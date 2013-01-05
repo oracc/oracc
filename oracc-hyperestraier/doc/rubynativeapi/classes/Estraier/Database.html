@@ -1,0 +1,1447 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Estraier::Database [estraier]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }<\/style>" )
+
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Estraier::Database</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+
+
+                <a href="../../files/estraier-doc_rb.html">
+
+                estraier-doc.rb
+
+                </a>
+
+
+        <br />
+
+            </td>
+        </tr>
+
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+
+                Object
+
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+  <div id="contextContent">
+
+    <div id="description">
+      <hr size="10"></hr><p>
+++ Abstraction of database.
+</p>
+<hr size="10"></hr>
+    </div>
+
+   </div>
+
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+
+        <a href="#M000041">add_attr_index</a>&nbsp;&nbsp;
+
+        <a href="#M000059">add_pseudo_index</a>&nbsp;&nbsp;
+
+        <a href="#M000038">close</a>&nbsp;&nbsp;
+
+        <a href="#M000053">doc_num</a>&nbsp;&nbsp;
+
+        <a href="#M000048">edit_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000036">err_msg</a>&nbsp;&nbsp;
+
+        <a href="#M000039">error</a>&nbsp;&nbsp;
+
+        <a href="#M000040">fatal</a>&nbsp;&nbsp;
+
+        <a href="#M000042">flush</a>&nbsp;&nbsp;
+
+        <a href="#M000049">get_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000050">get_doc_attr</a>&nbsp;&nbsp;
+
+        <a href="#M000045">merge</a>&nbsp;&nbsp;
+
+        <a href="#M000052">name</a>&nbsp;&nbsp;
+
+        <a href="#M000062">new</a>&nbsp;&nbsp;
+
+        <a href="#M000037">open</a>&nbsp;&nbsp;
+
+        <a href="#M000044">optimize</a>&nbsp;&nbsp;
+
+        <a href="#M000047">out_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000046">put_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000057">scan_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000056">search</a>&nbsp;&nbsp;
+
+        <a href="#M000035">search_meta</a>&nbsp;&nbsp;
+
+        <a href="#M000058">set_cache_size</a>&nbsp;&nbsp;
+
+        <a href="#M000061">set_informer</a>&nbsp;&nbsp;
+
+        <a href="#M000060">set_wildmax</a>&nbsp;&nbsp;
+
+        <a href="#M000055">size</a>&nbsp;&nbsp;
+
+        <a href="#M000043">sync</a>&nbsp;&nbsp;
+
+        <a href="#M000051">uri_to_id</a>&nbsp;&nbsp;
+
+        <a href="#M000054">word_num</a>&nbsp;&nbsp;
+
+      </div>
+    </div>
+
+  </div>
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">VERSION</td>
+          <td>=</td>
+          <td class="context-item-value">&quot;0.0.0&quot;</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+version of Hyper <a href="../Estraier.html">Estraier</a>
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRNOERR</td>
+          <td>=</td>
+          <td class="context-item-value">0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: no error
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRINVAL</td>
+          <td>=</td>
+          <td class="context-item-value">1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: invalid argument
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRACCES</td>
+          <td>=</td>
+          <td class="context-item-value">2</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: access forbidden
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRLOCK</td>
+          <td>=</td>
+          <td class="context-item-value">3</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: lock failure
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRDB</td>
+          <td>=</td>
+          <td class="context-item-value">4</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: database problem
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRIO</td>
+          <td>=</td>
+          <td class="context-item-value">5</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: I/O problem
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRNOITEM</td>
+          <td>=</td>
+          <td class="context-item-value">6</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: no item
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ERRMISC</td>
+          <td>=</td>
+          <td class="context-item-value">9999</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+error code: miscellaneous
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBREADER</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: open as a reader
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBWRITER</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: open as a writer
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBCREAT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 2</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: a writer creating
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBTRUNC</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 3</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: a writer truncating
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBNOLCK</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 4</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: open without locking
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBLCKNB</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 5</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: lock without blocking
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBPERFNG</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 10</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: use perfect N-gram analyzer
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBCHRCAT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 11</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: use character category analyzer
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBSMALL</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 20</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: small tuning
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBLARGE</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 21</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: large tuning
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBHUGE</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 22</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: huge tuning
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBHUGE2</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 23</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: huge tuning second
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBHUGE3</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 24</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: huge tuning third
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBSCVOID</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 25</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: store scores as void
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBSCINT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 26</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: store scores as integer
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DBSCASIS</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 27</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+open mode: refrain from adjustment of scores
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">IDXATTRSEQ</td>
+          <td>=</td>
+          <td class="context-item-value">0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+attribute index type: for multipurpose sequencial access method
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">IDXATTRSTR</td>
+          <td>=</td>
+          <td class="context-item-value">1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+attribute index type: for narrowing with attributes as strings
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">IDXATTRNUM</td>
+          <td>=</td>
+          <td class="context-item-value">2</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+attribute index type: for narrowing with attributes as numbers
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">OPTNOPURGE</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+optimize option: omit purging dispensable region of deleted
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">OPTNODBOPT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+optimize option: omit optimization of the database files
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">MGCLEAN</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+merge option: clean up dispensable regions
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">PDCLEAN</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000046">put_doc</a> option: clean up dispensable
+regions
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">PDWEIGHT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000046">put_doc</a> option: weight scores
+statically when indexing
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ODCLEAN</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000047">out_doc</a> option: clean up dispensable
+regions
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">GDNOATTR</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 0</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000049">get_doc</a> option: no attributes
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">GDNOTEXT</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 1</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000049">get_doc</a> option: no text
+
+</td>
+
+        </tr>
+
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">GDNOKWD</td>
+          <td>=</td>
+          <td class="context-item-value">1 &lt;&lt; 2</td>
+
+          <td>&nbsp;</td>
+          <td class="context-item-desc">
+<a href="Database.html#M000049">get_doc</a> option: no keywords
+
+</td>
+
+        </tr>
+
+        </table>
+      </div>
+    </div>
+
+
+
+
+    <!-- if method_list -->
+
+    <div id="methods">
+
+      <h3 class="section-bar">Public Class methods</h3>
+
+
+      <div id="method-M000062" class="method-detail">
+        <a name="M000062"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000062.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000062.html');return false;">
+
+          <span class="method-name">new</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Create a database object.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000035" class="method-detail">
+        <a name="M000035"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000035.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000035.html');return false;">
+
+          <span class="method-name">search_meta</span><span class="method-args">(dbs, cond)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Search plural databases for documents corresponding a condition.
+`dbs&#8217; specifies an array whose elements are database objects.
+`cond&#8217; specifies a condition object. The return value is a result
+object. On error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+
+      <div id="method-M000041" class="method-detail">
+        <a name="M000041"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000041.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000041.html');return false;">
+
+          <span class="method-name">add_attr_index</span><span class="method-args">(name, type)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Add an index for narrowing or sorting with document attributes.
+`name&#8217; specifies the name of an attribute. `type&#8217; specifies the
+data type of attribute index; `Database::IDXATTRSEQ&#8217; for multipurpose
+sequencial access method, `Database::IDXATTRSTR&#8217; for narrowing with
+attributes as strings, `Database::IDXATTRNUM&#8217; for narrowing with
+attributes as numbers. The return value is true if success, else it is
+false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000059" class="method-detail">
+        <a name="M000059"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000059.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000059.html');return false;">
+
+          <span class="method-name">add_pseudo_index</span><span class="method-args">(path)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Add a pseudo index directory. `path&#8217; specifies the path of a pseudo
+index directory. The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000038" class="method-detail">
+        <a name="M000038"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000038.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000038.html');return false;">
+
+          <span class="method-name">close</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Close the database. The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000053" class="method-detail">
+        <a name="M000053"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000053.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000053.html');return false;">
+
+          <span class="method-name">doc_num</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the number of documents. The return value is the number of documents in
+the database.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000048" class="method-detail">
+        <a name="M000048"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000048.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000048.html');return false;">
+
+          <span class="method-name">edit_doc</span><span class="method-args">(doc)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Edit attributes of a document. `doc&#8217; specifies a document object. The
+return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000036" class="method-detail">
+        <a name="M000036"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000036.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000036.html');return false;">
+
+          <span class="method-name">err_msg</span><span class="method-args">(ecode)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the string of an error code. `ecode&#8217; specifies an error code. The
+return value is the string of the error code.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000039" class="method-detail">
+        <a name="M000039"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000039.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000039.html');return false;">
+
+          <span class="method-name">error</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the last happened error code. The return value is the last happened
+error code.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000040" class="method-detail">
+        <a name="M000040"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000040.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000040.html');return false;">
+
+          <span class="method-name">fatal</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Check whether the database has a fatal error. The return value is true if
+the database has fatal erroor, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000042" class="method-detail">
+        <a name="M000042"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000042.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000042.html');return false;">
+
+          <span class="method-name">flush</span><span class="method-args">(max)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Flush index words in the cache. `max&#8217; specifies the maximum number of
+words to be flushed. If it not more than zero, all words are flushed. The
+return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000049" class="method-detail">
+        <a name="M000049"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000049.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000049.html');return false;">
+
+          <span class="method-name">get_doc</span><span class="method-args">(id, options)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve a document. `id&#8217; specifies the ID number of a registered
+document. `options&#8217; specifies options: `Database::GDNOATTR&#8217; to
+ignore attributes, `Database::GDNOTEXT&#8217; to ignore the body text,
+`Database::GDNOKWD&#8217; to ignore keywords. The three can be specified at
+the same time by bitwise or. The return value is a document object. On
+error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000050.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000050.html');return false;">
+
+          <span class="method-name">get_doc_attr</span><span class="method-args">(id, name)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve the value of an attribute of a document. `id&#8217; specifies the
+ID number of a registered document. `name&#8217; specifies the name of an
+attribute. The return value is the value of the attribute or `nil&#8217; if
+it does not exist.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000045.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000045.html');return false;">
+
+          <span class="method-name">merge</span><span class="method-args">(name, options)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Merge another database. `name&#8217; specifies the name of another database
+directory. `options&#8217; specifies options: `Database::MGCLEAN&#8217; to
+clean up dispensable regions of the deleted document. The return value is
+true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000052" class="method-detail">
+        <a name="M000052"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000052.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000052.html');return false;">
+
+          <span class="method-name">name</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the name. The return value is the name of the database.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000037" class="method-detail">
+        <a name="M000037"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000037.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000037.html');return false;">
+
+          <span class="method-name">open</span><span class="method-args">(name, omode)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Open a database. `name&#8217; specifies the name of a database directory.
+`omode&#8217; specifies open modes: `Database::DBWRITER&#8217; as a writer,
+`Database::DBREADER&#8217; as a reader. If the mode is
+`Database::DBWRITER&#8217;, the following may be added by bitwise or:
+`Database::DBCREAT&#8217;, which means it creates a new database if not
+exist, `Database::DBTRUNC&#8217;, which means it creates a new database
+regardless if one exists. Both of `Database::DBREADER&#8217; and
+`Database::DBWRITER&#8217; can be added to by bitwise or:
+`Database::DBNOLCK&#8217;, which means it opens a database file without
+file locking, or `Database::DBLCKNB&#8217;, which means locking is
+performed without blocking. If `Database::DBNOLCK&#8217; is used, the
+application is responsible for exclusion control. `Database::DBCREAT&#8217;
+can be added to by bitwise or: `Database::DBPERFNG&#8217;, which means
+N-gram analysis is performed against European text also,
+`Database::DBCHACAT&#8217;, which means character category analysis is
+performed instead of N-gram analysis, `Database::DBSMALL&#8217;, which
+means the index is tuned to register less than 50000 documents,
+`Database::DBLARGE&#8217;, which means the index is tuned to register more
+than 300000 documents, `Database::DBHUGE&#8217;, which means the index is
+tuned to register more than 1000000 documents, `Database::DBHUGE2&#8217;,
+which means the index is tuned to register more than 5000000 documents,
+`Database::DBHUGE3&#8217;, which means the index is tuned to register more
+than 10000000 documents, `Database::DBSCVOID&#8217;, which means scores are
+stored as void, `Database::DBSCINT&#8217;, which means scores are stored as
+32-bit integer, `Database::DBSCASIS&#8217;, which means scores are stored
+as-is and marked not to be tuned when search. The return value is true if
+success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000044.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000044.html');return false;">
+
+          <span class="method-name">optimize</span><span class="method-args">(options)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Optimize the database. `options&#8217; specifies options:
+`Database::OPTNOPURGE&#8217; to omit purging dispensable region of deleted
+documents, `Database::OPTNODBOPT&#8217; to omit optimization of the
+database files. The two can be specified at the same time by bitwise or.
+The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000047" class="method-detail">
+        <a name="M000047"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000047.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000047.html');return false;">
+
+          <span class="method-name">out_doc</span><span class="method-args">(id, options)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Remove a document. `id&#8217; specifies the ID number of a registered
+document. `options&#8217; specifies options: `Database::ODCLEAN&#8217; to
+clean up dispensable regions of the deleted document. The return value is
+true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000046" class="method-detail">
+        <a name="M000046"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000046.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000046.html');return false;">
+
+          <span class="method-name">put_doc</span><span class="method-args">(doc, options)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Add a document. `doc&#8217; specifies a document object. The document
+object should have the URI attribute. `options&#8217; specifies options:
+`Database::PDCLEAN&#8217; to clean up dispensable regions of the
+overwritten document. The return value is true if success, else it is
+false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000057" class="method-detail">
+        <a name="M000057"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000057.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000057.html');return false;">
+
+          <span class="method-name">scan_doc</span><span class="method-args">(doc, cond)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Check whether a document object matches the phrase of a search condition
+object definitely. `doc&#8217; specifies a document object. `cond&#8217;
+specifies a search condition object. The return value is true if the
+document matches the phrase of the condition object definitely, else it is
+false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000056" class="method-detail">
+        <a name="M000056"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000056.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000056.html');return false;">
+
+          <span class="method-name">search</span><span class="method-args">(cond)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Search for documents corresponding a condition. `cond&#8217; specifies a
+condition object. The return value is a result object. On error,
+`nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000058" class="method-detail">
+        <a name="M000058"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000058.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000058.html');return false;">
+
+          <span class="method-name">set_cache_size</span><span class="method-args">(size, anum, tnum, rnum)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the maximum size of the cache memory. `size&#8217; specifies the
+maximum size of the index cache. By default, it is 64MB. If it is not more
+than 0, the current size is not changed. `anum&#8217; specifies the maximum
+number of cached records for document attributes. By default, it is 8192.
+If it is not more than 0, the current size is not changed. `tnum&#8217;
+specifies the maximum number of cached records for document texts. By
+default, it is 1024. If it is not more than 0, the current size is not
+changed. `rnum&#8217; specifies the maximum number of cached records for
+occurrence results. By default, it is 256. If it is not more than 0, the
+current size is not changed. The return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000061" class="method-detail">
+        <a name="M000061"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000061.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000061.html');return false;">
+
+          <span class="method-name">set_informer</span><span class="method-args">(informer)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the callback function to inform of database events. `informer&#8217;
+specifies an arbitrary object with a method named as `inform&#8217;. The
+method should have one parameter for a string of a message of each event.
+The return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000060" class="method-detail">
+        <a name="M000060"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000060.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000060.html');return false;">
+
+          <span class="method-name">set_wildmax</span><span class="method-args">(num)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the maximum number of expansion of wild cards. `num&#8217; specifies
+the maximum number of expansion of wild cards. The return value is always
+`nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000055" class="method-detail">
+        <a name="M000055"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000055.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000055.html');return false;">
+
+          <span class="method-name">size</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the size. The return value is the size of the database.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000043" class="method-detail">
+        <a name="M000043"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000043.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000043.html');return false;">
+
+          <span class="method-name">sync</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Synchronize updating contents. The return value is true if success, else it
+is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000051.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000051.html');return false;">
+
+          <span class="method-name">uri_to_id</span><span class="method-args">(uri)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the ID of a document specified by URI. `uri&#8217; specifies the URI of
+a registered document. The return value is the ID of the document. On
+error, -1 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000054" class="method-detail">
+        <a name="M000054"></a>
+
+        <div class="method-heading">
+
+          <a href="Database.src/M000054.html" target="Code" class="method-signature"
+            onclick="popupCode('Database.src/M000054.html');return false;">
+
+          <span class="method-name">word_num</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the number of unique words. The return value is the number of unique
+words in the database.
+</p>
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+
+  </div>
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

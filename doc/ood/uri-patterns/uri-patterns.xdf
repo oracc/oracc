@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc URI Patterns</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Oracc's stable URIs are formed according to simple
+  patterns.  This document outlines the patterns on
+  which Oracc URIs are built.</dc:description>
+</d:meta>
+
+<p>Note that this document does not demonstrate every URI, but is
+intended to give a quick overview of the most useful URIs for
+accessing Oracc data.</p>
+
+<p>For the background to the examples given below see the Resources,
+URI and URN documents which are reached from the <a
+href="/doc/ood">Oracc Open Data</a> page.</p>
+
+<p>In order to keep this overview brief, we give only occasional notes
+here on what is returned in response to the URIs.  See the full URI
+documentation for details.  See the <a href="../uri-examples/">URI
+Examples document</a> for a list of clickable examples with
+commentary.</p>
+
+<h1>Oracc URIs</h1>
+
+<p>Stable Oracc URIs are aligned with Oracc URNs according to the
+principle that the most commonly accessed URN types should have the
+simplest URIs.</p>
+
+<ul>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/P334929" 
+       href="http://oracc.museum.upenn.edu/P334929">/P334929</a> or /Q123456 or /X123456
+<p>URIs matching a PQX-id are texts.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/šarru[king]N" 
+       href="http://oracc.museum.upenn.edu/šarru[king]N">/šarru[king]N</a> 
+     or <a class="uri" title="http://oracc.museum.upenn.edu/Šarru[King]CN" 
+       href="http://oracc.museum.upenn.edu/Šarru[King]CN">/šarru[King]CN</a>
+<p>URIs containing square brackets are words or names.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/Nineveh" 
+       href="http://oracc.museum.upenn.edu/Nineveh">/Nineveh</a>
+<p>URIs not matching the PQX-id or name/word patterns and
+which begin with an uppercase letter are entities.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/akk" 
+       href="http://oracc.museum.upenn.edu/akk">/akk</a>
+       or <a class="uri" title="http://oracc.museum.upenn.edu/akk-x-oldbab" 
+       href="http://oracc.museum.upenn.edu/akk-x-oldbab">/akk-x-oldbab</a>
+<p>URIs consisting of three lowercase letters, possibly
+followed by '-x-' and a further six-lowercase-letter word, are
+languages identifying glossaries.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/corpus" 
+       href="http://oracc.museum.upenn.edu/corpus">/corpus</a>
+     or <a class="uri" title="http://oracc.museum.upenn.edu/find" 
+       href="http://oracc.museum.upenn.edu/find">/find</a>
+     or <a class="uri" title="http://oracc.museum.upenn.edu/statistics" 
+       href="http://oracc.museum.upenn.edu/statistics">/statistics</a>
+<p>There are some keywords which are reserved in Oracc and have special meanings in URIs:</p>
+<dl>
+<dt>corpus</dt><dd>requests the text corpus rather than the index page</dd>
+<dt>statistics</dt><dd>requests a summary of prepackaged statistics</dd>
+<dt>find</dt><dd>invokes the full text search facility; may take a query string, e.g., 
+<a class="uri" title="http://oracc.museum.upenn.edu/find?sargon" 
+   href="http://oracc.museum.upenn.edu/find?sargon">/find?sargon</a></dd>
+</dl>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/cams" 
+       href="http://oracc.museum.upenn.edu/cams">/cams</a>
+<p>URIs other than reserved keywords which consist of a lowercase
+letter followed by three or more lowercase letters and numbers are
+projects.  Subproject names are also valid URIs.</p>
+</li>
+</ul>
+
+<h1>Project URIs</h1>
+
+<ul>
+<li>/cams or /cams/anzu
+<p>URIs beginning with a project or subproject name are project
+URIs.</p>
+</li>
+<li><code>[PROJECT]/[ORACC_URI]</code>
+<p>Any Oracc URI can be appended to a project URI.</p>
+</li>
+<li>/dcclt/Q000002
+<p>A project text URI returns a new instance of the Oracc pager with
+the text preloaded into it.</p>
+</li>
+<li>/dcclt/Q000002,Q000003
+<p>A project text-list URI is a comma-separated list of texts and
+returns a new instance of the Oracc pager with all of the requested
+texts preloaded into it.</p>
+</li>
+<li>/dcclt/Q000001/html
+<p>A project text URI with an HTML format specifier returns just the
+HTML page; this is suitable for embedding in other pages using
+iframe.</p>
+</li>
+<li>/saao/withatf
+<p>A project URI followed by a word containing only lowercase letters
+and hyphens is a list-name.</p>
+</li>
+<li>/saao?sargon
+<p>A project URI with a query string searches the project's catalogue
+for the keys in the query.</p>
+</li>
+<li>/saao/akk?king
+<p>A project language URI with a query string searches the
+project's glossary of that language.</p>
+</li>
+<li>/saao/find?sargon
+<p>A project full search URI with a query string searches the
+full text index of the project.</p>
+</li>
+</ul>
+</d:doc>

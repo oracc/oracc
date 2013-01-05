@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 8:<br/>XForms XQuery</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The XForms hello page is generated from an XQuery,
+  illustrating some pitfalls to be avoided.</dc:description>
+</d:meta>
+
+<h1>XForms XQuery</h1>
+
+<p>When generating your XForms from an XQuery there are two things you
+must get right: don't allow indentation in the output you send to the
+client-side browser; and make sure the browser will properly register
+any data namespaces you are using.  Other than this, there is nothing
+new in this example.</p>
+
+<h2>Indentation</h2>
+
+<p>You must suppress indentation using the
+<code>exist:serialize</code> option:</p>
+
+<pre class="example">
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=no";
+</pre>
+
+<h2>Namespaces</h2>
+
+<p>You must ensure that FireFox registers namespaces by not only
+declaring the namespaces <strong>but also using them</strong>.  An
+easy way to use them is to put attributes on the <code>html</code>
+element as follows, where the <code>xpd:dummy</code> attribute serves
+only to ensure that FireFox can find the <code>xpd</code> namespace
+when it processes the instance data:</p>
+
+<pre class="example">
+&lt;html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+      xpd:dummy="Force FireFox to register xpd namespace"
+      >
+</pre>
+
+<h2>All together</h2>
+
+<p>Here is the page all in one place:</p>
+
+<pre class="cookbook">
+xquery version "1.0" encoding "UTF-8";
+
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=no";
+
+
+declare variable $project as xs:string 
+        := request:get-parameter('project','');
+
+declare variable $configxml as xs:string 
+        := concat('/db/',$project,'/oml/00config.xml');
+
+document {
+
+processing-instruction
+  xml-stylesheet
+  { 'href="/db/oracc/lib/xsltforms/xsltforms.xsl" type="text/xsl"' },
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+      xpd:dummy="Force FireFox to register xpd namespace"
+      >
+&lt;head>
+&lt;title>XForms Project Hello&lt;/title>
+  &lt;xf:model>
+    &lt;xf:instance id="default" src="{$configxml}"/>
+  &lt;/xf:model>
+&lt;/head>
+&lt;body>
+  &lt;h1>XForms { $project } Hello&lt;/h1>
+  &lt;p>Hello &lt;xf:output ref="instance('default')/xpd:name"/>&lt;/p>
+&lt;/body>
+&lt;/html>
+
+}
+</pre>
+
+<p>You can access this page at: <a href="http://oracc.museum.upenn.edu/db/oracc/lib/examples/xforms/hello.xql?project=test">http://oracc.museum.upenn.edu/db/oracc/lib/examples/xforms/hello.xql?project=test</a>.</p>
+
+</d:doc>

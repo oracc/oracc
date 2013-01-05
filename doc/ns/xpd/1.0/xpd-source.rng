@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  xpd-source.rnc: DO NOT EDIT THE RNG VERSION OF THIS FILE.
+  
+  This schema is both the definition of the project configuration
+  file, typically 00lib/config.xml, and is used as the source for 
+  the XForms configuration editor.  The documentation in the
+  schema documentation below is carried over into the Xforms to
+  create a self-documenting configuration editor.
+  
+  The schema is annotated according to the rules in the Annotations
+  section of the RNC compact tutorial.  See, for example:
+  
+   http://relaxng.org/compact-tutorial-20030326.html#annotations
+  
+  The following rules must be observed:
+  
+    - definitions that are used in the content model of `project'
+      must be immediately before the documentation of the module
+    - documentation of groups must be immmediately before the
+      module name line
+    - documentation to go in the help panel must come immediately
+      before the element definition
+    - documentation of attributes must be immediately before the
+      attributes
+    - documentation of attribute values must be immediately before
+      the value, unless the value is the default, in which case:
+    - [ d:default="1" ] should be placed between the documentation
+      comment and the value
+  
+-->
+<grammar ns="http://oracc.org/ns/xpd/1.0" xmlns:d="http://oracc.org/ns/d" xmlns:xpd="http://oracc.org/ns/xpd/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:m="http://oracc.org/ns/m" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <ref name="project"/>
+  </start>
+  <!--
+    textarea needs to be a control which allows adding multiple
+    paras but for now it's just one
+  -->
+  <define name="textarea">
+    <text/>
+  </define>
+  <!-- p = element p { text } -->
+  <define name="project">
+    <element name="project">
+      <ref name="core">
+        <a:documentation>The basic name of the project as used in directories and filenames.</a:documentation>
+      </ref>
+      <interleave>
+        <ref name="build"/>
+        <ref name="atf"/>
+        <ref name="cbd"/>
+        <ref name="pager"/>
+        <ref name="render"/>
+        <ref name="outline"/>
+        <ref name="views"/>
+        <ref name="undocumented"/>
+      </interleave>
+    </element>
+  </define>
+  <define name="core">
+    <ref name="n"/>
+    <ref name="name"/>
+    <ref name="abbrev"/>
+    <ref name="type"/>
+    <ref name="logo"/>
+    <ref name="public"/>
+    <ref name="blurb"/>
+    <ref name="image"/>
+    <ref name="alt"/>
+    <optional>
+      <ref name="url"/>
+    </optional>
+  </define>
+  <div m:name="core">
+    <a:documentation>required for all projects.</a:documentation>
+    <define name="n">
+      <element name="n">
+        <a:documentation>The basename of the project as used in directories, e.g., epsd.
+For subprojects this includes the parent projects separated by
+slashes, e.g., epsd/late. This parameter is set when the project
+is created and cannot be altered without consultation with your
+project liaison.</a:documentation>
+        <data type="NCName">
+          <a:documentation>The project basename, e.g., epsd.</a:documentation>
+        </data>
+      </element>
+    </define>
+    <define name="name">
+      <element name="name">
+        <a:documentation>The full name of the project is not restricted in the same way as
+the abbreviated name and the project name itself.</a:documentation>
+        <text>
+          <a:documentation>The long human-readable name of the project, 
+e.g., electronic Pennsylvania Sumerian Dictionary</a:documentation>
+        </text>
+      </element>
+    </define>
+    <define name="abbrev">
+      <element name="abbrev">
+        <a:documentation>The abbreviation for the project should be a single word, which can
+mix case, like ePSD.</a:documentation>
+        <data type="NCName">
+          <a:documentation>The short human-readable name of the project, e.g., ePSD.</a:documentation>
+        </data>
+      </element>
+    </define>
+    <define name="type">
+      <element name="type">
+        <a:documentation>Oracc recognizes several different project types which affect things
+like how the default home page is constructed, and how the pager
+formats a browsable view of the project data.  This parameter is 
+set when the project is created and cannot be altered without 
+consultation with your project liaison.</a:documentation>
+        <choice>
+          <value d:default="1">corpus</value>
+          <a:documentation>project is primarily a corpus</a:documentation>
+          <value>glossary</value>
+          <a:documentation>project is primarily a glossary</a:documentation>
+          <value>portal</value>
+          <a:documentation>project is a portal providing only content-pages</a:documentation>
+          <value>signlist</value>
+          <a:documentation>project is primarily a signlist</a:documentation>
+        </choice>
+      </element>
+    </define>
+    <define name="logo">
+      <element name="logo">
+        <text>
+          <a:documentation>The logo to display in the top left corner of the page</a:documentation>
+        </text>
+      </element>
+    </define>
+    <define name="public">
+      <element name="public">
+        <a:documentation> This parameter cannot be altered without consultation with your
+project liaison.</a:documentation>
+        <data type="boolean">
+          <a:documentation>Make the project public and include it in Oracc search, etc. </a:documentation>
+        </data>
+      </element>
+    </define>
+    <define name="blurb">
+      <element name="blurb">
+        <a:documentation>You have 40 words, about 300 characters including spaces, to give
+the most interesting and relevant information about your project,
+which is used in the Oracc project list and in the Featured Project
+on the Oracc home page.
+
+You do not need to repeat the title and abbreviation, because that
+is already in the heading. You may include links in the blurb--they
+do not count against your word or character limit.
+ 
+If you want split your blurb into two or more paragraphs, each
+paragraph must start with a &lt;p&gt; tag and end with a &lt;/p&gt; tag.  </a:documentation>
+        <ref name="textarea">
+          <a:documentation>Short description for the Featured Project panel</a:documentation>
+        </ref>
+      </element>
+    </define>
+    <define name="image">
+      <element name="image">
+        <a:documentation>This image accompanies the blurb. It is always scaled to 320 x 240
+pixels (i.e., a 4:3 ratio), so should be chosen with this
+constraint in mind. It does not need to be an image that is used
+elsewhere in the project, but it must be placed in the 00web/images
+directory.
+
+Please scale your images so that they are a reasonable size: images
+over 100K in size will be rejected by the system. The best format
+is .png, but .jpg files are also acceptable.
+
+PLEASE TRY NOT TO USE PICTURES OF TABLETS! For some projects, that
+may be inevitable, but since we have so many pictures of tablets in
+so many places, it is more interesting to promote your project with
+a scene of relevance either to the context of the work you are
+doing or to the content of the tablets. If you do use a tablet
+image, please choose a relevant section of a relevant text, and
+present something that is meaningful to those able to read it. The
+section presented should be scaled and processed so that it is
+clearly readable online.</a:documentation>
+        <data type="anyURI">
+          <a:documentation>A 4:3 ratio image for the Featured Project panel</a:documentation>
+        </data>
+      </element>
+    </define>
+    <define name="alt">
+      <element name="image-alt">
+        <a:documentation>When the image is displayed online it is accompanied by
+a short description which is used by browsers which do not
+display the image.  This alternative text is required.</a:documentation>
+        <a:documentation>The text should be brief but descriptive--the project 
+list has a number of examples of good practice.  In general, 
+the image content, its provenance and date are a good starting 
+point.</a:documentation>
+        <text>
+          <a:documentation>Brief description of image for the 'alt' attribute</a:documentation>
+        </text>
+      </element>
+    </define>
+    <define name="url">
+      <element name="url">
+        <a:documentation>Projects may be integrated on the Oracc server or they may be
+separated, with the portal content on another server and only 
+the corpus on the Oracc server.  For the latter type of project, 
+this element gives the address of the portal-server.</a:documentation>
+        <data type="anyURI">
+          <a:documentation>URL of externally hosted portal page (if any)</a:documentation>
+        </data>
+      </element>
+    </define>
+  </div>
+  <define name="build">
+    <zeroOrMore>
+      <interleave>
+        <ref name="approved.lst"/>
+        <ref name="outlined.lst"/>
+        <ref name="catalog"/>
+        <ref name="TEI"/>
+        <ref name="TEI.list"/>
+        <ref name="TEI.dist"/>
+        <ref name="TEI.trim"/>
+        <ref name="ignore.bad.proxy"/>
+      </interleave>
+    </zeroOrMore>
+  </define>
+  <div m:name="build">
+    <a:documentation>affects the project rebuilding process.</a:documentation>
+    <div m:name="lists">
+      <define name="approved.lst">
+        <element name="option">
+          <a:documentation>The automatically generated file 00lib/approved.lst gives 
+all the texts which are considered part of the project. 
+You can choose how that list is made: 
+
+(a) "atf" harvests p-numbers and q-numbers from the ATF 
+files in 00atf/ ; 
+
+(b) "catalog" takes all the p- and q-numbers from the 
+project's catalogue (if it has one); 
+
+(c) "mixed" finds all the p- and q-numbers that are in 
+the ATF files and/or the catalogue (but you will have to make
+deletions manually);
+
+(d) "static" makes no changes to 00lib/approved.lst 
+(which you will have to edit by hand if you want to change it);
+
+(e) "umbrella" generates 00lib/approved.lst from all the
+approved.lst's in the project's subprojects.</a:documentation>
+          <attribute name="name">
+            <value>build-approved-policy</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>controls how 00lib/approved.lst is built</a:documentation>
+            <choice>
+              <value d:default="1">atf</value>
+              <a:documentation>list is derived from project's ATF sources</a:documentation>
+              <value>catalog</value>
+              <a:documentation>list is derived from project catalogs</a:documentation>
+              <value>mixed</value>
+              <a:documentation>list combined ATF sources and existing approved.lst</a:documentation>
+              <value>static</value>
+              <a:documentation>list is never changed by a program</a:documentation>
+              <value>umbrella</value>
+              <a:documentation>list is generated from subprojects</a:documentation>
+            </choice>
+          </attribute>
+        </element>
+      </define>
+      <define name="outlined.lst">
+        <element name="option">
+          <a:documentation>The file 00lib/outlined.lst defines the texts in 00lib/approved.lst
+which are displayed by the pager. The options are: 
+(a) "approved" displays all the texts in approved.lst; 
+(b) "atf" displays only the texts in approved.lst which already have 
+ATF files; 
+(c) "P" displays only the texts in approved.list that have p-numbers 
+and x-numbers  (i.e., the mss or tablets); 
+(d) "Q" only the texts in approved.list that have q-numbers (i.e., 
+the composite texts); and 
+(e) "static" means that you will need to manually edit 
+00lib/outlined.lst in order to change it. 
+
+You can control whether or not the pager actually uses 
+00lib/outlined.lst with the option pager-outlined-lst on the Pager
+tab.</a:documentation>
+          <attribute name="name">
+            <value>build-outlined-policy</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>controls how 00lib/outlined.lst is built</a:documentation>
+            <choice>
+              <value d:default="1">approved</value>
+              <a:documentation>outline gives the texts in approved.lst</a:documentation>
+              <value>atf</value>
+              <a:documentation>outline gives all texts for which project has ATF source</a:documentation>
+              <value>P</value>
+              <a:documentation>outline gives all P-id and X-id texts in approved.lst</a:documentation>
+              <value>Q</value>
+              <a:documentation>outline gives all Q-id texts in approved.lst</a:documentation>
+              <value>static</value>
+              <a:documentation>list is never changed by a program</a:documentation>
+            </choice>
+          </attribute>
+        </element>
+      </define>
+      <div m:name="formats">
+        <define name="catalog">
+          <element name="option">
+            <a:documentation> Catalog options control the source of your project's metadata.
+
+ The default is "auto", which takes data from the CDLI main 
+catalogue as installed on Oracc. This is the recommended approach, 
+since it encourages corrections to be propagated directly back to 
+the CDLI catalogue.
+
+If you use your own version of the CDLI catalogue with the same 
+fields, then set the value to "local". 
+
+If your corpus is composed entirely of texts from (an)other project(s),
+e.g., by proxying or as an umbrella, set the value to "virtual". The
+catalogue data will then be drawn from those other projects.
+
+If, unusually, your project has a customised catalogue, set the 
+value to "custom".
+
+If you use a custom xml catalogue the catalogue configuration is 
+more complicated and is not documented here. (Briefly, it is handled
+by a file called 00lib/keydata.xml.) If you do need a custom 
+catalogue, please consult your project liaison about configuration 
+options.</a:documentation>
+            <attribute name="name">
+              <value>catalog-build-policy</value>
+            </attribute>
+            <attribute name="value">
+              <a:documentation>controls how catalogue is built</a:documentation>
+              <choice>
+                <value d:default="1">auto</value>
+                <a:documentation>data comes from CDLI main catalogue</a:documentation>
+                <value>local</value>
+                <a:documentation>project maintains its own catalogue in CDLI format</a:documentation>
+                <value>virtual</value>
+                <a:documentation>project does not maintain its own catalogue</a:documentation>
+                <value>custom</value>
+                <a:documentation>project maintains its own catalogue in its own format</a:documentation>
+              </choice>
+            </attribute>
+          </element>
+        </define>
+        <define name="ignore.bad.proxy">
+          <element name="option">
+            <a:documentation>The default is "no".
+
+This option suppresses warnings about items in 00lib/proxy.lst
+when you rebuild the project.
+Set this option to "yes" if you can account for those warnings, 
+for instance if your proxy.lst contains texts that have not yet
+been edited.</a:documentation>
+            <attribute name="name">
+              <value>build-ignore-bad-proxy</value>
+            </attribute>
+            <attribute name="value" d:default="false">
+              <a:documentation>ignore error messages about proxy.lst</a:documentation>
+              <data type="boolean"/>
+            </attribute>
+          </element>
+        </define>
+        <define name="TEI">
+          <element name="option">
+            <a:documentation>The default is "no".
+
+If you set it to "yes:, a TEI version of the project 
+is created. See the TEI page for more information.</a:documentation>
+            <attribute name="name">
+              <value>build-tei</value>
+            </attribute>
+            <attribute name="value" d:default="false">
+              <a:documentation>build TEI version of project</a:documentation>
+              <data type="boolean"/>
+            </attribute>
+          </element>
+        </define>
+        <define name="TEI.list">
+          <element name="option">
+            <a:documentation>This options sets which texts in a project are included 
+in the TEI version. There are three options:
+
+(a) "atf" includes all the project's ATF files in the TEI 
+version.
+
+(b) "lem" includes only the project's lemmatised ATF files.
+
+(c) approved.lst includes all the texts listed in the file
+00lib/approved.lst (which are set using the approved.lst
+option above).</a:documentation>
+            <attribute name="name">
+              <value>build-tei-list</value>
+            </attribute>
+            <attribute name="value">
+              <a:documentation>control which files are converted to TEI</a:documentation>
+              <choice>
+                <value d:default="1">atf</value>
+                <a:documentation>all ATF files</a:documentation>
+                <value>lem</value>
+                <a:documentation>only lemmatized files</a:documentation>
+                <value>approved</value>
+                <a:documentation>all files list in approved.lst</a:documentation>
+              </choice>
+            </attribute>
+          </element>
+        </define>
+        <define name="TEI.dist">
+          <element name="option">
+            <a:documentation>When you select this option, every time you rebuild the 
+project a zipped version of the TEI corpus is also created,
+which can be downloaded from your project's url/downloads/teiCorpus.zip.</a:documentation>
+            <attribute name="name">
+              <value>build-tei-dist</value>
+            </attribute>
+            <attribute name="value" d:default="false">
+              <a:documentation>build TEI distribution</a:documentation>
+              <data type="boolean"/>
+            </attribute>
+          </element>
+        </define>
+        <define name="TEI.trim">
+          <element name="option">
+            <a:documentation>By selecting this option you ensure that only the 
+glossary data relating to your TEI corpus are included in 
+the TEI distribution. This is particularly useful if you 
+have set your TEI corpus to be a subset of your project's
+corpus.</a:documentation>
+            <attribute name="name">
+              <value>build-tei-trim</value>
+            </attribute>
+            <attribute name="value" d:default="false">
+              <a:documentation>trim TEI distribution</a:documentation>
+              <data type="boolean"/>
+            </attribute>
+          </element>
+        </define>
+      </div>
+    </div>
+  </div>
+  <define name="atf">
+    <interleave>
+      <ref name="lem-extended"/>
+      <ref name="cuneify-notices"/>
+      <ref name="lem-dsa"/>
+      <ref name="lem-nsa"/>
+      <ref name="lem-psa"/>
+    </interleave>
+  </define>
+  <div m:name="atf" m:tab="ATF processor">
+    <a:documentation>controls ATF processor behaviour.</a:documentation>
+    <define name="lem-extended">
+      <element name="option">
+        <a:documentation>If this option is set to "yes" then the lemmatizer operates in 
+extended mode.  This is presently only applicable to Sumerian, 
+where it involves calling the morphological analyzer.    </a:documentation>
+        <attribute name="name">
+          <value>atf-lem-extended</value>
+        </attribute>
+        <attribute name="value" d:default="false">
+          <a:documentation>switches extended lemmatising mode on or off</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="lem-dsa">
+      <element name="option">
+        <a:documentation>This option controls whether the Date System Analyser is
+run when texts are lemmatized and analysed.  The DSA is 
+functional but developmental.  The default is "no".</a:documentation>
+        <attribute name="name">
+          <value>atf-lem-dsa</value>
+        </attribute>
+        <attribute name="value" d:default="false">
+          <a:documentation>switches the Date System Analyser on or off</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="lem-nsa">
+      <element name="option">
+        <a:documentation>This option controls whether the Number System Analyser is
+run when texts are lemmatized and analysed.  The NSA is 
+functional but developmental.  The default is "no".</a:documentation>
+        <attribute name="name">
+          <value>atf-lem-nsa</value>
+        </attribute>
+        <attribute name="value" d:default="false">
+          <a:documentation>switches the Number System Analyser on or off</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="lem-psa">
+      <element name="option">
+        <a:documentation>This option controls whether the Person System Analyser is
+run when texts are lemmatized and analysed.  The PSA is 
+functional but developmental.  The default is "no".
+
+The option "properties" includes only the first stage of PSA 
+processing, which involves adding properties to the lemmata.  
+The option "entities" also includes the second stage of processing 
+which involves grouping name elements into sequences which identify 
+an individual.</a:documentation>
+        <attribute name="name">
+          <value>atf-lem-dsa</value>
+        </attribute>
+        <attribute name="value" d:default="none">
+          <a:documentation>switches the Person System Analyser on or off</a:documentation>
+          <choice>
+            <value>none</value>
+            <value>properties</value>
+            <a:documentation>adds PSA properties to lemmata</a:documentation>
+            <value>entities</value>
+            <a:documentation>adds PSA properties to lemmat and groups name elements</a:documentation>
+          </choice>
+        </attribute>
+      </element>
+    </define>
+    <define name="cuneify-notices">
+      <element name="option">
+        <a:documentation>If you tick this box, when you rebuild the project you 
+will receive warning notices about signs in your project 
+which Cuneify does not recognise.</a:documentation>
+        <attribute name="name">
+          <value>atf-cuneify-notices</value>
+        </attribute>
+        <attribute name="value" d:default="false">
+          <a:documentation>issue warning notices about cuneify failures</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+  </div>
+  <define name="cbd">
+    <interleave>
+      <ref name="cbd-mode"/>
+      <ref name="periods"/>
+    </interleave>
+  </define>
+  <div m:name="cbd" m:tab="glossary">
+    <a:documentation>controls glossary building behaviour.</a:documentation>
+    <define name="cbd-mode">
+      <element name="option">
+        <a:documentation>This option allows you to set how your project's 
+glossaries are built. There are four possibilities:
+
+(a) "mixed": existing glossary files (e.g., 00lib/akk.glo) 
+are merged with new glossary data (e.g., from 00lib/akk.new)
+when you run the harvest-merge sequence prior to rebuilding 
+a project.
+
+(b) "dynamic": your project's glossaries are created anew 
+from your lemmatised ATF files every time you rebuild your 
+project.
+
+(c) "static": the only way to change your project's 
+glossaries is to edit them by hand.
+
+(d) "none": your project has no glossaries.</a:documentation>
+        <attribute name="name">
+          <value>cbd-mode</value>
+        </attribute>
+        <attribute name="value">
+          <a:documentation>controls how glossaries are created</a:documentation>
+          <choice>
+            <value d:default="1">mixed</value>
+            <a:documentation>glossary files can be combined with harvested data</a:documentation>
+            <value>dynamic</value>
+            <a:documentation>glossaries are always generated from lemmatized sources</a:documentation>
+            <value>static</value>
+            <a:documentation>glossaries are never changed by a program</a:documentation>
+            <value>none</value>
+            <a:documentation>project does not use glossaries (portals, for example)</a:documentation>
+          </choice>
+        </attribute>
+      </element>
+    </define>
+    <define name="periods">
+      <element name="option">
+        <a:documentation>Tick this box if you want time periods to be displayed in your  
+glossaries. Leave it unticked if you have a single-period project.</a:documentation>
+        <attribute name="name">
+          <value>cbd-periods</value>
+        </attribute>
+        <attribute name="value" d:default="false">
+          <a:documentation>display periods in glossary</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+  </div>
+  <define name="pager">
+    <interleave>
+      <ref name="back-button"/>
+      <ref name="back-url"/>
+      <ref name="translations"/>
+    </interleave>
+  </define>
+  <div m:name="pager">
+    <a:documentation>controls pager behaviour.</a:documentation>
+    <div>
+      <define name="back-button" m:name="back">
+        <element name="option">
+          <a:documentation>If your project maintains its portal pages on another server or 
+another Oracc project, this option enables the  button in the top 
+of the outline pane which says, e.g., "Back to Knowledge and Power". 
+
+Simply give the text you want to appear in the value attribute of 
+this option, and also set the back-url option to the relevant URL.</a:documentation>
+          <attribute name="name">
+            <value>pager-back-button</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>text to display on 'Back to ...' button</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="back-url">
+        <element name="option">
+          <a:documentation>This is the URL to be used in the `Back to ...' link whose text is 
+set with the back-button option. It does not have to be an Oracc URL.</a:documentation>
+          <attribute name="name">
+            <value>pager-back-url</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>URL to visit when user clicks 'Back to ...' button</a:documentation>
+            <data type="anyURI"/>
+          </attribute>
+        </element>
+      </define>
+      <div>
+        <define name="translations" m:name="translations">
+          <element name="option">
+            <a:documentation>Use this option to list the ISO 639 language codes of 
+the translations in your project. When you rebuild the 
+project, this will generate a pull-down menu in the pager 
+of your online coprus which allows users to choose 
+between available translation languages. 
+
+Separate them with spaces (e.g., "en hu" for English and
+Hungarian).</a:documentation>
+            <attribute name="name">
+              <value>pager-translations</value>
+            </attribute>
+            <attribute name="value">
+              <a:documentation>translation languages available in the pager</a:documentation>
+            </attribute>
+          </element>
+        </define>
+      </div>
+    </div>
+    <!--
+        div {
+           [ m:name = "outline" ]
+        }
+        div {
+           [ m:name = "catalog" ]
+        }
+        div {
+           [ m:name = "views" ]
+        }
+    -->
+  </div>
+  <define name="render">
+    <interleave>
+      <ref name="accents"/>
+      <ref name="heth"/>
+      <ref name="lnum-opener"/>
+      <ref name="lnum-closer"/>
+      <ref name="inter-det-char"/>
+      <ref name="rulings"/>
+      <ref name="allographs"/>
+      <ref name="tlat-opener"/>
+      <ref name="tlat-closer"/>
+      <ref name="tlat-separator"/>
+    </interleave>
+  </define>
+  <div m:name="render">
+    <a:documentation>controls rendering (HTML, print).</a:documentation>
+    <div>
+      <define name="accents" m:name="transliteration">
+        <element name="option">
+          <a:documentation>Tick this box if you want your online corpus to display
+acute and grave accents (e.g, ú, ù) rather than subscript 
+numerals (e.g., u₂, u₃).</a:documentation>
+          <attribute name="name">
+            <value>render-accents</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>display graphemes with index 2 and 3 as accented</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="allographs">
+        <element name="option">
+          <a:documentation>Tick this box if you want your online corpus to display any allographs you have marked in your ATF files.</a:documentation>
+          <attribute name="name">
+            <value>render-allographs</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>display allographs</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="heth">
+        <element name="option">
+          <a:documentation>Tick this box if you want your online corpus to display
+ḫ instead of h in transliterations.</a:documentation>
+          <attribute name="name">
+            <value>render-heth</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>display ḫ not h</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="inter-det-char">
+        <element name="option">
+          <a:documentation>Use this option to add one or more characters or spaces between adjacent determinatives.</a:documentation>
+          <attribute name="name">
+            <value>render-inter-det-char</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>character between adjacent determinatives</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="lnum-opener">
+        <element name="option">
+          <a:documentation>Use this option to add one or more characters before line numbers in the online 
+transliterations. The default is blank.</a:documentation>
+          <attribute name="name">
+            <value>render-lnum-opener</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>character before line numbers in transliterations</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="lnum-closer">
+        <element name="option">
+          <a:documentation>Use this option to add one or more characters after line numbers in the online 
+transliterations. The default is blank.</a:documentation>
+          <attribute name="name">
+            <value>render-tlat-opener</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>character(s) after line numbers in transliterations</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="rulings">
+        <element name="option">
+          <a:documentation>Leave this box blank to display horizontal rulings as simple straight lines. Enter "char" if you want them displayed as text characters (----).</a:documentation>
+          <attribute name="name">
+            <value>render-rulings</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>set the characters for horizontal rulings</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+    <div>
+      <define name="tlat-opener" m:name="translation">
+        <element name="option">
+          <a:documentation>Use this option to add one or more characters before line numbers in the online 
+translations. The default is blank.</a:documentation>
+          <attribute name="name">
+            <value>render-tlat-opener</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>the character before line numbers in translations</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="tlat-closer">
+        <element name="option">
+          <a:documentation>Use this option to add one or more characters after line numbers in the online 
+translations. The default is blank.</a:documentation>
+          <attribute name="name">
+            <value>render-tlat-closer</value>
+          </attribute>
+          <attribute name="value" d:default="">
+            <a:documentation>the character after line numbers in translations</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="tlat-separator">
+        <element name="option">
+          <a:documentation>Use this option to change the character between ranges of line numbers
+in the online translations. The default is – (en-dash)</a:documentation>
+          <attribute name="name">
+            <value>render-tlat-separator</value>
+          </attribute>
+          <attribute name="value" d:default="&amp;#x2102;">
+            <a:documentation>the character between line numbers in translations</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+  </div>
+  <define name="outline">
+    <interleave>
+      <ref name="def.select"/>
+      <ref name="def.sort.fields"/>
+      <ref name="def.sort.labels"/>
+      <ref name="def.hdg.template"/>
+      <ref name="def.cat.fields"/>
+      <ref name="def.cat.widths"/>
+      <ref name="spe.select"/>
+      <ref name="spe.list.name"/>
+      <ref name="spe.sort.fields"/>
+      <ref name="spe.sort.labels"/>
+      <ref name="spe.hdg.template"/>
+      <ref name="spe.cat.fields"/>
+      <ref name="spe.cat.widths"/>
+    </interleave>
+  </define>
+  <div m:name="outline">
+    <a:documentation>controls how catalogue contents and search results are sorted and outlined </a:documentation>
+    <div>
+      <define name="def.select" m:name="default-outline">
+        <element name="option">
+          <attribute name="name">
+            <value>outline-default-select</value>
+          </attribute>
+          <attribute name="value" d:default="true">
+            <a:documentation>Switches the default outline mode on and off.</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="def.sort.fields">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</a:documentation>
+          <attribute name="name">
+            <value>outline-default-sort-fields</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the catalogue fields which the outliner uses to sort the corpus</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="def.sort.labels">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</a:documentation>
+          <attribute name="name">
+            <value>outline-default-sort-labels</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the catalogue labels which the outliner uses to sort the corpus</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="def.hdg.template">
+        <element name="option">
+          <a:documentation>The headings are the fields specified in def.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</a:documentation>
+          <attribute name="name">
+            <value>outline-default-heading-template</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>template for formatting headings</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="def.cat.fields">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </a:documentation>
+          <attribute name="name">
+            <value>outline-default-catalog-fields</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the fields for displaying catalogue records</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="def.cat.widths">
+        <element name="option">
+          <a:documentation>Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</a:documentation>
+          <attribute name="name">
+            <value>outline-default-catalog-widths</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the field widths for displayed catalogue records</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+    <div>
+      <define name="spe.select" m:name="special-outline">
+        <element name="option">
+          <attribute name="name">
+            <value>outline-special-select</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>Switches the special outline mode on and off</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.list.name">
+        <element name="option">
+          <attribute name="name">
+            <value>outline-special-list-name</value>
+          </attribute>
+          <attribute name="value">
+            <choice>
+              <value>all</value>
+              <a:documentation>(not sure)</a:documentation>
+              <value>outline</value>
+              <a:documentation>(not sure)</a:documentation>
+            </choice>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.sort.fields">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</a:documentation>
+          <attribute name="name">
+            <value>outline-special-sort-fields</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the catalogue fields which the outliner uses to sort the corpus</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.sort.labels">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</a:documentation>
+          <attribute name="name">
+            <value>outline-special-sort-labels</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the catalogue labels which the outliner uses to sort the corpus</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.hdg.template">
+        <element name="option">
+          <a:documentation>The headings are the fields specified in spe.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</a:documentation>
+          <attribute name="name">
+            <value>outline-special-heading-template</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>template for formatting headings</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.cat.fields">
+        <element name="option">
+          <a:documentation>Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </a:documentation>
+          <attribute name="name">
+            <value>outline-special-catalog-fields</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the fields for displaying catalogue records</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="spe.cat.widths">
+        <element name="option">
+          <a:documentation>Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</a:documentation>
+          <attribute name="name">
+            <value>outline-special-catalog-widths</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>sets the field widths for displayed catalogue records</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+  </div>
+  <define name="views">
+    <interleave>
+      <ref name="cuneify"/>
+      <ref name="proofing"/>
+      <ref name="TEI"/>
+      <ref name="buy-book"/>
+    </interleave>
+  </define>
+  <div m:name="views">
+    <a:documentation>adds extra views of texts in the corpus</a:documentation>
+    <define name="cuneify">
+      <element name="option">
+        <attribute name="name">
+          <value>views-cuneify</value>
+        </attribute>
+        <attribute name="value">
+          <a:documentation>creates 'Cuneify' link to display
+text in cuneiform in a popup window.</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="proofing">
+      <element name="option">
+        <attribute name="name">
+          <value>views-proofing</value>
+        </attribute>
+        <attribute name="value">
+          <a:documentation>creates 'Proofing' link to display the
+annotation of a text aligned by word
+in a popup window.</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="TEI">
+      <element name="option">
+        <attribute name="name">
+          <value>views-TEI</value>
+        </attribute>
+        <attribute name="value">
+          <a:documentation>creates 'TEI' link to display TEI version
+of a text in a popup window.</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </element>
+    </define>
+    <define name="buy-book">
+      <element name="option">
+        <a:documentation>If you need  to link to more than one bookseller or publisher, 
+simply create a web page of your own in the project and link to that.</a:documentation>
+        <attribute name="name">
+          <value>views-buy-book</value>
+        </attribute>
+        <attribute name="value">
+          <a:documentation>creates a 'Buy the Book' link to the URL provided in the option.  </a:documentation>
+          <data type="anyURI"/>
+        </attribute>
+      </element>
+    </define>
+  </div>
+  <define name="undocumented">
+    <interleave>
+      <ref name="flags"/>
+      <ref name="saa-mode"/>
+      <ref name="rws"/>
+      <ref name="labels"/>
+      <ref name="sum-dias"/>
+    </interleave>
+  </define>
+  <div m:name="undocumented">
+    <a:documentation>odds and ends </a:documentation>
+    <div>
+      <define name="flags" m:name="atf-undoc">
+        <element name="option">
+          <attribute name="name">
+            <value>atf-lem-flags</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>ATF options to use when converting ATF to XML</a:documentation>
+          </attribute>
+        </element>
+      </define>
+      <define name="saa-mode">
+        <element name="option">
+          <attribute name="name">
+            <value>atf-saa-mode</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>double hyphens in QPNs</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+      <define name="sum-dias">
+        <element name="option">
+          <attribute name="name">
+            <value>atf-sum-dias</value>
+          </attribute>
+          <attribute name="value" d:default="false">
+            <a:documentation>handles both long and short readings in Sumerian</a:documentation>
+            <data type="boolean"/>
+          </attribute>
+        </element>
+      </define>
+    </div>
+    <div>
+      <define name="rws" m:name="cbd-undoc">
+        <element name="option">
+          <attribute name="name">
+            <value>cbd-rws</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>register/writing-system</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+    <div>
+      <define name="labels" m:name="render-undoc">
+        <element name="option">
+          <attribute name="name">
+            <value>render-labels</value>
+          </attribute>
+          <attribute name="value">
+            <a:documentation>saa-style labels</a:documentation>
+          </attribute>
+        </element>
+      </define>
+    </div>
+  </div>
+</grammar>

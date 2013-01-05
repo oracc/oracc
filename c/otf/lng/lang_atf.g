@@ -1,0 +1,33 @@
+%{
+#include <string.h>
+#include "lang.h"
+%}
+struct langatf;
+%%
+0,	"sux-x-normal"
+1,	"sux-x-gloss"
+2,	"akk-935"
+3,	"akk-936"
+4,	"akk-x-neobab-937-x-dumusza"
+g,	"akk"
+n,	"akk-949"
+a,	"akk"
+e,	"sux-x-emesal"
+eg,	"sux"
+es,	"sux-x-emesal"
+h,	"hit"
+s,	"sux"
+sux,	"sux"
+u,	"sux-x-udgalnun"
+x,	"qcu"
+sy, "sux-x-syllabic"
+ca,	"akk-x-conakk"
+sb,	"akk-x-stdbab"
+na,	"akk-x-neoass"
+nb,	"akk-x-neobab"
+ma,	"akk-x-midass"
+mb,	"akk-x-midbab"
+oa,	"akk-x-oldass"
+ob,	"akk-x-oldbab"
+oakk,	"akk-x-oldakk"
+eakk,	"akk-x-earakk"

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<base href="http://oracc.museum.upenn.edu/doc/wwwhome/util/"/></head>
+<body>
+<form action="/atf" enctype="multipart/form-data" method="post">
+<h1>ATF Processing Interface</h1>
+<p>File: <input size="70" type="file" name="filename" value="xxx"/></p>
+<table width="80%">
+<tr>
+  <td>Lemmatize</td><td width="1%">
+  <input type="radio" name="operation" value="lem_file" checked="no"/>
+  </td>
+</tr>
+<tr>
+<td width="10%">Validation:</td>
+<td width="1%"><input type="radio" name="operation" value="check" checked="yes"/></td>
+<td width="20%">Check ATF</td>
+<td width="1%"><input type="radio" name="operation" value="ck_lemma"/></td>
+<td width="20%">Check lemmatization (implies check ATF)</td>
+<td width="1%"><input type="radio" name="operation" value="ck_links"/></td>
+<td width="20%">Check links (implies check ATF)</td>
+</tr>
+<!--
+<tr>
+<td width="10%"> </td>
+<td width="1%"><input type="checkbox" name="ck_nums"/></td>
+<td witdh="20%">Check numbers</td>
+</tr>
+-->
+</table>
+<hr/>
+<table>
+<tr>
+<td width="18%">Also produce <br/> (<input type="checkbox" name="frequency"/> Include frequency):</td>
+<td width="1%"><input type="radio" name="operation" value="glist"/></td>
+<td width="15%">Grapheme list</td>
+<td width="1%"><input type="radio" name="operation" value="wlist"/></td>
+<td width="15%">Word list</td>
+<td width="1%"><input type="radio" name="operation" value="wlist"/></td>
+<td width="15%">Lemma list</td>
+</tr>
+<tr>
+<td width="10%">List format:</td>
+<td width="1%"><input type="radio" name="list_type" value="simple" checked="yes"/></td>
+<td width="15%">Simple list</td>
+<td width="1%"><input type="radio" name="list_type" value="concord"/></td>
+<td width="15%">Concordance</td>
+</tr>
+<tr>
+<td width="15%">Return encoding:</td>
+<td width="1%"><input type="radio" name="ret_encoding" value="ascii" checked="yes"/></td>
+<td width="15%">ASCII</td>
+<td width="1%"><input type="radio" name="ret_encoding" value="utf8"/></td>
+<td width="15%">Unicode/UTF-8</td>
+</tr>
+</table>
+<hr/>
+<table>
+<tr>
+<td><input type="radio" name="operation" value="xtf"/></td>
+<td>Make XML</td>
+</tr>
+<tr>
+<td><input type="radio" name="operation" value="html"/></td>
+<td>Make HTML (<a href="/css/oraccscreen.css">use this CSS file if you want to save the HTML and put it on another website</a>)</td>
+</tr>
+<tr>
+<td><input type="radio" name="operation" value="rtf"/></td>
+<td>Make RTF (<a href="halfsquare.zip">Download half-bracket font (zipped TrueType file)</a>)</td>
+</tr>
+</table>
+
+<p><input type="submit" value="Go"/></p>
+
+</form>
+</body>
+</html>

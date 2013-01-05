@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Java" />
+<meta name="description" content="API specifications of Java binding" />
+<link rel="contents" href="./" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Java Binding of Hyper Estraier</title>
+</head>
+
+<body>
+
+<h1>Java Binding of Hyper Estraier.</h1>
+
+<div>Hyper Estraier is a full-text search system for communities.</div>
+
+<h2>Introduction</h2>
+
+<p>This is a package implementing the core API of <a href="http://fallabs.com/hyperestraier/">Hyper Estraier</a>, including native codes based on JNI.  As it works on Linux, Mac OS X, Windows, and so on, native libraries for each environment are required to run programs.  This package requires JRE 1.4.2 or later versions.</p>
+
+<h2>Setting</h2>
+
+<p>Install the latest version of Hyper Estraier.</p>
+
+<p>Enter the sub directory `javanative' in the extracted package then perform installation.</p>
+
+<pre style="margin: 0.5em 0.5em; padding: 0.1em 0.3em; border: 1pt solid #aaaaaa;">cd javanative
+./configure
+make
+su
+make install
+</pre>
+
+<p>`estraiernative.jar' should be included in the class path.  By default, the JAR file is installed in `/usr/local/lib'.</p>
+
+<p>`estraier.*' should be imported in each source file of application programs.</p>
+
+<p>Some native libraries should be found in the library search path.</p>
+
+<ul>
+<li>On Linux and other UNIX systems: set the environment variable LD_LIBRARY_PATH to find libraries; "libestraier.so" and "libjestraier.so".</li>
+<li>On Mac OS X: set the environment variable DYLD_LIBRARY_PATH to find libraries; "libestraier.dylib" and "libjestraier.dylib".</li>
+<li>On Windows: set the environment variable PATH to find libraries; "estraier.dll" and "jestraier.dll".</li>
+</ul>
+
+<h2>Example of Gatherer</h2>
+
+<p>The following is the simplest implementation of a gatherer.</p>
+
+<pre style="margin: 0.5em 0.5em; padding: 0.1em 0.3em; border: 1pt solid #aaaaaa;">import estraier.*;
+
+public class Example001 {
+  public static void main(String[] args){
+
+    // create the database object
+    Database db = new Database();
+
+    // open the database
+    if(!db.open("casket", Database.DBWRITER | Database.DBCREAT)){
+      System.err.println("error: " + db.err_msg(db.error()));
+      return;
+    }
+
+    // create a document object
+    Document doc = new Document();
+
+    // add attributes to the document object
+    doc.add_attr("@uri", "http://estraier.gov/example.txt");
+    doc.add_attr("@title", "Over the Rainbow");
+
+    // add the body text to the document object
+    doc.add_text("Somewhere over the rainbow.  Way up high.");
+    doc.add_text("There's a land that I heard of once in a lullaby.");
+
+    // register the document object to the database
+    if(!db.put_doc(doc, Database.PDCLEAN))
+      System.err.println("error: " + db.err_msg(db.error()));
+
+    // close the database
+    if(!db.close())
+      System.err.println("error: " + db.err_msg(db.error()));
+
+  }
+}
+</pre>
+
+<h2>Example of Searcher</h2>
+
+<p>The following is the simplest implementation of a searcher.</p>
+
+<pre style="margin: 0.5em 0.5em; padding: 0.1em 0.3em; border: 1pt solid #aaaaaa;">import estraier.*;
+import java.util.*;
+
+public class Example002 {
+  public static void main(String[] args){
+
+    // create the database object
+    Database db = new Database();
+
+    // open the database
+    if(!db.open("casket", Database.DBREADER)){
+      System.err.println("error: " + db.err_msg(db.error()));
+      return;
+    }
+
+    // create a search condition object
+    Condition cond = new Condition();
+
+    // set the search phrase to the search condition object
+    cond.set_phrase("rainbow AND lullaby");
+
+    // get the result of search
+    Result result = db.search(cond);
+
+    // for each document in the result
+    for(int i = 0; i &lt; result.doc_num(); i++){
+      // retrieve the document object
+      Document doc = db.get_doc(result.get_doc_id(i), 0);
+      if(doc == null) continue;
+      // display attributes
+      String uri = doc.attr("@uri");
+      if(uri != null) System.out.println("URI: " + uri);
+      String title = doc.attr("@title");
+      if(title != null) System.out.println("Title: " + title);
+      // display the body text
+      Iterator it = doc.texts().iterator();
+      while(it.hasNext()){
+        System.out.println((String)it.next());
+      }
+    }
+
+    // close the database
+    if(!db.close())
+      System.err.println("error: " + db.err_msg(db.error()));
+
+  }
+}
+</pre>
+
+<h2>License</h2>
+
+<div>Copyright (C) 2004-2006 Mikio Hirabayashi</div>
+
+<p>The Java binding of Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License or any later version.  The Java binding of Hyper Estraier is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.  You should have received a copy of the GNU Lesser General Public License along with the Java binding of Hyper Estraier; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.</p>
+
+</body>
+
+</html>

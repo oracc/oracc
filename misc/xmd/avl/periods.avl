@@ -1,0 +1,37 @@
+&V000100 = Periods
+@valuelist
+#class: period
+#name: periods
+#fields: name
+Uruk V
+Uruk IV
+Uruk III
+Archaic
+Proto-Elamite
+Linear Elamite
+ED I
+ED II
+ED IIIa
+ED IIIb
+Early Dynastic
+Ebla
+Old Akkadian
+Old Elamite
+Lagash II
+Lagaš II
+Ur III
+Old Assyrian
+Early Old Babylonian
+Old Babylonian
+Nuzi
+Middle Assyrian
+Middle Babylonian
+Middle Elamite
+Neo-Assyrian
+Neo-Babylonian
+Late Babylonian
+Persian
+Seleucid
+Parthian
+Roman
+Uncertain

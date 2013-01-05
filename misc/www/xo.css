@@ -1,0 +1,65 @@
+/* XTC Outline Styling */
+body.xonav { padding: 0px; margin: 0px; }
+div.xoform { background-color: #99ccff; color: black; }
+/* 	padding-bottom: 2px; margin-bottom: 2px;  */
+div.xoform form { padding: 0px; margin: 0px; background-color: #99ccff; color: black;
+	font-size: 80%; }
+div.xojump form { padding: 0px; margin: 0px; background-color: #99ccff; color: black;
+	font-size: 80%; }
+form.xo { padding: 0px; margin: 0px; }
+h1.xo { padding: 0px; margin: 0px; }
+h2.xo { padding: 0px; margin: 0px; }
+h3.xo { padding: 0px; margin: 0px; }
+h4.xo { padding: 0px; margin: 0px; }
+h5.xo { padding: 0px; margin: 0px; font-size: 10pt; }
+h6.xo { padding: 0px; margin: 0px; font-size: 10pt; }
+p.xocombo  { padding: 0px; margin: 0px; }
+p.xo { padding: 0px; margin-bottom: 1px; margin-top: 1px; }
+p.xonot { padding: 0px; margin-bottom: 1px; margin-top: 1px; color: gray; }
+p.xosel2 { padding: 0px; margin: 0px; background-color: silver; }
+div.xootl { font-family: arial,sans-serif; font-size: 80%; }
+div.xol1  { margin-left: 0px; }
+div.xol2  { margin-left: 5px; }
+div.xol3  { margin-left: 10px; }
+div.xol4  { margin-left: 15px; }
+a:link { text-decoration: none; color: blue; border: 0px; }
+a:visited { text-decoration: none; color: olive; border: 0px; }
+a:hover { background-color: red; }
+
+sup>sub { font-style: normal; }
+span.xlabel { display: none }
+
+.xoo0 { color: red }
+
+h1.xodisplay { font-size: 12pt; margin-top: 3px; margin-bottom: 5px; }
+span.h2 { font-size: 12pt; font-weight: bold; color: gray; }
+span.noncl { font-size: 90%; color: gray; }
+
+tr.h1 { font-weight: bold; }
+tr.l { vertical-align: baseline; }
+tr.selected { background-color: silver; vertical-align: baseline; }
+
+div.views { width: 206px; position: fixed; left: 3px; top: 3px; 
+	  margin: 0px; padding: 0px; }
+
+p.buttonbar { margin: 0px; padding: 0px; background-color: #9cf; 
+	    color: white; }
+/* span.syntax { display: none } */
+span.button { background-color: blue; color: white;
+	    font-size: 9pt; font-family: arial,sans-serif; }
+.button a   { color: white; }
+
+div.backbar { margin: auto; height: 1.5em;
+	    padding: 0px; background-color: #9cf; color: white;
+	    font-size: 9pt; font-family: arial,sans-serif;
+	    text-align: center; width: 100%; vertical-align: middle;
+	    position: fixed; left: 0px; top: 0px; }
+
+div.xtlbody { position: fixed; left: 0px; top: 1.5em }
+
+div.backbar p { padding: 0px; margin: 0px; }
+
+a.haveimg   { padding-right: 3px; background-color: #9cf; }
+
+p.withimg   { text-indent: -5px; margin-left: 5px; }
+p.sansimg   { text-indent: -5px; margin-left: 5px; }

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:dc="http://purl.org/dc/elements/1.1" ns="http://oracc.org/ns/xdf/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="xhtml-strict.rng">
+    <start>
+      <empty/>
+    </start>
+    <define name="title">
+      <empty/>
+    </define>
+  </include>
+  <start combine="interleave">
+    <ref name="xdf.doc"/>
+  </start>
+  <define name="xdf.doc">
+    <element name="doc">
+      <optional>
+        <attribute name="index-dir"/>
+      </optional>
+      <optional>
+        <attribute name="html-name"/>
+      </optional>
+      <ref name="xdf.meta"/>
+      <zeroOrMore>
+        <ref name="xdf.secondary"/>
+      </zeroOrMore>
+      <ref name="xdf.doco"/>
+    </element>
+  </define>
+  <define name="xdf.meta">
+    <element name="meta">
+      <element name="dc:title">
+        <text/>
+      </element>
+      <optional>
+        <element name="dcterms:alternative">
+          <text/>
+        </element>
+        <element name="dcterms:identifier">
+          <attribute name="xsi:type">
+            <data type="anyURI"/>
+          </attribute>
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="dc:creator">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="dc:date">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="dc:publisher">
+          <text/>
+        </element>
+      </optional>
+      <element name="dc:description">
+        <ref name="Inline.model"/>
+      </element>
+    </element>
+  </define>
+  <define name="xdf.secondary">
+    <element name="secondary">
+      <optional>
+        <attribute name="xml:id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <attribute name="n">
+        <data type="NCName"/>
+      </attribute>
+      <ref name="xdf.meta"/>
+      <element name="select">
+        <text/>
+      </element>
+      <element name="output">
+        <attribute name="file"/>
+      </element>
+    </element>
+  </define>
+  <define name="xdf.doco">
+    <interleave>
+      <zeroOrMore>
+        <ref name="Block.model"/>
+      </zeroOrMore>
+      <choice>
+        <oneOrMore>
+          <ref name="xdf.directory"/>
+        </oneOrMore>
+        <group>
+          <zeroOrMore>
+            <ref name="xdf.config"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="xdf.schema"/>
+          </zeroOrMore>
+          <optional>
+            <ref name="xdf.resources"/>
+          </optional>
+          <optional>
+            <ref name="xdf.refs"/>
+          </optional>
+        </group>
+      </choice>
+    </interleave>
+  </define>
+  <define name="xdf.directory">
+    <element name="directory">
+      <attribute name="dirs">
+        <data type="token" datatypeLibrary=""/>
+      </attribute>
+    </element>
+  </define>
+  <define name="xdf.config">
+    <element name="config">
+      <attribute name="name">
+        <data type="NCName"/>
+      </attribute>
+      <choice>
+        <attribute name="path"/>
+        <attribute name="output">
+          <value>none</value>
+        </attribute>
+      </choice>
+      <optional>
+        <ref name="Block.model"/>
+      </optional>
+      <zeroOrMore>
+        <element name="for">
+          <attribute name="name">
+            <data type="NCName"/>
+          </attribute>
+        </element>
+      </zeroOrMore>
+      <zeroOrMore>
+        <element name="use">
+          <attribute name="name">
+            <data type="NCName"/>
+          </attribute>
+        </element>
+      </zeroOrMore>
+      <oneOrMore>
+        <element name="var">
+          <attribute name="name">
+            <data type="NCName"/>
+          </attribute>
+          <optional>
+            <attribute name="type">
+              <ref name="type.model"/>
+            </attribute>
+          </optional>
+          <attribute name="times">
+            <choice>
+              <value>*</value>
+              <value>+</value>
+              <value>?</value>
+              <data type="integer"/>
+            </choice>
+          </attribute>
+          <choice>
+            <text/>
+            <ref name="tablevar"/>
+          </choice>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="type.model">
+    <choice>
+      <value>^xsd:.*$</value>
+      <data type="token"/>
+    </choice>
+  </define>
+  <define name="tablevar">
+    <element name="txt">
+      <text/>
+    </element>
+    <oneOrMore>
+      <element name="key">
+        <attribute name="name">
+          <data type="NCName"/>
+        </attribute>
+        <optional>
+          <attribute name="type">
+            <ref name="type.model"/>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="required">
+            <data type="boolean"/>
+          </attribute>
+        </optional>
+        <text/>
+      </element>
+    </oneOrMore>
+  </define>
+  <define name="xdf.schema">
+    <element name="schema">
+      <attribute name="name">
+        <data type="NCName"/>
+      </attribute>
+      <attribute name="uri">
+        <data type="anyURI"/>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <ref name="Block.model"/>
+          <ref name="rnc"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="rnc">
+    <element name="rnc">
+      <optional>
+        <attribute name="preprocess">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="xdf.resources">
+    <element name="resources">
+      <optional>
+        <attribute name="auto">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="sort">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="wrap">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <interleave>
+          <zeroOrMore>
+            <ref name="Block.model"/>
+          </zeroOrMore>
+          <ref name="xdf.resource"/>
+        </interleave>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="xdf.resource">
+    <element name="resource">
+      <optional>
+        <attribute name="copy">
+          <value>yes</value>
+        </attribute>
+      </optional>
+      <attribute name="href">
+        <data type="anyURI"/>
+      </attribute>
+    </element>
+  </define>
+  <define name="xdf.refs">
+    <element name="references">
+      <choice>
+        <ref name="refs.attr"/>
+        <group>
+          <optional>
+            <ref name="refs.attr"/>
+          </optional>
+          <ref name="refs.model"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="refs.attr">
+    <attribute name="refs">
+      <data type="token" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <define name="refs.model">
+    <zeroOrMore>
+      <interleave>
+        <zeroOrMore>
+          <ref name="Block.model"/>
+        </zeroOrMore>
+        <ref name="refs.elem"/>
+      </interleave>
+    </zeroOrMore>
+  </define>
+  <define name="refs.elem">
+    <element name="ref">
+      <attribute name="name"/>
+      <choice>
+        <group>
+          <attribute name="uri">
+            <data type="anyURI"/>
+          </attribute>
+          <text/>
+        </group>
+        <element name="bib">
+          <text/>
+        </element>
+      </choice>
+    </element>
+  </define>
+</grammar>

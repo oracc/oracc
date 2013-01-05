@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Estraier::Result [estraier]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }<\/style>" )
+
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Estraier::Result</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+
+
+                <a href="../../files/estraier-doc_rb.html">
+
+                estraier-doc.rb
+
+                </a>
+
+
+        <br />
+
+            </td>
+        </tr>
+
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+
+                Object
+
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+  <div id="contextContent">
+
+    <div id="description">
+      <hr size="10"></hr><p>
+++ Abstraction of result set from database.
+</p>
+<hr size="10"></hr>
+    </div>
+
+   </div>
+
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+
+        <a href="#M000027">doc_num</a>&nbsp;&nbsp;
+
+        <a href="#M000029">get_dbidx</a>&nbsp;&nbsp;
+
+        <a href="#M000028">get_doc_id</a>&nbsp;&nbsp;
+
+        <a href="#M000032">get_score</a>&nbsp;&nbsp;
+
+        <a href="#M000033">get_shadows</a>&nbsp;&nbsp;
+
+        <a href="#M000031">hint</a>&nbsp;&nbsp;
+
+        <a href="#M000030">hint_words</a>&nbsp;&nbsp;
+
+        <a href="#M000034">new</a>&nbsp;&nbsp;
+
+      </div>
+    </div>
+
+  </div>
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+    <!-- if method_list -->
+
+    <div id="methods">
+
+      <h3 class="section-bar">Public Class methods</h3>
+
+
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000034.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000034.html');return false;">
+
+          <span class="method-name">new</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Create a result set object.
+</p>
+
+        </div>
+      </div>
+
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+
+      <div id="method-M000027" class="method-detail">
+        <a name="M000027"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000027.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000027.html');return false;">
+
+          <span class="method-name">doc_num</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the number of documents. The return value is the number of documents in
+the result.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000029" class="method-detail">
+        <a name="M000029"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000029.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000029.html');return false;">
+
+          <span class="method-name">get_dbidx</span><span class="method-args">(index)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the index of the container database of a document. `index&#8217;
+specifies the index of a document. The return value is the index of the
+container database of the document or -1 if the index is out of bounds.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000028" class="method-detail">
+        <a name="M000028"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000028.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000028.html');return false;">
+
+          <span class="method-name">get_doc_id</span><span class="method-args">(index)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the ID number of a document. `index&#8217; specifies the index of a
+document. The return value is the ID number of the document or -1 if the
+index is out of bounds.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000032" class="method-detail">
+        <a name="M000032"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000032.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000032.html');return false;">
+
+          <span class="method-name">get_score</span><span class="method-args">(index)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the score of a document. `index&#8217; specifies the index of a
+document. The return value is the score of the document or -1 if the index
+is out of bounds.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000033" class="method-detail">
+        <a name="M000033"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000033.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000033.html');return false;">
+
+          <span class="method-name">get_shadows</span><span class="method-args">(id)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get an array of ID numbers of eclipsed docuemnts of a document. `id&#8217;
+specifies the ID number of a parent document. The return value is an array
+whose elements expresse the ID numbers and their scores alternately.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000031" class="method-detail">
+        <a name="M000031"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000031.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000031.html');return false;">
+
+          <span class="method-name">hint</span><span class="method-args">(word)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the value of a hint word. `word&#8217; specifies a hint word. An empty
+string means the number of whole result. The return value is the number of
+documents corresponding the hint word. If the word is in a negative
+condition, the value is negative.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000030" class="method-detail">
+        <a name="M000030"></a>
+
+        <div class="method-heading">
+
+          <a href="Result.src/M000030.html" target="Code" class="method-signature"
+            onclick="popupCode('Result.src/M000030.html');return false;">
+
+          <span class="method-name">hint_words</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get an array of hint words. The return value is an array of hint words.
+</p>
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+
+  </div>
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+* Install Xcode if necessary
+
+* Check basic tools are up to date (in this order):
+  m4
+  autoconf
+  automake
+  libtool
+
+* Install required libraries
+  
+  ** should provide colorer and correct HRD
+  ** delete ref to libstemmer as it's included in oracc
+
+ Mac OS X Leopard 10.5.8, 2010-05-17
+
+   . in all cases, configure with:
+
+     ./configure --prefix=/usr
+
+   . ****don't upgrade libtool****; non-Apple version doesn't
+     grok `ranlib -q', which breaks gmp build
+
+   . gmp-5.0.1 (and gmp-4.x.x, don't bother trying) fail
+     to build with duplicate symbol errors owing to a problem
+     with extern inline.  Edit gmp-h.in to 
+
+     	  #undef __GMP_EXTERN_INLINE 
+     
+     around line 1680
+
+     Build with CFLAGS='-O2 -m64'
+
+  . utf8proc fails to build because it wants _main for the .so lib.
+    Edit Makefile to comment out the .so target in c-library.
+
+  . tre config needs 
+
+    CFLAGS=-m64 ./configure --prefix=/usr
+
+  . libuninum fails to find gmp; make configure use -m64:
+
+    CFLAGS=-m64 ./configure --prefix=/usr
+
+  . msort needs:
+
+    LDFLAGS=-m64 ./configure --prefix=/usr
+
+    then:
+
+    make CFLAGS='-O2 -m64'
+    make install
+
+   . Leopard (X generally) comes without XML::LibXSLT; the shipped
+     versions of libxml and friends won't work with the latest 
+     XML::LibXSLT, so the easiest thing is to download 1.60 from
+     oracc/downloads and use that.
+
+   . download and install colorer from oracc/downloads; edit out
+     shared library build from Makefile.in, make, then:
+
+     mkdir -p /usr/local/share/colorer
+     cp -pR bin/colorer /usr/local/bin
+     cp -pR bin hrc hrd /usr/local/share/colorer
+     
+     (I didn't use the makefile.macos)
+
+   . PCRE
+
+   configure as:
+
+     CFLAGS=-m64 LDFLAGS=-m64 ./configure --prefix=/usr \
+          --enable-shared=no --disable-cpp
+
+     make CFLAGS='-O2 -m64' LDFLAGS=-m64
+
+   . Oracc src
+
+   CFLAGS=-m64 LDFLAGS=-m64 ./configure
+

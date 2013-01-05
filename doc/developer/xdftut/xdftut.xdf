@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XDF tutorial</dc:title>
+  <dcterms:alternative>How to make an Oracc documentation page</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/doc/steerer/xdftut/</dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2011-01-22</dc:date>
+  <dc:publisher>OSC</dc:publisher>
+  <dc:description>XDF (Extensible Document Format) is the document format used for writing Oracc online documentation pages. It is essentially XHTML-strict with a few extra tags and quirks. This page explains how to make an XDF document in Oracc.</dc:description>
+</d:meta>
+
+<h1>Getting started</h1>
+<p>It is best to edit XDF files in <a href="/doc/builder/emacs/">Emacs</a>, so that you can produce valid XDF. You will need to <a href="/downloads/schemas.zip">download the Oracc schemas</a> and install them on your own computer. The <code>oracc/schemas/</code> directory and its contents should go in whichever directory your <code>.emacs</code> file lives in. (This varies from operating system to operating system.)</p> 
+
+<h1>Making a new page</h1>
+<p>To create a new Oracc documentation page:</p>
+<ul>
+  <li>Download the template file <code><a href="/downloads/xdf-template.xdf">xdf-template.xdf</a></code> and save it somewhere convenient on your computer.</li>
+<li>The <code>xdf-template.xdf</code> file is read-only, which means that you will be prompted to save it with a different file name the first time you save it after editing. This means that you can use it as frequently as you like without running the risk of accidentally deleting key elements.</li>
+</ul>
+
+<p>Or, if you know the oracc password (i.e., if you are an Oracc steerer):</p>
+<ul>
+    <li>In a terminal programme, do <code class="cookbook">ssh oracc@oracc.museum.upenn.edu</code>, press return and enter the password as required.</li>
+    <li>Move to the directory in which you want your new page to appear (e.g., <code class="example">cd src/doc/steerer/</code>).</li>
+    <li>Make a new directory, named after your new page (e.g., <code class="example">mkdir xdftut</code>, and then <code class="example">cd xdftut/</code>).</li>
+    <li>Make the xdf page by typing <code class="cookbook">xdftemplate.plx NEWFILENAME.xdf</code> (e.g., <code class="example">xdftemplate.plx xdftut.xdf</code>) and press return. That's it.</li>
+</ul>
+<h1>Editing an existing page</h1>
+<p>If you are a steerer editing documentation directly on the Oracc server, open your file like this:</p>
+<ul>
+    <li>Using Tramp/PuTTy, open the file just as you would open any atf file on oracc (e.g., <code class="example">~//oracc@oracc.museum.upenn.edu:src/doc/steerer/xdftut/xdftut.xdf</code>).</li>
+    <li>If necessary, change the buffer mode to XML (nXML). To do this, type <code class="cookbook">M-x nxhtml-mode</code> and press return.</li>
+</ul>
+<p>Otherwise, just open your the xdf file in Emacs as you would any other file.</p>
+
+<p>A previously unedited xdf file looks like this:</p>
+
+<pre class="listing">
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;d:doc xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:d="http://oracc.org/ns/xdf/1.0"
+	  xmlns:dc="http://purl.org/dc/elements/1.1"
+	  xmlns:dcterms="http://purl.org/dc/terms/"
+	  xmlns:h="http://www.w3.org/1999/xhtml"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+
+&lt;d:meta&gt;
+    &lt;dc:title&gt;&lt;/dc:title&gt;
+    &lt;dcterms:alternative&gt;&lt;/dcterms:alternative&gt;
+    &lt;dcterms:identifier
+xsi:type="dcterms:URI"&gt;&lt;/dcterms:identifier&gt;
+    &lt;dc:creator&gt;&lt;/dc:creator&gt;
+    &lt;dc:date&gt;&lt;/dc:date&gt;
+    &lt;dc:publisher&gt;&lt;/dc:publisher&gt;
+    &lt;dc:description&gt;&lt;/dc:description&gt;
+&lt;/d:meta&gt;
+
+&lt;d:schema name="" uri=""&gt;
+&lt;/d:schema&gt;
+
+&lt;d:resources/&gt;
+
+&lt;/d:doc&gt;
+</pre>
+<p>Leave the attributes of the <code class="listing">&lt;d:doc&gt;</code> element unchanged. Complete the information in the <code class="listing">&lt;d:meta&gt;</code> element as needed. E.g., for a file called xdftut.xdf in the /xdftut directory:</p>
+
+<pre class="example">
+&lt;d:meta&gt;
+   &lt;dc:title&gt;XDF tutorial&lt;/dc:title&gt; 
+   &lt;dcterms:alternative&gt;How to make Oracc documentation pages
+       &lt;/dcterms:alternative&gt; 
+   &lt;dcterms:identifier xsi:type="dcterms:URI"&gt;external link:   
+       http://oracc.org/steerer/xdftut/&lt;/dcterms:identifier&gt;
+   &lt;dc:creator&gt;Eleanor Robson&lt;/dc:creator&gt; 
+   &lt;dc:date&gt;2011-01-09&lt;/dc:date&gt; 
+   &lt;dc:publisher&gt;Oracc&lt;/dc:publisher&gt; 
+   &lt;dc:description&gt;This page describes how to make Oracc documentation 
+       pages using XDF.&lt;/dc:description&gt; 
+&lt;/d:meta&gt;
+</pre>
+<p>The contents of the <code class="cookbook">&lt;dc:title&gt;</code> and <code class="cookbook">&lt;dcterms:alternative&gt;</code> elements will become the page's title and subtitle. The <code class="cookbook">&lt;description&gt;</code> element is used in the automatically generated contents pages, and as the introductory para of the page itself.</p>
+
+<p>If (as likely) you are not including a schema listing in the help page, it is important that you delete the <code class="cookbook">&lt;d:schema&gt;</code> and <code class="cookbook">&lt;/d:schema&gt;</code> tags, otherwise the install script will not work (it is buggy!).</p> 
+
+<p>You will probably not need the <code class="cookbook">&lt;d:resources&gt;</code> element either. But both are documented in the <a href="http://oracc.museum.upenn.edu/ns/xdf/1.0/">Oracc XDF schema</a> and you can see them both in use if you open, e.g., <code class="cookbook">/src/doc/ns/xdf/1.0/xdf.xdf</code>.</p>
+
+<h1>Creating content</h1>
+<p>The content of the help page goes after the <code class="cookbook">&lt;/d:meta&gt;</code> tag and before the <code class="cookbook">&lt;/d:doc&gt;</code> tag. Add <a href="http://webpageworkshop.co.uk/main/xhtml_reference">XHTML-strict tags</a> as needed - you can use any elements that are valid within an XHTML <code class="cookbook">&lt;body&gt;</code> element, plus a few more Oracc-specific ones, as documented in the <a href="/ns/xdf/1.0/#authoring">Oracc XDF schema</a> and below.</p>
+
+<h2>Oracc-specific classes</h2>
+
+<p>Three different classes can be used with the inline elements <code>&lt;code&gt;</code> and <code>&lt;span&gt;</code> and/or the block elements <code>&lt;pre&gt;</code> and <code>td</code> to highlight passages of code:</p>
+
+<dl>
+<dt><code>&lt;pre class="listing"&gt;</code></dt>
+<dd>Use for formatting literal listings of programs or code fragments</dd>
+<dt><code>&lt;pre class="example"&gt;</code>.</dt>
+<dd>Use for formatting code or document fragments which exemplify how
+to use a feature which has just been described.</dd>
+<dt><code>&lt;pre class="cookbook"&gt;</code></dt>
+<dd>Use for formatting instructions of a cook-book nature in
+documentation which is explaining how to carry out tasks.</dd>
+</dl>
+
+<p>Simply replace <code>pre</code> with <code>code</code> or <code>span</code> to use these classes inline. The second two classes can also be used within tables with the element <code>td</code>.</p>
+
+<p>A few different classes can be used to highlight whole paragraphs too:</p>
+
+<dl>
+<dt><code>&lt;p class="alert"></code></dt>
+<dd>Use to put a thick red line around a paragraph of particular importance.</dd>
+<dt><code>&lt;p class="ihead"></code></dt>
+<dd>Use to highlight a paragraph with les emphasis than <code>alert</code>.</dd>
+<dt><code>&lt;p class="qn"></code></dt>
+<dd>Use to put a paragraph in a smaller font.</dd>
+</dl>
+
+<h2>Validation</h2>
+<p>The mode line in Emacs will tell you whether your file is valid or not, by saying (nXML valid) or (nXML invalid). To find and eliminate validation errors, move your cursor to the start of the buffer, then do <code class="cookbook">^C ^N</code>. The cursor will move to the next error, and an error message will appear in the mode line.</p>
+
+<p>When your completed file is valid, save it. When it is finished, send it to an Oracc steerer (if you are not one) for checking and installing.</p>
+
+<h1>Reinstalling the documentation</h1>
+
+<p>You can only do this if you are an Oracc steerer, and you can only do if you are logged into Oracc with the oracc password. </p>
+<ul>
+    <li>To rebuild the whole documentation directory and its subdirectories, so that the new file gets added to the contents page and the search engine, just type <code class="cookbook">~/src/doc/install.sh</code> and press return.</li>
+</ul>
+<p>After the rebuild, check online to make sure your new page has appeared as you expected.</p>
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+<!-- <d:resources/> -->
+
+</d:doc>

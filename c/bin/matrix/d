@@ -1,0 +1,80 @@
+<outer 0>
+</outer 0>
+<outer 1>
+  <block 0>
+    <composite 0 name=35>
+      <comp_col 0 text="35." delim=" " viswidth=3 maxwidth=7 zero=f space=f
+      	complex_index=0 complex_columns=1 complex_has_variant=f s_l_d=f phant=f>
+      	complex = 0x10b51df0
+      <comp_col 1 text="{d}" delim="" viswidth=3 maxwidth=3 zero=f space=f
+      	complex_index=1 complex_columns=6 complex_has_variant=t s_l_d=f phant=f>
+      	complex = 0x10b4e110
+        <variant Ur₈_11' has "{d}nin-imma₂-ama{mušen}-ta-e" for "{d}nin-ninna₂{mušen}-ta-e">
+      <comp_col 2 text="nin" delim="-" viswidth=3 maxwidth=3 zero=f space=f
+      	complex_index=1 complex_columns=0 complex_has_variant=t s_l_d=f phant=f>
+      	complex = 0x10b4e1e0
+        <variant Ur₈_11' has "" for "nin-ninna₂{mušen}-ta-e">
+      <comp_col 3 text="ninna₂" delim="" viswidth=6 maxwidth=6 zero=f space=f
+      	complex_index=1 complex_columns=0 complex_has_variant=t s_l_d=f phant=f>
+      	complex = 0x10b4e2b0
+        <variant Ur₈_11' has "" for "ninna₂{mušen}-ta-e">
+      <comp_col 4 text="{mušen}" delim="-" viswidth=7 maxwidth=7 zero=f space=f
+      	complex_index=1 complex_columns=0 complex_has_variant=t s_l_d=f phant=f>
+      	complex = 0x10b4e380
+        <variant Ur₈_11' has "" for "{mušen}-ta-e">
+      <comp_col 5 text="ta" delim="-" viswidth=2 maxwidth=2 zero=f space=f
+      	complex_index=1 complex_columns=0 complex_has_variant=t s_l_d=f phant=f>
+      	complex = 0x10b4e450
+        <variant Ur₈_11' has "" for "ta-e">
+      <comp_col 6 text="e" delim=" " viswidth=1 maxwidth=4 zero=f space=f
+      	complex_index=1 complex_columns=0 complex_has_variant=t s_l_d=f phant=t>
+      	complex = 0x10b4e520
+        <variant Ur₈_11' has "" for "e">
+      <comp_col 7 text="ŋa₂" delim=" " viswidth=3 maxwidth=3 zero=f space=f
+      	complex_index=2 complex_columns=1 complex_has_variant=f s_l_d=f phant=f>
+      	complex = 0x10b4e5f0
+      <comp_col 8 text="udu" delim="-" viswidth=3 maxwidth=3 zero=f space=f
+      	complex_index=3 complex_columns=2 complex_has_variant=f s_l_d=f phant=f>
+      	complex = 0x10b4e6c0
+      <comp_col 9 text="ka" delim="\n" viswidth=2 maxwidth=2 zero=f space=f
+      	complex_index=3 complex_columns=0 complex_has_variant=f s_l_d=f phant=f>
+      	complex = 0x10b4e790
+    </composite 0>
+    <before_sources>
+    <source 0 name=Ur₈_11'>
+      <s_col 0 cindex=0 text="Ur₈_11'" cols=1 viswidth=7 zero=f space=f phant=f
+      	composite = 0x10b51df0; composite_end = 0x10b51df0
+        complex = (nil) >
+      <s_col 1 cindex=1 text="{d}nin-imma₂-ama{mušen}-ta-e" cols=6 viswidth=28 zero=f space=f phant=f
+      	composite = 0x10b4e110; composite_end = 0x10b4e110
+        complex = 0x10b4eb10 complex_has_variant=t complex_text = `{d}nin-imma₂-ama{mušen}-ta-e'>
+      <s_col 2 cindex=2 text="<filler>" cols=0 viswidth=0 zero=f space=f phant=f
+      	composite = 0x10b4e1e0; composite_end = 0x10b4e1e0
+        complex = 0x10b4eb10 >
+      <s_col 3 cindex=3 text="<filler>" cols=0 viswidth=0 zero=f space=f phant=f
+      	composite = 0x10b4e2b0; composite_end = 0x10b4e2b0
+        complex = 0x10b4eb10 >
+      <s_col 4 cindex=4 text="<filler>" cols=0 viswidth=0 zero=f space=f phant=f
+      	composite = 0x10b4e380; composite_end = 0x10b4e380
+        complex = 0x10b4eb10 >
+      <s_col 5 cindex=5 text="<filler>" cols=0 viswidth=0 zero=f space=f phant=f
+      	composite = 0x10b4e450; composite_end = 0x10b4e450
+        complex = 0x10b4eb10 >
+      <s_col 6 cindex=6 text="<filler>" cols=0 viswidth=0 zero=f space=f phant=t
+      	composite = 0x10b4e520; composite_end = 0x10b4e520
+        complex = 0x10b4eb10 >
+      <s_col 7 cindex=7 text="+" cols=1 viswidth=1 zero=f space=f phant=f
+      	composite = 0x10b4e5f0; composite_end = 0x10b4e5f0
+        complex = 0x10b4f080 complex_has_variant=f complex_text = `ŋa₂'>
+      <s_col 8 cindex=8 text="+" cols=1 viswidth=1 zero=f space=f phant=f
+      	composite = 0x10b4e6c0; composite_end = 0x10b4e6c0
+        complex = 0x10b4f160 complex_has_variant=f complex_text = `udu-ka'>
+      <s_col 9 cindex=9 text="+" cols=1 viswidth=1 zero=f space=f phant=f
+      	composite = 0x10b4e790; composite_end = 0x10b4e790
+        complex = 0x10b4f160 >
+    </source 0>
+    <after_sources>
+  </block 0>
+</outer 1>
+<outer 2>
+</outer 2>

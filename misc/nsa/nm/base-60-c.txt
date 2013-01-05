@@ -1,0 +1,33 @@
+# base-60.txt
+
+@nm Sexagesimal Counting, Curved
+
+@system sexagesimal-c type=num time=* place=* meb=sze mev=1/10800
+
+@step asz atf=asz aev=1
+@inst asz *		1..9  	1		#(asz@c)
+@inst asz *		1..9  	1		#(asz@c@v)
+
+@step u atf=u aev=10
+@inst u *		1..5	10		#(u@c)
+
+@step jesz atf=gesz2 aev=60
+@inst jesz *		1..9	60		#(gesz2@c)
+
+@step jeszu atf=geszu aev=600
+@inst jeszu *		1..5	600		#(geszu@c)
+
+@newpage
+
+@step szar atf=szar2 aev=3600
+@inst szar *		1..9	3600		#(szar2@c)
+
+@step szaru atf=szar'u aev=36000
+@inst szaru *		1..5	36000		#(szar'u@c)
+
+@step szargal atf="szargal{gal}" aev=216000
+@inst szargal * 	1..n=2	216000		#(szargal@c){gal}
+
+@examples
+
+@ex 2(szargal@c){gal} 3(szar'u@c) 4(szar2@c) 5(geszu@c) 1(gesz2@c) 3(u@c) 5(asz@c)

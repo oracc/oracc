@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <!-- Target Module -->
+  <define name="a.attlist" combine="interleave">
+    <ref name="target.attrib"/>
+  </define>
+  <define name="area.attlist" combine="interleave">
+    <ref name="target.attrib"/>
+  </define>
+  <define name="base.attlist" combine="interleave">
+    <ref name="target.attrib"/>
+  </define>
+  <define name="link.attrib" combine="interleave">
+    <ref name="target.attrib"/>
+  </define>
+  <define name="form.attlist" combine="interleave">
+    <ref name="target.attrib"/>
+  </define>
+  <define name="target.attrib">
+    <optional>
+      <attribute name="target"/>
+    </optional>
+  </define>
+</grammar>

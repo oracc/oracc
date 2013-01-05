@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="author" content="Mikio Hirabayashi" />
+<link rel="contents" href="./" />
+<title>My Private Memo for Hyper Estraier</title>
+</head>
+
+<body>
+
+<h1>Hyper Estraierのための私的メモ</h1>
+
+<hr />
+
+<h2>Cygwin+MinGWでのビルド環境の設定方法</h2>
+
+<ul>
+<li>Cygwinのセットアップ時に、MinGWのgccとMinGWのzlibも選択する。</li>
+<li>MinGWのregexは http://gnuwin32.sourceforge.net/packages/regex-spencer.htm から手に入れる。そして、*.h は /usr/include/mingw の下に、*.lib と *.a と *.dll.a は /lib/mingw の下に、*.dll は /binの下に移動させる。</li>
+<li>MinGWのlibiconvは http://www.mingw.org/ から手に入れる。そして、*.h は /usr/include/mingw の下に、*.dll.a は /lib/mingw の下に、*.dll は /binの下に移動させる。</li>
+<li>Pthreads for Win32は http://sources.redhat.com/pthreads-win32/ から手に入れる。そして、*.h は /usr/include/mingw の下に、*.a は /lib/mingw の下に、*.dll は /binの下に移動させる。</li>
+<li>xdoc2txtは http://www31.ocn.ne.jp/~h_ishida/xdoc2txt.html から手に入れる。/usr/local/xdoc2txt を作成してアーカイブの一式をその中に移動させる。</li>
+<li>QDBMのインストールは ./configure --enable-zlib --enable-iconv ; make mingw ; make install-win で行う。</li>
+<li>Hyper Estraierのインストールは ./configure ; make win ; make install-win で行う。パッケージ作成は make winpkg で行う。</li>
+</ul>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /
+
+User-agent: Googlebot
+Disallow: 
+
+User-Agent: W3C-checklink
+Disallow:

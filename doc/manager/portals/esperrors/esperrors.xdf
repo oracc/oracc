@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Checking, correcting, and rebuilding an ESP website</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson and Ruth Horry</dc:creator>
+  <dc:date>2011-05-02</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes some tips and tricks for avoiding errors when using ESP, and for decoding the error messages generated when the Oracc command is run.</dc:description>
+</d:meta>
+
+<h1>Basic principles</h1>
+<p></p>
+<h1>Structural errors</h1>
+
+<p>Errors in the structure of your XML may be picked up by your text editor, and will certainly be reported by the system when you come to regenerate your site. They will cause the generation of the associated page, or even of the whole site, to fail. The cause of such problems should usually be obvious from the error message.</p>
+
+<p>The <code>oracc esp</code> command will report any errors made during regeneration of the site.  Usually the error messages will indicate clearly what has gone wrong, however sometimes it takes experience (and/or some trial and error!) to decode them.  If you are unsure, try pasting the error message into Google and you may come up with some useful answers.  Contact the Oracc team if you need additional help.  Remember to make a note of anything that you may wish to refer to in future.</p>
+
+<p>NB. The system does not do extensive error checking in other circumstances. You will get a warning message if you try to create a <code>&lt;esp:link&gt;</code> to a non-existent page, or if you use <code>&lt;esp:glossary&gt;</code> on a term that is not defined on the glossary page, but some other errors may not be reported.</p>
+
+<p>After correcting any sources of error (e.g. mis-named files, badly formed XML, filenames with spaces in, etc.) and run the  <code>oracc esp</code> again.  When no errors are returned, all pages of the site have been generated correctly.</p>
+
+<h2>Some of the more cryptic errors explained</h2>
+
+<h4>Error before Phase 1 has started:</h4>
+<dl>
+<dt><code>Exception in thread "main" java.lang.NullPointerException at ImageInfo.main(ImageInfo.java:1025)</code></dt>
+<dd>This error is returned by the script that automatically detects the size of images. It means that the size of one or more images couldn't be detected properly, and that image may not display properly on the website.  The most likely cause of this error is image files that contain a space in their filename (e.g. <code class="example">my great image.jpg</code>).  (Spaces are not permitted in image filenames in order for the script to work properly.) To solve the error: go through the images folder and remove any spaces from image filenames (i.e. change to <code class="example">mygreatimage.jpg</code>).  The error may also occur if files other than image files are placed in the images folder.</dd>
+</dl>
+
+<h4>Validation errors:</h4>
+<dl>
+<dt><code>Error at line:x, column:x of file:///  tag name "div" is not allowed.</code></dt>
+<dd>You have use an invalid element (in this example <code>&lt;div&gt;</code>). You will need to remove or replace it.</dd>
+
+<dt>Error returned when &lt;esp:image&gt; tag refers to an image without a file extension</dt>
+<dd>For instance, <code class="example">&lt;esp:image file=”picture1” ...&gt;</code> instead of the correct version: <code class="example">&lt;esp:image file=”picture1.jpg” ...&gt;</code>.</dd>
+</dl>
+
+<h1>Good practice for avoiding errors</h1>
+<h2>Using and nesting elements</h2>
+<p>Most XHTML and system elements can be used inside (nested in) most other XHTML and system elements. However, there are exceptions. Because of the syntax of XML/XHTML, certain system elements will not work in certain places. If you use an element in a place where it doesn’t work, it will be filtered out, and a warning will be generated at the final stage of processing.</p>
+
+<p>Because the site claims to be valid XHTML, it must respect the XHTML specification. This places certain prohibitions on element nesting. </p>
+
+<p>Broadly, you should avoid the following: </p>
+
+<p>Placing a block-level XHTML element, such as <code>&lt;p&gt;</code> or <code>&lt;blockquote&gt;</code> (or a system element which creates one), inside an inline XHTML element, such as <code>&lt;a&gt;</code> or <code>&lt;b&gt;</code> (or a system element which creates one).  NB.  This means that when using <code>&lt;blockquote&gt;</code> you should nest the tags <code>&lt;blockquote&gt;&lt;p&gt;text here&lt;/p&gt;&lt;/blockquote&gt;</code> rather than the other way around.</p>
+
+<p>Placing a system element which creates an XHTML &lt;a&gt; element inside any other element that does so. This means that none of the elements <code>&lt;esp:bookmark&gt;</code>, <code>&lt;esp:link&gt;</code>, <code>&lt;esp:glossary&gt;</code>, <code>&lt;esp:reference&gt;</code>, and <code>&lt;esp:index&gt;</code> may occur inside any of those same elements.</p>
+
+<p>Note that using the <code>&lt;embed&gt;</code> element will unavoidably result in invalid XHTML, but that this is the only reasonable method for including a Flash movie that will play in all browsers.</p>
+
+<h2>Names and naming</h2>
+<p>To prevent errors, always use lowercase names for your files and when creating short page ids etc.  Do not use spaces in file names or image names; instead separate words with an underscore or a hyphen.</p>
+
+<p>The text in the navigation bar is given by &lt;esp:name&gt; – see ***section 2.1 on creating a new page.  Keep &lt;esp:name&gt; entries short as they will be used in the navigation bar.</p>
+
+<p>The page title is given by &lt;esp:title&gt; – see ***section 2.1 on creating a new page.  (This text can be much longer than that given in &lt;esp:name&gt;.)</p>
+
+<p>Links to internal pages should use the short page id defined in the &lt;esp:page&gt; tag in <code>structure.xml</code> – see ***section 2.4.1 on internal links.</p>
+
+<p>Each page is referenced in the site structure, i.e. in <code>structure.xml</code>, using its file name (e.g., <code>assurbanipal.xml</code>).  Using the wrong name, such as the page id, is a common reason for stage 1 errors when the code is processed.  Keep file names and folder names short and memorable as they are used to create the site’s URL structure.</p>
+
+<h1>Testing</h1>
+<p>For the above reasons, you should thoroughly test every page whenever it is changed. Ensure that all parts behave as expected--for example, that all links are present and working. In addition, you should study the output of the final, validation stage of site generation, and fix any errors reported (although they are reported for the html files, it is the associated xml files in <code>00web/esp/site-content/pages</code> that must be fixed.</p>
+
+<p>SAY MORE</p>
+
+<p>See also:</p>
+<ul>
+<li><a href="../esp/">Overview of ESP</a></li>
+<li><a href="../espsetup/">How to set up your ESP site</a></li>
+<li><a href="../espcontent/">How to mark up textual content</a></li>
+<li><a href="../espimages/">How to embed images and other non-textual content</a></li>
+<li><a href="../espelements/">Alphabetical list of ESP system elements</a></li>
+<li><a href="~/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+
+<d:resources/>
+
+</d:doc>
+

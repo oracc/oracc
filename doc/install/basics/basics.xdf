@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Installation Basics</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-10-15</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document gives basic information on
+  installation procedures.</dc:description>
+</d:meta>
+
+<h1>Installation Basics</h1>
+
+<p>For standard Gnu distributions the filename consists of the package
+name, a version number and extensions.  For example, msort might be in
+a package msort-8.52.tar.gz.  By Gnu coding conventions, such packages
+always unpack into a directory with the same name and version number
+(packages which do not are considered ill-behaved).  To build Gnu
+software, change to the package directory, and run the configure and
+make programs, then use `su' to become superuser (`su sudo' on Mac OS
+X) and do make install, then `exit' to leave super-user mode.  So for
+msort one might do this:</p>
+
+<pre class="cookbook">tar zxf msort-8.52.tar.gz 
+cd msort-8.52 
+./configure 
+make 
+su 
+make install 
+exit 
+</pre>
+
+<p>Note that on some systems you need to configure the library directory
+explicitly when installing libraries (pcre, tre, uninum, utf8proc):</p>
+
+<pre class="cookbook">
+./configure --libdir=/usr/lib64
+</pre>
+
+<h3>Installing Perl Packages</h3>
+
+<p>Perl packages have a common installation procedure as follows:</p>
+
+<pre class="cookbook">
+tar zxf &lt;package>.tar.gz 
+cd &lt;package> 
+perl Makefile.PL 
+make 
+su 
+make install 
+exit 
+</pre>
+
+<p>For Windows there are some Perl systems which provide a facility 
+to download pre-built packages.</p>
+
+</d:doc>

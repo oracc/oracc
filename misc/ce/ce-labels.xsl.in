@@ -1,0 +1,57 @@
+<?xml version='1.0'?>
+
+<xsl:stylesheet version="1.0" 
+  xmlns:x="http://emegir.info/xtf"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  exclude-result-prefixes="x">
+
+<xsl:output method="xml" indent="no"/>
+
+<xsl:template match="/">
+  <labels ref="{/*/@xml:id}" n="{/*/@n}">
+    <xsl:apply-templates select=".//x:l"/>
+  </labels>
+</xsl:template>
+
+<xsl:template match="x:l">
+  <xsl:variable name="object" select="ancestor::x:object/@n"/>
+  <xsl:variable name="division" select="ancestor::x:div.logical/@n"/>
+  <xsl:variable name="surface" select="ancestor::x:surface/@type"/>
+  <xsl:variable name="column" select="ancestor::x:column/@n"/>
+  <xsl:variable name="label">
+    <xsl:if test="string-length($object) > 0">
+      <xsl:value-of select="concat($object, ' ')"/>
+    </xsl:if>
+    <xsl:if test="string-length($division) > 0">
+      <xsl:value-of select="concat($division, ' ')"/>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$surface = 'surface'">
+	<xsl:value-of select="ancestor::x:surface/@surface"/>
+	<xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:if test="string-length($surface) > 0">
+	  <xsl:value-of select="document('@@ORACC@@/lib/config/label-info.xml')/*/l[@n=$surface]/@a"/>
+	  <xsl:text> </xsl:text>
+	</xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="string-length($column) > 0">
+      <xsl:if test="$column > 0">
+        <xsl:value-of select="document('@@ORACC@@/lib/config/label-info.xml')/*/l[@n=$column]/@a"/>
+        <xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:if>
+    <xsl:value-of select="@n"/>
+  </xsl:variable>
+  <label d="{$label}">
+<!--
+    <xsl:attribute name="xml:id">
+      <xsl:value-of select="concat(@xml:id,'.label')"/>
+    </xsl:attribute>
+ -->
+  </label>
+</xsl:template>
+
+</xsl:stylesheet>

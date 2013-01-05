@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Numbers and Metrology in Oracc Corpora</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson and Steve Tinney</dc:creator>
+  <dc:date>2010-05-05</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes how to transliterate weights and measures in ATF for Oracc corpora.</dc:description>
+</d:meta>
+
+<p>Almost all modern writing systems use just ten graphemes — the digits 0–9 — to write numbers with, whether we are counting individual objects, measuring lengths, calculating volumes, or weighing things. However, there are many different notations for numbers in cuneiform, depending on what is being counted, measured, weighed or calculated. If that weren't complicated enough, several of those separate notation systems use the same graphemes with different, context-dependent meanings.</p> 
+
+<p>For instance, the U sign &#x1230b; has the value 10 when counting individual objects, but is also an area measure (BUR₃) which is 3 (not 10) times larger than the EŠE₃ unit.</p>
+
+<ul>
+<li><p>In Akkadian texts, metrological units are transliterated in capital letters, as logograms, whether they are written explicitly or implicitly (in count-unit graphemes); for instance, <code class="example">1(BAN₂) 5 SILA₃</code>. In Sumerian texts, they are transliterated in lower case: <code class="example">1(ban₂) 20 sila₃</code>.</p></li> 
+</ul>
+<p> This example raises a further complicating factor: the fact that in many cuneiform metrological systems, especially those created in the late fourth and early third millennia, the numbers and units are not written separately but as <em>count-unit graphemes</em>. Thus in the classic Ur III-OB area system the U sign &#x1230b; means "1 BUR₃" and three U signs  &#x1230d; means "3 BUR₃". (We always transliterate these count-unit signs with the unit in parentheses immediately after the number, like this: <code class="example">1(BUR₃)</code> and <code class="example">3(BUR₃)</code>.)</p>
+
+<p>For all these reasons, it is essential to be as explicit and as consistent as possible when transliterating, lemmatising, and translating numbers, weights and measures. This document sets out good practice for Oracc projects. It builds on earlier <a href="../numbers/">numbers and metrology documentation for CDLI corpora</a>.</p>
+
+<h1>General principles</h1>
+
+<h2>Transliteration</h2>
+<p>The basic principle of transliterating numbers and units — as with all transliteration — is that the transliteration must <em>unambiguously</em> represent the signs on the tablet. A cuneiformist reading your transliteration must be able to tell immediately which wedges the scribe put on the clay, and the ATF processor must be able to parse your text without ambiguity. For instance, a transliteration such as <code>150</code> is invalid ATF, as there is no cuneiform sign "150". You must write either <code class="example">3.20</code> if the number is in base 60 or <code class="example">1 ME 50</code> if the scribe has used number-words as well as numerals.</p>
+<ul>
+<li><p>In standard CDLI notation numbers are always qualified; numbers in the
+   system where one is written as a vertical wedge are qualified with disz,
+   as in 1(disz); numbers written with tens and units have their tens 
+   qualified with u: 25 is thus transliterated as 2(u) 5(disz), ensuring a 
+   one-to-one relationship between graphemes on the tablet and 
+   transliteration.</p></li>
+<li><p>In the second and first millennia, most numbers most of the time were written with the DIŠ (one) and U (ten) signs, in combinations from 1 to 59 in base 60. When your text uses this sort of notation, you can <a href="metrol-tables.html#numbers">transliterate the numerals</a> without explicitly stating that they are written with DIŠ and U. In ATF we call these <em>diš-less numbers</em> and they are more fully documented on the <a href="../math/">Mathematical Conventions</a> page.</p> When a number between 1 and 59 is
+written with the diš-less shorthand it is the exact equivalent of the full
+writing using separate transliterations of tens and units.</li>
+<li><p>Similarly, in most contexts, the unit fractions can simply be transliterated as <code class="example">1/2, 1/3, 2/3, 5/6</code> and not <code>1/2(DIŠ)</code>, etc. See <a href="#notes">below</a> for notes on fractions in particular metrological systems.</p></li>
+<li><p>On the Upper Euphrates and in Assyria scribes often wrote six to nine U signs to mean 60-90. You should transliterate these numbers as <code class="example">6(U) 7(U) 8(U) 9(U)</code> (because an unqualified transliteration would be ambiguous).</p></li>
+<li><p>In metrological systems with notations other than the diš-oriented base-60 system, these must always be specified in the transliteration. For instance, you must write <code class="example">4(U) 2(AŠ) GUR</code> and not <code>42 GUR</code>.</p></li>
+<li><p>Indicate deliberately omitted metrological units with parentheses inside angle brackets, thus: <code class="example"> 3 &lt;(KUŠ₃)&gt;</code> and <code class="example">4(U) 2(AŠ) &lt;(GUR)&gt;</code>.</p></li>
+<li><p>If the scribe wrote a numeral with the "wrong" number sign then you should explicitly transliterate this too. Compare for instance <code class="example">5(AŠ) NINDA</code> (unusual or incorrect writing) and <code class="example">5 NINDA</code> (correct writing with DIŠ).</p></li>
+<li><p>Abbreviated transliterations such as <code>1.0.3, 4 SILA₃</code> and <code>2.3.1, 25 SAR</code> are not allowed, and nor are readings such as <code>BANMIN</code> for <code>2(BAN₂)</code>.</p></li>
+
+</ul>
+<p>There are further notes on specific metrological systems <a href="#notes">below</a>.</p>
+
+<p>Here is part of an Old Babylonian tabular account transliterated according to Oracc standards in an <a href="../layouts/">ODS spreadsheet</a>:</p>
+<p><img src="metrol-xlit.png" alt="Part of OECT 15, 18, an Old Babylonian tabular account, in ODS-ATF" /></p>
+<p>Note the differences between diš-less notations in the length system (where missing unit signs are supplied as necessary) and the count-unit graphemes of the volume system.</p>
+
+<h2>Lemmatisation</h2>
+<p>For general documentation on lemmatisation, see the <a href="../linganno/">Linguistic Annotation</a> pages.</p>
+<ul>
+<li><p>Numerals and count-unit graphemes are lemmatised as <code>n</code>.</p></li>
+<li><p>Numbers written syllabically in Akkadian, and as numerals with phonetic complements, should be lemmatised wherever possible.</p></li>
+<li><p>Similarly, in narrative contexts in Sumerian number words should be used
+ where possible (where known!), and lemmatized appropriately. For instance, write <code class="example">diŋir imin-bi</code> and lemmatize as <code class="example">imin[seven]</code> (rather than <code>7-bi</code>, lemmatized as <code>n</code>).</p></li>
+<li><p>Metrological units in Akkadian texts are lemmatised as shown in the <a href="metrol-tables.html">Metrology Tables</a>, with the SENSE "unit" and the NORM0 in the absolute case if they are written logographically. Syllabically written metrological units should be normalised as any other Akkadian word.</p></li>
+<li><p>There are some metrological units whose Akkadian readings are unknown. They should be lemmatised with the logogram as the GW and NORM0, as shown in the <a href="metrol-tables.html">Metrology Tables</a>. For instance <code class="example">1 UŠ</code> is lemmatised as <code class="example">n; +UŠ[unit]N$</code>.</p></li>
+</ul>
+
+<p>Here the same Old Babylonian tabular account has been lemmatised:</p>
+<p><img src="metrol-lemm.png" alt="Part of OECT 15, 18, an Old Babylonian tabular account, in lemmatised ODS-ATF" /></p>
+
+<h2>Translation</h2>
+<p>For general documentation on translation, see the <a href="../translation/">Translation</a> pages.</p>
+<ul>
+<li><p>Translate units into English wherever possible. Recommended translations are given in the <a href="metrol-tables.html">Metrology Tables</a>.</p></li>
+<li><p>Try to reflect the structure of the cuneiform notation in translations, rather than converting to decimal values or modern units. The <a href="metrol-tables.html">Metrology Tables</a> give approximate modern equivalents, which you can show in parentheses afterwards if appropriate. For instance, you might translate <code class="example">55 NINDA 3 KUŠ₃</code> by <code class="example">55 rods, 3 cubits (c.330.25 m)</code>.</p></li>
+<li><p>It's a good idea, though not essential, to reflect the use of count-unit graphemes in your translation too. For instance, you might translate <code class="example">1(BAN₂) 5.1/2 SILA₃</code> as <code class="example">1(@sūtu) 5 1/2 @qû (c.15 litres)</code>.</p></li> 
+</ul>
+
+<p>The same Old Babylonian tabular account translated:</p>
+<p><img src="metrol-xlat.png" alt="Part of OECT 15, 18, an Old Babylonian tabular account, in ODS-ATF translation" /></p>
+
+
+
+
+<h1>Metrology Tables</h1>
+
+<p><a href="metrol-tables.html">These tables</a> give the signs, transliterations, lemmatisations, translations and approximate modern equivalents for the major metrological systems of second and first-millennia Babylonia:</p>
+<h2>Diš-less numbers</h2>
+<ul>
+<li><a href="metrol-tables.html#unit_fractions">Unit fractions</a></li>
+<li><a href="metrol-tables.html#ones">Ones</a></li>
+<li><a href="metrol-tables.html#tens">Tens</a></li>
+</ul>
+<h2>Classic Ur III-OB metrologies</h2>
+<ul>
+<li><a href="metrol-tables.html#length">Length</a></li>
+<li><a href="metrol-tables.html#area">Area, volume, and bricks</a></li>
+<li><a href="metrol-tables.html#capacity">Capacity</a></li>
+<li><a href="metrol-tables.html#weight">Weight</a></li>
+</ul>
+<h2>Kassite and first-millennium metrologies</h2>
+<ul>
+<li><a href="metrol-tables.html#aru"><i>arû</i>-measure</a> for lengths and areas</li>
+<li><a href="metrol-tables.html#aru_seed"><i>arû</i> "seed measure"</a> for areas and capacities</li>
+<li><a href="metrol-tables.html#aslu"><i>aslu</i>-measure</a> for lengths and areas</li>
+<li><a href="metrol-tables.html#aslu_seed"><i>aslu</i> "seed measure"</a> for areas and capacities</li>
+<li><a href="metrol-tables.html#reed">"Reed measure"</a> for small lengths and areas</li>
+</ul>
+
+<p>If you need further metrological units or systems to be documented, please email the Oracc Steering Committee at osc@oracc.org.</p>
+
+
+<h1><a name="notes" />Notes on specific metrological systems</h1> 
+
+<h2>Ur III-OB systems</h2>
+<ul>
+<li><p>In the <a href="metrol-tables.html#area">area-volume-brick system</a>, the sign GANA₂ separates the large-value count-unit graphemes from the lower-value "diš-less" ones. ATF treats GANA₂ as punctuation in this context, so it must be written as <code class="cookbook">*GANA₂</code> or <code class="cookbook">*(GANA₂)</code> with no translation. For instance: <code class="example"> 2(EŠE) *GANA₂ 40 SAR</code>, translated as <code class="example">2(@eblu) 40 @mūšaru</code>. (It is good practice to read the sign GANA₂ as <code>AŠA₅</code> when it means "field", to further avoid ambiguity.)</p></li>
+<li><p>In the <a href="metrol-tables.html#area">area-volume-brick</a> and <a href="metrol-tables.html#capacity">capacity</a> systems respectively, the SAR and SILA are divided into 60 shekels and the shekel into 180 grains, just as in the <a href="metrol-tables.html#weight">weight system</a>.</p></li>
+<li><p>In the <a href="metrol-tables.html#area">area-volume-brick</a>, <a href="metrol-tables.html#capacity">capacity</a> and <a href="metrol-tables.html#weight">weight</a> systems, respectively, the base-60 multiples of the BUR₃, GUR and GUN can be represented sexagesimally  in translation. For instance, <code class="example">5(GEŠ₂) 2(U) 5(AŠ) GUR</code> can be translated as <code class="example">5.25(@kurru)</code> and <code class="example">1(ŠARʾU) 2(BURʾU) 4(BUR₃)</code> as <code class="example">1.24(@būru)</code>.</p></li>
+</ul>
+
+<h2>Post-OB systems</h2>
+<p>There were several parallel post-OB length-area systems in use, depending on the context of use. <a href="metrol-tables.html#reed">"Reed measure"</a> was used for small areas such as houses, while two different "Seed measures" — <a href="metrol-tables.html#aru"><i>arû</i></a> and <a href="metrol-tables.html#aslu"><i>aslu</i></a> (not to be confused with the <i>ašlu</i> unit)— were used for larger ones such as fields.</p>
+<ul>
+<li><p>The Ur III-OB <a href="metrol-tables.html#weight">weight system</a> continues unchanged into later periods.</p></li>
+<li><p>The larger units of the post-OB systems for lengths areas, and capacities are identical to those of the Ur III-OB <a href="metrol-tables.html#length">length</a> and <a href="metrol-tables.html#area">area</a> systems and are thus omitted from the <a href="metrol-tables.html">Metrology Tables</a>.</p></li>
+<li><p> Note that several relationships between units are different to those of the Ur III-OB systems.</p></li>
+<li><p>In area-capacity systems the sign PI separates the large-value count-unit graphemes from the lower-value ones. ATF treats PI as punctuation in this context, so it must be written as <code class="cookbook">*PI</code> or <code class="cookbook">*(PI)</code>. It is not translated. For instance: <code class="example">1(AŠ) GUR 2(BARIG) *PI 3(BAN₂)</code>, translated as <code class="example">1 @kurru, 2(@pānu), 3(@sūtu)</code>.</p></li>
+
+</ul>
+
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+
+
+ 
+
+<d:resources>
+<d:resource copy="yes" href="metrol-tables.html"/>
+<d:resource copy="yes" href="metrol-lemm.png"/>
+<d:resource copy="yes" href="metrol-xlat.png"/>
+<d:resource copy="yes" href="metrol-xlit.png"/>
+</d:resources>
+
+</d:doc>

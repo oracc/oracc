@@ -1,0 +1,40 @@
+**SPECS**
+
+structure:
+
+ each record in a 'record' element
+ all element children are fields
+
+must provide:
+
+ cdli_id
+ designation (may be inherited)
+
+may inherit:
+
+ any P or Q field
+ field must be specified in projcat, not just in keydata
+
+must specify
+
+ all data required in keydata.xml, just like main cat
+
+**BUILD**
+
+ read specified config
+ if project is set, operate in project-local mode
+ load project-local keydata
+ load project-local catalog inputs
+ for each record
+     for each inherited field
+     	 supply data from main .xmd unless specified
+     ?? implement augment fields also; could do this with a type on inherited/field ??
+ generate sort codes
+ write results/*
+ write  project-xmd
+
+**KEYDATA**
+
+if the values in a <keys> element are specified via an avl or xvl the
+search path is project/lib then catalog/lib
+

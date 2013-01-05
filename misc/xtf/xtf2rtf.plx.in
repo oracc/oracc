@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use ORACC::XTF2::RTF;
+undef $/;
+$_ = <>;
+my $xtf = load_xml_string($_);
+
+ORACC::XTF2::RTF::generate($xtf,'test.rtf');
+
+1;

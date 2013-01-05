@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>GDF: Generic Data Framework</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h2">
+          <a href="#Using_a_GDF_Dataset">Using a GDF Dataset</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Technical_Notes">Technical Notes</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Future_Plans">Future Plans</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">GDF: Generic Data Framework</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>GDF provides a way of turning arbitrary datasets into linked open data
+  quickly and easily.</p>
+
+<p>GDF is designed with an emphasis on simplicity: the data is
+minimally processed and accessible via a general full-text search
+engine.  It is particularly well-suited to rescuing legacy data from
+obscurity, and as such users should expect that the data will often be
+unpolished.</p>
+
+<p>We encourage users of GDF datasets to think about similar works
+they may have created as part of their research and which they might
+think of as useful but imperfect.  Please send us such datasets with
+written permission (e-mail is fine) to convert and distribute them!
+We will reformat them as necessary and distribute them under the
+Creative Commons BY-SA licence.</p>
+
+<h2><a name="Using_a_GDF_Dataset">Using a GDF Dataset</a></h2>
+
+<p>GDF datasets are easy to use: you should read the home-page for any
+information on abbreviations, conventions, etc., and then you can
+normally browse some fields to get a sense of what to search for.</p>
+
+<h2><a name="Technical_Notes">Technical Notes</a></h2>
+
+<p>At the very least, the data will have been structured into records
+with stable XML IDs which are then used in the URIs to provide
+persistent access.  The data will also be in the Unicode character set
+in UTF-8 encoding.</p>
+
+<p>GDF datasets generally provide their records in XML format if you
+add <code>/xml</code> to the URI.  If the status-field
+<code>stable-uris</code> is set to <code>yes</code> (as it normally
+will be) you can safely refer to the data by the URI and know that
+the URI will not disappear.</p>
+
+<h2><a name="Future_Plans">Future Plans</a></h2>
+
+<p>While GDF prides itself on its simplicity, there are plans for a few key improvements:</p>
+
+<ul>
+<li>improved formatting of records--the present simple list of fields
+and data will be supplemented by a more database-like layout
+option</li>
+<li>a facility to get a row-oriented view of the data and search
+results, and to browse the pages of data or search results in
+order.</li>
+</ul>
+
+<p>There is no timetable for these developments.</p>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

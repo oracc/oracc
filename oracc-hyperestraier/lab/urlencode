@@ -1,0 +1,25 @@
+#! /usr/bin/ruby
+
+#================================================================
+# urlencode
+# encode each line as URL
+#================================================================
+
+
+# library requirement
+require "uri"
+
+
+# process each line
+while(line = gets)
+  chomp
+  printf("%s\n", URI.encode(line))
+end
+
+
+# exit normally
+exit(0)
+
+
+
+# END OF FILE

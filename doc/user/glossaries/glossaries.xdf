@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Using the Oracc 2 glossaries</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2012-12-16</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Most Oracc 2 corpora are at least partially lemmatised; that is, the words in them are tagged in order to generate language glossaries. An Oracc corpus usually has more than one glossary (for instance Akkadian, Sumerian, Names) but they all work in essentially the same way. This page describes how to use them.</dc:description>
+</d:meta>
+
+<p>Quick links to more user help:</p>
+<ul>
+<li><a href="/doc/user/p2/">Introduction to using the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/searching/">Searching the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/advanced/">Advanced searching</a></li>
+</ul>
+
+
+<div>
+<a name="accessing" />
+<h1>Accessing a project's glossaries</h1>
+<p>You can access a project's or corpus's glossaries by one of two routes:</p>
+                         
+<ul>
+<li>The <a href="/doc/user/p2/#The_navigation_bar">Glossaries menu</a> at top centre of every page
+of the corpus takes you to the home page of each glossary. From there you can browse or
+search the entire glossary. </li>
+<li>In <a href="/doc/user/p2/#Text_Item_Mode">Text Item Mode</a>, each transliterated word in the corpus may be linked
+to a glossary entry. When you place your cursor over the word, the outline
+entry pops up; and when you click on the word you are taken to the <a href="#Full_Glossary_Entries">full entry</a>.</li>
+</ul>
+
+</div>
+      
+<div>                 
+<a name="homepages"></a>
+<h1>What you see</h1>
+
+<p>When you go to the front page of an Oracc glossary, you will see the screen split into three parts:</p>
+<ul>
+    <li>the coloured <a href="#Header">header</a> at the top;</li>
+    <li>the  <a href="#Outline_Pane">outline pane below it</a>, to the left;</li>
+    <li>and the  <a href="#Main_Pane">main pane</a> in the centre of the screen.
+</li>
+</ul>
+<p>The contents of the header and outline pane stay mostly the same as you move through the glossary. The contents of the main pane change, though, depending on your actions in the header and outline pane.</p>
+
+<h2>Header</h2>
+<p>You can use the coloured header at the top of the screen to navigate your way around the glossary, and to perform searches. It is divided into three different zones, from top to bottom:</p>
+<ul>
+<li>the same <a href="/doc/user/p2/#The_navigation_bar">navigation bar</a> as in the main corpus, for moving to different parts of the website;</li>
+<li>the plain-text project title;</li>
+<li>the usual <a href="/doc/user/p2/#The_search_bar">search bar</a>, for finding signs, words and phrases; but now it will search only in this particular glossary;</li>
+</ul>
+<p>In some contexts you will also see the <a href="/doc/user/p2/#The_pager_bar">pager bar</a>, for paging through different texts, catalogue entries, and search results.</p>
+
+
+<h2>Outline Pane</h2>
+<p>The outline pane lists the following items, which you can use to browse the glossary:</p>
+<dl>
+<dt>Overview</dt>
+<dd>The Overview gives single-line <a href="#Outline_Glossary_Entries">outline entries</a> for every item in the glossary.</dd>
+<dt>the letters A-Z (or a subset of them)</dt>
+<dd>Each of these gives you single-line <a href="#Outline_Glossary_Entries">outline entries</a> for every item in the glossary with that initial letter.</dd>
+<dt>One Big File</dt>
+<dd>This gives you a complete listing of the <a href="#Full_Glossary_Entries">full entries</a> for the entire glossary. </dd>
+</dl>
+</div>
+
+<div>
+<h1>Main Pane</h1>
+<h2>Outline Glossary Entries</h2>
+<p>You can access outline glossary entries via the Overview or the indvidual letters in the Outline pane, or by using the search box. Outline glossary entries like this:</p>
+<blockquote><p><span class="example">ana [TO] PRP (2x) "for; to"</span></p></blockquote>
+<p>It has five components:</p>
+<dl>
+<dt>Citation form (e.g., <span class="example">ana</span>)</dt>
+<dd>The dictionary headword or lemma. Akkadian nouns are always given in the nominative singular (e.g., <span class="example">awīlu</span>) and verbs in the infinitive (e.g., <span class="example">alāku</span>), in an un-mimated form called <a href="/doc/builder/linganno/AKK/#Citation_Forms__CF_">Conventional Akkadian</a>.</dd>
+<dt>Guide word (e.g., <span class="example">[TO]</span>)</dt>
+<dd>The basic translation.</dd>
+<dt>Part of speech (e.g., <span class="example">PRP</span>)</dt>
+<dd>Abbreviation such as N = noun, V = verb, PRP = preposition, AJ = adjective, AV = adverb. For more details see the documentation on <a href="/doc/builder/linganno/#Replacing_X's">lingusitic annotation</a>.</dd>
+<dt>Attestations (e.g., <span class="example">(2x)</span>)</dt>
+<dd>The number of times this word occurs in the (lemmatised part of) the current corpus.</dd>
+<dt>The context-based senses (e.g., <span class="example">"for; to"</span>)</dt>
+<dd>The various context-based meanings of the word, as used in the current corpus. 
+</dd>
+</dl>
+<p>Clicking on the coloured component of the outline entry will take you to
+ the corresponding <a href="#Full_Glossary_Entries">full glossary entry</a>. Depending on the context, it may appear in the main pane or in a pop-up window.</p>
+<h2>Full Glossary Entries</h2>
+<p>Full glossary entries look the same, whether they are in the main glossary pane or a pop-up window. They are divided into three parts:</p>
+<ul>
+<li>The top line is a summary, showing the citation form (dictionary headword or lemma), guide translation(s),
+<a href="/doc/builder/linganno/#Replacing_X's">part(s) of speech</a>, and number of instances in the online corpus. You can click on this number to see all the instances in context.</li>
+<li>The next section shows periods, spellings (transliterations), and normalisations of all the
+attestations in the corpus. For Sumerian words, it also shows their base forms and morphological forms. Click on any of these to see them shown in context. A pop-up window
+will appear, showing the relevant lines of manuscript or composite text, with
+the glossary word highlighted. You can then click on the coloured designation (publication number or composition name) to see the
+whole transliteration and translation.</li>
+<li>The third and final section lists the different meanings of the word within
+the corpus, showing their relative frequencies. Click on any of the
+frequencies to see the headwords in context.</li>
+</ul>
+
+</div>
+<div>
+<a name="more" />
+<h1>More on using Oracc 2 corpora</h1>
+<ul>
+<li><a href="/doc/user/p2/">Introduction to using the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/searching/">Searching the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/advanced/">Advanced searching</a></li>
+</ul>
+</div>
+
+
+<!-- <d:schema name="" uri="">
+</d:schema>
+
+<d:resources/> -->
+
+</d:doc>

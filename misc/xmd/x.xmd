@@ -1,0 +1,18 @@
+<x xmlns="http://oracc.org/ns/xmd/1.0" xmlns:xmd="http://oracc.org/ns/xmd/1.0">
+  <record>
+    <designation>A</designation>
+    <genre>Royal Inscription</genre>
+  </record>
+  <record>
+    <designation>B 1</designation>
+    <genre>Royal Inscription</genre>
+  </record>
+  <record>
+    <designation>C I 1</designation>
+    <genre>Royal Inscription</genre>
+  </record>
+  <record>
+    <designation>D 1 1</designation>
+    <genre>Royal Inscription</genre>
+  </record>
+</x>

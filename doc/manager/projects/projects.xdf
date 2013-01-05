@@ -1,0 +1,323 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc Projects</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-08-05</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>The basic unit in the Oracc system is the project.
+  This document gives a basic introduction to how projects are
+  organized and how to create and work with them.</dc:description>
+</d:meta>
+
+
+<h1>What is a Project?</h1>
+
+<p>From the user's perspective a project is a collection of texts
+which have glossaries and possibly some pages of explanation. From
+the system perspective, there are actually two kinds of projects: main
+projects (which we call simply `projects') and subprojects.
+Subprojects are a way of dividing up projects for various reasons.
+<!--Within the system, subprojects are all gathered together within one
+folder, or directory, which belongs to the parent project.  The folder
+is named `projects'.  The full way of referring to the
+<code>sargon</code> subproject which is part of the <code>saa</code>
+project is: <code>saa/projects/sargon</code>.--> For instance, the CAMS subproject Ludlul is found in the <code>cams/ludlul/</code> directory.</p>
+
+<!--<p>In most contexts, you can leave out the <code>projects/</code> and
+refer to subprojects by a shorthand form.  The short form of
+<code>saa/projects/sargon</code> is <code>saa/sargon</code>.</p> -->
+
+<h3>Setting up a project</h3>
+<p>Projects are the organizational core of the Oracc server.</p>
+<ul>
+<li>defining a project on the Oracc server is optional; you can work with most of the tools without doing so;</li>
+<li>but having a project makes it easy for you to store control lists of graphemes and lemmata, and view your data online even while you are developing it;</li>
+<li>a project provides an easy way to present your work online;</li>
+<li>e-mail osc@oracc.org to arrange this.</li>
+</ul>
+
+
+<h1>Fundamentals</h1>
+
+<p>Before we begin, it is useful to explain the fundamentals which are
+available to all projects.</p>
+
+<h2>Catalogue</h2>
+
+<p>While it may not be obvious, the most fundamental part of any
+project is the catalogue which provides the text metadata--at the very
+least the CDLI ID and a human-readable designation--which provides the
+organizational basis for all other components of the project.</p>
+
+<p>The easiest way to provide a catalogue for a corpus is to derive
+the project dynamically from the CDLI catalogue.  However, some
+projects have special needs and in those cases it is possible to
+tailor the catalogue processing software to the required metadata
+fields and values.</p>
+
+<h3>Working with P-numbers</h3>
+<p>P-numbers are unique identifiers required by the tools.</p>
+<ul>
+<li>send a brief catalog of texts to CDLI staff</li>
+<li>initially such a catalog might only contain identifying information such as museum and publication numbers and a
+few additional fields giving the author and date of the primary
+publication and the owner of the objects</li>
+<li>information on period, provenience and genre is desirable--and is used by the web-based browse and search tools--but may be added later</li>
+<li>further fields are useful but not absolutely required.</li>
+</ul>
+
+<h2>Corpus</h2>
+
+<p>Most projects relate in some way to a text corpus.  The texts are
+entered or converted to the ATF format and may have translations.  The
+project management software takes care of turning the ATF sources into
+the various formats used for web display and other purposes.</p>
+
+<h3>Working with transliterations</h3>
+<p>Transliterations are the core of a corpus.</p>
+<ul>
+<li>convert legacy data to ATF</li>
+<li>add new texts by typing them in ATF</li>
+<li>validate your transliterations using the ATF checker</li>
+<li>you can optionally use your own control lists for data content like allowable grapheme values and more</li>
+</ul>
+
+<h3>Working with translations</h3>
+<p>Translations can be integrated into the corpus.</p>
+<ul>
+<li>Translate the texts or convert legacy translations to ATF.</li>
+<li>Publish the corpus to the web with searching or in print with indexes.</li>
+</ul>
+
+<h2>Glossaries</h2>
+
+<p>The ATF format supports lemmatization, which is the process of
+adding references to dictionary headwords into the texts.  If a corpus
+is lemmatized, it can be used to generate glossaries directly from the
+texts with no glossary-editing at all.  Normally, however, the
+glossary and text corpus are used together: the glossary is maintained
+and may be edited or augmented with bibliography, and the corpus is
+synchronized with the glossary so that all of the instances of terms
+are instantly reachable from the glossary articles.</p>
+
+<h3>Adding linguistic annotations</h3>
+<p>Linguistic annotation makes a corpus more useful.</p>
+<ul>
+<li>you can add sentence boundaries to the transliterations by simply typing <code>+.</code> in the appropriate places</li>
+<li>lemmatization, identifying the word to which each form belongs, is particularly useful</li>
+<li>the Oracc tools provide a straightforward procedure for making lists of forms and their lemmata</li>
+</ul>
+
+
+<h2>Pager</h2>
+
+<p>The pager is the name given to the web-interface which enables
+users to interact with the corpus.  The pager understands how to
+present long lists of results in pages, and also how to assemble
+metadata, texts and translations into pages displaying individual
+texts.</p>
+
+<p>The link to the pager display of the corpus for the project `cams' is:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/cams/corpus
+</pre>
+
+<h2>Website</h2>
+
+<p>A project may use the pager directly as the user interface, or it
+may have additional <a href="/doc/manager/portals/">portal pages</a> some of which contain links to the
+pager. The portal website may be on the same server as the project data, or
+it may be located elsewhere.</p>
+
+<p><strong>ANY FILES FOR A PROJECT WEBSITE WHICH ARE LOCATED ON THE Oracc
+SERVER *MUST* BE PLACED IN THE <code>00web/</code>
+DIRECTORY.</strong></p>
+
+<p>The link to the website for a project `cams' is:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/cams
+</pre>
+
+<p>The initial installation redirects this URL to the pager.</p>
+
+<p>Note that if a project has a home page which is not the default
+pager-listing of the corpus, you can still jump directly to the corpus
+by using the keyword `corpus' after the project name in the URL.
+Compare <a
+href="http://oracc.museum.upenn.edu/saao">http://oracc.museum.upenn.edu/saa</a>
+and <a
+href="http://oracc.museum.upenn.edu/saao/corpus">http://oracc.museum.upenn.edu/saa/corpus</a>.</p>
+
+<h2>Stable URIs</h2>
+
+<p>The effect of a static HTML page for any given text in any given
+project is achieved via the following CGI call:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/PROJECT/PQXID/html
+</pre>
+
+<p>Where <code>PROJECT</code> is the project name and
+<code>PQID</code> is the P-, Q- or X-number of the text.  Thus, to
+retrieve the HTML version of SAA 01 01, with all SAA styling, the call
+would be:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/P336297.html
+</pre>
+
+<p>This form is suitable for referencing in the
+<code>&lt;object></code> tag.  A typical sample code fragment would
+look something like this:</p>
+
+<pre class="cookbook">
+ &lt;object type="text/html" 
+         data="http://oracc.museum.upenn.edu/saao/saa01/P334164.html"
+         style="height: 1350px; width: 600px; display: block;">
+    &lt;p>You are seeing this message because your browser does not 
+    support the &#60;object&#62; tag.  The transliteration and 
+    translation of this text is available at &lt;a
+    href="http://oracc.museum.upenn.edu/saao/saa01/P334164.html"
+    class="external" title="Link opens in new 
+    window">http://oracc.museum.upenn.edu/saao/saa01/P334164.html"&lt;/a>&lt;span
+class="externallinktext">
+[http://oracc.museum.upenn.edu/saao/saa01/P334164.html"]&lt;/span>&lt;/p>
+ &lt;/object>
+</pre>
+
+<!--
+<p>An example of how to use to use this may be found on <a
+href="http://knp.prs.heacademy.ac.uk/highlights/letters/saa10002/">Knowledge
+and Power Highlights page</a>.</p>
+ -->
+
+<h2>Text Lists</h2>
+
+<p>Lists of texts can be handled in either of two ways: as LIST files
+or as URLS.</p>
+
+<h3>List Files</h3>
+
+<p>List files are simply files containing P, Q or X IDs.  They must be placed in
+the directory PROJECT/00lib/, e.g., in <code
+class="example">cams/00lib/</code>. The rebuild process installs the
+lists in the proper place.  You can then refer to your list by
+name.</p>
+
+<p>After creating a list file in the CAMS project with the name
+`00lib/ritual-drawings.lst' and the content:</p>
+
+<pre>P363719</pre>
+
+<p>You can then refer to <code
+class="cookbook">http://oracc.museum.upenn.edu/cams/ritual-drawings</code>.</p>
+
+<h3>URLs</h3>
+
+<p>For small numbers of texts, it is convenient to give the P, Q or X IDs
+in a comma-separated list after the project name:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/saao/P334278,P334279
+</pre>
+
+<h1>Structure</h1>
+
+<h2>Users</h2>
+
+<p>The project organization is intended for use with multi-user
+systems.  At the operating system level, each project is a user with a
+password and a home directory.</p>
+
+<h2>Subprojects</h2>
+
+<p>Projects can also own subprojects, which also means that regular
+users on a system can have their own personal projects.</p>
+
+<h2>Folders</h2>
+
+<p>The files used by a project live in several different folders (aka
+directories).  The most important of these are:</p>
+
+<dl>
+<dt>00atf/</dt>
+<dd>Contains ATF files, conventionally with a .atf or .txt
+extension.</dd>
+<dt>00lib/</dt>
+<dd>Contains project configuration files and the glossary files.</dd>
+<dt>00web/</dt>
+<dd>Contains web pages and web configuration files which used when the project is rebuilt.</dd>
+</dl>
+
+<h1>Management</h1>
+
+<h2>Interfaces</h2>
+
+<p>Two interfaces are presently provided for project management tasks:
+the command-line interface (CLI) and the menu-driven Emacs interface. For more detailed information, see the pages on <a href="projemacs/">Project Management through Emacs</a> and/or <a href="projunix/">Project Management with Unix</a>.</p>
+
+<h2>The <code>oracc</code> command</h2>
+
+<p>Access to the CLI is generally provided via the Secure Sockets
+Layer (SSL) program <code>ssh</code>, either from the user's
+computer's commandline or from a graphical user interface.</p>
+
+<p>Once logged in as the project-user on the server, most tasks are
+accomplished via the program <code>oracc</code>, which is fully documented <a href="/doc/manager/the-oracc-command/">on another page</a>.</p>
+
+
+<h1>Procedures</h1>
+<p>For fuller instructions, see the pages on <a href="projemacs/">Project Management through Emacs</a> and/or <a href="projunix/">Project Management with Unix</a>, depending on how you run your project.</p>
+
+<h2>Catalogue </h2>
+
+<p>If you are using the CDLI catalogue then no action is required.  If
+you are using a <a href="projcats/">custom catalogue</a>, the project must be correctly
+configured, then the catalogue updates must be placed in the
+<code>00cat</code> folder with the file name(s) the project has
+been configured to use.</p>
+
+<p>There is a <a href="../projcats/">separate page</a> about setting up your own project catalogue.</p>
+
+<h2>Corpus </h2>
+
+<p>Transliterations should be placed in the <code>00atf/</code>
+folder.  There can be one big file, one file per text, or something in
+between; the rebuild process uses all the relevant files in
+<code>00atf/</code>.</p>
+
+<p>When new texts are added, simply run <a href="http://oracc.museum.upenn.edu/doc/manager/the-oracc-command">the oracc command</a> to update the website, indexes, etc.</p>
+
+<h2>Glossaries </h2>
+
+<p>The recommended workflow for glossary building is:</p>
+
+<ol>
+<li>begin with text data which is ATF-clean.</li>
+<li>lemmatize the texts; ensure they are ATF-clean with lem-checking,
+then add them to the <code>00atf</code> directory.</li>
+<li>run <code>oracc harvest</code>.</li>
+<li>review <code>01bld/new/*.new</code> and fix <code>00atf/*.atf</code> and/or <code>00lib/*.glo</code> as required.</li>
+<li>run <code>oracc merge [LANGUAGE]</code> (this automatically redoes the harvest).</li>
+<li>run <code>ncr</code> if all seems well.</li>
+<li>if something goes wrong, you can retrieve the previous <code>*.glo</code>
+file from the 'backups' directory--multiple <code>oracc merge [LANGUAGE]</code>
+commands on the same day overwrite the same file.</li>
+</ol>
+
+<d:resources/>
+
+</d:doc>

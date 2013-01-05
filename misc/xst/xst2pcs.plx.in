@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::Wrapper2;
+
+# CREATED WITH:
+my $invocation = "../mk-wrapper.plx -name xst2pcs.plx -type xslt -script @@ORACC@@/lib/scripts/xtf-HTML.xsl -from xst -to html";
+
+ORACC::Wrapper::xslt(from=>'xst',
+		   to=>'txt',
+		   script=>'@@ORACC@@/lib/scripts/xst2pcs.xsl');
+
+1;
+
+__END__
+
+=head1 NAME
+
+xst2pcs.plx -- wrapper for @@ORACC@@/lib/scripts/xst2pcs.xsl
+
+=head1 SYNOPSIS
+
+xst2pcs.plx [-verbose | -quiet | -help | -man] [-list filelists | FILES]
+
+=head1 DESCRIPTION
+
+A wrapper program which applies @@ORACC@@/lib/ORACC/XST/xst2pcs.xsl 
+to files.  Input files have extension 'xst'; output files have 
+extension 'html'.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).
+

@@ -1,0 +1,28 @@
+namespace psa     = "http://oracc.org/ns/psa/1.0"
+start     = config
+
+config    = element psa:config { lang* }
+
+lang      = element psa:lang   {
+              attribute psa:target-lang { xsd:NMTOKEN },
+              confdata* 
+	    }
+
+confdata  = lemma | ngram
+
+lemma     = element psa:lemma   { 
+              cfgw , 
+	      ((binary , prop-prev , prop-next) 
+               |(unary , prop-this , direction)) ,
+              scope
+            }
+ngram     = element psa:ngram   { text }
+
+cfgw      = attribute psa:cfgw  { text }
+binary    = attribute psa:arity { "binary" }
+unary     = attribute psa:arity { "unary" }
+direction = attribute psa:dir   { "backward" | "forward" }
+scope     = attribute psa:scope { "inner" | " outer" }
+prop-next = attribute psa:next  { text }
+prop-prev = attribute psa:prev  { text }
+prop-this = attribute psa:this  { text }

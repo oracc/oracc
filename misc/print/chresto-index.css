@@ -1,0 +1,5 @@
+body 		{ font-family: "Ungkam Basic"; width: 400px; margin: auto; }
+p 		{ text-indent: -2em; margin-left: 2em; }
+.headword	{ font-size: 12pt; font-weight: normal; }
+.text		{ font-style: regular; font-weight: bold; font-size: 11pt; }
+.line		{ font-style: regular; font-size: 10pt; }

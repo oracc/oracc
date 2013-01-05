@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc eXist Introduction</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document gives a general introduction to the
+  Oracc installation of the eXist database and pointers to further
+  useful documentation.</dc:description>
+</d:meta>
+
+<p>eXist is an XML database which stores XML as XML and implements the
+W3C XML Query standard (XQuery) to a very high level of conformancy.
+XQuery is not only useful for querying XML datasets, but can be used
+to create web pages, which means that the Oracc eXist installation
+can be used by projects to create facilities that are not provided by
+the native Oracc software.</p>
+
+<p>What is stored in the eXist database is a copy of the project
+data in two forms: the native Oracc XML format and also in the standard
+XML format known as TEI P5.</p>
+
+<p>Projects can use the database to create additional data
+programmatically and then install it into the database as well, or
+perform real-time queries on the data to produce search results which
+are displayed directly or passed to the Oracc pager for display.</p>
+
+<p>The initial implementation is "thin" in the sense that we provide
+access to the data but little else.  In time, it is likely that we
+will build up a library of useful functions and modular building
+blocks which will enable projects to build on each others' work.  It
+is also the intention to provide a form-based `Advanced Search'
+facility.</p>
+
+<p>All of the data in the database is publically visible to guest
+logins, but cannot be modified except by the database user named
+`oracc' or the user `admin'.  In this respect, the eXist installation
+is a public shared collection of all public project data.</p>
+
+<p>For further information see:</p>
+
+<ul>
+<li><a href="projects/">Projects and eXist</a></li>
+<li><a href="install/">Installing eXist</a></li>
+<li><a href="starting/">Getting Started with eXist on Oracc</a></li>
+<li><a href="example1/">Working with eXist on Oracc, Example 1: XPaths</a></li>
+<li><a href="example2/">Working with eXist on Oracc, Example 2: Functions</a></li>
+<li><a href="example3/">Working with eXist on Oracc, Example 3: Modularization</a></li>
+<li><a href="example4/">Working with eXist on Oracc, Example 4: Transformation</a></li>
+<li><a href="example5/">Working with eXist on Oracc, Example 5: Documentation</a></li>
+<li><a href="example6/">Working with eXist on Oracc, Example 6: XHTML Forms</a></li>
+<li><a href="example7/">Working with eXist on Oracc, Example 7: XForms Hello</a></li>
+<li><a href="example8/">Working with eXist on Oracc, Example 8: XForms XQuery</a></li>
+<li><a href="http://www.exist-db.org">The eXist home page</a></li>
+</ul>
+</d:doc>

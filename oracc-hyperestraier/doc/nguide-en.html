@@ -1,0 +1,1608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API, Node, P2P" />
+<meta name="description" content="P2P Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="nguide-ja.html" hreflang="ja" title="the Japanese version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>P2P Guide of Hyper Estraier Version 1</title>
+</head>
+
+<body>
+
+<h1>P2P Guide</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<span class="void">English</span>/<a href="nguide-ja.html" hreflang="ja">Japanese</a>] [<a href="index.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#tutorial">Tutorial</a></li>
+<li><a href="#estmaster">Node Master Usage</a></li>
+<li><a href="#protocol">Protocol</a></li>
+<li><a href="#nodeapi">Node API</a></li>
+<li><a href="#estcall">Command of a Client</a></li>
+<li><a href="#estfraud">Pseudo Node Master</a></li>
+<li><a href="#metagateway">Meta Search Gateway</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This guide describes Hyper Estraier's client/server (C/S) and peer to peer (P2P) architecture.  If you haven't read <a href="uguide-en.html">user's guide</a> yet, now is a good moment to do so.</p>
+
+<p>There was several problems which where motivation for C/S architecture.  <code>estseek.cgi</code> is inefficient because it reconnects to database for each search query.  Database updates using <code>estcmd</code> prevents searches on same database because <code>estcmd</code> uses locks when doing update.  To solve those problems, <code>estmaster</code> server process is provided.  This is resident (daemon) process which has control over database and provides services via network.</p>
+
+<p>This approach also leads to following advantages:</p>
+
+<ul>
+<li>server and clients can be distributed across different machines</li>
+<li>multiple clients and servers can work in parallel</li>
+<li>client crash doesn't leave database in inconsistent state</li>
+<li>clients implementation isn't specific to any programming language</li>
+</ul>
+
+<p>Protocol between clients and servers is based on HTTP, so normal web browsers can be used as simple clients.  Clients can be implemented using any languages which supports HTTP protocol like JavaScript or Flash.</p>
+
+<p>Distributed processing is based on peer to peer (P2P) architecture.  This allows horizontal scalability.  For example, if you use 10 servers, each with million documents, you can search 10 million documents without much additional effort.  Since all servers are equal, search service is provided even if some of servers are unavailable.  There is notion of relevance of each index which can improve search results (if some parts of index are more important that others).</p>
+
+<p>This guide describes <strong>the node API</strong> which can be used by client applications to implement search and update capabilities without using network protocol between client and server.  The node API is implemented by not only C language but also <a href="javapureapi/">Java</a> and <a href="rubypureapi/">Ruby</a>.</p>
+
+<hr />
+
+<h2 id="architecture">Architecture</h2>
+
+<p>This section describes the P2P architecture of Hyper Estraier.</p>
+
+<h3>Node Master and Node Server</h3>
+
+<p>When using multiple indexes, it is highly inefficient to run one server for each index.  <code>estmaster</code> is server process (daemon) implemented as single process available on network through HTTP protocol on some hight port that provides services for multiple indexes.  This component is called <strong>node master</strong>.  Each index has it's own unique URL which is served by <strong>node server</strong>.  You can think about node server as a virtual servers for each index within one node master.</p>
+
+<div class="illust"><img src="nodeframe.png" width="720" height="350" alt="[framework]" /></div>
+
+<p>Client application just need to know URL of node server and issue queries to it on any available node masters.  Term <strong>node</strong> corresponds to <strong>peer</strong> in P2P architecture.  Clients can also connect to node masters directly to manage configuration of that master.</p>
+
+<h3>Meta Search and Credit</h3>
+
+<p>Each node server can have unidirectional links to other node servers. This allows distributed searching called meta search.  When client sends query to node server, it will forward that query to all other node servers and merge responses before sending result back to client.</p>
+
+<p>Meta search is performed hierarchically.  Loops in links are detected and restrained automatically, so searching is always performed on tree structured network of nodes.  This allows infinite scalability just by adding additional nodes.</p>
+
+<div class="illust"><img src="metatree.png" width="720" height="400" alt="[tree of meta search]" /></div>
+
+<p>There is a notion of relevance for each link between nodes called <strong>credit</strong>.  It's used for weighting of scores when merging results from different nodes.  Document coming from node with larger credit will have higher rank in search results.  Application can set links and credits for them, and this allows improving of search precision by modifying credits of frequently used nodes.</p>
+
+<h3>Authentication</h3>
+
+<p>Client connections to node master or node server are authenticated using login names and passwords.  Users and permissions are defined on node masters and all node servers on that master inherit those permissions.  Users are divided into two groups: <strong>super users</strong> and <strong>normal users</strong>.  Normal users have permission to search index while super users also have permission to create and update indexes.  Moreover, for each node, normal users are divided into <strong>administrators</strong> and <strong>guest users</strong>.</p>
+
+<h3>Example Application</h3>
+
+<p><a href="http://modestraier.sourceforge.net/">mod_estraier</a> is the most interesting application of the node API of Hyper Estraier.  It works as a module of a Web server (Apache) and register contents mediated by its proxy mechanism.  Using it as a forward proxy, you can enjoy a search engine whose targets are documents which you (or your comrades) have seen.  Using it as a reverse proxy, you can add search feature to any web application as well as BBS and Wiki.  That is, the greatest characteristic of the node API is helping you to develop advanced search systems combining various applications.</p>
+
+<hr />
+
+<h2 id="tutorial">Tutorial</h2>
+
+<p>Concept of P2P seems difficult at first, so it's best to start with a tutorial which will show commands used to setup search network.</p>
+
+<h3>Start and Stop</h3>
+
+<p>First step is creation of the server root directory which contains configuration files and indexes.  Following command will create <code>casket</code>, the server root directory:</p>
+
+<pre>estmaster init casket
+</pre>
+
+<p>Next, we need to start node master using:</p>
+
+<pre>estmaster start casket
+</pre>
+
+<p>To stop node master you can press <code>Ctrl-C</code> on terminal in which it's running on issue following command:</p>
+
+<pre>estmaster stop casket
+</pre>
+
+<h3>Administration Interface</h3>
+
+<p>After starting node master you can access it's administration interface pointing web browser at <code><a href="http://localhost:1978/master_ui">http://localhost:1978/master_ui</a></code>.  This will bring HTTP authorization dialog requesting user name and password.  Enter "<code>admin</code>" and "<code>admin</code>".  You will be presented with administration commands menu.</p>
+
+<p>First option is <strong>Manage Master</strong> which provides options to shutdown node master and to synchronize databases.  However, they are not used for now.</p>
+
+<p>Since you are logged as <code>admin</code> which has super user privileges, we can edit users.  We will create new account with super user privileges and switch to it.  We will also erase <code>admin</code> user because it has well-known password and it's possible security hole.</p>
+
+<p>Select <strong>Manage Users</strong>.  There are input boxes for user name, password, flags, full name and miscellaneous information at bottom.  Enter following data for new user: "<code>clint</code>", "<code>tnilc</code>", "<code>s</code>", "<code>Clint Eastwood</code>" and "<code>Dirty Harry</code>".  Flag "<code>s</code>" denotes user with super user privileges.  User name is limited to alphanumeric characters only.</p>
+
+<p>You can now delete admin user using <strong>DELE</strong> link and confirm that by clicking on <strong>sure</strong> button.</p>
+
+<p>Select <strong>Manage Nodes</strong> next.  Since we just erased <code>admin</code> user, you will be again asked for user name and password.  Enter "<code>clint</code>" and "<code>tnilc</code>" to login again.  Input boxes at bottom allows you to enter new index name and label.  Index name is limited to alphanumeric characters.  Enter "<code>test1</code>" as name and "<code>First Node</code>" as description.  Create another node with name "<code>test2</code>" and "<code>Second Node</code>" as description.</p>
+
+<h3>Register Documents</h3>
+
+<p>We'll now register new documents in index.  For that, we will again use command-line utilities.  Since terminal in which you started <code>estmaster</code> is busy outputting log messages, open another one.</p>
+
+<p>Documents which are about to be registered in index must be in document draft format described in <a href="uguide-en.html#formats">User's Guide</a>.  Create file <code>data001.est</code> with following content:</p>
+
+<pre>@uri=data001
+@title=Material Girl
+
+Living in a material world
+And I am a material girl
+You know that we are living in a material world
+And I am a material girl
+</pre>
+
+<p>We are going to register this document to node <code>test1</code>.  Since updating of index needs super user permissions, we will use <code>-auth</code> option to specify user name and password of user that we created in previous step.</p>
+
+<pre>estcall put -auth clint tnilc http://localhost:1978/node/test1 data001.est
+</pre>
+
+<p>Document registration will finish shortly, and absence of any error message denotes that it has been successful.</p>
+
+<p>To demonstrate meta search mentioned before, we will register another document to node test2.  Create file <code>data002.est</code> with following content:</p>
+
+<pre>@uri=data002
+@title=Liberian Girl
+
+Liberian girl
+You came and you changed My world
+A love so brand new
+</pre>
+
+<p>Then, register document using:</p>
+
+<pre>estcall put -auth clint tnilc http://localhost:1978/node/test2 data002.est
+</pre>
+
+<p>As you can see, it's possible to register documents from any machine connected to network on which <code>estmaster</code> is running.  You can register few additional documents if you want now.</p>
+
+<h3>Search for Documents</h3>
+
+<p>Next step is to find some of documents we just registered.  You can try search by executing:</p>
+
+<pre>estcall search http://localhost:1978/node/test1 "material world"
+</pre>
+
+<p>This will produce search result with draft of the document including phrase <code>material world</code>.</p>
+
+<p>We can also create a link between two nodes and try meta search.  We need super user, URL of source and destination node, link name and credit.</p>
+
+<pre>estcall setlink -auth clint tnilc http://localhost:1978/node/test1 \
+  http://localhost:1978/node/test2 TEST02 8000
+</pre>
+
+<p>This command creates link from node <code>test1</code> to node <code>test2</code> called <code>TEST02</code> and assign it credit of <code>8000</code>.</p>
+
+<p>You can now repeat search and add option <code>-dpt</code> which will activate meta search over both nodes.</p>
+
+<pre>estcall search -dpt 1 http://localhost:1978/node/test1 "girl"
+</pre>
+
+<p>Although your search is accessing node <code>test1</code>, we can see merged results from <code>test2</code>.  Since nodes can be located on separate machines, meta search enables us to do distributed processing using P2P architecture described before.</p>
+
+<p>We can also influence ranking of results by increasing credit for particular node.  If we change it to <code>12000</code> and re-run search we will see different ranking of results.</p>
+
+<pre>estcall setlink -auth clint tnilc http://localhost:1978/node/test1 \
+  http://localhost:1978/node/test2 TEST02 12000
+</pre>
+
+<p>Results can also be returned in XML format which is defined in <code>estresult.dtd</code>.</p>
+
+<pre>estcall search -dpt 1 -vx http://localhost:1978/node/test1 "girl"
+</pre>
+
+<p>Each node server also has a web search interface.  You can go to <code><a href="http://localhost:1978/node/test1/search_ui">http://localhost:1978/node/test1/search_ui</a></code> and access search interface of node <code>test1</code>.</p>
+
+<hr />
+
+<h2 id="estmaster">Node Master Usage</h2>
+
+<p><code>estmaster</code> is provided as a command to manage the node master.  This section describes how to use <code>estmaster</code>.</p>
+
+<h3>Synopsis and Description</h3>
+
+<p><code>estmaster</code> is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument <var>rootdir</var> specifies the server root directory which contains configuration file and so on.</p>
+
+<dl>
+<dt><kbd>estmaster init [-ex] <var>rootdir</var></kbd></dt>
+<dd>Create the server root directory.</dd>
+<dd>If -ex is specified, some users and some nodes are set for example.  By default, only a super user whose name and password are both "admin" is set.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster start [-bg] [-st] <var>rootdir</var></kbd></dt>
+<dd>Start the node master.</dd>
+<dd>If -bg is specified, the server runs in background as a daemon process.</dd>
+<dd>If -ro is specified, the server runs in read-only mode regardless of the configuration.</dd>
+<dd>If -st is specified, the server runs in single thread mode.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster stop <var>rootdir</var></kbd></dt>
+<dd>Stop the running node master.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster unittest <var>rootdir</var></kbd></dt>
+<dd>Perform unit tests.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster crypt <var>key</var> [<var>hash</var>]</kbd></dt>
+<dd>Output an encrypted string of a string.</dd>
+<dd><var>key</var> specifies a target string.</dd>
+<dd>If <var>hash</var> is specified, it checks whether the key and the hash matches.</dd>
+</dl>
+
+<p>All sub commands return 0 if the operation is success, else return 1.  A running node master finishes with closing the database when it catches the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), or 15 (SIGTERM).  Moreover, when a node master running as a daemon catches the signal 1 (SIGHUP), the process is re-start and re-read the configuration files.</p>
+
+<p>A running node server should be finished by valid means by command line or via network.  Otherwise, the index may be broken.</p>
+
+<h3>Constitution of the Server Root Directory</h3>
+
+<p>The server root directory contains the following files and directories.</p>
+
+<ul>
+<li><kbd>_conf</kbd> : prime configuration file.</li>
+<li><kbd>_user</kbd> : user account file.</li>
+<li><kbd>_log</kbd> : log file.</li>
+<li><kbd>_meta</kbd> : database file for meta data.</li>
+<li><kbd>_pid</kbd> : file recording the process ID.</li>
+<li><kbd>_stop</kbd> : file to stop the node master.</li>
+<li><kbd>_dfdb</kbd> : document frequency database.</li>
+<li><kbd>_node/</kbd> : node directory.</li>
+<li><kbd>_sess/</kbd> : session directory.</li>
+</ul>
+
+<p>The prime configuration file can be edit with a text editor.  However, the user account file should not be edit during the node master is running.</p>
+
+<p>If you have an index created by <code>estcmd</code>, move it into the node directory and reboot the server.  So, the index will work as a node.</p>
+
+<h3>Prime Configuration File</h3>
+
+<p>The prime configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  By default, the following configuration is there.</p>
+
+<pre>bindaddr: 0.0.0.0
+portnum: 1978
+publicurl:
+runmode: 1
+authmode: 2
+recvmax: 1024
+maxconn: 30
+idleflush: 20
+idlesync: 300
+sessiontimeout: 600
+searchtimeout: 15
+searchmax: 1000
+searchdepth: 5
+rateuri: 1
+mergemethod: 2
+proxyhost:
+proxyport:
+logfile: _log
+loglevel: 2
+backupcmd:
+scalepred: 2
+scoreexpr: 2
+attrindex: @mdate{{!}}seq
+attrindex: @title{{!}}str
+docroot:
+indexfile:
+trustednode:
+denyuntrusted: 0
+cachesize: 64
+cacheanum: 8192
+cachetnum: 1024
+cachernum: 256
+specialcache:
+helpershift: 0.9
+wildmax: 256
+limittextsize: 128
+snipwwidth: 480
+sniphwidth: 96
+snipawidth: 96
+scancheck: 1
+smlrvnum: 32
+extdelay: 4096
+adminemail: magnus@hyperestraier.gov
+uireplace: ^file:///home/mikio/public_html/{{!}}http://localhost/
+uireplace: /index\.html?${{!}}/
+uiextattr: @author|Author
+uiextattr: @mdate|Modification Date
+uiphraseform: 2
+uismlrtune: 16 1024 4096
+</pre>
+
+<p>Meaning of each variable is the following.</p>
+
+<ul>
+<li><kbd>bindaddr</kbd> : specifies the binding address of the server.  0.0.0.0 means every address of the host.</li>
+<li><kbd>portnum</kbd> : specifies the port number of the server.</li>
+<li><kbd>publicurl</kbd> : specifies the public URL (absolute URL).  By default, it is generated with "http://", the hostname, ":", and the port number.</li>
+<li><kbd>runmode</kbd> : specifies running mode (1:normal, 2:readonly).</li>
+<li><kbd>authmode</kbd> : specifies authorization mode (1:none, 2:admin, 3:all).</li>
+<li><kbd>recvmax</kbd> : maximum length of data to receive (in kilobytes).</li>
+<li><kbd>maxconn</kbd> : specifies the maximum number of connections at the same time.</li>
+<li><kbd>idleflush</kbd> : specifies idle time to start flushing (in seconds).</li>
+<li><kbd>idlesync</kbd> : specifies idle time to start synchronizing (in seconds).</li>
+<li><kbd>sessiontimeout</kbd> : specifies timeout of a session (in seconds).</li>
+<li><kbd>searchtimeout</kbd> : specifies timeout of search (in seconds).</li>
+<li><kbd>searchmax</kbd> : specifies the maximum number of documents to send.</li>
+<li><kbd>searchdepth</kbd> : specifies the maximum depth of meta search.</li>
+<li><kbd>rateuri</kbd> : specifies whether to rate URI for scoring (0:no, 1:yes).</li>
+<li><kbd>mergemethod</kbd> : specifies merge method of meta search (1:score, 2:score and rank, 3:rank).</li>
+<li><kbd>proxyhost</kbd> : specifies the host name of the proxy server.</li>
+<li><kbd>proxyport</kbd> : specifies the port number of the proxy server.</li>
+<li><kbd>logfile</kbd> : specifies the path of the log file (relative path or absolute path).</li>
+<li><kbd>loglevel</kbd> : specifies logging level (1:debug, 2:information, 3:warning, 4:error, 5:none).</li>
+<li><kbd>backupcmd</kbd> : specifies the command for backup (absolute path of a command).</li>
+<li><kbd>scalepred</kbd> : specifies scale prediction of each node (1:small, 2:medium, 3:large, 4:huge).</li>
+<li><kbd>scoreexpr</kbd> : specifies score expression (1:void, 2:char, 3:int, 4:asis).</li>
+<li><kbd>attrindex</kbd> : specifies the attribute indexes (attribute name and data type).  This can be more than once.</li>
+<li><kbd>docroot</kbd> : specifies document root directory (absolute path of a directory to be public).</li>
+<li><kbd>indexfile</kbd> : specifies index file (name of directory index files).</li>
+<li><kbd>trustednode</kbd> : specifies decimal IP addresses of trusted nodes.  This can be more than once.</li>
+<li><kbd>denyuntrusted</kbd> : specifies whether to deny all nodes except for trusted nodes (0:no, 1:yes).</li>
+<li><kbd>cachesize</kbd> : specifies the maximum size of the index cache (in megabytes).</li>
+<li><kbd>cacheanum</kbd> : specifies the maximum number of cached records for document attributes.</li>
+<li><kbd>cachetnum</kbd> : specifies the maximum number of cached records for document texts.</li>
+<li><kbd>cachernum</kbd> : specifies the maximum number of cached records for occurrence results.</li>
+<li><kbd>specialcache</kbd> : specifies the name of the attribute of the special cache.</li>
+<li><kbd>helpershift</kbd> : specifies the lower limit of cache usage size to use the helper.</li>
+<li><kbd>wildmax</kbd> : specifies the maximum number of expansion of wild cards.</li>
+<li><kbd>limittextsize</kbd> : specifies the text size limitation of registered documents by kilobytes.</li>
+<li><kbd>snipwwidth</kbd> : specifies whole width of the snippet of each shown document.</li>
+<li><kbd>sniphwidth</kbd> : specifies width of strings picked up from the beginning of the text.</li>
+<li><kbd>snipawidth</kbd> : specifies width of strings picked up around each highlighted word.</li>
+<li><kbd>scancheck</kbd> : specifies whether to check documents by scanning (0:no, 1:yes).</li>
+<li><kbd>smlrvnum</kbd> : specifies the number of keywords for similarity search (0 means disabled).</li>
+<li><kbd>extdelay</kbd> : specifies the number of documents for delay of keyword extraction.</li>
+<li><kbd>adminemail</kbd> : specifies an e-mail address of the administrator.</li>
+<li><kbd>uireplace</kbd> : specifies regular expressions and replacement string to convert the URI of each document.  Regular expressions and replacement strings are separated by "<code>{{!}}</code>".  This can be more than once.</li>
+<li><kbd>uiextattr</kbd> : specifies an attribute to be shown.  The name and the label are separated by "<code>|</code>".  This can be more than once.</li>
+<li><kbd>uiphraseform</kbd> : specifies mode of phrase form (1:usual, 2:simplified, 3:rough, 4:union: 5:intersection)</li>
+<li><kbd>uismlrtune</kbd> : specifies tuning parameters for similarity search.  The number of keywords, the number of documents per keyword, and the number of all candidates are separated by space characters.</li>
+</ul>
+
+<h3>User Account File</h3>
+
+<p>The user account file is composed of lines and each includes the name, the encrypted password, the flags, the full name, and the miscellaneous information separated by tabs.  The character encoding is UTF-8.  By default, the following account is there.</p>
+
+<pre>admin   21232f297a57a5a743894a0e4a801fc3        s       Carolus Magnus  Administrator
+</pre>
+
+<p>The password is expressed as MD5 hash value.  In the flags, "<code>s</code>" is for super users, and "<code>b</code>" is for banned users.  Flags, full name, and miscellaneous information can be omitted.</p>
+
+<h3>Embedded User Interfaces</h3>
+
+<p>By accessing the absolute URL "<code>/master_ui</code>" of the node master with a web browser, you can use the administration interface.  It requires authentication as a super user.</p>
+
+<p>By accessing the URL which is the URL of a node server followed by "<code>/search_ui</code>", you can use the search interface.  There are some anchors with such labels as "<code>LINK#1</code>" in the result page.  They express nodes linked from the current node.  If you select one of them, you move to the node and then search with the current conditions are performed.</p>
+
+<p>If you select the link "<code>Atom</code>" or "<code>RSS</code>" in the result page, you get the search result in Atom or RSS format.  By registering the URL to an application supporting Atom 1.0 or RSS 1.0, you can monitor the search result periodically.  In order to work together with such site as Google, Wikipedia and so on, Hyper Estraier supports OpenSearch 1.1.  To get the description for OpenSearch, access the URL of the node server trailing "<code>/opensearch</code>".</p>
+
+<hr />
+
+<h2 id="protocol">Protocol</h2>
+
+<p>Communication between nodes and communication between clients and nodes are carried out by a protocol based on HTTP.  This section describes the protocol.</p>
+
+<h3>Introduction</h3>
+
+<p>The node master and node servers implement HTTP/1.0.  As for now, such particular features of HTTP/1.1 as keep-alive connection, chunked encoding, and content negotiation are not supported.</p>
+
+<p>While both of GET and POST are allowed for the request method of HTTP, GET is preferred if the command retrieves information, POST is preferred if the command update the node master or a node server.  As the character encoding of parameters is UTF-8, meta characters and multi-byte characters should be escaped by URL encoding (application/x-www-form-urlencoded).  The maximum length of data sent with the GET method is 8000.  Authentication information is passed in the basic authentication mechanism of HTTP.</p>
+
+<p>If an operation is done successfully, the status code 200 or 202 is returned.  On error, one of the following status code is returned.</p>
+
+<ul>
+<li>400 : parameters are invalid.</li>
+<li>401 : authentication information lacks or is invalid.</li>
+<li>403 : the account has not the permission.</li>
+<li>404 : the node does not exist.</li>
+<li>500 : some errors of due to the server occurred.</li>
+</ul>
+
+<p>The result of operation of search or retrieve is sent as message body of response.  As the format of the data is plain text whose encoding is UTF-8, it can be structured with tabs and line feeds.  If a client supports deflate encoding, compressed data is sent.</p>
+
+<h3>Operation of Node Master</h3>
+
+<p>To operate the node master, connect to the path "<code>/master</code>" of the server.  For example, if the host name is "<code>skyhigh.estraier.go.jp</code>" and the port number is <code>8888</code>, connect to "<code>http://skyhigh.estraier.go.jp:8888/master</code>".  Only super users are granted to operate the node master.  There are some sub commands for operations of the node master.  The name of a sub command is specified by the parameter "<code>action</code>".  Other parameters vary according to each sub command.</p>
+
+<dl>
+<dt><kbd>/master ? action=shutdown</kbd></dt>
+<dd>Shutdown the node master.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 202 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=sync</kbd></dt>
+<dd>Synchronize databases of all nodes and the disk.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 202 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=backup</kbd></dt>
+<dd>Synchronize databases and perform the backup command.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 202 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=userlist</kbd></dt>
+<dd>Get the list of user accounts.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the list of user accounts whose format is TSV.  Each line is information of each user.  There is fields of the user name, the encrypted password, the flags, the full name, and the miscellaneous information.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=useradd &amp; name=<var>str</var> &amp; passwd=<var>str</var> &amp; flags=<var>str</var> &amp; fname=<var>str</var> &amp; misc=<var>str</var></kbd></dt>
+<dd>Add a user account.</dd>
+<dd><var>name</var> specifies the name of a new user.  It is essential.  Only alphanumeric characters are in the name.  If the specified name overlaps the name of an existing user, it is treated as an error.</dd>
+<dd><var>passwd</var> specifies the password.  It is essential.</dd>
+<dd><var>flags</var> specifies the flags.  It is optional.  "s" is for super users, and "b" is for banned users.</dd>
+<dd><var>fname</var> specifies the full name.  It is optional.</dd>
+<dd><var>misc</var> specifies the miscellaneous information.  It is optional.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+<dd>Because the password is sent, POST method should be used.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=userdel &amp; name=<var>str</var></kbd></dt>
+<dd>Delete a user account.</dd>
+<dd><var>name</var> specifies the name of a user.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodelist</kbd></dt>
+<dd>Get the list of node servers.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the list of node servers whose format is TSV.  Each line is information of each node.  There is fields of the node name, the label, the number of documents, the number of unique words, and the size.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodeadd &amp; name=<var>str</var> &amp; label=<var>str</var></kbd></dt>
+<dd>Add a node server.</dd>
+<dd><var>name</var> specifies the name of a new node.  It is essential.  Only alphanumeric characters are in the name.  If the specified name overlaps the name of an existing node, it is treated as an error.</dd>
+<dd><var>label</var> specifies the label.  It is optional.  If it is omitted, the label is to be same as the name.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodedel &amp; name=<var>str</var></kbd></dt>
+<dd>Delete a node server.</dd>
+<dd><var>name</var> specifies the name of a node.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodeclr &amp; name=<var>str</var></kbd></dt>
+<dd>Clear registered documents in a node server.</dd>
+<dd><var>name</var> specifies the name of a node.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.  Information of users and links is still kept.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=logrtt</kbd></dt>
+<dd>Rotate the log file.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.  The existing log file is cleared and its content is escaped into a new file whose name is trailed by the date information in the format of "-YYYYMMDDhhmmss".</dd>
+</dl>
+
+<h3>Operation of Node Server</h3>
+
+<p>To operate a node server, connect to a path which begins "<code>/node/</code>" and is followed by the name of the node.  For example, if the host name is "<code>skyhigh.estraier.go.jp</code>" and the port number is <code>8888</code> and the name of the node is "<code>foo</code>", connect to "<code>http://skyhigh.estraier.go.jp:8888/node/foo</code>".  There are some sub commands for operations of node servers.  The name of a sub command is specified after the node name.  Parameters vary according to each sub command.</p>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/inform</kbd></dt>
+<dd>Get information of a node.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses node information whose format is TSV.  The first line includes fields of the node name, the label, the number of documents, the number of unique words, and the size.  The next line is empty.  The succeeding lines to the next empty line are names of administrators.  And, the succeeding lines to the next empty line are names of guests.  And, the succeeding lines to the end are link information.  There are fields of the URL, the label, and the credit.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/cacheusage</kbd></dt>
+<dd>Get the cache usage of a node.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the cache usage in decimal format.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/search ? phrase=<var>str</var> &amp; attr=<var>str</var> &amp; order=<var>str</var> &amp; max=<var>num</var> &amp; options=<var>num</var> &amp; auxiliary=<var>num</var> &amp; distinct=<var>str</var> &amp; depth=<var>num</var> &amp; wwidth=<var>num</var> &amp; hwidth=<var>num</var> &amp; awidth=<var>num</var> &amp; skip=<var>num</var> &amp; mask=<var>num</var></kbd></dt>
+<dd>Search for documents.</dd>
+<dd><var>phrase</var> specifies the search phrase.  It is optional.  The format is as with the one of the core API.</dd>
+<dd><var>attr</var> specifies an attribute search condition.  It is optional.  From <code>attr1</code> to <code>attr9</code> works as with it.  The format is as with the one of the core API.</dd>
+<dd><var>order</var> specifies the order expression.  It is optional.  The format is as with the one of the core API.</dd>
+<dd><var>max</var> specifies the maximum number of shown documents.  It is optional.  By default, it is 10.</dd>
+<dd><var>options</var> specifies options of the search condition.  It is optional.  The value is as with the one of the core API.</dd>
+<dd><var>auxiliary</var> specifies permission to adopt result of the auxiliary index.  It is optional.  By default, it is 32.</dd>
+<dd><var>distinct</var> specifies the attribute distinction filter.  It is optional.</dd>
+<dd><var>depth</var> specifies depth of meta search.  It is optional.  By default, it is 0.</dd>
+<dd><var>wwidth</var> specifies whole width of the snippet of each shown document.  It is optional.  By default, it is due to the server configuration.  If it is 0, no snippet is sent.  If it is negative, whole body text is sent instead of snippet.</dd>
+<dd><var>hwidth</var> specifies width of strings picked up from the beginning of the text.  It is optional.  By default, it is due to the server configuration.</dd>
+<dd><var>awidth</var> specifies width of strings picked up around each highlighted word.  It is optional.  By default, it is due to the server configuration.</dd>
+<dd><var>skip</var> specifies the number of documents to be skipped.  It is optional.  By default, it is 0.</dd>
+<dd><var>mask</var> specifies the mask of search targets.  It is optional.  1 means the node itself, 2 means the first link, 4 means the second link, 8 means the third link, and power values of 2 and their summation compose the mask.  Otherwise, it can be specifies by expressions as from <code>mask0=on</code> to <code>mask9=on</code>.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the search result.  The format is explained later.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/list ? max=<var>num</var> &amp; prev=<var>str</var></kbd></dt>
+<dd>Retrieve a list of documents.</dd>
+<dd><var>max</var> specifies the maximum number of shown documents.  It is optional.  By default, it is 10.</dd>
+<dd><var>prev</var> specifies the URI of the previous element of iteration.  It is optional.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the retrieval result.  The format is explained later.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/get_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>Get information of a document.</dd>
+<dd><var>id</var> specifies the ID number of a document.  It is optional.</dd>
+<dd><var>uri</var> specifies the URI of a document.  It is optional.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the search result.  The format is document draft.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/get_doc_attr ? id=<var>num</var> &amp; uri=<var>str</var> &amp; attr=<var>str</var></kbd></dt>
+<dd>Get the value of an attribute of a document.</dd>
+<dd><var>id</var> specifies the ID number of a document.  It is optional.</dd>
+<dd><var>uri</var> specifies the URI of a document.  It is optional.</dd>
+<dd><var>attr</var> specifies the name of an attribute.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the value of the attribute.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/etch_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>Extract keywords of a document.</dd>
+<dd><var>id</var> specifies the ID number of a document.  It is optional.</dd>
+<dd><var>uri</var> specifies the URI of a document.  It is optional.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses keywords and their scores.  The format is TSV.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/uri_to_id ? uri=<var>str</var></kbd></dt>
+<dd>Get the ID number of a document specified by URI.</dd>
+<dd><var>uri</var> specifies the URI of a document.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.  The entity body of response expresses the ID number of the document.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/put_doc ? draft=<var>str</var></kbd></dt>
+<dd>Register a document.  It is available by administrators only.</dd>
+<dd><var>draft</var> specifies content of a document in document draft format.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/out_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>Remove a document.  It is available by administrators only.</dd>
+<dd><var>id</var> specifies the ID number of a document.  It is optional.</dd>
+<dd><var>uri</var> specifies the URI of a document.  It is optional.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/edit_doc ? draft=<var>str</var></kbd></dt>
+<dd>Edit attributes of a document.  It is available by administrators only.</dd>
+<dd><var>draft</var> specifies content of a document in document draft format.  It is essential.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/sync</kbd></dt>
+<dd>Synchronize updating contents of the database.  It is available by administrators only.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/optimize</kbd></dt>
+<dd>Optimize the database.  It is available by administrators only.</dd>
+<dd>No parameter is used.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/_set_user ? name=<var>str</var> &amp; mode=<var>num</var></kbd></dt>
+<dd>Set permission of a user.  It is available by administrators only.</dd>
+<dd><var>name</var> specifies the name of a user.  It is essential.</dd>
+<dd><var>mode</var> specifies operation mode.  It is essential.  1 means to set the user as an administrator, 2 means to set the user as a guest, and 0 means to revoke the user account.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/_set_link ? url=<var>str</var> &amp; label=<var>str</var> &amp; credit=<var>num</var></kbd></dt>
+<dd>Set a link to another node.  It is available by administrators only.</dd>
+<dd><var>url</var> specifies the URL of a destination node.  It is essential.  If the specified URL overlaps the URL of an existing link, the label and the credit is overwritten.</dd>
+<dd><var>label</var> specifies the label of the link.  It is essential.</dd>
+<dd><var>credit</var> specifies the credit of the link.  It is optional.  If it is omitted, the link is removed.</dd>
+<dd>On success, the status code 200 is returned.</dd>
+</dl>
+
+<p>Note that while super users has permission to administrate all nodes, an administrator of a node may not be a super user.  Moreover, setting of guests of each node have meaning only when the authorization mode is 3 (all).</p>
+
+<h3>Format of Search Result</h3>
+
+<p>The format of the entity body of response of <code>search</code> command is alike to multipart of MIME.  The following is an example.</p>
+
+<pre>--------[2387AD2E34554FFF]--------
+VERSION 1.0
+NODE    http://localhost:1978/node/sample1
+HIT     2
+HINT#1  give    2
+DOCNUM  2
+WORDNUM 31
+TIME    0.006541
+TIME#i  0.000058
+TIME#0  0.002907
+TIME#1  0.001578
+LINK#0  http://localhost:1978/node/sample1      Sample1 10000   2       31      2731304 2
+LINK#1  http://localhost:1978/node/sample2      Sample2 4000    3       125     8524522 1
+VIEW    SNIPPET
+
+--------[2387AD2E34554FFF]--------
+#nodelabel=Sample Node One
+#nodescore=7823432
+#nodeurl=http://localhost:1978/node/sample1
+@id=1
+@uri=http://localhost/foo.html
+%VECTOR give    8502    dispose 7343    griefs  5932    king    2343    void    1232
+
+You may my glories and my state dispose, But not my griefs; still am I king of those. (
+Give    give
+ it u
+
+p, Yo!
+Give    give
+ it up, Yo!)
+
+--------[2387AD2E34554FFF]--------
+#nodelabel=Sample Node One
+#nodescore=5623772
+#nodeurl=http://localhost:1978/node/sample1
+@id=2
+@uri=http://localhost/bar.html
+%VECTOR faster  9304    give    7723    griefs  6632    go      5343    you     3289
+
+The faster I go, the behinder I get. (
+Give    give
+ it up, Yo!
+Give    give
+ it up, Yo!)
+
+--------[2387AD2E34554FFF]--------:END
+</pre>
+
+<p>Each line feed is a single LF.  The first line is definition of the border string.  Each parts are delimited by the border string.  The last border string is followed by "<code>:END</code>".  The first part is the meta section.  The other parts are document sections.</p>
+
+<p>The format of the meta section is TSV.  Meaning of each string is picked out by the first field.  There are the following kinds.</p>
+
+<ul>
+<li><kbd>VERSION</kbd> : specifies the version of the protocol.</li>
+<li><kbd>NODE</kbd> : specifies the URL of the node.</li>
+<li><kbd>HIT</kbd> : specifies the total number of the corresponding documents.</li>
+<li><kbd>HINT#<var>n</var></kbd> : specifies the number of documents corresponding each word.  The second field specifies the word.  The third field specifies the number.</li>
+<li><kbd>DOCNUM</kbd> : specifies the total number of documents in target nodes.</li>
+<li><kbd>WORDNUM</kbd> : specifies the total number of words in target nodes.</li>
+<li><kbd>TIME</kbd> : specifies total elapsed time in seconds.</li>
+<li><kbd>TIME#<var>n</var></kbd> : specifies elapsed time for each node in seconds.  "<code>TIME#i</code>" means elapsed time for the local inverted index only.</li>
+<li><kbd>LINK#<var>n</var></kbd> : specifies information of each linked node.  Fields express the URL, the label, the credit, the number of documents, the number of unique words, the size of the database, and the number of corresponding documents.  "<code>LINK#0</code>" means the node it self.</li>
+<li><kbd>VIEW</kbd> : specifies the format of document parts.  As for now, it is constantly "<code>SNIPPET</code>".</li>
+</ul>
+
+<p>Each document part expresses attributes and a snippet of a document.  Top lines to the first empty line expresses attributes.  Their format is as with the one of document draft.  If keywords are attached to the document, they are expressed with the "<code>%VECTOR</code>" control command.  If score is specified explicitly, it is expressed with the "<code>%SCORE</code>" control command.  The format of the snippet is TSV.  There are tab separated values.  Each line is a string to be shown.  Though most lines have only one field, some lines have two fields.  If the second field exists, the first field is to be shown with highlighted, and the second field means its normalized form.</p>
+
+<p>The following pseudo-attributes are added to each result documents of the <code>search</code> command or the <code>get_doc</code> command includes.</p>
+
+<ul>
+<li><kbd>#nodeurl</kbd> : specifies the URL of the node into which the document was registered.</li>
+<li><kbd>#nodescore</kbd> : specifies the node local score of the document.</li>
+<li><kbd>#nodelabel</kbd> : specifies the label of the node into which the document was registered.</li>
+</ul>
+
+<h3>Format of List Retrieval</h3>
+
+<p>The format of the entity body of response of <code>list</code> command is in TSV format.  The following is an example though some strings follows "..." actually.</p>
+
+<pre>181     http://localhost/data/ihaveadream.xml   31e51df5f33131943dda22bd0fd755a0 ...
+1       http://localhost/prog/hyperestraier-1.0.2/doc/index.html        45368fa3c...
+2       http://localhost/prog/hyperestraier-1.0.2/doc/index.ja.html     0e9edf4ae...
+3       http://localhost/prog/hyperestraier-1.0.2/doc/intro-en.html     ec622d19a...
+18      http://localhost/prog/hyperestraier-1.0.2/doc/intro-ja.html     96f743fa6...
+5       http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/allclasses-fr...
+25      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/allclasses-no...
+26      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/constant-valu...
+20      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/estraier/Cmd....
+1022    http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/estraier/Docu...
+</pre>
+
+<p>Each line feed is a single LF.  Each line expresses each document and has 14 fields of system attributes.  They are "<code>@id</code>", "<code>@uri</code>", "<code>@digest</code>", "<code>@cdate</code>", "<code>@mdate</code>", "<code>@adate</code>", "<code>@title</code>", "<code>@author</code>", "<code>@type</code>", "<code>@lang</code>", "<code>@genre</code>", "<code>@size</code>", "<code>@weight</code>", and "<code>@misc</code>".  Fields of undefined attributes are empty strings.</p>
+
+<h3>Special Format for Document Registration</h3>
+
+<p>Because URL encoding is not efficient as for large data sent for the <code>put_doc</code> command and <code>edit_doc</code> command, the raw mode is supported.  If the value of "Content-Type" is "text/x-estraier-draft", the entity body is treated as a document draft itself.  The following is an example.</p>
+
+<pre>POST /node/foo/put_doc HTTP/1.0
+Content-Type: text/x-estraier-draft
+Content-Length: 138
+
+@uri=http://gogo.estraier.go.jp/sample.html
+@title=Twinkle Twinkle Little Star
+
+Twinkle, twinkle, little star,
+How I wonder what you are.
+</pre>
+
+<hr />
+
+<h2 id="nodeapi">Node API</h2>
+
+<p>As it is a bother to implement HTTP, the node API is useful.  This section describes how to use the node API.</p>
+
+<h3>Introduction</h3>
+
+<p>Using the node API, you can implement clients communicating node severs without considering such low level processing as TCP/IP and HTTP.  Though the node API has overhead comparing to the core API, it is important to be able to execute at remote host and to perform parallel processing without discrimination of readers and writers.</p>
+
+<p>In each source of applications of the node API, include `<code>estraier.h</code>', `<code>estnode.h</code>', `<code>cabin.h</code>', and `<code>stdlib.h</code>'.</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+</pre>
+
+<p>To build an application, perform the following command.  It is same as with the core API.</p>
+
+<pre>gcc `estconfig --cflags` -o foobar foobar.c `estconfig --ldflags` `estconfig --libs`
+</pre>
+
+<p>Because the node API uses features of the core API also, if you have never read <a href="pguide-en.html">the programming guide</a>, please read it beforehand.</p>
+
+<h3>API for Initializing</h3>
+
+<p>For preparation to use the node API, initialize the network environment at the beginning of a program.  Moreover, the environment should be freed at the end of the program.</p>
+
+<p>The function `est_init_net_env' is used in order to initialize the networking environment.</p>
+
+<dl>
+<dt><kbd>int est_init_net_env(void);</kbd></dt>
+<dd>The return value is true if success, else it is false.  As it is allowable to call this function multiple times, it is needed to call the function `est_free_net_env' at the same frequency.</dd>
+</dl>
+
+<p>The function `est_free_net_env' is used in order to free the networking environment.</p>
+
+<dl>
+<dt><kbd>void est_free_net_env(void);</kbd></dt>
+<dd>There is no parameter and no return value.</dd>
+</dl>
+
+<h3>API for Nodes</h3>
+
+<p>The type of the structure `<code>ESTNODE</code>' is for abstraction of connection to a node.  A node has its own URL.  No entity of `<code>ESTNODE</code>' is accessed directly, but it is accessed by the pointer.  The term of <strong>node connection object</strong> means the pointer and its referent.  A node connection object is created by the function `<code>est_node_new</code>' and destroyed by `<code>est_node_delete</code>'.  Every created node connection object should be destroyed.</p>
+
+<p>The following is a typical use case of node connection object.</p>
+
+<pre>ESTNODE *node;
+
+/* create a node connection object */
+node = est_node_new("http://estraier.gov:1978/node/foo");
+
+/* set the proxy, the timeout, and the authentication */
+est_node_set_proxy(node, "proxy.qdbm.go.jp", 8080);
+est_node_set_timeout(node, 5);
+est_node_set_auth(node, "mikio", "oikim");
+
+  /* register documents or search for documents here */
+
+/* destroy the object */
+est_node_delete(node);
+</pre>
+
+<p>The function `est_node_new' is used in order to create a node connection object.</p>
+
+<dl>
+<dt><kbd>ESTNODE *est_node_new(const char *<var>url</var>);</kbd></dt>
+<dd>`url' specifies the URL of a node.  The return value is a node connection object.</dd>
+</dl>
+
+<p>The function `est_node_delete' is used in order to destroy a node connection object.</p>
+
+<dl>
+<dt><kbd>void est_node_delete(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.</dd>
+</dl>
+
+<p>The function `est_node_set_proxy' is used in order to set the proxy information of a node connection object.</p>
+
+<dl>
+<dt><kbd>void est_node_set_proxy(ESTNODE *<var>node</var>, const char *<var>host</var>, int <var>port</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `host' specifies the host name of a proxy server.  `port' specifies the port number of the proxy server.</dd>
+</dl>
+
+<p>The function `est_node_set_timeout' is used in order to set timeout of a connection.</p>
+
+<dl>
+<dt><kbd>void est_node_set_timeout(ESTNODE *<var>node</var>, int <var>sec</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `sec' specifies timeout of the connection in seconds.</dd>
+</dl>
+
+<p>The function `est_node_set_auth' is used in order to set the authentication information of a node connection object.</p>
+
+<dl>
+<dt><kbd>void est_node_set_auth(ESTNODE *<var>node</var>, const char *<var>name</var>, const char *<var>passwd</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `name' specifies the name of authentication.  `passwd' specifies the password of the authentication.</dd>
+</dl>
+
+<p>The function `est_node_status' is used in order to get the status code of the last request of a node.</p>
+
+<dl>
+<dt><kbd>int est_node_status(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the status code of the last request of the node.  -1 means failure of connection.</dd>
+</dl>
+
+<p>The function `est_node_sync' is used in order to synchronize updating contents of the database of a node.</p>
+
+<dl>
+<dt><kbd>int est_node_sync(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<p>The function `est_node_optimize' is used in order to optimize the database of a node.</p>
+
+<dl>
+<dt><kbd>int est_node_optimize(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<p>The function `est_node_put_doc' is used in order to add a document to a node.</p>
+
+<dl>
+<dt><kbd>int est_node_put_doc(ESTNODE *<var>node</var>, ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `doc' specifies a document object.  The document object should have the URI attribute.  The return value is true if success, else it is false.  If the URI attribute is same with an existing document in the node, the existing one is deleted.</dd>
+</dl>
+
+<p>The function `est_node_out_doc' is used in order to remove a document from a node.</p>
+
+<dl>
+<dt><kbd>int est_node_out_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<p>The function `est_node_out_doc_by_uri' is used in order to remove a document specified by URI from a node.</p>
+
+<dl>
+<dt><kbd>int est_node_out_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<p>The function `est_node_edit_doc' is used in order to edit attributes of a document in a node.</p>
+
+<dl>
+<dt><kbd>int est_node_edit_doc(ESTNODE *<var>node</var>, ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `doc' specifies a document object.  The return value is true if success, else it is false.  The ID can not be changed.  If the URI is changed and it overlaps the URI of another registered document, this function fails.</dd>
+</dl>
+
+<p>The function `est_node_get_doc' is used in order to retrieve a document in a node.</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_node_get_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is a document object.  It should be deleted with `est_doc_delete' if it is no longer in use.  On error, `NULL' is returned.</dd>
+</dl>
+
+<p>The function `est_node_get_doc_by_uri' is used in order to retrieve a document specified by URI in a node.</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_node_get_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is a document object.  It should be deleted with `est_doc_delete' if it is no longer in use.  On error, `NULL' is returned.</dd>
+</dl>
+
+<p>The function `est_node_get_doc_attr' is used in order to retrieve the value of an attribute of a document in a node.</p>
+
+<dl>
+<dt><kbd>char *est_node_get_doc_attr(ESTNODE *<var>node</var>, int <var>id</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.</dd>
+</dl>
+
+<p>The function `est_node_get_doc_attr_by_uri' is used in order to retrieve the value of an attribute of a document specified by URI in a node.</p>
+
+<dl>
+<dt><kbd>char *est_node_get_doc_attr_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.</dd>
+</dl>
+
+<p>The function `est_node_etch_doc' is used in order to extract keywords of a document.</p>
+
+<dl>
+<dt><kbd>CBMAP *est_node_etch_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is a new map object of keywords and their scores in decimal string or `NULL' on error.  Because the object of the return value is opened with the function `cbmapopen', it should be closed with the function `cbmapclose' if it is no longer in use.</dd>
+</dl>
+
+<p>The function `est_node_etch_doc_by_uri' is used in order to extract keywords of a document specified by URI in a node.</p>
+
+<dl>
+<dt><kbd>CBMAP *est_node_etch_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is a new map object of keywords and their scores in decimal string or `NULL' on error.  Because the object of the return value is opened with the function `cbmapopen', it should be closed with the function `cbmapclose' if it is no longer in use.</dd>
+</dl>
+
+<p>The function `est_node_uri_to_id' is used in order to get the ID of a document specified by URI.</p>
+
+<dl>
+<dt><kbd>int est_node_uri_to_id(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is the ID of the document.  On error, -1 is returned.</dd>
+</dl>
+
+<p>The function `est_node_name' is used in order to get the name of a node.</p>
+
+<dl>
+<dt><kbd>const char *est_node_name(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the name of the node.  On error, `NULL' is returned.  The life duration of the returned string is synchronous with the one of the node object.</dd>
+</dl>
+
+<p>The function `est_node_label' is used in order to get the label of a node.</p>
+
+<dl>
+<dt><kbd>const char *est_node_label(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the label of the node.  On error, `NULL' is returned.  The life duration of the returned string is synchronous with the one of the node object.</dd>
+</dl>
+
+<p>The function `est_node_doc_num' is used in order to get the number of documents in a node.</p>
+
+<dl>
+<dt><kbd>int est_node_doc_num(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the number of documents in the node.  On error, -1 is returned.</dd>
+</dl>
+
+<p>The function `est_node_word_num' is used in order to get the number of unique words in a node.</p>
+
+<dl>
+<dt><kbd>int est_node_word_num(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the number of unique words in the node.  On error, -1 is returned.</dd>
+</dl>
+
+<p>The function `est_node_size' is used in order to get the size of the database of a node.</p>
+
+<dl>
+<dt><kbd>double est_node_size(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the size of the database of the node.  On error, -1.0 is returned.</dd>
+</dl>
+
+<p>The function `est_node_cache_usage' is used in order to get the usage ratio of the cache of a node.</p>
+
+<dl>
+<dt><kbd>double est_node_cache_usage(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is the usage ratio of the cache of the node.  On error, -1.0 is returned.</dd>
+</dl>
+
+<p>The function `est_node_admins' is used in order to get a list of names of administrators of a node.</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_admins(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is a list object of names of administrators.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.</dd>
+</dl>
+
+<p>The function `est_node_users' is used in order to get a list of names of users of a node.</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_users(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is a list object of names of users.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.</dd>
+</dl>
+
+<p>The function `est_node_links' is used in order to get a list of expressions of links of a node.</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_links(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  The return value is a list object of expressions of links.  Each element is a TSV string and has three fields of the URL, the label, and the score.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.</dd>
+</dl>
+
+<p>The function `est_node_search' is used in order to search a node for documents corresponding a condition.</p>
+
+<dl>
+<dt><kbd>ESTNODERES *est_node_search(ESTNODE *<var>node</var>, ESTCOND *<var>cond</var>, int <var>depth</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `cond' specifies a condition object.  `depth' specifies the depth of meta search.  The return value is a node result object.  It should be deleted with `est_noderes_delete' if it is no longer in use.  On error, `NULL' is returned.</dd>
+</dl>
+
+<p>The function `est_node_set_snippet_width' is used in order to set width of snippet in the result from a node.</p>
+
+<dl>
+<dt><kbd>void est_node_set_snippet_width(ESTNODE *<var>node</var>, int <var>wwidth</var>, int <var>hwidth</var>, int <var>awidth</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `wwidth' specifies whole width of a snippet.  By default, it is 480.  If it is 0, no snippet is sent. If it is negative, whole body text is sent instead of snippet.  `hwidth' specifies width of strings picked up from the beginning of the text.  By default, it is 96.  If it is negative 0, the current setting is not changed.  `awidth' specifies width of strings picked up around each highlighted word. By default, it is 96.  If it is negative, the current setting is not changed.</dd>
+</dl>
+
+<p>The function `est_node_set_user' is used in order to manage a user account of a node.</p>
+
+<dl>
+<dt><kbd>int est_node_set_user(ESTNODE *<var>node</var>, const char *<var>name</var>, int <var>mode</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `name' specifies the name of a user.  `mode' specifies the operation mode.  0 means to delete the account.  1 means to set the account as an administrator.  2 means to set the account as a guest.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<p>The function `est_node_set_link' is used in order to manage a link of a node.</p>
+
+<dl>
+<dt><kbd>int est_node_set_link(ESTNODE *<var>node</var>, const char *<var>url</var>, const char *<var>label</var>, int <var>credit</var>);</kbd></dt>
+<dd>`node' specifies a node connection object.  `url' specifies the URL of the target node of a link.  `label' specifies the label of the link.  `credit' specifies the credit of the link.  If it is negative, the link is removed.  The return value is true if success, else it is false.</dd>
+</dl>
+
+<h3>API for Search Results of Nodes</h3>
+
+<p>The type of the structure `<code>ESTNODERES</code>' is for abstraction of search result from a node.  A result is composed of a list of corresponding documents and information of hints.  No entity of `<code>ESTNODERES</code>' is accessed directly, but it is accessed by the pointer.  The term of <strong>node result object</strong> means the pointer and its referent.  A node result object is created by the function `<code>est_node_search</code>' and destroyed by `<code>est_noderes_delete</code>'.  Every created node connection object should be destroyed.</p>
+
+<p>The type of the structure `<code>ESTRESDOC</code>' is for abstraction of a document in search result.  A result document is composed of some attributes and a snippet.  No entity of `<code>ESTRESDOC</code>' is accessed directly, but it is accessed by the pointer.  The term of <strong>result document object</strong> means the pointer and its referent.  A result document object is gotten by the function `<code>est_noderes_get_doc</code>' but it should not be destroyed because the entity is managed inside the node result object.</p>
+
+<p>The following is a typical use case of node connection object and result document object.</p>
+
+<pre>ESTNODERES *nres;
+CBMAP *hints;
+ESTRESDOC *rdoc;
+int i;
+
+/* create a node result object */
+nres = est_node_search(node, cond, 1);
+
+/* get hints */
+hints = est_noderes_hints(nres);
+
+   /* show the hints here */
+
+/* scan documents in the result */
+for(i = 0; i &lt; est_noderes_doc_num(nres); i++){
+
+  /* get a result document object */
+  rdoc = est_noderes_get_doc(nres, i);
+
+  /* show the result document object here */
+
+}
+
+/* destroy the node result object */
+est_noderes_delete(nres);
+</pre>
+
+<p>The function `est_noderes_delete' is used in order to delete a node result object.</p>
+
+<dl>
+<dt><kbd>void est_noderes_delete(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' specifies a node result object.</dd>
+</dl>
+
+<p>The function `est_noderes_hints' is used in order to get a map object for hints of a node result object.</p>
+
+<dl>
+<dt><kbd>CBMAP *est_noderes_hints(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' specifies a node result object.  The return value is a map object for hints.  Keys of the map are "VERSION", "NODE", "HIT", "HINT#n", "DOCNUM", "WORDNUM", "TIME", "TIME#n", "LINK#n", and "VIEW".  The life duration of the returned object is synchronous with the one of the node result object.</dd>
+</dl>
+
+<p>The function `est_noderes_eclipse' is used in order to eclipse similar documents of a node result object.</p>
+
+<dl>
+<dt><kbd>void est_noderes_eclipse(ESTNODERES *<var>nres</var>, int <var>num</var>, double <var>limit</var>);</kbd></dt>
+<dd>`nres' specifies a node result object.  `num' specifies the number of documents to be shown.  If it is not more than 0, eclipse is undone.  `limit' specifies the lower limit of similarity for documents to be eclipsed.  Similarity is between 0.0 and 1.0.</dd>
+</dl>
+
+<p>The function `est_noderes_doc_num' is used in order to get the number of documents in a node result object.</p>
+
+<dl>
+<dt><kbd>int est_noderes_doc_num(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' specifies a node result object.  The return value is the number of documents in a node result object.</dd>
+</dl>
+
+<p>The function `est_noderes_get_doc' is used in order to refer a result document object in a node result object.</p>
+
+<dl>
+<dt><kbd>ESTRESDOC *est_noderes_get_doc(ESTNODERES *<var>nres</var>, int <var>index</var>);</kbd></dt>
+<dd>`nres' specifies a node result object.  `index' specifies the index of a document.  The return value is a result document object or `NULL' if `index' is equal to or more than the number of documents.  The life duration of the returned object is synchronous with the one of the node result object.</dd>
+</dl>
+
+<p>The function `est_resdoc_uri' is used in order to get the URI of a result document object.</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_uri(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  The return value is the URI of the result document object.  The life duration of the returned string is synchronous with the one of the result document object.</dd>
+</dl>
+
+<p>The function `est_resdoc_attr_names' is used in order to get a list of attribute names of a result document object.</p>
+
+<dl>
+<dt><kbd>CBLIST *est_resdoc_attr_names(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  The return value is a new list object of attribute names of the result document object.  Because the object of the return value is opened with the function `cblistopen', it should be closed with the function `cblistclose' if it is no longer in use.</dd>
+</dl>
+
+<p>The function `est_resdoc_attr' is used in order to get the value of an attribute of a result document object.</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_attr(ESTRESDOC *<var>rdoc</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  The life duration of the returned string is synchronous with the one of the result document object.</dd>
+</dl>
+
+<p>The function `est_resdoc_snippet' is used in order to get the snippet of a result document object.</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_snippet(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  The return value is a string of the snippet of the result document object.  There are tab separated values.  Each line is a string to be shown.  Though most lines have only one field, some lines have two fields.  If the second field exists, the first field is to be shown with highlighted, and the second field means its normalized form.  The life duration of the returned string is synchronous with the one of the result document object.</dd>
+</dl>
+
+<p>The function `est_resdoc_keywords' is used in order to get keywords of a result document object.</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_keywords(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  The return value is a string of serialized keywords of the result document object.  There are tab separated values.  Keywords and their scores come alternately.  The life duration of the returned string is synchronous with the one of the result document object.</dd>
+</dl>
+
+<p>The function `est_resdoc_shadows' is used in order to get an array of documents eclipsed by a result document object.</p>
+
+<dl>
+<dt><kbd>ESTRESDOC **est_resdoc_shadows(ESTRESDOC *<var>rdoc</var>, int *<var>np</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  `np' specifies the pointer to a variable to which the number of elements of the return value is assigned.  The return value is an array of eclipsed result document objects.  The life duration of the returned array and its elements is synchronous with the one of the result document object.</dd>
+</dl>
+
+<p>The function `est_resdoc_similarity' is used in order to get similarity of an eclipsed result document object.</p>
+
+<dl>
+<dt><kbd>double est_resdoc_similarity(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' specifies a result document object.  The return value is similarity of the result document object to the front document or -1.0 if it is not eclipsed.</dd>
+</dl>
+
+<h3>Paralleling</h3>
+
+<p>Each of node connection objects, node result objects, and result document objects can not be shared by threads.  If you use multi threads, make each thread have its own objects.  If the precondition is kept, functions of the node API can be treated as thread-safe functions.</p>
+
+<h3>Example of Gatherer</h3>
+
+<p>The following is the simplest implementation of a gatherer.</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTNODE *node;
+  ESTDOC *doc;
+  /* initialize the network environment */
+  if(!est_init_net_env()){
+    fprintf(stderr, "error: network is unavailable\n");
+    return 1;
+  }
+  /* create and configure the node connection object */
+  node = est_node_new("http://localhost:1978/node/test1");
+  est_node_set_auth(node, "admin", "admin");
+  /* create a document object */
+  doc = est_doc_new();
+  /* add attributes to the document object */
+  est_doc_add_attr(doc, "@uri", "http://estraier.gov/example.txt");
+  est_doc_add_attr(doc, "@title", "Over the Rainbow");
+  /* add the body text to the document object */
+  est_doc_add_text(doc, "Somewhere over the rainbow.  Way up high.");
+  est_doc_add_text(doc, "There's a land that I heard of once in a lullaby.");
+  /* register the document object to the node */
+  if(!est_node_put_doc(node, doc))
+    fprintf(stderr, "error: %d\n", est_node_status(node));
+  /* destroy the document object */
+  est_doc_delete(doc);
+  /* destroy the node object */
+  est_node_delete(node);
+  /* free the networking environment */
+  est_free_net_env();
+  return 0;
+}
+</pre>
+
+<h3>Example of Searcher</h3>
+
+<p>The following is the simplest implementation of a searcher.</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTNODE *node;
+  ESTCOND *cond;
+  ESTNODERES *nres;
+  ESTRESDOC *rdoc;
+  int i;
+  const char *value;
+  /* initialize the network environment */
+  if(!est_init_net_env()){
+    fprintf(stderr, "error: network is unavailable\n");
+    return 1;
+  }
+  /* create the node connection object */
+  node = est_node_new("http://localhost:1978/node/test1");
+  /* create a search condition object */
+  cond = est_cond_new();
+  /* set the search phrase to the search condition object */
+  est_cond_set_phrase(cond, "rainbow AND lullaby");
+  /* get the result of search */
+  nres = est_node_search(node, cond, 0);
+  if(nres){
+    /* for each document in the result */
+    for(i = 0; i &lt; est_noderes_doc_num(nres); i++){
+      /* get a result document object */
+      rdoc = est_noderes_get_doc(nres, i);
+      /* display attributes */
+      if((value = est_resdoc_attr(rdoc, "@uri")) != NULL)
+        printf("URI: %s\n", value);
+      if((value = est_resdoc_attr(rdoc, "@title")) != NULL)
+        printf("Title: %s\n", value);
+      /* display the snippet text */
+      printf("%s", est_resdoc_snippet(rdoc));
+    }
+    /* delete the node result object */
+    est_noderes_delete(nres);
+  } else {
+    fprintf(stderr, "error: %d\n", est_node_status(node));
+  }
+  /* destroy the search condition object */
+  est_cond_delete(cond);
+  /* destroy the node object */
+  est_node_delete(node);
+  /* free the networking environment */
+  est_free_net_env();
+  return 0;
+}
+</pre>
+
+<hr />
+
+<h2 id="estcall">Command of a Client</h2>
+
+<p><code>estcall</code> is provided as a client command to manage the node server.  This section describes how to use <code>estcall</code>.</p>
+
+<h3>Synopsis and Description</h3>
+
+<p><code>estcall</code> is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument <var>nurl</var> specifies the URL of a node.  The option <code>-proxy</code> specifies the host name and the port number of a proxy server.  The option <code>-tout</code> specifies timeout in seconds.  The option <code>-auth</code> specifies the user name and the password of authentication information.</p>
+
+<dl>
+<dt><kbd>estcall put [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> [<var>file</var>]</kbd></dt>
+<dd>Register a document of document draft to a node.</dd>
+<dd><var>file</var> specifies a target file.  If it is omitted, the standard input is read.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall out [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var></kbd></dt>
+<dd>Remove information of a document from a node.</dd>
+<dd><var>expr</var> specifies the ID number or the URI of a document.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall edit [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var> <var>name</var> [<var>value</var>]</kbd></dt>
+<dd>Edit an attribute of a document in a node.</dd>
+<dd><var>expr</var> specifies the ID number or the URI of a document.</dd>
+<dd><var>name</var> specifies the name of an attribute.</dd>
+<dd><var>value</var> specifies the value of the attribute.  If it is omitted, the attribute is removed.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall get [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var> [<var>attr</var>]</kbd></dt>
+<dd>Output document draft of a document in a node.</dd>
+<dd><var>expr</var> specifies the ID number or the URI of a document.</dd>
+<dd>If <var>attr</var> is specified, only the value of the attribute is output.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall etch [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var></kbd></dt>
+<dd>Output TSV of keywords and their scores of a document in a node.</dd>
+<dd><var>expr</var> specifies the ID number or the URI of a document.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall uriid [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>uri</var></kbd></dt>
+<dd>Output the ID number of a document specified by URI.</dd>
+<dd><var>uri</var> specifies the URI of a document.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall inform [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-ia|-iu|-il] <var>nurl</var></kbd></dt>
+<dd>Output the name, the label, the number of documents, the number of unique words, and the cache usage of a node.</dd>
+<dd>If -ia is specified, names of administrators are output.</dd>
+<dd>If -iu is specified, names of users are output.</dd>
+<dd>If -il is specified, expressions of links are output.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall sync [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>Synchronize updating contents of the database of a node.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall optimize [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>Optimize the database of a node.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall search [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-vu|-vx] [-kw] [-ec <var>rn</var>] [-sf] [-attr <var>expr</var>] [-ord <var>expr</var>] [-max <var>num</var>] [-sk <var>num</var>] [-aux <var>num</var>] [-dis <var>name</var>] [-dpt <var>num</var>] [-mask <var>num</var>] <var>nurl</var> [<var>phrase</var>]</kbd></dt>
+<dd>Search a node for documents.</dd>
+<dd><var>phrase</var> specifies the search phrase.</dd>
+<dd>If -vu is specified, TSV of URI and node information are output.</dd>
+<dd>If -vx is specified, XML including including attributes and snippets is output.</dd>
+<dd>If -kw is specified, keyword vectors are retrieved.</dd>
+<dd>-ec specifies lower limit of similarity eclipse.</dd>
+<dd>If -sf is specified, the phrase is treated as a simplified form.</dd>
+<dd>-attr specifies an attribute search condition.  This option can be specified multiple times.</dd>
+<dd>-ord specifies the order expression.  By default, it is descending by score.</dd>
+<dd>-max specifies the maximum number of show documents.  Negative means unlimited.  By default, it is 10.</dd>
+<dd>-sk specifies the number of documents to be skipped.  By default, it is 0.</dd>
+<dd>-aux specifies permission to adopt result of the auxiliary index.  If it is not more than 0, the auxiliary index is not used.  By default, it is 32.</dd>
+<dd>-dis specifies the name of the distinct attribute.</dd>
+<dd>-dpt specifies the depth of meta search.  by default it is 0.</dd>
+<dd>-mask specifies the mask of meta search.  by default it is 0.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall list [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>Retriave a list of all documents.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall setuser [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>name</var> <var>mode</var></kbd></dt>
+<dd>Set permission of a user.</dd>
+<dd><var>name</var> specifies the name of a user.</dd>
+<dd><var>mode</var> specifies operation mode.  1 means to set the user as an administrator, 2 means to set the user as a guest, and 0 means to revoke the user account.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall setlink [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>url</var> <var>label</var> <var>credit</var></kbd></dt>
+<dd>Set a link to another node.</dd>
+<dd><var>url</var> specifies the URL of a destination node.</dd>
+<dd><var>label</var> specifies the label of the link.</dd>
+<dd><var>credit</var> specifies the credit of the link.  If the value is negative, the link is removed.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall raw [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-np] [-eh <var>expr</var>] <var>url</var> [<var>file</var>]</kbd></dt>
+<dd>Output response of an HTTP request.</dd>
+<dd><var>url</var> specifies the URL of a target.</dd>
+<dd>If <var>file</var> is specified, the content is sent by POST method.  If not, GET method is used.  If "-" is specified, the standard input is read.</dd>
+<dd>If -np is specified, output response headers also.</dd>
+<dd>-eh specifies an additional HTTP header.  By default, "Host", "Connection", "User-Agent", and "Content-Length" is added.</dd>
+</dl>
+
+<p>All sub commands return 0 if the operation is success, else return 1.</p>
+
+<h3>Examples</h3>
+
+<p>Operations for the node maser itself is not provided as APIs, use the raw sub command for that purpose.  For example, the following command is used in order to shutdown the node master.</p>
+
+<pre>estcall raw -auth admin admin \
+  'http://localhost:1978/master?action=shutdown'
+</pre>
+
+<p>In order to add a user, perform the following command.</p>
+
+<pre>estcall raw -auth admin admin \
+  'http://localhost:1978/master?action=useradd&amp;name=mikio&amp;passwd=iloveyou'
+</pre>
+
+<p>In order to use POST method, perform the following command.</p>
+
+<pre>echo -n 'action=useradd&amp;name=mikio&amp;passwd=iloveyou' |
+  estcall raw -auth admin admin \
+    -eh 'Content-Type: application/x-www-form-urlencoded' \
+    'http://localhost:1978/master' -
+</pre>
+
+<hr />
+
+<h2 id="estfraud">Pseudo Node Master</h2>
+
+<p><code>estfraud.cgi</code> is a CGI script working as a node master.</p>
+
+<h3>Constitution</h3>
+
+<p>Running a node master bothers you to write start-up and shutdown scripts.  And, it may be forbidden to run any daemon process on some shared servers.  In that case, <strong>pseudo node master</strong> is useful.  You can publish some indexes as node servers, on any environment where a web server runs and CGI scripts are available.  Such virtual node server working on a pseudo master is called <strong>pseudo node server</strong>.  Each pseudo node server can be searched with the node API.</p>
+
+<p>Pseudo node master is useful in case that the number of node is enormous.  Different from usual node server which regidents with keeping file descriptios, pseudo node server connects the database on demand of each request.  So, file descriptors are not exhausted.  Actually, the maximum number of node servers running on a usual node master is about 30.  However, a pseudo node master can handle one thousand or more pseudo node servers.</p>
+
+<p>To use pseudo node master, deploy a CGI script <code>estfraud.cgi</code> and a configuration file <code>estfraud.conf</code> into a directory where CGI scripts are available.</p>
+
+<h3>Configuration File</h3>
+
+<p>The configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line. Lines leaded by "<code>#</code>" are ignored as comments. By default, the following configuration is there.</p>
+
+<pre>indexdir: .
+runmode: 2
+pidxsuffix: -pidx
+pidxdocmax: 256
+pidxdocmin: 0
+lockindex: 0
+searchmax: 1000
+rateuri: 1
+mergemethod: 2
+scoreexpr: 2
+wildmax: 256
+snipwwidth: 480
+sniphwidth: 96
+snipawidth: 96
+scancheck: 1
+smlrvnum: 32
+extdelay: 4096
+</pre>
+
+<p>Means of each variable is the following.</p>
+
+<ul>
+<li><kbd>indexdir</kbd> : specifies the path of a directory containing indexes.</li>
+<li><kbd>runmode</kbd> : specifies running mode (1:normal, 2:readonly).</li>
+<li><kbd>pidxsuffix</kbd> : specifies the suffix of pseudo indexes.</li>
+<li><kbd>pidxdocmax</kbd> : specifies the maximum number of documents in each pseudo index.</li>
+<li><kbd>pidxdocmin</kbd> : specifies the minimum number of documents in each pseudo index.</li>
+<li><kbd>lockindex</kbd> : specifies whether to perform file locking to the database (0:no, 1:yes).</li>
+<li><kbd>searchmax</kbd> : specifies the maximum number of documents to send.</li>
+<li><kbd>rateuri</kbd> : specifies whether to rate URI for scoring (0:no, 1:yes).</li>
+<li><kbd>mergemethod</kbd> : specifies merge method of meta search (1:score, 2:score and rank, 3:rank).</li>
+<li><kbd>scoreexpr</kbd> : specifies score expression (1:void, 2:char, 3:int, 4:asis).</li>
+<li><kbd>wildmax</kbd> : specifies the maximum number of expansion of wild cards.</li>
+<li><kbd>snipwwidth</kbd> : specifies whole width of the snippet of each shown document.</li>
+<li><kbd>sniphwidth</kbd> : specifies width of strings picked up from the beginning of the text.</li>
+<li><kbd>snipawidth</kbd> : specifies width of strings picked up around each highlighted word.</li>
+<li><kbd>scancheck</kbd> : specifies whether to check documents by scanning (0:no, 1:yes).</li>
+<li><kbd>smlrvnum</kbd> : specifies the number of keywords for similarity search (0 means disabled).</li>
+<li><kbd>extdelay</kbd> : specifies the number of documents for delay of keyword extraction.</li>
+</ul>
+
+<p>For example, if the value of <code>indexdir</code> is "<code>/home/mikio/myindex</code>" and the URL of <code>estfraud.cgi</code> is "<code>http://abc.def/ghi/estfraud.cgi</code>", the URL "<code>http://abc.def/ghi/estfraud.cgi/foo</code>" is to access the index "<code>/home/mikio/myindex/foo</code>".</p>
+
+<h3>Restrictions</h3>
+
+<p>The following conditions must be satisfied for updating indexes by node servers.</p>
+
+<ul>
+<li>Running mode of the pseudo node master is normal (set "<code>runmode: 1</code>").</li>
+<li>Pseudo indexes exist (make directories whose names are the index names trailed by "<code>-pidx</code>".</li>
+<li>The user executing the CGI script has permission to write indexes and pseudo indexes.</li>
+</ul>
+
+<p>If documents are registered via node server, they are stored in a pseudo index.  When the number of files in the pseudo index reaches the number specified by <code>pidxdocmax</code>, content of the pseudo index is merged into the index and the pseudo index become empty.  Due to the mechanism, the CGI script which does not resident as daemon can update the index.  If <code>pidxdocmax</code> is set larger, faster the updating process performs, but slower the search process performs.  To merge the pseudo index into the index explicitly, call the sync method (<code>est_node_sync</code>).</p>
+
+<p>As pseudo node server does not support query relay to other nodes, the <code>depth</code> parameter of search query is ignored.  Moreover, pseudo node server does not support changing the URI attribute by document editing (<code>est_node_doc_edit</code>).</p>
+
+<hr />
+
+<h2 id="metagateway">Meta Search Gateway</h2>
+
+<p><code>estscout.cgi</code> is a gateway for intersection meta search and <code>estsupt.cgi</code> is a gateway for union meta search.</p>
+
+<h3>Constitution</h3>
+
+<p>In order to retrieve intersection set of search results from plural indexes by using such identifiers as URI attribute, the intersection meta search gateway is useful.  For example, you can search a staff register for records whose name and address match some full-text search conditions, by using URI attribute of staff number as identifier.  Moreover, the union meta search gateway is provided in order to get union set of search results from plural intersection meta search gateways.</p>
+
+<p>The two gateways are implemented as CGI scripts and used with parameters specified by URL.  No such abstraction interface as API is provided.  Because meta search is performed by multi thread or multi process, improvement of scalability for distributed processing is expected.</p>
+
+<div class="illust"><img src="gateframe.png" width="720" height="350" alt="[gateways]" /></div>
+
+<h3>Intersection Meta Search Gateway</h3>
+
+<p>To use the intersection meta search gateway, deploy a CGI script <code>estscout.cgi</code> and a configuration file <code>estscout.conf</code> into a directory where CGI scripts are available.</p>
+
+<p>The configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  By default, the following configuration is there.</p>
+
+<pre>indexname: casket-1
+indexname: casket-2
+indexname: casket-3
+lockindex: 1
+condgstep: 2
+dotfidf: true
+scancheck: 3
+phraseform: 2
+wildmax: 256
+stmode: 0
+idattr: @uri
+idsuffix:
+ordexpr: @uri STRA
+dupcheck: 0
+union: 0
+tmpdir: /tmp
+cclife: 300
+logfile:
+logformat: {time}\t{REMOTE_ADDR}:{REMOTE_PORT}\t{cond}\t{hnum}\n
+</pre>
+
+<p>Means of each variable is the following.</p>
+
+<ul>
+<li><kbd>indexname</kbd> : specifies the name of an index.  This can be more than once.</li>
+<li><kbd>lockindex</kbd> : specifies whether to perform file locking to the database (0:no, 1:yes).</li>
+<li><kbd>condgstep</kbd> : specifies accuracy of N-gram checking.</li>
+<li><kbd>dotfidf</kbd> : specifies whether to do TF-IDF score tuning (0:no, 1:yes).</li>
+<li><kbd>scancheck</kbd> : specifies the number of checked documents by scanning.</li>
+<li><kbd>phraseform</kbd> : specifies the phrase form (1:usual form, 2:simplified form, 3:rough form, 4:union form, 5:intersection form).</li>
+<li><kbd>wildmax</kbd> : specifies the maximum number of expansion of wild cards.</li>
+<li><kbd>stmode</kbd> : specifies whether to be single thread mode (0:no, 1:yes).</li>
+<li><kbd>idattr</kbd> : specifies the name of an attribute used as document identifier.  If it is an empty string, score is used.</li>
+<li><kbd>idsuffix</kbd> : specifies the name of an attribute used as the suffix of document identifier.  This can be more than once.</li>
+<li><kbd>ordexpr</kbd> : specifies an ordering expression used when attribute search.</li>
+<li><kbd>dupcheck</kbd> : specifies whether to check duplication of identifiers (0:no, 1:yes).</li>
+<li><kbd>union</kbd> : specifies whether to perform union meta search.</li>
+<li><kbd>score</kbd> : specifies a scoring method when logical operation (0:sum, 1:max, 2:min, 3:average).</li>
+<li><kbd>tmpdir</kbd> : specifies the path of the directory for temporary files.</li>
+<li><kbd>cclife</kbd> : specifies the lifetime of cache files (in seconds).  If it is negative, the lifetime is unlimited.</li>
+<li><kbd>logfile</kbd> : specifies the path of the log file.</li>
+<li><kbd>logformat</kbd> : specifies the format of each log data.</li>
+</ul>
+
+<p>The intersection meta search gateway receives the following parameters.  The order expression is not supported.</p>
+
+<ul>
+<li><kbd>phrase<var>n</var></kbd> : specifies full-text search conditions with <var>n</var> assigned from 1 to 9.</li>
+<li><kbd>attr<var>n</var></kbd> : specifies attribute search condition with <var>n</var> assigned from 1 to 9.</li>
+<li><kbd>max</kbd> : specifies the maximum number of documents to send.</li>
+<li><kbd>distinct</kbd> : the name of the distinct attribute.</li>
+<li><kbd>fresh</kbd> : specifies whether to disable cache temporarily (0:no, 1:yes).</li>
+</ul>
+
+<p>In the output, the first line specifies the approximation number of corresponding documents.  Each of the subsequent lines specifies identifier and score of a corresponding document.  For example, the following is output.</p>
+
+<pre>256
+file:///home/mikio/tako.html   12561
+file:///home/mikio/ika.html    11624
+file:///home/mikio/uni.html    9232
+file:///home/mikio/kani.html   8293
+file:///home/mikio/ebi.html    8312
+</pre>
+
+<h3>Union Meta Search Gateway</h3>
+
+<p>To use the union meta search gateway, deploy a CGI script <code>estsupt.cgi</code> and a configuration file <code>estsupt.conf</code> into a directory where CGI scripts are available.</p>
+
+<p>The configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  By default, the following configuration is there.</p>
+
+<pre>
+targeturl: http://searcher1/estscout.cgi
+targeturl: http://searcher2/estscout.cgi
+stmode: 0
+tmpdir: /tmp
+cclife: 1800
+#shareurl: http://merger1/estsupt.cgi
+#shareurl: http://merger2/estsupt.cgi
+failfile:
+logfile:
+logformat: {time}\t{REMOTE_ADDR}:{REMOTE_PORT}\t{cond}\t{hnum}\n
+</pre>
+
+<p>Means of each variable is the following.</p>
+
+<ul>
+<li><kbd>targeturl</kbd> : specifies the URL of an intersection meta search gateway.  This can be more than once.</li>
+<li><kbd>stmode</kbd> : specifies whether to be single thread mode (0:no, 1:yes).</li>
+<li><kbd>score</kbd> : specifies a scoring method when logical operation (0:sum, 1:max, 2:min, 3:average).</li>
+<li><kbd>tmpdir</kbd> : specifies the path of the directory for temporary files.</li>
+<li><kbd>cclife</kbd> : specifies the lifetime of cache files (in seconds).  If it is negative, the lifetime is unlimited.</li>
+<li><kbd>shareurl</kbd> : specifies the URL of a union meta search gateway for shared cache.  This can be more than once.</li>
+<li><kbd>failfile</kbd> : specifies the path of the fail rate file.</li>
+<li><kbd>logfile</kbd> : specifies the path of the log file.</li>
+<li><kbd>logformat</kbd> : specifies the format of each log data.</li>
+</ul>
+
+<p>The format of output and parameters of the union meta search gateway are same with ones of the intersection meta search gateway.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

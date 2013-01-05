@@ -1,0 +1,52 @@
+<props>
+  <group n="feat" group-is-name="yes">
+    <val v="mark"/>
+    <val v="slavemark"/>
+  </group>
+  <group n="post" group-is-name="yes">
+    <val v="barber"/>
+    <val v="scribe"/>
+  </group>
+  <group n="status">
+    <val v="king"/>
+    <val v="slave"/>
+  </group>
+  <group n="reln">
+    <val v="ancestor"/>
+    <val v="child"/>
+    <val v="daughter"/>
+    <val v="descendant"/>
+    <val v="father"/>
+    <val v="husband"/>
+    <val v="grandfather"/>
+    <val v="great-grandfather"/>
+    <val v="mother"/>
+    <val v="son"/>
+    <val v="wife"/>
+    <val v="spouse"/>
+  </group>
+  <group n="role" group-is-name="yes">
+    <val v="beneficiary"/>
+    <val v="buyer"/>
+    <val v="clearer"/>
+    <val v="co-beneficiary"/>
+    <val v="co-holder"/>
+    <val v="co-owner"/>
+    <val v="guarantor"/>
+    <val v="leasor"/>
+    <val v="leasee"/>
+    <val v="lessee"/>
+    <val v="seller"/>
+    <val v="sold"/>
+    <val v="waiver"/>
+    <val v="witness"/>
+  </group>
+  <group n="misc">
+    <val v="group-with"/>
+    <val v="neighbor"/>
+    <val v="othername"/>
+    <val v="weightstandard"/>
+    <val v="yeardate"/>
+    <val v="year-name"/>
+  </group>
+</props>

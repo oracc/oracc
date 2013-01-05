@@ -1,0 +1,120 @@
+namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace n = "http://oracc.org/ns/norm/1.0"
+namespace syn = "http://oracc.org/ns/syntax/1.0"
+
+word.content = text | group | grapheme | nongrapheme
+
+words = (word | sword.head | sword.cont | nonword | nongrapheme)*
+
+word = 
+  element g:w {
+    word.attributes,
+    word.content*
+  }
+
+sword.head = 
+  element g:w {
+    attribute headform { text },
+    attribute contrefs { xsd:IDREFS },
+    word.attributes,
+    word.content*
+  }
+
+sword.cont = 
+  element g:swc {
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute headref { xsd:IDREF },
+    attribute swc-final { "1" | "0" },
+    delim? ,
+    word.content*
+  }
+
+word.attributes = 
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute lemma { text }? ,
+    attribute guide { text }? ,
+    attribute sense { text }? ,
+    attribute pos   { text }? ,
+    attribute morph { text }? ,
+    attribute base  { text }? ,
+    attribute norm  { text }? ,
+    delim? ,
+    syntax.attributes*
+
+nonword = 
+  element g:nonw {
+    attribute xml:id { xsd:ID }? ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "comment" | "dollar" | "excised" | "punct" | "vari" }? ,
+    attribute form { text }? ,
+    attribute lemma { text }? ,
+    syntax.attributes* ,
+    break? , status.flags? , status.spans? , opener? , closer? , delim? ,
+    word.content*
+  }
+
+group = 
+  element g:gg {
+    attribute g:type { 
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+    } ,
+    g.meta ,
+    (group | grapheme | normseg)+
+  }
+
+groupgroup = 
+  element g:gg {
+    attribute g:type { "group" } ,
+    g.meta ,
+    (group | grapheme | normword)+
+  }
+
+syntax.attributes = 
+  (attribute syn:brk-before { text } |
+   attribute syn:brk-after  { text } |
+   attribute syn:ub-before  { text } |
+   attribute syn:ub-after   { text } )
+
+normword = 
+  element n:w { 
+    word.attributes , 
+    break? , status.flags? , status.spans? , opener? , closer? , 
+    hsqb_o? , hsqb_c? ,
+    (normwordword | normwordgroup | gloss | nongrapheme | group)* ,
+    syntax.attributes*,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? ,
+    statusStart? , statusEnd?
+  }
+
+normwordgroup = 
+  element n:word-group {
+     attribute g:type { "alternation" } ,
+     element n:grouped-word { normwordword }+
+  }
+
+normwordword = ( text | (normseg | normgroup)+)
+
+normseg =
+  element n:s {
+    n.meta ,
+    g.meta ,
+    text
+  }
+
+n.meta = normnum?
+
+normnum = attribute n:num { "yes" }
+
+normgroup = 
+  element n:g {
+    attribute g:type {
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "numword"
+    } ,
+    g.meta ,
+    (normgroup | normseg)+
+  }

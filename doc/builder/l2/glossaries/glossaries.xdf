@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2 Glossaries</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes a few essential details relating
+  to L2 glossaries.</dc:description>
+</d:meta>
+
+<h2>Rebuilding</h2>
+
+<p>The L2 rebuild consists of a series of phases, one of which is the
+rebuilding of the glossaries.  Each of the glossaries is rebuilt in order</p>
+
+<p><strong>N.B.:</strong> If you make changes in one glossary which
+you think should fix warnings which are being generated from another,
+but you are finding that the warnings are still being generated,
+check the output of the rebuild process to make sure there is no
+<code>REBUILD CANCELLED</code> message.</p>
+
+<p>The glossary building</p>
+
+</d:doc>

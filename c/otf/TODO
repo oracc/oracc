@@ -1,0 +1,12 @@
+lib/chr
+=======
+	* state / langtok needs separating into different
+	  modules
+	* charsets should depend only on a lang setting, not
+	  on the entire state mechanism
+
+lib/atf
+=======
+	* all the lem-running in text.c has to be factored
+	  out to l2lib so there is one call from text.c to
+	  perform all the annotation

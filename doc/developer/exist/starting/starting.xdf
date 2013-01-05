@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Getting Started with eXist on Oracc</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document shows how to write your first XQueries
+using the Oracc eXist installation.</dc:description>
+</d:meta>
+
+<h1>Getting Started with eXist on Oracc</h1>
+
+<h2>eXist</h2>
+
+<p><a href="http://www.exist-db.org">eXist</a> is an XML database
+which enables you to execute XQuery queries on your XML data.  eXist
+can be used on both servers and personal computers but here we
+concentrate on how to use the server installation on Oracc.</p>
+
+<h2>XML Data</h2>
+
+<p>Oracc loads three types of XML data into eXist:</p>
+
+<dl>
+<dt>OML</dt>
+<dd>OML is the native Oracc Markup Language XML data, the XML files
+that Oracc generates from the ATF sources, glossaries and so on.</dd>
+<dt>TEI</dt>
+<dd><a href="http://www.tei-c.org">TEI</a> is a widely used standard
+document format.  Oracc creates a version of its data in the TEI
+vocabulary and some users may prefer to use it rather than or in
+combination with the OML.  You can supply additional TEI files
+(perhaps from other sources) by saving them in
+<code>00tei</code> and Oracc will load them into eXist along with the
+TEI data it produces itself.</dd>
+<dt>USR</dt>
+<dd>USR data is any XML data which the user, you, want to include in
+your project.  By convention, this lives in <code>00xml/usr</code>,
+which may have its own tree of subdirectories if your additional data
+needs it.</dd>
+</dl>
+
+<h2>XQuery</h2>
+
+<p><a href="http://www.w3.org/XML/Query/">XQuery</a> is a W3C language
+designed for querying XML data.  XQuery itself is not described here,
+but there are many tutorials and books.  Here are a few to get started
+with:</p>
+<ul>
+<li><a href="http://www.stylusstudio.com/xquery_primer.html">Learn
+XQuery in 10 Minutes by Michael Kay</a></li>
+<li><a href="http://www.stylusstudio.com/xquery_flwor.html">Blooming
+FLWOR - An Introduction to the XQuery FLWOR Expression by Michael
+Kay</a></li>
+<li><a href="http://www.stylusstudio.com/xquery/xquery_functions.html">Defining
+your own Functions in XQuery by Michael Kay</a></li>
+<li><a href="http://saxon.sourceforge.net/">Saxon: The XSLT and XQuery
+Processor</a> may be useful if you want to play with XQuery without
+having to deal with eXist at the same time.</li>
+</ul>
+
+<h2>Interfaces</h2>
+
+<p>There are several ways of interacting with eXist, but we will stick
+to two of them here:</p>
+
+<h3>Filesystem</h3>
+
+<p>Using eXist from the filesystem (FS for short) means saving queries
+as files on the server as you would with any other part of the
+project, and then logging in to the server and using the command:</p>
+
+<pre class="example">oracc query [QUERY]</pre>
+
+<p>Where <code>[QUERY]</code> is replaced by the basename of your XQuery
+file (i.e., if you have an XQuery <code>00xml/lib/hello.xql</code>,
+you only have to say <code>oracc query hello</code>).</p>
+
+<h3>REST</h3>
+
+<p>Using eXist from the REST interface means creating a URL containing
+the name of the XQuery along with optional parameters.  You use the
+URL in your browser as with any other URL, and eXist processes the URL
+and sends the results back to your browser window.</p>
+
+<p>If you have set up the eXist support for your project and rebuilt
+the project since setting up that support, you can see the raw XML
+contained in the database by using the URL:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/rest/[PROJECT]
+</pre>
+
+<p>Where <code>[PROJECT]</code> is the name of your project.  Go on,
+try it now with your own project ...</p>
+
+<p>You should see something like this (in FireFox; the output with IE
+looks slightly different and with Safari and Chrome you will likely
+see nothing at all):</p>
+
+<div class="center">
+<img width="500px" src="rest-top.png" alt="Screen shot of rest/test"/>
+</div>
+
+<p>You can navigate through this hierarchy to understand the XML
+structures, though it is somewhat clumsy.  You can edit the URL at the
+top by adding the <code>name</code> portion of any of the child
+collections and load that URL.  For the project <code>test</code>
+shown in the screenshot above, for example, you can add
+<code>/oml/P108301/P108301.xmd</code> to the project URL and you
+should see something like this view of the OML version of the CDLI
+catalogue data for the text in question:</p>
+
+<div class="center">
+<img width="500px" src="rest-test-oml-P108301-xmd.png" alt="Screen shot of rest/test/oml/P108301/P108301.xmd"/>
+</div>
+
+<h2>Files</h2>
+
+<p>Whether you plan to use the FS or REST interface, you should save
+your queries in the conventional location <code>00xml/lib</code>.  So,
+the first thing you should do is create a file named
+<code>hello.xql</code> in that location which contains the
+following line:</p>
+
+<pre class="cookbook">
+&lt;a>"Hello world!" 2+2={2+2}&lt;/a>
+</pre>
+
+<p>Save the file and try the following REST URL, substituting
+<code>test</code> with your own project name:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/test/lib/hello.xql
+</pre>
+
+<p>You should see something like this:</p>
+
+<div class="center">
+<img width="500px" src="rest-hello.png" alt="Screen shot of result of hello.xql"/>
+</div>
+
+<p>Now log in to your project account, and try running the query in
+the FS via the <code>oracc</code> command:</p>
+
+<pre class="cookbook">
+oracc query hello
+</pre>
+
+<h2>More Help</h2>
+
+<p>The following links all explain how to begin using eXist from
+various points of view, both conceptual and practical.  New additions
+are always welcome.</p>
+
+<ul>
+<li><a
+	href="http://www.oreillynet.com/xml/blog/2008/05/xrx_a_simple_elegant_disruptiv_1.html">XRX:
+Simple, Elegant, Disruptive by Dan McCreary</a></li>
+<li><a
+	href="http://news.oreilly.com/2008/07/xrx-xqueries-in-exist.html">XRX:
+XQueries in eXist by Jeni Tenison</a></li>
+<li><a href="http://databits.lternet.edu/node/52">LTER's Getting
+started with eXist and XQuery</a></li>
+<li><a href="http://exist-db.org/devguide_xquery.html">Writing Web
+Applications using XQuery</a> (part of the <a
+href="http://exist-db.org/devguide.html">eXist Developer's
+Guide</a></li>
+<li><a href="http://en.wikibooks.org/wiki/XRX">Web Development with
+XRX (A Wikibook)</a></li>
+</ul>
+
+<d:resources>
+<d:resource copy="yes" href="etc/rest-hello.png"/>
+<d:resource copy="yes" href="etc/rest-test-oml-P108301-xmd.png"/>
+<d:resource copy="yes" href="etc/rest-top.png"/>
+</d:resources>
+
+</d:doc>

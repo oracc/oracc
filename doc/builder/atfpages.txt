@@ -1,0 +1,15 @@
+* Linguistic Annotation
+linganno/linganno.xdf
+l2/COFs/COFs.xdf
+l2/PSUs/PSUs.xdf
+l2/BFFs/BFFs.xdf
+l2/howitworks/howitworks.xdf
+l2/lemsyntax/lemsyntax.xdf
+
+* Details of ATF
+labels/labels.xdf
+../ns/xtf/1.0/xtf.xdf#lexical
+../ns/xtf/1.0/xtf.xdf#protocols
+../ns/xtf/1.0/xtf.xdf#advanced
+../ns/xtf/1.0/xtf.xdf#linkage
+dates/dates.xdf

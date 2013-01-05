@@ -1,0 +1,400 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/tools';
+use Frontier::RPC2;
+use MIME::Base64;
+use Data::Dumper;
+use Encode;
+
+binmode STDIN ,':raw';
+binmode STDOUT,':raw';
+binmode STDERR,':utf8';
+
+$ENV{'ORACC'} = '@@ORACC@@';
+
+my $atf_processor = '@@ORACC@@/bin/ox';
+my $lemcounter = '@@ORACC@@/bin/lemcount.plx';
+my $coder;
+my $debug_xml = 1;
+my $l2 = 1;
+
+#==========================================================================
+#  CGI Support
+#==========================================================================
+#  Simple CGI support for Frontier::RPC2. You can copy this into your CGI
+#  scripts verbatim, or you can package it into a library.
+#  (Based on xmlrpc_cgi.c by Eric Kidd <http://xmlrpc-c.sourceforge.net/>.)
+
+# Process a CGI call.
+sub process_cgi_call ($) {
+    my ($methods) = @_;
+    my $length = $ENV{'CONTENT_LENGTH'};
+    open RPCLOG, ">/tmp/rpc$$.log";
+    print RPCLOG map { "$_: $ENV{$_}\n" } sort keys %ENV;
+    # Fetch our body. (before sanity checks to allow debugging output)
+    my $body;
+    warn "$0: DEBUG: reading body of XML-RPC request ($length bytes) at " .
+	scalar(localtime) . "\n";
+    my $count = read STDIN, $body, $length;
+
+    print RPCLOG $body;
+
+    # Get our CGI request information.
+    my $method = $ENV{'REQUEST_METHOD'};
+    my $type = $ENV{'CONTENT_TYPE'};
+    my $enc = $type;
+    $type =~ s/;.*$//;
+    $enc =~ s/^.*?;\s*//;
+
+    # Perform some sanity checks.
+    $method = "" unless $method;
+    http_error(405, "Method Not Allowed") unless $method eq "POST";
+    http_error(400, "Bad Request (type = $type)") unless $type eq "text/xml";
+    http_error(411, "Length Required") unless $length > 0;
+    {
+	use bytes;
+	http_error(412, "Bad Request (count != length)") unless $count == $length;
+    }
+
+    warn "$0: DEBUG: finished read at " . scalar(localtime) . "\n";
+
+    # 2004-03-10 (mdh)
+    #
+    # hijack Frontier, which is absurdly inefficient at this very simple task
+    # 
+    # Add methods that get large b64 blobs to this regexp for more efficient
+    # processing.
+    if ($body =~ /<methodName.*?>donatus.analyze/) {
+	$body =~ /<base64>(.*?)<\/base64>/s;
+	my $base64 = $1 ? $1 : "";
+	my $object = new Donatus::DataType($base64);
+	$coder = Frontier::RPC2->new;
+	send_xml($coder->encode_response(analyze($object)));
+	return;
+    }
+
+    # Serve our request.
+    warn "$0: DEBUG: instantiating new Frontier server at " .
+	scalar(localtime) . "\n";
+
+#    open(BOD,">/tmp/$$-body.xml"); print BOD $body; close(BOD);
+
+#    my @bodydump = split(/\n/,Dumper($body));
+#    foreach my $b (@bodydump) {
+#	warn "$0: $b\n";
+#    }
+    $coder = Frontier::RPC2->new;
+
+    warn "$0: $$: DEBUG: calling coder->serve at " .
+	scalar(localtime) . "\n";
+    my $coder_res = $coder->serve($body, $methods);
+    warn "$0: $$: DEBUG: coder->serve returned at " .
+	scalar(localtime) . "\n";
+    
+    send_xml($coder_res);
+    close RPCLOG;
+}
+
+# Send an HTTP error and exit.
+sub http_error ($$) {
+    my ($code, $message) = @_;
+    print <<"EOD";
+Status: $code $message
+Content-type: text/html
+
+<title>$code $message</title>
+<h1>$code $message</h1>
+<p>Unexpected error processing XML-RPC request.</p>
+EOD
+    exit 0;
+}
+
+# Send an XML document (but don't exit).
+sub send_xml ($) {
+    my ($xml_string) = @_;
+    my $len;
+
+#    warn "$0: $$: DEBUG: send_xml called at " .
+#	scalar(localtime) . "\n";
+
+    open(TMP,">/tmp/$$.xml"); print TMP $xml_string; close(TMP);
+    $len = -s "/tmp/$$.xml";
+    open(LEN,">/tmp/$$.len"); print LEN $len; close(LEN);
+{ 
+    my $oldbar = $|;
+    my $cfh = select(STDOUT);
+    $| = 1;
+    print <<"EOD";
+Status: 200 OK
+Content-type: text/xml
+Content-length: $len
+
+EOD
+    $| = $oldbar;
+    select($cfh);
+}
+    # We want precise control over whitespace here.
+    system 'cat', "/tmp/$$.xml";
+
+#unlink "/tmp/$$.xml";
+unlink "/tmp/$$.len";
+#unlink "/tmp/$$.tmp";
+#unlink "/tmp/$$.log";
+}
+
+#==========================================================================
+#  RPC interface
+#==========================================================================
+
+sub
+hello {
+    return "hello";
+}
+
+sub
+atf_retrieve {
+    my $data = shift;
+    my $ret = undef;
+    if (!ref($data)) { # it was sent as a string
+	if ($data =~ /\&amp;/) {
+	    $data =~ s/\&amp;/&/g;
+	    $data =~ s/\&lt;/</g;
+	    $data =~ s/\&gt;/>/g;
+	    $data =~ s/\&quot;/"/g;
+	}
+	$ret = $data;
+    } elsif ($data->isa('Frontier::RPC2::Base64')) {
+	my $str = MIME::Base64::decode_base64($data->value);
+	Encode::_utf8_on($str);
+	$ret = $str;
+    } else {
+#	if ($data =~ /\&amp;/) {
+#	    $data =~ s/\&amp;/&/g;
+#	    $data =~ s/\&lt;/</g;
+#	}
+	$ret = $data;
+    }
+    $ret;
+}
+
+sub
+atf_check {
+    warn "$0: DEBUG: entering atf_check at " .
+	scalar(localtime) . "\n";
+
+    my $str = shift;
+#    print STDERR "hello from atf_check\n";
+#    use Data::Dumper; open(LOG,">/tmp/atfcheck-$$.log");
+#    print LOG Dumper($str);
+
+    my $atf = atf_retrieve($$str{'data'});
+    my $b64 = 0;
+
+    atf_processor_check();
+
+#    print LOG "===atf=\n";
+#    print LOG $atf;
+#    close(LOG);
+
+    my $args = $$str{'atf-args'} || 'cvm';
+#    if ($data !~ /\&/) {
+#	$atf = MIME::Base64::decode($data);
+#	$b64 = 1;
+#    }
+    my $results = {};
+    my $bad_fn = "/tmp/$$.bad";
+    my $err_fn = "/tmp/$$.log";
+    my $atf_err_fn = $$str{'atf-file-name'} || '';
+    my $atf_ext = atf_set_ext($atf_err_fn);
+    my $atf_fn = "/tmp/$$.$atf_ext";
+    my $atf_err_fn_arg = $atf_err_fn ? " -e\"$atf_err_fn\"" : '';
+
+    open(OUT,">$atf_fn");
+    print OUT $atf;
+    close(OUT);
+    my @syslist = ('-E');
+    if ($atf_err_fn) {
+	push @syslist, '-e', $atf_err_fn;
+    }
+    push @syslist, '-b', $bad_fn, "-$args",'-l', $err_fn, $atf_fn;
+    unshift(@syslist, '-v') if $atf_processor =~ /ox$/;
+    my %ret = ();
+    print RPCLOG "$atf_processor @syslist\n";
+    system $atf_processor, @syslist;
+    my $err = 0;
+    my $errstr = 0;
+    if ($? & 127) {
+	$err = 1;
+	$errstr = "Your input crashed the lemmatizer; please e-mail stinney\@sas.upenn.edu with ref '$$'";
+	system 'cp', "/tmp/$$.tmp", "/var/tmp/atfserver/$$.tmp";
+#	$errstr = 'Your input crashed the checker; this is not your fault--the authorities have been informed.';
+#	system 'cp', "/tmp/$$.$atf_ext", "/var/tmp/oracc/atfserver/$$.$atf_ext";
+#	system 'mail', '-N', '-s', "/var/tmp/atfserver/$$.$atf_ext crashes checker", 'stinney\@sas.upenn.edu'; </dev/null >/dev/null 2>&1";	
+    } else {
+	$err = 0;
+	$errstr = 'Check OK';
+    }
+    undef $/;
+    if (-z $err_fn) {
+	$ret{'badboys'} = $b64 ? MIME::Base64::encode_base64("") : "";
+	$ret{'check'} = $b64 ? MIME::Base64::encode_base64("ATF is clean.\n") : "ATF file $atf_err_fn is clean.\n";
+    } else {
+	my @err;
+	open(IN,$err_fn) || die "rpc.plx: can't open '$err_fn'\n";
+	@err = (<IN>);
+	close(IN);
+	my $estr = MIME::Base64::encode_base64(encode("UTF8",join('',@err)));
+	$ret{'check'} = $coder->base64($estr);
+	my @bad;
+	open(IN,$bad_fn) || die "rpc.plx: can't open $bad_fn\n";
+	@bad = (<IN>);
+	close(IN);
+	$ret{'badboys'} = join('',@bad);
+    }
+    $ret{'b64'} = ($b64 ? 't' : 'nil');
+    unlink($atf_fn);
+    unlink($bad_fn);
+    unlink($err_fn);
+
+    my $cerr = [ $coder->int($err), $errstr];
+    my %res = ( result=>{%ret}, err=>[$cerr] );
+
+    warn "$0: DEBUG: exiting atf_check $args at " .
+	scalar(localtime) . "\n";
+
+    return { %res };
+}
+
+sub
+atf_lemcount {
+    my $xobj = shift;
+    my $data = $$xobj{'data'};
+    my $err_fn = "/tmp/$$.log";
+    my $atf_err_fn = $$xobj{'atf-file-name'} || '';
+    my $atf_ext = atf_set_ext($atf_err_fn);
+    my $atf_fn = "/tmp/$$.$atf_ext";
+
+    open(TMP,">/tmp/$$.tmp");
+    print TMP atf_retrieve($data);
+    close(TMP);
+    binmode(STDIN,':utf8');
+    binmode(STDOUT,':utf8');
+    warn "$0: DEBUG: attempting lemmatization of /tmp/$$.tmp at " .
+	scalar(localtime) . "\n";
+    my @lemmatized = (`$lemcounter </tmp/$$.tmp`);
+    warn "$0: DEBUG: exiting lemmatization of /tmp/$$.tmp at " .
+	scalar(localtime) . "\n";
+    my $cerr = [ $coder->int(0), ''];
+    my %res = ( result=>join("\n",@lemmatized), err=>[$cerr] );
+    return { %res };
+}
+
+sub
+atf_lemmatize {
+    my $xobj = shift;
+    my $data = $$xobj{'data'};
+    my $atf_err_fn = $$xobj{'atf-file-name'} || '';
+    my $atf_ext = atf_set_ext($atf_err_fn);
+    my $err_fn = "/tmp/$$.log";
+    my $atf_fn = "/tmp/$$.$atf_ext";
+    my $atf_err_fn_arg = $atf_err_fn ? " -e\"$atf_err_fn\"" : '';
+
+    atf_processor_check();
+
+    open(TMP,">$atf_fn");
+    print TMP atf_retrieve($data);
+    close(TMP);
+    binmode(STDIN,':utf8');
+    binmode(STDOUT,':utf8');
+    warn "$0: DEBUG: attempting lemmatization of /tmp/$$.tmp at " .
+	scalar(localtime) . "\n";
+
+    my @lemmatized = (`$atf_processor -E $atf_err_fn_arg -l$err_fn -M , $atf_fn`);
+    warn "$0: DEBUG: exiting lemmatization of /tmp/$$.tmp at " .
+	scalar(localtime) . "\n";
+
+    my $err;
+    my $errstr;
+    my $serr = ($? >> 8);
+    warn "rpc.plx: atf_lemmatize exit value = $? shifted to $serr\n";
+    if ($serr >= 127) { # bit hinky
+	$err = $serr - 127;
+#	$errstr = 'Your input crashed the lemmatizer; this is not your fault--the authorities have been informed.';
+	$errstr = "Your input crashed the lemmatizer; please e-mail stinney\@sas.upenn.edu with ref '$$'";
+	system 'cp', "/tmp/$$.tmp", "/var/tmp/atfserver/$$.tmp";
+#	system "mail -N -s '/var/tmp/atfserver/$$.tmp crashes lemmatizer' stinney\@sas.upenn.edu </dev/null >/dev/null 2>&1";	
+    } else {
+	$err = ($? >> 8);
+	# FIXME: atf2xtf needs better errnum reporting and rpc needs to
+	# reflect that
+	my $errmsg;
+	if ($err == 3) {
+	    $errmsg = 'ATF OK except for lemmatization errors; use ATF check again';
+	} else {
+	    $errmsg = 'ATF errors found; fix and try again';
+	}
+	$errstr = ($err ? $errmsg : 'Lemmatization OK');
+    }
+    my $cerr = [ $coder->int($err), $errstr];
+    my %res = ();
+    if ($err == 0) {
+	my $b64lem = MIME::Base64::encode_base64(encode("UTF-8",join('',@lemmatized)));
+	%res = ( result=>$coder->base64($b64lem), err=>[$cerr] );
+    } else {
+	%res = ( err=>[$cerr] );
+    }
+    return { %res };
+}
+
+sub
+atf_template {
+    my $xobj = shift;
+    my $data = $$xobj{'data'};
+    open(TMP,">/tmp/$$.tmp");
+    print TMP $data;
+    close(TMP);
+    my @template = (`@@ORACC@@/bin/atftemplate.plx /tmp/$$.tmp`);
+#    print STDERR join('',@template);
+#    unlink("/tmp/$$.tmp");
+#    my %ret = ();
+#    $ret{'template'} = join('',@template);
+    my %res = ( result=>join('',@template), err=>'');
+    return { %res };
+}
+
+sub try_or_die {
+    die "dir $_[0] does not exist\n" unless -d $_[0]; 
+}
+
+sub
+atf_processor_check {
+    die "ATF processor $atf_processor does not exist (UID=$<)\n"
+	unless -e $atf_processor;
+    die "ATF processor $atf_processor cannot be read\n"
+	unless -r _;
+    die "ATF processor $atf_processor cannot be executed\n"
+	unless -x _;    
+}
+
+sub
+atf_set_ext {
+    my $fn = shift;
+    if ($fn =~ /\.otf/) {
+	'otf';
+    } else {
+	'atf';
+    }
+}
+
+#==========================================================================
+#  MAIN: register RPC methods
+#==========================================================================
+
+process_cgi_call({'oracc.hello' =>       \&hello,
+		  'oracc.atf.check'=>    \&atf_check,
+		  'oracc.atf.lemcount'=> \&atf_lemcount,
+		  'oracc.atf.lemmatize'=>\&atf_lemmatize,
+		  'oracc.atf.template'=> \&atf_template,
+		 });
+
+exit(0);

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<struct:page 
+	xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
+        xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	file="home.xml" id="home" accesskey="1">
+	
+		<!-- contexts-->
+		<struct:page file="contexts/index.xml" id="contexts-index">
+		        <struct:page file="contexts/ezida.xml" id="contexts-ezida"/>
+			<struct:page file="contexts/huzirina.xml" id="contexts-huzirina"/>
+			<struct:page file="contexts/ashipushouse.xml" id="contexts-ashipushouse"/>
+			<struct:page file="contexts/kaluslibrary.xml" id="contexts-kaluslibrary"/>
+			<struct:page file="contexts/seleuciduruk.xml" id="contexts-seleuciduruk"/>
+		</struct:page>
+		
+		<!-- CAMS -->
+		<struct:page file="cams/index.xml" id="cams-index">
+<!--		        <struct:page file="cams/searchingcamscorpus.xml" id="cams-searchingcamscorpus"/>
+		        <struct:page file="cams/glossaries.xml" id="cams-glossaries"/> -->
+			<struct:page file="cams/keywords.xml" id="cams-keywords"/>
+		</struct:page>
+		
+		<!--  bibliography--> 
+		<struct:page file="bibliography/index.xml" id="biblio-index">
+		</struct:page>
+		
+		<struct:page file="glossarypage.xml" id="glossary" accesskey="5"/>
+		<struct:page file="techtermspage.xml" id="techterms" accesskey="5"/>
+		
+	 <!--  external resources-->
+		<struct:page file="extres/index.xml" id="extres-index">
+		</struct:page>
+	
+	<!--About the project-->
+		<struct:page file="about.xml" id="about" accesskey="6"/>
+	
+	<struct:page file="accesskeys.xml" id="accesskeys" accesskey="0" hide-menu-link="yes" show-access-link="yes"/>
+	<struct:page file="sitemap.xml" id="site-map" accesskey="3" hide-menu-link="yes" show-access-link="yes"/>
+	<struct:page file="privacy.xml" id="privacy" hide-menu-link="yes" show-reference-link="yes"/>
+	<struct:page file="standards.xml" id="standards" hide-menu-link="yes" show-reference-link="yes"/>
+	<struct:page file="copyright.xml" id="copyright" accesskey="7" hide-menu-link="yes" show-reference-link="yes"/>
+	<struct:page file="404.xml" id="404" hide-menu-link="yes" hide-site-map-link="yes"/>
+	
+</struct:page>

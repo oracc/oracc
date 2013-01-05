@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc XML Text Architecture</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-01-06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of the
+  architecture of the output of the ATF processor for the purpose of
+  initial orientation of developers working with the XML.  Detailed
+  descriptions of each XML data type in the XML output are separately
+  available.</dc:description>
+</d:meta>
+
+<h2>ATF Files</h2>
+
+<p>The ATF format is a precisely defined ASCII notation which can be
+translated correctly and without loss of information into an XML
+equivalent; ATF is <a href="/doc/builder/">fully documented</a> and the
+following example is provided only as a simple orientation for the
+reader:</p>
+
+<pre>
+&amp;Q000887 = Gudea 1
+@composite
+1. {d}ba-u2
+2. dumu an-na
+3. nin-a-ni
+</pre>
+
+<p>Readers to whom this much ATF is not familiar are referred to the
+<a href="/doc/builder/primer.html/">ATF Primer</a>.</p>
+
+<h2>XTF Files</h2>
+
+<p>The ATF processor was originally a program which converted from ATF
+to its XML representation, named XTF (XML Transliteration Format).
+However, as the functionality of the ATF processor has grown the XTF
+format has become host to several subsidiary schemas.   The ATF
+processor still creates a single output, with document element
+<code>xtf</code>, which wraps all of this subsidiary information.</p>
+
+
+<h2>Components</h2>
+
+<h3><a href="/ns/XTF2/">XTF</a></h3>
+
+<p>The XTF component is an XML representation of the ATF, which tags
+transliterations at the grapheme level (word level for alphabetic
+scripts), and follows the physical object structure using containers
+for object, surface, column, line, orthographic word and other types
+of object hierarchy.</p>
+
+<h3><a href="/ns/XCL/">XCL</a></h3>
+
+<p>The XCL component is a rewriting of the XTF which follows document
+structure.  XCL has a very simple container hierarchy, consisting only
+of chunks (<code>c</code>) which contain lists of lemmata
+(<code>l</code>) and discontinuities (<code>d</code>).  This makes it
+much more suitable for higher-level linguistic analysis than the XTF,
+since the chunks may represent discourse divisions (dates, witness
+lists) and text-units such as sentences.</p>
+
+<p>The lemma nodes in XCL also host lemmatization information if that
+is provided in the ATF.  In this case, lemma nodes are present for
+<i>each lemma</i>, even if multiple lemmata were written with a single
+orthographic word in the ATF.  The data associated with a lemma are
+stored in form elements in the XFF namespace.</p>
+
+<h3><a href="/ns/XFF/">XFF</a></h3>
+
+<p>XFF is the data format used by Oracc for storing information about an
+orthographic form: the data structure is extensive and only partly
+documented.  The XML structure is an element with attributes for each
+data item: attributes include orthographic form (<code>form</code>),
+lemma data such as citation form (<code>cf</code>), guideword
+(<code>gw</code>) and sense (<code>sense</code>).</p>
+
+<p>XFF <code>f</code> nodes within XCL may also contain a
+<code>dict</code> element which caches the glossary information
+located by the ATF processor for the form.  This is harvested for
+inclusion as an instance in the computationally generated
+glossaries.</p>
+
+<h3>Linkbase</h3>
+
+<p>A linkbase may occur the end of the XCL element.  The linkbase is
+implemented using XLink, and is a host for annotation features which
+may span multiple lemmata, and even multiple chunks of the XCL.  The
+linkbase is a list of <code>linkset</code> elements, each of which
+stores one collection of data about a phrase or other object of
+interest.</p>
+
+<p>The linkbase is presently used for Phrasal Semantic Units (PSUs),
+i.e., glossary entries consisting of more than one word.  Work is
+already at advanced stage on number system analysis, which will be
+implemented with a linkset for each number.  Linksets have both the
+generic data on which lemmata are part of the linkset, and
+object-specific data; for metrological quantities, this data will
+include modern equivalencies, for example.</p>
+
+<h3><a href="/ns/XTR/">XTR</a></h3>
+
+<p>Translations, including those which are given as interlinear
+translations in the ATF, are included at the end of the XTF element.
+They are encoded in an extended version of XHTML.</p>
+
+<h2>Examples</h2>
+
+<h3>XTF Outline</h3>
+
+<p>This example shows the element framework of an XTF file and the
+various namespaced data elements which form part of it.</p>
+
+<pre class="example">
+&lt;xtf xmlns="http://oracc.org/ns/xtf/1.0"
+     xmlns:g="http://oracc.org/ns/gdl/1.0">
+  &lt;transliteration>
+    &lt;object>
+      &lt;surface>
+        &lt;column>
+          &lt;l>
+            &lt;g:w>
+              &lt;g:g/>
+            &lt;/g:w>
+          &lt;/l>
+        &lt;/column>
+      &lt;/surface>
+    &lt;/object>
+    &lt;xcl xmlns="http://oracc.org/ns/xcl/1.0"
+         xmlns:xff="http://oracc.org/ns/xff/1.0">
+      &lt;c>
+        &lt;d/>
+        &lt;l>
+          &lt;xff:f/>
+          &lt;dict/>
+        &lt;/l>
+      &lt;/c>
+      &lt;linkbase>
+        &lt;linkset>
+          &lt;link/>
+          &lt;xff:f/>
+          &lt;dict/>
+        &lt;/linkset>
+      &lt;/linkbase>
+    &lt;/xcl>
+  &lt;/transliteration>
+  &lt;xtr:translation xmlns:xtr="http://oracc.org/ns/xtr/1.0">
+    &lt;xh:p xmlns:xh="http://www.w3.org/1999/xhtml"/>
+  &lt;/xtr:translation>
+&lt;/xtf>
+</pre>
+
+<h3>XTF Sample</h3>
+
+<p>The sample traces a single orthographic word through the three
+complementary data types which are used to describe its properties
+from different perspectives.</p>
+
+<h4>Transliteration</h4>
+
+<p>The transliteration XML follows the object and orthographic word
+divisions standardly employed in Assyriological practice.  Although
+the logogram <code>U₂.{d}UTU</code> could be broken up into two
+orthographic words, in practice this is not done--and in any case,
+many other such logograms or spellings exhibiting crasis exist which
+cannot reasonably be broken up.  The annotation for transliteration is
+carried out at the grapheme level, facilitating future work on
+graphemics, graphotactics and sign list development.</p>
+
+<pre class="example">
+&lt;<span class="xml_elem">xtf:l</span> <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">id</span>="<span class="xml_string">P348831.21</span>" <span class="xml_attr">n</span>="<span class="xml_string">19</span>" <span class="xml_attr">label</span>="<span class="xml_string">o 19</span>">
+...
+  &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">w</span> <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">id</span>="<span class="xml_string">P348831.21.4</span>" <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">lang</span>="<span class="xml_string">akk</span>" <span class="xml_attr">form</span>="<span class="xml_string">U₂.{d}UTU</span>">
+    &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">gg</span> <span class="xml_ns_prefix">g</span>:<span class="xml_attr">type</span>="<span class="xml_string">logo</span>">
+      &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">s</span> <span class="xml_ns_prefix">g</span>:<span class="xml_attr">status</span>="<span class="xml_string">ok</span>" <span class="xml_ns_prefix">g</span>:<span class="xml_attr">role</span>="<span class="xml_string">logo</span>" <span class="xml_ns_prefix">g</span>:<span class="xml_attr">logolang</span>="<span class="xml_string">sux</span>" 
+           <span class="xml_ns_prefix">g</span>:<span class="xml_attr">delim</span>="<span class="xml_string">.</span>" >U₂&lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">s</span>>
+      &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">d</span> <span class="xml_ns_prefix">g</span>:<span class="xml_attr">role</span>="<span class="xml_string">semantic</span>" <span class="xml_ns_prefix">g</span>:<span class="xml_attr">pos</span>="<span class="xml_string">pre</span>">
+        &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">v</span> <span class="xml_ns_prefix">g</span>:<span class="xml_attr">status</span>="<span class="xml_string">ok</span>">d&lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">v</span>>
+      &lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">d</span>>
+      &lt;<span class="xml_ns_prefix">g</span>:<span class="xml_elem">s</span> <span class="xml_ns_prefix">g</span>:<span class="xml_attr">status</span>="<span class="xml_string">ok</span>" <span class="xml_ns_prefix">g</span>:<span class="xml_attr">role</span>="<span class="xml_string">logo</span>" <span class="xml_ns_prefix">g</span>:<span class="xml_attr">logolang</span>="<span class="xml_string">sux</span>">UTU&lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">s</span>>
+    &lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">gg</span>>
+  &lt;/<span class="xml_ns_prefix">g</span>:<span class="xml_elem">w</span>>
+&lt;/<span class="xml_elem">xtf:l</span>>
+</pre>
+
+<h4>Lemmatization</h4>
+
+<p>In the lemmatized tree, the XCL format, our single orthographic
+form has been decomposed into its two constituent lemmata.  The
+individual lemmata have been resolved to glossary entries during
+validation, and the associated data is preserved for later harvesting
+as an instance in the glossary, avoiding a repetition of the look up
+and validation process during harvesting.</p>
+
+<pre class="example">
+&lt;<span class="xml_elem">xcl:l</span> <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">id</span>="<span class="xml_string">l000097</span>" <span class="xml_attr">ref</span>="<span class="xml_string">P348831.21.4</span>">
+  &lt;<span class="xml_ns_prefix">xff</span>:<span class="xml_elem">f</span>  <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">lang</span>="<span class="xml_string">akk</span>" <span class="xml_attr">rws</span>="<span class="xml_string">SB</span>" <span class="xml_attr">form</span>="<span class="xml_string">U₂.{d}UTU</span>" <span class="xml_attr">type</span>="<span class="xml_string">cof-head</span>"
+          <span class="xml_attr">literal</span>="<span class="xml_string">+šammu[plant(s)]N$šammi&amp;Šamaš[]DN</span>"
+          <span class="xml_attr">sublem</span>="<span class="xml_string">šammu[plant(s)]N$šammi</span>"
+          <span class="xml_attr">idrefs</span>="<span class="xml_string">cams_cbd_akk.id6230595</span>" <span class="xml_attr">cf</span>="<span class="xml_string">šammu</span>" <span class="xml_attr">gw</span>="<span class="xml_string">plant(s)</span>"
+          <span class="xml_attr">sense</span>="<span class="xml_string">plant(s)</span>" norm0="šammi" <span class="xml_attr">pos</span>="<span class="xml_string">N</span>" <span class="xml_attr">epos</span>="<span class="xml_string">N</span>" <span class="xml_attr">freq</span>="<span class="xml_string">1</span>"
+          <span class="xml_attr">pct</span>="<span class="xml_string">33</span>" <span class="xml_attr">new</span>="<span class="xml_string">1</span>" ex_norm0="1" ex_sense="1" is_part="1" />
+  &lt;<span class="xml_elem">dict</span>  <span class="xml_attr">ref</span>="<span class="xml_string">cams/cbd/akk</span>" <span class="xml_attr">m</span>="<span class="xml_string">FORM|CF|GW|NORM0|SENSE</span>"
+         <span class="xml_attr">fid</span>="<span class="xml_string">cams_cbd_akk.id6230595</span>" >
+    &lt;<span class="xml_elem">r</span> <span class="xml_attr">type</span>="<span class="xml_string">norm0</span>" <span class="xml_attr">ref</span>="<span class="xml_string">x001872.10</span>"/>
+    ... [more r elements skipped] ...
+  &lt;/<span class="xml_elem">dict</span>>
+&lt;/<span class="xml_elem">xcl:l</span>>
+&lt;<span class="xml_elem">xcl:l</span> <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">id</span>="<span class="xml_string">l000098</span>" <span class="xml_attr">ref</span>="<span class="xml_string">P348831.21.4</span>">
+  &lt;<span class="xml_ns_prefix">xff</span>:<span class="xml_elem">f</span>  <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">lang</span>="<span class="xml_string">akk</span>" <span class="xml_attr">form</span>="<span class="xml_string">U₂.{d}UTU</span>" <span class="xml_attr">type</span>="<span class="xml_string">cof-tail</span>"
+          <span class="xml_attr">sublem</span>="<span class="xml_string">Šamaš[]DN</span>" <span class="xml_attr">idrefs</span>="<span class="xml_string">cams_cbd_qpn.id3266321</span>" <span class="xml_attr">cf</span>="<span class="xml_string">Šamaš</span>"
+          <span class="xml_attr">gw</span>="<span class="xml_string">1</span>" <span class="xml_attr">sense</span>="<span class="xml_string">1</span>" norm0="Šamaš" <span class="xml_attr">pos</span>="<span class="xml_string">DN</span>" <span class="xml_attr">epos</span>="<span class="xml_string">DN</span>" <span class="xml_attr">freq</span>="<span class="xml_string">1</span>"
+          <span class="xml_attr">pct</span>="<span class="xml_string">33</span>" <span class="xml_attr">new</span>="<span class="xml_string">1</span>" ex_sense="1" is_part="1" />
+  &lt;<span class="xml_elem">dict</span>  <span class="xml_attr">ref</span>="<span class="xml_string">cams/cbd/qpn</span>" <span class="xml_attr">m</span>="<span class="xml_string">FORM|CF|GW|NORM0|SENSE</span>"
+         <span class="xml_attr">fid</span>="<span class="xml_string">cams_cbd_qpn.id3266321</span>" >
+    &lt;<span class="xml_elem">r</span> <span class="xml_attr">type</span>="<span class="xml_string">norm0</span>" <span class="xml_attr">ref</span>="<span class="xml_string">x000663.7</span>"/>
+    ... [more r elements skipped] ...
+  &lt;/<span class="xml_elem">dict</span>>
+&lt;/<span class="xml_elem">xcl:l</span>>
+</pre>
+
+<h4>Linkbase</h4>
+
+<p>After lemmatization, a process is run over the XCL tree which
+discovers multi-word phrases ("Phrasal Semantic Units" or psu's).  For
+each such PSU, a linkset is entered into the linkbase.  The aggregate
+form is then also resolved against the glossary: this is how instances
+of compounds are harvested and in turn included in the glossary.</p>
+
+<pre class="example">
+&lt;<span class="xml_elem">linkset</span>  <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">title</span>="<span class="xml_string">šammi Šamaš[sunflower]N</span>" <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">id</span>="<span class="xml_string">ls00003</span>"
+          <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">type</span>="<span class="xml_string">extended</span>" <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">role</span>="<span class="xml_string">psu</span>" >
+  &lt;<span class="xml_elem">link</span>  <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">title</span>="<span class="xml_string">šammu</span>" <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">type</span>="<span class="xml_string">locator</span>" <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">href</span>="<span class="xml_string">#l000097</span>"
+         <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">role</span>="<span class="xml_string">elt</span>" />
+  &lt;<span class="xml_elem">link</span>  <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">title</span>="<span class="xml_string">Šamaš</span>" <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">type</span>="<span class="xml_string">locator</span>" <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">href</span>="<span class="xml_string">#l000098</span>"
+         <span class="xml_ns_prefix">xl</span>:<span class="xml_attr">role</span>="<span class="xml_string">elt</span>" />
+  &lt;<span class="xml_ns_prefix">xff</span>:<span class="xml_elem">f</span>  <span class="xml_ns_prefix">xml</span>:<span class="xml_attr">lang</span>="<span class="xml_string">akk</span>" <span class="xml_attr">form</span>="<span class="xml_string">U₂.{d}UTU</span>" <span class="xml_attr">type</span>="<span class="xml_string">compound</span>"
+          <span class="xml_attr">sublem</span>="<span class="xml_string">šammi Šamaš[sunflower]N</span>"
+          <span class="xml_attr">idrefs</span>="<span class="xml_string">cams_cbd_akk.id6230009</span>" <span class="xml_attr">cf</span>="<span class="xml_string">šammi Šamaš</span>" <span class="xml_attr">gw</span>="<span class="xml_string">sunflower</span>"
+          <span class="xml_attr">sense</span>="<span class="xml_string">sunflower</span>" norm0="šammi Šamaš" <span class="xml_attr">pos</span>="<span class="xml_string">N</span>" <span class="xml_attr">epos</span>="<span class="xml_string">N</span>" />
+  &lt;<span class="xml_elem">dict</span>  <span class="xml_attr">ref</span>="<span class="xml_string">cams/cbd/akk</span>" <span class="xml_attr">m</span>="<span class="xml_string">FORM|CF|NORM0|SENSE</span>"
+         <span class="xml_attr">fid</span>="<span class="xml_string">cams_cbd_akk.id6230009</span>" >
+    &lt;<span class="xml_elem">r</span> <span class="xml_attr">type</span>="<span class="xml_string">norm0</span>" <span class="xml_attr">ref</span>="<span class="xml_string">x001871.1</span>"/>
+  &lt;/<span class="xml_elem">dict</span>>
+&lt;/<span class="xml_elem">linkset</span>>
+</pre>
+
+<d:resources/>
+
+
+<d:references>
+<d:ref name="XTF Documentation" uri="/ns/XTF2/"/>
+<d:ref name="XCL Documentation" uri="/ns/XCL/"/>
+<d:ref name="XFF Documentation" uri="/ns/XFF/"/>
+<!-- <d:ref name="Linkbase Documentation" uri="../linkbase/"/> -->
+<d:ref name="XTR Documentation" uri="/ns/XTR/"/>
+
+</d:references>
+
+</d:doc>

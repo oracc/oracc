@@ -1,0 +1,63 @@
+<project xmlns="http://oracc.org/ns/xpd/1.0">
+  <n/>
+  <name/>
+  <abbrev/>
+  <type>corpus</type>
+  <logo/>
+  <public>false</public>
+  <blurb/>
+  <image/>
+  <image-alt/>
+  <option name="build-approved-policy" value="atf"/>
+  <option name="build-outlined-policy" value="approved"/>
+  <option name="catalog-build-policy" value="auto"/>
+  <option name="build-tei" value="false"/>
+  <option name="views-TEI" value="false"/>
+  <option name="build-tei-list" value="atf"/>
+  <option name="build-tei-dist" value="false"/>
+  <option name="build-tei-trim" value="false"/>
+  <option name="build-ignore-bad-proxy" value="false"/>
+  <option name="atf-lem-extended" value="false"/>
+  <option name="atf-cuneify-notices" value="false"/>
+  <option name="atf-lem-dsa" value="false"/>
+  <option name="atf-lem-nsa" value="false"/>
+  <option name="atf-lem-dsa" value="none"/>
+  <option name="cbd-mode" value="mixed"/>
+  <option name="cbd-periods" value="false"/>
+  <option name="pager-back-button" value=""/>
+  <option name="pager-back-url" value=""/>
+  <option name="pager-translations" value=""/>
+  <option name="render-accents" value="false"/>
+  <option name="render-heth" value="false"/>
+  <option name="render-lnum-opener" value=""/>
+  <option name="render-tlat-opener" value=""/>
+  <option name="render-inter-det-char" value=""/>
+  <option name="render-rulings" value=""/>
+  <option name="render-allographs" value="false"/>
+  <option name="render-tlat-opener" value=""/>
+  <option name="render-tlat-closer" value=""/>
+  <option name="render-tlat-separator" value=""/>
+  <option name="outline-default-select" value="true"/>
+  <option name="outline-default-sort-fields" value=""/>
+  <option name="outline-default-sort-labels" value=""/>
+  <option name="outline-default-heading-template" value=""/>
+  <option name="outline-default-catalog-fields" value=""/>
+  <option name="outline-default-catalog-widths" value=""/>
+  <option name="outline-special-select" value="false"/>
+  <option name="outline-special-list-name" value="all"/>
+  <option name="outline-special-sort-fields" value=""/>
+  <option name="outline-special-sort-labels" value=""/>
+  <option name="outline-special-heading-template" value=""/>
+  <option name="outline-special-catalog-fields" value=""/>
+  <option name="outline-special-catalog-widths" value=""/>
+  <option name="views-cuneify" value="false"/>
+  <option name="views-proofing" value="false"/>
+  <option name="build-tei" value="false"/>
+  <option name="views-TEI" value="false"/>
+  <option name="views-buy-book" value=""/>
+  <option name="atf-lem-flags" value=""/>
+  <option name="atf-saa-mode" value="false"/>
+  <option name="cbd-rws" value=""/>
+  <option name="render-labels" value=""/>
+  <option name="atf-sum-dias" value="false"/>
+</project>

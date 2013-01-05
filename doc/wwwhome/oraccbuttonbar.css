@@ -1,0 +1,80 @@
+.buttons { margin: 0px; padding: 0px; margin-bottom: 0px; } /* -12px */
+
+div.buttons { border-top: solid #666 4px; border-bottom: solid #666 4px; 
+	      background-color: #fcf9d8;
+	      position: fixed; top: 0; width: 700px;
+	    }
+
+div.docbuttons { border-top: solid #666 4px; border-bottom: solid #666 4px; 
+	      background-color: #fcf9d8;
+	      position: fixed; top: 0; width: 700px;
+	    }
+
+.buttons p { text-align: justify; margin: 0px; padding: 0px; background-color: #ffe; }
+
+div.social { background-color: #fcf9d8;
+	     margin-top: -24px; margin-bottom: 8px;
+	     position: relative; top: 4px; left: 560px; width: 140px; height: 17px;
+	     line-height: 0px;
+	    }
+div.docsocial { background-color: #fcf9d8;
+		margin-top: -39px; margin-bottom: 8px;
+		position: relative; top: 4px; left: 560px; width: 120px; height: 17px;
+		line-height: 0px;
+	      }
+
+.social p  { width: 140px; text-align: right; padding: 0px; margin: 0px; margin-top: 0px; }
+
+.social p a.facebook img { margin-top: -4px; margin-bottom: 0px; }
+.social p a img { margin-top: -2px; margin-bottom: 0px; }
+
+.docsocial p  { width: 140px; line-height: 1.2em; text-align: right; padding: 0px; margin: 0px; margin-top: 0px; }
+
+.docsocial p a.facebook img { margin-top: -4px; margin-bottom: 0px; }
+.docsocial p a.blogspot img { margin-top: -4px; margin-bottom: 0px; }
+.docsocial p a.twitter img { margin-top: -4px; margin-bottom: 0px; }
+.docsocial p a.cc-by-sa img { margin-top: -5px; margin-bottom: 0px; }
+.docsocial p a img { margin-top: -2px; margin-bottom: 0px; }
+
+input { padding: 0px; margin: 0px; }
+
+input.button { border: solid 2px brown;
+	       border-radius: 9px; -moz-border-radius: 15px;
+	       padding: 0px; padding-left: 3px; padding-right: 3px;
+	       padding-top: 2px; padding-bottom: 2px;
+	       margin: 0px; margin-top: -2px; height: 19px;
+	       vertical-align: center; text-align: center;
+	       opacity: 1; 
+	       color: black; background-color: #fff;
+	       font-family: Arial; font-size: 7pt; font-weight: bold;
+	     }
+
+/* input.button { font-size: 9px; padding: 0px; margin: 0px; } */
+
+span.button { width: 75px; border: outset 1px brown; vertical-align: center;
+	       border-radius: 9px; -moz-border-radius: 15px;
+	       padding: 3px; padding-bottom: 2px; margin-left: 2px; margin-right: 2px;
+	       margin-top: 0px; margin-bottom: 0px;
+	       vertical-align: center; text-align: center;
+	       opacity: 1; 
+	       color: #444;
+	       font-family: Arial; font-size: 7pt; font-weight: bold;
+	       line-height: 7pt;
+	       background-color: brown;
+	       background: -moz-linear-gradient(top,  #ffe 70%,  #e80);
+	       background-image: -webkit-linear-gradient(top, rgb(255,255,238) 70%, rgb(238,136,0) 100%);
+	       }
+
+span.button:hover {
+    background: -moz-linear-gradient(top,  #c60,  #ffe 80%);
+    background-image: -webkit-linear-gradient(top, rgb(204,102,0) 10%, rgb(255,255,238));
+}
+
+.solid { opacity: 1.0; }
+
+input.textbox { width: 240px; vertical-align: center;
+		margin-bottom: 0px;
+		font-size: 9pt; height: 16pt;
+	      }
+
+p.buttonbar { margin: 0px; padding: 0px; vertical-align: center; }

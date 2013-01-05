@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 4:<br/>Transformation</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The query in Example 3 is refactored again to use
+  eXist's transform:transform, an easy way to return HTML instead of
+  XML.</dc:description>
+</d:meta>
+
+<h1>Transformations</h1>
+
+<p>The general idea in this example is that we are going to use an XSL
+stylesheet to transform the XML output that our query generates into an
+HTML version which will get sent back to the browser.  This is a good
+strategy if the results of a query need to be understood by all
+browsers (for example, if a query is intended for public use rather
+than in-house use by a project).</p>
+
+<h2>Transform</h2>
+
+<p>The function <code>transform:transform</code> has two possible
+calling conventions, or signatures:</p>
+
+<pre class="example">
+transform:transform($node-tree as node()?, $stylesheet as item(),
+                    $parameters as node()?) node()?
+
+transform:transform($node-tree as node()?, $stylesheet as item(), 
+                    $parameters as node()?, 
+		    $serialization-options as xs:string) node()?)
+</pre>
+
+<p>That is, both take a node sequence to transform, a stylesheet to use
+in the transformation that can be specified in various ways, and
+parameters to the stylesheet, also in the form of a node sequence in a
+conventional form we will examine below.  The second form also allows
+callers to specify serialization options, but we are going to use the
+three argument form and the serialization options will not be
+discussed further in this example.</p>
+
+<h2>Let</h2>
+
+<p>We will begin by marshalling our data using a simple variable
+binding using the <code>let</code> keyword.  With <code>let</code> we
+do not specify types and we do not need a final semi-colon.  We'll
+define three variables with the syntax <code>let $VARIABLE_NAME :=
+VALUE</code>.</p>
+
+<h2>Node-tree</h2>
+
+<p>The <code>$node-tree</code> argument is the XML data to be
+transformed.  We simply move the business-end of our code to a
+<code>let</code> assignment to save the result rather than output
+it:</p>
+
+<pre class="cookbook">
+let $result :=
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ stats:node-count('Number of graphemes',
+                   $graphemes),
+  stats:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]),
+  stats:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]),
+  stats:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l),
+  stats:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+</pre>
+
+<h2>Stylesheet</h2>
+
+<p>Next, we specify the stylesheet argument as a string.  Stylesheets
+can live on the webserver filesystem and be accessed via an
+<code>http://</code> URL or they can live in the database, in which
+case we use the following form:</p>
+
+<pre class="cookbook">
+let $transform := "xmldb:exist:///db/oracc/lib/stats/stats-HTML.xsl"
+</pre>
+
+<h2>Parameters</h2>
+
+<p>Finally, we need to create a parameters fragment to pass to the
+transform.  By convention, the wrapper element is named
+<code>parameters</code> and the children have the form:</p>
+
+<pre class="example">
+&lt;param name="NAME" value="VALUE"/>
+</pre>
+
+<p>Some project-local scripts may not actually need any parameters,
+but if you are calling scripts from the <code>oracc/lib</code>
+collection, either directly or indirectly, you <strong>MUST</strong>
+at least give the project name as a parameter whose <code>name</code>
+attribute is <code>project</code>:</p>
+
+<pre class="cookbook">
+let $params := 
+&lt;parameters>
+  &lt;param name="project" value="{ $project }"/>
+&lt;parameters>
+</pre>
+
+<h2>Try it</h2>
+
+<p>You can try the refactored query as before, but with the query name
+now being <code>stats-t.xql</code>.  This version should run well on
+all browsers because the display no longer depends on the extent of
+browser support for XML+CSS:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/db/oracc/lib/stats/stats-t.xql?project=test
+</pre>
+
+<h2>Altogether</h2>
+
+<p>Here is the entire script:</p>
+
+<pre class="cookbook">
+import module namespace stats = "http://oracc.org/xqm/oracc/stats"
+       at "/db/oracc/lib/stats/stats.xqm";
+
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace transform = "http://exist-db.org/xquery/transform";
+
+declare namespace gdl  = "http://oracc.org/ns/gdl/1.0";
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+declare namespace xcl  = "http://oracc.org/ns/xcl/1.0";
+declare namespace xff  = "http://oracc.org/ns/xff/1.0";
+declare namespace xtf  = "http://oracc.org/ns/xtf/1.0";
+
+
+declare option exist:serialize 
+        "method=xhtml media-type=text/html omit-xml-declaration=no indent=yes";
+
+
+declare variable $project as xs:string := request:get-parameter('project','');
+
+declare variable $P as document-node()* := collection(concat('/db/',$project,'/oml'));
+
+declare variable $graphemes as element()* :=
+         $P/(xtf:transliteration|xtf:composite)//
+	 (gdl:v[not(parent::gdl:n)]|gdl:s[parent::gdl:w]|gdl:n|gdl:c);
+
+let $params := 
+&lt;parameters>
+  &lt;param name="project" value="oracc"/>
+&lt;/parameters>
+
+let $result :=
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ stats:node-count('Number of graphemes',
+                   $graphemes),
+  stats:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]),
+  stats:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]),
+  stats:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l),
+  stats:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+
+let $transform := "xmldb:exist:///db/oracc/lib/stats/stats-HTML.xsl"
+
+return transform:transform($result,$transform,$params)
+</pre>
+
+<h2>XSL</h2>
+
+<p>This is not a tutorial on XSL, but you can try the one <a
+href="http://zvon.org/xxl/XSLTutorial/Books/Book1/index.html">at
+Zvon</a> if you need one.</p>
+
+<p>For the record, here is our XSL script (note the changes to the
+<code>exist:serialize</code> option to support HTML output rather than
+XML output):</p>
+
+<pre class="cookbook">
+&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:xh="http://www.w3.org/1999/xhtml">
+
+&lt;xsl:template match="/">
+&lt;html>
+&lt;head>
+  &lt;link rel="stylesheet" 
+	type="text/css"
+	href="stats-HTML.css"/>
+  &lt;title>&lt;xsl:value-of select="/*/*/*/xh:caption"/>&lt;/title>
+&lt;/head>
+&lt;body>
+  &lt;div class="center">
+    &lt;xsl:apply-templates/>
+  &lt;/div>
+&lt;/body>
+&lt;/html>
+&lt;/xsl:template>
+
+&lt;xsl:template match="stats">
+  &lt;table>
+    &lt;xsl:apply-templates/>
+  &lt;/table>
+&lt;/xsl:template>
+
+&lt;xsl:template match="title">
+  &lt;caption>
+    &lt;xsl:apply-templates/>
+  &lt;/caption>
+&lt;/xsl:template>
+
+&lt;xsl:template match="count">
+  &lt;tr>
+    &lt;xsl:apply-templates/>
+  &lt;/tr>
+&lt;/xsl:template>
+
+&lt;xsl:template match="what">
+  &lt;td>
+    &lt;xsl:apply-templates/>
+  &lt;/td>
+&lt;/xsl:template>
+
+&lt;xsl:template match="number">
+  &lt;td>
+    &lt;xsl:apply-templates/>
+  &lt;/td>
+&lt;/xsl:template>
+
+&lt;/xsl:stylesheet>
+</pre>
+
+</d:doc>

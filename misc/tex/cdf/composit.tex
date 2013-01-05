@@ -1,0 +1,634 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: composit.tex,v 0.8 1996/05/27 16:16:52 s Exp s $
+
+\newif\ifcmpdisplay
+\let\displaycompositetrue\cmpdisplaytrue % backward compatibility
+\let\displaycompositefalse\cmpdisplayfalse
+
+\newif\ifcmp@maybelineno
+\newif\ifcmp@maybesiglum
+\newif\ifcmp@leadingspace
+\newif\ifcmp@ignoringspaces
+\newif\ifcmp@hastext
+\newif\ifcmp@linenohere
+\newif\ifcmp@linenoused
+\newif\ifcmp@linenofull
+\newif\ifcmp@siglumhere
+\newif\ifcmp@siglumused
+\newif\ifcmp@siglumfull
+\newif\ifcmp@blankline
+\newif\ifcmp@singlerule
+\newif\ifcmp@doublerule
+\newif\ifcmp@running
+\newif\ifcmp@header
+\newif\ifcmp@lastwashdr
+\newif\ifcmp@lastwasinfo
+\newbox\cmp@restoflinebox
+\newcount\cmp@lines
+\newcount\cmp@penaltyval
+
+\def\cmp@linenostash{}
+\def\cmp@siglumstash{}
+
+\def\composite{\leavehmode
+  \ifcmpdisplay\ifmc@ctive\else\@Above\begingroup\fi\fi
+  \cmp@runningfalse\cmp@init\compositehook}
+\def\endcomposite{\allowbreak
+  \ifcmpdisplay\ifmc@ctive\else\endgroup\@Below\fi\fi}
+
+\def\rcomposite{\leavehmode
+  \cmp@running@true\cmp@init\rcompositehook}
+\def\endrcomposite{\endgraf}
+
+\def\translation{\leavehmode
+  \ifcmpdisplay\ifmc@ctive\else\@Above\begingroup\fi\fi
+  \cmp@runningfalse\cmp@init
+  \def\cmptextformat{\tratextformat}\translationhook}
+\def\endtranslation{\allowbreak
+  \ifcmpdisplay\ifmc@ctive\else\endgroup\@Below\fi\fi}
+
+\def\rtranslation{\leavehmode
+  \cmp@running@true\cmp@init
+  \def\cmptextformat{\tratextformat}\rtranslationhook}
+\def\endrtranslation{\endgraf}
+
+\def\cquote{\quotebegin
+  \cmp@runningfalse\@begdisplay\cmp@init\cquotehook}
+\def\endcquote{\@enddisplay}
+
+\def\tquote{\quotebegin
+  \cmp@runningfalse\@begdisplay\cmp@init
+  \def\cmptextformat{\tratextformat}\tquotehook}
+\def\endtquote{\@enddisplay}
+
+\def\rcquote{\quotebegin
+  \cmp@runningtrue\@begdisplay\cmp@init\rcquotehook}
+\def\endrcquote{\endgraf\@enddisplay}
+
+\def\rtquote{\quotebegin
+  \cmp@runningtrue\@begdisplay\cmp@init
+  \def\cmptextformat{\tratextformat}\rtquotehook}
+\def\endrtquote{\endgraf\@enddisplay}
+
+\def\cmp@init{\cmpdimens\cmpformats\cmpspacing
+  \ifcmp@running\else\parindent0pt \parskip0pt \fi
+  \global\cmp@linenousedfalse
+  \global\cmp@siglumusedfalse
+  \global\cmp@lines0
+  \global\cmp@penaltyval2
+  \cmp@activate@eol}
+
+%{\enabledots\glet\cmp@dot.}
+{\def\\{\global\let\cmp@dot= }\\.}
+{\def\\{\global\let\cmp@hyphen= }\\-}
+{\def\\{\global\let\cmp@equals= }\\=}
+{\def\\{\global\let\cmp@colon= }\\:}
+{\def\\{\global\let\cmp@space= }\\ }
+{\def\\{\global\let\cmp@tab= }\\^^I}
+{\def\\{\global\let\cmp@semi= }\\;}
+{\def\\{\global\let\cmp@bang= }\\!}
+{\makeactive{\^^B}\glet\cmp@cB^^B}
+{\makeactive{\^^M}\glet\cmp@cr^^M}
+{\makeactive{\^^L}\def^^L{\controlL}\glet\cmp@ff^^L}
+\let\cmp@bgroup={
+
+\def\cmp@scanline{\cmp@initline\cmp@tok}
+
+\def\cmp@initline{%
+  \glet\cmp@tok\cmp@firsttok
+  \global\cmp@linenoherefalse
+  \global\cmp@linenofullfalse
+  \global\cmp@siglumherefalse
+  \global\cmp@siglumfullfalse
+  \global\cmp@headerfalse
+  \def\cmp@stashedstuff{}}
+
+\def\cmp@firsttok{\futurelet\next\cmp@firstswitch}
+\def\cmp@firstswitch{%
+  \ifx\next\cmp@bgroup\cmp@next@scanrest
+  \else\ifx\next\cmp@semi\cmp@semifirst
+   \else\ifx\next\cmp@space\cmp@spacefirst
+    \else\ifx\next\cmp@tab\cmp@spacefirst
+     \else\ifx\next\cmp@cr\cmp@blankline
+      \else\ifx\next\cmp@cB\cmp@control
+       \else\ifx\next\cmp@bang\cmp@bangfirst
+
+        \else\ifx\next\cmp@ff\cmp@next@relax
+         \else\ifx\next\cmp@hyphen\cmp@singlerule
+	  \else\ifx\next\cmp@equals\cmp@doublerule
+           \else\ifx\next\end\cmp@next@relax
+	    \else\ifx\next\obverse\cmp@next@header
+
+ 	     \else\ifx\next\reverse\cmp@next@header
+	      \else\ifx\next\column\cmp@next@header
+	       \else\ifx\next\division\cmp@next@header
+	        \else\ifx\next\part\cmp@next@header
+	         \else\ifx\next\leftedge\cmp@next@header
+ 
+	  	  \else\ifx\next\rightedge\cmp@next@header
+		   \else\ifx\next\topedge\cmp@next@header
+		    \else\ifx\next\bottomedge\cmp@next@header
+		     \else\ifx\next\side\cmp@next@header
+		      \else\ifx\next\tablet\cmp@next@header
+		       \else\ifx\next\envelope\cmp@next@header
+		        \else\ifx\next\sealtext\cmp@next@header
+
+		         \else\ifx\next\text\cmp@next@header
+		          \else\ifx\next\cmpinfo\cmp@next@info
+			   \else\ifx\next\emptyheader\cmp@next@header
+
+ 		            \else\glet\cmp@tok\cmp@midtok\cmp@next@nochomp
+  \fi\fi\fi\fi\fi
+  \fi\fi\fi\fi\fi
+  \fi\fi\fi\fi\fi
+  \fi\fi\fi\fi\fi
+  \fi\fi\fi\fi\fi
+  \fi\fi
+  \cmp@next}
+
+\def\cmp@control{\glet\cmp@tok\cmp@scanrest\cmp@next@nochomp}
+\def\cmp@semifirst{\cmp@softclearflags\glet\cmp@tok\cmp@scanrest\cmp@next@chomp}
+\def\cmp@bangfirst{\glet\cmp@tok\cmp@scanrest\cmp@next@chomp}
+\def\cmp@spacefirst{\global\cmp@leadingspacetrue\cmp@next@chompspace}
+\def\cmp@singlerule{\global\cmp@singleruletrue\cmp@next@specialeol}
+\def\cmp@doublerule{\global\cmp@doubleruletrue\cmp@next@specialeol}
+\def\cmp@blankline{\global\cmp@blanklinetrue\cmp@next@specialeol}
+
+\def\cmp@clearflags{%
+  \global\cmp@linenousedfalse\global\cmp@siglumusedfalse
+  \global\cmp@maybelinenofalse\global\cmp@maybesiglumfalse }
+
+% like the above, but if this line contained a line number or siglum
+% already, be careful not to clear that
+\def\cmp@softclearflags{%
+  \ifcmp@linenohere\else
+    \global\cmp@maybelinenofalse\global\cmp@linenousedfalse\fi
+  \ifcmp@siglumhere\else
+    \global\cmp@maybesiglumfalse\global\cmp@siglumusedfalse\fi}
+
+\def\cmpinfo#1#2{\csname#1\endcsname{#2}}
+
+\def\cmp@midtok{\futurelet\next\cmp@midswitch}
+\def\cmp@midswitch{%\show\next
+  \ifx\next\cmp@dot\ifcmp@linenohere
+		      \global\cmp@ignoringspacesfalse
+		      \cmp@next@stash
+		   \else
+		     \ifcmp@maybelineno
+		       \cmp@stashappend.\global\cmp@maybelinenofalse
+		       \cmp@next@stash
+		     \else
+		       \global\cmp@maybelinenotrue\cmp@next@chomp
+		     \fi
+		   \fi
+  \else\ifx\next\cmp@semi\cmp@semifirst
+   \else\ifx\next\cmp@cB\cmp@control
+    \else\ifx\next\cmp@colon\global\cmp@maybesiglumtrue\cmp@next@chomp
+     \else\ifx\next\cmp@space\cmp@spaceswitch
+      \else\ifx\next\cmp@tab\cmp@spaceswitch
+       \else\ifx\next\cmp@cr\cmp@crswitch
+        \else\ifcmp@maybelineno\cmp@stashappend.%
+		    \global\cmp@maybelinenofalse\fi
+	         \ifcmp@maybesiglum\cmp@stashappend:%
+		    \global\cmp@maybesiglumfalse\fi
+	         \global\cmp@ignoringspacesfalse
+	         \cmp@next@stash
+  \fi\fi\fi\fi\fi\fi\fi
+  \cmp@next}
+
+\def\cmp@spaceswitch{%
+  \ifcmp@maybelineno\cmp@setuplineno\cmp@next@chompspace
+    \else\ifcmp@maybesiglum\cmp@setupsiglum\cmp@next@skipwhite
+      \else\ifcmp@ignoringspaces\cmp@next@chompspace
+        \else\cmp@stashappend\space\cmp@next@skipwhite
+  \fi\fi\fi}
+
+\def\cmp@crswitch{%
+  \ifcmp@maybelineno\cmp@setuplineno
+    \else\ifcmp@maybesiglum\cmp@setupsiglum
+  \fi\fi
+  \cmp@next@scanrest}
+
+\def\cmp@skiptok{\futurelet\next\cmp@skipswitch}
+\def\cmp@skipswitch{%
+  \ifx\next\cmp@space\cmp@next@chompspace
+    \else\ifx\next\cmp@tab\cmp@next@chompspace
+      \else\cmp@next@scanrest
+  \fi\fi
+  \cmp@next}
+
+\def\cmp@clearlinetypes{%
+  \global\cmp@lastwashdrfalse
+  \global\cmp@lastwasinfofalse}
+
+\def\cmp@setuplineno{\cmp@clearlinetypes
+  \cmp@savelineno
+  \global\cmp@linenoheretrue
+  \global\cmp@maybelinenofalse
+  \global\cmp@linenousedtrue
+  \global\cmp@siglumusedfalse
+  \global\cmp@ignoringspacestrue}
+
+\def\cmp@setupsiglum{\cmp@clearlinetypes
+  \cmp@savesiglum
+  \global\cmp@siglumheretrue
+  \global\cmp@maybesiglumfalse
+  \global\cmp@siglumusedtrue}
+
+\def\cmp@next@relax{\gdef\cmp@next{\relax}}
+\def\cmp@next@chomp{\gdef\cmp@next{\afterassignment\cmp@tok\let\nextb=}}
+\def\cmp@next@nochomp{\gdef\cmp@next{\cmp@tok}}
+\def\cmp@next@chompspace{\gdef\cmp@next%
+  {\bgroup\aftergroup\cmp@tok\def\\{\afterassignment\egroup\let\pig= }\\}}
+\gdef\cmp@next@chomptoeol{\gdef\cmp@next{\cmp@chomptoeol}}
+\gdef\cmp@next@specialeol{\gdef\cmp@next{\cmp@specialeol}}
+\def\cmp@next@skipwhite{\glet\cmp@tok\cmp@skiptok\gdef\cmp@next{\cmp@tok}}
+\def\cmp@next@header{\global\cmp@headertrue
+		     \glet\cmp@hdr\next
+		     \glet\cmp@tok\cmp@printhdr
+		     \cmp@next@chomp}
+\def\cmp@next@info{\glet\cmp@tok\cmp@printinfo\cmp@next@chomp}
+\def\cmp@next@stash{\gdef\cmp@next{\cmp@stasharg}}
+\def\cmp@stasharg#1{\cmp@stashappend{#1}\cmp@tok}
+\def\cmp@stashappend#1{\expandafter\cmp@dostash\cmp@stashedstuff#1\endstash}
+\def\cmp@dostash#1\endstash{\gdef\cmp@stashedstuff{#1}}
+
+\def\cmp@next@scanrest{\gdef\cmp@next{\cmp@scanrest}}
+
+\def\cmp@scanrest{%
+  \ifcmp@running
+    \ifcmp@linenofull\up{\cmp@linenostash)}\fi
+    \ifcmp@siglumfull\kern1pt\up{\cmp@siglumstash}\fi
+    \cmptextformat\cmptexthook\cmp@stashedstuff
+  \else
+    \cmp@printlineandsiglum
+    \bgroup\interlinepenalty10000
+    \leavevmode\hbox{\cmpstrut}%
+    \rightskip\cmptextrskip
+    \hangindent\cmptexthang
+    \advance\hangindent\cmp@leftadjust
+    \cmptextformat\cmptexthook
+    \cmp@stashedstuff
+  \fi}
+
+\def\cmp@printlineandsiglum{%
+  \global\cmp@lastwashdrfalse
+  \global\advance\cmp@lines1
+  \ifcmp@linenohere
+    \ifnum\cmp@lines>1 \cmp@penalty\vskip\cmpinterblockskip\fi
+  \else
+    \ifcmp@linenoused
+      \nobreak\vskip\cmpinterlineskip
+    \else
+      \ifnum\cmp@lines>1 \cmp@penalty\vskip\cmpinterblockskip\fi
+    \fi
+  \fi
+  \nointerlineskip\leavevmode
+  \hskip\cmpleftskip
+  \cmp@leftadjust\cmpleftskip
+  \ifcmp@linenoused
+    \ifcmp@linenohere
+      \vtop{\hsize\cmpnumwidth \leftskip0pt \rightskip0pt 
+	    \cmplinenoformat \leavevmode\cmpstrut
+	    \ifcmp@linenofull\cmp@linenostash\cmpnumpunct\cmpstrut\fi}%
+      \advance\cmp@leftadjust\cmpnumwidth
+    \else
+      \kern\cmpnumwidth
+      \advance\cmp@leftadjust\cmpnumwidth
+    \fi
+  \fi
+  \ifcmp@siglumused\ifcmp@siglumhere
+    \vtop{\hsize\cmpsigwidth \leftskip0pt \rightskip\cmpsigrskip
+	  \hangindent\cmpsighang \cmpsiglumformat
+	  \leavevmode\cmpstrut
+	  \ifcmp@siglumfull\cmp@siglumstash\cmpsigpunct\cmpstrut\fi}%
+    \advance\cmp@leftadjust\cmpsigwidth
+  \else
+    \kern\cmpsigwidth
+    \advance\cmp@leftadjust\cmpsigwidth
+  \fi\fi}
+
+\def\cmp@savelineno{%
+  \setbox0=\hbox{\ignorespaces\cmp@stashedstuff\unskip}%
+  \ifdim\wd0>0pt
+    \global\let\cmp@linenostash\cmp@stashedstuff
+    \global\cmp@linenofulltrue
+  \else
+    \global\cmp@linenofullfalse
+  \fi
+  \gdef\cmp@stashedstuff{}}
+
+\def\cmp@savesiglum{%
+  \setbox0=\hbox{\ignorespaces\cmp@stashedstuff\unskip}%
+  \ifdim\wd0>0pt
+    \global\let\cmp@siglumstash\cmp@stashedstuff
+    \global\cmp@siglumfulltrue
+  \else
+    \global\cmp@siglumfullfalse
+  \fi
+  \gdef\cmp@stashedstuff{}}
+
+\def\cmp@endrestofline{\cmpstrut\endgraf\egroup}
+
+{\makeactive{\^^M}%
+ \gdef\cmp@specialeol#1^^M{\cmp@specialline\cmp@scanline}%
+ \gdef\cmp@chomptoeol#1^^M{\cmp@scanline}%
+ \gdef\cmp@activate@eol{\makeactive{\^^M}%
+			\def^^M{\cmp@switchon@eol\cmp@scanline}}%
+ \gdef\cmp@switchon@eol{\cmpsetup%
+			\def^^M{\ifcmp@running\ \else\cmp@endrestofline\fi%
+				\cmp@scanline}%
+			\glet\cmp@cr^^M}}
+
+% doesn't work now we don't stuff the text part into a box
+%\def\cmp@showline{%
+%  L=\ifcmp@linenohere`\cmp@linenostash'\else none\fi\ 
+%  S=\ifcmp@siglumhere`\cmp@siglumstash'\else none\fi\ 
+%  R=\newline\ifcmp@hastext`\box\cmp@restoflinebox'\else none\fi\endgraf}
+
+% we got here if the first token was a newline, hyphen or equals
+\def\cmp@showspecialline{%
+  \ifcmp@blankline Blank line
+    \else\ifcmp@singlerule Single rule 
+      \else\ifcmp@doublerule Double rule
+        \else Unknown special
+  \fi\fi\fi
+  \endgraf
+  \cmp@zerospecials}
+
+\def\cmp@zerospecials{%
+  \global\cmp@blanklinefalse
+  \global\cmp@singlerulefalse
+  \global\cmp@doublerulefalse}
+
+\def\cmpdebug{%
+  \let\cmp@printline\cmp@showline
+  \let\cmp@specialline\cmp@showspecialline}
+
+\def\cmp@printhdr{%
+  \ifcmp@running\let\next\cmp@@runhdr\else\let\next\cmp@@lblhdr\fi
+  \next\cmp@hdr}
+
+{\makeactive{\^^M}%
+ \gdef\cmp@@lblhdr#1^^M{\cmp@lblhdr{#1}}%
+ \gdef\cmp@@runhdr#1^^M{\cmp@runhdr{#1}}}
+
+\def\cmp@lblhdr#1{%
+   \removelastskip
+   \ifcmp@lastwashdr\nobreak\vskip\cmpinterhdrskip\nointerlineskip
+   \else\goodbreak
+        \iffp@ctive\vbox\bgroup\fi
+	\vskip\cmpabovehdrskip
+        \iffp@ctive\egroup\fi
+	\nointerlineskip
+   \fi
+   \iffp@ctive\vbox\bgroup\fi
+   {\noindent\cmpheaderformat\cmpstrut#1\endgraf}%
+   \iffp@ctive\egroup\fi
+   \removelastskip\nobreak\vskip\cmpbelowhdrskip\nointerlineskip
+   \cmp@finishhdr}
+
+\gdef\cmp@runhdr#1{\up{#1}\cmp@finishhdr}
+\def\cmp@finishhdr{\global\cmp@lastwashdrtrue\global\cmp@lastwasinfofalse\cmp@scanline}
+
+\def\cmp@printinfo#1#2{%
+  \ifcmp@running\let\next\gobbletwo\else\let\next\cmp@lblinfo\fi
+  \next{#1}{#2}}
+
+\def\cmp@lblinfo#1#2{%
+   \removelastskip
+   \ifcmp@lastwasinfo\nobreak\vskip\cmpinterlineskip
+   \else\nobreak\vskip\cmpinterhdrskip\fi
+   \iffp@ctive\vbox\bgroup\fi%
+   {\noindent\cmpinfoformat{#1}{#2}\endgraf}%
+   \iffp@ctive\egroup\fi
+   \global\cmp@lastwasinfotrue
+   \global\cmp@lastwashdrfalse
+   \nobreak\vskip\cmpbelowhdrskip
+   \cmp@chomptoeol}
+
+\def\cmp@specialline{%
+  \ifcmp@blankline\def\next{\cmpblankline}%
+    \else\ifcmp@singlerule\def\next{\cmpsinglerule}%
+      \else\ifcmp@doublerule\def\next{\cmpdoublerule}%
+        \else\errmessage{Unknown special}%
+  \fi\fi\fi
+  \next
+  \cmp@zerospecials}
+
+\def\cmp@penalty{\ifnum\cmp@penaltyval>0 \global\advance\cmp@penaltyval-1 \fi
+  \penalty\cmp@penaltyval}
+
+\def\cmp@block{\moveright\leftskip\hbox to\cmp@hsize}
+\def\cmp@blockv{\moveright\leftskip\vbox}
+
+% A blank line means nothing in a line-by-line environment,
+% but `finish the para' in a running environment.
+\def\cmpblankline{\ifcmp@running\def\next{\endgraf}\else\let\next\relax\fi\next}
+\def\cmp@rule{\ifdim\cmprulelength=0pt\hrulefill
+	    \else\vrule width\cmprulelength height0.04em \hfil\fi}
+\def\cmpsinglerule{\nobreak\iffp@ctive\vbox\bgroup\fi
+  \kern5pt\cmp@block{\cmp@rule}\kern7pt
+  \iffp@ctive\egroup\fi\goodbreak\nointerlineskip}
+\def\cmpdoublerule{\nobreak\iffp@ctive\vbox\bgroup\fi
+  \kern5pt\cmp@blockv{\offinterlineskip
+  \hbox to\cmp@hsize{\cmp@rule}\kern3pt\hbox to\cmp@hsize{\cmp@rule}}\kern7pt
+  \iffp@ctive\egroup\fi\goodbreak\nointerlineskip}
+
+%\cmpdebug
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newdimen\cmp@hsize		% a private note of the prevailing hsize
+\newdimen\cmp@leftadjust 	% used for aligning composite envs correctly
+
+% User modifiable variables
+\newdimen\cmpfullhsize		% This can be set to make the cmp
+				% macros believe its hsize is different
+				% from \hsize
+\newdimen\cmphsize		% This is the current hsize used
+				% for formatting the rest of the line
+\newdimen\cmpnumwidth		% Width of line numbers column
+\newdimen\cmpsigwidth		% Width of sigla column
+\newskip\cmpsigrskip		% Rightskip for sigla column
+\newdimen\cmpsighang		% Indention for continuation lines in 
+				% sigla column
+\newskip\cmptextrskip		% Rightskip for text part of line
+\newdimen\cmptexthang		% Indention of continuation lines in
+				% text part of line
+\newskip\cmpinterlineskip	% Space between exemplars of same line
+\newskip\cmpinterblockskip	% Space between blocks of exemplars
+\newskip\cmpabovehdrskip	% Space above a heading, like \obverse
+\newskip\cmpbelowhdrskip	% Space below a heading, like \obverse
+\newskip\cmpinterhdrskip	% Space between two consecutive headers
+\newdimen\cmplabelwd		% Width of a label in a \cquote environment
+\newskip\cmplabelrskip		% Rightskip within labels
+\newdimen\cmplabelhang		% Indention within labels
+\newdimen\cmprulelength		% Length of rules; if 0pt, rules are made
+				% across entire column/page
+\newdimen\cmpmaxlabelwd		% Max width of label in cquote environment
+
+\newdimen\cmpleftskip		% amount each line of text (not headings) is indented
+\newbox\cmpstrutbox		% box for strut that separates baselines
+\def\cmpinterbaseline#1#2{\setbox\cmpstrutbox=\hbox{%
+    \vrule height#1pt depth#2pt width\z@}}
+\def\cmpstrut{\relax\ifmmode\copy\cmpstrutbox\else\unhcopy\cmpstrutbox\fi}
+
+\def\cmpdimens{%
+  \cmpfullhsize0pt
+  \cmpleftskip0pt
+  \cmpnumwidth2\indention
+  \cmpsigwidth2\indention
+  \cmpsigrskip.25\indention \advance\cmpsigrskip0pt plus1fil
+  \cmpsighang.25\indention
+  \cmptextrskip0pt plus1fil
+  \cmptexthang\indention
+  \cmpinterlineskip1pt plus.1pt
+  \cmpinterbaseline{10}{3}%
+  \cmpinterblockskip1pt plus.1pt
+  \cmpabovehdrskip\abovedisplayskip
+  \cmpbelowhdrskip\belowdisplayskip
+  \cmpinterhdrskip.7\abovedisplayskip
+  \cmplabelwd1in
+  \cmplabelrskip0pt plus1fil
+  \cmplabelhang1em  
+  \cmprulelength3in
+  \cmpmaxlabelwd1.25in
+  \relax}
+
+\def\cmpformats{}
+
+\def\cmpheaderformat{\bf}
+\def\cmpinfoformat#1#2{\hangindent4pc
+  \hboxtomin{4pc}{#1:}#2\endgraf}
+\def\cmplinenoformat{\rm}
+\def\cmpsiglumformat{\eight\rm}
+\def\cmptextformat{\sum}
+\def\tratextformat{\rm}
+\def\cmplabelformat{\singlespace\rm}
+
+\def\cmpspacing{\singlespace}
+
+\def\compositehook{}
+\def\translationhook{}
+\def\rcompositehook{}
+\def\rtranslationhook{}
+\def\cquotehook{}
+\def\tquotehook{}
+\def\rcquotehook{}
+\def\rtquotehook{}
+
+\let\cmptexthook\relax
+
+\def\cmpsetup{\cmp@hsize=\ifdim\cmpfullhsize=0pt \hsize\else\cmpfullhsize\fi
+  \advance\cmp@hsize-\leftskip \advance\cmp@hsize-\rightskip}
+
+\def\cmp@settextwd{\cmphsize\cmp@hsize
+  \ifcmp@linenoused\advance\cmphsize-\cmpnumwidth\fi
+  \ifcmp@siglumused\advance\cmphsize-\cmpsigwidth\fi}
+
+\def\cmpnumpunct{.\ }
+\def\cmpsigpunct{:}
+
+\def\emptyheader{}
+\def\text{\cmp@longorshort{}{}}
+\def\tablet{\cmp@longorshort{\tabletstr\ }{\tabletabbstr\ }}
+\def\envelope{\cmp@longorshort{\envelopestr\ }{\envelopeabbstr\ }}
+\def\part{\cmp@longorshort{\partstr\ }{\partabbstr\ }}
+\def\division{\cmp@longorshort{}{}}% just use the argument
+\def\side{\cmp@longorshort{\sidestr\ }{\sideabbstr\ }}
+\def\obverse{\cmp@longorshort{\obversestr}{\obverseabbstr}}
+\def\reverse{\cmp@longorshort{\reversestr}{\reverseabbstr}}
+\def\leftedge{\cmp@longorshort{\leftedgestr}{\leftedgeabbstr}}
+\def\rightedge{\cmp@longorshort{\rightedgestr}{\rightedgeabbstr}}
+\def\topedge{\cmp@longorshort{\topedgestr}{\topedgeabbstr}}
+\def\bottomedge{\cmp@longorshort{\bottomedgestr}{\bottomedgeabbstr}}
+\def\column{\cmp@longorshort{\columnstr\ }{\columnabbstr\ }}
+\def\sealtext{Seal }
+\def\cmpinfo{\gobbletwo}
+
+\def\cmp@longorshort#1#2{\ifcmp@running\def\next{#2}\else\def\next{#1}\fi\next}
+
+%%% Label formatting for cquote environments
+\newif\ifnoendgraf
+
+%\def\ctshoveright#1{\setbox0=\hbox{\cmplabelfmt\stripwhite#1}%
+%  \ifdim\wd0 > \cmpmaxlabelwd\def\next{\ctvlabel}\else\let\next\relax\fi
+%  \next
+%  {\unskip\nobreak\hfil\penalty50\hskip2em\hbox{}\nobreak\hfill \box0
+%  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}%
+%  \global\noendgraftrue}
+
+%\def\ctvlabel{\setbox0=\vtop{\hsize\cmpmaxlabelwd
+%  \leavevmode\rightskip0pt plus.3\cmpmaxlabelwd
+%  \leftskip0pt \looseness-1 \cmplabelfmt\unhbox0 \endgraf}}
+
+\def\ctshoveright#1{%
+  \unskip\penalty0\hfil\penalty5\hskip2em\hbox{}\nobreak\hskip0pt plus1filll
+  \hbox{\cmplabelfmt#1}}
+
+% Users can easily redefine these to get smaller labels etc.
+\def\cmplabelfmt{\rm\singlespace}
+
+\catcode`|\active \def|#1|{\ctshoveright{#1}}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: composit.tex,v $
+Revision 0.8  1996/05/27 16:16:52  s
+various configurability changes
+
+% Revision 0.7  1996/02/20  01:25:40  s
+% add support for \emptyheader to make it easier to do facing page stuff
+%
+% add cmpstrut to header processing
+%
+% Revision 0.6  1995/12/11  12:10:01  s
+% implement \cmpstrut and \cmpinterbaseline so that spacing of
+% composite and translation environments can be altered independently
+% of baselineskip and friends
+%
+% Revision 0.5  1995/12/03  01:49:56  s
+% Add new command char to quote environments.  Now if `!' is the first
+% character in the line it undoes lineno and siglum used flags, so a
+% quote that has a variety of texts like:
+%
+% 	A: blah
+% 	B: blah			(text 1)
+%       	!blah			(text 2)
+%
+% is formatted with text 2's text aligned as above, not like this:
+%
+% 	A: blah
+% 	B: blah			(text 1)
+%       	   blah			(text 2)
+%
+% The first behaviour is correct.
+%
+% Revision 0.4  1995/06/16  11:26:13  s
+% trimmed out all the vestiges of previous composite formatting strategies
+%
+% added \global\cmp@siglumusedfalse to cmp init
+%
+% don't add \leftskip to \hangindent in \cmp@scanrest
+%
+% added \cmpmaxlabelwd which is supposed to control max width of the labels
+%       in cquote environment; didn't reimplement support for it yet
+%
+% revised \ctshoveright so it is much happier to put the label on its own
+% line; this avoids the
+% 	   blah blah blah blah blah blah blah
+% 		blah			 (label label label)
+% phenomenon---now we get
+% 	   blah blah blah blah blah blah blah blah
+% 					 (label label label)
+% which is much nicer
+%
+% introduced use of \cmplabelfmt in ctshoveright so now it's easy to change
+% label size
+%

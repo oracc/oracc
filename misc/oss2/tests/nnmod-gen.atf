@@ -1,0 +1,12 @@
+&Q001543 = Gudea Statue D [E3/1.01.07]
+@composite
+#project: epsd2/epsdc/royal
+#atf: use mylines
+#link: source P232277 = RIME 3/1, p. 040, E3/1.1.7, St D
+#@m=object statue
+
+7.	e2 jir2-su{ki}-ka-ni
+#lem: e[house]; Ŋirsu[1]SN +.
+
+8.	e2 gu2 {id2}idigna#-ka-ni
+#lem: e[house]; gu[bank]; Idigna[1]WN

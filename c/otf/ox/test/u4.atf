@@ -1,0 +1,9 @@
+&P100001 = AAS 013
+#project: epsd2/epsdc/uriii
+#version: 0.1
+#atf: lang sux
+@tablet
+@obverse
+@column 1
+1. u4
+#lem: ud[sun]

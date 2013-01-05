@@ -1,0 +1,42 @@
+<common-words>
+  <!-- cheap hack to keep all-space keys out -->
+  <common word=" "/>
+  <common word="  "/>
+  <common word="   "/>
+  <common word="    "/>
+  <common word="     "/>
+  <common word="a"/>
+  <common word="an"/>
+  <common word="and"/>
+  <common word="as"/>
+  <common word="at"/>
+  <common word="axe"/>
+  <common word="Bab."/>
+<!--  <common word="be"/> -->
+  <common word="become"/>
+  <common word="by"/>
+  <common word="desig."/>
+  <common word="esp."/>
+  <common word="etc."/>
+  <common word="for"/>
+  <common word="i.e."/>
+  <common word="II"/>
+  <common word="in"/>
+  <common word="is"/>
+  <common word="its"/>
+  <common word="made"/>
+  <common word="mng."/>
+  <common word="of"/>
+  <common word="on"/>
+  <common word="or"/>
+  <common word="perhaps"/>
+  <common word="phps."/>
+  <common word="prob."/>
+  <common word="the"/>
+  <common word="to"/>
+  <common word="type"/>
+  <common word="types"/>
+  <common word="uncl."/>
+  <common word="unkn."/>
+  <common word="used"/>
+</common-words>

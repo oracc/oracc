@@ -1,0 +1,36 @@
+#!/bin/sh
+echo gdf-entry.sh $1 $2 $3 1>&2
+xml=$1
+xid=$2
+form=$3
+bin=@@ORACC@@/bin
+xsl=@@ORACC@@/lib/scripts
+dir=`dirname $xml`
+ids=$dir/`basename $xml xml`ids
+testx()
+{
+    if [ "$1" == "$2" ]; then
+        echo -n "-"
+    else
+        echo -n "$2"
+    fi
+}
+findnext()
+{
+    x=`grep -m1 -A1 "^$1$" $ids | tail -1 | tr -d '\n'`
+    testx $1 $x
+}
+findprev()
+{
+    x=`grep -m1 -B1 "^$1$" $ids | head -1 | tr -d '\n'`
+    testx $1 $x
+}
+next=`findnext $1`
+prev=`findprev $1`
+if [ "$form" == "xml" ]; then
+    $bin/gdf $xml $xid
+else
+    prev=`findprev $xid`
+    next=`findnext $xid`
+    $bin/gdf $xml $xid | xsltproc --stringparam next $next --stringparam prev $prev $xsl/gdf-entry-html.xsl -
+fi

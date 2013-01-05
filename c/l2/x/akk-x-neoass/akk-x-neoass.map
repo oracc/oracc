@@ -1,0 +1,9 @@
+@saao/saa01%akk-x-neoass:ša=ša[of//of]DET'DET$ša	akk-x-neoass.x000002
+@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šar	akk-x-neoass.x000001
+@saao/saa01%akk-x-neoass:ša=ša[of//those of]DET'DET$ša	akk-x-neoass.x000002
+@saao/saa01%akk-x-neoass:a-na=ana[to//to]PRP'PRP$ana	akk-x-neoass.x000003
+@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šarru	akk-x-neoass.x000001
+@saao/saa01%akk-x-neoass:ša=ša[of//that of]DET'DET$ša	akk-x-neoass.x000002
+@saao/saa01%akk-x-neoass:ina=ina[in//in]PRP'PRP$ina	akk-x-neoass.x000004
+@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šarri	akk-x-neoass.x000001
+{ana[to]PRP šarru[king]N += abat šarri[king's word//edict]N'N}::@saao/saa01%akk-x-neoass:a-na=ana[to//to]PRP'PRP$ana++@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šarri	akk-x-neoass.x000000

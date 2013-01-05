@@ -1,0 +1,79 @@
+<css>
+/* The CSS wrapper in this file is for the benefit
+   of xsltforms--do not remove it! */
+empty	        {}
+body	        { background-color: #fff8dc; color: black; 
+		  font-family: "Times New Roman", serif; width: 700px; 
+		  margin: auto;}
+h1 	    	{ text-align: center; color: red; }
+h2		{ margin: 0px; padding-top: 5px; }
+
+p.readonlies    { text-align: center; }
+
+.submits p  	{ text-align: center; }
+span.cancel 	{ margin-left: 30px; }
+span.submit 	{ margin-right: 30px; }
+
+table		{ width: 90%; }
+tr		{ vertical-align: top; }
+td.option       { width: 15%; }
+td.control      { width: 15%; }
+/* td.double       { width: 75%; } */
+td.doco	        { width: 59%; }
+td.doco p	{ margin-left: 2em; text-indent: -2em; }
+td p		{ margin: 0px; padding: 0px; }
+
+.choicedoc , .docsolo
+		{ color: gray; }
+.groupdoc	{ font-weight: normal; }
+
+.valval		{ font-family: sans-serif; font-weight: bold; 
+		  font-size: 90%; }
+
+.blurb .xforms-value { width: 480px; height: 80px; }
+
+@namespace xf url("http://www.w3.org/2002/xforms");
+/* all the attributes of each tab, except the background color */
+
+#horiz-tab-menu xf|trigger {
+    border-left: black solid 1px;
+    border-top: black solid 1px;
+    border-right: black solid 1px;
+    border-bottom: 0px;
+    font-weight: bold;
+    font-family: Helvetica, sans-serif;
+    font-size: .9em;
+    margin-right: 5px;
+    padding: 3px;
+    /* the following only works under FireFox */
+    -moz-border-radius: .5em .5em 0em 0em;
+    border-radius-topright: .5em;
+    border-radius-topleft: .5em;
+}
+/* the attributes of each div inside of a case */
+xf|switch xf|case div {
+    border-left: solid black 1px;
+    border-top: solid black 0px;
+    border-right: solid black 1px;
+    border-bottom: solid black 1px;
+}
+#tab-core, #div-core  {
+    background-color: #fef;
+}
+#tab-build, #div-build  {
+    background-color: #cfc;
+}
+#tab-atf, #div-atf  {
+    background-color: #fc9;
+}
+#tab-cbd, #div-cbd  {
+    background-color: #eef;
+}
+#tab-pager, #div-pager  {
+    background-color: #eff;
+}
+#tab-render, #div-render  {
+    background-color: #ffc;
+}
+
+</css>

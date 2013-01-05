@@ -1,0 +1,53 @@
+h1.reflabel { font-size: medium; width: 80%; }
+span.refid  { font-size: x-small }
+
+a.button    { color: #ff0000; text-decoration: none; }
+p.buttonbar { margin-top: -20pt;
+	 	font-size: x-small; font-weight: bold; line-height: 10pt;
+		width: 100%;
+		text-align: right; font-family: sans-serif; }
+span.button { padding: 2pt; padding-bottom: 1pt; border: 2px; 
+		border-style: outset; 
+		background-color: #ccccff; }
+span.selbutton { padding: 2pt; padding-bottom: 1pt; border: 2px; 
+		border-style: inset; 
+		background-color: #ff0000; color: #ccccff }
+
+td.label    { width: 20pt; text-align: right; padding-right: 5pt; 
+              font-size: small; color: gray; }
+td.indent   { width: 10pt }
+
+p.comment   { font-size: small; font-weight: bold }
+
+img.stve    { vertical-align: middle }
+
+span.data   { color: black }
+span.MCDAT1 { color: red }
+span.MCERG1 { color: blue }
+span.MCABS1 { color: gray }
+span.MCTER1 { color: green }
+span.MCLT1  { color: maroon }
+span.MCCOM1 { color: aqua }
+span.MCLOC1 { color: fuchsia }
+span.MCABL1 { color: navy }
+span.MCEQU1 { color: teal }
+span.MCS1   { color: black }
+
+span.MCDAT3 { color: red }
+span.MCERG3 { color: blue }
+span.MCABS3 { color: gray }
+span.MCTER3 { color: green }
+span.MCLT3  { color: maroon }
+span.MCCOM3 { color: aqua }
+span.MCLOC3 { color: fuchsia }
+span.MCABL3 { color: navy }
+span.MCEQU3 { color: teal }
+span.MCS3   { color: black }
+
+hr.unitsep { border-style: outset }
+hr.buttonsep { border-style: dotted }
+
+a img { border: none }
+
+p.qn { font-size: 90%; }
+img { vertical-align: middle }

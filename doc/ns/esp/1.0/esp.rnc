@@ -1,0 +1,191 @@
+default namespace = "http://oracc.org/ns/esp/1.0"
+namespace dc = "http://purl.org/dc/elements/1.1"
+namespace dcterms = "http://purl.org/dc/terms/"
+namespace esp = "http://oracc.org/ns/esp/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "xhtml/rnc/xhtml-strict.rnc" {
+  start = empty
+  title = empty
+}
+
+start &= esp-page
+
+Block.class |=  esp-block
+Inline.class |= esp-inline
+
+esp-block = 
+  esp-accesskeys-listing | esp-site-map | esp-index-list | esp-author
+  | esp-content-last-modified | esp-h | esp-sh | esp-image | esp-glossary-list
+  | esp-techterms-list | esp-reading | esp-ref
+
+esp-inline = 
+  esp-content-last-modified | esp-link | esp-bookmark
+  | esp-glossary | esp-index | esp-techterms | esp-email | esp-page-name
+  | esp-page-title
+
+esp-accesskeys-listing = 
+  element accesskeys-listing { empty }?
+
+esp-author = 
+  element author  {
+    attribute first-names { text },
+    attribute last-name { text }	
+  }
+
+esp-bookmark = 
+  element bookmark { 
+    attribute id {text},
+    attribute title {text}?,
+    attribute hide-highlight { "yes" | "no" }?,
+    Inline.model
+  }*
+
+esp-caption = 
+  element caption { Inline.model }
+
+esp-content-last-modified = 
+  element content-last-modified  { empty }?
+
+esp-email = 
+  element email {
+    attribute address { text },
+    empty
+  }*
+
+esp-flash-movie = 
+  element flash-movie { 
+    attribute id { text },
+    attribute file { text },
+    attribute title { text },
+    attribute width { text },
+    attribute height { text },
+    Inline.model
+  }
+
+esp-glossary = 
+  element glossary {
+    attribute term { text},
+    Inline.model
+  }*
+
+esp-glossary-list = 
+  element glossary-list { 
+    element definition {
+      attribute term { text },
+      Inline.model
+    }*
+  }?
+
+esp-h = 
+  element h { Inline.model }*
+
+esp-image = 
+  element image {
+    (attribute file { text } | attribute url { xsd:anyURI }),
+    attribute description { text }?,
+    attribute height { text }?,
+    attribute width { text }?,
+    attribute position { "float" | "inline" }?,
+    (
+      (esp-link , esp-caption)
+      | ( esp-caption? ,
+          (esp-image-map | esp-link | esp-flash-movie)
+        )
+    )
+  }
+
+esp-image-map = 
+  element image-map {
+    element area {
+      ( attribute page { text } | attribute url { text } ),
+      attribute access-key { text }?,
+      attribute coords { text },
+      attribute description { text }?,
+      attribute shape { text }, 
+      attribute site-name { text }?,
+      attribute title { text }
+    }+
+}
+
+esp-index = 
+  element index {
+    attribute term  { text },
+    Inline.model
+  }*
+
+esp-index-list = 
+  element index-list { empty }?
+
+esp-link = 
+  element link {
+    ( 	 
+      ( attribute page { text },  
+        attribute bookmark { text }? 
+      ) 
+    | ( attribute url { text }, 
+        attribute site-name { text }? , 
+        attribute hide-print { "yes" | "no" }?
+      )
+    |   attribute bookmark { text }? 
+    ),
+    attribute onclick { text }?,
+    attribute title { text }?,
+    attribute accesskey { text }?,
+    attribute rel { "external" }?,
+    attribute type { "link" }?,
+    Inline.model
+  }*
+
+esp-page =
+  element page {
+    element name { text },
+    element title { text },
+    html
+  }
+
+esp-page-name = 
+  element page-name { 
+    attribute page { text },
+    empty
+  }*
+
+esp-page-title = 
+  element page-title  {
+    attribute page { text },
+    empty
+  }*
+
+esp-reading = 
+  element reading {
+    attribute referent { text },
+    attribute page { text }?,
+    empty
+  }*
+
+esp-ref = 
+  element ref {
+    attribute referent { text },
+    attribute page { text }?,
+    empty
+  }*
+
+esp-site-map = 
+  element site-map { empty }?
+
+esp-sh = 
+  element sh { Inline.model }*
+
+esp-techterms = 
+  element techterms {
+    attribute term { text },
+    Inline.model
+  }*
+
+esp-techterms-list = 
+  element techterms-list {
+    element termsdefinition { 
+      attribute term { text },
+      Inline.model
+    }*
+  }?

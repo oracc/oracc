@@ -1,0 +1,10 @@
+delSpan in the Note to damageSpan should be damageSpan
+
+@sex in 13.3.2 should be defined to use ISO 5218 like <sex> in 13.3.2.1
+
+why is ptr not allowed in <w>? <anchor> is.
+
+'surface' would be nice as part of page semantics or in addition to <pb/> and in
+the enumeration of @unit values on <milestone>
+
+need a place to download TEI corpus from

@@ -1,0 +1,2 @@
+#!/bin/sh
+sed -e "s%@@SESSION@@%$1%g" <$2

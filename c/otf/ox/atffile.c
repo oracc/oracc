@@ -1,0 +1,321 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#include "pool.h"
+#include "block.h"
+#include "tree.h"
+#include "atffile.h"
+#include "protocols.h"
+#include "text.h"
+#include "inline.h"
+#include "atf.h"
+#include "ox.h"
+#include "globals.h"
+
+#undef warning
+#include "warning.h"
+
+extern int setenv(const char *,const char *, int);
+static ssize_t biggest_text = 0;
+static unsigned char **setup_lines(unsigned char *ftext);
+static struct node *file_protocols;
+
+void
+begin_file()
+{
+  const char *const*ns = xtf_xmlns;
+  if (!check_only && !perform_lem)
+    {
+      /*xml_decl();*/
+      fputs("<xtf",f_xml);
+      while (ns[0][0])
+	{
+	  fprintf(f_xml," %s=\"%s\"",ns[0],ns[1]);
+	  ns += 2;
+	}
+      fputc('>',f_xml);
+    }
+}
+
+unsigned char *
+check_bom(unsigned char *s)
+{
+  if (s[0] == 0xef && s[1] == 0xbb && s[2] == 0xbf)
+    return s+3;
+  else if ((s[0] == 0x00 && s[1] == 0x00 && s[2] == 0xfe && s[3] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe && s[2] == 0x00 && s[3] == 0x00)
+	   || (s[0] == 0xfe && s[1] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe))
+    {
+      fprintf(stderr,"unhandled UTF-format (I only understand UTF-8)\n");
+      return NULL;
+    }
+  else
+    return s;
+}
+
+void
+end_file()
+{
+  if (!check_only && !perform_lem)
+    {
+      if (!no_destfile)
+	fputs("<?destfile?>", f_xml);
+      fputs("</xtf>", f_xml);
+    }
+}
+
+int
+process_file(struct run_context *run, const char *fname)
+{
+  struct stat finfo;
+  ssize_t fsize;
+  int fdesc, ret;
+  static unsigned char *ftext = NULL;
+
+  if (strlen(fname) > 4 && !strcmp(fname + (strlen(fname) - 4),".ods"))
+    {
+      odsods_fn = malloc(strlen(fname) + 1);
+      strcpy(odsods_fn, fname);
+      odsatf_fn = malloc(strlen(fname) + 5);
+      sprintf(odsatf_fn,"%s.atf",fname);
+      odslem_fn = malloc(strlen(odsatf_fn)+1);
+      sprintf(odslem_fn,"%s.lem",fname);
+      setenv("ODS2ATF",fname,1);
+      system("/usr/local/oracc/bin/ods2atf.sh");
+      fname = odsatf_fn;
+      ods_mode = 1;
+    }
+
+  if (-1 == stat(fname,&finfo))
+    {
+      fprintf(stderr,"atf2xtf: stat failed on %s\n",fname);
+      return -1;
+    }
+  if (!S_ISREG(finfo.st_mode))
+    {
+      fprintf(stderr,"atf2xtf: %s not a regular file\n",fname);
+      return -1;
+    }
+  fsize = finfo.st_size;
+  if (!fsize)
+    {
+      fprintf(stderr,"atf2xtf: %s: empty file\n",fname);
+      return -1;
+    }
+  if (NULL == (ftext = malloc(fsize+1)))
+    {
+      fprintf(stderr,"atf2xtf: %s: couldn't malloc %d bytes\n",
+	      fname,(int)fsize);
+      return -1;
+    }
+
+  fdesc = open(fname,O_RDONLY);
+  if (fdesc >= 0)
+    {
+      ssize_t ret = read(fdesc,ftext,fsize);
+      close(fdesc);
+      if (ret == fsize)
+	ftext[fsize] = '\0';
+      else
+	{
+	  fprintf(stderr,"atf2xtf: read %d bytes failed\n",(int)fsize);
+	  return -1;
+	}
+    }
+  else
+    {
+      fprintf(stderr, "atf2xtf: %s: open failed\n", fname);
+      return -1;
+    }
+
+  file = errmsg_fn ? errmsg_fn : fname;
+
+  if (!check_only && !perform_lem)
+    {
+      if (!one_big_file)
+	begin_file();
+      atf_file_pi(fname);
+    }
+  ret = process_string(run, ftext, fsize);
+  free(ftext);
+  if (!check_only && !perform_lem)
+    {
+      if (!one_big_file)
+	end_file();
+    }
+
+  if (ods_mode)
+    {
+      if (perform_lem && !exit_status)
+	{
+	  setenv("ODS2ATF",odsods_fn,1);
+	  system("/usr/local/share/cdl/bin/ods-lem.sh");
+	}
+      free(odsods_fn);
+      free(odslem_fn);
+      free(odsatf_fn);
+      odsods_fn = odslem_fn = odsatf_fn = NULL;
+    }
+  
+  return ret;
+}
+
+int
+process_string(struct run_context *run, unsigned char *ftext, ssize_t fsize)
+{
+  unsigned char *ftext_post_bom, **lines, **rest;;
+  ftext_post_bom = check_bom(ftext);
+  if (!ftext_post_bom)
+    return 1;
+
+#if 1
+  (void)vchars(ftext_post_bom,fsize);
+#else
+  if (vchars(ftext_post_bom,fsize))
+    return 1;
+#endif
+
+  if (process_detchars)
+    ftext_post_bom = remap_detchars(ftext_post_bom);
+
+  rest = lines = setup_lines(ftext_post_bom);
+
+  curr_lang = global_lang;
+  file_protocols = protocols(run, s_file, XTF, lines, &rest, NULL);
+  if (!check_only && !perform_lem)
+    {
+      if (file_protocols && file_protocols->children.lastused)
+	serialize(file_protocols,0);
+    }
+  while (*rest)
+    {
+      if (**rest == '&')
+	break;
+      else if (!rest[0][0])
+	{
+	  ++lnum;
+	  ++rest;
+	}
+      else if (isspace(rest[0][0]))
+	{
+	  int i = 1;
+	  while (isspace(rest[0][i]))
+	    ++i;
+	  if (!rest[0][i])
+	    {
+	      ++lnum;
+	      ++rest;
+	    }
+	  else
+	    {
+	      warning("malformed line; spaces followed by non-spaces");
+	      ++lnum;
+	      ++rest;
+	    }
+	}
+      else if (**rest == '#')
+	{
+	  warning("comments not allowed before text");
+	  ++lnum;
+	  ++rest;
+	}
+      else
+	{
+	  warning("unexpected start-of-line");
+	  ++lnum;
+	  ++rest;
+	}
+    }
+  while (*rest && '&' != **rest)
+    {
+      ++lnum;
+      ++rest;
+    }
+  while (1)
+    {
+      rest = process_text(run, rest);
+      if (!rest || !*rest)
+	break;
+      if (rest - lines != (lnum-1))
+	fprintf(stderr,"%s: %s: lnum corrupted: actual %d expected %d\n",
+		file, textid,
+		lnum, (int)(1+(rest - lines)));
+      if (verbose > 1)
+	fprintf(f_log,"%d\n",lnum);
+      clear_blocks();
+    }
+  free(lines);
+  /*xcl_clear_cache();*/
+  return status;
+}
+
+static unsigned char **
+setup_lines(unsigned char *ftext)
+{
+  unsigned char **p,**ret;
+  register unsigned char*s = ftext;
+  int nlines = 0;
+  unsigned char *lastand = s;
+  while (*s)
+    {
+      if (*s == '\r')
+	{
+	  ++nlines;
+	  if (s[1] != '\n')
+	    *s++ = '\n';     /* for MAC \r, map to \n */
+	  else
+	    s+=2; 	     /* for DOS \r\n, skip \n */
+	}
+      else if (*s == '\n') /* UNIX */
+	{
+	  ++nlines;
+	  if ('&' == *++s)
+	    {
+	      if (s - lastand > biggest_text)
+		biggest_text = s - lastand;
+	      lastand = s;
+	    }
+	    
+	}
+      else
+	++s;
+    }
+  if (s - lastand > biggest_text)
+    biggest_text = s - lastand;
+  if (s[-1] != '\n' && s[-1] != '\r')
+    ++nlines;
+  ++nlines; /* NULL ptr to terminate */
+  ret = p = malloc(nlines*sizeof(unsigned char *));
+  s = ftext;
+#if 0 /* this screws with the line count, or with corruption detection */
+  while ('\n' == *s)
+    {
+      *s++ = '\0';
+      ++lnum;
+    }
+#endif
+  while (*s)
+    {
+      *p++ = s;
+      while (*s && '\n' != *s)
+	++s;
+      if (*s == '\n')
+	{
+	  if (s > ftext && s[-1] == '\r')
+	    {
+	      s[-1] = '\0';
+	      ++s;
+	    }
+	  else
+	    *s++ = '\0';
+	}
+    }
+  *p = NULL;
+  return ret;
+}

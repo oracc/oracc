@@ -1,0 +1,182 @@
+\newbox\hijackedinsert
+
+\newdimen\partialshrink \newdimen\ppshrink \newdimen\MCpartialtmp
+
+\def\@beginmcol#1{%
+  \ifvoid\mc@magicbox
+    \setbox\mc@magicbox=\vbox{}%
+    \dp\mc@magicbox=\mc@magicboxdp
+  \fi
+  \ifmc@ctive
+    \errhelp={%
+You can't put one piece of multicolumn text inside another.^^J
+Perhaps you missed some kind of end multicolumn command?}%
+    \errmessage{Nested multicolumn environments}%
+  \fi
+  \mc@ctivetrue
+
+  % \mincoltarget is the amount of space which must remain on the
+  % page to start the mcol on this page; if the calculated \dimen@
+  % is less than \mincoltarget, we \eject.  However, this is not 
+  % suitable if the mcol material is preceded by a heading; in that
+  % case, use \needspace with the heading and eject if necessary.
+  \mc@calcsofar
+  \wlog{MC: ppshrink = \the\ppshrink}
+  \ifdim\dimen@<\mincoltarget \mc@outputsofar\fi %\mcolmagicthreshold
+  \ifdim\dimen@>\ht\topins
+    \ifdim\ht\topins>0pt
+      \wlog{MC: dump true; \ht\topins=\the\ht\topins}\mc@dumptopinsertstrue\else
+      \mc@dumptopinsertsfalse\fi
+    \else\mc@dumptopinsertsfalse\fi
+ 
+  \output={%\showboxbreadth10000 \showboxdepth10000 \showbox255
+%        \shipout\vbox{\hijacktopins}%
+        \global\partialshrink=\pageshrink
+	\global\setbox\partialpage=
+	\vbox{% \partialpage can only contain something already if
+	      % this multicol environment is wrongly nested within
+	      % another one.
+              \ifvoid\partialpage\else\unvbox\partialpage\fi
+%              % any inserts to flush?
+%              \ifvoid\topins\else
+%                 \wlog{MC: partialpage topins}%
+%                 \global\setbox\hijackedinsert{\unvbox\topins}\fi
+	      \unvbox255
+	      \ifnum\mc@added>0 \mc@removeaddedstuff\fi}}\eject
+%   \showbox\partialpage
+%  \output={\plainoutput}%
+   \peek
+     \ifdim\the\ht\popped>0pt
+       \ifdim\ht\popped=\vsize\else\wlog{MC: @beginmcol: \ht\popped=\the\ht\popped}\fi\fi
+%  \ifdim\the\ht\popped>0pt \eject \fi
+
+  \global\@numcols#1
+
+  % set column widths
+  \dimen@=\intercolgutter \count255\@numcols \advance\count255by-1
+  \ifnum\count255>1\multiply\dimen@ by\count255 \fi
+  \hsize\fullhsize
+  \advance\hsize by-\dimen@ \divide\hsize by\@numcols
+
+  % \goal@vsize here is the goal height of one column
+  \goal@vsize\textheight 
+  \peek
+  \advance\goal@vsize-\dp\partialpage
+  \advance\goal@vsize-\ht\popped 
+
+  \ifdim\ht\partialpage>\vsize
+    \wlog{MC: partial \the\ht\partialpage > \the\vsize; \pageshrink=\the\pageshrink}
+    \MCpartialtmp\ht\partialpage 
+    \advance\MCpartialtmp\partialshrink
+    \ifdim\MCpartialtmp>\vsize
+      \advance\MCpartialtmp-\vsize
+      \advance\goal@vsize-\MCpartialtmp\relax
+     \else
+       \advance\goal@vsize-\ht\partialpage 
+       \advance\goal@vsize\ppshrink
+     \fi
+  \else
+    \advance\goal@vsize-\ht\partialpage 
+  \fi
+
+  \ifvoid\footins
+    \def\next{\dimen255=0pt}%
+  \else
+    \ifmc@lfnotes\def\next{\get@footsize}%
+    \else\def\next{\dimen255\ht\footins
+                   \advance\dimen255\dp\footins
+                   \advance\goal@vsize-\skip\footins}\fi
+  \fi
+  \next
+%  \dimen255\ht\footins \ifmc@lfnotes\divide\dimen255\numfnotec@ls\fi
+  \advance\goal@vsize-\dimen255
+  \ifdim\goal@vsize<\mincoltarget \goal@vsize\mincoltarget\fi
+
+  \wlog{MC: pre-set@goal@vsize: \textheight=\the\textheight; \vsize=\the\vsize}%
+  \wlog{MC: \pagetotal=\the\pagetotal; \pagestretch=\the\pagestretch; \pageshrink=\the\pageshrink}%
+  \wlog{MC: \ht\partialpage=\the\ht\partialpage; \goal@vsize=\the\goal@vsize}%
+
+  \ifdim\goal@vsize<1pt \wlog{MC: plainoutput newpage}%
+    \output={\plainoutput}%
+    %\unvbox\partialpage\vfil\eject\fi
+    \unvbox\partialpage
+    \goal@vsize=\vsize \advance\goal@vsize-\ht\partialpage
+    \ifdim\ht\popped=\vsize
+      \vfil\eject
+    \else
+      \ifdidMaybeEject\global\didMaybeEjectfalse\else\vfil\eject\fi
+    \fi\fi
+
+%%%%%
+
+  \set@goal@vsize
+  
+%%%%%
+
+  \ifdim\goal@vsize=0pt 
+    \goal@vsize\currleading pt 
+    \divide\goal@vsize by10\relax
+  \fi
+
+  \multiply\goal@vsize\@numcols
+  \vsize\goal@vsize
+  \advance\vsize\columnfuzz
+  \wlog{MC: setting \vsize to \the\vsize; \columnfuzz=\the\columnfuzz}%
+  \global\mc@lpagegoal\vsize % \showthe\vsize
+  \ifmc@lfnotes\multiply\count\footins by\@numcols \fi
+  \output={\mcolcolumnout}}
+
+\def\hijacktopins{%\global\setbox\hijackedinsert=\vbox{\unvbox\topins}%
+%  \showbox\hijackedinsert
+  }
+
+\def\@endmcol{%
+  \iffpleftover@ % ensure the last bit is output
+    \box\fpleftp@ge\allowbreak\nointerlineskip\box\fprightp@ge 
+  \fi
+  \output={\outputbalancecolumns}\eject%\supereject
+%  \outputbalancecolumns
+  \iffpleftover@\global\fpleftover@false\fi
+  \global\outputtingbalancedcolumnsfalse \output={\plainoutput}%
+  \global\vsize\textheight
+%  \dimen255\ht\footins \ifmc@lfnotes\divide\dimen255by\numfnotec@ls\fi
+%  \advance\vsize-\dp\footins
+  \ifvoid\footins
+    \def\next{\dimen255=0pt}%
+  \else
+    \ifmc@lfnotes\def\next{\bic@push\get@footsize\bic@pop}%
+    \else\def\next{\dimen255\ht\footins\advance\dimen255\dp\footins
+      \advance\vsize-\skip\footins}\fi
+  \fi
+  \next
+  \advance\vsize-\dimen255
+  \global\makevsizefulltrue 
+  \penalty0
+  \unvbox\partialpage
+  \penalty0
+  \ifvoid\savedboxincolsb@x\else
+    \box\savedboxincolsb@x\fi
+  \wlog{MC: putting \boxincolsb@x on main list with \ht \the\ht\boxincolsb@x\ and \dp \the\dp\boxincolsb@x}%
+  \box\boxincolsb@x
+  \nointerlineskip}
+
+\def\mcolcolumnout{\message{mcolcolumnout}%
+%  \iffp@mc\showboxbreadth10000 \showbox255\fi
+  \boxcolumns\@numcols
+%  \ifforcecolumnfillfalse\else\message{forcing column fill}\columnfilltrue\fi
+  \columnfillfalse
+  \global\didMaybeEjectfalse
+  \balancebox{255}%
+  \global\setbox255=\vbox{\penalty0\unvbox\partialpage\penalty0\box\boxincolsb@x}%
+  \global\vsize\textheight
+  \wlog{MC: shipping out with box255 \ht \the\ht\boxincolsb@x{} and \dp \the\dp\boxincolsb@x}%
+  \shipout\vbox{\makeheadline\pagebody\makefootline}\advancepageno % part of \plainoutput
+  \global\notopinsfalse
+  \resetoutputvariables
+  \goal@vsize\textheight
+  \set@goal@vsize
+  \global\vsize\goal@vsize
+  \global\multiply\vsize\@numcols
+  \global\advance\vsize\columnfuzz  % \showthe\vsize
+  \global\mc@lpagegoal\vsize
+}

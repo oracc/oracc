@@ -1,0 +1,583 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: utility.tex,v 0.10 1997/05/16 15:01:41 s Exp s $
+
+% A miscellany of macros that do useful things, both for users and for
+% other macros. They're not in any particular order, but they are fairly
+% modular.
+
+% 0) Oddments (various origins)
+% ===========================
+%
+% Little macros that encapsulate some oft-used functionality
+%
+
+% useful debugging aid: print a message before and after executing a
+% macro
+\def\beforeandafter#1{\wstdout{Before: \string#1}#1\wstdout{After: \string#1}}
+
+% set things up so you can say \if\defined\... and \define...
+\def\defined{defined}     \def\undefd{undefined}
+% these need an expandafter to behave correctly with constructs like
+% \define{\csname pig\endcsname}
+\def\define#1{\global\expandafter\let#1\defined}
+\def\undefine#1{\global\expandafter\let#1\undefined}
+
+% test argument #1 to see if it's defined and execute true text (#2) if
+% so, false text (#3) otherwise
+% e.g. \ifdefined\pig{\message{pig OK}}{\message{no pig}}
+\def\ifdefined#1#2#3{\ifx#1\neverdefined#3\else#2\fi}
+
+% like the above, but for use with csname 
+% e.g. \ifcsname{pig}{\message{pig OK}}{\message{no pig}}
+%%
+%% We used to have:
+%%
+%% \def\ifcsname#1#2#3{\expandafter\if\csname#1\endcsname\relax#3\else#2\fi}
+%%
+%% but this def is not good enough: expansions of csname which result
+%% in two tokens break it (like `11').
+%%
+%% The following is more complicated, but gets the \relax as first comparand,
+%% which is then more robust.
+\def\ifcsname#1#2#3{%
+  \expandafter\if
+    \expandafter\expandafter
+      \relax
+      \csname#1\endcsname
+        #3\else#2\fi}
+
+% Eat arguments so you can ignore them
+\def\gobbleone#1{\relax}
+\def\gobbletwo#1#2{\relax}
+\def\gobblethree#1#2#3{\relax}
+
+% put #1 in math mode if not already in it
+\def\mathnomath#1#2{\ifmmode#1\else#2\fi}
+\def\forcemath#1{\mathnomath{#1}{$#1$}}
+
+%\def\forcemath#1{\ifmmode\def\next{#1}\else\def\next{$#1$}\fi\next}
+
+% a depth independent, non-math, underline macro
+\def\ul#1{\leavevmode\vtop{\hbox{#1\strut}\hrule}}
+
+% remove leading and trailing whitespace from #1
+\def\stripwhite#1{\ignorespaces#1\unskip}
+
+% so we can say \def\next\true ... \ifx\next\true
+\def\true{t} \def\false{f}
+
+% sheer laziness
+\def\glet{\global\let }
+
+% set a piece of text to occupy at least #1 much room, but to run into
+% following text if wider than that.
+\newskip\posthboxtominamount \newif\ifhboxtominwaslong
+\def\hboxtomin#1#2{\setbox0=\hbox{#2}%
+  \ifdim\wd0>#1\relax\global\hboxtominwaslongtrue\unhbox0 \unskip
+               \hskip\posthboxtominamount\ignorespaces
+  \else\global\hboxtominwaslongfalse\hbox to#1{\unhbox0\hfil}\fi}
+
+% put argument at right hand end of line if it fits, or at end of
+% next line if not
+\def\shoveright#1{{\unskip\nobreak\hfil\penalty50
+  \hskip2em\hbox{}\nobreak\hfill #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+% Define \( (or `@(') as a shorthand for \shoveright: this definition
+% requires the user to have (...) around the text
+\def\(#1){\shoveright{\rm(#1)}}
+
+% Put a box around the argument; the box has default rule width
+% (0.04em in Plain TeX).  These macros are based on the TeXbook,
+% p.331 ad 21.3.
+%
+% The documentation should mention that ordinary text should 
+% probably be enclosed in an \hbox, or you get a box around a 
+% line (para).
+\long\def\boxit#1{\vbox{\hrule\hbox{\vrule\kern3pt 
+  \vbox{\kern3pt#1\kern3pt}\kern3pt\vrule}\hrule}}
+
+% Like \boxit, but the first argument is the thickness of the rules 
+% to use.
+\long\def\boxittwo#1#2{\vbox{\hrule height#1\hbox{\vrule width#1\kern3pt 
+  \vbox{\kern3pt#2\kern3pt}\kern3pt\vrule width#1}\hrule height#1}}
+
+% Like \boxittwo, but the second argument is the amount of space to clear
+% around the box
+\long\def\boxitthree#1#2#3{\vbox{\hrule height#1\hbox{\vrule width#1\kern#2
+  \vbox{\kern#2\relax#3\kern#2}\kern#2\vrule width#1}\hrule height#1}}
+
+% useful paragraph shapes
+\def\centerpar#1\par{{\let\\\break\leftskip=2em plus1fill 
+  \rightskip=\leftskip\relax \parindent0pt \parfillskip0pt 
+  \leavevmode#1\endgraf}}
+\def\leftpar#1\par{\noindent{\leftskip0pt \rightskip=2em plus1fil
+   \ignorespaces#1\unskip\endgraf}}
+\def\rightpar#1\par{\par{\parfillskip0pt 
+  \advance\leftskip0pt plus1fill\relax \noindent
+  \ignorespaces#1\unskip\endgraf}}
+\def\hangpar#1\par{\par\noindent\hangindent\indention#1\endgraf}
+
+% After the following definitions we can easily apply something to the
+% next para, or the next N para's (using \loop). In div.tex this is used
+% to achieve the effect of getting an unindented para after the section
+% heading without the need to use \noindent (\noindent contributes unwanted
+% \parskip glue when \heading is followed immediately by \subheading).
+%
+% This feature has to be used with some care.  It is intended only for
+% controlling the indentation of following paras: lists should use 
+% \everypar directly with grouping to control their effects.  Macros 
+% that modify \everypar directly should leave it set to \the\nextpar
+% after they're done, and may need to call \the\nextpar anyway to 
+% ensure that their first para behaves correctly after a heading.
+\newtoks\nextpar \everypar{\the\nextpar}
+
+% convenient line types
+\def\blankline{\ifvmode\allowbreak\kern\baselineskip\allowbreak
+  \else\hfill\break\strut\hfill\break\fi}
+\newdimen\rulespace \newdimen\interrulespace 
+\rulespace7pt \interrulespace3pt
+\def\singlerule{\par\kern\rulespace\hrule\kern\rulespace}
+\def\doublerule{\par\kern\rulespace\hrule\kern\interrulespace\hrule%
+  \kern\rulespace}
+
+% control appearance of overfull rules
+\def\blackboxes{\global\overfullrule5pt}
+\def\noblackboxes{\global\overfullrule0pt}
+
+% control sloppiness of paragraphs
+\def\verysloppy{\tolerance10000\relax}
+\def\sloppy{\tolerance2000\relax}
+\def\fussy{\tolerance500\relax}
+\def\veryfussy{\tolerance100\relax}
+
+% convenient definitions for things that look better when smaller
+\def\@smallrom#1{{\the\scriptfont\the\fam#1}}
+\def\@srstart{\unskip~}
+\def\I{\@srstart\@smallrom{I}}
+\def\II{\@srstart\@smallrom{II}}
+\def\III{\@srstart\@smallrom{III}}
+\def\IV{\@srstart\@smallrom{IV}}
+\def\V{\@srstart\@smallrom{V}}
+\def\VI{\@srstart\@smallrom{VI}}
+\def\VII{\@srstart\@smallrom{VII}}
+\def\VIII{\@srstart\@smallrom{VIII}}
+\def\AD{\@srstart\@smallrom{A}.\@smallrom{D}}
+\def\CE{\@srstart\@smallrom{C}.\@smallrom{E}}
+\def\BC{\@srstart\@smallrom{B}.\@smallrom{C}}
+\def\BCE{\@srstart\@smallrom{B}.\@smallrom{C}.\@smallrom{E}}
+
+% shorthands for some things that are a pain to type otherwise
+\def\wn{w.n.~\ignorespaces} 
+\def\cf{cf.~\ignorespaces} \def\cp{cp.~\ignorespaces} 
+\def\eg{\hbox{e.g.}} \def\ie{\hbox{i.e.}} 
+\def\sv{s.v.~\ignorespaces} \def\adloc{{\it ad loc}}
+
+% Logos: should add AMS-tex, make one for DA-tex, add MetaFont
+\def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX}
+\def\LaTeX{La\TeX{}}
+
+% control puntuation settings
+\def\frenchspacing{\sfcode`\.\@m \sfcode`\?\@m \sfcode`\!\@m
+  \sfcode`\:\@m \sfcode`\;\@m \sfcode`\,\@m}
+\def\nonfrenchspacing{\sfcode`\.3000\sfcode`\?3000\sfcode`\!3000%
+  \sfcode`\:2000\sfcode`\;1500\sfcode`\,1250 }
+
+% 1) Ellipsis macros (SJT)
+% ===========================
+%
+% Dots are defined such that ... turns into ellipsis, .... turns into
+% an endellipsis and .. issues a warning and outputs '...'.
+%
+\newif\if@llspace \@llspacefalse \newcount\d@tct \d@tct=0
+\def\Pd{.} % this has to be used in <dimens> unless \disabledots is in effect
+%% use this one in \macrofile's to prevent dots being switched on again
+%\newif\ifdodots \dodotstrue
+% macros executed for 1, 2, 3 and 4 dots
+%\def\errellipsis{\message{2 dots converted to ellipsis!}\ellipsis}
+% This macro should really determine if the next token is a punctuation
+% mark and, if so, put in a \nobreak rather than a \penalty2000
+\def\@llipstail{\penalty2000\ignorespaces}
+\def\ellipsis{\ifvmode\leavevmode\fi\hbox{.\ .\ .}\@llipstail}
+\def\endellipsis{\unskip\nobreak\hbox{.\ .\ .\ .}\@llipstail}
+%\def\nd@ts{\unskip\loop~.\ifnum\d@tct>0 \advance\d@tct-1 \repeat\ \ignorespaces}
+% These macros do the business. For each dot, see if the next token is a
+% dot. If so, advance \d@tct and check the next token. When you find a token
+% that isn't a dot, or if you've found 4 dots (\d@tct=3), call \out@llips.
+%{\catcode`.=\active \gdef.{\chk@llips} \gdef\activedot{\chk@llips}}
+%\def\chk@llips{\futurelet\nexttok\tst@llips}
+%\def\tst@llips{\ifx\activedot\nexttok\def\nextcs{\adv@llips}%
+%  \else\def\nextcs{\out@llips}\fi\nextcs}
+%\def\adv@llips#1{\advance\d@tct1\relax\chk@llips} % #1 eats the current dot
+%\def\out@llips{\ifcase\d@tct\def\nextcs{\Pd}\or\def\nextcs{\errellipsis}%
+%  \or\def\nextcs{\ellipsis}\or\def\nextcs{\endellipsis}%
+%  \else\def\nextcs{\nd@ts}\fi\nextcs\d@tct0\relax}
+% provide convenient way to switch these macros on and off
+%\def\enabledots{\makeactive{.}}\def\disabledots{\makeother{.}}
+\let\enabledots\relax \let\disabledots\relax
+
+% 2) Inwords (Raymond Chen, submitted to TeXhax in early 1991)
+% ===============================================================
+%
+% Take an argument in digits and print it in words.
+%
+\def\inwords{\numbersplit{1000000000}\underbillion\underthousand{ billion }}
+\def\numbersplit#1#2#3#4#5{%
+  \ifnum#5<#1 #2{#5}\else
+    {\count@#5\relax \allocationnumber\count@ \divide\count@ #1\relax
+      #3\count@#4\multiply\count@ #1\relax
+      \advance\allocationnumber-\count@ #2\allocationnumber\relax}%
+  \fi}
+\def\underbillion{\numbersplit{1000000}\undermillion\underthousand{ million }}
+\def\undermillion{\numbersplit\@m\underthousand\underthousand{ thousand }}
+\def\underthousand{\numbersplit{100}\underhundred\undertwenty{ hundred }}
+% The careful sidestepping involved in \count@=#1 \allocationnumber=\count@
+% is to make sure the right thing happens, even if #1=\count@ or
+% #1=\allocationnumber.
+% We use \allocationnumber as a scratch count variable.  It and \count@
+% are always used inside a group, so their original values will be
+% restored when the macros finish their job.
+\def\underhundred#1{\ifnum#1<20 \undertwenty{#1}\else
+  {\count@#1\relax \allocationnumber\count@ \divide\count@ 10
+   \ifcase\count@ \or\or twenty\or thirty\or forty\or fifty\or sixty\or
+           seventy\or eighty\or ninety\fi
+   \multiply\count@ 10
+   \advance\allocationnumber by-\count@
+   \ifnum\allocationnumber>\z@ -\undertwenty\allocationnumber\fi
+  }\fi}
+\def\undertwenty#1{\ifcase#1\or one\or two\or three\or four\or five\or
+    six\or seven\or eight\or nine\or ten\or eleven\or twelve\or thirteen\or
+    fourteen\or fifteen\or sixteen\or seventeen\or eighteen\or nineteen\fi}
+
+% 3) Time and Date (\today from The TeXbook, Appendix E; \inserttime by SJT)
+% ==========================================================================
+% 
+% Print out today as Month DD, YY
+%
+\def\thismonth{\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi}
+\def\thismonthshort{\ifcase\month\or
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or
+  Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi}
+
+\def\today{\thismonth\space\number\day, \number\year}
+
+% Insert time in form hh:mm
+\newcount\hours		\newcount\minutes
+\def\calctime{%
+  \hours=\time		\global\divide\hours by60
+  \count255=\hours	\multiply\count255 by60
+  \minutes=\time	\global\advance\minutes by-\count255\relax}
+\def\inserttime{\calctime\number\hours:\ifnum\minutes<10 0\fi\number\minutes}
+
+% give a complete datestamp of form hh:mm on day mon yr
+\def\datestamp{\inserttime\space on \number\day\space\thismonthshort\space\number\year}
+
+% 4) Verbatim Macros (after Kent Eschenberg, KEE@PSUARLC, Sep 88 TeXhax)
+% ======================================================================
+%
+% These macros contain several DA-specific constructs. They will need more
+% modifications when the FLOD macros are finished.
+%
+% Entry points: \vb, \vbfile, \vbfileno. Show respectively a short text, 
+% a file and a file with line numbering in verbatim style.
+%
+\newcount\vbnumbering \newbox\vbbox
+\def\vbfont{\Fixedwidth\rm\hyphenchar\the\font-1 }
+%  Set action to be taken at a quote, end of line, and embedded blank.
+{\catcode`\`=13\relax \gdef\vblquote{\def`{\relax\lq}}}
+{\catcode`\^^M=13\relax \gdef\vbeol{\def^^M{\leavevmode \endgraf}}%
+ \gdef\vbeolsp{\def^^M{ }}}
+{\catcode`\ =13\relax \gdef\vbsmallsp{\let \enskip}}
+{\catcode`\ =13\relax \gdef\vbmiddlesp{\let \enskip}}
+% Adjust character categories of all special characters
+\def\vbcatcodes{%
+  \let\do\makeother \dospecials \DAdospecials \let\Prime\vbPrime
+  \catcode`\{=12\relax \catcode`\}=12\relax \catcode`\@=12\relax
+  \catcode`\^^M=13\relax \catcode`\ =13\relax \catcode`\`=13\relax
+  \catcode`\^^L=13\relax \vblquote}
+% Show a Few Words Verbatim. The user can specify any closing character 
+% and should choose one which does not occur in the verbatim text. When
+% the endgroup character is found all the prior catcodes will be 
+% restored and verbatim mode will terminate naturally
+\def\vb#1{\bgroup\catcode`#1=2 \vbfont\vbcatcodes\vbeolsp\vbmiddlesp}
+% Show a file verbatim without line numbering
+\def\vbfile#1{\def\@fn{#1}\vbfile@\vbdofile}
+% Show a file verbatim with line numbering
+\def\vbfileno#1{\def\@fn{#1}\vbfile@\everypar{\vbnum@}\vbnumbering0 \vbdofile}
+\def\vbnum@{\advance\vbnumbering1 
+  \rlap{\hbox to 3em{\hfil\the\vbnumbering\quad}}\hskip3em\relax}
+\def\vbfile@{\par\begingroup\verbatimformat\vbeol\vbsmallsp
+  \vbfont\ninepoint\baselineskip=2ex \lineskiplimit2pt \lineskip3pt
+  \def\vbstrut{\vrule height1.6ex depth.4ex width\z@}%
+  \parindent=0in \parskip=0pt \vbhook}
+\def\vbdofile{\input\@fn\relax\endgroup\par}
+% set up ^^L to act as a pagebreak when active
+{\catcode`\^^L\active \let^^L\relax
+\gdef\ControlLpages{\catcode`\^^L\active \let^^L\newpage}}
+\def\vbhook{\ControlLpages}
+
+% 5) A robust way of shifting formats (SJT)
+% =========================================
+%
+% To extend, simply add another \chardef for the new format, modify the
+% \ifcase in \currformat, and define a macro which sets the character
+% codes and sets \currfmt, analogous to \DAformat and friends.
+%
+\chardef\plainfmtc@de		0
+\chardef\macrofmtc@de		1
+\chardef\DAfmtc@de		2
+\chardef\verbatimfmtc@de	3
+\newcount\currfmt	\currfmt\macrofmtc@de
+\def\currformat{\ifcase\currfmt
+  \plainformat%0 
+  \or\macroformat%1
+  \or\DAformat%2
+  \or\verbatimformat%3
+  \fi}
+\def\effectmacroformat{\catcode92=0 \catcode`\#=6 \catcode95=8 
+   \catcode`\^=7 \catcode`\_=10
+   \catcode34=12 \catcode64=11 \disabledots}
+\def\plainformat{\effectmacroformat\makeother{@}\global\currfmt\plainfmtc@de\catcode`\\0\relax}
+\def\macroformat{\effectmacroformat\global\currfmt\macrofmtc@de }
+\def\DAformat{\global\currfmt\DAfmtc@de\DAcatcodes}
+\def\verbatimformat{\global\currfmt\verbatimfmtc@de\vbcatcodes}
+
+% 6) Files and Filenames (SJT)
+% ============================
+%
+% \checkfile: Check if a file exists and set \ifitexists to true or false
+%
+%	#1 = the filename
+%
+\newif\ifitexists
+\def\checkfile{\effectmacroformat \ch@ckfile}
+\def\ch@ckfile#1{{\immediate\openin0 #1\relax
+  \ifeof0\global\itexistsfalse\else
+  \global\itexiststrue\fi 
+  \immediate\closein0 }\currformat}
+
+% define IfFileExists for xmltex's benefit
+\def\IfFileExists#1#2#3{
+  \def\@filef@und{#1 }
+  \immediate\openin0 #1\relax
+  \ifeof0 \def\next{#3}\else\def\next{#2}\fi
+  \immediate\closein0 \next}
+
+% \pathfind: find a file somewhere in a path.
+%
+% The path must be previously defined with the command
+% \pathdefine#1#2:
+%	#1 = the symbolic path name, without any escape char.
+%	#2 = the path: each element must be legal for the local OS, and
+%		must include any final delimiter which goes between the
+%		directory and the file name. Elements in the path are 
+%		delimited by ',', e.g., 
+%			e:/bin/,e:/usr/bin/,e:/usr/local/bin/
+% For each element in #2 a control sequence \<NAME>n is defined with the
+% value of that segment. The command
+%	\pathdefine{TFMpath}{e:/emtex/tfms/,d:/da/tex/tfms/}
+% is equivalent to
+%	\def\TFMpath{e:/emtex/tfms/,d:/da/tex/tfms/}
+%	\def\TFMpath1{e:/emtex/tfms/}
+%	\def\TFMpath2{d:/da/tex/tfms/}
+% except that the digit is part of the \csname, not an argument delimiter.
+%
+% Thereafter a file may be sought in the defined path by the call
+% \pathfind#1#2:
+%	#1 = the symbolic path name, as in \pathdefine
+%	#2 = the name of the file
+%
+% The full successful result is returned in the macro \pathresult, which
+% is empty on failure.
+%
+\def\pathdefine{\effectmacroformat\count255=0 \pathdefine@}
+\def\pathdefine@#1#2{\advance\count255by1 
+  \ifnum\count255=1
+    \expandafter\gdef\csname#1\endcsname{#2}%
+    \gdef\pathname{#1}\gdef\pathpath{#2}%
+    \pathshow{`\pathname' defined as `\pathpath'}%
+  \fi
+  \pathdefelement#2,\endofarg{#1}{\the\count255 }%
+  \nexttry}
+\def\pathdefelement#1,#2\endofarg#3#4{%
+  \def\next{#1}%
+  \ifx\next\empty
+    \gdef\nexttry{\currformat}%
+  \else
+    \expandafter\gdef\csname#3#4\endcsname{#1}%
+    \pathshow{`#3#4' defined as `#1'}%
+    \gdef\nexttry{\pathdefine@{#3}{#2}}%
+  \fi}
+
+\def\pathfind{\effectmacroformat\count255=0 \pathfind@}
+\def\pathfind@#1#2{\advance\count255by1 
+  \ifnum\count255=1
+    \gdef\pathname{#1}\gdef\pathfile{#2}%
+%    \pathshow{searching `\pathname' for `\pathfile'}%
+  \fi
+%%  \gdef\next{\csname#1\the\count255 \endcsname}% %% DOES THIS DO ANYTHING?
+  \pathfindelement{#1}{\the\count255 }{#2}\nexttry}
+\def\pathfindelement#1#2#3{%
+  \gdef\next{\csname#1#2\endcsname}%
+  \if\next\empty \relax
+    \pathshow{`\pathfile' not found in `\csname\pathname\endcsname'}%
+    \gdef\pathresult{}%
+    \gdef\nexttry{\currformat}%
+  \else
+    \checkfile{\next#3}%
+    \ifitexists
+      \pathshow{found `\next#3'}%
+      \xdef\pathresult{\next#3}%
+      \gdef\nexttry{\currformat}%
+    \else
+%      \pathshow{`\next#3' unsuccessful}%
+      \gdef\nexttry{\pathfind@{#1}{#3}}\fi
+  \fi }
+
+% If \tracingpaths=1 is true we show every path operation on screen and
+% log. If \tracingpaths=2 we show operations on log only. (If 0, no show.)
+\newcount\tracingpaths
+\def\pathshow#1{\ifcase\tracingpaths\or\wstdout{Path: #1}\or\wlog{Path: #1}\fi}
+
+% 7) Protecting Mark and Message (SJT)
+% ====================================
+%
+% These macros provide no protection per se, but they provide the
+% programmer with an easy way of getting protection. Just use the
+% \@protect macro as an inner shell for any macro that may misbehave
+% in a \mark or \message. This may mean that the behaviour in the
+% mark/message must be simplified, but there are difficulties with
+% TeX's scanning of the token arguments to these commands which
+% make it unwise to use \def, \let and conditionals within them.
+% Sometimes a trade off is inevitable. 
+%
+\newif\ifprotecting \newif\ifmessage \newcount\protected@flag
+%\let\protected@message\message \let\protected@mark\mark
+%\def\message{\messagetrue\call@protected\protected@message}
+%\def\mark{\call@protected\protected@mark}
+\def\call@protected#1#2{\protectingtrue\def\pn@xt{}%
+  #1{#2}%
+  \protectingfalse\ifmessage\messagefalse\fi}
+\def\mess@protected#1{\ifmessage#1^^J\else\immediate\write16{#1}\fi}
+\def\@protect#1#2{\ifprotecting#1\else\def\pn@xt{#2}\fi\pn@xt}
+
+% 8) performing \write's without expansion (TeXbook p. 377)
+% =========================================================
+%
+% As noted ad loc, the second parameter to \write should not contain
+% more than about 150 tokens.
+%
+% Use \rawwrites to enable unexpanded writing; \cookedwrites to enable
+% normal expanded writing
+%
+\let\original@write\write
+\long\def\unexpandedwrite#1#2{\def\finwrite{\write#1}%
+  {\aftergroup\finwrite\aftergroup{\sanitize#2\endsanity}}}
+\def\sanitize{\futurelet\next\sanswitch}
+\def\sanswitch{\let\n@xt\endsanity \ifx\next\endsanity
+  \else\ifcat\noexpand\next\stoken\aftergroup\space\let\n@xt=\eat
+   \else\ifcat\noexpand\next\bgroup\aftergroup{\let\n@xt=\eat
+    \else\ifcat\noexpand\next\egroup\aftergroup}\let\n@xt=\eat
+     \else\let\n@xt=\copytok\fi\fi\fi\fi \n@xt}
+\def\eat{\afterassignment\sanitize \let\next= }
+\long\def\copytok#1{\ifcat\noexpand#1\relax\aftergroup\noexpand\fi
+  \ifcat\noexpand#1\noexpand~\aftergroup\noexpand\fi
+  \aftergroup#1\sanitize}
+\def\endsanity\endsanity{}
+\def\rawwrites{\let\write\unexpandedwrite}
+\def\cookedwrites{\let\write\original@write}
+
+% 9) Miscellaneous Reading and Writing Manoeuvres (SJT)
+% =====================================================
+%
+% provide a safe shell for reading macro files. The control sequence
+% \macrofile is the only documented one of the \macrofile/\inputM pair.
+% \inputM is retained solely for backward compatibility with previous
+% versions of this format. We take some care to be reentrant, but the
+% format-switching code really needs to be redone to push/pop formats.
+\newif\ifmacrofile \macrofilefalse \newcount\savedfmt
+\def\macrofile{\ifmacrofile\def\next{\inp@tm}\else
+  \def\next{\macrofiletrue\savedfmt\currfmt\macroformat\inp@tM}\fi
+  \next}
+\def\inp@tM#1{\input #1 \relax\currfmt\savedfmt\currformat\macrofilefalse} 
+\let\inputM\macrofile
+\def\inp@tm#1{\input #1 \relax}
+
+% and another for document files
+\def\include{\bgroup\effectmacroformat\afterassignment\@nclude\xdef\next}
+\def\@nclude{\egroup\input\next\relax}
+
+% redefine \message so it will expand its text in macro format
+%\let\m@ss@ge\message
+%\def\message{\effectmacroformat\m@ssage}
+%\def\m@ssage#1{\m@ss@ge{#1}\currformat}
+
+% define a macro for the everyjob tokens
+\def\readlocal{\checkfile{local}%
+  \ifitexists\def\next{\inputM{local}}\else\let\next\relax\fi
+  \next}
+
+% futurenonspacelet from the TeXbook
+\def\futurenonspacelet#1{\def\cs{#1}%
+  \afterassignment\stepone\let\nexttoken= }
+{\def\\{\glet\stoken= } \\ }
+\def\stepone{\expandafter\futurelet\cs\steptwo}
+\def\steptwo{\expandafter\ifx\cs\stoken\let\next=\stepthree
+  \else\let\next=\nexttoken\fi \next}
+\def\stepthree{\afterassignment\stepone\let\next= }
+
+\def\leavehmode{\ifhmode\endgraf\fi}
+
+%%% These don't have a better home at the moment...
+\def\bSuper{\setbox0=\hbox\bgroup\scriptsize}
+\def\eSuper{\egroup\raise3pt\box0\relax}
+\def\bText{\leavevmode\rm}
+\gdef\Lsux{sux}
+\gdef\Lakk{akk}
+\gdef\Lqpc{qpc}
+\gdef\logorole{logo}\gdef\signrole{sign}
+\def\rolesize{\ifx\role\signrole\else\logosize\fi}%
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: utility.tex,v $
+Revision 0.10  1997/05/16 15:01:41  s
+correct use of arguments in boxittwo
+
+Revision 0.9  1996/05/27 16:37:56  s
+change verbatimformat back to vbcatcodes in \vb only (verbatimformat
+broke \vb somehow)
+
+% Revision 0.8  1996/05/27  00:40:05  s
+% replace \vbcatcodes with \verbatimformat twice
+%
+% Revision 0.7  1996/02/17  23:33:44  s
+% refine definition of \rightpar so that leftskip is increased by fill,
+% but no other amount
+%
+% Revision 0.6  1995/11/22  11:35:36  s
+% add cp to useful shorthands
+%
+% Revision 0.5  1995/11/18  11:22:16  s
+% make \hboxtomin use \posthboxtominamount instead of a \quad
+% for the space after text which is wider than min
+%
+% Revision 0.4  1995/07/01  12:21:21  s
+% added \boxit and \boxittwo
+%
+% Revision 0.3  1995/06/16  11:06:45  s
+% added \BCE to the `better when smaller' group
+%
+% Revision 0.2  1995/02/27  14:35:42  s
+% added _ to \effectmacroformat
+% fixed \include to use macro format for scanning filenames
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

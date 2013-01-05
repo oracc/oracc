@@ -1,0 +1,320 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: div.tex,v 0.8 1996/05/27 16:18:27 s Exp s $
+
+% div.tex, macros for divisions.
+%
+% Two sets are defined, \section, \subsection, \subsubsection,
+% which are numbered, and \heading, \subheading and \subsubheading,
+% which aren't. 
+
+\newif\ifllapsecnums	\llapsecnumsfalse
+\newif\ifnumbernotesbychapter
+\def\notesbychapter{\global\numbernotesbychaptertrue}
+\def\notesacrosschapter{\global\numbernotesbychapterfalse}
+
+% shell for headings
+% #1==space above,
+% #2==space below,
+% #3==the heading (par or line). This must specify font changes, justification
+% etc.
+\long\def\@hdshell#1#2#3{\endgraf \skip0\lastskip \dimen@\lastkern
+  \ifdim\skip0=0pt \skip0=\dimen@ \fi
+  \ifdim\skip0>0pt
+    \ifdim\skip0>#1\else % only use above heading skip if it's > last skip
+      \nobreak\vskip-\skip0
+      \nobreak\kern#1
+    \fi
+    \nobreak\nointerlineskip
+  \else
+    \goodbreak\vskip#1\relax
+    \nointerlineskip
+  \fi
+  \clearctylabel % in case a heading comes in a commentary environment
+  \clearnoindent % in case two headings come in a row
+  \ifalwaysindent\indent\else\noindent\fi#3
+  \ifdim#2<0pt \hskip-#2\relax\indentnextpar
+  \else\endgraf\nobreak\vskip#2\relax\noindentnextpar\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fairly effective way to avoid indenting next para without adding 
+% spurious leftward movement of start of para (a problem with the older,
+% simpler \noindentnextpar)
+\newif\ifnoindentactive
+\def\noindentnextpar{%
+  \global\noindentactivetrue \parclearsindent
+  \nextpar{\ifnoindentactive\kern-\parindent\fi
+	   \global\noindentactivefalse\global\nextpar{}}}
+\def\indentnextpar{\global\noindentactivefalse\global\nextpar{}}
+\def\clearnoindent{\global\noindentactivefalse}
+\let\real@par\par
+\def\clearing@par{\clearnoindent\endgraf}
+\def\parisnormal{\let\par\real@par}
+\def\parclearsindent{\let\par\clearing@par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% heading macros (unnumbered)
+
+\long\def\heading#1\par{%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{\leftpar\bem#1\par}}
+\long\def\subheading#1\par{%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{\leftpar\em#1\par}}
+\long\def\subsubheading#1\par{%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{\leftpar#1\par}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Numbered sections
+\newif\ifnumbersecfromzero \newif\ifnumbersubsecfromzero 
+\newif\ifnumbersubsubsecfromzero \newif\ifnumbersubsubsubsecfromzero
+
+\def\countsecfromzero{\numbersecfromzerotrue\resetsects}
+\def\countsubsecfromzero{\numbersubsecfromzerotrue\resetsects}
+\def\countsubsubsecfromzero{\numbersubsubsecfromzerotrue\resetsects}
+\def\countsubsubsubsecfromzero{\numbersubsubsubsecfromzerotrue\resetsects}
+
+\newcount\sectct \newcount\subsectct \newcount\subsubsectct 
+\newcount\subsubsubsectct \newtoks\@secnumtoks
+\def\resetsects{
+  \global\sectct\ifnumbersecfromzero-1\else0\fi
+  \global\subsectct\ifnumbersubsecfromzero-1\else0\fi
+  \global\subsubsectct\ifnumbersubsubsecfromzero-1\else0\fi
+  \global\subsubsubsectct\ifnumbersubsubsubsecfromzero-1\else0\fi}
+\resetsects
+
+\newif\ifchapsecnums \newif\ifchapzerosecnums
+\chapzerosecnumstrue \chapsecnumstrue
+
+\newif\ifsecfinaldots \newif\ifsecfirstlevelfinaldot
+\secfirstlevelfinaldottrue
+
+\newif\ifsectionsintoc \newif\ifsubsectionsintoc 
+\newif\ifsubsubsectionsintoc \newif\ifsubsubsubsectionsintoc 
+\newif\ifsectionpagesintoc \newif\ifsubsectionpagesintoc 
+\newif\ifsubsubsectionpagesintoc \newif\ifsubsubsubsectionpagesintoc 
+
+% #1 is the section level, #2 is the parameter text
+\def\@sectfmt#1#2{%
+    \@secnumtoks={}%
+    \ifcase#1% 
+        % #1=0
+    \or % #1=1
+     \global\advance\sectct1%
+     \edef\@secnum{\ifchapsecnums\number\chapterno.\fi
+		   \number\sectct
+		   \ifchapsecnums\ifsecfinaldots.\fi\else\ifsecfirstlevelfinaldot.\fi\fi}%
+     \xdef\curr@secnum{\the\toc@rangeid}%
+     \@secnumtoks={\@secnum}%
+     \ifsectionpagesintoc\def\withpage{t}\def\withpage{f}\fi%
+     \ifsectionsintoc
+       \count255=#1 \advance\count255by1
+       \edef\next\withpage{\sec@toc{\the\count255}{#2}{\@secnum}{\curr@secnum}}%
+     \else
+       \let\next\relax
+     \fi
+     \next
+    \or % #1=2
+     \global\advance\subsectct1%
+     \edef\@secnum{\ifchapsecnums\number\chapterno.\fi
+		   \number\sectct.\number\subsectct\ifsecfinaldots.\fi}%
+     \xdef\curr@subsecnum{\the\toc@rangeid}%
+     \@secnumtoks={\@secnum}%
+     \ifsubsectionsintoc
+       \def\next{\sec@toc{#1}{#2}{\@secnum}{\curr@subsecnum}f}%
+     \else
+       \let\next\relax
+     \fi
+     \next
+    \or % #1=3
+     \global\advance\subsubsectct1%
+     \edef\@secnum{\ifchapsecnums\number\chapterno.\fi
+		   \number\sectct.\number\subsectct.\number\subsubsectct
+		   \ifsecfinaldots.\fi}%
+     \xdef\curr@subsubsecnum{\the\toc@rangeid}%
+     \@secnumtoks={\@secnum}%
+     \ifsubsubsectionsintoc
+       \def\next{\sec@toc{#1}{#2}{\@secnum}{\curr@subsubsecnum}f}%
+     \else
+       \let\next\relax
+     \fi
+     \next
+    \or % #1=4
+     \global\advance\subsubsubsectct1%
+     \edef\@secnum{\ifchapsecnums\number\chapterno.\fi
+		   \number\sectct.\number\subsectct.\number\subsubsectct
+		       .\number\subsubsubsectct
+		   \ifsecfinaldots.\fi}%
+     \xdef\curr@subsubsubsecnum{\the\toc@rangeid}%
+     \@secnumtoks={\@secnum}%
+     \ifsubsubsubsectionsintoc
+       \def\next{\sec@toc{#1}{#2}{\@secnum}{\curr@subsubsubsecnum}f}%
+     \else
+       \let\next\relax
+     \fi
+     \next
+    \fi
+    \global\advance\toc@rangeid1
+    \leavevmode
+    % call the relevant section formatting macro
+    % with the section number as the first argument, and the 
+    % and the text as the second
+    \ifcase#1\or
+    \def\next{\sectionformat}\or
+    \def\next{\subsectionformat}\or
+    \def\next{\subsubsectionformat}\or
+    \def\next{\subsubsubsectionformat}\fi
+    \next{\the\@secnumtoks}{#2}}
+
+\def\sec@toc#1#2#3#4#5{\ifusenumber\edef\next{{#3}}\else\edef\next{{\relax}}\fi%
+  \expandafter\writetocb\next#1#5{#2}{#4}}
+
+\def\section#1\par{\subsectct=0 \subsubsectct=0%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{{\@sectfmt1{#1}}}}
+\def\subsection#1\par{\subsubsectct=0%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{{\@sectfmt2{#1}}}}
+\def\subsubsection#1\par{%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{{\@sectfmt3{#1}}}}
+\def\subsubsubsection#1\par{%
+  \@hdshell{\aboveheadingskip}{\belowheadingskip}{{\@sectfmt4{#1}}}}
+
+\def\sectionformat#1#2{\bem
+  \ifusenumber#1\quad\let\next\relax
+  \else\let\next\resetusenumber
+  \fi\next
+  \ignorespaces#2}
+\def\subsectionformat#1#2{\bem#1\quad\ignorespaces#2}
+\def\subsubsectionformat#1#2{\bem#1\quad\ignorespaces#2}
+\def\subsubsubsectionformat#1#2{\bem#1\quad\ignorespaces#2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter titles etc.
+\newdimen\abovechapter  \newdimen\chaptertotitle  \newdimen\belowchapter
+\newcount\chapterno
+\newcount\toc@rangeid
+\newif\ifchapterpage % headers and footers can check this
+\newif\ifusenumber \usenumbertrue
+\newif\ifnochapternumbers
+\newif\ifnorunningheads
+\newtoks\chaptertitletoks
+\def\nonumber{\usenumberfalse}
+\def\resetusenumber{\global\usenumbertrue}
+\def\chapnumstyle#1{\number#1}
+
+\newif\ifrightpagechapters \rightpagechaptersfalse
+\def\chapter#1\par{%
+  \endgraf\verynewpage%\global\chaptertitletoks{}%
+  \ifrightpagechapters\ifodd\pageno\else\blankpage\fi\fi
+  \ifnorunningheads\global\chaptertitletoks{}\else
+    \global\chaptertitletoks{#1}\fi
+  \ifchapzerosecnums\resetsects\fi
+  \ifnochapternumbers\usenumberfalse\fi
+  \ifusenumber\global\advance\chapterno1 \fi
+  \xdef\curr@chapnum{\the\toc@rangeid}%
+  \edef\chapval{\chapnumstyle{\chapterno}}%
+  \vglue\abovechapter\nointerlineskip 
+  \chaptertitle{#1}{\chapval}%
+  \ifusenumber\def\next{\writetoc1t{\chapval}{#1}{\curr@chapnum}}%
+  \else\def\next{\resetusenumber\writetoc1t{}{#1}{\curr@chapnum}}\fi
+  \next
+  \global\advance\toc@rangeid1
+  \vskip\belowchapter\nointerlineskip
+  \global\chapterpagetrue
+  \ifnumbernotesbychapter\def\next{\resetfnotecount}\else\let\next\relax\fi
+  \next}
+
+\def\chaptertitle#1#2{%
+  \ifusenumber
+    \centerline{\fourteen\bf Chapter #2}%
+    \vglue\chaptertotitle\nointerlineskip
+  \fi
+  \centerline{\fourteen\bf\uppercase{#1}}\endgraf}
+
+\def\setchaptersizes#1#2#3{\abovechapter#1\relax\chaptertotitle#2\relax
+  \belowchapter#3\relax}
+
+\setchaptersizes{1truein}{18truept}{30truept}
+
+\newcount\partno \partno=1
+\def\parttitle#1{\centerpar\singlespace\titlesize\bf\uppercase{#1}\par}
+\def\partnumstyle#1{\uppercase{\romannumeral#1}}
+\def\Part#1\par{
+  \endgraf\newpage
+  \edef\partval{\partnumstyle{\partno}}%
+  \vglue\aboveappendix\nointerlineskip 
+  \ifusenumber\def\next{\writetoc0t{\partval}{#1}{}}%
+  \else\def\next{\usenumbertrue\writetoc0t{}{#1}{}}\fi
+  \next
+  {\noindent\twenty\bf Part \partval\endgraf}
+  \vskip1in \leftpar{\fourteen\bf\uppercase{#1}}\par%
+  \vskip\belowappendix
+  \global\advance\partno1
+  \chapterpagetrue
+  \newpage
+}
+
+\newdimen\aboveappendix  \newdimen\appendixtotitle  \newdimen\belowappendix
+\newcount\appendixno \appendixno=`A
+\def\appendixhead#1{\centerline{\titlesize\bf \appendixstr #1}}
+\def\appendixtitle#1{\centerpar\singlespace\titlesize\bf\uppercase{#1}\par}
+\def\appnumstyle#1{\char#1}
+\def\appendix#1\par{\endgraf\newpage 
+  \edef\appval{\appnumstyle\appendixno}%
+  \vglue\aboveappendix\nointerlineskip 
+  \ifusenumber\def\next{\d@apphead\writetoc1t{\appval}{#1}{}}%
+  \else\def\next{\usenumbertrue\writetoc1t{}{#1}{}}\fi
+  \next
+  \appendixtitle{#1}%
+  \vskip\belowappendix
+  \global\advance\appendixno1
+  \chapterpagetrue
+}
+
+\def\d@apphead{\appendixhead{\appnumstyle{\appendixno}}%
+  \vglue\appendixtotitle\nointerlineskip}
+
+\def\setappendixsizes#1#2#3{\aboveappendix#1\relax\appendixtotitle#2\relax
+  \belowappendix#3\relax}
+
+\setappendixsizes{1truein}{18truept}{30truept}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: div.tex,v $
+Revision 0.8  1996/05/27 16:18:27  s
+*** empty log message ***
+
+% Revision 0.7  1996/02/20  01:22:05  s
+% added \ifsecfinaldots to control if dots appear at the end of
+% multi-part section numbers
+%
+% added \ifnumbersecfromzero and friends so section numbering can start
+% from 0 or 1
+%
+% Revision 0.6  1996/02/17  23:27:00  s
+% revise chapter handling to support starting every chap on a righthand page
+%
+% Revision 0.5  1995/11/09  13:10:22  s
+% added config stuff for \ifISOfonts
+%
+% Revision 0.4  1995/06/16  10:51:10  s
+% call \clearctylabel in \@hdshell
+%
+% introduce new toks reg, \chaptertitletoks, so one can put chapter title in
+% running headers
+%
+% revise organization of \chapter so that it calls one macro with two args
+% instead of two macros with one arg each for formatting the chapter number
+% and chapter title.  now its \chaptertitle#1#2, #1=title, #2=number.
+%
+% Revision 0.3  1995/06/12  09:50:32  s
+% fixed minor bugs with new \noindentnextpar stuff
+%
+% Revision 0.2  1995/06/11  19:20:57  s
+% implement new \noindentnextpar stuff
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

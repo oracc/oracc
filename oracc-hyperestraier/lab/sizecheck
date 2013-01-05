@@ -1,0 +1,43 @@
+#! /bin/sh
+
+#================================================================
+# diffcheck
+# List files different from ones of another version.
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+progname="sizecheck"
+progexts='\.in|\.h|\.c|\.cc|\.cpp|\.cxx|\.java|\.pl|\.pm|\.pod|\.rb|\.rd'
+docexts='\.[1-9]|spex\.html|\spex-ja\.html|\.txt'
+regex="($progexts|$docexts)\$"
+
+
+# check arguments
+if [ $# != 1 ] || [ ! -d "$1" ]
+then
+  printf '%s: usage: %s directory\n' "$progname" "$progname" 1>&2
+  exit 1
+fi
+
+
+# output size
+sum=0
+find "$1" -type f -printf '%s\n' |
+while read num
+do
+  sum=$((sum + num))
+  printf '%d\t%d\n' "$num" "$sum"
+done
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

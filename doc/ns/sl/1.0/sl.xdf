@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:d="http://oracc.org/ns/xdf/1.0"
+        xmlns:dc="http://purl.org/dc/elements/1.1"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xmlns:h="http://www.w3.org/1999/xhtml" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>SL</dc:title>
+  <dcterms:alternative>Sign Lists</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/sl/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-08-05</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>Sign list source files are maintained as a simple
+  plain text file with @-commands in the manner of Oracc
+  glossaries. This document gives an simple overview of the SL
+  commands.</dc:description>
+</d:meta>
+
+<h2>Structure/scope</h2>
+
+<p>The general structure of the file is a collection of records, one
+per sign.  Each record contains a partly-ordered set of fields, i.e.,
+there are some key elements of the ordering that are important but
+there is not a single strict order imposed on every field in the
+record.  These ordering restrictions apply to the
+<code>@form</code> field and also to a group of fields whose scope is
+dependent on where they occur relative to other fields.</p>
+
+<p>By convention, <code>@form</code> fields come at the end of the
+<code>@sign</code> block, immediately before the <code>@end
+sign</code>.  This allows there to be a short version and a long
+version of the <code>@form</code> field.  If a <code>@form</code> is
+followed immediately by another <code>@form</code> or by <code>@end
+sign</code> then it is considered complete and <code>@end form</code>
+is silently supplied by the parser.  If a <code>@form</code> field is
+followed by another other sign field, it must be concluded with
+<code>@end form</code>.</p>
+
+<p>The scoped fields apply either to signs, forms or values, depending
+on where they are given.  If they occur before any values or forms,
+they belong to the sign.  If they occur within a form, but before any
+values which the form may contain, they belong to the form.  If they
+occur after a value, they belong to the value.</p>
+
+<p>The scoped fields are: <code>@note</code>, <code>@inote</code>, and
+<code>@inst</code>.</p>
+
+<h2>Signs</h2>
+
+<p>Each sign is enclosed in an <code>@sign ... @end sign</code>
+block.  After the <code>@sign</code> comes the sign name, which is the
+standard way of referring to the sign and must be unique.  The sign
+name is constructed using the conventions of GDL, the grapheme
+description language used by ATF.</p>
+
+<h2>Forms</h2>
+
+<p>Any sign may contain <code>@form</code> entries which at their
+simplest give a form variant code and a name for the variant form.
+The form variant codes and names must be unique within the current
+sign.  The form may contain also contain any of the fields which may
+be part of a sign, except for nested <code>@form</code> entries.</p>
+
+<p>In a <code>@form</code> field, the variant code is given by tilde
+followed by one or more lowercase letters (<code>~a</code>
+... <code>~aa</code> etc.).</p>
+
+<h2>Values</h2>
+
+<p>The most common field of <code>@sign</code> is the value, and we
+call the values of a top-level <code>@sign</code> global values.
+Global values must be unique with respect to each other, i.e., each
+global value may only occur once as a value of a top-level
+<code>@sign</code>.</p>
+
+<p>Values These are usually simply a reading of the sign, but
+additional information can be given on the <code>@v</code> line:</p>
+
+<dl>
+<dt>Questionable value</dt>
+<dd>A questionable value is indicated by putting question mark after
+the field name, as in <code>@v? id₅</code>.</dd>
+
+<dt>Deprecated value</dt>
+<dd>A deprecated value, one which is no longer considered allowable
+for the sign or form, is indicated by putting a minus sign after the
+field name, as in <code>@v- gazum₂</code>.</dd>
+
+<dt>Language restriction</dt>
+<dd>A value which is only valid for one language may be indicated by
+putting an ATF language code between the field name and the value, as
+in <code>@v %elx anše@d</code>.</dd>
+
+<dt>Proof Example</dt>
+<dd>A proof example may be given on the same line, after the
+value. These are not needed for most values, but where a value is
+contested and a particular instance is critical to the proof of the
+value's existence, the instance may be given in square brackets,
+following the general conventions for instances described elsewhere in
+this document. E.g., <code class="cookbook">@v nanna₂ [SpTu 2 36 =
+cams:P348641 o 18, i-nanna₂-ma]</code>.</dd>
+
+</dl>
+
+<h3>Local Values</h3>
+
+<p>Forms can contain <code>@v</code> lines: we call these local
+values.  Local values may occur more than once in the signlist,
+either as values of top-level <code>@sign</code>s or as values of
+other forms.  Within the signlist system, local values are always
+considered to be qualified by their form.  Thus, if you have the
+following mythical sign:</p>
+
+<pre class="example">
+@sign BA
+@v ba
+@form ~a ZU
+@v ba
+@end form
+@end sign
+</pre>
+
+<p>the actual values as internalized by the signlist system are:</p>
+
+<pre class="example">
+ba
+ba(BA~a)
+ba(ZU)
+</pre>
+
+<p>Of these, the first two are guaranteed to be unique as a result of
+the sign/form name and value restrictions on uniqueness described
+above. The third is potentially ambiguous (imagining how such an
+ambiguity could arise is left as an exercise for the reader).  When
+entering data, however, it is convenient for users to be able to use
+the form name as a qualifier and only look up the variant code when
+the system warns about ambiguity.</p>
+
+<p>Note that this approach means that local values must always be
+qualified by their form, even when they are globally unique.</p>
+
+<h2>Instances</h2>
+
+<p>Although the general idea of GSL is that instances should be
+harvested from the corpora, it is possible to include instances
+manually if so desired.  The format of an instance consists of the
+field name, <code>@inst</code>, followed by the instance data.  The
+instance data may contain up to three subfields, but no restrictions
+are imposed on which of them are present.  These subfields are:</p>
+
+<dl>
+<dt>Citation</dt>
+<dd>A human-readable citation, usually the name of the text.  If
+further subfields are given the citation <strong>must</strong> be
+followed by an equals sign (<code>=</code>).</dd>
+<dt>CDL Label</dt>
+<dd>A CDL label is a standard label documented elsewhere.  Briefly, a
+label consists of an optional project abbreviation, a required text ID
+(P- or Q-number), and an optional line label.  An example is given
+above in the discussion of proof examples.</dd>
+<dt>Word</dt>
+<dd>A word may come at the end of an instance, in which case it
+<strong>must</strong> be preceded by a comma followed by a space.  The
+word should be a word form which occurs in the line, omitting any
+editorial marks such as flags and bracketing (though it may have
+determinative brackets).</dd>
+</dl>
+
+<h2>Notes</h2>
+
+<p>One or more notes may be given each in their own <code>@note</code>
+field.  Notes of this kind appear in rendered versions of the sign
+list such as web pages and PDFs.</p>
+
+<h2>Internal Notes</h2>
+
+<p>Internal notes are given in <code>@inote</code> fields.  These are
+exactly the same as <code>@note</code> fields, but they do not display
+when the sign list is rendered.</p>
+
+<h2>Lists</h2>
+
+<p>The numbers used for signs in other signlists are given using the
+<code>@list</code> field.  This contains at least an ATF-style sign
+list reference, e.g., <code>MZL503</code>. This may optionally be
+followed by and ATF version of the name used in that signlist for the
+sign in question.</p>
+
+<h2>Unicode Fields</h2>
+
+<p>Several fields are used for bookkeeping purposes with respet to the
+Unicode cuneiform specification.  These are not yet documented.</p>
+
+</d:doc>

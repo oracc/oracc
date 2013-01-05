@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XSE</dc:title>
+  <dcterms:alternative>XML Search Expressions</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xse/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-02-08</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>XSE is a schema for expressing the search
+  expressions that are understood by the Oracc native search
+  engine.</dc:description>
+</d:meta>
+
+<d:schema name="xse" uri="http://oracc.org/ns/xse/1.0">
+<d:rnc>
+default namespace = "http://oracc.org/ns/xse/1.0"
+
+start = xse
+
+xse    = element xse { search* }
+
+search = (project , index , expr* , result)*
+
+project = element  project { text }
+
+index   = element   index   { attribute n { text }}
+
+result  = element   result  { location } ?
+
+expr    = (key | binop)
+
+binop   = (key , and , key)
+
+and     = (invert? , type , near , expr)
+
+group   = element group { invert? , (expr | term)* , result? }
+
+term    = filter* , key , (op , key)*
+
+filter  = (field | lang | prop)
+
+near	= element near { where , scope , level }
+
+where   = attribute where { "before" | "after" | "around" }
+
+scope   = attribute scope { text }
+
+level   = attribute level { "record" | "field" 
+			    | "text" | "word" | "line" }
+
+location = element l { text }
+
+invert  = attribute invert { "yes" | "no" }
+
+type    = attribute type { "and" | "or" }
+
+key     = element key { text }
+
+op      = element op  { attribute n { "-" | "_" | "~" | "x" } }
+
+field   = element field { text }
+
+lang    = element lang { text }
+
+prop    = element prop { text }
+
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

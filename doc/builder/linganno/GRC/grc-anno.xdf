@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>GRC: Oracc Linguistic Annotation for Greek</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Greek used in Oracc.
+<!--  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.  This document assumes knowledge of its parent
+  page on linguistic annotation (see top of menu at left).
+ -->
+</dc:description>
+</d:meta>
+
+<h1>Transliteration</h1>
+
+<p>Greek is indicated by the language shift <code>%grc</code>.</p>
+
+<p>Greek may be entered in Unicode without any special indication to
+the ATF processor; we define an ASCII transliteration as well since it
+may be easier for some users to employ.</p>
+
+<table class="sixty">
+<tr><td>alpha</td><td>α</td><td>a</td></tr>
+<tr><td>beta</td><td>β</td><td>b</td></tr>
+<tr><td>gamma</td><td>γ</td><td>g</td></tr>
+<tr><td>delta</td><td>δ</td><td>d</td></tr>
+<tr><td>epsilon</td><td>ε</td><td>e</td></tr>
+<tr><td>zeta</td><td>ζ</td><td>z</td></tr>
+<tr><td>eta</td><td>η</td><td>e'</td></tr>
+<tr><td>theta</td><td>θ</td><td>th</td></tr>
+<tr><td>iota</td><td>ι</td><td>i</td></tr>
+<tr><td>kappa</td><td>κ</td><td>k</td></tr>
+<tr><td>lambda</td><td>λ</td><td>l</td></tr>
+<tr><td>mu</td><td>μ</td><td>m</td></tr>
+<tr><td>nu</td><td>ν</td><td>n</td></tr>
+<tr><td>xi</td><td>ξ</td><td>x</td></tr>
+<tr><td>omicron</td><td>ο</td><td>o</td></tr>
+<tr><td>pi</td><td>π</td><td>p</td></tr>
+<tr><td>rho</td><td>ρ</td><td>r</td></tr>
+<tr><td>sigma</td><td>ς, σ</td><td>s</td></tr>
+<tr><td>tau</td><td>τ</td><td>t</td></tr>
+<tr><td>upsilon</td><td>υ</td><td>u</td></tr>
+<tr><td>phi</td><td>φ</td><td>ph</td></tr>
+<tr><td>chi</td><td>χ</td><td>ch</td></tr>
+<tr><td>psi</td><td>ψ</td><td>p'</td></tr>
+<tr><td>omega</td><td>ω</td><td>o'</td></tr>
+</table>
+
+<p>Words are separated by spaces.</p>
+
+<h1>Editing Conventions</h1>
+
+<p>Matching square brackets are used for broken material, a following
+question mark for unclear letters and a following exclamation mark for
+corrected letters.  Multiple alternative possible readings are
+separated by slashes (e.g., <code>d/r</code>).</p>
+
+<p>Within square brackets, broken segments of relatively certain
+length are indicated by a period for each missing letter.</p>
+
+<p>Broken segments of uncertain length are indicated by underscore
+characters, e.g., <code class="cookbook">[...]br
+[________________________]</code> indicates that in the first break 3
+characters are missing, and in the second break more a large but
+indeterminate number of characters is missing.</p>
+
+<p>Spaces should be used to terminate words in breaks; words may
+contain dots and underscores indicating that they are partially
+preserved, e.g., <code class="cookbook">[_____ _]br[_ _____]</code>.</p>
+
+</d:doc>

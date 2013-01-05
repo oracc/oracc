@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml">
+	
+	<esp:name>People, gods &amp; places</esp:name>
+	
+	<esp:title>People, gods &amp; places</esp:title>
+	
+	<html>
+		<head></head>
+
+		<body>
+<p style="firstpara">These are the names that appear in the translations of the letters, queries, and reports. Unless otherwise noted, all the people's names are of <esp:link page="intro-cuneiform">Akkadian</esp:link> origin.</p>
+
+
+			<esp:glossary-list>
+
+<esp:definition term="Ṭudi (person)"> "My path": Author of a letter to king Esarhaddon, reporting on some Babylonians.</esp:definition>
+
+
+					</esp:glossary-list>
+
+
+
+				<p>Content last modified: <esp:content-last-modified/>.</p>
+
+			</body>
+
+		</html>
+
+	</esp:page>
+
+
+
+
+
+
+

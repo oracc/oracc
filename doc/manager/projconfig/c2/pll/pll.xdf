@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Projects, Lists and Links (PLL)</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2011-12-14</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Oracc gathers several different types of corpus and
+link navigation under a single drop-down menu at the
+top of the pager.  This drop-down is known as the
+PLL menu. This page tells you how to configure it.</dc:description>
+</d:meta>
+
+
+<p>Some of the PLL entries are created for you, others
+must be entered in a file called <code>00lib/pll.xml</code>, which has the
+following basic structure:</p>
+
+<pre class="cookbook">
+ &lt;pll>
+   &lt;list menu="MENU-NAME" file="FILE-NAME"/>
+   &lt;link menu="MENU-NAME" url="URL"/>
+ &lt;/pll>
+</pre>
+
+<h2>Projects</h2>
+<p>Public ancestor and subprojects are automatically added to PLL.</p>
+
+<h2>Lists</h2>
+<p>Lists of PQX numbers can be placed in the <code>00lib/lists</code>
+directory from where they are copied to the web 
+directory and can be accessed by the URL:</p>
+
+<pre class="cookbook">http://oracc.museum.upenn.edu/PROJECT/LIST</pre>
+
+<p>In addition, if a list entry is given in <code>00lib/pll.xml</code>, that
+entry is added to the menu.</p>
+
+<p>For example, if a project has texts belonging to 
+several libraries, one could <a href="ol/">create lists</a> for each
+library and add entries like this to <code>00lib/pll.xml</code>:</p>
+
+<pre class="example">
+ &lt;list menu="Resh Temple Library" file="resh"/>
+</pre>
+
+<p>Which would correspond to a list file <code class="example">00lib/lists/resh</code>.</p>
+
+
+<h2>Links</h2>
+<p>Links to websites which are not in the project hierarchy 
+can also be included in <code>00lib/pll.xml</code>.  These have two forms,
+a <a href="#Short_Form">short form</a> for commonly used links and a <a href="Long_Form">long form</a> for links that are not in Oracc's list of known links.</p>
+
+<p>All of these links open in a new window.</p>
+
+<h3>Short Form</h3>
+<p>The short form simply gives an identifier for the link, e.g.:</p>
+
+<pre class="example">
+ &lt;link id="CDLI"/>
+</pre>
+
+<p>Oracc expands this to the long form for you, and puts
+the relevant entry in the PLL menu.</p>
+
+<h3>Long Form</h3>
+<p>The long form requires you to specify the text to appear
+in the menu and the URL to which it points, e.g.:</p>
+
+<pre class="example">
+ &lt;link menu="CDLI"
+       url="http://cdli.ucla.edu"/>
+</pre>
+
+<p>When choosing the name for the menu, use the full name
+of the project for projects which may not be well known
+to users, unless that name is more than about 20
+characters--there is a reasonable amount of space for
+the PLL drop-down, but we don't want the top buttons
+to be completely dominated by it.  Long project names
+can either use a standard abbreviation for the project
+or the first three words followed by an ellipsis. Thus,
+an alternative form of the CDLI menu item might have
+been:</p>
+
+<pre class="example">
+ &lt;link menu="Cuneiform Digital Lib..."
+       url="http://cdli.ucla.edu"/>
+</pre>
+
+<p>When deciding how to abbreviate such names, it is 
+reasonable to base the final choice on the look of
+your project when viewed in the Oracc 2 pager--the 20
+character limit should be viewed as a guideline rather
+than a rule.</p>
+
+<p>The list of links which can be referenced by ID is kept
+at: <a href="http://oracc.museum.upenn.edu/doc/builder/p2/linkids.html">http://oracc.museum.upenn.edu/doc/builder/p2/linkids.htm</a>.</p>
+
+<p>To suggest additional commonly-used links e-mail 
+osc@oracc.org.</p>
+
+<!-- (The data list of IDs is src/misc/p2/pll_linkids.xml installed as
+lib/data/pll_linkids.xml) -->
+
+<h2>Example:</h2>
+
+<p>(Interim example which is currently used for testing in p3-saao.xml)</p>
+
+<pre class="example">
+&lt;pll>
+  &lt;list menu="Arpad" file="arpad"/>
+  &lt;link menu="Knowledge &amp; Power" url="http://knp.prs.heacademy.ac.uk"/>
+  &lt;link id="AEB"/>
+&lt;/pll>
+</pre>
+<!-- <d:schema name="" uri="">
+</d:schema>
+
+<d:resources/> -->
+
+</d:doc>

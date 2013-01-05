@@ -1,0 +1,4 @@
+cp: cannot create regular file `/usr/local/share/cdl/share/cdl/www/cgi-bin': No such file or directory
+make[2]: *** [install] Error 1
+make[1]: *** [install-recursive] Error 1
+make: *** [install-recursive] Error 1

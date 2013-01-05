@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>OOD: Oracc Open Data</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#Concepts">Concepts</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#Reading_Order">Reading Order</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">OOD: Oracc Open Data</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>This document provides an introduction to Open Data
+  on Oracc and also serves as a guide to the various pieces of
+  documentation about the OOD.</p>
+
+<p>The implementation of comprehensive, systematic Open Data access
+for Oracc is planned as a multi-phase operation.  In the first phase
+the intention is to provide stable, consistently organized web
+addresses for all of Oracc's most important data.  Future phases will
+increase the extent of this implementation and add semantically-based
+access and discovery.</p>
+
+<h1><a name="Concepts">Concepts</a></h1>
+
+<p>In order to understand Open Data it is useful to be familiar with
+the following basic concepts and how Oracc understands them:</p>
+
+<dl>
+<dt>Resource</dt><dd>Any kind of data point in Oracc from a project to
+a word instance.  The resources involved in OOD are described in the
+<a href="/doc/ood/resources/">OOD resources document</a>.</dd>
+
+<dt>URN: Uniform Resource Name</dt><dd>a subset of URIs which define a
+persistent, unique name for a resource without implying anything about any
+possible locations of the resource.  The Oracc URN scheme is described
+in the <a href="/doc/ood/urns/">OOD URN document.</a></dd>
+
+<dt>URI: Uniform Resource Identifier</dt><dd>a URI is a string which
+identifies a name or resource.  In the OOD documentation we generally
+use the term URI in a restricted sense to refer to the http-based
+URIs which provide the public access methods to OOD and which are
+described in the <a href="/doc/ood/uris/">OOD URI document</a>.</dd>
+
+<dt>URL: Uniform
+Resource Locator</dt><dd>a subset of URIs which is used in Oracc only
+to refer to file-resources which are referred to directly by the
+URL.</dd>
+</dl>
+
+<h1><a name="Reading_Order">Reading Order</a></h1>
+
+<p>If you are new to the OOD you will likely benefit most from reading
+the documentation in the following order:</p>
+
+<ul>
+  <li><a href="/doc/ood/uri-patterns/">Oracc URI Patterns</a></li>
+  <li><a href="/doc/ood/resources/">Oracc Resources</a></li>
+  <li><a href="/doc/ood/urns">OOD URNs</a></li>
+  <li><a href="/doc/ood/uris">OOD URIs</a></li>
+  <li><a href="/doc/ood/uri-text/">URIs for texts</a></li>
+</ul>
+
+<p>The Patterns document does depend on an understanding of the
+Resources, URNs and URIs documents, but nevertheless some familiarity
+with the patterns will probably clarify the verbiage of the other pages.</p>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

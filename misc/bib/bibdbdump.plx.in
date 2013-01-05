@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+use warnings; use strict; use open ':utf8';
+use lib '@@ORACC@@/lib';
+use GDBM_File;
+use Encode;
+binmode STDOUT, ':utf8';
+my %keys = ();
+tie(%keys, 'GDBM_File', shift @ARGV,
+    &GDBM_File::GDBM_READER, 0640) or die;
+foreach my $k (sort keys %keys) {
+    my $refs = $keys{$k};
+    Encode::_utf8_on($k);
+    print "$k\t$refs\n";
+}
+untie(%keys);
+1;

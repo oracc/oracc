@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Oracc URI Patterns</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#Oracc_URIs">Oracc URIs</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#Project_URIs">Project URIs</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">Oracc URI Patterns</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>Oracc's stable URIs are formed according to simple
+  patterns.  This document outlines the patterns on
+  which Oracc URIs are built.</p>
+
+<p>Note that this document does not demonstrate every URI, but is
+intended to give a quick overview of the most useful URIs for
+accessing Oracc data.</p>
+
+<p>For the background to the examples given below see the Resources,
+URI and URN documents which are reached from the <a href="/doc/ood">Oracc Open Data</a> page.</p>
+
+<p>In order to keep this overview brief, we give only occasional notes
+here on what is returned in response to the URIs.  See the full URI
+documentation for details.  See the <a href="../uri-examples/">URI
+Examples document</a> for a list of clickable examples with
+commentary.</p>
+
+<h1><a name="Oracc_URIs">Oracc URIs</a></h1>
+
+<p>Stable Oracc URIs are aligned with Oracc URNs according to the
+principle that the most commonly accessed URN types should have the
+simplest URIs.</p>
+
+<ul>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/P334929" href="http://oracc.museum.upenn.edu/P334929">/P334929</a> or /Q123456 or /X123456
+<p>URIs matching a PQX-id are texts.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/šarru[king]N" href="http://oracc.museum.upenn.edu/šarru[king]N">/šarru[king]N</a> 
+     or <a class="uri" title="http://oracc.museum.upenn.edu/Šarru[King]CN" href="http://oracc.museum.upenn.edu/Šarru[King]CN">/šarru[King]CN</a>
+<p>URIs containing square brackets are words or names.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/Nineveh" href="http://oracc.museum.upenn.edu/Nineveh">/Nineveh</a>
+<p>URIs not matching the PQX-id or name/word patterns and
+which begin with an uppercase letter are entities.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/akk" href="http://oracc.museum.upenn.edu/akk">/akk</a>
+       or <a class="uri" title="http://oracc.museum.upenn.edu/akk-x-oldbab" href="http://oracc.museum.upenn.edu/akk-x-oldbab">/akk-x-oldbab</a>
+<p>URIs consisting of three lowercase letters, possibly
+followed by '-x-' and a further six-lowercase-letter word, are
+languages identifying glossaries.</p>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/corpus" href="http://oracc.museum.upenn.edu/corpus">/corpus</a>
+     or <a class="uri" title="http://oracc.museum.upenn.edu/find" href="http://oracc.museum.upenn.edu/find">/find</a>
+     or <a class="uri" title="http://oracc.museum.upenn.edu/statistics" href="http://oracc.museum.upenn.edu/statistics">/statistics</a>
+<p>There are some keywords which are reserved in Oracc and have special meanings in URIs:</p>
+<dl>
+<dt>corpus</dt><dd>requests the text corpus rather than the index page</dd>
+<dt>statistics</dt><dd>requests a summary of prepackaged statistics</dd>
+<dt>find</dt><dd>invokes the full text search facility; may take a query string, e.g., 
+<a class="uri" title="http://oracc.museum.upenn.edu/find?sargon" href="http://oracc.museum.upenn.edu/find?sargon">/find?sargon</a></dd>
+</dl>
+</li>
+<li><a class="uri" title="http://oracc.museum.upenn.edu/cams" href="http://oracc.museum.upenn.edu/cams">/cams</a>
+<p>URIs other than reserved keywords which consist of a lowercase
+letter followed by three or more lowercase letters and numbers are
+projects.  Subproject names are also valid URIs.</p>
+</li>
+</ul>
+
+<h1><a name="Project_URIs">Project URIs</a></h1>
+
+<ul>
+<li>/cams or /cams/anzu
+<p>URIs beginning with a project or subproject name are project
+URIs.</p>
+</li>
+<li><code>[PROJECT]/[ORACC_URI]</code>
+<p>Any Oracc URI can be appended to a project URI.</p>
+</li>
+<li>/dcclt/Q000002
+<p>A project text URI returns a new instance of the Oracc pager with
+the text preloaded into it.</p>
+</li>
+<li>/dcclt/Q000002,Q000003
+<p>A project text-list URI is a comma-separated list of texts and
+returns a new instance of the Oracc pager with all of the requested
+texts preloaded into it.</p>
+</li>
+<li>/dcclt/Q000001/html
+<p>A project text URI with an HTML format specifier returns just the
+HTML page; this is suitable for embedding in other pages using
+iframe.</p>
+</li>
+<li>/saao/withatf
+<p>A project URI followed by a word containing only lowercase letters
+and hyphens is a list-name.</p>
+</li>
+<li>/saao?sargon
+<p>A project URI with a query string searches the project's catalogue
+for the keys in the query.</p>
+</li>
+<li>/saao/akk?king
+<p>A project language URI with a query string searches the
+project's glossary of that language.</p>
+</li>
+<li>/saao/find?sargon
+<p>A project full search URI with a query string searches the
+full text index of the project.</p>
+</li>
+</ul>
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

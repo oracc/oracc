@@ -1,0 +1,64 @@
+=Checking
+
+-* lemmer needs to report only no-match or ambig
+
+-* memory management needs to be correct before moving forward
+
+* multi-stage validation for error-checking: 
+  +form, +core, +sense and +periph
+  	  -core = no recordable match
+  	  +form means form is known
+	  +core means core is OK, with or without form
+	  +periph means all fields are OK
+
+	  errors:
+		-form = new form or typo for CORE
+		-sense = unknown sense for CORE
+		-periph = unknown XXX for CORE
+
+=PSU etc.
+
+-* .ang format needs review for sigs-conformity
+
+-* additional annotation to be callable from lemmer
+
+-* PSU needs to build compound fields like form/norm
+
+
+=Integration I
+
+-* cdl.c needs to generate unlemmed XCL
+
+* xpd.c needs to load sigset-lists from config.xml
+
+-* file/line needs passing to l-nodes
+
+* '+' needs passing to l-nodes
+
+* #lemmatizer: use sparse needs fixing and reimplementing
+
+* EZ-PSU
+
+
+=Lemmatizing
+
+* new sig-lemming routine needed in libsigs
+
+* bigram format needs review for sig-conformity
+
+
+=Integration II
+
+* lemmatizing needs integrating with atf2xtf
+
+
+====
+
+EZ-PSU implementation:
+
+       #psu: allowed anywhere in ATF
+
+       #psu: %nb ... => %akk-x-neobab ...
+
+       xpdmanager harvests from ATF and updates 00lib/project.psu; updates
+          01bld/*/glossary.psu

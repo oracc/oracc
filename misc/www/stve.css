@@ -1,0 +1,10 @@
+body { margin: 0; padding: 0; line-height: 12pt }
+applet { margin: 0; padding: 0; border: 0 }
+
+div.applet { width: 702; height: 350; margin: auto;
+	   }
+
+div.keydoc { width: 702; height: 20; font-size: 10pt; margin: auto;
+ 	   }
+
+p { text-align: center }

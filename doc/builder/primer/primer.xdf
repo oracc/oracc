@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>ATF Primer</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2007-02-08</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>A very quick start to get you up and running with
+    your first ATF texts by giving some annotated examples.</dc:description>
+</d:meta>
+<a name="example_1" />
+<h1>Example 1</h1>
+<p>Let's start with an example:</p>
+<!-- &amp;P100003 = AAS 015
+<pre class="cookbook">
+#atf: lang sux
+@tablet
+@obverse
+1. 1(disz) geme2 u4 1(disz)-sze3
+2. ki dingir-ra-ta
+3. da-da-ga
+4. szu ba-ti
+@reverse
+1. mu ki-masz{ki} ba-hul</pre> -->
+
+<pre class="cookbook">
+&amp;P348865 = SpTU 5, 283
+#atf: lang akk-x-ltebab
+#atf: use unicode
+#project: cams
+
+@tablet
+
+@obverse
+1.	ṭup-pi! E₂ ep-šu₂ sip-pu rak-su E₂ rug-gu-bu
+2.	{giš}IG SAG.KUL kun-nu KI{+ti₃} {id₂}har ša₂ {d}NA₃
+$ single ruling
+3.	40?# ina 1 KUŠ₃ US₂ AN.TA {tu₁₅}SI.SA₂ DA E₂ ša₂ 
+</pre>
+
+<p>The various ATF features illustrated here are:</p>
+<dl>
+<dt>The <code>&amp;-line</code></dt>
+<dd>Every text begins with an <code>&amp;-line</code> giving the ID
+and the text's designation according to the CDLI catalog; if your text
+is not yet in the catalog, e-mail cdli@cdli.ucla.edu or osc@oracc.org to get the ID and
+designation.</dd>
+<dt><code>#atf: lang akk-x-stdbab</code></dt>
+<dd>You need to specify the main <a href="/ns/gdl/1.0/gdltut.html#Languages">language and dialect</a> for the text; for Sumerian just
+write <code class="cookbook">#atf: lang sux</code>.</dd>
+<dt><code>#atf: use unicode</code></dt>
+<dd>You can specify that the transliteration is in <a href="/doc/user/unicode/">Unicode</a> (with š, ṣ, ṭ, etc and subscript numerals); if you omit this line then the transliteration must be in ASCII (with sz, s,, and t, and full-size numerals). We strongly recommend that all new ATF files use Unicode for Oracc. <a href="/doc/builder/cdli/">CDLI ATF</a> continues to use ASCII.</dd>
+<dt><code>#project: cams</code></dt>
+<dd>You can specify the project that the text belongs too; this is particularly useful if the project uses a standard set of protocols and conventions.</dd>
+<dt><code>@tablet</code></dt>
+<dd>You can specify an object type; this is normally @tablet, but
+others include @bulla and @envelope.</dd>
+<dt><code>@obverse, @reverse</code></dt>
+<dd>You can specify the part of the object you are transliterating;
+the edges are given using: <code class="cookbook">@left @right @top
+@bottom</code>.</dd>
+<dt>Lines of text</dt>
+<dd>Lines of text are for the most part just like regular
+Assyriological practice.  See <a href="#example_2">Example 2</a> for how to do breakage.</dd>
+<dt>Logograms</dt>
+<dd>Logograms can be simply entered as uppercase as is natural in transliterations of Akkadian.</dd>
+<dt>Determinatives, phonetic complements and glosses</dt>
+<dd><p>Determinatives are given in curly brackets.</p> 
+<p>Phonetic complements and glosses are marked with a <code>+</code> immediately after the first curly bracket; they are assumed to be in the same language as the rest of the word.</p> </dd>
+<dt>Rulings</dt>
+<dd>Lines ruled on the tablet as paragraph separators, etc., can be marked with $-lines ("dollar-lines").</dd>
+<dt>Numbers</dt>
+<dd>Sexagesimal (base 60) numbers that just use the DIŠ and U signs are transliterated as regular numerals. Numbers in other metrological systems are explicitly qualified as in <code
+class="cookbook">1(disz)</code>.  See <a href="/doc/builder/numbers/">the
+numbers page</a> and the <a href="/doc/builder/math/">mathematics page</a> for more information (or the <a href="/doc/builder/numbers/">numbers and metrology in CDLI page</a> as appropriate).</dd>
+</dl>
+
+<p>You can see <a href="http://oracc.museum.upenn.edu/cams/P348865">here</a> how the entire text appears online in CAMS.</p>
+<h1><a name="example_2" />Example 2</h1>
+
+<pre class="cookbook">
+&amp;P348658 = SpTU 2, 055
+#atf: lang akk-x-ltebab
+#atf: use unicode
+#project: cams
+
+@tablet
+
+@obverse
+1.	ṭup-pi A.ŠA₃ ki-šub-ba#-[a ...]
+2.	{id₂}har-ri ša₂ {d}MUATI? x [...]
+3.	ša₂ qe₂-reb UNUG#[{ki}]
+</pre>
+
+<dl>
+<dt>Damage and breakage</dt>
+<dd><p>There are no half-brackets in ATF: signs which are damaged are
+flagged with the hash-sign (<code>#</code>) after the grapheme.</p>
+<p>Signs which are completely broken away are placed in square
+brackets; square brackets may not occur inside a grapheme, only before
+or after it.  The ellipsis (<code>...</code>) may be used to indicate that an
+undeterminable number of signs is missing.</p>
+<p>Signs which cannot be identified are transliterated as
+<code>x</code>; when a number is missing the convention is to use
+<code>n</code> as in <code class="cookbook">n(disz)</code>.</p></dd>
+<dt>Querying, Correction and Collation</dt>
+<dd>The other flags are the query (<code>?</code>) which can be placed
+after a grapheme to indicate uncertainty of reading; the asterisk
+(<code>*</code>) which indicates a collated reading; and the
+exclamation mark which indicates correction.  After a corrected sign,
+the actual sign on the tablet may optionally be given: <code
+class="cookbook">a!</code> or <code class="cookbook">ki!(DI)</code>.</dd>
+</dl>
+
+<p>You can see <a href="http://oracc.museum.upenn.edu/cams/P348658">here</a> how the entire text appears online in CAMS.</p>
+
+<h1>Example 3</h1>
+
+<p>This shows a Sumerian text with non-sexagesimal numbers, transliterated in ASCII.</p> 
+<pre class="cookbook">
+&amp;P100099 = AAS 113
+#atf: lang sux
+@tablet
+@obverse
+1. 1(ban2) kasz 1(ban2) [...]
+2. 1(disz) sila3 [...]
+3. 1(u)? [...] gesz
+4. 1(barig) kasz#? [...] x [...]
+5. 3(ban2) [x]
+6. nam-ha-ni sagi
+7. {d}gu-la
+8. mu-da-gen-na-a
+9. iti sze-kar-ra-gal2-la
+</pre>
+
+
+
+<d:resources/>
+
+</d:doc>

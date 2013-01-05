@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Date Specifications for CDLI/Oracc</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-10-15</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document describes the conventions used for
+  specifying dates in the CDLI catalogs and gives a list of kings and
+  dynasties.  This list is a work-in-progress; e-mail corrections to
+  Steve Tinney (stinney@sas.upenn.edu).</dc:description>
+</d:meta>
+
+<h1>Scheme</h1>
+
+<p>The general scheme of dates is a sequence of up to five members
+giving the following data:</p>
+
+<pre class="example">
+[DYNASTY/ERA] . [RULER] . [YEAR] . [MONTH] . [DAY]</pre>
+
+<p>The actual syntax of a single date specification gives an instance
+of each of these members with the members separated by periods:</p>
+
+<pre class="cookbook">
+Ur III.Shulgi.23.04.5</pre>
+
+<p>The form of each member is described in the following below.</p>
+
+<h2>Dynasties</h2>
+
+<p>A dynasty is specified using the basic combination:</p>
+
+<pre class="example">
+[CITY] [NUMBER]</pre>
+
+<p>This specification is deliberately open-ended since new finds will
+inevitably require additional dynasty designations. Actual examples
+include:</p>
+
+<pre class="cookbook">
+Lagash I
+Agade
+Lagash II
+Ur III
+Isin I
+Larsa
+Babylon I
+Mari</pre>
+
+<p>In transcriptions of city and ruler names /sh/ is used for /shin/.</p>
+
+<h2>Eras</h2>
+
+<p>The Seleucid Era is indicated by the prefix <code>SE</code>. [more
+needed here]</p>
+
+<h2>Rulers</h2>
+
+<p>Rulers are specified by giving the normal form of their name in
+transcription rather than transliteration and are normalized following
+Brinkman's list in <i>Ancient Mesopotamia</i>, if they occur in that
+list.  Rulers must be unique within their dynasty, appending the
+conventional 'I', 'II' etc., as required.  A provisional list of
+dynasties and rulers follows.</p>
+
+<h2>Years</h2>
+
+<p>Years are given using the lettering or numbering system appropriate
+to the dynasty/ruler in question.  For years which correspond to
+year-names the canonical equivalency of year-name to year-number is
+given below.</p>
+
+<p>Where years are named by symbols other than year-names, such as
+limmu-officials, the year may be given as the number in the
+reign of the ruler, the symbol, or both.  The syntax of this is:</p>
+
+<pre class="example">
+[YEAR]? =? [SYMBOL]?
+</pre>
+
+<p>Where either part is optional and the equals-sign may be omitted if
+both parts are not given.  If <code>[SYMBOL]</code> could be confused
+with a year letter or number, the equals-sign must be given.</p>
+
+<p>In the following examples, (1) shows how to indicate a date
+according to a year named after a limmu at Tuttul where the year of
+the ruler's reign which corresponds to the limmu is unknown.  Example
+(2) shows how to do the same when the year of the ruler is known:</p>
+
+<pre class="cookbook">
+(1)  Tuttul.Yasmah-Addu.3=Ibni-Adad.06.09
+(2)  Tuttul.Yasmah-Addu.Ibni-Adad.06.09
+</pre>
+
+<h2>Months</h2>
+
+<p>Months consist of one or two parts:</p>
+
+<pre class="example">
+[CALENDAR] [NUMBER|NAME]
+
+or
+
+[NUMBER|NAME]</pre>
+
+<p>The optional <code class="example">CALENDAR</code> portion consists
+of a city name or other code which identifies the date's calendar if
+that calendar is not the standard Mesopotamian calendar.</p>
+
+<p>The <code>NUMBER|NAME</code> portion consists of either a month
+number given as a pair of arabic numerals or the transcription of a
+month name; the latter convention should only be used for months whose
+position in a given calendar is uncertain.</p>
+
+<h2>Days</h2>
+
+<p>Days are given as a pair of arabic numerals.</p>
+
+<h2>Hyphen</h2>
+
+<p>Unspecified components of the date are given with double zero ('00'); 
+components which are broken are given with double hyphen ('--'):</p>
+
+<pre class="cookbook">
+Ur III.00.00.4.25 <span class="comment">(no year name given)</span>
+
+Ur III.--.--.4.25 (year name broken)</pre>
+
+<d:resources/>
+
+</d:doc>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--@SUMMARY@=Sample PSA configuration file-->
+<psa:config xmlns:psa="http://oracc.org/ns/psa/1.0">
+  <psa:lang psa:target-lang="akk">
+    <psa:lemma psa:cfgw="māru[son]N" psa:arity="binary" psa:scope="inner"
+	       psa:prev="father-of" psa:next="son-of"/>
+    <psa:lemma psa:cfgw="ṭupšarru[scribe]N" psa:arity="unary" psa:dir="backward"
+	       psa:scope="outer" psa:this="profession"/>
+  </psa:lang>
+  <psa:lang psa:target-lang="sux">
+    <psa:lemma psa:cfgw="dumu[child]N" psa:arity="binary" psa:scope="inner"
+	       psa:prev="father-of" psa:next="child-of"/>
+    <psa:lemma psa:cfgw="dubsar[scribe]N" psa:arity="unary" psa:dir="backward"
+	       psa:scope="outer" psa:this="profession"/>
+  </psa:lang>
+</psa:config>

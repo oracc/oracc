@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/esp-struct/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="esp.rng">
+    <start>
+      <empty/>
+    </start>
+  </include>
+  <start combine="interleave">
+    <ref name="struct-page"/>
+  </start>
+  <define name="struct-page">
+    <element name="page">
+      <attribute name="id"/>
+      <optional>
+        <attribute name="file"/>
+      </optional>
+      <optional>
+        <attribute name="accesskey"/>
+      </optional>
+      <optional>
+        <attribute name="hide-menu-link">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="hide-site-map-link">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="show-small-print-link">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="show-access-link">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="show-reference-link">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <attribute name="type">
+        <choice>
+          <value>link</value>
+          <value>page</value>
+        </choice>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <ref name="struct-link"/>
+          <ref name="struct-page"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="struct-link">
+    <element name="link">
+      <attribute name="id"/>
+      <attribute name="url">
+        <data type="anyURI"/>
+      </attribute>
+      <attribute name="title"/>
+    </element>
+  </define>
+</grammar>

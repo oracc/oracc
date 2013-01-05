@@ -1,0 +1,77 @@
+Notes
+
+> The graphic form particularly of the fractions
+> 1/3 and so on are neo-Assyrian. 5(u) form
+> probably never, rather 3u over 2u. For later.
+
+Yes, I had your previous request re: the fractions on my TODO list
+already, and the incorrect alignment of the final u in 5(u) was the
+font-design equivalent of a typo (a designo?).
+
+> 3(u) sze = igi.6.gal2 gin2 and so on (2/6 = 1/3
+> under gin2). Maybe somewhere a note that both do
+> occur, or some graphic link in the paper.
+
+I have it on my list to do normalization of fractions to lowest
+common denominator; then at least the fact that there are multiple
+ways of expressing the same fraction will be more obvious.
+
+For actual occurrence information, we will (sometime next year) take
+the NM database we're creating now and apply it to the corpus to make
+a map of what actually occurs, so I'm going to punt for now the issue
+of explicitly notating the existence of instances of multiple
+expressions of the same value.
+
+> I believe 2(szargal){gal} is more elegant--and
+> more consistent with numerical convention. HI =
+> szar2 and szargal dependent on context. What do
+> you think? What are these HIxGAL entries in Ea V
+> 87ff?
+
+Yes, they are interesting, aren't they.  HIx(GAL.1) and HIx(GAL.2) with
+readings szargaldisz and szargalmin.  But does HI really have a
+reading szargal?  This stretches our notational conventions because I
+would first think that it is |HI.GAL| = /szargal/; that would mean
+the writing |HI&HI.GAL| would be /szargalmin/ if we put it together
+with the Ea evidence.  So, I guess I end up thinking that you are
+correct that the mental gymnastic is: multiply the HI-signs together
+to get the number of szargals, and jot down the fact that they are
+'gal' as supplementary information.  OK, I'll buy that.
+
+>kuc2 to kusz2.
+
+done
+
+> Is that |SZU.BAD| in our system?
+
+yep; done
+
+I guess to be consistent change gi etc. fraction sequence to "small to large".
+
+> What does asterisk mean here? Is that a times sign?
+
+Yes, but I see in your original doc you use space so I've fixed that.
+There is an underlying issue here with the conversion process, i.e.,
+for computation the AEV needs to be expressed as the relevant
+multiples of a single step.  I need to do more work on steps AEV's
+and MEV's, perhaps we should print the MEV for each step along with
+the citation form.  The value expressed as a true AEV might not be
+suitable for humans.
+
+> 1/2 esz2 would be 1/2xESZ2 consistent with 1/2 USZ. 
+
+Fixed the other way around, unless you'd prefer '*'--it's a 1-line
+fix in the sequence of what I'm doing.
+
+> We have no reading for USZ?
+
+Well, there is usz, us, nitah/ninta/nita, jesz/jisz, or unu8.  Of
+these, unu8 is 'a stick', so if I had to commit to something, that
+would be it.  Unless they had very long penises.
+
+You call it; play safe with USZ or take a shot with unu8?  The
+evidence is just a couple of lexical passages, unless you can come up
+with u-nu, u2-nu or the like in probative context--I just scanned the
+TRANSLIT file for u-nu, u2-nu and u3-num and there was nothing relevant.
+
+ Steve

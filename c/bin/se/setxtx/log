@@ -1,0 +1,8 @@
+../keymangler.o: In function `keymangler':
+/usr/local/oracc/src/c/bin/se/secatx/../keymangler.c:32: undefined reference to `get_charset'
+/usr/local/oracc/src/c/bin/se/secatx/../keymangler.c:39: undefined reference to `chartrie_init'
+/usr/local/oracc/src/c/bin/se/secatx/../keymangler.c:42: undefined reference to `gatf2utf'
+/usr/local/oracc/src/c/bin/se/secatx/../keymangler.c:55: undefined reference to `utf2wcs'
+/usr/local/oracc/src/c/bin/se/secatx/../keymangler.c:111: undefined reference to `wcs2utf'
+collect2: ld returned 1 exit status
+make: *** [setxtx] Error 1

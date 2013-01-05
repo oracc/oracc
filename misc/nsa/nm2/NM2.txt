@@ -1,0 +1,608 @@
+# NSA Configuration File
+#===============
+#
+# This file defines counting or metrological systems.  A system
+# begins with a @system tag and ends with @end system, and
+# consists of the following components:
+#
+# NAME:		  the human-readable name of the system, given
+#  	      	          after the @system tag
+# CODE: 		  a single word, which may contain hyphens, 
+#			  which uniquely identifies this system; may
+# TYPE:	          either 'num' or 'met' for number or metrology;
+# 		  	  defaults to 'met'
+# TIME:	          a period, as used in the CDLI catalogue; may be
+# 		    	  given more than once
+# PLACE: 	    	  a place, as used in the CDLI catalogue; may
+# 			  be given more than once
+# MEB:		  Modern Equivalency Base: the step in the system
+# 		  	  which is used as the basis for calculating
+#			  modern values
+# MEV:		  Modern Equivalency Value: the modern 
+# 		  	  equivalent of 1 unit of the MEB.  May be
+#			  fractional.  For TYPE=met the MEV has a 
+#			  final modern metric unit abbreviation such
+#			  as:
+#			  l g m m^2 m^3
+# SYSDET:	  A grapheme or lemma which is used in final 
+# 			  position in the system possibly after the 
+#			  commodity as with gur.
+# STEP:	          One step in the system expressed as a triple:
+# 		      	    step-name
+#			    step-value, expressed in some other step
+#			    step-format
+#
+#			  step-format notations: 
+#			  	      #(X) = a CDLI-style count-unit 
+#				      	        grapheme, e.g., 3(u).
+#				      SD = Sexagesimal DIŠ
+#				      SA = Sexagesimal AŠ
+#				      SP = Sexagesimal Place-Value System
+#				      D =  Decimal
+#				      BS = Bisexagesimal
+#				      CF[GW]POS = lemma, possibly a
+#				      	 	PSU, e.g., giŋ tur[unit]N
+#				      * = implicit unit, as where SA 
+#				      	implies gur
+#
+# DISCUSSION POINTS:
+#
+# 1) how to handle indeterminacy or  incompleteness 
+# in system steps? E.g., we know that
+# n X n Y is a sequence, but do not know how many 
+# Ys are in an X, or suspect that there is a gap in the
+# steps between X and Y (can this latter really happen?).
+#
+#   a) steps need to be defined in terms of choice of possibilities
+#   b) modern values need to be defined in terms of range
+#   c) for uncertain intermediate steps do nothing as of now
+#
+# 2) Time was you could specify a system explicitly in ATF
+# to cue NSA when it wasn't able to disambiguate the
+# system.  Perhaps need to bring that back.
+#
+# Yes, do need to bring it back.
+#
+# 3) SYSDET needs more thought; should it be grapheme(s),
+# lemma(ta) or either?
+#
+#  1(diš) sila₃ še gur++ = lemma
+#  GAN₂ = grapheme
+#  *(PI) = punctuation
+#
+# 4) IIRC we have cases of signs being used in the middle
+# of a sequence as a kind of punctuation (PI? the colon used
+# to indicate empty tens?).  How to specify them here?
+#
+# see (3)
+#
+# 5) Need to select system by reference to graphemics as well as lemmata?
+#    e.g., ban₂ vs. ban₂@v
+#    not worry about this for now
+#
+# COMM		A commodity measured in the system,
+# 		        given as one or more CF[GW]POS 
+#			or CF[GW//SENSE]POS'EPOS.
+# COMH		A commodity head measured in the system,
+#  		        given as a single CF[GW]POS or 
+#			CF[GW//SENSE]POS'EPOS. This is useful
+#			where a commodity may have several 
+#			different types or qualifications which do
+#			not affect the measurement system.
+
+@system Sexagesimal Counting, AŠ-system
+@code sexagesimal-a
+@type num 
+@time * 
+@place * 
+@meb še 
+@mev 1/10800
+
+@step še		1/10800 	    SD še[unit]N
+@step giŋ	1/6		    SD giŋ[unit]N
+@step aš 		1		    #(aš)
+@step u 		10	            #(u)
+@step ŋeš        60		    #(ŋeš₂)
+@step ŋešu      600		    #(ŋešu)
+@step šar	3600	    #(šar₂)
+@step šaru 	36000	    #(šaru)
+@step šargal	216000	    #(šargal){gal}
+
+@end system
+
+
+
+@system Sexagesimal Counting, DIŠ-system 
+
+@code sexagesimal-d 
+@type num 
+@time * 
+@place * 
+@meb še 
+@mev 1/10800
+
+@step še		1/10800 	    SD še[unit]N
+@step giŋ	1/6		    SD giŋ[unit]N
+@step diš 	1		    #(diš)
+@step u 		10	            #(u)
+@step ŋeš        60		    #(ŋeš₂)
+@step ŋešu      600		    #(ŋešu)
+@step šar	3600	    #(šar₂)
+@step šaru 	36000	    #(šaru)
+@step šargal	216000	    #(šargal@c){gal}
+
+@end system
+
+@system 
+
+@system Sexagesimal Counting, Curved
+
+@code sexagesimal-c 
+@type num 
+@time * 
+@place * 
+@meb še 
+@mev 1/10800
+
+@step aš 	      	1		    #(aš@c)
+@step u 		10	            #(u@c)
+@step ŋeš        60		    #(ŋeš₂@c)
+@step ŋešu      600		    #(ŋešu@c)
+@step šar	3600	    #(šar₂@c)
+@step šaru 	36000	    #(šaru@c)
+@step šargal	216000	    #(šargal@c){gal}
+
+@end system
+
+@system ED Fara Dry Capacity Metrology
+@code drycap-ed-fara
+@time Early Dynastic
+@place Fara
+@place Šuruppak
+@meb sila
+
+@step sila 	1/10*ban	SD sila[unit]N
+@step ban/ban₂	1/6*barig	#(ban₂) | #(ban₂@v)
+@step ban/ban₂@v 1/6*barig	#(ban₂) | #(ban₂@v)
+@step PI	#		*(PI)
+@step barig	1/4*lidga	#(barig)
+@step lidga	1/2*gurmah	SA lidga[unit]N
+@step gurmah	1/2400*guru	SA gur[unit]N mah[great]AJ
+@step guru	1*guru		SA guru[unit]N
+# ePSD has gur-mah as a separate entry but no attestations; they're
+all currently under gur.
+
+@end system
+
+@system OAkk Gur Saggal Dry Capacity Metrology
+@code drycap-oakk-gursaggal
+@time Old Akkadian
+@place *
+@meb sila 
+
+@sysdet gursaggal[unit]N
+
+@step sila 	1/10*ban	SD sila[unit]N
+@step ban/ban₂	1/6*barig	#(ban₂) | #(ban₂@v)
+@step ban/ban₂@v 1/6*barig	#(ban₂) | #(ban₂@v)
+@step PI	#		*(PI)
+@step barig	1/4*gur	#(barig)
+@step gur	1/3600*guru	SA gur[unit]N
+@step guru	1*guru		SA guru[unit]N
+
+@end system
+
+@system OAkk Lagaš Gur Saggal Dry Capacity Metrology
+@code drycap-oakk-lagaš-gursaggal
+@time Old Akkadian
+@place Lagaš
+@meb sila 
+
+@sysdet gursaggal[unit]N
+
+@step sila 	1/10*ban	SD sila[unit]N
+@step ban/ban₂	1/6*barig	#(ban₂) | #(ban₂@v)
+@step ban/ban₂@v 1/6*barig	#(ban₂) | #(ban₂@v)
+@step PI	#		*(PI)
+@step barig	1/5*gur	#(barig)
+@step gur	1/3600*guru	SA gur[unit]N
+@step guru	1*guru		SA guru[unit]N
+
+@end system
+	
+@system OAkk-OB Dry Capacity Metrology 
+
+@code drycap-oakkob
+@time Old Akkadian
+@time Ur III
+@time Old Babylonian
+@place * 
+@meb še 
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	1/10*ban	SD sila[unit]N
+@step ban/ban₂	1/6*barig	#(ban₂) | #(ban₂@v)
+@step ban/ban₂@v 1/6*barig	#(ban₂) | #(ban₂@v)
+@step PI	#		*(PI)
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+@system Ur III 60.2/3-Sila Dry Capacity Metrology 
+@code drycap-60.2/3sila
+@time Ur III
+@place * 
+@meb še 
+@mev 1/10800l
+
+# Is this really right? ER to check with SC
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	3/182*barig	SD sila[unit]N
+# unknown number of sila per ban * and ban₂ per barig 
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+@system Ur III 72-Sila Dry Capacity Metrology 
+@code drycap-72sila
+@time Ur III
+@place * 
+@meb še 
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	1/72*barig	SD sila[unit]N
+# unknown number of sila per ban (12?) and ban₂ per barig (6?)
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+@system Ur III 75-Sila Dry Capacity Metrology 
+@code drycap-75sila
+@time Ur III
+@place * 
+@meb še 
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	1/75*barig	SD sila[unit]N
+# unknown number of sila per ban (15?) and ban₂ per barig (5?)
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+@system Ur III 80-Sila Dry Capacity Metrology 
+@code drycap-80sila
+@time Ur III
+@place * 
+@meb še 
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	1/80*barig	SD sila[unit]N
+# unknown number of sila per ban (10?) and ban₂ per barig (8?)
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+@system Ur III 85-Sila Dry Capacity Metrology 
+@code drycap-85sila
+@time Ur III
+@place * 
+@meb še 
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sila	SD giŋ[unit]N
+@step sila 	1/85*barig	SD sila[unit]N
+# unknown number of sila per ban₂ (13?) and ban₂ per barig (5?)
+@step barig	1/5*gur		#(barig)
+@step gur 	1/3600*guru	SA *
+@step šar 	1/60*šargal	#(šar₂)
+@step guru 	1/6*šargal	SA guru[unit]
+@step šaru 	1/6*šargal	#(šaru)
+@step šargal 	1*šargal	#(šargal){gal}
+
+@end system
+
+
+
+@system Classic Babylonian Dry Capacity Metrology 
+
+@code drycap-classic
+@time Old Babylonian
+@time Middle Babylonian
+@time Neo-Babylonian
+@time Late Babylonian
+@place * 
+@meb uṭṭatu
+@mev 1/10800l
+
+@sysdet	gur[unit]
+
+@step uṭṭatu  	1/180*šiqlu	SP uṭṭat[unit]N
+@step šiqlu	1/60*qû		SP šiqil[unit]N
+@step qû 	1/10*sūtu	SP qā[unit]N
+@step sūtu	1/6*pānu	#(BAN₂) | #(BAN₂@v)
+@step PI	#		*(PI)
+@step pānu	1/5*kurru		#(barig)
+@step kurru 	1/3600*guru	SA *
+@step ŠAR 	1/60*ŠARGAL	#(ŠAR₂)
+@step karû 	1/6*ŠARGAL	SA karā[unit]
+@step ŠARʾU 	1/6*ŠARGAL	#(ŠARʾU)
+@step ŠARGAL 	1*ŠARGAL	#(ŠARGAL){gal}
+
+@end system
+
+@system Early Third-millennium Liquid Capacity Metrology
+
+@code liqcap 
+@place * 
+@time Early Dynastic
+@time Old Akkadian
+@meb še 
+@mev 1/3600l
+
+@comh kaš[beer]N
+
+@step giŋtur 	  1/160*giŋ	SD giŋ tur[unit]N
+@step sila 	  1/30*dug	SD sila[unit]N
+@step dug	  30*sila		SD dug[unit]N
+
+@end system
+
+@system Third-millennium Weight Metrology 
+@code weight-thirdmill 
+@time Early Dynastic III
+@time Old Akkadian
+@time Ur III
+@time Old Babylonian 
+@time Middle Babylonian
+@time Neo-Babylonian 
+@time Late Babylonian 
+@place * 
+@meb še 
+@mev 500/10800g
+
+@step še 	1/180*giŋ	SD še[unit]N
+@step giŋ 	1/60*mana	SD giŋ[unit]N
+@step mana	1/60*gun	SD mana[unit]N
+@step gun	1*gun		SA gun[unit]N
+
+@end system
+
+@system Classic Babylonian Weight Metrology 
+@code weight-classic 
+@time Old Babylonian 
+@time Middle Babylonian
+@time Neo-Babylonian 
+@time Late Babylonian 
+@place * 
+@meb uṭṭatu 
+@mev 500/10800g
+
+@step uṭṭatu 	1/180*šiqlu	SP utṭat[unit]N
+@step šiqlu 	1/60*manû	SP šiqil[unit]N
+@step manû	1/60*biltu	SP manā[unit]N
+@step biltu	1*biltu		SA gun[unit]N
+
+@end system
+
+@system Third-millennium Length Metrology 
+@code length-thirdmill
+@time Early Dynastic
+@time Old Akkadian 
+@time Ur III
+@time Old Babylonian
+# because still used in e.g, school exercises
+@place * 
+@meb šusi 
+@mev 3000/180mm
+
+@step šusi	1/30*kuš	SD šusi[unit]N
+@step šudua	1/3*kuš		SD šudua[unit]N
+@step zapah 	1/2*kuš		SD zapah[unit]N
+## Listed variously as zipah, zapah and šubad in non-Oracc ePSD
+#  often written with rather funky numerals (e.g., aš@c)
+@step kuš 	1/2*kuš-numun	SD kuš[unit]N
+@step kuš-numun	1/3*gi		SD kuš[unit]N numun[seed]N
+#  old ePSD doesn't really recognise this as an independent unit
+@step gi 	1/2*nindan	SD gi[unit]N
+@step nindan 	1/1800*dana	SD nindan[unit]N
+# length units eše and UŠ are not attested in third mill
+@step dana 	1*dana		SD dana[unit]N
+# rare; a lot of ePSD's instances are mislemmatised (e.g., after
+capacity units). = dan[pure]??
+
+@system Classic Babylonian Length Metrology 
+@code length-classic
+# classic because various competing systems develop from MB onwards 
+# for practical measuring but this never really goes away in 
+# scholarly discourse
+@time Old Babylonian 
+@time Middle Babylonian 
+@time Neo-Babylonian 
+@time Late Babylonian 
+@place * 
+@meb ubānu 
+@mev 3000/180mm
+
+@step ubānu	1/30*ammatu	SP ubān[unit]N
+@step ammatu 	1/6*qanû	SP ammat[unit]N
+@step nikkas	1/2*qanû	SP nikkas[unit]N
+@step qanû 	1/2*nindanu	SP qan[unit]N
+@step nindanu 	1/10*ašlu	SP nindan[unit]N
+@step ṣuppān	1/2*ašlu	SP ṣuppān[unit]N
+@step ašlu 	1/6*UŠ		SP ašal[unit]N
+@step UŠ 	1/30*bēru	SP UŠ[unit]N
+@step bēru 	1*bēru		SP bēr[unit]N
+
+@end system
+
+@system Third-millennium Surface Metrology 
+@code surface-thirdmill 
+@time Ur III 
+@time Old Babylonian 
+@place * 
+@meb še 
+@mev 36/10800m^2
+
+@sysdet GAN₂
+# only for units above sar
+
+@step še 	1/180*giŋ	SD še[unit]N
+@step giŋtur	1/60*giŋ	SD giŋ tur[unit]N
+@step giŋ	1/60*sar	SD giŋ[unit]N
+@step manatur 	1/3*giŋ		SD mana tur[unit]N
+@step sar     	1/100*iku	SD sar[unit]N
+@step iku 	1/6*eše		#(iku)
+@step eše	1/3*bur		#(eše)
+@step bur	1/10*buru	#(bur₃)
+@step buru	1/6*šar		#(bur'u)
+@step šar	1*šar		#(šar₂)
+@step šaru	10*šar		#(šaru)
+@step šargal	60*šar		#(šargal){gal}
+
+@end system
+
+@system Classic Babylonian Surface Metrology 
+@code surface-classic 
+@time Old Babylonian 
+@time Middle Babylonian 
+@time Neo-Babylonian 
+@time Late Babylonian 
+@place * 
+@meb uṭṭatu 
+@mev 36/10800m^2
+
+@sysdet GAN₂
+# only for units above mūšaru
+
+@step uṭṭatu 	1/180*šiqlu	SP uṭṭat[unit]N
+@step šiqlu	1/60*mūšaru	SP šiqil[unit]N
+@step mūšaru  	1/100*ikû	SP mūšar[unit]N
+# can also be written, e.g., 1 ŠU (for šūši, 60) SAR
+@step ikû 	1/6*eblu	#(IKU)
+@step eblu	1/3*būru	#(EŠE)
+@step būru	1/10*BUR'U	#(BUR₃)
+@step BUR'U	1/6*ŠAR		#(BUR'U)
+@step ŠAR	1*ŠAR		#(ŠAR₂)
+@step ŠARU	10*ŠAR		#(ŠARU)
+@step ŠARGAL	60*ŠAR		#(ŠARGAL){GAL}
+
+@end system
+
+@system Third-millennium Volume Metrology 
+@code volume-thirdmill 
+@time Ur III 
+@time Old Babylonian 
+@place * 
+@meb še 
+@mev 18/10800m^3
+
+@sysdet GAN₂
+# only for units above sar
+
+@step še 	1/180*giŋ	SD še[unit]N
+@step giŋ	1/60*sar	SD giŋ[unit]N
+@step sar     	1/100*iku	SD sar[unit]N
+@step iku 	1/6*eše		#(iku)
+@step eše	1/3*bur		#(eše)
+@step bur	1/10*buru	#(bur₃)
+@step buru	1/6*šar		#(bur'u)
+@step šar	1*šar		#(šar₂)
+@step šaru	10*šar		#(šaru)
+@step šargal	60*šar		#(šargal){gal}
+
+@end system
+
+@system Classic Babylonian Volume Metrology 
+@code volume-classic 
+@time Old Babylonian 
+@time Middle Babylonian 
+@time Neo-Babylonian 
+@time Late Babylonian 
+@place * 
+@meb uṭṭatu 
+@mev 1/600m^2
+
+@sysdet GAN₂
+# only for units above mūšaru
+
+@step uṭṭatu 	1/180*šiqlu	SP uṭṭat[unit]N
+@step šiqlu	1/60*mūšaru	SP šiqil[unit]N
+@step mūšaru  	1/100*ikû	SP mūšar[unit]N
+# can also be written, e.g., 1 ŠU (for šūši, 60) SAR
+@step ikû 	1/6*eblu	#(IKU)
+@step eblu	1/3*būru	#(EŠE)
+@step būru	1/10*BUR'U	#(BUR₃)
+@step BUR'U	1/6*ŠAR		#(BUR'U)
+@step ŠAR	1*ŠAR		#(ŠAR₂)
+@step ŠARU	10*ŠAR		#(ŠARU)
+@step ŠARGAL	60*ŠAR		#(ŠARGAL){GAL}
+
+@end system
+
+
+@system Ur III-OB Brick Metrology 
+@code brick-ur3ob
+@time Ur III
+@time Old Babylonian 
+@place * 
+@meb diš 
+@mev 1
+
+@comm sig[brick]N
+
+@step giŋ	12	SD giŋ[unit]N
+@step sar	720	SD sar[unit]N
+@step iku 	1/6*eše		#(iku)
+@step eše	1/3*bur		#(eše)
+@step bur	1/10*buru	#(bur₃)
+@step buru	1/6*šar		#(burʾu)
+@step šar	1*šar		#(šar₂)
+
+@end system

@@ -1,0 +1,9 @@
+sigs_lookup.c: In function ‘sigs_lookup_sub’:
+sigs_lookup.c:264: error: invalid type argument of ‘->’ (have ‘struct siglook’)
+sigs_lookup.c:264: error: ‘fp’ undeclared (first use in this function)
+sigs_lookup.c:264: error: (Each undeclared identifier is reported only once
+sigs_lookup.c:264: error: for each function it appears in.)
+sigs_lookup.c: In function ‘sigs_lookup’:
+sigs_lookup.c:609: error: ‘fp’ undeclared (first use in this function)
+make[1]: *** [sigs_lookup.lo] Error 1
+make: *** [all-recursive] Error 1

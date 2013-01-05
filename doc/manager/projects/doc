@@ -1,0 +1,36 @@
+This is 'cdlproject'--a project management tool for CDL projects.
+
+cdlproject must always be run from within a project subdirectory.
+
+cdlproject understands the following commands:
+
+    catalog  :: updates catalogue installation.
+
+    check    :: perform various checks; say 'cdlproject check help' for more
+                information.
+
+    clean    :: remove unneeded files; currently just */*~ (i.e., emacs
+                backup files).
+
+    harvest  :: collect new words from the corpus and place them in
+                lib/<LANG>.new; the new material can be reviewed but
+                corrections *MUST* be made in the corpus sources or
+                in lib/<LANG>.glo (the main glossary file).
+
+    merge    :: redo the harvest and then merge the lib/<LANG>.new
+                files with the main glossary files.
+
+    rebuild  :: rebuild the corpus, glossaries and website; this does
+                not doing any harvesting or merging.
+
+The recommended workflow for glossary building is:
+    0) begin with text data which is ATF-clean.
+    1) lemmatize the texts; ensure they are ATF-clean with lem-checking,
+       then add them to the 'sources' directory.
+    2) run 'cdlproject harvest'.
+    3) review lib/*.new and fix sources/*.atf or lib/*.glo as required.
+    4) run 'cdlproject merge' (this automatically redoes the harvest).
+    5) run 'cdlproject rebuild' if all seems well.
+    6) if something goes wrong, you can retrieve the previous *.glo
+       file from the 'backups' directory--multiple 'cdlproject merge'
+       commands on the same day overwrite the same file.

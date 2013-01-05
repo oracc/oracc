@@ -1,0 +1,54 @@
+a#
+
+[ ]
+
+( )
+
+< >
+
+<< >>
+
+<( )>
+
+{d}muati
+
+uru11{ru}
+
+{lu-ub}lub2{sar}
+
+{(1(u))} ur {(he2-pi2)}
+
+
+~A
+
+_utu{szi}_
+
+a!
+
+a?
+
+a*
+
+
+%0 ... %9 = hands
+
+{%1 sa-pa-ru}
+
+%a = akkadian          xml:lang="akk"
+%s = sumerian/emegir   xml:lang="sux" / g:rws="emegir"
+%h = hittite           xml:lang="hit"
+%e = sumerian/emesal   xml:lang="sux" / g:rws="emesal"
+%u = sumerian/UDGALNUN xml:lang="sux" / g:rws="udgalnun"
+
+%[a-z]{2,3} = language code
+
+%en 
+
+%qpc
+
+%%rws
+
+Configure the ATF processor to understand additional languages:
+
+#atf register lang xxx
+#atf register rws xxx

@@ -1,0 +1,21 @@
+0. Marshalling
+   -- use onebig.plx to create single XML file with all
+      project data
+
+1. Selection 
+   -- configure by POS including multi-POS in one index
+   -- optionally trim to remove unreferenced entries
+   -- compounds or no compounds
+
+2. Rewrite 
+   -- determine index-heads (CF or ORTH)
+   -- create xrefs if needed (ORTH mode needs xrefs 
+      from non-head writings)
+   -- induct index-specific names of texts from names.xml
+   -- map labels to project-specific style
+
+3. Sort
+   -- only necessary if not using CF as head
+
+4. Render
+   -- current only to HTML

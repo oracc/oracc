@@ -1,0 +1,20 @@
+#!/bin/sh
+# @SUMMARY@= Script to convert all lemmatized files in project to TEI.
+if [ "$1" = "" ]; then
+    echo teitexts.sh: must give project name as argument
+    exit 1
+fi
+if [ "$2" = "" ]; then
+    LIST=@@ORACC@@/projects/$1/lib/have-lem.lst
+else
+    LIST=$2
+fi
+outdir=tei
+projdir=@@ORACC@@/projects/$1
+mkdir -p $outdir
+cd $projdir
+mkdir -p $projdir/tei
+cd $outdir
+teicorpus.sh $1 $2
+cd $projdir
+chmod -R o+r tei

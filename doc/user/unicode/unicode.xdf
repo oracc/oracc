@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Unicode for Cuneiform Transliteration</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2010-04-18</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This page lists the essential Unicode characters for
+transliterating and normalising Sumero-Akkadian cuneiform.</dc:description>
+</d:meta>
+
+<p>  Several families of fonts
+containing all of these characters are available from <a href="/doc/user/fonts/">the fonts page</a>.</p>
+<p>A collection of keyboards supporting Unicode transliterations
+implements a consistent set of input conventions across operating
+systems.  The keystrokes in the 'KEYS' column below are composed of
+the comma character (<code>,</code>)<!-- or the shifted comma character
+(<code>S,</code>)  In each case the comma or shift-comma is--> followed
+by the character typed to produce a Unicode result.</p>
+<p>For complete details please see <a href="/doc/user/keyboards/">the keyboards
+page</a>.</p>
+<table>
+<thead><tr><th class="center ungkam">LITERAL</th><th>U+</th><th>UNICODE NAME</th><th>KEYS</th></tr></thead>
+<tbody>
+<tr class="vcenter"><td class="center ungkam">á</td><td>00E1</td><td class="fixed">LATIN SMALL LETTER A WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">é</td><td>00E9</td><td class="fixed">LATIN SMALL LETTER E WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">í</td><td>00ED</td><td class="fixed">LATIN SMALL LETTER I WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">ú</td><td>00FA</td><td class="fixed">LATIN SMALL LETTER U WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">Á</td><td>00C1</td><td class="fixed">LATIN CAPITAL LETTER A WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">É</td><td>00C9</td><td class="fixed">LATIN CAPITAL LETTER E WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">Í</td><td>00CD</td><td class="fixed">LATIN CAPITAL LETTER I WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ú</td><td>00DA</td><td class="fixed">LATIN CAPITAL LETTER U WITH ACUTE</td></tr>
+<tr class="vcenter"><td class="center ungkam">ś</td><td>015B</td><td class="fixed">LATIN SMALL LETTER S WITH ACUTE</td><td class="center"><!--S,s--></td></tr>
+<tr class="vcenter"><td class="center ungkam">Ś</td><td>015A</td><td class="fixed">LATIN CAPITAL LETTER S WITH ACUTE</td><td class="center"><!--S,S--></td></tr>
+<tr class="vcenter"><td class="center ungkam">à</td><td>00E0</td><td class="fixed">LATIN SMALL LETTER A WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">è</td><td>00E8</td><td class="fixed">LATIN SMALL LETTER E WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">ì</td><td>00EC</td><td class="fixed">LATIN SMALL LETTER I WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">ù</td><td>00F9</td><td class="fixed">LATIN SMALL LETTER U WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">À</td><td>00C0</td><td class="fixed">LATIN CAPITAL LETTER A WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">È</td><td>00C8</td><td class="fixed">LATIN CAPITAL LETTER E WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ì</td><td>00CC</td><td class="fixed">LATIN CAPITAL LETTER I WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ù</td><td>00D9</td><td class="fixed">LATIN CAPITAL LETTER U WITH GRAVE</td></tr>
+<tr class="vcenter"><td class="center ungkam">ā</td><td>0101</td><td class="fixed">LATIN SMALL LETTER A WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">ē</td><td>0113</td><td class="fixed">LATIN SMALL LETTER E WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">ī</td><td>012B</td><td class="fixed">LATIN SMALL LETTER I WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">ū</td><td>016B</td><td class="fixed">LATIN SMALL LETTER U WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ā</td><td>0100</td><td class="fixed">LATIN CAPITAL LETTER A WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ē</td><td>0112</td><td class="fixed">LATIN CAPITAL LETTER E WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ī</td><td>012A</td><td class="fixed">LATIN CAPITAL LETTER I WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ū</td><td>016A</td><td class="fixed">LATIN CAPITAL LETTER U WITH MACRON</td></tr>
+<tr class="vcenter"><td class="center ungkam">â</td><td>00E2</td><td class="fixed">LATIN SMALL LETTER A WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">ê</td><td>00EA</td><td class="fixed">LATIN SMALL LETTER E WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">î</td><td>00EE</td><td class="fixed">LATIN SMALL LETTER I WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">û</td><td>00FB</td><td class="fixed">LATIN SMALL LETTER U WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">Â</td><td>00C2</td><td class="fixed">LATIN CAPITAL LETTER A WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ê</td><td>00CA</td><td class="fixed">LATIN CAPITAL LETTER E WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">Î</td><td>00CE</td><td class="fixed">LATIN CAPITAL LETTER I WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">Û</td><td>00DB</td><td class="fixed">LATIN CAPITAL LETTER U WITH CIRCUMFLEX</td></tr>
+<tr class="vcenter"><td class="center ungkam">š</td><td>0161</td><td class="fixed">LATIN SMALL LETTER S WITH CARON</td><td class="center">,c</td></tr>
+<tr class="vcenter"><td class="center ungkam">Š</td><td>0160</td><td class="fixed">LATIN CAPITAL LETTER S WITH CARON</td><td class="center">,c</td></tr>
+<tr class="vcenter"><td class="center ungkam">ṣ</td><td>1E63</td><td class="fixed">LATIN SMALL LETTER S WITH DOT BELOW</td><td class="center">,s</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ṣ</td><td>1E62</td><td class="fixed">LATIN CAPITAL LETTER S WITH DOT BELOW</td><td class="center">,S</td></tr>
+<tr class="vcenter"><td class="center ungkam">ṭ</td><td>1E6D</td><td class="fixed">LATIN SMALL LETTER T WITH DOT BELOW</td><td class="center">,t</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ṭ</td><td>1E6C</td><td class="fixed">LATIN CAPITAL LETTER T WITH DOT BELOW</td><td class="center">,T</td></tr>
+<tr class="vcenter"><td class="center ungkam">ḫ</td><td>1E2B</td><td class="fixed">LATIN SMALL LETTER H WITH BREVE BELOW</td><td class="center">,h</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ḫ</td><td>1E2A</td><td class="fixed">LATIN CAPITAL LETTER H WITH BREVE BELOW</td><td class="center">,H</td></tr>
+<tr class="vcenter"><td class="center ungkam">ŋ</td><td>014B</td><td class="fixed">LATIN SMALL LETTER ENG</td><td class="center">,j</td></tr>
+<tr class="vcenter"><td class="center ungkam">Ŋ</td><td>014A</td><td class="fixed">LATIN CAPITAL LETTER ENG</td><td class="center">,J</td></tr>
+<tr class="vcenter"><td class="center ungkam">×</td><td>00D7</td><td class="fixed">MULTIPLICATION SIGN</td><td class="center">,X</td></tr>
+<tr class="vcenter"><td class="center ungkam">ʾ</td><td>02BE</td><td class="fixed">MODIFIER LETTER RIGHT HALF RING</td><td class="center">,)</td></tr>
+<tr class="vcenter"><td class="center ungkam">ʿ</td><td>02BF</td><td class="fixed">MODIFIER LETTER LEFT HALF RING</td><td class="center">,(</td></tr>
+<tr class="vcenter"><td class="center ungkam">₀</td><td>2080</td><td class="fixed">SUBSCRIPT ZERO</td><td class="center">,0</td></tr>
+<tr class="vcenter"><td class="center ungkam">₁</td><td>2081</td><td class="fixed">SUBSCRIPT ONE</td><td class="center">,1</td></tr>
+<tr class="vcenter"><td class="center ungkam">₂</td><td>2082</td><td class="fixed">SUBSCRIPT TWO</td><td class="center">,2</td></tr>
+<tr class="vcenter"><td class="center ungkam">₃</td><td>2083</td><td class="fixed">SUBSCRIPT THREE</td><td class="center">,3</td></tr>
+<tr class="vcenter"><td class="center ungkam">₄</td><td>2084</td><td class="fixed">SUBSCRIPT FOUR</td><td class="center">,4</td></tr>
+<tr class="vcenter"><td class="center ungkam">₅</td><td>2085</td><td class="fixed">SUBSCRIPT FIVE</td><td class="center">,5</td></tr>
+<tr class="vcenter"><td class="center ungkam">₆</td><td>2086</td><td class="fixed">SUBSCRIPT SIX</td><td class="center">,6</td></tr>
+<tr class="vcenter"><td class="center ungkam">₇</td><td>2087</td><td class="fixed">SUBSCRIPT SEVEN</td><td class="center">,7</td></tr>
+<tr class="vcenter"><td class="center ungkam">₈</td><td>2088</td><td class="fixed">SUBSCRIPT EIGHT</td><td class="center">,8</td></tr>
+<tr class="vcenter"><td class="center ungkam">₉</td><td>2089</td><td class="fixed">SUBSCRIPT NINE</td><td class="center">,9</td></tr>
+<tr class="vcenter"><td class="center ungkam">ₓ</td><td>2093</td><td class="fixed">LATIN SUBSCRIPT SMALL LETTER X</td><td class="center">,x</td></tr>
+<tr class="vcenter"><td class="center ungkam">⸢</td><td>2E22</td><td class="fixed">TOP LEFT HALF BRACKET</td><td class="center">,[</td></tr>
+<tr class="vcenter"><td class="center ungkam">⸣</td><td>2E23</td><td class="fixed">TOP RIGHT HALF BRACKET</td><td class="center">,]</td></tr>
+<tr class="vcenter"><td class="center ungkam">⸤</td><td>2E24</td><td class="fixed">BOTTOM LEFT HALF BRACKET</td></tr>
+<tr class="vcenter"><td class="center ungkam">⸥</td><td>2E25</td><td class="fixed">BOTTOM RIGHT HALF BRACKET</td></tr>
+<tr class="vcenter"><td class="center ungkam">ʳ</td><td>02B3</td><td class="fixed">MODIFIER LETTER SMALL R</td><td class="center">,r</td></tr>
+</tbody></table>
+
+
+
+<d:resources/>
+
+</d:doc>

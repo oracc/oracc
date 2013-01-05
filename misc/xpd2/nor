@@ -1,0 +1,10 @@
+#!/bin/sh
+[ -r 02xml/config.xml ] || oracc config
+project=`oraccopt`
+if [ "$project" == "" ]; then 
+    echo "nor: must run in project directory"; exit 1
+fi
+rm -f nohup.out
+echo nor: rebuilding $project ...
+/usr/bin/time -f "nor elapsed time: %E" nohup o2-rebuild.sh
+echo `wc -l nohup.out | cut -d' ' -f1` lines written to nohup.out

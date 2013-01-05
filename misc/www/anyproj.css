@@ -1,0 +1,17 @@
+/* Pager colors for ePSD */
+.fg-logo   { color: #fff; }
+.fg-banner { color: #a0b7e0; }
+.bg-dk     { background-color: #011f5b; }
+.bg-lt     { background-color: #a0b7e0; }
+.ba	   { border: 1px solid #900; }
+.br-1      { border-right: 1px solid #900; }
+.bl-1      { border-left: 1px solid #900; }
+.bt-4      { border-top: 4px solid #900; }
+.bb-4      { border-bottom: 4px solid #900; }
+.h2	   { border-top: 1px solid #900; 
+             background-color: #6e83ad; color: #fff;
+             font-weight: normal; }
+.h3 	   { background-color: #fff; color: #011f5b; font-size: 90%; }
+.bg-dk a:link     { color: #fff; }
+.bg-dk a:visited  { color: #fff; }
+.bg-dk a:hover    { background-color: #011f5b; color: #a0b7e0; }

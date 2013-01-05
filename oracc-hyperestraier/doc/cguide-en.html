@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, web crawler" />
+<meta name="description" content="Crawler Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="cguide-ja.html" hreflang="ja" title="the Japanese version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Crawler Guide of Hyper Estraier Version 1</title>
+</head>
+
+<body>
+
+<h1>Crawler Guide</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<span class="void">English</span>/<a href="cguide-ja.html" hreflang="ja">Japanese</a>] [<a href="index.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#tutorial">Tutorial</a></li>
+<li><a href="#estwaver">Crawler Command</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This guide describes usage of Hyper Estraier's web crawler.  If you haven't read <a href="uguide-en.html">user's guide</a> and <a href="nguide-en.html">P2P guide</a> yet, now is a good moment to do so.</p>
+
+<p><code>estcmd</code> can index files on local file system only.  Though files on remote hosts can be indexed by using NFS or SMB remote mount mechanism, unspecified number of web sites on Internet can not be mounted by them.  Though such web crawlers as <code>wget</code> can do prefetch of those files, it involves high overhead and wastes much disk space.</p>
+
+<p>The command <code>estwaver</code> is useful to crawl arbitrary web sites and to index their documents directly.  <code>estwaver</code> is so intelligent that it supports not only depth first order and width first but also similarity oriented order.  It crawls documents similar to specified seed documents preferentially.</p>
+
+<hr />
+
+<h2 id="tutorial">Tutorial</h2>
+
+<p>First step is creation of the crawler root directory which contains a configuration file and some databases.  Following command will create <code>casket</code>, the crawler root directory:</p>
+
+<pre>estwaver init casket
+</pre>
+
+<p>By default, the configuration is to start crawling at the project page of Hyper Estraier.  Let's try it as it is:</p>
+
+<pre>estwaver crawl casket
+</pre>
+
+<p>Then, documents are fetched one after another and they are indexed into the index.  To stop the operation, you can press <code>Ctrl-C</code> on terminal.</p>
+
+<p>When the operation finishes, there is a directory <code>_index</code> in the crawler root directory.  It is an index which can be treated with <code>estcmd</code> and so on.  Let's try to search the index as with the following command:</p>
+
+<pre>estcmd search -vs casket/_index "hyper estraier"
+</pre>
+
+<p>If you want to resume the crawling operation, perform <code>estwaver crawl</code> again.</p>
+
+<hr />
+
+<h2 id="estwaver">Crawler Command</h2>
+
+<p>This section describes specification of <code>estwaver</code>, whose purpose is to index documents on the Web.</p>
+
+<h3>Synopsis and Description</h3>
+
+<p><code>estwaver</code> is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument <code>rootdir</code> specifies the crawler root directory which contains configuration file and so on.</p>
+
+<dl>
+<dt><kbd>estwaver init [-apn|-acc] [-xs|-xl|-xh] [-sv|-si|-sa] <var>rootdir</var></kbd></dt>
+<dd>Create the crawler root directory.</dd>
+<dd>If -apn is specified, N-gram analysis is performed against European text also.</dd>
+<dd>If -acc is specified, character category analysis is performed instead of N-gram analysis.</dd>
+<dd>If -xs is specified, the index is tuned to register less than 50000 documents.</dd>
+<dd>If -xl is specified, the index is tuned to register more than 300000 documents.</dd>
+<dd>If -xh is specified, the index is tuned to register more than 1000000 documents.</dd>
+<dd>If -sv is specified, scores are stored as void.</dd>
+<dd>If -si is specified, scores are stored as 32-bit integer.</dd>
+<dd>If -sa is specified, scores are stored as-is and marked not to be tuned when search.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver crawl [-restart|-revisit|-revcont] <var>rootdir</var></kbd></dt>
+<dd>Start crawling.</dd>
+<dd>If -restart is specified, crawling is restarted from the seed documents.</dd>
+<dd>If -revisit is specified, collected documents are revisited.</dd>
+<dd>If -revcont is specified, collected documents are revisited and then crawling is continued.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver unittest <var>rootdir</var></kbd></dt>
+<dd>Perform unit tests.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver fetch [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-il <var>lang</var>] <var>url</var></kbd></dt>
+<dd>Fetch a document.</dd>
+<dd><var>url</var> specifies the URL of a document.</dd>
+<dd>-proxy specifies the host name and the port number of the proxy server.</dd>
+<dd>-tout specifies timeout in seconds.</dd>
+<dd>-il specifies the preferred language.  By default, it is English.</dd>
+</dl>
+
+<p>All sub commands return 0 if the operation is success, else return 1.  A running crawler finishes with closing the database when it catches the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), or 15 (SIGTERM).</p>
+
+<p>When crawling finishes, there is a directory <code>_index</code> in the crawler root directory.  It is an index available by <code>estcmd</code> and so on.</p>
+
+<h3>Constitution of the Crawler Root Directory</h3>
+
+<p>The crawler root directory contains the following files and directories.</p>
+
+<ul>
+<li><kbd>_conf</kbd> : configuration file.</li>
+<li><kbd>_log</kbd> : log file.</li>
+<li><kbd>_meta</kbd> : database file for meta data.</li>
+<li><kbd>_queue</kbd> : priority queue of URLs to be crawled.</li>
+<li><kbd>_trace/</kbd> : tracking records of crawled URLs.</li>
+<li><kbd>_index/</kbd> : index directory.</li>
+<li><kbd>_tmp/</kbd> : directory for temporary files.</li>
+</ul>
+
+<h3>Configuration File</h3>
+
+<p>The configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  By default, the following configuration is there.</p>
+
+<pre>seed: 1.5|http://fallabs.com/hyperestraier/uguide-en.html
+seed: 1.0|http://fallabs.com/hyperestraier/pguide-en.html
+seed: 1.0|http://fallabs.com/hyperestraier/nguide-en.html
+seed: 0.0|http://fallabs.com/qdbm/
+proxyhost:
+proxyport:
+interval: 500
+timeout: 30
+strategy: 0
+inherit: 0.4
+seeddepth: 0
+maxdepth: 20
+masscheck: 500
+queuesize: 50000
+replace: ^http://127.0.0.1/{{!}}http://localhost/
+allowrx: ^http://
+denyrx: \.(css|js|csv|tsv|log|md5|crc|conf|ini|inf|lnk|sys|tmp|bak)$
+denyrx: \.(zip|tar|tgz|gz|bz2|tbz2|z|lha|lzh)(\?.*)?$
+denyrx: ://(localhost|[a-z]*\.localdomain|127\.0\.0\.1)/
+noidxrx: /\?[a-z]=[a-z](;|$)
+urlrule: \.est${{!}}text/x-estraier-draft
+urlrule: \.(eml|mime|mht|mhtml)${{!}}message/rfc822
+typerule: ^text/x-estraier-draft${{!}}[DRAFT]
+typerule: ^text/plain${{!}}[TEXT]
+typerule: ^(text/html|application/xhtml+xml)${{!}}[HTML]
+typerule: ^message/rfc822${{!}}[MIME]
+language: 0
+textlimit: 128
+seedkeynum: 256
+savekeynum: 32
+threadnum: 10
+docnum: 10000
+period: 10000s
+revisit: 7d
+cachesize: 256
+#nodeserv: 1|http://admin:admin@localhost:1978/node/node1
+#nodeserv: 2|http://admin:admin@localhost:1978/node/node2
+#nodeserv: 3|http://admin:admin@localhost:1978/node/node3
+logfile: _log
+loglevel: 2
+draftdir:
+entitydir:
+postproc:
+</pre>
+
+<p>Meaning of each variable is the following.</p>
+
+<ul>
+<li><kbd>seed</kbd> : specifies the weight and the URL of a seed document, separated by "<code>|</code>".  This can be more than once.</li>
+<li><kbd>proxyhost</kbd> : specifies the host name of the proxy server.</li>
+<li><kbd>proxyport</kbd> : specifies the port number of the proxy server.</li>
+<li><kbd>interval</kbd> : specifies waiting interval of each request (in milliseconds).</li>
+<li><kbd>timeout</kbd> : specifies timeout of each request (in seconds).</li>
+<li><kbd>strategy</kbd> : specifies strategy of crawling path (0:balanced, 1:similarity, 2:depth, 3:width, 4:random).</li>
+<li><kbd>inherit</kbd> : specifies inheritance ratio of similarity from the parent.</li>
+<li><kbd>seeddepth</kbd> : specifies maximum depth of seed documents.</li>
+<li><kbd>maxdepth</kbd> : specifies maximum depth of recursion.</li>
+<li><kbd>masscheck</kbd> : specifies standard value for checking mass sites.</li>
+<li><kbd>queuesize</kbd> : specifies maximum number of records of the priority queue.</li>
+<li><kbd>replace</kbd> : specifies regular expressions and replacement strings to normalize URLs.  This can be more than once.</li>
+<li><kbd>allowrx</kbd> : specifies allowing regular expressions of URLs to be visited.  This can be more than once.</li>
+<li><kbd>denyrx</kbd> : specifies denying regular expressions of URLs to be visited.  This can be more than once.</li>
+<li><kbd>noidxrx</kbd> : specifies denying regular expressions of URLs to be indexed.  This can be more than once.</li>
+<li><kbd>urlrule</kbd> : specifies URL rules (regular expressions and media types).  This can be more than once.</li>
+<li><kbd>typerule</kbd> : specifies media type rules (regular expressions and filter commands).  This can be more than once.</li>
+<li><kbd>language</kbd> : specifies the preferred language (0:English, 1:Japanese, 2:Chinese, 3:Korean, 4:misc).</li>
+<li><kbd>textlimit</kbd> : specifies text size limitation (in kilobytes).</li>
+<li><kbd>seedkeynum</kbd> : specifies the total number of keywords for seed documents.</li>
+<li><kbd>savekeynum</kbd> : specifies the number of keywords saved for each document.</li>
+<li><kbd>threadnum</kbd> : specifies the number of threads running in parallel.</li>
+<li><kbd>docnum</kbd> : specifies the number of documents to collect.</li>
+<li><kbd>period</kbd> : specifies running time period (in s:seconds, m:minutes, h:hours, d:days).</li>
+<li><kbd>revisit</kbd> : specifies revisit span (in s:seconds, m:minutes, h:hours, d:days).</li>
+<li><kbd>cachesize</kbd> : specifies the maximum size of the index cache (in megabytes).</li>
+<li><kbd>nodeserv</kbd> : specifies the ID number and the URL of a node server, separated by "<code>|</code>".  This can be more than once.</li>
+<li><kbd>logfile</kbd> : specifies the path of the log file (relative path or absolute path).</li>
+<li><kbd>loglevel</kbd> : specifies logging level (1:debug, 2:information, 3:warning, 4:error, 5:none).</li>
+<li><kbd>draftdir</kbd> : specifies the path of the draft directory (relative path or absolute path).</li>
+<li><kbd>entitydir</kbd> : specifies the path of the entity directory (relative path or absolute path).</li>
+<li><kbd>postproc</kbd> : the postprocessor for retrieved files.</li>
+</ul>
+
+<p><code>allowrx</code>, <code>denyrx</code>, and <code>noidxrx</code> are evaluated in the order of description.  Alphabetical characters are case-insensitive.</p>
+
+<p>Arbitrary filter commands can be specified with <code>typerule</code>.  The interface of filter command is same as with <code>-fx</code> option of <code>estcmd gather</code>.  For example, the following specifies to process PDF documents.</p>
+
+<pre>typerule: ^application/pdf${{!}}H@/usr/local/share/hyperestraier/filter/estfxpdftohtml
+</pre>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

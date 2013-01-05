@@ -1,0 +1,31 @@
+body  { width: 600px; margin: auto;  text-align: center; }
+
+div.preamble { border: solid 1px black; text-align: left; font-size: 10pt; padding: 1em; padding-bottom: 0px; }
+
+p.about { font-size: 10pt; padding: 0px; margin: 0px; text-align: center; }
+
+p.description { text-indent: -4em; margin-left: 4em; }
+
+span.title {  font-weight: bold; }
+
+.preface { text-align: left; }
+
+.centered { text-align: center; }
+
+h1    { text-align: center; font-size: 16pt; }
+
+h2    { text-align: center; font-size: 14pt; text-align: left; }
+
+h2.author { font-style: italic; font-weight: normal; text-align: center; }
+
+h3    { text-align: center; font-size: 12pt; }
+
+tr    { vertical-align: top; }
+
+.name { text-align: right; padding-right: 1em; }
+
+.data { text-align: left; }
+
+a { text-decoration: none; }
+
+a.hiding { background-color: white; color: white; }

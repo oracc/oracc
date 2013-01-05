@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+binmode STDOUT, ':utf8';
+my $bibfile = '@@ORACC@@/lib/bib/names.xml';
+my $xnames = load_xml($bibfile);
+foreach my $c ($xnames->getDocumentElement()->childNodes()) {
+    next unless $c->isa('XML::LibXML::Element') 
+	&& $c->localName() eq 'name';
+    my @init = $c->findnodes('init');
+    if ($#init < 0) {
+	my $rest = ($c->findnodes('rest'))[0];
+	if ($rest) {
+	    $rest = $rest->textContent();
+	    $rest =~ s/(^|\s)(\S)\S+/$1$2./g;
+	    $rest =~ s/\.\.+/./g;
+	    $rest =~ s/\.\s+/./g;
+	    $c->appendTextChild('init',$rest);
+	}
+    }
+}
+print $xnames->toString();
+1;

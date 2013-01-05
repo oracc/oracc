@@ -1,0 +1,40 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: paper.tex,v 0.2 1996/03/01 14:24:23 s Exp $
+
+% Physical Page Size (pps) module for DA TeX
+% ==========================================
+%
+% Physical page sizes are set automatically if \setmarginsbytypefield
+% or \settypefieldbymargins is used. The entry point for actually
+% changing the paper size is deliberately difficult to use in an
+% ordinary text to encourage use of the higher level interface.
+%
+% The format defaults to using \ppsUSletter.
+%
+\def\ppsUSletter{\gdef\ppsSiz@{%
+  \global\physicalpageheight=11truein 
+  \global\physicalpagewidth=8.5truein
+}}
+\def\ppsUSlegal{\gdef\ppsSiz@{%
+  \global\physicalpageheight=14truein
+  \global\physicalpagewidth=8.5truein
+}}
+\def\ppsAfour{\gdef\ppsSiz@{% DIN and ISO
+  \global\physicalpageheight=297truemm
+  \global\physicalpagewidth=210truemm
+}}
+\ifAFOURpaper\ppsAfour\else\ppsUSletter\fi
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: paper.tex,v $
+Revision 0.2  1996/03/01 14:24:23  s
+made default paper size selectable for A4 or US letter
+
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

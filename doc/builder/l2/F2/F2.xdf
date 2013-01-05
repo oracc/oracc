@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>F2: Forms Parser</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page gives some help with fixing L2 errors with the (f2) label.</dc:description>
+</d:meta>
+
+<h1>Introduction</h1>
+
+<p>An L2 feature common to several subsystems is the 'form' or
+'signature'.  This is the basic component of interlinear
+lemmatization, for example.  All of the L2 programs which are written
+in C use the same parser for these forms, so the messages the parser
+produces may occur in a variety of contexts.  When the messages are
+produced as part of lemma-checking, they are labeled as '(f2)'.</p>
+
+<h2>F2 Diagnostics</h2>
+
+<h3>xxx: parse error at 'x'</h3>
+
+<p>This is an error which is generated when the F2 parser is expecting
+to find any of the delimiter characters that separate parts of the
+form. The first thing it tells you is the string it is looking at when
+it finds the parse error, and at the end of the line it tells you
+which character in the string was the one that confused it.</p>
+
+<p>Here's a real-life example:</p>
+
+<pre class="class=example">
+sb-I.atf:575: (f2) stack: parse error at 's'</pre>
+
+<p>Looking at line 575 of the offending file we see:</p>
+
+<pre class="example">
+147. zar
+#lem: zar[sheaf (of barley); stack of sheaves]N
+</pre>
+
+<p>So, the error is detected at the 's' of 'stacks'. In L2
+semi-colons are not allowed within a sense: the normal meaning of such
+a semi-colon in a glossary or dictionary is that multiple senses are
+involved, and in L2 the correct way to handle that is to define
+multiple <code>@sense</code> lines in the glossary entry, and to
+separate the GW and the SENSE with <code>//</code> in the
+lemmatization:</p>
+
+<pre class="example">
+147. zar
+#lem: zar[sheaf (of barley)//stack of sheaves]N
+</pre>
+
+</d:doc>

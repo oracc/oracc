@@ -1,0 +1,262 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::XML;
+use Data::Dumper;
+
+my $oracc = $ENV{'ORACC'}; # @@ORACC@@
+my @op_ids = ();
+my %references = ();
+my $sourceIndex = 0;
+my @source_ids = ();
+my %sources = ();
+
+my $ol = shift @ARGV;
+
+die "ol: must give OL script on command line\n"
+    unless $ol;
+
+my $xol = load_xml($ol);
+
+die "ol: failed to load OL script `$ol'\n"
+    unless $xol;
+
+# load all the sources
+foreach my $s (tags($xol,undef,'source')) {
+    load_source($s);
+}
+
+my @ops = tags($xol,undef,'op');
+
+# exec all the operations, or the default op if there
+# are none
+if ($#ops >= 0) {
+    foreach my $o (@ops) {
+	exec_op($o);
+    }
+} else {
+    exec_default_op();
+}
+
+# Perform all the outputs
+my @outputs = tags($xol, undef, 'output');
+if ($#outputs >= 0) {
+    foreach my $o (@outputs) {
+	do_output($o);
+    }
+} else {
+    do_default_output();
+}
+
+# warn about unreferenced sources or ops
+foreach my $k (sort keys %sources) {
+    warn "ol: source or operation with ID=`$k' never used in operation or output\n"
+	unless $references{$k};
+}
+
+###########################################################################
+
+sub
+do_default_output {
+    do_outputs_sub('-', pop(@op_ids));
+}
+
+sub
+do_outputs {
+    my $xnode = shift;
+    my $outfile = $xnode->getAttribute('file');
+    my @ids = split(/\s+/, $xnode->getAttribute('ids'));
+    do_outputs_sub($outfile, @ids);
+}
+
+sub
+do_outputs_sub {
+    my($outfile, @ids) = @_;
+    my %pqx = ();
+
+    ## invert the result list by PQX ids
+    foreach my $id (@ids) {
+	++$references{$id};
+	my %k = %{$sources{$id}};
+	foreach my $k (keys %k) {
+	    push @{$pqx{$k}}, [ $k, $k{$k} ];
+	}
+    }
+    
+#    warn Dumper(\%pqx);
+
+    ## sort duplicates by priority and 
+    ## warn about them if required
+    my @outlist = ();
+    foreach my $p (keys %pqx) {
+	my @ps = @{$pqx{$p}};
+	if ($#ps > 0) {
+	    my $p1 = $ps[1];
+	    warn "ol: repeated ID: $$p1[0]\n";
+	    my @newp = sort { $$b[1] <=> $$a[1] } @ps;
+	    push @outlist, ${$newp[0]}[0];
+	} else {
+	    push @outlist, ${$ps[0]}[0];
+	}
+    }
+
+    # dump the result, sorted by ID number not by project
+    if ($outfile ne '-') {
+	open(O, ">$outfile") || die "ol: can't open '$outfile' for output\n";
+	select O;
+    }
+    foreach my $p (sort { &pqxcmp } @outlist) {
+	print "$p\n";
+    }
+    close(O) 
+	unless $outfile eq '-';
+}
+
+sub
+exec_default_op {
+    # giving the default op an illegal ID name is an easy way to
+    # avoid ID clashes
+    exec_op_sub('join', '_j1', @source_ids);
+}
+
+sub
+exec_op {
+    my $o = shift;
+    ++$sourceIndex;
+    my $type = $o->getAttribute('type');
+    my $ids = $o->getAttribute('ids');
+    my $id = xid($o);
+    exec_op_sub($type,$id,split(/\s+/,$ids));
+}
+
+sub
+exec_op_sub {
+    my($type,$id,@ids) = @_;
+    push @op_ids, $id;
+
+    foreach (@ids) {
+	++$references{$_};
+    }
+
+    if ($type eq 'join') {
+	my %runninglist = ();
+	foreach my $i (@ids) {
+	    my %k = %{$sources{$i}};
+	    foreach my $k (keys %k) {
+		if ($runninglist{$k}) {
+		    $runninglist{$k} = $k{$k}
+		    if $k{$k} > $runninglist{$k};
+		} else {
+		    $runninglist{$k} = $k{$k};
+		}
+	    }
+	}
+	$sources{$id} = { %runninglist };
+    } elsif ($type eq 'keep') {
+	my %newlist = ();
+	warn "ol: 'keep' requires exactly two arguments (id='$id')\n" and return
+	    if $#ids > 1;
+	%newlist = ();
+	my %a = %{$sources{$ids[0]}};
+	my %b = %{$sources{$ids[1]}};
+	foreach my $a (keys %a) {
+	    if ($b{$a}) {
+		$newlist{$a} = ($a{$a} > $b{$a} ? $a{$a} : $b{$a});
+	    }
+	}
+	$sources{$id} = { %newlist };
+    } elsif ($type eq 'trim') {
+	my %newlist = ();
+	warn "ol: 'trim' requires exactly two arguments (id='$id')\n" and return
+	    if $#ids > 1;
+	%newlist = ();
+	my %a = %{$sources{$ids[0]}};
+	my %b = %{$sources{$ids[1]}};
+	foreach my $a (keys %a) {
+	    unless ($b{$a}) {
+		$newlist{$a} = ($a{$a} > $b{$a} ? $a{$a} : $b{$a});
+	    }
+	}
+	$sources{$id} = { %newlist };
+    } elsif ($type eq 'drop') {
+	my %newlist = ();
+	warn "ol: 'drop' requires exactly two arguments (id='$id')\n" and return
+	    if $#ids > 1;
+	%newlist = ();
+	my %a = %{$sources{$ids[0]}};
+	my %b = %{$sources{$ids[1]}};
+	my %all = ();
+	@all{keys %a, keys %b} = ();
+	foreach my $k (keys %all) {
+	    unless ($a{$k} && $b{$k}) {
+		$newlist{$k} = ($a{$k} > $b{$k} ? $a{$k} : $b{$k});
+	    }
+	}
+	$sources{$id} = { %newlist };
+    } else {
+	warn "ol: unknown source type `$type' in source with ID=`$id'\n";
+    }
+}
+
+sub
+findListFile {
+    my $f = shift;
+    return "01lbd/lists/$f" if -r "01bld/lists/$f";
+    return "00lib/$f" if -r "00lib/$f";
+    return "$oracc/$f" if -r "$oracc/$f";
+    return $f;
+}
+
+sub
+load_source {
+    my $xnode = shift;
+    my $id = xid($xnode);
+    ++$sourceIndex;
+    warn "ol: ID `$id' already used\n" and next 
+	if defined $sources{$id};
+    push @source_ids, $id;
+    my $type = $xnode->getAttribute('type') || 'project';
+    my $priority = $xnode->getAttribute('priority') || $sourceIndex;
+    my @l = ();
+    if ($type eq 'numbers') {
+	@l = map { $_->textContent() } tags($xnode, undef, 'n');
+    } elsif ($type eq 'list') {
+	my $listfile = findListFile($xnode->getAttribute('list'));
+	@l = `cat $listfile`; chomp @l;
+    } elsif ($type eq 'project') {
+	my $project = $xnode->getAttribute('project');
+	my $listfile = findListFile("$project/01bld/lists/have-atf.lst");
+	@l = `cat $listfile`; chomp @l;
+	@l = map { $_ =~ /:/ ? $_ : "$project:$_" } @l;
+    } elsif ($type eq 'search') {
+	my $toks = $xnode->getAttribute('toks');
+	$toks =~ s,#,\\#,g;
+	$toks =~ s,!,\\!,g;
+	$toks =~ s,\@,\\\@,g;
+	@l = `se $toks`;
+    } else {
+	warn "ol: unknown source type `$type' in source with ID=`$id'\n";
+    }
+    save_list($id,$priority,@l);
+}
+
+# P < X < Q
+sub
+pqxcmp {
+    my($a1,$aN) = ($a =~ /^.*?:(.)(.*)$/);
+    my($b1,$bN) = ($b =~ /^.*?:(.)(.*)$/);
+    return $a1 cmp $b1 if $a1 ne $b1;
+    return $aN <=> $bN;
+}
+
+sub
+save_list {
+    my($id,$priority,@l) = @_;
+    my %e = ();
+    foreach my $e (@l) {
+	$e{$e} = $priority;
+    }
+    $sources{$id} = { %e };
+}
+
+1;

@@ -1,0 +1,24 @@
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+
+  <uri pattern="*.xslt" typeId="XSLT20"/>
+  <typeId id="XSLT20" uri="xslt20.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/xdf/1.0" typeId="XDF"/>
+  <typeId id="XDF" uri="xdf.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/esp/1.0" typeId="ESP"/>
+  <typeId id="ESP" uri="esp.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/esp-reuse/1.0" typeId="ESP-REUSE"/>
+  <typeId id="ESP-REUSE" uri="esp-reuse.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/esp-refer/1.0" typeId="ESP-REFER"/>
+  <typeId id="ESP-REFER" uri="esp-refer.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/esp-param/1.0" typeId="ESP-PARAM"/>
+  <typeId id="ESP-PARAM" uri="esp-param.rnc"/>
+
+  <namespace ns="http://oracc.org/ns/esp-struct/1.0" typeId="ESP-STRUCT"/>
+  <typeId id="ESP-STRUCT" uri="esp-struct.rnc"/>
+
+</locatingRules>

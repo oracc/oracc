@@ -1,0 +1,44 @@
+#! /bin/sh
+
+#================================================================
+# estndgather
+# Register documents into a node
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+progname="estndgather"
+user="admin"
+pass="admin"
+
+
+# check arguments
+if [ $# != 2 ]
+then
+  printf '%s: usage: %s node dir\n' "$progname" "$progname" 1>&2
+  exit 1
+fi
+node="$1"
+dir="$2"
+
+
+# register documents
+find "$dir" -type f -name '*.html' -print |
+while read file
+do
+  printf '%s: registering %s\n' "$progname" "$file"
+  estcmd draft -fh -il ja -bc "$file" |
+  estcall put -auth "$user" "$pass" "$node"
+done
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

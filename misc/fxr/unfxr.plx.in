@@ -1,0 +1,110 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use Getopt::Long;
+use Pod::Usage;
+use ORACC::FXR::Util;
+
+my $rs_tag = 'xmd';
+my $rs_ns_prefix = 'xmd';
+my $rs_ns_uri = 'http://oracc.org/ns/xmd/1.0';
+my $rec_tag = 'record';
+my $fxr_fn = '';
+my $rs_fn = '';
+
+GetOptions(
+    'rs:s'=>\$rs_tag,
+    'rs-ns-prefix:s'=>\$rs_ns_prefix,
+    'rs-ns-uri:s'=>\$rs_ns_uri,
+    'rec:s'=>\$rec_tag,
+    'fxr:s'=>\$fxr_fn,
+    'res:s'=>\$rs_fn
+    ) || pod2usage(1);
+
+pod2usage(1) unless $fxr_fn && $rs_fn;
+
+my($fieldnames,$fieldindexes,$rows) = ORACC::FXR::Util::internalize($fxr_fn);
+
+
+for (my $i = 0; $i <= $#$fieldnames; ++$i) {
+    $$fieldnames[$i] =~ tr/ /-/;
+}
+
+unlink $rs_fn;
+open RS, ">>$rs_fn";
+print RS '<?xml version="1.0" encoding="utf-8"?>',"\n";
+print RS "<$rs_tag xmlns=\"$rs_ns_uri\" xmlns:$rs_ns_prefix=\"$rs_ns_uri\">";
+foreach my $r (@$rows) {
+    print RS "<$rec_tag>";
+    my $i = 0;
+    foreach my $f (@$r) {
+	print RS "<$$fieldnames[$i]";
+	if ($f) {
+	    print RS ">$f</$$fieldnames[$i]>";
+	} else {
+	    print RS "/>";
+	}
+	++$i;
+    }
+    print RS "</$rec_tag>";
+}
+
+print RS "</$rs_tag>";
+
+1;
+
+__END__
+
+=head1 NAME
+
+unfxr.plx -- invert FXR files so that fields are named
+
+=head1 SYNOPSIS
+
+unfxr.plx [options]
+
+=head1 OPTIONS
+
+=over
+
+=item B<-fxr>
+
+Name of the FXR input.
+
+=item B<-res>
+
+Name of the result output.
+
+=item B<-rs>
+
+Name of the result-set tag; default C<xmd>.
+
+=item B<-rs-ns-prefix>
+
+Name of the result-set namespace prefix; default C<xmd>.
+
+=item B<-rs-ns-uri>
+
+Name of the result-set namespace prefix; default C<xmd>.
+
+=item B<-rec>
+
+Name of the record tag; default C<catalog>.
+
+=back
+
+=head1 DESCRIPTION
+
+Simple utility that uses ORACC::FXR::Util to read a FileMaker fmpxmlresult 
+(FXR) file and write, by default, an XMD file.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).

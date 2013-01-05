@@ -1,0 +1,112 @@
+Catalogue Architecture
+===============
+
+Catalogue files can live in 00cat or in 00lib, with different
+results.
+
+When catalogue data is installed from local or custom
+catalogues, all of the .xml files in 00cat are used for
+the installation.  This cannot be changed.
+
+Catalogue files in 00lib are never installed, but they
+can be published (via the catalog-publish option). This
+means that they can be used as system catalogues by
+other projects.  Note that when a catalogue is listed
+in the catalog-publish option, it is looked for in 00cat
+first and in 00lib second.
+
+This architecture allows a top-level project to be
+completely virtualized, but still be the host for the
+master catalogue.
+
+In SAAo, for example, the following layout is used:
+
+ * the master catalogue (maintained in FMP) is 
+   saved as XML and copied to 
+
+   	 saao/00lib/saa-cat.xml
+
+   this catalogue is published by saao.
+
+ * the subprojects saa01..saa19 use the master
+   SAAo catalogue as their system catalogue.
+
+ * All of the ATF files live in the subprojects
+
+ * SAAo has no ATF files and no installed catalogue
+    files (i.e., catalogue-build-policy=virtual)
+
+ * the subprojects use the SAAo master catalogue
+   to install their own metadata and their own ATF
+   files
+ 
+ * SAAo then harvests the metadata back from the
+   subprojects, which is necessary because the 
+   virtualization requires the metadata to have IDs
+   of the form project:P123456, e.g., saa01:P123456
+
+* SAAo is then able to list and index the entire 
+   corpus metadata without installing it; it does so
+   by building temporary files in 00cat which are
+   used for the sorting/indexing.  If the master
+   catalogue lived in 00cat this would create a 
+   problem, but as it is, there is no conflict because
+   the master catalogue lives in 00lib.
+
+Catalogue Options
+============
+
+catalog-build-policy = auto|custom|local|none
+
+   auto = create based on system catalogues; to specify
+   	  	 which catalog(s) to use as system catalogs,
+		 see the 'catalog-use' option.
+   custom = own cat with own fields
+   local = own cat with CDLI/QCAT fields
+   none = no catalogue is installed
+
+catalog-publish = COMMA-SEPPED-CATFILES
+
+   the catalogues in specified are copied to 02pub and
+   made publically readable. CATFILES uses just the
+   name of the catalogue file, e.g., saa_cat.xml, and
+   the catalogue manager looks for them in 00cat
+   and 00lib.
+
+catalog-use = COMMA-SEPPED-CATFILES
+
+   used with catalog-build-policy=auto, this allows
+   specification of custom or local catalogues as the
+   sources from which the project's catalogue is 
+   automatically derived.  Give the project and 
+   filename separated by a colon, e.g.:
+
+   	catalog-sysfiles = saao:saa-cat.xml
+   or
+   	catalog-sysfiles = saao:saa-cat.xml,saa01:cat.xml
+   or
+   	catalog-sysfiles = saa01:cat.xml,saao:saa-cat.xml
+
+   Note that no directory portion is given in file names.
+   All catalogues which are used in this way must be
+   given in a corresponding 'catalog-publish' option
+   in the project which owns them. 
+  
+   Catalog entries for any given text are taken from the 
+   first catalogue in which they are found, so the 
+   different orders can be used to override the system
+   file in different ways.
+
+   All catalogues must use the same keydata, which is
+   enforced by first determining the keydata used for
+   each project according to the usual method, then 
+   checking the list of keydata's to check that they all
+   reference the same copy of keydata.xml.
+
+   The method for associating a keydata.xml with a
+   catalogue is to look in the following places and use
+   the first one that is found:
+
+     00lib/keydata.xml
+     [CATPROJECT]/00lib/keydata.xml
+     [ORACC]/lib/data/keydata.xml

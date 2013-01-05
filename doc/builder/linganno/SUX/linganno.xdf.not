@@ -1,0 +1,457 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Linguistic Annotation</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of linguistic
+  annotation facilities, such as lemmatization, used in Oracc.</dc:description>
+</d:meta>
+
+<p> We
+  focus here on the data-entry view of linguistic annotation,
+  describing the general facilities provided by the ATF document type
+  which support lemmatization, morphological annotation, unit
+  divisions and syntactic trees.  The facilities described here are
+  not language-specific; instructions for applying this approach to
+  different languages are maintained in language-specific
+  documents.</p>
+
+<h1>ATF Files</h1>
+
+<p>The ATF format is a precisely defined ASCII notation which can be
+translated correctly and without loss of information into an XML
+equivalent; ATF is <a href="../ATF/">fully documented</a> and the
+following example is provided only as a simple orientation for the
+reader:</p>
+
+<pre>
+&amp;Q000887 = Gudea 1
+@composite
+1. {d}ba-u2
+2. dumu an-na
+3. nin-a-ni
+</pre>
+
+<p>Readers to whom this much ATF is not familiar are referred to the
+<a href="../ATF/primer.html">ATF Primer</a>.</p>
+
+<h1>Lemmatization</h1>
+
+<p>Lemmatization is the simplest and most common annotation which
+consists of labelling written words, which may be inflected, with the
+base word (or dictionary headword) of which the written form is an
+instance.  The lemmatized version of the example above might look
+something like this:</p>
+
+<pre class="example">
+&amp;Q000887 = Gudea 1
+@composite
+1. {d}ba-u2
+#lem: DN
+
+2. dumu an-na
+#lem: dumu[child]; An[]DN
+
+3. nin-a-ni
+#lem: nin[lady]
+</pre>
+
+<p>This example illustrates several common aspects of lemmatization;
+though the example is in Sumerian, the principles apply equally to all
+languages.</p>
+
+<p class="alert"><strong>STOP HERE.</strong> If you have not
+already done so, you should read the <a href="./quickstart/">Lemmatization Quick
+Start</a> document before reading the sometimes more detailed
+discussions below.</p>
+
+<h1>Forms</h1>
+
+<p>The word form is used to mean two things.  The first meaning is the
+collection of analytic and linguistic information which belongs to a
+word.  The word may be an instance in a corpus, in which case the form
+may have fields specific to the corpus context.  Or the word may be an
+entry in a dictionary, in which case the form may have fields specific
+to the dictionary context (in a dictionary, each head word may have
+several forms which represent different combinations of spelling,
+part-of-speech etc.).</p>
+
+<p>In the following sections, we describe the fields that make up a
+form; by convention we write the names of these fields in uppercase
+and using abbreviations which, once learned, make it easy to refer to
+the fields of a form.  The first field discussed utilizes our second
+sense of form, namely the orthographic form: to reduce the ambiguity
+of these usages, we abbreviate the orthographic form using the name
+'ORTH'.</p>
+
+<p>One part of the lemmatizer's job is to match up corpus-instance
+forms and dictionary-entry forms.  It does this by using the written
+instance of a word and/or the supplied lemmatizations, and it is
+actually possible to specify most form fields in the lemmatization
+line but that is almost never necessary.  Instead, we support
+supplying hints to the linguistic processing layer which allow
+programs to make the correct choices between ambiguous forms or to
+supplement the information provided in the external lists of forms
+which are either embedded in the project's corpus-based dictionary or
+maintained as separate forms files.</p>
+
+
+<h2>ORTH</h2>
+
+<p>We call the written sequence of graphemes which represents a word,
+including its bound morphemes and inflectional characteristics, an
+<strong>orthographic form</strong>, or sometimes simply 'form'.  The
+words in a transliteration are such forms.  Simply, forms are
+the words which are separated by spaces.</p>
+
+<h2>CF</h2>
+
+<p>The fundamental portion of the lemmatization is the provision of a
+conventional form of the word of which the form is an instance; we
+call this conventional form of the word the <strong>Citation
+Form</strong>, and abbreviate it as <strong>CF</strong>.</p>
+
+<p>In lemmatizations containing square brackets, the CF is given
+before the opening square bracket (lemmatizations which do not contain
+square brackets are discussed below under 'POS').</p>
+
+<p>Lemmatizations which consist of CFs are required to have square
+brackets even if the brackets are empty; unbracketed forms are taken
+as bare part-of-speech annotations.</p>
+
+<p>In languages which use normalization, it is permissible to give the
+normalization of the current instance instead of the citation
+form:</p>
+
+<pre class="example">
+1.     AN{+e}
+#lem:  szam^e[heavens]
+</pre>
+
+<h2>GW</h2>
+
+<p>A <strong>Guide Word</strong> (abbreviated as <strong>GW</strong>),
+is a specific label paired with the CF to identify lemmata uniquely.
+A GW may be given within the square brackets following a CF but this
+is optional and is generally not used in the case of proper nouns (see
+the example <code>An[]DN</code> above).</p>
+
+<h2>SENSE</h2>
+
+<p>A meaning, or sense, which a word has in the current context may be
+used instead of a GW between the brackets.  The automated
+lemmatization starts by inserting the basic GW; this may be corrected
+by subsequent lemmatization processing, but normally annotators will
+correct this to specific senses as they work through the texts.</p>
+
+<h2>POS</h2>
+
+<p>Part-of-speech may be given immediately after the closing square
+bracket; for some languages the POS may be optional, as in Sumerian
+where the POS can normally be supplied from the dictionary.</p>
+
+<p>A special case of lemmatization is the provision of a POS alone;
+this is presently used in Oracc files as a place-holder pending more
+sophisticated approaches to prosopography and other realia.  Thus,
+such lemmatizations as 'n' (number) and PN (personal name) are
+frequently seen in lemmatized files.</p>
+
+<p>POS tags for proper nouns are not language-specific.</p>
+
+<table class="eighty">
+<tr class="caption"><td class="caption"><a name="properpos">POS Tags for Proper Nouns</a></td></tr>
+<tr><td>AN</td><td>Agricultural (locus) Name</td></tr>
+<tr><td>CN</td><td>Celestial Name</td></tr>
+<tr><td>DN</td><td>Divine Name</td></tr>
+<tr><td>EN</td><td>Ethnos Name</td></tr>
+<tr><td>FN</td><td>Field Name</td></tr>
+<tr><td>GN</td><td>Geographical Name (lands and other geographical entities without their own tag)</td></tr>
+<tr><td>LN</td><td>Line Name (ancestral clan)</td></tr>
+<tr><td>MN</td><td>Month Name</td></tr>
+<tr><td>ON</td><td>Object Name</td></tr>
+<tr><td>PN</td><td>Personal Name</td></tr>
+<tr><td>RN</td><td>Royal Name</td></tr>
+<tr><td>SN</td><td>Settlement Name</td></tr>
+<tr><td>TN</td><td>Temple Name</td></tr>
+<tr><td>WN</td><td>Watercourse Name</td></tr>
+<tr><td>YN</td><td>Year Name</td></tr>
+</table>
+
+<h2>EPOS</h2>
+
+<p>The lemmatizer actually uses a double POS: the
+<strong>default</strong> POS and the <strong>effective</strong> POS
+(EPOS).</p>
+
+<p>Every instance of a lemma has a part-of-speech associated with
+it which is tied to the current syntactic context: this is the
+<strong>effective</strong> POS.  Every lemma has a part-of-speech which
+is assumed to be the effective part-of-speech unless the lemmatizer is
+informed otherwise: this is the <strong>default</strong> POS.  It is
+not necessarily the case that the default POS (or, since it is the
+unmarked case, simply POS) is the statistically most frequent EPOS
+(though this usually will be true).  The nomination of a POS is primarily
+a matter of practical convenience.</p>
+
+<p>In most lemmatization, even the existence of the EPOS can be
+ignored--this is why EPOS is not mentioned in the Lemmatization Quick
+Start.  Some words, however, have more than one POS and it is
+necessary to annotate those cases in which the EPOS is not the POS.
+Another common case is that some classes of words may be used in
+certain contexts with a unusual EPOS--verbs may function as nouns, for
+example.  Here, too, the EPOS must be annotated explicitly.</p>
+
+<p><strong>The EPOS is never inherited; every instance in which the EPOS is
+different from the POS must be annotated explicitly.</strong></p>
+
+<p>The EPOS is signified in ATF by use of the ASCII prime symbol, or
+right quote (<code>'</code>) immediately before the POS.  Annotation
+may give both POS and EPOS or EPOS alone:</p>
+
+<pre class="example">
+1. sag9-ga-zu bi2-in-dug4
+#lem: sag[good]V'N dug[speak]
+</pre>
+
+<p>or:</p>
+
+<pre class="example">
+1. sag9-ga-zu bi2-in-dug4
+#lem: sag[good]'N dug[speak]
+</pre>
+
+<p>(Other analyses of the construct above are possible; this is just
+an example).</p>
+
+<h2>NORM0</h2>
+
+<p>Normalization is the version of the word in which the actual
+written form is replaced by an analytic form which is a linguistic
+interpretation of the word represented by the writing.  Though the Oracc
+system recognizes several kinds of normalization, which are referred
+to internally as <code>norm0</code>, <code>norm1</code>, etc., it is
+only norm0 which is given in the lemmatization; this is the full form
+with accents and length marks and is always created by the person
+annotating the form at its first instance (once it has been included
+in the dictionary the lemmatizer has "learned" it and it no longer
+needs to be given).</p>
+
+<p>Normalized forms are given somewhere after the closing square
+bracket and are introduced by a dollar sign (<code>$</code>):</p>
+
+<pre class="example">
+1.     A
+#lem: +m^u[water]$m^e
+</pre>
+
+<h2>MORPH</h2>
+
+<p>Morphology (MORPH) may be annotated either externally, as part of
+the forms definitions, or inline, as part of the lemmatization string.</p>
+
+<p>A morphology string is a sequence of morphemes or abstract
+denotations of morphemes, separated by periods.  A morphology string
+may reference the base-form of the word by using a tilde
+(<code>~</code>).  Additional conventions and constraints on the
+nature of morphology strings are language-specific.</p>
+
+<h1>#lem: lines</h1>
+
+<h2>Separator</h2>
+
+<p>The sequence '<code>; </code>', i.e., semi-colon followed by space,
+is reserved as the separator between lemmatizations.  There must be
+the same number of lemmatizations in the <code>#lem:</code> line as
+there are forms in the corresponding line of transliteration; the ATF
+processor signals an error when it detects mismatches of this kind.
+Special provision is made for preserving this 1:1 relationship when
+labelling broken forms or breakage on manuscripts as described
+below.</p>
+
+<h2>Ambiguity</h2>
+
+<p>Ambiguous forms may have multiple lemmatizations attached to them
+with the lemmatizations separated by vertical bars:</p>
+
+<pre class="example">
+1. an-na
+#lem: DN|an[sky]</pre>
+
+<p>The sequences either side of vertical bars are complete lemmatizations in
+their own right and may therefore have their own POS, morphology,
+disambiguation and any other characteristics.</p>
+
+<h2>Multiplexes</h2>
+
+<p>There are several circumstances in which a single orthorgraphic
+form ("word") actually writes more than one lemma: these include
+crasis and sandhi writings as well as logograms which are best treated
+as a single word (perhaps because of word order) but which correspond
+to more than one word in the target language (e.g., the writing
+<code>{d}UTU.E3</code> for Akkadian <code>s,=it szamszi</code>).</p>
+
+<p>In all these cases, the input is analogous to the ambiguous forms
+described above, but the <code>&amp;</code> is used instead of the
+vertical bar.  Thus, <code>{d}UTU.E3</code> would be lemmatized as
+<code>s,=it[exit]&amp;szamszi[sun]</code>.  (Note, by the way, that
+compound phrases are always lemmatized according to their
+constituents).</p>
+
+<h2>Uncertainty</h2>
+
+<p>Uncertainty in lemmatization is indicated by the use of the
+conventional lemmatization <code>X</code> (uppercase 'X').  This
+should be used when the form is in principle open to lemmatization but
+no lemmatization can be suggested.</p>
+
+<h2>Breakage</h2>
+
+<p>Breakage in the manuscript is lemmatized with the conventional
+lemmatization <code>u</code>; such forms are considered
+unlemmatizable.</p>
+
+<h2>Numbers</h2>
+
+<p>Numbers are lemmatized with the conventional lemmatization
+<code>n</code>; a special-purpose processor is planned for higher
+order annotation and manipulation of numerical data.</p>
+
+<p><strong>N.B.</strong>  In narrative context, numbers should be
+lemmatized as words; in administrative context, the <code>n</code>
+convention should be used.</p>
+
+<h2>Miscellanea</h2>
+
+<p>The conventional lemmatization <code>M</code> is used where the
+form is a standalone instance of a morpheme such as occur in certain
+Mesopotamian lexical lists.</p>
+
+<p>The conventional lemmatization <code>L</code> is used where the
+form is in a language that is not currently handled by the
+lemmatization system.</p>
+
+<h2>Forms Files</h2>
+
+<p>Forms files give a mapping from forms and CF[GW] pairs to other
+information relevant to a form such as the morphological analysis.
+The format of forms files is documented [REF]here[REF].</p>
+
+<h2>Inlining</h2>
+
+<h1>Units</h1>
+
+<p>Top-level unit (normally main sentence) boundaries can be annotated
+within the lemmatization by use of two conventions:</p>
+
+<pre class="example">
++. = insert unit boundary
+-. = suppress unit boundary</pre>
+
+<p>The <code>+.</code> convention is relevant to all languages.  It
+must occur either at the very beginning or the very end of the
+lemmatization string: if it precedes the lemmatization it must be
+followed by a space; it if follows the lemmatization it must be
+preceded by a space.</p>
+
+<p>For some languages (e.g., Sumerian) most unit boundaries are
+correctly identified programmatically; where the program is wrong, the
+<code>-.</code> can be used to suppress a break.  The <code>-.</code>
+convention is subject to the same rules for placement and whitespace
+as <code>+.</code>.</p>
+
+<pre class="cookbook">
+6. mu-na-du3
+#lem: du[build] +.
+
+...
+
+10. e2 mu-na-du3 lugal-e
+#lem: e[house]; du[build] -.; lugal[king] +.</pre>
+
+<h1>Dictionaries</h1>
+
+<p>A specific type of dictionary, the Corpus-Based Dictionary XML
+datatype, is used by Oracc annotation to provide control lists of
+permitted CFs, GWs, Senses and POS information.  Documentation of this
+format is in preparation.</p>
+
+<p>This dictionary is the means of supplying POS information when it
+is not given explicitly (if given explicitly, the POS in the
+lemmatization overrides the one given in the dictionary).</p>
+
+<p>The dictionary is also the means of canonicalizing lemmatizations
+of the form <code>CF[SENSE]</code> since such pairs can be looked up
+and the corresponding unique <code>CF[GW]</code> identified; this is
+relevant in the construction of forms files.</p>
+
+<h1>Syntax Trees</h1>
+
+<p>Syntax annotation is language-specific, but the principles and
+notational conventions supported by the ATF processor apply to all
+languages.  In all cases the annotation may come before or after the
+lemma, but in practice most annotation (except for unit boundaries)
+comes before the lemma.</p>
+
+<p>Language-specific documents are currently available for the
+following languages: <a href="AKK">Akkadian</a>; 
+<a href="ARC">Aramaic</a>; 
+<a href="GRC">Greek</a>; 
+<a href="ELX">Elamite</a>; 
+<a href="SUX/">Sumerian</a>.</p>
+
+<h3>+/-[SYMBOL]</h3>
+
+<p>The convention described above for unit boundaries is also
+available for syntax annotation; a plus or minus sign followed by a
+single non-alphabetic symbol indicates the presence/absence or
+forcing/suppression of a feature.  The relationship between symbols
+and features is specified in the documentation for specific
+languages.</p>
+
+<h3>([+/-][TEXT])</h3>
+
+<p>Syntax annotation may be placed between a pair of parentheses.  An
+optional plus or minus may occur immediately after the open
+parenthesis.  The content of the parentheses is any text but may not
+contain parentheses.</p>
+
+<h3>Generic</h3>
+
+<p>In principle, generic syntax annotation can be provided before or
+after the lemmatization string.  Syntax preceding the lemma must begin
+with an opening parenthesis and be separated from the lemma by a
+space; that following the lemma must end with a closing parenthesis
+and must also be separated from the lemma by a space.  A syntax string
+may not contain spaces.</p>
+
+<pre class="cookbook">
+6. mu-na-du3
+#lem: (VC-F du[build] ) +.</pre>
+
+<p><strong>This feature is not yet supported and will only be
+supported when a demonstrated need for it is encountered.</strong></p>
+
+<d:resources/>
+
+<d:references>
+<p>For more detailed language-specific information about lemmatization, please refer to the following pages:</p>
+<d:ref name="AKK" uri="AKK">Akkadian Language Information</d:ref>
+<d:ref name="ARC" uri="ARC">Aramaic Language Information</d:ref>
+<d:ref name="GRC" uri="GRC">Greek Language Information</d:ref>
+<d:ref name="ELX" uri="ELX">Elamite Language Information</d:ref>
+<d:ref name="SUX" uri="SUX">Sumerian Language Information</d:ref>
+</d:references>
+
+</d:doc>

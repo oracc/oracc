@@ -1,0 +1,39 @@
+cannot handle extension q on cs/cs-format.q
+cannot handle extension class on esp/ImageInfo.class
+cannot handle extension conf on estraier/estfraud.conf
+cannot handle extension conf on estraier/estproxy.conf
+cannot handle extension idl on estraier/estraier.idl
+cannot handle extension dtd on estraier/estresult.dtd
+cannot handle extension conf on estraier/estscout.conf
+cannot handle extension conf on estraier/estseek.conf
+cannot handle extension help on estraier/estseek.help
+cannot handle extension tmpl on estraier/estseek.tmpl
+cannot handle extension top on estraier/estseek.top
+cannot handle extension conf on estraier/estsupt.conf
+cannot handle extension txt on gdf/readme.txt
+cannot handle extension txt on gdl/glosses.txt
+cannot handle lib/xl: add it to oracc-am-files
+cannot handle extension exclude on msort/msort.exclude
+cannot handle extension order on msort/msort.order
+cannot handle extension src on nsa/NumberData.src
+cannot handle extension txt on o2/build-sequence.txt
+cannot handle extension txt on ol/ol.txt
+cannot handle extension ol on ol/saao.ol
+cannot handle extension txt on p2/p2colours.txt
+cannot handle p2/sessionify: add it to oracc-am-files
+cannot handle tex/notes: add it to oracc-am-files
+cannot handle tex/oracctex: add it to oracc-am-files
+cannot handle util/xl: add it to oracc-am-files
+cannot handle extension txt on www/colours.txt
+cannot handle extension conf on www/httpd.conf
+cannot handle extension txt on www/new-urls.txt
+cannot handle extension txt on www/robots.txt
+cannot handle extension txt on www/xhtml-strict-doctype.txt
+cannot handle extension xcl on xcl/ex1.xcl
+cannot handle xmd/projects: add it to oracc-am-files
+cannot handle extension xmd on xmd/x.xmd
+cannot handle xpd2/ncr: add it to oracc-am-files
+cannot handle xpd2/nor: add it to oracc-am-files
+cannot handle xpd2/oracc: add it to oracc-am-files
+cannot handle extension cnc on xtf/forms.cnc
+cannot handle extension lst on xtf/forms.lst

@@ -1,0 +1,82 @@
+* Bootstrapping an Oracc Installation
+
+Bootstrapping requires installation of four projects that
+are used as system data: cdli, qcat, ogsl, and epsd.
+
+After installing these projects you should install Piwik
+if you want web analytics.  See oracc-piwik.txt.
+
+** CDLI Installation
+
+At present there is only one way of accessing the CDLI data
+itself programmatically, which is to download the nightly 
+dumps.  However, existing Oracc sites make available for 
+download a static version of the CDLI data which can be used
+even if you don't want to track the CDLI data nightly.
+
+*** Static Installation
+
+To initialize this on a new Oracc installation on NEWHOST:
+
+ - create the cdli project:
+
+   su
+   ${ORACC}/00/sys/newproj.sh cdli
+   exit
+   exit
+   ssh -XYC cdli@NEWHOST
+   oracc init CDLI 'The Cuneiform Digital Library Initiative'
+ 
+ - download the CDLI seed files from an existing CDLI installation.
+   E.g., to download from oracc.museum.upenn.edu:
+
+   curl http://oracc.museum.upenn.edu/cdli/downloads/cdli.tar.gz 00any
+
+ - Install the seed files (while logged in as cdli):
+
+   tar zxof 00any/cdli.tar.gz
+   
+ - fix the ownerships of the downloaded files:
+
+   su
+   chown -R cdli:cdli *
+   exit
+
+ - rebuild the project
+
+   oracc rebuild
+
+ - When you want to update the catalogue, run the script 
+
+   00bin/cdli-nightly.sh
+
+*** Nightly Updates Installation
+
+To set up nightly updates you need permission from the CDLI project
+to use password-less login on their server.  Contact them directly
+to ask if they will allow this.
+
+** Qcat Installation
+
+ - create the qcat project
+
+ - install the qcat files from an existing Oracc server
+
+ - rebuild qcat
+
+** Ogsl Installation
+
+ - create the ogsl project
+
+ - install the ogsl files from an existing Oracc server
+
+ - rebuild ogsl
+
+** Epsd Installation
+
+ - create the epsd project
+
+ - install the epsd files from an existing Oracc server
+
+ - rebuild epsd
+

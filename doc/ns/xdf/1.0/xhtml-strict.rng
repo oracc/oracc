@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XHTML Strict -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="datatypes.rng"/>
+  <include href="attribs.rng"/>
+  <include href="struct.rng"/>
+  <include href="text.rng"/>
+  <include href="hypertext.rng"/>
+  <include href="list.rng"/>
+  <include href="image.rng"/>
+  <include href="ssismap.rng"/>
+  <include href="base.rng"/>
+  <include href="link.rng"/>
+  <include href="meta.rng"/>
+  <include href="param.rng"/>
+  <include href="object.rng"/>
+  <include href="bdo.rng"/>
+  <include href="pres.rng"/>
+  <include href="edit.rng"/>
+  <include href="applet.rng"/>
+  <!-- <include href="modules/basic-form.rng"/> -->
+  <include href="form.rng"/>
+  <include href="style.rng"/>
+  <include href="script.rng"/>
+  <!-- <include href="modules/basic-table.rng"/> -->
+  <include href="table.rng"/>
+  <include href="csismap.rng"/>
+  <include href="events.rng"/>
+  <include href="inlstyle.rng"/>
+  <include href="target.rng"/>
+  <include href="iframe.rng"/>
+  <include href="nameident.rng"/>
+</grammar>

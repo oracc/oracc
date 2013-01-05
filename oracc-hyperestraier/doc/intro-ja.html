@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, introduction" />
+<meta name="description" content="Introduction of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="intro-en.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Introduction of Hyper Estraier Version 1 (Japanese)</title>
+</head>
+
+<body>
+
+<h1>イントロダクション</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<a href="intro-en.html" hreflang="en">English</a>/<span class="void">Japanese</span>] [<a href="index.ja.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">目次</h2>
+
+<ol>
+<li><a href="#introduction">はじめに</a></li>
+<li><a href="#installation">インストール</a></li>
+<li><a href="#deployment">検索機能の配備</a></li>
+<li><a href="#complement">補足</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">はじめに</h2>
+
+<p>Hyper Estraierは全文検索システムです。たくさんの文書の中から、特定の語句を含むものを探して、該当するものの一覧を表示することができます。Webサイトを運営している方なら、自分のサイト専用の検索エンジンとして利用することができます。メールボックスやファイルサーバを対象とした検索ツールとして利用することもできます。</p>
+
+<p>Hyper Estraierには、次のような特徴があります。</p>
+
+<ul>
+<li>インデックスを使った高速な検索ができます。</li>
+<li>大量の文書のインデックスを短時間で作成できます。</li>
+<li>N-gram方式による漏れのない検索ができます。</li>
+<li>形態素解析とN-gramのハイブリッド機構で検索精度を向上させます。</li>
+<li>フレーズ検索や正規表現検索や属性検索や類似検索をサポートします。</li>
+<li>世界各国の言語が扱えます。</li>
+<li>対象文書の所在や形式に依存しません。</li>
+<li>賢いWebクローラが付属しています。</li>
+<li>ライブラリとして各種製品に組み込めます。</li>
+<li>P2P連携機能をサポートします。</li>
+</ul>
+
+<p>Hyper Estraierは二つの側面を持ちます。一つ目は、全文検索システムを構築するためのライブラリであることです。つまり、プログラマが利用するAPI（Application Programming Interface）を備えています。Hyper EstraierのAPIを利用することにより、全文検索の高度な機能を自分のプログラムに簡単に組み込むことができます。</p>
+
+<p>二つ目は、上述のAPIを使ったアプリケーションであることです。検索用のインデックスを管理するコマンドと、Webインターフェイスで検索を行うためのCGIスクリプトが提供されます。それらを使うことにより、典型的な検索システムならプログラミングをしないで構築することができます。</p>
+
+<p>この文書では、Webサイトの検索機能を題材に、上述のコマンドとCGIスクリプトを使って検索システムを構築する方法を説明します。まずは付属のコマンドとやCGIスクリプトを利用方法を習得してから、それでは実現できない機能が必要ならばAPIを使ったアプリケーションで補うようにするとよいでしょう。Hyper Estraierは豊富な機能を備えていますが、その全ての使い方を覚える必要はありません。Webサイトの検索システムを構築するなら、この文書だけ読めば十分です。</p>
+
+<hr />
+
+<h2 id="installation">インストール</h2>
+
+<p>Hyper Estraierのソースパッケージからのインストール方法を説明します。バイナリパッケージのインストール方法についてはそれぞれのパッケージの説明書をご覧ください。</p>
+
+<h3>前提</h3>
+
+<p>Hyper Estraierの現在バージョンは、UNIX系およびWindows NT系のOSで利用することができます。少なくとも、以下の環境では動作するはずです。</p>
+
+<ul>
+<li>Linux 2.2以降 (IA32/IA64/AMD64/SPARC/Alpha)</li>
+<li>FreeBSD 4.9以降 (IA32/Alpha)</li>
+<li>Solaris 8以降 (IA32/SPARC)</li>
+<li>Mac OS X 10.2以降 (IA32/PowerPC)</li>
+<li>HP-UX 11.11以降 (IA64/PA-RISC)</li>
+<li>Windows 2000以降 (IA32/IA64/AMD64)</li>
+</ul>
+
+<p>ソースパッケージを用いてHyper Estraierをインストールするには、<code>gcc</code>のバージョン2.95以降と<code>make</code>が必要です。それらはLinuxやFreeBSDには標準的にインストールされています。</p>
+
+<p>Hyper Estraierは、以下のライブラリを利用しています。予めそれらをインストールしておいてください。</p>
+
+<ul>
+<li><a href="http://www.gnu.org/software/libiconv/">libiconv</a> : 文字コード変換。バージョン1.9.1以降（glibcにも同梱）。</li>
+<li><a href="http://www.gzip.org/zlib/">zlib</a> : 可逆データ圧縮。バージョン1.2.1以降。</li>
+<li><a href="http://fallabs.com/qdbm/">QDBM</a> : 組み込み用データベース。バージョン1.8.75以降。</li>
+</ul>
+
+<p>なお、QDBMをインストールする際には、zlibを有効化（<code>./configure --enable-zlib</code>）しておくことをお薦めします。その方がHyper Estraierの作るインデックスが小さくなります。QDBMの1.8.74以前のバージョンはサポートされませんので注意してください。</p>
+
+<h3>ビルドとインストール</h3>
+
+<p>Hyper Estraierの配布用アーカイブファイルを展開したら、生成されたディレクトリに入ってインストール作業を行います。</p>
+
+<p><code>configure</code>スクリプトを実行して、ビルド環境を設定します。</p>
+
+<pre>./configure
+</pre>
+
+<p>プログラムをビルドします。</p>
+
+<pre>make
+</pre>
+
+<p>プログラムの自己診断テストを行います。</p>
+
+<pre>make check
+</pre>
+
+<p>プログラムをインストールします。作業は<code>root</code>ユーザで行います。</p>
+
+<pre>make install
+</pre>
+
+<h3>結果</h3>
+
+<p>一連の作業が終ると、以下のファイルがインストールされます。</p>
+
+<pre>/usr/local/include/estraier.h
+/usr/local/include/estmtdb.h
+/usr/local/include/estnode.h
+/usr/local/lib/libestraier.a
+/usr/local/lib/libestraier.so.8.38.0
+/usr/local/lib/libestraier.so.8
+/usr/local/lib/libestraier.so
+/usr/local/lib/pkgconfig/hyperestraier.pc
+/usr/local/bin/estcmd
+/usr/local/bin/estmttest
+/usr/local/bin/estmaster
+/usr/local/bin/estbutler
+/usr/local/bin/estcall
+/usr/local/bin/estwaver
+/usr/local/bin/estload
+/usr/local/bin/estconfig
+/usr/local/bin/estwolefind
+/usr/local/libexec/estseek.cgi
+/usr/local/libexec/estfraud.cgi
+/usr/local/libexec/estproxy.cgi
+/usr/local/libexec/estscout.cgi
+/usr/local/libexec/estsupt.cgi
+/usr/local/share/hyperestraier/estseek.conf
+/usr/local/share/hyperestraier/estseek.tmpl
+/usr/local/share/hyperestraier/estseek.top
+/usr/local/share/hyperestraier/estseek.help
+/usr/local/share/hyperestraier/estfraud.conf
+/usr/local/share/hyperestraier/estproxy.conf
+/usr/local/share/hyperestraier/estscout.conf
+/usr/local/share/hyperestraier/estsupt.conf
+/usr/local/share/hyperestraier/estresult.dtd
+/usr/local/share/hyperestraier/estraier.idl
+/usr/local/share/hyperestraier/locale/...
+/usr/local/share/hyperestraier/filter/...
+/usr/local/share/hyperestraier/increm/...
+/usr/local/share/hyperestraier/doc/...
+/usr/local/man/man1/...
+/usr/local/man/man3/...
+</pre>
+
+<h3>Mac OS XとHP-UXとWindows</h3>
+
+<p>Mac OS Xの場合、「<code>make</code>」の代わりに「<code>make mac</code>」、「<code>make check</code>」の代わりに「<code>make check-mac</code>」、「<code>make install</code>」の代わりに「<code>make install-mac</code>」を実行してください。なお、Mac OS Xでは共有ライブラリの命名規則が異なります。「<code>libestraier.1.0.0.dylib</code>」「<code>libestraier.1.dylib</code>」「<code>libestraier.dylib</code>」になります。</p>
+
+<p>HP-UXの場合、「<code>make</code>」の代わりに「<code>make hpux</code>」、「<code>make check</code>」の代わりに「<code>make check-hpux</code>」、「<code>make install</code>」の代わりに「<code>make install-hpux</code>」を実行してください。なお、HP-UXでは共有ライブラリの命名規則が異なります。「<code>libestraier.sl</code>」になります。</p>
+
+<p>Windows上でビルドを行う場合には、CygwinおよびMinGWの開発環境が必要です。また、zlibとlibiconvとQDBMのMinGW版がそれぞれインストールされている必要があります。その上で、「<code>make win</code>」を実行してください。Windows用のインストールコマンドは用意されていません。Windows版のアプリケーションを動作させるには、「<code>estraier.dll</code>」だけでなく、「<code>mgwz.dll</code>」「<code>libiconv-2.dll</code>」「<code>regex.dll</code>」「<code>qdbm.dll</code>」「<code>pthreadGC2.dll</code>」も必要です。なお、Windows版のバイナリパッケージには必要なライブラリが全て納められていますので、そちらを使うことをお薦めします。</p>
+
+<h3>configureのオプション</h3>
+
+<p>「./configure」を実行する際には、以下のオプションを指定することができます。</p>
+
+<ul>
+<li><kbd>--enable-debug</kbd> : デバッグ用にビルドします。デバッグシンボルを有効化し、最適化を行わず、静的にリンクします。</li>
+<li><kbd>--enable-devel</kbd> : 開発用にビルドします。デバッグシンボルを有効化し、最適化を行い、動的にリンクします。</li>
+<li><kbd>--enable-mecab</kbd> : MeCabによるキーワード抽出を有効にします。</li>
+<li><kbd>--disable-zlib</kbd> : ZLIBによる転置インデックスのレコード圧縮を無効にします。</li>
+<li><kbd>--enable-lzo</kbd> : ZLIB圧縮の代わりにLZO圧縮を用います。</li>
+<li><kbd>--enable-bzip</kbd> : ZLIB圧縮の代わりにBZIP2圧縮を用います。</li>
+<li><kbd>--enable-vista</kbd> : Villaデータベースの代わりにVistaデータベースを用います。</li>
+</ul>
+
+<p>MeCabを組み込む場合、MeCabのバージョン0.92以降と、MeCab-IPADICの2.7.0以上を用い、辞書の文字コードはEUC-JP（デフォルト）にしてください。</p>
+
+<hr />
+
+<h2 id="deployment">検索機能の配備</h2>
+
+<p>Webサイトの検索機能を例にとって、検索機能を動作させるための手順を説明します。意外に簡単にできますので、ぜひ実際に設置してみてください。</p>
+
+<h3>インデックス管理用のコマンド</h3>
+
+<p>Hyper Estraierでは、高速な検索を可能にするために、転置インデックスと呼ばれるデータベースを利用します。つまり、検索を行う前に、検索対象の文書を登録した転置インデックスを構築しておく必要があります。以後は転置インデックスのことを単にインデックスと言います。</p>
+
+<p>インデックスを管理するために、<code>estcmd</code>というコマンドが提供されます。<code>estcmd</code>はローカルホストのファイルシステム上にある個々のファイルを文書として扱います。インデックスに文書を登録したり、インデックス内の文書情報を削除することができます。また、特定のディレクトリの以下の文書を一括して登録することもできます。対応している文書の形式は、プレーンテキストと、HTMLと電子メール（MIME）です。</p>
+
+<p>その他の形式の文書を扱ったり、リモートホストにあるファイルを扱ったりすることもできるのですが、その方法については後々説明します。</p>
+
+<h3>インデックスの作成</h3>
+
+<p>あなたがWebサイトを運営していて、そのコンテンツが「<code>/home/www/public_html</code>」以下に置いてあるとしましょう。その下にある全てのHTMLファイルを登録したインデックスを「<code>/home/www/casket</code>」として作成することにします。それには、以下のコマンドを実行します。</p>
+
+<pre>cd /home/www
+estcmd gather -il ja -sd casket /home/www/public_html
+</pre>
+
+<p>「<code>/home/www/public_html</code>」以下の文書を収集して、<code>casket</code>という名前のインデックスを作るという意味です。「<code>-il ja</code>」オプションは、文字コードの判定時に日本語を優先するという意味です。「<code>-sd</code>」オプションは、ファイルの作成日時と更新日時をインデックスに記録するという意味です。実行すると、進捗状態のログメッセージが出てから、<code>casket</code>というディレクトリが作成されます。このディレクトリがインデックスです。インデックスの作成に必要な手順はこれだけです。</p>
+
+<h3>検索用CGIスクリプト</h3>
+
+<p>検索はWebインターフェイスで行います。Webブラウザで検索用ページにアクセスすることで、検索を行います。<code>estseek.cgi</code>はそのためのCGIスクリプトです。CGIスクリプトを動作させるためのWebサーバの設定については、各サーバのマニュアルをご覧ください。</p>
+
+<h3>検索用ページの設置</h3>
+
+<p>CGIスクリプトの設置場所のURLが「<code>http://www.estraier.ad.jp/cgi-bin/</code>」で、そのローカルのパスが「<code>/home/www/cgi-bin</code>」だとしましょう。その場合、以下のコマンドを実行します。</p>
+
+<pre>cd /home/www/cgi-bin/
+cp /usr/local/libexec/estseek.cgi .
+cp /usr/local/share/hyperestraier/estseek.* .
+</pre>
+
+<p>「<code>/usr/local/libexec/estseek.cgi</code>」と、「<code>/usr/local/share/hyperestraier/</code>」にある<code>estseek.conf</code>と<code>estseek.tmpl</code>と<code>estseek.top</code>と<code>estseek.help</code>を、「<code>/home/www/cgi-bin/</code>」にコピーするという意味です。<code>estseek.cgi</code>はCGIスクリプトです。<code>estseek.conf</code>は設定ファイルです。<code>estseek.tmpl</code>は検索ページのテンプレートファイルです。<code>estseek.top</code>は検索ページの初期画面のメッセージを記述したファイルです。<code>estseek.help</code>は検索機能の簡単な使い方を記述したファイルです。なお、それらを日本語化したものが「<code>/usr/local/share/hyperestraier/locale/ja/</code>」の下にありますので、そちらを利用してもよいでしょう。</p>
+
+<p>適当なテキストエディタで、設置された<code>estseek.conf</code>を開いて編集します。多くの項目はそのままでよいのですが、<code>indexname</code>と<code>replace</code>だけは変更する必要があります。以下のように書きます。</p>
+
+<pre>indexname: /home/www/casket
+...
+replace: file:///home/www/public_html/{{!}}http://www.estraier.ad.jp/
+...
+</pre>
+
+<p><code>indexname</code>はインデックスのパスを指定します。<code>replace</code>はローカル用のURIをWebサーバ用のURIに変換する指定です。「<code>{{!}}</code>」の前後にローカルの接頭辞とWebサーバ用の接頭辞を書きます。</p>
+
+<h3>使ってみよう</h3>
+
+<p>これで準備はOKです。Webブラウザで、「<code>http://www.estraier.ad.jp/cgi-bin/estseek.cgi</code>」にアクセスしてみてください。詳しい使い方はそのページに書いてあります。</p>
+
+<h3>インデックスの更新</h3>
+
+<p>サイト内の文書が更新されたり、新しい文書が追加されたりした場合、適当な頻度でインデックスも更新するとよいでしょう。古いインデックスを削除して新しく作りなおしてもよいのですが、Hyper Estraierではインデックスの差分登録をすることもできます。</p>
+
+<p>インデックスを作る際に「<code>-sd</code>」オプションをつけてファイルの更新時刻を記録していたのは、差分登録のためです。更新時刻を記録したインデックスに対しては、「<code>-cl</code>」と「<code>-sd</code>」と「<code>-cm</code>」オプションをつけて更新を行うことで、差分登録を行うことができます。</p>
+
+<pre>cd /home/www
+estcmd gather -cl -il ja -sd -cm casket /home/www/public_html
+</pre>
+
+<p>「<code>-cm</code>」オプションをつけると、まだインデックス内に存在しないか、前に登録した時より更新時刻が新しい文書のみを登録します。なお、既存の文書とURLが同じ文書を登録すると上書きされますので、古い文書は検索にヒットしなくなります。「<code>-cl</code>」オプションをつけると、上書きされた文書が含んでいた語句のインデックスを再構築します。次に更新をする時のために「<code>-sd</code>」オプションもつけて更新日時を記録しています。</p>
+
+<h3>削除文書の反映</h3>
+
+<p>サイト内の文書が削除された場合も、それをインデックスに反映して検索にヒットしないようにします。以下のコマンドを実行します。</p>
+
+<pre>cd /home/www
+estcmd purge -cl casket
+</pre>
+
+<p>インデックス内の文書情報をスキャンして、元の場所にファイルがないものを削除します。「<code>-cl</code>」オプションは、削除された文書が含んでいた語句のインデックスを再構築することを指示します。</p>
+
+<h3>インデックスの最適化</h3>
+
+<p>文書の登録や削除を繰り返すと、少しずつインデックスのサイズが肥大化してきます。データベースを最適化するとそれを解消してサイズを縮小することができます。</p>
+
+<pre>cd /home/www
+estcmd optimize casket
+</pre>
+
+<p>なお、<code>gather</code>や<code>purge</code>を実行する際に「<code>-cl</code>」をつけなかった場合、上書きまたは削除された文書の情報は、削除マークが付けられるだけでインデックス内に残っています。最適化はインデックスを再構築して削除文書の領域を完全に消去する効果もあります。</p>
+
+<h3>更新作業の自動化</h3>
+
+<p>コマンドを定期的に実行する<code>cron</code>などの機能を使ってインデックスの更新作業を自動化すると楽です。その際には、以下のようなスクリプトを書いておくとよいでしょう。</p>
+
+<pre>/usr/local/bin/estcmd gather -cl -il ja -sd -cm /home/www/casket /home/www/public_html
+/usr/local/bin/estcmd purge -cl /home/www/casket
+</pre>
+
+<p>ただし、<code>purge</code>は毎回の更新で必要なわけではありません。それらは比較的重い処理なので、たまにやるだけで充分です。個人のWebサイトの検索システムであれば、<code>gather</code>は毎日、<code>purge</code>は毎週といった頻度にしてもよいでしょう。また、月に一度くらいで<code>optimize</code>を行ってもいいでしょう。</p>
+
+<h3>詳しい使い方</h3>
+
+<p>コマンドやCGIスクリプトの詳しい使い方に関しては<a href="uguide-ja.html">ユーザガイド</a>をご覧ください。APIの詳しい使い方に関しては<a href="pguide-ja.html">プログラミングガイド</a>をご覧ください。</p>
+
+<p>Hyper Estraierの真価は、そのP2P機構にあります。P2P機構を使わなくても一般的な全文検索システムとして十分に有用だとは思いますが、それに飽きたら、ぜひともP2P機構を使ってみていただきたいと思います。たとえマシンを1台しか持っていなくても、検索と更新が並列に行えたり、複数のインデックスを扱えたり、Atomフィードが配信できたりといった様々な利点が得られます。P2P機構の詳しい使い方に関しては<a href="nguide-ja.html">P2Pガイド</a>をご覧ください。</p>
+
+<p>Hyper EstraierにはWebを巡回して文書を集めてくるクローラも付属しています。それを使うと特定のWebサイトや不特定多数のWebサイトを対象としたサーチエンジンを簡単に構築することができます。詳しくは<a href="cguide-ja.html">クローラガイド</a>を御覧ください。</p>
+
+<hr />
+
+<h2 id="complement">補足</h2>
+
+<p>作者の連絡先などの補足事項を紹介します。</p>
+
+<h3>連絡先</h3>
+
+<p>Hyper Estraierは平林幹雄が作成しました。作者と連絡をとるには、`<code>mikio@fallabs.com</code>' 宛に電子メールを送ってください。</p>
+
+<h3>ライセンス</h3>
+
+<p>Hyper Estraierはフリーソフトウェアです。あなたは、Free Software Foundationが公表したGNU Lesser General Public Licenseのバージョン2.1あるいはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従ってHyper Estraierを再頒布または変更することができます。</p>
+
+<p>Hyper Estraierは有用であると思われますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU Lesser General Public Licenseを読んでください。</p>
+
+<p>あなたは、Hyper Estraierと一緒にGNU Lesser General Public Licenseの写しを受け取っているはずです（`<code>COPYING</code>' ファイルを参照してください）。そうでない場合は、Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA へ連絡してください。</p>
+
+<h3>謝辞</h3>
+
+<p>Hyper Estraierは<a href="http://www.ipa.go.jp/">情報処理推進機構（IPA）</a>による2004年度第2回未踏ソフトウェア創造事業の支援を受けて開発されました。同機構の関係各位および鵜飼文敏PMに感謝いたします。また、有用な助言をくれた皆様、そして、Hyper Estraierのユーザの皆様にお礼を申し上げます。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

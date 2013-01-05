@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use strict; use warnings; use open ':utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::BIB::Indexer;
+
+my $dbname = undef;
+my $dbdir = undef;
+
+use Getopt::Long;
+# use Pod::Usage;
+GetOptions("db=s" =>\$dbname,
+	   "dbdir=s" =>\$dbdir); # or pod2usage(1);
+
+die "biblindex.plx: must give -db and -dbdir args on command line\n"
+  unless defined($dbname) && defined($dbdir);
+
+ORACC::BIB::Indexer::index($dbdir,$dbname,@ARGV);
+
+1;

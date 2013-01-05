@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::Wrapper2;
+
+# CREATED WITH:
+my $invocation = "../mk-wrapper.plx -name xcl2uxh.plx -type xslt -script @@ORACC@@/lib/scripts/xcl-HTML.xsl -from xcl -to uxh";
+
+ORACC::Wrapper::xslt(from=>'xcl',
+		    to=>'uxh',
+		    script=>'@@ORACC@@/lib/scripts/xcl-HTML.xsl',
+		    ,
+    );
+
+1;
+
+__END__
+
+=head1 NAME
+
+xcl2uxh.plx -- wrapper for @@ORACC@@/lib/scripts/xcl-HTML.xsl
+
+=head1 SYNOPSIS
+
+xcl2uxh.plx [-verbose | -quiet | -help | -man] [-list filelists | FILES]
+
+=head1 DESCRIPTION
+
+A wrapper program which applies @@ORACC@@/lib/scripts/xcl-HTML.xsl 
+to files.  Input files have extension 'xcl'; output files have 
+extension 'uxh'.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).
+

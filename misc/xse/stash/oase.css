@@ -1,0 +1,8 @@
+<css>
+body	    { background-color: #fff8dc; color: black; 
+	      font-family: "Times New Roman", serif; padding: 1em;
+	      margin: auto;}
+
+@namespace xf url("http://www.w3.org/2002/xforms");
+
+</css>

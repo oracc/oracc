@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc Resources</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an informal introduction to
+  major Oracc resources as the foundational constituents of Oracc Open
+  Data access.</dc:description>
+</d:meta>
+
+<p>Oracc resources are the kinds of things that users and builders
+interact with and create on Oracc every day: projects, texts,
+glossaries and so on.  Resources are generally made up of collections
+of resources and some resources have a natural hierarchy in which it
+makes sense to regard the subcomponents as resources in their own
+right--the words of a glossary or the records of a catalogue, for
+example.</p>
+
+<p>In almost all cases, these common terms mean particular things in
+their Oracc implementation which in turn has implications for the ways
+in which their formal identifiers and access methods are defined.  In
+this document we therefore describe each of Oracc's major resources in
+a narrative manner as a means of explaining what such a resource is on
+Oracc and of contextualizing the formal definition of URNs and
+URIs.</p>
+
+<h1>Projects</h1>
+
+<p>The project serves as the basic organizational unit of Oracc and is
+a workspace within which one or more cuneiform texts is usually
+edited, annotated and presented--these texts are referred to as the
+project's corpus.  Not all projects have a corpus--some have only a
+catalogue, or consist of a collection of pages which we call a
+portal.</p>
+
+<p>A project is both a resource in its own right and a home for any
+number of other resources.</p>
+
+<h1>Catalogues</h1>
+
+<p>The meaning of catalogue on Oracc is specifically a catalogue of
+texts.  Three of these are system catalogues which provide identifiers
+for texts and are called Pcat, Qcat and Xcat.  All other
+text-catalogues are local to individual projects.</p>
+
+<p>Note: CDLI is currently also developing a catalogue of seals but
+this is not yet integrated into Oracc.</p>
+
+<h2>Pcat</h2>
+
+<p>Oracc's Pcat is a wrapper around the CDLI main catalogue.  The CDLI
+catalogue aims to provide a comprehensive registry of ancient objects
+and assigns to these IDs which begin with 'P' and are followed by six
+digits.  We call these IDs P-numbers.</p>
+
+<p>Oracc never assigns P-numbers and for active CDLI P-numbers, the
+Pcat P-number always refers to the same object as its corresponding
+CDLI P-number.</p>
+
+<p>Pcat does, however, preserve P-numbers which are deleted from the
+CDLI catalogue.  These deleted P-numbers are categorized as inactive
+or active.  Deleted-inactive P-numbers are those where the deletion is
+clearly justified.  Deleted-active P-numbers are those for which a
+project manager is in disagreement with the deletion, usually because
+the CDLI deletion is based on the merging of fragments which do not
+have a provable physical join between them.  The status which Pcat
+assigns to deleted P-numbers may change--for example, an active status
+could be changed to inactive if a join ends up being conclusively
+demonstrated.</p>
+
+<p>Deleted-active P-numbers are assigned permanent X-numbers, see
+below.</p>
+
+<h2>Qcat</h2>
+
+<p>Qcat covers not ancient objects but compositions.  There may be a
+one-to-one relationship between a composition and the object on which
+it is inscribed.  Qcat assigns IDs beginning with Q and followed by
+six digits.  We call these IDs Q-numbers.</p>
+
+<h2>Xcat</h2>
+
+<p>Xcat covers texts of both kinds, objects and compositions, and is
+used for two purposes, the provision of temporary identifiers for
+works-in-progress and the assignment of permanent identifiers for
+deleted-active P-numbers.</p>
+
+<p>Xcat IDs consist of an 'X' followed by six digits, and we call them
+(you should be able to guess this by now) X-numbers.  X-numbers are
+split into two ranges.  X-numbers from X000001 to X899999 inclusive
+are permanent X-numbers and correspond to a deleted CDLI P-numbers.
+Thus X123456 corresponds to the object formerly known as P123456.</p>
+
+<p>X-numbers from X900000 to X999999 inclusive are temporary
+X-numbers.</p>
+
+<p>Permanent X-numbers are stable in exactly the same way as Pcat
+P-numbers and Q-cat Q-numbers.  Although they are assigned only to
+deleted-active P-numbers, they may also correspond to deleted-inactive
+P-numbers because the status of a deleted P number is subject to
+change.</p>
+
+<p>Temporary X-numbers are unstable.  They are assigned to projects as
+needed and withdrawn when the temporarily numbered texts are assigned
+P- or Q-numbers.  They may be reused and thus change their meaning
+over time, but at any given time they are uniquely assigned to a
+single project.</p>
+
+<h2>Project Catalogues</h2>
+
+<p>Projects may have their own catalogues which either follow the
+structure of the CDLI P-catalogue or define their own structures.
+Regardless of their structure, project catalogues are required to
+align with the system catalogues via P-, Q-, or X-numbers (or a
+PQX-number for short).</p>
+
+<h1>Texts</h1>
+
+<p>An Oracc text resource is identified by a PQX-number and composed
+of several parts.  The metadata is a resource drawn from a catalogue
+which gives information about the object or composition.  Images of
+the object or of hand-copies may be available from CDLI and are
+treated as external resources.</p>
+
+<p>A text usually has a transliteration--a rendering into roman
+characters done according to strict conventions--and may have one or
+more translations in various languages.  Some composite texts (those
+with Q-numbers) are also edited as "scores" or tabular representations
+of the signs preserved or provided by each examplar of a
+composition.</p>
+
+<h1>Glossaries</h1>
+
+<p>Oracc glossaries are, broadly speaking, collections of information
+about words.  These words fall into several categories: regular
+lexical items; names of entities (otherwise known as proper nouns);
+and named entities (i.e., the entities to which proper nouns refer).</p>
+
+<p>Two glossary formats are used on Oracc. The Corpus-Based Dictionary
+is used for regular lexical items and names of entities, and serves as
+a framework for the aggregation of data on the instances of words in a
+corpus.</p>
+
+<p>By contrast, the ESP Glossary file provides a collection of short
+narrative definitions of entities which occur in a corpus.</p>
+
+<p>Although languages are not resources as such, glossaries are named
+by the language of the words they define, in accordance with Oracc's
+implementation of ISO 639-3 language codes.  For entity names the
+special pseudo-language qpn is used; for entities, the special
+pseudo-language qpe is used.  Language-tags may thus stand as
+referents to language-glossaries which are in turn the definitional
+resources for languages on Oracc.</p>
+
+<p>The three types of entry in the different glossaries are also
+resources:</p>
+
+<h2>Words</h2>
+
+<p>A word resource has a relatively complex structure most of whose
+components are not yet exposed as independent resources.  Words are
+uniquely identified in a glossary by a combination of three of these
+fields, however: the Citation Form (CF; the head word in the
+glossary); the Guide Word (GW; a reference meaning or label used to
+disambiguate otherwise identical head words) and the Part of Speech
+(POS).</p>
+
+<p>By convention, these fields are concatenated with square brackets
+to form a string with the pattern CF[GW]POS.  For example, the
+Sumerian noun lugal has the guideword "king" and is referred to as
+lugal[king]N.</p>
+
+<h2>Names</h2>
+
+<p>Names are simply words which are classed as proper nouns of some
+kind.  All proper nouns in Oracc have a POS which is an uppercase
+letter followed by uppercase 'N', e.g., DN for divine names.  Names
+are referred to by the same syntax as regular words, but the Guide
+Word is always considered to be '00' (zero-zero).</p>
+
+<h2>Entities</h2>
+
+<p>Entities are names which are not indefinite but definite.  Thus,
+where a name is a label which could potentially refer to any number of
+entities, an entity is a word with a specific referent.  To
+differentiate names from entities a distinct syntax is used: entities
+have no square brackets but are instead disambiguated by subscript
+numbers.  Further, no POS is given in an entity reference: subscripts
+are assigned continously across parts of speech, and the POS
+information is reserved to the qpe glossary.</p>
+
+<p>Entities are always qualified by a subscript even where there is
+only one entity so far known to which the name applies.  Thus, every
+entity in principle ends in a subscript letter from the Unicode range
+U+2080 .. U+2089.</p>
+
+<p>In practice, unsubscripted entities are canonically equivalent to
+the entity with subscript 1; thus <code>Nineveh</code> is by
+definition identical to <code>Nineveh₁</code>.</p>
+
+<h1>Sign Lists</h1>
+
+<p>A sign list is analagous to a glossary in that it contains entries
+on each sign in a writing system together with data about its readings
+and, Unicode numbers and instances.  The only sign list presently
+implemented on Oracc is the Oracc Global Sign List, a sign list of
+Sumero-Akkadian Cuneiform, whose ISO15XXX code is Xsux.</p>
+
+<!-- TODO: LISTS; PERIODS -->
+
+</d:doc>

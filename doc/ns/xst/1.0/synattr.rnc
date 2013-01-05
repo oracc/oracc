@@ -1,0 +1,6 @@
+namespace syn = "http://oracc.org/ns/syntax/1.0"
+syntax.attributes = 
+  (attribute syn:brack-before { text } |
+   attribute syn:brack-after  { text } |
+   attribute syn:ub-before  { "+" | "-" } |
+   attribute syn:ub-after   { "+" | "-" } )

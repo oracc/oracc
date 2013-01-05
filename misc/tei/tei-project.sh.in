@@ -1,0 +1,49 @@
+#!/bin/sh
+if [ ! -e 00lib/config.xml ]; then
+    echo tei-project.sh: must run from a project or subproject directory
+    exit 1
+fi
+if [ "$1" = "" ];
+then
+    echo tei-project.sh: must give project name as argument
+    exit 1
+fi
+project=$1
+if [ "$2" != "" ];
+then
+    teilist=$2
+    lst2xml.plx $teilist >01bld/lists/make-tei.xml
+else
+    teilist=01bld/lists/have-atf.lst
+    lst2xml.plx $teilist >01bld/lists/make-tei.xml
+fi
+teidir=02xml/00tei
+rm -fr $teidir ; mkdir -p $teidir
+clean_nl.plx $teilist
+echo teilist=$teilist
+libscripts=@@ORACC@@/lib/scripts
+rm -fr $teidir
+mkdir -p $teidir
+# trim listNym if necessary
+xsltproc --stringparam project $1 $libscripts/cbd2listNym.xsl 01bld/qpn/qpn.g2c >$teidir/01listNym.xml
+# trim listPerson if necessary
+xsltproc --stringparam project $1 $libscripts/cbd2listPerson.xsl 01bld/qpn/qpn.g2c >$teidir/02listPerson.xml
+echo Creating TEI for texts listed in $teilist
+cat $teilist | while read line; do
+    pqx=`echo -n $line | sed 's/^.*://'`
+    prj=`echo -n $line | sed 's/:.*$//'`
+    echo Generating $teidir/${pqx}.xml from $prj:$pqx
+    xsltproc --stringparam project $prj @@ORACC@@/lib/scripts/xtf2tei.xsl \
+	${ORACC}/bld/$prj/${pqx:0:4}/$pqx/$pqx.xtf \
+	> $teidir/$pqx.xml
+done
+rm -fr 02www/tei
+xmltei=${ORACC}/$project/00xml/tei
+ls -A $xmltei/* >/dev/null 2>&1 && ln -sf $xmltei/* ${ORACC}/xml/$project/00tei
+ln -sf ${ORACC}/xml/$project/00tei 02www/tei
+chmod -R o+r 02www/tei 02xml/00tei
+# create corpus header
+xsltproc --stringparam project $1 @@ORACC@@/lib/scripts/teicorpus-header.xsl \
+    01bld/lists/make-tei.xml >$teidir/00teiCorpus-header.xml
+# create xinclude wrapper, removing non-lemmed texts if necessary
+tei-bigfile.sh $1

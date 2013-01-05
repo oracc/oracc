@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  -*- rnc -*-
+  XHTML+XForms
+-->
+<grammar ns="http://www.w3.org/1999/xhtml" xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="xhtml.rng"/>
+  <include href="xhtml-xforms.rng"/>
+  <!--
+    Optional features
+    navndex is suggested by XForms 1.1 but XHTML uses tabindex instead.
+  -->
+  <include href="xforms-navindex.rng"/>
+  <!-- repeat attributes are suggested by XForms 1.1, but there is no guidance on where to attach them. -->
+  <include href="xhtml-xforms-repeat-attributes.rng"/>
+</grammar>

@@ -1,0 +1,87 @@
+namespace g = "http://oracc.org/ns/gdl/1.0"
+
+grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+form     = attribute form { text }
+sb       = element g:b { s.model }
+vb       = element g:b { v.model }
+punct    = element g:p { p.model }
+lang     = attribute xml:lang { xsd:language }
+gsurro   = 
+  element g:surro {
+    delim? , (s|c|n|punct) , groupgroup
+  }
+
+# Values
+#v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
+v.model = text
+v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
+dingir   = element g:v { g.meta , lang? , ("d") }
+mister   = element g:v { g.meta , lang? , ("m") }
+
+# Names
+#s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num
+s.model  = text
+
+lst    = xsd:string {
+  pattern="(..?SL|ABZ|BAU|HZL|KWU|LAK|M|MEA|MZL|REC|RSP|ZATU)\d+[a-z]*"
+}
+
+#[ABCD] is a stop-gap until lateuruk numbers are fixed
+num      = xsd:string { pattern = "N|N\d+[ABCD]?" }
+
+s        = element g:s { form? , g.meta , (s.model | (sb , mods+)) }
+
+# Qualified graphemes
+q        = element g:q { form? , g.meta , (v|s|c) , (s|c|n) }
+
+# Numbers
+n.model  = r , (v|s|c|q)?
+
+r        = element g:r {
+             xsd:string {
+	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
+
+n        = element g:n { form? , g.meta , n.model , mods* }
+
+# Modifiers
+mods     = modifier | allograph | formvar
+
+modifier = element g:m { xsd:string { pattern = "[a-z]|[0-9]{1,3}" } }
+
+allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }
+
+formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
+
+# Compounds
+c.model  = (compound , (o.join , compound)+) | unary | binary | ternary | (g , mods+)
+
+c        = element g:c { form? , g.meta , c.model , mods* }
+
+g        = element g:g { g.meta , c.model , mods* }
+
+compound = single | unary | binary
+
+single   = n | s | c | (g,mods*) | q
+
+unary    = o.unary , single
+
+binary   = single , o.binary , single
+
+ternary   = single , o.binary , single , o.binary , single
+
+o.join   = element g:o { attribute g:type { "beside" | "joining" | "reordered" } }
+
+o.unary  = element g:o { attribute g:type { "repeated" } , xsd:integer }
+
+o.binary =
+  element g:o {
+    attribute g:type {
+      "containing" | "above" | "crossing" | "opposing"
+    }
+  }
+
+# Punctuation
+p.model =
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/" } , 
+    g.meta , 
+    (v|q|s|n|c)?

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/esp-param/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="esp.rng">
+    <start>
+      <empty/>
+    </start>
+  </include>
+  <start combine="interleave">
+    <ref name="parameters"/>
+  </start>
+  <define name="parameters">
+    <element name="parameters">
+      <element name="title">
+        <text/>
+      </element>
+      <optional>
+        <element name="subtitle">
+          <text/>
+        </element>
+      </optional>
+      <element name="publisher">
+        <text/>
+      </element>
+      <element name="host">
+        <text/>
+      </element>
+      <element name="root">
+        <text/>
+      </element>
+      <optional>
+        <element name="cuneify">
+          <attribute name="switcher">
+            <choice>
+              <value>yes</value>
+              <value>no</value>
+            </choice>
+          </attribute>
+          <attribute name="default">
+            <choice>
+              <value>yes</value>
+              <value>no</value>
+            </choice>
+          </attribute>
+        </element>
+      </optional>
+      <optional>
+        <element name="common-headers">
+          <ref name="head.content"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="dc-id-prefix">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="main-menu-caption">
+          <text/>
+        </element>
+      </optional>
+      <element name="footer">
+        <ref name="Flow.model"/>
+      </element>
+    </element>
+  </define>
+</grammar>

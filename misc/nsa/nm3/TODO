@@ -1,0 +1,11 @@
+1) implement ancient parts of nm2xml, skip mev for now
+
+2) implement system-specification with %%[sysname] ... %% in ATF
+
+3) implement system defaulting with #nsa: system drycap=drycap-ed-fara
+
+3) install some kind of Ur III corpus
+
+4) write simple data visualizer
+
+   id_text designation start-label end-label start-word end-word system commodity

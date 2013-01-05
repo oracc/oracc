@@ -1,0 +1,24 @@
+@system Ur III Umma Region Dry Capacity 72 sila
+
+@code ur3-umma-region-dry-72
+@time Ur III
+@date Shulgi.23.04.05 - Shulgi.44.04.05
+@place Umma, Girsu, Garšana, Urusaŋrig
+
+@meb še 
+@mev ~1/10800l
+
+@sysdet	gur[unit]
+
+@step še  	*1/180*giŋ	SD še[unit]N
+@step giŋ	*1/60*sila	SD giŋ[unit]N
+@step sila 	*1/12*ban	SD sila[unit]N
+@step ban	*1/6*barig	#(ban₂)
+@step bariga	72*sila		#(bariga)
+@step gur 	*1/3600*guru	SA *
+@step šar 	*1/60*šargal	#(šar₂)
+@step guru 	*1/6*šargal	SA guru[unit]
+@step šaru 	*1/6*šargal	#(šaru)
+@step šargal 	*1*šargal	#(šargal){gal}
+
+@end system

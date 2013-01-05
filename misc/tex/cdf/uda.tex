@@ -1,0 +1,116 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: da.tex,v 0.12 1996/08/11 12:13:48 s Exp $
+
+% New version which expects UTF-8 input but still uses the 
+% old 8-bit fonts.
+
+\input utf
+\input daplain
+\input replain
+\input utility
+
+\newif\ifoldTeX \newif\ifnomag \newif\ifnewfonts 
+\newif\ifnoeditions \newif\ifISOfonts \newif\ifAFOURpaper
+\newif\ifusehbgk
+
+\input config % must come after utility because it uses \pathdefine
+	      % needs the paths to be set up carefully
+\input output
+\input fontload
+\input lib/fontlist
+\input fontsets
+%\ifISOfonts\def\next{isochars}\else\def\next{dachars}\fi \input \next
+\input udachars
+\input paper
+\input spacing
+\input document
+\input env
+\input styles
+\input upolyglot
+\input ituline
+\input lib/RCS % lives in lib because it can't be checked in with RCS
+
+% That's the end of macro definitions
+\makeother{@}
+\getRCSRevision$Revision: 0.12 $
+\def\fmtname{DA}\def\fmtversion{2.\RCSRevisionvalue\space for TeX \TeXversion}
+
+% the file local.tex is a way for individuals to modify their DA-TeX
+% the \DAformat command switches on special DA characters, including @==\,
+% only after the command line arguments have been scanned. (Otherwise some
+% characters in filenames can cause problems.)
+\everyjob={\sayhello\readlocal\readxrf\DAformat}
+
+\let\Pretex\gobbletwo % should be history
+
+% set up a minimal default format
+
+\errorcontextlines10000
+
+\usefontcollection{\ComputerModernMath}\CMM
+\CMfontset\Serifed
+\localdocsize{10}
+\spaceandahalf
+\def\folioface{\DACMR}
+\EnglishLanguage\blackboxes\fussy\nonfrenchspacing
+\setvspacing \sethspacing{2em}{2em}
+
+% \setpageformat and friends can't be used here as
+% they invalidate future magnification commands. We simply set
+% the relevant dimensions to ensure a reasonable default layout.
+%
+% !!!!!!!!!!!!!!! No true dimens allowed here. !!!!!!!!!!!!!!!!!
+%
+\leftmargin1in \hoffset0pt \topmargin1in \voffset0pt \headersep.5in
+\footersep.5in \textheight8.9in \vsize\textheight \textwidth6.5in
+\hsize\textwidth \fullhsize\hsize \righthdrinfo{\folio}
+
+\def\sayhello{\immediate\write16
+	{This is the \fmtname\space format, version \fmtversion}}
+\sayhello
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: da.tex,v $
+Revision 0.12  1996/08/11 12:13:48  s
+fix typo in \newif\ifusehbgk
+
+Revision 0.11  1996/08/10 11:50:02  s
+add \newif\ifusehbgk
+
+Revision 0.10  1996/08/04 12:23:37  s
+fontlist.tex and RCS.tex now live in lib/
+
+Revision 0.9  1996/03/01 14:24:39  s
+add \ifAFOURpaper for European users
+
+% Revision 0.8  1995/11/09  13:10:15  s
+% added config stuff for \ifISOfonts
+%
+% Revision 0.7  1995/06/16  12:21:15  s
+% added \sayhello but not sure if I like it
+%
+% Revision 0.6  1995/06/16  11:35:21  s
+% Doh! Can't put Revision in \def; use \getRCSRevision instead---that's what
+% it's there for...
+%
+% Revision 0.5  1995/06/16  11:34:14  s
+% Doh! I meant RCS Revision!
+%
+% Revision 0.4  1995/06/16  11:33:46  s
+% *** empty log message ***
+%
+% Revision 0.3  1995/06/16  11:33:22  s
+% use RCS Id in \fmtversion
+%
+% Revision 0.2  1995/06/16  11:14:25  s
+% added \input RCS
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

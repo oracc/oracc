@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 6:<br/>XHTML Forms</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The query in Example 4 is accessed using an XHTML form.</dc:description>
+</d:meta>
+
+<h1>XHTML Forms</h1>
+
+<p>Although Oracc supports XForms (see Examples 7 and 8), the simpler
+basic XHTML forms are adequate for many of the user interaction pages
+that most projects will want to create.  The major advantages of
+XForms are that XML data can be pulled directly from the database
+without intermediate formatting, and that XML data can be written back
+to the database.</p>
+
+<p>To use an XQuery script from an XHTML form, simply specify it in
+the <code>action</code> attribute of the <code>form</code> tag, and
+use the <code>post</code> method. Then set up your inputs to use the
+same names as the XQuery script expects to find in its parameters.
+That's all there is to it:</p>
+
+<pre class="cookbook">
+&lt;html xmlns="http://www.w3.org/1999/xhtml">
+&lt;head>
+&lt;title>Oracc XHTML Forms and eXist/XQuery&lt;/title>
+&lt;/head>
+&lt;body>
+  &lt;h1>Oracc XHTML Forms and eXist/XQuery&lt;/h1>
+  &lt;form 
+      action="/db/oracc/lib/examples/stats/stats-t.xql"
+      method="post">
+    &lt;fieldset>
+      &lt;legend>Select Project&lt;/legend>
+      &lt;select id="project" name="project">
+	&lt;option value="ctij">CTIJ&lt;/option>
+	&lt;option value="test">Test&lt;/option>
+      &lt;/select>
+    &lt;/fieldset>
+    &lt;p>&lt;input type="submit"/>&lt;/p>
+  &lt;/form>
+&lt;/body>
+&lt;/html>
+</pre>
+
+<p>You can access this page at: <a href="http://oracc.museum.upenn.edu/db/oracc/lib/examples/xhtmlforms/stats.html">http://oracc.museum.upenn.edu/db/oracc/lib/examples/xhtmlforms/stats.html</a>.</p>
+
+</d:doc>

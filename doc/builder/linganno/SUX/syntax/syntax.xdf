@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>SUX: Oracc Linguistic Annotation for Sumerian</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-09-26</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Sumerian syntax used in
+  Oracc.</dc:description>
+</d:meta>
+
+<h1>Syntax</h1>
+
+<h2>PPCS</h2>
+
+<p>The syntax annotation conventions are developed and maintained in
+and adjunct project related to the Pennsylvania Sumerian Dictionary.
+This project is known as the PPCS: the Penn Parsed Corpus of
+Sumerian.  Its documentation (which is in the process of being
+updated) is available on <a href="http://psd.museum.upenn.edu/ppcs/">the
+PPCS website</a>.</p>
+
+<p>The PPCS is based on a Penn tradition of parsed corpora which have
+common vocabulary and annotation conventions and this has informed the
+descriptive vocabulary used for syntactic features.  Readers
+interested in the broader context of this work can see the <a
+href="http://www.ling.upenn.edu/hist-corpora/">Penn Parsed Corpora of
+Historical English Home Page</a>.</p>
+
+<h2>Parser</h2>
+
+<p>Syntax processing is carried out using a Sumerian-specific parser
+which understands enough about Sumerian syntax to enable it to work
+effectively on many texts with only minimal hints being given in the
+annotation.  In the following sections we describe what the parser can
+and cannot do, and what it sometimes needs to be prevented from doing,
+at the same time as we describe the notations and features relevant to
+annotation in ATF files.</p>
+
+<h2>Phrasal Parenthesis</h2>
+
+<p>Parenthetic noun-phrases (NP-PRN) are the name used for
+appositional phrases.  The parser normally recognizes parenthetic phrases
+automatically by considering the context and the semantic class of key
+words.</p>
+
+<p>To force a lemma to be the head noun of a parenthetic phrase, use
+the notation <code class="cookbook">+,</code> (plus-sign followed by
+comma).  To suppress parenthetic interpretation, use <code
+class="cookbook">-,</code> (minus-sign followed by comma).</p>
+
+<p>In the following example, the parser defaults to understanding
+<code>dijir</code> as parenthetic but that is incorrect; the
+annotation suppresses the parser's enthusiasm in this case:</p>
+
+<pre class="cookbook">
+1. {d}nin-jesz-zid-da
+#lem: DN
+
+2. dijir gu3-de2-a-kam
+#lem: -, dijir[deity]; RN
+</pre>
+
+<h2>Phrasal Conjunction</h2>
+
+<p>Because the parser defaults to understanding adjacent otherwise
+unmarked NPs as parenthetic it is necessary to mark phrasal
+conjunctions unless they are in the parser's built-in table.</p>
+
+<p>The following entries are in the parser's table:</p>
+
+<pre class="example">
+# List of N N conjunction pairs
+# input must be a list of pairs of ePSD CFGWs
+an[heaven] ki[earth]
+dam[spouse] dumu[child]
+kug[metal] zagin[lapis lazuli]
+gud[ox] udu[sheep]
+kugsig[gold] kugbabbar[silver]
+Enki Ninki
+</pre>
+
+<p>Common cases should be added to this list; less common cases can be
+annotated using the convention <code class="cookbook">+&amp;</code>
+(plus-sign ampersand). Similarly, an unwanted conjunction can be suppressed using the
+notation <code class="cookbook">-&amp;</code> (minus-sign
+ampersand):</p>
+
+<pre class="cookbook">
+1. ku6 muszen
+#lem: kud[fish]; +&amp; muszen[bird]
+</pre>
+
+<h2>Noun-noun Modification</h2>
+
+<p>Nouns can modify nouns in Sumerian and the parser supports this
+with a built-in table (derived mainly from third millennium royal
+inscriptions) as well as the notation <code
+class="cookbook">+&lt;</code>.  The current version of the table contains
+the following entries:</p>
+
+<pre class="example">
+# List of N N modifier pairs; default is to assume post-mod
+# for pre-mod put '+' before first element
+#
+# input must be a list of pairs of ePSD CFGWs; proper nouns should
+# not have a guideword element
+
+e[house] ub[corner]
+
+šita[weapon] saŋ[head]
+šita[weapon] ur[lion]
+ur[lion] saŋ[head]
+
+aga[rear] eren[cedar]
+
+eš[shrine] Bagara
+eš[shrine] Gutur
+eš[shrine] Nibru
+eš[shrine] Ŋirsu
+gu[neck] Idigna
+iri[city] Ŋirsu
+egal[palace] Tiraš
+hursaŋ[mountain] Uringiriaz
+hursaŋ[mountain] Magan
+kur[foreign land] Magan
+kur[foreign land] Dilmun
+abulla[gate] Kasurra
+
+i[oil] nun[prince]
+ir[scent] nun[prince]
+
+mu[name] gilsa[treasure]
+
+kar[harbor] zagin[lapis lazuli]
+udu[sheep] i[oil]
+udu[sheep] nita[male]
+gur[unit] lugal[king]
+</pre>
+
+<p>A manually annoted N-N modifier looks like this:</p>
+
+<pre class="cookbook">
+1. ab2 ti dara4
+#lem: ab[cow]; +&lt; ti[rib]; dara[brown]
+#tr: brown-ribbed cow
+</pre>
+
+<h2>Pre-modification</h2>
+
+<p>Premodification, with the exception of kug inana, must be annotated
+manually using the notation <code class="example">+></code>:</p>
+
+<pre class="cookbook">
+1. kug ama {d}nansze
+#lem: kug[pure] +> ; ama[mother]; DN
+</pre>
+
+<h2>Subordinate Clauses</h2>
+
+<p>Annotation of subordinate clauses generally involves only giving
+the start of the clause using the <code
+class="example">([WORD])</code> convention.  Notes on individual
+clause types are given below.</p>
+
+<h4>Relative</h4>
+
+<p>The parser is usually able to determine the start of a relative
+clause. If necessary, however, the notation <code
+class="cookbook">(S-REL)</code> can be inserted before the first lemma
+of the clause:</p>
+
+<pre class="cookbook">
+1. lu2 e2 mu-du3-a
+#lem: lu[person]; (S-REL) e[house]; du[build]
+</pre>
+
+<p><strong>N.B.:</strong>This is just by way of example; relatives
+like this are correctly handled by the parser without hinting.</p>
+
+<h4>DE3</h4>
+
+<p>The parser never tries to guess the start of a DE3-clause.  As a
+result, it is always necessary to supply the start and type of the
+clause.  The most common type is purpose (S-PRP); other DE3-clauses
+should be tagged as S-ADV:</p>
+
+<pre class="cookbook">
+1. e2 du3-u3-de3 i3-jen
+#lem: (S-PRP) e[house]; du[build]; jen[go]
+</pre>
+
+</d:doc>

@@ -1,0 +1,58 @@
+default namespace = "http://oracc.org/ns/xcl/1.0"
+
+start = c
+c =
+  element c {
+    attribute xml:lang { xsd:language }?,
+    attribute level { xsd:integer }?,
+    ((attribute ref { xsd:NCName }?,
+      attribute subtype { xsd:NCName }?,
+      attribute type { xsd:NCName },
+      attribute xml:id { xsd:NCName }?)
+     |
+     (attribute type { "field-start" } ,
+      attribute utype { token })) ,
+    (c | d | l | ll)*
+  }
+
+d =
+  element d {
+    (attribute type { xsd:NCName } ,
+       attribute ref { xsd:NCName },
+       attribute form { xsd:NCName }?,
+       attribute sb { xsd:NCName }?)
+    | (attribute type { "num-start" } ,
+       attribute sys { token })
+    | attribute type { "num-end" | "gloss-start" | "gloss-end" }
+  }
+
+l =
+  element l {
+    attribute base { text }?,
+    attribute cfgw { text }?,
+         attribute cont { text }?,
+    attribute form { text }?,
+    attribute id { xsd:NCName }?,
+    attribute lang { xsd:language }?,
+    attribute lela { text }?,
+    attribute morph { token }?,
+    attribute pos { xsd:NCName }?,
+    attribute ref { xsd:NCName },
+    attribute rws { xsd:NCName }?,
+    attribute sb { xsd:NCName }?,
+    attribute status { xsd:NCName },
+    dsu ?
+  }
+
+dsu =
+  element dsu {
+    attribute base { text }?,
+    attribute dsu { xsd:NCName },
+    attribute form { token }?,
+    attribute last { xsd:NCName }?,
+    attribute morph { text }?,
+    attribute n { xsd:integer },
+    attribute term { text }
+  }
+
+ll = element ll { l+ , dsu? }

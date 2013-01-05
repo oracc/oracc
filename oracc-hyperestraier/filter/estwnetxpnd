@@ -1,0 +1,60 @@
+#! /bin/sh
+
+#================================================================
+# estwnetsyno
+# List synonyms of a word using WordNet
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:$HOME/bin:/usr/WordNet-*/bin:/usr/local/WordNet-*/bin" ; export PATH
+progname="estwnetsyno"
+word="$1"
+if [ -z "$word" ]
+then
+  word="$ESTWORD"
+fi
+
+
+# show help message
+if [ "$1" = "--help" ]
+then
+  printf 'List synonyms of a word using WordNet\n'
+  printf '\n'
+  printf 'Usage:\n'
+  printf '  %s word\n' "$progname"
+  printf '\n'
+  exit 0
+fi
+
+
+# limit the resource
+ulimit -v 262144 -t 30 2> "/dev/null"
+
+
+# list synonyms
+wn "$word" -o -synsn -synsv -synsa -synsr |
+awk '
+/^{[0-9]*} */ {
+  sub(/^{[0-9]*} */, "")
+  gsub(/\([^)]*\)/, "")
+  split($0, terms, /,/)
+  for(i in terms){
+    term = tolower(terms[i])
+    sub(/^ +/, "", term)
+    sub(/ +$/, "", term)
+    if(length(term) > 0) printf("%s\n", term)
+  }
+}
+' |
+sort | uniq
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

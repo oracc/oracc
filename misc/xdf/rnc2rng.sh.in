@@ -1,0 +1,11 @@
+#!/bin/sh
+# @SUMMARY@= convert xdf.rnc to xdf.rng and do some housekeeping
+# DESCRIPTION
+# Converts xdf.rnc to xdf.rng, doing some housekeeping of
+# the XHTML RNG files that Trang produces in the ORACC/XDF
+# directory.
+trang xdf.rnc xdf.rng
+mv xdf.rng xdf.xxx ; rm -f *.rng
+sed 's,<grammar ,<grammar xml:base="@@ORACC@@/lib/xhtml/" ,' \
+    <xdf.xxx >xdf.rng
+rm xdf.xxx

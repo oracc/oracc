@@ -1,0 +1,216 @@
+#!/usr/bin/perl
+use warnings; use strict; use open ':utf8';
+use Data::Dumper;
+use lib '@@ORACC@@/lib';
+use lib '@@ORACC@@/lib/epsd';
+use ORACC::Expand2;
+use ORACC::XML;
+use PSD::SUM::Parser::ParseManual;
+use ORACC::XST::Manager;
+
+use Getopt::Long;
+my @list = ();
+my $project = '';
+my $stdin = 0;
+my $text = '';
+my $verbose = 0;
+
+GetOptions (
+    'list:s'=>\@list,
+    'project:s'=>\$project,
+    'stdin+'=>\$stdin,
+    'verbose'=>\$verbose,
+    );
+
+my $discourse = 0;
+my $status = 0;
+my @files = ();
+if ($#list >= 0) {
+    foreach my $list (@list) {
+	open(IN, $list) || die "xclmanager.plx: can't open list file $list\n";
+	while (<IN>) {
+	    chomp;
+	    push @files, $_;
+	}
+	close(IN);
+    }
+} elsif ($stdin) {
+    while (<>) {
+	chomp;
+	push @files, $_;
+    }
+} else {
+    @files = @ARGV;
+}
+
+foreach my $f (@files) {
+    $status = 0;
+    one_file($f);
+}
+
+sub
+one_file {
+    my $xcl = shift;
+    $xcl = expand_in_project($project,"$xcl.xtf") if $xcl =~ /^[PQX]\d+$/;
+    my $pq = $xcl;
+    $pq =~ s/^.*?([PQX]\d{6,}).*/$1/;
+    my $xcldoc = load_xml($xcl);
+    my @refs = xcl2refs($xcldoc);
+    
+    if ($status) {
+	return;
+    } else {
+#    print Dumper(@refs);
+#	my $id = $xcldoc->getDocumentElement()->getAttribute('ref');
+	my $id = xid($xcldoc);
+	my @phrasal = ();
+	eval { @phrasal = ORACC::XST::Manager::run($id,@refs); };
+	warn $@ and return if $@;
+	my $xst = $xcl;
+	$xst =~ s/xtf$/xst/;
+	if ($#phrasal >= 0) {
+	    ORACC::XST::Manager::dump_xst($xst,
+					$id,
+					$xcldoc->getDocumentElement()->getAttribute('n'),
+					@phrasal);
+	} else {
+	    open(XST,">xst");
+	    print XST <<BAD;
+	    <units xmlns="http://oracc.org/ns/syntax-tree/1.0">
+BAD
+		close(XST);
+	}
+    }
+}
+#########################################################################
+
+sub
+bad {
+    warn('xcl2xst.plx: ', @_, "\n");
+    ++$status;
+}
+
+sub
+make_pos {
+    my $n = shift;
+    my $cfgw = $n->getAttribute('cfgw');
+    if (!$cfgw || $cfgw eq 'n') {
+	if ($n->getAttribute('pos') eq 'n') {
+	    my $form = $n->getAttribute('base') || $n->getAttribute('form');
+	    my $morph = $n->getAttribute('morph') || '';
+	    if ($morph) {
+		return $form.'[]n#'.$morph;
+	    } else {
+		return $form.'[]n#~';
+	    }
+	} else {
+	    my $form = $n->getAttribute('form');
+	    my $morph = $n->getAttribute('morph') || '~';
+	    return $form.'[]X#'.$morph;
+	}
+    } else {
+	$cfgw .= '[]' unless $cfgw =~ /\]$/;
+	my $base = $n->getAttribute('base') || $n->getAttribute('form');
+	my $morph = $n->getAttribute('morph') || '~';
+	$morph =~ s/~/$base/ if $morph;
+	my $pos = $n->getAttribute('pos') || 'X';
+	"$cfgw$pos#$morph";
+    }
+}
+
+sub
+sent2ref {
+    my ($id,$label,@n) = @_;
+#    print STDERR "s-label = $label\n";
+    my @w = ();
+    my $position = undef;
+    foreach my $node (@n) {
+	my $xid = $node->getAttribute('ref');
+	my $lname = $node->localName();
+	if ($lname eq 'l') {
+	    next if $discourse;
+	    my %w = ();
+	    my $pos = make_pos($node);
+	    $w{'parses'} = [ PSD::SUM::Parser::ParseManual::mk_parse_from_pos($pos) ];
+	    $w{'ro'} = 1;
+	    $w{'wid'} = $xid;
+	    $w{'pre-syn'} = $node->getAttribute('pre-syn');
+	    $w{'post-syn'} = $node->getAttribute('post-syn');
+	    push @w, { %w };
+	} elsif ($lname eq 'll') { # FIXME: ambiguities should be handled differently
+	    next if $discourse;
+	    foreach my $lc ($node->childNodes()) {
+		$node = $lc and last
+		    if $lc->isa('XML::LibXML::Element') and $lc->localName() eq 'l';
+	    }
+	    my %w = ();
+	    my $pos = make_pos($node);
+	    $w{'parses'} = [ PSD::SUM::Parser::ParseManual::mk_parse_from_pos($pos) ];
+	    $w{'ro'} = 1;
+	    $w{'wid'} = $xid;
+	    $w{'pre-syn'} = $node->getAttribute('pre-syn');
+	    $w{'post-syn'} = $node->getAttribute('post-syn');
+	    push @w, { %w };
+	} elsif ($lname eq 'd') {
+	    my $dtype = $node->getAttribute('dtype') || $node->getAttribute('type');
+	    if ($dtype eq 'break') {
+		next if $discourse;
+		push @w, { w=>      { node=>$node,
+				      wid =>$xid,
+				      form=>'' },
+			   parses=> [ ],
+			   break=>  1,
+		};
+		undef $position;
+	    } elsif ($dtype eq 'div-start' || $dtype eq 'div-end') {
+		# ignore for now
+	    } elsif ($dtype eq 'line-start') {
+		next if $discourse;
+		# set the 'li' flag on the next node and the 'lf' flag
+		# on the preceding node
+		if ($#w >= 0) {
+		    $w[$#w]{'position'} = 'final';
+		}
+		$position = 'initial';
+	    } elsif ($dtype eq 'locator') {
+		# do nothing; line-discontinuities output the required
+		# potential caesure information
+	    } elsif ($dtype eq 'discourse') {
+		my $subtype = $node->getAttribute('subtype');
+		if ($subtype eq 'body') {
+		    $discourse = 0;
+		} else {
+		    $discourse = 1;
+		}
+	    } else {
+		bad("unhandled dtype '$dtype'");
+	    }
+	} else {
+	    bad("unhandled node $lname");
+	}
+    }
+    [ $id, $label, @w ];
+}
+
+sub
+xcl2refs {
+    my $x = shift;
+    my $c = $x->getDocumentElement();
+    my $t = $c->getAttribute('type');
+    my $xid = $c->getAttribute('ref');
+    my @r = ();
+    foreach my $s (tags($c,'http://oracc.org/ns/xcl/1.0')) {
+#	$discourse = 0 if $s->getAttribute('level') eq '0';
+#	next unless ($s->getAttribute('level') eq '3'
+#		     && $s->getAttribute('type') eq 'unit');
+#	next if $s->getAttribute('label') =~ /^seal/;
+	next unless $s->getAttribute('type') eq 'sentence';
+	my $r = sent2ref(xid($s),
+			 $s->getAttribute('label'),
+			 $s->childNodes());
+	push @r, $r if $#$r > 1;
+    }
+    @r;
+}
+
+1;

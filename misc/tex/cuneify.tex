@@ -1,0 +1,25 @@
+\setmarginsbytypefield{9.6in}{4.75in} \advance\voffset30pt \advance\hoffset20pt
+
+\font\c="CuneiformNAOutline" at 14pt
+
+\newdimen\tabletwidth \tabletwidth=4.25in \spaceskip1em plus1fil minus0pt
+
+\looseness-1 \hfuzz.25in
+
+\def\tabletruling{\penalty0 \hrule height.1pt width\tabletwidth 
+  \nobreak\kern-6pt\nobreak}
+
+\def\cuneifyLine#1#2{\tabletruling
+  \leavevmode\llap{\hbox to.5in{\ten\rm#1\hfil}}%
+  \vtop{
+    \leftskip0pt plus1fil \hsize\tabletwidth \parfillskip0pt
+    \leavevmode\hfilneg\c#2\endgraf
+  }\endgraf\smallskip}
+
+\def\cuneifySquare#1{{\fourteen\rm[}#1{\fourteen\rm]}}
+
+\UBB\ten\rm
+
+\noblackboxes
+
+\endinput

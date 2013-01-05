@@ -1,0 +1,28 @@
+OB Lem guidelines
+
+Use CACF as CF
+
+Use mimation consistently on @OB CF
+
+Assume logograms are mimated
+
+Normalize syllabic writings consistently with spelling, i.e., final -im 
+normalized as -im.
+
+Normalize morphology according to standard paradigms not spelling, i.e., 
+orthographically non-geminated radicals are geminated in normalization.
+
+Dates:
+====
+
+Month names are in Akkadian, with CACF as CDA but OB CF as OB. Normalize logograms in nominative.
+
+Days are um-absolute followed by number; U4 and numbers are separate words.
+
+Year names which look like Sumerian are tagged as Sumerian as a matter of corpus-building strategy/consistency.
+
+     u3 is not enough to look like Akkadian (other cases?)
+
+(check on CDLI OB year names for other confusing lexemes)
+
+Add disclaimer to the effect that this does not necessarily mean the YNs were read in Sumerian?

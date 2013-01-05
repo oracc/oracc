@@ -1,0 +1,293 @@
+.TH ESTNODE 3 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estnode.h \- the node API of Hyper Estraier
+
+.SH SYNOPSIS
+.PP
+.B #include <estraier.h>
+.br
+.B #include <estnode.h>
+.br
+.B #include <cabin.h>
+.br
+.B #include <stdlib.h>
+
+.SH API FOR INITIALIZING
+.PP
+For preparation to use the node API, initialize the network environment at the beginning of a program.  Moreover, the environment should be freed at the end of the program.
+.PP
+The function `est_init_net_env' is used in order to initialize the networking environment.
+.TP
+.B int est_init_net_env(void);
+The return value is true if success, else it is false.  As it is allowable to call this function multiple times, it is needed to call the function `est_free_net_env' at the same frequency.
+.PP
+The function `est_free_net_env' is used in order to free the networking environment.
+.TP
+.B void est_free_net_env(void);
+There is no parameter and no return value.
+
+.SH API FOR NODES
+.PP
+The type of the structure `ESTNODE' is for abstraction of connection to a node.  A node has its own URL.  No entity of `ESTNODE' is accessed directly, but it is accessed by the pointer.  The term of node connection object means the pointer and its referent.  A node connection object is created by the function `est_node_new' and destroyed by `est_node_delete'.  Every created node connection object should be destroyed.
+.PP
+The function `est_node_new' is used in order to create a node connection object.
+.TP
+.B ESTNODE *est_node_new(const char *url);
+`url' specifies the URL of a node.  The return value is a node connection object.
+.PP
+The function `est_node_delete' is used in order to destroy a node connection object.
+.TP
+.B void est_node_delete(ESTNODE *node);
+`node' specifies a node connection object.
+.PP
+The function `est_node_set_proxy' is used in order to set the proxy information of a node connection object.
+.TP
+.B void est_node_set_proxy(ESTNODE *node, const char *host, int port);
+`node' specifies a node connection object.  `host' specifies the host name of a proxy server.  `port' specifies the port number of the proxy server.
+.PP
+The function `est_node_set_timeout' is used in order to set timeout of a connection.
+.TP
+.B void est_node_set_timeout(ESTNODE *node, int sec);
+`node' specifies a node connection object.  `sec' specifies timeout of the connection in seconds.
+.PP
+The function `est_node_set_auth' is used in order to set the authentication information of a node connection object.
+.TP
+.B void est_node_set_auth(ESTNODE *node, const char *name, const char *passwd);
+`node' specifies a node connection object.  `name' specifies the name of authentication.  `passwd' specifies the password of the authentication.
+.PP
+The function `est_node_status' is used in order to get the status code of the last request of a node.
+.TP
+.B int est_node_status(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the status code of the last request of the node.  \-1 means failure of connection.
+.PP
+The function `est_node_sync' is used in order to synchronize updating contents of the database of a node.
+.TP
+.B int est_node_sync(ESTNODE *node);
+`node' specifies a node connection object.  The return value is true if success, else it is false.
+.PP
+The function `est_node_optimize' is used in order to optimize the database of a node.
+.TP
+.B int est_node_optimize(ESTNODE *node);
+`node' specifies a node connection object.  The return value is true if success, else it is false.
+.PP
+The function `est_node_put_doc' is used in order to add a document to a node.
+.TP
+.B int est_node_put_doc(ESTNODE *node, ESTDOC *doc);
+`node' specifies a node connection object.  `doc' specifies a document object.  The document object should have the URI attribute.  The return value is true if success, else it is false.  If the URI attribute is same with an existing document in the node, the existing one is deleted.
+.PP
+The function `est_node_out_doc' is used in order to remove a document from a node.
+.TP
+.B int est_node_out_doc(ESTNODE *node, int id);
+`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is true if success, else it is false.
+.PP
+The function `est_node_out_doc_by_uri' is used in order to remove a document specified by URI from a node.
+.TP
+.B int est_node_out_doc_by_uri(ESTNODE *node, const char *uri);
+`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is true if success, else it is false.
+.PP
+The function `est_node_edit_doc' is used in order to edit attributes of a document in a node.
+.TP
+.B int est_node_edit_doc(ESTNODE *node, ESTDOC *doc);
+`node' specifies a node connection object.  `doc' specifies a document object.  The return value is true if success, else it is false.  The ID can not be changed.  If the URI is changed and it overlaps the URI of another registered document, this function fails.
+.PP
+The function `est_node_get_doc' is used in order to retrieve a document in a node.
+.TP
+.B ESTDOC *est_node_get_doc(ESTNODE *node, int id);
+`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is a document object.  It should be deleted with `est_doc_delete' if it is no longer in use.  On error, `NULL' is returned.
+.PP
+The function `est_node_get_doc_by_uri' is used in order to retrieve a document specified by URI in a node.
+.TP
+.B ESTDOC *est_node_get_doc_by_uri(ESTNODE *node, const char *uri);
+`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is a document object.  It should be deleted with `est_doc_delete' if it is no longer in use.  On error, `NULL' is returned.
+.PP
+The function `est_node_get_doc_attr' is used in order to retrieve the value of an attribute of a document in a node.
+.TP
+.B char *est_node_get_doc_attr(ESTNODE *node, int id, const char *name);
+`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_node_get_doc_attr_by_uri' is used in order to retrieve the value of an attribute of a document specified by URI in a node.
+.TP
+.B char *est_node_get_doc_attr_by_uri(ESTNODE *node, const char *uri, const char *name);
+`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_node_etch_doc' is used in order to extract keywords of a document.
+.TP
+.B CBMAP *est_node_etch_doc(ESTNODE *node, int id);
+`node' specifies a node connection object.  `id' specifies the ID number of a registered document.  The return value is a new map object of keywords and their scores in decimal string or `NULL' on error.  Because the object of the return value is opened with the function `cbmapopen', it should be closed with the function `cbmapclose' if it is no longer in use.
+.PP
+The function `est_node_etch_doc_by_uri' is used in order to extract keywords of a document specified by URI in a node.
+.TP
+.B CBMAP *est_node_etch_doc_by_uri(ESTNODE *node, const char *uri);
+`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is a new map object of keywords and their scores in decimal string or `NULL' on error.  Because the object of the return value is opened with the function `cbmapopen', it should be closed with the function `cbmapclose' if it is no longer in use.
+.PP
+The function `est_node_uri_to_id' is used in order to get the ID of a document specified by URI.
+.TP
+.B int est_node_uri_to_id(ESTNODE *node, const char *uri);
+`node' specifies a node connection object.  `uri' specifies the URI of a registered document.  The return value is the ID of the document.  On error, \-1 is returned.
+.PP
+The function `est_node_name' is used in order to get the name of a node.
+.TP
+.B const char *est_node_name(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the name of the node.  On error, `NULL' is returned.  The life duration of the returned string is synchronous with the one of the node object.
+.PP
+The function `est_node_label' is used in order to get the label of a node.
+.TP
+.B const char *est_node_label(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the label of the node.  On error, `NULL' is returned.  The life duration of the returned string is synchronous with the one of the node object.
+.PP
+The function `est_node_doc_num' is used in order to get the number of documents in a node.
+.TP
+.B int est_node_doc_num(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the number of documents in the node.  On error, \-1 is returned.
+.PP
+The function `est_node_word_num' is used in order to get the number of unique words in a node.
+.TP
+.B int est_node_word_num(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the number of unique words in the node.  On error, \-1 is returned.
+.PP
+The function `est_node_size' is used in order to get the size of the database of a node.
+.TP
+.B double est_node_size(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the size of the database of the node.  On error, \-1.0 is returned.
+.PP
+The function `est_node_cache_usage' is used in order to get the usage ratio of the cache of a node.
+.TP
+.B double est_node_cache_usage(ESTNODE *node);
+`node' specifies a node connection object.  The return value is the usage ratio of the cache of the node.  On error, \-1.0 is returned.
+.PP
+The function `est_node_admins' is used in order to get a list of names of administrators of a node.
+.TP
+.B const CBLIST *est_node_admins(ESTNODE *node);
+`node' specifies a node connection object.  The return value is a list object of names of administrators.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.
+.PP
+The function `est_node_users' is used in order to get a list of names of users of a node.
+.TP
+.B const CBLIST *est_node_users(ESTNODE *node);
+`node' specifies a node connection object.  The return value is a list object of names of users.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.
+.PP
+The function `est_node_links' is used in order to get a list of expressions of links of a node.
+.TP
+.B const CBLIST *est_node_links(ESTNODE *node);
+`node' specifies a node connection object.  The return value is a list object of expressions of links.  Each element is a TSV string and has three fields of the URL, the label, and the score.  On error, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the node object.
+.PP
+The function `est_node_search' is used in order to search a node for documents corresponding a condition.
+.TP
+.B ESTNODERES *est_node_search(ESTNODE *node, ESTCOND *cond, int depth);
+`node' specifies a node connection object.  `cond' specifies a condition object.  `depth' specifies the depth of meta search.  The return value is a node result object.  It should be deleted with `est_noderes_delete' if it is no longer in use.  On error, `NULL' is returned.
+.PP
+The function `est_node_set_snippet_width' is used in order to set width of snippet in the result from a node.
+.TP
+.B void est_node_set_snippet_width(ESTNODE *node, int wwidth, int hwidth, int awidth);
+`node' specifies a node connection object.  `wwidth' specifies whole width of a snippet.  By default, it is 480.  If it is 0, no snippet is sent. If it is negative, whole body text is sent instead of snippet.  `hwidth' specifies width of strings picked up from the beginning of the text.  By default, it is 96.  If it is negative 0, the current setting is not changed.  `awidth' specifies width of strings picked up around each highlighted word. By default, it is 96.  If it is negative, the current setting is not changed.
+.PP
+The function `est_node_set_user' is used in order to manage a user account of a node.
+.TP
+.B int est_node_set_user(ESTNODE *node, const char *name, int mode);
+`node' specifies a node connection object.  `name' specifies the name of a user.  `mode' specifies the operation mode.  0 means to delete the account.  1 means to set the account as an administrator.  2 means to set the account as a guest.  The return value is true if success, else it is false.
+.PP
+The function `est_node_set_link' is used in order to manage a link of a node.
+.TP
+.B int est_node_set_link(ESTNODE *node, const char *url, const char *label, int credit);
+`node' specifies a node connection object.  `url' specifies the URL of the target node of a link.  `label' specifies the label of the link.  `credit' specifies the credit of the link.  If it is negative, the link is removed.  The return value is true if success, else it is false.
+
+.SH API FOR SEARCH RESULTS OF NODES
+.PP
+The type of the structure `ESTNODERES' is for abstraction of search result from a node.  A result is composed of a list of corresponding documents and information of hints.  No entity of `ESTNODERES' is accessed directly, but it is accessed by the pointer.  The term of node result object means the pointer and its referent.  A node result object is created by the function `est_node_search' and destroyed by `est_noderes_delete'.  Every created node connection object should be destroyed.
+.PP
+The type of the structure `ESTRESDOC' is for abstraction of a document in search result.  A result document is composed of some attributes and a snippet.  No entity of `ESTRESDOC' is accessed directly, but it is accessed by the pointer.  The term of result document object means the pointer and its referent.  A result document object is gotten by the function `est_noderes_get_doc' but it should not be destroyed because the entity is managed inside the node result object.
+.PP
+The function `est_noderes_delete' is used in order to delete a node result object.
+.TP
+.B void est_noderes_delete(ESTNODERES *nres);
+`nres' specifies a node result object.
+.PP
+The function `est_noderes_hints' is used in order to get a map object for hints of a node result object.
+.TP
+.B CBMAP *est_noderes_hints(ESTNODERES *nres);
+`nres' specifies a node result object.  The return value is a map object for hints.  Keys of the map are "VERSION", "NODE", "HIT", "HINT#n", "DOCNUM", "WORDNUM", "TIME", "TIME#n", "LINK#n", and "VIEW".  The life duration of the returned object is synchronous with the one of the node result object.
+.PP
+The function `est_noderes_eclipse' is used in order to eclipse similar documents of a node result object.
+.TP
+.B void est_noderes_eclipse(ESTNODERES *nres, int num, double limit);
+`nres' specifies a node result object.  `num' specifies the number of documents to be shown.  If it is not more than 0, eclipse is undone.  `limit' specifies the lower limit of similarity for documents to be eclipsed.  Similarity is between 0.0 and 1.0.
+.PP
+The function `est_noderes_doc_num' is used in order to get the number of documents in a node result object.
+.TP
+.B int est_noderes_doc_num(ESTNODERES *nres);
+`nres' specifies a node result object.  The return value is the number of documents in a node result object.
+.PP
+The function `est_noderes_get_doc' is used in order to refer a result document object in a node result object.
+.TP
+.B ESTRESDOC *est_noderes_get_doc(ESTNODERES *nres, int index);
+`nres' specifies a node result object.  `index' specifies the index of a document.  The return value is a result document object or `NULL' if `index' is equal to or more than the number of documents.  The life duration of the returned object is synchronous with the one of the node result object.
+.PP
+The function `est_resdoc_uri' is used in order to get the URI of a result document object.
+.TP
+.B const char *est_resdoc_uri(ESTRESDOC *rdoc);
+`rdoc' specifies a result document object.  The return value is the URI of the result document object.  The life duration of the returned string is synchronous with the one of the result document object.
+.PP
+The function `est_resdoc_attr_names' is used in order to get a list of attribute names of a result document object.
+.TP
+.B CBLIST *est_resdoc_attr_names(ESTRESDOC *rdoc);
+`rdoc' specifies a result document object.  The return value is a new list object of attribute names of the result document object.  Because the object of the return value is opened with the function `cblistopen', it should be closed with the function `cblistclose' if it is no longer in use.
+.PP
+The function `est_resdoc_attr' is used in order to get the value of an attribute of a result document object.
+.TP
+.B const char *est_resdoc_attr(ESTRESDOC *rdoc, const char *name);
+`rdoc' specifies a result document object.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  The life duration of the returned string is synchronous with the one of the result document object.
+.PP
+The function `est_resdoc_snippet' is used in order to get the snippet of a result document object.
+.TP
+.B const char *est_resdoc_snippet(ESTRESDOC *rdoc);
+`rdoc' specifies a result document object.  The return value is a string of the snippet of the result document object.  There are tab separated values.  Each line is a string to be shown.  Though most lines have only one field, some lines have two fields.  If the second field exists, the first field is to be shown with highlighted, and the second field means its normalized form.  The life duration of the returned string is synchronous with the one of the result document object.
+.PP
+The function `est_resdoc_keywords' is used in order to get keywords of a result document object.
+.TP
+.B const char *est_resdoc_keywords(ESTRESDOC *rdoc);
+`rdoc' specifies a result document object.  The return value is a string of serialized keywords of the result document object.  There are tab separated values.  Keywords and their scores come alternately.  The life duration of the returned string is synchronous with the one of the result document object.
+.PP
+The function `est_resdoc_shadows' is used in order to get an array of documents eclipsed by a result document object.
+.TP
+.B ESTRESDOC **est_resdoc_shadows(ESTRESDOC *rdoc, int *np);
+`rdoc' specifies a result document object.  `np' specifies the pointer to a variable to which the number of elements of the return value is assigned.  The return value is an array of eclipsed result document objects.  The life duration of the returned array and its elements is synchronous with the one of the result document object.
+.PP
+The function `est_resdoc_similarity' is used in order to get similarity of an eclipsed result document object.
+.TP
+.B double est_resdoc_similarity(ESTRESDOC *rdoc);
+`rdoc' specifies a result document object.  The return value is similarity of the result document object to the front document or \-1.0 if it is not eclipsed.
+
+.SH PARALLELING
+.PP
+Each of node connection objects, node result objects, and result document objects can not be shared by threads.  If you use multi threads, make each thread have its own objects.  If the precondition is kept, functions of the node API can be treated as thread\-safe functions.
+
+.SH AUTHOR
+.PP
+Hyper Estraier is written by Mikio Hirabayashi.  You can contact the author by e\-mail to <mikio@fallabs.com>.  Any suggestion or bug report is welcome to the author.
+
+.SH ACKNOWLEDGEMENTS
+Hyper Estraier was developed under management by Fumitoshi Ukai and supports by Exploratory Software Project of Information\-technology Promotion Agency, Japan (IPA).
+
+.SH COPYRIGHT
+.PP
+Copyright (C) 2004\-2007 Mikio Hirabayashi
+.PP
+Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version.
+.PP
+Hyper Estraier is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with Hyper Estraier; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111\-1307 USA.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estcmd (1),
+.BR estmaster (1),
+.BR estcall (1),
+.BR estwaver (1),
+.BR cabin (3),
+.BR estraier (3)
+.PP
+Please see
+.B http://fallabs.com/hyperestraier/nguide-en.html
+for detail.

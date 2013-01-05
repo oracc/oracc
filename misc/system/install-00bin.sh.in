@@ -1,0 +1,19 @@
+#!/bin/sh
+project=`xpdmanager.plx -showproj`
+if [ "$project" = "" ]; then
+    echo "install-00bin.sh: must run in valid project"; exit 1
+fi
+if [ ! -d ${ORACC_HOME}/$project/00bin/src ]; then
+    echo "install-00bin.sh: no 00bin/src directory ${ORACC_HOME}/$project/00bin/src"; exit 1
+fi
+pushd ${ORACC_HOME}/$project/00bin
+# Install all of the .plx and .sh scripts into oracc/bin,
+# fixing the @\@ORACC@@ path as we go.
+for a in */*.plx */*.sh */*.txt; do \
+    exe=./`basename $a` ; \
+    rm -f $exe ; \
+    echo installing $exe; \
+    perl -C0 -pe "s#\@\@ORACC\@\@#$ORACC#g" <$a >$exe ; \
+    chmod +x $exe ; chmod o+r $exe ; chmod -w $exe; \
+done
+popd

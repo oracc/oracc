@@ -1,0 +1,878 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xpd="http://oracc.org/ns/xpd/1.0" xpd:dummy="I am the Fly">
+  <head>
+    <link href="/db/oracc/manager/config/config.css" type="text/css" rel="stylesheet"/>
+    <title>Oracc { $project } Configuration</title>
+    <xf:model>
+      <xf:instance xmlns="http://oracc.org/ns/xpd/1.0" id="config" src="{ $configxml }"/>
+      <xf:instance xmlns="http://oracc.org/ns/xpd/1.0" id="template" src="{ $template }"/>
+      <xf:instance xmlns="" id="display">
+        <data>
+          <x/>
+        </data>
+      </xf:instance>
+      <xf:instance xmlns="" id="help">
+        <data>
+          <blob name="#empty"/>
+          <blob name="name">The full name of the project is not restricted in the same way as
+the abbreviated name and the project name itself.</blob>
+          <blob name="abbrev">The abbreviation for the project should be a single word which can
+mix case, like ePSD.</blob>
+          <blob name="type">Oracc recognizes several different project types which affect things
+like how the default home page is constructed, and how the pager
+formats a browsable view of the project data.</blob>
+          <blob name="blurb">You have 40 words, about 300 characters including spaces, to give
+the most interesting and relevant information about your project,
+which is used in the Oracc project list and in the Featured Project
+on the Oracc home page.
+
+You do not need to repeat the title and abbreviation, because that
+is already in the heading. You may include links in the blurb--they
+do not count against your word or character limit.
+ 
+If you want split your blurb into two or more paragraphs, each
+paragraph must start with a &lt;p&gt; tag and end with a &lt;/p&gt; tag.  </blob>
+          <blob name="image">This image accompanies the blurb. It is always scaled to 320 x 240
+pixels (i.e., a 4:3 ratio), so should be chosen with this
+constraint in mind. It does not need to be an image that is used
+elsewhere in the project, but it must be placed in the 00web/images
+directory.
+
+Please scale your images so that they are a reasonable size: images
+over 100K in size will be rejected by the system. The best format
+is .png, but .jpg files are also acceptable.
+
+PLEASE TRY NOT TO USE PICTURES OF TABLETS! For some projects, that
+may be inevitable, but since we have so many pictures of tablets in
+so many places, it is more interesting to promote your project with
+a scene of relevance either to the context of the work you are
+doing or to the content of the tablets. If you do use a tablet
+image, please choose a relevant section of a relevant text, and
+present something that is meaningful to those able to read it. The
+section presented should be scaled and processed so that it is
+clearly readable online.</blob>
+          <blob name="image-alt">When the image is displayed online it is accompanied by
+a short description which is used by browsers which do not
+display the image.  This alternate text is required.</blob>
+          <blob name="option">The two important lists are approved.lst and outlined.lst (both are
+in the 00lib directory). The first gives all the texts which are
+considered part of the project. The second gives the texts which
+are displayed by the pager. Whether or not the pager actually uses
+00lib/outlined.lst is controlled by the pager option
+pager-outlined-lst on the pager panel.</blob>
+        </data>
+      </xf:instance>
+      <xf:submission id="put-and-quit" method="post" action="/db/oracc/manager/manager.xql?module=config-savequit">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="put-only" method="post" action="/db/oracc/manager/manager.xql?module=config-save">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="cancel" method="post" action="/db/oracc/manager/manager.xql?module=config-cancel">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="reset" method="get" replace="instance" resource="{$configxml}">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+      </xf:submission>
+      <xf:action ev:event="xforms-ready">
+        <xf:action if="not(instance('config')/*[@name='build-approved-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-approved-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-outlined-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-outlined-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='catalog-build-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='catalog-build-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-list'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-list']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-dist'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-dist']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-trim'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-trim']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-exist'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-exist']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-lem-system'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-lem-system']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-lem-flags'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-lem-flags']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-cuneify-notices'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-cuneify-notices']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='cbd-mode'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='cbd-mode']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='pager-back-button'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='pager-back-button']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='pager-back-url'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='pager-back-url']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-accents'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-accents']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+      </xf:action>
+      <xf:bind nodeset="instance('config')/xpd:public" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-exist']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei-dist']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei-trim']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='atf-cuneify-notices']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='render-accents']/@value" type="xs:boolean"/>
+    </xf:model>
+  </head>
+  <body>
+    <h1>Oracc Configuration for project: { $project }</h1>
+    <div class="submits">
+      <p>
+        <span class="savequit">
+          <xf:submit class="store" submission="put-and-quit">
+            <xf:label>Save and Exit</xf:label>
+          </xf:submit>
+        </span>
+        <span class="savequit">
+          <xf:submit class="store" submission="put-only">
+            <xf:label>Save</xf:label>
+          </xf:submit>
+        </span>
+        <span class="cancel">
+          <xf:submit class="store" submission="reset">
+            <xf:label>Reset</xf:label>
+          </xf:submit>
+        </span>
+        <span class="cancel">
+          <xf:submit class="store" submission="cancel">
+            <xf:label>Cancel</xf:label>
+          </xf:submit>
+        </span>
+      </p>
+    </div>
+    <div id="horiz-tab-menu">
+      <xf:trigger id="tab-core" appearance="minimal">
+        <xf:label>core</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-core"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-build" appearance="minimal">
+        <xf:label>build</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-build"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-atf" appearance="minimal">
+        <xf:label>ATF processor</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-atf"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-cbd" appearance="minimal">
+        <xf:label>glossary</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-cbd"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-pager" appearance="minimal">
+        <xf:label>pager</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-pager"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-render" appearance="minimal">
+        <xf:label>render</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-render"/>
+        </xf:action>
+      </xf:trigger>
+    </div>
+    <xf:switch>
+      <xf:case id="case-core" appearance="minimal">
+        <div id="div-core" class="optgroup">
+          <h2>core —
+      <span class="groupdoc">required for all projects.</span></h2>
+          <fieldset class="core">
+            <table>
+              <tr>
+                <td class="option">name: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:name">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The long human-readable name of the project.</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='name']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">abbrev: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:abbrev">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The short human-readable name of the project</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='abbrev']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">type: </td>
+                <td class="control">
+                  <xf:select1 ref="instance('config')/xpd:type">
+                    <xf:item>
+                      <xf:label>corpus</xf:label>
+                      <xf:value>corpus</xf:value>
+                    </xf:item>
+                    <xf:item>
+                      <xf:label>dictionary</xf:label>
+                      <xf:value>dictionary</xf:value>
+                    </xf:item>
+                    <xf:item>
+                      <xf:label>portal</xf:label>
+                      <xf:value>portal</xf:value>
+                    </xf:item>
+                    <xf:item>
+                      <xf:label>signlist</xf:label>
+                      <xf:value>signlist</xf:value>
+                    </xf:item>
+                  </xf:select1>
+                </td>
+                <td class="doco">
+                  <p class="choicedoc"><span class="valval">corpus</span>: <span class="valdoc">project is primarily role a corpus</span></p>
+                  <p class="choicedoc"><span class="valval">dictionary</span>: <span class="valdoc">project is primarily role a glossary</span></p>
+                  <p class="choicedoc"><span class="valval">portal</span>: <span class="valdoc">project is a portal providing only content-pages</span></p>
+                  <p class="choicedoc"><span class="valval">signlist</span>: <span class="valdoc">project is primarily a signlist</span></p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='type']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">logo: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:logo">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The logo to display in the top left corner of the page</span>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">public: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:public">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">make project public and include it in Oracc search, etc.</span>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">blurb: </td>
+                <td colspan="2" class="double">
+                  <p>
+                    <xf:textarea class="blurb" ref="instance('config')/xpd:blurb">
+                      <xf:label/>
+                    </xf:textarea>
+                    <br/>
+                    <span class="docsolo">Short description for the Featured Project panel</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='blurb']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">image: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:image">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">A 4:3 ratio image for the Featured Project panel</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='image']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">alt: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:image-alt">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">Brief description of image for the 'alt' attribute</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='image-alt']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-build" appearance="minimal">
+        <div id="div-build" class="optgroup">
+          <h2>build —
+      <span class="groupdoc">affects the project rebuilding process.</span></h2>
+          <fieldset class="lists">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>approved.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-approved-policy']/@value">
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>catalog</xf:label>
+                        <xf:value>catalog</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>mixed</xf:label>
+                        <xf:value>mixed</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">list is derived from project's ATF sources</span></p>
+                    <p class="choicedoc"><span class="valval">catalog</span>: <span class="valdoc">list is derived from project catalogs</span></p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">list combined ATF sources and existing approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:action ev:event="DOMActivate">
+                      <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='option']"/>
+                    </xf:action>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>outlined.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-outlined-policy']/@value">
+                      <xf:item>
+                        <xf:label>approved</xf:label>
+                        <xf:value>approved</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>P</xf:label>
+                        <xf:value>P</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>Q</xf:label>
+                        <xf:value>Q</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">outline gives the texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">outline gives all texts for which project has ATF source</span></p>
+                    <p class="choicedoc"><span class="valval">P</span>: <span class="valdoc">outline gives all P-id and X-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">Q</span>: <span class="valdoc">outline gives all Q-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="formats">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>catalog: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='catalog-build-policy']/@value">
+                      <xf:item>
+                        <xf:label>auto</xf:label>
+                        <xf:value>auto</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>local</xf:label>
+                        <xf:value>local</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>custom</xf:label>
+                        <xf:value>custom</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">auto</span>: <span class="valdoc">data comes from CDLI main catalog</span></p>
+                    <p class="choicedoc"><span class="valval">local</span>: <span class="valdoc">project maintains its own catalog in CDLI format</span></p>
+                    <p class="choicedoc"><span class="valval">custom</span>: <span class="valdoc">project maintains its own catalog in its own format</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>eXist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-exist']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build eXist version of project</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI version of project</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.list: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-tei-list']/@value">
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>lem</xf:label>
+                        <xf:value>lem</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>approved</xf:label>
+                        <xf:value>approved</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">all ATF files</span></p>
+                    <p class="choicedoc"><span class="valval">lem</span>: <span class="valdoc">only lemmatized files</span></p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">all files list in approved.lst</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.dist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei-dist']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.trim: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei-trim']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">trim TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-atf" appearance="minimal">
+        <div id="div-atf" class="optgroup">
+          <h2>ATF processor —
+      <span class="groupdoc">controls ATF processor behaviour</span></h2>
+          <fieldset class="atf">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>lem-system: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-lem-system']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">projects to search for words when lemmatizing</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>flags: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-lem-flags']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">ATF options to use when converting ATF to XML</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>cuneify-notices: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-cuneify-notices']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">issue warning notices about cuneify failures</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-cbd" appearance="minimal">
+        <div id="div-cbd" class="optgroup">
+          <h2>glossary —
+      <span class="groupdoc">controls glossary building behaviour</span></h2>
+          <fieldset class="cbd">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>cbd-mode: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='cbd-mode']/@value">
+                      <xf:item>
+                        <xf:label>mixed</xf:label>
+                        <xf:value>mixed</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>dynamic</xf:label>
+                        <xf:value>dynamic</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>none</xf:label>
+                        <xf:value>none</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">glossary files can be combined with harvested data</span></p>
+                    <p class="choicedoc"><span class="valval">dynamic</span>: <span class="valdoc">glossaries are always generated from lemmatized sources</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">glossaries are never changed by a program</span></p>
+                    <p class="choicedoc"><span class="valval">none</span>: <span class="valdoc">project does not use glossaries (portals, for example)</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-pager" appearance="minimal">
+        <div id="div-pager" class="optgroup">
+          <h2>pager —
+      <span class="groupdoc">controls pager behaviour</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>back-button: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='pager-back-button']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">text to display on 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>back-url: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='pager-back-url']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">URL to visit when user clicks 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-render" appearance="minimal">
+        <div id="div-render" class="optgroup">
+          <h2>render —
+      <span class="groupdoc">controls rendering (HTML, print)</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>accents: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-accents']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display graphemes with index 2 and 3 as accented</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+    </xf:switch>
+    <br/>
+    <xf:switch>
+      <xf:case id="ready"/>
+      <xf:case id="case-busy">
+        <p>Waiting for results from server...</p>
+      </xf:case>
+      <xf:case id="case-submit-error">
+        <p>Submit error</p>
+      </xf:case>
+      <xf:case id="case-submit-done">
+        <p>Submit done</p>
+      </xf:case>
+    </xf:switch>
+  </body>
+</html>

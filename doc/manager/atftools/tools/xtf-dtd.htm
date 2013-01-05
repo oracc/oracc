@@ -1,0 +1,1083 @@
+<html><head><title>XTF.DTD</title></head><body><pre>
+&lt;!--
+
+ XML Text Format DTD, version 1.5 of 06/16/05
+
+ By Steve Tinney for the Cuneiform Digital Library.
+
+ CDL collaborators:
+
+  CDLI   http://cdli.ucla.edu
+  DCCLT  http://cdli.ucla.edu/dcclt/dcclt.html
+  PSD    http://psd.museum.upenn.edu
+
+ Changes in 1.5:
+
+   * add 'cont' value for glosses
+
+ Changes in 1.4: 
+ 
+   * lemmatization attributes (scan for 'Lemmatization')
+     
+   * RWS changes from May 2005 CDLI tech meeting at UCLA (scan for 'RWS')
+
+   * first etcsl attributes to support converting ETCSL TEI2 to XTF
+       (incomplete as of xtf.dtd 1.4)
+
+   * add fragment to object type enumeration (ATF @fragment)
+
+   * add bulla to object type enumeration (ATF @bulla)
+
+   * document suggested CDLI practice of using @face with @bulla
+
+   * add new M (milestone) element (scan for 'MILESTONES')
+
+   * modify content model of SURFACE and SEALING to allow them to be 
+     empty
+
+ -->
+
+&lt;!-- 
+ This DTD defines several related object types which share a common
+ XML namespace; by convention this namespace is bound to the prefix
+ 'xtf'.
+ -->
+
+&lt;!ENTITY % xtf-ns
+  "xmlns       CDATA #FIXED 'http://emegir.info/xtf'
+   xmlns:xtf   CDATA #FIXED 'http://emegir.info/xtf'
+   xmlns:lem   CDATA #FIXED 'http://emegir.info/lemma'
+   xmlns:etcsl CDATA #FIXED 'http://www-etcsl.orient.ox.ac.uk/etcsl'
+   xmlns:d     CDATA #FIXED 'http://emegir.info/debug'">
+
+&lt;!--
+ A convenience wrapper for having files containing more
+ than one text; archival files should only contain one
+ text, in a file whose name is the P-ID.
+ -->
+&lt;!ELEMENT texts     (transliteration|composite)*>
+
+&lt;!ATTLIST texts
+	xmlns       CDATA #FIXED 'http://emegir.info/xtf'>
+
+&lt;!--
+  TRANSLITERATION is the basic data object type in the CDL corpus.
+
+  A TRANSLITERATION consists of a series of zero or more objects, and
+  zero or more associated seals.  *Properly*, seals should be handled
+  in an external dataset, but as discussed in the March 2001 meeting
+  (the Kinsey Accord), it is *practically* preferable to enable inline
+  editing of seals during the preparation of the corpus.
+
+  @N: the museum number, publication reference or other common way of
+      referring to the text.  This is the one that humans use.
+
+  Constraint: id must be unique among the entire CDL corpus.
+  This is the relational ID that can be used for catalogue
+  lookups also.
+
+  @RWS: the default register/writing-system for the text; RWS is
+      presently:
+          eg = emegir
+	  es = emesal
+	  ugn = UDGALNUN
+	  alog = Akkadian logograms
+	  slog = Sumerian logograms
+	  norm = normalized transcription
+          ssyl = Sumerian syllabic writing
+	  asyl = Akkadian syllabic writing
+	  hsyl = Hittite syllabic writing
+	  galpha = Greek alphabetic (think Graeco-Babyloniaca)
+
+  @XML:LANG: the default language for the text.
+ -->
+&lt;!ELEMENT transliteration    (  (object  , (object|cmt|sealing)*) 
+                    	      | (sealing , (object|cmt|sealing)*)
+		    	      | (cmt     , (object|cmt|sealing)*))>
+
+&lt;!ATTLIST transliteration
+	xml:id   ID      #REQUIRED
+	n        CDATA   #REQUIRED
+	rws	 NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #REQUIRED
+        d:file   CDATA   #IMPLIED
+        %xtf-ns;>
+
+&lt;!--
+  TRANSLITERATIONs contain OBJECTS; normally, multiple OBJECTS
+  will be of different types, as with tablets and 
+  envelopes.
+
+  If a TRANSLITERATION contains multiple OBJECTs of the same
+  type, each OBJECT is a fragment of the original
+  whole OBJECT of that type.  The @fragment directive is useful
+  for this purpose.
+
+  @N: The name of the object, often the same as the parent
+      TRANSLITERATION element and therefore unnecessary.  This
+      provides for a TRANSLITERATION being composed of fragments or
+      envelopes with different names from the TRANSLITERATION name.
+      If any text is given after the object name in the ATF input it
+      is used as the value of @N.
+
+  @TYPE: The type of object bearing the inscription.  'seal' in this
+      context means the actual object rolled, not the impression (for
+      impressions see below under SURFACE).
+
+  @OJBECT: When @TYPE='other' the @OBJECT attribute stores the name
+      given to the object by the data enterer
+
+  Constraint: id must be unique among the entire CDL corpus.
+ -->
+&lt;!ELEMENT object   (surface|sealing|cmt)+ >
+&lt;!ATTLIST object
+        xml:id   ID #REQUIRED
+        n	 CDATA #IMPLIED
+	type     (tablet|envelope|prism|fragment|bulla|other) "other"
+	object   CDATA #IMPLIED
+ 	certain  (y|n) "y">
+
+&lt;!--
+ A sealing is a text which is treated as a surface (if you think about
+ it, this makes a certain kind of virtual sense).
+
+ As such a sealing has columnar and non-columnar data.  Because the
+ situation of seals in the final (probably post-1.0) CDL corpus is
+ likely to change, we accomodate three vectors of association:
+
+ @ID: the cdli-global-unique ID of this edition of a sealing.
+
+ @N:  the text-local-unique ID of this edition of a seal text (e.g., 1,
+      2, 3).  The goal of this ID is to provide a target for seal
+      location designators elsewhere on the OBJECTs, so the intent is
+      that this be a simple identifier.  It should be easy for a
+      transliterator to say something like:
+
+      $ seal 1
+
+      and
+
+      @ Seal 1
+      1. da-da
+      2. arad-zu
+
+      To encode the fact that `seal 1' occurs somewhere on the object
+      and then also describe what `seal 1' says.
+
+ @SCID: the Seal-Corpus ID; this is really an IDREF, but to facilitate
+      parsing it is defined here as a NMTOKEN.  The assumption is that
+      within the seal-corpus every seal will have an ID, and this will
+      provide the facility for cross-referencing from specific
+      transliterations to the instance of the seal in the
+      seal-corpus.
+
+ @RWS: the default register/writing-system for the seal text
+
+ @XML:LANG: the default language for the seal text
+ -->
+&lt;!ELEMENT sealing     (column|noncolumn|cmt)* >
+&lt;!ATTLIST sealing
+	xml:id	 ID      #REQUIRED
+	n        NMTOKEN #REQUIRED
+	scid     NMTOKEN #IMPLIED
+        rws      NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #REQUIRED >
+
+&lt;!--
+  Surface is a physical area on which text is layed out.
+
+  The generic SURFACE value for @TYPE is an escape to facilitate
+  non-standard surface designations.  For example, if the nature
+  of a surface is uncertain, one could write:
+
+      &lt;surface type="surface" surface="X">
+
+  The generic EDGE value for @TYPE is intended for use where it
+  is unclear which edge is preserved.
+
+  @CERTAIN: this is 'n' if there was a query on the input column
+      number.
+
+  @REMARK: this is 'y' if there was an exclamation mark on the input
+      surface notation.
+
+  Constraint: id must be unique among the entire CDL corpus.
+
+  Note: CDLI recommended practice for bullae should be to treat them
+  like prisms and use @face a, @face b, etc.
+
+ -->
+&lt;!ELEMENT surface  (column|noncolumn|cmt)* >
+&lt;!ATTLIST surface 
+        xml:id  ID #REQUIRED
+        type    (surface | obverse | reverse 
+	         | edge | left  | right | top | bottom
+	         | face)    #REQUIRED
+        face    (a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t) #IMPLIED
+	surface CDATA #IMPLIED
+ 	certain (y|n) "y"
+ 	remark  (y|n) "n">
+
+&lt;!--
+  Columns are wrapped in COLUMN; there must always be at least
+  one column.  A single column text has &lt;column n="0">.
+
+  @N: the 'name' of the column as presented for display, unless
+      n="0", in which case it is a redundant wrapper column on 
+      a single-column text.
+
+  @PRIMES: this is a string of &quot; characters which
+      corresponds to primes on the input column number.
+
+  @CERTAIN: this is 'n' if there was a query on the input column
+      number.
+
+  @REMARK: this is 'y' if there was an exclamation mark on the input column
+      number.
+
+  Constraint: id must be unique among the entire CDL corpus.
+
+ -->
+&lt;!ELEMENT column (m|l|nonl|cmt)* >
+&lt;!ATTLIST column
+        xml:id   ID    #REQUIRED
+	n        CDATA #REQUIRED
+	primes   CDATA #IMPLIED
+	certain  (y|n) "y"
+ 	remark   (y|n) "n">
+
+&lt;!--
+  Lines are wrapped in L.
+
+  Line numbers are handled in divergent ways by transliterators, 
+  and take different forms dependent on display needs.  For some 
+  corpora the line numbers are simply used as they occur in the 
+  transliterations; for others, e.g., the Ur III administrative
+  corpus, the CDL handles this by reassigning line numbers to all
+  lines based on simple computation from the parent column or surface.
+
+  The rules for computing these line numbers are quite simple:
+
+    Take the number of preceding sibling L elements
+    Add 1
+    For each NONCOLUMN element among the preceding siblings
+      add 1 prime symbol to the number
+
+  This value is stored in the @N attribute.
+
+  The original line number entered by the transliterator is also
+  preserved in the @O attribute.
+
+(THE BULK OF THIS DESCRIPTION REALLY BELONGS IN THE REF MANUAL)
+
+  A second precomputed value is also stored in the @L attribute.
+  This value is the unified locator for the line in the style 
+  established for the Archaic texts corpus.  This precomputation
+  is made to facilitate working with the texts in database systems
+  or low-overhead environments where dynamic calculation of an 
+  entire label is undesirable.  By design, this label is not 
+  completely reversible.  The goal is to create unique line identifiers
+  in the spirit of the Archaic corpus rather than to maintain fidelity
+  to the CDL text structure features.
+
+  The format of this locator is:
+
+     &lt;SURFACE>&lt;COLUMN>&lt;CASE>&lt;SUBCASES>
+
+  SURFACE is one or two alphabetic characters.  The list below is
+  based on the Archaic corpus conventions and maintains backward
+  compatibility with it.  The list is augmented to support a more
+  complete subset of the CDL conventions.
+
+    O  = Obverse
+    P  = Bottom edge
+    R  = Reverse
+    Rd = Top edge
+    E  = Edge
+    Le = Left Edge
+    Re = Right Edge
+    Fx = Face, x = a..z
+    Xx = Surface, x = a..z 
+
+  Note that mapping the generalized surface construction poses
+  a small problem in that the value of the SURFACE's @N attribute when
+  @SURFACE=surface is arbitrary CDATA.  The extant SURFACE elements
+  are therefore simply mapped to identifiers which are unique within
+  the text, i.e., Xa, Xb, Xc etc., but without any attempt to preserve
+  the CDATA of SURFACE's @N.
+
+  COLUMN is a two digit sequence.  In conformity to the practice of
+  the Archaic corpus, the special CDL column value '0' is mapped to
+  '01'.
+
+  LINE is a two digit sequence based on the CDL computed numbering.
+
+  SUBCASES is the catchall alphanumeric trailer which defines the
+  subcase location.
+
+  @N: the 'name' of the line as presented for display
+  @O: the original line number entered by the transliterator
+  @L: the locator in the style of the Archaic texts corpus
+
+  Constraint: id must be unique among the entire CDL corpus.
+
+  @RWS: the register/writing-system of this word
+  @XML:LANG: the default language for this line.
+ -->
+
+&lt;!-- &lt;!ELEMENT l (atf | (mpx,mpx) | (w|n|g|nong|gloss|cg|gg|igg)* | c+ | f+)> -->
+
+&lt;!ELEMENT l (atf | (mpx,mpx) | c+ | f+ | (n|w|nong|gloss)*)>
+
+&lt;!ATTLIST l
+	xml:id   ID      #REQUIRED
+	n        CDATA   #REQUIRED
+	o	 CDATA   #IMPLIED
+	l	 CDATA   #IMPLIED
+	d:line   CDATA   #IMPLIED
+        rws      NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #IMPLIED 
+	etcsl:corresp NMTOKEN #IMPLIED >
+
+&lt;!--
+ The processor atf2xml.plx supports translating only the structure
+ on the first pass so that the simple inline notation can be used
+ as PCDATA with the XML structure.  This tag is a wrapper for the
+ ASCII Text Format data.
+ -->
+&lt;!ELEMENT atf (#PCDATA)>
+&lt;!ELEMENT cmt (#PCDATA)>
+&lt;!ATTLIST cmt
+	  type CDATA #IMPLIED >
+
+&lt;!--
+ The C element supports dividing lines into columns.  This is to allow
+ tabular texts like ledgers to be transliterated as tables rather than
+ lines, as well as for lexical texts organized in columns.
+
+ Because intra-line columns often imply that the data in the column has
+ a distinct meaning, the C element always wraps at least one F element.
+ This permits a clean separation between C as an element which records
+ the layout on the tablet, and F as an element which records information
+ about the significance of portions of a line (whether those portions
+ are aligned in columns or not).
+ -->
+&lt;!ELEMENT c (f+)>
+&lt;!ATTLIST c
+	xml:id   ID      #REQUIRED >
+
+&lt;!--
+ The F element supports noting that certain sections of a line or
+ column have a distinct ancient significance or modern interpretation.
+ An ancient example would be the organization of information on
+ commentaries (generally non-columnar) or the distinction between
+ equivalences in different languages in a lexical text (generally
+ columnar).  A modern example is offered by the Archaic texts'
+ separation of cases into numeric and post-numeric portions.
+ -->
+&lt;!ELEMENT f ((nong|n|gloss|w|g|cg|gg|igg)*)>
+&lt;!ATTLIST f
+	xml:id   ID      #REQUIRED
+	n        CDATA   #IMPLIED
+	type     NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #IMPLIED >
+
+&lt;!--
+  GLOSS is the element which is used when glosses are in smaller script.
+  Because these may span several words (like 'he-pi2 esz-szu') the GLOSS 
+  element has content analogous to that of L.
+
+  No facility is implemented for linking discontiguous gloss graphemes.  Instead,
+  the gloss graphemes should be consolidated in a single location; if the exact
+  location of the signs on the tablet is to be preserved the OGS/IRS approach can
+  be used (see the section on multiplexing at the end of this DTD).
+
+  To exemplify, given:
+
+            {{%a id}}mu-un-cum2{{%a din}}
+
+  on the tablet, the default data entry should be:
+
+            {{%a id-din}}mu-un-cum2
+
+  with the additional OGS line if required as follows:
+
+        1.    {{%a id-din}}mu-un-cum2
+	=:    {{%a id}}mu-un-cum2{{%a din}}
+  
+  Note that a gloss does not need to be dependent on another word, but
+  may be independent ('free').
+
+  In ATF the use of a GLOSS element is indicated by {{...}}.
+ -->
+&lt;!ELEMENT gloss (nong|n|w|g|cg|gg|igg)+>
+&lt;!ATTLIST gloss
+	pos	(pre|post|cont|mid|free) #REQUIRED>
+
+&lt;!--
+  Words are wrapped in W.
+
+  @WS: this attribute preserves whitespace from legacy data.  It was
+       added to support blind fidelity to the original input whitespace
+       when round-tripping.  The processor emits this attribute
+       only when the whitespace which triggered the W is anything other 
+       than a single space character (ASCII 32).
+  @RWS: the register/writing-system of this word
+  @XML:LANG: the language of this word.
+  @ID: the words's ID
+
+  Lemmatization Support
+  =====================
+
+  This lemmatization support is designed to facilitate lemma-based
+  and mixed-mode searching and computed-value storage without the
+  overhead of external datasets.  
+
+  This does not constrain XTF users to implement their lemmatization
+  with the lem: attributes; it is recommended, however, that if an
+  external storage solution is used the data format should include
+  attributes or elements with the same names and namespace as the lem:
+  family of attributes, as well as both the top-level ID (given by
+  /*/@xml:id in XTF) and the word ID (given by @xml:id on the W
+  element).  This will simplify the programmatic negotiation of
+  in-band and out-of-band lemmatization solutions.
+
+  The lem: namespace is bound at the top level of XTF
+  files as xmlns:lem="http://emegir.info/lemma.
+
+  @LEM:BOUND: the bound form of the lemma, i.e., the morphological
+    context in which it occurs; this is a language-dependant
+    plain-text string.  For Sumerian, e.g., it conforms to the
+    output of Steve Tinney's morphological analyser, with the lemma
+    replaced by ~, e.g., mu-un-du3 would be mu.n:~.
+
+  @LEM:CFGW: the PSD-style Citation-Form[Guide Word] pair for 
+    this lemma.
+
+  @LEM:FORM: a string form of the word including the writing of
+    bound morphemes, if any.  This is what is fed to the lemmatization
+    pipeline; its format is dependant on the needs of the processor
+    chain for the language.
+
+  @LEM:LELA: a LELA pair used to refer to the lemma by the
+    corpus-preparers; this allows corpus-preparers to have 
+    lemma/labels which are different from the CFGW of an external 
+    dictionary.
+
+  @LEM:LEMMA: either a CFGW or a LELA; may be used instead of 
+    LEM:CFGW and/or LEM:LELA if (a) the two systems are not being
+    used together or (b) if it is always possible to look the
+    LELA up from the CFGW or vice-versa.
+
+  @LEM:ORTH: the spelling of the lemma, distinct from its name (i.e.,
+    @LEM:LEMMA attribute) or its form (i.e., the @LEM:FORM 
+    attribute which may include bound morphemes as well).
+
+  @LEM:POS: the part-of-speech for the lemma.
+
+  @LEM:REF: references to a forms database containing information
+    about the lemma; if more than one NMTOKEN is given then the form
+    is ambiguous (ambiguity cannot be handled adequately using the
+    inline LEM: attribute-set).  In addition, one-to-many relations
+    between form and lemma must be handled using the external
+    database (e.g., if doorpost were lemmatized as door and post the
+    external forms database would handle this).
+
+  @LEM:SENSE: the sense in which the lemma is used in this context,
+    as distinct from its GW or its label (i.e., the @LEM:LABEL).
+
+ -->
+&lt;!ELEMENT w (g|cg|gg|igg|nong|gloss|n)*>
+&lt;!ATTLIST w
+	ws CDATA #IMPLIED
+        rws      NMTOKEN  #IMPLIED
+	xml:id   ID       #REQUIRED 
+	xml:lang NMTOKEN  #IMPLIED
+	lem:bound CDATA #IMPLIED
+	lem:cfgw  CDATA #IMPLIED
+	lem:form  CDATA #IMPLIED
+	lem:label CDATA #IMPLIED
+	lem:lemma CDATA #IMPLIED
+	lem:orth  CDATA #IMPLIED
+	lem:pos   CDATA #IMPLIED
+	lem:sense CDATA #IMPLIED
+>
+
+&lt;!--
+  Numbers are wrapped in N.  The content is the word or grapheme
+  sequence constituting the number
+
+  @SYSTEM: a name for the system, as given in the ATF input or determined
+        by the ATF XML output routine.
+ -->
+
+&lt;!ELEMENT n (w|g|cg|gg|igg|nong)*>
+&lt;!ATTLIST n
+	xml:id   ID    #REQUIRED
+	system   CDATA #IMPLIED >
+
+&lt;!--
+
+  IGG = Interpretive Grapheme Group; a mechanism for inline
+  presentation of both an interpretive/rewritten version of what the
+  graphemes on the tablet were supposed to be, and the original
+  grapheme sequence occurring on the tablet.  For a full-line version
+  of this facility see the section on multiplexing elsewhere in this
+  DTD.
+
+  By definition, the first child of the group is the interpretation;
+  the second child is the literal grapheme sequence on the object.
+
+  We allow CG.C and CG.GG as children of IGG because IGG is allowed within
+  CG and the alternative would be further proliferation of special-purpose CG
+  children (we may end up there anyway in v2 of this DTD).
+ -->
+&lt;!ELEMENT igg  ((g|gg|cg|cg.g|cg.gg),(g|gg|cg|cg.g|cg.gg))>
+&lt;!ATTLIST igg
+	type (ordering|correction|explanation) #REQUIRED >
+
+&lt;!--
+  GG (grapheme group) is exclusively a scoping mechanism
+  for treating several graphemes as a single unit.
+
+  The typing mechanism supports the following values:
+
+      group:       AB.AB (but not implying cg)
+      alternation: ki/di
+      ligature:    um+me
+      num-plus:    [x]+3
+      num-dotted:  1.2.3
+
+  A GG element may contain nested GG elements.
+ -->
+&lt;!ELEMENT gg   ((g|cg|gg|igg),(g|nong|cg|gg|igg)+)>
+&lt;!ATTLIST gg
+	type  (group|alternation|ligature|num-plus|num-dotted) #REQUIRED >
+
+&lt;!--
+  Graphemes are wrapped in G.
+
+  The content of G is character data, essentially sign-values of the 
+  traditional kind.  
+
+  The base grapheme is:
+
+          LETTER+ DIGIT*
+
+  A grapheme may have one or more modifier notations as follows:
+
+          @g   = gunu
+	  @s   = sheshig
+          @t   = tenu
+	  @k   = kabatenu
+	  @z   = zidatenu
+	  @r   = vertically reflected around horizontal axis
+	  @h   = horizontally reflected around vertical axis
+          @n   = nutillu
+	  @v   = variant sign form
+	  @4   = sign repeated in squared formation
+	  @90  = rotated 90 degrees clockwise
+	  @180 = rotated 180 degrees clockwise (inversum)
+	  @270 = rotated 270 degrees clockwise
+
+  An extension is supported whereby subforms of a grapheme can be
+  specified using a tilde character followed by letters, digits
+  or an optional plus or minus:
+
+	  LETTER+ DIGIT* '~' ( (LETTER|DIGIT)+ | - | + )
+
+  This permits forms like EN~a, EN2~a, as well as providing a convenient
+  shorthand for IM~- and IM~+.
+
+  A numerical grapheme is a sequence of digits, optionally
+  followed by a number grapheme in parenthesis:
+
+	  DIGIT+
+	  DIGIT+ '/' DIGIT+
+	| DIGIT+ '(' NUMBER_GRAPHEME ')'
+
+  Where the set of NUMBER_GRAPHEME's is restricted to the 
+  following:
+
+	ASZ
+	ASZ-o
+	ASZ-c
+	ASZ-co
+	DISZ
+	DISZ-c
+	DISZ-co
+	U
+	U-c
+	GESZ2
+	GESZ2-d (to be struck? d=deep)
+	GESZ'U
+	GESZ'U-c
+	SZAR2
+	SZAR2-c
+	SZAR'U
+	BARIG
+	BAN2
+	ESZE3
+
+  Where the system is known, the number graphemes are given in lower
+  case.  Where the system is uncertain, the number graphemes are
+  given in upper case.
+
+  In Perl-speak a grapheme must match:
+
+	 [[:alpha:]\']+[[:digit:]]*(?:~[[:alpha:]])?
+	|[0-9]+(?:\([[:alpha:]\']+[[:digit:]]*(?:~[[:alpha:]])?\))?
+
+  The symbol 'x' in transliterations is interpreted as a grapheme whose
+  identity cannot be established.  The symbol X in transliterations is
+  interpreted as a grapheme whose identity is clear but unknown.  It is
+  preferable to avoid this construct in favour of using X+index to refer
+  to a list of unknown signs.
+
+  The grapheme attribute definitions were made with an underlying
+  assumption that CDL transliterations would be as simple as possible
+  for manipulation as data, and that wherever possible editorial
+  commentary and squeamishness should be reserved to a commentary
+  file.
+
+  The commentary is not expected to be machine-manipulated, beyond the
+  assumption that commentary entries will reference the ID at the L
+  level, such that an HTML version of the corpus could include
+  machine-generated links back from the lines to the commentary.
+
+  Items to be removed/reserved to the commentary include:
+
+    erasures
+    palimpsest writings
+    alternate possible identifications; e.g., ki/di
+    alternate readings; e.g., gin/du
+    explanatory addition of sign name; e.g., mu4(TUG2)
+
+  @NAMETYPE:
+
+    Defines whether the grapheme content is a sign-value, a sign-name
+    or a reference to an entry in a sign list.  Grapheme readings and
+    sign-names are not differentiated by use of lowercase and uppercase,
+    but instead by use of @NAMETYPE.
+
+  @BREAKAGE:
+
+    DAMAGED: indicates grapheme has significant damage (i.e., damage
+    which makes the identification ambiguous).  This is intended as a
+    flag to the reader that checking the original is advisable; it is
+    not intended that any trivial damage to signs should be marked.
+
+    MISSING: indicates that the grapheme has been restored by the
+    editor.
+
+    MAYBE-MISSING: indicates the grapheme may have to be restored, especially
+           constructs like [x (x) x], where the middle 'x' would be 
+           'maybe-missing'.
+
+    MAYBE: indicates that the grapheme may occur in some writings; this is not
+           intended for transliteration of instances, but rather for glossaries
+	   which need to express constructs like ({d})utu meaning 'utu written 
+	   sometimes with, sometimes without determinative'.
+
+  @SIGN:
+
+    ED.EMENDED:  indicates sign on tablet is erroneous and
+		  has been corrected by editor.  Indicated by '!' in
+		  ASCII input.
+    UNUSUAL.FORM: indicates sign-form is paleographically
+		  unusual.  Indicated by '!!' in ASCII input.
+    REALLY.IS:   indicates sign-form is counter to expectation
+		  but really is what is on tablet and has not been
+		  corrected.  Indicated by '!!!' in ASCII input.
+    ED.SUPPLIED: indicates sign has been supplied by editor after
+		  accidental omission by scribe.  Indicated by 
+		  '&lt;' ... '>' in ASCII input.
+    SCRIBE.IMPLIED: indicates sign has been supplied by editor after
+		  deliberate omission by scribe.  Indicated by 
+		  '&lt;(' ... ')>' in ASCII input.  This should be used
+ 		  in situations such as litanies in which refrains
+		  are not written out after each divine name.
+    ED.REMOVED: flag to indicate sign is pleonastic and has been
+		  removed by editor.  Indicated by '&lt;&lt;' ... '>>' in
+		  ASCII input.
+
+  @UNCERTAIN:
+
+    Flag to indicate sign identification or reading is uncertain.
+    Indicated by '?' in ASCII input.
+
+  @COLLATED:
+
+    Flag to indicate sign has been collated; indicated by '*' in
+    ASCII input.
+
+  @GLOSS:
+
+    Allows qualification of whether graphemes are glosses or not.
+    No distinction is made between types of gloss.  Glosses are
+    simply characterized as PRE (i.e., occurring before what
+    they gloss) or POST (i.e., occurring after what they
+    gloss).  Glosses are indicated by '{'...'}' in ASCII input.
+
+    Hyphenation of {...} glosses does not generate separate
+    W nodes; instead, the first grapheme of a multi-grapheme gloss
+    is flagged as pre/post, and the remainder have gloss=cont, e.g.,
+    {u-du}udu produces (simplified):
+
+      &lt;w>&lt;g gloss="pre">u&lt;/g>&lt;g gloss="cont">du&lt;/g>&lt;g>udu&lt;/g>&lt;/w>
+
+  @SOCALLED:
+
+    Encodes the disciplinary practice of indicating that the sign-name
+    given is that of a sign similar to the grapheme in question but not that
+    grapheme itself.  Examples from the sign-lists include "ZA" and "KUR.SI".
+    Normally notated by enclosing the sign-name in double quotes.
+
+ -->
+&lt;!ELEMENT g    (#PCDATA)>
+&lt;!ATTLIST g
+	role         (logogram)        #IMPLIED
+	nametype     (signref|listref) #IMPLIED
+	breakage     (damaged|missing|maybe-missing|maybe) #IMPLIED
+	sign         (unusual.form|really.is
+                      |ed.emended|ed.removed|ed.supplied
+                      |scribe.implied) #IMPLIED
+	uncertain    (y)               #IMPLIED
+	collated     (y)               #IMPLIED
+        socalled     (y)               #IMPLIED
+	gloss        (pre|post|cont)   #IMPLIED
+        rws          NMTOKEN           #IMPLIED
+        xml:lang     NMTOKEN           #IMPLIED
+	>
+
+&lt;!-- 
+ Compound graphemes are wrapped in CG.
+
+ Sign-modifiers (gunu, rotation, etc.) are treated as part of the
+ grapheme syntax, with CG.REL used to express the relation between
+ multiple graphemes.
+
+ A nestable grouping mechanism, CG.GG, is provided to support arbitrarily
+ complex combinations of signs.
+
+ We allow a subset of the attributes on G to appear on CG to allow,
+ e.g., |GA2+AN|?
+
+ -->
+&lt;!ELEMENT cg         ((cg.g|cg.gg|igg) , (cg.rel , (cg.g|cg.gg|igg))*)>
+&lt;!ATTLIST cg
+	role         (logogram)        #IMPLIED
+	breakage     (damaged|missing|maybe-missing) #IMPLIED
+	sign         (unusual.form|really.is
+                      |ed.emended|ed.removed|ed.supplied
+                      |scribe.implied) #IMPLIED
+	uncertain    (y)               #IMPLIED
+	collated     (y)               #IMPLIED
+	atf	     CDATA #IMPLIED
+        xml:lang     NMTOKEN #FIXED "sux" >
+&lt;!ELEMENT cg.g       (#PCDATA)>
+&lt;!ATTLIST cg.g
+	nametype     (signref|listref) #IMPLIED
+	breakage     (damaged|missing|maybe-missing) #IMPLIED
+	sign         (unusual.form|really.is
+                      |ed.emended|ed.removed|ed.supplied
+                      |scribe.implied) #IMPLIED
+	uncertain    (y)               #IMPLIED
+	collated     (y)               #IMPLIED
+        socalled     (n)               #IMPLIED
+	>
+&lt;!ELEMENT cg.gg      ((cg.g|cg.gg) , (cg.rel , (cg.g|cg.gg))*)>
+&lt;!ELEMENT cg.rel     EMPTY>
+&lt;!ATTLIST cg.rel     c (adjacent|ligatured|times|over|opposed|crossed|or) #REQUIRED>
+
+&lt;!--************END OF CG***************-->
+
+&lt;!--
+  All the non-x types (noncolumn, nonl (non-line) and nong
+  (non-grapheme) share a common set of attributes and content model.
+
+  The content model, PCDATA, is intended purely for the preservation
+  of the verbatim text of comments in legacy data.
+
+  @TYPE:
+        newline: the scribe has begun a new line within a case or ruled 
+	         line where the new line does not get a line number of its
+		 own 
+ 	broken: one or more lines or columns are lost due to breakage
+ 	maybe-broken: one or more lines or columns may be lost due to breakage
+        blank:  one or more lines or columns was left blank by the scribe
+        ruling: one or more additional rulings is present on the tablet;
+	        not used for rulings where they are the default way of marking
+                line divisions on a tablet
+	traces: for extents with signs or traces
+	        which have not been transliterated as data
+	maybe-traces: for extents with indistinct areas possibly containing 
+	        traces of signs
+	image: for drawings included by the scribe
+	seal:  for seals
+	other: for legacy data which cannot be parsed into one of the
+               explicitly defined types
+	comment: preserves a comment found in the ATF source file; primarily
+	       intended for round-tripping
+
+  @UNIT:
+        self: derived from object-oriented programming practice;
+	      'self' indicates that the extent is given in units of
+	      the type of the element on which the attribute occurs:
+	      for noncolumn, self means 'column(s)'; for nonl, self
+	      means 'line(s); for nong, self means 'grapheme(s)'.
+
+	      Co-constraint notes (these cannot be expressed in the
+	      DTD):
+
+	      For type=image, UNIT may be 'self'.  If type=image and
+	      unit=quantity, the extent indicates the amount of 'self'
+	      which is covered with the image.  Regardless of the
+	      value of UNIT, the REF attribute may be used when
+	      type=image to give a URL which shows the image.
+
+	      For type=seal, UNIT is always 'self'; the REF attribute
+	      is always used.  The reference is either to a text-local
+	      seal-transliteration or to the seal-corpus entry of
+	      which the instance seal is an exemplar.
+
+	quantity: indicates that the extent is given as a quantity
+
+  @REF:
+  	A reference.  
+
+ 	  For @type=seal, the REF should give the local ID of the seal
+      	  whose occurrence is being noted in the non-x element.
+	
+	  For @type=image, the REF should be a URL (note: this is
+       	  technically never necessary for CDL; an exception could be
+       	  a situation in which a specific file contains a shot of the
+       	  image which is better than, or more specifically targetted
+       	  than, the images which give shots of the tablets).
+
+  @EXTENT:
+ 	the extent of the non-x material.  Should match
+
+	      \d+(mm|cm)?
+
+        i.e., it may be a number, or a measurement in mm or cm.
+ -->
+
+&lt;!ELEMENT noncolumn (#PCDATA)>
+&lt;!ELEMENT nonl      (#PCDATA)>
+&lt;!ELEMENT nong      (#PCDATA)>
+
+&lt;!ENTITY % non-x-attr-set " 
+	type   (newline|broken|maybe-broken|traces|maybe-traces
+	        |blank|ruling|image|seal|comment|bullet|other) 
+						     #REQUIRED
+	unit   (self|quantity|ref)                   #IMPLIED
+	extent CDATA                                 #IMPLIED
+	ref    CDATA                                 #IMPLIED
+	xml:id ID        			     #REQUIRED
+	">
+
+&lt;!ATTLIST noncolumn %non-x-attr-set; >
+&lt;!ATTLIST nonl      %non-x-attr-set; >
+&lt;!ATTLIST nong      %non-x-attr-set; >
+
+&lt;!--
+ COMPOSITE TEXT SUPPORT
+
+ A composite text has a restricted content model; none of the object or
+ surface elements are permitted.  The reason for this restriction is that
+ both division and object models are structured containers; to allow both
+ would inevitably result in attempts to create documents in which the 
+ division and object structures are interwoven, which is not possible in 
+ XML. The solution is to use the M tag to interpolate locators which key 
+ the composition edition to the physical distribution of an object.
+
+ A composite text must have siglum definitions for all texts which are 
+ cited in exemplars.
+
+ A synopticon is a text in which each of the exemplars is given in
+ longhand form, but which lacks a line giving the composite
+ abstraction.  We do not recommend creating this kind of text as a
+ data-gathering exercise, but synoptica are the natural presentation
+ form for link rings, so it makes sense to define the facility here.
+
+ Note that '$'-lines in ATF should only occur between line-groups in 
+ composite texts and between exemplar-groups in synoptica (because each
+ group by definition gives the information for one line as a unity).
+
+ -->
+
+&lt;!ELEMENT composite  ((sigdef*) , (m|div|lg|l|cmt|nonl)*)>
+&lt;!ATTLIST composite
+	xml:id   ID      #REQUIRED
+	n        CDATA   #REQUIRED
+        rws      NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #IMPLIED
+        %xtf-ns;>
+
+&lt;!ELEMENT score ((sigdef*) , (m|div|lg|cmt|nonl)*)>
+&lt;!ATTLIST score 
+        xml:id   ID      #REQUIRED
+        n        CDATA   #REQUIRED
+        rws      NMTOKEN #IMPLIED
+        xml:lang NMTOKEN #IMPLIED
+        %xtf-ns;>
+
+&lt;!ELEMENT synopticon ((sigdef*) , (eg|cmt|nonl)*)>
+&lt;!ATTLIST synopticon
+	xml:id   ID      #REQUIRED
+	n        CDATA   #REQUIRED
+        rws      NMTOKEN #IMPLIED
+	xml:lang NMTOKEN #IMPLIED
+        %xtf-ns;>
+
+&lt;!ELEMENT sigdef EMPTY>
+&lt;!ATTLIST sigdef
+	xml:id   ID      #REQUIRED
+	targ-id  NMTOKEN #REQUIRED
+	targ-n   CDATA   #REQUIRED
+>
+&lt;!ELEMENT lg (l , (e|cmt)*)>
+&lt;!ATTLIST lg
+	xml:id   ID      #IMPLIED
+        n        CDATA   #IMPLIED
+>
+&lt;!ELEMENT eg (e*)>
+&lt;!ATTLIST eg
+	xml:id   ID      #IMPLIED
+>
+&lt;!ELEMENT e  (atf | (mpx,mpx) | (w|n|g|nong|gloss|cg|gg|igg)* | c+ | f+)>
+&lt;!ATTLIST e
+	xml:id   ID      #IMPLIED
+	sigref   IDREF   #IMPLIED
+        n        CDATA   #IMPLIED
+	l        CDATA   #IMPLIED
+	p        CDATA   #IMPLIED
+        hlid	 CDATA   #IMPLIED
+        plid	 CDATA   #IMPLIED
+>
+
+&lt;!--
+ STRUCTURAL DIVISIONS IN COMPOSITE TEXTS
+
+ Composites may contain divisions for marking tablets of a series (but
+ not physical tablets although the two are historically related),
+ paragraphs, colophons, rubrics, subscripts etc. As of version 1.4
+ physical divisions may only be given by use of M tags and locators.
+
+ Logical divisions are indicated in ATF by use of the @div tag which
+ maps to the DIV element in XTF.  The first NMTOKEN which follows
+ the @div is the name of the division and is stored in the @TYPE
+ attribute.  The remainder of the line is stored in the @N
+ attribute.  The @div tag requires a closing @end tag, which must
+ take as its single argument the NMTOKEN of its corresponding opening
+ @div.  @div's of different kinds may not be interwoven.
+ 
+ @div part
+ ...
+ @end part
+
+ @div colophon
+ ...
+ @end colophon
+
+ In the liturgical corpus (including ETCSL editions of texts which
+ could reasonably be considered liturgical), kirugu and other rubrics
+ are used as logical structures, and they contain subdivisions giving
+ the actual rubric; this is supported with the following syntax:
+
+  @div kirugu 1
+  1.  tur3-ra-na ...
+
+  @div rubric kirugu
+  10. ki-ru-gu2 1-a-kam
+  @end rubric
+
+  @end kirugu
+
+  @div giszgigal 1
+  11. u2-a a-u3-a u2-a-u2-a
+
+  @div rubric giszgigal
+  12. gisz-gi4-gal2-bi-im
+  @end rubric
+
+  @end giszgigal  
+
+ -->
+
+&lt;!ELEMENT div (div|m|lg|cmt|nonl)* >
+&lt;!ATTLIST div
+	  xml:id ID      #REQUIRED
+	  n      CDATA #IMPLIED 
+	  type   NMTOKEN #REQUIRED >
+
+&lt;!--
+ MULTIPLEXING SUPPORT
+
+ In order to support clean differentiation between different
+ representations of the content of a line, XTF implements
+ multiplexing.  Uses of multiplexing include transliterating ED 
+ texts where the interpretation of the line reorders the graphemes 
+ in arbitrary ways and supplying the literal grapheme sequence in 
+ lines that contain discontiguously written glosses.
+
+ We call the original sequence of graphemes on the object the Original
+ Grapheme Stream (OGS); we call the reordered version the
+ Interpreted/Rewritten Stream (IRS).  The intention is that searching
+ and indexing should be able to be carried out on either stream.
+
+ When multiplexing is in effect any E or L element may have a pair of
+ MPX children.  The first is by definition the IRS and the second is
+ the OGS.
+
+ No alignment is done between the two streams.
+ -->
+&lt;!ELEMENT mpx ((w|n|g|nong|gloss|cg|gg|igg)+ | c+ | f+)>
+&lt;!ATTLIST mpx
+	type	(ogs|irs) #REQUIRED >
+
+&lt;!--
+ MILESTONES
+
+ Milestones were added in version 1.4 to support a rudimentary
+ interweaving of object-centric transliterations and
+ composition-centric edition. The milestone mechanism is deliberately
+ narrowly constrained because it is not intended as a backdoor for the
+ introduction of free text into CDL transliterations.
+
+ M is permitted only as a child of COLUMN in a TRANSLITERATION; and
+ only as a child of COMPOSITE or DIV in a COMPOSITE.
+
+ M has attributes, type and subtype and contains only PCDATA which is
+ governed by external validation constraints.
+
+ If @TYPE=locator only the PCDATA is used and it should be a
+ human-readable abbreviation string for a location, e.g., o ii 3 =
+ obverse column ii line 3.
+
+ If @TYPE=division, @SUBTYPE stores the division type, e.g.,
+ paragraph.  The PCDATA then stores the value for the division, if
+ any.
+
+ Thus, the milestone:
+
+  @m=division paragraph 1
+
+ Is stored as:
+
+ &lt;m type="division" subtype="paragraph">1&lt;/m>
+
+ If @TYPE=text, @SUBTYPE stores the text section type (e.g., date)
+ and the PCDATA gives optional additional information.
+
+ -->
+
+&lt;!ELEMENT m (#PCDATA)>
+&lt;!ATTLIST m
+	type    (locator|division|text) #REQUIRED
+	subtype NMTOKEN            #IMPLIED
+>
+
+&lt;!-- end of XTF.DTD -->
+</pre></body></html>

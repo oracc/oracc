@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<html>
+<head><title>Oracc ATF Text Template Generator</title><base href="http://oracc.museum.upenn.edu/doc/wwwhome/util/"/></head>
+<body>
+  <h2>Oracc ATF Text Template Generator</h2>
+  <p>This form creates ATF templates to take some of the drudgery out
+  of typing texts.  The results are not intended to be perfect; the
+  idea is just to give a useful start to text-typing.</p>
+  <p style="color:red">Documentation is at <a href="#doco">the end of this file</a>.</p>
+  <p>To use it, just type or paste template specifications into the
+  text field below; more documentation is given after the text field.
+  The output is sent back as a text document to the same window as you
+  are using; just select all, copy it and paste it into your text
+  editor.  You can either give fragments to get templates--without
+  even an &amp;-line--or you can make templates for an entire volume
+  of texts and expand them all to include their P-numbers,
+  designations, block structure and line numbers at one fell
+  swoop.</p>
+  <p>(If your list of templates is more than a few hundred lines you may
+  need to split it into several chunks to process it all
+  successfully.)</p>
+  <hr/>
+  <form method="POST" action="/cgi-bin/atftemplate">
+    <input type="hidden" name="cgimode" value="1"/>
+    <table width="90%">
+      <tr valign="top">
+	<td colspan="10" align="center">
+	<textarea name="input" cols="60" rows="30"/>
+      </td>
+      <td>
+	<table>
+	  <tr>
+	  <tr>
+	    <td>
+	      Project for texts:
+	      <input type="text" name="project"/>
+	    </td>
+	  </tr>
+	    <td>
+	      Default language for texts:
+	      <select name="lang">
+		<option value="sux" selected="yes">Sumerian</option>
+		<option value="akk">Akkadian</option>
+		<option value="qpc">Proto-Cuneiform</option>
+		<option value="qpe">Proto-Elamite</option>
+	      </select>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      Default protocol for texts:
+	      <select name="use">
+		<option value="none">(none)</option>
+		<option value="lex">Lexical</option>
+		<option value="math">Mathematical</option>
+	      </select>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+      </tr>
+    </table>
+    <p><input type="submit" value="Create template"/></p>
+  </form>
+  <hr/>
+<h2 name="doco" id="doco">Documentation</h2>
+  <p>The input is a series of lines: lines that start with '&amp;' are
+  ATF &amp;-lines; if the line has an ID starting with P or Q, the
+  designation is looked up and added; if it has an ID starting with X,
+  or if it has no ID the template generator tries to find the P-number
+  for the text based on the rest of the line (if there is an X-ID, the
+  rest of the line following the '=' sign is used).  If it can't find a
+  P-ID it just outputs the &amp;-line unchanged.  If multiple P-IDs
+  appear to match the keys in the &amp;-line, all the matches are
+  output.</p>
+  <p>If a line starts with '#' it is a comment; the line is passed
+  through unchanged.</p>
+  <p>Otherwise, the line is parsed as a list of block and line-number
+  specifications.  Each specification token is separated by spaces.
+  The rules for the tokens are simple:</p>
+<pre>
+o = obverse         r = reverse
+
+le = leftedge       re = rightedge     te = topedge       be = bottomedge
+
+c&lt;N&gt; = column N
+
+N = line number     N1-N2 = range of line numbers
+</pre>
+  <p>The normal prime, exclamation and question-mark flags are allowed
+  at the end of any token; in addition, three special flags are
+  understood which create $-lines instead of block tags and line
+  numbers:</p>
+<pre>
+] = broken   # = traces    _ = blank
+</pre>
+  <p>A special distinction is made in $-specifiers between
+  <code>cN]</code> and <code>Nc]</code>: the former generates <code>$
+  column N broken</code>; the latter generates <code>$ N columns
+  broken</code>.</p>
+  <p>The special codes <code>c-]</code> and <code>c+]</code> generate
+  <code>$ start of column broken</code> and <code>$ rest of column
+  broken</code> respectively; the other special flags behave similarly.</p>
+  <p>Similarly, <code>o-], o+], r-], r+]</code>, and all the other surface
+  designators, produce <code>$ start of obverse broken</code>, etc.</p>
+  <p>It's easiest to learn to use this utility by
+  playing with it, but here is an example:</p>
+<pre>
+&amp;P100001
+#a comment
+1-2 3] 1'-3' r c1 1-3 c2#
+</pre>
+<p>Generates</p>
+<pre>
+&amp;P100001 = AAS 013
+#atf: lang sux
+#a comment
+1.	
+2.	
+$ 3 lines broken
+1'.	
+2'.	
+3'.	
+@reverse
+@column 1
+1.	
+2.	
+3.	
+$ column 2 traces
+</pre>
+</body>
+</html>

@@ -1,0 +1,47 @@
+================================================================
+ Hyper Estraier: a full-text search system for communities
+ Copyright (C) 2004-2005 Mikio Hirabayashi
+================================================================
+
+
+Please read the following documents with a WWW browser.
+How to install QDBM is explained in the specification.
+
+  README         - this file
+  COPYING        - license
+  ChangeLog      - history of enhancement
+  THANKS         - list of contributors
+  doc/index.html - index of documents
+
+
+Contents of the directory tree is below.
+
+  ./             - sources of Hyper Estraier
+  ./locale/      - locale files
+  ./filter/      - filter scripts
+  ./increm/      - files for incremental search
+  ./emskel/      - skelton of configuration
+  ./doc/         - manuals and specifications
+  ./man/         - manuals for nroff
+  ./javanative/  - sources of the Java binding
+  ./javapure/    - sources of the pure Java interface
+  ./rubynative/  - sources of the Ruby binding
+  ./rubypure/    - sources of the pure Ruby interface
+  ./win/         - files for Windows
+  ./example/     - sample code of tutorial
+  ./lab/         - for test and experiment
+  ./misc/        - miscellaneous files
+
+
+Hyper Estraier is released under the terms of the GNU Lesser General
+Public License.  See the file `COPYING' for details.
+
+Hyper Estraier was written by Mikio Hirabayashi.  You can contact the
+author by e-mail to `mikio@fallabs.com'.
+
+
+Thanks.
+
+
+
+== END OF FILE ==

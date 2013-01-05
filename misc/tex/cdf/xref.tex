@@ -1,0 +1,158 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: xref.tex,v 0.7 1996/02/17 23:25:50 s Exp s $
+
+\newwrite\xrffile \newif\ifxrfopen \newif\ifshowingxrefs
+\let\nx\noexpand
+\def\xtag{\effectmacroformat\xt@g}
+
+\def\xt@g#1{\currformat %\count255\chapterno \advance\count255-1
+  \ifxrfopen\else\openxrf\fi
+  \ifnum\pageno<0 \writeonly{#1}{p}{\romannumeral-\pageno}
+  \else\writeonly{#1}{p}{\the\pageno}\fi
+  \defandwrite{#1}{c}{\the\chapterno}%
+  \ifinnote\defandwrite{#1}{n}{\the\fnotecounter}\fi
+  \defandwrite{#1}{s}{\the\sectct}%
+  \defandwrite{#1}{ss}{\the\subsectct}%
+  \defandwrite{#1}{sss}{\the\subsubsectct}%
+  \ifshowingxrefs\def\next{\xrefshowtag{#1}f}\else\let\next\relax\fi\next}
+
+\newdimen\marginkern 
+\newbox\marginstrut \setbox\marginstrut=\hbox{\vrule height9pt depth3pt width0pt}
+\marginkern=\dp\marginstrut \advance\marginkern1sp
+\newcount\marginnotecount
+\newdimen\marginpagetotal \marginpagetotal=-1pt
+\newskip\marginnoteskip
+\newif\ifxrefOK \xrefOKtrue
+\newinsert\xrefinsert \dimen\xrefinsert=\maxdimen \count\xrefinsert=0 \skip\xrefinsert=0pt
+\def\addtoxrefinsert#1{\insert\xrefinsert{\offinterlineskip#1}}
+
+\def\addtomarginlist#1{\addtoxrefinsert{%
+  \noindent\eight\rm
+  \ifxrefOK\else[\fi
+  \nextval=#1%
+  \ifxrefOK\else]\fi
+  \strut\endgraf}}
+
+\def\fakeaddtomarginlist#1{%
+  \global\setbox\fakebox=\vbox{\unvbox\fakebox
+  \hbox{\eight\rm
+  \ifxrefOK\else[\fi
+  \nextval=#1%
+  \ifxrefOK\else]\fi
+  \strut}}}
+
+\newbox\fakebox
+\def\fakefnotedivider{\kern1pt\hbox{...\hbox{}...}\kern1pt}
+\def\unfakemarginlist{%
+  \ifvoid\fakebox
+  \else\addtoxrefinsert{\fakefnotedivider\unvbox\fakebox\fakefnotedivider}\fi}
+
+\def\xrefshowtag#1#2{\def\torf{#2}\let\next\relax\copy\marginstrut
+  \ifdim\marginpagetotal=\pagetotal \advance\marginnotecount1 
+  \else\marginnotecount97 \marginpagetotal\pagetotal 
+       \addtoxrefinsert{\kern1pt\hrule height0.01em depth0.01em width10pt \kern1pt}\fi
+  \edef\nextval{\char\marginnotecount}%
+  \ifinnote
+    \fakeaddtomarginlist{#1}\aftergroup\unfakemarginlist
+  \else
+    \def\next{\addtomarginlist{#1}}\fi
+  \next
+  \xrefOKtrue
+  \setbox0\hbox{\ifx\true\torf\ul{\eight\tt\nextval}%
+		\else\eight\tt\nextval\fi}\ht0=0pt \dp0=0pt
+  \ifnum\marginnotecount=97 \marginnoteskip1em \else\advance\marginnoteskip\wd0 \fi
+  \vadjust{\kern-\marginkern
+    \hbox to\hsize{\hfil\rlap{\kern\marginnoteskip\box0}}%
+  \vskip\marginkern}}
+
+\def\defandwrite#1#2#3{%
+  \immediate\write\xrffile{%
+    \nx\expandafter\nx\def\nx\csname!#2#1\nx\endcsname{#3}}%
+  \expandafter\edef\csname!#2#1\endcsname{#3}}
+
+\def\writeonly#1#2#3{%
+  \write\xrffile{%
+    \nx\expandafter\nx\def\nx\csname!#2#1\nx\endcsname{#3}}}
+
+\def\xref{\effectmacroformat\xr@f}
+\def\xr@f#1{\xr@@f#1:\empty}
+\def\xr@@f#1:#2\empty{\currformat\testxref{#1}%
+  \ifx\next\true\def\next{\xrefOKtrue\xgetref{#1}{#2}}%
+  \else\def\next{\xrefOKfalse\xwarn{#1}???}\fi
+  \next
+  \ifshowingxrefs\def\next{\xrefshowtag{#1}t}\else\let\next\relax\fi
+  \next}
+
+\def\xwarn#1{\immediate\write16{Warning: Tag `#1' is not defined!}}
+\def\testxref#1{%
+  \expandafter\ifx\csname!p#1\endcsname\relax\def\next{}\else\def\next{t}\fi}
+\def\xgetref#1#2{\csname!#1\endcsname % get all the xcounters defined
+  \def\test{#2}%
+  \ifx\test\empty\def\next{\csname!p#1\endcsname}%
+  \else\def\next{\xg@tref{#1}#2}\fi
+  \next}
+\def\xg@tref#1#2:{\csname!#2#1\endcsname}
+\def\cxref#1{chapter~\xref{#1:c}}
+\def\nxref#1{n.~\xref{#1:n}}
+\def\pxref{p.~\xref}
+\def\@scxref#1{\ifnum\count255=0 \else\xref{#1:c}.\fi}
+\def\sxref#1{\secsym%~
+  \edef\pig{\csname!c#1\endcsname}%
+  \count255=\pig
+  \ifchapsecnums\def\next{\@scxref{#1}}\else\let\next\relax\fi
+  \next
+  \xref{#1:s}%
+  \edef\pig{\csname!ss#1\endcsname}%
+ \showthe\pig \count255=\pig
+  \ifnum\count255=0 
+  \else.\xref{#1:ss}%ss % i think this ss and the sss below are spurioussssss
+       \edef\pig{\csname!sss#1\endcsname}%
+       \count255=\pig 
+       \ifnum\count255=0 
+       \else.\xref{#1:sss}%sss
+       \fi
+  \fi}
+\def\openxrf{\immediate\openout\xrffile=\jobname.xrf\relax\global\xrfopentrue}
+\def\closexrf{\immediate\closeout\xrffile\global\xrfopenfalse}
+\def\usexrf{\ifxrfopen\closexrf\fi\catcode`@=0
+  \input\jobname.xrf\relax\catcode`\@=12 }
+\def\readxrf{\checkfile{\jobname.xrf}%
+  \ifitexists\def\next{\usexrf}\else\let\next\relax\fi
+  \next}
+
+\def\noxrffile{\let\xtag\gobbleone}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: xref.tex,v $
+Revision 0.7  1996/02/17 23:25:50  s
+add support for showing xrefs in margins
+
+fix reporting of undefined xrefs, and have ??? in message
+
+% Revision 0.6  1995/10/13  10:14:54  s
+% fixed page xref'ing so it doesn't do an immediate \write
+%
+% Revision 0.5  1995/09/21  01:01:09  s
+% define cxref like nxref etc.
+%
+% Revision 0.4  1995/06/12  00:41:43  s
+% removed \show that I left in like a dummy after last changes
+%
+% Revision 0.3  1995/06/12  00:24:37  s
+% fixed spurious s problem in \sxref
+%
+% Revision 0.2  1994/12/13  05:22:18  s
+% Clean up xref writing
+% Define xref values for use in forward refs
+% Add writing of section counters for xrefs
+% Add \sxref macro to refer to section values of tag
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

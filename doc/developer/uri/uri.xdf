@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc URIs</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Oracc's Stable URIs are formed according to simple
+  patterns.  This document defines and exemplifies the patterns on
+  which every possible valid Oracc URI is built.</dc:description>
+</d:meta>
+
+<h1>URLs and URIs</h1>
+
+<p>Oracc URIs which end with a file extension such as
+<code>.html</code> are always URLs, i.e., locators for the named
+file.  On Oracc, any URI which is a URL ends with a file extension;
+and any URI which is not a URL is decoded by the Oracc resolver to
+determine what is returned to the requester.</p>
+
+<p>The remainder of this document is concerned only with non-URL
+URIs.</p>
+
+<h1>URIs and URNs</h1>
+
+<p>Oracc URIs are designed in such a way that they are easy to map
+onto Oracc URNs.  Within Oracc, all resources are uniquely identified
+by a URN, including projects, languages, words, texts and others.  The
+structure of Oracc URIs is designed in such a way that references to
+resources can be expanded to references to URNs without disrupting the
+URI.</p>
+
+<p>To exemplify, the URN for a text in Oracc contains an ID such as
+P123456.  The full URN is: <code>urn:oracc:t:P123456</code>.  A URI
+such as: <code>http://oracc.museum.upenn.edu/P123456</code> is
+effectively a request for the default response relevant to the URN
+<code>urn:oracc:t:P123456</code>.</p>
+
+<h1>URIs and Queries</h1>
+
+<p>Oracc does not encode query-like elements in the URI body, but in
+principle any URI can include a query component consisting of keys to
+be searched for in the URI's resource.  For more information see the
+<a href="">URI Queries</a> document.</p>
+
+<h1>URI Components</h1>
+
+<p>URI path segments consist of several types, all of them optional:</p>
+
+<dl>
+<dt>HOST</dt><dd>The name of an Oracc server, with the http prefix,
+e.g., http://oracc.museum.upenn.edu</dd>
+<dt>RESOURCE</dt><dd>The name of an Oracc resource</dd>
+<dt>SELECTION</dt><dd>A selection from the resource, for example the
+translation of a text</dd>
+<dt>VIEW</dt><dd>A view of the selection from the resource, e.g, a
+view of a transliteration rendered into cuneiform signs</dd>
+<dt>FORMAT</dt><dd>The format of the response, e.g., HTML, XML or
+RDF</dd>
+<dt>UI</dt><dd>The UI component used to render the URI; this should be
+only rarely be needed as the server defaults will usually suffice.</dd>
+</dl>
+
+<h2>RESOURCE</h2>
+
+<dl>
+<dt>PROJECT</dt><dd>Oracc projects are resources and if given must
+occur first in the URI. This component may contain forward-slashes
+because Oracc subprojects are implemented as subdirectories of parent
+projects. E.g.: HOST/dcclt; HOST/saao/saa01.</dd>
+<dt>LIST</dt><dd>A list consists of any legal system filename. LIST
+names consist of the prefix 'list:' followed by the list name proper,
+e.g., <code>list:withatf</code>. E.g.: HOST/dcclt/withatf.</dd>
+<dt>TEXT</dt><dd>A text ID consists of an uppercase 'P', 'Q', or 'X',
+followed by six or more digits.  E.g., HOST/P123456.</dd>
+<dt>LANG</dt><dd>A language conforms to the range of ISO-639-3
+language codes used by Oracc. Without a selection, a language URI
+refers its glossary. E.g., HOST/cams/anzu/akk-x-stdbab</dd>
+<dt>WORD</dt><dd><p>A word conforms to the Oracc syntax for URN word
+names in which the Citation Form, the Guide Word and the Part of
+Speech are concatenated with square brackets in the pattern CF[GW]POS.
+For example, lugal[king]N is the URN for the Sumerian noun lugal,
+"king".</p><p>At the Oracc level, WORD may occur without a language because
+the response value is a list of all glossary resources which include
+an entry for the word URN.  At the project level, WORD may only occur
+after a language.  Thus, we have HOST/lugal[king]N but
+HOST/dcclt/sux/lugal[king]N.</p></dd>
+<dt>SIGN</dt><dd>A sign is a valid sign-name as included in the Oracc
+Global Sign List, preceded by the prefix <code>sign:</code>.  Sign
+names always begin with a sequence of one or more uppercase letters,
+and never include square brackets.  For a full syntax of sign names
+see OGSL.  E.g., HOST/etcsri/sign:BA.</dd>
+</dl>
+
+<h2>SELECTION</h2>
+
+<p>Valid selections depend on the resource type.  In the enumeration
+which follows, a lowercase name is a URI path component, e.g.,
+HOST/statistics; an uppercase name is a RESOURCE used as a SELECTION.
+These resources may in turn have their own SELECTION.</p>
+
+<p>SELECTION responses are either lists or resources.  The SELECTION
+mechanism may thus be used for discovery of values of selectable
+segments of the parent resource.</p>
+
+<ul>
+<li>(NO PROJECT)
+<dl>
+<dt>LANG</dt><dd></dd>
+<dt>LIST</dt><dd></dd>
+<dt>PROJECT</dt><dd></dd>
+<dt>TEXT</dt><dd></dd>
+<dt>WORD</dt><dd></dd>
+<dt>langs</dt><dd>A list of languages for which Oracc defines URNs.</dd>
+<dt>lists</dt><dd>A list of lists for which Oracc defines URNs.</dd>
+<dt>projects</dt><dd>A list of Oracc's public projects for which Oracc
+defines a URN.</dd>
+<dt>statistics</dt><dd>Various Oracc-related statistics</dd>
+<dt>texts</dt><dd>A list of texts for which Oracc defines a URN.</dd>
+<dt>words</dt><dd>A list of words for which Oracc defines a URN.</dd>
+</dl>
+</li>
+<li>PROJECT
+<dl>
+<dt>corpus</dt><dd>A listing of all the texts in the project.</dd>
+<dt>lists</dt><dd>A listing of the project-defined lists.</dd>
+<dt>statistics</dt><dd>Various project-related statistics.</dd>
+<dt>LIST</dt><dd></dd>
+<dt>TEXT</dt><dd></dd>
+<dt>LANG</dt><dd></dd>
+<dt>WORD</dt><dd></dd>
+</dl>
+</li>
+<li><p>TEXT</p>
+<p>The nature of a TEXT selection depends on whether it is a selection
+from Oracc or from a project.  If it is from Oracc, then it is a
+LIST of all of the resources on Oracc that meet the selection
+criteria, for example, of all transliterations of a text listed by
+project.  If the selection is from a project then by definition there
+is only one TEXT resource that can match the request (by design, a
+project can only edit a text once).  The response to a request from a
+project is therefore the relevant project data for the text.</p>
+<dl>
+<dt>full</dt><dd>Metadata, transliteration and translation of the
+text.</dd>
+<dt>meta</dt><dd>A metadata record for the text, drawn from either a
+project catalogue or one of the system catalogues.</dd>
+<dt>tlit</dt><dd>A transliteration of the text.</dd>
+<dt>tlat</dt><dd>A translation of the text.  A language may be
+suffixed to <code>tlat</code> to request a translation in any of a
+list of comma-separated languages, e.g.,
+HOST/etcsri/P123456/tlat.hu,en.  The response is then the translation
+in the first matching language in the list, or an error if no match is
+found.</dd>
+</dl>
+<p>TEXT selections may be combined, i.e., the metadata and translation
+for CAMS/GKAB's version of P123456 can be requested via the URI
+<code>HOST/cams/gkab/meta+tlat</code>.  The default is
+<code>tlit+tlat</code>.</p>
+</li>
+<li>LANG
+<dl>
+<dt>WORD</dt><dd></dd>
+</dl>
+</li>
+<li>WORD
+<dl>
+<dt>(NONE)</dt><dd></dd>
+</dl>
+</li>
+<li>SIGN
+<dl>
+<dt>VALUE</dt><dd>A sign may be followed by a value, e.g.: HOST/BA/ba.</dd>
+</dl>
+</li>
+</ul>
+
+<h2>VIEW</h2>
+
+<p>VIEWs are indicated by a restricted set of keywords relating to
+Oracc system-defined views or by a URI-component beginning with the
+prefix <code>view:</code> relating to project-defined views.</p>
+
+<dl>
+<dt>cuneified</dt><dd>applicable only to texts which have a
+transliteration; the transliteration is rendered into cuneiform
+according to the Unicode standard repertoire. E.g.: HOST/saao/saa18/P123456/cuneified</dd>
+<dt></dt><dd></dd>
+</dl>
+
+<h2>FORMAT</h2>
+
+<p>In time Oracc will support several response formats including XML
+and RDF.  At present the supported formats are:</p>
+
+<dl>
+<dt>html</dt><dd>Unless otherwise specified, Oracc's default response format is XHTML
+1.0-strict HTML.</dd>
+<dt>csv</dt><dd>Comma-Separated-Values, a database distribution
+format which may be requested for projects whose type is
+<code>catalogue</code> or <code>database</code>.</dd>
+<dt>tei</dt><dd>XML in the TEI vocabulary.</dd>
+</dl>
+
+</d:doc>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+
+	<esp:name>Template</esp:name>
+	<esp:title>This is a template page</esp:title>
+
+	<html><head></head><body>
+	
+<p>Fill this is with the text and images you want, following the Oracc documentation at http://oracc.museum.upenn.edu/doc/manager/portals/esp/.</p>
+
+	</body></html>
+
+</esp:page>

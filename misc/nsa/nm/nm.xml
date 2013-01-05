@@ -1,0 +1,11 @@
+<master xmlns="http://psd.museum.upenn.edu/nm"
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+<xi:include href="base-60.xml"/>
+<xi:include href="length.xml"/>
+<xi:include href="surface.xml"/>
+<xi:include href="volume.xml"/>
+<xi:include href="drycap.xml"/>
+<xi:include href="liqcap.xml"/>
+<xi:include href="weight.xml"/>
+<xi:include href="brick.xml"/>
+</master>

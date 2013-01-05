@@ -1,0 +1,56 @@
+Oracc Resolver Handlers:
+========================
+
+Oracc URIs consist of a variable prefix followed by some combination
+of static components.  Any variables that select from the URI
+constructed so far are given in the query string, ensuring that the
+URIs themselves are stable.
+
+Variable Components:
+********************
+
+	PROJECT
+	PQX
+	LANG
+
+Static Components:
+******************
+
+	SELECTION
+	VIEW
+	FORMAT
+
+URI Templates:
+==============
+
+A handler is defined by its URI template.  The URI template replaces
+the leading variable components with the tokens:
+
+	PRJ/PQX/LNG
+
+It then concatenates any combination of the known URI segments in
+the order:
+
+    SELECTION/VIEW/FORMAT
+
+
+This produces URI templates of the form:
+
+     PRJ/PQX/tlit/proofing/xml
+
+or
+
+     PRJ/PQX/word
+
+
+URI Handler Registration:
+=========================
+
+Handlers are registered by their template.  The have_components frame
+is turned into a template and the template handler table is searched
+for a matching entry.
+
+This is done with a gperf table of the form:
+
+ TEMPLATE    HANDLER
+

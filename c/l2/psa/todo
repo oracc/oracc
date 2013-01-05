@@ -1,0 +1,17 @@
+implement <func> and <parm>
+
+implement grouper, using conj
+
+test match on normalization/morph
+
+====
+
+
+implement ? operator so we can write
+
+    maru[son//son] sza[of]?
+
+instead of repeating all those rules
+
+
+  

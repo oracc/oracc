@@ -1,0 +1,20 @@
+.broken {
+  background-image: url('/breaks.png');
+  background-repeat: repeat;
+}
+
+span.osquare:before { content: "["; }
+span.csquare:before { content: "]"; }
+
+.cuneify-label { font-size: 70%; color: gray; }
+
+.cuneify-text { width: 99%; 
+	      }
+
+.cuneify-line { 
+}
+
+.cuneify-content {
+		width: 100%;
+	      	text-align: justify;
+		}

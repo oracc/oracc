@@ -1,0 +1,47 @@
+.def_Comment {
+	color: #b22222;
+}
+
+.def_Keyword {
+	color: black;
+}
+
+.def_Defword {
+	color: #3cb371;
+}
+
+.def_Flowword {
+	color: #ba55d3;
+}
+
+.def_String {
+	color: #bc8f8f;
+}
+
+.def_String .def_Var {
+	color: #bc8f8f;
+}
+
+.def_String .regexp_Quote {
+	color: #bc8f8f;
+}
+
+.def_String .def_Symbol {
+	color: #bc8f8f;
+}
+
+.def_Var {
+	color: #c96;
+}
+
+.perl_packages {
+	color: #48d1cc;
+}
+
+.regexp_SpecQuote {
+	color: black;
+}
+
+.def_Symbol {
+	color: black;
+}

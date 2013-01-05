@@ -1,0 +1,32 @@
+<gdf:metadata xmlns:gdf="http://oracc.org/ns/gdf/1.0">
+<gdf:owner-project></gdf:owner-project>
+<gdf:title></gdf:title>
+<gdf:abbrev></gdf:abbrev>
+<gdf:description></gdf:description>
+<gdf:status>
+  <gdf:curated>no</gdf:curated>
+  <gdf:updates>no</gdf:updates>
+  <gdf:stable-uris>yes</gdf:stable-uris>
+  <gdf:licence>CC BY-SA</gdf:licence>
+</gdf:status>
+<gdf:resources>
+  <gdf:have-css>no</gdf:have-css>
+  <gdf:have-js>no</gdf:have-js>
+  <gdf:original gdf:public="yes" gdf:format="PDF"></gdf:original>
+</gdf:resources>
+<gdf:source-index xmlns="http://www.w3.org/1999/xhtml">
+
+<div class="titlepage">
+
+<h1 class="title"></h1>
+
+<h2 class="author"></h2>
+
+<p class="place"></p>
+</div>
+
+<div class="preface">
+</div>
+
+</gdf:source-index>
+</gdf:metadata>

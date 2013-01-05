@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>CBD</dc:title>
+  <dcterms:alternative>Corpus-Based Dictionary</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/cbd/2.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-03-31</dc:date>
+  <dc:publisher>Cuneiform Digital Library Group</dc:publisher>
+  <dc:description>The CBD format is used for glossaries and lexicons,
+  and this document describes version 2 of the CBD, a.k.a., G2.
+  The architecture is designed to support the inclusion of arbitrary
+  items of information tailored to the needs of different languages or
+  types of name books.</dc:description>
+</d:meta>
+
+<d:schema name="cbd" uri="http://oracc.org/ns/cbd/2.0">
+
+<h2>Preamble</h2>
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/cbd/2.0"
+namespace cbd = "http://oracc.org/ns/cbd/2.0"
+include "cdfi.rnc"
+</d:rnc>
+
+<h2>Document</h2>
+
+<p>The document element is <code>cbd</code> and has attributes to
+specify various fundamental glossary parameters as follows:</p>
+
+<dl>
+<dt>project</dt>
+<dd>The project in which this CBD lives.</dd>
+<dt>target-lang</dt>
+<dd>The language of which the present CBD is a glossary. This must
+follow the rules laid out in <a href="/doc/developer/l2/langtags/">the
+Oracc language tag documentation</a>.</dd>
+<dt>xml:lang</dt>
+<dd>The default language for definitions.</dd>
+</dl>
+
+<d:rnc>
+cbd = element cbd { cbd-attr , declaration? , entry* }
+cbd-attr    = (target-lang , xml-lang)
+target-lang = attribute cbd:target-lang { text }
+xml-lang    = attribute xml:lang        { text }
+</d:rnc>
+
+<h2>Declaration</h2>
+
+<p>The CBD declaration defines parameters for the glossary including
+its languages and properties.  A library of default parameters set by
+language is available in <code>cdl/lib/cbd/&lt;LANG>.xml</code>; if
+there is no <code>declaration</code>, or if the
+<code>declaration</code> has <code>replace=no</code>, the processor
+reads the system declaration for the <code>target-lang</code> before
+proceeding.</p>
+
+<d:rnc>
+declaration =   element declaration { features , properties }
+features = 	element features { feat-def* }
+properties =    element properties { prop-def* }
+prop-def =      element property {
+                  prop-scope , prop-name , prop-type ,  prop-sort , 
+		  prop-gaps , prop-val* }
+prop-scope =    attribute cbd:property-scope { "cbd" | "entry" }
+prop-name  =    attribute cbd:property-name  { xsd:NMTOKEN }
+prop-type =     attribute cbd:property-type  { "singleton" | "list" | "complex" }
+prop-sort =     attribute cbd:property-sort  { 
+                  "none" | "numeric" | "alpha" | "list" }
+prop-gaps =     attribute cbd:property-gaps-ok { xsd:boolean }
+prop-val =      element property-value { prop-val-type , text }
+prop-val-type = attribute cbd:prop-ok-type {
+                  "number" | "letter" | "token" | "pattern" }
+</d:rnc>
+
+<h2>Entries</h2>
+
+<p>A CBD <code>entry</code> consists of several core elements, 
+selectable additional features, and an open-ended 
+collection of properties.  In this way the structure is adaptable
+to different kinds of glossaries and languages.  For example, a
+glossary of personal names can have properties giving genealogical
+information for the persons referenced in the entries.</p>
+
+<p>Entries are recursive, so although we speak of <code>entry</code>
+and <code>sense</code> they are simply instances of the same structure
+with different <code>level</code> values.</p>
+
+<d:rnc>
+entry = element entry { 
+  type , level , signature , mapped_signature ,
+  cf , gw , pos , features* ,
+  meaning , definition , entry* , 
+  forms* ,
+  notes* , 
+  inotes* ,
+  issl*
+  }
+</d:rnc>
+
+<p>The core elements provide the essential structural data for the
+glossaries and, optionally, the semantic outline.</p>
+
+<h3>Structure</h3>
+
+<p>The central structural mechanism for entries in the CBD
+architecture is formed from three pieces of data: the <code>Citation
+Form</code> (CF), i.e., the form of the word that is given as the
+headword in the entry; the <code>Guide Word</code> (GW), i.e., a
+disambiguating label which separates homophones; and the <code>Part Of
+Speech</code> (POS), i.e., the syntactic function typically fulfilled
+by the word.</p>
+
+<p>In more traditional dictionaries the GW function is fulfilled by
+letters or numbers, and there is nothing in the CBD definition to
+prevent this from being the case in a CBD.  However, it is also common
+in CBDs for the GW to be a word or phrase which orients the dictionary
+user to the meaning or semantic realm of the term--hypernyms often
+make good choices for GWs.  The use of unordered symbols of this kind
+to disambiguate words permits deferral of decisions about the number
+and ordering of homonyms, and is particularly useful for the
+development phase of glossaries where the complete lexicon is unknown
+during the corpus-building process.</p>
+
+<p>The permitted values for GW can be specified in the declaration by
+giving a <code>prop-def</code> entry for the property
+<code>gw</code>.  Thus, to declare that GW is actually digits the
+following entry can be given:</p>
+<pre class="cookbook">&lt;property cbd:property-scope="cbd" cbd:property-name="gw">
+  cbd:property-type="singleton" cbd:property-sort="numeric"
+  cbd:property-gaps-ok="no">
+  &lt;property-value type="number"/>
+&lt;/property>
+</pre>
+
+<p>Similarly, the range of values of the <code>pos</code> element can
+be constrained by giving a specification for the property
+<code>pos</code> in the CBD declaration.</p>
+
+<p>The content model of the structural elements is very weak because
+there is an operating assumption that validation will be carried out
+on the content--at least for <code>gw</code> and
+<code>pos</code>--based on allowable values specified in the property
+declarations.</p>
+
+<d:rnc>
+cf = element cf { text }
+gw = element gw { text }
+pos = element pos { text}
+</d:rnc>
+
+<h3>Semantics</h3>
+
+<p>The CBD provides a built-in structure for dictionary definitions.
+The structure is recursive to arbitrary levels and provides support
+for multiple glossary-writing styles as well as tie-ins with the CDL
+lemmatizer.</p>
+
+<p>Note that the specification for <code>definition</code> permits
+arbitrary structured content to be included here and subsequently
+processed by glossary-specific plug-ins.</p>
+
+<d:rnc>
+glosses    = element glosses { cdf-inline }
+definition = element definition { text | anyElement }
+anyElement = element * { attribute * { text }* , (anyElement | text)*}
+
+</d:rnc>
+
+<h3>Misc</h3>
+
+<d:rnc>
+meaning = element meaning { text }
+definition = element definition { cdf-inline }
+forms = element forms { text }
+notes = element notes { note* }
+inotes = element inotes { note*}
+note = element note { cdf-inline }
+issl = element issl { text }
+</d:rnc>
+
+<h3>Properties</h3>
+
+<p>The property framework enables CBDs to be configured to the needs
+of various languages and target data types.  The framework is generic
+and recursive, meaning that complex properties are also supported.</p>
+
+<p>Properties consist of at most three components: a required name,
+given in the <code>n</code> attribute; a required value or reference,
+given either as a <code>v</code> attribute, a <code>v</code> element
+or, for references, an <code>r</code> attribute; and an optional key
+symbol, given with a <code>k</code> attribute.</p>
+
+<p>The key symbol may be used for sorting and cross-referencing. In
+the following example of the use of cross-referencing, the Sumerian
+verb ŋar[place] has several stems, each of which may be written in
+several ways.  We call the writing of a stem a <code>base</code>, so
+the relationship between stem and base can be defined as follows:</p>
+
+<pre class="example">    &lt;prop n="stem" v="B">
+      &lt;prop n="form" v="&#x14B;ar"/>
+      &lt;prop n="func" v="perf"/>
+    &lt;/prop>
+    &lt;prop n="stem" v="B">
+      &lt;prop n="form" v="mar"/>
+      &lt;prop n="func" v="perf"/>
+      &lt;prop n="rws" v="ES"/>
+    &lt;/prop>
+    &lt;prop n="base" v="&#x14B;ar">
+      &lt;prop n="stem" r="#form=ŋar"/>
+    &lt;/prop>
+    &lt;prop n="base" v="ma-r·a">
+      &lt;prop n="stem" r="#form=mar"/>
+    &lt;/prop>
+</pre>
+
+<p>The (incomplete and simplified) example enumerates the stems of the
+verb--there is a B (base) stem with perfective function in the default
+register/writing-system with the form <code>ŋar</code>, and another
+form, <code>mar</code> of the B-perfective used in Emesal.  The
+orthographic bases on which forms are constructed are given in the
+<code>base</code> property.  The bases reference the stems via the
+<code>form</code> property of the <code>stem</code> properties.  This
+permits complex co-validation of the lemmatized instance-data: the
+lemmatizer uses the glossary to ensure, for example, that a lemmatized
+form uses a combination of base and stem which is valid according to
+the entry's properties.  If a base can be used to write several stems,
+the lemmatizer can issue a diagnostic if no stem is specified; if the
+base is used to write only one stem, the lemmatizer can supply the
+stem from the base if the user has not done so.</p>
+
+<d:rnc>
+properties = element prop { name , 
+                            ((value , key?) | ref),
+			    properties }*
+
+name  = attribute n { xsd:NMTOKEN }
+value = attribute v { text } | element v { text | anyElement }
+key   = attribute k { text }
+ref   = attribute r { text }
+
+</d:rnc>
+
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

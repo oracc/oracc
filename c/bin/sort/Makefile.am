@@ -1,0 +1,5 @@
+bin_PROGRAMS=psdsort
+psdsort_SOURCES=sort.c long-options.c xstrtod.c error.c \
+	system.h long-options.h error.h xstrtod.h getopt1.c
+psdsort_LDADD=@top_srcdir@/c/lib/liboracc.la
+INCLUDES =-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/collate

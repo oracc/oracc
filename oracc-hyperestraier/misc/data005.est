@@ -1,0 +1,9 @@
+@uri=data005
+@title=QDBM
+%SCORE	10000000
+
+QDBMはデータベースを扱うルーチン群のライブラリです。データベースといっても単純なもので、キーと値のペアからなるレコード群を格納したデータファイルです。キーと値は任意の長さを持つ一連のバイト列であり、文字列でもバイナリでも扱うことができます。テーブルやデータ型の概念はありません。レコードはハッシュ表またはB+木で編成されます。
+QDBM is a library of routines for managing a database. The database is a simple data file containing records, each is a pair of a key and a value. Every key and value is serial bytes with variable length. Both binary data and character string can be used as a key and a value. There is neither concept of data tables nor data types. Records are organized in hash table or B+ tree.
+ハッシュ表のデータベースでは、キーはデータベース内で一意であり、キーが重複する複数のレコードを格納することはできません。このデータベースに対しては、キーと値を指定してレコードを格納したり、キーを指定して対応するレコードを削除したり、キーを指定して対応するレコードを検索したりすることができます。また、データベースに格納してある全てのキーを順不同に一つずつ取り出すこともできます。このような操作は、UNIX標準で定義されているDBMライブラリおよびその追従であるNDBMやGDBMに類するものです。QDBMはDBMのより良い代替として利用することができます。
+As for database of hash table, each key must be unique within a database, so it is impossible to store two or more records with a key overlaps. The following access methods are provided to the database: storing a record with a key and a value, deleting a record by a key, retrieving a record by a key. Moreover, traversal access to every key are provided, although the order is arbitrary. These access methods are similar to ones of DBM (or its followers: NDBM and GDBM) library defined in the UNIX standard. QDBM is an alternative for DBM because of its higher performance.
+	QDBM: 高速資料基盤管理器

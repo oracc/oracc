@@ -1,0 +1,106 @@
+.TH ESTWAVER 3 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estwaver \- command line interface of web crawler
+
+.SH SYNOPSIS
+.PP
+.B estwaver init [\-apn|\-acc] [\-xs|\-xl|\-xh] [\-sv|\-si|\-sa] rootdir
+.PP
+.B estwaver crawl [\-restart|\-revisit|\-revcont] rootdir
+.PP
+.B estwaver unittest rootdir
+.PP
+.B estwaver fetch [\-proxy hostr port] [\-tout num] [\-il lang] url
+
+.SH DESCRIPTION
+.PP
+.B estwaver
+is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument
+.I rootdir
+specifies the crawler root directory which contains configuration file and so on.
+.TP
+.B estwaver init [\-apn|\-acc] [\-xs|\-xl|\-xh] [\-sv|\-si|\-sa] rootdir
+Create the crawler root directory.
+.br
+If
+.B \-apn
+is specified, N\-gram analysis is performed against European text also.
+.br
+If
+.B \-acc
+is specified, character category analysis is performed instead of N\-gram analysis.
+.br
+If
+.B \-xs
+is specified, the index is tuned to register less than 50000 documents.
+.br
+If
+.B \-xl
+is specified, the index is tuned to register more than 300000 documents.
+.br
+If
+.B \-xh
+is specified, the index is tuned to register more than 1000000 documents.
+.br
+If
+.B \-sv
+is specified, scores are stored as void.
+.br
+If
+.B \-si
+is specified, scores are stored as 32\-bit integer.
+.br
+If
+.B \-sa
+is specified, scores are stored as\-is and marked not to be tuned when search.
+.TP
+.B estwaver crawl [\-restart|\-revisit|\-revcont] rootdir
+Start crawling.
+.br
+If
+.B \-restart
+is specified, crawling is restarted from the seed documents.
+.br
+If
+.B \-revisit
+is specified, collected documents are revisited.
+.br
+If
+.B \-revcont
+is specified, collected documents are revisited and then crawling is continued.</dd>
+.TP
+.B estwaver unittest rootdir
+Perform unit tests.
+.TP
+.B estwaver fetch [\-proxy hostr port] [\-tout num] [\-il lang] url
+Fetch a document.
+.br
+.I url
+specifies the URL of a document.
+.br
+.B \-proxy
+specifies the host name and the port number of the proxy server.
+.br
+.B \-tout
+specifies timeout in seconds.
+.br
+.B \-il
+specifies the preferred language.  By default, it is English.
+.PP
+All sub commands return 0 if the operation is success, else return 1.  A running crawler finishes with closing the database when it catches the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), or 15 (SIGTERM).
+.PP
+When crawling finishes, there is a directory
+.B _index
+in the crawler root directory.  It is an index available by
+.B estcmd
+and so on.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estcmd (1),
+.BR estmaster (1),
+.BR estcall (1),
+.BR estraier (3),
+.BR estnode (3)

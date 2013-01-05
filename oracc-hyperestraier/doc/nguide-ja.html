@@ -1,0 +1,1790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API, Node, P2P" />
+<meta name="description" content="P2P Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="nguide-en.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>P2P Guide of Hyper Estraier Version 1 (Japanese)</title>
+</head>
+
+<body>
+
+<h1>P2Pガイド</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<a href="nguide-en.html" hreflang="en">English</a>/<span class="void">Japanese</span>] [<a href="index.ja.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">目次</h2>
+
+<ol>
+<li><a href="#introduction">はじめに</a></li>
+<li><a href="#architecture">アーキテクチャ</a></li>
+<li><a href="#tutorial">チュートリアル</a></li>
+<li><a href="#estmaster">ノードマスタ用コマンド</a></li>
+<li><a href="#protocol">プロトコル</a></li>
+<li><a href="#nodeapi">ノードAPI</a></li>
+<li><a href="#estcall">クライアント用コマンド</a></li>
+<li><a href="#estfraud">疑似ノードマスタ</a></li>
+<li><a href="#metagateway">メタ検索ゲートウェイ</a></li>
+<li><a href="#tips">助言</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">はじめに</h2>
+
+<p>このガイドでは、Hyper EstraierのP2P機構の詳細な使い方を説明します。<a href="uguide-ja.html">ユーザガイド</a>をまだお読みでない場合は先にそちらに目を通しておいてください。</p>
+
+<p><code>estseek.cgi</code>で検索を行う場合、起動する度にデータベースを立ち上げ直すので、処理効率が悪いです。また、<code>estcmd</code>でデータベースの更新作業を行っている間は、データベースがロックされてしまうので検索ができません。これらの問題に対処するために、Hyper EstraierはC/S（クライアント/サーバ）方式のサーバプログラムを提供します。データベースを内包したプロセスをシステムに常駐させておいて、それをネットワーク経由で操作するものです。C/S方式には以下の利点があります。</p>
+
+<ul>
+<li>サーバとクライアントを別々のマシン上で動作させることができます。</li>
+<li>単一のサーバに対する複数のクライアントが並列に処理を行えます。</li>
+<li>クライアントがクラッシュしてもデータベースが壊れません。</li>
+<li>実装言語やAPIに依存しないでクライアントを実装できます。</li>
+</ul>
+
+<p>C/S間のプロトコルはHTTPベースなので、一般的なWebブラウザをクライアントにすることが可能です。もちろん、独自のクライアントを実装していただいてもかまいませんし、WebブラウザにJavaScriptやFlashなどの技術を組み合わせることもできるでしょう。</p>
+
+<p>複数のサーバが相互に通信することよって、P2P（Peer to Peer）方式の分散処理を行うこともできます。100万件の文書のインデックスを管理する10個のサーバを連携させれば、1000万件の文書を扱う検索システムを構築することができるというわけです。サーバ同士は対等の関係であるため、クライアントはどのサーバにアクセスしてもサービスを享受することができますし、どれかのサーバがダウンしてもシステム全体が停止することはありません。また、サーバ間の信頼度を元に検索精度を向上させる仕組みも備わっています。</p>
+
+<p>C/S間のプロトコルを隠蔽する「<strong>ノードAPI</strong>」も提供されます。ノードAPIを使えば、ネットワークに関する詳細な知識がなくても、クライアントのプログラムを実装することができます。このガイドでは、ノードAPI（C言語）の使い方についても説明します。ノードAPIには<a href="javapureapi/">Java版</a>と<a href="rubypureapi/">Ruby版</a>もあります。</p>
+
+<hr />
+
+<h2 id="architecture">アーキテクチャ</h2>
+
+<p>ここでは、Hyper EstraierにおけるP2Pのアーキテクチャについて説明します。</p>
+
+<h3>ノードマスタとノードサーバ</h3>
+
+<p>多数のインデックスを管理することを想定した場合、インデックス毎にサーバを起動するのは非効率です。そこで、単一のプロセスおよび単一のポートで複数のインデックスを管轄できる「<strong>ノードマスタ</strong>」というプログラムが提供されます。ノードマスタ内の個々のインデックスは独立したサービスを提供するので、ノードマスタは複数のサーバの集合体とみなすこともできます。そこで、個々のインデックスを管轄する仮想的なサーバを「<strong>ノードサーバ</strong>」と呼ぶことにします。各ノードサーバには別々のURLが割り当てられます。ユーザが操作するアプリケーションはノードサーバのクライアントとして位置づけられますが、接続先のノードサーバについてはURLだけ知っていればよく、ノードサーバがどのノードマスタ上に存在しているかをアプリケーション側で意識する必要はありません。</p>
+
+<div class="illust"><img src="nodeframe.png" width="720" height="350" alt="[framework]" /></div>
+
+<p>「<strong>ノード</strong>（node）」という用語をここではP2P機構における「<strong>ピア</strong>（peer）」とほぼ同じ意味で使っています。クライアントは、ノードマスタそのものに接続してノードの管理を行うとともに、各々のノードサーバに接続してインデックスに対する検索や文書の登録などの操作を行うことができます。</p>
+
+<h3>メタ検索と信頼度</h3>
+
+<p>ノードサーバは別のノードサーバに対して一方的にリンクを張ることができます。クライアントがノードサーバに検索要求を出した場合、依頼を受けたノードサーバは自分がリンクを張っているノードサーバにもクエリを中継し、返された結果を自分のインデックスの結果とマージしてクライアントに返します。つまり、いわゆるメタ検索機能を全てのノードサーバが持つことによって、P2P型の分散処理を実現しているのです。</p>
+
+<p>メタ検索は多階層的に行われます。経路の循環は自動的に検出されて抑止されますので、検索時には木構造のネットワークからデータを収集しているような挙動になります。この機構によって、検索対象となるノードの数を際限なく増やしていくことが可能になります。</p>
+
+<div class="illust"><img src="metatree.png" width="720" height="400" alt="[tree of meta search]" /></div>
+
+<p>ノード間の各リンクには、「<strong>信頼度</strong>」という数値が定義されます。ノードがメタ検索の結果をマージする際には、スコアの重みづけに信頼度が利用されます。信頼度が高いノードの結果は上位に来やすいということです。リンク作成や信頼度設定の指示はアプリケーションに任されますが、よく利用されるノードの信頼度を高めるように指示することによって、検索の精度が高めて行くことができます。</p>
+
+<h3>認証</h3>
+
+<p>クライアントがノードマスタやノードサーバに接続する際には、ユーザ名とパスワードを用いた認証が行われます。ユーザには、「<strong>スーパーユーザ</strong>」と「<strong>ノーマルユーザ</strong>」の2種類があります。前者はノードの管理やユーザの管理を行う権限を持つユーザで、後者はそれらの権限を持たないユーザです。また、ノードサーバの単位でも権限の付与が行われます。各ノードについて、インデックスの更新が可能な<strong>管理者ユーザ</strong>のリストと、検索だけが可能な<strong>ゲストユーザ</strong>のリストが管理されます。なお、ノードマスタのスーパーユーザは配下のどのノードにも管理者としてアクセスできます。ユーザの管理はクライアントがノードマスタに指示を出すことで行います。</p>
+
+<h3>アプリケーションの例</h3>
+
+<p>Hyper EstraierのノードAPIを使った最も興味深いアプリケーションとして、<a href="http://modestraier.sourceforge.net/">mod_estraier</a>が挙げられます。Webサーバ（Apache）のモジュールとして動作して、プロクシとして仲介したコンテンツをインデックスに登録するソフトウェアです。フォワードプロクシとして使えば、自分や仲間が見たことのあるページのみを対象とした検索エンジンができます。リバースプロクシとして使えば、掲示板やWikiはもちろん、いかなるWebアプリケーションにも検索機能を組み込めます。このように、様々なアプリケーションと連携して高度な検索システムを簡単に作れるのがノードAPIの最大の特徴です。</p>
+
+<hr />
+
+<h2 id="tutorial">チュートリアル</h2>
+
+<p>P2Pの概念はなかなか難解なものですが、まずはコマンドを使ってみながら雰囲気を掴んで行きましょう。</p>
+
+<h3>起動と終了</h3>
+
+<p>ノードマスタを動作させる準備として、サーバルートディレクトリを作成します。設定ファイルやインデックスなどを格納するディレクトリです。以下のコマンドを実行すると、「<code>casket</code>」というディレクトリが作成されます。</p>
+
+<pre>estmaster init casket
+</pre>
+
+<p>次に、ノードマスタを起動します。以下のようにします。</p>
+
+<pre>estmaster start casket
+</pre>
+
+<p>ノードマスタを終了させる場合は、ノードマスタを実行している端末で<code>Ctrl-C</code>を入力するか、別の端末で以下のコマンドを実行します。</p>
+
+<pre>estmaster stop casket
+</pre>
+
+<h3>管理用インターフェイス</h3>
+
+<p>ノードマスタが起動しているならば、「<code><a href="http://localhost:1978/master_ui">http://localhost:1978/master_ui</a></code>」というURLにWebブラウザでアクセスすることで、管理用インターフェイスを使うことができます。アクセスするとユーザ名とパスワードを聞かれるダイアログが出ますので、「<code>admin</code>」「<code>admin</code>」と入力してください。すると、管理用のメニューが表示されます。</p>
+
+<p>「<strong>Manage Master</strong>」メニュー経由ではノードマスタの終了処理や同期処理を指示できますが、それらは今は放っておきましょう。</p>
+
+<p>「<strong>Manage Users</strong>」を選んでください。今は「<code>admin</code>」というユーザでログインしていますが、新しいユーザを作っておきましょう。画面の下の方にある入力フォームに、右からユーザ名、パスワード、フラグ、本名、その他の情報を入力します。ユーザ名とパスワードは英数字とハイフンとアンダースコアとピリオドで指定します。とりあえずは、「<code>mikio</code>」「<code>oikim</code>」「<code>s</code>」「<code>平林幹雄</code>」「<code>管理用ユーザ</code>」としてみましょう。フラグに「<code>s</code>」を入力しているのが重要なところです。そのユーザが管理者権限を持つことを指示しています。</p>
+
+<p>もはや「<code>admin</code>」ユーザは不要です。セキュリティの問題となるので、消してしまいましょう。「<code>admin</code>」の欄にある「<strong>DELE</strong>」を選択して、確認の画面で「<strong>sure</strong>」を選択してください。</p>
+
+<p>次に、「<strong>Manage Nodes</strong>」を選択してください。もう「<code>admin</code>」ユーザが消えてしまったので、再びユーザ名とパスワードを聞かれます。先ほどの「<code>mikio</code>」「<code>oikim</code>」を入力すると進むことができます。今度は新しいノードを作ります。画面の下の方にある入力フォームにノード名とラベルを指定します。ノード名は英数字とハイフンとアンダースコアとピリオドで指定します。とりあえずは、「<code>test1</code>」「<code>テスト用ノードその壱</code>」というノードと、「<code>test2</code>」「<code>テスト用ノードその弍</code>」というノードを作ってください。</p>
+
+<h3>文書の登録</h3>
+
+<p>今度はコマンドラインの操作に戻ります。管理用インターフェイスの画面は閉じて構いません。ノードマスタを起動した端末はいろいろログが出て塞がれているでしょうから、別の端末を立ち上げてください。</p>
+
+<p>ノードのインデックスに文書を登録してみましょう。登録対象の文書は文書ドラフト形式で表現する必要がありますので、予め以下のようなファイルを「<code>data001.est</code>」という名前で作成してください。</p>
+
+<pre>@uri=data001
+@title=Material Girl
+
+Living in a material world
+And I am a material girl
+You know that we are living in a material world
+And I am a material girl
+</pre>
+
+<p>「<code>test1</code>」ノードに文書を登録するには、以下のコマンドを実行します。インデックスの更新には管理者権限が必要なので、<code>-auth</code>オプションで管理者のユーザ名とパスワードを指定しています。登録処理は一瞬で終わるので、本当に登録されているか疑いたくなるかもしれませんが、何もメッセージが出なければ成功ということです。</p>
+
+<pre>estcall put -auth mikio oikim http://localhost:1978/node/test1 data001.est
+</pre>
+
+<p>メタ検索の説明のために、「<code>test2</code>」ノードにも文書を登録しておきましょう。以下のファイルを「<code>data002.est</code>」として作成してください。</p>
+
+<pre>@uri=data002
+@title=Liberian Girl
+
+Liberian girl
+You came and you changed My world
+A love so brand new
+</pre>
+
+<p>そして、以下のコマンドを実行してください。</p>
+
+<pre>estcall put -auth mikio oikim http://localhost:1978/node/test2 data002.est
+</pre>
+
+<p>文書ドラフト形式のファイルさえ作れば、リモートマシンからでも文書の登録ができるのがミソです。同じ要領で、いくつかの文書を登録してみてください。</p>
+
+<h3>文書の検索</h3>
+
+<p>では、登録した文書を対象とした検索を行ってみましょう。以下のコマンドを実行します。</p>
+
+<pre>estcall search http://localhost:1978/node/test1 "material world"
+</pre>
+
+<p>すると、先ほど登録した文書の情報が表示されます。なお、日本語（UTF-8）が表示できない端末だと文字化けするかもしれません。</p>
+
+<p>ノード間にリンクを張ることで、メタ検索を行うことができるようになります。試しに、「<code>test1</code>」から「<code>test2</code>」に対してリンクを張ってみましょう。リンク元のURL、リンク先のURL、表示用のラベル、信頼度の順で引数を指定します。</p>
+
+<pre>estcall setlink -auth mikio oikim http://localhost:1978/node/test1 \
+  http://localhost:1978/node/test2 TEST02 8000
+</pre>
+
+<p>ではまた検索してみましょう。今度は<code>-dpt</code>オプションでメタ検索の深度を指定します。</p>
+
+<pre>estcall search -dpt 1 http://localhost:1978/node/test1 "girl"
+</pre>
+
+<p>「<code>test1</code>」に対して検索したのに、「<code>test2</code>」の結果もマージされて表示されます。これがP2P型のメタ検索です。「<code>test1</code>」と「<code>test2</code>」が別々のコンピュータにあれば、分散処理ができるわけです。</p>
+
+<p>リンクの信頼度を高くすると、リンク先のノードが返した結果の方が表示順位が上がります。以下のコマンドを実行してから、先ほどと同じコマンドで検索してみてください。ちゃんと順位が入れ替わっていますよね。</p>
+
+<pre>estcall setlink -auth mikio oikim http://localhost:1978/node/test1 \
+  http://localhost:1978/node/test2 TEST02 12000
+</pre>
+
+<p>検索結果をXML形式で取得することもできます。以下のコマンドを実行してみてください。XMLの詳しい書式については<code>estresult.dtd</code>をご覧ください。</p>
+
+<pre>estcall search -dpt 1 -vx http://localhost:1978/node/test1 "girl"
+</pre>
+
+<p>コマンドラインで検索しても大して面白くないですよね。でも、ノードサーバにはWebブラウザで検索できるインターフェイスも内蔵されています。「<code><a href="http://localhost:1978/node/test1/search_ui">http://localhost:1978/node/test1/search_ui</a></code>」にアクセスしてみてください。表示された画面で、「<strong>phrase</strong>」の欄に検索語を入れてから、「<strong>search</strong>」ボタンを押せば検索できます。「<strong>depth</strong>」の数を増やせばメタ検索もできます。左側に表示されたリンクを選択すると、そのノードを起点にして再検索が行われます。</p>
+
+<h3>アプリケーションの開発</h3>
+
+<p>文書ドラフト形式のデータを作るのは面倒くさいし、付属の検索用インターフェイスもちょっと渋い感じかもしれません。さて、ここから先はあなたの出番です。<code>estcall</code>コマンドやノードAPIを使って小粋なアプリケーションを作ってみてください。このガイドの残りの項目では、そのためのノウハウについて説明します。</p>
+
+<hr />
+
+<h2 id="estmaster">ノードマスタ用コマンド</h2>
+
+<p>ノードマスタを管理するためのコマンドとして「<code>estmaster</code>」が提供されます。ここではその仕様を説明します。</p>
+
+<h3>書式</h3>
+
+<p><code>estmaster</code>は多くのサブコマンドの集合体です。サブコマンドの名前は第1引数で指定されます。その他の引数はサブコマンドの種類に応じて解釈されます。<var>rootdir</var>という引数はサーバルートディレクトリのパスです。サーバルートディレクトリとは、ノードマスタの動作に必要な設定ファイルなどを格納するディレクトリツリーのトップのことです。</p>
+
+<dl>
+<dt><kbd>estmaster init [-ex] <var>rootdir</var></kbd></dt>
+<dd>サーバルートディレクトリを作成します。</dd>
+<dd>-exを付けると、サンプルのユーザとノードを作成します。デフォルトでは、ユーザ名とパスワードがともに「admin」であるスーパーユーザのみが作成されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster start [-bg] [-ro] [-st] <var>rootdir</var></kbd></dt>
+<dd>ノードマスタを起動します。</dd>
+<dd>-bgをつけると、デーモンプロセスとしてバックグラウンドで実行します。</dd>
+<dd>-roをつけると、設定にかかわらず読み込み専用モードで動作します。</dd>
+<dd>-stをつけると、マルチスレッドを使わずにシングルスレッドで動作します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster stop <var>rootdir</var></kbd></dt>
+<dd>起動中のノードマスタを終了させます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster unittest <var>rootdir</var></kbd></dt>
+<dd>ユニットテストを行います。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estmaster crypt <var>key</var> [<var>hash</var>]</kbd></dt>
+<dd>指定した文字列の暗号用ハッシュ値を出力します。</dd>
+<dd><var>key</var>は処理対象の文字列を指定します。</dd>
+<dd><var>hash</var>を指定すると、キーとハッシュが対応するかどうかを判定します。</dd>
+</dl>
+
+<p>全てのサブコマンドは、処理が正常に終了した場合には0を、そうでない場合は1を終了ステータスにします。起動中のノードマスタに1（SIGHUP）、2（SIGINT）、3（SIGQUIT）、15（SIGTERM）のどれかのシグナルを送ることにより、データベースを閉じて正常終了させることができます。デーモンとして稼働中のノードマスタの場合は、シグナル1（SIGHUP）を送ることにより、再起動して設定ファイルを読み込み直させることができます。</p>
+
+<p>ノードマスタを終了させるにはコマンドラインによる方法や後述のネットワーク経由による方法がありますが、いずれにせよ、必ず規定の手順で終了させてください。さもなくばインデックスのデータが壊れる可能性があります。</p>
+
+<h3>サーバルートディレクトリの構成</h3>
+
+<p>サーバルートディレクトリは以下のファイルやディレクトリを格納しています。</p>
+
+<ul>
+<li><kbd>_conf</kbd> : 設定ファイル。詳細は後述します。</li>
+<li><kbd>_user</kbd> : ユーザアカウントファイル。詳細は後述します。</li>
+<li><kbd>_log</kbd> : ログファイル。サーバのイベントログや各クライアントのアクセスログを記録します。</li>
+<li><kbd>_meta</kbd> : メタデータのデータベースファイル。重複起動防止のロック機構も兼ねます。</li>
+<li><kbd>_pid</kbd> : プロセスIDファイル。起動中のノードマスタのプロセスIDが書かれます。</li>
+<li><kbd>_stop</kbd> : 停止指示用ファイル。このファイルがあるとノードマスタは自分で停止しようとします。</li>
+<li><kbd>_dfdb</kbd> : 文書頻度データベースのファイル。このファイルがあれば文書頻度の計算に利用されます。</li>
+<li><kbd>_node/</kbd> : ノードディレクトリ。各ノードの転置インデックスを格納します。</li>
+<li><kbd>_sess/</kbd> : セッションディレクトリ。各ユーザのセッション情報を格納します。現状では未使用です。</li>
+</ul>
+
+<p>設定ファイルやユーザアカウントは任意のエディタで書き換えることができます。ただし、ユーザアカウントファイルは起動中のノードマスタが停止する際に更新されますので、ユーザアカウントファイルの編集はノードマスタを止めてから行ってください。</p>
+
+<p><code>estcmd</code>で作成したデータベースをノードディレクトリに入れてからノードマスタを起動すると、そのデータベースをノードとして利用することができるようになります。</p>
+
+<h3>設定ファイル</h3>
+
+<p>設定ファイルは、変数名と値を「<code>:</code>」で区切った形式の行を並べたものです。デフォルトでは、設定ファイルは以下のような内容になっています。</p>
+
+<pre>bindaddr: 0.0.0.0
+portnum: 1978
+publicurl:
+runmode: 1
+authmode: 2
+recvmax: 1024
+maxconn: 30
+idleflush: 20
+idlesync: 300
+sessiontimeout: 600
+searchtimeout: 15
+searchmax: 1000
+searchdepth: 5
+rateuri: 1
+mergemethod: 2
+proxyhost:
+proxyport:
+logfile: _log
+loglevel: 2
+backupcmd:
+scalepred: 2
+scoreexpr: 2
+attrindex: @mdate{{!}}seq
+attrindex: @title{{!}}str
+docroot:
+indexfile:
+trustednode:
+denyuntrusted: 0
+cachesize: 64
+cacheanum: 8192
+cachetnum: 1024
+cachernum: 256
+specialcache:
+helpershift: 0.9
+wildmax: 256
+limittextsize: 128
+snipwwidth: 480
+sniphwidth: 96
+snipawidth: 96
+scancheck: 1
+smlrvnum: 32
+extdelay: 4096
+adminemail: magnus@hyperestraier.gov
+uireplace: ^file:///home/mikio/public_html/{{!}}http://localhost/
+uireplace: /index\.html?${{!}}/
+uiextattr: @author|Author
+uiextattr: @mdate|Modification Date
+uiphraseform: 2
+uismlrtune: 16 1024 4096
+</pre>
+
+<p>それぞれの変数の機能を以下に示します。</p>
+
+<ul>
+<li><kbd>bindaddr</kbd> : サーバのアドレスを指定します。0.0.0.0はホストの全てのアドレスを意味します。</li>
+<li><kbd>portnum</kbd> : サーバのポート番号を指定します。</li>
+<li><kbd>publicurl</kbd> : サーバの公開URLを絶対URLで指定します。デフォルトでは、"http://"、ホスト名、":"、ポート番号から生成されます。</li>
+<li><kbd>runmode</kbd> : 運用モードを指定します。1は通常モード、2は読み込み専用モードです。</li>
+<li><kbd>authmode</kbd> : 認証モードを指定します。1は認証を一切しないモード、2は管理機能のみで認証を行うモード、3は全ての操作で認証を行うモードです。</li>
+<li><kbd>recvmax</kbd> : 受信するデータの最大の長さをキロバイト単位で指定します。</li>
+<li><kbd>maxconn</kbd> : 最大同時接続数を指定します。</li>
+<li><kbd>idleflush</kbd> : キャッシュのフラッシュを開始するアイドル時間を秒単位で指定します。</li>
+<li><kbd>idlesync</kbd> : データベースとディスクの同期処理を開始するアイドル時間を秒単位で指定します。</li>
+<li><kbd>sessiontimeout</kbd> : セッションのタイムアウトを秒単位で指定します。未実装です。</li>
+<li><kbd>searchtimeout</kbd> : 検索処理のタイムアウトを秒単位で指定します。</li>
+<li><kbd>searchmax</kbd> : 送信する文書の最大数を指定します。</li>
+<li><kbd>searchdepth</kbd> : メタ検索の最大深度を指定します。</li>
+<li><kbd>rateuri</kbd> : 正数ならスコアリングの際にURIを評価します。</li>
+<li><kbd>mergemethod</kbd> : メタ検索の結果のマージ方法を指定します。1ならスコアのみを用い、2ならスコアと順位を用い、3なら順位のみを用います。</li>
+<li><kbd>proxyhost</kbd> : プロクシサーバのホスト名を指定します。</li>
+<li><kbd>proxyport</kbd> : プロクシサーバのポート番号を指定します。</li>
+<li><kbd>logfile</kbd> : ログファイルの名前を指定します。絶対パスか相対パスで指定します。</li>
+<li><kbd>loglevel</kbd> : ログのレベルを指定します。1ならデバッグ、2なら通常、3なら警告、4ならエラー、5なら無しです。</li>
+<li><kbd>docroot</kbd> : 通常のWebサーバとして公開するディレクトリの絶対パスを指定します。</li>
+<li><kbd>backupcmd</kbd> : バックアップに用いるコマンドの絶対パスを指定します。</li>
+<li><kbd>scalepred</kbd> : 各ノードのインデックスの規模に対する予測を指定します。1なら50000件未満、2なら300000件未満、3なら1000000件未満、4ならそれ以上です。</li>
+<li><kbd>scoreexpr</kbd> : スコアの表現方法を指定します。1ならスコアを破棄し、2なら8ビットで保持し、3なら32ビットで保持し、4なら未調整で保持します。</li>
+<li><kbd>attrindex</kbd> : 属性インデックスの属性名とデータ型を指定します。複数回指定できます。</li>
+<li><kbd>indexfile</kbd> : 通常のWebサーバとして公開する際のディレクトリのインデックスファイルの名前を指定します。不要なら空文字列にします。</li>
+<li><kbd>trustednode</kbd> : 認証を省略するノード（クライアント）のIPアドレスを10進数ドット付き表記で指定します。複数回指定可能です。</li>
+<li><kbd>denyuntrusted</kbd> : 正数なら上記のノード以外からのアクセスを拒絶します。</li>
+<li><kbd>cachesize</kbd> : インデックス用キャッシュのサイズをメガバイト単位で指定します。</li>
+<li><kbd>cacheanum</kbd> : 文書の属性用のキャッシュのレコード数を指定します。</li>
+<li><kbd>cachetnum</kbd> : 文書のテキスト用のキャッシュのレコード数を指定します。</li>
+<li><kbd>cachernum</kbd> : 出現結果用のキャッシュのレコード数を指定します。</li>
+<li><kbd>specialcache</kbd> : スペシャルキャッシュの属性名を指定します。</li>
+<li><kbd>helpershift</kbd> : ヘルパを用いる下限のキャッシュ使用率を指定します。</li>
+<li><kbd>wildmax</kbd> : ワイルドカード展開の最大語数を指定します。</li>
+<li><kbd>limittextsize</kbd> : 登録文書のテキストのサイズ制限をキロバイト単位で指定します。</li>
+<li><kbd>snipwwidth</kbd> : 検索結果のスニペットの全体の幅を指示します。</li>
+<li><kbd>sniphwidth</kbd> : 検索結果のスニペットを作る際に文書の冒頭から取得する幅を指示します。</li>
+<li><kbd>snipawidth</kbd> : 検索結果のスニペットを作る際に検索語の周辺から取得する幅を指示します。</li>
+<li><kbd>scancheck</kbd> : 正数なら文書の内容と検索フレーズの精密検査をします。</li>
+<li><kbd>smlrvnum</kbd> : 類似検索のベクトルの次元数を指定します。0なら類似検索が無効になります。</li>
+<li><kbd>extdelay</kbd> : 類似検索のベクトル抽出を遅延させる文書数を指定します。負数を指定すると、遅延なしで形態素解析を適用します。</li>
+<li><kbd>adminemail</kbd> : サイト管理者の電子メールアドレスを指定します。</li>
+<li><kbd>uireplace</kbd> : ユーザインターフェイスで表示するURIを変換するための正規表現と置換文字列を「<code>{{!}}</code>」で区切って指定します。複数回指定できます。</li>
+<li><kbd>uiextattr</kbd> : ユーザインターフェイスで表示する属性の名前とラベルを「<code>|</code>」で区切って指示します。複数回指定できます。</li>
+<li><kbd>uiphraseform</kbd> : 検索条件式の種類指定します。1なら通常書式、2なら簡便書式、3なら粗略書式、4なら論理和書式、5なら論理積書式です。</li>
+<li><kbd>uismlrtune</kbd> : ユーザインターフェイスからの類似検索のチューニングパラメータを指定します。キーワード数とキーワード毎の文書数と全体の候補の数を空白区切りで指定します。</li>
+</ul>
+
+<p><code>backupcmd</code>で指定したコマンドは、引数としてサーバルートディレクトリの絶対パスが渡されて呼び出されます。通常はシェルスクリプトを指定し、任意の方法でサーバルートディレクトリのバックアップを取ります。</p>
+
+<p>gatherの「<code>-fx</code>」オプションで指定した外部コマンドは、第1引数に対象文書のパス、第2引数に出力先のパスが渡されて呼び出されます。すなわち、外部コマンドは第1引数のファイルを解析して文書ドラフトやプレーンテキストやHTMLやMIMEを生成し、第2引数のファイルに書き込むという機能を持つことが期待されます。なお、対象文書は一時ファイルとしてコピーされて渡されます。対象文書の元来のパスは環境変数<code>ESTORIGFILE</code>の値として渡されますが、決して元のファイルを変更してはいけません。<code>ESTORIGFILE</code>を使う場合はファイルを読み込む必要はありませんので、「<code>-fo</code>」オプションも同時につけるとよいでしょう。</p>
+
+<p><code>ui</code>で始まる名前の属性はユーザインターフェイスにのみ反映されます。APIを使う場合は、<code>uireplace</code>によって表示時にURLを加工することはできませんので、登録時に外部用URIを各文書の属性としてつけるようにしてください。</p>
+
+<h3>ユーザアカウントファイル</h3>
+
+<p>ユーザアカウントファイルは、ユーザ名、暗号化されたパスワード、フラグ、フルネーム、雑多な情報をタブ区切りで並べた行を並べたものです。文字コードはUTF-8です。デフォルトでは以下のような内容になっています。</p>
+
+<pre>admin   21232f297a57a5a743894a0e4a801fc3        s       Carolus Magnus  Administrator
+</pre>
+
+<p>パスワードはMD5のハッシュ値で表現されます。フラグには、管理者であることを示す「<code>s</code>」とアクセス禁止者であることを示す「<code>b</code>」を用いることができます。フラグとフルネームと雑多な情報は省略可能です。</p>
+
+<h3>内蔵ユーザインターフェイス</h3>
+
+<p>Webブラウザで、ノードマスタの相対URL「<code>/master_ui</code>」にアクセスすると、管理用のインターフェイスを使うことができます。管理用インターフェイスを使うには、スーパーユーザのアカウントでログインする必要があります。</p>
+
+<p>Webブラウザで、ノードサーバのURLの後ろに「<code>/search_ui</code>」をつけたURLにアクセスすると、検索用のインターフェイスを使うことができます。検索結果の画面で、「<code>LINK#1</code>」といったラベルで表示されるのは、現在のノードからリンクされた他のノードです。リンクを選択すると、そのノードを中心として再検索が行われます。これを使って関連しそうなノードを次々とブラウズしていくことで、目的の文書を探すことができます。</p>
+
+<p>検索結果の画面で、「<code>Atom</code>」や「<code>RSS</code>」というリンクを選択すると、その検索結果を配信するためのAtom形式またはRSS形式のデータが得られます。このリンクのURLをAtom 1.0かRSS 1.0に対応したアプリケーション（RSSリーダ）に登録すると、定期的に検索結果を監視して、変化があった場合に通知させることができます。</p>
+
+<p>GoogleやWikipediaなどの多くのサイトと連携したメタ検索を行うためのOpenSearchという規格があります。ノードサーバはOpenSearch 1.1のインターフェイスにも対応しています。Webブラウザで、ノードサーバのURLの後ろに「<code>/opensearch</code>」をつけたURLにアクセスすると、OpenSearch Descriptionと呼ばれるデータを取得することができます。これをOpenSearch対応のサイトやアプリケーションに読み込ませることで、そのノードをメタ検索の対象に含めることができます。</p>
+
+<hr />
+
+<h2 id="protocol">プロトコル</h2>
+
+<p>ノード間およびクライアント・ノード間の通信はHTTPベースのプロトコルに基づいて行われます。ここでは、その具体的な仕様について見て行きます。</p>
+
+<h3>概要</h3>
+
+<p>ノードマスタおよびノードサーバはHTTP/1.0を実装しています。現状では、HTTP/1.1特有の機能であるキープアライブ接続やチャンクエンコーディングや各種のネゴシエーションには対応していません。</p>
+
+<p>HTTPのメソッドはGETでもPOSTでも構いませんが、情報を取得するだけの場合はGET、ノードマスタやノードサーバに更新が発生する場合はPOSTを使うことが推奨されます。パラメータの文字コードはUTF-8ですが、URLに含められない文字にはURLエンコード（application/x-www-form-urlencoded）を施す必要があります。GETメソッドで送れるデータのサイズは8000バイトまでです。ユーザ名とパスワードの受け渡しはHTTPのBasic認証機構を使って行われます。</p>
+
+<p>処理が成功した場合は原則的に200または202のステータスコードが返ります。エラーの場合は、以下のステータスコードが返ります。</p>
+
+<ul>
+<li>400 : パラメータが不正です。</li>
+<li>401 : 認証情報がないか、間違っています。</li>
+<li>403 : 現在のアカウントにはアクセス権限がありません。</li>
+<li>404 : 接続先のパスが存在しません。</li>
+<li>500 : サーバに原因があるエラーが発生しました。</li>
+</ul>
+
+<p>検索等の操作ではメッセージボディに結果のデータが含まれます。データ形式はUTF-8のテキストですが、タブや改行で構造化されている場合もあります。操作の種類によって結果の解釈方法は変わります。deflateエンコーディングに対応しているクライアントに対しては、圧縮したデータを送信します。</p>
+
+<h3>ノードマスタの操作</h3>
+
+<p>ノードマスタに対する操作は「<code>/master</code>」というパスに接続することで行います。例えばホスト名が「<code>skyhigh.estraier.go.jp</code>」でポートが「<code>8888</code>」の場合は、「<code>http://skyhigh.estraier.go.jp:8888/master</code>」に接続することになります。ノードマスタの操作はスーパーユーザのみが行えます。ノードマスタの操作はいくつかのサブコマンドからなりますが、サブコマンドの名前は「<code>action</code>」パラメータで指定します。その他のパラメータはサブコマンドによって変わります。パラメータの順番は任意です。</p>
+
+<dl>
+<dt><kbd>/master ? action=shutdown</kbd></dt>
+<dd>ノードマスタをシャットダウンします。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば202のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=sync</kbd></dt>
+<dd>全てノードのデータベースをディスクと同期させます。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば202のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=backup</kbd></dt>
+<dd>データベースを同期させた上でバックアップコマンドを実行します。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば202のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=userlist</kbd></dt>
+<dd>ユーザアカウントのリストを取得します。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードとともにTSV形式のリストが返信されます。各行が各ユーザの情報を表し、ユーザ名、暗号化されたパスワード、フラグ、フルネーム、その他の情報をタブ区切りのフィールドとして表現します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=useradd &amp; name=<var>str</var> &amp; passwd=<var>str</var> &amp; flags=<var>str</var> &amp; fname=<var>str</var> &amp; misc=<var>str</var></kbd></dt>
+<dd>ユーザアカウントを追加します。</dd>
+<dd><var>name</var>は新規のユーザ名を指定します。必須です。ユーザ名に利用できる文字はUS-ASCIIの英数字とハイフンとアンダースコアとピリオドのみです。既存のユーザ名と重複していた場合はエラーになります。</dd>
+<dd><var>passwd</var>はパスワードを指定します。必須です。</dd>
+<dd><var>flags</var>はフラグを指定します。省略可能です。フラグが "s" を含めば管理者ユーザとなり、"b" を含めば禁止ユーザとなります。</dd>
+<dd><var>fname</var>はフルネームを指定します。省略可能です。</dd>
+<dd><var>misc</var>は雑多な情報を指定します。省略可能です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+<dd>パスワードを送信することになるため、パラメータはPOSTメソッドで送信すべきです。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=userdel &amp; name=<var>str</var></kbd></dt>
+<dd>ユーザアカウントを削除します。</dd>
+<dd><var>name</var>はユーザ名を指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodelist</kbd></dt>
+<dd>ノードサーバのリストを取得します。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードとともにTSV形式のリストが返信されます。各行が各ノードの情報を表し、ノード名、ラベル、登録文書数、登録語数、サイズをタブ区切りのフィールドとして表現します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodeadd &amp; name=<var>str</var> &amp; label=<var>str</var></kbd></dt>
+<dd>ノードサーバを追加します。</dd>
+<dd><var>name</var>は新規のノード名を指定します。必須です。ノード名に利用できる文字はUS-ASCIIの英数字とハイフンとアンダースコアとピリオドのみです。既存のノード名と重複していた場合はエラーになります。</dd>
+<dd><var>label</var>はラベルを指定します。省略可能です。省略した場合はノード名と同じラベルが付けられます。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodedel &amp; name=<var>str</var></kbd></dt>
+<dd>ノードサーバを削除します。</dd>
+<dd><var>name</var>はノード名を指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=nodeclr &amp; name=<var>str</var></kbd></dt>
+<dd>ノードサーバに登録された文書を削除します。</dd>
+<dd><var>name</var>はノード名を指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。ユーザとリンクの情報は保持されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/master ? action=logrtt</kbd></dt>
+<dd>ログファイルのローテーションを行います。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードが返信されます。既存のログファイルは空になり、内容はハイフンと「YYYYMMDDhhmmss」形式の日付表現を接尾させた名前のファイルとして退避されます。</dd>
+</dl>
+
+<h3>ノードサーバの操作</h3>
+
+<p>各ノードサーバに対する操作は「<code>/node/</code>」の後にノード名をつけたパスに接続することで行います。例えばホスト名が「<code>skyhigh.estraier.go.jp</code>」でポートが「<code>8888</code>」でノード名が「<code>foo</code>」の場合は、「<code>http://skyhigh.estraier.go.jp:8888/node/foo</code>」に接続することになります。ノードマスタの操作はいくつかのサブコマンドからなりますが、サブコマンドの名前はノード名の後に「<code>/</code>」を挟んで指定します。パラメータはサブコマンドによって変わります。パラメータの順番は任意です。ノードマスタの操作は検索系と更新系の二つに大別できますが、前者はどのユーザでも実行でき、後者はそのノードの管理者のみが実行できます。</p>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/inform</kbd></dt>
+<dd>ノードの情報を取得します。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードとともにTSV形式のデータが返信されます。第1行目は、ノード名、ラベル、登録文書数、登録語数、サイズをタブ区切りのフィールドとして表現したものです。空行を挟んで、次の空行までの各行は管理者のユーザ名のリストです。空行を挟んで、次の空行までの各行はゲストのユーザ名のリストです。空行を挟んで、以降はリンク情報のリストです。リンク情報の各行はURLとラベルと信頼度をタブ区切りのフィールドで表現したものです。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/cacheusage</kbd></dt>
+<dd>ノードのキャッシュ使用率を取得します。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードとともにキャッシュの使用率を10進小数で表現したデータが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/search ? phrase=<var>str</var> &amp; attr=<var>str</var> &amp; order=<var>str</var> &amp; max=<var>num</var> &amp; options=<var>num</var> &amp; auxiliary=<var>num</var> &amp; distinct=<var>str</var> &amp; depth=<var>num</var> &amp; wwidth=<var>num</var> &amp; hwidth=<var>num</var> &amp; awidth=<var>num</var> &amp; skip=<var>num</var> &amp; mask=<var>num</var></kbd></dt>
+<dd>検索を実行します。</dd>
+<dd><var>phrase</var>は検索フレーズを指定します。省略可能です。書式はコアAPIのものと同じです。</dd>
+<dd><var>attr</var>は属性条件を指定します。省略可能です。<code>attr1</code>から<code>attr9</code>を使って複数の属性条件を指定することも可能です。書式はコアAPIのものと同じです。</dd>
+<dd><var>order</var>はソート条件を指定します。省略可能です。書式はコアAPIのものと同じです。</dd>
+<dd><var>max</var>は取得件数を指定します。省略可能です。デフォルトは10です。</dd>
+<dd><var>options</var>は検索条件のオプションを指定します。省略可能です。値はコアAPIのものと同じです。</dd>
+<dd><var>auxiliary</var>は補助インデックスの結果を採用する許可を指定します。省略可能です。デフォルトは32です。</dd>
+<dd><var>distinct</var>は属性重複除去フィルタを指定します。省略可能です。</dd>
+<dd><var>depth</var>はメタ検索の深度を指定します。省略可能です。デフォルトは0です。</dd>
+<dd><var>wwidth</var>はスニペットの全体の幅を指示します。省略可能です。デフォルトはノードマスタの設定に従います。0にするとスニペットを送信しません。負数にするとスニペットの代わりに本文全体を送信します。</dd>
+<dd><var>hwidth</var>はスニペットを作る際に文書の冒頭から取得する幅を指示します。省略可能です。デフォルトはノードマスタの設定に従います。</dd>
+<dd><var>awidth</var>はスニペットを作る際に検索語の周辺から取得する幅を指示します。省略可能です。デフォルトはノードマスタの設定に従います。</dd>
+<dd><var>skip</var>は取得をスキップする件数を指定します。省略可能です。デフォルトは0件です。</dd>
+<dd><var>mask</var>は検索対象のマスクを指定します。省略可能です。1は自分自身、2は1番目のリンク先、4は2番目のリンク先、8は3番目のリンク先といった2の累乗の値の合計で検索を抑止する対象を指定します。あるいは、<code>mask0=on</code>から<code>mask9=on</code>までの式で指定することもできます。</dd>
+<dd>成功すれば200のステータスコードとともに検索結果のデータが返信されます。詳細は後述します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/list ? max=<var>num</var> &amp; prev=<var>str</var></kbd></dt>
+<dd>文書の一覧を取得します。</dd>
+<dd><var>max</var>は取得件数を指定します。省略可能です。デフォルトは10です。</dd>
+<dd><var>prev</var>は繰り返しにおける前の要素のURLを指定します。省略可能です。</dd>
+<dd>成功すれば200のステータスコードとともに文書の一覧のデータが返信されます。詳細は後述します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/get_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>文書の情報を取得します。</dd>
+<dd><var>id</var>は対象文書のID番号を指定します。省略可能です。</dd>
+<dd><var>uri</var>は対象文書のURIを指定します。省略可能です。</dd>
+<dd>成功すれば200のステータスコードとともに文書ドラフト形式のデータが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/get_doc_attr ? id=<var>num</var> &amp; uri=<var>str</var> &amp; attr=<var>str</var></kbd></dt>
+<dd>文書の属性値を取得します。</dd>
+<dd><var>id</var>は対象文書のID番号を指定します。省略可能です。</dd>
+<dd><var>uri</var>は対象文書のURIを指定します。省略可能です。</dd>
+<dd><var>attr</var>は属性名を指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードとともに属性値のデータが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/etch_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>文書のキーワードを抽出します。</dd>
+<dd><var>id</var>は対象文書のID番号を指定します。省略可能です。</dd>
+<dd><var>uri</var>は対象文書のURIを指定します。省略可能です。</dd>
+<dd>成功すれば200のステータスコードとともにキーワードとそのスコアのデータが返信されます。書式はTSVです。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/uri_to_id ? uri=<var>str</var></kbd></dt>
+<dd>URIに対応する文書のID番号を取得します。</dd>
+<dd><var>uri</var>は対象文書のURIを指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードとともに該当文書のID番号が返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/put_doc ? draft=<var>str</var></kbd></dt>
+<dd>文書を登録します。管理者のみが利用できます。</dd>
+<dd><var>draft</var>は対象文書の内容を文書ドラフト形式で指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/out_doc ? id=<var>num</var> &amp; uri=<var>str</var></kbd></dt>
+<dd>文書を削除します。管理者のみが利用できます。</dd>
+<dd><var>id</var>は対象文書のID番号を指定します。省略可能です。</dd>
+<dd><var>uri</var>は対象文書のURIを指定します。省略可能です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/edit_doc ? draft=<var>str</var></kbd></dt>
+<dd>文書の属性を編集します。管理者のみが利用できます。</dd>
+<dd><var>draft</var>は対象文書の内容を文書ドラフト形式で指定します。必須です。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/sync</kbd></dt>
+<dd>データベースの更新内容を同期させます。管理者のみが利用できます。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/optimize</kbd></dt>
+<dd>データベースを最適化します。管理者のみが利用できます。</dd>
+<dd>パラメータはありません。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/_set_user ? name=<var>str</var> &amp; mode=<var>num</var></kbd></dt>
+<dd>ユーザのアクセス権限を設定します。管理者のみが利用できます。</dd>
+<dd><var>name</var>はユーザ名を指定します。必須です。</dd>
+<dd><var>mode</var>は操作内容を指定します。必須です。0なら指定したユーザのアクセス権限を剥奪します。1なら指定したユーザを管理者として登録します。2なら指定したユーザをゲストとして登録します。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>/node/<var>name</var>/_set_link ? url=<var>str</var> &amp; label=<var>str</var> &amp; credit=<var>num</var></kbd></dt>
+<dd>他のノードへのリンクを設定します。管理者のみが利用できます。</dd>
+<dd><var>url</var>はリンク先のノードサーバのURLを指定します。必須です。既存のリンクと重複していた場合はラベルと信頼度が再設定されます。</dd>
+<dd><var>label</var>はリンク先のノードサーバのラベルを指定します。必須です。</dd>
+<dd><var>credit</var>はリンクの信頼度を指定します。省略可能です。省略した場合はリンクが削除されます。</dd>
+<dd>成功すれば200のステータスコードが返信されます。</dd>
+</dl>
+
+<p>ノードマスタのスーパーユーザは各ノードの管理権限を持ちますが、各ノードの管理者はノードマスタのスーパーユーザとは限らないということに注意してください。また、各ノードのゲストは、認証モードを3（all）にした場合にのみ意味を持ちます。</p>
+
+<h3>検索結果の書式</h3>
+
+<p><code>search</code>コマンドの応答のエンティティボディは、MIMEのマルチパートに似た形式をとります。以下に例を示します。</p>
+
+<pre>--------[2387AD2E34554FFF]--------
+VERSION 1.0
+NODE    http://localhost:1978/node/sample1
+HIT     2
+HINT#1  give    2
+DOCNUM  2
+WORDNUM 31
+TIME    0.006541
+TIME#i  0.000058
+TIME#0  0.002907
+TIME#1  0.001578
+LINK#0  http://localhost:1978/node/sample1      Sample1 10000   2       31      2731304 2
+LINK#1  http://localhost:1978/node/sample2      Sample2 4000    3       125     8524522 1
+VIEW    SNIPPET
+
+--------[2387AD2E34554FFF]--------
+#nodelabel=Sample Node One
+#nodescore=7823432
+#nodeurl=http://localhost:1978/node/sample1
+@id=1
+@uri=http://localhost/foo.html
+%VECTOR give    8502    dispose 7343    griefs  5932    king    2343    void    1232
+
+You may my glories and my state dispose, But not my griefs; still am I king of those. (
+Give    give
+ it u
+
+p, Yo!
+Give    give
+ it up, Yo!)
+
+--------[2387AD2E34554FFF]--------
+#nodelabel=Sample Node One
+#nodescore=5623772
+#nodeurl=http://localhost:1978/node/sample1
+@id=2
+@uri=http://localhost/bar.html
+%VECTOR faster  9304    give    7723    griefs  6632    go      5343    you     3289
+
+The faster I go, the behinder I get. (
+Give    give
+ it up, Yo!
+Give    give
+ it up, Yo!)
+
+--------[2387AD2E34554FFF]--------:END
+</pre>
+
+<p>改行コードは単一のLFです。第1行目は区切り文字列の定義です。ここで定義された文字列の行で、パートが区切られます。最後の区切り文字列の末尾には「<code>:END</code>」という文字列がつきます。最初のパートはメタ部です。それ以降のパートは文書部です。</p>
+
+<p>メタ部は、TSV形式をとります。各行の意味は第1フィールドの文字列で識別できます。以下の種類があります。</p>
+
+<ul>
+<li><kbd>VERSION</kbd> : プロトコルのバージョンを示します。</li>
+<li><kbd>NODE</kbd> : ノードのURLを示します。</li>
+<li><kbd>HIT</kbd> : 該当文書数の総計を示します。</li>
+<li><kbd>HINT#<var>n</var></kbd> : 各検索語の該当数を示します。第2フィールドが語で、第3フィールドが該当数です。</li>
+<li><kbd>DOCNUM</kbd> : 登録文書数の総計を示します。</li>
+<li><kbd>WORDNUM</kbd> : 登録語数の総計を示します。</li>
+<li><kbd>TIME</kbd> : 全体の処理にかかった時間を秒単位で示します。</li>
+<li><kbd>TIME#<var>n</var></kbd> : 各ノードの処理にかかった時間を秒単位で示します。「<code>TIME#i</code>」はローカルの転置インデックスの処理時間を示します。</li>
+<li><kbd>LINK#<var>n</var></kbd> : 各ノードの情報を示します。第2フィールドはURL、第3フィールドはラベル、第4フィールドは信頼度、第5フィールドは登録文書数、第6フィールドは登録語数、第8フィールドはデータベースのサイズ、第8フィールドは該当文書数です。「<code>LINK#0</code>」はそのノード自身の情報を示します。</li>
+<li><kbd>VIEW</kbd> : 文書パートの形式を示します。現状では「<code>SNIPPET</code>」のみが定義されています。</li>
+</ul>
+
+<p>文書部は、該当文書の属性情報とスニペットを示します。最初の空行までが属性情報で、それ以降がスニペットです。属性情報の形式は文書ドラフトと同じです。キーワードが付与されている場合は<code>%VECTOR</code>制御命令で表現され、スコアが指定されている場合は<code>%SCORE</code>制御命令で表現されます。スニペットの形式はTSVです。その各行は表示すべき文字列です。ほとんどの行は単一のフィールドしか持ちませんが、いくつかは二つのフィールドを持ちます。もし第2フィールドが存在したならば、第1フィールドはハイライトして表示すべき文字列で、第2フィールドはその正規化された文字列です。</p>
+
+<p><code>search</code>コマンドや<code>get_doc</code>コマンドの操作を行った際に返される文書情報には、以下の疑似属性が付加されます。</p>
+
+<ul>
+<li><kbd>#nodeurl</kbd> : その文書が登録されているノードのURL。</li>
+<li><kbd>#nodescore</kbd> : その文書のノードローカルなスコア。</li>
+<li><kbd>#nodelabel</kbd> : その文書が登録されているノードのラベル。</li>
+</ul>
+
+<h3>文書一覧の書式</h3>
+
+<p><code>list</code>コマンドの応答のエンティティボディは、TSV形式です。以下に例を示します。実際には、「...」の後にも文字列は続きます。</p>
+
+<pre>181     http://localhost/data/ihaveadream.xml   31e51df5f33131943dda22bd0fd755a0 ...
+1       http://localhost/prog/hyperestraier-1.0.2/doc/index.html        45368fa3c...
+2       http://localhost/prog/hyperestraier-1.0.2/doc/index.ja.html     0e9edf4ae...
+3       http://localhost/prog/hyperestraier-1.0.2/doc/intro-en.html     ec622d19a...
+18      http://localhost/prog/hyperestraier-1.0.2/doc/intro-ja.html     96f743fa6...
+5       http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/allclasses-fr...
+25      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/allclasses-no...
+26      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/constant-valu...
+20      http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/estraier/Cmd....
+1022    http://localhost/prog/hyperestraier-1.0.2/doc/javanativeapi/estraier/Docu...
+</pre>
+
+<p>改行コードは単一のLFです。各行が各文書のデータを表し、14個のシステム属性を表すフィールドを持ちます。左から、「<code>@id</code>」「<code>@uri</code>」「<code>@digest</code>」「<code>@cdate</code>」「<code>@mdate</code>」「<code>@adate</code>」「<code>@title</code>」「<code>@author</code>」「<code>@type</code>」「<code>@lang</code>」「<code>@genre</code>」「<code>@size</code>」「<code>@weight</code>」「<code>@misc</code>」です。該当の属性が定義されていない場合は、そのフィールドは空文字列になります。</p>
+
+<h3>文書登録の特殊形式</h3>
+
+<p><code>put_doc</code>コマンドと<code>edit_doc</code>コマンドでは大きなサイズのパラメータを送ることが多いですが、それをURLエンコードすると効率が悪くなります。POSTメソッドのContent-Typeヘッダの値を「text/x-estraier-draft」にすると、エンティティボディとして文書ドラフトそのものを送ることができます。例えば、以下のようなリクエストを送信します。</p>
+
+<pre>POST /node/foo/put_doc HTTP/1.0
+Content-Type: text/x-estraier-draft
+Content-Length: 138
+
+@uri=http://gogo.estraier.go.jp/sample.html
+@title=Twinkle Twinkle Little Star
+
+Twinkle, twinkle, little star,
+How I wonder what you are.
+</pre>
+
+<hr />
+
+<h2 id="nodeapi">ノードAPI</h2>
+
+<p>ノードサーバを操作する際にHTTPを駆使するのが面倒な場合はノードAPIを使うと便利です。ここではその詳細について説明します。</p>
+
+<h3>概要</h3>
+
+<p>ノードAPIを使えば、TCP/IPやHTTPについての低レベルな処理を気にすることなく、ノードサーバと通信を行うことができます。コアAPIと比べると通信の分のオーバーヘッドがかかりますが、リモートホストから実行できたり、リーダやライタの区別を気にせずに並列処理ができるといった利点は重要です。</p>
+
+<p>ノードAPIを使うアプリケーションのソースコードでは、<code>estraier.h</code>と<code>estnode.h</code>と<code>cabin.h</code>と<code>stdlib.h</code>をインクルードしてください。 </p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+</pre>
+
+<p>アプリケーションをビルドする際には、以下ようなコマンドを実行してください。コアAPIのビルド方法と全く同じです。</p>
+
+<pre>gcc `estconfig --cflags` -o foobar foobar.c `estconfig --ldflags` `estconfig --libs`
+</pre>
+
+<p>ノードAPIを利用する際には、コアAPIで定義されている機能も利用することになりますので、<a href="pguide-ja.html">プログラミングガイド</a>をまだお読みでない場合は先にそちらに目を通しておいてください。</p>
+
+<h3>初期化のためのAPI</h3>
+
+<p>ノードAPIのネットワーク機能を使う前提として、プログラムの冒頭でネットワーク環境を初期化してください。また、プログラムが終了する際にはネットワーク環境を破棄してください。</p>
+
+<p>ネットワーク環境を初期化するには、関数 `est_init_net_env' を用います。</p>
+
+<dl>
+<dt><kbd>int est_init_net_env(void);</kbd></dt>
+<dd>戻り値は成功なら真、エラーなら偽です。同一プログラム内でこの関数を複数回実行しても構いませんが、同じ回数だけ `est_free_net_env' も実行してください。</dd>
+</dl>
+
+<p>ネットワーク環境を破棄するには、関数 `est_free_net_env' を用います。</p>
+
+<dl>
+<dt><kbd>void est_free_net_env(void);</kbd></dt>
+<dd>パラメータや戻り値はありません。</dd>
+</dl>
+
+<h3>ノードを扱うAPI</h3>
+
+<p>構造体型 `<code>ESTNODE</code>' は、ノードとの接続を抽象化したものです。各ノードはURLで識別されます。`<code>ESTNODE</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>ノード接続オブジェクト</strong>と呼びます。ノード接続オブジェクトは関数 `<code>est_node_new</code>' によって生成され、`<code>est_node_delete</code>' によって破棄されます。生成されたノード接続オブジェクトは必ず破棄してください。</p>
+
+<p>ノード接続オブジェクトの典型的なライフサイクルを以下に示します。</p>
+
+<pre>ESTNODE *node;
+
+/* 生成する */
+node = est_node_new("http://estraier.gov:1978/node/foo");
+
+/* プロクシとタイムアウトと認証情報を設定する */
+est_node_set_proxy(node, "proxy.qdbm.go.jp", 8080);
+est_node_set_timeout(node, 5);
+est_node_set_auth(node, "mikio", "oikim");
+
+  /* ここで文書を登録したり、検索を行ったりする */
+
+/* 破棄する */
+est_node_delete(node);
+</pre>
+
+<p>ノード接続オブジェクトを生成するには、関数 `est_node_new' を用います。</p>
+
+<dl>
+<dt><kbd>ESTNODE *est_node_new(const char *<var>url</var>);</kbd></dt>
+<dd>`url' はノードのURLを指定します。戻り値はノード接続オブジェクトです。</dd>
+</dl>
+
+<p>ノード接続オブジェクトを破棄するには、関数 `est_node_delete' を用います。</p>
+
+<dl>
+<dt><kbd>void est_node_delete(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。</dd>
+</dl>
+
+<p>ノード接続オブジェクトにプロクシの情報を設定するには、関数 `est_node_set_proxy' を用います。</p>
+
+<dl>
+<dt><kbd>void est_node_set_proxy(ESTNODE *<var>node</var>, const char *<var>host</var>, int <var>port</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`host' はプロクシサーバのホスト名を指定します。`port' はプロクシサーバのポート番号を指定します。</dd>
+</dl>
+
+<p>ノード接続オブジェクトにタイムアウトの情報を設定するには、関数 `est_node_set_timeout' を用います。</p>
+
+<dl>
+<dt><kbd>void est_node_set_timeout(ESTNODE *<var>node</var>, int <var>sec</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`sec' は接続のタイムアウト時間を秒単位で指定します。</dd>
+</dl>
+
+<p>ノード接続オブジェクトに認証情報を設定するには、関数 `est_node_set_auth' を用います。</p>
+
+<dl>
+<dt><kbd>void est_node_set_auth(ESTNODE *<var>node</var>, const char *<var>name</var>, const char *<var>passwd</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`name' は認証情報のユーザ名を指定します。`passwd' は認証情報のパスワードを指定します。</dd>
+</dl>
+
+<p>ノード接続オブジェクトで直前に起きたステータスコードを取得するには、関数 `est_node_status' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_status(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノード接続で直前に起きたステータスコードです。-1は接続に失敗したことを意味します。</dd>
+</dl>
+
+<p>ノードのデータベースの更新内容を同期させるには、関数 `est_node_sync' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_sync(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>ノードのデータベースを最適化するには、関数 `est_node_optimize' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_optimize(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>ノードに文書を追加するには、関数 `est_node_put_doc' を用いる。</p>
+
+<dl>
+<dt><kbd>int est_node_put_doc(ESTNODE *<var>node</var>, ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`doc' は文書オブジェクトを指定します。文書オブジェクトはURI属性を持っていなければなりません。戻り値は成功なら真、エラーなら偽です。指定された文書オブジェクトのURI属性がノード内の既存の文書と一致する場合、既存の方は削除されます。</dd>
+</dl>
+
+<p>ノードから文書を削除するには、関数 `est_node_out_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_out_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`id' は登録文書のID番号を指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>ノードからURIで指定した文書を削除するには、関数 `est_node_out_doc_by_uri' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_out_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`uri' は登録文書のURIを指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+
+<p>ノード内の文書の属性を編集するには、関数 `est_node_edit_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_edit_doc(ESTNODE *<var>node</var>, ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`doc' は文書オブジェクトを指定します。文書オブジェクトはURI属性を持っていなければなりません。戻り値は成功なら真、エラーなら偽です。ID属性を変更することはできません。変更したURI属性が他の登録文書と重なる場合はエラーとなります。</dd>
+</dl>
+
+<p>ノードから文書を取得するには、関数 `est_node_get_doc' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_node_get_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`id' は登録文書のID番号を指定します。戻り値は文書オブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトは `est_doc_new' で生成されているので、不要になったら `est_doc_close' で破棄してください。</dd>
+</dl>
+
+<p>ノードからURIで指定した文書を取得するには、関数 `est_node_get_doc_by_uri' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_node_get_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`uri' は登録文書のURIを指定します。戻り値は文書オブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトは `est_doc_new' で生成されているので、不要になったら `est_doc_close' で破棄してください。</dd>
+</dl>
+
+<p>ノードから文書の属性値を取得するには、関数 `est_node_get_doc_attr' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_node_get_doc_attr(ESTNODE *<var>node</var>, int <var>id</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`id' は登録文書のID番号を指定します。`name' は属性名を指定します。戻り値は該当の属性値か、無ければ `NULL' です。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>ノードからURIで指定した文書の属性値を取得するには、関数 `est_node_get_doc_attr_by_uri' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_node_get_doc_attr_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`uri' は登録文書のURIを指定します。`name' は属性名を指定します。戻り値は該当の属性値か、無ければ `NULL' です。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>ノードから文書のキーワードを取得するには、関数 `est_node_etch_doc' を用います。</p>
+
+<dl>
+<dt><kbd>CBMAP *est_node_etch_doc(ESTNODE *<var>node</var>, int <var>id</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`id' は登録文書のID番号を指定します。戻り値はキーワードとその10進数表現のスコアを格納したマップオブジェクトか、エラーなら `NULL' です。戻り値の領域は `cbmapopen' で生成されているので、不要になったら `cbmapclose' で破棄してください。</dd>
+</dl>
+
+<p>ノードからURIで指定した文書のキーワードを取得するには、関数 `est_node_etch_doc_by_uri' を用います。</p>
+
+<dl>
+<dt><kbd>CBMAP *est_node_etch_doc_by_uri(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`uri' は登録文書のURIを指定します。戻り値はキーワードとその10進数表現のスコアを格納したマップオブジェクトか、エラーなら `NULL' です。戻り値の領域は `cbmapopen' で生成されているので、不要になったら `cbmapclose' で破棄してください。</dd>
+</dl>
+
+<p>URIに対応する文書のID番号を取得するには、関数 `est_node_uri_to_id' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_uri_to_id(ESTNODE *<var>node</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`uri' は登録文書のURIを指定します。戻り値は文書のID番号であるか、エラーなら-1です。</dd>
+</dl>
+
+<p>ノードの名前を取得するには、関数 `est_node_name' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_node_name(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はデータベースの名前か、エラーなら `NULL' です。戻り値の文字列の寿命はノード接続オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>ノードのラベルを取得するには、関数 `est_node_label' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_node_label(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はデータベースのラベルか、エラーなら `NULL' です。戻り値の文字列の寿命はノード接続オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>ノードに登録された文書の数を取得するには、関数 `est_node_doc_num' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_doc_num(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はデータベースに登録された文書の数か、エラーなら-1です。</dd>
+</dl>
+
+<p>ノードに登録された異なり語の数を取得するには、関数 `est_node_word_num' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_word_num(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はデータベースに登録された異なり語の数か、エラーなら-1です。</dd>
+</dl>
+
+<p>ノードのデータベースのサイズを取得するには、関数 `est_node_size' を用います。</p>
+
+<dl>
+<dt><kbd>double est_node_size(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノードのデータベースのサイズか、エラーなら-1.0です。</dd>
+</dl>
+
+<p>ノードのキャッシュ使用率を取得するには、関数 `est_node_cache_usage' を用います。</p>
+
+<dl>
+<dt><kbd>double est_node_cache_usage(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノードのキャッシュ使用率か、エラーなら-1.0です。</dd>
+</dl>
+
+<p>ノードの管理者名のリストを取得するには、関数 `est_node_admins' を用います。</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_admins(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノードの管理者名のリストオブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトの寿命はノード接続オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>ノードのユーザ名のリストを取得するには、関数 `est_node_users' を用います。</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_users(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノードのユーザ名のリストオブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトの寿命はノード接続オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>ノードのリンク表現のリストを取得するには、関数 `est_node_links' を用います。</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_node_links(ESTNODE *<var>node</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。戻り値はノードのリンク表現のリストオブジェクトか、エラーなら `NULL' です。戻り値の各要素はTSVの文字列で、URLとラベルとスコアの3つのフィールドを持ちます。戻り値のオブジェクトの寿命はノード接続オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>検索条件に該当する文書の一覧を取得するには、関数 `est_node_search' を用います。</p>
+
+<dl>
+<dt><kbd>ESTNODERES *est_node_search(ESTNODE *<var>node</var>, ESTCOND *<var>cond</var>, int <var>depth</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`cond' は検索条件オブジェクトを指定します。`depth' はメタ検索の深度を指定します。戻り値はノード結果オブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトは不要になったら `est_noderes_delete' で破棄してください。</dd>
+</dl>
+
+<p>検索結果のスニペットの幅を設定するには、関数 `est_node_set_snippet' を用います。</p>
+
+<dl>
+<dt><kbd>void est_node_set_snippet_width(ESTNODE *<var>node</var>, int <var>wwidth</var>, int <var>hwidth</var>, int <var>awidth</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`wwidth' は結果全体の幅（≒文字数）を指定します。デフォルトは480です。0にするとスニペットを送信しません。負数にするとスニペットの代わりに本文全体を送信します。`hwidth' は本文の冒頭から抽出する幅を指定します。デフォルトは96です。`awidth' はハイライトされる語の周辺から抽出する幅を指定します。デフォルトは96です。</dd>
+</dl>
+
+<p>ノードのユーザアカウントを管理するには、関数 `est_node_set_user' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_set_user(ESTNODE *<var>node</var>, const char *<var>name</var>, int <var>mode</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`name' はユーザ名を指定します。`mode' は操作モードを指定します。0ならアカウントを削除し、1ならアカウントを管理者にし、2なら通常ユーザにします。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>ノードのリンクを管理するには、関数 `est_node_set_link' を用います。</p>
+
+<dl>
+<dt><kbd>int est_node_set_link(ESTNODE *<var>node</var>, const char *<var>url</var>, const char *<var>label</var>, int <var>credit</var>);</kbd></dt>
+<dd>`node' はノード接続オブジェクトを指定します。`url' はリンク対象のノードのURLを指定します。`label' はリンクのラベルを指定します。`credit' はリンクの信頼度を指定します。負数の場合は該当のリンクを削除します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<h3>ノードからの検索結果を扱うAPI</h3>
+
+<p>構造体型 `<code>ESTNODERES</code>' は、ノードからの検索結果を抽象化したものです。結果には、該当文書の情報のリストとヒント情報が含まれます。`<code>ESTNODERES</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>ノード結果オブジェクト</strong>と呼びます。ノード結果オブジェクトは関数 `<code>est_node_search</code>' によって生成され、`<code>est_noderes_delete</code>' によって破棄されます。生成されたノード結果オブジェクトは必ず破棄してください。</p>
+
+<p>構造体型 `<code>ESTRESDOC</code>' は、ノードからの検索結果の各文書の情報を抽象化したものです。文書情報には、複数の属性と一つのスニペットが含まれます。`<code>ESTRESDOC</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>結果文書オブジェクト</strong>と呼びます。結果文書オブジェクトは関数 `<code>est_noderes_get_doc</code>' によって参照できますが、実体はノード結果オブジェクトの内部で管理されるため、破棄する必要はありません。</p>
+
+<p>ノード結果オブジェクトと結果文書オブジェクトの典型的なライフサイクルを以下に示します。</p>
+
+<pre>ESTNODERES *nres;
+CBMAP *hints;
+ESTRESDOC *rdoc;
+int i;
+
+/* ノード結果オブジェクトを生成する */
+nres = est_node_search(node, cond, 1);
+
+/* ヒントを取り出す */
+hints = est_noderes_hints(nres);
+
+   /* ここでヒントを表示する */
+
+/* 該当文書のリストを走査する */
+for(i = 0; i &lt; est_noderes_doc_num(nres); i++){
+
+  /* 結果文書オブジェクトを取り出す */
+  rdoc = est_noderes_get_doc(nres, i);
+
+  /* ここで文書情報を表示する */
+
+}
+
+/* ノード結果オブジェクトを破棄する */
+est_noderes_delete(nres);
+</pre>
+
+<p>ノード結果オブジェクトを破棄するには、関数 `est_noderes_delete' を用います。</p>
+
+<dl>
+<dt><kbd>void est_noderes_delete(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' はノード結果オブジェクトを指定します。</dd>
+</dl>
+
+<p>ノード結果オブジェクトからヒントのマップオブジェクトを取得するには、関数 `est_noderes_hints' を用いる。</p>
+
+<dl>
+<dt><kbd>CBMAP *est_noderes_hints(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' はノード結果オブジェクトを指定します。戻り値はヒントのマップオブジェクトです。キーには "VERSION"、"NODE"、"HIT"、"HINT#n"、"DOCNUM"、"WORDNUM"、"TIME"、"TIME#n"、"LINK#n"、"VIEW" があります。戻り値のオブジェクトの寿命はノード結果オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>ノード結果オブジェクト内の類似した文書を隠蔽するには、関数 `est_noderes_eclipse' を用います。</p>
+
+<dl>
+<dt><kbd>void est_noderes_eclipse(ESTNODERES *<var>nres</var>, int <var>num</var>, double <var>limit</var>);</kbd></dt>
+<dd>`nres' はノード結果オブジェクトを指定します。`num' は表示すべき文書の数を指定します。0を越えない値を指定すると隠蔽を解除します。`limit' は隠蔽される文書の下限の類似度を0.0から1.0までの値で指定します。</dd>
+</dl>
+
+<p>ノード結果オブジェクトに含まれる文書情報の数を取得するには、関数 `est_noderes_doc_num' を用います。</p>
+
+<dl>
+<dt><kbd>int est_noderes_doc_num(ESTNODERES *<var>nres</var>);</kbd></dt>
+<dd>`nres' はノード結果オブジェクトを指定します。戻り値はノード結果オブジェクトに含まれる文書情報の数です。</dd>
+</dl>
+
+<p>ノード結果オブジェクトから個々の結果文書オブジェクトを取得するには、関数 `est_noderes_get_doc' を用います。</p>
+
+<dl>
+<dt><kbd>ESTRESDOC *est_noderes_get_doc(ESTNODERES *<var>nres</var>, int <var>index</var>);</kbd></dt>
+<dd>`nres' はノード結果オブジェクトを指定します。`index' は取り出す要素のインデックスを指定します。戻り値は文書オブジェクトか、`index' が要素数と等しいか大きければ `NULL' です。戻り値のオブジェクトの寿命はノード結果オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>結果文書オブジェクトからURIを取得するには、関数 `est_resdoc_uri' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_uri(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。戻り値は結果文書オブジェクトのURIです。戻り値の文字列の寿命は結果文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>結果文書オブジェクトの属性名のリストを取得するには、関数 `est_resdoc_attr_names' を用います。</p>
+
+<dl>
+<dt><kbd>CBLIST *est_resdoc_attr_names(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。戻り値は結果文書オブジェクトの属性名のリストです。戻り値のオブジェクトは `cblistopen' で生成されているので、不要になったら `cblistclose' で破棄してください。</dd>
+</dl>
+
+<p>結果文書オブジェクトの属性の値を取得するには、関数 `est_resdoc_attr' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_attr(ESTRESDOC *<var>rdoc</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。`name' は属性名を指定します。戻り値は属性値ですが、該当する属性がない場合は `NULL' が返されます。戻り値の文字列の寿命は結果文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>結果文書オブジェクトのスニペットを取得するには、関数 `est_resdoc_snippet' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_snippet(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。戻り値は結果文書オブジェクトのスニペットの文字列です。その形式はタブ区切り文字列（TSV）です。その各行は表示すべき文字列です。ほとんどの行は単一のフィールドしか持ちませんが、いくつかは二つのフィールドを持ちます。もし第2フィールドが存在したならば、第1フィールドはハイライトして表示すべき文字列で、第2フィールドはその正規化された文字列です。戻り値の文字列の寿命は結果文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>検索結果オブジェクトのキーワードベクトルを取得するには、関数 `est_resdoc_keywords' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_resdoc_keywords(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。戻り値は結果文書オブジェクトのキーワードの文字列です。その形式はタブ区切り文字列（TSV）です。各フィールドには、キーワードとそのスコアが交互に表れます。戻り値の文字列の寿命は結果文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>結果文書オブジェクトに隠蔽された文書の配列を取得するには、関数 `est_resdoc_shadows' を用います。</p>
+
+
+<dl>
+<dt><kbd>ESTRESDOC **est_resdoc_shadows(ESTRESDOC *<var>rdoc</var>, int *<var>np</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。`np' は戻り値の配列の要素数を格納する変数へのポインタを指定します。戻り値は隠蔽された結果文書オブジェクトの配列です。戻り値の配列とその要素の寿命は結果文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>隠蔽された検索結果オブジェクトの代表文書との類似度を取得するには、関数 `est_resdoc_similarity' を用います。</p>
+
+<dl>
+<dt><kbd>double est_resdoc_similarity(ESTRESDOC *<var>rdoc</var>);</kbd></dt>
+<dd>`rdoc' は結果文書オブジェクトを指定します。戻り値は代表文書との類似度ですが、その結果オブジェクトが隠蔽されていない場合は-1.0です。</dd>
+</dl>
+
+<h3>並列性</h3>
+
+<p>ノード接続オブジェクト、ノード結果オブジェクト、結果文書オブジェクトのいずれも、スレッド間で共有してはなりません。マルチスレッドを用いる場合は、各スレッドで別々のオブジェクトを使うようにしてください。その条件さえ守れば、ノードAPIの各関数はマルチスレッドセーフなものとして扱えます。</p>
+
+<h3>ギャザラのサンプル</h3>
+
+<p>最も単純なギャザラの実装を以下に示します。コアAPIのギャザラとの違いは、ネットワーク環境の初期化が必要なことと、データベースオブジェクトの代わりにノード接続オブジェクトを使うことです。</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTNODE *node;
+  ESTDOC *doc;
+  /* ネットワーク環境を初期化する */
+  if(!est_init_net_env()){
+    fprintf(stderr, "error: network is unavailable\n");
+    return 1;
+  }
+  /* ノード接続オブジェクトを生成して設定する */
+  node = est_node_new("http://localhost:1978/node/test1");
+  est_node_set_auth(node, "admin", "admin");
+  /* 文書オブジェクトを生成する */
+  doc = est_doc_new();
+  /* 文書オブジェクトに属性を追加する */
+  est_doc_add_attr(doc, "@uri", "http://estraier.gov/example.txt");
+  est_doc_add_attr(doc, "@title", "Over the Rainbow");
+  /* 文書オブジェクトに本文を追加する */
+  est_doc_add_text(doc, "Somewhere over the rainbow.  Way up high.");
+  est_doc_add_text(doc, "There's a land that I heard of once in a lullaby.");
+  /* 文書オブジェクトをノードに登録する */
+  if(!est_node_put_doc(node, doc))
+    fprintf(stderr, "error: %d\n", est_node_status(node));
+  /* 文書オブジェクトを破棄する */
+  est_doc_delete(doc);
+  /* ノード接続オブジェクトを破棄する */
+  est_node_delete(node);
+  /* ネットワーク環境を破棄する */
+  est_free_net_env();
+  return 0;
+}
+</pre>
+
+<h3>サーチャのサンプル</h3>
+
+<p>最も単純なサーチャの実装を以下に示します。コアAPIでは検索結果から文書オブジェクト（ESTDOC）を取得していましたが、ここでは結果文書オブジェクト（ESTRESDOC）を取得していることに注意してください。</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;estnode.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTNODE *node;
+  ESTCOND *cond;
+  ESTNODERES *nres;
+  ESTRESDOC *rdoc;
+  int i;
+  const char *value;
+  /* ネットワーク環境を初期化する */
+  if(!est_init_net_env()){
+    fprintf(stderr, "error: network is unavailable\n");
+    return 1;
+  }
+  /* ノード接続オブジェクトを生成する */
+  node = est_node_new("http://localhost:1978/node/test1");
+  /* 検索条件オブジェクトを生成する */
+  cond = est_cond_new();
+  /* 検索条件オブジェクトに検索式を設定する */
+  est_cond_set_phrase(cond, "rainbow AND lullaby");
+  /* ノード結果オブジェクトを取得する */
+  nres = est_node_search(node, cond, 0);
+  if(nres){
+    /* 各文書を取得して表示する */
+    for(i = 0; i &lt; est_noderes_doc_num(nres); i++){
+      /* 結果文書オブジェクトを取得する */
+      rdoc = est_noderes_get_doc(nres, i);
+      /* 属性を表示する */
+      if((value = est_resdoc_attr(rdoc, "@uri")) != NULL)
+        printf("URI: %s\n", value);
+      if((value = est_resdoc_attr(rdoc, "@title")) != NULL)
+        printf("Title: %s\n", value);
+      /* スニペットを表示する */
+      printf("%s", est_resdoc_snippet(rdoc));
+    }
+    /* ノード結果オブジェクトを破棄する */
+    est_noderes_delete(nres);
+  } else {
+    fprintf(stderr, "error: %d\n", est_node_status(node));
+  }
+  /* 検索条件オブジェクトを破棄する */
+  est_cond_delete(cond);
+  /* ノード接続オブジェクトを破棄する */
+  est_node_delete(node);
+  /* ネットワーク環境を破棄する */
+  est_free_net_env();
+  return 0;
+}
+</pre>
+
+<hr />
+
+<h2 id="estcall">クライアント用コマンド</h2>
+
+<p>ここでは、ノード管理用コマンド「<code>estcall</code>」の詳細な仕様を説明します。検索もできるので、<code>estcall</code>をスクリプト言語から呼び出せばそれなりのアプリケーションが簡単に作れます。</p>
+
+<h3>書式</h3>
+
+<p><code>estcall</code>は多くのサブコマンドの集合体です。サブコマンドの名前は第1引数で指定されます。その他の引数はサブコマンドの種類に応じて解釈されます。<var>nurl</var>という引数は操作対象のノードのURLです。<code>-proxy</code>オプションはプロクシのホスト名とポート番号を指定します。<code>-tout</code>はタイムアウトの時間を秒単位で指定します。<code>-auth</code>は認証のユーザ名とパスワードを指定します。</p>
+
+<dl>
+<dt><kbd>estcall put [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> [<var>file</var>]</kbd></dt>
+<dd>文書ドラフト形式のファイルを登録します。</dd>
+<dd><var>file</var>は対象のファイルを指定しますが、省略した場合は標準入力が読み込まれます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall out [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var></kbd></dt>
+<dd>特定の文書の情報をインデックスから削除します。</dd>
+<dd><var>expr</var>は対象のID番号かURIを指定します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall edit [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var> <var>name</var> [<var>value</var>]</kbd></dt>
+<dd>特定の文書の属性を更新します。</dd>
+<dd><var>expr</var>は対象のID番号かURIを指定します。</dd>
+<dd><var>name</var>は属性の名前を指定します。</dd>
+<dd><var>value</var>は属性の値を指定します。省略した場合その属性は削除されます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall get [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var> [<var>attr</var>]</kbd></dt>
+<dd>特定の文書の情報を文書ドラフト形式で出力します。</dd>
+<dd><var>expr</var>は対象のID番号かURIを指定します。</dd>
+<dd><var>attr</var>を付けると、その属性の値のみを出力します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall etch [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>expr</var></kbd></dt>
+<dd>特定の文書のキーワードとスコアをTSV形式で出力します。</dd>
+<dd><var>expr</var>は対象のID番号かURIを指定します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall uriid [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>uri</var></kbd></dt>
+<dd>指定したURIの文書のID番号を出力します。</dd>
+<dd><var>uri</var>は対象のURIを指定します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall inform [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-ia|-iu|-il] <var>nurl</var></kbd></dt>
+<dd>ノードの名前とラベルと登録文書数と登録語数とキャッシュ使用率を出力します。</dd>
+<dd>-iaを付けると、管理者名のリストを出力します。</dd>
+<dd>-iuを付けると、ユーザ名のリストを出力します。</dd>
+<dd>-ilを付けると、リンク表現のリストを出力します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall sync [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>ノードのデータベースの更新内容を同期させます。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall optimize [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>ノードのデータベースを最適化します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall search [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-vu|-vx] [-kw] [-ec <var>rn</var>] [-sf] [-attr <var>expr</var>] [-ord <var>expr</var>] [-max <var>num</var>] [-sk <var>num</var>] [-aux <var>num</var>] [-dis <var>name</var>] [-dpt <var>num</var>] [-mask <var>num</var>] <var>nurl</var> [<var>phrase</var>]</kbd></dt>
+<dd>ノードに登録された文書を検索します。</dd>
+<dd><var>phrase</var>は全文検索の検索式を指定します。</dd>
+<dd>-vuを付けると、URIとノードの情報をタブ区切りにした形式で結果を出力します。</dd>
+<dd>-vxを付けると、XML形式にして結果を出力します。</dd>
+<dd>-kwを付けると、キーワードベクトルを取得します。</dd>
+<dd>-ecは類似隠蔽の下限類似度を0.0から1.0までの実数で指定します。</dd>
+<dd>-sfを付けると、検索式を簡便書式として扱います。</dd>
+<dd>-attrは絞り込みの属性条件を指定します。複数指定可能です。</dd>
+<dd>-ordはソート条件を指定します。デフォルトはスコアの降順です。</dd>
+<dd>-maxは最大表示件数を指定します。負数にすると無制限になります。デフォルトは10件です。</dd>
+<dd>-skは取得をスキップする件数を指定します。デフォルトは0件です。</dd>
+<dd>-auxは補助インデックスの結果を採用する許可を指定します。0を越えない値を指定すると補助インデックスは使われません。デフォルトは32件です。</dd>
+<dd>-disは重複回避属性の名前を指定します。</dd>
+<dd>-dptはメタ検索の深度を指定します。デフォルトは0です。</dd>
+<dd>-maskはメタ検索のマスクを指定します。デフォルトは0です。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall list [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var></kbd></dt>
+<dd>ノードに登録された全ての文書の一覧を取得します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall setuser [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>name</var> <var>mode</var></kbd></dt>
+<dd>ユーザ権限を設定します。</dd>
+<dd><var>name</var>はユーザ名を指定します。</dd>
+<dd><var>mode</var>が1ならそのユーザを管理者にし、2ならそのユーザを通常ユーザにし、0ならユーザ権限を削除します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall setlink [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] <var>nurl</var> <var>url</var> <var>label</var> <var>credit</var></kbd></dt>
+<dd>リンクを設定します。</dd>
+<dd><var>url</var>はリンク先のノードのURLを指定します。</dd>
+<dd><var>label</var>はラベルを指定します。</dd>
+<dd><var>credit</var>は信頼度を指定します。値が負数の場合はそのリンクを削除します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcall raw [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-auth <var>user</var> <var>pass</var>] [-np] [-eh <var>expr</var>] <var>url</var> [<var>file</var>]</kbd></dt>
+<dd>HTTPリクエストを直接制御してレスポンスを出力します。</dd>
+<dd><var>url</var>は操作対象のURLを指定します。</dd>
+<dd><var>file</var>が指定された場合はその内容をPOSTメソッドで送信します。指定されなかった場合はGETメソッドを用います。"-" を指定すると標準入力を読み込みます。</dd>
+<dd>-npを付けると、レスポンスヘッダも含めて出力します。</dd>
+<dd>-ehは追加するHTTPヘッダを指定します。デフォルトではHostとConnectionとUser-AgentContent-Lengthが付加されます。</dd>
+</dl>
+
+<p>全てのサブコマンドは、処理が正常に終了した場合には0を、そうでない場合は1を終了ステータスにします。</p>
+
+<h3>応用例：ノードマスタの操作</h3>
+
+<p>ノードマスタ自体の操作はAPIにはありませんので、rawサブコマンドを用いてください。例えば、ノードマスタをシャットダウンするには、以下のようなコマンドを実行します。</p>
+
+<pre>estcall raw -auth admin admin \
+  'http://localhost:1978/master?action=shutdown'
+</pre>
+
+<p>ユーザを追加するには、以下のようなコマンドを実行します。</p>
+
+<pre>estcall raw -auth admin admin \
+  'http://localhost:1978/master?action=useradd&amp;name=mikio&amp;passwd=iloveyou'
+</pre>
+
+<p>POSTメソッドを使うには、以下のようにします。</p>
+
+<pre>echo -n 'action=useradd&amp;name=mikio&amp;passwd=iloveyou' |
+  estcall raw -auth admin admin \
+    -eh 'Content-Type: application/x-www-form-urlencoded' \
+    'http://localhost:1978/master' -
+</pre>
+
+<hr />
+
+<h2 id="estfraud">疑似ノードマスタ</h2>
+
+<p>ここでは、疑似ノードマスタ<code>estfraud.cgi</code>の詳細な仕様を説明します。</p>
+
+<h3>構成</h3>
+
+<p>デーモンプロセスであるノードマスタを実際に運用するには、起動および終了の処理を行うスクリプトを用意するなどの手間がかかります。また、共用サーバなどでデーモンプロセスの利用が禁止されていることもあります。そのような場合には、ノードサーバのプロトコルを模倣するCGIスクリプトである<strong>疑似ノードマスタ</strong>が役に立つかもしれません。Webサーバが動いていて、CGIスクリプトが利用できる環境であれば、通常のインデックスをノードサーバに見立てて、ノードAPIを使ってリモートから検索を行うことができます。疑似ノードマスタの上で動く仮想的なノードサーバを<strong>疑似ノードサーバ</strong>と呼びます。</p>
+
+<p>疑似ノードマスタはノードの数が非常に多い場合にも役立ちます。ファイルディスクリプタを開いたまま常駐する通常のノードサーバと違い、疑似ノードサーバはリクエスト毎にプロセスを生成してデータベースに接続するので、ファイルディスクリプタの枯渇を心配する必要はありません。通常のノードマスタの上で動かせるノードサーバは実用的には30個程度が上限ですが、疑似ノードマスタの上では1000個以上の疑似ノードサーバを動かしても問題はありません。</p>
+
+<p>疑似ノードサーバを利用するには、CGIスクリプト<code>estfraud.cgi</code>とその設定ファイル<code>estfraud.conf</code>をCGIスクリプトが利用できる場所に設置してください。</p>
+
+<h3>設定ファイル</h3>
+
+<p>設定ファイルは、変数名と値を「<code>:</code>」で区切った形式の行を並べたものです。デフォルトでは、設定ファイルは以下のような内容になっています。</p>
+
+<pre>indexdir: .
+runmode: 2
+pidxsuffix: -pidx
+pidxdocmax: 256
+pidxdocmin: 0
+lockindex: 0
+searchmax: 1000
+rateuri: 1
+mergemethod: 2
+scoreexpr: 2
+wildmax: 256
+snipwwidth: 480
+sniphwidth: 96
+snipawidth: 96
+scancheck: 1
+smlrvnum: 32
+extdelay: 4096
+</pre>
+
+<p>それぞれの変数の機能を以下に示します。</p>
+
+<ul>
+<li><kbd>indexdir</kbd> : インデックスを置いたディレクトリのパスを指定します。</li>
+<li><kbd>runmode</kbd> : 運用モードを指定します。1は通常モード、2は読み込み専用モードです。</li>
+<li><kbd>pidxsuffix</kbd> : 疑似インデックスの接尾辞を指定します。</li>
+<li><kbd>pidxdocmax</kbd> : 疑似インデックス内の文書の最大数を指定します。</li>
+<li><kbd>pidxdocmin</kbd> : 疑似インデックス内の文書の最小数を指定します。</li>
+<li><kbd>lockindex</kbd> : 正数ならインデックスにファイルロックをかけます。</li>
+<li><kbd>searchmax</kbd> : 送信する文書の最大数を指定します。</li>
+<li><kbd>rateuri</kbd> : 正数ならスコアリングの際にURIを評価します。</li>
+<li><kbd>mergemethod</kbd> : メタ検索の結果のマージ方法を指定します。1ならスコアのみを用い、2ならスコアと順位を用い、3なら順位のみを用います。</li>
+<li><kbd>scoreexpr</kbd> : スコアの表現方法を指定します。1ならスコアを破棄し、2なら8ビットで保持し、3なら32ビットで保持し、4なら未調整で保持します。</li>
+<li><kbd>wildmax</kbd> : ワイルドカード展開の最大語数を指定します。</li>
+<li><kbd>snipwwidth</kbd> : 検索結果のスニペットの全体の幅を指示します。</li>
+<li><kbd>sniphwidth</kbd> : 検索結果のスニペットを作る際に文書の冒頭から取得する幅を指示します。</li>
+<li><kbd>snipawidth</kbd> : 検索結果のスニペットを作る際に検索語の周辺から取得する幅を指示します。</li>
+<li><kbd>scancheck</kbd> : 正数なら文書の内容と検索フレーズの精密検査をします。</li>
+<li><kbd>smlrvnum</kbd> : 類似検索のベクトルの次元数を指定します。0なら類似検索が無効になります。</li>
+<li><kbd>extdelay</kbd> : 類似検索のベクトル抽出を遅延させる文書数を指定します。負数を指定すると、遅延なしで形態素解析を適用します。</li>
+</ul>
+
+<p>疑似ノードサーバによって扱いたいインデックスを「<code>/home/mikio/myindex</code>」の下に置く場合、<code>indexdir</code>の値には「<code>/home/mikio/myindex</code>」を指定します。このディレクトリの中に置いたインデックスは、全て検索対象として公開されることになります。<code>estfraud.cgi</code>が「<code>http://abc.def/ghi/estfraud.cgi</code>」としてアクセスできるならば、「<code>/home/mikio/myindex/foo</code>」は「<code>http://abc.def/ghi/estfraud.cgi/foo</code>」というURLの疑似ノードサーバとして公開されます。</p>
+
+<h3>制限</h3>
+
+<p>疑似ノードサーバによってインデックスの更新を行う場合、以下の条件を満たす必要があります。</p>
+
+<ul>
+<li>疑似ノードマスタの運用モードが通常モードであること（「<code>runmode: 1</code>」にする）。</li>
+<li>疑似インデックスが存在すること（インデックス名の後に「<code>-pidx</code>」をつけたディレクトリを作る）。</li>
+<li>CGIスクリプトの実行ユーザがインデックスおよび疑似インデックスの書き込み権限を持っていること。</li>
+</ul>
+
+<p>疑似ノードサーバ経由で文書登録を行った場合、その文書のデータは文書ドラフトとして疑似インデックスに格納されます。疑似インデックス内のファイル数が<code>pidxdocmax</code>で指定した数に達した時点で、疑似インデックスの内容がインデックスにマージされ、疑似インデックスは空にされます。この仕組みによって、常駐しないCGIスクリプトのプロセスでも効率的にインデックスの更新を行うことができます。<code>pidxdocmax</code>の値を大きくするほど更新性能は上がりますが、検索性能は下がります。疑似インデックスのマージを明示的に行うには、インデックスの同期（<code>est_node_sync</code>）を行ってください。</p>
+
+<p>疑似ノードサーバは、他のノードサーバへのクエリのリレーをサポートしません。つまり、疑似ノードサーバに対する検索クエリでは、<code>depth</code>パラメータは無視されます。また、疑似ノードサーバは登録文書の編集（<code>est_node_edit_doc</code>）によるURI属性の変更をサポートしません。</p>
+
+<hr />
+
+<h2 id="metagateway">メタ検索ゲートウェイ</h2>
+
+<p>ここでは、論理積メタ検索ゲートウェイ<code>estscout.cgi</code>および論理和メタ検索ゲートウェイ<code>estsupt.cgi</code>の詳細な仕様を説明します。</p>
+
+<h3>構成</h3>
+
+<p>複数のインデックスに対する全文検索の結果を要素とする、URI属性等を識別子にした論理積（積集合）を取得するには、論理積メタ検索ゲートウェイを使うと便利です。例えば社員名簿から名前と住所の両方で絞りこむ場合、名前を本文として社員番号をURIにした文書群のインデックスと、住所を本文として社員番号をURIにした文書群のインデックスに対して論理積メタ検索を行い、両方に含まれる社員番号のリストを得ることができます。さらに、複数回の論理積メタ検索の結果の論理和（和集合）を得るための論理和メタ検索ゲートウェイも提供されます。</p>
+
+<p>論理積メタ検索ゲートウェイおよび論理和メタ検索ゲートウェイはCGIスクリプトとして実装され、GETメソッドのURLでパラメータを指定して利用されます。APIなどの抽象化されたインターフェイスは提供されません。メタ検索はマルチスレッドおよびマルチプロセスで行わるので、分散処理によるスケーラビリティの向上が期待できます。</p>
+
+<div class="illust"><img src="gateframe.png" width="720" height="350" alt="[gateways]" /></div>
+
+<h3>論理積メタ検索ゲートウェイ</h3>
+
+<p>論理積メタ検索ゲートウェイを利用するには、CGIスクリプト<code>estscout.cgi</code>とその設定ファイル<code>estscout.conf</code>をCGIスクリプトが利用できる場所に設置してください。</p>
+
+<p>設定ファイルは、変数名と値を「<code>:</code>」で区切った形式の行を並べたものです。デフォルトでは、設定ファイルは以下のような内容になっています。</p>
+
+<pre>indexname: casket-1
+indexname: casket-2
+indexname: casket-3
+lockindex: 1
+condgstep: 2
+dotfidf: true
+scancheck: 3
+phraseform: 2
+wildmax: 256
+stmode: 0
+idattr: @uri
+idsuffix:
+ordexpr: @uri STRA
+dupcheck: 0
+union: 0
+score: 0
+tmpdir: /tmp
+cclife: 300
+logfile:
+logformat: {time}\t{REMOTE_ADDR}:{REMOTE_PORT}\t{cond}\t{hnum}\n
+</pre>
+
+<p>それぞれの変数の機能を以下に示します。</p>
+
+<ul>
+<li><kbd>indexname</kbd> : インデックスのパスを指定します。複数回指定できます。</li>
+<li><kbd>lockindex</kbd> : 正数ならインデックスにファイルロックをかけます。</li>
+<li><kbd>condgstep</kbd> : N-gramの検査精度を指定します。「<code>1</code>」だと全ての語を調べ、「<code>2</code>」だと1個置き、「<code>3</code>」だと2個置き、「<code>4</code>」だと3個置きに調べます。</li>
+<li><kbd>dotfidf</kbd> : TF-IDF法を適用するかどうかを指定します。「<code>true</code>」か「<code>false</code>」です。</li>
+<li><kbd>scancheck</kbd> : 文書の内容と検索フレーズの精密検査をする数を指定します。</li>
+<li><kbd>phraseform</kbd> : 検索条件式の種類指定します。「<code>1</code>」だと通常書式で、「<code>2</code>」だと簡便書式で、「<code>3</code>」だと粗略書式で、「<code>4</code>」だと論理和書式で、「<code>5</code>」だと論理積書式です。</li>
+<li><kbd>wildmax</kbd> : ワイルドカード展開の最大語数を指定します。</li>
+<li><kbd>stmode</kbd> : 正数ならシングルスレッドモードになります。</li>
+<li><kbd>idattr</kbd> : 文書の識別子として用いる属性名を指定します。空文字列の場合はスコアが識別子として用いられます。</li>
+<li><kbd>idsuffix</kbd> : 文書の識別子の接尾辞として用いられる属性名を指定します。複数回指定できます。</li>
+<li><kbd>ordexpr</kbd> : 属性検索の際に用いられる順序指定式を指定します。または、「<code>$</code>」に続けて属性名を書くと常にその属性値の降順でソートされます。</li>
+<li><kbd>dupcheck</kbd> : 正数なら識別子の重複検査を行います。</li>
+<li><kbd>union</kbd> : 正数なら論理和メタ検索を行います。</li>
+<li><kbd>score</kbd> : 論理演算時のスコアの演算方法を指定します。「<code>0</code>」だと合計値、「<code>1</code>」だと最大値、「<code>2</code>」だと最小値、「<code>3</code>」だと平均値を採用します。</li>
+<li><kbd>tmpdir</kbd> : 一時ファイルを格納するディレクトリのパスを指定します。</li>
+<li><kbd>cclife</kbd> : キャッシュファイルの寿命を秒数で指定します。負数なら無期限です。</li>
+<li><kbd>logfile</kbd> : ログファイルのパスを指定します。</li>
+<li><kbd>logformat</kbd> : ログの書式を指定します。「<code>{time}</code>」は現在時刻に変換され、「<code>{cond}</code>」は検索条件に置換され、「<code>{hnum}</code>」は検索の該当件数に置換され、それ以外で「<code>{}</code>」で括ったものはその名前の環境変数の値に置換されます。「<code>\t</code>」はタブに、「<code>\n</code>」は改行に置換されます。</li>
+</ul>
+
+<p>論理積メタ検索ゲートウェイは以下のパラメータを受け付けます。順序指定はできません。</p>
+
+<ul>
+<li><kbd>phrase<var>n</var></kbd> : <var>n</var>には1から9までの数字をとり、対応するインデックスに対する全文検索条件を指定します。</li>
+<li><kbd>attr<var>n</var></kbd> : <var>n</var>には1から9までの数字をとり、最初のインデックスに対する属性検索条件を指定します。</li>
+<li><kbd>max</kbd> : 結果の表示件数を指定します。デフォルトは10件です。</li>
+<li><kbd>distinct</kbd> : 重複回避属性の名前を指定します。</li>
+<li><kbd>fresh</kbd> : 正数ならば、そのクエリにはキャッシュを使いません。</li>
+</ul>
+
+<p>例えば、「<code>http://localhost/estscout.cgi</code>」として設置した論理積メタ検索ゲートウェイに対して、1番目のインデックスにおいて本文に「<code>mikio</code>」を含み、2番目のインデックスにおいて本文に「<code>tokyo</code>」を含み、1番目のインデックスにおいてURI属性に「<code>123</code>」を含むものを取得するには、以下のURLのHTTPリクエストを発行します。</p>
+
+<pre>http://localhost/estscout.cgi?phrase1=mikio&amp;phrase2=tokyo&amp;attr1=%40title%20STRINC%20123
+</pre>
+
+<p>出力の最初の行には該当数の概算が出力されます。それ以降の行は、該当文書の識別子とスコアがタブ区切りで出力されます。例えば以下のようになります。</p>
+
+<pre>256
+file:///home/mikio/tako.html   12561
+file:///home/mikio/ika.html    11624
+file:///home/mikio/uni.html    9232
+file:///home/mikio/kani.html   8293
+file:///home/mikio/ebi.html    8312
+</pre>
+
+<h3>論理和メタ検索ゲートウェイ</h3>
+
+<p>論理和メタ検索ゲートウェイを利用するには、CGIスクリプト<code>estsupt.cgi</code>とその設定ファイル<code>estsupt.conf</code>をCGIスクリプトが利用できる場所に設置してください。</p>
+
+<p>設定ファイルは、変数名と値を「<code>:</code>」で区切った形式の行を並べたものです。デフォルトでは、設定ファイルは以下のような内容になっています。</p>
+
+<pre>
+targeturl: http://searcher1/estscout.cgi
+targeturl: http://searcher2/estscout.cgi
+stmode: 0
+tmpdir: /tmp
+cclife: 1800
+#shareurl: http://merger1/estsupt.cgi
+#shareurl: http://merger2/estsupt.cgi
+failfile:
+logfile:
+logformat: {time}\t{REMOTE_ADDR}:{REMOTE_PORT}\t{cond}\t{hnum}\n
+</pre>
+
+<p>それぞれの変数の機能を以下に示します。</p>
+
+<ul>
+<li><kbd>targeturl</kbd> : 論理積メタ検索ゲートウェイのURLを指定します。複数回指定できます。</li>
+<li><kbd>stmode</kbd> : 正数ならシングルスレッドモードになります。</li>
+<li><kbd>score</kbd> : 論理演算時のスコアの演算方法を指定します。「<code>0</code>」だと合計値、「<code>1</code>」だと最大値、「<code>2</code>」だと最小値、「<code>3</code>」だと平均値を採用します。</li>
+<li><kbd>tmpdir</kbd> : 一時ファイルを格納するディレクトリのパスを指定します。</li>
+<li><kbd>cclife</kbd> : キャッシュファイルの寿命を秒数で指定します。負数なら無期限です。</li>
+<li><kbd>shareurl</kbd> : 共有キャッシュ用の論理和メタ検索ゲートウェイのURLを指定します。複数回指定できます。</li>
+<li><kbd>failfile</kbd> : 失敗確率ファイルのパスを指定します。</li>
+<li><kbd>logfile</kbd> : ログファイルのパスを指定します。</li>
+<li><kbd>logformat</kbd> : ログの書式を指定します。「<code>{time}</code>」は現在時刻に変換され、「<code>{cond}</code>」は検索条件に置換され、「<code>{hnum}</code>」は検索の該当件数に置換され、それ以外で「<code>{}</code>」で括ったものはその名前の環境変数の値に置換されます。「<code>\t</code>」はタブに、「<code>\n</code>」は改行に置換されます。</li>
+</ul>
+
+<p>論理和メタ検索ゲートウェイのパラメータおよび出力の形式は論理積メタ検索ゲートウェイのものと全く同じです。</p>
+
+<p>論理和メタ検索ゲートウェイはリモートに設置した論理積メタ検索ゲートウェイの検索結果を収集することができます。したがって、論理積メタ検索ゲートウェイを複数のマシンに設置することで分散処理が可能となります。</p>
+
+<p>失敗確率ファイルは0.0から1.0までの小数式を内容とするファイルで、その値の確率で検索処理を失敗させるためにあります。システムの負荷が高すぎる場合にはこのファイルの内容を調整して、タイムアウトによる輻輳を避けて運用することができます。</p>
+
+<hr />
+
+<h2 id="tips">助言</h2>
+
+<p>ここでは、Hyper EstraierのP2P機構を活用するためのコツをいくつか紹介します。</p>
+
+<h3>パラメータの詳細</h3>
+
+<p>メタ検索の深度は0が起点です。深度が0なら自前のインデックスのみを対象とし、1ならリンク先のノードも対象とし、2ならその先も対象とし、3ならさらにその先も対象とします。それ以上の値も指定できます。クライアントが指定した深度がノードマスタの設定ファイルで指定した深度より大きい場合は、ノードマスタで指定した方に抑えられます。</p>
+
+<p>設定ファイルで<code>rateuri</code>の値を正数にした場合は、各文書のURI属性に含まれるディレクトリ階層の深さがスコアに反映されます。階層が浅い位置にあるほど重要な文書で、深い位置にあるほど瑣末な文書だという考え方に基づいています。具合的には、以下の値を計算します。</p>
+
+<ul>
+<li>score * (8 / (4 + depth))</li>
+</ul>
+
+<p>例えば、「http://foo.go.jp/bar/baz.html」の階層の深さは2ですので、元来のスコアに1.333が掛けられます。「http://abc.gov/def/ghi/jkl/mno/pqr.html」の階層の深さは5ですので、元来のスコアに0.888が掛けられます。</p>
+
+<p>リンクの信頼度は検索結果の各文書の順位を決定する際に利用されます。各ノードから収集した結果をマージする際には、各文書について以下の値が計算され、それが大きいものから提示されます。scoreは各文書のノードにおけるスコアです。maxは表示件数です。rankはノード内の表示順位です。creditは各ノードの信頼度を10000で割ったものです。</p>
+
+<ul>
+<li>score * (max * 2 - rank) * credit</li>
+</ul>
+
+<p>例えば、信頼度15000のノードに対して10件の文書を問い合わせた結果の4位の文書のスコアが1000だった場合、調整後のスコアは「1000 * (10 * 2 - 4) * (15000 / 10000)」で24000になります。なお、設定ファイルで<code>mergemethod</code>の値を1にした場合は「score * credit」という式が用いられ、3にした場合は「(max - rank) * credit」という式が用いられます。ただし、<code>scoreexpr</code>が4（asis）の場合はスコアの調整は一切行われません。</p>
+
+<p>各文書において<code>@weight</code>という属性が定義されていた場合、その値が調整後のスコアに掛けられます。これによって特定の文書に重みづけを行うことができます。値は小数で指定できます。例えば調整後のスコアが24000で<code>@weight</code>が1.5の場合は36000になります。</p>
+
+<p>自前のインデックスの信頼度は10000で固定です。したがって、他のノードへのリンクの信頼度は、その結果を自前のインデックスの結果より上位にしたい場合は10000より大きくし、下位にしたい場合は10000より小さくするとよいでしょう。</p>
+
+<h3>認証機構の詳細</h3>
+
+<p>認証機構のモードは3種類あり、設定ファイルで指定されます。デフォルトは2です。以下の表では、各種の操作に対して匿名を許可する場合は「○」、認証を行う場合は「×」を示します。ノードサーバの管理操作とは、<code>put_doc</code>、<code>out_doc</code>、<code>_set_user</code>、<code>_set_link</code>のことです。ノードサーバに対するそれ以外の操作は通常操作です。</p>
+
+<table summary="authorization mode">
+<tr>
+<th abbr="mode"></th>
+<th abbr="1">1（none）</th>
+<th abbr="2">2（admin）</th>
+<th abbr="3">3（all）</th>
+</tr>
+<tr>
+<td>ノードマスタの操作</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>ノードサーバの管理操作</td>
+<td>○</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>ノードサーバの通常操作</td>
+<td>○</td>
+<td>○</td>
+<td>×</td>
+</tr>
+</table>
+
+<p>認証機構があっても平文をネットワーク上に流すのではセキュリティとしては不十分です。特にHTTPの基本認証のセキュリティは低く、邪悪な人達には全く無力と言っても過言ではありません。したがって、重要なデータを扱う際には、通信を暗号化することをお薦めします。ただし、Hyper Estraier自体は暗号通信の機能を提供しませんので、Apache等をリバースプロクシとして利用してください。同時接続数が多い場合は市販のSSLアクセラレータを利用するとよいでしょう。</p>
+
+<p>このような認証機構が気に入らない場合は、フロントエンドのクライアントを実装して、そこでアカウント管理と認証を行ってください。フロントエンドがバックエンドであるノードマスタやノードサーバにアクセスする際には常にスーパーユーザを用いるとよいでしょう。Apacheをフロントエンドにすれば、mod_auth_ldapを使ってLDAPによる認証を行ったり、mod_auth_radiusを使ってRADIUSによる認証を行ったりできます。Locationディレクティブなどを駆使すれば各メソッドのアクセス権限を詳細に設定することもできます。</p>
+
+<h3>類似検索</h3>
+
+<p>設定ファイルの<code>smlrvnum</code>の値を1以上にすると、類似検索が有効になります。この状態でノードサーバに文書を登録すると、類似検索用のキーワードが抽出されて内部で管理されるようになります。</p>
+
+<p>キーワードの選定にはTF-IDF法を用いますが、デフォルトでは、文書頻度（DF）の算出にはそのノードの既存の登録文書を用います。したがって、はじめの方に登録した文書と後の方に登録した文書とではTF-IDF法の強さに差が出てきます。これを回避するために、予め生成した文書頻度のデータベースを用いることができます。<code>estcmd words</code>コマンドで生成したデータベースをサーバルートディレクトリの直下に「<code>_dfdb</code>」というファイル名で置いてください。</p>
+
+<h3>通常のWeb機能</h3>
+
+<p>ノードマスタは通常のWebサーバとしての機能も備えています。この機能は検索対象文書の実体を公開する場合に便利でしょう。例えば、「<code>/home/www/public_html</code>」以下を公開したい場合は、設定ファイルに以下のように書きます。</p>
+
+<pre>docroot: /home/www/public_html
+indexfile: index.html
+</pre>
+
+<h3>バックアップ</h3>
+
+<p>設定ファイルの<code>backupcmd</code>に任意のコマンドを指定することにより、ノードマスタの稼働中にデータベースのバックアップを取ることができます。ノードマスタ組み込みのユーザインターフェイスから「BACKUP」を実行すると、全てのノードのデータベースをデバイスに同期させた上で、<code>backupcmd</code>で指定したバックアップコマンドが呼び出されます。バックアップコマンドの第1引数にはサーバルートディレクトリの絶対パスが指定されます。通常は、以下のようなシェルスクリプトを用意して、そのパスを指定するとよいでしょう。</p>
+
+<pre>#! /bin/sh
+cd "$1"
+name=`printf '%s' ${PWD##*/}`
+cd ..
+find "./$name" -depth | grep -v './_pid' |
+cpio -o &gt; "$name.`date -I`.cpio"
+</pre>
+
+<p><code>_pid</code>ファイルは不要ですので、アーカイブに含めないようにするか、アーカイブを展開した後に削除するようにしてください。なお、CPIO形式のファイルは「cpio -idv &lt; casket.xxx.cpio」などとすると展開できます。</p>
+
+<h3>負荷テスト用コマンド</h3>
+
+<p>各種のWebアプリケーションに対する負荷テストのためのユーティリティとして、<code>estload</code>コマンドが提供されます。以下の書式を持ちます。</p>
+
+<dl>
+<dt><kbd>estload [-t <var>num</var>] [-l <var>num</var>] [-i <var>num</var>] [-p] [-q] [<var>file</var>|<var>url</var>]</kbd></dt>
+<dd><var>file</var>を指定した場合、そのファイルの各行に含まれるURLのリクエストを発行します。<var>url</var>を指定した場合、そのURLのリクエストを発行します。何も指定しなかった場合、標準入力の各行に含まれるURLのリクエストを発行します。</dd>
+<dd>-tは並行して動かすスレッドの数を指定します。デフォルトは1です。</dd>
+<dd>-lはリストを繰り返す回数を指定します。デフォルトは1です。</dd>
+<dd>-iはリクエストを発行してからスリープする時間をミリ秒単位で指定します。デフォルトは0です。</dd>
+<dd>-pを指定すると、レスポンスを表示します。</dd>
+<dd>-qを指定すると、進捗状態を表示しません。</dd>
+</dl>
+
+<h3>初期導入の効率化</h3>
+
+<p>大規模なサイトの立ち上げを素早く行いたい場合、<code>estcmd</code>を利用するかアプリケーションを作成するかして、コアAPIのレベルでインデックスを作った方がよいでしょう。そうして作ったインデックスは、ノードディレクトリに置くことでノードサーバとして利用することができます。例えば、「<code>/home/mikio</code>」以下の文書を登録した、名前が「<code>mikio</code>」でラベルが「<code>Mikio Hirabayashi</code>」のノードサーバを設置するには、以下のようにします。</p>
+
+<pre>estmaster init casket
+estcmd gather -sd -il ja casket/_node/mikio /home/mikio
+estcmd meta casket/_node/mikio label "Mikio Hirabayashi"
+</pre>
+
+<p>類似検索を有効にする場合は、以下のコマンドも実行してキーワードデータベースを作ってください。</p>
+
+<pre>estcmd extkeys casket/_node/mikio
+</pre>
+
+<p>ユーザやリンクの設定は、ノードマスタを起動させた上で、ノードAPIや<code>estcall</code>コマンドを使って行ってください。なお、<code>estcall</code>には<code>estcmd gather</code>のようなギャザラ用のサブコマンドは用意されていません。<code>find</code>や<code>estcmd draft</code>などを組み合わせれば同等のことは可能です。最も簡単には、以下のようにします。</p>
+
+<pre>find /home/mikio/public_html -type f -name '*.html' |
+while read file ; do
+  estcmd draft -fh -il ja "$file" |
+  estcall put -auth admin admin http://localhost:1978/node/test1
+done
+</pre>
+
+<h3>Windowsサービス</h3>
+
+<p>Windows版のバイナリパッケージには、ノードマスタのWindowsサービス版も同梱されます。ログオンしていない状態でもノードマスタを動かしたい場合にはWindowsサービスが役立ちます。ここでは、「<code>C:\hyperestraier</code>」の中にHyper EstraierのコマンドやDLLの一式を置いて、そこにパスを通してあることを前提に、Windowsサービス版の導入手順を説明します。</p>
+
+<p>まず、サーバルートディレクトリを作成します。コマンドプロンプトで以下を実行します。</p>
+
+<pre>estmaster init C:\hyperestraier\casket
+</pre>
+
+<p>ノードマスタのサービスを登録します。コマンドプロンプトで以下を実行します。なお、行末の「<code>^</code>」はコマンドプロンプトのエスケープ文字です。</p>
+
+<pre>scmutil install estraier ESTRAIER ^
+  C:\hyperestraier\estmaster-sv.exe C:\hyperestraier\casket
+</pre>
+
+<p>「コントロールパネル」の「管理ツール」の「サービス」を開くと、「<code>estraier</code>」というサービスが登録されているはずです。それを開始すれば、ノードマスタが起動します。あとは、通常のWindowsサービスと同様に扱うことができます。ログオフしてもノードマスタは動作し続けますし、シャットダウンの際には正常終了します。システム起動時にノードマスタも自動起動するように設定することもできます。</p>
+
+<p><code>scmutil</code>はWindowsサービスのインストールとアンインストールのためのコマンドです。以下の書式を持ちます。</p>
+
+<dl>
+<dt><kbd>scmutil install <var>name</var> <var>label</var> <var>command</var> ...</kbd></dt>
+<dd>サービスをインストールします。</dd>
+<dd><var>name</var>はサービスの名前を指定します。</dd>
+<dd><var>label</var>はサービスのラベルを指定します。</dd>
+<dd><var>command</var>はサービスの起動コマンドを指定します。コマンドやファイルのパスには絶対パスを用います。</dd>
+</dl>
+
+<dl>
+<dt><kbd>scmutil uninstall <var>name</var></kbd></dt>
+<dd>サービスをアンインストールします。</dd>
+<dd><var>name</var>はサービスの名前を指定します。</dd>
+</dl>
+
+<p><code>estmaster-sv.exe</code>はサービス専用のコマンドです。起動時の第1引数でサーバルートディレクトリを指定します。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

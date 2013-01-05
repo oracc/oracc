@@ -1,0 +1,193 @@
+<css>
+@namespace xf url("http://www.w3.org/2002/xforms");
+body 		{ width: 100%; background-color: white; }
+
+#topButtons p  { text-align: center; }
+#topButtons .spacer { padding-right: 1em; }
+
+#banner		{ width: 100%; /* height: 39px;  */
+		  padding: 0px; margin: 0px;
+		  /* border-bottom: 1px solid black; */
+		}
+#banner p	{ text-align: left; 
+		}
+
+.padding	{ padding-top: 10px; }
+
+span.h1		{ font-size: 200%; }
+span.corpus-top { padding-left: 1em; margin-bottom: 5px; }
+
+#left		{ clear: all;
+    		  width: 20%;  padding: 0px; 
+		  position: absolute; left: 0px; /* top: 40px; */
+		  margin-top: 26px;
+		  z-index: 1;
+		}
+
+#right		{
+    		}
+
+#minibanner	{ padding: 0px; margin: 0px; margin-top: -22px;
+		  position: absolute; left: 20%; top: 0px;
+		  z-index: 3;
+		}
+
+.right80	{ clear: all;
+    		  width: 80%;  padding: 0px; 
+		  position: absolute; left: 20%; /* top: 40px; */
+		  margin-top: 26px;
+		  z-index: 1;
+		}
+
+.right100	{ clear: all;
+    		  width: 100%;  padding: 0px; 
+		  position: absolute; left: 0; /* top: 40px; */
+		  margin-top: 26px;
+		}
+
+#searchLeft	{ line-height: 2em; 
+		  /* border-bottom: 1px solid black; */
+		}
+#searchRight	{ line-height: 2em; width: 100%; 
+		  margin-left: auto; margin-right: auto;
+		  /* border-bottom: 1px solid black; */
+		}
+
+#navLeft    	{ height: 24px;
+		  padding: 0px; margin: 0px;
+
+		  width: 20%;  padding: 0px;
+		  position: absolute; left: 0px; /* top: 40px; */
+		  z-index: 2;
+
+		  /* padding-bottom: 4px; */
+		  /* border-bottom: 1px solid black; 
+		     border-right: 1px solid black; 
+		   */
+		}
+
+#zArrows	{ position: absolute; left: 20%; top: 22px;
+		}
+
+#navRight   	{ height: 24px;
+    	          width: 100%;
+		  padding: 0px; /* padding-bottom: 4px;  */
+		  margin-bottom: 0px; margin-top: 0px;
+		  margin-left: auto; margin-right: auto;
+
+		  width: 80%;  padding: 0px; 
+		  position: absolute; left: 20%; /* top: 40px; */
+
+		  z-index: 2;
+
+		  /* border-bottom: 1px solid black; */
+		}
+
+#navLeft p	{ padding: 0px; margin: 0px; 
+		}
+
+#navRight p	{ padding: 0px; margin: 0px; 
+		}
+
+#controls 	{ width: 100%; /* height: 60px; */
+		  padding: 0px; margin: 0px;
+		  padding-top: 3px; padding-bottom: 3px;
+		  /* background-color: white; */
+		  /* border-bottom: 1px solid black; */
+		}
+
+#rightTrailer   { font-size: 90%; color: #666; }
+
+p.controls	 { margin-left: 20%; }
+span.outline-sorter select { padding-top: 2px; }
+
+.quick-search	{ }
+
+#outline 	{ padding: 0px; 
+		  /* background-color: white;  */
+		  /* border-right: 1px solid black; */
+		  /* border-bottom: 1px solid black; */
+		}
+#content 	{ padding: 0px; 
+		  /* background-color: white; */
+		  /* border-bottom: 1px solid black; */
+		}
+
+#contentFrame   { width: 100%; height: 500px; border: none; }
+#outlineFrame   { width: 100%; height: 500px; border: none; }
+
+.hidden    	{ display: none !important; }
+
+h1		{ padding: 0px; margin: 0px; 
+		  padding-left: 3px;
+		}
+p		{ padding: 0px; margin: 0px; }
+iframe		{ padding: 0px; margin: 0px; }
+
+p.toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
+		  padding-top: 5px;
+		}
+.control p	{ padding: 2px; padding-top: 5px;
+		}
+
+span.arrow 	{ font-weight: bold; padding-left: .2em; 
+		  padding-right: .2em; padding-bottom: 1px;
+		}
+
+.toccenter span.arrow 		{ vertical-align: middle; }
+.botlinks span.arrow 		{ vertical-align: middle; }
+
+.page-input .xforms-value 	{ width: 3em; height: 1.1em; margin-right: .4em; 
+				  text-align: center;
+				}
+.search-input .xforms-value 	{ width: 40%; margin-right: 0px; 
+				  text-align: left; 
+				}
+
+.unzoom 	{  }
+.zarrow button	{ font-weight: bold; padding: 0px; margin: 0px;
+		  width: 60px !important;
+		}
+
+.center 	{ text-align: center; }
+.smash		{ line-height: 0px; height: 20px;
+		  margin-top: 0px; margin-bottom: 0px; 
+		  padding-top: 0px; padding-bottom: 0px; 
+		}
+.right		{ text-align: right; }
+
+.glossaries	{ text-align: center; }
+.gloss-arrows 	{ margin-top: 20px; }
+
+.transonly 	{ padding-left: .2em; }
+
+button		{ display: inline; }
+.inline				{ display: inline; }
+.inline .xforms-group-content	{ display: inline; }
+
+.cetype		{ padding-left: .5em; }
+
+.white-on-white { color: white; }
+
+.xforms-required .xforms-required-icon { display: none !important; }
+.xforms-required-icon { display: none !important; }
+
+.noselect	{ padding-left: .2em; 
+		  padding-right: .333em; 
+		  /* color: black; */ 
+		}
+
+#Xxsltforms_console {
+    border-top: thin solid #888888;
+    /* color: #888888; */
+    color: red;
+    background-color: black;
+    display: none;
+    font-size: 0.8em;
+    position: absolute;
+    left: 200px;
+    top: 0px;
+    z-index: 100;
+}
+
+</css>

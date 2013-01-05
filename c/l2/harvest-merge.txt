@@ -1,0 +1,32 @@
+Harvest:
+
+if lem_autolem:
+
+   forms are checked for required components in sig_warn
+
+in ilem_wrapup:
+
+   sigs should be attached when there are no finds and the + flag
+   	is set; + means not only 'don't warn' but also 'is approved'
+   use attr 'newsig' not 'sig' for ease of harvesting
+
+To perform a harvest:
+
+   rip newsigs -- this means only approved sigs can possibly make it
+       into the glossary
+   create lang.new
+
+To merge:
+
+   if !lang.glo mv lang.new new.glo
+   else g2manager.plx -merge lang
+
+ISSUES:
+
+	HOW TO HANDLE LEMMATA FROM NON-PROJ GLOSSARIES? F2_FLAG?
+	need to know which they are for harvesting purposes, otherwise
+	harvest doesn't ingest material from system sig files
+	track origin-project separately from sig?
+
+
+	PSU harvesting

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/xtc/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="xtc">
+      <attribute name="basename">
+        <data type="NCName"/>
+      </attribute>
+      <attribute name="destdir">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <oneOrMore>
+        <element name="t">
+          <attribute name="path"/>
+          <data type="NCName"/>
+        </element>
+      </oneOrMore>
+    </element>
+  </start>
+</grammar>

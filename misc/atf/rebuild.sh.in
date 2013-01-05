@@ -1,0 +1,4 @@
+#!/bin/sh
+for a in $* ; do \
+    cat $a.lst | @@ORACC@@/lib/ORACC/XTF/xtfmanager.plx -force -base $a ; \
+done

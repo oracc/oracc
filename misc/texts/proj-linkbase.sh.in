@@ -1,0 +1,11 @@
+#!/bin/sh
+oracc=@@ORACC@@
+project=`oraccopt`
+if [ "$project" = "" ]; then
+    echo proj-linkbase.sh: must be run in project directory
+    exit 1
+fi
+cat 01bld/lists/have-xtf.lst >01tmp/pqxpand.lst
+[ -r 01bld/lists/proxy.lst ] && cat 01bld/lists/proxy.lst >>01tmp/pqxpand.lst
+cat 01tmp/pqxpand.lst | pqxpand xtf | haslinks1 >01bld/lists/linktexts.lst
+cat 01bld/lists/linktexts.lst | harvest-links.plx 2>01tmp/harvest-links.log

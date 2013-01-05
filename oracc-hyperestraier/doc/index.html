@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API" />
+<meta name="description" content="homepage of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="index.ja.html" hreflang="ja" title="the Japanese version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Hyper Estraier: a full-text search system for communities</title>
+<script type="text/javascript">function startup(){
+  var elem = document.getElementById("headline");
+  if(elem){
+    var now = new Date();
+    if((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 4 == 0){
+      var name;
+      switch((now.getMonth() + now.getDate() + now.getMinutes()) % 6){
+      default: name = "Hyper Super Ultra Estraier"; break;
+      case 1: name = "Superdreadnought Estraier"; break;
+      case 2: name = "Supercool Estraier"; break;
+      case 3: name = "Supersonic Estraier"; break;
+      case 4: name = "Superstring Estraier"; break;
+      case 5: name = "Estraier II' Turbo"; break;
+      }
+      var desc;
+      switch((now.getDate() + now.getMinutes()) % 9){
+      default: desc = "The World Warrior"; break;
+      case 1: desc = "Champion Edition"; break;
+      case 2: desc = "Hyper Fighting"; break;
+      case 3: desc = "The New Challengers"; break;
+      case 4: desc = "Grand Master Challenge"; break;
+      case 5: desc = "Warriors' Dreams"; break;
+      case 6: desc = "New Generation"; break;
+      case 7: desc = "Giant Attack"; break;
+      case 8: desc = "Fight for the Future"; break;
+      }
+      elem.firstChild.nodeValue = name + ": " + desc;
+    }
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">Hyper Estraier: a full-text search system for communities</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<span class="void">English</span>/<a href="index.ja.html" hreflang="ja">Japanese</a>]</div>
+
+<div class="logo"><img src="logo.png" alt="Hyper Estraier" width="300" height="110" /></div>
+
+<hr />
+
+<h2>Overview</h2>
+
+<p>Hyper Estraier is a full-text search system.  You can search lots of documents for some documents including specified words.  If you run a web site, it is useful as your own search engine for pages in your site.  Also, it is useful as search utilities of mail boxes and file servers.</p>
+
+<p>The characteristic of Hyper Estraier is the following.</p>
+
+<ul>
+<li>High performance of search</li>
+<li>High scalability of target documents</li>
+<li>Perfect recall ratio by N-gram method</li>
+<li>High precision by hybrid mechanism of N-gram and morphological analyzer</li>
+<li>Phrase search, regular expressions, attribute search, and similarity search</li>
+<li>Multilingualism with Unicode</li>
+<li>Independent of file format and repository</li>
+<li>Intelligent web crawler</li>
+<li>Simple and powerful API</li>
+<li>Supporting P2P architecture</li>
+</ul>
+
+<p>Hyper Estraier is an open-source software released under the terms of the GNU Lesser General Public License.  It works on Linux, Windows, Mac OS X, and other UNIX-like systems.</p>
+
+<hr />
+
+<h2>Documents</h2>
+
+<p>The following are documents of Hyper Estraier.  They are contained also in the source package.</p>
+
+<ul>
+<li><a href="intro-en.html">Introduction</a></li>
+<li><a href="uguide-en.html">User's Guide</a></li>
+<li><a href="pguide-en.html">Programming Guide</a></li>
+<li><a href="nguide-en.html">P2P Guide</a></li>
+<li><a href="cguide-en.html">Crawler Guide</a></li>
+</ul>
+
+<hr />
+
+<h2>Download</h2>
+
+<p>The following are packages of Hyper Estraier.</p>
+
+<ul>
+<li><a href="hyperestraier-1.4.13.tar.gz">Latest Source Package (version 1.4.13)</a></li>
+</ul>
+
+<hr />
+
+<h2>Language Bindings</h2>
+
+<p>Class libraries for Java are also provided.</p>
+
+<ul>
+<li><a href="javanativeapi/">Documents for Java Binding</a></li>
+<li><a href="javapureapi/">Documents for Pure Java Interface</a></li>
+</ul>
+
+<p>Class libraries for Ruby are also provided.</p>
+
+<ul>
+<li><a href="rubynativeapi/">Documents for Ruby Binding</a></li>
+<li><a href="rubypureapi/">Documents for Pure Ruby Interface</a></li>
+</ul>
+
+<p>Class libraries for Perl are also provided.</p>
+
+<ul>
+<li><a href="perlnativeapi/">Documents for Perl Binding</a></li>
+</ul>
+
+<hr />
+
+<h2>Information</h2>
+
+<p>Hyper Estraier was written and is maintained by <a href="http://fallabs.com/mikio/">Mikio Hirabayashi</a>.  You can contact the author by e-mail to `mikio@fallabs.com'.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

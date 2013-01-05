@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  -*- rnc -*-
+  XForms 1.1 repeat-attributes module for XHTML 1.0
+-->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <!-- xhtml table elements -->
+  <define name="table.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="tbody.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="tr.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="colgroup.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <!-- xhtml list elements -->
+  <define name="ul.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="ol.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="li.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <!-- xhtml text and block elements -->
+  <define name="div.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+  <define name="span.attlist" combine="interleave">
+    <ref name="xforms.repeat-various.attrs"/>
+  </define>
+</grammar>

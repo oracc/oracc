@@ -1,0 +1,427 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Setting up your ESP portal website</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2011-04-30</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes how to configure the parameters, structure, appearance, and privacy preferences of your ESP website.</dc:description>
+</d:meta>
+
+<h1>Site parameters</h1>
+<p>The parameters of the site are set in the <code>00web/esp/site-content/paramaters.xml</code> file. Here is an example <code>parameters.xml</code> file:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;param:parameters 
+	xmlns:param="http://oracc.org/ns/esp-param/1.0"
+        xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+&gt;
+	&lt;param:title&gt;The Geography of Knowledge&lt;/param:title&gt;
+	&lt;param:publisher&gt;The GKAB Project&lt;/param:publisher&gt;
+	&lt;param:host&gt;http://oracc.museum.upenn.edu&lt;/param:host&gt;
+	&lt;param:root&gt;/xkab&lt;/param:root&gt;
+	&lt;param:common-headers&gt;
+		&lt;meta name="DC.publisher" content="GKAB Project, Department
+		of History and Philosophy of Science, University of Cambridge, 
+		Free School Lane, Cambridge CB2 3RH, UK"/&gt;
+		&lt;meta name="DC.language" scheme="ISO 639-2/T" content="eng"/&gt;
+		&lt;meta name="DC.rights.copyright" content="Copyright 2007-11 
+		The GKAB Project; released under a CC-BY-SA 3.0 license"/&gt;
+		&lt;meta name="DC.type" scheme="DCTERMS.DCMIType" 
+		content="Text"/&gt; 	
+		&lt;meta name="DC.format" content="text/html"/&gt;
+	&lt;/param:common-headers&gt;
+	&lt;param:dc-id-prefix&gt;gkab-oracc-museum-upenn-edu/page/
+	&lt;/param:dc-id-prefix&gt;
+	&lt;param:main-menu-caption&gt;Main menu&lt;/param:main-menu-caption&gt;
+	&lt;param:footer&gt;&#169; &lt;esp:link url="http://oracc.museum.upenn.edu/gkab/" 
+        hide-print="yes"&gt;The GKAB Project&lt;/esp:link&gt;, 2007-11&lt;/param:footer&gt;
+&lt;/param:parameters&gt;
+</pre>
+
+<p>The available elements are described below.</p>
+
+<dl>
+<dt><code>&lt;param:title&gt;Text&lt;/param:title&gt;</code></dt>
+
+<dd>Provides the title for the site as a whole. Also used in creating citations.</dd>
+
+<dt><code>&lt;param:publisher&gt;Text&lt;/param:publisher&gt;</code></dt>
+
+<dd>Used in creating citations.</dd>
+
+<dt><code>&lt;param:host&gt;http://www.servername.ext&lt;/param:host&gt;
+and &lt;param:root&gt;/path/to/site/root&lt;/param:root&gt;</code></dt>
+
+<dd>Describe where the site home page is located. For example, if the home page is at <code class="example">http://oracc.museum.upenn.edu/gkab/</code>, the host is <code class="example">http://oracc.museum.upenn.edu</code> and the root is <code class="example">/gkab</code>. Note that neither should end with a slash.</dd>
+
+<dt><code>&lt;param:common-headers&gt;inline content&lt;/param:common-headers&gt;</code></dt>
+<dd>Any elements within this element are copied directly to the head element of all pages of the site. This can be used, for example, for <a href="http://dublincore.org/">Dublin Core</a> metadata items that are the same on all pages, such as <code>DC.publisher</code>.</dd>
+
+
+<dt><code>&lt;param:dc-id-prefix&gt;Text&lt;/param:dc-id-prefix&gt;</code></dt>
+
+<dd>The text content of this element is prefixed to each page’s id to form a <a href="http://dublincore.org/">Dublin Core</a> identifier for each page. This is to ensure that the identifier is globally unique.</dd>
+
+<dt><code>&lt;param:main-menu-caption&gt;Text&lt;/param:main-menu-caption&gt;</code></dt>
+
+<dd>Optional. If this is present, the main menu is captioned with the supplied text.</dd>
+
+<dt><code>&lt;param:footer&gt;Arbitrary block and/or inline content&lt;param:footer&gt;</code></dt>
+
+<dd>Any elements within this element are copied directly to the footer area of all pages of the site.</dd>
+</dl>
+
+<h1>Site style</h1>
+<p>Many aspects of the visual appearance of the site are defined in the file <code>00web/esp/site-content/appearance.xml</code>. Here is an example of <code>appearance.xml</code>:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;app:appearance xmlns:app="http://oracc.org/ns/esp-appearance/1.0"&gt;
+&lt;app:colours&gt;
+		&lt;app:dark&gt;#6d0020&lt;/app:dark&gt;
+		&lt;app:medium&gt;#89606c&lt;/app:medium&gt;
+		&lt;app:light&gt;#dbb8b8&lt;/app:light&gt;
+		&lt;app:outline&gt;#ccc&lt;/app:outline&gt;
+		&lt;app:alternate&gt;#eeeeee&lt;/app:alternate&gt;
+		&lt;app:text&gt;#333333&lt;/app:text&gt;
+		&lt;app:page&gt;#ffffff&lt;/app:page&gt;
+		&lt;app:highlight&gt;#ffff99&lt;/app:highlight&gt;
+		&lt;app:print&gt;#000&lt;/app:print&gt;
+	&lt;/app:colours&gt;
+  &lt;app:fonts&gt;
+    &lt;app:body-screen&gt;"Verdana", Helvetica, Arial, sans-serif&lt;/app:body-screen&gt;
+    &lt;app:body-print&gt;"Palatino Linotype", Palatino, Georgia, 
+    "Times New Roman", Times, serif&lt;/app:body-print&gt;
+    &lt;app:h1&gt;Verdana, Times, "Times New Roman", serif&lt;/app:h1&gt;
+    &lt;app:h2&gt;Verdana, Times, "Times New Roman", serif&lt;/app:h2&gt;
+  &lt;/app:fonts&gt;
+  &lt;app:tabs&gt;
+    &lt;app:tab&gt;
+      &lt;app:url&gt;/knp/peoplegodsplaces/&lt;/app:url&gt;
+      &lt;app:title&gt;People, gods &amp; places&lt;/app:title&gt;
+      &lt;app:alt&gt;People, gods &amp; places&lt;/app:alt&gt;
+      &lt;app:img height="191" width="28"&gt;tab_pgp.gif&lt;/app:img&gt;
+    &lt;/app:tab&gt;
+    &lt;app:tab&gt;
+      &lt;app:url&gt;/knp/technicalterms/&lt;/app:url&gt;
+      &lt;app:title&gt;Technical terms&lt;/app:title&gt;
+      &lt;app:alt&gt;Technical terms&lt;/app:alt&gt;
+      &lt;app:img height="146" width="28"&gt;tab_tt.gif&lt;/app:img&gt;
+    &lt;/app:tab&gt;
+    &lt;app:tab&gt;
+      &lt;app:url&gt;/knp/bibliography/&lt;/app:url&gt;
+      &lt;app:title&gt;Bibliography&lt;/app:title&gt;
+      &lt;app:alt&gt;Bibliography&lt;/app:alt&gt;
+      &lt;app:img height="116" width="28"&gt;tab_b.gif&lt;/app:img&gt;
+    &lt;/app:tab&gt;
+&lt;/app:tabs&gt;
+&lt;/app:appearance&gt;
+</pre>
+<!-- reusables - tabs/tab/img (h, w), text, alt, url -->
+<p>The available elements are described below.</p>
+<h4>Colours</h4>
+<dl>
+<dt><code>app:colours</code></dt>
+<dd>Container element for the following nine elements which define the colours used in the website's CSS stylesheet. May not contain any other content. (There are many good colour-pickers on the web; try for instance <a href="http://www.color-hex.com/">color-hex.com</a>.)</dd>
+<dt><code>app:dark</code></dt>
+<dd>Defines the darkest contrast colour; must consist of a hexadecimal colour code.</dd>
+<dt><code>app:medium</code></dt>
+<dd>Defines the medium contrast colour; must consist of a hexadecimal colour code.</dd>
+<dt><code>app:light</code></dt>
+<dd>Defines the lightest contrast colour; must consist of a hexadecimal colour code.</dd>
+<dt><code>app:outline</code></dt>
+<dd>Defines the colour of the outline around the site's link boxes (such as on the text size and cuneiform script buttons in the header).</dd> 
+<dt><code>app:alternate</code></dt>
+<dd>Defines an alternative background colour, used in tables.</dd>
+<dt><code>app:text</code></dt>
+<dd>Defines the colour of basic text; must consist of a hexadecimal colour code.</dd>
+
+<dt><code>app:page</code></dt>
+<dd>Defines the background colour for text; must consist of a hexadecimal colour code.</dd>
+
+<dt><code>app:highlight</code></dt>
+<dd>Defines the text colour of links when they are selected or moused-over; must consist of a hexadecimal colour code.</dd>
+
+<dt><code>app:print</code></dt>
+<dd>Defines the text colour for printing; must consist of a hexadecimal colour code.</dd>
+</dl>
+
+<h4>Fonts</h4>
+<dl>
+<dt><code>app:fonts</code></dt>
+<dd>Container element for the following four elements, which define the preferred fonts in the site's CSS stylesheet. May not have any other content.</dd>
+<dt><code>app:body-print</code></dt>
+<dd>Defines the preferred fonts for printing; must consist of one or more font names separated by commas. Multi-word font names such as "Times New Roman" must be in double quotes.</dd>
+<dt><code>app:body-screen</code></dt>
+<dd>Defines the preferred fonts for on-screen display; must consist of one or more font names separated by commas. Multi-word font names such as "Times New Roman" must be in double quotes.</dd>
+<dt><code>app:h1</code></dt>
+<dd>Defines the preferred fonts for top-level headings in print and on screen; must consist of one or more font names separated by commas. Multi-word font names such as "Times New Roman" must be in double quotes.</dd>
+<dt><code>app:h2</code></dt>
+<dd>Defines the preferred fonts for second-level headings in print and on screen; must consist of one or more font names separated by commas. Multi-word font names such as "Times New Roman" must be in double quotes.</dd>
+</dl>
+<!-- <dt><code>app:images</code></dt>
+<dd>Container element for the following three elements, which define the images (in <code>00web/esp/site-content/00web</code> used to prettify the left-hand menu. The image files themselves can be edited and/or renamed but must not be moved.</dd>
+<dt><code>app:dark-corner</code></dt>
+<dd>Defines the name of the file used to round of the top right-hand corner in menu directories; must consist of a <a href="../espbuild/#Names_and_naming">valid image-file name</a>.</dd>
+<dt><code>app:highlight-corner</code></dt>
+<dd>Defines the name of the file used to round of the top right-hand corner in menu directories when selected or moused-over; must consist of a <a href="../espbuild/#Names_and_naming">valid image-file name</a>.</dd>
+<dt><code>app:light-corner</code></dt>
+<dd>Defines the name of the file used to round of the top right-hand corner in active menu directories; must consist of a <a href="../espbuild/#Names_and_naming">valid image-file name</a>.</dd> -->
+
+<h3>Tabs</h3>
+<dl>
+<dt><code>app:tabs</code></dt>
+<dd>Container element for one or more <code>app:tab</code> elements, which set the parameters for the tabs on the right-hand side of every web page in the site.</dd>
+<dt><code>app:tab</code></dt>
+<dd>Container element for the elements which define the parameters of the tab</dd>
+<dt><code>app:url</code></dt>
+<dd>Gives the URL of the site or page that the tab links to.</dd>
+<dt><code>app:title</code></dt>
+<dd>Gives the text of the tab.</dd>
+<dt><code>app:alt</code></dt>
+<dd>Gives an textual alternative in case the tab image cannot be displayed; by default the same content as <code>app:text</code>.</dd>
+<dt><code>app:img</code></dt>
+<dd>Gives the name of the image file for the tab (which should live in <code>00web/esp/site-content/00web/images/</code> by default). Takes two compulsory attributes, <code>height</code> (in pixels) and <code>width</code> (in pixels).</dd>
+</dl>
+
+<p>The image files for the tabs should be kept in <code>00web/esp/site-content/00web/images/</code>. The <a href="../esp/esp/#Installing_the_ESP_templates_and_schemas">ESP templates</a> include three examples, which can be edited or replaced. (See <a href="../espimages/">the ESP images page</a> for more information.) The site may have as many tabs as you like, from none to whatever will fit sensibly on the screen.</p>
+
+<p>You can also edit the image file <code>00web/esp/site-content/00web/favicon.ico</code> in an image editor. This file is used as the site's icon in web browsers' bookmarks, navigation bars, etc. It must be just 16 × 16 pixels in size.</p>
+
+<h1>Site structure</h1>
+
+<p>The structure of the site is defined in the file <code>00web/esp/site-content/structure.xml</code>. Here is an example <code>structure.xml</code> file:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;struct:page 
+    xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    file="home.xml" 
+    id="home"
+&gt;
+	&lt;struct:page file="models.xml" id="models"&gt;
+		&lt;struct:page file="gilbert.xml" id="gilbert"/&gt;
+		&lt;struct:page file="daphne.xml" id="daphne"&gt;
+			&lt;struct:page file="article.xml" id="daphnearticle"/&gt;
+		&lt;/struct:page&gt;
+	&lt;/struct:page&gt;
+&lt;/struct:page&gt;
+</pre>
+
+<p>As seen above, the file usually contains only <code>&lt;struct:page&gt;</code> elements. The nesting of these elements defines the structure of the site. The <code>&lt;struct:page&gt;</code> element is used as described below:</p>
+
+<pre class="listing">
+&lt;struct:page 
+id="example"
+file="example.xml"
+accesskey="0"
+hide-menu-link="yes"
+show-small-print-link="yes"
+show-access-link="yes"
+	show-reference-link="yes"
+&gt;
+	Other &lt;struct:page&gt; elements (optional)
+&lt;/struct:page&gt;
+</pre>
+
+<dl>
+<dt><code>id</code></dt>
+<dd>Mandatory. The unique identifier for the page. Other pages will link to this page using its <code>id</code>. Give pages ids according to a logical and memorable system: any value can be chosen that you are happy to be open to the public (it may be used in metadata fields).</dd>
+
+<dt><code>file</code></dt>
+<dd>Optional. The location of the XML file containing the information for this page, relative to the pages folder in the <code>site-content</code> folder (if the <code>file</code> attribute is not present, the page’s information must be present inside the <code>&lt;struct:page&gt;</code> element itself, but this is not recommended). Name the XML files, and place them inside folders in the <code>site-content/pages</code> folder, according to a logical and memorable system. No trace of the file names or locations will be present anywhere in the public site.</dd>
+
+<dt><code>accesskey</code></dt>
+<dd>Optional. This defines an access key to be used to access this page from other pages on the site. However, note that the access key will only work on pages on which there is a link to the target page.</dd>
+
+<dt><code>hide-menu-link="yes"</code></dt>
+<dt><code>show-small-print-link="yes"</code></dt>
+<dt><code>show-access-link="yes"</code></dt>
+<dt><code>show-reference-link="yes"</code></dt>
+<dd>All optional. The presence of each of these attributes determines where links to the page are displayed (or not displayed). Access links are shown at top left. Reference links are shown at top right. Small print links are displayed at bottom right.</dd>
+</dl>
+<p>The <code>&lt;struct:page&gt;</code> element can contain other <code>&lt;struct:page&gt;</code> elements; these are then ‘children’ (i.e., sub-pages) of this page in the site structure.</p>
+
+<p>As noted above, the <code>&lt;struct:page&gt;</code> element can technically also contain the content of the page, but this is not recommended because it makes the <code>structure.xml</code> file unwieldy.</p>
+
+<h3>Links</h3>
+
+<p>You can reference external links in <code>structure.xml</code> by using the new <code>struct:link</code> element.  This has the following attributes:</p>
+
+<dl>
+<dt><code>id</code></dt>
+<dd>Mandatory. The unique identifier for the page. Other pages will link to this page using its <code>id</code>. Give pages ids according to a logical and memorable system: any value can be chosen that you are happy to be open to the public (it may be used in metadata fields).</dd>
+
+<dt><code>title</code></dt>
+<dd>Mandatory.  The text that is used in the menu when displaying the link entry.</dd>
+
+<dt><code>url</code></dt>
+<dd>Mandatory.  The URL for the resource which is usually external to the ESP site, but may be local.  The URL is handled according to the following rules:
+<ul>
+<li>If the URL begins with <code>http://</code> or <code>/</code> it is passed through unmodified</li>
+<li>Otherwise, the URL is treated the same way as any other <code>esp:link</code>, i.e., it is taken to be relative to the ESP portal's top level directory.</li>
+</ul>
+</dd>
+</dl>
+
+<p>A common application of this feature is to create a link in the menu to reach a corpus referenced by the portal.  To include such a link, you can simply include <code>struct:link</code> in the appropriate place in <code>structure.xml</code>.  For example, to link to the SAAo corpus one could write:</p>
+
+<pre class="cookbook">
+  &lt;struct:link id="SAAo" title="Browse SAAo Corpus" url="/SAAo/corpus"/>
+</pre>
+
+<h2>Site tabs and navigation structure</h2>
+
+<p>To link to external sites you can either define the link in <code>structure.xml</code> as described under <a href="#links">Links</a> above or you can link to external web pages using the right hand site tabs, as described under <a href="#tabs">Tabs</a> above.</p>
+
+<h1>Privacy preferences</h1>
+
+<p>The file <code>00web/esp/site-content/00web/w3c/p3p.xml</code> contains standard data which gives the site's privacy preferences according to a protocol laid down by the Platform for Privacy Preferences Initiative. This is the version of the file included in the <a href="../esp/esp/#Installing_the_ESP_templates_and_schemas">ESP templates</a>:</p>
+
+<pre class="listing">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;META xmlns="http://www.w3.org/2002/01/P3Pv1" xml:lang="en"&gt;
+   &lt;POLICY-REFERENCES&gt;
+      &lt;EXPIRY max-age="86400"/&gt;
+      &lt;POLICY-REF about="#logs-only"&gt;
+         &lt;INCLUDE&gt;/*&lt;/INCLUDE&gt;
+      &lt;/POLICY-REF&gt;
+   &lt;/POLICY-REFERENCES&gt;
+   &lt;POLICIES&gt;
+      &lt;POLICY name="logs-only" discuri="/privacy/"&gt;
+         &lt;ENTITY&gt;
+            &lt;DATA-GROUP&gt;
+               &lt;DATA ref="#business.name"&gt;The Open, Richly-Annotated 
+	       Cuneiform Corpus&lt;/DATA&gt;
+               &lt;DATA ref="#business.contact-info.online.email"&gt;
+	       osc@oracc.org&lt;/DATA&gt;
+            &lt;/DATA-GROUP&gt;
+         &lt;/ENTITY&gt;
+         &lt;ACCESS&gt;
+            &lt;nonident/&gt;
+         &lt;/ACCESS&gt;
+         &lt;STATEMENT&gt;
+            &lt;PURPOSE&gt;
+               &lt;current/&gt;
+               &lt;admin/&gt;
+               &lt;develop/&gt;
+            &lt;/PURPOSE&gt;
+            &lt;RECIPIENT&gt;
+               &lt;ours/&gt;
+            &lt;/RECIPIENT&gt;
+            &lt;RETENTION&gt;
+               &lt;indefinitely/&gt;
+            &lt;/RETENTION&gt;
+            &lt;DATA-GROUP&gt;
+               &lt;DATA ref="#dynamic.clickstream"/&gt;
+               &lt;DATA ref="#dynamic.http"/&gt;
+            &lt;/DATA-GROUP&gt;
+         &lt;/STATEMENT&gt;
+      &lt;/POLICY&gt;
+   &lt;/POLICIES&gt;
+&lt;/META&gt;
+</pre>
+
+<p>We recommend that you do not edit this file unless you understand the basics of P3P compliance. You can find out more at P3P's <a href="http://www.w3.org/P3P/details.html">Make Your Website P3P Compliant</a> page.</p>
+
+<h1>Page structure</h1>
+
+<p>The content of each page is defined in its own XML file. Here is an example of an XML page file:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+&gt;
+	&lt;esp:name&gt;Home&lt;/esp:name&gt;
+	&lt;esp:title&gt;Home&lt;/esp:title&gt;
+	
+	&lt;html&gt;
+		&lt;head&gt;
+			&lt;meta name="DC.rights.copyright" 
+			content="Released under a CC-BY-SA 3.0 license"&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+			&lt;p&gt;Good morning.&lt;/p&gt;
+		&lt;/body&gt;
+	&lt;/html&gt;
+	
+&lt;/esp:page&gt;
+</pre>
+
+<p>All XML documents must start with the XML declaration:</p>
+<pre class="cookbook">&lt;?xml version="1.0" encoding="utf-8?&gt;</pre>
+
+<p>The <code>encoding</code> attribute should match the encoding used to save the document; utf-8 is recommended in order that the characters display correctly.</p>
+
+<p>The root element is <code>&lt;esp:page&gt;</code>.  The <code>&lt;esp:name&gt;</code> element gives the short name of the page (used in the menu, for example). The <code>&lt;esp:title&gt;</code> element gives a longer description (used as the title of the page, and in the site map, for example).</p>
+
+<p>The root element of an XML document must declare the namespace prefixes used in that document. Therefore, ensure that the first element in your document includes the following attributes:</p>
+
+<pre class="cookbook">xmlns:esp="http://www.hps.cam.ac.uk/whipple/xmlsite/markup"
+xmlns="http://www.w3.org/1999/xhtml"</pre>
+
+<p>There then follows a skeleton HTML page.</p>
+
+<p>The <code>&lt;html&gt;</code> element can contain system elements (such as <a href="../espimages/#esp:image"><code>&lt;esp:image&gt;</code></a>) and a subset of valid XHTML elements (such as the paragraph, <code>&lt;p&gt;</code>). The system elements are processed in various ways, most of which cause XHTML elements to be added to the final page. XHTML elements may be processed or may be copied directly to the final page. Unrecognised elements of any kind (such as <code>&lt;a href=""&gt; or &lt;h2&gt;</code> or mistyped elements such as <code>&lt;esp:glsoarry&gt;</code>) will be stripped from the final page, but their content is retained and processed as normal.</p>
+
+<p>The recognised XHTML elements are:</p>
+<ul>
+<li><code>abbr</code>, <code>acronym</code>, <code>address</code></li>
+<li><code>b</code>, <code>blockquote</code>, <code>body</code>, <code>br</code></li>
+<li><code>code</code></li>
+<li><code>dd</code>, <code>dl</code>, <code>dt</code></li>
+<li><code>embed</code>, <code>em</code></li>
+<li><code>h2</code>, <code>h3</code>, <code>head</code>, <code>html</code></li>
+<li><code>i</code></li>
+<li><code>kbd</code></li>
+<li><code>li</code></li>
+<li><code>meta</code></li>
+<li><code>object</code>, <code>ol</code></li>
+<li><code>p</code>, <code>param</code></li>
+<li><code>q</code></li>
+<li><code>span</code>, <code>sub</code>, <code>sup</code></li>
+<li><code>table</code>, <code>td</code>, <code>th</code>, <code>tr</code></li>
+<li><code>ul</code></li>
+</ul>
+
+<p>For details of these elements, please consult an XHTML reference such as <a href="http://www.w3schools.com/xhtml/xhtml_ref_byfunc.asp">w3schools.com</a>. Always try to use a semantic tag (such as <code>&lt;emph&gt;</code> or <code>&lt;q&gt;</code>) in preference to a presentational tag (such as <code>&lt;b&gt;</code> or <code>&lt;i&gt;</code>), athough be aware that semantic tags do not display in the same way over all browsers (e.g., <code>&lt;emph&gt;</code> displays as italics in some browsers and bold in others). </p>
+
+<p>Note that the <code>&lt;meta&gt;</code> element may be used to add <a href="http://dublincore.org/">Dublin Core</a> metadata specific to each page. <code>DC.title</code> and <code>DC.identifier</code> are added automatically to each page where appropriate, and items common to all pages can be added within <code>&lt;esp:common-headers</code> in <code>parameters.xml</code>. However, there are many other useful page-specific metadata items, including <code>DC.date.issued</code>, <code>DC.date.modified</code>, <code>DC.description</code>, and so on, which may be placed within the head element on each page.</p>
+
+<p>For example, </p>
+
+<pre class="example">&lt;meta name="DC.date.modified" scheme="DCTERMS.W3CDTF" content="2005-02-03" /&gt;</pre>
+
+<h1>Next steps</h1>
+<p>You are now ready to create content for your ESP website.</p>
+<p>All system elements are described in detail on the pages on <a href="../espcontent/">Creating web content</a> and <a href="../espimages">Embedding images and other files</a>. They are also listed in alphabetical order on the <a href="../espelements">ESP Elements page</a>.</p>
+
+<p>See also:</p>
+<ul>
+<li><a href="../esp/">Overview of ESP</a></li>
+<!-- <li><a href="../espsetup/">How to set up your ESP site</a></li> -->
+<li><a href="../espcontent/">How to mark up textual content</a></li>
+<li><a href="../espimages/">How to embed images and other non-textual content</a></li>
+<li><a href="../espbuild/">How to check and rebuild your ESP website</a></li>
+<li><a href="../espelements/">Alphabetical list of ESP system elements</a></li>
+<li><a href="/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+ 
+<d:resources/>
+
+</d:doc>

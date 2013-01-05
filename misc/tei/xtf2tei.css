@@ -1,0 +1,109 @@
+@namespace t   "http://www.tei-c.org/ns/1.0";
+@namespace xml "http://www.w3.org/XML/1998/namespace";
+
+t|TEI				{ background-color: white; color: black; 
+		 	  	  padding-left: 3px; padding-bottom: 5px; }
+
+t|listNym		  	{ display: none; }
+
+t|title 			{ display: block; font-weight: bold; }
+t|title > t|note		{ font-weight: normal; }
+t|publicationStmt		{ display: none; }
+
+t|sourceDesc > t|bibl > t|name[type="file"]:before { content: " from "; }
+t|sourceDesc > t|bibl > t|name[type="file"]:after { content: ")"; }
+
+t|resp:before     	        { content: " ("; padding-left: 2em; }
+t|respStmt,t|sourceDesc		{ font-size: 90%; color: silver; }
+
+t|body				{ display: block; border-left: solid black 4px; }
+t|div[subtype="witnesses"]	{ display: block; border-left: solid red 4px; }
+t|div[subtype="colophon"]	{ display: block; border-left: solid green 4px; }
+t|div[subtype="sealings"]	{ display: block; border-left: solid blue 4px; }
+t|div[subtype="summary"]	{ display: block; border-left: solid purple 4px; }
+
+t|p				{ display: block; margin-left: .75in; }
+
+t|note[type="helplink"]		{ display: block; font-style: normal; 
+				  text-align: right; padding-right: 2em; }
+t|note				{ display: block; font-style: normal; }
+
+t|milestone,t|cb  		{ display: block; text-indent: -.7in; 
+				  font-style: normal; }
+
+t|lb		  		{ display: block; text-indent: -.7in; 
+		    		  padding-top: 5pt; margin-bottom: -1.5em; 
+				  font-style: normal; }
+
+t|milestone:before 		{ color: silver; content: attr(n); }
+
+t|cb:before			{ color: silver; content: "Column "; }
+t|cb:after        		{ color: silver; content: attr(n); }
+
+t|lb:before        		{ color: silver; content: attr(n); }
+
+t|lb:after	   		{ color: silver; content: ". "; }
+
+t|s[xml|lang="akk"]  		{ font-style: italic; }
+
+t|c[type="determinative"][subtype="semantic"] 	{ font-size: 80%; font-style: normal;
+				  vertical-align: super; }
+t|c[type="determinative"][subtype="phonetic"] 	{ font-size: 80%; font-style: italic;
+				  vertical-align: super; }
+t|c[subtype="logo"]	    	{ font-size: 90%; font-style: normal; }
+t|c[subtype="sign"]	   	{ font-size: 100%; font-style: normal; }
+t|c[type="num"]	   		{ font-size: 100%; font-style: normal; }
+
+t|corr[type="bang"]:after	{ content: "!"; 
+				  font-size: 80%; font-style: normal; 
+				  vertical-align: super; }
+t|sic:before	   	      	{ content: "("; }
+t|sic:after	     	      	{ content: ")"; }
+
+t|corr[cert="low"]:after	{ content: "?"; 
+				  font-size: 80%; font-style: normal; 
+				  vertical-align: super; }
+t|corr[cert="medium"]:after	{ content: "*?"; 
+				  font-size: 80%; font-style: normal; 
+				  vertical-align: super; }
+t|corr[cert="high"]:after	{ content: "*"; 
+				  font-size: 80%; font-style: normal; 
+				  vertical-align: super; }
+
+t|delSpan[type="excised"]:before   { content: "<<"; font-style: normal; }
+t|anchor[type="excised"]:after	   { content: ">>"; font-style: normal; }
+
+t|addSpan[type="implied"]:before   { content: "<("; font-style: normal; }
+t|anchor[type="implied"]:after	   { content: ")>"; font-style: normal; }
+
+t|addSpan[type="maybe"]:before     { content: "("; font-style: normal; }
+t|anchor[type="maybe"]:after	   { content: ")"; font-style: normal; }
+
+t|addSpan[type="supplied"]:before  { content: "<"; font-style: normal; }
+t|anchor[type="supplied"]:after	   { content: ">"; font-style: normal; }
+
+t|anchor[type="breakStart"]:before { content: "["; font-style: normal; }
+t|anchor[type="breakEnd"]:after	   { content: "]"; font-style: normal; }
+
+t|damageSpan:before	   	   { content: "⸢"; font-style: normal; }
+t|anchor[type="damage"]:after      { content: "⸣"; font-style: normal; }
+
+t|persName 			   { background-color: #eaeaea; }
+t|persName:before		   { content: "\2045"; font-style: normal; color: green; }
+t|persName:after		   { content: "\2046"; font-style: normal; color: green; }
+
+t|anchor[type="siblings"]:after	   { content: "\2693"; font-style: normal; }
+t|ptr[type="name-group"]:before    { content: "\22B3"; font-style: normal; }
+
+t|forename[type='patronymic'] 	   { color: purple; }
+t|forename[subtype='grandfather']  { color: orange; }
+t|forename[type='feminine']	   { color: fuchsia; }
+t|forename			   { color: blue; }
+
+t|addName[type='clan']		   { color: red; }
+t|addName[type='spouse']	   { color: navy; }
+
+t|nameLink			   { color: olive; }
+t|roleName			   { color: brown; }
+t|placeName			   { color: teal; }
+t|date				   { color: maroon; }

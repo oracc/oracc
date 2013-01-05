@@ -1,0 +1,19 @@
+* Setting Up the Hyper-Estraier Search Engine for Oracc
+
+This is not as smooth as it should be, but it's not too bad:
+
+  - install Hyper-Estraier from http://hyperestraier.sourceforge.net/
+    (this is also mentioned in oracc-install.txt)
+
+  - now do the base installation; this creates the index and marshalls
+    Hyper-Estraier configuration files
+
+  - to complete the process, copy estraier.cgi from the Hyper-Estraier
+    distribution to $ORACC/www/cgi-bin
+
+The documentation index should now be functional.
+
+The documentation index is updated automatically by 
+src/doc/install.sh which calls src/doc/00tools/estindex.sh. See
+that script for further details.
+

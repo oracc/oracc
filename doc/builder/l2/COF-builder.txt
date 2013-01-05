@@ -1,0 +1,128 @@
+L2 Fields
+*********
+
+Each element of a lemmatization is considered a field in L2, and the
+fields are given names and abbreviations as in L1.  The fields which
+may typically be given in an interlinear lemmatization are:
+
+ CF
+ GW
+ SENSE
+ POS
+ EPOS
+ NORM
+ M1	Morphology-1: the descriptive morpheme sequence
+ M2	Morphology-2: the interpretive morpheme sequence
+ BASE
+ CONT
+
+Different languages may use different subsets of these fields.  BASE
+and CONT, for example, are restricted to Sumerian.
+
+In addition, several additional fields are set by the context of the
+lemmatization: 
+
+ PROJ Project
+ LANG Language
+ FORM orthographic form (i.e., the word as it occurs in the text)
+
+
+L2 Signatures
+*************
+
+L2 is founded on the concept of the lemmatization *signature*.  At
+some level, all lemmatization specifications are signatures, so we
+distinguish (and name) several levels of signature with different
+make-ups (any character in the make-ups column which is not an
+uppercase letter or a digit is the literal puncuation that is required
+as part of the signature):
+
+ FORMSIG	FORM=NORM
+ LANGSIG	%LANG:FORM=NORM
+ CORESIG	CF[GW]POS
+ MORESIG	CF[GW//SENSE]POS'EPOS
+ FULLSIG	@PROJ%LANG:FORM=CF[GW//SENSE]POS'EPOS#M1##M2/BASE+CONT
+
+Two further kinds of signatures are the COFSIG and the PSUSIG, with
+the following syntax:
+
+ COFSIG FULLSIG&&FULLSIG ...
+ PSUSIG {MORESIG}:FULLSIG++FULLSIG ...
+
+In the PSUSIG, the MORESIG is the signature for the compound, while
+the list of FULLSIGs which follows gives the components.
+
+In each case, we call the first FULLSIG component the HEAD and the
+rest TAILs; each COF or PSU has one HEAD and one or more TAILs
+
+In the case of COFs, the TAIL FULLSIGs are created and managed by L2
+with the FORM removed, i.e., they contain an empty '%:' sequence.
+
+#
+# e -- don't include this for now as I am thinking it may be able
+#      to do the reordered PSUs by just giving multiple @parts 
+#      lines
+#
+# In the case of PSUs, some languages may reorder the components, and
+# this is supported by L2 signatures with the following syntax:
+#
+#  XXXXX
+
+Specifying COF and PSU components in Glossaries
+***********************************************
+
+L2 aims to make it as convenient as possible to specify the components
+of COFs and PSUs.  In general, try to give the minimum information
+possible for each component, and augment the information only if you
+discover that lemmatization uncovers ambiguities that need to be
+resolved.
+
+Components occur in two places: in the @form lines of entries, and in
+the @parts line of PSU entries.  The rules for the minimum amount of
+information a component must have are related but slightly different
+for the two cases.
+
+Terminology
+===========
+
+We use the terminology of L2 signatures with the addition of reduced
+versions of FORMSIG, LANGSIG.  Each of these is indicated by adding a
+minus-sign to the form name, and in both cases they differ from their
+non-reduced equivalents by the omission of the FORM field and its
+following punctuation, the equals-sign (=).  These reduced forms are
+allowed only in @form lines, because the FORM is already known from
+the first field of such lines.
+
+This yields the following patterns:
+
+ FORMSIG-	NORM
+ LANGSIG-	%LANG:NORM
+
+Components in @form
+===================
+
+The following signatures may be given as components of an @form, in
+increasing order of specificity:
+
+ FORMSIG-
+ LANGSIG-
+ CORESIG
+ MORESIG
+
+Components in @parts
+====================
+
+Components in parts have no FORM in their context, and thus may
+consist only of the following:
+
+ CORESIG
+ MORESIG
+
+Note, however, that CORESIG in PSU @parts components is a shorthand
+for a MORESIG in which GW=SENSE and POS=EPOS.  L2 requires that each
+component in a PSU @parts line must resolve to a MORESIG, i.e., a
+valid SENSE in an entry.  This means that some CORESIGs will draw
+complaints because the entry does not have a SENSE which corresponds
+exactly to the GW.  The remedy is to give an explicit MORESIG in such
+cases.
+

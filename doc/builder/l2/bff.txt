@@ -1,0 +1,106 @@
+The @bff Tag
+============
+
+The @bff is intended to support word byforms of various kinds.  The
+general mechanism allows the individual byforms to be treated under
+their own entries within the glossary and during lemmatization, but
+then be kept separate or grouped together when the glossaries are
+rendered.
+
+Syntax
+-----
+
+The @bff tag's syntax consists of two required and two optional
+arguments.  The required arguments are:
+
+ =CLASS
+
+	A single token which indicates which class of byform this is;
+	the names of the tokens are language-specific.
+
+ =OWNER 
+
+ 	A glossary link which must resolve to an @entry in the
+	glossary.  Note that the @bff linkage points only from the
+	byforms to the mainform; it is an error for a word named as an
+	OWNER in @bff tag to have its own @bff tags.  The link has the
+	same form as other glossary entry links: <CF [GW] POS>.  So,
+	to link to ki aŋ, love, the form would be: <ki aŋ [love] V/t>.
+
+
+The optional arguments are:
+
+ =LABEL
+
+	A human-readable label which may be rendered in the glossary
+	and is intended to convey information about the byform to
+	readers.  This may contain spaces and must be given in double
+	quotes.
+
+ =CODE
+
+	A machine-readable code which is stored in the XML version of
+	the glossary and is intended for use in machine-processing;
+	may not contain spaces.
+
+
+The required order of arguments is:
+
+ @bff CLASS CODE LABEL OWNER
+
+Sumerian Classes
+--------------
+
+ = SUPP
+
+	Suppletive byform: used for suppletive verbs
+
+ = COMP
+
+	Compound byform: used for collapsed compounds of the type
+	mu-un-si-sa2 for si ... sa2.  With this schema, there is an
+	entry @entry sisa [set straight] V/t, with @base si-sa₂ and
+	@form mu-un-si-sa₂ /si-sa₂ #mu.n:~.  The entry has @bff COMP
+	si sa [make straight] V/t
+
+ = GRAM
+
+	Grammatical byform: used primarily for frozen verbal forms
+	which exhibit variation in morphological markers.
+
+Sumerian Labels
+-------------
+
+Labels are not used for Sumerian; they are constructed from the CODE argument
+
+Sumerian Codes
+-------------
+
+Sumerian codes are used only for suppletive verbs.  They are
+constructed of quadruples giving the following information, in the
+following sequence:
+
+ = Aspect
+
+	P (perfective) or I (imperfective)
+
+ = Number
+
+	Sg (singular) or Pl (plural)
+
+ = Case
+
+	S (subject) or O (object)
+
+ = Animacy
+
+	H (human) or N (nonhuman)
+
+If the selection criterion is not relevant to the suppletion, an
+asterisk (*) is used.  Thus, typical suppletion codes include:
+
+   P-Sg-*-*
+
+   I-Pl-O-*
+
+   I-Pl-S-N

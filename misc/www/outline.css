@@ -1,0 +1,19 @@
+.outline {
+	list-style: none;
+}
+
+.outline ul {
+	list-style: none;
+}
+
+.outline li {
+	cursor: auto;
+}
+
+.olink {
+	border-style: none;
+	padding-right: 10px;
+}
+.oimg {
+	border-style: none;
+}

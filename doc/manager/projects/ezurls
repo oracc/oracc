@@ -1,0 +1,25 @@
+PROJ - display project home
+
+PROJ/Pxxxxxx - display text in pager frame
+
+PROJ/Pxxxxxx.html - display text without pager frame
+
+PROJ/Pxxxxxx,Pxxxxxx - display adhoc listing of texts
+
+Yes /d
+======
+
+PROJ/SUBPROJ - display subproject home
+
+PROJ/<list-name> - display list as given in lists/ directory
+
+PROJ/LANG - display project glossary home page for LANG
+
+PROJ/LANG/WORDS - display articles matching words (try '/cams/akk/adru' and
+                '/cams/akk/adru afraid')
+
+PROJ/WORDS - display results of searching catalogue for words (try
+                   `/ckst/middle_assyrian', which loads the list, and
+                `/ckst/middle assyrian', which loads the results of
+                the catalogue search--this can function to make listless
+                lists, if that makes any sense)

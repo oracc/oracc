@@ -1,0 +1,15 @@
+@import '/css/gdl.css';
+
+@namespace xtf "http://oracc.org/ns/xtf/1.0";
+@namespace xml "http://www.w3.org/XML/1998/namespace";
+@namespace xcl "http://oracc.org/ns/xcl/1.0";
+
+xtf|protocol 	{ display: none; }
+xtf|cmt		{ display: none; }
+
+xtf|nonl,xtf|note
+		{ display: block; }
+xtf|cell,xtf|field
+		{ display: inline; }
+
+xcl|xcl		{ display: none; }

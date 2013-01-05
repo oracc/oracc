@@ -1,0 +1,139 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use Getopt::Long;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use ORACC::NS;
+
+my $subtype = '';
+my $type = '';
+my $xmd = '';
+
+GetOptions(
+    'subtype:s'=>\$subtype,
+    'type:s'=>\$type,
+    'xmd:s'=>\$xmd,
+    );
+
+my $pqx = undef;
+
+$type = 'thumb'; # Force thumb to display first
+
+unless ($xmd && $type) {
+    $pqx = '(unknown P-number)';
+    error_return("Malformed request: no file name or type");
+}
+
+($pqx) = ($xmd =~ m,/([^/]+?)\.xmd$,);
+
+unless ($pqx) {
+    $pqx = '(unknown P-number)';
+    my $pxmd = $xmd;
+    $pxmd =~ s,^.*?/([^/]+)$,$1,;
+    error_return("Malformed request file name $pxmd.");
+}
+
+my $x = load_xml($xmd);
+
+unless ($x) {
+    my $pxmd = $xmd;
+    $pxmd =~ s,^.*?/([^/]+)$,$1,;
+    error_return("Unable to load XML file $pxmd.");
+}
+
+my %images = ();
+my @i = tags($x,$XMD,'images');
+if ($#i == 0 && $i[0]->getAttribute("public") eq 'yes') {
+    foreach my $c ($i[0]->childNodes()) {
+	next unless $c->isa('XML::LibXML::Element');
+	$images{$c->getAttribute("type").':'.$c->getAttribute("scale")} = $c;
+    }
+} else {
+    print $i[0]->toString(1);
+    error_return("No CDLI images found.");
+}
+
+#use Data::Dumper; warn Dumper \%images;
+
+my @wanted = ();
+if ($type eq 'thumb') {
+    @wanted = ('p:thumb', 'l:thumb');
+} elsif ($type eq 'image') {
+    @wanted = ('p:full', 'l:full');
+} elsif ($type eq 'photo') {
+    @wanted = ('p:full');
+} elsif ($type eq 'line') {
+    @wanted = ('l:full');
+} elsif ($type eq 'detail') {
+    @wanted = ('d:full');
+}
+
+#warn Dumper \@wanted;
+
+my $result = undef;
+foreach my $w (@wanted) {
+    if ($images{$w}) {
+#	warn "FOUND", Dumper $images{$w};
+	$result = $images{$w};
+	last;
+    }
+}
+
+if ($result) {
+    my $uri = "http://cdli.ucla.edu/dl/".$result->getAttribute('src');
+    my $full = $uri;
+    $full =~ s#/tn_#/#;
+
+    print <<EOH;
+Content-type: text/html; charset=utf-8
+
+<html>
+<head>
+<title>CDLI $pqx Image</title>
+<link rel="stylesheet" type="text/css" href="/css/image.css"/>
+</head>
+<body class="oracc-cdli-image">
+<div class="oracc-cdli-image">
+<h1>TERMS OF USE</h1>
+<p>This thumbnail and the full-size version which can be reached by clicking on it are distributed under the terms of the 
+<a href="http://cdli.ucla.edu/info/copyright.html">CDLI Copyright and Permissions statement.</a></p>
+<a href="$full"><img src="$uri" alt="CDLI $type of text $pqx"/></a>
+</div>
+</body>
+</html>
+EOH
+} else {
+    error_return("No matching CDLI images found.");
+}
+
+########################################################################################################
+
+sub
+error_return {
+    my $ptype = 'any';
+    if ($type eq 'thumb') {
+	$ptype = 'thumbnail';
+    } elsif ($type eq 'image') {
+	$ptype = 'any';
+    } elsif ($type eq 'photo') {
+	$ptype = 'photo';
+    } elsif ($type eq 'line') {
+	$ptype = 'lineart';
+    } elsif ($type eq 'detail') {
+	$ptype = 'details';
+    }
+    print <<EOH;
+Content-type: text/html; charset=utf-8
+
+<html>
+<head><title>Oracc Image Error</title></head>
+<body>
+<h2>Oracc Image Error for request $pqx $ptype</h2>
+<p>@_</p>
+</body>
+</html>
+EOH
+exit 1;
+}
+
+1;

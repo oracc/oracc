@@ -1,0 +1,249 @@
+#include <unistd.h>
+#include <ctype.h>
+#include <psd_base.h>
+#include <runexpat.h>
+#include <fname.h>
+#include <string.h>
+#include <hash.h>
+#include <pool.h>
+/*#include "xff.h"*/
+#include "xcl.h"
+#include "ngram.h"
+
+#include "hash.h"
+#include "pool.h"
+#include "ilem_form.h"
+#include "props.h"
+
+#define cc(x) ((char *)(x))
+
+#define xpool_copy(x) (char*)pool_copy((unsigned char*)x)
+
+#define uxpool_copy(x) (const unsigned char *)pool_copy((unsigned char *)(x))
+extern char *strdup(const char*);
+
+static const char *xl_role = "http://www.w3.org/1999/xlink|role";
+
+static char pqid[8];
+static char lid[32];
+static char parts_buf[1024];
+static char lrefs_buf[1024];
+static int in_ll = 0;
+static int in_psu = 0;
+static enum ll_types ll_type;
+const char *curr_xml_id = lid;
+static char wid[32];
+const char *curr_ref = wid;
+static int want_dict = 0;
+static int in_multi = 0;
+
+static Hash_table *lid2wid = NULL;
+static Hash_table *parts = NULL;
+
+const char *system_project = NULL;
+extern int lem_autolem;
+extern void lem_clear_cache(void);
+static struct xcl_context static_xc;
+
+static struct sysproj { const char *lang; const char *proj; } sysproj_tab[] = 
+  {
+    { "sux","epsd" } ,
+    { "akk","epad" } ,
+    { "qpn","epnd" } ,
+    {  NULL, NULL } ,
+  };
+
+static struct xcl_context *xcc;
+
+Hash_table *known_langs;
+Hash_table *curr_meta;
+char langbuf[16];
+static struct ilem_form *curr_form;
+const char *next_k = NULL;
+#define xpool_copy(x) (char*)pool_copy((unsigned char*)x)
+
+extern int lem_autolem;
+
+/* This routine is called just before lemmatization, so it is also
+   a good place to process anything that is getting added by users 
+   in the ATF, like EZ PSUs.
+ */
+void
+xcl_load_langs(struct xcl_context *xcp)
+{
+  static char lbuf[16], *lp;
+  const char *langsp;
+  struct Hash_table *needed_langs = hash_create(10);
+
+  if (!xcp->langs)
+    return;
+
+  for (langsp = xcp->langs; *langsp;)
+    {
+      while (isspace(*langsp))
+	++langsp;
+      if (*langsp)
+	{
+	  lp = lbuf;
+	  while (*langsp && !isspace(*langsp))
+	    *lp++ = *langsp++;
+	  *lp = '\0';
+	  if (!hash_find(known_langs,(unsigned char *)lbuf))
+	    {
+	      hash_add(known_langs,pool_copy((unsigned char *)lbuf),xcp);
+	      hash_add(needed_langs,pool_copy((unsigned char *)lbuf),xcp);
+	    }
+	}
+    }
+  hash_exec2(needed_langs,load_one_lang);
+  hash_free(needed_langs,NULL);
+}
+
+void
+xcl_init()
+{
+  known_langs = hash_create(32);
+}
+void
+xcl_term()
+{
+}
+static void
+xcl_sH(void *userData, const char *name, const char **atts)
+{
+  static struct ilem_form *curr_form = NULL;
+  const char *vbar = strchr(name,'|');
+
+  if (!strncmp("http://oracc.org/ns/xcl/1.0",name,vbar-name))
+    {
+      ++vbar;
+      if (vbar[0] == 'l')
+	{
+	  if (!vbar[1])
+	    {
+	      const char *xid = get_xml_id(atts);
+	    }
+	  else if (vbar[1] == 'l' && !vbar[2])
+	    {
+	      in_ll = 1;
+	    }
+	  else if (!strcmp(vbar,"linkset"))
+	    {
+	    }
+	  else if (!strcmp(vbar,"link"))
+	    {
+	    }
+	}
+      else if (!strcmp(vbar, "xcl"))
+	{
+	  
+	}
+      else if (!strcmp(vbar, "c"))
+	{
+	  const char *strtok = findAttr(atts, "type");
+	  struct xcl_tok_tab *ttp = xcltok(strtok,strlen(strtok));
+	  if (ttp && ttp->node_type == xcl_node_c)
+	    xcl_chunk(xcc, findAttr(atts, "xml:id"), ttp->subtype);
+	  else
+	    fprintf(stderr,"unknown xcl chunk token type '%s'\n",strtok);
+	}
+      else if (!strcmp(vbar, "d"))
+	{
+	  const char *strtok = findAttr(atts, "type");
+	  struct xcl_tok_tab *ttp = xcltok(strtok,strlen(strtok));
+	  if (ttp && ttp->node_type == xcl_node_d)
+	    xcl_discontinuity(xcc, findAttr(atts, "xml:id"), ttp->subtype);
+	  else
+	    fprintf(stderr,"unknown xcl discontinuity token type '%s'\n",strtok);
+	}
+      else if (!strcmp(vbar,"mds"))
+	curr_meta = xcl_create_meta(xcc,(const char*)pool_copy((unsigned char *)get_xml_id(atts)));
+      else if (!strcmp(vbar,"m"))
+	next_k = findAttr(atts,"k");
+      else if (!strcmp(vbar, "multi"))
+	{
+	  in_multi = 1;
+	}      
+      else if (!strcmp(vbar, "prop"))
+	{
+	  if (curr_form)
+	    {
+	      props_add_prop(curr_form,
+			     uxpool_copy(findAttr(atts,"group")),
+			     uxpool_copy(findAttr(atts,"name")),
+			     uxpool_copy(findAttr(atts,"value")),
+			     xpool_copy(findAttr(atts,"ref")),
+			     xpool_copy(findAttr(atts,"xml:id")),
+			     xpool_copy(findAttr(atts,"p")),
+			     atoi(findAttr(atts,"ngram")));
+	    }
+	  else
+	    {
+	      fprintf(stderr,"xff loader: invalid XML: found prop outside form\n");
+	      return;	  
+	    }
+	}
+    }
+}
+
+
+void
+xcl_eH(void *userData, const char *name)
+{
+#define XCL_LOCAL_NAME_OFFSET	25
+  if (!strncmp(name,"http://oracc.org/ns/xcl/1.0",strlen("http://oracc.org/ns/xcl/1.0")))
+    {
+      if (next_k && !strcmp(&name[XCL_LOCAL_NAME_OFFSET],"m"))
+	{
+	  hash_add(curr_meta,
+		   pool_copy((unsigned char *)next_k),
+		   pool_copy((unsigned char *)charData_retrieve()));
+	  next_k = NULL;
+	}
+      else if (!strcmp(&name[XCL_LOCAL_NAME_OFFSET],"c"))
+	xcl_chunk_end(xcc);
+      else if (!strcmp(&name[XCL_LOCAL_NAME_OFFSET],"l"))
+	{
+	  if (!in_ll)
+	    (void)xcl_lemma(xcc,
+			    (const char *)pool_copy((unsigned char *)curr_xml_id),
+			    (const char *)pool_copy((unsigned char *)curr_ref),
+			    curr_form,
+			    NULL,ll_type);
+	}
+      else if (!strcmp(&name[XCL_LOCAL_NAME_OFFSET],"ll"))
+	{
+	  ll_type = ll_none;
+	  in_ll = 0;
+	}
+    }
+  else
+    charData_discard();
+}
+
+struct xcl_context *
+xcl_load(const char *xcl_fn, int setup_formsets)
+{
+  const char *fname[2];
+  struct xcl_context *xcp = xcl_create();
+  /*  *xcp = global_context;*/
+  *xcp = static_xc;
+  xcc = xcp;
+  pool_init();
+  fname[0] = xcl_fn;
+  fname[1] = NULL;
+  if (!access(fname[0],R_OK))
+    runexpatNS(i_list, fname, xcl_sH, xcl_eH, ":");
+  else
+    fprintf(stderr,"xcl_load: can't open XCL input %s\n", fname[0]);
+  /*runexpat_term();*/
+
+  /* set up the xcl_context for use in lemmatization */
+  if (setup_formsets)
+    {
+      /*xcp->cache = xff_create_formset();*/
+      /* caller must call load_langs(xcp) to finish this process */
+    }
+
+  return xcp;
+}

@@ -1,0 +1,16 @@
+hr.score-block-sep { width: 80%; text-align: center; }
+
+.score_block span.lnum { display: inline; }
+
+.score_map td.lnum { width: 10%; }
+.score_map td.tlit { width: 65%; }
+.score_map td.enum { width: 20%; }
+
+.parallel { text-align: right; }
+
+.score_map table { margin-bottom: 5px; }
+
+.score_map tr:nth-child(even) .tlit, 
+  .score_map tr:nth-child(even) .enum { 
+      background-color: #f0f0f0; 
+}

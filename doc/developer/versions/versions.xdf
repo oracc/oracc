@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Versioning in Oracc</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes versioning as it
+applies to projects.</dc:description>
+</d:meta>
+
+<p>Versioning in Oracc projects is quite simple: the command
+<code>oracc version</code> creates a new subproject named with an
+uppercase <code>V</code> followed by three digits.  The first version
+is <code>V000</code>, and Oracc automatically uses the next available
+version number when create the version subproject.</p>
+
+<p>All of the existing content of the current project is saved to the
+new version of the project, which is rebuilt and then frozen.  Thus, a
+version of a project is a terminal snapshot which can be left online
+indefinitely to provide a fixed permanent reference point.</p>
+
+</d:doc>

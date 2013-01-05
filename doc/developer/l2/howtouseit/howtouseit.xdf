@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2: How To Use It</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document explains the steps required to use 
+L2, including the procedure for switching an existing project over to
+the new lemmatizer.</dc:description>
+</d:meta>
+
+<h1>Migration</h1>
+
+
+
+<d:resources/>
+
+</d:doc>

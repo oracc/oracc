@@ -1,0 +1,62 @@
+#! /bin/sh
+
+#================================================================
+# estmgtest
+# Test index merger function
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+progname="estmgtest"
+tmpfile="/tmp/$progname.$$"
+
+
+# check arguments
+if [ $# != 2 ]
+then
+  printf '%s: usage: %s db dir\n' "$progname" "$progname" 1>&2
+  exit 1
+fi
+db="$1"
+dir="$2"
+
+
+# function to remove temporary files
+cleanup(){
+  rm -f $tmpfile*
+  rm -rf $db-*
+}
+trap 1 2 3 4 6 11 13 15
+
+
+# register documents
+find "$dir" -type f -print | egrep -i '\.(est|html|htm)$' > $tmpfile
+split -l 1000 -a 3 $tmpfile $tmpfile-
+i=1
+ls -d $tmpfile-* |
+while read file
+do
+  name=`printf "%s-%03d" "$db" "$i"`
+  estcmd gather -il ja -sd -cs 5 -kn 32 -um "$name" "$file"
+  i=`expr $i + 1`
+done
+estcmd create -tr -xl -attr '@uri' seq -attr '@title' str \
+  -attr '@author' str -attr '@mdate' num -attr '@size' num "$db"
+ls -d $db-* |
+while read file
+do
+  estcmd merge -cl "$db" "$file"
+done
+
+
+# exit normally
+cleanup
+exit 0
+
+
+
+# END OF FILE

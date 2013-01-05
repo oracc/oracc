@@ -1,0 +1,304 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: multicol.tex,v 1.2 1996/05/27 16:19:09 s Exp sjt $
+
+% This module provides output routines that typeset material
+% in multiple columns
+
+\newif\ifnotopins
+\newif\iftracingmcol
+
+\newdimen\mc@lpagegoal
+\newcount\mc@added
+\newbox\mc@calcbox
+\newbox\mc@magicbox
+\newbox\hijackedinsert
+\newcount\mc@magicpenalty \mc@magicpenalty=10001
+\newdimen\mc@magicskip	  \mc@magicskip=33.123456pt
+\newdimen\mc@magicboxdp	  \mc@magicboxdp=0.123456pt
+\newdimen\mcolmagicthreshold \mcolmagicthreshold=20pt
+\newif\ifmc@nopageyet
+\newif\ifforcecolumnfillfalse
+\newdimen\goal@vsize
+
+\newif\ifmc@dumptopinserts
+
+\def\lengthencols#1{\advance\vsize#1 \advance\mc@lpagegoal#1 \advance\goal@vsize#1 \relax}
+
+\newdimen\mc@calcdimen
+\def\mc@calcsofar{%
+  \global\ppshrink=\pageshrink
+  \wlog{MC: mc@calcsofar: \textheight=\the\textheight; \vsize=\the\vsize}%
+  \wlog{MC: \pagetotal=\the\pagetotal; \pagestretch=\the\pagestretch; \pageshrink=\the\pageshrink; \ppshrink=\the\ppshrink}%
+  \mc@calcdimen\textheight
+  \advance\mc@calcdimen-\pagetotal
+  \advance\mc@calcdimen-\pageshrink
+%  \advance\mc@calcdimen-.5\pagestretch
+%  \advance\mc@calcdimen\pageshrink
+%  \dimen255\ht\footins \divide\dimen255by\numfnotec@ls
+%  \advance\mc@calcdimen-\dp\footins
+  \ifvoid\footins
+    \def\next{\dimen255=0pt}%
+  \else
+    \ifmc@lfnotes\def\next{\bic@push\get@footsize\bic@pop}%
+    \else\def\next{\dimen255\ht\footins
+       \advance\dimen255\dp\footins
+       \advance\dimen255\skip\footins}\fi
+  \fi
+  \next
+  \advance\mc@calcdimen-\dimen255
+  \dimen@\mc@calcdimen
+  \wlog{MC: mc@calcsofar: \dimen@=\the\dimen@}%
+}
+
+\newdimen\one@pt \one@pt=1pt
+% Round \goal@vsize down to the nearest multiple of \currleading.  This is only
+% useful in formats in which \baselineskip=\currleading and \parskip=0pt; 
+% in such formats it helps ensure that columns get filled as much as
+% possible across pagebreaks.
+\def\set@goal@vsize{%
+  \dimen255\goal@vsize 
+  \multiply\dimen255by10 \divide\dimen255by\currleading
+  \count255=\dimen255 \divide\count255\one@pt
+  \dimen255=\count255pt %coerce to integer
+
+  \wlog{MC: lines to get = \the\dimen255}%
+
+  % Now, if there is almost room for an extra line, i.e., if an extra
+  % line could be added without making the height of the column exceed
+  % columnfuzz, make the goal size a line longer
+  \multiply\dimen255by\currleading \divide\dimen255by10
+%  \dimen2\goal@vsize \advance\dimen2-\dimen255
+%  \advance\dimen2\columnfuzz
+%  \ifdim\dimen2>\baselineskip \advance\dimen255\baselineskip\fi
+  \goal@vsize\dimen255
+  % but don't let goal@vsize be bigger than \textheight
+  \ifdim\goal@vsize>\textheight 
+    \advance\goal@vsize-\baselineskip
+  \fi
+  \wlog{MC: \goal@vsize = \the\goal@vsize}}
+
+\def\mc@outputsofar{%
+  \global\mc@added0
+  \global\mc@nopageyettrue
+  \global\advance\mc@added1
+ }
+
+\def\mc@removeaddedstuff{%
+  \ifnum\mc@added>0 \def\next{\mc@@remove}\else
+    \def\next{\relax}\fi
+  \next}
+
+\def\mc@@remove{
+  \ifnum\lastpenalty=9999
+    \unpenalty \unskip \global\mc@added0
+  \fi}
+
+\def\@endmcol{%
+  \iffpleftover@ % ensure the last bit is output
+    \box\fpleftp@ge\allowbreak\nointerlineskip\box\fprightp@ge 
+  \fi
+  \output={\outputbalancecolumns}\eject%\supereject
+%  \outputbalancecolumns
+  \iffpleftover@\global\fpleftover@false\fi
+  \global\outputtingbalancedcolumnsfalse \output={\plainoutput}%
+  \global\vsize\textheight
+%  \dimen255\ht\footins \ifmc@lfnotes\divide\dimen255by\numfnotec@ls\fi
+%  \advance\vsize-\dp\footins
+  \ifvoid\footins
+    \def\next{\dimen255=0pt}%
+  \else
+    \ifmc@lfnotes\def\next{\bic@push\get@footsize\bic@pop}%
+    \else\def\next{\dimen255\ht\footins\advance\dimen255\dp\footins
+      \advance\vsize-\skip\footins}\fi
+  \fi
+  \next
+  \advance\vsize-\dimen255
+  \global\makevsizefulltrue 
+  \unvbox\partialpage
+  \ifvoid\savedboxincolsb@x\else
+    \box\savedboxincolsb@x\fi
+  \wlog{MC: putting \boxincolsb@x on main list with \ht \the\ht\boxincolsb@x\ and \dp \the\dp\boxincolsb@x}%
+  \box\boxincolsb@x
+  \nointerlineskip}
+
+\newdimen\saved@mincoltarget
+
+\def\mcolcolumnout{\message{mcolcolumnout}%
+%  \iffp@mc\showboxbreadth10000 \showbox255\fi
+  \boxcolumns\@numcols
+%  \ifforcecolumnfillfalse\else\message{forcing column fill}\columnfilltrue\fi
+  \columnfillfalse
+  \balancebox{255}%
+  \global\setbox255=\vbox{\unvbox\partialpage\box\boxincolsb@x}%
+  \global\vsize\textheight
+  \wlog{MC: shipping out with box255 \ht \the\ht\boxincolsb@x{} and \dp \the\dp\boxincolsb@x}%
+  \global\notopinstrue
+  \shipout\vbox{\makeheadline\pagebody\makefootline}\advancepageno % part of \plainoutput
+  \global\notopinsfalse
+  \resetoutputvariables
+  \goal@vsize\textheight
+  \set@goal@vsize
+  \global\vsize\goal@vsize
+  \global\multiply\vsize\@numcols
+  \global\advance\vsize\columnfuzz  % \showthe\vsize
+  \global\mc@lpagegoal\vsize
+  \flushpageinserts}
+
+\newif\ifoutputtingbalancedcolumns
+
+\def\outputbalancecolumns{%\message{outputbalancecolumns}%
+  \wlog{MC: outputbalancecolumns \ifoutputtingbalancedcolumns inner \fi}%
+  \ifoutputtingbalancedcolumns
+%    \vglue\currleading pt
+  \fi
+    \global\outputtingbalancedcolumnstrue \boxcolumns\@numcols
+    \columnfilltrue \iffpleftover@ \mincoltarget0pt \fi
+    \wlog{MC: box255 has \ht=\the\ht255,\dp=\the\dp255}%
+    \balancebox{255}
+  }
+
+\def\fpflush#1{%\message{fpflush}
+  \global\advance\fpflushn@m1
+  \vfuzz\vf@zz
+  \setbox#1=
+    \vbox\ifmc@ctive\else to\fppagegoal\fi{\unvbox#1\vfil\iffpspaceatend l\fi}
+  \box#1
+  \ifmc@ctive
+    \ifnum\fpflushn@m=\@numcols \message{fpeject}
+      \global\fpflushn@m0 \fp@mctrue \eject \fp@mcfalse
+    \fi
+  \else
+    \eject
+  \fi
+  \vfuzz\maxdimen\relax}
+
+\def\fpflushtwo#1#2{%
+  \vfuzz\vf@zz
+%  \showboxdepth10000 \showboxbreadth10000
+%  \showbox#1 \showbox#2
+  \setbox#1=\vbox{\unvbox#1\vfil\iffpspaceatend l\fi}%
+  \setbox#2=\vbox{\unvbox#2\vfil\iffpspaceatend l\fi}%
+%  \message{box1}\box#1\allowbreak\nointerlineskip\message{box2}\box#2\message{boxboth}
+  \box#1\allowbreak\nointerlineskip\box#2
+  \global\fp@mctrue \eject \fp@mcfalse
+  \vfuzz\maxdimen}
+
+\def\fpformat{
+  \ifmc@ctive
+    \fppagegoal=\mc@lpagegoal
+    \divide\fppagegoal\@numcols
+  \else
+    \fppagegoal\vsize
+    \advance\fppagegoal-\fp@lreadysize
+  \fi
+  \vf@zz = \vfuzz % store this and reset it
+  \vfuzz = \maxdimen % so we don't get overfull box messages
+  \splittopskip0pt
+  \loop
+    \setbox\fpleftb@@ = \vsplit\fpleftb@x to0pt
+    \setbox\fprightb@@ = \vsplit\fprightb@x to0pt
+    \setbox\fpleftb@@ = \vbox{\unvbox\fpleftb@@} % restore ht and dp to natural
+    \setbox\fprightb@@ = \vbox{\unvbox\fprightb@@} % levels
+%    \showbox\fpleftb@@ \showbox\fprightb@@
+    \dimen@ = \ht\fpleftb@@ % set dimen@ to max(ht(lft),ht(rgt))
+    \ifdim\dimen@ < \ht\fprightb@@ \dimen@\ht\fprightb@@\fi
+    \fpb@xsize\dimen@ \fpb@xht\dimen@
+    \dimen@ = \dp\fpleftb@@ % set dimen@ to max(dp(lft),dp(rgt))
+    \ifdim\dimen@ < \dp\fprightb@@ \dimen@\dp\fprightb@@\fi
+    \advance\fpb@xsize\dimen@ \fpb@xdp\dimen@
+    % reset ht and dp to respective max's
+    \dp\fpleftb@@=\fpb@xdp \ht\fpleftb@@=\fpb@xht
+    \dp\fprightb@@=\fpb@xdp \ht\fprightb@@=\fpb@xht
+    \dimen@\ht\fpleftp@ge \advance\dimen@\dp\fpleftp@ge
+    \dimen255\fpshrink \multiply\dimen255by\fpnumsof@r
+    \advance\dimen@-\dimen255
+    \advance\dimen@\fpb@xsize
+    \advance\dimen@\fpskip
+    % [put insert calculations here also (?---those for composite notes, I guess)]
+    \ifdim\dimen@ > \fppagegoal % if new stuff makes > page
+%      \showthe\dimen@
+%      \message{flushing}
+      \ifmc@ctive
+        \def\next{\fpflushtwo{\fpleftp@ge}{\fprightp@ge}}%
+      \else
+        \def\next{\fpflush{\fpleftp@ge}\fpflush{\fprightp@ge}}%
+      \fi
+      \next
+      \ifmc@ctive
+        \fppagegoal\textheight
+      \else\ifdim\fp@lreadysize>0pt
+             \advance\fppagegoal\fp@lreadysize
+	     \global\fp@lreadysize0pt
+             \fi
+      \fi
+      \fpnumsof@r0
+    \fi
+    \setbox\fpleftp@ge=\vbox{\unvbox\fpleftp@ge\box\fpleftb@@
+      \iffpspaceatend\else\vskip\fpskip\fi}
+    \setbox\fprightp@ge=\vbox{\unvbox\fprightp@ge\box\fprightb@@
+      \iffpspaceatend\else\vskip\fpskip\fi}
+    \advance\fpnumsof@r1
+  \ifdim\ht\fpleftb@x > 0pt \repeat
+  \ifvoid\fpleftp@ge
+    \ifvoid\fprightp@ge
+    \else
+      \global\fpleftover@true 
+      \message{Left side of facing page shorter than right side}
+      \global\setbox\fprightp@ge=\vbox{\unvbox\fprightp@ge\unskip}
+      \global\setbox\fpleftp@ge=\vbox to\ht\fprightp@ge{\vfil}
+      \dp\fpleftp@ge\dp\fprightp@ge
+    \fi
+  \else
+    \global\fpleftover@true 
+    \ifvoid\fprightp@ge
+      \message{Right side of facing page shorter than left side}
+      \global\setbox\fpleftp@ge=\vbox{\unvbox\fpleftp@ge\unskip}
+      \global\setbox\fprightp@ge=\vbox to\ht\fpleftp@ge{\vfil}
+      \dp\fprightp@ge\dp\fpleftp@ge
+    \else
+      \global\setbox\fpleftp@ge=\vbox{\unvbox\fpleftp@ge\unskip}
+      \global\setbox\fprightp@ge=\vbox{\unvbox\fprightp@ge\unskip}
+      \ifdim\ht\fpleftp@ge>\ht\fprightp@ge
+        \ht\fprightp@ge\ht\fpleftp@ge
+      \else
+        \ht\fpleftp@ge\ht\fprightp@ge
+      \fi
+      \ifdim\dp\fpleftp@ge>\dp\fprightp@ge
+        \dp\fprightp@ge\dp\fpleftp@ge
+      \else
+        \dp\fpleftp@ge\dp\fprightp@ge
+      \fi
+    \fi
+  \fi
+
+  \vfuzz\vf@zz}
+
+\def\fpoutput{
+	\message{called fpoutput}%
+	\vbox to\ht255{\unvbox255\vfill}\penalty0
+	\box\fprightp@ge\penalty\outputpenalty
+	\global\fpleftover@false
+	\global\output{\plainoutput}}
+
+\newbox\footsize@box
+\def\get@footsize{
+  \saved@mincoltarget\mincoltarget
+  \mincoltarget0pt
+  \saved@gutter\intercolgutter
+  \intercolgutter\fnoteintercolgutter
+  \saved@topskip\topskip
+  \topskip\foottopskip
+  \boxcolumns\numfnotec@ls
+  \columnfilltrue
+  \setbox\footsize@box=\vbox{\unvcopy\footins}
+  \balancebox\footsize@box
+  \intercolgutter\saved@gutter
+  \mincoltarget\saved@mincoltarget
+  \topskip\saved@topskip
+  \dimen255=\ht\boxincolsb@x \advance\dimen255by\dp\boxincolsb@x }
+%  \showthe\dimen255 \showthe\ht\footins \showthe\dp\footins }
+
+\endinput

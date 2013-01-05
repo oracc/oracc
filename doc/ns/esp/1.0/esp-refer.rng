@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/esp-refer/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="esp.rng">
+    <start>
+      <empty/>
+    </start>
+  </include>
+  <start combine="interleave">
+    <ref name="referents"/>
+  </start>
+  <define name="referents">
+    <element name="referents">
+      <oneOrMore>
+        <ref name="referent"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="referent">
+    <element name="referent">
+      <attribute name="id"/>
+      <ref name="Inline.model"/>
+    </element>
+  </define>
+</grammar>

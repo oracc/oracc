@@ -1,0 +1,365 @@
+\font\ExpandedRm="Ungkam Book Basic Expanded Regular" at 14pt
+\settypefieldbymargins{1in}{1in}{1in}{1in}
+\spaceskip 3.33333pt plus1.66666pt minus1.11111pt
+\hfuzz2.5pt \vfuzz4pt
+%\hyphenpenalty200
+\parindent5mm
+\tolerance1000
+\pretolerance=500
+
+\newtoks\titletoks
+
+\def\title#1{\global\titletoks{#1}}
+
+\baselineskip12pt \lineskip1pt \lineskiplimit1pt
+
+\newcount\figurecount \figurecount1
+
+\intercolgutter=.3in
+
+\bic@diff@fuzz0pt
+
+\noblackboxes
+
+\topskip0pt \splittopskip0pt
+
+\centrehdrinfo{\ten\rm \firstmark}
+\lefthdrinfo{\ifodd\pageno\else\ten\rm\folio\fi}
+\righthdrinfo{\ifodd\pageno\ten\rm\folio\fi}
+
+%\fnoterule{width3in}
+
+\def\X#1{\csname #1\endcsname}
+
+\def\chapterspacing{\penalty-2000\vskip36pt plus7pt minus6pt}
+\def\headingspacing{\penalty-1000\vskip20pt plus6pt minus4pt}
+
+% #1 is space to reserve; #2 is spacing to use if no eject
+\newdimen\calcedpagetotal \newdimen\calctmp \newif\ifdidMaybeEject
+\def\calcpagetotal{\calcedpagetotal\pagetotal
+%  \advance\calcedpagetotal\pagestretch
+  \ifdim\footnoteSize>0pt
+    \advance\calcedpagetotal\footnoteSize
+  \fi
+  \peek 
+  \ifdim\ht\popped<\vsize
+     \advance\calcedpagetotal\ht\popped
+     % if the insertion isn't going to fit, don't
+     % include it in the calculation
+     \dimen\calctmp=\vsize
+%     \advance\dimen\calctmp\pageshrink
+     \ifdim\calcedpagetotal>\dimen\calctmp
+       \wlog{\calcedpagetotal =\the\calcedpagetotal > \the\dimen\calctmp (\the\vsize+\the\pageshrink)}%
+       \wlog{removing \ht\popped=\the\ht\popped from calcedpagetotal}%
+       \advance\calcedpagetotal-\ht\popped\fi
+  \fi
+  \voidpop}
+
+\def\doMaybeEject{%
+  \global\didMaybeEjecttrue
+  \wlog{doMaybeEject: forcing eject}%
+  \vfil\eject
+}
+
+\def\xmaybeEject#1#2{#2\relax}
+\def\reallyMaybeEject#1#2{
+   \calcpagetotal
+   \wlog{computed \calcedpagetotal=\the\calcedpagetotal; \vsize=\the\vsize; \pageshrink=\the\pageshrink}%
+   \ifdim\calcedpagetotal<\vsize
+     \advance\calcedpagetotal#1pt\relax
+     \wlog{adjusted[1] \calcedpagetotal=\the\calcedpagetotal; \pageshrink=\the\pageshrink}%
+     \ifdim\calcedpagetotal > \vsize
+%       \showthe\footnoteSize
+       \advance\calcedpagetotal-\vsize
+       \advance\calcedpagetotal.5\pagestretch
+       \ifdim\calcedpagetotal < .5\pageshrink %\pageshrink % hack!
+         \doMaybeEject
+       \else
+         #2
+       \fi
+     \else
+       #2
+     \fi
+   \else
+     \ifdim\ht\popped>0pt
+       \doMaybeEject
+     \else
+       \advance\calcedpagetotal#1pt\relax
+       \wlog{adjusted[2] \calcedpagetotal=\the\calcedpagetotal; \pageshrink=\the\pageshrink}%
+       \advance\calcedpagetotal-\vsize
+       \ifdim\calcedpagetotal > .5\pageshrink % hack!
+         \doMaybeEject
+       \else
+         #2
+       \fi
+     \fi
+   \fi
+   }
+
+\def\maybeEject#1#2{%#2\wlog{not doing maybeEject}}
+   \ifdidMaybeEject
+     #2
+   \else
+     \reallyMaybeEject{#1}{#2}%
+   \fi
+}
+
+\def\chapter#1\par{\wlog{#1}%
+    \maybeEject{80}\chapterspacing
+    \mark{\the\titletoks}%
+    \centerline{\twentyfive #1}%
+    \nobreak\vskip 15pt plus5pt minus5pt\relax}
+
+\def\heading#1\par{\wlog{#1}%
+    \maybeEject{70}\headingspacing
+    \centerline{\ExpandedRm #1}%
+    \nointerlineskip
+    \nobreak\vskip 15pt plus0pt minus2pt\relax
+    \nobreak
+}
+
+\def\introduction{\leftskip1in \rightskip\leftskip}
+\def\introductionFirstPar{\noindent}
+\def\introductionPar{\indent}
+
+\def\introductionb{\parskip\baselineskip}
+\def\introductionbFirstPar{\noindent}
+\def\introductionbPar{\noindent}
+
+\newdimen\catwidth \newdimen\catleftskip
+\def\catalogue{\begingroup\parindent0pt\relax\nine\rm
+               \frenchspacing \baselineskip10pt \lineskip0pt\relax}
+\def\endcatalogue{\endgraf
+   \baselineskip0pt \nobreak\kern3pt\relax
+   \catrule\endgroup}
+\let\catalog\catalogue
+\let\endcatalog\endcatalogue
+\def\catrule{\hbox{\kern\catleftskip
+        \vrule width\catwidth height0.375pt depth0pt\hfill}}
+\def\catbodyformat#1{\catwidth=#1\relax 
+        \dimen0\fullhsize \advance\dimen0-\catwidth
+        \divide\dimen0by2\relax
+        \catleftskip\dimen0\relax
+        \leftskip\catleftskip\relax
+        \nointerlineskip\catrule\nobreak}
+\def\catheaderskip{\nobreak\vglue3pt\catrule\nobreak\kern4pt\nobreak\nointerlineskip}
+\def\Catstrut{\vrule width0pt height8pt depth2pt}
+\def\CatHeader{\parindent0pt\relax}
+\def\CatBody{\nointerlineskip\noindent\leftskip0pt \parindent0pt \rightskip .1in plus1fil\relax}
+
+\newbox\CatBox
+\def\CatVbox{\setbox\CatBox=\vbox\bgroup\aftergroup\CatFinishVbox\let\next=}
+\def\CatFinishVbox{%
+  \moveright\catleftskip\box\CatBox}
+
+\def\CatRestore{\leftskip\catleftskip\relax}
+\def\CatOffset{}
+
+\def\discussion{%
+  \def\currleading{116}\baselineskip11.6pt \lineskiplimit0pt \lineskip0pt \linepenalty1\relax
+%  \columnfuzz23.2pt
+  \parskip0pt \@beginmcol2\relax \clubpenalty0 \widowpenalty0 \nobreak \relax}
+\def\discussionFirstPar{\noindent}
+\def\discussionPar{\indent}
+\def\enddiscussion{\@endmcol}
+
+\def\bibliographySingleton{\def\currleading{93}%
+  \vtop\bgroup\hsize3.1in
+        \eight\rm\baselineskip9.3pt \lineskip0pt \lineskiplimit0pt \relax
+}
+\def\endbibliographySingleton{\egroup}
+
+\def\bibliography{\def\currleading{93}%
+%  \columnfuzz18.6pt
+  \@beginmcol2 % \parskip1pt 
+  \clubpenalty99 \widowpenalty99 \frenchspacing
+  \eight\rm\baselineskip9.3pt \lineskip0pt \lineskiplimit0pt \relax
+}
+\def\endbibliography{\@endmcol}
+
+\def\bibliographyFirstPar{\noindent}
+\def\bibliographyPar{\indent}
+
+\newdimen\bibTabstop \bibTabstop=.4in
+
+\def\bibPar{\noindent\leftskip0pt \hangindent\bibTabstop \rightskip0pt plus1fil
+            \relax}
+\def\bibEnd{\endgraf\allowbreak}
+
+\def\bibyear#1{\hboxtomin\bibTabstop{#1}}
+\def\bibyearB{\bgroup\let\newline\relax\let\quad\relax\biby@arB}
+\def\biby@arB#1{\hboxtomin\bibTabstop{#1}\egroup\kern1em\relax}
+\def\bibinfo#1{#1}
+
+\def\edition{\ten\rm}
+\def\editionFirstPar{}
+\def\editionPar{}
+
+\def\logosize{\nine\rm}
+
+\input xtf
+\input gdl
+\input facinglines
+
+\def\footnoterule{\nobreak\vskip0pt plus1fill
+  \vbox{}\kern3\p@
+  \hrule width6.5in height.4pt depth0pt
+  \kern 2.6\p@ % the \hrule is .4pt high
+  \vbox{}\vskip\fnotebelowruleskip\relax}
+
+%\fnotebelowruleskip-5pt
+
+\newif\ifhfnoterule
+\def\fnotesize{\eight\rm}
+
+% For RINAP style the total escapement to the
+% left margin of the translation column must be
+% 3.3in, and the translation column must therefore
+% be 3.2in
+\FLsetcolumns{.3in}{.1in}{2.7in}{.3in}{3.1in}
+
+\newbox\f@@tins \newdimen\footnoteSize
+
+\def\notespacing{\baselineskip9pt \lineskip0pt \lineskiplimit0pt\relax}
+\let\footbeginstrut\relax
+\let\footendstrut\relax
+\def\notelabel#1{{\bf #1} }
+\def\rinapnote{\unskip\bgroup\innotetrue\footnotehook
+    \def\logosize{\seven}\f@otnote{}}
+\def\f@otnote#1{\let\@sf\empty % parameter #2 (the text) is read later
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  #1\@sf\vfootnote{#1}}
+\def\vfootnote#1{\setbox\f@@tins=\vbox\bgroup
+  \everypar{}% in case a note is in an enumerate
+  \def\|{}\interlinepenalty\interfootnotelinepenalty
+  \topskip\foottopskip
+  \splittopskip\foottopskip
+  \splitmaxdepth\dp\strutbox \floatingpenalty\@MM
+  \leftskip\z@skip \rightskip\z@skip \spaceskip\z@skip \xspaceskip\z@skip
+  \fnotesize\notespacing
+  \parindent\fnoteparindent \parskip\fnoteparskip
+  \footbeginstrut
+  \footnotehook\futurelet\next\fo@t}
+\def\fo@t{\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
+\def\f@@t{\bgroup\aftergroup\@foot\let\next}
+\def\f@t#1{#1\@foot}
+\def\@foot{\footendstrut\parfillskip0pt plus1fill\par
+  \penalty\interfootpenalty\vskip\interfootskip\egroup
+  \global\advance\footnoteSize\ht\f@@tins
+  \message{\footnoteSize=\the\footnoteSize}
+  \insert\footins{\unvbox\f@@tins}\egroup}
+
+\newskip\figureskip \figureskip=0pt \relax
+\def\figure#1#2#3{\kern\baselineskip % compensate for XeTeX image handling
+                  \parindent0pt \vskip\figureskip\relax
+                  \setbox0=\vbox{#3}\message{fig \the\figurecount: \ht=\the\ht0 \dp=\the\dp0}%
+                  \hbox to\fullhsize{\hss\box0\hss}%
+                  \vskip10pt
+                  \noindent Figure \the\figurecount. #2\endgraf
+                  \vskip10pt\vfill
+                  \global\advance\figurecount1\relax}
+
+\hyphenation{musuk-kannu Senn-ach-erib la-men-ta-tion}
+
+\ten\rm
+
+\makeactive{*}\gdef*{\ifflags\setbox2=\hbox{\asterisk}\lower1.5pt\box2\else\asterisk\fi}
+
+\catcode` =13 \def {\penalty10000\ }
+
+\def\setpageno#1{\pageno#1\relax}
+\setpageno{9}
+
+\let\real@endinsert\endinsert
+\def\endinsert{%
+        \wlog{endinsert1: \pagetotal=\the\pagetotal}%
+        \real@endinsert
+%        \pagesofar
+        \wlog{endinsert2: \pagetotal=\the\pagetotal}%
+        \allowbreak}
+
+%\setbox0=\hbox{\eight\rm A} \showthe\ht0 \showthe\dp0
+
+%%%% \topinsert
+
+\newdimen\sofardimen
+\def\calcsofar{%
+  \wlog{CSF: \textheight=\the\textheight; \vsize=\the\vsize}%
+  \wlog{CSF: \pagetotal=\the\pagetotal; \pagestretch=\the\pagestretch; \pageshrink=\the\pageshrink}%
+  \sofardimen\textheight
+  \advance\sofardimen-\pagetotal
+%  \advance\sofardimen-.5\pagestretch
+%  \advance\sofardimen\pageshrink
+%  \dimen255\ht\footins \divide\dimen255by\numfnotec@ls
+%  \advance\sofardimen-\dp\footins
+  \ifvoid\footins
+    \def\next{\dimen255=0pt}%
+  \else
+    \ifmc@lfnotes\def\next{\bic@push\get@footsize\bic@pop}%
+    \else\def\next{\dimen255\ht\footins
+       \advance\dimen255\dp\footins
+       \advance\dimen255\skip\footins}\fi
+  \fi
+  \next
+  \advance\sofardimen-\dimen255
+  \wlog{CSF: \sofardimen=\the\sofardimen}%
+}
+
+\def\flushpageinserts{%
+%  \message{flushpageinserts}%
+  \ifdim\ht\hijackedinsert>0pt
+     \shipout\vbox{\makeheadline\vbox to\vsize{\unvbox\hijackedinsert\vfil}\makefootline}\fi}
+
+\input newmcol
+
+\input pagecont
+
+\newbox\sofarb@x \newtoks\sofart@ks
+\def\pagesofar{%
+   \sofart@ks={\the\output}%
+   \output={\setbox\sofarb@x=\vbox{\unvcopy255}\box255}\eject
+   \output={\the\sofart@ks}%
+}
+
+\newcount\lastinsertcount \newdimen\lastinsertht \newbox\tmpstackbox
+
+\def\endinsert{\egroup % finish the \vbox
+  \if@mid\if@reallymid\else
+    \dimen@\ht\z@ \advance\dimen@\dp\z@ \advance\dimen@12\p@
+    \advance\dimen@\pagetotal \advance\dimen@-\pageshrink
+    \ifdim\dimen@>\pagegoal\@midfalse\p@gefalse\fi\fi\fi
+  \if@mid %\bigskip
+	  \box\z@
+	  \penalty-200
+	  %\bigbreak \message{mid true}
+  \else%\message{mid false}%
+    \global\lastinsertht=\ht\z@
+    \insert\topins{\penalty100 % floating insertion
+    \splittopskip\z@skip
+    \splitmaxdepth\maxdimen \floatingpenalty\z@
+    \ifp@ge \dimen@\dp\z@ \global\lastinsertht=\vsize
+    \vbox to\vsize{\unvbox\z@\kern-\dimen@}% depth is zero
+    \else \box\z@\nobreak
+%\bigskip
+\fi}%
+ \lastinsertcount=\figurecount \advance\lastinsertcount-1
+ \setbox\tmpstackbox=\vbox to\lastinsertht{\vfil}\push{\box\tmpstackbox}%
+ \wlog{endinsert: cueing insert \the\lastinsertcount\ with ht=\the\lastinsertht}\fi\endgroup
+}
+
+\newbox\stack \newbox\popped
+\def\push#1{\global\setbox\stack=\vbox{#1\unvbox\stack}}
+\def\pop{\global\setbox\stack=\vbox{\unvbox\stack
+         \global\setbox\popped=\lastbox}}
+\def\peek{\global\setbox\stack=\vbox{\unvbox\stack
+          \global\setbox\popped=\lastbox\copy\popped}}
+\def\voidpop{\global\setbox\popped=\box\voidb@x}
+
+\showboxbreadth10000 \showboxdepth10000 \tracingoutput1
+
+%\makeother{#} \makeother{&}
+
+\catcode"EFFF=\active \def{\&}%
+
+\endinput

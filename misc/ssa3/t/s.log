@@ -1,0 +1,302 @@
+$VAR1 = {
+          'label' => 'S-MAT',
+          'children' => [
+                          {
+                            'label' => 'NP-ABS',
+                            'children' => [
+                                            {
+                                              'wid' => 'X121212.1.1',
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'pos' => 'nin[lady]N',
+                                                           'root' => [
+                                                                       -1,
+                                                                       'nin',
+                                                                       'nin'
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ]
+                                                         },
+                                              'form' => 'nin[lady]',
+                                              'children' => [],
+                                              'orth' => 'nin',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'type' => 'leaf',
+                                              'pos' => 'N'
+                                            },
+                                            {
+                                              'label' => 'RRC',
+                                              'children' => [
+                                                              {
+                                                                'label' => 'NP-LOC',
+                                                                'children' => [
+                                                                                {
+                                                                                  'label' => 'NP-CONJ',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.1.2',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'pos' => 'an[sky]N',
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             'an',
+                                                                                                                             'an'
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => 'an[sky]',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => 'an',
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'N'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => '*',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => '',
+                                                                                                    'ro' => 0,
+                                                                                                    'userdata' => '',
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'CONJ'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.1.3',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'a'
+                                                                                                                            ]
+                                                                                                                          ],
+                                                                                                                 'pos' => 'ki[place]N',
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             'ki',
+                                                                                                                             'ki'
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => 'ki[place]',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => 'ki',
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'N'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'wid' => 'X121212.1.3',
+                                                                                  'dsu' => undef,
+                                                                                  'form' => 'a',
+                                                                                  'children' => [],
+                                                                                  'orth' => 'ki',
+                                                                                  'ro' => undef,
+                                                                                  'userdata' => 1,
+                                                                                  'type' => 'leaf',
+                                                                                  'pos' => 'LOC'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'phrase'
+                                                              },
+                                                              {
+                                                                'label' => 'NP-ABS',
+                                                                'children' => [
+                                                                                {
+                                                                                  'wid' => 'X121212.1.4',
+                                                                                  'dsu' => undef,
+                                                                                  'parse' => {
+                                                                                               'isf' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'vpr' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'nsf' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'pos' => 'nam[fate]N',
+                                                                                               'root' => [
+                                                                                                           -1,
+                                                                                                           'nam',
+                                                                                                           'nam'
+                                                                                                         ],
+                                                                                               'vsf' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ]
+                                                                                             },
+                                                                                  'form' => 'nam[fate]',
+                                                                                  'children' => [],
+                                                                                  'orth' => 'nam',
+                                                                                  'ro' => 1,
+                                                                                  'userdata' => '',
+                                                                                  'type' => 'leaf',
+                                                                                  'pos' => 'N'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'phrase'
+                                                              },
+                                                              {
+                                                                'label' => 'VC-N',
+                                                                'children' => [
+                                                                                {
+                                                                                  'wid' => 'X121212.1.5',
+                                                                                  'dsu' => undef,
+                                                                                  'parse' => {
+                                                                                               'isf' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'vpr' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'nsf' => [
+                                                                                                          10000,
+                                                                                                          []
+                                                                                                        ],
+                                                                                               'pos' => 'tar[cut]V/t',
+                                                                                               'root' => [
+                                                                                                           -1,
+                                                                                                           'tar',
+                                                                                                           'tar'
+                                                                                                         ],
+                                                                                               'vsf' => [
+                                                                                                          10000,
+                                                                                                          [
+                                                                                                            undef,
+                                                                                                            'e',
+                                                                                                            'de'
+                                                                                                          ]
+                                                                                                        ]
+                                                                                             },
+                                                                                  'form' => 'tar[cut]',
+                                                                                  'children' => [],
+                                                                                  'orth' => 'tar',
+                                                                                  'ro' => 1,
+                                                                                  'userdata' => 'CVV',
+                                                                                  'type' => 'leaf',
+                                                                                  'pos' => 'V'
+                                                                                },
+                                                                                {
+                                                                                  'wid' => 'X121212.1.5',
+                                                                                  'dsu' => undef,
+                                                                                  'form' => 'e',
+                                                                                  'children' => [],
+                                                                                  'orth' => 'tar',
+                                                                                  'ro' => 1,
+                                                                                  'userdata' => '',
+                                                                                  'type' => 'leaf',
+                                                                                  'pos' => 'E'
+                                                                                },
+                                                                                {
+                                                                                  'wid' => 'X121212.1.5',
+                                                                                  'dsu' => undef,
+                                                                                  'form' => 'de',
+                                                                                  'children' => [],
+                                                                                  'orth' => 'tar',
+                                                                                  'ro' => 1,
+                                                                                  'userdata' => '',
+                                                                                  'type' => 'leaf',
+                                                                                  'pos' => 'DE'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'phrase'
+                                                              }
+                                                            ],
+                                              'type' => 'clause'
+                                            }
+                                          ],
+                            'type' => 'phrase'
+                          },
+                          {
+                            'label' => 'NP-ERG',
+                            'children' => [
+                                            {
+                                              'wid' => 'X121212.1.6',
+                                              'dsu' => undef,
+                                              'form' => 'Ninlil[1]',
+                                              'children' => [],
+                                              'orth' => "{d}nin-lil\x{2082}",
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'type' => 'leaf',
+                                              'pos' => 'DN'
+                                            },
+                                            {
+                                              'wid' => 'X121212.1.6',
+                                              'dsu' => undef,
+                                              'form' => 'e',
+                                              'children' => [],
+                                              'orth' => "{d}nin-lil\x{2082}",
+                                              'ro' => undef,
+                                              'userdata' => 1,
+                                              'type' => 'leaf',
+                                              'pos' => 'ERG'
+                                            }
+                                          ],
+                            'type' => 'phrase'
+                          }
+                        ],
+          'type' => 'clause'
+        };

@@ -1,0 +1,20 @@
+&X121212 = T1
+#project: epsd
+
+1.	gu3-de2-a
+#lem: Gudea[1]RN
+
+2.	ensi2
+#lem: ensik[ruler]
+
+3.	lagasz{ki}
+#lem: Lagaš[1]SN+.*ak.*eE
+
+4.	lu2 e2-ninnu
+#lem: lu[person]; Eninnu[1]TN
+
+5.	{d}nin-jir2-su-ka
+#lem: Ninŋirsuk[1]DN
+
+6.	in-du3-a
+#lem: !du[build]+.*am +.

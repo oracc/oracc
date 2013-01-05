@@ -1,0 +1,17 @@
+Proxies
+=======
+
+*) Proxies are implemented by giving a list of P-numbers in lib/proxies.lst.
+
+   ISSUE: syntax needs to be extended to allow prefixing P-numbers with a project
+
+*) Proxies are borrowed from other projects at the ATF level; this ensures 
+   single-sourcing but otherwise keeps the upstream processing simple because all
+   of the proxied texts subsequently appear like any other text in the project's
+   texts tree.
+
+*) Before any other processing, the proxy manager harvests the necessary ATFs based
+   on lib/proxies.lst and places them in results/proxies.atf.
+
+*) Proxies are then included in glossaries by being processed along
+   with the rest of the project ATFs.

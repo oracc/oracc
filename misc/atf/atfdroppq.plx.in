@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use warnings; use strict;
+
+my %warnlist = ();
+
+if ($ARGV[0] eq '-warn') {
+    shift @ARGV;
+    open(W,shift @ARGV) || die;
+    my @w = (<W>);
+    chomp @w;
+    @warnlist{@w} = ();
+    close(W);
+}
+
+undef $/;
+open(VEC,'@@ORACC@@/lib/data/catpnums.vec') || die;
+binmode VEC, ':raw';
+my $vec = <VEC>;
+close(VEC);
+$/ = "\n";
+
+while (<>) {
+    print and next unless s/^P//;
+    chomp;
+    if (vec($vec,$_,1)) {
+	print "P$_\n";
+    } else {
+	if (exists $warnlist{"P$_"}) {
+	    warn "P$_ referenced in ATF but is not in catalogue\n";
+	} else {
+	    warn "dropping P$_\n";
+	}
+    }
+}
+
+1;

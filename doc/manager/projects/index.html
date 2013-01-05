@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Oracc Projects</title>
+<link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+<script src="/js/oraccdoc.js" type="text/javascript"> </script>
+<base href="http://oracc.museum.upenn.edu/doc/manager/projects/"/></head>
+<body onload="onresize=setTOCoffset; setTOCoffset()">
+<div class="withtoc">
+<div class="speedbar" id="speedbar">
+<p class="toc h1">
+<a href="/index.html">ORACC Home</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#top">Introduction</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#What_is_a_Project?">What is a Project?</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Fundamentals">Fundamentals</a>
+</p>
+<p class="toc h2">
+<a href="#Catalogue">Catalogue</a>
+</p>
+<p class="toc h2">
+<a href="#Corpus">Corpus</a>
+</p>
+<p class="toc h2">
+<a href="#Glossaries">Glossaries</a>
+</p>
+<p class="toc h2">
+<a href="#Pager">Pager</a>
+</p>
+<p class="toc h2">
+<a href="#Website">Website</a>
+</p>
+<p class="toc h2">
+<a href="#Static_HTML">Static HTML</a>
+</p>
+<p class="toc h2">
+<a href="#Text_Lists">Text Lists</a>
+</p>
+<p class="toc h3">
+<a href="#List_Files">List Files</a>
+</p>
+<p class="toc h3">
+<a href="#URLs">URLs</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Structure">Structure</a>
+</p>
+<p class="toc h2">
+<a href="#Users">Users</a>
+</p>
+<p class="toc h2">
+<a href="#Subprojects">Subprojects</a>
+</p>
+<p class="toc h2">
+<a href="#Folders">Folders</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Management">Management</a>
+</p>
+<p class="toc h2">
+<a href="#Interfaces">Interfaces</a>
+</p>
+<p class="toc h2">
+<a href="#cdlproject">cdlproject</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Procedures">Procedures</a>
+</p>
+<p class="toc h2">
+<a href="#Catalogue">Catalogue</a>
+</p>
+<p class="toc h2">
+<a href="#Corpus">Corpus</a>
+</p>
+<p class="toc h2">
+<a href="#Glossaries">Glossaries</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#More_Documents">More Documents</a>
+</p>
+<p class="toc h2">
+<a href="#Projects_and_Emacs">
+<a href="projemacs">Projects and Emacs</a>
+</a>
+</p>
+<p class="toc h2">
+<a href="#Project_Catalogs">
+<a href="projcats">Project Catalogs</a>
+</a>
+</p>
+<p class="toc h2">
+<a href="#Project_Configuration">
+<a href="projconfig">Project Configuration</a>
+</a>
+</p>
+<p class="toc h2">
+<a href="#Project_URLs">
+<a href="projurls">Project URLs</a>
+</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Resources">Resources</a>
+</p>
+</div>
+<div class="body">
+
+<h1 class="title">Oracc Projects</h1><h2 class="author">Steve Tinney<br/>Version of 2010-04-04
+</h2><h1><a name="intro">Introduction</a></h1><p>The basic unit in the Oracc system is the project.
+  This document gives a basic introduction to how projects are
+  organized and how to create and work with them.</p>
+
+
+<h1><a name="What_is_a_Project?">What is a Project?</a></h1>
+
+<p>From the user's perspective a project is a collection of texts
+which have glossaries and possibly some pages of explanation.  From
+the system perspective, there are actually two kinds of projects: main
+projects (which we call simply `projects') and subprojects.
+Subprojects are a way of dividing up projects for various reasons.
+Within the system, subprojects are all gathered together within one
+folder, or directory, which belongs to the parent project.  The folder
+is named `projects'.  The full way of referring to the
+<code>sargon</code> subproject which is part of the <code>saa</code>
+project is: <code>saa/projects/sargon</code>.</p>
+
+<p>In most contexts, you can leave out the <code>projects/</code> and
+refer to subprojects by a shorthand form.  The short form of
+<code>saa/projects/sargon</code> is <code>saa/sargon</code>.</p>
+
+<h1><a name="Fundamentals">Fundamentals</a></h1>
+
+<p>Before we begin, it is useful to explain the fundamentals which are
+available to all projects.</p>
+
+<h2><a name="Catalogue">Catalogue</a></h2>
+
+<p>While it may not be obvious, the most fundamental part of any
+project is the catalogue which provides the text metadata--at the very
+least the CDLI ID and a human-readable designation--which provides the
+organizational basis for all other components of the project.</p>
+
+<p>The easiest way to provide a catalogue for a corpus is to derive
+the project dynamically from the CDLI catalogue.  However, some
+projects have special needs and in those cases it is possible to
+tailor the catalogue processing software to the required metadata
+fields and values.</p>
+
+<h2><a name="Corpus">Corpus</a></h2>
+
+<p>Most projects relate in some way to a text corpus.  The texts are
+entered or converted to the ATF format and may have translations.  The
+project management software takes care of turning the ATF sources into
+the various formats used for web display and other purposes.</p>
+
+<h2><a name="Glossaries">Glossaries</a></h2>
+
+<p>The ATF format supports lemmatization, which is the process of
+adding references to dictionary headwords into the texts.  If a corpus
+is lemmatized, it can be used to generate glossaries directly from the
+texts with no glossary-editing at all.  Normally, however, the
+glossary and text corpus are used together: the glossary is maintained
+and may be edited or augmented with bibliography, and the corpus is
+synchronized with the glossary so that all of the instances of terms
+are instantly reachable from the glossary articles.</p>
+
+<h2><a name="Pager">Pager</a></h2>
+
+<p>The pager is the name given to the web-interface which enables
+users to interact with the corpus.  The pager understands how to
+present long lists of results in pages, and also how to assemble
+metadata, texts and translations into pages displaying individual
+texts.</p>
+
+<p>The link to the pager display of the corpus for the project `cams' is:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/cams/corpus
+</pre>
+
+<h2><a name="Website">Website</a></h2>
+
+<p>A project may use the pager directly as the user interface, or it
+may have additional pages some of which contain links to the
+pager. The website may be on the same server as the project data, or
+it may be located elsewhere.</p>
+
+<p><strong>ANY FILES FOR A PROJECT WEBSITE WHICH ARE LOCATED ON THE Oracc
+SERVER *MUST* BE PLACED IN THE <code>websources/</code>
+DIRECTORY.</strong></p>
+
+<p>The link to the website for a project `cams' is:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/cams
+</pre>
+
+<p>The initial installation redirects this URL to the pager.</p>
+
+<p>Note that if a project has a home page which is not the default
+pager-listing of the corpus, you can still jump directly to the corpus
+by using the keyword `corpus' after the project name in the URL.
+Compare <a href="http://oracc.museum.upenn.edu/saa">http://oracc.museum.upenn.edu/saa</a>
+and <a href="http://oracc.museum.upenn.edu/saa/corpus">http://oracc.museum.upenn.edu/saa/corpus</a>.</p>
+
+<h2><a name="Static_HTML">Static HTML</a></h2>
+
+<p>The effect of a static HTML page for any given text in any given
+project is achieved via the following CGI call:</p>
+
+<pre class="example">
+http://oracc.museum.upenn.edu/PROJECT/PQID.html
+</pre>
+
+<p>Where <code>PROJECT</code> is the project name and
+<code>PQID</code> is the P- or Q-number of the text.  Thus, to
+retrieve the HTML version of SAA 01 01, with all SAA styling, the call
+would be:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/P336297.html
+</pre>
+
+<p>This form is suitable for referencing in the
+<code>&lt;object&gt;</code> tag.  A typical sample code fragment would
+look something like this:</p>
+
+<pre class="cookbook">
+ &lt;object type="text/html" 
+         data="http://oracc.museum.upenn.edu/saa/P334164.html"
+         style="height: 1350px; width: 600px; display: block;"&gt;
+    &lt;p&gt;You are seeing this message because your browser does not 
+    support the &lt;object&gt; tag.  The transliteration and 
+    translation of this text is available at &lt;a
+    href="http://oracc.museum.upenn.edu/saa/P334164.html"
+    class="external" title="Link opens in new 
+    window"&gt;http://oracc.museum.upenn.edu/saa/P334164.html"&lt;/a&gt;&lt;span
+class="externallinktext"&gt;
+[http://oracc.museum.upenn.edu/saa/P334164.html"]&lt;/span&gt;&lt;/p&gt;
+ &lt;/object&gt;
+</pre>
+
+
+
+<h2><a name="Text_Lists">Text Lists</a></h2>
+
+<p>Lists of texts can be handled in either of two ways: as LIST files
+or as URLS.</p>
+
+<h3><a name="List_Files">List Files</a></h3>
+
+<p>List files are simply files containing P or Q IDs.  They must be placed in
+the directory PROJECT/lists, e.g., in <code class="example">cams/lists</code>. The rebuild process installs the
+lists in the proper place.  You can then refer to your list by
+name.</p>
+
+<p>After creating a list file in the CAMS project with the name
+`lists/ritual-drawings' and the content:</p>
+
+<pre>P363719</pre>
+
+<p>You can then refer to <code class="cookbook">http://oracc.museum.upenn.edu/cams/ritual-drawings</code>.</p>
+
+<h3><a name="URLs">URLs</a></h3>
+
+<p>For small numbers of texts, it is convenient to give the P or Q IDs
+in a comma-separated list after the project name:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/saa/P334278,P334279
+</pre>
+
+<h1><a name="Structure">Structure</a></h1>
+
+<h2><a name="Users">Users</a></h2>
+
+<p>The project organization is intended for use with multi-user
+systems.  At the operating system level, each project is a user with a
+password and a home directory.</p>
+
+<h2><a name="Subprojects">Subprojects</a></h2>
+
+<p>Projects can also own subprojects, which also means that regular
+users on a system can have their own personal projects.</p>
+
+<h2><a name="Folders">Folders</a></h2>
+
+<p>The files used by a project live in several different folders (aka
+directories).  The most important of these are:</p>
+
+<dl>
+<dt>sources/</dt>
+<dd>Contains ATF files, conventionally with a .atf or .txt
+extension.</dd>
+<dt>lib/</dt>
+<dd>Contains project configuration files and the glossary files.</dd>
+<dt>web/</dt>
+<dd>The live website folder for the project; files should not be
+edited or placed directly in this folder because it is recreated every
+time the project is rebuilt.</dd>
+<dt>websources/</dt>
+<dd>Contains web pages and web configuration files which are copied
+into <code>web/</code> when the project is rebuilt.</dd>
+</dl>
+
+<h1><a name="Management">Management</a></h1>
+
+<h2><a name="Interfaces">Interfaces</a></h2>
+
+<p>Two interfaces are presently provided for project management tasks:
+the command-line interface (CLI) and the menu-driven Emacs interface.
+The latter is now documented on <a href="projemacs">a separate page</a>.</p>
+
+<h2><a name="cdlproject">cdlproject</a></h2>
+
+<p>Access to the CLI is generally provided via the Secure Sockets
+Layer (SSL) program <code>ssh</code>, either from the user's
+computer's commandline or from a graphical user interface.</p>
+
+<p>Once logged in as the project-user on the server, most tasks are
+accomplished via the program <code>cdlproject</code>.  Each of the
+following headings corresponds to an invocation of
+<code>cdlproject</code> followed by the heading--for example, the
+heading `rebuild' means that in the CLI you type:</p>
+
+<pre class="cookbook">cdlproject rebuild
+</pre>
+
+<p><strong>N.B.: you must be in the home folder/directory when using <code>cdlproject</code>.</strong></p>
+
+<dl>
+<dt>catalog</dt>
+<dd>updates catalogue installation.</dd>
+
+<dt>check</dt>
+<dd>perform various checks; see 'check' for more information.</dd>
+
+<dt>clean</dt>
+<dd>remove unneeded files; currently just */*~ (i.e., emacs
+backup files).</dd>
+
+<dt>harvest</dt>
+<dd>collect new words from the corpus and place them in
+lib/&lt;LANG&gt;.new; the new material can be reviewed but
+corrections *MUST* be made in the corpus sources or
+in lib/&lt;LANG&gt;.glo (the main glossary file).</dd>
+
+<dt>merge</dt>
+<dd>redo the harvest and then merge the lib/&lt;LANG&gt;.new
+files with the main glossary files.</dd>
+
+<dt>rebuild</dt>
+<dd>rebuild the corpus, glossaries and website; this does
+not doing any harvesting or merging.</dd>
+</dl>
+
+<h1><a name="Procedures">Procedures</a></h1>
+
+<h2><a name="Catalogue">Catalogue</a></h2>
+
+<p>If you are using the CDLI catalogue then no action is required.  If
+you are using your own catalogue, the project must be correctly
+configured, then the catalogue updates must be placed in the
+<code>catalogue</code> folder with the file name(s) the project has
+been configured to use.</p>
+
+<p>There is a <a href="projcats">separate page</a> about setting up your own project catalogue.</p>
+
+<h2><a name="Corpus">Corpus</a></h2>
+
+<p>Transliterations should be placed in the <code>sources/</code>
+folder.  There can be one big file, one file per text, or something in
+between; the rebuild process uses all the relevant files in
+<code>sources/</code>.</p>
+
+<p>When new texts are added, simply run:</p>
+
+<pre class="cookbook">
+cdlproject rebuild
+</pre>
+
+<p>to update the website, indexes, etc.</p>
+
+<h2><a name="Glossaries">Glossaries</a></h2>
+
+<p>The recommended workflow for glossary building is:</p>
+
+<ol>
+<li>begin with text data which is ATF-clean.</li>
+<li>lemmatize the texts; ensure they are ATF-clean with lem-checking,
+then add them to the 'sources' directory.</li>
+<li>run 'cdlproject harvest'.</li>
+<li>review lib/*.new and fix sources/*.atf or lib/*.glo as required.</li>
+<li>run 'cdlproject merge' (this automatically redoes the harvest).</li>
+<li>run 'cdlproject rebuild' if all seems well.</li>
+<li>if something goes wrong, you can retrieve the previous *.glo
+file from the 'backups' directory--multiple 'cdlproject merge'
+commands on the same day overwrite the same file.</li>
+</ol>
+
+<h1><a name="More_Documents">More Documents</a></h1>
+
+<h2><a name=""><a href="projemacs">Projects and Emacs</a></a></h2>
+<h2><a name=""><a href="projcats">Project Catalogs</a></a></h2>
+<h2><a name=""><a href="projconfig">Project Configuration</a></a></h2>
+<h2><a name=""><a href="projurls">Project URLs</a></a></h2>
+
+<div><h1><a name="Resources">Resources</a></h1><dl><dt><a href=".//html/projects.xdf.html">projects.xdf</a></dt><dd>XDF source for this documentation.</dd><dt><a href=".//html/public-projects.xml.html">public-projects.xml</a></dt><dd>.</dd></dl></div>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+Steve Tinney (stinney at sas dot upenn dot edu).</p></div>
+</div>
+</body>
+</html>

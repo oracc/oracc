@@ -1,0 +1,396 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+<d:meta>
+  <dc:title>Working with ATF in Emacs using atf-mode</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2009-11-22</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>An Emacs major mode is available which makes editing ATF files a
+bit easier and gives access to the template generator and checker.</dc:description>
+</d:meta>
+
+<h1>Obtaining Emacs</h1>
+
+<ul>
+<li><p>For Mac OS X we recommend Aquamacs, at <a
+href="http://www.aquamacs.org">http://www.aquamacs.org</a> and then follow the instructions <a href="For_Unix_and_Mac_OS_X_users">below</a>.</p></li>
+
+<!-- <li><p>For Windows I would ordinarily recommend EmacsW32 from <a href="http://www.ourcomments.org/Emacs/EmacsW32.html">http://www.ourcomments.org/Emacs/EmacsW32.html</a>; however, the most recent version there (EmacsW32 version 1.58 based on Emacs 23 CVS from 20090226) does not start up consistently and I therefore recommend against upgrading if you already have a working Win32 Emacs installation on your machine.</p> <p>If you do not yet have Emacs on your Windows machine, I recommend downloading <a href="../Emacs-22-CvsP070523-EmacsW32-1.54.exe">this locally cached version</a> of an older release of EmacsW32 which is known to work.</p> <p>If you are adventurous, you may like to experiment with the pretest releases coming <a href="http://alpha.gnu.org/gnu/emacs/pretest/windows/">directly from the Gnu project</a>.  Download the file named <code>emacs-23.X.XX-bin-i386.zip</code>, where X.XX will be digits (e.g., <code>emacs-23.0.93-bin-i386.zip</code>).  Unzip the file—a typical location would be <code>C:\Program Files\Emacs</code>—and run the program <code>bin/addpm.exe</code> to create an entry on your Start menu.</p></li> -->
+<li><p>For Windows we recommend EmacsW32 from <a
+href="http://www.ourcomments.org/Emacs/EmacsW32.html">http://www.ourcomments.org/Emacs/EmacsW32.html</a>. Download the <strong>latest EmacsW32+Emacs patched</strong> version. Then follow the instructions <a href="For_Windows_users">below</a>.</p></li>
+
+<li>For Unix Emacs is probably already installed; if not, you can go
+to <a href="http://www.gnu.org/software/emacs/">the
+Gnu Emacs page</a> for sources, or (probably) to your distribution
+provider for a binary package. Either way, you will also need to follow the instructions <a href="For_Unix_and_Mac_OS_X_users">below</a></li>
+</ul>
+
+<h1>Fonts</h1>
+
+<p>It is best to install the DejaVu fonts before installing ATF mode; 
+see <a href="/doc/user/fonts/">the fonts page</a> for further information.</p>
+
+<h1><a name="atf-mode" />Downloading and Installing ATF Mode and friends</h1>
+
+<h2>For Unix and Mac OS X users</h2>
+<ol class="spaced">
+<li>Download the Emacs lisp files in the archive <a
+href="/downloads/atf-mode.zip">atf-mode.zip</a>.</li>
+<li>Unzip the archive to extract the files in the directory or folder
+where you want them to live. It is simplest to extract into your home
+  directory.</li>
+<li>Locate your <code>.emacs</code> file; this will be in your
+home directory and it may be hidden.  It is possible that it may not
+exist, if your Emacs installation creates it on demand when needed to
+store configuration options.  To locate this file it is easiest to use
+Emacs: type <code>ctrl-x ctrl-f</code> and enter the filename as
+<code>~/.emacs</code>.  If the file does not exist, Emacs will create it.</li>
+<li>Edit your <code>.emacs</code> file to include the following line:
+<pre>
+(load-file "~/oracc-init.el")
+</pre>
+(The file name will be different if you do not extract the files to
+your home directory or <code>Application Data</code> under Windows).</li>
+<li>Save your .emacs, exit Emacs and restart.</li>
+</ol>
+
+<h2>For Windows users</h2>
+<p class="alert">If you already have a working
+Win32 Emacs installation on your machine and want to upgrade, you must first delete your existing <a href="#atf-mode">ATF Mode files and friends</a>, and then reinstall them after you have installed the new Win32 Emacs. If you do not do this, you are likely to find that Win32 Emacs fails to start up properly.</p>
+
+
+<p>You need to download an extra few files to optimise the functionality of EmacsW32.</p>
+<ol class="spaced">
+<li>Download the Emacs lisp files in the archive <a
+href="/downloads/atf-mode.zip">atf-mode.zip</a>.</li>
+<li>Unzip the archive to extract the files in the directory or folder
+where you want them to live. 
+<ul>
+<li>On <strong>Windows XP</strong> EmacsW32 considers the home directory to be (for  user 's') <code class="cookbook">c:\Documents and Settings\s\</code> or  <code class="cookbook">c:\Documents and Settings\s\Applications Data\</code> (depending on the exact version of XP; you will need to experiment). So if your Windows XP user name (or login name) is Hammurabi, your home directory will be <code class="example">c:\Documents and Settings\Hammurabi\</code> (or  <code class="example">c:\Documents and Settings\Hammurabi\Applications Data)</code> by default.</li>
+<li>On <strong>Windows 7</strong>, your home directory will be (for user 's') <code class="cookbook">c:\Users\s\AppData\Roaming\</code> . Note that the folder AppData is hidden: if you do not see it, you can make it visible by selecting the 'Show hidden files, folders, and drives' option in the Folder Options (tab View) of the Control Panel.</li>
+</ul>
+</li>
+<li>Download the <a href="/downloads/emacsw32-utils.zip">zipped file of add-ons for EmacsW32</a> and copy it to your home directory. Unzip it.</li> 
+<li>Leave the unzipped <code>.emacs</code> file in your home directory.</li>
+<li>Move <code>w32-winprint.el</code> (an old program by 
+Lennart Borgman that enables printing with Notepad), <code>recentf-ext.el</code> (a program by Rubikitch that allows you to handle 'dired' buffers) and <code>pc-bufsw.el</code> (a program by Igor Boukanov that enables moving between buffers with Ctrl-Tab, Ctrl-Shift-Tab) to <code class="cookbook">c:\Program Files\Emacs\site-lisp\</code> . On <strong>Windows 7</strong> this will be <code class="cookbook">C:\Program Files (x86)\Emacs\site-lisp\</code></li>
+</ol> 
+
+<h1>Starting to use Emacs</h1>
+<p>See the pages on <a href="aquamacs/">Aquamacs</a> and <a href="emacsw32/">EmacsW32</a> for a some help on getting started with Emacs.</p>
+
+<h1>Using ATF mode</h1>
+
+<p>If you name your files using the extension <code>.atf</code>, Emacs
+will automatically switch into ATF mode when you create a new file or
+load an existing one.</p>
+
+<p>If you name your files using another extension, for example
+<code>.txt</code>, you can set the mode explicitly by typing Esc-x (escape
+then x) and then entering <code>atf-mode</code> at the prompt.</p>
+
+<p>You can now use the ATF menu to read the ATF mode help, which will
+in turn tell you how to use the other menu items effectively.</p>
+
+<h1>Creating New Transliterations</h1>
+
+<ol class="spaced">
+<li>Use menu File Visit new file  to open a new file</li>
+<li>If your new file does not have a <code>.atf</code> extension,
+enter ATF mode manually</li>
+<li>Enter a template specification in your new file; you can access
+the template help from the ATF menu</li>
+<li>When you have completed your template, select menu Create
+Template</li>
+<li>Review the block structure you have created; if is incorrect, use
+the undo function to remove the block structure, edit the template
+specification and recreate the template</li>
+<li>When you are satisfied with your template, delete the template
+specification</li>
+</ol>
+
+<h1>Selective Views</h1>
+
+<p>As of 2009-05-04, atf-mode enables outline-minor-mode;
+use the 'ATF mode help' item from the ATF menu and read the 'Selective
+Display' section for more information.</p>
+
+<h1>Using the Checker</h1>
+
+<p>Although you can use the menu, there are two particularly useful
+keystrokes for working with the checker:</p>
+
+<dl>
+<dt>C-c-C-c</dt>
+<dd>This is control-c then control-c again.  This runs the checker and
+displays the results in another window.</dd>
+<dt>C-c-C-n</dt>
+<dd>This is control-c then control-n.  This moves the cursor to the
+next erroneous line in your ATF file (it is often easier to use this
+key than C-x-`, which is the mainstream key-binding for the next-error
+command.</dd>
+</dl>
+<!--
+<h2>Note:</h2>
+
+<p>Before you begin checking, ensure the XML-RPC Customization option
+'Xml Rpc Allow Unicode String' is set to 'nil'.</p>
+
+<p>To find this option, try <code>Options -> Customize Emacs -> Settings
+Matching Regexp</code> and type <code>xml-rpc-*</code> at the prompt.</p> -->
+
+<h1>Using Tramp to Edit Files on a Server</h1>
+
+<p>Emacs includes a package named <code>tramp</code> which can be used
+to edit files on a remote machine.  This means that if you work on a
+project which is hosted on <code>oracc.museum.upenn.edu</code> you can
+keep the files there and edit them using Emacs.  When you save the
+file it is saved back to the server.</p>
+
+<p>Tramp is activated automatically when you type a filename that
+starts with a forward slash (<code>/</code>).  Tramp filenames have
+the following syntax:</p>
+
+<pre class="example">
+/&lt;USER>@&lt;MACHINE>:&lt;FILE>
+</pre>
+
+<p>This works with directories, too, which can then be clicked on to
+open files; and you can also use &lt;TAB>-completion, so tramp will go
+away and get the list of files that complete for you.</p>
+
+<p>So, if you are part of a project named, say, <code>dcclt</code>,
+and you have the DCCLT password, you can start by typing the Emacs
+command to open a file:</p>
+
+<pre class="cookbook">
+C-x C-f
+</pre>
+
+<p>You'll get a prompt <code class="cookbook">Find file:</code> which
+may have some filename or directory already there.  You can ignore
+anything that may be there and type starting with the forward
+slash:</p>
+
+<pre class="cookbook">
+/dcclt@oracc.museum.upenn.edu:00atf/&lt;TAB>
+</pre>
+
+<p>You should be prompted for a password and then see a list of the
+sources.  Click on a file to open it.</p>
+
+<h2>Tramp and Emacs on Windows</h2>
+
+<p>Windows needs additional programs to enable Tramp to work
+effectively, but installing them is not hard:</p>
+
+<ol>
+<li>Install <code>putty</code> from <a
+href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">the
+PuTTY Download Page</a>.  Use the Windows installer that installs
+everything.</li>
+
+<li>Edit your Windows path to include C:\Program Files\PuTTY or (for <strong>Windows 7</strong>) C:\Program Files (x86)\PuTTY:
+<ol>
+<li> Left-click on My Computer</li>
+<li>Select <code>Properties</code></li>
+<li>Go to the <code>Advanced</code> tab</li>
+<li>Click <code>Environment Variables</code> button</li>
+<li>Scroll down to the <code>Path</code> variable in 
+<code>System Variables</code> field</li>
+<li>Double-click <code>Path</code> variable</li>
+<li>Append your PuTTy install directory to the <code>Variable
+value</code> field, for example <br/>
+<code class="cookbook">;C:\Program Files\PuTTy</code> (or, for <strong>Windows 7</strong>, <code class="cookbook">;C:\Program Files (x86)\PuTTy></code>),
+to the end of  the line. Remember the semi-colon first -
+It's important.</li>
+<li>Apply settings, get back to desktop.</li>
+</ol>
+</li>
+<li>Open the file <code>.emacs</code> by typing <code
+class="cookbook">C-x C-f</code> and answering <code
+class="cookbook">~/.emacs</code> at the <code class="cookbook">Find
+File:</code> prompt.  Now add the following line to
+<code>.emacs</code> and then save the file:
+<pre class="cookbook">
+(setq tramp-default-method "plink")
+</pre>
+</li>
+
+<li>Restart Emacs.</li>
+</ol>
+
+<!--
+
+<h1>Changing the default font</h1>
+
+<p>To change the default font, you need to add some lines to your
+<code>.emacs</code> file.  These lines look something like the
+following:</p>
+
+<pre class="cookbook">
+(reset-atf-default-font
+ "-apple-dejavu sans mono-medium-r-normal-<span/>-16-*-*-*-m-*-iso10646-1")
+
+(add-to-list 'initial-frame-alist '(top    . 20))
+(add-to-list 'initial-frame-alist '(left   . 20))
+(add-to-list 'initial-frame-alist '(height . 32))
+(add-to-list 'initial-frame-alist '(width  . 70))
+(add-to-list 'default-frame-alist '(height . 32))
+(add-to-list 'default-frame-alist '(width  . 70))
+</pre>
+
+<p>The lines need to be adapted to suit your machine and the font you
+use. Firstly, you must ensure that the font-string given in the
+function <code>reset-atf-default-font</code> is valid for your
+system.  System-specific font-string examples can be found in the file
+<code>oracc-init.el</code>, which can be found in the directory in which
+you installed the ATF mode files.  In the example above, the first
+number in the string, <code>16</code> is the font-size, so you can
+change the font-size by changing that number.</p>
+
+<p>The remainder of the lines tell Emacs what size to make new
+windows, and where to put the initial window.  Note that what most
+people think of as a window is called a frame in Emacs.  You can
+change the width and height appropriately to control the window size
+(width is given in characters; height is given in lines, and includes
+the lines used for the status line and the mini-buffer line.</p>
+
+ -->
+
+<h1>Troubleshooting</h1>
+
+<h2>Checker fails on Windows with strange '&amp;amp;P123456' results</h2>
+
+<p>Check the XML-RPC Customization option 'Xml Rpc Allow Unicode
+String': if it is not set to 'nil', then set it to 'nil' and try
+again.</p>
+
+<p>(To find this option, try <code>Options -> Customize Emacs -> Settings
+Matching Regexp</code> and type <code>xml-rpc-*</code> at the prompt.)</p>
+
+<h2>Using a Remote Access Program, e.g., HummingBird</h2>
+
+<p>If you are having difficulty connecting via a graphical user
+interface to SSH and friends, check that all of the following are
+correct:</p>
+
+<ul>
+<li>Hostname = <code>oracc.museum.upenn.edu</code></li>
+<li>Port number = 80</li>
+<li>User ID = your project's abbreviation, in lowercase letters</li>
+<li>Password = the correct password for your project</li>
+<li>Starting Directory = the path <code>/home/</code> followed by your
+project's abbreviation, in lowercase letters.</li>
+</ul>
+
+<!--
+<h1>Displaying Unicode Characters</h1>
+
+<p>For Win32 Emacs it is easiest to install the PSD Lynn fonts <a
+href="http://oracc.museum.upenn.edu/doc/user/fonts/">available here</a>.
+Once this is done you can select 'Lynn' from the font dialog as your
+font.</p>
+-->
+<div>
+<a name="unicode" />
+<h1>Entering Unicode Characters</h1>
+
+<p>The Emacs ATF package includes an input method which is based on
+the Emacs MULE TeX input method but adds some characters which are
+useful for cuneiform transliterations.  If the ATF mode package is
+installed correctly this input method is available under the name
+'Cuneiform'.</p>
+
+<p>To use this input method:</p>
+<ol>
+<!--
+<li>Choose Options - Mule - Set Language Environment - UTF-8; you will now see a lowercase 'u' at the left end of the Emacs status line</li>
+<li>Choose Options - Mule - Select Input Method and then type 'Cuneiform' at the prompt</li>
+-->
+<li>Use control-backslash (<code>\</code>) to switch the Cuneiform input method on and off; when the method is enabled you will see a backslash at the left end of the status line</li>
+</ol>
+
+
+<h2>Keyboard Sequences in Cuneiform Input Method</h2>
+
+<p>The Cuneiform transliteration input method is based on control
+sequences used by the typesetting package TeX, with some additions.
+In general these sequences start with the backslash character,
+followed by an accent character, then the character that will receive
+the accent.  These sequences are notated as, e.g., <code>\-v-s</code>
+in the following table (meaning, in this case, that you type the
+backslash, then v, then s, which gives you shin, &#x161;).</p>
+
+<p>Note that the table below restricts the list of available
+characters to those needed for cuneiform transliteration; many more
+characters are available following the same principles.</p>
+
+<p>See also <a href="/doc/user/unicode/">the Unicode for cuneiform
+transliteration</a> page and <a href="/doc/user/fonts/"> the fonts page</a>.
+If you don't see the subscript x character you probably need to update
+to the latest fonts.</p>
+
+<table>
+<tr>
+<td>Sequence</td>
+<td>Accent Name</td>
+<td>Available for:</td>
+<td>Results:</td>
+</tr>
+<tr><td>\-'</td><td>Acute</td><td>aeiuAEIUsS</td><td>áéíúÁÉÍÚśŚ</td></tr>
+<tr><td>\-`</td><td>Grave</td><td>aeiuAEIU</td><td>àèìùÀÈÌÙ</td></tr>
+<tr><td>\-=</td><td>Macron</td><td>aeiuAEIU</td><td>āēīūĀĒĪŪ</td></tr>
+<tr><td>\-^</td><td>Circumflex</td><td>aeiuAEIU</td><td>âêîûÂÊÎÛ</td></tr>
+<tr><td>\-v</td><td>Hachek</td><td>sS</td><td>šŠ</td></tr>
+<tr><td>\-d</td><td>Dot-under</td><td>sStT</td><td>ṣṢṭṬ</td></tr>
+</table>
+
+<p>Several other characters are provided using the following sequences:</p>
+
+<table width="30%">
+  <tr><td>\-h , \-H</td><td>ḫ , Ḫ</td></tr>
+<tr><td>\-j , \-J</td><td>ŋ , Ŋ</td></tr>
+<tr><td>\-[ , \-]</td><td>˹ , ˺</td></tr>
+<tr><td>\-_[ , \-_]</td><td>⸤ , ⸥</td></tr>
+</table>
+
+<p>(Note that lower left/right square brackets are not used in ATF;
+they are provided for use in citing published work.)</p>
+
+<p>A few characters require typing a word after the backslash:</p>
+
+<table width="30%">
+<tr><td>\times</td><td>×</td></tr>
+<tr><td>\alef</td><td>ʾ</td></tr>
+<tr><td>\ayin</td><td>ʿ</td></tr>
+</table>
+
+<p>If you are using the <code>#atf: use unicode</code> protocol you
+must also type the grapheme index numbers as Unicode subscripts using
+the <code>\-&lt;digit></code> sequences:</p>
+
+<table width="30%">
+<tr><td>\-0</td><td><sub>0</sub></td></tr>
+<tr><td>\-1</td><td><sub>1</sub></td></tr>
+<tr><td colspan="2">...</td></tr>
+<tr><td>\-9</td><td><sub>9</sub></td></tr>
+<tr><td>\-+</td><td><sub>+</sub></td></tr>
+<tr><td>\-x</td><td><sub>x</sub></td></tr>
+</table>
+</div>
+
+<d:resources>
+<!-- <d:resource copy="yes" href="/downloads/atf-mode.zip" />
+<d:resource copy="yes" href="/downloads/emacsw32-utils.zip" /> -->
+</d:resources>
+</d:doc>

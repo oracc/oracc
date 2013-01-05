@@ -1,0 +1,4 @@
+<nl xmlns="http://emegir.info/ngram" xmlns:ngram="http://emegir.info/ngram"
+><nle priority="0"
+><cts><ct><cf bad="0" neg="0" wild="0">māru</cf><pred neg="0" attr="gw" value="son"/><pred neg="0" attr="pos" value="N"/></ct><ct><cf bad="0" neg="0" wild="0">ša</cf><pred neg="0" attr="gw" value="of"/></ct></cts></nle
+></nl>

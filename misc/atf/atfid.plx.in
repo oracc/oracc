@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::SF5::Cat;
+use Getopt::Long;
+
+binmode STDOUT, ':utf8';
+
+my $format = 'andline';
+my $max = 0;
+my $orig = '';
+my $unique = 0;
+
+while (<>) {
+    if (/^\&(?!P\d+)/) {
+#	warn("$.\n");
+	m/^\&(.*?)\s*=/ || m/^\&(.*)$/;
+	my $t = $1;
+	$t =~ tr/+//d;
+#	warn("$t\n");
+	my @res = ORACC::SF5::Cat::search($t);
+	if ($#res == 0) {
+	    s/^\&/\#/;
+	    my $f = ORACC::XMD::Fields::get($res[0]);
+	    print "\&$res[0] = $$f{'primary_publication'}\n";
+	    ORACC::XMD::Fields::drop($res[0]);
+	} elsif ($#res > 0) {
+	    warn "$t: $#res matches\n";
+	} else {
+	    warn "$t: no matches\n";
+	}
+    }
+    print;
+}
+
+1;

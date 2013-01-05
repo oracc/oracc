@@ -1,0 +1,10 @@
+body {
+font-size: 1.5em;
+}
+#TextSizeLarger a {
+color: #cccccc;
+cursor: default;
+}
+#TextSizeLarger a:hover {
+background-color: transparent;
+}

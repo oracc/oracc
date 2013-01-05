@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib/ORACC/BIB';
+use CGI;
+&CGI::ReadParse;
+
+use ORACC::BIB::QueryContext;
+
+my $qc = ORACC::BIB::QueryContext->new(dblist => [ qw/oracc/ ],
+				     dbdir  => '/var/local/oracc/bib');
+
+print "Content-type: text/html\n\n";
+print <<EOH;
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+EOH
+print <<EOH;
+<TITLE>Bib-query results for '$in{'term'}'</TITLE>
+</HEAD>
+<BODY bgcolor="#ffffff">
+<h1>Bibliographical query results for '$in{'term'}'</h1>
+EOH
+
+my $ret_ix;
+my $ret_res_ref;
+
+($ret_ix,$ret_res_ref) = $qc->exec($in{'term'});
+
+print $ret_ix->retrieve_htm(@$ret_res_ref);
+
+print <<EOB;
+</BODY></HTML>
+EOB
+
+1;

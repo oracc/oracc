@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc eXist Installation</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document contains clues on how to install eXist
+  on a new server installation; most people will never need to look at
+  it.</dc:description>
+</d:meta>
+
+<h1>Installation</h1>
+
+<p>The database running on oracc.museum.upenn.edu listens on port 8680
+and executes using the Jetty server packaged with eXist as a webapp
+installed at root and named <code>Oracc</code>.  The home directory
+for the webapp is <code>/usr/local/oracc/lib/java/eXist/webapp</code>
+and the index.html that lives in that directory is the entry point
+arrived at via the URL <a
+href="http://oracc.museum.upenn.edu:8680"><code>http://oracc.museum.upenn.edu:8680</code></a>.</p>
+
+<p>The <code>exist</code> webapp is also running in the DB, meaning
+that the documentation on how to carry out adminstrative tasks and
+browse the database is largely relevant to the Oracc app.</p>
+
+<h4>Installation Notes</h4>
+
+<p>Most people won't need to install eXist--though it should be possible
+for individuals to have copies of their projects on eXist running on a PC
+so maybe people will want to try.</p>
+
+<p>To install, first follow the standard instructions. Then do the following:</p>
+
+<dl>
+
+<dt>Set an administrator password</dt>
+
+<dd>Recent eXist install procedures prompt for you to set an admin password
+during the install; you must do this if you want to enable external
+access to the DB, and you should do it anyway.</dd>
+
+<dt>Test the installation on <code>localhost</code></dt>
+
+<dd>
+
+<p>Before changing anything, test the installation using
+<code>localhost</code> and the default database according
+to the eXist quick-start documentation.</p>
+</dd>
+
+<dt>Test the installation from a different machine</dt>
+
+<dd>
+<p>If you want to enable internet access to your database,
+try the installation from a different machine.  If you are unable to
+make a connection check the port settings.  Firstly, is access to the
+eXist port enabled?  This port is by default 8080, but you can change
+it if you need to by editing the properties in
+<code>bin/functions.d/eXist-settings.sh</code>.  Simply edit the
+function <code>set_exist_options()</code> to set the
+<code>jetty.port</code> property:</p>
+
+<pre>
+set_exist_options() {
+    OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8680"
+}
+</pre>
+
+<p>You may need to modify your firewall settings to allow access to
+the port, and you may need to change the port if someone else is
+listening there.</p>
+</dd>
+
+<dt>Configure Jetty</dt>
+
+<dd>
+<p>Edit the file <code>[EXIST_HOME]/tools/jetty/etc/jetty.xml</code> and look
+for the section 'Configure the Contexts'.  After the first call to
+<code>addWebApplication</code> add the following:</p>
+
+<pre>
+&lt;Call name="addWebApplication">
+  &lt;Arg>/&lt;/Arg>
+  &lt;Arg>/usr/local/oracc/www/&lt;/Arg>
+  &lt;Set name="defaultsDescriptor">
+     /usr/local/oracc/eXist/tools/jetty/etc/webdefault.xml&lt;/Set>
+  &lt;Set name="displayName">Oracc&lt;/Set>
+&lt;/Call>
+</pre>
+
+<p>Where the actual paths in args 2 and 3 will need modification
+depending on the actual installation locations on the machine in
+question.</p>
+</dd>
+
+<dt>Load the Oracc data</dt>
+
+<dd>
+<p><strong>This step is not yet implemented.</strong></p>
+
+<p>To load the Oracc portion of the database run the script:</p>
+
+<pre>/usr/local/oracc/bin/oracc-eXist-system.sh</pre>
+</dd>
+
+<dt>Load the project data</dt>
+
+<dd>
+<p>Login as the project user and run:</p>
+<pre>
+oracc eXist
+</pre>
+</dd>
+</dl>
+
+</d:doc>

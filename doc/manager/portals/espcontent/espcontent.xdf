@@ -1,0 +1,614 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Creating Textual Content in ESP XML Files</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Ruth Horry and Eleanor Robson</dc:creator>
+  <dc:date>2011-04-30</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes how to use the system-specific ESP elements and attributes to create web pages. It assumes that you know how to use Emacs and are familiar with the basics of HTML.</dc:description>
+</d:meta>
+<p>If you haven't already read the <a href="../espsetup/#Page structure">documentation on page structure</a> in ESP then do so now.</p>
+
+<h1>Readability</h1>
+<p>When writing for the web, it is a good idea to keep your paragraphs short and concise, as this increases readability. Aim for a lively, accessible style. Above all, keep your sentences simple. Here are some useful pages about academic writing for the web, but there are also many others:</p>
+<ul>
+<li>Cambridge University Computing Service's <a href="http://web-support.csx.cam.ac.uk/courses/writing/slides/">Writing for the web</a>;</li>
+<li>The University of York's <a href="http://www.york.ac.uk/communications/websites/content/writing-for-the-web/">web-writing guide</a>;</li>
+<li>The University of Oxford's <a href="http://www.ox.ac.uk/web/guides/writing_for_the_web.html">Writing for the web</a>.</li></ul>
+<p>For the research behind these guidelines, see for instance Jakob Nielsen's <a href="http://www.useit.com/alertbox/9710a.html">Reading on the web</a> and his <a href="http://www.useit.com/alertbox/percent-text-read.html">How little do users read?</a>.</p>
+
+<p>Your university probably has useful guides and/or tutorials too; ask around.</p>
+
+<h1>Headings and subheadings</h1>
+
+<p>Including a short and enticing heading for each paragraph or section will help your reader to navigate around the page.</p>
+
+<h4><a name="esp:h"/><code>&lt;esp:h&gt;</code></h4>
+<p>The <code>&lt;esp:h&gt;</code> (heading) tag creates a heading and should be used instead of HTML's <code>h1</code>, which it replaces. It includes a bookmark that can be used by external websites to link to this point in the page.</p>
+
+<pre class="listing">
+&lt;esp:h&gt;
+	Inline content
+&lt;/esp:h&gt;</pre>
+
+<p>If, say, your heading looks like this: <code class="example">&lt;esp:h>Aims&lt;/esp:h></code>, the processor will generate an HTML <code>a</code> element, with the values of the <code>id</code> and <code>name</code> attributes in lower-case, with a prefix <code>h_</code> like this: <code class="example">&lt;a id="h_aims" name="h_aims">&lt;/a>&lt;h3>Aims&lt;/h3></code>, enabling other (non-ESP) websites to link to it with the <code>a</code> element in the usual way.</p>
+<p>Within an ESP site, you can link to a heading using the <code><a name="esp:link">esp:link</a></code> element, setting the <code>bookmark</code> attribute to the heading contents, e.g., <code class="example">&lt;esp:link bookmark="Aims"/></code>.</p>
+<h4><a name="esp:sh"><code>&lt;esp:sh&gt;</code></a></h4>
+
+<p>Sub-headings for pages are created using the <code>&lt;esp:sh&gt;</code> (sub heading) tag which replaces HTML's <code>h2</code>.  The sub-heading includes a bookmark that can be used by external websites to link to this point in the page.</p>
+
+<p>The <code>&lt;esp:sh&gt;</code> tag is the equivalent of using either <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code> or <code>&lt;h3&gt;</code> tags in HTML.</p>
+
+<p>If, say, your subheading looks like this: <code class="example">&lt;esp:sh>Aims&lt;/esp:sh></code>, the processor will generate an HTML <code>a</code> element, with the values of the <code>id</code> and <code>name</code> attributes in lower-case, with a prefix <code>h_</code> like this: <code class="example">&lt;a id="sh_aims" name="sh_aims">&lt;/a>&lt;h3>Aims&lt;/h3></code>, enabling other (non-ESP) websites to link to it with the <code>a</code> element in the usual way.</p>
+<p>Within an ESP site, you can link to a heading using the <code><a name="esp:link">esp:link</a></code> element, setting the <code>bookmark</code> attribute to the heading contents, e.g., <code class="example">&lt;esp:link bookmark="Aims"/></code>.</p>
+<h4><a name="esp:sh"><code>&lt;esp:sh&gt;</code></a></h4>
+
+<pre class="listing">
+&lt;esp:sh&gt;
+	Inline content
+&lt;/esp:sh&gt;</pre>
+
+<h1>Tables</h1>
+<p>You can create tables using the usual HTML tags, and optionally add the attribute <code class="cookbook">&lt;table class="pretty"></code> to style it more elegantly.</p>
+
+<h1>Special characters</h1> 
+<p>The characters <code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code> have special meanings in XML (single and double quotes do too, but only inside attribute values, if they then terminate those values). Therefore, if you need to use them in a web page, use the following named character entities as substitutes:</p>
+
+<ul>
+<li>for <code>&amp;</code> use <code>&amp;amp;</code> (ampersand);</li>
+<li>for <code>&gt;</code> use <code>&amp;gt;</code> (greater than);</li>
+<li>for <code>&lt;</code> use <code>&amp;lt;</code> (less than); </li>
+<li>for <code>“</code> use <code>&amp;quot;</code> (use only in attribute values); </li>
+<li>for <code>‘</code> use <code>&amp;apos;</code> (use only in attribute values).</li>
+</ul>
+<p>Note that no other named character entities (such as the non-breaking space, <code>&amp;nbsp;</code>) are supported. Any character defined in HTML 4.01 can be used in ESP (see <a href="http://www.w3.org/TR/html401/sgml/entities.html">http://www.w3.org/TR/html401/sgml/entities.html</a> for a list). All can be specified as numeric character entities, such as <code>&amp;#160;</code> (the non-breaking space) or <code>&amp;#169;</code> (the copyright symbol, ©).</p>
+
+<p>‘Smart’ or “smart” quotes, the ellipsis (...) character, and the en-dash (–) and em-dash (—) are automatically converted to 'dumb' or "dumb" quotes, three dots (...), and standard hyphens (-) for browser compatibility reasons.</p>
+
+<p>To avoid errors, in any URLs that include the <code>&amp;</code> (ampersand) character, substitute the entity <code>&amp;amp;</code> in place of the ampersand.  Also see the documentation on <a href="#Links">Links</a>.</p>
+
+<h1>Links</h1>
+<h2 class="hide">Internal links</h2>
+<h4><a name="esp:link"><code>&lt;esp:link&gt;</code></a></h4>
+<p>The <code>&lt;esp:link&gt;</code> tag is used to create links and is equivalent to the HTML tag  <code>&lt;a href="..."&gt;</code>.  To create a link to another page within the site (i.e., an internal link) use the <code>&lt;esp:link&gt;</code> tag together with the <code>page</code> attribute. To create a link to a bookmarked point in a page (within the site), use the <code>&lt;esp:link&gt;</code> tag together with the <code>bookmark</code> attribute.</p>
+
+<pre class="listing">&lt;esp:link
+	page="example"
+	bookmark="example"
+	title="Example title"
+	accesskey="X"
+&gt;
+	Inline content (optional)
+&lt;/esp:link&gt;</pre>	
+	
+<dl>
+<dt><code>page</code></dt>
+<dd>Optional. The id of another page within the site. Must be present if there is no <code>bookmark</code> attribute.</dd>
+
+<dt><code>bookmark</code></dt>
+<dd>Optional. The <code>id</code> of a <code><a href="#esp:bookmark">bookmark</a></code> on this page or (if a <code>page</code> attribute is given) another page. Must be present if there is no <code>page</code> attribute.</dd>
+
+<dt><code>title</code></dt>
+<dd>Optional. Title text for the link (read by screen readers, displayed as a yellow ‘tool-tip’ in standard browsers). Overrides any title text that is automatically generated. If title="", no title text is present on the link on the final page.</dd>
+
+<dt><code>accesskey</code></dt>
+<dd>Optional. Define an access key for this link. Overrides any access key specified in <code><a href="../espsetup/#Site_structure">structure.xml</a></code>. Use not recommended.</dd>
+</dl>
+
+<p><strong>NB.</strong>  If the element has content (i.e., contains text) , this content becomes the link.  If the element has no content, the name of the destination page (or title of the destination bookmark) is used as the link text. This usage is recommended, because it guarantees that the link text is consistent with any changes made to the destination page name or bookmark title.</p>
+
+<h2 class="hide">External links</h2>
+
+<p>The <code>&lt;esp:link&gt;</code> tag is used to create links and is equivalent to the HTML tag  <code>&lt;a href="..."&gt;</code>.  To create a link to an external web page use the <code>&lt;esp:link&gt;</code> tag together with the <code>url</code> attribute.</p>
+
+<pre class="listing">&lt;esp:link
+	url="http://www.example.com/"
+	site-name="Example and Sons Ltd."
+	title="Example title"
+	accesskey="X"
+	hide-print="yes"
+&gt;
+	Inline content (optional)
+&lt;/esp:link&gt;</pre>
+
+<dl>
+<dt><code>url</code></dt>
+<dd>Mandatory. The URL of the external website. Will usually begin <code>http://...</code>. </dd>
+
+<dt><code>site-name</code></dt>
+<dd>Optional. Used as the link text if element is empty. Used in automatically generated title text if the element is not empty and the <code>title</code> attribute is not specified.</dd>
+
+<dt><code>title</code></dt>
+<dd>Optional. Title text for the link. Overrides any title text (after the words “External site") that is automatically generated.</dd>
+
+<dt><code>accesskey</code></dt>
+<dd>Optional. Defines an access key for this link. Use not recommended.</dd>
+
+<dt><code>hide-print="yes"</code></dt>
+<dd>If present this prevents the default behaviour, which is to show the URL of an external link in square brackets after the link text when the page is printed.</dd>
+</dl>
+
+<p><strong>NB</strong>  If the element has content (i.e., contains text), this content becomes the link. If the element has no content, the <code>site-name</code> or (failing that) <code>url</code> attribute is used as the link text.</p>
+
+<p>Some URLs include the <code>&amp;</code> (ampersand) character.  For such URLs, you must substitute the entity <code>&amp;amp;</code> in place of the ampersand or else ESP will return an error when you <a href="../espbuild">build the site</a>.</p>
+
+<h2 class="hide">Links to downloads</h2>
+
+<p>Sometimes you may want to link to a resource within the site which is not a page with an <code>id</code> (for example, a PDF file placed in the <code>00web/esp/site-content/00web/downloads</code> folder or one of its subfolders, KMZ files <a href="../espimages/#Google_Earth_and_Google_Maps_content">to open in Google Earth</a> or a <a href="../espimages/#Images">large image</a> contained in the <code>images</code> folder). In this case, use the <code>&lt;esp:link&gt;</code> tag together with the <code>url</code> attribute (as described in the section on <a href="#External_links">External links</a>) and begin the URL with the <code>~</code> character: this will be replaced with the root of the site (known as a relative URL). For example,</p>
+
+<pre class="example">&lt;esp:link url="~/downloads/example.pdf" title="blah"&gt;... &lt;/esp:link&gt;</pre>
+
+<pre class="example">&lt;esp:link url="~/downloads/adian_eski_kalak.kmz" 
+   title="View location of Adian using Google Earth"&gt;View location 
+   using Google Earth&lt;/esp:link&gt;</pre>
+
+<pre class="example">&lt;esp:link url="~/images/essentials/kingsadvisors/bm-ane-124537-large.jpg" 
+   title="blah"&gt;...&lt;/esp:link&gt;</pre>
+
+<h2 class="hide">Links within captions</h2>
+
+<p>The <code>&lt;esp:link&gt;</code> element can be used within the <code>&lt;esp:image&gt;</code> element (described on the <a href="../espimages/#esp:image">Images page</a>) to:</p>
+<ol>
+<li>make images into links;</li>
+<li>add a text link within an image caption.</li>
+</ol>
+<p>Most commonly, both types will be links to larger versions of images.  If these larger images are on external web pages, you should use the <code>url</code> attribute to specify the URL of the image (described in the <a href="#External_links">External links</a> section).  Otherwise, specify the location of the large image within the site using the <code>~</code> character to create a relative URL to the correct folder (described in the section on <a href="#Links_to_downloadable_content">Links to downloadable content</a>).</p>
+
+<p>The example below shows how to use the <code>&lt;esp:link&gt;</code> element within the <code>&lt;esp:image&gt;</code> element to (a) make an image into a link to an external web page and (b) create a text link within the image caption.</p>
+
+<pre class="example">
+&lt;esp:image file="essentials/assurbanipalslibrary/ps086972_m.jpg" 
+description="Cuneiform tablet telling the legend of Ishtar's descent 
+to the Underworld" position="float"&gt;
+   
+   &lt;esp:link  url="http://www.thebritishmuseum.ac.uk/blah1/" 
+   title="Large image of Cuneiform tablet telling the legend of 
+   Ishtar's descent to the Underworld" hide-print="yes"/&gt;
+
+   &lt;esp:caption&gt;This tablet, telling the myth of the goddess 
+   Ishtar's visit to her sister, the underworld goddess Ereshkigal, 
+   ends with a colophon describing it as the property of Assurbanipal, 
+   'king of the world, king of the land of Ashur'; from Assurbanipal's
+   Library in Nineveh (BM K 162). Photo &#169; The British Museum. 
+
+       &lt;esp:link url="http://www.thebritishmuseum.ac.uk/blah2/"
+       title="Large image of Cuneiform tablet telling the legend of 
+       Ishtar's descent to the Underworld" hide-print="yes"&gt;View  
+       large image on the British Museum's website&lt;/esp:link&gt;.
+
+    &lt;/esp:caption&gt;
+
+&lt;/esp:image&gt;
+</pre>
+
+<h2 class="hide">Links to other Oracc websites</h2>
+<p>You may wish to link to a resource on Oracc that is not within the generated site structure. In this case, use a standard absolute URL beginning with the <code>/</code> character. For example, <code class="example">&lt;esp:link url="/cams/gkab/P348777.html" title="blah"&gt;...&lt;/esp:link&gt;</code>.</p>
+
+<p>Oracc URLs are explained <a href="/doc/user/projurls">in the Oracc user documentation</a>.</p>
+
+<h2 class="hide">Inserting page titles, etc.</h2>
+<p>The following element can be used to conveniently refer to other pages within the site:</p>
+
+<h4><a name="esp:page-name"><code>&lt;esp:page-name&gt;</code></a></h4>
+<pre class="listing">&lt;esp:page-name
+	page="example"
+/&gt;
+</pre>
+
+<p>Inserts the name of the page with the given id. If you want to refer to a page by name, use this element to ensure that the name remains consistent with any future changes. Always empty.</p>
+
+<h4><a name="esp:page-title"><code>&lt;esp:page-title&gt;</code></a></h4>
+<pre class="listing">&lt;esp:page-title
+	page="example"
+/&gt;</pre>
+
+<p>Inserts the title of the page with the given id. If you want to refer to a page by title, use this element to ensure that the title remains consistent with any future changes. Always empty.</p>
+
+<h1>Bookmarks</h1>
+<p>Bookmarking functionality allows you to jump directly to any point on a specific page by following a link.</p>
+
+<h4><a name="esp:bookmark"><code>&lt;esp:bookmark&gt;</code></a></h4>
+<p>The <code>&lt;esp:bookmark&gt;</code> element defines the point on a page that may be jumped to directly from a link, either on the same page or on another page.  The link to the bookmark is a straightforward <code>&lt;esp:link&gt;</code> element that uses the <code>page</code> attribute.</p>
+
+<p>Bookmarking requires two steps:</p>  
+<ol>
+<li>placing a <code>&lt;esp:bookmark&gt;</code> element around the text to which you would like to jump:</li>
+<li>creating a link to the bookmark using <code>&lt;esp:link&gt;</code>.</li>
+</ol>
+
+<p>The specification of the <code>&lt;esp:bookmark&gt;</code> element is as follows:</p>
+
+<pre class="listing">&lt;esp:bookmark
+	id="example"
+	title="Example bookmark"
+	hide-highlight="yes"
+&gt;
+	Inline content (optional)
+&lt;/esp:bookmark&gt;
+</pre>
+
+<dl>
+<dt><code>id</code></dt>
+<dd>Mandatory. Identifies the bookmark. Must be unique within the page. Becomes part of the URL for that page/bookmarked section, so as well as being unique, each id should be reasonably short, contain no spaces and no accented characters.
+</dd>
+
+<dt><code>title</code></dt>
+<dd>Mandatory. Used to describe the point that will be jumped to by a link (e.g. <code>"Jump to description of microscope on this page"</code>).</dd>
+
+<dt><code>hide-highlight="yes"</code></dt>
+<dd>Optional. By default, the content of the <code>&lt;esp:bookmark&gt;</code> element is highlighted when the bookmark is jumped to. This attribute prevents that behaviour.</dd>
+</dl>
+
+<p>NB.  The <code>&lt;esp:bookmark&gt;</code> can be empty, i.e., it does not have to be placed around text, but should usually contain a term or short phrase.</p>
+
+<h2 class="hide">Creating links to a bibliography</h2>
+<p>The <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website is an example of a site that uses bookmarks to create links to the bibliography. At the end of each introductory essay is a link to the relevant bookmarked entry in the bibliography.</p>
+
+<p>So, for example, here are four links, used at the end of an essay to jump to bookmarked entries in the bibliography:</p>
+
+<pre class="example">&lt;ul&gt;
+	&lt;li&gt;&lt;esp:link page="biblio-index" bookmark="faleslanfranchi"&gt;Fales and 
+Lanfranchi&lt;/esp:link&gt;, 'The impact of oracular materials', 1997&lt;/li&gt;
+
+	&lt;li&gt;&lt;esp:link page="biblio-index" 
+bookmark="leichty_1997"&gt;Leichty&lt;/esp:link&gt;, 'Divination, magic, and 
+astrology', 1997&lt;/li&gt;
+
+	&lt;li&gt;&lt;esp:link page="biblio-index" bookmark="mattila"&gt;Mattila&lt;/esp:link&gt;, 
+&lt;i&gt;The king's magnates&lt;/i&gt;, 2000&lt;/li&gt;
+
+	&lt;li&gt;&lt;esp:link page="biblio-index" 
+bookmark="pecirkova"&gt;P&#233;&#231;irkov&#225;&lt;/esp:link&gt;, 'Divination and politics', 1985&lt;/li&gt;
+
+&lt;/ul&gt;</pre>
+
+<p>and here is the text that appears on the bibliography page, containing the <code>&lt;esp:bookmark&gt;</code> element:</p>
+
+<pre class="example">
+&lt;p&gt;
+   &lt;esp:bookmark id="faleslanfranchi" title="entry"&gt;Fales, F.M. and 
+   G.B. Lanfranchi&lt;/esp:bookmark&gt;, 'The impact of oracular materials on 
+   the political utterances and political actions of the Sargonid dynasty', 
+   in J.-G. Heintz (ed.), &lt;i&gt;Oracles et propheties dans l'antiquit&#233;&lt;/i&gt;, 
+   Paris: de Boccard, 1997, pp. 99-114.
+&lt;/p&gt;
+
+&lt;p&gt;
+   &lt;esp:bookmark id="leichty_1997" title="entry"&gt;Leichty, E.&lt;/esp:bookmark&gt;, 
+   'Divination, magic, and astrology in the Assyrian royal court', in 
+   S. Parpola and R. Whiting (eds.), &lt;i&gt;Assyria 1995&lt;/i&gt;, Helsinki
+   1997, pp. 161-164.
+&lt;/p&gt;
+
+&lt;p&gt;
+   &lt;esp:bookmark id="mattila" title="entry"&gt;Mattila, R.&lt;/esp:bookmark&gt;, 
+   &lt;i&gt;The king's magnates: a study of the highest officials 
+   of the Neo-Assyrian empire&lt;/i&gt; (State Archives of Assyria 
+   Studies 11), Helsinki: Helsinki University Press, 2000.
+&lt;/p&gt;
+
+&lt;p&gt;
+   &lt;esp:bookmark id="pecirkova" title="entry"&gt;P&#233;&#231;irkov&#225;, J.&lt;/esp:bookmark&gt;, 
+   'Divination and politics in the Late Assyrian empire', &lt;i&gt;Archiv 
+   Orient&#225;ln&#237;&lt;/i&gt; &lt;b&gt;53&lt;/b&gt; (1985), 155-168.
+&lt;/p&gt;
+</pre>
+
+<h1>Glossary</h1>
+<p>ESP contains glossary functionality, allowing you to create a list of defined terms and link each use of the term back to this list.</p>
+
+<p>Adding glossary functionality is carried out in two steps:</p>
+<ol>
+<li>making a new glossary term and definition pair using the <code>&lt;esp:definition&gt;</code>  element</li> 
+<li>a reference to the glossary entry where that word occurs in your text, using the <code>&lt;esp:glossary&gt;</code> element.</li>
+</ol>
+
+<h2 class="hide">Adding definitions</h2>
+<h4><a name="esp:glossary-list"><code>&lt;esp:glossary-list&gt;</code></a></h4>
+<p>The glossary is generated from the file called <code>glossarypage.xml</code>, which contains the one occurrence of the element <code>&lt;esp:glossary-list&gt;</code>.</p>
+
+<p>All glossary term and definition pairs should be created inside <code>&lt;esp:glossary-list&gt;</code> using  the <code>&lt;esp:definition&gt;</code> element.</p>
+
+<h4><a name="esp:definition"><code>&lt;esp:definition&gt;</code></a></h4>
+<p>The specification of <code>&lt;esp:definition&gt;</code> is given below:</p>
+
+<pre class="listing">&lt;esp:definition term="example"&gt;
+Definition of your glossary term
+&lt;/esp:definition&gt;</pre>
+
+<dl>
+<dt><code>term</code></dt>
+<dd>Mandatory. The term to be defined, which appears in the glossary list. It is matched with the <code>term</code> attributes (or content) of <a href="#esp:glossary"><code>&lt;esp:glossary&gt;</code></a> elements.</dd>
+</dl>
+
+<p>The  <code>&lt;esp:definition&gt;</code> can contain other elements (including <a href="#esp:techterms"><code>&lt;esp:techterms&gt;</code></a> and <a href="#esp:glossary"><code>&lt;esp:glossary&gt;</code></a>, such that glossary entries can reference techterms entries or other glossary entries).  See the section on <a href="#Cross-referencing">cross-referencing the glossary and technical terms lists</a>.</p>
+
+<h2 class="hide">Referring to a glossary entry</h2>
+<h4><a name="esp:glossary"><code>&lt;esp:glossary&gt;</code></a></h4>
+<p>To create a reference in the text to a glossary entry, use the <code>&lt;esp:glossary&gt;</code> element, as outlined below:</p>
+
+<pre class="listing">&lt;esp:glossary
+	term="example"
+&gt;
+	Inline content
+&lt;/esp:glossary&gt;</pre>
+
+<dl>
+<dt><code>term</code></dt>
+<dd>Optional. The <code>term</code> attribute specifies the glossary term to link to. It is used when the text on the page is not identical to the term in the glossary.  For example: <code class="example">&lt;esp:glossary term="astrolabe"&gt;Astrolabe&lt;/esp:glossary&gt;</code> if your term in the text is capitalized, or <code class="example">&lt;esp:glossary term="astrolabe"&gt;astrolabes&lt;/esp:glossary&gt;</code> if your term in the text is in plural.</dd>
+</dl>
+
+<p>If no <code>term</code> attribute is given, the content of the element is used as the term.</p>
+
+<h2 class="hide">Cross referencing</h2>
+<p>A glossary definition can cross-reference other glossary entries or entries in the technical terms list (see <a href="#List_of_technical_terms">below</a> for more on the technical terms list).  Thus, the element <code>&lt;esp:definition&gt;</code> can contain the elements <code>&lt;esp:glossary&gt;</code> and <code>&lt;esp:techterms&gt;</code>, which reference glossary and techterms entries respectively.</p>
+
+<h1>List of technical terms</h1>
+<p>The technical terms functionality operates in the same way as the glossary to provide a reference list of technical terms.  It was added to ESP's forerunner electrostatic by Ruth Horry in 2007 for the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website.</p>
+
+<p>Adding technical terms (henceforth called ‘techterms’) functionality involves two steps:</p>
+<ol>
+<li>the creation of a new technical term and definition pair using the <code>&lt;esp:termsdefinition&gt;</code>  element;</li>
+<li>a reference to the glossary entry where that word occurs in your text, using the <code>&lt;esp:techterms&gt;</code> element.</li>
+</ol>
+
+<h2 class="hide">Adding definitions</h2>
+<h4><a name="esp:techterms-list"><code>&lt;esp:techterms-list&gt;</code></a></h4>
+
+<p>The technical terms list is generated from the file called <code>techterms.xml</code>, which contains the one occurrence of the element <code>&lt;esp:techterms-list&gt;</code>.</p>
+
+<p>All techterms term and definition pairs should be created inside <code>&lt;esp:techterms-list&gt;</code> using  the <code>&lt;esp:termsdefinition&gt;</code> element.</p>
+
+<h4><a name="esp:termsdefinition"><code>&lt;esp:termsdefinition&gt;</code></a></h4>
+
+<p>The specification of <code>&lt;esp:termsdefinition&gt;</code> is given below:</p>
+
+<pre class="listing">&lt;esp:termsdefinition term="example"&gt;
+Definition of your techterms term
+&lt;/esp:termsdefinition&gt;</pre>
+
+<dl>
+<dt><code>term</code></dt>
+<dd>Mandatory. The term to be defined, which appears in the techterms list. It is matched with the <code>term</code> attributes (or content) of <code>&lt;esp:techterms&gt;</code> elements.</dd>
+</dl>
+
+<p>The  <code>&lt;esp:termsdefinition&gt;</code> element can contain other elements (including <code>&lt;esp:glossary&gt;</code> and <code>&lt;esp:techterms&gt;</code>), such that techterms entries can reference glossary entries or other techterms entries.  See  the section on <a href="#Cross-referencing">cross-referencing the glossary and technical terms lists</a>.</p>
+
+<h2 class="hide">Referring to a techterms entry</h2>
+<h4><a name="esp:techterms"><code>&lt;esp:techterms&gt;</code></a></h4>
+
+<p>To create a reference in the text to a techterms entry, use the <code>&lt;esp:techterms&gt;</code> element, as outlined below:</p>
+
+<pre class="listing">&lt;esp:techterms
+	term="example"
+&gt;
+	Arbitrary inline content
+&lt;/esp:techterms&gt;</pre>
+
+<dl>
+<dt><code>term</code></dt>
+<dd>Optional. The <code>term</code> attribute specifies the techterms term to link to. It is used when the text on the page is not identical to the term in the glossary.  For example: <code class="example">&lt;esp:techterms term="astrolabe"&gt;Astrolabe&lt;/esp:techterms&gt;</code> if your term in the text is capitalized, or <code class="example">&lt;esp:techterms term="astrolabe"&gt;astrolabes&lt;/esp:glossary&gt;</code> if your term in the text is in plural.</dd>
+</dl>
+<p>If no <code>term</code> attribute is given, the content of the element is used as the term.</p>
+
+<h1>References</h1>
+<p>ESP has functionality for referencing articles, journals, books, websites etc. within the site’s pages.</p>
+
+<h4><a name="esp:referents"><code>&lt;esp:referents&gt;</code></a></h4>
+<p>References are stored in the file <code>referents.xml</code> in the folder site-content.  The list of referents is created using a number of <code>&lt;esp:referent&gt;</code> elements inside the root element <code>&lt;esp:referents&gt;</code>.</p>
+
+<p>Adding reference functionality is carried out in two stages:</p>
+<ol>
+<li>adding the details of an article/book etc., to the reference list using <code>&lt;esp:referent&gt;</code>:</li>
+<li>creating a link to the reference in the text using <code>&lt;esp:ref&gt;</code>.</li>
+</ol>
+
+<h2 class="hide">Adding to the reference list</h2>
+<h4><a name="esp:link"><code>&lt;esp:referent&gt;</code></a></h4>
+<p>To add the details of a book, article, etc., to the reference list, create a new <code>&lt;esp:referent&gt;</code> tag within the reference list.</p>
+
+<p>The specification of <code>&lt;esp:referent&gt;</code> is given below:</p>
+
+<pre class="listing">&lt;esp:referent id="example"&gt;
+	Arbitrary inline content
+&lt;/esp:referent&gt;</pre>
+
+<dl>
+<dt><code>id</code></dt>
+<dd>A unique identifier for this referent. Becomes part of the URL for that referent, so as well as being unique, each id should be reasonably short, contain no spaces and no accented characters.</dd>
+</dl>
+
+<p>Place the details of the article, book, etc., within the element in whatever reference format you prefer.  The text should not end with a full stop, as this is added by the system.</p>
+
+<h2 class="hide">Referring to the reference list</h2>
+
+<p>To place a reference in the text to an item in the reference list, use the <code>&lt;esp:ref&gt;</code> element.  ESP will place a bracketed reference number in the text at the point where <code>&lt;esp:ref&gt;</code> is inserted and will place the full details of the reference at the bottom of the page.  (The number acts as a link to the full reference.)  Remember to use the <code>id</code> of the referent as defined in the reference list.</p>
+
+<h4><a name="esp:ref"><code>&lt;esp:ref&gt;</code></a></h4>
+<p>The specification of the <code>&lt;esp:ref&gt;</code> element is given below:</p>
+
+<pre class="listing">&lt;esp:ref
+	referent="example"
+	page="123"
+/&gt;</pre>
+
+<dl>	
+<dt><code>referent</code></dt>
+<dd>Mandatory. The <code>id</code> of a <code>&lt;esp:referent&gt;</code> element listed in the file <code>referents.xml</code> in the site-content folder.</dd>
+
+<dt><code>page</code></dt>
+<dd>Optional. The page number or page range to be added to the reference. For example, <code class="example">page="123"</code> or <code class="example">page="123, 125"</code> or <code class="example">page="123-150"</code> (the text <code>p.</code> or <code>pp.</code> is added automatically when the site is <a href="../espbuild">rebuilt</a>).</dd>
+</dl>
+<p>NB.  This element is always empty.</p>
+
+<h2 class="hide">Examples of reference functionality</h2>
+<p>See the Whipple Museum’s <a href="www.hps.cam.ac.uk/whipple/explore">Explore</a> website for examples of reference functionality in use.  It was not utilised in the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website.</p>
+
+<p>Here is an example <code>referents.xml</code> file containing two references:</p>
+
+<pre class="example">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;esp:referents 
+	xmlns:esp="http://www.hps.cam.ac.uk/whipple/xmlsite/markup"
+	xmlns="http://www.w3.org/1999/xhtml"
+&gt;
+
+&lt;esp:referent id="mercer1993"&gt;MERCER, P.A. and SMITH, G., 1993. &lt;i&gt;Private 
+viewdata in the UK.&lt;/i&gt; 2nd ed. London: Longman&lt;/esp:referent&gt;
+
+&lt;esp:referent id="bantz1995"&gt;BANTZ, C.R., 1995. Social dimensions of software 
+development. In: J.A. ANDERSON, ed. &lt;i&gt;Annual review of software management 
+and development.&lt;/i&gt; Newbury Park, CA: Sage&lt;/esp:referent&gt;
+
+&lt;/esp:referents&gt;</pre>
+
+
+<h1>‘Further reading’ functionality</h1>
+<p>There are two methods to create a list of materials suggested for further reading:</p>
+
+<ol>
+<li>using the list of references in the <code>referents.xml</code> file; or</li>
+<li>using links to a bookmarked bibliography.</li>
+</ol>
+
+<p><a href="#Method_I">Method I</a> is recommended for sites where you require links to a bibliography page, which may contain links to downloadable resources, such as PDF files.  This method was used on the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website.</p>
+
+<p><a href="#Method_II">Method II</a> is recommended for sites such as the Whipple Museum’s <a href="www.hps.cam.ac.uk/whipple/explore">Explore</a> website that have a limited bibliography and no requirement for a separate bibliography page.</p>
+
+<h2 class="hide">Method I</h2>
+<p>First, create a bibliography page that contains all of the reference material for your site.  Here you can create links to downloadable material, such as PDF files and multimedia content.</p>
+
+<p>Use the <code>&lt;esp:bookmark&gt;</code> element to create a bookmark for each entry in your bibliography to which you would like to refer.  On the page where you wish to place the further reading list, create a set of links to the relevant bookmarks in your bibliography.</p>
+
+<p>See the section on <a href="#Bookmarks">bookmarks</a> for details of how to do this.</p>
+
+<p>You can place the links anywhere on the page, though it may be helpful to put them together at the end.</p>
+
+<h2 class="hide">Method II</h2>
+<p>The list of references created in the <code>referents.xml</code> file (see the section on <a href="#References">References</a>) can be used to add a list of materials for further reading to the bottom of a page.</p>
+
+<p>At the bottom of your page, insert the <code>&lt;esp:reading&gt;</code> element with the <code>id</code> of each item you would like to include in a ‘further reading’ list.  Technically, the element can be placed anywhere on the page, though it may be helpful to put them together at the end.</p>
+
+<h4><a name="esp:reading"><code>&lt;esp:reading&gt;</code></a></h4>
+<p>The specification of <code>&lt;esp:reading&gt;</code> is given below:</p>
+
+<pre class="listing">&lt;esp:reading
+	referent="example"
+	page="123"
+/&gt;</pre>
+	
+<dl>
+<dt><code>referent</code></dt>
+<dd>Mandatory. The <code>id</code> of a <code>&lt;esp:referent&gt;</code> element in the file <code>referents.xml</code> in the site-content folder.</dd>
+	
+<dt><code>page</code></dt>
+<dd>Optional. The page number or page range to be added to the further reading entry. For example, <code class="example">page="123"</code> or <code class="example">page="123, 125"</code> or <code class="example">page="123-150"</code> (the text <code>p.</code> or <code>pp.</code> is added automatically when the site is <a href="../espbuild">rebuilt</a>).</dd>
+</dl>
+<p>NB.  The element is always empty.</p>
+
+<h1>Index functionality</h1>
+
+<p>ESP can create an index of terms used on the site and allows cross referencing between them.  Indexing is done using the <code>&lt;esp:index&gt;</code> element.</p>  
+
+<p>When you index a term that occurs on two different pages, a cross reference (XR) graphic is inserted next to the term.  Clicking on the XR graphic takes you to the index page, listing all of the pages where this term occurs.</p>
+
+<h4><a name="esp:index-list"><code>&lt;esp:index-list&gt;</code></a></h4>
+<p>The file <code>indexpage.xml</code> contains the single instance of the element <code>&lt;esp:index-list/&gt;</code>, from which the index is generated.  This element is empty.  No index terms should be placed on this page.  The index is automatically generated from the instances of <code>&lt;esp:index&gt;</code> within the text.</p>
+
+<p>The <code>indexpage.xml</code> file should contain the following code:</p>
+
+<pre class="cookbook">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;esp:page
+	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+&gt;
+	&lt;esp:name&gt;Index&lt;/esp:name&gt;
+
+	&lt;esp:title&gt;Site index&lt;/esp:title&gt;  (any arbitrary name)
+
+	&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
+		&lt;esp:index-list/&gt;
+	&lt;/body&gt;&lt;/html&gt;
+
+&lt;/esp:page&gt;</pre>
+
+<h2 class="hide">Creating entries in the index</h2>
+<h4><a name="esp:index"><code>&lt;esp:index&gt;</code></a></h4>
+
+<p>Entries in the index are created using the <code>&lt;esp:index&gt;</code> element.  If there is more than one entry for the index term, a cross reference to that term is created in the index.</p>
+
+<pre class="listing">&lt;esp:index
+	term="example"
+&gt;
+	Arbitrary inline content
+&lt;/esp:index&gt;</pre>
+
+<dl>
+<dt><code>term</code></dt>
+<dd>Optional. The term that is being indexed. Used when the term on the page is not identical to the term in the index—for example, if it is capitalized (<code class="example">&lt;esp:glossary term="astrolabe"&gt;Astrolabe&lt;/esp:glossary&gt;</code>) or in the plural (<code class="example">&lt;esp:glossary term="astrolabe"&gt;astrolabes&lt;/esp:glossary&gt;</code>).</dd>
+</dl>
+<p>If no <code>term</code> attribute is given, the content of the element is used as the term.</p>
+
+
+<h1>Endmatter: authors, updates and email addresses</h1>
+<h4><a name="esp:author"><code>&lt;esp:author&gt;</code></a></h4>
+<p>The <code>&lt;esp:author&gt;</code> element defines an author for a page. It may be used any number of times, anywhere within the <code>&lt;body&gt;</code> element. If present at least once, author and citation details are included at the bottom of the content section.</p>
+
+<pre class="listing">&lt;esp:author
+	first-names="George W**ker"
+	last-name="Bush"
+/&gt;</pre>
+
+<h4><a name="esp:content-last-modified"><code>&lt;esp:content-last-modified&gt;</code></a></h4>
+<p>The <code>&lt;esp:content-last-modified/&gt;</code> element inserts the date the content of this page (i.e., the XML file inside <code>00web/esp/site-content/pages</code>) was last modified, in the format <code>18 Sep 2007</code>.</p>
+
+<h4><a name="esp:email"><code>&lt;esp:email&gt;</code></a></h4>
+<p> The <code class="example">&lt;esp:email address="me@example.com"/&gt;</code> element, which is always empty, creates an email address obfuscated like so – <code class="example">me at example dot com</code> – which is converted back into a real address and made into a <code>mailto:</code> link using JavaScript, where available.</p>
+
+<h1>Accesskeys, sitemap etc.</h1>
+
+<h4><a name="esp:accesskeys-listing"><code>&lt;esp:accesskeys-listing&gt;</code></a></h4>
+
+<pre class="listing">&lt;esp:accesskeys-listing/&gt;</pre>
+
+<p>Creates a table of the access keys that are defined for the site in <code>structure.xml</code>, and those that are created automatically (such as <code class="example">S</code> for <code class="example">Skip to main content</code>). Probably used only once, on the <code>accesskeys.xml</code> page.</p>	
+
+<h4><a name="esp:site-map"><code>&lt;esp:site-map&gt;</code></a></h4>
+
+<pre class="listing">&lt;esp:site-map/&gt;</pre>
+
+<p>Creates a site map. Used once, on the <code>sitemap.xml</code> page. Always empty.</p>
+
+<h1>Comments</h1>
+<p>XML files can contain comments in this format: <code class="example">&lt;!-- Here is a comment --&gt;</code>. Comments cannot be nested inside each other, because the sequence of characters -- is not permitted inside a comment.</p>
+
+<p>Using comments can be handy way to temporarily remove sections of content from the site, as things that are commented out leave no trace in the final output site.</p>
+
+<h1>Next steps</h1>
+<p>There is an alphabetical reference list of <a href="../espelements">ESP system elements</a> for quick cross-reference.</p>
+<p>Information on embedding images and other non-textual content is given on a <a href="../espimages">separate page</a>.</p>
+
+<p>See also:</p>
+<ul>
+<li><a href="../esp/">Overview of ESP</a></li>
+<li><a href="../espsetup/">How to set up your ESP site</a></li>
+<!-- <li><a href="../espcontent/">How to mark up textual content</a></li> -->
+<li><a href="../espimages/">How to embed images and other non-textual content</a></li>
+<li><a href="../espbuild/">How to check and rebuild your ESP website</a></li>
+<li><a href="../espelements/">Alphabetical list of ESP system elements</a></li>
+<li><a href="/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+
+<!--<d:schema name="" uri="">
+</d:schema>
+<d:resources/>-->
+
+</d:doc>

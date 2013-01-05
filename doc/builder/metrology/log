@@ -1,0 +1,42 @@
+Argument "\x{31}\x{2f}..." isn't numeric in integer division (/) at /usr/local/oracc/lib/ORACC/Legacy/Sexify.pm line 19.
+Argument "\x{31}\x{2f}..." isn't numeric in integer division (/) at /usr/local/oracc/lib/ORACC/Legacy/Sexify.pm line 19.
+Argument "\x{32}\x{2f}..." isn't numeric in integer division (/) at /usr/local/oracc/lib/ORACC/Legacy/Sexify.pm line 19.
+Argument "\x{35}\x{2f}..." isn't numeric in integer division (/) at /usr/local/oracc/lib/ORACC/Legacy/Sexify.pm line 19.
+metrol_tables.ods:21: grapheme '7(diš)@v' not in sign list
+metrol_tables.ods:56: sign name '3(IKU)@v' not in sign list
+metrol_tables.ods:64: sign name '3(BUR₂)@v' not in sign list
+metrol_tables.ods:74: sign name '3(BURʾU)@v' not in sign list
+metrol_tables.ods:77: 1(ŠAR₂): no ucode (id=x2200)
+metrol_tables.ods:80: sign name '3(ŠAR₂)@v' not in sign list
+metrol_tables.ods:90: sign name '3(ŠARʾU)@v' not in sign list
+metrol_tables.ods:105: N: no ucode (id=x1390)
+metrol_tables.ods:106: N: no ucode (id=x1390)
+metrol_tables.ods:107: N: no ucode (id=x1390)
+metrol_tables.ods:108: N: no ucode (id=x1390)
+metrol_tables.ods:109: 1(AŠ): no ucode (id=x2167)
+metrol_tables.ods:112: sign name '3(AŠ)@v' not in sign list
+metrol_tables.ods:133: N: no ucode (id=x1390)
+metrol_tables.ods:134: N: no ucode (id=x1390)
+metrol_tables.ods:135: N: no ucode (id=x1390)
+metrol_tables.ods:136: N: no ucode (id=x1390)
+metrol_tables.ods:137: N: no ucode (id=x1390)
+metrol_tables.ods:138: 1(ŠAR₂): no ucode (id=x2200)
+metrol_tables.ods:152: 1(AŠ): no ucode (id=x2167)
+metrol_tables.ods:172: 1(AŠ): no ucode (id=x2167)
+metrol_tables.ods:172: grapheme 'or' not in sign list
+metrol_tables.ods:195: N: no ucode (id=x1390)
+metrol_tables.ods:196: N: no ucode (id=x1390)
+metrol_tables.ods:197: N: no ucode (id=x1390)
+metrol_tables.ods:198: N: no ucode (id=x1390)
+metrol_tables.ods:199: N: no ucode (id=x1390)
+metrol_tables.ods:200: 1(ŠAR₂): no ucode (id=x2200)
+metrol_tables.ods:237: N: no ucode (id=x1390)
+metrol_tables.ods:238: N: no ucode (id=x1390)
+metrol_tables.ods:239: N: no ucode (id=x1390)
+metrol_tables.ods:240: N: no ucode (id=x1390)
+metrol_tables.ods:241: 1(AŠ): no ucode (id=x2167)
+metrol_tables.ods:268: N: no ucode (id=x1390)
+metrol_tables.ods:269: N: no ucode (id=x1390)
+metrol_tables.ods:270: N: no ucode (id=x1390)
+metrol_tables.ods:271: N: no ucode (id=x1390)
+metrol_tables.ods:272: 1(AŠ): no ucode (id=x2167)

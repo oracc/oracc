@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- @SUMMARY@= XMD documentation source file -->
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XMD</dc:title>
+  <dcterms:alternative>XML MetaData</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/XMD/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2/2/06</dc:date>
+  <dc:publisher>CDL</dc:publisher>
+  <dc:description>XMD is a CDL subsystem which imports catalogs
+  containing metadata concerning texts and compositions and creates an
+  XML version of the data.  Some validation of the catalog content is
+  performed and sort codes are generated and added to some fields.
+  XMD also encompasses a keyset-generator to create keys for
+  indexing.</dc:description>
+</d:meta>
+
+<h1 id="processing">Processing</h1>
+
+<p>An XMD installation is controlled by a <a
+href="#config">configuration file</a> which may be created using a
+template generator or by hand.  The XMD run is then executed using a
+Perl program, <code>xmdmanager.plx</code>, otherwise known as `the XMD
+processor'.</p>
+
+<p>The XMD processor operates on an internal data type named
+<code>catalog</code>.  Configuring an XMD processor run is handled by
+a configuration file as <a href="#config">described below</a>.  The
+XMD processing sequences is as follows; any failed validation phase
+results in termination of the run.</p>
+
+<ol>
+  <li>Configuration input validation against <code>xcf.rnc</code></li>
+  <li>Configuration loading (see <a href="../XCF/">XCF documentation</a>)</li>
+  <li>Configuration result validation against
+  <code>xmd-config.rnc</code></li>
+  <li>Keydata validation against <code>xmd-keydata.rnc</code></li>
+  <li>Input catalog validation against type-appropriate schema
+  (currently only <a href="../FXR/">FXR</a>)</li>
+  <li>Catalog conversion using type-specific module</li>
+  <li>Catalog conversion result validation against <code>xmd.rnc</code></li>
+  <li>Catalog field content validation against keydata</li>
+  <li>Sort code generation</li>
+  <li>Sort code data output</li>
+  <li>XMD instances generation</li>
+  <li>XRU generation simultaneously with XMD instances generation</li>
+</ol>
+
+<h1 id="config">Configuration</h1>
+<p>The locations of key files and the catalogs to be processed are
+specified in an <a href="../XCF/">XCF configuration file</a>; the <a
+href="http://cdl.museum.upenn.edu/doc/catalog/">CDL XML
+catalog implementation</a> offers a working demonstration.</p>
+<d:config name="xmd-config" path="/usr/local/oracc/lib/ORACC/XMD">
+<d:for name="xmdmanager.plx"/>
+<d:var name="catdir" times="1">location of the catalogs directory</d:var>
+<d:var name="catalog" times="+">
+  <d:txt>Each catalog table provides the XMD processor with the
+  information needed to locate and internalize one catalog.  More than
+  one catalog may be given.</d:txt>
+  <d:key name="path">the path to the catalog, excluding the basename</d:key>
+  <d:key name="basename">the catalog basename, excluding extension</d:key>
+  <d:key name="ext">the catalog extension if different from the type</d:key>
+  <d:key name="type" type="fxr" required="false">the catalog type</d:key>
+</d:var>
+<d:var name="logfile" times="1">logfile to which to append messages</d:var>
+<d:var name="loghtml" times="1">name of result of logfile rendering as
+html</d:var>
+<d:var name="keydata" times="1">name of keydata file</d:var>
+<!--<d:var name="" times="1"/>-->
+</d:config>
+
+<d:schema name="xmd" uri="http://oracc.org/ns/XMD/1.0">
+<h2>Preamble</h2>
+<d:rnc>
+default namespace = "http://oracc.org/ns/XMD/1.0"
+</d:rnc>
+<h2>Start</h2>
+<d:rnc>
+start = element xmd { P.model | Q.model }
+</d:rnc>
+<p>Sorting results is facilitated by inclusion of a sortcode on
+several of the key types; these are generated from the entire keyset
+for each field type so display routines simply need to compare the
+integers to sort by genre, place, etc.</p>
+<d:rnc>
+sortcode = attribute c { xsd:integer }
+</d:rnc>
+<p>The catalog group is derived from the XMD versions of either P or Q
+record entries.</p>
+<d:rnc>
+P.model =
+  element catalog {
+    element accession_no { text },
+    element accounting_period { text },
+    element acquisition_history { text },
+    element aka_name { text },
+    element alternative_years { text },
+    element author { text },
+    element author_remarks { text },
+    element cdli_collation { text },
+    element citation { text },
+    element condition_description { text },
+    element date_entered { text },
+    element date_of_origin { text },
+    element date_remarks { text },
+    element date_updated { text },
+    element dates_referenced { text },
+    element db_source { text },
+    element designation { sortcode , text },
+    element display_size { text },
+    element electronic_publication { text },
+    element elevation { text },
+    element envelope { text },
+    element excavation_no { text },
+    element findspot_remarks { text },
+    element findspot_square { text },
+    element genre { text },
+    element height { sortcode , text },
+    element id_text { xsd:NCName },
+    element join_information { text },
+    element language { text },
+    element lineart_up { text },
+    element material { text },
+    element museum_no { text },
+    element object_preservation { text },
+    element object_remarks { text },
+    element object_type { text },
+    element owner { text },
+    element period { sortcode , text },
+    element period_remarks { text },
+    element primary_publication { text },
+    element provenience { sortcode , text },
+    element provenience_remarks { text },
+    element publication_date { text },
+    element publication_history { text },
+    element published_collation { text },
+    element seal_id { text },
+    element seal_information { text },
+    element sigrist_no { text },
+    element stratigraphic_level { text },
+    element subgenre { text },
+    element subgenre_remarks { text },
+    element supergenre { sortcode , xsd:NCName },
+    element surface_preservation { text },
+    element text_remarks { text },
+    element thickness { text },
+    element width { text },
+    element writing_phase { text }
+  }+
+
+Q.model =
+  element catalog {
+    element id_composite { text },
+    element number { xsd:integer },
+    element editions { text },
+    element provenience { sortcode , text },
+    element notes { text },
+    element tradition { text },
+    element name { sortcode , text },
+    element corpus { text },
+    element subcorpus { text },
+    element genre { sortcode , text },
+    element supergenre { sortcode , text },
+    element period { sortcode , text },
+    element xname { text },
+    element xid { text },
+    element xurl { xsd:anyURI },
+    element last_updated { text },
+    element date_entered { text }
+  }+
+
+</d:rnc>
+</d:schema>
+
+<d:schema name="xmd-keydata" uri="http://oracc.org/ns/xmd-keydata/1.0">
+<d:rnc>
+default namespace = "http://oracc.org/ns/keydata/1.0"
+
+start =
+  element keydata {
+    element not-indexed {
+      element field {
+        attribute n { xsd:NCName }
+      }*
+    }? ,
+    element imported {
+      element field {
+        attribute n    { xsd:NCName },
+        attribute via  { xsd:NCName }?
+      }*
+    }? ,
+    element inherited {
+      element field {
+        attribute n    { xsd:NCName },
+        attribute from { xsd:NCName },
+        attribute new  { xsd:boolean }?,
+        attribute via  { xsd:NCName }?
+      }*
+    }? ,
+    element keytypes {
+      element keytype {
+        attribute n    { xsd:NCName } ,
+        attribute type { xsd:NCName }
+      }*
+    }? ,
+    element sortable {
+      element type { attribute n { xsd:NCName } , hr }*
+      | element field { attribute n { xsd:NCName } , hr }*
+    }? ,
+    element keys {
+      attribute class     { xsd:NCName  },
+      attribute method    { xsd:NCName  }?,
+      attribute reorder   { xsd:boolean },
+      (attribute type     { xsd:NCName  }
+      |attribute field    { xsd:NCName  }) ,
+      attribute queryable { xsd:boolean },
+      (attribute remap    { xsd:boolean },
+       attribute remap-to { xsd:NCName }?),
+      (attribute value-set { text }
+      |element val {
+         attribute n { text },
+         attribute abbrev { text }?,
+         attribute remap { text }?
+       }*)
+    }+
+  }
+
+hr = attribute hr { text }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+<!--
+<d:references namespaces="fxr rng xru rng"/>
+-->
+
+</d:doc>

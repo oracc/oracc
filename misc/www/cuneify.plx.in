@@ -1,0 +1,169 @@
+#!/usr/bin/perl
+#
+# Take an ATF inline string as input and translate it to Unicode cuneiform
+#
+use strict; use warnings; 
+use open 'utf8'; use utf8;
+use CGI;
+use Encode;
+use integer;
+
+binmode STDIN, ':utf8';
+binmode STDOUT, ':utf8';
+
+my $q = CGI->new($ENV{'QUERY_STRING'});
+my $cuneiform = '';
+my $cuneify_text = '';
+my $cuneify_xsl = '@@ORACC@@/lib/scripts/cuneify-text.xsl';
+my $input = $q->param('input'); Encode::_utf8_on($input);
+my $project = $q->param('project');
+my $project_html = $project ? "@@ORACC@@/www/$project/cuneify/index.html" : '';
+my $text = $q->param('text') || undef;
+
+if (!$text) {
+    my $atf_input = preprocess($input);
+    open(C,">/tmp/$$.cun") || die "cuneify.plx: couldn't open /tmp/$$.cun for output\n";
+    print C <<EOF;
+\&X000001 = Cuneify input
+#atf: use cuneiform
+#atf: use legacy
+#atf: use math
+1. $atf_input
+EOF
+close(C);
+$cuneiform = `@@ORACC@@/bin/ox -w -a /tmp/$$.cun | xsltproc @@ORACC@@/lib/scripts/cuneify-string.xsl -`;
+
+    chomp($cuneiform);
+    if ($cuneiform) {
+	1 while $cuneiform =~ s/\x{2591}\s+\x{2591}/\x{2591}\x{2591}/;
+    } else {
+	$cuneiform = "Sorry, I didn't understand your transliteration ($atf_input)" 
+    }
+    unlink "/tmp/$$.cun";
+} else {
+    my $prefix = $text;
+    $prefix =~ s/^(....).*$/$1/;
+    $cuneify_text = "@@ORACC@@/bld/$project/$prefix/$text/$text.xtf";    
+}
+
+print $q->header(-charset=>'utf-8');
+
+if ($text) {
+    exec 'xsltproc', $cuneify_xsl, $cuneify_text;
+} else {
+    if ($project_html && -e $project_html) {
+	open(H,$project_html);
+	while (<H>) {
+	    if (/<span[^>]*\sid=\"CuneifyOutput\"/) {
+		sub_cuneify_output($_,$cuneiform);
+	    }
+	    if (m/<input[^>]*\sname=\"input\"/) {
+		sub_cuneify_input($_,$input);
+            }
+            print;
+        }
+        close(H);
+    } else {
+	print <<EOF;
+<html>
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>
+<link rel="stylesheet" type="text/css" href="/css/cuneiform.css"/>
+</head>
+<body>
+<p class=\"input\">$input</p>
+EOF
+    print "<p class=\"output cuneiform\">";
+    print $cuneiform;
+    print "</p>\n";
+    print "</body></html>\n";
+    }
+}
+exit 1;
+
+#####################################################################
+
+sub
+cg {
+    local($_) = $_[0];
+    if (!/^[&\@\$\#]/ && !/\|/) {
+	s/([A-Z][A-Z0-9x\#*?!+\[\]<>\@a-z]*?
+          ([.x%\&\+\/~]|\@(?>[A-Z]))
+          [\(\[\]<>]*[A-Z0-9][A-Za-z0-9x\#*?!\+.x%\@\&\/\[\]<>\(\)]*)/|$1|/gx;
+	s/\(\|(.*?)\)\|\&\(\|(.*?)\)\|/|($1)&($2)|/g;
+	s/\(\|([^()]*?.*?)\)\|/(|$1|)/g;
+	s/\(\<\|([^|]+?>)/(|<$1/g;
+	s/\[\|([^\[\|]+\])/|[$1/g;
+	s/\(\|(.*?)\)\|(?!\))/(|$1|)/g;
+    }
+    $_;
+}
+
+sub
+preprocess {
+    my $i = shift;
+    $i =~ tr/[]⸢⸣<>?!#*//d;
+    $i =~ s/\.\.+/ x x x /g;
+    $i =~ tr/./-/;
+    my @w = ();
+    foreach my $w (split(/([\s{}])/,,$i)) {
+	if ($w =~ /^\d+$/) {
+	    $w = sexify($w);
+	}
+	$w = cg($w);
+	push @w, $w;
+    }
+    join('',@w);
+}
+
+sub
+sexify {
+    my ($n,$asz) = @_;
+
+    my $asz_or_disz = ($asz ? 'asz' : 'disz');
+
+    return '' unless defined $n;
+
+    my $szargal = $n / 216000;
+    $n %= 216000;
+
+    my $szaru = $n / 36000;
+    $n %= 36000;
+
+    my $szar2 = $n / 3600;
+    $n %= 3600;
+
+    my $geszu = $n / 600;
+    $n %= 600;
+
+    my $geszd = $n / 60;
+    $n %= 60;
+
+    my $u = $n / 10;
+    $n %= 10;
+
+    my $disz = $n;
+
+    my $ret = '';
+    
+    $ret .= "$szargal(szar2){gal} " if $szargal;
+    $ret .= "$szaru(szaru) " if $szaru;
+    $ret .= "$szar2(szar2) " if $szar2;
+    $ret .= "$geszu(geszu) " if $geszu;
+    $ret .= "$geszd(gesz2) " if $geszd;
+    $ret .= "$u(u) " if $u;
+    $ret .= "$disz($asz_or_disz)" if $disz;
+
+    $ret =~ s/\s*$//;
+    
+    $ret;
+}
+
+sub
+sub_cuneify_input {
+    $_[0] =~ s#value=".*?"#value="$_[1]"#;
+}
+sub
+sub_cuneify_output {
+    $_[0] =~ s#(id="CuneifyOutput"[^>]+>)#$1$_[1]#;
+}

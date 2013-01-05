@@ -1,0 +1,86 @@
+.TH ESTCONFIG 1 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estconfig \- configuration utility of Hyper Estraier
+
+.SH SYNOPSIS
+.PP
+.B estconfig \-\-version
+.PP
+.B estconfig \-\-prefix
+.PP
+.B estconfig \-\-execprefix
+.PP
+.B estconfig \-\-headdir
+.PP
+.B estconfig \-\-libdir
+.PP
+.B estconfig \-\-bindir
+.PP
+.B estconfig \-\-libexecdir
+.PP
+.B estconfig \-\-datadir
+.PP
+.B estconfig \-\-cflags
+.PP
+.B estconfig \-\-ldflags
+.PP
+.B estconfig \-\-libs
+.PP
+.B estconfig \-\-mtlibs
+
+.SH DESCRIPTION
+.PP
+.B estconfig
+is useful for integration of an application or a system using Hyper Estraier.  It outputs setting and configurations of Hyper Estraier.
+.TP
+.B estconfig \-\-version
+to output version information.
+.TP
+.B estconfig \-\-prefix
+to output the prefix of the destination of installation.
+.TP
+.B estconfig \-\-execprefix
+to output the prefix of the files depending on the platform.
+.TP
+.B estconfig \-\-headdir
+to output the prefix of the headers.
+.TP
+.B estconfig \-\-libdir
+to output the prefix of the libraries.
+.TP
+.B estconfig \-\-bindir
+to output the prefix of the commands.
+.TP
+.B estconfig \-\-libexecdir
+to output the prefix of the CGI script.
+.TP
+.B estconfig \-\-datadir
+to output the prefix of the configuration files.
+.TP
+.B estconfig \-\-cflags
+to output the compiler options to be specified when building.
+.TP
+.B estconfig \-\-ldflags
+to output the linker options to be specified when building.
+.TP
+.B estconfig \-\-libs
+to output the libraries to be specified when building.
+.TP
+.B estconfig \-\-mtlibs
+to output the libraries for applications with multi thread.
+.PP
+estconfig always returns 0 as the exit status.
+
+.SH SEE ALSO
+.PP
+.BR estcmd (1),
+.BR estmaster (1),
+.BR estcall (1),
+.BR estwaver (1),
+.BR estraier (3)
+.BR estnode (3)
+.PP
+Please see
+.B http://fallabs.com/pguide-en.html
+for detail.

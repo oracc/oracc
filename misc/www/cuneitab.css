@@ -1,0 +1,27 @@
+table { width: 90%; margin: auto; border-collapse: collapse; }
+
+.ulast { font-family: sans-serif; font-size: 9pt; text-align: right; 
+	 padding-right: .25em; }
+
+th { font-family: sans-serif; font-weight: normal; font-size: 9pt; 
+     text-align: center; border-bottom: 2px solid black; }
+
+.uchr { font-family: CuneiformComposite; font-size: 17pt; 
+	text-align: center; vertical-align: middle;
+	border-right: 1px solid silver; }
+
+.unum { font-family: sans-serif; font-size: 7pt; text-align: center; 
+	border-bottom: 1px solid silver; 
+	border-right: 1px solid silver; }
+
+.nchr { text-align: center; vertical-align: middle;
+	border-right: 1px solid silver; 
+	background-color: #eee; }
+
+.nnum { font-family: sans-serif; font-size: 7pt; text-align: center; 
+	border-bottom: 1px solid silver; 
+	border-right: 1px solid silver; background-color: #eee; }
+
+.c1  { border-right: 2px solid black; border-bottom: 0px; }
+.c16 { border-left: 2px solid black; width: 0px; }
+.r16 { border-top: 2px solid black; }

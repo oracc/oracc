@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/xcf/1.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="xcf">
+      <zeroOrMore>
+        <choice>
+          <element name="set">
+            <ref name="set.model"/>
+          </element>
+          <ref name="xinclude"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </start>
+  <define name="set.model">
+    <attribute name="var">
+      <data type="token" datatypeLibrary=""/>
+    </attribute>
+    <choice>
+      <ref name="to"/>
+      <oneOrMore>
+        <ref name="kto"/>
+      </oneOrMore>
+    </choice>
+  </define>
+  <define name="to">
+    <choice>
+      <ref name="to.attr"/>
+      <oneOrMore>
+        <ref name="to.elem"/>
+      </oneOrMore>
+    </choice>
+  </define>
+  <define name="to.attr">
+    <attribute name="to"/>
+  </define>
+  <define name="to.elem">
+    <element name="to">
+      <ref name="to.attr"/>
+    </element>
+  </define>
+  <define name="kto">
+    <element name="key">
+      <attribute name="k">
+        <data type="token" datatypeLibrary=""/>
+      </attribute>
+      <ref name="to.attr"/>
+    </element>
+  </define>
+  <define name="xinclude">
+    <element name="xi:include">
+      <attribute name="href">
+        <data type="anyURI"/>
+      </attribute>
+    </element>
+  </define>
+</grammar>

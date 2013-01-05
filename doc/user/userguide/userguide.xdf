@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Using the Oracc online corpora</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2009-11-29</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>These pages describe how to browse, sort, and search any of Oracc's online corpora, and how to use the associated glossaries. </dc:description>
+</d:meta>
+
+<h1>Before you start</h1>
+
+<p>You may find it helpful to print this page out for reference before you start to explore any of the Oracc corpora for the first time. If your browser has problems displaying all the special transliteration characters you may want to download and install a <a href="../fonts/">Unicode transliteration font</a> for Mac, Windows, or Linux.</p>
+
+<ul>
+<li><a href="../searching/">Searching the Oracc corpora</a></li>
+<li><a href="../glossaries/">Using the Oracc glossaries</a></li>
+</ul>
+
+<div>
+<a name="pageview" />
+<h1>Page View</h1>
+
+<p>The Page View is the page you see when you first access the corpus online. You can use it to browse the corpus. The screen is divided into two unequal halves. There is a sidebar on the left, and a full listing of the corpus on the
+right.</p>
+
+<p>On the right, the tablets are listed by a short, standardised designation, based on their place of publication, and grouped by period, genre, and provenance. There are 25 records per page. Left and right arrows at the top and bottom of the page enable you to move through the listing. You can also jump to another page by typing the page number in the box at the top centre. </p>
+
+<p>The "CDLI" button on the left-hand side of each
+entry takes you to the relevant entry in the <a href="http://cdli.ucla.edu">Cuneiform Digital Library Initiative's</a>
+database. Designation (publication numbers) that are blue link to the <a href="#itemview">Item View</a>, which displays the transliteration and translation of a single tablet. Black designations list tablets that have not yet been edited as part of the corpus.</p> 
+<p>The following columns list information such as textual genre and ancient author. They vary from project to project and corpus to corpus. For more information on project-specific keywords, go to that project's website (as listed on the front page of <a href="http://oracc.museum.upenn.edu/">Oracc</a>).</p>
+
+<p>The left-hand sidebar is typically divided into five
+ zones by four horizontal lines (though some projects use a slightly different layout):</p>
+<ul>
+<li>The top link or two take you to the project's
+website (if there is one) or allow you to start a fresh search.</li>
+<li>Beneath the second line are links to the
+project's <a href="../glossaries/">glossary or glossaries</a>.</li>
+<li>The tools in the fourth section allow you to
+<a href="../searching/">search</a> the corpus in three different ways and to sort your findings (or the entire corpus) by
+any combination of period, genre, and provenance.</li>
+<li>The lowest, longest part of the sidebar gives an
+outline view of the corpus, or the found set of records, which in many Oracc projects is grouped by period, genre, and provenance as specified in the search box and sort bar above. It shows the
+number of found records in each category and allows you to zoom in on a subset
+of records by clicking on any blue word. To unzoom back to your found set,
+click on <code>UNZOOM</code> at the top or bottom of the resulting text listing. To move
+from one subset to another, click on the up and down arrows either side of <code>ZOOM</code>
+at the top or bottom of the text listing.</li>
+</ul>
+</div>
+
+<div>
+<a name="itemview" />
+<h1>Item View</h1>
+
+<p>The Item View shows the transliteration and
+translation of a single tablet or composite text. If the text has been <a href="../glossaries/">lemmatised</a>, you can place the cursor over any
+word of the transliteration to see its outline <a href="../glossaries/">glossary</a> entry, and click on
+the word to go to its full <a href="../glossaries/">glossary</a> entry. If the line numbers of the
+transliteration are shown in blue, you can click them to view an associated tablet or composite text.</p>
+
+<p>The left-hand sidebar gives a set of information about the tablet and text. Its exact contents depend on the project, but it should include some or all of the following data:</p> 
+
+<dl> 
+<dt>Numbers</dt>
+
+<dd><a href="http://cdli.ucla.edu">CDLI</a> catalogue number (external
+link);<br/>
+        museum number;<br/>
+        excavation number (as appropriate)<br/>
+         </dd>
+<dt>Views</dt>
+<dd>Cuneified (for which you need to install the relevant <a href="../fonts/#Cuneiform_Fonts">Unicode cuneiform font</a>)<br />
+Line Art (i.e., cuneiform copy, from <a href="http://cdli.ucla.edu">CDLI</a>)<br />
+Image (i.e., photograph, from <a href="http://cdli.ucla.edu">CDLI</a>)<br />
+TEI (i.e., marked up according to the <a href="http://www.tei-c.org/index.xml">Text Encoding Initiative</a>'s <a href="http://www.tei-c.org/Guidelines/P5/">P5 Guidelines</a></dd>
+<dt>Details</dt>
+        <dd>period<br/>
+        provenance<br/>
+        genre</dd>
+			 <dt>Bibliography</dt>
+			         <dd>short references to relevant secondary literature</dd>
+
+</dl>
+
+<p>To hide or unhide the left-hand sidebar, click <code>[fullscreen]</code> or <code>[splitscreen]</code> at the top of the page.</p>
+</div>
+
+<div>
+<a name="printing" />
+<h1>Printing</h1> <p>When you print a
+page, either in <a href="#pageview">Page View</a> or in <a href="#itemview">Item View</a>, the left-hand sidebar
+containing the search box and catalogue data is omitted.</p>
+</div>
+
+<div>
+<a name="more" />
+<h1>More on using Oracc corpora</h1>
+<ul>
+<li><a href="../searching/">Searching the Oracc corpora</a></li>
+<li><a href="../glossaries/">Using the Oracc glossaries</a></li>
+</ul>
+</div>
+
+<!--<d:resources/>-->
+
+</d:doc>

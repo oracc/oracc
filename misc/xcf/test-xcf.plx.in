@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+# @SUMMARY@= simple test program with built-in data
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XCF::Util;
+use Data::Dumper;
+my $testfn = shift @ARGV;
+
+my $test = <<EOT;
+<?xml version="1.0" encoding="utf-8"?>
+<xcf xmlns="http://oracc.org/ns/xcf/1.0">
+  <set var="decl" to="a"/>
+  <set var="decl_test" to="\${decl}s"/>
+  <set var="scalar_test" to="s"/>
+  <set var="list" to="l1"/>
+  <set var="list" to="l2"/>
+  <set var="explicit_list">
+    <to to="a"/>
+    <to to="b"/>
+  </set>
+  <set var="hash_test">
+    <key k="k1" to="v1"/>
+    <key k="k2" to="v2"/>
+  </set>
+  <set var="hash_test">
+    <key k="k1" to="v3"/>
+    <key k="k2" to="v4"/>
+  </set>
+</xcf>
+EOT
+
+unless ($testfn) {
+    $testfn = "/tmp/test.xcf";
+    open(T,">$testfn");
+    print T $test;
+    close(T);
+}
+
+my $set = ORACC::XCF::Util::load($testfn);
+
+#print Dumper($set);
+
+ORACC::XCF::Util::dumpconfig($set);
+
+1;

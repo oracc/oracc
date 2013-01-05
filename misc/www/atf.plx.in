@@ -1,0 +1,332 @@
+#!/usr/bin/perl -C0
+use warnings; use strict; #use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use ORACC::XTF::RTF;
+#use Encode;
+
+#binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+
+##
+# CGI frontend to atf2xtf, by Steve Tinney
+#
+# Based on atf2xml by Malcolm D. Hyman
+
+##
+# TARGET_PATH is the location in which all files created by the program
+# will be written. Files are not removed by this script; they should be
+# cleaned up periodically by a cron job, vel sim.
+##
+
+my $TARGET_PATH = "/var/tmp/oracc/atfserver";
+
+$ENV{'ORACC'} = '@@ORACC@@';
+
+##
+# LINK_BASE is the base that is prepended to URLs in links to generated
+# files. Normally, one will create a symlink in the appropriate location
+# in the web server HTML directory, which points to $TARGET_PATH.
+##
+
+my $LINK_BASE = "/atfserver";
+
+use CGI;
+my $q = CGI->new();
+#my $base = $q->param('base');
+
+my $mac = $q->param('mac');
+my $check_lem = $q->param('operation') eq 'ck_lemma';
+my $check_links = $q->param('operation') eq 'ck_links';
+my $lem_file = $q->param('operation') eq 'lem_file';
+my $check_nums = $q->param('ck_nums');
+my $rtf = $q->param('operation') eq 'rtf';
+my $html = $q->param('operation') eq 'html';
+my $glist = $q->param('operation') eq 'glist';
+my $wlist = $q->param('operation') eq 'wlist';
+my $xtf = $html || $rtf || $q->param('operation') eq 'xtf';
+my $xmlformat = 1; # $q->param('xmlformat');
+my $freq = $q->param('frequency');
+
+my $filename = $q->param('filename');
+$filename =~ s/^.*\\//;
+
+##
+# Escape shell metacharacters:
+##
+$filename =~ s/[\001-\011\013-\014\016-\037\041-\052\057\074-\077\133-\136\140\173-\377]//g;
+
+##
+# Create the working directory, if it doesn't exist:
+##
+
+unless (-f $TARGET_PATH) {
+    mkdir($TARGET_PATH, 0777);
+}
+
+##
+# Generate random file name:
+##
+
+my $rand = int(rand(42));
+my $time = $^T;
+my $randfile = $rand . $time;
+
+my $outdir = "$TARGET_PATH/$randfile";
+mkdir($outdir, 0777) or die "$0: can't create temp dir $outdir\n";
+
+##
+# Copy the file:
+##
+my $procfile = "$outdir/$filename";
+my $logfile = "$outdir/atf2xtf.log";
+my $xmlfile = $procfile;
+$xmlfile =~ s,\.[^\\]+,,;
+$xmlfile .= '.xml';
+
+my $previewer = '/usr/local//www/lib/preview.xsl';
+
+open (OUTFILE,">$procfile");
+my $fh = $q->upload('filename');
+my $buffer;
+my $bytes_read = 0;
+my $total_bytes_read = 0;
+my $macbinary = 0;
+my $data_fork_length = 0;
+while ($bytes_read = read($fh, $buffer, 16384)) {
+    
+    $total_bytes_read += $bytes_read;
+    
+##
+# Strip MacBinary wrapper, in case the user's browser is idiotic:
+#
+# MacBinary begins with 0x00; length of data fork is a big-endian
+# 32 bit int at offset 83. Data fork begins after header at offset 128.
+# If it weren't for the stupidity of Internet Explorer, I shouldn't
+# have had to waste an hour learning this nonsense.
+##
+    
+    if (($buffer =~ /^\x00/) && ($bytes_read == $total_bytes_read)) {
+	$data_fork_length = unpack("N", substr($buffer, 83, 4));
+	$buffer =~ s/^.{128}//;
+	$total_bytes_read -= 128;
+	$macbinary = 1;
+    }
+    
+    if ($macbinary && ($total_bytes_read > $data_fork_length)) {
+	my $bytes_to_chop = $total_bytes_read - $data_fork_length;
+	$buffer = substr($buffer, 0, length($buffer) - $bytes_to_chop);
+    }
+    
+    print OUTFILE $buffer;
+}
+
+close OUTFILE;
+#my $op = $xtf ? '' : '-cv';
+#$op .= " -m" if $check_lem;
+#$op .= " -X" if $check_links;
+#$op .= " -o" if $check_nums;
+#$op .= " -G_$outdir/graphemes.lst" if $glist;
+#$op .= " -F_$outdir/forms.lst" if $wlist;
+#$op .= " -f_-x_$xmlfile" if $xtf;
+#$op .= " -M" if $lem_file;
+
+my @op = $xtf ? () : ('-cv');
+push(@op, '-m') if $check_lem;
+push(@op, '-X') if $check_links;
+push(@op, '-o') if $check_nums;
+push(@op, '-G', "$outdir/graphemes.lst") if $glist;
+push(@op, '-F', "$outdir/forms.lst") if $wlist;
+push(@op, '-f', '-x', $xmlfile) if $xtf;
+push(@op, '-M') if $lem_file;
+
+my @sys = ("@@ORACC@@/bin/ox", @op, '-l', $logfile, '-z', 'cdli', $procfile);
+warn("atf.plx: @sys\n");
+my $sysfail = system @sys;
+warn("atf.plx: sysfail =$sysfail\n");
+
+binmode STDOUT, ':utf8';
+print $q->header(-charset=>'utf-8');
+print <<EOH;
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>ATF Processing Results</title>
+</head>
+<body>
+EOH
+
+if ($? & 127) {
+    print <<EOS;
+<p>Your input crashed the ATF processor--this is not your fault; please advise
+stinney\@sas.upenn.edu to review the job '$procfile'.</p>
+EOS
+
+#<p>The ATF Authorities have been notified of the problem and will take 
+#appropriate action as soon as possible.</p>
+#    system "mail -N -s 'Bad ATF job $procfile' stinney\@sas.upenn.edu </dev/null >/dev/null 2>&1";
+
+print <<EOT;
+</body>
+</html>
+EOT
+    exit 1;
+}
+
+print "<h1>ATF Processing Results</h1>";
+if ($xtf && !$sysfail) {
+    if (-z $xmlfile) {
+	print "<p>No XML output was produced</p>";
+	if ($rtf) {
+	    print "<p>Without XML output no RTF can be produced</p>";
+	}
+    } else {
+	if ($rtf) {
+	    my $rtffile = $xmlfile;
+	    $rtffile =~ s/xml$/rtf/;
+	    my $xtf = load_xml($xmlfile);
+	    ORACC::XTF::RTF::generate($xtf,$rtffile);
+	    sleep(1);
+	    my $sz = (stat($rtffile))[7];
+#	    if (-z $rtffile) {
+	    if (!$sz) {
+		print "<p>No RTF output was produced ($rtffile)</p>";
+		print `cat $rtffile`;
+	    } else {
+		my $dl_rtffile = $rtffile;
+		$dl_rtffile =~ s#/var/tmp/oracc##;
+		print <<EOX;
+		<p>RTF output was successfully produced; you can <a href="$dl_rtffile">download it here</a></p>
+EOX
+	    }
+	} elsif ($html) {
+	    my $htmlfile = $xmlfile;
+	    $htmlfile =~ s/xml$/html/;
+	    my $dl_htmlfile = $htmlfile;
+	    $dl_htmlfile =~ s#/var/tmp/oracc##;
+	    warn("can't read $previewer\n") unless -r $previewer;
+	    warn("xsltproc -o $htmlfile $previewer $xmlfile\n");
+	    my $res = system '/usr/bin/xsltproc', '-o', $htmlfile, $previewer, $xmlfile;
+	    if ($res) {
+		print <<EOX;
+<p>HTML output failed</p>
+EOX
+	    } else {
+		print <<EOX;
+		<p>HTML output was successfully produced; you can <a href="$dl_htmlfile">preview it here</a></p>
+EOX
+	    }
+	} else {
+	    if ($xmlformat) {
+		system '/usr/bin/xmllint', '-format', '--nsclean', '-o', $xmlfile, $xmlfile;
+	    }
+	    my $dl_xmlfile = $xmlfile;
+	    $dl_xmlfile =~ s#/var/tmp/oracc##;
+	    print <<EOX;
+	    <p>XML output was successfully produced; you can <a href="$dl_xmlfile">download it here</a></p>
+EOX
+	}
+    }
+}
+
+# my $cut = 'cut -f7';
+# my $asciify = ($q->param('ret_encoding') eq 'ascii' 
+# 	       ? "|/usr/local//bin/transatf" : '');
+# my $paste='perl -ne \'($n,$l,$w)=(/^(.*?)\t(.*?)\t(.*?)$/);$n=~tr/ /_/;$l=~tr/ /_/;print"$n\:_$l\t$w\n"\'';
+
+# if ($lem_file) {
+#     my $dl_file = "$outdir/$filename";
+#     $dl_file =~ s#/var/tmp/oracc##;
+#     print <<EOX;
+# <p>File lemmatized; <a href="$dl_file">download it here</a></p>
+# EOX
+# } elsif ($glist) {
+#     my $dl_glist = "$outdir/dlgraphemes.txt";
+#     my $freq_arg = ($freq ? '' : '-f');
+#     my $freq_pipe = ($freq ? "| perl -pe 's/\\((\\d+)\\)/\\t\$1/' " : '');
+#     if ($q->param('list_type') eq 'simple') {
+# 	system "$cut <$outdir/graphemes.lst | /usr/local//bin/concord -gswcnl* $freq_arg $asciify $freq_pipe >$dl_glist";
+#     } else {
+# 	$cut = 'cut -f4,6,7';
+# 	system "$cut <$outdir/graphemes.lst |$paste| /usr/local//bin/concord -gswcfl* $asciify|/usr/local//bin/finishcnc.plx>$dl_glist";
+#     }
+#     $dl_glist =~ s#/var/tmp/oracc##;
+#     print <<EOX;
+# <p>Grapheme list produced; <a href="$dl_glist">download it here</a></p>
+# EOX
+# } elsif ($wlist) {
+#     my $dl_flist = "$outdir/dlforms.txt";
+#     my $freq_arg = ($freq ? '' : '-f');
+#     my $freq_pipe = ($freq ? "| perl -pe 's/\\((\\d+)\\)/\\t\$1/' " : '');
+#     if ($q->param('list_type') eq 'simple') {
+# 	system "$cut <$outdir/forms.lst | /usr/local//bin/concord -gswcnl* $freq_arg $asciify $freq_pipe >$dl_flist";
+#     } else {
+# 	$cut = 'cut -f4,6,7';
+# 	system "$cut <$outdir/forms.lst |$paste| /usr/local/bin/concord -gswcfl* $asciify |/usr/local//bin/finishcnc.plx>$dl_flist";
+#     }
+#     $dl_flist =~ s#/var/tmp/oracc##;
+#     print <<EOX;
+# <p>Forms list produced; <a href="$dl_flist">download it here</a></p>
+# EOX
+# }
+
+check_logfile();
+
+print <<EOT;
+</body>
+</html>
+EOT
+
+#########################################################################
+sub
+check_logfile {
+    if (-z $logfile) {
+	print <<EOZ;
+	<p>$filename contained no errors in ATF checking--congratulations!</p>
+EOZ
+    } else {
+	my $nerrs = fixchecklog($logfile);
+	--$nerrs;
+	my $errs_s = $nerrs == 1 ? '' : 's';
+	my $dl_logfile = $logfile;
+#	my $upto50 = `head -50 $logfile`;
+#	Encode::_utf8_on($upto50);
+	$dl_logfile =~ s#/var/tmp/oracc##;
+	my $xwarn = $xtf ? '<span style="color:red">YOUR XML MAY BE BAD!</span>'
+	    : '';
+	print <<EOE;
+	$xwarn
+	<p>$filename contained $nerrs error$errs_s which you can <a href="$dl_logfile">view here</a>; up to <strong>50</strong> errors are listed below:</p>
+<hr/>
+EOE
+        system '/usr/local/oracc/bin/atflog50.sh', $logfile;
+    }
+#<pre>
+#EOE
+#system 'head', '-50', $logfile;
+#print <<EOE;
+#</pre>
+#<hr/>
+#EOE
+#    }
+}
+
+sub
+fixchecklog {
+    my $log = shift;
+    my $prefix = $log;
+    my $nerr = 0;
+    my @lines = ();
+    open(L,$log) || die "can't open log $log\n";
+    while (<L>) {
+	s,^.*atfserver/\d+/,,;
+	push @lines, $_;
+    }
+    close(L);
+    $nerr = $#lines + 1;
+    open(L,">$log");
+    print L @lines;
+    close(L);    
+    $nerr;
+}
+
+1;

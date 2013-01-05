@@ -1,0 +1,187 @@
+\def\facinglines{}
+\def\endfacinglines{}
+
+\newif\if@flushing
+
+\newdimen\FLcolwidthOne \newdimen\FLcolwidthTwo \newdimen\FLcolwidthThree
+
+\newdimen\FLgutterOne \newdimen\FLgutterTwo \newdimen\FLrulingadjust
+
+\def\FLsetcolumns#1#2#3#4#5{%
+  \FLcolwidthOne=.3in
+  \FLgutterOne=.1in
+  \FLcolwidthTwo=2.7in
+  \FLcolwidthThree=3.2in
+  \FLgutterTwo=.2in \relax
+}
+
+\newdimen\FLsavedvfuzz
+
+\newcount\FLlinecountOne \newcount\FLlinecountTwo \newcount\FLlinecountThree
+\newcount\FLmaxLines 
+\newcount\FLiterations
+
+\newbox\FLboxOne \newbox\FLboxTwo \newbox\FLboxThree
+
+\newbox\FLtmpOne \newbox\FLtmpTwo \newbox\FLtmpThree
+
+\def\FLforceleft{\leavevmode\kern-\FLcolwidthOne\relax\kern-\FLgutterOne}
+
+\def\FLcountlines#1#2{%
+  #1=0\relax
+  \FLsavedvfuzz=\vfuzz
+  \vfuzz1000pt
+  \setbox0=\vbox{\unvcopy#2}%
+  \loop
+    \setbox2=\vsplit0 to1pt
+    \advance#1by1
+  \ifdim\ht0>0pt\repeat
+  \vfuzz\FLsavedvfuzz\relax
+}
+
+\def\FLstrut{\vrule width0pt height 10pt depth2.7pt{}}
+\def\FLvstrut{\hrule width0pt height 10pt depth2.7pt{}}
+
+%\let\|\FLstrut 
+\newskip\zzz
+
+\def\|{\FLstrut\hskip\zzz}%\FLstrut
+
+%\def\|{\discretionary{}{}{\FLstrut}}
+
+\def\FLbaseline{\baselineskip12.7pt \lineskiplimit1pt \lineskip1pt\relax
+  \FLrulingadjust=15pt\relax
+}
+
+\def\FLnextline#1#2#3{%
+  \ifdim\ht #2 > 0pt \relax
+    \FLsavedvfuzz=\vfuzz\relax
+    \vfuzz10000pt
+    \setbox2=\vsplit#2 to1pt
+    \vfuzz=\FLsavedvfuzz
+  \else
+    \setbox2=\vbox{\hbox to#3{\hfil}\vfil}%
+  \fi
+  \box2
+}
+
+\def\FLpar{\clubpenalty0 \widowpenalty0 \brokenpenalty0
+  \interlinepenalty0 \parindent0pt \hangindent0pt \parskip0pt\relax }
+
+\def\FLtlit{\spaceskip3.3333pt \tolerance100 \rightskip0pt plus1fil\relax}
+\def\FLtlat{\tolerance3000 \pretolerance1000 \hyphenpenalty0 
+  \spaceskip3.33333pt plus1.66666pt minus1.11111pt
+  \lineskip2pt \lineskiplimit2pt
+  \baselineskip14pt \relax}
+
+% We're going to format args #2 and #3 and then
+% pass one line at a time to the page builder,
+% with all three columns wrapped in a single hbox.
+\def\facingblock#1#2#3#4{%
+  \gdef\FLnotes{#4}%
+  \let\next\relax
+  \ifdim\ht\FLboxThree>0pt
+    \let\next\@facinglines
+  \else
+    \ifdim\ht\FLboxTwo>0pt
+      \let\next\@facinglines
+    \else
+      \ifdim\ht\FLboxOne>0pt
+        \let\next\@facinglines
+      \fi
+    \fi
+  \fi
+  \@flushingtrue\next
+  \@flushingfalse
+  \setbox\FLboxOne=\vbox{\FLpar\hsize\FLcolwidthOne\relax
+        \FLbaseline\FLstrut#1\endgraf}%
+  \setbox\FLboxTwo=\vbox{\FLpar\FLtlit
+        \hsize\FLcolwidthTwo\relax
+        \FLbaseline\FLstrut#2\endgraf}%
+  \setbox0=\hbox{#3\hfil}%
+  \ifdim\wd0>0pt
+    \setbox\FLboxThree=\vbox{\FLpar\FLtlat\hsize\FLcolwidthThree\relax
+          \FLbaseline#3\endgraf}%
+  \fi
+  \@facinglines
+}
+
+\def\facingmoretlit#1#2#3{%
+  \@flushingfalse
+  \gdef\FLnotes{#3}%
+  \setbox\FLboxOne=\vbox{\FLpar\hsize\FLcolwidthOne\relax
+                         \FLbaseline\FLstrut#1}%
+  \setbox\FLboxTwo=\vbox{\FLpar\FLtlit\hsize\FLcolwidthTwo\relax
+                         \FLstrut#2}%
+  \@facinglines
+}
+
+\def\facingflush{%
+  \let\next\relax
+  \@flushingtrue
+  \ifdim\ht\FLboxThree>0pt
+    \let\next\@facinglines
+  \else
+    \ifdim\ht\FLboxTwo>0pt
+      \let\next\@facinglines
+    \else
+      \ifdim\ht\FLboxOne>0pt
+        \let\next\@facinglines
+      \fi
+    \fi
+  \fi
+  \next
+}
+
+\def\facingrulings{\facingflush
+  \dimen0\FLcolwidthOne \advance\dimen0\FLgutterOne 
+  \advance\dimen0\FLcolwidthTwo
+  \nobreak\kern3pt
+  \hbox{%
+%    \kern\FLcolwidthOne \kern\FLgutterOne
+    \vrule width\dimen0 height.5pt
+    \kern\FLgutterTwo
+    \vrule width\FLcolwidthThree height.5pt
+  }\kern-10pt\relax
+  \allowbreak
+}
+
+\def\@facinglines{%
+  \FLcountlines\FLlinecountOne\FLboxOne
+  \FLcountlines\FLlinecountTwo\FLboxTwo
+  \FLcountlines\FLlinecountThree\FLboxThree
+  \FLmaxLines=\FLlinecountOne
+  \ifnum\FLlinecountTwo>\FLmaxLines
+    \FLmaxLines\FLlinecountTwo
+  \fi
+  \if@flushing
+    \ifnum\FLlinecountThree>\FLmaxLines
+      \FLmaxLines\FLlinecountThree
+    \fi
+  \fi
+  \FLiterations\FLmaxLines
+  \loop
+    \setbox0=\hbox to\fullhsize{%
+      \FLnextline\FLtmpOne\FLboxOne\FLcolwidthOne
+      \kern\FLgutterOne
+      \FLnextline\FLtmpTwo\FLboxTwo\FLcolwidthTwo
+      \kern\FLgutterTwo
+      \FLnextline\FLtmpThree\FLboxThree\FLcolwidthThree
+      \hfill
+    }%
+%    \ifnum\FLiterations=\FLmaxLines
+%      \ifnum\FLmaxLines=1
+%        \allowbreak\vskip1pt plus1pt minus1pt
+%        \nobreak
+%      \fi
+%    \else
+%      \allowbreak\vskip1pt plus1pt minus1pt
+%    \fi
+    \allowbreak \vskip1pt plus1pt minus1pt
+    \hbox{\box0
+      \FLnotes\global\let\FLnotes\relax}
+    \advance\FLiterations-1
+  \ifnum\FLiterations>0\repeat
+}
+
+\endinput

@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>ATF Quick Reference</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-08-10</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>A quick reference sheet for the ATF
+    format.</dc:description>
+</d:meta>
+
+<h1>Structure Conventions</h1>
+<p>See the <a href="/ns/xtf/1.0/atftut.html">Structure Tutorial</a> for more details.</p>
+  <div class="slidebody">
+    <table border="1">
+      <tr>
+        <td class="col0">&amp;</td>
+        <td class="col1">Text/catalogue number designator</td>
+      </tr>
+      <tr>
+        <td class="col0">@&lt;type&gt;</td>
+        <td class="col1">@composite (for composite texts)</td>
+      </tr>
+      <tr>
+        <td class="col0">@&lt;object&gt;</td>
+        <td class="col1"><a name="object" />Object = @tablet, @envelope, @prism, @object
+&lt;object-type&gt;</td>
+      </tr>
+      <tr>
+        <td class="col0">@&lt;surface&gt;</td>
+        <td class="col1"><a name="surface" />Surface = @obverse, @reverse, @surface, @edge,
+@left, @right, @top, @bottom, @face [a..z]</td>
+      </tr>
+      <tr>
+        <td class="col0">@seal &lt;n&gt;</td>
+        <td class="col1">for transliteration of seal impressions on
+objects; n=number</td>
+      </tr>
+      <tr>
+        <td class="col0">@column</td>
+        <td class="col1">column</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;number&gt;.</td>
+        <td class="col1">line of text</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;number&gt;.&lt;subcases&gt;.</td>
+        <td class="col1">line of text with subdivision into cases</td>
+      </tr>
+      <tr>
+        <td class="col0">$ &lt;qualification&gt; &lt;extent&gt; &lt;scope&gt; &lt;state&gt;</td>
+        <td class="col1">non-text, such as breakage, blank lines, etc. <br />
+	qualification = at least, at most, about<br />
+	number = NUMBER, RANGE, n, several, some, start of, beginning of, middle of, end of, rest of<br />
+	scope = <a href="#object">OBJECT</a>, <a href="#surface">SURFACE</a>, case(s), column(s), line(s), surface<br />
+	state = blank, broken, damaged, effaced, illegible, missing, traces</td>
+      </tr>
+      <tr>
+	<td class="col0">$ &lt;multiple&gt; ruling</td>
+	<td class="col1">horizontal ruling(s) in the text<br />
+	multiple = single, double, triple</td>
+      </tr>
+      <tr>
+	<td class="col0">$ (image N = &lt;text&gt;)</td>
+	<td class="col1">location of inline image, such as a seal impression or a diagram</td>
+      </tr>
+      <tr>
+        <td class="col0">#</td>
+        <td class="col1">comment line</td>
+      </tr>
+      <tr>
+        <td class="col0">=:</td>
+        <td class="col1">multiplexing comment line giving original order of
+interpreted/reordered signs in preceding line of
+transliteration.</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;whitespace&gt;</td>
+        <td class="col1">continues previous line (modern convenience, not
+ancient line break)</td>
+      </tr>
+    </table>
+  </div>
+  <h1>Inline
+ASCII Conventions</h1>
+<p>See the <a href="/ns/gdl/1.0/gdltut.html">ATF Inline Tutorial</a> for more details.</p>
+  <div class="slidebody">
+    <table border="1">
+      <tr>
+        <td class="col0">[A-Z<span class="atf">ṢŠṬ</span>][a-z<span class="atf">ṣšṭ</span>][<span class="atf">₀-₉</span>]</td>
+        <td class="col1">grapheme name</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;hyphen&gt;</td>
+        <td class="col1">joiner for graphemes of single word</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;space&gt;</td>
+        <td class="col1">word separator</td>
+      </tr>
+      <tr>
+        <td class="col0">!</td>
+        <td class="col1">flags correction of sign</td>
+      </tr>
+      <tr>
+        <td class="col0">?</td>
+        <td class="col1">flags uncertainty of identification or
+reading</td>
+      </tr>
+      <tr>
+        <td class="col0">*</td>
+        <td class="col1">flags collation</td>
+      </tr>
+      <tr>
+        <td class="col0">#</td>
+        <td class="col1">flags damage to sign</td>
+      </tr>
+      <tr>
+        <td class="col0">[...]</td>
+        <td class="col1">encloses material broken away from object</td>
+      </tr>
+      <tr>
+        <td class="col0">[(...)]</td>
+        <td class="col1">encloses material perhaps broken away from
+object</td>
+      </tr>
+      <tr>
+        <td class="col0">value(SIGN)</td>
+        <td class="col1">explanatory name or variant form after value</td>
+      </tr>
+      <tr>
+        <td class="col0">value!(SIGN)</td>
+        <td class="col1">actual signs on object given after corrected
+version</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;...&gt;</td>
+        <td class="col1">accidental omission supplied by editor</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;(...)&gt;</td>
+        <td class="col1">intentional omission supplied by editor</td>
+      </tr>
+      <tr>
+        <td class="col0">MIN&lt;(...)&gt;</td>
+        <td class="col1">surrogate text supplied by editor</td>
+      </tr>
+      <tr>
+        <td class="col0">&lt;&lt;...&gt;&gt;</td>
+        <td class="col1">material removed by editor</td>
+      </tr>
+      <tr>
+        <td class="col0">{...}</td>
+        <td class="col1">determinative delimiters
+(written in normal script)</td>
+      </tr>
+      <tr>
+        <td class="col0">{{...}}</td>
+        <td class="col1">gloss delimiters</td>
+      </tr>
+      <tr>
+        <td class="col0">~</td>
+        <td class="col1">following sign is a logogram</td>
+      </tr>
+      <tr>
+        <td class="col0">x</td>
+        <td class="col1">unclear sign</td>
+      </tr>
+      <tr>
+        <td class="col0">X</td>
+        <td class="col1">clear sign not yet identified</td>
+      </tr>
+      <tr>
+        <td class="col0">|...|</td>
+        <td class="col1">compound grapheme delimiters</td>
+      </tr>
+      <tr>
+        <td class="col0">[.x%&amp;+()]</td>
+        <td class="col1">compound grapheme operators (see
+<small>QR</small>.3 below)</td>
+      </tr>
+      <tr>
+        <td class="col0">[<span class="atf">āēīū</span>], [<span class="atf">âêîû</span>]</td>
+        <td class="col1">long vowels in normalized Akkadian</td>
+      </tr>
+      <tr>
+        <td class="col0">%[sahrux]</td>
+        <td class="col1">language shift</td>
+      </tr>
+      <tr>
+        <td class="col0">%e,%u,%g,%n</td>
+        <td class="col1">register/writing system shift</td>
+      </tr>
+      <tr>
+        <td class="col0">_..._</td>
+        <td class="col1">encloses material in alternate language</td>
+      </tr>
+    </table>
+  </div>
+  <h1>Compound Grapheme Conventions</h1>
+<p>See the <a href="/ns/gdl/1.0/gdltut.html#Compound">ATF Inline Tutorial</a> for full documentation of these conventions.</p>
+  <div class="slidebody">
+    <table border="1">
+      <tr>
+        <td class="col0">.</td>
+        <td class="col1">juxtaposed signs, e.g., DU.DU <img src="etc/du.png" alt="du" height="25"/><img src="etc/du.png" alt="du" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0"><span class="atf">×</span></td>
+        <td class="col1">following sign(s) written over/within preceding
+sign, e.g., <span class="atf">GA₂×AN</span> <img src="etc/ga2-times-an.png" alt="ga2-times-an" height="25"/></td>
+      </tr>
+<!--      <tr>
+        <td class="col0">%</td>
+        <td class="col1">signs are written crossed over each other
+(gilimmu), e.g., GI%GI <img src="etc/gi-crossing-gi.png" alt="gi-crossing-gi" height="30"/></td>
+      </tr> -->
+      <tr>
+        <td class="col0">&amp;</td>
+        <td class="col1">signs are written one above the other, e.g.,
+DU&amp;DU <img src="etc/du-over-du.png" alt="du-over-du" height="25"/> as opposed to standard DU <img src="etc/du.png" alt="du" height="25"/></td>
+      </tr>
+<!--      <tr>
+        <td class="col0">@</td>
+        <td class="col1">signs are written opposing, e.g., LU@LU <img src="etc/lu2-opposing-lu2.png" alt="lu2-opposing-lu2" height="25"/></td>
+      </tr> -->
+      <tr>
+        <td class="col0">+</td>
+        <td class="col1">signs are ligatured, e.g.,
+|LAGAB+LAGAB|(nigin<span class="atf">₂</span>) <img src="etc/nigin2.png" alt="nigin2" height="25"/></td>
+      </tr>
+<!--      <tr>
+        <td class="col0">x4</td>
+        <td class="col1">signs are written in a square, e.g., LUx4
+<img src="etc/lu2-times-4.png" alt="lu2-times-4" height="45"/></td>
+      </tr> -->
+      <tr>
+        <td class="col0">(...)</td>
+        <td class="col1">grouping of signs, e.g., <span class="atf">GA₂×</span>(ME.EN) <img src="etc/ga2-times-me-en.png" alt="ga2-times-me-en" height="30"/></td>
+      </tr>
+<!--      <tr>
+        <td class="col0">@90</td>
+        <td class="col1">preceding sign is rotated 90 degrees
+clockwise</td>
+      </tr>
+      <tr>
+        <td class="col0">@180</td>
+        <td class="col1">preceding sign is rotated 180 degrees clockwise
+(inversum)</td>
+      </tr>
+      <tr>
+        <td class="col0">@270</td>
+        <td class="col1">preceding sign is rotated 270 degrees
+clockwise</td>
+      </tr> -->
+      <tr>
+        <td class="col0">@g</td>
+        <td class="col1">gunu, e.g., DU@g <img src="etc/du-gunu.png" alt="du-gunu.png" height="25"/> as opposed to
+standard DU <img src="etc/du.png" alt="du" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@t</td>
+        <td class="col1">tenu, e.g., GAN<span class="atf">₂</span>@t <img src="etc/gan2-tenu.png" alt="gan2-tenu" height="25"/></td>
+      </tr>
+<!--      <tr>
+        <td class="col0">@s</td>
+        <td class="col1">sheshig, e.g., DU@s <img src="etc/du-sheshig.png" alt="du-sheshig" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@n</td>
+        <td class="col1">nutillu, e.g., SAG@n <img src="etc/sag-nutillu.png" alt="sag-nutillu" height="25"/> as opposed to the standard SAG <img src="etc/sag.png" alt="sag" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@k</td>
+        <td class="col1">kabatenu, e.g., ASZ@k <img src="etc/ash-kabatenu.png" alt="ash-kabatenu" height="25"/> as opposed to the standard ASZ <img src="etc/ash.png" alt="ash.png" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@z</td>
+        <td class="col1">zidatenu, e.g., ASZ@z <img src="etc/ash-zidatenu.png" alt="ash-zidatenu" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@c</td>
+        <td class="col1">curved, e.g., ASZ@c <img src="etc/ash-curved.png" alt="ash-curved" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@r</td>
+        <td class="col1">vertically reflected, e.g., U@r <img src="etc/u-vreflected.png" alt="u-vreflected" height="25"/></td>
+      </tr>
+      <tr>
+        <td class="col0">@h</td>
+        <td class="col1">horizontally reflected, e.g., N07A@h (aka N07B)
+<img src="etc/1-n07b.png" alt="1-n07b" height="20"/> as opposed to the standard N07A <img src="etc/1-n07a.png" alt="1-n07a" height="20"/></td>
+      </tr> -->
+      <tr>
+        <td class="col0">@v</td>
+        <td class="col1">variant, e.g., 4(ban<span class="atf">₂</span>)@v <img src="etc/4ban2-variant.png" alt="4ban2-variant" height="25"/> as opposed to the standard 4(ban<span class="atf">₂</span>)
+<img src="etc/4ban2.png" alt="4ban2" height="25"/></td>
+      </tr>
+    </table>
+  </div>
+<d:resources>
+<d:resource copy="yes" href="etc/du.png" />
+<d:resource copy="yes" href="etc/ga2-times-an.png" />
+<d:resource copy="yes" href="etc/gi-crossing-gi.png" />
+<d:resource copy="yes" href="etc/du-over-du.png" />
+<d:resource copy="yes" href="etc/lu2-opposing-lu2.png" />
+<d:resource copy="yes" href="etc/nigin2.png" />
+<d:resource copy="yes" href="etc/lu2-times-4.png" />
+<d:resource copy="yes" href="etc/ga2-times-me-en.png" />
+<d:resource copy="yes" href="etc/du-gunu.png" />
+<d:resource copy="yes" href="etc/gan2-tenu.png" />
+<d:resource copy="yes" href="etc/du-sheshig.png" />
+<d:resource copy="yes" href="etc/sag-nutillu.png" />
+<d:resource copy="yes" href="etc/sag.png" />
+<d:resource copy="yes" href="etc/ash-kabatenu.png" />
+<d:resource copy="yes" href="etc/ash.png" />
+<d:resource copy="yes" href="etc/ash-zidatenu.png" />
+<d:resource copy="yes" href="etc/ash-curved.png" />
+<d:resource copy="yes" href="etc/u-vreflected.png" />
+<d:resource copy="yes" href="etc/1-n07b.png" />
+<d:resource copy="yes" href="etc/1-n07a.png" />
+<d:resource copy="yes" href="etc/4ban2-variant.png" />
+<d:resource copy="yes" href="etc/4ban2.png" />
+
+</d:resources>
+</d:doc>

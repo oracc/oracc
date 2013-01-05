@@ -1,0 +1,335 @@
+.TH ESTRAIER 3 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estraier.h \- the core API of Hyper Estraier
+
+.SH SYNOPSIS
+.PP
+.B #include <estraier.h>
+.br
+.B #include <cabin.h>
+.br
+.B #include <stdlib.h>
+
+.SH API FOR DOCUMENT
+.PP
+The API for documents aims to handle documents which were registered into the index.
+.PP
+The type of the structure `ESTDOC' is for abstraction of a document.  A document is composed of some attributes and some text sentences.  No entity of `ESTDOC' is accessed directly, but it is accessed by the pointer.  The term of document object means the pointer and its referent.  A document object is created by the function `est_doc_new' and destroyed by `est_doc_delete'.  Every created document object should be destroyed.
+.PP
+Target documents of search are to be registered in the database beforehand.  The ID is assigned to each registered document.  When search, they can be retrieved from the database by their ID.  The encoding of attributes and text sentences should be UTF\-8.
+.PP
+The function `est_doc_new' is used in order to create a document object.
+.TP
+.B ESTDOC *est_doc_new(void);
+The return value is an object of a document.
+.PP
+The function `est_doc_new_from_draft' is used in order to create a document object made from draft data.
+.TP
+.B ESTDOC *est_doc_new_from_draft(const char *draft);
+`draft' specifies a string of draft data.  The return value is an object of a document.
+.PP
+The function `est_doc_delete' is used in order to destroy a document object.
+.TP
+.B void est_doc_delete(ESTDOC *doc);
+`doc' specifies a document object.
+.PP
+The function `est_doc_add_attr' is used in order to add an attribute to a document object.
+.TP
+.B void est_doc_add_attr(ESTDOC *doc, const char *name, const char *value);
+`doc' specifies a document object.  `name' specifies the name of an attribute.  `value' specifies the value of the attribute.  If it is `NULL', the attribute is removed.
+.PP
+The function `est_doc_add_text' is used in order to add a sentence of text to a document object.
+.TP
+.B void est_doc_add_text(ESTDOC *doc, const char *text);
+`doc' specifies a document object.  `text' specifies a sentence of text.
+.PP
+The function `est_doc_add_hidden_text' is used in order to add a hidden sentence to a document object.
+.TP
+.B void est_doc_add_hidden_text(ESTDOC *doc, const char *text);
+`doc' specifies a document object.  `text' specifies a hidden sentence.
+.PP
+The function `est_doc_set_keywords' is used in order to attach keywords to a document object.
+.TP
+.B void est_doc_set_keywords(ESTDOC *doc, CBMAP *kwords);
+`doc' specifies a document object.  `kwords' specifies a map object of keywords.  Keys of the map should be keywords of the document and values should be their scores in decimal string.  The map object is copied internally.
+.PP
+The function `est_doc_set_score' is used in order to set the substitute score of a document object.
+.TP
+.B void est_doc_set_score(ESTDOC *doc, int score);
+`doc' specifies a document object.  `score' specifies the substitute score.  It it is negative, the substitute score setting is nullified.
+.PP
+The function `est_doc_id' is used in order to get the ID number of a document object.
+.TP
+.B int est_doc_id(ESTDOC *doc);
+`doc' specifies a document object.  The return value is the ID number of the document object.  If the object has not been registered, \-1 is returned.
+.PP
+The function `est_doc_attr_names' is used in order to get a list of attribute names of a document object.
+.TP
+.B CBLIST *est_doc_attr_names(ESTDOC *doc);
+`doc' specifies a document object.  The return value is a new list object of attribute names of the document object.  Because the object of the return value is opened with the function `cblistopen', it should be closed with the function `cblistclose' if it is no longer in use.
+.PP
+The function `est_doc_attr' is used in order to get the value of an attribute of a document object.
+.TP
+.B const char *est_doc_attr(ESTDOC *doc, const char *name);
+`doc' specifies a document object.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  The life duration of the returned string is synchronous with the one of the document object.
+.PP
+The function `est_doc_texts' is used in order to get a list of sentences of the text of a document object.
+.TP
+.B const CBLIST *est_doc_texts(ESTDOC *doc);
+`doc' specifies a document object.  The return value is a list object of sentences of the text of the document object.  The life duration of the returned object is synchronous with the one of the document object.
+.PP
+The function `est_doc_cat_texts' is used in order to concatenate sentences of the text of a document object.
+.TP
+.B char *est_doc_cat_texts(ESTDOC *doc);
+`doc' specifies a document object.  The return value is concatenated sentences of the document object.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_doc_keywords' is used in order to get attached keywords of a document object.
+.TP
+.B CBMAP *est_doc_keywords(ESTDOC *doc);
+`doc' specifies a document object.  The return value is a map object of keywords and their scores in decimal string.  If no keyword is attached, `NULL' is returned.  The life duration of the returned object is synchronous with the one of the document object.
+.PP
+The function `est_doc_dump_draft' is used in order to dump draft data of a document object.
+.TP
+.B char *est_doc_dump_draft(ESTDOC *doc);
+`doc' specifies a document object.  The return value is draft data of the document object.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_doc_make_snippet' is used in order to make a snippet of the body text of a document object.
+.TP
+.B char *est_doc_make_snippet(ESTDOC *doc, const CBLIST *words, int wwidth, int hwidth, int awidth);
+`doc' specifies a document object.  `word' specifies a list object of words to be highlight.  `wwidth' specifies whole width of the result.  `hwidth' specifies width of strings picked up from the beginning of the text.  `awidth' specifies width of strings picked up around each highlighted word.  The return value is a snippet string of the body text of the document object.  There are tab separated values.  Each line is a string to be shown.  Though most lines have only one field, some lines have two fields.  If the second field exists, the first field is to be shown with highlighted, and the second field means its normalized form.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+
+.SH API FOR SEARCH CONDITIONS
+.PP
+The API for search conditions aims to specify search conditions given to the index.
+.PP
+The type of the structure `ESTCOND' is for abstraction of search conditions.  A unit of search conditions is composed of one search phrase, some attribute expressions, and one order expression.  No entity of `ESTCOND' is accessed directly, but it is accessed by the pointer.  The term of condition object means the pointer and its referent.  A condition object is created by the function `est_cond_new' and destroyed by `est_cond_delete'.  Every created condition object should be destroyed.
+.PP
+Condition objects are used as a parameter to search for documents registered in the database so that a list of IDs of corresponding documents are returned.  See the manual for the formats of expressions.  The encoding of conditional expressions should be UTF\-8.
+.PP
+The function `est_cond_new' is used in order to create a condition object.
+.TP
+.B ESTCOND *est_cond_new(void);
+The return value is an object of search conditions.
+.PP
+The function `est_cond_delete' is used in order to destroy a condition object.
+.TP
+.B void est_cond_delete(ESTCOND *cond);
+`cond' specifies a condition object.
+.PP
+The function `est_cond_set_phrase' is used in order to set the search phrase to a condition object.
+.TP
+.B void est_cond_set_phrase(ESTCOND *cond, const char *phrase);
+`cond' specifies a condition object.  `phrase' specifies a search phrase.
+.PP
+The function `est_cond_add_attr' is used in order to add an expression for an attribute to a condition object.
+.TP
+.B void est_cond_add_attr(ESTCOND *cond, const char *expr);
+`cond' specifies a condition object.  `expr' specifies an expression for an attribute.
+.PP
+The function `est_cond_set_order' is used in order to set the order of a condition object.
+.TP
+.B void est_cond_set_order(ESTCOND *cond, const char *expr);
+`cond' specifies a condition object.  `expr' specifies an expression for the order.  By default, the order is by score descending.
+.PP
+The function `est_cond_set_max' is used in order to set the maximum number of retrieval of a condition object.
+.TP
+.B void est_cond_set_max(ESTCOND *cond, int max);
+`cond' specifies a condition object.  `max' specifies the maximum number of retrieval.  By default, the number of retrieval is not limited.
+.PP
+The function `est_cond_set_skip' is used in order to set the number of skipped documents of a condition object.
+.TP
+.B void est_cond_set_skip(ESTCOND *cond, int skip);
+`cond' specifies a condition object.  `skip' specifies the number of documents to be skipped in the search result.
+.PP
+The function `est_cond_set_options' is used in order to set options of retrieval of a condition object.
+.TP
+.B void est_cond_set_options(ESTCOND *cond, int options);
+`cond' specifies a condition object.  `options' specifies options: `ESTCONDSURE' specifies that it checks every N\-gram key, `ESTCONDUSUAL', which is the default, specifies that it checks N\-gram keys with skipping one key, `ESTCONDFAST' skips two keys, `ESTCONDAGITO' skips three keys, `ESTCONDNOIDF' specifies not to perform TF\-IDF tuning, `ESTCONDSIMPLE' specifies to use simplified phrase, `ESTCONDROUGH' specifies to use rustic phrase, `ESTCONDUNION' specifies to use union phrase, `ESTCONDISECT' specifies to use intersection phrase, `ESTCONDSCFB' specifies to feed back scores (only for debugging).  Each option can be specified at the same time by bitwise or.  If keys are skipped, though search speed is improved, the relevance ratio grows less.
+.PP
+The function `est_cond_set_auxiliary' is used in order to set permission to adopt result of the auxiliary index.
+.TP
+.B void est_cond_set_auxiliary(ESTCOND *cond, int min);
+`cond' specifies a condition object.  `min' specifies the minimum hits to adopt result of the auxiliary index.  If it is not more than 0, the auxiliary index is not used.  By default, it is 32.
+.PP
+The function `est_cond_set_eclipse' is used in order to set the lower limit of similarity eclipse.
+.TP
+.B void est_cond_set_eclipse(ESTCOND *cond, double limit);
+`cond' specifies a condition object.  `limit' specifies the lower limit of similarity for documents to be eclipsed.  Similarity is between 0.0 and 1.0.  If the limit is added by `ESTECLSIMURL', similarity is weighted by URL.  If the limit is `ESTECLSERV', similarity is ignored and documents in the same server are eclipsed.  If the limit is `ESTECLDIR', similarity is ignored and documents in the same directory are eclipsed.  If the limit is `ESTECLFILE', similarity is ignored and documents of the same file are eclipsed.
+.PP
+The function `est_cond_set_distinct' is used in order to set the attribute distinction filter.
+.TP
+.B void est_cond_set_distinct(ESTCOND *cond, const char *name);
+`cond' specifies a condition object.  `name' specifies the name of an attribute to be distinct.  If this filter is set, candidates which have same value of the attribute is omitted.
+.PP
+The function `est_set_cond_mask' is used in order to set the mask of targets of meta search.
+.TP
+.B void est_cond_set_mask(ESTCOND *cond, int mask);
+`cond' specifies a condition object.  `mask' specifies a masking number.  1 means the first target, 2 means the second target, 4 means the third target, and power values of 2 and their summation compose the mask.
+
+.SH API FOR DATABASE
+.PP
+The API for database aims to handle the database of the index.
+.PP
+The type of the structure `ESTDB' is for abstraction of access methods to database.  A database has inverted index, document data, and meta data.  One of writer or reader is selected when the connection is established.  No entity of `ESTDB' is accessed directly, but it is accessed by the pointer.  The term of database object means the pointer and its referent.  A database object is created by the function `est_db_open' and destroyed by `est_db_close'.  Every created database object should be destroyed.
+.PP
+Errors with some operations are informed to by the function `est_db_error'.  The meaning of each error code can be gotten as a string by the function `est_err_msg'.
+.PP
+The following constant are defined for error codes.
+.PP
+The function `est_err_msg' is used in order to get the string of an error code.
+.TP
+.B const char *est_err_msg(int ecode);
+`ecode' specifies an error code.  The return value is the string of the error code.
+.PP
+The function `est_db_open' is used in order to open a database.
+.TP
+.B ESTDB *est_db_open(const char *name, int omode, int *ecp);
+`name' specifies the name of a database directory.  `omode' specifies open modes: `ESTDBWRITER' as a writer, `ESTDBREADER' as a reader.  If the mode is `ESTDBWRITER', the following may be added by bitwise or: `ESTDBCREAT', which means it creates a new database if not exist, `ESTDBTRUNC', which means it creates a new database regardless if one exists.  Both of `ESTDBREADER' and  `ESTDBWRITER' can be added to by bitwise or: `ESTDBNOLCK', which means it opens a database file without file locking, or `ESTDBLCKNB', which means locking is performed without blocking.  If `ESTDBNOLCK' is used, the application is responsible for exclusion control.  `ESTDBCREAT' can be added to by bitwise or: `ESTDBPERFNG', which means N\-gram analysis is performed against European text also, `ESTDBCHRCAT', which means character category analysis is performed instead of N\-gram analysis, `ESTDBSMALL', which means the index is tuned to register less than 50000 documents, `ESTDBLARGE', which means the index is tuned to register more than 300000 documents, `ESTDBHUGE', which means the index is tuned to register more than 1000000 documents, `ESTDBHUGE2', which means the index is tuned to register more than 5000000 documents, `ESTDBHUGE3', which means the index is tuned to register more than 10000000 documents, `ESTDBSCVOID', which means scores are stored as void, `ESTDBSCINT', which means scores are stored as 32-bit integer, `ESTDBSCASIS', which means scores are stored as-is and marked not to be tuned when search.  `ecp' specifies the pointer to a variable to which the error code is assigned.  The return value is a database object of the database or `NULL' if failure.
+.PP
+The function `est_db_close' is used in order to close a database.
+.TP
+.B int est_db_close(ESTDB *db, int *ecp);
+`db' specifies a database object.  `ecp' specifies the pointer to a variable to which the error code is assigned.  The return value is true if success, else it is false.
+.PP
+The function `est_db_error' is used in order to get the last happened error code of a database.
+.TP
+.B int est_db_error(ESTDB *db);
+`db' specifies a database object.  The return value is the last happened error code of the database.
+.PP
+The function `est_db_fatal' is used in order to check whether a database has a fatal error.
+.TP
+.B int est_db_fatal(ESTDB *db);
+`db' specifies a database object.  The return value is true if the database has fatal error, else it is false.
+.PP
+The function `est_db_add_attr_index' is used in order to add an index for narrowing or sorting with document attributes.
+.TP
+.B int est_db_add_attr_index(ESTDB *db, const char *name, int type);
+`db' specifies a database object connected as a writer.  `name' specifies the name of an attribute.  `type' specifies the data type of attribute index; `ESTIDXATTRSEQ' for multipurpose sequencial access method, `ESTIDXATTRSTR' for narrowing with attributes as strings, `ESTIDXATTRNUM' for narrowing with attributes as numbers.  The return value is true if success, else it is false.  Note that this function should be called before the first document is registered.
+.PP
+The function `est_db_flush' is used in order to flush index words in the cache of a database.
+.TP
+.B int est_db_flush(ESTDB *db, int max);
+`db' specifies a database object connected as a writer.  `max' specifies the maximum number of words to be flushed.  If it not more than zero, all words are flushed.  The return value is true if success, else it is false.
+.PP
+The function `est_db_sync' is used in order to synchronize updating contents of a database.
+.TP
+.B int est_db_sync(ESTDB *db);
+`db' specifies a database object connected as a writer.  The return value is true if success, else it is false.
+.PP
+The function `est_db_optimize' is used in order to optimize a database.
+.TP
+.B int est_db_optimize(ESTDB *db, int options);
+`db' specifies a database object connected as a writer.  `options' specifies options: `ESTOPTNOPURGE' to omit purging dispensable region of deleted documents, `ESTOPTNODBOPT' to omit optimization of the database files.  The three can be specified at the same time by bitwise or.  The return value is true if success, else it is false.
+.PP
+The function `est_db_merge' is used in order to merge another database.
+.TP
+.B int est_db_merge(ESTDB *db, const char *name, int options);
+`db' specifies a database object connected as a writer.  `name' specifies the name of another database directory.  `options' specifies options: `ESTMGCLEAN' to clean up dispensable regions of the deleted document.  The return value is true if success, else it is false.  Creation options of the two databases should be same entirely.  ID numbers of imported documents are changed within the sequence of the desitination database.  If URIs of imported documents conflict ones of exsisting documents, existing documents are removed.
+.PP
+The function `est_db_put_doc' is used in order to add a document to a database.
+.TP
+.B int est_db_put_doc(ESTDB *db, ESTDOC *doc, int options);
+`db' specifies a database object connected as a writer.  `doc' specifies a document object.  The document object should have the URI attribute.  `options' specifies options: `ESTPDCLEAN' to clean up dispensable regions of the overwritten document, `ESTPDWEIGHT' to weight scores statically with score weighting attribute.  The return value is true if success, else it is false.  If the URI attribute is same with an existing document in the database, the existing one is deleted.
+.PP
+The function `est_db_out_doc' is used in order to remove a document from a database.
+.TP
+.B int est_db_out_doc(ESTDB *db, int id, int options);
+`db' specifies a database object connected as a writer.  `id' specifies the ID number of a registered document.  `options' specifies options: `ESTODCLEAN' to clean up dispensable regions of the deleted document.  The return value is true if success, else it is false.
+.PP
+The function `est_db_edit_doc' is used in order to edit attributes of a document in a database.
+.TP
+.B int est_db_edit_doc(ESTDB *db, ESTDOC *doc);
+`db' specifies a database object connected as a writer.  `doc' specifies a document object.  The return value is true if success, else it is false.  The ID can not be changed.  If the URI is changed and it overlaps the URI of another registered document, this function fails.
+.PP
+The function `est_db_get_doc' is used in order to retrieve a document in a database.
+.TP
+.B ESTDOC *est_db_get_doc(ESTDB *db, int id, int options);
+`db' specifies a database object.  `id' specifies the ID number of a registered document.  `options' specifies options: `ESTGDNOATTR' to ignore attributes, `ESTGDNOTEXT' to ignore the body text, `ESTGDNOKWD' to ignore keywords.  The two can be specified at the same time by bitwise or.  The return value is a document object.  It should be deleted with `est_doc_delete' if it is no longer in use.  On error, `NULL' is returned.
+.PP
+The function `est_db_get_doc_attr' is used in order to retrieve the value of an attribute of a document in a database.
+.TP
+.B char *est_db_get_doc_attr(ESTDB *db, int id, const char *name);
+`db' specifies a database object.  `id' specifies the ID number of a registered document.  `name' specifies the name of an attribute.  The return value is the value of the attribute or `NULL' if it does not exist.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_db_uri_to_id' is used in order to get the ID of a document specified by URI.
+.TP
+.B int est_db_uri_to_id(ESTDB *db, const char *uri);
+`db' specifies a database object.  `uri' specifies the URI of a registered document.  The return value is the ID of the document.  On error, \-1 is returned.
+.PP
+The function `est_db_name' is used in order to get the name of a database.
+.TP
+.B const char *est_db_name(ESTDB *db);
+`db' specifies a database object.  The return value is the name of the database.  The life duration of the returned string is synchronous with the one of the database object.
+.PP
+The function `est_db_doc_num' is used in order to get the number of documents in a database.
+.TP
+.B int est_db_doc_num(ESTDB *db);
+`db' specifies a database object.  The return value is the number of documents in the database.
+.PP
+The function `est_db_word_num' is used in order to get the number of unique words in a database.
+.TP
+.B int est_db_word_num(ESTDB *db);
+`db' specifies a database object.  The return value is the number of unique words in the database.
+.PP
+The function `est_db_size' is used in order to get the size of a database.
+.TP
+.B double est_db_size(ESTDB *db);
+`db' specifies a database object.  The return value is the size of the database.
+.PP
+The function `est_db_search' is used in order to search a database for documents corresponding a condition.
+.TP
+.B int *est_db_search(ESTDB *db, ESTCOND *cond, int *nump, CBMAP *hints);
+`db' specifies a database object.  `cond' specifies a condition object.  `nump' specifies the pointer to a variable to which the number of elements in the result is assigned.  `hints' specifies a map object into which the number of documents corresponding to each word is stored.  If a word is in a negative condition, the number is negative.  The element whose key is an empty string specifies the number of whole result.  If it is `NULL', it is not used.  The return value is an array whose elements are ID numbers of corresponding documents.  This function does never fail.  Even if no document corresponds or an error occurs, an empty array is returned.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+Search plural databases for documents corresponding a condition.
+.TP
+.B int *est_db_search_meta(ESTDB **dbs, int dbnum, ESTCOND *cond, int *nump, CBMAP *hints);
+`dbs' specifies an array whose elements are database objects.  `dbnum' specifies the number of elements of the array.  `cond' specifies a condition object.  `nump' specifies the pointer to a variable to which the number of elements in the result is assigned.  `hints' specifies a map object into which the number of documents corresponding to each word is stored.  If a word is in a negative condition, the number is negative.  The element whose key is an empty string specifies the number of whole result.  If it is `NULL', it is not used.  The return value is an array whose elements are indexes of container databases and ID numbers of in each database alternately.  This function does never fail.  Even if no document corresponds or an error occurs, an empty array is returned.  Because the region of the return value is allocated with the `malloc' call, it should be released with the `free' call if it is no longer in use.
+.PP
+The function `est_db_scan_doc' is used in order to check whether a document object matches the phrase of a search condition object definitely.
+.TP
+.B int est_db_scan_doc(ESTDB *db, ESTDOC *doc, ESTCOND *cond);
+`db' specifies a database object.  `doc' specifies a document object.  `cond' specifies a search condition object.  The return value is true if the document matches the phrase of the condition object definitely, else it is false.
+.PP
+The function `est_db_set_cache_size' is used in order to set the maximum size of the cache memory of a database.
+.TP
+.B void est_db_set_cache_size(ESTDB *db, size_t size, int anum, int tnum, int rnum);
+`db' specifies a database object.  `size' specifies the maximum size of the index cache.  By default, it is 64MB.  If it is negative, the current size is not changed.  `anum' specifies the maximum number of cached records for document attributes.  By default, it is 8192.  If it is negative, the current size is not changed.  `tnum' specifies the maximum number of cached records for document texts.  By default, it is 1024.  If it is negative, the current size is not changed.  `rnum' specifies the maximum number of cached records for occurrence results.  By default, it is 256.  If it is negative, the current size is not changed.
+
+.SH PARALLELING
+.PP
+Databases of Hyper Estraier are protected by file locking.  While a writer is connected to a database, neither readers nor writers can be connected.  While a reader is connected to a database, other readers can be connect, but writers can not.
+.PP
+If you use multi thread, it is suggested to use the MT\-safe API of Hyper Estraier.  It is a wrapper to make the core API thread\-safe.  As the MT\-safe API provides the same functions as with the core API, the following is different.
+
+.SH AUTHOR
+.PP
+Hyper Estraier is written by Mikio Hirabayashi.  You can contact the author by e\-mail to <mikio@fallabs.com>.  Any suggestion or bug report is welcome to the author.
+
+.SH ACKNOWLEDGEMENTS
+Hyper Estraier was developed under management by Fumitoshi Ukai and supports by Exploratory Software Project of Information\-technology Promotion Agency, Japan (IPA).
+
+.SH COPYRIGHT
+.PP
+Copyright (C) 2004\-2007 Mikio Hirabayashi
+.PP
+Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version.
+.PP
+Hyper Estraier is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with Hyper Estraier; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111\-1307 USA.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estcmd (1),
+.BR estmaster (1),
+.BR estcall (1),
+.BR estwaver (1),
+.BR cabin (3),
+.BR estnode (3)
+.PP
+Please see
+.B http://fallabs.com/hyperestraier/pguide-en.html
+for detail.

@@ -1,0 +1,19 @@
+&Q001543 = Gudea Statue D [E3/1.01.07]
+@composite
+#project: epsd2/epsdc/royal
+#atf: use mylines
+#link: source P232277 = RIME 3/1, p. 040, E3/1.1.7, St D
+#@m=object statue
+
+6.	e2# {an}angur zu2-lum{ki}-ka-ni
+#lem: e[house]; Angur[1]TN; Zulum[1]SN/zu₂-lum{ki}#~,ak.ani +.
+
+7.	e2 ki aj2-ja2-ni
+#lem: e[house]; ki[place]; aj[measure]
+
+8.	e2-lal3-DU
+#lem: TN
+
+@m reverse
+1.	ki-es3-sa2{ki}-ka-ni
+#lem: Kiessa[1]SN/ki-es₃-sa₂{ki}#~,ak.ani +.

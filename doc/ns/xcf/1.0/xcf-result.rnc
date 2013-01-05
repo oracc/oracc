@@ -1,0 +1,4 @@
+default namespace = ""
+namespace xr = "http://oracc.org/ns/xcf-result/1.0"
+
+start = element xr:xcf-result { element * { text }* }

@@ -1,0 +1,75 @@
+## Process this file with automake to produce Makefile.in
+##
+#  Copyright(c) Pennsylvania Sumerian Dictionary and Steve Tinney
+#  1997 under the GNU General Public License (see /psd/COPYING).
+# 
+#  $Id: Makefile.lam,v 0.5 1997/09/08 13:01:43 sjt Exp $
+
+INCLUDES=-I@top_srcdir@/c/include \
+	-I@top_srcdir@/c/lib/expat/xmlparse \
+	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
+	-I@top_srcdir@/c/lib/{collate,sas} \
+	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2}
+
+AM_CFLAGS=-pedantic -Wall
+
+bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
+	jpegsize linkfiles gdf \
+	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
+	xmlns xmlsplit utf8v xalias xfrag
+
+#pqoutline pqsort  
+
+concord_SOURCES=concord.c
+concord_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+gdf_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+haslinks_SOURCES=haslinks.c
+
+isogmt_SOURCES=isogmt.c
+
+linkfiles_SOURCES=linkfiles.c
+
+jpegsize_SOURCES=jpegsize.c jpeginfo.c jpeginfo.h
+
+newext_SOURCES=newext.c
+newext_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+oraccopt_SOURCES=oraccopt.c
+oraccopt_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+#pqoutline_SOURCES=pqoutline.c otlenum.h
+#pqoutline_LDADD = ../expat/libexpat.la @top_srcdir@/c/lib/liboracc.la
+
+#pqsort_SOURCES=pqsort.c
+#pqsort_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+pqunion_SOURCES=pqunion.c
+
+pqxpand_SOURCES=pqxpand.c
+pqxpand_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+signiary_SOURCES=signiary.c
+signiary_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+sigfixer_SOURCES=sigfixer.c
+sigfixer_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+sigmap_SOURCES=sigmap.c
+sigmap_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+xalias_SOURCES=xalias.c
+xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
+	@top_srcdir@/c/otf/gdl/libgdl.la \
+	@top_srcdir@/c/lib/liboracc.la
+
+xfrag_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+xmlns_SOURCES=xmlns.c
+xmlns_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+xmlsplit_SOURCES=xmlsplit.c
+xmlsplit_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+utf8v_sources=utf8v.c

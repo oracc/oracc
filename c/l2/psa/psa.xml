@@ -1,0 +1,116 @@
+<config xmlns="http://oracc.org/ns/psa/1.0" 
+	xmlns:psa="http://oracc.org/ns/psa/1.0">
+  <lang lang="akk">
+    <term>
+      <ngram>u[and]</ngram>
+      <prop on="prevs" name="group-with" value="#next-ref"/>
+      <prop on="next" name="group-head"/>
+      <prop on="next" name="group-type" value="siblings"/>
+    </term>
+    <term>
+      <ngram>māru[son//son]N$mārī</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>māru[son//son]N$mārū ša[of]</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>māru[son//son]N</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>māru[son//son]N ša[of]</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>māru[son//descendant]N</ngram>
+      <prop on="head" name="ancestor-is" value="#next-ref" headshift="1"/>
+      <prop on="prev" name="ancestor-is" value="#next-ref" headshift="1"/>
+      <prop on="next" name="descendant-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>mārtu[daughter]N ša[of]</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="-2" name="grandfather-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="prev" name="gender" value="f"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>ahu[brother]N</ngram>
+      <prop on="prev" name="brother-is" value="#next-ref"/>
+      <prop on="next" name="brother-is" value="#prev-ref"/>
+      <prop on="prev" name="gender" value="m"/>
+      <prop on="this" name="relator" value="h"/>
+    </term>
+    <term>
+      <ngram>ummu[mother]N ša[of]</ngram>
+      <prop on="prev" name="mother-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="prev" name="gender" value="f"/>
+    </term>
+    <term>
+      <ngram>aplu[son]N</ngram>
+      <prop on="prev" name="ancestor-is" value="#next-ref"/>
+      <prop on="next" name="descendant-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>aššatu[wife]N$aššat</ngram>
+      <prop on="head" name="husband-is" value="#next-ref" headshift="1"/>
+      <prop on="next" name="wife-is" value="#head-ref"/>
+      <prop on="prev" name="gender" value="f"/>
+      <prop on="next" name="gender" value="m"/>
+      <prop on="this" name="relator" value="h"/>
+    </term>
+    <term>
+      <ngram>šarru[king]N</ngram>
+      <prop on="this" name="status" value="king"/>
+      <prop on="head" name="king" value="1"/>
+    </term>
+    <term>
+      <ngram>ṭupšarru[scribe]N</ngram>
+      <prop on="this" name="post" value="scribe"/>
+      <prop on="head" name="scribe" value="1"/>
+    </term>
+    <term>
+      <ngram>wardu[slave]N$arassu</ngram>
+      <prop on="this" name="status" value="slave"/>
+      <prop on="head" name="slave" value="1"/>
+    </term>
+  </lang>
+  <lang lang="sux">
+    <term>
+      <ngram>dumu[child]N$dumu;meš</ngram>
+    </term>
+    <term>
+      <ngram>dumu[child]N</ngram>
+      <prop on="prev" name="father-is" value="#next-ref"/>
+      <prop on="next" name="child-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>dumu[child]N munus[woman]N</ngram>
+      <prop on="prev" name="child-is" value="#next-ref"/>
+      <prop on="next" name="father-is" value="#prev-ref"/>
+      <prop on="prev" name="gender" value="f"/>
+      <prop on="this" name="relator" value="v"/>
+    </term>
+    <term>
+      <ngram>dam[spouse]N</ngram>
+      <prop on="prev" name="spouse-is" value="#next-ref"/>
+      <prop on="next" name="spouse-is" value="#prev-ref"/>
+      <prop on="this" name="relator" value="h"/>
+    </term>
+  </lang>
+</config>

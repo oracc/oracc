@@ -1,0 +1,173 @@
+\font\ExpandedRm="Ungkam Book Basic Expanded Regular" at 14pt
+\settypefieldbymargins{1in}{1in}{1in}{1in}
+\spaceskip 3.33333pt plus1.66666pt minus1.11111pt
+\hfuzz2pt \vfuzz4pt
+%\hyphenpenalty200
+\parindent5mm
+\tolerance1000
+\pretolerance=500
+\baselineskip12pt \lineskip0pt
+
+\intercolgutter=.3in
+
+\columnfuzz0pt \bic@diff@fuzz0pt
+
+\noblackboxes
+
+\topskip0pt \splittopskip0pt
+
+\centrehdrinfo{\ten\rm Esarhaddon Text \firstmark}
+\lefthdrinfo{\ifodd\pageno\else\ten\rm\folio\fi}
+\righthdrinfo{\ifodd\pageno\ten\rm\folio\fi}
+
+%\fnoterule{width3in}
+
+\def\X#1{\csname #1\endcsname}
+
+\def\chapter#1\par{
+        \penalty-1000
+        \vskip 36pt plus5pt minus5pt\relax
+                   \mark{#1}%
+                   \centerline{\twentyfive #1}%
+                   \nobreak\vskip 15pt plus5pt minus5pt\relax}
+
+\def\heading#1\par{\penalty-1000
+        \vskip 20pt plus10pt minus3pt\relax
+        \centerline{\ExpandedRm #1}%
+        \nobreak\vskip 15pt plus3pt minus2pt\relax}
+
+\def\introduction{\leftskip1in \rightskip\leftskip}
+\def\introductionFirstPar{\noindent}
+\def\introductionPar{\indent}
+
+\newdimen\catwidth \newdimen\catleftskip
+\def\catalogue{\begingroup\parindent0pt\relax\nine\rm \baselineskip10pt
+                                                      \lineskip0pt\relax}
+\def\endcatalogue{\endgraf
+   \baselineskip0pt \nobreak\kern3pt\relax
+   \catrule\relax\nobreak\endgroup}
+\def\catrule{\hbox{\kern\catleftskip
+        \vrule width\catwidth height0.375pt depth0pt\hfill}}
+\def\catbodyformat#1{\catwidth=#1\relax
+        \dimen0\fullhsize \advance\dimen0-\catwidth
+        \divide\dimen0by2\relax
+        \catleftskip\dimen0\relax
+        \leftskip\catleftskip\relax
+        \catrule}
+\def\catheaderskip{\nobreak\vglue3pt\catrule\nobreak\kern3pt}
+\def\Catstrut{\vrule width0pt height8pt depth2pt}
+\def\CatHeader{}
+\def\CatBody{\noindent\leftskip0pt \parindent0pt \rightskip .1in plus1fil\relax}
+
+\newbox\CatBox
+\def\CatVbox{\setbox\CatBox=\vbox\bgroup\aftergroup\CatFinishVbox\let\next=}
+\def\CatFinishVbox{%
+%  \ifnum\pageno=50 
+%    \global\showboxdepth10000 \global\showboxbreadth10000 %\showbox\CatBox
+%    \global\tracingoutput=1
+%  \fi
+%  \ifnum\pageno=51 \global\tracingoutput=0 \fi
+  \moveright\catleftskip\box\CatBox}
+
+\def\CatRestore{\leftskip\catleftskip\relax}
+\def\CatOffset{}
+
+\def\discussion{\nobreak
+  \def\currleading{12}\baselineskip12pt \lineskiplimit1pt \lineskip1pt
+  \@beginmcol2\relax \clubpenalty0 \widowpenalty0 \relax}
+\def\discussionFirstPar{\noindent}
+\def\discussionPar{\indent}
+\def\enddiscussion{\@endmcol}
+
+\def\bibliographySingleton{\def\currleading{9}%
+%  \@beginmcol2 % \parskip1pt 
+%  \clubpenalty10000 \widowpenalty10000 
+  \vtop\bgroup\hsize3.1in
+        \eight\rm\baselineskip9pt \lineskip0pt
+}
+\def\endbibliographySingleton{\egroup}
+
+\def\bibliography{\def\currleading{9}%
+  \@beginmcol2 % \parskip1pt 
+  \clubpenalty100 \widowpenalty100 
+  \eight\rm\baselineskip9pt \lineskip0pt
+}
+\def\endbibliography{\@endmcol}
+
+\def\bibliographyFirstPar{\noindent}
+\def\bibliographyPar{\indent}
+
+\newdimen\bibTabstop \bibTabstop=.4in
+
+\def\bibPar{\noindent\leftskip0pt \hangindent\bibTabstop \rightskip0pt plus1fil
+            \relax}
+\def\bibEnd{\endgraf\allowbreak}
+
+\def\bibyear#1{\hboxtomin\bibTabstop{#1}}
+\def\bibyearB#1{\vtop{\noindent\hsize\bibTabstop\hangindent.5em\relax#1\endgraf}}
+\def\bibinfo#1{#1}
+
+\def\edition{\ten\rm}
+\def\editionFirstPar{}
+\def\editionPar{}
+
+\def\logosize{\nine\rm}
+
+\input xtf
+\input gdl
+\input facinglines
+
+\def\footnoterule{\vskip0pt plus1fill
+  \vbox{}\kern3\p@
+  \hrule width6.5in height.4pt depth0pt
+  \kern 2.6\p@ % the \hrule is .4pt high
+  \vbox{}\vskip\fnotebelowruleskip\relax}
+
+%\fnotebelowruleskip-5pt
+
+\newif\ifhfnoterule
+\def\fnotesize{\eight\rm}
+
+% For RINAP style the total escapement to the
+% left margin of the translation column must be
+% 3.3in, and the translation column must therefore
+% be 3.2in
+\FLsetcolumns{.3in}{.1in}{2.7in}{.3in}{3.1in}
+
+\def\notespacing{\baselineskip9pt \lineskip0pt \lineskiplimit0pt\relax}
+\let\footbeginstrut\relax
+\let\footendstrut\relax
+\def\notelabel#1{{\bf #1} }
+\def\rinapnote{\unskip\bgroup\innotetrue\footnotehook
+    \def\logosize{\seven}\f@otnote{}}
+\def\f@otnote#1{\let\@sf\empty % parameter #2 (the text) is read later
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  #1\@sf\vfootnote{#1}}
+\def\vfootnote#1{\insert\footins
+  \bgroup\everypar{}% in case a note is in an enumerate
+  \def\|{}\interlinepenalty\interfootnotelinepenalty
+  \topskip\foottopskip
+  \splittopskip\foottopskip
+  \splitmaxdepth\dp\strutbox \floatingpenalty\@MM
+  \leftskip\z@skip \rightskip\z@skip \spaceskip\z@skip \xspaceskip\z@skip
+%  \fntextindent{#1}
+  \fnotesize\notespacing
+  \parindent\fnoteparindent \parskip\fnoteparskip
+  \footbeginstrut
+  \footnotehook\futurelet\next\fo@t}
+\def\fo@t{\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
+\def\f@@t{\bgroup\aftergroup\@foot\let\next}
+\def\f@t#1{#1\@foot}
+\def\@foot{\footendstrut\parfillskip0pt plus1fill\par
+  \penalty\interfootpenalty\vskip\interfootskip\egroup\egroup}
+
+%\skip\footins=3pt
+
+%\global\catcode`\_=10
+
+\hyphenation{musuk-kannu Senn-ach-erib la-men-ta-tion}
+
+\ten\rm
+
+\endinput

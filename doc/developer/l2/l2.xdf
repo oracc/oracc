@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2: The New Lemmatizer</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The pages in this area concern the implementation
+  details of the rewrite of the Oracc lemmatizer.  They are mostly an
+  attempt to keep the implementation honest.</dc:description>
+</d:meta>
+
+<h1>Overview</h1>
+
+<h2>Requirements</h2>
+
+<p>L2, the new lemmatizer, is a rewrite of the existing lemmatization
+and glossary-building system intended to fulfill several (slightly
+overlapping or partially identical) needs:</p>
+
+<ul>
+<li>lemmatization needs to be simpler and more maintainable</li>
+<li>lemmatization needs to be lighter-weight--projects which import
+texts should not need to relemmatize them</li>
+<li>rendered texts need their lemmatization links to point back to the
+glossaries of the project into which they have been imported</li>
+<li>glossaries need to be able to incorporate arbitrary slices of
+material from arbitrary imported texts without actually having an
+imported corpus</li>
+<li>instance lists from corpus-less glossaries need to behave as
+though they are part of the glossary's corpus</li>
+</ul>
+
+<h2>Implementation</h2>
+
+<p>These requirements will be met by a multi-phase approach as
+follows:</p>
+
+<ol>
+<li>All texts are lemmatized within a project, the owner-project</li>
+<li>Words are annotated with a signature during lemmatization</li>
+<li>Signatures can be extracted from texts to create glossaries</li>
+<li>New lemmatization is done by looking up forms in the signatures
+file</li>
+<li>Lemmatization checking is done against the signatures files
+belonging to a list of glossaries</li>
+<li>Lemmatization should be able to be done with an XML environment as
+well as from the command line</li>
+<li>Glossaries track the owner-project from which signatures come, and
+so can link properly back to the source text</li>
+<li>A text that is rendered from the glossary (i.e., a text which
+comes from the owner-project) is additionally annotated by the pager
+with the glossary-project</li>
+<li>Glossary entries can link to owner-project glossary entries using
+the owner-project and the signature</li>
+<li>A lemmatization on a word in a text is sent to the pager with both
+the glossary-project and the owner-project, and the glossary lookup is
+done first on the glossary-project and, if that fails, on the
+owner-project</li>
+<li>This lookup is done via the signature rather than an ID, meaning
+that glossaries must maintain a table mapping signatures to IDs</li>
+<li>Glossaries can remap from an incoming signature to a new signature
+to realign owner-project lemmatization with the glossary's
+perspective; the owner-project signature must be mapped to the
+remapped ID in the glossary's map</li>
+</ol>
+
+<h1>Signatures</h1>
+
+<p>Signatures are unique combinations of values of five fields:</p>
+
+<pre class="example">CF GW SENSE POS NORM</pre>
+
+<p>These called the core fields.</p>
+
+<p>Signatures may also be associated with additional fields, named
+adjunct fields.  These may include EPOS, M1, M2, BASE, CONT.  Although
+the core fields are strings, adjunct fields may be complex structures.
+Adjunct fields must have a string serialization, however, which can be
+used for matching.</p>
+
+<p>We call a set of signatures a <code>sigtree</code>.</p>
+
+<h1>Programs</h1>
+
+<p>This is an unruly listing of functionalities and programs which
+is just intended to guide thinking about how L2 will work.</p>
+
+<h2>sig2xml</h2>
+
+<ul>
+<li>create sigtree from signatures</li>
+<li>create XML glossary (but don't use sigmanager--must
+keep additional fields)</li>
+</ul>
+
+<h2>sigharvest</h2>
+
+<ul>
+<li>extract sigtree from corpus</li>
+</ul>
+
+<h2>bigrammer</h2>
+
+<ul>
+<li>compile statistics on adjacent signatures</li>
+</ul>
+
+<h2>sigmanager</h2>
+
+<ul>
+<li>merge two sigtrees</li>
+<li>dump signature file as XML glossary</li>
+<li>add bigrams to sigtrees</li>
+</ul>
+
+<h2>cbdmanager</h2>
+
+<ul>
+<li>merge two XML glossaries (CBDs)</li>
+<li>dump CBD as sigtree</li>
+</ul>
+
+<h2>Lemmatizer</h2>
+
+<ul>
+<li>apply sigtree to lemmatize new texts</li>
+<li>apply sigtree to check existing lemmatization</li>
+</ul>
+
+<h2>Pager</h2>
+
+<ul>
+<li>augment outgoing texts with glossary-project</li>
+<li>locate sigs in project/glossary context</li>
+</ul>
+
+<h1>Roadmap</h1>
+
+<ul>
+<li><del>implement L2 sigtree lemmatization in XML</del></li>
+
+<li><del>implement L2 sigtree lemmatization in C</del></li>
+
+<li><del>write CBD to sigtree in XSL</del></li>
+
+<li>modify lemmer to add sigs to output, and drop dicts
+(for now, leave form structures as they are used by
+PSUs etc.)</li>
+
+<li>write sigharvest which adds freqs to
+sigtree (harvest then merge, probably; or perl
+script that runs xsl to extract sigs from each
+xtf and pipe's 'em in to count)</li>
+
+<li>modify dict2xis to generate .xis from sigtree</li>
+
+<li>write mapper to invert sigtree as index to CBD
+  (need to include remapped sigs from CBD here)</li>
+
+<li><p>add @map to CBD<br/>
+<code class="cookbook">@map a[water//semen]N$a => a[semen//semen]N$a</code><br/>
+These get emitted as <code>cbd:entry</code> nodes with <code>type="map"</code>
+but with cf/gw nodes to support easy sorting:</p>
+<pre class="example">
+  &lt;cbd:entry cbd:type="map">
+    &lt;cbd:cf>a&lt;/cbd:cf>
+    &lt;cbd:gw>water&lt;/cbd:gw>
+    &lt;cbd:pos>N&lt;/cbd:pos>
+    &lt;cbd:map from="a[water//semen]N$a" to="a[semen//semen]N$a"/>
+  &lt;/cbd:entry>
+</pre>
+</li>
+</ul>
+
+<h1>More Documents</h1>
+
+<ul>
+<li><a href="langtags/">Language Tags</a></li>
+<li><a href="lemsyntax/">Syntax of Signatures and Lemmatizations</a></li>
+</ul>
+
+</d:doc>

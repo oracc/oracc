@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XTC</dc:title>
+  <dcterms:alternative>XML Text Corpus</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xtc/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-02-08</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>XTC (besides being a tribute) is a very simple XML
+  vocabulary which provides a list of texts on which downstream corpus
+  processing can operate.  The principle is that further linguistic
+  service processing does not need to know anything system-specific,
+  enabling the higher-order tools to operate on a variety of source
+  corpora.</dc:description>
+</d:meta>
+
+<d:schema name="xtc" uri="http://oracc.org/ns/xtc/1.0">
+<d:rnc>
+default namespace = "http://oracc.org/ns/xtc/1.0"
+
+start =
+  element xtc {
+    attribute basename { xsd:NCName },
+    attribute destdir { xsd:NMTOKEN },
+    element t {
+      attribute path { text },
+      xsd:NCName
+    }+
+  }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Views</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2011-12-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Views are ways of visualizing a text. They apply only to 
+the generation of a single result from a single input, and
+are available from a list given in the outline pane when
+browsing a transliteration or translation. This page describes how to configure your Oracc website to display different views of the texts in your corpus.</dc:description>
+</d:meta>
+
+
+<p>There are two types of views: system views and <a href="#Project_Views">project
+views</a>.</p>
+<ul>
+<li>Configuring the project to make system views
+available is simply a matter of setting options in the
+<a href="c2/">configuration file</a>.</li>
+
+<li>Configuring custom project views must be done manually, by
+creating a file <code class="cookbook">00lib/views.xml</code>.</li>
+</ul>
+
+<h2>Custom Views</h2>
+
+<p>Custom views are defined in an XML file, <code>00lib/views.xml</code>, which
+consists of a view block for each custom view, wrapped in views
+tags:</p>
+
+<pre class="cookbook">
+ &lt;views>
+   &lt;view>
+     &lt;name>&lt;/name>
+     &lt;input>&lt;/input>
+     &lt;script>&lt;/script>
+   &lt;/view>
+ &lt;/views>
+</pre>
+
+<dl>
+<dt><code>name</code></dt>
+<dd>The <code>name</code> element gives the name of the view, and is used in the
+Views section of a text's catalogue display.</dd>
+
+<dt><code>input</code></dt>
+<dd>The <code>input</code> element gives the ending of the type of file to
+input:</dd>
+<dd>
+<ul>
+<li> to process the TEI version of a text, this is <code>tei</code></li>
+<li>for catalogue data, <code>xmd</code></li>
+<li>for the Oracc XML version of a transliteration, it is <code>xtf</code>
+</li>
+</ul>
+</dd>
+
+<dt><code>script</code></dt>
+<dd>The <code>script</code> element gives the name of an XSL script which is
+applied to the input to produce the view.  No other script 
+types are supported.</dd>
+</dl>
+
+<h3>Example</h3>
+
+<pre class="example">
+  &lt;views>
+   &lt;view>
+     &lt;name>BPS TEI&lt;/name>
+     &lt;input>tei&lt;/input>
+     &lt;script>BPSTEINames&lt;/script>
+   &lt;/view>
+  &lt;/views>
+</pre>
+<!--
+<d:schema name="" uri="">
+</d:schema>
+
+<d:resources/> -->
+
+</d:doc>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Numbers and Metrology in CDLI Corpora</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-11-19</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document gives basic guidelines for entering numbers and
+metrological transliterations for CDLI.</dc:description>
+</d:meta>
+
+<p> We are preparing an
+exhaustive account of numbers and metrology, a preliminary version
+of part of which is available for <a href="numref.pdf">download
+(pdf 120KB)</a>.</p>
+      <p>We are aware of the fact that this is a preliminary version and
+is restricted to more or less uncontroversial
+numerical/metrological systems of the Ur III period; further, that
+while restricted, the proposal does include a paradigmatic
+completeness, particularly of the smaller units of the systems,
+that is not covered by our text corpus. At the same time, complex
+fractions of the NINDA2×SIGNS type, and the igi-n-gal2 complex, are
+not complete.</p>
+      <p>We are thankful for any advice and corrections of mistakes or
+omissions you might offer us in this, and subsequent proposals that
+will deal with other, and earlier 4th and 3rd millennium
+systems.</p>
+     <!-- <p>A previous paper analyzing the requirements and laying out out a
+design for the XML infrastructure for number and metrology handling
+is available (see <a href="wnm.html">Numbers Whitepaper</a>).</p>-->
+    <h1>Transliteration</h1>
+    
+      <p>All numbers are given with digits or a fraction followed by a
+qualifier in parenthesis, e.g., 1(disz). A full list of the
+allowable forms is given in the reference document.</p>
+    
+    <h2>Large
+Numbers Transliterated According to Their Graphemes</h2>
+
+      <p>Numerical notations are to be transliterated in the form
+n(sign1) n(sign2) etc., for instance "3(gesz2) 5(u) 7(disz) gurusz"
+for "180 + 50 + 7 workmen" or "6(bur3) 2(esze3) 4(iku) 1/4(iku)"
+GAN2" for "6 bur 2 esze 4 1/4 iku field."</p>
+
+    <h1>UxKASKAL</h1>
+   
+      <p>Note that for the time being we will transliterate
+Ugunu/UxKASKAL ("10 bur") with "bur'u" in avoidance of either buru
+(assigned to BUR by the sign lists) or burux (requiring description
+in parentheses that would unnecessarily complicate perl scripting);
+in like manner, szar'u for SZAR2xU, although this sign is listed
+with the value szaru by Borger.</p>
+ 
+    <h1>Reference</h1>
+    <p>A preliminary reference paper is <a href="numref.pdf">available
+    as a PDF [120k]</a>.</p>
+    <h4>Systems Included in the Reference Tables</h4>
+ 
+      <ul>
+        <li>Sexagesimal</li>
+        <li>Length</li>
+        <li>Surface</li>
+        <li>Volume</li>
+        <li>Dry &amp; Liquid Capacity</li>
+        <li>Weight</li>
+        <li>Brick</li>
+      </ul>
+
+    <h2>Systems on the TODO list</h2>
+
+      <ul>
+        <li>pre-Ur III generally; eventually post-Ur III also</li>
+        <li>Bisexagesimal</li>
+        <li>Decimal</li>
+        <li>Baskets</li>
+        <li>others</li>
+      </ul>
+
+
+<hr/>
+<p class="qn">
+ Questions about this document may be directed to osc@oracc.org</p>
+
+<h1>Related documentation</h1>
+<ul>
+<li>For purely sexagesimal notations in mathematical and astronomical texts, see the page on <a href="../math/">Mathematical notations in ATF</a>.</li>
+</ul>
+<d:resources>
+<d:resource copy="yes" href="numref.pdf" />
+</d:resources>
+</d:doc>

@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Project Configuration</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2009-11-09</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document gives an account of project configuration in Oracc 2.</dc:description>
+</d:meta>
+
+<p>This configuration is substantially similar to the old options but there are some significant differences. If there are elements in your config file that are not mentioned here it is likely that they have been superseded. If in doubt, consult Steve or Eleanor.</p>
+ 
+<h2>Files</h2>
+
+<p>Oracc project configuration is handled by several files:</p>  
+<ul>
+<li><p>The project configuration is handled by an XML project definition file called <code>00lib/config.xml</code>. This is the file you are most likely to need to edit. We give more detailed instructions <a href="#Corpus_configuration">below</a>.</p></li>  
+<li><p>The colours of your project website are given in the file <code>00web/colours.txt</code>, as described <a href="/doc/manager/webcolours">on a separate page</a>.</p></li>
+<li><p>If your corpus borrows ("proxies") ATF files from another project, their P, Q or X-numbers are listed in <code>00lib/proxy.lst</code>, described further below.</p></li>
+<li><p>In principle, several corpus configuration issues are dealt with by
+the XML Text Corpus (XTC) definition file <code>00lib/corpus.xtc</code>.  In practice, the default
+ never needs editing, so we will say nothing more about it here.</p></li>  
+</ul>
+
+<h2>Lists</h2>
+
+<p>Several lists of ID-numbers provide control over what is included
+in the project and what is displayed. </p>
+
+<p>The two important lists are <code>00lib/approved.lst</code> and
+<code>00lib/outlined.lst</code>.  The first gives all the texts which
+are considered part of the project.  The second gives the texts which
+are displayed by the pager.  Whether or not the pager actually uses
+<code>00lib/outlined.lst</code> is controlled by the pager
+option <code>pager-outlined-lst</code> in <code>00lib/config.xml</code>, as described <a href="/configdoc/build.html">build</a> page.</p>
+<p>The other two lists
+(<code>00lib/new.lst</code> and <code>00lib/rejected.lst</code>) are
+presently irrelevant as they are intended to support dynamic tracking
+of new additions to the CDLI catalogue in a manner that is not yet
+implemented.</p>
+
+<p>Secondary lists influence the build process if any kind of dynamic
+editing is being done by the system.  They are:</p>
+
+<dl>
+<dt>not-approved.lst</dt>
+<dd>Any numbers in this list are removed from the generated
+  <code>approved.lst</code></dd>
+<dt>add-approved.lst</dt>
+<dd>Any numbers in this list are added to the generated
+  <code>approved.lst</code></dd>
+</dl>
+
+<p>Similar lists influence the creation of <code>outlined.lst</code>:
+  <code>not-outlined.lst</code> and <code>add-outlined.lst</code>
+  contain numbers to be excluded or included in the generated
+  <code>outlined.lst</code> respectively.</p>
+
+<h3>Proxies</h3>
+<p>Finally, if you want to borrow ("proxy") ATF files from another corpus, you should make a file <code>00lib/proxy.lst</code>, that lists the P, Q or X-number of each proxied text, one to each line. Precede each text-id with the relevant project abbreviation and a colon; if you want to borrow the other project's catalogue data, follow the text-id with an @-sign and the project name. If you don't include an @-statement, the CDLI catalogue data will be used.</p> 
+<p>For instance:</p>
+<pre class="example">
+dccmt:P345916@dccmt
+dccmt:P347486@dccmt
+cams/gkab:P348765@dccmt
+cams/gkab:P348767@dccmt
+</pre>
+<p>In this example the first two texts are proxied from <a href="/dccmt/">DCCMT</a> and the second from the CAMS subcorpus <a href="/cams/gkab/">GKAB</a>. However, all four take catalogue data from DCCMT.</p>
+
+<p>You can use proxy lists to make corpora or subcorpora entirely of proxied texts (e.g., <a href="dccmt/paper11">DCCMT/Paper11</a>, a collection of texts for an undergraduate course). If you do this, set the (sub)project's <a href="/configdoc/build.html"><code>catalogue-build-policy</code> option</a> to "virtual" to generate a glossary.</p>
+<h2>Updating</h2> 
+<p>When you have edited the file <code>00lib/config.xml</code> as described below, use <a href="../the-oracc-command/">the <code>oracc</code> command</a> to
+update the web version of the configuration file:</p>
+
+<pre class="cookbook">
+oracc config
+</pre>
+
+<h1>Corpus configuration</h1>
+
+
+<h2>00lib/config.xml</h2>
+
+<p>The configuration file <code>00lib/config.xml</code> ("the config
+file") is the one which projects will modify most.  It is an XML file
+with a simple syntax and simple tags, the most important of which are
+described here.</p>  
+
+<!-- <p class="alert">The use of this file is not yet consistently
+implemented for all the needs of all projects: if your project has a
+file named <code>00web/config</code> you should
+<strong>NOT</strong> remove it.  Instead, please contact your project
+liaison so that we can evaluate whether your project's needs are
+already met by the facilities in the config file.  If they are, we will
+help you make the switch to this new-style configuration.  Ultimately,
+no project will use <code>00web/config</code>.</p> -->
+
+<!--<p>In order to use the new-style configuration you must first make
+sure that there is no file named <code>websources/config</code> (you
+can save it to a different name by saying, e.g., <code
+class="cookbook">mv websources/config websources/xconfig</code>).</p> -->
+
+<p>Config files are generated automatically when a project is first
+created. Let's start by looking at a typical config file (this one has
+been simplified a little for clarity):</p>
+
+<pre class="example">
+&lt;project n="dcclt">
+
+&lt;name>Digital Corpus of Cuneiform Lexical Texts&lt;/name>
+&lt;abbrev>DCCLT&lt;/abbrev>
+&lt;logo type="text">dcclt&lt;/logo>
+&lt;url/>
+&lt;type>corpus&lt;/type>
+&lt;public>yes&lt;/public>
+&lt;blurb>Editions and translations of lexical texts (word lists and sign lists) from all
+periods of cuneiform writing &lt;br/>
+Project directed by Niek Veldhuis at UC Berkeley and supported by the 
+&lt;a href="http://www.neh.gov">National Endowment for the Humanities&lt;/a>.&lt;/blurb>
+&lt;image>P000120.png&lt;/image>
+&lt;image-alt>Drawing of a list of vessels from Archaic Uruk, circa 3500 BCE&lt;/image-alt>
+
+&lt;option name="build-approved-policy" value="mixed"/>
+&lt;option name="build-outlined-policy" value="Q"/>
+&lt;option name="catalog-build-policy" value="auto"/>
+
+&lt;option name="cbd-mode" value="mixed"/>
+&lt;option name="%sux" value=". epsd2 dcclt/nineveh"/>
+&lt;option name="%akk" value="."/>
+
+&lt;option name="pager-back-button" value="DCCLT Portal"/>
+&lt;option name="pager-back-url" value="http://oracc.museum.upenn.edu/dcclt"/>
+
+&lt;option name="outline-default-select" value="true"/>
+&lt;option name="outline-default-sort-fields" value="period,genre,provenience"/>
+&lt;option name="outline-default-sort-labels" value="Time,Genre,Place"/>
+
+&lt;option name="outline-special-select" value="true"/>
+&lt;option name="outline-special-list-name" value="outlined.lst"/>
+&lt;option name="outline-special-sort-fields" value="period,subgenre"/>
+&lt;option name="outline-special-heading-template" value="1 2"/>
+&lt;option name="outline-special-catalog-fields" value="designation,subgenre,keywords"/>
+&lt;option name="outline-special-catalog-widths" value="30,25,41"/>
+
+&lt;/project>
+</pre>
+
+<p>The words following the angle bracket, <code>&lt;</code>, we call
+`tags'.  The words before an equals sign followed by a quoted string
+we call `attributes'.  These are the building blocks of XML.  XML
+files are always balanced: tags may contain tags, but the closing tags
+must always match at the same level of containment.</p>
+
+<p>Certain elements of the config file should not be edited: the
+opening and closing tags must be `project', and the `xmlns' code in
+the first line should never be changed.  The project name and
+abbreviations at the start of the file are generally set up when the
+project is created, and also should not be changed (because they are
+used by the Oracc software to work with the project's files--changing
+an abbreviation will result in files not being found).</p>
+
+<h2>Editable components</h2>
+<p>Several components of the config file may be edited by projects, however.</p> 
+
+<p>Some are required for all projects. They are described on the page of <a href="/configdoc/core.html">core</a> config elements.</p>
+
+<p>Then there are a large number of configuration options. In order to ensure some
+kind of systematization in the options we categorize them into groups.
+Each one begins with its own prefix and has its own page of documentation:</p>
+
+<dl>
+<dt><a href="/configdoc/build.html">build</a></dt>
+<dd>affects the project rebuilding process</dd>
+<dt><a href="/configdoc/atf.html">ATF processor</a></dt>
+<dd>controls the behaviour of the ATF processor</dd>
+<dt><a href="/configdoc/cbd.html">glossary</a></dt>
+<dd>controls glossary building behaviour</dd>
+<dt><a href="/configdoc/pager.html">pager</a></dt>
+<dd>controls the behaviour of the corpus pager on the project website</dd>
+<dt><a href="/configdoc/render.html">render</a></dt>
+<dd>controls rendering of the project website (e.g., HTML, print)</dd>
+<dt><a href="/configdoc/outline.html">outline</a></dt>
+<dd>controls how catalogue contents and search results are sorted and outlined online</dd>
+<dt><a href="/configdoc/views.html">views</a></dt>
+<dd>adds extra views of texts in the corpus to the project website</dd>
+</dl>
+
+
+<p>In the configuration file <code>00lib/config.xml</code> an option is
+declared using the following XML syntax:</p>
+
+<pre class="example">
+&lt;option name="NAME" value="VALUE"/>
+</pre>
+
+<p>For example, to set the <code>build-approved-policy</code> option
+described below to the value <code>atf</code> you would write:</p>
+
+<pre class="cookbook">
+&lt;option name="build-approved-policy" value="atf"/>
+</pre>
+
+<p>The options must be given within an <code>&lt;options></code>
+block.  If your <code>00lib/config.xml</code> doesn't have such a block
+yet, you will need to say:</p>
+
+<pre class="cookbook">
+&lt;options>
+  &lt;option name="build-approved-policy" value="atf"/>
+&lt;/options>
+</pre>
+
+<p>We are currently developing a web interface for project configuration, which will mean that you no longer have to edit config files by hand. However, the options available will remain the same.</p>
+
+<h1>Related pages</h1>
+<p>More documentation on project configuration can be found here:</p>
+<ul>
+<li><a href="/configdoc/core.html">Core</a> config elements</li>
+<li><a href="/configdoc/build.html">Build</a> options</li>
+<li><a href="/configdoc/atf.html">ATF processor</a> options</li>
+<li><a href="/configdoc/cbd.html">Glossary</a> options</li>
+<li><a href="/configdoc/pager.html">Pager</a> options</li>
+<li><a href="/configdoc/render.html">Render</a> options</li>
+<li><a href="/configdoc/outline.html">Outline</a> options</li>
+<li><a href="/configdoc/views.html">Views</a> options</li>
+<li>The <a href="/doc/manager/webcolours">website colours</a> file</li>
+</ul>
+<d:resources/>
+
+</d:doc>

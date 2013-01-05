@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Project Files</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-11-09</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The files belonging to a project are organized according to a specific
+set of conventions which are described here.</dc:description>
+</d:meta>
+
+<h2>Background</h2>
+
+<p>The files belonging to a project are strictly organized; no files
+may be present in the project's home directory except system
+configuration files (these generally begin with a period
+(<code>.</code>) and so are not normally visible when listing the
+project home directory.  Several groups of directories contain static
+and computer-generated project content, and all of these begin with
+digits.  Any directory whose name does not begin with digits is by
+definition a sub-project.</p>
+
+<h2>Project Home</h2>
+
+<p>Most project workers will access project files from the project
+home directory.  Thus, when we refer to a
+directory <code>00atf</code>, that would be accessed via Emacs using
+tramp as: <code>/PROJECT@oracc.museum.upenn.edu/00atf</code>,
+where <code>PROJECT</code> would be replaced by the actual project
+name.</p>
+
+<p>Programs also access project files is via the Oracc installation
+directory.  This directory contains a link to the actual location of
+project files, which is usually the home directory of the project
+user, but this is not a requirement.  So, when a program refers to the
+<code>00atf</code> directory in an error message, it will probably
+call it, following the standard Oracc installation,
+<code>/usr/local/oracc/PROJECT/00atf</code>.</p>
+
+<p>This access route is the reason why project names must all be four
+characters or more in length: Oracc reserves names of three or less
+letters for system files and directories.</p>
+
+<p>This is also the reason why project names must be in all lowercase:
+for simplicity and predictability all Oracc directory names consist
+only of lowercase letters, in some cases prefixed by a sequence of
+digits.</p>
+
+<h2>Editing Data</h2>
+
+<p>All project content which can be edited by hand is contained in one of the directories
+prefixed with <code>00</code>.  The current set of these directories is:</p>
+
+<dl>
+<dt>00any</dt>
+<dd>conventional space where arbitrary project materials may be 
+kept; by convention a subdirectory '00any/portal' contains a copy
+of any project portal, which may be a compressed archive.  This copy
+of the portal is not used in any way, but is simply a convenient way
+to ensure that the portal and the project can be archived together.</dd>
+
+<dt>00atf</dt>
+<dd>source texts in ATF format; this is versioned, and each ATF file is in its own
+file named by its P/Q/X ID</dd>
+
+<dt>00bak</dt>
+<dd>project backups can be stored here, and when the glossary-merger updates a glossary
+a copy is made in this directory</dd>
+
+<dt>00bib</dt>
+<dd>project bibliography can be kept here, but it is not yet used by the Oracc build
+mechanism</dd>
+
+<dt>00bin</dt>
+<dd>executable versions of any programs specific to the project should be kept here
+(sources should be kept in <code>00any/src</code>)</dd>
+
+<dt>00cat</dt>
+<dd>if a project maintains its own catalogues the installable sources live in <code>00cat</code>;
+note that projects which use the CDLI main catalogue directly have their metadata created
+dynamically when the project is built, and do not have any catalogue files in the 00-tree</dd>
+
+<dt>00lib</dt>
+<dd>project configuration data, glossaries and signlists live in <code>00lib</code>; text lists
+live in <code>00lib/lists</code></dd>
+
+<dt>00map</dt>
+<dd>to support the transition to Oracc's new architecture, ATF sources may be accessed
+through alternate names via the <code>00map</code> directory which contains links to the
+files in <code>00atf</code> in a more user-friendly format</dd>
+
+<dt>00tei</dt>
+<dd>additional TEI data can be placed here and is migrated into the XML version
+of the project along with the automatically generated TEI version of project data.</dd>
+
+<dt>00web</dt>
+<dd>project content for the website should be placed here and is migrated into the
+HTML version of the project along with the automatically generated HTML version of project
+data; images live in 00web/images</dd>
+
+<dt>00xml</dt>
+<dd>additional project data in XML format should be placed here and
+is migrated into the XML version of the project</dd>
+</dl>
+
+
+<h2>Generating Data</h2>
+
+<p>During the build process, a number of XML versions of the
+text-based sources are generated, and these are placed in the
+directory <code>01bld</code>.  Each text has its own directory
+in <code>01bld</code>, named according to its ID.  When one project
+borrows data from another via proxying, it is this ID-named directory
+from which the proxied data is taken.</p>
+<p>Unmerged glossary data harvested from ATF files is stored in <code>01bld/new/[LANGUAGE].new</code>.</p>
+
+<p>There is also a working directory named <code>01tmp</code>.</p>
+
+<p>Both of these directories actually live in the variable part of the
+filesystem, by convention in /var/local/oracc.  The entries in the project
+home directory are links.</p>
+
+
+<h2>Public Data</h2>
+
+<p>There are several different kinds of public data besides the raw build results.
+Like <code>01bld</code> these directories are also links to the Oracc directory
+<code>/var/local/oracc</code>.</p>
+
+<dl>
+
+<dt>02pub</dt>
+<dd>public files which don't belong in 02www or 02xml are put here; these files
+are public but are not visible online</dd>
+
+<dt>02www</dt>
+<dd>this is the live project web site</dd>
+
+<dt>02xml</dt>
+<dd>this is the XML form of the project's data, which is what is loaded into the XML database; 
+there is an [ID].xml for each text in the project, including those which are proxied from other 
+projects, and the XML versions of glossaries etc., are included with <code>00</code> prefixes
+so that they occur first in the project data in a simple sort</dd>
+</dl>
+
+<h2>Sub-projects</h2>
+
+<p>Sub-projects work exactly like projects; the only difference is that their home directory 
+is a project or sub-project directory, rather than the home directory of the project.</p>
+
+</d:doc>
+

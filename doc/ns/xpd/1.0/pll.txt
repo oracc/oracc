@@ -1,0 +1,110 @@
+Projects, Lists & Links (PLL)
+=============================
+
+Oracc gathers several different types of corpus and
+link navigation under a single drop-down menu at the
+top of the pager.  This drop-down is known as the
+PLL menu.
+
+Some of the PLL entries are created for you, others
+must be entered in 00lib/pll.xml, which has the
+following basic structure:
+
+ <pll>
+   <list menu="MENU-NAME" file="FILE-NAME"/>
+   <link menu="MENU-NAME" url="URL"/>
+ </pll>
+
+Projects
+***********
+
+Public ancestor and subprojects are automatically added to PLL.
+
+Lists
+*****
+
+Lists of PQX numbers can be placed in the 00lib/lists
+directory from where they are copied to the web 
+directory and can be accessed by the URL:
+
+ http://oracc.museum.upenn.edu/PROJECT/LIST
+
+In addition, if a list entry is given pll.xml, that
+entry is added to the menu.
+
+For example, if a project has texts belonging to 
+several libraries, one could create lists for each
+library and add entries like this to pll.xml:
+
+ <list menu="Resh Temple Library" file="resh"/>
+
+Which would correspond to a list file 00lib/lists/resh.
+
+
+Links
+*****
+
+Links to websites which are not in the project hierarchy 
+can also be included in pll.xml.  These have two forms,
+a short form for commonly used links and a long form for
+links that are not in Oracc's list of known links.
+
+All of these links open in a new window.
+
+Short Form
+----------
+
+The short form simply gives an identifier for the link, 
+e.g.:
+
+ <link id="CDLI"/>
+
+Oracc expands this to the long form for you, and puts
+the relevant entry in the PLL menu.
+
+The long form requires you to specify the text to appear
+in the menu and the URL to which it points, e.g.:
+
+ <link menu="CDLI"
+       url="http://cdli.ucla.edu"/>
+
+When choosing the name for the menu, use the full name
+of the project for projects which may not be well known
+to users, unless that name is more than about 20
+characters--there is a reasonable amount of space for
+the PLL drop-down, but we don't want the top buttons
+to be completely dominated by it.  Long project names
+can either use a standard abbreviation for the project
+or the first three words followed by an ellipsis. Thus,
+an alternative form of the CDLI menu item might have
+been:
+
+  menu="Cuneiform Digital Lib..."
+
+When deciding how to abbreviate such names, it is 
+reasonable to base the final choice on the look of
+your project when viewed in the P2 pager--the 20
+character limit should be viewed as a guideline rather
+than a rule.
+
+The list of links which can be referenced by ID is kept
+at:
+
+http://oracc.museum.upenn.edu/doc/builder/p2/linkids.html
+
+To suggest additional commonly-used links e-mail 
+osc@oracc.org.
+
+(The data list of IDs is src/misc/p2/pll_linkids.xml installed as
+lib/data/pll_linkids.xml)
+
+Example
+-------
+
+(Interim example which is currently used for testing in p3-saao.xml)
+
+<pll>
+  <list menu="Arpad" file="arpad"/>
+  <link menu="Knowledge &amp; Power" url="http://knp.prs.heacademy.ac.uk"/>
+  <link id="AEB"/>
+</pll>

@@ -1,0 +1,210 @@
+.TH ESTCALL 1 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estcall \- command line interface of the node API
+
+.SH SYNOPSIS
+.PP
+.B estcall put [\-proxy host port] [\-tout num] [\-auth user pass] nurl [file]
+.PP
+.B estcall out [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr
+.PP
+.B estcall edit [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr name [value]
+.PP
+.B estcall get [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr [attr]
+.PP
+.B estcall etch [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr
+.PP
+.B estcall uriid [\-proxy host port] [\-tout num] [\-auth user pass] nurl uri
+.PP
+.B estcall inform [\-proxy host port] [\-tout num] [\-auth user pass] [\-ia|\-iu|\-il] nurl
+.PP
+.B estcall sync [\-proxy host port] [\-tout num] [\-auth user pass] nurl
+.PP
+.B estcall optimize [\-proxy host port] [\-tout num] [\-auth user pass] nurl
+.PP
+.B estcall search [\-proxy host port] [\-tout num] [\-auth user pass] [\-vx] [\-kw] [\-ec] [\-sf] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [\-dpt num] [\-mask num] nurl [phrase]
+.PP
+.B estcall setuser [\-proxy host port] [\-tout num] [\-auth user pass] nurl name mode
+.PP
+.B estcall setlink [\-proxy host port] [\-tout num] [\-auth user pass] nurl url label credit
+.PP
+.B estcall raw [\-proxy host port] [\-tout num] [\-auth user pass] [\-np] [\-eh expr] url [file]
+
+.SH DESCRIPTION
+.PP
+.B estcall
+is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument
+.I nurl
+specifies the URL of a node.  The option
+.B \-proxy
+specifies the host name and the port number of a proxy server.  The option
+.B \-tout
+specifies timeout in seconds.  The option
+.B \-auth
+specifies the user name and the password of authentication information.
+.TP
+.B estcall put [\-proxy host port] [\-tout num] [\-auth user pass] nurl [file]
+Register a document of document draft to a node.
+.br
+.I file
+specifies a target file.  If it is omitted, the standard input is read.
+.TP
+.B estcall out [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr
+Remove information of a document from a node.
+.br
+.I expr
+specifies the ID number or the URI of a document.
+.TP
+.B estcall edit [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr name [value]
+Edit an attribute of a document in a node.
+.br
+.I expr
+specifies the ID number or the URI of a document.
+.br
+.I name
+specifies the name of an attribute.
+.br
+.I value
+specifies the value of the attribute.  If it is omitted, the attribute is removed.
+.TP
+.B estcall get [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr [attr]
+Output document draft of a document in a node.
+.br
+.I expr
+specifies the ID number or the URI of a document.
+.br
+If
+.I attr
+is specified, only the value of the attribute is output.
+.TP
+.B estcall etch [\-proxy host port] [\-tout num] [\-auth user pass] nurl expr
+Output TSV of keywords and their scores of a document in a node.
+.br
+.I expr
+specifies the ID number or the URI of a document.
+.TP
+.B estcall uriid [\-proxy host port] [\-tout num] [\-auth user pass] nurl uri
+Output the ID number of a document specified by URI.
+.br
+.I uri
+specifies the URI of a document.
+.TP
+.B estcall inform [\-proxy host port] [\-tout num] [\-auth user pass] [\-ia|\-iu|\-il] nurl
+Output the name, the label, the number of documents, the number of unique words, and the cache usage of a node.
+.br
+If
+.B \-ia
+is specified, names of administrators are output.
+.br
+If
+.B \-iu
+is specified, names of users are output.
+.br
+If
+.B \-il
+is specified, expressions of links are output.
+.TP
+.B estcall sync [\-proxy host port] [\-tout num] [\-auth user pass] nurl
+Synchronize updating contents of the database of a node.
+.TP
+.B estcall optimize [\-proxy host port] [\-tout num] [\-auth user pass] nurl
+Optimize the database of a node.
+.TP
+.B estcall search [\-proxy host port] [\-tout num] [\-auth user pass] [\-vx] [\-kw] [\-ec] [\-sf] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [\-dpt num] [\-mask num] nurl [phrase]
+Search a node for documents.
+.br
+.I phrase
+specifies the search phrase.
+.br
+If
+.B \-vx
+is specified, XML including including attributes and snippets is output.
+.br
+If
+.B \-kw
+is specified, keyword vectors are retrieved.
+.br
+.B \-ec
+specifies lower limit of similarity eclipse.
+.br
+If
+.B \-sf
+is specified, the phrase is treated as a simplified form.
+.br
+.B \-attr
+specifies an attribute search condition.  This option can be specified multiple times.
+.br
+.B \-ord
+specifies the order expression.  By default, it is descending by score.
+.br
+.B \-max
+specifies the maximum number of show documents.  Negative means unlimited.  By default, it is 10.
+.br
+.B \-sk
+specifies the number of documents to be skipped.  By default, it is 0.
+.br
+.B \-aux
+specifies permission to adopt result of the auxiliary index.  If it is not more than 0, the auxiliary index is not used.  By default, it is 32.
+.br
+.B -dis
+specifies the name of the distinct attribute.
+.br
+.B \-dpt
+specifies the depth of meta search.  by default it is 0.
+.br
+.B \-mask
+specifies the mask of meta search.  by default it is 0.
+.TP
+.B estcall setuser [\-proxy host port] [\-tout num] [\-auth user pass] nurl name mode
+Set permission of a user.
+.br
+.I name
+specifies the name of a user.
+.br
+.I mode
+specifies operation mode.  1 means to set the user as an administrator, 2 means to set the user as a guest, and 0 means to revoke the user account.
+.TP
+.B estcall setlink [\-proxy host port] [\-tout num] [\-auth user pass] nurl url label credit
+Set a link to another node.
+.br
+.I url
+specifies the URL of a destination node.
+.br
+.I label
+specifies the label of the link.
+.br
+.I credit
+specifies the credit of the link.  If the value is negative, the link is removed.
+.TP
+.B estcall raw [\-proxy host port] [\-tout num] [\-auth user pass] [\-np] [\-eh expr] url [file]
+Output response of an HTTP request.
+.br
+.I url
+specifies the URL of a target.
+.br
+If
+.I file
+is specified, the content is sent by POST method.  If not, GET method is used.  If "\-" is specified, the standard input is read.
+.br
+If
+.B \-np
+is specified, output response headers also.
+.br
+.B \-eh
+specifies an additional HTTP header.  By default, "Host", "Connection", "User\-Agent", and "Content\-Length" is added.
+.PP
+All sub commands return 0 if the operation is success, else return 1.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estcmd (1),
+.BR estmaster (1),
+.BR estwaver (1),
+.BR estraier (3),
+.BR estnode (3)
+.PP
+Please see
+.B http://fallabs.com/hyperestraier/nguide-en.html
+for detail.

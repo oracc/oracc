@@ -1,0 +1,10 @@
+body {
+font-size: 0.7em;
+}
+#TextSizeSmaller a {
+color: #cccccc;
+cursor: default;
+}
+#TextSizeSmaller a:hover {
+background-color: transparent;
+}

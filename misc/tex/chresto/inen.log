@@ -1,0 +1,18 @@
+This is XeTeX, Version 3.1415926-2.2-0.9995.2 (TeX Live 2009) (format=oracctex 2010.3.17)  21 MAR 2010 00:43
+ %&-line parsing enabled.
+**inen
+(./inen.tex (./cuneify.tex
+\tabletwidth=\dimen142
+Font: Received request to load UBBrmten
+Font: requested: "Ungkam Book Basic" at 10pt
+Font: loading "Ungkam Book Basic" at 10pt
+Font: Received request to load UBBrmseven
+Font: requested: "Ungkam Book Basic" at 7pt
+Font: loading "Ungkam Book Basic" at 7pt
+Font: Received request to load UBBrmseven
+Font: \UBBrmseven  already loaded
+) [1] [2]
+Missing character: There is no ░ in font CuneiformOB!
+Missing character: There is no ░ in font CuneiformOB!
+ [3] [4] [5] [6] )
+Output written on inen.pdf (6 pages).

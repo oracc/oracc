@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Citing Oracc URLs online and in print</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2010-01-14</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes how to refer to Oracc web pages online or in print, using short, stable URLs. A wider range of options, described in more technical language, is given on the <a href="/doc/ood/uri-patterns/">Oracc URI patterns</a> page.</dc:description>
+</d:meta>
+
+<h1>Online or In Print?</h1>
+<p>When linking to Oracc from a web page or another online resource, just follow the instructions below.</p>
+<p>When citing Oracc resources in print, you should not cite the
+<code>oracc.museum.upenn.edu</code> server directly. Instead, use the hostname
+<code>http://oracc.org</code>.  Then append the relevant part of the
+URL as given in the examples, which are designed to be
+permanent. The hostname <code>http://oracc.org</code> will always redirect to the
+current Oracc server, wherever it is hosted.</p>
+
+<h1>Projects</h1>
+<p>Decide whether you want to link to the home page of a project (which is likely to include a text-based description of its aims and scope), or directly to the corpus outline. Always the lower-case project abbreviation, and remember to include the final <code>/</code>. For instance:</p>
+ 
+<dl>
+<dt>Project home page in print</dt>
+<dd><code class="example">http://oracc.org/dccmt/</code></dd>
+<dt>Project home page online</dt>
+<dd><code class="example">http://oracc.museum.upenn.edu/dccmt/</code></dd>
+<dt>Corpus home page in print</dt>
+<dd><code class="example">http://oracc.org/dccmt/corpus/</code></dd>
+<dt>Corpus home page online</dt>
+<dd><code class="example">http://oracc.museum.upenn.edu/dccmt/corpus/</code></dd>
+</dl>
+<p>Some projects have subprojects:</p>
+<dl>
+<dt>Subproject home page in print</dt>
+<dd><code class="example">http://oracc.org/cams/gkab/</code></dd>
+<dt>Subproject home page online</dt>
+<dd><code class="example">http://oracc.museum.upenn.edu/cams/gkab/</code></dd>
+<dt>Subproject corpus home page in print</dt>
+<dd><code class="example">http://oracc.org/cams/gkab/corpus/</code></dd>
+<dt>Subproject corpus home page online</dt>
+<dd><code class="example">http://oracc.museum.upenn.edu/cams/gkab/corpus/</code></dd>
+</dl>
+<p>If a project (or subproject) does not have a separate home page, the home-page URL defaults to the corpus home page. For instance, <code class="example">http://oracc.org/contrib/amarna/</code> is equivalent to<code class="example">http://oracc.org/contrib/amarna/corpus/</code>.</p>
+
+<h1>Texts</h1>
+<p>There are various different ways of linking to single or several texts in a corpus. For instance:</p>
+
+<h2>Single text</h2>
+<p>To link directly to a single text in a project, for instance to imbed it in another web page, use the the text's ID (i.e., <a href="/doc/user/p2/#Outline_Main_Pane">P-, Q- or X-number</a>) and add <code>/html</code>. For example:</p>
+<ul>
+<li> <code
+class="example">http://oracc.museum.upenn.edu/dcclt/Q000001/html</code></li>
+<li><code
+class="example">http://oracc.museum.upenn.edu/cams/gkab/P363523/html</code></li>
+</ul>
+<p>We don't recommend this method for print citations.</p>
+<h2>List of texts</h2>
+<p>There are a few different ways of generating a list of one or more texts in a project:</p>
+
+<dl>
+<dt>Using text IDs</dt>
+<dd>List the IDs <a href="/doc/user/p2/#Outline_Main_Pane">P-, Q- or X-number(s) </a>) of one or more texts, separated by commas (but no spaces) and no final <code>.html</code> or <code>/</code>. For example:</dd>
+<dd>
+<ul>
+<li><code class="example">http://oracc.museum.upenn.edu/dcclt/Q000001,Q000002</code></li>
+<li><code class="example">http://oracc.museum.upenn.edu/dcclt/Q000003</code></li>
+<li><code class="example">http://oracc.org/cams/gkab/Q002715,P363442,P363443</code></li></ul>
+</dd>
+<dt>Using keywords from the catalogue</dt>
+<dd>Sometimes it is useful to provide a list of texts as if they were the results of a <a href="/doc/user/searching/#Searching_the_catalogue_data">catalogue search</a>. Use a question mark <code>?</code> before the search term. For instance:</dd>
+<dd>
+<ul>
+<li><code class="example">http://oracc.museum.upenn.edu/qcat?sargon</code> lists all compositions in the Q-catalogue that have "Sargon" in the title, whether Sargon the Great or Sargon II;</li>
+<li><code class="example">http://oracc.org/saao?query</code> lists all the divinatory queries in State Archives of Assyria online;</li>
+<li><code class="example">http://oracc.museum.upenn.edu/cams/gkab?iqqur-ipuš</code> lists all the manuscripts and Tablets of <i>Iqqur Ipuš</i> in CAMS/GKAB. Note the hyphen instead of the space.</li>
+</ul>
+</dd>
+<!--<dd>Note that words are separated by underscores and <a href="/doc/user/searching/#ASCII__non_Unicode_">ASCII</a>, not Unicode, transliteration is used.</dd> -->
+</dl>
+
+<h1>Glossaries</h1>
+
+<h2>Whole glossaries</h2>
+<p>Give the lower-case abbreviation for the glossary or subglossary, without a final <code>/</code>. For example: </p>
+
+<ul>
+<li><code class="example">http://oracc.museum.upenn.edu/cams/akk</code> for the top-level CAMS Akkadian glossary;</li>
+<li><code class="example">http://oracc.museum.upenn.edu/etcsri/qpn-x-divine</code> for ETCSRI's Divine Names subglossary of the Proper Nouns;</li>
+<li><code class="example">http://oracc.museum.upenn.edu/saao/saa01/akk-x-neoass</code> for the Neo-Assyrian subglossary of the Akkadian glossary of State Archives of Assyria online, volume 1.</li>
+</ul>
+
+<!-- <p>There is a full list of Oracc language codes WHERE </p> -->
+
+<h2>Glossary entries</h2>
+<p>You can also give lists of one more glossary entries, using Sumerian, Akkadian and/or English keywords. For instance:</p>
+
+<ul>
+<li><code
+class="example">http://oracc.museum.upenn.edu/cams/gkab/akk?adru</code> lists the entries for both <code>adru [AFRAID] AJ</code> and <code>adru [DARK]</code> in CAMS/GKAB's Akkadian glossary;</li>
+<li><code
+class="example">http://oracc.museum.upenn.edu/cams/gkab/akk?afraid</code> lists all the entries for Akkadian words that mean "afraid" in CAMS/GKAB's Akkadian glossary;</li>
+<li> and <code
+class="example">http://oracc.museum.upenn.edu/cams/gkab/akk/adru[afraid]AJ</code> lists only the entry for <code>adru [afraid] AJ</code>.</li>
+</ul>
+<p>Note the <code>akk/</code> instead of <code>akk?</code> in that last example.</p>
+
+<h1>Further information</h1>
+<p>The range of citation patterns, described in more technical language, is given on the <a href="/doc/ood/uri-patterns/">Oracc URI Patterns</a> page.</p>
+
+<!-- <d:resources/> -->
+
+</d:doc>

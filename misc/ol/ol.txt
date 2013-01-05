@@ -1,0 +1,151 @@
+OL: The Oracc Listmaker
+================
+
+OL is a program which can make lists from a variety of sources.  The resultant
+list can be used as the basis for a project or as the input to chresto or any other
+purpose to which lists are put in Oracc.
+
+OL is controlled by an OL script, which is an XML file conforming to the 
+following schema:
+
+ ol = element ol { ol-options , source+ , op* , output+}
+
+ ol-options = (multi?)
+
+ multi = attribute multi { "ignore" | "warn" }
+
+ ol-attr = ( xml:id , priority? )
+
+ priority = attribute priority { xsd:nonNegativeInteger }
+
+ source = (numsource | listsource | projsource | sourcehsource)
+
+ numsource = element source { 
+ 	  	      ol-attr,
+  		      attribute type { "numbers" } ,
+		      n* 
+		 }
+
+ n = element n { proj_pqxid_regex }
+
+ listsource = element source {
+ 	   	       ol-attr,
+		       attribute type { "list" },
+		       attribute list { xsd:anyURI } 
+		 }
+
+ projsource = element source {
+ 	    	    	ol-attr,
+			attribute type { "project" },
+			attribute project { project_regex }
+		}
+
+ srchsource = element source {
+ 	   	       ol-attr,
+		       attribute type { "search" },
+		       attribute toks { text }
+		}
+
+ op = 	element op {
+    		       attribute xml:id { xsd:ID },
+		       attribute type { "join" | "drop" | "keep" | "trim" },
+		       attribute ids { xsd:IDREFs }
+		}
+
+ output = element output {
+ 		      ol-options,
+ 		      attribute file = { text },
+ 		      attribute ids = { xsd:IDREFs };
+ 	       }
+
+Options
+********
+
+Options can be supplied to the OL script.  At present there
+is one option to control whether OL warns about multiple
+instances of the same ID or silently ignores them following
+its priority rules.
+
+Sources
+********
+
+The following sources are understood by OL:
+
+    numbers : a literal list of id numbers
+
+    list : another list
+
+    project : the contents of a project
+
+    search : the results of executing a search
+
+Operations
+***********
+
+The following set operations can be applied to sources where A and B
+are the two lists:
+
+    join : create a new list which contains all the entries in both A and B
+
+    drop : create a new list which contains only entries in neither A nor B
+
+    keep : create a new list which contains only entries in A which are also in B
+
+    trim : create a new list which contains only entries in A which are not in B
+
+Note that operations can themselves be treated as sources: they take an ID
+but the priority for each entry is inherited.
+
+If no operations are specified in the OL script, all of the sources are joined
+together exactly as if they had been listed in the order in which they occur
+in the script in an <op type="join"> element.
+
+In join and keep operations the higher priority is retained
+
+Outputs
+*******
+
+Output can be controlled with the <output> element, which takes
+attributes for the file and the IDs to output.  This means that a 
+single OL script can output different result lists to different
+files.
+
+If no output element is given OL sends the result of the last
+op element to STDOUT.
+
+Entries:
+********
+
+Entries always consist of three parts: a project, an ID and a priority.  Source
+elements take a priority attribute which must be a non-negative integer 
+greater than 0.
+
+If no priority attribute is given, the priority is the number of the source
+element in the order in which they are specified in the OL script.
+
+All of the set operations are carried out on IDs regardless or 
+priority, and more than one entry can have the same ID if they are 
+in different projects. I.e., P123456 is allowed to occur more than once
+if it is in two different projects.  If an ID in the same project occurs
+more than once,the higher priority is retained.
+
+The final list may only contain one instance of each ID, and the priority value
+is used to determine which project's version of an ID is included in the 
+final list.  Entries with a higher priority are preferred over entries with a
+lower priority.
+
+The final list is produced with the correct project preprended to the ID and
+the priority is discarded.
+
+Examples:
+**********
+
+  <ol>
+    <source id="saa01" type="project" project="saao/saa01"/>
+    <source id="saa05" type="project" project="saao/saa05"/>
+    <source id="saa07" type="project" project="saao/saa07"/>
+    <source id="saa08" type="project" project="saao/saa08"/>
+    <source id="saa010" type="project" project="saao/saa10"/>
+    <op id="j1" type="join" ids="saa01 saa05 saa07 saa08 saa010"/>
+    <output file="j1.lst" ids="j1"/>
+  </ol>

@@ -1,0 +1,141 @@
+* Sysadmin Documentation
+
+** Sysadmin programs
+
+Executable versions of all sysadmin programs are kept in 00/sys, which
+is only readable by the oracc user.  When a program is named in this
+documentation, the full path to the program is the path of the oracc
+installation followed by 00/sys followed by the program name.  For a
+typical installation, then, the full path to the program newproj.sh
+is /usr/local/oracc/00/sys/newproj.sh.
+
+Some of these scripts can only run as root; they will complain when
+run as a regular user.
+
+
+** Environment Variables
+
+Several environment variables are used by Oracc; they must be set
+either in a system-wide login script (e.g., bash's /etc/profile) or
+in the user login scripts, including those for the oracc user and
+the root user when root is performing Oracc sysadmin tasks.
+
+++ ORACC
+
+   This is the path to the Oracc installation, by default /usr/local/oracc.
+
+
+++ ORACC_VAR
+
+   This is the path to the Oracc variable data tree, by default /var/local/oracc.
+
+++ ORACC_HOME
+
+   This is the path to the Oracc project directories, by default /home.
+
+** ORACC_HOST
+
+   This is the host name to use for Oracc web services; it may be the
+   host on which the system is installed, or it may be a different
+   host.  It is therefore not a requirement for a local installation
+   to run the webservices.
+
+To set the variables from the command line, use the oracc admin script
+${ORACC}/bin/oraccenv.sh.
+
+To call oraccenv.sh you may be able simply to copy or link it to 
+/etc/profile.d .   If your bash's /etc/profile doesn't automatically
+load the files in that directory, you can add to /etc/profile the
+line:
+
+	. /usr/local/oracc/bin/oraccenv.sh
+
+Where the first token is a single period, followed by a space, and the path
+/usr/local/oracc must be replaced by the path to Oracc's bin directory
+on the installation in question.
+
+Instructions for other shells and non-Unix systems will vary.
+
+** Oracc permissions scheme
+
+*** Oracc installation
+
+*** Oracc projects
+
+Oracc projects have several groups of directories which are described
+in the Manager documentation.  Directories with a 00 prefix are u+rwx
+project, g+r-x and o+---.
+
+Directories with a 01 or 02 prefix have the same permissions as 00
+directories for user and group, but are also o+r-x.
+
+*** Groups
+
+On project creation, projects are added to the oracc group, and the
+oracc user is added to the project group.
+
+** Project tasks
+
+To create or delete a project, first login as oracc and issue the
+'su' command to become superuser.  At this point extreme care is 
+necessary because the superuser ("root") has no restrictions on
+what can be done on the machine.
+
+*** Creating a new project
+
+New user-projects are created with the script newproj.sh, which takes
+a single argument, the name of the new project.  This must be all
+lowercase.  It must start with a letter from a to z, but may include
+digits after that.
+
+So, to create a new project 'amarna' on a standard installation, the 
+full command would be (executed as root):
+
+  /usr/local/oracc/00/sys/newproj.sh amarna
+
+New sub-projects (those which belong to a user-project) can be created
+by users themselves, and must be created while logged in as the user.
+More information is given in the Manager documentation.
+
+*** Completing Project Creation
+
+To complete the process of project creation, logout as root and login
+as the user.  Run `oracc init' with the project's standard abbreviation
+and long name as arguments.  The standard abbreviation must be the same
+as the created project name, but it may use uppercase characters.  So,
+for a top-level project whose userid is 'epsd', the init command would
+be:
+
+ oracc init ePSD 'The electronic Pennsylvania Sumerian Dictionary'
+
+Note the quotes around the long name to preserve the spaces.
+
+*** Deleting a project
+
+User-projects can be deleted with the script delproj.sh, which takes a
+single argument, the name of the project to be deleted.  A complete
+copy of the project is archived in /deleted_home before the user is
+deleted, and may be removed when no further use for it is likely.
+
+So, to delete a project 'amarna' on a standard installation, the full
+command would be (executed as root):
+
+  /usr/local/oracc/00/sys/delproj.sh amarna
+
+Sub-project deletion is described in the Manager documentation.
+
+** Service tasks
+
+Oracc runs several services: the webserver, the eXist database, the
+Tomcat servlet container.  Each service has a script to start and to
+stop it (or will: they aren't written yet).
+
+
+** Maintenance tasks
+
+Oracc uses a number of temporary files which can be cleaned up by the
+maintenance scripts.
+
+** Scheduled tasks
+
+Oracc makes use of crontab to schedule certain tasks.

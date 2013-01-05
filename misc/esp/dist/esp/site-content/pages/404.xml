@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+	<esp:name>404</esp:name>
+	<esp:title>404 Not Found</esp:title>
+
+	<html>
+		<head>
+			<meta name="robots" content="noindex,nofollow"/>
+		</head>
+		<body>
+			<p>
+				Please use the <esp:link page="site-map"/> <!--or <esp:link page="index"/>, or the search facility at the top of this page,--> to find what you are looking for.
+			</p>
+		</body>
+	</html>
+
+</esp:page>

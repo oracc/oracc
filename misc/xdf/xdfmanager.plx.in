@@ -1,0 +1,1132 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use Getopt::Long;
+use Pod::Usage;
+use XML::LibXML;
+
+my $xp = XML::LibXML->new(); $xp->validation(0); $xp->expand_xinclude(1);
+my $xsl;
+
+my $XDF = 'http://oracc.org/ns/xdf/1.0';
+my $XHTML = 'http://www.w3.org/1999/xhtml';
+
+my $htmldump = '';
+my $quiet = 1;
+#my $revdate = `date --iso-8601`;
+my $revdate = `date +%F`;
+my $rnc_only = 0;
+my $secdump = '';
+my $secid = '00';
+my $upref = '/index.html';
+my $uptitle = 'ORACC Home';
+my $verbose = 0;
+
+GetOptions (
+    'htmldump:s'=>\$htmldump,
+    'quiet'=>\$quiet,
+    'revdate'=>\$revdate,
+    'rnc'=>\$rnc_only,
+    'secdump:s'=>\$secdump,
+    'upref:s'=>\$upref,
+    'uptitle:s'=>\$uptitle,
+    'verbose'=>\$verbose,
+    ) || pod2usage(1);
+
+my $refsxml_fn = '@@ORACC@@/lib/ORACC/XDF/refs.xml';
+my $xdf_rnc = '@@ORACC@@/lib/ORACC/XDF/xdf.rnc';
+my $xdf_xsl = '@@ORACC@@/lib/scripts/xdf-HTML.xsl';
+my $xdf = shift(@ARGV);
+my @schemas = ();
+my $index_dir = '';
+my $html_name = '';
+my $made_html_dir = 0;
+my %configs = ();
+
+my $xdfdoc = undef;
+my $styler = undef;
+
+my %description = ();
+my %listing = ();
+
+my %files_done = ();
+my $perlStringB = "<span class=.perl_String.*?>[\\\"\\\'\\/].*?<\/span>";
+my $perlStringE = "<span class=.perl_String.*?>.*?[\\\"\\\'\\/]<\/span>";
+
+auto_xdf() unless $xdf;
+fatal("must give XDF file") unless $xdf;
+fatal("no such XDF file `$xdf'") unless -r $xdf;
+
+process($xdf);
+
+unlink 'pod2htmd.tmp', 'pod2htmi.tmp';
+
+#######################################################################
+
+sub
+auto_xdf {
+    my @files = <*.xdf>;
+    if ($#files >= 0) {
+	$xdf = $files[0]; ### SHOULD PROCESS ENTIRE LIST
+    }
+}
+
+sub
+process {
+    # We need to be able to run in the absence of xdf.rnc when bootstrapping
+    validate_xdf() if -e $xdf_rnc;
+    $xdfdoc = load_xml($xdf);
+    config();
+    find_schemas();
+    if ($#schemas >= 0) {
+	generate_rnc();
+	validate_rnc();
+	generate_rng();
+	interpolate_rnc();
+    }
+    return if $rnc_only;
+    eval "use XML::LibXSLT;";
+    $xsl = XML::LibXSLT->new();
+    if ($xdfdoc->getDocumentElement()->hasAttribute('index-dir')) {
+	$index_dir = $xdfdoc->getDocumentElement()->getAttribute('index-dir');
+	$index_dir =~ s,/?$,/,;
+    }
+    if ($xdfdoc->getDocumentElement()->hasAttribute('html-name')) {
+	$html_name = $xdfdoc->getDocumentElement()->getAttribute('html-name');
+    }
+    directories();
+    resources();
+    references();
+    generate_xhtml();
+    secondary();
+}
+
+sub
+colorize_script {
+    my ($script,$mode,$submode) = @_;
+    my %flowWords = (
+		     perl=>'if|else|elsif|unless|next|for|foreach|while|use',
+		     );
+    my %defWords = (
+		    perl=>'my|our|local',
+		    );
+    my $cmd = undef;
+    if ($mode eq 'text') {
+	$cmd = "/usr/bin/expand $script";
+    } elsif ($mode eq 'xml' || $mode eq 'xslt') {
+	my $nofill = ($mode eq 'xslt' || $submode eq 'xxx') ? '-nofill' : '';
+	$cmd = "@@ORACC@@/bin/xmlformat.plx $nofill $script";
+    } else {
+	$cmd = "/usr/bin/expand $script|/usr/local/bin/colorer -ht -eiutf-8 -eoutf-8 -t $mode 2>colorer.log";
+    }
+
+    my @h = ();
+    verbose($cmd);
+    open(S, "$cmd|");
+    unless ($mode eq 'text') {
+	while (<S>) {
+	    last if /<span/;
+	}
+	until (m,</pre>,) {
+	    if ($mode eq 'perl') {
+		s/($perlStringB.*?$perlStringE)/&defString($1)/eg;
+	    }
+	    s/_Keyword([\'\"])>($flowWords{$mode})</_Flowword$1>$2</g
+		if $flowWords{$mode};
+	    s/_Keyword([\'\"])>($defWords{$mode})</_Defword$1>$2</g
+		if $defWords{$mode};
+	    s/(<span[^<]+_Var[\'\"]>)([^A-Za-z])/$2$1/g
+		if $mode eq 'perl';
+	    if ($submode eq 'rng') {
+		s/(def_Parameter.>ns<)/xml_Attribute-nsprefix $1/;
+	    }
+	    push @h, $_;
+	    last unless defined($_ = <S>);
+	}
+    } else {
+	while (<S>) {
+	    push @h, $_;
+	}
+    }
+    close(S);
+    @h;
+}
+
+sub
+config {
+    my @cfg = tags($xdfdoc,$XDF,'config');
+    foreach my $c (@cfg) {
+	my $n = config_cache($c);
+	if ($c->hasAttribute('path')) {
+	    config_rnc($c,$n);
+	}
+	config_html($n);
+    }
+}
+
+sub
+config_cache {
+    my $c = shift;
+    my $n = $c->getAttribute('name');
+    ${$configs{$n}}{'node'} = $c;
+    @{$configs{$n}{'forlist'}} = map({ $_->getAttribute('name') } 
+				     tags($c,$XDF,'for'));
+    foreach my $v (tags($c,$XDF,'var')) {
+	my %tmp = (node=>$v,
+		   name=>$v->getAttribute('name'),
+		   type=>$v->getAttribute('type')||'xsd:string',
+		   times=>$v->getAttribute('times'),
+		   keys=>[ tags($v,$XDF,'key') ]);
+	push (@{$configs{$n}{'varlist'}}, { %tmp });
+    }
+    $n;
+}
+
+sub
+config_file {
+    my $c = shift;
+    $c->getAttribute('path').'/'.$c->getAttribute('name').'.rnc';
+}
+
+sub
+config_html {
+    my $n = shift;
+    my @h = ();
+    push @h, "<div xmlns=\"$XHTML\">";
+    push @h, '<table class="config">';
+    my $c = ${$configs{$n}}{'node'};
+    my $cap = '';
+    if ($c->getAttribute('path')) {
+	$cap = config_file($c);
+    } else {
+	$cap = $c->getAttribute('name');
+    }
+    push @h, "<caption>Variables in $cap</caption>";
+    push(@h, 
+	 "<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>");
+    if ($#{$configs{$n}{'forlist'}} >= 0) {
+	push(@h, 
+	     "<tfoot class=\"usedby\"><tr><td colspan=\"10\">Used by: ", 
+	     join(', ', @{$configs{$n}{'forlist'}}),
+	     '</td></tr></tfoot>');
+    }
+    push @h, '<tbody>';
+    foreach my $v (@{$configs{$n}{'varlist'}}) {
+	my @txt = tags($$v{'node'},$XDF,'txt');
+	if ($#txt >= 0) {
+	    my @tr = ('<tr>');
+	    push (@tr, "<td>$$v{'name'}</td><td/><td>",
+		  $txt[0]->textContent(),'</td></tr>');
+	    push @tr, '<tr><td/><td/><td><table>';
+	    foreach my $k (@{$$v{'keys'}}) {
+		push (@tr,
+		      '<tr><td>',
+		      $k->getAttribute('name'),
+		      '</td><td>',
+		      $k->getAttribute('type')||'xsd:string',
+		      '</td><td>',
+		      $k->getAttribute('required')||'',
+		      '</td><td>',
+		      $k->textContent(),
+		      '</td></tr>');
+	    }
+	    push @tr, '</table></td></tr>';
+	    push @h, join('',@tr);
+	} else {
+	    push(@h, 
+		 "<tr><td>$$v{'name'}</td>",
+		 "<td>$$v{'type'}</td>",
+		 '<td>',$$v{'node'}->textContent(),'</td></tr>');
+	    
+	}
+    }
+    push @h, '</tbody>';
+    push @h, '</table>';
+    if (${$configs{$n}}{'rnc'}) {
+	push @h, "<h2>$n.rnc</h2>";
+	push (@h, '<pre class="listing">',
+	      xmlify(${$configs{$n}}{'rnc'}),'</pre>');
+    }
+    push @h, '</div>';
+    my $xhdoc = load_xml_string(join("\n", @h, ''));
+    $c->parentNode()->replaceChild($xhdoc->getDocumentElement(),
+				   $c);
+}
+
+sub
+config_rnc {
+    my($c,$n) = @_;
+    my @rnc = ();
+    push @rnc, <<EOH;
+default namespace = ""
+namespace xr = "http://oracc.org/ns/xcf-result/1.0";
+start = element xr:config \{
+EOH
+    $rnc[$#rnc] =~ s/\s*$//;
+    foreach my $u (tags($c,$XDF,'use')) {
+	my $uname = $u->getAttribute('name');
+	if ($configs{$uname}) {
+	    push @rnc, ${$configs{$uname}}{'rnc'};
+	} else {
+	    bad("attempt to use undefined config block '$uname'");
+	}
+    }
+    foreach my $v (@{$configs{$n}{'varlist'}}) {
+	my @keys = ();
+	foreach my $k (@{$$v{'keys'}}) {
+	    my($k,$t,$r) = ($k->getAttribute('name'),
+			    config_type($k->getAttribute('type')),
+			    $k->getAttribute('required'));
+	    if ($r) {
+		if ($r eq 'false' || $r eq '0') {
+		    $r = '?';
+		} else {
+		    $r = '';
+		}
+	    } else {
+		$r = '';
+	    }
+	    push @keys, "    element $k { $t }$r ,";
+	}
+	my $content = '';
+	if ($#keys >= 0) {
+	    $keys[$#keys] =~ s/\s*,$//;
+	    $content = join("\n",'',@keys)."\n ";
+	} else {
+	    $content = config_type($$v{'type'});
+	}
+	
+	if ($$v{'times'} =~ /^[*+?]$/) {
+	    push @rnc, "  element $$v{'name'} { $content }$$v{'times'} &";
+	} else {
+	    if ($$v{'times'} && $$v{'times'} > 1) {
+		push (@rnc, 
+		      "  (\n",
+		      ("    element $$v{'name'} { $content } ,")x$$v{'times'},
+		      "  ) &"
+		    );
+	    } else {
+		push @rnc, "  element $$v{'name'} { $content } &";
+	    }
+	}
+    }
+    $rnc[$#rnc] =~ s/\&$//;
+    ${$configs{$n}}{'rnc'} = join("\n",@rnc, '}','');
+    open(RNC,'>',config_file($c));
+    print RNC ${$configs{$n}}{'rnc'};
+    close(RNC);
+}
+
+sub
+config_type {
+    my $t = shift || 'xsd:string';
+    my @t = ();
+    foreach my $w (split(/\s+/,$t)) {
+	if ($w =~ /^xsd:/) {
+	    push @t, $w;
+	} else {
+	    push @t, "\"$w\"";
+	}
+    }
+    join(' ', @t);
+}
+
+# There is no oraccdoc.js !
+# <script src="/js/oraccdoc.js" type="text/javascript"><![CDATA[ ]]></script>
+
+sub
+create_html {
+    my($script,@h) = @_;
+    print H <<EOH;
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Listing: $script</title>
+<link rel="stylesheet" type="text/css" href="/css/oraccdoc.css" />
+<link rel="stylesheet" type="text/css" href="/css/colorer.css" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+<div class="listing">
+<h1>Listing of <span>$script</span></h1>
+EOH
+    print H "<pre>",@h,"</pre>\n";
+    print H <<EOB;
+</div>
+EOB
+    if (-r "@@ORACC@@/lib/piwik/oracc.tag") {
+	open(T,"@@ORACC@@/lib/piwik/oracc.tag");
+	print H $_ while (<T>);
+	close(T);
+    }
+print H <<EOB;
+</body>
+</html>
+EOB
+    close(H);
+}
+
+sub
+directories {
+    foreach my $dir (tags($xdfdoc,$XDF,'directory')) {
+	my @h = ();
+	push @h, '<dl>';
+	foreach my $d (split(/\s+/, $dir->getAttribute('dirs'))) {
+	    push @h, "<dt><a href=\"$d\">$d</a></dt>";
+	    if (-r "$d/index.html") {
+		my $xh = load_xml("$d/index.html");
+		my $title = (tags($xh,$XHTML,'title'))[0]->textContent();
+		push @h, "<dd>$title</dd>\n";
+	    } else {
+		warn("xdfmanager.plx: no dir entry $d/index.html\n");
+	    }
+	}
+	push @h, '</dl>';
+	my $h = load_xml_string(join('',@h));
+	$dir->parentNode()->replaceChild($h->getDocumentElement(),
+					 $dir);
+    }
+}
+
+sub
+find_schemas {
+    my @schema_nodes = tags($xdfdoc,$XDF,'schema');
+    foreach my $schema (@schema_nodes) {
+	push @schemas, { node=>$schema, 
+			 name=>$schema->getAttribute('name') };
+    }
+}
+
+sub
+generate_rnc {
+    foreach my $s (@schemas) {
+	my $snode = $$s{'node'};
+	my @rnc = tags($snode,$XDF,'rnc');
+	$$s{'nrnc'} = $#rnc+1;
+	if ($#rnc >= 0) {
+	    progress("generating RNC $$s{'name'}.rnc ...");
+	    my $rnc = $$s{'name'}.'.rnc';
+	    my $doc_rnc = format_rnc(map { anno_pp($_) } @rnc);
+	    my $rnc_rnc = format_rnc(map { preprocess($s,$_) } @rnc);
+	    $$s{'validate'} = $rnc_rnc =~ /^start(\s|=|$)/m;
+	    print STDERR "$rnc validate = $$s{'validate'}\n";
+	    $$s{'rnc'} = $doc_rnc;
+	    open(RNC,">$rnc");
+	    print RNC $rnc_rnc;
+	    close(RNC);
+	    map { tn_stripwhite($_) } @rnc;
+	    1;
+	} else {
+	    0;
+	}
+    }
+}
+
+sub
+format_rnc {
+    chomp(@_);
+    my $rnc = join("\n",@_)."\n";
+    $rnc =~ s/^\s*//;
+    $rnc =~ s/\s*$//;
+    $rnc =~ s/\n\s*\n\s*\n/\n\n/sg;
+    $rnc;
+}
+
+sub
+anno_pp {
+    my $node = shift;
+    if ($node->getAttribute('preprocess')) {
+	my $t = $node->textContent();
+	$t =~ s/^\s*//;
+	"\n### This segment preprocessed by xdfmanager ###\n"
+	    .$t
+	    ."\n### end of preprocessed segment ###\n";
+    } else {
+	$node->textContent();
+    }
+}
+
+# preprocess RNC fragments which explicitly have the preprocess
+# flag set in the context of the current schema
+sub
+preprocess {
+    my ($schema,$rnc_node) = @_;
+    my $text = '';
+    if ($rnc_node->getAttribute('preprocess')) {
+	my @rnc_pp = ();
+	foreach my $l (split('\n',$rnc_node->textContent())) {
+	    if ($l =~ /^\s*\$/) {
+		my($var,$def) = ($l =~ /^\s*\$([a-zA-Z0-9_]+)\s*= *(.*?) ?$/);
+		$def = ivar($def,$$schema{'vars'});
+		${$$schema{'vars'}}{$var} = $def;
+	    } else {
+		$l = ivar($l,$$schema{'vars'});
+		push @rnc_pp, $l;
+	    }
+	}
+	$text = join("\n",@rnc_pp)."\n";
+    } else {
+	$text = $rnc_node->textContent();
+    }
+    $text;
+}
+
+# interpolate variables in string
+sub
+ivar {
+    my($str,$setref) = @_;
+    $str =~ s/\$\$/\000/g;
+    $str =~ s/\$\{([a-zA-Z0-9]+)\}/isub($1,$setref)/eg;
+    $str =~ tr/\000/$/;
+    $str;
+}
+sub
+isub {
+    my($var,$set) = @_;
+    if ($$set{$var}) {
+	$$set{$var};
+    } else {
+	warn("xdfmanager.plx: probable undefined variable $var\n");
+	"\$\{$var\}";
+    }
+}
+
+# strip whitespace from start and end of a text node
+sub
+tn_stripwhite {
+    my $node = shift;
+    my $text = $node->textContent();
+    $text =~ s/^\s*//;
+    $text =~ s/\s*$//;
+    $node->firstChild()->setData($text);
+}
+
+sub
+generate_rng {
+    my $arg = shift;
+    my $rnc2rng = undef;
+    if (-e 'rnc2rng.sh') {
+	$rnc2rng = './rnc2rng.sh';
+    } else {
+	$rnc2rng = 'java -jar @@ORACC@@/lib/java/trang.jar';
+    }
+    foreach my $s (@schemas) {
+	my $rnc = $$s{'name'}.'.rnc';
+	my $rng = $$s{'name'}.'.rng';
+	progress("generating rng with $rnc2rng $rnc $rng ... ");
+	system("$rnc2rng $rnc $rng 2>rnc2rng.log");
+	unless (-z 'rnc2rng.log') {
+	    # exit by echoing the error log
+	    exec 'cat', 'rnc2rng.log';
+	} else {
+	    unlink 'rnc2rng.log';
+	}
+    }
+}
+
+sub
+generate_xhtml {
+    my $xhtml_file = $index_dir ? "${index_dir}index.html" : "html/index.html";
+    if ($html_name) {
+	$xhtml_file =~ s/index\./$html_name./;
+    }
+    progress("generating $xhtml_file ...");
+    my $pridoc = $xdfdoc->cloneNode(1);
+    remove_secondary($pridoc);
+    if ($htmldump) {
+	open(OUT,">$htmldump") 
+	    || die "xdfmanager.plx: can't write $htmldump\n";
+	print OUT $pridoc->toString(0);
+	close(OUT);
+    }
+    $styler = load_xsl($xdf_xsl);
+    my $result = $styler->transform($pridoc, 
+				    'parent-href'=>"'$upref'",
+				    'parent-title'=>"'$uptitle'",
+				    'rev-date'=>"'$revdate'"
+	);
+    system "mkdir -p ${index_dir}html" unless $index_dir;
+    open(OUT,">:raw","$xhtml_file");
+    print OUT $styler->output_string($result);
+    close(OUT);
+}
+
+sub
+secondary {
+    foreach my $sec (tags($xdfdoc,$XDF,'secondary')) {
+	my $secdoc = $xdfdoc->cloneNode(1);
+	my($meta,$select,$output) = $sec->findnodes("*");
+	my $output_fn = $output->getAttribute('file');
+	warn("xdfmanager: can't write secondary '$output_fn'\n") and return
+	    unless open(SEC,">:raw",$output_fn);
+	my @nodes = $secdoc->findnodes($select->textContent());
+	warn("xdfmanager: no nodes in secondary\n") and return
+	    unless $#nodes >= 0;
+	progress("generating secondary $output_fn ...");
+	my $sd_elem = $secdoc->getDocumentElement();
+	$sd_elem->removeChildNodes();
+	foreach my $n ($meta, @nodes) {
+	    trim_class_sub($n);
+	    remove_primary($n);
+	    remove_secondary($n); # remove child nodes tagged with secondary
+	    trim_class($n);
+	    $sd_elem->appendChild($n);
+	}
+	if ($secdump) {
+	    open(OUT,">$secid-$secdump") 
+		|| die "xdfmanager.plx: can't write $secdump\n";
+	    print OUT $secdoc->toString(0);
+	    close(OUT);
+	    ++$secid;
+	}
+	my $result = $styler->transform($secdoc, 
+					'parent-href'=>"'$upref'",
+					'parent-title'=>"'$uptitle'",
+					'rev-date'=>"'$revdate'"
+	    );
+	my $res = $styler->output_string($result);
+	$res =~ s/xmlns:default=\"(.*?)\"//g;
+	$res =~ s/default://g;
+	print SEC $res;
+	close(SEC);
+    }
+}
+
+sub
+remove_primary {
+    my $n = shift;
+    foreach my $p ($n->findnodes('.//*[contains(@class,"primary")]')) {
+	$p->parentNode()->removeChild($p);
+    }
+}
+
+sub
+remove_secondary {
+    my $n = shift;
+    foreach my $s ($n->findnodes('.//*[contains(@class,"secondary")]')) {
+	$s->parentNode()->removeChild($s);
+    }
+}
+
+sub
+trim_class {
+    my $n = shift;
+    foreach my $p ($n->findnodes('.//*[@class]')) {
+	trim_class_sub($p);
+    }
+}
+
+sub
+trim_class_sub {
+    my $n = shift;
+    my $c = $n->getAttribute('class');
+    return unless $c;
+    if ($c eq 'atf') {
+	$c = '';
+    } else {
+	$c =~ s/(^|\s)atf(\s|$)/$1$2/;
+	$c =~ s/(^|\s)secondary(\s|$)/$1$2/;
+	$c =~ s/\s+/ /g;
+	$c =~ s/^\s*(.*?)\s*$/$1/;
+    }
+    if ($c) {
+	$n->setAttribute('class',$c);
+    } else {
+	$n->removeAttribute('class');
+    }
+}
+
+# Put a heading on each schema node.
+# Include the full RNC grammar as the first child of the schema
+# if there was more than one rnc node.
+sub
+interpolate_rnc {
+    foreach my $s (@schemas) {
+	my $snode = $$s{'node'};
+	my $h1 = <<EOH1;
+<h1 id="schema$$s{'name'}" xmlns="$XHTML">$$s{'name'}.rnc</h1>
+EOH1
+        my $h1doc = load_xml_string($h1);
+	my @insnodes = $h1doc->getDocumentElement();
+	if ($$s{'nrnc'} > 1) {
+	    my $xrnc = xmlify($$s{'rnc'});
+	    $xrnc =~ s/^(\#.*)$/<span xmlns="$XHTML" class="rnc-comment">$1<\/span>/mg;
+	    my $rnc_pre = <<EOR;
+<frag>
+<d:rnc xmlns:d=\"$XDF\">$xrnc</d:rnc>
+</frag>
+EOR
+#<h2>Concatenated schema</h2>
+#<p>The complete RNC schema as used for validating this datatype:</p>
+#<h2 id="details" xmlns="$XHTML">Details</h2>
+            my $rnc_frag = load_xml_string($rnc_pre);
+	    push @insnodes,$rnc_frag->getDocumentElement()->childNodes();
+	}
+	foreach my $node (reverse @insnodes) {
+	    $snode->insertBefore($node,
+				 $snode->firstChild());
+	}
+    }
+}
+
+sub
+references {
+    my $rnode = undef;
+    my @h = ();
+    my $refsxml = undef;
+    my %refs = ();
+    # this is only going to get executed once; we are writing
+    # Perl like XSLT...
+    foreach my $node (tags($xdfdoc,$XDF,'references')) {
+	$rnode = $node;
+	$refsxml = load_xml($refsxml_fn) 
+	    if $refsxml_fn;
+	my $refs = $node->getAttribute('refs') || '';
+	foreach my $tok (split(/\s+/,$refs)) {
+	    next unless $tok && $tok->isa('XML::LibXML::Element');
+	    my $refsnode = $refsxml->getElementsById($tok);
+	    if ($refsnode) {
+		$refs{$tok} = { uri=>$refsnode->getAttribute('uri'),
+				txt=>$refsnode->textContent() };
+	    } else {
+		warn("undefined ref token $tok\n");
+	    }
+	}
+	foreach my $ref (tags($node,$XDF,'ref')) {
+	    my $name = $ref->getAttribute('name');
+	    if ($ref->hasAttribute('uri')) {
+		$refs{$name} = { uri=>$ref->getAttribute('uri'),
+				 txt=>$ref->textContent() };
+	    } else {
+		foreach my $bib (tags($ref,$XDF,'bib')) {
+		    $refs{$name} = { bib=>$bib->textContent() };
+		}
+	    }
+	}
+    }
+    if ($rnode) {
+	push @h, "<div class=\"references\" xmlns=\"$XHTML\">";
+	push @h, '<h1 id="references">References</h1>';
+	foreach my $key (sort keys %refs) {
+	    push @h, '<p class="ref">';
+	    if (${$refs{$key}}{'uri'}) {
+		push @h, '<a href="',${$refs{$key}}{'uri'},'">[',$key,']</a> ';
+		push @h, ${$refs{$key}}{'txt'};
+	    } else {
+		push @h, "[$key] ", ${$refs{$key}}{'bib'};
+	    }
+	    push @h, '</p>', "\n";
+	}
+	push @h, '</div>';
+	my $h = load_xml_string(join('',@h));
+	$rnode->parentNode()->replaceChild($h->getDocumentElement(),
+					   $rnode);
+    }
+}
+
+sub
+resources {
+    my $node = undef;
+    
+    system "mkdir -p ${index_dir}html"
+	unless $made_html_dir++;
+
+    my @resources = tags($xdfdoc,$XDF,'resources');
+    foreach my $node (@resources) {
+	my @tools = ();
+	my ($auto,$sort,$wrap) = (1,1,1);
+
+	$auto = $node->getAttribute('auto') if $node->hasAttribute('auto');
+	$sort = $node->getAttribute('sort') if $node->hasAttribute('sort');
+	$wrap = $node->getAttribute('wrap') if $node->hasAttribute('wrap');
+
+	my @rkids = $node->getElementsByTagNameNS($XDF,'resource');
+
+	@tools = <*.{c,g,h,sh,plx,rnc,rng,pm,css,js,xtf,atf}> if $auto;
+	push @tools, <*.x*> if $auto;
+	@tools = grep !/~$/, @tools;
+	if ($#rkids >= 0) {
+	    foreach my $rkid (@rkids) {
+		my $h = $rkid->getAttribute('href');
+		if (-r $h) {
+		    if ($rkid->hasAttribute('copy')) {
+			# FIXME: should propagate errors!
+			system 'cp',$h,'html';
+		    } else {
+			push @tools, $h;
+		    }
+		} else {
+		    warn("xdfmanager.plx: no such resource '$h'\n");
+		}
+	    }
+	}
+
+	@tools = sort @tools if $sort;
+	my @html_files = grep(process_resource($_),@tools);
+
+	my @h = ();
+	push @h, "<div xmlns=\"$XHTML\">" if $wrap;
+	push @h, '<h1>Resources</h1>' if $wrap;
+	push @h, '<dl>';
+	foreach my $h (@html_files) {
+	    # Perl scripts with POD manuals get their POD in the
+	    # default location, and have a separate listing
+	    my $hrefdir = ${index_dir};
+	    if ($hrefdir) {
+		$hrefdir .= "/html/";
+	    }
+	    my $listing = '';
+	    if ($listing{$h}) {
+		$listing = " <a href=\"$hrefdir$listing{$h}\">[listing]</a>";
+	    }
+	    push @h, "<dt><a href=\"$hrefdir$h.html\">$h</a>$listing</dt>";
+	    push @h, "<dd>$description{$h}</dd>";
+	}
+	push @h, '</dl>';
+	push @h, '</div>' if $wrap;
+	my $hstring = load_xml_string(join('',@h));
+	$node->parentNode()->replaceChild($hstring->getDocumentElement(),
+					  $node);
+    }
+    # a bit cavalier, but this will almost always be just clutter
+    unlink 'colorer.log';
+    1+$#resources;
+}
+
+sub
+process_resource {
+    my $script = shift;
+    return 0 unless -f $script && !$files_done{$script};
+    ++$files_done{$script};
+
+    my $script_no_path = $script;
+    if ($script_no_path =~ m,/,) {
+	$script_no_path =~ s,^.*?/([^/]+)$,$1,;
+    }
+    my $html_path = '';
+
+    my($mode,$submode) = set_modes($script);
+    if ($mode) {
+	progress("processing resource $script ...");
+    } else {
+	progress("ignoring resource $script ...");
+	return 0;
+    }
+
+    system "mkdir -p ${index_dir}html"
+	unless $made_html_dir++;
+
+    my @h = colorize_script($script,$mode,$submode);
+
+    my $pod = ($mode eq 'perl') ? `grep -c '^=head1' $script` : 0;
+    chomp $pod;
+    my $desc;
+    if ($pod) {
+	my @desc = (`grep -A2 '=head1 NAME' $script`);
+	$desc = $desc[$#desc];
+	$desc =~ s/^.*?--\s*(.)/$1/;
+	my $lfile = $script_no_path;
+	$lfile =~ s/.plx$/-listing.html/;
+	open(H,">${index_dir}html/$lfile");
+	$listing{$script} = "$lfile";
+	system "pod2html $script | @@ORACC@@/bin/podhtml-filter.plx >${index_dir}html/$script.html ; rm -f pod2htm[di].x~~";
+    } else {
+	$desc = `grep -m1 '\@SUMMARY\@=' $script`;
+	if ($desc) {
+	    $desc =~ s/^.*?\@SUMMARY\@=\s*//;
+	    $desc =~ s/[^a-zA-Z]*$//;
+	} else {
+	    if ($script =~ /\.pm$/) {
+		my $package = `grep -m1 '^package ' $script`;
+		if ($package) {
+		    $package =~ s/^package //;
+		    $package =~ s/;\s*$//;
+		    $desc = "Perl module $package";
+		}
+	    }
+	    unless ($desc) {
+		$desc = set_desc_from_fname($script) || '';
+	    }
+	}
+	$html_path = "${index_dir}html/$script_no_path";
+	open(H,">${html_path}.html");
+    }
+    $desc =~ s/^(.*?)\.?\s*$/\u$1./;
+    $description{$script_no_path} = $desc;
+    create_html($script,@h);
+    $_ = $script_no_path;
+}
+
+sub
+set_modes {
+    my $script = shift;
+    my($ext) = ($script =~ /\.([^.]+)$/);
+    my %syntax = (atf=>'text',
+		  css=>'css',
+		  js=>'javascript',
+		  plx=>'perl',
+		  pl=>'perl',
+		  pm=>'perl',
+		  rnc=>'text',
+		  rng=>'xml/rng',
+		  sh=>'sh',
+		  xdf=>'xml/xxx',
+		  xtf=>'xml',
+		  xml=>'xml',
+		  xsl=>'xslt',
+		  h=>'c',
+		  c=>'c'
+		  );
+    return () unless $syntax{$ext} || $ext =~ /^x..$/;
+    my $mode = $syntax{$ext} || 'xml';
+    my $submode = $mode;
+    if ($mode =~ s,/(.*?)$,,) {
+	$submode = $1;
+    }
+    ($mode,$submode);
+}
+
+sub
+defString {
+    my $att = shift;
+    $att =~ s/<span.*?>//g;
+    $att =~ s,</span>,,g;
+    $att = '<span class="def_String">'.$att.'</span>';
+    $att;
+    
+}
+
+sub
+load_xml {
+    my($xml_file,$enotfound) = @_;
+    if (-r $xml_file) {
+	my $ret = undef;
+	eval { $ret = $xp->parse_file($xml_file) };
+	warn "xdfmanager.plx: $@\n" if $@;
+	$ret;
+    } else {
+	warn("xdfmanager.plx: XML file $xml_file not readable\n")
+	    if $enotfound;
+	undef;
+    }
+}
+
+sub
+load_xml_string {
+    my $xml_str = shift;
+    if ($xml_str) {
+	my $ret = undef;
+	eval { $ret = $xp->parse_string($xml_str) };
+	warn "ORACC::XML: $@\n" if $@;
+	$ret;
+    } else {
+	warn("ORACC::XML: load_xml_string called on empty input");
+	undef;
+    }
+}
+
+sub
+load_xsl {
+    my ($xsl_file) = @_;
+    if (-r $xsl_file) {
+	my $sheet = load_xml($xsl_file);
+	$xsl->parse_stylesheet($sheet);
+    } else {
+	warn("ORACC::XML: XSL argument file $xsl_file not readable\n");
+	undef;
+    }
+}
+
+sub
+maybe_upper {
+    my $arg = shift;
+    if ($xdf =~ /^$arg\./) {
+	"\U$arg";
+    } else {
+	$arg;
+    }
+}
+
+sub
+rnv {
+    my ($rnc,$doc,$verbose) = @_;
+    $doc = '' unless $doc;
+    if ($verbose) {
+	if ($doc) {
+	    print STDERR "validating $doc ...\n";
+	} else {
+	    print STDERR "checking grammar $rnc ...\n";
+	}
+    }
+    system("@@ORACC@@/bin/rnv -q -c $rnc $doc 2>rnv.log");
+    unless (-z 'rnv.log') {
+	# seems like there should be an easier way to cat
+	# to stderr than the following...
+	exec 'perl', '-ne', 'print STDERR', 'rnv.log';
+    } else {
+	unlink 'rnv.log';
+    }
+}
+
+sub
+set_desc_from_fname {
+    my $name = shift;
+    if ($name =~ /^(.*?)-(.*?)\.xsl$/) {
+	my $to = $2;
+	my $n = maybe_upper($1);
+	return "XSL transform from $n to $to";
+    } elsif ($name =~ /^(.*?)\.xsl$/) {
+	my $n = maybe_upper($1);
+	return "mysterious XSL transformation";
+    } elsif ($name =~ /^(.*?)\.rnc$/) {
+	my $n = maybe_upper($1);
+	return "$n Relax NG Compact Syntax grammar";
+    } elsif ($name =~ /^(.*?)\.rng$/) {
+	my $n = maybe_upper($1);
+	return "$n Relax NG grammar.";
+    } elsif ($name =~ /^(.*?)\.css$/) {
+	my $n = maybe_upper($1);
+	return "Cascading Style Sheet for $n display";
+    } elsif ($name =~ /^(.*?)\.xcf$/) {
+	my $n = maybe_upper($1);
+	return "XML configuration file";
+    } elsif ($name =~ /^(.*?)\.js$/) {
+	my $n = maybe_upper($1);
+	return "Javascript module for $n display";
+    } elsif ($name eq $xdf || $name =~ m,/$xdf$,) {
+	return "XDF source for this documentation";
+    } elsif ($name =~ /^(.*?)\.atf$/) {
+	return "ASCII TRANSLITERATION FORMAT file";
+    } elsif ($name =~ /^(.*?)\.xtf$/) {
+	return "XML TRANSLITERATION FORMAT file";
+    }
+}
+
+sub
+tags {
+    my($node,$ns,$tag) = @_;
+    $node = $node->getDocumentElement()
+	if $node->isa('XML::LibXML::Document');
+    if ($ns) {
+	$node->getElementsByTagNameNS($ns,$tag);
+    } else {
+	$node->getElementsByTagName($tag);
+    }
+}
+
+# Validate the RNC grammar we just extacted from the XDF document
+sub
+validate_rnc {
+    foreach my $s (@schemas) {
+	next unless $$s{'validate'};
+	rnv($$s{'name'}.'.rnc');
+    }
+}
+
+# Validate the document we are about to process using xdf.rnc
+sub
+validate_xdf {
+    rnv($xdf_rnc, $xdf);
+}
+
+sub
+xmlify {
+    my $tmp = shift;
+    if ($tmp && $tmp =~ /[&<\"]/) {
+	$tmp =~ s/&/&amp;/g;
+	$tmp =~ s/</&lt;/g;
+	$tmp =~ s/\"/&quot;/g
+    }
+    $tmp;
+}
+
+################################################################
+#
+# Library routines
+
+sub
+fatal {
+    die 'xdfmanager.plx: error: ', @_, "\n";
+}
+
+sub
+progress {
+    warn(@_, "\n") unless $quiet;
+}
+
+sub
+verbose {
+    warn(@_, "\n") if $verbose;
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+xdfmanager.plx -- process XDF files to make XHTML documentation
+
+=head1 SYNOPSIS
+
+xdfmanager.plx [options] FILE
+
+=head1 OPTIONS
+
+=over
+
+=item B<-htmldump [FILENAME]>
+
+Dump the results of preprocessing the XDF file to [filename]; useful
+for debugging.
+
+=item B<-quiet>
+
+Work quietly (don't give any progress messages).
+
+=item B<-rnc>
+
+Generate the .rnc file and quit.
+
+=item B<-upref [URI]>
+
+Set the URI to pass in to HTML processing as the parent-href param.
+
+=item B<-uptitle [STRING]>
+
+Set the string to pass in to HTML processing as the parent-title param.
+
+=item B<-verbose>
+
+Give additional progress messages.
+
+=back
+
+=head1 DESCRIPTION
+
+Processes XDF files extracting schemas from the literate XML,
+validating, managing resource-listing colorization, and generating
+an XHTML version of the documentation.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).

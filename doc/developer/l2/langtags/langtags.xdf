@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2: Language Tags</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of language tag
+  definitions and recommendations used in Oracc.</dc:description>
+</d:meta>
+
+<h1>Structure</h1>
+
+<p>The maximal extent of a language tag consists of seven members,
+separated by hyphens:</p>
+
+<pre class="example">
+language-extlang-script-region-variants-extensions-privateuse</pre>
+
+<p>Of these seven, Oracc does not use <code
+class="example">extlang</code>, <code>region</code>,
+<code>variants</code> or <code>extensions</code> at the present time.
+However, this is open to reconsideration if projects have language
+tagging needs that are not met by the Oracc implementation.  Note that
+rather than using <code>region</code>, regional criteria should be
+included in private use tagging.</p>
+
+<p>Oracc conforms to all current standards and best practice
+recommendations in the use of language tags, and enforces further
+restrictions in some cases so that the notations of language tags in
+ATF may be unambiguously abbreviated (the XML versions of the
+language tags are expanded by the ATF processor to ensure conformancy
+with the standards).</p>
+
+<h2>Language</h2>
+
+<p>Language tags consist of a two- or three-letter language code as
+defined in ISO 639-3.  Oracc requires that language tags be all
+lowercase.</p>
+
+<h2>Script</h2>
+
+<p>Script subtags consist of four letters or three digits and are
+defined in ISO 15924.  Oracc enforces the recommendation that in
+alphabetic tags the initial letter is capitalized and subsequent
+letters are in lowercase.</p>
+
+<p>Note that wherever possible, script tags are not used.  Thus, in
+general Sumerian is written in Sumero-Akkadian cuneiform and this need
+not be specified unless it is important to note a particular subform
+of the script.</p>
+
+<h2>Private Use</h2>
+
+<p>Oracc uses the private use tags, those beginning with
+<code>x-</code> with the additional constraint that private use tags
+are all lowercase letters and must consist between five and eight
+characters (excluding the <code>x-</code>).</p>
+
+<p>In principle, some of the information expressed in private use tags
+could be expressed using variant tags, but the must be registered with
+the IANA in order to be valid, while use of the private use tags is
+not subject to this requirement.</p>
+
+<h1>Values</h1>
+
+<h2>Language</h2>
+
+<p>Oracc can work with any language, but presently requires
+predefinition of language codes it understands.  The following codes
+are currently defined, some of which use the ISO 639 private use codes
+in the range <code>qaa-qtz</code>:</p>
+
+<table class="eighty">
+<caption>Predefined Primary Language Tags</caption>
+<thead>
+<tr><th>Code</th><th>Language</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">akk</td><td>Akkadian</td></tr>
+<tr><td class="cookbook">arc</td><td>Aramaic</td></tr>
+<tr><td class="cookbook">elx</td><td>Elamite</td></tr>
+<tr><td class="cookbook">grc</td><td>Ancient Greek</td></tr>
+<tr><td class="cookbook">hit</td><td>Hittite</td></tr>
+<tr><td class="cookbook">peo</td><td>Old Persian</td></tr>
+<tr><td class="cookbook">qam</td><td>Amorite</td></tr>
+<tr><td class="cookbook">xcr</td><td>Carian</td></tr>
+<tr><td class="cookbook">qcu</td><td>Undetermined cuneiform</td></tr>
+<tr><td class="cookbook">qeb</td><td>Eblaite</td></tr>
+<tr><td class="cookbook">xhu</td><td>Hurrian</td></tr>
+<tr><td class="cookbook">xlc</td><td>Lycian</td></tr>
+<tr><td class="cookbook">xld</td><td>Lydian</td></tr>
+<tr><td class="cookbook">xlu</td><td>Cuneiform Luvian</td></tr>
+<tr><td class="cookbook">hlu</td><td>Hieroglyphic Luvian</td></tr>
+<tr><td class="cookbook">imy</td><td>Milyan (Lycian B)</td></tr>
+<tr><td class="cookbook">qpc</td><td>Proto-Cuneiform</td></tr>
+<tr><td class="cookbook">qpe</td><td>Proto-Elamite</td></tr>
+<tr><td class="cookbook">plq</td><td>Palaic</td></tr>
+<tr><td class="cookbook">xur</td><td>Urartian</td></tr>
+<tr><td class="cookbook">sux</td><td>Sumerian</td></tr>
+<tr><td class="cookbook">uga</td><td>Ugaritic</td></tr>
+</tbody>
+</table>
+
+<h2>Script</h2>
+
+<p>Basic script codes are provided by the definitions in ISO 15924;
+Oracc makes extensive use of the numeric private use codes in the
+range 900 to 949 to support finer-grained specification of script.
+Predefined tags are <a
+href="http://unicode.org/iso15924/iso15924-codes.html">listed on the
+Unicode web site</a>.</p>
+
+<table class="eighty">
+<caption>Predefined Script Tags</caption>
+<thead>
+<tr><th>Code</th><th>Number</th><th>Script</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">Armi</td><td>124</td><td>Imperial Aramaic</td></tr>
+<tr><td class="cookbook">Cari</td><td>201</td><td>Carian</td></tr>
+<tr><td class="cookbook">Grek</td><td>200</td><td>Greek</td></tr>
+<tr><td class="cookbook">Latn</td><td>215</td><td>Latin</td></tr>
+<tr><td class="cookbook">Lyci</td><td>202</td><td>Lycian</td></tr>
+<tr><td class="cookbook">Lydi</td><td>116</td><td>Lydian</td></tr>
+<tr><td class="cookbook">Xpeo</td><td>030</td><td>Old Persian cuneiform</td></tr>
+<tr><td class="cookbook">Xsux</td><td>020</td><td>Sumero-Akkadian cuneiform</td></tr>
+<tr><td class="cookbook">Ugar</td><td>040</td><td>Ugaritic cuneiform</td></tr>
+</tbody>
+</table>
+
+<p>The amount of space allocated for private use script tags in ISO
+15924 is quite limited: from 900 to 949.  Private use script tags are
+therefore reserved for Oracc system use, and any project-specific
+needs can be met through the general private use tags.</p>
+
+<table class="eighty">
+<caption>Additional Script Codes</caption>
+<thead>
+<tr><th>Code</th><th>Script</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">900</td><td>Uruk III</td></tr>
+<tr><td class="cookbook">901</td><td>Uruk IV</td></tr>
+<tr><td class="cookbook">902</td><td>Early Dynastic</td></tr>
+<tr><td class="cookbook">903</td><td>Old Akkadian</td></tr>
+<tr><td class="cookbook">904</td><td>Gudea</td></tr>
+<tr><td class="cookbook">905</td><td>Ur III</td></tr>
+<tr><td class="cookbook">915</td><td>OB Literary</td></tr>
+<tr><td class="cookbook">916</td><td>OB Documentary</td></tr>
+<tr><td class="cookbook">917</td><td>Old Assyrian</td></tr>
+<tr><td class="cookbook">918</td><td>Kassite</td></tr>
+<tr><td class="cookbook">919</td><td>Middle Assyrian</td></tr>
+<tr><td class="cookbook">920</td><td>Middle Babylonian</td></tr>
+<tr><td class="cookbook">935</td><td>Neo-Assyrian</td></tr>
+<tr><td class="cookbook">936</td><td>Neo-Babylonian</td></tr>
+<tr><td class="cookbook">937</td><td>Hellenistic</td></tr>
+<tr><td class="cookbook">938</td><td>Proto-Elamite</td></tr>
+<tr><td class="cookbook">947</td><td>Sumerian in syllabic/unorthographic writing</td></tr>
+<tr><td class="cookbook">948</td><td>Sumerian in the Udgalnun writing system</td></tr>
+<tr><td class="cookbook">949</td><td>Normalized Akkadian in Latin script</td></tr>
+</tbody>
+</table>
+
+<h2>Private Use</h2>
+
+<p>Private use tags are employed for language dialect and writing
+system convention variants.  All Oracc private use tags are between
+five characters and eight characters in length.  Lowercase tags are
+reserved for meanings which are defined by Oracc; uppercase or
+mixed-case tags may be used in projects to encode information of
+interest only within the project.  Projects should clearly document
+the semantics of any such project-local private use tags.</p>
+
+<p>Note that multiple private use tags are permitted by the standards,
+so local language variants such as Old Babylonian Alalakh can be
+encoded using tags of the form <code>akk-x-oldbab-x-alalakh</code>.
+Though this is verbose, in general usage it will rarely be intrusive
+as it will normally only need to be specified in the default language
+protocol for the text, as, e.g., <code class="cookbook">#atf: lang
+akk-x-oldbab-x-alalakh</code>.</p>
+
+<table class="eighty">
+<caption>Private Use Tags</caption>
+<thead>
+<tr><th>Code</th><th>Language Variant</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">sux-x-emegir</td><td>Sumerian emegir</td></tr>
+<tr><td class="cookbook">sux-x-emesal</td><td>Sumerian emesal</td></tr>
+<tr><td class="cookbook">sux-x-syllabic</td><td>Sumerian syllabic/unorthographic</td></tr>
+<tr><td class="cookbook">sux-x-udgalnun</td><td>Sumerian UD.GAL.NUN</td></tr>
+<tr><td class="cookbook">akk-x-conakk</td><td>Conventional Akkadian</td></tr>
+<tr><td class="cookbook">akk-x-ltebab</td><td>Late Babylonian</td></tr>
+<tr><td class="cookbook">akk-x-stdbab</td><td>Standard Babylonian</td></tr>
+<tr><td class="cookbook">akk-x-neoass</td><td>Neo-Assyrian</td></tr>
+<tr><td class="cookbook">akk-x-neobab</td><td>Neo-Babylonian</td></tr>
+<tr><td class="cookbook">akk-x-midass</td><td>Middle Assyrian</td></tr>
+<tr><td class="cookbook">akk-x-midbab</td><td>Middle Babylonian</td></tr>
+<tr><td class="cookbook">akk-x-mbperi</td><td>Middle Babylonian peripheral</td></tr>
+<tr><td class="cookbook">akk-x-oldass</td><td>Old Assyrian</td></tr>
+<tr><td class="cookbook">akk-x-oldbab</td><td>Old Babylonian</td></tr>
+<tr><td class="cookbook">akk-x-obperi</td><td>Old Babylonian peripheral</td></tr>
+<tr><td class="cookbook">akk-x-ur3akk</td><td>Ur III Akkadian</td></tr>
+<tr><td class="cookbook">akk-x-oldakk</td><td>Old Akkadian</td></tr>
+<tr><td class="cookbook">akk-x-earakk</td><td>Early Akkadian (Ebla, ED Mari)</td></tr>
+<!--<tr><td class="cookbook">ANY-x-normal</td><td>Normal-sized script</td></tr>
+<tr><td class="cookbook">ANY-x-gloss</td><td>Gloss-sized script</td></tr>
+<tr><td class="cookbook">akk-x-dumusza</td><td>Hellenistic hand using
+DUMU+sza ligature</td></tr> -->
+</tbody>
+</table>
+
+<h1>ATF Syntax</h1>
+
+<p>In ATF, all language tags are introduced by a <code>%</code>-sign,
+and a number of shorthand notations exist which make it easier to
+specify switches.  Abbreviation of language tags is facilitated by
+this mechanism even where the standards do not permit abbreviation in
+language tags per se.</p>
+
+<table class="eighty">
+<caption>ATF Syntax Summary</caption>
+<thead>
+<tr><th>Inline Code</th><th>Protocol Code</th><th>Languaage Variant</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">%a</td><td>akk (C-ATF only)</td><td>Akkadian</td></tr>
+<tr><td class="cookbook">%ca</td><td>akk-x-conakk</td><td>Conventional Akkadian</td></tr>
+<tr><td class="cookbook">%lb</td><td>akk-x-ltebab</td><td>Late Babylonian</td></tr>
+<tr><td class="cookbook">%sb</td><td>akk-x-stdbab</td><td>Standard Babylonian</td></tr>
+<tr><td class="cookbook">%na</td><td>akk-x-neoass</td><td>Neo-Assyrian</td></tr>
+<tr><td class="cookbook">%nb</td><td>akk-x-neobab</td><td>Neo-Babylonian</td></tr>
+<tr><td class="cookbook">%ma</td><td>akk-x-midass</td><td>Middle Assyrian</td></tr>
+<tr><td class="cookbook">%mb</td><td>akk-x-midbab</td><td>Middle Babylonian</td></tr>
+<tr><td class="cookbook">%mp</td><td>akk-x-mbperi</td><td>Middle Babylonian peripheral</td></tr>
+<tr><td class="cookbook">%oa</td><td>akk-x-oldass</td><td>Old Assyrian</td></tr>
+<tr><td class="cookbook">%ob</td><td>akk-x-oldbab</td><td>Old Babylonian</td></tr>
+<tr><td class="cookbook">%op</td><td>akk-x-obperi</td><td>Old Babylonian peripheral</td></tr>
+<tr><td class="cookbook">%ua</td><td>akk-x-ur3akk</td><td>Ur III Akkadian</td></tr>
+<tr><td class="cookbook">%oa</td><td>akk-x-oldakk</td><td>Old Akkadian</td></tr>
+<tr><td class="cookbook">%ea</td><td>akk-x-earakk</td><td>Early Akkadian (Ebla, ED Mari)</td></tr>
+<tr><td class="cookbook">%s</td><td>sux</td><td>Sumerian</td></tr>
+<tr><td class="cookbook">%e</td><td>sux-x-emesal</td><td>Emesal</td></tr>
+<tr><td class="cookbook">%u</td><td>sux-x-udgalnun</td><td>Udgalnun</td></tr>
+<tr><td class="cookbook">%g</td><td>*-Xsux</td><td>Graphemic writing</td></tr>
+<tr><td class="cookbook">%n</td><td>*-949</td><td>Normalised Akkadian</td></tr>
+<tr><td class="cookbook">%y</td><td>sux-x-syllabic</td><td>Syllabic Sumerian</td></tr>
+<!--<tr><td class="cookbook">%0</td><td>*-x-normal</td></tr>
+<tr><td class="cookbook">%1</td><td>*-x-gloss</td></tr>
+<tr><td class="cookbook">%2</td><td>*-935</td></tr>
+<tr><td class="cookbook">%3</td><td>*-936</td></tr>
+<tr><td class="cookbook">%4</td><td>*-937-x-dumusza</td></tr> -->
+</tbody>
+</table>
+
+<d:resources/>
+
+<d:references>
+<d:ref name="BCP47" uri="http://tools.ietf.org/rfc/bcp/bcp47.txt">Best Current Practice: Language Tags</d:ref>
+<d:ref name="ISO639" uri="http://www.sil.org/iso639-3/default.asp">ISO 693-3: Language Tags</d:ref>
+<d:ref name="ISO15924" uri="http://unicode.org/iso15924">ISO 15924: Script Tags</d:ref>
+<d:ref name="W3CLT" uri="http://www.w3.org/International/articles/language-tags/">W3C Language Tags Tutorial</d:ref>
+</d:references>
+
+</d:doc>

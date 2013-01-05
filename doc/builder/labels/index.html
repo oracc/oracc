@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Labels</title>
+<link rel="stylesheet" type="text/css" href="/xdf.css"/>
+<script src="/xdf.js" type="text/javascript"> </script>
+<base href="http://oracc.museum.upenn.edu/doc/builder/labels/"/></head>
+<body onload="onresize=setTOCoffset; setTOCoffset()">
+<div class="withtoc">
+<div class="speedbar" id="speedbar">
+<p class="toc h1">
+<a href="/nindex.html">Oracc Home</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#top">Introduction</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Overview">Overview</a>
+</p>
+<p class="toc h2">
+<a href="#SURFACE">SURFACE</a>
+</p>
+<p class="toc h2">
+<a href="#COLUMN">COLUMN</a>
+</p>
+<p class="toc h2">
+<a href="#LINE">LINE</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Syntax">Syntax</a>
+</p>
+<p class="toc h2">
+<a href="#LABEL">LABEL</a>
+</p>
+<p class="toc h2">
+<a href="#LABEL_RANGE">LABEL_RANGE</a>
+</p>
+<p class="toc h2">
+<a href="#LABEL_SPEC">LABEL_SPEC</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Examples">Examples</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Resources">Resources</a>
+</p>
+</div>
+<div class="body">
+
+<h1 class="title">Labels</h1><h2 class="author">Steve Tinney<br/>Version of 2010-02-17
+</h2><h1><a name="intro">Introduction</a></h1><p>Labels are generated for lines by the ATF processor
+  and are used to reference lines in some parts of the ATF system.
+  This document describes the syntax of labels.</p>
+
+<h1><a name="Overview">Overview</a></h1>
+
+<p>Labels are a shorthand way of referring to the location of a line
+on an object.  For transliterations, labels consist of at most three
+parts: a <code>SURFACE</code> abbreviation, a <code>COLUMN</code>
+designation and a <code>LINE</code> number.</p>
+
+<h2><a name="SURFACE">SURFACE</a></h2>
+
+<p>The <code>SURFACE</code> field is an abbreviation of ATF surface
+tags according to the following table:</p>
+
+<table>
+<thead>
+<tr><th>ATF</th><th>LABEL</th></tr>
+</thead>
+<tbody>
+<tr><td>@obverse</td><td>o</td></tr>
+<tr><td>@reverse</td><td>r</td></tr>
+<tr><td>@bottom</td><td>b.e.</td></tr>
+<tr><td>@edge</td><td>e.</td></tr>
+<tr><td>@left</td><td>l.e.</td></tr>
+<tr><td>@right</td><td>r.e.</td></tr>
+<tr><td>@top</td><td>t.e.</td></tr>
+</tbody>
+</table>
+
+<p>If the transliteration does not give <code>@obverse</code>
+explicitly, labels for line numbers on the obverse do not include the
+`o'.</p>
+
+<h2><a name="COLUMN">COLUMN</a></h2>
+
+<p>Column numbers in labels are rendered in roman numerals, which both
+follows normal Assyriological practice and avoids possible confusion
+with the line numbers.  This does mean, however, that the notations
+for column numbers in ATF sources and labels are different:
+<code>@column 1</code> in a label is <code>i</code>.</p>
+
+<p>If the transliteration does not include column number tags, no
+column number component is included in the label.</p>
+
+<h2><a name="LINE">LINE</a></h2>
+
+<p>There are two possible line numbers which the ATF processor can use
+in labels.  By default, the processor renumbers lines according to
+CDLI conventions--restarting line numbers at `1' at the start of each
+surface and numbering lines consecutively.  However, in contexts where
+stability is required--where the labels are being used to link
+exemplar lines to composite lines, for example--the ATF protocol:</p>
+
+<pre class="cookbook">#atf: use mylines
+</pre>
+
+<p>should be used.  This instructs the processor to prefer the user's
+line numbers to its auto-generated ones.  The line numbers in
+transliterations have few restrictions--as long as they consist of a
+series of non-spaces followed by a period followed by a space they are
+considered acceptable.</p>
+
+<h1><a name="Syntax">Syntax</a></h1>
+
+<h2><a name="LABEL">LABEL</a></h2>
+
+<p>Considering the preceding comments and using the convention
+<code>?</code> to indicate optional components, the syntax of a single
+label is then:</p>
+
+<pre class="example">LABEL =&gt; SURFACE? COLUMN? LINE
+</pre>
+
+<h2><a name="LABEL_RANGE">LABEL_RANGE</a></h2>
+
+<p>There is a standard syntax for ranges also, which must be observed
+when, e.g., translations use labeling to refer to blocks of
+transliteration.  In such cases, two labels may be given and
+<strong>must</strong> be separated by the sequence: SPACES HYPHEN
+SPACES.  The reason for requiring the spaces is that ATF line numbers
+may contain hyphens so we require ranges to include spaces between the
+components.</p>
+
+<p>Formally, then, we have the following definition:</p>
+
+<pre class="example">LABEL_RANGE =&gt; LABEL ' - ' LABEL
+</pre>
+
+<h2><a name="LABEL_SPEC">LABEL_SPEC</a></h2>
+
+<p>Combining the preceding definitions, we can now define a label
+specification, LABEL_SPEC, as follows (using the standard notation of
+vertical bar (`|') = OR):</p>
+
+<pre class="example">LABEL_SPEC =&gt; LABEL | LABEL_RANGE
+</pre>
+
+<h1><a name="Examples">Examples</a></h1>
+
+<p>Let the notation <code>@obverse ... @column 1 ... 1.</code> mean
+that the ATF transliteration has block tags <code>@obverse</code> and
+<code>@column 1</code>, among other possible content, and that
+<code>1.</code> is a line number.  Then the following relations
+apply:</p>
+
+<table>
+<thead>
+<tr><th>ATF</th><th>LABEL</th></tr>
+</thead>
+<tbody>
+<tr><td>1.</td><td>1</td></tr>
+<tr><td>@column 1 ... 1.</td><td>i 1</td></tr>
+<tr><td>@obverse ... @column 1 ... 1.</td><td>o i 1</td></tr>
+<tr><td>@left ... 3'.</td><td>l.e. 3'</td></tr>
+</tbody>
+</table>
+
+<div><h1><a name="Resources">Resources</a></h1><dl><dt><a href=".//html/labels.xdf.html">labels.xdf</a></dt><dd>XDF source for this documentation.</dd></dl></div>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+Steve Tinney (stinney at sas dot upenn dot edu).</p></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/esp/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="xhtml-strict.rng">
+    <start>
+      <empty/>
+    </start>
+    <define name="title">
+      <empty/>
+    </define>
+  </include>
+  <start combine="interleave">
+    <ref name="esp-page"/>
+  </start>
+  <define name="Block.class" combine="choice">
+    <ref name="esp-block"/>
+  </define>
+  <define name="Inline.class" combine="choice">
+    <ref name="esp-inline"/>
+  </define>
+  <define name="esp-block">
+    <choice>
+      <ref name="esp-accesskeys-listing"/>
+      <ref name="esp-site-map"/>
+      <ref name="esp-index-list"/>
+      <ref name="esp-author"/>
+      <ref name="esp-content-last-modified"/>
+      <ref name="esp-h"/>
+      <ref name="esp-sh"/>
+      <ref name="esp-image"/>
+      <ref name="esp-glossary-list"/>
+      <ref name="esp-techterms-list"/>
+      <ref name="esp-reading"/>
+      <ref name="esp-ref"/>
+    </choice>
+  </define>
+  <define name="esp-inline">
+    <choice>
+      <ref name="esp-content-last-modified"/>
+      <ref name="esp-link"/>
+      <ref name="esp-bookmark"/>
+      <ref name="esp-glossary"/>
+      <ref name="esp-index"/>
+      <ref name="esp-techterms"/>
+      <ref name="esp-email"/>
+      <ref name="esp-page-name"/>
+      <ref name="esp-page-title"/>
+    </choice>
+  </define>
+  <define name="esp-accesskeys-listing">
+    <optional>
+      <element name="accesskeys-listing">
+        <empty/>
+      </element>
+    </optional>
+  </define>
+  <define name="esp-author">
+    <element name="author">
+      <attribute name="first-names"/>
+      <attribute name="last-name"/>
+    </element>
+  </define>
+  <define name="esp-bookmark">
+    <zeroOrMore>
+      <element name="bookmark">
+        <attribute name="id"/>
+        <optional>
+          <attribute name="title"/>
+        </optional>
+        <optional>
+          <attribute name="hide-highlight">
+            <choice>
+              <value>yes</value>
+              <value>no</value>
+            </choice>
+          </attribute>
+        </optional>
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-caption">
+    <element name="caption">
+      <ref name="Inline.model"/>
+    </element>
+  </define>
+  <define name="esp-content-last-modified">
+    <optional>
+      <element name="content-last-modified">
+        <empty/>
+      </element>
+    </optional>
+  </define>
+  <define name="esp-email">
+    <zeroOrMore>
+      <element name="email">
+        <attribute name="address"/>
+        <empty/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-flash-movie">
+    <element name="flash-movie">
+      <attribute name="id"/>
+      <attribute name="file"/>
+      <attribute name="title"/>
+      <attribute name="width"/>
+      <attribute name="height"/>
+      <ref name="Inline.model"/>
+    </element>
+  </define>
+  <define name="esp-glossary">
+    <zeroOrMore>
+      <element name="glossary">
+        <attribute name="term"/>
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-glossary-list">
+    <optional>
+      <element name="glossary-list">
+        <zeroOrMore>
+          <element name="definition">
+            <attribute name="term"/>
+            <ref name="Inline.model"/>
+          </element>
+        </zeroOrMore>
+      </element>
+    </optional>
+  </define>
+  <define name="esp-h">
+    <zeroOrMore>
+      <element name="h">
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-image">
+    <element name="image">
+      <choice>
+        <attribute name="file"/>
+        <attribute name="url">
+          <data type="anyURI"/>
+        </attribute>
+      </choice>
+      <optional>
+        <attribute name="description"/>
+      </optional>
+      <optional>
+        <attribute name="height"/>
+      </optional>
+      <optional>
+        <attribute name="width"/>
+      </optional>
+      <optional>
+        <attribute name="position">
+          <choice>
+            <value>float</value>
+            <value>inline</value>
+          </choice>
+        </attribute>
+      </optional>
+      <choice>
+        <group>
+          <ref name="esp-link"/>
+          <ref name="esp-caption"/>
+        </group>
+        <group>
+          <optional>
+            <ref name="esp-caption"/>
+          </optional>
+          <choice>
+            <ref name="esp-image-map"/>
+            <ref name="esp-link"/>
+            <ref name="esp-flash-movie"/>
+          </choice>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="esp-image-map">
+    <element name="image-map">
+      <oneOrMore>
+        <element name="area">
+          <choice>
+            <attribute name="page"/>
+            <attribute name="url"/>
+          </choice>
+          <optional>
+            <attribute name="access-key"/>
+          </optional>
+          <attribute name="coords"/>
+          <optional>
+            <attribute name="description"/>
+          </optional>
+          <attribute name="shape"/>
+          <optional>
+            <attribute name="site-name"/>
+          </optional>
+          <attribute name="title"/>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="esp-index">
+    <zeroOrMore>
+      <element name="index">
+        <attribute name="term"/>
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-index-list">
+    <optional>
+      <element name="index-list">
+        <empty/>
+      </element>
+    </optional>
+  </define>
+  <define name="esp-link">
+    <zeroOrMore>
+      <element name="link">
+        <choice>
+          <group>
+            <attribute name="page"/>
+            <optional>
+              <attribute name="bookmark"/>
+            </optional>
+          </group>
+          <group>
+            <attribute name="url"/>
+            <optional>
+              <attribute name="site-name"/>
+            </optional>
+            <optional>
+              <attribute name="hide-print">
+                <choice>
+                  <value>yes</value>
+                  <value>no</value>
+                </choice>
+              </attribute>
+            </optional>
+          </group>
+          <optional>
+            <attribute name="bookmark"/>
+          </optional>
+        </choice>
+        <optional>
+          <attribute name="onclick"/>
+        </optional>
+        <optional>
+          <attribute name="title"/>
+        </optional>
+        <optional>
+          <attribute name="accesskey"/>
+        </optional>
+        <optional>
+          <attribute name="rel">
+            <value>external</value>
+          </attribute>
+        </optional>
+        <optional>
+          <attribute name="type">
+            <value>link</value>
+          </attribute>
+        </optional>
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-page">
+    <element name="page">
+      <element name="name">
+        <text/>
+      </element>
+      <element name="title">
+        <text/>
+      </element>
+      <ref name="html"/>
+    </element>
+  </define>
+  <define name="esp-page-name">
+    <zeroOrMore>
+      <element name="page-name">
+        <attribute name="page"/>
+        <empty/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-page-title">
+    <zeroOrMore>
+      <element name="page-title">
+        <attribute name="page"/>
+        <empty/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-reading">
+    <zeroOrMore>
+      <element name="reading">
+        <attribute name="referent"/>
+        <optional>
+          <attribute name="page"/>
+        </optional>
+        <empty/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-ref">
+    <zeroOrMore>
+      <element name="ref">
+        <attribute name="referent"/>
+        <optional>
+          <attribute name="page"/>
+        </optional>
+        <empty/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-site-map">
+    <optional>
+      <element name="site-map">
+        <empty/>
+      </element>
+    </optional>
+  </define>
+  <define name="esp-sh">
+    <zeroOrMore>
+      <element name="sh">
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-techterms">
+    <zeroOrMore>
+      <element name="techterms">
+        <attribute name="term"/>
+        <ref name="Inline.model"/>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="esp-techterms-list">
+    <optional>
+      <element name="techterms-list">
+        <zeroOrMore>
+          <element name="termsdefinition">
+            <attribute name="term"/>
+            <ref name="Inline.model"/>
+          </element>
+        </zeroOrMore>
+      </element>
+    </optional>
+  </define>
+</grammar>

@@ -1,0 +1,77 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use open 'utf8';
+use lib "@@ORACC@@/lib";
+use ORACC::XML;
+use ORACC::NS;
+
+my $ce_ns = 'http://oracc.org/ns/ce/1.0';
+binmode(STDIN, ':utf8'); binmode(STDOUT, ':utf8');
+
+my $input = (<>);
+my $x = load_xml_string($input);
+
+if ($x->getDocumentElement()->getAttribute("cetype")
+    eq 'line') {
+    foreach my $s (tags($x,$ce_ns,'start')) {
+	move_h($s);
+    }
+} else {
+    foreach my $s (tags($x,$ce_ns,'start')) {
+	move_h($s);
+	remove_preceding($s);
+    }
+    
+    foreach my $s (tags($x,$ce_ns,'end')) {
+	remove_following($s);
+    }
+}
+print $x->toString();
+
+##############################################
+
+sub
+move_h {
+    my $node = shift;
+    my $h = $node->getAttribute('h');
+    return unless $h;
+    while ($node->parentNode()->nodeName() ne 'ce:data') {
+	$node = $node->parentNode();
+    }
+    $node = $node->parentNode(); # $node is now ce:data
+    my $ce_h = $x->createElement('ce:heading');
+    $ce_h->appendTextNode($h);
+    $node->parentNode()->insertBefore($ce_h, $node);
+}
+
+sub
+remove_following {
+    my $node = shift;
+    $node = word_ancestors($node);
+    # remove all following siblings
+    while ($node->nextSibling()) {
+	$node->parentNode()->removeChild($node->nextSibling());
+    }
+}
+
+sub
+remove_preceding {
+    my $node = shift;
+    $node = word_ancestors($node);
+    # remove all preceding siblings
+    while ($node->previousSibling()) {
+	last if $node->previousSibling->localName() eq 'l';
+	$node->parentNode()->removeChild($node->previousSibling());
+    }
+}
+
+sub
+word_ancestors {
+    my $node = shift;
+    while ($node->parentNode()->nodeName() !~ /^ce:/) {
+	$node = $node->parentNode();
+    }
+    $node;
+}
+
+1;

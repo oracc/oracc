@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Project URLS</title>
+<link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+<script src="/js/oraccdoc.js" type="text/javascript"> </script>
+<base href="http://oracc.museum.upenn.edu/doc/user/projurls/"/></head>
+<body onload="onresize=setTOCoffset; setTOCoffset()">
+<div class="withtoc">
+<div class="speedbar" id="speedbar">
+<p class="toc h1">
+<a href="/index.html">ORACC Home</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#top">Introduction</a>
+</p>
+<hr class="toc"/>
+<p class="toc h2">
+<a href="#Background">Background</a>
+</p>
+<p class="toc h2">
+<a href="#Definitions">Definitions</a>
+</p>
+<p class="toc h2">
+<a href="#Patterns">Patterns</a>
+</p>
+<p class="toc h2">
+<a href="#Citing">Citing</a>
+</p>
+<hr class="toc"/>
+<p class="toc h1">
+<a href="#Resources">Resources</a>
+</p>
+</div>
+<div class="body">
+
+<h1 class="title">Project URLS</h1><h2 class="author">Steve Tinney<br/>Version of 2010-04-04
+</h2><h1><a name="intro">Introduction</a></h1><p>This document describes the rewrite patterns used to
+create simpler, permanent URLs for Oracc resources</p>
+
+<h2><a name="Background">Background</a></h2>
+
+<p>The Oracc server now has its first support for URLs which are easier
+to remember, persistent, and safe to cite in print.  This facility is
+not yet fully developed and suggestions for additions are welcome.</p>
+
+<p>For some background to the usefulness of these URLs (which are
+implemented using webserver rewrite rules) see Jakob Nielsen's
+fundamental article <a href="http://www.useit.com/alertbox/990321.html">URL as UI</a>.</p>
+
+<h2><a name="Definitions">Definitions</a></h2>
+
+<p>In order to express the various URLs supported for Oracc projects we
+define some basic components before describing the patterns.</p>
+
+<dl>
+
+<dt>PROJECT</dt>
+<dd>The name of a project or subproject, e.g., <code>dcclt</code> or
+<code>saa/sargon</code>.</dd>
+
+<dt>PQID</dt>
+<dd>A single CDLI P or Q id followed by six digits.  For example,
+<code>P123456</code> or <code>Q000001</code>.</dd>
+
+<dt>PQIDS</dt>
+<dd>A comma-separated list of one or more CDLI IDs, of the form P or Q
+followed by six digits.  For example, <code>P123456</code> or
+<code>P123456,Q000001</code>.</dd>
+
+<dt>LANG</dt>
+<dd>A language code corresponding to a glossary, e.g.: sux, akk.</dd>
+
+<dt>WORDS</dt>
+<dd>One or more words, consisting of letters and numbers.  Depending on
+the context these may be project names, list names or search terms.</dd>
+
+</dl>
+
+<h2><a name="Patterns">Patterns</a></h2>
+
+<dl>
+
+<dt>PROJECT/PQID.html</dt>
+<dd>This pattern produces the HTML version of the text, without the
+pager frame. Example: <code class="example">http://oracc.museum.upenn.edu/dcclt/Q000001.html</code>.</dd>
+
+<dt>PROJECT/PQIDS</dt>
+<dd>This pattern produces a pager listing of the PQIDS; it replaces
+the functionality of the <code>adhoc</code> method formerly
+recommended for including references to ad hoc collections of
+texts. Example:
+<code class="example">http://oracc.museum.upenn.edu/dcclt/Q000001,Q000002</code>.
+With a single PQID, this behaves similarly to the pattern
+PROJECT/PQID.html, but includes the pager frame around the text.</dd>
+
+<dt>PROJECT/LANG</dt>
+<dd>This pattern goes straight to the project glossary for the language.
+Example: <code class="example">http://oracc.museum.upenn.edu/cams/akk</code>.
+</dd>
+
+<dt>PROJECT/LANG/WORDS</dt>
+<dd>This pattern searches the glossary in the project language for the words.<code class="example">http://oracc.museum.upenn.edu/cams/akk/adru</code>; 
+<code class="example">http://oracc.museum.upenn.edu/cams/akk/adru afraid</code>.</dd>
+
+<dt>PROJECT/WORDS</dt>
+<dd><p>This pattern is used for several purposes.</p>
+<ul>
+<li>If the first WORD is the name of a sub-project, the remainder of
+the WORDS are processed in the context of the subproject; all of the
+above patterns as well as the patterns related to WORDS described
+below, then behave exactly as if PROJECT is set to the
+subproject.</li>
+<li>If the first WORD after the project/subproject is `corpus', the
+pager listing for the corpus is displayed (this allows projects which
+have content in their `index.html' to have a link directly to the
+pager listing for the texts.</li>
+<li>If the first WORD after the project/subproject is a list file the
+pager displays the list of texts from that file.  List files are
+special-purpose files created by the projects which simply give lists
+of ID numbers. Example: <code class="example">http://oracc.museum.upenn.edu/ckst/middle_assyrian</code>.</li>
+<li>Otherwise the WORDS are used as search terms for the project
+catalogue. Example: <code class="example">http://oracc.museum.upenn.edu/ckst/middle
+assyrian</code> (note the space instead of an underscore).</li>
+</ul>
+</dd>
+
+</dl>
+
+<h2><a name="Citing">Citing</a></h2>
+
+<p>When citing Oracc resources in print, you should not cite the
+<code>oracc.museum</code> server directly: instead, use the hostname
+<code>http://cdlref.org</code>.  Then append the relevant part of the
+URL as given in the patterns above, which are designed to be
+permanent.</p>
+
+<p>The hostname <code>cdlref.org</code> will always redirect to the
+current Oracc server.</p>
+
+<div><h1><a name="Resources">Resources</a></h1><dl><dt><a href=".//html/projurls.xdf.html">projurls.xdf</a></dt><dd>XDF source for this documentation.</dd></dl></div>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+Steve Tinney (stinney at sas dot upenn dot edu).</p></div>
+</div>
+</body>
+</html>

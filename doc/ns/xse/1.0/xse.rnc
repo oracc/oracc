@@ -1,0 +1,50 @@
+default namespace = "http://oracc.org/ns/xse/1.0"
+
+start = xse
+
+xse    = element xse { search* }
+
+search = (project , index , expr* , result)*
+
+project = element  project { text }
+
+index   = element   index   { attribute n { text }}
+
+result  = element   result  { location } ?
+
+expr    = (key | binop)
+
+binop   = (key , and , key)
+
+and     = (invert? , type , near , expr)
+
+group   = element group { invert? , (expr | term)* , result? }
+
+term    = filter* , key , (op , key)*
+
+filter  = (field | lang | prop)
+
+near	= element near { where , scope , level }
+
+where   = attribute where { "before" | "after" | "around" }
+
+scope   = attribute scope { text }
+
+level   = attribute level { "record" | "field" 
+			    | "text" | "word" | "line" }
+
+location = element l { text }
+
+invert  = attribute invert { "yes" | "no" }
+
+type    = attribute type { "and" | "or" }
+
+key     = element key { text }
+
+op      = element op  { attribute n { "-" | "_" | "~" | "x" } }
+
+field   = element field { text }
+
+lang    = element lang { text }
+
+prop    = element prop { text }

@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+
+<xsl:stylesheet version="1.0" 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:l="http://oracc.org/ns/log/1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:param name="project" select="''"/>
+
+<xsl:include href="@@ORACC@@/lib/scripts/html-standard.xsl"/>
+
+<xsl:output method="xml" encoding="utf-8"
+   doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+   indent="yes"/>
+
+<xsl:template match="/">
+  <xsl:call-template name="make-html">
+    <xsl:with-param name="webtype" select="xdf"/>
+    <xsl:with-param name="with-trailer" select="false()"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="call-back">
+  <table>
+    <caption><xsl:value-of select="/*/@producer"/> output at <xsl:value-of select="/*/@at"/></caption>
+    <xsl:apply-templates/>
+  </table>
+</xsl:template>
+
+<xsl:template match="l:error">
+  <tr>
+    <td><xsl:value-of select="l:loc/@file"/></td>
+    <td><xsl:value-of select="l:message/text()"/></td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="*">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </xsl:copy>
+</xsl:template>
+
+</xsl:stylesheet>

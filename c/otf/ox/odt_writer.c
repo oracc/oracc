@@ -1,0 +1,494 @@
+#include <stdio.h>
+#include <ctype.h>
+#include "list.h"
+#include "xpd2.h"
+#include "cdt.h"
+#include "xmlutil.h"
+
+extern struct styles common_styles;
+extern void write_style(struct style_node *sp);
+static FILE *wfile;
+int frame_index;
+
+static void body(List *master);
+static void cdt_attr(unsigned char *attr, int nth);
+static int cdt_write_children(struct cdt_node *np);
+static void cdt_write_figure(FILE *wfile, struct cdt_node *np);
+static void cdt_write_image(FILE *wout, struct cdt_node *np);
+static void cdt_write_insert(FILE *wout, struct cdt_node *np);
+static void cdt_write_node(struct cdt_node *np);
+static void meta(List *meta);
+static void preamble(void);
+static void postamble(void);
+static char *set_size_and_scale(struct image *i);
+
+void
+cdt_writer(FILE*wout, List *master, List *metalist)
+{
+  wfile = wout;
+  preamble();
+  meta(metalist);
+  cdt_style_writer(wfile);
+  body(master);
+  postamble();
+}
+
+static unsigned char *
+unconst(const char *s)
+{
+  static unsigned char buf[128];
+  strcpy((char*)buf,s);
+  return buf;
+}
+
+static void
+body(List *master)
+{
+  fputs("<office:document-content>",wfile);
+  fputs("<office:font-face-decls>",wfile);
+  list_exec(common_styles.faces, (list_exec_func*)write_style);
+  fputs("</office:font-face-decls>",wfile);
+  fputs("<office:automatic-styles>",wfile);
+  list_exec(common_styles.styles, (list_exec_func*)write_style);
+  fputs("</office:automatic-styles>",wfile);
+  fputs("<office:body>",wfile);
+  list_exec(master, (list_exec_func*)cdt_write_node);
+  fputs("</office:body>",wfile);
+  fputs("</office:document-content>",wfile);
+}
+
+static void
+meta(List *metalist)
+{
+  fputs("<office:meta>",wfile);
+  list_exec(metalist, (list_exec_func*)cdt_write_node);
+  xpd_echo(cdt_project,wfile);
+  fputs("</office:meta>",wfile);
+}
+
+static void
+cdt_write_text(const char *t, FILE *w)
+{
+  while (*t)
+    {
+      if ('\t' == *t)
+	fputs("<text:tab/>",w);
+      else if ('&' == *t)
+	fputs("&amp;",w);
+      else
+	fputc(*t,w);
+      ++t;
+    }
+}
+
+static void
+cdt_write_node(struct cdt_node*np)
+{
+  if (!np)
+    return;
+
+  if (np->class == odt_foreign)
+    cdt_data_handler(np,op_write,wfile);
+  else if (*np->name)
+    {
+      if (isalpha(*np->name))
+	{
+	  if (np->code == odt_span)
+	    {
+	      fprintf(wfile,"<text:span");
+	      cdt_attr(unconst(np->name),0);
+	      if (np->attr)
+		cdt_attr(np->attr,1);
+	    }
+	  else if (np->code == odt_document)
+	    {
+	      fprintf(wfile,"<office:text");
+#if 0
+	      if (np->attr)
+		cdt_attr(np->attr,0);
+	      else
+		cdt_attr(unconst("p"),0);
+#endif
+	    }
+	  else if (np->code == odt_section)
+	    {
+	      fprintf(wfile,"<text:section");
+	      if (np->text && *np->text)
+		fprintf(wfile," text:name=\"%s\"",np->text);
+	      else
+		cdt_warning(np->file,np->lnum,"@section must have section name on rest of line");
+	      if (np->attr)
+		cdt_attr(np->attr,0);
+
+	      /* Yes, the angle bracket hacks here are correct. */
+	      if (np->user)
+		fprintf(wfile,
+			"><text:p text:style-name=\"hidden-title\"><text:hidden-text text:condition=\"1\" text:string-value=\"%s\"/></text:p",
+			xmlify(np->user));
+
+
+
+#if 0 /* This can't be right--if it is supposed to achieve something sneaky, cdt_reader should decode
+	 the relevant portion of np->text and reassign it to np->attr */
+	      else if (np->text)
+		cdt_attr(np->text,0);
+#endif
+	    }
+	  else if (np->code == cdt_figure)
+	    {
+	      cdt_write_figure(wfile,np);
+	      return;
+	    }
+	  else if (np->code == cdt_insert)
+	    {
+	      cdt_write_insert(wfile,np);
+	      return;
+	    }
+	  else if (np->code == cdt_image)
+	    {
+	      cdt_write_image(wfile,np);
+	      return;
+	    }
+	  else if (np->code == odt_p)
+	    {
+	      fprintf(wfile,"<text:p");
+	      if (np->attr)
+		cdt_attr(np->attr,0);
+	      else
+		cdt_attr(unconst("p"),0);
+	    }
+	  else if (np->code == odt_title)
+	    {
+	      fprintf(wfile,"<text:p");
+	      if (np->attr)
+		cdt_attr(np->attr,0);
+	      else
+		cdt_attr(unconst("H.title"),0);
+	    }
+	  else if (np->code == odt_h)
+	    {
+	      char lastchar = np->name[strlen(np->name)-1];
+	      fprintf(wfile,"<text:h");
+	      cdt_attr(unconst(np->name),0);
+	      if (np->attr)
+		cdt_attr(np->attr,1);
+	      if (!isdigit(lastchar))
+		lastchar = '0';
+	      fprintf(wfile," text:outline-level=\"%c\"",lastchar);
+	    }
+	  else if (np->class == odt_meta)
+	    {
+	      if (np->code == cdt_project_c)
+		{
+		  fprintf(wfile,"<oracc:project>%s</oracc:project>",np->text);
+		  return;
+		}
+	      else
+		{
+		  fprintf(wfile,"<dc:%s",np->name);
+		  if (np->attr)
+		    cdt_attr(np->attr,0);
+		}
+	    }
+	  else if (np->code == cdt_caption)
+	    {
+	      fprintf(wfile,"<text:span text:style-name=\"caption-%s\"",np->attr);
+	    }
+	  else if (np->code == cdt_newline)
+	    {
+	      fprintf(wfile,"<text:line-break/>");
+	      return;
+	    }
+	  else if (np->code == cdt_newpage)
+	    {
+	      fprintf(wfile,"<text:page-break/>");
+	      return;
+	    }
+	  else if (np->code == cdt_newoddpage)
+	    {
+	      fprintf(wfile,"<text:page-break oracc:odd=\"yes\"/>");
+	      return;
+	    }
+	  else if (np->code == cdt_pageno)
+	    {
+	      fprintf(wfile,"<oracc:pageno value=\"%s\"/>", np->text);
+	      return;
+	    }
+	  else if (np->code == cdt_figno)
+	    {
+	      fprintf(wfile,"<oracc:figno value=\"%s\"/>", np->text);
+	      return;
+	    }
+	  else
+	    {
+	      fprintf(wfile,"<%s",np->name);
+	      if (np->attr)
+		cdt_attr(np->attr,0);
+	    }
+
+	  if (!cdt_write_children(np))
+	    fputs("/>",wfile);
+	}
+      else
+	{
+	  /* @@ and friends */
+	}
+    }
+  else if (np->text)
+    cdt_write_text((const char *)np->text, wfile);
+}
+
+static int
+cdt_write_children(struct cdt_node *np)
+{
+  if (np->code == odt_section || (np->children && list_len(np->children)))
+    {
+      if (np->code != cdt_figure && np->code != cdt_insert)
+	fputc('>',wfile);
+      if (!strcmp(np->name,"gdl"))
+	gdl_writer(wfile,np);
+      else
+	list_exec(np->children, (list_exec_func*)cdt_write_node);
+      switch (np->code)
+	{
+	case odt_span:
+	  fputs("</text:span>",wfile);
+	  break;
+	case odt_section:
+	  fputs("</text:section>",wfile);
+	  break;
+	case odt_h:
+	  fputs("</text:h>",wfile);
+	  break;
+	case odt_p:
+	  fputs("</text:p>",wfile);
+	  break;
+	case odt_title:
+	  fputs("</text:p>",wfile);
+	  break;
+	case odt_document:
+	  fputs("</office:text>",wfile);
+	  break;
+	case cdt_caption:
+	  fputs("</text:span>",wfile);
+	  break;
+
+	case cdt_figure:
+	case cdt_insert:
+	  break;
+	default:
+	  fprintf(wfile,"</%s>",np->name);
+	  break;
+	}
+      return 1;
+    }
+  else
+    return 0;
+}
+
+static void
+cdt_attr(unsigned char *attr, int nth)
+{
+  unsigned char *attr_end = attr, *equals, save;
+  while (*attr_end)
+    {
+      while (*attr_end && !isspace(*attr_end))
+	++attr_end;
+      save = *attr_end;
+      *attr_end = '\0';
+      if ((equals = (unsigned char *)strchr((const char *)attr,'=')))
+	{
+	  *equals = '=';
+	  fprintf(wfile," %s=\"%s\"",attr,equals);
+	}
+      else if (!nth)
+	{
+	  fprintf(wfile," text:style-name=\"%s\"",attr);
+	  *attr_end = save;
+	  if (*attr_end)
+	    {
+	      attr = attr_end;
+	      while (isspace(*attr))
+		++attr;
+	      attr_end = attr;
+	    }
+	}
+      else
+	{
+	  if (save)
+	    {
+	      if ((equals = (unsigned char *)strchr((const char *)attr_end+1,'=')))
+		{
+		  attr_end = equals;
+		  while (attr_end > attr && !isspace(attr_end[-1]))
+		    --attr_end;
+		  attr_end[-1] = '\0';
+		}
+	      else
+		{
+		  *attr_end = save;
+		  attr_end += strlen((const char *)attr_end);
+		}
+	    }
+	  else
+	    equals = NULL;
+	  fprintf(wfile," text:classes=\"%s\"",attr);
+	  if (equals)
+	    {
+	      attr = attr_end+1;
+	      while (isspace(*attr))
+		++attr;
+	      attr_end = attr;
+	    }
+	}
+    }
+}
+
+static const char *xmldecl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+static const char *xmlns1 = 
+  "\n  xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"\n"
+  "  xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\"\n"
+  "  xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\"\n"
+  "  xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\"\n"
+  "  xmlns:draw=\"urn:oasis:names:tc:opendocument:xmlns:drawing:1.0\"\n"
+  "  xmlns:fo=\"urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0\"\n";
+static const char *xmlns2 = 
+  "  xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n"
+  "  xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
+  "  xmlns:meta=\"urn:oasis:names:tc:opendocument:xmlns:meta:1.0\"\n"
+  "  xmlns:number=\"urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0\"\n"
+  "  xmlns:svg=\"urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0\"\n"
+  "  xmlns:chart=\"urn:oasis:names:tc:opendocument:xmlns:chart:1.0\"\n"
+  "  xmlns:dr3d=\"urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0\"\n"
+  "  xmlns:math=\"http://www.w3.org/1998/Math/MathML\"\n";
+static const char *xmlns3 =
+  "  xmlns:form=\"urn:oasis:names:tc:opendocument:xmlns:form:1.0\"\n"
+  "  xmlns:script=\"urn:oasis:names:tc:opendocument:xmlns:script:1.0\"\n"
+  "  xmlns:ooo=\"http://openoffice.org/2004/office\"\n"
+  "  xmlns:ooow=\"http://openoffice.org/2004/writer\"\n"
+  "  xmlns:oooc=\"http://openoffice.org/2004/calc\"\n"
+  "  xmlns:dom=\"http://www.w3.org/2001/xml-events\"\n"
+  "  xmlns:xforms=\"http://www.w3.org/2002/xforms\"\n"
+  "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n"
+  "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
+static const char *xmlns4 =
+  "  office:version=\"1.1\" office:mimetype=\"text/xml\"\n"
+  "  xmlns:oracc=\"http://oracc.org/ns/oracc/1.0\"\n"
+  "  xmlns:gdl=\"http://oracc.org/ns/gdl/1.0\"\n"
+  "  xmlns:g=\"http://oracc.org/ns/gdl/1.0\"\n"
+  "  xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\"\n"
+  "  xmlns:xtf=\"http://oracc.org/ns/xtf/1.0\""
+  "  xmlns:xh=\"http://www.w3.org/1999/xhtml\""
+  ;
+
+static const char *
+otfODTstyler(void)
+{
+  return "file:///usr/local/oracc/lib/scripts/otf-ODT.xsl";
+}
+
+void
+preamble(void)
+{
+  const char *xslpi = "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstyler\"?>";
+  static char xslinc[2048];
+  sprintf(xslinc,
+	  "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "
+	  "href=\"%s\"/>",otfODTstyler());
+  fprintf(wfile,"%s\n%s\n<office:document %s%s%s%s>%s\n",xmldecl,xslpi,xmlns1,xmlns2,
+	  xmlns3,xmlns4,xslinc);
+}
+
+void
+postamble(void)
+{
+  fprintf(wfile,"</office:document>");
+}
+
+static const char *fig_template =
+  "<draw:text-box>\n"
+  "<text:p text:style-name=\"Figure\"\n"
+  ">Figure <text:sequence text:ref-name=\"refIllustration%d\"\n" 
+  "text:name=\"Illustration\" text:formula=\"ooow:Illustration+1\"\n"
+  "style:num-format=\"1\">%d</text:sequence>";
+
+static const char *fig_template_end = "</text:p></draw:text-box>";
+
+static const char *img_template =
+  "<draw:frame draw:style-name=\"fr%d\"\n"     
+  "draw:name=\"graphics%d\"\n"			
+  "text:anchor-type=\"paragraph\"\n"		
+  " %s "					
+  "draw:z-index=\"1\"\n"			
+  "><draw:image\n"				
+  "xlink:href=\"%s\"\n"				
+  "xlink:type=\"simple\"\n"			
+  "xlink:show=\"embed\"\n"			
+  "xlink:actuate=\"onLoad\"/></draw:frame\n>";
+
+static const char *ins_template_begin = 
+"<draw:frame\n"
+   "draw:name=\"Frame%d\" draw:style-name=\"%s\"\n"
+  "text:anchor-type=\"paragraph\" draw:z-index=\"0\"\n>";
+
+static const char *ins_template_end = "</draw:frame>";
+
+static void
+cdt_write_figure(FILE *wout, struct cdt_node *np)
+{
+  struct figure *figure = np->user;
+  fprintf(wout, fig_template,
+	  frame_index+1,
+	  figure->figure_num - 1,
+	  figure->figure_num);
+  cdt_write_node(figure->caption);
+  cdt_write_children(np);
+  fputs(fig_template_end,wfile);
+  ++frame_index;
+}
+
+static void
+cdt_write_image(FILE *wout, struct cdt_node *np)
+{
+  char *size_and_scale = NULL;
+  struct image *image;
+  if (np && np->user)
+    image = np->user;
+  else
+    return;
+  size_and_scale = set_size_and_scale(image);
+  fprintf(wout, img_template,
+	  frame_index,
+	  image->graphics_num,
+	  size_and_scale,
+	  image->href);
+  free(size_and_scale);
+  ++frame_index;
+}
+
+static void
+cdt_write_insert(FILE *wout, struct cdt_node *np)
+{
+  fprintf(wout, ins_template_begin,
+	  frame_index,
+	  np->attr);
+  cdt_write_children(np);
+  fputs(ins_template_end,wfile);
+  ++frame_index;
+}
+
+static char *
+set_size_and_scale(struct image *i)
+{
+  char *buf = malloc(1024);
+  *buf = '\0';
+  if (i->width)
+    sprintf(buf, " svg:width=\"%s\"", i->width);
+  if (i->height)
+    sprintf(buf+strlen(buf), " svg:height=\"%s\"", i->height);
+  if (i->scale_x)
+    sprintf(buf+strlen(buf), 
+	    " draw:transform=\"scale(%s,%s)\"",
+	    i->scale_x, i->scale_y ? i->scale_y : i->scale_x);
+  return buf;
+}

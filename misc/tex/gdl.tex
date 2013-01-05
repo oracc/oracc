@@ -1,0 +1,20 @@
+\def\sac{\logosize\rm}
+\let\akk\it
+\let\arc\it
+\let\sux\rm
+\let\qcu\rm
+\let\gdl\relax
+\let\compound\relax
+\let\i\it
+\let\b\bf
+\let\r\rm
+\def\asterisk{*}
+\newif\ifflags
+\def\sup#1{\setbox0=\hbox{\scriptsize\rm#1}\ht0=0pt\raise.7ex\box0\relax}
+\def\flags{\bgroup\flagstrue\fl@gs}
+\def\fl@gs#1{\setbox0=\hbox{\scriptsize\rm#1}\ht0=0pt\raise.7ex\box0\egroup}
+
+%\font\cun="CuneiformNAFilled" at 8pt
+\font\cun="CuneiformNAOutline" at 8pt
+
+\endinput

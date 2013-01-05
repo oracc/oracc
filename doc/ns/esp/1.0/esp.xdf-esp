@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>ESP</dc:title>
+  <dcterms:alternative>Electrostatic Portal</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/esp/1.0</dcterms:identifier>
+  <dc:creator>Eleanor Robson and Steve Tinney</dc:creator>
+  <dc:date>2010-09-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>ESP is a port of George MacKerron's Electrostatic website
+building software to Oracc.  It is suitable for larger portals and was
+initially used on Oracc by GKAB, AEB and K&amp;P.</dc:description>
+</d:meta>
+
+<d:schema name="esp" uri="http://oracc.org/ns/esp/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/esp/1.0"
+namespace dc = "http://purl.org/dc/elements/1.1"
+namespace dcterms = "http://purl.org/dc/terms/"
+namespace esp = "http://oracc.org/ns/esp/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "xhtml/rnc/xhtml-strict.rnc" {
+  start = empty
+  title = empty
+}
+
+start &amp;= page
+
+Block.class |=  esp-block
+Inline.class |= esp-inline
+
+esp-block = 
+  esp-accesskeys-listing | esp-site-map | esp-index-list | esp-author
+  | esp-content-last-modified | esp-h | esp-sh | esp-image | esp-glossary-list
+  | esp-techterms-list | esp-reading | esp-ref
+
+esp-inline = 
+  esp-content-last-modified | esp-link | esp-bookmark
+  | esp-glossary | esp-index | esp-techterms | esp-email | esp-page-name
+  | esp-page-title
+
+esp-accesskeys-listing = 
+  element esp:accesskeys-listing { empty }?
+
+esp-author = 
+  element esp:author  {
+    attribute first-names { text },
+    attribute last-name { text }	
+  }
+
+esp-bookmark = 
+  element esp:bookmark { 
+    attribute id {text},
+    attribute title {text}?,
+    attribute hide-highlight { "yes" | "no" }?,
+    Inline.model
+  }*
+
+esp-caption = 
+  element esp:caption { Inline.model }
+
+esp-content-last-modified = 
+  element esp:content-last-modified  { empty }?
+
+esp-email = 
+  element esp:email {
+    attribute address { text },
+    empty
+  }*
+
+esp-flash-movie = 
+  element esp:flash-movie { 
+    attribute id { text },
+    attribute file { text },
+    attribute title { text },
+    attribute width { text },
+    attribute height { text },
+    Inline.model
+  }
+
+esp-glossary = 
+  element esp:glossary {
+    attribute term { text},
+    Inline.model
+  }*
+
+esp-glossary-list = 
+  element esp:glossary-list { 
+    element definition {
+      attribute term { text },
+      Inline.model
+    }*
+  }?
+
+esp-h = 
+  element esp:h { Inline.model }*
+
+esp-image = 
+  element esp:image {
+    (attribute file { text } | attribute url { xsd:anyURI }),
+    attribute description { text }?,
+    attribute height { text }?,
+    attribute width { text }?,
+    attribute position { "float" | "inline" }?,
+    (
+      (esp-link , esp-caption)
+      | ( esp-caption? ,
+          (esp-image-map? | esp-link? | esp-flash-movie?)
+        )
+    )
+  }
+
+esp-image-map = 
+  element esp:image-map {
+    element esp:area {
+      ( attribute page { text } | attribute url { text } ),
+      attribute access-key { text }?,
+      attribute coords { text },
+      attribute description { text }?,
+      attribute shape { text }, 
+      attribute site-name { text }?,
+      attribute title { text }
+    }+
+}
+
+esp-index = 
+  element esp:index {
+    attribute term  { text },
+    Inline.model
+  }*
+
+esp-index-list = 
+  element esp:index-list { empty }?
+
+esp-link = 
+  element esp:link {
+    ( 	 
+      ( attribute page { text },  
+        attribute bookmark { text }? 
+      ) 
+    | ( attribute url { text }, 
+        attribute site-name { text }? , 
+        attribute hide-print { "yes" | "no" }?
+      )
+    |   attribute bookmark { text }? 
+    ),
+    attribute onclick { text }?,
+    attribute title { text }?,
+    attribute accesskey { text }?,
+    attribute rel { "external" }?,
+    Inline.model
+  }*
+
+page =
+  element esp:page {
+    element esp:name { text },
+    element esp:title { text },
+    html
+  }
+
+esp-page-name = 
+  element esp:page-name { 
+    attribute page { text },
+    empty
+  }*
+
+esp-page-title = 
+  element esp:page-title  {
+    attribute page { text },
+    empty
+  }*
+
+esp-reading = 
+  element esp:reading {
+    attribute referent { text },
+    attribute page { text }?,
+    empty
+  }*
+
+esp-ref = 
+  element esp:ref {
+    attribute referent { text },
+    attribute page { text }?,
+    empty
+  }*
+
+esp-site-map = 
+  element esp:site-map { empty }?
+
+esp-sh = 
+  element esp:sh { Inline.model }*
+
+esp-techterms = 
+  element esp:techterms {
+    attribute term { text },
+    Inline.model
+  }*
+
+esp-techterms-list = 
+  element esp:techterms-list {
+    element termsdefinition { 
+      attribute term { text },
+      Inline.model
+    }*
+  }?
+</d:rnc>
+</d:schema>
+
+<d:schema name="esp-param" uri="http://oracc.org/ns/esp-param/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/esp-param/1.0"
+namespace esp = "http://oracc.org/ns/esp-param/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &amp;= parameters
+
+parameters =
+  element parameters {
+	element title { text },
+	element publisher { text },
+	element host { text },
+	element root { text },
+	element common-headers { head.content }?,
+	element dc-id-prefix { text }?,
+	element main-menu-caption { text }?,
+	element footer { Flow.model }
+}
+</d:rnc>
+
+</d:schema>
+
+<d:schema name="esp-struct" uri="http://oracc.org/ns/esp-struct/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/esp-struct/1.0"
+namespace esp = "http://oracc.org/ns/esp-struct/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &amp;= page
+
+page =
+  element page {
+    attribute id { text },
+    attribute file { text }?,
+    attribute accesskey { text }?,
+    attribute hide-menu-link { "yes" | "no" }?,
+    attribute show-small-print-link { "yes" | "no" }?,
+    attribute show-access-link {"yes" | "no" }?,	
+    attribute show-reference-link { "yes" | "no" }?, 
+    page*
+  }
+</d:rnc>
+
+</d:schema>
+
+<d:schema name="esp-refer" uri="http://oracc.org/ns/esp-refer/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/esp-refer/1.0"
+namespace esp = "http://oracc.org/ns/esp-refer/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &amp;= referents
+
+referents = 
+  element referents {
+    referent+
+  }
+
+referent =
+  element referent {
+    attribute id { text },
+    Inline.model
+  }
+</d:rnc>
+
+</d:schema>
+
+<d:schema name="esp-reuse" uri="http://oracc.org/ns/esp-reuse/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/esp-reuse/1.0"
+namespace esp = "http://oracc.org/ns/esp-reuse/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &amp;= reusables
+
+reusables = 
+  element reusables { colours? , fonts? }
+
+colours =
+  element colours {
+    dark , medium , light , outline , alternate , \text , 
+    page , highlight , print
+  }
+
+dark      = element dark      { css-colour }
+medium    = element medium    { css-colour }
+light     = element light     { css-colour }
+outline   = element outline   { css-colour }
+alternate = element alternate { css-colour }
+\text     = element text      { css-colour }
+page      = element page      { css-colour }
+highlight = element highlight { css-colour }
+print     = element print     { css-colour }
+
+# Could constrain this further with a list of legal colour names.
+css-colour =
+  xsd:string {
+    pattern = "#[0-9ABCDEFabcdef]{3}|#[0-9ABCDEFabcdef]{6}|[A-Za-z][A-Za-z0-9]*"
+  }
+
+fonts =
+  element fonts {
+    empty
+  }
+</d:rnc>
+
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

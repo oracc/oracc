@@ -1,0 +1,70 @@
+<?xml version='1.0'?>
+<project name="remove-project" default="remove-project" xmlns:xdb="http://exist-db.org/ant">
+<description>Remove an ORACC project's data from the ORACC instance of the eXist db</description>
+
+<!-- edit these properties //-->
+<property name="p.exist.dir" value="@@ORACC@@/lib/java/eXist"/>
+<property name="p.exist.url" 
+	  value="xmldb:exist://localhost:8680/xmlrpc/db/"/>
+<property name="p.project.data" 
+	  value="@@ORACC@@/${p.project}/02xdb"/>
+
+<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+  <classpath>
+    <pathelement location="/usr/local/oracc/lib/java/ant-contrib-1.0b3.jar"/>
+  </classpath>
+</taskdef>
+
+<!-- import eXist-db tasks -->
+<typedef resource="org/exist/ant/antlib.xml" uri="http://exist-db.org/ant">
+  <classpath>
+    <fileset dir="${p.exist.dir}/lib/core">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${p.exist.dir}/lib/endorsed">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${p.exist.dir}/lib/optional">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement location="${p.exist.dir}/exist.jar"/>
+    <pathelement location="${p.exist.dir}/exist-optional.jar"/>
+  </classpath>
+</typedef>
+
+<target name="remove-collection"
+	description="remove one collection">
+  <if>
+    <isset property="collection"/>
+    <then>
+      <xdb:remove uri="${p.exist.url}${p.project}" collection="${collection}"
+		  user="${p.project.user}" password="${p.project.pass}"/>
+    </then>
+  </if>
+</target>
+
+<target name="remove-resource"
+	description="remove one resource">
+  <if>
+    <equals arg1="$resource" arg2="\${resources}"/>
+    <then>
+      <xdb:remove uri="${p.exist.url}${p.project}" resource="${resource}"
+		  user="${p.project.user}" password="${p.project.pass}"/>
+    </then>
+  </if>
+</target>
+
+<target name="remove-project" 
+	description="remove xml from target eXist instance"
+	>
+  <xdb:list uri="${p.exist.url}${p.project}" resources="true"
+	    outputproperty="resources"/>
+  <foreach list="${resources}" target="remove-resource"
+	   param="resource"/>
+  <xdb:list uri="${p.exist.url}${p.project}" collections="true"
+	    outputproperty="collections"/>
+  <foreach list="${collections}" target="remove-collection"
+	   param="collection"/>
+</target>
+
+</project>

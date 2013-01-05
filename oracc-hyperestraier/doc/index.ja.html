@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API" />
+<meta name="description" content="homepage of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="index.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>全文検索システム Hyper Estraier</title>
+<script type="text/javascript">function startup(){
+  var elem = document.getElementById("headline");
+  if(elem){
+    var now = new Date();
+    if((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 4 == 0){
+      var name;
+      switch((now.getMonth() + now.getDate() + now.getMinutes()) % 64){
+      default: name = "超弩級迷子"; break;
+      case 1: name = "超絶技巧迷子"; break;
+      case 3: name = "超並列迷子"; break;
+      case 5: name = "超伝導迷子"; break;
+      case 7: name = "超音速迷子"; break;
+      case 9: name = "超幾何学的迷子"; break;
+      case 11: name = "超ひも迷子"; break;
+      case 13: name = "超高校級迷子"; break;
+      case 15: name = "超臨界迷子"; break;
+      case 17: name = "超多元迷子"; break;
+      case 19: name = "超巨星迷子"; break;
+      case 21: name = "超ゆんゆん迷子"; break;
+      case 23: name = "超超超超イイ感じ迷子"; break;
+      case 25: name = "貴様だって超迷子だろうに！"; break;
+      case 27: name = "言語道断超迷子"; break;
+      case 29: name = "疾風怒涛超迷子"; break;
+      case 31: name = "滅殺波動昇龍超迷子"; break;
+      case 33: name = "禁断の超迷子"; break;
+      case 35: name = "赤い超迷子"; break;
+      case 37: name = "超迷子とよばれて"; break;
+      case 39: name = "超迷子に何が起こったか"; break;
+      case 41: name = "超迷子は振り向かない"; break;
+      case 43: name = "泣き虫先生の超迷子"; break;
+      case 45: name = "ふぞろいな超迷子"; break;
+      case 47: name = "金曜日の超迷子"; break;
+      case 49: name = "仁義なき超迷子"; break;
+      case 51: name = "超迷子は少年を浪費する"; break;
+      case 53: name = "超迷子さんのすきゃんてぃ"; break;
+      case 55: name = "超迷子の海岸物語"; break;
+      case 57: name = "超迷子オブジョイトイ"; break;
+      case 59: name = "ちょｗｗｗおまｗｗｗいごｗｗ"; break;
+      case 61: name = "どう見ても超迷子です本当にありがとうございました"; break;
+      case 63: name = "牌破衛須都隸亜"; break;
+      }
+      var desc;
+      switch((now.getDate() + now.getMinutes()) % 16){
+      default: desc = "ゲマインシャフト的P2P全文検索システム"; break;
+      case 0: desc = "苦しい事もあるだろう。云いたい事もあるだろう。" +
+        "不満な事もあるだろう。腹の立つ事もあるだろう。泣きたい事もあるだろう。" +
+        "これらをじっと堪えてゆくのが男の修行である。"; break;
+      case 1: desc = "コードも書かない人に言われたくはない。"; break;
+      case 2: desc = "コードだけでOSSの世界が回ると思ってんのか？"; break;
+      case 3: desc = "乾杯は、杯を乾かすってことなんですよ。"; break;
+      case 4: desc = "貧乏人は麦を食え。"; break;
+      case 5: desc = "毎日を生きよ。あなたの人生が始まった時のように。"; break;
+      case 6: desc = "しかし夜間に出されると、殺意を覚えますね。"; break;
+      case 7: desc = "天上天下最速最強佛恥義理全文検索系夜露死苦"; break;
+      case 9: case 11: case 13: case 15:
+        switch(now.getSeconds() % 16){
+        default: desc = "ふるえるぞハート！燃えつきるほどヒート！！"; break;
+        case 0: desc = "オラオラオラオラオラオラオラオラオラオラオラオラオラァッ!!"; break;
+        case 1: desc = "無駄無駄無駄無駄無駄無無駄無駄無駄駄無駄無駄無駄無駄ァッ!!"; break;
+        case 2: desc = "なっ！何をするだァーーーーーッ"; break;
+        case 3: desc = "君がッ、泣くまで、殴るのをやめないッ！"; break;
+        case 4: desc = "貧弱！貧弱ゥ！"; break;
+        case 5: desc = "ああ！ う…美しすぎます！"; break;
+        case 6: desc = "ノックしてもしもぉ〜〜〜し"; break;
+        case 7: desc = "ハッピー うれピー よろピくねーーーー"; break;
+        case 8: desc = "あァァァんまりだァァァァ"; break;
+        case 9: desc = "まさに歯車的砂嵐の小宇宙！！"; break;
+        case 10: desc = "だが、頂点に立つ者は常にひとり！"; break;
+        case 11: desc = "きさま！見ているなッ！"; break;
+        case 12: desc = "こんなことを見せられて、頭に来ねえヤツはいねえッ！"; break;
+        case 13: desc = "ンまぁーーーーいッ！！ 味に目醒めたァーっ"; break;
+        case 14: desc = "「覚悟」とは！！暗闇の荒野に！！進むべき道を切り開く事だッ！"; break;
+        }
+        break;
+      }
+      elem.firstChild.nodeValue = name + ": " + desc;
+    }
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">超迷子: 共同体的全文検索系</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<a href="index.html" hreflang="en">English</a>/<span class="void">Japanese</span>]</div>
+
+<div class="logo"><img src="logo.png" alt="Hyper Estraier" width="300" height="110" /></div>
+
+<hr />
+
+<h2>概要</h2>
+
+<p>Hyper Estraierは全文検索システムです。たくさんの文書の中から、特定の語句を含むものを探して、該当するものの一覧を表示することができます。Webサイトを運営している方なら、自分のサイト専用の検索エンジンとして利用することができます。メールボックスやファイルサーバを対象とした検索ツールとして利用することもできます。</p>
+
+<p>Hyper Estraierには、次のような特徴があります。</p>
+
+<ul>
+<li>インデックスを使った高速な検索ができます。</li>
+<li>大量の文書のインデックスを短時間で作成できます。</li>
+<li>N-gram方式による漏れのない検索ができます。</li>
+<li>形態素解析とN-gramのハイブリッド機構で検索精度を向上させます。</li>
+<li>フレーズ検索や正規表現検索や属性検索や類似検索をサポートします。</li>
+<li>世界各国の言語が扱えます。</li>
+<li>対象文書の所在や形式に依存しません。</li>
+<li>賢いWebクローラが付属しています。</li>
+<li>ライブラリとして各種製品に組み込めます。</li>
+<li>P2P連携機能をサポートします。</li>
+</ul>
+
+<p>Hyper EstraierはGNU Lesser General Public Licenseに基づいて配布されるフリーソフトウェアです。Linux、Windows、Mac OS Xおよびその他のUNIX系OSの上で動作します。</p>
+
+<hr />
+
+<h2>文書</h2>
+
+<p>以下の文書をお読みください。ソースパッケージにも同じものが含まれています。</p>
+
+<ul>
+<li><a href="intro-ja.html">イントロダクション</a></li>
+<li><a href="uguide-ja.html">ユーザガイド</a></li>
+<li><a href="pguide-ja.html">プログラミングガイド</a></li>
+<li><a href="nguide-ja.html">P2Pガイド</a></li>
+<li><a href="cguide-ja.html">クローラガイド</a></li>
+</ul>
+
+<hr />
+
+<h2>ダウンロード</h2>
+
+<p>以下のパッケージをダウンロードしてください。</p>
+
+<ul>
+<li><a href="hyperestraier-1.4.13.tar.gz">最新のソースパッケージ（バージョン1.4.13）</a></li>
+</ul>
+
+<hr />
+
+<h2>言語バインディング</h2>
+
+<p>Javaのクラスライブラリも用意していますので、適宜ご利用ください。</p>
+
+<ul>
+<li><a href="javanativeapi/">Javaバインディングの文書</a></li>
+<li><a href="javapureapi/">ピュアJavaインターフェイスの文書</a></li>
+
+</ul>
+
+<p>Rubyのクラスライブラリも用意していますので、適宜ご利用ください。</p>
+
+<ul>
+<li><a href="rubynativeapi/">Rubyバインディングの文書</a></li>
+<li><a href="rubypureapi/">ピュアRubyインターフェイスの文書</a></li>
+</ul>
+
+<p>Perlのクラスライブラリも用意していますので、適宜ご利用ください。</p>
+
+<ul>
+<li><a href="perlnativeapi/">Perlバインディングの文書</a></li>
+</ul>
+
+<hr />
+
+<h2>その他の情報</h2>
+
+<p>Hyper Estraierは<a href="http://fallabs.com/mikio/">平林幹雄</a>が作成しました。作者と連絡をとるには、`mikio@fallabs.com' 宛に電子メールを送ってください。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

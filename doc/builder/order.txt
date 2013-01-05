@@ -1,0 +1,23 @@
+* CDLI ATF
+cdli/cdli.xdf
+numbers/numbers.xdf
+
+* Oracc ATF
+primer/primer.xdf
+emacs/emacs.xdf
+../ns/xtf/1.0/xtf.xdf#atftut
+../ns/gdl/1.0/gdl.xdf#gdltut
+translation/translation.xdf
+l2/howtouseit/howtouseit.xdf
+
+* Working with ATF
+quickref/quickref.xdf
+linganno/AKK/akkstyle/akkstyle.xdf
+../ns/xtf/1.0/xtf.xdf#composite
+scores/scores.xdf
+layouts/layouts.xdf
+metrology/metrology.xdf
+math/math.xdf
+
+
+@atfpages.txt More: Linguistic Annotation and Details of ATF

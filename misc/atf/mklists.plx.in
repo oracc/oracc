@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+use warnings; use strict;
+my %atfs = ();
+my $listsdir = '@@ORACC@@/corpora/lists';
+my %periods = ();
+my %perlists = ();
+my $periods = '@@ORACC@@/texts/lib/period.tab';
+my $atflist = '@@ORACC@@/texts/lib/have-atf.lst';
+open(P,$periods);
+while (<P>) {
+    my($pq,$per) = (/^(.*?)\t(.*)$/);
+    $per =~ s/^\s*$//;
+    $per = 'noperiod' unless $per;
+    $per =~ s/\s*\?\s*$//;
+    ++$periods{$per};
+    push @{$perlists{$per}}, $pq;
+}
+close(P);
+open(A,$atflist); my @atf = (<A>); chomp @atf; @atfs{@atf} = (); close(A);
+
+foreach my $p (keys %periods) {
+    my $pfn_base = $p;
+    $pfn_base =~ s/\s+/_/g;
+    $pfn_base = lc($pfn_base);
+    my $pfn_have = "$listsdir/$pfn_base-have.lst";
+    my $pfn_not = "$listsdir/$pfn_base-not.lst";
+    open(HAVE,">$pfn_have");
+    open(NOT,">$pfn_not");
+    foreach my $pq (@{$perlists{$p}}) {
+	if (exists $atfs{$pq}) {
+	    print HAVE "$pq\n";
+	} else {
+	    print NOT "$pq\n";
+	}
+    }
+    close(HAVE);
+    close(NOT);
+}
+
+1;

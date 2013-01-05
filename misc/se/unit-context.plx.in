@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+binmode STDOUT, ':utf8';
+
+my $project = shift @ARGV;
+
+print '<ce:ce xmlns:ce="http://oracc.org/ns/ce/1.0">';
+while (<>) {
+    chomp;
+    s/,.*$//;
+    my $unit = $_;
+    my $id = $_;
+    $id =~ s/\..*$//;
+    $id =~ /^(....)/;
+    my $four = $1;
+    print '<ce:data>';
+    system('xsltproc', 
+	   '-stringparam', 'project', $project, 
+	   '-stringparam', 'unit-id', $unit,
+	   "@@ORACC@@/lib/scripts/xcl-HTML.xsl",
+	   "@@ORACC@@/bld/$project/$four/$id/$id.xtf");
+    print '</ce:data>';
+}
+print '</ce:ce>';
+1;

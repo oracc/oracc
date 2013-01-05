@@ -1,0 +1,57 @@
+&Q001497 = Gudea 56 [E3/1.1.7.56]
+@composite
+#project: pccss
+#project: epsd2/epsdc/royal
+#atf: use mylines
+#link: source P234436 = RIME 3/1, p. 150, E3/1.1.7.56
+@m column 1
+1.	{d}nin-jir2-su
+#lem: Ninŋirsuk[1]DN
+
+2.	ur-saj kalag-ga#
+#lem: ursaj[hero]; kalag[strong]
+
+3.	{d}en-lil2#-la2#
+#lem: Enlil[1]DN
+
+4.	lugal-a-ni
+#lem: lugal[king]#~,ani.*ra ,
+
+5.	gu3-de2-a
+#lem: Gudea[1]RN
+
+6.	ensi2#
+#lem: ensik[ruler]
+
+@m column 2
+1.	lagasz{ki}-ke4
+#lem: Lagaš[1]SN ,
+
+2.	hur-saj ur-in-gi4-ri2-az
+#lem: hursaj[mountain]; Uringiriaz[1]GN
+
+3.	a-ab-ba igi-nim-ka
+#lem: a'abak[sea]; iginim[land]\a ,
+
+4.	{na4}jesznu-gal-e
+#lem: jesznugal[alabaster] ,
+
+@m column 3
+1.	mu-ba-al
+#lem: bal[dig] +.
+
+2.	im-ta-ed3
+#lem: ed[ascend\t] +.
+
+3.	szitax(|KAK.GISZ|) ur saj esz5-sze3
+#lem: szita[weapon]; ur[dog]; saj[head]; eš[three]
+
+4.	mu-na-dim2
+#lem: dim[create] +.
+
+5.	[nam]-til3-la-ni-sze3
+#lem: namtil[life]
+
+6.	[a] mu#-na-ru
+#lem: a[water]; ru[cvve]
+

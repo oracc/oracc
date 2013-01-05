@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XHTML Hybrid: a version of XHTML used in CDLG XDF -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <include href="datatypes.rng"/>
+  <include href="attribs.rng"/>
+  <!-- <include href="modules/struct.rng"/> -->
+  <include href="text.rng"/>
+  <include href="hypertext.rng"/>
+  <include href="list.rng"/>
+  <include href="image.rng"/>
+  <!-- include "basic-form.rnc" inherit = ns1 -->
+  <include href="pres.rng"/>
+  <include href="edit.rng"/>
+  <include href="form.rng"/>
+  <!-- include "basic-table.rnc" inherit = ns1 -->
+  <include href="table.rng"/>
+  <include href="param.rng"/>
+  <include href="object.rng"/>
+  <include href="meta.rng"/>
+  <include href="link.rng"/>
+  <include href="base.rng"/>
+  <include href="nameident.rng"/>
+</grammar>

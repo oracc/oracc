@@ -1,0 +1,64 @@
+@nm Surface Metrology
+
+@system surface time=* place=* meb=sze mev=1/300m^2
+
+@step sze atf=sze aev=1/180*gij
+#     count unit	range		aev		count-glyph
+@inst disz sze		1		1/180*gij	#(disz) sze
+@inst u sze     	1		1/18*gij	#(u) sze
+
+@step gijtur atf="gin2 tur" aev=1/60*gij
+@inst disz gijtur	1	        1/60*gij	#(disz) gin2 tur
+
+@step gij atf=gin2 aev=1/60*sar
+@inst igi.6.jal gij	1		1/6*gij		igi-6(disz)-gal2 gin2
+@inst igi.4.jal gij	1		1/4*gij		igi-4(disz)-gal2 gin2
+@inst 1/3 gij		1		1/3*gij		1/3~a=1/3(disz) gin2
+@inst 1/2 gij		1		1/2*gij		1/2~a=1/2(disz) gin2
+@inst 2/3 gij	 	1      		2/3*gij		2/3~a=2/3(disz) gin2
+@inst 5/6 gij		1		5/6*gij		5/6~a=5/6(disz) gin2
+@inst disz gij		1 		1/60*sar	#(disz) gin2
+@inst u gij 		1		1/6*sar		#(u) gin2
+@inst-system sexagesimal
+
+@step manatur atf="ma-na tur" aev=1/3*gij
+@inst disz manatur	1		1/3*gij		#(disz) ma-na tur
+
+@step sar atf=sar aev=1/100*iku
+@inst 1/3 sar	1 	1/3*sar		1/3~a=1/3(disz) sar
+@inst 1/2 sar	1 	1/2*sar		1/2~a=1/2(disz) sar
+@inst 2/3 sar	1 	2/3*sar		2/3~a=2/3(disz) sar
+@inst 5/6 sar	1	5/6*sar		5/6~a=5/6(disz) sar
+@inst disz sar	1 	1/100*iku	#(disz) sar
+@inst u sar	1..5 	1/10*iku	#(u) sar
+@inst jesz sar 	1 	6/10*iku	#(gesz2) sar
+
+@newpage
+
+@step iku atf=iku aev=1/6*esze
+@inst 1/4 iku 	1	1/4*iku		1/4~a=1/4(iku) GAN2
+@inst 1/2 iku 	1 	1/2*iku 	1/2~b=1/2(iku) GAN2
+@inst asz iku 	1..5	1/6*esze	#(iku) GAN2
+
+@step esze atf=esze3 aev=1/3*bur
+@inst 1 esze3  	1..2	1/3*bur		#(esze3) GAN2
+
+@step bur atf=bur3 aev=1/10*buru
+@inst 1 bur	1..9   	1/10*buru	#(bur3) GAN2
+
+@step buru atf=bur'u aev=1/6*szar
+@inst 1 buru	1..5	1/6*szar	#(bur'u) GAN2
+
+@step szar atf=szar2 aev=1*szar
+@inst 1 szar2   1..9	1*szar		#(szar2) GAN2
+
+@step szaru atf=szar'u aev=10*szar
+@inst 1 szaru   1..5	10*szar		#(szar'u) GAN2
+
+@step szargal atf=szargal{gal} aev=60*szar
+@inst 1 szargal   1..2	60*szar		#(szargal){gal} GAN2
+
+@examples
+
+@ex 5(bur3) 1(esze3) 4(iku) 1/2(iku) 1/4(iku) GAN2
+@ex 1(szargal){gal} 7(szar2) 1(bur'u) 4(bur3) 2(esze3) 5(iku) 1/2(iku) 1/4(iku) GAN2

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Project Web Management</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-11-09</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document gives an account of Oracc project web
+  management facilities, principally the various CSS style files and
+  Javascript source files that are included in HTML pages.</dc:description>
+</d:meta>
+
+<h1>Overview</h1>
+
+<p>The styling and javascript are controlled at several levels.  There
+is the system styling in files with a <code>cdl</code> prefix; the
+pager styling in files with a <code>pager</code> prefix; and the
+project styling in files with a <code>project</code> prefix.</p>
+
+<p>System styling cannot be modified by projects, but it is loaded
+first and so can be overridden.</p>
+
+<p>Pager styling can be modified by projects via the configuration
+file <code>00lib/config.xml</code>.  The intention is that for most
+projects this will be adequate and so project owners can at least
+modify the colour schemes without knowing any CSS.</p>
+
+<p>Project styling consists of files manually created by the project
+owners.  It requires knowledge of CSS and/or Javascript as well as the
+internals of which <code>class</code> attributes are used by the
+Oracc processing programs. These internals are not documented, but
+someone familiar with basic web tricks and tools should be able to
+look at the HTML sources to determine how to adjust CSS styling.</p>
+
+<p>Although we only discuss CSS below, the same principles apply to
+Javascript source files with the exception that only absolute file
+names are recognized.</p>
+
+<h1>Media</h1>
+
+<p>Open-ended multiple media support is built in to the file syntax
+in the Oracc web management configuration. All filenames can be either
+an absolute or a pair, with the parts separated by a hyphen.  For
+pairs, the first component is the configuration level, the second the
+intended media:</p>
+
+<pre class="example">
+cdl.css           # absolute file name, used for all media
+cdl-screen.css    # media-specific file for screen
+</pre>
+
+<p>The following CSS2 media types are understood:</p>
+
+<pre class="example">
+braille embossed handheld print projection screen speech tty tv</pre>
+
+<p>Media queries are not yet supported.</p>
+
+<h1>Processing</h1>
+
+<p>The pager CSS may be given in the <code>00web/</code>
+directory or the colours may be given according to the configuration
+options in <code>00lib/config.xml</code>.  The latter approach is
+<strong>strongly</strong> recommended as it ensures that the proper
+CSS will be generated for the pager's needs.</p>
+
+<p>Project CSS must be stored in <code>00web/</code>.</p>
+
+<p>When a project is rebuilt, the project configuration,
+<code>00lib/config.xml</code> is processed to create the pager CSS
+files in <code>00web/</code> unless the relevant files already exist in
+<code>00web/</code>.</p> 
+
+<p>Now, the project manager reviews all the CSS and JS files in
+<code>00web/</code> and creates a text file containing the HTML
+<code>link</code> and <code>script</code> commands necessary to
+utilize all of the CSS/JS in the proper order.  The generated
+fragment, <code>css-js.xml</code>, is well-formed XML so that it can
+be referenced via XML tools.  However, it cannot be included as-is in
+the <code>head</code> of an HTML document because of its document
+root.  Given the project name (stored in a variable
+<code>$project</code>), say, the fragment can be processed using the
+following XSLT code assuming that the calling XSLT script lives in the
+standard <code>cdl/lib/scripts</code> (the actual call could be given
+without the variable, which is used here for clarity):</p>
+
+<pre>
+&lt;xsl:variable name="css-js" 
+              select="concat('../../projects/',$project,'/web/css-js.xml')"/>
+&lt;xsl:copy-of select="document($css-js, / )/*)"/>
+</pre>
+
+<h1>Pager CSS</h1>
+
+<p>The various class attributes used by the pager for its
+colour-skinning need to be documented.  But first they need some
+rationalization, so this is likely to be a while coming.</p>
+
+</d:doc>

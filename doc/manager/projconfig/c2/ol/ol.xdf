@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>OL: The Oracc Listmaker</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2011-12-11</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>OL is a program which can make lists from a variety of sources.  The resultant
+list can be used as the basis for a project or as the input to a chrestomathy or any other
+purpose to which lists are put in Oracc. This page describes how to use it.</dc:description>
+</d:meta>
+
+<p>OL is controlled by an OL script, which is an XML file that looks like this:</p>
+
+<pre class="example">
+  &lt;ol>
+    &lt;ol-options multi="ignore"/>  
+    &lt;source id="saa01" type="project" project="saao/saa01"/>
+    &lt;source id="saa05" type="project" project="saao/saa05"/>
+    &lt;source id="saa07" type="project" project="saao/saa07"/>
+    &lt;source id="saa08" type="project" project="saao/saa08"/>
+    &lt;source id="saa010" type="project" project="saao/saa10"/>
+    &lt;op id="j1" type="join" ids="saa01 saa05 saa07 saa08 saa010"/>
+    &lt;output file="j1.lst" ids="j1"/>
+  &lt;/ol>
+</pre>
+
+<p>This example creates a project from five sources: the SAAo subprojects SAA01, SAA05, SAA07, SAA08, and SAA10. It makes a single list of PQX-numbers in the file <code>j1.lst</code>, ignoring multiple instances of the same PQX-number in that list.</p>
+
+
+<h2>Options</h2>
+<p>Options can be supplied to the OL script as attributes of the <code>ol-options</code> element.  At present there
+is one option to control whether OL warns about multiple
+instances of the same ID or silently ignores them following
+its priority rules. The permissible values of the <code>multi</code> attribute are <code>ignore</code> and <code>warn</code>.</p>
+
+<h2>Sources</h2>
+
+<p>The sources for each list are given by one or more <code>source</code> elements. Each <code>source</code> element must have an <code>id</code> attribute and a <code>type</code> attribute. The <code>type</code> attribute must take one of the following values:</p>
+
+<dl>
+    <dt><code>numbers</code></dt>
+    <dd>a literal list of id numbers</dd>
+
+    <dt><code>list</code></dt> 
+    <dd>another list</dd>
+
+    <dt><code>project</code></dt>
+    <dd>the contents of a project</dd>
+
+    <dt><code>search</code></dt>
+    <dd>the results of executing a search</dd>
+</dl>
+
+<p>Source elements also take a <code>priority</code> attribute which must be a non-negative integer 
+greater than 0.</p>
+
+<p>If no <code>priority</code> attribute is given, the priority is the number of the source element in the order in which they are specified in the OL script.</p>
+
+<h2>Operations</h2>
+<p>The following set operations can be applied to sources using the <code>type</code> attribute of the <code>op</code> element, where A and B
+are the two lists:</p>
+
+<dl>
+    <dt><code>join</code></dt>
+    <dd>create a new list which contains all the entries in both A and B</dd>
+
+    <dt><code>drop</code></dt>
+    <dd>create a new list which contains only entries in neither A nor B</dd>
+
+    <dt>keep</dt>
+    <dd>create a new list which contains only entries in A which are also in B</dd>
+
+    <dt>trim</dt>
+    <dd>create a new list which contains only entries in A which are not in B</dd>
+</dl>
+
+<p>Note that operations can themselves be treated as sources: they take an ID
+but the priority for each entry is inherited.</p>
+
+<p>All of the set operations are carried out on IDs regardless of 
+priority, and more than one entry can have the same ID if they are 
+in different projects. That is, P123456 is allowed to occur more than once
+if it is in two different projects.  If an ID in the same project occurs
+more than once, the higher priority is retained.</p>
+
+<p>If no operations are specified in the OL script, all of the sources are joined
+together exactly as if they had been listed in the order in which they occur
+in the script in an <code>&lt;op type="join"></code> element.</p>
+
+<p>In <code>join</code> and <code>keep</code> operations the higher priority is retained.</p>
+
+
+
+<h2>Outputs</h2>
+<p>Output can be controlled with the <code>output</code> element, which takes
+attributes for the <code>file</code> and the <code>IDs</code> to output.  This means that a single OL script can output different result lists to different
+files.</p>
+
+<p>If no output element is given OL sends the result of the last
+op element to <code>STDOUT</code>.</p>
+
+<p>Entries in the final list always consist of three parts: a project, an ID and a priority.</p>
+
+<p>The final list may only contain one instance of each ID, and the <code>priority</code> value
+is used to determine which project's version of an ID is included in the 
+final list.  Entries with a higher priority are preferred over entries with a
+lower priority.</p>
+
+<p>The final list is produced with the correct project preprended to the ID and
+the priority is discarded.</p>
+
+<!--<d:schema name="" uri="">
+</d:schema> -->
+
+<!--<d:resources/> -->
+
+</d:doc>

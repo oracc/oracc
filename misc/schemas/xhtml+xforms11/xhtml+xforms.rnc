@@ -1,0 +1,14 @@
+# -*- rnc -*-
+# XHTML+XForms
+
+default namespace = "http://www.w3.org/1999/xhtml"
+
+include "../xhtml/rnc/xhtml-strict.rnc"
+include "xhtml-xforms.rnc"
+
+# Optional features
+# navndex is suggested by XForms 1.1 but XHTML uses tabindex instead.
+include "../xforms11/xforms-navindex.rnc"   
+
+# repeat attributes are suggested by XForms 1.1, but there is no guidance on where to attach them.
+include "xhtml-xforms-repeat-attributes.rnc"   

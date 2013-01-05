@@ -1,0 +1,1663 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib "@@ORACC@@/lib";
+use Getopt::Long;
+use Pod::Usage;
+use ORACC::Expand2;
+use ORACC::Log::Util;
+use ORACC::XML;
+use ORACC::NS;
+use ORACC::FXR::Util;
+use ORACC::XMD::CSV;
+use ORACC::XMD::Util;
+use ORACC::XMD::Fields;
+use ORACC::XVL::AVL;
+
+use Data::Dumper;
+
+binmode STDIN, ':utf8';
+binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
+
+umask 022;
+
+my %xmd_outputs = ();
+my $curr_xmd = '';
+
+my $oracc_mode = 0;
+my $project_mode = 0;
+my %seen = ();
+my %id_projects = ();
+#my $l2_value = `xpd.plx l2`;
+#my $l2 = ($l2_value eq 'yes' ? 1 : 0);
+my $l2 = 1;
+my %vid = ();
+my @vid = ();
+
+my $config = '';
+my $no_xmd = 0;
+my $onebigfile = 1;
+my $output_all = 1;
+my %output_records = ();
+my $pacifier = 0;
+my $project_designation_codes = 0;
+my %proj_des_sort = ();
+my $proxying = 0;
+my %skip_list = ();
+my $skip_xmd = 0;
+my $split = 1;
+my $update = 0;
+my $validate = 1;
+my $verbose = 0;
+
+my %langmasks = (
+    'misc'           =>0x01000000,
+    'sumerian'       =>0x02000000,
+    'akkadian'       =>0x08000000,
+    'proto-cuneiform'=>0x10000000,
+    'proto-elamite'  =>0x20000000,
+    );
+my $lmattr = '';
+my %unknown_langs = ();
+
+my %ns_types = (
+    'http://www.filemaker.com/fmpxmlresult'=>'fxr',
+    'http://oracc.org/ns/xmd/1.0'=>'xmd',
+    );
+
+my $xmlsplit = "@@ORACC@@/bin/xmlsplit";
+my $kd_rnc = "@@ORACC@@/lib/schemas/xmd-keydata.rnc";
+my $kd_uri = 'http://oracc.org/ns/keydata/1.0';
+my $log_xsl = "@@ORACC@@/lib/scripts/log-HTML.xsl";
+
+my %xproject = ();
+my %xproject_uris = (
+    'CDLI'=>'http://cdli.ucla.edu',
+    'DCCLT'=>'http://cuneiform.ucla.edu/dcclt',
+    'ETCSL'=>'http://www-etcsl.orient.ox.ac.uk',
+    );
+
+my $imgdb = "@@ORACC@@/xml/cdli/imgdb.xml";
+my $imgdoc = load_xml($imgdb);
+die "xmdmanager.plx: can't open image database $imgdb\n" unless $imgdoc;
+
+my $pubimg_lst = "@@ORACC@@/pub/cdli/public_image.lst";
+my %pubimg = ();
+
+my %nifs = ();
+my @currvt = ();
+my %valtab = ();
+
+# Variables to be set in config file:
+my $basename = '';
+my $catdir = '';
+my $dynacat = '';
+my $force = 0; # not used; just for oraccproject
+my $results = '';
+my $keydata = '';
+my $logfile = '';
+my $loghtml = '';
+my $project = '';
+my $public = '';
+my $xml = '';
+my @catalogs = ();
+my %tix_warned = ();
+
+my %orig = ();
+
+GetOptions(
+    'config:s'=>\$config,
+    'dynacat:s'=>\$dynacat,
+    'force'   =>\$force,
+    'noxmd'   =>\$no_xmd,
+    'project:s' =>\$project,
+    'skipxmd' =>\$skip_xmd,
+    'split'   =>\$split,
+    'update'  =>\$update,
+    'validate'=>\$validate,
+    'verbose' =>\$verbose,
+    ) || pod2usage(1);
+
+$catdir  = '00cat'; # ${$r{'catdir'}}[0];
+$results = '01bld'; # ${$r{'results'}}[0];
+$public = '02pub'; # ${$r{'results'}}[0];
+$xml = '02xml'; # ${$r{'results'}}[0];
+$logfile = '01tmp/last-catalog-build.xml'; # ${$r{'logfile'}}[0];
+$loghtml = '02www/last-catalog-build.html'; # ${$r{'loghtml'}}[0];
+
+$project = `oraccopt`
+    unless $project;
+die "xmdmanager.plx: must run from project directory (no '00lib')\n"
+    unless $project;
+my $projectDir = "$project/";
+
+unless ($project eq 'cdli') {
+    open(P,$pubimg_lst) || die "xmdmanager.plx: can't open $pubimg_lst";
+    while (<P>) {
+	chomp;
+	++$pubimg{$_};
+    }
+    close(P);
+}
+
+if (-r '00lib/designation-sort-codes.lst') {
+    load_designation_sort_codes();
+}
+
+my $pub_cat = `oraccopt . catalog-publish`;
+foreach my $c (split(/,/,$pub_cat)) {
+    my $cat_c = "00cat/$c";
+    unless (-r $cat_c) {
+	$cat_c = "00lib/$c";
+	warn("xmdmanager: `$c' no such catalogue to publish (tried 00cat and 00lib)\n") and next
+	    unless -r $cat_c;
+    }
+    my $type = type_from_ns($cat_c);
+    my @res = ("02pub/$c");
+    if ($type eq 'fxr') {
+	$res[0] =~ s#\.[^./]+$#.xml#;
+	system 'unfxr.plx', '-fxr', $cat_c, '-res', $res[0];
+    } else {
+	system 'cp', '-p', $cat_c, '02pub';
+    }
+    if (-r '00lib/keydata.xml') {
+	system 'cp', '-p', '00lib/keydata.xml', '02pub';
+	push @res, '02pub/keydata.xml';
+    }
+    system 'chmod', 'o+r', @res;
+}
+
+my $cat_policy = `oraccopt . catalog-build-policy`;
+warn "catalog-build-policy=$cat_policy\n" if $verbose;
+exit(0) if $cat_policy eq 'none';
+
+# open the log file; we create an XML report on the
+# run which is turned into a web page on the XMD doco
+open(LOG,">utf8", $logfile) || die "xmdmanager: $logfile: failed to open logfile\n";
+print LOG xmldecl();
+print LOG 
+    '<log xmlns="http://oracc.org/ns/log/1.0" date="',
+    `date`,
+    "\">\n";
+my $locator = undef;
+
+if ($cat_policy eq 'auto') {
+    make_dynacat();
+} elsif ($cat_policy eq 'virtual') {
+    make_vcat();
+    $split = 0;
+} elsif ($cat_policy eq 'derived') {
+    setup_derived_cat();
+} else {
+    @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>;
+}
+
+if (-r '01bld/lists/proxy.lst') {
+    system 'xmd-proxy.plx';
+    push @catalogs, map { { 'file'=>$_ } } <01bld/cat/proxy-*.xml>;
+    open(P,'01bld/lists/proxy.lst');
+    while (<P>) {
+	chomp;
+	my($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
+	$id_projects{$id,'xtf'} = $xtf;
+	$id_projects{$id,'xmd'} = $xmd;
+    }
+    close(P);
+}
+
+$keydata = find_keydata() unless $keydata;
+
+if ($#catalogs >= 0) {
+    foreach my $c (@catalogs) {
+	$$c{'type'} = type_from_ns($$c{'file'});
+	print STDERR $$c{'file'},"\n" if $verbose;
+	$$c{'locator'} = ORACC::Log::Util::create_locator(file=>$$c{'file'});
+	if ($$c{'type'} eq 'fxr') {
+	    $$c{'icat'} = [ ORACC::FXR::Util::internalize($$c{'file'}) ];
+	} elsif ($$c{'type'} eq 'xmd' || $$c{'type'} eq 'xml') {
+	    $$c{'icat'} = [ ORACC::XMD::Util::internalize($$c{'file'}) ];
+	} elsif ($$c{'type'} eq 'csv') {
+	    $$c{'icat'} = [ ORACC::XMD::CSV::internalize($$c{'file'}) ];
+	} else {
+	    die "xmdmanager.plx: unknown catalog type $$c{'type'}\n";
+	}
+    }
+}
+
+# internalize the keydata for rapid access and to enable
+# the value arrays to be extended dynamically if we find new 
+# ones
+my %badremaps = ();
+my %badvalues = ();
+my %keydata = ();
+my %nonindexed_fields = ();
+my %valdefs = ();
+my %value_counts = ();
+my %remaps = ();
+my %sortable_hrs = ();
+my %sortable_types = ();
+my %sortvals = ();
+my %split_sortkeys = ();
+my %stringpool = ();
+my %type_counts = ();
+my %type_indexes = ();
+my %typeinfo = ();
+my %typemap = ();
+my %xru = ();
+
+my $did_valtab = 0;
+
+my $stringpool_index = 0;
+$stringpool{'unknown'} = $stringpool_index++;
+
+# Validate and load keydata
+rnv($kd_rnc,$keydata,$verbose);
+my $kd = load_xml($keydata);
+my $kdoc = $kd->getDocumentElement();
+
+# load names of keys which don't get indexed
+foreach my $n (tags($kdoc,$kd_uri,'not-indexed')) {
+    foreach my $f (tags($n,$kd_uri,'field')) {
+	++$nonindexed_fields{$f->getAttribute('n')};
+	++$nifs{$f->getAttribute('n')};
+    }
+}
+
+# load types table which maps field names to field types
+my %fields_of_types = ();
+foreach my $s ($kdoc->getElementsByTagNameNS($kd_uri,
+					     'keytype')) {
+#    my $field = $s->getAttribute('n');
+#    my $type = $s->getAttribute('type');
+    $typemap{$s->getAttribute('n')} = $s->getAttribute('type');
+    push @{$fields_of_types{$s->getAttribute('type')}}, $s->getAttribute('n');
+}
+
+my @nvt = ();
+# load the sortable types list
+my $typindex = 0;
+my $nvt_fields = 0;
+foreach my $s (tags($kdoc,$kd_uri,'sortable')) {
+    foreach my $t (tags($s,$kd_uri,'type')) {
+	my $n = $t->getAttribute('n');
+	++$sortable_types{$n};
+	$sortable_hrs{$n} = $t->getAttribute('hr');
+	push @nvt, "\#field @{$fields_of_types{$n}} = $sortable_hrs{$n}\n";
+	$nvt_fields += $#{$fields_of_types{$n}}+1;
+	foreach my $f (@{$fields_of_types{$n}}) {
+	    warn("type_index{$f}= $typindex\n") if $verbose;
+	    $type_indexes{$f} = $typindex;
+	}
+	++$typindex;
+    }
+    foreach my $t (tags($s,$kd_uri,'field')) {
+	my $n = $t->getAttribute('n');
+	$sortable_hrs{$n} = $t->getAttribute('hr');
+	++$sortable_types{$n};
+	push @nvt, "\#field $n = $sortable_hrs{$n}\n";
+	$type_indexes{$n} = $typindex++;
+	++$nvt_fields;
+	$typemap{$n} = $n; # fake the typemap info for fields
+	push @{$fields_of_types{$n}}, $n; # and fake fields_of_types, too
+    }
+}
+
+print STDERR @nvt if $verbose;
+
+# load the key type info
+foreach my $k ($kdoc->getElementsByTagNameNS($kd_uri,
+					     'keys')) {
+    my $type = $k->getAttribute('type') || $k->getAttribute('field');
+    $typeinfo{$type} = { 
+	node=>$k,
+	class=>$k->getAttribute('class'),
+	method=>$k->getAttribute('method'),
+	reorder=>$k->getAttribute('reorder'),
+	remap=>$k->getAttribute('remap'),
+	queryable=>$k->getAttribute('queryable') };
+    if ($k->hasAttribute('value-set')) {
+	my $class = $k->getAttribute('value-set');
+	ORACC::XVL::AVL::load_class($class);
+	@{$keydata{$type}} = ORACC::XVL::AVL::list($class);
+	@{$valdefs{$type}}{ @{$keydata{$type}} } = (1..$#{$keydata{$type}});
+	my $x = ORACC::XVL::AVL::values($class);
+	foreach my $n (keys %$x) {
+	    push @{$keydata{$type}}, $n;
+	    ++${$valdefs{$type}}{$n};
+	}
+    } else {
+	foreach my $v ($k->childNodes()) {
+	    my $n = $v->getAttribute('n');
+	    push @{$keydata{$type}}, $n;
+	    ++${$valdefs{$type}}{$n};
+	}
+    }
+}
+
+open_tab_files()
+    unless $cat_policy eq 'none';
+
+foreach my $c (@catalogs) {
+    $locator = $$c{'locator'};
+    remap($$c{'icat'});
+    if ($project_mode) {
+	$$c{'icat'} = imports($$c{'icat'});
+	$$c{'icat'} = inherits($$c{'icat'});
+#	use Data::Dumper; print Dumper($$c{'icat'});
+    } else {
+	xproject($$c{'icat'},$$c{'file'});
+    }
+    check_vals($$c{'icat'});
+}
+
+unless ($cat_policy eq 'none') {
+    close(QNMTAB);
+    close(PNMTAB);
+    close(PERTAB);
+    close(LOCTAB);
+    dump_bad();
+}
+
+exit 0 if $no_xmd;
+
+# generate the sort codes for the known values of each key
+foreach my $si (keys %sortable_types) {
+    if (${$typeinfo{$si}}{'reorder'}) {
+	@{$keydata{$si}} = sort { &xmd_sort; } keys %{$valdefs{$si}};
+    }
+    my $i = 1;
+    foreach my $v (@{$keydata{$si}}) {
+#	print STDERR "$si:$v = $i\n";
+	${$sortvals{$si}}{$v} = $i++;
+	if (${$typeinfo{$si}}{'queryable'}) {
+#	    print STDERR "$si:$v ? = $i\n";
+	    ${$sortvals{$si}}{$v.' ?'} = $i++;
+	}
+    }
+}
+
+# dump sort values information
+my $sortvals = "$results/sortvals.xml";
+#my $sortvals_ = "@@ORACC@@/texts/lib/sortvals-.xml";
+my $sortvals_ = "$xml/sortvals-.xml";
+print STDERR "writing sortcodes to $sortvals\n" if $verbose;
+open(SVI,">$sortvals");
+open(SVI_,">$sortvals_");
+print SVI '<?xml version="1.0" encoding="utf-8"?>',"\n";
+print SVI '<sortvals>';
+print SVI_ '<?xml version="1.0" encoding="utf-8"?>',"\n";
+print SVI_ '<sortvals>';
+foreach my $si (keys %sortable_types) {
+    print SVI "<$si>";
+    print SVI_ "<$si>" unless $si eq 'names';
+#    foreach my $v (@{$keydata{$si}}) {
+    foreach my $v (sort { ${$sortvals{$si}}{$a} <=> ${$sortvals{$si}}{$b} } 
+		   keys %{$sortvals{$si}}) {
+	my $refcount = ${$type_counts{$si}}{$v} || '0';
+	my $c = xmlify(${$sortvals{$si}}{$v});
+	my $xv = xmlify($v);
+	print SVI "<v n=\"$xv\" c=\"$c\" r=\"$refcount\"/>";
+	print SVI_ "<v n=\"$xv\" c=\"$c\"/>" unless $si eq 'names';
+    }
+    print SVI_ "</$si>" unless $si eq 'names';
+    print SVI "</$si>";
+}
+print SVI '</sortvals>';
+close(SVI);
+print SVI_ '</sortvals>';
+close(SVI_);
+
+my $xmdfile = "$results/cdlicat.xmd";
+if ($onebigfile) {
+    my $splitmess = ($split ? "(and splitting) " : '');
+    print STDERR "writing ${splitmess}XMD $xmdfile\n" if $verbose;
+} else {
+    print STDERR "writing XMD files " if $verbose;
+}
+
+my $total_rows = 0;
+map { $total_rows += (1 + $#{ ${$$_{'icat'}}[2] }) } @catalogs;
+
+foreach my $c (@catalogs) {
+    $proxying = ($$c{'file'} =~ /proxy/);
+    dump_xmd($$c{'icat'},$$c{'file'});
+}
+
+if ($onebigfile) {
+    if (!$split) {
+	if ($skip_xmd) {
+	    # open(RS,">/dev/null");
+	} else {
+	    open(XOUT,">$xmdfile");
+	}
+    } else {
+	open(XOUT,"|tee $xmdfile|$xmlsplit");
+    }
+    select XOUT;
+    print XOUT xmldecl();
+    print XOUT '<xmd-set>';
+    foreach my $id (sort keys %xmd_outputs) {
+	make_vid($id);
+	print XOUT @{$xmd_outputs{$id}}; 
+    }
+    print XOUT '<?destfile?></xmd-set>';
+    close(XOUT);
+    if (scalar keys %valtab) {
+	my $xproject = ($project ? $project : 'cdli');
+	my $l2 = ($l2 ? '-2' : '');
+	system 'mkdir', '-p', "/var/local/oracc/pub/$project/cat";
+	if ($l2) {
+	    dump_vid("/var/local/oracc/pub/$project/cat/vid.dat");
+	}
+	#FIXME: does this work with subprojects?
+	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
+	system 'gzip', '-f9', $xmdfile;
+    }
+}
+
+print LOG '</log>';
+close LOG;
+#print KEYS '</keys>';
+#close(KEYS);
+sortkeys();
+
+print VALTAB "#nmembers ", scalar(keys %valtab), "\n"; # $total_rows\n";
+print VALTAB map { XIFY_P($valtab{$_}) } sort { XIFY_ID($a) <=> XIFY_ID($b) } keys %valtab;
+print VALTAB "#nstring $stringpool_index\n";
+foreach my $k (sort {$stringpool{$a} <=> $stringpool{$b} } keys %stringpool) {
+    print VALTAB "$k\000";
+}
+close(VALTAB);
+
+if (scalar keys %valtab) {
+    system "@@ORACC@@/bin/pgcsi $results/sortinfo.tab";
+    system 'mv', "$results/sortinfo.csi", '02pub'
+	if -r "$results/sortinfo.csi";
+    if ($project eq 'cdli') {
+	system "@@ORACC@@/bin/catvec.plx";
+    }
+}
+print STDERR "\n" if $verbose;
+
+# format the log file
+my $lxsl = load_xsl($log_xsl);
+my $lxml = load_xml($logfile);
+my $lhtml = $lxsl->transform($lxml);
+open(OUT,'>utf8',$loghtml) || die "xmdmanager.plx: can't write $loghtml\n";
+#print OUT $lxsl->output_string($lhtml);
+print OUT $lhtml->toString(1);
+close(OUT);
+
+########################################################
+
+sub
+XIFY_ID {
+    my($p,$n) = ($_[0] =~ /^(.)(.*?)$/);
+    if ($p eq 'X') {
+	$n + 2000000;
+    } elsif ($p eq 'Q') {
+	$n + 3000000;
+    } else {
+	$n;
+    }
+}
+
+sub
+XIFY_P {
+    my $tmp = shift;
+    $tmp =~ s/(^|:)X/$1P2/;
+    $tmp;
+}
+
+sub
+badvalue {
+    my($fieldname,$value) = @_;
+    
+#    print STDERR "$fieldname: unknown value $value [$count time$s]\n";
+    my ($loc,$field) = ($fieldname =~ /^(.*?):(.*)$/);
+    my $count = ${$value_counts{$field}}{$value};
+    my $s = $count == 1 ? '' : 's';
+    my $xf = xmlify($field);
+    my $xv = xmlify($value);
+    print LOG ORACC::Log::Util::entry(
+	"$xf: unknown value $xv [$count time$s]",
+	'error','field',{file=>$loc});
+}
+
+# walk the catalogs checking the values of interest and
+# adding any new ones to the lists
+sub
+check_vals {
+    my $cat = shift;
+    my $fields = $$cat[0];
+    my $rows = $$cat[2];
+    my @slice = ();
+    my @sort_types= ();
+
+    my %field_indexes = ();
+
+    my $i = 0;
+    foreach my $f (@$fields) {
+	$field_indexes{$f} = $i++;
+    }
+
+    # cache the indices of the fields we care about
+#    my @vtflds = ();
+    $i = 0;
+    foreach my $t (sort keys %sortable_types) {
+	my $found = 0;
+	foreach my $f (@{$fields_of_types{$t}}) {
+	    if (defined $field_indexes{$f}) {
+		push @slice, $field_indexes{$f};
+		$sort_types[$field_indexes{$f}] = $typemap{$f};
+		$found = 1;
+		last;
+	    }
+	}
+	if (!$found) {
+	    push @slice, -1;
+	}
+	++$i;
+    }
+    warn("VALTAB fields @nvt\n") if $verbose;
+    print VALTAB "#nfields $typindex\n", "#nmapentries $nvt_fields\n", @nvt unless $did_valtab++;
+    # save these arrays for output time
+    push @$cat, [@slice,-1], [@sort_types];
+    foreach my $r (@$rows) {
+	# check each sortable value in this row
+	foreach my $i (@slice) {
+	    next if $i < 0;
+	    if ($$r[$i]) {
+		if ($typeinfo{$typemap{$$fields[$i]}}{'queryable'}) {
+		    unless ($$r[$i] eq '?') {
+			$$r[$i] =~ s/\s*\?\s*$//; # && warn "$$r[$i] dequeried\n";
+		    }
+		}
+		my ($f,$v,$t) = ($$fields[$i],$$r[$i],$sort_types[$i]);
+		unless (defined ${$valdefs{$t}}{$v}) {
+		    warn "no class for typeinfo{$t}\n" unless ${$typeinfo{$t}}{'class'};
+		    if ('closed' eq ${$typeinfo{$t}}{'class'}) {
+		        ++${$badvalues{$$locator{'file'}.':'.$f}}{$v};
+		    }
+		    unless (${$valdefs{$t}}{$v}++) {
+			push @{$keydata{$t}}, $v;
+		    }
+		}
+		++${$value_counts{$f}}{$v};
+		++${$type_counts{$t}}{$v};
+	    }
+	}
+    }
+}
+
+sub
+dump_bad {
+    foreach my $b (sort keys %badvalues) {
+	foreach my $v (sort keys %{$badvalues{$b}}) {
+#	    badvalue($b,$v,${$badvalues{$b}}{$v});
+	    badvalue($b,$v);
+	}
+    }
+}
+
+sub
+dump_images {
+    my $id = shift;
+    my $img = $imgdoc->getElementsById($id);
+    if ($img) {
+	my $pub = ($pubimg{$id} ? 'yes' : 'no');
+#	print "<images public=\"$pub\">", map({ $_->toString() } $img->childNodes()), '</images>';
+	push @{$xmd_outputs{$curr_xmd}},
+		"<images public=\"$pub\">", map({ $_->toString() } $img->childNodes()), '</images>';
+    }
+}
+
+# walk the internalized data dumping the XMD and generating keys
+sub
+dump_xmd {
+    my ($cat,$file) = @_;
+    my $fields = $$cat[0];
+    my $last = $#$fields;
+    my $rows = $$cat[2];
+    my $item_index = -1;
+    my $xurl_index = -1;
+    my $prov_index = -1;
+    my $lang_index = -1;
+    # determine the index of the field that has the P/Q number
+    # for P this is id_text, for Q this is id_composite
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$item_index = $i and last 
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+    }
+    $item_index = -1 if $item_index >= $#$fields;
+    warn("xmdmanager: catalog $file has no item field\n") and return
+	unless $item_index >= 0;
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$xurl_index = $i and last 
+	    if $$fields[$i] eq 'xurl';
+    }
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$prov_index = $i and last 
+	    if $$fields[$i] eq 'provenience';
+    }
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$lang_index = $i and last 
+	    if $$fields[$i] eq 'language' || $$fields[$i] eq 'lang';
+    }
+    $lang_index = $item_index if $lang_index < 0;
+#    print STDERR "lang_index = $lang_index; item_index = $item_index\n";
+    my %slice_wanted = ();
+    my @catslice = @{$$cat[3]};
+#    print STDERR "index slice = @catslice\n" if $verbose;
+    @slice_wanted{ @catslice } = ();
+    my @sort_types = @{$$cat[4]};
+    my @sortrows = ();
+#    if ($l2) {
+#	map { make_vid($$_[$item_index]) } @$rows;
+#	@sortrows = sort { $vid{$$a[$item_index]} 
+#			   cmp $vid{$$b[$item_index]} } @$rows;
+#	@sortrows = sort { $$a[$item_index] cmp $$b[$item_index] } @$rows;
+#    } else {
+#	@sortrows = sort { $$a[$item_index] cmp $$b[$item_index] } @$rows;
+#    }
+    # Note that we don't care about sort order any more because we build the
+    # resultset in a hash and sort it on output
+    foreach my $r (@$rows) {
+	next unless $output_all || exists($output_records{$$r[$item_index]});
+	next if $seen{$$r[$item_index]}++;
+	next unless xmd_begin($$r[$item_index], $$r[$lang_index], $r);
+#	my @slice = @catslice;
+#	for (my($i,$s) = (0,shift @slice); $i <= $last; ++$i) {
+#	    while ($s == -1 && $#slice >= 0) {
+#		$s = shift @slice;
+#	    }
+	for (my $i = 0; $i <= $last; ++$i) {
+	    my $f = $$r[$i];
+	    my $tag = $$fields[$i];
+#	    print "<$tag";
+	    push @{$xmd_outputs{$curr_xmd}}, "<$tag";
+	    if ($i == $#$fields && $f) {
+		# this is the xproject field
+		my $xuri;
+		if ($xurl_index >= 0) {
+		    $xuri = $$r[$xurl_index];
+		}
+		unless ($xuri) {
+		    $xuri = $xproject_uris{$f};
+		    $xuri .= "/$$r[$item_index]" if $f eq 'CDLI';
+		}
+		if ($xuri) {
+		    $xuri = xmlify($xuri);
+#		    print " uri=\"$xuri\"";
+		    push @{$xmd_outputs{$curr_xmd}}, " uri=\"$xuri\"";
+		}
+	    }
+	    if (exists $slice_wanted{$i}) { # $i == $s) {
+		if ($f || ($i == $prov_index)) {
+		    $f = 'unclear' unless $f;
+		    my $c = ${$sortvals{$sort_types[$i]}}{$f};
+		    my $sp = defined($stringpool{$f}) ? $stringpool{$f} 
+		    : ($stringpool{$f} = $stringpool_index++);
+		    my $tix = $type_indexes{$tag};
+		    if (defined $tix) {
+			if ($tag eq 'designation' && $project_designation_codes) {
+			    my $id = $$r[$item_index];
+			    if ($proj_des_sort{$id}) {
+				$c = $proj_des_sort{$id};
+				warn "Sortcode for $id == $c\n"
+				    if $verbose;
+			    } else {
+				warn "xmdmanager: no project sortcode for $id\n";
+			    }
+			}
+			if ($c) {
+			    $currvt[$type_indexes{$tag}] = "$c=$sp";
+#			    print " c=\"$c\"";
+			    push @{$xmd_outputs{$curr_xmd}}, " c=\"$c\"";
+			} else {
+			    print STDERR "c undefined for tag $tag with value $f\n";
+			}
+		    } else {
+			print STDERR "type_indexes{$tag} not defined (value=$f)\n" 
+			    unless $tix_warned{$tag}++;
+		    }
+		} else {
+		    $currvt[$type_indexes{$tag}] = "1000000=0";
+#		    print " c=\"1000000\"";
+		    push @{$xmd_outputs{$curr_xmd}}, " c=\"1000000\"";
+		}
+#		$s = shift @slice;
+	    }
+	    if ($f) {
+		if ($f =~ / \000 /) {
+#		    print '>';
+		    push @{$xmd_outputs{$curr_xmd}}, '>';
+		    foreach my $fbit (split(/ \000 /,$f)) {
+			my $xf = xmlify($fbit);
+#			print '<subfield>';
+#			print $xf;
+#			print '</subfield>';
+			push @{$xmd_outputs{$curr_xmd}}, "<subfield>$xf</subfield>";
+#			findex($tag,$fbit) unless exists $nifs{$tag};
+		    }
+#		    print "</$tag>";
+		    push @{$xmd_outputs{$curr_xmd}}, "</$tag>";
+		} else {
+		    my $xf = xmlify($f);
+		    if ($tag eq 'period') {
+			$xf =~ s/\s+\(.*$//;
+		    }
+#		    print ">$xf</$tag>";
+		    push @{$xmd_outputs{$curr_xmd}}, ">$xf</$tag>";
+#		    findex($tag,$f,$xf) unless exists $nifs{$tag};
+		}
+	    } else {
+#		print "/>";
+		push @{$xmd_outputs{$curr_xmd}}, '/>';
+	    }
+	}
+	for (my $ti = 0; $ti < $typindex; ++$ti) {
+	    $currvt[$ti] = "1000000=0" unless $currvt[$ti];
+	}
+#	print Dumper(\@currvt);
+	xmd_end($$r[$item_index]);
+    }
+}
+
+sub
+find_keydata {
+    my $catproj = shift || 'cdli';
+    if (-r '00lib/keydata.xml') {
+	$project_mode = 1;
+	$keydata = '00lib/keydata.xml';
+    } elsif (-r "@@ORACC@@/pub/$catproj/keydata.xml") {
+	$keydata = "@@ORACC@@/pub/$catproj/keydata.xml";
+    } else {
+	$keydata = "@@ORACC@@/lib/data/keydata.xml";
+    }
+    warn "xmdmanager2.plx: using keydata from $keydata\n";
+    $keydata;
+}
+
+#sub
+#findex {
+#    my ($tag,$f,$xf) = @_;
+#    $xru{$f} = xmlify(ORACC::XRU::Canonicalize::str($f))
+#	unless exists $xru{$f};
+#    $c14n{$tag} = $xru{$f};
+#    $orig{$xru{$f}} = $xf;
+#}
+
+sub
+imports {
+    my $cat = shift;
+    my $fields = $$cat[0];
+    my %fields = %{$$cat[1]};
+    my $rows = $$cat[2];
+    my @inherits = ();
+    my %via_indexes = ();
+
+    foreach my $n (tags($kdoc,$kd_uri,'imported')) {
+	foreach my $f (tags($n,$kd_uri,'field')) {
+	    my $fn = $f->getAttribute('n');
+	    my $via = $f->getAttribute('via');
+	    my $fn_index = -1;
+	    # find the field index for this entry, if any
+	    for (my $i = 0; $i <= $#$fields; ++$i) {
+		$fn_index = $i and last 
+		    if $$fields[$i] eq $fn;
+	    }
+	    if (-1 == $fn_index) {
+#		print STDERR "adding $fn\n";
+		push @$fields, $fn;
+		$fn_index = $fields{$fn} = $#$fields;
+	    }
+	    unless ($via_indexes{$via}) {
+		my $via_index = -1;
+		for (my $i = 0; $i <= $#$fields; ++$i) {
+		    $via_index = $i and last 
+			if $$fields[$i] eq $via;
+		}
+		$via_indexes{$via} = $via_index;
+	    }
+	    push (@inherits,
+		  [ $fn_index, undef, $fn, $via_indexes{$via} ]);
+	}
+    }
+
+    $$cat[0] = $fields;
+    $$cat[1] = { %fields };
+
+    foreach my $r (@$rows) {
+	foreach my $i (@inherits) {
+	    # first edit the cache to replace $$i[1] with the row-specific value
+	    # derived from $$i[3]
+	    $$i[1] = $$r[$$i[3]];
+	    unless ($$r[$$i[0]]) {
+		$$r[$$i[0]] 
+		    = ORACC::XMD::Fields::get_field_in_project('cdli',
+							       $$i[1],
+							       $$i[2]);
+#		$$r[$$i[0]] = ORACC::XMD::Fields::get_field($$i[1],$$i[2]);
+	    }
+	}
+    }
+    $cat;
+}
+
+sub
+inherits {
+    my $cat = shift;
+    my $fields = $$cat[0];
+    my %fields = %{$$cat[1]};
+    my $rows = $$cat[2];
+    my @inherits = ();
+    my %via_indexes = ();
+
+#    print STDERR "fields = @$fields\n";
+
+    # for each inherit node cache the attributes
+    foreach my $n (tags($kdoc,$kd_uri,'inherited')) {
+	foreach my $f (tags($n,$kd_uri,'field')) {
+	    my $fn = $f->getAttribute('n');
+	    my $newok = $f->getAttribute('new');
+	    my $via = $f->getAttribute('via');
+	    my $fn_index = -1;
+
+	    # find the field index for this entry
+	    for (my $i = 0; $i <= $#$fields; ++$i) {
+#		print STDERR "fn=$fn; field $i = $$fields[$i]\n";
+		$fn_index = $i and last 
+		    if $$fields[$i] eq $fn;
+	    }
+	    if ($fn_index >= 0 || $newok) {
+		if ($fn_index == -1) {
+		    push @$fields, $fn;
+		    $fn_index = $fields{$fn} = $#$fields;
+		}
+		unless ($via_indexes{$via}) {
+		    my $via_index = -1;
+		    for (my $i = 0; $i <= $#$fields; ++$i) {
+			$via_index = $i and last 
+			    if $$fields[$i] eq $via;
+		    }
+		    $via_indexes{$via} = $via_index;
+		}
+		push (@inherits,
+		      [ $fn_index, undef, $f->getAttribute('from'), $via_indexes{$via} ]);
+	    } else {
+		warn("$fn: field name in inherits not in catalogue\n");
+	    }
+	}
+    }
+
+    $$cat[0] = $fields;
+    $$cat[1] = { %fields };
+   
+    foreach my $r (@$rows) {
+	foreach my $i (@inherits) {
+	    # first edit the cache to replace $$i[1] with the row-specific value
+	    # derived from $$i[3]
+	    $$i[1] = $$r[$$i[3]];
+	    unless ($$r[$$i[0]]) {
+		$$r[$$i[0]] = ORACC::XMD::Fields::get_field($$i[1],$$i[2]);
+	    }
+	}
+    }
+
+    $cat;
+}
+
+sub
+make_dynacat {
+    my $d = shift;
+    my $cat_list = `oraccopt . catalog-build-list`;
+    my $list = $cat_list || '01bld/lists/approved.lst';
+    my $pcat = "01bld/cat/dynamic-p.xml";
+    my $qcat = "01bld/cat/dynamic-q.xml";
+    my $n_p = 0;
+    my $n_q = 0;
+
+    warn ("xmdmanager: creating $pcat/$qcat dynamically from $list ...\n") if $verbose;
+    open(P,">$pcat") || die "xmdmanager: unable to open `$pcat'\n";
+    open(Q,">$qcat") || die "xmdmanager: unable to open `$qcat'\n";
+    print P xmldecl();
+    print Q xmldecl();
+    print P '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
+    print Q '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
+    open(L,$list) || die;
+    my @lst = (<L>); chomp(@lst);
+    close(L);
+    local($/) = undef;
+    my @trylist = ();
+    push @trylist, 'cdli', 'qcat';
+    foreach my $f (@lst) {
+	my $xf = '';
+	$f =~ tr/\n\r//d;
+	next unless length $f;
+	next if $f =~ /(?:^|:)X/;
+	my $xmd = '';
+	my $proj = undef;
+	foreach my $p (@trylist) {
+	    $xf = $f;
+	    $xf =~ s/^.*?://;
+	    $proj = $p;
+	    $xmd = expand_in_project(undef,"$xf.xmd",$p);
+	    $xmd = '' unless $xmd;
+	    warn "expand_in_project(undef,$xf.xmd,$p)=>$xmd\n"
+		if $verbose;
+	    if ($xmd && -r $xmd) {
+		last;
+	    } else {
+		$xmd = '';
+	    }
+	}
+	unless ($xmd) {
+	    warn "xmdmanager2.plx: (dynamic) no catalogue information for '$xf' found in @trylist\n";
+	    ++$skip_list{$xf};
+	    next;
+	}
+	$id_projects{$xf} = $project;
+	open(X,$xmd);
+	$_ = <X>;
+	close(X);
+	s/^\<\?xml.*?>\s*\n//;
+	if (/\?xml/) {
+	    warn("$xmd: leftover XML decl\n");
+	}
+	s/^\<xmd.*?<cat>/<record>/;
+#	s,<images>.*?</images>,,;
+	s,</cat></xmd>,</record>,;
+	if ($f =~ /(?:^|:)P/) {
+	    tr/\n\r/  /; ### TEMPORARY UNTIL FXR/XMD IMPORT STRIPS THESE
+	    print P $_;
+	    ++$n_p;
+	} else {
+	    print Q $_;
+	    ++$n_q;
+	}
+    }
+    close(L);
+    print P "</catalog>"; close(P);
+    print Q "</catalog>"; close(Q);
+    ## FIXME: need to validate X-numbers if project-x is used instead of xcat
+    system 'xcat.plx' unless -e "00cat/$project-x.xml";
+    unlink $pcat unless $n_p;
+    unlink $qcat unless $n_q;
+    ## Note that we do not edit project-x.xml; only edit cats that are in 01bld/cat
+    if (-r "00bin/edit-dynacat.sh") {
+	foreach my $c ($pcat, $qcat, '01bld/cat/dynamic-x.xml') {
+	    system('00bin/edit-dynacat.sh', $c) if -r $c;
+	}
+    }
+    foreach my $c ($pcat, $qcat, '01bld/cat/dynamic-x.xml', "00cat/$project-x.xml") {
+	push(@catalogs , { 'file'=>$c }) if -r $c;
+    }
+}
+
+# virtual cat is only an option when there is no xtf
+# in the project, otherwise use dynamic
+sub
+make_vcat {
+    my $d = shift;
+    my $cat_list = `oraccopt . catalog-build-list`;
+    my $list = $cat_list || '01bld/lists/proxy.lst';
+    my $pcat = "01bld/cat/dynamic-p.xml";
+    my $qcat = "01bld/cat/dynamic-q.xml";
+    my $xcat = "01bld/cat/dynamic-x.xml";
+    my $proj = '';
+    my $n_p = 0;
+    my $n_q = 0;
+    my $n_x = 0;
+
+    warn ("xmdmanager: creating $pcat/$qcat virtually from $list ...\n") 
+	if $verbose;
+    open(P,">$pcat") || die "xmdmanager: unable to open `$pcat'\n";
+    open(Q,">$qcat") || die "xmdmanager: unable to open `$qcat'\n";
+    open(X,">$xcat") || die "xmdmanager: unable to open `$xcat'\n";
+    print P xmldecl();
+    print Q xmldecl();
+    print X xmldecl();
+    print P '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
+    print Q '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
+    print X '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
+    open(L,$list) || die;
+    my @lst = (<L>); chomp(@lst);
+    close(L);
+    local($/) = undef;
+    my @trylist = ();
+    push @trylist, 'cdli', 'qcat';
+    foreach my $f (@lst) {
+	$f =~ tr/\cM//d;
+	next unless $f;
+	my $xmd = '';
+	if ($f =~ s/^(.*?):(.*?)\@(.*?)$/$2/) {
+	    my $xmd_proj = '';
+	    ($proj,$xmd_proj) = ($1,$3);
+	    $xmd = expand_in_project(undef,"$f.xmd",$xmd_proj);
+	    warn "no metadata for $f found in $xmd_proj\n" 
+		and next unless -r $xmd;
+	} else {
+	    foreach my $p (@trylist) {
+		$proj = $p;
+		$xmd = expand_in_project(undef,"$f.xmd",$p);
+		last if $xmd && -r $xmd;
+	    }
+	    warn "no metadata for $f found in @trylist\n" 
+		and next unless -r $xmd;
+	    $proj = $project;
+	}
+	$id_projects{$f} = $proj;
+	open(XMD,$xmd);
+	$_ = <XMD>;
+	close(XMD);
+	s/^\<\?xml.*?>\s*\n//;
+	if (/\?xml/) {
+	    warn("$xmd: leftover XML decl\n");
+	}
+	s/^\<xmd.*?<cat>/<record project=\"$proj\">/;
+#	s,<images>.*?</images>,,;
+	s,</cat></xmd>,</record>,;
+	if ($f =~ /(?:^|:)P/) {
+	    tr/\n\r/  /; ### TEMPORARY UNTIL FXR/XMD IMPORT STRIPS THESE
+	    print P $_;
+	    ++$n_p;
+	} elsif ($f =~ /(?:^|:)Q/) {
+	    print Q $_;
+	    ++$n_q;
+	} else {
+	    print X $_;
+	    ++$n_x;
+	}
+    }
+    close(L);
+    print P "</catalog>"; close(P);
+    print Q "</catalog>"; close(Q);
+    print X "</catalog>"; close(X);
+    unlink $pcat unless $n_p;
+    unlink $qcat unless $n_q;
+    unlink $xcat unless $n_x;
+
+    foreach my $c ($pcat, $qcat, $xcat) {
+	push(@catalogs , { 'file'=>$c }) if -r $c;
+    }
+}
+
+sub
+make_vid {
+    my $pqx = shift;
+    if ($pqx =~ /(?:^|:)P(\d+)$/ && length($1) != 6) {
+	my $nid = $1;
+	$nid = 'P'.('0'x(6-length($nid))).$nid;
+	print STDERR "xmdmanager: repairing P-ID from $pqx to $nid\n";
+	$pqx = $nid;
+    }
+    push @vid, $pqx;
+    $vid{$pqx} = $#vid;
+}
+
+sub
+qualify_vid {
+    my $id = shift;
+    my $xtf = $id_projects{$id,'xtf'} || $project;
+    my $xmd = $id_projects{$id,'xmd'} || $project;
+    print XMDMAP "$xtf:$id\t$xmd\n";
+    "$xtf:$id";
+}
+
+sub
+vid_pad {
+    my($s,$n) = @_;
+    $s.("\000"x($n - length($s)));
+}
+
+sub
+dump_vid {
+    open(XMDMAP, ">02pub/cat/proxy-xmd.map");
+    open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
+    my @qvid = map { qualify_vid($_) } @vid;
+    my $max = max_vid_len(@qvid);
+    printf V "%d\000%d\000", $#vid+1, $max;
+    foreach my $qvid (@qvid) {
+	print V vid_pad($qvid,$max);
+    }
+    close(V);
+    close(XMDMAP);
+}
+
+sub
+max_vid_len {
+    my $len = 0;
+    foreach (@_) {
+	$len = length if length > $len;
+    }
+    $len+1;
+}
+
+sub
+open_tab_files {
+    open(LOCTAB,">$public/place.tab");
+    open(PERTAB,">$public/period.tab");
+    open(MUSTAB,">$public/musnos.tab");
+    open(PRITAB,">$public/pripub.tab");
+    open(PNMTAB,">$public/Pnames.tab");
+    open(QNMTAB,">$public/Qnames.tab");
+    open(PUBIMG,">$public/public_image.lst");
+    open(PRVIMG,">$public/private_image.lst");
+    open(VALTAB,">$results/sortinfo.tab");
+}
+
+sub
+remap {
+    my $cat = shift;
+    my $fields = $$cat[0];
+    my $remap_type = undef;
+    my $remap_to = undef;
+    my $remap_index = -1;
+    my $remap_source = -1;
+
+    # does any field in this catalog have a field type which is remappable?
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	if ($typemap{$$fields[$i]}) {
+	    if (${$typeinfo{$typemap{$$fields[$i]}}}{'remap'}) {
+		$remap_type = $typemap{$$fields[$i]};
+		$remap_source = $i;
+		$remap_to = ${$typeinfo{$remap_type}}{'node'}->getAttribute('remap-to');
+		last;
+	    }
+	}
+    }
+
+    return unless $remap_type;
+
+    # does the remap target exist as a field in this catalog?
+    if ($remap_to) {
+	for (my $i = 0; $i <= $#$fields; ++$i) {
+	    if ($remap_to eq $$fields[$i]) {
+		$remap_index = $i;
+	    }
+	}
+    }
+    # if not, append it to the field list
+    if ($remap_index == -1) {
+	$remap_index = $#$fields+1;
+	push @$fields, $remap_to;
+    }
+    # build a hash of remap values unless we have it already
+    my %remap = get_remaps($remap_type);
+
+    # traverse the data rows creating the remap fields
+    my $rows = $$cat[2];
+    foreach my $r (@$rows) {
+	if ($$r[$remap_source]) {
+	    my $v = $$r[$remap_source];
+	    $v =~ s/\s*\?\s*$//;
+	    my $as;
+	    if ($remap{$v}) {
+		$as = $remap{$v};
+	    } else {
+#		print LOG ORACC::Log::Util::entry(
+#		    "$remap_to: no remap for value '$v'",
+#		    'error','field',{})
+		print STDERR "$remap_to: no remap for value '$v'\n"
+		    unless $badremaps{$v}++;
+		$as = 'unknown';
+	    }
+	    $$r[$remap_index] = $as;
+	}
+    }
+}
+
+sub
+get_remaps {
+    my $type = shift;
+    unless ($remaps{$type}) {
+	my %map = ();
+	foreach my $v (tags(${$typeinfo{$type}}{'node'},$kd_uri,'val')) {
+	    $map{$v->getAttribute('n')} = $v->getAttribute('remap');
+	}
+	$remaps{$type} = { %map };
+    }
+    %{$remaps{$type}};
+}
+
+sub
+cat_hack_file {
+    my $cat = shift;
+    my($p,$f) = (split(/:/,$cat));
+    my $catfile = "$ENV{'ORACC'}/$p/02pub/$f";
+    return ( 'project'=>$p, 'file'=>$catfile );
+}
+
+sub
+cat_keydata {
+    my $K = '';
+    my $Kproj = '';
+    foreach my $c (@catalogs) {
+	my $k = find_keydata($$c{'project'});
+	if ($k ne $K) {
+	    if ($K) {
+		warn "xmdmanager: incompatible keydata between projects $Kproj and $$c{'project'}\n";
+	    } else {
+		$K = $k;
+		$Kproj = $$c{'project'};
+	    }
+	}
+    }
+    $K;
+}
+
+sub
+setup_derived_cat {
+#  e.g., saao:saa_cat.xml,xcat.xml
+#  or    xcat.xml,saao:saa_cat.xml
+    my @catfiles = split(',',
+			 `oraccopt . catalog-sysfiles`);
+#    @catfiles = map { cat_hack_file($_) } @catfiles;
+#    @catalogs = map { { ('project','file') = split(/:/,$_) } } @catfiles;
+    @catalogs = map { { cat_hack_file($_) } } @catfiles;
+
+    $keydata = cat_keydata(@catalogs);
+
+    ### set list of files to restrict output here
+    if (open(A,'01bld/lists/approved.lst')) {
+	my @a = (<A>); chomp(@a);
+	@output_records{ map { s/^.*?://; $_ } @a } = ();
+	close(A);
+	$output_all = 0;
+    }
+}
+
+# not presently used b/c we should really require the DB to be
+# clean
+sub
+stripwhite {
+    return '' unless $_[0];
+    my $qry = ($_[0] =~ tr/?//d) ? '?' : '';
+    $_[0] =~ s/^\s*//;
+    $_[0] =~ s/\s*$//;
+    $_[0].$qry;
+}
+
+sub
+type_from_ns {
+    my $fn = shift;
+    if ($fn =~ /\.csv$/) {
+	'csv';
+    } else {
+	my $ns = `@@ORACC@@/bin/xmlns $fn`;
+	if ($ns_types{$ns}) {
+	    $ns_types{$ns};
+	} else {
+	    die "xmdmanager.plx: xmlns `$ns' is not a known catalogue type\n";
+	}
+    }
+}
+
+sub
+xmd_begin {
+    my ($id,$langs,$row) = @_;
+    if ($id !~ /^[PQX]\d\d\d\d\d\d$/) {
+	if ($id =~ /^P(\d+)$/) {
+	    my $nid = $1;
+	    $nid = 'P'.('0'x(6-length($nid))).$nid;
+	    print STDERR "xmdmanager: repairing P-ID from $id to $nid\n";
+	    $id = $nid;
+	} else {
+	    my @data = grep (defined && length , @$row);
+	    print STDERR "xmdmanager: bad ID `$id'\n data=@data\n";
+	    return 0;
+	}
+    }
+
+    my $xmd = $id;
+
+    $curr_xmd = $xmd;
+
+    my $langmask = 0;
+    if ($langs && $langs ne $id) {
+	$langs =~ s/\s*\?\s*//g;
+	foreach my $l (split(/[, ]/,$langs)) {
+	    $l = "\l$l";
+	    if ($langmasks{$l}) {
+		$langmask |= $langmasks{$l};
+	    } else {
+		++$unknown_langs{$l};
+		$langmask |= $langmasks{'misc'};
+	    }
+	}
+	$lmattr = sprintf(" langs=\"0x%08x\"", $langmask);
+#	print STDERR "lmattr = $lmattr\n";
+    } else {
+	$lmattr = "";
+    }
+
+    my($pref) = ($id =~ /^(....)/);
+
+    if ($proxying) {
+#	print '<?destfile #none?>';
+	push @{$xmd_outputs{$curr_xmd}}, '<?destfile #none?>';
+    } else {
+#	print "<?destfile @@ORACC@@/$project/01bld/$pref/$id/$id.xmd?>";
+	push @{$xmd_outputs{$curr_xmd}}, "<?destfile @@ORACC@@/$project/01bld/$pref/$id/$id.xmd?>";
+    }
+
+    my $xlink = '';
+    my $xp = $xproject{$id} || '';
+    if ($xp eq 'CDLI' || ($xp eq 'DCCLT' && $id =~ /(?:^|:)P/)) {
+	$xlink = "http://cdli.ucla.edu/$id";
+    } elsif ($xp eq 'ETCSL') {
+	;
+    }
+    if (!$onebigfile) {
+	print '<?xml version="1.0" encoding="utf-8"?>',"\n";
+    }
+    my $pattr = '';
+    if ($id_projects{$id,'xtf'}) {
+	$pattr = " project=\"$id_projects{$id,'xtf'}\"";
+    } else {
+	$pattr = " project=\"$project\"";
+    }
+#    print "<xmd xmlns=\"$XMD\" xmlns:xmd=\"$XMD\" xml:id=\"$id\"$lmattr$pattr><cat>";
+    push @{$xmd_outputs{$curr_xmd}}, "<xmd xmlns=\"$XMD\" xmlns:xmd=\"$XMD\" xml:id=\"$id\"$lmattr$pattr><cat>";
+    1;
+}
+
+sub
+xmd_end {
+    my $id = shift;
+#    print VALTAB "\n";
+    
+    $valtab{$id} = join("\t",$id,@currvt)."\n";
+#    warn "$id => $valtab{$id}";
+    @currvt = ();
+    dump_images($id);
+#    print '</cat>';
+#    print "</xmd>";
+    push @{$xmd_outputs{$curr_xmd}}, '</cat></xmd>';
+#    if ($id =~ /^P/ && scalar keys %c14n) {
+#	my($pref) = ($id =~ /^(....)/);
+#	print KEYS "<key ref=\"$id\"$lmattr>";
+#	foreach my $if (keys %c14n) {
+#	    print KEYS "<$if>$c14n{$if}</$if>";	    
+#	}
+#	print KEYS '</key>';
+#    } elsif ($id =~ /^Q/ && scalar keys %c14n) {
+#	print KEYS "<key ref=\"$id\"$lmattr>";
+#	foreach my $if (keys %c14n) {
+#	    print KEYS "<$if>$c14n{$if}</$if>";	    
+#	}
+#	print KEYS '</key>';
+#    }
+#    %c14n = ();
+}
+
+sub
+uniq {
+    my %x;
+    @x{@_} = ();
+    sort keys %x;
+}
+
+sub
+splitkeys {
+    my @res = ();
+    my $tmp = $_[0];
+    $tmp =~ tr/a-zA-Z0-9 //cd;
+    foreach my $r (split(/\s+/, $tmp)) {
+	my $r2 = undef;
+	my $intval = 0;
+	if ($r =~ /^\d/) {
+	    if ($r =~ /^\d+$/) {
+		$intval = 1;
+	    } else {
+		$r =~ s/^(\d+)(.*)$/$1/;
+		$r2 = $2;
+		$intval = 2;
+	    }
+	}
+	my $tmp = [ $intval , $r , $r2 ];
+	push @res, $tmp;
+    }
+    $split_sortkeys{$_[0]} = [@res];
+    @res;
+}
+
+# FIXME: we should do a multilevel cmp here on unaccented then NFD; also alph vs num
+# keys
+sub
+xmd_sort {
+    my $ret = 0;
+    my @a = ();
+    my @b = ();
+    if ($split_sortkeys{$a}) {
+	@a = @{$split_sortkeys{$a}};
+    } else {
+	@a = splitkeys($a);
+    }
+    if ($split_sortkeys{$b}) {
+	@b = @{$split_sortkeys{$b}};
+    } else {
+	@b = splitkeys($b);
+    }
+    # @a and @b are now lists of doubles [ intflag , value ]
+    # intflag is 1 if the value is entirely numeric
+    for (my $i = 0; $i <= $#a && $i <= $#b; ++$i) {
+	if (${$a[$i]}[0]) {
+	    if (${$b[$i]}[0]) {
+		$ret = ${$a[$i]}[1] <=> ${$b[$i]}[1];
+		if (0 == $ret) {
+		    if (${$a[$i]}[0] == 2) {
+			if (${$b[$i]}[0] == 2) {
+			    $ret = ${$a[$i]}[2] cmp ${$b[$i]}[2];
+			} else {
+			    $ret = 1;
+			}
+		    } elsif (${$b[$i]}[0] == 2) {
+			$ret = -1;
+		    }
+		}
+	    } else {
+		$ret = -1;
+	    }
+	} elsif (${$b[$i]}[0]) {
+	    $ret = 1;
+	} else {
+	    $ret = ${$a[$i]}[1] cmp ${$b[$i]}[1];
+	}
+	return $ret if $ret;
+    }
+    # default to sorting on length:
+    # if we got here and they are the same length, return 0
+    # if a is shorter ret is negative; if b is shorter, a is positive
+    $#a <=> $#b;
+}
+
+# walk the catalogs checking the values of interest and
+# adding any new ones to the lists
+sub
+xproject {
+    my ($cat,$file) = @_;
+    my $fields = $$cat[0];
+    my $rows = $$cat[2];
+    my $item_index = -1;
+    my $name_index = -1;
+    my $period_index = -1;
+    my $place_index = -1;
+    my $pripub_index = -1;
+    my $pubimg_index = -1;
+    my @musno_indices = ();
+    my %musno_fields = ();
+    @musno_fields{qw/excavation_no museum_no accession_no/} = ();
+
+    # find the ID field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$item_index = $i and last 
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+    }
+    $item_index = -1 if $item_index >= $#$fields;
+
+    # find the period field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$period_index = $i and last 
+	    if $$fields[$i] eq 'period';
+    }
+    # find the place field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$place_index = $i and last 
+	    if $$fields[$i] eq 'provenience';
+    }
+    # find the public_images field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$pubimg_index = $i and last 
+	    if $$fields[$i] eq 'public_images';
+    }
+
+    warn("xmdmanager: xproject: catalog $file has no item field\n") and return
+	unless $item_index >= 0;
+
+    # if it is the main cat, we will dump ID:NAME table here also
+ #   if (${$$rows[0]}[$item_index] =~ /^P/) {
+	for (my $i = 0; $i <= $#$fields; ++$i) {
+#	    warn "x: trying $$fields[$i]\n" if $file =~ /-x/;
+	    $name_index = $i and last 
+		if $$fields[$i] eq 'designation';
+	}
+	$name_index = -1 if $name_index > $#$fields;
+	warn("xmdmanager: catalog $file lacks required designation field\n") and return
+	    unless $name_index >= 0;
+	for (my $i = 0; $i <= $#$fields; ++$i) {
+	    if ($$fields[$i] eq 'primary_publication') {
+		$pripub_index = $i;
+	    } elsif (exists $musno_fields{$$fields[$i]}) {
+		push @musno_indices, $i;
+	    }
+	}
+#    } else {
+#	for (my $i = 0; $i <= $#$fields; ++$i) {
+#	    $name_index = $i and last 
+#		if $$fields[$i] eq 'name';
+#	}
+#    }
+    my $xprojects_index = $#$fields+1;
+    push @$fields, 'xproject';
+
+    foreach my $r (@$rows) {
+	my $pq = $$r[$item_index];
+	print PERTAB "$pq\t$$r[$period_index]\n";
+	my $pl = $$r[$place_index] || 'unknown';
+	print LOCTAB "$pq\t$pl\n";
+	if ($pq =~ /(?:^|:)P/) {
+	    my $pname = $$r[$name_index];
+	    $pname =~ s/^\s*(.*?)\s*$/$1/;
+	    $pname =~ s/&apos;/'/g;
+	    $pname =~ s/&amp;/&/g;
+	    $$r[$xprojects_index] = $xproject{$pq} || 'CDLI';
+	    print PNMTAB "$pq\t$pname\n";
+	    print PRITAB "$pq\t", strip0($$r[$pripub_index]),"\n"
+		if $$r[$pripub_index];
+	    foreach my $m (@musno_indices) {
+		print MUSTAB "$pq\t",strip0($$r[$m]),"\n"
+		    if $$r[$m];
+	    }
+	    if ($pubimg_index >= 0 && $$r[$pubimg_index] eq 'yes') {
+		print PUBIMG "$pq\n";
+		++$pubimg{$pq};
+	    } else {
+		print PRVIMG "$pq\n";
+	    }
+	} else {
+	    my $qname = $$r[$name_index];
+	    print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
+	    $$r[$xprojects_index] = $xproject{$pq} || '';
+	}
+    }
+}
+
+sub
+sortkeys {
+    if (0 && $project_mode) {
+	#FIXME: write an xmlwf() func for ORACC::XML and test keys.xml
+	my $xk = load_xml("$results/keys.xml");
+	my %s = ();
+	foreach my $k ($xk->getDocumentElement()->childNodes()) {
+	    $s{$k->getAttribute('ref')} = $k;
+	}
+	$xk = load_xml("$results/qkeys.xml");
+	if ($xk && $xk->getDocumentElement()->hasChildNodes()) {
+	    foreach my $k ($xk->getDocumentElement()->childNodes()) {
+		$s{$k->getAttribute('ref')} = $k;
+	    }
+	}
+    }
+}
+
+sub
+strip0 {
+    my $tmp = shift;
+    $tmp =~ s/([,: \t])0+/$1/;
+    $tmp;
+}
+
+sub
+load_designation_sort_codes {
+    open(IN,'00lib/designation-sort-codes.lst');
+    while (<IN>) {
+	chomp;
+	my($q,$c) = split(/\t/,$_);
+	$proj_des_sort{$q} = $c;
+    }
+    close(IN);
+    $project_designation_codes = 1;
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+xmdmanager.plx -- manage XML MetaData import, collation and indexing
+
+=head1 SYNOPSIS
+
+xmdmanager.plx [options]
+
+=head1 OPTIONS
+
+=over
+
+=item B<-config>
+
+Give the name of the configuration file; see 
+http://oracc.museum.upenn.edu/oracc/doc/XMD/#config
+for configuration info.
+
+=item B<-validate>
+
+Perform validation phases and exit.
+
+=item B<-verbose>
+
+Make noise about what is happening.
+
+=back
+
+=head1 DESCRIPTION
+
+Program to manage conversion of metadata managed in FileMaker to XMD
+(XML MetaData format).  Configuration is done by an XML data file
+giving details on which fields are sortable, collate sequences for
+values or collate methods for fields, and how to generate computed
+fields from key values.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).

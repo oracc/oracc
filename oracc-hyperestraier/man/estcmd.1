@@ -1,0 +1,735 @@
+.TH ESTCMD 1 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estcmd \- command line interface of the core API
+
+.SH SYNOPSIS
+.PP
+.B estcmd create [\-tr] [\-apn|\-acc] [\-xs|\-xl|\-xh|\-xh2|\-xh3] [\-sv|\-si|\-sa] [\-attr name type] db
+.PP
+.B estcmd put [\-tr] [\-cl] [\-ws] [\-apn|\-acc] [\-xs|\-xl|\-xh||\-xh2|\-xh3] [\-sv|\-si|\-sa] db [file]
+.PP
+.B estcmd out [\-cl] [\-pc enc] db expr
+.PP
+.B estcmd edit [\-pc enc] db expr name [value]
+.PP
+.B estcmd get [\-nl|\-nb] [\-pidx path] [\-pc enc] db expr [attr]
+.PP
+.B estcmd list [\-nl|\-nb] [\-lp] db
+.PP
+.B estcmd uriid [\-nl|\-nb] [\-pidx path] [\-pc enc] db expr
+.PP
+.B estcmd meta db [name [value]]
+.PP
+.B estcmd inform [\-nl|\-nb] db
+.PP
+.B estcmd optimize [\-onp] [\-ond] db
+.PP
+.B estcmd merge [\-cl] db target
+.PP
+.B estcmd repair [\-rst|\-rsh] db
+.PP
+.B estcmd search [\-nl|\-nb] [\-pidx path] [\-ic enc] [\-vu|\-va|\-vf|\-vs|\-vh|\-vx|\-dd] [\-sn wnum hnum anum] [\-kn num] [\-um] [\-ec rn] [\-gs|\-gf|\-ga] [\-cd] [\-ni] [\-sf|\-sfr|\-sfu|\-sfi] [\-hs] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [\-sim id] db [phrase]
+.PP
+.B estcmd gather [\-tr] [\-cl] [\-ws] [\-no] [\-fe|\-ft|\-fh|\-fm] [\-fx sufs cmd] [\-fz] [\-fo] [\-rm sufs] [\-ic enc] [\-il lang] [\-bc] [\-lt num] [\-lf num] [\-pc enc] [\-px name] [\-aa name value] [\-apn|\-acc] [\-xs|\-xl|\-xh|\-xh2|\-xh3] [\-sv|\-si|\-sa] [\-ss name] [\-sd] [\-cm] [\-cs num] [\-ncm] [\-kn num] [\-um] db [file|dir]
+.PP
+.B estcmd purge [\-cl] [\-no] [\-fc] [\-pc enc] [\-attr expr] db [prefix]
+.PP
+.B estcmd extkeys [\-no] [\-fc] [\-dfdb file] [\-ncm] [\-ni] [\-kn num] [\-um] [\-attr expr] db [prefix]
+.PP
+.B estcmd words [\-nl|\-nb] [\-dfdb file] [\-kw|\-kt] db
+.PP
+.B estcmd draft [\-ft|\-fh|\-fm] [\-ic enc] [\-il lang] [\-bc] [\-lt num] [\-kn num] [\-um] [file]
+.PP
+.B estcmd break [\-ic enc] [\-il lang] [\-apn|\-acc] [\-wt] [file]
+.PP
+.B estcmd iconv [\-ic enc] [\-il lang] [\-oc enc] [file]
+.PP
+.B estcmd regex [\-inv] [\-repl str] expr [file]
+.PP
+.B estcmd scandir [\-tf|\-td] [\-pa|\-pu] [dir]
+.PP
+.B estcmd multi [\-db db] [\-nl|\-nb] [\-ic enc] [\-gs|\-gf|\-ga] [\-cd] [\-ni] [\-sf|\-sfr|\-sfu|\-sfi] [\-hs] [\-hu] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [phrase]
+.PP
+.B estcmd randput [\-ren|\-rla|\-reu|\-ror|\-rjp|\-rch] [\-cs num] db dnum
+.PP
+.B estcmd wicked db dnum
+.PP
+.B estcmd regression db
+.PP
+.B estcmd version
+
+.SH DESCRIPTION
+.PP
+.B estcmd
+is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument
+.I db
+specifies the path of an index.
+.TP
+.B estcmd create [\-tr] [\-apn|\-acc] [\-xs|\-xl|\-xh|\-xh2|\-xh3] [\-sv|\-si|\-sa] [\-attr name type] db
+Create an index.
+.br
+If
+.B \-tr
+is specified, a new index is created regardless if one exists.
+.br
+If
+.B \-apn
+is specified, N\-gram analysis is performed against European text also.
+.br
+If
+.B \-acc
+is specified, character category analysis is performed instead of N-gram analysis.
+.br
+If
+.B \-xs
+is specified, the index is tuned to register less than 50000 documents.
+.br
+If
+.B \-xl
+is specified, the index is tuned to register more than 300000 documents.
+.br
+If
+.B \-xh
+is specified, the index is tuned to register more than 1000000 documents.
+.br
+If
+.B \-xh2
+is specified, the index is tuned to register more than 5000000 documents.
+.br
+If
+.B \-xh3
+is specified, the index is tuned to register more than 10000000 documents.
+.br
+If
+.B \-sv
+is specified, scores are stored as void.
+.br
+If
+.B \-si
+is specified, scores are stored as 32-bit integer.
+.br
+If
+.B \-sa
+is specified, scores are stored as-is and marked not to be tuned when search.
+.br
+.B \-attr
+specifies an attribute index and its data type.  This option can be specified multiple times.
+.TP
+.B estcmd put [\-tr] [\-cl] [\-apn|\-acc] [\-xs|\-xl|\-xh|\-xh2|\-xh3] [\-sv|\-si|\-sa] db [file]
+Register a document of document draft to an index.
+.br
+.I file
+specifies a target file.  If it is omitted, the standard input is read.
+.br
+If
+.B \-tr
+is specified, a new index is created regardless if one exists.
+.br
+If
+.B \-cl
+is specified, regions of a overwritten document are cleaned up.
+.br
+If
+.B \-ws
+is specified, scores are weighted statically with score weighting attribute.
+.br
+If
+.B \-apn
+is specified, N\-gram analysis is performed against European text also.
+.br
+If
+.B \-acc
+is specified, character category analysis is performed instead of N-gram analysis.
+.br
+If
+.B \-xs
+is specified, the index is tuned to register less than 50000 documents.
+.br
+If
+.B \-xl
+is specified, the index is tuned to register more than 300000 documents.
+.br
+If
+.B \-xh
+is specified, the index is tuned to register more than 1000000 documents.
+.br
+If
+.B \-xh2
+is specified, the index is tuned to register more than 5000000 documents.
+.br
+If
+.B \-xh3
+is specified, the index is tuned to register more than 10000000 documents.
+.br
+If
+.B \-sv
+is specified, scores are stored as void.
+.br
+If
+.B \-si
+is specified, scores are stored as 32-bit integer.
+.br
+If
+.B \-sa
+is specified, scores are stored as-is and marked not to be tuned when search.
+.TP
+.B estcmd out [\-pc enc] [\-cl] db expr
+Remove information of a document from an index.
+.br
+.I expr
+specifies the ID number, the URI, or the local path of a document.
+.br
+If
+.B \-cl
+is specified, regions of the document are cleaned up.
+.br
+.B \-pc
+specifies the encoding of file paths.  By default, it is ISO-8859-1.
+.TP
+.B estcmd edit [\-pc enc] db expr name [value]
+Edit an attribute of a document in an index.
+.br
+.I expr
+specifies the ID number, the URI, or the local path of a document.
+.br
+.I name
+specifies the name of an attribute.
+.br
+.I value
+specifies the value of the attribute.  If it is omitted, the attribute is removed.
+.br
+.B \-pc
+specifies the encoding of the file path and the attribute value.  By default, it is ISO-8859-1.
+.TP
+.B estcmd get [\-nl|\-nb] [\-pidx path] [\-pc enc] db expr [attr]
+Output document draft of a document in an index.
+.br
+.I expr
+specifies the ID number, the URI, or the local path of a document.
+.br
+If
+.I attr
+is specified, only the value of the attribute is output.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.br
+.B \-pidx
+specifies the path of a pseudo index.  This option can be specified multiple times.
+.br
+.B \-pc
+specifies the encoding of file paths.  By default, it is ISO-8859-1.
+.TP
+.B estcmd list [\-nl|\-nb] [\-lp] db
+Output a list of all document in an index.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.br
+If
+.B \-lp
+is specified, local path equivalent to URL of "file://" is output.
+.TP
+.B estcmd uriid [\-nl|\-nb] [\-pidx path] [\-pc enc] db expr
+Output the ID number of a document specified by URI.
+.br
+.I expr
+specifies the URI or the local path of a document.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.br
+.B \-pidx
+specifies the path of a pseudo index.  This option can be specified multiple times.
+.br
+.B \-pc
+specifies the encoding of file paths.  By default, it is ISO-8859-1.
+.TP
+.B estcmd meta db [name [value]]
+Handle meta data.
+.br
+.I name
+specifies the name of a piece of meta data.  If it is omitted, a list of all names is output.
+.br
+.I value
+specifies the value of the meta data to be recorded.  If it is omitted, the current value is output.  If it is an empty string, the meta data is removed.
+.TP
+.B estcmd inform [\-nl|\-nb] db
+Output the number of documents and the number of unique words in an index.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.TP
+.B estcmd optimize [\-onp] [\-ond] db
+Optimize an index and clean up dispensable regions.
+.br
+If
+.B \-onp
+is specified, it is omitted to clean up dispensable regions.
+.br
+If
+.B \-ond
+is specified, it is omitted to optimize the database files.
+.TP
+.B estcmd merge [\-cl] db target
+Merge another index.
+.br
+.I target
+specifies the path of another index.
+.br
+If
+.B \-cl
+is specified, regions of overwritten documents are cleaned up.
+.TP
+.B estcmd repair [\-rst|\-rsh] db
+Repair a broken index.
+.br
+If
+.B \-rst
+is specified, strict consistency check is performed.
+.br
+If
+.B \-rsh
+is specified, consistency check is omitted.
+.TP
+.B estcmd search [\-nl|\-nb] [\-pidx path] [\-ic enc] [\-vu|\-va|\-vf|\-vs|\-vh|\-vx|\-dd] [\-sn wnum hnum anum] [\-kn num] [\-um] [\-ec rn] [\-gs|\-gf|\-ga] [\-cd] [\-ni] [\-sf|\-sfr|\-sfu|\-sfi] [\-hs] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [\-sim id] db [phrase]
+Search an index for documents.
+.br
+.I phrase
+specifies the search phrase.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.br
+.B \-pidx
+specifies the path of a pseudo index.  This option can be specified multiple times.
+.br
+.B \-ic
+specifies the input encoding.  By default, it is UTF\-8.
+.br
+If
+.B \-vu
+is specified, TSV of ID number and URI are output.
+.br
+If
+.B \-va
+is specified, multipart format including attributes is output.
+.br
+If
+.B \-vf
+is specified, multipart format including document draft is output.
+.br
+If
+.B \-vs
+is specified, multipart format including attributes and snippets is output.
+.br
+If
+.B \-vh
+is specified, human readable format including attributes and snippets is output.
+.br
+If
+.B \-vx
+is specified, XML including including attributes and snippets is output.
+.br
+If
+.B \-dd
+is specified, document draft data are dumped and saved into separated files.
+.br
+.B \-sn
+specifies the number of whole width of snippet and width of strings picked up from the beginning of the text and width of strings picked up around each highlighted word.
+.br
+.B \-kn
+specifies the number of keywords to be extracted.  By default, keyword extraction is not performed.
+.br
+If
+.B \-um
+is specified, morphological analyzers are used for keyword extraction.
+.br
+.B \-ec
+specifies lower limit of similarity eclipse.
+.br
+If
+.B \-gs
+is specified, every key of N\-gram is checked.  By default, it is alternately.
+.br
+If
+.B \-gf
+is specified, keys of N\-gram are checked every three.
+.br
+If
+.B \-ga
+is specified, keys of N\-gram are checked every four.
+.br
+If
+.B \-cd
+is specified, whether documents match the search phrase definitely is checked.
+.br
+If
+.B \-ni
+is specified, TF\-IDF tuning is omitted.
+.br
+If
+.B \-sf
+is specified, the phrase is treated as a simplified form.
+.br
+If
+.B \-sfr
+is specified, the phrase is treated as a rough form.
+.br
+If
+.B \-sfu
+is specified, the phrase is treated as a union form.
+.br
+If
+.B \-sfi
+is specified, the phrase is treated as an intersection form.
+.br
+If
+.B \-hs
+is specified, score information is output as an attribute.
+.br
+.B \-attr
+specifies an attribute search condition.  This option can be specified multiple times.
+.br
+.B \-ord
+specifies the order expression.  By default, it is descending by score.
+.br
+.B \-max
+specifies the maximum number of shown documents.  Negative means unlimited.  By default, it is 10.
+.br
+.B \-sk
+specifies the number of documents to be skipped.  By default, it is 0.
+.br
+.B \-aux
+specifies permission to adopt result of the auxiliary index.  If it is not more than 0, the auxiliary index is not used.  By default, it is 32.
+.br
+.B -dis
+specifies the name of the distinct attribute.
+.br
+.B \-sim
+specifies the ID number of the seed document for similarity search.
+.TP
+.B estcmd gather [\-tr] [\-cl] [\-ws] [\-no] [\-fe|\-ft|\-fh|\-fm] [\-fx sufs cmd] [\-fz] [\-fo] [\-rm sufs] [\-ic enc] [\-il lang] [\-bc] [\-lt num] [\-lf num] [\-pc enc] [\-px name] [\-aa name value] [\-apn|\-acc] [\-xs|\-xl|\-xh|\-xh2|\-xh3] [\-sv|\-si|\-sa] [\-ss name] [\-sd] [\-cm] [\-cs num] [\-ncm] [\-kn num] [\-um] db [file|dir]
+Scan the local file system and register documents into an index.
+.br
+If the third argument is the name of a file, a list of paths of target documents are read from it.  If it is "\-", the standard input is specified.
+.br
+If the third argument is the name of a directory.  All files under the directory are treated as target documents.
+.br
+If
+.B \-tr
+is specified, a new index is created regardless if one exists.
+.br
+If
+.B \-cl
+is specified, regions of overwritten documents are cleaned up.
+.br
+If
+.B \-ws
+is specified, scores are weighted statically with score weighting attribute.
+.br
+If
+.B \-no
+is specified, operations are printed but not executed actually.
+.br
+If
+.B \-fe
+is specified, target files are treated as document draft.  By default, the format is detected by the suffix of each document.
+.br
+If
+.B \-ft
+is specified, target files are treated as plain text.
+.br
+If
+.B \-fh
+is specified, target files are treated as HTML.
+.br
+If
+.B \-fm
+is specified, target files are treated as MIME.
+.br
+If
+.B \-fx
+is specified, target files with the specified suffixes are processed by the specified outer command.  "*" matches any file.  If the command is leaded by "T@", the output of the command is treated as plain text.  If the command is leaded by "H@", the output of the command is treated as HTML.  If the command is leaded by "M@", the output of the command is treated as MIME.  Else, the output is treated as document draft.  This option can be specified multiple times.
+.br
+If
+.B \-fz
+is specified, documents which do not corresponding to the condition of
+.B \-fx
+are ignored.
+.br
+If
+.B \-fo
+is specified, target files are not read.  It is useful for efficient process of the outer command.
+.br
+If
+.B \-rm
+is specified, target files with the specified suffixes are removed.  "*" matches any file.  This option can be specified multiple times.
+.br
+.B \-ic
+specifies the input encoding.  By default, it is detected automatically.
+.br
+.B \-il
+specifies the preferred input language.  By default, English is preferred.
+.br
+If
+.B \-bc
+is specified, binary files are detected and ignored.
+.br
+.B \-lt
+specifies the text size limitation by kilo bytes.  By default, it is 128KB.  If it is negative, the size is unlimited.
+.br
+.B \-lf
+specifies the file size limitation by mega bytes.  By default, it is 32MB.  If it is negative, the size is unlimited.
+.br
+.B \-pc
+specifies the encoding of file paths.  By default, it is ISO\-8859\-1.
+.br
+.B \-px
+specifies the name of an attribute read from the list of paths.  As the list of paths can be in TSV format, the first field is treated as the path of a target document, the second field and the followers are definitions of attribute values.
+.B \-px
+specifies the name of each values of the second field and the followers.  This option can be specified multiple times.
+.br
+.B \-aa
+specifies the name and the value of an additional attribute.  This option can be specified multiple times.
+.br
+If
+.B \-apn
+is specified, N\-gram analysis is performed against European text also.
+.br
+If
+.B \-acc
+is specified, character category analysis is performed instead of N-gram analysis.
+.br
+If
+.B \-xs
+is specified, the index is tuned to register less than 50000 documents.
+.br
+If
+.B \-xl
+is specified, the index is tuned to register more than 300000 documents.
+.br
+If
+.B \-xh
+is specified, the index is tuned to register more than 1000000 documents.
+.br
+If
+.B \-xh2
+is specified, the index is tuned to register more than 5000000 documents.
+.br
+If
+.B \-xh3
+is specified, the index is tuned to register more than 10000000 documents.
+.br
+If
+.B \-sv
+is specified, scores are stored as void.
+.br
+If
+.B \-si
+is specified, scores are stored as 32-bit integer.
+.br
+If
+.B \-sa
+is specified, scores are stored as-is and marked not to be tuned when search.
+.br
+.B -ss
+specifies the name of an attribute for substitute score.
+.br
+If
+.B \-sd
+is specified, the modification date of each file is recorded as an attribute.
+.br
+If
+.B \-cm
+is specified, documents whose modification date has not changed are ignored.
+.br
+.B \-cs
+specifies the size of cache memory by mega bytes.  By default, it is 64MB.
+.br
+If
+.B -ncm
+is specified, checking availability of the virtual memory is omitted.
+.br
+.B \-kn
+specifies the number of keywords to be extracted.  By default, keyword extraction is not performed.
+.br
+If
+.B \-um
+is specified, morphological analyzers are used for keyword extraction.
+.TP
+.B estcmd purge [\-cl] [\-no] [\-fc] [\-pc enc] [\-attr expr] db [prefix]
+Purge information of documents which do not exist on the file system.
+.br
+If
+.I prefix
+is specified, only documents whose URIs are begins with it.  It can be specified by the local path of a directory.
+.br
+If
+.B \-cl
+is specified, regions of the deleted documents are cleaned up.
+.br
+If
+.B \-no
+is specified, operations are printed but not executed actually.
+.br
+If
+.B \-fc
+is specified, information of all target documents are deleted.
+.br
+.B \-pc
+specifies the encoding of file paths.  By default, it is ISO-8859-1.
+.br
+.B \-attr
+specifies an attribute search condition.  This option can be specified multiple times.
+.TP
+.B estcmd extkeys [\-no] [\-fc] [\-dfdb file] [\-ncm] [\-ni] [\-kn num] [\-um] [\-attr expr] db [prefix]
+Create a database of keywords extracted from documents.
+.br
+If
+.I prefix
+is specified, only documents whose URIs are begins with it.
+.br
+If
+.B \-no
+is specified, operations are printed but not executed actually.
+.br
+If
+.B \-fc
+is specified, all target documents are processed whichever they have existing records or not.
+.br
+.B \-dfdb
+specifies an outher database of document frequency.  By default, document frequency is calculated dynamically according to the index.
+.br
+If
+.B -ncm
+is specified, checking availability of the virtual memory is omitted.
+.br
+If
+.B \-ni
+is specified, TF\-IDF tuning is omitted.
+.br
+.B \-kn
+specifies the number of keywords to be extracted.  By default, it is 32.
+.br
+If
+.B \-um
+is specified, morphological analyzers are used for keyword extraction.
+.br
+.B \-attr
+specifies an attribute search condition.  This option can be specified multiple times.
+.TP
+.B estcmd words [\-nl|\-nb] [\-dfdb file] [\-kw|\-kt] db
+Output a list of all unique words and each record size which is treated as docuemnt frequency.
+.br
+If
+.B \-nl
+is specified, the index is opened without file locking.
+.br
+If
+.B \-nb
+is specified, file locking is performed without blocking.
+.br
+.B \-dfdb
+specifies an outer database where the result is stored.  By default, the result is output to the standard output as TSV.  If the outer database already exists, the value of each record is incremented.
+.br
+If
+.B \-kw
+is specified, keywords and numbers of corresponding documents are output.
+.br
+If
+.B \-kt
+is specified, keywords and their related terms are output.
+.TP
+.B estcmd draft [\-ft|\-fh|\-fm] [\-ic enc] [\-il lang] [\-bc] [\-lt num] [\-kn num] [\-um] [file]
+For test and debug.
+.TP
+.B estcmd break [\-ic enc] [\-il lang] [\-apn|\-acc] [\-wt] [file]
+For test and debug.
+.TP
+.B estcmd iconv [\-ic enc] [\-il lang] [\-oc enc] [file]
+For test and debug.
+.TP
+.B estcmd regex [\-inv] [\-repl str] expr [file]
+For test and debug.
+.TP
+.B estcmd scandir [\-tf|\-td] [\-pa|\-pu] [dir]
+For test and debug.
+.TP
+.B estcmd multi [\-db db] [\-nl|\-nb] [\-ic enc] [\-gs|\-gf|\-ga] [\-cd] [\-ni] [\-sf|\-sfr|\-sfu|\-sfi] [\-hs] [\-hu] [\-attr expr] [\-ord expr] [\-max num] [\-sk num] [\-aux num] [\-dis name] [phrase]
+For test and debug.
+.TP
+.B estcmd randput [\-ren|\-rla|\-reu|\-ror|\-rjp|\-rch] [\-cs num] db dnum
+For test and debug.
+.TP
+.B estcmd wicked db dnum
+For test and debug.
+.TP
+.B estcmd regression db
+For test and debug.
+.TP
+.B estcmd version
+Show the version information.
+.PP
+All sub commands return 0 if the operation is success, else return 1.  As for put, out, gather, purge, randput, wicked, and regression, they finish with closing the database when they catch the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), 13 (SIGPIPE), or 15 (SIGTERM).
+.PP
+The data type of attribute indexes specified by
+.B \-attr
+option of
+.B create
+sub command should be "seq" for sequencial type, "str" for string type, or "num" for number type.
+.PP
+Each pseudo index specified by
+.B \-pidx
+option of
+.B search
+sub command and so on is a directory containing files of document draft.  If you search a main index with pseudo indexes, meta search of the main index and pseudo indexes is performed.
+.PP
+The encoding name specified by
+.B \-ic
+option should be such name registered to IETF as UTF\-8, ISO\-8859\-1, and so on.  The language name specified by
+.B \-il
+option should be one of "en" (English), "ja" (Japanese, "zh" (Chinese), "ko" (Korean).
+.PP
+The outer command specified by \-fx option of gather receives the path of the target document by the first argument and the path for output by the second argument.  The original path of the target document is given as the value of the environment variable `ESTORIGFILE'.
+.PP
+Note that similarity search is very slow, by default.  To improve the performance of similarity search, running "estcmd extkeys" beforehand is strongly recommended.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estmaster (1),
+.BR estcall (1),
+.BR estwaver (1),
+.BR estraier (3),
+.BR estnode (3)
+.PP
+Please see
+.B http://fallabs.com/hyperestraier/uguide-en.html
+for detail.

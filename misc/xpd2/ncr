@@ -1,0 +1,10 @@
+#!/bin/sh
+[ -r 02xml/config.xml ] || oracc config
+project=`oraccopt`
+if [ "$project" == "" ]; then 
+    echo "ncr: must run in project directory"; exit 1
+fi
+rm -f nohup.out
+echo ncr: Performing clean rebuild of $project ...
+/usr/bin/time -f "ncr elapsed time: %E" nohup o2-clean-build.sh
+echo `wc -l nohup.out | cut -d' ' -f1` lines written to nohup.out

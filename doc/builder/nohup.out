@@ -1,0 +1,128 @@
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./math/index.html: Permission denied
+html/math.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./math/math.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./math/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./math/math.xdf.html': Permission denied
+html/cdli.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./cdli/cdli.xdf.html: Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./cdli/index.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./cdli/cdli.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./cdli/index.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./quickref/index.html: Permission denied
+html/quickref.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./quickref/quickref.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./quickref/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./quickref/quickref.xdf.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./layouts/index.html: Permission denied
+html/layouts.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./layouts/layouts.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./layouts/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./layouts/layouts.xdf.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./labels/index.html: Permission denied
+html/labels.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./labels/labels.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./labels/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./labels/labels.xdf.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./metrology/index.html: Permission denied
+html/install.sh.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./metrology/install.sh.html: Permission denied
+html/metrology.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./metrology/metrology.xdf.html: Permission denied
+html/metrol-tables.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./metrology/metrol-tables.html: Permission denied
+html/metrol-tables.plx.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./metrology/metrol-tables.plx.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./metrology/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./metrology/install.sh.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./metrology/metrology.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./metrology/metrol-tables.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./metrology/metrol-tables.plx.html': Permission denied
+html/dates.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./dates/dates.xdf.html: Permission denied
+html/dsa.xml.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./dates/dsa.xml.html: Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./dates/index.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./dates/dates.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./dates/dsa.xml.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./dates/index.html': Permission denied
+xdfmanager.plx: languages.xdf:83: parser error : Premature end of data in tag doc line 2
+
+Can't call method "isa" on an undefined value at /usr/local/oracc/bin/xdfmanager.plx line 1007.
+html/*.html
+../../00tools/tagify-all.sh: line 5: html/*.html: No such file or directory
+cp: cannot stat `html/*': No such file or directory
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./primer/index.html: Permission denied
+html/primer.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./primer/primer.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./primer/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./primer/primer.xdf.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./translation/index.html: Permission denied
+html/translation.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./translation/translation.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./translation/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./translation/translation.xdf.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/QPN/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/QPN/qpn-anno.xdf.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/ARC/index.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./linganno/index.html: Permission denied
+html/linganno.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./linganno/linganno.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/linganno.xdf.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/akk-anno.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/akkstyle/akkstyle.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/akkstyle/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/akk-roots/akk-roots.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/AKK/akk-roots/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/PEO/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/ELX/elx-anno.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/ELX/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/GRC/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/SUX/syntax/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/SUX/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./linganno/SUX/primer/index.html': Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./numbers/index.html: Permission denied
+html/numbers.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./numbers/numbers.xdf.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./numbers/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./numbers/numbers.xdf.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/aquamacs/aquamacs.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/aquamacs/index.html': Permission denied
+./install.sh: line 7: ../../00tools/tagify-all.sh: No such file or directory
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/emacsw32/emacsw32.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/emacsw32/index.html': Permission denied
+html/emacs.xdf.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./emacs/emacs.xdf.html: Permission denied
+html/index.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./emacs/index.html: Permission denied
+html/mk-dist.sh.html
+../../00tools/tagify-all.sh: line 5: /usr/local/oracc/www/doc/builder/./emacs/mk-dist.sh.html: Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/emacs.xdf.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/index.html': Permission denied
+cp: cannot create regular file `/usr/local/oracc/www/doc/builder/./emacs/mk-dist.sh.html': Permission denied
+../00tools/mk-index-html.sh: line 5: /usr/local/oracc/www/doc/builder/index00.html: Permission denied
+../00tools/mk-index-html.sh: line 5: /usr/local/oracc/www/doc/builder/index.html: Permission denied

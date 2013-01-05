@@ -1,0 +1,196 @@
+
+bad sigs in l2 should be rendered with, say, !-prefix; then there is a
+choice of whether to integrate them with the lem-glossary or not
+
+ERRORS TO ADD:
+
+_0 on non-compound should warn and remove
+
+PSU component error should identify PSU being processed
+
+in COF extern must currently have NORM; should be able to auto-NORM
+from CF
+
+@entry pit $babi [...] POS should error on $
+
+g2x-merge (and others?) need an xis-to-label function to show
+locations of errors by decoding line-ids; this should give ATF file/line
+
+in qpn, gw[2] must match sense[2], not gw[2] and sense[1]
+
+BUGS:
+
+@form XXXX $(a) $(b) (c) should warn about non-dollared parens
+
+@parts must accept full ngram or f2 specs, e.g., ša[that]REL rēšu[head]N$rēši
+
+x-glossary COFS/PSUs
+
+The bad form ##NV2=STEM.NV3=PF.N#=3-SG-NH-POSS.N5=X  should produce a warning
+
+DOCO:
+
+if a partsig (a signature belonging to a component of an @parts line)
+doesn't match a sense, the first sense in the entry that
+matches the gw is used
+
+a partsig must match an entry in the current glossary or in qpn
+
+PSUs only get sigs produced for senses, not for gw//gw
+
+explain that if you + a lem you may see 'corpus sense not in glossary'
+warnings from g2x-merge.
+
+only place PSU ngrams get created is g2a-sig.plx (or ez-psu in ATF); 
+everything else is round-tripped from that.  Note that in ez-psu we
+have to take care to supply sense as we do in g2a-sig
+
+< not allowed in lem string anywhere
+
+External PSU & COF components begin with %lang and may be either
+CF[GW]POS or CF[GW//SENSE]POS'EPOS; by convention, these always
+resolve to the first matching signature found by external-sig.plx
+but this may need to be revisited.
+
+COFs and PSUs in the L2 Implementation
+======================================
+
+Definitions
+***********
+
+BASE = base signature consisting of CF[GW]POS
+
+CORE = core signature consisting of CF[GW//SENSE]POS'EPOS$NORM; 
+       the SENSE and EPOS may be optional in some contexts
+       (more clarity needed here)
+
+FULL = full signature including M2, M2, etc.
+
+COF = Compound Orthographic Forms
+    = single written forms which contain multiple lemmata.
+
+PSU = Phrasal Semantic Units
+    = multiple lemmata which can be taken as a unit, e.g.,
+      Sumerian compound verbs; Akkadian construct+noun combos.
+
+HEAD = the first component of a COF or PSU.
+
+TAIL = second and following components of a COF or PSU
+
+F2C = F2 Core Form, or struct f2 in the C code.
+
+F2I = F2 Instance Form, or struct ilem_form in the C code
+
+COF-c = COF as realized in the C data structures
+
+COF-lem = COF as realized in the interlinear lemmatization
+
+COF-glo = COF as realized in the glossary
+
+COF-sig = COF as realized in a signature
+
+PSU-c = PSU as realized in the C data structures
+
+PSU-glo = PSU as realized in the glossary
+
+PSU-lem = PSU as realized in the interlinear lemmatization
+
+PSU-sig = PSU as realized in a signature
+
+
+Introduction
+************
+
+The L2 implementation of COFs and PSUs is multifacted and 
+partly interdependent.  
+
+Interlinear Lemmatization
+*************************
+
+COF-lem:
+
+    a-a-mu-ut
+    ai[not]MOD$ay&mâtu[die]V$amūt
+
+PSU-lem:
+
+    no special marking; but a sense for a PSU can be selected by 
+    adding '+=SENSE' to the GW of the first consituent.
+
+    A PSU can be defined in ATF as follows:
+
+    #lem: šu[hand] teŋ[reach] => šu teŋ[accept]
+
+
+Glossaries
+********** 
+
+COF-glo:
+
+    Each component is entered as a @form under the appropriate
+    lemma/sense, with the components that belong to other lemmata
+    parenthesized:
+
+      @entry ay [not] MOD
+      @form a-a-mu-ut $ay $(mâtu[die//die]V'V$amūt)
+
+    The components are given in the orthographic order, with all
+    the data for a component being given together.  The TAILs
+    following a COF head are CORE signatures.  The combination
+    of FORM and CORE serves to identify a signature uniquely.
+
+    Note that the @form entries in COF TAILs are never used for
+    primary matching in L2: the HEAD is matched by the lemmatizer,
+    and then the TAILs are checked against the HEAD's 
+    signature, which itself includes all the components.
+
+PSU-glo:
+
+    PSUs have specially flagged entries in the glossary with a
+    @parts line giving the necessary signature data to identify
+    the form:
+
+      @parts šu[hand]N teŋ[reach]V
+
+    Although the minimal form of components in a @parts line
+    is that of a BASE signature, components are strictly speaking 
+    Ngram specifications, meaning that additional predicates beyond
+    just the GW/POS can be included.  For example, the entry:
+
+      @parts e[house][!#nsf] du[build][#vsf4]
+    
+    will match e2 du3-a, but not e2 mu-un-du3.
+
+    PSU-glo entries have simple @form lines giving only the
+    form itself--all other fields are computed from the form
+    in the component entries. 
+
+Signatures
+**********
+
+COF-sig:
+
+    A COF-sig is simply the concatentation of the HEAD and TAILs, 
+    joined by double-ampersand:
+
+      %akk:a-a-mut=ay[not//not]MOD'MOD$ay&&%akk:=mâtu[die//die]V'V$amūt
+
+    Note that the FORM is omitted from the TAIL components.
+
+PSU-sig:
+
+    A PSU-sig gives both the data for the compound and the data for
+    the components in a single, long signature.  The general syntax
+    is:
+   
+      { COMPOUND }:: PART1 ++ ... ++ PARTn
+
+    e.g.:
+
+      {šu teŋ[receive]V/t'V/t}::%sux:šu=šu[hand]'N$šu++%sux:ba-ti=tēŋ[reach]V/t$ba:teŋ
+
+   A PSU-sig containing a COF uses the same no-FORM notation for
+   the TAILs as a COF-SIG, but joins the lemmata with ++ not
+   &&.
+
+				   

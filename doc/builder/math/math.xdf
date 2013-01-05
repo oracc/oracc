@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Mathematical Notations</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-31</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>Mathematical notations use some conventions which are specific to
+mathematical and astronomical texts, as well as employing a variant of
+the standard CDLI method of notating sexagesimal numbers. They are described here.</dc:description>
+</d:meta>
+
+<h1>The math protocol</h1>
+
+<p>In May 2008 conversations between Jacob Dahl, Peter Damerow,
+Manfred Krebernik, Christine Proust and Steve Tinney in Berlin and
+Eleanor Robson and Steve Tinney in Cambridge clarified a number of
+issues in the ATF support for the transliteration of mathematical and
+astronomical texts.  This document was written by Steve Tinney to take
+into account the issues raised and resolved in those conversations.</p>
+
+<p>To inform the ATF processor that you are using these conventions, 
+include the following protocol at the start of your transliteration:</p>
+
+<pre class="cookbook">
+#atf: use math
+</pre>
+
+<h1>Disz-less Numbers</h1>
+
+<p>The standard CDLI notation for numbers is, e.g., <code>1(u)
+1(disz)</code>.  Because the use of this notation becomes cumbersome
+in the long sequences of number graphemes which occur in mathematical
+texts, we recognize a set of graphemes which refer specifically to
+equivalents in the CDLI disz-system.  We call these disz-less
+numbers.</p>
+
+<h2>1 to 9</h2>
+
+<p>Disz-less 1 to 9 are written without a leading zero in initial and
+independent positions, following standard practice in the
+transliteration of mathematical and astronomical texts.  In medial and
+final position, they may be written with a leading zero to facilitate
+alignment of numbers in columnar texts.</p>
+
+<p>We distinguish between standard (the most common) and variant
+stacking patterns for the purposes of transliteration. The standard
+and variant stacking patterns for 1 to 9 are as follows:</p>
+
+<table class="sixty">
+<caption>Standard Stacking Patterns for 1 to 9</caption>
+<thead><tr><th>Transliteration</th><th>CDLI</th><th>Unicode</th><th>Cuneiform</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1(disz)</td><td>U+12079</td><td>&#x12079;</td></tr>
+<tr><td>2</td><td>2(disz)</td><td>U+1222B</td><td>&#x1222B;</td></tr>
+<tr><td>3</td><td>3(disz)</td><td>U+12408</td><td>&#x12408;</td></tr>
+<tr><td>4</td><td>4(disz)</td><td>U+1243C</td><td>&#x1243C;</td></tr>
+<tr><td>5</td><td>5(disz)</td><td>U+1240A</td><td>&#x1240A;</td></tr>
+<tr><td>6</td><td>6(disz)</td><td>U+1240B</td><td>&#x1240B;</td></tr>
+<tr><td>7</td><td>7(disz)</td><td>U+12442</td><td>&#x12442;</td></tr>
+<tr><td>8</td><td>8(disz)</td><td>U+12444</td><td>&#x12444;</td></tr>
+<tr><td>9</td><td>9(disz)</td><td>U+12446</td><td>&#x12446;</td></tr>
+</tbody>
+</table>
+<p> </p>
+<table class="sixty">
+<caption>Variant Stacking Patterns for 4, 7, 8 and 9</caption>
+<thead>
+<tr><th>Transliteration</th><th>CDLI</th><th>Unicode</th><th>Cuneiform</th></tr></thead>
+<tbody>
+<tr><td>4@v</td><td>4(disz)@v</td><td>U+12409</td><td>&#x12409;</td></tr>
+<tr><td>7@v</td><td>7(disz)@v</td><td>U+1240C</td><td>&#x1240C;</td></tr>
+<tr><td>8@v</td><td>8(disz)@v</td><td>U+1240D</td><td>&#x1240D;</td></tr>
+<tr><td>9@v</td><td>9(disz)@v</td><td>U+12448</td><td>&#x12448;</td></tr>
+</tbody>
+</table>
+
+<h2>10 to 90</h2>
+
+<p>Tens from 10 to 90 are attested; several of the stacking patterns
+need to be added to Unicode.</p>
+
+<table class="sixty">
+<caption>Standard Stacking Patterns for 10 to 90</caption>
+<thead><tr><th>Transliteration</th><th>CDLI</th><th>Unicode</th><th>Cuneiform</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>1(u)</td><td>U+1230B</td><td>&#x1230B;</td></tr>
+<tr><td>20</td><td>2(u)</td><td></td><td><img src="etc/cunei-20.png" height="20" alt="cuneiform 20"/></td></tr>
+<tr><td>30</td><td>3(u)</td><td>U+1230D</td><td>&#x1230D;</td></tr>
+<tr><td>40</td><td>4(u)</td><td></td><td><img src="etc/cunei-40.png" height="20" alt="cuneiform 40"/></td></tr>
+<tr><td>50</td><td>5(u)</td><td></td><td><img src="etc/cunei-50.png" height="20" alt="cuneiform 50"/></td></tr>
+<tr><td>60</td><td>6(u)</td><td></td><td><img src="etc/cunei-60.png" height="20" alt="cuneiform 60"/></td></tr>
+<tr><td>70</td><td>7(u)</td><td></td><td><img src="etc/cunei-70.png" height="20" alt="cuneiform 70"/></td></tr>
+<tr><td>80</td><td>8(u)</td><td></td><td><img src="etc/cunei-80.png" height="20" alt="cuneiform 80"/></td></tr>
+<tr><td>90</td><td>9(u)</td><td></td><td><img src="etc/cunei-90.png" height="20" alt="cuneiform 90"/></td></tr>
+</tbody>
+</table>
+
+<h2>Combinations of Tens and Digits</h2>
+
+<p>Combinations of tens and digits may similarly be transliterated in
+math mode as <code>11.22.33.44.55</code> etc.  This eliminates
+possible ambiguities in the expression of numbers in place-value
+notation.  If a tens and digits grapheme is followed by
+<code>@v</code>, this indicates that the digits part is written with
+the variant form: 37@v = 3(u)+7(disz)@v.</p>
+
+<p>Precomposed tens and digits numbers are not defined in Unicode but
+should be treated as compound signs.</p>
+
+<h2>Zero</h2>
+
+<p>The number zero is handled in cuneiform sources in several ways.
+One method is simply to give no indication of it, relying on context
+for disambiguation.  A second is to use a deliberate blank space where
+zero is to be understood.  The third is to use a cuneiform sign which
+we may then read as zero.</p>
+
+<p>In general, the signs for zero are transliterated as <code>0</code>
+(in initial position; independent <code>0</code> is not known), or as
+<code>0</code> or <code>00</code> in medial and final position.</p>
+
+<p>The different signs used for <code>00</code> are indicated using
+the variant sign notation with tilde and a lowercase letter; the table
+below gives the correlations between sign-forms and notations.  By
+definition, unadorned <code>00</code> is identical
+to <code>00~a</code>, which is by far the commonest way of indicating
+zero.</p>
+
+<p>The blank space left to indicate zero is always to be
+transliterated as <code>oo</code>, i.e., a pair of lowercase latin
+letter o characters.</p>
+
+<p>The very rare cases where zero is required by the context but is
+unmarked should be transliterated as <code>&lt;oo></code>, i.e., the
+zero-space is supplied by the editor.</p>
+
+<table class="eighty">
+<caption>Methods of Transliterating Zero</caption>
+<thead><tr><th>Transliteration</th><th>Unicode</th><th>Cuneiform</th><th>Notes</th></tr></thead>
+<tbody>
+<tr>
+  <td>00<br/>00~a</td>
+  <td>U+12471</td>
+  <td>&#x12471;</td>
+  <td>Identical to the punctuation mark 'colon'.</td>
+</tr>
+<tr>
+  <td>00~b</td>
+  <td></td>
+  <td><img src="etc/cunei-20.png" height="20" alt="cuneiform 20"/></td>
+  <td>Identical to "20", i.e., the MAN sign</td>
+</tr>
+<!--
+<tr>
+  <td>00~c</td>
+  <td></td>
+  <td><img src="cunei-0c.png" height="20" alt="cuneiform zero type c"/></td>
+  <td>This sign is so far attested only on P254754 = N 3958 r 1ff.</td>
+</tr>
+ -->
+<tr>
+  <td>00~c</td>
+  <td>U+1240B</td>
+  <td>&#x1240B;</td>
+  <td>This is "6" used as zero, attested in Seleucid astronomical
+  texts; see Neugebauer ACT p.511</td>
+</tr>
+<tr>
+  <td>00~d</td>
+  <td>U+1230D</td>
+  <td>&#x1230D;</td>
+  <td>This is "30" used as zero, attested in Seleucid astronomical
+  texts; see Neugebauer ACT p.511</td>
+</tr>
+<tr>
+  <td>oo</td>
+  <td></td>
+  <td></td>
+  <td>For spaces left to indicate medial zero see, e.g., P254790 = Plimpton 322</td>
+</tr>
+<tr>
+  <td>&lt;oo></td>
+  <td></td>
+  <td></td>
+  <td>P357330 = AfO 50, 356 BM 106444 (1913-04-16, 1276) r 9</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Number words</h2>
+
+<p>Most numbers are written with more than one grapheme; the
+components of these 'number words' are joined by dots:</p>
+
+<pre class="cookbook">
+&#x1222B; &#x1230D; = 2.30
+&#x12079; &#x1230B; &#x1240B; = 1.10.06
+&#x12448; &#x12471; &#x1230D;&#x12408; = 9@v.00.33
+</pre>
+
+<h3>Intra-number-word Colons</h3>
+<p>A rare scribal convention is to use a colon to clarify that two
+adjacent graphemes are separate even though the graphemes are part of
+the same number word as in, e.g., P363174 = ACT 130 r iii 6.  The
+colon functions as an explicit marker that the tens column is empty
+in such cases, and the requisite conventional transliteration
+of the sequence is: <code class="cookbook">10.:6</code>, i.e., the
+leading zero in the number is replaced by a colon.  Number
+processing software should treat such colons as no-ops,
+<strong>not</strong> as zeroes.</p>
+
+<h1>Related documentation</h1>
+<ul>
+<li><a href="http://oracc.museum.upenn.edu/doc/ATF/numbers/">Numbers in ATF</a></li>
+</ul>
+<d:resources>
+<d:resource copy="yes" href="etc/cunei-20.png" />
+<d:resource copy="yes" href="etc/cunei-40.png" />
+<d:resource copy="yes" href="etc/cunei-50.png" />
+<d:resource copy="yes" href="etc/cunei-60.png" />
+<d:resource copy="yes" href="etc/cunei-70.png" />
+<d:resource copy="yes" href="etc/cunei-80.png" />
+<d:resource copy="yes" href="etc/cunei-90.png" />
+<d:resource copy="yes" href="etc/cunei-0c.png" />
+</d:resources>
+</d:doc>

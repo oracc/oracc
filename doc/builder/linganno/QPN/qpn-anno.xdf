@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>QPN: Oracc Linguistic Annotation for Proper Nouns</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson and Steve Tinney</dc:creator>
+  <dc:date>2010-05-16</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of annotation conventions for proper nouns used in Oracc. We focus here on the data-entry view of linguistic annotation giving only enough additional technical background to ensure that correct annotation of ATF files can be carried out.</dc:description>
+</d:meta>
+
+<!--<d:schema name="" uri="">
+</d:schema> -->
+
+<p> This document assumes knowledge of the introductory page on <a href="/doc/builder/linganno/">Oraccc linguistic annotation</a>.</p>
+
+<h1>Transliteration</h1>
+<ul>
+<li>Proper nouns are transliterated without initial capitals, e.g., <code class="example">{m}ha-am-mu-ra-bi</code> not <code>{d}Ha-am-mu-ra-bi</code>.</li>
+<li>The male and female determinatives are {m} and {f} respectively, e.g., <code class="example">{f}la-ma-as-sa-ni</code>.</li>
+<li>Some projects, such as SAAo and CAMS, use double hyphens to mark internal word boundaries with double hyphens in ATF, so that they can be clearly distinguished (e.g., <code class="example">{d}a-nu--ŠEŠ-šu--DIN</code>  = Anu-ahšu-uballiṭ). However, new projects are encouraged not to use double hyphenation.</li>
+</ul>
+
+<h1>Lemmatization</h1>
+<p>Most lemmatization of proper nouns follows the conventions of the relevant language; here is a summary of the conventions common to all proper nouns. For further language-specific information, see the pages on <a href="../AKK/">Akkadian</a>, <a href="../ARC/">Aramaic</a>, <a href="../ELX/">Elamite</a>, <a href="../GRC/">Greek</a>, <a href="../PEO/">Old Persian</a>, and <a href="../SUX/">Sumerian</a>.</p>
+
+<p>This page describes explicit lemmatization. See the page on <a href="/doc/builder/linganno/#Proper_Nouns">Linguistic Annotation</a> for the difference between explicit and POS-only lemmatization of proper nouns.</p>
+<h2>CF</h2>
+<ul>
+<li>CFs of proper nouns have initial capitals. For instance <code class="example">{f}la-ma-as-sa-ni = +Lamassani[]PN$</code>.</li>
+<li>Internal word boundaries are marked by single hyphens, with initial capitals for internal proper nouns. Compare <code class="example">{m}{d}60-EN-šu-nu = +Anu-belšunu[]PN$</code> and <code class="example">{m}ri-mut-{d}60 = +Rimut-Anu[]PN$</code>.</li>
+<li>CFs of proper nouns <strong>NEVER</strong> use long vowels (i.e., not <code>Anu-bēlšunu</code> or <code>Rīmūt-Anu</code>).</li>
+</ul>
+
+<p>Partially broken proper nouns should be lemmatised wherever possible, according to the following conventions:</p>
+<dl>
+<dt>Only illegible signs survive after the determinative (if there is one)</dt>
+<dd>Lemmatise the whole name with CF <code>X</code>. For instance, <code class="example">{m}x = +X[]PN$</code>.</dd>
+<dt>No signs survive after the determinative</dt>
+<dd>Lemmatise the whole name with CF <code>X</code>. For instance,  <code class="example">{m}[...] = +X[]PN$</code>.</dd>
+<dt>One or more elements are completely missing</dt>
+<dd>Lemmatise the missing elements with X, separated by hyphens. For instance, <code class="example">{d}EN-[...] = +Bel-X[]PN$</code> and <code class="example">x-x-u₂-bal-liṭ = +X-uballiṭ[]PN$</code>.</dd>
+<dt>One or more elements are only partially preserved</dt>
+<dd>Lemmatise the sign names of the partially preserved elements in capitals, separated by periods. For instance, in <code class="example">{d}a-nu-$U₂-[...] = +Anu-U₂.X[]PN$</code> it is possible that the <code>U₂</code> might be read <code>šam</code> instead of <code>u₂</code>.</dd>
+</dl>
+
+<h2>GW and SENSE</h2>
+<p>There are three types of GW for proper nouns:</p>
+<dl>
+<dt>Modern-language GW</dt>
+<dd>Use this type when your translation uses a modern word instead of the ancient one, e.g., <code class="example">+Purattu[Euphrates]WN$</code>.</dd>
+<dt>Numerical GW</dt>
+<dd>Use this type when you need to distinguish between different individuals of the same name, and your translation uses the CF. For instance, <code class="example">+Nidintu-Anu[01]PN$</code> is a different person to <code class="example">+Nidintu-Anu[02]PN$</code>. Make sure to apply these numerical codings consistently across your corpus, so that it is always the same Nidintu-Anu who is assigned GW <code>[01]</code>. This will ensure that the glossary treats them as separate individuals.</dd>
+<dt>Empty GW</dt>
+<dd>Use this type when your translation uses the CF but you do not need or want to distinguish between individuals. For instance <code class="example">+Ištar[]DN$</code> does not need a numerical or modern-language GW if she is written "Ištar" in the translation and there is only one deity of that name.</dd>
+</dl>
+
+<p>SENSEs are rarely used in lemmatising proper nouns.</p>
+
+<h2>POS and EPOS</h2>
+<p>POS tags for proper nouns are not language-specific.  In the table below,
+the <code>Class</code> column indicates how the different NN types are
+grouped in glossaries.</p>
+
+<table class="eighty">
+<caption><a name="properpos">POS Tags for Proper Nouns</a></caption>
+<thead>
+<tr><th>POS</th><th>Meaning</th><th>Class</th><th>Pseud-lang</th></tr>
+</thead>
+<tbody>
+<tr><td>AN</td><td>Agricultural (locus) Name</td><td>Places</td><td>qpn-x-people</td></tr>
+<tr><td>CN</td><td>Celestial Name</td><td>Celestial</td><td>qpn-x-celest</td></tr>
+<tr><td>DN</td><td>Divine Name</td><td>Divine</td><td>qpn-x-divine</td></tr>
+<tr><td>EN</td><td>Ethnos Name</td><td>Ethnic</td><td>qpn-x-ethnic</td></tr>
+<tr><td>FN</td><td>Field Name</td><td>Places</td><td>qpn-x-places</td></tr>
+<tr><td>GN</td><td>Geographical Name (lands and other geographical entities without their own tag)</td><td>Places</td><td>qpn-x-places</td></tr>
+<tr><td>LN</td><td>Line Name (ancestral clan)</td><td>People</td><td>qpn-x-people</td></tr>
+<tr><td>MN</td><td>Month Name</td><td>Month</td><td>qpn-x-months</td></tr>
+<tr><td>ON</td><td>Object Name</td><td>Object</td><td>qpn-x-object</td></tr>
+<tr><td>PN</td><td>Personal Name</td><td>People</td><td>qpn-x-people</td></tr>
+<tr><td>QN</td><td>Quarter Name (city area)</td><td>Places</td><td>qpn-x-places</td></tr>
+<tr><td>RN</td><td>Royal Name</td><td>People</td><td>qpn-x-people</td></tr>
+<tr><td>SN</td><td>Settlement Name</td><td>Places</td><td>qpn-x-places</td></tr>
+<tr><td>TN</td><td>Temple Name</td><td>Temples</td><td>qpn-x-temple</td></tr>
+<tr><td>WN</td><td>Watercourse Name</td><td>Watercourses</td><td>qpn-x-waters</td></tr>
+<tr><td>YN</td><td>Year Name</td><td>Year name</td><td>qpn-x-ynames</td></tr>
+</tbody>
+</table>
+
+<p>EPOS is helpful in cases where, for instance, royal names are deified or celestial entities are named after deities. For example:</p>
+
+<pre class="example">
+4. {mul}GU.LA u {d}ŠUL.GI
+#lem: +Gula[]DN'CN$; u[and]CNJ; +Šulgi[]RN'DN$
+</pre> 
+
+<h2>NORM0</h2>
+<p>It is only necessary to add a NORM0 to the lemmatisation if the spelling shows a morphological difference from the CF. For instance, <code class="example">ak-ka-di-i = +Akkadu[Akkadian]EN$Akkadi</code>.</p>
+
+<h1>Translation</h1>
+<p>Ideally, your translation of a proper noun should match <em>either</em> the modern-language GW (see above) <em>or</em> the CF, with short vowels, if the GW is empty or numerical.</p>
+
+<d:resources/>
+
+</d:doc>

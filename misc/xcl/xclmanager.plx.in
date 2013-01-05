@@ -1,0 +1,538 @@
+#!/usr/bin/perl
+BEGIN { push @INC, '@@ORACC@@/tools' }
+use warnings; use strict; use open 'utf8';
+
+use ORACC::XML;
+use ORACC::NS;
+use ORACC::Expand2;
+use ORACC::Lang::Any::Ngram;
+use ORACC::Lang::Any::Util;
+use ORACC::Protocols;
+use Getopt::Long;
+use Pod::Usage;
+use Data::Dumper;
+
+my @config = ();
+my $create = 0;
+my $debug = 0;
+my %config = ();
+my $xcl_fn = '';
+my $xcldoc = undef;
+my $xclroot = undef;
+my $lang = 'sux';
+my @list = ();
+my $output = '';
+my $noconf = 0;
+my $stdin = 0;
+my $syntax = 0;
+my $xclext = 'xcl';
+my @todo = ();
+my $verbose = 0;
+my $last_label = '';
+my $xtfdoc = undef;
+my %labels = ();
+my $units_labeled = 0;
+my $line_is_unit = 0;
+my $textid = '';
+my $uid;
+
+GetOptions (
+	    'config:s'=>\@config,
+	    'create'=>\$create,
+	    'debug'=>\$debug,
+	    'lang'=>\$lang,
+	    'list:s'=>\@list,
+	    'noconf'=>\$noconf,
+	    'output:s'=>\$output,
+	    'stdin'=>\$stdin,
+	    'syntax'=>\$syntax,
+	    'xclext:s'=>\$xclext,
+	    'verbose'=>\$verbose,
+	    ) || pod2usage(1);
+
+my $xtf2xcl = '@@ORACC@@/lib/ORACC/XTF2/xtf-XCL.xsl';
+my $mergexlf = '@@ORACC@@/lib/ORACC/XCL/merge-XLF.xsl';
+my $xclmaker = load_xsl($xtf2xcl);
+my $xlfmerger = load_xsl($mergexlf);
+
+my $basename = '';
+
+my @sentences = ();
+
+my %langconf
+    = (
+       'sux'=>['@@ORACC@@/projects/epsd/lib/oraccifix.cfg',
+	       '@@ORACC@@/projects/epsd/lib/compounds.cfg',
+	       '@@ORACC@@/projects/epsd/lib/usages.cfg',
+	       ],
+       );
+
+#  '@@ORACC@@/projects/epsd/lib/senses.cfg',
+
+if ($#config < 0 && $lang && $langconf{$lang}) {
+    @config = @{$langconf{$lang}};
+}
+
+die "xclmanager.plx: must give configuration name on command line\n"
+    unless $#config >= 0 || $noconf;
+
+@config = map { split(/,/,$_) } @config;
+
+foreach my $c (@config) {
+    push @todo, load_config($c);
+}
+
+my @files = ();
+if ($#list >= 0) {
+    foreach my $list (@list) {
+	open(IN, $list) || die "xclmanager.plx: can't open list file $list\n";
+	while (<IN>) {
+	    chomp;
+	    push @files, $_;
+	}
+	close(IN);
+    }
+} elsif ($stdin) {
+    while (<>) {
+	chomp;
+	push @files, $_;
+    }
+} else {
+    @files = @ARGV;
+}
+
+foreach my $pq (@files) {
+    ($textid) = ($pq =~ /([PQX]\d{6,})/);
+    print STDERR "xclmanager: $pq\n" if $verbose;
+    @sentences = ();
+
+    if ($pq =~ /^[PQX]\d+[a-z]*$/) {
+	$basename = expand("$pq.xtf");
+	$basename =~ s/\.xtf$//;
+    } else {
+	$basename = $pq;
+	$basename =~ s/\.[^\.]+$//;
+    }
+
+    if ($create) {
+	create_xcl();
+	next unless $xcldoc;
+    } else {
+	load_xcl();
+    }
+
+    unless ($noconf) {
+	foreach my $t (@todo) {
+	    process_xcl($t,$xclroot);
+	    fixup_dsu($xclroot);
+	}
+    }
+
+    if ($syntax) {
+	my @retree = ORACC::Lang::Any::Base::syntax(@sentences);
+	foreach my $r (@retree) {
+	    # redo the tree to include clause/phrase hierarchy
+	}
+    }
+
+    save_xcl();
+    undef $xcldoc;
+}
+
+if ($debug) {
+    open(OUT,">xclmanager.cfg") || die; select OUT;
+    foreach my $t (@todo) {
+	print_config($t);
+    }
+    close(OUT);
+}
+
+##################################################
+
+### XCL HANDLING ###
+
+sub
+create_xcl {
+    $xcl_fn = "$basename.$xclext";
+    my $xtf = "$basename.xtf";
+    my $xlf = "$basename.xlf";
+
+    # reduce XTF to chunks discontinuities and words
+    # N.B.: never use transform_file if there will be many inputs;
+    # instead, load the XML yourself so you can transform it yourself
+    # and free it when done.
+    $xtfdoc = load_xml($xtf);
+    return unless $xtfdoc;
+
+    $line_is_unit = ORACC::Protocols::has_proto($xtfdoc,'syntax','line_is_unit');
+
+    $xcldoc = $xclmaker->transform($xtfdoc);
+#    print $xcldoc->toString();
+    # remap word nodes to lemmata if possible
+    if (-r $xlf) {
+	$xcldoc = $xlfmerger->transform($xcldoc, 'xlf-file'=>"'$xlf'");
+    }
+    $xclroot = $xcldoc->getDocumentElement();
+
+    # generate the base structural hierarchy
+    my @t = ORACC::XML::tree($xclroot->childNodes());
+    $xclroot->removeChildNodes();
+    foreach my $t (@t) {
+	$xclroot->appendChild($t);
+    }
+
+    $uid = 1;
+    foreach my $c ($xclroot->getElementsByTagNameNS($XCL,'c')) {
+	my $fc = $c->firstChild();
+	if ($fc && $fc->isa('XML::LibXML::Element') && $fc->localName() ne 'c') {
+	    my @newc = ();
+	    if ($line_is_unit) {
+		foreach my $cc ($c->childNodes()) {
+		    if ($cc->isa('XML::LibXML::Element')
+			&& $cc->localName() eq 'd'
+			&& $cc->getAttribute('type') eq 'line-start') {
+			push @newc, sb($c), $cc;
+		    } else {
+			push @newc, $cc;
+		    }
+		}
+	    } else {
+		# send out for sentence annotation; if return is
+		# >= zero it means reflow the tree to add sentence
+		# hierarchy
+		if (ORACC::Lang::Any::Base::sentences($c) >= 0) {
+		    # interpolate sentence markers
+		    foreach my $cc ($c->childNodes()) {
+			if ($cc->isa('XML::LibXML::Element') 
+			    && $cc->hasAttribute('sb')) {
+			    if ($cc->getAttribute('sb') eq 'before') {
+				push @newc, sb($c), $cc;
+			    } else {
+				push @newc, $cc, sb($c);
+			    }
+			} else {
+			    push @newc, $cc;
+			}
+		    }
+		    # remove final sentence node if any
+		    # FIXME: this really needs to scan the last sentence for l/ll
+		    # nodes not matter how many nodes are in the sentence and strip it
+		    # out if the sentence has no words at all
+		    if ($newc[$#newc]->localName() eq 'c' 
+			&& $newc[$#newc]->getAttribute('type') eq 'unit') {
+			pop @newc;
+		    } elsif ($newc[$#newc-1]->localName() eq 'c'
+			     && $newc[$#newc-1]->getAttribute('type') eq 'unit'
+			     && $newc[$#newc]->localName() !~ /^ll?$/) {
+			my $last = pop @newc;
+			pop @newc;
+			push @newc, $last;
+		    }
+		}
+	    }
+	    # generate sentential hierarchy
+	    my @sent = ORACC::XML::tree(@newc);
+	    $c->removeChildNodes();
+	    foreach my $cc (@sent) {
+		if ($cc->hasChildNodes()) {
+		    unit_attr($cc);
+		}
+		push @sentences, $cc;
+		$c->appendChild($cc);
+	    }
+	}
+    }
+    undef $xtfdoc;
+}
+
+sub
+sb {
+    my $n = shift;
+    my $sb = $n->ownerDocument()->createElementNS($XCL,'c');
+    $sb->setAttribute('type','unit');
+    $sb->setAttribute('level','3');
+    $sb;
+}
+
+sub
+load_xcl {
+    $xcl_fn = "$basename.$xclext";
+    die "xclmanager.plx: must give XCL file on command line\n"
+	unless defined $xcl_fn;
+    $xcldoc = load_xml($xcl_fn);
+    print STDERR "xclmanager.plx: processing $xcl_fn\n"
+	if $debug;
+    $xclroot = $xcldoc->getDocumentElement();
+    foreach my $c ($xclroot->getElementsByTagNameNS($XCL,'c')) {
+	push @sentences, $c if $c->getAttribute('type') eq 'unit';
+    }
+}
+
+sub
+process_xcl {
+    my $todo = shift;
+    # process child chunks depth first
+    foreach my $x (@_) {
+	process_xcl($todo, $x->childNodes()) 
+	    if $x->nodeName() eq 'c' && $x->hasChildNodes();
+    }
+    # now process the current list
+    ngramify($$todo{'ngram'}, @_);
+}
+
+sub
+fixup_dsu {
+    my $xdoc = shift;
+    #N.B.: don't use getElementsByTagNameNS here b/c the dsu elements
+    # get added without the default namespace being set properly
+    my @dsu = $xdoc->getElementsByTagName('dsu');
+    my $xdsu = 'aaa';
+    for (my $i = 0; $i <= $#dsu; ++$i) {
+	if ($dsu[$i]->getAttribute('n') == 0) {
+	    my @base = ();
+	    my @form = ();
+	    my @morph = ();
+	    my $j;
+	    my $dsu_id = 'dsu.'.$xdsu++;
+	    for ($j = $i; $j <= $#dsu; ++$j) {
+		my $anode = $dsu[$j]->parentNode();
+		if ($anode->localName() eq 'll') {
+		    $anode = $dsu[$j]->previousSibling();
+		}
+		push @base, $anode->getAttribute('base') || 'x';
+		push @form, $anode->getAttribute('form') || 'x';
+		push @morph, $anode->getAttribute('morph') || 'x';
+		$dsu[$j]->setAttribute('dsu',$dsu_id);
+		last if $dsu[$j]->getAttribute('last');
+	    }
+	    $dsu[$i]->setAttribute('base', join(' ', @base));
+	    $dsu[$i]->setAttribute('form', join('...', @form));
+	    $dsu[$i]->setAttribute('morph', join('...', @morph));
+	    $i = $j;
+	}
+    }
+}
+
+sub
+save_xcl {
+    my $save_fn = $output || $xcl_fn;
+    open(OUT,">$save_fn") || die "xclmanager.plx: can't write $save_fn\n";
+    print OUT $xcldoc->toString();
+    close(OUT);
+}
+
+### ID and LABEL HANDLING ###
+sub
+unit_attr {
+    my $s = shift;
+    my ($first_l, $last_l);
+#    $s->setAttribute('type','unit');
+    $s->setAttributeNS($XML,'id',"$textid.U$uid");
+    ++$uid;
+    my @c = $s->childNodes();
+    my $i = 0;
+    while ($c[$i]
+	   && (!$c[$i]->isa('XML::LibXML::Element')
+	       || ($c[$i]->localName() !~ /^ll?$/
+		   && $c[$i]->localName() ne 'w'))) {
+	++$i;
+    }
+    if (!$c[$i]) {
+#	warn("xclmanager: $textid.U$uid: no l-nodes to get label\n");
+    } else {
+	$first_l = $c[$i];
+	$i = $#c;
+	# we don't care about $i == 0 here because it means first_l == last_l
+	while ($i && (!$c[$i]->isa('XML::LibXML::Element')
+		      || $c[$i]->localName() !~ /^ll?$/)) {
+	    --$i;
+	}
+	$last_l = $c[$i];
+	my $first_label = get_label($first_l);
+	return $first_label if $first_l == $last_l;
+	my $last_label = get_label($last_l);
+	$s->setAttribute('label',make_label($first_label,$last_label));
+    }
+}
+
+sub
+get_label {
+    my $l = shift;
+#    print STDERR $l->toString(),"\n";
+    if ($l->localName() eq 'll') {
+	foreach my $lc ($l->childNodes()) {
+	    $l = $lc and last 
+		if $lc->isa('XML::LibXML::Element') && $lc->localName() eq 'l';
+	}
+    }
+    my $lid = $l->getAttribute('ref');
+    $lid =~ s/\.[^\.]+$//;
+#    print STDERR "trying $lid...\n";
+    my $lnode = $xtfdoc->getElementsById($lid);
+    $lnode->getAttribute('label');
+}
+
+sub
+xunit_label {
+    my $r = shift;
+    my @r = @$r;
+    $last_label = '';
+    my($from_ref,$to_ref);
+    foreach (my $i = 0; $i <= $#r; ++$i) {
+	my $w = $r[$i]{'w'};
+	if (defined $$w{'wid'}) {
+	    $from_ref = $w;
+	    last;
+	}
+    }
+    foreach (my $i = $#r; $i >= 0; --$i) {
+	my $w = $r[$i]{'w'};
+	if (defined $$w{'wid'}) {
+	    $to_ref = $w;
+	    last;
+	}
+    }
+    my $from_w = $$from_ref{'wid'};
+    my $to_w = $$to_ref{'wid'};
+    my $label = make_label(find_lid($from_w),
+			   find_lid($to_w));
+
+#    print STDERR "ref $units_labeled from $from_w to $to_w => '$label'\n";
+    ++$units_labeled;
+
+    $label;
+}
+
+sub
+find_lid {
+    my $n = ($xtfdoc->findnodes("id('$_[0]')"))[0];
+    if ($n) {
+	$n = $n->parentNode();
+	while ($n) {
+	    if ($n->localName() eq 'l') {
+		return xml_id($n);
+	    }
+	    $n = $n->parentNode();
+	}
+    }
+    '';
+}
+
+sub
+make_label {
+#    my($from_l,$to_l) = ($labels{$_[0]},$labels{$_[1]});
+    my($from_l,$to_l) = @_;
+    my $label = $from_l;
+    my $to = strip_redundancy($from_l,$to_l);
+    if ($to) {
+	$label .= '-'.$to;
+    }
+    $label;
+}
+
+sub
+strip_redundancy {
+    my ($from_l,$to_l) = @_;
+    my @from = split(/\s+/, $from_l);
+    my @to = split(/\s+/, $to_l);
+    my $i;
+    for ($i = 0; $i <= $#from && $i <= $#to; ++$i) {
+	last unless $from[$i] eq $to[$i];
+    }
+    if ($i) {
+	splice(@to, 0, $i);
+    }
+    join(' ',@to);
+}
+
+### CONFIG HANDLING ###
+
+sub
+load_config {
+    my $cfg_fn = shift;
+    if (-r $cfg_fn) {
+	my $cfg_doc = load_xml($cfg_fn);
+	my %config = ();
+	$config{'config'} = $cfg_fn;
+	$config{'ngram'} = ORACC::Lang::Any::Ngram->new();
+	$config{'base'} = $cfg_fn;
+	$config{'base'} =~ s,/[^/]+$,,;
+	my $cfgroot = $cfg_doc->getDocumentElement();
+	$config{'process'} = $cfgroot->getAttribute('name');
+	foreach my $c ($cfgroot->childNodes()) {
+	    next unless ref($c) eq 'XML::LibXML::Element';
+	    my $cName = $c->nodeName();
+	    if ($cName eq 'use') {
+		my $file = $c->getAttribute('file');
+		$file = "$config{'base'}/$file" unless $file =~ m,^/,;
+		push @{$config{'using'}}, $file;
+		load_nl_file($config{'ngram'},$file);
+	    } elsif ($cName eq 'to') {
+		$config{'output_extension'} = $c->getAttribute('ext');
+	    } elsif ($cName eq 'lang') {
+		load_lang($c->getAttribute('n'));
+	    } else {
+		warn("xclmanager.plx: unknown config command '$cName'\n");
+	    }
+	}
+	return { %config };
+    } else {
+	die "xclmanager.plx: config file $cfg_fn not readable\n";
+    }
+}
+
+sub
+print_config {
+    my $cfgref = shift;
+    print "config=>$$cfgref{'config'}\n";
+    print "process=>$$cfgref{'process'}\n";
+    print "output_extension=>$$cfgref{'output_extension'}\n";
+    foreach my $u (@{$$cfgref{'using'}}) {
+	print "using $u\n";
+    }
+    print "-------------------------------------\n";
+    print_ngrams($$cfgref{'ngram'});
+    print "=====================================\n";
+}
+
+1;
+__END__
+
+=head1 NAME
+
+xclmanager.plx -- manage creation and annotation of XCL files
+
+=head1 SYNOPSIS
+
+xclmanager.plx [options]
+
+=head1 OPTIONS
+
+=over
+
+=item B<-config>
+
+Give the name of the configuration file; see 
+http://oracc.museum.upenn.edu/oracc/doc/XTF/#config
+for configuration info (not yet used).
+
+=item B<-verbose>
+
+Make noise about what is happening.
+
+=back
+
+=head1 DESCRIPTION
+
+Manage XCL processing including creation and linguistic annotation.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).

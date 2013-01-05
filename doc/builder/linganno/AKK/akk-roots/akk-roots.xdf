@@ -1,0 +1,1352 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Akkadian roots</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2010-09-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This index of Akkadian roots refers to the principal lemma(ta) in the Concise Dictionary of Akkadian which are
+verbs in which the root letters may occur. It does not refer to other
+parts of speech (to which reference is made at the end of each verb).
+The aleph sign (ʾ) refers to ALL weaknesses, including medial ā,
+ī, and ū, except for initial w.</dc:description>
+</d:meta>
+
+<h1>Index of Akkadian roots</h1>
+
+<p><a href="#alef">ʾ</a> | <a href="#b">B</a> | <a href="#d">D</a> | <a href="#g">G</a> | <a href="#h">Ḫ</a> | <a href="#k">K</a> | <a href="#l">L</a> | <a href="#m">M</a> | <a href="#n">N</a> | <a href="#p">P</a> | <a href="#q">Q</a> | <a href="#r">R</a> | <a href="#s">S</a> | <a href="#sadhe">Ṣ</a> | <a href="#shin">Š</a> | <a href="#t">T</a> |
+  <a href="#teth">Ṭ</a> | <a href="#w">W</a> | <a href="#z">Z</a></p>
+
+<h2 id="alef">ʾ (aleph)</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">ʾʾʾ&#160;&#160;</td><td class="nocolrules">ḫaḫû II</td></tr>
+<tr><td class="ten nocolrules">ʾʾd&#160;&#160;</td><td class="nocolrules">âdu</td></tr>
+<tr><td class="ten nocolrules">ʾʾl&#160;&#160;</td><td class="nocolrules">âlu; eʾēlu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾʾr&#160;&#160;</td><td class="nocolrules">êru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾʾṣ&#160;&#160;</td><td class="nocolrules">wiāṣum</td></tr>
+<tr><td class="ten nocolrules">ʾʾš&#160;&#160;</td><td class="nocolrules">âšu</td></tr>
+<tr><td class="ten nocolrules">ʾbʾ&#160;&#160;</td><td class="nocolrules">apû III; ebû II</td></tr>
+<tr><td class="ten nocolrules">ʾbb&#160;&#160;</td><td class="nocolrules">ebēbu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾbd&#160;&#160;</td><td class="nocolrules">nābutu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾbḫ&#160;&#160;</td><td class="nocolrules">ebēḫu</td></tr>
+<tr><td class="ten nocolrules">ʾbk&#160;&#160;</td><td class="nocolrules">abāku(m)</td></tr>
+<tr><td class="ten nocolrules">ʾbl&#160;&#160;</td><td class="nocolrules">abālu(m) I; apālu(m) I; ebēlu; wabālu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾbr&#160;&#160;</td><td class="nocolrules">abāru(m) III; ebēru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾbs&#160;&#160;</td><td class="nocolrules">uppusu II</td></tr>
+<tr><td class="ten nocolrules">ʾbt&#160;&#160;</td><td class="nocolrules">abātu(m) I.II; nābutu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾbṭ&#160;&#160;</td><td class="nocolrules">ebēṭu(m) I.II; ubbuṭu IV</td></tr>
+<tr><td class="ten nocolrules">ʾdʾ&#160;&#160;</td><td class="nocolrules">edû(m) II; uddû III</td></tr>
+<tr><td class="ten nocolrules">ʾdb&#160;&#160;</td><td class="nocolrules">edēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdd&#160;&#160;</td><td class="nocolrules">edēdu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdḫ/k&#160;&#160;</td><td class="nocolrules">edēḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdl&#160;&#160;</td><td class="nocolrules">edēlu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdm&#160;&#160;</td><td class="nocolrules">adāmum</td></tr>
+<tr><td class="ten nocolrules">ʾdp&#160;&#160;</td><td class="nocolrules">edēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdq&#160;&#160;</td><td class="nocolrules">edēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdr&#160;&#160;</td><td class="nocolrules">adāru(m) I.II; edēru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾdš&#160;&#160;</td><td class="nocolrules">edēšu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾgʾ&#160;&#160;</td><td class="nocolrules">egû(m) V</td></tr>
+<tr><td class="ten nocolrules">ʾgg&#160;&#160;</td><td class="nocolrules">agāgu(m); ekēku; eqēqu</td></tr>
+<tr><td class="ten nocolrules">ʾgm&#160;&#160;</td><td class="nocolrules">agāmu</td></tr>
+<tr><td class="ten nocolrules">ʾgr&#160;&#160;</td><td class="nocolrules">agāru(m); egēru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾḫʾ&#160;&#160;</td><td class="nocolrules">aḫû(m) II; ḫaḫû II</td></tr>
+<tr><td class="ten nocolrules">ʾḫr&#160;&#160;</td><td class="nocolrules">aḫāru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾḫz&#160;&#160;</td><td class="nocolrules">aḫāzu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾkʾ&#160;&#160;</td><td class="nocolrules">ekû(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾkb/p&#160;&#160;</td><td class="nocolrules">ekēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾkd&#160;&#160;</td><td class="nocolrules">ekēdu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾkk&#160;&#160;</td><td class="nocolrules">ekēku</td></tr>
+<tr><td class="ten nocolrules">ʾkl&#160;&#160;</td><td class="nocolrules">akālu(m); ekēlu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾkm&#160;&#160;</td><td class="nocolrules">akāmu II; ekēmu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾkp&#160;&#160;</td><td class="nocolrules">ukkupu</td></tr>
+<tr><td class="ten nocolrules">ʾkṣ&#160;&#160;</td><td class="nocolrules">ekēṣu</td></tr>
+<tr><td class="ten nocolrules">ʾkš&#160;&#160;</td><td class="nocolrules">akāšu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾlʾ&#160;&#160;</td><td class="nocolrules">elû(m) IV; utlellû(m) </td></tr>
+<tr><td class="ten nocolrules">ʾlʾʾ&#160;&#160;</td><td class="nocolrules">šutelūʾu</td></tr>
+<tr><td class="ten nocolrules">ʾld&#160;&#160;</td><td class="nocolrules">(w)alādu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾlḫ&#160;&#160;</td><td class="nocolrules">elēḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾlk&#160;&#160;</td><td class="nocolrules">alāku(m)</td></tr>
+<tr><td class="ten nocolrules">ʾll&#160;&#160;</td><td class="nocolrules">alālu(m) II.III; elēlu(m) II.III</td></tr>
+<tr><td class="ten nocolrules">ʾllʾ&#160;&#160;</td><td class="nocolrules">neʾellû</td></tr>
+<tr><td class="ten nocolrules">ʾlp&#160;&#160;</td><td class="nocolrules">alāpu(m) I; elēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾlṣ&#160;&#160;</td><td class="nocolrules">elēṣu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾlt&#160;&#160;</td><td class="nocolrules">alātu(m); ḫalātum</td></tr>
+<tr><td class="ten nocolrules">ʾmʾ&#160;&#160;</td><td class="nocolrules">amûm V; ewûm I</td></tr>
+<tr><td class="ten nocolrules">ʾmd&#160;&#160;</td><td class="nocolrules">emēdu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾmm&#160;&#160;</td><td class="nocolrules">emēmu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾmq&#160;&#160;</td><td class="nocolrules">emēqu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾmr&#160;&#160;</td><td class="nocolrules">amāru(m) I.II; emēru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾms&#160;&#160;</td><td class="nocolrules">amāṣu</td></tr>
+<tr><td class="ten nocolrules">ʾmṣ&#160;&#160;</td><td class="nocolrules">amāṣu; emēṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾmš&#160;&#160;</td><td class="nocolrules">amāšu; emēšu</td></tr>
+<tr><td class="ten nocolrules">ʾnʾ&#160;&#160;</td><td class="nocolrules">enû(m) III</td></tr>
+<tr><td class="ten nocolrules">ʾnb&#160;&#160;</td><td class="nocolrules">enēbu</td></tr>
+<tr><td class="ten nocolrules">ʾnḫ&#160;&#160;</td><td class="nocolrules">anāḫu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾnn&#160;&#160;</td><td class="nocolrules">anānu; enēnu(m) I.II.III.IV; utnēnu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾnq&#160;&#160;</td><td class="nocolrules">enēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾnš&#160;&#160;</td><td class="nocolrules">enēšu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾnt&#160;&#160;</td><td class="nocolrules">enētu</td></tr>
+<tr><td class="ten nocolrules">ʾpʾ&#160;&#160;</td><td class="nocolrules">apû III; epû(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾpl&#160;&#160;</td><td class="nocolrules">apālu(m) I.II; uppulu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾpp&#160;&#160;</td><td class="nocolrules">apāpum</td></tr>
+<tr><td class="ten nocolrules">ʾpq&#160;&#160;</td><td class="nocolrules">epēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾpr&#160;&#160;</td><td class="nocolrules">apāru; ebēru(m) I; epēru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾps&#160;&#160;</td><td class="nocolrules">epēsum I; uppusu II</td></tr>
+<tr><td class="ten nocolrules">ʾpš&#160;&#160;</td><td class="nocolrules">epēšu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾqʾ&#160;&#160;</td><td class="nocolrules">eqû(m) II; uqqû(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾqb/p&#160;&#160;</td><td class="nocolrules">ekēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾqq&#160;&#160;</td><td class="nocolrules">eqēqu</td></tr>
+<tr><td class="ten nocolrules">ʾqr&#160;&#160;</td><td class="nocolrules">(w)aqāru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrʾ&#160;&#160;</td><td class="nocolrules">arû IV.V.VIII; erû(m) V; warûm II; wurrûm</td></tr>
+<tr><td class="ten nocolrules">ʾrb&#160;&#160;</td><td class="nocolrules">erēbu(m) I; nērubu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrd&#160;&#160;</td><td class="nocolrules">arādu II; (w)arādu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrḫ&#160;&#160;</td><td class="nocolrules">arāḫu(m) I.II; erēḫu</td></tr>
+<tr><td class="ten nocolrules">ʾrk&#160;&#160;</td><td class="nocolrules">arāku(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrm&#160;&#160;</td><td class="nocolrules">arāmu</td></tr>
+<tr><td class="ten nocolrules">ʾrp&#160;&#160;</td><td class="nocolrules">erēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrr&#160;&#160;</td><td class="nocolrules">arāru(m) I.III; erēru(m); naʾarruru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾrsʾ&#160;&#160;</td><td class="nocolrules">šutērsû</td></tr>
+<tr><td class="ten nocolrules">ʾrš&#160;&#160;</td><td class="nocolrules">erēšu(m) I.II; (w)arāšu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsʾ&#160;&#160;</td><td class="nocolrules">azû(m) I; esû III</td></tr>
+<tr><td class="ten nocolrules">ʾsd&#160;&#160;</td><td class="nocolrules">ussudu</td></tr>
+<tr><td class="ten nocolrules">ʾsḫ&#160;&#160;</td><td class="nocolrules">esēḫu(m) I; ezēḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsk&#160;&#160;</td><td class="nocolrules">esēḫu(m) I; esēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsl&#160;&#160;</td><td class="nocolrules">esēlu</td></tr>
+<tr><td class="ten nocolrules">ʾsm&#160;&#160;</td><td class="nocolrules">(w)asāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsp&#160;&#160;</td><td class="nocolrules">esēpu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsq&#160;&#160;</td><td class="nocolrules">esēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾsr&#160;&#160;</td><td class="nocolrules">esēru(m) II.III</td></tr>
+<tr><td class="ten nocolrules">ʾṣʾ&#160;&#160;</td><td class="nocolrules">eṣû; (w)aṣû(m)</td></tr>
+<tr><td class="ten nocolrules">ʾṣb&#160;&#160;</td><td class="nocolrules">waṣābum</td></tr>
+<tr><td class="ten nocolrules">ʾṣd&#160;&#160;</td><td class="nocolrules">eṣēdu(m) II</td></tr>
+<tr><td class="ten nocolrules">ʾṣl&#160;&#160;</td><td class="nocolrules">eṣēlu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾṣn&#160;&#160;</td><td class="nocolrules">eṣēnu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾṣp&#160;&#160;</td><td class="nocolrules">eṣēpu(m); waṣābum</td></tr>
+<tr><td class="ten nocolrules">ʾṣr&#160;&#160;</td><td class="nocolrules">esēru(m) II; eṣēru(m); uṣṣuru(m) II.III</td></tr>
+<tr><td class="ten nocolrules">ʾšʾ&#160;&#160;</td><td class="nocolrules">ešēʾu; ešû(m) V.VI; išû(m) IV</td></tr>
+<tr><td class="ten nocolrules">ʾšb&#160;&#160;</td><td class="nocolrules">ešṣbu; (w)ašābu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾšr&#160;&#160;</td><td class="nocolrules">ašāru(m) I; ešēru(m); wašārum</td></tr>
+<tr><td class="ten nocolrules">ʾšš&#160;&#160;</td><td class="nocolrules">ašāšu(m) III.IV; uššušu(m) III</td></tr>
+<tr><td class="ten nocolrules">ʾtʾ (or ntʾ)&#160;&#160;</td><td class="nocolrules">nentû</td></tr>
+<tr><td class="ten nocolrules">ʾtk&#160;&#160;</td><td class="nocolrules">atāku; etāku</td></tr>
+<tr><td class="ten nocolrules">ʾtm&#160;&#160;</td><td class="nocolrules">adāmum; etēmu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾtn&#160;&#160;</td><td class="nocolrules">etēmu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾtq&#160;&#160;</td><td class="nocolrules">etēqu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾtr&#160;&#160;</td><td class="nocolrules">(w)atāru(m)</td></tr>
+<tr><td class="ten nocolrules">ʾṭʾ&#160;&#160;</td><td class="nocolrules">eṭû II</td></tr>
+<tr><td class="ten nocolrules">ʾṭl&#160;&#160;</td><td class="nocolrules">eṭēlu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾṭm&#160;&#160;</td><td class="nocolrules">adāmum</td></tr>
+<tr><td class="ten nocolrules">ʾṭr&#160;&#160;</td><td class="nocolrules">eṭēru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ʾwʾ&#160;&#160;</td><td class="nocolrules">awûm; ewûm I.II</td></tr>
+<tr><td class="ten nocolrules">ʾzr&#160;&#160;</td><td class="nocolrules">azāru</td></tr>
+<tr><td class="ten nocolrules">ʾzʾ&#160;&#160;</td><td class="nocolrules">azû(m) I; ezûm I.II</td></tr>
+<tr><td class="ten nocolrules">ʾzb&#160;&#160;</td><td class="nocolrules">ezēbu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾzḫ&#160;&#160;</td><td class="nocolrules">ezēḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ʾzr&#160;&#160;</td><td class="nocolrules">esēru(m) II; ezēru</td></tr>
+<tr><td class="ten nocolrules">ʾzz&#160;&#160;</td><td class="nocolrules">ezēzu(m); → izuzzum</td></tr>
+</table>
+
+<h2 id="b">B</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">bʾʾ&#160;&#160;</td><td class="nocolrules">bâʾu(m) I.II; buʾʾû(m) II</td></tr>
+<tr><td class="ten nocolrules">bʾd&#160;&#160;</td><td class="nocolrules">biātu(m)</td></tr>
+<tr><td class="ten nocolrules">bʾl&#160;&#160;</td><td class="nocolrules">baʾālu(m); bâlu I; bêlu(m); bullu I</td></tr>
+<tr><td class="ten nocolrules">bʾr&#160;&#160;</td><td class="nocolrules">bâru(m) I.II.III; bêru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">bʾš&#160;&#160;</td><td class="nocolrules">baʾāšu; bâšu(m) I.II; beʾēšu(m); bêšu(m)</td></tr>
+<tr><td class="ten nocolrules">bʾt&#160;&#160;</td><td class="nocolrules">biātu(m)</td></tr>
+<tr><td class="ten nocolrules">bʾṭ&#160;&#160;</td><td class="nocolrules">bâṭu</td></tr>
+<tr><td class="ten nocolrules">bbl&#160;&#160;</td><td class="nocolrules">babālu(m); wabālum</td></tr>
+<tr><td class="ten nocolrules">bdʾ&#160;&#160;</td><td class="nocolrules">bedûm</td></tr>
+<tr><td class="ten nocolrules">bdd&#160;&#160;</td><td class="nocolrules">buddudu</td></tr>
+<tr><td class="ten nocolrules">bdḫ&#160;&#160;</td><td class="nocolrules">badāḫu</td></tr>
+<tr><td class="ten nocolrules">bdm&#160;&#160;</td><td class="nocolrules">badāmu</td></tr>
+<tr><td class="ten nocolrules">bdq&#160;&#160;</td><td class="nocolrules">batāqu(m)</td></tr>
+<tr><td class="ten nocolrules">bdš&#160;&#160;</td><td class="nocolrules">badāšu</td></tr>
+<tr><td class="ten nocolrules">bḫʾ&#160;&#160;</td><td class="nocolrules">baḫû II; buʾʾû(m) II</td></tr>
+<tr><td class="ten nocolrules">bḫr&#160;&#160;</td><td class="nocolrules">beḫēru; buḫḫuru</td></tr>
+<tr><td class="ten nocolrules">bḫš&#160;&#160;</td><td class="nocolrules">buḫḫušu</td></tr>
+<tr><td class="ten nocolrules">bkʾ&#160;&#160;</td><td class="nocolrules">bakû(m)</td></tr>
+<tr><td class="ten nocolrules">blʾ&#160;&#160;</td><td class="nocolrules">belû(m) II</td></tr>
+<tr><td class="ten nocolrules">blky&#160;&#160;</td><td class="nocolrules">nabalkutu(m) II</td></tr>
+<tr><td class="ten nocolrules">bll&#160;&#160;</td><td class="nocolrules">balālu(m)</td></tr>
+<tr><td class="ten nocolrules">blm&#160;&#160;</td><td class="nocolrules">balāmu</td></tr>
+<tr><td class="ten nocolrules">blṣ&#160;&#160;</td><td class="nocolrules">balāṣu I.II</td></tr>
+<tr><td class="ten nocolrules">blṭ&#160;&#160;</td><td class="nocolrules">balāṭu(m) II</td></tr>
+<tr><td class="ten nocolrules">bnʾ&#160;&#160;</td><td class="nocolrules">banû(m) II.IV</td></tr>
+<tr><td class="ten nocolrules">bnn&#160;&#160;</td><td class="nocolrules">bunnunu</td></tr>
+<tr><td class="ten nocolrules">bql&#160;&#160;</td><td class="nocolrules">baqālu</td></tr>
+<tr><td class="ten nocolrules">bqm/n&#160;&#160;</td><td class="nocolrules">baqāmu(m)</td></tr>
+<tr><td class="ten nocolrules">bqr&#160;&#160;</td><td class="nocolrules">baqāru(m) I; buqquru; (w)aqāru(m)</td></tr>
+<tr><td class="ten nocolrules">bqš&#160;&#160;</td><td class="nocolrules">baqāšu</td></tr>
+<tr><td class="ten nocolrules">brʾ&#160;&#160;</td><td class="nocolrules">barû(m) I.IV.V; berû(m) II; bitrû II</td></tr>
+<tr><td class="ten nocolrules">brḫ&#160;&#160;</td><td class="nocolrules">barāḫu</td></tr>
+<tr><td class="ten nocolrules">brm&#160;&#160;</td><td class="nocolrules">barāmu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">brq&#160;&#160;</td><td class="nocolrules">barāqu(m) I</td></tr>
+<tr><td class="ten nocolrules">brr&#160;&#160;</td><td class="nocolrules">barāru</td></tr>
+<tr><td class="ten nocolrules">brṣ&#160;&#160;</td><td class="nocolrules">barāṣu</td></tr>
+<tr><td class="ten nocolrules">brš&#160;&#160;</td><td class="nocolrules">barāšu</td></tr>
+<tr><td class="ten nocolrules">brzḫ&#160;&#160;</td><td class="nocolrules">šuparzuḫu</td></tr>
+<tr><td class="ten nocolrules">bsl&#160;&#160;</td><td class="nocolrules">basālu</td></tr>
+<tr><td class="ten nocolrules">bsm&#160;&#160;</td><td class="nocolrules">bussumu II</td></tr>
+<tr><td class="ten nocolrules">bsr&#160;&#160;</td><td class="nocolrules">bussuru(m)</td></tr>
+<tr><td class="ten nocolrules">bṣr&#160;&#160;</td><td class="nocolrules">baṣāru(m)</td></tr>
+<tr><td class="ten nocolrules">bṣṣ&#160;&#160;</td><td class="nocolrules">baṣāṣu</td></tr>
+<tr><td class="ten nocolrules">bšl&#160;&#160;</td><td class="nocolrules">bašālu(m)</td></tr>
+<tr><td class="ten nocolrules">bšm&#160;&#160;</td><td class="nocolrules">bašāmu II; pašāmum</td></tr>
+<tr><td class="ten nocolrules">bšš&#160;&#160;</td><td class="nocolrules">bašāšum</td></tr>
+<tr><td class="ten nocolrules">bšʾ&#160;&#160;</td><td class="nocolrules">bašû(m)</td></tr>
+<tr><td class="ten nocolrules">btq&#160;&#160;</td><td class="nocolrules">batāqu(m)</td></tr>
+<tr><td class="ten nocolrules">btr&#160;&#160;</td><td class="nocolrules">butturu II</td></tr>
+<tr><td class="ten nocolrules">bṭl&#160;&#160;</td><td class="nocolrules">baṭālu(m)</td></tr>
+<tr><td class="ten nocolrules">bṭʾ&#160;&#160;</td><td class="nocolrules">bedûm</td></tr>
+<tr><td class="ten nocolrules">bzʾ&#160;&#160;</td><td class="nocolrules">bazāʾum</td></tr>
+</table>
+<h2 id="d">D</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">dʾb&#160;&#160;</td><td class="nocolrules">daʾāpu</td></tr>
+<tr><td class="ten nocolrules">dʾk&#160;&#160;</td><td class="nocolrules">dâku(m)</td></tr>
+<tr><td class="ten nocolrules">dʾl&#160;&#160;</td><td class="nocolrules">dâlu(m)</td></tr>
+<tr><td class="ten nocolrules">dʾm&#160;&#160;</td><td class="nocolrules">daʾāmu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">dʾn&#160;&#160;</td><td class="nocolrules">diānum</td></tr>
+<tr><td class="ten nocolrules">dʾp&#160;&#160;</td><td class="nocolrules">daʾāpu; dêpu</td></tr>
+<tr><td class="ten nocolrules">dʾr&#160;&#160;</td><td class="nocolrules">duārum</td></tr>
+<tr><td class="ten nocolrules">dʾṣ&#160;&#160;</td><td class="nocolrules">dâṣu(m)</td></tr>
+<tr><td class="ten nocolrules">dʾš&#160;&#160;</td><td class="nocolrules">diāšum</td></tr>
+<tr><td class="ten nocolrules">dbb&#160;&#160;</td><td class="nocolrules">dabābu(m) II</td></tr>
+<tr><td class="ten nocolrules">(dbq)&#160;&#160;</td><td class="nocolrules">(dabāqu)</td></tr>
+<tr><td class="ten nocolrules">dbr&#160;&#160;</td><td class="nocolrules">dabāru</td></tr>
+<tr><td class="ten nocolrules">dgl&#160;&#160;</td><td class="nocolrules">dagālu(m)</td></tr>
+<tr><td class="ten nocolrules">dḫʾ&#160;&#160;</td><td class="nocolrules">daḫû(m) II</td></tr>
+<tr><td class="ten nocolrules">dḫs&#160;&#160;</td><td class="nocolrules">duḫḫusu</td></tr>
+<tr><td class="ten nocolrules">dkʾ&#160;&#160;</td><td class="nocolrules">dekû(m) II</td></tr>
+<tr><td class="ten nocolrules">dkk&#160;&#160;</td><td class="nocolrules">dakāku(m) I.II</td></tr>
+<tr><td class="ten nocolrules">dkm&#160;&#160;</td><td class="nocolrules">dakāmu</td></tr>
+<tr><td class="ten nocolrules">dkš&#160;&#160;</td><td class="nocolrules">dakāšu(m)</td></tr>
+<tr><td class="ten nocolrules">dlʾ&#160;&#160;</td><td class="nocolrules">dalû II</td></tr>
+<tr><td class="ten nocolrules">dlḫ&#160;&#160;</td><td class="nocolrules">dalāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">dll&#160;&#160;</td><td class="nocolrules">dalālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">dlb&#160;&#160;</td><td class="nocolrules">dalāpu(m)</td></tr>
+<tr><td class="ten nocolrules">dlp&#160;&#160;</td><td class="nocolrules">dalāpu(m)</td></tr>
+<tr><td class="ten nocolrules">dmʾ&#160;&#160;</td><td class="nocolrules">dawûm; dummû</td></tr>
+<tr><td class="ten nocolrules">dmm&#160;&#160;</td><td class="nocolrules">damāmu(m)</td></tr>
+<tr><td class="ten nocolrules">dmq&#160;&#160;</td><td class="nocolrules">damāqu(m)</td></tr>
+<tr><td class="ten nocolrules">dmṣ&#160;&#160;</td><td class="nocolrules">damāṣu</td></tr>
+<tr><td class="ten nocolrules">dmš&#160;&#160;</td><td class="nocolrules">damāšu</td></tr>
+<tr><td class="ten nocolrules">dnʾ&#160;&#160;</td><td class="nocolrules">danû(m)</td></tr>
+<tr><td class="ten nocolrules">dnn&#160;&#160;</td><td class="nocolrules">danānu(m) II</td></tr>
+<tr><td class="ten nocolrules">dpn&#160;&#160;</td><td class="nocolrules">dapānu(m) II</td></tr>
+<tr><td class="ten nocolrules">dpr&#160;&#160;</td><td class="nocolrules">duppuru(m)</td></tr>
+<tr><td class="ten nocolrules">dqq&#160;&#160;</td><td class="nocolrules">daqāqu</td></tr>
+<tr><td class="ten nocolrules">dqr&#160;&#160;</td><td class="nocolrules">daqāru</td></tr>
+<tr><td class="ten nocolrules">dqš&#160;&#160;</td><td class="nocolrules">daqāšu(m)</td></tr>
+<tr><td class="ten nocolrules">drʾ&#160;&#160;</td><td class="nocolrules">darû(m) I; derû; durrû(m)</td></tr>
+<tr><td class="ten nocolrules">drg&#160;&#160;</td><td class="nocolrules">darākum II</td></tr>
+<tr><td class="ten nocolrules">drk&#160;&#160;</td><td class="nocolrules">darāku(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">drq&#160;&#160;</td><td class="nocolrules">darāku III</td></tr>
+<tr><td class="ten nocolrules">drr&#160;&#160;</td><td class="nocolrules">darāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">drs&#160;&#160;</td><td class="nocolrules">darāsu(m)</td></tr>
+<tr><td class="ten nocolrules">drš&#160;&#160;</td><td class="nocolrules">darāšum</td></tr>
+<tr><td class="ten nocolrules">dšʾ&#160;&#160;</td><td class="nocolrules">dešû(m)</td></tr>
+<tr><td class="ten nocolrules">dšp&#160;&#160;</td><td class="nocolrules">dašāpu(m)</td></tr>
+<tr><td class="ten nocolrules">dwʾ&#160;&#160;</td><td class="nocolrules">dawûm</td></tr>
+</table>
+<h2 id="g">G</h2>
+
+<table class="eighty">
+<tr><td class="ten nocolrules">gʾʾ&#160;&#160;</td><td class="nocolrules">gâʾu; gaʾûm</td></tr>
+<tr><td class="ten nocolrules">gʾr&#160;&#160;</td><td class="nocolrules">giāru(m)</td></tr>
+<tr><td class="ten nocolrules">gʾs&#160;&#160;</td><td class="nocolrules">gêsu(m) I; gêšu(m) I</td></tr>
+<tr><td class="ten nocolrules">gʾš&#160;&#160;</td><td class="nocolrules">gâšu(m) I.II; gêšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">gbb&#160;&#160;</td><td class="nocolrules">kabābu II</td></tr>
+<tr><td class="ten nocolrules">gdd&#160;&#160;</td><td class="nocolrules">gadādu</td></tr>
+<tr><td class="ten nocolrules">gdm&#160;&#160;</td><td class="nocolrules">gadāmu</td></tr>
+<tr><td class="ten nocolrules">gḫb&#160;&#160;</td><td class="nocolrules">guḫḫubu</td></tr>
+<tr><td class="ten nocolrules">glʾ&#160;&#160;</td><td class="nocolrules">galû II</td></tr>
+<tr><td class="ten nocolrules">glb&#160;&#160;</td><td class="nocolrules">gullubu(m) II</td></tr>
+<tr><td class="ten nocolrules">gld&#160;&#160;</td><td class="nocolrules">galātu(m)</td></tr>
+<tr><td class="ten nocolrules">gll&#160;&#160;</td><td class="nocolrules">galālu II; gullulu(m)</td></tr>
+<tr><td class="ten nocolrules">glš&#160;&#160;</td><td class="nocolrules">galāšu; gullušu</td></tr>
+<tr><td class="ten nocolrules">glt&#160;&#160;</td><td class="nocolrules">galātu(m)</td></tr>
+<tr><td class="ten nocolrules">gltʾ&#160;&#160;</td><td class="nocolrules">nagaltû</td></tr>
+<tr><td class="ten nocolrules">gmʾ&#160;&#160;</td><td class="nocolrules">gamāʾu</td></tr>
+<tr><td class="ten nocolrules">gml&#160;&#160;</td><td class="nocolrules">gamālu(m)</td></tr>
+<tr><td class="ten nocolrules">gmm&#160;&#160;</td><td class="nocolrules">gamāmu</td></tr>
+<tr><td class="ten nocolrules">gmr&#160;&#160;</td><td class="nocolrules">gamāru(m) II</td></tr>
+<tr><td class="ten nocolrules">gmt&#160;&#160;</td><td class="nocolrules">gummutu</td></tr>
+<tr><td class="ten nocolrules">gnʾ&#160;&#160;</td><td class="nocolrules">genû</td></tr>
+<tr><td class="ten nocolrules">gnḫ&#160;&#160;</td><td class="nocolrules">ganāḫu</td></tr>
+<tr><td class="ten nocolrules">gnn&#160;&#160;</td><td class="nocolrules">ganānu</td></tr>
+<tr><td class="ten nocolrules">gnṣ&#160;&#160;</td><td class="nocolrules">ganāṣu</td></tr>
+<tr><td class="ten nocolrules">gpʾ&#160;&#160;</td><td class="nocolrules">gepû</td></tr>
+<tr><td class="ten nocolrules">gpr&#160;&#160;</td><td class="nocolrules">gapāru(m)</td></tr>
+<tr><td class="ten nocolrules">gpš&#160;&#160;</td><td class="nocolrules">gapāšu(m)</td></tr>
+<tr><td class="ten nocolrules">grʾ&#160;&#160;</td><td class="nocolrules">gerû(m)</td></tr>
+<tr><td class="ten nocolrules">grm&#160;&#160;</td><td class="nocolrules">garāmu</td></tr>
+<tr><td class="ten nocolrules">grn&#160;&#160;</td><td class="nocolrules">qarānu(m)</td></tr>
+<tr><td class="ten nocolrules">grr&#160;&#160;</td><td class="nocolrules">qarāru(m); šugarruru(m)</td></tr>
+<tr><td class="ten nocolrules">grṣ&#160;&#160;</td><td class="nocolrules">karāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">grš&#160;&#160;</td><td class="nocolrules">garāšum; qarāšu(m)</td></tr>
+<tr><td class="ten nocolrules">gršʾ&#160;&#160;</td><td class="nocolrules">nagaršû</td></tr>
+<tr><td class="ten nocolrules">gs/ṣr&#160;&#160;</td><td class="nocolrules">gazārum</td></tr>
+<tr><td class="ten nocolrules">gṣṣ&#160;&#160;</td><td class="nocolrules">gazāzu(m); kaṣāṣu(m) I</td></tr>
+<tr><td class="ten nocolrules">gšʾ&#160;&#160;</td><td class="nocolrules">gešû</td></tr>
+<tr><td class="ten nocolrules">gšr&#160;&#160;</td><td class="nocolrules">gašāru(m)</td></tr>
+<tr><td class="ten nocolrules">gšš&#160;&#160;</td><td class="nocolrules">gašāšu(m)</td></tr>
+<tr><td class="ten nocolrules">gzʾ&#160;&#160;</td><td class="nocolrules">gutezzû</td></tr>
+<tr><td class="ten nocolrules">gzr&#160;&#160;</td><td class="nocolrules">gazārum</td></tr>
+<tr><td class="ten nocolrules">gzz&#160;&#160;</td><td class="nocolrules">gazāzu(m)</td></tr>
+</table>
+<h2 id="h">Ḫ</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">ḫʾb&#160;&#160;</td><td class="nocolrules">ḫâbu II; ḫiāpum</td></tr>
+<tr><td class="ten nocolrules">ḫʾd&#160;&#160;</td><td class="nocolrules">ḫiādu; ḫiāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫʾl&#160;&#160;</td><td class="nocolrules">ḫâlu I; ḫiālum</td></tr>
+<tr><td class="ten nocolrules">ḫʾp&#160;&#160;</td><td class="nocolrules">ḫâpu II; ḫiāpum</td></tr>
+<tr><td class="ten nocolrules">ḫʾq&#160;&#160;</td><td class="nocolrules">ḫâqu II; ḫiāqum</td></tr>
+<tr><td class="ten nocolrules">ḫʾr&#160;&#160;</td><td class="nocolrules">ḫiāru(m)</td></tr>
+<tr><td class="ten nocolrules">ḫʾs&#160;&#160;</td><td class="nocolrules">ḫâsu</td></tr>
+<tr><td class="ten nocolrules">ḫʾš&#160;&#160;</td><td class="nocolrules">ḫâšu(m) I.II; ḫiāšum</td></tr>
+<tr><td class="ten nocolrules">ḫʾt&#160;&#160;</td><td class="nocolrules">ḫâtum</td></tr>
+<tr><td class="ten nocolrules">ḫʾṭ&#160;&#160;</td><td class="nocolrules">ḫiāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫbʾ&#160;&#160;</td><td class="nocolrules">ḫabû(m) II.III.IV; kubbû II</td></tr>
+<tr><td class="ten nocolrules">ḫbb&#160;&#160;</td><td class="nocolrules">ḫabābu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫbl&#160;&#160;</td><td class="nocolrules">ḫabālu(m) II.III.IV</td></tr>
+<tr><td class="ten nocolrules">ḫbr&#160;&#160;</td><td class="nocolrules">ḫabāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫbṣ&#160;&#160;</td><td class="nocolrules">ḫabāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫbš&#160;&#160;</td><td class="nocolrules">ḫabāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫbt&#160;&#160;</td><td class="nocolrules">ḫabātu(m) I.II.III.IV</td></tr>
+<tr><td class="ten nocolrules">ḫdʾ&#160;&#160;</td><td class="nocolrules">ḫadû(m) III.IV</td></tr>
+<tr><td class="ten nocolrules">ḫdd&#160;&#160;</td><td class="nocolrules">ḫadādu I.II</td></tr>
+<tr><td class="ten nocolrules">ḫdl&#160;&#160;</td><td class="nocolrules">ḫadālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫdq&#160;&#160;</td><td class="nocolrules">ḫadāqu</td></tr>
+<tr><td class="ten nocolrules">ḫdr&#160;&#160;</td><td class="nocolrules">adāru(m) I</td></tr>
+<tr><td class="ten nocolrules">ḫdš&#160;&#160;</td><td class="nocolrules">ḫadāšu</td></tr>
+<tr><td class="ten nocolrules">ḫḫʾ&#160;&#160;</td><td class="nocolrules">ḫaḫû II</td></tr>
+<tr><td class="ten nocolrules">ḫkʾ&#160;&#160;</td><td class="nocolrules">ḫakûm</td></tr>
+<tr><td class="ten nocolrules">ḫkm&#160;&#160;</td><td class="nocolrules">ḫakāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫkr&#160;&#160;</td><td class="nocolrules">ḫakāru(m)</td></tr>
+<tr><td class="ten nocolrules">ḫlʾ&#160;&#160;</td><td class="nocolrules">ḫalûm III; ḫelû(m) II</td></tr>
+<tr><td class="ten nocolrules">ḫlb&#160;&#160;</td><td class="nocolrules">ḫalābu</td></tr>
+<tr><td class="ten nocolrules">ḫll&#160;&#160;</td><td class="nocolrules">alālu III; ḫalālu(m) I.II.IV</td></tr>
+<tr><td class="ten nocolrules">ḫlp&#160;&#160;</td><td class="nocolrules">ḫalāpu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫlq&#160;&#160;</td><td class="nocolrules">ḫalāqu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫlṣ&#160;&#160;</td><td class="nocolrules">ḫalāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫlṣʾ&#160;&#160;</td><td class="nocolrules">neḫelṣû(m)</td></tr>
+<tr><td class="ten nocolrules">ḫlš&#160;&#160;</td><td class="nocolrules">ḫalāsu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫlt&#160;&#160;</td><td class="nocolrules">ḫalātum</td></tr>
+<tr><td class="ten nocolrules">ḫmʾ&#160;&#160;</td><td class="nocolrules">ḫamāʾu; ḫamû II.III; ḫawû</td></tr>
+<tr><td class="ten nocolrules">ḫmd&#160;&#160;</td><td class="nocolrules">ḫamādum</td></tr>
+<tr><td class="ten nocolrules">ḫml&#160;&#160;</td><td class="nocolrules">ḫamālu</td></tr>
+<tr><td class="ten nocolrules">ḫmm&#160;&#160;</td><td class="nocolrules">ḫamāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫmr&#160;&#160;</td><td class="nocolrules">ḫamāru(m); ḫemēru</td></tr>
+<tr><td class="ten nocolrules">ḫms&#160;&#160;</td><td class="nocolrules">ḫummusum</td></tr>
+<tr><td class="ten nocolrules">ḫmṣ&#160;&#160;</td><td class="nocolrules">ḫamāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫmš&#160;&#160;</td><td class="nocolrules">ḫamāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫmṭ&#160;&#160;</td><td class="nocolrules">ḫamāṭu(m) II.III</td></tr>
+<tr><td class="ten nocolrules">ḫnʾ&#160;&#160;</td><td class="nocolrules">ḫanû(m) II; ḫunnû(m)</td></tr>
+<tr><td class="ten nocolrules">ḫnb&#160;&#160;</td><td class="nocolrules">ḫanābu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫnm&#160;&#160;</td><td class="nocolrules">ḫanāmum</td></tr>
+<tr><td class="ten nocolrules">ḫnn&#160;&#160;</td><td class="nocolrules">ḫanānu I</td></tr>
+<tr><td class="ten nocolrules">ḫnp&#160;&#160;</td><td class="nocolrules">ḫanāpu I.II</td></tr>
+<tr><td class="ten nocolrules">ḫnq&#160;&#160;</td><td class="nocolrules">ḫanāqu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫnṣ&#160;&#160;</td><td class="nocolrules">ḫanāṣu</td></tr>
+<tr><td class="ten nocolrules">ḫnš&#160;&#160;</td><td class="nocolrules">kanāšu(m) I</td></tr>
+<tr><td class="ten nocolrules">ḫpʾ&#160;&#160;</td><td class="nocolrules">ḫapûm; ḫepû(m) II</td></tr>
+<tr><td class="ten nocolrules">ḫpd&#160;&#160;</td><td class="nocolrules">ḫuppudum II</td></tr>
+<tr><td class="ten nocolrules">ḫpp&#160;&#160;</td><td class="nocolrules">ḫapāpu I.II</td></tr>
+<tr><td class="ten nocolrules">ḫpr&#160;&#160;</td><td class="nocolrules">ḫapāru(m) I.III; ḫepēru</td></tr>
+<tr><td class="ten nocolrules">ḫpt&#160;&#160;</td><td class="nocolrules">ḫapātum</td></tr>
+<tr><td class="ten nocolrules">ḫqm&#160;&#160;</td><td class="nocolrules">ḫuqqumum</td></tr>
+<tr><td class="ten nocolrules">ḫqr&#160;&#160;</td><td class="nocolrules">ḫaqāru</td></tr>
+<tr><td class="ten nocolrules">ḫrʾ&#160;&#160;</td><td class="nocolrules">ḫarû IV; ḫerû(m) II</td></tr>
+<tr><td class="ten nocolrules">ḫrb&#160;&#160;</td><td class="nocolrules">ḫarābu; ḫarāpu(m) I</td></tr>
+<tr><td class="ten nocolrules">ḫrbš&#160;&#160;</td><td class="nocolrules">naḫarbušu</td></tr>
+<tr><td class="ten nocolrules">ḫrd&#160;&#160;</td><td class="nocolrules">ḫarādu(m) III.IV</td></tr>
+<tr><td class="ten nocolrules">ḫrk&#160;&#160;</td><td class="nocolrules">ḫarāku</td></tr>
+<tr><td class="ten nocolrules">ḫrm&#160;&#160;</td><td class="nocolrules">ḫarāmu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫrmm&#160;&#160;</td><td class="nocolrules">naḫarmumu</td></tr>
+<tr><td class="ten nocolrules">ḫrmṭ&#160;&#160;</td><td class="nocolrules">naḫarmuṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫrp&#160;&#160;</td><td class="nocolrules">ḫarāpu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫrr&#160;&#160;</td><td class="nocolrules">arāru(m) III; ḫarāru(m) I; šuḫarruru(m) II; šuḫruru</td></tr>
+<tr><td class="ten nocolrules">ḫrs&#160;&#160;</td><td class="nocolrules">ḫarāsu</td></tr>
+<tr><td class="ten nocolrules">ḫrṣ&#160;&#160;</td><td class="nocolrules">ḫarāṣu(m) I; karāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫrš&#160;&#160;</td><td class="nocolrules">ḫarāšu(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">ḫršš&#160;&#160;</td><td class="nocolrules">naḫaršušu</td></tr>
+<tr><td class="ten nocolrules">ḫrṭ&#160;&#160;</td><td class="nocolrules">ḫarāṭum</td></tr>
+<tr><td class="ten nocolrules">ḫsʾ&#160;&#160;</td><td class="nocolrules">azû(m) I; ḫesû(m)</td></tr>
+<tr><td class="ten nocolrules">ḫsp&#160;&#160;</td><td class="nocolrules">ḫasāpu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫsr&#160;&#160;</td><td class="nocolrules">ḫasāru(m)</td></tr>
+<tr><td class="ten nocolrules">ḫss&#160;&#160;</td><td class="nocolrules">ḫasāsu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫṣʾ&#160;&#160;</td><td class="nocolrules">ḫazûm II</td></tr>
+<tr><td class="ten nocolrules">ḫṣb&#160;&#160;</td><td class="nocolrules">ḫaṣābu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫṣn&#160;&#160;</td><td class="nocolrules">ḫaṣānu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫṣṣ&#160;&#160;</td><td class="nocolrules">˙aṣāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫšʾ&#160;&#160;</td><td class="nocolrules">ḫašû(m) V.VI.VII</td></tr>
+<tr><td class="ten nocolrules">ḫšb&#160;&#160;</td><td class="nocolrules">ḫašābu</td></tr>
+<tr><td class="ten nocolrules">ḫšḫ&#160;&#160;</td><td class="nocolrules">ḫašāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫšl&#160;&#160;</td><td class="nocolrules">ḫašālu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫšr&#160;&#160;</td><td class="nocolrules">ḫašāru</td></tr>
+<tr><td class="ten nocolrules">ḫšš&#160;&#160;</td><td class="nocolrules">ḫašāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫtʾ&#160;&#160;</td><td class="nocolrules">ḫatû(m) II.III</td></tr>
+<tr><td class="ten nocolrules">ḫtk&#160;&#160;</td><td class="nocolrules">ḫatākum</td></tr>
+<tr><td class="ten nocolrules">ḫtn&#160;&#160;</td><td class="nocolrules">ḫatānu</td></tr>
+<tr><td class="ten nocolrules">ḫtp&#160;&#160;</td><td class="nocolrules">ḫatāpu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫtr&#160;&#160;</td><td class="nocolrules">ḫatāru</td></tr>
+<tr><td class="ten nocolrules">ḫṭʾ&#160;&#160;</td><td class="nocolrules">ḫaṭû(m) II</td></tr>
+<tr><td class="ten nocolrules">ḫṭm&#160;&#160;</td><td class="nocolrules">ḫaṭāmu</td></tr>
+<tr><td class="ten nocolrules">ḫṭp&#160;&#160;</td><td class="nocolrules">ḫaṭāpu(m)</td></tr>
+<tr><td class="ten nocolrules">ḫṭṭ&#160;&#160;</td><td class="nocolrules">ḫaṭāṭu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ḫwʾ&#160;&#160;</td><td class="nocolrules">ḫawû</td></tr>
+<tr><td class="ten nocolrules">ḫzʾ&#160;&#160;</td><td class="nocolrules">azû(m) I</td></tr>
+<tr><td class="ten nocolrules">ḫzʾ&#160;&#160;</td><td class="nocolrules">ḫazûm II; ḫutenzû</td></tr>
+<tr><td class="ten nocolrules">ḫzm&#160;&#160;</td><td class="nocolrules">ḫazāmu</td></tr>
+<tr><td class="ten nocolrules">ḫzq&#160;&#160;</td><td class="nocolrules">ḫazāqu</td></tr>
+</table>
+<h2 id="k">K</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">kʾʾ&#160;&#160;</td><td class="nocolrules">gâʾu; kaʾʾû</td></tr>
+<tr><td class="ten nocolrules">kʾd&#160;&#160;</td><td class="nocolrules">kâdu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kʾn&#160;&#160;</td><td class="nocolrules">kânu(m)</td></tr>
+<tr><td class="ten nocolrules">kʾl&#160;&#160;</td><td class="nocolrules">kullu(m) II</td></tr>
+<tr><td class="ten nocolrules">kʾp&#160;&#160;</td><td class="nocolrules">kâpu</td></tr>
+<tr><td class="ten nocolrules">kʾr&#160;&#160;</td><td class="nocolrules">kâru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kʾs&#160;&#160;</td><td class="nocolrules">kêsu(m)</td></tr>
+<tr><td class="ten nocolrules">kʾṣ&#160;&#160;</td><td class="nocolrules">kâṣu</td></tr>
+<tr><td class="ten nocolrules">kʾš&#160;&#160;</td><td class="nocolrules">kâšu III</td></tr>
+<tr><td class="ten nocolrules">kbʾ&#160;&#160;</td><td class="nocolrules">kubbû II; kubbuʾu</td></tr>
+<tr><td class="ten nocolrules">kbb&#160;&#160;</td><td class="nocolrules">kabābu II</td></tr>
+<tr><td class="ten nocolrules">kbd&#160;&#160;</td><td class="nocolrules">kabātu(m)</td></tr>
+<tr><td class="ten nocolrules">kbl&#160;&#160;</td><td class="nocolrules">kabālu(m)</td></tr>
+<tr><td class="ten nocolrules">kbr&#160;&#160;</td><td class="nocolrules">kabāru(m)</td></tr>
+<tr><td class="ten nocolrules">kbs&#160;&#160;</td><td class="nocolrules">kabāsu(m) I; kapāṣu(m) II</td></tr>
+<tr><td class="ten nocolrules">kbṣ&#160;&#160;</td><td class="nocolrules">kapāṣu(m) II</td></tr>
+<tr><td class="ten nocolrules">kbš&#160;&#160;</td><td class="nocolrules">kabāsu(m) I; kabāšu I</td></tr>
+<tr><td class="ten nocolrules">kbt&#160;&#160;</td><td class="nocolrules">kabātu(m)</td></tr>
+<tr><td class="ten nocolrules">kdd&#160;&#160;</td><td class="nocolrules">kadādu</td></tr>
+<tr><td class="ten nocolrules">kdn&#160;&#160;</td><td class="nocolrules">kuddunu</td></tr>
+<tr><td class="ten nocolrules">kdp&#160;&#160;</td><td class="nocolrules">kadāpu</td></tr>
+<tr><td class="ten nocolrules">kdr&#160;&#160;</td><td class="nocolrules">kadāru(m) II.III</td></tr>
+<tr><td class="ten nocolrules">klʾ&#160;&#160;</td><td class="nocolrules">kalû(m) V</td></tr>
+<tr><td class="ten nocolrules">kll&#160;&#160;</td><td class="nocolrules">kullulu(m) II; šuklulu(m) II</td></tr>
+<tr><td class="ten nocolrules">klm&#160;&#160;</td><td class="nocolrules">kullumu(m)</td></tr>
+<tr><td class="ten nocolrules">klmʾ&#160;&#160;</td><td class="nocolrules">nekemû(m)</td></tr>
+<tr><td class="ten nocolrules">klṣ&#160;&#160;</td><td class="nocolrules">kalāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">kmʾ&#160;&#160;</td><td class="nocolrules">kamû(m) III; kawû(m) II</td></tr>
+<tr><td class="ten nocolrules">kmd&#160;&#160;</td><td class="nocolrules">kamādu(m)</td></tr>
+<tr><td class="ten nocolrules">kml&#160;&#160;</td><td class="nocolrules">kamālu</td></tr>
+<tr><td class="ten nocolrules">kmm&#160;&#160;</td><td class="nocolrules">kamāmu</td></tr>
+<tr><td class="ten nocolrules">kmr&#160;&#160;</td><td class="nocolrules">kamāru(m) III</td></tr>
+<tr><td class="ten nocolrules">kms&#160;&#160;</td><td class="nocolrules">kamāsu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kmṣ&#160;&#160;</td><td class="nocolrules">kamāsu(m) I.II.III<sup>?</sup></td></tr>
+<tr><td class="ten nocolrules">kmš&#160;&#160;</td><td class="nocolrules">kamāsu(m) II; kamāšu</td></tr>
+<tr><td class="ten nocolrules">knʾ&#160;&#160;</td><td class="nocolrules">kanû(m)</td></tr>
+<tr><td class="ten nocolrules">knk&#160;&#160;</td><td class="nocolrules">kanāku(m)</td></tr>
+<tr><td class="ten nocolrules">knn&#160;&#160;</td><td class="nocolrules">ganānu; kanānu(m)</td></tr>
+<tr><td class="ten nocolrules">knp&#160;&#160;</td><td class="nocolrules">kunnupu</td></tr>
+<tr><td class="ten nocolrules">knš&#160;&#160;</td><td class="nocolrules">kamāšu; kanāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">knz&#160;&#160;</td><td class="nocolrules">kanāzu</td></tr>
+<tr><td class="ten nocolrules">kpʾ&#160;&#160;</td><td class="nocolrules">kepû(m)</td></tr>
+<tr><td class="ten nocolrules">kpd&#160;&#160;</td><td class="nocolrules">kapādu(m)</td></tr>
+<tr><td class="ten nocolrules">kpl&#160;&#160;</td><td class="nocolrules">kapālu(m)</td></tr>
+<tr><td class="ten nocolrules">kpp&#160;&#160;</td><td class="nocolrules">kapāpu(m)</td></tr>
+<tr><td class="ten nocolrules">kpr&#160;&#160;</td><td class="nocolrules">kapāru(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">kps&#160;&#160;</td><td class="nocolrules">kapāṣu(m) II</td></tr>
+<tr><td class="ten nocolrules">kpṣ&#160;&#160;</td><td class="nocolrules">kapāṣu(m) II</td></tr>
+<tr><td class="ten nocolrules">kpš&#160;&#160;</td><td class="nocolrules">kapāšu(m)</td></tr>
+<tr><td class="ten nocolrules">kpt&#160;&#160;</td><td class="nocolrules">kapādu(m); kapātu(m)</td></tr>
+<tr><td class="ten nocolrules">krʾ&#160;&#160;</td><td class="nocolrules">karāʾu; karû(m) II</td></tr>
+<tr><td class="ten nocolrules">krb&#160;&#160;</td><td class="nocolrules">karābu(m) II</td></tr>
+<tr><td class="ten nocolrules">krk&#160;&#160;</td><td class="nocolrules">karāku</td></tr>
+<tr><td class="ten nocolrules">krm&#160;&#160;</td><td class="nocolrules">karāmu(m)</td></tr>
+<tr><td class="ten nocolrules">krr&#160;&#160;</td><td class="nocolrules">karāru I.II</td></tr>
+<tr><td class="ten nocolrules">krs&#160;&#160;</td><td class="nocolrules">karāsu</td></tr>
+<tr><td class="ten nocolrules">krṣ&#160;&#160;</td><td class="nocolrules">karāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">krt&#160;&#160;</td><td class="nocolrules">karātu</td></tr>
+<tr><td class="ten nocolrules">krṭ&#160;&#160;</td><td class="nocolrules">karāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ksʾ&#160;&#160;</td><td class="nocolrules">kasû(m) III</td></tr>
+<tr><td class="ten nocolrules">ksm&#160;&#160;</td><td class="nocolrules">kasāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ksp&#160;&#160;</td><td class="nocolrules">kasāpu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ksr&#160;&#160;</td><td class="nocolrules">kasāru(m)</td></tr>
+<tr><td class="ten nocolrules">kss&#160;&#160;</td><td class="nocolrules">kasāsu(m)</td></tr>
+<tr><td class="ten nocolrules">kṣʾ&#160;&#160;</td><td class="nocolrules">kaṣû(m) III</td></tr>
+<tr><td class="ten nocolrules">kṣb&#160;&#160;</td><td class="nocolrules">kaṣābu</td></tr>
+<tr><td class="ten nocolrules">kṣd&#160;&#160;</td><td class="nocolrules">kaṣādu(m)</td></tr>
+<tr><td class="ten nocolrules">kṣp&#160;&#160;</td><td class="nocolrules">kaṣāpu</td></tr>
+<tr><td class="ten nocolrules">kṣr&#160;&#160;</td><td class="nocolrules">kaṣāru(m)</td></tr>
+<tr><td class="ten nocolrules">kṣṣ&#160;&#160;</td><td class="nocolrules">gazāzu(m); kasāsu(m); kaṣāṣu(m) I</td></tr>
+<tr><td class="ten nocolrules">kšʾ&#160;&#160;</td><td class="nocolrules">kašû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kšd&#160;&#160;</td><td class="nocolrules">kašādu(m)</td></tr>
+<tr><td class="ten nocolrules">kšḫ&#160;&#160;</td><td class="nocolrules">ḫašāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">kšp&#160;&#160;</td><td class="nocolrules">kašāpu(m)</td></tr>
+<tr><td class="ten nocolrules">kšr&#160;&#160;</td><td class="nocolrules">kašāru(m)</td></tr>
+<tr><td class="ten nocolrules">kšš&#160;&#160;</td><td class="nocolrules">kašāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kšṭ&#160;&#160;</td><td class="nocolrules">kašāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ktʾ&#160;&#160;</td><td class="nocolrules">katāʾum</td></tr>
+<tr><td class="ten nocolrules">ktm&#160;&#160;</td><td class="nocolrules">katāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ktr&#160;&#160;</td><td class="nocolrules">katāru I.II</td></tr>
+<tr><td class="ten nocolrules">ktt&#160;&#160;</td><td class="nocolrules">katātu(m)</td></tr>
+<tr><td class="ten nocolrules">kwʾ&#160;&#160;</td><td class="nocolrules">kawû(m) II</td></tr>
+<tr><td class="ten nocolrules">kzb&#160;&#160;</td><td class="nocolrules">kazābu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">kzr&#160;&#160;</td><td class="nocolrules">kezēru(m) I</td></tr>
+<tr><td class="ten nocolrules">kzz&#160;&#160;</td><td class="nocolrules">gazāzu(m); kazāzu</td></tr>
+</table>
+<h2 id="l">L</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">lʾʾ&#160;&#160;</td><td class="nocolrules">leʾû(m); luʾʾû(m) II</td></tr>
+<tr><td class="ten nocolrules">lʾb&#160;&#160;</td><td class="nocolrules">laʾābu(m)</td></tr>
+<tr><td class="ten nocolrules">lʾd&#160;&#160;</td><td class="nocolrules">lâdu(m)</td></tr>
+<tr><td class="ten nocolrules">lʾk&#160;&#160;</td><td class="nocolrules">lêku(m)</td></tr>
+<tr><td class="ten nocolrules">lʾm&#160;&#160;</td><td class="nocolrules">lêmu(m); luāmum; lummu III</td></tr>
+<tr><td class="ten nocolrules">lʾp&#160;&#160;</td><td class="nocolrules">laʾʾupum II; liāpum</td></tr>
+<tr><td class="ten nocolrules">lʾš&#160;&#160;</td><td class="nocolrules">laʾāšu(m); lâšu I.II</td></tr>
+<tr><td class="ten nocolrules">lʾt&#160;&#160;</td><td class="nocolrules">laʾātu</td></tr>
+<tr><td class="ten nocolrules">lʾṭ&#160;&#160;</td><td class="nocolrules">lâṭu(m)</td></tr>
+<tr><td class="ten nocolrules">lbʾ&#160;&#160;</td><td class="nocolrules">labû I; lawûm II</td></tr>
+<tr><td class="ten nocolrules">lbb&#160;&#160;</td><td class="nocolrules">labābu(m)</td></tr>
+<tr><td class="ten nocolrules">lbt&#160;&#160;</td><td class="nocolrules">lapātu(m)</td></tr>
+<tr><td class="ten nocolrules">lbk&#160;&#160;</td><td class="nocolrules">labāku(m)</td></tr>
+<tr><td class="ten nocolrules">lbn&#160;&#160;</td><td class="nocolrules">labānu(m)</td></tr>
+<tr><td class="ten nocolrules">lbr&#160;&#160;</td><td class="nocolrules">labāru(m)</td></tr>
+<tr><td class="ten nocolrules">lbš&#160;&#160;</td><td class="nocolrules">labāšu(m)</td></tr>
+<tr><td class="ten nocolrules">lgg&#160;&#160;</td><td class="nocolrules">lagāgu</td></tr>
+<tr><td class="ten nocolrules">lḫb&#160;&#160;</td><td class="nocolrules">laḫābu</td></tr>
+<tr><td class="ten nocolrules">lḫd&#160;&#160;</td><td class="nocolrules">laḫātu</td></tr>
+<tr><td class="ten nocolrules">lḫm&#160;&#160;</td><td class="nocolrules">laḫāmu(m) I.II; leḫēmu II</td></tr>
+<tr><td class="ten nocolrules">lḫš&#160;&#160;</td><td class="nocolrules">laḫāšu(m)</td></tr>
+<tr><td class="ten nocolrules">lḫt/ṭ&#160;&#160;</td><td class="nocolrules">laḫātu</td></tr>
+<tr><td class="ten nocolrules">lkʾ&#160;&#160;</td><td class="nocolrules">lakû(m) II.III; lekû</td></tr>
+<tr><td class="ten nocolrules">lkd&#160;&#160;</td><td class="nocolrules">lakādu(m)</td></tr>
+<tr><td class="ten nocolrules">lkk&#160;&#160;</td><td class="nocolrules">lukkuku</td></tr>
+<tr><td class="ten nocolrules">lks&#160;&#160;</td><td class="nocolrules">lukkusu</td></tr>
+<tr><td class="ten nocolrules">lkṣ&#160;&#160;</td><td class="nocolrules">lukkusu</td></tr>
+<tr><td class="ten nocolrules">llʾ&#160;&#160;</td><td class="nocolrules">lalû III; lullû II</td></tr>
+<tr><td class="ten nocolrules">lmʾ&#160;&#160;</td><td class="nocolrules">lawûm II; lemû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">lmd&#160;&#160;</td><td class="nocolrules">lamādu(m)</td></tr>
+<tr><td class="ten nocolrules">lmm&#160;&#160;</td><td class="nocolrules">lamāmu I.II</td></tr>
+<tr><td class="ten nocolrules">lmn&#160;&#160;</td><td class="nocolrules">lemēnu(m)</td></tr>
+<tr><td class="ten nocolrules">lmṣ&#160;&#160;</td><td class="nocolrules">lummuṣu</td></tr>
+<tr><td class="ten nocolrules">lpn&#160;&#160;</td><td class="nocolrules">lapānu(m)</td></tr>
+<tr><td class="ten nocolrules">lpp&#160;&#160;</td><td class="nocolrules">lapāpu(m)</td></tr>
+<tr><td class="ten nocolrules">lpt&#160;&#160;</td><td class="nocolrules">lapātu(m)</td></tr>
+<tr><td class="ten nocolrules">lqʾ&#160;&#160;</td><td class="nocolrules">laqāʾu II; lekû; leqû(m) II</td></tr>
+<tr><td class="ten nocolrules">lqḫ&#160;&#160;</td><td class="nocolrules">laqāḫu</td></tr>
+<tr><td class="ten nocolrules">lqt&#160;&#160;</td><td class="nocolrules">laqātu(m)</td></tr>
+<tr><td class="ten nocolrules">lsm&#160;&#160;</td><td class="nocolrules">lasāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ltʾ&#160;&#160;</td><td class="nocolrules">letû(m) II</td></tr>
+<tr><td class="ten nocolrules">ltk&#160;&#160;</td><td class="nocolrules">latāku(m)</td></tr>
+<tr><td class="ten nocolrules">lwʾ&#160;&#160;</td><td class="nocolrules">lawûm II</td></tr>
+<tr><td class="ten nocolrules">lzʾ&#160;&#160;</td><td class="nocolrules">lezû II</td></tr>
+<tr><td class="ten nocolrules">lzn&#160;&#160;</td><td class="nocolrules">lezēnu</td></tr>
+<tr><td class="ten nocolrules">lzz&#160;&#160;</td><td class="nocolrules">lazāzu</td></tr>
+</table>
+<h2 id="m">M</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">mʾʾ&#160;&#160;</td><td class="nocolrules">mâʾu(m) I; maʾû(m); muāʾum</td></tr>
+<tr><td class="ten nocolrules">mʾd&#160;&#160;</td><td class="nocolrules">mâdu(m) I</td></tr>
+<tr><td class="ten nocolrules">mʾḫ&#160;&#160;</td><td class="nocolrules">mâḫum</td></tr>
+<tr><td class="ten nocolrules">mʾn&#160;&#160;</td><td class="nocolrules">mânu</td></tr>
+<tr><td class="ten nocolrules">mʾq&#160;&#160;</td><td class="nocolrules">muqqu III</td></tr>
+<tr><td class="ten nocolrules">mʾr&#160;&#160;</td><td class="nocolrules">mâru; (w)âru(m)</td></tr>
+<tr><td class="ten nocolrules">mʾs&#160;&#160;</td><td class="nocolrules">mêsu; mêšu(m)</td></tr>
+<tr><td class="ten nocolrules">mʾṣ&#160;&#160;</td><td class="nocolrules">mâṣu(m) I; wiāṣum</td></tr>
+<tr><td class="ten nocolrules">mʾš&#160;&#160;</td><td class="nocolrules">mêsu; mêšu(m); muāšu</td></tr>
+<tr><td class="ten nocolrules">mʾt&#160;&#160;</td><td class="nocolrules">mâtu(m)</td></tr>
+<tr><td class="ten nocolrules">mʾz&#160;&#160;</td><td class="nocolrules">mâzu(m)</td></tr>
+<tr><td class="ten nocolrules">mdʾ&#160;&#160;</td><td class="nocolrules">medû; šamdûm</td></tr>
+<tr><td class="ten nocolrules">mdd&#160;&#160;</td><td class="nocolrules">madādu(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">mdl&#160;&#160;</td><td class="nocolrules">madālu</td></tr>
+<tr><td class="ten nocolrules">mdr&#160;&#160;</td><td class="nocolrules">madāru(m) II</td></tr>
+<tr><td class="ten nocolrules">mgg&#160;&#160;</td><td class="nocolrules">magāgu</td></tr>
+<tr><td class="ten nocolrules">mgr&#160;&#160;</td><td class="nocolrules">magāru(m); makāru(m) I</td></tr>
+<tr><td class="ten nocolrules">mgš&#160;&#160;</td><td class="nocolrules">muggušu(m)</td></tr>
+<tr><td class="ten nocolrules">mḫʾ&#160;&#160;</td><td class="nocolrules">maḫû(m)</td></tr>
+<tr><td class="ten nocolrules">mḫḫ&#160;&#160;</td><td class="nocolrules">maḫāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">mḫl&#160;&#160;</td><td class="nocolrules">maḫālu</td></tr>
+<tr><td class="ten nocolrules">mḫr&#160;&#160;</td><td class="nocolrules">maḫāru(m)</td></tr>
+<tr><td class="ten nocolrules">mḫṣ&#160;&#160;</td><td class="nocolrules">maḫāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">mkʾ&#160;&#160;</td><td class="nocolrules">makû(m) III; mekû(m) V</td></tr>
+<tr><td class="ten nocolrules">mkk&#160;&#160;</td><td class="nocolrules">makāku</td></tr>
+<tr><td class="ten nocolrules">mkl&#160;&#160;</td><td class="nocolrules">mekēlu</td></tr>
+<tr><td class="ten nocolrules">mkr&#160;&#160;</td><td class="nocolrules">makāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">mks&#160;&#160;</td><td class="nocolrules">makāsu(m)</td></tr>
+<tr><td class="ten nocolrules">mkš&#160;&#160;</td><td class="nocolrules">makāšu</td></tr>
+<tr><td class="ten nocolrules">mlʾ&#160;&#160;</td><td class="nocolrules">malāʾu II; malû(m) IV</td></tr>
+<tr><td class="ten nocolrules">mld&#160;&#160;</td><td class="nocolrules">(w)alādu(m)</td></tr>
+<tr><td class="ten nocolrules">mlḫ&#160;&#160;</td><td class="nocolrules">malāḫu IV</td></tr>
+<tr><td class="ten nocolrules">mlk&#160;&#160;</td><td class="nocolrules">malāku(m) II.III</td></tr>
+<tr><td class="ten nocolrules">mll&#160;&#160;</td><td class="nocolrules">malālu(m) I; mēlulu(m)</td></tr>
+<tr><td class="ten nocolrules">mls/š&#160;&#160;</td><td class="nocolrules">malāsu</td></tr>
+<tr><td class="ten nocolrules">mlt&#160;&#160;</td><td class="nocolrules">malātu</td></tr>
+<tr><td class="ten nocolrules">mnʾ&#160;&#160;</td><td class="nocolrules">manû(m) V; menû(m)</td></tr>
+<tr><td class="ten nocolrules">mqr&#160;&#160;</td><td class="nocolrules">(w)aqāru(m)</td></tr>
+<tr><td class="ten nocolrules">mqq&#160;&#160;</td><td class="nocolrules">magāgu</td></tr>
+<tr><td class="ten nocolrules">mqt&#160;&#160;</td><td class="nocolrules">maqātu(m)</td></tr>
+<tr><td class="ten nocolrules">mrʾ&#160;&#160;</td><td class="nocolrules">marû(m) II.III; murrû; wurrûm</td></tr>
+<tr><td class="ten nocolrules">mrḫ&#160;&#160;</td><td class="nocolrules">marāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">mrkʾ&#160;&#160;</td><td class="nocolrules">namarkû</td></tr>
+<tr><td class="ten nocolrules">mrq&#160;&#160;</td><td class="nocolrules">marāqu(m)</td></tr>
+<tr><td class="ten nocolrules">mrr&#160;&#160;</td><td class="nocolrules">marāru(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">mrs&#160;&#160;</td><td class="nocolrules">marāsu</td></tr>
+<tr><td class="ten nocolrules">mrṣ&#160;&#160;</td><td class="nocolrules">marāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">mrš&#160;&#160;</td><td class="nocolrules">(w)arāšu(m)</td></tr>
+<tr><td class="ten nocolrules">mrṭ&#160;&#160;</td><td class="nocolrules">marāṭu</td></tr>
+<tr><td class="ten nocolrules">msʾ&#160;&#160;</td><td class="nocolrules">mesû(m) II; wussûm</td></tr>
+<tr><td class="ten nocolrules">msḫ&#160;&#160;</td><td class="nocolrules">masāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">msk&#160;&#160;</td><td class="nocolrules">masāku(m)</td></tr>
+<tr><td class="ten nocolrules">msr&#160;&#160;</td><td class="nocolrules">masārum; maṣāru(m)</td></tr>
+<tr><td class="ten nocolrules">mṣʾ&#160;&#160;</td><td class="nocolrules">maṣû(m); (w)uṣṣû(m)</td></tr>
+<tr><td class="ten nocolrules">mṣl&#160;&#160;</td><td class="nocolrules">šumṣulu(m)</td></tr>
+<tr><td class="ten nocolrules">mṣr&#160;&#160;</td><td class="nocolrules">masārum; maṣāru(m)</td></tr>
+<tr><td class="ten nocolrules">mṣṣ&#160;&#160;</td><td class="nocolrules">muzzuzu</td></tr>
+<tr><td class="ten nocolrules">mšʾ&#160;&#160;</td><td class="nocolrules">mašāʾu(m) I; mašû(m) II; muššuʾu; šumšû(m); wussûm</td></tr>
+<tr><td class="ten nocolrules">mšd&#160;&#160;</td><td class="nocolrules">mašādu(m)</td></tr>
+<tr><td class="ten nocolrules">mšḫ&#160;&#160;</td><td class="nocolrules">mašāḫu I.II</td></tr>
+<tr><td class="ten nocolrules">mšk&#160;&#160;</td><td class="nocolrules">masāku(m)</td></tr>
+<tr><td class="ten nocolrules">mšl&#160;&#160;</td><td class="nocolrules">mašālu(m); miššulu</td></tr>
+<tr><td class="ten nocolrules">mšr&#160;&#160;</td><td class="nocolrules">mašāru(m)</td></tr>
+<tr><td class="ten nocolrules">mšš&#160;&#160;</td><td class="nocolrules">mašāšu(m) I</td></tr>
+<tr><td class="ten nocolrules">mšt&#160;&#160;</td><td class="nocolrules">mašātu</td></tr>
+<tr><td class="ten nocolrules">mtḫ&#160;&#160;</td><td class="nocolrules">matāḫu</td></tr>
+<tr><td class="ten nocolrules">mtq&#160;&#160;</td><td class="nocolrules">matāqu(m)</td></tr>
+<tr><td class="ten nocolrules">mtr&#160;&#160;</td><td class="nocolrules">matāru(m) II; (w)atāru(m)</td></tr>
+<tr><td class="ten nocolrules">mṭʾ&#160;&#160;</td><td class="nocolrules">maṭû(m) II</td></tr>
+<tr><td class="ten nocolrules">mzʾ&#160;&#160;</td><td class="nocolrules">mazāʾu(m) II; mazûm III</td></tr>
+<tr><td class="ten nocolrules">mzq&#160;&#160;</td><td class="nocolrules">mazāqu I</td></tr>
+<tr><td class="ten nocolrules">mzr&#160;&#160;</td><td class="nocolrules">masārum; maṣāru(m); mazāru</td></tr>
+<tr><td class="ten nocolrules">mzz&#160;&#160;</td><td class="nocolrules">muzzuzu</td></tr>
+</table>
+<h2 id="n">N</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">nʾʾ&#160;&#160;</td><td class="nocolrules">nâʾu; naʾû(m); nêʾu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾd&#160;&#160;</td><td class="nocolrules">naʾādu(m) I; nâdu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾḫ&#160;&#160;</td><td class="nocolrules">nâḫu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾk&#160;&#160;</td><td class="nocolrules">nâku II; niāku(m)</td></tr>
+<tr><td class="ten nocolrules">nʾl&#160;&#160;</td><td class="nocolrules">itūlu(m); naʾālu(m); nâlu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾm&#160;&#160;</td><td class="nocolrules">naʾāmu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾp&#160;&#160;</td><td class="nocolrules">naʾāpu; nâpu I.II</td></tr>
+<tr><td class="ten nocolrules">nʾq&#160;&#160;</td><td class="nocolrules">nâqu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">nʾr&#160;&#160;</td><td class="nocolrules">naʾāru(m); nêru(m)</td></tr>
+<tr><td class="ten nocolrules">nʾs&#160;&#160;</td><td class="nocolrules">naʾāsu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾṣ&#160;&#160;</td><td class="nocolrules">nâṣu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾš&#160;&#160;</td><td class="nocolrules">naʾāšu; nâšu(m); nêšu(m)</td></tr>
+<tr><td class="ten nocolrules">nʾt&#160;&#160;</td><td class="nocolrules">nêtu I.II</td></tr>
+<tr><td class="ten nocolrules">nʾṭ&#160;&#160;</td><td class="nocolrules">nâṭu</td></tr>
+<tr><td class="ten nocolrules">nbʾ&#160;&#160;</td><td class="nocolrules">nabāʾu(m) I; nabû(m) II; nebû(m) II</td></tr>
+<tr><td class="ten nocolrules">nbb&#160;&#160;</td><td class="nocolrules">nabābu</td></tr>
+<tr><td class="ten nocolrules">nbḫ&#160;&#160;</td><td class="nocolrules">nabāḫu</td></tr>
+<tr><td class="ten nocolrules">nbk&#160;&#160;</td><td class="nocolrules">nabākum</td></tr>
+<tr><td class="ten nocolrules">nbq&#160;&#160;</td><td class="nocolrules">nabākum</td></tr>
+<tr><td class="ten nocolrules">nbṭ&#160;&#160;</td><td class="nocolrules">nabāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">nbz&#160;&#160;</td><td class="nocolrules">nabāzu</td></tr>
+<tr><td class="ten nocolrules">ndʾ&#160;&#160;</td><td class="nocolrules">nadû(m) III.IV; naṭû(m) IV</td></tr>
+<tr><td class="ten nocolrules">ndd&#160;&#160;</td><td class="nocolrules">nadādu(m)</td></tr>
+<tr><td class="ten nocolrules">ndk&#160;&#160;</td><td class="nocolrules">nadāqu</td></tr>
+<tr><td class="ten nocolrules">ndn&#160;&#160;</td><td class="nocolrules">nadānu(m) II</td></tr>
+<tr><td class="ten nocolrules">ndq&#160;&#160;</td><td class="nocolrules">nadāqu</td></tr>
+<tr><td class="ten nocolrules">ndr&#160;&#160;</td><td class="nocolrules">nadāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ndš&#160;&#160;</td><td class="nocolrules">nadāšum</td></tr>
+<tr><td class="ten nocolrules">ngb&#160;&#160;</td><td class="nocolrules">nagāpum</td></tr>
+<tr><td class="ten nocolrules">ngg&#160;&#160;</td><td class="nocolrules">nagāgu(m)</td></tr>
+<tr><td class="ten nocolrules">ngl&#160;&#160;</td><td class="nocolrules">nagālu</td></tr>
+<tr><td class="ten nocolrules">ngp&#160;&#160;</td><td class="nocolrules">nagāpum</td></tr>
+<tr><td class="ten nocolrules">ngr&#160;&#160;</td><td class="nocolrules">nagāru(m) II</td></tr>
+<tr><td class="ten nocolrules">ngš&#160;&#160;</td><td class="nocolrules">nagāšu(m)</td></tr>
+<tr><td class="ten nocolrules">ngʾ&#160;&#160;</td><td class="nocolrules">nagû(m) II</td></tr>
+<tr><td class="ten nocolrules">nḫʾ&#160;&#160;</td><td class="nocolrules">naḫû; neḫû(m) II</td></tr>
+<tr><td class="ten nocolrules">nḫl&#160;&#160;</td><td class="nocolrules">naḫālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">nḫr&#160;&#160;</td><td class="nocolrules">naḫāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">nḫs&#160;&#160;</td><td class="nocolrules">naḫāsu(m)</td></tr>
+<tr><td class="ten nocolrules">nḫṣ&#160;&#160;</td><td class="nocolrules">nuḫḫuṣu</td></tr>
+<tr><td class="ten nocolrules">nḫš&#160;&#160;</td><td class="nocolrules">naḫāšu(m)</td></tr>
+<tr><td class="ten nocolrules">nḫt&#160;&#160;</td><td class="nocolrules">naḫātu(m)</td></tr>
+<tr><td class="ten nocolrules">nḫṭ&#160;&#160;</td><td class="nocolrules">nuḫḫuṭu</td></tr>
+<tr><td class="ten nocolrules">nkd&#160;&#160;</td><td class="nocolrules">nakādu(m)</td></tr>
+<tr><td class="ten nocolrules">nkl&#160;&#160;</td><td class="nocolrules">nakālu(m)</td></tr>
+<tr><td class="ten nocolrules">nkm&#160;&#160;</td><td class="nocolrules">nakāmu(m)</td></tr>
+<tr><td class="ten nocolrules">nkp&#160;&#160;</td><td class="nocolrules">nakāpu(m)</td></tr>
+<tr><td class="ten nocolrules">nkr&#160;&#160;</td><td class="nocolrules">nakāru(m)</td></tr>
+<tr><td class="ten nocolrules">nks&#160;&#160;</td><td class="nocolrules">nakāsu(m)</td></tr>
+<tr><td class="ten nocolrules">nkš&#160;&#160;</td><td class="nocolrules">nakāšu(m)</td></tr>
+<tr><td class="ten nocolrules">nlš&#160;&#160;</td><td class="nocolrules">nalāšu(m)</td></tr>
+<tr><td class="ten nocolrules">nmʾ&#160;&#160;</td><td class="nocolrules">nawûm II</td></tr>
+<tr><td class="ten nocolrules">nmr&#160;&#160;</td><td class="nocolrules">nawāru(m)</td></tr>
+<tr><td class="ten nocolrules">nmš&#160;&#160;</td><td class="nocolrules">namāšu(m)</td></tr>
+<tr><td class="ten nocolrules">npʾ&#160;&#160;</td><td class="nocolrules">napû(m) II; nepû(m); nuppuʾum</td></tr>
+<tr><td class="ten nocolrules">npd&#160;&#160;</td><td class="nocolrules">napādu II</td></tr>
+<tr><td class="ten nocolrules">npg&#160;&#160;</td><td class="nocolrules">napāgu</td></tr>
+<tr><td class="ten nocolrules">npḫ&#160;&#160;</td><td class="nocolrules">napāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">npk&#160;&#160;</td><td class="nocolrules">nabākum</td></tr>
+<tr><td class="ten nocolrules">npl&#160;&#160;</td><td class="nocolrules">napālu(m) I.II.III</td></tr>
+<tr><td class="ten nocolrules">npq&#160;&#160;</td><td class="nocolrules">nabākum; napāqu(m); nuppuqu</td></tr>
+<tr><td class="ten nocolrules">npr&#160;&#160;</td><td class="nocolrules">napāru</td></tr>
+<tr><td class="ten nocolrules">npṣ&#160;&#160;</td><td class="nocolrules">napāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">npš&#160;&#160;</td><td class="nocolrules">napāšu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">npt&#160;&#160;</td><td class="nocolrules">napātu</td></tr>
+<tr><td class="ten nocolrules">nqʾ&#160;&#160;</td><td class="nocolrules">naqû(m)</td></tr>
+<tr><td class="ten nocolrules">nqb&#160;&#160;</td><td class="nocolrules">naqābu(m)</td></tr>
+<tr><td class="ten nocolrules">nqd&#160;&#160;</td><td class="nocolrules">naqādu(m) I</td></tr>
+<tr><td class="ten nocolrules">nqr&#160;&#160;</td><td class="nocolrules">naqāru(m)</td></tr>
+<tr><td class="ten nocolrules">nrb&#160;&#160;</td><td class="nocolrules">narābu(m)</td></tr>
+<tr><td class="ten nocolrules">nrṭ&#160;&#160;</td><td class="nocolrules">narāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">nsʾ&#160;&#160;</td><td class="nocolrules">nesû(m) II</td></tr>
+<tr><td class="ten nocolrules">nsḫ&#160;&#160;</td><td class="nocolrules">nasāḫu(m) I; našāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">nsk&#160;&#160;</td><td class="nocolrules">nasāku(m)</td></tr>
+<tr><td class="ten nocolrules">nsq&#160;&#160;</td><td class="nocolrules">nasāqu(m)</td></tr>
+<tr><td class="ten nocolrules">nsr&#160;&#160;</td><td class="nocolrules">nasāru</td></tr>
+<tr><td class="ten nocolrules">nss&#160;&#160;</td><td class="nocolrules">nasāsu(m) I; našāšu I</td></tr>
+<tr><td class="ten nocolrules">nṣb&#160;&#160;</td><td class="nocolrules">naṣābu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">nṣr&#160;&#160;</td><td class="nocolrules">naṣāru(m)</td></tr>
+<tr><td class="ten nocolrules">nṣṣ&#160;&#160;</td><td class="nocolrules">naṣ(ṣ) → našû(m) II</td></tr>
+<tr><td class="ten nocolrules">nšʾ&#160;&#160;</td><td class="nocolrules">našû(m) II; nešû(m)</td></tr>
+<tr><td class="ten nocolrules">nšb&#160;&#160;</td><td class="nocolrules">nuššubum</td></tr>
+<tr><td class="ten nocolrules">nšḫ&#160;&#160;</td><td class="nocolrules">našāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">nšk&#160;&#160;</td><td class="nocolrules">nasāku(m); našāku(m) I</td></tr>
+<tr><td class="ten nocolrules">nšp&#160;&#160;</td><td class="nocolrules">našāpu(m)</td></tr>
+<tr><td class="ten nocolrules">nšq&#160;&#160;</td><td class="nocolrules">našāqu(m)</td></tr>
+<tr><td class="ten nocolrules">nšr&#160;&#160;</td><td class="nocolrules">našāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">nšš&#160;&#160;</td><td class="nocolrules">našāšu I.II</td></tr>
+<tr><td class="ten nocolrules">ntʾ&#160;&#160;</td><td class="nocolrules">naṭû(m) IV; nentû<sup>?</sup>; nuttûm II</td></tr>
+<tr><td class="ten nocolrules">ntk&#160;&#160;</td><td class="nocolrules">natāku(m)</td></tr>
+<tr><td class="ten nocolrules">ntp&#160;&#160;</td><td class="nocolrules">naṭāpu(m)</td></tr>
+<tr><td class="ten nocolrules">ntr&#160;&#160;</td><td class="nocolrules">natāru</td></tr>
+<tr><td class="ten nocolrules">nṭʾ&#160;&#160;</td><td class="nocolrules">naṭû(m) III.IV</td></tr>
+<tr><td class="ten nocolrules">nṭl&#160;&#160;</td><td class="nocolrules">naṭālu(m)</td></tr>
+<tr><td class="ten nocolrules">nṭp&#160;&#160;</td><td class="nocolrules">naṭāpu(m)</td></tr>
+<tr><td class="ten nocolrules">nwʾ&#160;&#160;</td><td class="nocolrules">nawû(m) II</td></tr>
+<tr><td class="ten nocolrules">nwr&#160;&#160;</td><td class="nocolrules">nawāru(m)</td></tr>
+<tr><td class="ten nocolrules">nzʾ&#160;&#160;</td><td class="nocolrules">nezû</td></tr>
+<tr><td class="ten nocolrules">nzl&#160;&#160;</td><td class="nocolrules">nazālu(m)</td></tr>
+<tr><td class="ten nocolrules">nzm&#160;&#160;</td><td class="nocolrules">nazāmu(m)</td></tr>
+<tr><td class="ten nocolrules">nzp&#160;&#160;</td><td class="nocolrules">nazāpum</td></tr>
+<tr><td class="ten nocolrules">nzq&#160;&#160;</td><td class="nocolrules">nazāqu(m)</td></tr>
+<tr><td class="ten nocolrules">nzr&#160;&#160;</td><td class="nocolrules">nazāru(m)</td></tr>
+<tr><td class="ten nocolrules">nzz&#160;&#160;</td><td class="nocolrules">našāšu I; nazāzu(m) I</td></tr>
+</table>
+<h2 id="p">P</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">pʾd&#160;&#160;</td><td class="nocolrules">pâdu(m); puādum</td></tr>
+<tr><td class="ten nocolrules">pʾḫ&#160;&#160;</td><td class="nocolrules">puḫḫu(m)</td></tr>
+<tr><td class="ten nocolrules">pʾn&#160;&#160;</td><td class="nocolrules">pênu</td></tr>
+<tr><td class="ten nocolrules">pʾq&#160;&#160;</td><td class="nocolrules">piāqum; puāgu(m); puqqu(m)</td></tr>
+<tr><td class="ten nocolrules">pʾr&#160;&#160;</td><td class="nocolrules">pâru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">pʾṣ&#160;&#160;</td><td class="nocolrules">paʾāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">pʾš&#160;&#160;</td><td class="nocolrules">pâšu; puāšu(m)</td></tr>
+<tr><td class="ten nocolrules">pʾt/ṭ&#160;&#160;</td><td class="nocolrules">puādum</td></tr>
+<tr><td class="ten nocolrules">pdʾ&#160;&#160;</td><td class="nocolrules">padû(m)</td></tr>
+<tr><td class="ten nocolrules">pgʾ&#160;&#160;</td><td class="nocolrules">pagû(m) II</td></tr>
+<tr><td class="ten nocolrules">pgl&#160;&#160;</td><td class="nocolrules">pagālu</td></tr>
+<tr><td class="ten nocolrules">pḫʾ&#160;&#160;</td><td class="nocolrules">peḫû(m) II</td></tr>
+<tr><td class="ten nocolrules">pḫd&#160;&#160;</td><td class="nocolrules">paḫādu</td></tr>
+<tr><td class="ten nocolrules">pḫḫ&#160;&#160;</td><td class="nocolrules">paḫāḫu</td></tr>
+<tr><td class="ten nocolrules">pḫr&#160;&#160;</td><td class="nocolrules">paḫāru(m) II</td></tr>
+<tr><td class="ten nocolrules">pḫs/ṣ&#160;&#160;</td><td class="nocolrules">paḫāsu</td></tr>
+<tr><td class="ten nocolrules">pḫz&#160;&#160;</td><td class="nocolrules">paḫāsu; paḫāzu</td></tr>
+<tr><td class="ten nocolrules">pkl&#160;&#160;</td><td class="nocolrules">pagālu</td></tr>
+<tr><td class="ten nocolrules">pkr&#160;&#160;</td><td class="nocolrules">pakāru</td></tr>
+<tr><td class="ten nocolrules">plʾ&#160;&#160;</td><td class="nocolrules">pelû III</td></tr>
+<tr><td class="ten nocolrules">pld&#160;&#160;</td><td class="nocolrules">palādu II</td></tr>
+<tr><td class="ten nocolrules">plḫ&#160;&#160;</td><td class="nocolrules">palāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">plk&#160;&#160;</td><td class="nocolrules">palāku(m) I; palāqu(m)</td></tr>
+<tr><td class="ten nocolrules">plkʾ&#160;&#160;</td><td class="nocolrules">nepelkû(m)</td></tr>
+<tr><td class="ten nocolrules">pll&#160;&#160;</td><td class="nocolrules">palālum</td></tr>
+<tr><td class="ten nocolrules">plq&#160;&#160;</td><td class="nocolrules">palāqu(m)</td></tr>
+<tr><td class="ten nocolrules">pls&#160;&#160;</td><td class="nocolrules">palāsu(m)</td></tr>
+<tr><td class="ten nocolrules">plsḫ&#160;&#160;</td><td class="nocolrules">napalsuḫu</td></tr>
+<tr><td class="ten nocolrules">plš&#160;&#160;</td><td class="nocolrules">palāšu(m)</td></tr>
+<tr><td class="ten nocolrules">plṭʾ&#160;&#160;</td><td class="nocolrules">napalṭû</td></tr>
+<tr><td class="ten nocolrules">pnʾ&#160;&#160;</td><td class="nocolrules">panû(m)</td></tr>
+<tr><td class="ten nocolrules">png/k&#160;&#160;</td><td class="nocolrules">panāku</td></tr>
+<tr><td class="ten nocolrules">pnn&#160;&#160;</td><td class="nocolrules">bunnunu</td></tr>
+<tr><td class="ten nocolrules">pqʾ&#160;&#160;</td><td class="nocolrules">peqûm</td></tr>
+<tr><td class="ten nocolrules">pqd&#160;&#160;</td><td class="nocolrules">paqādu(m)</td></tr>
+<tr><td class="ten nocolrules">pqr&#160;&#160;</td><td class="nocolrules">baqāru(m) I</td></tr>
+<tr><td class="ten nocolrules">prʾ&#160;&#160;</td><td class="nocolrules">parāʾu(m) I.II; parû III.IV; purrûm II</td></tr>
+<tr><td class="ten nocolrules">prd&#160;&#160;</td><td class="nocolrules">parādu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">prdʾ&#160;&#160;</td><td class="nocolrules">napardû II</td></tr>
+<tr><td class="ten nocolrules">prḫ&#160;&#160;</td><td class="nocolrules">parāḫu I; parāku(m); parāʾu(m) I</td></tr>
+<tr><td class="ten nocolrules">prk&#160;&#160;</td><td class="nocolrules">parāku(m)</td></tr>
+<tr><td class="ten nocolrules">prkʾ&#160;&#160;</td><td class="nocolrules">naparkû II</td></tr>
+<tr><td class="ten nocolrules">prq&#160;&#160;</td><td class="nocolrules">parāqu</td></tr>
+<tr><td class="ten nocolrules">prqd&#160;&#160;</td><td class="nocolrules">naparqudu(m)</td></tr>
+<tr><td class="ten nocolrules">prr&#160;&#160;</td><td class="nocolrules">parāru(m); šuparruru(m) II</td></tr>
+<tr><td class="ten nocolrules">prs&#160;&#160;</td><td class="nocolrules">parāsu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">prsḫ&#160;&#160;</td><td class="nocolrules">napalsuḫu</td></tr>
+<tr><td class="ten nocolrules">prṣ&#160;&#160;</td><td class="nocolrules">parāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">prš&#160;&#160;</td><td class="nocolrules">naprušu(m) II; parāšu(m) II</td></tr>
+<tr><td class="ten nocolrules">pršd&#160;&#160;</td><td class="nocolrules">naparšudu(m)</td></tr>
+<tr><td class="ten nocolrules">pršm&#160;&#160;</td><td class="nocolrules">paršumu</td></tr>
+<tr><td class="ten nocolrules">prṭ&#160;&#160;</td><td class="nocolrules">parāṭu</td></tr>
+<tr><td class="ten nocolrules">przḫ&#160;&#160;</td><td class="nocolrules">šuparzuḫu</td></tr>
+<tr><td class="ten nocolrules">psʾ&#160;&#160;</td><td class="nocolrules">pasû; pesû</td></tr>
+<tr><td class="ten nocolrules">psḫ&#160;&#160;</td><td class="nocolrules">pasāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">psk&#160;&#160;</td><td class="nocolrules">passuku</td></tr>
+<tr><td class="ten nocolrules">psl&#160;&#160;</td><td class="nocolrules">pasālu(m)</td></tr>
+<tr><td class="ten nocolrules">psm&#160;&#160;</td><td class="nocolrules">pasāmu(m)</td></tr>
+<tr><td class="ten nocolrules">psn&#160;&#160;</td><td class="nocolrules">pesēnu</td></tr>
+<tr><td class="ten nocolrules">psq&#160;&#160;</td><td class="nocolrules">pasāqu(m)</td></tr>
+<tr><td class="ten nocolrules">psr&#160;&#160;</td><td class="nocolrules">bussuru(m)</td></tr>
+<tr><td class="ten nocolrules">pss&#160;&#160;</td><td class="nocolrules">pasāsu(m)</td></tr>
+<tr><td class="ten nocolrules">pṣʾ&#160;&#160;</td><td class="nocolrules">peṣû(m) II</td></tr>
+<tr><td class="ten nocolrules">pṣd&#160;&#160;</td><td class="nocolrules">paṣādu(m)</td></tr>
+<tr><td class="ten nocolrules">pṣm&#160;&#160;</td><td class="nocolrules">paṣāmu</td></tr>
+<tr><td class="ten nocolrules">pṣn&#160;&#160;</td><td class="nocolrules">paṣānu(m)</td></tr>
+<tr><td class="ten nocolrules">pṣṣ&#160;&#160;</td><td class="nocolrules">paṣāṣu</td></tr>
+<tr><td class="ten nocolrules">pšʾ&#160;&#160;</td><td class="nocolrules">pašû(m)</td></tr>
+<tr><td class="ten nocolrules">pšḫ&#160;&#160;</td><td class="nocolrules">pašāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">pšl&#160;&#160;</td><td class="nocolrules">bašālu(m); pašālu(m) I</td></tr>
+<tr><td class="ten nocolrules">pšm&#160;&#160;</td><td class="nocolrules">pašāmum</td></tr>
+<tr><td class="ten nocolrules">pšn&#160;&#160;</td><td class="nocolrules">pašānu</td></tr>
+<tr><td class="ten nocolrules">pšq&#160;&#160;</td><td class="nocolrules">pašāqu(m)</td></tr>
+<tr><td class="ten nocolrules">pšr&#160;&#160;</td><td class="nocolrules">pašāru(m)</td></tr>
+<tr><td class="ten nocolrules">pšš&#160;&#160;</td><td class="nocolrules">pašāšu(m)</td></tr>
+<tr><td class="ten nocolrules">pšṭ&#160;&#160;</td><td class="nocolrules">pašāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">ptʾ&#160;&#160;</td><td class="nocolrules">petû(m) II</td></tr>
+<tr><td class="ten nocolrules">ptḫ&#160;&#160;</td><td class="nocolrules">patāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ptl&#160;&#160;</td><td class="nocolrules">patālu(m)</td></tr>
+<tr><td class="ten nocolrules">ptn&#160;&#160;</td><td class="nocolrules">patānu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ptq&#160;&#160;</td><td class="nocolrules">patāqu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">pṭm&#160;&#160;</td><td class="nocolrules">paṭāmum</td></tr>
+<tr><td class="ten nocolrules">pṭr&#160;&#160;</td><td class="nocolrules">paṭāru(m)</td></tr>
+<tr><td class="ten nocolrules">pzr&#160;&#160;</td><td class="nocolrules">pazāru(m)</td></tr>
+</table>
+<h2 id="q">Q</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">qʾʾ&#160;&#160;</td><td class="nocolrules">gâʾu; quʾʾû(m)</td></tr>
+<tr><td class="ten nocolrules">qʾb&#160;&#160;</td><td class="nocolrules">qâpu(m) I</td></tr>
+<tr><td class="ten nocolrules">qʾd&#160;&#160;</td><td class="nocolrules">qâdu</td></tr>
+<tr><td class="ten nocolrules">qʾl&#160;&#160;</td><td class="nocolrules">qaʾālum; qâlu(m) I; qiālu(m)</td></tr>
+<tr><td class="ten nocolrules">qʾp&#160;&#160;</td><td class="nocolrules">qâpu(m) I; qiāpu(m)</td></tr>
+<tr><td class="ten nocolrules">qʾš&#160;&#160;</td><td class="nocolrules">qiāšu(m)</td></tr>
+<tr><td class="ten nocolrules">qbʾ&#160;&#160;</td><td class="nocolrules">qabû(m) II; quʾʾû(m)</td></tr>
+<tr><td class="ten nocolrules">qbl&#160;&#160;</td><td class="nocolrules">qitbulu; qubbulu</td></tr>
+<tr><td class="ten nocolrules">qbr&#160;&#160;</td><td class="nocolrules">qebēru(m)</td></tr>
+<tr><td class="ten nocolrules">qbt&#160;&#160;</td><td class="nocolrules">ḫabātu IV; qubbutu</td></tr>
+<tr><td class="ten nocolrules">qdʾ&#160;&#160;</td><td class="nocolrules">qadāʾum; qadû III</td></tr>
+<tr><td class="ten nocolrules">qdd&#160;&#160;</td><td class="nocolrules">qadādu(m)</td></tr>
+<tr><td class="ten nocolrules">qdp&#160;&#160;</td><td class="nocolrules">qadāpu</td></tr>
+<tr><td class="ten nocolrules">qdš&#160;&#160;</td><td class="nocolrules">qadāšu(m)</td></tr>
+<tr><td class="ten nocolrules">qlʾ&#160;&#160;</td><td class="nocolrules">qalû(m) II</td></tr>
+<tr><td class="ten nocolrules">qll&#160;&#160;</td><td class="nocolrules">qalālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">qlp&#160;&#160;</td><td class="nocolrules">qalāpu(m)</td></tr>
+<tr><td class="ten nocolrules">qlt&#160;&#160;</td><td class="nocolrules">qullutu</td></tr>
+<tr><td class="ten nocolrules">qmʾ&#160;&#160;</td><td class="nocolrules">qamû(m) II; qemûm; quʾʾû(m)</td></tr>
+<tr><td class="ten nocolrules">qmm&#160;&#160;</td><td class="nocolrules">qamāmu</td></tr>
+<tr><td class="ten nocolrules">qmš&#160;&#160;</td><td class="nocolrules">qummušu</td></tr>
+<tr><td class="ten nocolrules">qnʾ&#160;&#160;</td><td class="nocolrules">qanû(m) II; qenû</td></tr>
+<tr><td class="ten nocolrules">qnn&#160;&#160;</td><td class="nocolrules">kanānu(m); qanānu(m) I</td></tr>
+<tr><td class="ten nocolrules">qnp&#160;&#160;</td><td class="nocolrules">qunnupu</td></tr>
+<tr><td class="ten nocolrules">qlpʾ&#160;&#160;</td><td class="nocolrules">neqelpû(m)</td></tr>
+<tr><td class="ten nocolrules">qpʾ&#160;&#160;</td><td class="nocolrules">qapû</td></tr>
+<tr><td class="ten nocolrules">qpl&#160;&#160;</td><td class="nocolrules">kapālu(m)</td></tr>
+<tr><td class="ten nocolrules">qrʾ&#160;&#160;</td><td class="nocolrules">qerû(m)</td></tr>
+<tr><td class="ten nocolrules">qrb&#160;&#160;</td><td class="nocolrules">qerēbu(m)</td></tr>
+<tr><td class="ten nocolrules">qrd&#160;&#160;</td><td class="nocolrules">qarādu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">qrḫ&#160;&#160;</td><td class="nocolrules">qarāḫu</td></tr>
+<tr><td class="ten nocolrules">qrm&#160;&#160;</td><td class="nocolrules">qarāmu</td></tr>
+<tr><td class="ten nocolrules">qrn&#160;&#160;</td><td class="nocolrules">qarānu(m)</td></tr>
+<tr><td class="ten nocolrules">qrr&#160;&#160;</td><td class="nocolrules">qarāru(m)</td></tr>
+<tr><td class="ten nocolrules">qrš&#160;&#160;</td><td class="nocolrules">qarāšu(m)</td></tr>
+<tr><td class="ten nocolrules">qšd&#160;&#160;</td><td class="nocolrules">qašādu(m)</td></tr>
+<tr><td class="ten nocolrules">qtʾ&#160;&#160;</td><td class="nocolrules">qadāʾum; qatû(m) II</td></tr>
+<tr><td class="ten nocolrules">qtl&#160;&#160;</td><td class="nocolrules">qatālu(m)</td></tr>
+<tr><td class="ten nocolrules">qtn&#160;&#160;</td><td class="nocolrules">qatānu(m)</td></tr>
+<tr><td class="ten nocolrules">qtp&#160;&#160;</td><td class="nocolrules">qatāpu(m)</td></tr>
+<tr><td class="ten nocolrules">qtr&#160;&#160;</td><td class="nocolrules">qatāru II</td></tr>
+<tr><td class="ten nocolrules">qṭʾ&#160;&#160;</td><td class="nocolrules">qaṭû</td></tr>
+<tr><td class="ten nocolrules">qwʾ&#160;&#160;</td><td class="nocolrules">quʾʾû(m)</td></tr>
+</table>
+<h2 id="r">R</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">rʾʾ&#160;&#160;</td><td class="nocolrules">râʾu; reʾû(m)</td></tr>
+<tr><td class="ten nocolrules">rʾb&#160;&#160;</td><td class="nocolrules">raʾābu(m); râbu(m) I; riābu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾd&#160;&#160;</td><td class="nocolrules">râdu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾḫ&#160;&#160;</td><td class="nocolrules">riāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾk&#160;&#160;</td><td class="nocolrules">râku</td></tr>
+<tr><td class="ten nocolrules">rʾm&#160;&#160;</td><td class="nocolrules">râmu(m) II.III; rêmu(m); ruʾʾumu</td></tr>
+<tr><td class="ten nocolrules">rʾq&#160;&#160;</td><td class="nocolrules">rêqu(m); riāqu(m); ruāqu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾs&#160;&#160;</td><td class="nocolrules">râsu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾṣ&#160;&#160;</td><td class="nocolrules">râṣu(m); rêṣu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾš&#160;&#160;</td><td class="nocolrules">râsu(m); riāšu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾṭ&#160;&#160;</td><td class="nocolrules">râṭu(m)</td></tr>
+<tr><td class="ten nocolrules">rʾz&#160;&#160;</td><td class="nocolrules">raʾāzu</td></tr>
+<tr><td class="ten nocolrules">rbʾ&#160;&#160;</td><td class="nocolrules">rabû(m) III.IV; rubbuʾum</td></tr>
+<tr><td class="ten nocolrules">rbb&#160;&#160;</td><td class="nocolrules">rabābu(m)</td></tr>
+<tr><td class="ten nocolrules">rbk&#160;&#160;</td><td class="nocolrules">rabāku(m)</td></tr>
+<tr><td class="ten nocolrules">rbq&#160;&#160;</td><td class="nocolrules">rabāqum</td></tr>
+<tr><td class="ten nocolrules">rbṣ&#160;&#160;</td><td class="nocolrules">rabāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">rbš&#160;&#160;</td><td class="nocolrules">rabāšum</td></tr>
+<tr><td class="ten nocolrules">rdʾ&#160;&#160;</td><td class="nocolrules">redû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">rdd&#160;&#160;</td><td class="nocolrules">radādu(m)</td></tr>
+<tr><td class="ten nocolrules">rdm&#160;&#160;</td><td class="nocolrules">radāmu</td></tr>
+<tr><td class="ten nocolrules">rdp&#160;&#160;</td><td class="nocolrules">radāpu</td></tr>
+<tr><td class="ten nocolrules">rgʾ&#160;&#160;</td><td class="nocolrules">ruggû(m)</td></tr>
+<tr><td class="ten nocolrules">rgb&#160;&#160;</td><td class="nocolrules">ragābu; ruggubu II</td></tr>
+<tr><td class="ten nocolrules">rgg&#160;&#160;</td><td class="nocolrules">ragāgu</td></tr>
+<tr><td class="ten nocolrules">rgm&#160;&#160;</td><td class="nocolrules">ragāmu(m)</td></tr>
+<tr><td class="ten nocolrules">rgš&#160;&#160;</td><td class="nocolrules">ragāšum</td></tr>
+<tr><td class="ten nocolrules">rḫʾ&#160;&#160;</td><td class="nocolrules">reḫû(m)</td></tr>
+<tr><td class="ten nocolrules">rḫb&#160;&#160;</td><td class="nocolrules">raʾābu(m)</td></tr>
+<tr><td class="ten nocolrules">rḫḫ&#160;&#160;</td><td class="nocolrules">raḫāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">rḫp&#160;&#160;</td><td class="nocolrules">ruḫḫupu</td></tr>
+<tr><td class="ten nocolrules">rḫṣ&#160;&#160;</td><td class="nocolrules">raḫāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">rḫš&#160;&#160;</td><td class="nocolrules">raḫāšu(m)</td></tr>
+<tr><td class="ten nocolrules">rḫt/ṭ&#160;&#160;</td><td class="nocolrules">raḫātu</td></tr>
+<tr><td class="ten nocolrules">rkb&#160;&#160;</td><td class="nocolrules">rakābu(m)</td></tr>
+<tr><td class="ten nocolrules">rkk&#160;&#160;</td><td class="nocolrules">rakāku</td></tr>
+<tr><td class="ten nocolrules">rkn&#160;&#160;</td><td class="nocolrules">rakānu(m)</td></tr>
+<tr><td class="ten nocolrules">rkp&#160;&#160;</td><td class="nocolrules">rakābu(m)</td></tr>
+<tr><td class="ten nocolrules">rks/š&#160;&#160;</td><td class="nocolrules">rakāsu(m)</td></tr>
+<tr><td class="ten nocolrules">rmʾ&#160;&#160;</td><td class="nocolrules">ramû(m) II.III</td></tr>
+<tr><td class="ten nocolrules">rmk&#160;&#160;</td><td class="nocolrules">ramāku(m)</td></tr>
+<tr><td class="ten nocolrules">rmm&#160;&#160;</td><td class="nocolrules">ramāmu(m) I; râmu(m) II</td></tr>
+<tr><td class="ten nocolrules">rmṣ&#160;&#160;</td><td class="nocolrules">ramāṣu</td></tr>
+<tr><td class="ten nocolrules">rpʾ&#160;&#160;</td><td class="nocolrules">rapāʾum</td></tr>
+<tr><td class="ten nocolrules">rpd&#160;&#160;</td><td class="nocolrules">rapādu(m) II</td></tr>
+<tr><td class="ten nocolrules">rpq&#160;&#160;</td><td class="nocolrules">rapāqu(m)</td></tr>
+<tr><td class="ten nocolrules">rps&#160;&#160;</td><td class="nocolrules">rapāsu(m)</td></tr>
+<tr><td class="ten nocolrules">rpš&#160;&#160;</td><td class="nocolrules">rapāšu(m)</td></tr>
+<tr><td class="ten nocolrules">rpt/ṭ&#160;&#160;</td><td class="nocolrules">rapātu</td></tr>
+<tr><td class="ten nocolrules">rqʾ&#160;&#160;</td><td class="nocolrules">raqû(m); ruqqû</td></tr>
+<tr><td class="ten nocolrules">rqb&#160;&#160;</td><td class="nocolrules">raqābu</td></tr>
+<tr><td class="ten nocolrules">rqd&#160;&#160;</td><td class="nocolrules">raqādu(m)</td></tr>
+<tr><td class="ten nocolrules">rqq&#160;&#160;</td><td class="nocolrules">raqāqu(m)</td></tr>
+<tr><td class="ten nocolrules">rsʾ&#160;&#160;</td><td class="nocolrules">russû(m)</td></tr>
+<tr><td class="ten nocolrules">rsb&#160;&#160;</td><td class="nocolrules">rasābu(m)</td></tr>
+<tr><td class="ten nocolrules">rsn&#160;&#160;</td><td class="nocolrules">rasānu(m)</td></tr>
+<tr><td class="ten nocolrules">rsp&#160;&#160;</td><td class="nocolrules">rasābu(m)</td></tr>
+<tr><td class="ten nocolrules">rṣʾ&#160;&#160;</td><td class="nocolrules">raṣûm</td></tr>
+<tr><td class="ten nocolrules">rṣd&#160;&#160;</td><td class="nocolrules">raṣādu(m)</td></tr>
+<tr><td class="ten nocolrules">rṣn&#160;&#160;</td><td class="nocolrules">rasānu(m); raṣānu(m) I</td></tr>
+<tr><td class="ten nocolrules">rṣp&#160;&#160;</td><td class="nocolrules">raṣāpu</td></tr>
+<tr><td class="ten nocolrules">ršʾ&#160;&#160;</td><td class="nocolrules">rašû(m) I.II.III; ruššû(m) II</td></tr>
+<tr><td class="ten nocolrules">ršb&#160;&#160;</td><td class="nocolrules">rasābu(m); rašābu(m) I</td></tr>
+<tr><td class="ten nocolrules">ršd&#160;&#160;</td><td class="nocolrules">rašādu</td></tr>
+<tr><td class="ten nocolrules">ršk&#160;&#160;</td><td class="nocolrules">rašāku(m)</td></tr>
+<tr><td class="ten nocolrules">ršš&#160;&#160;</td><td class="nocolrules">rašāšu</td></tr>
+<tr><td class="ten nocolrules">rtʾ&#160;&#160;</td><td class="nocolrules">retû(m) II</td></tr>
+<tr><td class="ten nocolrules">rtḫ&#160;&#160;</td><td class="nocolrules">ruttuḫu</td></tr>
+<tr><td class="ten nocolrules">rtm&#160;&#160;</td><td class="nocolrules">ratāmu</td></tr>
+<tr><td class="ten nocolrules">rtt&#160;&#160;</td><td class="nocolrules">ratātu</td></tr>
+<tr><td class="ten nocolrules">rṭʾ&#160;&#160;</td><td class="nocolrules">retû(m) II</td></tr>
+<tr><td class="ten nocolrules">rṭb&#160;&#160;</td><td class="nocolrules">raṭābu(m)</td></tr>
+<tr><td class="ten nocolrules">rṭp&#160;&#160;</td><td class="nocolrules">raṭāpu(m)</td></tr>
+<tr><td class="ten nocolrules">rzʾ&#160;&#160;</td><td class="nocolrules">razû</td></tr>
+<tr><td class="ten nocolrules">rwʾ&#160;&#160;</td><td class="nocolrules">reʾû(m)</td></tr>
+<tr><td class="ten nocolrules">ryʾ&#160;&#160;</td><td class="nocolrules">reʾû(m)</td></tr>
+</table>
+<h2 id="s">S</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">sʾʾ&#160;&#160;</td><td class="nocolrules">sâʾu; seʾû</td></tr>
+<tr><td class="ten nocolrules">sʾb&#160;&#160;</td><td class="nocolrules">saʾābu; sâbu(m)</td></tr>
+<tr><td class="ten nocolrules">sʾd&#160;&#160;</td><td class="nocolrules">sâdu(m); sêdu</td></tr>
+<tr><td class="ten nocolrules">sʾk&#160;&#160;</td><td class="nocolrules">sâku(m)</td></tr>
+<tr><td class="ten nocolrules">sʾl&#160;&#160;</td><td class="nocolrules">saʾālu; sâlu II; sêlu</td></tr>
+<tr><td class="ten nocolrules">sʾm&#160;&#160;</td><td class="nocolrules">siāmum</td></tr>
+<tr><td class="ten nocolrules">sʾp&#160;&#160;</td><td class="nocolrules">saʾābu; sâbu(m)</td></tr>
+<tr><td class="ten nocolrules">sʾq&#160;&#160;</td><td class="nocolrules">siāqum</td></tr>
+<tr><td class="ten nocolrules">sʾr&#160;&#160;</td><td class="nocolrules">sâru(m); sêru(m)</td></tr>
+<tr><td class="ten nocolrules">sʾs&#160;&#160;</td><td class="nocolrules">suʾʾusu</td></tr>
+<tr><td class="ten nocolrules">sʾt&#160;&#160;</td><td class="nocolrules">sâtu</td></tr>
+<tr><td class="ten nocolrules">sʾṭ&#160;&#160;</td><td class="nocolrules">sâṭu; šêtu(m) II</td></tr>
+<tr><td class="ten nocolrules">sbʾ&#160;&#160;</td><td class="nocolrules">sabāʾu(m); sabû</td></tr>
+<tr><td class="ten nocolrules">sbk&#160;&#160;</td><td class="nocolrules">sabāku(m)</td></tr>
+<tr><td class="ten nocolrules">sbl&#160;&#160;</td><td class="nocolrules">zabālu(m)</td></tr>
+<tr><td class="ten nocolrules">sbs&#160;&#160;</td><td class="nocolrules">subbusu II; šabāsu(m)</td></tr>
+<tr><td class="ten nocolrules">sdd&#160;&#160;</td><td class="nocolrules">sadādu I.II</td></tr>
+<tr><td class="ten nocolrules">sdḫ&#160;&#160;</td><td class="nocolrules">sadāḫum</td></tr>
+<tr><td class="ten nocolrules">sdr&#160;&#160;</td><td class="nocolrules">sadāru(m)</td></tr>
+<tr><td class="ten nocolrules">sgʾ&#160;&#160;</td><td class="nocolrules">sagû III; segû</td></tr>
+<tr><td class="ten nocolrules">sḫʾ&#160;&#160;</td><td class="nocolrules">sehû(m)</td></tr>
+<tr><td class="ten nocolrules">sḫḫ&#160;&#160;</td><td class="nocolrules">saḫāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">sḫl&#160;&#160;</td><td class="nocolrules">saḫālu(m)</td></tr>
+<tr><td class="ten nocolrules">sḫm&#160;&#160;</td><td class="nocolrules">saḫāmu(m)</td></tr>
+<tr><td class="ten nocolrules">sḫn&#160;&#160;</td><td class="nocolrules">saḫānu</td></tr>
+<tr><td class="ten nocolrules">sḫp&#160;&#160;</td><td class="nocolrules">saḫāpu(m)</td></tr>
+<tr><td class="ten nocolrules">sḫr&#160;&#160;</td><td class="nocolrules">saḫāru(m)</td></tr>
+<tr><td class="ten nocolrules">sḫš&#160;&#160;</td><td class="nocolrules">saḫāšu(m)</td></tr>
+<tr><td class="ten nocolrules">skd&#160;&#160;</td><td class="nocolrules">zaqādum</td></tr>
+<tr><td class="ten nocolrules">skk&#160;&#160;</td><td class="nocolrules">sakāku(m)</td></tr>
+<tr><td class="ten nocolrules">skl&#160;&#160;</td><td class="nocolrules">sakālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">skn&#160;&#160;</td><td class="nocolrules">sakānu; šakānu(m)</td></tr>
+<tr><td class="ten nocolrules">skp&#160;&#160;</td><td class="nocolrules">sakāpu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">skr&#160;&#160;</td><td class="nocolrules">sekēru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">skt&#160;&#160;</td><td class="nocolrules">sakātu(m)</td></tr>
+<tr><td class="ten nocolrules">slʾ&#160;&#160;</td><td class="nocolrules">salāḫu(m) II; salāʾu(m) I.II.III; sullû(m) IV; šalû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">sld&#160;&#160;</td><td class="nocolrules">salātu(m) II; salāṭu</td></tr>
+<tr><td class="ten nocolrules">slḫ&#160;&#160;</td><td class="nocolrules">salāḫu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">sll&#160;&#160;</td><td class="nocolrules">salālu(m)</td></tr>
+<tr><td class="ten nocolrules">slm&#160;&#160;</td><td class="nocolrules">salāmu(m) II</td></tr>
+<tr><td class="ten nocolrules">sln&#160;&#160;</td><td class="nocolrules">sullunu II</td></tr>
+<tr><td class="ten nocolrules">slq&#160;&#160;</td><td class="nocolrules">salāqu I.II</td></tr>
+<tr><td class="ten nocolrules">slt&#160;&#160;</td><td class="nocolrules">salātu(m) II</td></tr>
+<tr><td class="ten nocolrules">slṭ&#160;&#160;</td><td class="nocolrules">salāṭu</td></tr>
+<tr><td class="ten nocolrules">smʾ&#160;&#160;</td><td class="nocolrules">samû II</td></tr>
+<tr><td class="ten nocolrules">smd&#160;&#160;</td><td class="nocolrules">samādu(m)</td></tr>
+<tr><td class="ten nocolrules">smḫ&#160;&#160;</td><td class="nocolrules">samāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">smk&#160;&#160;</td><td class="nocolrules">samāku(m)</td></tr>
+<tr><td class="ten nocolrules">smr&#160;&#160;</td><td class="nocolrules">samārum</td></tr>
+<tr><td class="ten nocolrules">smš&#160;&#160;</td><td class="nocolrules">samāšu(m)</td></tr>
+<tr><td class="ten nocolrules">snb&#160;&#160;</td><td class="nocolrules">sanāpu(m)</td></tr>
+<tr><td class="ten nocolrules">snn&#160;&#160;</td><td class="nocolrules">sanānu</td></tr>
+<tr><td class="ten nocolrules">snp&#160;&#160;</td><td class="nocolrules">sanāpu(m)</td></tr>
+<tr><td class="ten nocolrules">snq&#160;&#160;</td><td class="nocolrules">sanāqu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">sns/š&#160;&#160;</td><td class="nocolrules">sanāšu</td></tr>
+<tr><td class="ten nocolrules">spʾ&#160;&#160;</td><td class="nocolrules">sepû(m) II.III; suppû II</td></tr>
+<tr><td class="ten nocolrules">spd&#160;&#160;</td><td class="nocolrules">sapādu(m)</td></tr>
+<tr><td class="ten nocolrules">spḫ&#160;&#160;</td><td class="nocolrules">sapāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">spk&#160;&#160;</td><td class="nocolrules">sapāku</td></tr>
+<tr><td class="ten nocolrules">spn&#160;&#160;</td><td class="nocolrules">sapānu(m)</td></tr>
+<tr><td class="ten nocolrules">spq&#160;&#160;</td><td class="nocolrules">sapāqu</td></tr>
+<tr><td class="ten nocolrules">spr&#160;&#160;</td><td class="nocolrules">sepēru</td></tr>
+<tr><td class="ten nocolrules">sps&#160;&#160;</td><td class="nocolrules">šapāṣu I</td></tr>
+<tr><td class="ten nocolrules">sqd&#160;&#160;</td><td class="nocolrules">zaqādum</td></tr>
+<tr><td class="ten nocolrules">sql&#160;&#160;</td><td class="nocolrules">saqālu</td></tr>
+<tr><td class="ten nocolrules">sqp&#160;&#160;</td><td class="nocolrules">zaqāpu(m)</td></tr>
+<tr><td class="ten nocolrules">sqr&#160;&#160;</td><td class="nocolrules">zakāru(m); zaqāru(m) I</td></tr>
+<tr><td class="ten nocolrules">srʾ&#160;&#160;</td><td class="nocolrules">surrûm II; zarû(m) II</td></tr>
+<tr><td class="ten nocolrules">srd&#160;&#160;</td><td class="nocolrules">sarādu(m); serēdu</td></tr>
+<tr><td class="ten nocolrules">srḫ&#160;&#160;</td><td class="nocolrules">sarāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">srm&#160;&#160;</td><td class="nocolrules">sarāmu(m)</td></tr>
+<tr><td class="ten nocolrules">srp&#160;&#160;</td><td class="nocolrules">sarāpu</td></tr>
+<tr><td class="ten nocolrules">srq&#160;&#160;</td><td class="nocolrules">sarāqu(m) I</td></tr>
+<tr><td class="ten nocolrules">srr&#160;&#160;</td><td class="nocolrules">sarāru(m); sarruru</td></tr>
+<tr><td class="ten nocolrules">ssʾ&#160;&#160;</td><td class="nocolrules">šasû(m)</td></tr>
+<tr><td class="ten nocolrules">stl&#160;&#160;</td><td class="nocolrules">satālu</td></tr>
+<tr><td class="ten nocolrules">sṭḫ&#160;&#160;</td><td class="nocolrules">sadāḫum</td></tr>
+<tr><td class="ten nocolrules">sṭr&#160;&#160;</td><td class="nocolrules">šaṭāru(m) II</td></tr>
+</table>
+<h2 id="sadhe">Ṣ</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">ṣʾʾ&#160;&#160;</td><td class="nocolrules">ṣêʾu; ṣuāʾu</td></tr>
+<tr><td class="ten nocolrules">ṣʾd&#160;&#160;</td><td class="nocolrules">ṣâdu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ṣʾḫ&#160;&#160;</td><td class="nocolrules">ṣiāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣʾl&#160;&#160;</td><td class="nocolrules">ṣâlu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣʾn&#160;&#160;</td><td class="nocolrules">ṣânu I; ṣênu(m) I</td></tr>
+<tr><td class="ten nocolrules">ṣʾp&#160;&#160;</td><td class="nocolrules">ṣêpum; ṣuppu II</td></tr>
+<tr><td class="ten nocolrules">ṣʾr&#160;&#160;</td><td class="nocolrules">ṣeʾārum; ṣêru(m) I; ṣiāru(m)</td></tr>
+<tr><td class="ten nocolrules">ṣʾy&#160;&#160;</td><td class="nocolrules">ṣêʾu</td></tr>
+<tr><td class="ten nocolrules">ṣbʾ&#160;&#160;</td><td class="nocolrules">ṣabāʾum; ṣabû(m) IV; ṣapû(m) II; ṣubbû(m)</td></tr>
+<tr><td class="ten nocolrules">ṣbb&#160;&#160;</td><td class="nocolrules">ṣabābu</td></tr>
+<tr><td class="ten nocolrules">ṣbl&#160;&#160;</td><td class="nocolrules">zabālu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣbr&#160;&#160;</td><td class="nocolrules">ṣabāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ṣbt/ṭ&#160;&#160;</td><td class="nocolrules">ṣabātu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣdʾ&#160;&#160;</td><td class="nocolrules">ṣadû(m)</td></tr>
+<tr><td class="ten nocolrules">ṣdr&#160;&#160;</td><td class="nocolrules">ṣadāru</td></tr>
+<tr><td class="ten nocolrules">ṣḫr&#160;&#160;</td><td class="nocolrules">ṣeḫēru(m)</td></tr>
+<tr><td class="ten nocolrules">ṣḫt&#160;&#160;</td><td class="nocolrules">ṣaḫātu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ṣlʾ&#160;&#160;</td><td class="nocolrules">ṣalāʾu; ṣelû(m) I.II; ṣullû III</td></tr>
+<tr><td class="ten nocolrules">ṣll&#160;&#160;</td><td class="nocolrules">ṣalālu(m); ṣullulu(m) II</td></tr>
+<tr><td class="ten nocolrules">ṣlm&#160;&#160;</td><td class="nocolrules">ṣalāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣlp&#160;&#160;</td><td class="nocolrules">ṣalāpu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣmʾ&#160;&#160;</td><td class="nocolrules">ṣamû(m) II</td></tr>
+<tr><td class="ten nocolrules">ṣmd&#160;&#160;</td><td class="nocolrules">ṣamādu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣmr&#160;&#160;</td><td class="nocolrules">ṣamāru(m) I; ṣemēru(m)</td></tr>
+<tr><td class="ten nocolrules">ṣmt&#160;&#160;</td><td class="nocolrules">ṣamātu</td></tr>
+<tr><td class="ten nocolrules">ṣnḫ&#160;&#160;</td><td class="nocolrules">ṣanāḫu</td></tr>
+<tr><td class="ten nocolrules">ṣpʾ&#160;&#160;</td><td class="nocolrules">ṣapû(m) II</td></tr>
+<tr><td class="ten nocolrules">ṣpḫ&#160;&#160;</td><td class="nocolrules">ṣappuḫu</td></tr>
+<tr><td class="ten nocolrules">ṣpn&#160;&#160;</td><td class="nocolrules">ṣapānu</td></tr>
+<tr><td class="ten nocolrules">ṣpp&#160;&#160;</td><td class="nocolrules">ṣabābu</td></tr>
+<tr><td class="ten nocolrules">ṣpr&#160;&#160;</td><td class="nocolrules">ṣapāru(m)</td></tr>
+<tr><td class="ten nocolrules">ṣrd&#160;&#160;</td><td class="nocolrules">ṣarātu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣrḫ&#160;&#160;</td><td class="nocolrules">ṣarāḫu(m) I.II.III.IV; ṣurruḫu II</td></tr>
+<tr><td class="ten nocolrules">ṣrk&#160;&#160;</td><td class="nocolrules">ṣarākum</td></tr>
+<tr><td class="ten nocolrules">ṣrm&#160;&#160;</td><td class="nocolrules">ṣarāmu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣrp&#160;&#160;</td><td class="nocolrules">ṣarāpu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ṣrr&#160;&#160;</td><td class="nocolrules">ṣarāru(m) I.III</td></tr>
+<tr><td class="ten nocolrules">ṣrš&#160;&#160;</td><td class="nocolrules">ṣarāšu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣrt&#160;&#160;</td><td class="nocolrules">ṣarātu(m)</td></tr>
+<tr><td class="ten nocolrules">ṣwʾ&#160;&#160;</td><td class="nocolrules">ṣawwûm</td></tr>
+</table>
+
+<h2 id="shin">Š</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">šʾʾ&#160;&#160;</td><td class="nocolrules">šâʾu(m); šaʾû(m) II; šêʾu(m) I.II; šeʾû(m); šuḫḫû III; šutaʾʾûm</td></tr>
+<tr><td class="ten nocolrules">šʾb&#160;&#160;</td><td class="nocolrules">šâbu(m) I; šiābu(m)</td></tr>
+<tr><td class="ten nocolrules">šʾḫ&#160;&#160;</td><td class="nocolrules">šêḫu; šiāḫum</td></tr>
+<tr><td class="ten nocolrules">šʾk&#160;&#160;</td><td class="nocolrules">šâqum II</td></tr>
+<tr><td class="ten nocolrules">šʾl&#160;&#160;</td><td class="nocolrules">šâlu(m) I; šêlu(m); šiālu(m)</td></tr>
+<tr><td class="ten nocolrules">šʾm&#160;&#160;</td><td class="nocolrules">šâmu(m) I; šiāmu(m); šummu(m) IV</td></tr>
+<tr><td class="ten nocolrules">šʾn&#160;&#160;</td><td class="nocolrules">šênu; šiānu(m); šunnu(m) II</td></tr>
+<tr><td class="ten nocolrules">šʾp&#160;&#160;</td><td class="nocolrules">šêpu</td></tr>
+<tr><td class="ten nocolrules">šʾq&#160;&#160;</td><td class="nocolrules">šâqu(m) I.II; šêqu(m)</td></tr>
+<tr><td class="ten nocolrules">šʾr&#160;&#160;</td><td class="nocolrules">šaʾāru(m) I.II; šâru II; šeʾēru II; šêru(m); šurru(m)</td></tr>
+<tr><td class="ten nocolrules">šʾṣ&#160;&#160;</td><td class="nocolrules">šâṣu</td></tr>
+<tr><td class="ten nocolrules">šʾt&#160;&#160;</td><td class="nocolrules">šêtu(m) II</td></tr>
+<tr><td class="ten nocolrules">šʾṭ&#160;&#160;</td><td class="nocolrules">šâṭu I.II; šêṭu(m); šiāṭu</td></tr>
+<tr><td class="ten nocolrules">šbʾ&#160;&#160;</td><td class="nocolrules">šapû(m) II.III.IV; šebû(m) I</td></tr>
+<tr><td class="ten nocolrules">šbʾʾ&#160;&#160;</td><td class="nocolrules">šubeʾʾû(m)</td></tr>
+<tr><td class="ten nocolrules">šbb&#160;&#160;</td><td class="nocolrules">šabābu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šbḫ&#160;&#160;</td><td class="nocolrules">šabāḫu I; šapāḫu(m); šubbuḫu</td></tr>
+<tr><td class="ten nocolrules">šbr&#160;&#160;</td><td class="nocolrules">šebēru</td></tr>
+<tr><td class="ten nocolrules">šbs&#160;&#160;</td><td class="nocolrules">šabāsu(m)</td></tr>
+<tr><td class="ten nocolrules">šbṣ&#160;&#160;</td><td class="nocolrules">šapāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šbš&#160;&#160;</td><td class="nocolrules">šabāsu(m); šabāšu(m) I</td></tr>
+<tr><td class="ten nocolrules">šbt&#160;&#160;</td><td class="nocolrules">šabāṭu(m) II; šapāṭu(m) I; šubbutu</td></tr>
+<tr><td class="ten nocolrules">šbṭ&#160;&#160;</td><td class="nocolrules">šabāṭu(m) II</td></tr>
+<tr><td class="ten nocolrules">šdʾ&#160;&#160;</td><td class="nocolrules">šadû IV; tuddû</td></tr>
+<tr><td class="ten nocolrules">šdd&#160;&#160;</td><td class="nocolrules">šadādu(m)</td></tr>
+<tr><td class="ten nocolrules">šdḫ&#160;&#160;</td><td class="nocolrules">šadāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">šdl&#160;&#160;</td><td class="nocolrules">šadālu(m)</td></tr>
+<tr><td class="ten nocolrules">šgʾ&#160;&#160;</td><td class="nocolrules">šagû II; šegû(m) II</td></tr>
+<tr><td class="ten nocolrules">šgg&#160;&#160;</td><td class="nocolrules">šagāgu</td></tr>
+<tr><td class="ten nocolrules">šgl&#160;&#160;</td><td class="nocolrules">šagālu(m)</td></tr>
+<tr><td class="ten nocolrules">šgm/n&#160;&#160;</td><td class="nocolrules">šagāmu(m) II</td></tr>
+<tr><td class="ten nocolrules">šgrr&#160;&#160;</td><td class="nocolrules">šugarruru(m)</td></tr>
+<tr><td class="ten nocolrules">šgš&#160;&#160;</td><td class="nocolrules">šagāšu(m)</td></tr>
+<tr><td class="ten nocolrules">šḫʾ&#160;&#160;</td><td class="nocolrules">šaḫû II.III; šêḫu; šuḫḫû(m) II.III</td></tr>
+<tr><td class="ten nocolrules">šḫd&#160;&#160;</td><td class="nocolrules">šaḫādum</td></tr>
+<tr><td class="ten nocolrules">šḫḫ&#160;&#160;</td><td class="nocolrules">šaḫāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">šḫl&#160;&#160;</td><td class="nocolrules">šaḫālu(m)</td></tr>
+<tr><td class="ten nocolrules">šḫn&#160;&#160;</td><td class="nocolrules">šaḫānu(m)</td></tr>
+<tr><td class="ten nocolrules">šḫq&#160;&#160;</td><td class="nocolrules">šeḫēqu</td></tr>
+<tr><td class="ten nocolrules">šḫrr&#160;&#160;</td><td class="nocolrules">šuḫarruru(m) II</td></tr>
+<tr><td class="ten nocolrules">šḫt&#160;&#160;</td><td class="nocolrules">šaḫātu(m) III.IV</td></tr>
+<tr><td class="ten nocolrules">šḫṭ&#160;&#160;</td><td class="nocolrules">šaḫātu(m) III.IV; šaḫāṭu(m) I.II.V</td></tr>
+<tr><td class="ten nocolrules">škʾ&#160;&#160;</td><td class="nocolrules">šekûm</td></tr>
+<tr><td class="ten nocolrules">škʾn&#160;&#160;</td><td class="nocolrules">šukênu(m)</td></tr>
+<tr><td class="ten nocolrules">škk&#160;&#160;</td><td class="nocolrules">šakāku(m)</td></tr>
+<tr><td class="ten nocolrules">škl&#160;&#160;</td><td class="nocolrules">šakālum; šukkulu(m)</td></tr>
+<tr><td class="ten nocolrules">škm&#160;&#160;</td><td class="nocolrules">šakāmu(m) I; šakānu(m)</td></tr>
+<tr><td class="ten nocolrules">škn&#160;&#160;</td><td class="nocolrules">šakānu(m)</td></tr>
+<tr><td class="ten nocolrules">škr&#160;&#160;</td><td class="nocolrules">šakāru</td></tr>
+<tr><td class="ten nocolrules">šks&#160;&#160;</td><td class="nocolrules">šakāsum</td></tr>
+<tr><td class="ten nocolrules">škṣ&#160;&#160;</td><td class="nocolrules">šakāṣu(m)</td></tr>
+<tr><td class="ten nocolrules">škš&#160;&#160;</td><td class="nocolrules">šagāšu(m)</td></tr>
+<tr><td class="ten nocolrules">škt&#160;&#160;</td><td class="nocolrules">šakātu</td></tr>
+<tr><td class="ten nocolrules">šlʾ&#160;&#160;</td><td class="nocolrules">šalāʾum; šalû(m) I.II; šelû II.IV</td></tr>
+<tr><td class="ten nocolrules">šlḫ&#160;&#160;</td><td class="nocolrules">salāḫu II; šalāḫu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šll&#160;&#160;</td><td class="nocolrules">šalālu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šlm&#160;&#160;</td><td class="nocolrules">šalāmu(m) II</td></tr>
+<tr><td class="ten nocolrules">šlp&#160;&#160;</td><td class="nocolrules">šalāpu(m)</td></tr>
+<tr><td class="ten nocolrules">šlpʾ&#160;&#160;</td><td class="nocolrules">nešalpû</td></tr>
+<tr><td class="ten nocolrules">šlq&#160;&#160;</td><td class="nocolrules">šalāqu(m)</td></tr>
+<tr><td class="ten nocolrules">šlš&#160;&#160;</td><td class="nocolrules">šalāšu(m)</td></tr>
+<tr><td class="ten nocolrules">šlṭ&#160;&#160;</td><td class="nocolrules">šalāṭu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šmʾ&#160;&#160;</td><td class="nocolrules">šawû II; šemû(m) I; šummû II</td></tr>
+<tr><td class="ten nocolrules">šmd&#160;&#160;</td><td class="nocolrules">šamādu</td></tr>
+<tr><td class="ten nocolrules">šmḫ&#160;&#160;</td><td class="nocolrules">samāḫu(m); šamāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">šmk&#160;&#160;</td><td class="nocolrules">šamāḫu(m); šamākum</td></tr>
+<tr><td class="ten nocolrules">šmm&#160;&#160;</td><td class="nocolrules">šamāmu</td></tr>
+<tr><td class="ten nocolrules">šmr&#160;&#160;</td><td class="nocolrules">šamāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šmt&#160;&#160;</td><td class="nocolrules">šamātu I; šamāṭu(m) II</td></tr>
+<tr><td class="ten nocolrules">šmṭ&#160;&#160;</td><td class="nocolrules">šamāṭu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šnʾ&#160;&#160;</td><td class="nocolrules">šanāʾu I; šanû(m) III.IV.V.VI; šenû(m)</td></tr>
+<tr><td class="ten nocolrules">šnḫ&#160;&#160;</td><td class="nocolrules">šanāʾu I</td></tr>
+<tr><td class="ten nocolrules">šnn&#160;&#160;</td><td class="nocolrules">šanānu(m)</td></tr>
+<tr><td class="ten nocolrules">šnq&#160;&#160;</td><td class="nocolrules">sanāqu(m) I; šunnuqu</td></tr>
+<tr><td class="ten nocolrules">šnṣ&#160;&#160;</td><td class="nocolrules">šanāṣu</td></tr>
+<tr><td class="ten nocolrules">šnš&#160;&#160;</td><td class="nocolrules">sanāšu</td></tr>
+<tr><td class="ten nocolrules">šnz&#160;&#160;</td><td class="nocolrules">šanāzu</td></tr>
+<tr><td class="ten nocolrules">špʾ&#160;&#160;</td><td class="nocolrules">šapû(m) II.III.IV; šepû(m) IV</td></tr>
+<tr><td class="ten nocolrules">špʾl&#160;&#160;</td><td class="nocolrules">šupêlu(m)</td></tr>
+<tr><td class="ten nocolrules">špḫ&#160;&#160;</td><td class="nocolrules">šapāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">špk&#160;&#160;</td><td class="nocolrules">šapāku(m)</td></tr>
+<tr><td class="ten nocolrules">špl&#160;&#160;</td><td class="nocolrules">šapālu(m)</td></tr>
+<tr><td class="ten nocolrules">špn&#160;&#160;</td><td class="nocolrules">šapānu</td></tr>
+<tr><td class="ten nocolrules">špp&#160;&#160;</td><td class="nocolrules">šapāpu(m)</td></tr>
+<tr><td class="ten nocolrules">špr&#160;&#160;</td><td class="nocolrules">šapāru(m)</td></tr>
+<tr><td class="ten nocolrules">šps&#160;&#160;</td><td class="nocolrules">šapāṣu I</td></tr>
+<tr><td class="ten nocolrules">špṣ&#160;&#160;</td><td class="nocolrules">šapāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">špš&#160;&#160;</td><td class="nocolrules">šapāšum</td></tr>
+<tr><td class="ten nocolrules">špt&#160;&#160;</td><td class="nocolrules">šapāṭu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">špṭ&#160;&#160;</td><td class="nocolrules">šapāṭu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šqʾ&#160;&#160;</td><td class="nocolrules">šaqû(m) II.III; šuqqû</td></tr>
+<tr><td class="ten nocolrules">šql&#160;&#160;</td><td class="nocolrules">šaqālu(m)</td></tr>
+<tr><td class="ten nocolrules">šqll&#160;&#160;</td><td class="nocolrules">šuqallulu(m)</td></tr>
+<tr><td class="ten nocolrules">šqmm&#160;&#160;</td><td class="nocolrules">šuqammumu(m)</td></tr>
+<tr><td class="ten nocolrules">šqq&#160;&#160;</td><td class="nocolrules">šaqāqu II</td></tr>
+<tr><td class="ten nocolrules">šqr&#160;&#160;</td><td class="nocolrules">šaqāru; šuqquru(m)</td></tr>
+<tr><td class="ten nocolrules">šqt&#160;&#160;</td><td class="nocolrules">šaqātu(m)</td></tr>
+<tr><td class="ten nocolrules">šrʾ&#160;&#160;</td><td class="nocolrules">šarû(m) II; šerû I.II.III; šurrû(m) II</td></tr>
+<tr><td class="ten nocolrules">šrbṣ/ṭ&#160;&#160;</td><td class="nocolrules">našarbuṭu(m)</td></tr>
+<tr><td class="ten nocolrules">šrd&#160;&#160;</td><td class="nocolrules">šitrudu</td></tr>
+<tr><td class="ten nocolrules">šrgʾ&#160;&#160;</td><td class="nocolrules">šergûm</td></tr>
+<tr><td class="ten nocolrules">šrḫ&#160;&#160;</td><td class="nocolrules">šarāḫu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šrk&#160;&#160;</td><td class="nocolrules">šarāku(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šrkʾ&#160;&#160;</td><td class="nocolrules">šerkûm</td></tr>
+<tr><td class="ten nocolrules">šrm&#160;&#160;</td><td class="nocolrules">šarāmu(m)</td></tr>
+<tr><td class="ten nocolrules">šrp&#160;&#160;</td><td class="nocolrules">šarāpu(m)</td></tr>
+<tr><td class="ten nocolrules">šrq&#160;&#160;</td><td class="nocolrules">šarāqu(m) I</td></tr>
+<tr><td class="ten nocolrules">šrr&#160;&#160;</td><td class="nocolrules">šarāru(m) I.II</td></tr>
+<tr><td class="ten nocolrules">šrṣ&#160;&#160;</td><td class="nocolrules">šarāṣu</td></tr>
+<tr><td class="ten nocolrules">šrṭ&#160;&#160;</td><td class="nocolrules">šarāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">šṣʾ&#160;&#160;</td><td class="nocolrules">šaṣû</td></tr>
+<tr><td class="ten nocolrules">šsʾ&#160;&#160;</td><td class="nocolrules">šasû(m)</td></tr>
+<tr><td class="ten nocolrules">štʾ&#160;&#160;</td><td class="nocolrules">šatû(m) II.III</td></tr>
+<tr><td class="ten nocolrules">štḫ&#160;&#160;</td><td class="nocolrules">šatāḫu</td></tr>
+<tr><td class="ten nocolrules">štn&#160;&#160;</td><td class="nocolrules">šatānu</td></tr>
+<tr><td class="ten nocolrules">štp&#160;&#160;</td><td class="nocolrules">šatāpu; šutattupu</td></tr>
+<tr><td class="ten nocolrules">štq&#160;&#160;</td><td class="nocolrules">šatāqu I.II</td></tr>
+<tr><td class="ten nocolrules">šṭʾ&#160;&#160;</td><td class="nocolrules">šeṭû(m) II</td></tr>
+<tr><td class="ten nocolrules">šṭp&#160;&#160;</td><td class="nocolrules">šaṭāpu(m)</td></tr>
+<tr><td class="ten nocolrules">šṭr&#160;&#160;</td><td class="nocolrules">šaṭāru(m) II</td></tr>
+<tr><td class="ten nocolrules">šṭṭ&#160;&#160;</td><td class="nocolrules">šaṭāṭu</td></tr>
+<tr><td class="ten nocolrules">šwʾ&#160;&#160;</td><td class="nocolrules">šawû II</td></tr>
+<tr><td class="ten nocolrules">šwr&#160;&#160;</td><td class="nocolrules">šewērum</td></tr>
+</table>
+<h2 id="t">T</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">tʾʾ&#160;&#160;</td><td class="nocolrules">tamû II; taʾû(m) I; têʾu</td></tr>
+<tr><td class="ten nocolrules">tʾb&#160;&#160;</td><td class="nocolrules">têbum</td></tr>
+<tr><td class="ten nocolrules">tʾl&#160;&#160;</td><td class="nocolrules">têlu(m)</td></tr>
+<tr><td class="ten nocolrules">tʾm&#160;&#160;</td><td class="nocolrules">tuʾʾumu II </td></tr>
+<tr><td class="ten nocolrules">tʾp&#160;&#160;</td><td class="nocolrules">tâpu; têbum</td></tr>
+<tr><td class="ten nocolrules">tʾr&#160;&#160;</td><td class="nocolrules">târu(m)</td></tr>
+<tr><td class="ten nocolrules">tbʾ&#160;&#160;</td><td class="nocolrules">tebû(m)</td></tr>
+<tr><td class="ten nocolrules">tbk&#160;&#160;</td><td class="nocolrules">tabāku(m)</td></tr>
+<tr><td class="ten nocolrules">tbl&#160;&#160;</td><td class="nocolrules">tabālu(m)</td></tr>
+<tr><td class="ten nocolrules">tdʾ&#160;&#160;</td><td class="nocolrules">tuddû</td></tr>
+<tr><td class="ten nocolrules">tdn&#160;&#160;</td><td class="nocolrules">tadānu(m)</td></tr>
+<tr><td class="ten nocolrules">tgn&#160;&#160;</td><td class="nocolrules">taqānu(m)</td></tr>
+<tr><td class="ten nocolrules">tḫḫ&#160;&#160;</td><td class="nocolrules">taḫāḫu</td></tr>
+<tr><td class="ten nocolrules">tkk&#160;&#160;</td><td class="nocolrules">takāku(m)</td></tr>
+<tr><td class="ten nocolrules">tkl&#160;&#160;</td><td class="nocolrules">takālu(m)</td></tr>
+<tr><td class="ten nocolrules">tkp&#160;&#160;</td><td class="nocolrules">takāpu(m)</td></tr>
+<tr><td class="ten nocolrules">tlʾ&#160;&#160;</td><td class="nocolrules">tullû II</td></tr>
+<tr><td class="ten nocolrules">tlk&#160;&#160;</td><td class="nocolrules">tullukum</td></tr>
+<tr><td class="ten nocolrules">tll&#160;&#160;</td><td class="nocolrules">talālu(m); tullulu</td></tr>
+<tr><td class="ten nocolrules">tlm&#160;&#160;</td><td class="nocolrules">šutlumu(m); tullumum</td></tr>
+<tr><td class="ten nocolrules">tmʾ&#160;&#160;</td><td class="nocolrules">tamû(m) II.III</td></tr>
+<tr><td class="ten nocolrules">tmḫ/k&#160;&#160;</td><td class="nocolrules">tamāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">tmm&#160;&#160;</td><td class="nocolrules">tamāmum</td></tr>
+<tr><td class="ten nocolrules">tmr&#160;&#160;</td><td class="nocolrules">temēru(m)</td></tr>
+<tr><td class="ten nocolrules">tpʾ&#160;&#160;</td><td class="nocolrules">tappûm II; tapû</td></tr>
+<tr><td class="ten nocolrules">tpk&#160;&#160;</td><td class="nocolrules">tabāku(m)</td></tr>
+<tr><td class="ten nocolrules">tpš&#160;&#160;</td><td class="nocolrules">tapāšum</td></tr>
+<tr><td class="ten nocolrules">tqm&#160;&#160;</td><td class="nocolrules">taqānu(m)</td></tr>
+<tr><td class="ten nocolrules">tqn&#160;&#160;</td><td class="nocolrules">taqānu(m)</td></tr>
+<tr><td class="ten nocolrules">trʾ&#160;&#160;</td><td class="nocolrules">tarû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">trḫ&#160;&#160;</td><td class="nocolrules">tarāḫu</td></tr>
+<tr><td class="ten nocolrules">trk&#160;&#160;</td><td class="nocolrules">tarāku(m)</td></tr>
+<tr><td class="ten nocolrules">trp&#160;&#160;</td><td class="nocolrules">tarāpu</td></tr>
+<tr><td class="ten nocolrules">trq&#160;&#160;</td><td class="nocolrules">tarāqum</td></tr>
+<tr><td class="ten nocolrules">trr&#160;&#160;</td><td class="nocolrules">tarāru(m)</td></tr>
+<tr><td class="ten nocolrules">trs/ṣ&#160;&#160;</td><td class="nocolrules">ṭarāsu</td></tr>
+<tr><td class="ten nocolrules">trṣ&#160;&#160;</td><td class="nocolrules">tarāṣu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">trš&#160;&#160;</td><td class="nocolrules">tarāšum</td></tr>
+<tr><td class="ten nocolrules">tṣʾ&#160;&#160;</td><td class="nocolrules">taṣû(m); teṣû(m)</td></tr>
+<tr><td class="ten nocolrules">tšb&#160;&#160;</td><td class="nocolrules">tašābu(m)</td></tr>
+<tr><td class="ten nocolrules">twʾ&#160;&#160;</td><td class="nocolrules">tawûm</td></tr>
+<tr><td class="ten nocolrules">tzʾ&#160;&#160;</td><td class="nocolrules">teṣû(m)</td></tr>
+</table>
+<h2 id="teth">Ṭ</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">ṭʾb&#160;&#160;</td><td class="nocolrules">ṭiābu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭʾm&#160;&#160;</td><td class="nocolrules">ṭêmu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭʾn&#160;&#160;</td><td class="nocolrules">ṭênu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭʾp&#160;&#160;</td><td class="nocolrules">ṭâpu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭbʾ&#160;&#160;</td><td class="nocolrules">ṭebû(m)</td></tr>
+<tr><td class="ten nocolrules">ṭbḫ&#160;&#160;</td><td class="nocolrules">ṭabāḫu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭḫʾ&#160;&#160;</td><td class="nocolrules">ṭeḫû(m) I.II</td></tr>
+<tr><td class="ten nocolrules">ṭḫd&#160;&#160;</td><td class="nocolrules">ṭaḫādu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭlm&#160;&#160;</td><td class="nocolrules">ṭullumum</td></tr>
+<tr><td class="ten nocolrules">ṭmʾ&#160;&#160;</td><td class="nocolrules">ṭawûm</td></tr>
+<tr><td class="ten nocolrules">ṭmm&#160;&#160;</td><td class="nocolrules">ṭummumu II</td></tr>
+<tr><td class="ten nocolrules">ṭnp&#160;&#160;</td><td class="nocolrules">ṭanāpu</td></tr>
+<tr><td class="ten nocolrules">ṭpʾ&#160;&#160;</td><td class="nocolrules">ṭepû(m)</td></tr>
+<tr><td class="ten nocolrules">ṭpl&#160;&#160;</td><td class="nocolrules">ṭapālu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭpp&#160;&#160;</td><td class="nocolrules">ṭapāpu</td></tr>
+<tr><td class="ten nocolrules">ṭpr&#160;&#160;</td><td class="nocolrules">ṭapāru(m)</td></tr>
+<tr><td class="ten nocolrules">ṭpš&#160;&#160;</td><td class="nocolrules">ṭapāšu</td></tr>
+<tr><td class="ten nocolrules">ṭrʾ&#160;&#160;</td><td class="nocolrules">ṭerû(m)</td></tr>
+<tr><td class="ten nocolrules">ṭrd&#160;&#160;</td><td class="nocolrules">ṭarādu(m)</td></tr>
+<tr><td class="ten nocolrules">ṭrr&#160;&#160;</td><td class="nocolrules">ṭarāru</td></tr>
+<tr><td class="ten nocolrules">ṭrs/ṣ&#160;&#160;</td><td class="nocolrules">ṭarāsu</td></tr>
+<tr><td class="ten nocolrules">ṭrš&#160;&#160;</td><td class="nocolrules">ṭarāšu</td></tr>
+<tr><td class="ten nocolrules">ṭwʾ&#160;&#160;</td><td class="nocolrules">ṭawûm</td></tr>
+</table>
+<h2 id="w">W</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">wʾʾ&#160;&#160;</td><td class="nocolrules">wuʾʾûm</td></tr>
+<tr><td class="ten nocolrules">wʾr&#160;&#160;</td><td class="nocolrules">(w)âru(m)</td></tr>
+<tr><td class="ten nocolrules">wʾṣ&#160;&#160;</td><td class="nocolrules">wiāṣum</td></tr>
+<tr><td class="ten nocolrules">wʾš&#160;&#160;</td><td class="nocolrules">wêšum</td></tr>
+<tr><td class="ten nocolrules">wbʾ&#160;&#160;</td><td class="nocolrules">wabāʾu(m)</td></tr>
+<tr><td class="ten nocolrules">wbd&#160;&#160;</td><td class="nocolrules">wabātum</td></tr>
+<tr><td class="ten nocolrules">wbl&#160;&#160;</td><td class="nocolrules">wabālu(m)</td></tr>
+<tr><td class="ten nocolrules">wbt/ṭ&#160;&#160;</td><td class="nocolrules">wabātum</td></tr>
+<tr><td class="ten nocolrules">wdʾ&#160;&#160;</td><td class="nocolrules">tuddû; (w)adû(m)</td></tr>
+<tr><td class="ten nocolrules">wgʾ&#160;&#160;</td><td class="nocolrules">wagûm</td></tr>
+<tr><td class="ten nocolrules">wkl&#160;&#160;</td><td class="nocolrules">wakālum</td></tr>
+<tr><td class="ten nocolrules">wkm&#160;&#160;</td><td class="nocolrules">(w)akāmu(m)</td></tr>
+<tr><td class="ten nocolrules">wlʾ&#160;&#160;</td><td class="nocolrules">alāʾu</td></tr>
+<tr><td class="ten nocolrules">wld&#160;&#160;</td><td class="nocolrules">(w)alādu(m)</td></tr>
+<tr><td class="ten nocolrules">wmʾ&#160;&#160;</td><td class="nocolrules">wamāʾum</td></tr>
+<tr><td class="ten nocolrules">wml&#160;&#160;</td><td class="nocolrules">(w)amālu(m)</td></tr>
+<tr><td class="ten nocolrules">wpʾ&#160;&#160;</td><td class="nocolrules">(w)apû(m)</td></tr>
+<tr><td class="ten nocolrules">wpd&#160;&#160;</td><td class="nocolrules">wabātum</td></tr>
+<tr><td class="ten nocolrules">wpš&#160;&#160;</td><td class="nocolrules">wapāšum</td></tr>
+<tr><td class="ten nocolrules">wpt/ṭ&#160;&#160;</td><td class="nocolrules">wabātum</td></tr>
+<tr><td class="ten nocolrules">wqʾ&#160;&#160;</td><td class="nocolrules">(w)aqû(m)</td></tr>
+<tr><td class="ten nocolrules">wqr&#160;&#160;</td><td class="nocolrules">(w)aqāru(m)</td></tr>
+<tr><td class="ten nocolrules">wrʾ&#160;&#160;</td><td class="nocolrules">warûm II; wurrûm</td></tr>
+<tr><td class="ten nocolrules">wrd&#160;&#160;</td><td class="nocolrules">(w)arādu(m)</td></tr>
+<tr><td class="ten nocolrules">wrḫ&#160;&#160;</td><td class="nocolrules">arāḫu(m) I; warāḫum</td></tr>
+<tr><td class="ten nocolrules">wrk&#160;&#160;</td><td class="nocolrules">→ namarkû</td></tr>
+<tr><td class="ten nocolrules">wrq&#160;&#160;</td><td class="nocolrules">(w)arāqu(m)</td></tr>
+<tr><td class="ten nocolrules">wrš&#160;&#160;</td><td class="nocolrules">(w)arāšu(m)</td></tr>
+<tr><td class="ten nocolrules">wsʾ&#160;&#160;</td><td class="nocolrules">wussûm</td></tr>
+<tr><td class="ten nocolrules">wsm&#160;&#160;</td><td class="nocolrules">(w)asāmu(m)</td></tr>
+<tr><td class="ten nocolrules">wsq&#160;&#160;</td><td class="nocolrules">asāqu</td></tr>
+<tr><td class="ten nocolrules">wṣʾ&#160;&#160;</td><td class="nocolrules">(w)aṣû(m); (w)uṣṣû(m)</td></tr>
+<tr><td class="ten nocolrules">wṣb&#160;&#160;</td><td class="nocolrules">waṣābum</td></tr>
+<tr><td class="ten nocolrules">wṣṣ&#160;&#160;</td><td class="nocolrules">(w)uṣṣuṣu(m)</td></tr>
+<tr><td class="ten nocolrules">wšʾ&#160;&#160;</td><td class="nocolrules">(w)ašû(m) I</td></tr>
+<tr><td class="ten nocolrules">wšb&#160;&#160;</td><td class="nocolrules">(w)ašābu(m)</td></tr>
+<tr><td class="ten nocolrules">wšm&#160;&#160;</td><td class="nocolrules">wašāmum</td></tr>
+<tr><td class="ten nocolrules">wšn&#160;&#160;</td><td class="nocolrules">wašānum</td></tr>
+<tr><td class="ten nocolrules">wšp&#160;&#160;</td><td class="nocolrules">(w)ašāpu(m)</td></tr>
+<tr><td class="ten nocolrules">wšr&#160;&#160;</td><td class="nocolrules">wašārum</td></tr>
+<tr><td class="ten nocolrules">wšṭ&#160;&#160;</td><td class="nocolrules">(w)ašāṭu(m)</td></tr>
+<tr><td class="ten nocolrules">wtʾ&#160;&#160;</td><td class="nocolrules">(w)atû(m)</td></tr>
+<tr><td class="ten nocolrules">wtr&#160;&#160;</td><td class="nocolrules">(w)atāru(m)</td></tr>
+<tr><td class="ten nocolrules">wzn&#160;&#160;</td><td class="nocolrules">wazzunum</td></tr>
+</table>
+<h2 id="z">Z</h2>
+<table class="eighty">
+<tr><td class="ten nocolrules">zʾʾ&#160;&#160;</td><td class="nocolrules">zeʾû; zuʾʾû</td></tr>
+<tr><td class="ten nocolrules">zʾb&#160;&#160;</td><td class="nocolrules">zâbu(m)</td></tr>
+<tr><td class="ten nocolrules">zʾk&#160;&#160;</td><td class="nocolrules">sâku(m)</td></tr>
+<tr><td class="ten nocolrules">zʾn&#160;&#160;</td><td class="nocolrules">zaʾānu(m)</td></tr>
+<tr><td class="ten nocolrules">zʾp&#160;&#160;</td><td class="nocolrules">zuʾʾupu</td></tr>
+<tr><td class="ten nocolrules">zʾq&#160;&#160;</td><td class="nocolrules">ziāqu(m)</td></tr>
+<tr><td class="ten nocolrules">zʾr&#160;&#160;</td><td class="nocolrules">zâru I; zêru(m)</td></tr>
+<tr><td class="ten nocolrules">zʾz&#160;&#160;</td><td class="nocolrules">zâzu(m)</td></tr>
+<tr><td class="ten nocolrules">zbl&#160;&#160;</td><td class="nocolrules">zabālu(m)</td></tr>
+<tr><td class="ten nocolrules">zkʾ&#160;&#160;</td><td class="nocolrules">zakû(m) II</td></tr>
+<tr><td class="ten nocolrules">zkd&#160;&#160;</td><td class="nocolrules">zaqādum</td></tr>
+<tr><td class="ten nocolrules">zkp&#160;&#160;</td><td class="nocolrules">sakāpu(m) I; zaqāpu(m)</td></tr>
+<tr><td class="ten nocolrules">zkr&#160;&#160;</td><td class="nocolrules">zakāru(m)</td></tr>
+<tr><td class="ten nocolrules">zmʾ&#160;&#160;</td><td class="nocolrules">zemû; zummû(m) II</td></tr>
+<tr><td class="ten nocolrules">zmn&#160;&#160;</td><td class="nocolrules">zummunu</td></tr>
+<tr><td class="ten nocolrules">zmr&#160;&#160;</td><td class="nocolrules">samārum; zamāru(m) II</td></tr>
+<tr><td class="ten nocolrules">znʾ&#160;&#160;</td><td class="nocolrules">zenû(m) II</td></tr>
+<tr><td class="ten nocolrules">znd&#160;&#160;</td><td class="nocolrules">zanādu</td></tr>
+<tr><td class="ten nocolrules">znn&#160;&#160;</td><td class="nocolrules">zanānu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">znq&#160;&#160;</td><td class="nocolrules">zunnuqu</td></tr>
+<tr><td class="ten nocolrules">zpr&#160;&#160;</td><td class="nocolrules">zapāru</td></tr>
+<tr><td class="ten nocolrules">zqd&#160;&#160;</td><td class="nocolrules">zaqādum</td></tr>
+<tr><td class="ten nocolrules">zqn&#160;&#160;</td><td class="nocolrules">zaqānu(m)</td></tr>
+<tr><td class="ten nocolrules">zqp&#160;&#160;</td><td class="nocolrules">zaqāpu(m)</td></tr>
+<tr><td class="ten nocolrules">zqr&#160;&#160;</td><td class="nocolrules">zakāru(m); zaqāru(m) I</td></tr>
+<tr><td class="ten nocolrules">zqt&#160;&#160;</td><td class="nocolrules">zaqātu(m) I.II</td></tr>
+<tr><td class="ten nocolrules">zrʾ&#160;&#160;</td><td class="nocolrules">zarû(m) II</td></tr>
+<tr><td class="ten nocolrules">zrb&#160;&#160;</td><td class="nocolrules">zarāpu</td></tr>
+<tr><td class="ten nocolrules">zrbb&#160;&#160;</td><td class="nocolrules">nazarbubu(m)</td></tr>
+<tr><td class="ten nocolrules">zrp&#160;&#160;</td><td class="nocolrules">zarāpu</td></tr>
+<tr><td class="ten nocolrules">zrq&#160;&#160;</td><td class="nocolrules">zarāqu(m)</td></tr>
+</table>
+
+<d:resources/>
+
+</d:doc>

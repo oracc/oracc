@@ -1,0 +1,104 @@
+=========before merge_adj========
+[ leaf :: N :: e[house] ]
+[ phrase :: VC-N ::  ]
+  [ leaf :: V :: du[build] ]
+  [ leaf :: E :: e ]
+  [ leaf :: DE :: de ]
+================================
+=========after merge_adj========
+[ leaf :: N :: e[house] ]
+[ phrase :: VC-N ::  ]
+  [ leaf :: V :: du[build] ]
+  [ leaf :: E :: e ]
+  [ leaf :: DE :: de ]
+================================
+===pre parse_sentence====
+[00] S	(N e[house])
+[01] Z	(VC-N (V du[build])(E e)(DE de))
+=========before merge_adj parse_phrases========
+[ leaf :: N :: e[house] ]
+================================
+=========after merge_adj========
+[ leaf :: N :: e[house] ]
+================================
+==parse_phrases after label_phrase==
+[ phrase :: NP-ABS ::  ]
+  [ leaf :: N :: e[house] ]
+===post parse_sentence====
+[ clause :: S-MAT ::  ]
+  [ phrase :: NP-ABS ::  ]
+    [ leaf :: N :: e[house] ]
+  [ phrase :: VC-N ::  ]
+    [ leaf :: V :: du[build] ]
+    [ leaf :: E :: e ]
+    [ leaf :: DE :: de ]
+===final result====
+(S-MAT (NP-ABS (N e[house]))
+       (VC-N   (V du[build])(E e)(DE de)))
+=========before merge_adj========
+[ leaf :: N :: lu[person] ]
+[ leaf :: ERG :: e ]
+[ clause :: S-DE-PRP ::  ]
+  [ phrase :: NP-ABS ::  ]
+    [ leaf :: N :: e[house] ]
+  [ phrase :: VC-N ::  ]
+    [ leaf :: V :: du[build] ]
+    [ leaf :: E :: e ]
+    [ leaf :: DE :: de ]
+[ phrase :: VC-F ::  ]
+  [ leaf :: NEG :: nu ]
+  [ leaf :: V :: du[build] ]
+================================
+=========after merge_adj========
+[ leaf :: N :: lu[person] ]
+[ leaf :: ERG :: e ]
+[ clause :: S-DE-PRP ::  ]
+  [ phrase :: NP-ABS ::  ]
+    [ leaf :: N :: e[house] ]
+  [ phrase :: VC-N ::  ]
+    [ leaf :: V :: du[build] ]
+    [ leaf :: E :: e ]
+    [ leaf :: DE :: de ]
+[ phrase :: VC-F ::  ]
+  [ leaf :: NEG :: nu ]
+  [ leaf :: V :: du[build] ]
+================================
+===pre parse_sentence====
+[00] S	(N lu[person])
+[01] P	(ERG e)
+[02] .	(S-DE-PRP (NP-ABS (N e[house]))
+	          (VC-N   (V du[build])(E e)(DE de)))
+[03] V	(VC-F (NEG nu)(V du[build]))
+=========before merge_adj parse_phrases========
+[ leaf :: N :: lu[person] ]
+[ leaf :: ERG :: e ]
+================================
+=========after merge_adj========
+[ leaf :: N :: lu[person] ]
+[ leaf :: ERG :: e ]
+================================
+==parse_phrases after label_phrase==
+[ phrase :: NP-ERG ::  ]
+  [ leaf :: N :: lu[person] ]
+  [ leaf :: ERG :: e ]
+===post parse_sentence====
+[ clause :: S-MAT ::  ]
+  [ phrase :: NP-ERG ::  ]
+    [ leaf :: N :: lu[person] ]
+    [ leaf :: ERG :: e ]
+  [ clause :: S-DE-PRP ::  ]
+    [ phrase :: NP-ABS ::  ]
+      [ leaf :: N :: e[house] ]
+    [ phrase :: VC-N ::  ]
+      [ leaf :: V :: du[build] ]
+      [ leaf :: E :: e ]
+      [ leaf :: DE :: de ]
+  [ phrase :: VC-F ::  ]
+    [ leaf :: NEG :: nu ]
+    [ leaf :: V :: du[build] ]
+===final result====
+(S-MAT (NP-ERG    (N lu[person])(ERG e))
+       (NP-ABS   ( *))
+       (S-DE-PRP (NP-ABS (N e[house]))
+                 (VC-N   (V du[build])(E e)(DE de)))
+       (VC-F     (NEG nu)(V du[build])))

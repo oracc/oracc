@@ -1,0 +1,444 @@
+<?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xforms="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events">
+  <head>
+    <title>OASE Form</title>
+  <link rel="stylesheet" type="text/css" href="/css/oase.css"/>
+  <script type="text/javascript" src="/js/oase.js">
+</script>
+    <xforms:model>
+      <xforms:instance id="search">
+        <xse xmlns="">
+	  <project>etcsri</project>
+	  <search>
+	    <index>txt</index>
+	    <key/>
+	    <filter type="role" value="any"/>
+	    <filter type="position" value="any"/>
+	    <filter type="fieldset" value="any"/>
+	    <filter type="field" value="any"/>
+	  </search>
+	  <result count="0" list="oase">
+	    <url>javascript:oasePager('etcsri','oase')</url>
+	  </result>
+        </xse>
+      </xforms:instance>
+      <xforms:instance id="new-search">
+	<search type="include">
+	  <index></index>
+	  <key/>
+	  <filter type="role" value="any"/>
+	  <filter type="position" value="any"/>
+	  <filter type="fieldset" value="any"/>
+	  <filter type="field" value="any"/>
+	</search>
+      </xforms:instance>
+      <xforms:instance id="new-binop">
+	<binop invert="no" type="and">
+	  <near where="after" scope="" level="default"/>
+	  <key/>
+	  <filter type="role" value="any"/>
+	  <filter type="position" value="any"/>
+	  <filter type="fieldset" value="any"/>
+	  <filter type="field" value="any"/>
+	</binop>
+      </xforms:instance>
+      <xforms:submission action="/cgi-bin/oase.plx" method="post" id="go"
+			 mediatype="application/xml" replace="instance">
+	<xforms:action ev:event="xforms-submit-done">
+	  <!-- <xforms:message>Submit done</xforms:message> -->
+	  <xforms:load>
+	    <xforms:resource 
+		value="instance('search')/result"/>
+	  </xforms:load>
+	</xforms:action>
+      </xforms:submission>
+    </xforms:model>
+    <style type="text/css">
+      .xforms-input input { margin-bottom: .5em; background-color: white }
+      .xforms-repeat-selected-item-1 input { background-color: orange }
+      button.xforms-trigger
+    </style>
+  </head>
+  <body>
+    <h1><xforms:output value="project"/> Search: <xforms:output value="result/@count"/> results so far</h1>
+    <xforms:repeat nodeset="search" id="search-repeat">
+      <fieldset>
+	<legend>
+	  <xforms:group ref=".[count(preceding-sibling::search)=0]">
+	    Search index 
+	  </xforms:group>
+	  <xforms:group ref=".[count(preceding-sibling::search)>0]">
+	    <xforms:select1 ref="@type">
+	    <xforms:item>
+	      <xforms:label>include</xforms:label>
+	      <xforms:value>and</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>exclude</xforms:label>
+	      <xforms:value>sans</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>as well as</xforms:label>
+	      <xforms:value>or</xforms:value>
+	    </xforms:item>
+	    </xforms:select1>
+	    results of searching 
+	  </xforms:group>
+	  <xforms:select1 ref="index">
+	    <xforms:item>
+	      <xforms:label>transliterations</xforms:label>
+	      <xforms:value>txt</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>catalogue</xforms:label>
+	      <xforms:value>cat</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>translations</xforms:label>
+	      <xforms:value>tra</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	</legend>
+
+	<xforms:group ref=".[index[.='txt']]">
+	  <table><tr><td>
+	<xforms:input ref="key">
+	  <xforms:label>For </xforms:label>
+	</xforms:input>
+	</td><td>
+	<xforms:select1 ref="filter[@type='position']/@value">
+	  <xforms:item>
+	    <xforms:label>Any position</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Beginning of word</xforms:label>
+	    <xforms:value>wb</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>End of word</xforms:label>
+	    <xforms:value>we</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Beginning of line</xforms:label>
+	    <xforms:value>lb</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>End of line</xforms:label>
+	    <xforms:value>le</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+	<xforms:select1 ref="filter[@type='role']/@value">
+	  <xforms:item>
+	    <xforms:label>Any role</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Sign name</xforms:label>
+	    <xforms:value>sign</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Logogram</xforms:label>
+	    <xforms:value>logo</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+	<xforms:select1 ref="filter[@type='field']/@value">
+	  <xforms:item>
+	    <xforms:label>Any field</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Transliteration</xforms:label>
+	    <xforms:value>tr</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>CitationForm/Normalization</xforms:label>
+	    <xforms:value>cf</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>GuideWord/Senses</xforms:label>
+	    <xforms:value>gw</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Morphology 1</xforms:label>
+	    <xforms:value>m1</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Morphology 2</xforms:label>
+	    <xforms:value>m2</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+	</td></tr>
+	<xforms:repeat nodeset="binop" id="binop-repeat">
+	  <tr><td>
+	  <xforms:select1 ref="@type">
+	    <xforms:item>
+	      <xforms:label>and</xforms:label>
+	      <xforms:value>and</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>or</xforms:label>
+	      <xforms:value>or</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>without</xforms:label>
+	      <xforms:value>sans</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	  <xforms:input ref="key"/>
+	  </td><td>
+	<xforms:select1 ref="filter[@type='position']/@value">
+	  <xforms:item>
+	    <xforms:label>Any position</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Beginning of word</xforms:label>
+	    <xforms:value>wb</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>End of word</xforms:label>
+	    <xforms:value>we</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Beginning of line</xforms:label>
+	    <xforms:value>lb</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>End of line</xforms:label>
+	    <xforms:value>le</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+	<xforms:select1 ref="filter[@type='role']/@value">
+	  <xforms:item>
+	    <xforms:label>Any role</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Sign name</xforms:label>
+	    <xforms:value>sign</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Logogram</xforms:label>
+	    <xforms:value>logo</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+	  <xforms:select1 ref="filter[@type='field']/@value">
+	    <xforms:item>
+	      <xforms:label>Any field</xforms:label>
+	      <xforms:value>any</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Transliteration</xforms:label>
+	      <xforms:value>tr</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>CitationForm/Normalization</xforms:label>
+	      <xforms:value>cf</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>GuideWord/Senses</xforms:label>
+	      <xforms:value>gw</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Morphology 1</xforms:label>
+	      <xforms:value>m1</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Morphology 2</xforms:label>
+	      <xforms:value>m2</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	  <xforms:input ref="near/@scope">
+	    <xforms:label>within </xforms:label>
+	  </xforms:input>
+	  <xforms:select1 ref="near/@level" >
+	    <xforms:item>
+	      <xforms:label>word</xforms:label>
+	      <xforms:value>word</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>line</xforms:label>
+	      <xforms:value>line</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>sentence</xforms:label>
+	      <xforms:value>sentence</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>text</xforms:label>
+	      <xforms:value>text</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	  <xforms:select1 ref="near/@where">
+	    <xforms:item>
+	      <xforms:label>after</xforms:label>
+	      <xforms:value>after</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>around</xforms:label>
+	      <xforms:value>around</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>before</xforms:label>
+	      <xforms:value>before</xforms:value>
+	    </xforms:item>	      
+	  </xforms:select1>
+	  </td></tr>
+	</xforms:repeat>
+	</table>
+	</xforms:group>
+
+	<xforms:group ref=".[index[.='cat']]">
+	<xforms:input ref="key">
+	  <xforms:label>For </xforms:label>
+	</xforms:input>
+
+	<xforms:select1 ref="filter[@type='fieldset']/@value">
+	  <xforms:item>
+	    <xforms:label>Any field</xforms:label>
+	    <xforms:value>any</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Number</xforms:label>
+	    <xforms:value>tr</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Date</xforms:label>
+	    <xforms:value>cf</xforms:value>
+	  </xforms:item>
+	  <xforms:item>
+	    <xforms:label>Place</xforms:label>
+	    <xforms:value>gw</xforms:value>
+	  </xforms:item>
+	</xforms:select1>
+
+	  Or
+
+	  <xforms:select1 ref="filter[@type='field']/@value" appearance="minimal">
+	    <xforms:item>
+	      <xforms:label>Choose individual field</xforms:label>
+	      <xforms:value>any</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Period</xforms:label>
+	      <xforms:value>period</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Place</xforms:label>
+	      <xforms:value>place</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Provenience</xforms:label>
+	      <xforms:value>provenience</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Museum number</xforms:label>
+	      <xforms:value>museum_no</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Accession number</xforms:label>
+	      <xforms:value>accession_no</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Excavation number</xforms:label>
+	      <xforms:value>excavation_no</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+
+	<xforms:repeat nodeset="binop" id="binop-repeat-cat">
+	  <xforms:select1 ref="@type">
+	    <xforms:item>
+	      <xforms:label>and</xforms:label>
+	      <xforms:value>and</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>or</xforms:label>
+	      <xforms:value>or</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+
+	  <xforms:input ref="key"/>
+
+	  <xforms:select1 ref="filter[@type='fieldset']/@value">
+	    <xforms:item>
+	      <xforms:label>Any fields</xforms:label>
+	      <xforms:value>any</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Number</xforms:label>
+	      <xforms:value>tr</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Date</xforms:label>
+	      <xforms:value>cf</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Place</xforms:label>
+	      <xforms:value>gw</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+
+	  Or
+
+	  <xforms:select1 ref="filter[@type='field']/@value" appearance="minimal">
+	    <xforms:item>
+	      <xforms:label>Choose individual field</xforms:label>
+	      <xforms:value>any</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Period</xforms:label>
+	      <xforms:value>period</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Place</xforms:label>
+	      <xforms:value>place</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Provenience</xforms:label>
+	      <xforms:value>provenience</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Museum number</xforms:label>
+	      <xforms:value>museum_no</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Accession number</xforms:label>
+	      <xforms:value>accession_no</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>Excavation number</xforms:label>
+	      <xforms:value>excavation_no</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	</xforms:repeat>
+	
+	</xforms:group>
+
+	<xforms:trigger>
+	  <xforms:label>+</xforms:label>
+	  <xforms:insert ev:event="DOMActivate"
+			 context="." nodeset="search"
+			 origin="instance('new-binop')"/>
+	</xforms:trigger>
+      </fieldset>
+    </xforms:repeat>
+    <xforms:trigger>
+      <xforms:label>Add a search</xforms:label>
+      <xforms:insert ev:event="DOMActivate"
+		     context="." nodeset="search"
+		     origin="instance('new-search')"/>
+    </xforms:trigger>
+    <hr/>
+    <xforms:submit submission="go">
+      <xforms:label>GO</xforms:label>
+    </xforms:submit>
+<!--
+    <xforms:submit submission="save">
+      <xforms:label>Save</xforms:label>
+    </xforms:submit>
+ -->
+  </body>
+</html>

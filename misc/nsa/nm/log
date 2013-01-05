@@ -1,0 +1,83 @@
+base-60
+length
+eval-ing '3000/180'
+eval-ing '250/1'
+eval-ing '500/1'
+eval-ing '3000/1'
+eval-ing '6000/1'
+eval-ing '60000/1'
+eval-ing '360000/1'
+eval-ing '10800000/1'
+surface
+eval-ing '1/300'
+eval-ing '1/100'
+eval-ing '3/5'
+eval-ing '1/5'
+eval-ing '36/1'
+eval-ing '3600/1'
+eval-ing '21600/1'
+eval-ing '64800/1'
+eval-ing '648000/1'
+eval-ing '3888000/1'
+eval-ing '38880000/1'
+eval-ing '233280000/1'
+volume
+eval-ing '5/3'
+eval-ing '300/1'
+eval-ing '18000/1'
+eval-ing '1800000/1'
+eval-ing '10800000/1'
+eval-ing '32400000/1'
+drycap
+eval-ing '1/10800'
+eval-ing '1/60'
+eval-ing '1/1'
+eval-ing '10/1'
+eval-ing '60/1'
+eval-ing '300/1'
+eval-ing '1080000/1'
+eval-ing '1080000/1'
+eval-ing '1080000/1'
+eval-ing '64800000/1'
+liqcap
+brick
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] FOP 0.20.5
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] building formatting object tree
+[INFO] setting up fonts
+[INFO] [1]
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] [2]
+[INFO] [3]
+[INFO] [4]
+[INFO] [5]
+[INFO] [6]
+[INFO] [7]
+[INFO] [8]
+[INFO] [9]
+[INFO] [10]
+[INFO] [11]
+[INFO] [12]
+[INFO] [13]
+[INFO] [14]
+[INFO] Parsing of document complete, stopping renderer
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] FOP 0.20.5
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] building formatting object tree
+[INFO] setting up fonts
+[INFO] [1]
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] Using org.apache.xerces.parsers.SAXParser as SAX2 Parser
+[INFO] [2]
+[INFO] [3]
+[INFO] [4]
+[INFO] [5]
+[INFO] [6]
+[INFO] [7]

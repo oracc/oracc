@@ -1,0 +1,45 @@
+# -*- rnc -*-
+# Namespaced XForms 1.1 schema in RELAX NG
+# 
+#    Copyright (C) 2009 W3C (R); (MIT, ERCIM, Keio), All Rights Reserved.
+# 
+# 
+#    Permission to use, copy, modify and distribute this RELAX NG schema
+#    for XForms 1.1 and its accompanying documentation for any purpose and
+#    without fee is hereby granted in perpetuity, provided that the above
+#    copyright notice and this paragraph appear in all copies. The copyright
+#    holders make no representation about the suitability of this RELAX NG
+#    schema for any purpose.
+# 
+#    It is provided "as is" without expressed or implied warranty.
+#    For details, please refer to the W3C software license at:
+# 
+# http://www.w3.org/Consortium/Legal/copyright-software
+
+namespace xf = "http://www.w3.org/2002/xforms"
+
+include "xforms-nons-11.rnc" inherit = xf {
+  xforms.anyForeignElement = element (* - xf:*) {
+    (attribute * { text }
+     | text
+     | xforms.anyForeignElement)*
+  }
+}
+
+# repeat attributes in xf namespace
+xforms.repeat-nodeset.attr = attribute xf:repeat-nodeset { XPathExpression }
+xforms.repeat-bind.attr = attribute xf:repeat-bind  { xsd:IDREF }
+xforms.repeat-model.attr = attribute xf:repeat-mode { xsd:IDREF }
+xforms.repeat-startindex.attr = attribute xf:repeat-startindex { xsd:positiveInteger }
+xforms.repeat-number.attr = attribute xf:repeat-number { xsd:nonNegativeInteger }
+xforms.repeat-various.attrs = xforms.repeat-nodeset.attr?, xforms.repeat-bind.attr?,
+   xforms.repeat-model.attr?, xforms.repeat-startindex.attr?, xforms.repeat-number.attr?
+
+# xforms elements
+xforms.group.attrib &= xforms.repeat-various.attrs
+
+# Changes for first update after XForms 1.1 Recommendation 2009-12-08
+# + Changed namespace prefix from ns1 to xf
+# + Added redefinition of xforms.anyForeignElement to include xf namespace
+# + added repeat attributes for host languages to integrate
+# + added repeat attributes on xf:group

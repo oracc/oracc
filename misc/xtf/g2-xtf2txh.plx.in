@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::Wrapper2;
+
+# CREATED WITH:
+my $invocation = "../mk-wrapper.plx -name xtf2txh.plx -type xslt -script @@ORACC@@/lib/scripts/xtf-HTML.xsl -from xtf -to txh";
+
+ORACC::Wrapper2::xslt(from=>'xtf',
+		   to=>'txh',
+		   script=>'@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl');
+
+1;
+
+__END__
+
+=head1 NAME
+
+xtf2txh.plx -- wrapper for @@ORACC@@/lib/scripts/xtf-HTML.xsl
+
+=head1 SYNOPSIS
+
+xtf2txh.plx [-verbose | -quiet | -help | -man] [-list filelists | FILES]
+
+=head1 DESCRIPTION
+
+A wrapper program which applies @@ORACC@@/lib/ORACC/XTF/xtf-HTML.xsl 
+to files.  Input files have extension 'xtf'; output files have 
+extension 'txh'.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).
+

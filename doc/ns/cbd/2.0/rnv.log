@@ -1,0 +1,12 @@
+cbd.rnc:6:1: error: repeated define or start
+cbd.rnc:41:1: error: repeated define or start
+cbd.rnc:47:1: error: repeated define or start
+cbd.rnc:51:1: error: repeated define or start
+cbd.rnc:57:1: error: repeated define or start
+cbd.rnc:60:28: error: repeated define or start
+cbd.rnc:60:28: error: undefined reference to 'gdl'
+cbd.rnc:60:28: error: undefined reference to 'feat-def'
+cbd.rnc:60:28: error: undefined reference to 'type'
+cbd.rnc:60:28: error: undefined reference to 'level'
+cbd.rnc:60:28: error: undefined reference to 'signature'
+cbd.rnc:60:28: error: undefined reference to 'mapped_signature'

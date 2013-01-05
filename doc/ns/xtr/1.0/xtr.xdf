@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XTR</dc:title>
+  <dcterms:alternative>XML Translations</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xtr/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-09-28</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides the RNG schema used by the
+XML version of translations and explains implementation details useful
+for programmers; if you are typing translations in ATF you don't need
+to read this page.</dc:description>
+</d:meta>
+
+<p>The XML Translations subsystem handles translations of texts.
+These may be input as interlinear, within the ATF files, or
+extralinear either within ATF files or separately.  Interlinear
+translations are automatically aligned with the translated material at
+the line-level; extralinear translations may be aligned either at the
+level of labels (including label ranges like [o i 14 - o ii 3]) or at
+the level of units (units are normally sentences).  We do not expect
+that XTR will be generated manually, though it could be; the normal
+practice will be to prepare translations in a simple format which is
+an extension to ATF.</p>
+
+<h3>Processing</h3>
+
+<p>The ATF processor transparently handles the relationship between
+the different surface forms of translations and the single internal
+data structure and serialized XML form.  Linkage between the
+transliterations and their corresponding translations is also handled
+automatically.</p>
+
+<p>A multi-pass approach is used to achieve this:</p>
+
+<ul>
+<li><p>All of the inputs are read, skipping transliterations and
+interlinear translations but processing extralinear translations.</p>
+
+<p>When a translation is processed it is parsed into an internal data
+structure which is the same for all surface forms of translation; the
+type of translation input is preserved.  Note that this applies to
+interlinear translations as well as extralinear ones.</p>
+
+<p>Each unit in the translation is assigned an ID based on the memory
+address of the translation unit; this is guaranteed to be unique but
+is irreproducible.</p></li>
+
+<li><p>When a transliteration which has an extralinear translation is
+being parsed a table of lines indexed by labels is built at parse-time
+by the processor.</p>
+
+<p>When a transliteration which has an interlinear translation is
+being parsed the translation parsing takes place simultaneously.  The
+end result is that interlinear and extralinear translations both end
+up in the same internal form.</p></li>
+
+<li><p>After parsing, extralinear translations are processed again
+with each label in the internal structure being looked up in the
+transliteration index.  If the label is not found a warning is
+emitted.  If the label is found the ID for the label is stored in the
+translation; the translation unit's ID is also added to the
+transliteration line's node.</p>
+<p>In the case of unitary translations, references to the unit ID are
+generated at this point.  Note that the <code>@span</code>, even if
+present, is not used to set start/end references; these can, however,
+be looked up at a later time based on the document-centric version of
+the XTF document which is generated during linguistic annotation
+processing.</p>
+</li>
+
+<li><p>The transliteration and translation are then output to their own
+files.  The transliteration is named by the ID and the extension
+<code>.xtf</code> as usual; the translation is named by the ID, a
+language subscript and the extension <code>.xtr</code>, e.g., Gudea 1
+is Q000887 in the CDL composites catalog so that English and German
+translations would be named <code
+class="example">Q000887-en.xtr</code> and <code
+class="example">Q000887-de.xtr</code> respectively.</p></li>
+</ul>
+
+<h3>Schema</h3>
+
+<p>XTR translations are defined as a tiny subset of XHTML so that
+rendering them is little more than a matter of inserting appropriate
+linking conventions to support user-navigation between the IDREFs in
+<code>xtf:ref</code> attributes and the IDs in either the
+transliteration or the translation.</p>
+
+<p>Each translation unit is expressed as an <code>xhtml:p</code>.</p>
+
+<p>The values of the <code>@label</code>, <code>@unit</code> and
+<code>@span</code> commands are preserved in XTR attributes with
+corresponding names.</p>
+
+<d:schema name="xtr" uri="http://oracc.org/ns/xtr/1.0">
+<d:rnc>
+namespace xtr = "http://oracc.org/ns/xtr/1.0"
+namespace xh  = "http://www.w3.org/1999/xhtml"
+
+translation =
+  element xtr:translation {
+    id,
+    attribute ref      { xsd:NMTOKEN },
+    attribute n        { text },
+    attribute project  { text },
+    attribute xml:lang { xsd:NMTOKEN },
+    attribute xtr:code { xsd:NMTOKEN },
+    attribute xtr:type { 
+      "interlinear" | "parallel" | "labeled" | "unitary" 
+    },
+    attribute xtr:cols { xsd:nonNegativeInteger }?,
+    (trans-unit | trans-note | trans-dollar | trans-comment | h)*,
+    map?
+  }
+
+id  = attribute xml:id { xsd:ID }
+cid = attribute xtr:cid { xsd:IDREF }
+ctr = attribute class { "tr" }
+
+trans-comment =
+  element xh:p {
+    attribute class { "tr-comment" },
+    htext*
+  }
+
+trans-dollar =
+  element xh:p {
+    attribute class { "dollar" },
+    silent?,
+    (standalone
+     | (ref | refs | (unit,refs?))),
+    new-labels? ,
+    htext* ,
+    innerp*
+  }
+
+trans-note = 
+  element xh:div {
+    attribute class { "note" },
+    id?,
+    element xh:p { ctr , marker-ref , htext } ,
+    (element xh:p { ctr , htext } 
+     | trans-comment)*
+  }
+
+trans-unit = 
+  element xh:p {
+    id,
+    cid?,
+    ctr,
+    xtr-label, se-label,
+    (ref | refs | (unit,refs?)),
+    new-labels? ,
+    overlap? ,
+    spanall? ,
+    (innerp+ | htext)
+  }
+
+h = h1 | h2 | h3
+h1 = element xh:h1 { h-model }
+h2 = element xh:h2 { h-model }
+h3 = element xh:h3 { h-model }
+
+h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
+
+innerp = element xh:innerp { htext | (comment, text) }
+htext = (text | trword | trcell | foreign | literal | marker 
+         | supplied | uncertain | rspan | bspan | ispan | sign
+	 | bispan | smaller | sc | gdlspan | sup | lab | cun)*
+
+trword    = element xh:span { attribute class      { "w" },  
+			      attribute xtr:lem    { text }?,
+			      attribute xtr:disamb { text }?,
+			      attribute xtr:form   { text }?,
+			      id,
+			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
+
+trcell	  = element xh:span { attribute class { "cell" },  
+			      attribute xtr:span { xsd:nonNegativeInteger }?,
+			      htext }
+comment   = attribute class { "tr-comment" }
+foreign   = element xh:span { attribute class { "foreign" },  htext }
+literal   = element xh:span { attribute class { "literal" },  htext }
+supplied  = element xh:span { attribute class { "supplied" }, htext }
+uncertain = element xh:span { attribute class { "uncertain" },htext }
+rspan     = element xh:span { attribute class { "r" },        htext }
+bspan     = element xh:span { attribute class { "b" },        htext }
+ispan     = element xh:span { attribute class { "i" },        htext }
+bispan    = element xh:span { attribute class { "bi" },       htext }
+gdlspan   = element xh:span { attribute class { "gdl" },      l.inner }
+lab       = element xh:span { attribute class { "lab" },      htext }
+sc        = element xh:span { attribute class { "sc" },       htext }
+sign      = element xh:span { attribute class { "sign" },     htext }
+smaller   = element xh:span { attribute class { "smaller" },  htext }
+sup       = element xh:span { attribute class { "sup" },      htext }
+cun       = element xh:span { attribute class { "cun" },      htext }
+
+marker = 
+  element xh:a {
+    attribute class { "marker" },
+    nrefs?,
+    xsd:string { pattern = "\d+[a-z]*" }
+  }
+marker-ref = 
+  element xh:span {
+    attribute class { "marker" },
+    xsd:string { pattern = "\d+[a-z]*" }
+  }
+
+ref       = attribute xtr:ref     { xsd:IDREF }
+hdr-ref   = attribute xtr:hdr-ref { xsd:IDREF }
+refs      = start-ref , end-ref , all-refs? , new-labels? , rows
+start-ref = attribute xtr:sref    { xsd:IDREF  }
+end-ref   = attribute xtr:eref    { xsd:IDREF  }
+all-refs  = attribute xtr:refs    { xsd:IDREFS }
+uref      = attribute xtr:uref    { xsd:IDREF  }
+nrefs     = attribute xtr:nrefs   { xsd:IDREFS }
+rows 	  = attribute xtr:rows    { xsd:integer }
+overlap   = attribute xtr:overlap { xsd:boolean }
+silent    = attribute xtr:silent  { "1" }
+spanall   = attribute xtr:spanall { "1" }
+standalone= attribute xtr:standalone { "1" }
+xtr-label = (attribute xtr:label { text },
+             attribute xtr:rend-label { text }?)
+se-label = attribute xtr:se_label { text }
+unit  = attribute xtr:unit  { text }
+
+new-labels = 
+	(attribute xtr:lab-start-lnum  { text },
+	 attribute xtr:lab-end-lnum    { text } ?,
+	 attribute xtr:lab-start-label { text },
+	 attribute xtr:lab-end-label   { text } ?
+	)
+
+map =
+  element xtr:map {
+    element xtr:l2t {
+      attribute lid { xsd:IDREF },
+      attribute tid { xsd:IDREF }
+    }*
+  }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

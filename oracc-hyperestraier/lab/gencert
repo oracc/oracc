@@ -1,0 +1,44 @@
+#! /bin/sh
+
+#================================================================
+# gencert
+# Generate a self signed certificate
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+name="selfish"
+
+
+# generate the private key
+openssl genrsa -out "$name.key" 1024
+
+
+# generate the certificate signing request
+openssl req -new -days 1456 -key "$name.key" -out "$name.csr" <<__EOF
+JP
+Kanagawa
+Yokohama
+Hyper Estraier
+Development
+localhost.localdomain
+mikio@fallabs.com
+
+
+__EOF
+
+
+# generate the self signed certificate
+openssl x509 -in "$name.csr" -out "$name.crt" -req -signkey "$name.key" -days 1456
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib "@@ORACC@@/lib";
+use ORACC::FXR::Util;
+use ORACC::XMD::CSV;
+use ORACC::XMD::Util;
+
+$ORACC::XMD::Util::quiet = 1;
+
+my %items = ();
+my %ns_types = (
+    'http://www.filemaker.com/fmpxmlresult'=>'fxr',
+    'http://oracc.org/ns/xmd/1.0'=>'xmd',
+    );
+my $outfile = shift @ARGV;
+my $project = `oraccopt`;
+
+die "xmd-ids.plx: must run from project directory\n"
+    unless $project;
+
+foreach my $c (<00cat/*.xml>, <00cat/*.csv>) {
+    my $type = type_from_ns($c);
+    my @icat = ();
+    if ($type eq 'fxr') {
+	@icat = ORACC::FXR::Util::internalize($c);
+    } elsif ($type eq 'xmd' || $type eq 'xml') {	    
+	@icat = ORACC::XMD::Util::internalize($c);
+    } elsif ($type eq 'csv') {
+	@icat = ORACC::XMD::CSV::internalize($c);
+    } else {
+	die "xmd-ids.plx: unknown catalog type $type\n";
+    }
+    my $item_index = -1;
+    my $fields = $icat[0];
+    my $rows = $icat[2];
+    next if $#$rows < 0;
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$item_index = $i and last 
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+    }
+    die "xmd-ids.plx: no item field found in catalogue $c\n"
+	unless $item_index >= 0;
+    foreach my $r (@$rows) {
+	++$items{"$project:".$$r[$item_index]};
+    }
+}
+
+if (scalar keys %items > 0) {
+    if ($outfile) {
+	open(O, ">$outfile") || die "xmd-ids.plx: can't write to outfile `$outfile'\n";
+	select O;
+    }
+    print join("\n", sort keys %items), "\n";
+    close(O) if $outfile;
+}
+
+#############################################################################
+
+sub
+type_from_ns {
+    my $fn = shift;
+    if ($fn =~ /\.csv$/) {
+	'csv';
+    } else {
+	my $ns = `@@ORACC@@/bin/xmlns $fn`;
+	if ($ns_types{$ns}) {
+	    $ns_types{$ns};
+	} else {
+	    die "xmd-ids.plx: xmlns `$ns' is not a known catalogue type\n";
+	}
+    }
+}
+
+1;

@@ -1,0 +1,166 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: edn.tex,v 0.7 1999/01/07 03:47:30 s Exp s $
+
+% Format editions in the interim format.
+
+\def\ulinechar{\vrule width4pt height0.02em depth0.02em}
+{\makeactive{_}\gdef\newFile{\bgroup\let_\ulinechar\@newFile}}
+\def\@newFile#1{\newpage\xdef\Filename{#1}\egroup}
+\lefthdrinfo{{\ten\rm\Editionname}}
+\righthdrinfo{{\ten\rm\number\pageno:\number\count1 \global\advance\count1by1\relax}}
+\cmpdisplaytrue
+\def\newEdition{\newpage\count1=1\relax}
+
+\catcode`\^^L=\active \def^^L{\controlL}
+\let\controlL\relax
+
+\def\Edition#1{\gdef\Editionname{\ignorespaces#1}\count1=1
+  \heading\ignorespaces#1\par}
+\let\endEdition\relax
+
+\def\Discussion{\bigskip}
+\def\endDiscussion{\bigskip}
+
+%\let\abbrev\gobbleone
+%\let\fastbib\gobbleone
+%\let\corpus\gobbleone
+%\let\HKL\gobbleone
+%\let\HKLname\gobbleone
+%\let\PSDname\gobbleone
+%\let\incipit\gobbleone
+%\let\length\gobbleone
+%\let\subscript\gobbleone
+%\let\catalogs\gobbleone
+%\let\version\gobbleone
+%\let\circulation\gobbleone
+%\let\citation\gobbleone
+%\let\plans\gobbleone
+
+\def\Summary{}%\heading Summary\par}
+\def\abbrev#1{\gdef\abbrev@text{#1}}%u
+\def\fastbib#1{\def\fastbib@text{#1}}
+\def\corpus#1{\def\corpus@text{#1}}
+\def\HKL#1{\def\HKL@text{#1}}%u
+\def\HKLname#1{\def\HKLname@text{#1}}
+\def\PSDname#1{\def\PSDname@text{#1}}%u
+\def\incipit#1{\def\incipit@text{#1}}
+\def\length#1{\def\length@text{#1}}
+\def\subscript#1{\def\subscript@text{#1}}
+\def\catalogs#1{\def\catalogs@text{#1}}%u
+\def\RCSid{\catcode`\$=12 \RCSid@sub}
+\def\RCSid@sub#1{\catcode`\$=3 \def\RCSid@text{#1}}
+\def\RCSid@text{v.~???} % default definition
+\def\version#1{\def\version@text{#1}}%u
+\def\circulation#1{\def\circulation@text{#1}}
+\def\citation#1{\def\citation@text{#1}}
+\def\plans#1{\def\plans@text{#1}}
+\def\endSummary{%
+  \line{\hbox to1in{\abbrev@text\hfil}%
+	\hbox to1in{HKL\# \HKL@text\hfil}%
+	PSD: \PSDname@text\hss}%
+  \medskip
+  \line{Catalogs: \catalogs@text\hss}%
+  \medskip
+  \line{File \Filename\ version \version@text\ at \datestamp\hss}%
+  \line{RCS id: \RCSid@text\hss}%
+  \medskip
+}
+
+\def\Introduction{\heading Introduction\par}
+\let\endIntroduction\relax
+
+\def\Credits{\heading Credits\par}
+\let\endCredits\relax
+
+\def\Score{\heading Score\par}
+\let\endScore\relax
+
+\def\Matrix{\newpage\heading Textual Matrix\par}
+\let\endMatrix\relax
+
+\def\Sources{\heading Sources\par}
+\let\endSources\relax
+
+\newif\ifneedbibliography
+\def\Bibliography{\needbibliographytrue}%\heading Bibliography\par}
+\let\endBibliography\relax
+
+\def\Text#1{\filbreak\begin{composite}}
+\def\endText{\end{composite}}
+
+\def\Composite{\newpage\heading Composite Text\par\begin{composite}}
+\def\endComposite{\end{composite}}
+
+\def\Translation{\heading Translation\par\begin{translation}}
+\def\endTranslation{\end{translation}}
+
+\def\Commentary{\heading Commentary\par\begin{commentary}}
+\def\endCommentary{\end{commentary}}
+
+\def\exemplar#1{\def\exemplar@text{\ignorespaces#1}}
+\def\from#1{\def\from@text{#1}}
+\def\musno#1{\def\musno@text{#1}}
+\def\pub#1{\def\pub@text{#1}}
+\def\lines#1{\def\lines@text{#1}}
+\def\type#1{\def\type@text{#1}}
+\def\ltype#1{\def\ltype@text{#1}}
+\def\with#1{\def\with@text{#1}}
+\def\desc#1{\def\desc@text{#1}}
+\type{}\ltype{}\with{}
+\def\endexemplar{\bgroup\parindent0pt%
+  \indent\hangindent2em{\bf\exemplar@text\ = }
+  \ifnonzero{\musno@text}{\musno@text.}
+  \ifnonzero{\pub@text}{(\stripwhite\pub@text).}
+  \ifnonzero{\from@text}{\from@text.}
+  \ifnonzero{\lines@text}{Lines \lines@text.}
+  \ifnonzero{\desc@text}{\desc@text.}
+  \ifnonzero{\type@text}{\type@text.}
+  \ifnonzero{\ltype@text}{\ltype@text.}
+  \ifnonzero{\with@text}{\with@text.}
+  \endgraf\egroup\medskip}
+\let\flushexemplar\relax
+
+\def\abb#1{\def\abb@text{\ignorespaces#1\unskip}}
+\def\bib#1{\def\bib@text{\ignorespaces#1\unskip}}
+\def\has#1{\def\has@text{\ignorespaces#1\unskip}}
+\def\endabb{%
+  \ifneedbibliography\heading Bibliography\par\needbibliographyfalse\fi
+  \bgroup\parindent0pt
+  \indent\hangindent2em
+  \ifnonzero{\abb@text}{\abb@text\ = }
+  \ifnonzero{\bib@text}{\bib@text.}
+  \ifnonzero{\has@text}{[\has@text]}
+  \endgraf\egroup\medskip}
+\let\flushabb\relax
+
+\def\ad#1{\def\ad@text{#1}}
+\def\on#1{\def\on@text{#1}}
+\def\nn#1{\def\nn@text{#1}}
+\def\endad{\noindent
+  \hboxtomin{2\indention}{\bf\ignorespaces\ad@text\unskip.\ }\nn@text\endgraf}
+\let\flushad\relax
+
+\def\ifnonzero#1#2{\setbox0=\hbox{\ignorespaces#1\unskip}%
+  \ifdim\wd0>0pt \def\next{\ignorespaces#2}\else\let\next\relax\fi
+  \next}
+
+\let\obv\obverse
+\let\rev\reverse
+\let\col\column
+
+\singlespace
+%\hsize4in \fullhsize\hsize \advance\hoffset1in
+
+\def\ednsetupELA{\singlespace 
+  \advance\hsize4pc \fullhsize\hsize
+  \advance\vsize4pc %\advance\voffset-2pc
+  \rightskip4pc \advance\hoffset-2pc \begin{2column}}
+\def\edntermELA{\end{2column}\endgraf}
+
+\def\ednsetupLIT{}%\singlespace
+\def\edntermLIT{}
+
+\endinput

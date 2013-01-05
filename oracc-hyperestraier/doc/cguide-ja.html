@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, web crawler" />
+<meta name="description" content="Crawler Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="cguide-en.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Crawler Guide of Hyper Estraier Version 1 (Japanese)</title>
+</head>
+
+<body>
+
+<h1>クローラガイド</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<a href="cguide-en.html" hreflang="en">English</a>/<span class="void">Japanese</span>] [<a href="index.ja.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">目次</h2>
+
+<ol>
+<li><a href="#introduction">はじめに</a></li>
+<li><a href="#tutorial">チュートリアル</a></li>
+<li><a href="#estwaver">クローラコマンド</a></li>
+<li><a href="#searchengine">Web検索エンジンの実現</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">はじめに</h2>
+
+<p>このガイドでは、Hyper EstraierのWebクローラの詳細な使い方を説明します。<a href="uguide-ja.html">ユーザガイド</a>と<a href="nguide-ja.html">P2Pガイド</a>をまだお読みでない場合は先にそちらに目を通しておいてください。</p>
+
+<p><code>estcmd</code>だとローカルのファイルシステム上にある文書（ファイル）を対象としたインデクシングしかできません。NFSやSMB等を用いてファイルシステムをリモートマウントすれば別のマシンにある文書をインデクシングすることもできますが、不特定対数のWebサイトの文書を扱おうとするとそうもいきません。<code>wget</code>などのクローラで文書を集めて来てローカルに保存してからインデクシングすることも考えられますが、ディスク容量の問題や更新頻度の問題などがあります。</p>
+
+<p>Web上のリンクを辿って文書を収集することをWebクローリングと言い、そのプログラムをWebクローラと言います。Hyper Estraierに付属のWebクローラ<code>estwaver</code>を使うと、任意のWebサイトの文書を直接的にインデックスに登録することができます。</p>
+
+<p><code>estwaver</code>は賢いクローラです。深さ優先探索や幅優先探索のような単純なアルゴリズムでなく、文書の内容を判断して関連するものを優先的に辿って行きます。種文書として指定した文書は、探索の起点になるとともに、類似度判定の材料にもなります。類似検索と同じ要領で種文書のベクトルの和に対する類似度を算出し、それが高い文書のリンク先を優先的に辿ります。</p>
+
+<hr />
+
+<h2 id="tutorial">チュートリアル</h2>
+
+<p><code>estwaver</code>も多彩な機能をもっていますが、基本的な使い方は単純です。実際に動かしながら使い方を身につけていきましょう。</p>
+
+<h3>基本的な使い方</h3>
+
+<p>クローラを動かす準備として、以下のコマンドを実行してクローラルートディレクトリを作ってください。クローラルートディレクトリとは、クローラの動作に必要な設定ファイルなどを格納するディレクトリツリーのトップのことです。</p>
+
+<pre>estwaver init casket
+</pre>
+
+<p>デフォルトではHyper Estraierのホームページなどを起点としてクローリングを行うように設定されています。<code>casket/_conf</code>を編集すれば、設定を変更することができます。とりあえずは<code>seed</code>という項目を編集して、巡回の起点となるURLに好きなサイトのURLを指定してください。「<code>|</code>」の前の部分は類似度判定の重み付けなのですが、とりあえずは「<code>1.0</code>」にしておけばよいでしょう。なお、プロクシを使わないとWebが見られない環境では、<code>proxyhost</code>と<code>proxyport</code>にプロクシのホスト名とポート番号を設定することも必要です。また、日本語のサイトを優先して巡回したい場合は<code>language</code>を<code>1</code>にするとよいでしょう。例えば以下のように設定します。</p>
+
+<pre>seed: 1.0|http://www.asahi.com/
+seed: 1.0|http://www.yomiuri.co.jp/
+seed: 1.0|http://www.mainichi.co.jp/
+...
+proxyhost: proxy.yourdomain.ad.jp
+proxyport: 8080
+...
+language: 1
+...
+</pre>
+
+<p>それでは、クローラを動かしてみましょう。以下のコマンドを実行してください。</p>
+
+<pre>estwaver crawl casket
+</pre>
+
+<p>すると、文書が続々と取得されてインデックスに登録されていきます。停止させたい場合は端末で<code>Ctrl-C</code>を入力してください。しばらく待つと停止します。</p>
+
+<p>クローリングが終った時には、クローラルートディレクトリの中に<code>_index</code>というディレクトリができています。これが<code>estcmd</code>等で利用できるインデックスです。作成されたインデックスを使って検索を行ってみましょう。</p>
+
+<pre>estcmd search -vs casket/_index "hyper estraier"
+</pre>
+
+<p>中断したクローリングを再開するには、再び<code>estwaver crawl</code>を実行します。</p>
+
+<pre>estwaver crawl casket
+</pre>
+
+<p><code>-revisit</code>オプションをつけて<code>estwaver crawl</code>を実行すると、既にインデックスに登録した文書のみを対象にして再巡回を行い、更新された文書をインデックスに反映させたり、削除された文書の情報をインデックスから削除したりできます。</p>
+
+<pre>estwaver crawl -revisit casket
+</pre>
+
+<p><code>-revcont</code>オプションをつけて<code>estwaver crawl</code>を実行すると、既存の文書の再巡回を行ってから、他の文書のクローリングを続行します。<code>-restart</code>オプションをつけて<code>estwaver crawl</code>を実行すると、クローリングを最初からやり直して、Web上で更新された文書の内容をインデックスに反映させることができます。通常の運用では、<code>-revcont</code>オプションで定期的にインデックスを更新するのがよいでしょう。</p>
+
+<h3>イントラネットでの利用</h3>
+
+<p>企業や学校などのイントラネットでいくつかのWebサイトを運営している場合にもクローラを使ってインデクシングをすると便利です。イントラネットの文書からも外部（インターネット）へのリンクが張ってあることが考えられるので、<code>casket/_conf</code>の<code>allowrx</code>を編集して巡回先を制限します。例えば、<code>estraier.ad.jp</code>ドメインのみを巡回する場合は以下のようにします。</p>
+
+<pre>seed: 1.0|http://www.estraier.ad.jp/
+seed: 1.0|http://intra.estraier.ad.jp/
+...
+allowrx: ^http://[^/]*\.estraier.ad.jp/
+...
+</pre>
+
+<h3>ノードサーバへの登録</h3>
+
+<p>数百万件以上の文書を対象にしたい場合は、巡回した文書を全て単一のインデックスに登録していくのはスケーラビリティの観点から現実的ではありません。また、クローラが動作している間はインデックスがロックされてしまうという欠点もあります。P2P機構のノードサーバに文書を登録するとその問題を解決できます。それには、<code>casket/_conf</code>の<code>nodeserv</code>を編集して、登録先のノードサーバを指定します。例えば、<code>http://foo.estraier.ad.jp:1978/node/node1</code>と<code>http://bar.estraier.ad.jp:1978/node/node2</code>と<code>http://baz.estraier.ad.jp:1978/node/node3</code>の3つのノードサーバに分散して登録する場合は、以下のようにします。「<code>|</code>」の前の部分はノードサーバにつけるIDなのですが、各々がユニークになるように適当な番号を指定してください。「<code>admin:admin</code>」の部分にはノードサーバに接続する際のユーザ情報を指定してください。</p>
+
+<pre>nodeserv: 1|http://admin:admin@foo.estraier.ad.jp:1978/node/node1
+nodeserv: 2|http://admin:admin@bar.estraier.ad.jp:1978/node/node2
+nodeserv: 3|http://admin:admin@baz.estraier.ad.jp:1978/node/node3
+</pre>
+
+<p>複数のノードサーバを指定すると適当な件数毎に分散して登録されるので、検索する際にはノードサーバのメタ検索機能を利用することになります。</p>
+
+<hr />
+
+<h2 id="estwaver">クローラコマンド</h2>
+
+<p>ここでは、Web上の文書を対象としたインデックスを作るためのコマンド<code>estwaver</code>の詳細な仕様を説明します。</p>
+
+<h3>書式</h3>
+
+<p><code>estwaver</code>は多くのサブコマンドの集合体です。サブコマンドの名前は第1引数で指定されます。その他の引数はサブコマンドの種類に応じて解釈されます。<var>rootdir</var>という引数はクローラルートディレクトリです。クローラルートディレクトリとは、クローラの動作に必要な設定ファイルなどを格納するディレクトリツリーのトップのことです。</p>
+
+<dl>
+<dt><kbd>estwaver init [-apn|-acc] [-xs|-xl|-xh] [-sv|-si|-sa] <var>rootdir</var></kbd></dt>
+<dd>クローラルートディレクトリを作成します。</dd>
+<dd>-apnをつけると、全ての言語をN-gram法で処理します。</dd>
+<dd>-accをつけると、N-gram法の代わりに文字種分類法を利用します。</dd>
+<dd>-xsをつけると、50000件未満の文書を登録することを想定してインデックスを作成します。</dd>
+<dd>-xlをつけると、300000件以上の文書を登録することを想定してインデックスを作成します。</dd>
+<dd>-xhをつけると、1000000件以上の文書を登録することを想定してインデックスを作成します。</dd>
+<dd>-svをつけると、スコア情報を破棄します。</dd>
+<dd>-siをつけると、スコア情報を32ビットの数値として記録します。</dd>
+<dd>-saをつけると、スコア情報をそのまま保存した上で検索時に調整されないようにマークします。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver crawl [-restart|-revisit|-revcont] <var>rootdir</var></kbd></dt>
+<dd>クローリングを開始します。</dd>
+<dd>-restartをつけると、以前に停止した状態を無視して種文書からクローリングをやり直します。</dd>
+<dd>-revisitをつけると、以前に収集した文書の再取得のみを行います。</dd>
+<dd>-revcontをつけると、以前に収集した文書の再取得を行った後にクローリングを継続します。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver unittest <var>rootdir</var></kbd></dt>
+<dd>ユニットテストを行います。</dd>
+</dl>
+
+<dl>
+<dt><kbd>estwaver fetch [-proxy <var>host</var> <var>port</var>] [-tout <var>num</var>] [-il <var>lang</var>] <var>url</var></kbd></dt>
+<dd>単一の文書を取得します。</dd>
+<dd><var>url</var>は取得する文書のURLを指定します。</dd>
+<dd>-proxyはプロクシのホスト名とポート番号を指定します。</dd>
+<dd>-toutはタイムアウトの時間を秒単位で指定します。</dd>
+<dd>-ilは文字コードの判定で優先される言語を指定します。デフォルトは英語です。</dd>
+</dl>
+
+<p>全てのサブコマンドは、処理が正常に終了した場合には0を、そうでない場合は1を終了ステータスにします。起動中のクローラに1（SIGHUP）、2（SIGINT）、3（SIGQUIT）、15（SIGTERM）のどれかのシグナルを送ることにより、データベースを閉じて正常終了させることができます。</p>
+
+<h3>クローラルートディレクトリの構成</h3>
+
+<p>クローラルートディレクトリは以下のファイルやディレクトリを格納しています。</p>
+
+<ul>
+<li><kbd>_conf</kbd> : 設定ファイル。詳細は後述します。</li>
+<li><kbd>_log</kbd> : ログファイル。クローラのイベントログを記録します。</li>
+<li><kbd>_meta</kbd> : メタデータのデータベースファイル。重複起動防止のロック機構も兼ねます。</li>
+<li><kbd>_queue</kbd> : 巡回先のプライオリティキューのデータベースファイル。</li>
+<li><kbd>_trace/</kbd> : 巡回記録のデータベースディレクトリ。</li>
+<li><kbd>_index/</kbd> : インデックスディレクトリ。</li>
+<li><kbd>_tmp/</kbd> : テンポラリファイルを入れるディレクトリ。</li>
+</ul>
+
+<h3>設定ファイル</h3>
+
+<p>設定ファイルは、変数名と値を「<code>:</code>」で区切った形式の行を並べたものです。デフォルトでは、設定ファイルは以下のような内容になっています。</p>
+
+<pre>seed: 1.5|http://fallabs.com/hyperestraier/uguide-en.html
+seed: 1.0|http://fallabs.com/hyperestraier/pguide-en.html
+seed: 1.0|http://fallabs.com/hyperestraier/nguide-en.html
+seed: 0.0|http://fallabs.com/qdbm/
+proxyhost:
+proxyport:
+interval: 500
+timeout: 30
+strategy: 0
+inherit: 0.4
+seeddepth: 0
+maxdepth: 20
+masscheck: 500
+queuesize: 50000
+replace: ^http://127.0.0.1/{{!}}http://localhost/
+allowrx: ^http://
+denyrx: \.(css|js|csv|tsv|log|md5|crc|conf|ini|inf|lnk|sys|tmp|bak)$
+denyrx: \.(zip|tar|tgz|gz|bz2|tbz2|z|lha|lzh)(\?.*)?$
+denyrx: ://(localhost|[a-z]*\.localdomain|127\.0\.0\.1)/
+noidxrx: /\?[a-z]=[a-z](;|$)
+urlrule: \.est${{!}}text/x-estraier-draft
+urlrule: \.(eml|mime|mht|mhtml)${{!}}message/rfc822
+typerule: ^text/x-estraier-draft${{!}}[DRAFT]
+typerule: ^text/plain${{!}}[TEXT]
+typerule: ^(text/html|application/xhtml+xml)${{!}}[HTML]
+typerule: ^message/rfc822${{!}}[MIME]
+language: 0
+textlimit: 128
+seedkeynum: 256
+savekeynum: 32
+threadnum: 10
+docnum: 10000
+period: 10000s
+revisit: 7d
+cachesize: 256
+#nodeserv: 1|http://admin:admin@localhost:1978/node/node1
+#nodeserv: 2|http://admin:admin@localhost:1978/node/node2
+#nodeserv: 3|http://admin:admin@localhost:1978/node/node3
+logfile: _log
+loglevel: 2
+draftdir:
+entitydir:
+postproc:
+</pre>
+
+<p>それぞれの変数の機能を以下に示します。</p>
+
+<ul>
+<li><kbd>seed</kbd> : 種文書の重み付けとURLを「<code>|</code>」で区切って指定します。複数回指定できます。</li>
+<li><kbd>proxyhost</kbd> : プロクシサーバのホスト名を指定します。</li>
+<li><kbd>proxyport</kbd> : プロクシサーバのポート番号を指定します。</li>
+<li><kbd>interval</kbd> : 各文書を取得する際の待ち時間をミリ秒単位で指定します。</li>
+<li><kbd>timeout</kbd> : 各文書を取得する際のタイムアウトの時間を秒単位で指定します。</li>
+<li><kbd>strategy</kbd> : リンクを巡回する方針を指定します。0ならバランス戦略、1なら深さ類似度優先戦略、2なら深さ優先戦略、3なら幅優先戦略、4なら無作為戦略です。</li>
+<li><kbd>inherit</kbd> : リンク元から継承する類似度の割合を指定します。</li>
+<li><kbd>seeddepth</kbd> : 種文書の深さを指定します。</li>
+<li><kbd>maxdepth</kbd> : リンクを辿る深さの制限を指定します。</li>
+<li><kbd>masscheck</kbd> : サイトへの負荷集中を判定する際の基準となる訪問数を指定します。</li>
+<li><kbd>queuesize</kbd> : 優先度付き待ち行列の最大レコード数を指定します。</li>
+<li><kbd>replace</kbd> : URLを正規化するための正規表現と置換文字列を指定します。複数回指定できます。</li>
+<li><kbd>allowrx</kbd> : 訪問することを許可するURLを正規表現で指定します。複数回指定できます。</li>
+<li><kbd>denyrx</kbd> : 訪問することを禁止するURLを正規表現で指定します。複数回指定できます。</li>
+<li><kbd>noidxrx</kbd> : 訪問するが登録しないURLを正規表現で指定します。複数回指定できます。</li>
+<li><kbd>urlrule</kbd> : URLの正規表現とそれに対応するメディアタイプを指定します。この規則はContent-Typeヘッダよりも優先されます。複数回指定できます。</li>
+<li><kbd>typerule</kbd> : メディアタイプとそれに対応するフィルタを指定します。メディアタイプは正規表現で指定し、フィルタは文書ドラフト用なら「<code>[DRAFT]</code>」とし、プレーンテキスト用なら「<code>[TEXT]</code>」とし、HTML用なら「<code>[HTML]</code>」とし、MIME用なら「<code>[MIME]</code>」とします。複数回指定できます。</li>
+<li><kbd>language</kbd> : 好ましい言語を指定します。0なら英語、1なら日本語、2なら中国語、3なら韓国語、4なら未指定です。</li>
+<li><kbd>seedkeynum</kbd> : 種文書から抽出するキーワードの総数を指定します。</li>
+<li><kbd>savekeynum</kbd> : 登録文書の各々で保存するキーワードの総数を指定します。</li>
+<li><kbd>threadnum</kbd> : 並列実行するスレッドの数を指定します。</li>
+<li><kbd>docnum</kbd> : 取得する文書の総数を指定します。</li>
+<li><kbd>period</kbd> : 動作時間を指定します。「s」を接尾させると秒単位、「m」を接尾させると分単位、「h」を接尾させると時単位、「d」を接尾させると日単位になります。</li>
+<li><kbd>revisit</kbd> : 再訪問の期間を指定します。「s」を接尾させると秒単位、「m」を接尾させると分単位、「h」を接尾させると時単位、「d」を接尾させると日単位になります。</li>
+<li><kbd>cachesize</kbd> : インデックス用キャッシュのサイズをメガバイト単位で指定します。</li>
+<li><kbd>nodeserv</kbd> : 登録先のノードサーバを指定します。IDとURLを「<code>|</code>」で区切って指定します。認証情報はホスト名の前に「<code>name:pass@</code>」の形式で記述します。複数回指定できます。</li>
+<li><kbd>logfile</kbd> : ログファイルの名前を指定します。絶対パスか相対パスで指定します。</li>
+<li><kbd>loglevel</kbd> : ログのレベルを指定します。1ならデバッグ、2なら通常、3なら警告、4ならエラー、5なら無しです。</li>
+<li><kbd>draftdir</kbd> : 取得した文書の文書ドラフトを保存するディレクトリを指定します。絶対パスか相対パスで指定します。</li>
+<li><kbd>entitydir</kbd> : 取得した文書の実体データを保存するディレクトリを指定します。絶対パスか相対パスで指定します。</li>
+<li><kbd>postproc</kbd> : 取得した文書のデータに対する後処理のコマンドを指定します。</li>
+</ul>
+
+<p><code>allowrx</code>と<code>denyrx</code>と<code>noidxrx</code>は記述した順番に解釈されます。また、正規表現における英字の大文字と小文字は区別されません。</p>
+
+<h3>巡回戦略</h3>
+
+<p>設定ファイルの<code>strategy</code>という項目では、リンクを巡回する際の戦略を指定することができます。バランス戦略、深さ優先戦略、幅優先戦略、類似度優先戦略から選ぶことができます。</p>
+
+<p>バランス戦略では、Webクローラとして最も適切であろうという振舞いをします。類似度優先をベースに、多数のサイトから種文書の内容に近い文書を効率良く集められるように調整をします。ブログ等のサイト内リンクに捕らわれて同じような文書ばかり集めたり特定のサイトに高いに負荷を与えたりしないように、他のサイトへのリンクに移動しやすいようにします。類似度優先戦略は、そのような調整をしないで類似度のみで巡回先を決定します。</p>
+
+<p>深さ優先戦略と幅優先戦略は、一般的なツリー構造の探索アルゴリズムとしての深さ優先探索や幅優先探索とほぼ同じ振舞いをします。深さ優先はメモリ使用量を抑えられるという利点がありますが、ブログ等のサイト内リンクに捕らわれる可能性が高いので、不特定多数のサイトを巡回する用途には向きません。幅優先探索は多様なサイトから文書を集められるという利点がありますが、巡回する範囲があまりに広くなるので、これも不特定多数のサイトを巡回する用途には向きません。無作為戦略は巡回先の優先度を無作為に決定するので特定のサイトに負荷が集中しにくいという利点がありますが、幅優先探索と同じ欠点があります。なお、マルチスレッドで動くので、深さ優先戦略は完全な深さ優先探索にはならず、スレッド数の分だけ幅が出て来ます。完全な深さ優先探索をしたい場合はスレッド数を1にしてください。</p>
+
+<p>特定のサイトの文書を全て集めるならば、どの戦略を使っても結果は同じです。とはいえ、メモリ使用量を抑えたいならば深さ優先戦略を使い、ブログ等のWebアプリケーションがある場合に備えるならば幅優先戦略か無作為戦略を使うとよいでしょう。</p>
+
+<p>あるサイトに関連する文書を集めたい場合に、そのサイトの全てのページを指定するのが面倒な場合は、設定ファイルの<code>seeddepth</code>の値を増やすと便利です。<code>seed</code>に指定したURLからの指定したホップ数以内で到達できる文書が全て種文書になります。</p>
+
+<h3>フィルタプログラム</h3>
+
+<p><code>typerule</code>では、「<code>{{!}}</code>」の後に任意のフィルタプログラムのコマンドを書くことができます。フィルタプログラムの仕様は<code>estcmd gather</code>の「<code>-fx</code>」オプションと同じで、第1引数に対象文書のパス、第2引数に出力先のパスが渡されて呼び出されます。例えばPDF文書を処理するには以下のように指定します。</p>
+
+<pre>typerule: ^application/pdf${{!}}H@/usr/local/share/hyperestraier/filter/estfxpdftohtml
+</pre>
+
+<h3>ファイルの保存と後処理</h3>
+
+<p>設定ファイルの<code>draftdir</code>や<code>entitydir</code>という項目を指定した場合、クローラが取得した文書の文書ドラフトや実体データのファイルをそのディレクトリが保存されます。さらに、<code>postproc</code>を指定すると、個々の文書を取得する度に、指定したコマンドが呼び出して後処理を行うことがれます。第1引数には保存した文書ドラフトのファイルのパスが、第2引数には保存した実体データのファイルのパスが渡されます。<code>draftdir</code>や<code>entitydir</code>を指定しないで<code>postproc</code>のみを指定した場合、テンポラリファイルが作成されてそのパスが引数として渡されます。</p>
+
+<p>例えば、取得した文書をメールで送信するには、以下のようなシェルスクリプトを作って、そのコマンド名を<code>postproc</code>に指定します。</p>
+
+<pre>#! /bin/sh
+address="mikio@estraier.ad.jp"
+url=`sed -n -e '/^@uri/ s/^@uri=// p' "$1"`
+uuencode "$2" entity.dat | mail -s "[estwaver] $url" "$address"
+</pre>
+
+<p>適当な後処理のコマンドを用いれば、<code>estwaver</code>をHyper Estraier以外の検索システムの収集エージェントとして用いることができます。文書管理システムのフロントエンドとして使ってもよいでしょう。後処理のみを行ってHyper Estraierのインデックスに文書を入れる必要がない場合は、設定ファイルの<code>noidx</code>の値を<code>^http://</code>などとしてください。</p>
+
+<hr />
+
+<h2 id="searchengine">Web検索エンジンの実現</h2>
+
+<p>Hyper Estraierのマニュアル群をここまで読み進めてくれたあなたは偉い！ ついにWeb検索エンジンを構築する時が来ました。誰でも自分のWeb検索エンジンを持てるようにするという、Hyper Estraierの目標がここに結実します。ここではそのためのノウハウを説明します。</p>
+
+<h3>インデックス用ノードサーバの準備</h3>
+
+<p>まずは、インデックスを管理するノードサーバを構築します。できるだけ大量の文書をできるだけ高速に検索するには、できるだけ多くのコンピュータで分散処理をさせた方が有利なのは言うまでもありませんが、とりあえずはPC1台でもWeb検索エンジンは実現できます。</p>
+
+<p>PC1台で運用する場合にも、複数のノードサーバを用いた方がインデクシングの効率がよくなります。また、個々のノードサーバは別々のノードマスタ上で動かした方が効率がよくなります。その理由は、マルチプロセッサやマルチコアプロセッサの恩恵が受けやすくなることと、あるノードサーバがキャッシュをフラッシュしている間に別のノードサーバに登録先を割り振って処理速度の低下を抑止できることです。</p>
+
+<p>ここでは、「<code>ortho.estraier.ad.jp</code>」「<code>para.estraier.ad.jp</code>」「<code>meta.estraier.ad.jp</code>」という3台のPCを所有していることを想定します。それぞれ1GBの実メモリを搭載しているとします。それぞれに1つずつノードマスタとノードサーバを配置することにしましょう。以下に作業例を示しますが、<code>ortho</code>、<code>para</code>、<code>meta</code>で同様の作業をしてください。</p>
+
+<pre>mkdir -p /home/mikio/var
+cd /home/mikio/var
+estmaster init master
+</pre>
+
+<p>適当なエディタで<code>/home/mikio/var/master/_conf</code>を開いて、<code>cachesize</code>の値を512にしてください。実メモリの搭載量が1GBならば、その半分くらいの容量のキャッシュを使うのが望ましいです。</p>
+
+<p>ノードマスタをデーモンとして起動します。</p>
+
+<pre>estmaster start -bg master
+</pre>
+
+<p>ノードマスタのUI（Webブラウザで<code>http://ortho.estraier.ad.jp:1978/master_ui</code>などに接続）を使って、管理者ユーザを設定します。ここではユーザ名が「<code>mikio</code>」で、パスワードが「<code>oikim</code>」ということにします。また、ノードサーバを作ります。ここでは名前を「<code>child</code>」とし、ラベルはホスト名をつけることにします。</p>
+
+<h3>メタ検索用ノードサーバの準備</h3>
+
+<p><code>ortho</code>、<code>para</code>、<code>meta</code>の各ホストにノードサーバを構築したら、それらにメタ検索をするための親ノードを別に作ります。ここでは<code>ortho</code>のノードマスタに作ることにして、名前は「<code>parent</code>」でラベルは「<code>estraier.ad.jp</code>」をつけることにします。</p>
+
+<p>親ノードから各々の子ノードにリンクを張ります。この作業はどのホスト上で行っても構いません。</p>
+
+<pre>estcall setlink -auth mikio oikim http://ortho.estraier.ad.jp:1978/node/parent \
+  http://ortho.estraier.ad.jp:1978/node/child ortho 10000
+estcall setlink -auth mikio oikim http://ortho.estraier.ad.jp:1978/node/parent \
+  http://para.estraier.ad.jp:1978/node/child para 10000
+estcall setlink -auth mikio oikim http://ortho.estraier.ad.jp:1978/node/parent \
+  http://meta.estraier.ad.jp:1978/node/child meta 10000
+</pre>
+
+<p>うまく設置できているか確認するために、親ノードの検索用ユーザインターフェイス（<code>http://ortho.estraier.ad.jp:1978/node/parent/master_ui</code>）に接続してください。そこで、「<code>link#1: ortho</code>」「<code>link#2: para</code>」「<code>link#3: meta</code>」の3つのリンクが表示されているはずです。それぞれのリンクを選択してみて、それぞれのノードサーバのユーザインターフェイスに進めるかどうかも確認してください。なお、親ノードから間違ってリンクを張ってしまった場合は、10000の部分を-1に変えて<code>estcall setlink</code>を実行してリンクを消してください。</p>
+
+<h3>クローラの準備</h3>
+
+<p>クローラは<code>meta</code>で動かすことにします。クローラ用のディレクトリを設置します。</p>
+
+<pre>cd /home/mikio/var
+estwaver init waver
+</pre>
+
+<p>適当なエディタで<code>/home/mikio/var/waver/_conf</code>を開いて、<code>seed</code>に値に種文書の重み付けとURLを指定してください。プロクシを使う場合は<code>proxyhost</code>や<code>proxyport</code>も指定してください。また、日本語のサイトの文字コードの認識率を上げるために、<code>language</code>も設定した方がいいでしょう。そして、取得した文書の登録先のノードも指定します。</p>
+
+<pre>seed: 1.5|http://fallabs.com/hyperestraier/
+seed: 1.0|http://fallabs.com/estraier/
+seed: 0.5|http://www.namazu.org/
+...
+proxyhost: proxy.estraier.ad.jp
+proxyport: 3128
+...
+language: 1
+...
+nodeserv: 1|http://ortho.estraier.ad.jp:1978/node/child
+nodeserv: 2|http://para.estraier.ad.jp:1978/node/child
+nodeserv: 3|http://meta.estraier.ad.jp:1978/node/child
+...
+</pre>
+
+<p><code>nodeserv</code>でわざわざIDをつけているのは、ノードサーバのURLが変えられるようにするためです。<code>estwaver</code>はどの文書をどのノードに登録したかをIDを使って記録して、文書が更新された時に古い情報を消します。したがって、IDさえ変えなければURLを変えても問題なく更新を行うことができるのです。</p>
+
+<h3>クローラの実行</h3>
+
+<p>さて、いよいよクローラを実行します。<code>-revcont</code>オプションは、既に取得した文書で再訪問周期になったもの（設定ファイルの<code>revisit</code>で指定）を巡回した上で新たな文書の巡回を継続する指定ですが、最初からつけていても問題はありません。</p>
+
+<pre>estwaver crawl -revcont waver
+</pre>
+
+<p>これで巡回された文書が続々と登録されていきます。親ノードの検索用ユーザインターフェイス（<code>http://ortho.estraier.ad.jp:1978/node/parent/search_ui</code>）で確認してみてください。メタ検索を行うために、<code>depth</code>の設定は1以上にしてください。</p>
+
+<p>デフォルトの設定では10000件の文書を取得した時点でクローラは停止するようになっているので、もっとたくさん集めたい場合は設定ファイルの<code>docnum</code>の値を増やしてください。夜中などに定期的にクローラを走らせたい場合は、<code>cron</code>などに<code>estwaver</code>の起動スクリプトを登録しておくとよいでしょう。</p>
+
+<h3>おわりに</h3>
+
+<p>設定が面倒で面目無いです。ほとんどの設定はノードAPIを使ったりREST風のリクエストを発行したりすれば自動化できるはずなんですが、その辺のインテグレーションは今後の課題ということで。なお、ノードAPIを使った検索アプリケーションを作ると、自前の検索エンジンを様々な用途に使えるようになると思います。ノードサーバのOpenSearch機能を利用して他の検索エンジンと連携させても面白いでしょう。</p>
+
+<p>Web全体の検索エンジンはGoogleやYahooに任せておくとして、Hyper Estraierを使うと、Webの中でホットな部分に絞った検索システムを、インターネット上のユーザコミュニティが協調して構築できるようになります。<code>estmaster</code>のP2P機構によってPC数台でも分散処理のインデクシングができるようにし、<code>estwaver</code>の類似文書巡回機構によって興味のある文書を選択的に取得できるようにしているのはそのためなのです。インターネット上に設置されたノードサーバがどんどん増えて、それらが互いにリンクし合うようになれば、きっと面白い世界が見えて来るでしょう（いささか妄想気味）。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

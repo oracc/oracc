@@ -1,0 +1,3 @@
+#!/bin/sh
+ref2xml.plx $* | xsltproc @@ORACC@@/lib/bib/ref2tei.xsl - \
+    >new-tei-bib.xml

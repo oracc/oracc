@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Unicode Fonts for Oracc</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2010-05-15</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page provides access to a variety of Unicode fonts for transliteration and normalisation, as well as for cuneiform script. </dc:description>
+</d:meta>
+
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+<h1>Unicode Transliteration Fonts</h1>
+
+<p>Fonts are only referenced here if they are both free and include
+the full set of Unicode characters needed for Assyriological
+transliterations as listed on
+the <a href="/doc/user/unicode/">Unicode for Cuneiform
+Transliteration</a> page.  All Oracc fonts are released under the
+terms of the <a href="http://scripts.sil.org/OFL">SIL Open Font
+License</a>.</p>
+
+<p>If you need additional characters please let the Oracc steering committee know.</p>
+
+<p>For daily work the best fonts to try are Ungkam Basic
+and DejaVu.  Ungkam has two forms, the Basic and the Book Basic, with
+the Basic being better for on-screen use and the Book Basic being 
+better for print.  DejaVu is useful to have as well, because it has
+sans-serif and monospaced fonts.</p>
+
+<h2>Ungkam</h2>
+
+<p>Ungkam may be the first calque from Latin into Sumerian; the fonts
+are modified as permitted from Victor Gaultney's
+beautiful <a href="http://scripts.sil.org/gentium_download">"Gentium"
+typefaces</a>.</p>
+
+<h3>Ungkam Basic</h3>
+
+<p>This is a version of the Gentium Basic and Gentium Book Basic
+families in which all fonts have been extended to meet the
+requirements above.</p>  
+
+<ul>
+<li>Version for Mac OS 10.5 and earlier: <a href="/downloads/UngkamBasic-mac.zip">[Download here]</a></li>
+<li>Version for Windows, Unix and Mac OS 10.6: <a href="/downloads/UngkamBasic-ttf.zip">[Download here]</a>.</li>
+</ul>
+
+<h3>Ungkam Original</h3>
+
+<p>This is a version of the original, full Gentium font extended to
+meet the requirements above and named Ungkam.  Version 1.2 is now
+available.</p> 
+<ul>
+<li>Version for Mac OS 10.5 and earlier: <a href="/downloads/ungkam-1.2-mac.zip">[Download here]</a></li>
+<li>Version for Windows, Unix and Mac OS 10.6: <a href="/downloads/ungkam-1.2-ott.zip">[Download here]</a>.</li>
+</ul>
+
+<h2>DejaVu</h2>
+
+<p>The extended version of Bitstream Vera, named Lynn, has been discontinued.
+Instead we strongly recommend the excellent ongoing work to extend Vera under
+the name <a href="http://dejavu-fonts.org">DejaVu Fonts</a>.</p>
+
+<ul>
+<li>Version for Mac OS 10.5 and earlier: <a href="/downloads/DejaVu-mac.zip">[Download here]</a></li>
+<li>Version for Windows, Unix and Mac OS 10.6: <a href="/downloads/DejaVu-ttf.zip">[Download here]</a>.</li>
+</ul>
+
+
+<h2>Freefont</h2>
+
+<p>An extended version of the FreeFont project's 2009-01-04 release.
+  Minimally tested.</p>
+<ul>
+<li>Version for Mac OS 10.5 and earlier: <a href="/downloads/FreeFont-mac.zip">[Download here]</a></li>
+<li>Version for Windows, Unix and Mac OS 10.6: <a href="/downloads/FreeFont-ttf.zip">[Download here]</a>.</li>
+</ul>
+
+
+<h2>Desconsolata</h2>
+
+<p>An experimental font based on <a
+ href="http://www.levien.com/type/myfonts/inconsolata.html">Ralph
+Levien's Inconsolata</a>, available in monospaced version only and
+intended for limited on-screen use.  The font includes some
+superscript characters in the Private Use Area to support aligning
+text matrices on-screen even when they include determinatives.  This
+font is distributed only in TrueType format.</p> 
+
+<ul>
+<li><a href="/downloads/Desconsolata-ttf.zip">[Download here]</a>.</li>
+</ul>
+
+<h1>Cuneiform Fonts</h1>
+
+<h2>CuneiformNA</h2>
+
+<p>A font based on original MetaFont/Type1 fonts by <a
+href="http://www-hep2.fzu.cz/~piska/cuneiform.html">Karel Píška</a>
+with Neo-Assyrian sign-forms.</p>
+
+<ul><li><a href="/downloads/CuneiformNA.zip">[Download here]</a></li></ul>
+
+<h2>CuneiformOB</h2>
+
+<p>A font based on Cuneiform Composite whose forms are closer to
+those found in Old Babylonian monumental and literary texts.</p>
+
+<ul><li><a href="/downloads/CuneiformOB.zip">[Download here]</a></li></ul>
+
+
+<h2>Cuneiform Composite</h2>
+
+<p>This is the official font of the book, soon to be a major movie.
+It was created and is maintained by Steve Tinney.  Alphabetician
+and font designer Michael Everson of <a
+href="http://www.evertype.com">Evertype</a> corrected many glyph
+problems.</p>
+
+<p>This is a composite font which is based on Ur III forms but which
+ranges from Fara to Neo-Assyrian in its outliers.  The reason for this
+is that it was designed to cover all of the cuneiform defined in
+Unicode version 5.0.  For PDFs of the Unicode 5.0 code pages see
+<a href="http://www.unicode.org/charts/">the Unicode web site</a>.</p>
+
+<p>It is anticipated that subsequent development of CuneiformComposite
+will improve the relative sizes of signs and fix any remaining glyph
+errors.</p>
+
+<p>CuneiformComposite is released under the terms of
+the <a href="http://scripts.sil.org/OFL">SIL Open Font License</a>.</p>
+
+<p>After you install the font, you can test-drive it by viewing the following pages:</p>
+<blockquote><p>
+<a href="cuneitab_0.html">Unicode Cuneiform Table page 1</a><br/>
+<a href="cuneitab_1.html">Unicode Cuneiform Table page 2</a><br/>
+<a href="cuneitab_2.html">Unicode Cuneiform Table page 3</a><br/>
+<a href="cuneitab_3.html">Unicode Cuneiform Table page 4</a><br/>
+<a href="cuneitab_4.html">Unicode Cuneiform Table page 5</a>
+</p></blockquote>
+
+<ul><li><a href="/downloads/CuneiformComposite-1001.zip">[Download here]</a></li></ul>
+
+
+<h1>Other Non-Latin Fonts</h1>
+<h2>Aegean</h2>
+
+<p>Aegean is a free font created by George Douros which supports Old
+Persian, Ugaritic, and other scripts relevant to ancient Near Eastern
+research.  You can download a locally cached
+copy of the distribution here, or go to its <a
+href="http://users.teilar.gr/~g1951d/">home page here</a>.</p>
+
+<ul><li><a href="/downloads/Aegean.zip">[Download here]</a></li></ul>
+
+<h1>Installation Instructions</h1>
+
+<p>First download the ZIP file containing the font from the
+<code>[Download here]</code> link (you may need to control-click to save it
+rather than open it in your browser window) and unzip the font.</p>
+
+<p>System-specific font-installation procedures vary—additional
+installation hints for systems not covered below are welcome.</p>
+
+<dl>
+<dt>Mac OS X</dt>
+<dd>Double click on the font to open it in Fontbook and click on
+Install; for 10.6 use the TrueType (.ttf) fonts, <b>NOT</b> the Mac
+downloads.</dd>
+<dt>Linux</dt>
+<dd>For Redhat EL 3 simply copy the font (as superuser) to /usr/share/fonts.</dd>
+<dt>Windows</dt>
+<dd>For Windows
+see <a
+href="http://support.microsoft.com/kb/314960">these
+cookbook instructions</a>.</dd>
+</dl>
+
+<h1>System-specific Hints</h1>
+
+<h2>Use ClearType on Windows XP</h2>
+
+<p>If you are using Windows XP, you will benefit from enabling
+ClearType (which is enabled by default on Vista).  Instructions for
+doing this are available from <a
+href="http://support.microsoft.com/kb/306527">this MS page</a>.</p>
+
+
+<h2>Mac OS 10.6</h2>
+
+<p>As of 10.6/Snow Leopard the <code>.dfont</code> format is no longer used; be
+sure to use the normal TrueType (.ttf) files.</p>
+
+<d:resources>
+<d:resource copy="yes" href="cuneitab_0.html" />
+<d:resource copy="yes" href="cuneitab_1.html" />
+<d:resource copy="yes" href="cuneitab_2.html" />
+<d:resource copy="yes" href="cuneitab_3.html" />
+<d:resource copy="yes" href="cuneitab_4.html" />
+</d:resources>
+</d:doc>

@@ -1,0 +1,9 @@
+OK, that's looking good now. The only remaining problems are that: 1)
+the explanations to the core elements aren't showing up online, just
+the one-line descriptors. The longer explanations are visible for all
+the option elements though. And 2) the core elements we decided would
+be non-editable with the webservice aren't showing either, but I guess
+we still need them while config files are hand-edited.
+
+build-ignore-bad-proxy suppress warnings about missing proxied texts
+

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Oracc URI Text Patterns</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">Oracc URI Text Patterns</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>Oracc's stable URIs are formed according to simple
+  patterns.  This document demonstrates the patterns which are used for
+  requesting different parts and forms of texts.</p>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER">Pattern: PROJECT/NUMBER</a></h4>
+<p class="example"><a href="/cams/gkab/P338652"><code class="cookbook">/cams/gkab/P338652</code></a></p>
+<p class="example"><a href="/saao/knpp/P223388"><code class="cookbook">/saao/knpp/P223388</code></a></p>
+<p class="comments">HTML facing-page transliteration and translation, with pager.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER_NUMBER_...">Pattern: PROJECT/NUMBER,NUMBER ...</a></h4>
+<p class="example"><a href="/cams/gkab/P338652,P338628"><code class="cookbook">/cams/gkab/P338652,P338628</code></a></p>
+<p class="example"><a href="/saao/P223388,P334194"><code class="cookbook">/saao/P223388,P334194</code></a></p>
+<p class="comments">Item list with pager.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/html">Pattern: PROJECT/NUMBER/html</a></h4>
+<p class="example"><a href="/cams/gkab/P338652/html"><code class="cookbook">/cams/gkab/P338652/html</code></a></p>
+<p class="example"><a href="/saao/P223388/html"><code class="cookbook">/saao/P223388/html</code></a></p>
+<p class="comments">HTML facing-page transliteration and translation, no pager.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/translit">Pattern: PROJECT/NUMBER/translit</a></h4>
+<p class="example"><a href="/cams/gkab/P338652/translit"><code class="cookbook">/cams/gkab/P338652/translit</code></a></p>
+<p class="example"><a href="/saao/P223388/translit"><code class="cookbook">/saao/P223388/translit</code></a></p>
+<p class="comments">HTML transliteration only.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/translation">Pattern: PROJECT/NUMBER/translation</a></h4>
+<p class="example"><a href="/cams/gkab/P338652/translation"><code class="cookbook">/cams/gkab/P338652/translation</code></a></p>
+<p class="example"><a href="/saao/P223388/translation"><code class="cookbook">/saao/P223388/translation</code></a></p>
+<p class="comments">HTML translation only.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/score">Pattern: PROJECT/NUMBER/score</a></h4>
+<p class="example"><a href="/dcclt/Q000001/score"><code class="cookbook">/dcclt/Q000001/score</code></a></p>
+<p class="comments">Full HTML score.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/cuneified">Pattern: PROJECT/NUMBER/cuneified</a></h4>
+<p class="example"><a href="/saao/saa01/P334194/cuneified"><code class="cookbook">/saao/saa01/P334194/cuneified</code></a></p>
+<p class="comments">Cuneified transliteration.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/proofing">Pattern: PROJECT/NUMBER/proofing</a></h4>
+<p class="example"><a href="/etcsri/Q001253/proofing"><code class="cookbook">/etcsri/Q001253/proofing</code></a></p>
+<p class="comments">Proofing output (beta).</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/tei">Pattern: PROJECT/NUMBER/tei</a></h4>
+<p class="example"><a href="/hbtin/P342428/tei"><code class="cookbook">/hbtin/P342428/tei</code></a></p>
+<p class="comments">TEI version of text served as CSS-styled XML.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/cat">Pattern: PROJECT/NUMBER/cat</a></h4>
+<p class="example"><a href="/hbtin/P342428/cat"><code class="cookbook">/hbtin/P342428/cat</code></a></p>
+<p class="comments">HTML version of catalogue data.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/xml">Pattern: PROJECT/NUMBER/xml</a></h4>
+<p class="example"><a href="/hbtin/P342428/xml"><code class="cookbook">/hbtin/P342428/xml</code></a></p>
+<p class="comments">XML version of text data in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/cat/xml">Pattern: PROJECT/NUMBER/cat/xml</a></h4>
+<p class="example"><a href="/hbtin/P342428/cat/xml"><code class="cookbook">/hbtin/P342428/cat/xml</code></a></p>
+<p class="comments">XML version of catalogue data in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/translit/xml">Pattern: PROJECT/NUMBER/translit/xml</a></h4>
+<p class="example"><a href="/hbtin/P342428/translit/xml"><code class="cookbook">/hbtin/P342428/translit/xml</code></a></p>
+<p class="comments">XML version of transliteration in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/translation/xml">Pattern: PROJECT/NUMBER/translation/xml</a></h4>
+<p class="example"><a href="/hbtin/P342428/translation/xml"><code class="cookbook">/hbtin/P342428/translation/xml</code></a></p>
+<p class="comments">XML version of translation in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__PROJECT/NUMBER/score/xml">Pattern: PROJECT/NUMBER/score/xml</a></h4>
+<p class="example"><a href="/dcclt/Q000001/score/xml"><code class="cookbook">/dcclt/Q000001/score/xml</code></a></p>
+<p class="comments">XML version of score in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__cdli/NUMBER/images">Pattern: cdli/NUMBER/images</a></h4>
+<p class="example"><a href="/cdli/P000001/images"><code class="cookbook">/cdli/P313915/images</code></a></p>
+<p class="comments">HTML with links to all CDLI images for the text.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__cdli/NUMBER/image">Pattern: cdli/NUMBER/image</a></h4>
+<p class="example"><a href="/cdli/P000001/image"><code class="cookbook">/cdli/P000001/image</code></a></p>
+<p class="comments">Wrapper returning best available CDLI image.</p>
+</div>
+
+<div class="pattern">
+<h4><a name="Pattern__cdli/NUMBER/thumb">Pattern: cdli/NUMBER/thumb</a></h4>
+<p class="example"><a href="/cdli/P000001/thumb"><code class="cookbook">/cdli/P000001/thumb</code></a></p>
+<p class="comments">Wrapper returning best available CDLI thumbnail.</p>
+</div>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

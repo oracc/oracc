@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+	<esp:name>Names Index</esp:name>
+
+	<esp:title>Index of names</esp:title>
+	
+
+	<html><head></head><body>
+		<esp:index-list/>
+	</body></html>
+
+</esp:page>

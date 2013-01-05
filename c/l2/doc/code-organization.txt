@@ -1,0 +1,19 @@
+L2 Code Organization
+====================
+
+The L2 library consists of a collection of
+sublibraries:
+
+  l2/form : parsing, storing and finding the core
+  	    part of ilem and sigs, i.e., the string
+	    representation of the signature proper
+  l2/ilem : interlinear lemmatization handling
+  l2/sigs : signature handling; the load framework
+  	    for data used by the lemmatizer
+  l2/tags : language tag handling
+  l2/word : the wordset matching library
+  l2/xcl2 : new XCL handling routines; the XCL data
+  	    structure is very similar to v.1 but 
+	    some of the administrative framework that
+	    used to belong to the form structure lives
+	    here now

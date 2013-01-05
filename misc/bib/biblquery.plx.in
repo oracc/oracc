@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+use strict; use warnings; use open ':utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::BIB::Config;
+use ORACC::BIB::QueryContext;
+use Getopt::Long;
+
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+my $dbpath = '/var/local/oracc/bib';
+my @dblist = ();
+my @ixlist = ();
+my $html_results = 0;
+
+#use Pod::Usage;
+GetOptions("h+"      =>\$html_results,
+	   "db=s"    =>\@dblist,
+	   "dbpath=s" =>\$dbpath); # or pod2usage(1);
+
+$dbpath .= '/' if length $dbpath;
+
+@dblist = split(/,/,join(',',@dblist));
+
+@dblist = qw/oracc/ unless $#dblist >= 0;
+
+ORACC::BIB::Config::init();
+$ORACC::BIB::env->set('dbpath', $dbpath);
+$ORACC::BIB::env->set('dblist', \@dblist);
+
+my $query_context = ORACC::BIB::QueryContext->new();
+
+if ($#ARGV >= 0) {
+    doquery(@ARGV);
+} else {
+    while (<>) {
+	chomp;
+	doquery(split);
+    }
+}
+
+sub
+doquery {
+    my $ret_ix;
+    my $ret_res_ref;
+    
+    ($ret_ix,$ret_res_ref) = $query_context->exec(@_);
+    my @res = @$ret_res_ref;
+    if ($#res >= 0) {
+	print $html_results 
+	    ? $ret_ix->retrieve_htm(@res)
+	    : $ret_ix->retrieve(@res);
+    }
+}
+
+1;

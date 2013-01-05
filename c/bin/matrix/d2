@@ -1,0 +1,29 @@
+<outer 0>
+</outer 0>
+<outer 1>
+  <block 0>
+    <composite 0 name=7>
+      <comp_col 0 text="7." delim=" " viswidth=2 maxwidth=2 zero=f space=f
+      	complex_index=0 complex_columns=1 complex_has_variant=f s_l_d=f phant=f>
+      	complex = 0xa81add0
+      <comp_col 1 text="ba" delim="\n" viswidth=2 maxwidth=2 zero=f space=f
+      	complex_index=1 complex_columns=1 complex_has_variant=t s_l_d=f phant=t>
+      	complex = 0xa8170e0
+    </composite 0>
+    <before_sources>
+    <source 0 name=S>
+      <s_col 0 cindex=0 text="S" cols=1 viswidth=1 zero=f space=f phant=f
+      	composite = 0xa81add0; composite_end = 0xa81add0
+        complex = (nil) >
+      <s_col 1 cindex=1 text="+" cols=1 viswidth=1 zero=f space=f phant=t
+      	composite = 0xa8170e0; composite_end = 0xa8170e0
+        complex = 0xa817440 complex_has_variant=t complex_text = `ba ba'>
+      <s_col 2 cindex=2 text=" ba" cols=0 viswidth=3 zero=f space=f phant=f
+      	composite = 0xa8170e0; composite_end = 0xa8170e0
+        complex = 0xa817440 >
+    </source 0>
+    <after_sources>
+  </block 0>
+</outer 1>
+<outer 2>
+</outer 2>

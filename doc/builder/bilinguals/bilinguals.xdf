@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Bilinguals</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date></dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document describes how to transliterate
+  bilinguals using Oracc (the same principles apply to trilinguals,
+  etc.).</dc:description>
+</d:meta>
+
+<h1>Overview</h1>
+
+<p>Multilingual texts provide special challenges: the text for each
+language needs to be processed both on its own and with some level of
+alignment (word, line or text), and the layout of the text on the
+original artefact is also of interest.  This page provides some initial
+guidelines for preferred practices in processing multilinguals in
+Oracc.</p>
+
+<h1>Layouts</h1>
+
+<p>Several layouts are attested in multilinguals:</p>
+
+<ol>
+<li>In some cases, words are given as glosses and the translation may
+be only partial.</li>
+
+<li>In perhaps the most common case, the translations are given as
+interlinear text--typically a tablet of this kind will be ruled in
+blocks, with each block containing a pair of lines, the first in, say,
+Sumerian, the second in Akkadian.</li>
+
+<li>Another format for multilinguals is to place the translations
+alongside each other in columns--this is commonly used in lexical texts.</li>
+
+<li>A variant on the preceding is to bracket one of the languages with
+line segments in the other language: so, an Akkadian line may have a
+Sumerian translation which is split partly on the left of the Akkadian
+and partly on the right.  Words in the Sumerian may themselves be
+split by the Akkadian column.  We call these "bracketing translations".</li>
+
+<li>Texts may be given in whole separate passages or on separate
+artefacts, as on the Bisitun inscription.</li>
+</ol>
+
+<h1>Principles</h1>
+
+<p>There are several fundamental principles which inform the
+recommendations on transliterating multilinguals:</p>
+
+<ol>
+<li>It must be possible to recreate the layout of words on the
+original artefact</li>
+<li>It must be possible to create a running text of each
+language-version regardless of the layout of the transliteration</li>
+<li>Words <em>within a language version</em> should never be reordered
+in the transliteration; it may be acceptable to separate interwoven
+language-versions</li>
+</ol>
+
+<h1>How-to</h1>
+
+<p>The examples in this how-to section are keyed to the numbers in the
+<a href="#Layouts">Layouts</a> section.</p>
+
+<ol>
+
+<li><p>Use the double-curly bracket notation for translation glosses,
+giving the language inside the brackets: <code
+class="cookbook">iri{{a-li}}</code>.</p></li>
+
+<li><p>For interlinear translations, number each block of lines giving
+the various translations of the text as one line, with each
+translation given using a <code>==</code> line with the language
+switch immediately after the <code>==</code>:</p>
+
+<pre class="cookbook">
+2'.	piriŋ abzu-ta me huš šu# ti-a
+==%akk	nam-ru ina ap-si-i par-ṣi ez-zu-ti le-qu-u
+$	single ruling
+</pre>
+</li>
+
+<li><p>For bracketing translations, transliterate the text as it
+appears on the tablet, separating the different language sections with
+a double equals-sign, then the language shift:</p>
+
+<pre class="cookbook">piriŋ abzu-ta ==%akk nam-ru ina ap-si-i par-ṣi ez-zu-ti le-qu-u
+==%sux me huš šu# ti-a</pre>
+
+<p>If a word is split between left and right sides, use the ATF
+conventions for words split across lines:</p>
+
+<pre class="cookbook">piriŋ abzu-; ==%akk nam-ru ina ap-si-i par-ṣi ez-zu-ti le-qu-u
+==%sux -ta me huš šu# ti-a</pre>
+</li>
+
+<li><p>For translations of entire texts, or text sections, there are
+several strategies.  One is to edit each translated version as a
+division of a single composite text (regardless of whether the
+versions appear on the same object or not):</p>
+
+<pre class="cookbook">
+&amp;X000009 = DPi
+@composite
+#atf: use unicode
+#atf: lang peo
+
+@div Persian 1
+1. m-y-u-x : k-a-s-k-i-n : d-a-r-y-v-h-u-š : XŠ-h-y-a 
+	: vi-i-θ-i-y-a : k-r-t
+@end Persian
+
+@div Elamite 1
+1. %elx {aš}li-ki₂ {aš}ik-nu-maš-na {m}da-[ri]-ia-ma-u-iš# [{m}EŠŠANA 
+	{aš}ul-hi{meš}-e-ma] hu-ut-tuk
+@end Elamite
+
+@div Akkadian 1
+1. %akk sik-kat kar-ri {na₄}ZA.GIN₃ ina E₂ {m}da-a-ri-ya-muš 
+	LUGAL e-pu-uš
+@end Akkadian
+</pre>
+</li>
+</ol>
+
+<d:resources/>
+
+</d:doc>

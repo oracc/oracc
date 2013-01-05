@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Scores</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date></dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document describes how to create scores using Oracc.</dc:description>
+</d:meta>
+
+<h1>Overview</h1>
+
+<p>Oracc divides scores into two types and two modes.  The two types
+are the matrix and the synopsis; the two modes are parsed and
+unparsed.  To specify that an ATF transliteration is some kind of
+score, you give one of the following @-protocols immediately after the
+&amp;-line:</p>
+
+<pre class="example">
+@score matrix parsed
+@score matrix unparsed
+@score synopsis parsed
+@score synopsis unparsed
+</pre>
+
+<p>Both types of scores use a composite line--the reconstructed line
+which does not belong to a physical source--and exemplar lines, which
+are the individual manuscript witnesses.  In a synopsis, the composite
+line may be empty; in either type the exemplars may be empty.</p>
+
+<h2>Matrix</h2>
+
+<p>In a matrix, the composite line is used to establish a set of
+columns; the exemplar lines are given in schematic form, with each
+column of the composite having a corresponding entry in the exemplars'
+columns.  Matrices may be specified at the grapheme or word level: in
+Sumerian, they are typically specified at the grapheme level.  The
+actual rules for matrices are given later in this page, but an example
+will give the general idea:</p>
+
+<pre class="example">
+1.     	   šag4-ga-ne2 er2 im-si  edin-še3  ba-ra-e3
+
+N1,i_1:    .    .  ,   +   +  +   +    ,    +  +  +
+N2,1:	   +	+  +   .   .  .   .    .    .  .  .
+N3,1:	   +    .  .   .   .  .   .    .    .  .  .
+Ki4,1:	   .	.  .   .   .  .   ,    +    +  +  +
+Šad1,1:	   .	+  +   +   +  +   +    +    ,  .  .
+Su1,2':	   .	.  .   .   .  ši  +    .    .  .  .
+X5,i_1:	   .	.  .   .   .  .   .    .    .  .  .
+</pre>
+
+<p>The default matrix-level is graphemic.  To specify that your matrix
+is word-level in a parsed score, add the token <code>word</code> at
+the end of the <code>@score</code> line (note that you don't need to
+do this with an unparsed matrix):</p>
+
+<pre class="example">
+@score matrix parsed word
+</pre>
+
+<h2>Synopsis</h2>
+
+<p>In a synopsis, the composite line and exemplar lines are both
+written out in full.  The composite line may be empty, but this is not
+a recommended practice (it is allowed, as there is so much legacy data
+using this approach, but for new data the editor should, whenever
+possible, specify the composite text and ensure that it is properly
+used as the basis for translation).</p>
+
+<h2>Parsed</h2>
+
+<p>In a parsed score, the composite and exemplar lines are validated
+and parsed according to the respective rules of the score types.</p>
+
+<h2>Unparsed</h2>
+
+<p>In an unparsed score, the composite line must be parsable, but the
+exemplars are treated as a blob of text which is opaque to Oracc's
+parsers.  This is strictly a transitional feature, which allows legacy
+data to be presented to users until such time as the necessary changes
+can be made to bring the score in line with Oracc parsing
+conventions.</p>
+
+<h1>Conventions</h1>
+
+<h2>Labels</h2>
+
+<p>The composite and exemplar line-labeling conventions are shared by
+all types and modes of score.</p>
+
+<h3>Composite</h3>
+
+<p>The composite line label has the same format as any other
+transliteration line in ATF: it is a string terminated by a period and
+one or more space or tab characters.</p>
+
+<h3>Exemplar</h3>
+
+<p>An exemplar line label is basically string terminated by a colon and one or
+more space or tab characters.  This string, however, has its own
+internal structure, consisting of a siglum, or code for a witness, and
+an optional line label.</p>
+
+<h4>Siglum</h4>
+
+<p>The siglum is typically a letter, often with numeric subscripts.
+To assist in alignment, numeric subscripts should be given with ASCII
+digits 0..9, which are automatically converted to Unicode subscript
+numbers by the processor.</p>
+
+<p>In all types and modes of scores, the sigla must be defined in the
+ATF source for the score even when they are also defined in an
+external catalogue.  This is done using the <code>#link</code>
+protocol:</p>
+
+<pre class="example">
+#link: def A = P123456 = N 1
+</pre>
+
+<p>Additional identifiers may be given, but need not be.  If no
+P-number has been assigned to the source, an X-number may be used, in
+which case additional identifiers such as publication places are
+strongly encouraged:</p>
+
+<pre class="example">
+#link: def B = X000001 = N 1 = PBS 1, 29
+</pre>
+
+<h4>Label</h4>
+
+<p>A line-label may also be given, separated from the siglum by a
+comma.  The label should conform to Oracc standards, with spaces
+replaced by underscores:</p>
+
+<pre class="example">
+A,i_1: a
+</pre>
+
+<p>A label may reference part of a line by including letter
+subscripts separated from the label by a semi-colon:</p>
+
+<pre class="example">
+A,i_1;a: a
+</pre>
+
+<p>A label may reference a range, separating the parts with a hyphen
+surrounded by underscores (the Oracc label specification requires
+spaces around a range-hyphen as line-numbers themselves may contain
+hyphens):</p>
+
+<pre class="example">
+A,i_1_-_i_2b: a
+</pre>
+
+<h2>Synopses</h2>
+
+<p>Synopsis conventions for parsed line-content are simple: they are
+regular ATF.</p>
+
+<h2>Matrices</h2>
+
+<p>Matrices have quite different conventions for composite and
+exemplar lines.</p>
+
+<h3>Composite </h3>
+
+<p>Composite lines in matrices are basically in ATF, with these
+additions:</p>
+
+<dl>
+<dt>#</dt>
+<dd>A hash-sign can be used to create an empty column in the
+composite; this is used when an exemplar has additional material which
+is not included in the composite.</dd>
+
+<dt>0</dt>
+<dd>A number-zero can be used as a grapheme to create an additional
+column within a word.  This is useful when, for example, an exemplar
+has an  additional component in a Sumerian verbal prefix chain.</dd>
+</dl>
+
+<h3>Exemplar </h3>
+
+<h4>Grapheme Codes</h4>
+
+<dl>
+<dt>+ (plus sign)</dt>
+<dd>grapheme positively preserved</dd>
+<dt>- (minus sign)</dt>
+<dd>grapheme positively omitted</dd>
+<dt><code>.</code> (period)</dt>
+<dd>grapheme broken</dd>
+<dt><code>,</code> (comma)</dt>
+<dd>grapheme traces fit composite</dd>
+<dt><code>x</code> (lowercase letter ex)</dt>
+<dd>grapheme traces do not fit composite</dd>
+<dt><code>^</code> (caret)</dt>
+<dd>exemplar adds following sign relative to composite</dd>
+<dt><code>#</code> (hash)</dt>
+<dd>creates empty cell as in composite; if text is broken, use
+<code>#</code> or <code>.</code> depending on whether it is likely
+that the exemplar originally may have had a corresponding sign</dd>
+</dl>
+
+<h4>Code Flags</h4>
+
+<p>These are a subset of the standard ATF flags (<code>#</code> is not
+used as a flag in matrices):</p>
+
+<dl>
+<dt>!</dt>
+<dd>corrected reading</dd>
+<dt>?</dt>
+<dd>uncertain reading</dd>
+<dt>*</dt>
+<dd>collated</dd>
+</dl>
+
+<h4>Line Divisions</h4>
+
+<dl>
+<dt><code>;</code> (semi-colon)</dt>
+<dd>indented line split point</dd>
+<dt><code>/</code> (forward slash)</dt>
+<dd>line break (often with ruling; used with ranges)</dd>
+</dl>
+
+<h4>Replacements</h4>
+
+<dl>
+<dt><code>&amp; (ampersand)</code></dt>
+<dd>at start of alignment column means text replaces how
+ever many columns the corresponding word occupies in the
+main text; must come at the start of a word.</dd>
+
+<dt>&amp;[0-9] (ampersand followed by digits)</dt>
+<dd>at start of alignment column means text replaces how 
+ever many columns the corresponding number of words occupy 
+in the main text; must come at the start of a word.</dd>
+
+<dt>&amp;&amp; (double ampersand)</dt>
+<dd>at start of alignment column means following text replaces
+rest of line; no word alignment is done in this case.</dd>
+</dl>
+
+<h4>Dollar-lines</h4>
+
+<p>Lines beginning with a <code>$</code> are ATF $-line.  If the
+$-line comes immediately after the composite, it is included in the
+composite.  If the $-line contains an exemplar label, it pertains to
+that witness:</p>
+
+<pre class="example">
+Ki1: $ Omits.
+</pre>
+
+<h2>Computing Witness Transliterations</h2>
+
+<p>Oracc can compute transliterations from scores of both kinds by
+sorting on the labels, splitting and reassembling portions of lines as
+necessary.  For parsed synopses this procedure is relatively
+straightforward as the transliterations are already ATF.  For unparsed
+synopses the witness transliteration is assumed invalid by the Oracc
+processor and is presented as-is.</p>
+
+<p>For matrices, only the parsed form can be turned into witness
+transliterations: unparsed matrices cannot be meaningfully handled by
+the processor.</p>
+
+<h3>Matrix Witnesses</h3>
+
+<p>In a matrix, the grapheme codes are simply replaced as appropriate
+with graphemes from the composite line.  Where the exemplar contains
+transliteration, the texts  replaces the text in the composite line.
+This results in a number of preferred-practice recommendations to
+ensure that the witness generation is as accurate as possible:</p>
+
+<ul>
+<li>If the text involves different hyphenation the word or words
+should be given in their entirety, with the relevant &amp;-span
+notation (to enable correct derivation of exemplar transliterations
+from the matrix).  See DD 25 where both of the words must vary from
+the composite and so it might be tempting to use rest-of-line
+transliteration.  Instead, we do word alignment for each word so that
+variant searching can work</li>
+
+<li>Where reasonable, word alignment should be maintained, but where
+texts diverge extensively there may be no alternative to
+transliterating the exemplar in full (see DD line 13, exemplar Ki₁ for
+examples of both word alignment and rest-of-line
+transliteration).</li>
+
+<li><p>The note marker ^[DIGITS]^ should be used in the matrix to handle
+insertions that belong in the witness transliteration but which
+overload the matrix structure.  If the text immediately following the
+corresponding note label begins with a +, it is included with the
+matrix line's text when the source is rendered as a witness
+transliteration; this text must be terminated by a period followed by
+a space.</p>
+
+<pre class="example">
+55: ... szu-na ba-...  
+
+N₂₁_r_5': + +^1^ 
+
+#note: +{{NI?}} . Any note begins here ...  
+</pre>
+ 
+<p>Is rendered as:</p>
+
+<pre class="example"> 
+5. ... szu-na{{NI?}} ba-... 
+</pre>
+ 
+<p>After the initial +, text is inserted literally--to get a space or
+hyphen before the text it must be given after the +.  The same rules
+apply at the end of the inserted text, hence the space before the
+closing period in the example above.</p>
+</li>
+</ul>
+
+<d:resources/>
+
+</d:doc>

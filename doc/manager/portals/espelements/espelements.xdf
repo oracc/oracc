@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>ESP System Elements</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Ruth Horry and Eleanor Robson</dc:creator>
+  <dc:date>2011-04-30</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page gives an alphabetical listing of all the system-specific elements available in <a href="../esp/">ESP</a>, as documented in more detail on the <a href="../espcontent/">Creating content</a> and <a href="../espimages/">Embedding images</a> pages.</dc:description>
+</d:meta>
+
+<p>Note that elements are mostly listed here without any attributes.  When using most of these elements, you will need to include the attributes, which are described in detail on the relevant pages.</p>
+ 
+<h1>Alphabetical listing</h1>
+<dl>
+<dt><code><a href="espcontent/#esp:accesskeys-listing">&lt;esp:accesskeys-listing/&gt;</a></code></dt>
+<dd>Creates a table of the access keys that are defined for the site in structure.xml, and those that are created automatically (such as <code class="example">S</code> for <code class="example">Skip to main content</code>). Probably used only once, on the <code>accesskeys.xml</code> page.</dd>
+
+<dt><code><a href="../espimages/#esp:area">&lt;esp:area/&gt;</a></code></dt>
+<dd>Used one or more times within <code>&lt;esp:image-map&gt;</code> to define hotspots.</dd>
+
+<dt><code><a href="../espcontent/#esp:author">&lt;esp:author/&gt;</a></code></dt>
+<dd>Defines an author for a page. May be used any number of times, anywhere within the <code>&lt;body&gt;</code> element. If present at least once, author and citation details are included at the bottom of the content section.</dd>
+
+<dt><code><a href="../espcontent/#esp:bookmark">&lt;esp:bookmark&gt;</a></code></dt>
+<dd>Contains optional inline content. Defines a point on a page that may be jumped to directly from <code>&lt;esp:link&gt;</code> elements on the same or other pages.</dd>
+
+<dt><code><a href="../espimages/#esp:caption">&lt;esp:caption&gt;</a></code></dt>
+<dd>Inline content. When used inside a <code>&lt;esp:image&gt;</code> element, its content becomes a caption for the image.</dd>
+
+<dt><code><a href="../espcontent/#esp:content-last-modified">&lt;esp:content-last-modified/&gt;</a></code></dt>
+<dd>Inserts the date the content of this page was last modified, in the format <code class="example">11 Sep 2011</code>.</dd>
+
+<dt><code><a href="../espcontent/#esp:definition">&lt;esp:definition term="example"&gt;</a></code></dt>
+<dd>Inline content. Creates a definition in the glossary.</dd>
+
+<dt><code><a href="../espcontent/#esp:email">&lt;esp:email address="me@example.com"/&gt;</a></code></dt>
+<dd>Creates an obfuscated email address which is converted back into a real address and made into a mailto: link using JavaScript, where available.</dd>
+
+<dt><code><a href="../espimages/#esp:flash-movie">&lt;esp:flash-movie&gt;</a></code></dt>
+<dd>Arbitrary content. Creates a link which will launch a Flash movie in a new window using Javascript.</dd>
+
+<dt><code><a href="../espcontent/#esp:glossary">&lt;esp:glossary term="example"&gt;</a></code></dt>
+<dd>Inline content. Creates a link to a term/definition pair on the glossary page.</dd>
+
+<dt><code><a href="../espcontent/#esp:glossary-list">&lt;esp:glossary-list&gt;</a></code></dt>
+<dd>Contains <code>&lt;esp:definition&gt;</code> elements. Creates the glossary. Used only once, on the <code>glossary.xml</code> page.</dd>
+
+<dt><code><a href="../espcontent/#esp:h">&lt;esp:h&gt;</a></code></dt>
+<dd>Inline content. Creates a heading (including a bookmark that can be used by external websites to link to this point in the page).</dd>
+
+<dt><code><a href="../espimages/#esp:image">&lt;esp:image&gt;</a></code></dt>
+<dd>Contains other elements. Places an image on the page.</dd>
+
+<dt><code><a href="../espimages/#esp:image-map">&lt;esp:image-map&gt;</a></code></dt>
+<dd>Contains one or more <code>&lt;esp:area/&gt;</code> elements. Placed within a 
+<code>&lt;esp:image&gt;</code> element, it defines an image map for that image.</dd>
+
+<dt><code><a href="../espcontent/#esp:index">&lt;esp:index term="example" &gt;</a></code></dt>
+<dd>Inline content. Creates an entry on the <code>indexpage.xml</code> page and, if there is more than one entry for the index term, a cross reference to that term in the index.</dd>
+
+<dt><code><a href="../espcontent/#esp:index-list">&lt;esp:index-list/&gt;</a></code></dt>
+<dd>Creates the index. Used only once, on the <code>indexpage.xml</code> page. Always empty. </dd>
+
+<dt><code><a href="../espcontent/#esp:link">&lt;esp:link&gt;</a></code></dt>
+<dd>Inline content (optional). Creates a link to another page within the site or to an external site. See the section on <a href="../espcontent/#Links">Links</a>.</dd>
+
+<dt><code><a href="../espcontent/#esp:page-name">&lt;esp:page-name page="example"/&gt;</a></code></dt>
+<dd>Inserts the name of the page with the given id.</dd>
+
+<dt><code><a href="../espcontent/#esp:page-title">&lt;esp:page-title page="example"/&gt;</a></code></dt>
+<dd>Inserts the title of the page with the given id.</dd>
+
+<dt><code><a href="../espcontent/#esp:reading">&lt;esp:reading referent="example" page="123"/&gt;</a></code></dt>
+<dd>Creates an entry in the further reading list at the bottom of the page.</dd>
+
+<dt><code><a href="../espcontent/#esp:ref">&lt;esp:ref referent="example" page="123"/&gt;</a></code></dt>
+<dd>Creates a bracketed reference number, linked to an entry in the references list at the bottom of the page.</dd>
+
+<dt><code><a href="../espcontent/#esp:sh">&lt;esp:sh&gt;</a></code></dt>
+<dd>Inline content. Creates a sub-heading (including a bookmark that can be used by external websites to link to this point in the page). </dd>
+
+<dt><code><a href="../espcontent/#esp:site-map">&lt;esp:site-map/&gt;</a></code></dt>
+<dd>Creates a site map. Used once, on the <code>sitemap.xml</code> page.</dd>
+
+<dt><code><a href="../espcontent/#esp:techterms">&lt;esp:techterms term="example"&gt;</a></code></dt>
+<dd>Inline content. Creates a link to a term/definition pair on the technical terms page.</dd>
+
+<dt><code><a href="../espcontent/#esp:techterms-list">&lt;esp:techterms-list&gt;</a></code></dt>
+<dd>Contains <code>&lt;esp:termsdefinition&gt;</code> elements. Creates the technical terms list. Used only once, on the glossary page. Contains only <code>&lt;esp:termsdefinition&gt;</code> elements.</dd>
+
+<dt><code><a href="../espcontent/#esp:termsdefinition">&lt;esp:termsdefinition term="example"&gt;</a></code></dt>
+<dd>Inline content. Creates a definition in the technical terms list.</dd>
+</dl>
+<p>See also:</p>
+<ul>
+<li><a href="../esp/">Overview of ESP</a></li>
+<li><a href="../espsetup/">How to set up your ESP site</a></li>
+<li><a href="../espcontent/">How to mark up textual content</a></li>
+<li><a href="../espimages/">How to embed images and other non-textual content</a></li>
+<li><a href="../espbuild/">How to check and rebuild your ESP website</a></li>
+<!-- <li><a href="../espelements/">Alphabetical list of ESP system elements</a></li> -->
+<li><a href="~/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+
+<d:resources/>
+
+</d:doc>

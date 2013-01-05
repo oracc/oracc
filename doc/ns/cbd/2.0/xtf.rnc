@@ -1,0 +1,372 @@
+default namespace = "http://oracc.org/ns/xtf/1.0"
+include "../../gdl/1.0/gdl.rnc"
+include "../../xtr/1.0/xtr.rnc"
+start = xtf | doctype
+xtf = element xtf { proto.outer? , doctype }
+doctype = score | translation | transliteration | composite | atf
+atf = element atf { attribute xml:id   { xsd:ID } , text }
+
+proto.outer = element protocols {
+  attribute scope { text },
+  proto.basket
+}
+
+proto.start = element protocols {
+  attribute scope { text },
+  (  proto.atf | proto.bib | proto.etcsl | proto.key | proto.lemmatizer 
+     | proto.link | proto.project | proto.syntax | proto.version )*
+}
+
+proto.after = proto.note
+
+proto.inter = proto.bib | proto.etcsl | proto.lem | proto.link 
+            | proto.note | proto.psu | proto.var
+
+proto.atf    = element protocol { attribute type { "atf" }    , text }
+proto.basket = element protocol { attribute type { "basket" } , text }
+proto.bib    = element protocol { attribute type { "bib" }    , text }
+proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
+proto.key    = element protocol { attribute type { "key" }    , text }
+proto.lem    = element protocol { attribute type { "lem" }    , text }
+proto.psu    = element protocol { attribute type { "psu" }    , text }
+proto.lemmatizer
+             = element protocol { attribute type { "lemmatizer" }, text }
+proto.link   = element protocol { attribute type { "link" }   , text }
+proto.note   = element protocol { attribute type { "note" }   , text }
+proto.project= element protocol { attribute type { "project" }, text }
+proto.syntax = element protocol { attribute type { "syntax" } , text }
+proto.var    = element protocol { attribute type { "var" }    , text }
+proto.version= element protocol { attribute type { "version" }, text }
+
+comments = cmt | note
+cmt = element cmt { text }
+note = element note {
+         attribute xml:id    { xsd:ID } ,
+         attribute notemark  { text }? , 
+         attribute notelabel { text }? , 
+	 htext }
+
+transliteration =
+  element transliteration {
+    attribute xml:id   { xsd:ID },
+    attribute n        { text },
+    attribute hand     { text }?,
+    attribute xml:lang { xsd:NMTOKEN },
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    (proto.start? , (object | nonobject | comments | sealing)*)
+  }
+n.attr = attribute n { text }
+n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
+haslinks = attribute haslinks { xsd:boolean }
+maxcells = attribute cols { xsd:nonNegativeInteger }
+project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } }
+
+composite =
+  element composite {
+    composite-attlist,
+    sigdef*,
+    attribute hand     { text }?,
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    proto.start?,
+    composite-content,
+    (referto, comments?)*
+  }
+
+composite-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+
+object = 
+  element object {
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    ( attribute type { known.object }
+     |(attribute type { user.object } , n.attr) 
+    ) ,
+    status.flags,
+    (m.fragment | surface | sealing | comments | nonx)*
+  }
+known.object =    xsd:string { pattern="tablet|envelope|prism|bulla" }
+user.object =     xsd:string { pattern="object" }
+nonobject = nonx
+
+surface =
+  element surface { 
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (proto.inter | column | nonx | m | comments)* ,
+    (  attribute type { known.surface }
+     |(attribute type { face.surface } , n.attr.lc)
+     |(attribute type { edge.surface } , n.attr.lc?)
+     |(attribute type { user.surface | docket.surface | seal.surface } , n.attr)
+     ),
+    primes?,
+    status.flags
+  }
+
+known.surface =
+  xsd:string {
+    pattern="surface|obverse|reverse|left|right|top|bottom"
+  }
+face.surface = xsd:string { pattern="face" }
+edge.surface = xsd:string { pattern="edge" }
+user.surface = xsd:string { pattern="surface" }
+docket.surface = xsd:string { pattern="docket" }
+seal.surface = xsd:string { pattern="seal" }
+
+sealing =
+  element sealing {
+    attribute xml:id { xsd:ID },
+    attribute label    { text },
+    attribute n { xsd:NMTOKEN },
+    attribute scid { xsd:NMTOKEN }?,
+    (column | nonx | milestone | comments)*
+  }
+
+column = 
+  element column { 
+    (implicit
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (milestone | hdr | lg | l | nonl | nonx | comments | proto.inter)*,
+    attribute n { text },
+    attribute o { text }?,
+    primes?,
+    status.flags
+  }
+
+primes = 
+  attribute primes { xsd:string { pattern="\x{2032}+" } }
+
+hdr = element h {
+  attribute level { xsd:nonNegativeInteger },
+  attribute xml:id   { xsd:ID },
+  htext
+}
+
+milestone = m | m.discourse
+
+m = element m { 
+  attribute type { "division" | "locator" },
+  attribute subtype { text }?,
+  attribute n { text }?,
+  text
+}
+
+m.discourse = element m {
+  attribute type { "discourse" },
+  attribute subtype { "body" | "catchline" | "colophon" | "date" | "linecount" 
+                      | "witnesses" | "signature" | "summary" 
+		      | "sealings" | "sealing" },
+  attribute endflag { "1" }?,
+  text
+}
+
+m.fragment = element m { 
+  attribute type { "locator" },
+  attribute subtype { "fragment" }?,
+  text
+}
+
+implicit = attribute implicit { "1" }
+
+nonx = element nonx { nonx-attlist, text }
+nonl = element nonl { nonl-attlist, text }
+nong = element nong { nong-attlist, text }
+
+nonx-attlist =
+  attribute xml:id { xsd:ID },
+  (attribute label { text },
+   attribute silent { "1" })?,
+  (
+   (attribute strict { "1" },
+    ((attribute ref     { text },
+      attribute scope   { text })
+     |(attribute extent { text },
+       attribute scope  { text },
+       attribute state  { text },
+       attribute flags  { xsd:string {
+                              pattern="[!?*]+"
+			  }}?)))
+  |
+   (attribute strict { "0" },
+    attribute extent { text }?,
+    attribute ref    { text }?,
+    attribute scope  { text }?,
+    attribute state  { text }?)
+  |
+   (attribute strict { "0" },
+    attribute ref    { "none" },
+    attribute type   { "empty" })
+  |
+   (attribute type   { "image" },
+    attribute strict { "0" },
+    attribute ref    { xsd:string {
+                          pattern="[PQX][0-9]+@[0-9]+[a-z]*" 
+		       }},
+    attribute alt    { text })
+  )
+
+non-x-attr-set =
+  attribute type {
+    "newline" | "broken" | "maybe-broken" | "traces"
+    | "maybe-traces" | "blank" | "ruling" | "image"
+    | "seal" | "docket" | "comment" | "bullet" | "other"
+  },
+  attribute unit { "self" | "quantity" | "ref" }?,
+  attribute extent { text }?,
+  attribute ref { text }?,
+  attribute xml:id { xsd:ID }?
+noncolumn-attlist &= non-x-attr-set
+nonl-attlist &= non-x-attr-set
+nong-attlist &= non-x-attr-set
+
+l =
+  element l {
+    attribute xml:id { xsd:ID },
+    attribute n { text },
+    attribute o { text }?,
+    attribute label { text }?,
+    attribute spanall { "1" }?,
+    (cell+ | f+ | (ag | l.inner)*) 
+  }
+
+l.inner = (surro | normword | words | glo)*
+
+cell = element c { span? , (f+ | l.inner) }
+span = attribute span { xsd:nonNegativeInteger }
+
+f = element f { f-attlist, (ag | l.inner)* }
+f-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute xml:lang { xsd:NMTOKEN }?
+
+lg = element lg { 
+  attribute xml:id { xsd:ID }?,
+  maxcells?,
+  attribute n { text }?,
+  (   (l,gus?,nts)
+    | (l,gus?,nts?,(proto.link?,bil+)+)
+    | (l,gus?,lgs) 
+    | (l,gus?,nts,lgs) 
+    | (l,gus?, (e | comments)*)),
+  proto.inter*,
+  var*
+}
+bil = element l { attribute type { "bil" } , l.inner* }
+nts = element l { attribute type { "nts" } , (ag | l.inner)* }
+lgs = element l { attribute type { "lgs" } , grapheme* }
+gus = element l { attribute type { "gus" } , l.inner* }
+var = element v { 
+  attribute varnum { text | "*" } ,
+  attribute label  { text } ,
+  attribute ex_label { text }? ,
+  (l.inner | cell+)
+}
+
+# alignment groups
+ag = element ag { 
+  attribute ref { xsd:string { pattern="[a-z]+" } },
+  attribute form { text }?,
+  l.inner*
+}
+
+surro = element surro { l.inner }
+words |= surro?
+word |= surro?
+
+composite-content = 
+  (milestone | \include | \div | variants | hdr | lg | l | comments | nonl | nonx | proto.inter)*
+
+\include = element include { increfAttr }
+
+referto = element referto { increfAttr }
+
+increfAttr = 
+  (attribute ref { text } , 
+   attribute n { text } ,
+   (attribute from { text },
+    attribute to { text }?)?)
+
+\div =
+  element div {
+    div-attlist, 
+    composite-content
+  }
+div-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute lang { text }?,
+  attribute place { text }?,
+  attribute subtype { text }?
+
+variants = element variants { variant* }
+
+variant = 
+  element variant {
+    (\div | variants | lg | l | comments | nonl | proto.inter | nonx)*
+  }
+
+score =
+  element score {
+    score-attlist, 
+    proto.start? , sigdef*, 
+    (object | surface | column | milestone | \div | lg | comments | nonl)*
+  }
+score-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  score_mode,
+  score_type,
+  score_word?,
+  attribute xml:lang { xsd:NMTOKEN }?,
+  attribute hand     { text }?,
+  project?,
+  implicit?,
+  haslinks?,
+  maxcells?
+
+score_mode = attribute score-mode { "parsed" | "unparsed" }
+score_type = attribute score-type { "matrix" | "synopsis" }
+score_word = attribute score-word { "yes" }
+
+synopticon =
+  element synopticon { synopticon-attlist, sigdef*, (eg | comments | nonl)* }
+synopticon-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+sigdef = element sigdef { sigdef-attlist, empty }
+sigdef-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute targ-id { xsd:NMTOKEN },
+  attribute targ-n { text }
+eg = element eg { eg-attlist, e* }
+eg-attlist &= attribute xml:id { xsd:ID }?
+e =
+  element e {
+    e-attlist,
+    (l.inner
+     | cell+
+     | f+)
+  }
+e-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute sigref { xsd:IDREF }?,
+  attribute n { text }?,
+  attribute l { text }?,
+  attribute p { text }?,
+  attribute hlid { text }?,
+  attribute plid { text }?

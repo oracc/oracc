@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XST</dc:title>
+  <dcterms:alternative>XML Syntax Trees</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xst/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-09-26</dc:date>
+  <dc:publisher>CDL</dc:publisher>
+  <dc:description>XML Syntax Trees provide a generic vocabulary for
+  expressing syntactic data which is based closely on XCES.  This
+  document describes the CDL system-level support for XST, including
+  the facilities in the ATF notation for expressing syntactic
+  annotation.  Such annotations may range from isolated hints to a
+  parser which generates the bulk of syntax trees automatically to
+  complete syntax trees interwoven with lemmatization in the
+  linguistic annotation layer of ATF.  The annotations themselves are
+  language-specific and are described in separate
+  documents.</dc:description>
+</d:meta>
+
+<h1>XST</h1>
+
+<d:schema name="synattr" uri="http://oracc.org/ns/syntax/1.0">
+<h3>XTF Attributes</h3>
+<p>When syntax data is procesed by the ATF processor it is stored in a
+set of attributes placed on word nodes in the XTF file; the actual
+definitions of these attributes is located in the GDL schema, along
+with the various word elements; the information is repeated here for
+convenience.</p>
+<dl>
+<dt>brack-before, brack-after</dt>
+<dd>These attributes store bracket sequences and their annotation; the
+bracket sequences may occur before or after the word (represented as a
+lemma).</dd>
+<dt>ub-before, ub-after</dt>
+<dd>These attributes store unit break information given before or
+after the lemma.  If the attribute value is <code>+</code> a unit
+break is inserted before or after the word.  A value of <code>-</code>
+is only relevant if some of the unit breaks are being chosen
+automatically; the effect is to suppress an automatically chosen unit
+break.</dd>
+</dl>
+<d:rnc>
+namespace syn = "http://oracc.org/ns/syntax/1.0"
+syntax.attributes = 
+  (attribute syn:brack-before { text } |
+   attribute syn:brack-after  { text } |
+   attribute syn:ub-before  { "+" | "-" } |
+   attribute syn:ub-after   { "+" | "-" } )
+</d:rnc></d:schema>
+
+<d:resources/>
+
+</d:doc>

@@ -1,0 +1,9 @@
+projects/projects.xdf
+projemacs/projemacs.xdf
+projunix/projunix.xdf
+the-oracc-command/the-oracc-command.xdf
+projcats/projcats.xdf
+portals/portals.xdf
+filesystem/filesystem.xdf
+projconfig/projconfig.xdf
+projlife/projlife.xdf

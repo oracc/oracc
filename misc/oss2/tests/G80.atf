@@ -1,0 +1,27 @@
+&Q000926 = Gudea 80 [E3/1.1.7.80]
+@composite
+#project: pccss
+#project: epsd2/epsdc/royal
+
+1'.	[gu3]-de2-a
+#lem: Gudea[1]RN
+
+2'.	ensi2
+#lem: ensik[ruler]
+
+3'.	lagasz{ki}
+#lem: Lagaš[1]SN
+
+4'.	lu2 e2-ninnu
+#lem: lu[person]; Eninnu[1]TN
+
+5'.	{d}nin-jir2-su-ka
+#lem: Ninŋirsuk[1]DN
+
+6'.	in-du3-a
+#lem: du[build]\eE
+
+7'.	|LA.E.GI.LUL| gesztin-ka#-ni#
+#lem: N; jesztin[vine]
+
+$ rest broken

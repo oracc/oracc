@@ -1,0 +1,144 @@
+# Source of configuration for the pure Java interface of Hyper Estraier
+
+
+
+#================================================================
+# Generic Settings
+#================================================================
+
+
+# Targets
+AC_INIT(hyperestraier-javapure, 1.0.0)
+
+# Export variables
+LIBVER=1
+LIBREV=0
+MYJAVAHOME="/usr/java"
+JVMPLATFORM="linux"
+JAVAC="javac"
+JAR="jar"
+JAVAH="javah"
+JAVADOC="javadoc"
+JAVARUN="java"
+
+# Building paths
+pathtmp="$PATH"
+PATH="..:$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+PATH="$PATH:/usr/ccs/bin:/usr/ucb:/usr/xpg4/bin:/usr/xpg6/bin:$pathtmp"
+LIBRARY_PATH="..:$HOME/lib:/usr/local/lib:$LIBRARY_PATH"
+LD_LIBRARY_PATH="..:$HOME/lib:/usr/local/lib:$LD_LIBRARY_PATH"
+CPATH="..:$HOME/include:/usr/local/include:$CPATH"
+PKG_CONFIG_PATH="..:$HOME/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
+if type pkg-config > /dev/null 2>&1
+then
+  PATH="$PATH:`pkg-config --variable=bindir qdbm`"
+  PATH="$PATH:`pkg-config --variable=bindir hyperestraier`"
+  LIBRARY_PATH="$LIBRARY_PATH:`pkg-config --variable=libdir qdbm`"
+  LIBRARY_PATH="$LIBRARY_PATH:`pkg-config --variable=libdir hyperestraier`"
+  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pkg-config --variable=libdir qdbm`"
+  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pkg-config --variable=libdir hyperestraier`"
+  CPATH="$CPATH:`pkg-config --variable=includedir qdbm`"
+  CPATH="$CPATH:`pkg-config --variable=includedir hyperestraier`"
+  export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
+fi
+
+
+
+#================================================================
+# Checking Commands and Libraries
+#================================================================
+
+
+# Home directory of Java
+printf 'checking MYJAVAHOME... '
+if test -d "$JAVA_HOME"
+then
+  MYJAVAHOME="$JAVA_HOME"
+fi
+printf '%s\n' "$MYJAVAHOME"
+
+# Platform of Java
+printf 'checking JVMPLATFORM... '
+if uname | grep Darwin > /dev/null
+then
+  JVMPLATFORM="mac"
+else
+  for file in `\ls $MYJAVAHOME/include`
+  do
+    if test -d "$MYJAVAHOME/include/$file"
+    then
+      JVMPLATFORM="$file"
+    fi
+  done
+fi
+printf '%s\n' "$JVMPLATFORM"
+
+# Java compiler
+printf 'checking JAVAC... '
+JAVAC="$MYJAVAHOME/bin/javac"
+if uname | grep Darwin > /dev/null
+then
+  if test -x "$MYJAVAHOME/Commands/javac"
+  then
+    JAVAC="$MYJAVAHOME/Commands/javac"
+  else
+    JAVAC="$MYJAVAHOME/bin/javac"
+  fi
+fi
+if test -x "$JAVAC"
+then
+  printf '%s\n' "$JAVAC"
+else
+  printf 'no\n'
+  printf '#================================================================\n' 1>&2
+  printf '# WARNING: %s is not found.\n' "$JAVAC" 1>&2
+  printf '#================================================================\n' 1>&2
+fi
+
+# Other building tools
+if uname | grep Darwin > /dev/null
+then
+  if test -x "$MYJAVAHOME/Commands/java"
+  then
+    JAR="$MYJAVAHOME/Commands/jar"
+    JAVAH="$MYJAVAHOME/Commands/javah"
+    JAVADOC="$MYJAVAHOME/Commands/javadoc"
+    JAVARUN="$MYJAVAHOME/Commands/java"
+  else
+    JAR="$MYJAVAHOME/bin/jar"
+    JAVAH="$MYJAVAHOME/bin/javah"
+    JAVADOC="$MYJAVAHOME/bin/javadoc"
+    JAVARUN="$MYJAVAHOME/bin/java"
+  fi
+else
+  JAR="$MYJAVAHOME/bin/jar"
+  JAVAH="$MYJAVAHOME/bin/javah"
+  JAVADOC="$MYJAVAHOME/bin/javadoc"
+  JAVARUN="$MYJAVAHOME/bin/java"
+fi
+
+
+
+#================================================================
+# Generic Settings
+#================================================================
+
+
+# Export variables
+AC_SUBST(LIBVER)
+AC_SUBST(LIBREV)
+AC_SUBST(MYJAVAHOME)
+AC_SUBST(JVMPLATFORM)
+AC_SUBST(JAVAC)
+AC_SUBST(JAR)
+AC_SUBST(JAVAH)
+AC_SUBST(JAVADOC)
+AC_SUBST(JAVARUN)
+
+# Targets
+AC_OUTPUT(Makefile)
+
+
+
+# END OF FILE

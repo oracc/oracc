@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  -*- rnc -*-
+  XForms 1.1 module for XHTML 1.0
+-->
+<grammar ns="http://www.w3.org/2002/xforms" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="head.content" combine="interleave">
+    <interleave>
+      <zeroOrMore>
+        <ref name="xforms.model"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="xforms.Actions"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="Inline.class" combine="choice">
+    <choice>
+      <zeroOrMore>
+        <ref name="xforms.model"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="xforms.Actions"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="xforms.Core.Form.Controls"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="xforms.Container.Form.Controls"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="xforms.UI.Inline.class"/>
+      </zeroOrMore>
+    </choice>
+  </define>
+  <define name="foreign-attributes">
+    <zeroOrMore>
+      <attribute>
+        <anyName>
+          <except>
+            <nsName/>
+            <nsName ns=""/>
+          </except>
+        </anyName>
+      </attribute>
+    </zeroOrMore>
+  </define>
+  <define name="xforms.Common.attrib" combine="interleave">
+    <optional>
+      <attribute name="id">
+        <ref name="ID.datatype"/>
+      </attribute>
+    </optional>
+    <ref name="foreign-attributes"/>
+  </define>
+  <define name="xforms.UI.Common.attrib" combine="interleave">
+    <optional>
+      <attribute name="tabindex">
+        <ref name="Number.datatype"/>
+      </attribute>
+    </optional>
+    <ref name="class.attrib"/>
+    <optional>
+      <attribute name="accesskey">
+        <ref name="NMTOKENS.datatype"/>
+      </attribute>
+    </optional>
+  </define>
+  <define name="xforms.Linking.attrib" combine="interleave">
+    <optional>
+      <attribute name="src">
+        <data type="anyURI"/>
+      </attribute>
+    </optional>
+  </define>
+  <define name="xforms.UI.Messages.attrib" combine="interleave">
+    <ref name="class.attrib"/>
+  </define>
+  <define name="xforms.UI.Inline.content" combine="choice">
+    <ref name="Flow.model"/>
+  </define>
+  <include href="xforms-11.rng">
+    <!-- Siince xforms.UI.Inline.content eventually contains text, we override the default definition of "text" for the message and label elements. -->
+    <define name="xforms.message.Text.content">
+      <empty/>
+    </define>
+    <define name="xforms.label.Text.content">
+      <empty/>
+    </define>
+  </include>
+</grammar>

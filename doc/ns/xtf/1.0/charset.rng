@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="lV">
+    <data type="string">
+      <param name="pattern">[aeiu]([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="lVCv">
+    <data type="string">
+      <param name="pattern">([aeiu][ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz])+[aeiu]?([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="lCVc">
+    <data type="string">
+      <param name="pattern">([ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz][aeiu])+[ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]?([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="lVCCvc">
+    <data type="string">
+      <param name="pattern">([aeiu][ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]{1,2})+([aeiu][ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]?)([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="lCVCCvc">
+    <data type="string">
+      <param name="pattern">(suen|kuara|[ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]([aeiu][ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]{1,2})+([aeiu][ʾbdeghḫiŋklmnpqrsšṣśtṭuwyz]?))([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="uV">
+    <data type="string">
+      <param name="pattern">[AEIU]([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="uVCv">
+    <data type="string">
+      <param name="pattern">([AEIU][ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ])+[AEIU]?([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="uCVc">
+    <data type="string">
+      <param name="pattern">([ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ][AEIU])+[ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]?([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="uVCCvc">
+    <data type="string">
+      <param name="pattern">([AEIU][ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]{1,2})+([AEIU][ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]?)([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+  <define name="uCVCCvc">
+    <data type="string">
+      <param name="pattern">[ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]([AEIU][ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]{1,2})+([AEIU][ʾBDEGHḪIŊKLMNPQRSŠṢŚTṬUWYZ]?)([₁₂₃₄₅₆₇₈₉][₀₁₂₃₄₅₆₇₈₉]?|₊)?</param>
+    </data>
+  </define>
+</grammar>

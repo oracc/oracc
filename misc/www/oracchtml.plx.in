@@ -1,0 +1,120 @@
+#!/usr/bin/perl
+use warnings; use strict;
+delete $ENV{'PATH'};
+use CGI qw/:cgi/;
+
+my %scripts = (
+    'raw'=>'',
+    'oracci'=>'textdisplay.xsl',
+    'ctxt'=>'oraccdisplay.xsl',
+    'epsdcorpus'=>'psdview.xsl',
+    'xo'=>'oraccdisplay.xsl',
+    );
+
+my $cgi = new CGI;
+my %param = $cgi->Vars();
+
+my $dummy_xtl = '@@ORACC@@/lib/scripts/lib/dummy.xtl';
+
+my $item = $param{'item'} || die "no 'item'\n";
+my $what = $param{'what'} || '';
+my $project = $param{'project'} || '';
+
+$what = 'block' if $param{'block'};
+$what = 'sources' if $param{'sources'};
+
+my $trans = '';
+if ($what eq 'trans') {
+    $trans = $item;
+    $item =~ s/\@.*$//;
+    my $path = $item;
+}
+my $path = $item;
+$path =~ s/^(....).*$/$1/;
+my $projdir = $project ? "/$project" : "";
+
+my $textdir = "@@ORACC@@/texts/$path/$item$projdir";
+$projdir = '' unless -d $textdir;
+
+if ($what eq 'sources') {
+    print "Content-Type: text/html; charset=utf-8\n\n";
+    $path = "@@ORACC@@/texts/$path/$item$projdir/$item.xtl";
+    $path = $dummy_xtl unless -e $path;
+    exec 
+	'xsltproc',
+	'@@ORACC@@/lib/scripts/xtl-HTML.xsl',
+	$path;
+} elsif ($what eq 'block') {
+    print "Content-Type: text/html; charset=utf-8\n\n";
+    $path = "@@ORACC@@/texts/$path/$item$projdir/$item.sxh";
+    exec 
+	'xsltproc',
+	'--stringparam', 'block', $param{'block'},
+	'--stringparam', 'project', $param{'project'},
+	'@@ORACC@@/lib/scripts/scoreblock.xsl',
+	$path;
+} elsif ($what eq 'trans') {
+    print "Content-Type: text/html; charset=utf-8\n\n";
+    $path =~ s/^(....).*$/$1/;
+    $path = "@@ORACC@@/texts/$path/$item$projdir/$trans";
+    exec 
+	'xsltproc',
+	'@@ORACC@@/lib/scripts/xtr-HTML.xsl',
+	$path;
+} elsif ($project eq 'ppcs') {
+    print "Content-Type: text/html; charset=utf-8\n\n";
+    $path = "@@ORACC@@/texts/$path/$item$projdir/$item.xst";
+    exec 
+	'xsltproc',
+	'@@ORACC@@/lib/scripts/xst2ppcs.xsl',
+	$path;
+} else {
+    if ($item !~ /^[PQX]\d\d\d\d\d\d$/) {
+	print "Content-Type: text\n\n";
+	exec 'echo', "bad item $item" 
+    }
+
+    $path = "@@ORACC@@/texts/$path/$item$projdir/$item.xmd";
+    
+    if ($param{'mode'} eq 'raw') {
+	$path =~ s/xmd$/txh/;
+	print "Content-Type: text/xml; charset=utf-8\n\n";
+	if (-r $path) {
+	    exec 'cat', $path;
+	} else {
+	    print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+	    exec 'echo', "<error>no XHTML file $path</error>";
+	}
+    }
+
+    my $xsl = $param{'mode'} || die "no 'mode'\n";
+    die "bad script $xsl\n" unless $scripts{$xsl};
+    my $script;
+    if ($item =~ /^Q/) {
+	$script = "@@ORACC@@/lib/scripts/corpusview.xsl";
+    } elsif ($scripts{$project}) {
+	$script = "@@ORACC@@/lib/scripts/$scripts{$project}";
+    } else {
+	$script = "@@ORACC@@/lib/scripts/$scripts{$xsl}";
+    }
+
+    my $seq = '';
+    my $base = $param{'base'} || '';
+    my $sid = $param{'sid'} || '';
+    if ($param{'base'} && $param{'sid'}) {
+	$seq = "@@ORACC@@/lib/scripts/$param{'base'}/xo/$param{'sid'}-seq.xml";
+    }
+
+    my $line = $param{'line'} || '';
+    my $frag = $param{'frag'} || '';
+
+    print "Content-Type: text/html; charset=utf-8\n\n";
+    exec '/usr/bin/xsltproc', 
+    '--stringparam', 'project', $project,
+    '--stringparam', 'line-id', $line,
+    '--stringparam', 'frag-id', $frag,
+    '--stringparam', 'base',    $base,
+    '--stringparam', 'sid',     $sid,
+    '--stringparam', 'seqfile', $seq,
+    $script, $path;
+}

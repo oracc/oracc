@@ -1,0 +1,100 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: replain.tex,v 0.4 1996/05/27 16:19:21 s Exp $
+
+% Redo or extend some of the things that plain has done. Cleaner than
+% merging it with daplain.tex
+
+% Shifting catcodes
+\chardef\lettercat=11
+\chardef\othercat=12
+\def\makeother#1{\catcode`#1\othercat\relax}
+\def\makeletter#1{\catcode`#1\lettercat\relax}
+\def\makeactive#1{\catcode`#1\active\relax}
+\def\makeactiveB#1{\catcode#1\active\relax}
+
+% We make @ signs act like letters (again) to avoid conflict 
+% between user names and internal control sequences of the DA format.
+\makeletter{@}
+
+\catcode`\^^K=14 % Sprint ruler lines are like %-signs
+\catcode`\^^L=\active \outer\def^^L{\par} % ascii form-feed is "\outer\par"
+\catcode`\^^Z=9 % DOS EOF marker is ignored
+\catcode`\^^_=10 % Sprint SoftNL is just a space
+\catcode`\^^\=\active \let\^^\~ % hard space in Sprint is a non-breaking space
+
+\def^^L{\par} % remove the outer used by Plain
+
+% change some parameter values
+\hbadness=5000 % most of the work done by this format will be drafting
+\vbadness=5000
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=2000
+\newlinechar=`\^^J
+\errorcontextlines=0
+\hfuzz=2pt
+\vfuzz=2pt
+
+% A minor tweak to Plain's narrower, to make it consistent with
+% everything else.
+\def\narrower{\advance\leftskip\indention\advance\rightskip\indention}
+\def\wider{\advance\leftskip-\indention\advance\rightskip-\indention}
+
+% The DA manuscript format has a few important differences from the 
+% macro writing format:
+% The quote marks are special since they force a roman font to be used
+\newif\ifinquotes 
+\def\inquoteshook{}
+{\makeactive{"}\gdef"{\ifinquotes\egroup\else\bgroup\rm\inquotestrue\inquoteshook\fi}}
+% the underline character is used as another form of visible space
+{\makeactive{_}\gdef_{~}}
+\def\DAcatcodes{\makeactive{_}\makeactive{"}\catcode"40=0\relax}%\makeactive{.}
+% This is the list of special DA characters
+%{\DAcatcodes\gdef\DAdospecials{\do_\do.\do"}}
+\def\DAdospecials{\do\_\do.\do"\do|}
+
+% more prepackaged trace options, a la \tracingall, and a new \tracingall
+% that traces paths and font loads
+\def\traceoutput{\tracingoutput=1 \showboxbreadth10000 \showboxdepth10000 }
+\def\tracemacros{\tracingmacros=1 }
+\def\tracingalot{\tracingonline0 \tracingcommands\tw@\tracingstats0
+  \tracingpages\@ne\tracingoutput\@ne\tracinglostchars\@ne
+  \tracingmacros\tw@\tracingrestores\@ne\tracingparagraphs0
+  \showboxbreadth\maxdimen\showboxdepth\maxdimen\batchmode}
+\def\tracingall{\tracingonline\@ne\tracingcommands\tw@\tracingstats\tw@
+  \tracingpages\@ne\tracingoutput\@ne\tracinglostchars\@ne
+  \tracingmacros\tw@\tracingparagraphs\@ne\tracingrestores\@ne
+  \showboxbreadth\maxdimen\showboxdepth\maxdimen\errorstopmode
+  \tracingfonts\tw@ \tracingpaths\tw@}
+
+% plain has \goodbreak
+\def\badbreak{\par\penalty500 }
+
+% abbreviations for some of plain's spacing commands
+\let\>\thinspace \let\<\negthinspace \let\,\enskip \let\;\quad \let\:\qquad
+\let\mathcomma\, \def\,{$\mathcomma$}
+
+% write to log and screen, cf. plain's \wlog
+\def\wstdout{\immediate\write16}
+\endinput
+
+\def\everymathextra{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: replain.tex,v $
+Revision 0.4  1996/05/27 16:19:21  s
+*** empty log message ***
+
+% Revision 0.3  1996/01/18  12:09:54  s
+% add \inquoteshook to be run after \rm in "..."
+%
+% Revision 0.2  1995/08/04  13:50:35  s
+% added `|' to list of characters in \DAdospecials
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

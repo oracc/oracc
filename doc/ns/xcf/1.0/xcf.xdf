@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XCF</dc:title>
+  <dcterms:alternative>XML Configuration Files</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xcf/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2/2/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>XCF is an XML vocabulary for setting program
+  configuration values; one day there will be a more user-friendly
+  ASCII front end.</dc:description>
+</d:meta>
+
+<h1>Tutorial</h1>
+
+<p>An XCF file is a collection of settings for variables that will be
+used by a program to decide where to get and put data and other
+actions.  Most variables are simple name and value pairs and are set
+with the command:</p>
+<pre class="example">
+&lt;set var="[NAME]" to="[VALUE]"/></pre>
+<p>In the examples, terms in uppercase and with square brackets around
+them are place-holders.</p>
+<p>Some variables are more complex, and consist of collections of name
+and value pairs; in this case, the content of the <code>set</code>
+element is a sequence of <code>key</code> elements each of which has a
+<code>k</code> attribute giving the key-name and a <code>to</code>
+attribute giving the value of the key:</p>
+<pre class="example">
+&lt;set var="[NAME]">
+  &lt;key k="[KEY1]" to="[VALUE1]"/>
+  &lt;key k="[KEY2]" to="[VALUE2]"/>
+&lt;/set></pre>
+<p>Each program documents its own configurable variables; some may be
+given only once, some may be repeated, some may be optional.  No
+special rules apply to repeatable variables; they are just given more
+than once.</p>
+<p>One convenient feature of the XCF system is that simple variables
+which have been defined exactly once can be used in subsequent
+definitions; this means, e.g., that directory names can be built up in
+pieces (we call these substitution variables):</p>
+<pre class="example">
+&lt;set var="basedir" to="/home"/>
+&lt;set var="userdir" to="$basedir/cdl"/></pre>
+<p>Substitution variables are prefixed with a dollar sign
+(<code>$</code>) and must consist only of letters, numbers and the
+underscore character (<code>_</code>).  If a substitution variable is
+followed immediately by letters, numbers or underscores it must be
+enclosed in curly brackets:</p>
+<pre class="example">
+&lt;set var="basedir" to="/home/"/>
+&lt;set var="userdir" to="${basedir}cdl"/></pre>
+
+<h1>Commands</h1>
+
+<dl>
+<dt><code>xcf</code></dt>
+<dd>A configuration file is always wrapped in the <code>xcf</code>
+element which must be used with the default namespace
+<code>xmlns="http://oracc.org/ns/xcf/1.0"</code>.</dd>
+<dt><code>set</code></dt>
+<dd>The <code>set</code> element always takes a <code>var</code> attribute
+giving the name of the variable whose value is being assigned.
+Variable names are restricted to being a sequence of one or more of
+the following characters: A-Z a-z 0-9 _ (underscore).</dd>
+<dt><code>to</code></dt>
+<dd>The <code>to</code> attribute always gives a value to be
+assigned to the variable.</dd>
+<dt><code>key</code></dt>
+<dd>The <code>key</code> element combines a naming attribute,
+<code>k</code>, with the assignment attribute <code>to</code>.</dd>
+</dl>
+
+<h1>Variables</h1>
+
+<dl>
+<dt>Simple</dt>
+<dd>Simple values are always assigned as strings using the
+<code>to</code> attribute.</dd>
+<!--
+<dt>List</dt>
+<dd>List values may be created explicitly or implicitly; giving the
+same variable name more than once creates an implicit list.  Note that
+the result syntaxes of explicit lists and implicit lists are identical.</dd>
+-->
+<dt>Table</dt>
+<dd>A table is a collection of keys and values.</dd>
+<dt>Substitution</dt>
+<dd>Simple values used in replacements are preceded by a dollar sign
+and wrapped in curly brackets when necessary using the
+<code>$&lt;variable></code> syntax; to include a dollar sign in a
+<code>to</code> value simply double it (i.e., <code>$$</code>).  To
+protect a variable name from following letters and numbers, wrap it in
+curly brackets.</dd>
+<dt>Builtins</dt>
+<dd>Some variables are predeclared:
+<table class="ninety">
+<thead><tr>
+<th class="thirty">Variable name</th><th class="sixty">Built-in definition</th></tr></thead>
+<tbody><tr><td><code>cdl</code></td><td>/usr/local/share/cdl</td></tr></tbody>
+</table>
+</dd>
+</dl>
+
+<h1>Example XCF</h1>
+
+<pre class="example">
+&lt;xcf xmlns="http://oracc.org/ns/xcf/1.0">
+  &lt;set var="doc" to="$cdl/doc/XMD"/>
+  &lt;set var="catdir" to="$cdl/catalog"/>
+  &lt;set var="keydata" to="$catdir/lib/keydata.xml"/>
+  &lt;set var="logfile" to="$catdir/results/log.xml"/>
+  &lt;set var="loghtml" to="$doc/lastlog.html"/>
+  &lt;set var="sources" to="$catdir/sources"/>
+  &lt;set var="results" to="$catdir/results"/>
+  &lt;set var="catalog">
+    &lt;key k="path"     to="$sources"/>
+    &lt;key k="basename" to="P"/>
+    &lt;key k="type"     to="fxr"/>
+  &lt;/set>
+  &lt;set var="catalog">
+    &lt;key k="path"     to="$sources"/>
+    &lt;key k="basename" to="Q"/>
+    &lt;key k="type"     to="fxr"/>
+  &lt;/set>
+&lt;/xcf></pre>
+
+<h1>Example result</h1>
+
+<p>Users don't need to know about the results of transforming the
+input configuration file; nor do programmers if they simply use the
+documented API.  For the curious, though, this is the result of
+processing the example input given above:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?>
+&lt;xr:xcf-result xmlns:xr="http://oracc.org/ns/xcf-result/1.0">
+  &lt;catalog>
+    &lt;basename>P&lt;/basename>
+    &lt;path>/usr/local/share/cdl/catalog/sources&lt;/path>
+    &lt;type>fxr&lt;/type>
+  &lt;/catalog>
+  &lt;catalog>
+    &lt;basename>Q&lt;/basename>
+    &lt;path>/usr/local/share/cdl/catalog/sources&lt;/path>
+    &lt;type>fxr&lt;/type>
+  &lt;/catalog>
+  &lt;catdir>/usr/local/share/cdl/catalog&lt;/catdir>
+  &lt;cdl>/usr/local/share/cdl&lt;/cdl>
+  &lt;doc>/usr/local/share/cdl/doc/XMD&lt;/doc>
+  &lt;keydata>/usr/local/share/cdl/catalog/lib/keydata.xml&lt;/keydata>
+  &lt;logfile>/usr/local/share/cdl/catalog/results/log.xml&lt;/logfile>
+  &lt;loghtml>/usr/local/share/cdl/doc/XMD/lastlog.html&lt;/loghtml>
+  &lt;results>/usr/local/share/cdl/catalog/results&lt;/results>
+  &lt;sources>/usr/local/share/cdl/catalog/sources&lt;/sources>
+&lt;/xr:xcf-result>
+</pre>
+
+<p>The XDF loader serializes the loaded variables as XML in the format
+above to validate them against the program-specific schema if one is
+provided.</p>
+<p>With the CDLG documentation system the normal way of creating XCF
+documentation and the validating schemas for a configuration type is
+within the XDF documentation for the program or subsystem.  See the <a
+href="../XDF/#config">XDF <code>config</code> documentation</a> in
+general and the <a href="../XMD/#config">XMD documentation</a> on
+<code>xmdmanager.plx</code>'s configuration for a working example.</p>
+
+<d:schema name="xcf" uri="http://oracc.org/ns/xcf/1.0">
+<d:rnc>
+default namespace = "http://oracc.org/ns/xcf/1.0"
+namespace      xi = "http://www.w3.org/2001/XInclude"
+
+start =
+  element xcf { (element set { set.model } | xinclude)* }
+
+set.model = attribute var { token } , (to | kto+)
+
+to = (to.attr | to.elem+)
+
+to.attr = attribute to { text }
+
+to.elem = element to { to.attr }
+
+kto = 
+   element key { 
+     attribute k { token } ,
+     to.attr
+   }
+
+xinclude = element xi:include { attribute href { xsd:anyURI } }
+
+</d:rnc>
+</d:schema>
+
+<d:schema name="xcf-result" uri="http://oracc.org/ns/xcf-result/1.0">
+<p>This is actually just a schema template; the XDF system generates a
+configuration-specific schema complete with variable-typing
+constraints which is actually used to validate the results of loading
+a configuration.</p>
+<d:rnc>
+default namespace = ""
+namespace xr = "http://oracc.org/ns/xcf-result/1.0"
+
+start = element xr:xcf-result { element * { text }* }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="grapheme">
+    <choice>
+      <ref name="v"/>
+      <ref name="q"/>
+      <ref name="s"/>
+      <ref name="n"/>
+      <ref name="c"/>
+      <ref name="gloss"/>
+      <ref name="g"/>
+      <ref name="nongrapheme"/>
+      <ref name="punct"/>
+      <ref name="gsurro"/>
+    </choice>
+  </define>
+  <define name="form">
+    <attribute name="form"/>
+  </define>
+  <define name="sb">
+    <element name="g:b">
+      <ref name="s.model"/>
+    </element>
+  </define>
+  <define name="vb">
+    <element name="g:b">
+      <ref name="v.model"/>
+    </element>
+  </define>
+  <define name="punct">
+    <element name="g:p">
+      <ref name="p.model"/>
+    </element>
+  </define>
+  <define name="lang">
+    <attribute name="xml:lang">
+      <data type="language"/>
+    </attribute>
+  </define>
+  <define name="gsurro">
+    <element name="g:surro">
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <choice>
+        <ref name="s"/>
+        <ref name="c"/>
+        <ref name="n"/>
+      </choice>
+      <ref name="groupgroup"/>
+    </element>
+  </define>
+  <!--
+    Values
+    v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
+  -->
+  <define name="v.model">
+    <text/>
+  </define>
+  <define name="v">
+    <element name="g:v">
+      <optional>
+        <ref name="form"/>
+      </optional>
+      <ref name="g.meta"/>
+      <optional>
+        <ref name="lang"/>
+      </optional>
+      <choice>
+        <ref name="v.model"/>
+        <group>
+          <ref name="vb"/>
+          <oneOrMore>
+            <ref name="mods"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="dingir">
+    <element name="g:v">
+      <ref name="g.meta"/>
+      <optional>
+        <ref name="lang"/>
+      </optional>
+      <value>d</value>
+    </element>
+  </define>
+  <define name="mister">
+    <element name="g:v">
+      <ref name="g.meta"/>
+      <optional>
+        <ref name="lang"/>
+      </optional>
+      <value>m</value>
+    </element>
+  </define>
+  <!--
+    Names
+    s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num
+  -->
+  <define name="s.model">
+    <text/>
+  </define>
+  <define name="lst">
+    <data type="string">
+      <param name="pattern">(..?SL|ABZ|BAU|HZL|KWU|LAK|M|MEA|MZL|REC|RSP|ZATU)\d+[a-z]*</param>
+    </data>
+  </define>
+  <!-- [ABCD] is a stop-gap until lateuruk numbers are fixed -->
+  <define name="num">
+    <data type="string">
+      <param name="pattern">N|N\d+[ABCD]?</param>
+    </data>
+  </define>
+  <define name="s">
+    <element name="g:s">
+      <optional>
+        <ref name="form"/>
+      </optional>
+      <ref name="g.meta"/>
+      <choice>
+        <ref name="s.model"/>
+        <group>
+          <ref name="sb"/>
+          <oneOrMore>
+            <ref name="mods"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <!-- Qualified graphemes -->
+  <define name="q">
+    <element name="g:q">
+      <optional>
+        <ref name="form"/>
+      </optional>
+      <ref name="g.meta"/>
+      <choice>
+        <ref name="v"/>
+        <ref name="s"/>
+        <ref name="c"/>
+      </choice>
+      <choice>
+        <ref name="s"/>
+        <ref name="c"/>
+        <ref name="n"/>
+      </choice>
+    </element>
+  </define>
+  <!-- Numbers -->
+  <define name="n.model">
+    <ref name="r"/>
+    <optional>
+      <choice>
+        <ref name="v"/>
+        <ref name="s"/>
+        <ref name="c"/>
+        <ref name="q"/>
+      </choice>
+    </optional>
+  </define>
+  <define name="r">
+    <element name="g:r">
+      <data type="string">
+        <param name="pattern">[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]</param>
+      </data>
+    </element>
+  </define>
+  <define name="n">
+    <element name="g:n">
+      <optional>
+        <ref name="form"/>
+      </optional>
+      <ref name="g.meta"/>
+      <ref name="n.model"/>
+      <zeroOrMore>
+        <ref name="mods"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <!-- Modifiers -->
+  <define name="mods">
+    <choice>
+      <ref name="modifier"/>
+      <ref name="allograph"/>
+      <ref name="formvar"/>
+    </choice>
+  </define>
+  <define name="modifier">
+    <element name="g:m">
+      <data type="string">
+        <param name="pattern">[a-z]|[0-9]{1,3}</param>
+      </data>
+    </element>
+  </define>
+  <define name="allograph">
+    <element name="g:a">
+      <data type="string">
+        <param name="pattern">[a-wyz0-9]+</param>
+      </data>
+    </element>
+  </define>
+  <define name="formvar">
+    <element name="g:f">
+      <data type="string">
+        <param name="pattern">[a-z0-9]+</param>
+      </data>
+    </element>
+  </define>
+  <!-- Compounds -->
+  <define name="c.model">
+    <choice>
+      <group>
+        <ref name="compound"/>
+        <oneOrMore>
+          <ref name="o.join"/>
+          <ref name="compound"/>
+        </oneOrMore>
+      </group>
+      <ref name="unary"/>
+      <ref name="binary"/>
+      <ref name="ternary"/>
+      <group>
+        <ref name="g"/>
+        <oneOrMore>
+          <ref name="mods"/>
+        </oneOrMore>
+      </group>
+    </choice>
+  </define>
+  <define name="c">
+    <element name="g:c">
+      <optional>
+        <ref name="form"/>
+      </optional>
+      <ref name="g.meta"/>
+      <ref name="c.model"/>
+      <zeroOrMore>
+        <ref name="mods"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="g">
+    <element name="g:g">
+      <ref name="g.meta"/>
+      <ref name="c.model"/>
+      <zeroOrMore>
+        <ref name="mods"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="compound">
+    <choice>
+      <ref name="single"/>
+      <ref name="unary"/>
+      <ref name="binary"/>
+    </choice>
+  </define>
+  <define name="single">
+    <choice>
+      <ref name="n"/>
+      <ref name="s"/>
+      <ref name="c"/>
+      <group>
+        <ref name="g"/>
+        <zeroOrMore>
+          <ref name="mods"/>
+        </zeroOrMore>
+      </group>
+      <ref name="q"/>
+    </choice>
+  </define>
+  <define name="unary">
+    <ref name="o.unary"/>
+    <ref name="single"/>
+  </define>
+  <define name="binary">
+    <ref name="single"/>
+    <ref name="o.binary"/>
+    <ref name="single"/>
+  </define>
+  <define name="ternary">
+    <ref name="single"/>
+    <ref name="o.binary"/>
+    <ref name="single"/>
+    <ref name="o.binary"/>
+    <ref name="single"/>
+  </define>
+  <define name="o.join">
+    <element name="g:o">
+      <attribute name="g:type">
+        <choice>
+          <value>beside</value>
+          <value>joining</value>
+          <value>reordered</value>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <define name="o.unary">
+    <element name="g:o">
+      <attribute name="g:type">
+        <value>repeated</value>
+      </attribute>
+      <data type="integer"/>
+    </element>
+  </define>
+  <define name="o.binary">
+    <element name="g:o">
+      <attribute name="g:type">
+        <choice>
+          <value>containing</value>
+          <value>above</value>
+          <value>crossing</value>
+          <value>opposing</value>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <!-- Punctuation -->
+  <define name="p.model">
+    <attribute name="g:type">
+      <choice>
+        <value>*</value>
+        <value>:</value>
+        <value>:'</value>
+        <value>:"</value>
+        <value>:.</value>
+        <value>::</value>
+        <value>|</value>
+        <value>/</value>
+      </choice>
+    </attribute>
+    <ref name="g.meta"/>
+    <optional>
+      <choice>
+        <ref name="v"/>
+        <ref name="q"/>
+        <ref name="s"/>
+        <ref name="n"/>
+        <ref name="c"/>
+      </choice>
+    </optional>
+  </define>
+</grammar>

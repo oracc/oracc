@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Full Text Search in Oracc 2</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>OSC</dc:publisher>
+  <dc:description>You can use the Search Oracc box at the top right of the Oracc home page, and on several project home pages, to search intuitively across the whole of the Oracc 2 site or across that project. This page gives some hints on how to do that most effectively.</dc:description>
+</d:meta>
+
+<h1>The basics</h1>
+<p>The Full Text Search on the <a href="/">Oracc home page</a> is designed to be used very intuitively. Just enter one or more words in any relevant modern or ancient language (in transliteration or transcription) and see what happens. Results will be returned from text transliterations, translations, language glossaries, and portal pages across Oracc—wherever your word occurs.</p>
+
+<p>Compared to Oracc's <a href="/doc/user/searching/">corpus</a>, <a href="/doc/user/glossaries/">glossary</a> and <a href="/doc/user/advanced">advanced</a> search functions, the Full Text Search is quite fuzzy. It just searches for strings of characters, regardless of whether they are a whole word, or which language they are in. So although the Full Text Search is useful for locate which projects or corpora words appear in, it does not replace the much more sophisticated <a href="/doc/user/searching/">corpus</a>, <a href="/doc/user/glossaries/">glossary</a> and <a href="/doc/user/advanced">advanced</a> search functions.</p>
+
+<h1>Tips and tricks</h1>
+<h2>Language, case and words</h2>
+<ul>
+<li>Search isn't case sensitive: you can write, e.g., <code>LUGAL</code>, <code>lugal</code>, or even <code>LuGAl</code> as you like;</li>
+<li>Nor is it language sensitive, so searching for, e.g., <code>man</code> will find both the English word and the cuneifom transliteration (whether syllable or logogram);</li>
+<li>However, searching for searching for, e.g., <code>man</code> will not find (English) <code>men</code> as the corpus search does;</li>
+<li>And searching for, e.g., <code>gub</code> will also find <code>gub₂</code> and <code>gub₃</code>, etc.</li>
+</ul>
+
+<h2>Vowels and consonants</h2>
+<ul>
+<li>Search also ignores vowel length, so that searching for, e.g., <code>akalu</code> will find both <code>akalu</code> and <code>akālu</code>;</li>
+<li>But <code>sh</code> won't find <code>š</code> though, so we recommend having a <a href="/doc/user/keyboards/">Unicode keyboard</a> installed on your computer;</li>
+<!-- <li>The search engine does understand basic CDLI-ATF, however, so you can write <code>sz</code>, <code>s'</code>, <code>s,</code> and <code>t,</code> for <code>š</code>, <code>ś</code>, and <code>ṭ</code>.</li> -->
+</ul>
+
+
+<d:resources/>
+
+</d:doc>

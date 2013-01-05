@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Complex Layouts in ATF</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2010-05-04</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes how to deal with complex layouts, such as tabular formatting, in ATF.</dc:description>
+</d:meta>
+
+<!--<d:schema name="" uri="">
+</d:schema> -->
+
+<h1>Tablets with unusual layouts</h1>
+<p>Some tablets have unusual layouts that are hard to describe using the standard hierarchy of lines-within-columns-within-surfaces such as obverse or reverse. Blocks of text may be upside-down relative to the rest, for instance, or run from reverse to obverse.</p>
+
+<p>In such cases, it is best not to use the standard structure codes such as <code>@obverse</code> and <code>@column 1</code> but to use the <code>@surface</code> tag instead. For instance:</p>
+
+<pre class="example">
+&amp;P363868 = TCL 06, 13
+
+#atf: lang akk-stdbab
+#project: cams
+#atf: use unicode
+
+@tablet
+@column 1
+$ (column runs from obverse to reverse)
+
+@surface obv top
+$ start of obverse missing
+$ single ruling
+1'.	 [... an]-na#-a-ti ana?# DUH.LAL₃
+2'.	 [...] {na₄}GIŠ.NU₁₁.GAL
+$ single ruling
+
+@surface 90 degrees
+$ single ruling
+1. [...] $HA $SU x [...] x $KI $KAL E₂.GAL MAH {d}LUGAL.IR₉.RA
+$ rest of surface missing
+
+@surface 270 degrees
+1. [...] {d#}40 GUB-MEŠ {mul}dele-bat {mul}ŠU.GI {mul}UR.GU.LA 
+</pre>
+<p>The online version (<a href="http://oracc.org/cams/P363686">on CAMS</a>) does not attempt to replicate the directionality of the writing, but it describes and preserves the orientations and relationships of the blocks of text.</p>
+
+<h1>Tablets with both continuous and tabular formatting</h1>
+<p>Simple tables, with just a few columns, can be edited in <a href="../emacs/">Emacs</a> with <code>&amp; </code> before each cell of the table (and <code>@&amp; </code> serving the same function in the translation). </p>
+<p>To mark text that spans more than one column — such as table headers, interlinear notes, or colophons — add the number of columns spanned to the preceding <code>&amp;</code>. For instance <code>&amp;3 </code> precedes text that spans three columns of a table.</p>
+
+<p>See the <a href="/ns/xtf/1.0/advanced.html#Cells_&amp;_Fields">Advanced ATF</a> and <a href="/ns/xtf/1.0/lexical.html#Fields">Lexical Conventions</a> pages for more information about cells and fields.</p>
+
+<h1>Complex tables</h1>
+<p>For ease of editing, larger more complex tables — such as tabular administrative accounts or astronomical ephemerides — are best edited in <a href="http://www.openoffice.org">OpenOffice</a> Calc, a free, open-source spreadsheet program (also available as <a href="http://www.neooffice.org/">NeoOffice</a> Calc for Macs). Using Calc will enable you to manage column spacing while still being able to validate and lemmatise your ATF. Calc spreadsheet filenames have the extension <code>.ods</code> so we will refer to them as ODS files here.</p>
+
+<h2>Setting up Calc</h2>
+<p>If you don't already have it, download and install <a href="http://www.openoffice.org/download/index.html">OpenOffice</a> or <a href="http://www.neooffice.org/neojava/en/maindownload.php">NeoOffice</a> as you would any other application from the web.</p>
+
+<ul>
+<li><p>If you have not already done so, install the relevant <a href="doc/user/keyboards/">Unicode keyboard layout</a> for your computer, to make the typing of transliteration and lemmatisation as simple as possible.</p></li>
+
+<li><p>When you first open OpenOffice, by default it will open a word processing window. Choose <code>File &gt; New &gt; Spreadsheet</code> from the menus at the top of the screen. Calc spreadsheets behave much like commercially available packages such as Microsoft Excel; if you have used spreadsheets before you will find it quite intuitive to use. The <code>Help</code> menu also offers a lot of support.</p></li> 
+
+<li><p>Like many spreadsheet programmes, Calc will automatically reformat much of what you type. To edit ATF, you need to switch this functionality off. First select the whole spreadsheet and choose <code>Format &gt; Cells...</code> from the menus. In the resulting dialogue box, scroll down the <code>Category</code> list and select <code>Text</code>. Now choose <code>OK</code> to save and close the dialogue box.</p></li>
+
+<li><p>You may also want to turn off Calc's autocomplete functionality, which can be rather confusing. To do this, go to the <code>Tools &gt; Cell Contents</code> menu item and deselect both <code>AutoCalculate</code> and <code>AutoInput</code>.</p></li>
+
+<li><p>Make sure you have a <a href="../unicode/">Unicode font</a> such as DejaVu selected as the default. To do this, select the whole table and choose <code>Format &gt; Cells...</code> from the menus. In the dialogue box that opens, choose <code>Fonts</code> from the bar running across the top, then select the font you want.</p></li>
+
+<li><p>However, there is no point in doing any more formatting than this (such as italics, underlining, different fonts or font sizes), as the ATF processor ignores formatting and will not replicate it in lemmatising (see below). In particular, do not use superscript for determinatives, glosses or phonetic complements; continue to use the ATF brackets as normal.</p></li>
+
+<li><p>You may sometimes find it useful to split the screen, either horizontally or vertically. For instance, you may want to look at transliteration and translation together, and/or the beginnings and ends of long lines. To do this, find the thick black lines that are above and to the right of the vertical and horizontal scroll bars. You can drag them down or across as you like to split the screen, so that the two halves move independently.</p></li>
+</ul>
+
+<h2>Editing ATF in ODS</h2>
+<p>Now you are ready to type your ATF document. ODS files can only contain a single ATF document, which must be entered in Sheet 1 of the spreadsheet. The ATF processor ignores all other sheets.</p>
+<p class="ihead"><strong>NOTE</strong> that in the following image the language protocol line should read <code class="example">#atf: lang akk-x-stdbab</code> according to current Oracc conventions.</p>
+<p class="center"><img src="ods-xlit.png" alt="A transliterated text in OpenOffice Calc" /></p>
+
+<ul> 
+<li><p>&amp;-lines, #-lines, $-lines and line-numbers all go in Column A, each in their own row. The following columns must remain empty. (The contents of Column A may look as though they spill over; but the visible column boundaries show that the cells have not been merged.)</p></li> 
+<li><p>The transliteration starts in Column B, with a separate spreadsheet cell for each cell of the table.</p></li>
+<li><p>You can mark line breaks within a cell with a semicolon <code>;</code> just as you would mark them in any ATF.</p></li>
+<li><p>For text that runs across more than one cell of table, you can merge cells of the spreadsheet. Select the cells to be merged and choose <code>Format &gt; Merge Cells &gt; Merge Cells</code> from the menus.</p></li>
+<li><p>For text that runs across the whole table — such as headers, interlinear comments, colophons and doxologies — add a single space and a vertical bar <code>|</code> after the period, in the same cell, like this: <code class="example">1. |</code></p></li>
+<li><p>Save and name your file as you would for any ATF file, but make sure that it has a <code>.ods</code> extension (e.g., <code class="example">tcl_06_22.ods</code>).</p></li>
+</ul>
+<p>Translation proceeds in much the same way.</p>
+
+<p class="center"><img src="ods-xlat.png" alt="A translated text in OpenOffice Calc" /></p>
+
+<h2>Checking and lemmatising ODS files</h2>
+<p>You will need to check your ATF with the web service <a href="/util/atfproc.html">ATF checker</a>; you can't check it in Emacs.</p>
+
+<ul>
+<li><p>Click <code>Browse ...</code> to choose the ODS file you wish to validate.</p></li>
+<li><p>Click the <code>check ATF</code> button if it is not already selected.</p></li>
+<li><p>The checker will return a page of error messages or a notice that the file is clean. Error messages begin with strings that look like this: <code class="example">tcl_06_22.ods.atf:87:P363695:</code>. The first part is the file name (<code>tcl_06-22.ods</code>) with the extension <code>.atf</code> appended. Then comes the line number, <code>87</code>, which equates to the row number of the ODS file, so that errors are easy to locate. Finally, there is the P-number of your text.</p></li>
+<li><p>To return to the checker page, use the <code>Back</code> facility on your web browser.</p></li>
+<li><p>Keep correcting and checking the file until it is clean.</p></li>
+</ul>
+<p>When your ATF is clean, you can <a href="../linganno/">lemmatise</a> it by clicking the <code>Lemmatize</code> button on the <a href="./util/atfproc.html">ATF checker</a> page (once you have selected the ODS file you wish to lemmatise).</p>
+<ul>
+<li><p>The lemmatiser will return a new page giving a link to a new, lemmatised ODS file for you to download.</p></li>
+<li><p>Save it on to your computer and edit the lemmatisation as you would normally. Lemmatisation lines are also tabular, with the lemmatisations immediately below the transliterated cell to which they relate.</p></li>
+<li><p>To check your edited lemmatisation, make sure you choose the <code>Check lemmatization</code> button on the checker web page.</p></li>
+<li><p>To relemmatise your file, choose <code>Lemmatize</code> and download the new ODS file that results.</p></li>
+</ul>
+<p class="ihead"><strong>NOTE</strong> that in the following image the language protocol line should read <code class="example">#atf: lang akk-x-stdbab</code> according to current Oracc conventions.</p>
+<p class="center"><img src="ods-lemm.png" alt="lemmatised ODS file" /></p>
+
+<h2>ODS files in project management</h2>
+<p>You (or your project manager, as appropriate) should treat ODS files just like ATF files. They are stored in a project's <code>/00atf</code> directory and can be re-opened and edited just like ATF files.</p>
+
+<p>To count the lemmata in an ODS file you can do the following:</p>
+
+<ul>
+<li><p>Open your ODS file in Calc, as normal.</p></li>
+<li><p>Click on <code>Sheet 2</code> at the bottom left of the window.</p></li>
+<li><p>In any cell of Sheet 2, type this formula:</p>
+<pre class="cookbook">=COUNTIF(Sheet1.&lt;RANGE&gt;;"#lem:")+COUNTIF(Sheet1.&lt;RANGE&gt;;">;")</pre>
+<p>where <code class="cookbook">&lt;RANGE&gt;</code> is the range of cells containing the transliteration and lemmatisation of your tablet. For instance:</p>
+
+<pre class="example">=COUNTIF(Sheet1.A10:N130;"#lem:")+COUNTIF(Sheet1.A10:N130;">;")</pre>
+
+<p>counts the lemmata in the cells ranging from Column A, Row 10 to Column N, Row 130 in Sheet 1.</p></li>
+<li><p>Press <code>ENTER</code> and the lemcount will appear.</p></li> 
+<li><p>You can leave this formula in the spreadsheet, as the ATF processor ignores everything that is not in Sheet 1.</p></li>
+</ul>
+
+<d:resources>
+<d:resource copy="yes" href="ods-xlit.png"/>
+<d:resource copy="yes" href="ods-xlat.png"/>
+<d:resource copy="yes" href="ods-lemm.png"/>
+</d:resources>
+</d:doc>

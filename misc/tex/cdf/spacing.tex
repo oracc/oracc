@@ -1,0 +1,244 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: spacing.tex,v 0.9 1996/08/12 15:17:21 s Exp $
+
+% 0) CDF compatibility hacks
+\newif\ifitalicunderline \italicunderlinefalse
+
+% 1) layout of the typefield and headers
+\newdimen\physicalpageheight
+\newdimen\physicalpagewidth
+\newdimen\leftmargin
+\newdimen\topmargin 
+\newdimen\rightmargin
+\newdimen\botmargin
+\newdimen\headersep 
+\newdimen\footersep 
+\newdimen\textheight
+\newdimen\textwidth 
+\newdimen\fullhsize
+
+% Enable the text field to be set from the margins. The arguments
+% are left, top, right and bottom margins respectively.
+\def\settypefieldbymargins#1#2#3#4{\ppsSiz@%
+  \leftmargin#1 \topmargin#2 \rightmargin#3 \botmargin#4
+  \textheight\physicalpageheight
+    \advance\textheight-\topmargin
+    \advance\textheight-\botmargin
+  \textwidth\physicalpagewidth
+    \advance\textwidth-\leftmargin
+    \advance\textwidth-\rightmargin
+  \setpageformat}
+
+% Enable the margins to be set from the type field such that the type
+% will be centred on the available page. The arguments are height and
+% width of the text field respectively. Note that the text field 
+% generally does not include headers and footers.
+\def\setmarginsbytypefield#1#2{\ppsSiz@%
+  \textheight#1 \textwidth#2
+  \dimen@=\physicalpagewidth \advance\dimen@-\textwidth
+    \divide\dimen@ by2
+    \leftmargin\dimen@ \rightmargin\dimen@
+  \dimen@=\physicalpageheight \advance\dimen@-\textheight
+    \divide\dimen@ by2
+    \topmargin\dimen@ \botmargin\dimen@
+  \setpageformat}
+
+% set the typefield and hoffset/voffset from the margins. 
+\def\setpageformat{%
+  \ifdim\topmargin<1truein 
+    \dimen0=1truein \advance\dimen0-\topmargin \voffset-\dimen0
+  \else
+    \advance\topmargin-1truein \voffset\topmargin
+  \fi
+  \ifdim\leftmargin<1truein
+    \dimen0=1truein \advance\dimen0-\leftmargin \hoffset-\dimen0
+  \else
+    \dimen0\leftmargin \advance\dimen0-1truein \hoffset\dimen0
+  \fi
+  \ifdim\textwidth<0pt \errmessage{Text width is less than 0}\fi
+  \ifdim\textheight<0pt \errmessage{Text height is less than 0}\fi
+  \hsize\textwidth
+  \fullhsize\hsize
+  \vsize\textheight\relax}
+
+% 2) vertical spacing considerations
+% This macro is called by any of the \{title|text|fnote}size commands
+% to reset the baselines
+\newbox\strutbox       \newif\ifbaselinefuzz     \baselinefuzztrue
+\newskip\bigskipamount \newskip\medskipamount    \newskip\smallskipamount
+\newskip\basicleading  \newskip\aboveheadingskip \newskip\belowheadingskip
+\newskip\itemskip
+
+% The vertical spacing of a document can be controlled by redefining
+% the \spreadfactor which is applied to all necessary constants and 
+% variables whenever the spacing changes
+\newdimen\spreadfactor \newdimen\quadsp \quadsp=4sp
+\def\singlespace{\setspread{1\ifitalicunderline.25 \fi}\leading{\currleading}\setvspacing}
+\def\spaceandahalf{\setspread{1.5}\leading{\currleading}\setvspacing}
+\def\doublespace{\setspread2\leading{\currleading}\setvspacing}
+\def\setspread#1{\spreadfactor#1\quadsp\relax}
+\def\applyspread#1{\multiply#1\spreadfactor \divide#1by4\relax}
+\def\singlespacedisplays{\def\displayspacing{\singlespace}}
+\def\spaceandahalfdisplays{\def\displayspacing{\spaceandahalf}}
+\def\doublespacedisplays{\def\displayspacing{\doublespace}}
+\def\singlespacelists{\def\listspacing{\singlespace}}
+\def\spaceandahalflists{\def\listspacing{\spaceandahalf}}
+\def\doublespacelists{\def\listspacing{\doublespace}}
+\def\singlespacenotes{\def\notespacing{\singlespace}}
+\def\spaceandahalfnotes{\def\notespacing{\spaceandahalf}}
+\def\doublespacenotes{\def\notespacing{\doublespace}}
+
+\singlespacedisplays\singlespacelists\singlespacenotes
+
+% This macro retrieves the current leading and passes it to the
+% leading macro. It should only be called when the text size has
+% changed, as after a \textsize or \fnotesize command.
+\def\setleading{\edef\next{%
+  \csname\the\FLODtextintcoll\the\FLODextsize b\endcsname}%
+%  \csname\FLODtextintcoll\the\FLODextsize b\endcsname}%
+  \leading\next }
+
+% leading receives a numeric argument which is the pointsize for 
+% normal baselineskip
+\def\leading#1{%
+  \edef\currleading{#1}%
+  \basicleading\currleading pt \baselineskip\basicleading
+  \ifbaselinefuzz\advance\baselineskip 0pt plus.1pt minus.1pt \fi
+  \lineskiplimit.15\baselineskip \lineskip\lineskiplimit
+  \ifbaselinefuzz\advance\lineskip 0pt plus.1pt minus.1pt \fi
+  \applyspread\baselineskip
+  \applyspread\lineskip
+  \applyspread\lineskiplimit
+  \setbox\strutbox=\hbox{%
+    \vrule height.7\basicleading depth.3\basicleading width\z@}%
+  \def\strut{\relax\ifmmode\copy\strutbox\else\unhcopy\strutbox\fi
+  \foottopskip\ht\strutbox}}
+\def\lines{\basicleading}
+\def\needspace#1{
+  \skip@#1 \dimen@\skip@
+  \dimen255\pagegoal
+  \advance\dimen255-\pagetotal
+  \ifdim\dimen@>\dimen255\newpage\fi}
+
+% the following macro resets all the vertical spacing parameters taking
+% into account the current leading and (optionally) the spread factor.
+% It should probably only be used for overall document set up.
+\newif\ifspreadeverything \spreadeverythingtrue
+\def\setvspacing{%
+  \dimen0\basicleading % coerce leading to remove plus/minus parts
+  \aboveheadingskip1.2\dimen0 plus.2\dimen0 minus.1\dimen0
+  \belowheadingskip.8\dimen0 plus.2\dimen0 minus.1\dimen0
+  \itemskip.25\dimen0 plus.1\dimen0 minus.1\dimen0
+  \abovedisplayskip\dimen0 plus.25\dimen0 minus.75\dimen0
+  \abovedisplayshortskip.1\dimen0 plus.1\dimen0 minus0pt
+  \belowdisplayskip\dimen0 plus.25\dimen0 minus.75\dimen0
+  \belowdisplayshortskip.1\dimen0 plus.1\dimen0 minus0pt
+  \smallskipamount.25\dimen0 plus.1\dimen0 minus0pt
+  \medskipamount.5\dimen0 plus.25\dimen0 minus.1\dimen0
+  \bigskipamount.75\dimen0 plus.5\dimen0 minus.25\dimen0
+  \skip\footins.75\dimen0 plus.25\dimen0 minus.25\dimen0
+  \ifspreadeverything
+  \applyspread\aboveheadingskip
+  \applyspread\belowheadingskip
+  \applyspread\abovedisplayskip
+  \applyspread\abovedisplayshortskip
+  \applyspread\belowdisplayskip
+  \applyspread\belowdisplayshortskip
+  \applyspread\itemskip
+  \applyspread{\skip\footins}%
+  \fi
+  \setvhook
+}
+
+\def\smallskip{\vskip\smallskipamount}
+\def\medskip{\vskip\medskipamount}
+\def\bigskip{\vskip\bigskipamount}
+\def\vspace{\macroformat\afterassignment\d@space\skip0=}
+\def\d@space{\DAformat\ifhmode\par\fi\vskip\skip0 \vbox{}}
+\def\Vspace{\macroformat\afterassignment\D@space\skip0=}
+\def\D@space{\DAformat\ifhmode\par\fi\vbox{}\vskip\skip0 \vbox{}}
+\def\nointerlineskip{\prevdepth-1000\p@}
+\def\offinterlineskip{\baselineskip-1000\p@
+  \lineskip\z@ \lineskiplimit\maxdimen}
+
+% later additions to this format can say
+% \let\svh\setvhook\def\setvhook{\svh additions...}
+\def\setvhook{}
+
+\def\currleading{10} % set a default
+
+% 3) Horizontal spacing considerations. It's convenient to think of all these
+% as relative to a basic indention so that if pages have a lot of 
+% different displays there won't be too many vertices of alignment.
+\newdimen\indention
+\newdimen\displayleftmargin
+\newdimen\displayrightmargin
+\newdimen\displayindent
+\newdimen\hbindentamount
+\newif\ifindentdisplays
+% set the parindent and the display indents.
+% \indention should be used for hangindent, display leftskip's etc. so it
+% will be safe to set \parindent to 0 and indention to 2em, say.
+\def\sethspacing#1#2{%
+  \parindent#1 \fnparindent\parindent \indention#2
+  \displayleftmargin\indention
+  \displayrightmargin\indention \divide\displayrightmargin2
+  \ifindentdisplays\displayindent#1 \else\displayindent0pt\fi
+  \posthboxtominamount\indention
+  \hbindentamount0pt }
+
+% This strut is tied to the size of the current font (though it probably
+% won't work too well in math mode superscripts/subscripts, because it uses
+% an \hbox).
+\newbox\fontstrutbox
+\def\fontstrut{\setbox\fontstrutbox=\hbox{\^Adp}%
+  \vrule height1.05\ht\fontstrutbox depth1.05\dp\fontstrutbox width\z@}
+
+% miscellaneous commands to insert space
+\def\newline{\hfill\break}
+\def\newpage{\vfill\eject}
+\def\newoddpage{\vfill\eject
+  \ifodd\pageno\else\blankpage\fi}
+\def\verynewpage{\vfill\supereject}
+\def\blankpage{\global\chaptertitletoks{}\nonumberthispage\emptypage}
+\def\emptypage{\vbox{}\newpage}
+
+\let\^^\\ % define \<hardspace> and \<softnl> to be control spaces
+\let\^^_\ %
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: spacing.tex,v $
+Revision 0.9  1996/08/12 15:17:21  s
+add hbindentamount to horizontal spacing paramenters
+
+Revision 0.8  1996/05/27 16:19:32  s
+*** empty log message ***
+
+% Revision 0.7  1996/03/06  11:34:02  s
+% add fontstrut stuff
+%
+% Revision 0.6  1995/11/18  11:21:10  s
+% add support for \posthboxtominamount
+%
+% Revision 0.5  1995/06/11  19:14:46  s
+% Finally fixed setmarginsbytypefield properly
+%
+% Revision 0.4  1995/06/08  12:49:50  s
+% fixed stupid bug in \settypefieldbymargins, where h margin was
+% set from v page height and vice versa
+%
+% Revision 0.3  1995/06/08  12:44:08  s
+% fixed typo in arguements
+%
+% Revision 0.2  1995/06/06  02:58:22  s
+% radically revised \abovedisplayskip and \belowdisplayskip to make them a bit more
+% like Plain's values (previous values were far too loose).
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

@@ -1,0 +1,4 @@
+@namespace xtf "http://oracc.org/ns/xtf/1.0";
+@import url(xtf-common.css);
+
+xtf|l { display: inline }

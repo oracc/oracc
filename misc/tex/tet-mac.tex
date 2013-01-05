@@ -1,0 +1,83 @@
+\noblackboxes
+
+\def\vocabstrut{\vrule height9pt depth3pt width0pt}
+
+\def\Tetradstyle{%
+%  \usefontcollection{\DAAdobeCaslon}\DAAW
+%  \DAAW\textsize
+%  \usefontcollection{\DANewCaledonia}\DANL
+%  \DANL\textsize
+  \setmarginsbytypefield{43pc}{27pc} \vfuzz1pc%
+  \headersep1.5pc \footersep0pt
+  \singlespace\sethspacing{2em}{2em}%
+  \lefthdrinfo{\ifchapterpage\else\ifodd\pageno\else\ten\rm\folio\fi\fi}%
+  \centrehdrinfo{\ifchapterpage\else\runninghdrfont\the\chaptertitletoks\fi}%
+  \righthdrinfo{\ifchapterpage\else\ifodd\pageno\ten\rm\folio\fi\fi}%
+  \fussy\normalbottom\twosidedtrue}
+
+\def\runninghdrfont{\nine\rm}
+\def\foliofont{\nine\rm}
+
+\def\UNDEF{\boxit{\vtop to10pt{\hbox to10pt{\hfil}\vfil}}}
+\def\WD{\hskip0pt plus.005fil}
+\def\WP{\hskip0pt plus.1fil}
+\def\WH{\hskip0pt plus1fil\relax
+       \hbox{\hfil}\penalty0\ \hbox{\hfil}\hskip0pt plus1fil}
+\def\WHH{\hskip0pt plus1.1fil\relax
+       \hbox{\hfil}\penalty0\ \hbox{\hfil}\hskip0pt plus1fil}
+\def\WS{\hskip0pt plus1fill\relax
+       \hbox{\hfil}\penalty0\ \penalty1\hbox{\hfil}\hskip0pt plus1fill}
+\def\WB{\hbox{\hfil}\hskip0pt plus.0001fil}
+\def\SLsign#1#2#3#4{\leavevmode\hangindent18pc\hboxtomin{8pc}{\TINYw#1\hfil}%
+  \hbox to9pc{\Sans\eight\rm #2 (#3)\hfil}{\Sans\nine\rm #4}\endgraf}
+\def\SLidxitem#1#2{\hbox to\hsize{%
+  \hboxtomin{4pc}{\Sans\nine\rm #1}\ →\ {\Sans\eight\rm #2}\hfil}\vskip0pt plus1pt minus1pt\relax}
+
+%\def\Matrix{\chapter Textual Matrix\par}
+\let\Matrix\relax
+\let\endMatrix\relax
+
+\long\def\chaptertitle#1#2{%
+  \leftpar
+  \ifusenumber
+    \fourteen\hbox to3em{\bf #2.\hfil}\hangindent3em
+  \fi
+  \fourteen\bf\uppercase{#1}\par
+  \kern3pc}
+
+{\makeother{_}
+ \global\def\ednameLiB{Li_B}
+ \global\def\ednameEbA{Eb_A}
+ \global\def\ednameIdB{Id_B}
+ \global\def\ednameNdA{Nd_A}}
+
+\def\sum{\nine\rm}
+
+%\input wedgname \TINYw
+\font\TINYw="CuneiformComposite" at 13pt
+\intercolgutter2.9999pc
+\def\wdgcolwd{12pc\relax}
+
+\rightftrinfo{\vbox to0pt{\kern10pt\vtop to100pt{\vfill
+  \hbox to\fullhsize{\hfil\seven\rm DRAFT as of \datestamp---not for citation}}\vss}}
+
+\def\tocinterlowerhook#1#2{\nointerlineskip\allowbreak\vskip10pt}
+\def\toczeronumformat#1{\hbox to\toczerohang{\bf Part #1.\hss}}
+
+\def\toclevone#1:#2:#3,#4;#5\endtocentry{\def\test{#1}\def\testthree{#3}%
+  \gettocpagev@l{#2}%
+  \noindent\leftskip\toczerohang\rightskip\toconerightskip plus1fil
+  \ifx\testthree\empty\else\toconenumformat{#3}\fi
+  \unskip\hangindent\toconehang\toconeformat{\strut\ignorespaces#5\unskip}%
+  \ifx\test\true\def\next{\iftoconedotfill\tocdotfill\else
+			  \hfill\fi
+			  \parfillskip-\toconerightskip plus-1fil\relax
+			  \toconepageformat{\tocpv@l}%
+			  \iftocranges\toczerorangeformat{#2}{\tocgetrange{1;#4}}\fi}%
+  \else\let\next\relax\fi
+  \next
+  \endtocentry}
+
+\def\bibitem{\par\noindent\hangindent2em\relax}
+
+\rm \showthe\baselineskip

@@ -1,0 +1,3993 @@
+<?xml version="1.0" encoding="utf-8"?>
+<namemap>
+  <name key=".Anonymous">
+    <last>Anonymous</last>
+    <rest/>
+    <aka>Anonymous</aka>
+    <init/>
+  </name>
+  <name key=".et al.">
+    <last>et al.</last>
+    <rest/>
+    <aka>et al.</aka>
+    <init/>
+  </name>
+  <name key="AbelL" type="none">
+    <last>Abel</last>
+    <rest>Ludwig</rest>
+    <aka>Abel, Ludwig</aka>
+    <init>L.</init>
+  </name>
+  <name key="AbuschT">
+    <last>Abusch</last>
+    <rest>Tzvi</rest>
+    <aka>Abusch, T.</aka>
+    <aka>Abusch, Tzvi</aka>
+    <init>T.</init>
+  </name>
+  <name key="AdamsRMC">
+    <last>Adams</last>
+    <rest>Robert McC.ormick</rest>
+    <aka>Adams, Robert McC.ormick</aka>
+    <aka>Adams, Robert M.</aka>
+    <init>R.M.</init>
+  </name>
+  <name key="AdlerR">
+    <last>Adler</last>
+    <rest>Ruth</rest>
+    <aka>Adler, Ruth</aka>
+    <init>R.</init>
+  </name>
+  <name key="Afanas'evaV">
+    <last>Afanas'eva</last>
+    <rest>Veronika</rest>
+    <aka>Afanas'eva, Veronika</aka>
+    <init>V.</init>
+  </name>
+  <name key="AfanasjevaA">
+    <last>Afanasjeva</last>
+    <rest>A.</rest>
+    <aka>Afanasjeva, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="AfanasjevaV" type="none">
+    <last>Afanasjeva</last>
+    <rest>Veronika</rest>
+    <aka>Afanas’eva, Veronika</aka>
+    <init>V.</init>
+  </name>
+  <name key="Al-RawiFNH">
+    <last>Al-Rawi</last>
+    <rest>Farouk N.H.</rest>
+    <aka>Al-Rawi, Farouk N.H.</aka>
+    <aka>Al-Rawi, Farouk</aka>
+    <aka>Al-Rawi, F.N.H.</aka>
+    <aka>al-Rawi, Farouk N. H.</aka>
+    <aka>Al-Rawi, Farouk N. H.</aka>
+    <init>F.N.</init>
+  </name>
+  <name key="AlbertiA">
+    <last>Alberti</last>
+    <rest>A.</rest>
+    <aka>Alberti, A.</aka>
+    <aka>Alberti, Amedeo</aka>
+    <init>A.</init>
+  </name>
+  <name key="AlbertiA" type="none">
+    <last>Alberti</last>
+    <rest>Amedeo</rest>
+    <aka>Alberti, Amedeo</aka>
+    <init>A.</init>
+  </name>
+  <name key="AlbrightWF">
+    <last>Albright</last>
+    <rest>W. F.</rest>
+    <aka>Albright, W. F.</aka>
+    <init>W.F.</init>
+  </name>
+  <name key="AliFA">
+    <last>Ali</last>
+    <rest>Fadhil A.</rest>
+    <aka>Ali, Fadhil A.</aka>
+    <init>F.A.</init>
+  </name>
+  <name key="AlsterB">
+    <last>Alster</last>
+    <rest>Bendt</rest>
+    <aka>Alster, B.</aka>
+    <aka>Alster, Bendt</aka>
+    <init>B.</init>
+  </name>
+  <name key="AmietP">
+    <last>Amiet</last>
+    <rest>Pierre</rest>
+    <aka>Amiet, Pierre</aka>
+    <init>P.</init>
+  </name>
+  <name key="AnbarA">
+    <last>Anbar</last>
+    <rest>A.</rest>
+    <aka>Anbar, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="AndradosFR">
+    <last>Andrados</last>
+    <rest>Francisco R.</rest>
+    <aka>Andrados, Francisco R.</aka>
+    <init>F.R.</init>
+  </name>
+  <name key="ArchiA">
+    <last>Archi</last>
+    <rest>Alberto</rest>
+    <aka>Archi, Alberto</aka>
+    <aka>Archi, Alfonso</aka>
+    <init>A.</init>
+  </name>
+  <name key="ArchiA" type="none">
+    <last>Archi</last>
+    <rest>Alfonso</rest>
+    <aka>Archi, Alfonso</aka>
+    <init>A.</init>
+  </name>
+  <name key="ArfaM">
+    <last>Arfa</last>
+    <rest>Milton</rest>
+    <aka>Arfa, Milton</aka>
+    <init>M.</init>
+  </name>
+  <name key="ArnaudD" type="none">
+    <last>Arnaud</last>
+    <rest>Daniel</rest>
+    <aka>Arnaud, Daniel</aka>
+    <init>D.</init>
+  </name>
+  <name key="AroJ">
+    <last>Aro</last>
+    <rest>Jussi</rest>
+    <aka>Aro, Jussi</aka>
+    <init>J.</init>
+  </name>
+  <name key="ArtziP" type="none">
+    <last>Artzi</last>
+    <rest>Pinhas</rest>
+    <aka>Artzi, Pinhas</aka>
+    <init>P.</init>
+  </name>
+  <name key="AttingerP">
+    <last>Attinger</last>
+    <rest>Pascal</rest>
+    <aka>Attinger, P.</aka>
+    <aka>Attinger, Pascal</aka>
+    <init>P.</init>
+  </name>
+  <name key="AttridgeHW">
+    <last>Attridge</last>
+    <rest>Harold W.</rest>
+    <aka>Attridge, Harold W.</aka>
+    <init>H.W.</init>
+  </name>
+  <name key="AvalosH">
+    <last>Avalos</last>
+    <rest>Hector</rest>
+    <aka>Avalos, Hector</aka>
+    <init>H.</init>
+  </name>
+  <name key="AverbeckRE">
+    <last>Averbeck</last>
+    <rest>Richard E.</rest>
+    <aka>Averbeck, Richard E.</aka>
+    <init>R.E.</init>
+  </name>
+  <name key="BabcockSH">
+    <last>Babcock</last>
+    <rest>Sidney H.</rest>
+    <aka>Babcock, Sidney H.</aka>
+    <init>S.H.</init>
+  </name>
+  <name key="BalkeTE" type="none">
+    <last>Balke</last>
+    <rest>Thomas E.</rest>
+    <aka>Balke, Thomas E.</aka>
+    <init>T.E.</init>
+  </name>
+  <name key="BankierJ">
+    <last>Bankier</last>
+    <rest>J.</rest>
+    <aka>Bankier, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="BarnettR">
+    <last>Barnett</last>
+    <rest>R.</rest>
+    <aka>Barnett, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="BarnettRD" type="none">
+    <last>Barnett</last>
+    <rest>R.D.</rest>
+    <aka>Barnett, R.D.</aka>
+    <init>R.</init>
+  </name>
+  <name key="BarnstoneA">
+    <last>Barnstone</last>
+    <rest>A.</rest>
+    <aka>Barnstone, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="BarnstoneW">
+    <last>Barnstone</last>
+    <rest>W.</rest>
+    <aka>Barnstone, W.</aka>
+    <init>W.</init>
+  </name>
+  <name key="BarreletT">
+    <last>Barrelet</last>
+    <rest>T.</rest>
+    <aka>Barrelet, T.</aka>
+    <init>T.</init>
+  </name>
+  <name key="BauerJ">
+    <last>Bauer</last>
+    <rest>J.</rest>
+    <aka>Bauer, J.</aka>
+    <aka>Bauer, Josef</aka>
+    <init>J.</init>
+  </name>
+  <name key="BauerJ" type="none">
+    <last>Bauer</last>
+    <rest>Josef</rest>
+    <aka>Bauer, Josef</aka>
+    <init>J.</init>
+  </name>
+  <name key="BeaulieuPA">
+    <last>Beaulieu</last>
+    <rest>Paul-Alain</rest>
+    <aka>Beaulieu, Paul-Alain</aka>
+    <init>P.</init>
+  </name>
+  <name key="BeckingB">
+    <last>Becking</last>
+    <rest>Bob</rest>
+    <aka>Becking, Bob</aka>
+    <init>B.</init>
+  </name>
+  <name key="BeekMA" type="none">
+    <last>Beek</last>
+    <rest>M.A.</rest>
+    <aka>Beek, M.A.</aka>
+    <init>M.</init>
+  </name>
+  <name key="BehrensH">
+    <last>Behrens</last>
+    <rest>Hermann</rest>
+    <aka>Behrens, H.</aka>
+    <aka>Behrens, Hermann</aka>
+    <init>H.</init>
+  </name>
+  <name key="Ben-AmosD">
+    <last>Ben-Amos</last>
+    <rest>D.</rest>
+    <aka>Ben-Amos, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="BenitoCA">
+    <last>Benito</last>
+    <rest>Carlos</rest>
+    <aka>Benito, C.A.</aka>
+    <aka>Benito, Carlos</aka>
+    <aka>Benito, Carlos Alfredo</aka>
+    <init>C.</init>
+  </name>
+  <name key="BergmanJ">
+    <last>Bergman</last>
+    <rest>J.</rest>
+    <aka>Bergman, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="BergmannE">
+    <last>Bergmann</last>
+    <rest>E.</rest>
+    <aka>Bergmann, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="BerlinA">
+    <last>Berlin</last>
+    <rest>Adele</rest>
+    <aka>Berlin, Adele</aka>
+    <init>A.</init>
+  </name>
+  <name key="BernhardtI">
+    <last>Bernhardt</last>
+    <rest>Inez</rest>
+    <aka>Bernhardt, Ines</aka>
+    <aka>Bernhardt, Inez</aka>
+    <init>I.</init>
+  </name>
+  <name key="BeyerD" type="none">
+    <last>Beyer</last>
+    <rest>Dominique</rest>
+    <aka>Beyer, Dominique</aka>
+    <init>D.</init>
+  </name>
+  <name key="BiggsRD">
+    <last>Biggs</last>
+    <rest>Robert D.</rest>
+    <aka>Biggs, Robert D.</aka>
+    <aka>Biggs, R. D.</aka>
+    <init>R.D.</init>
+  </name>
+  <name key="BingJD" type="none">
+    <last>Bing</last>
+    <rest>J. D.</rest>
+    <aka>Bing, J. D.</aka>
+    <init>J.D.</init>
+  </name>
+  <name key="BittelK">
+    <last>Bittel</last>
+    <rest>Kurt</rest>
+    <aka>Bittel, Kurt</aka>
+    <init>K.</init>
+  </name>
+  <name key="BlackJA">
+    <last>Black</last>
+    <rest>Jeremy A.</rest>
+    <aka>Black, Jeremy</aka>
+    <aka>Black, J.A.</aka>
+    <aka>Black, Jeremy A.</aka>
+    <aka>Black, Jeremy</aka>
+    <init>J.A.</init>
+  </name>
+  <name key="BlackerC">
+    <last>Blacker</last>
+    <rest>Carmen</rest>
+    <aka>Blacker, Carmen</aka>
+    <init>C.</init>
+  </name>
+  <name key="BlancoAG" type="none">
+    <last>Blanco</last>
+    <rest>A. González</rest>
+    <aka>Blanco, A. González</aka>
+    <init>A.G.</init>
+  </name>
+  <name key="BoissierA" type="none">
+    <last>Boissier</last>
+    <rest>Alfred</rest>
+    <aka>Boissier, Alfred</aka>
+    <init>A.</init>
+  </name>
+  <name key="BonechiM" type="none">
+    <last>Bonechi</last>
+    <rest>Marco</rest>
+    <aka>Bonechi, Marco</aka>
+    <init>M.</init>
+  </name>
+  <name key="BordreuilP" type="none">
+    <last>Bordreuil</last>
+    <rest>Pierre</rest>
+    <aka>Bordreuil, Pierre</aka>
+    <init>P.</init>
+  </name>
+  <name key="BorgerR">
+    <last>Borger</last>
+    <rest>Rykle</rest>
+    <aka>Borger, Rykle</aka>
+    <init>R.</init>
+  </name>
+  <name key="BottéroJ">
+    <last>Bottéro</last>
+    <rest>Jean</rest>
+    <aka>Bottéro, J.</aka>
+    <aka>Bottéro, Jean</aka>
+    <init>J.</init>
+  </name>
+  <name key="BrandesM">
+    <last>Brandes</last>
+    <rest>M.</rest>
+    <aka>Brandes, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="BraunE">
+    <last>Braun</last>
+    <rest>E.</rest>
+    <aka>Braun, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="BraunJ" type="none">
+    <last>Braun</last>
+    <rest>Jan</rest>
+    <aka>Braun, Jan</aka>
+    <init>J.</init>
+  </name>
+  <name key="BraunJ" type="none">
+    <last>Braun</last>
+    <rest>J.</rest>
+    <aka>Braun, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="BregsteinLB">
+    <last>Bregstein</last>
+    <rest>Linda B.</rest>
+    <aka>Bregstein, Linda B.</aka>
+    <init>L.B.</init>
+  </name>
+  <name key="BrinkmanA">
+    <last>Brinkman</last>
+    <rest>Anthony</rest>
+    <aka>Brinkman, Anthony</aka>
+    <init>A.</init>
+  </name>
+  <name key="BrinkmanJA" type="none">
+    <last>Brinkman</last>
+    <rest>J. A.</rest>
+    <aka>Brinkman, J. A.</aka>
+    <init>J.A.</init>
+  </name>
+  <name key="BrischNM" type="none">
+    <last>Brisch</last>
+    <rest>Nicole Maria</rest>
+    <aka>Brisch, Nicole Maria</aka>
+    <aka>Brisch, Nicole</aka>
+    <init>N.M.</init>
+  </name>
+  <name key="Brooke-RoseC">
+    <last>Brooke-Rose</last>
+    <rest>Christine</rest>
+    <aka>Brooke-Rose, Christine</aka>
+    <init>C.</init>
+  </name>
+  <name key="BrookmanX">
+    <last>Brookman</last>
+    <rest>X.</rest>
+    <aka>Brookman, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="BrownD">
+    <last>Brown</last>
+    <rest>David</rest>
+    <aka>Brown, David</aka>
+    <init>D.</init>
+  </name>
+  <name key="BruschweilerF">
+    <last>Bruschweiler</last>
+    <rest>Françoise</rest>
+    <aka>Bruschweiler, Françoise</aka>
+    <init>F.</init>
+  </name>
+  <name key="BuccellatiG">
+    <last>Buccellati</last>
+    <rest>Giorgio</rest>
+    <aka>Buccellati, Giorgio</aka>
+    <init>G.</init>
+  </name>
+  <name key="BuchananB">
+    <last>Buchanan</last>
+    <rest>B.</rest>
+    <aka>Buchanan, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="BursteinSM">
+    <last>Burstein</last>
+    <rest>Stanley Mayer</rest>
+    <aka>Burstein, Stanley Mayer</aka>
+    <init>S.M.</init>
+  </name>
+  <name key="BöckB" type="none">
+    <last>Böck</last>
+    <rest>B.</rest>
+    <aka>Böck, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="BöhlFMTdL" type="none">
+    <last>Böhl</last>
+    <rest>Franz M. Th. de Liagre</rest>
+    <aka>Böhl, Franz M. Th. de Liagre</aka>
+    <init>F.M.T.d.L.</init>
+  </name>
+  <name key="CagniL">
+    <last>Cagni</last>
+    <rest>Luigi</rest>
+    <aka>Cagni, Luigi</aka>
+    <init>L.</init>
+  </name>
+  <name key="CalmeyerP" type="none">
+    <last>Calmeyer</last>
+    <rest>Peter</rest>
+    <aka>Calmeyer, Peter</aka>
+    <init>P.</init>
+  </name>
+  <name key="CanbyJV">
+    <last>Canby</last>
+    <rest>Jeanny Vorys</rest>
+    <aka>Canby, Jeanny Vorys</aka>
+    <init>J.V.</init>
+  </name>
+  <name key="CapliceR">
+    <last>Caplice</last>
+    <rest>R.</rest>
+    <aka>Caplice, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="CarterE" type="none">
+    <last>Carter</last>
+    <rest>Elizabeth</rest>
+    <aka>Carter, Elizabeth</aka>
+    <init>E.</init>
+  </name>
+  <name key="CasaburiMC" type="none">
+    <last>Casaburi</last>
+    <rest>Maria C.</rest>
+    <aka>Casaburi, Maria C.</aka>
+    <init>M.C.</init>
+  </name>
+  <name key="CassinE">
+    <last>Cassin</last>
+    <rest>E.</rest>
+    <aka>Cassin, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="CastellinoGR">
+    <last>Castellino</last>
+    <rest>G. R.</rest>
+    <aka>Castellino, G.</aka>
+    <aka>Castellino, G. R.</aka>
+    <aka>Castellino, G.R.</aka>
+    <init>G.R.</init>
+  </name>
+  <name key="CastilloJS">
+    <last>Castillo</last>
+    <rest>Jorge Silva</rest>
+    <aka>Castillo, Jorge Silva</aka>
+    <init>J.S.</init>
+  </name>
+  <name key="CavigneauxA">
+    <last>Cavigneaux</last>
+    <rest>Antoine</rest>
+    <aka>Cavigneaux, A.</aka>
+    <aka>Cavigneaux, A. </aka>
+    <aka>Cavigneaux, Antoine</aka>
+    <init>A.</init>
+  </name>
+  <name key="CharpinD">
+    <last>Charpin</last>
+    <rest>Dominique</rest>
+    <aka>Charpin, D.</aka>
+    <aka>Charpin, Dominique</aka>
+    <init>D.</init>
+  </name>
+  <name key="ChatmanS">
+    <last>Chatman</last>
+    <rest>S.</rest>
+    <aka>Chatman, S.</aka>
+    <init>S.</init>
+  </name>
+  <name key="ChieraE">
+    <last>Chiera</last>
+    <rest>E.</rest>
+    <aka>Chiera, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="CigM">
+    <last>Cig</last>
+    <rest>Muazzez</rest>
+    <aka>Cig, Muazzez</aka>
+    <aka>Çığ, M</aka>
+    <aka>Çığ, Muazzez</aka>
+    <init>M.</init>
+  </name>
+  <name key="CivilM">
+    <last>Civil</last>
+    <rest>Miguel</rest>
+    <aka>Civil,  Miguel</aka>
+    <aka>Civil, M.</aka>
+    <aka>Civil, Miguel</aka>
+    <init>M.</init>
+  </name>
+  <name key="ClaassenWT" type="none">
+    <last>Claassen</last>
+    <rest>W.T.</rest>
+    <aka>Claassen, W.T.</aka>
+    <init>W.</init>
+  </name>
+  <name key="CoganM">
+    <last>Cogan</last>
+    <rest>Mordechai</rest>
+    <aka>Cogan, M.</aka>
+    <aka>Cogan, Mordechai</aka>
+    <init>M.</init>
+  </name>
+  <name key="CohenC" type="none">
+    <last>Cohen</last>
+    <rest>Chaim</rest>
+    <aka>Cohen, Chaim</aka>
+    <init>C.</init>
+  </name>
+  <name key="CohenME">
+    <last>Cohen</last>
+    <rest>Mark E.</rest>
+    <aka>Cohen, M.E</aka>
+    <aka>Cohen, M.E.</aka>
+    <aka>Cohen, Marc E.</aka>
+    <aka>Cohen, Mark</aka>
+    <aka>Cohen, Mark E.</aka>
+    <init>M.E.</init>
+  </name>
+  <name key="CohenR">
+    <last>Cohen</last>
+    <rest>Ronald</rest>
+    <aka>Cohen, Ralph</aka>
+    <aka>Cohen, Ronald</aka>
+    <init>R.</init>
+  </name>
+  <name key="CohenS">
+    <last>Cohen</last>
+    <rest>Sol</rest>
+    <aka>Cohen, Sol</aka>
+    <init>S.</init>
+  </name>
+  <name key="CohenY" type="none">
+    <last>Cohen</last>
+    <rest>Yoram</rest>
+    <aka>Cohen, Yoram</aka>
+    <init>Y.</init>
+  </name>
+  <name key="CollinsJJ">
+    <last>Collins</last>
+    <rest>John J.</rest>
+    <aka>Collins, John J.</aka>
+    <init>J.J.</init>
+  </name>
+  <name key="CooperJS">
+    <last>Cooper</last>
+    <rest>Jerrold S.</rest>
+    <aka>Cooper, J.S.</aka>
+    <aka>Cooper, Jerrold S.</aka>
+    <init>J.S.</init>
+  </name>
+  <name key="CooperM">
+    <last>Cooper</last>
+    <rest>Marc</rest>
+    <aka>Cooper, Marc</aka>
+    <init>M.</init>
+  </name>
+  <name key="CorneliusX">
+    <last>Cornelius</last>
+    <rest>X.</rest>
+    <aka>Cornelius, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="CornwallPB">
+    <last>Cornwall</last>
+    <rest>P. B.</rest>
+    <aka>Cornwall, P. B.</aka>
+    <aka>Cornwall, X.</aka>
+    <init>P.B.</init>
+  </name>
+  <name key="CourtoisX">
+    <last>Courtois</last>
+    <rest>X.</rest>
+    <aka>Courtois, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="CowgillGL">
+    <last>Cowgill</last>
+    <rest>George L.</rest>
+    <aka>Cowgill, George L.</aka>
+    <init>G.L.</init>
+  </name>
+  <name key="CrawfordVE">
+    <last>Crawford</last>
+    <rest>Vaughn Emerson</rest>
+    <aka>Crawford, Vaughn Emerson</aka>
+    <init>V.E.</init>
+  </name>
+  <name key="CrosG">
+    <last>Cros</last>
+    <rest>Gaston</rest>
+    <aka>Cros, G.</aka>
+    <aka>Cros, Gaston</aka>
+    <init>G.</init>
+  </name>
+  <name key="CunninghamG" type="none">
+    <last>Cunningham</last>
+    <rest>Graham</rest>
+    <aka>Cunningham, Graham</aka>
+    <init>G.</init>
+  </name>
+  <name key="CurtisA">
+    <last>Curtis</last>
+    <rest>Adrian</rest>
+    <aka>Curtis, Adrian</aka>
+    <init>A.</init>
+  </name>
+  <name key="DalleyS">
+    <last>Dalley</last>
+    <rest>Stephanie</rest>
+    <aka>Dalley, Stephanie</aka>
+    <init>S.</init>
+  </name>
+  <name key="DandamaevMA">
+    <last>Dandamaev</last>
+    <rest>Muhammad A.</rest>
+    <aka>Dandamaev, Muhammad A.</aka>
+    <init>M.A.</init>
+  </name>
+  <name key="DavidovicX">
+    <last>Davidovic</last>
+    <rest>X.</rest>
+    <aka>Davidovic, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="DayJ">
+    <last>Day</last>
+    <rest>John</rest>
+    <aka>Day, John</aka>
+    <init>J.</init>
+  </name>
+  <name key="DehesellD" type="none">
+    <last>Dehesell</last>
+    <rest>D.</rest>
+    <aka>Dehesell, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="DeheselleD">
+    <last>Deheselle</last>
+    <rest>D.</rest>
+    <aka>Deheselle, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="DeimelA">
+    <last>Deimel</last>
+    <rest>Anton</rest>
+    <aka>Deimel, A.</aka>
+    <aka>Deimel, Anton</aka>
+    <init>A.</init>
+  </name>
+  <name key="DelneroP">
+    <last>Delnero</last>
+    <rest>Paul</rest>
+    <aka>Delnero, Paul</aka>
+    <init>P.</init>
+  </name>
+  <name key="DemskyA" type="none">
+    <last>Demsky</last>
+    <rest>Aaron</rest>
+    <aka>Demsky, Aaron</aka>
+    <init>A.</init>
+  </name>
+  <name key="Denning-BolleS">
+    <last>Denning-Bolle</last>
+    <rest>Sarah</rest>
+    <aka>Denning-Bolle, Sarah</aka>
+    <init>S.</init>
+  </name>
+  <name key="DepuydtL">
+    <last>Depuydt</last>
+    <rest>Leo</rest>
+    <aka>Depuydt, Leo</aka>
+    <init>L.</init>
+  </name>
+  <name key="DerridaJ">
+    <last>Derrida</last>
+    <rest>Jacques</rest>
+    <aka>Derrida, Jacques</aka>
+    <init>J.</init>
+  </name>
+  <name key="DiakonoffIM">
+    <last>Diakonoff</last>
+    <rest>Igor M.</rest>
+    <aka>Diakonoff, Igor M.</aka>
+    <init>I.M.</init>
+  </name>
+  <name key="DiakonovIM" type="none">
+    <last>Diakonov</last>
+    <rest>Igor Mikhailovich</rest>
+    <aka>Diakonov, Igor Mikhailovich</aka>
+    <init>I.M.</init>
+  </name>
+  <name key="DietrichM">
+    <last>Dietrich</last>
+    <rest>Manfred</rest>
+    <aka>Dietrich, M.</aka>
+    <aka>Dietrich, Manfred</aka>
+    <aka>Dietrich, Manfried</aka>
+    <init>M.</init>
+  </name>
+  <name key="DombrowskiE">
+    <last>Dombrowski</last>
+    <rest>Eva</rest>
+    <aka>Dombrowski, Eva</aka>
+    <init>E.</init>
+  </name>
+  <name key="DonbazV">
+    <last>Donbaz</last>
+    <rest>Veysel</rest>
+    <aka>Donbaz, Veysel</aka>
+    <init>V.</init>
+  </name>
+  <name key="DossinG">
+    <last>Dossin</last>
+    <rest>G.</rest>
+    <aka>Dossin, G.</aka>
+    <aka>Dossin, Georges</aka>
+    <init>G.</init>
+  </name>
+  <name key="DoughertyX">
+    <last>Dougherty</last>
+    <rest>X.</rest>
+    <aka>Dougherty, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="DrewsR">
+    <last>Drews</last>
+    <rest>R.</rest>
+    <aka>Drews, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="DrijversJW">
+    <last>Drijvers</last>
+    <rest>Jan Willem</rest>
+    <aka>Drijvers, Jan Willem</aka>
+    <init>J.W.</init>
+  </name>
+  <name key="DrynjeffK">
+    <last>Drynjeff</last>
+    <rest>K.</rest>
+    <aka>Drynjeff, K.</aka>
+    <init>K.</init>
+  </name>
+  <name key="DunhamS">
+    <last>Dunham</last>
+    <rest>Sally</rest>
+    <aka>Dunham, Sally</aka>
+    <init>S.</init>
+  </name>
+  <name key="DupretMA">
+    <last>Dupret</last>
+    <rest>Marie-Astrid</rest>
+    <aka>Dupret, Marie-Astrid</aka>
+    <init>M.</init>
+  </name>
+  <name key="DurandJM">
+    <last>Durand</last>
+    <rest>Jean-Marie</rest>
+    <aka>Durand, J.-M.</aka>
+    <aka>Durand, Jean-Marie</aka>
+    <init>J.</init>
+  </name>
+  <name key="DyckhoffC">
+    <last>Dyckhoff</last>
+    <rest>Christian</rest>
+    <aka>Dyckhoff, Christian</aka>
+    <init>C.</init>
+  </name>
+  <name key="EbelingE">
+    <last>Ebeling</last>
+    <rest>Erich</rest>
+    <aka>Ebeling, Erich</aka>
+    <init>E.</init>
+  </name>
+  <name key="EdzardDO">
+    <last>Edzard</last>
+    <rest>Dietz Otto</rest>
+    <aka>Edzard, D.O.</aka>
+    <aka>Edzard, Dietz Otto</aka>
+    <aka>Edzard, Dietz O.</aka>
+    <init>D.O.</init>
+  </name>
+  <name key="EhrichRW">
+    <last>Ehrich</last>
+    <rest>Robert W.</rest>
+    <aka>Ehrich, Robert W.</aka>
+    <init>R.W.</init>
+  </name>
+  <name key="EichlerB">
+    <last>Eichler</last>
+    <rest>Barry</rest>
+    <aka>Eichler, Barry</aka>
+    <init>B.</init>
+  </name>
+  <name key="EichlerBL">
+    <last>Eichler</last>
+    <rest>Barry L.</rest>
+    <aka>Eichler, Barry L.</aka>
+    <init>B.L.</init>
+  </name>
+  <name key="EisenstadtSN">
+    <last>Eisenstadt</last>
+    <rest>Shmuel Noah</rest>
+    <aka>Eisenstadt, Shmuel Noah</aka>
+    <init>S.N.</init>
+  </name>
+  <name key="ElatM">
+    <last>Elat</last>
+    <rest>Moshe</rest>
+    <aka>Elat, Moshe</aka>
+    <init>M.</init>
+  </name>
+  <name key="EllisMJ">
+    <last>Ellis</last>
+    <rest>Maria de Jong</rest>
+    <aka>Ellis, Maria de J.</aka>
+    <aka>Ellis, Maria de Jong</aka>
+    <aka>de J.ong Ellis, Maria</aka>
+    <aka>Ellis, Maria deJong</aka>
+    <aka>deJong Ellis, Maria</aka>
+    <init>M.d.J.</init>
+  </name>
+  <name key="EllisR">
+    <last>Ellis</last>
+    <rest>Richard</rest>
+    <aka>Ellis, Richard</aka>
+    <init>R.</init>
+  </name>
+  <name key="EnglundRK" type="none">
+    <last>Englund</last>
+    <rest>Robert K.</rest>
+    <aka>Englund, Robert K.</aka>
+    <init>R.K.</init>
+  </name>
+  <name key="EphalI" type="none">
+    <last>Eph’al</last>
+    <rest>I.</rest>
+    <aka>Eph’al, I.</aka>
+    <aka>Eph`al, Israel</aka>
+    <aka>Eph'al, I.</aka>
+    <aka>EphÊ¿al, Israel</aka>
+    <init>I.</init>
+  </name>
+  <name key="FalkensteinA">
+    <last>Falkenstein</last>
+    <rest>Adam</rest>
+    <aka>Falkenstein, A.</aka>
+    <aka>Falkenstein, Adam</aka>
+    <init>A.</init>
+  </name>
+  <name key="FalkowitzRS">
+    <last>Falkowitz</last>
+    <rest>Robert S.</rest>
+    <aka>Falkowitz, R.</aka>
+    <aka>Falkowitz, R.S.</aka>
+    <aka>Falkowitz, Robert S.</aka>
+    <aka>Falkowitz, R. S.</aka>
+    <init>R.S.</init>
+  </name>
+  <name key="Farber-FlÃ¼ggeG">
+    <last>Farber-FlÃ¼gge</last>
+    <rest>Gertrud</rest>
+    <aka>Farber-FlÃ¼ge, Gertrud</aka>
+    <aka>Farber-FlÃ¼gge, Gertrud</aka>
+    <aka>Farber, Gertrud</aka>
+    <init>G.</init>
+  </name>
+  <name key="FarberW">
+    <last>Farber</last>
+    <rest>Walter</rest>
+    <aka>Farber, Walter</aka>
+    <init>W.</init>
+  </name>
+  <name key="FerraraAJ">
+    <last>Ferrara</last>
+    <rest>A.J.</rest>
+    <aka>Ferrara, A.J.</aka>
+    <aka>Ferrara, A. J.</aka>
+    <init>A.</init>
+  </name>
+  <name key="FinetA">
+    <last>Finet</last>
+    <rest>A.</rest>
+    <aka>Finet, A.</aka>
+    <aka>Finet, André</aka>
+    <init>A.</init>
+  </name>
+  <name key="FinkelIL">
+    <last>Finkel</last>
+    <rest>I.L.</rest>
+    <aka>Finkel, I.L.</aka>
+    <aka>Finkel, I.</aka>
+    <aka>Finkel, Irving</aka>
+    <aka>Finkel, Irving L.</aka>
+    <init>I.</init>
+  </name>
+  <name key="FinkelsteinJJ">
+    <last>Finkelstein</last>
+    <rest>Jacob Joel</rest>
+    <aka>Finkelstein, J.J.</aka>
+    <aka>Finkelstein, Jacob Joel</aka>
+    <init>J.J.</init>
+  </name>
+  <name key="FirmatGPé">
+    <last>Firmat</last>
+    <rest>Gustavo Pérez</rest>
+    <aka>Firmat, Gustavo Pérez</aka>
+    <init>G.P.</init>
+  </name>
+  <name key="FishbaneM">
+    <last>Fishbane</last>
+    <rest>Michael</rest>
+    <aka>Fishbane, M.</aka>
+    <aka>Fishbane, Michael</aka>
+    <init>M.</init>
+  </name>
+  <name key="FlemingD">
+    <last>Fleming</last>
+    <rest>D.</rest>
+    <aka>Fleming, D.</aka>
+    <aka>Fleming, Daniel</aka>
+    <init>D.</init>
+  </name>
+  <name key="Flückiger-HawkerE">
+    <last>Flückiger-Hawker</last>
+    <rest>Esther</rest>
+    <aka>Flückiger-Hawker, Esther</aka>
+    <init>E.</init>
+  </name>
+  <name key="FockeK">
+    <last>Focke</last>
+    <rest>Karen</rest>
+    <aka>Focke, Karen</aka>
+    <init>K.</init>
+  </name>
+  <name key="ForsythN">
+    <last>Forsyth</last>
+    <rest>Neil</rest>
+    <aka>Forsyth, Neil</aka>
+    <init>N.</init>
+  </name>
+  <name key="FosterB">
+    <last>Foster</last>
+    <rest>Benjamin</rest>
+    <aka>Foster, Benjamin</aka>
+    <init>B.</init>
+  </name>
+  <name key="FosterBR">
+    <last>Foster</last>
+    <rest>Benjamin R.</rest>
+    <aka>Foster, Benjamin R.</aka>
+    <init>B.R.</init>
+  </name>
+  <name key="FoucaultM">
+    <last>Foucault</last>
+    <rest>Michel</rest>
+    <aka>Foucault, Michel</aka>
+    <init>M.</init>
+  </name>
+  <name key="FowlerA">
+    <last>Fowler</last>
+    <rest>A.</rest>
+    <aka>Fowler, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="FoxvogD">
+    <last>Foxvog</last>
+    <rest>Daniel</rest>
+    <aka>Foxvog, Daniel</aka>
+    <init>D.</init>
+  </name>
+  <name key="FoxvogDA" type="none">
+    <last>Foxvog</last>
+    <rest>Daniel A.</rest>
+    <aka>Foxvog, Daniel A.</aka>
+    <init>D.A.</init>
+  </name>
+  <name key="FrameG">
+    <last>Frame</last>
+    <rest>Grant</rest>
+    <aka>Frame, Grant</aka>
+    <init>G.</init>
+  </name>
+  <name key="FrankeS">
+    <last>Franke</last>
+    <rest>Sabina</rest>
+    <aka>Franke, Sabina</aka>
+    <init>S.</init>
+  </name>
+  <name key="FrankfortH">
+    <last>Frankfort</last>
+    <rest>Henri</rest>
+    <aka>Frankfort, Henri</aka>
+    <init>H.</init>
+  </name>
+  <name key="FrayneDR">
+    <last>Frayne</last>
+    <rest>Douglas R.</rest>
+    <aka>Frayne, D.</aka>
+    <aka>Frayne, Douglas</aka>
+    <aka>Frayne, Douglas R.</aka>
+    <init>D.R.</init>
+  </name>
+  <name key="FreedmanDN">
+    <last>Freedman</last>
+    <rest>David Noel</rest>
+    <aka>Freedman, David Noel</aka>
+    <aka>Freedman, D. N.</aka>
+    <aka>Freedmen, D. N.</aka>
+    <init>D.N.</init>
+  </name>
+  <name key="FreedmanSM" type="none">
+    <last>Freedman</last>
+    <rest>Sally M.</rest>
+    <aka>Freedman, Sally M.</aka>
+    <init>S.M.</init>
+  </name>
+  <name key="FreydankH">
+    <last>Freydank</last>
+    <rest>Helmut</rest>
+    <aka>Freydank, Helmut</aka>
+    <init>H.</init>
+  </name>
+  <name key="FribergJ">
+    <last>Friberg</last>
+    <rest>J.</rest>
+    <aka>Friberg, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="FritzMM" type="none">
+    <last>Fritz</last>
+    <rest>Michael M.</rest>
+    <aka>Fritz, Michael M.</aka>
+    <init>M.M.</init>
+  </name>
+  <name key="FronzaroliP">
+    <last>Fronzaroli</last>
+    <rest>Pelio</rest>
+    <aka>Fronzaroli, Pelio</aka>
+    <init>P.</init>
+  </name>
+  <name key="FurlaniG" type="none">
+    <last>Furlani</last>
+    <rest>Giuseppe</rest>
+    <aka>Furlani, Giuseppe</aka>
+    <init>G.</init>
+  </name>
+  <name key="FähndrichW" type="none">
+    <last>Fähndrich</last>
+    <rest>Walter</rest>
+    <aka>Fähndrich, Walter</aka>
+    <init>W.</init>
+  </name>
+  <name key="GabbayU">
+    <last>Gabbay</last>
+    <rest>Uri</rest>
+    <aka>Gabbay, Uri</aka>
+    <init>U.</init>
+  </name>
+  <name key="GaddCJ">
+    <last>Gadd</last>
+    <rest>C. J.</rest>
+    <aka>Gadd, C. J.</aka>
+    <aka>Gadd, C.J.</aka>
+    <init>C.J.</init>
+  </name>
+  <name key="GarelliP">
+    <last>Garelli</last>
+    <rest>P.</rest>
+    <aka>Garelli, P.</aka>
+    <aka>Garelli, Paul</aka>
+    <init>P.</init>
+  </name>
+  <name key="GascheH">
+    <last>Gasche</last>
+    <rest>Herman</rest>
+    <aka>Gasche, Herman</aka>
+    <aka>Gasche, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="GelbIJ">
+    <last>Gelb</last>
+    <rest>Ignace Jay</rest>
+    <aka>Gelb, Ignace Jay</aka>
+    <init>I.J.</init>
+  </name>
+  <name key="GellerMJ">
+    <last>Geller</last>
+    <rest>Markham J.</rest>
+    <aka>Geller, M.J.</aka>
+    <aka>Geller, Mark</aka>
+    <aka>Geller, Mark J.</aka>
+    <aka>Geller, Markham J.</aka>
+    <init>M.J.</init>
+  </name>
+  <name key="GenouillacH">
+    <last>Genouillac</last>
+    <rest>H. de</rest>
+    <aka>Genouillac, H. de</aka>
+    <init>H.d.</init>
+  </name>
+  <name key="GeorgeAR">
+    <last>George</last>
+    <rest>Andrew R.</rest>
+    <aka>George, A.</aka>
+    <aka>George, A.R.</aka>
+    <aka>George, Andrew</aka>
+    <aka>George, Andrew R.</aka>
+    <init>A.R.</init>
+  </name>
+  <name key="GeorgeL">
+    <last>George</last>
+    <rest>Lynne</rest>
+    <aka>George, Lynne</aka>
+    <init>L.</init>
+  </name>
+  <name key="GerardiP">
+    <last>Gerardi</last>
+    <rest>Pamela</rest>
+    <aka>Gerardi, Pamela</aka>
+    <init>P.</init>
+  </name>
+  <name key="GeratyLT">
+    <last>Geraty</last>
+    <rest>L.T.</rest>
+    <aka>Geraty, L.T.</aka>
+    <init>L.</init>
+  </name>
+  <name key="GeschePD">
+    <last>Gesche</last>
+    <rest>Petra</rest>
+    <aka>Gesche, Petra D.</aka>
+    <init>P.D.</init>
+  </name>
+  <name key="GhirshmanR">
+    <last>Ghirshman</last>
+    <rest>R.</rest>
+    <aka>Ghirshman, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="GibsonMG">
+    <last>Gibson</last>
+    <rest>McG.uire</rest>
+    <aka>Gibson, McG.uire</aka>
+    <aka>Gibson, McGuire</aka>
+    <init>M.</init>
+  </name>
+  <name key="GlassnerJJ">
+    <last>Glassner</last>
+    <rest>Jean-Jacques</rest>
+    <aka>Glassner, J.-J.</aka>
+    <aka>Glassner, Jean-Jacques</aka>
+    <init>J.</init>
+  </name>
+  <name key="GoedickeH">
+    <last>Goedicke</last>
+    <rest>Hans</rest>
+    <aka>Goedicke, H.</aka>
+    <aka>Goedicke, Hans</aka>
+    <init>H.</init>
+  </name>
+  <name key="GoetzeA">
+    <last>Goetze</last>
+    <rest>Albrecht</rest>
+    <aka>Goetze, Albrecht</aka>
+    <init>A.</init>
+  </name>
+  <name key="GomiT">
+    <last>Gomi</last>
+    <rest>Tohru</rest>
+    <aka>Gomi, Tohru</aka>
+    <init>T.</init>
+  </name>
+  <name key="GoodRM">
+    <last>Good</last>
+    <rest>R.M.</rest>
+    <aka>Good, R.M.</aka>
+    <init>R.</init>
+  </name>
+  <name key="GoossensG">
+    <last>Goossens</last>
+    <rest>G.</rest>
+    <aka>Goossens, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="GordonEI">
+    <last>Gordon</last>
+    <rest>Edmund I.</rest>
+    <aka>Gordon, E.</aka>
+    <aka>Gordon, Edmund I.</aka>
+    <init>E.I.</init>
+  </name>
+  <name key="GordonRP">
+    <last>Gordon</last>
+    <rest>Robert P.</rest>
+    <aka>Gordon, Robert P.</aka>
+    <init>R.P.</init>
+  </name>
+  <name key="GottliebC" type="none">
+    <last>Gottlieb</last>
+    <rest>Claire</rest>
+    <aka>Gottlieb, Claire</aka>
+    <init>C.</init>
+  </name>
+  <name key="GraggGB">
+    <last>Gragg</last>
+    <rest>Gene B.</rest>
+    <aka>Gragg, Gene B.</aka>
+    <init>G.B.</init>
+  </name>
+  <name key="GraysonAK">
+    <last>Grayson</last>
+    <rest>A. Kirk</rest>
+    <aka>Grayson, A. Kirk</aka>
+    <init>A.K.</init>
+  </name>
+  <name key="GrazianiS" type="none">
+    <last>Graziani</last>
+    <rest>Simonetta</rest>
+    <aka>Graziani, Simonetta</aka>
+    <init>S.</init>
+  </name>
+  <name key="GreenMW">
+    <last>Green</last>
+    <rest>Margaret W.</rest>
+    <aka>Green, M.W.</aka>
+    <aka>Green, M.W. </aka>
+    <aka>Green, Margaret W.</aka>
+    <aka>Green, Margaret Whitney</aka>
+    <init>M.W.</init>
+  </name>
+  <name key="GreenfieldJ">
+    <last>Greenfield</last>
+    <rest>Jonas</rest>
+    <aka>Greenfield, Jonas</aka>
+    <init>J.</init>
+  </name>
+  <name key="GronebergBRM">
+    <last>Groneberg</last>
+    <rest>Brigitte R.M.</rest>
+    <aka>Groneberg, Brigitte R.M.</aka>
+    <aka>Groneberg, Brigitte</aka>
+    <init>B.R.</init>
+  </name>
+  <name key="GroszK">
+    <last>Grosz</last>
+    <rest>Katarzyna</rest>
+    <aka>Grosz, Katarzyna</aka>
+    <init>K.</init>
+  </name>
+  <name key="GrotanelliC">
+    <last>Grotanelli</last>
+    <rest>Cristiano</rest>
+    <aka>Grotanelli, Cristiano</aka>
+    <init>C.</init>
+  </name>
+  <name key="GuichardM" type="none">
+    <last>Guichard</last>
+    <rest>MichaÃ«l</rest>
+    <aka>Guichard, MichaÃ«l</aka>
+    <init>M.</init>
+  </name>
+  <name key="GuinanAK">
+    <last>Guinan</last>
+    <rest>Ann K.</rest>
+    <aka>Guinan, Ann</aka>
+    <aka>Guinan, Ann K.</aka>
+    <init>A.K.</init>
+  </name>
+  <name key="GurneyOR">
+    <last>Gurney</last>
+    <rest>Oliver R.</rest>
+    <aka>Gurney, O.R.</aka>
+    <aka>Gurney, Oliver R.</aka>
+    <aka>Gurney, Oliver</aka>
+    <init>O.R.</init>
+  </name>
+  <name key="GuterbockH">
+    <last>Guterbock</last>
+    <rest>H.</rest>
+    <aka>Guterbock, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="GüterbockHG" type="none">
+    <last>Güterbock</last>
+    <rest>Hans G.</rest>
+    <aka>Güterbock, Hans G.</aka>
+    <init>H.G.</init>
+  </name>
+  <name key="HaaseR">
+    <last>Haase</last>
+    <rest>Richard</rest>
+    <aka>Haase, Richard</aka>
+    <init>R.</init>
+  </name>
+  <name key="HaayerG">
+    <last>Haayer</last>
+    <rest>G.</rest>
+    <aka>Haayer, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="HainesRC">
+    <last>Haines</last>
+    <rest>Richard C.</rest>
+    <aka>Haines, Richard C.</aka>
+    <init>R.C.</init>
+  </name>
+  <name key="HallMG">
+    <last>Hall</last>
+    <rest>Mark G.</rest>
+    <aka>Hall, Mark</aka>
+    <aka>Hall, Mark G.</aka>
+    <aka>Hall, Mark Glenn</aka>
+    <init>M.G.</init>
+  </name>
+  <name key="HalloWW">
+    <last>Hallo</last>
+    <rest>William W.</rest>
+    <aka>Hallo, W.H.</aka>
+    <aka>Hallo, W.W.</aka>
+    <aka>Hallo, William H.</aka>
+    <aka>Hallo, William W.</aka>
+    <init>W.W.</init>
+  </name>
+  <name key="HallockR">
+    <last>Hallock</last>
+    <rest>R.</rest>
+    <aka>Hallock, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="HansenDP">
+    <last>Hansen</last>
+    <rest>Donald P.</rest>
+    <aka>Hansen, Donald P.</aka>
+    <init>D.P.</init>
+  </name>
+  <name key="HansmanX">
+    <last>Hansman</last>
+    <rest>X.</rest>
+    <aka>Hansman, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="HarrakA">
+    <last>Harrak</last>
+    <rest>Amir</rest>
+    <aka>Harrak, Amir</aka>
+    <init>A.</init>
+  </name>
+  <name key="HarrisR">
+    <last>Harris</last>
+    <rest>Rivkah</rest>
+    <aka>Harris, Rivkah</aka>
+    <init>R.</init>
+  </name>
+  <name key="HartmanSS">
+    <last>Hartman</last>
+    <rest>Sven S.</rest>
+    <aka>Hartman, Sven S.</aka>
+    <init>S.S.</init>
+  </name>
+  <name key="HartmannB" type="none">
+    <last>Hartmann</last>
+    <rest>B.</rest>
+    <aka>Hartmann, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="HartmannH">
+    <last>Hartmann</last>
+    <rest>Henrike</rest>
+    <aka>Hartmann, Henrike</aka>
+    <init>H.</init>
+  </name>
+  <name key="HauptmannH">
+    <last>Hauptmann</last>
+    <rest>Harald</rest>
+    <aka>Hauptmann, Harald</aka>
+    <aka>Hauptman, Harald</aka>
+    <init>H.</init>
+  </name>
+  <name key="HawkinsJD">
+    <last>Hawkins</last>
+    <rest>J. D.</rest>
+    <aka>Hawkins, J. D.</aka>
+    <init>J.D.</init>
+  </name>
+  <name key="HeckerK">
+    <last>Hecker</last>
+    <rest>Karl</rest>
+    <aka>Hecker, Karl</aka>
+    <init>K.</init>
+  </name>
+  <name key="HeidelA" type="none">
+    <last>Heidel</last>
+    <rest>Alexander</rest>
+    <aka>Heidel, Alexander</aka>
+    <init>A.</init>
+  </name>
+  <name key="HeimerdingerJW">
+    <last>Heimerdinger</last>
+    <rest>Jane W.</rest>
+    <aka>Heimerdinger, Jane W.</aka>
+    <aka>Heimerdinger, Jane</aka>
+    <init>J.W.</init>
+  </name>
+  <name key="HeimpelW">
+    <last>Heimpel</last>
+    <rest>Wolfgang</rest>
+    <aka>Heimpel, W.</aka>
+    <aka>Heimpel, Wolfgang</aka>
+    <init>W.</init>
+  </name>
+  <name key="HeintzJG">
+    <last>Heintz</last>
+    <rest>Jean-Georges</rest>
+    <aka>Heintz, Jean-Georges</aka>
+    <init>J.</init>
+  </name>
+  <name key="HellholmD">
+    <last>Hellholm</last>
+    <rest>David</rest>
+    <aka>Hellholm, David</aka>
+    <init>D.</init>
+  </name>
+  <name key="HerrLG">
+    <last>Herr</last>
+    <rest>L.G.</rest>
+    <aka>Herr, L.G.</aka>
+    <init>L.</init>
+  </name>
+  <name key="HilprechtHV">
+    <last>Hilprecht</last>
+    <rest>Hermann V.</rest>
+    <aka>Hilprecht, Hermann V.</aka>
+    <init>H.V.</init>
+  </name>
+  <name key="HinzW">
+    <last>Hinz</last>
+    <rest>Walther</rest>
+    <aka>Hinz, W.</aka>
+    <aka>Hinz, Walther</aka>
+    <init>W.</init>
+  </name>
+  <name key="HirschH">
+    <last>Hirsch</last>
+    <rest>Hans</rest>
+    <aka>Hirsch, Hans</aka>
+    <init>H.</init>
+  </name>
+  <name key="HoffnerHA">
+    <last>Hoffner</last>
+    <rest>H. A.</rest>
+    <aka>Hoffner, H. A.</aka>
+    <init>H.A.</init>
+  </name>
+  <name key="HolubRC">
+    <last>Holub</last>
+    <rest>Robert C.</rest>
+    <aka>Holub, Robert C.</aka>
+    <init>R.C.</init>
+  </name>
+  <name key="HommelX">
+    <last>Hommel</last>
+    <rest>X.</rest>
+    <aka>Hommel, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="HorowitzW">
+    <last>Horowitz</last>
+    <rest>Wayne</rest>
+    <aka>Horowitz, Wayne</aka>
+    <init>W.</init>
+  </name>
+  <name key="HoustonSD" type="none">
+    <last>Houston</last>
+    <rest>Stephen D.</rest>
+    <aka>Houston, Stephen D.</aka>
+    <init>S.D.</init>
+  </name>
+  <name key="HroudaB">
+    <last>Hrouda</last>
+    <rest>Barthel </rest>
+    <aka>Hrouda, Barthel</aka>
+    <aka>Hrouda, Barthel </aka>
+    <init>B.</init>
+  </name>
+  <name key="HroznýF" type="none">
+    <last>Hrozný</last>
+    <rest>Friedrich</rest>
+    <aka>Hrozný, Friedrich</aka>
+    <init>F.</init>
+  </name>
+  <name key="HruškaB">
+    <last>Hruška</last>
+    <rest>Blahoslav</rest>
+    <aka>Hrushka, B.</aka>
+    <aka>Hruška, Blahoslav</aka>
+    <init>B.</init>
+  </name>
+  <name key="HuberF" type="none">
+    <last>Huber</last>
+    <rest>Fabienne</rest>
+    <aka>Huber, Fabienne</aka>
+    <init>F.</init>
+  </name>
+  <name key="HuehnergardJ">
+    <last>Huehnergard</last>
+    <rest>John</rest>
+    <aka>Huehnergard, John</aka>
+    <init>J.</init>
+  </name>
+  <name key="HungerH">
+    <last>Hunger</last>
+    <rest>Hermann</rest>
+    <aka>Hunger, Hermann</aka>
+    <init>H.</init>
+  </name>
+  <name key="HuntRC">
+    <last>Hunt</last>
+    <rest>Robert C.</rest>
+    <aka>Hunt, Robert C.</aka>
+    <init>R.C.</init>
+  </name>
+  <name key="HurowitzV">
+    <last>Hurowitz</last>
+    <rest>Victor (Avigdor)</rest>
+    <aka>Hurowitz, Victor (Avigdor)</aka>
+    <init>V.(.</init>
+  </name>
+  <name key="HurowitzVA" type="none">
+    <last>Hurowitz</last>
+    <rest>Victor A.</rest>
+    <aka>Hurowitz, Victor A.</aka>
+    <init>V.A.</init>
+  </name>
+  <name key="IdemaEL">
+    <last>Idema</last>
+    <rest>E.L. et al.</rest>
+    <aka>Idema, E.L. et al.</aka>
+    <init>E.e.a.</init>
+  </name>
+  <name key="JacobsenT">
+    <last>Jacobsen</last>
+    <rest>Thorkild</rest>
+    <aka>Jacobsen, T.</aka>
+    <aka>Jacobsen, Th.</aka>
+    <aka>Jacobsen, Thorkild</aka>
+    <init>T.</init>
+  </name>
+  <name key="JagersmaB">
+    <last>Jagersma</last>
+    <rest>B.</rest>
+    <aka>Jagersma, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="Jakob-RostL" type="none">
+    <last>Jakob-Rost</last>
+    <rest>Liane</rest>
+    <aka>Jakob-Rost, Liane</aka>
+    <init>L.</init>
+  </name>
+  <name key="JanssenC">
+    <last>Janssen</last>
+    <rest>C.</rest>
+    <aka>Janssen, C.</aka>
+    <init>C.</init>
+  </name>
+  <name key="JaquesM" type="none">
+    <last>Jaques</last>
+    <rest>Margaret</rest>
+    <aka>Jaques, Margaret</aka>
+    <init>M.</init>
+  </name>
+  <name key="JaussHR">
+    <last>Jauss</last>
+    <rest>H.-R.</rest>
+    <aka>Jauss, H.-R.</aka>
+    <init>H.</init>
+  </name>
+  <name key="JenniE" type="none">
+    <last>Jenni</last>
+    <rest>E.</rest>
+    <aka>Jenni, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="JensenMS">
+    <last>Jensen</last>
+    <rest>M.S.</rest>
+    <aka>Jensen, M.S.</aka>
+    <init>M.</init>
+  </name>
+  <name key="JeyesU">
+    <last>Jeyes</last>
+    <rest>Ulla</rest>
+    <aka>Jeyes, Ulla</aka>
+    <init>U.</init>
+  </name>
+  <name key="JoannÃ¨sF">
+    <last>JoannÃ¨s</last>
+    <rest>F.</rest>
+    <aka>JoannÃ¨s, F.</aka>
+    <aka>JoannÃ¨s, Francis</aka>
+    <init>F.</init>
+  </name>
+  <name key="JoannÃ¨sF" type="none">
+    <last>JoannÃ¨s</last>
+    <rest>Francis</rest>
+    <aka>JoannÃ¨s, Francis</aka>
+    <init>F.</init>
+  </name>
+  <name key="JonesBW">
+    <last>Jones</last>
+    <rest>B.W.</rest>
+    <aka>Jones, B.W.</aka>
+    <init>B.</init>
+  </name>
+  <name key="JonesTB">
+    <last>Jones</last>
+    <rest>Tom B.</rest>
+    <aka>Jones, Tom B.</aka>
+    <init>T.B.</init>
+  </name>
+  <name key="KaiserO">
+    <last>Kaiser</last>
+    <rest>Otto</rest>
+    <aka>Kaiser, Otto</aka>
+    <init>O.</init>
+  </name>
+  <name key="KammenhuberA">
+    <last>Kammenhuber</last>
+    <rest>A.</rest>
+    <aka>Kammenhuber, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="KampKA">
+    <last>Kamp</last>
+    <rest>Kathryn A.</rest>
+    <aka>Kamp, Kathryn A.</aka>
+    <init>K.A.</init>
+  </name>
+  <name key="KampmanAA" type="none">
+    <last>Kampman</last>
+    <rest>A. A.</rest>
+    <aka>Kampman, A. A.</aka>
+    <aka>Kampman, A.A.</aka>
+    <init>A.A.</init>
+  </name>
+  <name key="KantorH">
+    <last>Kantor</last>
+    <rest>Helene</rest>
+    <aka>Kantor, Helene</aka>
+    <init>H.</init>
+  </name>
+  <name key="KappA">
+    <last>Kapp</last>
+    <rest>A.</rest>
+    <aka>Kapp, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="KatzD">
+    <last>Katz</last>
+    <rest>Diana</rest>
+    <aka>Katz, Diana</aka>
+    <aka>Katz, Dina</aka>
+    <init>D.</init>
+  </name>
+  <name key="KatzD" type="none">
+    <last>Katz</last>
+    <rest>Dina</rest>
+    <aka>Katz, Dina</aka>
+    <init>D.</init>
+  </name>
+  <name key="KaufmanS">
+    <last>Kaufman</last>
+    <rest>Stephen</rest>
+    <aka>Kaufman, Stephen</aka>
+    <init>S.</init>
+  </name>
+  <name key="KeckB">
+    <last>Keck</last>
+    <rest>Brian</rest>
+    <aka>Keck, Brian</aka>
+    <init>B.</init>
+  </name>
+  <name key="KeckE" type="none">
+    <last>Keck</last>
+    <rest>Egon</rest>
+    <aka>Keck, Egon</aka>
+    <init>E.</init>
+  </name>
+  <name key="KellerSR" type="none">
+    <last>Keller</last>
+    <rest>Sharon R.</rest>
+    <aka>Keller, Sharon R.</aka>
+    <init>S.R.</init>
+  </name>
+  <name key="KennedyD">
+    <last>Kennedy</last>
+    <rest>Douglas</rest>
+    <aka>Kennedy, Douglas</aka>
+    <init>D.</init>
+  </name>
+  <name key="KestemontX">
+    <last>Kestemont</last>
+    <rest>X.</rest>
+    <aka>Kestemont, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="KienastB">
+    <last>Kienast</last>
+    <rest>Burkhart</rest>
+    <aka>Kienast, Burkhart</aka>
+    <init>B.</init>
+  </name>
+  <name key="KilmerAD">
+    <last>Kilmer</last>
+    <rest>Anne Draffkorn</rest>
+    <aka>Kilmer, A.D.</aka>
+    <aka>Kilmer, Anne Draffkorn</aka>
+    <init>A.D.</init>
+  </name>
+  <name key="KingLW">
+    <last>King</last>
+    <rest>L. W.</rest>
+    <aka>King, L. W.</aka>
+    <aka>King, Leonard W.</aka>
+    <init>L.W.</init>
+  </name>
+  <name key="Kinnier WilsonJV" type="none">
+    <last>Kinnier Wilson</last>
+    <rest>James V.</rest>
+    <aka>Kinnier Wilson, James V.</aka>
+    <init>J.V.</init>
+  </name>
+  <name key="KleinJ">
+    <last>Klein</last>
+    <rest>Jacob</rest>
+    <aka>Klein, Jacob</aka>
+    <init>J.</init>
+  </name>
+  <name key="KlengelE">
+    <last>Klengel</last>
+    <rest>E.</rest>
+    <aka>Klengel, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="KlengelH">
+    <last>Klengel</last>
+    <rest>H.</rest>
+    <aka>Klengel, H.</aka>
+    <aka>Klengel, Horst</aka>
+    <init>H.</init>
+  </name>
+  <name key="KoefoedA">
+    <last>Koefoed</last>
+    <rest>Aase</rest>
+    <aka>Koefoed, Aase</aka>
+    <init>A.</init>
+  </name>
+  <name key="KomoróczyG">
+    <last>Komoróczy</last>
+    <rest>Géza</rest>
+    <aka>Komoróczy, G.</aka>
+    <aka>Komoróczy, Géza</aka>
+    <init>G.</init>
+  </name>
+  <name key="KortA">
+    <last>Kort</last>
+    <rest>Ann</rest>
+    <aka>Kort, Ann</aka>
+    <init>A.</init>
+  </name>
+  <name key="KraelingCH">
+    <last>Kraeling</last>
+    <rest>Carl H.</rest>
+    <aka>Kraeling, Carl H.</aka>
+    <init>C.H.</init>
+  </name>
+  <name key="KramerSN">
+    <last>Kramer</last>
+    <rest>Samuel Noah</rest>
+    <aka>Kramer, S. N.</aka>
+    <aka>Kramer, S.N.</aka>
+    <aka>Kramer, Samuel N.</aka>
+    <aka>Kramer, Samuel Noah</aka>
+    <init>S.N.</init>
+  </name>
+  <name key="KrausFR">
+    <last>Kraus</last>
+    <rest>Fritz Rudolph</rest>
+    <aka>Kraus, F.R.</aka>
+    <aka>Kraus, Fritz Rudolph</aka>
+    <init>F.R.</init>
+  </name>
+  <name key="KrausHJ">
+    <last>Kraus</last>
+    <rest>H.-J.</rest>
+    <aka>Kraus, H.-J.</aka>
+    <init>H.</init>
+  </name>
+  <name key="KrebernikM">
+    <last>Krebernik</last>
+    <rest>Manfred</rest>
+    <aka>Krebernik, Manfred</aka>
+    <aka>Krebernik, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="KrebernikM" type="none">
+    <last>Krebernik</last>
+    <rest>M.</rest>
+    <aka>Krebernik, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="KrecherJ">
+    <last>Krecher</last>
+    <rest>Joachim</rest>
+    <aka>Krecher, J.</aka>
+    <aka>Krecher, Joachim</aka>
+    <init>J.</init>
+  </name>
+  <name key="KrispijnTJH">
+    <last>Krispijn</last>
+    <rest>Th. J. H.</rest>
+    <aka>Krispijn, Th. J. H.</aka>
+    <aka>Krispijn, Th.J.H.</aka>
+    <init>T.J.H.</init>
+  </name>
+  <name key="KuhrtA">
+    <last>Kuhrt</last>
+    <rest>Amélie</rest>
+    <aka>Kuhrt, Amélie</aka>
+    <init>A.</init>
+  </name>
+  <name key="KupperJR">
+    <last>Kupper</last>
+    <rest>Jean-Robert</rest>
+    <aka>Kupper, Jean-Robert</aka>
+    <init>J.</init>
+  </name>
+  <name key="KutscherEY" type="none">
+    <last>Kutscher</last>
+    <rest>E.Y.</rest>
+    <aka>Kutscher, E.Y.</aka>
+    <init>E.</init>
+  </name>
+  <name key="KutscherR">
+    <last>Kutscher</last>
+    <rest>Raphael</rest>
+    <aka>Kutscher, Raphael</aka>
+    <init>R.</init>
+  </name>
+  <name key="KämmererTR" type="none">
+    <last>Kämmerer</last>
+    <rest>Thomas R.</rest>
+    <aka>Kämmerer, Thomas R.</aka>
+    <init>T.R.</init>
+  </name>
+  <name key="KärkiI">
+    <last>Kärki</last>
+    <rest>Ilmari</rest>
+    <aka>Kärki, Ilmari</aka>
+    <init>I.</init>
+  </name>
+  <name key="KöcherF">
+    <last>Köcher</last>
+    <rest>Franz</rest>
+    <aka>Köcher, Franz</aka>
+    <init>F.</init>
+  </name>
+  <name key="KühneH" type="none">
+    <last>Kühne</last>
+    <rest>Hartmut</rest>
+    <aka>Kühne, Hartmut</aka>
+    <init>H.</init>
+  </name>
+  <name key="KÄ±zÄ±lyayH">
+    <last>KÄ±zÄ±lyay</last>
+    <rest>Hatice </rest>
+    <aka>KÄ±zÄ±lyay, Hatice</aka>
+    <aka>KÄ±zÄ±lyay, Hatice </aka>
+    <aka>Kizilyay, Hatice</aka>
+    <aka>KÄ±zÄ±lyay, H.</aka>
+    <aka>Kizilyay, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="LabatR">
+    <last>Labat</last>
+    <rest>René</rest>
+    <aka>Labat, René</aka>
+    <aka>Labat, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="LacerenzaG" type="none">
+    <last>Lacerenza</last>
+    <rest>Giancarlo</rest>
+    <aka>Lacerenza, Giancarlo</aka>
+    <init>G.</init>
+  </name>
+  <name key="LachemanX">
+    <last>Lacheman</last>
+    <rest>X.</rest>
+    <aka>Lacheman, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="LafontB">
+    <last>Lafont</last>
+    <rest>Bertrand</rest>
+    <aka>Lafont, Bertrand</aka>
+    <init>B.</init>
+  </name>
+  <name key="LambertM" type="none">
+    <last>Lambert</last>
+    <rest>Maurice</rest>
+    <aka>Lambert, Maurice</aka>
+    <init>M.</init>
+  </name>
+  <name key="LambertWG">
+    <last>Lambert</last>
+    <rest>Wilfred G.</rest>
+    <aka>Lambert, W.G.</aka>
+    <aka>Lambert, Wilfred G.</aka>
+    <init>W.G.</init>
+  </name>
+  <name key="LandsbergerB">
+    <last>Landsberger</last>
+    <rest>Benno</rest>
+    <aka>Landsberger, Benno</aka>
+    <aka>Landsberger, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="LandsbergerB" type="none">
+    <last>Landsberger</last>
+    <rest>B.</rest>
+    <aka>Landsberger, B.</aka>
+    <init>B.</init>
+  </name>
+  <name key="LangdonS">
+    <last>Langdon</last>
+    <rest>Stephen</rest>
+    <aka>Langdon, S.</aka>
+    <aka>Langdon, Stephen</aka>
+    <init>S.</init>
+  </name>
+  <name key="LarocheE" type="none">
+    <last>Laroche</last>
+    <rest>Emmanuel</rest>
+    <aka>Laroche, Emmanuel</aka>
+    <init>E.</init>
+  </name>
+  <name key="LarsenMT">
+    <last>Larsen</last>
+    <rest>Mogens Trolle</rest>
+    <aka>Larsen, Mogens Trolle</aka>
+    <init>M.T.</init>
+  </name>
+  <name key="LashgariD">
+    <last>Lashgari</last>
+    <rest>D.</rest>
+    <aka>Lashgari, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="LebeauM" type="none">
+    <last>Lebeau</last>
+    <rest>Marc</rest>
+    <aka>Lebeau, Marc</aka>
+    <init>M.</init>
+  </name>
+  <name key="LeeX">
+    <last>Lee</last>
+    <rest>X.</rest>
+    <aka>Lee, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="LeemansWF">
+    <last>Leemans</last>
+    <rest>W. F.</rest>
+    <aka>Leemans, W. F.</aka>
+    <init>W.F.</init>
+  </name>
+  <name key="LeichtyE">
+    <last>Leichty</last>
+    <rest>Erle</rest>
+    <aka>Leichty, Erle</aka>
+    <init>E.</init>
+  </name>
+  <name key="LenzenHJ" type="none">
+    <last>Lenzen</last>
+    <rest>Heinrich J.</rest>
+    <aka>Lenzen, Heinrich J.</aka>
+    <init>H.J.</init>
+  </name>
+  <name key="LerbergheKV">
+    <last>Lerberghe</last>
+    <rest>K. Van</rest>
+    <aka>Lerberghe, K. Van</aka>
+    <aka>Lerberghe, K.Van</aka>
+    <aka>Lerberghe, Karel van</aka>
+    <init>K.V.</init>
+  </name>
+  <name key="LeskoB">
+    <last>Lesko</last>
+    <rest>Barbara</rest>
+    <aka>Lesko, Barbara</aka>
+    <init>B.</init>
+  </name>
+  <name key="LewisTJ">
+    <last>Lewis</last>
+    <rest>Theodore J.</rest>
+    <aka>Lewis, Theodore J.</aka>
+    <init>T.J.</init>
+  </name>
+  <name key="LichtheimM">
+    <last>Lichtheim</last>
+    <rest>Miriam</rest>
+    <aka>Lichtheim, Miriam</aka>
+    <init>M.</init>
+  </name>
+  <name key="LiebermanSJ">
+    <last>Lieberman</last>
+    <rest>Stephen J.</rest>
+    <aka>Lieberman, Stephen J.</aka>
+    <aka>Lieberman, Stephen J. et al</aka>
+    <aka>Lieberman, S.J.</aka>
+    <init>S.J.</init>
+  </name>
+  <name key="LimetH">
+    <last>Limet</last>
+    <rest>Henri</rest>
+    <aka>Limet, H.</aka>
+    <aka>Limet, Henri</aka>
+    <init>H.</init>
+  </name>
+  <name key="LipinskiE">
+    <last>Lipiński</last>
+    <rest>E.</rest>
+    <aka>Lipiński, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="LiveraniM">
+    <last>Liverani</last>
+    <rest>Mario</rest>
+    <aka>Liverani, Mario</aka>
+    <init>M.</init>
+  </name>
+  <name key="LivingstoneA">
+    <last>Livingstone</last>
+    <rest>Alasdair</rest>
+    <aka>Livingstone, Alasdair</aka>
+    <init>A.</init>
+  </name>
+  <name key="LloydJB" type="none">
+    <last>Lloyd</last>
+    <rest>J.B.</rest>
+    <aka>Lloyd, J.B.</aka>
+    <init>J.</init>
+  </name>
+  <name key="LodingD">
+    <last>Loding</last>
+    <rest>Darlene</rest>
+    <aka>Loding, Darlene</aka>
+    <init>D.</init>
+  </name>
+  <name key="LodingDT">
+    <last>Loding</last>
+    <rest>Darlene T.</rest>
+    <aka>Loding, Darlene T.</aka>
+    <aka>Loding, Darlene</aka>
+    <init>D.T.</init>
+  </name>
+  <name key="LoeweM">
+    <last>Loewe</last>
+    <rest>Michael</rest>
+    <aka>Loewe, Michael</aka>
+    <init>M.</init>
+  </name>
+  <name key="LohnertA">
+    <last>Löhnert</last>
+    <rest>Anne</rest>
+    <aka>Löhnert, Anne</aka>
+    <init>A.</init>
+  </name>
+  <name key="LongmanT">
+    <last>Longman</last>
+    <rest>Tremper</rest>
+    <aka>Longman, Tremper</aka>
+    <init>T.</init>
+  </name>
+  <name key="LoretzO">
+    <last>Loretz</last>
+    <rest>Oswald</rest>
+    <aka>Loretz, O.</aka>
+    <aka>Loretz, Oswald</aka>
+    <init>O.</init>
+  </name>
+  <name key="LubetskiM" type="none">
+    <last>Lubetski</last>
+    <rest>Meir</rest>
+    <aka>Lubetski, Meir</aka>
+    <init>M.</init>
+  </name>
+  <name key="LudwigMC">
+    <last>Ludwig</last>
+    <rest>Marie-Christine</rest>
+    <aka>Ludwig, Marie-Christine</aka>
+    <init>M.</init>
+  </name>
+  <name key="LyczkowskaK" type="none">
+    <last>Lyczkowska</last>
+    <rest>K.</rest>
+    <aka>Lyczkowska, K.</aka>
+    <init>K.</init>
+  </name>
+  <name key="LÃ¦ssÅJø">
+    <last>LÃ¦ssÅ</last>
+    <rest>Jørgen</rest>
+    <aka>LÃ¦ssÅ, Jørgen</aka>
+    <init>J.</init>
+  </name>
+  <name key="MaagV" type="none">
+    <last>Maag</last>
+    <rest>V.</rest>
+    <aka>Maag, V.</aka>
+    <init>V.</init>
+  </name>
+  <name key="MacDonaldAA">
+    <last>MacDonald</last>
+    <rest>A. A.</rest>
+    <aka>MacDonald, A. A.</aka>
+    <init>A.A.</init>
+  </name>
+  <name key="MachinistPB">
+    <last>Machinist</last>
+    <rest>Peter B.</rest>
+    <aka>Machinist, Peter B.</aka>
+    <init>P.B.</init>
+  </name>
+  <name key="MaedaT">
+    <last>Maeda</last>
+    <rest>T.</rest>
+    <aka>Maeda, T.</aka>
+    <init>T.</init>
+  </name>
+  <name key="MaekawaK">
+    <last>Maekawa</last>
+    <rest>Kazuko</rest>
+    <aka>Maekawa, Kazuko</aka>
+    <init>K.</init>
+  </name>
+  <name key="MaierJ">
+    <last>Maier</last>
+    <rest>J.</rest>
+    <aka>Maier, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="MaigretX">
+    <last>Maigret</last>
+    <rest>X. de</rest>
+    <aka>Maigret, X. de</aka>
+    <init>X.d.</init>
+  </name>
+  <name key="MalamatA">
+    <last>Malamat</last>
+    <rest>A.</rest>
+    <aka>Malamat, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="Malbran-LabatF">
+    <last>Malbran-Labat</last>
+    <rest>Florence</rest>
+    <aka>Malbran-Labat, Florence</aka>
+    <init>F.</init>
+  </name>
+  <name key="MalulM">
+    <last>Malul</last>
+    <rest>Meir</rest>
+    <aka>Malul, Meir</aka>
+    <init>M.</init>
+  </name>
+  <name key="ManderP">
+    <last>Mander</last>
+    <rest>Pietro</rest>
+    <aka>Mander, Pietro</aka>
+    <init>P.</init>
+  </name>
+  <name key="MarchesiG" type="none">
+    <last>Marchesi</last>
+    <rest>Gianni</rest>
+    <aka>Marchesi, Gianni</aka>
+    <init>G.</init>
+  </name>
+  <name key="MargueronJ">
+    <last>Margueron</last>
+    <rest>J.</rest>
+    <aka>Margueron, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="MarksJH">
+    <last>Marks</last>
+    <rest>J.H.</rest>
+    <aka>Marks, J.H.</aka>
+    <init>J.</init>
+  </name>
+  <name key="MartinH">
+    <last>Martin</last>
+    <rest>Harriet</rest>
+    <aka>Martin, Harriet</aka>
+    <init>H.</init>
+  </name>
+  <name key="MartinHP" type="none">
+    <last>Martin</last>
+    <rest>Harriet P.</rest>
+    <aka>Martin, Harriet P.</aka>
+    <init>H.P.</init>
+  </name>
+  <name key="MaríkT">
+    <last>Marík</last>
+    <rest>Tomáš</rest>
+    <aka>Marík, Tomáš</aka>
+    <init>T.</init>
+  </name>
+  <name key="MatsushimaE">
+    <last>Matsushima</last>
+    <rest>Eiko</rest>
+    <aka>Matsushima, Eiko</aka>
+    <init>E.</init>
+  </name>
+  <name key="MatthewsR" type="none">
+    <last>Matthews</last>
+    <rest>Roger</rest>
+    <aka>Matthews, Roger</aka>
+    <init>R.</init>
+  </name>
+  <name key="MattinglyGL">
+    <last>Mattingly</last>
+    <rest>G.L.</rest>
+    <aka>Mattingly, G.L.</aka>
+    <init>G.</init>
+  </name>
+  <name key="MaulS">
+    <last>Maul</last>
+    <rest>Stefan</rest>
+    <aka>Maul, Stefan</aka>
+    <init>S.</init>
+  </name>
+  <name key="MaulSM">
+    <last>Maul</last>
+    <rest>Stefan M.</rest>
+    <aka>Maul, Stefan M.</aka>
+    <init>S.M.</init>
+  </name>
+  <name key="MayerWR">
+    <last>Mayer</last>
+    <rest>Werner R.</rest>
+    <aka>Mayer, Werner R.</aka>
+    <init>W.R.</init>
+  </name>
+  <name key="McCownDE">
+    <last>McCown</last>
+    <rest>Donald E.</rest>
+    <aka>McCown, Donald E.</aka>
+    <init>D.E.</init>
+  </name>
+  <name key="McCulloughWS">
+    <last>McCullough</last>
+    <rest>William Stewart</rest>
+    <aka>McCullough, William Stewart</aka>
+    <init>W.S.</init>
+  </name>
+  <name key="McCulloughX">
+    <last>McCullough</last>
+    <rest>X.</rest>
+    <aka>McCullough, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="McEwanGP">
+    <last>McEwan</last>
+    <rest>G. P.</rest>
+    <aka>McEwan, G. P.</aka>
+    <init>G.P.</init>
+  </name>
+  <name key="MeadorBS" type="none">
+    <last>Meador</last>
+    <rest>Betty De Shong</rest>
+    <aka>Meador, Betty De Shong</aka>
+    <init>B.D.S.</init>
+  </name>
+  <name key="MeierG" type="none">
+    <last>Meier</last>
+    <rest>Gerhard</rest>
+    <aka>Meier, Gerhard</aka>
+    <init>G.</init>
+  </name>
+  <name key="MeissnerB" type="none">
+    <last>Meissner</last>
+    <rest>Bruno</rest>
+    <aka>Meissner, Bruno</aka>
+    <init>B.</init>
+  </name>
+  <name key="MeyerJ" type="none">
+    <last>Meyer</last>
+    <rest>Jan-Waalke</rest>
+    <aka>Meyer, Jan-Waalke</aka>
+    <init>J.</init>
+  </name>
+  <name key="MichalowskiPA">
+    <last>Michalowski</last>
+    <rest>Piotr A.</rest>
+    <aka>Michalowski, Piotr A.</aka>
+    <aka>Michalowski, P.</aka>
+    <aka>Michalowski, Piotr</aka>
+    <init>P.A.</init>
+  </name>
+  <name key="MilanoL">
+    <last>Milano</last>
+    <rest>Lucio</rest>
+    <aka>Milano, Lucio</aka>
+    <init>L.</init>
+  </name>
+  <name key="MillardAR">
+    <last>Millard</last>
+    <rest>Alan R.</rest>
+    <aka>Millard, A.R.</aka>
+    <aka>Millard, Alan R.</aka>
+    <init>A.R.</init>
+  </name>
+  <name key="MillerPD">
+    <last>Miller, Jr.</last>
+    <rest>Patrick D.</rest>
+    <aka>Jr., Patrick D. Miller,</aka>
+    <init>P.D.</init>
+  </name>
+  <name key="MolinaM" type="none">
+    <last>Molina</last>
+    <rest>Manuel</rest>
+    <aka>Molina, Manuel</aka>
+    <init>M.</init>
+  </name>
+  <name key="MonacoX">
+    <last>Monaco</last>
+    <rest>X.</rest>
+    <aka>Monaco, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="MooreyPRS">
+    <last>Moorey</last>
+    <rest>P. R. S.</rest>
+    <aka>Moorey, P. R. S.</aka>
+    <aka>Moorey, P.R.S</aka>
+    <init>P.R.S.</init>
+  </name>
+  <name key="MoranWL">
+    <last>Moran</last>
+    <rest>William L.</rest>
+    <aka>Moran, W. L.</aka>
+    <aka>Moran, W.L.</aka>
+    <aka>Moran, William L.</aka>
+    <init>W.L.</init>
+  </name>
+  <name key="MorenS">
+    <last>Moren</last>
+    <rest>Sally</rest>
+    <aka>Moren, Sally</aka>
+    <now ref="FreedmanS"/>
+    <init>S.</init>
+  </name>
+  <name key="MoriM">
+    <last>Mori</last>
+    <rest>Masao</rest>
+    <aka>Mori, Masao</aka>
+    <init>M.</init>
+  </name>
+  <name key="MoronyMG">
+    <last>Morony</last>
+    <rest>Michael G.</rest>
+    <aka>Morony, Michael G.</aka>
+    <init>M.G.</init>
+  </name>
+  <name key="MorschauserS">
+    <last>Morschauser</last>
+    <rest>Scott</rest>
+    <aka>Morschauser, Scott</aka>
+    <init>S.</init>
+  </name>
+  <name key="Mullo-WeirCJ">
+    <last>Mullo-Weir</last>
+    <rest>C. J.</rest>
+    <aka>Mullo-Weir, C. J.</aka>
+    <init>C.J.</init>
+  </name>
+  <name key="Na'amanN">
+    <last>Na'aman</last>
+    <rest>N.</rest>
+    <aka>Na'aman, N.</aka>
+    <init>N.</init>
+  </name>
+  <name key="NashefK">
+    <last>Nashef</last>
+    <rest>Khaled</rest>
+    <aka>Nashef, Kh.</aka>
+    <aka>Nashef, Khaled</aka>
+    <init>K.</init>
+  </name>
+  <name key="NassouhiX">
+    <last>Nassouhi</last>
+    <rest>X.</rest>
+    <aka>Nassouhi, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="NasterX">
+    <last>Naster</last>
+    <rest>X</rest>
+    <aka>Naster, X</aka>
+    <init>X</init>
+  </name>
+  <name key="Nemet-NejatKR">
+    <last>Nemet-Nejat</last>
+    <rest>Karen Rhea</rest>
+    <aka>Nemet-Nejat, Karen Rhea</aka>
+    <init>K.R.</init>
+  </name>
+  <name key="NeufeldE">
+    <last>Neufeld</last>
+    <rest>E.</rest>
+    <aka>Neufeld, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="NeugebauerO">
+    <last>Neugebauer</last>
+    <rest>Otto</rest>
+    <aka>Neugebauer, Otto</aka>
+    <init>O.</init>
+  </name>
+  <name key="NeumannH">
+    <last>Neumann</last>
+    <rest>Hans</rest>
+    <aka>Neumann, Hans</aka>
+    <init>H.</init>
+  </name>
+  <name key="NijlandC" type="none">
+    <last>Nijland</last>
+    <rest>C.</rest>
+    <aka>Nijland, C.</aka>
+    <init>C.</init>
+  </name>
+  <name key="NissenH">
+    <last>Nissen</last>
+    <rest>Hans</rest>
+    <aka>Nissen, Hans</aka>
+    <aka>Nissen, H.J.</aka>
+    <init>H.</init>
+  </name>
+  <name key="NissenHJ" type="none">
+    <last>Nissen</last>
+    <rest>Hans J.</rest>
+    <aka>Nissen, Hans J.</aka>
+    <init>H.J.</init>
+  </name>
+  <name key="NothM">
+    <last>Noth</last>
+    <rest>M.</rest>
+    <aka>Noth, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="NougayrolJ">
+    <last>Nougayrol</last>
+    <rest>Jean</rest>
+    <aka>Nougayrol, Jean</aka>
+    <init>J.</init>
+  </name>
+  <name key="OatesD">
+    <last>Oates</last>
+    <rest>D.</rest>
+    <aka>Oates, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="OberhuberX">
+    <last>Oberhuber</last>
+    <rest>X.</rest>
+    <aka>Oberhuber, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="OdenRA">
+    <last>Oden</last>
+    <rest>Robert A.</rest>
+    <aka>Oden, Robert A.</aka>
+    <init>R.A.</init>
+  </name>
+  <name key="OelsnerJ">
+    <last>Oelsner</last>
+    <rest>Joachim</rest>
+    <aka>Oelsner, Joachim</aka>
+    <init>J.</init>
+  </name>
+  <name key="OgawaH">
+    <last>Ogawa</last>
+    <rest>Hideo</rest>
+    <aka>Ogawa, Hideo</aka>
+    <init>H.</init>
+  </name>
+  <name key="OhgamaN">
+    <last>Ohgama</last>
+    <rest>Naoko</rest>
+    <aka>Ohgama, Naoko</aka>
+    <init>N.</init>
+  </name>
+  <name key="OppenheimAL">
+    <last>Oppenheim</last>
+    <rest>A. Leo</rest>
+    <aka>Oppenheim, A. Leo</aka>
+    <init>A.L.</init>
+  </name>
+  <name key="OrlinLL">
+    <last>Orlin</last>
+    <rest>L. L.</rest>
+    <aka>Orlin, L. L.</aka>
+    <init>L.L.</init>
+  </name>
+  <name key="OttenH">
+    <last>Otten</last>
+    <rest>Heinrich</rest>
+    <aka>Otten, Heinrich</aka>
+    <init>H.</init>
+  </name>
+  <name key="OwenDI">
+    <last>Owen</last>
+    <rest>David I.</rest>
+    <aka>Owen, David I.</aka>
+    <init>D.I.</init>
+  </name>
+  <name key="PallisSA">
+    <last>Pallis</last>
+    <rest>Svend Aage</rest>
+    <aka>Pallis, Svend Aage</aka>
+    <init>S.A.</init>
+  </name>
+  <name key="PangasX">
+    <last>Pangas</last>
+    <rest>X.</rest>
+    <aka>Pangas, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="PardeeD" type="none">
+    <last>Pardee</last>
+    <rest>Dennis</rest>
+    <aka>Pardee, Dennis</aka>
+    <init>D.</init>
+  </name>
+  <name key="ParpolaS">
+    <last>Parpola</last>
+    <rest>Simo</rest>
+    <aka>Parpola, Simo</aka>
+    <init>S.</init>
+  </name>
+  <name key="PeatX">
+    <last>Peat</last>
+    <rest>X.</rest>
+    <aka>Peat, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="PedersénO">
+    <last>Pedersén</last>
+    <rest>Olof</rest>
+    <aka>Pedersén, Olof</aka>
+    <init>O.</init>
+  </name>
+  <name key="PeiserFE" type="none">
+    <last>Peiser</last>
+    <rest>F. E.</rest>
+    <aka>Peiser, F. E.</aka>
+    <init>F.E.</init>
+  </name>
+  <name key="PenglaseC">
+    <last>Penglase</last>
+    <rest>Charles</rest>
+    <aka>Penglase, Charles</aka>
+    <init>C.</init>
+  </name>
+  <name key="PettinatoG">
+    <last>Pettinato</last>
+    <rest>Giovanni</rest>
+    <aka>Pettinato, Giovanni</aka>
+    <init>G.</init>
+  </name>
+  <name key="PfeifferR">
+    <last>Pfeiffer</last>
+    <rest>R.</rest>
+    <aka>Pfeiffer, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="PinchesTG" type="none">
+    <last>Pinches</last>
+    <rest>Theophilus G.</rest>
+    <aka>Pinches, Theophilus G.</aka>
+    <init>T.G.</init>
+  </name>
+  <name key="PingreeD">
+    <last>Pingree</last>
+    <rest>D.</rest>
+    <aka>Pingree, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="PoebelA">
+    <last>Poebel</last>
+    <rest>Arno</rest>
+    <aka>Poebel, Arno</aka>
+    <init>A.</init>
+  </name>
+  <name key="PognonX">
+    <last>Pognon</last>
+    <rest>X.</rest>
+    <aka>Pognon, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="PoliakovL">
+    <last>Poliakov</last>
+    <rest>Léon</rest>
+    <aka>Poliakov, Léon</aka>
+    <init>L.</init>
+  </name>
+  <name key="PomponioF">
+    <last>Pomponio</last>
+    <rest>Francesco</rest>
+    <aka>Pomponio, F.</aka>
+    <aka>Pomponio, Francesco</aka>
+    <init>F.</init>
+  </name>
+  <name key="Pongratz-LeistenB" type="none">
+    <last>Pongratz-Leisten</last>
+    <rest>Beate</rest>
+    <aka>Pongratz-Leisten, Beate</aka>
+    <init>B.</init>
+  </name>
+  <name key="PopkaM" type="none">
+    <last>Popka</last>
+    <rest>M.</rest>
+    <aka>Popka, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="PopkoM" type="none">
+    <last>Popko</last>
+    <rest>Maciej</rest>
+    <aka>Popko, Maciej</aka>
+    <init>M.</init>
+  </name>
+  <name key="PoradaE">
+    <last>Porada</last>
+    <rest>Edith</rest>
+    <aka>Porada, Edith</aka>
+    <init>E.</init>
+  </name>
+  <name key="PosnerE">
+    <last>Posner</last>
+    <rest>Ernst</rest>
+    <aka>Posner, Ernst</aka>
+    <init>E.</init>
+  </name>
+  <name key="PostgateJN">
+    <last>Postgate</last>
+    <rest>Julian Nicholas</rest>
+    <aka>Postgate, Julian Nicholas</aka>
+    <aka>Postgate, J. N.</aka>
+    <init>J.N.</init>
+  </name>
+  <name key="PowellMA">
+    <last>Powell</last>
+    <rest>Marvin A.</rest>
+    <aka>Powell, Marvin A.</aka>
+    <aka>Powell, Marvin K.</aka>
+    <init>M.A.</init>
+  </name>
+  <name key="PritchardJB">
+    <last>Pritchard</last>
+    <rest>James B.</rest>
+    <aka>Pritchard, James B.</aka>
+    <init>J.B.</init>
+  </name>
+  <name key="ProseckyJ" type="none">
+    <last>Prosecky</last>
+    <rest>Jirí</rest>
+    <aka>Prosecky, Jirí</aka>
+    <aka>Prosecký, Jiri</aka>
+    <init>J.</init>
+  </name>
+  <name key="QuaegebeurJ">
+    <last>Quaegebeur</last>
+    <rest>Jan</rest>
+    <aka>Quaegebeur, J.</aka>
+    <aka>Quaegebeur, Jan</aka>
+    <init>J.</init>
+  </name>
+  <name key="RaaflaubK" type="none">
+    <last>Raaflaub</last>
+    <rest>K.</rest>
+    <aka>Raaflaub, K.</aka>
+    <init>K.</init>
+  </name>
+  <name key="RabinowP">
+    <last>Rabinow</last>
+    <rest>Paul</rest>
+    <aka>Rabinow, Paul</aka>
+    <init>P.</init>
+  </name>
+  <name key="RaineyAF">
+    <last>Rainey</last>
+    <rest>A. F.</rest>
+    <aka>Rainey, A. F.</aka>
+    <aka>Rainey, A.F.</aka>
+    <init>A.F.</init>
+  </name>
+  <name key="RajmovaX">
+    <last>Rajmova</last>
+    <rest>X.</rest>
+    <aka>Rajmova, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="ReadeJ">
+    <last>Reade</last>
+    <rest>Julian</rest>
+    <aka>Reade, Julian</aka>
+    <init>J.</init>
+  </name>
+  <name key="ReadeJE" type="none">
+    <last>Reade</last>
+    <rest>J. E.</rest>
+    <aka>Reade, J. E.</aka>
+    <init>J.E.</init>
+  </name>
+  <name key="ReinauHö">
+    <last>Reinau</last>
+    <rest>Hansjörg</rest>
+    <aka>Reinau, Hansjörg</aka>
+    <init>H.</init>
+  </name>
+  <name key="ReinerE">
+    <last>Reiner</last>
+    <rest>Erica</rest>
+    <aka>Reiner, Erica</aka>
+    <init>E.</init>
+  </name>
+  <name key="ReininkG">
+    <last>Reinink</last>
+    <rest>G.</rest>
+    <aka>Reinink, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="ReismanDD">
+    <last>Reisman</last>
+    <rest>Daniel David</rest>
+    <aka>Reisman, Daniel</aka>
+    <aka>Reisman, Daniel David</aka>
+    <aka>Reisman, David</aka>
+    <init>D.D.</init>
+  </name>
+  <name key="ReisnerG">
+    <last>Reisner</last>
+    <rest>G.</rest>
+    <aka>Reisner, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="RendsburgG">
+    <last>Rendsburg</last>
+    <rest>Gary</rest>
+    <aka>Rendsburg, Gary</aka>
+    <init>G.</init>
+  </name>
+  <name key="RengerJ">
+    <last>Renger</last>
+    <rest>Johannes</rest>
+    <aka>Renger, Johannes</aka>
+    <init>J.</init>
+  </name>
+  <name key="RichterDA">
+    <last>Richter</last>
+    <rest>David A.</rest>
+    <aka>Richter, David A.</aka>
+    <init>D.A.</init>
+  </name>
+  <name key="RinggrenH">
+    <last>Ringgren</last>
+    <rest>Helmer</rest>
+    <aka>Ringgren, H.</aka>
+    <aka>Ringgren, Helmer</aka>
+    <init>H.</init>
+  </name>
+  <name key="RitterEK">
+    <last>Ritter</last>
+    <rest>Edith K.</rest>
+    <aka>Ritter, Edith K.</aka>
+    <init>E.K.</init>
+  </name>
+  <name key="RobertsJJH">
+    <last>Roberts</last>
+    <rest>J.J.H.</rest>
+    <aka>Roberts, J.J.H.</aka>
+    <init>J.</init>
+  </name>
+  <name key="RobertsJJM">
+    <last>Roberts</last>
+    <rest>J. J. M.</rest>
+    <aka>Roberts, J. J. M.</aka>
+    <init>J.J.M.</init>
+  </name>
+  <name key="RobsonE">
+    <last>Robson</last>
+    <rest>Eleanor</rest>
+    <aka>Robson, Eleanor</aka>
+    <init>E.</init>
+  </name>
+  <name key="Rochberg-HaltonF">
+    <last>Rochberg-Halton</last>
+    <rest>Francesca</rest>
+    <aka>Rochberg-Halton, Francesca</aka>
+    <init>F.</init>
+  </name>
+  <name key="RolligerR" type="none">
+    <last>Rolliger</last>
+    <rest>Robert</rest>
+    <aka>Rolliger, Robert</aka>
+    <init>R.</init>
+  </name>
+  <name key="RosengartenY">
+    <last>Rosengarten</last>
+    <rest>Yvonne</rest>
+    <aka>Rosengarten, Yvonne</aka>
+    <init>Y.</init>
+  </name>
+  <name key="RosmarinA">
+    <last>Rosmarin</last>
+    <rest>Adena</rest>
+    <aka>Rosmarin, Adena</aka>
+    <init>A.</init>
+  </name>
+  <name key="RothM">
+    <last>Roth</last>
+    <rest>Martha Tobi</rest>
+    <aka>Roth, Martha T.</aka>
+    <aka>Roth, Martha Tobi</aka>
+    <aka>Roth, Martha</aka>
+    <init>M.T.</init>
+  </name>
+  <name key="RouaultO">
+    <last>Rouault</last>
+    <rest>Oliver</rest>
+    <aka>Rouault, Oliver</aka>
+    <init>O.</init>
+  </name>
+  <name key="RowtonMB">
+    <last>Rowton</last>
+    <rest>Michael B.</rest>
+    <aka>Rowton, Michael B.</aka>
+    <aka>Rowton, M.B.</aka>
+    <init>M.B.</init>
+  </name>
+  <name key="RubioG" type="none">
+    <last>Rubio</last>
+    <rest>Gonzalo</rest>
+    <aka>Rubio, Gonzalo</aka>
+    <init>G.</init>
+  </name>
+  <name key="RuttenM">
+    <last>Rutten</last>
+    <rest>M.</rest>
+    <aka>Rutten, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="RutzMT" type="none">
+    <last>Rutz</last>
+    <rest>Matthew T.</rest>
+    <aka>Rutz, Matthew T.</aka>
+    <init>M.T.</init>
+  </name>
+  <name key="RyckmansJ" type="none">
+    <last>Ryckmans</last>
+    <rest>J.</rest>
+    <aka>Ryckmans, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="RölligW">
+    <last>Röllig</last>
+    <rest>Wolfgang</rest>
+    <aka>Röllig, W.</aka>
+    <aka>Röllig, Wolfgang</aka>
+    <aka>Röllig, Wolfram</aka>
+    <init>W.</init>
+  </name>
+  <name key="RömerWHP">
+    <last>Römer</last>
+    <rest>Willem Hendrik Ph.</rest>
+    <aka>Römer, W. H. Ph.</aka>
+    <aka>Römer, W.H.Ph.</aka>
+    <aka>Römer, Willem H. Ph.</aka>
+    <aka>Römer, Willem H.Ph.</aka>
+    <aka>Römer, Willem Hendrik Ph.</aka>
+    <init>W.H.P.</init>
+  </name>
+  <name key="SachsA">
+    <last>Sachs</last>
+    <rest>A.</rest>
+    <aka>Sachs, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="SaggsHWF">
+    <last>Saggs</last>
+    <rest>H. W. F.</rest>
+    <aka>Saggs, H. W. F.</aka>
+    <init>H.W.F.</init>
+  </name>
+  <name key="SallabergerW">
+    <last>Sallaberger</last>
+    <rest>Walther</rest>
+    <aka>Sallaberger, Walther</aka>
+    <aka>Sallaberger, Walter</aka>
+    <init>W.</init>
+  </name>
+  <name key="SallabergerW" type="none">
+    <last>Sallaberger</last>
+    <rest>Walter</rest>
+    <aka>Sallaberger, Walter</aka>
+    <init>W.</init>
+  </name>
+  <name key="SalviniX">
+    <last>Salvini</last>
+    <rest>X.</rest>
+    <aka>Salvini, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="Sanati-MullerX">
+    <last>Sanati-Muller</last>
+    <rest>X.</rest>
+    <aka>Sanati-Muller, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="Sancisi-WeerdenburgH">
+    <last>Sancisi-Weerdenburg</last>
+    <rest>H.</rest>
+    <aka>Sancisi-Weerdenburg, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="SandersSL" type="none">
+    <last>Sanders</last>
+    <rest>Seth L.</rest>
+    <aka>Sanders, Seth L.</aka>
+    <init>S.L.</init>
+  </name>
+  <name key="SaporettiC">
+    <last>Saporetti</last>
+    <rest>Claudio</rest>
+    <aka>Saporetti, Claudio</aka>
+    <init>C.</init>
+  </name>
+  <name key="SarkisianX">
+    <last>Sarkisian</last>
+    <rest>X.</rest>
+    <aka>Sarkisian, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="SassmannshausenL">
+    <last>Sassmannshausen</last>
+    <rest>Leonard</rest>
+    <aka>Sassmannshausen, Leonard</aka>
+    <aka>Sassmannshausen, Leonhard</aka>
+    <init>L.</init>
+  </name>
+  <name key="SassmannshausenL" type="none">
+    <last>Sassmannshausen</last>
+    <rest>Leonhard</rest>
+    <aka>Sassmannshausen, Leonhard</aka>
+    <init>L.</init>
+  </name>
+  <name key="SassonJ">
+    <last>Sasson</last>
+    <rest>Jack</rest>
+    <aka>Sasson, Jack</aka>
+    <init>J.</init>
+  </name>
+  <name key="SassonJM" type="none">
+    <last>Sasson</last>
+    <rest>Jack M.</rest>
+    <aka>Sasson, Jack M.</aka>
+    <init>J.M.</init>
+  </name>
+  <name key="SaurenH">
+    <last>Sauren</last>
+    <rest>Herbert</rest>
+    <aka>Sauren, H.</aka>
+    <aka>Sauren, Herbert</aka>
+    <init>H.</init>
+  </name>
+  <name key="ScheilV">
+    <last>Scheil</last>
+    <rest>V.</rest>
+    <aka>Scheil, V.</aka>
+    <init>V.</init>
+  </name>
+  <name key="Schmandt-BesseratD">
+    <last>Schmandt-Besserat</last>
+    <rest>Denise</rest>
+    <aka>Schmandt-Besserat, D.</aka>
+    <aka>Schmandt-Besserat, Denise</aka>
+    <init>D.</init>
+  </name>
+  <name key="SchmidtBB">
+    <last>Schmidt</last>
+    <rest>Brian B.</rest>
+    <aka>Schmidt, Brian B.</aka>
+    <init>B.B.</init>
+  </name>
+  <name key="SchneiderT">
+    <last>Schneider</last>
+    <rest>Tammi Joy</rest>
+    <aka>Schneider, Tammi J.</aka>
+    <init>T.J.</init>
+  </name>
+  <name key="SchretterM">
+    <last>Schretter</last>
+    <rest>Manfred</rest>
+    <aka>Schretter, Manfred</aka>
+    <init>M.</init>
+  </name>
+  <name key="SchwartzG">
+    <last>Schwartz</last>
+    <rest>Glenn</rest>
+    <aka>Schwartz, Glenn</aka>
+    <init>G.</init>
+  </name>
+  <name key="ScurlockJA">
+    <last>Scurlock</last>
+    <rest>J. A.</rest>
+    <aka>Scurlock, J. A.</aka>
+    <aka>Scurlock, JoAnn</aka>
+    <init>J.A.</init>
+  </name>
+  <name key="SefatiY">
+    <last>Sefati</last>
+    <rest>Yitschak</rest>
+    <aka>Sefati, Yitschak</aka>
+    <init>Y.</init>
+  </name>
+  <name key="SeibertI">
+    <last>Seibert</last>
+    <rest>Ilse</rest>
+    <aka>Seibert, Ilse</aka>
+    <init>I.</init>
+  </name>
+  <name key="SelzG">
+    <last>Selz</last>
+    <rest>Gebhard J.</rest>
+    <rest/>
+    <aka>Selz, Gebhard</aka>
+    <aka>Selz, G.J.</aka>
+    <init>G.J.</init>
+  </name>
+  <name key="SelzGJ" type="none">
+    <last>Selz</last>
+    <rest>Gebhard J.</rest>
+    <aka>Selz, Gebhard J.</aka>
+    <init>G.J.</init>
+  </name>
+  <name key="SeminaraS" type="none">
+    <last>Seminara</last>
+    <rest>Stefano</rest>
+    <aka>Seminara, Stefano</aka>
+    <init>S.</init>
+  </name>
+  <name key="SennerWM">
+    <last>Senner</last>
+    <rest>Wayne M.</rest>
+    <aka>Senner, Wayne M.</aka>
+    <init>W.M.</init>
+  </name>
+  <name key="SeuxMJ">
+    <last>Seux</last>
+    <rest>M.-J.</rest>
+    <aka>Seux, M.-J.</aka>
+    <init>M.</init>
+  </name>
+  <name key="ShafferA">
+    <last>Shaffer</last>
+    <rest>Aaron</rest>
+    <aka>Shaffer, A.</aka>
+    <aka>Shaffer, Aaron</aka>
+    <init>A.</init>
+  </name>
+  <name key="Sherwin-WhiteS">
+    <last>Sherwin-White</last>
+    <rest>Susan</rest>
+    <aka>Sherwin-White, Susan</aka>
+    <init>S.</init>
+  </name>
+  <name key="SigristM">
+    <last>Sigrist</last>
+    <rest>Marcel</rest>
+    <aka>Sigrist, Marcel</aka>
+    <init>M.</init>
+  </name>
+  <name key="SjöbergAW">
+    <last>Sjöberg</last>
+    <rest>Åke Waldemar</rest>
+    <aka>Sjöberg, Å.</aka>
+    <aka>Sjöberg, A.W.</aka>
+    <aka>Sjöberg, Å.W.</aka>
+    <aka>Sjöberg, Åke</aka>
+    <aka>Sjöberg, Åke W</aka>
+    <aka>Sjöberg, Ake W.</aka>
+    <aka>Sjöberg, Åke W.</aka>
+    <aka>Sjöberg, Åke Waldemar</aka>
+    <aka>Sjöberg, ÅkeW.</aka>
+    <init>Å.W.</init>
+  </name>
+  <name key="SkaistA">
+    <last>Skaist</last>
+    <rest>Aaron</rest>
+    <aka>Skaist, A.</aka>
+    <aka>Skaist, Aaron</aka>
+    <init>A.</init>
+  </name>
+  <name key="SladekWR">
+    <last>Sladek</last>
+    <rest>William R.</rest>
+    <aka>Sladek, William R.</aka>
+    <init>W.R.</init>
+  </name>
+  <name key="SmithJZ">
+    <last>Smith</last>
+    <rest>Jonathan Z.</rest>
+    <aka>Smith, Jonathan Z.</aka>
+    <init>J.Z.</init>
+  </name>
+  <name key="SmithMS">
+    <last>Smith</last>
+    <rest>Mark S.</rest>
+    <aka>Smith, Mark S.</aka>
+    <init>M.S.</init>
+  </name>
+  <name key="SmithS">
+    <last>Smith</last>
+    <rest>Sidney</rest>
+    <aka>Smith, Sidney</aka>
+    <init>S.</init>
+  </name>
+  <name key="SnellDC">
+    <last>Snell</last>
+    <rest>Daniel C.</rest>
+    <aka>Snell, Daniel</aka>
+    <aka>Snell, Daniel C.</aka>
+    <aka>Snell, D.C.</aka>
+    <init>D.C.</init>
+  </name>
+  <name key="SodenWv" type="none">
+    <last>Soden</last>
+    <rest>Wolfram von</rest>
+    <aka>Soden, Wolfram von</aka>
+    <init>W.v.</init>
+  </name>
+  <name key="SollbergerE">
+    <last>Sollberger</last>
+    <rest>Edmond</rest>
+    <aka>Sollberger, E.</aka>
+    <aka>Sollberger, Edmond</aka>
+    <init>E.</init>
+  </name>
+  <name key="SommerfeldW">
+    <last>Sommerfeld</last>
+    <rest>Walter</rest>
+    <aka>Sommerfeld, Walter</aka>
+    <init>W.</init>
+  </name>
+  <name key="SparI" type="none">
+    <last>Spar</last>
+    <rest>Ira</rest>
+    <aka>Spar, Ira</aka>
+    <init>I.</init>
+  </name>
+  <name key="SperlingS">
+    <last>Sperling</last>
+    <rest>S.</rest>
+    <aka>Sperling, S.</aka>
+    <init>S.</init>
+  </name>
+  <name key="SpycketA">
+    <last>Spycket</last>
+    <rest>A.</rest>
+    <aka>Spycket, A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="StarrI">
+    <last>Starr</last>
+    <rest>Ivan</rest>
+    <aka>Starr, Ivan</aka>
+    <init>I.</init>
+  </name>
+  <name key="SteibleH">
+    <last>Steible</last>
+    <rest>Horst</rest>
+    <aka>Steible, Horst</aka>
+    <init>H.</init>
+  </name>
+  <name key="SteinerG">
+    <last>Steiner</last>
+    <rest>G.</rest>
+    <aka>Steiner, G.</aka>
+    <aka>Steiner, Gerd</aka>
+    <init>G.</init>
+  </name>
+  <name key="SteinkellerP">
+    <last>Steinkeller</last>
+    <rest>Piotr</rest>
+    <aka>Steinkeller, P.</aka>
+    <aka>Steinkeller, P. </aka>
+    <aka>Steinkeller, Piotr</aka>
+    <init>P.</init>
+  </name>
+  <name key="StephensF">
+    <last>Stephens</last>
+    <rest>Ferris</rest>
+    <aka>Stephens, Ferris</aka>
+    <init>F.</init>
+  </name>
+  <name key="StolM">
+    <last>Stol</last>
+    <rest>Marten</rest>
+    <aka>Stol, M.</aka>
+    <aka>Stol, Marten</aka>
+    <init>M.</init>
+  </name>
+  <name key="StolperM">
+    <last>Stolper</last>
+    <rest>Matthew</rest>
+    <aka>Stolper, Matthew</aka>
+    <init>M.</init>
+  </name>
+  <name key="StoneEC">
+    <last>Stone</last>
+    <rest>Elizabeth C.</rest>
+    <aka>Stone, E. C.</aka>
+    <aka>Stone, Elizabeth C.</aka>
+    <aka>Stone, E.C.</aka>
+    <init>E.C.</init>
+  </name>
+  <name key="StreckMP" type="none">
+    <last>Streck</last>
+    <rest>Michael P.</rest>
+    <aka>Streck, Michael P.</aka>
+    <init>M.P.</init>
+  </name>
+  <name key="SullivanBB" type="none">
+    <last>Sullivan</last>
+    <rest>Brian Barry</rest>
+    <aka>Sullivan, Brian Barry</aka>
+    <init>B.B.</init>
+  </name>
+  <name key="SuterCE">
+    <last>Suter</last>
+    <rest>Claudia E.</rest>
+    <aka>Suter, Clauda E.</aka>
+    <aka>Suter, Claudia E.</aka>
+    <init>C.E.</init>
+  </name>
+  <name key="SweetRF">
+    <last>Sweet</last>
+    <rest>Ronald F.</rest>
+    <aka>Sweet, Ronald F.</aka>
+    <init>R.F.</init>
+  </name>
+  <name key="SöhneFB" type="none">
+    <last>Söhne</last>
+    <rest>Ferdinand Berger</rest>
+    <aka>Söhne, Ferdinand Berger</aka>
+    <init>F.B.</init>
+  </name>
+  <name key="SøndergaardS" type="none">
+    <last>Søndergaard</last>
+    <rest>Svend</rest>
+    <aka>Søndergaard, Svend</aka>
+    <init>S.</init>
+  </name>
+  <name key="TadmorH">
+    <last>Tadmor</last>
+    <rest>Hayim</rest>
+    <aka>Tadmor, Hayim</aka>
+    <init>H.</init>
+  </name>
+  <name key="TalonP" type="none">
+    <last>Talon</last>
+    <rest>Philippe</rest>
+    <aka>Talon, Philippe</aka>
+    <init>P.</init>
+  </name>
+  <name key="TanretM">
+    <last>Tanret</last>
+    <rest>M.</rest>
+    <aka>Tanret, M.</aka>
+    <aka>Tanret, Michel</aka>
+    <init>M.</init>
+  </name>
+  <name key="TaylorJ" type="none">
+    <last>Taylor</last>
+    <rest>Jon</rest>
+    <aka>Taylor, Jon</aka>
+    <init>J.</init>
+  </name>
+  <name key="TeixidorJ" type="none">
+    <last>Teixidor</last>
+    <rest>Javier</rest>
+    <aka>Teixidor, Javier</aka>
+    <init>J.</init>
+  </name>
+  <name key="TempleR">
+    <last>Temple</last>
+    <rest>R.</rest>
+    <aka>Temple, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="ThomasDW">
+    <last>Thomas</last>
+    <rest>D. W.</rest>
+    <aka>Thomas, D. W.</aka>
+    <init>D.W.</init>
+  </name>
+  <name key="ThomsenML">
+    <last>Thomsen</last>
+    <rest>Marie-Louise</rest>
+    <aka>Thomsen, Marie-Louise</aka>
+    <init>M.</init>
+  </name>
+  <name key="Thureau-DanginF">
+    <last>Thureau-Dangin</last>
+    <rest>Fr.</rest>
+    <aka>Thureau-Dangin, F.</aka>
+    <aka>Thureau-Dangin, Fr.</aka>
+    <init>F.</init>
+  </name>
+  <name key="TigayJ">
+    <last>Tigay</last>
+    <rest>J.</rest>
+    <aka>Tigay, J.</aka>
+    <init>J.</init>
+  </name>
+  <name key="TinneySJ">
+    <last>Tinney</last>
+    <rest>Stephen John</rest>
+    <aka>Tinney, Steve</aka>
+    <aka>Tinney, Stephen John</aka>
+    <init>S.J.</init>
+  </name>
+  <name key="TodorovT">
+    <last>Todorov</last>
+    <rest>Tzvetan</rest>
+    <aka>Todorov, Tzvetan</aka>
+    <init>T.</init>
+  </name>
+  <name key="TolandJD">
+    <last>Toland</last>
+    <rest>Judith D.</rest>
+    <aka>Toland, Judith D.</aka>
+    <init>J.D.</init>
+  </name>
+  <name key="TournayR">
+    <last>Tournay</last>
+    <rest>R.</rest>
+    <aka>Tournay, R.</aka>
+    <init>R.</init>
+  </name>
+  <name key="TournayRJ">
+    <last>Tournay</last>
+    <rest>R.-J.</rest>
+    <aka>Tournay, R.-J.</aka>
+    <init>R.</init>
+  </name>
+  <name key="TovE">
+    <last>Tov</last>
+    <rest>E.</rest>
+    <aka>Tov, E.</aka>
+    <init>E.</init>
+  </name>
+  <name key="TuncaO">
+    <last>Tunca</last>
+    <rest>O.</rest>
+    <aka>Tunca, O.</aka>
+    <init>O.</init>
+  </name>
+  <name key="TuncaO">
+    <last>Tunca</last>
+    <rest>Ö.</rest>
+    <aka>Tunca, Ö.</aka>
+    <init>Ö.</init>
+  </name>
+  <name key="Ungern-SternbergJü">
+    <last>Ungern-Sternberg</last>
+    <rest>Jürgen von</rest>
+    <aka>Ungern-Sternberg, Jürgen von</aka>
+    <init>J.v.</init>
+  </name>
+  <name key="UrioI" type="none">
+    <last>Urio</last>
+    <rest>Ivanka</rest>
+    <aka>Urio, Ivanka</aka>
+    <init>I.</init>
+  </name>
+  <name key="VanstiphoutHLJ">
+    <last>Vanstiphout</last>
+    <rest>Herman L.J.</rest>
+    <aka>Vanstiphout, H. L. J.</aka>
+    <aka>Vanstiphout, H.L.J.</aka>
+    <aka>Vanstiphout, Herman L.J.</aka>
+    <aka>Vanstiphout, Herman L. J.</aka>
+    <init>H.L.</init>
+  </name>
+  <name key="VeenhofKR">
+    <last>Veenhof</last>
+    <rest>K. R.</rest>
+    <aka>Veenhof, K. R.</aka>
+    <aka>Veenhof, Klaas R.</aka>
+    <aka>Veenhof, K.R.</aka>
+    <init>K.R.</init>
+  </name>
+  <name key="VeldhuisN">
+    <last>Veldhuis</last>
+    <rest>Niek C.</rest>
+    <aka>Veldhuis, N.</aka>
+    <aka>Veldhuis, Niek</aka>
+    <aka>Veldhuis, Niek C.</aka>
+    <init>N.C.</init>
+  </name>
+  <name key="VerSteegR" type="none">
+    <last>VerSteeg</last>
+    <rest>Russ</rest>
+    <aka>VerSteeg, Russ</aka>
+    <init>R.</init>
+  </name>
+  <name key="VerbruggheGP">
+    <last>Verbrugghe</last>
+    <rest>Gerald P.</rest>
+    <aka>Verbrugghe, Gerald P.</aka>
+    <init>G.P.</init>
+  </name>
+  <name key="VerhaarJWM">
+    <last>Verhaar</last>
+    <rest>John W. M.</rest>
+    <aka>Verhaar, John W. M.</aka>
+    <init>J.W.M.</init>
+  </name>
+  <name key="VincenteCA">
+    <last>Vincente</last>
+    <rest>Claudine-Adrienne</rest>
+    <aka>Vincente, Claudine-Adrienne</aka>
+    <init>C.</init>
+  </name>
+  <name key="VisicatoG" type="none">
+    <last>Visicato</last>
+    <rest>Giuseppe</rest>
+    <aka>Visicato, Giuseppe</aka>
+    <init>G.</init>
+  </name>
+  <name key="VitaJ" type="none">
+    <last>Vita</last>
+    <rest>Juan-Pablo</rest>
+    <aka>Vita, Juan-Pablo</aka>
+    <init>J.</init>
+  </name>
+  <name key="VoetG" type="none">
+    <last>Voet</last>
+    <rest>Gabriela</rest>
+    <aka>Voet, Gabriela</aka>
+    <aka>Voet, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="VogelzangM">
+    <last>Vogelzang</last>
+    <rest>Maria E.</rest>
+    <aka>Vogelzang, Maria</aka>
+    <aka>Vogelzang, M.E.</aka>
+    <aka>Vogelzang, Marianna E.</aka>
+    <init>M.E.</init>
+  </name>
+  <name key="VolkK">
+    <last>Volk</last>
+    <rest>Konrad</rest>
+    <aka>Volk, K.</aka>
+    <aka>Volk, Konrad</aka>
+    <init>K.</init>
+  </name>
+  <name key="VolterraE" type="none">
+    <last>Volterra</last>
+    <rest>Edoardo</rest>
+    <aka>Volterra, Edoardo</aka>
+    <init>E.</init>
+  </name>
+  <name key="WaetzoldtH">
+    <last>Waetzoldt</last>
+    <rest>Hartmut</rest>
+    <aka>Waetzoldt, H.</aka>
+    <aka>Waetzoldt, Hartmut</aka>
+    <init>H.</init>
+  </name>
+  <name key="WalcotP">
+    <last>Walcot</last>
+    <rest>Peter</rest>
+    <aka>Walcot, Peter</aka>
+    <init>P.</init>
+  </name>
+  <name key="WalkerCBF">
+    <last>Walker</last>
+    <rest>Christopher B. F.</rest>
+    <aka>Walker, C.B.F.</aka>
+    <aka>Walker, Christopher B. F.</aka>
+    <aka>Walker, C. B. F</aka>
+    <aka>Walker, C.B. F.</aka>
+    <init>C.B.F.</init>
+  </name>
+  <name key="WassermanN" type="none">
+    <last>Wasserman</last>
+    <rest>Nathan</rest>
+    <aka>Wasserman, Nathan</aka>
+    <init>N.</init>
+  </name>
+  <name key="WatersMW" type="none">
+    <last>Waters</last>
+    <rest>M.W.</rest>
+    <aka>Waters, M.W.</aka>
+    <init>M.</init>
+  </name>
+  <name key="WatsonP">
+    <last>Watson</last>
+    <rest>Philip</rest>
+    <aka>Watson, Philip</aka>
+    <init>P.</init>
+  </name>
+  <name key="WatsonWGE">
+    <last>Watson</last>
+    <rest>W.G.E.</rest>
+    <aka>Watson, W.G.E.</aka>
+    <init>W.</init>
+  </name>
+  <name key="WeidnerE">
+    <last>Weidner</last>
+    <rest>Ernst</rest>
+    <aka>Weidner, Ernst</aka>
+    <init>E.</init>
+  </name>
+  <name key="WeinfeldM">
+    <last>Weinfeld</last>
+    <rest>M.</rest>
+    <aka>Weinfeld, M.</aka>
+    <init>M.</init>
+  </name>
+  <name key="WeisbergD">
+    <last>Weisberg</last>
+    <rest>David B.</rest>
+    <aka>Weisberg, David</aka>
+    <aka>Weisberg, D.B.</aka>
+    <aka>Weisberg, David B.</aka>
+    <init>D.B.</init>
+  </name>
+  <name key="WeissH">
+    <last>Weiss</last>
+    <rest>Harvey</rest>
+    <aka>Weiss, Harvey</aka>
+    <init>H.</init>
+  </name>
+  <name key="WeissertE">
+    <last>Weissert</last>
+    <rest>Elnathan</rest>
+    <aka>Weissert, Elnathan</aka>
+    <init>E.</init>
+  </name>
+  <name key="WerrX">
+    <last>Werr</last>
+    <rest>X.</rest>
+    <aka>Werr, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="WestbrookR">
+    <last>Westbrook</last>
+    <rest>Raymond</rest>
+    <aka>Westbrook, Raymond</aka>
+    <init>R.</init>
+  </name>
+  <name key="WestenholzA">
+    <last>Westenholz</last>
+    <rest>Aage</rest>
+    <aka>Westenholz, Aage</aka>
+    <init>A.</init>
+  </name>
+  <name key="WestenholzJG">
+    <last>Westenholz</last>
+    <rest>Joan Goodnick</rest>
+    <aka>Westenholz, J.G.</aka>
+    <aka>Westenholz, Joan Goodnick</aka>
+    <init>J.G.</init>
+  </name>
+  <name key="WhitingRM">
+    <last>Whiting</last>
+    <rest>Robert M.</rest>
+    <aka>Whiting, Robert M.</aka>
+    <init>R.M.</init>
+  </name>
+  <name key="WickershamJM">
+    <last>Wickersham</last>
+    <rest>John M.</rest>
+    <aka>Wickersham, John M.</aka>
+    <init>J.M.</init>
+  </name>
+  <name key="WiggermanFAM">
+    <last>Wiggerman</last>
+    <rest>F. A. M.</rest>
+    <aka>Wiggerman, F. A. M.</aka>
+    <aka>Wiggermann, Frans</aka>
+    <init>F.A.M.</init>
+  </name>
+  <name key="WiggermannFAM" type="none">
+    <last>Wiggermann</last>
+    <rest>F. A. M.</rest>
+    <aka>Wiggermann, F. A. M.</aka>
+    <init>F.A.M.</init>
+  </name>
+  <name key="WilckeC">
+    <last>Wilcke</last>
+    <rest>Claus</rest>
+    <aka>Wilcke, C.</aka>
+    <aka>Wilcke, Cl.</aka>
+    <aka>Wilcke, Claus</aka>
+    <init>C.</init>
+  </name>
+  <name key="WilhelmG">
+    <last>Wilhelm</last>
+    <rest>Gernot</rest>
+    <aka>Wilhelm, Gernot</aka>
+    <init>G.</init>
+  </name>
+  <name key="WilliamsonHGM">
+    <last>Williamson</last>
+    <rest>H. G. M</rest>
+    <aka>Williamson, H. G. M</aka>
+    <aka>Williamson, H.G.M.</aka>
+    <aka>Williamson, H.G.M</aka>
+    <init>H.G.M</init>
+  </name>
+  <name key="WincklerH">
+    <last>Winckler</last>
+    <rest>H.</rest>
+    <aka>Winckler, H.</aka>
+    <aka>Winckler, Hugo</aka>
+    <init>H.</init>
+  </name>
+  <name key="WincklerH" type="none">
+    <last>Winckler</last>
+    <rest>Hugo</rest>
+    <aka>Winckler, Hugo</aka>
+    <init>H.</init>
+  </name>
+  <name key="WinterIJ">
+    <last>Winter</last>
+    <rest>Irene J.</rest>
+    <aka>Winter, Irene J.</aka>
+    <init>I.J.</init>
+  </name>
+  <name key="WinterNT">
+    <last>Winter</last>
+    <rest>Nathan T.</rest>
+    <aka>Winter, Nathan T.</aka>
+    <init>N.T.</init>
+  </name>
+  <name key="WitzelM">
+    <last>Witzel</last>
+    <rest>Maurus</rest>
+    <aka>Witzel, Maurus</aka>
+    <init>M.</init>
+  </name>
+  <name key="WolksteinD">
+    <last>Wolkstein</last>
+    <rest>D.</rest>
+    <aka>Wolkstein, D.</aka>
+    <init>D.</init>
+  </name>
+  <name key="WrightGE" type="none">
+    <last>Wright</last>
+    <rest>G.Ernest</rest>
+    <aka>Wright, G.Ernest</aka>
+    <init>G.</init>
+  </name>
+  <name key="WuY">
+    <last>Wu</last>
+    <rest>Yuhong</rest>
+    <aka>Wu, Yuhong</aka>
+    <init>Y.</init>
+  </name>
+  <name key="WulffE" type="none">
+    <last>Wulff</last>
+    <rest>Ellen</rest>
+    <aka>Wulff, Ellen</aka>
+    <init>E.</init>
+  </name>
+  <name key="WyattN" type="none">
+    <last>Wyatt</last>
+    <rest>N.</rest>
+    <aka>Wyatt, N.</aka>
+    <init>N.</init>
+  </name>
+  <name key="WäflerM" type="none">
+    <last>Wäfler</last>
+    <rest>Markus</rest>
+    <aka>Wäfler, Markus</aka>
+    <init>M.</init>
+  </name>
+  <name key="XellaP" type="none">
+    <last>Xella</last>
+    <rest>Paolo</rest>
+    <aka>Xella, Paolo</aka>
+    <init>P.</init>
+  </name>
+  <name key="YalvacX">
+    <last>Yalvac</last>
+    <rest>X.</rest>
+    <aka>Yalvac, X.</aka>
+    <init>X.</init>
+  </name>
+  <name key="YangZ">
+    <last>Yang</last>
+    <rest>Zhi</rest>
+    <aka>Yang, Zhi</aka>
+    <init>Z.</init>
+  </name>
+  <name key="YoffeeN">
+    <last>Yoffee</last>
+    <rest>Norman</rest>
+    <aka>Yoffee, Norman</aka>
+    <init>N.</init>
+  </name>
+  <name key="YoshikawaM">
+    <last>Yoshikawa</last>
+    <rest>Mamoru</rest>
+    <aka>Yoshikawa, Mamoru</aka>
+    <init>M.</init>
+  </name>
+  <name key="YÄ±ldÄ±zF">
+    <last>YÄ±ldÄ±z</last>
+    <rest>Fatma</rest>
+    <aka>YÄ±ldÄ±z, Fatma</aka>
+    <init>F.</init>
+  </name>
+  <name key="ZaccagniniC">
+    <last>Zaccagnini</last>
+    <rest>C.</rest>
+    <aka>Zaccagnini, C.</aka>
+    <init>C.</init>
+  </name>
+  <name key="ZamoraJ" type="none">
+    <last>Zamora</last>
+    <rest>Jose-Angel</rest>
+    <aka>Zamora, Jose-Angel</aka>
+    <init>J.</init>
+  </name>
+  <name key="ZettlerRL">
+    <last>Zettler</last>
+    <rest>Richard Louis</rest>
+    <aka>Zettler, R.L.</aka>
+    <aka>Zettler, Richard Louis</aka>
+    <aka>Zettler, Richard L.</aka>
+    <init>R.L.</init>
+  </name>
+  <name key="ZgollA">
+    <last>Zgoll</last>
+    <rest>Annette</rest>
+    <aka>Zgoll, Annette</aka>
+    <was ref="GanterA"/>
+    <aka>Zgoll, Anette</aka>
+    <init>A.</init>
+  </name>
+  <name key="ZgollA" type="none">
+    <last>Zgoll</last>
+    <rest>Anette</rest>
+    <aka>Zgoll, Anette</aka>
+    <init>A.</init>
+  </name>
+  <name key="ZimmernH" type="none">
+    <last>Zimmern</last>
+    <rest>H.</rest>
+    <aka>Zimmern, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="ZólyomiG">
+    <last>Zólyomi</last>
+    <rest>Gábor</rest>
+    <aka>Zólyomi, Gábor</aka>
+    <aka>Zólyomi, Gabor</aka>
+    <init>G.</init>
+  </name>
+  <name key="al-FouadiAH">
+    <last>al-Fouadi</last>
+    <rest>Abdul-Hadi</rest>
+    <aka>al-Fouadi, Abdul-Hadi</aka>
+    <aka>Al-Fouadi, Abdul-Hadi A.</aka>
+    <init>A.</init>
+  </name>
+  <name key="al-JadirW">
+    <last>al-Jadir</last>
+    <rest>Walid</rest>
+    <aka>al-Jadir, Walid</aka>
+    <init>W.</init>
+  </name>
+  <name key="d'AgostinoF" type="none">
+    <last>d'Agostino</last>
+    <rest>Franco</rest>
+    <aka>d'Agostino, Franco</aka>
+    <init>F.</init>
+  </name>
+  <name key="ten CateH">
+    <last>ten Cate</last>
+    <rest>H.</rest>
+    <aka>ten Cate, H.</aka>
+    <init>H.</init>
+  </name>
+  <name key="DijkJJA">
+    <last>van Dijk</last>
+    <rest>J. J. A.</rest>
+    <aka>van Dijk, J.</aka>
+    <aka>van Dijk, J. J. A.</aka>
+    <aka>van Dijk, J.A.A.</aka>
+    <aka>van Dijk, J.J.A.</aka>
+    <aka>Dijk, J.J.A. van</aka>
+    <aka>Van Dijk, J. J. A.</aka>
+    <aka>Van Dijk, J A A</aka>
+    <aka>Dijk, Johannes J.A. van</aka>
+    <init>J.J.A.</init>
+  </name>
+  <name key="DrielG">
+    <last>van Driel</last>
+    <rest>G.</rest>
+    <aka>van Driel, G.</aka>
+    <aka>Van Driel, G.</aka>
+    <init>G.</init>
+  </name>
+  <name key="MieroopM">
+    <last>van de Mieroop</last>
+    <rest>Marc</rest>
+    <aka>van de Mieroop, Marc</aka>
+    <init>M.</init>
+  </name>
+  <name key="van der HorstPW">
+    <last>van der Horst</last>
+    <rest>Pieter W.</rest>
+    <aka>van der Horst, Pieter W.</aka>
+    <init>P.W.</init>
+  </name>
+  <name key="van der SpekRJ">
+    <last>van der Spek</last>
+    <rest>R. J.</rest>
+    <aka>van der Spek, R. J.</aka>
+    <init>R.J.</init>
+  </name>
+  <name key="van der ToornK">
+    <last>van der Toorn</last>
+    <rest>Karel</rest>
+    <aka>van der Toorn, Karel</aka>
+    <init>K.</init>
+  </name>
+  <name key="van der WaerdenBL">
+    <last>van der Waerden</last>
+    <rest>B. L.</rest>
+    <aka>van der Waerden, B. L.</aka>
+    <init>B.L.</init>
+  </name>
+  <name key="vanSoldtWH" type="none">
+    <last>vanSoldt</last>
+    <rest>Wilfred H.</rest>
+    <aka>van Soldt, Wilfred H.</aka>
+    <init>W.H.</init>
+  </name>
+  <name key="vanderMeerP" type="none">
+    <last>van der Meer</last>
+    <rest>P.</rest>
+    <aka>van der Meer, P.</aka>
+    <init>P.</init>
+  </name>
+  <name key="von SodenW">
+    <last>von Soden</last>
+    <rest>Wolfram</rest>
+    <aka>von Soden, Wolfram</aka>
+    <init>W.</init>
+  </name>
+  <name key="vonWeiherE" type="none">
+    <last>von Weiher</last>
+    <rest>Egbert</rest>
+    <aka>von Weiher, Egbert</aka>
+    <init>E.</init>
+  </name>
+  <name key="ŁyczkowskaK" type="none">
+    <last>Łyczkowska</last>
+    <rest>Krystyna</rest>
+    <aka>Łyczkowska, Krystyna</aka>
+    <init>K.</init>
+  </name>
+  <name key="ZimmernH">
+    <last>Zimmern</last>
+    <rest>Heinrich</rest>
+    <aka>Zimmern, Heinrich</aka>
+    <init>H.</init>
+  </name>
+</namemap>

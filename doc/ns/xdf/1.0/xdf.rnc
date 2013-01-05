@@ -1,0 +1,120 @@
+default namespace = "http://oracc.org/ns/xdf/1.0"
+namespace dc = "http://purl.org/dc/elements/1.1"
+namespace dcterms = "http://purl.org/dc/terms/"
+namespace xsi = "http://www.w3.org/2001/XMLSchema-instance"
+include "xhtml/rnc/xhtml-strict.rnc" {
+  start = empty
+  title = empty
+}
+
+start &= xdf.doc
+
+xdf.doc =
+  element doc { 
+    attribute index-dir { text }?,
+    attribute html-name { text }?,
+    xdf.meta , xdf.secondary* , xdf.doco 
+  }
+
+xdf.meta =
+  element meta { 
+    element dc:title { text } ,
+    (element dcterms:alternative { text } ,
+     element dcterms:identifier {
+       attribute xsi:type { xsd:anyURI } ,
+       text
+     }
+    )? ,
+    element dc:creator     { text }? ,
+    element dc:date        { text }? ,
+    element dc:publisher   { text }? ,
+    element dc:description { Inline.model }
+  }
+
+xdf.secondary = 
+  element secondary {
+    attribute xml:id { xsd:ID }? ,
+    attribute n { xsd:NCName } ,
+    xdf.meta , 
+    element select { text } ,
+    element output { attribute file { text } }
+  }
+
+xdf.doco = 
+  Block.model* 
+  & (xdf.directory+
+         | (xdf.config* , xdf.schema* , xdf.resources? , xdf.refs?))
+
+xdf.directory =
+  element directory {
+    attribute dirs { token }
+  }
+
+xdf.config =
+  element config {
+    attribute name { xsd:NCName } ,
+    (attribute path { text } | attribute output { "none" }) ,
+    Block.model? ,
+    element for { attribute name { xsd:NCName }}* ,
+    element use { attribute name { xsd:NCName }}* ,
+    element var {
+      attribute name { xsd:NCName } ,
+      attribute type { type.model }? ,
+      attribute times { '*' | '+' | '?' | xsd:integer } ,
+      (text | tablevar)
+    }+
+  }
+
+type.model = ( "^xsd:.*$" | xsd:token )
+
+tablevar =
+  ( element txt { text } ,
+    element key {
+      attribute name { xsd:NCName } ,
+      attribute type { type.model }? ,
+      attribute required { xsd:boolean }?,
+      text
+    }+
+  )
+
+xdf.schema = 
+  element schema { 
+    attribute name   { xsd:NCName } ,
+    attribute uri    { xsd:anyURI } ,
+    (Block.model | rnc)*
+}
+
+rnc =
+  element rnc { 
+    attribute preprocess { xsd:boolean }?,
+    text
+  }
+
+xdf.resources = 
+  element resources {
+    attribute auto { xsd:boolean }? ,
+    attribute sort { xsd:boolean }? ,
+    attribute wrap { xsd:boolean }? ,
+    (Block.model* & xdf.resource)* 
+  }
+
+xdf.resource =
+  element resource {
+    attribute copy { "yes" }? ,
+    attribute href { xsd:anyURI }
+  }
+
+  xdf.refs = element references { 
+      refs.attr | (refs.attr? , refs.model)
+    }
+
+  refs.attr = attribute refs { token }
+
+  refs.model = (Block.model* & refs.elem)* 
+
+  refs.elem = 
+    element ref {
+      attribute name { text } ,
+      ((attribute uri { xsd:anyURI } , text)
+       | element bib { text })
+  }

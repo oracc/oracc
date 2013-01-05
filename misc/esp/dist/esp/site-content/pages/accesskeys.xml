@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+	<esp:name>Access Keys</esp:name>
+	<!-- 	used in e.g. text of navigation links;
+			also processed for use in URLs, so must be unique at its own level in site hierarchy -->
+	<esp:title>Access Keys</esp:title>
+	<!-- 	used in e.g. page titles -->
+
+	
+	<!-- 	used in HTML META tags -->
+
+	<html><head></head><body>
+	
+		<p>Most browsers let you jump to specific pages using access keys defined by a web site. On Windows, you hold down the <kbd>Alt</kbd> key and press the access key. On a Mac, you use <kbd>Ctrl</kbd> in the same way. On some browsers, you then press <kbd>Return</kbd> or <kbd>Enter</kbd>.</p>
+		<p>This site defines the following access keys:</p>
+		
+		<esp:accesskeys-listing/>
+
+	</body></html>
+
+</esp:page>

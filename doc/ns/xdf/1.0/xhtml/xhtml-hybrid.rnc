@@ -1,0 +1,23 @@
+# XHTML Hybrid: a version of XHTML used in CDLG XDF
+
+namespace ns1 = "http://www.w3.org/1999/xhtml"
+
+include "datatypes.rnc" inherit = ns1
+include "attribs.rnc" inherit = ns1
+include "nostart-struct.rnc" inherit = ns1
+include "text.rnc" inherit = ns1
+include "hypertext.rnc" inherit = ns1
+include "list.rnc" inherit = ns1
+include "image.rnc" inherit = ns1
+#include "basic-form.rnc" inherit = ns1
+include "pres.rnc" inherit = ns1
+include "edit.rnc" inherit = ns1
+include "form.rnc" inherit = ns1
+#include "basic-table.rnc" inherit = ns1
+include "table.rnc" inherit = ns1
+include "param.rnc" inherit = ns1
+include "object.rnc" inherit = ns1
+include "meta.rnc" inherit = ns1
+include "link.rnc" inherit = ns1
+include "base.rnc" inherit = ns1
+include "nameident.rnc" inherit = ns1

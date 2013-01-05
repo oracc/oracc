@@ -1,0 +1,294 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: boxincol.tex,v 1.3 1996/09/20 11:29:58 s Exp sjt $
+
+% This module provides routines that balance material in multiple
+% columns and wrap it inside a \vbox.  These routines are not
+% re-entrant, so don't try to put balanced boxes inside balanced 
+% boxes.
+%
+% Usage:
+%
+%	\boxin#1columns{text}: #1 gives the number of columns, text is
+%			       the material that has to be balanced.
+%	\boxcolumns#1: #1 is the number of columns that \balancebox
+%		       should use
+%	\balancebox#1: #1 is a box
+%
+% After \boxin#1columns or \balancebox, the stuff is deposited in an
+% \hbox to\fullhsize on the main list.  If further processing of that 
+% box is needed, it should be possible to pull it off the main list
+% with \lastbox.
+
+\newbox\savedboxincolsb@x
+\newcount\bic@numcols \newbox\boxincolsb@x \newdimen\b@xhsize
+\newif\ifcolumnfill \columnfilltrue
+\newdimen\redo@xtra  \newdimen\c@lshort
+\newif\ifmcolinfo
+\newdimen\c@leverythingsize
+\newbox\reb@lancebox
+\newdimen\columnfuzz	\columnfuzz3pt
+\newdimen\bic@diff@fuzz \bic@diff@fuzz3pt
+\newdimen\lastc@lsize
+\newbox\coltestbox
+\newbox\colsavedbox
+\newdimen\@colmax
+\newif\if@balanceOK
+\newdimen\mincoltarget
+\newdimen\footmincoltarget \footmincoltarget0pt
+\newbox\bic@pushbox \newbox\do@overbox
+
+\newdimen\boxsizedimen
+\def\boxsize#1{\boxsizedimen=\ht#1 \advance\boxsizedimen\dp#1\relax}
+%                \advance\boxsizedimen2\lineskip\relax}
+
+\def\boxin#1columns{\global\bic@numcols=#1
+  \setbox\boxincolsb@x=\vbox\bgroup
+  \aftergroup\balanceb@x
+  \let\next=}
+
+\def\boxcolumns#1{\global\bic@numcols=#1}
+
+\def\balanceb@x{\balancebox\boxincolsb@x
+  \box\boxincolsb@x}
+
+\def\balancebox#1{\dimen@\maxdimen \global\redo@xtra0pt
+  \ifvoid\boxincolsb@x\else
+    \global\setbox\savedboxincolsb@x=\hbox{\box\boxincolsb@x}\fi
+  \ifvoid\boxincolsb@x\else
+    \wlog{MC: balancebox called when \boxincolsb@x is non-void}\fi
+  \b@lanceb@x{#1}\finishb@x
+  \wlog{MC: boxincolsb@x has \ht \the\ht\boxincolsb@x{} and \dp \the\dp\boxincolsb@x}}
+
+\def\b@lanceb@x#1{%
+  \dimen@=\intercolgutter \count255\bic@numcols \advance\count255by-1
+  \ifnum\count255>1\multiply\dimen@ by\count255 \fi
+  \hsize\fullhsize
+  \advance\hsize-\dimen@ \divide\hsize\bic@numcols 
+  \global\b@xhsize\hsize
+
+  \ifoutputtingbalancedcolumns\else
+    \setbox\do@overbox\vbox{\unvcopy#1\relax}\fi
+
+  % trim trailing space
+  \setbox0=\vbox{%
+    \unvbox#1 \loop\unskip\ifdim\lastskip>0pt\repeat}%
+  \setbox\reb@lancebox=\vbox{\unvcopy0}%
+  \dimen255=\ht0 
+%  \advance\dimen255by2\lineskip % fake box depth
+  \advance\dimen255by3pt % fake box depth
+  \advance\dimen255by\redo@xtra
+  \c@leverythingsize\dimen255
+  \set@coltarget
+  \global\@balanceOKtrue
+  \@makecolumns
+  \iftracingmcol
+    \if@balanceOK\message{OK}\else\message{OK false}\fi
+  \fi
+  \if@balanceOK\def\next{\finishb@lance}\else\def\next{\reb@lance}\fi
+%  \def\next{\finishb@lance}%
+  \next}
+
+\def\@makecolumns{%
+  \global\@colmax0pt
+  \splittopskip=\topskip
+  {\vbadness=10000 
+     % \@coltarget = goal height for each column
+     % \count255   = target box for split
+     % \tmpct      = iterations performed
+     % \tmpctb     = # of columns still to be filled
+   \count255=1 \tmpct=0 \tmpctb=\bic@numcols
+   \loop
+     \advance\tmpct1
+     \ifnum\tmpct=\bic@numcols
+       \def\next{\getlastc@l}%
+     \else
+       \def\next{\getcol}%
+     \fi
+     \next
+     \ifnum\tmpct=1
+       \def\next{\xdef\colfirstmark{\splitfirstmark}}%
+     \else
+       \let\next\relax
+     \fi
+     \next
+     \advance\count255 by2 \advance\tmpctb-1 
+   \ifnum\tmpct<\bic@numcols\repeat
+  }%
+  \xdef\collastmark{\splitbotmark}}
+
+% This macro is used inside a loop so it can't use a loop itself,
+% hence the tail-recursion.
+\def\getcol{%
+  \ifdim\ht0<\@coltarget
+    \def\next{\getlastc@l}%
+  \else
+    \def\next{\getc@l}%
+  \fi
+  \next}
+
+\def\getc@l{%\global\setbox\colsavedbox=\copy0 %
+  \global\setbox\count255=\vsplit0 to\@coltarget
+  \wlog{MC: box\the\count255{} set to \the\ht\count255,\the\dp\count255}%
+  \wlog{MC: box0 left with \the\ht0,\the\dp0}%
+%  \setbox\coltestbox=\vbox{\unvbox\count255}%
+%  \boxsize{\coltestbox}%
+%  \advance\boxsizedimen\columnfuzz
+%  \ifdim\boxsizedimen < \@coltarget
+%    \def\next{\getc@lretry}%
+%  \else
+    \def\next{\getc@ldoit}%
+%  \fi
+  \next}
+
+%\def\getc@lretry{\global\setbox0=\copy\colsavedbox
+%  \global\advance\@coltarget1pt \getcol}
+
+\def\getc@ldoit{%
+   \global\setbox\count255=\vbox{\unvbox\count255}%
+%  \global\setbox\count255=\vbox{\unvbox\coltestbox}%
+  \boxsize{\count255}%
+  \set@colmax
+  \ifnum\tmpct=1 \lastc@lsize\boxsizedimen \fi
+  \@checkbalance}
+
+\def\getlastc@l{%
+  \global\setbox\count255=\vbox{\unvbox0}%
+  \boxsize{\count255}%
+  \set@colmax
+  \@checkbalance}
+
+\def\set@colmax{%
+  \ifdim\boxsizedimen > \@colmax
+    \global\@colmax\boxsizedimen
+  \fi}
+
+\newif\ifb@xesaresame \newdimen\testb@xdimen
+
+\def\testb@xsizes#1#2#3{%
+  \testb@xdimen=#1 
+  \advance\testb@xdimen-#2
+  \ifdim\testb@xdimen<0pt
+    \multiply\testb@xdimen-1 
+  \fi
+  \wlog{MC: testb@xsizes \testb@xdimen is \the\testb@xdimen}%
+  \wlog{MC: testb@xsizes \bic@diff@fuzz is \the\bic@diff@fuzz}%
+  \ifdim\testb@xdimen=#3
+    \b@xesaresametrue
+  \else
+    \ifdim\testb@xdimen < #3
+      \b@xesaresametrue
+    \else
+      \b@xesaresamefalse
+    \fi
+  \fi}
+
+\def\@checkbalance{%
+%  \errorcontextlines0
+%  \showthe\lastc@lsize \showthe\mincoltarget \showthe\boxsizedimen
+  \advance\boxsizedimen-\columnfuzz
+  \advance\boxsizedimen-\bic@diff@fuzz
+
+  \testb@xsizes\boxsizedimen\lastc@lsize\bic@diff@fuzz
+
+  \ifb@xesaresame
+    \global\@balanceOKtrue
+  \else
+    \ifdim\boxsizedimen > \lastc@lsize 
+      \advance\boxsizedimen\columnfuzz
+      \advance\boxsizedimen\bic@diff@fuzz
+      \ifdim\boxsizedimen > \lastc@lsize
+        \lastc@lsize\boxsizedimen
+      \fi
+      \global\@balanceOKfalse 
+    \else
+      \advance\boxsizedimen\columnfuzz
+      \advance\boxsizedimen\bic@diff@fuzz
+      \wlog{MC: checkbalance: \@coltarget \the\@coltarget}%
+      \wlog{MC: checkbalance: \boxsizedimen is \the\boxsizedimen}%
+      \wlog{MC: checkbalance: \lastc@lsize is \the\lastc@lsize}%
+      \wlog{MC: checkbalance: \mincoltarget is \the\mincoltarget}%
+      \ifdim\ht\count255 > 0pt
+        \ifdim\boxsizedimen < \mincoltarget
+          \global\@balanceOKfalse
+%      \else
+%        \c@lshort\lastc@lsize
+%        \advance\c@lshort-\boxsizedimen
+%        \ifdim\c@lshort > \baselineskip
+%          \wlog{MC: checkbalance: \c@lshort is \the\c@lshort}%
+%          \global\@balanceOKfalse
+%          \fi
+        \fi
+      \fi
+    \fi
+  \fi}
+
+\def\reb@lance{%
+  \wlog{MC: rebalancing}%
+  \global\setbox0=\vbox{\unvcopy\reb@lancebox}%
+  \global\advance\@coltarget1pt
+  \global\@balanceOKtrue
+  \@makecolumns
+  % If the second box is empty, we can't possibly gain by \reb@lance'ing.
+  % The hard coded \ht3 is a bit of slightly black magic; columns go in 
+  % odd-numbered boxes, so column 2 is box 3.
+  \ifdim\ht3 = 0pt \global\@balanceOKtrue \wlog{MC: rebalance forcing OK true}\fi
+  \if@balanceOK\def\next{\finishb@lance}\else\def\next{\reb@lance}\fi
+  \next}
+
+\def\finishb@lance{{\vbadness10000 %
+  % \count255	= destbox
+  % \tmpctb	= sourcebox
+  % \tmpct	= iterations
+  \count255=0 \tmpct=0 \tmpctb=1
+
+%  \showthe\@colmax
+ 
+  \loop
+    \advance\tmpct1 % advance here so we can test for vfill below
+    \wlog{MC: \ht\tmpctb = \the\ht\tmpctb}%
+    \wlog{MC: \dp\tmpctb = \the\dp\tmpctb}%
+    \global\setbox\count255=
+    \vbox to%\dimen@
+	    \@colmax{\unvbox\tmpctb
+		    \ifcolumnfill
+%		      \ifnum\tmpct=\bic@numcols
+		        %\vskip0pt plus1fil % \vfil(l)?
+			\vfill%\message{filling column}
+%		      \fi
+		    \fi
+		    }%
+    \advance\count255 by2 \advance\tmpctb2 % advance these after box ops
+  \ifnum\tmpct<\bic@numcols\repeat}}
+
+\def\finishb@x{%
+  \count255=0 \tmpct=0
+  \loop \wd\count255=\b@xhsize \advance\count255 by2 \advance\tmpct1
+  \ifnum\tmpct<\bic@numcols \repeat % set \wd all
+  \count255=0 \tmpct=0
+  \global\setbox\boxincolsb@x=\hbox to\fullhsize{%
+    \loop \box\count255 \advance\count255 by2 \advance\tmpct1 
+    \ifnum\tmpct<\bic@numcols \hfil \gutterrule \repeat}% insert all columns
+%  \ifnum\tracingoutput>0 \showbox\boxincolsb@x \showbox255 \fi
+  }
+
+\def\set@coltarget{%
+  \ifcolnobalanceatend
+    \@coltarget=1000pt
+  \else
+    \dimen255\mincoltarget
+    \multiply\dimen255\bic@numcols
+    \ifdim\c@leverythingsize > \dimen255
+      \@coltarget\c@leverythingsize
+      \divide\@coltarget\bic@numcols
+    \else
+      \@coltarget\mincoltarget
+    \fi
+  \fi}
+
+\def\bic@push{\setbox\bic@pushbox=\box\boxincolsb@x}
+\def\bic@pop{\setbox\boxincolsb@x=\box\bic@pushbox}
+
+\endinput

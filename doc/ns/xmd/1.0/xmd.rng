@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/XMD/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="xmd">
+      <choice>
+        <ref name="P.model"/>
+        <ref name="Q.model"/>
+      </choice>
+    </element>
+  </start>
+  <define name="sortcode">
+    <attribute name="c">
+      <data type="integer"/>
+    </attribute>
+  </define>
+  <define name="P.model">
+    <oneOrMore>
+      <element name="catalog">
+        <element name="accession_no">
+          <text/>
+        </element>
+        <element name="accounting_period">
+          <text/>
+        </element>
+        <element name="acquisition_history">
+          <text/>
+        </element>
+        <element name="aka_name">
+          <text/>
+        </element>
+        <element name="alternative_years">
+          <text/>
+        </element>
+        <element name="author">
+          <text/>
+        </element>
+        <element name="author_remarks">
+          <text/>
+        </element>
+        <element name="cdli_collation">
+          <text/>
+        </element>
+        <element name="citation">
+          <text/>
+        </element>
+        <element name="condition_description">
+          <text/>
+        </element>
+        <element name="date_entered">
+          <text/>
+        </element>
+        <element name="date_of_origin">
+          <text/>
+        </element>
+        <element name="date_remarks">
+          <text/>
+        </element>
+        <element name="date_updated">
+          <text/>
+        </element>
+        <element name="dates_referenced">
+          <text/>
+        </element>
+        <element name="db_source">
+          <text/>
+        </element>
+        <element name="designation">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="display_size">
+          <text/>
+        </element>
+        <element name="electronic_publication">
+          <text/>
+        </element>
+        <element name="elevation">
+          <text/>
+        </element>
+        <element name="envelope">
+          <text/>
+        </element>
+        <element name="excavation_no">
+          <text/>
+        </element>
+        <element name="findspot_remarks">
+          <text/>
+        </element>
+        <element name="findspot_square">
+          <text/>
+        </element>
+        <element name="genre">
+          <text/>
+        </element>
+        <element name="height">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="id_text">
+          <data type="NCName"/>
+        </element>
+        <element name="join_information">
+          <text/>
+        </element>
+        <element name="language">
+          <text/>
+        </element>
+        <element name="lineart_up">
+          <text/>
+        </element>
+        <element name="material">
+          <text/>
+        </element>
+        <element name="museum_no">
+          <text/>
+        </element>
+        <element name="object_preservation">
+          <text/>
+        </element>
+        <element name="object_remarks">
+          <text/>
+        </element>
+        <element name="object_type">
+          <text/>
+        </element>
+        <element name="owner">
+          <text/>
+        </element>
+        <element name="period">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="period_remarks">
+          <text/>
+        </element>
+        <element name="primary_publication">
+          <text/>
+        </element>
+        <element name="provenience">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="provenience_remarks">
+          <text/>
+        </element>
+        <element name="publication_date">
+          <text/>
+        </element>
+        <element name="publication_history">
+          <text/>
+        </element>
+        <element name="published_collation">
+          <text/>
+        </element>
+        <element name="seal_id">
+          <text/>
+        </element>
+        <element name="seal_information">
+          <text/>
+        </element>
+        <element name="sigrist_no">
+          <text/>
+        </element>
+        <element name="stratigraphic_level">
+          <text/>
+        </element>
+        <element name="subgenre">
+          <text/>
+        </element>
+        <element name="subgenre_remarks">
+          <text/>
+        </element>
+        <element name="supergenre">
+          <ref name="sortcode"/>
+          <data type="NCName"/>
+        </element>
+        <element name="surface_preservation">
+          <text/>
+        </element>
+        <element name="text_remarks">
+          <text/>
+        </element>
+        <element name="thickness">
+          <text/>
+        </element>
+        <element name="width">
+          <text/>
+        </element>
+        <element name="writing_phase">
+          <text/>
+        </element>
+      </element>
+    </oneOrMore>
+  </define>
+  <define name="Q.model">
+    <oneOrMore>
+      <element name="catalog">
+        <element name="id_composite">
+          <text/>
+        </element>
+        <element name="number">
+          <data type="integer"/>
+        </element>
+        <element name="editions">
+          <text/>
+        </element>
+        <element name="provenience">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="notes">
+          <text/>
+        </element>
+        <element name="tradition">
+          <text/>
+        </element>
+        <element name="name">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="corpus">
+          <text/>
+        </element>
+        <element name="subcorpus">
+          <text/>
+        </element>
+        <element name="genre">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="supergenre">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="period">
+          <ref name="sortcode"/>
+          <text/>
+        </element>
+        <element name="xname">
+          <text/>
+        </element>
+        <element name="xid">
+          <text/>
+        </element>
+        <element name="xurl">
+          <data type="anyURI"/>
+        </element>
+        <element name="last_updated">
+          <text/>
+        </element>
+        <element name="date_entered">
+          <text/>
+        </element>
+      </element>
+    </oneOrMore>
+  </define>
+</grammar>

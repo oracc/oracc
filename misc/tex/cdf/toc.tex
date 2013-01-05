@@ -1,0 +1,259 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: toc.tex,v 0.4 1996/05/27 16:19:43 s Exp $
+
+\newif\iftocpageno \tocpagenotrue
+\newif\ifdotocentry \dotocentrytrue
+\newif\ifskiptoconce
+\newwrite\tocfile \newif\iftocopen
+\def\notoc{\skiptoconcetrue\dotocentryfalse}
+\def\nevertoc{\skiptoconcefalse\dotocentryfalse}
+\def\notocpageno{\tocpagenofalse}
+% write an entry to the toc file. 
+% #1 = level (numeric, numbered from 1)
+% #2 = put page-num or not (t or f) [this argument is ignored]
+% #3 = label for text
+% #4 = text to write
+\def\writet@c#1#2#3#4#5{\edef\next{{#5}}%
+  \expandafter\writet@@\next{#1}{#2}{#3}{#4}}
+%  \iftocopen\else\opentoc\fi
+%  \iftocpageno\def\next{\write\tocfile%
+%    {\noexpand\tocentry#1:t:\the\pageno:#3,\iftocranges#5\fi;}%
+%    \unexpandedwrite\tocfile{#4}%
+%    \write\tocfile{\noexpand\endtocentry}}%
+%  \else\def\next{\tocpagenotrue\write\tocfile%
+%    {\noexpand\tocentry#1:f::#3.\iftocranges#5\fi}%
+%    \unexpandedwrite\tocfile{#4}%
+%    \write\tocfile{\noexpand\endtocentry}}\fi
+%  \next}
+
+\def\writet@@#1#2#3#4#5{%
+  \iftocopen\else\opentoc\fi
+  \iftocpageno\def\next{\write\tocfile%
+    {\noexpand\tocentry#2:t:\the\pageno:#4,\iftocranges#1\fi;}%
+    \unexpandedwrite\tocfile{#5}%
+    \write\tocfile{\noexpand\endtocentry}}%
+  \else\def\next{\tocpagenotrue\write\tocfile%
+    {\noexpand\tocentry#2:f::#4.\iftocranges#1\fi}%
+    \unexpandedwrite\tocfile{#5}%
+    \write\tocfile{\noexpand\endtocentry}}\fi
+  \next}
+
+\def\skipt@c#1#2#3#4#5{\ifskiptoconce\dotocentrytrue\fi}
+\def\writetoc{\ifdotocentry\def\next{\writet@c}\else\def\next{\skipt@c}\fi\next}
+\def\writetocb#1#2#3#4#5{\writetoc{#2}{#3}{#1}{#4}{#5}}
+  
+\def\usetoc{%
+  \iftocopen\closetoc\fi
+  \checkfile{\jobname.toc}%
+  \ifitexists{\global\toc@lastlevel=-1 
+              \tocdimens\tochook\input\jobname.toc\relax}\fi}
+\def\opentoc{\immediate\openout\tocfile=\jobname.toc\relax\global\tocopentrue}
+\def\closetoc{\immediate\closeout\tocfile\global\tocopenfalse}
+
+\newcount\toc@lastlevel
+
+% #1 = level (numeric)
+% #2 = put page-num or not (t or f)
+% #3 = pageno
+% #4 = text for entry
+\def\tocentry#1:{%
+  \ifnum\toc@lastlevel=-1 \def\next{\tocinterinithook}%
+  \else
+    \ifnum\toc@lastlevel=#1 \def\next{\tocintersamehook{#1}}%
+    \else
+      \ifnum\toc@lastlevel>#1 
+        \def\next{\tocinterlowerhook{\toc@lastlevel}{#1}}%
+      \else
+        \def\next{\tocinterhigherhook{\toc@lastlevel}{#1}}%
+      \fi
+    \fi
+  \fi
+  \next
+  \vbox\bgroup\singlespace
+  \global\toc@lastlevel#1
+  \csname toclev\ifcase#1zero\or one\or two\or three\or four\fi\endcsname}
+\def\endtocentry{\endgraf\egroup}
+
+\newcount\tocpagev@l
+\def\gettocpagev@l#1{%
+  \tocpagev@l#1 
+  \edef\tocpv@l{\ifnum\tocpagev@l<0 
+%	        \multiply\tocpagev@l-1 \romannumeral-\tocpagev@l
+	        \romannumeral-\tocpagev@l
+	        \else\number\tocpagev@l\fi}}
+
+\def\tocprintpageno#1{\count255=#1 %\showthe\count255
+  \ifnum\count255<0 
+    \romannumeral-\count255
+  \else
+    \number\count255
+  \fi}
+
+\def\tocdotfillwidth{5pt}
+\def\tocdotfill{\cleaders\hbox to\tocdotfillwidth{\hfil.\hfil}\hfill}
+
+% #1 = put page-num or not (t or f)
+% #2 = pageno
+% #3 = label for entry
+% #4 = text for entry
+\def\toclevzero#1:#2:#3,#4;#5\endtocentry{\def\test{#1}\def\testthree{#3}%
+  \gettocpagev@l{#2}%
+  \noindent\rightskip\toczerorightskip plus1fil
+  \ifx\testthree\empty\else\toczeronumformat{#3}\fi
+  \unskip\hangindent\toczerohang\toczeroformat{\strut\ignorespaces#5\unskip}%
+  \ifx\test\true\def\next{\iftoczerodotfill\tocdotfill\else
+			  \hfill\fi
+			  \parfillskip-\toczerorightskip plus-1fil\relax
+			  \toczeropageformat{\tocpv@l}%
+			  \iftocranges\toczerorangeformat{#2}%
+					{\tocgetrange{0;#4}}\fi}%
+  \else\let\next\relax\fi
+  \next
+  \endtocentry}
+
+\def\toclevone#1:#2:#3,#4;#5\endtocentry{\def\test{#1}\def\testthree{#3}%
+  \gettocpagev@l{#2}%
+  \noindent\rightskip\toconerightskip plus1fil
+  \ifx\testthree\empty\else\toconenumformat{#3}\fi
+  \unskip\hangindent\toconehang\toconeformat{\strut\ignorespaces#5\unskip}%
+  \ifx\test\true\def\next{\iftoconedotfill\tocdotfill\else
+			  \hfill\fi
+			  \parfillskip-\toconerightskip plus-1fil\relax
+			  \toconepageformat{\tocpv@l}%
+			  \iftocranges\toczerorangeformat{#2}{\tocgetrange{1;#4}}\fi}%
+  \else\let\next\relax\fi
+  \next
+  \endtocentry}
+
+\def\toclevtwo#1:#2:#3,#4;#5\endtocentry{\def\test{#1}\def\testthree{#3}%
+  \gettocpagev@l{#2}%
+  \noindent\rightskip\toctworightskip plus1fil
+  \ifx\testthree\empty\else\toctwonumformat{#3}\fi
+  \unskip\hangindent\toctwohang\toctwoformat{\strut\ignorespaces#5\unskip}%
+  \ifx\test\true\def\next{\iftoctwodotfill\tocdotfill\else
+			  \hfill\fi
+			  \parfillskip-\toctworightskip plus-1fil\relax
+			  \toctwopageformat{\tocpv@l}%
+			  \iftocranges\toczerorangeformat{#2}{\tocgetrange{2;#4}}\fi}%
+  \else\let\next\relax\fi
+  \next
+  \endtocentry}
+
+\def\toclevthree#1:#2:#3,#4;#5\endtocentry{\def\test{#1}\def\testthree{#3}%
+  \gettocpagev@l{#2}%
+  \noindent\rightskip\tocthreerightskip plus1fil
+  \ifx\testthree\empty\else\tocthreenumformat{#3}\fi
+  \unskip\hangindent\tocthreehang\tocthreeformat{\strut\ignorespaces#5\unskip}%
+  \ifx\test\true\def\next{\iftocthreedotfill\tocdotfill\else
+			  \hfill\fi
+			  \parfillskip-\tocthreerightskip plus-1fil\relax
+			  \tocthreepageformat{\tocpv@l}%
+			  \iftocranges\toczerorangeformat{#2}{\tocgetrange{3;#4}}\fi}%
+  \else\let\next\relax\fi
+  \next
+  \endtocentry}
+
+\newdimen\toczerorightskip
+\newdimen\toczeroindent
+\newdimen\toczerohang
+\newif\iftoczerodotfill \toczerodotfilltrue
+
+\newdimen\toconerightskip
+\newdimen\toconeindent
+\newdimen\toconehang
+\newif\iftoconedotfill \toconedotfilltrue
+
+\newdimen\toctworightskip
+\newdimen\toctwoindent
+\newdimen\toctwohang
+\newif\iftoctwodotfill \toctwodotfilltrue
+
+\newdimen\tocthreerightskip
+\newdimen\tocthreeindent
+\newdimen\tocthreehang
+\newif\iftocthreedotfill \tocthreedotfilltrue
+
+\def\toczeroformat#1{\bf\expandafter\uppercase{#1}}
+\def\toczeronumformat#1{\hbox to\toczerohang{\bf#1.\hss}}
+\def\toczeropageformat#1{\rm#1}
+\def\toczerorangeformat#1#2{\ifnum#1=#2\else--\tocprintpageno{#2}\fi}
+
+\def\toconeformat#1{\expandafter\uppercase{#1}}
+\def\toconenumformat#1{\hbox to\toconehang{\bf#1.\hss}}
+\def\toconepageformat#1{\rm#1}
+\def\toconerangeformat#1#2{\ifnum#1=#2\else--\tocprintpageno{#2}\fi}
+
+\def\toctwoformat#1{\expandafter\uppercase{#1}}
+\def\toctwonumformat#1{\hbox to\toctwohang{\bf#1.\hss}}
+\def\toctwopageformat#1{\rm#1}
+\def\toctworangeformat#1#2{\ifnum#1=#2\else--\tocprintpageno{#2}\fi}
+
+\def\tocthreeformat#1{\expandafter\uppercase{#1}}
+\def\tocthreenumformat#1{\hbox to\tocthreehang{\bf#1.\hss}}
+\def\tocthreepageformat#1{\rm#1}
+\def\tocthreerangeformat#1#2{\ifnum#1=#2\else--\tocprintpageno{#2}\fi}
+
+\def\tocdimens{%
+  \toczerorightskip48pt
+  \toczeroindent40pt
+  \toczerohang\toczeroindent
+  \toconerightskip48pt
+  \toconeindent40pt
+  \toconehang\toconeindent
+  \toctworightskip48pt
+  \toctwoindent40pt
+  \toctwohang\toctwoindent
+  \tocthreerightskip48pt
+  \tocthreeindent40pt
+  \tocthreehang\tocthreeindent}
+
+\def\tochook{}
+\def\tocinterinithook{}
+\def\tocintersamehook#1{\nointerlineskip\nobreak\vskip10pt}
+\def\tocinterlowerhook#1#2{\nointerlineskip\nobreak\vskip10pt}
+\def\tocinterhigherhook#1#2{\nointerlineskip\nobreak\vskip10pt}
+
+% code to support putting ranges in the TOC
+
+\newif\iftocranges
+\newwrite\tocrangefile
+\def\tocuseranges{\tocrangestrue\openrangefile}
+\def\openrangefile{\readrangefile
+  \immediate\openout\tocrangefile=\jobname.ran\relax}
+\def\readrangefile{\checkfile{\jobname.ran}%
+  \ifitexists{\input\jobname.ran\relax}\fi}
+\def\closerangefile{\immediate\closeout\tocrangefile}
+\def\tocrangedef#1:#2\enddef{\expandafter\gdef\csname toc!#1\endcsname{#2}}
+\def\tocgetrange#1{\csname toc!#1\endcsname}
+
+\def\tocendchapter{\expandafter\tocend@\curr@chapnum;0}
+\def\tocendsection{\expandafter\tocend@\curr@secnum;1}
+\def\tocendsubsection{\expandafter\tocend@\curr@subsecnum;2}
+\def\tocendsubsubsection{\expandafter\tocend@\curr@subsubsecnum;3}
+\def\tocend@#1;#2{%
+  \write\tocrangefile{\noexpand\tocrangedef
+		      #2;#1:\the\pageno
+		      \noexpand\enddef}}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: toc.tex,v $
+Revision 0.4  1996/05/27 16:19:43  s
+*** empty log message ***
+
+% Revision 0.3  1995/06/16  10:40:36  s
+% \usetoc now checks that \jobname.toc exists before trying to read it
+%
+% Revision 0.2  1995/02/24  13:42:50  s
+% added \nevertoc command to suppress all writes to toc file
+%
+% renamed \nopageno to \notocpageno
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

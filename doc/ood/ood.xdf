@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>OOD</dc:title>
+  <dcterms:alternative>Oracc Open Data</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an introduction to Open Data
+  on Oracc and also serves as a guide to the various pieces of
+  documentation about the OOD.</dc:description>
+</d:meta>
+
+<p>The implementation of comprehensive, systematic Open Data access
+for Oracc is planned as a multi-phase operation.  In the first phase
+the intention is to provide stable, consistently organized web
+addresses for all of Oracc's most important data.  Future phases will
+increase the extent of this implementation and add semantically-based
+access and discovery.</p>
+
+<h1>Concepts</h1>
+
+<p>In order to understand Open Data it is useful to be familiar with
+the following basic concepts and how Oracc understands them:</p>
+
+<dl>
+<dt>Resource</dt><dd>Any kind of data point in Oracc from a project to
+a word instance.  The resources involved in OOD are described in the
+<a href="/doc/ood/resources/">OOD resources document</a>.</dd>
+
+<dt>URN: Uniform Resource Name</dt><dd>a subset of URIs which define a
+persistent, unique name for a resource without implying anything about any
+possible locations of the resource.  The Oracc URN scheme is described
+in the <a href="/doc/ood/urns/">OOD URN document.</a></dd>
+
+<dt>URI: Uniform Resource Identifier</dt><dd>a URI is a string which
+identifies a name or resource.  In the OOD documentation we generally
+use the term URI in a restricted sense to refer to the http-based
+URIs which provide the public access methods to OOD and which are
+described in the <a href="/doc/ood/uris/">OOD URI document</a>.</dd>
+
+<dt>URL: Uniform
+Resource Locator</dt><dd>a subset of URIs which is used in Oracc only
+to refer to file-resources which are referred to directly by the
+URL.</dd>
+</dl>
+
+<h1>Reading Order</h1>
+
+<p>If you are new to the OOD you will likely benefit most from reading
+the documentation in the following order:</p>
+
+<ul>
+  <li><a href="/doc/ood/uri-patterns/">Oracc URI Patterns</a></li>
+  <li><a href="/doc/ood/resources/">Oracc Resources</a></li>
+  <li><a href="/doc/ood/urns">OOD URNs</a></li>
+  <li><a href="/doc/ood/uris">OOD URIs</a></li>
+  <li><a href="/doc/ood/uri-text/">URIs for texts</a></li>
+</ul>
+
+<p>The Patterns document does depend on an understanding of the
+Resources, URNs and URIs documents, but nevertheless some familiarity
+with the patterns will probably clarify the verbiage of the other pages.</p>
+
+</d:doc>

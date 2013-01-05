@@ -1,0 +1,114 @@
+Oracc Discourse Model
+=====================
+
+The Oracc Discourse Model is the way Oracc views the combination of
+elements that make up an ancient text, be it the collection of
+inscribed material on a particular object or the virtual
+reconstruction which we normally call a 'composite'.  
+
+The model divides discourse into two broad categories: units and
+features. Units are a block category and are containers of parts of a
+text, while features are collections of language-elements which may be
+discontinuous.
+
+
+Discourse Units
+---------------
+
+Top Level
+*********
+
+At the top level is the TEXT unit, which may be repeated (for example
+on exercise texts and collective tablets).
+
+The ATF tag for TEXT is @text.
+
+Second Level
+************
+
+At the next level are BODY and META units:
+
+	BODY: the text content proper--often a transaction or a narrative
+
+	META: anything other than the text
+
+BODY may be discontinuous, that is, it may be interspersed with META
+blocks.  In this case, the BODY text as seen by linguistic processors
+is the concatenated content of all the BODY units without the
+intervention of the META units.
+
+In the case of multilingual texts, a BODY unit is generated for each
+language.  Partial treatments of the BODY in a language should be
+marked (DEFINE HOW).
+
+METAS
+-----
+
+The syntax of a META tag in ATF is:
+
+ @meta RELN NAME
+
+METAs are considered to exist in some specified relationship (RELN) to
+the BODY. These relationships are:
+
+	FUNC: the META is functionally related to the BODY
+	DATA: the META provides metadata about the
+	      the text or production process
+	NONE: the META is independent
+
+The NAMEs of several common METAs are available as shorthands:
+
+	@witnesses  = @meta func witnesses
+
+	@sealings =   @meta func sealings (should really use
+		      	    signatures instead)
+
+	@signatures = @meta func signatures
+
+	@colophon   = @meta data colophon
+
+Others may be given after the META tag following the relator
+designation.
+
+Third Level
+***********
+
+At the third level the content of BODY and META differs.
+
+BODY always contains zero or more SENTENCEs.
+
+META contains a mixture of MET3s and UNITs:
+
+     MET3 : third level META, used for discourse features
+     UNIT : a neutral label for a segment of the text 
+     	    analogous to a SENTENCE.
+
+MET3s may also be typed and may have their own RELN, inheriting from
+their immediate parent if they have no RELN.
+
+At the ATF level, much of this structure is elided in favour
+of convenience tags for discourse features: a feature tag will
+automatically be wrapped in the necessary UNIT and META 
+containers by the ATF processor.
+
+The following convenience tags are defined for discourse
+features:
+
+	@signature : @met3 func signature
+
+	@sealing :   @met3 func signature
+
+	@date :      @met3 data date
+
+	@incipit :   @met3 data incipit : opening words of a composition
+
+	@catchline : @met3 data catchline : line of next text/tablet
+
+	@rubric : performance division, sajara, kirugu, etc.
+
+	@subscript : designation of text-type
+
+	@doxology : address/dedication to deity
+
+	@scribe :
+

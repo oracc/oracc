@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use utf8; use open ':utf8'; binmode(STDOUT, ':utf8');
+use lib '@@ORACC@@/lib';
+use Encode;
+use File::Temp qw/tempdir tempfile/;
+use CGI qw/:cgi/;
+
+my $model = param('XForms:Model');
+
+print "Content-type: text/html; charset=utf-8\n\n";
+
+print $model;
+
+1;

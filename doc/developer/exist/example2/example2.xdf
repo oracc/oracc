@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 2:<br/>Fun with Functions</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The query in Example 1 is refactored to use functions.</dc:description>
+</d:meta>
+
+<h1>Functions</h1>
+
+<p>Whenever code is repetitive or becomes complex to follow it is good
+idea to consider rewriting parts of the code to use functions.  A good
+quick start on XQuery functions
+is <a href="http://www.stylusstudio.com/xquery/xquery_functions.html">Defining
+your own Functions in XQuery by Michael Kay</a>.</p>
+
+<p>In our statistics script, we generated each block of label and
+count with code like this:</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of graphemes&lt;/what>
+  &lt;number>{
+    count($P/(xtf:transliteration|xtf:composite)//gdl:v)
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>We can refactor this to put the static, repetitive components in a
+function to which we pass the variable components each time we call
+the function.  The function may be defined as follows:</p>
+
+<pre class="cookbook">
+declare function local:node-count($what as xs:string, 
+                                  $nodes as element()*)
+		 as element() {
+  &lt;count>
+    &lt;what>{ $what }&lt;/what>
+    &lt;number>{ count($nodes) }&lt;/number>
+  &lt;/count>    
+};
+</pre>
+
+<p>XQuery functions in general are described in Michael Kay's
+article.  The result is that we can simplify the body of the query by
+replacing the forest of XML tags and interwoven queries by a much
+clearer series of function calls:</p>
+
+<pre class="cookbook">
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ local:node-count('Number of graphemes',
+                   $graphemes) }
+{ local:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]) }
+{ local:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]) }
+{ local:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l) }
+{ local:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+</pre>
+
+<h1>Variables</h1>
+
+<p>Another way of reducing the complexity of queries is to move
+complex XPaths out into variable declarations.  The narrative of the
+query is then easier to follow, and when it is useful or necessary to
+examine the path in question it is separated out of the query body and
+easier to focus on.</p>
+
+<p>We define the variable for graphemes as in the prolog like
+this:</p>
+
+<pre class="cookbook">
+declare variable $graphemes as element()* :=
+         $P/(xtf:transliteration|xtf:composite)//
+	 (gdl:v[not(parent::gdl:n)]|gdl:s[parent::gdl:w]|gdl:n|gdl:c);
+</pre>
+
+<p>Like function declarations, the variable should be typed, i.e.,
+there should be an <code>as</code> clause which tells the process the
+data type of the variable's value.  Here the type is the result of the
+XPath's evaluation, so it is a sequence of nodes.  We define it more
+narrowly as a sequence of elements because we know that we can only be
+selecting grapheme elements of various kinds (unless we make a
+mistake, in which case it is better if the query fails early and
+obviously rather than later and non-obviously).</p>
+
+<p>Note that an alert reader of the <a
+href="http://oracc.museum.upenn.edu/ns/gdl/1.0">GDL schema</a> will
+observe that the grapheme selector could be further refined to
+eliminate redundant counts.  However, the frequency with which the
+constructs implicated in these redundancies occur does not warrant the
+additional query-complexity in this case.</p>
+
+<h1>Try it</h1>
+
+<p>You can try the refactored query as before, but with the query name
+now being <code>stats-fn.xql</code>:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/db/oracc/lib/stats/stats-fn.xql?project=test
+</pre>
+
+<h1>Altogether</h1>
+
+<p>Here is the entire script:</p>
+
+<pre class="cookbook">
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace gdl  = "http://oracc.org/ns/gdl/1.0";
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+declare namespace xcl  = "http://oracc.org/ns/xcl/1.0";
+declare namespace xff  = "http://oracc.org/ns/xff/1.0";
+declare namespace xtf  = "http://oracc.org/ns/xtf/1.0";
+
+declare variable $project as xs:string := request:get-parameter('project','');
+declare variable $P as document-node()* := collection(concat('/db/',$project,'/oml'));
+
+declare variable $graphemes as element()* :=
+         $P/(xtf:transliteration|xtf:composite)//
+	 (gdl:v[not(parent::gdl:n)]|gdl:s[parent::gdl:w]|gdl:n|gdl:c);
+
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=yes";
+
+declare function local:node-count($what as xs:string, 
+                                  $nodes as element()*)
+		 as element() {
+  &lt;count>
+    &lt;what>{ $what }&lt;/what>
+    &lt;number>{ count($nodes) }&lt;/number>
+  &lt;/count>    
+};
+
+document {
+
+processing-instruction
+  xml-stylesheet
+  { 'href="http://oracc.museum.upenn.edu/css/stats-xql.css" type="text/css"' },
+
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ local:node-count('Number of graphemes',
+                   $graphemes),
+  local:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]),
+  local:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]),
+  local:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l),
+  local:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+
+}
+</pre>
+
+</d:doc>

@@ -1,0 +1,78 @@
+.TH ESTMASTER 1 "2007-03-06" "Man Page" "Hyper Estraier"
+
+.SH NAME
+estmaster \- master process of node servers
+
+.SH SYNOPSIS
+.PP
+.B estmaster init [\-ex] rootdir
+.PP
+.B estmaster start [\-bg] [\-ro] [\-st] rootdir
+.PP
+.B estmaster stop rootdir
+.PP
+.B estmaster unittest rootdir
+.PP
+.B estmaster crypt key [hash]
+
+.SH DESCRIPTION
+.PP
+.B estmaster
+is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument
+.I rootdir
+specifies the server root directory which contains configuration file and so on.
+.TP
+.B estmaster init [\-ex] rootdir
+Create the server root directory.
+.br
+If
+.B \-ex
+is specified, some users and some nodes are set for example.  By default, only a super user whose name and password are both "admin" is set.
+.TP
+.B estmaster start [\-bg] [\-ro] [\-st] rootdir
+Start the node master.
+.br
+If
+.B \-bg
+is specified, the server runs in background as a daemon process.
+.br
+If
+.B \-ro
+is specified, the server runs in read-only mode regardless of the configuration.
+.br
+If
+.B \-st
+is specified, the server runs in single thread mode.
+.TP
+.B estmaster stop rootdir
+Stop the running node master.
+.TP
+.B estmaster unittest rootdir
+Perform unit tests.
+.TP
+.B estmaster crypt key [hash]
+Output an encrypted string of a string.
+.br
+.I key
+specifies a target string.
+.br
+If
+.I hash
+is specified, it checks whether the key and the hash matches.
+.PP
+All sub commands return 0 if the operation is success, else return 1.  A running node master finishes with closing the database when it catches the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), or 15 (SIGTERM).  Moreover, when a node master running as a daemon catches the signal 1 (SIGHUP), the process is re\-start and re\-read the configuration files.
+.PP
+A running node server should be finished by valid means by command line or via network.  Otherwise, the index may be broken.
+
+.SH SEE ALSO
+.PP
+.BR estconfig (1),
+.BR estcmd (1),
+.BR estcall (1),
+.BR estwaver (1),
+.BR estraier (3),
+.BR estnode (3)
+.PP
+Please see
+.B http://fallabs.com/hyperestraier/nguide-en.html
+for detail.

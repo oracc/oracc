@@ -1,0 +1,37 @@
+/* 
+ * Perl colors, mimicking emacs perl-mode
+ */
+.def_Comment { color: #b22222; }
+
+.def_Keyword { color: black; }
+
+.def_Defword { color: #3cb371; }
+
+.def_Flowword { color: #ba55d3; }
+
+.def_String { color: #bc8f8f; }
+
+.def_Var { color: #c96; }
+
+.perl_packages { color: #48d1cc; }
+
+.regexp_SpecQuote { color: black; }
+
+.def_Symbol { color: black; }
+
+/*
+  XML colors, mostly from nxml-mode colors:
+	nxml-light-blue-color: #9292C9 
+ 	nxml-dark-blue-color:  #3A3A7B 
+ 	nxml-green-color:      #70F170
+ */
+
+.xml_decl { color: silver; }
+
+.xml_ns_prefix { color: black; }
+
+.xml_elem,.xml_attr { color: #257a25; }
+
+.xml_string,.xml_ns_uri { color: #3a3a7b; }
+
+.xml_default_ns_uri { color: fuchsia; }

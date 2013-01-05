@@ -1,0 +1,13 @@
+Don't create hybrid verbal forms.  
+
+I.e., faced by variants u3-mu-e-ni-sig10 and u3-mu-ni-in-sig10, choose
+one for the main text, but do *not* choose the combination
+u3-mu-e-ni-in-sig10.
+
+Avoid exaggerating variation.
+
+I.e., if a verbal form u3-mu-e-ni-sig10 is statistically preferable in
+one passage, and a form u3-mu-ni-in-sig10 seems preferable in another
+otherwise identical passage, consider over-riding the statistics in
+one or the other passage so that they use the same form, *as long as
+both forms are evidenced by the data*.

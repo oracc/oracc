@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<param:parameters 
+	xmlns:param="http://oracc.org/ns/esp-param/1.0"
+        xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+	<param:title>The Geography of Knowledge</param:title><!-- used at head of page and in citations -->
+	<param:publisher>The GKAB Project</param:publisher><!-- used in citations -->
+	<param:host>http://oracc.museum.upenn.edu</param:host>
+	<param:root>/gkab</param:root>
+	<param:cuneify switcher="no" default="no" />
+	<param:common-headers>
+		<meta name="DC.publisher" content="GKAB Project, Department of History and Philosophy of Science, University of Cambridge, Free School Lane, Cambridge CB2 3RH, UK"/>
+		<meta name="DC.language" scheme="ISO 639-2/T" content="eng"/>
+		<meta name="DC.rights.copyright" content="Copyright 2007-10 The GKAB Project"/>
+		<meta name="DC.type" scheme="DCTERMS.DCMIType" content="Text" /> 	
+		<meta name="DC.format" content="text/html"/>
+		<!--<script type="text/javascript" src="/library.js"></script>-->
+	<!--	<meta name="robots" content="noindex,nofollow"/> -->
+	</param:common-headers>
+	<param:dc-id-prefix>gkab-oracc-museum-upenn-edu/page/</param:dc-id-prefix>
+	<param:main-menu-caption>Main menu</param:main-menu-caption>
+	<param:footer>&#169; <wm:link url="http://www.prs.heacademy.ac.uk/" hide-print="yes">Higher Education Academy</wm:link>, 2007-10</param:footer>
+</param:parameters>

@@ -1,0 +1,1026 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: EstraierPure::Node [estraierpure]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }<\/style>" )
+
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">EstraierPure::Node</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+
+
+                <a href="../../files/estraierpure_rb.html">
+
+                estraierpure.rb
+
+                </a>
+
+
+        <br />
+
+            </td>
+        </tr>
+
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+
+                Object
+
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+  <div id="contextContent">
+
+    <div id="description">
+      <hr size="10"></hr><p>
+++ Abstraction of connection to P2P node.
+</p>
+<hr size="10"></hr>
+    </div>
+
+   </div>
+
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+
+        <a href="#M000068">admins</a>&nbsp;&nbsp;
+
+        <a href="#M000067">cache_usage</a>&nbsp;&nbsp;
+
+        <a href="#M000064">doc_num</a>&nbsp;&nbsp;
+
+        <a href="#M000054">edit_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000059">etch_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000060">etch_doc_by_uri</a>&nbsp;&nbsp;
+
+        <a href="#M000055">get_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000057">get_doc_attr</a>&nbsp;&nbsp;
+
+        <a href="#M000058">get_doc_attr_by_uri</a>&nbsp;&nbsp;
+
+        <a href="#M000056">get_doc_by_uri</a>&nbsp;&nbsp;
+
+        <a href="#M000063">label</a>&nbsp;&nbsp;
+
+        <a href="#M000070">links</a>&nbsp;&nbsp;
+
+        <a href="#M000062">name</a>&nbsp;&nbsp;
+
+        <a href="#M000075">new</a>&nbsp;&nbsp;
+
+        <a href="#M000050">optimize</a>&nbsp;&nbsp;
+
+        <a href="#M000052">out_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000053">out_doc_by_uri</a>&nbsp;&nbsp;
+
+        <a href="#M000051">put_doc</a>&nbsp;&nbsp;
+
+        <a href="#M000071">search</a>&nbsp;&nbsp;
+
+        <a href="#M000047">set_auth</a>&nbsp;&nbsp;
+
+        <a href="#M000074">set_link</a>&nbsp;&nbsp;
+
+        <a href="#M000045">set_proxy</a>&nbsp;&nbsp;
+
+        <a href="#M000072">set_snippet_width</a>&nbsp;&nbsp;
+
+        <a href="#M000046">set_timeout</a>&nbsp;&nbsp;
+
+        <a href="#M000044">set_url</a>&nbsp;&nbsp;
+
+        <a href="#M000073">set_user</a>&nbsp;&nbsp;
+
+        <a href="#M000066">size</a>&nbsp;&nbsp;
+
+        <a href="#M000048">status</a>&nbsp;&nbsp;
+
+        <a href="#M000049">sync</a>&nbsp;&nbsp;
+
+        <a href="#M000061">uri_to_id</a>&nbsp;&nbsp;
+
+        <a href="#M000069">users</a>&nbsp;&nbsp;
+
+        <a href="#M000065">word_num</a>&nbsp;&nbsp;
+
+      </div>
+    </div>
+
+  </div>
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+    <!-- if method_list -->
+
+    <div id="methods">
+
+      <h3 class="section-bar">Public Class methods</h3>
+
+
+      <div id="method-M000075" class="method-detail">
+        <a name="M000075"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000075.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000075.html');return false;">
+
+          <span class="method-name">new</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Create a node connection object.
+</p>
+
+        </div>
+      </div>
+
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+
+      <div id="method-M000068" class="method-detail">
+        <a name="M000068"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000068.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000068.html');return false;">
+
+          <span class="method-name">admins</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get an array of names of administrators. The return value is an array
+object of names of administrators. On error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000067" class="method-detail">
+        <a name="M000067"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000067.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000067.html');return false;">
+
+          <span class="method-name">cache_usage</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the usage ratio of the cache. The return value is the usage ratio of
+the cache. On error, -1.0 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000064" class="method-detail">
+        <a name="M000064"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000064.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000064.html');return false;">
+
+          <span class="method-name">doc_num</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the number of documents. The return value is the number of documents.
+On error, -1 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000054" class="method-detail">
+        <a name="M000054"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000054.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000054.html');return false;">
+
+          <span class="method-name">edit_doc</span><span class="method-args">(doc)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Edit attributes of a document. `doc&#8217; specifies a document object. The
+return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000059" class="method-detail">
+        <a name="M000059"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000059.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000059.html');return false;">
+
+          <span class="method-name">etch_doc</span><span class="method-args">(id)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Extract keywords of a document. `id&#8217; specifies the ID number of a
+registered document. The return value is a hash object of keywords and
+their scores in decimal string or `nil&#8217; on error.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000060" class="method-detail">
+        <a name="M000060"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000060.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000060.html');return false;">
+
+          <span class="method-name">etch_doc_by_uri</span><span class="method-args">(uri)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Extract keywords of a document specified by URI. `uri&#8217; specifies the
+URI of a registered document. The return value is a hash object of keywords
+and their scores in decimal string or `nil&#8217; on error.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000055" class="method-detail">
+        <a name="M000055"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000055.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000055.html');return false;">
+
+          <span class="method-name">get_doc</span><span class="method-args">(id)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve a document. `id&#8217; specifies the ID number of a registered
+document. The return value is a document object. On error, `nil&#8217; is
+returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000057" class="method-detail">
+        <a name="M000057"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000057.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000057.html');return false;">
+
+          <span class="method-name">get_doc_attr</span><span class="method-args">(id, name)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve the value of an attribute of a document. `id&#8217; specifies the
+ID number of a registered document. `name&#8217; specifies the name of an
+attribute. The return value is the value of the attribute or `nil&#8217; if
+it does not exist.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000058" class="method-detail">
+        <a name="M000058"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000058.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000058.html');return false;">
+
+          <span class="method-name">get_doc_attr_by_uri</span><span class="method-args">(uri, name)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve the value of an attribute of a document specified by URI.
+`uri&#8217; specifies the URI of a registered document. `name&#8217;
+specifies the name of an attribute. The return value is the value of the
+attribute or `nil&#8217; if it does not exist.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000056" class="method-detail">
+        <a name="M000056"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000056.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000056.html');return false;">
+
+          <span class="method-name">get_doc_by_uri</span><span class="method-args">(uri)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Retrieve a document. `uri&#8217; specifies the URI of a registered
+document. The return value is a document object. On error, `nil&#8217; is
+returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000063" class="method-detail">
+        <a name="M000063"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000063.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000063.html');return false;">
+
+          <span class="method-name">label</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the label. The return value is the label. On error, `nil&#8217; is
+returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000070" class="method-detail">
+        <a name="M000070"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000070.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000070.html');return false;">
+
+          <span class="method-name">links</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get an array of expressions of links. The return value is an array object
+of expressions of links. Each element is a TSV string and has three fields
+of the URL, the label, and the score. On error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000062" class="method-detail">
+        <a name="M000062"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000062.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000062.html');return false;">
+
+          <span class="method-name">name</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the name. The return value is the name. On error, `nil&#8217; is
+returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000050.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000050.html');return false;">
+
+          <span class="method-name">optimize</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Optimize the database. The return value is true if success, else it is
+false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000052" class="method-detail">
+        <a name="M000052"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000052.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000052.html');return false;">
+
+          <span class="method-name">out_doc</span><span class="method-args">(id)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Remove a document. `id&#8217; specifies the ID number of a registered
+document. The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000053" class="method-detail">
+        <a name="M000053"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000053.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000053.html');return false;">
+
+          <span class="method-name">out_doc_by_uri</span><span class="method-args">(uri)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <pre>
+ Remove a document specified by URI.
+</pre>
+<p>
+`uri&#8217; specifies the URI of a registered document. The return value is
+true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000051.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000051.html');return false;">
+
+          <span class="method-name">put_doc</span><span class="method-args">(doc)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Add a document. `doc&#8217; specifies a document object. The document
+object should have the URI attribute. The return value is true if success,
+else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000071" class="method-detail">
+        <a name="M000071"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000071.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000071.html');return false;">
+
+          <span class="method-name">search</span><span class="method-args">(cond, depth)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Search for documents corresponding a condition. `cond&#8217; specifies a
+condition object. `depth&#8217; specifies the depth of meta search. The
+return value is a node result object. On error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000047" class="method-detail">
+        <a name="M000047"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000047.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000047.html');return false;">
+
+          <span class="method-name">set_auth</span><span class="method-args">(name, password)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the authentication information. `name&#8217; specifies the name of
+authentication. `passwd&#8217; specifies the password of the
+authentication. The return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000074" class="method-detail">
+        <a name="M000074"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000074.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000074.html');return false;">
+
+          <span class="method-name">set_link</span><span class="method-args">(url, label, credit)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Manage a link of a node. `url&#8217; specifies the URL of the target node
+of a link. `label&#8217; specifies the label of the link. `credit&#8217;
+specifies the credit of the link. If it is negative, the link is removed.
+The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000045.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000045.html');return false;">
+
+          <span class="method-name">set_proxy</span><span class="method-args">(host, port)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the proxy information. `host&#8217; specifies the host name of a proxy
+server. `port&#8217; specifies the port number of the proxy server. The
+return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000072" class="method-detail">
+        <a name="M000072"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000072.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000072.html');return false;">
+
+          <span class="method-name">set_snippet_width</span><span class="method-args">(wwidth, hwidth, awidth)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set width of snippet in the result. `wwidth&#8217; specifies whole width of
+a snippet. By default, it is 480. If it is 0, no snippet is sent. If it is
+negative, whole body text is sent instead of snippet. `hwidth&#8217;
+specifies width of strings picked up from the beginning of the text. By
+default, it is 96. If it is negative 0, the current setting is not changed.
+`awidth&#8217; specifies width of strings picked up around each highlighted
+word. By default, it is 96. If it is negative, the current setting is not
+changed.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000046" class="method-detail">
+        <a name="M000046"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000046.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000046.html');return false;">
+
+          <span class="method-name">set_timeout</span><span class="method-args">(sec)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set timeout of a connection. `sec&#8217; specifies timeout of the
+connection in seconds. The return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000044.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000044.html');return false;">
+
+          <span class="method-name">set_url</span><span class="method-args">(url)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Set the URL of a node server. `url&#8217; specifies the URL of a node. The
+return value is always `nil&#8217;.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000073" class="method-detail">
+        <a name="M000073"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000073.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000073.html');return false;">
+
+          <span class="method-name">set_user</span><span class="method-args">(name, mode)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Manage a user account of a node. `name&#8217; specifies the name of a user.
+`mode&#8217; specifies the operation mode. 0 means to delete the account. 1
+means to set the account as an administrator. 2 means to set the account as
+a guest. The return value is true if success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000066" class="method-detail">
+        <a name="M000066"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000066.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000066.html');return false;">
+
+          <span class="method-name">size</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the size of the datbase. The return value is the size of the datbase.
+On error, -1.0 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000048" class="method-detail">
+        <a name="M000048"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000048.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000048.html');return false;">
+
+          <span class="method-name">status</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the status code of the last request. The return value is the status
+code of the last request. -1 means failure of connection.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000049" class="method-detail">
+        <a name="M000049"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000049.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000049.html');return false;">
+
+          <span class="method-name">sync</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Synchronize updating contents of the database. The return value is true if
+success, else it is false.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000061" class="method-detail">
+        <a name="M000061"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000061.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000061.html');return false;">
+
+          <span class="method-name">uri_to_id</span><span class="method-args">(uri)</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the ID of a document specified by URI. `uri&#8217; specifies the URI of
+a registered document. The return value is the ID of the document. On
+error, -1 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000069" class="method-detail">
+        <a name="M000069"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000069.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000069.html');return false;">
+
+          <span class="method-name">users</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get an array of names of users. The return value is an array object of
+names of users. On error, `nil&#8217; is returned.
+</p>
+
+        </div>
+      </div>
+
+
+      <div id="method-M000065" class="method-detail">
+        <a name="M000065"></a>
+
+        <div class="method-heading">
+
+          <a href="Node.src/M000065.html" target="Code" class="method-signature"
+            onclick="popupCode('Node.src/M000065.html');return false;">
+
+          <span class="method-name">word_num</span><span class="method-args">()</span>
+
+          </a>
+
+        </div>
+
+        <div class="method-description">
+
+          <p>
+Get the number of unique words. The return value is the number of unique
+words. On error, -1 is returned.
+</p>
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+
+  </div>
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

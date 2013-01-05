@@ -1,0 +1,9 @@
+#!/bin/sh
+mkdir -p @@ORACC@@/lib/tex
+TEXINPUTS=.:./graphics:$TEXINPUTS
+cd @@ORACC@@/src/misc/tex/cdf ; \
+    xetex -etex -ini oracctex.ini ; \
+    mv oracctex.fmt @@ORACC@@/lib/tex/
+cd @@ORACC@@/src/misc/tex/cdf ; \
+    xetex -etex -ini oraccplain.ini ; \
+    mv oraccplain.fmt @@ORACC@@/lib/tex/

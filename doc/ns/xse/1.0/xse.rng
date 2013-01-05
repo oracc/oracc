@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/xse/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
+  <start>
+    <ref name="xse"/>
+  </start>
+  <define name="xse">
+    <element name="xse">
+      <zeroOrMore>
+        <ref name="search"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="search">
+    <zeroOrMore>
+      <ref name="project"/>
+      <ref name="index"/>
+      <zeroOrMore>
+        <ref name="expr"/>
+      </zeroOrMore>
+      <ref name="result"/>
+    </zeroOrMore>
+  </define>
+  <define name="project">
+    <element name="project">
+      <text/>
+    </element>
+  </define>
+  <define name="index">
+    <element name="index">
+      <attribute name="n"/>
+    </element>
+  </define>
+  <define name="result">
+    <optional>
+      <element name="result">
+        <ref name="location"/>
+      </element>
+    </optional>
+  </define>
+  <define name="expr">
+    <choice>
+      <ref name="key"/>
+      <ref name="binop"/>
+    </choice>
+  </define>
+  <define name="binop">
+    <ref name="key"/>
+    <ref name="and"/>
+    <ref name="key"/>
+  </define>
+  <define name="and">
+    <optional>
+      <ref name="invert"/>
+    </optional>
+    <ref name="type"/>
+    <ref name="near"/>
+    <ref name="expr"/>
+  </define>
+  <define name="group">
+    <element name="group">
+      <optional>
+        <ref name="invert"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="expr"/>
+          <ref name="term"/>
+        </choice>
+      </zeroOrMore>
+      <optional>
+        <ref name="result"/>
+      </optional>
+    </element>
+  </define>
+  <define name="term">
+    <zeroOrMore>
+      <ref name="filter"/>
+    </zeroOrMore>
+    <ref name="key"/>
+    <zeroOrMore>
+      <ref name="op"/>
+      <ref name="key"/>
+    </zeroOrMore>
+  </define>
+  <define name="filter">
+    <choice>
+      <ref name="field"/>
+      <ref name="lang"/>
+      <ref name="prop"/>
+    </choice>
+  </define>
+  <define name="near">
+    <element name="near">
+      <ref name="where"/>
+      <ref name="scope"/>
+      <ref name="level"/>
+    </element>
+  </define>
+  <define name="where">
+    <attribute name="where">
+      <choice>
+        <value>before</value>
+        <value>after</value>
+        <value>around</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="scope">
+    <attribute name="scope"/>
+  </define>
+  <define name="level">
+    <attribute name="level">
+      <choice>
+        <value>record</value>
+        <value>field</value>
+        <value>text</value>
+        <value>word</value>
+        <value>line</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="location">
+    <element name="l">
+      <text/>
+    </element>
+  </define>
+  <define name="invert">
+    <attribute name="invert">
+      <choice>
+        <value>yes</value>
+        <value>no</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="type">
+    <attribute name="type">
+      <choice>
+        <value>and</value>
+        <value>or</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="key">
+    <element name="key">
+      <text/>
+    </element>
+  </define>
+  <define name="op">
+    <element name="op">
+      <attribute name="n">
+        <choice>
+          <value>-</value>
+          <value>_</value>
+          <value>~</value>
+          <value>x</value>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <define name="field">
+    <element name="field">
+      <text/>
+    </element>
+  </define>
+  <define name="lang">
+    <element name="lang">
+      <text/>
+    </element>
+  </define>
+  <define name="prop">
+    <element name="prop">
+      <text/>
+    </element>
+  </define>
+</grammar>

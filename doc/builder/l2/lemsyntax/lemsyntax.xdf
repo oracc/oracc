@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2: Signature/Lemmatization Syntax</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes extant and planned elements
+  of the syntax of signatures and the lemmatization specifications
+  that use them.</dc:description>
+</d:meta>
+
+<p>The forms of signatures and inline lemmatizations proper are
+identical as far as core and adjunct fields are concerned.  Signatures
+are simply lemmatizations prefixed with a project and a lang/form
+pair.</p>
+
+<h1>Prefix Fields</h1>
+
+<table class="eighty">
+<thead>
+<tr><th>Key Char</th><th>Field</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@...</code></td><td>Project name</td></tr>
+<tr><td><code>%...</code></td><td></td></tr>
+<tr><td>:...=</td><td>Form (Unicode text, no 'equals' signs)</td></tr>
+</tbody>
+</table>
+
+<pre class="example">@dcclt%sux-emesal:ma=</pre>
+
+<h1>Core Fields</h1>
+
+<table class="eighty">
+<thead>
+<tr><th>Key Char</th><th>Abbrev</th><th>Full Name</th></tr>
+</thead>
+<tbody>
+<tr><td></td><td>CF</td><td>Citation Form</td></tr>
+<tr><td><code>[...]</code></td><td>GW</td><td>Guide Word</td></tr>
+<tr><td><code>//</code></td><td>SENSE</td><td>Sense</td></tr>
+<tr><td></td><td>POS</td><td>Part of Speech</td></tr>
+<tr><td><code>$</code></td><td>NORM</td><td>Normalization</td></tr>
+</tbody>
+</table>
+
+<h1>Adjunct Fields</h1>
+
+<table class="eighty">
+<thead>
+<tr><th>Key Char</th><th>Abbrev</th><th>Full Name</th></tr>
+</thead>
+<tbody>
+<tr><td><code>'</code></td><td>EPOS</td><td>Effective Part of Speech</td></tr>
+<tr><td><code>/</code></td><td>BASE</td><td>Word Base</td></tr>
+<tr><td><code>+</code></td><td>CONT</td><td>Base Continuation</td></tr>
+<tr><td><code>*</code></td><td>STEM</td><td>Word Stem</td></tr>
+<tr><td><code>#</code></td><td>M1</td><td>Morphology 1</td></tr>
+<tr><td><code>##</code></td><td>M2</td><td>Morphology 2</td></tr>
+</tbody>
+</table>
+
+<p>Note: augmentation and disambiguation do not need to be handled
+explicitly in signatures because they are rewritten as part of the
+FORM or M1 fields.</p>
+
+<h1>Para-lemma Features</h1>
+
+<h2>Properties</h2>
+
+<p>Properties can also be specified on lemmata using the
+'$'-notation.  The full form is:</p>
+
+<pre class="example">$PROPERTY=VALUE</pre>
+
+<p>No spaces are allowed.  If 'VALUE' is unique within
+the values given in the project's 00lib/properties.xml
+then the PROPERTY component is optional giving the
+short form:</p>
+
+<pre class="example">$VALUE</pre>
+
+<h2>Anchors</h2>
+
+<p>Any lemma can be labeled with an anchor which can be
+used as the target of a reference. This can be used
+to handle anaphora:</p>
+
+<pre class="example">#lem: ...  Anu-uballit[1]PN @1 ...
+
+#lem: abišu[father] =1</pre>
+
+<p>A simple label consists of the at-sign (<code>@</code>) followed by
+digits, but arbitrary labels may be given subject to the constraint
+that no label may contain spaces:</p>
+
+<pre class="cookbook">#lem: ...  Anu-uballit[1]PN @mystery-man ...
+
+#lem: abišu[father] =mystery-man
+</pre>
+
+<h2>Syntax Hinting</h2>
+
+<h3>Top vs Internal</h3>
+
+<p>Top-level boundaries may be given to mark discourse
+(<code>:</code>), sentence (<code>.</code>), clause (<code>;</code>)
+and phrase (<code>,</code>) boundaries.</p>
+
+<p>Bracketing is implicit between top-level constituents:</p>
+
+<pre class="example">a b ; c , d e ; f g . h i : j k</pre>
+
+<p>Is identical to:</p>
+
+<pre class="example">( ( (a b) ; (c) , (d e) ; (f g) ) . ( h i ) ) : ( j k )</pre>
+
+<p>To annotate internal phrase structure one can add parentheses
+explicitly:</p>
+
+<pre class="example">a b ; c , (d e , f g) , h i .</pre>
+
+<p>Here, <code>(d e , f g)</code> is first parsed as a top-level 
+constituent, then recursively parsed.</p>
+
+<h3>Labeling Units</h3>
+
+<p>A unit can always be labelled by giving the label after
+its opening parenthesis.  For units with explicit dividers,
+the label may be given after the divider:</p>
+
+<pre class="example">(S a b ; (PRP c d)) :DATE e f</pre>
+
+<h3>Conjunction and Modification</h3>
+
+<p><code>+&amp;</code>, <code>+></code>, <code>+&lt;</code> imply a
+phrase boundary, i.e., they are equivalent to <code>+,+&amp;</code>
+etc.</p>
+
+<pre class="cookbook">kud[fish]; +&amp; muszen[bird]</pre>
+
+<pre class="cookbook">kud[fish]; tur[small]; +&amp; (muszen[bird]; gal[big])</pre>
+
+<h2>Linksets</h2>
+
+<p>Linksets allow arbitrary collections of words to be collected
+as discontinuous units.  These are generally identified by the various
+analyzer programs, but we define a mechanism for specifying them
+manually to supplement or override the programs.</p>
+
+<p>Linksets can be defined and populated using two notations:</p>
+
+<pre class="example">
+ ##TYPE/INDEX[/MEMBER]
+
+ #INDEX/[MEMBER]</pre>
+
+<p>Where INDEX may be a simple integer or a more complex symbol:</p>
+
+<pre class="cookbook">
+ ##date/from ... #from ... #from
+
+ ##date/to ... #to ... #to</pre>
+
+<p><code>[MEMBER]</code> in each case enables the lemma(ta) to be
+associated with an element in the linkset structure.  Suppose any date
+should consist of a year, month and day element.  A date linkset might
+then look something like this:</p>
+
+<pre class="example">
+ #lem: mu[year] ##date/doc/year; Šulgir[1]RN #doc/year; lugal[king] #doc/year
+
+ #lem: iti[month]; Ubigu[1]MN #doc/month; ud[day]; n #doc/day</pre>
+
+<p>Note that many dates can be parsed successfully by machine, but
+this mechanism allows manual tagging of dates that aren't handled by
+the machine.</p>
+
+</d:doc>

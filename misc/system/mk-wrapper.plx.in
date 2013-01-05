@@ -1,0 +1,81 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use Getopt::Long;
+
+my $invocation = join(' ', $0, map { s/\s+/\\ /g; $_ } @ARGV);
+$invocation =~ s/\"/\\\"/g;
+my $callback = '';
+my $name = '';
+my $type = '';
+my $script = '';
+my $from = '';
+my $to = '';
+my @packages = ();
+
+GetOptions(
+	   'callback:s'=>\$callback,
+	   'name:s'=>\$name,
+	   'type:s'=>\$type,
+	   'script:s'=>\$script,
+	   'from:s'=>\$from,
+	   'to:s'=>\$to,
+	   'use:s'=>\@packages,
+	   );
+
+die "mk-wrapper.plx: must give all of: name type script from to\n"
+    unless $name && $type && $script && $from && $to;
+
+my $callback_arg = ($callback ? "callback=>\\\&$callback" : '');
+
+print <<EOW;
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::Wrapper2;
+EOW
+foreach my $p (@packages) {
+    print "use $p;\n";
+}
+print <<EOW;
+
+# CREATED WITH:
+my \$invocation = "$invocation";
+
+ORACC::Wrapper::$type(from=>'$from',
+		    to=>'$to',
+		    script=>'$script',
+		    $callback_arg,
+    );
+
+1;
+
+__END__
+
+=head1 NAME
+
+$name -- wrapper for $script
+
+=head1 SYNOPSIS
+
+$name [-verbose | -quiet | -help | -man] [-list filelists | FILES]
+
+=head1 DESCRIPTION
+
+A wrapper program which applies $script 
+to files.  Input files have extension '$from'; output files have 
+extension '$to'.
+
+=head1 AUTHOR
+
+Steve Tinney (stinney\@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2006.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).
+
+EOW
+
+1;

@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use GDBM_File;
+
+my $project = shift @ARGV;
+my $linkbase = load_xml("@@ORACC@@/$project/01bld/linkbase.xml");
+die "linkmap.plx: no linkbase\n" unless $linkbase;
+my $projectNode = find_project($linkbase,$project);
+die "linkmap.plx: no project $project\n" unless $projectNode;
+
+my $max_lid = 0;
+my $master_pvec = '';
+my %each_p_vecs = ();
+my %goesto_map = ();
+
+unlink("@@ORACC@@/$project/02pub/linkmap.gdbm");
+tie(%goesto_map, 'GDBM_File', 
+    "@@ORACC@@/$project/02pub/linkmap.gdbm", 
+    &GDBM_WRCREAT, 0644);
+
+foreach my $g ($projectNode->childNodes()) {
+    next unless 
+	$g->isa('XML::LibXML::Element')
+	&& $g->nodeName() eq 'link'
+	&& $g->getAttribute('rel') eq 'goesto';
+    my $fromNode = (tags($g,'','from'))[0];
+    my $from_line = $fromNode->getAttribute('line');
+    if ($from_line =~ /^P/) {
+	my $toNode = (tags($g,'','to'))[0];
+	my $to_line = $toNode->getAttribute('line');
+	if ($to_line =~ /^Q/) {
+	    # we only handle P->Q goesto links
+	    my $pid_str = $fromNode->getAttribute('ref');
+	    my($pid,$lid) = ($from_line =~ /^P(\d+)\.(\d+)$/);
+	    die "linkmap: bad from attribute $from_line\n"
+		unless $pid && $lid; # can't happen if linkbase is OK
+	    $max_lid = $lid unless $lid < $max_lid;
+	    vec($master_pvec,$pid,1) = 1;
+	    $each_p_vecs{$pid_str} = '' unless exists $each_p_vecs{$pid_str};
+	    vec($each_p_vecs{$pid_str},$lid,1) = 1;
+	    $goesto_map{$from_line} = $to_line;
+	}
+    }
+}
+
+untie(%goesto_map);
+
+open(PWITH, ">@@ORACC@@/$project/01bld/lists/pwithlink.lst");
+print PWITH join("\n", sort keys %each_p_vecs), "\n";
+close(PWITH);
+
+#######################################################################
+
+sub
+find_project {
+    my($x,$p) = @_;
+    foreach my $c ($x->getDocumentElement()->childNodes()) {
+	if ($c->isa('XML::LibXML::Element') && $c->nodeName() eq 'project') {
+	    if ($p eq $c->getAttribute('n')) {
+		return $c;
+	    }
+	}
+    }
+    return undef;
+}
+
+1;

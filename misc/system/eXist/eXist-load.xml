@@ -1,0 +1,47 @@
+<?xml version='1.0'?>
+<project name="load-project" default="load-project" xmlns:xdb="http://exist-db.org/ant">
+<description>Load a ORACC project's data into the ORACC instance of the eXist db</description>
+
+<!-- edit these properties //-->
+<property name="p.exist.dir" value="@@ORACC@@/lib/java/eXist"/>
+<property name="p.exist.url" 
+	  value="xmldb:exist://localhost:8680/xmlrpc/db/"/>
+<property name="p.project.user" value="oracc"/>
+<property name="p.project.pass" value="oracc1234"/>
+<property name="p.project.data" 
+	  value="@@ORACC@@/${p.project}/02xdb"/>
+
+<!-- import eXist-db tasks -->
+<typedef resource="org/exist/ant/antlib.xml" uri="http://exist-db.org/ant">
+  <classpath>
+    <fileset dir="${p.exist.dir}/lib/core">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${p.exist.dir}/lib/endorsed">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${p.exist.dir}/lib/optional">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement location="${p.exist.dir}/exist.jar"/>
+    <pathelement location="${p.exist.dir}/exist-optional.jar"/>
+  </classpath>
+</typedef>
+
+<target name="load-project" 
+	description="store xml to target eXist instance">
+
+<!--
+	     user="${p.project.user}"
+	     password="${p.project.pass}"
+ -->
+
+  <xdb:store uri="${p.exist.url}/${p.project}"
+	     createcollection="true"
+	     createsubcollections="true"
+	     type="xml">
+    <fileset dir="${p.project.data}"/>
+  </xdb:store>
+</target>
+
+</project>

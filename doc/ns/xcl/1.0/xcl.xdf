@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XCL</dc:title>
+  <dcterms:alternative>XML Chunks and Lemmas</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xcl/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-02-14</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>XCL is the format used as a basis for linguistic
+  annotation.</dc:description>
+</d:meta>
+
+<d:schema name="xcl" uri="http://oracc.org/ns/xcl/1.0">
+
+<d:rnc>
+default namespace = "http://oracc.org/ns/xcl/1.0"
+
+start = c
+c =
+  element c {
+    attribute xml:lang { xsd:language }?,
+    attribute level { xsd:integer }?,
+    ((attribute ref { xsd:NCName }?,
+      attribute subtype { xsd:NCName }?,
+      attribute type { xsd:NCName },
+      attribute xml:id { xsd:NCName }?)
+     |
+     (attribute type { "field-start" } ,
+      attribute utype { token })) ,
+    (c | d | l | ll)*
+  }
+
+d =
+  element d {
+    (attribute type { xsd:NCName } ,
+       attribute ref { xsd:NCName },
+       attribute form { xsd:NCName }?,
+       attribute sb { xsd:NCName }?)
+    | (attribute type { "num-start" } ,
+       attribute sys { token })
+    | attribute type { "num-end" | "gloss-start" | "gloss-end" }
+  }
+
+l =
+  element l {
+    attribute base { text }?,
+    attribute cfgw { text }?,
+         attribute cont { text }?,
+    attribute form { text }?,
+    attribute id { xsd:NCName }?,
+    attribute lang { xsd:language }?,
+    attribute lela { text }?,
+    attribute morph { token }?,
+    attribute pos { xsd:NCName }?,
+    attribute ref { xsd:NCName },
+    attribute rws { xsd:NCName }?,
+    attribute sb { xsd:NCName }?,
+    attribute status { xsd:NCName },
+    dsu ?
+  }
+
+dsu =
+  element dsu {
+    attribute base { text }?,
+    attribute dsu { xsd:NCName },
+    attribute form { token }?,
+    attribute last { xsd:NCName }?,
+    attribute morph { text }?,
+    attribute n { xsd:integer },
+    attribute term { text }
+  }
+</d:rnc>
+<p>It is an error that the current implementation of the Ngram
+processor can add <code>dsu</code> nodes to an <code>ll</code> parent;
+this must be fixed some day and the schema revised accordingly.</p>
+<d:rnc>
+ll = element ll { l+ , dsu? }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

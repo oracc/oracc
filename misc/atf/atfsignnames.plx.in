@@ -1,0 +1,84 @@
+#!/usr/bin/perl -p
+use warnings; use strict; use bytes;
+use lib '@@ORACC@@/lib';
+use lib '@@ORACC@@/signlists/psl/tools';
+use ORACC::ATF::Unicode;
+use PSL; PSL::init();
+
+binmode(STDIN,':raw');
+binmode(STDOUT,':raw');
+
+unless (/^(?:\x{ef}\x{bb}\x{bf})?[\&\#\@\$\|\<\>]/) {
+    my($num,$line) = (/^(\S+\s+)(.*)$/);
+    if ($line) {
+	my @newc = ();
+	my @chunk = split(/(\|[A-Z0-9a-z\+\.\&\%\@\(\)\[\]\*!?\#<>{}]+\|)/,$line);
+	while ($#chunk >= 0) {
+	    if ($chunk[0] =~ /^\|/) {
+		$chunk[0] =~ s/^\|(.*?)\|/$1/;
+		push @newc, '|', fixcompound(shift @chunk), '|';
+	    } else {
+		push @newc, fix(shift @chunk, 0);
+	    }
+	}
+	$line = join('',@newc);
+	$_ = "$num$line\n";
+    }
+}
+print and close if eof;
+
+sub
+do_sign {
+    my ($orig,$killvert) = @_;
+    my $s = $orig;
+    $s = ORACC::ATF::Unicode::gconv($s);
+    if (PSL::is_sign($s)) {
+	$orig;
+    } else {
+	my $l = "\L$orig";
+	$l = ORACC::ATF::Unicode::gconv($l);
+	if (PSL::is_sign($l)) {
+	    my $ns = ORACC::ATF::Unicode::asciify(PSL::sign_of(PSL::xid($l)));
+	    if ($killvert && /\|/) {
+		$ns =~ s/^\|(.*?)\|$/($1)/;
+	    }
+	    $ns;
+	} else {
+	    warn("$ARGV:$.: $orig: unknown sign\n")
+		unless $orig =~ /^(?:LAK|N\d|ZATU)/ || $orig eq 'N';
+	    $orig;
+	}
+    }
+}
+
+sub
+fix {
+    my($tmp,$killvert) = @_;
+    $tmp =~ s/(?:^|(?!<[A-Z0-9]))([A-Z][A-Z0-9]*)(?:$|(?=[^A-Z0-9]))/do_sign($1,$killvert)/eg;
+    $tmp;
+}
+
+sub
+fixc {
+    my($tmp,$killvert) = @_;
+    $tmp =~ s/([A-Z][A-Z0-9]*)/do_sign($1,$killvert)/e;
+    $tmp;
+}
+
+sub
+fixcompound {
+    my $tmp = shift;
+    my @c = ();
+    foreach my $c (split(/([x\.\+\&\@\%])/, $tmp)) {
+	if ($c =~ /[A-Z]/) {
+	    push @c, fixc($c,1);
+	} else {
+	    push @c, $c;
+	}
+    }
+    join('',@c);
+}
+
+PSL::term();
+
+1;

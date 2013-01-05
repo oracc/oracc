@@ -1,0 +1,30 @@
+ cd . && /bin/sh /usr/local/oracc/src/missing --run automake-1.11 --gnu
+configure.ac:45: required file `c/bin/se/Makefile.in' not found
+configure.ac:45: required file `misc/agg/Makefile.in' not found
+configure.ac:45: required file `misc/cs/Makefile.in' not found
+configure.ac:45: required file `misc/emacs/Makefile.in' not found
+configure.ac:45: required file `misc/esp/Makefile.in' not found
+configure.ac:45: required file `misc/est/Makefile.in' not found
+configure.ac:45: required file `misc/fonts/Makefile.in' not found
+configure.ac:45: required file `misc/g2plus/Makefile.in' not found
+configure.ac:45: required file `misc/issl/Makefile.in' not found
+configure.ac:45: required file `misc/l2common/Makefile.in' not found
+configure.ac:45: required file `misc/legacy/Makefile.in' not found
+configure.ac:45: required file `misc/lib/Makefile.in' not found
+configure.ac:45: required file `misc/msort/Makefile.in' not found
+configure.ac:45: required file `misc/msv/Makefile.in' not found
+configure.ac:45: required file `misc/nsa/Makefile.in' not found
+configure.ac:45: required file `misc/ods/Makefile.in' not found
+configure.ac:45: required file `misc/otf/Makefile.in' not found
+configure.ac:45: required file `misc/ptb/Makefile.in' not found
+configure.ac:45: required file `misc/saxon/Makefile.in' not found
+configure.ac:45: required file `misc/schemas/Makefile.in' not found
+configure.ac:45: required file `misc/ssa3/Makefile.in' not found
+configure.ac:45: required file `misc/urn/Makefile.in' not found
+configure.ac:45: required file `misc/version/Makefile.in' not found
+configure.ac:45: required file `misc/xix/Makefile.in' not found
+configure.ac:45: required file `misc/xse/Makefile.in' not found
+configure.ac:45: required file `misc/xtl/Makefile.in' not found
+configure.ac:45: required file `misc/xtr/Makefile.in' not found
+configure.ac:45: required file `misc/xvl/Makefile.in' not found
+make: *** [Makefile.in] Error 1

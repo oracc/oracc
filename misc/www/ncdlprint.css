@@ -1,0 +1,16 @@
+body 	{ background-color: #FFFFFF;
+      	  color: #000000;
+     	}
+
+a:link	{ color: #000000; text-decoration: none }
+
+a:visited { color: #000000; text-decoration: none }
+
+img { border: none }
+
+td.button { width: 50px; line-height: 12pt; font-size: 10pt; text-align: center;
+	   font-family: sanserif,helvetica,arial; 
+	   font-weight: bold; padding: 0; border: 0; }
+
+table.xmd { font-size: 10pt; border: 1px solid; border-collapse: collapse }
+td.xmd { border: 1px solid }

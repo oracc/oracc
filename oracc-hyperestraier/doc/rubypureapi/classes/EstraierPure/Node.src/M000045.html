@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>set_proxy (EstraierPure::Node)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File estraierpure.rb, line 521</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_proxy</span>(<span class="ruby-identifier">host</span>, <span class="ruby-identifier">port</span>)
+      <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">check_types</span>({ <span class="ruby-identifier">host</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">String</span>, <span class="ruby-identifier">port</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Integer</span> }) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG</span>
+      <span class="ruby-ivar">@pxhost</span> = <span class="ruby-identifier">host</span>
+      <span class="ruby-ivar">@pxport</span> = <span class="ruby-identifier">port</span>
+      <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

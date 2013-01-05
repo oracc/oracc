@@ -1,0 +1,37 @@
+@nm Liquid Capacity Metrology
+
+@sytem liqcap place=* time=* meb=sze mev=1/10800l
+
+@step sze atf=sze aev=1/180*gij
+@inst 1 sze	1	1/180*gij		1(disz) sze
+@inst 1 gijtur	1	1/60*gij		1(disz) gin2-tur
+@inst 1 sze	1	1/18*gij		1(u) sze
+
+@step gij atf=gin2 aev=1/60*sila
+@inst 1/6 gij	1	1/6*gij		1/6(igi.6(disz).gal2) gin2
+@inst 1/4 gij	1	1/4*gij		1/4(igi.4(disz).gal2) gin2
+@inst 1/3 gij	1	1/3*gij		1/3~a=1/3(disz) gin2
+@inst 1/2 gij	1	1/2*gij		1/2~a=1/2(disz) gin2
+@inst 2/3 gij	1	2/3*gij		2/3~a=2/3(disz) gin2
+@inst 5/6 gij	1	5/6*gij		5/6~a=5/6(disz) gin2
+@inst 1 gij	1	1/60*sila		1(disz) gin2
+@inst 1 gij	1	1/6*sila		1(u) gin2
+
+@step sila atf=sila3 aev=1/30*dug
+@inst 1/3 sila	1	1/3*sila		1/3~a=1/3(disz) sila3
+@inst 1/2 sila	1	1/2*sila		1/2~a=1/2(disz) sila3
+@inst 2/3 sila	1	2/3*sila		2/3~a=2/3(disz) sila3
+@inst 5/6 sila	1	5/6*sila		5/6~a=5/6(disz) sila3
+@inst 1 sila	1	1/30*dug		1(disz) sila3
+
+@step dug atf=dug aev=30*sila
+@inst 1/3 dug	1	1/3*dug		1/3~a=1/3(disz) dug
+@inst 1/2 dug	1	1/2*dug		1/2~a=1/2(disz) dug
+@inst 2/3 dug	1	2/3*dug		2/3~a=2/3(disz) dug
+@inst 1 dug	1	30*sila		1(disz) dug
+
+@step bariga atf=bariga aev=60*sila
+@inst 1 bariga	1	60*sila		1(disz) bariga
+
+@step gur atf=bur aev=300*sila
+@inst 1 gur	1	300*sila		1(disz) gur

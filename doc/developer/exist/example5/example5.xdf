@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 5:<br/>Documentation</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The query in Example 4 is documented according to xqDoc rules.</dc:description>
+</d:meta>
+
+<h1>Documentation</h1>
+
+<p>All XQuery programs which are part of a project's installation or
+are installed in the <code>oracc/lib</code> collection must be
+formatted and documented according to the <a
+href="http://xqdoc.org">xqDoc</a> conventions.  This is not difficult
+to do and is well-documented in <a
+href="http://xqdoc.org/xquery-style.html">the xqDoc XQuery Style
+Conventions</a>.  Here we present the library module and main query
+developed in our examples with xqDoc documentation and formatted
+according to the xqDoc rules.</p>
+
+<h2>Module</h2>
+
+<pre class="cookbook">
+xquery version "1.0" encoding "UTF-8";
+
+(:
+ :
+ : Module Name: Statistics Node-counting Module
+ :
+ : Module Version: 1.0
+ :
+ : Date: 2010-11-03
+ :
+ : Copyright: oracc.org
+ :
+ : Proprietary XQuery Extensions Used: None
+ : 
+ : XQuery Specification: November 2005
+ : 
+ : Module Overview: Provides a function to return a
+ :                  structured count of nodes.
+ : 
+ :)
+
+(:~
+ : This module provides a function to count nodes and
+ : return them formatted as an XML fragment.
+ :
+ : @author Steve Tinney
+ : @version 1.0
+ :)
+module namespace stats = "http://oracc.org/xqm/oracc/stats";
+
+
+(:~
+ : Shorthand function to generate formatted counts of
+ : nodes.
+ :
+ : @param $what the descriptive label of what is being 
+ : counted.
+ : @param $nodes the nodes to count.
+ : @return XML.
+ :)
+declare function stats:node-count($what as xs:string, 
+                                  $nodes as element()*)
+as element() 
+{
+  &lt;count>
+    &lt;what>{ $what }&lt;/what>
+    &lt;number>{ count($nodes) }&lt;/number>
+  &lt;/count>    
+};
+
+</pre>
+
+<h2>XQuery</h2>
+
+<pre class="cookbook">
+xquery version "1.0" encoding "UTF-8";
+
+(:
+ :
+ : Module Name: Stats using Transformation
+ :
+ : Module Version: 1.0
+ :
+ : Date: 2010-11-03
+ :
+ : Copyright: oracc.org
+ :
+ : Proprietary XQuery Extensions Used: eXist's transform:transform
+ : 
+ : XQuery Specification: November 2005
+ : 
+ : Module Overview: Count graphemes, words and lemmatizations 
+ :                  in a project.
+ : 
+ :)
+
+import module namespace stats = "http://oracc.org/xqm/oracc/stats"
+       at "/db/oracc/lib/stats/stats-c.xqm";
+
+
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace transform = "http://exist-db.org/xquery/transform";
+
+declare namespace gdl  = "http://oracc.org/ns/gdl/1.0";
+
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+
+declare namespace xcl  = "http://oracc.org/ns/xcl/1.0";
+
+declare namespace xff  = "http://oracc.org/ns/xff/1.0";
+
+declare namespace xtf  = "http://oracc.org/ns/xtf/1.0";
+
+
+declare option exist:serialize 
+        "method=xhtml media-type=text/html omit-xml-declaration=no indent=yes";
+
+
+declare variable $project as xs:string := request:get-parameter('project','');
+
+declare variable $P as document-node()* := 
+         collection(concat('/db/',$project,'/oml'));
+
+declare variable $graphemes as element()* :=
+         $P/(xtf:transliteration|xtf:composite)//
+	 (gdl:v[not(parent::gdl:n)]|gdl:s[parent::gdl:w]|gdl:n|gdl:c);
+
+
+let $result :=
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ stats:node-count('Number of graphemes',
+                   $graphemes),
+  stats:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]),
+  stats:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]),
+  stats:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l),
+  stats:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+
+let $transform := "xmldb:exist:///db/oracc/lib/stats/stats-HTML.xsl"
+
+let $params := 
+&lt;parameters>
+  &lt;param name="project" value="{ $project }"/>
+&lt;/parameters>
+
+
+return transform:transform($result,$transform,$params)
+
+</pre>
+
+</d:doc>

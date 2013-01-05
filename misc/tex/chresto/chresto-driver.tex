@@ -1,0 +1,25 @@
+% #1 = Title/name of text; #2 = Header name of text
+% #3 = Preamble file; 
+\macrofile{chresto}
+
+\chrestoConfig{Inana and Ebih}{IEb}{}
+
+\chapter\the\chrestoChapter
+
+\chaptertitletoks{\theChrestoHeader}
+\newpage
+\begingroup\cuneifiedstyle
+\includetoks\chrestoTexts
+\endgroup
+
+\newpage
+\begingroup\signliststyle
+\includetoks\chrestoSigns
+\endgroup
+
+\newpage
+\begingroup\vocabstyle
+\includetoks\chrestoWords
+\endgroup
+
+\bye

@@ -1,0 +1,479 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: output.tex,v 0.14 1996/09/02 09:40:18 s Exp sjt $
+
+% Output routines for DA format
+% =============================
+\newif\iftwosided \newcount\fpoutputpending \newif\ifinnote
+
+\countdef\pageno=0 \pageno=1 % first page is number 1
+\newtoks\headline \newtoks\footline 
+\newtoks\lefthdrinfo \newtoks\centrehdrinfo \newtoks\righthdrinfo
+\newtoks\leftftrinfo \newtoks\centreftrinfo \newtoks\rightftrinfo
+\let\centerhdrinfo\centrehdrinfo
+\let\centerftrinfo\centreftrinfo
+\newif\ifr@ggedbottom 
+\newif\ifnumberthispage \numberthispagetrue
+\newif\ifcountthispage  \countthispagetrue
+
+\def\fullline{\hbox to\fullhsize} \let\lineline\line
+\def\hfline#1{\hbox to0pt{#1\hss}}
+
+\headline={\fullline{\rlap{\the\lefthdrinfo\hss}%
+		     \fullline{\hss\the\centrehdrinfo\hss}%
+		     \llap{\hss\the\righthdrinfo}}}
+\footline={\fullline{\the\leftftrinfo\hss\the\centreftrinfo\hss\the\rightftrinfo}}
+\newif\ifhdrsepline
+\def\dohdrsepline{\kern3pt\hrule width\fullhsize height0.04em depth0pt \kern3pt}
+\def\usehdrsepline{\hdrseplinetrue}
+\def\nohdrsepline{\hdrseplinefalse}
+
+\def\raggedbottom{\topskip 10\p@ plus60\p@ \r@ggedbottomtrue}
+\def\normalbottom{\topskip 10\p@ \r@ggedbottomfalse} % undoes \raggedbottom
+\def\folio{\ifnumberthispage\def\next{\f@li@}\else\let\next\relax\fi
+  \next}
+%  \ifnumberthispage\def\next{\f@li@}%
+%  \else\def\next{\global\numberthispagetrue}\fi
+%  \next}
+\def\f@li@{\ifnum\pageno<\z@ \folioformat{\romannumeral-\pageno}%
+    \else\folioformat{\number\pageno} \fi}
+\let\f@lio\folio
+\def\foliofont{\folioface\ten\rm}
+\def\folioformat#1{\foliofont#1}
+\def\nopagenumbers{\let\folio\relax}
+\def\numberpages{\let\folio\f@lio}
+\def\nonumberthispage{\global\numberthispagefalse}
+\def\dontcountthispage{\global\countthispagefalse}
+\def\advancepageno{\ifnum\pageno<\z@ \global\advance\pageno\m@ne
+  \else\global\advance\pageno\@ne \fi} % increase |pageno|
+
+%% THE WHOLE FOOTNOTE BUSINESS NEEDS REWRITING.
+
+%% In particular, \foottopskip and \footlastlinedp should be 
+%% automatically resized by reference to the size of the footnote
+%% font, and the horrid code to detect split footnotes needs to be
+%% redone (using \holdinginserts?).
+
+% for footnotes called inside quotes, etc.
+\newdimen\fnparindent 
+\newdimen\savedindent % for pushing \parindent when doing above
+\newinsert\footins 
+% foottopskip must be set to same height as the foot strut
+\newdimen\foottopskip
+\newif\iffootsplit
+\newbox\footbeginstrutbox 
+\newbox\footendstrutbox 
+
+\setbox\footbeginstrutbox=\hbox{\hfil}
+\def\footbeginstrut{\copy\footbeginstrutbox}
+
+\setbox\footendstrutbox=\hbox{\vrule height0pt depth2.85pt width0pt }
+\def\footendstrut{\copy\footendstrutbox}
+
+\foottopskip9pt
+\def\footlastlinedp{2.85pt}
+\def\footnotehook{\lineskip0pt \lineskiplimit0pt\relax}
+
+\def\footsplitrule{\footnoterule}
+\def\footnonsplitrule{\footnoterule}
+\newdimen\footlastlinedp \footlastlinedp\maxdimen
+\newcount\interfootpenalty \interfootpenalty0
+\newskip\interfootskip \interfootskip0pt
+\newdimen\fnoteparindent
+\newskip\fnoteparskip
+
+\def\footnote{\bgroup\f@otnote}
+\def\f@otnote#1{\let\@sf\empty % parameter #2 (the text) is read later
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  #1\@sf\vfootnote{#1}}
+\def\vfootnote#1{\insert\footins\bgroup\everypar{}% in case a note is in an enumerate
+  \interlinepenalty\interfootnotelinepenalty
+  \topskip\foottopskip
+  \splittopskip\foottopskip
+  \splitmaxdepth\dp\strutbox \floatingpenalty\@MM
+  \leftskip\z@skip \rightskip\z@skip \spaceskip\z@skip \xspaceskip\z@skip
+  \fntextindent{#1}\fnotesize\notespacing
+  \parindent\fnoteparindent \parskip\fnoteparskip
+  \footbeginstrut\footnotehook\futurelet\next\fo@t}
+\def\fo@t{\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
+\def\f@@t{\bgroup\aftergroup\@foot\let\next}
+\def\f@t#1{#1\@foot}
+\def\@foot{\footendstrut\parfillskip0pt plus1fill\par
+  \penalty\interfootpenalty\vskip\interfootskip\egroup\egroup}
+\skip\footins=\bigskipamount % space added when footnote is present
+\count\footins=1000 % footnote magnification factor (1 to 1)
+\dimen\footins=8in % maximum footnotes per page
+
+% footnote counting
+\newcount\fnotecounter
+\def\resetfnotecount{\global\fnotecounter=0 } \resetfnotecount
+\def\setfnotecount#1{\global\fnotecounter=#1 }
+\def\fnote{\unskip\bgroup\innotetrue\footnotehook
+  \global\advance\fnotecounter by 1 % First bump the counter.
+  % Now convert the current value of the counter into a superscripted numeral
+  \f@otnote{$^{\rm\the\fnotecounter}$}}
+\def\fnotesansmark{\unskip\bgroup\innotetrue\footnotehook
+  \global\advance\fnotecounter by 1 % First bump the counter.
+  % Now convert the current value of the counter into a superscripted numeral
+  \f@otnote{}}
+\def\fntextindent#1{%
+  {\parindent0pt\leavevmode\hbox to\indention{\hfil#1\enspace}}}
+%  \savedindent\parindent \parindent\fnparindent
+%  \indent\llap{#1\enspace}\ignorespaces \parindent\savedindent }
+\def\fnotenumber{\unskip\global\advance\fnotecounter1 $^{\the\fnotecounter}$}
+\def\fnoterest{\unskip\bgroup
+  \let\@sf\empty % parameter #2 (the text) is read later
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi\@sf
+  \vfootnote{$^{\the\fnotecounter}$}}
+
+\newskip\enoteskip \enoteskip0pt plus1pt
+\def\textenotemark#1{\let\@sf\empty
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  \up{\rm#1}\@sf{}} % this space is a problem if people put note marks before punct
+%  \,\up{\rm#1}\@sf}% \ } % this space is a problem if people put note marks before punct
+\def\endenotemarkuncounted#1{\leavevmode\noindent\hbox to 2em{\up{#1}\hfil}\innotetrue}
+\def\endenotemark#1{\global\advance\fnotecounter1
+  \ifnum\fnotecounter=#1 \else\errmessage{End note number doesn't match internal count}\fi
+  \leavevmode\noindent\hbox to 2em{\up{#1}\hfil}\innotetrue}
+\let\enotemark\textenotemark \let\fnmark\textenotemark
+\def\enoteend{\endgraf\innotefalse\vskip\enoteskip}
+\def\endnotes{\endnotehdr\let\enotemark\endenotemark\global\fnotecounter0 }
+\def\endendnotes{}
+\let\endnoteshere\relax
+\def\endnotehdr{\newpage\heading Endnotes\par\indentnextpar}
+
+% When writing files for the DA format only \note should be used, as 
+% Pretex controls whether footnotes or end notes are produced according
+% to the -e switch
+\let\note\fnote
+
+\newinsert\topins
+\newif\ifp@ge \newif\if@mid
+\newif\if@reallymid
+
+\def\topinsert{\@midfalse\p@gefalse\@ins}
+\def\midinsert{\@midtrue\@ins}
+\def\MIDinsert{\@midtrue\@reallymidtrue\@ins}
+\def\pageinsert{\@midfalse\p@getrue\@ins}
+
+\skip\topins=\z@skip % no space added when a topinsert is present
+\count\topins=1000 % magnification factor (1 to 1)
+\dimen\topins=\maxdimen % no limit per page
+\def\@ins{\par\begingroup\setbox\z@\vbox\bgroup} % start a \vbox
+\def\endinsert{\egroup % finish the \vbox
+  \if@mid\if@reallymid\else
+    \dimen@\ht\z@ \advance\dimen@\dp\z@ \advance\dimen@12\p@
+    \advance\dimen@\pagetotal \advance\dimen@-\pageshrink
+    \ifdim\dimen@>\pagegoal\@midfalse\p@gefalse\fi\fi\fi
+  \if@mid %\bigskip
+	  \box\z@
+	  \penalty-200
+	  %\bigbreak \message{mid true}
+  \else%\message{mid false}%
+    \insert\topins{\penalty100 % floating insertion
+    \splittopskip\z@skip
+    \splitmaxdepth\maxdimen \floatingpenalty\z@
+    \ifp@ge \dimen@\dp\z@
+    \vbox to\vsize{\unvbox\z@\kern-\dimen@}% depth is zero
+    \else \box\z@\nobreak
+%\bigskip
+\fi}\fi\endgroup}
+
+\def\pagebody{{\vbadness10000\vbox to\vsize{
+  \ifvoid\xrefinsert\else
+     \rlap{\kern30pc \vbox to0pt{\box\xrefinsert\vss}}\fi
+  \boxmaxdepth\maxdepth \pagecontents}}%
+  \ifsources\global\moresourcestrue\fi}
+
+\def\makeheadline{\vbox to\z@{\vskip-\headersep
+  \hfline{\vbox to8.5\p@{}% this dimen is an artefact of Plain TeX and troubles
+			% me, but I can't see how to parameterize it yet. It
+			% doesn't seem terribly important in any case.
+  \the\headline}\ifhdrsepline\dohdrsepline\fi
+  \vss}\nointerlineskip}
+\def\makefootline{\baselineskip\footersep \the\footline}
+\def\dosupereject{\ifnum\insertpenalties>\z@ % something is being held over
+  \line{}\kern-\topskip\nobreak\vfill\supereject\fi}
+
+\newskip\fnotebelowruleskip \fnotebelowruleskip3pt plus2pt minus1pt
+
+%\def\footnoterule{\kern-3\p@ \hrule width 2truein \kern 2.6\p@ % the \hrule is .4pt high
+%  \vbox{}\vskip\fnotebelowruleskip\relax}
+
+% New footnoterule def from HRW's hebtex.tex
+\def\footnoterule{\kern-3\p@
+  \ifhfnoterule \line{\hfil\hbox to 2truein{\leaders\hrule\hfil}}%
+  \else \hrule width 2truein
+  \fi
+  \kern 2.6\p@ % the \hrule is .4pt high
+  \vbox{}\vskip\fnotebelowruleskip\relax}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% multicolumn output routines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\ifmc@ctive
+\newbox\partialpage		\newbox\whatsleft
+\newdimen\intercolgutter	\intercolgutter=.1in
+\newdimen\savedvsize
+\newcount\tmpct			\newcount\tmpctb
+\newcount\@numcols
+\newif\ifgutterrules
+\def\gutterrule{\ifgutterrules\vrule width0.04em\relax\hfil\fi}
+\newif\ifcolnobalanceatend
+
+% External interface; user says @begin{2column}...@end{2column} etc.
+\expandafter\def\csname 2column\endcsname{\@beginmcol2}
+\expandafter\def\csname 3column\endcsname{\@beginmcol3}
+\expandafter\def\csname 4column\endcsname{\@beginmcol4}
+\expandafter\def\csname 5column\endcsname{\@beginmcol5}
+\expandafter\def\csname 6column\endcsname{\@beginmcol6}
+\expandafter\def\csname end2column\endcsname{\@endmcol}
+\expandafter\def\csname end3column\endcsname{\@endmcol}
+\expandafter\def\csname end4column\endcsname{\@endmcol}
+\expandafter\def\csname end5column\endcsname{\@endmcol}
+\expandafter\def\csname end6column\endcsname{\@endmcol}
+
+\expandafter\def\csname 2columnbox\endcsname{\@beginmcolbox2}
+\expandafter\def\csname 3columnbox\endcsname{\@beginmcolbox3}
+\expandafter\def\csname 4columnbox\endcsname{\@beginmcolbox4}
+\expandafter\def\csname 5columnbox\endcsname{\@beginmcolbox5}
+\expandafter\def\csname 6columnbox\endcsname{\@beginmcolbox6}
+\expandafter\def\csname end2columnbox\endcsname{\@endmcolbox}
+\expandafter\def\csname end3columnbox\endcsname{\@endmcolbox}
+\expandafter\def\csname end4columnbox\endcsname{\@endmcolbox}
+\expandafter\def\csname end5columnbox\endcsname{\@endmcolbox}
+\expandafter\def\csname end6columnbox\endcsname{\@endmcolbox}
+
+\newif\iffp@mc
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Facing page routines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% These routines are simple in the sense that they read all of the text
+% to be faced up before sending any of it to the page builder. This means
+% that for longer examples you'll need a 32 bit/big TeX to process your
+% files. 
+%
+% The principle is simple: all of the left page material is read in,
+% after which all of the right page material is read in. Then pages are
+% lopped off of each box in turn, padded with whitespace so they're the
+% same depth and sent to the page builder (the page builder
+% may be in multi-column mode at this point, so transliteration and 
+% translation can actually be prepared in facing columns as well as
+% facing pages). The internal format of the left and right page boxes
+% is a simple series of vboxes each of which must represent a unit for 
+% alignment purposes. [Similar, parallel, lists of vboxes may be present in
+% the variant and footnote boxes, and will be taken into account 
+% appropriately. (not yet implemented)]
+%
+% The only slightly complicated part is choosing where to lop off the pieces,
+% as it is desirable to account for footnotes and variant insertions. These
+% may be simply placed at the bottom of the page, or balanced across the 
+% facing pages.
+%
+% The present first attempt at facing page macros does not take account of
+% such inserts.
+%
+% General Structure:
+% ==================
+%
+%	\fpbegin	: initialize left page collection
+%	\fpswitch	: terminate left and initialize right page collection
+%	\fpend		: terminate right page collection and send amassed 
+%			  material to page builder
+%
+% These commands also have external forms:
+%	\facingpage
+%	\switch
+%	\endfacingpage
+% to conform to the structure of begin...end environments.
+%
+\newif\iffp@ctive	\newif\iffpleftover@	\newif\iffpspaceatend
+\newif\iffpnopresplit
+\newbox\fpleftb@x	\newbox\fpleftp@ge	\newbox\fpleftb@@
+\newbox\fprightb@x	\newbox\fprightp@ge	\newbox\fprightb@@
+\newbox\fppreleftb@x	\newbox\fpprerightb@x
+\newdimen\fppagegoal	\newdimen\fppagetotal	\newdimen\vf@zz
+\newdimen\fpb@xsize	\newskip\fpskip	\fpskip5pt plus1fil minus1pt
+\newdimen\fpshrink	\fpshrink0pt
+\newdimen\fppreskip	\fppreskip5pt
+\newdimen\fp@lreadysize % size of stuff already on page when fp begins
+\newcount\fpnumsof@r
+\newdimen\fpb@xht	\newdimen\fpb@xdp
+
+\def\fpbegin{
+  \ifmc@ctive
+    \def\next{\fp@lreadysize\ht\partialpage \advance\fp@lreadysize\dp\partialpage}
+  \else
+    \def\next{\fppre@}
+  \fi
+  \next
+  \fp@ctivetrue
+  \setbox\fpleftb@x\vbox\bgroup\box\fppreleftb@x}
+
+% When this macro is invoked there may already be material on the
+% page. The solution is simply to stash that material in two registers,
+% \fppreleftb@x and \fpprerightb@x, which are always inserted at the
+% start of a new left/right box. The material is split if possible, and
+% if the user hasn't set \fpnopresplittrue. Space equivalent to 
+% \fppreskip is inserted between these initial boxes and the main left/
+% right pages
+\def\fppre@{
+  \ifdim\pagetotal > 0pt
+    \toks0\output \output{\fppre@output} \eject \output\toks0
+  \else
+    \iftwosided\ifodd\pageno\else\newpage\fi\fi
+  \fi
+  \fp@lreadysize=\pagetotal}
+\def\fppre@output{
+  \global\setbox\fppreleftb@x=\vbox{}
+  \global\setbox\fpprerightb@x=\vbox{}
+  \setbox0=\vbox{\unvbox255} % retrieve prev stuff from main list
+  \ifdim\ht0>0pt \def\next{\fpsetpreb@xes}\else\let\next\relax\fi
+  \next}
+\def\fpsetpreb@xes{{\vbadness10000 \vfuzz\maxdimen
+  \iffpnopresplit
+    \global\setbox\fppreleftb@x=\vbox{\unvbox0}
+  \else
+    \global\setbox\fppreleftb@x=\vsplit0 to.5\ht0 
+    \global\setbox\fppreleftb@x=\vbox{\unvbox\fppreleftb@x}
+    \global\setbox\fpprerightb@x=\vbox{\unvbox0}
+  \fi
+  \ifdim\ht\fpprerightb@x>\ht\fppreleftb@x\def\next{\fpbalanceb@xes}
+  \else\let\next\relax\fi
+  \next}
+  \fpfinishb@xes}
+\def\fpbalanceb@xes{
+  \loop
+    \setbox0=\vsplit\fpprerightb@x to0pt
+    \global\setbox\fppreleftb@x=\vbox{\unvbox\fppreleftb@x\unvbox0}
+  \ifdim\ht\fprightb@x > \ht\fppreleftb@x \repeat
+}
+\def\fpfinishb@xes{
+  \global\setbox\fppreleftb@x=\vbox{\unvbox\fppreleftb@x\vbox to\fppreskip{\vfil}}
+  \global\setbox\fpprerightb@x=\vbox{\unvbox\fpprerightb@x\vbox to\fppreskip{\vfil}}
+}
+\def\fpswitch{\egroup\setbox\fprightb@x\vbox\bgroup\box\fpprerightb@x}
+
+\def\fpend{\egroup\fpformat\fp@ctivefalse
+  \ifmc@ctive\else\box\fpleftp@ge\global\fpoutputpending=1\relax\fi}
+
+\def\fpoutput{
+	\vbox to\ht255{\unvbox255\vfill}\penalty0
+	\box\fprightp@ge\penalty\outputpenalty
+	\global\fpleftover@false
+	\global\output{\plainoutput}}
+
+\newcount\fpflushn@m
+
+% define syntactic sugar
+\let\facingpage\fpbegin \let\switch\fpswitch \let\endfacingpage\fpend
+
+%%%%%%%%%%%%%%%%%%% end of facing page macros %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\resetoutputvariables{%
+  \global\countthispagetrue
+  \global\chapterpagefalse
+  \global\numberthispagetrue}
+
+\newif\ifmakevsizefull
+
+\def\plainoutput{%
+  \ifnum\mc@added>0 \global\mc@nopageyetfalse\fi
+  \global\didMaybeEjectfalse
+  \shipout\vbox{\makeheadline\pagebody\makefootline}%
+  \ifcountthispage\def\output@next{\advancepageno}\else\let\output@next\relax\fi
+  \output@next
+  \resetoutputvariables
+  \ifmakevsizefull\global\makevsizefullfalse\global\vsize\textheight\fi
+  \ifnum\outputpenalty>-\@MM \else\dosupereject\fi
+  \ifnum\fpoutputpending=1 \global\advance\fpoutputpending-1
+    \box\fprightp@ge
+  \fi
+  \flushpageinserts}
+
+\output{\plainoutput}
+\outer\def\bye{
+  \ifnum\fpoutputpending=1
+    \line{}\kern-\topskip\nobreak\vfill\eject
+  \else
+    \par
+  \fi
+  \vfill\supereject\End}
+
+\newdimen\@coltarget
+
+\input boxincol
+\input mcolnote
+\input multicol
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: output.tex,v $
+Revision 0.14  1996/09/02 09:40:18  s
+Doh! Remove debug \show statement from \plainoutput
+
+Revision 0.13  1996/09/02 09:39:20  s
+modify \fpend, \plainoutput and \bye to ensure that final bits of
+  facing-page stuff are emitted correctly
+
+Revision 0.12  1996/08/22 01:31:18  s
+add \let\fnmark\textenotemark for backwards compatibility with
+earlier DA macro packages
+
+Revision 0.11  1996/08/10 11:31:30  s
+merge HRW's redefinition of footnoterule for LR-adjustability
+
+Revision 0.10  1996/05/27 16:19:15  s
+*** empty log message ***
+
+% Revision 0.9  1996/04/05  12:06:35  s
+% first hack at stripping out superseded stuff that's now in
+% multicol and boxincol---needs more work, and possibly more
+% modularization (e.g., a facepage.tex module)
+%
+% Revision 0.8  1996/02/17  23:41:34  s
+% revisions to facing page macros
+%
+% revisions to midinsert etc NOTE: THEY ADD NO SPACE NOW---PROBABLY
+% NEEDS PARAMETERIZING
+%
+% enhanced footnote code to support differentiating between split and
+% non-split notes NOTE: THIS SUPPORT IS A NASTY KLUDGE
+%
+% Revision 0.7  1995/10/27  03:16:56  s
+% add \footnotehook to \fnote and \footnote
+%
+% Revision 0.6  1995/09/21  01:00:03  s
+% fix \moresources magic to make source header blocks carry
+% over from page to page
+%
+% Revision 0.5  1995/06/15  10:58:17  s
+% fixed nasty sleeper bug with \blankpage: if \nopagenumbers was in effect, \folio
+%       never got called, which meant that \nonumberthispage didn't get switched
+%       off until pages later.  Now there is a command \resetoutputvariables that
+%       every output routine should call after the actual page make up has been
+%       performed.
+%
+% Revision 0.4  1995/06/15  03:50:27  s
+% \ifchapterpage needs to be set false after an output routine is called;
+%    added it in \mcolcolumnout
+%
+% Revision 0.3  1995/06/14  15:00:23  s
+% fixed multi-column balancing (finally!?) by removing spurious \vbox{} from
+% \@endmcol and implementing the \loop\unskip\if\lastskip>0pt\repeat trick
+% in \balancecolumns
+%
+% Revision 0.2  1995/06/14  13:24:31  s
+% \ifchapterpage needs to be set false after an output routine is called
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

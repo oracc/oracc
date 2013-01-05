@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>ATF Tools</title>
+  <link rel="stylesheet" type="text/css" href="/cdl/www/cdl.css" />
+<base href="http://oracc.museum.upenn.edu/doc/manager/atftools/tools/" /></head><body>
+<table class="hdr">
+  <tr class="hdr">
+    <td class="hdr-left" rowspan="2">
+      <a class="hdr" href="#download">DOWNLOAD</a><br />
+      <a class="hdr" href="#webservice">WEB SERVICE INFO</a><br />
+      <a class="hdr" href="/cgi-bin/atf2xml">USE WEB SERVICE</a><br />
+      <a class="hdr" href="xtf-dtd.htm">READ XTF DTD</a></td>
+    <td class="hdr-centre">
+      <h1 class="title">ATF Tools</h1>
+    </td>
+    <td class="hdr-right"></td>
+  </tr>
+  <tr class="hdr">
+    <td class="hdr-centre">
+      <h2 class="author">Steve Tinney, 11/03/05</h2>
+    </td>
+    <td class="hdr-right"></td>
+  </tr>
+</table>
+
+<h2>Introduction</h2>
+
+<p>The ATF Tools distribution consists of programs for working with 
+<a href="http://cdli.ucla.edu/methods/de/conventions.html">ASCII Text
+  Format</a> files.  Note that ATF is an intermediate format designed for
+  rapid acquisition of data; XTF, the corresponding XML format (i.e., XML
+  Text Format) is the primary archival format for the CDL, and is the
+  starting point for most computational processing which is not simply
+  a matter of improving the consistency of imported data.</p>
+
+<p>The tools fall into four main groups:</p>
+
+<ul>
+ <li>Tools for helping convert legacy data to ATF</li>
+ <li>Tools for checking the form and content of ATF files</li>
+ <li>General ATF processors</li>
+ <li>Programmer Tools</li>
+</ul>
+
+<h1>Programs and Documentation</h1>
+
+<p>In the listings below, clicking on the program name brings up a
+page giving the online documentation which is contained in the
+program files and is installed in the system man pages under
+Unix-style systems.</p>
+
+<h2>Tools for Legacy Data Conversion</h2>
+
+<dl>
+  <dt><a href="atfc.plx.html">atfc.plx</a></dt>
+  <dd>Convert tabs to &amp;-column markers.</dd>
+
+  <dt><a href="atfcase.plx.html">atfcase.plx</a></dt>
+  <dd>Fix mixed-case graphemes, e.g., in PNs like Ab-ba-sa6-ga.</dd>
+
+  <dt><a href="atfchars.plx.html">atfchars.plx</a></dt>
+  <dd>Eliminate undesirable characters.</dd>
+
+  <dt><a href="atfcg.plx.html">atfcg.plx</a></dt>
+  <dd>Convert compound graphemes to ATF standard format.</dd>
+
+  <dt><a href="atfnum.plx.html">atfnum.plx</a></dt>
+  <dd>Convert numbers to ATF standard format.</dd>
+
+  <dt><a href="atfhyphen.plx.html">atfhyphen.plx</a></dt>
+  <dd>Adjust hyphenation of ATF files, e.g., removing hyphen from
+  genitive complexes.</dd>
+
+  <dt><a href="atflog.plx.html">atflog.plx</a></dt>
+  <dd>Convert logograms from uppercase to ATF underscore format.</dd>
+
+  <dt><a href="atfsquare.plx.html">atfsquare.plx</a></dt>
+  <dd>Move brackets outside of graphemes and add <code>#</code> instead.</dd>
+</dl>
+
+<p><strong>Hint:</strong> If you are converting legacy data with
+strange characters a good strategy is first to get the strange
+characters into Unicode in UTF8 encoding; if the file contains some
+representation of half-brackets map the characters either to Unicode
+left ceiling/right ceiling or to the strings <code>[#</code> and
+<code>#]</code> respectively.  Then you can simply run your
+text data through atf2ascii.plx and then through atfsquare.plx and you
+will have solved most of your text-level translation issues.</p>
+
+<h2>Tools for Checking ATF Form and Content</h2>
+
+<dl>
+  <dt><a href="atfcheck.plx.html">atfcheck.plx</a></dt>
+  <dd>Perform some syntax-checking of ATF files without making an XML file.</dd>
+
+  <dt><a href="atfgrabpq.plx.html">atfgrabpq.plx</a></dt>
+  <dd>Grab names that match P or Q ids from input and print a list of them.</dd>
+
+  <dt><a href="atfgrapheme.plx.html">atfgrapheme.plx</a></dt>
+  <dd>Analyze and fix grapheme usage in input.</dd>
+
+  <dt><a href="atftriage.plx.html">atftriage.plx</a></dt>
+  <dd>Uses atfcheck.plx to read a list of ATF files and tell which are bad.</dd>
+
+  <dt><a href="atfwords.plx.html">atfwords.plx</a></dt>
+  <dd>List words in input.</dd>
+
+</dl>
+
+<h2>General ATF processors</h2>
+
+<dl>
+  <dt><a href="atf2xtf.plx.html">atf2xtf.plx</a></dt>
+  <dd>Convert ATF files to XTF; see below for a web interface.</dd>
+
+  <dt><a href="atf2ascii.plx.html">atf2ascii.plx</a></dt>
+  <dd>Naive filter from Unicode transliteration to CDL ASCII conventions.</dd>
+
+  <dt><a href="atf2uni.plx.html">atf2uni.plx</a></dt>
+  <dd>Convert ATF ASCII to the Unicode used in atf2xtf.plx output.</dd>
+
+  <dt><a href="atf2gdl.plx.html">atf2gdl.plx</a></dt>
+  <dd>Convert ATF writings to the XML Grapheme Description Language 
+      used by XTF.</dd>
+
+  <dt><a href="atflemma.plx.html">atflemma.plx</a></dt>
+  <dd>Lemmatizer for ATF files; you need the cdl-tools distribution
+  as well to make this work.</dd>
+
+  <dt><a href="atfsplit.plx.html">atfsplit.plx</a></dt>
+  <dd>Break ATF archives into individual files.</dd>
+
+</dl>
+
+<h2>Programmer Tools</h2>
+
+<p>Most users don't need to worry about this section; the ATF Tools
+suite contains some programs and API docs which facilitate learning
+about and using the ATF parser engine.  This is only useful if you want to
+write new Perl programs that work with ATF files.</p>
+
+<dl>
+  <dt><a href="atfidentity.plx.html">atfidentity.plx</a></dt>
+  <dd>Simple demo program for use of CDL::ATF::Tokenizer and CDL::ATF::Serializer.</dd>
+
+  <dt><a href="atftokens.plx.html">atftokens.plx</a></dt>
+  <dd>Show what tokens the ATF parser is identifying in the input.</dd>
+
+  <dt><a href="Tokenizer.pm.html">Tokenizer.pm</a></dt>
+  <dd>Simple API for getting a token stream from the ATF Parser engine.</dd>
+
+  <dt><a href="Serializer.pm.html">Serializer.pm</a></dt>
+  <dd>Simple API for printing ATF Parser engine tokens.</dd>
+
+</dl>
+
+<h1>Getting and Installing</h1>
+
+<h2><a name="webservice" id="webservice">Do You Need To?</a></h2>
+
+<p>If you only want to check the validity of your ATF files,
+  or convert them to XTF to ensure that you are doing things correctly, 
+  to see if they parse
+  and validate, then you can simply use the <a href="/cgi-bin/atf2xml">web service</a> which allows
+  you to submit ATF files for processing and retrieve the XTF output
+  or a list of any errors which might have occurred.</p>
+
+<p>The web service interface was originally written by Malcolm Hyman
+  and is now maintained by Steve Tinney.  It presently provides access
+  to the ATF checker and to the ATF to XML converter.  Extending it to
+  give access to the other ATF tools is on the TODO list.</p>
+
+<h2>If You Have To</h2>
+
+<p>For now, installing the ATF Tools requires some experience with
+  installing Perl modules.  For most of the required software, binary
+  packages are available for various systems and can be found at the
+  websites mentioned below; installing binary packages of libxml2,
+  libxslt and XML-LibXML/XML-LibXSLT will make the installation path
+  easier in some ways, but the binary packages sometimes lag behind
+  the most recent versions of the sources so I recommend installing
+  everything from source if it is feasible.</p>
+
+<p>No installation or testing has been done on Windows at present;
+  this is on the TODO list.</p>
+
+<p>Preparing easy-to-install versions of this software is on the TODO
+  list.</p>
+
+<h2><a name="download" id="download">Downloading</a></h2>
+
+<p>You can download the ATF Tools <a href="CDL-ATF-1.9e.zip">as a ZIP
+    archive</a> or as a <a href="CDL-ATF-1.9e.tar.gz">Unix .tar.gz
+    file</a>.  The current version is 1.9e, of 11/03/05.  <a href="news.html">Read the release notes</a>.</p>
+
+<h2><a name="prepare" id="prepare">Preparing Your System</a></h2>
+
+<p>The simplest installation procedure is to follow the instructions
+for binary distribution based installation which are given in the
+next section.</p>
+
+<p>If you are planning to build the tools and dependencies from
+scratch you will need some form of the Gnu build and compile tools,
+including at least autoconf, libtools and the gcc suite.   For Linux
+users these are often already installed; if your distribution had an
+option for 'development tools' or the like and you didn't choose it,
+you will need to follow your distribution's procedures for adding
+package.  For Mac OS X the developers tools have everything you need;
+if they didn't come with your version of the operating system you can
+get them from <a href="http://developer.apple.com">the Apple
+developer's website</a>.  I find that everything I need compiles out
+of the box for OS X, but there is also a binaries distribution that
+may be of interest to some at <a href="http://fink.sourceforge.net">the Fink Sourceforge site</a>.  For
+Windows users, the best approach I know of is to install <a href="http://www.cygwin.com">Cygwin</a>.  These tools have not yet
+been tested with Cygwin.</p>
+
+<h2>Installing</h2>
+
+<p>Most of the packages you need to install, including the ATF Tools,
+follow the standard install sequence of configuration, build, test,
+install.</p>
+
+<p>For non-Perl programs, configuration is normally a matter
+of typing <code>./configure</code>.  For libxml2 and libxslt I have
+found it easier to install them in <code>/usr</code> than in the
+default <code>/usr/local</code>, so I use <code>./configure
+--prefix=/usr</code>.</p>
+
+<p>For Perl modules, including the ATF Tools, the configuration step
+is <code>perl Makefile.PL</code>.</p>
+
+<p>To build, use simply <code>make</code>.</p>
+
+<p>To test, use <code>make test</code>.  Not all programs have tests;
+the ATF Tools has a test suite of about 230 tests.</p>
+
+<p>To install, use <code>make install</code>.</p>
+
+<h2>Prerequisites</h2>
+
+<p>To install ATF you must first install, in this order:</p>
+
+<h3>Libxml2 and Friends</h3>
+
+<p>The XML/XSLT parser and processor libraries (<a href="http://www.xmlsoft.org">http://www.xmlsoft.org</a>).
+You need both libxml2 and libxslt, and the website has both the
+sources and a good list of the various <strong>binary
+distributions</strong> that are out there.</p>
+
+<h3>Perl Modules used by the ATF Tools</h3>
+
+<p>Install in this order:</p>
+
+<ul>
+<!--   <li>String-CRC32</li> -->
+   <li>XML-Namespace</li>
+   <li>XML-SAX</li>
+   <li>XML-LibXML-Common</li>
+   <li>XML-LibXML</li>
+   <li>XML-LibXSLT</li>
+</ul>
+
+<p>You can find them <a href="../../tools/software/">here</a> or at <a href="http://www.cpan.org">CPAN</a>.  For <strong>binary
+distributions</strong> of the XML-LibXML packages, try <a href="http://www.xmlperl.com">xmlperl.com</a>.</p>
+
+<h3>ATF Tools</h3>
+
+<p>Download and unpack the current version of CDL-ATF-x.x.tar.gz (or the .zip equivalent)
+ using the links above.</p>
+
+<p>Install the ATF Tools using:<br /><br /><code>
+perl Makefile.PL<br />
+make<br />
+make test<br />
+sudo make install</code></p>
+
+<p>(on Linux and Windows <code>sudo</code> may be replaced by logging
+  in as superuser and then installing).</p>
+
+<p>Then read the documentation, either here or with man, e.g., man atf2xtf.plx</p>
+
+<h3>Daemonize</h3>
+
+<p>I run the <code>atfserver</code> using a program named
+'daemonize'; you can get that <a href="http://www.clapper.org/software/daemonize">from here</a>.</p>
+
+<p>The shell script used to run the server on enlil (runserver.sh!) is:<br />
+<pre>
+#!/bin/sh
+/usr/local/sbin/daemonize -u apache /usr/local/share/cdl/tools/CDL/ATF/atfserver
+</pre>
+</p>
+
+<h2>Running the ATF Tools web service</h2>
+
+<ul>
+  <li>Edit the scripts <code>atf2xml</code> and
+  <code>atfserver</code> according to the instructions therein.</li>
+  <li>Put <code>atf2xml</code> in the <code>cgi-bin</code> directory
+  of your web server (on Mac OS X:
+  <code>/Library/WebServer/CGI-Executables</code>; on Linux/Apache:
+  <code>/var/www/cgi-bin</code>).</li>
+  <li>Start the atfserver.  I use daemonize (see above)--on Mac OS X
+  this is <code>daemonize -u www &lt;path-to-atfserver&gt;</code>; on
+  Linux/apache it is <code>daemonize -u apache
+  &lt;path-to-atfserver&gt;</code>.</li>
+</ul>
+
+<h2>Trouble-shooting the ATF Tools web service</h2>
+
+<ul>
+  <li>Is atfserver running?</li>
+  <li>Do you have the right <code>$PS_ARGS</code> in
+  <code>atf2xml</code>?</li>
+  <li>is <code>$LINK_TARG</code> set correctly?</li>
+  <li>did you create a link from the directory <code>atfserver</code> is using for
+  output (<code>$WORK_DIR</code>) to the directory
+  <code>atf2xml</code> responses use to find the output files
+  (<code>$LINK_DIR</code>).</li>
+</ul>
+
+<hr />
+
+<p class="qn">
+<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+  <img style="border:0;width:88px;height:31px" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" />
+ </a>Questions specifically about ATF Tools can be directed to 
+<a href="mailto:stinney@sas.upenn.edu">Steve Tinney</a>; questions on
+other issues related to the ATF format or processing ATF texts can be
+directed to <a href="mailto:cdli@ucla.edu">CDLI staff</a>.</p>
+
+</body></html>

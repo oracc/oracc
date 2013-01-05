@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API" />
+<meta name="description" content="User's Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="uguide-ja.html" hreflang="ja" title="the Japanese version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>User's Guide of Hyper Estraier Version 1</title>
+</head>
+
+<body>
+
+<h1>User's Guide</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<span class="void">English</span>/<a href="uguide-ja.html" hreflang="ja">Japanese</a>] [<a href="index.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#attributes">Attributes</a></li>
+<li><a href="#formats">File Formats</a></li>
+<li><a href="#searchcond">Search Conditions</a></li>
+<li><a href="#estcmd">Administration Command</a></li>
+<li><a href="#estseek">CGI Script for Search</a></li>
+<li><a href="#estproxy">CGI Script for Highlight</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This guide describes detail of how to use applications of Hyper Estraier.  If you have never read <a href="intro-en.html">the introduction document</a>, please read it beforehand.</p>
+
+<p>Hyper Estraier is a full-text search system using <strong>index database</strong>.  So, before search, it is needed to prepare an index into which target documents have been registered.  Hyper Estraier provides the administration command `<code>estcmd</code>' and the CGI script `<code>estsearch.cgi</code>' for search.  The former is used in order to administrate the index by command line interface.  The latter is used in order to search the index for documents with a web browser.</p>
+
+<p><code>estcmd</code> can handle various file formats and features various operations to administrate index.  How to use it is described in this guide.</p>
+
+<p>Hyper Estraier supports such various methods for search as combining some search phrase and search with attributes of documents.  Moreover, it is possible to customize presentation according to the configuration of <code>estseek.cgi</code>.  How to do it is described in this guide.</p>
+
+<hr />
+
+<h2 id="attributes">Attributes</h2>
+
+<p>Not only information of the body text but also such attributes as the title, the modification date, and so on can be added to documents handled by Hyper Estraier.  Attributes are used for such various purposes as search with attributes and determination of difference updating.</p>
+
+<h3>Attribute Name</h3>
+
+<p>Any attribute has a name.  As the name can be determined arbitrarily, some names are reserved for being used as <strong>system attributes</strong>.  Names of system attributes begin with "<code>@</code>".  There are the following system attributes.</p>
+
+<ul>
+<li><kbd>@id</kbd> : the ID number determined automatically when the document is registered.</li>
+<li><kbd>@uri</kbd> : the location of a document which any document should have.</li>
+<li><kbd>@digest</kbd> : the message digest calculated automatically when the document is registered.</li>
+<li><kbd>@cdate</kbd> : the creation date.</li>
+<li><kbd>@mdate</kbd> : the last modification date.</li>
+<li><kbd>@adate</kbd> : the last access date.</li>
+<li><kbd>@title</kbd> : the title used as a headline in the search result.</li>
+<li><kbd>@author</kbd> : the author.</li>
+<li><kbd>@type</kbd> : the media type.</li>
+<li><kbd>@lang</kbd> : the language.</li>
+<li><kbd>@genre</kbd> : the genre.</li>
+<li><kbd>@size</kbd> : the size.</li>
+<li><kbd>@weight</kbd> : the scoring weight.</li>
+<li><kbd>@misc</kbd> : miscellaneous information.</li>
+</ul>
+
+<p>The other attributes except for system attributes are called <strong>user-defined attributes</strong>.  They can be defined by document draft said later.  Meta attributes in HTML and headers of MIME are also treated as user-defined attributes.  Any attribute name should not begin with "<code>%</code>".</p>
+
+<h3>Attribute Type</h3>
+
+<p>There are two data types for attributes; <strong>string</strong> and <strong>number</strong>.  Data of the string type are arbitrary strings.  There are such operations as full matching, forward matching, backward matching, partial matching.  Data of the number type are numbers or date information.  A string of the number type is converted into the number and calculated according to the following formats.  If the format is for date, the value is computed based on the UNIX epoch (1 Jan 1970).</p>
+
+<ul>
+<li>If all characters are digits, it is computed as a decimal number.</li>
+<li>If it begins with "0x", it is computed as a hexadecimal number.</li>
+<li>If it conforms to W3CDTF (e.g. 1978-02-11T18:05:32+09:00), it is computed as a date.</li>
+<li>If it conforms to RFC822 (e.g. Sat, 11 Feb 1978 18:05:32 +0900), it is computed as a date.</li>
+<li>If it is in YYYY/MM/DD format (e.g. 1978/02/11 18:05:32), it is computed as a date.</li>
+<li>Else, it is computed as -1.</li>
+</ul>
+
+<p>The data type is not determined when registration.  It is determined when search.  Length of the value of an attribute is not limited.</p>
+
+<p>Attributes and the body text of a document should be expressed in UTF-8 encoding.  If another encoding is used, it should be converted into UTF-8.  By the way, <code>estcmd</code> detect the encoding automatically if it is not clearly specified.</p>
+
+<p><code>estcmd</code> defines <strong>the URI attribute</strong> begins with "<code>file://</code>" for each document.  However, if a document defines its own URI, it comes first.  The URI of the local file system is defined as an attribute whose name is "<code>_lpath</code>".  The absolute path on the local file system is defined as an attribute whose name is "<code>_lreal</code>".  The file name is normalized to UTF-8 is defined as an attribute whose name is "<code>_lfile</code>".  The encoding of the value of each attribute is normalized as UTF-8.  Attributes whose name begins with "<code>_</code>" are hidden in detail display by <code>estseek.cgi</code>.</p>
+
+<hr />
+
+<h2 id="formats">File Formats</h2>
+
+<p><code>estcmd</code> handles four file formats.  This section describes how the four are processed.</p>
+
+<h3>Plain Text</h3>
+
+<p>A document of plain-text is composed of strings with no structure.  By default, files whose names end with "<code>.txt</code>", "<code>.text</code>", or "<code>.asc</code>" are treated as plain-text.</p>
+
+<ul>
+<li>The character encoding is detected automatically.</li>
+<li>"text/plain" is recorded as the "@type" attribute.</li>
+<li>The file size is recorded as the "@size" attribute.</li>
+</ul>
+
+<h3>HTML</h3>
+
+<p>As we all know, a document of HTML is used as a hyper-text on the Web.  By default, files whose names end with "<code>.html</code>", "<code>.htm</code>", "<code>xhtml</code>", or "<code>.xht</code>" are treated as HTML.</p>
+
+<ul>
+<li>The character encoding is detected automatically.  But, if the encoding is specified by a "meta" attribute, it comes first.</li>
+<li>If there is a "title" attribute, its content is recorded as the "@title" attribute.</li>
+<li>If the "name" attribute of a "meta" element specifies "author", the value of the "content" attribute is recorded as the "@author" attribute.</li>
+<li>If the "html" element has the "lang" or "xml:lang" attribute, the value is recorded as the "@lang" attribute.</li>
+<li>"text/html" is recorded as the "@type" attribute.</li>
+<li>The file size is recorded as the "@size" attribute.</li>
+<li>If the "name" or the "http-equiv" is specified in a "meta" element, the value of the "content" attribute is recorded as an attribute whose name is converted from the value of them into lower cases.</li>
+<li>The value of the attribute "@title" is treated as a hidden text.</li>
+</ul>
+
+<h3>MIME (e-mail)</h3>
+
+<p>MIME is used for communication by e-mail based on RFC822 and so on.  By default, files whose names end with "<code>.eml</code>", "<code>.mime</code>", "<code>.mht</code>", or "<code>.mhtml</code>" are treated as HTML.</p>
+
+<ul>
+<li>The character encoding is detected automatically.  But, if the encoding is specified by the "Content-Type" header, it comes first.</li>
+<li>If the "Subject" header is, the value is recorded as the "@title" attribute.</li>
+<li>If the "From" header is, the value is recorded as the "@author" attribute.</li>
+<li>If the "Date" header is, the value is recorded as the "@cdate" attribute and the "@mdate" attribute.</li>
+<li>"message/rfc822" is recorded as the "@type" attribute.</li>
+<li>The file size is recorded as the "@size" attribute.</li>
+<li>The value of each header is recorded as an attribute whose name is converted from the header name into lower cases.</li>
+<li>The value of the attribute "@title" is treated as a hidden text.</li>
+</ul>
+
+<p>If the content of each part of multipart is "text/plain", "text/html", or "message/rfc822", the content is treated as a part of the body text so that web archive can be supported.</p>
+
+<h3>Document Draft</h3>
+
+<p><strong>Document draft</strong> is a original format of Hyper Estraier.  It is possible to handle various formats in the integrative way by using document draft as intermediate format.  By default, files whose names end with "<code>.est</code>" are treated as document draft.</p>
+
+<p>Though format of document draft is similar to RFC822, detail points differ.  The delimiter for headers is not "<code>:</code>" but "<code>=</code>".  Moreover, no space character is needed after "<code>=</code>".  The following is an example data to handle a MIDI document.</p>
+
+<pre>@uri=http://www.music-estraier.com/mididb/t/tw/twinkle.kar
+@title=Twinkle Twinkle Little Star
+@author=Jane Taylor
+@cdate=2004-11-01T23:11:18+09:00
+@mdate=2005-03-21T08:07:45+09:00
+category=chorus,dance
+
+Twinkle, twinkle, little star,
+How I wonder what you are.
+Up above the world so high,
+Like a diamond in the sky.
+Twinkle, twinkle, little star,
+How I wonder what you are!
+        Twinkle Twinkle Little Star
+        Jane Taylor
+</pre>
+
+<p>The following specifications are required for document draft.</p>
+
+<ul>
+<li>It is composed of valid UTF-8 strings.</li>
+<li>Line feeds are one of UNIX style (LF) or DOS style (CR+LF).</li>
+<li>There are the attribute section and the text section and they are separated by the first empty line.</li>
+<li>Each line in the attribute section specifies an attribute.  The name and the value is separated by the first "<kbd>=</kbd>".</li>
+<li>Each line in the text section specifies a sentence of the body text.  If a line begins with a tab character, the line is treated as a hidden text.</li>
+</ul>
+
+<p>In the attribute section, lines which begin with "<kbd>%</kbd>" are regarded as control commands and are ignored.  Lines which begin with "<kbd>%VECTOR</kbd>" trailed by a tab express keyword vectors.  The format of the keyword vector is TSV.  Keywords and their scores come alternately.  Lines which begin with "<kbd>%SCORE</kbd>" trailed by a tab express the substitute score.</p>
+
+<p>A hidden text is the same as normal text except not displayed in the snippet of the result.  It is useful to search with some attributes.</p>
+
+<hr />
+
+<h2 id="searchcond">Search Conditions</h2>
+
+<p>Two kinds of search conditions are supported.  One is for full-text search and the other is for attribute search.  If both are specified at the same time, documents corresponding to the both are searched for.  Moreover, usual form, simplified form and so on are supported for full-text search condition.</p>
+
+<h3>Full-text Search Conditions</h3>
+
+<p>The purpose of <strong>full-text search expression</strong> is to search for documents including some specified words.  For example, if you search for documents including a word "<code>computer</code>", specify "<code>computer</code>" in the search phrase as it is.</p>
+
+<p>You can specify two or more words.  For example, if you specify "<code>United Nations</code>", documents including "<code>united</code>" followed by "<code>nations</code>" are searched for.  In case of simplified form, specify the following.</p>
+
+<pre>"united nations"
+</pre>
+
+<p>Intersection operation is supported by the "<kbd>AND</kbd>" operator.  For example, if you specify "<code>internet AND security</code>", documents including both of "<code>internet</code>" and "<code>security</code>" are searched for.  In case of simplified form, specify the following.</p>
+
+<pre>internet security
+</pre>
+
+<p>Difference operation is supported by the "<kbd>ANDNOT</kbd>" operator.  For example, if you specify "<code>hacker ANDNOT cracker</code>", documents including "<code>hacker</code>" but not including "<code>cracker</code>" are searched for.  In case of simplified form, specify the following.</p>
+
+<pre>hacker ! cracker
+</pre>
+
+<p>Union operation is supported by the "<kbd>OR</kbd>" operator.  For example, if you specify "<code>proxy OR firewall</code>", documents including one or both of "<code>proxy</code>" and "<code>firewall</code>" are searched for.  In case of simplified form, specify the following.</p>
+
+<pre>proxy | firewall
+</pre>
+
+<p>Note that the priority of "<kbd>OR</kbd>" is higher than ones of "<kbd>AND</kbd>" and "<kbd>ANDNOT</kbd>".  For example, if you specify "<code>F1 OR F-1 OR Formula One AND Champion OR Victory</code>", documents including one or both of "<code>f1</code>", "<code>f-1</code>", and "<code>formula one</code>", and including one or both of "<code>champion</code>" and "<code>victory</code>".  In case of simplified form, specify the following.</p>
+
+<pre>F1 | F-1 | "Formula One" Champion | Victory
+</pre>
+
+<p>Search words are case insensitive.  However, operators are case sensitive.  If you want to search for documents including "<code>AND</code>", specify "<code>and</code>" instead.</p>
+
+<p>Wild card is also supported.  It can be used for forward match search and backward match search.  For example, "<code>[BW] euro</code>" matches words which begin with "<code>euro</code>".  "<code>[EW] shere</code>" matches words which end with "<code>sphere</code>".  Moreover, regular expression is also supported.  For example, "<code>[RX] ^inter.*al$</code>" matches words which begin with "<code>inter</code>" and end with "<code>al</code>".  In case of simplified form, "<code>euro*</code>", "<code>*sphere</code>", and "<code>*^inter.*al$*</code>" are used instead.</p>
+
+<h3>Attribute Search Conditions</h3>
+
+<p>The purpose of <strong>attribute search expression</strong> is to search for documents whose attributes are corresponding to the specified expression.  An expression of attribute search is composed of an attribute name, an operator, and a value.  They are separated with space characters.  For example, if you specify "<code>@title STRINC IMPORTANT</code>", documents whose title includes "<code>IMPORTANT</code>".  The following operators for attribute search are supported.</p>
+
+<ul>
+<li><kbd>STREQ</kbd> : is equal to the string</li>
+<li><kbd>STRNE</kbd> : is not equal to the string</li>
+<li><kbd>STRINC</kbd> : includes the string</li>
+<li><kbd>STRBW</kbd> : begins with the string</li>
+<li><kbd>STREW</kbd> : ends with the string</li>
+<li><kbd>STRAND</kbd> : includes all tokens in the string</li>
+<li><kbd>STROR</kbd> : includes at least one token in the string</li>
+<li><kbd>STROREQ</kbd> : is equal to at least one token in the string</li>
+<li><kbd>STRRX</kbd> : matches regular expressions of the string</li>
+<li><kbd>NUMEQ</kbd> : is equal to the number or date</li>
+<li><kbd>NUMNE</kbd> : is not equal to the number or date</li>
+<li><kbd>NUMGT</kbd> : is greater than the number or date</li>
+<li><kbd>NUMGE</kbd> : is greater than or equal to the number or date</li>
+<li><kbd>NUMLT</kbd> : is less than the number or date</li>
+<li><kbd>NUMLE</kbd> : is less than or equal to the number or date</li>
+<li><kbd>NUMBT</kbd> : is between the two numbers or dates</li>
+</ul>
+
+<p>If an operator is leaded by "<kbd>!</kbd>", the meaning is inverted.  If an operator is leaded by "<kbd>I</kbd>", case of the value is ignored.  If no operator is specified, all documents with the attribute correspond regardless of the value.  <code>STRAND</code>, <code>STROR</code>, <code>STROREQ</code>, and <code>NUMBT</code> take plural parameters separated by space.  Range of <code>NUMBT</code> is inclusive of border values.  Two or more attribute names can be listed with separated by "<kbd>,</kbd>" to mean logical addition.</p>
+
+<h3>Order of the Result</h3>
+
+<p>You can specify the order of the result by an expression.  An <strong>ordering expression</strong> is composed of an attribute name and an operator.  For example, if you specify "@size NUMA", documents in the result are in ascending order of the size.  The following operators for ordering are supported.</p>
+
+<ul>
+<li><kbd>STRA</kbd> : ascending by string</li>
+<li><kbd>STRD</kbd> : descending by string</li>
+<li><kbd>NUMA</kbd> : ascending by number or date</li>
+<li><kbd>NUMD</kbd> : descending by number or date</li>
+</ul>
+
+<p>By default, the order of the result is descending by score.  The score is calculated by the number of specified words in each document.</p>
+
+<h2>Other Faculties</h2>
+
+<p><code>estseek.cgi</code> provides other faculties also.  "<code>[...] per page</code>" in the form is to specify the number of shown documents per page.  If documents over one page correspond, you can move to another page via anchors of "<code>PREV</code>" and "<code>NEXT</code>" at the bottom of the page.  "<code>clip by [...]</code>" in the form is to specify strength of clipping similar documents.  It is useful if too similar documents occupy the page.  Each of "<code>[detail]</code>" links in the result is to show detail information.  Each of "<code>[similar]</code>" links in the result is to search for similar documents.  Each of "<code>[include]</code>" links in the result is to include clipped documents.</p>
+
+<p>Search phrase has other kinds of formats; rough form, union form, and intersection form.  Though rough form is similar to simplified form, negative conditions are specified by tokens leaded by "<code>-</code>".  Union form specifies only union conditions by tokens.  Intersection form specifies only intersection conditions by tokens.  These forms do not support wild card nor other special operators.</p>
+
+<hr />
+
+<h2 id="estcmd">Administration Command</h2>
+
+<p>This section describes specification of <code>estcmd</code>.  <code>estcmd</code> can do not only indexing but also search.</p>
+
+<h3>Synopsis and Description</h3>
+
+<p><code>estcmd</code> is an aggregation of sub commands.  The name of a sub command is specified by the first argument.  Other arguments are parsed according to each sub command.  The argument <var>db</var> specifies the path of an index.</p>
+
+<dl>
+<dt><kbd>estcmd create [-tr] [-apn|-acc] [-xs|-xl|-xh|-xh2|-xh3] [-sv|-si|-sa] [-attr <var>name</var> <var>type</var>] <var>db</var></kbd></dt>
+<dd>Create an index.</dd>
+<dd>If -tr is specified, a new index is created regardless if one exists.</dd>
+<dd>If -apn is specified, N-gram analysis is performed against European text also.</dd>
+<dd>If -acc is specified, character category analysis is performed instead of N-gram analysis.</dd>
+<dd>If -xs is specified, the index is tuned to register less than 50000 documents.</dd>
+<dd>If -xl is specified, the index is tuned to register more than 300000 documents.</dd>
+<dd>If -xh is specified, the index is tuned to register more than 1000000 documents.</dd>
+<dd>If -xh2 is specified, the index is tuned to register more than 5000000 documents.</dd>
+<dd>If -xh3 is specified, the index is tuned to register more than 10000000 documents.</dd>
+<dd>If -sv is specified, scores are stored as void.</dd>
+<dd>If -si is specified, scores are stored as 32-bit integer.</dd>
+<dd>If -sa is specified, scores are stored as-is and marked not to be tuned when search.</dd>
+<dd>-attr specifies an attribute index and its data type.  This option can be specified multiple times.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd put [-tr] [-cl] [-ws] [-apn|-acc] [-xs|-xl|-xh|-xh2|-xh3] [-sv|-si|-sa] <var>db</var> [<var>file</var>]</kbd></dt>
+<dd>Register a document of document draft to an index.</dd>
+<dd><var>file</var> specifies a target file.  If it is omitted, the standard input is read.</dd>
+<dd>If -tr is specified, a new index is created regardless if one exists.</dd>
+<dd>If -cl is specified, regions of a overwritten document are cleaned up.</dd>
+<dd>If -ws is specified, scores are weighted statically with score weighting attribute.</dd>
+<dd>If -apn is specified, N-gram analysis is performed against European text also.</dd>
+<dd>If -acc is specified, character category analysis is performed instead of N-gram analysis.</dd>
+<dd>If -xs is specified, the index is tuned to register less than 50000 documents.</dd>
+<dd>If -xl is specified, the index is tuned to register more than 300000 documents.</dd>
+<dd>If -xh is specified, the index is tuned to register more than 1000000 documents.</dd>
+<dd>If -xh2 is specified, the index is tuned to register more than 5000000 documents.</dd>
+<dd>If -xh3 is specified, the index is tuned to register more than 10000000 documents.</dd>
+<dd>If -sv is specified, scores are stored as void.</dd>
+<dd>If -si is specified, scores are stored as 32-bit integer.</dd>
+<dd>If -sa is specified, scores are stored as-is and marked not to be tuned when search.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd out [-cl] [-pc <var>enc</var>] <var>db</var> <var>expr</var></kbd></dt>
+<dd>Remove information of a document from an index.</dd>
+<dd><var>expr</var> specifies the ID number, the URI, or the local path of a document.</dd>
+<dd>If -cl is specified, regions of the document are cleaned up.</dd>
+<dd>-pc specifies the encoding of file paths.  By default, it is ISO-8859-1.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd edit [-pc <var>enc</var>] <var>db</var> <var>expr</var> <var>name</var> [<var>value</var>]</kbd></dt>
+<dd>Edit an attribute of a document in an index.</dd>
+<dd><var>expr</var> specifies the ID number, the URI, or the local path of a document.</dd>
+<dd><var>name</var> specifies the name of an attribute.</dd>
+<dd><var>value</var> specifies the value of the attribute.  If it is omitted, the attribute is removed.</dd>
+<dd>-pc specifies the encoding of the file path and the attribute value.  By default, it is ISO-8859-1.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd get [-nl|-nb] [-pidx <var>path</var>] [-pc <var>enc</var>] <var>db</var> <var>expr</var> [<var>attr</var>]</kbd></dt>
+<dd>Output document draft of a document in an index.</dd>
+<dd><var>expr</var> specifies the ID number, the URI, or the local path of a document.</dd>
+<dd>If <var>attr</var> is specified, only the value of the attribute is output.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+<dd>-pidx specifies the path of a pseudo index.  This option can be specified multiple times.</dd>
+<dd>-pc specifies the encoding of file paths.  By default, it is ISO-8859-1.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd list [-nl|-nb] [-lp] <var>db</var></kbd></dt>
+<dd>Output a list of all document in an index.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+<dd>If -lp is specified, local path equivalent to URL of "file://" is output.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd uriid [-pidx <var>path</var>] [-nl|-nb] [-pc <var>enc</var>] <var>db</var> <var>expr</var></kbd></dt>
+<dd>Output the ID number of a document specified by URI.</dd>
+<dd><var>expr</var> specifies the URI or the local path of a document.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+<dd>-pidx specifies the path of a pseudo index.  This option can be specified multiple times.</dd>
+<dd>-pc specifies the encoding of file paths.  By default, it is ISO-8859-1.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd meta <var>db</var> [<var>name</var> [<var>value</var>]]</kbd></dt>
+<dd>Handle meta data.</dd>
+<dd><var>name</var> specifies the name of a piece of meta data.  If it is omitted, a list of all names is output.</dd>
+<dd><var>value</var> specifies the value of the meta data to be recorded.  If it is omitted, the current value is output.  If it is an empty string, the meta data is removed.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd inform [-nl|-nb] <var>db</var></kbd></dt>
+<dd>Output the number of documents and the number of unique words in an index.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd optimize [-onp] [-ond] <var>db</var></kbd></dt>
+<dd>Optimize an index and clean up dispensable regions.</dd>
+<dd>If -onp is specified, it is omitted to clean up dispensable regions.</dd>
+<dd>If -ond is specified, it is omitted to optimize the database files.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd merge [-cl] <var>db</var> <var>target</var></kbd></dt>
+<dd>Merge another index.</dd>
+<dd><var>target</var> specifies the path of another index.</dd>
+<dd>If -cl is specified, regions of overwritten documents are cleaned up.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd repair [-rst|-rsh] <var>db</var></kbd></dt>
+<dd>Repair a broken index.</dd>
+<dd>If -rst is specified, strict consistency check is performed.</dd>
+<dd>If -rsh is specified, consistency check is omitted.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd search [-nl|-nb] [-pidx <var>path</var>] [-ic <var>enc</var>] [-vu|-va|-vf|-vs|-vh|-vx|-dd] [-sn <var>wnum</var> <var>hnum</var> <var>anum</var>] [-kn <var>num</var>] [-ec <var>rn</var>] [-gs|-gf|-ga] [-cd] [-ni] [-sf|-sfr|-sfu|-sfi] [-hs] [-attr <var>expr</var>] [-ord <var>expr</var>] [-max <var>num</var>] [-sk <var>num</var>] [-aux <var>num</var>] [-dis <var>name</var>] [-sim <var>id</var>] <var>db</var> [<var>phrase</var>]</kbd></dt>
+<dd>Search an index for documents.</dd>
+<dd><var>phrase</var> specifies the search phrase.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+<dd>-pidx specifies the path of a pseudo index.  This option can be specified multiple times.</dd>
+<dd>-ic specifies the input encoding.  By default, it is UTF-8.</dd>
+<dd>If -vu is specified, TSV of ID number and URI are output.</dd>
+<dd>If -va is specified, multipart format including attributes is output.</dd>
+<dd>If -vf is specified, multipart format including document draft is output.</dd>
+<dd>If -vs is specified, multipart format including attributes and snippets is output.</dd>
+<dd>If -vh is specified, human readable format including attributes and snippets is output.</dd>
+<dd>If -vx is specified, XML including including attributes and snippets is output.</dd>
+<dd>If -dd is specified, document draft data are dumped and saved into separated files.</dd>
+<dd>-sn specifies the number of whole width of snippet and width of strings picked up from the beginning of the text and width of strings picked up around each highlighted word.</dd>
+<dd>-kn specifies the number of keywords to be extracted.  By default, keyword extraction is not performed.</dd>
+<dd>If -um is specified, morphological analyzers are used for keyword extraction.</dd>
+<dd>-ec specifies lower limit of similarity eclipse.  If it is negative, similarity is weighted by URL.  "serv" specifies server basis.  "dir" specifies directory basis.  "file" specifies file basis.</dd>
+<dd>If -gs is specified, every key of N-gram is checked.  By default, it is alternately.</dd>
+<dd>If -gf is specified, keys of N-gram are checked every three.</dd>
+<dd>If -ga is specified, keys of N-gram are checked every four.</dd>
+<dd>If -cd is specified, whether documents match the search phrase definitely is checked.</dd>
+<dd>If -ni is specified, TF-IDF tuning is omitted.</dd>
+<dd>If -sf is specified, the phrase is treated as a simplified form.</dd>
+<dd>If -sfr is specified, the phrase is treated as a rough form.</dd>
+<dd>If -sfu is specified, the phrase is treated as a union form.</dd>
+<dd>If -sfi is specified, the phrase is treated as an intersection form.</dd>
+<dd>If -hs is specified, score information is output as an attribute.</dd>
+<dd>-attr specifies an attribute search condition.  This option can be specified multiple times.</dd>
+<dd>-ord specifies the order expression.  By default, it is descending by score.</dd>
+<dd>-max specifies the maximum number of shown documents.  Negative means unlimited.  By default, it is 10.</dd>
+<dd>-sk specifies the number of documents to be skipped.  By default, it is 0.</dd>
+<dd>-aux specifies permission to adopt result of the auxiliary index.  If it is not more than 0, the auxiliary index is not used.  By default, it is 32.</dd>
+<dd>-dis specifies the name of the distinct attribute.</dd>
+<dd>-sim specifies the ID number of the seed document for similarity search.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd gather [-tr] [-cl] [-ws] [-no] [-fe|-ft|-fh|-fm] [-fx <var>sufs</var> <var>cmd</var>] [-fz] [-fo] [-rm <var>sufs</var>] [-ic <var>enc</var>] [-il <var>lang</var>] [-bc] [-lt <var>num</var>] [-lf <var>num</var>] [-pc <var>enc</var>] [-px <var>name</var>] [-aa <var>name</var> <var>value</var>] [-apn|-acc] [-xs|-xl|-xh|-xh2|-xh3] [-sv|-si|-sa] [-ss <var>name</var>] [-sd] [-cm] [-cs <var>num</var>] [-ncm] [-kn <var>num</var>] [-um] <var>db</var> [<var>file</var>|<var>dir</var>]</kbd></dt>
+<dd>Scan the local file system and register documents into an index.</dd>
+<dd>If the third argument is the name of a file, a list of paths of target documents are read from it.  If it is "-", the standard input is specified.</dd>
+<dd>If the third argument is the name of a directory.  All files under the directory are treated as target documents.</dd>
+<dd>If -tr is specified, a new index is created regardless if one exists.</dd>
+<dd>If -cl is specified, regions of overwritten documents are cleaned up.</dd>
+<dd>If -ws is specified, scores are weighted statically with score weighting attribute.</dd>
+<dd>If -no is specified, operations are printed but not executed actually.</dd>
+<dd>If -fe is specified, target files are treated as document draft.  By default, the format is detected by the suffix of each document.</dd>
+<dd>If -ft is specified, target files are treated as plain text.</dd>
+<dd>If -fh is specified, target files are treated as HTML.</dd>
+<dd>If -fm is specified, target files are treated as MIME.</dd>
+<dd>If -fx is specified, target files with the specified suffixes are processed by the specified outer command.  "*" matches any file.  If the command is leaded by "T@", the output of the command is treated as plain text.  If the command is leaded by "H@", the output of the command is treated as HTML.  If the command is leaded by "M@", the output of the command is treated as MIME.  Else, the output is treated as document draft.  This option can be specified multiple times.</dd>
+<dd>If -fz is specified, documents which do not corresponding to the condition of -fx are ignored.</dd>
+<dd>If -fo is specified, target files are not read.  It is useful for efficient process of the outer command.</dd>
+<dd>If -rm is specified, target files with the specified suffixes are removed.  "*" matches any file.  This option can be specified multiple times.</dd>
+<dd>-ic specifies the input encoding.  By default, it is detected automatically.</dd>
+<dd>-il specifies the preferred input language.  By default, English is preferred.</dd>
+<dd>If -bc is specified, binary files are detected and ignored.</dd>
+<dd>-lt specifies the text size limitation by kilobytes.  By default, it is 128KB.  If it is negative, the size is unlimited.</dd>
+<dd>-lf specifies the file size limitation by megabytes.  By default, it is 32MB.  If it is negative, the size is unlimited.</dd>
+<dd>-pc specifies the encoding of file paths.  By default, it is ISO-8859-1.</dd>
+<dd>-px specifies the name of an attribute read from the list of paths.  As the list of paths can be in TSV format, the first field is treated as the path of a target document, the second field and the followers are definitions of attribute values.  -px specifies the name of each values of the second field and the followers.  This option can be specified multiple times.</dd>
+<dd>-aa specifies the name and the value of an additional attribute.  This option can be specified multiple times.</dd>
+<dd>If -apn is specified, N-gram analysis is performed against European text also.</dd>
+<dd>If -acc is specified, character category analysis is performed instead of N-gram analysis.</dd>
+<dd>If -xs is specified, the index is tuned to register less than 50000 documents.</dd>
+<dd>If -xl is specified, the index is tuned to register more than 300000 documents.</dd>
+<dd>If -xh is specified, the index is tuned to register more than 1000000 documents.</dd>
+<dd>If -xh2 is specified, the index is tuned to register more than 5000000 documents.</dd>
+<dd>If -xh3 is specified, the index is tuned to register more than 10000000 documents.</dd>
+<dd>If -sv is specified, scores are stored as void.</dd>
+<dd>If -si is specified, scores are stored as 32-bit integer.</dd>
+<dd>If -sa is specified, scores are stored as-is and marked not to be tuned when search.</dd>
+<dd>-ss specifies the name of an attribute for substitute score.</dd>
+<dd>If -sd is specified, the modification date of each file is recorded as an attribute.</dd>
+<dd>If -cm is specified, documents whose modification date has not changed are ignored.</dd>
+<dd>-cs specifies the size of cache memory by megabytes.  By default, it is 64MB.</dd>
+<dd>If -ncm is specified, checking availability of the virtual memory is omitted.</dd>
+<dd>-kn specifies the number of keywords to be extracted.  By default, keyword extraction is not performed.</dd>
+<dd>If -um is specified, morphological analyzers are used for keyword extraction.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd purge [-cl] [-no] [-fc] [-pc <var>enc</var>] [-attr <var>expr</var>] <var>db</var> [<var>prefix</var>]</kbd></dt>
+<dd>Purge information of documents which do not exist on the file system.</dd>
+<dd>If <var>prefix</var> is specified, only documents whose URIs are begins with it.  It can be specified by the local path of a directory.</dd>
+<dd>If -cl is specified, regions of the deleted documents are cleaned up.</dd>
+<dd>If -no is specified, operations are printed but not executed actually.</dd>
+<dd>If -fc is specified, information of all target documents are deleted.</dd>
+<dd>-pc specifies the encoding of file paths.  By default, it is ISO-8859-1.</dd>
+<dd>-attr specifies an attribute search condition.  This option can be specified multiple times.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd extkeys [-no] [-fc] [-dfdb <var>file</var>] [-ncm] [-ni] [-kn <var>num</var>] [-um] [-attr <var>expr</var>] <var>db</var> [<var>prefix</var>]</kbd></dt>
+<dd>Create a database of keywords extracted from documents.</dd>
+<dd>If <var>prefix</var> is specified, only documents whose URIs are begins with it.</dd>
+<dd>If -no is specified, operations are printed but not executed actually.</dd>
+<dd>If -fc is specified, all target documents are processed whichever they have existing records or not.</dd>
+<dd>-dfdb specifies an outher database of document frequency.  By default, document frequency is calculated dynamically according to the index.</dd>
+<dd>If -ncm is specified, checking availability of the virtual memory is omitted.</dd>
+<dd>If -ni is specified, TF-IDF tuning is omitted.</dd>
+<dd>-kn specifies the number of keywords to be extracted.  By default, it is 32.</dd>
+<dd>If -um is specified, morphological analyzers are used for keyword extraction.</dd>
+<dd>-attr specifies an attribute search condition.  This option can be specified multiple times.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd words [-nl|-nb] [-dfdb <var>file</var>] [-kw] <var>db</var></kbd></dt>
+<dd>Output a list of all unique words and each record size which is treated as docuemnt frequency.</dd>
+<dd>If -nl is specified, the index is opened without file locking.</dd>
+<dd>If -nb is specified, file locking is performed without blocking.</dd>
+<dd>-dfdb specifies an outer database where the result is stored.  By default, the result is output to the standard output as TSV.  If the outer database already exists, the value of each record is incremented.</dd>
+<dd>If -kw is specified, keywords and numbers of corresponding documents are output.</dd>
+<dd>If -kt is specified, keywords and their related terms are output.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd draft [-ft|-fh|-fm] [-ic <var>enc</var>] [-il <var>lang</var>] [-bc] [-lt <var>num</var>] [-kn <var>num</var>] [-um] [<var>file</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd break [-ic <var>enc</var>] [-il <var>lang</var>] [-apn|-acc] [-wt] [<var>file</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd iconv [-ic <var>enc</var>] [-il <var>lang</var>] [-oc <var>enc</var>] [<var>file</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd regex [-inv] [-repl <var>str</var>] <var>expr</var> [<var>file</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd scandir [-tf|-td] [-pa|-pu] [<var>dir</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd multi [-db <var>db</var>] [-nl|-nb] [-ic <var>enc</var>] [-gs|-gf|-ga] [-cd] [-ni] [-sf|-sfr|-sfu|-sfi] [-hs] [-hu] [-attr <var>expr</var>] [-ord <var>expr</var>] [-max <var>num</var>] [-sk <var>num</var>] [-aux <var>num</var>] [-dis <var>name</var>] [<var>phrase</var>]</kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd randput [-ren|-rla|-reu|-ror|-rjp|-rch] [-cs num] <var>db</var> <var>dnum</var></kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd wicked <var>db</var> <var>dnum</var></kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd regression <var>db</var></kbd></dt>
+<dd>For test and debug.</dd>
+</dl>
+
+<dl>
+<dt><kbd>estcmd version</kbd></dt>
+<dd>Show the version information.</dd>
+</dl>
+
+<p>All sub commands return 0 if the operation is success, else return 1.  As for put, out, gather, purge, randput, wicked, and regression, they finish with closing the database when they catch the signal 1 (SIGHUP), 2 (SIGINT), 3 (SIGQUIT), 13 (SIGPIPE), or 15 (SIGTERM).</p>
+
+<p>The data type of attribute indexes specified by <code>-attr</code> option of <code>create</code> sub command should be "<code>seq</code>" for sequencial type, "<code>str</code>" for string type, or "<code>num</code>" for number type.</p>
+
+<p>Each pseudo index specified by <code>-pidx</code> option of <code>search</code> sub command and so on is a directory containing files of document draft.  If you search a main index with pseudo indexes, meta search of the main index and pseudo indexes is performed.</p>
+
+<p>The encoding name specified by <code>-ic</code> option should be such name registered to IETF as <code>UTF-8</code>, <code>ISO-8859-1</code>, and so on.  The language name specified by <code>-il</code> option should be one of "<code>en</code>" (English), "<code>ja</code>" (Japanese), "<code>zh</code>" (Chinese), "<code>ko</code>" (Korean).</p>
+
+<p>The outer command specified by <code>-fx</code> option of <code>gather</code> receives the path of the target document by the first argument and the path for output by the second argument.  The original path of the target document is given as the value of the environment variable `<code>ESTORIGFILE</code>'.</p>
+
+<p>Note that similarity search is very slow, by default.  To improve the performance of similarity search, running "<code>estcmd extkeys</code>" beforehand is strongly recommended.</p>
+
+<h3>Examples</h3>
+
+<p>The following is to register mail files of mh format.</p>
+
+<pre>find /home/mikio/Mail -type f | egrep 'inbox/(business|friends)/[0-9]+$' |
+  estcmd gather -cl -fm -cm casket -
+</pre>
+
+<p>The following is to register MS-Office files.  <code>estfxmsotohtml</code> requires wvWare and xlhtml.</p>
+
+<pre>PATH=$PATH:/usr/local/share/hyperestraier/filter ; export PATH
+estcmd gather -cl -fx ".doc,.xls,.ppt" "H@estfxmsotohtml" -fz -sd -cm casket .
+</pre>
+
+<p>The following is to register PDF files.  <code>estfxpdftohtml</code> requires pdftotext.</p>
+
+<pre>PATH=$PATH:/usr/local/share/hyperestraier/filter ; export PATH
+estcmd gather -cl -fx ".pdf" "H@estfxpdftohtml" -fz -sd -cm casket .
+</pre>
+
+<p>The following is to register cache files of WWWOFFLE, a proxy server.  <code>estwolefind</code> requires WWWOFFLE.</p>
+
+<pre>estwolefind /var/spool/wwwoffle |
+  estcmd gather -cl -fm -bc -px @uri -px _lfile -sd -cm casket -
+</pre>
+
+<p>The following is to output the search result as XML.</p>
+
+<pre>estcmd search -vx -max 8 casket 'socket AND shutdown'
+</pre>
+
+<hr />
+
+<h2 id="estseek">CGI Script for Search</h2>
+
+<p>This section describes specification of <code>estseek.cgi</code>.  The subject matter is to write configuration files.</p>
+
+<h3>Composition</h3>
+
+<p><code>estseek.cgi</code> needs three configuration files; <strong>the prime configuration file</strong>, <strong>the template file</strong>, <strong>the top page file</strong>, and <strong>the help file</strong>.  Their default names are `<code>estseek.cgi</code>', `<code>estseek.tmpl</code>', `<code>estseek.top</code>', and `<code>estseek.help</code>'.</p>
+
+<p>The name of the prime configuration file is determined by changing the suffix of the CGI script to "<code>.conf</code>".  If you change the name of `<code>estseek.cgi</code>' to `<code>estsearch.cgi</code>', `<code>estsearch.conf</code>' is read.  Names of the other files are specified in the prime configuration file.  So, you can install some sets of search scripts in one directory.</p>
+
+<p>As <code>estseek.cgi</code> is installed as `<code>/usr/local/libexec/estseek.cgi</code>', copy it to a directory for CGI scripts.  Moreover, as samples of configurations are installed in `<code>/usr/local/share/hyperestraier/</code>', copy and modify them.</p>
+
+<h3>Prime Configuration File</h3>
+
+<p>The prime configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  Lines leaded by "<code>#</code>" are ignored as comments.  By default, the following configuration is there.</p>
+
+<pre>indexname: casket
+tmplfile: estseek.tmpl
+topfile: estseek.top
+helpfile: estseek.help
+lockindex: true
+pseudoindex:
+replace: ^file:///home/mikio/public_html/{{!}}http://localhost/
+replace: /index\.html?${{!}}/
+showlreal: false
+deftitle: Hyper Estraier: a full-text search system for communities
+formtype: normal
+perpage: 10 100 10
+attrselect: false
+#genrecheck: private{{!}}private
+#genrecheck: business{{!}}business
+#genrecheck: misc{{!}}miscellaneous
+attrwidth: 80
+showscore: true
+extattr: author|Author
+extattr: from|From
+extattr: to|To
+extattr: cc|Cc
+extattr: date|Date
+snipwwidth: 480
+sniphwidth: 96
+snipawidth: 96
+condgstep: 2
+dotfidf: true
+scancheck: 3
+phraseform: 2
+dispproxy:
+candetail: true
+candir: false
+auxmin: 32
+smlrvnum: 32
+smlrtune: 16 1024 4096
+clipview: 2
+clipweight: none
+relkeynum: 0
+spcache:
+wildmax: 256
+qxpndcmd:
+logfile:
+logformat: {time}\t{REMOTE_ADDR}:{REMOTE_PORT}\t{cond}\n
+</pre>
+
+<p>Means of each variable is the following.</p>
+
+<ul>
+<li><kbd>indexname</kbd> : specifies the name of the index.</li>
+<li><kbd>tmplfile</kbd> : specifies the path of the template file.</li>
+<li><kbd>topfile</kbd> : specifies the path the top page file.</li>
+<li><kbd>helpfile</kbd> : specifies the path the help file.</li>
+<li><kbd>lockindex</kbd> : specifies whether to perform file locking to the database.  "<code>true</code>" or "<code>false</code>".</li>
+<li><kbd>pseudoindex</kbd> : specifies the path of a pseudo index.  This can be more than once.</li>
+<li><kbd>replace</kbd> : specifies regular expressions and replacement string to convert the URI of each document.  Regular expressions and replacement strings are separated by "<code>{{!}}</code>".  Each "&amp;" in a replacement string is evolved to the matched string.  Special escapes "\1" through "\9" referring to the corresponding matching sub-expressions are also supported.  This can be more than once.</li>
+<li><kbd>showlreal</kbd> : specifies whether to show the absolute path instead of the URI.  "<code>true</code>" or "<code>false</code>".</li>
+<li><kbd>deftitle</kbd> : specifies the default title of the page.</li>
+<li><kbd>formtype</kbd> : specifies the type of the input form.  "<code>normal</code>" for generic purpose, "<code>web</code>", for web site, "<code>file</code>" for file system, or "<code>mail</code>" for mail box.</li>
+<li><kbd>perpage</kbd> : specifies parameters of the perpage select box; the minimum number, the maximum number, and the step of increment.</li>
+<li><kbd>attrselect</kbd> : specifies whether to use select boxes for attribute conditions.</li>
+<li><kbd>genrecheck</kbd> : specifies a check box to narrow by genre attribute.  A condition value and a label are separated by "<code>{{!}}</code>".  This can be more than once.</li>
+<li><kbd>attrwidth</kbd> : specifies mamximum width of each shown attribute.</li>
+<li><kbd>showscore</kbd> : specifies whether to show scores.</li>
+<li><kbd>extattr</kbd> : specifies an attribute to be shown.  The name and the label are separated by "<code>|</code>".  This can be more than once.</li>
+<li><kbd>snipwwidth</kbd> : specifies whole width of the snippet of each shown document.</li>
+<li><kbd>sniphwidth</kbd> : specifies width of strings picked up from the beginning of the text.</li>
+<li><kbd>snipawidth</kbd> : specifies width of strings picked up around each highlighted word.</li>
+<li><kbd>condgstep</kbd> : specifies accuracy of N-gram checking.  "<code>1</code>" is to check every key.  "<code>2</code>" is to check keys of N-gram are checked every two.  "<code>3</code>" is every three.  "<code>4</code>" is every four.</li>
+<li><kbd>dotfidf</kbd> : specifies whether to do TF-IDF score tuning.  "<code>true</code>" or "<code>false</code>".</li>
+<li><kbd>scancheck</kbd> : specifies the number of checked documents by scanning.</li>
+<li><kbd>phraseform</kbd> : specifies the phrase form.  "<code>1</code>" is usual form.  "<code>2</code>" is simplified form.  "<code>3</code>" is rough form.  "<code>4</code>" is union form.  "<code>5</code>" is intersection form.</li>
+<li><kbd>dispproxy</kbd> : specifies the URL of <code>estproxy.cgi</code> to display original pages with highlighted words.  "<code>[URI]</code>" is replaced by the URI of each document.</li>
+<li><kbd>candetail</kbd> : specifies whether to enable detail display of a document.  "<code>true</code>" or "<code>false</code>".</li>
+<li><kbd>candir</kbd> : specifies whether to enable directory display of a document.  "<code>true</code>" or "<code>false</code>".</li>
+<li><kbd>auxmin</kbd> : specifies the minimum hits to adopt result of the auxiliary index.  If it is less than 1, the auxiliary index is not used.</li>
+<li><kbd>smlrvnum</kbd> : specifies the number of keywords for similarity search.  If it is less than 1, similarity search is disabled.</li>
+<li><kbd>smlrtune</kbd> : specifies tuning parameters for similarity search; the number of keywords, the number of documents per keyword, and the number of all candidates are separated by space characters.</li>
+<li><kbd>clipview</kbd> : specifies the number of clipped documents to be shown.  If it is negative, similarity eclipse is disabled.</li>
+<li><kbd>clipweight</kbd> : specifies weighting algorithm of documents clipping.  "<code>none</code>" or "<code>url</code>".</li>
+<li><kbd>relkeynum</kbd> : specifies the number of related terms to be shown.</li>
+<li><kbd>spcache</kbd> : specifies the name of an attribute of the special cache.</li>
+<li><kbd>wildmax</kbd> : specifies the maximum number of expansion of wild cards.</li>
+<li><kbd>qxpndcmd</kbd> : specifies a command line for query expansion.  If it is an empty string, query expansion is disabled.</li>
+<li><kbd>logfile</kbd> : specifies the path of the log file.</li>
+<li><kbd>logformat</kbd> : specifies the format of each log data.</li>
+</ul>
+
+<h3>Template File</h3>
+
+<p>The template file is to determine appearance of the page.  It describes HTML and the data is shown as it is.  However, "<code>&lt;!--ESTTITLE--&gt;</code>" is replaced by the page title.  "<code>&lt;!--ESTFORM--&gt;</code>" is replaced by the form to input search conditions.  "<code>&lt;!--ESTRESULT--&gt;</code>" is replaced by the search result.  "<code>&lt;!--ESTINFO--&gt;</code>" is replaced by information of the index.</p>
+
+<h3>Top Page File</h3>
+
+<p>When a user access the CGI script first or if no configuration is input, the content of the top page file is displayed instead of the search result.  By default, the banner of Hyper Estraier is described there.</p>
+
+<h3>Help File</h3>
+
+<p>When a user select the "<code>help</code>" link near the input form, the content of the help file is displayed instead of the search result.  By default, usage of the CGI script is described there.</p>
+
+<h3>Search Form</h3>
+
+<p>If you want set the search form in another page, write the following HTML.</p>
+
+<pre>&lt;form method="get" action="estseek.cgi"&gt;
+&lt;div&gt;
+&lt;input type="text" name="phrase" value="" size="32" /&gt;
+&lt;input type="submit" value="Search" /&gt;
+&lt;input type="hidden" name="enc" value="UTF-8" /&gt;
+&lt;/div&gt;
+&lt;/form&gt;
+</pre>
+
+<p>Change "<code>estseek.cgi</code>" to the URI of <code>setseek.cgi</code>.  Change "<code>UTF-8</code>" to the encoding name of the page.</p>
+
+<h3>Query Expansion</h3>
+
+<p>If you want query expansion, enable an outer command by editing <code>qxpndcmd</code> in <code>estseek.conf</code>.  It specifies the absolute path of an arbitrary command which output synonyms of a word specified by the environment variable `<code>ESTWORD</code>'.</p>
+
+<p>Make <code>qxpndcmd</code> specify "<code>/usr/local/share/hyperestraier/filter/estwnetxpnd</code>" in order to enable query expansion with <a href="http://wordnet.princeton.edu/">WordNet</a>, English thesaurus.  It requires WordNet installed on your system.</p>
+
+<hr />
+
+<h2 id="estproxy">CGI Script for Highlight</h2>
+
+<p>This section describes specification of <code>estproxy.cgi</code>.  It features search word highlighting view of corresponding documents.</p>
+
+<h3>Composition and Features</h3>
+
+<p><code>estproxy.cgi</code> needs the configuration file <code>estproxy.conf</code>.  The name of the configuration file is determined by changing the suffix of the CGI script to ".conf".</p>
+
+<p>As <code>estsproxy.cgi</code> is installed as `<code>/usr/local/libexec/estproxy.cgi</code>', copy it to a directory for CGI scripts.  Moreover, as samples of the configuration is installed as `<code>/usr/local/share/hyperestraier/estproxy.conf</code>', copy and modify it.</p>
+
+<p><code>estproxy.cgi</code> works like a proxy server though it is implemented as a CGI script.  So, you can browse arbitrary documents on the Web via the script, by giving their URLs with the `<code>url</code>' parameter.  Any data format except for HTML is converted into HTML.  Moreover, words specified by such parameters as from `<code>word1</code>' to `<code>word32</code>' are highlighted.</p>
+
+<p>Supported protocols are HTTP and FILE.  If a URL beginning with "<code>http://</code>" is specified, the document is fetched by HTTP (as for now, HTTPS is not supported).  If a URL beginning with "<code>file://</code>" is specified, the document is readed directly from the local file system of the server.</p>
+
+<p>Supported file formats by built-in filters are plain text (text/plain), HTML (text/html), and MIME (message/rfc822).  Other formats can handled with arbitrary outer commands.</p>
+
+<h3>Configuration</h3>
+
+<p>The configuration file is composed of lines and the name of an variable and the value separated by "<code>:</code>" are in each line.  Lines leaded by "<code>#</code>" are ignored as comments. By default, the following configuration is there.</p>
+
+<pre>#replace: ^http://localhost/{{!}}file:///home/mikio/public_html/
+allowrx: ^http://
+#allowrx: ^file://
+denyrx: /\.
+passaddr: 1
+limitsize: 32
+urlrule: \.est${{!}}text/x-estraier-draft
+urlrule: \.(eml|mime|mht|mhtml)${{!}}message/rfc822
+typerule: ^text/x-estraier-draft${{!}}[DRAFT]
+typerule: ^text/plain${{!}}[TEXT]
+typerule: ^(text/html|application/xhtml+xml)${{!}}[HTML]
+typerule: ^message/rfc822${{!}}[MIME]
+language: 0
+shownavi: 1
+</pre>
+
+<p>Means of each variable is the following.</p>
+
+<ul>
+<li><kbd>replace</kbd> : specifies regular expressions and replacement string to convert the URL of the target document.  Regular expressions and replacement strings are separated by "<code>{{!}}</code>".  Each "&amp;" in a replacement string is evolved to the matched string.  Special escapes "\1" through "\9" referring to the corresponding matching sub-expressions are also supported.  This can be more than once.</li>
+<li><kbd>allowrx</kbd> : specifies allowing regular expressions of URLs to be visited.  This can be more than once.</li>
+<li><kbd>denyrx</kbd> : specifies denying regular expressions of URLs to be visited.  This can be more than once.</li>
+<li><kbd>passaddr</kbd> : specifies whether to pass the IP adresses of the clients to remote servers (0:no, 1:yes).</li>
+<li><kbd>limitsize</kbd> : specifies the maximum size of downloading data (in mega bytes).</li>
+<li><kbd>urlrule</kbd> : specifies URL rules (regular expressions and media types).  This can be more than once.</li>
+<li><kbd>typerule</kbd> : specifies media type rules (regular expressions and filter commands).  This can be more than once.</li>
+<li><kbd>language</kbd> : specifies the preferred language (0:English, 1:Japanese, 2:Chinese, 3:Korean, 4:misc).</li>
+<li><kbd>shownavi</kbd> : specifies whether to show the navigation bar (0:no, 1:yes).</li>
+</ul>
+
+<p><code>allowrx</code> and <code>denyrx</code> are evaluated in the order of description.  Alphabetical characters are case-insensitive.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

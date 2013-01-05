@@ -1,0 +1,6 @@
+<nl xmlns="http://emegir.info/ngram" xmlns:ngram="http://emegir.info/ngram"
+><nle priority="0"
+><cts><ct><cf bad="0" neg="0" wild="0">dumu</cf><pred neg="0" attr="gw" value="child"/><pred neg="0" attr="pos" value="N"/></ct></cts></nle
+><nle priority="1"
+><cts><ct><cf bad="0" neg="0" wild="0">dumu</cf><pred neg="0" attr="gw" value="child"/><pred neg="0" attr="pos" value="N"/></ct><ct><cf bad="0" neg="0" wild="0">munus</cf><pred neg="0" attr="gw" value="woman"/><pred neg="0" attr="pos" value="N"/></ct></cts></nle
+></nl>

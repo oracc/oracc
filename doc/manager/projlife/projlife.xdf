@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Project Life Cycle Management</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-11-01</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>Many projects go through various phases of development: they may
+start as personal tools, then get developed as a book, published in
+print, and then revised after publication.  Oracc provides several
+general facilities for managing this process: cloning, freezing, and
+versioning.</dc:description>
+</d:meta>
+
+<p>Throughout these instructions, substitute <code>proj</code> for the name of your project (e.g, rinap, cams, hbtin).</p>
+
+<h1>Cloning</h1>
+
+<p>Cloning a project involves copying all of the files into another
+project, changing embedded project names as appropriate.  In
+cloning, the destination project must already exist and is normally
+created as a subproject before cloning.  The command to clone a
+project is simply: <code class="example">oracc clone
+[DESTPROJ]</code>, where <code>[DESTPROJ]</code> is the name of the
+clone.</p>
+
+<p>So, if you have a project <code>nbtexts</code>, with a subproject
+named <code>nb100</code>, for example, which is published as a book,
+you might create a subproject <code>thebook</code> and clone
+<code>nb100</code> like this:</p>
+
+<pre class="cookbook">
+cd nb100
+oracc subproject thebook '100 Neo-Babylonian Texts, 1st Edition'
+oracc clone thebook
+oracc rebuild
+</pre>
+
+<p>After this, you can access the cloned project as you would expect,
+via the URL
+<code>http://oracc.museum.upenn.edu/nbtexts/nb100/thebook</code>.</p>
+
+<h3>Limitations</h3>
+
+<p>The initial implementation of cloning does correct <code>#atf:
+project</code> lines, and similar constructs in the glossaries.  It
+also uses the subproject naming from the clone's config.xml, merging
+that with the options from the source project's config.xml.</p>
+
+<p>The initial implementation does not modify HTML <code>title</code>
+tags, or attempt to guess where it would be useful to add the version
+number to document headings.  Nor does it correct URLs--though this is
+not a problem if the source project uses relative URLs.</p>
+
+<h1>Freezing</h1>
+
+<p>So far, so good, but how do you protect the new cloned project from
+being modified or rebuilt?  The answer is to freeze it:</p>
+
+<pre class="cookbook">
+cd nb100/thebook
+oracc freeze
+</pre>
+
+<p>This changes permissions on the user-modifiable parts of the
+project (the directories starting with <code>00</code>) so that any
+attempt to modify them or rebuild the project will be invalid.</p>
+
+<p>If you mistakenly freeze the wrong project, or you realize you need
+to fix some errata in the book, you can unfreeze it like this:</p>
+
+<pre class="cookbook">
+cd nb100/thebook
+oracc unfreeze
+</pre>
+
+<h1>Versioning</h1>
+
+<p>If you want to keep a snapshot of the project for any
+reason--perhaps to have a basis for comparison with the ongoing
+development of a work, you can use the command:</p>
+
+<pre class="cookbook">
+oracc version
+</pre>
+
+<p>This command creates a subproject with a conventional name, clones
+the current project into it, rebuilds the subproject, and then freezes
+it.  The name starts with the lowercase letter <code>v</code>,
+followed by a three digit number.  The number is automatically
+computed from existing version directories if any, starting from
+<code>v000</code>, so if you have versioned your project twice before,
+the new version will be saved as <code>v002</code>.</p>
+
+<p>If you want to edit files after versioning--perhaps to change URLs
+in the 00web directory--you can simply unfreeze the project, make the
+edits, rebuild it, and freeze it again.</p>
+
+<d:resources/>
+
+</d:doc>

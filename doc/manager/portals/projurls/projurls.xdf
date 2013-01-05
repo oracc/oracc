@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc project URLs</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2010-01-14</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document describes how to refer to Oracc web pages online or in print, using short, stable URLs</dc:description>
+</d:meta>
+
+<h2>Background</h2>
+
+<p>The Oracc server now has its first support for URLs which are easier
+to remember and to use in links, persistent, and safe to cite in print.  This facility is
+not yet fully developed and suggestions for additions are welcome.</p>
+
+<p>For some background to the usefulness of these URLs (which are
+implemented using webserver rewrite rules) see Jakob Nielsen's
+fundamental article <a
+href="http://www.useit.com/alertbox/990321.html">URL as UI</a>.</p>
+
+<p>You may also find it helpful to read the <a href="/doc/user/citing/">user documentation on citing URLs</a>, which gives a simple introduction to the material presented here.</p>
+
+<h2>Definitions</h2>
+
+<p>In order to express the various URLs supported for Oracc projects we
+define some basic components before describing the patterns.</p>
+
+<dl>
+
+<dt>PROJECT</dt>
+<dd>The name of a project or subproject, e.g., <code>dcclt</code> or
+<code>saa/sargon</code>.</dd>
+
+<dt>PQID</dt>
+<dd>A single CDLI P or Q id followed by six digits.  For example,
+<code>P123456</code> or <code>Q000001</code>.</dd>
+
+<dt>PQIDS</dt>
+<dd>A comma-separated list of one or more CDLI IDs, of the form P or Q
+followed by six digits.  For example, <code>P123456</code> or
+<code>P123456,Q000001</code>.</dd>
+
+<dt>LANG</dt>
+<dd>A language code corresponding to a glossary, e.g.: sux, akk.</dd>
+
+<dt>WORDS</dt>
+<dd>One or more words, consisting of letters and numbers.  Depending on
+the context these may be project names, list names or search terms.</dd>
+
+</dl>
+
+<h2>Patterns</h2>
+
+<dl>
+
+<dt>PROJECT/PQID.html</dt>
+<dd>This pattern produces the HTML version of the text, without the
+pager frame. Example: <code
+class="example">http://oracc.museum.upenn.edu/dcclt/Q000001.html</code>.</dd>
+
+<dt>PROJECT/PQIDS</dt>
+<dd>This pattern produces a pager listing of the PQIDS; it replaces
+the functionality of the <code>adhoc</code> method formerly
+recommended for including references to ad hoc collections of
+texts. Example:
+<code
+    class="example">http://oracc.museum.upenn.edu/dcclt/Q000001,Q000002</code>.
+With a single PQID, this behaves similarly to the pattern
+PROJECT/PQID.html, but includes the pager frame around the text.</dd>
+
+<dt>PROJECT/LANG</dt>
+<dd>This pattern goes straight to the project glossary for the language.
+Example: <code class="example">http://oracc.museum.upenn.edu/cams/akk</code>.
+</dd>
+
+<dt>PROJECT/LANG/WORDS</dt>
+<dd>This pattern searches the glossary in the project language for the words.<code
+class="example">http://oracc.museum.upenn.edu/cams/akk/adru</code>; 
+<code class="example">http://oracc.museum.upenn.edu/cams/akk/adru afraid</code>.</dd>
+
+<dt>PROJECT/WORDS</dt>
+<dd><p>This pattern is used for several purposes.</p>
+<ul>
+<li>If the first WORD is the name of a sub-project, the remainder of
+the WORDS are processed in the context of the subproject; all of the
+above patterns as well as the patterns related to WORDS described
+below, then behave exactly as if PROJECT is set to the
+subproject.</li>
+<li>If the first WORD after the project/subproject is `corpus', the
+pager listing for the corpus is displayed (this allows projects which
+have content in their `index.html' to have a link directly to the
+pager listing for the texts.</li>
+<li>If the first WORD after the project/subproject is a list file the
+pager displays the list of texts from that file.  List files are
+special-purpose files created by the projects which simply give lists
+of ID numbers. Example: <code
+class="example">http://oracc.museum.upenn.edu/ckst/middle_assyrian</code>.</li>
+<li>Otherwise the WORDS are used as search terms for the project
+catalogue. Example: <code
+class="example">http://oracc.museum.upenn.edu/ckst/middle
+assyrian</code> (note the space instead of an underscore).</li>
+</ul>
+</dd>
+
+</dl>
+
+<h2>Citing</h2>
+
+<p>When citing Oracc resources in print, you should not cite the
+<code>oracc.museum</code> server directly: instead, use the hostname
+<code>http://oracc.org</code>.  Then append the relevant part of the
+URL as given in the patterns above, which are designed to be
+permanent.</p>
+
+<p>The hostname <code>oracc.org</code> will always redirect to the
+current Oracc server.</p>
+
+<d:resources/>
+
+</d:doc>

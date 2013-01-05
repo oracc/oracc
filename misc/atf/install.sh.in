@@ -1,0 +1,9 @@
+#!/bin/sh
+oracc=@@ORACC@@
+cd $oracc/corpora/sources
+for a in *.atf ; do \
+#    $oracc/bin/atfsplit2.plx -inst $a ; \
+#    atfgrabpq.plx -atf $a > `basename $a atf`lst ; \
+    atf2xtf -l= -b `basename $a .atf`-bad.lst -g `basename $a .atf`-good.lst $a | xmlsplit
+done
+cd $oracc/projects/dcclt ; tools/install-xtf.sh

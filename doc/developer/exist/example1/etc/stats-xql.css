@@ -1,0 +1,8 @@
+stats  { display: table; 
+	 width: 60%; margin: auto; }
+title  { display: table-caption; 
+	 margin-top: 10px; margin-bottom: 10px; 
+	 text-align: center; font-weight: bold; }
+count  { display: table-row; }
+what   { display: table-cell; }
+number { display: table-cell; }

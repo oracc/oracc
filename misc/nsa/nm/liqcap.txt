@@ -1,0 +1,34 @@
+@nm Liquid Capacity Metrology
+
+@system liqcap place=* time=* usedfor=beer meb=sze mev=1/3600l
+
+@step gijtur atf="gin2 tur" aev=1/160*gij
+@inst 1 gijtur	1	1/60*gij		1(disz) gin2 tur
+
+@step gij atf=gin2 aev=1/60*sila
+@inst 1/6 gij	1	1/6*gij		igi-6(disz)-gal2 gin2
+@inst 1/4 gij	1	1/4*gij		igi-4(disz)-gal2 gin2
+@inst 1/3 gij	1	1/3*gij		1/3~a=1/3(disz) gin2
+@inst 1/2 gij	1	1/2*gij		1/2~a=1/2(disz) gin2
+@inst 2/3 gij	1	2/3*gij		2/3~a=2/3(disz) gin2
+@inst 5/6 gij	1	5/6*gij		5/6~a=5/6(disz) gin2
+@inst disz gij	1	1/60*sila	#(disz) gin2
+@inst u gij	1	1/6*sila	#(u) gin2
+
+@step sila atf=sila3 aev=1/30*dug
+@inst 1/3 sila	1	1/3*sila		1/3~a=1/3(disz) sila3
+@inst 1/2 sila	1	1/2*sila		1/2~a=1/2(disz) sila3
+@inst 2/3 sila	1	2/3*sila		2/3~a=2/3(disz) sila3
+@inst 5/6 sila	1	5/6*sila		5/6~a=5/6(disz) sila3
+@inst 1 sila	1	1/30*dug		1(disz) sila3
+
+@step dug atf=dug aev=30*sila
+@inst 1/3 dug	1	1/3*dug		1/3~a=1/3(disz) dug
+@inst 1/2 dug	1	1/2*dug		1/2~a=1/2(disz) dug
+@inst 2/3 dug	1	2/3*dug		2/3~a=2/3(disz) dug
+@inst 1 dug	1	30*sila		1(disz) dug
+@inst-system sexagesimal
+
+@examples
+
+@ex 1(disz) dug 1(u) 5(disz) sila3 kasz sag10

@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Starting to use Aquamacs</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2009-11-29</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Here we give a short description of some features that we have found useful for editing and lemmatising ATF in Aquamacs (Emacs for Mac), apart from those provided by ATF Mode. </dc:description>
+</d:meta>
+
+<p>Emacs is a very powerful piece of software, but its documentation is dense, difficult to navigate, and usually assumes that you are working in Unix without a mouse. And it doesn't help that Aquamacs  has its own little quirks. This page aims to make working with Emacs as intuitive and Mac-like as possible.</p>
+
+<h1>Setting the default font</h1>
+<p>In Aquamacs, you can open up (and close) a Fonts window with the command <code>⌘⇧T</code>. In that window, you can choose a font, size, colour, as you would normally, and save different combinations as favourites. To ensure you have all the necessary transliteration and normalisation characters, we recommend that you install the <a href="/doc/user/fonts/">DejaVu font</a> and set it as the default. <a href="/doc/user/keyboards/">Two</a> <a href="../emacs/#unicode">different</a> ways of typing transliteration characters are described on other pages. You can use either or both, as you like.</p>
+
+<h1>Menus and the Toolbar</h1>
+<p>When you first <a href="../#Obtaining_Emacs">install Aquamacs</a>, it is worth looking through the menus to locate the basic commands. Much is where you would expect it, though Emacs terminology can seem rather strange to Mac users. A "buffer" is essentially a view of a document, which is displayed in one or more "frames" (windows). A frame may have more than one tab, each containing a different buffer, in the same way that a web browser can several web pages open at once in different tabs.You may also be unfamiliar with the Aquamacs terms "directory" (folder) and "search" (find).</p>  
+
+<p>Apart from the <a href="../emacs/">ATF menu</a>, the File, Edit, Options, and Windows menus will be most useful to you. You are unlikely to need anything in Tools, and the Help menu lists far too many different sorts of help to be useful for a beginner. Even on the File, Edit, Options, and Windows menus there are many items that you will never need, so do not worry if they seem mostly incomprehensible to you for now.</p>
+
+<p>There is also a toolbar at the top of each Emacs frame, with clickable icons for basic editing and file commands. You can add items to the toolbar, and remove them from it, by selecting and deselecting them from the <code>Options &gt; View &gt; Toolbar Items</code>  menu item.</p>
+
+<p>Menus and toolbars are comforting and intuitive, especially when you are first learning to use a new piece of software. But for more efficient working it is useful to learn as many keyboard shortcuts as possible. Next to most menu items you will see the equivalent keyboard shortcut, and there are many hundreds more. But almost everything you will need can be found through the menus or is described on this page.</p>
+
+<h1>The Control and Meta keys</h1>
+<p>Almost all Emacs keyboard shortcuts are combinations with the Control or Meta keys. You'll see them written as, for instance, <code>C-g</code> or <code>M-x</code>.</p> 
+
+<p>The minibuffer is Emacs's name for the little window that appears at the bottom of a frame when you type a command and where, for instance, you type text that you want to find or replace. If you find your cursor there accidentally <code>C-g</code> will get you out of it with no harm done.</p>
+
+
+<p>On Macs the Control key is marked <code>ctrl</code> and is often found near the <code>fn</code>, <code>alt</code> and <code>⌘</code> (Apple/command) keys near the bottom of the keyboard.  When you see a command such as <code>C-g</code>, this means that you should hold down the Control key and then press the g key simultaneously. Many keyboard shortcuts involve sequences of commands, so that for instance <code>C-c C-c</code> means that you type Control-and-c twice.</p>
+
+<p>The Meta key is the <code>esc</code> key (usually top left on the keyboard). For, say, <code>M-u</code> you type <code>esc</code> first and then the u key, not the two simultaneously.</p> 
+
+<p>As you will see on the menus, the <code>⌘</code> key also retains much of its functionality in Aquamacs, so that for instance you can save files with <code>⌘S</code>, just as usual.</p>
+
+<p>To make sure that the <code>alt</code> key works properly in Aquamacs, go to the Option Key item on the Options menu, and select <code>Standard Mac characters</code>.</p>
+
+<h1>Keyboard shortcuts</h1>
+
+<ul>
+<li>The most important command you need to know is <code>C-g</code>. This will cancel any command that you are in the middle of, and is particularly useful if you've typed a command by mistake.</li> 
+<li>If you want to undo a command that has already been carried out, then choose <code>File &gt; Undo</code>, or type <code>C-x u</code> or <code>⌘Z</code> (the usual Mac "cancel") as you would normally.</li>
+</ul> 
+
+
+<h2>Word wrapping</h2>
+<ul>
+<li>You can get lines of a paragraph to break at word boundaries (and not in the middle of a word) with the command <code>C-x w</code> (where w is for "wrap").</li></ul>
+
+<h2>Changing case</h2>
+<ul>
+<li>Change case, from the position of the cursor to the end of the current word, with <code>M-u</code> (upper-case), <code>M-l</code> (lower-case), and <code>M-c</code> (initial capital).</li>
+</ul>
+
+<h2>Deleting text</h2>
+<ul>
+<li>Delete text, from the position of the cursor to the end of the current word, with <code>M-d</code> (for "delete").</li>
+<li>Delete text to the start of the current word with <code>M-Del</code> (where <code>Del</code> is the normal Delete key).</li> 
+<li>Delete the whole line, from the position of the cursor to the end, with <code>C-k</code> (for "kill").</li>
+</ul>
+
+<h2>Swapping and sorting text</h2>
+<ul>
+<li>Transpose two adjacent characters with <code>C-t</code> (for "transpose").</li> 
+<li>Transpose two adjacent words with <code>M-t</code>.</li> 
+<li>Transpose two adjacent lines with <code>C-x C-t</code>.</li> 
+<li>Sort lines into alphabetical order by selecting them with the mouse (or the Shift and Arrow keys) and then typing <code>M-x sort-lines</code>.</li>
+</ul>
+
+<h2>Going to a particular line</h2>
+<ul>
+<li>Go to a particular line by typing <code>⌘L</code> (for "line") and then the line number. For instance, <code>⌘L 123</code> will move the cursor to line 123 of the file.</li>
+</ul>
+
+<h2>Searching for text</h2>
+<ul>
+<li>Search forwards with <code>C-s</code> (for "search")  or <code>⌘F</code> (the usual Mac "find"), then type your search term into the minibuffer and press return.</li> 
+<li>Repeat the search with <code>C-s</code> again or <code>⌘G</code>.</li>
+<li>Search backwards within the file with <code>C-r</code>.</li> 
+<li>Return to where search started (if you are still in search mode) with <code>C-g</code>.</li>
+</ul>
+
+<h2>Systematically replacing text</h2>
+<p>To start a global search-and-replace within a file, type <code>M-%</code>. In the minibuffer type the search term (e.g., <code>teh</code>) and press return, then type the replacement term (e.g., <code>the</code>) and press return again. Aquamacs will highlight the first occurrence of the search term.</p>
+<ul>
+<li>To replace this occurrence and move on to the next one, type <code>y</code> ("yes") or press the space bar.</li> 
+<li>To move to the next occurrence without replacing the current one, type <code>n</code> ("no") or the delete key.</li>
+<li>To replace all following occurences, type <code>!</code>.</li> 
+<li>To go back to a previous occurrence, type <code>^</code>.</li> 
+<li>To cancel before the end of the file, type <code>q</code> ("quit") or press return.</li> 
+</ul>
+
+<h2>Search and replace with special characters (regular expressions)</h2>
+<p>If you want to search for text that only occurs in a particular context, then you will need to learn a little bit about Emac's so-called regular expressions. For instance you can specify that text is a whole word, or occurs at the end of a line.</p>
+
+<dl>
+<dt><code>^</code> = start of line</dt>
+<dd>For instance, <code>^the</code> finds "the" at the beginning of a line.</dd>
+<dt><code>$</code> = end of line</dt>
+<dd>Similarly, <code>the$</code> finds "the" at the end of a line.</dd> 
+<dt><code>\&lt;</code> = start of word</dt>
+<dd>Then <code>\&lt;the</code> finds "the" at the start of a word (e.g., in "there" but not in "lithe")</dd> 
+<dt><code>\&gt;</code> = end of word</dt>
+<dd><code>the\&gt;</code> finds "the" at the end of a word (e.g., in "lithe" but not in "there"). Thus <code>\&lt;the\&gt;</code> finds whole-word "the" (but not words like "there" or "lithe".</dd>
+</dl>
+
+<p>You can also use regular expressions to make more generalised search 
+terms.</p>
+<dl>
+<dt><code>[ ]</code> can contain any set of characters</dt>
+<dd>For instance, <code>th[aeiou]</code> will find the characters "th" followed by any short vowel. You can put any combination of characters inside the square brackets.</dd> 
+<dt><code>.</code> = any single character</dt>
+<dd>Also, <code>t.e</code> will find the characters "t" and "e" separated by any single character (e.g., "the" but also "tee", "tre" "t-e", etc.)</dd> 
+<dt><code>.*</code> = any number of characters</dt>
+<dd><code>t.*e</code>  will find the characters "t" and "e" separated by any number of characters (e.g., "te" but also "treasure").</dd>
+</dl>
+
+<p>To use these regular expressions in a search, you need to:</p>
+<ul>
+<li> Type <code>M C-s</code> and return (then enter your search term) to search forwards in a file.</li> 
+<li>Type <code>M C-r</code> and return (then enter your search term) to search backwards.</li> 
+<li>To search and replace, type <code>M-x query-replace-regexp</code> and return (then enter your search term and replacement term).</li>
+</ul>
+<h2>Searching in multiple files at once</h2>
+<ul>
+<li>To search for texts in many files in the same folder, type <code>M-x lgrep</code> and follow the prompts in the mini-buffer. To search in nested folders, type <code>M-x rgrep</code>.</li></ul>
+
+
+
+<h1>Working with windows and buffers</h1>
+<p>Almost everything on the File and Windows menus is self-explanatory. You can almost always open, save, close, and print buffers using menu items, toolbar items, and normal Mac keyboard shortcuts just as you would normally. </p>
+
+<p>It's often useful to have two views of the same file at once, especially if you are lemmatising and translating at the same time. <code>C-x 2</code> splits a buffer in half horizontally and <code>C-x 1</code> removes the split. <code>C-x 5 2</code> opens the same buffer in a new frame, so that you can put them side by side.</p>
+
+<ul>
+<li><code>C-x 1</code> is particularly useful for getting rid of messages and error reports from the ATF checker when you have finished with them—but make sure your cursor is in the frame you want to keep!</li>
+</ul>
+
+<p>If you have several buffers open at once, you can keep track of them, and move between them through the list in the <code>Windows</code> menu. A <code>*</code> after a file name means that it has been edited since it was last saved.</p>
+
+<p>When Emacs starts up, it automatically opens a buffer called *scratch*, which you can use as a dumping ground for notes, to-do lists and text (such as ATF protocol lines) that you frequently re-use. If you don't want to use *scratch*, just ignore it: you can't get rid of it but it's harmless.</p>
+
+<h1>The Mode Line</h1>
+<p>Just above the minibuffer is a grey line (called the Mode Line, for what it's worth) with lots of useful information in it. It probably says something like:</p> 
+<pre class="example">\u:** <b>filename.atf</b> 68% of 43k (334,48) [(ATF Outl)]</pre>
+<ul>
+
+<li>If <code>\</code> is showing this means that you have Cuneiform typing mode on (see the Emacs page). To toggle it on and off, type <code>C-\</code>.</li>
+<li>The letter <code>u</code> means that your character set is correctly set to Unicode UTF-8. If you see some other letter instead, choose the Menu item <code>Options &gt; Language &gt; Set Language Environment &gt; UTF-8</code>.</li>
+<li>The characters <code>**</code> mean that the buffer has been edited or changed since you last saved it; the characters <code>--</code> mean that it is unchanged since the last save.</li>
+<li>Then the Mode Line gives the name of the file in the buffer, with whatever name and extension you have given it.</li>
+<li>After that you see how large the file is, and where your cursor is within the file. In this example it is over 2/3 way down a 43k file.</li>
+<li>The numbers in parentheses tell you exactly where you are in the file, if it is not too large. In this case, the cursor is on the 334th line and the 48th character from the beginning (left) of that line. It is often quite useful to know where you are in a file.</li>
+<li>The part in square brackets tells you which mode you are working in. It should be set to ATF and perhaps also Outl(ine) mode. If not, type <code>M-x atf-mode</code> to enter ATF mode.</li>
+</ul>
+
+<h1>Exploring more of Emacs's capabilities</h1>
+<p> The <a href="http://www.gnu.org/software/emacs/manual/emacs.html">GNU Emacs manual</a> is exhaustive and useful (if you are patient) but is geared to Unix users and/or programmers. Similarly, Debra Cameron et al.'s book, <i>Learning GNU Emacs</i>, 3rd ed., O'Reilly (2005) starts too slowly and then covers far more ground than you will need. But it does include a very handy detachable reference card inside the back cover listing dozens of useful keyboard shortcuts. In the end, a search in your web browser for "Emacs thing command" (where "thing" is whatever you are looking for) is almost always the quickest way to find what you want to know.</p>
+
+<h1>More documentation on Emacs</h1>
+<ul>
+<li><a href="../emacsw32/">EmacsW32</a> (Emacs for Windows)</li>
+<li><a href="/doc/builder/emacs/">Working with ATF in Emacs using ATF mode</a></li>
+<li><a href="/doc/manager/projemacs/">Managing your project in Emacs</a></li>
+</ul>
+<d:resources/>
+
+</d:doc>

@@ -1,0 +1,525 @@
+&V000000 = Early Dynastic Rulers
+@valuelist
+Urnanše
+Akurgal
+Eannatum
+Enannatum I
+Enmetena
+Enannatum II
+Enentarzi
+Lugalanda
+Uruinimgina
+AnLag.
+Medurba
+Barahe-NI-du
+Ureshlila
+E'iginimpa'e
+Lugaldalu
+Lumma
+AnAdab
+AnAgr.
+AnEshn.
+AnFara
+AnHaf.
+Mebarasi
+Uhub
+Mesalim
+Enna'il
+Lugal-TAR-si
+Lugal-UD
+Urzage
+AnKish
+Abzukidu
+Nammah
+Nammahabzu
+Urenlil
+AnNip
+AnSippar
+Enlilpabilgagi
+Aka
+Urlumma
+Il
+Gishakidu
+E'abzu
+AnUmma
+Meskalamdu
+Mesannepada
+A'annepada
+Meski'agnun
+Elili
+Urpabilsag
+AnUr
+Enshakushanna
+Lugalkiginnedudu
+Lugalkisalsi
+Lugalzagesi
+Lugal-TAR
+AnUruk
+Anonym
+
+&V000001 = Rulers of Akkad
+@valuelist
+#class: ruler
+#name: akkad-rulers
+#fields: canonical display dates comments
+Sargon 	Sargon 	2335-2279	
+Rimuš 	Rimuš 	2279-2270	
+Maništušu 	Maništušu 	2270-2255	
+Naramsin 	Naram-Sin 	2255-2218	
+Šarkališarri 	Šar-kali-šarri 	2218-2193	
+Igigi	Igigi	c.2193-c.2190	
+Naniyum	Naniyum	c.2193-c.2190	
+Imi	Imi	c.2193-c.2190	
+Elulu	Elulu	c.2193-c.2190	
+
+&V000002 = Rulers of Assyria
+@valuelist
+#class: ruler
+#name: assyria-rulers
+#fields: canonical display dates comments
+Ilušuma 	Ilušuma 	c.1894	dates not known
+Erišum I 	Erišum I 	c.1881	contemporary of Sumulael
+Ikunum 	Ikunum 	c.1881	dates not known
+Sargon I 	Sargon I 	c.1881	dates not known
+Puzuraššur II 	Puzur-Aššur II 	?-1876	
+Erišum II 	Erišum II 	?-1813	
+Šamšiadad I 	Šamši-Adad I 	1813-1781	
+Išmedagan I 	Išme-Dagan I 	1781-1741	
+Mutaškur 	Mut-Aškur 	c.1740	dates not known
+Rimuxxx 	Rimu-xxx 	c.1740	dates not known
+Asinum 	Asinum 	c.1729	dates not known
+Aššurdugul 	Aššur-dugul 	c.1725	6 years
+Aššuraplaidi 	Aššur-apla-idi 	c.1725	dates not known
+Nasirsin 	Nasir-Sin 	c.1725	dates not known
+Sinnamir 	Sin-namir 	c.1712	dates not known
+Ipqiištar 	Ipqi-Ištar 	c.1700	dates not known
+Adadsalulu 	Adad-salulu 	c.1684	dates not known
+Adasi 	Adasi 	c.1676	dates not known
+Belubani 	Belu-bani 	c.1674	10 years
+Libaya 	Libaya 	c.1659	17 years
+Šarmaadad I 	Šarma-Adad I 	c.1634	12 years
+IBTARsin 	IB.TAR-Sin 	c.1626	12 years
+Bazaya 	Bazaya 	c.1599	28 years
+Lullaya 	Lullaya 	c.1594	6 years
+Šuninua 	Šu-Ninua 	c.1588	14 years
+Šarmaadad II 	Šarma-Adad II 	c.1572	3 years
+Erišum III 	Erišum III 	c.1565	13 years
+Šamšiadad II 	Šamši-Adad II 	c.1556	6 years
+Išmedagan II 	Išme-Dagan II 	c.1552	16 years
+Šamšiadad III 	Šamši-Adad III 	c.1536	16 years
+Aššurnirari I 	Aššur-nirari I 	c.1520	26 years
+Puzuraššur III 	Puzur-Aššur III 	c.1494	14/24 years
+Enlilnasir 	Enlil-nasir 	c.1480	13 years
+Nurili 	Nur-ili 	c.1467	12 years
+Aššuršaduni 	Aššur-šaduni 	c.1455	one month
+Aššurrabi I 	Aššur-rabi I 	c.1455	dates not known
+Aššurnadinahhe I 	Aššur-nadin-ahhe I 	c.1455	dates not known
+Enlilnasir II 	Enlil-nasir II 	1420-1415	
+Aššurnirari II 	Aššur-nirari II 	1415-1408	
+Aššurbelnišešu 	Aššur-Bel-nišešu 	1408-1399	
+Aššurrimnišešu 	Aššur-rim-nišešu 	1399-1391	
+Aššurnadinahhe II 	Aššur-nadin-ahhe II 	1391-1381	
+Eribaadad I 	Eriba-Adad I 	1381-1354	
+Aššuruballit I 	Aššur-uballit I 	1354-1318	
+Enlilnirari 	Enlil-nirari 	1318-1308	
+Arikdenili 	Arik-den-ili 	1308-1296	
+Adadnirari I 	Adad-nirari I 	1296-1264	
+Šalmaneser I 	Šalmaneser I 	1264-1234	
+Tukultininurta I 	Tukulti-ninurta I 	1234-1197	
+Aššurnadinapli 	Aššur-nadin-apli 	1197-1193	
+Aššurnirari III 	Aššur-nirari III 	1192-1187	
+Enlilkudurriusur 	Enlil-kudurri-usur 	1187-1182	
+Ninurtaapilekur 	Ninurta-apil-Ekur 	1182-1179	
+Aššurdan I 	Aššur-dan I 	1179-1133	
+Ninurtatukultiaššur 	Ninurta-tukulti-Aššur 	1133	
+Mutakkilnusku 	Mutakkil-Nusku 	1133	
+Aššurrešiši I 	Aššur-reš-iši I 	1133-1115	
+Tiglathpileser I 	Tiglath-pileser I 	1115-1076	
+Ašaridapilekur 	Ašarid-apil-Ekur 	1075-1074	
+Aššurbelkala 	Aššur-bel-kala 	1073-1056	
+Eribaadad II 	Eriba-Adad II 	1055-1054	
+Šamšiadad IV 	Šamši-Adad IV 	1053-1050	
+Aššurnasirpal I 	Aššurnasirpal I 	1049-1031	
+Šalmaneser II 	Šalmaneser II 	1030-1019	
+Aššurnirari IV 	Aššur-nirari IV 	1018-1013	
+Aššurrabi II 	Aššur-rabi II 	1012-972	
+Aššurrešiši II 	Aššur-reš-iši II 	971-967	
+Tiglathpileser II 	Tiglath-pileser II 	967-935	
+Aššurdan II 	Aššur-dan II 	935-912	
+Adadnirari II 	Adad-nirari II 	912-891	
+Tukultininurta II 	Tukulti-Ninurta II 	891-884	
+Aššurnasirpal II 	Aššurnasirpal II 	884-859	
+Šalmaneser III 	Šalmaneser III 	859-824	
+Šamšiadad V 	Šamši-Adad V 	824-811	
+Adadnirari III 	Adad-nirari III 	811-783	
+Šalmaneser IV 	Šalmaneser IV 	783-773	
+Aššurdan III 	Aššur-dan III 	773-755	
+Aššurnirari V 	Aššur-nirari V 	755-745	
+Tiglathpileser III 	Tiglath-pileser III 	745-727	
+Šalmaneser V 	Šalmaneser V 	726-722	
+Sargon II	Sargon II	721-705	
+Sennacherib 	Sennacherib 	705-681	
+Esarhaddon 	Esarhaddon 	680-669	
+Aššurbanipal 	Aššurbanipal 	669-631?	
+Aššuretelilani 	Aššur-etel-ilani 	631?-?	
+Sinšumulišir 	Sin-šumu-lišir 	c.640	dates not known
+Sinšariškun 	Sin-šar-iškun 	?-612	
+Aššuruballit II 	Aššur-uballit II 	612-610	
+
+&V000003 = Rulers of Babylon
+@valuelist
+#class: ruler
+#name: babylon-rulers
+#fields: canonical display dates comments
+Adadšumaiddina 	Adad-šuma-iddina 	1223-1217	
+Adadšumausur 	Adad-šuma-usur 	1217-1187	
+Melišipak 	Meli-Šipak 	1187-1172	
+Mardukaplaiddina I 	Marduk-apla-iddina I 	1172-1159	
+Zababašumaiddina 	Zababa-šuma-iddina 	1159-1158	
+Enlilnadinahi 	Enlil-nadin-ahi 	1158-1155	
+Mardukkabitahhešu 	Marduk-kabit-ahhešu 	1158-1140	
+Ittimardukbalatu 	Itti-Marduk-balatu 	1140-1132	
+Ninurtanadinšumi 	Ninurta-nadin-šumi 	1132-1126	
+Nebuchadnezzar I 	Nebuchadnezzar I 	1126-1104	
+Enlilnadinapli 	Enlil-nadin-apli 	1104-1100	
+Marduknadinahhe 	Marduk-nadin-ahhe 	1100-1082	
+Mardukšapikzeri 	Marduk-šapik-zeri 	1082-1069	
+Adadaplaiddina 	Adad-apla-iddina 	1069-1047	
+Mardukahheeriba 	Marduk-ahhe-eriba 	1047-1046	
+Mardukzerxxx 	Marduk-zer-xxx 	1046-1034	
+Nabušumulibur 	Nabu-šumu-libur 	1034-1026	
+Simbaršipak 	Simbar-Šipak 	1026-1008	
+Eamukinzeri 	Ea-mukin-zeri 	1008	
+Kaššunadinahhe 	Kaššu-nadin-ahhe 	1008-1005	
+Eulmaššakinšumi 	Eulmaš-šakin-šumi 	1005-988	
+Ninurtakudirriusur I 	Ninurta-kudirri-usur I 	988-985	
+Širiktišuqamuna 	Širikti-Šuqamuna 	985	
+Marbitiaplausur 	Mar-biti-apla-usur 	985-979	
+Nabumukinapli 	Nabu-mukin-apli 	979-943	
+Nabumukinapli 	Nabu-mukin-apli 	979-943	
+Ninurtakudirriusur II 	Ninurta-kudirri-usur II 	943	
+Marbitiahheiddina 	Mar-biti-ahhe-iddina 	942-?	
+Šamašmudammiq 	Šamaš-mudammiq 	c.935	contemporary of Adad-nirari and Aššur-dan
+Nabušumaukin I 	Nabu-šuma-ukin I 	c.912	contemporary of Adad-nirari and Tukulti-Ninurta
+Nabuaplaiddina 	Nabu-apla-iddina 	c.884	contemporary of Aššurnasirpal and Šalmaneser
+Mardukzakiršumi 	Marduk-zakir-šumi 	c.950	contemporary of Šalmaneser
+Mardukbalassuiqbi 	Marduk-balassu-iqbi 	?-813	
+Bahaahaiddina 	Baha-aha-iddina 	812-?	
+Ninurtaaplaxxx 	Ninurta-apla-xxx 	c.796	dates not known
+Mardukbelzeri 	Marduk-bel-zeri 	c.804	dates not known
+Mardukaplausur 	Marduk-apla-usur 	c.788	dates not known
+Eribamarduk 	Eriba-Marduk 	c.773	dates not known
+Nabušumaiškun 	Nabu-šuma-iškun 	?-748	
+Nabunasir 	Nabu-nasir 	748-734	
+Nabunadinzeri 	Nabu-nadin-zeri 	734-732	
+Nabušumaukin II 	Nabu-šuma-ukin II 	732	
+Nabumukinzeri 	Nabu-mukin-zeri 	732-729	
+Mardukaplaiddina II 	Marduk-apla-iddina II 	721-710	phase 1
+Mardukzakiršumi 	Marduk-zakir-šumi 	703	
+Mardukaplaiddina II	Marduk-apla-iddina II	703-702	phase 2
+Belibni 	Bel-Ibni 	702-700	
+Aššurnadinšumi 	Aššur-nadin-šumi 	699-694	
+Nergalušezib 	Nergal-ušezib 	693	
+Mušezibmarduk 	Mušezib-Marduk 	693-689	
+Šamaššumaukin 	Šamaš-šuma-ukin 	668-648	
+Kandalanu 	Kandalanu 	647-627	
+Sinšumlišir	Sin-šumlišir	627-626	
+Sinšariškun 	Sin-šar-iškun	627-626	
+Nabopolassar	Nabopolassar 	626-605	
+Nebuchadnezzar 	Nebuchadnezzar 	605-562	
+Evilmerodach 	Evil-Merodach 	562-560	
+Neriglissar 	Neriglissar 	560-556	
+Labašimarduk 	Labaši-Marduk 	556	
+Nabonidus 	Nabonidus 	556-539	
+
+&V000004 = Babylon I Rulers
+@valuelist
+#class: ruler
+#name: babylon-i-rulers
+#fields: canonical display dates comments
+Sumuabum 	Sumuabum 	1894-1881	
+Sumulael 	Sumulael 	1881-1845	
+Sabium 	Sabium 	1845-1831	
+Apilsin 	Apil-Sin 	1831-1813	
+Sinmuballit 	Sin-muballit 	1813-1793	
+Hammurabi 	Hammurabi 	1793-1750	
+Samsuiluna 	Samsuiluna 	1750-1712	
+Abiešuh 	Abi-ešuh 	1712-1684	
+Ammiditana 	Ammiditana 	1684-1647	
+Ammiṣaduqa 	Ammisaduqa 	1647-1626	
+Samsuditana 	Samsuditana 	1626-1595	
+
+&V000005 = Kassite Rulers
+@valuelist
+#class: ruler
+#name: kassite-rulers
+#fields: canonical display dates comments
+Gandaš I 	Gandaš I 	1729-1704	
+Agum I 	Agum I 	1704-1682	
+Kaštiliašu I 	Kaštiliašu I 	1682-1659	
+Abirattaš 	Abirattaš 	1659-?	
+Kaštiliašu II 	Kaštiliašu II 	c.1626	dates not known
+Urzigurumaš 	Urzigurumaš 	c.1599	dates not known
+Harbašipak 	Harba-Šipak 	c.1594	dates not known
+Tiptakzi 	Tiptakzi 	c.1572	contemporary of Šarma-Adad
+Agum II 	Agum II 	c.1565	dates not known
+Burnaburiaš I 	Burnaburiaš I 	c.1552	contemporary of Išme-Dagan
+Kaštiliašu III 	Kaštiliašu III 	c.1520	contemporary of Aššur-nirari
+Ulamburiaš 	Ulamburiaš 	c.1494	contemporary of Puzur-Aššur, Enlil-nasir and Nur-ili
+Agum III 	Agum III 	c.1437	dates not known
+Karaindaš 	Karaindaš 	c.1408	contemporary of Aššur-Bel-nišešu
+Kadašmanharbe I 	Kadašman-Harbe I 	c.1399	dates not known
+Kurigalzu I 	Kurigalzu I 	c.1399	dates not known
+Kadašmanenlil I 	Kadašman-Enlil I 	c.1377-1360	
+Burnaburiaš II 	Burnaburiaš II 	1360-1333	
+Karahardaš 	Kara-Hardaš 	1333	
+Nazibugaš 	Nazi-Bugaš 	1333	
+Kurigalzu II 	Kurigalzu II 	1333-1308	
+Nazimaruttaš 	Nazi-Maruttaš 	1308-1282	
+Kadašmanturgu 	Kadašman-Turgu 	1282-1264	
+Kadašmanenlil II 	Kadašman-Enlil II 	1264-1255	
+Kudurenlil 	Kudur-Enlil 	1255-1246	
+Šagaraktišuriaš 	Šagarakti-Šuriaš 	1246-1233	
+Kaštiliašu IV 	Kaštiliašu IV 	1233-1225	
+Enlilnadinšumi 	Enlil-nadin-šumi 	1225-1224	
+Kadašmanharbe II 	Kadašman-Harbe II 	1124-1223	
+
+&V000006 = Sealand Rulers
+@valuelist
+#class: ruler
+#name: sealand-rulers
+#fields: canonical display dates comments
+Ilumael 	Ilumael 	c.1881	60 years
+Ittiilinibi 	Itti-ili-nibi 	c.1793	56 years?
+Iškibal 	Iškibal 	c.1740	15 years
+Šušši 	Šušši 	c.1725	24 years
+Gulkišar 	Gulkišar 	c.1700	12 years
+GISEN 	{m}GÍS-EN, same 	c.1684	12 years
+Pešgaldaramaš 	Pešgaldaramaš 	c.1676	50 years
+Adarakalamma 	Adarakalamma 	c.1626	28 years
+Ekurduanna 	Ekurduanna 	c.1594	26 years
+Melamkurkurra 	Melamkurkurra 	c.1572	7 years
+Eagamil 	Ea-gamil 	c.1558	9 years
+
+&V000007 = Rulers of Elam
+@valuelist
+#class: ruler
+#name: elam-rulers
+#fields: canonical display dates comments
+Humbannumena 	Humban-numena 	c.1300-c.1275	
+Untašnapiriša 	Untaš-napiriša 	c.1275-c.1240	
+Unpahašnapiriša 	Unpahaš-napiriša 	c.1240-c.1235	
+Kidenhutran 	Kiden-Hutran 	c.1235-c.1205	
+Hallutušinšušinak 	Hallutuš-Inšušinak 	c.1205-c.1185	
+Šutruknahhunte 	Šutruk-Nahhunte 	c.1185-c.1155	
+Kudurnahhunte 	Kudur-Nahhunte 	c.1155-c.1150	
+Šilhakinšušinak  	Šilhak-Inšušinak  	c.1150-c.1120	
+Huletutušinšušinak 	Huletutuš-Inšušinak 	c.1120-c.1110	
+Humbannikaš I 	Humban-nikaš I 	743-717	
+Šuturnahhunte II 	Šutur-nahhunte II 	717-699	
+Hallušuinšušinak 	Hallušu-Inšušinak 	699-693	
+Kudurnahhunte 	Kudur-nahhunte 	693-692	
+Humbannimena III 	Humban-nimena III 	692-688	
+Humbanhaltaš I 	Humban-haltaš I 	688-681	
+Humbanhaltaš II 	Humban-haltaš II 	681-675	
+Urtak 	Urtak 	675-664	
+Teumma 	Te-Umma 	664-653	
+Humbannikaš II 	Humban-nikaš II 	653-648	
+Humbanhaltaš III 	Humban-haltaš III 	648-646	
+Humbankitin	Humban-kitin	c.626	
+
+&V000008 = Rulers of Ešnunna
+@valuelist
+#class: ruler
+#name: ešnunna-rulers
+#fields: canonical display dates comments
+Naramsin 	Naram-Sin 	c.1876-?	
+
+&V000009 = Hittite Rulers
+@valuelist
+#class: ruler
+#name: hittite-rulers
+#fields: canonical display dates comments
+Hattusili II 	Hattusili II 	1400-1390	
+Tudhaliya II 	Tudhaliya II 	1390-1370	
+Arnuwanda I 	Arnuwanda I 	1370-1355	
+Tudhaliya III 	Tudhaliya III 	1355-1344	
+Suppiluliuma 	Suppiluliuma 	1344-1322	
+Arnuwanda II 	Arnuwanda II 	1322-1321	
+Mursili II 	Mursili II 	1321-1295	
+Muwatalli II 	Muwatalli II 	1295-1271	
+Mursili III 	Mursili III 	1271-1264	
+Hattusili III 	Hattusili III 	1264-1239	
+Tudhaliya IV 	Tudhaliya IV 	1239-1209	
+Arnuwanda III 	Arnuwanda III 	1209-1205	
+Suppiluliuma II 	Suppiluliuma II 	c.1205-?	
+
+&V000010 = Rulers of Isin
+@valuelist
+#class: ruler
+#name: isin-rulers
+#fields: canonical display dates comments
+Išbiirra 	Išbi-Irra 	2018-1985	
+Šuilišu 	Šu-ilišu 	1985-1975	
+Iddindagan 	Iddin-Dagan 	1975-1954	
+Išmedagan 	Išme-Dagan 	1954-1935	
+Lipitištar 	Lipit-Ištar 	1935-1924	
+Urninurta 	Ur-Ninurta 	1924-1896	
+Bursin 	Bur-Sin 	1896-1874	
+Lipitenlil 	Lipit-Enlil 	1864-1869	
+Irraimitti 	Irra-imitti 	1869-1861	
+Enlilbani 	Enlil-bani 	1861-1837	
+Zambiya 	Zambiya 	1837-1834	
+Iterpiša 	Iter-piša 	1834-1831	
+Urdukuga 	Urdukuga 	1831-1828	
+Sinmagir 	Sin-magir 	1828-1817	
+Damiqilišu 	Damiq-ilišu 	1817-1794	
+
+&V000011 = Lagaš II Rulers
+@valuelist
+#class: ruler
+#name: lagaš-ii-rulers
+#fields: canonical display dates comments
+Urningirsu I	   Ur-Ningirsu I
+Pirigme	   Pirig-me
+Lubau	   Lu-Bau
+Lugula	   Lugula
+Kaku	   Kaku
+Urbau 	Ur-Bau 	2155-2142	
+Gudea 	Gudea 	2142-2122	
+Urningirsu II	Ur-Ningirsu II
+UrGAR	   Ur-GAR
+Urayabba  Ur-ayabba
+Urmama	  Ur-Mama
+Nammahani Nammahani
+Halabau	  Hala-Bau
+Lagash II Unidentified	Lagash II Unidentified
+
+&V000012 = Rulers of Larsa
+@valuelist
+#class: ruler
+#name: larsa-rulers
+#fields: canonical display dates comments
+Naplanum 	Naplanum 	2026-2005	
+Emisum 	Emisum 	2005-1977	
+Samium 	Samium 	1977-1942	
+Zabaya 	Zabaya 	1942-1933	
+Gungunum 	Gungunum 	1933-1906	
+Abisare 	Abisare 	1906-1895	
+Sumuel 	Sumuel 	1895-1866	
+Nuradad 	Nur-Adad 	1866-1850	
+Siniddinam 	Sin-iddinam 	1850-1843	
+Sineribam 	Sin-eribam 	1843-1841	
+Siniqišam 	Sin-iqišam 	1841-1836	
+Ṣilliadad 	Silli-Adad 	1836-1835	
+Waradsin 	Warad-Sin 	1835-1823	
+Rimsin I 	Rim-Sin I 	1823-1763	
+Rimsin II	Rim-Sin II	
+
+&V000013 = Rulers of Mari
+@valuelist
+#class: ruler
+#name: mari-rulers
+#fields: canonical display dates comments
+Iaggidlim	Iaggid-Lim	c.1835	
+Iahdunlim	Iahdun-Lim	c.1823	
+Iasmahadad 	Iasmah-Adad 	1797-1780	
+Zimrilim 	Zimri-Lim 	1780-1761	
+
+&V000014 = Rulers of Medea
+@valuelist
+#class: ruler
+#name: medea-rulers
+#fields: canonical display dates comments
+Cyaxares 	Cyaxares 	c.625-585	
+Astyages 	Astyages 	c.585-550	
+
+&V000015 = Rulers of Persia
+@valuelist
+#class: ruler
+#name: persia-rulers
+#fields: canonical display dates comments
+Teispes 	Teispes 	?-c.600	
+Cambyses I 	Cambyses I 	c.580-559	
+Cyrus 	Cyrus 	559-530	
+Cambyses II 	Cambyses II 	530-522	
+
+&V000016 = Ur III Rulers
+@valuelist
+#class: ruler
+#name: ur-iii-rulers
+#fields: canonical display dates comments
+Urnamma 	Ur-Namma 	2113-2095	
+Šulgi 	Šulgi 	2095-2047	
+Amarsin 	Amar-Sin 	2047-2038	
+Šusin 	Šu-Sin 	2038-2029	
+Ibbisin 	Ibbi-Sin 	2029-2004	
+
+&V000017 = Rulers of Urartu
+@valuelist
+#class: ruler
+#name: urartu-rulers
+#fields: canonical display dates comments
+Rusa I 	Rusa I 	734-714	
+Argište II 	Argište II 	714-685	
+Rusa II 	Rusa II 	685-645	
+Sardure III 	Sardure III 	645-635	
+Erima 	Erima 	635-629	
+Rusa III 	Rusa III 	629-601	
+
+&V000018 = Rulers of Uruk
+@valuelist
+#class: ruler
+#name: uruk-rulers
+#fields: canonical display dates comments
+Lugalzagesi 	Lugalzagesi 	2341-2316	
+Utuhegal 	Utu-Hegal 	2124-2113	
+
+&V000019 = Miscellaneous Rulers
+@valuelist
+Lugalnigzu
+Lu'utu
+Lugal-ušumgal
+Puzurmama
+Lusaga
+Nammahni
+Shulgi
+Amarsuen
+Cusuen
+Ibbisuen
+Unattributed Ur III
+Urningirsu
+Unattributed
+Erridupizir
+Urunabadbi
+Ludingirana
+Šaratigubisin
+Meskigal
+Lugalgiš
+UrTUR
+Hala'adda
+Šuruškin
+Namahni
+Lugalanatuma
+Urniginak
+Urgigirak
+Kuda
+Urutu
+Urgar
+Hala-Bau
+Sin-abušu
+Urnanshe
+Anonymous
+Šu-iliya
+Išbierra
+Lipiteštar
+Erra'imitti
+Zambija
+Siniribam
+Kudurmabuk
+Sinkašid
+Singamil
+Ilumgamil
+Anam
+Bilalama
+Unidentified

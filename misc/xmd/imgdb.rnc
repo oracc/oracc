@@ -1,0 +1,16 @@
+default namespace = ""
+
+start =
+  element imagedata {
+    element images {
+      attribute xml:id { xsd:NCName },
+      element img {
+        attribute h { xsd:integer },
+	attribute mtime { text },
+        attribute scale { xsd:NCName },
+        attribute src { text },
+        attribute type { xsd:NCName },
+        attribute w { xsd:integer }
+      }+
+    }+
+  }

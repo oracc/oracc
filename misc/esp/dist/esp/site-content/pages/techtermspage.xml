@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml">
+	
+	<esp:name>Technical terms</esp:name>
+	
+	<esp:title>Technical terms</esp:title>
+	
+	<html>
+		<head></head>
+		<body>
+		<p class="firstpara">These are the technical terms used in the translation of the letters, queries, and reports.</p>
+		
+			<esp:techterms-list>
+
+<esp:termsdefinition term="zikurudani">Literally "throat-cutting", a magical <esp:techterms term="Rite, ritual">ritual</esp:techterms>.</esp:termsdefinition> 
+
+
+	
+
+				
+
+				
+
+					</esp:techterms-list>
+
+				<p>Content last modified: <esp:content-last-modified/>.</p>
+
+			</body>
+
+		</html>
+
+	</esp:page>
+

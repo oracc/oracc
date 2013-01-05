@@ -1,0 +1,41 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: doc-mac.tex,v 0.3 1995/08/04 13:52:16 s Exp $
+
+% Macros for producing the DA documentation. These are separated out 
+% because they're not needed for regular work and will probably not be
+% much used beyond DA central.
+\escapechar64
+\def\showeffect#1{\leavevmode\hbox to2em{#1\hfil}{\vbfont\string#1}\endgraf}
+\def\showaccent#1#2#3{\leavevmode
+  \hbox to1in{\vbfont\string#1\hfil}%
+  \hbox to1in{\vbfont\string#1\{#2\}\hfil}%
+  \hbox to1in{#1 #2\hfil}%
+  #3\endgraf}
+\def\showfont#1#2#3{\leavevmode
+  \hbox to1in{\vbfont\carat\string#1\hfil}%
+  \hbox to1in{\vbfont\string#2\hfil}%
+  #3\endgraf}
+\def\escape#1{{\tt @#1}}
+\def\fld#1{\%#1}
+\def\showfield#1#2{\leavevmode\hbox to2em{\vbfont#1\hfil}%
+  \hangindent\leftskip\advance\hangindent2em#2\endgraf}
+
+\def\DATeX{DA\TeX}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: doc-mac.tex,v $
+Revision 0.3  1995/08/04 13:52:16  s
+refixed \escape so that \tt@ isn't mistaken as a cs
+
+% Revision 0.2  1995/08/04  13:49:41  s
+% fixed \tt{...} to be {\tt...}
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>L2: How To Use It</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document explains the steps required to use 
+L2, the lemmatiser used by Oracc 2, for those who have been using the old lemmatiser. First we describe what you need to know about editing ATF files, then glossary management, then rebuilding the whole project. </dc:description>
+</d:meta>
+
+<p>All the Oracc documentation has been revised to reflect the way Oracc 2 operates; this is just a quick summary with pointers to more detailed help. Depending on your role in your project, you may not need to read all of this file. For instance, if you did not manage glossaries for your project before then you will not need to do so now. If you have any questions or problems, please contact your Oracc liaison.</p>
+<h2>Migration</h2>
+
+<p>Your project has been migrated to Oracc 2 and is ready to be worked on again. The migration will inevitably involve a lot of error-fixing, as L2 checks for errors much more rigourously than the old lemmatiser did. You and your project team will need to set aside some time for this before you return to your usual work patterns. Once this is done, though, you will find that there is very little difference between using L2 and the old system.</p>
+
+
+<h1>Editing and fixing ATF files</h1>
+
+<h2>Languages</h2>
+
+<p>If your project uses Akkadian, you will see that the
+Akkadian language tags in your exising ATF files have changed, 
+because language-handling is finer-grained in L2
+than it was in L1.</p>
+
+<p>Set the default language of your text using the <a href="/ns/xtf/1.0/protocols.html">protocol line</a> <code class="cookbook">#atf: lang akk-x-[DIALECT]</code>. For instance, if your project's language should be described as, e.g., Old
+Babylonian, you will need to write:</p>
+
+<pre class="example">#atf: lang akk-x-oldbab</pre>
+
+<p>If you need to switch languages or dialects in the middle of a text, you can still use a <a href="/doc/developer/l2/languages/#Language_codes">short code</a>. For instance, to mark a Neo-Assyrian dialect word in an otherwise Standard Babylonian text, you can write, e.g.,</p>
+<pre class="example">{d}NIN.LIL₂ ana {d}BAD %na a-bu-su %sb DAB-su</pre>
+
+<p>Here, the code <code class="example">%na</code> marks the switch into Neo-Assyrian, while <code class="example">%sb</code> marks the switch back to Standard Babylonian.</p>
+
+<p>As before, you do not mark a language switch at the end of a line, as the processor automatically returns to the default language at the start of each line.</p>
+
+<p>For more about L2's handling of languages see the <a
+href="/ns/gdl/1.0/gdltut.html#Languages">languages</a> section of the Inline Tutorial.</p>
+
+<h2>SENSE and EPOS</h2>
+<p>When you add a new lemmatisation which has a <a href="/doc/builder/linganno/#SENSE_and_EPOS">SENSE</a> as well as a <a href="/doc/builder/linganno/#Replacing_X's">GW</a>, now you always need to add an EPOS too, even when it is the same as the POS. For instance, instead of <code>+šaknu[appointee//governor]N$</code> the correct entry is now:</p>
+<pre class="example">+šaknu[appointee//governor]N'N$</pre>
+<p>But if there is no SENSE, there is no need to add an EPOS:</p>
+<pre class="example">+šaknu[appointee]N$</pre>
+<p>If you forget to add an EPOS where it's needed, the checker will tell you!</p>
+
+<h2>COFs and PSUs</h2>
+<p>Lemmatise Compound Orthographic Forms (COFs) <a href="../COFs/#Lemmatizing">in the same way as before</a>.</p>
+
+<p>You can also lemmatise Phrasal Semantic Units (PSUs) exactly as you did before. However, now you can add SENSEs to individual components of a PSU if this is appropriate. An overview of PSUs in L2 (almost exactly the same as the old documentation) is given <a href="../PSUs/#Glossarizing">here</a>.</p>
+
+<h2>Sentence boundaries</h2>
+<p>If you are in the habit of marking sentence boundaries in the lemmatisation with <code>+.</code> you will need to ensure that they occur <em>before</em> the semi-colons that mark the end of a lemmatisation, not after them. That is, the correct form is now, e.g.,</p>
+
+<pre class="example">iddâk[kill]V +.; šumma[if]MOD;</pre>
+
+<p>not <code>iddâk[kill]V; +. šumma[if]MOD;</code> as was permissible before.</p>
+
+<p>In the normal course of things, the <code>+.</code> markers will be moved during migration to L2 but you may find that some need fixing by hand. And of course sentence boundaries should be marked in this new way in all new lemmatisations too, to prevent error messages.</p> 
+
+<h1>Editing and fixing glossaries</h1>
+<h2>Language/dialect glossaries</h2>
+<p>There is now a glossary for each dialect of the languages in your corpus (as defined by the <a href="#Languages">language</a> tags in your ATF files), with names such as <code class="example">akk-x-oldass.glo</code> and <code class="example">akk-x-stdbab.glo</code>. The higher-level language glossaries, such as <code class="example">akk.glo</code> are now generated from these lower-level ones. So, when you need to hand-edit glossary entries, you will need to do so in the relevant dialect-level glossary or glossaries, not in the top-level language glossaries as before.</p>
+
+<h2>Byforms</h2>
+<p>You can now use the new <a href="../byforms/">byforms</a> mechanism in your Sumerian glossary to handle phenomena such as suppletive verbs, collapsed compounds and variant frozen forms. This is documented <a href="../byforms/">separately</a>.</p> 
+<p>Byforms are not yet implemented for Akkadian, but if you see a need for them in your project please contact your liaison.</p>
+
+<h2>COF and PSU handling</h2>
+<p>L2 handles Compound Orthographic Forms (COFs) in exactly the same way as before. You should not need to fix COF entries in the glossary if they are already entered correctly. A brief overview of COFs in L2 glossaries is given <a href="../COFs/#Glossarizing">here</a>.</p>
+
+<p>L2 handles Phrasal Semantic Units (PSUs) in almost exactly the same way as before, but error-checks more rigorous. You should not need to fix PSUs entries in the glossary if they are already entered correctly, except if they also contain a COF. A brief overview of PSUs in L2 glossaries is given <a href="../PSUs/#Glossarizing">here</a>.</p>
+
+
+<h1>Glossary management</h1> 
+<p>The harvest and merge routines work essentially as they did before, with two exceptions.</p> 
+<ul>
+<li>You will now find the harvested entries in the <code>01bld/new/</code> directory. If you run <code>oracc harvest</code> <a href="/doc/manager/projunix/">through Unix</a> you will see a report telling you where they are.</li>
+<li>When you run <code>oracc merge</code> you now need to specify which glossary you are merging, e.g., <code class="example">oracc merge akk-x-neoass</code>. This gives much more control than before, as you can now manage and update each glossary individually.</li>
+</ul>
+
+<h1>Rebuilding L2 projects</h1>
+<p>Rebuild your new L2 project just as you would rebuild your old-style project. However, if you usually run <a href="/doc/manager/projunix/#Rebuilding_the_website"><code>nor</code></a> we now recommend</p>
+<pre class="cookbook">ncr</pre> 
+<p>(which stands for "no-hangup clean rebuild").</p>
+
+<p>However you rebuild your project, you will notice that it takes much less time than before!</p>
+
+<p>You may notice some new types of error message. We have provided hints on how to fix most of them but if you notice error messages that you cannot interpret, please contact your liaison for help.</p> 
+<ul>
+<li>error messages with the label <a href="../F2">(f2)</a></li>
+<li>error messages with the label <a href="../lem">(lem)</a></li>
+<li>error messages with the label <a href="../COFs/#unknown_COF_component">unknown COF component</a></li>
+<li>error messagies with the label <a href="../PSUs/#PSU_component_not_found_in_glossary">PSU component not found in glossary</a>.</li>
+</ul>
+
+<h1>Project configuration</h1>
+<p>A new, more user-friendly interface for managing <a href="/doc/manager/projconfig">project configuration</a> is coming soon. Meanwhile you will still need to edit <code>00lib/config.xml</code> by hand. There are a couple of new things you can do.</p>
+<h2>Glossaries</h2>
+<p>You can now control which glossaries are used to lemmatise your project, language by language. The old <code>atf-lem-system = [PROJECT NAMES]</code> option is no longer used (but you can leave it in the config file, as the system will just ignore it). Instead, use following option as many times as you need to:</p>
+<pre class="cookbook">&lt;option name="[LANGUAGE]" value="[PROJECT AND/OR GLOSSARY NAMES]"></pre>
+<p>For instance:</p>
+
+<pre class="example">&lt;option name="%akk-x-ltebab" value="hbtin cams/gkab"/>
+&lt;option name="%akk-x-neoass" value=". .:akk-x-stdbab"/></pre>
+<p>Here, the lemmatiser is told to look up forms tagged as Late Babylonian first in the HBTIN project's glossary (which is all LB), then in CAMS/GKAB's LB glossary. Neo-Assyrian forms are to be looked up first in the project's own NA glossary (the meaning of <code>.</code>) and then in the project's own SB glossary (the <code>.</code> followed by a <code>:</code> and the relevant language code).</p>
+<p>If you do not add an entry to the config file for a particular language, the system will just use the project glossary for that language, as expected.</p>
+
+<h2>Proxies</h2>
+<p>If your project proxies (borrows) ATF files from another project, the list of proxied texts is now stored in a file called <code>00lib/proxy.lst</code>. To add to this file, add a line for each text in the form <code class="cookbook">[PROJECT]/[SUBPROJECT]:[PQXID]</code>. For instance:</p>
+<pre class="cookbook">saao/saa01:P123246
+dcclt:Q002718</pre>
+<p>proxies the text P123246 from the SAAo subproject SAA 1, and the composite Q002718 from DCCLT.</p> 
+
+<p>Further, you can now override the proxy project's catalogue data about those texts if you want, for instance with the CDLI catalogue data. To do this, add <code class="cookbook">@[PROJECT]</code> to each entry this applies to. For instance:</p>
+<pre class="example">saao/saa01:P123246@cdli</pre>
+<p>borrows P123246 from the SAAo/SAA 1 subproject but takes the pertinent catalogue data from CDLI instead.</p>
+<d:resources/>
+
+</d:doc>

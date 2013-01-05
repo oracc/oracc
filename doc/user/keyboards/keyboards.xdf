@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Keyboards for Cuneiform Transliteration</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2010-04-18</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This page presents a collection of keyboards supporting Unicode transliterations,
+implementing a consistent set of input conventions across operating
+systems.</dc:description>
+</d:meta>
+
+<p>Custom keyboard layouts are not hard to create or install on
+Windows, Mac OS X or Unix's X11.  However, there are some technical
+issues which make it impossible to create a single keyboard layout
+which works the same across all systems.</p>
+<p>The design strategy adopted here makes commonly used characters
+easily accessible in keyboards which are adapted from the standard
+national keyboards.  This means that for much work it will be
+comfortable to use the transliteration keyboard, and users can easily
+switch to the standard national keyboard when necessary.</p>
+<h1>Core Characters</h1>
+<p>On Windows and Mac OS X, the core characters are all reached using
+the comma as a prefix key (dead key); for a list, see <a
+href="/doc/user/unicode/">the Unicode page</a>.</p>
+<h1>Accented Vowels</h1>
+<p>These are usually available in various ways from the national
+keyboards.  In addition, we define a set of fallback keyboard
+combinations to provide access to the accented vowels as follows:</p>
+<ul>
+<li>,-vowel = vowel + macron</li>
+<li>ctrl+,-vowel = vowel + circumflex</li>
+<!-- <li>shift+,-vowel = vowel + acute</li>
+<li>shift+control+,-vowel = vowel + grave</li> -->
+</ul>
+
+<h1>Determinatives</h1>
+
+
+<p>In ATF, the correct markup for determinatives is to enclose them in
+curly brackets.  In word-processing contexts the superscript style
+should be used.</p>
+
+<p>The commonest ATF determinatives can be written with the following keyboard combinations:</p>
+
+<ul>
+<li>,-d = {d}</li>
+<li>,-f = {f}</li>
+<li>,-k = {ki}</li>
+<li>,-l = {lu₂}</li>
+<li>,-m = {m}</li>
+</ul>
+
+<p>Limited support for superscript determinatives is included in the
+Oracc fonts (this currently only applies to Desconsolata).  This support
+is not intended for general purpose applications, but is provided for
+the creation of manuscript matrices where alignment is important and
+the use of a tabular layout is not an option for plain text files.
+These superscript characters are mostly available from the semi-colon
+deadkey, with a few reached from the colon deadkey.</p>
+
+<h1>Mac OS X Keyboards</h1>
+
+<h2>Installation</h2>
+
+<ul>
+<li>Download and unzip the keyboard(s) you wish to use and copy them to
+the <code>Library/Keyboard Layouts</code> folder in your home
+directory/folder.</li>
+<li>Log out and log in again.</li>
+<li>Open the 'International' item under 'System
+Preferences' (or from the flag in your menu bar if you have one) and
+look for the relevant name(s) in the list--click on the checkbox to
+include the new keyboard(s) in your list of available keyboards.</li>
+<li>Ensure that 'Show input menu on menubar is checked.</li>
+<li>You should now be able to switch keyboards via the icon in the
+menubar.</li>
+</ul>
+
+<p>Note that Mac OS X will sometimes 'helpfully' switch keyboards when you
+switch applications or even windows, so you may want to define a
+keyboard shortcut to select your favourite transliteration keyboard.
+Alternatively, if you find that you can work comfortably with the
+transliteration keyboard all the time, you can remove all other
+keyboards from your list in the 'International' settings.</p>
+
+<h2>Available Key Layouts</h2>
+
+<ul>
+<li><a href="/downloads/kb-mac-us-tlit.zip">US Extended/Tlit</a></li>
+</ul>
+
+<h1>Windows Keyboards</h1>
+
+<h2>Installation </h2>
+
+<ul>
+  <li>Download and unzip the keyboard(s) you wish to use and
+  double-click on the installer appropriate for your computer (for
+  most people this will be the i386 installer.</li>
+  <li>Use the Keyboards item in the Control Panel to add the keyboard
+  to the ones you use and optionally set up a keystroke combination to
+  switch between keyboards.</li>
+</ul>
+
+<h2>Available Key Layouts </h2>
+
+<ul>
+<li><a href="/downloads/USIntl-Tlit-win.zip">US International/Tlit</a></li>
+</ul>
+
+<!-- <h1>Unix X11 Keyboards</h1> -->
+
+<h1>Related documentation</h1>
+<ul>
+<li><a href="/doc/user/fonts/">Oracc fonts</a></li>
+<li><a href="/doc/user/unicode/">Unicode for cuneiform transliteration</a></li>
+<li><a href="/doc/builder/emacs/#Entering_Unicode_Characters">Entering Unicode characters in Emacs</a></li>
+</ul>
+<d:resources/>
+
+</d:doc>

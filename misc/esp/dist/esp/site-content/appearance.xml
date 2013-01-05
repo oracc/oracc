@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app:appearance xmlns:app="http://oracc.org/ns/esp-appearance/1.0">
+  <app:colours>
+    <app:dark>#1d33a8</app:dark>
+    <app:medium>#df1a1a</app:medium>
+    <app:light>#dbbf3e</app:light>
+    <app:outline>#ccc</app:outline>
+    <app:alternate>#eeeeee</app:alternate>
+    <app:text>#333333</app:text>
+    <app:page>#ffffff</app:page>
+    <app:highlight>#dbbf3e</app:highlight><app:print>#000</app:print>
+  </app:colours>
+  <app:fonts>
+    <app:body-print>"Palatino Linotype", Palatino, Georgia, "Times New Roman", Times, serif</app:body-print>
+    <app:body-screen>verdana, "trebuchet MS", helvetica, sans-serif</app:body-screen>
+    <app:h1>Georgia, Times, "Times New Roman", serif</app:h1>
+    <app:h2>Georgia, Times, "Times New Roman", serif</app:h2>
+  </app:fonts>
+<app:tabs>
+    <app:tab>
+      <app:url>/knp/peoplegodsplaces/</app:url>
+      <app:title>People, gods &amp; places</app:title>
+      <app:alt>People, gods &amp; places</app:alt>
+      <app:img height="191" width="28">tab_pgp.gif</app:img>
+    </app:tab>
+    <app:tab>
+      <app:url>/knp/technicalterms/</app:url>
+      <app:title>Technical terms</app:title>
+      <app:alt>Technical terms</app:alt>
+      <app:img height="146" width="28">tab_tt.gif</app:img>
+    </app:tab>
+    <app:tab>
+      <app:url>/knp/bibliography/</app:url>
+      <app:title>Bibliography</app:title>
+      <app:alt>Bibliography</app:alt>
+      <app:img height="116" width="28">tab_b.gif</app:img>
+    </app:tab>
+</app:tabs>
+</app:appearance>

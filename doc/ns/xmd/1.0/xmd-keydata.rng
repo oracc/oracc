@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/keydata/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="keydata">
+      <optional>
+        <element name="not-indexed">
+          <zeroOrMore>
+            <element name="field">
+              <attribute name="n">
+                <data type="NCName"/>
+              </attribute>
+            </element>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="imported">
+          <zeroOrMore>
+            <element name="field">
+              <attribute name="n">
+                <data type="NCName"/>
+              </attribute>
+              <optional>
+                <attribute name="via">
+                  <data type="NCName"/>
+                </attribute>
+              </optional>
+            </element>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="inherited">
+          <zeroOrMore>
+            <element name="field">
+              <attribute name="n">
+                <data type="NCName"/>
+              </attribute>
+              <attribute name="from">
+                <data type="NCName"/>
+              </attribute>
+              <optional>
+                <attribute name="new">
+                  <data type="boolean"/>
+                </attribute>
+              </optional>
+              <optional>
+                <attribute name="via">
+                  <data type="NCName"/>
+                </attribute>
+              </optional>
+            </element>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="keytypes">
+          <zeroOrMore>
+            <element name="keytype">
+              <attribute name="n">
+                <data type="NCName"/>
+              </attribute>
+              <attribute name="type">
+                <data type="NCName"/>
+              </attribute>
+            </element>
+          </zeroOrMore>
+        </element>
+      </optional>
+      <optional>
+        <element name="sortable">
+          <choice>
+            <zeroOrMore>
+              <element name="type">
+                <attribute name="n">
+                  <data type="NCName"/>
+                </attribute>
+                <ref name="hr"/>
+              </element>
+            </zeroOrMore>
+            <zeroOrMore>
+              <element name="field">
+                <attribute name="n">
+                  <data type="NCName"/>
+                </attribute>
+                <ref name="hr"/>
+              </element>
+            </zeroOrMore>
+          </choice>
+        </element>
+      </optional>
+      <oneOrMore>
+        <element name="keys">
+          <attribute name="class">
+            <data type="NCName"/>
+          </attribute>
+          <optional>
+            <attribute name="method">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+          <attribute name="reorder">
+            <data type="boolean"/>
+          </attribute>
+          <choice>
+            <attribute name="type">
+              <data type="NCName"/>
+            </attribute>
+            <attribute name="field">
+              <data type="NCName"/>
+            </attribute>
+          </choice>
+          <attribute name="queryable">
+            <data type="boolean"/>
+          </attribute>
+          <group>
+            <attribute name="remap">
+              <data type="boolean"/>
+            </attribute>
+            <optional>
+              <attribute name="remap-to">
+                <data type="NCName"/>
+              </attribute>
+            </optional>
+          </group>
+          <choice>
+            <attribute name="value-set"/>
+            <zeroOrMore>
+              <element name="val">
+                <attribute name="n"/>
+                <optional>
+                  <attribute name="abbrev"/>
+                </optional>
+                <optional>
+                  <attribute name="remap"/>
+                </optional>
+              </element>
+            </zeroOrMore>
+          </choice>
+        </element>
+      </oneOrMore>
+    </element>
+  </start>
+  <define name="hr">
+    <attribute name="hr"/>
+  </define>
+</grammar>

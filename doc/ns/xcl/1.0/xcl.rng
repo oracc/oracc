@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/xcl/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <ref name="c"/>
+  </start>
+  <define name="c">
+    <element name="c">
+      <optional>
+        <attribute name="xml:lang">
+          <data type="language"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="level">
+          <data type="integer"/>
+        </attribute>
+      </optional>
+      <choice>
+        <group>
+          <optional>
+            <attribute name="ref">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="subtype">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+          <attribute name="type">
+            <data type="NCName"/>
+          </attribute>
+          <optional>
+            <attribute name="xml:id">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+        </group>
+        <group>
+          <attribute name="type">
+            <value>field-start</value>
+          </attribute>
+          <attribute name="utype">
+            <data type="token" datatypeLibrary=""/>
+          </attribute>
+        </group>
+      </choice>
+      <zeroOrMore>
+        <choice>
+          <ref name="c"/>
+          <ref name="d"/>
+          <ref name="l"/>
+          <ref name="ll"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="d">
+    <element name="d">
+      <choice>
+        <group>
+          <attribute name="type">
+            <data type="NCName"/>
+          </attribute>
+          <attribute name="ref">
+            <data type="NCName"/>
+          </attribute>
+          <optional>
+            <attribute name="form">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="sb">
+              <data type="NCName"/>
+            </attribute>
+          </optional>
+        </group>
+        <group>
+          <attribute name="type">
+            <value>num-start</value>
+          </attribute>
+          <attribute name="sys">
+            <data type="token" datatypeLibrary=""/>
+          </attribute>
+        </group>
+        <attribute name="type">
+          <choice>
+            <value>num-end</value>
+            <value>gloss-start</value>
+            <value>gloss-end</value>
+          </choice>
+        </attribute>
+      </choice>
+    </element>
+  </define>
+  <define name="l">
+    <element name="l">
+      <optional>
+        <attribute name="base"/>
+      </optional>
+      <optional>
+        <attribute name="cfgw"/>
+      </optional>
+      <optional>
+        <attribute name="cont"/>
+      </optional>
+      <optional>
+        <attribute name="form"/>
+      </optional>
+      <optional>
+        <attribute name="id">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="lang">
+          <data type="language"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="lela"/>
+      </optional>
+      <optional>
+        <attribute name="morph">
+          <data type="token" datatypeLibrary=""/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="pos">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <attribute name="ref">
+        <data type="NCName"/>
+      </attribute>
+      <optional>
+        <attribute name="rws">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="sb">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <attribute name="status">
+        <data type="NCName"/>
+      </attribute>
+      <optional>
+        <ref name="dsu"/>
+      </optional>
+    </element>
+  </define>
+  <define name="dsu">
+    <element name="dsu">
+      <optional>
+        <attribute name="base"/>
+      </optional>
+      <attribute name="dsu">
+        <data type="NCName"/>
+      </attribute>
+      <optional>
+        <attribute name="form">
+          <data type="token" datatypeLibrary=""/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="last">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="morph"/>
+      </optional>
+      <attribute name="n">
+        <data type="integer"/>
+      </attribute>
+      <attribute name="term"/>
+    </element>
+  </define>
+  <define name="ll">
+    <element name="ll">
+      <oneOrMore>
+        <ref name="l"/>
+      </oneOrMore>
+      <optional>
+        <ref name="dsu"/>
+      </optional>
+    </element>
+  </define>
+</grammar>

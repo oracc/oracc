@@ -1,0 +1,106 @@
+=========before merge_adj========
+[ leaf :: N :: sipad[shepherd] ]
+[ leaf :: N :: šag[heart] ]
+[ leaf :: ERG :: e ]
+[ phrase :: VC-N ::  ]
+  [ leaf :: V :: pad[find] ]
+  [ leaf :: NOM :: a ]
+[ leaf :: DN :: Ninŋirsuk[1] ]
+[ leaf :: GEN :: ak ]
+[ leaf :: ERG :: e ]
+================================
+=========after merge_adj========
+[ leaf :: N :: sipad[shepherd] ]
+[ leaf :: N :: šag[heart] ]
+[ leaf :: ERG :: e ]
+[ phrase :: VC-N ::  ]
+  [ leaf :: V :: pad[find] ]
+  [ leaf :: NOM :: a ]
+[ leaf :: DN :: Ninŋirsuk[1] ]
+[ leaf :: GEN :: ak ]
+[ leaf :: ERG :: e ]
+================================
+===pre parse_sentence====
+[00] S	(N sipad[shepherd])
+[01] A	(N šag[heart])
+[02] P	(ERG e)
+[03] V	(VC-N (V pad[find])(NOM a))
+[04] .	(NP-GEN (DN Ninŋirsuk[1])(GEN ak))
+[05] P	(ERG e)
+=========before merge_adj parse_phrases========
+[ leaf :: N :: šag[heart] ]
+[ leaf :: ERG :: e ]
+================================
+=========after merge_adj========
+[ leaf :: N :: šag[heart] ]
+[ leaf :: ERG :: e ]
+================================
+==parse_phrases after label_phrase==
+[ phrase :: NP-ERG ::  ]
+  [ leaf :: N :: šag[heart] ]
+  [ leaf :: ERG :: e ]
+=========before merge_adj parse_phrases========
+[ phrase :: NP ::  ]
+  [ phrase :: NP ::  ]
+    [ leaf :: N :: sipad[shepherd] ]
+    [ clause :: RRC ::  ]
+      [ phrase :: NP-ERG ::  ]
+        [ leaf :: N :: šag[heart] ]
+        [ leaf :: ERG :: e ]
+      [ phrase :: VC-N ::  ]
+        [ leaf :: V :: pad[find] ]
+        [ leaf :: NOM :: a ]
+  [ phrase :: NP-GEN ::  ]
+    [ leaf :: DN :: Ninŋirsuk[1] ]
+    [ leaf :: GEN :: ak ]
+[ leaf :: ERG :: e ]
+================================
+=========after merge_adj========
+[ phrase :: NP ::  ]
+  [ phrase :: NP ::  ]
+    [ leaf :: N :: sipad[shepherd] ]
+    [ clause :: RRC ::  ]
+      [ phrase :: NP-ERG ::  ]
+        [ leaf :: N :: šag[heart] ]
+        [ leaf :: ERG :: e ]
+      [ phrase :: VC-N ::  ]
+        [ leaf :: V :: pad[find] ]
+        [ leaf :: NOM :: a ]
+  [ phrase :: NP-GEN ::  ]
+    [ leaf :: DN :: Ninŋirsuk[1] ]
+    [ leaf :: GEN :: ak ]
+[ leaf :: ERG :: e ]
+================================
+==parse_phrases after label_phrase==
+[ phrase :: NP-ERG ::  ]
+  [ phrase :: NP ::  ]
+    [ phrase :: NP ::  ]
+      [ leaf :: N :: sipad[shepherd] ]
+      [ clause :: RRC ::  ]
+    [ phrase :: NP-GEN ::  ]
+      [ leaf :: DN :: Ninŋirsuk[1] ]
+      [ leaf :: GEN :: ak ]
+  [ leaf :: ERG :: e ]
+===post parse_sentence====
+[ clause :: S-MAT ::  ]
+  [ phrase :: NP-ERG ::  ]
+    [ phrase :: NP ::  ]
+      [ phrase :: NP ::  ]
+        [ leaf :: N :: sipad[shepherd] ]
+        [ clause :: RRC ::  ]
+          [ phrase :: NP-ERG ::  ]
+            [ leaf :: N :: šag[heart] ]
+            [ leaf :: ERG :: e ]
+          [ phrase :: VC-N ::  ]
+            [ leaf :: V :: pad[find] ]
+            [ leaf :: NOM :: a ]
+      [ phrase :: NP-GEN ::  ]
+        [ leaf :: DN :: Ninŋirsuk[1] ]
+        [ leaf :: GEN :: ak ]
+    [ leaf :: ERG :: e ]
+===final result====
+(S-MAT (NP-ERG (NP (NP     (N sipad[shepherd])
+                           (RRC (NP-ERG (N šag[heart])(ERG e))
+                                (VC-N   (V pad[find])(NOM a))))
+                   (NP-GEN (DN Ninŋirsuk[1])(GEN ak)))
+               (ERG e)))

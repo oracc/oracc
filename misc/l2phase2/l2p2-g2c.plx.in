@@ -1,0 +1,232 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
+sub xsystem;
+
+my @add = ();
+my %add = ();
+my $base = ''; # the glossary to use as the base, overrides 'lang'
+my $cbd = '';
+my $dir = '';
+my $error_phase = 'g2c';
+my %g2x = ();
+my @imports = ();
+my $lang = shift @ARGV;
+my $out = '';
+my $project = `oraccopt`;
+my $verbose = 0;
+my $warnings = 1;
+
+die "l2p2-g2x.plx: can't continue without project\n"
+    unless $project;
+
+die "l2p2-g2x.plx: must give language on command line\n"
+    unless $lang;
+
+$cbd = "01bld/$lang/$lang.cbd";
+$dir = "01bld/$lang";
+if (-r $cbd) {
+    push @add, $cbd;
+}
+if ($project =~ m#/#) {
+    my $top = $project;
+    if ($top =~ s#/.*$##) {
+	if (-r "$ENV{'ORACC'}/bld/$top/$lang/$lang.cbd") {
+	    push @add, "$ENV{'ORACC'}/bld/$top/$lang/$lang.cbd";
+	}
+    }
+}
+
+if (-r "$dir/$lang.g2x") {
+    if ($#add >= 0) {
+#	xsystem 'l2p2-l2p2-g2c.plx', '-l', $lang, @a_args;
+	create_g2c();
+    } else {
+	xsystem "$ENV{'ORACC'}/bin/gdlme2", '-cng', '-o', "$dir/$lang.g2c", "$dir/$lang.g2x";
+    }
+} elsif (-r "$dir/$lang.cbd") {
+    xsystem "$ENV{'ORACC'}/bin/gdlme2", '-cng', '-o', "$dir/$lang.g2c", "$dir/$lang.cbd";
+}
+
+##################################################################################
+
+sub
+create_g2c {
+    use Encode;
+    use lib '@@ORACC@@/lib';
+    use ORACC::XML;
+    use ORACC::NS;
+
+## This function merges the g2x and cbd threads of glossaries,
+## importing dialect cf's (DCF) and one day perhaps secondary lit
+## and other info.
+##
+## See sig-merge for a general merger of glossaries based on signatures.
+
+    my $xg2x = undef;
+    my $xadd = undef;
+    
+    my $base_g2x = $base || "01bld/$lang/$lang.g2x";
+    $xg2x = load_xml($base_g2x,\%g2x);
+    die "l2p2-g2c.plx: XML load failed on $base_g2x\n"
+	unless $xg2x;
+    index_g2x($xg2x,\%g2x);
+    my $i = 0;
+    foreach my $add (@add) {
+	$xadd = load_xml($add,\%add);
+	die "l2p2-g2c.plx: XML load failed on $add\n"
+	    unless $xadd;
+	index_g2x($xadd,\%add);
+	$i++;
+	augment($add, 1);
+	undef($xadd);
+	%add = ();
+    }
+
+    $out = "01bld/$lang/$lang.g2c";
+    open(OUT,"|$ENV{'ORACC'}/bin/gdlme2 -cng -s >$out");
+    my $str = $xg2x->toString(0);
+    Encode::_utf8_on($str);
+    print OUT $str;
+    close(OUT);
+}
+
+#my $project = $xcbd->getDocumentElement()->getAttribute('project');
+#my $lang = $xcbd->getDocumentElement()->getAttributeNS($XML,'lang');
+
+sub
+augment {
+    my ($add,$ignore_errors) = @_;
+    foreach my $e (keys %g2x) {
+	my $enode = ${$g2x{$e}}{'node'};
+	if ($add{$e}) {
+	    my $anode = ${$add{$e}}{'node'};
+	    my @edcf = tags($enode,$CBD,'dcf');
+	    unless (has_dcf($enode,$lang)) {
+		my $dcf = has_dcf($anode,$lang);
+		if ($dcf) {
+		    addnode('after',$enode,'cf',$dcf);
+		    # now make <cf> the dialect and
+		    # <dcf> the conakk
+		    my $cf_node = (tags($enode,$CBD,'cf'))[0];
+		    my $cf_lang 
+			= ($cf_node->getAttributeNS($XML,'lang')
+			   || 'akk-x-conakk');
+		    my $cf_text = $cf_node->textContent();
+		    $cf_node->setAttributeNS($XML,'lang',$lang);
+		    $cf_node->firstChild()->setData($dcf->textContent());
+		    $dcf->setAttributeNS($XML,'lang',$cf_lang);
+		    $dcf->firstChild()->setData($cf_text);
+		}
+	    }
+	    foreach my $s (keys %{$g2x{$e}}) {
+		next if $s eq 'node';
+		if (${$add{$e}}{$s}) {
+		    ${$g2x{$e}}{$s}->setAttribute('ok','1');
+		} else {
+		    ${$g2x{$e}}{$s}->setAttribute('ok','0');
+		    my $xis = ${$g2x{$e}}{$s}->getAttribute('xis');
+		    maybe_warn("corpus sense $s not in glossary $add: xis=$xis")
+			unless $ignore_errors;
+		}
+	    }
+	} else {
+	    my $xis = $enode->getAttribute('xis');
+	    maybe_warn("corpus entry $e not in glossary $add: xis=$xis")
+		unless $ignore_errors;
+	}
+    }
+}
+
+###############################################################
+
+sub
+addnode {
+    my($where,$parent,$child,$node) = @_;
+    $parent->ownerDocument()->adoptNode($node);
+    my @childNodes = tags($parent,$CBD,$child);
+    if ($#childNodes >= 0) {
+	if ($where eq 'before') {
+	    $parent->insertBefore($node,$childNodes[0]);
+	} else {
+	    $parent->insertAfter($node,$childNodes[0]);
+	}
+    }
+}
+
+sub
+has_dcf {
+    my($node,$lang) = @_;
+    my @dcf = tags($node,$CBD,'dcf');
+    foreach my $d (@dcf) {
+	my $l = $d->getAttributeNS($XML,'lang');
+	if ($l eq $lang) {
+	    return $d;
+	}
+    }
+    undef;
+}
+
+sub
+index_g2x {
+    my ($xdoc,$xhash) = @_;
+    $xdoc = $xdoc->getDocumentElement();
+    foreach my $e ($xdoc->childNodes()) {
+	next unless $e->isa('XML::LibXML::Element');
+	if ($e->localName() eq 'entry') {
+	    my $curr_e = $e->getAttribute('n');
+	    ${$$xhash{$curr_e}}{'node'} = $e;
+	    foreach my $ss ($e->childNodes()) {
+		next unless $ss->isa('XML::LibXML::Element');
+		if ($ss->localName() eq 'senses') {
+		    foreach my $s ($ss->childNodes()) {
+			next unless $s->isa('XML::LibXML::Element');
+			if ($s->localName() eq 'sense') {
+			    ${$$xhash{$curr_e}}{$s->getAttribute('n')} = $s;
+			}
+		    }
+		} elsif ($ss->localName eq 'dcf') {
+		    my $d = $ss->textContent();
+		    my $de = $curr_e;
+		    $de =~ s/^(.*?)\[/$d/;
+		    ${$$xhash{'dialects'}}{$de} = $curr_e;
+		}
+	    }
+	}
+    }
+}
+
+sub
+maybe_warn {
+    if ($warnings) {
+	warn "l2p2-g2c.plx: @_\n";
+    }
+}
+
+sub
+sigs_node {
+    my $node = shift;
+#    print STDERR ref($node),"\n";
+    if (ref($node) eq 'XML::LibXML::Element') {
+	foreach my $c ($node->childNodes()) {
+	    next unless $c->isa('XML::LibXML::Element');
+	    if ($c->localName() eq 'sigs') {
+		return $c;
+	    }
+	}
+    }
+    undef;
+}
+
+sub
+xsystem {
+    warn "$error_phase: system @_\n" if $verbose;
+    eval { system @_; };
+    if ($? & 127) {
+	warn "$error_phase: system @_\n" unless $verbose;
+	die "l2p2-g2c.plx: detected crash in last named system call; stop.\n";
+    }
+}
+
+1;

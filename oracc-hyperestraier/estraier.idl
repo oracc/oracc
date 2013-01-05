@@ -1,0 +1,214 @@
+/*************************************************************************************************
+ * IDL for bindings of scripting languages
+ *                                                      Copyright (C) 2004-2005 Mikio Hirabayashi
+ * This file is part of Hyper Estraier.
+ * Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of
+ * the GNU Lesser General Public License as published by the Free Software Foundation; either
+ * version 2.1 of the License or any later version.  Hyper Estraier is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+ * License for more details.
+ * You should have received a copy of the GNU Lesser General Public License along with Hyper
+ * Estraier; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA.
+ *************************************************************************************************/
+
+
+
+/**
+ * namespace of Hyper Estraier
+ */
+module estraier {
+  //----------------------------------------------------------------
+  // data structures for utility
+  //----------------------------------------------------------------
+  /**
+   * List of strings (to be substituted for by the native list mechanism).
+   */
+  interface List {
+    string get(in long index);
+  };
+  /**
+   * Map of strings (to be substituted for by the native map mechanism).
+   */
+  interface Map {
+    List keys();
+    string get(in string key);
+  };
+  //----------------------------------------------------------------
+  // core API
+  //----------------------------------------------------------------
+  /**
+   * Abstraction of document.
+   */
+  interface Document {
+    void add_attr(in string name, in string value);
+    void add_text(in string text);
+    void add_hidden_text(in string text);
+    void set_keywords(in Map kwords);
+    void set_score(in long score);
+    long id();
+    List attr_names();
+    string attr(in string name);
+    List texts();
+    string cat_texts();
+    Map keywords();
+    long score();
+    string dump_draft();
+    string make_snippet(in List words, in long wwidth, in long hwidth, in long awidth);
+  };
+  /**
+   * Abstraction of search condition.
+   */
+  interface Condition {
+    const long SURE = 1 << 0;
+    const long USUAL = 1 << 1;
+    const long FAST = 1 << 2;
+    const long AGITO = 1 << 3;
+    const long NOIDF = 1 << 4;
+    const long SIMPLE = 1 << 10;
+    const long ROUGH = 1 << 11;
+    const long UNION = 1 << 15;
+    const long ISECT = 1 << 16;
+    void set_phrase(in string phrase);
+    void add_attr(in string expr);
+    void set_order(in string expr);
+    void set_max(in long max);
+    void set_skip(in long skip);
+    void set_options(in long options);
+    void set_auxiliary(in long min);
+    void set_distinct(in string name);
+  };
+  /**
+   * Abstraction of result set from database.
+   */
+  interface Result {
+    long doc_num();
+    long get_doc_id(in long index);
+    List hint_words();
+    string hint(in string word);
+  };
+  /**
+   * Abstraction of database.
+   */
+  interface Database {
+    const long ERRNOERR = 0;
+    const long ERRINVAL = 1;
+    const long ERRACCES = 2;
+    const long ERRLOCK = 3;
+    const long ERRDB = 4;
+    const long ERRIO = 5;
+    const long ERRNOITEM = 6;
+    const long ERRMISC = 9999;
+    const long DBREADER = 1 << 0;
+    const long DBWRITER = 1 << 1;
+    const long DBCREAT = 1 << 2;
+    const long DBTRUNC = 1 << 3;
+    const long DBNOLCK = 1 << 4;
+    const long DBLCKNB = 1 << 5;
+    const long DBPERFNG = 1 << 10;
+    const long DBCHRCAT = 1 << 11;
+    const long DBSMALL = 1 << 20;
+    const long DBLARGE = 1 << 21;
+    const long DBHUGE = 1 << 22;
+    const long DBSCVOID = 1 << 25;
+    const long DBSCINT = 1 << 26;
+    const long DBSCASIS = 1 << 27;
+    const long IDXATTRSEQ = 0;
+    const long IDXATTRSTR = 1;
+    const long IDXATTRNUM = 2;
+    const long OPTNOPURGE = 1 << 0;
+    const long OPTNODBOPT = 1 << 1;
+    const long MGCLEAN = 1 << 0;
+    const long PDCLEAN = 1 << 0;
+    const long PDWEIGHT = 1 << 1;
+    const long ODCLEAN = 1 << 0;
+    const long GDNOATTR = 1 << 0;
+    const long GDNOTEXT = 1 << 1;
+    const long GDNOKWD = 1 << 2;
+    string err_msg(in long ecode);
+    boolean open(in string name, in long omode);
+    boolean close();
+    long error();
+    boolean fatal();
+    boolean add_attr_index(in string name, in long type);
+    boolean flush(in long max);
+    boolean sync();
+    boolean optimize(in long options);
+    boolean merge(in string name, in long options);
+    boolean put_doc(in Document doc, in long options);
+    boolean out_doc(in long id, in long options);
+    boolean edit_doc(in Document doc);
+    Document get_doc(in long id, in long options);
+    string get_doc_attr(in long id, in string name);
+    long uri_to_id(in string uri);
+    string name();
+    long doc_num();
+    long word_num();
+    double size();
+    Result search(in Condition cond);
+    boolean scan_doc(in Document doc, in Condition cond);
+    void set_cache_size(in double size, in long anum, in long tnum);
+    boolean add_pseudo_index(in string path);
+  };
+  //----------------------------------------------------------------
+  // node API
+  //----------------------------------------------------------------
+  /**
+   * Abstraction of document in result set.
+   */
+  interface ResultDocument {
+    string uri();
+    List attr_names();
+    string attr(in string name);
+    string snippet();
+    string keywords();
+  };
+  /**
+   * Abstraction of result set from node.
+   */
+  interface NodeResult {
+    long doc_num();
+    ResultDocument get_doc(in long index);
+    string hint(in string key);
+  };
+  /**
+   * Abstraction of connection to P2P node.
+   */
+  interface Node {
+    long status();
+    void set_url(in string url);
+    void set_proxy(in string host, in long port);
+    void set_timeout(in long msec);
+    void set_auth(in string name, in string password);
+    boolean sync();
+    boolean optimize();
+    boolean put_doc(in Document doc);
+    boolean out_doc(in long id);
+    boolean out_doc_by_uri(in string uri);
+    Document get_doc(in long id);
+    Document get_doc_by_uri(in string uri);
+    string get_doc_attr(in long id, in string name);
+    string get_doc_attr_by_uri(in string uri, in string name);
+    Map etch_doc(in long id);
+    Map etch_doc_by_uri(in string uri);
+    long uri_to_id(in string uri);
+    string name();
+    string label();
+    long doc_num();
+    long word_num();
+    double size();
+    double cache_usage();
+    List admins();
+    List users();
+    List links();
+    NodeResult search(in Condition cond, in long depth);
+    void set_snippet_width(in long wwidth, in long hwidth, in long awidth);
+    boolean set_user(in string name, in long mode);
+    boolean set_link(in string url, in string label, in long credit);
+  };
+};
+
+
+
+/* END OF FILE */

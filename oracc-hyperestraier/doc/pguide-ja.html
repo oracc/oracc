@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, API" />
+<meta name="description" content="Programming Guide of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="pguide-en.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Programming Guide of Hyper Estraier Version 1 (Japanese)</title>
+</head>
+
+<body>
+
+<h1>プログラミングガイド</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<a href="pguide-en.html" hreflang="en">English</a>/<span class="void">Japanese</span>] [<a href="index.ja.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">目次</h2>
+
+<ol>
+<li><a href="#introduction">はじめに</a></li>
+<li><a href="#architecture">アーキテクチャ</a></li>
+<li><a href="#building">ビルド</a></li>
+<li><a href="#estdoc">文書を扱うAPI</a></li>
+<li><a href="#estcond">検索条件を扱うAPI</a></li>
+<li><a href="#estdb">データベースを扱うAPI</a></li>
+<li><a href="#gatherer">ギャザラのサンプル</a></li>
+<li><a href="#searcher">サーチャのサンプル</a></li>
+<li><a href="#paralleling">並列性</a></li>
+<li><a href="#tips">助言</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">はじめに</h2>
+
+<p>このガイドでは、Hyper EstraierのAPIの詳細な使い方を説明します。<a href="uguide-ja.html">ユーザガイド</a>をまだお読みでない場合は先にそちらに目を通しておいてください。</p>
+
+<p>全文検索システムの機能要件は様々ですが、代表的なものを挙げてみましょう。</p>
+
+<dl>
+<dt>リポジトリへの要求</dt>
+<dd>ファイルシステム、メールボックス、Web、Wiki、RDBMS、各社の文書管理システムなどへの対応。</dd>
+<dt>文書形式への要求</dt>
+<dd>プレーンテキスト、HTML、MIME、PDF、RTF、MS-Word、MP3、各種の画像（OCR）などへの対応。</dd>
+<dt>言語や語彙への要求</dt>
+<dd>日本語、英語、中国語などの各種言語対応。類義語の正規化。表記揺れの正規化。</dd>
+<dt>ユーザインターフェイスへの要求</dt>
+<dd>検索条件の指定方法。結果の表示方法。クライアントの種類。応答時間。同時接続数。</dd>
+<dt>管理機能への要求</dt>
+<dd>対象文書の規模。文書の差分登録。無停止運用。バックアップ。移植性。</dd>
+</dl>
+
+<p>考え得る全ての要求に応えることはできませんが、<code>estcmd</code>や<code>estseek.cgi</code>を使うだけでは不可能だった多くのことが、ライブラリを組み込んだアプリケーションを作ることで可能になります。<code>estcmd</code>ではファイルとして存在している文書しか扱えませんでしたが、ライブラリを使えば、リレーショナルデータベースに格納されたレコードを文書として扱うアプリケーションを作ることもできます。<code>estseek.cgi</code>はWebブラウザで使うものでしたが、ライブラリを使えば、ネイティブOSのGUIを備えた検索アプリケーションを作ることもできます。</p>
+
+<p>Hyper Estraierが提供する「<strong>コアAPI</strong>」は、転置インデックスというデータ構造を実現する機能を提供するだけです。つまり、文書を取得したり解釈したりする処理はアプリケーションに任されます。検索結果を表示するための処理もアプリケーションに任されます。繰り返しになりますが、Hyper Estraierはリポジトリ（対象文書の格納場所）の種類には依存しませんし、文書形式にも依存しませんし、ユーザインターフェイスにも依存しません。それらはアプリケーション作者が好きなように設計・実装することができます。</p>
+
+<p>Hyper EstraierはUnicode（UCS-2）の文字セットを扱い、UTF-8で表現します。したがって、現在世界で日常的に使われているほとんどの言語の文字が利用できます。また、テキストから検索キーを切り出すにあたってN-gram法を用いるので、言語の語彙に依存しません。</p>
+
+<p>スケーラビリティ（大規模な文書群を扱う能力）が高いことは、Hyper Estraierの特徴の一つです。スケーラビリティを向上するための工夫はコアAPIの内部でやってくれるので、アプリケーション作者は文書規模のことをそれほど気にしないで済みます。</p>
+
+<p>このガイドではC言語版のコアAPIについて説明しますが、コアAPIを<a href="javanativeapi/">Java</a>や<a href="rubynativeapi/">Ruby</a>や<a href="perlnativeapi/">Perl</a>から呼び出すためのバインディングもあります。また、Hyper EstraierはP2Pアーキテクチャに基づく「<strong>ノードAPI</strong>」も提供しています。ノードAPIについては<a href="nguide-ja.html">P2Pガイド</a>をご覧ください。</p>
+
+<hr />
+
+<h2 id="architecture">アーキテクチャ</h2>
+
+<p>ここでは、Hyper EstraierのコアAPIのアーキテクチャについて説明します。</p>
+
+<h3>ギャザラとフィルタ</h3>
+
+<p>検索対象の文書のデータをインデックスに登録する機能を「<strong>ギャザラ</strong>（gatherer）」と呼ぶことにします。ギャザラはアプリケーションが実装します。例えば、<code>estcmd</code>にはファイルシステムを探索して文書のデータを集めてくる機能がありますが、そこでは以下のような処理をしています。</p>
+
+<ul>
+<li>コマンドライン引数を解析して、インデックスの名前や探索の開始点を取得します。</li>
+<li>インデックスを開きます。</li>
+<li>ファイルシステムを探索して、登録対象のファイルのパスを特定します。</li>
+<li>上記でリストアップした個々のファイルに対して‥‥<ul>
+<li>ファイル名の接尾辞によって文書の種類を判別します。</li>
+<li>サポートしている種類であれば、ファイルを読み込みます。</li>
+<li>文書の種類に応じたフィルタ機能を呼んで文書オブジェクトを作成します。</li>
+<li>文書オブジェクトをインデックスに登録します。</li>
+</ul></li>
+<li>インデックスを閉じます。</li>
+</ul>
+
+<p>ファイルなどから文書の属性と本文を取り出す機能を「<strong>フィルタ</strong>（filter）」と呼びます。フィルタはアプリケーションが実装します。アプリケーションが独自の解析処理を実装してもいいですし、巷に転がっているライブラリを使ってもいいでしょう。あるいは、外部のコマンドを呼び出してその出力を加工してもいいでしょう。</p>
+
+<h3>サーチャ</h3>
+
+<p>インデックスに検索をかけて該当する文書の情報を取得し、それを表示する機能を「<strong>サーチャ</strong>（searcher）」と呼びます。サーチャはアプリケーションが実装します。例えば、<code>estseek.cgi</code>はWebサーバ上からCGIで呼び出されて検索結果をHTMLとして生成する機能を持ちますが、それは以下のような処理をしています。</p>
+
+<ul>
+<li>インデックスの名前や各種の表示設定を設定ファイルから読み込みます。</li>
+<li>CGIのパラメータを解析して、ユーザが入力した検索条件を取得します。</li>
+<li>インデックスを開きます。</li>
+<li>全文検索の検索式、属性条件式、順序指定を持たせた検索条件オブジェクトを生成します。</li>
+<li>インデックスに検索条件オブジェクトを渡して、該当する文書IDのリストを取得します。</li>
+<li>上記でリストアップした個々の文書IDに対して‥‥<ul>
+<li>インデックスに文書IDを渡して文書オブジェクトを取得します。</li>
+<li>文書の属性やスニペットをHTMLに加工してから出力します。</li>
+</ul></li>
+<li>インデックスを閉じます。</li>
+</ul>
+
+<p>検索結果をわかりやすくするために、各文書のスニペット（紹介文）を表示した方がいいでしょう。本文から検索語の周辺を抜き出したスニペットを作る機能がコアAPIによって提供されますが、アプリケーションが独自に実装してもかまいません。自然言語処理を行って内容の要約をしてもいいでしょう。本文中の頻出語をキーワードとして表示してもいいでしょう。</p>
+
+<h3>典型的なシステム構成</h3>
+
+<p>システム構成の典型例を以下に図示します。これはあくまで概念的なもので、実際のアプリケーションではサーチャとギャザラを一つのモジュールで実現してもいいですし、リポジトリにギャザラやサーチャを組み込んでもいいでしょう。</p>
+
+<div class="illust"><img src="coreframe.png" width="720" height="450" alt="[framework]" /></div>
+
+<hr />
+
+<h2 id="building">ビルド</h2>
+
+<p>Hyper EstraierのコアAPIはC言語のAPIですので、アプリケーションの実装言語はCまたはC++になります。ただし、他の言語（JavaまたはRuby）のバインディングも提供されています。ここでは、C言語のライブラリを使ったアプリケーションをビルドする方法を説明します。</p>
+
+<h3>ヘッダの取り込み</h3>
+
+<p>コアAPIを使うアプリケーションのソースコードでは、<code>estraier.h</code>と<code>cabin.h</code>と<code>stdlib.h</code>をインクルードしてください。<code>estraier.h</code>はHyper Estraierのヘッダファイルで、<code>cabin.h</code>はQDBMのヘッダファイルです。<code>cabin.h</code>が提供する機能については<a href="http://fallabs.com/qdbm/spex-ja.html#cabinapi">QDBMの文書</a>をご覧ください。</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+</pre>
+
+<h3>コンパイルとリンク</h3>
+
+<p>デフォルトではHyper Estraierのヘッダは「<code>/usr/local/include</code>」の中、ライブラリは「<code>/usr/local/lib</code>」の中にインストールされ、<code>-lestraier</code>の他に前提となるライブラリとして<code>-lqdbm</code>、<code>-lresolv</code>、<code>-lnsl</code>、<code>-lpthread</code>、<code>-lz</code>、<code>-liconv</code>、<code>-lm</code>、<code>-lc</code>を利用します。したがって、Hyper Estraierを組み込んだアプリケーションをビルドするには、以下のようなコマンドを実行すればよいことになります。</p>
+
+<pre>gcc -I/usr/local/include -o foobar foobar.c \
+  -L/usr/local/lib -lestraier -lresolv -lnsl -lpthread -lqdbm -lz -liconv -lm -lc
+</pre>
+
+<p>しかし、上記はHyper Estraierのインストール先を変えた場合にはうまく動きません。インテグレーションを自動化する場合には、<code>estconfig</code>コマンドの出力を埋め込むようにして、保守性を向上させましょう。以下のようにします。</p>
+
+<pre>gcc `estconfig --cflags` -o foobar foobar.c `estconfig --ldflags` `estconfig --libs`
+</pre>
+
+<h3>インテグレーション用コマンド</h3>
+
+<p><code>estconfig</code>は、Hyper Estraierを使ったシステムやアプリケーションのインテグレーションを行う際に役立つユーティリティコマンドです。Hyper Estraierのビルド時の設定を後で参照するために使います。</p>
+
+<dl>
+<dt><kbd>estconfig --version</kbd></dt>
+<dd>バージョン情報を出力します。</dd>
+<dt><kbd>estconfig --prefix</kbd></dt>
+<dd>全体のインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --execprefix</kbd></dt>
+<dd>プラットフォーム依存ファイルのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --headdir</kbd></dt>
+<dd>ヘッダファイルのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --libdir</kbd></dt>
+<dd>ライブラリのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --bindir</kbd></dt>
+<dd>コマンドのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --libexecdir</kbd></dt>
+<dd>CGIスクリプトのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --datadir</kbd></dt>
+<dd>各種設定ファイルのインストール先の接頭辞を出力します。</dd>
+<dt><kbd>estconfig --cflags</kbd></dt>
+<dd>アプリケーションのビルド時に指定すべきコンパイラオプションを出力します。</dd>
+<dt><kbd>estconfig --ldflags</kbd></dt>
+<dd>アプリケーションのビルド時に指定すべきリンカオプションを出力します。</dd>
+<dt><kbd>estconfig --libs</kbd></dt>
+<dd>アプリケーションのビルド時に指定すべきライブラリを出力します。</dd>
+</dl>
+
+<p><code>estconfig</code>は常に0を終了ステータスにします。</p>
+
+<hr />
+
+<h2 id="estdoc">文書を扱うAPI</h2>
+
+<p>ここでは、検索対象の文書を扱うためのAPIについて説明します。</p>
+
+<h3>機能</h3>
+
+<p>構造体型 `<code>ESTDOC</code>' は、文書を抽象化したものです。一つの文書は、複数の属性と複数の本文の集合です。`<code>ESTDOC</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>文書オブジェクト</strong>と呼びます。文書オブジェクトは関数 `<code>est_doc_new</code>' によって生成され、`<code>est_doc_delete</code>' によって破棄されます。生成された文書オブジェクトは必ず破棄してください。</p>
+
+<p>検索対象となる文書は、文書オブジェクトとして表現した上で、予めデータベースに登録しておきます。登録済みの文書オブジェクトにはIDが割り当てられます。検索時にはそのIDを元にデータベースに問い合わせて、登録してある文書オブジェクトを取り出すことになります。なお、文書オブジェクトに付加する属性や本文の文字コードはUTF-8にしてください。</p>
+
+<p>文書オブジェクトの典型的なライフサイクルを以下に示します。</p>
+
+<pre>ESTDOC *doc;
+
+/* 生成する */
+doc = est_doc_new();
+
+/* URIとタイトルを属性として付加する */
+est_doc_add_attr(doc, "@uri", "http://foo.bar/baz.txt");
+est_doc_add_attr(doc, "@title", "Now Scream");
+
+/* 本文を付加する */
+est_doc_add_text(doc, "Give it up, Yo!  Give it up, Yo!");
+est_doc_add_text(doc, "Check it out, come on!");
+
+  /* ここでデータベースに登録したり、画面に表示したりする */
+
+/* 破棄する */
+est_doc_delete(doc);
+</pre>
+
+<h3>API</h3>
+
+<p>文書オブジェクトを生成するには、関数 `est_doc_new' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_doc_new(void);</kbd></dt>
+<dd>戻り値は文書オブジェクトです。</dd>
+</dl>
+
+<p>文書ドラフトのデータから文書オブジェクトを生成するには、関数 `est_doc_new_from_draft' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_doc_new_from_draft(const char *<var>draft</var>);</kbd></dt>
+<dd>`draft' は文書ドラフトの文字列を指定します。戻り値は文書オブジェクトです。</dd>
+</dl>
+
+<p>文書オブジェクトを破棄するには、関数 `est_doc_delete' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_delete(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。</dd>
+</dl>
+
+<p>文書オブジェクトに属性を追加するには、関数 `est_doc_add_attr' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_add_attr(ESTDOC *<var>doc</var>, const char *<var>name</var>, const char *<var>value</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`name' は属性名を指定します。`value' は属性値を指定しますが、`NULL' の場合は属性を削除します。</dd>
+</dl>
+
+<p>文書オブジェクトに本文の一文を追加するには、関数 `est_doc_add_text' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_add_text(ESTDOC *<var>doc</var>, const char *<var>text</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`text' は本文の一文を指定します。</dd>
+</dl>
+
+<p>文書オブジェクトに隠しテキストの一文を追加するには、関数 `est_doc_add_hidden_text' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_add_hidden_text(ESTDOC *<var>doc</var>, const char *<var>text</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`text' は隠しテキストの一文を指定します。</dd>
+</dl>
+
+<p>文書オブジェクトにキーワードを添付するには、関数 `est_doc_set_keywords' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_set_keywords(ESTDOC *<var>doc</var>, CBMAP *<var>kwords</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`kwords' はキーワードのマップオブジェクトを指定します。マップのキーはキーワードの文字列で、値はそのスコアの10進数表現です。マップオブジェクトは内部的にコピーされます。</dd>
+</dl>
+
+<p>文書オブジェクトに代替スコアを設定するには、関数 `est_doc_set_score' を用います。</p>
+
+<dl>
+<dt><kbd>void est_doc_set_score(ESTDOC *<var>doc</var>, int <var>score</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`score' は代替スコアを指定します。負数の場合は代替スコアの既存の設定が無効化されます。</dd>
+</dl>
+
+<p>文書オブジェクトのID番号を取得するには、関数 `est_doc_id' を用います。</p>
+
+<dl>
+<dt><kbd>int est_doc_id(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値は文書オブジェクトのID番号です。もしそのオブジェクトがまだ登録されていない場合、-1が返されます。</dd>
+</dl>
+
+<p>文書オブジェクトの属性名のリストを取得するには、関数 `est_doc_attr_names' を用います。</p>
+
+<dl>
+<dt><kbd>CBLIST *est_doc_attr_names(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値は文書オブジェクトの属性名のリストです。戻り値のオブジェクトは `cblistopen' で生成されているので、不要になったら `cblistclose' で破棄してください。</dd>
+</dl>
+
+<p>文書オブジェクトの属性の値を取得するには、関数 `est_doc_attr' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_doc_attr(ESTDOC *<var>doc</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`name' は属性名を指定します。戻り値は属性値ですが、該当する属性がない場合は `NULL' が返されます。戻り値の文字列の寿命は文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>文書オブジェクトの本文のリストを取得するには、関数 `est_doc_texts' を用います。</p>
+
+<dl>
+<dt><kbd>const CBLIST *est_doc_texts(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値は本文のリストオブジェクトです。戻り値のオブジェクトの寿命は文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>文書オブジェクトの本文を連結した文字列を取得するには、関数 `est_doc_cat_texts' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_doc_cat_texts(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値は本文を連結した文字列のデータです。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>文書オブジェクトに添付されたキーワードを取得するには、関数 `est_doc_keywords' を用います。</p>
+
+<dl>
+<dt><kbd>CBMAP *est_doc_keywords(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値はキーワードのマップオブジェクトです。マップのキーはキーワードの文字列で、値はそのスコアの10進数表現です。戻り値のオブジェクトの寿命は文書オブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>文書オブジェクトから文書ドラフトを生成するには、関数 `est_doc_dump_draft' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_doc_dump_draft(ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。戻り値は文書ドラフトのデータです。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>文書オブジェクトの本文のスニペットを生成するには、関数 `est_doc_make_snippet' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_doc_make_snippet(ESTDOC *<var>doc</var>, const CBLIST *<var>words</var>, int <var>wwidth</var>, int <var>hwidth</var>, int <var>awidth</var>);</kbd></dt>
+<dd>`doc' は文書オブジェクトを指定します。`words' はハイライトすべき語句のリストオブジェクトを指定します。`wwidth' は結果全体の幅（≒文字数）を指定します。`hwidth' は本文の冒頭から抽出する幅を指定します。`awidth' はハイライトされる語の周辺から抽出する幅を指定します。戻り値は文書オブジェクトのスニペットの文字列です。その形式はタブ区切り文字列（TSV）です。その各行は表示すべき文字列です。ほとんどの行は単一のフィールドしか持ちませんが、いくつかは二つのフィールドを持ちます。もし第2フィールドが存在したならば、第1フィールドはハイライトして表示すべき文字列で、第2フィールドはその正規化された文字列です。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<hr />
+
+<h2 id="estcond">検索条件を扱うAPI</h2>
+
+<p>ここでは、検索条件を扱うためのAPIについて説明します。</p>
+
+<h3>機能</h3>
+
+<p>構造体型 `<code>ESTCOND</code>' は、検索条件を抽象化したものです。一つの検索条件は、一つの検索フレーズと複数の属性検索条件と一つの順序指定の集合です。`<code>ESTCOND</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>検索条件オブジェクト</strong>と呼びます。検索条件オブジェクトは関数 `<code>est_cond_new</code>' によって生成され、`<code>est_cond_delete</code>' によって破棄されます。生成された検索条件オブジェクトは必ず破棄してください。</p>
+
+<p>検索条件オブジェクトをデータベースに渡すことにより、その条件に該当する文書IDのリストを取得することができます。各種の条件式の書式については<a href="uguide-ja.html#searchcond">ユーザガイドの検索条件式の項目</a>を参照してください。なお、各種の条件式の文字コードはUTF-8にしてください。</p>
+
+<p>検索条件オブジェクトの典型的なライフサイクルを以下に示します。</p>
+
+<pre>ESTCOND *cond;
+
+/* 生成する */
+cond = est_cond_new();
+
+/* 本文に「check」と「out」を含むと指定する */
+est_cond_set_phrase(cond, "check AND out");
+
+/* URIが「.txt」で終わると指定する */
+est_cond_add_attr(cond, "@uri ISTREW .txt");
+
+  /* ここでデータベースに問い合わせを行う */
+
+/* 破棄する */
+est_cond_delete(cond);
+</pre>
+
+<h3>API</h3>
+
+<p>検索条件オブジェクトを生成するには、関数 `est_cond_new' を用います。</p>
+
+<dl>
+<dt><kbd>ESTCOND *est_cond_new(void);</kbd></dt>
+<dd>戻り値は検索条件オブジェクトです。</dd>
+</dl>
+
+<p>検索条件オブジェクトを破棄するには、関数 `est_cond_delete' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_delete(ESTCOND *<var>cond</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに検索フレーズを設定するには、関数 `est_cond_set_phrase' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_phrase(ESTCOND *<var>cond</var>, const char *<var>phrase</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`phrase' は検索フレーズを指定します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに属性検索条件を追加するには、関数 `est_cond_add_attr' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_add_attr(ESTCOND *<var>cond</var>, const char *<var>expr</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`expr' は属性検索条件の式を指定します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに順序指定を設定するには、関数 `est_cond_set_order' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_order(ESTCOND *<var>cond</var>, const char *<var>expr</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`expr' 順序指定の式を指定します。デフォルトでは、順序はスコアの降順です。</dd>
+</dl>
+
+<p>検索条件オブジェクトに取得文書数の最大数を設定するには、関数 `est_cond_set_max' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_max(ESTCOND *<var>cond</var>, int <var>max</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`max' は取得文書数の最大数を指定します。デフォルトでは、取得文書数は無制限です。</dd>
+</dl>
+
+<p>検索条件オブジェクトに検索結果からスキップする文書数を設定するには、関数 `est_cond_set_skip' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_skip(ESTCOND *<var>cond</var>, int <var>skip</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`skip' は検索結果からスキップする文書数を指定します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに検索オプションを設定するには、関数 `est_cond_set_options' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_options(ESTCOND *<var>cond</var>, int <var>options</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`options' はオプションを指定します。`ESTCONDSURE' だと全てのN-gramキーを検索します。`ESTCONDUSUAL' はデフォルトですが、N-gramのキーを1個置きで検査します。`ESTCONDFAST' だとN-gramのキーを2個置き、`ESTCONDAGITO' だと3個置きで検査します。`ESTCONDNOIDF' だとTF-IDF法による重みづけを省略します。`ESTCONDSIMPLE' だと検索フレーズを簡便書式のものとして扱います。`ESTCONDROUGH' だと検索フレーズを粗略書式のものとして扱います。`ESTCONDUNION' だと検索フレーズを論理和書式（OR結合）のものとして扱います。`ESTCONDISECT' だと検索フレーズを論理積書式（AND結合）のものとして扱います。`ESTCONDSCFB' だとスコアをフィードバックします（デバッグ専用）。それぞれのオプションはビット和で同時に指定できます。N-gramのキーの検査が省略されればされるほど、検索速度は向上しますが、検索精度は低下します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに補助インデックスの結果を採用する許可を設定するには、関数 `est_cond_set_auxiliary' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_auxiliary(ESTCOND *<var>cond</var>, int <var>min</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`min' は補助インデックスが返す結果を採用するための下限該当件数を指定します。0を越えない値を指定すると、補助インデックスは使われません。デフォルトは32件です。</dd>
+</dl>
+
+<p>検索条件オブジェクトに類似隠蔽における下限類似度を設定するには、関数 `est_cond_set_eclipse' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_eclipse(ESTCOND *<var>cond</var>, double <var>limit</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`limit' は隠蔽される文書の下限の類似度を0.0から1.0までの値で指定しますが、`ESTECLSIMURL' を加算するとURLを重み付けに使うようになります。`ESTECLSERV' を指定すると類似度を無視して同じサーバの文書を隠蔽します。`ESTECLDIR' を指定すると類似度を無視して同じディレクトリの文書を隠蔽します。`ESTECLSERV' を指定すると類似度を無視して同じファイルの文書を隠蔽します。</dd>
+</dl>
+
+<p>検索条件オブジェクトに属性重複除去フィルタを設定するには、関数 `est_cond_set_distinct' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_distinct(ESTCOND *<var>cond</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`name' は値が重複してはならない属性の名前を指定します。このフィルタが設定された場合、検索結果の候補の中で重複する属性値を持つものは除外されます。</dd>
+</dl>
+
+<p>検索条件オブジェクトにメタ検索の対象のマスクを設定するには、関数 `est_cond_set_mask' を用います。</p>
+
+<dl>
+<dt><kbd>void est_cond_set_mask(ESTCOND *<var>cond</var>, int <var>mask</var>);</kbd></dt>
+<dd>`cond' は検索条件オブジェクトを指定します。`mask' は検索対象のマスクを指定します。1は1番目の対象、2は2番目の対象、4は3番目の対象といった2の累乗の値の合計で検索を抑止する対象を指定します。</dd>
+</dl>
+
+<hr />
+
+<h2 id="estdb">データベースを扱うAPI</h2>
+
+<p>ここでは、データベースを扱うためのAPIについて説明します。</p>
+
+<h3>機能</h3>
+
+<p>構造体型 `<code>ESTDB</code>' は、データベースの参照手段を抽象化したものです。データベースは、転置インデックスと書誌情報とメタデータを保持します。データベースに接続する際には、リーダ（読み込み専用）かライタ（読み書き両用）の2つのモードのどちらかを選択します。`<code>ESTDB</code>' の実体が直接参照されることはなく、必ずポインタを介して間接参照されます。このポインタおよびその参照先を総じて<strong>データベースオブジェクト</strong>と呼びます。データベースオブジェクトは関数 `<code>est_db_open</code>' によって生成され、`<code>est_db_close</code>' によって破棄されます。生成されたデータベースオブジェクトは必ず破棄してください。</p>
+
+<p>各種の操作によってデータベースに起きたエラーは、関数 `<code>est_db_error</code>' によって取得することができます。各エラーコードの意味は、エラーコードを関数 `<code>est_err_msg</code>' に渡して知ることもできます。</p>
+
+<p>データベースオブジェクトの典型的なライフサイクルを以下に示します。</p>
+
+<pre>
+ESTDB *db
+int ecode;
+
+/* ライタとして開く */
+if(!(db = est_db_open("casket", ESTDBWRITER | ESTDBCREAT, &amp;ecode))){
+  /* 失敗した場合、エラーメッセージを出して終了する */
+  fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+  return -1;
+}
+
+  /* ここで文書を登録したり、検索を行ったりする */
+
+/* データベースを閉じる */
+if(!est_db_close(db, &amp;ecode)){
+  /* 失敗した場合、エラーメッセージを出して終了する */
+  fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+  return -1;
+}
+</pre>
+
+<h3>API</h3>
+
+<p>エラーコードの値として以下の定数が定義されています。</p>
+
+<ul>
+<li><kbd>ESTENOERR</kbd> : エラーが起きていない。</li>
+<li><kbd>ESTEINVAL</kbd> : 引数が妥当でない。</li>
+<li><kbd>ESTEACCES</kbd> : アクセスが禁止されている。</li>
+<li><kbd>ESTELOCK</kbd> : ロックに失敗した。</li>
+<li><kbd>ESTEDB</kbd> : データベースに問題がある。</li>
+<li><kbd>ESTEIO</kbd> :	入出力に失敗した。</li>
+<li><kbd>ESTENOITEM</kbd> : 該当のアイテムがない。</li>
+<li><kbd>ESTEMISC</kbd> : その他のエラー。</li>
+</ul>
+
+<p>エラーコードに対応した文字列を取得するには、関数 `est_err_msg' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_err_msg(int <var>ecode</var>);</kbd></dt>
+<dd>`ecode' はエラーコードを指定します。戻り値はエラーコードに対応した文字列です。</dd>
+</dl>
+
+<p>データベースを開いてデータベースオブジェクトを生成するには、関数 `est_db_open' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDB *est_db_open(const char *<var>name</var>, int <var>omode</var>, int *<var>ecp</var>);</kbd></dt>
+<dd>`name' はデータベースのディレクトリ名を指定します。`omode' はオープンモードを指定します。`ESTDBWRITER' ならライタ（書き込みモード）で、`ESTDBREADER' ならリーダ（読み込みモード）です。ライタの場合、ビット和で次のものを指定できます。`ESTDBCREAT' ならデータベースが存在しない場合に新規に作成することを指示し、`ESTDBTRUNC' ならデータベースが既存だった場合にも新規に作りなおすことを指示します。リーダでもライタでも `ESTDBNOLCK' または `ESTDBLCKNB' をビット和で指定することができますが、前者はファイルロックをかけないでデータベースを開くことを指示し、後者はブロックせずにロックをかけることを指示します。その場合は排他制御の責任はアプリケーションが負います。`ESTDBCREAT' に `ESTDBPERFNG' をビット和で加えてデータベースを作成すると、欧文も完全なN-gram法で処理されるようになります。`ESTDBCREAT' に `ESTDBCHRCAT' をビット和で加えてデータベースを作成すると、N-gram法の代わりに文字分類法が解析に用いられます。`ESTDBCREAT' に `ESTDBSMALL' をビット和で加えてデータベースを作成すると50000件未満の文書を登録することを想定してインデックスがチューニングされ、`ESTDBLARGE' をビット和で加えてデータベースを作成すると300000件以上の文書を登録することを想定してインデックスがチューニングされ、`ESTDBHUGE' をビット和で加えてデータベースを作成すると1000000件以上の文書を登録することを想定してインデックスがチューニングされ、`ESTDBHUGE2' をビット和で加えてデータベースを作成すると5000000件以上の文書を登録することを想定してインデックスがチューニングされ、`ESTDBHUGE3' をビット和で加えてデータベースを作成すると10000000件以上の文書を登録することを想定してインデックスがチューニングされ、`ESTDBSCVOID' をビット和で加えてデータベースを作成するとスコア情報を破棄するようになり、`ESTDBSCINT' をビット和で加えてデータベースを作成するとスコア情報を32ビットの数値として記録するようになり、`ESTDBSCASIS' をビット和で加えてデータベースを作成するとスコア情報をそのまま保存した上で検索時に調整されないようにマークします。`ecp' はエラーコードを格納する変数へのポインタを指定します。戻り値はデータベースオブジェクトか、エラーの場合は `NULL' です。</dd>
+</dl>
+
+<p>データベースを閉じてデータベースオブジェクトを破棄するには、関数 `est_db_close' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_close(ESTDB *<var>db</var>, int *<var>ecp</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`ecp' はエラーコードを格納する変数へのポインタを指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>データベースに直前に起きたエラーコードを取得するには、関数 `est_db_error' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_error(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースに直前に起きたエラーコードです。</dd>
+</dl>
+
+<p>データベースに致命的エラーがあったかどうか検査するには、関数 `est_db_fatal' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_fatal(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースに致命的エラーがあれば真、そうでなければ偽です。</dd>
+</dl>
+
+<p>データベースに属性の絞り込み用またはソート用のインデックスを加えるには、関数 `est_db_add_attr_index' を用いる。</p>
+
+<dl>
+<dt><kbd>int est_db_add_attr_index(ESTDB *<var>db</var>, const char *<var>name</var>, int <var>type</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`name' は対象となる属性の名前を指定します。`type' はインデックスのデータ型を指定します。`ESTIDXATTRSEQ' なら多目的のシーケンシャルアクセス用になり、`ESTIDXATTRSTR' なら文字列の絞り込み用になり、`ESTIDXATTRNUM' なら数値型の絞り込み用になります。戻り値は成功なら真、エラーなら偽です。この関数はどの文書を登録するよりも前に呼ぶ必要があります。</dd>
+</dl>
+
+<p>データベースのキャッシュ内の索引語をフラッシュするには、関数 `est_db_flush' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_flush(ESTDB *<var>db</var>, int <var>max</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`max' はフラッシュする語の最大数を指定しますが、0以下ならば全ての索引語がフラッシュされます。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>データベースの更新内容を同期させるには、関数 `est_db_sync' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_sync(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>データベースを最適化するには、関数 `est_db_optimize' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_optimize(ESTDB *<var>db</var>, int <var>options</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`options' はオプションを指定します。`ESTOPTNOPURGE' は削除された文書の情報を消去する処理を省略することを指示し、`ESTOPTNODBOPT' はデータベースファイルの最適化を省略することを指示します。オプションはビット和で同時に指定できます。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>別のデータベースをマージするには、関数 `est_db_merge' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_merge(ESTDB *<var>db</var>, const char *<var>name</var>, int <var>options</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`name' は別のデータベースのディレクトリ名を指定します。`options' はオプションを指定します。`ESTODCLEAN' は削除された文書の領域を整理することを指示します。戻り値は成功なら真、エラーなら偽です。双方のデータベースを作成した際のオプションは完全に同一である必要があります。取り込んだ文書のURLが既存の文書のURLと同じ場合は、既存の文書は削除されます。</dd>
+</dl>
+
+<p>データベースに文書を追加するには、関数 `est_db_put_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_put_doc(ESTDB *<var>db</var>, ESTDOC *<var>doc</var>, int <var>options</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`doc' は文書オブジェクトを指定します。文書オブジェクトはURI属性を持っていなければなりません。`options' はオプションを指定します。`ESTPDCLEAN' は上書きされた文書の領域を整理することを指示し、`ESTPDWEIGHT' はインデクシングの際に重み付け属性を静的に適用することを指示します。戻り値は成功なら真、エラーなら偽です。指定された文書オブジェクトのURI属性がデータベース内の既存の文書と一致する場合、既存の方は削除されます。</dd>
+</dl>
+
+<p>データベースから文書を削除するには、関数 `est_db_out_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_out_doc(ESTDB *<var>db</var>, int <var>id</var>, int <var>options</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`id' は登録文書のID番号を指定します。`options' はオプションを指定します。`ESTODCLEAN' は削除された文書の領域を整理することを指示します。戻り値は成功なら真、エラーなら偽です。</dd>
+</dl>
+
+<p>データベース内の文書の属性を編集するには、関数 `est_db_edit_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_edit_doc(ESTDB *<var>db</var>, ESTDOC *<var>doc</var>);</kbd></dt>
+<dd>`db' はライタとして接続したデータベースオブジェクトを指定します。`id' は登録文書のID番号を指定します。`doc' は文書オブジェクトを指定します。戻り値は成功なら真、エラーなら偽です。ID属性を変更することはできません。変更したURI属性が他の登録文書と重なる場合はエラーとなります。</dd>
+</dl>
+
+<p>データベースから文書を取得するには、関数 `est_db_get_doc' を用います。</p>
+
+<dl>
+<dt><kbd>ESTDOC *est_db_get_doc(ESTDB *<var>db</var>, int <var>id</var>, int <var>options</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`id' は登録文書のID番号を指定します。`options' はオプションを指定します。`ESTGDNOATTR' は属性を取得しないことを指示し、`ESTGDNOTEXT' は本文を取得しないことを指示し、`ESTGDNOKWD' はキーワードを取得しないことを指示します。オプションはビット和で同時に指定できます。戻り値は文書オブジェクトか、エラーなら `NULL' です。戻り値のオブジェクトは `est_doc_new' で生成されているので、不要になったら `est_doc_delete' で破棄してください。</dd>
+</dl>
+
+<p>データベースから文書の属性を取得するには、関数 `est_db_get_doc_attr' を用います。</p>
+
+<dl>
+<dt><kbd>char *est_db_get_doc_attr(ESTDB *<var>db</var>, int <var>id</var>, const char *<var>name</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`id' は登録文書のID番号を指定します。`name' は属性名を指定します。戻り値は属性値ですが、該当する文書か属性がない場合は `NULL' が返されます。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>URIに対応する文書のID番号を取得するには、関数 `est_db_uri_to_id' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_uri_to_id(ESTDB *<var>db</var>, const char *<var>uri</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`uri' は登録文書のURIを指定します。戻り値は文書のID番号であるか、エラーなら-1です。</dd>
+</dl>
+
+<p>データベースの名前を取得するには、関数 `est_db_name' を用います。</p>
+
+<dl>
+<dt><kbd>const char *est_db_name(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースの名前です。戻り値の文字列の寿命はデータベースオブジェクトのそれと同期します。</dd>
+</dl>
+
+<p>データベースに登録された文書の数を取得するには、関数 `est_db_doc_num' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_doc_num(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースに登録された文書の数です。</dd>
+</dl>
+
+<p>データベースに登録された異なり語の数を取得するには、関数 `est_db_word_num' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_word_num(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースに登録された異なり語の数です。</dd>
+</dl>
+
+<p>データベースのサイズを取得するには、関数 `est_db_size' を用います。</p>
+
+<dl>
+<dt><kbd>double est_db_size(ESTDB *<var>db</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。戻り値はデータベースのサイズです。</dd>
+</dl>
+
+<p>検索条件に該当する文書の一覧を取得するには、関数 `est_db_search' を用います。</p>
+
+<dl>
+<dt><kbd>int *est_db_search(ESTDB *<var>db</var>, ESTCOND *<var>cond</var>, int *<var>nump</var>, CBMAP *<var>hints</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`cond' は検索条件オブジェクトを指定します。`nump' は戻り値の配列の要素数を格納する変数へのポインタです。`hints' は各検索語に該当する文書数を格納するマップオブジェクトを指定しますが、`NULL' なら無視されます。否定条件の中の語の該当数は負数になります。マップ内の空文字列のキーには全体の該当数が関連づけられます。戻り値は該当した文書のIDを格納した配列です。この関数は決してエラーになりません。もし該当する文書がない場合にも、空の配列が返されます。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>複数のデータベースを検索して検索条件に該当する文書の一覧を取得するには、関数 `est_db_search_meta' を用います。</p>
+
+<dl>
+<dt><kbd>int *est_db_search_meta(ESTDB **<var>dbs</var>, int <var>dbnum</var>, ESTCOND *<var>cond</var>, int *<var>nump</var>, CBMAP *<var>hints</var>);</kbd></dt>
+<dd>`dbs' はデータベースオブジェクトを要素とした配列を指定します。`dbnum' はその配列の要素数を指定します。`cond' は検索条件オブジェクトを指定します。`nump' は戻り値の配列の要素数を格納する変数へのポインタです。`hints' は各検索語に該当する文書数を格納するマップオブジェクトを指定しますが、`NULL' なら無視されます。否定条件の中の語の該当数は負数になります。マップ内の空文字列のキーには全体の該当数が関連づけられます。戻り値は該当した文書を格納したデータベースのインデックスと文書IDを交互に要素とする配列です。この関数は決してエラーになりません。もし該当する文書がない場合にも、空の配列が返されます。戻り値の領域は `malloc' で生成されているので、不要になったら `free' で破棄してください。</dd>
+</dl>
+
+<p>文書が検索条件のフレーズに完全に一致するか調べるには、関数 `est_db_scan_doc' を用います。</p>
+
+<dl>
+<dt><kbd>int est_db_scan_doc(ESTDB *<var>db</var>, ESTDOC *<var>doc</var>, ESTCOND *<var>cond</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`doc' は文書オブジェクトを指定します。`cond' は検索条件オブジェクトを指定します。戻り値は、文書が検索条件のフレーズに完全に一致するなら真、そうでなければ偽です。</dd>
+</dl>
+
+<p>データベースのキャッシュメモリの最大サイズを指定するには、関数 `est_db_set_cache_size' を用います。</p>
+
+<dl>
+<dt><kbd>void est_db_set_cache_size(ESTDB *<var>db</var>, size_t <var>size</var>, int <var>anum</var>, int <var>tnum</var>, int <var>rnum</var>);</kbd></dt>
+<dd>`db' はデータベースオブジェクトを指定します。`size' はインデックス用のキャッシュメモリの最大サイズを指定します。デフォルトは64MBです。負数を指定すると、現状の設定を変更しません。`anum' は文書の属性用のキャッシュのレコード数を指定します。デフォルトは8192個です。負数を指定すると、現状の設定を変更しません。`tnum' は文書のテキスト用のキャッシュのレコード数を指定します。デフォルトは1024個です。負数を指定すると、現状の設定を変更しません。`rnum' は出現結果用のキャッシュのレコード数を指定します。デフォルトは256個です。負数を指定すると、現状の設定を変更しません。</dd>
+</dl>
+
+<hr />
+
+<h2 id="gatherer">ギャザラのサンプル</h2>
+
+<p>最も単純なギャザラの実装を以下に示します。全文検索システムがこんなに短いコードで実現できるなんて、便利な世の中になったものです。</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTDB *db;
+  ESTDOC *doc;
+  int ecode;
+
+  /* データベースを開く */
+  if(!(db = est_db_open("casket", ESTDBWRITER | ESTDBCREAT, &amp;ecode))){
+    fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+    return 1;
+  }
+
+  /* 文書オブジェクトを生成する */
+  doc = est_doc_new();
+
+  /* 文書オブジェクトに属性を追加する */
+  est_doc_add_attr(doc, "@uri", "http://estraier.gov/example.txt");
+  est_doc_add_attr(doc, "@title", "Over the Rainbow");
+
+  /* 文書オブジェクトに本文を追加する */
+  est_doc_add_text(doc, "Somewhere over the rainbow.  Way up high.");
+  est_doc_add_text(doc, "There's a land that I heard of once in a lullaby.");
+
+  /* 文書オブジェクトをデータベースに登録する */
+  if(!est_db_put_doc(db, doc, ESTPDCLEAN))
+    fprintf(stderr, "error: %s\n", est_err_msg(est_db_error(db)));
+
+  /* 文書オブジェクトを破棄する */
+  est_doc_delete(doc);
+
+  /* データベースを閉じる */
+  if(!est_db_close(db, &amp;ecode)){
+    fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+    return 1;
+  }
+
+  return 0;
+}
+</pre>
+
+<p>コアAPIでは、データベースの概念が重要になります。転置インデックスや登録文書などのデータを参照するための手段を抽象化したものです。データベースを開く際には、読み込みモードか書き込みモードを指定します。いずれにしても、開いたデータベースは必ず閉じてください。特に書き込みモードの場合、適切にデータベースを閉じないとデータベースが壊れてしまいます。</p>
+
+<p>データベースオブジェクトに限らず、Hyper Estraierにおける大抵のオブジェクトは、生成するための関数と破棄するための関数を備えています。生成したオブジェクトは必ず破棄してください。そうしないとメモリリークになります。</p>
+
+<p><code>est_db_open</code>はデータベースを開く関数です。第1引数はデータベースの名前を指定しています。第2引数はオープンモードです。<code>ESTDBWRITER</code>は書き込みモードであることを意味し、<code>ESTDBCREAT</code>はデータベースが存在しない場合に新しく作成することを意味します。第3引数はエラーコードを受け取る変数へのポインタを指定します。戻り値はデータベースオブジェクトですが、エラーがあった場合は<code>NULL</code>です。データベースを閉じるには、<code>est_db_close</code>関数を使います。</p>
+
+<p>この例では、エラーが起きた際にはエラーメッセージを出力しています。データベースを開いたり閉じたりする関数ではエラーコードを受け取る変数へのポインタを引数で指定し、その他の関数でエラーが起きた場合にはデータベースオブジェクトの中にエラーコードがセットされます。その値は<code>est_db_error</code>という関数を使って取得できます。<code>est_err_msg</code>という関数を使うとエラーコードに対応する文字列を取得できます。</p>
+
+<p>文書オブジェクトは、各種の文書を抽象化したものです。文書オブジェクトには属性と本文を登録できます。この例ではそれらを文字列定数で指定していますが、実際のアプリケーションでは、ファイルを読むなどして取得したデータを指定することでしょう。<code>est_doc_new</code>は文書オブジェクトを作り、<code>est_doc_add_attr</code>は属性を追加し、<code>est_doc_add_text</code>は本文を追加し、<code>est_doc_delete</code>は文書オブジェクトを破棄する関数です。文書の属性、本文とも文字コードはUTF-8にしてください。</p>
+
+<p>文書オブジェクトを作ったら、それを<code>est_db_put_doc</code>関数に渡して登録します。登録する文書は必ずURI属性（"@uri"）を備えている必要があります。そうでない場合はエラーになります。また、既に登録してある文書のURIと重複した場合は、上書き（既存の文書が削除）されます。ここでは、削除された領域を整理するために、オプションで<code>ESTPDCLEAN</code>を指示しています。</p>
+
+<hr />
+
+<h2 id="searcher">サーチャのサンプル</h2>
+
+<p>最も単純なサーチャの実装を以下に示します。サーチャはギャザラに比べると少し長いですが、やっていることはそれほど難しくはありません。</p>
+
+<pre>#include &lt;estraier.h&gt;
+#include &lt;cabin.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+  ESTDB *db;
+  ESTCOND *cond;
+  ESTDOC *doc;
+  const CBLIST *texts;
+  int ecode, *result, resnum, i, j;
+  const char *value;
+
+  /* データベースを開く */
+  if(!(db = est_db_open("casket", ESTDBREADER, &amp;ecode))){
+    fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+    return 1;
+  }
+
+  /* 検索条件オブジェクトを生成する */
+  cond = est_cond_new();
+
+  /* 検索条件オブジェクトに検索式を設定する */
+  est_cond_set_phrase(cond, "rainbow AND lullaby");
+
+  /* データベースから検索結果を得る */
+  result = est_db_search(db, cond, &amp;resnum, NULL);
+
+  /* 各該当文書を取得して表示する */
+  for(i = 0; i &lt; resnum; i++){
+
+    /* 文書オブジェクトを取得する */
+    if(!(doc = est_db_get_doc(db, result[i], 0))) continue;
+
+    /* 属性を表示する */
+    if((value = est_doc_attr(doc, "@uri")) != NULL)
+      printf("URI: %s\n", value);
+    if((value = est_doc_attr(doc, "@title")) != NULL)
+      printf("Title: %s\n", value);
+
+    /* 本文を表示する */
+    texts = est_doc_texts(doc);
+    for(j = 0; j &lt; cblistnum(texts); j++){
+      value = cblistval(texts, j, NULL);
+      printf("%s\n", value);
+    }
+
+    /* 文書オブジェクトを破棄する */
+    est_doc_delete(doc);
+
+  }
+
+  /* 検索結果を破棄する */
+  free(result);
+
+  /* 検索条件オブジェクトを破棄する */
+  est_cond_delete(cond);
+
+  /* データベースを閉じる */
+  if(!est_db_close(db, &amp;ecode)){
+    fprintf(stderr, "error: %s\n", est_err_msg(ecode));
+    return 1;
+  }
+
+  return 0;
+}
+</pre>
+
+<p>ヘッダのインクルードやデータベースの開閉についてはギャザラと同じです。ただし、サーチャの場合、データベースは読み込みモードで開きます。書き込みモードでも検索はできるのですが、読み込みモードの場合は、プロセスがクラッシュしてもデータベースが壊れないという利点と、複数のプロセスが同時にデータベースを開けるという利点があります。</p>
+
+<p>検索を行う前に、検索条件を抽象化した検索条件オブジェクトを準備します。<code>est_cond_new</code>で生成して、<code>est_cond_set_phrase</code>で検索式を指定して、使いおわったら<code>est_cond_delete</code>で破棄します。</p>
+
+<p>検索条件オブジェクトを渡して<code>est_db_search</code>関数を呼ぶことで、条件に該当する文書のIDの配列を得ることができます。配列の要素数は第3引数のポインタが指す変数に格納されます。第4引数は今は気にしないでください。</p>
+
+<p>検索結果が得られたら、あとはそれに含まれる個々の文書を取り出してから表示します。<code>est_db_get_doc</code>はIDに対応した文書オブジェクトを取り出す関数です。既に削除した文書がヒットすることもあるので、その場合には<code>NULL</code>が返されます。<code>NULL</code>の場合は単に無視して次の周回に進みます。<code>est_doc_get_attr</code>は属性を取得する関数です。<code>est_doc_get_texts</code>は本文のリストを取得する関数です。この関数の戻り値は、QDBMのcabin.hが提供するリストオブジェクトです。<code>cblistnum</code>関数で要素の数を得たり、<code>cblistval</code>関数で特定の番号の要素を取り出すことができます。この例では、取り出した属性や本文の値をそのまま画面に出力しています。</p>
+
+<hr />
+
+<h2 id="paralleling">並列性</h2>
+
+<p>Hyper Estraierのデータベースは、ファイルロックによって保護されます。読み込みモードで接続された場合は共有ロックがかかり、書き込みモードで接続された場合は排他ロックがかかります。したがって、読み込みモード同士であれば複数のプロセスが同じデータベースを同時に開くことができますが、書き込みモードで接続できるのは一つのデータベースに対して一つのプロセスだけです。読み込みモードの場合、複数のプロセスが同一のデータベースを開くだけでなく、読み込みモードでデータベースを開いたプロセスを<code>fork</code>させることもできます。</p>
+
+<p>書き込みモードであっても読み込みモードであっても、同一プロセス内で同一のデータベースに対する複数のコネクションを生成することはできません。マルチスレッドのプログラムにおいて複数のスレッドでデータベースを処理したい場合は、スレッド間でコネクションを共有するようにしてください。なお、コアAPIの各関数はリエントラントですが、コネクションはマルチスレッドセーフではありませんので、mutexで各コネクションを保護するようにしてください。</p>
+
+<p>コネクションを自分で保護するのが面倒な場合は、Hyper EstraierのスレッドAPIを使うとよいでしょう。コアAPIのデータベース管理機能をマルチスレッドセーフにしたものです。スレッドAPIはコアAPIと全く同じ機能を提供しますが、以下の点が異なります。なお、データベース関連以外の機能（ESTDOCとESTCOND）はコアAPIとスレッドAPIで共通です。</p>
+
+<ul>
+<li>estraier.hだけでなくestmtdb.hもインクルードする。</li>
+<li>`ESTDB' へのポインタではなく `ESTMTDB' へのポインタをコネクションとして利用する。</li>
+<li>関数名の接頭辞が「est_db_」でなく「est_mtdb_」である。</li>
+</ul>
+
+<p>基本的にはスレッドAPIはコネクションに対する排他制御をグローバルに行いますが、QDBMをビルドする際に「<code>--enable-pthread</code>」をつけてスレッド対応にさせていた場合は、コネクション単位で排他制御が行われます。どちらでも動作に支障はありませんが、QDBMがスレッド対応している方が並列性は大幅に向上します。</p>
+
+<hr />
+
+<h2 id="tips">助言</h2>
+
+<p>ここでは、ライブラリとしてのHyper Estraierを活用するためのコツをいくつか紹介します。</p>
+
+<h3>CGIスクリプトでの利用</h3>
+
+<p>Webインターフェイスの検索アプリケーションをCGIスクリプトとして実装することも多いかと思います。そこで注意してほしいのは、書き込みモードでデータベースを開いてはならないということです。</p>
+
+<p>CGIのプロセスは、呼び出し側のサーバによっていつ殺されるかわかりません。データの転送中にネットワークが切断された場合（ユーザが停止ボタンを押した場合）には、SIGPIPEによって殺される可能性があります。サーバが停止または再起動する場合、SIGTERMによって殺される可能性があります。プロセスサイズの制限や実行時間の制限に触れたことよってSIGKILLで殺される可能性もあります。</p>
+
+<p>そのような不慮の停止の際に書き込みモードでデータベースを開いていた場合、データベースが壊れてしまいます。したがって、CGIスクリプトは更新処理には不向きです。それでも敢えてCGIで更新作業を行うならば、必ずバックアップを取りながら運用するようにしてください。</p>
+
+<h3>検索サーバ</h3>
+
+<p>コマンドラインインターフェイスでもWebインターフェイスでも、検索要求を処理する度にデータベースを開いたり閉じたりするのは非効率です（<code>estcmd</code>や<code>estseek.cgi</code>ではそうしていますが）。データベースに接続する際にはそれなりのオーバーヘッドがかかるので、同時接続数が増えると負荷が高まり、ひいては検索速度の低下を招きます。したがって、なるべくなら、常駐型のプロセスを実装して、データベースのコネクションを使いまわすようにしてください。それが面倒ならば、ノードAPIの利用を検討してみるのもよいでしょう。</p>
+
+<h3>裏API</h3>
+
+<p>実は、このガイドで紹介した以外にも関数がたくさん提供されています。それらはちょっと使い方が難しい、いわばハッカー用のAPIです。興味を持たれた方は、<code>estraier.h</code>を覗いてみてください。</p>
+
+<h3>ミニライブラリ</h3>
+
+<p><code>libestraier.a</code>はPOSIXスレッドに依存する構成になっています。一方で、組み込み系ではPOSIXスレッドが実装されていないこともあります。コアAPIはスレッドの機能を一切使っていませんので、そういった環境にも移植することができます。「<code>make corelib</code>」を実行すると、コアAPIのオブジェクトファイル（estraier.oとmyconf.o）のみを含んだライブラリである<code>libestcore.a</code>が生成されます。<code>libestcore.a</code>は<code>libiconv.a</code>と<code>libz.a</code>と<code>libm.a</code>と<code>libc.a</code>に依存するのみですので、多くの環境で利用することができるでしょう。</p>
+
+<h3>言語バインディング</h3>
+
+<p>C言語以外のプログラミング言語からHyper Estraierを使うためのバインディングを作るプロジェクトも進行中です。あなたが新たな言語のバインディングを作ってくれるのも歓迎します。その際には、<code>estraier.idl</code>ファイルに記述してあるインターフェイスを参考にしてください。各種のバインディングのインターフェイスはなるべく似ている方が覚えやすいですよね。</p>
+
+<p>現状ではHyper EstraierのソースパッケージにはJavaとRubyとPerlの言語バインディングが収録されていますが、それらはC言語のスレッドAPIをベースとして実装されています。したがって、並列性の性質はスレッドAPIと同様になります。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

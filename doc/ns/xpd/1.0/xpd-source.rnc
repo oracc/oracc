@@ -1,0 +1,929 @@
+# xpd-source.rnc: DO NOT EDIT THE RNG VERSION OF THIS FILE.
+#
+# This schema is both the definition of the project configuration
+# file, typically 00lib/config.xml, and is used as the source for 
+# the XForms configuration editor.  The documentation in the
+# schema documentation below is carried over into the Xforms to
+# create a self-documenting configuration editor.
+#
+# The schema is annotated according to the rules in the Annotations
+# section of the RNC compact tutorial.  See, for example:
+#
+#  http://relaxng.org/compact-tutorial-20030326.html#annotations
+#
+# The following rules must be observed:
+#
+#   - definitions that are used in the content model of `project'
+#     must be immediately before the documentation of the module
+#   - documentation of groups must be immmediately before the
+#     module name line
+#   - documentation to go in the help panel must come immediately
+#     before the element definition
+#   - documentation of attributes must be immediately before the
+#     attributes
+#   - documentation of attribute values must be immediately before
+#     the value, unless the value is the default, in which case:
+#   - [ d:default="1" ] should be placed between the documentation
+#     comment and the value
+#
+
+default namespace = "http://oracc.org/ns/xpd/1.0"
+namespace xpd = "http://oracc.org/ns/xpd/1.0"
+namespace d = "http://oracc.org/ns/d"
+namespace m = "http://oracc.org/ns/m"
+
+start = project
+
+# textarea needs to be a control which allows adding multiple
+# paras but for now it's just one
+textarea = text
+# p = element p { text }
+
+project = element project { 
+## The basic name of the project as used in directories and filenames.
+	core , (build & atf & cbd & pager & render & outline & views & undocumented) }
+
+core = n , name , abbrev , type , logo , public , blurb , image , alt , url?
+
+## required for all projects.
+[ m:name = "core" ]
+div {
+
+  n = 
+    ## The basename of the project as used in directories, e.g., epsd.
+    ## For subprojects this includes the parent projects separated by
+    ## slashes, e.g., epsd/late. This parameter is set when the project
+    ## is created and cannot be altered without consultation with your
+    ## project liaison.
+    element n { 
+       ## The project basename, e.g., epsd.
+       xsd:NCName 
+    }
+
+
+  name = 
+    ## The full name of the project is not restricted in the same way as
+    ## the abbreviated name and the project name itself.
+    element name { 
+       ## The long human-readable name of the project, 
+       ## e.g., electronic Pennsylvania Sumerian Dictionary
+       text 
+    }
+
+  abbrev = 
+    ## The abbreviation for the project should be a single word, which can
+    ## mix case, like ePSD.
+    element abbrev { 
+       ## The short human-readable name of the project, e.g., ePSD.
+       xsd:NCName 
+    }
+
+  type = 
+    ## Oracc recognizes several different project types which affect things
+    ## like how the default home page is constructed, and how the pager
+    ## formats a browsable view of the project data.  This parameter is 
+    ## set when the project is created and cannot be altered without 
+    ## consultation with your project liaison.
+    element type {
+       ## project is primarily a corpus
+       [ d:default="1" ]
+       "corpus" | 
+       ## project is primarily a glossary
+       "glossary" | 
+       ## project is a portal providing only content-pages
+       "portal" | 
+       ## project is primarily a signlist
+       "signlist" 
+    }
+
+  logo =
+    element logo { 
+       ## The logo to display in the top left corner of the page
+       text 
+    }
+
+  public =
+    ##  This parameter cannot be altered without consultation with your
+    ## project liaison.
+    element public { 
+       ## Make the project public and include it in Oracc search, etc. 
+       xsd:boolean 
+    }
+
+  blurb =
+## You have 40 words, about 300 characters including spaces, to give
+## the most interesting and relevant information about your project,
+## which is used in the Oracc project list and in the Featured Project
+## on the Oracc home page.
+##
+## You do not need to repeat the title and abbreviation, because that
+## is already in the heading. You may include links in the blurb--they
+## do not count against your word or character limit.
+##  
+## If you want split your blurb into two or more paragraphs, each
+## paragraph must start with a <p> tag and end with a </p> tag.  
+    element blurb { 
+       ## Short description for the Featured Project panel
+       textarea 
+    }
+
+  image =
+## This image accompanies the blurb. It is always scaled to 320 x 240
+## pixels (i.e., a 4:3 ratio), so should be chosen with this
+## constraint in mind. It does not need to be an image that is used
+## elsewhere in the project, but it must be placed in the 00web/images
+## directory.
+##
+## Please scale your images so that they are a reasonable size: images
+## over 100K in size will be rejected by the system. The best format
+## is .png, but .jpg files are also acceptable.
+##
+## PLEASE TRY NOT TO USE PICTURES OF TABLETS! For some projects, that
+## may be inevitable, but since we have so many pictures of tablets in
+## so many places, it is more interesting to promote your project with
+## a scene of relevance either to the context of the work you are
+## doing or to the content of the tablets. If you do use a tablet
+## image, please choose a relevant section of a relevant text, and
+## present something that is meaningful to those able to read it. The
+## section presented should be scaled and processed so that it is
+## clearly readable online.
+    element image { 
+       ## A 4:3 ratio image for the Featured Project panel
+       xsd:anyURI 
+    }
+
+  alt = 
+    ## When the image is displayed online it is accompanied by
+    ## a short description which is used by browsers which do not
+    ## display the image.  This alternative text is required.
+
+  ## The text should be brief but descriptive--the project 
+  ## list has a number of examples of good practice.  In general, 
+  ## the image content, its provenance and date are a good starting 
+  ## point.
+    element image-alt { 
+       ## Brief description of image for the 'alt' attribute
+       text 
+    }
+
+      url =
+## Projects may be integrated on the Oracc server or they may be
+## separated, with the portal content on another server and only 
+## the corpus on the Oracc server.  For the latter type of project, 
+## this element gives the address of the portal-server.
+         element url { 
+           ## URL of externally hosted portal page (if any)
+            xsd:anyURI
+         }
+}
+
+build = ( approved.lst & outlined.lst
+ 	  & catalog 
+ 	  & TEI & TEI.list & TEI.dist & TEI.trim
+   	  & ignore.bad.proxy )*
+## affects the project rebuilding process.
+[ m:name = "build" ]
+div {
+   [ m:name = "lists" ]
+   div {
+      approved.lst = 
+## The automatically generated file 00lib/approved.lst gives 
+## all the texts which are considered part of the project. 
+## You can choose how that list is made: 
+##
+## (a) "atf" harvests p-numbers and q-numbers from the ATF 
+## files in 00atf/ ; 
+##
+## (b) "catalog" takes all the p- and q-numbers from the 
+## project's catalogue (if it has one); 
+##
+## (c) "mixed" finds all the p- and q-numbers that are in 
+## the ATF files and/or the catalogue (but you will have to make
+## deletions manually);
+##
+## (d) "static" makes no changes to 00lib/approved.lst 
+## (which you will have to edit by hand if you want to change it);
+## 
+## (e) "umbrella" generates 00lib/approved.lst from all the
+## approved.lst's in the project's subprojects.
+         element option { 
+            attribute name { "build-approved-policy" }, 
+            ## controls how 00lib/approved.lst is built
+            attribute value {
+               ## list is derived from project's ATF sources
+               [ d:default="1" ]
+               "atf" | 
+               ## list is derived from project catalogs
+               "catalog" | 
+               ## list combined ATF sources and existing approved.lst
+               "mixed" |
+               ## list is never changed by a program
+               "static" |
+               ## list is generated from subprojects
+               "umbrella"
+    	    }
+         }
+      outlined.lst = 
+## The file 00lib/outlined.lst defines the texts in 00lib/approved.lst
+## which are displayed by the pager. The options are: 
+## (a) "approved" displays all the texts in approved.lst; 
+## (b) "atf" displays only the texts in approved.lst which already have 
+## ATF files; 
+## (c) "P" displays only the texts in approved.list that have p-numbers 
+## and x-numbers  (i.e., the mss or tablets); 
+## (d) "Q" only the texts in approved.list that have q-numbers (i.e., 
+## the composite texts); and 
+## (e) "static" means that you will need to manually edit 
+## 00lib/outlined.lst in order to change it. 
+##
+## You can control whether or not the pager actually uses 
+## 00lib/outlined.lst with the option pager-outlined-lst on the Pager
+## tab.
+         element option { 
+            attribute name { "build-outlined-policy" }, 
+            ## controls how 00lib/outlined.lst is built
+            attribute value {
+               ## outline gives the texts in approved.lst
+               [ d:default="1" ]
+               "approved" | 
+               ## outline gives all texts for which project has ATF source
+               "atf" |
+               ## outline gives all P-id and X-id texts in approved.lst
+               "P" | 
+               ## outline gives all Q-id texts in approved.lst
+               "Q" |
+               ## list is never changed by a program
+               "static" 
+    	    }
+         
+   }
+   [ m:name = "formats" ]
+   div {
+      catalog =
+##  Catalog options control the source of your project's metadata.
+##
+##  The default is "auto", which takes data from the CDLI main 
+## catalogue as installed on Oracc. This is the recommended approach, 
+## since it encourages corrections to be propagated directly back to 
+## the CDLI catalogue.
+##
+## If you use your own version of the CDLI catalogue with the same 
+## fields, then set the value to "local". 
+## 
+## If your corpus is composed entirely of texts from (an)other project(s),
+## e.g., by proxying or as an umbrella, set the value to "virtual". The
+## catalogue data will then be drawn from those other projects.
+##
+## If, unusually, your project has a customised catalogue, set the 
+## value to "custom".
+##
+## If you use a custom xml catalogue the catalogue configuration is 
+## more complicated and is not documented here. (Briefly, it is handled
+## by a file called 00lib/keydata.xml.) If you do need a custom 
+## catalogue, please consult your project liaison about configuration 
+## options.
+
+         element option { 
+            attribute name { "catalog-build-policy" }, 
+            ## controls how catalogue is built
+            attribute value {
+               ## data comes from CDLI main catalogue
+               [ d:default="1" ]
+               "auto" | 
+               ## project maintains its own catalogue in CDLI format
+               "local" | 
+               ## project does not maintain its own catalogue
+               "virtual" |
+               ## project maintains its own catalogue in its own format
+               "custom" 
+    	    }
+         }
+     ignore.bad.proxy = 
+         ## The default is "no".
+         ##
+         ## This option suppresses warnings about items in 00lib/proxy.lst
+         ## when you rebuild the project.
+         ## Set this option to "yes" if you can account for those warnings, 
+         ## for instance if your proxy.lst contains texts that have not yet
+         ## been edited.
+         element option { 
+            attribute name { "build-ignore-bad-proxy" }, 
+            ## ignore error messages about proxy.lst
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+      TEI = 
+         ## The default is "no".
+         ##
+         ## If you set it to "yes:, a TEI version of the project 
+         ## is created. See the TEI page for more information.
+         element option { 
+            attribute name { "build-tei" }, 
+            ## build TEI version of project
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+      TEI.list = 
+      ## This options sets which texts in a project are included 
+      ## in the TEI version. There are three options:
+      ##
+      ## (a) "atf" includes all the project's ATF files in the TEI 
+      ## version.
+      ##
+      ## (b) "lem" includes only the project's lemmatised ATF files.
+      ##
+      ## (c) approved.lst includes all the texts listed in the file
+      ## 00lib/approved.lst (which are set using the approved.lst
+      ## option above).
+
+         element option { 
+            attribute name { "build-tei-list" }, 
+            ## control which files are converted to TEI
+            attribute value {
+               ## all ATF files
+               [ d:default="1" ]
+               "atf" | 
+               ## only lemmatized files
+               "lem" |
+               ## all files list in approved.lst
+               "approved" 
+    	    }
+         }
+      TEI.dist = 
+         ## When you select this option, every time you rebuild the 
+      ## project a zipped version of the TEI corpus is also created,
+         ## which can be downloaded from your project's url/downloads/teiCorpus.zip.
+         element option { 
+            attribute name { "build-tei-dist" }, 
+            ## build TEI distribution
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+      TEI.trim = 
+         ## By selecting this option you ensure that only the 
+      ## glossary data relating to your TEI corpus are included in 
+      ## the TEI distribution. This is particularly useful if you 
+      ## have set your TEI corpus to be a subset of your project's
+      ## corpus.
+         element option { 
+            attribute name { "build-tei-trim" }, 
+            ## trim TEI distribution
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+            }
+  }
+
+}
+atf = (lem-extended & cuneify-notices & lem-dsa & lem-nsa & lem-psa)
+## controls ATF processor behaviour.
+[ m:name = "atf" m:tab = "ATF processor" ]
+div {
+   lem-extended =
+## If this option is set to "yes" then the lemmatizer operates in 
+## extended mode.  This is presently only applicable to Sumerian, 
+## where it involves calling the morphological analyzer.    
+       element option { 
+         attribute name { "atf-lem-extended" }, 
+         ## switches extended lemmatising mode on or off
+          [ d:default="false" ]
+         attribute value { xsd:boolean }
+      }
+
+   lem-dsa =
+## This option controls whether the Date System Analyser is
+## run when texts are lemmatized and analysed.  The DSA is 
+## functional but developmental.  The default is "no".
+       element option { 
+         attribute name { "atf-lem-dsa" }, 
+         ## switches the Date System Analyser on or off
+          [ d:default="false" ]
+         attribute value { xsd:boolean }
+      }
+
+   lem-nsa =
+## This option controls whether the Number System Analyser is
+## run when texts are lemmatized and analysed.  The NSA is 
+## functional but developmental.  The default is "no".
+       element option { 
+         attribute name { "atf-lem-nsa" }, 
+         ## switches the Number System Analyser on or off
+          [ d:default="false" ]
+         attribute value { xsd:boolean }
+      }
+
+   lem-psa =
+## This option controls whether the Person System Analyser is
+## run when texts are lemmatized and analysed.  The PSA is 
+## functional but developmental.  The default is "no".
+##
+## The option "properties" includes only the first stage of PSA 
+## processing, which involves adding properties to the lemmata.  
+## The option "entities" also includes the second stage of processing 
+## which involves grouping name elements into sequences which identify 
+## an individual.
+       element option { 
+         attribute name { "atf-lem-dsa" }, 
+         ## switches the Person System Analyser on or off
+          [ d:default="none" ]
+         attribute value { 
+         "none" |
+            ## adds PSA properties to lemmata
+         "properties" |
+            ## adds PSA properties to lemmat and groups name elements
+         "entities" }
+      }
+   cuneify-notices = 
+      ## If you tick this box, when you rebuild the project you 
+   ## will receive warning notices about signs in your project 
+   ## which Cuneify does not recognise.
+      element option { 
+         attribute name { "atf-cuneify-notices" }, 
+         ## issue warning notices about cuneify failures
+         [ d:default="false" ]
+         attribute value { xsd:boolean }
+      }
+}
+
+cbd = (cbd-mode & periods)
+## controls glossary building behaviour.
+[ m:name = "cbd" m:tab = "glossary" ]
+div {
+   cbd-mode = 
+      ## This option allows you to set how your project's 
+   ## glossaries are built. There are four possibilities:
+   ##
+   ## (a) "mixed": existing glossary files (e.g., 00lib/akk.glo) 
+   ## are merged with new glossary data (e.g., from 00lib/akk.new)
+   ## when you run the harvest-merge sequence prior to rebuilding 
+   ## a project.
+   ##
+   ## (b) "dynamic": your project's glossaries are created anew 
+   ## from your lemmatised ATF files every time you rebuild your 
+   ## project.
+   ##
+   ## (c) "static": the only way to change your project's 
+   ## glossaries is to edit them by hand.
+   ##
+   ## (d) "none": your project has no glossaries.
+      element option { 
+         attribute name { "cbd-mode" }, 
+         ## controls how glossaries are created
+         attribute value {
+            ## glossary files can be combined with harvested data
+            [ d:default="1" ]
+            "mixed" | 
+            ## glossaries are always generated from lemmatized sources
+            "dynamic" | 
+            ## glossaries are never changed by a program
+            "static" |
+            ## project does not use glossaries (portals, for example)
+            "none" 
+         }
+      }
+
+   periods = 
+   ## Tick this box if you want time periods to be displayed in your  
+   ## glossaries. Leave it unticked if you have a single-period project.
+            element option {
+               attribute name { "cbd-periods" },
+## display periods in glossary
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+            }
+   
+}
+
+
+pager = (back-button & back-url & translations)
+## controls pager behaviour.
+[ m:name = "pager" ]
+div {
+   div {
+      [ m:name = "back" ]
+      back-button =
+## If your project maintains its portal pages on another server or 
+## another Oracc project, this option enables the  button in the top 
+## of the outline pane which says, e.g., "Back to Knowledge and Power". 
+##
+## Simply give the text you want to appear in the value attribute of 
+## this option, and also set the back-url option to the relevant URL.
+         element option { 
+            attribute name { "pager-back-button" }, 
+            ## text to display on 'Back to ...' button
+            attribute value { text }
+         }
+      back-url =
+## This is the URL to be used in the `Back to ...' link whose text is 
+## set with the back-button option. It does not have to be an Oracc URL.
+         element option { 
+            attribute name { "pager-back-url" }, 
+            ## URL to visit when user clicks 'Back to ...' button
+            attribute value { xsd:anyURI }
+         }
+   div {
+      [ m:name = "translations" ]
+      translations =
+         ## Use this option to list the ISO 639 language codes of 
+      ## the translations in your project. When you rebuild the 
+      ## project, this will generate a pull-down menu in the pager 
+      ## of your online coprus which allows users to choose 
+      ## between available translation languages. 
+      ##
+      ## Separate them with spaces (e.g., "en hu" for English and
+      ## Hungarian).
+         element option { 
+            attribute name { "pager-translations" }, 
+            ## translation languages available in the pager
+            attribute value { text }
+         }
+   }
+   }
+#   div {
+#      [ m:name = "outline" ]
+#   }
+#   div {
+#      [ m:name = "catalog" ]
+#   }
+#   div {
+#      [ m:name = "views" ]
+#   }
+}
+
+render = (accents & heth & lnum-opener & lnum-closer & inter-det-char & rulings & allographs & tlat-opener & tlat-closer & tlat-separator)
+## controls rendering (HTML, print).
+[ m:name = "render" ]
+div {
+   div {
+      [ m:name = "transliteration" ]
+      accents =
+      ## Tick this box if you want your online corpus to display
+      ## acute and grave accents (e.g, ú, ù) rather than subscript 
+      ## numerals (e.g., u₂, u₃).
+         element option { 
+            attribute name { "render-accents" }, 
+            ## display graphemes with index 2 and 3 as accented
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+      
+      allographs =
+      ## Tick this box if you want your online corpus to display any allographs you have marked in your ATF files.
+      element option {
+         attribute name { "render-allographs" },
+         ## display allographs
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+            }
+         
+      heth =
+      ## Tick this box if you want your online corpus to display
+      ## ḫ instead of h in transliterations.
+         element option { 
+            attribute name { "render-heth" }, 
+            ## display ḫ not h
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+
+      inter-det-char =
+       ## Use this option to add one or more characters or spaces between adjacent determinatives.
+         element option { 
+            attribute name { "render-inter-det-char" }, 
+            ## character between adjacent determinatives
+            [ d:default="" ]
+            attribute value { text }
+         }
+
+      lnum-opener =
+        ## Use this option to add one or more characters before line numbers in the online 
+      ## transliterations. The default is blank.
+         element option { 
+            attribute name { "render-lnum-opener" }, 
+            ## character before line numbers in transliterations
+            [ d:default="" ]
+            attribute value { text }
+         }
+
+      lnum-closer = 
+       ## Use this option to add one or more characters after line numbers in the online 
+      ## transliterations. The default is blank.
+         element option { 
+            attribute name { "render-tlat-opener" }, 
+            ## character(s) after line numbers in transliterations
+            [ d:default="" ]
+            attribute value { text }
+         }
+
+      rulings =
+         ## Leave this box blank to display horizontal rulings as simple straight lines. Enter "char" if you want them displayed as text characters (----).
+            element option {
+               attribute name { "render-rulings" },
+               ## set the characters for horizontal rulings
+            [ d:default="" ]
+            attribute value { text }
+            }
+
+   }
+      
+   div {
+      [ m:name = "translation" ]
+
+      tlat-opener =
+       ## Use this option to add one or more characters before line numbers in the online 
+      ## translations. The default is blank.
+         element option { 
+            attribute name { "render-tlat-opener" }, 
+            ## the character before line numbers in translations
+            [ d:default="" ]
+            attribute value { text }
+         }
+
+      tlat-closer =
+       ## Use this option to add one or more characters after line numbers in the online 
+      ## translations. The default is blank.
+         element option { 
+            attribute name { "render-tlat-closer" }, 
+            ## the character after line numbers in translations
+            [ d:default="" ]
+            attribute value { text }
+         }
+
+      tlat-separator =
+       ## Use this option to change the character between ranges of line numbers
+      ## in the online translations. The default is – (en-dash)
+         element option { 
+            attribute name { "render-tlat-separator" }, 
+            ## the character between line numbers in translations
+            [ d:default="&#x2102;" ]
+            attribute value { text }
+         }
+  
+   }
+}
+
+
+outline = (def.select & def.sort.fields & def.sort.labels 
+           & def.hdg.template & def.cat.fields & def.cat.widths
+           & spe.select & spe.list.name & spe.sort.fields & spe.sort.labels 
+           & spe.hdg.template & spe.cat.fields & spe.cat.widths)
+## controls how catalogue contents and search results are sorted and outlined 
+[ m:name = "outline" ]
+div {
+   div {
+      [ m:name = "default-outline" ]
+         def.select =
+         element option { 
+            attribute name { "outline-default-select" }, 
+            ## Switches the default outline mode on and off.
+            [ d:default="true" ]
+            attribute value { xsd:boolean }
+         }
+
+         def.sort.fields = 
+         ## Comma-separated list of catalogue field names, which may contain 
+         ## multiple fields separated with '|' to mark alternatives (e.g, 
+         ##  museum_no | accession_no , provenience ).  
+         ##
+         ## Do not include the field 'designation' here, as it is appended
+         ## automatically as the final sort field within each block.
+         element option {
+            attribute name { "outline-default-sort-fields" },
+            ## sets the catalogue fields which the outliner uses to sort the corpus
+            attribute value { text }
+         }
+
+         def.sort.labels = 
+         ## Comma-separated list of catalogue human-readable names to use for 
+         ## the fields in the sorter.
+         ##
+         ## You may *not* use '|' here; note that these names are only used 
+         ## for building the outline-sorter drop-down selector.  It is 
+         ## important to choose brief, mnemonic labels for the fields to keep 
+         ## the drop-down menu manageable and transparent.
+         element option {
+            attribute name { "outline-default-sort-labels" },
+            ## sets the catalogue labels which the outliner uses to sort the corpus
+            attribute value { text }
+         }
+
+         def.hdg.template = 
+         ## The headings are the fields specified in def.sort.fields option, in the same 
+         ## order.
+         ##
+         ## Each field is referenced by a decimal number starting from 1, 
+         ## i.e., 1 = the first field; 2 = the second field, 3 = the third 
+         ## field.  Around and  between the numbers is spacing and 
+         ## punctuation which is used in the header. 
+         ##
+         ## By way of example, the default format is equivalent to `1/2/3'.  
+         ## An alternative format might be given as `1, 2: 3'.  There may be 
+         ## no more han nine (9) fields in the header.
+         element option {
+            attribute name { "outline-default-heading-template" },
+            ## template for formatting headings
+            attribute value { text }
+         }
+
+         def.cat.fields = 
+         ## Comma-separated list of catalogue field names, which may contain 
+         ## multiple fields separated with '|' to mark alternatives (e.g, 
+         ##  museum_no | accession_no , provenience ).           
+         element option {
+            attribute name { "outline-default-catalog-fields" },
+            ## sets the fields for displaying catalogue records
+            attribute value { text }
+         }
+
+         def.cat.widths = 
+         ## Comma-separated list of numbers, which are percentage widths for 
+         ## each display catalogue field.  The sum of all the numbers should 
+         ## be 97, as the remaining 3% is used for the catalog icon which is 
+         ## placed at the start of each row of catalogue data.   
+         ##
+         ## Do not include percentage signs (e.g., "20, 30, 15, 32").
+         element option {
+            attribute name { "outline-default-catalog-widths" },
+            ## sets the field widths for displayed catalogue records
+            attribute value { text }
+         }
+   }
+
+   div { 
+      [ m:name = "special-outline" ]
+      
+         spe.select =
+         element option { 
+            attribute name { "outline-special-select" }, 
+            ## Switches the special outline mode on and off
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+
+         spe.list.name =
+         element option { 
+            attribute name { "outline-special-list-name" }, 
+            
+            attribute value { 
+               ## (not sure)
+               "all" |
+               ## (not sure)
+               "outline" }
+         }
+
+         spe.sort.fields = 
+         ## Comma-separated list of catalogue field names, which may contain 
+         ## multiple fields separated with '|' to mark alternatives (e.g, 
+         ##  museum_no | accession_no , provenience ).  
+         ##
+         ## Do not include the field 'designation' here, as it is appended
+         ## automatically as the final sort field within each block.
+         element option {
+            attribute name { "outline-special-sort-fields" },
+            ## sets the catalogue fields which the outliner uses to sort the corpus
+            attribute value { text }
+         }
+
+         spe.sort.labels = 
+         ## Comma-separated list of catalogue human-readable names to use for 
+         ## the fields in the sorter.
+         ##
+         ## You may *not* use '|' here; note that these names are only used 
+         ## for building the outline-sorter drop-down selector.  It is 
+         ## important to choose brief, mnemonic labels for the fields to keep 
+         ## the drop-down menu manageable and transparent.
+         element option {
+            attribute name { "outline-special-sort-labels" },
+            ## sets the catalogue labels which the outliner uses to sort the corpus
+            attribute value { text }
+         }
+
+         spe.hdg.template = 
+         ## The headings are the fields specified in spe.sort.fields option, in the same 
+         ## order.
+         ##
+         ## Each field is referenced by a decimal number starting from 1, 
+         ## i.e., 1 = the first field; 2 = the second field, 3 = the third 
+         ## field.  Around and  between the numbers is spacing and 
+         ## punctuation which is used in the header. 
+         ##
+         ## By way of example, the default format is equivalent to `1/2/3'.  
+         ## An alternative format might be given as `1, 2: 3'.  There may be 
+         ## no more han nine (9) fields in the header.
+         element option {
+            attribute name { "outline-special-heading-template" },
+            ## template for formatting headings
+            attribute value { text }
+         }
+         spe.cat.fields = 
+         ## Comma-separated list of catalogue field names, which may contain 
+         ## multiple fields separated with '|' to mark alternatives (e.g, 
+         ##  museum_no | accession_no , provenience ).           
+         element option {
+            attribute name { "outline-special-catalog-fields" },
+            ## sets the fields for displaying catalogue records
+            attribute value { text }
+         }
+
+         spe.cat.widths = 
+         ## Comma-separated list of numbers, which are percentage widths for 
+         ## each display catalogue field.  The sum of all the numbers should 
+         ## be 97, as the remaining 3% is used for the catalog icon which is 
+         ## placed at the start of each row of catalogue data.   
+         ##
+         ## Do not include percentage signs (e.g., "20, 30, 15, 32").
+         element option {
+            attribute name { "outline-special-catalog-widths" },
+            ## sets the field widths for displayed catalogue records
+            attribute value { text }
+         }
+   }
+}
+
+views = ( cuneify & proofing & TEI & buy-book )
+## adds extra views of texts in the corpus
+[ m:name = "views" ]
+div {
+   cuneify =
+      element option {
+         attribute name { "views-cuneify" },
+         ## creates 'Cuneify' link to display
+     	 ## text in cuneiform in a popup window.
+         attribute value { xsd:boolean }
+      }
+
+   proofing =
+      element option {
+         attribute name { "views-proofing" },
+         ## creates 'Proofing' link to display the
+         ## annotation of a text aligned by word
+         ## in a popup window.
+         attribute value { xsd:boolean }
+      }
+
+   TEI =
+      element option {
+         attribute name { "views-TEI" },
+         ## creates 'TEI' link to display TEI version
+         ## of a text in a popup window.
+         attribute value { xsd:boolean }
+      }
+
+   buy-book = 
+      ## If you need  to link to more than one bookseller or publisher, 
+      ## simply create a web page of your own in the project and link to that.
+      element option {
+         attribute name { "views-buy-book" },
+         ## creates a 'Buy the Book' link to the URL provided in the option.  
+         attribute value { xsd:anyURI }
+      }
+}
+undocumented = (flags & saa-mode & rws & labels & sum-dias)
+## odds and ends 
+[ m:name = "undocumented" ]
+div {
+   div {
+      [ m:name = "atf-undoc" ]
+         flags =
+      element option { 
+         attribute name { "atf-lem-flags" }, 
+         ## ATF options to use when converting ATF to XML
+         attribute value { text }
+      }
+         saa-mode = 
+         element option {
+            attribute name { "atf-saa-mode" },
+            ## double hyphens in QPNs
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+         sum-dias = 
+         element option {
+            attribute name { "atf-sum-dias" },
+            ## handles both long and short readings in Sumerian
+            [ d:default="false" ]
+            attribute value { xsd:boolean }
+         }
+
+         }
+
+   div { 
+      [ m:name = "cbd-undoc" ]
+      rws =
+         element option {
+            attribute name { "cbd-rws" },
+            ## register/writing-system
+            attribute value { text }
+         }
+   }
+   div {
+      [ m:name = "render-undoc" ]
+      labels =
+         element option {
+            attribute name { "render-labels" },
+            ## saa-style labels
+            attribute value { text }
+         }
+   }
+
+}

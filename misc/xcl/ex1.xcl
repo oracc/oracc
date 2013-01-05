@@ -1,0 +1,67 @@
+<xcl xmlns="http://oracc.org/ns/xcl/1.0" xmlns:xcl="http://oracc.org/ns/xcl/1.0"
+     xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xl="http://www.w3.org/1999/xlink">
+  <dicts>
+    <dict-def type="cbd" xml:id="d1" name="ePSD" version="2007-11-26T11:30:45" 
+	  xl:href="file:/usr/local//projects/epsd/results/epsd.cbd"/>
+    <dict-def type="xff" xml:id="d2" name="epsd-forms" version="2007-11-26T11:30:45" 
+	  xl:href="file:/usr/local//projects/epsd/lib/epsd.xff"/>
+  </dicts>
+  <chunks>
+    <c type="text" xml:id="c.P000001">
+      <meta>
+	<m n="time">Old Babylonian</m>
+	<m n="place">Nippur</m>
+	<m n="genre">Lexical</m>
+	<m n="text">Lu</m>
+      </meta>
+      <c type="sentence">
+	<l xml:id="l000001" ref="P100001.1.1">
+	  <f xmlns="http://oracc.org/ns/xff/1.0" xmlns:xff="http://oracc.org/ns/xff/1.0"
+	     xml:lang="sux" dict="d2">
+	    <form>a</form>
+	    <cf>a</cf>
+	    <gw xml:lang="en">water</gw>
+	    <sense xml:lang="en">semen</sense>
+	    <morph><root>~</root></morph>
+<!--
+  <morph>
+    <mg type="vpr">
+      <m class="CP" rank="1">mu</m>
+      <m class="PRON" rank="9">n</m>
+    </mg>
+    <root>~</root>
+  </morph>
+-->
+	  </f>
+	  <dict ref="d1">
+	    <r type="entry" ref="x000001"/>
+	    <r type="sense" ref="x000001.1"/>
+	    <r type="base" ref="x000001.2"/>
+	    <r type="norm0" ref="x000001.4"/>
+	  </dict>
+	</l>
+      </c>
+    </c>
+  </chunks>
+  <phrases>
+    <p refs="l000001 l000003">
+      <f xmlns="http://oracc.org/ns/xff/1.0" xmlns:xff="http://oracc.org/ns/xff/1.0"
+	 xml:lang="sux">
+	<form>a</form>
+	<cf>a</cf>
+	<gw xml:lang="en">water</gw>
+	<sense xml:lang="en">semen</sense>
+      </f>
+      <cbd name="epsd">
+	<r type="entry" ref="x000001"/>
+	<r type="sense" ref="x000001.1"/>
+	<r type="base" ref="x000001.2"/>
+	<r type="form" ref="x000001.3"/>
+	<r type="norm0" ref="x000001.4"/>
+      </cbd>
+    </p>
+  </phrases>
+  <xi:include href="xxx.xst">
+    <xi:fallback><syntax/></xi:fallback>
+  </xi:include>
+</xcl>

@@ -1,0 +1,218 @@
+* codes:
+  - L2 = new lemmatizer implementation
+  - G2 = new glossary implementation
+  - F2 = new form implementation
+  - PROP = properties
+  - FEAT = features
+  - IL = interlinear lemma(tization)
+  - FL = @form lemma
+
+* SENSE now owns @form
+
+* CBD must now name langs:
+
+  @langs sux sux-x-emesal
+
+* CBD may now declare properties and features, but these
+  can be auto-declared by using g2 config file for the
+  relevant language; need global configs as well as
+  project-local ones.  Conventional names:
+
+    ORACC/lib/data/LANGTAG.g2c
+    PROJECT/00lib/LANGTAG.g2c
+    PROJECT/00lib/GLOSSARYNAME.g2c
+
+  This is also the mechanism for specifying how to build
+  G2's (slices):
+
+  <g2>
+    <name>NAME</name>
+    <tags>sux sux-x-emesal</tags>
+    <from>P-ids or projects or filename.lst</from>
+    <glos>
+      <glo>./sux</glo>    <!-- current project glossary -->
+      <glo>/sux</glo>     <!-- root project glossary -->
+      <glo>epsd/sux</glo> <!-- other project glossary -->
+    </glos>
+  </g2>
+
+  If a project is given for the P-ids or in the list,
+  in the format project:P123456, the data is sliced from
+  the that project (we are going to need a semaphore
+  mechanism so that projects can register interest in
+  texts and receive notification/auto-rebuild when data
+  changes)
+
+* @form is LANG:FORM REST
+
+  where LANG is optional and defaults to first langtag
+  in @langs
+
+  REST may have these and perhaps more in time:
+     
+     NORM M1 M2 FEATURES
+
+  FEATURES vary by language and the mechanism is 
+  extensible:
+  
+    - sux has /BASE and +CONT
+    - akk has /ROOT
+
+* if @form has NORM and M1=~ and NORM differs from 
+  CF this is OK: it is a sublang-specific CF; diff NORM 
+  only OK for primary lang when primary lang is qpn, and 
+  then forms must be identical after canonicalization with
+  removal of vowel accents
+
+* when building, e.g., akk-x-neoass, we automatically
+  look for a form with MORPH=~ and use NORM for CF; if
+  no form has MORPH=~ then we use given CF
+
+* SENSE has SENSE_GW (SGW), computed from sense defn
+
+* building a signature is:
+
+  - LANG (poss from default) :
+  - FORM = 
+  - CF [
+  - GW //
+  - SGW ]
+  - POS '
+  - EPOS
+  - REST with removal of spaces
+
+* syntax of @form changes now for PSU because we have:
+
+  @form a_ba $a_ba
+
+  instead of
+
+  @form a_ba $a $ba
+
+* annotation needs to be either instance-scoped or G2-scoped
+  - instance-scoped doesn't get harvested
+  - g2-scoped does get harvested
+
+* G2
+  - http://oracc.org/ns/cbd/2.0
+  - .g2a = AT-format
+  - .g2x = XML-format
+  - .g2c = G2 configuration file
+  - .g2l = L2-format, i.e., simple sig list
+  - word-scope and sense-scope data are same; all word-scope
+    data comes first, then sense-scope:
+    @entry a [water] N
+    @inote a or e?
+    @sense [SGW?] N water
+    @end entry
+  - now allowed @sub, @subsub, etc. to do subsenses
+  - lists of each feature on word, each with ID
+    <norms><n xml:id="1" s="ba"/></norms>
+  - sig on sense nodes
+  - mdrefs on sense nodes
+  - idref on sense nodes for each feature
+    <sense sgw="boot" sig="%sux-x-emesal:ba=ba[boot//boot]N'N£~/ba+0"
+     	   norm="1" icnt="4" ipct="75">
+  - frequencies first harvested on senses; then computed for features
+  - implemented using CDT library (libdoc), integrated with CDT by
+    declaring @glossary as cdt_data with term=cdt_end and g2 as the
+    foreign data handler
+  - libg2 should not include any routines from libdoc; keep
+    them separate
+  - standalone g2 program should also handle @glossary tags, so 
+    @include x.g2a via cdt2cdx and direct g2a2g2x should produce 
+    same results bar the wrapper
+  - g2manager should harvest freqs from instances catalogued by
+    project g2's
+  - entire g2 annotation loop needs to move from xpdmanager to
+    g2manager; possibly call g2manager from cdt2cdx rather than
+    library directly; or g2a2g2x must handle freq annotation
+
+* L2
+  - reads G2L looking for <g2:sense> nodes
+  - grabs sig, frequency info and meaning node
+  - to check: simply compare sig on words with sigs in
+    G2; on failure, do a more complex search, matching on
+    CF/GW and all of sense to see if alignment is feasible,
+    checking any other features given in interlinear lem
+    as part of match also
+    . successful match is: all specified core and adjunct 
+      features match exactly one G2 sig
+    . ambiguous match is: specified core/adjuncts match 
+      more than one G2 sig
+    . partial match is: some specified core/adjuncts match
+      one or more signatures (not counting fuzzy SENSE
+      matching)
+    . failure is: no match
+  - SENSE matching is EXACT or FUZZY: fuzzy can be FULL
+    or PART
+    . EXACT: match after canocicalization of whitespace
+    . FUZZY: specified sense matches some words in G2 SENSE
+      = FULL - all specified words match
+      = PART - some specified words match but not all
+  - to do new lemming, look for LANG:FORM combo, if found
+    eliminate ambiguity using frequencies if possible; also
+    use mdrefs if available
+
+* L2 parser
+  - invoked with structure and lem as args
+  - structure may be partially filled in already
+  - same parser used for IL and GL; spaces between
+    features with keychars are legal in both
+
+* FEAT vs PROP
+  - FEAT is for features that belong to G2 entries 
+    (words/senses)
+  - PROP is for properties that belong to instances 
+
+* FEAT
+  - features are used to extend core data on ENTRY/
+    SENSE
+    . core = CF GW SENSE POS EPOS
+    . adjunct = NORM M1 M2 ROOT BASE CONT
+  - the featureset provided by G2 is closed, but
+    languages can select which they use
+  - e.g. root
+  - features must be declared in a g2 config file,
+    optionally with control list
+  - features go in sig
+  - features may be required or optional
+
+* PROP
+  - properties are used to extend core data on
+    INSTANCE
+  - property lists constrain key names and optionally
+    group them; may also contrain values
+    . humans may have relatives (group) including
+      spouse (property) whose name is (value, an
+      identifier)
+  - properties always go on instances and stay there
+  - this means that the property frame of a G2 is
+    always dynamic
+  - every SENSE in a G2 may have any or all defined
+    properties
+
+* F2
+  - smaller/leaner than XFF
+  - in XML, sig, core and admin features are in f2-ns;
+    other features are in f2f-ns
+  - features are collected at start of word
+  - values of f2f:* are IDREF
+
+
+============================
+
+STATIC SIG vs INSTANCE SIG
+
+STATIC: CF[GW//SENSE]POS'EPOS
+
+INSTANCE: adds NORM, MORPH etc
+
+g2manager puts STATIC SIG on each SENSE
+
+lemmer first tries to identify STATIC match
+
+if OK, tries to identify INSTANCE match
+
+
+

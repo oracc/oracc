@@ -1,0 +1,2009 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>XTF</dc:title>
+  <dcterms:alternative>XML Transliteration Format Version</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/xtf/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-08-10</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>XTF is an XML format for describing the
+  transliteration of cuneiform texts; it also encompasses facilities
+  for other kinds of editions commonly used in cuneiform studies.</dc:description>
+</d:meta>
+
+<d:secondary xml:id="atftut" n="atftut">
+  <d:meta>
+    <dc:title>ATF Structure Tutorial</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document gives a tutorial on how to type the
+    block structure features of texts in ATF, the ASCII Transliteration
+    Format.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'tutorial')]</d:select>
+  <d:output file="html/atftut.html"/>
+</d:secondary>
+
+<d:secondary xml:id="protocols" n="protocols">
+  <d:meta>
+    <dc:title>ATF Protocols</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document offers an overview of the protocols
+    which may be used in ATF documents.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'protocols')]</d:select>
+  <d:output file="html/protocols.html"/>
+</d:secondary>
+
+<d:secondary xml:id="linkage" n="linkage">
+  <d:meta>
+    <dc:title>ATF Linkage</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document describes the ATF mechanisms for
+    intertext linking.  The original version of this document was
+    written by Madeleine Fitzgerald and Steve Tinney.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'linkage')]</d:select>
+  <d:output file="html/linkage.html"/>
+</d:secondary>
+
+<d:secondary xml:id="lexical" n="lexical">
+  <d:meta>
+    <dc:title>ATF Lexical Conventions</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document describes the ATF features for
+    working with lexical texts.  The original version of this document was
+    written by Madeleine Fitzgerald and Steve Tinney.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'lexical')]</d:select>
+  <d:output file="html/lexical.html"/>
+</d:secondary>
+
+<d:secondary xml:id="advanced" n="advanced">
+  <d:meta>
+    <dc:title>ATF Advanced Conventions</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document describes ATF features which are not
+    needed for everyday documents and which some users will never
+    need.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'advanced')]</d:select>
+  <d:output file="html/advanced.html"/>
+</d:secondary>
+
+<d:secondary xml:id="composite" n="composite">
+  <d:meta>
+    <dc:title>ATF Composites Conventions</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-08-10</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document describes ATF features which are available when
+    entering composite texts.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'composite')]</d:select>
+  <d:output file="html/composite.html"/>
+</d:secondary>
+
+<d:schema name="xtf" uri="http://oracc.org/ns/xtf/1.0">
+<h2>Preamble</h2>
+<p>This document is a work in progress; the schema is correct and
+defines the XML output format produced by atf2xtf.  Developer
+documentation is not yet included here, but the tutorial is
+essentially complete.</p>
+<div class="secondary tutorial">
+<p>We provide a simple introduction to typing ATF
+texts, describing the more common features first and filling in the
+details later.  Before explaining any specifics, here is a simple
+typical example of an ATF text:</p>
+<pre class="cookbook">
+&amp;P555555 = Some Publication 32
+@obverse
+1. 1(diš) udu ba-ug₇
+$ reverse blank
+</pre>
+<p>This example illustrates the four of the most common types of lines
+in an ATF text:</p>
+<dl>
+<dt>&amp;-lines</dt>
+<dd>Every ATF text must start with an <code>&amp;-lines</code>
+("and-lines") which normally gives the CDLI P-identifier and should
+also have a human-readable name following it after an '=' sign.</dd>
+<dt>@-lines</dt>
+<dd>Divisions in the text are specified using lines that start with an
+<code>@</code> sign ("at-lines").  These are used to indicate object
+types, surfaces, divisions and columns.</dd>
+<dt>$-lines</dt>
+<dd>Descriptive asides concerning the preservation or state of the
+text are given using <code>$-lines</code> ("dollar lines").  These
+look like ordinary sequences of words but they may be subject to
+strict rules.</dd>
+<dt>Text lines</dt>
+<dd>Lines beginning with non-spaces followed by a period followed by
+one or more spaces are lines of text.  The rules for transliteration
+are given in the <a href="../GDL/gdltut.html">ATF Grapheme
+tutorial</a>.</dd>
+</dl>
+</div>
+
+<h1 class="secondary tutorial">Line-types</h1>
+
+<p>Most elements in an XTF file are in either the XTF or GDL
+namespaces, the latter being defined in the included GDL
+specification.  The <code>n</code> namespace is used for normalized
+text as described below.</p>
+<p>The macro structure of any XTF file produced by the ATF processor
+is always an outer container, the <code>xtf</code> element, followed
+by optional outer protocols and then zero or more transliterations
+and/or composite texts.</p>
+<p>We allow transliteration and composite as start elements to simplify
+the ATF processor's internal validation of texts.</p>
+<d:rnc>
+default namespace = "http://oracc.org/ns/xtf/1.0"
+include "../../gdl/1.0/gdl.rnc"
+include "../../xtr/1.0/xtr.rnc"
+start = xtf | doctype
+xtf = element xtf { proto.outer? , doctype }
+doctype = score | translation | transliteration | composite | atf
+atf = element atf { attribute xml:id   { xsd:ID } , text }
+</d:rnc>
+
+<h1 class="secondary protocols">Protocols</h1>
+
+<div class="primary tutorial"><a name="protocols"/>
+<h2>#-lines</h2>
+
+<p>The other quite common type of line in an ATF file begins with the
+hash sign (<code>#</code>).  There are two kinds of #-line: protocols
+and comments.</p>
+
+<h3 class="tutorial">Protocols</h3>
+
+<div class="tutorial protocols">
+
+<p>Protocols are statements which are interpreted or stored by the ATF
+processor but are not part of the text edition proper.  Protocols are
+all named and may trigger special processing within the ATF
+processor.</p>
+
+<div class="atf">
+<p>Protocols are indicated in ATF by a line beginning with the hash
+character (<code>#</code>), a known protocol name and a colon character
+(<code>:</code>).</p>
+</div>
+
+</div>
+
+<div class="secondary tutorial">
+<p>The details of protocols are beyond the scope of this tutorial; for
+now, it is enough to know that they look like this:</p>
+
+<pre class="cookbook">
+&amp;P123321 = Some Akkadian Text
+#atf: lang akk-x-oldbab
+1. i-na AN{+e}
+#note: This is a contrived note.</pre>
+
+<p>Most protocols are a single line and do not require
+a blank line after them to separate them from a following protocol
+(the one exception is <code>#note:</code>).</p>
+
+<p>More information on protocols, what they are, where they are
+allowed and the rules about ordering of protocols is available in the
+<a href="http://oracc.org/doc/builder/protocols/">protocols manual</a>.</p>
+</div>
+
+<div class="primary protocols">
+
+<p>With the exception of <code>#note:</code>, protocols must occur on
+a single line; multiple protocols do not need blank lines between them
+except for multiple <code>#note:</code> protocols which behave like
+comments.</p>
+
+<p>Protocols are divided into four classes:</p>
+
+<dl>
+<dt>outer</dt>
+<dd>protocols which may only occur at the very beginning of the
+document; only <code>#basket:</code> may occur in this location.</dd>
+<dt>start</dt>
+<dd>protocols which may occur at the start of a text; only
+<code>#atf:</code>, <code>#bib:</code>, <code>#link:</code>,
+<code>#note:</code> and <code>#version:</code> may occur in this
+location.</dd>
+<dt>after</dt>
+<dd>protocols which may occur only after all other protocols have been
+given in a particular section; only <code>#note:</code> may occur in
+this location.  Other protocols are not required before
+<code>#note:</code>, but if they are present they must precede
+it.</dd>
+<dt>inter</dt>
+<dd>protocols which may occur between lines of a text; only
+<code>#bib:</code>, <code>#lem:</code>, <code>#note:</code> and
+<code>#var:</code> may occur in this location.</dd>
+</dl>
+
+<pre class="cookbook">#bib: MSL 14, 343
+
+1. a
+#lem: a[water]
+#note: This can only occur after any protocols other than #note:.
+</pre>
+</div>
+
+<div class="secondary protocols">
+<a name="atf"/><h2>#atf:</h2>
+<p>Introduces directives to the ATF processor. Implemented directives
+are:</p>
+<dl>
+
+<dt><code class="example">lang &lt;LANG></code></dt>
+<dd><p>Sets the default language for the text;  see under <a
+href="/ns/gdl/1.0/gdltut.html#Languages">languages in the GDL tutorial</a> for more
+information.</p>
+<pre class="cookbook">
+#atf: lang qpc
+</pre></dd>
+
+<!-- <dt><code class="example">script &lt;SCRIPT></code></dt>
+<dd><p>Sets the default script for the text; see under <a
+href="../GDL/gdltut.html#scripts">scripts in the GDL tutorial</a> for more
+information.</p>
+<pre class="cookbook">
+#atf: script 2</pre></dd> -->
+
+<dt><code class="example">use &lt;FEATURE></code></dt>
+<dd><p>The <code>use</code> directive enables <a href="/ns/xtf/1.0/advanced.html">less commonly used ATF
+features</a>, which are turned off by default, to be turned on.
+<code>FEATURE</code> must be one of: alignment-groups; legacy; lexical; math;
+mylines.</p>
+<pre class="cookbook">
+#atf: use lexical
+</pre></dd>
+
+</dl>
+
+<a name="basket"/><h2>#basket:</h2>
+<p>This protocol is used only by the CDLI ATF repository system; the
+content is a token used internally by the repository and should not be
+changed by users.</p>
+
+<a name="bib"/><h2>#bib:</h2>
+<p>Bibliography information my be included using this protocol and may
+then be included with locator strings to provide text and publication
+information, e.g.:</p>
+<pre class="cookbook">
+&amp;P312111 = Some Lexical Text
+1. a
+#bib: MSL 14, 33</pre>
+
+<p>Could be rendered as: <code>(Some Lexical Text 1 [MSL 14, 33])</code>.</p>
+
+<a name="lem"/><h2>#lem:</h2>
+<p>Gives lemmatization for the line before.  The format is a list of
+lemmata separated by semi-colon-space (<code>; </code>) and the number
+of lemmata must equal the number of words in the lemmatized line:</p>
+<pre class="cookbook">
+1. a i3-nag
+#lem: a[water]; naj[drink]</pre>
+
+<a name="lemmatizer"/><h2>#lemmatizer:</h2>
+<p>Introduces directives to the lemmatization subsystem.  Implemented
+directives are:</p>
+
+<dl>
+<dt><code class="example">sparse do &lt;FIELDS></code></dt>
+<dd>Enables selective lemmatization which is useful for texts where
+not all fields have been (or can be) lemmatized.  The
+<code>&lt;FIELDS></code> must match field names used in the
+document.  See the lexical documentation for an example.</dd>
+</dl>
+
+<a name="link"/><h2>#link:</h2>
+<p>Introduces directives to the linkage subsystem.  Implemented
+directives are:</p>
+
+<dl>
+<dt><code class="example">def &lt;SYMBOL> = &lt;ID> = &lt;NAME></code></dt>
+<dd><p>Defines a SYMBOL to refer to the text indicated by ID and NAME;
+interlinear links can then refer to the text via the symbol (see the
+linkage documentation for more information and examples):</p>
+<pre class="cookbook">
+&amp;P123321 = Some Exemplar
+#link: def A = Q000002 = Archaic Lu A
+1. NAMESZDA
+>> A 1
+</pre>
+</dd>
+</dl>
+
+<a name="note"/><h2>#note:</h2>
+<p>Notes given using this protocol are included in the rendered ATF text.</p>
+
+<a name="syntax"/><h2>#syntax:</h2>
+<p>Introduces directives to the syntax processing subsystem.  Implemented directives are:</p>
+<dl>
+<dt><code>line_is_unit</code></dt>
+<dd>Instructs the unit-processor to treat each line as a unit by
+default.  This protocol is automatically emitted when <code>#atf: use
+lexical</code> is given.</dd>
+</dl>
+
+<a name="var"/><h2>#var:</h2>
+<p>Informal annotation of text variants; see the composites
+documentation for a more structured implementation.</p>
+
+<a name="version"/><h2>#version:</h2>
+<p>Provides a location in the ATF file for a version number or version
+control system string.</p>
+
+</div>
+
+<p class="primary">Protocols which may be given explicitly by users
+in an ATF file are: 
+<a href="protocols.html#atf">atf</a>; 
+<a href="protocols.html#basket">basket</a>;
+<a href="protocols.html#bib">bib</a>;
+<a href="protocols.html#lem">lem</a>;
+<a href="protocols.html#lem">lemmatizer</a>;
+<a href="protocols.html#link">link</a>;
+<a href="protocols.html#note">note</a>;
+<a href="protocols.html#syntax">syntax</a>;
+<a href="protocols.html#var">var</a>;
+<a href="protocols.html#version">version</a>.
+</p>
+
+<p class="primary">Note that the <code>#link:</code> protocol handles
+only a subset of intertext linkage; link protocols in XTF may also
+originate from the <code>|| &lt;&lt; >></code> operator set.  See
+the link protocol documentation for further details.  The
+<code>#note:</code> protocol does not generate a protocol node; it
+generates a <code>note</code> element.</p>
+
+</div>
+<d:rnc>
+proto.outer = element protocols {
+  attribute scope { text },
+  proto.basket
+}
+
+proto.start = element protocols {
+  attribute scope { text },
+  (  proto.atf | proto.bib | proto.etcsl | proto.key | proto.lemmatizer 
+     | proto.link | proto.project | proto.syntax | proto.version )*
+}
+
+proto.after = proto.note
+
+proto.inter = proto.bib | proto.etcsl | proto.lem | proto.link 
+            | proto.note | proto.psu | proto.var
+
+proto.atf    = element protocol { attribute type { "atf" }    , text }
+proto.basket = element protocol { attribute type { "basket" } , text }
+proto.bib    = element protocol { attribute type { "bib" }    , text }
+proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
+proto.key    = element protocol { attribute type { "key" }    , text }
+proto.lem    = element protocol { attribute type { "lem" }    , text }
+proto.psu    = element protocol { attribute type { "psu" }    , text }
+proto.lemmatizer
+             = element protocol { attribute type { "lemmatizer" }, text }
+proto.link   = element protocol { attribute type { "link" }   , text }
+proto.note   = element protocol { attribute type { "note" }   , text }
+proto.project= element protocol { attribute type { "project" }, text }
+proto.syntax = element protocol { attribute type { "syntax" } , text }
+proto.var    = element protocol { attribute type { "var" }    , text }
+proto.version= element protocol { attribute type { "version" }, text }
+</d:rnc>
+
+<div class="primary tutorial">
+<h3>Comments</h3>
+
+<p>Comments are asides which are not part of the text edition or the
+annotation; they are useful for keeping odd bits of information in the
+file without it getting in the way of the text edition or
+annotation.</p>
+
+<div class="atf">
+<p>Comments are indicated in ATF by one or more lines beginning with
+the hash character (<code>#</code>).</p>
+</div>
+
+<p>Comments look like protocols in that they begin with a hash-sign,
+but they may not begin with the sequence hash-name-colon.  Comments
+may be included within text transliterations but not before the first
+text in a file.  Comments must always follow any protocols which occur
+adjacent to them.</p>
+
+<p>A sequence of lines beginning with hash-signs is a multi-line
+comment.  To separate multiple comments to the same line use a blank
+line in the ATF file.</p>
+
+<pre class="cookbook">
+1. a
+#a simple comment
+
+2. a
+#a longer comment which somewhat artificially extends
+#over multiple lines
+
+3. a
+#one comment to line 3.
+
+#another comment to line 3.
+
+4. a
+#Comments look a bit like protocols but there is no chance of
+#confusion: the ATF processor's scanning rules take care of that.
+
+5. a
+#lem: a[water]
+#note: If you want a comment to appear in the displayed text-edition 
+#use the '#note:' protocol instead.
+
+#and note that any comment must follow any other protocol, including
+#'#note:'.
+</pre>
+
+<p>You can include note marks in the transliteration and after an
+<code>#note:</code> by putting the note mark between caret signs
+(e.g., <code class="cookbook">^1^</code>).  You can also specify that
+a note corresponds to the label of a text line (or a range) by using
+the <code>@notelabel{...}</code> notation, e.g., <code
+class="cookbook">#note: @notelabel{i 1} A note to column 1 line
+1.</code>.</p>
+
+</div>
+
+<d:rnc>
+comments = cmt | note
+cmt = element cmt { text }
+note = element note {
+         attribute xml:id    { xsd:ID } ,
+         attribute notemark  { text }? , 
+         attribute notelabel { text }? , 
+	 htext }
+</d:rnc>
+
+<div class="primary tutorial">
+<a name="andlines"/><h2>&amp;-lines</h2>
+
+<p>&amp;-lines are used to introduce a new text and consist of two
+parts: the ID and the name.</p>
+
+<p>For transliterations of exemplars, the ID is a 'P' followed by six
+digits, e.g., P123456.  This ID is assigned by CDLI and is the
+reference ID of the object in the main CDLI catalog; to get IDs for
+objects not in the CDLI catalog send an e-mail to
+cdli@cdli.ucla.edu.</p>
+
+<p>The name of the text should be identical with the 'Designation'
+field in the CDLI main catalog; the ATF processor detects mismatches
+and reports the correct name.  This mechanism is designed to provide a
+check that the P-number in the ID actually references the text the
+transliterator intends.</p>
+
+<div class="atf">
+<p>In ATF the two parts of an &amp;-line are separated by
+space-equals-space, like this:</p>
+<pre class="cookbook">
+&amp;P000001 = ATU 3, pl. 011, W 6435,a</pre>
+</div>
+
+</div>
+
+<div class="primary">
+
+<h2>Document Types</h2>
+
+<p>Transliterations are not the only data type which can be entered in
+ATF: composite texts, translations and scores are all understood by
+the ATF processor.  Also, when the ATF processor is unable to parse a
+text, it outputs the literal input wrapped in <code>atf</code> tags,
+so that it can be displayed in some form if required.</p>
+
+</div>
+
+<d:rnc>
+transliteration =
+  element transliteration {
+    attribute xml:id   { xsd:ID },
+    attribute n        { text },
+    attribute hand     { text }?,
+    attribute xml:lang { xsd:NMTOKEN },
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    (proto.start? , (object | nonobject | comments | sealing)*)
+  }
+n.attr = attribute n { text }
+n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
+haslinks = attribute haslinks { xsd:boolean }
+maxcells = attribute cols { xsd:nonNegativeInteger }
+project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } }
+
+composite =
+  element composite {
+    composite-attlist,
+    sigdef*,
+    attribute hand     { text }?,
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    proto.start?,
+    composite-content,
+    (referto, comments?)*
+  }
+
+composite-attlist &amp;=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+
+</d:rnc>
+
+<div class="primary tutorial">
+<h2>@-lines</h2>
+
+<p>@-lines are used for structural tags.  Several
+kinds of structure may be indicated using this mechanism: physical
+structure, e.g., objects, surfaces; manuscript structure, i.e.,
+columns; and document structure, e.g., divisions and colophons.  For
+clarity, we describe here only the structural features which are
+permitted in object transliterations, i.e., texts with an ID beginning
+with <code>P</code>.  Documentation of structural conventions for
+composite texts is given in the <a href="composite.html">composites
+manual</a>.</p>
+
+
+<h3>Objects</h3>
+
+<p>The kind of object on which the inscription being transliterated is
+written is designated using one of the following tags:</p>
+
+<dl>
+<dt><code class="cookbook">@tablet</code></dt>
+<dd>The default, and therefore optional; object is a tablet.</dd>
+<dt><code class="cookbook">@envelope</code></dt>
+<dd>Tablets and envelopes with the same P number can be transliterated
+separately using this tag.</dd>
+<dt><code class="cookbook">@prism</code></dt>
+<dd>Object is a prism.</dd>
+<dt><code class="cookbook">@bulla</code></dt>
+<dd>Object is a bulla.</dd>
+<dt><code class="cookbook">@fragment</code></dt>
+<dd>Object is a fragment, with a fragment name (e.g., a letter)
+following the tag; may be used more than once to transliterate
+multiple fragments of an object, e.g.:
+<pre class="cookbook">
+&amp;P212121 = Some Fragmentary Object
+@fragment a
+1. a
+@fragment b
+1. a</pre></dd>
+<dt><code class="cookbook">@object</code></dt>
+<dd>The generic object tag which must be followed by the type of the
+object, e.g. <code class="cookbook">@object Stone wig</code>.</dd>
+</dl>
+
+<h4>Seals</h4>
+
+<p>A transliteration of the text inscribed on a physical seal object
+should be handled using the <code>@object</code> tag:</p>
+
+<pre class="cookbook">
+&amp;P333444 = Some Seal
+@object seal
+1. da-da
+2. dumu du-du</pre>
+</div>
+
+<d:rnc>
+object = 
+  element object {
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    ( attribute type { known.object }
+     |(attribute type { user.object } , n.attr) 
+    ) ,
+    status.flags,
+    (m.fragment | surface | sealing | comments | nonx)*
+  }
+known.object =    xsd:string { pattern="tablet|envelope|prism|bulla" }
+user.object =     xsd:string { pattern="object" }
+nonobject = nonx
+</d:rnc>
+
+<div class="primary tutorial">
+<h3>Surfaces</h3>
+
+<p>Surfaces are principally the physical surfaces:</p>
+
+<dl>
+<dt><code class="cookbook">@obverse</code>,
+    <code class="cookbook">@reverse</code></dt>
+<dd>Obverse and reverse.</dd>
+<dt><code class="cookbook">@left</code>,
+    <code class="cookbook">@right</code>,
+    <code class="cookbook">@top</code>,
+    <code class="cookbook">@bottom</code></dt>
+<dd>Specifiable edges, left right, top and bottom (as seen when
+looking at obverse of tablet).</dd>
+<dt><code class="cookbook">@face</code></dt>
+<dd>Conventional designation for surfaces of a prism; must be followed
+by single lowercase letter indicating the face, e.g.:
+<pre class="cookbook">
+&amp;P123321 = Some Prism
+@prism
+@face a
+1. a
+@face b
+1. e</pre></dd>
+<dt><code class="cookbook">@surface</code></dt>
+<dd>Generic surface tag which must be followed by name of surface,
+e.g.: <code class="cookbook">@surface shoulder</code>; <code
+class="cookbook">@surface side a</code>.</dd>
+<dt><code class="cookbook">@edge</code></dt>
+<dd>Generic edge tag; may be followed by single lowercase letter
+to name the edge similarly to <code>@face</code>.</dd>
+</dl>
+
+<a name="sealex"/><h4>Sealings</h4>
+
+<p>A transliteration of a sealing should be handled using the
+<code>@seal</code> tag included like a surface after the
+transliteration of the object on which the sealing occurs:</p>
+
+<pre class="cookbook">
+&amp;P343434 = Some Sealed Tablet
+1. a
+$ seal 1
+
+@seal 1
+1. du-du</pre>
+
+<p>The use of <code>$ seal</code> anticipates the discussion of
+$-lines below; this mechanism can be used to indicate which sealings
+occur where on an object.</p>
+</div>
+
+<d:rnc>
+surface =
+  element surface { 
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (proto.inter | column | nonx | m | comments)* ,
+    (  attribute type { known.surface }
+     |(attribute type { face.surface } , n.attr.lc)
+     |(attribute type { edge.surface } , n.attr.lc?)
+     |(attribute type { user.surface | docket.surface | seal.surface } , n.attr)
+     ),
+    primes?,
+    status.flags
+  }
+
+known.surface =
+  xsd:string {
+    pattern="surface|obverse|reverse|left|right|top|bottom"
+  }
+face.surface = xsd:string { pattern="face" }
+edge.surface = xsd:string { pattern="edge" }
+user.surface = xsd:string { pattern="surface" }
+docket.surface = xsd:string { pattern="docket" }
+seal.surface = xsd:string { pattern="seal" }
+</d:rnc>
+
+<p class="primary">The <code>scid</code> attribute is intended for use
+in cross-referencing sealing instance transliterations to composite
+transliterations of sealings stored in an external database.</p>
+<d:rnc>
+sealing =
+  element sealing {
+    attribute xml:id { xsd:ID },
+    attribute label    { text },
+    attribute n { xsd:NMTOKEN },
+    attribute scid { xsd:NMTOKEN }?,
+    (column | nonx | milestone | comments)*
+  }
+</d:rnc>
+
+<div class="primary tutorial">
+<h3>Columns</h3>
+
+<p>Columns are indicated with the <code>@column</code> tag, which may
+be omitted for single-column texts.  Column numbers must be given in
+arabic numerals:</p>
+<pre class="cookbook">
+&amp;P545454 = Some Columnar Text
+@column 1
+1. a
+@column 2
+1. e</pre>
+</div>
+
+<d:rnc>
+column = 
+  element column { 
+    (implicit
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (milestone | hdr | lg | l | nonl | nonx | comments | proto.inter)*,
+    attribute n { text },
+    attribute o { text }?,
+    primes?,
+    status.flags
+  }
+</d:rnc>
+
+<div class="primary tutorial">
+<h3>Status</h3>
+<p>The status of some of the features indicated with @-lines can be
+indicated in a manner similar to that of graphemes; the notation is
+intended to be natural and to follow Assyriological conventions:</p>
+<pre class="cookbook">
+@obverse?</pre>
+<p>Meaning: status of obverse/reverse uncertain</p>
+
+<pre class="cookbook">
+@reverse!*</pre>
+<p>Meaning: collated; reverse correct despite designation in publication</p>
+
+<p>Primes can be used where this makes sense:</p>
+<pre class="cookbook">
+@face a'
+
+@column 3'
+</pre>
+</div>
+
+<d:rnc>
+primes = 
+  attribute primes { xsd:string { pattern="\x{2032}+" } }
+</d:rnc>
+
+<div class="primary tutorial">
+<h3>Headings</h3>
+
+<p>Transliterations and composites can both contain headings, which take the form <code>@h&lt;DIGIT></code>, where DIGIT is the outline-level of the heading, normally 1, 2 or 3.</p>
+
+<h3>Milestones</h3>
+<p>For technical reasons it is impossible to interweave physical
+structure (of the kind described above for transliterated objects) and
+document structure (e.g., paragraph divisions).  This limitation is
+resolved by recourse to milestones.</p>
+
+<h4>Divisions</h4>
+
+<p>Documentary divisions in a transliterated object are given using
+the <code>@m</code> tag, with the milestone type given after an equals
+sign and the division type following; an optional division name or
+number may follow the division type:</p>
+
+<pre class="cookbook">
+@m=division paragraph 1
+
+@m=division colophon
+</pre>
+
+<h4>Discourse</h4>
+
+<p>Simple support for discourse elements in administrative and scholarly
+texts is provided using shorthands which are also implemented as
+milestones.  These shorthands are:</p> 
+<ul>
+<li><code class="cookbook">@catchline</code></li>
+<li><code class="cookbook">@colophon</code></li>
+<li><code class="cookbook">@date</code></li>
+<li><code class="cookbook">@signatures</code> and 
+    <code class="cookbook">@signature</code></li>
+<li><code class="cookbook">@summary</code></li>
+<li><code class="cookbook">@witnesses</code></li>
+</ul>
+
+<p>These milestones must be specified between lines. If you need to mark a
+milestone in the middle of a line then you can split the line into two 
+(labeled, e.g., a and b) at the milestone.</p>
+<pre class="example">
+&amp;P787878 = Some Administrative Text
+1. 1(diš) udu
+2. da-da
+3. šu ba-ti
+@date
+4. u₄ 1-kam
+@left
+@summary
+1. 1(diš) udu
+</pre>
+
+<pre class="example">
+&amp;P908908 = A Scholarly Text
+@colophon
+1a. UNUG{ki} 
+@date
+1b. {iti}AB U₄ 1-KAM₂
+2. MU 1.39@v-KAM₂ {m}an-ti-ʾi-ku-su LUGAL 
+</pre>
+</div>
+
+<d:rnc>
+
+hdr = element h {
+  attribute level { xsd:nonNegativeInteger },
+  attribute xml:id   { xsd:ID },
+  htext
+}
+
+milestone = m | m.discourse
+
+m = element m { 
+  attribute type { "division" | "locator" },
+  attribute subtype { text }?,
+  attribute n { text }?,
+  text
+}
+
+m.discourse = element m {
+  attribute type { "discourse" },
+  attribute subtype { "body" | "catchline" | "colophon" | "date" | "linecount" 
+                      | "witnesses" | "signature" | "summary" 
+		      | "sealings" | "sealing" },
+  attribute endflag { "1" }?,
+  text
+}
+
+m.fragment = element m { 
+  attribute type { "locator" },
+  attribute subtype { "fragment" }?,
+  text
+}
+</d:rnc>
+
+<div class="primary">
+<h3>Implied tags</h3>
+<p>The ATF processor supplies structural elements where they are
+implied by the transliteration and this is indicated in the XTF tree
+by use of the <code>implicit</code> attribute.  For example, given:</p>
+
+<pre class="cookbook">
+&amp;P121212 = Some Sparse Data
+1. a</pre>
+
+<p>The following (schematic) element structure is generated:</p>
+<pre class="example">
+&lt;transliteration>
+  &lt;object>
+    &lt;surface>
+      &lt;column></pre>
+<p>All of these elements have <code>implicit="1"</code>.</p>
+<p><strong>N.B.:</strong> Implicit elements are not addressable by
+label or xml:id attributes; explicit object, surface and column
+indicators must be given if addressability is a requirement.</p>
+</div>
+<d:rnc>
+implicit = attribute implicit { "1" }
+</d:rnc>
+
+<div class="tutorial">
+<a name="dollar"/>
+<h2>$-lines</h2>
+<p>$-lines are used to indicate information about the state of the
+text or object, or to describe features on the object which are not
+part of the transliteration proper.  They come in two flavours: strict
+and loose.</p>
+<p><strong>Strict</strong> $-lines are subject to the restrictions in
+the table below; strict $-lines can be interpreted in their entirety
+by the ATF processor and the interpreted information can then be used
+by other programs.  Strict $-lines are the best practice.</p>
+<p><strong>Loose</strong> $-lines are indicated by putting parentheses
+around the contents of the $-line.  This is a facility provided to
+enable annotation of features which are not covered by the strict
+$-line specification.  If the ATF processor detects that a loose
+$-line actually meets the criteria defined for strict $-lines it gives
+an advisory notice that the parentheses should be removed.</p>
+<p>$-lines and comments are two quite different facilities, but
+experience has shown that transliterators can confuse the two.
+Comments are for information which does not belong in the
+transliteration and description of the text; comments are not
+displayed when the text is formatted for display or print.  $-lines
+are for information which is integral to an understanding of the
+textual data; $-lines are included when the text is displayed or
+printed.</p>
+<h3>Seal</h3>
+<p>A particular use of $-lines is to indicate that a seal is used on
+an object; the form is:</p>
+<pre class="example">$ seal &lt;N></pre>
+<p>Where <code>N</code> is a number indicating which seal is used;
+if a transliteration of the seal is also given using the
+<code>@seal</code> heading, the number following <code>$ seal</code>
+should correspond to the number following <code>@seal</code>.  See the
+<a href="#sealex">example above.</a></p>
+
+<h3>State</h3>
+<p>Most $-lines are used to give information about the state of the
+object being transliterated.  The conventions for this can be
+summarized as follows:</p>
+<table class="eighty middled">
+<caption>Summary of Strict $-line Conventions for States</caption>
+<thead>
+<tr><th>Qualification</th><th>Extent<sup>1</sup></th><th>Scope</th><th>State</th></tr>
+</thead>
+<tfoot>
+<tr><td colspan="5"><sup>1</sup>The extent <code>N</code> may be a
+number such as 1 or 5; a <code>RANGE</code> gives two numbers
+separated by a hyphen, e.g., 3-5.</td></tr>
+<tr><td colspan="5"><sup>2</sup><code>OBJECT</code> is any object
+specifier as described above, e.g., tablet, object etc.</td></tr>
+<tr><td colspan="5"><sup>3</sup><code>SURFACE</code> is any surface
+specifier as described above, e.g., obverse, left etc.</td></tr>
+</tfoot>
+<tbody>
+<tr>
+<td>
+at least<br/>
+at most<br/>
+about
+</td>
+<td>
+n<br/>
+several<br/>
+some<br/>
+NUMBER<br/>
+RANGE<br/>
+rest of<br/>
+start of<br/>
+beginning of<br/>
+middle of<br/>
+end of<br/>
+</td>
+<td>
+OBJECT<sup>2</sup><br/>
+SURFACE<sup>3</sup><br/>
+column<br/>
+columns<br/>
+line<br/>
+lines<br/>
+case<br/>
+cases<br/>
+surface
+</td>
+<td>
+blank<br/>
+broken<br/>
+effaced<br/>
+illegible<br/>
+missing<br/>
+traces
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Rulings</h3>
+<p>$-lines are also used to indicate noteworthy rulings on the
+tablet; ordinary case- or line-ruling should not be indicated with a
+$-line, but where a scribe has used a ruling to give additional
+information about the document structure this should be noted as:</p>
+<pre class="listing">
+(single | double | triple)   ruling
+</pre>
+<h3>Examples</h3>
+<p>Strict $-lines look like this:</p>
+<pre class="cookbook">
+$ 3 lines blank
+$ rest of obverse missing
+</pre>
+<p>A loose $-line looks like this:</p>
+<pre class="cookbook">
+$ (head of statue broken)
+</pre>
+<p>A ruling $-line looks like this:</p>
+<pre class="cookbook">
+$ double ruling
+</pre>
+<h3>Images</h3>
+<p>Inline images can be specified using the form:</p>
+<pre class="example">
+$ (image N = &lt;text>)
+</pre>
+<p>Where N is an image number consisting of digits followed by
+optional lowercase letters from a to z, and &lt;text> is free text,
+giving a label for the image (which is copied through to the XHTML
+'alt' attribute on the &lt;img> tag).</p>
+
+<pre class="cookbook">
+$ (image 1 = numbered diagram of triangle)
+</pre>
+
+<p>At present, the implementation only works for XHTML which is
+produced within a project.  The ATF processor constructs a file name
+consisting of the text ID and the image's N value, joined by an at
+sign (e.g., <code>P123456@1</code>).  The XHTML producer then emits an
+<code>&lt;img></code> tag with the <code>src</code> attribute set to
+<code>/&lt;PROJECT>/&lt;FILENAME>.png</code>.</p>
+
+<p>Thus, in the present implementation, there must exist an
+appropriately named file in the PNG graphics format residing in the
+project's <code>images</code> directory.  The implementation is
+expected to support a more sophisticated locator mechanism in the
+future.</p>
+</div>
+
+<d:rnc>
+nonx = element nonx { nonx-attlist, text }
+nonl = element nonl { nonl-attlist, text }
+nong = element nong { nong-attlist, text }
+
+nonx-attlist =
+  attribute xml:id { xsd:ID },
+  (attribute label { text },
+   attribute silent { "1" })?,
+  (
+   (attribute strict { "1" },
+    ((attribute ref     { text },
+      attribute scope   { text })
+     |(attribute extent { text },
+       attribute scope  { text },
+       attribute state  { text },
+       attribute flags  { xsd:string {
+                              pattern="[!?*]+"
+			  }}?)))
+  |
+   (attribute strict { "0" },
+    attribute extent { text }?,
+    attribute ref    { text }?,
+    attribute scope  { text }?,
+    attribute state  { text }?)
+  |
+   (attribute strict { "0" },
+    attribute ref    { "none" },
+    attribute type   { "empty" })
+  |
+   (attribute type   { "image" },
+    attribute strict { "0" },
+    attribute ref    { xsd:string {
+                          pattern="[PQX][0-9]+@[0-9]+[a-z]*" 
+		       }},
+    attribute alt    { text })
+  )
+
+non-x-attr-set =
+  attribute type {
+    "newline" | "broken" | "maybe-broken" | "traces"
+    | "maybe-traces" | "blank" | "ruling" | "image"
+    | "seal" | "docket" | "comment" | "bullet" | "other"
+  },
+  attribute unit { "self" | "quantity" | "ref" }?,
+  attribute extent { text }?,
+  attribute ref { text }?,
+  attribute xml:id { xsd:ID }?
+noncolumn-attlist &amp;= non-x-attr-set
+nonl-attlist &amp;= non-x-attr-set
+nong-attlist &amp;= non-x-attr-set
+</d:rnc>
+
+<div class="primary tutorial">
+<h2>Text Lines</h2>
+<p>Lines of transliterated text begin with a sequence of non-space
+characters followed by a period and a space (these are typically
+numbers, but that is not a requirement):</p>
+<pre class="cookbook">
+1.   a
+a+1. e
+2'.  i</pre>
+
+<div class="atf">
+<p>In ATF, lines containing only spaces are ignored; lines
+beginning with a space are continuation lines and the newline and
+leading spaces are dropped by the ATF processor:</p>
+<pre class="cookbook">
+1. a a a a 
+   a a a</pre>
+</div>
+
+<p class="secondary tutorial">The content of lines is defined principally by the <a
+href="../GDL/gdltut.html">Grapheme Description Language</a>, but there are
+some line-related ATF features which are not necessary for many users
+and which are dealt with in the <a href="advanced.html">advanced
+documentation</a>.</p>
+</div>
+
+<d:rnc>
+l =
+  element l {
+    attribute xml:id { xsd:ID },
+    attribute n { text },
+    attribute o { text }?,
+    attribute label { text }?,
+    attribute spanall { "1" }?,
+    (cell+ | f+ | (ag | l.inner)*) 
+  }
+
+l.inner = (surro | normword | words | glo)*
+</d:rnc>
+
+<!--
+    attribute l { text }?,
+    attribute silent { "1" }?,
+-->
+<h2 class="primary">Advanced</h2>
+<h3 class="primary">Legacy</h3>
+<h1 class="secondary advanced">Legacy</h1>
+<p>To save the time and bother of converting legacy transliteration into ATF you can use:</p>
+<pre class="cookbook">#atf: use legacy</pre>
+<p>to get the processor to treat typographic features such as diacritics, half-brackets, and intra-sign square brackets as if they were valid ATF.</p>
+<h3 class="primary">Line Numbers</h3>
+<h1 class="secondary advanced">Line Numbers</h1>
+
+<div class="primary advanced">
+<p>By default the ATF processor renumbers lines, storing the original
+line number and generating a new one according to consistently defined
+rules.  This procedure was adopted because of the lack of consistency
+in numbering administrative texts.</p>
+
+<p>It is possible to suppress this behaviour and, indeed, it is
+necessary to suppress this behaviour if intertext linking is in use.
+The relevant protocol to achieve this is:</p>
+<pre class="cookbook">
+#atf: use mylines</pre>
+</div>
+
+<h3 class="primary">Cells &amp; Fields</h3>
+<h1 class="secondary advanced">Cells &amp; Fields</h1>
+
+<div class="primary advanced">
+<p>Two mechanisms provide structural subdivisions of lines: cells and
+fields.</p>
+
+<p>Cells are alignment units (like table cells); they can be of use to
+organize the data in a way that mimics the layout on the object.
+Fields are logical subdivisions in a line which are not necessarily
+laid out in a special way on the object.  Cells can contain fields but
+fields cannot contain cells; fields are lower in the structural
+hierarchy than cells.</p>
+
+<p>Fields can have a type specified so that higher order processors
+working with the XTF data can work intelligently with them.</p>
+
+<div class="atf">
+<p>In ATF, cells are separated by ampersand characters
+(<code>&amp;</code>); fields are separated by commas.  Both separators
+must be preceded by one or more spaces.</p>
+<p>Field types are indicated with an exclamation mark followed by one
+or more lowercase letters; see the <a href="lexical.html">lexical
+documentation for examples of how this works</a>.</p>
+
+<pre class="cookbook">
+&amp;P123123=UET 3,2
+1. a &amp; e
+
+&amp;P123123=UET 3,2
+1. a , e
+
+&amp;P123123=UET 3,2
+1. e4 ,!sv A</pre>
+</div>
+</div>
+
+<d:rnc>
+cell = element c { span? , (f+ | l.inner) }
+span = attribute span { xsd:nonNegativeInteger }
+
+f = element f { f-attlist, (ag | l.inner)* }
+f-attlist &amp;=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute xml:lang { xsd:NMTOKEN }?
+</d:rnc>
+
+<h3 class="primary">Streams</h3>
+<h1 class="secondary advanced">Streams</h1>
+
+<div class="primary advanced">
+<p>Streams are XTF's mechanism for entering data several times in
+several different ways; no automatic alignment is done between
+streams, but an alignment-group mechanism is provided for those
+occasions where alignment is a requirement.  There are three kinds of
+stream in XTF:</p>
+
+<dl>
+<dt>MTS: Main Transliteration Stream</dt>
+<dd>This is the default line-type and is the only one that is normally
+used.  Lemmatization information is aligned with the MTS unless there
+is an NTS.</dd>
+<dt>NTS: Normalized Transliteration Stream</dt>
+<dd>This is a transliteration stream in which adjustments have been
+made to normalize the text; a normal-orthography version of an emesal
+text could be created using this mechanism, for example.
+Lemmatization information is aligned with the NTS if present.  If NTS
+and LGS are both given, NTS must come before LGS.</dd>
+<dt>LGS: Linearized Grapheme Stream</dt>
+<dd>This is the sequence of graphemes exactly in order and linearized
+to the extent possible; this is mainly used in transliterations of ED
+texts where the presumed reading sequence and the actual grapheme
+sequence often diverge.  No alignment is ever done with the LGS.</dd>
+<dt>GUS: Gloss Underneath Stream</dt>
+<dd>Implemented for compatibility with the SAA corpus, this stream
+allows glosses which appear on the tablet underneath the main text
+line to be given in their own line.</dd>
+</dl>
+
+<div class="atf">
+<p>In ATF, the MTS is the unmarked case (the one with the line
+number).  The NTS is introduced by the sequence equals-period-space at
+the start of the line (<code>=. </code>).  The LGS is introduced by
+the sequence equals-colon-space at the start of the line (<code>=:
+</code>).  A simple, if contrived example of all the streams is:</p>
+<pre class="cookbook">
+&amp;P246246=Streams
+1. a
+={ e
+=. e4
+=: A
+#lem: a[water]
+</pre>
+</div>
+</div>
+
+<d:rnc>
+lg = element lg { 
+  attribute xml:id { xsd:ID }?,
+  maxcells?,
+  attribute n { text }?,
+  (   (l,gus?,nts)
+    | (l,gus?,nts?,(proto.link?,bil+)+)
+    | (l,gus?,lgs) 
+    | (l,gus?,nts,lgs) 
+    | (l,gus?, (e | comments)*)),
+  proto.inter*,
+  var*
+}
+bil = element l { attribute type { "bil" } , l.inner* }
+nts = element l { attribute type { "nts" } , (ag | l.inner)* }
+lgs = element l { attribute type { "lgs" } , grapheme* }
+gus = element l { attribute type { "gus" } , l.inner* }
+var = element v { 
+  attribute varnum { text | "*" } ,
+  attribute label  { text } ,
+  attribute ex_label { text }? ,
+  (l.inner | cell+)
+}
+</d:rnc>
+
+<h3 class="primary">Alignment</h3>
+<h1 class="secondary advanced">Alignment</h1>
+
+<div class="primary advanced">
+<p>Alignment between MTS and NTS can be effected through the
+alignment-groups mechanism in which groups of words can be defined and
+labelled such that the groups in one stream correspond to the groups
+in the other stream.</p>
+
+<p>If groups are used at all in a stream then every word in the stream
+must belong to a group.</p>
+
+<div class="atf">
+<p>In ATF, alignment groups must be enabled using a protocol; the
+groups are then indicated using matched parentheses with one or more
+lowercase letters following the closing parenthesis:</p>
+<pre class="cookbook">
+&amp;P122221=Align
+#atf: use alignment-groups
+1.  %u  (UD)a  (GAL UM ME)b (BA LAGAB)c
+=.      (kur)a (umeda)b     (ba-jen)c
+#lem: 	kur[mountain]; umeda[nurse]; jen[go]
+</pre>
+</div>
+</div>
+
+<d:rnc>
+# alignment groups
+ag = element ag { 
+  attribute ref { xsd:string { pattern="[a-z]+" } },
+  attribute form { text }?,
+  l.inner*
+}
+</d:rnc>
+
+<h3 class="primary">Zones</h3>
+<h1 class="secondary advanced">Zones</h1>
+
+<div class="primary advanced">
+<p>Zones are an experimental feature; at the schema level they are
+defined in the GDL, but it is convenient to discuss them here because
+they are another mechanism for grouping graphemes.  The concept is
+that part of an inscription, e.g., a case, may exhibit ordering which
+may not be linear but is nevertheless be based on some spatial
+relationship between signs.  Transliterators can assign graphemes to
+zones and label the graphemes by zone.</p>
+
+<div class="atf">
+<img class="floatright" src="UGN_example.png" alt="UD GAL NUN
+example"/>
+<p>In ATF, zones are indicated using a dollar sign followed by digits
+(e.g., <code>$1</code>.  In the Ebla version of the text in the
+alignment example, the words are stacked vertically as in the image
+here.  This could be transliterated as follows:</p>
+<pre class="cookbook">
+&amp;P122221=Align
+#atf: use alignment-groups
+1.  %u  (UD$1)a (GAL$2 UM$3 ME$3)b (BA$4 LAGAB$4)c
+=.      (kur)a  (umeda)b           (ba-jen)c
+#lem: 	kur[mountain]; umeda[nurse]; jen[go]</pre>
+</div>
+</div>
+
+<p class="primary">See the <a href="GDL/gdltut.html#presence">GDL
+documentation under Presence</a> for surrogates.</p>
+<d:rnc>
+surro = element surro { l.inner }
+words |= surro?
+word |= surro?
+</d:rnc>
+
+<div class="primary composite">
+<h2 class="primary">Composites</h2>
+<h3 class="primary">@composite</h3>
+<h1 class="secondary">@composite</h1>
+
+<p>Composite texts by convention have an ID beginning with Q and are
+declared by an @-line which immediately follows the &amp;-line for the
+text:</p>
+<pre class="cookbook">
+&amp;Q000002 = Archaic Lu A
+@composite</pre>
+
+<p>To obtain an ID for a composite text e-mail
+<code>stinney@sas.upenn.edu</code>.</p>
+
+<h3 class="primary">Structure</h3>
+<h1 class="secondary">Structure</h1>
+
+<p>Most of the @-lines which are permitted in transliterations are not
+permitted in composites; this is because composites are organized
+around documentary structure rather than the structure of a physical
+object.  The one exception is that milestones are allowed in
+composites.</p>
+
+<p>Documentary divisions are indicated in ATF by use of the
+<code>@div</code> tag which is followed by the name of the division
+and an optional name for the division.  The <code>@div</code> tag
+requires a closing <code>@end</code> tag, which must take as its
+single argument the name of its corresponding opening
+<code>@div</code>.  <code>@div</code>'s of different kinds may not be
+interwoven</p>
+
+<p class="primary">The <code>@div</code> tag maps to the DIV element
+in XTF.  The first NMTOKEN which follows the @div is the name of the
+division and is stored in the @TYPE attribute.  The remainder of the
+line is stored in the @N attribute..</p>
+
+<pre class="cookbook"> 
+@div part 1
+...
+@end part
+
+@div colophon
+...
+@end colophon</pre>
+
+<p>In the liturgical corpus (including ETCSL editions of texts which
+could reasonably be considered liturgical), kirugu and other rubrics
+are used as logical structures, and they contain subdivisions giving
+the actual rubric; this is supported with the following syntax:</p>
+
+<pre class="cookbook">
+@div kirugu 1
+1.  tur3-ra-na ...
+
+@div rubric kirugu
+10. ki-ru-gu2 1(disz)-a-kam
+@end rubric
+
+@end kirugu
+
+@div giszgigal 1
+11. u2-a a-u3-a u2-a-u2-a
+
+@div rubric giszgigal
+12. gisz-gi4-gal2-bi-im
+@end rubric
+
+@end giszgigal</pre>
+
+<h3 class="primary">Locator</h3>
+<h1 class="secondary">Locators</h1>
+
+<p>A physical location may be given in a composite by using the
+locator milestone; the content after locator is a label.  This is
+intended for use when the documentary structure of composites is being
+used to edit a text which is preserved only in one exemplar (the ePSD
+royal inscriptions corpus edits all royal inscriptions as composites):</p>
+
+<pre class="cookbook">
+1. a
+@m=locator o 1</pre>
+
+<h3 class="primary">Variants</h3>
+
+<p>Variants are implemented to support the ETCSL corpus but may be
+used in any composite.</p>
+
+</div>
+<d:rnc>
+composite-content = 
+  (milestone | \include | \div | variants | hdr | lg | l | comments | nonl | nonx | proto.inter)*
+
+\include = element include { increfAttr }
+
+referto = element referto { increfAttr }
+
+increfAttr = 
+  (attribute ref { text } , 
+   attribute n { text } ,
+   (attribute from { text },
+    attribute to { text }?)?)
+
+\div =
+  element div {
+    div-attlist, 
+    composite-content
+  }
+div-attlist &amp;=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute lang { text }?,
+  attribute place { text }?,
+  attribute subtype { text }?
+
+variants = element variants { variant* }
+
+variant = 
+  element variant {
+    (\div | variants | lg | l | comments | nonl | proto.inter | nonx)*
+  }
+</d:rnc>
+
+<d:rnc>
+score =
+  element score {
+    score-attlist, 
+    proto.start? , sigdef*, 
+    (object | surface | column | milestone | \div | lg | comments | nonl)*
+  }
+score-attlist &amp;=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  score_mode,
+  score_type,
+  score_word?,
+  attribute xml:lang { xsd:NMTOKEN }?,
+  attribute hand     { text }?,
+  project?,
+  implicit?,
+  haslinks?,
+  maxcells?
+
+score_mode = attribute score-mode { "parsed" | "unparsed" }
+score_type = attribute score-type { "matrix" | "synopsis" }
+score_word = attribute score-word { "yes" }
+
+synopticon =
+  element synopticon { synopticon-attlist, sigdef*, (eg | comments | nonl)* }
+synopticon-attlist &amp;=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+sigdef = element sigdef { sigdef-attlist, empty }
+sigdef-attlist &amp;=
+  attribute xml:id { xsd:ID },
+  attribute targ-id { xsd:NMTOKEN },
+  attribute targ-n { text }
+eg = element eg { eg-attlist, e* }
+eg-attlist &amp;= attribute xml:id { xsd:ID }?
+e =
+  element e {
+    e-attlist,
+    (l.inner
+     | cell+
+     | f+)
+  }
+e-attlist &amp;=
+  attribute xml:id { xsd:ID }?,
+  attribute sigref { xsd:IDREF }?,
+  attribute n { text }?,
+  attribute l { text }?,
+  attribute p { text }?,
+  attribute hlid { text }?,
+  attribute plid { text }?
+</d:rnc>
+<div class="secondary linkage">
+    <h2>Background</h2>
+    <div>
+      <p>The ATF format supports inline notations of three relationships
+between lines in different texts:</p>
+      <ul>
+        <li>parallels, in which a line or lines in one text are similar to
+lines in another text</li>
+        <li>sources, or lines which are being included in a composite text
+but originate in other texts</li>
+        <li>contributors, or lines which are being entered in a
+transliteration and at the same time are relevant to the
+reconstruction of a composite text</li>
+      </ul>
+    </div>
+    <h2>Operators</h2>
+    <div>
+      <p>Linking composite text lines to lines in individual texts, lines
+in exemplars to lines in composite texts, and matching lines in two
+or more individual exemplars or composite texts are indicated with
+the following notation at the beginning of the next line after the
+line of transliterated text to be linked.</p>
+      <dl>
+        <dt>&lt;&lt;</dt>
+        <dd>line comes from tablet instance (source)</dd>
+        <dt>&gt;&gt;</dt>
+        <dd>line goes to composite text (contributor)</dd>
+        <dt>||</dt>
+        <dd>before reference to line in parallel composite or tablet
+(parallel)</dd>
+      </dl>
+      <p>The source ('comes from') and contributor ('goes to') facilities
+are intended to allow creation of composite texts in the absence of
+a complete set of transliterated sources and, conversely, to allow
+the transliteration of individual sources by reference to a
+composite text which may not yet include the original sources.</p>
+      <p>The parallel link facility is especially useful for editing
+tablets such as those containing liturgical texts and incantations
+where creating a composite text may be practically futile as well
+as methodologically dubious.</p>
+    </div>
+    <h2>Targets and Link Definitions</h2>
+    <div>
+      <p>A <code>TARGET</code> is a reference to another text related to
+the one at hand. Every linked text must be defined and given a
+<code>TARGET</code> identifier in the file in which it is to be
+used before the first use; we recommend grouping all the
+definitions together just before the <code>&amp;</code>-line (text
+ID/name line).</p>
+      <p>A linked text definition takes the form:</p>
+      <pre>
+#link: def linktext &lt;TARGET&gt; = &lt;ID&gt; = &lt;NAME&gt;
+</pre>
+      <p>For example:</p>
+      <pre>
+#link: def A =  P227635 = CBS 10792 (OB Syllabary B)
+</pre>
+      <p>The variable elements of this definition are:</p>
+      <dl>
+        <dt>TARGET</dt>
+        <dd>the name that is used in the link specifiers; this is normally
+an uppercase letter, e.g., <code>A</code>, but the only actual
+restriction on the spelling of a target is that it may not contain
+any whitespace.</dd>
+        <dt>ID</dt>
+        <dd>the ID as assigned by the CDLI project; for transliterated
+objects this begins with a 'P', e.g., P123456. Other text types
+have similar identifiers with different initial letters. (<a href="st.html#st3">see documentation on text naming</a>)</dd>
+        <dt>NAME</dt>
+        <dd>the human-readable name assigned by the CDLI project; in the
+XML format this is the value of the 'N' attribute. (<a href="st.html#st3">see documentation on text naming</a>)</dd>
+      </dl>
+      <p>The ID and NAME values of texts can be obtained from the CDLI
+website; for texts which have not yet been assigned ID's, use an
+initial 'X' followed by digits as an interim measure and e-mail the
+CDLI staff to request IDs (cdli@ucla.edu).</p>
+    </div>
+    <h2>Labels</h2>
+    <div>
+      <p>The target is followed by a label that gives the location of the
+related text in the target document. Labels are constructed
+according to the following abbreviations (which are designed to be
+easy to type while still allowing programmatic reconstruction of
+the location of the reference in the XML dataset):</p>
+      <ul>
+        <li>o = obverse</li>
+        <li>r = reverse</li>
+        <li>t = top edge</li>
+        <li>b = bottom edge</li>
+        <li>l = left edge</li>
+        <li>r = right edge</li>
+        <li>e = edge</li>
+        <li>&lt;surface&gt; = other surface, e.g.,
+<code>shoulder</code></li>
+        <li>face a..z = prism face a to z</li>
+        <li>seal n = seal n (n = the number of the seal in the
+transliteration)</li>
+        <li>&lt;roman&gt; = column number in lowercase roman numerals</li>
+        <li>&lt;line number&gt;</li>
+      </ul>
+      <p>Spaces are required between elements of a label, for example, o
+i 2 = obverse, column 1, line 2.</p>
+      <p>Two labels, a 'from' label and a 'to' label, are used when there
+is a need to indicate a range of text beyond a single line in the
+target document. A range requires a hypehn character between the
+two labels.</p>
+    </div>
+    <h2>Syntax</h2>
+    <div>
+      <p>The syntax of these constructs is either:</p>
+      <pre>
+&lt;OPERATOR&gt; &lt;TARGET&gt; &lt;LABEL&gt;</pre>
+      <p>or:</p>
+      <pre>
+&lt;OPERATOR&gt; &lt;TARGET&gt; &lt;FROM_LABEL&gt; - &lt;TO_LABEL&gt;</pre>
+    </div>
+    <h2>Implementation
+Notes</h2>
+    <div>
+      <p>A separate program manages the links in such a way that it is
+unnecessary to group together all of the links to a specific
+parallel. In other words, given three texts which contain the same
+parallel, let's say Liturgy 1, 2 and 3, one can encode the
+relationship as follows:</p>
+      <pre>
+@transliteration
+#link: def A = P222222 = Liturgy 2
+&amp;P111111 = Liturgy 1
+1. a-u-a
+|| A 1</pre>
+      <pre>
+&amp;P222222 = Liturgy 2
+1. a-u2-a</pre>
+      <pre>
+#link: def A = P222222 = Liturgy 2
+&amp;P333333 = Liturgy 3
+1. a-u3-a
+|| A 1</pre>
+      <p>The link manager will resolve the links in Liturgy 1 and Liturgy
+3 and construct a link-ring in which all three parallels refer
+mutually to each other. The search engine will automatically
+display all parallels whenever a match is found in any of the
+lines.</p>
+    </div>
+    <h2>Examples</h2>
+    <div>
+      <p>
+        <b>(a) Source (line in composite 'comes from' exemplar):</b>
+      </p>
+      <p>
+        <i>File 1:</i>
+      </p>
+      <pre>
+&amp;P121323 = OB Lu excerpt N 4304
+1. lu2</pre>
+      <p>
+        <i>File 2:</i>
+      </p>
+      <pre>
+@composite
+#link: def A = P123123 = OB Lu excerpt N 4304
+&amp;Q123238 = A = OB Lu A
+1. lu2
+&lt;&lt; A 1</pre>
+      <p>
+        <b>(b) Contributor (line in exemplar 'goes to'
+composite)</b>
+      </p>
+      <p>
+        <i>File 1:</i>
+      </p>
+      <pre>
+@composite
+&amp;Q123238 = OB Lu A
+1. lu2</pre>
+      <p>
+        <i>File 2:</i>
+      </p>
+      <pre>
+#link: def A = Q128238 = OB Lu A
+&amp;P121323 = OB Lu excerpt N 4304
+1. A
+&gt;&gt;A 1</pre>
+      <p>
+        <b>(c) Parallel</b>
+      </p>
+      <p>
+        <i>File 1:</i>
+      </p>
+      <pre>
+&amp;P123456 = Kusu Incantation version 1
+@reverse
+@column 2
+1. [am husz gal] du7-du7 gi-[izi-la2] </pre>
+      <p>
+        <i>File 2:</i>
+      </p>
+      <pre>
+#link: def D = P123456 = Kusu Incantation version 1
+&amp;P123457 = Kusu Incantation version 2
+1. am husz# gal du7-du7 gi-[izi-la2]
+|| D r ii 1</pre>
+      <p>The above example shows two exemplars of a text. The second
+transliteration contains a definition of the first text as "D" and
+indicates that its first line is paralleled (||) in the first line
+of the second column of the reverse of the first text. Parallels
+may be drawn between composite texts, transliterations or a
+combination of the two.</p>
+    </div>
+</div>
+
+<div class="secondary lexical">
+    <h1>Protocol</h1>
+    <div>
+      <p>Lexical texts are indicated by a special protocol which should
+be given at the start of each file. This protocol takes the
+form:</p>
+      <pre class="cookbook">
+#atf: use lexical</pre>
+<p>The use of the lexical protocol also automatically enables the
+<code>#atf: use mylines</code> protocol.</p>
+    </div>
+    <h1>Fields</h1>
+    <div>
+      <p>Columns of lexical texts are treated as fields in the ATF sense,
+i.e., they are segments of a line which have distinct content. The
+ATF field-separator <code>','</code> is used to separate columns of
+a lexical text; if the physical alignment of a lexical text is to
+be mimicked, the ATF column-separator code <code>'&amp;'</code> can
+be used instead.</p>
+      <p>Fields are marked for their content, whether the column contains
+a sign, a pronunciation, a translation or other data type. If the
+column is unmarked, the column contains a word or phrase.</p>
+      <p>The following are the markers for column types. Note that there
+are both shorthand and explicit markers. Shorthand markers must be
+preceded and followed by at least one space or tab character.</p>
+      <table cellspacing="3" cellpadding="3">
+        <tr>
+          <th align="left">Shorthand</th>
+          <th align="left">Explicit</th>
+          <th align="left">Meaning</th>
+        </tr>
+        <tr>
+          <td align="center">#</td>
+          <td>,!sv</td>
+          <td>column that follows is sign value</td>
+        </tr>
+        <tr>
+          <td align="center">"</td>
+          <td>,!pr</td>
+          <td>column that follows is pronunciation</td>
+        </tr>
+        <tr>
+          <td align="center">~</td>
+          <td>,!sg</td>
+          <td>column that follows is sign</td>
+        </tr>
+        <tr>
+          <td align="center">|</td>
+          <td>,!sn</td>
+          <td>column that follows is ancient sign name</td>
+        </tr>
+        <tr>
+          <td align="center">=</td>
+          <td>,!eq</td>
+          <td>column that follows is an equivalent (translation or
+synonym)</td>
+        </tr>
+        <tr>
+          <td align="center">^</td>
+          <td>,!wp</td>
+          <td>column that follows is a word or phrase; this is the default
+column type and the <code>','</code> may be omitted if it is the
+first column</td>
+        </tr>
+        <tr>
+          <td align="center">@</td>
+          <td>,!cs</td>
+          <td>column that follows gives the contained signs which occur within a
+	  container sign</td>
+        </tr>
+      </table>
+      <p>In addition, a bullet-character may be transliterated at the
+start of the line using '*', optionally followed by the grapheme in
+parenthesis, e.g., <code>*</code> or <code>*(disz)</code>.</p>
+      <p>Example:</p>
+      <pre class="cookbook">
+1. !pr e-a ,!sg A ,!eq %a na-a-qu</pre>
+      <p>which may also be entered as:</p>
+      <pre class="cookbook">
+1. " e-a ~ A = %a na-a-qu</pre>
+      <p>This is a three-column text with the first column being the
+pronunciation, the second being the sign, and the third being the
+translation, in this case into Akkadian as indicated by the
+standard <a href="../GDL/gdltut.html#langs">language shift</a> marker "%a." The
+first example is the full form with the standard notation for field
+breaks, <code>','</code> followed by the notation for the type of
+column. The second example above is the same transliteration with
+shorthand rather than explicit notation. Remember that it is very
+important to have whitespace on either side of the shorthand
+markers.</p>
+    </div>
+    <h1>Examples</h1>
+    <div></div>
+    <h4>Paleographic Ea</h4>
+    <div>
+      <pre class="cookbook">
+1. !sg A</pre>
+      <p>This example shows how to mark up a single column list of sign names.</p>
+    </div>
+    <h4>Proto-Ea</h4>
+    <div>
+      <pre class="cookbook">
+1. !pr e-a ,!sg A</pre>
+    </div>
+    <h4>Proto-Aa</h4>
+    <div>
+      <pre class="cookbook">
+1. !pr e-a ,!sg A ,!eq%a mu-u</pre>
+      <p>Here we have a three-column list with pronunciation, sign name,
+and akkadian translation. Shorthand for the same line of
+translation would be:</p>
+      <pre class="cookbook">
+1. " e-a : A = %a mu-u</pre>
+    </div>
+    <h4>Unilingual</h4>
+    <div>
+      <pre class="cookbook">
+1. !wp a </pre>
+      <p>or:</p>
+      <pre class="cookbook">
+1. ^ a</pre>
+      <p>Note that because <code>!wp</code> is the default field type,
+this can also be written as:</p>
+      <pre class="cookbook">
+1. a</pre>
+    </div>
+    <h4>Bilingual</h4>
+    <div>
+      <pre class="cookbook">
+1. !wp a ,!eq%a mu-u </pre>
+      <p>In this case we have a two column list with the Sumerian word in
+the first column and the Akkadian translation in the second. The
+shorthand version would be</p>
+      <pre class="cookbook">
+1. ^ a = %a mu-u </pre>
+      <p>or (because an unmarked column is assumed to contain a word or
+phrase):</p>
+      <pre class="cookbook">
+1. a = %a mu-u</pre>
+      <p>Note again the whitespace on each side of the shorthand markers
+^ and = in the last two examples above.</p>
+    </div>
+    <h4>Trilingual etc.</h4>
+    <div>
+      <pre class="cookbook">
+1. !wp a ,!eq%a mu-u ,!eq%h ba-ba</pre>
+      <p>A three-column text with Sumerian, Akkadian, and Hittite, which
+can also be rendered in shorthand as:</p>
+      <pre class="cookbook">
+1. ^ a = %a mu-u = %h ba-ba</pre>
+      <p>or:</p>
+      <pre class="cookbook">
+1. a = %a mu-u = %h ba-ba</pre>
+    </div>
+    <h4>Prism with unilingual Sumerian vocabulary excerpt from Hh</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = Hh IX excerpt 44
+@prism
+@face 1
+@column 1
+1. ,!pr a-ab ,!wp ab
+2. ,!pr i-ig ,!wp ig</pre>
+    </div>
+    <h4>Syllabary</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. * ,!pr du-u ,!sg KAK</pre>
+      <p>or:</p>
+      <pre class="cookbook">
+1. * " du-u : KAK</pre>
+    </div>
+    <h4>Trilingual</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. " tak-tak ~ TAK4.TAK4 | tak min-a-bi = %a e-ze-bu = %h ar-ha da-lu-mar</pre>
+    </div>
+    <h4>Unilingual Proto-Ea</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. " su-un : BUR2
+2. " bu-ur : BUR2
+3. " du-un : BUR2
+4. " u3-szu-um : BUR2</pre>
+    </div>
+    <h4>Bilingual Proto-Ea</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. ,!pr mu-ul  ,!sg MUL ,!eq%a ka-ka-bu
+2. "           ~        =%a szi-t,ir-tu
+3. "           ~        =%a na-pa-hu
+4. "           ~        =%a na-ba-t,u
+5. " szu2-hub2 ~    MUL = %a szu-hu-pu</pre>
+      <p>Remember that <code>!pr</code> is equivalent to <code>"</code>,
+not "ditto," and <code>!sg</code> is equivalent to <code>~ ;</code>
+.</p>
+      <p>If you want to indicate that empty space is meant to indicate a
+repetition of data from a preceding line, you can include the data
+between &lt;(...)&gt; (intentional omission supplied by editor).
+The example above would then be rendered as follows:</p>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. ,!pr mu-ul  ,!sg MUL , !eq %a ka-ka-bu
+2. &lt;(mu-ul)&gt; ~ &lt;(MUL)&gt; = %a szi-t,ir-tu
+3. &lt;(mu-ul)&gt; ~ &lt;(MUL)&gt; = %a na-pa-hu
+4. &lt;(mu-ul)&gt; ~ &lt;(MUL)&gt; = %a na-ba-t,u
+5. " szu2-hub2  ~ MUL = %a szu-hu-pu</pre>
+    </div>
+    <h4>Emesal</h4>
+    <div>
+      <pre class="cookbook">
+#atf use lexical
+&amp;Pxxxxxx = XX
+@tablet
+@obverse
+1. %e ga-sza-an = %eg nin = %a bel-tu
+2. %e u5-mu = %eg i3-gisz = %a el-lu
+3. %e ze2-eg3 = %eg szum2 = %a na-da-nu</pre>
+    </div>
+</div>
+
+</d:schema>
+
+<d:resources>
+<d:resource copy="yes" href="etc/UGN_example.png"/>
+</d:resources>
+
+<h1 class="tutorial protocols">Links</h1>
+<h2 class="tutorial protocols"><a href="/ns/xtf/1.0/atftut.html">Top</a></h2>
+<h2 class="primary"><a href="atftut.html">Tutorial</a></h2>
+<h2 class="secondary tutorial protocols"><a href="index.html">XTF Manual</a></h2>
+<h2 class="primary"><a href="../GDL/index.html">GDL Manual</a></h2>
+<h2 class="secondary tutorial"><a href="../GDL/gdltut.html">GDL Tutorial</a></h2>
+<h2 class="tutorial"><a href="http://oracc.org/doc/builder/advanced/">Advanced</a></h2>
+<h2 class="tutorial"><a href="http://oracc.org/doc/builder/composite/">Composites</a></h2>
+<h2 class="tutorial"><a href="http://oracc.org/doc/builder/lexical/">Lexical</a></h2>
+<h2 class="tutorial"><a href="http://oracc.org/doc/builder/linkage/">Linkage</a></h2>
+<h2 class="tutorial"><a href="http://oracc.org/doc/builder/protocols/">Protocols</a></h2>
+
+</d:doc>

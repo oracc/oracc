@@ -1,0 +1,51 @@
+/* Distribution Profile Styling */
+
+body.pqotl { padding: 0px; margin: 0px; }
+
+div.pqform { background-color: #99ccff; color: black;
+	padding-top: 3px; padding-bottom: 3px; margin-bottom: 0px; }
+div.pqform form { padding: 0px; margin: 0px; 
+	   background-color: #99ccff; color: black;
+	font-size: 80%; }
+form.pqform p { padding: 0px; margin: 0px; }
+
+h1 { font-size: 100%; }
+h1.pqotl { padding: 0px; margin: 0px; font-size: 80%; }
+h2.pqotl { padding: 0px; margin: 0px; font-size: 80%; }
+h3.pqotl { padding: 0px; margin: 0px; font-size: 80%; }
+h4.pqotl { padding: 0px; margin: 0px; font-size: 80%; }
+
+p.pqcombo  { padding: 0px; margin: 0px; }
+p.pqcombo select {
+	   font-family: arial,sans-serif;
+	   font-weight: bold; font-size: 80%;
+	   }
+p.pqotl  { padding: 0px; margin: 0px; margin-left: 10px; 
+	   margin-bottom: 1px; margin-top: 1px; font-size: 80%; }
+p.pqsel { padding: 0px; margin: 0px; margin-left: 10px; background-color: silver; }
+
+div.pqotl { font-family: arial,sans-serif; padding: 0px; }
+
+div.level0  { margin-left: 0px; 	  
+	      padding-left: 7px; padding-top: 7px; }
+div.level1  { margin-left: 0px; padding: 0px; }
+div.level2  { margin-left: 10px; padding: 0px; }
+div.level3  { margin-left: 15px; padding: 0px; }
+a { text-decoration: none; color: blue; }
+a:hover { color: white; background-color: red; }
+
+h2.pqpage { padding: 0px; margin: 0px; font-size: 80%; line-height: 90%; 
+	  padding-top: 2px; padding-bottom: 2px; border-top: 1px solid #9c9; 
+	  background-color: #cfc; font-family: arial, sans-serif; }
+
+.pqpage p { padding-top: 0px; padding-bottom: 0px; 
+	margin-top: 2px; margin-bottom: 2px; }
+
+p.botlinks { text-align: center; background-color: #9c9; 
+	   padding: 0px; margin: 0px; }
+
+table.pqcat { width: 100%; }
+tr.h2 td { padding: 0px; margin: 0px; font-size: 80%; line-height: 90%; 
+	  padding-top: 2px; padding-bottom: 2px; border-top: 1px solid #9c9; 
+	  background-color: #cfc; font-family: arial, sans-serif;
+	  font-weight: bold; }

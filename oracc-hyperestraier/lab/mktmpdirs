@@ -1,0 +1,58 @@
+#! /bin/sh
+
+#================================================================
+# mktmpdirs
+# Make temporary directories
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+
+
+# parse options
+base="."
+rm=0
+if [ "$1" = "-rm" ]
+then
+  rm="1"
+  shift
+fi
+if [ -n "$1" ]
+then
+  base="$1"
+fi
+if [ ! -d "$base" ]
+then
+  printf "%s is not a directory\n" "$base" 1>&2
+  exit 1
+fi
+
+
+# process each file names
+i=0
+while [ $i -lt 256 ]
+do
+  path=`printf "%s/%02x" "$base" "$i"`
+  if [ "$rm" = "1" ]
+  then
+    printf "deleting %s\n" "$path"
+    rm -rf "$path"
+  else
+    printf "making %s\n" "$path"
+    mkdir -p "$path"
+    chmod 777 "$path"
+  fi
+  i=`expr $i + 1`
+done
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

@@ -1,0 +1,12 @@
+&V000100 = Traditions
+@valuelist
+#class: period
+#name: traditions
+#fields: name
+Archaic
+Third Millennium
+Ur III
+Old Babylonian
+Middle Assyrian
+Middle Babylonian
+First Millennium

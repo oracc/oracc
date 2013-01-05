@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>OOD URNs</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#NID">NID</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#NIS">NIS</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Resource_Type">Resource Type</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Single_Letters">Single Letters</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Double_Letters">Double Letters</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Language_Codes">Language Codes</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Quadruple_Letters">Quadruple Letters</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Examples">Examples</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Resource">Resource</a>
+        </p>
+        <p class="toc h3">
+          <a href="#Words">Words</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">OOD URNs</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>This document defines URNs for Oracc Resources.  It
+  assumes knowledge of the Oracc Resources document.</p>
+
+<h1><a name="NID">NID</a></h1>
+
+<p>Oracc uses non-standard URNs with the NID "oracc"; Oracc URNs begin
+with the prefix urn:oracc:</p>
+
+<h1><a name="NIS">NIS</a></h1>
+
+<p>The NIS is structured using segments delimited by colon
+characters.  Colons are not used within any NIS segments.</p>
+
+<p>Characters which are not in the USASCII repertoire are encoded
+as UTF-8.</p>
+
+<p>The repertoire and patterning of URNs follows the domain
+requirements of Oracc and does not pretend to greater generality.</p>
+
+<h2><a name="Resource_Type">Resource Type</a></h2>
+
+<p>The first segment of the NIS is a resource type.  These fall into
+several categories.</p>
+
+<h3><a name="Single_Letters">Single Letters</a></h3>
+
+<p>Single letter resource types are used for the commonest resources
+and have the following correspondences:</p>
+
+<table>
+<tr><td>e</td><td>entity</td></tr>
+<tr><td>n</td><td>name</td></tr>
+<tr><td>p</td><td>project</td></tr>
+<tr><td>s</td><td>seal</td></tr>
+<tr><td>t</td><td>text</td></tr>
+<tr><td>w</td><td>word</td></tr>
+</table>
+
+<h3><a name="Double_Letters">Double Letters</a></h3>
+
+<p>Double letter resource types are reserved for future expansion
+of the single letter resource types.</p>
+
+<h3><a name="Language_Codes">Language Codes</a></h3>
+
+<p>Triple letter resource types are ISO 639-3 language codes and
+reference the glossaries as described in the Oracc Resources
+document.  Triple letter prefixes followed by '-x-' and a six letter
+sublanguage name are also valid URNs.</p>
+
+<h3><a name="Quadruple_Letters">Quadruple Letters</a></h3>
+
+<p>Quadruple letter codes are of two types.</p>
+<ul>
+  <li>If their initial letter is uppercase, they are ISO 15XXX script codes denoting a
+  writing system resource (i.e., a sign-list).</li>
+  <li>Otherwise they are resource types for which no shorter code is
+  appropriate.</li>
+</ul>
+
+<h3><a name="Examples">Examples</a></h3>
+
+<p>The preceding rules lead to prefixes such as: urn:oracc:p: (for
+projects); urn:oracc:akk: (for the Akkadian language);
+urn:oracc:akk-x-oldbab (for Old Babylonian Akkadian); urn:oracc:Xsux
+(for Sumero-Akkadian Cuneiform).</p>
+
+<h2><a name="Resource">Resource</a></h2>
+
+<p>Where applicable, the fourth segment of the NIS is a resource as
+described in the Oracc Resources document.  Examples include:</p>
+
+<table>
+<tr><td>urn:oracc:p:cams</td><td>the CAMS project</td></tr>
+<tr><td>urn:oracc:p:cams/gkab</td><td>the CAMS/GKAB project</td></tr>
+<tr><td>urn:oracc:t:P123456</td><td>A text</td></tr>
+<tr><td>urn:oracc:w:šarru[king]N</td><td>A word</td></tr>
+<tr><td>urn:oracc:n:Urnamma[00]RN</td><td>A royal name</td></tr>
+<tr><td>urn:oracc:e:Urnamma₁</td><td>King Ur-Namma</td></tr>
+<tr><td>urn:oracc:Xsux:BA</td><td>the BA-sign in Sumero-Akkadian Cuneform</td></tr>
+</table>
+
+<p>The fourth segment of URNs is not applicable to glossary resources
+referenced by their language, so language URNs are terminal.  By
+definition, urn:oracc:akk is the name of Akkadian glossaries.</p>
+
+<h3><a name="Words">Words</a></h3>
+
+<p>Note that words are not restricted to a particular language in
+URNs: this is deliberate.  In the Oracc URN-space, a word URN is
+simply a name for a word; the matter of which projects attest to the
+word's existence and occurrence in a particular language-context is
+separate from the naming.</p>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

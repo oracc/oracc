@@ -1,0 +1,22 @@
+&P332946 = Ugaritica 5, 130
+#project: dcclt
+#atf: use unicode
+#link: def A =  Q000054 = Syllabary A (Sa)
+# Ugaritica V 130 = RS 20.149 (+) Ugaritica V 134 = RS 20.426D
+# (+) Ugaritica V 131 = RS 20.201G + RS 20.426G (+) 
+# Ugaritica V 138 = RS 20.426B
+# for reconstruction see v. Soldt BiOr 47, 729.
+@tablet
+@obverse
+@column 1
+$ 4 lines traces
+@column 2
+$ 1 line traces
+2'. [*(diš)] ~ LUM = %a qa-an-nu-nu = %xhu he₂#-iš-la-e = %uga/g qu-un-na#?-[nu?]
+|| A 20
+3'. *(diš)# ~ ZU# = %a ši-i-ru = %xhu u₂-zi = %uga/g ši#-i-ru
+|| A 21
+4'. *(diš) ~ ZA = %a at-ta = %xhu ši-ni-|GUDxKUR|#? = %uga/g at-ta
+|| A 22
+5'. *(diš) ~ ZA = %a a-mi-lu = %xhu tar-šu#-wa-an-ni# = %uga/g *(GAM) bu-nu-šu
+|| A 22

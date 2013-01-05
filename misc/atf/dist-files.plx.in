@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+use warnings; use strict;
+#my @files = qw/catalog.xmd x.xmd/;
+my @ext = qw/.txh .xmd/;
+my $base = '@@ORACC@@/texts';
+
+while (<>) {
+    next if /^\#/ || /^\s*$/;
+    chomp;
+    my $PQ = $_; $PQ =~ s/^(.).*$/$1/;
+    my $xxx = $_; $xxx =~ s/^(....).*$/$1/;
+    my $dir = $_;
+    my $path = "$base/$xxx/$dir/";
+#    foreach my $f (@files) {
+#	print "$path$f\n";
+#    }
+    foreach my $e (@ext) {
+	print "$path$dir$e\n";
+    }
+}
+
+1;

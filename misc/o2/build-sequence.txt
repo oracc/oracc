@@ -1,0 +1,55 @@
+Full Rebuild:
+=============
+
+o2-cnf.sh:
+
+	Update config
+
+o2-lst.sh:
+
+	Update lists; this includes turning 00lib/proxy.{ol,lst}
+	and 00lib/proxy-cat.{ol,lst} into 01bld/lists/proxy.lst
+	and 01bld/lists/proxy-cat.lst as well as extracting 
+	cat-ids.lst from the project's static catalogues
+
+o2-cat.sh:
+
+	Update catalogues, integrating proxy data as necessary
+
+o2-atf.sh:
+
+	Update 00lib/atfsources.lst and install 00atf in 01bld
+
+o2-glo.sh:
+
+	Glossary building in three phases
+
+o2-xtf.sh:
+
+	Create .txh files and process scores
+
+o2-web.sh
+
+	Web update
+
+o2-prm.sh
+
+	Permissions fixing
+
+
+Additional Tasks:
+=================
+
+esp - ESP processing
+
+lem - fast update suitable for relemmatization
+
+odf - OpenDocument output
+
+pdf - PDF generation
+
+ptb - Penn TreeBank output
+
+tei - TEI output
+
+xml - XML output

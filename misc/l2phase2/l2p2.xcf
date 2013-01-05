@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xcf xmlns="http://oracc.org/ns/xcf/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- this is project-specific config info; we need to set it in the
+       project config and inherit from there -->
+  <set var="use_gw" to="yes"/>
+  <set var="proj_type" to="corpus"/>
+  <set var="scripts" to="/usr/local/oracc/lib/scripts"/>
+
+<!--  <xi:include href="/usr/local/oracc/lib/config/cbd-var.xcf"/> -->
+
+  <!--processing phases-->
+
+  <set var="process">
+    <key k="action" to="input"/>
+    <key k="input" to="01bld/$cbdlang/$cbdlang.g2c"/>
+  </set>
+
+<!--
+  <set var="process">
+    <key k="action" to="$scripts/cbd-usage-ids.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+-->
+
+  <set var="process"><key k="action" to="sort"/></set>
+
+  <set var="process">
+    <key k="action" to="$scripts/g2-primary-base.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="$scripts/g2-see-cpds.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="$scripts/l2-cbd-letters.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="$scripts/cbd-super-periods.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="$scripts/g2-base-s.xsl"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="output"/>
+    <key k="output"   to="01bld/$cbdlang/$cbdlang.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="/usr/local/oracc/bin/l2p2-rewrite-ids.plx"/>
+    <key k="args"   to="$cbdlang"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="input"/>
+    <key k="input" to="01bld/$cbdlang/$cbdlang.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-articles.xsl"/>
+    <key k="cbdresult" to="1"/>
+    <key k="output"   to="01bld/$cbdlang/articles.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-summaries.xsl"/>
+    <key k="cbdresult" to="1"/>
+    <key k="output"   to="01bld/$cbdlang/summaries.xml"/>
+  </set>
+
+</xcf>

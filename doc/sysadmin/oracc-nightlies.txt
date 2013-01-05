@@ -1,0 +1,59 @@
+*Oracc Server Nightlies
+
+This page describes the configuration of tasks run nightly on the
+server. On a Unix machine these are managed using the program `cron'
+and its configuration file, `crontab'. To edit a crontab, log in as
+the user and type:
+
+ EDITOR=emacs crontab -e
+
+To set up crontab for user cdli:
+
+ su
+ crontab -u cdli $ORACC/src/doc/sysadmin/crontab.cdli
+
+** Nightlies for user oracc
+
+The oracc user changes the featured project hourly:
+
+1,15,30,45 * * * * /usr/local/oracc/src/doc/wwwhome/projlist/mk-featured.sh
+
+** Nightlies for user cdli
+
+The user cdli runs a nightly grab of the CDLI catalogue and installs
+it.
+
+The cdli crontab looks like this:
+
+PATH=/bin:/usr/bin:/usr/local/bin:/home/cdl/bin:/usr/local/oracc/bin
+#
+# update CDLI catalog installation
+#
+0 5 * * * /usr/local/oracc/cdli/00bin/cdli-nightly.plx 2>$HOME/00any/nightly.log
+
+The first non-zero number is the time to run the job; the second is
+the day of the month.
+
+** Nightlies for user root
+
+The superuser backs up all the projects every night.
+
+The root crontab looks like this:
+
+PATH=/bin:/usr/bin/
+bin=/usr/local/oracc/bin
+
+#
+# Back up the Oracc src; full backup on first of month,
+# incremental all other nights
+#
+## 0 2 1 * * $cdladmin/full-backup.sh 2>$HOME/fullback.log
+## 0 2 2-31 * * $cdladmin/incr-backup.sh 2>$HOME/incrback.log
+
+#
+# Back up all the projects; full backup on first of month,
+# incremental all other nights
+#
+bin=/usr/local/oracc/bin
+0 3 1 * * $bin/projsave-all.sh full 2>$HOME/projsave-full.log
+0 3 2-31 * * $bin/projsave-all.sh incr 2>$HOME/projsave-incr.log

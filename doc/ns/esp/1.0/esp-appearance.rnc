@@ -1,0 +1,65 @@
+default namespace = "http://oracc.org/ns/esp-appearance/1.0"
+namespace esp = "http://oracc.org/ns/esp-appearance/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+start = appearance
+
+appearance = 
+  element appearance { colours? , fonts? , images? , tabs? }
+
+colours =
+  element colours {
+    dark , medium , light , outline , alternate , \text , 
+    page , highlight , print
+  }
+
+dark      = element dark      { css-colour }
+medium    = element medium    { css-colour }
+light     = element light     { css-colour }
+outline   = element outline   { css-colour }
+alternate = element alternate { css-colour }
+\text     = element text      { css-colour }
+page      = element page      { css-colour }
+highlight = element highlight { css-colour }
+print     = element print     { css-colour }
+
+# Could constrain this further with a list of legal colour names.
+css-colour =
+  xsd:string {
+    pattern = "#[0-9ABCDEFabcdef]{3}|#[0-9ABCDEFabcdef]{6}|[A-Za-z][A-Za-z0-9]*"
+  }
+
+fonts =
+  element fonts {
+    body-screen , body-print , h1-font , h2-font
+  }
+
+body-print  = element body-print  { text }
+body-screen = element body-screen { text }
+h1-font     = element h1          { text }
+h2-font     = element h2          { text }
+
+images = 
+  element images {
+    dark-corner , highlight-corner , light-corner
+  }
+
+dark-corner      = element dark-corner      { text }
+highlight-corner = element highlight-corner { text }
+light-corner     = element light-corner     { text }
+
+tabs =
+  element tabs { tab* }
+
+tab = 
+  element tab {
+    url , title , alt , img
+  }
+
+url	= element url   { xsd:anyURI }
+title 	= element title { text }
+alt	= element alt   { text }
+img	= element img   { attribute height { xsd:nonNegativeInteger },
+			  attribute width  { xsd:nonNegativeInteger },
+			  xsd:anyURI
+		        }

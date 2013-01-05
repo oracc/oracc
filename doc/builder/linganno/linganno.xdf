@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Linguistic Annotation</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of linguistic
+  annotation facilities, such as lemmatization, used in Oracc.</dc:description>
+</d:meta>
+
+<p>If you are not yet familiar with the concept and details of ATF please read the <a href="/doc/builder/primer/">ATF Primer</a> first.</p>
+
+<h1>Lemmatization</h1>
+
+<p>Lemmatization is the simplest and most common annotation which
+consists of labelling written words, which may be inflected, with the
+base word (or dictionary headword) of which the written form is an
+instance. </p>
+
+<h2>First Steps</h2>
+<p>So, you have an ATF file and you want to lemmatize it. When we say in this
+document "now lemmatize the text (again)", we mean: Use the <a href="/doc/builder/emacs">Emacs interface</a>; open the file and choose 'Lemmatize' from the ATF menu.</p>
+
+<p>The lemmatizer is actually built in to the same ATF processor which
+does the checking.</p>
+
+<p>We'll go through the procedure for creating a new lemmatization of
+an Akkadian text here, assuming that there is no dictionary or project
+glossary to rely on.  In real life, projects will build glossaries as
+they go, and the ePSD and ePAD (electronic Pennsylvania
+Sumerian/Akkadian Dictionaries) will also help by enabling the
+lemmatizer to make better initial guesses.  Here, though, we'll assume
+that the lemmatizer has no external information to help it, and we'll
+show how to build up the information which can be harvested to
+generate a simple glossary automatically.</p>
+
+<p>In real life, too, we recommend that you translate and lemmatize
+each text at the same time: thinking about the two together
+significantly improves the quality of both. However, here we shall
+just focus on the process of lemmatization.</p>
+
+<h2>Initial Document</h2>
+
+<p>Let's say your initial document looks like this (OK, admittedly
+this is somewhat contrived, but it will serve to make the points we
+need to make):</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+2. A{+e} ba-[...]
+3. 1 SILA₃ me-e {m}ri-hat-{d}60
+4. mu-u
+@reverse
+$ reverse missing
+</pre>
+
+<p>Now, lemmatize that file and you should see this:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: X
+
+2. A{+e} ba-[...]
+#lem: X; u
+
+3. 1 SILA₃ me-e {m}ri-hat-{d}60
+#lem: n; X; X; X
+
+4. mu-u
+#lem: X
+
+@reverse
+$ reverse missing
+</pre>
+
+<p>The lemmatizer has inserted interlinear lemmatization lines and
+carried out a minimal preliminary analysis of the forms, sorting them
+into numbers (<code>n</code> in line 3); unlemmatizable forms
+(<code>u</code> in line 2); and unknown forms 
+(all those <code>X</code>'s).</p>
+
+<h2>Replacing X's</h2>
+
+<p>In this bottom-up model we are defining relations between forms
+(the words-between-spaces in the transliteration) and glossary items.
+In all cases, we prefix a lemmatization which contains any new
+information with a plus sign.  The plus sign always means "I know that
+this form may not pass the ATF checker's validation of lemmata
+content; don't warn me about it; I'm adding information that can be
+harvested later for a glossary or dictionary."</p>
+
+<p>A new lemmatization requires certain
+basic information:</p>
+
+<dl>
+<dt>The Citation Form (CF)</dt>
+<dd>The dictionary headword; the fundamental portion of the lemmatization.</dd>
+<dt>The Guide Word (GW)</dt>
+<dd>The disambiguator used in the dictionary; in conventional
+dictionaries this is usually a number or letter, but the Corpus-Based
+Dictionary system uses a guide word which is normally a basic meaning
+of the word, or a hypernym (a superset designator such as
+"official").</dd>
+<dt>The Sense (SENSE)</dt>
+<dd>An optional meaning, or sense, which a word has in the current context; it may be
+used as well as, or instead of, a GW.</dd>
+<dt>The Part-of-Speech (POS)</dt>
+<dd>The part-of-speech; a complete list for any given language is
+available in the language-specific linguistic annotation documents,
+e.g., <a href="AKK/">the Akkadian-specific documentation</a>.</dd>
+<dt>The Effective Part-of-Speech (EPOS)</dt>
+<dd>An optional part-of-speech tied to the current syntactic context.</dd>
+<dt>Normalization (NORM0)</dt>
+<dd>The normalization for the form; not needed for Sumerian.</dd>
+<dt>The Base (BASE)</dt>
+<dd>The written base of the form; only needed for Sumerian</dd>
+<dt>The Morphology (MORPH)</dt>
+<dd>The morphological information for the form; not yet used with all languages.</dd>
+</dl>
+
+<p>Minimally, then, the first X in the sample file can be replaced
+with the lemmatization <code class="cookbook">+mû[water]N$</code>.
+In this example, the Citation Form (CF) precedes the Guide Word (GW),
+which is given in square brackets.  Next comes the Part of Speech
+(POS), followed by a probably mysterious dollar symbol
+(<code>$</code>).  This symbol introduces the normalized form of the
+word (NORM0); in
+Akkadian, the normalization is required for new definitions of
+lemmata.  The form given here is abbreviated--the unadorned dollar
+symbol means that the normalized form is identical to the CF.</p>
+
+<p>So, we now have:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: +mû[water]N$
+
+2. A{+e} ba-[...]
+#lem: X; u
+
+3. 1 SILA₃ me-e {m}ri-hat--{d}60
+#lem: n; X; X; X
+
+4. mu-u
+#lem: X
+
+@reverse
+$ reverse missing
+</pre>
+
+<p>Lemmatize that file again, and you'll see this:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: +mû[water]N$
+
+2. A{+e} ba-[...]
+#lem: X; u
+
+3. 1 SILA₃ me-e {m}ri-hat--{d}60
+#lem: n; X; X; X
+
+4. mu-u
+#lem: mû[water]N
+
+@reverse
+$ reverse missing
+</pre>
+
+<p>Note how the lemmatizer has learned the form <code>mu-u</code> and
+lemmatized the form in line 4 automatically. This shorter form of lemmatization comprises just the NORM0, the GW, and the POS.</p>
+
+<p>Sometimes you will want to define a new lemma but indicate that the
+current context uses a sense other than the basic sense.  You can do
+this by putting both the GW and the sense in square brackets,
+separated by double-slash (<code>//</code>), e.g.: <code class="cookbook">+awātu[word//command]N$</code></p>
+
+<h2>New Forms</h2>
+
+<p>Often, you will have a new form of a lemma you have already
+defined.  You need to tell the lemmatizer that there is novel
+information here by prefixing the lemmatization with a plus, as usual.
+For Akkadian you also need to give the normalization explicitly using
+the dollar convention if the normalization is new.  (You can always
+try adding less information in the examples that follow to experience
+the many and varied complaints the ATF checker and lemmatizer
+generate when they don't have enough information.)</p>
+
+<p>The next step, then is to lemmatize the forms of <i>mû</i> and <i>qû</i> in lines 2 and 3:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: +mû[water]N$
+
+2. A{+e} ba-[...]
+#lem: +mû[water]N$mê; u
+
+3. 1 SILA₃ me-e {m}ri-hat--{d}60
+#lem: n; +qû[unit]N$qā; +mû[water]N$mê; X
+
+4. mu-u
+#lem: mû[water]N
+
+@reverse
+$ reverse missing
+</pre>
+
+
+<p>In short, whenever you want the lemmatizer to learn new information -- a new form or SENSE or NORM0 -- you must use the long form of lemmatization, <code>+CF[GW//SENSE]POS'EPOS$NORM0</code>. Lemmatizations added automatically (which match data already in the glossary) used the short form <code>NORM0[SENSE](E)POS</code>. (We will come back to <a href="#SENSE_and_EPOS">SENSE and EPOS</a> very shortly.)</p>
+
+<h2>Proper Nouns</h2>
+
+<p>Proper nouns can be lemmatized in either of two ways; an individual
+text can use a mixture if desired.</p>
+
+<h3>POS only</h3>
+
+<p>Lemmatizing proper nouns only by their POS is appropriate if
+lemmatization is being carried out in multiple phases--first the
+lexical information and later the proper nouns.  Under this approach,
+a personal name is lemmatized simply as <code
+class="cookbook">PN</code>; a month name as <code
+class="cookbook">MN</code>, and so on.  A list of POS tags is available in<a
+href="QPN/"> the proper nouns linguistic annotation page</a>. In our example, we would complete the lemmatization like this:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: +mû[water]N$
+
+2. A{+e} ba-[...]
+#lem: +mû[water]N$mê; u
+
+3. 1 SILA₃ me-e {m}ri-hat--{d}60
+#lem: n; +qû[unit]N$qā; +mû[water]N$mê; PN
+
+4. mu-u
+#lem: mû[water]N
+
+@reverse
+$ reverse missing
+</pre>
+
+<h3>Explicit</h3>
+
+<p>If you choose to lemmatization proper nouns explicitly, you need to
+give at least a CF and the POS, in which case you can leave the square
+brackets empty: <code class="cookbook">+Rihat-Anu[]PN$</code></p> 
+<p class="ihead">Note that the CFs of proper nouns do not mark vowel length.</p>
+
+<p>In our example, we would have:</p>
+
+<pre class="cookbook">
+&amp;P363704 = TCL 06, 32
+#project: cams
+#atf: lang akk-x-stdbab
+#atf: use unicode
+
+@tablet
+@obverse
+1. mu-u
+#lem: +mû[water]N$
+
+2. A{+e} ba-[...]
+#lem: +mû[water]N$mê; u
+
+3. 1 SILA₃ me-e {m}ri-hat--{d}60
+#lem: n; +qû[unit]N$qā; +mû[water]N$mê; +Rihat-Anu[]PN$
+
+4. mu-u
+#lem: mû[water]N
+
+@reverse
+$ reverse missing
+</pre>
+
+<p>For most classes of proper nouns this approach is adequate--most
+divine names have only one possible referent, as do most geographical
+names.  For personal names the situation is more complicated as the
+same name may frequently refer to different people.  In such cases,
+the present solution is simply to put a number in the square
+brackets--a future implementation of the lemmatizer will support
+giving ancillary information such as a parent's name to serve as a
+disambiguator.  Thus, <code class="cookbook">Dada[1]PN</code> and <code
+class="cookbook">Dada[2]PN</code> reference different entries in the
+prosopography.</p>
+
+<h2>SENSE and EPOS</h2>
+<p>Compare these two phrases in Akkadian: <i>ina mahar ili</i> and <i>mahar ili</i>. We might well translate both of them as "in front of the god" or "before the god" interchangeably, but there are important grammatical differences between the two. Compare these lemmatisations:</p>
+<pre class="example">
+1. ina ma-har DINGIR
+#lem: +ina[in]PRP$; +mahru[front]N$mahar; +ilu[god]N$ili
+
+2. ma-har DINGIR
+#lem: +mahru[front//before]N'PRP$mahar; ili[god]N
+</pre>
+
+<p>In the first line <i>mahar</i> is a construct-state noun, "front", following a preposition; in the second it <em>is</em> a preposition, "before". The lemmatization explicitly shows the context-dependent SENSE, separated from the GW with <code>//</code> but contained in the square brackets with it. The context-dependent EPOS (Effective Part-of-Speech) is marked with <code>'</code> immediately following the POS.</p>
+
+<p>Running the lemmatizer again on a further instance of the same spelling will generate just the SENSE and the EPOS, not the GW and POS. EPOS always appear with the <code>'</code> preceding them, but auto-lemmatized SENSEs look just like GWs:</p>
+<pre class="example">
+1. ina ma-har DINGIR
+#lem: +ina[in]PRP$; +mahru[front]N$mahar; +ilu[god]N$ili
+
+2. ma-har DINGIR
+#lem: +mahru[front//before]N'PRP$mahar; ili[god]N
+
+3. ma-har LUGAL
+#lem: mahar[before]'PRP; +šarru[king]N$šarri
+</pre>
+<p>Every time you specify SENSE you need to specify an EPOS too, even if it is the same as the POS. For instance:</p>
+<pre class="example">
+1. ina ma-har DINGIR
+#lem: +ina[in]PRP$; +mahru[front//presence]N'N$mahar; +ilu[god]N$ili</pre>
+
+<p class="ihead">The checker flags a SENSE without an EPOS as an error.</p>
+
+<p>EPOS can also be useful on its own, however. For instance, with proper nouns:</p>
+
+<pre class="example">
+4. {mul}GU.LA u {d}ŠUL.GI
+#lem: +Gula[]DN'CN$; u[and]CNJ; +Šulgi[]RN'DN$
+</pre>
+<p>For more information on SENSE and EPOS in Akkadian, see the page on <a href="AKK/">Akkadian linguistic annotation</a>.</p>
+
+<h2>Morphology</h2>
+
+<p>If your project is specifying the morphology for each form, you
+should also give that information when you specify a new form.  The
+morphology is given after a pound sign (<code>#</code>), and the
+content depends on the language.  The special symbol tilde
+(<code>~</code>) indicates that the morphology is the base or
+uninflected form.  Let's say there are morphology specifiers 'Sg.' for
+singular, '3' for second person and 'fem' for feminine.  A morphology
+example might then look like this:</p>
+
+<pre class="cookbook">
+5. ta-ra-am
+#lem: +râmu[love]V$tarām#3.Sg.fem
+</pre>
+<p>There is much more detail on annotating Sumerian morphology on <a href="SUX/">the Sumerian linguistic annotation page</a>.</p>
+
+<h2>Checking your lemmatization</h2>
+
+<p>After lemmatizing, you can review the ATF files to check ambiguous
+lemmatizations and typographical errors. If you are using Emacs, choose the Harvest Notices item on the ATF menu to generate a list of all the long-form lemmatizations (the ones with a plus sign) so that you can review them individually.</p> 
+
+<p>New lemmatizations should also be checked by project managers as part of the glossary management process. This is described in the documentation on <a href="/doc/manager/projemacs/#Harvesting_new_lemmatisation_data">Project Management with Emacs</a>.</p>
+
+
+<h1>Next Steps</h1>
+
+<p>You should now be ready to start lemmatizing files; as you get more
+experience and have more questions you should refer to the language-specific pages on lemmatization:</p>
+
+<ul>
+<li><a href="AKK/">Akkadian</a></li>
+<li><a href="ARC/">Aramaic</a></li>
+<li><a href="ELX/">Elamite</a></li>
+<li><a href="GRC/">Greek</a></li>
+<li><a href="PEO/">Old Persian</a></li>
+<li><a href="SUX/">Sumerian</a></li>
+</ul>
+
+<p>and, for all languages, the page on lemmatizing:</p>
+
+<ul>
+<li><a href="QPN/">proper nouns</a>.</li></ul>
+
+<h1>#lem: lines</h1>
+<p>This section gives a more formal description of the components of #lem: lines.</p>
+
+<h2>Separator</h2>
+
+<p>The sequence '<code>; </code>', i.e., semi-colon followed by space,
+is reserved as the separator between lemmatizations.  There must be
+the same number of lemmatizations in the <code>#lem:</code> line as
+there are forms in the corresponding line of transliteration; the ATF
+processor signals an error when it detects mismatches of this kind.
+Special provision is made for preserving this 1:1 relationship when
+labelling broken forms or breakage on manuscripts as described
+below.</p>
+
+<h2>Ambiguity</h2>
+
+<p>Ambiguous forms may have multiple lemmatizations attached to them
+with the lemmatizations separated by vertical bars:</p>
+
+<pre class="example">
+1. an-na
+#lem: DN|an[sky]</pre>
+
+<p>The sequences either side of vertical bars are complete lemmatizations in
+their own right and may therefore have their own POS, morphology,
+disambiguation and any other characteristics.</p>
+
+<h2>Multiplexes</h2>
+
+<p>There are several circumstances in which a single orthorgraphic
+form ("word") actually writes more than one lemma: these include
+crasis and sandhi writings as well as logograms which are best treated
+as a single word (perhaps because of word order) but which correspond
+to more than one word in the target language (e.g., the writing
+<code>{d}UTU.E₃</code> for Akkadian <code>ṣīt šamši</code> "sunrise").</p>
+
+<p>In all these cases, the input is analogous to the ambiguous forms
+described above, but the <code>&amp;</code> is used instead of the
+vertical bar.  Thus, <code>{d}UTU.E3</code> would be lemmatized as
+<code>ṣīt[exit]&amp;šamši[sun]</code>.  (Note, by the way, that
+compound phrases are always lemmatized according to their
+constituents).</p>
+<p>See the <a href="AKK/">Akkadian linguistic annotation page</a> for more details.</p>
+
+<h2>Uncertainty</h2>
+
+<p>Uncertainty in lemmatization is indicated by the use of the
+conventional lemmatization <code>X</code> (uppercase 'X').  This
+should be used when the form is in principle open to lemmatization but
+no lemmatization can be suggested.</p>
+
+<h2>Breakage</h2>
+
+<p>Breakage in the manuscript is lemmatized with the conventional
+lemmatization <code>u</code>; such forms are considered
+unlemmatizable.</p>
+
+<h2>Numbers</h2>
+
+<p>Numbers are lemmatized with the conventional lemmatization
+<code>n</code>; a special-purpose processor is planned for higher
+order annotation and manipulation of numerical data.</p>
+
+<p><strong>N.B.</strong>  In narrative context, numbers should be
+lemmatized as words; in administrative context, the <code>n</code>
+convention should be used.</p>
+
+<h2>Miscellanea</h2>
+
+<p>The conventional lemmatization <code>M</code> is used where the
+form is a standalone instance of a morpheme such as occur in certain
+Mesopotamian lexical lists.</p>
+
+<p>The conventional lemmatization <code>L</code> is used where the
+form is in a language that is not currently handled by the
+lemmatization system.</p>
+
+
+<h1>Units</h1>
+
+<p>Top-level unit (normally main sentence) boundaries can be annotated
+within the lemmatization by use of two conventions:</p>
+
+<pre class="example">
++. = insert unit boundary
+-. = suppress unit boundary</pre>
+
+<p>The <code>+.</code> convention is relevant to all languages.  It
+must occur either at the very beginning or the very end of the
+lemmatization string: if it precedes the lemmatization it must be
+followed by a space; it if follows the lemmatization it must be
+preceded by a space.</p>
+
+<p>For some languages (e.g., Sumerian) most unit boundaries are
+correctly identified programmatically; where the program is wrong, the
+<code>-.</code> can be used to suppress a break.  The <code>-.</code>
+convention is subject to the same rules for placement and whitespace
+as <code>+.</code>.</p>
+
+<pre class="cookbook">
+6. mu-na-du₃
+#lem: du[build] +.
+
+...
+
+10. e₂ mu-na-du₃ lugal-e
+#lem: e[house]; du[build] -.; lugal[king] +.</pre>
+
+<h1>Dictionaries</h1>
+
+<p>A specific type of dictionary, the Corpus-Based Dictionary XML
+datatype, is used by Oracc annotation to provide control lists of
+permitted CFs, GWs, Senses and POS information.  Documentation of this
+format is in preparation.</p>
+
+<p>This dictionary is the means of supplying POS information when it
+is not given explicitly (if given explicitly, the POS in the
+lemmatization overrides the one given in the dictionary).</p>
+
+<p>The dictionary is also the means of canonicalizing lemmatizations
+of the form <code>CF[SENSE]</code> since such pairs can be looked up
+and the corresponding unique <code>CF[GW]</code> identified; this is
+relevant in the construction of forms files.</p>
+
+<d:resources/>
+
+<d:references>
+<p>For more detailed language-specific information about lemmatization, please refer to the following pages:</p>
+<d:ref name="AKK" uri="AKK/">Akkadian Language Information</d:ref>
+<d:ref name="ARC" uri="ARC/">Aramaic Language Information</d:ref>
+<d:ref name="ELX" uri="ELX/">Elamite Language Information</d:ref>
+<d:ref name="GRC" uri="GRC/">Greek Language Information</d:ref>
+<d:ref name="PEO" uri="PEO/">Old Persian Language Information</d:ref>
+<d:ref name="SUX" uri="SUX/">Sumerian Language Information</d:ref>
+<p>and, for all languages:</p>
+<d:ref name="QPN" uri="QPN/">Proper Noun Information</d:ref>
+</d:references>
+
+</d:doc>

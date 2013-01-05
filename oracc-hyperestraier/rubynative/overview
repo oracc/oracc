@@ -1,0 +1,112 @@
+= Ruby Binding of Hyper Estraier
+
+Hyper Estraier is a full-text search system for communities.
+
+== Introduction
+
+This is a package implementing the core API of {Hyper Estraier}[http://fallabs.com/hyperestraier/], including native codes written in C.  As it works on Linux, Mac OS X, Windows, and so on, native libraries for each environment are required to run programs.  This package requires Ruby 1.8.4 or later versions.
+
+== Setting
+
+Install the latest version of Hyper Estraier.
+
+Enter the sub directory `rubynative' in the extracted package then perform installation.
+
+ cd rubynative
+ ./configure
+ make
+ su
+ make install
+
+The package `estraier' should be required in each source file of application programs and include the module `Estraier' at pleasure.
+
+== Example of Gatherer
+
+The following is the simplest implementation of a gatherer.
+
+ require "estraier"
+ include Estraier
+
+ # create the database object
+ db = Database::new
+
+ # open the database
+ unless db.open("casket", Database::DBWRITER | Database::DBCREAT)
+   printf("error: %s\n", db.err_msg(db.error))
+   exit
+ end
+
+ # create a document object
+ doc = Document::new
+
+ # add attributes to the document object
+ doc.add_attr("@uri", "http://estraier.gov/example.txt")
+ doc.add_attr("@title", "Over the Rainbow")
+
+ # add the body text to the document object
+ doc.add_text("Somewhere over the rainbow.  Way up high.")
+ doc.add_text("There's a land that I heard of once in a lullaby.")
+
+ # register the document object to the database
+ unless db.put_doc(doc, Database::PDCLEAN)
+   printf("error: %s\n", db.err_msg(db.error))
+ end
+
+ # close the database
+ unless db.close
+   printf("error: %s\n", db.err_msg(db.error))
+ end
+
+==Example of Searcher
+
+The following is the simplest implementation of a searcher.
+
+ require "estraier"
+ include Estraier
+
+ # create the database object
+ db = Database::new
+
+ # open the database
+ unless db.open("casket", Database::DBREADER)
+   printf("error: %s\n", db.err_msg(db.error))
+   exit
+ end
+
+ # create a search condition object
+ cond = Condition::new
+
+ # set the search phrase to the search condition object
+ cond.set_phrase("rainbow AND lullaby")
+
+ # get the result of search
+ result = db.search(cond)
+
+ # for each document in the result
+ dnum = result.doc_num
+ for i in 0...dnum
+   # retrieve the document object
+   doc = db.get_doc(result.get_doc_id(i), 0)
+   next unless doc
+   # display attributes
+   uri = doc.attr("@uri")
+   printf("URI: %s\n", uri) if uri
+   title = doc.attr("@title")
+   printf("Title: %s\n", title) if title
+   # display the body text
+   doc.texts.each do |text|
+     printf("%s\n", text)
+   end
+ end
+
+ # close the database
+ unless db.close
+   printf("error: %s\n", db.err_msg(db.error))
+ end
+ 
+== License
+
+ Copyright (C) 2004-2006 Mikio Hirabayashi
+ All rights reserved.
+
+Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License or any later version.  Hyper Estraier is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.  You should have received a copy of the GNU Lesser General Public License along with Hyper Estraier; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.

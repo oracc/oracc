@@ -1,0 +1,1368 @@
+2007-12-24  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* mymorph.c (est_mecab_analyze): an option about EOS was added.
+
+	- Release: 1.4.13
+
+2007-11-18  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c: code clean-up.
+
+	- Bugs related to type casting of perl binding were fixed.
+
+	- Release: 1.4.12
+
+2006-11-11  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_resmap_add): "method" argument was added.
+
+	* estraier.c (est_inode): a bug related to overflow was fixed.
+
+	* estraier.c (est_narrow_score): a bug related to attribute distinction was fixed.
+
+	* estraier.c (est_search_union): search accuracy with trailing uni-gram was improved.
+
+	* estmaster.c (searchlocal): a bug related to scanning with regular expressions was fixed.
+
+	* estscout.c (realmain): "union", "score", and "idsuffix" attributes were added.
+
+	* estsupt.c (realmain): "score" attribute was added.
+
+	* estsupt.c (procsearch): accuracy of hint was improved.
+
+	* estsupt.c (realmain): "logmsg" parameter was added.
+
+	* estscout.c (realmain): "distinct" parameter was added.
+
+	* estscout.c (showresult): cache clear at random was added.
+
+	- Release: 1.4.11
+
+2006-11-11  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_set_ecode): new function.
+
+	* estraier.c (est_search_union): scoring of ASIS mode was modified.
+
+	* estraier.c (est_resmap_add, est_resmap_dump_keys): new functions.
+
+	* estraier.c (est_narrow_scores): efficiency of narrowing index was improved.
+
+	* estraier.c (est_utime): new function.
+
+	* estraier.c (est_cond_scores, est_cond_set_narrowing_scores): new functions.
+
+	* estraier.c (est_rescc_put): a bug of memory leak was fixed.
+
+	* estnode.c: the function "est_datum_printf" was replaced by "cbdatumprintf".
+
+	* estmaster.c (sendnodecmdsearch): accuracy of hints was improved.
+
+	* estfraud.c (sendnodecmdputdoc): accuracy of hints was improved.
+
+	* estfraud.c (sendnodecmdputdoc): morphological analyzer support was added.
+
+	* estfraud.c (sendnodecmdputdoc): accuracy of hints was improved.
+
+	* estwaver.c (runinit, procinit): "-apn", "-acc", "-sv", "-si", "-sa" options was added.
+
+	* estscout.c: new file.
+
+	* estsupt.c: new file.
+
+	- Release: 1.4.10
+
+2006-11-03  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_doc_score): new function.
+
+	* estraier.c (est_db_check_option): new function.
+
+	* estraier.c (est_search_union): a bug related to scoring when ASIS mode was fixed.
+
+	* estraier.c (est_db_score_doc): difference operator was added.
+
+	* estcmd.c (procinform): display of known options was added.
+
+	* estcmd.c (doputdoc): modification date of files became able to be recorded as score.
+
+	* estseek.c (showresult): accuracy of "{hnum}" operator was improved.
+
+	* estwaver.c (runinit, procinit): "-xs", "-xl", "-xh" options were added.
+
+	- "set_score" and "score" methods were added to language bindings and node APIs.
+
+	- Release: 1.4.9
+
+2006-11-03  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estfraud.c (realmain): handling path information was modified.
+
+	* estseek.c (outputlog): "{hnum}" operator was added to the log format.
+
+	- A bug related to optimization on Intel Mac series was escaped.
+
+	- Release: 1.4.8
+
+2006-10-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): "ESTDBHUGE2" and "ESTDBHUGE3" options were added.
+
+	* estraier.c (est_db_repair): a bug related to the attribute database was added.
+
+	* estraier.c (est_cond_distinct): new function.
+
+	* estmaster.c (startup): "extdelay" attribute was added.
+
+	* estfraud.c (realmain): "extdelay" attribute was added.
+
+	* estfraud.c (sendnodecmdsearch): a bug related to attribute search was fixed.
+
+	* estseek.c (main): a bug related to FastCGI was fixed.
+
+	- Release: 1.4.7
+
+2006-10-15  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_search_meta): a bug about the skip parameter was fixed.
+
+	* estcmd.c (runmulti, procmulti): new functions.
+
+	* estseek.c (showdoc): class name based on attribute name was added.
+
+	* estseek.c (realmain): "helpfile" attribute was added.
+
+	* estseek.c (shownaviform): new function.
+
+	* estseek.c (realmain): "logformat" attribute was added.
+
+	- A bug about URL encoding in the pure Ruby API was fixed.
+
+	- Release: 1.4.6
+
+2006-09-24  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_search_aidx_attr): case insensitive mode was added.
+
+	* estraier.c (est_check_cjk_only): new function.
+
+	* estraier.c (est_make_cattr_list): search speed with CJK characters was improved.
+
+	* estraier.c (est_db_add_attr_index): altering attribute index was added.
+
+	* estraier.c (est_db_attr_index_exprs): new function.
+
+	* estraier.c (est_regex_match_str): new function.
+
+	* estraier.c (est_str_make_snippet): new function.
+
+	* estraier.c (est_db_merge): a bug related to discordance of the ID attribute was fixed.
+
+	* estraier.c (est_db_merge): division of inverted files was added.
+
+	* estseek.c (showformforweb): new function.
+
+	* estseek.c (realmain, showdoc): "deftitle" and "attrwidth" attributes were added.
+
+	* estseek.c (showtitle): new function.
+
+	* wavermod.c (waver_init, waver_open): "urlrule" attribute was added.
+
+	* estproxy.c: new file.
+
+	- Release: 1.4.5
+
+2006-09-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_pseudo_doc_num): new function.
+
+	* estcmd.c (runregex, procregex): "-ci" option was added.
+
+	* estseek.c (realmain): "formtype" and "candir" attributes were added.
+
+	* estseek.c (showformforfile, showformformail): new functions.
+
+	* estfraud.c (sendnodecmdputdoc, sendnodecmdoutdoc, sendnodecmdsync): new functions.
+
+	- Release: 1.4.4
+
+2006-09-14  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_regex_replace): replacement with "\1" through "\9" were added.
+
+	* estcmd.c (runregex, procregex): new functions.
+
+	* estbutler.c (runsearch, procsearch): "wildmax" parameter was added.
+
+	* wavermod.c (make_doc_from_html): links of "object" and "embed" elements were added.
+
+	* estfraud.c: new file.
+
+	- Release: 1.4.3
+
+2006-09-05  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_set_cache_size): parameters now support zero value.
+
+	* estcmd.c (doputdoc): "-fx" option now supports "*".
+
+	* estseek.c (realmain, showform): "perpage" attribute was added.
+
+	* estmaster.c (sendmasterdata, sendmasterdataui): referer checking was modified.
+
+	* wavermod.c (waver_init, fetch_document): "replace" attribute was added.
+
+	* myconf.h: a wrong message about version requirement of QDBM was fixed.
+
+	- Release: 1.4.2
+
+2006-08-31  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_cond_set_options): "ESTCONDROUGH" and other options were added.
+
+	* estraier.c (est_phrase_from_rough): new function.
+
+	* estraier.c (est_phrase_from_union, est_phrase_from_isect): new functions.
+
+	* estmaster.c (startup): "uiphraseform" attribute was added. 
+
+	* estcmd.c (runsearch, procsearch): "-sfr" options and so on were added.
+
+	* estcmd.c (rungather, procgather): "-aa" option was added.
+
+	* estseek.c (main, showpage): "genrecheck" and "phraseform" attributes were added.
+
+	* estseek.c (showpage): accuracy of sequencial scan was improved.
+
+	- Release: 1.4.1
+
+2006-08-27  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_strstr_sparse): new function.
+
+	* estraier.c (est_db_add_pseudo_index): new functions.
+
+	* estraier.c (est_pidx_uri_to_id, est_db_score_doc): new functions.
+
+	* estraier.c (est_db_get_doc, est_db_get_doc_attr): pseudo index was to be supported.
+
+	* estraier.c (est_make_cattr_list, est_free_cattr_list): new functions.
+
+	- Bugs of doc.keywords methods of language bindings was fixed.
+
+	- Release: 1.4.0
+
+2006-08-18  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estbutler.c (procsearch): a bug about handling "max" and "skip" parameters was fixed.
+
+	- Release: 1.3.9
+
+2006-08-15  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_search_aidx_attr): speed of the "NUMBT" operator was improved.
+
+	* estraier.c (est_aidx_attr_narrow): speed of the "NUMBT" operator was improved.
+
+	* estmaster.c (searchlocal): a bug of attribute search was fixed.
+
+	- Release: 1.3.8
+
+2006-08-08  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_search_union): a bug of bus error on SPARC environment was fixed.
+
+	* estmaster.c (startup): "helpershift" attribute was added.
+
+	* estmaster.c (sendnodecmdinformhelper): new function.
+
+	* estbutler.c (runinform, procinform): new functions.
+
+	* estbutler.c (rungetdoc, procgetdoc): new functions.
+
+	* estbutler.c (rungetdocattr, procgetdocattr): new functions.
+
+	* estbutler.c (runetchdoc, procetchdoc): new functions.
+
+	* estbutler.c (runuriid, procuriid): new functions.
+
+	- Release: 1.3.7
+
+2006-08-01  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_normalize_text): some symbol marks were to be normalized.
+
+	* estmaster.c (sendnodecmdsearchhelper): blocking because of mutex was cleared.
+
+	* estseek.c (realmain): a bug about attribute search was fixed.
+
+	- building option to use Vista database instead of Villa was added.
+
+	- Release: 1.3.6
+
+2006-07-28  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_normalize_text): symbol marks were to be normalized.
+
+	* estmaster.c (sendnodecmdsearchhelper): new function.
+
+	* estmastersearch.c: new file.
+
+	* estseek.c (realmain): type of "scancheck" attribute was changed to integer.
+
+	- Release: 1.3.5
+
+2006-07-18  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): a parameter of B+ tree was modified for space efficiency.
+
+	* estraier.c (est_db_open): "ESTDBSMALL" option was added.
+
+	* mymorph.c (est_mecab_analyze): accuracy of extracting complex words was improved.
+
+	- Release: 1.3.4
+
+2006-07-13  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_search): a bug about union of natural scores was fixed.
+
+	* estraier.c (est_cond_set_mask, est_cond_mask): new functions.
+
+	* estnode.c (est_node_admins, est_node_users, est_node_links): new functions.
+
+	* estmaster.c (getnodeoptions): new function.
+
+	* estmaster.c (syncnodes): a trying lock was replaced by a usual lock.
+
+	* estmaster.c (communicate): a CSRF vulnerability was cleared.
+
+	* estmaster.c (sendnodecmdsearchui, sendnodecmdsearchui): masks was added.
+
+	* estcall.c (runsearch, procsearch): "-mask" option was added.
+
+	- Release: 1.3.3
+
+2006-07-07  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_repair): new function.
+
+	* estnode.c (est_node_sync, est_node_optimize): new functions.
+
+	* estmaster.c (sendnodecmdsync, sendnodecmdoptimize): new functions.
+
+	* estmaster.c (refreshnode, flushnode, syncnodes): mutex was to be shared.
+
+	* estcmd.c (runrepair, procrepair): new functions.
+
+	* estcall.c (procsync, procoptimize): new functions.
+
+	* mymorph.c (est_mecab_analyze): accuracy of extracting complex words was improved.
+
+	- Release: 1.3.2
+
+2006-06-30  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_search_meta): new function.
+
+	* estseek.c (realmain): a bug about the file separator was fixed.
+
+	* estmttest.c (runregression, procregression): new functions.
+
+	- Release: 1.3.1
+
+2006-06-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): "ESTDBSCVOID" option and so on were added.
+
+	* estraier.c (est_db_open): database format was modified.
+
+	* estraier.c (est_inodes_delete_informer): new function.
+
+	* estraier.c (est_doc_set_score): new function.
+
+	* estraier.c (est_narrow_scores): sorting operators for ID numbers and scores were added.
+
+	* estraier.c (est_db_merge): new function.
+
+	* estcmd.c (runcreate, proccreate): "-sv" option and so on were added.
+
+	* estcmd.c (rungather, procgather): "-ss" option was added.
+
+	* estcmd.c (runmerge, procmerge): new functions.
+
+	- Release: 1.3.0
+
+2006-06-03  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_set_informer): arguments of the callback were increased.
+
+	* estraier.c (est_db_flush): frequency of disk access was reduced.
+
+	* estmaster.c (sendnodecmdsearch): hints for "TIME#n" were added.
+
+	- The Java binding and the Ruby binding were to support callback for database events.
+
+	- Perl binding using XS (not SWIG) was added.
+
+	- Release: 1.2.9
+
+2006-05-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): databases were tuned for QDBM 1.8.58 or later.
+
+	* estraier.c (est_db_close): the order of flushing was optimized for no-lock mode.
+
+	* estraier.c (est_idx_memsync): new function.
+
+	* estcmd.c (runsearch, procsearch): no-lock mode and non-blocking mode were added.
+
+	* estseek.c (realmain): "lockdb" attribute was added.
+
+	* wavermod.c (waver_current_node_load): new function.
+
+	- Release: 1.2.8
+
+2006-05-16  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_proc_env_reset): new function.
+
+	* estraier.c (est_db_flush): a flag to be under flushing was added.
+
+	* estraier.c (est_db_open): databases were tuned to curb ballooning.
+
+	* estnode.c (est_node_cache_usage): new function.
+
+	* estnode.c (est_noderes_mdate): new function.
+
+	* estmaster.c (startup): "bindaddr" attribute was added.
+
+	* estmaster.c (sendnodecmdcacheusage): new function.
+
+	* estmaster.c (sendnodecmdsearch): a bug of race condition was fixed.
+
+	* estmaster.c (die): dying messages was to be written into the log file.
+
+	* estcmd.c (runsearch, procsearch): "-aux" option was added.
+
+	* estcall.c (procsearch): a bug about "-max" option was fixed.
+
+	* estcall.c (runsearch, procsearch): "-aux" option was added.
+
+	* wavermod.c (waver_init, waver_open): "seedkeynum" and "savekeynum" attributes were added.
+
+	* wavermod.c (waver_set_current_node, waver_node_put_doc): new functions.
+
+	* estwaver.c (geturldoc): saving files and postprocessor calling were added.
+
+	- The Java binding and the Ruby binding were to support setting auxiliary permission.
+
+	- Release: 1.2.7
+
+2006-05-10  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_cond_set_eclipse): option constants were added.
+
+	* estraier.c (est_url_sameness): new function.
+
+	* estcmd.c (rungather, procgather, runextkeys, procextkeys): "-ncm" option was added.
+
+	* estcmd.c (runextkeys, proxectkeys): "-ws" option was added.
+
+	* estseek.c (showform): options to clip documents by URL were added.
+
+	* estseek.c (main, showform): "perpage" attribute was deleted.
+
+	* estwaver.c (seedurldocs): new function.
+
+	* estwaver.c (geturldoc): checking mass visit was added.
+
+	* wavermod.c (waver_open, waver_close): trace database was changed from Villa to Curia.
+
+	* estmaster.c (startup, communicate): "recvmax" attribute was added.
+
+	- The Java binding and the Ruby binding were to support wild card configuration.
+
+	- Release: 1.2.6
+
+2006-05-01  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estmaster.c (sendnodecmdsearchui): robot exclusion control was added.
+
+	* estwaver.c (runcrawl, proccrawl): "-revcont" option was added.
+
+	* estwaver.c (enqueuelinks): "strategy" option was added.
+
+	* estwaver.c (enqueuelinks): similarity was to be inherited.
+
+	* wavermod.c (queue_slim): new function.
+
+	* estraier.c (est_db_put_doc): an option to use "@weight" attribute was added.
+
+	* estcmd.c (runput, procput, rungather, procgather): "-ws" option was added.
+
+	- Release: 1.2.5
+
+2006-04-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estnode.c (est_get_host_addr): a bug about race confition of threads was fixed.
+
+	* wavermod.c (fetch_document): a bug about checking "content-type" header was fixed.
+
+	* wavermod.c (make_doc_from_html): "frame" and "link" elements were to be followed.
+
+	* wavermod.c (make_doc_from_draft, make_doc_from_mime, make_doc_with_xcmd): new functions.
+
+	* wavermod.c (waver_open): "allowrx" and "denyrx" were to be able to be more than once.
+
+	* estwaver.c (runcrawl, proccrawl): "-restart" and "-revisit" options were added.
+
+	* estcmd.c (doputdoc): "_lpath", "_lreal", and "_lfile" were not to be overwritten.
+
+	* estwolefind (outputlist): WWWOFFLE 2.9a was to be supported.
+
+	- Release: 1.2.4
+
+2006-04-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_edit_doc): a bug of ID assignment was fixed.
+
+	* estraier.c (est_db_get_doc_attr): attribute indexes were to be used.
+
+	* estraier.c (est_regex_new): case insensitive mode was added.
+
+	* estnode.c (est_url_shuttle): a bug when "resbody" was null was fixed.
+
+	* estwaver.c: new file.
+
+	* wavermod.c: new file.
+
+	* Makefile.in: a bug about compilation on Mac OS X was fixed.
+
+	- Release: 1.2.3
+
+2006-04-15  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_check_strand, est_check_stror): checking rules were changed.
+
+	* estraier.c (est_search_union): a bug about memory allocation with regex was fixed.
+
+	* estraier.c (est_check_stroreq): new function.
+
+	* estmaster.c (startup): "attrindex" attribute was added.
+
+	* mastermod.c (log_rotate): new function.
+
+	* estcmd.c (runcreate, runput, rungather): "-tr" option was added.
+
+	- Release: 1.2.2
+
+2006-04-10  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_put_doc): dispensable trailer was purged from record.
+
+	* estraier.c (est_db_add_attr_index): new function.
+
+	* estraier.c (est_aidx_seq_put, est_aidx_seq_out,  est_aidx_seq_narrow): new functions.
+
+	* estraier.c (est_aidx_attr_put, est_aidx_attr_out,  est_aidx_attr_narrow): new functions.
+
+	* estnode.c (est_url_shuttle): "limsize" parameter was added.
+
+	* mastermod.c (nmgr_clear): new function.
+
+	* estcmd.c (runcreate, proccreate): new functions.
+
+	- The Java binding and the Ruby binding were to support attribute indexes.
+
+	- The Java binding and the Ruby binding were to support feedback of scores.
+
+	- Release: 1.2.1
+
+2006-03-12  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_weight_keywords): weighting algorithm was enhanced.
+
+	* estraier.c (est_db_set_wildmax): new function.
+
+	* estraier.c (est_narrow_scores): disjunction of attribute conditions was added.
+
+	* estraier.c (est_doc_dup, est_cond_dup): new functions.
+
+	* estcmd.c (rungather, doputfile): default value of "-lf" options was changed.
+
+	* estseek.c (realmain): "wildmax" parameter was added.
+
+	* estmaster.c (main): "wildmax" parameter was added.
+
+	- A bug about the skip parameter in the pure Java API was fixed.
+
+	- The Java binding and the Ruby binding were to support similarity eclipse.
+
+	- Release: 1.1.6
+
+2006-03-08  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_weight_keywords): new function.
+
+	* estraier.c (est_doc_slim): new function.
+
+	* estcmd.c (rungather, doputfile): "-lt" and "-lf" options were added.
+
+	* estmaster.c (startup, sendnodecmdputdoc): "limittextsize" attribute was added.
+
+	- Release: 1.1.5
+
+2006-03-03  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_cond_set_skip, est_cond_skip): new functions.
+
+	* estraier.c (est_memory_usage): new function.
+
+	* estraier.c (est_deflate, est_inflate): "mode" parameter was added.
+
+	* estnode.c (est_node_set_skip): removed.
+
+	* estcmd.c (doputdoc, procextkeys): finishing was to occur when the RAM runs out.
+
+	* estmaster.c (communicate, sendnodecmdsearchui): gzip encoding was added.
+
+	* estcall.c (runsearch, procsearch): "-vu" option was added.
+
+	- Java API was to support deflated transfer.
+
+	- Release: 1.1.4
+
+2006-01-01  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): tuning parameters of perfect N-gram mode were modified.
+
+	* estraier.c (est_db_open): compression with LZO and BZIP2 was added.
+
+	* estraier.c (est_set_vnumbuf, est_read_vnumbuf): new functions.
+
+	* estmaster.c (dispatch): preemption during synchronization was implemented.
+
+	* estmaster.c (sendmasterdata): "backup" was added.
+
+	* estmaster.c (backupdb): new function.
+
+	* estmaster.c (searchlocal, searchremote): minimum number to retrieve was to be set.
+
+	* estmaster.c (sendnodecmdsearch): "skip" parameter was added.
+
+	* estcmd.c (runwords, procwords): "-kt" option was added.
+
+	* estcall.c (runsearch, procsearch): "-sk" option was added.
+
+	* estcmd.c (runsearch, procsezrch): "-sn" option was added.
+
+	* mymorth.c (est_mecab_analyze): MeCab 0.90 was supported.
+
+	- Release: 1.1.3
+
+2005-12-15  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_open): "ESTDBHUGE" was added.
+
+	* estraier.c (est_regex_replace): "&" was to be handled.
+
+	* estraier.c (est_cond_set_expander): new function.
+
+	* estcmd.c (runput, rungather): "-lg" was renamed to "-xl", and "-xh" was added.
+
+	* estseek.c (showdoc): a bug about calculating similarity was fixed.
+
+	* estseek.c (realmain): "qxpndcmd" was added.
+
+	* estseek.c (expandquery): new function.
+
+	* estmaster.c (realmain, startup): "-ro" option was added.
+
+	* estmaster.c (sendnodecmdsearchui): the output format modified for OpenSearch 1.1.
+
+	- Release: 1.1.2
+
+2005-12-04  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_keyword_num, est_keyword_rec_size): new functions.
+
+	* estraier.c (est_keyword_iter_init, est_keyword_iter_next): new functions.
+
+	* estraier.c (est_search_union): scoring was to use standard deviation.
+
+	* estraier.c (est_expand_keyword_bw, est_expand_keyword_ew): new functions.
+
+	* estraier.c (est_db_open): "ESTDBLARGE" was added.
+
+	* estseek.c (realmain, setsimilarphrase): "smlrtune" was added.
+
+	* estseek.c (realmain, showpage): "relkeynum" was added.
+
+	* estmaster.c (startup, setsimilarphrase): "uismlrtune" was added.
+
+	* estmaster.c (sendnodecmdsearchatom, nodecmdopensearch): conformed to draft 2.
+
+	- Release: 1.1.1
+
+2005-11-22  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.h: "ESTCONDETCH" was abolished.
+
+	* estraier.c (est_db_open): a bug about not to check old format was fixed.
+
+	* estraier.c (est_db_etch_doc): algorithm of TF-IDF tuning was modified.
+
+	* estraier.c (est_canonicalize_text): accentuated characters were to be canonicalized.
+
+	* estraier.c (est_doc_new_from_draft, est_doc_dump_draft): keywords was to be handled.
+
+	* estraier.c (est_db_put_doc): keywords was to be stored.
+
+	* estraier.c (est_db_out_doc, est_db_flush): keywords was to be cleaned.
+
+	* estraier.c (est_db_inode): new function.
+
+	* estraier.c (est_search_keywords): new function.
+
+	* estraier.c (est_cond_set_auxiliary, est_cond_auxiliary): new functions.
+
+	* estraier.c (est_inode, est_inodes_delete): new functions.
+
+	* estraier.c (est_search_similar): accuracy was improved.
+
+	* mymorph.c: new file.
+
+	* estnode.c (est_resdoc_vector): renamed as "est_resdoc_keywords".
+
+	* estnode.c (est_url_shuttle_impl): memory allocation was to be more effective.
+
+	* estcmd.c (procsearch, procextkeys): morphological analyzer support was added.
+
+	* estcmd.c (rungather, procgather): "-kn" and "-um" was added.
+
+	* estcmd.c (procgather): path of each directory was to be canonicalized.
+
+	- Some bugs of the pure Java API and the pure Ruby API were fixed.
+
+	- Release: 1.1.0
+
+2005-11-11  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_eclipse_scores): accuracy was improved.
+
+	* estraier.c (est_narrow_scores): a bug of segmentation fault was fixed.
+
+	* estraier.c (est_regex_new, est_regex_delete, est_regex_match): new functions.
+
+	* estraier.c (est_expand_word_rx): new function.
+
+	* estreier.c (est_db_put_keywords, est_db_get_keywords): new functions.
+
+	* estraier.c (est_db_measure_doc): new function.
+
+	* estraier.c (est_db_set_vectorizer): abolished.
+
+	* estcmd.c (runextkeys, procextkeys): "-no" was added.
+
+	* estcmd.c (runpurge, procpurge, runextkeys, procextkeys): "-attr" was added.
+
+	* estcmd.c (rundraft, procdraft): "-kn" was added.
+
+	* estcmd.c (procgather): a bug of handling drive characters on Windows was fixed.
+
+	* estseek.c (realmain, makeshownuri): "lprefix" and so on were abolished.
+
+	* estmaster.c (startup, makeshownuri): "uilprefix" and so on were abolished.
+
+	* estmaster.c (startup, sendnodecmdputdoc): "lateextkeys" was added.
+
+	* estmaster.c (searchlocal): a bug of segmentation fault was fixed.
+
+	- Release: 1.0.6
+
+2005-11-08  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_narrow_scores): speed of attribute search was improved.
+
+	* estcmd.c (doputdoc, procpurge, procextkeys): local paths was to be printed.
+
+	* estcmd.c (doputdoc): "@size" was to be added even with "-fo" option.
+
+	* estcmd.c (procsearch): "_lfile" was to be printed when human readable mode.
+
+	* estcmd.c (procout, procedit, procget, procuriid): retrieving by local path was added.
+
+	* estcmd.c (procpurge): retrieving by local path was added.
+
+	* estcmd.c (runiconv, prociconv): new functions.
+
+	* estcmd.c (procedit): "-pc" was to convert the encoding of the attribute value.
+
+	* estseek.c (realmain, showform): "clipview" attribute was added.
+
+	- Release: 1.0.5
+
+2005-11-02  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_vector_cosine): new function.
+
+	* estraier.c (est_eclipse_scores): new function.
+
+	* estcmd.c (runsearch, procsearch): "-ec" option was added.
+
+	* estcmd.c (procgather, procpurge): "-no" option was added.
+
+	* estcmd.c (urltopath): a bug about drive letter was fixed.
+
+	* estcmd.c (runlist, proclist): "-lp" option was added.
+
+	* estseek.cgi (showresult): similar eclipse was implemented.
+
+	* estmaster.c (startup, searchlocal): "rateuri" attribute was added.
+
+	* estmaster.c (sendmenudata): new function.
+
+	- Release: 1.0.4
+
+2005-11-01  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_doc_set_id): new function.
+
+	* estraier.c (est_db_search): "[ID]" and "[URI]" was added.
+
+	* estraier.c (est_check_strand, est_check_stror): new functions.
+
+	* estnode.c (est_node_iter_init, est_node_iter_next): new functions.
+
+	* estcmd.c (runlist, proclist): new functions.
+
+	* estnode.c (est_node_set_snippet_width): new function.
+
+	* estnode.c (est_noderes_eclipse, est_resdoc_vector): new functions.
+
+	* estnode.c (est_parse_search_body): "%VECTOR" was to be handled.
+
+	* estmaster.c (node_etch_doc): new function.
+
+	* estmaster.c (sendnodecmdsearch): width of snippets was to be able to be changed.
+
+	* estcall.c (runsearch, procsearch): "-kw" and "-ec" options was added.
+
+	- Release: 1.0.3
+
+2005-10-28  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_etch_doc): disadvantage bias of hiragana was added.
+
+	* estraier.c (est_db_interrupt): new function.
+
+	* estraier.c (est_db_flush): interruption was implemented.
+
+	* estraier.c (est_db_put_doc): "@digest" was to be added.
+
+	* estraier.c (est_db_iter_init): "upper" parameter was added.
+
+	* estnode.c (est_url_shuttle_impl): deflate encoding was added.
+
+	* estcmd.c (iswinbadname): new function.
+
+	* estcmd.c (est_doc_new_form_html): "lang" of "html" was to be handled.
+
+	* estmaster.c (sendnodecmdgetdoc, sendnodecmdsearch): deflate encoding was added.
+
+	* estmaster.c (startup, sendnodecmdsearch): "searchmax" attribute was added.
+
+	* estmaster.c (estnodecmdlist): new function.
+
+	* estmaster.c: wait time for flushing was changed.
+
+	* estmaster.c: "@scoreweight" was deleted.
+
+	* estraier.h: "@weight" and "@adate" was added.
+
+	- Release: 1.0.2
+
+2005-10-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_idx_size_current): new function.
+
+	* estraier.c (est_db_flush): criterion of adding a new database was changed.
+
+	* estraier.c (est_db_list_rescc): new function.
+
+	* estraier.c (est_db_used_cache_size): bumped up to the private API.
+
+	* estraier.c (est_db_flush): algorithm of cleaning dispensable keys was changed.
+
+	* estraier.c (est_idx_put_one, est_idx_get_one): new functions.
+
+	* estcmd.c (procdraft): "@uri" and "@mdate" was to be added.
+
+	* estcmd.c (est_doc_new_with_xcmd): arguments in the command line were to be escaped.
+
+	* estmaster.c (sendmasteruidata): the label was to be able to be changed.
+
+	* estmaster.c (sendnodecmdsearchui): deflate encoding was added.
+
+	* estmaster.c (searchremote): a bug of redundant score weighting was fixed.
+
+	- Release: 1.0.1
+
+2005-10-15  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_refresh, est_db_charge): new functions.
+
+	* estcmd.c (runsearch, procsearch): "-sk" option was added.
+
+	* estcmd.c (est_doc_new_from_html): parsing "script" tag and "style" tag was improved.
+
+	* estmaster.c (sendnodecmdsearchrss, catdocdatarss): new functions.
+
+	* estmaster.c (sendnodecmdsearchui, sendnodecmdsearchatom): navigation links were added.
+
+	* estmaster.c (sendfavicondata): new function.
+
+	* myimage.dat: new file.
+
+	- estmaster was to support RSS 1.0.
+
+	- estmaster was to support virtual URL of reverse proxy.
+
+	- Release: 1.0.0
+
+2005-10-08  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_set_cache_size): "rnum" parameter was added.
+
+	* estraier.c (est_rescc_get, est_rescc_put): new functions.
+
+	* estraier.c (est_db_edit_doc): the URI attribute was to be modifiable.
+
+	* estraier.c (est_db_set_doc_entity, est_db_get_doc_entity): new functions.
+
+	* estmaster.c (sendoptions): new function.
+
+	* estmaster.c (sendnodecmdopensearch): a bug of violation of the standard was fixed.
+
+	* estmaster.c (startup): some attributes for cache were added.
+
+	* estmaster.c (svmain, sendstatus, svdispatch): new functions.
+
+	* estcmd.c (doputdoc): st_ctime of each file was not to be recorded.
+
+	* estseek.c (realmain): hacking attribute "scan" was added.
+
+	- The node master as a windows service is now supported.
+
+	- Release: 0.9.2
+
+2005-09-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estmaster.c (sendnodedata): URLs of "masterui" and "searchui" were changed.
+
+	* estmaster.c (sendnodecmdsearchatom, catdocdataatom): new functions.
+
+	* estmaster.c (log_print): a bug of segmantation fault on AMD64 was fixed.
+
+	- estmaster was to support Atom 1.0 and OpenSearch 1.1.
+
+	- Manual files for nroff were added.
+
+	- Release: 0.9.1
+
+2005-09-10  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_word_iter_init, est_db_word_iter_next): new functions.
+
+	* estnode.c (est_node_etch_doc): new function.
+
+	* estcmd.c (runwords, procwords): new functions.
+
+	* estmaster.c (startup): whether to open the log file was to be checked.
+
+	* estmaster.c (startup, searchlocal, searchremote): "mergemethod" attribute was added.
+
+	* estmaster.c (startup): "smlrvnum" attribute was added.
+
+	* estmaster.c (startup): "_dfdb" file was to be read.
+
+	* estmaster.c (sendnodecmdetchdoc): new function.
+
+	* estmaster.c (searchlocal, searchremote): "@scoreweight" attribute was to be handled.
+
+	* estmaster.c (sendnodecmdsearchui): similarity search was to be supported.
+
+	* estcall.c (runetch, procetch): new functions.
+
+	- The pure Java API and the pure Ruby API were to support "est_node_etch_doc".
+
+	- Release: 0.9.0
+
+2005-09-08  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_scan_doc): new function instead of "est_doc_scan".
+
+	* estraier.c (est_deflate, est_inflate): Compressing options was changed.
+
+	* estraier.c: a tuning parameter of B+ tree was changed.
+
+	* estcmd.c (est_doc_new_from_mime): gzipped or deflated content was supported.
+
+	* estcmd.c (rungather, procgather): "-bc" option was added.
+
+	* estcmd.c (runsearch, procsearch): "-kn" option was added.
+
+	* estmaster.c (startup, searchlocal): "scancheck" attribute was added.
+
+	- estwolefind was to support cache files of FTP.
+
+	- estraiernative.jar was renamed as estraier.jar.
+
+	- Release: 0.5.7
+
+2005-08-31  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estcmd.c (rungather, procgather): "-rm" option was added.
+
+	* Database.java (err_msg): changed as an instance method.
+
+	- Ruby binding as an extention library was added.
+
+	- estcallpure.rb was renamed as estcall.rb.
+
+	- Release: 0.5.6
+
+2005-08-26  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* Makefile.in: a bug about compilation on Mac OS X was fixed.
+
+	- Release: 0.5.5.1
+
+2005-08-16  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.h: "ESTCONDAGIT" was changed to "ESTCONDAGITO".
+
+	* estraier.c (est_db_edit_doc): bumped up to the public API.
+
+	* estnode.c (est_url_shuttle_impl): a bug of memory leak was fixed.
+
+	* estcmd.c (runedit, procedit): new functions.
+
+	* estmaster.c (startup, dispatch): "idleflush" and "idlesync" attributes were added.
+
+	* estmaster.c (startup): "logfile" attribute was added.
+
+	* estmaster.c (sendmasterdata, sendmasteruidata): an action of synchronus was added.
+
+	* estmaster.c (sendnodecmdeditdoc): new function.
+
+	* estmaster.c (startup): databases were to be checked before being opened.
+
+	- Java binding using JNI was added.
+
+	- Packaging of the pure Java interface was changed.
+
+	- Packaging of the pure Ruby interface was changed.
+
+	- The Windows package was to be include files for Java and Ruby.
+
+	- Release: 0.5.5
+
+2005-08-04  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.h: "ESTCONDUSU" was changed to "ESTCONDUSUAL".
+
+	* estraier.c (est_search_union): a bug about query expansion was fixed.
+
+	* estraier.c (est_search_union): wild cards were supported.
+
+	* estraier.c (est_doc_scan): new function.
+
+	* estraier.c (est_enc_name): accuracy of detection was improved.
+
+	* estraier.c (est_hints_to_words, est_expand_word_ew, est_signal): new functions.
+
+	* estmaster.c (sendnodecmdsearchui): numbers of documents and words were to be shown.
+
+	* estmaster.c (makeshownuri): behavior of replacement was changed.
+
+	* estmaster.c (syncnodes): new function.
+
+	* mastermod.c (esmap_list): sorting by attributes was featured.
+
+	* estcmd.c (pathtourl): a bug about drive letter on Windows was fixed.
+
+	* estcmd.c (rungather, procgather): "-pf" option was abolished.
+
+	* estcmd.c (runsearch, procsearch): "-cd" option was added.
+
+	* estseek.c (main, showdoc): "showlreal" attribute was featured.
+
+	* estseek.c (makeshownuri): behavior of replacement was changed.
+
+	* estwolefind: "_lpath" was to be specified.
+
+	- Release: 0.5.4
+
+2005-07-28  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_canonicalize_text): a bug about special characters was fixed.
+
+	* estraier.c (est_idx_size): a bug about overflow was fixed.
+
+	* estraier.c (est_db_inform): the number of dispensable keys was to be reported.
+
+	* estnode.c (est_init_net_env, est_free_net_env): made be MT-safe.
+
+	* estwolefind: new file.
+
+	* estcmd.c (estrungather, doputdoc): attribute definition with TSV was featured.
+
+	- A class library of the node API for Ruby was added.
+
+	- The Java API was modified based on the factory method pattern.
+
+	- Some example programs were added.
+
+	- Release: 0.5.3
+
+2005-07-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	- A class library of the node API for Java was added.
+
+	* estmaster.c (sendnodecmdsearchui): a bug about sorting order was fixed.
+
+	* estnode.c (est_node_search): simplified phrase was supported.
+
+	- Release: 0.5.2
+
+2005-07-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estmaster.c (startup): "cachesize" attribute was supported.
+
+	* estmaster.c (communicate): a problem on Mac OS X was solved.
+
+	* estmaster.c (sendmasteruidata): editing admins, users, and links was featured.
+
+	* estmaster.c (sendnodecmdsearchui, catdocdataui, makeshownuri): new functions.
+
+	* mastermod.c (be_daemon): exit code was changed.
+
+	* estnode.c (est_free_net_env): new function.
+
+	- Release: 0.5.1
+
+2005-07-16  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estmaster.c, mastermod.h, mastermod.c, md5.h, md5.c: new files.
+
+	* estcmd.c (runget, procget, runout, procout): specifying with URI was supported.
+
+	* estcmd.c (est_doc_new_with_xcmd): the original path was to be given via environ.
+
+	* estcmd.c (est_doc_new_with_xcmd): a mode without copying original file was added.
+
+	* estcmd.c (est_doc_new_from_mime): sub parts of MIME was to be handled recursively.
+
+	* estcmd.c (runextkeys, procextkeys): "-ni" option was added.
+
+	* estraier.c (est_db_get_doc_attr): new function.
+
+	* estresult.dtd: result of estcall was supported.
+
+	* estraier.idl: new file.
+
+	- Release: 0.5.0
+
+2005-06-09  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_cond_score): new function.
+
+	* estcmd.c (procsearch): scores were to be able to be shown.
+
+	* estseek.c (showdoc): scores were to be able to be shown.
+
+	* estraier.c (est_random_fclose): new function.
+
+	* estraier.c (est_fill_key_cache): new function.
+
+	* estraier.c (est_db_set_special_cache): new function.
+
+	* estcmd.c (est_doc_new_with_xcmd): original size of a document was to be recorded.
+
+	* estcmd.c (est_ext_type): new function.
+
+	- Speed of indexing on Windows was improved due to enhancement of QDBM.
+
+	- Release: 0.3.13
+
+2005-06-07  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_narrow_scores): new function.
+
+	* estcmd.c (pathtourl): a problem againt Shift_JIS was resolved.
+
+	* estcmd.c (urltofile): new function.
+
+	* estseek.c (showdoc): the local file name of a document was to be able to be shown.
+
+	* hyperestraier.pc.in: new file.
+
+	- Release: 0.3.12
+
+2005-05-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_search_union): forward matching extension was abolished.
+
+	* estraier.c (est_break_text_perfng, est_char_category_perfng): new functions.
+
+	* estload.c: new file.
+
+	* estseek.c (main, realmain): FastCGI was supported.
+
+	* estcmd.c (runsearch): number of documents searched for by default was changed.
+
+	* Makefile.in: HP-UX and others were supported.
+
+	- Release: 0.3.11
+
+2005-05-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_add_meta, est_db_meta_names, est_db_meta): new functions.
+
+	* estraier.c (est_make_crypt, est_match_crypt): new functions.
+
+	* estraier.c (est_search_union): forward matching extension was featured.
+
+	* estseek.c (main, showform): specifying attributes with select boxes was featured.
+
+	* estseek.c (main, showresult): incremental search was featured.
+
+	- Release: 0.3.10
+
+2005-05-10  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estmtdb.h, estmtdb.c: new files.
+
+	* estraier.c (est_enc_name): English, Chinese, and Korean were supported.
+
+	* estraier.c (est_break_text): normalization was to be able to be omitted.
+
+	* estraier.c (est_db_open): non-blocking lock was featured.
+
+	- some functions of Cabin were replaced by macros.
+
+	- Pthreads for Win32 was added to the binary package for Windows.
+
+	- Release: 0.3.9
+
+2005-05-05  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estcmd.c (runsearch, procsearch): to display XML was featured.
+
+	* estcmd.c (runsearch, procsearch): similarity search with a seed document was featured.
+
+	* estseek.c (main, showresult): to display detail was featured.
+
+	* estseek.c (outputlog): new function.
+
+	* estseek.c (main, makeshowuri): "gsuffix" attribute was added.
+
+	- xdoc2txt was added to the binary package for Windows.
+
+	- Release: 0.3.8
+
+2005-05-01  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_etch_doc): new function.
+
+	* estraier.c (est_phrase_vector, est_get_tvmap, est_vec_cos): new functions.
+
+	* estcmd.c (runextkeys, procextkeys): new functions.
+
+	* estseek.c (vectorizer, setsimilarphrase): new functions.
+
+	* estseek.c (makeshownuri): arbitrary replacement was featured.
+
+	- Release: 0.3.7
+
+2005-04-28  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estcmd.c (est_doc_new_from_html): all meta information was to be recorded as attributes.
+
+	* estcmd.c (est_doc_new_from_mime): title and author of MHTML was to be handled.
+
+	* estcmd.c (doput): "stat" was to be used instead of "lstat".
+
+	* estcmd.c (est_doc_new_with_xcmd): new function.
+
+	- Release: 0.3.6
+
+2005-04-25  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_out_doc, est_db_flush): partial optimization was featured.
+
+	* estraier.c (est_uconv_in, est_uconv_out): new functions.
+
+	* estcmd.c (runout, rungather, runpurge): the option "-cl" was featured.
+
+	* estcmd.c (est_doc_new_from_html): times of calling est_html_raw_text was reduced.
+
+	- Release: 0.3.5
+
+2005-04-22  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_snippet_add_text, est_str_fwmatch_wide): multibyte support was enhanced.
+
+	* estraier.c (est_search_union, est_search_uvset): hints of negative words were changed.
+
+	* estraier.c (est_search_union): search accuracy with latin alphabet was improved.
+
+	* estraier.c (est_snippet_add_text): highlight counting was dropped.
+
+	* estraier.c (est_doc_scan_words): new function.
+
+	* estseek.c (showresult): negative words were to be ignored.
+
+	* estseek.c (showresult): a warning mark to be optimize was featured.
+
+	* estseek.c (main): encoding conversion of the parameters was featured.
+
+	* estseek.c (makeshownuri): new function.
+
+	* estcmd.c (procpurge, doputdoc): handling the "_lpath" attribute was featured.
+
+	- Release: 0.3.4
+
+2005-04-20  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* myconf.h: new file.
+
+	* estraier.c (est_db_sync): to write meta data.
+
+	* estraier.c (est_db_flush): new function.
+
+	* estraier.h: export declaration for C++ was added.
+
+	* Makefile.in: MinGW support was added.
+
+	- Release: 0.3.3
+
+2005-04-18  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	* estraier.c (est_db_optimize): a parameter "options" was added.
+
+	* estraier.c (est_db_sync): a parameter "options" was added.
+
+	* Makefile.in: Mac OS X support was added.
+
+	- An API references in English and Japanese were written.
+
+	- Release: 0.3.2
+
+2005-04-16  Mikio Hirabayashi  <mikio@fallabs.com>
+
+	- The initial version.
+
+	- Release: 0.3.1
+

@@ -1,0 +1,363 @@
+# Note that in graphemic scripts, translation from ASCII digits to
+# subscript U+208X digits is handled by the grapheme library
+
+# Allow ŋ and Ŋ in Akk because Sumerian names in Akkadian context
+# are not tagged as Sumerian.
+
+@chars %akk/g
+@allow abdefgŋhḫiklmnopqrsṣśštṭuwxyzABDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
+@trans
+j  ŋ
+J  Ŋ
+s, ṣ
+S, Ṣ
+s' ś
+S' Ś
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+@chars %akk/n
+@allow aāâbcdeēêgŋhḫiīîklmnopqrsṣśštṭuūûwxyzʾ'AĀÂBCDEĒÊGŊHḪIĪÎKLMNOPQRSṢŚŠTṬUŪÛWXYZ-?`<>
+@nokey Ḫḫ
+@trans
+j  ŋ
+J  Ŋ
+s, ṣ
+s' ś
+sz š
+t, ṭ
+S, Ṣ
+S' Ś
+SZ Š
+T, Ṭ
+'  ʾ
+=a ā
+=e ē
+=i ī
+=u ū
+^a â
+^e ê
+^i î
+^u û
+=A Ā
+=E Ē
+=I Ī
+=U Ū
+^A Â
+^E Ê
+^I Î
+^U Û
+@end chars
+
+@chars %arc/a
+@allow ʾʿbgdhḥwzyklmnsśṣšpqrtṭ[]?!.#*<>+_-0123456789&'
+@order reverse
+@trans
+)      ʾ	0x05D0
+b      b	0x05D1
+g      g	0x05D2
+d      d	0x05D3
+h      h	0x05D4
+w      w	0x05D5
+z      z	0x05D6
+x      ḥ	0x05D7
+T      ṭ	0x05D8
+y      y	0x05D9
+k'     k	0x05DA
+k      k	0x05DB
+l      l	0x05DC
+m'     m	0x05DD
+m      m	0x05DE
+n'     n	0x05DF
+n      n	0x05E0
+s      s	0x05E1
+(      ʿ	0x05E2
+p'     p	0x05E3
+p      p	0x05E4
+c'     ṣ	0x05E5
+c      ṣ	0x05E6
+q      q	0x05E7
+r      r	0x05E8
+$      š	0xFB2A
+&      ś	0xFB2B
+t      t	0x05E9
+@end chars
+
+@chars %elx/g
+@allow aAbBdDeEgGhHḫḪiIkKlLmMnNpPrRsSšŠtTuUxXzZ₀₁₂₃₄₅₆₇₈₉ₓ
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+sz š
+SZ Š
+@end chars
+
+@chars %grc/a
+@allow αβγδεζηθικλμνξοπρσςτυφχψω
+@trans
+a α
+b β
+g γ
+d δ
+e ε
+z ζ
+e' η
+th θ
+i ι
+k κ
+l λ
+m μ
+n ν
+x ξ
+o ο
+p π
+r ρ
+s σ
+s' ς
+t τ
+u υ
+ph φ
+ch χ
+p' ψ
+o' ω
+@end chars
+
+@chars %hit/g
+@allow abdefghḫiklmnopqrsṣśštṭuwxyzABDEGHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
+@trans
+s, ṣ
+S, Ṣ
+s' ś
+S' Ś
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+@chars %peo/g
+@allow aiukgxčjtdθpbfnmyvrlszšçhAM₂XŠDHBGU
+@trans
+c' č
+c, ç
+t' θ
+$  š
+2  ₂
+@end chars
+
+@chars %peo/n
+@allow aiukgxčjtdθpbfnmyvrlszšçhāēīūṛAIUKGXČJTDΘPBFNMYVRLSZŠÇHĀĒĪŪṚ
+@trans
+=a ā
+=e ē
+=i ī
+=u ū
+c' č
+c, ç
+r, ṛ
+t' θ
+$  š
+=A Ā
+=E Ē
+=I Ī
+=U Ū
+C' Č
+C, Ç
+R, Ṛ
+T' Θ
+%  Š
+@end chars
+
+@chars %qcu/g
+@allow abdefghḫiklmnopqrsṣśštṭuwxyzABDEGHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@end chars
+
+@chars %qcu/n
+@allow aāâbcdeēêfghḫiīîjklmnopqrsṣśštṭuūûvwxyzʾ'AĀÂBCDEĒÊFGHḪIĪÎJKLMNOPQRSṢŚŠTṬUŪÛVWXYZ-?`/
+@end chars
+
+@chars %qeb/g
+@allow abdefghḫiklmnopqrsṣśštṭuwxyzABDEGHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
+@trans
+s, ṣ
+S, Ṣ
+s' ś
+S' Ś
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+@chars %qeb/n
+@allow aāâbcdeēêghḫiīîklmnopqrsṣśštṭuūûwxyzʾ'AĀÂBCDEĒÊGHḪIĪÎKLMNOPQRSṢŚŠTṬUŪÛWXYZ-
+@nokey Ḫḫ
+@trans
+s, ṣ
+s' ś
+sz š
+t, ṭ
+S, Ṣ
+S' Ś
+SZ Š
+T, Ṭ
+'  ʾ
+=a ā
+=e ē
+=i ī
+=u ū
+^a â
+^e ê
+^i î
+^u û
+=A Ā
+=E Ē
+=I Ī
+=U Ū
+^A Â
+^E Ê
+^I Î
+^U Û
+@end chars
+
+@chars %qpc/g
+@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'
+@nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+J Ŋ
+S, Ṣ
+SZ Š
+T, Ṭ
+@end chars
+
+@chars %qpe/g
+@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'
+@nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+J Ŋ
+S, Ṣ
+SZ Š
+T, Ṭ
+@end chars
+
+@chars %qpn/g
+@allow abdefgŋhḫijklmnopqrsṣśštṭuwxyzABDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
+@trans
+j  ŋ
+J  Ŋ
+s, ṣ
+S, Ṣ
+s' ś
+S' Ś
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+#Note that some characters need to be allowed in sux/g and n
+#for sign-names like REC107
+#Need to allow cdot for cbd bases which say, e.g., a-r·e
+#and degree for cbd bases like m°e
+#
+#FIXME: implement sux/m(orph) and remove ,:; from sux/g
+#
+@chars %sux/g
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNoOpPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙʾ;,:
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°
+@trans
+j ŋ
+J Ŋ
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+@chars %sux/n
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNoOpPqrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'.@~&+\-
+@nokey ḫḪ
+@trans
+j ŋ
+J Ŋ
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+@end chars
+
+#This is just a clone of sux/g for now
+@chars %xhu/g
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'ʾ
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
+#This is just a clone of sux/g for now
+@chars %uga/g
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+@end chars
+
+#This is a fake charset for search engine keys
+@chars %qse/n
+@allow aāâbcdeēêfgŋhḫiīîjklmnopqrsṣśštṭuūûvwxyzʾ'AĀÂBCDEĒÊFGŊHḪIĪÎJKLMNOPQRSṢŚŠTṬUŪÛVWXYZ-?`<>[]*0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙ;,:₀₁₂₃₄₅₆₇₈₉ₓ|
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°
+@trans
+j  ŋ
+J  Ŋ
+s, ṣ
+s' ś
+sz š
+t, ṭ
+S, Ṣ
+S' Ś
+SZ Š
+T, Ṭ
+'  ʾ
+=a ā
+=e ē
+=i ī
+=u ū
+^a â
+^e ê
+^i î
+^u û
+=A Ā
+=E Ē
+=I Ī
+=U Ū
+^A Â
+^E Ê
+^I Î
+^U Û
+@end chars

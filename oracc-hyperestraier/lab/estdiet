@@ -1,0 +1,57 @@
+#! /bin/sh
+
+#================================================================
+# estdiet
+# Reduce the size of an index directory
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+progname="estdiet"
+
+
+# check arguments
+if [ $# != 1 ]
+then
+  printf '%s: usage: %s index\n' "$progname" "$progname" 1>&2
+  exit 1
+fi
+
+
+# check the directory
+if ! [ -d "$1" ]
+then
+  printf '%s: %s could not open\n' "$progname" "$1" 1>&2
+  exit 1
+fi
+
+
+# squeeze the database
+[ -e "$1/_meta" ] && dpmgr optimize -na "$1/_meta"
+if [ -e "$1/_idx" ]
+then
+  ls "$1/_idx" |
+  while read file
+  do
+    dpmgr optimize -na "$1/_idx/$file"
+  done
+fi
+[ -e "$1/_fwm" ] && dpmgr optimize -na "$1/_fwm"
+[ -e "$1/_aux" ] && dpmgr optimize -na "$1/_aux"
+[ -e "$1/_xfm" ] && dpmgr optimize -na "$1/_xfm"
+[ -e "$1/_attr" ] && crmgr optimize -na "$1/_attr"
+[ -e "$1/_text" ] && crmgr optimize -na "$1/_text"
+[ -e "$1/_kwd" ] && crmgr optimize -na "$1/_kwd"
+[ -e "$1/_list" ] && dpmgr optimize -na "$1/_list"
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

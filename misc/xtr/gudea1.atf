@@ -1,0 +1,42 @@
+&Q000887 = Gudea 1 [E3/1.1.7.1]
+@composite
+#atf: use mylines
+#link: source P232309 = RIME 3/1, p. 107, E3/1.1.7.1, ex. 1
+#link: source P232310 = RIME 3/1, p. 107, E3/1.1.7.1, ex. 2
+1.	{d}ba-u2#
+#lem: DN
+
+2.	munus sag9-ga
+#lem: munus[woman]; sag[good]
+
+3.	dumu an-na
+#lem: dumu[child]; DN/k
+
+4.	nin iri-kug-ga
+#lem: nin[lady]; GN/k
+
+5.	nin-a-ni
+#lem: nin[lady]+*ra
+
+6.	gu3-de2-a
+#lem: RN
+
+7.	ensi2
+#lem: ensik[ruler]
+
+8.	lagasz{ki}-ke4
+#lem: GN/e
+
+9.	e2 iri-kug-ga-ka-ni
+#lem: e[house]; GN
+
+10.	mu-na-du3
+#lem: du[build]
+
+@translation unitary en psd
+
+@unit 1
+@span 1 - 10
+
+For Bau, the good woman, daughter of An, lady of Iri-kug, his
+lady, Gudea, ruler of Lagaš built her house in Iri-kug.

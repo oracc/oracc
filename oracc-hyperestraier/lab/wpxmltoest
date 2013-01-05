@@ -1,0 +1,147 @@
+#! /usr/bin/ruby
+
+#================================================================
+# wpxmltoest
+# dump draft data from an XML archive of Wikipedia
+#================================================================
+
+
+# library requirement
+require "stringio"
+require "uri"
+require "rexml/document"
+require "rexml/streamlistener"
+include REXML
+
+
+# listener for the parser
+class MyListener
+  include StreamListener
+  BASEURL = "http://ja.wikipedia.org/wiki/"
+  TEXTMINSIZE = 256
+  def initialize
+    @seq = 0
+    @buf = nil
+  end
+  def tag_start(name, attrs)
+    if(name == "page")
+      @buf = StringIO::new
+    end
+    return nil unless @buf
+    @buf.printf("<%s", Text::normalize(name))
+    attrs.each do |pair|
+      @buf.printf(" %s=\"%s\"", Text::normalize(pair[0]), Text::normalize(pair[1]))
+    end
+    @buf.printf(">")
+  end
+  def tag_end(name)
+    return nil unless @buf
+    @buf.printf("</%s>", Text::normalize(name))
+    if(name == "page")
+      begin
+        procpage(Document::new(@buf.string))
+      rescue
+        return
+      end
+    end
+  end
+  def text(text)
+    return nil unless @buf
+    @buf.printf("%s", Text::normalize(text))
+  end
+  def procpage(doc)
+    elems = doc.elements
+    title = nil
+    elems.each("page/title") do |elem|
+      title = elem.get_text.value
+      break
+    end
+    mdate = nil
+    elems.each("page/revision/timestamp") do |elem|
+      mdate = elem.get_text.value
+      break
+    end
+    author = nil
+    elems.each("page/revision/contributor/username") do |elem|
+      author = elem.get_text.value
+      break
+    end
+    text = nil
+    elems.each("page/revision/text") do |elem|
+      text = elem.get_text.value
+      break
+    end
+    return if !title || title.size < 1
+    return if title =~ /(Wikipedia|利用者|ノート) *(:|;|-|‐|=|)/
+    return if !text || text.size < 1
+    text = text.gsub(/<[^>]+>/, "")
+    text = Text::unnormalize(text)
+    return if text =~ /^#REDIRECT/ || text.size < TEXTMINSIZE
+    text = text.gsub(/^=+([^=]+)=+/, "\\1\n")
+    text = text.gsub(/^ *[\*#:|;-]+ */, "")
+    text = text.gsub(/\[\[[^\]\|]+\|([^\]]+)\]\]/, "\\1")
+    text = text.gsub(/\[\[([a-zA-Z-]+:)?([^\]]+)\]\]/, "\\2")
+    text = text.gsub(/\{\{([^\}\|]+)\|[^\}]+\}\}/, "\\1")
+    text = text.gsub(/\{\{([^\}]+)\}\}/, "\\1")
+    text = text.gsub(/\[http:[^ \]]+ ([^\]]+)\]/, "\\1")
+    text = text.gsub(/''+/, "")
+    text = text.gsub(/^ *\{?|/, "")
+    text = text.gsub(/^ *[\!\|\}]/, "")
+    text = text.gsub(/^\*+/, "")
+    text = text.gsub(/[a-zA-Z]+=\"[^\"].*\"/, "")
+    text = text.gsub(/[a-z][a-z]+=[0-9]+/, "")
+    text = text.gsub(/.*border-style.*/, "")
+    text = text.gsub(/.*valign=.*/, "")
+    text = text.gsub(/\&[a-zA-Z]+;/, "")
+    text = text.gsub(/.*(利用者|会話|ノート):.*/, "")
+    text = text.gsub(/(Wikipedia|Category):/, "")
+    text = text.gsub(/.*語:/, "")
+    text = text.gsub(/^thumb\|/, "")
+    text = text.gsub(/画像:/, "")
+    text = text.gsub(/^[ +]*[\|]*/, "")
+    text = text.gsub(/\|\|/, "\n")
+    text = text.gsub(/\n\n+/, "\n")
+    if(@seq % 1000 == 0)
+      name = sprintf("%05d", @seq / 1000)
+      printf("%s: making %s\n", $0, name)
+      begin
+        Dir::mkdir(name)
+      rescue
+      end
+    end
+    name = sprintf("%05d/%08d.est", @seq / 1000, @seq)
+    printf("%s: saving %s\n", $0, name)
+    File::open(name, "w") do |fp|
+      fp.printf("@uri=%s%s\n", BASEURL, URI::encode(title))
+      fp.printf("@title=%s\n", title)
+      fp.printf("@author=%s\n", author) if author && author.size > 0
+      fp.printf("@mdate=%s\n", mdate) if mdate && mdate.size > 0
+      fp.printf("@size=%d\n", text.size)
+      fp.printf("\n")
+      fp.printf("%s", text)
+      fp.printf("\n")
+    end
+    @seq += 1
+  end
+end
+
+
+# check arguments
+if ARGV.size != 1
+  STDERR.printf("usage: %s file\n", $0)
+  exit(1)
+end
+
+
+# perform parsing
+listener = MyListener::new
+source = File::new(ARGV[0])
+Document::parse_stream(source, listener)
+
+
+# exit normally
+exit(0)
+
+
+
+# END OF FILE

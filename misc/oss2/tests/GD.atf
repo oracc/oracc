@@ -1,0 +1,256 @@
+&Q001543 = Gudea Statue D [E3/1.01.07]
+@composite
+#project: epsd2/epsdc/royal
+#atf: use mylines
+#link: source P232277 = RIME 3/1, p. 040, E3/1.1.7, St D
+#@m=object statue
+
+#@surface shoulder
+1.	gu3-de2-a
+#lem: Gudea[1]RN\eE
+
+2.	ensi2
+#lem: ensik[ruler]
+
+3.	lagasz{ki}
+#lem: Lagaš[1]SN\akam +.
+
+#@surface front
+@m column 1
+1.	{d}nin-jir2-su
+#lem: Ninŋirsuk[1]DN
+
+2.	ur-saj kalag-ga
+#lem: ursaj[hero]; kalag[strong]
+
+3.	{d}en-lil2-la2
+#lem: Enlil[1]DN
+
+4.	lugal-a-ni
+#lem: lugal[king]\ra
+
+5.	gu3-de2-a
+#lem: Gudea[1]RN
+
+6.	ensi2
+#lem: ensik[ruler]
+
+7.	lagasz{ki}
+#lem: Lagaš[1]SN\ak
+
+8.	mu gil-sa
+#lem: mu[name]; gilsa[treasure]\ak
+
+9.	ma2-gid2
+#lem: magid[boat-tower]
+
+10.	{d}en-lil2-la2
+#lem: Enlil[1]DN
+
+11.	sipad szag4-ge pad3-da
+#lem: sipad[shepherd]; szag[heart]; pad[discover]
+
+12.	{d}nin-jir2-su-ka-ke4
+#lem: Ninŋirsuk[1]DN
+
+13.	agrig kalag-ga
+#lem: agrig[steward]; kalag[strong]
+
+14.	{d}nansze-ke4
+#lem: Nanše[1]DN
+
+15.	lu2 inim-ma sig10-ga
+#lem: lu[person]; inim[word]\a; !sig[put]
+
+16.	{d}ba-u2-ke4
+#lem: Bau[1]DN
+
+17.	dumu tud-da
+#lem: dumu[child]; utud[bear]
+
+18.	{d}ja2-tum3-dug3-ke4
+#lem: Ŋatumdug[1]DN
+
+19.	nam-nir-jal2 jidru mah szum2-ma
+#lem: namnirjal[authority]; jidru[scepter]; mah[great]; szum[give]
+
+@m column 2
+1.	{d}ig-alim-ka-ke4
+#lem: Igalimak[1]DN
+
+2.	zi-szag4-jal2-la szu dajal dug4-ga
+#lem: ziszagjal[encouragement]; szu[hand]; dajal[wide]; dug[speak]
+
+3.	{d}szul-szag4-ga-na-a-ke4
+#lem: Šulšaganak[1]DN
+
+4.	lu2 si-sa2
+#lem: lu[person]; sisa[fair]
+
+5.	iri-ne2 ki aj2-e
+#lem: iri[city]; ki[place]; aj[measure]
+
+6.	nij2-du7-e pa mu-na-e3
+#lem: nijdu[appropriate thing]\l; pa[branch]; e[leave] +.
+
+7.	e2-ninnu-anzud2{muszen}-babbar2-ra-ni
+#lem: Eninnu-anzubabbar[1]TN
+
+8.	mu-na-du3
+#lem: !du[build] +.
+
+9.	szag4-ba gi-gun4 ki aj2-ni
+#lem: szag[heart]\a; giguna[terrace]; ki[place]; aj[measure]\0
+
+10.	{szim}{jesz}eren-na mu-na-ni-du3
+#lem: eren[cedar]\a; !du[build] +.
+
+11.	e2-jidru e2 ub imin-na-ni
+#lem: Eŋidruk[1]TN; e[house]; ub[corner]; imin[seven]
+
+12.	mu-na-du3
+#lem: !du[build] +.
+
+13.	szag4-ba nij2-mussa
+#lem: szag[heart]\a; nijmussa[gift]
+
+14.	{d}ba-u2
+#lem: Bau[1]DN
+
+@m column 3
+1.	nin-a-na-ke4
+#lem: nin[lady]\l
+
+2.	si ba-ni-sa2-sa2
+#lem: si[horn]; sa[equal] +.
+
+3.	ma2-gur8 ki aj2-ja2-ni
+#lem: magur[barge]; ki[place]; aj[measure]
+
+4.	kar-nun-ta-e3-a
+#lem: Karnuntaea[1]GN
+
+5.	mu-na-dim2
+#lem: dim[create] +.
+
+6.	kar za-gin3 ka2-sur-ra-ke4
+#lem: kar[harbor]; zagin[lapis]; Kasura[1]SN\l
+
+7.	mu-na-us2
+#lem: us[follow] +.
+
+8.	lu2-ma2-gur8-be2
+#lem: lumagur[boatman]
+
+9.	nu-banda3-be2
+#lem: nubanda[overseer]\l
+
+10.	zu2 mu-na-kesz2
+#lem: zu[tooth]; keszed[bind] +.
+
+11.	e2 lugal-na-ke4
+#lem: e[house]; lugal[king]\l
+
+12.	saj-sze3 im-mi-rig7
+#lem: saj[head]; rig[donate] +.
+
+13.	{d}ba-u2
+#lem: Bau[1]DN
+
+14.	munus sag9-ga
+#lem: munus[woman]; sag[good]
+
+15.	dumu an-na
+#lem: dumu[child]; An[1]DN
+
+16.	nin-a-ni
+#lem: nin[lady]\ra
+
+17.	e2 iri-kug-ga-ka-ni
+#lem: e[house]; Irikug[1]SN
+
+@m column 4
+1.	mu-na-du3
+#lem: !du[build] +.
+
+2.	a2 {d}nansze-ta
+#lem: a[arm]; Nanše[1]DN
+
+3.	a2 {d}nin-jir2-su-ka-ta
+#lem: a[arm]; Ninŋirsuk[1]DN
+
+4.	gu3-de2-a
+#lem: Gudea[1]RN
+
+5.	jidru szum2-ma
+#lem: jidru[scepter]; szum[give]
+
+6.	{d}nin-jir2-su-ka-ra
+#lem: Ninŋirsuk[1]DN
+
+7.	ma2-gan{ki}
+#lem: Magan[1]GN
+
+8.	me-luh-ha{ki}
+#lem: Meluha[1]GN
+
+9.	gu-bi{ki}
+#lem: Gubin[1]SN
+
+10.	kur dilmun{ki}
+#lem: kur[land]; Dilmun[1]GN
+
+11.	gu2 jesz mu-na-jal2-la-am3
+#lem: gu[neck]; jesz[tree]; jal[be] +.
+
+12.	ma2 jesz du3-a-bi
+#lem: ma[ship]; jesz[tree]; du[all]
+
+13.	lagasz{ki}-sze3
+#lem: Lagaš[1]SN
+
+14.	mu-na-de6
+#lem: de[bring] +.
+
+15.	hur-saj ma2-gan{ki}-ta
+#lem: hursaj[mountain]; Magan[1]GN
+
+16.	{na4}esi im-ta-ed3
+#lem: esi[diorite]; ed[ascend\t] +.
+
+17.	alan-na-sze3
+#lem: alan[statue]
+
+@m column 5
+1.	mu-tud
+#lem: utud[bear] +.
+
+2.	lugal a2 dugud-da-ni
+#lem: lugal[king]; (RRC a[arm]; dugud[heavy]
+
+# #~;ani.0
+
+3.	kur-e nu-il2-e
+#lem: kur[mountain]; il[raise]#nu:~;e )
+
+4.	{d}nin-jir2-su-ke4
+#lem: Ninŋirsuk[1]DN
+
+5.	gu3-de2-a
+#lem: Gudea[1]RN
+
+6.	lu2 e2 du3-a-ra
+#lem: lu[person]; e[house]; !du[build]
+
+7.	nam dug3 mu-ni-tar
+#lem: nam[fate]; dug[good]; tar[cut] +.
+
+8.	mu-sze3 mu-na-sze21
+#lem: mu[name]; sze[call] +.
+
+9.	e2-ninnu-a
+#lem: Eninnu[1]TN\a
+
+10.	mu-na-ni-[kur9]
+#lem: kur[enter] +.
+

@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Advanced search in Oracc 2 corpora</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2011-12-16</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>In Oracc 2 corpora you can carry out complex combinations of context-dependent searches. This page describes how to use the Advanced Search tool.</dc:description>
+</d:meta>
+
+<p>Quick links to more user help:</p>
+<ul>
+<li><a href="/doc/user/p2/">Introduction to using the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/searching/">Searching the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/glossaries/">Using the Oracc 2 glossaries</a></li>
+</ul>
+
+<h1>What you see</h1>
+<p>When you click on the <code>Advanced Search</code> button at the top of a corpus <a href="/doc/user/p2/#The_Header">header</a>, a pop-up window appears. (Be patient; it may take a few seconds to load.) Under the heading "Oracc Advanced Search" you will see six different elements:</p>
+<dl>
+<dt>Results summary</dt>
+<dd>This line of plain text tells you how many results have been returned in the <a href="/doc/user/p2/#Outline_Main_Pane">main pane</a> of your browser window. It also gives the search code in plain text in a grey box below. If you like you can copy, save and perhaps modify those snippets of search code for re-use in the main <a href="/doc/user/p2/#The_search_bar">Search Box</a> if you want to replicate your search later.</dd>
+<dt>Search index "transliterations" drop-down menu</dt>
+<dd>Use this to choose whether to search in the transliterations, lemmatisations, translations, or catalogue data of the corpus. The options next to the search box below will change, depending on which you select.</dd>
+<dt>Search box and associated options</dt>
+<dd>The basic search conventions are described on the <a href="searching/">page about simple searches</a>. The options offered in the associated drop-down menus are <a href="#Search_Options">detailed below</a>.</dd>
+<dt>"Combine with another search" button</dt>
+<dd>Use this to add one or more extra search parameters. The options are <a href="#Combine_with_another_search">detailed below</a>.</dd>
+<dt>Search button</dt>
+<dd>Click on this only when you have entered your search criteria in the box(es) above. The results of the search will appear in the <a href="/doc/user/p2/#Outline_Main_Pane">main pane</a> of your browser window, not in the pop-up itself.</dd>
+<dt>Use <a href="http://knp.prs.heacademy.ac.uk/cuneiformrevealed/aboutcuneiform/computercuneiform/#h_unicodetransliterationandnormalisation">Unicode</a> tick-box</dt>
+<dd>This is set to yes by default. Un-check this box if you do not have a suitable <a href="/doc/user/fonts">Unicode font</a> and <a href="/doc/user/keyboard">keyboard</a> installed on your computer.</dd>
+</dl>
+<h1>Search Options</h1>
+<h2>Transliteration</h2>
+<p>Advanced transliteration searches take the textual line as the basic search unit. When you search within transliterations you can specify the positions and roles of the sign (sequence(s)) you are searching for:</p>
+<dl>
+<dt>"Any position" menu</dt>
+<dd>Use this to specify where within a word or line the sign (sequence) you are searching for occurs. The default is <code>Any position</code>, but you may also choose to look for a sign (sequence) at the start or end of a word, or the start or end of a line.</dd>
+<dt>"Any role" menu</dt>
+<dd>Use this if you wish to search only for logograms, sign names, syllable signs, determinatives or phonetic complements. [ONLY THE FIRST TWO CURRENTLY ON OFFER.] The default is <code>Any role</code>.</dd>
+<dt>+/- button</dt>
+<dd>Use this to add or remove one or more further transliteration search terms. (Use <code>Combine with another search</code> as well or instead if you wish to further constrain your single search term.)</dd>
+<dt>"and" drop-down menu</dt>
+<dd>Use this to choose whether you want both your old and new search terms to be found (using <code>and</code>), either or both of them (using <code>or</code>), or the previous one(s) to the exclusion of this one (using <code>without</code>).</dd>
+<dt>"Following" drop-down menu</dt>
+<dd>Use this to specify whether your additional search term(s) should follow or precede the first, or whether it/they can occur on either side of it.</dd>
+<dt>Number box and "Word" drop-down menu</dt>
+<dd>Use these two tools to specify how close or far from the first search term your second term may be. You may choose to count words, lines, texts, or signs.</dd>
+</dl>
+ 
+<h2>Lemmatisations</h2>
+<p>Advanced lemmatisation searches use the sentence as the basic search unit. You can specify which sort of lemmatisation data to search in:</p>
+<dl>
+<dt>"Any" drop-down menu</dt>
+<dd>Choose whether to search the Sumerian/Akkadian (with <code>Citation Form/Normalization</code>), the English equivalents (<code>Guideword/Senses</code>), or -- for Sumerian only -- the morphology. <code>Morphology 1</code> allows you to search the morphemes themselves, while <code>Morphology 2</code> enables you to search the morphemic glosses. See the <a href="/etcsri/">ETCSRI</a> documentation on <a href="/etcsri/parsing">morphological parsing</a>, <a href="/etcsri/glossing/">morphological glossing</a> and <a href="/etcsri/searching/">searching ETCSRI</a> for more information.</dd>
+<dt>"End" tick-box</dt>
+<dd>Use this in conjuction with the <code>Any</code> option if you want to constrain your search to the final morpheme of a word (particularly useful for Sumerian).</dd>
+<dt>+/- button</dt>
+<dd>Use this to add or remove one or more further transliteration search terms. (Use <code>Combine with another search</code> as well or instead if you wish to further constrain your single search term.)</dd>
+<dt>"and" drop-down menu</dt>
+<dd>Use this to choose whether you want both your old and new search terms to be found (using <code>and</code>), either or both of them (using <code>or</code>), or the previous one(s) to the exclusion of this one (using <code>without</code>).</dd>
+<dt>"Following" drop-down menu</dt>
+<dd>Use this to specify whether your additional search term(s) should follow or precede the first, or whether it/they can occur on either side of it.</dd>
+<dt>Number box and "Word" drop-down menu</dt>
+<dd>Use these two tools to specify how close or far from the first search term your second term may be. You may choose to count words, sentences, or texts.</dd>
+</dl>
+
+<h2>Translation</h2>
+<p>The default search unit for translations is the paragraph or line (depending on the structure of the translation). You can refine translation searches by adding further search terms:</p>
+<dl>
+<dt>+/- button</dt>
+<dd>Use this to add or remove one or more further transliteration search terms. (Use <code>Combine with another search</code> as well or instead if you wish to further constrain your single search term.)</dd>
+<dt>"and" drop-down menu</dt>
+<dd>Use this to choose whether you want both your old and new search terms to be found (using <code>and</code>), either or both of them (using <code>or</code>), or the previous one(s) to the exclusion of this one (using <code>without</code>).</dd>
+</dl>
+
+<h2>Catalogue</h2>
+<p>You can choose which of the core fields to search in, and/or search in any catalogue field:</p>
+<dl>
+<dt>"Any field" drop-down menu</dt>
+<dd>Choose whether to constrain your search to one of the four core fields--<code>designation</code>, <code>provenience</code> (provenance), <code>genre</code>, or <code>period</code>--or whether to leave it set to <code>any field</code>.</dd>
+<dd>Alternatively, you can enter the name of the field directly into the search box, followed by a colon and the keyword, as you can with the <a href="/doc/user/searching/#Searching_the_catalogue_data">simple search box</a> (e.g., <code class="example">genre:medical</code>).</dd> 
+<dt>+/- button</dt>
+<dd>Use this to add or remove one or more further transliteration search terms. (Use <code>Combine with another search</code> as well or instead if you wish to further constrain your single search term.)</dd>
+<dt>"and" drop-down menu</dt>
+<dd>Use this to choose whether you want both your old and new search terms to be found (using <code>and</code>), either or both of them (using <code>or</code>), or the previous one(s) to the exclusion of this one (using <code>without</code>).</dd>
+</dl>
+
+<h2>Combine with another search</h2>
+<p>When you click the "Combine with another search button" further options appear:</p>
+<dl>
+<dt>"Only include" drop-down menu</dt>
+<dd>Use this menu to choose whether you want both your old and new search criteria to be found (using <code>only include</code>), either or both of them (using <code>also include</code>), or the previous one(s) to the exclusion of this one (using <code>exclude</code>).</dd>
+<dt>"transliterations" drop-down menu</dt>
+<dd>This menu enables you to choose whether to search in the transliterations, lemmatisations, translations, or catalogue data of the corpus, and to access the associated <a href="#Search_Options">search options</a>.</dd>
+<dt>"Remove this search" button</dt>
+<dd>Use this to clear the new search criteria and start again.</dd>
+</dl>
+
+<h1>More on using Oracc 2 corpora</h1>
+
+<ul>
+<li><a href="/doc/user/p2/">Introduction to using the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/searching/">Searching the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/glossaries/">Using the Oracc 2 glossaries</a></li>
+</ul><!-- <d:schema name="" uri="">
+</d:schema>
+
+<d:resources/> -->
+
+</d:doc>

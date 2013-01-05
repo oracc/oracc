@@ -1,0 +1,1760 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>GDL</dc:title>
+  <dcterms:alternative>Grapheme Description Language</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.org/ns/gdl/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-03-03</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>Grapheme Description Language for embedding in
+  higher-order document types such as text editions and
+  signlists.  A formal definition with RNC schema is given interwoven
+  with the ATF conventions for representing each element in
+  the schema.</dc:description>
+</d:meta>
+
+<d:secondary n="tutorial" xml:id="gdltut">
+  <d:meta>
+    <dc:title>ATF Inline Tutorial</dc:title>
+    <dc:creator>Steve Tinney</dc:creator>
+    <dc:date>2006-03-03</dc:date>
+    <dc:publisher>CDLG</dc:publisher>
+    <dc:description>This document gives a tutorial on how to type
+    graphemes and other inline content in ATF.</dc:description>
+  </d:meta>
+  <d:select>//*[contains(@class,'tutorial')]</d:select>
+  <d:output file="html/gdltut.html"/>
+</d:secondary>
+
+<h1 class="tutorial secondary">Graphemes</h1>
+
+<h2>Grapheme</h2>
+
+<p>The term "grapheme" as used in this document refers to a string of
+letters, numbers, modifiers and operators used to specify a Sumero-Akkadian
+cuneiform sign by name or to render one of the values of such a sign.
+While sign names are often glyph-descriptive (e.g., <code>KA×A</code>
+meaning sign <code>A</code> written inside sign <code>KA</code>), this
+document does not provide a glyph description language.  Rather, we
+define a <i>Grapheme</i> Description Language.</p>
+
+<h2>GDL &amp; ATF</h2>
+
+<p>GDL is not intended to be generated manually; rather, it is the XML
+result of processing ASCII Transliteration Format (ATF) with the ATF
+processor.  This document includes implementor notes on ATF interwoven
+with the technical documentation.  Unless you are an implementor, or
+are pathologically curious (or both), you don't need to read this
+document!  <a href="gdltut.html">Read the tutorial instead.</a>  If you
+are a developer who is new to GDL and ATF it is recommended that you
+first read the tutorial, and then this document.</p>
+
+<p>An XSL script to convert from GDL back to ATF can be found in the
+resources section below.  The script does not convert the character
+set from Unicode to ASCII.</p>
+
+<div class="tutorial secondary">
+<p>Although you will see references to GDL here, use of ATF in typing
+texts does not require any knowledge of GDL.  GDL, the Grapheme
+Description Language, is the name for the model and XML vocabulary
+used to describe graphemes to computers.  This tutorial is actually a
+subset of the <a href="index.html">full GDL specification</a> intended
+to make it easy to start using ATF.</p>
+</div>
+
+<d:schema name="charset" uri="http://oracc.org/ns/gdl-charset/1.0">
+<p>In this section we provide a model for constraining the lexical
+representation of graphemic atoms.  This aspect of grapheme
+description does not constrain the validity of values within a given
+signiary; that is handled elsewhere.</p>
+
+<p>Atoms are tightly constrained sequences of characters separated
+into distinct lowercase and uppercase sets to permit finer-grained
+constraints.</p>
+
+<h2 class="tutorial">Characters</h2>
+
+<p>GDL does not support any of the common ASCII approximations of the
+various non-ASCII characters used in cuneiform transliteration; GDL
+uses only the specific Unicode codepoints listed below for the
+representation of these characters.  Details and images of the Unicode
+characters can be found at <a
+href="http://www.unicode.org/charts/">http://www.unicode.org/charts</a>.</p>
+
+<div class="atf tutorial">
+
+<p>These days most ATF is generated in <a
+href="/doc/user/unicode/">Unicode</a>. However, it can also be
+restricted to ASCII characters, for which we define simple equivalents
+for the characters used in cuneiform transliteration which are not in
+the ASCII character set.  The following table gives the ASCII
+sequences and the Unicode codepoints to which the ATF processor
+translates them.  Certain conventions are not used in CDLI-strict
+notation; this is indicated in another column.</p>
+
+<table class="wide">
+<caption>ATF Character Conventions</caption>
+<thead>
+<tr>
+<th>Unicode-ATF</th>
+<th>ASCII-ATF</th>
+<th>Character</th>
+<th>CDLI-Strict?<sup>1</sup></th>
+</tr>
+</thead>
+<tfoot>
+<tr><td colspan="4"><p><sup>1</sup>Characters not in the strict repertoire are not
+permitted in CDLI archival ATF.</p></td></tr>
+<tr><td colspan="4"><sup>2</sup>Lowercase <code>x</code> is permitted
+only in sign values; in sign names, only uppercase <code>X</code> is
+permitted as a notation for subscript-x.  In sign names, lowercase
+<code>x</code> is an operator.</td></tr>
+</tfoot>
+<tbody>
+<tr>
+<td class="cookbook">sz</td>
+<td>š</td>
+<td>U+161</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">SZ</td>
+<td>Š</td>
+<td>U+160</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">s,</td>
+<td>ṣ</td>
+<td>U+1E63</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">S,</td>
+<td>Ṣ</td>
+<td>U+1E62</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">t,</td>
+<td>ṭ</td>
+<td>U+1E6D</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">T,</td>
+<td>Ṭ</td>
+<td>U+1E6C</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">s'</td>
+<td>ś</td>
+<td>U+015B</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">S'</td>
+<td>Ś</td>
+<td>U+015A</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">'</td>
+<td>ʾ</td>
+<td>U+02BE</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">0-9</td>
+<td>subscript ₀-₉</td>
+<td>U+2080-U+2089</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">x<sup>2</sup></td>
+<td>subscript ₓ</td>
+<td>U+208A</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">X<sup>2</sup></td>
+<td>subscript ₓ</td>
+<td>U+208A</td>
+<td class="center">yes</td>
+</tr>
+<tr>
+<td class="cookbook">h,</td>
+<td>ḫ</td>
+<td>U+1E2B</td>
+<td class="center">no</td>
+</tr>
+<tr>
+<td class="cookbook">H,</td>
+<td>Ḫ</td>
+<td>U+1E2A</td>
+<td class="center">no</td>
+</tr>
+<tr>
+<td class="cookbook">j</td>
+<td>ŋ</td>
+<td>U+014B</td>
+<td class="center">no</td>
+</tr>
+<tr>
+<td class="cookbook">J</td>
+<td>Ŋ</td>
+<td>U+014A</td>
+<td class="center">no</td>
+</tr>
+</tbody>
+</table></div>
+
+<p>Characters are combined into atom specifications by grouping them
+in classes which are used to place lexical constraints on the
+atoms.</p>
+
+<dl>
+<dt>lV = Permitted lowercase vowels</dt>
+<dd><code>a e i u</code></dd>
+<dt>uV = Permitted uppercase vowels</dt>
+<dd><code>A E I U</code></dd>
+<dt>lC = Permitted lowercase consonants</dt>
+<dd><code>b d g h k l m n p q r s u w y z</code><br/>
+<span class="unicode-name">U+014B LATIN SMALL LETTER ENG</span><br/>
+<span class="unicode-name">U+1E2B LATIN SMALL LETTER H WITH BREVE BELOW</span><br/>
+<span class="unicode-name">U+015B LATIN SMALL LETTER S WITH ACUTE</span><br/>
+<span class="unicode-name">U+0161 LATIN SMALL LETTER S WITH CARON</span><br/>
+<span class="unicode-name">U+1E63 LATIN SMALL LETTER S WITH DOT BELOW</span><br/>
+<span class="unicode-name">U+1E6D LATIN SMALL LETTER T WITH DOT BELOW</span><br/>
+<span class="unicode-name">U+02BE MODIFIER LETTER RIGHT HALF RING</span><br/>
+</dd>
+<dt>uC = Permitted uppercase consonants</dt>
+<dd><code>B D G H K L M N P Q R S U W Y Z</code><br/>
+<span class="unicode-name">U+014A LATIN CAPITAL LETTER ENG</span><br/>
+<span class="unicode-name">U+1E2A LATIN CAPITAL LETTER H WITH BREVE BELOW</span><br/>
+<span class="unicode-name">U+015A LATIN CAPITAL LETTER S WITH ACUTE</span><br/>
+<span class="unicode-name">U+0160 LATIN CAPITAL LETTER S WITH CARON</span><br/>
+<span class="unicode-name">U+1E62 LATIN CAPITAL LETTER S WITH DOT BELOW</span><br/>
+<span class="unicode-name">U+1E6C LATIN CAPITAL LETTER T WITH DOT BELOW</span><br/>
+<span class="unicode-name">U+02BE MODIFIER LETTER RIGHT HALF RING</span><br/>
+</dd>
+<dt>Si = Subscript initial characters</dt>
+<dd><code>U+2081-U+2089</code> (Unicode subscript 1 through 9)</dd>
+<dt>Sc = Subscript continuation characters</dt>
+<dd><code>U+2080-U+2089</code> (Unicode subscript 0 through 9)</dd>
+<dt>Sx = Subscript x character</dt>
+<dd><span class="unicode-name">U+208A SUBSCRIPT PLUS SIGN</span></dd>
+</dl>
+
+<p>This yields the following base character sets and definitions
+(dollar-variables are expanded by a preprocessor to generate the
+actual RNC schema):</p>
+<d:rnc preprocess="1"><![CDATA[
+$lV = [aeiu]
+$lC = [\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]
+$uV = [AEIU]
+$uC = [\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]
+$Si = [\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]
+$Sc = [\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]
+
+$subscript = (${Si}${Sc}?|\x{208A})?
+
+lV = xsd:string {
+   pattern = "${lV}${subscript}"
+}
+
+lVCv = xsd:string {
+  pattern = "(${lV}${lC})+${lV}?${subscript}"
+}
+
+lCVc = xsd:string {
+  pattern = "(${lC}${lV})+${lC}?${subscript}"
+}
+
+lVCCvc = xsd:string {
+  pattern = "(${lV}${lC}{1,2})+(${lV}${lC}?)${subscript}"
+}
+
+lCVCCvc = xsd:string {
+  pattern = "(suen|kuara|${lC}(${lV}${lC}{1,2})+(${lV}${lC}?))${subscript}"
+}
+
+uV = xsd:string {
+   pattern = "${uV}${subscript}"
+}
+
+uVCv = xsd:string {
+  pattern = "(${uV}${uC})+${uV}?${subscript}"
+}
+
+uCVc = xsd:string {
+  pattern = "(${uC}${uV})+${uC}?${subscript}"
+}
+
+uVCCvc = xsd:string {
+  pattern = "(${uV}${uC}{1,2})+(${uV}${uC}?)${subscript}"
+}
+
+uCVCCvc = xsd:string {
+  pattern = "${uC}(${uV}${uC}{1,2})+(${uV}${uC}?)${subscript}"
+}]]></d:rnc>
+</d:schema>
+
+<d:schema name="grapheme" uri="http://oracc.org/ns/gdl/1.0">
+
+<h2>Preamble</h2>
+
+<p>As a design principle, all of the most common GDL elements have single
+character names.  In order to minimize possible confusion with similar
+names in other vocabularies, it is recommended that GDL elements
+always be namespace-qualified.  To reinforce this point, the
+definition of the GDL schema does not use a default namespace.</p>
+
+<p>The examples in this document all assume that the prefix
+<code>g</code> is bound to the namespace of the GDL schema.</p>
+
+<d:rnc>
+namespace g = "http://oracc.org/ns/gdl/1.0"
+
+grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+form     = attribute form { text }
+sb       = element g:b { s.model }
+vb       = element g:b { v.model }
+punct    = element g:p { p.model }
+lang     = attribute xml:lang { xsd:language }
+gsurro   = 
+  element g:surro {
+    delim? , (s|c|n|punct) , groupgroup
+  }
+</d:rnc>
+
+<h2 class="tutorial">Signs</h2>
+
+<p>We call the core alphanumeric portion of a sign an atom.  This is a
+single grapheme component which for the purposes of <strong>this
+grapheme description instance</strong> is not susceptible to further
+sub-description.</p>
+
+<p>All sign values are by definition atoms.</p>
+
+<p>Sign names consist of one or more atoms.  In the grapheme
+<code>A</code> there is a single atom; in the grapheme
+<code>KA×A</code> there are two atoms, <code>KA</code> and
+<code>A</code>.  In another context, that same grapheme might be named
+as <code>NAG</code>; this version of the name contains a single atom,
+despite the fact that a sign list might describe the sign as
+<code>KA×A</code>.  In other words, atomicity in grapheme names is
+determined by the naming scheme rather than the underlying
+construction of the glyph.</p>
+
+<p class="tutorial secondary">Signs may be simple values or names, or
+compound sign names.  Compound signs are made up of simple names
+combined with operators or affected by modifiers or sign-variant
+indicators.  Names and values are one part of number signs.  The forms
+of the various kinds of signs, as well as the compound sign operators,
+modifiers and variant indicators, are described in turn below.</p>
+
+
+<p>Two simple elements are defined for atoms: <code>g:v</code>, for sign
+values, and <code>g:s</code> for sign names.</p>
+
+<h2 class="tutorial">Values</h2>
+
+<d:rnc>
+# Values
+#v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
+v.model = text
+v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
+dingir   = element g:v { g.meta , lang? , ("d") }
+mister   = element g:v { g.meta , lang? , ("m") }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF a sign value is a sequence of lowercase letters
+followed by optional subscript digits:</p>
+
+<pre class="cookbook">
+a      a₂    babbar      dug₄      ṣe₂    ša₁₃
+</pre></div>
+
+<h2 class="tutorial">Names</h2>
+
+<d:rnc>
+# Names
+#s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num
+s.model  = text
+
+lst    = xsd:string {
+  pattern="(..?SL|ABZ|BAU|HZL|KWU|LAK|M|MEA|MZL|REC|RSP|ZATU)\d+[a-z]*"
+}
+
+#[ABCD] is a stop-gap until lateuruk numbers are fixed
+num      = xsd:string { pattern = "N|N\d+[ABCD]?" }
+
+s        = element g:s { form? , g.meta , (s.model | (sb , mods+)) }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF a simple sign name is a sequence of uppercase letters
+followed by optional subscript digits:</p>
+
+<pre class="cookbook">
+A      BA     ŠA₃    GILIM
+</pre>
+<p>A sign name in a transliteration conventionally means either that
+the sign is clear but its reading is uncertain, or that the sign is
+being used as a logogram.  ATF has some simple rules to mark the
+difference between these two:</p>
+<ul>
+<li>You can always put a dollar sign (<code>$</code>) before a sign
+name to indicate that its reading is uncertain.</li>
+<li>You can always put a tilde (<code>~</code>) before a sign name to
+indicate that it is a logogram.</li>
+<li>You can tell the ATF processor what the meaning of the unmarked
+form is in an ATF protocols section.</li>
+</ul>
+<p>As a result of these rules, <code>$AN</code> always means "the
+AN-sign is there but I am not sure which reading to choose" and
+<code>~AN</code> always means "the AN sign is a logogram here".  The
+meaning of <code>AN</code> can be configured to mean either one.  By
+default, in Sumerian language context the meaning of <code>AN</code> is
+equivalent to <code>$AN</code>.  In all other language contexts, the
+meaning of <code>AN</code> is equivalent to <code>~AN</code>.  This
+means that typing logograms in Akkadian is as easy as:</p>
+<pre class="cookbook">ša AN</pre>
+</div>
+
+<div class="tutorial">
+<p>Two special classes of sign name are signlists and numerical
+sign names.  Numerical sign names match the pattern
+<code>N&lt;DIGITS></code>.  Signlist names consist of an uppercase
+alphabetic prefix and an ASCII digit suffix; the prefix is the name of
+the sign list and the suffix is the number of the sign in that list.
+Prefixes fall into one of two groups.  Generic signlist prefixes
+consist of any one or two uppercase letters followed by
+<code>SL</code>; hence, <code>CDSL</code>, <code>PSL</code>,
+<code>PCSL</code> are all valid signlist prefixes.  The second group
+is the built-in set of historic sign lists.</p></div>
+
+<div class="atf tutorial">
+<p>In ATF  signlist names and numerical sign names look like this:</p>
+
+<pre class="cookbook">N01       N34       LAK37        ZATU777</pre></div>
+
+<div class="tutorial"><table class="ninety">
+<caption>Built-in Sign List Names</caption>
+<thead><tr><th>Name</th><th>Bibliography</th></tr></thead>
+<tbody>
+<tr><td class="cookbook">ABZ</td><td>R. Borger, <i>Assyrisch-babylonische Zeichenliste</i>
+(<i>AOAT</i> 33; Neukirchen-Vluyn 1978)</td></tr>
+<tr><td class="cookbook">BAU</td><td>E. Burrows, <i>Archaic Texts</i> (<i>UET</i> 2; London
+1935)</td></tr>
+<tr><td class="cookbook">HZL</td><td>C. Ruster and E. Neu, <i>Hethitisches Zeichenlexikon</i>
+(Harrassowitz Verlag 1989)</td></tr>
+<tr><td class="cookbook">KWU</td><td>N. Schneider, <i>Die Keilschriftzeichen der
+Wirtschaftsurkunden von Ur III</i> (Rome 1935)</td></tr>
+<tr><td class="cookbook">LAK</td><td>A. Deimel, <i>Liste der archaischen Keilschriftzeichen</i>
+(<i>WVDOG</i> 40; Berlin 1922)</td></tr>
+<tr><td class="cookbook">MEA</td><td>R. Labat, <i>Manuel d'épigraphie akkadienne</i> (6th
+ed. Paris 1988)</td></tr>
+<tr><td class="cookbook">MZL</td><td>R. Borger, <i>Mesopotamisches Zeichenlexikon</i>
+(<i>AOAT</i> 305; Ugarit-Verlag 2003)</td></tr>
+<tr><td class="cookbook">REC</td><td>F. Thureau-Dangin, <i>Recherches sur l'origine de
+l'écriture cunéiforme</i> (Paris 1898)</td></tr>
+<tr><td class="cookbook">RSP</td><td>Y. Rosengarten, <i>Répertoire commenté des
+signes présargoniques sumériens de Lagash</i> (Paris
+1967)</td></tr>
+<tr><td class="cookbook">ZATU</td><td>M. Green and H. J. Nissen, <i>Zeichenliste der
+Archaischen Texte aus Uruk</i> (<i>ATU</i> 2; Berlin 1987)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 class="tutorial">Qualified</h2>
+
+<p>Qualifed graphemes consist of a sign value followed by a sign name
+in parentheses, e.g., <code>pu(BU)</code>.  (In normalized text the
+superficially similar construct is used to indicate the logograms used
+for the normalized form, e.g., <code>%akk/n bēlu(EN)</code>.)</p>
+
+<d:rnc>
+# Qualified graphemes
+q        = element g:q { form? , g.meta , (v|s|c) , (s|c|n) }
+</d:rnc>
+
+<div class="atf tutorial">
+
+<p>Signs which have the special subscript <code>ₓ</code>
+must be qualified in ATF by placing the sign name in parentheses
+immediately after the sign value:</p>
+
+<pre class="cookbook">baₓ(PI)         ZAX(LAK384)</pre>
+
+<p><strong>Note:</strong> in sign values, use subscript
+<code>ₓ</code>; in sign names, use uppercase <code>X</code>.</p></div>
+
+<h2 class="tutorial">Number</h2>
+
+<p>Numerical graphemes have a special form.  Each numerical grapheme
+consists of at least two parts: the repetition count and the sign
+value, sign name or compound sign.  A special case is made for
+numerical graphemes by allowing them to have modifiers even if the
+graphemic base is a sign value.</p>
+
+<p>The repetition count must have one of the following forms:</p>
+
+<dl>
+<dt><code>digits</code></dt>
+<dd>This is the normal case.</dd>
+<dt><code>n</code></dt>
+<dd>This is a special case for circumstances where the repetition is
+completely uncertain.</dd>
+<dt><code>n+digits</code></dt>
+<dd>This is a special case for circumstances where the repetition is
+partly uncertain.</dd>
+</dl>
+
+<p>While it would in principle be possible to constrain the value
+space of <code>GRAPHEME</code> in the schema we do not do so; instead,
+as with non-numerical graphemes, we constrain the lexical space and
+require the values of numerical graphemes to be validated elsewhere.
+This allows the schema to be open-ended with respect to the
+identification of new numerical systems.</p>
+
+<d:rnc>
+# Numbers
+n.model  = r , (v|s|c|q)?
+
+r        = element g:r {
+             xsd:string {
+	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
+
+n        = element g:n { form? , g.meta , n.model , mods* }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF a number sign conforms to the pattern:</p>
+
+<pre class="listing">REPETITION '(' GRAPHEME ')'</pre>
+
+<p>where <code>REPETITION</code> is either a number giving the
+repetition factor or the letter <code>n</code> or the combination
+<code>n+DIGITS</code> (in sign names or compound signs use
+<code>N</code> instead of <code>n</code>). The <code>GRAPHEME</code> is a sign value or
+sign name, including compound signs.</p>
+
+<p>The following examples illustrate a few basic ATF numerical forms:</p>
+
+<!--
+<pre class="cookbook">
+1(N01)      &lt;g:n>&lt;g:r>1&lt;/g:r>&lt;g:s>N01&lt;/g:s>&lt;/g:n>
+
+1(asz@c)    &lt;g:n>&lt;g:r>1&lt;/g:r>&lt;g:v>aš&lt;/g:v>&lt;g:m>c&lt;/g:m>&lt;/g:n>
+
+n+1(asz)    &lt;g:n>&lt;g:r>n+1&lt;/g:r>&lt;g:v>aš&lt;/g:v>&lt;/g:n>
+</pre>-->
+<pre class="cookbook">
+1(N₀₁)      4(ban₂)     1(aš@c)    n(geš₂)      n+1(aš)
+</pre>
+<p>The notation <code>n(aš)</code> means: some quantity in the
+<code>aš</code> system which is not determinable from the traces on
+the tablet.  The notation <code>n+1(aš)</code> (where '1' could be any
+number) means: a quantity in the <code>asz</code> system which is
+damaged or lost and which is at least 1 but may be more.  ATF does not
+use the notation <code>x+1(aš)</code>.</p>
+
+<p>See also the pages on <a href="http://oracc.org/doc/builder/numbers/">numbers and metrology</a> and <a href="http://oracc.org/doc/builder/math/">mathematical notations</a>.</p>
+<a name="modifiers"/>
+</div>
+
+<h2 class="tutorial">Modifier</h2>
+
+<p>Sign names and numerical sign value atoms may be described by
+reference to modifications of the base sign, as summarized in the
+table below.  The lexical representation of modifiers is restricted to
+either a single lower case letter or a sequence of one, two or three ASCII
+digits.  The semantics of these modifiers is indicated in the table,
+but is irrelevant from the point of view of the schema.  A single GDL
+element, <code>g:m</code>, contains the modifier.</p>
+
+<p>Modifiers may not follow a compound sign's terminating pipe
+character; if an entire compound is to be modified, the compound's
+content must be grouped and the modifiers suffixed between the closing
+parenthesis and the closing pipe.</p>
+
+<d:rnc>
+# Modifiers
+mods     = modifier | allograph | formvar
+
+modifier = element g:m { xsd:string { pattern = "[a-z]|[0-9]{1,3}" } }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF the at-sign (<code>@</code>) precedes each modifier;
+multiple modifiers may be given in which case each modifier requires
+its own at-sign.  The entire sequence of modifiers (and allographs,
+described below) belongs to the immediately preceding sign or group.
+Sign names and values with modifiers and/or allographs following them
+should not be be treated as compounds.</p>
+
+<table class="eighty">
+<caption>ATF Modifier Overview</caption>
+<thead>
+  <tr>
+    <th>Modifier</th><th>ATF</th><th>Example</th><th>Sign</th>
+  </tr>
+</thead>
+<tbody>
+<tr>
+  <td>curved</td>
+  <td>@c</td>
+  <td class="cookbook"><code>AŠ@c</code></td>
+  <td><img src="ash-curved.png" alt="ash-curved" height="25"/></td>
+</tr>
+<tr>
+  <td>flat</td>
+  <td>@f</td>
+  <td class="cookbook"><code>1(N01@f)</code></td>
+  <td><img src="N01F.png" alt="1N01-flat" height="15"/></td>
+</tr>
+<tr>
+  <td>gunu (4 extra wedges)</td>
+  <td>@g</td>
+  <td class="cookbook"><code>DU@g</code></td>
+  <td><img src="du-gunu.png" alt="du-gunu.png" height="25" /></td>
+</tr>
+<tr>
+  <td>sheshig (added še-sign)</td>
+  <td>@s</td>
+  <td class="cookbook"><code>DU@s</code></td>
+  <td><img src="du-sheshig.png" alt="du-sheshig" height="25"/></td>
+</tr>
+<tr>
+  <td>tenu (slanting)</td>
+  <td>@t</td>
+  <td class="cookbook"><code>GAN₂@t</code></td>
+  <td><img src="gan2-tenu.png" alt="gan2-tenu" height="30"/></td>
+</tr>
+<tr>
+  <td>nutillu (unfinished)</td>
+  <td>@n</td>
+  <td class="cookbook"><code>SAG@n</code></td>
+  <td><img src="sag-nutillu.png" alt="sag-nutillu" height="25"/></td>
+</tr>
+<tr>
+  <td>zidatenu (slanting right)</td>
+  <td>@z</td>
+  <td class="cookbook"><code>AŠ@z</code></td>
+  <td><img src="ash-zidatenu.png" alt="ash-zidatenu" height="25"/></td>
+</tr>
+<tr>
+  <td>kabatenu (slanting left)</td>
+  <td>@k</td>
+  <td class="cookbook"><code>AŠ@k</code></td>
+  <td><img src="ash-kabatenu.png" alt="ash-kabatenu" height="25"/></td></tr>
+<tr>
+  <td>vertically reflected</td>
+  <td>@r</td>
+  <td class="cookbook"><code>U@r</code></td>
+  <td><img src="u-vreflected.png" alt="u-vreflected" height="25" /></td>
+</tr>
+<tr>
+  <td>horizontally reflected</td>
+  <td>@h</td>
+  <td class="cookbook"><code>N07~a@h</code></td>
+  <td><img src="1-n07b.png" alt="1-n07b" height="20" /></td>
+</tr>
+<tr>
+  <td>rotated</td>
+  <td class="center">@&lt;DIGITS></td>
+  <td class="cookbook">NAGA@180</td>
+  <td><img height="35" src="naga180.png" alt="NAGA ROTATED 180"/></td>
+</tr>
+<tr>
+  <td>variant</td>
+  <td>@v</td>
+  <td class="cookbook"><code>4(ban₂)@v</code></td>
+  <td><img src="4ban2-variant.png" alt="4ban2-variant" height="25"/></td>
+</tr>
+</tbody>
+</table>
+
+<p>Modifiers on numerical graphemes may go inside or outside the
+closing parenthesis depending on the naming schema for values and sign
+names used by the style manual or sign list for an individual
+project.</p></div>
+
+<h2 class="tutorial">Allograph</h2>
+<p>It is sometimes desirable to distinguish between grapheme instances
+which have otherwise been considered the same sign, or which actually
+are the same sign, for semantic or glyph-analytic reasons.  This is
+expressed in GDL by the <code>g:a</code> element whose content is a
+sequence of one or more lowercase letters, <strong>excluding
+x</strong>, and ASCII digits.  Sign list creators are free to assign
+whatever meanings they like to any combinations of these characters;
+in PCSL, for example, sequences such as <code>a1a</code> versus
+<code>a1b</code> and <code>a2a</code> versus <code>a2b</code> are used
+to implement multi-level distinctions between variants of a sign.  An
+allograph may follow the closing parenthesis of a group within a
+compound sign, but may not follow the final vertical bar of the
+compound.</p>
+
+<p>The reason for the exclusion of <code>x</code> in the allowable set
+of lowercase letters in an allograph is that allowing it in ASCII
+transliterations would introduce an ambiguity at the ATF level between
+<code>x</code> in allographs and <code>x</code> as a compound
+operator.</p>
+
+<d:rnc>
+allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF an allograph, or systemic sign variant, is introduced by the
+tilde-prefix (<code>~</code>); the sequence of characters following
+the tilde is restricted to ASCII digits and lowercase letters,
+<strong>except for x</strong>.</p>
+
+<pre class="cookbook">
+|EN~a|  |EN~b|  |GA₂~a1|  |GA₂~a2|  |GEŠTU~axŠE~a@t|
+</pre>
+
+<p>The use of <code>x</code> as an operator in examples like the last
+one in the line above is the reason for excluding <code>x</code> from
+the characters allowed in allograph sequences.</p>
+
+<p>The special allograph <code>~v</code> is used instead of
+<code>~x</code> to indicate that the form is some variant of the sign
+in question but the specific variant is not identified.</p>
+
+<p>The special allograph <code>~t</code> is used to indicate tokens,
+e.g., <code>1(N₀₁~t)</code>.</p>
+
+<p>Note that the allograph mechanism is not the way that unusual sign
+forms are notated in ATF; for this the normal exclamation mark
+(<code>!</code>) is used.  The allograph mechanism is provided to
+support systematic subdivision of sign-forms relative to extant sign
+lists or sign name descriptions.</p>
+</div>
+
+<h2 class="tutorial">Formvars</h2>
+
+<d:rnc>
+formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
+</d:rnc>
+
+<p>Form variants is the GDL name for minor differences in the
+construction of signs which may be of interest in analysis of a corpus
+for handwritings, but which are not important enough to be displayed
+or included in the version of the writing used for linguistic
+analysis.</p>
+
+<div class="atf tutorial">
+
+<p>Form variants are preceded by the backslash character
+(<code>\</code>) and consist of lowercase letters and or digits.</p>
+
+<a name="compound"/>
+</div>
+
+<h2 class="tutorial">Compound</h2>
+
+<p>Compound graphemes are combinations of sign names and operators;
+the definition is recursive meaning that compound grapheme atoms may
+be grouped and the group treated as a compound in its own right.
+Atoms and compounds may both have associated modifier and/or allograph
+qualifications.  We call a single combination of a sign or compound
+sign and its qualifiers a constituent.</p>
+
+<p>The possible operator types are:</p>
+<dl>
+<dt>beside</dt>
+<dd>Constituents are written sequentially beside each other.</dd>
+<dt>joining</dt>
+<dd>Constituents are written such that they share at least one
+common wedge.</dd>
+<dt>containing</dt>
+<dd>The constituent preceding the operator contains the constituent
+following the operator; the containment may be partial.</dd>
+<dt>above</dt>
+<dd>The constituent preceding the operator is written in the upper
+part of the line, with the following constituent written
+beneath it in the lower part of the line.</dd>
+<dt>crossing</dt>
+<dd>The constituents cross one another similarly to the diagonals of
+an <code>X</code>.</dd>
+<dt>opposing</dt>
+<dd>The constituent preceding the operator is opposite the following
+constituent, which is turned upside down.</dd>
+<dt>repeated</dt>
+<dd>The following constituent is repeated <i>N</i> times</dd>
+</dl>
+
+<p>The <code>beside</code> and <code>joining</code> operators are in
+fact joiners which mark boundaries; any number of joiner/compound
+pairs may be siblings.</p>
+
+<p>The <code>inside</code>, <code>above</code>, <code>crossing</code> and
+<code>opposing</code> operators all have binary scope: a compound
+which contains an operator is constrained to having exactly two
+compound children, one before and one after the operator.</p>
+
+<p>The <code>repeated</code> operator is a unary prefix with the
+content of the operator giving the repetition count.  Compounds
+containing this operator may have only one compound child.</p>
+
+<p>The <code>repeated</code> operator is a unary postfix with the
+content of the operator giving the number of degrees the sign is
+rotated in a clockwise direction.  Compounds containing this operator
+may have only one compound child.</p>
+
+<d:rnc>
+# Compounds
+c.model  = (compound , (o.join , compound)+) | unary | binary | ternary | (g , mods+)
+
+c        = element g:c { form? , g.meta , c.model , mods* }
+
+g        = element g:g { g.meta , c.model , mods* }
+
+compound = single | unary | binary
+
+single   = n | s | c | (g,mods*) | q
+
+unary    = o.unary , single
+
+binary   = single , o.binary , single
+
+ternary   = single , o.binary , single , o.binary , single
+
+o.join   = element g:o { attribute g:type { "beside" | "joining" | "reordered" } }
+
+o.unary  = element g:o { attribute g:type { "repeated" } , xsd:integer }
+
+o.binary =
+  element g:o {
+    attribute g:type {
+      "containing" | "above" | "crossing" | "opposing"
+    }
+  }
+</d:rnc>
+
+<div class="atf tutorial">
+<p>The difference between a simple sign and a compound sign is that a
+a compound sign is a sequence of sign names which contains at least
+one operator, i.e., a character which represents a relationship
+between multiple graphemes.  In ATF the set of characters used for
+operators is: <code>× % @ &amp; . : +</code>.</p>
+
+<p>In ATF compound graphemes are enclosed at the outer level in
+vertical bars ("pipes", <code>|...|</code>):</p>
+
+<pre class="cookbook">|KA×A|</pre>
+
+<p>Signs are frequently modified or operated on as a group;
+parentheses are used to group multi-part constituents:</p>
+
+<pre class="cookbook">|GA₂×(ME.EN)|      |(GI&amp;GI)×ŠE₃|</pre>
+
+<p>Note that modifiers and allographs must not be placed after the
+closing pipe; instead, they must be put inside the pipe adding
+grouping characters if necessary:</p>
+
+<pre class="cookbook">|GA₂~a×EN|       |GA₂×EN~a|          |(GA₂×EN)~a|  </pre>
+
+<p>Th examples above all mean different things.  The first,
+<code>|GA₂~a×EN|</code>, means: "the a-allograph of the sign GA₂
+containing sign EN".  The second, <code>|GA₂×EN~a|</code>, means: "GA₂
+containing the a-allograph of sign EN".  The third,
+<code>|(GA₂×EN)~a|</code>, means: "the a-allograph of the group
+consisting of sign GA₂ containing sign EN".  In example three the bad
+form *<code>|GA₂×EN|~a</code> would result in a parse error.</p>
+
+<p>Each of the compound operations has its own ATF notation as
+summarized in the table below:</p>
+
+<table class="wide middled">
+<caption>Summary of Compound Grapheme Operators in ATF/GDL</caption>
+<thead>
+<tr>
+<th>GDL</th>
+<th>ATF</th>
+<th>Example</th>
+<th>Sign</th>
+</tr>
+</thead>
+<!--<tfoot></tfoot>-->
+<tbody>
+<tr>
+<td>beside</td>
+<td class="center">.</td>
+<td class="cookbook">|DU.DU|</td>
+<td><img height="35" src="du.png" alt="DU"/><img height="35" src="du.png" alt="DU"/></td>
+</tr>
+<tr>
+<td>joining</td>
+<td class="center">+</td>
+<td class="cookbook">|LAGAB+LAGAB|</td>
+<td><img height="35" src="nigin2.png" alt="NIGIN2"/></td>
+</tr>
+<tr>
+<td>containing</td>
+<td class="center">×</td>
+<td class="cookbook">|GA₂×AN|</td>
+<td><img height="35" src="ga2-times-an.png" alt="GA TWO TIMES AN"/></td>
+</tr>
+<tr>
+<td>containing/group</td>
+<td class="center">×</td>
+<td class="cookbook">|GA₂×(ME.EN)|</td>
+<td><img height="35" src="ga2-times-me-en.png" alt="GA TWO TIMES ME PLUS EN"/></td>
+</tr>
+<tr>
+<td>above</td>
+<td class="center">&amp;</td>
+<td class="cookbook">|DU&amp;DU|</td>
+<td><img height="35" src="du-over-du.png" alt="DU OVER DU"/></td>
+</tr>
+<tr>
+<td>crossing</td>
+<td class="center">%</td>
+<td class="cookbook">|GI%GI|</td>
+<td><img height="35" src="gi-crossing-gi.png" alt="GI CROSSING GI"/></td>
+</tr>
+<tr>
+<td>opposing</td>
+<td class="center">@</td>
+<td class="cookbook">|LU₂@LU₂|</td>
+<td><img height="35" src="lu2-opposing-lu2.png" alt="LU TWO OPPOSING
+LU TWO"/></td>
+</tr>
+<tr>
+<td>repeated</td>
+<td class="center">3×</td>
+<td class="cookbook">|3×AN|</td>
+<td><img height="40" src="mul.png" alt="THREE TIMES AN"/></td>
+</tr>
+<tr>
+<td>repeated</td>
+<td class="center">4×</td>
+<td class="cookbook">|4xLU2|</td>
+<td><img height="50" src="lu2-times-4.png" alt="FOUR TIMES LU TWO"/></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="tutorial">
+<a name="punct"/>
+<h2>Punctuation</h2>
+
+<p>Several types of cuneiform punctuation are supported in ATF and all
+of them must be preceded and followed by a space (in the case of
+<code>*</code> and <code>/</code> the punctuation may be immediately
+followed by a sign name in parentheses and then the following space).
+The recognized punctuation codes are:</p>
+
+<dl>
+<dt>* = Bullet</dt>
+<dd>The "1" used at the start of each line in lexical texts, omen compendia, etc..</dd>
+<dt>*(GRAPHEME)</dt>
+<dd>Generic punctuation; most often used where scribes use signs other
+than a "1" at the start of the line in lexical texts, but may be used
+to transliterate arbitrary or unusual kinds of punctuation that are
+not otherwise covered below.</dd>
+<dt>: = <img src="colon.png" alt="cuneiform vertical colon"/>.</dt>
+<dd><p>The vertical "colon" sign often found in commentaries.</p>
+<p><strong>N.B.:</strong> If the single colon occurs within a word it
+must be transliterated with the grapheme name form <code>P₂</code></p></dd>
+<dt>:' (colon+right-quote) = </dt>
+<dd>Borger MZL 592 variant b; a variant on the vertical two-wedge colon</dd>
+<dt>:" (colon+double-quote) = <img src="diacolon.png" alt="cuneiform diagonal colon"/></dt>
+<dd>The diagonal "colon" sign often found in commentaries.  Note that the three 
+different double-wedge colon signs are mnemonically two-dots, two-dots-prime and
+two-dots-double-prime</dd>
+<dt>:. = <img src="tricolon.png" alt="cuneiform triple wedge colon"/></dt>
+<dd>The triple-wedge "colon" sign sometimes found in commentaries.</dd>
+<dt>:: = ??</dt>
+<dd>(A colon convention defined in the SAA style manual, form unspecified.)</dd>
+<dt>/ = <img src="worddiv.png" alt="word divider"/></dt>
+<dd>Word divider; if unqualified, this is the single vertical wedge
+word-divider as used, e.g., in Old Assyrian texts.  May be qualified
+as, e.g., <code class="cookbook">/(P2)</code>.</dd>
+</dl>
+
+<h4 class="tutoral">Punctuation Sign Names</h4>
+
+<p>The punctuation signs may also be transliterated using the following names: 
+P1 (<img src="worddiv.png" alt="cuneiform word divider"/>); P2 (<img
+src="colon.png" alt="cuneiform colon"/>); P3 (<img src="diacolon.png"
+alt="cuneiform diagonal colon"/>); P4 (<img src="tricolon.png"
+alt="cuneiform triple wedge colon"/>); MZL592~b (as <code>:'</code>).</p>
+</div>
+
+<d:rnc>
+# Punctuation
+p.model =
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/" } , 
+    g.meta , 
+    (v|q|s|n|c)? 
+</d:rnc>
+
+</d:schema>
+
+<h1 class="tutorial secondary">Metadata</h1>
+
+<d:schema name="graphmeta" uri="http://oracc.org/ns/gdl/1.0">
+<h2>Preamble</h2>
+<p>This module defines attributes which are essentially graphemic
+metadata supplied by the editor of the text.  They fall into several
+groups: properties of the grapheme imputed to derive from the scribe;
+properties assigned by the editor; physical preservation properties;
+paleographic properties; and linguistic properties.  We describe these
+principally in the form of the tutorial aimed at end-users and allow
+the sequence of definitions in the schema to follow the tutorial.</p>
+<d:rnc>
+namespace g = "http://oracc.org/ns/gdl/1.0"
+g.meta = 
+  break? , status.flags? , status.spans? , 
+  paleography.attr? , linguistic.attr? , proximity.attr? ,
+  opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
+  varnum? , sign_attr? , utf8? , delim? , notemark? ,
+  attribute xml:id { xsd:ID }? ,
+  breakStart? , breakEnd? ,
+  damageStart? , damageEnd? ,
+  surroStart? , surroEnd? ,
+  statusStart? , statusEnd? ,
+  accented?
+
+accented = attribute g:accented { text }
+breakStart = attribute g:breakStart { "1" }
+breakEnd = attribute g:breakEnd { xsd:IDREF }
+damageStart = attribute g:damageStart { "1" }
+damageEnd = attribute g:damageEnd { xsd:IDREF }
+surroStart = attribute g:surroStart { "1" }
+surroEnd = attribute g:surroEnd { xsd:IDREF }
+statusStart = attribute g:statusStart { "1" }
+statusEnd = attribute g:statusEnd { xsd:IDREF }
+
+notemark  = (attribute notemark  { text } , 
+             attribute noteref { xsd:IDREF })
+</d:rnc>
+
+<div class="atf tutorial">
+<p>In ATF there are several general ways of specifying information
+about graphemes:</p>
+<dl>
+<dt>Flags</dt>
+<dd>Flags are single characters which are placed immediately after a
+grapheme; they may occur in any order.  The flag characters in ATF
+are: <code>! ? * #</code>.  Flags may appear only immediately after a
+grapheme (after the parenthetic part of a qualified grapheme), and are
+not permitted within compound signs.  Flags may be given after the
+closing pipe of a compound sign.</dd>
+<dt>Brackets</dt>
+<dd>Brackets are matching pairs of single or double characters. The
+matched pairs in ATF are (the ellipsis in the following is a
+conventional indicator for text between the brackets): <code>(...)
+[...] {...} {(...)} &lt;...> &lt;&lt;...>> &lt;(...)></code>.
+Brackets are not permitted within the body of graphemes or within
+compound signs.</dd>
+<dt>Shifts</dt>
+<dd>Shifts are combinations of a percent-sign (<code>%</code>) and a
+label which alter the current value of a property.  The value remains
+current until another shifter for the same property is encountered; or
+until the closing of the nearest enclosing bracket; or until the end
+of the line.  Sample shifts include: <code>%s %akk %1</code>.  A table
+of all of the shifts, properties and values is given later on in this
+tutorial.  Shifts are not permitted within compound signs.  Shifts
+must always be followed by one or more spaces.</dd>
+</dl></div>
+<h2 class="tutorial">Breakage</h2>
+<div class="atf tutorial">
+<p>Partially broken signs are flagged by putting a hash
+(<code>#</code>) after the grapheme.  Signs which are completely
+missing from the tablet are enclosed in square brackets.</p>
+<pre class="cookbook">
+ba#       [a]-ba     mudₓ(|ZI&amp;ZI.A|)#
+</pre>
+</div>
+<d:rnc>
+break = attribute g:break  { "damaged" | "missing" }
+opener = attribute g:o     { text }
+closer = attribute g:c     { text }
+hsqb_o = attribute g:ho    { "1" }
+hsqb_c = attribute g:hc    { "1" }
+emhyph = attribute g:em    { "1" }
+sign_attr = attribute g:sign  { text }
+utf8   = attribute g:utf8  { text }
+delim  = attribute g:delim { text }
+varnum = (
+  attribute g:varo { text }? , 
+  attribute g:vari { text }? ,  
+  attribute g:varc { text }?
+)
+</d:rnc>
+
+<h2 class="tutorial">Other flags</h2>
+<div class="atf tutorial">
+<p>Collation, uncertainty and remarkability are flagged by
+<code>*</code>, <code>?</code> and <code>!</code> respectively.  If a
+grapheme is flagged as remarkable it may indicate a correction or an
+unusual form.  Corrections are often followed by the actual sign in
+parenthesis, and this convention is supported but not required in ATF
+transliterations.</p>
+<pre class="cookbook">
+a*               ki?            šum!              ki!?*(DI)
+</pre>
+</div>
+<d:rnc>
+status.flags =
+  attribute g:collated { xsd:boolean } ? ,
+  attribute g:queried  { xsd:boolean } ? ,
+  attribute g:remarked { xsd:boolean } ?
+</d:rnc>
+<h2 class="tutorial">Glosses</h2>
+<div class="atf tutorial">
+<p>ATF divides glosses into three types:</p>
+<dl>
+<dt>Determinatives</dt>
+<dd>Determinatives include semantic and phonetic modifiers, which may
+be single graphemes or several hyphenated graphemes, which are part of
+the current word.  Determinatives are enclosed in single brackets
+<code>{...}</code>; semantic determinatives require no special
+marking, but phonetic glosses and determinatives should be indicated by adding a
+plus sign (<code>+</code>) immediately after the opening brace, e.g.,
+<code>AN{+e}</code>. Multiple separate
+determinatives must be enclosed in their own brackets, but a single
+determinative may consist of more than one sign (as is the case with
+Early Dynastic pronunciation glosses).</dd>
+<dt>Linguistic</dt>
+<dd>Linguistic glosses are defined for the purposes of this specification
+as glosses which give an alternative to the word(s) in question. Such
+alternatives are typically either variants or translations.
+Linguistic glosses are enclosed in the double brackets
+<code>{{...}}</code>.</dd>
+<dt>Document-oriented</dt>
+<dd>Document-oriented glosses are used for scribal comments on the
+document including 10-marks, line-count summaries and asides such as
+<i>he-pi₂</i> ("(text) broken").  Document-oriented glosses
+are enclosed in the compound brackets <code>{(...)}</code>.</dd>
+</dl>
+<p>Glosses must have a space or hyphen on one side or the other.  They
+may have spaces on both sides.  Glosses may not touch directly both
+the preceding and following graphemes; nor may they have hyphens at
+both ends.</p>
+<pre class="cookbook">
+{d}utu   larsa{ki}   {+u₃-mu₂}u₂-mu₁₁    AN{+e}
+
+du₃-am₃{{mu-un-&lt;(du₃)>}}
+
+{(1(u))}    {(%a he-pi₂ eš-šu₂)}
+</pre>
+<p class="primary">The ATF processor sets <code>type=text</code> when
+the gloss is enclosed in <code>{(...)}</code> and
+<code>type=lang</code> when the gloss is enclosed in
+<code>{...}</code>.</p>
+<p class="primary">The ATF processor sets <code>pos=pre</code> when
+the gloss has no space or boundary following it; <code>pos=post</code>
+when the gloss has no space or boundary preceding it; and
+<code>pos=free</code> when the gloss has spaces on both sides.</p>
+</div>
+<d:rnc>
+gloss = det | glo
+pos = attribute g:pos { "pre" | "post" | "free" }
+det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? ,
+                    (dingir | mister | word.content*)}
+dtyp= attribute g:role { "phonetic" | "semantic" }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
+</d:rnc>
+<div>
+<a name="presence"/><h2 class="tutorial">Presence</h2>
+<div class="atf tutorial">
+<p>The status of one or more graphemes' presence/absence often
+requires notation.  The following bracketings support the common
+practices in Assyriological transliteration:</p>
+<dl>
+<dt>(...)</dt>
+<dd>The enclosed graphemes may be present but this is not certain; normally
+used within [...] as in <pre class="cookbook">[x (x) x]</pre></dd>
+<dt>&lt;...></dt>
+<dd>The graphemes must be supplied for the sense but are not
+present<pre class="cookbook">mu-un-&lt;pa₃>-da</pre></dd>
+<dt>&lt;&lt;...>></dt>
+<dd>The graphemes are present but must be excised for the sense
+<pre class="cookbook">mu-un-&lt;&lt;an>>-pa₃-da</pre></dd>
+<dt>&lt;(...)></dt>
+<dd><p>1) <strong><small>[AFTER BOUNDARY]</small></strong> The graphemes
+are implied because the scribe has left a blank space on the tablet;
+common in liturgies and some types of administrative texts.  
+<code>BOUNDARY</code> can be space, hyphen, etc.</p>
+<p>2) <strong><small>[AFTER GRAPHEME]</small></strong> The graphemes
+are the text meant by a surrogate grapheme such as <code>MIN</code>;
+common in lexical texts.</p>
+<pre class="cookbook">
+1. {d}suen he₂-me-en
+2. {d}nanna &lt;(he₂-me-en)>
+
+1. a    = %a mu-u₂
+2. illu = %a MIN&lt;(mu-u₂)></pre>
+</dd>
+</dl>
+<p class="primary">Surrogates are defined in the XTF2 schema because
+their content model is <code>l.inner</code>.</p>
+
+<p><strong>Note:</strong> in all of these cases
+except the last there must be a space or hyphen before the opening
+bracket and after the closing bracket.</p></div>
+</div>
+<d:rnc>
+status.spans =
+  attribute g:status {
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied"
+  }
+</d:rnc>
+
+<p class="primary"><strong>Programming note:</strong> Graphemic
+elements which can carry graphemic content (i.e., <code>g:v</code>,
+<code>g:s</code>, <code>g:c</code>, <code>g:p</code>,
+<code>g:q</code>, <code>g:n</code>, and <code>g:x</code> where the
+type is ellipsis) always have a <code>g:status</code> attribute.  This
+can be used to navigate to the preceding/following grapheme which can
+have bracketing to determine when to open/close bracketing.  Graphemes
+which have no explicit presence-status have
+<code>g:status="ok"</code>.</p>
+
+<div><a class="tutorial" name="scripts"/><h2 class="tutorial">Scripts</h2>
+<div class="atf tutorial">
+<p>A simple mechanism for identifying distinct scripts on a single
+document is provided by the percent-digit commands which consist of a
+percent sign followed by a single digit: <code>%0 %1 %2 %3 %4 %5 %6 %7
+%8 %9</code>.  The characteristics of the scripts identified by
+numbers can be specified in the protocols section at the start of an
+ATF file.</p>
+<p>By default, the normal sized, normal form script is
+<code>%0</code>; this only needs to be specified rarely.  By default,
+the smaller script used for glosses is <code>%1</code>.  Two other
+default scripts are <code>%2</code> = Assyrian and <code>%3</code> =
+Babylonian as a contrastive pair in neo-Assyrian documents.</p>
+<p>This example shows how to enter a gloss which is in smaller script:</p>
+<pre class="cookbook">mu-un-šum₂{%1 szu}</pre>
+</div></div>
+<d:rnc>
+paleography.attr =
+  attribute g:script      { xsd:NCName }
+</d:rnc>
+
+<div><a class="tutorial" name="langs"/><h2 class="tutorial">Languages</h2>
+<h3 class="tutorial">Defining the default language</h3>
+
+<p>At the start of the ATF file, amongst the other <a href="http://oracc.museum.upenn.edu/ns/xtf/1.0/atftut.html#Protocols">protocols</a>, you need to define the language of your (ancient) text. (For instructions on how to define the language of your translation, see the page on <a href="http://oracc.museum.upenn.edu/doc/builder/translation">translations</a>.)</p>
+
+<p>After the &amp;-line but before the text begins, enter a single protocol line which begins <code class="cookbook">#atf: lang</code>,  followed by a space and the relevant <a href="#Language_codes">language or dialect code</a> in lower-case. This example is for Neo-Babylonian:</p>
+
+<pre class="example">#atf: lang nb</pre>
+
+<p>This line ensures that all transliterated and lemmatised words in the text will be treated as Neo-Babylonian--unless you explicitly mark otherwise, as described below.</p>
+
+<!--<h3 class="tutorial">Defining an alternative language</h3>
+
+<p>When you are editing bilingual or multidialectal texts it is useful to set a default alternative language, so that you can mark language-switching easily. For instance, you may have a letter in Neo-Assyrian which quotes an omen in Standard Babylonian; or an Ur III Sumerian legal document in which some of the witness statements are in Akkadian.</p>
+
+<p>To do so, simply add the <a href="#Language_codes">code</a> for the alternative language or dialect to the <code class="cookbook">#atf: lang</code> protocol line after the default language, preceded by a space and an underscore (_). For instance, for a main-dialect Sumerian literary work with some Emesal words in it, you would write:</p>
+
+<pre class="example">#atf: lang s _e</pre>
+
+<p>In the text itself, you delimit the alternative-language words or phrases with an underscore too. In this example, the first word of the line is in Emesal, the rest in main-dialect Sumerian:</p>
+
+<pre class="example">8. _še-eb_ e₂-kur-ra ba-du₃-a-bi</pre> 
+
+<p>Note that the underscore characters must be balanced—that is, they must occur in pairs.  New lines are always assumed to start with the default language, so if the final word of a line is in the alternative language, you need to end the line with an underscore and then, if the first word of the <i>next</i> line is also in the alternative language, you will need to mark that again too. For instance (again with main-dialect Sumerian and Emesal):</p>
+
+<pre class="example">101. _mu-un-gur₁₁-bi_ tum₉-e _ba-ab-ir-ra-am₃_
+102. _uru₂_ ŋal₂-la-bi nu-ŋal₂-la mi-ni-in-kur₉-ra-am₃</pre>
+
+<p><strong>NB</strong> This mechanism is for marking <em>language</em> shifts, not shifts in script use. In Akkadian texts, simply type logographic writings in capital letters and lemmatise them as Akkadian too. If you are unsure whether you are dealing with logograms or genuine Sumerian (for instance in Old Babylonian administrative texts), consult your project leader or your OSC liaison.</p> -->
+
+<h2>Shifting to other languages</h2>
+
+<p>To shift to a different language within the text, write a percent sign followed immediately by the relevant language code. You will also need to explicitly signal the shift back to the default language. For instance, if you had not defined Emesal as the default alternative language in the first example you could write:</p>
+
+<pre class="example">8. %e še-eb %s e₂-kur-ra ba-du₃-a-bi</pre> 
+
+<p>As before, the text is assumed to switch back to the default language at the start of every new line.</p>
+
+<h2>Language codes</h2>
+
+<p>Here is a list of the most frequently used language and dialect codes. The full set, including peripheral dialects of Akkadian, is given on the <a href="http://oracc.museum.upenn.edu/doc/developer/l2/langtags/">Language Tags</a> page of the developer documentation.</p>
+
+<table class="eighty">
+<caption>The Main Language and Dialect Codes</caption>
+<thead><tr><th>Language or dialect</th><th>Protocol Code</th><th>Inline Code(s)</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Akkadian</td><td>(none: must specify dialect too)</td><td>a <i>or</i> akk</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Early Akkadian</td><td>akk-x-earakk</td><td>eakk</td><td>For pre-Sargonic Akkadian.</td></tr>
+<tr><td>&#xa0;&#xa0;Old Akkadian</td><td>akk-x-oldakk</td><td>oakk</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Ur III Akkadian</td><td>ua</td><td>ur3akk</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Old Assyrian</td><td>akk-x-oldass</td><td>oa</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Old Babylonian</td><td>akk-x-oldbab</td><td>ob</td><td></td></tr>
+<tr><td>>&#xa0;&#xa0;Old Babylonian peripheral</td><td>akk-x-obperi</td><td></td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Middle Assyrian</td><td>akk-x-midass</td><td>ma</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Middle Babylonian</td><td>akk-x-midbab</td><td>mb</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Middle Babylonian peripheral</td><td>akk-x-mbperi</td><td></td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Neo-Assyrian</td><td>akk-x-neoass</td><td>na</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Neo-Babylonian</td><td>akk-x-neobab</td><td>nb</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Late Babylonian</td><td>akk-x-ltebab</td><td>nb</td><td></td></tr><tr><td>&#xa0;&#xa0;Standard Babylonian</td><td>akk-x-stdbab</td><td>sb</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Conventional Akkadian</td><td>akk-x-conakk</td><td>ca</td><td>The artificial form of Akkadian used in lemmatisation <a href="http://oracc.museum.upenn.edu/doc/builder/linganno/AKK/#Citation_Forms__CF_">Citation Forms</a>.</td></tr>
+<tr><td>&#xa0;&#xa0;normalised</td><td>(none: main text must be transliteration)</td><td>n</td><td>Used in lexical lists and restorations; try to avoid wherever possible.</td></tr>
+<tr><td>&#xa0;&#xa0;transliterated (graphemic) Akkadian</td><td>(none: must specify dialect too)</td><td>g</td><td>Only for use when switching from normalised Akkadian.</td></tr>
+
+<tr><td>Hittite</td><td>hit</td><td>h <i>or</i> hit</td><td></td></tr>
+<tr><td>Sumerian</td><td>sux or sux-x-emegir</td><td>s, sux, <i>or</i> eg</td><td>The abbreviation <code>eg</code> stands for Emegir (main-dialect Sumerian).</td></tr>
+<tr><td>&#xa0;&#xa0;Emesal</td><td>sux-x-emesal</td><td>e, es</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Syllabic</td><td>sux-x-syllabic</td><td>sy</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Udgalnun</td><td>sux-x-udgalnun</td><td>u</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<!-- OUT OF DATE <p>Language attributes specify the language which the grapheme is
+being used to write (normally specified at a higher level, word, line
+or text); the role of the grapheme and in the case of logograms the
+source language from which the logogram derives.</p>
+<div class="atf tutorial">
+<p>Language shifts are marked with a sin:</p>
+<pre class="cookbook">
+an = %a ša-me-e
+</pre>
+<p>A shift done in this way is terminated in one of three ways:</p>
+<ul>
+<li>another shifter of the same type;</li>
+<li>the end of the line;</li>
+<li>the end of the enclosing determinative or gloss, if the shift is given within the determinative or gloss.</li>
+</ul>
+<p>A second convention which is useful in
+mixed-language contexts is to use matched pairs of underscore
+characters (<code>_</code>) to shift in and out of the secondary
+language (the ATF processor's definitions of primary/secondary
+language relationships are usually enough, but you can configure them
+with ATF protocols if necessary; when the current language is
+Akkadian, the secondary is Sumerian and vice versa):</p>
+<pre class="cookbook">
+%a im-me-ra-am _šu ba-an-ti_
+</pre> 
+<p>Normalized text, e.g., Akkadian transcription, can be indicated by
+use of the <code>%n</code> shift, with an analogous <code>%g</code>
+indicating graphemic text (though this is in practice rarely
+necessary).  If <code>%n</code> or <code>%g</code> follow a language
+shift they can be separated using <code>/</code>: <code
+class="cookbook">%akk/n</code>.</p>
+<p>Single-letter shorthands are defined for the common requirements of
+Sumero-Akkadian cuneiform, but by definition all two-letter and three
+letter shifters may be language codes.  In order to implement
+effective validation, it is necessary to register in the protocols
+section the use of language codes which are not in the table below.
+Several lists of the standardized language codes exist on the web but
+GDL follows the ISO-639-3 <a
+href="http://www.sil.org/iso639-3">registry at SIL</a>.</p>
+
+<p>We utilize codes in the range qaa to qtz to handle languages that
+are either not covered by ISO 639 or are not sufficiently determined
+to assign to one of the known languages.</p>
+
+<table class="eighty">
+<caption>Single Letter Language/Writing-system Shifts</caption>
+<thead>
+<tr><th>ATF</th><th>ISO 639</th><th>Language</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">%a</td><td>akk</td><td>Akkadian</td></tr>
+<tr><td class="cookbook">%e</td><td>sux-es</td><td>Emesal Sumerian</td></tr>
+<tr><td class="cookbook">%g</td><td></td><td>Graphemic text</td></tr>
+<tr><td class="cookbook">%h</td><td>hit</td><td>Hittite</td></tr>
+<tr><td class="cookbook">%n</td><td></td><td>Normalized text</td></tr>
+<tr><td class="cookbook">%s</td><td>sux</td><td>Emegir Sumerian</td></tr>
+<tr><td class="cookbook">%u</td><td>sux-ugn</td><td>UD.GAL.NUN Sumerian</td></tr>
+<tr><td class="cookbook">%x</td><td>qcu</td><td>Undetermined language in
+cuneiform</td></tr>
+</tbody>
+</table>
+<p/>
+<table class="eighty">
+<caption>Predefined Language Codes</caption>
+<thead>
+<tr><th>Code</th><th>Language</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">%akk</td><td>Akkadian</td></tr>
+<tr><td class="cookbook">%arc</td><td>Aramaic</td></tr>
+<tr><td class="cookbook">%elx</td><td>Elamite</td></tr>
+<tr><td class="cookbook">%grc</td><td>Ancient Greek</td></tr>
+<tr><td class="cookbook">%hit</td><td>Hittite</td></tr>
+<tr><td class="cookbook">%peo</td><td>Old Persian</td></tr>
+<tr><td class="cookbook">%qam</td><td>Amorite</td></tr>
+<tr><td class="cookbook">%xcr</td><td>Carian</td></tr>
+<tr><td class="cookbook">%qcu</td><td>Undetermined cuneiform</td></tr>
+<tr><td class="cookbook">%qeb</td><td>Eblaite</td></tr>
+<tr><td class="cookbook">%xhu</td><td>Hurrian</td></tr>
+<tr><td class="cookbook">%xlc</td><td>Lycian</td></tr>
+<tr><td class="cookbook">%xld</td><td>Lydian</td></tr>
+<tr><td class="cookbook">%xlu</td><td>Cuneiform Luvian</td></tr>
+<tr><td class="cookbook">%hlu</td><td>Hieroglyphic Luvian</td></tr>
+<tr><td class="cookbook">%imy</td><td>Milyan (Lycian B)</td></tr>
+<tr><td class="cookbook">%qpc</td><td>Proto-Cuneiform</td></tr>
+<tr><td class="cookbook">%qpe</td><td>Proto-Elamite</td></tr>
+<tr><td class="cookbook">%plq</td><td>Palaic</td></tr>
+<tr><td class="cookbook">%xur</td><td>Urartian</td></tr>
+<tr><td class="cookbook">%sux</td><td>Sumerian</td></tr>
+<tr><td class="cookbook">%uga</td><td>Ugaritic</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The ATF processor maps single letter shifters to the explicit
+lang/rws values which are expected in the schema.  The
+<code>logolang</code> attribute is set from the ATF processor's
+secondary language when processing logograms.</p>
+-->
+<h4>Roles</h4>
+<p>The role of a grapheme may be annotated on the grapheme element,
+but there is no ATF syntax for specifying it: the <code>ideo</code>,
+<code>num</code> or <code>syll</code> values of the <code>role</code>
+attribute should be determined by linguistic services processors and
+added directly to the XTF version of the text.</p>
+<h4>Logograms</h4>
+<p>The surface syntax for logograms is described under Sign Names
+above.</p>
+<p>A normalization may be given after a word containing at least one
+logogram by following the word immediately with <code>(=...)</code>,
+e.g., <code>SAL(=mimma)</code>.</p>
+<d:rnc>
+linguistic.attr =
+  attribute xml:lang      { xsd:language } ? ,
+#  attribute g:rws         { "emegir" | "emesal" | "udgalnun" }? ,
+  (attribute g:role       { "sign" | "ideo" | "num" | "syll" }
+  | (attribute g:role     { "logo" } ,
+     attribute g:logolang { xsd:language }))
+</d:rnc>
+
+<h1 class="tutorial">Proximity</h1>
+
+<div class="atf tutorial">
+<p>A general facility for annotating graphemic proximity is provided
+with the notation <code>$&lt;zone></code>, where <code>zone</code> is
+an arbitrary region of the surface defined only by the transliterator
+and represented by a single digit.  Search engines may provide
+facilities to find multiple graphemes with the same zone code (in the
+same line) and possibly to relate grapheme proximity to the difference
+between zone codes (i.e., in <code>a$1 e$2 i$3</code>, the
+<code>i</code> grapheme may be considered closer to <code>e</code>
+than to <code>a</code> (the ordering relationships of zone codes are
+likely to be problematic, however).  This is an experimental feature
+intended for use in exploring the graphotactics of Early Dynastic
+texts.</p>
+</div>
+<d:rnc>
+proximity.attr = 
+  attribute g:prox { xsd:integer }
+</d:rnc>
+
+<h1 class="tutorial">Intrusions</h1>
+<div class="atf tutorial">
+<p>To indicate that there is any kind of newline within a
+transliterated sequence of words or graphemes, use the semi-colon
+(<code>;</code>).</p>
+<p>To indicate that an unknown number of signs is missing, use an
+ellipsis (<code>...</code>).</p>
+<p>If it is necessary to indicate any other information which is not
+part of the grapheme sequence the compound brackets
+<code>(#...#)</code> may be used.  This feature should be used rarely
+if ever.</p>
+<pre class="cookbook">mu-un-;e₃          [...]         [(...)]</pre>
+</div>
+
+<p>The <code>g:x</code> type <code>empty</code> is generated by the
+ATF processor when a word begins with a boundary.  This can happen in
+GDL fragments within a note, e.g.:</p>
+
+<p>The <code>g:x</code> type <code>disambig</code> cannot be generated
+by the ATF processor, and so cannot occur outside of glossaries.
+Glossaries are processed using <code>gdlme2</code>, which generates a
+<code>disambig</code> for disambiguated forms such as
+<code>a\abs</code>.  The use of backslash in <code>\</code> for form
+variants cannot conflict with this because form variants are by
+definition non-linguistic and are not rendered when producing forms
+for the lemmatizer.  If a form variant has linguistic importance it
+should be expressed using either an <code>@</code>-modifier or a
+<code>~</code>-modifier.</p>
+
+<pre class="example">
+#note: @akk{-ir}*: copy has @akk{NI}.
+</pre>
+
+<d:rnc>
+nongrapheme = 
+  element g:x {
+    ( attribute g:type { "disambig" | "empty" | "newline" | "user" }
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
+        , status.spans , opener? , closer? , break? , notemark?)),
+    delim? , text? , varnum? ,
+    attribute xml:id { xsd:ID }? ,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? , emhyph? ,
+    surroStart? , surroEnd? ,
+    statusStart? , statusEnd?
+    }
+</d:rnc>
+
+</d:schema>
+<h1 class="tutorial secondary">Words</h1>
+
+<d:schema name="words" uri="http://oracc.org/ns/gdl/1.0">
+<h2 class="primary">Words</h2>
+
+
+<p class="tutorial">For the purposes of transliteration, a "word" is
+anything between spaces, including isolated and uninterpretable
+signs.</p>
+<p>In GDL, words are sequences of graphemes or grapheme-groups. The
+following kinds of grapheme-groups are defined:</p>
+<dl>
+<dt><code>alternation</code></dt>
+<dd>Simple alternation of the common transliterational form
+<code>KI/DI</code>.  An alternation may contain more than one choice,
+but always applies to a sequence of single graphemes.</dd>
+<dt><code>reordering</code></dt>
+<dd>Reordering of graphemes within a word commonly expressed by use of
+the colon (<code>:</code>) as a grapheme joiner in transliterations.
+The original order of the signs on the tablet is not indicated within
+a word; the structural mechanism Multiplexing must be used instead.</dd>
+</dl>
+<div class="atf tutorial">
+<p>In ATF words are separated by spaces, and graphemes within words
+are joined by hyphens. Note that periods (<code>.</code>) are only
+permitted inside compound graphemes.</p>
+
+<p>Simple choices in the transliteration of single graphemes may be expressed
+by separating the graphemes with a slash (<code>/</code>).  More than
+one choice may be given, but each sequence of choices only applies to
+a single grapheme.</p>
+
+<p>The fact that signs are inscribed on the object in a different
+order than they are transliterated may be indicated by joining
+graphemes with the colon (<code>:</code>) instead of the hyphen.  This
+mechanism is a convenient shorthand which is intended to cover cases
+of occasional reversal in sign order.  It is only available within
+words, it is not permitted in compound signs, and it may only be used
+with pairs of reversed graphemes.  A different, completely general,
+mechanism for indicating more complex reorderings is provided under
+the concept of Multiplexing and is explained in the description of
+document structure.</p>
+
+<pre class="cookbook">
+a-ba mu-un-ba-al-e     KI/DI-bi     LAGAB-DUL₃      mu:un-du₃
+</pre>
+<p class="primary">Note that there is no surface syntax for group
+generation in ATF; all non-compound groups are generated as necessary
+by the ATF processor.</p></div>
+
+<d:rnc>
+namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace n = "http://oracc.org/ns/norm/1.0"
+namespace syn = "http://oracc.org/ns/syntax/1.0"
+
+word.content = text | group | grapheme | nongrapheme
+
+words = (word | sword.head | sword.cont | nonword | nongrapheme)*
+
+word = 
+  element g:w {
+    word.attributes,
+    word.content*
+  }
+
+sword.head = 
+  element g:w {
+    attribute headform { text },
+    attribute contrefs { xsd:IDREFS },
+    word.attributes,
+    word.content*
+  }
+
+sword.cont = 
+  element g:swc {
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute headref { xsd:IDREF },
+    attribute swc-final { "1" | "0" },
+    delim? ,
+    word.content*
+  }
+
+word.attributes = 
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute lemma { text }? ,
+    attribute guide { text }? ,
+    attribute sense { text }? ,
+    attribute pos   { text }? ,
+    attribute morph { text }? ,
+    attribute base  { text }? ,
+    attribute norm  { text }? ,
+    delim? ,
+    syntax.attributes*
+
+nonword = 
+  element g:nonw {
+    attribute xml:id { xsd:ID }? ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "comment" | "dollar" | "excised" | "punct" | "vari" }? ,
+    attribute form { text }? ,
+    attribute lemma { text }? ,
+    syntax.attributes* ,
+    break? , status.flags? , status.spans? , opener? , closer? , delim? ,
+    word.content*
+  }
+
+group = 
+  element g:gg {
+    attribute g:type { 
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+    } ,
+    g.meta ,
+    (group | grapheme | normseg)+
+  }
+
+groupgroup = 
+  element g:gg {
+    attribute g:type { "group" } ,
+    g.meta ,
+    (group | grapheme | normword)+
+  }
+
+syntax.attributes = 
+  (attribute syn:brk-before { text } |
+   attribute syn:brk-after  { text } |
+   attribute syn:ub-before  { text } |
+   attribute syn:ub-after   { text } )
+</d:rnc>
+
+<p>In normalization, sequences like <code>mû/pû</code> generate an
+outer <code>n:w</code> containing a <code>n:word-group</code> which in
+turn contains a sequence of <code>n:grouped-word</code> elements.</p>
+
+<d:rnc>
+normword = 
+  element n:w { 
+    word.attributes , 
+    break? , status.flags? , status.spans? , opener? , closer? , 
+    hsqb_o? , hsqb_c? ,
+    (normwordword | normwordgroup | gloss | nongrapheme | group)* ,
+    syntax.attributes*,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? ,
+    statusStart? , statusEnd?
+  }
+
+normwordgroup = 
+  element n:word-group {
+     attribute g:type { "alternation" } ,
+     element n:grouped-word { normwordword }+
+  }
+
+normwordword = ( text | (normseg | normgroup)+)
+
+normseg =
+  element n:s {
+    n.meta ,
+    g.meta ,
+    text
+  }
+
+n.meta = normnum?
+
+normnum = attribute n:num { "yes" }
+
+normgroup = 
+  element n:g {
+    attribute g:type {
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "numword"
+    } ,
+    g.meta ,
+    (normgroup | normseg)+
+  }
+</d:rnc>
+
+</d:schema>
+
+<d:schema name="gdl" uri="http://oracc.org/ns/gdl/1.0">
+<p>A simple entry point so that users don't have to include several
+separate schemas.</p>
+<d:rnc>
+include "charset.rnc"
+include "grapheme.rnc"
+include "graphmeta.rnc"
+include "words.rnc"
+</d:rnc>
+</d:schema>
+<d:schema name="example" uri="http://oracc.org/ns/gdl-example/1.0">
+<p>The test harness uses the following schema to embed GDL in a
+document element.</p>
+<d:rnc>
+namespace gx = "http://oracc.org/ns/gdl-example/1.0"
+start = gx
+include "gdl.rnc"
+gx = element gx:gdl { grapheme+ }
+</d:rnc>
+</d:schema>
+
+<d:resources>
+<d:resource copy="yes" href="etc/du.png"/>
+<d:resource copy="yes" href="etc/du-over-du.png"/>
+<d:resource copy="yes" href="etc/nigin2.png"/>
+<d:resource copy="yes" href="etc/ga2-times-an.png"/>
+<d:resource copy="yes" href="etc/ga2-times-me-en.png"/>
+<d:resource copy="yes" href="etc/gi-crossing-gi.png"/>
+<d:resource copy="yes" href="etc/lu2-opposing-lu2.png"/>
+<d:resource copy="yes" href="etc/lu2-times-4.png"/>
+<d:resource copy="yes" href="etc/1-n07a.png"/>
+<d:resource copy="yes" href="etc/1-n07b.png"/>
+<d:resource copy="yes" href="etc/4ban2.png"/>
+<d:resource copy="yes" href="etc/4ban2-variant.png"/>
+<d:resource copy="yes" href="etc/ash-curved.png"/>
+<d:resource copy="yes" href="etc/ash-kabatenu.png"/>
+<d:resource copy="yes" href="etc/ash-zidatenu.png"/>
+<d:resource copy="yes" href="etc/ash.png"/>
+<d:resource copy="yes" href="etc/u-vreflected.png"/>
+<d:resource copy="yes" href="etc/du-gunu.png"/>
+<d:resource copy="yes" href="etc/gan2-tenu.png"/>
+<d:resource copy="yes" href="etc/du-sheshig.png"/>
+<d:resource copy="yes" href="etc/sag-nutillu.png"/>
+<d:resource copy="yes" href="etc/sag.png"/>
+<d:resource copy="yes" href="etc/mul.png"/>
+<d:resource copy="yes" href="etc/naga180.png"/>
+<d:resource copy="yes" href="etc/N01F.png"/>
+<d:resource copy="yes" href="etc/colon.png"/>
+<d:resource copy="yes" href="etc/diacolon.png"/>
+<d:resource copy="yes" href="etc/tricolon.png"/>
+<d:resource copy="yes" href="etc/worddiv.png"/>
+</d:resources>
+
+<h1 class="tutorial">Links</h1>
+<h2 class="tutorial"><a href="/ns/gdl/1.0/">Top</a></h2>
+<h2 class="primary"><a href="gdltut.html">Tutorial</a></h2>
+<h2 class="secondary tutorial"><a href="index.html">Manual</a></h2>
+
+<!--TODO:
+ * table of default primary and secondary languages (belongs in
+ protocols section)
+-->
+</d:doc>

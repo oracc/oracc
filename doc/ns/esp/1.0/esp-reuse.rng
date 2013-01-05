@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://oracc.org/ns/esp-reuse/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!--
+    include "esp.rnc" {
+      start = empty   
+    }
+  -->
+  <!-- start &= reusables -->
+  <start>
+    <ref name="reusables"/>
+  </start>
+  <define name="reusables">
+    <element name="reusables">
+      <optional>
+        <ref name="colours"/>
+      </optional>
+      <optional>
+        <ref name="fonts"/>
+      </optional>
+      <optional>
+        <ref name="images"/>
+      </optional>
+      <optional>
+        <ref name="tabs"/>
+      </optional>
+    </element>
+  </define>
+  <define name="colours">
+    <element name="colours">
+      <ref name="dark"/>
+      <ref name="medium"/>
+      <ref name="light"/>
+      <ref name="outline"/>
+      <ref name="alternate"/>
+      <ref name="text"/>
+      <ref name="page"/>
+      <ref name="highlight"/>
+      <ref name="print"/>
+    </element>
+  </define>
+  <define name="dark">
+    <element name="dark">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="medium">
+    <element name="medium">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="light">
+    <element name="light">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="outline">
+    <element name="outline">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="alternate">
+    <element name="alternate">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="text">
+    <element name="text">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="page">
+    <element name="page">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="highlight">
+    <element name="highlight">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <define name="print">
+    <element name="print">
+      <ref name="css-colour"/>
+    </element>
+  </define>
+  <!-- Could constrain this further with a list of legal colour names. -->
+  <define name="css-colour">
+    <data type="string">
+      <param name="pattern">#[0-9ABCDEFabcdef]{3}|#[0-9ABCDEFabcdef]{6}|[A-Za-z][A-Za-z0-9]*</param>
+    </data>
+  </define>
+  <define name="fonts">
+    <element name="fonts">
+      <ref name="body-screen"/>
+      <ref name="body-print"/>
+      <ref name="h1-font"/>
+      <ref name="h2-font"/>
+    </element>
+  </define>
+  <define name="body-print">
+    <element name="body-print">
+      <text/>
+    </element>
+  </define>
+  <define name="body-screen">
+    <element name="body-screen">
+      <text/>
+    </element>
+  </define>
+  <define name="h1-font">
+    <element name="h1">
+      <text/>
+    </element>
+  </define>
+  <define name="h2-font">
+    <element name="h2">
+      <text/>
+    </element>
+  </define>
+  <define name="images">
+    <element name="images">
+      <ref name="dark-corner"/>
+      <ref name="highlight-corner"/>
+      <ref name="light-corner"/>
+    </element>
+  </define>
+  <define name="dark-corner">
+    <element name="dark-corner">
+      <text/>
+    </element>
+  </define>
+  <define name="highlight-corner">
+    <element name="highlight-corner">
+      <text/>
+    </element>
+  </define>
+  <define name="light-corner">
+    <element name="light-corner">
+      <text/>
+    </element>
+  </define>
+  <define name="tabs">
+    <element name="tabs">
+      <zeroOrMore>
+        <ref name="tab"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="tab">
+    <element name="tab">
+      <ref name="url"/>
+      <ref name="title"/>
+      <ref name="alt"/>
+      <ref name="img"/>
+    </element>
+  </define>
+  <define name="url">
+    <element name="url">
+      <data type="anyURI"/>
+    </element>
+  </define>
+  <define name="title">
+    <element name="title">
+      <text/>
+    </element>
+  </define>
+  <define name="alt">
+    <element name="alt">
+      <text/>
+    </element>
+  </define>
+  <define name="img">
+    <element name="img">
+      <attribute name="height">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+      <attribute name="width">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+      <data type="anyURI"/>
+    </element>
+  </define>
+</grammar>

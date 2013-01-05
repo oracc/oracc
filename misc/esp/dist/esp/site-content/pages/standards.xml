@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+	<esp:name>Web Standards</esp:name>
+	<esp:title>Web Standards</esp:title>
+	
+	<html><head></head><body>
+
+		<esp:image url="http://www.w3.org/WAI/wcag1AA" description="WCAG 1.0 Level Double-A conformance icon" position="float" width="88" height="32"/><p>
+			
+			The pages of this site conform to <esp:link url="http://www.w3.org/WAI/WCAG1AA-Conformance" title="W3C Explanation of Double-A Conformance">level <abbr title="Double A">AA</abbr></esp:link> of the <esp:link url="http://www.w3.org/TR/WCAG10/"><abbr title="World Wide Web Consortium">W3C</abbr> Web Content Accessibility Guidelines 1.0</esp:link>. They also satisfy many of the <abbr title="Triple A">AAA</abbr> guidelines.
+		</p>
+		<esp:image url="http://www.w3.org/Icons/valid-xhtml10" description="XHTML 1.0 icon" position="float" width="88" height="31"/>
+			<esp:image url="http://jigsaw.w3.org/css-validator/images/vcss" description="CSS icon" position="float" width="88" height="31"/><p>
+			
+			These pages are <esp:link url="http://www.w3.org/TR/xhtml1/" site-name="W3C XHTML Recommendation">valid <abbr title="eXtensible Hypertext Mark-up Language">XHTML</abbr> 1.0 Strict</esp:link>, with design and layout specified using <esp:link url="http://www.w3.org/Style/CSS/" site-name="W3C CSS home page">valid <abbr title="Cascading Style Sheets">CSS</abbr></esp:link>.
+		</p>
+		<esp:image file="icra_sw.gif" description="ICRA logo" position="float"/><p>
+			
+			These pages are labelled with the <esp:link url="http://www.icra.org/labelv02.html" site-name="Internet Content Rating Association"/> as free of any material in any ICRA category. They also provide a machine-readable W3C <abbr title="Platform for Privacy Preferences">P3P</abbr> privacy policy (see <esp:link page="privacy"/>).
+		</p>
+		<p>
+			These pages are intended to be viewable with any web browser. However, we recommend you use a modern, standards-compliant browser such as <esp:link site-name="Mozilla FireFox" url="http://www.getfirefox.com/"/>, which is available free of charge for Windows, Mac and Linux.  To ensure that all characters on this website display correctly, set your web browser's Character Encoding settings to Unicode (UTF-8). On most web browsers you can find this on the View menu, under Encoding or Character Encoding.
+		</p>
+		<p>
+			For more information about web standards, please visit <esp:link url="http://www.webstandards.org/" site-name="The Web Standards Project"/>.
+		</p>
+	</body></html>
+
+</esp:page>

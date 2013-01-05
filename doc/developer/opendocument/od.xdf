@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>OpenDocument in the Oracc System</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-08-05</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>OpenDocument is a powerful XML vocabulary which is
+  an ISO international standard for describing all of the document
+  types that make up an office suite.  A sophisticated free software
+  application, OpenOffice (NeoOffice on the Mac) uses this format, and
+  the Oracc system is able to turn an extended form of ATF into Open
+  Document XML, so that OpenOffice can be used to make PDFs or Word
+  versions of anything from individual texts to entire books.  This
+  document does not describe OpenDocument XML, but instead describes
+  how the Oracc software can be used to create and style OpenDocument
+  Text files.</dc:description>
+</d:meta>
+
+<h1>OpenDocument</h1>
+
+<p>OpenDocument (OD) is an XML vocabulary which was developed by <a
+href="http://www.oasis-open.org">Oasis</a> and submitted to the ISO
+for ratification as an international standard.  Both the Oasis version
+of the specification (in <a
+href="http://www.oasis-open.org/specs/index.php#opendocument">PDF
+format</a>) and the ratified standard, <a
+href="http://standards.iso.org/ittf/PubliclyAvailableStandards/index.html">ISO/iEC
+26300:2006</a> (in XHTML format) are available online.</p>
+
+<p>While the standards are large, and the specification admittedly has
+its trickier corners, OpenDocument is actually a fairly simple way of
+specifying text documents in XML (one reason the specifications are so
+large is that they cover spreadsheets, presentation software and other
+document types which are not normally germane to the Oracc system).  At
+its core, an OpenDocument text is a collection of headings, sections,
+paragraphs and spans, any of which can be styled.  A good introduction
+to OpenDocument is the book OpenDocument Essentials, which you can
+<a href="http://books.evc-cit.info/">read online</a> and also purchase
+in hard-copy.  Chapters 3 and 4 of OpenDocument Essentials give a good
+introduction to the things most users will need to know to customize
+Oracc OpenDocument texts.</p>
+
+<p>For everyday use, however, most users will find that the Oracc
+default settings, in combination with some <a
+href="/doc/manager/projconfig/">project options</a> will be all they
+need to make perfectly good printable versions of text editions, or to
+obtain versions of ATF transliterations which can be imported into
+OpenOffice or Word for use in preparing articles and books with
+traditional tools.</p>
+
+<h1>Processing</h1>
+
+<p>OD processing can be done directly on ATF files or on a file type
+we call <code>CDF</code>, or <code>Oracc Document Format</code>.  The
+processing is done with a program which contains the ATF processor and
+adds routines to understand CDF commands.  CDF is <a
+href="/ns/CDF/1.0/">documented here</a>.</p>
+
+<h1>Configuring</h1>
+
+<p>OD configuration is done via several mechanisms.  The CDF processor
+automatically includes the project configuration file in the XML it
+generates where the options are then available to the scripts that do
+the final conversion into OpenDocument.</p>
+
+<p>In addition, a special, simplified input form is available for OD
+styles.  More complicated OD configuration is done with XML files
+which give configuration fragments to be read by the processor and
+embedded in its output in the appropriate places.</p>
+
+<p>In all cases, projects can override the default Oracc OD
+configuration by providing their own versions of the files mentioned
+below.  Project versions of files must be named according to the
+guidelines in each section, and all must be maintained in the
+project's <code>lib/</code> directory.</p>
+
+<h2>Style Files</h2>
+
+<p>Style files offer some simplification of OD rules for styling
+sections, headings, paragraphs, spans and tables.</p>
+
+<p>The project style file is named <code>project.sty</code>.  Here is
+an example, which comes from the RINAP project:</p>
+
+<pre class="cookbook">
+@style font "Times New Roman" svg:font-family="'Times New Roman'" 
+       style:font-family-generic=roman style:font-pitch=variable
+
+@style font UngkamBasic svg:font-family="Ungkam Book Basic"
+       style:font-family-generic=roman style:font-pitch=variable
+
+@style font Arial svg:font-family=Arial
+       style:font-family-generic=swiss style:font-pitch=variable
+
+@style font Arial1 svg:font-family=Arial
+       style:font-family-generic=system style:font-pitch=variable
+
+@style section introduction fo:column-count=1
+
+@style paragraph introduction.p fo:text-align=justify
+       fo:margin-left=2.54cm fo:margin-right=2.54cm fo:text-indent=0cm
+       fo:widows=0 fo:orphans=0
+
+@style section discussion fo:column-count=2 fo:column-gap=3mm
+
+@style paragraph discussion.p fo:text-align=justify
+       fo:text-indent=0cm
+       fo:widows=0 fo:orphans=0 fo:font-size=10pt
+
+@style section bibliography fo:column-count=2 fo:column-gap=3mm
+
+@style paragraph bibliography.p fo:text-align=justify
+       fo:text-indent=-1.2cm fo:margin-left=1.2cm
+       fo:widows=0 fo:orphans=0 fo:font-size=8pt
+       cdl:tab-stops="1.5cm left"
+
+@style paragraph #default-style
+       fo:hyphenation-ladder-count=no-limit style:text-autospace=ideograph-alpha
+       style:punctuation-wrap=hanging style:line-break=strict
+       style:tab-stop-distance=0.4925in style:writing-mode=page
+       [text] style:use-window-font-color=true style:font-name=UngkamBasic
+       fo:font-size=12p fo:language=en fo:country=US style:letter-kerning=true
+       style:font-name-asian=Arial1 style:font-size-asian=10.5pt 
+       style:language-asian=zxx style:country-asian=zxx
+       style:font-name-complex=Arial1 style:font-size-complex=12pt
+       style:language-complex=zxx style:country-complex=none fo:hyphenate=false
+       fo:hyphenation-remain-char-count=2 fo:hyphenation-push-char-count=2
+
+@style paragraph Standard style:class=text
+
+@style paragraph H.atftext fo:font-size=14pt fo:font-style=normal fo:font-weight=bold
+
+@style paragraph H.surface fo:font-size=14pt fo:font-style=normal fo:font-weight=bold
+
+@style paragraph H.column  fo:font-size=13pt fo:font-style=normal fo:font-weight=bold
+
+@style paragraph H.title   fo:text-align=center 
+       fo:font-size=14pt fo:font-style=normal fo:font-weight=bold
+
+@style paragraph h1   fo:text-align=center 
+       fo:font-size=14pt fo:font-style=normal fo:font-weight=bold
+
+@style paragraph h2   fo:text-align=center 
+       fo:font-size=12pt fo:font-style=normal fo:font-weight=bold
+
+@style table     #default-style table:border-model=collapsing
+
+@style table-row #default-style fo:keep-together=auto
+
+@style table-column Col-lineno style:column-width=1cm
+
+@style table-column Col style:column-width=6cm
+
+@style page-layout #default-page-layout style:layout-grid-square-mode=false
+
+@style text akk	   	fo:font-style=italic
+
+@style text compound	fo:font-size=10pt
+
+@style text elx	   	fo:font-style=italic
+
+@style text flags	fo:font-style=normal style:text-position="super 70%"
+
+@style text i		fo:font-style=italic
+
+@style text sac-sign	fo:font-size=10pt
+
+@style text sub		style:text-position="sub 70%"
+
+@style text sup		style:text-position="super 70%"
+
+@style text supsub	style:text-position="22% 50%"
+
+@style text supsup	style:text-position="40% 50%"
+
+@style text sux	   	fo:font-style=normal
+</pre>
+
+<h2>XML Files</h2>
+
+<p>XML configuration files give users direct control over OD features
+which are not accessible through the style files.  Note that it is
+also possible to use OpenOffice as a graphical front end for managing
+these features, but the XML configuration file strategy allows
+production of complex documents like books to be completely
+automated.</p>
+
+<h3>Masters</h3>
+
+<p>The <code>masters</code> configuration file is named
+<code>master-styles.xml</code> and provides the
+<code>office:master-styles</code> section of an OD text <strong>in its
+entirety</strong>--the file is copied directly into the output without
+being changed, and must therefore contain all of the code necessary
+for the <code>office:master-styles</code> section.  The default
+version of this file defines page masters for various formats and
+purposes.  The project version is also named
+<code>master-styles.xml</code>.  Here is an example, again from the
+RINAP project:</p>
+
+<pre class="cookbook">
+&lt;office:master-styles
+      xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+      xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
+      xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+      xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"      
+      style:name="Standard"> 
+  &lt;style:master-page 
+      style:name="Standard" 
+      style:page-master-name="pm1" /> 
+  &lt;style:master-page style:name="LandscapePage" 
+		     style:page-master-name="pm2" 
+		     style:next-style-name="Standard"> 
+    &lt;style:header> 
+      &lt;text:p text:style-name="P1">page header&lt;/text:p> 
+    &lt;/style:header> 
+    &lt;style:footer> 
+      &lt;text:p text:style-name="P2">page footer&lt;/text:p> 
+    &lt;/style:footer> 
+  &lt;/style:master-page> 
+&lt;/office:master-styles> 
+</pre>
+
+<h3>Automatic</h3>
+
+<p>Another XML configuration file contains data which is integrated
+into the <code>office:automatic-styles</code> section of the OD text
+file.  This differs from the master-styles configuration because
+<code>office:automatic-styles</code> contains a lot of information
+from varying sources, including that derived from the style file.
+This means that the automatic-styles configuration file gives only a
+fragment of the automatic-styles data.  The structure of the file
+reflects this: it does not have an official
+<code>office:automatic-styles</code> top-level node, but one named
+simply <code>wrapper</code>.  This node serves as a host for the
+namespaces, but is otherwise discarded.  The child-nodes of the
+top-level wrapper are copied verbatim into the
+<code>office:automatic-styles</code> section of the document.</p>
+
+<p>The RINAP version of this file looks like this:</p>
+
+<pre class="cookbook">
+&lt;wrapper
+      xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+      xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+      xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0">
+  &lt;style:page-layout 
+      style:name="pm2"> 
+    &lt;style:page-layout-properties 
+	fo:page-width="8.5in" fo:page-height="11in" 
+	style:num-format="1" 
+	style:print-orientation="portrait" 
+	fo:margin-top="1in" fo:margin-bottom="1in" 
+	fo:margin-left="1in" fo:margin-right="1in" 
+	style:writing-mode="lr-tb" 
+	style:footnote-max-height="1in">
+      &lt;style:footnote-sep style:width="0.0071in" 
+			  style:distance-before-sep="0.0398in" 
+			  style:distance-after-sep="0.0398in" 
+			  style:adjustment="left" 
+			  style:rel-width="25%" 
+			  style:color="#000000"/> 
+    &lt;/style:page-layout-properties> 
+    &lt;style:header-style> 
+      &lt;style:header-footer-properties 
+	  fo:min-height="0in" fo:margin-bottom="0.1965in"/> 
+    &lt;/style:header-style> 
+    &lt;style:footer-style> 
+      &lt;style:header-footer-properties
+	  fo:min-height="0in" fo:margin-top="0.1965in"/>
+    &lt;/style:footer-style>
+  &lt;/style:page-layout>
+&lt;/wrapper>
+</pre>
+
+<d:resources/>
+
+</d:doc>

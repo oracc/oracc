@@ -1,0 +1,2 @@
+#!/bin/sh
+xmllint --xinclude --noxincludenode -format $* | less

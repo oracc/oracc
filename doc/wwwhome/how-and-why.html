@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+  <title>How and Why and Oracc Corpus</title>
+<base href="http://oracc.museum.upenn.edu/doc/wwwhome/"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body class="subpage">
+
+<h1>Oracc How and Why</h1>
+
+<h2>How building an Oracc corpus works</h2>
+
+<p>Our basic model for corpus and tool development is that text
+corpora are <a href="#atf">edited</a> and <a href="#lemm">annotated</a>
+at the source (or manuscript or tablet) level. We also know that it is often desirable to add new texts, joins, and fragments to the corpus; and to improve or update existing transliterations, translations, and annotations. Oracc thus works by merging manuscript files with lists of varying complexity to produce tools for describing and exploring the corpora in many ways. Whenever an editor or project manager edits, adds or updates the texts or data lists, the tools are rebuilt programmatically from scratch, so that the latest improvements to the annotated texts and the lists of data are automatically incorporated throughout the project.</p>
+
+<p><a name="atf"/>The core Oracc standard for entering textual data is known as <a href="/doc/ATF/">ATF</a>, the ASCII Transliteration Format. ATF can support multiple translations, in any language.</p>
+
+<p><a name="#lemm"/><a href="/doc/linganno/quickstart/">Lemmatization</a> is the process of annotating instances of forms of
+words according to their dictionary headword.  Oracc uses interlinear
+lemmatization in the ATF transliterations to enable lemmatization
+data to remain synchronized with textual changes. Even for completely new projects, the lemmatizer can be set up to draw on relevant glossaries from existing Oracc projects, thus automating much of the process. </p>
+
+<p>This page is under development: additional sections are planned
+which will cover the generation of various kinds of scholarly metadata
+&#x2014; signlists, concordances, dictionaries and other tools &#x2014; from corpora
+prepared according to the corpus specifications described here.</p>
+
+<h2>Why build a corpus using the Oracc tools?</h2>
+
+<dl>
+<dt>Text Cataloging</dt>
+<dd><p class="ihead">The CDLI catalog provides a global repository of unique
+identifiers for inscribed objects:</p>
+<ul>
+<li>you can use this catalog to develop a corpus and eliminate duplication</li>
+<li>you can also use additional catalog data for fields not in the CDLI
+catalog</li>
+</ul>
+</dd>
+<dt>Data Entry</dt>
+<dd>
+<p class="ihead">You can use old data and enter new data easily:</p>
+<ul>
+<li>The heart of the Oracc tools is a strictly defined text format which
+has an ASCII input version, ATF, and an XML version used by programs (XTF).</li>
+<li>The Oracc group has extensive experience in legacy data
+conversion and we are willing to help with substantial conversion jobs
+by bringing old data into ATF.</li>
+<li>ATF makes easy things easy and difficult things
+possible.</li>
+<li>ATF provides a complete solution to
+transliteration needs for cuneiform texts in any of the languages
+written in cuneiform.</li>
+<li>An online template generator takes some of the drudgery out of
+entering new texts.</li>
+<li>Many data preparers can still create consistent results thanks to
+the simplicity and thorough documentation of ATF.</li>
+</ul>
+</dd>
+<dt>Data Consistency</dt>
+<dd>
+<p class="ihead">The Oracc tools help you get data into a well-defined and highly
+consistent format and keep it that way:</p>
+<ul>
+<li>An online service, the web-based ATF checker, identifies hundreds
+of different kinds of errors and can also do content validation of
+graphemes and more.</li>
+<li>The ATF checker can produce lists of graphemes and words, with
+their frequencies, and these lists can be edited to eliminate
+inconsistent transliterations.  The checker can then use the revised
+lists to check the content of your data, ensuring that it stays valid
+both in structure and content.</li>
+<li>ATF is backed by a rigorously defined XML document
+definition in the international standard Relax/NG Schema language.
+Both the ATF input mechanism and the XML schemas are fully documented
+and available on the web.</li></ul></dd>
+<dt>Data Backup and Version History</dt>
+<dd><p class="ihead">The Oracc server can look after your data:</p>
+<ul>
+<li>the repository is backed up nightly</li>
+<li>files are available from anywhere to download, work on, and upload again</li>
+<li>a history of changes is maintained; old versions can be retrieved easily</li>
+</ul>
+</dd>
+<dt>Data Development</dt>
+<dd><p class="ihead">Once texts are entered they can be enhanced in various ways:</p>
+<ul>
+<li>Lemmatization can be added either with interlinear tags or
+dynamically during ATF processing.</li>
+<li>Sentence boundaries may be added.</li>
+<li>Full support is provided for different translation styles;
+translation units can be lines, groups of lines, or sentences.</li>
+<li>The XML format, XTF, is able to provide a very rich version of
+your textual data for programs to work on while the approach of typing
+simple ASCII texts and augmenting them automatically via lists means that the
+benefits of XTF are achieved with as little human effort as possible.</li>
+</ul></dd>
+<dt>Presentation</dt>
+<dd><p class="ihead">The same transliterations and translation can be presented in several ways:</p>
+<ul>
+<li>Online, as HTML; we can even host your project either in its
+entirety or in part.</li>
+<li>In print, by using the 'Create RTF'
+option on the web-service and importing the results into most modern
+word processors and page-layout programs.</li>
+<li>Projects hosted on the Oracc web server can easily take advantage of
+sophisticate searching and web-display facilities.</li>
+<li>The various lists produced by the ATF web service can be used as
+indices of print publications.</li>
+</ul></dd>
+<dt>Enhanced Usefulness</dt>
+<dd><p class="ihead">Corpora prepared with these tools are reusable and more useful:</p>
+<ul>
+<li>they add to the globally searchable and browsable Oracc</li>
+<li>they provide more and a greater variety of instances for use in online sign lists and dictionaries<a name="how"/></li>
+</ul>
+</dd>
+</dl>
+
+<p>For more information on how to manage a project, go to
+the <a href="/doc/manager/">Manager</a> section of the Oracc
+documentation.</p>
+
+</body>
+</html>

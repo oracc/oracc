@@ -1,0 +1,817 @@
+==13385== Memcheck, a memory error detector
+==13385== Copyright (C) 2002-2009, and GNU GPL'd, by Julian Seward et al.
+==13385== Using Valgrind-3.5.0 and LibVEX; rerun with -h for copyright info
+==13385== Command: ./matrix -l dd-1.mtx
+==13385== 
+dd-1.mtx:1252: column count mismatch: 12 in composite; 14 in matrix
+dd-1.mtx:1253: column count mismatch: 12 in composite; 14 in matrix
+dd-1.mtx:1301: column count mismatch: 10 in composite; 9 in matrix
+dd-1.mtx:1471: column count mismatch: 15 in composite; 14 in matrix
+dd-1.mtx:1832: column count mismatch: 12 in composite; 15 in matrix
+dd-1.mtx:1992: column count mismatch: 16 in composite; 15 in matrix
+dd-1.mtx:1994: column count mismatch: 16 in composite; 15 in matrix
+dd-1.mtx:1995: column count mismatch: 16 in composite; 15 in matrix
+dd-1.mtx:2036: column count mismatch: 12 in composite; 13 in matrix
+dd-1.mtx:2324: column count mismatch: 11 in composite; 15 in matrix
+==13385== 
+==13385== HEAP SUMMARY:
+==13385==     in use at exit: 4,349,765 bytes in 87,962 blocks
+==13385==   total heap usage: 92,237 allocs, 4,275 frees, 6,915,156 bytes allocated
+==13385== 
+==13385== 2 bytes in 2 blocks are still reachable in loss record 1 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x4052C7: basic_source_setup (matrix.c:806)
+==13385==    by 0x404E98: new_source (matrix.c:717)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 6 bytes in 2 blocks are definitely lost in loss record 2 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x407C0F: get_next_bit (tabloc.c:180)
+==13385==    by 0x40777F: do_tabloc (tabloc.c:49)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 8 bytes in 4 blocks are still reachable in loss record 3 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405018: basic_source_setup (matrix.c:757)
+==13385==    by 0x4047C9: new_source (matrix.c:615)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 9 bytes in 1 blocks are still reachable in loss record 4 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405177: basic_source_setup (matrix.c:784)
+==13385==    by 0x4047C9: new_source (matrix.c:615)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 9 bytes in 1 blocks are still reachable in loss record 5 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x455277: file_open (file_io.c:102)
+==13385==    by 0x4038D9: scan_input (matrix.c:215)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 9 bytes in 1 blocks are still reachable in loss record 6 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403971: scan_input (matrix.c:233)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 13 bytes in 1 blocks are still reachable in loss record 7 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x4039F1: scan_input (matrix.c:243)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 22 bytes in 11 blocks are still reachable in loss record 8 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x4063F6: get_source_entry (matrix.c:1183)
+==13385==    by 0x404E25: new_source (matrix.c:613)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 9 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x403C6C: new_outer (matrix.c:320)
+==13385==    by 0x4039E8: scan_input (matrix.c:242)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 10 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403CB1: new_outer (matrix.c:324)
+==13385==    by 0x4039E8: scan_input (matrix.c:242)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 11 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403A00: scan_input (matrix.c:243)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 12 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44CF82: sH (gsl.c:53)
+==13385==    by 0x45E5EE: doContent (xmlparse.c:1264)
+==13385==    by 0x45B2D4: XML_ParseBuffer (xmlparse.c:817)
+==13385==    by 0x45C2B1: XML_Parse (xmlparse.c:807)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 13 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44D1F2: eH (gsl.c:89)
+==13385==    by 0x45E4C1: doContent (xmlparse.c:1344)
+==13385==    by 0x45B2D4: XML_ParseBuffer (xmlparse.c:817)
+==13385==    by 0x45C2B1: XML_Parse (xmlparse.c:807)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 14 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x403C6C: new_outer (matrix.c:320)
+==13385==    by 0x40386C: scan_input (matrix.c:197)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 15 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403CB1: new_outer (matrix.c:324)
+==13385==    by 0x40386C: scan_input (matrix.c:197)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 16 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x4551C2: file_add_name (file_io.c:67)
+==13385==    by 0x45528F: file_open (file_io.c:103)
+==13385==    by 0x4038D9: scan_input (matrix.c:215)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 17 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403980: scan_input (matrix.c:233)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 18 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x403C6C: new_outer (matrix.c:320)
+==13385==    by 0x403991: scan_input (matrix.c:234)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 24 bytes in 1 blocks are still reachable in loss record 19 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403CB1: new_outer (matrix.c:324)
+==13385==    by 0x403991: scan_input (matrix.c:234)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 25 bytes in 25 blocks are still reachable in loss record 20 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405743: add_filler (matrix.c:908)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404EA2: new_source (matrix.c:718)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 32 bytes in 2 blocks are indirectly lost in loss record 21 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x406CE5: fm_make_list (matrix.c:1377)
+==13385==    by 0x4568AE: list_exec (list.c:134)
+==13385==    by 0x406BED: fix_multis (matrix.c:1351)
+==13385==    by 0x403A8A: scan_input (matrix.c:262)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 22 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403C99: new_outer (matrix.c:323)
+==13385==    by 0x4039E8: scan_input (matrix.c:242)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 23 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403854: scan_input (matrix.c:196)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 24 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403C99: new_outer (matrix.c:323)
+==13385==    by 0x40386C: scan_input (matrix.c:197)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 25 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x4551AB: file_add_name (file_io.c:66)
+==13385==    by 0x45528F: file_open (file_io.c:103)
+==13385==    by 0x4038D9: scan_input (matrix.c:215)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 26 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403C99: new_outer (matrix.c:323)
+==13385==    by 0x403991: scan_input (matrix.c:234)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 27 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403A94: scan_input (matrix.c:263)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 40 bytes in 1 blocks are still reachable in loss record 28 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x406BD5: fix_multis (matrix.c:1350)
+==13385==    by 0x403A8A: scan_input (matrix.c:262)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 45 bytes in 15 blocks are still reachable in loss record 29 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x407C0F: get_next_bit (tabloc.c:180)
+==13385==    by 0x40777F: do_tabloc (tabloc.c:49)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 48 bytes in 2 blocks are still reachable in loss record 30 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x4052EF: basic_source_setup (matrix.c:809)
+==13385==    by 0x404E98: new_source (matrix.c:717)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 48 bytes in 2 blocks are indirectly lost in loss record 31 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x406D68: fm_make_list (matrix.c:1385)
+==13385==    by 0x4568AE: list_exec (list.c:134)
+==13385==    by 0x406BED: fix_multis (matrix.c:1351)
+==13385==    by 0x403A8A: scan_input (matrix.c:262)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 68 bytes in 68 blocks are still reachable in loss record 32 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403A3B: scan_input (matrix.c:252)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 168 bytes in 3 blocks are still reachable in loss record 33 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x407EFE: new_srcs_tabloc (tabloc.c:262)
+==13385==    by 0x407907: get_next_bit (tabloc.c:90)
+==13385==    by 0x40777F: do_tabloc (tabloc.c:49)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 192 bytes in 1 blocks are still reachable in loss record 34 of 100
+==13385==    at 0x4A05F0D: realloc (vg_replace_malloc.c:476)
+==13385==    by 0x44D354: psl_bounded_sname (gsl.c:135)
+==13385==    by 0x44D027: sH (gsl.c:65)
+==13385==    by 0x45E5EE: doContent (xmlparse.c:1264)
+==13385==    by 0x45B2D4: XML_ParseBuffer (xmlparse.c:817)
+==13385==    by 0x45C2B1: XML_Parse (xmlparse.c:807)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 193 bytes in 193 blocks are still reachable in loss record 35 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405743: add_filler (matrix.c:908)
+==13385==    by 0x404D5D: new_source (matrix.c:706)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 256 bytes in 1 blocks are still reachable in loss record 36 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4A05E86: realloc (vg_replace_malloc.c:476)
+==13385==    by 0x4076E5: grow_expandbuf (tabloc.c:30)
+==13385==    by 0x407754: do_tabloc (tabloc.c:44)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 257 bytes in 1 blocks are still reachable in loss record 37 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4A05E86: realloc (vg_replace_malloc.c:476)
+==13385==    by 0x455567: xgetline (getline.c:35)
+==13385==    by 0x403BF9: scan_input (matrix.c:224)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 288 bytes in 2 blocks are still reachable in loss record 38 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x404F34: basic_source_setup (matrix.c:735)
+==13385==    by 0x404E98: new_source (matrix.c:717)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 600 bytes in 25 blocks are still reachable in loss record 39 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x405776: add_filler (matrix.c:910)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404EA2: new_source (matrix.c:718)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 664 bytes in 419 blocks are still reachable in loss record 40 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x407EE5: tabloc_location_noline (tabloc.c:256)
+==13385==    by 0x402FAB: srcs_in_lines (sources.c:108)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 748 bytes in 114 blocks are still reachable in loss record 41 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x40303B: srcs_in_lines (sources.c:113)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 975 bytes in 975 blocks are still reachable in loss record 42 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405743: add_filler (matrix.c:908)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404A31: new_source (matrix.c:657)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 985 bytes in 272 blocks are still reachable in loss record 43 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403EBB: new_composite (matrix.c:372)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 1,024 bytes in 1 blocks are still reachable in loss record 44 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4A05E86: realloc (vg_replace_malloc.c:476)
+==13385==    by 0x44D609: sname_append (gsl.c:215)
+==13385==    by 0x44CF04: sH (gsl.c:48)
+==13385==    by 0x45E5EE: doContent (xmlparse.c:1264)
+==13385==    by 0x45C34C: XML_Parse (xmlparse.c:781)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 1,213 bytes in 305 blocks are still reachable in loss record 45 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x402FCE: srcs_in_lines (sources.c:110)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 1,257 bytes in 272 blocks are still reachable in loss record 46 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403FB2: new_composite (matrix.c:402)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 1,632 bytes in 68 blocks are still reachable in loss record 47 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403A4A: scan_input (matrix.c:252)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 2,400 bytes in 100 blocks are still reachable in loss record 48 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403B1B: scan_input (matrix.c:273)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 3,600 bytes in 25 blocks are still reachable in loss record 49 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x405716: add_filler (matrix.c:905)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404EA2: new_source (matrix.c:718)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 4,245 bytes in 914 blocks are still reachable in loss record 50 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x407718: do_tabloc (tabloc.c:40)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 4,269 bytes in 914 blocks are still reachable in loss record 51 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x40788A: do_tabloc (tabloc.c:63)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 4,632 bytes in 193 blocks are still reachable in loss record 52 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x405776: add_filler (matrix.c:910)
+==13385==    by 0x404D5D: new_source (matrix.c:706)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 4,680 bytes in 117 blocks are definitely lost in loss record 53 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403A94: scan_input (matrix.c:263)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 5,131 bytes in 100 blocks are still reachable in loss record 54 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403B0C: scan_input (matrix.c:273)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 6,200 (6,120 direct, 80 indirect) bytes in 153 blocks are definitely lost in loss record 55 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x406BD5: fix_multis (matrix.c:1350)
+==13385==    by 0x403A8A: scan_input (matrix.c:262)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 6,528 bytes in 272 blocks are still reachable in loss record 56 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x403D95: new_block (matrix.c:342)
+==13385==    by 0x403AAB: scan_input (matrix.c:265)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 6,552 bytes in 1 blocks are still reachable in loss record 57 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4034EE: srcs_make_presence (sources.c:194)
+==13385==    by 0x402EA1: srcs_in_lines (sources.c:79)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 6,600 bytes in 275 blocks are still reachable in loss record 58 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44D21A: eH (gsl.c:91)
+==13385==    by 0x45E4C1: doContent (xmlparse.c:1344)
+==13385==    by 0x45C34C: XML_Parse (xmlparse.c:781)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 6,704 bytes in 419 blocks are still reachable in loss record 59 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x402F8E: srcs_in_lines (sources.c:106)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 7,992 bytes in 333 blocks are still reachable in loss record 60 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x402E2F: srcs_add_name (sources.c:57)
+==13385==    by 0x40463A: new_source (matrix.c:583)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 8,016 bytes in 1 blocks are still reachable in loss record 61 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x403237: srcs_make_array (sources.c:155)
+==13385==    by 0x402E90: srcs_in_lines (sources.c:76)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 8,192 bytes in 1 blocks are still reachable in loss record 62 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45590B: hash_create (hash.c:85)
+==13385==    by 0x402DD9: srcs_init (sources.c:45)
+==13385==    by 0x403657: main (matrix.c:110)
+==13385== 
+==13385== 8,240 bytes in 1 blocks are still reachable in loss record 63 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4558DC: hash_create (hash.c:81)
+==13385==    by 0x402DD9: srcs_init (sources.c:45)
+==13385==    by 0x403657: main (matrix.c:110)
+==13385== 
+==13385== 8,240 bytes in 1 blocks are still reachable in loss record 64 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4558DC: hash_create (hash.c:81)
+==13385==    by 0x44D24F: psl_init (gsl.c:105)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 8,240 bytes in 1 blocks are still reachable in loss record 65 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x4558DC: hash_create (hash.c:81)
+==13385==    by 0x44D271: psl_init (gsl.c:107)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 9,591 bytes in 1,234 blocks are still reachable in loss record 66 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x40461F: new_source (matrix.c:582)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 9,591 bytes in 1,234 blocks are still reachable in loss record 67 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x40519A: basic_source_setup (matrix.c:789)
+==13385==    by 0x404719: new_source (matrix.c:602)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 10,056 bytes in 419 blocks are still reachable in loss record 68 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x40307F: srcs_in_lines (sources.c:118)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 10,880 bytes in 272 blocks are still reachable in loss record 69 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x403D24: new_block (matrix.c:337)
+==13385==    by 0x403AAB: scan_input (matrix.c:265)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 10,880 bytes in 272 blocks are still reachable in loss record 70 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x403D6E: new_block (matrix.c:341)
+==13385==    by 0x403AAB: scan_input (matrix.c:265)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 10,880 bytes in 272 blocks are still reachable in loss record 71 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x405CDD: new_line (matrix.c:1026)
+==13385==    by 0x403DD8: new_composite (matrix.c:353)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 10,880 bytes in 272 blocks are still reachable in loss record 72 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x405D05: new_line (matrix.c:1029)
+==13385==    by 0x403DD8: new_composite (matrix.c:353)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 13,320 bytes in 333 blocks are still reachable in loss record 73 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x402E17: srcs_add_name (sources.c:56)
+==13385==    by 0x40463A: new_source (matrix.c:583)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 13,320 bytes in 333 blocks are still reachable in loss record 74 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x402ED2: srcs_in_lines (sources.c:89)
+==13385==    by 0x403737: main (matrix.c:130)
+==13385== 
+==13385== 14,338 bytes in 3,176 blocks are still reachable in loss record 75 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x403FD4: new_composite (matrix.c:404)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 14,692 bytes in 272 blocks are still reachable in loss record 76 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405CC8: new_line (matrix.c:1025)
+==13385==    by 0x403DD8: new_composite (matrix.c:353)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 16,384 bytes in 2 blocks are still reachable in loss record 77 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45590B: hash_create (hash.c:85)
+==13385==    by 0x44D24F: psl_init (gsl.c:105)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 21,936 bytes in 914 blocks are still reachable in loss record 78 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x407708: do_tabloc (tabloc.c:39)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 23,400 bytes in 975 blocks are still reachable in loss record 79 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x405776: add_filler (matrix.c:910)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404A31: new_source (matrix.c:657)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 27,792 bytes in 193 blocks are still reachable in loss record 80 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x405716: add_filler (matrix.c:905)
+==13385==    by 0x404D5D: new_source (matrix.c:706)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 29,616 bytes in 1,234 blocks are still reachable in loss record 81 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x404397: new_source (matrix.c:526)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 29,616 bytes in 1,234 blocks are still reachable in loss record 82 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x402E4B: srcs_add_name (sources.c:60)
+==13385==    by 0x40463A: new_source (matrix.c:583)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 29,616 bytes in 1,234 blocks are still reachable in loss record 83 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x4052EF: basic_source_setup (matrix.c:809)
+==13385==    by 0x404719: new_source (matrix.c:602)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 29,736 bytes in 1,239 blocks are still reachable in loss record 84 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44D057: sH (gsl.c:65)
+==13385==    by 0x45E5EE: doContent (xmlparse.c:1264)
+==13385==    by 0x45C34C: XML_Parse (xmlparse.c:781)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 30,464 bytes in 272 blocks are still reachable in loss record 85 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405C57: new_line (matrix.c:1019)
+==13385==    by 0x403DD8: new_composite (matrix.c:353)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 31,891 bytes in 13,955 blocks are still reachable in loss record 86 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x4051BC: basic_source_setup (matrix.c:791)
+==13385==    by 0x4047C9: new_source (matrix.c:615)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 39,960 bytes in 1,665 blocks are still reachable in loss record 87 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44D21A: eH (gsl.c:91)
+==13385==    by 0x45E4C1: doContent (xmlparse.c:1344)
+==13385==    by 0x45B2D4: XML_ParseBuffer (xmlparse.c:817)
+==13385==    by 0x45C2B1: XML_Parse (xmlparse.c:807)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 49,360 bytes in 1,234 blocks are still reachable in loss record 88 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x405CDD: new_line (matrix.c:1026)
+==13385==    by 0x40435C: new_source (matrix.c:523)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 49,360 bytes in 1,234 blocks are still reachable in loss record 89 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x4565EA: list_create (list.c:59)
+==13385==    by 0x405D05: new_line (matrix.c:1029)
+==13385==    by 0x40435C: new_source (matrix.c:523)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 51,184 bytes in 914 blocks are still reachable in loss record 90 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x407EFE: new_srcs_tabloc (tabloc.c:262)
+==13385==    by 0x407727: do_tabloc (tabloc.c:41)
+==13385==    by 0x404518: new_source (matrix.c:562)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 65,536 bytes in 8 blocks are still reachable in loss record 91 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45590B: hash_create (hash.c:85)
+==13385==    by 0x44D271: psl_init (gsl.c:107)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 69,885 bytes in 1,234 blocks are still reachable in loss record 92 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45849D: xstrdup (xsystem.c:159)
+==13385==    by 0x405CC8: new_line (matrix.c:1025)
+==13385==    by 0x40435C: new_source (matrix.c:523)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 82,752 bytes in 3,448 blocks are still reachable in loss record 93 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x4040E5: new_composite (matrix.c:426)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 138,208 bytes in 1,234 blocks are still reachable in loss record 94 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405C57: new_line (matrix.c:1019)
+==13385==    by 0x40435C: new_source (matrix.c:523)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 140,400 bytes in 975 blocks are still reachable in loss record 95 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x405716: add_filler (matrix.c:905)
+==13385==    by 0x4056E6: apocopation_setup (matrix.c:890)
+==13385==    by 0x404A31: new_source (matrix.c:657)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 177,696 bytes in 1,234 blocks are still reachable in loss record 96 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x404F34: basic_source_setup (matrix.c:735)
+==13385==    by 0x404719: new_source (matrix.c:602)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 178,872 bytes in 7,453 blocks are still reachable in loss record 97 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45580E: hash_add (hash.c:51)
+==13385==    by 0x44D057: sH (gsl.c:65)
+==13385==    by 0x45E5EE: doContent (xmlparse.c:1264)
+==13385==    by 0x45B2D4: XML_ParseBuffer (xmlparse.c:817)
+==13385==    by 0x45C2B1: XML_Parse (xmlparse.c:807)
+==13385==    by 0x458A5A: runexpatNSuD (runexpat.c:197)
+==13385==    by 0x44D2BA: psl_init (gsl.c:110)
+==13385==    by 0x4451B3: graphemes_init (graphemes.c:889)
+==13385==    by 0x442E5D: gdl_init (gdl.c:17)
+==13385==    by 0x40EE4E: gdlif_init (gdlif.c:12)
+==13385==    by 0x403661: main (matrix.c:111)
+==13385== 
+==13385== 334,944 bytes in 13,956 blocks are still reachable in loss record 98 of 100
+==13385==    at 0x4A05E0C: malloc (vg_replace_malloc.c:195)
+==13385==    by 0x45641D: list_add (list.c:14)
+==13385==    by 0x4052EF: basic_source_setup (matrix.c:809)
+==13385==    by 0x4047C9: new_source (matrix.c:615)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 441,344 bytes in 3,448 blocks are still reachable in loss record 99 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x404288: new_composite_column (matrix.c:464)
+==13385==    by 0x403F71: new_composite (matrix.c:396)
+==13385==    by 0x403ABB: scan_input (matrix.c:266)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== 2,009,664 bytes in 13,956 blocks are still reachable in loss record 100 of 100
+==13385==    at 0x4A05130: calloc (vg_replace_malloc.c:418)
+==13385==    by 0x405A72: new_source_column (matrix.c:994)
+==13385==    by 0x404F34: basic_source_setup (matrix.c:735)
+==13385==    by 0x4047C9: new_source (matrix.c:615)
+==13385==    by 0x403BAA: scan_input (matrix.c:295)
+==13385==    by 0x403677: main (matrix.c:113)
+==13385== 
+==13385== LEAK SUMMARY:
+==13385==    definitely lost: 10,806 bytes in 272 blocks
+==13385==    indirectly lost: 80 bytes in 4 blocks
+==13385==      possibly lost: 0 bytes in 0 blocks
+==13385==    still reachable: 4,338,879 bytes in 87,686 blocks
+==13385==         suppressed: 0 bytes in 0 blocks
+==13385== 
+==13385== For counts of detected and suppressed errors, rerun with: -v
+==13385== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 4 from 4)

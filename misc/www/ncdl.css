@@ -1,0 +1,20 @@
+div.banner { background-color: black }
+span.logo { color: white; font-size: 25pt }
+
+body 	{ background-color: #000000;
+      	  color: #FFFFFF;
+     	}
+
+span.log { font-size: -1; }
+
+a:link	{ color: #0099FF; text-decoration: none }
+
+a:visited { color: #FF99FF; text-decoration: none }
+
+img { border: none }
+
+td.button { width: 50px; line-height: 12pt; font-size: 10pt; text-align: center;
+	  font-family: sanserif,helvetica,arial; 
+	  font-weight: bold; padding: 0; border: 0; }
+
+span.xlabel { display: none }

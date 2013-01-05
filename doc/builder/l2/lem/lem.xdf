@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Lem: lemmatising errors</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2012-06-10</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page gives some help with fixing L2 errors with the (lem) label.</dc:description>
+</d:meta>
+
+<p>This is a list of (lem) error messages that might seem rather mysterious at first, with hints on what they mean and how to fix them. Do get in touch if there are others you would like to be added.</p>
+
+<dl>
+<dt><code>(lem) no FORM `EN.NAM' and no matches for mīnûm[what?]QP in glossary dccmt:akk-x-oldbab</code></dt>
+<dd>The usual cause of this sort of error messages is a surplus <code>$</code> in an auto-lemmatised form, i.e., <code>mīnûm[what?]QP$</code> instead of correct <code>mīnûm[what?]QP</code>. Just delete the <code>$</code>.</dd>
+<dt><code>(lem) no FORM `EN.NAM' and no matches for mīnûm[what?]QP in glossary cdli:akk-x-oldbab</code></dt>
+<dd>Here the lemmatiser is looking for a form in a putative <code>cdli</code> OB glossary, not the project's own one. This is because the protocol lines are in the wrong order. In Oracc 2 the <code>#project:</code> protocol line <em>must</em> come before the <code>#atf:</code> protocol lines. Moving the <code>#project:</code> protocol line to before the <code>#atf:</code> protocol lines will fix this error.</dd>
+</dl>
+
+<d:resources/>
+
+</d:doc>

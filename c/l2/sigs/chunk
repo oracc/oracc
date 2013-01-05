@@ -1,0 +1,51 @@
+#if 0
+  if (!xaccess((char*)fname,R_OK,0))
+    {
+      qpn_mode = 0;
+    }
+  
+  if (qpn_mode)
+    {
+      if ('.' == *lproject)
+	{
+	  if (cbd_lem_sigs) {
+	    sprintf((char*)fname,"%s/%s/cbd.sig",lproject,lang);
+	  } else {
+	    sprintf((char*)fname,"%s/%s/glossary.sig",lproject,lang);
+	  }
+	}
+      else
+	{
+	  strcpy((char*)fname,oracc_home());
+	  if (fname[strlen((char*)fname)-1] != '/')
+	    strcat((char*)fname,"/");
+	  if (cbd_lem_sigs)
+	    sprintf(((char*)fname)+strlen((char*)fname),"bld/%s/%s/cbd.sig",lproject,lang);
+	  else
+	    sprintf(((char*)fname)+strlen((char*)fname),"bld/%s/%s/glossary.sig",lproject,lang);
+	}
+      if (xaccess((char*)fname,R_OK,0))
+	{
+	  strcpy((char*)fname,oracc_home());
+	  if (fname[strlen((char*)fname)-1] != '/')
+	    strcat((char*)fname,"/");
+	  sprintf(((char*)fname)+strlen((char*)fname),"bld/%s/%s/%s.sig",lproject,lang,lang);
+	  if (xaccess((char*)fname,R_OK,0))
+	    {
+	      sprintf((char*)fname,"%s:%s",lproject,lang);
+	      if (!hash_find(scp->known_bad,fname))
+		{
+		  /*fprintf(stderr,"sig_context: no .sig files for %s\n", fname);*/
+		  hash_add(scp->known_bad,npool_copy(fname,scp->pool),&bad);
+		  no_sigfile = 1;
+		}
+	      else
+		goto ret;
+	    }
+	}
+      else if (verbose)
+	fprintf(stderr,
+		"sig_context: registering sigs for %s:%s from `%s'\n", 
+		lproject, lang, fname);
+    }
+#endif

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Oracc Prerequisites</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-10-15</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>This document lists the Oracc prerequisites,
+the packages which should be installed prior to
+installing the Oracc.</dc:description>
+</d:meta>
+
+<p>If you are not familiar with Unix installation procedures, there is a 
+<a href="../basics/">brief introduction here</a>.</p>
+
+<p><strong>FIRST READ THE <a
+href="../ports/">PORTING NOTES</a> FOR YOUR SYSTEM OR SIMILAR
+SYSTEMS</strong>:</p>
+
+<p>Now install the following, in this order:</p>
+
+<dl>
+<dt>Current versions of the GNU build tools:</dt>
+<dd>
+  <p><strong>Note that on Mac OS X it is best to try porting without
+  updating these tools first as some of them (in particular libtool) have been
+  adapted by Apple and the Gnu versions may not understand necessary linker options.</strong></p>
+  <p>The following basic tools should be up to date and synchronized, in
+this order:</p>
+  <ul>
+  <li>m4</li>
+  <li>autoconf</li>
+  <li>automake</li>
+  <li>libtool</li>
+  </ul>
+</dd>
+
+<dt>Gperf</dt>
+<dd>Some distributions do not include, or even provide, gperf (I'm looking at you, RHEL6.0). Get the
+sources from <a href="http://www.gnu.org">the Gnu website</a>, build and install it</dd>
+
+<dt><a href="http://www.pcre.org">PCRE</a></dt>
+<dd><p>provides regular expression support; there is a precompiled version of the library for windows which can be found via the PCRE home page</p></dd>
+
+<dt><a href="http://expat.sourceforge.net">Expat</a></dt>
+<dd><p>provides XML parsing and the utility program `xmlwf' which is a useful way of checking XML files for well-formedness.  An abbreviated version of expat is included in the cdl/tools/src to facilitate compilation of the ATF processor, but the latest full version should also be installed to provide xmlwf</p></dd>
+
+<dt><a href="http://www.xmlsoft.org">LibXML/LibXSLT</a></dt>
+<dd><p>provides XML parsing and XSLT transformation. Binary distributions are available for many systems</p></dd>
+
+<dt><a href="http://cpan.perl.org">Perl LibXML packages</a></dt>
+<dd><p>search for `XML::LibXML' and `XML::LibXSLT'.  <strong>LibXML/LibXSLT should be installed first</strong>.  The Perl packages have several dependencies so these must also be installed.  At the last installation the following packages were necessary (if packages are missing a diagnostic is generally issued, so it may be that there are more or different prerequisites for any given installation.:</p>
+<ul>
+<li>XML-LibXML</li>
+<li>XML-LibXML-Common</li>
+<li>XML-LibXML-Fixup</li>
+<li>XML-LibXML-Iterator</li>
+<li>XML-LibXML-XPathContext</li>
+<li>XML-LibXSLT</li>
+<li>XML-NamespaceSupport</li>
+<li>XML-NodeFilter</li>
+</ul>
+</dd>
+
+<dt><a href="http://www.davidashen.net/rnv.html">Rnv:</a></dt>
+<dd><p>provides validation according to Relax/NG Schemas in compact syntax (the version used in all of the schema documentation).  A version of this is included in cdl/tools/src so it is not essential to install the full distribution.</p></dd>
+
+<dt><a href="http://laurikari.net/tre">Tre</a></dt>
+<dd><p>provides regular expression support for msort, so install it before building msort.</p></dd>
+
+<dt><a href="http://www.public-software-group.org/utf8proc">Utf8proc</a></dt>
+<dd><p>provides UTF8 support for msort, so install it before building msort.  TODO: include this in Oracc system distro because the build/installation is non-standard.  For now, use `make' to build, then move the libraries to /usr/lib and the .h file to /usr/include (or wherever is appropriate).</p></dd>
+
+<dt><a href="http://billposer.org/Software/libuninum.html">Libuninum</a></dt>
+<dd><p>provides unicode number handling support for msort, so install it before building msort.</p></dd>
+
+<dt><a href="http://gmplib.org">Gnu MP</a></dt>
+<dd><p>provides bignum handling for msort.</p></dd>
+
+<dt><a href="http://billposer.org/Software/msort.html">Msort</a></dt>
+<dd><p>provides sorting facilities used by Oracc programs including the glossary manager.</p></dd>
+
+<dt><a href="http://sourceforge.net/projects/colorer/">Colorer</a></dt>
+<dd><p>provides source colourization for the XDF resources listings. TODO: my HRC definitions have some fixes and should be downloadable separately from the Oracc server.</p></dd>
+
+<dt><a href="http://hyperestraier.sourceforge.net">Hyper-Estraier</a></dt>
+<dd><p>provides the documentation search on the Oracc website.</p></dd>
+
+</dl>
+</d:doc>

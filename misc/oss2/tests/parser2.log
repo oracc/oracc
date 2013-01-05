@@ -1,0 +1,1066 @@
+===after make_leaves===
+$VAR1 = [
+          'Q001543.U2',
+          '6 - 6',
+          [
+            {
+              'wid' => 'Q001543.1.1',
+              'lnode' => bless( do{\(my $o = 36096976)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'pos' => 'e[house]N',
+                           'root' => [
+                                       -1,
+                                       "e\x{2082}",
+                                       "e\x{2082}"
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'e[house]',
+              'orth' => "e\x{2082}",
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 2,
+              'type' => 'leaf',
+              'pos' => 'N',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.1.2',
+              'lnode' => bless( do{\(my $o = 36082992)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'pos' => 'Angur[1]TN',
+                           'root' => [
+                                       -1,
+                                       '{an}angur',
+                                       '{an}angur'
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'Angur[1]',
+              'orth' => '{an}angur',
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 3,
+              'type' => 'leaf',
+              'pos' => 'TN',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.1.3',
+              'lnode' => bless( do{\(my $o = 36097520)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      [
+                                        undef,
+                                        'ak',
+                                        'ani'
+                                      ]
+                                    ],
+                           'pos' => 'Zulum[1]SN',
+                           'root' => [
+                                       -1,
+                                       "zu\x{2082}-lum{ki}",
+                                       "zu\x{2082}-lum{ki}"
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'Zulum[1]',
+              'orth' => "zu\x{2082}-lum{ki}",
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 4,
+              'type' => 'leaf',
+              'pos' => 'SN',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.1.3',
+              'lnode' => $VAR1->[2][2]{'lnode'},
+              'dsu' => undef,
+              'file' => 'MakeLeaves',
+              'form' => 'ak',
+              'orth' => "zu\x{2082}-lum{ki}",
+              'subtype' => 'nsf',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 5,
+              'type' => 'leaf',
+              'pos' => 'GEN',
+              'line' => 151
+            },
+            {
+              'wid' => 'Q001543.1.3',
+              'lnode' => $VAR1->[2][2]{'lnode'},
+              'dsu' => undef,
+              'file' => 'MakeLeaves',
+              'form' => 'ani',
+              'orth' => "zu\x{2082}-lum{ki}",
+              'subtype' => 'nsf',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 6,
+              'type' => 'leaf',
+              'pos' => 'POS',
+              'line' => 151
+            }
+          ]
+        ];
+=====
+===after make_leaves===
+$VAR1 = [
+          'Q001543.U4',
+          '7 - r 1',
+          [
+            {
+              'wid' => 'Q001543.2.1',
+              'lnode' => bless( do{\(my $o = 36101728)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'pos' => 'e[house]N',
+                           'root' => [
+                                       -1,
+                                       "e\x{2082}",
+                                       "e\x{2082}"
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'e[house]',
+              'orth' => "e\x{2082}",
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 7,
+              'type' => 'leaf',
+              'pos' => 'N',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.2.2',
+              'lnode' => bless( do{\(my $o = 36100624)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'pos' => 'ki[place]N',
+                           'root' => [
+                                       -1,
+                                       'ki',
+                                       'ki'
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'ki[place]',
+              'orth' => 'ki',
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 8,
+              'type' => 'leaf',
+              'pos' => 'N',
+              'line' => 129
+            },
+            {
+              'file' => 'MakeLeaves',
+              'label' => 'VC-N',
+              'id' => 11,
+              'children' => [
+                            {
+                              'wid' => 'Q001543.2.3',
+                              'lnode' => bless( do{\(my $o = 36100720)}, 'XML::LibXML::Element' ),
+                              'dsu' => undef,
+                              'parse' => {
+                                           'isf' => [
+                                                      10000,
+                                                      []
+                                                    ],
+                                           'vpr' => [
+                                                      10000,
+                                                      []
+                                                    ],
+                                           'nsf' => [
+                                                      10000,
+                                                      [
+                                                        undef,
+                                                        undef,
+                                                        'ani'
+                                                      ]
+                                                    ],
+                                           'pos' => "a\x{14b}[measure]V/t",
+                                           'root' => [
+                                                       -1,
+                                                       "a\x{14b}\x{2082}",
+                                                       "a\x{14b}\x{2082}"
+                                                     ],
+                                           'vsf' => [
+                                                      10000,
+                                                      [
+                                                        undef,
+                                                        undef,
+                                                        undef,
+                                                        undef,
+                                                        'a'
+                                                      ]
+                                                    ]
+                                         },
+                              'file' => 'MakeLeaves',
+                              'form' => "a\x{14b}[measure]",
+                              'orth' => "a\x{14b}\x{2082}",
+                              'subtype' => 'lemma',
+                              'ro' => 1,
+                              'userdata' => 'CVV',
+                              'id' => 9,
+                              'type' => 'leaf',
+                              'pos' => 'V',
+                              'line' => 300
+                            },
+                            {
+                              'wid' => 'Q001543.2.3',
+                              'lnode' => $VAR1->[2][2]{'children'}[0]{'lnode'},
+                              'dsu' => undef,
+                              'file' => 'MakeLeaves',
+                              'form' => 'a',
+                              'orth' => "a\x{14b}\x{2082}",
+                              'ro' => 1,
+                              'userdata' => '',
+                              'id' => 10,
+                              'type' => 'leaf',
+                              'pos' => 'NOM',
+                              'line' => 315
+                            }
+                          ],
+              'type' => 'phrase',
+              'line' => 317
+            },
+            {
+              'wid' => 'Q001543.2.3',
+              'lnode' => $VAR1->[2][2]{'children'}[0]{'lnode'},
+              'dsu' => undef,
+              'file' => 'MakeLeaves',
+              'form' => 'ani',
+              'orth' => "a\x{14b}\x{2082}",
+              'subtype' => 'nsf',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 12,
+              'type' => 'leaf',
+              'pos' => 'POS',
+              'line' => 151
+            },
+            {
+              'wid' => 'Q001543.3.1',
+              'lnode' => bless( do{\(my $o = 36099536)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'pos' => 'TN[]TN',
+                           'root' => [
+                                       -1,
+                                       "e\x{2082}-lal\x{2083}-DU",
+                                       "e\x{2082}-lal\x{2083}-DU"
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'TN',
+              'orth' => "e\x{2082}-lal\x{2083}-DU",
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 13,
+              'type' => 'leaf',
+              'pos' => 'TN',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.4.1',
+              'lnode' => bless( do{\(my $o = 36099744)}, 'XML::LibXML::Element' ),
+              'dsu' => undef,
+              'parse' => {
+                           'isf' => [
+                                      10000,
+                                      []
+                                    ],
+                           'vpr' => [
+                                      10000,
+                                      []
+                                    ],
+                           'nsf' => [
+                                      10000,
+                                      [
+                                        undef,
+                                        'ak',
+                                        'ani'
+                                      ]
+                                    ],
+                           'pos' => 'Kiessa[1]SN',
+                           'root' => [
+                                       -1,
+                                       "ki-es\x{2083}-sa\x{2082}{ki}",
+                                       "ki-es\x{2083}-sa\x{2082}{ki}"
+                                     ],
+                           'vsf' => [
+                                      10000,
+                                      []
+                                    ]
+                         },
+              'file' => 'MakeLeaves',
+              'form' => 'Kiessa[1]',
+              'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+              'subtype' => 'lemma',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 14,
+              'type' => 'leaf',
+              'pos' => 'SN',
+              'line' => 129
+            },
+            {
+              'wid' => 'Q001543.4.1',
+              'lnode' => $VAR1->[2][5]{'lnode'},
+              'dsu' => undef,
+              'file' => 'MakeLeaves',
+              'form' => 'ak',
+              'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+              'subtype' => 'nsf',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 15,
+              'type' => 'leaf',
+              'pos' => 'GEN',
+              'line' => 151
+            },
+            {
+              'wid' => 'Q001543.4.1',
+              'lnode' => $VAR1->[2][5]{'lnode'},
+              'dsu' => undef,
+              'file' => 'MakeLeaves',
+              'form' => 'ani',
+              'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+              'subtype' => 'nsf',
+              'ro' => 1,
+              'userdata' => '',
+              'id' => 16,
+              'type' => 'leaf',
+              'pos' => 'POS',
+              'line' => 151
+            }
+          ]
+        ];
+=====
+before first parse_outer
+$VAR1 = [
+          {
+            'wid' => 'Q001543.1.1',
+            'lnode' => bless( do{\(my $o = 36096976)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'pos' => 'e[house]N',
+                         'root' => [
+                                     -1,
+                                     "e\x{2082}",
+                                     "e\x{2082}"
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'e[house]',
+            'orth' => "e\x{2082}",
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 2,
+            'type' => 'leaf',
+            'pos' => 'N',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.1.2',
+            'lnode' => bless( do{\(my $o = 36082992)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'pos' => 'Angur[1]TN',
+                         'root' => [
+                                     -1,
+                                     '{an}angur',
+                                     '{an}angur'
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'Angur[1]',
+            'orth' => '{an}angur',
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 3,
+            'type' => 'leaf',
+            'pos' => 'TN',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.1.3',
+            'lnode' => bless( do{\(my $o = 36097520)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    [
+                                      undef,
+                                      'ak',
+                                      'ani'
+                                    ]
+                                  ],
+                         'pos' => 'Zulum[1]SN',
+                         'root' => [
+                                     -1,
+                                     "zu\x{2082}-lum{ki}",
+                                     "zu\x{2082}-lum{ki}"
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'Zulum[1]',
+            'orth' => "zu\x{2082}-lum{ki}",
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 4,
+            'type' => 'leaf',
+            'pos' => 'SN',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.1.3',
+            'lnode' => $VAR1->[2]{'lnode'},
+            'dsu' => undef,
+            'file' => 'MakeLeaves',
+            'form' => 'ak',
+            'orth' => "zu\x{2082}-lum{ki}",
+            'subtype' => 'nsf',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 5,
+            'type' => 'leaf',
+            'pos' => 'GEN',
+            'line' => 151
+          },
+          {
+            'wid' => 'Q001543.1.3',
+            'lnode' => $VAR1->[2]{'lnode'},
+            'dsu' => undef,
+            'file' => 'MakeLeaves',
+            'form' => 'ani',
+            'orth' => "zu\x{2082}-lum{ki}",
+            'subtype' => 'nsf',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 6,
+            'type' => 'leaf',
+            'pos' => 'POS',
+            'line' => 151
+          }
+        ];
+===
+=========before merge_adj========
+[ leaf :: N :: e[house] ]                                   #0002 @MakeLeaves:129
+[ leaf :: TN :: Angur[1] ]                                  #0003 @MakeLeaves:129
+[ leaf :: SN :: Zulum[1] ]                                  #0004 @MakeLeaves:129
+[ leaf :: GEN :: ak ]                                       #0005 @MakeLeaves:151
+[ leaf :: POS :: ani ]                                      #0006 @MakeLeaves:151
+=========after merge_adj========
+[ leaf :: N :: e[house] ]                                   #0002 @MakeLeaves:129
+[ leaf :: TN :: Angur[1] ]                                  #0003 @MakeLeaves:129
+[ leaf :: SN :: Zulum[1] ]                                  #0004 @MakeLeaves:129
+[ leaf :: GEN :: ak ]                                       #0005 @MakeLeaves:151
+[ leaf :: POS :: ani ]                                      #0006 @MakeLeaves:151
+===pre parse_sentence====
+[00] S	(N e[house])
+============================
+=========before merge_adj parse_phrases========
+[ leaf :: N :: e[house] ]                                   #0002 @MakeLeaves:129
+[ phrase :: NP-POS ::  ]                                    #0020 @Phrasal:1867
+  [ phrase :: NP ::  ]                                      #0019 @Phrasal:1793
+    [ leaf :: TN :: Angur[1] ]                              #0003 @MakeLeaves:129
+    [ phrase :: NP-GEN ::  ]                                #0018 @Phrasal:1790
+      [ leaf :: SN :: Zulum[1] ]                            #0004 @MakeLeaves:129
+      [ leaf :: GEN :: ak ]                                 #0005 @MakeLeaves:151
+  [ leaf :: POS :: ani ]                                    #0006 @MakeLeaves:151
+=========after merge_adj========
+[ leaf :: N :: e[house] ]                                   #0002 @MakeLeaves:129
+[ phrase :: NP-POS ::  ]                                    #0020 @Phrasal:1867
+  [ phrase :: NP ::  ]                                      #0019 @Phrasal:1793
+    [ leaf :: TN :: Angur[1] ]                              #0003 @MakeLeaves:129
+    [ phrase :: NP-GEN ::  ]                                #0018 @Phrasal:1790
+      [ leaf :: SN :: Zulum[1] ]                            #0004 @MakeLeaves:129
+      [ leaf :: GEN :: ak ]                                 #0005 @MakeLeaves:151
+  [ leaf :: POS :: ani ]                                    #0006 @MakeLeaves:151
+==parse_phrases after label_phrase==
+[ phrase :: NP-ABS ::  ]                                    #0021 @Phrasal:1166
+  [ leaf :: N :: e[house] ]                                 #0002 @MakeLeaves:129
+  [ phrase :: NP-POS ::  ]                                  #0020 @Phrasal:1867
+    [ phrase :: NP ::  ]                                    #0019 @Phrasal:1793
+      [ leaf :: TN :: Angur[1] ]                            #0003 @MakeLeaves:129
+      [ phrase :: NP-GEN ::  ]                              #0018 @Phrasal:1790
+        [ leaf :: SN :: Zulum[1] ]                          #0004 @MakeLeaves:129
+        [ leaf :: GEN :: ak ]                               #0005 @MakeLeaves:151
+    [ leaf :: POS :: ani ]                                  #0006 @MakeLeaves:151
+===post parse_sentence====
+[ clause :: S-MAT ::  ]                                     #0022 @Phrasal:994
+  [ phrase :: NP-ABS ::  ]                                  #0021 @Phrasal:1166
+    [ leaf :: N :: e[house] ]                               #0002 @MakeLeaves:129
+    [ phrase :: NP-PRN-POS ::  ]                            #0020 @Phrasal:1867
+      [ phrase :: NP ::  ]                                  #0019 @Phrasal:1793
+        [ leaf :: TN :: Angur[1] ]                          #0003 @MakeLeaves:129
+        [ phrase :: NP-GEN ::  ]                            #0018 @Phrasal:1790
+          [ leaf :: SN :: Zulum[1] ]                        #0004 @MakeLeaves:129
+          [ leaf :: GEN :: ak ]                             #0005 @MakeLeaves:151
+      [ leaf :: POS :: ani ]                                #0006 @MakeLeaves:151
+adjust_prn_pos
+[ phrase :: NP-POS ::  ]
+  [ phrase :: NP ::  ]
+    [ leaf :: N :: e[house] ]
+  [ phrase :: NP-PRN ::  ]
+    [ phrase :: NP ::  ]
+      [ leaf :: TN :: Angur[1] ]
+      [ phrase :: NP-GEN ::  ]
+        [ leaf :: SN :: Zulum[1] ]
+        [ leaf :: GEN :: ak ]
+  [ leaf :: POS :: ani ]
+===final result====
+(S-MAT (NP-ABS (NP-POS (NP      (N e[house]))
+                       (NP-PRN (NP (TN Angur[1])
+                                   (NP-GEN (SN Zulum[1])(GEN ak))))
+                       (POS ani))))
+=====================================
+before first parse_outer
+$VAR1 = [
+          {
+            'wid' => 'Q001543.2.1',
+            'lnode' => bless( do{\(my $o = 36101728)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'pos' => 'e[house]N',
+                         'root' => [
+                                     -1,
+                                     "e\x{2082}",
+                                     "e\x{2082}"
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'e[house]',
+            'orth' => "e\x{2082}",
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 7,
+            'type' => 'leaf',
+            'pos' => 'N',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.2.2',
+            'lnode' => bless( do{\(my $o = 36100624)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'pos' => 'ki[place]N',
+                         'root' => [
+                                     -1,
+                                     'ki',
+                                     'ki'
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'ki[place]',
+            'orth' => 'ki',
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 8,
+            'type' => 'leaf',
+            'pos' => 'N',
+            'line' => 129
+          },
+          {
+            'file' => 'MakeLeaves',
+            'label' => 'VC-N',
+            'id' => 11,
+            'children' => [
+                          {
+                            'wid' => 'Q001543.2.3',
+                            'lnode' => bless( do{\(my $o = 36100720)}, 'XML::LibXML::Element' ),
+                            'dsu' => undef,
+                            'parse' => {
+                                         'isf' => [
+                                                    10000,
+                                                    []
+                                                  ],
+                                         'vpr' => [
+                                                    10000,
+                                                    []
+                                                  ],
+                                         'nsf' => [
+                                                    10000,
+                                                    [
+                                                      undef,
+                                                      undef,
+                                                      'ani'
+                                                    ]
+                                                  ],
+                                         'pos' => "a\x{14b}[measure]V/t",
+                                         'root' => [
+                                                     -1,
+                                                     "a\x{14b}\x{2082}",
+                                                     "a\x{14b}\x{2082}"
+                                                   ],
+                                         'vsf' => [
+                                                    10000,
+                                                    [
+                                                      undef,
+                                                      undef,
+                                                      undef,
+                                                      undef,
+                                                      'a'
+                                                    ]
+                                                  ]
+                                       },
+                            'file' => 'MakeLeaves',
+                            'form' => "a\x{14b}[measure]",
+                            'orth' => "a\x{14b}\x{2082}",
+                            'subtype' => 'lemma',
+                            'ro' => 1,
+                            'userdata' => 'CVV',
+                            'id' => 9,
+                            'type' => 'leaf',
+                            'pos' => 'V',
+                            'line' => 300
+                          },
+                          {
+                            'wid' => 'Q001543.2.3',
+                            'lnode' => $VAR1->[2]{'children'}[0]{'lnode'},
+                            'dsu' => undef,
+                            'file' => 'MakeLeaves',
+                            'form' => 'a',
+                            'orth' => "a\x{14b}\x{2082}",
+                            'ro' => 1,
+                            'userdata' => '',
+                            'id' => 10,
+                            'type' => 'leaf',
+                            'pos' => 'NOM',
+                            'line' => 315
+                          }
+                        ],
+            'type' => 'phrase',
+            'line' => 317
+          },
+          {
+            'wid' => 'Q001543.2.3',
+            'lnode' => $VAR1->[2]{'children'}[0]{'lnode'},
+            'dsu' => undef,
+            'file' => 'MakeLeaves',
+            'form' => 'ani',
+            'orth' => "a\x{14b}\x{2082}",
+            'subtype' => 'nsf',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 12,
+            'type' => 'leaf',
+            'pos' => 'POS',
+            'line' => 151
+          },
+          {
+            'wid' => 'Q001543.3.1',
+            'lnode' => bless( do{\(my $o = 36099536)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'pos' => 'TN[]TN',
+                         'root' => [
+                                     -1,
+                                     "e\x{2082}-lal\x{2083}-DU",
+                                     "e\x{2082}-lal\x{2083}-DU"
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'TN',
+            'orth' => "e\x{2082}-lal\x{2083}-DU",
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 13,
+            'type' => 'leaf',
+            'pos' => 'TN',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.4.1',
+            'lnode' => bless( do{\(my $o = 36099744)}, 'XML::LibXML::Element' ),
+            'dsu' => undef,
+            'parse' => {
+                         'isf' => [
+                                    10000,
+                                    []
+                                  ],
+                         'vpr' => [
+                                    10000,
+                                    []
+                                  ],
+                         'nsf' => [
+                                    10000,
+                                    [
+                                      undef,
+                                      'ak',
+                                      'ani'
+                                    ]
+                                  ],
+                         'pos' => 'Kiessa[1]SN',
+                         'root' => [
+                                     -1,
+                                     "ki-es\x{2083}-sa\x{2082}{ki}",
+                                     "ki-es\x{2083}-sa\x{2082}{ki}"
+                                   ],
+                         'vsf' => [
+                                    10000,
+                                    []
+                                  ]
+                       },
+            'file' => 'MakeLeaves',
+            'form' => 'Kiessa[1]',
+            'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+            'subtype' => 'lemma',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 14,
+            'type' => 'leaf',
+            'pos' => 'SN',
+            'line' => 129
+          },
+          {
+            'wid' => 'Q001543.4.1',
+            'lnode' => $VAR1->[5]{'lnode'},
+            'dsu' => undef,
+            'file' => 'MakeLeaves',
+            'form' => 'ak',
+            'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+            'subtype' => 'nsf',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 15,
+            'type' => 'leaf',
+            'pos' => 'GEN',
+            'line' => 151
+          },
+          {
+            'wid' => 'Q001543.4.1',
+            'lnode' => $VAR1->[5]{'lnode'},
+            'dsu' => undef,
+            'file' => 'MakeLeaves',
+            'form' => 'ani',
+            'orth' => "ki-es\x{2083}-sa\x{2082}{ki}",
+            'subtype' => 'nsf',
+            'ro' => 1,
+            'userdata' => '',
+            'id' => 16,
+            'type' => 'leaf',
+            'pos' => 'POS',
+            'line' => 151
+          }
+        ];
+===
+=========before merge_adj========
+[ leaf :: N :: e[house] ]                                   #0007 @MakeLeaves:129
+[ leaf :: N :: ki[place] ]                                  #0008 @MakeLeaves:129
+[ phrase :: VC-N ::  ]                                      #0011 @MakeLeaves:317
+  [ leaf :: V :: aŋ[measure] ]                              #0009 @MakeLeaves:300
+  [ leaf :: NOM :: a ]                                      #0010 @MakeLeaves:315
+[ leaf :: POS :: ani ]                                      #0012 @MakeLeaves:151
+[ leaf :: TN :: TN ]                                        #0013 @MakeLeaves:129
+[ leaf :: SN :: Kiessa[1] ]                                 #0014 @MakeLeaves:129
+[ leaf :: GEN :: ak ]                                       #0015 @MakeLeaves:151
+[ leaf :: POS :: ani ]                                      #0016 @MakeLeaves:151
+=========after merge_adj========
+[ leaf :: N :: e[house] ]                                   #0007 @MakeLeaves:129
+[ leaf :: N :: ki[place] ]                                  #0008 @MakeLeaves:129
+[ phrase :: VC-N ::  ]                                      #0011 @MakeLeaves:317
+  [ leaf :: V :: aŋ[measure] ]                              #0009 @MakeLeaves:300
+  [ leaf :: NOM :: a ]                                      #0010 @MakeLeaves:315
+[ leaf :: POS :: ani ]                                      #0012 @MakeLeaves:151
+[ leaf :: TN :: TN ]                                        #0013 @MakeLeaves:129
+[ leaf :: SN :: Kiessa[1] ]                                 #0014 @MakeLeaves:129
+[ leaf :: GEN :: ak ]                                       #0015 @MakeLeaves:151
+[ leaf :: POS :: ani ]                                      #0016 @MakeLeaves:151
+===pre parse_sentence====
+[00] S	(N e[house])
+[01] A	(N ki[place])
+[02] V	(VC-N (V aŋ[measure])(NOM a))
+[03] .	(POS ani)
+============================
+=========before merge_adj parse_phrases========
+[ leaf :: N :: ki[place] ]                                  #0008 @MakeLeaves:129
+=========after merge_adj========
+[ leaf :: N :: ki[place] ]                                  #0008 @MakeLeaves:129
+==parse_phrases after label_phrase==
+[ phrase :: NP-ABS ::  ]                                    #0029 @Phrasal:1166
+  [ leaf :: N :: ki[place] ]                                #0008 @MakeLeaves:129
+=========before merge_adj parse_phrases========
+[ phrase :: NP ::  ]                                        #0031 @Phrasal:781
+  [ leaf :: N :: e[house] ]                                 #0007 @MakeLeaves:129
+  [ clause :: RRC ::  ]                                     #0030 @Phrasal:994
+    [ phrase :: NP-ABS ::  ]                                #0029 @Phrasal:1166
+      [ leaf :: N :: ki[place] ]                            #0008 @MakeLeaves:129
+    [ phrase :: VC-N ::  ]                                  #0011 @MakeLeaves:317
+      [ leaf :: V :: aŋ[measure] ]                          #0009 @MakeLeaves:300
+      [ leaf :: NOM :: a ]                                  #0010 @MakeLeaves:315
+  [ leaf :: POS :: ani ]                                    #0012 @MakeLeaves:151
+[ phrase :: NP-POS ::  ]                                    #0028 @Phrasal:1867
+  [ phrase :: NP ::  ]                                      #0027 @Phrasal:1793
+    [ leaf :: TN :: TN ]                                    #0013 @MakeLeaves:129
+    [ phrase :: NP-GEN ::  ]                                #0026 @Phrasal:1790
+      [ leaf :: SN :: Kiessa[1] ]                           #0014 @MakeLeaves:129
+      [ leaf :: GEN :: ak ]                                 #0015 @MakeLeaves:151
+  [ leaf :: POS :: ani ]                                    #0016 @MakeLeaves:151
+=========after merge_adj========
+[ phrase :: NP ::  ]                                        #0031 @Phrasal:781
+  [ leaf :: N :: e[house] ]                                 #0007 @MakeLeaves:129
+  [ clause :: RRC ::  ]                                     #0030 @Phrasal:994
+    [ phrase :: NP-ABS ::  ]                                #0029 @Phrasal:1166
+      [ leaf :: N :: ki[place] ]                            #0008 @MakeLeaves:129
+    [ phrase :: VC-N ::  ]                                  #0011 @MakeLeaves:317
+      [ leaf :: V :: aŋ[measure] ]                          #0009 @MakeLeaves:300
+      [ leaf :: NOM :: a ]                                  #0010 @MakeLeaves:315
+  [ leaf :: POS :: ani ]                                    #0012 @MakeLeaves:151
+[ phrase :: NP-POS ::  ]                                    #0028 @Phrasal:1867
+  [ phrase :: NP ::  ]                                      #0027 @Phrasal:1793
+    [ leaf :: TN :: TN ]                                    #0013 @MakeLeaves:129
+    [ phrase :: NP-GEN ::  ]                                #0026 @Phrasal:1790
+      [ leaf :: SN :: Kiessa[1] ]                           #0014 @MakeLeaves:129
+      [ leaf :: GEN :: ak ]                                 #0015 @MakeLeaves:151
+  [ leaf :: POS :: ani ]                                    #0016 @MakeLeaves:151
+==parse_phrases after label_phrase==
+[ phrase :: NP-ABS ::  ]                                    #0032 @Phrasal:1166
+  [ phrase :: NP ::  ]                                      #0031 @Phrasal:781
+    [ leaf :: N :: e[house] ]                               #0007 @MakeLeaves:129
+    [ clause :: RRC ::  ]                                   #0030 @Phrasal:994
+      [ phrase :: NP-ABS ::  ]                              #0029 @Phrasal:1166
+        [ leaf :: N :: ki[place] ]                          #0008 @MakeLeaves:129
+      [ phrase :: VC-N ::  ]                                #0011 @MakeLeaves:317
+        [ leaf :: V :: aŋ[measure] ]                        #0009 @MakeLeaves:300
+        [ leaf :: NOM :: a ]                                #0010 @MakeLeaves:315
+    [ leaf :: POS :: ani ]                                  #0012 @MakeLeaves:151
+  [ phrase :: NP-POS ::  ]                                  #0028 @Phrasal:1867
+    [ phrase :: NP ::  ]                                    #0027 @Phrasal:1793
+      [ leaf :: TN :: TN ]                                  #0013 @MakeLeaves:129
+      [ phrase :: NP-GEN ::  ]                              #0026 @Phrasal:1790
+        [ leaf :: SN :: Kiessa[1] ]                         #0014 @MakeLeaves:129
+        [ leaf :: GEN :: ak ]                               #0015 @MakeLeaves:151
+    [ leaf :: POS :: ani ]                                  #0016 @MakeLeaves:151
+===post parse_sentence====
+[ clause :: S-MAT ::  ]                                     #0034 @Phrasal:994
+  [ phrase :: NP-ABS ::  ]                                  #0032 @Phrasal:1166
+    [ phrase :: NP-POS ::  ]                                #0031 @Phrasal:781
+      [ leaf :: N :: e[house] ]                             #0007 @MakeLeaves:129
+      [ clause :: RRC ::  ]                                 #0030 @Phrasal:994
+        [ phrase :: NP-ABS ::  ]                            #0029 @Phrasal:1166
+          [ leaf :: N :: ki[place] ]                        #0008 @MakeLeaves:129
+        [ phrase :: VC-N ::  ]                              #0011 @MakeLeaves:317
+          [ leaf :: V :: aŋ[measure] ]                      #0009 @MakeLeaves:300
+          [ leaf :: NOM :: a ]                              #0010 @MakeLeaves:315
+      [ leaf :: POS :: ani ]                                #0012 @MakeLeaves:151
+    [ phrase :: NP-POS-PRN ::  ]                            #0028 @Phrasal:1867
+      [ phrase :: NP ::  ]                                  #0027 @Phrasal:1793
+        [ leaf :: TN :: TN ]                                #0013 @MakeLeaves:129
+        [ phrase :: NP-GEN ::  ]                            #0026 @Phrasal:1790
+          [ leaf :: SN :: Kiessa[1] ]                       #0014 @MakeLeaves:129
+          [ leaf :: GEN :: ak ]                             #0015 @MakeLeaves:151
+      [ leaf :: POS :: ani ]                                #0016 @MakeLeaves:151
+===final result====
+(S-MAT (NP-ABS (NP-POS     (N e[house])
+                           (RRC (NP-ABS (N ki[place]))
+                                (VC-N   (V aŋ[measure])(NOM a)))
+                           (POS ani))
+               (NP-POS-PRN (NP (TN TN)
+                               (NP-GEN (SN Kiessa[1])(GEN ak)))
+                           (POS ani))))
+=====================================

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Website Colours</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>2012-10-14</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Colourization of the pager display on your project's website is facilitated by a simple
+configuration file and a special rebuild option. This page describes how to set and change those colours.</dc:description>
+</d:meta>
+
+<p>The colours of your project website are given in the file <code>00web/colours.txt</code>, which you can open and edit with <a href="/doc/builder/emacs">Emacs</a>. You can update the colours any time you change
+the colour configuration simply by <a href="the-oracc-command/">saying</a>:</p>
+
+<pre class="cookbook">
+oracc colours</pre>
+
+<p>Then you need to reload the page you are viewing in your
+browser.</p>
+
+<p>Colour specification for regions is always done in pairs, with both
+text/foreground (<code>-fg</code>) and background (<code>-bg</code>)
+elements being required.  Border colours are given as singletons.</p>
+
+<p>Colours must be specified using the HTML/CSS notation of a hash
+mark followed by three or six hexadecimal digits.  In this scheme,
+<code>#fff</code> (or <code>#ffffff</code>) is white;
+<code>#000</code> (or <code>#000000</code>) is black.  There are
+several color maps and wheels on the web, of which one of the nicer
+examples is <a
+href="http://ficml.org/jemimap/style/color/wheel.html">Jemima
+Pereira's</a> which is also locally cached on <a href="/jemimap/wheel.html">the
+Oracc server</a>.</p>
+
+<p>Because colour specification is really separate from the rest of
+the configuration process it is handled with a separate file which has
+its own format.  The file <code>00web/colours.txt</code> is a
+text file with the following format:</p>
+
+<pre class="example">#COLOUR (OPTIONAL NAME) OPTIONS</pre>
+
+<p>This allows options using the same colour to be specified together.
+In this format, the <code>#COLOUR</code> is a colour code as described
+above.  The <code>OPTIONAL NAME</code> in parentheses is a way for
+humans to keep track of the colour the colour code refers to.  No
+validation is done on the name, which may come from one of the
+standard lists or be made up for the convenience of the creator of the
+colours file.  The options are as given below: all of the options in
+the paragraph are set to the colour code.  A new colour code at the
+beginning of a line starts a new paragraph.</p>
+
+<p>Here is a sample colours file, the one for the CAMS project:</p>
+
+<pre class="cookbook">
+#000 (black) lemm-unvisited-fg lemm-visited-fg
+#fff (white) logo-fg alt-fg logo-visited-fg logo-unvisited-fg 
+     lemm-unvisited-bg lemm-visited-bg h3-bg
+#a0b7e0 (pastel blue) banner-fg logo-hover-fg
+#1d33a8 (royal blue) logo-bg banner-bg
+#df1a1a (scarlet) banner-border other-border
+#dbbf3e (mustard) alt-bg
+#011f5b (dark blue) logo-hover-bg h3-fg
+</pre>
+
+<dl>
+<dt>logo-fg logo-bg</dt>
+<dd>Colours for the logo patch in the top left corner of the pager display.</dd>
+
+<dt>banner-fg banner-bg</dt>
+<dd>Colours for the banner across the top of the pager
+display. Defaults to the same as the logo colours.</dd>
+
+<dt>banner-borders</dt>
+<dd>Colour for the banner borders.</dd>
+
+<dt>other-borders</dt>
+<dd>Colour for all borders except the banner.</dd>
+
+<dt>alt-fg alt-bg</dt>
+<dd>Alternative colours which are used for example in the headings the
+pager uses for text titles and for the outline-based headings that
+come between lists of paged items and references.</dd>
+
+<dt>h3-fg h3-bg</dt>
+<dd>Colours for HTML H3 headings; presently only used in the metadata
+panel of a text display.</dd>
+</dl>
+
+<h4>Link Colours</h4>
+
+<p>Links may involve six colour specifications because they have
+foreground and background for unvisited, visited and hover states.
+Each link set name described below thus expands to six options, formed
+on the pattern <code class="example">NAME-STATE-FGBG</code>.  The name
+<code>logo</code> implies the existence of <code
+class="cookbook">logo-unvisited-bg logo-unvisited-fg logo-visited-bg
+logo-visited-fg logo-hover-bg logo-hover-fg</code>.</p>
+
+<dl>
+<dt>logo</dt>
+<dd>Links in the logo.</dd>
+
+<dt>banner</dt>
+<dd>Links in the banner.</dd>
+
+<dt>alt</dt>
+<dd>Links when the background is the alternative colour.</dd>
+
+<dt>lemm</dt>
+<dd>Links from lemmatized words in texts.</dd>
+
+<dt>score</dt>
+<dd>Links from the numbers in a composite text to the score blocks.</dd>
+</dl>
+
+<p>Projects can exert additional control over the web display by
+providing files <code>00web/project.css</code> and <code>00web/project.js</code>. Both files are loaded last in the HTML header.</p>
+
+<p>Full details of the CSS/JS implementation are given in
+the <a href="/doc/developer/projweb/">Project Web Management</a> document.</p>
+
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+<d:resources/>
+
+</d:doc>

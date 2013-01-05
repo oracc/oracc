@@ -1,0 +1,59 @@
+default namespace = "http://oracc.org/ns/cbd/2.0"
+namespace cbd = "http://oracc.org/ns/cbd/2.0"
+include "cdfi.rnc"
+
+cbd = element cbd { cbd-attr , declaration? , entry* }
+cbd-attr    = (target-lang , xml-lang)
+target-lang = attribute cbd:target-lang { text }
+xml-lang    = attribute xml:lang        { text }
+
+declaration =   element declaration { features , properties }
+features = 	element features { feat-def* }
+properties =    element properties { prop-def* }
+prop-def =      element property {
+                  prop-scope , prop-name , prop-type ,  prop-sort , 
+		  prop-gaps , prop-val* }
+prop-scope =    attribute cbd:property-scope { "cbd" | "entry" }
+prop-name  =    attribute cbd:property-name  { xsd:NMTOKEN }
+prop-type =     attribute cbd:property-type  { "singleton" | "list" | "complex" }
+prop-sort =     attribute cbd:property-sort  { 
+                  "none" | "numeric" | "alpha" | "list" }
+prop-gaps =     attribute cbd:property-gaps-ok { xsd:boolean }
+prop-val =      element property-value { prop-val-type , text }
+prop-val-type = attribute cbd:prop-ok-type {
+                  "number" | "letter" | "token" | "pattern" }
+
+entry = element entry { 
+  type , level , signature , mapped_signature ,
+  cf , gw , pos , features* ,
+  meaning , definition , entry* , 
+  forms* ,
+  notes* , 
+  inotes* ,
+  issl*
+  }
+
+cf = element cf { text }
+gw = element gw { text }
+pos = element pos { text}
+
+glosses    = element glosses { cdf-inline }
+definition = element definition { text | anyElement }
+anyElement = element * { attribute * { text }* , (anyElement | text)*}
+
+meaning = element meaning { text }
+definition = element definition { cdf-inline }
+forms = element forms { text }
+notes = element notes { note* }
+inotes = element inotes { note*}
+note = element note { cdf-inline }
+issl = element issl { text }
+
+properties = element prop { name , 
+                            ((value , key?) | ref),
+			    properties }*
+
+name  = attribute n { xsd:NMTOKEN }
+value = attribute v { text } | element v { text | anyElement }
+key   = attribute k { text }
+ref   = attribute r { text }

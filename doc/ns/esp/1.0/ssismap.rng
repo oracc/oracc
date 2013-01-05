@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <!-- Server-side Image Map Module -->
+  <!-- Depends on image module. -->
+  <define name="img.attlist" combine="interleave">
+    <optional>
+      <attribute name="ismap">
+        <value>ismap</value>
+      </attribute>
+    </optional>
+  </define>
+</grammar>

@@ -1,0 +1,26 @@
+<css>
+body	    { background-color: #ffffee; color: black; 
+	      font-family: "Times New Roman", serif; padding: 1em;
+	      margin: auto;}
+
+@namespace xf url("http://www.w3.org/2002/xforms");
+
+h1	    { color: maroon; background-color: beige;
+	      border-top: 3px solid red;
+              font-family: arial, sans-serif; 
+	      font-size: 12pt; font-weight: bold;
+	      padding: 2pt; }
+
+.searchtoks { width: 80%; margin: auto; background-color: silver; }
+
+.scope .xforms-value { width: 2em; margin-right: .5em; text-align: center; }
+.insert button { width: 3em; text-align: center; padding: 0px; margin: 0px; color: blue; }
+.remove button { width: 3em; text-align: center; padding: 0px; margin: 0px; color: blue; }
+.remove-search button { width: auto; text-align: center; padding: 0px; margin: 0px; color: blue; }
+
+tr { vertical-align: top; }
+td { border-bottom: 1px; }
+
+.trailer { font-size: 90%; color: #777; }
+
+</css>

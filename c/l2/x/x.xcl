@@ -1,0 +1,26 @@
+<xcl xmlns="http://oracc.org/ns/xcl/1.0" xmlns:xff="http://oracc.org/ns/xff/1.0"
+     project="./x" textid="P224487" file="x/x.xcl">
+  <psus>
+    <psu lang="akk-x-neoass">ana[to]PRP šarru[king]N += abat šarri[king's word]N</psu>
+  </psus>
+  <c type="text" xml:id="P224487.U0">
+    <l xml:id="P224487.l02f70" ref="P224487.2.2" lnum="1"
+       inst="%akk-x-neoass:{1}{d}MES-rem₂-a-ni=Marduk-remanni[]PN$"
+       sig="@saao/saa01%akk-x-neoass:{1}{d}MES-rem₂-a-ni=Marduk-remanni[1//1]PN'PN$Marduk-remanni"/>
+    <l xml:id="P224487.l02f72" ref="P224487.2.2" lnum="1"
+       inst="%akk-x-neoass:ša=ša[of]DET"
+       sig="@saao/saa01%akk-x-neoass:ša=ša[of//of]DET$ša"/>
+    <l xml:id="P224487.l02f73" ref="P224487.2.2" lnum="1"
+       inst="%akk-x-neoass:ina=ina[in+=concerning]PRP"
+       sig="@saao/saa01%akk-x-neoass:ina=ina[in//in]PRP'PRP$ina"/>
+    <l xml:id="P224487.l02f74" ref="P224487.2.1" lnum="2"
+       inst="%akk-x-neoass:a-na=ana[to]PRP"
+       sig="ana[to//to]PRP'PRP$ana@saao/saa01%akk-x-neoass:a-na"/>
+    <l xml:id="P224487.l02f75" ref="P224487.2.2" lnum="2"
+       inst="%akk-x-neoass:LUGAL=šarri[king]N"
+       sig="@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šarri"/>
+    <l xml:id="P224487.l02f76" ref="P224487.2.2" lnum="2"
+       inst="%akk-x-neoass:LUGAL=šarru[king]N"
+       sig="@saao/saa01%akk-x-neoass:LUGAL=šarru[king//king]N'N$šarru"/>
+  </c>
+</xcl>

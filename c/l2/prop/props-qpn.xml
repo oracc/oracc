@@ -1,0 +1,69 @@
+<declaration xmlns="http://emegir.info/cbd" 
+	     xmlns:cbd="http://emegir.info/cbd">
+  <property name="alias"          group="misc" type="ref" multi="yes"/>
+  <property name="gender"         group="misc" type="token"/>
+  <property name="group-head"     group="misc" type="flag"/>
+  <property name="group-type"     group="misc" type="token"/>
+  <property name="group-with"     group="misc" type="ref" multi="yes"/>
+  <property name="neighbor"       group="misc" type="ref" multi="yes"/>
+  <property name="slavemark"      group="misc" type="flag"/>
+  <property name="pn-weight"      group="misc" type="flag"/>
+  <property name="pn-year"        group="misc" type="flag"/>
+  <property name="ancestor"       group="reln" type="ref"/>
+  <property name="child"          group="reln" type="ref"/>
+  <property name="daughter"       group="reln" type="ref"/>
+  <property name="descendant"     group="reln" type="ref"/>
+  <property name="husband"        group="reln" type="ref"/>
+  <property name="father"         group="reln" type="ref"/>
+  <property name="grandfather"    group="reln" type="ref"/>
+  <property name="father-is"      group="reln" type="ref"/>
+  <property name="grandfather-is" group="reln" type="ref"/>
+  <property name="ancestor-is"    group="reln" type="ref"/>
+  <property name="child-is"       group="reln" type="ref"/>
+  <property name="daughter-is"    group="reln" type="ref"/>
+  <property name="descendant-is"  group="reln" type="ref"/>
+  <property name="husband-is"     group="reln" type="ref"/>
+  <property name="gfather"        group="reln" type="ref"/>
+  <property name="ggfather"       group="reln" type="ref"/>
+  <property name="gggfather"      group="reln" type="ref"/>
+  <property name="ggggfather"     group="reln" type="ref"/>
+  <property name="father-of"      group="reln" type="ref" multi="yes"/>
+  <property name="gfather-of"     group="reln" type="ref" multi="yes"/>
+  <property name="ggfather-of"    group="reln" type="ref" multi="yes"/>
+  <property name="gggfather-of"   group="reln" type="ref" multi="yes"/>
+  <property name="ggggfather-of"  group="reln" type="ref" multi="yes"/>
+  <property name="mother"         group="reln" type="ref" multi="yes"/>
+  <property name="mother-is"      group="reln" type="ref"/>
+  <property name="grandmother-is" group="reln" type="ref"/>
+  <property name="gmother"        group="reln" type="ref" multi="yes"/>
+  <property name="ggmother"       group="reln" type="ref" multi="yes"/>
+  <property name="spouse"         group="reln" type="ref"/>
+  <property name="spouse-is"      group="reln" type="ref"/>
+  <property name="brother-is"     group="reln" type="ref"/>
+  <property name="wife-is"        group="reln" type="ref"/>
+  <property name="son"            group="reln" type="ref"/>
+  <property name="gson"           group="reln" type="ref"/>
+  <property name="ggson"          group="reln" type="ref"/>
+  <property name="beneficiary"    group="role" type="flag"/>
+  <property name="buyer"          group="role" type="flag"/>
+  <property name="clearer"        group="role" type="flag"/>
+  <property name="co-beneficiary" group="role" type="flag"/>
+  <property name="co-holder"      group="role" type="flag"/>
+  <property name="co-owner"       group="role" type="flag"/>
+  <property name="guarantor"      group="role" type="flag"/>
+  <property name="leasor"         group="role" type="flag"/>
+  <property name="leasee"         group="role" type="flag"/>
+  <property name="seller"         group="role" type="flag"/>
+  <property name="waiver"         group="role" type="flag"/>
+  <property name="witness"        group="role" type="flag"/>
+  <property name="sold"           group="role" type="flag"/>
+  <property name="barber"         group="post" type="flag"/>
+  <property name="scribe"         group="post" type="flag"/>
+  <property name="king"           group="status" type="flag"/>
+  <property name="slave"          group="status" type="flag"/>
+  <property name="status"         group="marker" type="string"/>
+  <property name="post"           group="marker" type="string"/>
+  <property name="role"           group="marker" type="string"/>
+  <property name="relator"        group="marker" type="string"/>
+  <property name="date"		  group="dsa" type="flag"/>
+</declaration>

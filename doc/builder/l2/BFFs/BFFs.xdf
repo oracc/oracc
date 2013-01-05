@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>BFFs: Byforms</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>BFFs are the Oracc glossary mechanism for word byforms of various
+kinds.  The general mechanism allows the individual byforms to be
+treated under their own entries within the glossary and during
+lemmatization, but then be kept separate or grouped together when the
+glossaries are rendered.</dc:description>
+</d:meta>
+
+<h2>Syntax</h2>
+
+<p>BFFs are implemented in glossaries using the <code>@bff</code> tag;
+this should be read as 'ByForm-oF', since BFFs are only given under
+the entries of byforms, not of the main form.  The choice of main form
+depends on the language and the kind of byform.</p>
+
+<p>The <code>@bff</code> tag's syntax consists of two required and two
+optional arguments.  The required arguments are:</p>
+
+<dl>
+  <dt>CLASS</dt>
+  <dd>A single word which indicates which kind of byform this is;
+  the names of the classes are language-specific.</dd>
+
+  <dt>OWNER</dt> <dd>A glossary link which must resolve to an
+  <code>@entry</code> in the glossary.  Note that the
+  <code>@bff</code> linkage points only from the byforms to the main
+  form; it is an error for a word named as an OWNER in a
+  <code>@bff</code> tag to have its own <code>@bff</code> tags.  The
+  link has the same form as other glossary entry links: &lt;CF [GW]
+  POS>.  So, to link to ki aŋ, love, the OWNER argument would be:
+  &lt;ki aŋ [love] V/t>.</dd>
+</dl>
+
+<p>The optional arguments are:</p>
+
+
+<dl>
+  <dt>LABEL</dt>
+  <dd>A human-readable label which may be rendered in the glossary
+  and is intended to convey information about the byform to
+  readers.  This may contain spaces and must be given in double
+  quotes.</dd>
+
+  <dt>CODE</dt>
+  <dd>A machine-readable code which is stored in the XML version of
+  the glossary and is intended for use in machine-processing;
+  may not contain spaces.</dd>
+</dl>
+
+<p>The required order of arguments (with optional arguments indicated
+with a question-mark after them) is:</p>
+
+<pre class="example">@bff CLASS CODE? LABEL? OWNER</pre>
+
+<h2>Sumerian BFFs</h2>
+
+<h3>Main Forms</h3>
+
+<p>The main forms in Sumerian BFFs depend on the CLASS of the BFF and
+are described under Classes below.</p>
+
+<h3>Classes</h3>
+
+<dl>
+  <dt>SUPP</dt>
+  <dd>Suppletive byform: used for suppletive verbs.  The main form is
+  the entry that is used for Perfective/Singular/Subject/Human.</dd>
+
+  <dt>COMP</dt>
+  <dd><p>Compound byform: used for collapsed compounds of the type
+  <code>mu-un-si-sa₂</code> instead of expected <code>si
+  mu-un-sa₂</code>.  With this schema, there is an entry for the
+  byform <code>sisa</code> which refers back to the main form <code>si
+  sa</code>:</p>
+
+  <pre class="cookbook">
+  @entry sisa [set straight] V/t
+  @bff COMP &lt;si sa [make straight] V/t>
+  @bases si-sa₂
+  @form mu-un-si-sa₂ /si-sa₂ #mu.n:~
+  @sense V/t set straight
+  @end entry</pre>
+  
+  <p>The main form is the uncollapsed version of the compound.</p>
+  </dd>
+
+  <dt>GRAM</dt>
+  <dd>Grammatical byform: used primarily for frozen verbal forms
+  which exhibit variation in morphological markers.  The main form is
+  a matter of choice rather than rule, but should be a widely attested or
+  earliest-attested form.</dd>
+</dl>
+
+<h3>Labels</h3>
+
+<p>Labels are not used for Sumerian; they are constructed from the CODE argument</p>
+
+<h3>Codes</h3>
+
+<p>Sumerian codes are used only for suppletive verbs.  They are
+constructed of hyphen-delimited quadruples giving the following
+information, in the following sequence:</p>
+
+<dl>
+  <dt>Aspect</dt>
+  <dd>P (perfective) or I (imperfective)</dd>
+  <dt>Number</dt>
+  <dd>Sg (singular) or Pl (plural)</dd>
+  <dt>Case</dt>
+  <dd>S (subject) or O (object)</dd>
+  <dt>Animacy</dt>
+  <dd>H (human) or N (nonhuman)</dd>
+</dl>
+
+<p>If the selection criterion is not relevant to the suppletion, an
+asterisk (*) is used.  Thus, typical suppletion codes include:</p>
+
+<pre class="cookbook">
+   P-Sg-*-*
+
+   I-Pl-O-*
+
+   I-Pl-S-N
+</pre>
+
+</d:doc>

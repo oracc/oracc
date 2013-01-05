@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>ARC: Oracc Linguistic Annotation for Aramaic</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Aramaic used in
+ Oracc.
+<!--  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.  This document assumes knowledge of its parent
+  page on linguistic annotation (see top of menu at left).
+ -->
+</dc:description>
+</d:meta>
+
+<h1>Transliteration</h1>
+
+<p>Aramaic is indicated by the language shift <code>%arc</code>;
+following this language shift, the ATF processor recognizes a special
+set of conventions adapted to alphabetic scripts, and a special
+transliteration system particular to Aramaic. The transliteration
+system is that of the Comprehensive Aramaic Lexicon, and this document
+has benefited from e-mail discussions with Steve Kaufman, Director of
+the CAL.</p>
+
+<pre class="example">
+
+) = aleph    b = beth       g = gimel      d = daleth     h = he
+w = waw      z = zayin      x = heth       T = teth       y = yodh
+k = kaph     l = lamedh     m = mem        n = nun        s = samekh
+( = ayin     p = pe         c = tsade      q = qoph       r = resh
+$ = shin     &amp; = sin        t = taw
+
+</pre>
+
+<p>This ASCII transliteration is converted on input to the following
+Unicode characters:</p>
+
+<pre class="example">
+bgdhwzyklmnspqrt : themselves
+)      ʾ
+(      ʿ
+T      ṭ
+c      ṣ
+$      š
+x      ḥ
+&amp;      ś
+</pre>
+
+<p>Words are separated by spaces.</p>
+
+<h1>Editing Conventions</h1>
+
+<p>Matching square brackets are used for broken material, a following
+question mark for unclear letters and a following exclamation mark for
+corrected letters.  Multiple alternative possible readings are
+separated by slashes (e.g., <code>d/r</code>).</p>
+
+<p>Within square brackets, broken segments of relatively certain
+length are indicated by a period for each missing letter.</p>
+
+<p>Broken segments of uncertain length are indicated by underscore
+characters, e.g., <code class="cookbook">[...]br
+[________________________]</code> indicates that in the first break 3
+characters are missing, and in the second break a large but
+indeterminate number of characters is missing.</p>
+
+<p>Spaces should be used to terminate words in breaks; words may
+contain dots and underscores indicating that they are partially
+preserved, e.g., <code class="cookbook">[_____ _]br[_ _____]</code>.</p>
+
+</d:doc>

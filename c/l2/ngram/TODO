@@ -1,0 +1,5 @@
+check md_select in lem_forms is working
+
+check nle sorting works properly; e.g., maru[descendant]$mar should be
+evaluated before maru[descendant]
+

@@ -1,0 +1,11 @@
+default namespace = "http://oracc.org/ns/xtc/1.0"
+
+start =
+  element xtc {
+    attribute basename { xsd:NCName },
+    attribute destdir { xsd:NMTOKEN },
+    element t {
+      attribute path { text },
+      xsd:NCName
+    }+
+  }

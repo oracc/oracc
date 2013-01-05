@@ -1,0 +1,21 @@
+default namespace = "http://oracc.org/ns/xcf/1.0"
+namespace      xi = "http://www.w3.org/2001/XInclude"
+
+start =
+  element xcf { (element set { set.model } | xinclude)* }
+
+set.model = attribute var { token } , (to | kto+)
+
+to = (to.attr | to.elem+)
+
+to.attr = attribute to { text }
+
+to.elem = element to { to.attr }
+
+kto = 
+   element key { 
+     attribute k { token } ,
+     to.attr
+   }
+
+xinclude = element xi:include { attribute href { xsd:anyURI } }

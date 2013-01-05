@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XMD::Q;
+
+my @fields = qw/id_composite tradition provenience base part corpus subcorpus attested attested_places/;
+my $fname = shift @ARGV;
+
+ORACC::XMD::Q::load();
+
+if ($fname eq '-t') {
+    ORACC::XMD::Q::dump_tabbed();
+} else {
+    die "Qtab.plx: must give filename\n" unless $fname;
+    
+    open(T,$fname) || die "Qtab.plx: can't open file '$fname'\n";
+    open(N,">$fname.tmp") || die "Qtab.plx: can't open tmp file '$fname.tmp'\n";
+
+    $_ = <T>;
+    if (/^Q/) {
+	print N $_;
+    } else {
+	#FIXME: this is no longer right--we should use the fields list
+	print N "Q\torigin_trad\torigin_place\tbase\tpart\tcorpus\tsubcorpus\tattested_periods\tattested_places\n";
+	do_line();
+    }
+    while (<T>) {
+	do_line();
+    }
+    close T;
+    
+    ORACC::XMD::Q::dump();
+}
+
+##############################################################################
+
+sub
+do_line {
+    my %r = ();
+    chomp;
+    @r{@fields} = split(/\t/);
+    if (!$r{'id_composite'}) {
+	$r{'id_composite'} = ORACC::XMD::Q::nextqid();
+	my @nbits = ();
+	foreach my $n (qw/tradition provenience base part/) {
+	    push @nbits, $r{$n} if $r{$n};
+	}
+	$r{'name'} = join(' ', @nbits);
+	delete $r{'attested_places'};
+	delete $r{'base'};
+	delete $r{'part'};
+	foreach my $f (keys %r) {
+	    $r{$f} = '' unless $r{$f};
+	}
+	ORACC::XMD::Q::createQrec(%r);
+	print N "$r{'id_composite'}$_\n";
+    }
+}
+
+1;

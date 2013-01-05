@@ -1,0 +1,538 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use Getopt::Long;
+
+my $oraccenv = $ENV{'ORACC'};
+my $oraccvar = $ENV{'ORACC_VAR'};
+
+die "oracc: the environment variable 'ORACC' is not set. Stop.\n"
+    unless $oraccenv;
+
+die "oracc: the environment variable 'ORACC_VAR' is not set. Stop.\n"
+    unless $oraccenv;
+
+my $l2 = 'yes';
+
+my @all_tasks = qw/texts gloss/;
+my %check_tasks = (
+    cdf =>\&check_cdf, 
+    dups =>\&check_dups, 
+    gloss=>\&check_gloss, 
+    links=>\&check_links, 
+    texts=>\&check_texts
+    );
+
+my @build_commands = qw/atf cat glo lem lst odf pdf ptb tei web xml xtf/;
+my %build_commands = ();
+@build_commands{@build_commands} = ();
+
+my @commands = qw/check clean clone
+		  colors colours config esp
+                  exist eXist freeze query
+                  fix help init name
+		  project public unpublic
+		  rebuild 
+                  subproject 
+		  unfreeze unplus unsub update
+		  harvest merge
+		  /;
+my %commands = ();
+@commands{@commands} = ();
+
+my @oracc_root_commands = qw/create delete/;
+my %oracc_root_commands = ();
+@oracc_root_commands{@oracc_root_commands} = ();
+@commands{@oracc_root_commands} = ();
+
+my @oracc_user_commands = qw/projectlist/;
+my %oracc_user_commands = ();
+@oracc_user_commands{@oracc_user_commands} = ();
+@commands{@oracc_user_commands} = ();
+
+my @oracc_wrappers = qw/clone freeze unfreeze unplus unsub version/;
+my %oracc_wrappers = ();
+@oracc_wrappers{@oracc_wrappers} = ();
+@commands{@oracc_wrappers} = ();
+my %wrapper_data = (
+    clone    => [ '.plx', 1 ],
+    freeze   => [ '.sh',  0 ],
+    unfreeze => [ '.sh',  0 ],
+    unplus   => [ 'l2unplus.plx',  0 ],
+    unsub    => [ '.sh',  0 ],
+    version  => [ '.sh',  0 ],
+    );
+
+my %manager_of = (
+    odf=>'odt',
+    pdf=>'tex',
+    tei=>'tei',
+    xml=>'xml',
+    );
+
+my %takes_list = ();
+my @takes_list = qw/odf pdf tei/;
+@takes_list{@takes_list} = ();
+
+sub xexec;
+sub xsystem;
+
+my $force = 0;
+my $force_arg = '';
+my $lang = '';
+my $verbose = 0;
+my $verbose_arg = '';
+
+GetOptions(
+    'force'=>\$force,
+    'lang:s'=>\$lang,
+    'verbose'=>\$verbose,
+    );
+
+usage() and exit(1) unless $#ARGV >= 0;
+
+my $bin = "$oraccenv/bin";
+my $command = shift @ARGV;
+$command = '' unless $command;
+
+unless (exists $commands{$command} || exists $build_commands{$command}) {
+    warn("oracc: unknown command '$command'\n");
+    usage(1);
+    exit(1);
+}
+
+my $oracc_uid = getpwnam('root');
+if (!defined($oracc_uid)) {
+    die "oracc: weird: there doesn't seem to be a 'root' user\n";
+}
+my $project;
+my $project_user;
+
+### All oracc root commands must be handled in this
+### block.
+
+if ($oracc_uid == $>) {
+    if (exists $oracc_root_commands{$command}) {
+	die "oracc: unhandled `root' user command `$command'\n"
+	    unless $command =~ /^create|delete$/;
+	$project = shift @ARGV;
+	if ($project) {
+	    if (length($project) > 3 && $project =~ /^[a-z][a-z0-9]+$/) {
+		if ($command eq 'create') {
+		    if ($#ARGV > 0) {
+			xsystem '/usr/local/oracc/00/sys/newproj.sh', $project;
+			exec 'sudo', '-u', $project, '-s', '/usr/local/oracc/bin/oracc.sh', 
+				$ENV{'ORACC'}, 'init', @ARGV;
+		    } elsif ($#ARGV < 0) {
+			exec '/usr/local/oracc/00/sys/newproj.sh', $project;
+		    } else {
+			die "oracc: `create' must take 1 or 3+ arguments, never 2\n";
+		    }
+		} elsif ($command eq 'delete') {
+		    exec '/usr/local/oracc/00/sys/delproj.sh', $project;
+		} else {
+		    
+		}
+	    } else {
+		die "oracc: project names must start with a-z then have 3 or more a-z0-9\n";
+	    }
+	} else {
+	    die "oracc: the `$command' command requires a project name argument\n";
+	}
+    } else {
+	die "oracc: the `$command' command cannot be run as root\n";
+    }
+} else {
+    if (exists $oracc_root_commands{$command}) {
+	die "oracc: only the `root' user can run the `$command' command\n";
+    }
+}
+
+### All oracc user commands must be handled in this
+### block.
+if (exists $oracc_user_commands{$command}) {
+    my $oracc_uid = getpwnam('oracc');
+    if (!$oracc_uid) {
+	die "oracc: weird: there doesn't seem to be an 'oracc' user\n";
+    }
+    if ($oracc_uid != $>) {
+	die "oracc: only the `oracc' user can run the `$command' command\n";
+    }
+    if ($command eq 'projectlist') {
+	exec "$oraccenv/bin/mk-projlist.sh";
+    } else {
+	die "oracc: unhandled `oracc' user command `$command'\n";
+    }
+}
+
+if (exists $oracc_wrappers{$command}) {
+    if ($wrapper_data{$command}) {
+	my($ext,$args) = @{$wrapper_data{$command}};
+	if ($ext =~ /^\./) {
+	    exec "$command$ext", @ARGV;
+	} else {
+	    exec $ext, @ARGV;
+	}
+    } else {
+	die "oracc: wrapper `$command' not handled\n";
+    }
+}
+
+if ($command eq 'build') {
+    if ($#ARGV == 0 && exists($build_commands{$ARGV[0]})) {
+	unshift(@ARGV, '-force') if $force;
+	unshift(@ARGV, '-verbose') if $verbose;
+	$command = shift @ARGV;
+	exec "o2-$command.sh", @ARGV;
+    } else {
+	die "oracc: build must be followed by one of: @build_commands\n";
+    }
+} elsif (exists $build_commands{$command}) {
+    exec "o2-$command.sh", @ARGV;
+}
+
+if ($command eq 'rebuild') {
+    maybe_exec('prebuild.sh');
+    if (-x '00bin/rebuild.sh') {
+	exec '00bin/rebuild.sh' || die;
+    } else {
+	exec "o2-rebuild.sh", @ARGV;
+    }
+    maybe_exec('postbuild.sh');
+}
+
+if ($command =~ /colou?rs/) {
+    exec "$bin/p2colours.plx";
+} elsif ($command eq 'config') {
+    if ($#ARGV < 0) {
+	exec "$bin/o2-cnf.sh";
+    } elsif ($ARGV[0] eq 'inherit') {
+	if ($ARGV[1]) {
+	    exec 'config-inherit.sh', $ARGV[1];
+	} else {
+	    die "oracc: config inherit also needs project to inherit from\n";
+	}
+    } elsif ($ARGV[0] eq 'uninherit') {
+	exec 'config-uninherit.sh';
+    } else {
+	die "oracc: unknown config command @ARGV\n";
+    }
+}
+
+if ($command eq 'web') {
+    exec "$bin/o2-web.sh";
+}
+
+if ($command =~ /^odf|pdf|tei|xml$/) {
+#    my $man = $manager_of{$command};
+#    my $base = `oraccopt`;
+#    if ($base) {
+#        exec "$bin/${man}manager.plx -proj $base @ARGV";
+#    }
+    exec "$bin/o2-$command.sh", @ARGV;
+}
+
+unless ($command eq 'init') {
+    $project = `oraccopt`;
+    if (!$project) {
+        die "oracc: must run in project directory with valid 00lib/config.xml\n";
+        exit(1);
+    }
+    $project_user = $project;
+    $project_user =~ s#/.*$## if $project_user =~ m#/#;
+}
+
+if ($command eq 'check') {
+    my @check = @ARGV;
+    if ($#check < 0) {
+	check(@all_tasks);
+    } elsif ($check[0] eq 'help') {
+	check_help();
+    } else {
+	check(@check);
+    }
+} elsif ($command eq 'clean') {
+    if ($oraccvar) {
+	xsystem "(cd $oraccvar ; rm -fr */$project)";
+	xsystem 'projdirs.sh', $project;
+    } else {
+	warn "oracc: can't perform 'clean' unless environment variable ORACC_VAR is set\n";
+    }
+} elsif ($command eq 'esp') {
+    if ($#ARGV >= 0 && $ARGV[0] eq 'init') {
+	xsystem 'esp-init.sh';
+    } else {
+        xsystem 'o2-esp.sh', @ARGV;
+    }
+} elsif ($command eq 'exist' || $command eq 'eXist') {
+    xsystem 'oracc', 'xml';
+    exec "$bin/oracc-eXist.sh", $project, $project_user;
+} elsif ($command eq 'query') {
+    exec "$bin/oracc-query.sh", $project, @ARGV;
+} elsif ($command eq 'fix') {
+#    xsystem('o2-fix.plx'); # needs updating
+    exit(1);
+} elsif ($command eq 'name') {
+    exec 'oraccopt', '.', 'abbrev';
+} elsif ($command eq 'project') {
+    print $project;
+} elsif ($command eq 'init' || $command eq 'subproject') {
+    my($short,$long) = (shift @ARGV, join(' ',@ARGV));
+    my $standard = '';
+    subproject_die() unless $short && $long;
+    my $lsub = "\L$short";
+    if (length $lsub < 4) {
+	die "oracc: subproject must be at least four characters long\n";
+    }
+    if ($lsub !~ m/^[a-z][a-z0-9]+/) {
+	die "oracc: subproject must contain only letters and numbers\n";
+    }
+    $project = $lsub unless $project;
+    if ($command eq 'subproject') {
+        my $argproj = "$project/$lsub";
+        $standard = `oraccopt . abbrev`;
+        xsystem "$bin/subproject.sh $lsub";
+        xsystem "(cd $lsub; $bin/createproj.plx -abbr $standard/$short -proj $argproj -name '$standard/$long' -user)";
+    } else {
+        xsystem "$bin/createproj.plx -abbr $short -proj $project -name '$long' -init";
+    }
+} else {
+    maybe_exec('prebuild.sh');
+    if ($command =~ /^catalog(?:ue)?$/) {
+	my @args = ('catalog');
+	unshift @args, '-force' if $force;
+	unshift @args, '-verbose' if $verbose;
+	xexec "$bin/o2-cat.sh", @args;
+    } else {
+	my @args = ();
+	if ($command eq 'harvest') {
+#	    @args = ('harvest');
+#	    unshift @args, '-verbose' if $verbose;
+#	    xexec "$bin/o2-harvest.plx", @args;
+	    xsystem 'o2-harvest.sh';
+	} elsif ($command eq 'merge') {
+#	    @args = ('merge');
+#	    unshift @args, '-verbose' if $verbose;
+#	    xexec "$bin/o2-merge.plx", @args;
+	    xsystem 'o2-merge.sh', @ARGV;
+	} elsif ($command eq 'rebuild') {
+	    my @args = ();
+	    unshift @args, '-force' if $force;
+	    unshift @args, '-verbose' if $verbose;
+	    push @args, 'rebuild';
+	    xsystem "$bin/o2-rebuild.sh", @args;
+	    maybe_exec('postbuild.sh');
+	} elsif ($command eq 'update') {
+	    xsystem "$bin/l2p1.sh";
+	} else {
+	    print "oracc: unknown command $command\n" if $command;
+	    usage();
+	}
+    }
+}
+
+1;
+
+########################################################################
+
+sub
+check {
+    my @tasks = @_;
+    foreach my $t (@tasks) {
+	if ($t eq 'odf') {
+	    check_cdf(@tasks[1..$#tasks]);
+	} else {
+	    if (defined $check_tasks{$t}) {
+		&{$check_tasks{$t}};
+	    } else {
+		print "oracc: unknown check task '$t'\n";
+		usage();
+	    }
+	}
+    }
+}
+
+sub
+check_cdf {
+    my @cdf = @_;
+    @cdf = ('00lib/project.otf') unless $#cdf >= 0;
+    xsystem "$bin/ox", "-P$project", '-lcheck.log', '-c', @cdf;
+    xsystem 'cat', 'check.log';
+}
+
+sub
+check_dups {
+    my @files = check_files();
+    xsystem "$bin/ox", "-P$project", '-lcheck.log', '-c', @files;
+    xsystem 'grep', 'duplicate', 'check.log';
+}
+
+sub
+check_files {
+    my @f = grep(/\.(?:atf|ods)$/, <00atf/*>);
+    grep !/\.ods\.atf$/, @f;
+}
+
+sub
+check_gloss {
+    foreach my $glo (<00lib/*.glo>) {
+	if ($glo =~ /sux|qpn/) {
+	    xsystem 'l2p1-sux-norm.plx', $glo;
+	}
+	xsystem "$bin/l2-glomanager.plx", '-check', $glo;
+    }
+}
+
+sub
+check_links {
+    my @files = check_files();
+    xsystem "$bin/ox", "-P$project", '-llinks.log', '-cX', @files;
+    my $l = `wc -l links.log`;
+    ($l) = ($l =~ /^(\d+)/);
+    warn "$l link errors listed in links.log\n" if $l;
+}
+
+sub
+check_texts {
+    my @files = check_files();
+    xsystem "$bin/ox", "-P$project", '-cvm', @files;
+}
+
+sub
+maybe_exec {
+    my $script = shift;
+    if (-e "00bin/$script") {
+	if (-x _) {
+	    xsystem "00bin/$script";
+	} else {
+	    warn("oracc: script 00bin/$script not executable\n");
+	}
+    }
+}
+
+sub
+xexec {
+    warn "exec @_\n" if $verbose;
+    exec @_;
+}
+
+sub
+xsystem {
+    warn "xsystem @_\n" if $verbose;
+    system @_;
+}
+
+sub
+short_usage {
+    print <<E;
+This is 'oracc'--Oracc's project management interface.
+
+For more help try `oracc help'.  If that goes by too fast, try
+viewing the help with a pager like this:
+
+    oracc help | less
+
+E
+}
+
+sub
+subproject_die {
+    print <<E;
+
+To initialize a new top-level project or create a new subproject,
+please give the abbreviated name and the full name of the project,
+leaving out the name of the parent project for subprojects.
+
+A subproject name may not contain forward slashes, i.e., you must
+create nested subprojects as subprojects of the immediate parent 
+project.
+
+You may want to use uppercase or mixed case in the abbreviation--as
+ePSD does in its top-level project, for example.  This is fine.  The
+filename, directories and web-access for the new project will use the
+same name as the abbreviated name, but in all lowercase.
+
+E
+    exit(1);
+}
+
+sub
+usage {
+    my $level = shift;
+    if ($level) {
+	short_usage();
+	return 1;
+    }
+    print <<E;
+This is 'oracc'--the Oracc's project management interface.
+
+oracc must always be run from within a project subdirectory.
+
+oracc understands the following commands:
+
+    catalog  :: updates catalogue installation.
+
+    check    :: perform various checks; say 'oracc check help' for more
+                information.
+
+    clean    :: remove unneeded files; currently just */*~ (i.e., emacs
+                backup files).
+
+    colours  :: update the colours used by the web display.
+
+    config   :: update the configuration used by the web display.
+
+    fix      :: check some files and links and run the permissions scripts.
+
+    harvest  :: collect new words from the corpus and place them in
+                lib/<LANG>.new; the new material can be reviewed but
+                corrections *MUST* be made in the corpus sources or
+                in lib/<LANG>.glo (the main glossary file).
+
+    help     :: display this help.
+
+    init     :: initialize a new project; see subproject for additional
+                arguments.
+
+    merge    :: redo the harvest and then merge the lib/<LANG>.new
+                files with the main glossary files.
+
+    subproject :: create a subproject; give the short and long names
+    		of the subproject as as well: 
+
+                oracc subproject EDAdm 'ED Administrative Texts'
+
+    update   :: rebuild the glossaries.
+
+    rebuild  :: rebuild the corpus, glossaries and website; this does
+                not doing any harvesting or merging.
+E
+}
+
+#Some commands only do conditional updates; to force an update, say '-force'
+#before the command, e.g., 'oracc force catalog'.
+
+sub
+check_help {
+    print <<E;
+This is 'oracc'--a project management tool for Oracc projects.
+
+This is the help for the 'check' task.  To run all checks, just say:
+
+  oracc check
+
+If no errors are discovered, no output is produced.
+
+To run specific check sub-tasks, you can specify one or more of the following 
+sub-task names, e.g., 'oracc check links dups':
+
+    dups      :: check for duplicate P-numbers in the corpus.
+
+    gloss     :: check that the glossary files are loadable.
+
+    links     :: check that the links are correct.
+
+    texts     :: check that the corpus ATF files are correct.
+E
+}
+
+1;

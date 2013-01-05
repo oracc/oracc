@@ -1,0 +1,585 @@
+% FONTLOAD
+% Generic Font Loading On Demand (FLOD) package for TeX
+%
+% The idea is to set things up so that \rm selects the current size of
+% the roman font of the current face. Similarly, \seven\rm selects
+% the sevenpoint roman font of the current face. \CM\seven\rm
+% selects the sevenpoint roman face of the CM fonts.
+%
+% In all cases the prior loading of the font is tested for, and
+% the font is only loaded if not found.
+%
+
+\newtoks\FLODtextintcoll % where we keep the internal representation of a text FLODcoll
+%	\FLODtextintcoll{DACMR}%initialize for FLODpushcol
+\newtoks\FLODmathintcoll % where we keep the internal representation of the math coll
+%	\FLODmathintcoll{CMM}%initialize for FLODpushcol
+\newtoks\FLODintcol@ % the current collection for font constructors
+\newtoks\FLODintsize % where we keep the internal representation of a FLODsize
+\newtoks\FLODextsize % where we keep the external representation of a FLODsize
+\newtoks\FLODintsiz@ % the internal form of the next font to load
+\newtoks\FLODextsiz@ % the external form of the next font to load
+\newtoks\FLODintface % where we keep the internal representation of a FLODface
+
+\FLODintsize{ten}\FLODextsize{10}
+
+% We begin by defining a means of initializing a control sequence so that
+% it loads a file of macros the first time it's called
+%
+% #1 = collection name, e.g. DACM
+% #2 = definition module, e.g. fnt-dacm
+\def\FLODinit#1#2{\expandafter\gdef\csname#1\endcsname{%
+  \FLODshow{Received request to initialize collection #1 from #2}%
+  \ifFLODloadOK\def\next{\FLODreallyload{#1}{#2}}%
+  \else\def\next{\FLODloaderror{#1}}\fi
+  \next}}
+
+\def\FLODreallyload#1#2{%
+  \FLODshow{Loading font collection #1 ...}%
+  \undefine{\csname#1\endcsname}%		first undefine the collection name
+  \expandafter\def\csname#1hook\endcsname{\let\currface\FLODcurrface}%
+						% define a default hook
+  \macrofile{lib/#2}%				now load the font macros for it
+  \expandafter
+  \if\csname#1\endcsname\undefd %	and check that it got defined
+    \errhelp{The font definition module `#2' did not contain a definition of^^J%
+            the font collection `#1'.}%
+    \errmessage{Font collection `#1' undefined}%
+  \else
+    \csname#1\endcsname
+  \fi}
+\def\FLODloaderror#1{%
+  \errhelp{You must declare fonts with `usefontcollection' before trying to use them.}%
+  \errmessage{Attempt to use undeclared font collection `#1'}}
+
+% \FLODcoll and \FLODmathcoll:
+% ============================
+%
+%   #1 = internal collection name, e.g. DACMR
+%   #2 is presently ignored
+%
+% After this, \DACMR is redefined to set the internal collection
+% variable to the DACMR.  Before the first invocation, the cs is
+% defined in fontlist.tex to load the macros for that font.
+%
+% The hook macro is called before using \currface because that allows
+% collections to do face overloading and supply their own \currface 
+% switch.
+\def\FLODcoll#1{\expandafter\gdef\csname#1\endcsname{%
+	\FLODtextintcoll{#1}%
+	\csname#1hook\endcsname
+	\currface}%
+  \FLODtextintcoll{#1}}
+\def\FLODmathcoll#1#2{\expandafter\gdef\csname#1\endcsname{%
+	\FLODmathintcoll{#1}\csname#1hook\endcsname}%
+	\FLODmathintcoll{#1}}
+% This is like FLODcoll, but it doesn't take effect until a face setting command
+%\def\FLODcollnocurrface#1#2{%
+%  \expandafter\gdef\csname#1\endcsname{\FLODtextintcoll{#1}\csname#1hook\endcsname}%
+%	\FLODtextintcoll{#1}}
+
+% \FLODface:
+% ==============
+%
+% This defines how to look up the external face from the internal collection
+% and face.
+% #1 = internal collection, e.g. DACMR
+% #2 = face name, e.g. rm
+% #3 = external font name, e.g., cmrr4
+% after this one can say \csname DACMRrm!ext\endcsname to get cmrr4
+\def\FLODface#1#2#3{\expandafter\gdef\csname#1#2!ext\endcsname{#3}}
+
+% \FLODsetsizes:
+% ==============
+%
+% A font definition file contains commands like this:
+%	 \FLODsetsizes{DACMR}{10}{8}{6}{12}
+% #1 is collection
+% #2 is text size
+% #3 is script size
+% #4 is scriptscript
+% #5 is baseline (single-spaced, no fuzz)
+% e.g. \FLODsetsizes{DACMR}{10}{7}{5}{12} defines
+%		\DACMR10t as 10
+%		\DACMR10s as 7
+%		\DACMR10ss as 5
+%		\DACMR10b as 12
+\def\FLODsetsizes#1#2#3#4#5{%
+  \expandafter\gdef\csname#1#2t\endcsname{#2}%
+  \expandafter\gdef\csname#1#2s\endcsname{#3}%
+  \expandafter\gdef\csname#1#2ss\endcsname{#4}%
+  \expandafter\gdef\csname#1#2b\endcsname{#5}}
+
+% \FLODsetfamily
+% ==============
+%
+% Because commands like \rm need to reset the components of families
+% we need to define a means of associating the face commands with a family
+% ID and an indication of which sizes the face is available for, i.e.,
+% textsize, scriptsize and scriptscriptsize. By arranging that this command
+% be optional we allow non-family fonts (like the IPA symbols) simply to omit
+% it. Note that a face can specify that two or all three of the family
+% members share the same size. The size is derived from the FLODsetsizes
+% command for the relevant collection and base-size.
+%
+% #1 is collection
+% #2 is face
+% #3 is text font to use*
+% #4 is script font to use*
+% #5 is scriptscript font to use*
+% #6 is family ID to select when face command is executed; 
+%    -1 for no change
+% * these values are indexed into text/script/scriptscript as defined 
+%   by a FLODsetsizes command
+%
+% e.g. \FLODsetfamily{CM}{rm}{0}{1}{2}{0} will define:
+%		\CMrmfam{0}
+%		\CMrmsizes{012}
+\def\FLODsetfamily#1#2#3#4#5#6{\count255=#6%
+  \expandafter\xdef\csname#1#2fam\endcsname{\the\count255}%
+  \expandafter\xdef\csname#1#2sizes\endcsname{#3#4#5}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Now we come to the interesting stuff.  Here are the macros
+% that actually implement font loading on demand.
+%
+
+% check to see if the fonts for this family have been loaded.  If so,
+% just use \FLODsetonefamily.  If not, load all the fonts needed.
+%
+% When this is called, the collection, size and face have all been
+% set.  #1 is the face abbreviation, e.g. `rm'.
+\def\FLODtextloadorsetonefamily#1{\FLODintcol@\FLODtextintcoll
+  \FLODloadorsetonefamily{#1}}
+\def\FLODmathloadorsetonefamily#1{\FLODintcol@\FLODmathintcoll
+  \FLODloadorsetonefamily{#1}}
+
+\def\FLODloadorsetonefamily#1{%
+  \FLODintface{#1}%
+  \ifcsname{\the\FLODintcol@\the\FLODintface\the\FLODextsize f}%
+    \relax\FLODloadonefamily
+  \FLODsetonefamily{#1}}
+
+\def\FLODloadonefamily{%
+  \ifcsname{\the\FLODintcol@\the\FLODextsize t}%
+    \FLODreally@loadfamily\FLODcant@loadfamily}
+
+\def\FLODcant@loadfamily{%
+  \errhelp{%
+There is no `FLODsetsizes' command for current point size^^J%
+in the current font module file.  That means that I don't know how^^J%
+to set the text, script and scriptscript fonts for the various families.}%
+  \errmessage{`FLODsetsize' not called for \the\FLODintcol@ \the\FLODextsize}}
+
+\def\FLODreally@loadfamily{%
+  \expandafter\gdef\csname\the\FLODintcol@\the\FLODintface\the\FLODextsize f\endcsname{t}%
+  \edef\next{\csname\the\FLODintcol@\the\FLODintface sizes\endcsname}%
+  \expandafter\FLODloadbyfamsizes\next}
+
+% set \@tsize, \@ssize and \@sssize to the first, second or third order 
+% size of <COLL><FACE><SIZE> depending on the value of the definition of
+% <COLL><FACE>sizes. Arg 1 is for text, arg 2 is for script and arg 3
+% is for sscript.
+\def\FLODloadbyfamsizes#1#2#3{%
+  \FLODloadone{\ifcase#1 t\or s\or ss\fi}t%
+  \FLODloadone{\ifcase#2 t\or s\or ss\fi}s%
+  \FLODloadone{\ifcase#3 t\or s\or ss\fi}{ss}}
+
+\def\FLODloadone#1#2{%
+  \edef\FLOD@nextsize{\csname\the\FLODintcol@\the\FLODextsize#1\endcsname}%
+%  \message{FLOD@nextsize is \FLOD@nextsize}
+  \expandafter\FLODextsiz@\expandafter\expandafter{\FLOD@nextsize}%
+  \edef\FLOD@nextsize{\csname FLOD\the\FLODextsiz@\endcsname}%
+  \expandafter\FLODintsiz@\expandafter\expandafter{\FLOD@nextsize}%
+  \FLODloadfont
+  \expandafter
+    \xdef
+      \csname\the\FLODintcol@\the\FLODintface\the\FLODextsize#2\endcsname{\lastfontloaded}}
+
+\def\FLODloadfont{%
+  \FLODshow{Received request to load \the\FLODintcol@\the\FLODintface\the\FLODintsiz@}%
+  \isfontcs{\the\FLODintcol@\the\FLODintface!\the\FLODextsiz@}%
+  \iffont
+    \deflastfontloaded
+    \def\next{\FLODshow{\lastfontloaded\space already loaded}}%
+  \else
+    \def\next{\FLODfindfont}%
+  \fi
+  \next}
+
+% Look for a font which has not yet been loaded
+\def\FLODfindfont{%
+  \edef\tryfont{"\csname\the\FLODintcol@\the\FLODintface!ext\endcsname" %
+  at \csname FLOD\the\FLODintsiz@\endcsname pt}%
+  \FLODshow{requested: \tryfont}%
+  \FLODreallyloadfont{\tryfont}}
+
+% Load the argument font to the cs 
+% `\the\FLODintcoll\the\FLODintface\the\FLODintsize' 
+% and also define the macro that tracks what has been loaded
+% for future testing of the font cs.
+\def\FLODreallyloadfont#1{\FLODshow{loading #1}%
+  \global\expandafter\font\csname\the\FLODintcol@\the\FLODintface\the\FLODintsiz@\endcsname=#1%
+  \deflastfontloaded\defnextfonttouse
+  \expandafter\gdef\csname\the\FLODintcol@\the\FLODintface!\the\FLODextsiz@\endcsname{!OK!}}
+
+% Same as above, but used when no TFM could be found; sets the font
+% to nullfont, but pretends the font has been loaded so it doesn't get
+% looked for needlessly in the future.
+\def\FLODrelaxfont#1{\FLODshow{relaxing #1}%
+  \expandafter\xdef\csname\the\FLODintcol@\the\FLODintface\the\FLODintsiz@\endcsname{\nullfont}%
+  \deflastfontloaded\defnextfonttouse
+  \expandafter\gdef\csname\the\FLODintcol@\the\FLODintface!\the\FLODextsiz@\endcsname{!OK!}}
+
+\def\deflastfontloaded{%
+  \xdef\lastfontloaded{\csname\the\FLODintcol@\the\FLODintface\the\FLODintsiz@\endcsname}}
+\def\defnextfonttouse{%
+  \xdef\nextfonttouse{\csname\the\FLODintcol@\the\FLODintface\the\FLODintsiz@\endcsname}}
+
+%%%%%%%%%%%% set up the family after the fonts have been loaded
+
+\def\FLODtextsetonefamily#1{\FLODintcol@\FLODtextintcoll\FLODsetonefamily{#1}}
+\def\FLODmathsetonefamily#1{\FLODintcol@\FLODmathintcoll\FLODsetonefamily{#1}}
+
+% This macro uses the previously defined cs's of the form
+%	  \<COLL><FACE><SIZE>{t|s|ss}
+% to set the text/script/scriptscript fonts quickly. SIZE is in digits.
+% It takes one argument, the font abbreviation, e.g. `rm'.
+\def\FLODsetonefamily#1{%
+  \expandafter
+    \textfont
+      \csname#1fam\endcsname=\csname\the\FLODintcol@#1\the\FLODextsize t\endcsname
+  \expandafter
+    \scriptfont
+      \csname#1fam\endcsname=\csname\the\FLODintcol@#1\the\FLODextsize s\endcsname
+  \expandafter
+    \scriptscriptfont
+      \csname#1fam\endcsname=\csname\the\FLODintcol@#1\the\FLODextsize ss\endcsname}
+
+%%%%%%%%%% A convenient way of preloading all fonts for all families
+
+\def\FLODsetfamilies{%
+  \ifcsname{\the\FLODintcoll\the\FLODextsize f}\FLODreally@setfamilies\FLODcant@setfamilies}
+
+\def\FLODcant@setfamilies{%
+  \errhelp={You must use `usefontsize' for each size you want to use^^Jin
+each font collection before using xxxpoint macros.}%
+  \errmessage{`usefontsize' not called for \the\FLODintcoll \the\FLODintsize}}
+
+% This macro is used for setting the families up after the fonts
+% have already been loaded by a usefontsize command.  It uses the 
+% lists of fonts defined in FLODfacelist and FLODmathfacelist to 
+% apply FLODsetonefamily to each family.
+\def\FLODreally@setfamilies{%
+  \let\FLODdo\FLODtextsetonefamily\FLODtextfacelist
+  \let\FLODdo\FLODmathsetonefamily\FLODmathfacelist}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \FLODsize:
+%
+%   #1 = size in words, e.g. `seven'
+%   #2 = size in digits, e.g. `7'
+%
+% The controls sequences \seven and \sevenpoint defined in this way
+% do not change the current face or collection.
+\def\FLODsize#1#2{%
+  \expandafter\gdef\csname FLOD#1\endcsname{#2}% look up 10 from ten
+  \expandafter\gdef\csname FLOD#2\endcsname{#1}% look up ten from 10
+  \expandafter\gdef\csname#1\endcsname{\FLODintsize{#1}\FLODextsize{#2}%
+				       \currface\FLODmathdirty}%
+  \expandafter\gdef\csname#1point\endcsname{\FLODintsize{#1}\FLODextsize{#2}%
+					    \currface\FLODmathdirty}}
+\def\FLODmathdirty{}%%%\def\everymathextra{\FLODmathclean}}
+\def\FLODmathclean{}%%%%
+%  \let\FLODdo\FLODmathloadorsetonefamily\FLODmathfacelist
+%  \def\everymathextra{}}
+
+% the way the DA format uses math will need some fixing for real math;
+% perhaps a macro such as \realmath which temporarily omits the
+% \fam\currfam
+\everymath{\fam\currfam\everymathextra}
+
+\def\FLODfacelist{%
+  \FLODdo{rm}\FLODdo{it}\FLODdo{bf}\FLODdo{bi}%
+  \FLODdo{su}\FLODdo{sub}\FLODdo{ak}\FLODdo{akb}}
+
+\def\FLODmathfacelist{\FLODdo{mi}\FLODdo{sy}\FLODdo{ex}%
+  \FLODdo{mib}\FLODdo{syb}}
+
+% This is used to set up \rm and friends
+\def\FLODuseallfamilies{%
+  \let\FLODdo\FLODtextuseonefam\FLODfacelist
+  \let\FLODdo\FLODmathuseonefam\FLODmathfacelist}
+
+\def\FLODtextuseonefam#1{%
+  \expandafter\gdef\csname#1\endcsname{%
+%     \@protect{\FLODsetonefamily{#1}}{\FLODloadorsetonefamily{#1}}
+     % by not protecting this call we force an error if a font is used
+     % in a \mark that hasn't been used outside of the \mark.  The FLOD
+     % macros can't autoload within a \mark, but at least we can complain and
+     % then the user can just use the font spuriously in a safe place to 
+     % prepare it for later.
+     \FLODtextloadorsetonefamily{#1}%
+     \fam\csname#1fam\endcsname\currfam\fam % reset the family and \currfam
+     \csname\the\FLODintcol@#1\the\FLODextsize t\endcsname % set curr font
+     \csname#1hook\endcsname}} % call the hook function for the face
+
+% like the above, but for math fonts
+\def\FLODmathuseonefam#1{%
+  \expandafter\gdef\csname#1\endcsname{%
+     \FLODmathloadorsetonefamily{#1}%
+     \fam\csname#1fam\endcsname\currfam\fam % reset the family and \currfam
+     \csname\the\FLODintcol@#1\the\FLODextsize t\endcsname}} % set curr font
+
+\FLODuseallfamilies % set up \rm and friends
+
+% we need to know if a \cs is a currently defined font selector
+% so we provide:
+%
+%   \isfont: test whether a control sequence is a font selector
+%   \isfontcs: the same, but argument is encapsulated in \csname...\endcsname
+%
+% After either call the conditional \iffont is true if the csname
+% selects a font, false otherwise.
+%
+% We do this by defining a control sequence for each font that expands
+% to the string !OK! and simply comparing it to the constant \known@font.
+%
+% To avoid the possibility that a user macro will both have this definition
+% and get tested by this macro (both pretty small), we put '!' in the csname
+% also. If a user defines a macro with '!' in the name, gives it the value !OK!
+% *and* tests it with this macro, let's just trust that they know what they're
+% doing.
+\def\known@font{!OK!} \newif\iffont
+\def\isfont#1{\ifx#1\known@font\fonttrue\else\fontfalse\fi}
+\def\isfontcs#1{\expandafter\isfont\csname#1\endcsname}
+
+% If \tracingfonts=1 we show every fontload operation on screen and
+% log. If \tracingfonts=2 we show operations on log only. (If 0, no show.)
+\newcount\tracingfonts \tracingfonts=2
+\def\FLODshow#1{\ifcase\tracingfonts\or\wstdout{Font: #1}\or\wlog{Font: #1}\fi}
+
+
+% We predefine the font sizes, which are generic, and the basic family
+% names, which are limited and so must be conventionalized across
+% modules. Everything else is defined in load-on-demand macro modules.
+%
+% make 'fam' naming consistent
+\count18=-1 % careful now; must define the first 4 like Plain...
+\newfam\rmfam
+\newfam\mifam
+\newfam\syfam
+\newfam\exfam
+\newfam\itfam
+\newfam\bffam
+\newfam\bifam
+\newfam\mibfam
+\newfam\sybfam
+\newfam\sufam
+\newfam\subfam
+\newfam\akfam
+\newfam\akbfam
+\newfam\Xfam % a bizarre, rotating family used as a wildcard
+	     % actually, I'm not sure what I'm going to do with this yet
+
+% this macro must be defined with some care. The actual numbers to 
+% which the various \fam's correspond need not be known, but the 
+% order of selection must be the same as the order of calls to 
+% \newfam.
+% 
+% Would be neat to rewrite the newfam and currface stuff as a macro
+% which defined everything based on a list of family names.
+\newcount\currfam \currfam-1
+\def\savef@m{\currfam\the\fam\relax}
+\def\FLODcurrface{%
+  \ifcase\currfam
+    \rm\or
+    \mi\or % math italic = 1
+    \sy\or % math symbol = 2
+    \ex\or % math extended = 3
+    \it\or % = 4
+    \bf\or % = 5
+    \bi\or % = 6
+    \mib\or % = 7
+    \syb\or % = 8
+    \su\or % = 9
+    \sub\or % = 10
+    \ak\or % = 11
+    \akb\or % = 12
+    \Xface % = 13
+  \fi}
+
+%Initialize \currface
+\let\currface\FLODcurrface
+
+% The alias \setfonts for \currface allows users to say \seven\setfonts
+% and \CM\setfonts, inheriting face and/or size from the environment.
+\def\setfonts{\currface}
+
+\FLODsize{three}{3}
+\FLODsize{four}{4}
+\FLODsize{five}{5}
+\FLODsize{six}{6}
+\FLODsize{seven}{7}
+\FLODsize{eight}{8}
+\FLODsize{nine}{9}
+\FLODsize{ten}{10}
+\FLODsize{eleven}{11}
+\FLODsize{twelve}{12}
+\FLODsize{thirteen}{13}
+\FLODsize{fourteen}{14}
+\FLODsize{fifteen}{15}
+\FLODsize{sixteen}{16}
+\FLODsize{seventeen}{17}
+\FLODsize{eighteen}{18}
+\FLODsize{nineteen}{19}
+\FLODsize{twenty}{20}
+\FLODsize{twentyone}{21}
+\FLODsize{twentytwo}{22}
+\FLODsize{twentythree}{23}
+\FLODsize{twentyfour}{24}
+\FLODsize{twentyfive}{25}
+
+% Now we define a few defaults for handling fonts.
+% We make it easy to get everything in bold face if so desired
+\def\@emfonts{\let\alo\bf\let\sum\sub\let\sumup\sub\let\akk\akb\def\rot{\rotbold}}
+\def\@rmfonts{\let\alo\rm\let\sum\su\let\sumup\su\let\akk\ak\def\rot{\rotrom}}
+\def\bem{\@emfonts\bf} \def\em{\@rmfonts\it} \def\unem{\@rmfonts\rm}
+% one could get bold superscripts as well by saying \let\sumup\sub
+\def\boldsum{\let\sum\sub\let\sumup\su\def\rot{\rotbold}}
+
+% for compatibility with Plain TeX
+\def\oldstyle{\fam\@ne\mi} \def\mit{\mi}
+
+% Because it's so problemmatic to allow the font collection macros
+% to be loaded within a group, we define the following and require
+% that font collections to be used be declared thusly.
+%
+%   \usefontcollection{\DAComputerModern}
+%
+% It's really not much more than syntactic sugar, but it forces 
+% users to do font preloading.
+\newif\ifFLODloadOK
+\def\usefontcollection#1{\FLODreallyusecoll{#1}}
+\def\FLODreallyusecoll#1{%
+  \FLODpushcoll\FLODloadOKtrue
+  #1
+  \FLODloadOKfalse\FLODpopcoll}
+\def\FLODusecollerror#1{%
+  \errhelp{You are trying to load a font that is not defined in fontlist.tex}%
+  \errmessage{Font \string#1 has not been initialized}}
+
+%%% FIXME !!!???
+%%% There may be other things that should be pushed and popped around
+%%% a \usefontcollection command: keep an eye on this!
+\newcount\FLOD@restoreface
+\newcount\FLOD@pushedfam    \FLOD@pushedfam0
+\newtoks\FLODtextpushedcoll
+\newtoks\FLODmathpushedcoll
+\def\FLODpushcoll{
+  \FLOD@pushedfam\currfam
+  \let\FLOD@pushedsaveface\currface
+  \FLODtextpushedcoll\FLODtextintcoll
+  \FLODmathpushedcoll\FLODmathintcoll}
+\def\FLODpopcoll{
+  \currfam\FLOD@pushedfam
+  \let\currface\FLOD@pushedsaveface
+  \FLODtextintcoll\FLODtextpushedcoll
+  \FLODmathintcoll\FLODmathpushedcoll
+  \ifnum\currfam=-1 \else\currface\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FONT; Generic font loader which works only with XeTeX.
+% (The old font loader has been dropped and only XeTeX is supported by the CDF
+% macros)
+
+% e.g., \FLODset{Ungkam}{UNG}{Ungkam}
+% where 
+%  #1 is the control sequence to be defined; 
+%  #2 is the internal code; 
+%  #3 is the registered font name
+
+\def\FLODset#1#2#3{\FLODshow{Loading #1}%
+  \FLODcoll{#2}%
+  \FLODface{#2}{rm}{#3}%
+  \FLODface{#2}{it}{#3/I}%
+  \FLODface{#2}{bf}{#3/B}%
+  \FLODface{#2}{bi}{#3/BI}%
+%\FLODface{#2}{su}{pnls4}
+%\FLODface{#2}{ak}{pnla4}
+%\FLODface{#2}{sub}{pnlsb4}
+%\FLODface{#2}{akb}{pnlab4}
+  \FLODsetfamily{#2}{rm}011\rmfam
+  \FLODsetfamily{#2}{it}011\itfam
+  \FLODsetfamily{#2}{bf}011\bffam
+  \FLODsetfamily{#2}{bi}011\bifam
+%\FLODsetfamily{#2}{su}011\sufam
+%\FLODsetfamily{#2}{ak}011\akfam
+%\FLODsetfamily{#2}{sub}011\subfam
+%\FLODsetfamily{#2}{akb}011\akbfam
+  \FLODsetsizes{#2}{5}{5}{5}{7}%
+  \FLODsetsizes{#2}{6}{6}{5}{8}%
+  \FLODsetsizes{#2}{7}{6}{5}{9}%
+  \FLODsetsizes{#2}{8}{6}{5}{10}%
+  \FLODsetsizes{#2}{9}{7}{5}{11}%
+  \FLODsetsizes{#2}{10}{7}{5}{13}%
+  \FLODsetsizes{#2}{11}{8}{6}{14}%
+  \FLODsetsizes{#2}{12}{9}{7}{15}%
+  \FLODsetsizes{#2}{14}{11}{9}{18}%
+  \FLODsetsizes{#2}{17}{14}{10}{21}%
+  \FLODsetsizes{#2}{20}{14}{10}{24}%
+  \FLODsetsizes{#2}{25}{17}{12}{29}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FONTSETS
+% This module defines a simple way of establishing what the meanings
+% of \Serifed, \Sansserif and \Fixedwidth are. The idea is to use
+% these general font styles as an API and thus avoid even font names
+% in user macros, except at the very beginning of a document.
+
+% This is how we set up the meanings of \Serifed, \Sansserif and
+% \Fixedwidth
+%
+%  #1 is the font collection to use for serifed text
+%  #2 is the font collection to use for sansserif text
+%  #3 is the font collection to use for fixed width text
+%
+% The apparently odd order of the usefontcollection commands is
+% intentional: if no font collection has been set yet, the serifed
+% one will be the persistent one.
+\def\definefontset#1#2#3{%
+  \def\Serifed{#1}\def\Sansserif{#2}\let\Sanserif\Sansserif
+  \def\Fixedwidth{#3}%
+  \usefontcollection#2\usefontcollection#3\usefontcollection#1\relax}
+
+% shorter names for Sanserif and Fixedwidth
+\def\Sans{\Sanserif}\def\Fw{\Fixedwidth}\def\tt{\Fixedwidth}
+
+% This is how to set text in the right superscript size relative to the current size
+\def\scriptsize{%
+  \edef\next{\csname FLOD\csname\the\FLODtextintcoll\the\FLODextsize s\endcsname\endcsname}%
+  \csname\next\endcsname}
+
+\def\logosize{%
+  \edef\next{\csname FLOD\csname\the\FLODtextintcoll\the\FLODextsize s\endcsname\endcsname}%
+  \csname\next\endcsname}
+
+%\def\textsize{%
+%  \edef\next{\csname FLOD\csname\the\FLODtextintcoll\the\FLODextsize \endcsname\endcsname}%
+%  \csname\next\endcsname}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Default Fontsets
+\global\tracingfonts=2
+\FLODset{CuneiformNA}{CunNA}{CuneiformNA}
+\FLODset{UngkamBookBasic}{UBB}{Ungkam Book Basic}
+\FLODset{DejaVuSans}{DVS}{DejaVu Sans}
+\FLODset{DejaVuMono}{DVM}{DejaVu Mono}
+\definefontset{\UBB}{\DVS}{\DVM}
+%\UBB\ten\rm
+
+\endinput

@@ -1,0 +1,36 @@
+default namespace = "http://www.filemaker.com/fmpxmlresult"
+
+start =
+  element FMPXMLRESULT {
+    element ERRORCODE { xsd:integer },
+    element PRODUCT {
+      attribute BUILD { text },
+      attribute NAME { text },
+      attribute VERSION { xsd:NMTOKEN }
+    },
+    element DATABASE {
+      attribute DATEFORMAT { text },
+      attribute LAYOUT { xsd:NCName },
+      attribute NAME { xsd:NCName },
+      attribute RECORDS { xsd:integer },
+      attribute TIMEFORMAT { xsd:NMTOKEN }
+    },
+    element METADATA {
+      element FIELD {
+        attribute EMPTYOK { xsd:NCName },
+        attribute MAXREPEAT { xsd:integer },
+        attribute NAME { xsd:NCName },
+        attribute TYPE { xsd:NCName }
+      }+
+    },
+    element RESULTSET {
+      attribute FOUND { xsd:integer },
+      element ROW {
+        attribute MODID { xsd:integer },
+        attribute RECORDID { xsd:integer },
+        element COL {
+          element DATA { text }
+        }+
+      }+
+    }
+  }

@@ -1,0 +1,26 @@
+namespace c = "http://oracc.org/cdf/1.0"
+include "xtf.rnc"
+include "cdfi.rnc"
+cdf = element c:cdf { (document | transliteration | composite | translation)* }
+
+document = element c:document { section | toplev }
+
+toplev = ( bibliography | catalog | p | section | xtf )*
+
+bibliography = element c:bibliography { attribute type { "by-year" }? , bib+ }
+
+bib     = element c:bib     { (year , data) | (cdf-inline) }
+year    = element c:biby    { text }
+data    = element c:bibd    { text }
+
+catalog = element c:catalog { record* }
+record  = element c:record  { field*  }
+field   = element c:field   { key , val }
+key     = element c:key     { xsd:NMTOKEN }
+val     = element c:val     { cdf-inline }
+
+p       = element c:p       { cdf-inline }
+
+section = element c:section { attribute type { xsd:NMTOKEN } , toplev }
+
+gdl     = element c:gdl { words }

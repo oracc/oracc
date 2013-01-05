@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:xh="http://www.w3.org/1999/xhtml" xmlns:xtr="http://oracc.org/ns/xtr/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="translation">
+    <element name="xtr:translation">
+      <ref name="id"/>
+      <attribute name="ref">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <attribute name="n"/>
+      <attribute name="project"/>
+      <attribute name="xml:lang">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <attribute name="xtr:code">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <attribute name="xtr:type">
+        <choice>
+          <value>interlinear</value>
+          <value>parallel</value>
+          <value>labeled</value>
+          <value>unitary</value>
+        </choice>
+      </attribute>
+      <optional>
+        <attribute name="xtr:cols">
+          <data type="nonNegativeInteger"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="trans-unit"/>
+          <ref name="trans-note"/>
+          <ref name="trans-dollar"/>
+          <ref name="trans-comment"/>
+          <ref name="h"/>
+        </choice>
+      </zeroOrMore>
+      <optional>
+        <ref name="map"/>
+      </optional>
+    </element>
+  </define>
+  <define name="id">
+    <attribute name="xml:id">
+      <data type="ID"/>
+    </attribute>
+  </define>
+  <define name="cid">
+    <attribute name="xtr:cid">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="ctr">
+    <attribute name="class">
+      <value>tr</value>
+    </attribute>
+  </define>
+  <define name="trans-comment">
+    <element name="xh:p">
+      <attribute name="class">
+        <value>tr-comment</value>
+      </attribute>
+      <zeroOrMore>
+        <ref name="htext"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="trans-dollar">
+    <element name="xh:p">
+      <attribute name="class">
+        <value>dollar</value>
+      </attribute>
+      <optional>
+        <ref name="silent"/>
+      </optional>
+      <choice>
+        <ref name="standalone"/>
+        <choice>
+          <ref name="ref"/>
+          <ref name="refs"/>
+          <group>
+            <ref name="unit"/>
+            <optional>
+              <ref name="refs"/>
+            </optional>
+          </group>
+        </choice>
+      </choice>
+      <optional>
+        <ref name="new-labels"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="htext"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="innerp"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="trans-note">
+    <element name="xh:div">
+      <attribute name="class">
+        <value>note</value>
+      </attribute>
+      <optional>
+        <ref name="id"/>
+      </optional>
+      <element name="xh:p">
+        <ref name="ctr"/>
+        <ref name="marker-ref"/>
+        <ref name="htext"/>
+      </element>
+      <zeroOrMore>
+        <choice>
+          <element name="xh:p">
+            <ref name="ctr"/>
+            <ref name="htext"/>
+          </element>
+          <ref name="trans-comment"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="trans-unit">
+    <element name="xh:p">
+      <ref name="id"/>
+      <optional>
+        <ref name="cid"/>
+      </optional>
+      <ref name="ctr"/>
+      <ref name="xtr-label"/>
+      <ref name="se-label"/>
+      <choice>
+        <ref name="ref"/>
+        <ref name="refs"/>
+        <group>
+          <ref name="unit"/>
+          <optional>
+            <ref name="refs"/>
+          </optional>
+        </group>
+      </choice>
+      <optional>
+        <ref name="new-labels"/>
+      </optional>
+      <optional>
+        <ref name="overlap"/>
+      </optional>
+      <optional>
+        <ref name="spanall"/>
+      </optional>
+      <choice>
+        <oneOrMore>
+          <ref name="innerp"/>
+        </oneOrMore>
+        <ref name="htext"/>
+      </choice>
+    </element>
+  </define>
+  <define name="h">
+    <choice>
+      <ref name="h1"/>
+      <ref name="h2"/>
+      <ref name="h3"/>
+    </choice>
+  </define>
+  <define name="h1">
+    <element name="xh:h1">
+      <ref name="h-model"/>
+    </element>
+  </define>
+  <define name="h2">
+    <element name="xh:h2">
+      <ref name="h-model"/>
+    </element>
+  </define>
+  <define name="h3">
+    <element name="xh:h3">
+      <ref name="h-model"/>
+    </element>
+  </define>
+  <define name="h-model">
+    <optional>
+      <ref name="id"/>
+    </optional>
+    <ref name="ctr"/>
+    <optional>
+      <choice>
+        <ref name="ref"/>
+        <ref name="hdr-ref"/>
+      </choice>
+    </optional>
+    <optional>
+      <ref name="new-labels"/>
+    </optional>
+    <ref name="htext"/>
+  </define>
+  <define name="innerp">
+    <element name="xh:innerp">
+      <choice>
+        <ref name="htext"/>
+        <group>
+          <ref name="comment"/>
+          <text/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="htext">
+    <zeroOrMore>
+      <choice>
+        <text/>
+        <ref name="trword"/>
+        <ref name="trcell"/>
+        <ref name="foreign"/>
+        <ref name="literal"/>
+        <ref name="marker"/>
+        <ref name="supplied"/>
+        <ref name="uncertain"/>
+        <ref name="rspan"/>
+        <ref name="bspan"/>
+        <ref name="ispan"/>
+        <ref name="sign"/>
+        <ref name="bispan"/>
+        <ref name="smaller"/>
+        <ref name="sc"/>
+        <ref name="gdlspan"/>
+        <ref name="sup"/>
+        <ref name="lab"/>
+        <ref name="cun"/>
+      </choice>
+    </zeroOrMore>
+  </define>
+  <define name="trword">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>w</value>
+      </attribute>
+      <optional>
+        <attribute name="xtr:lem"/>
+      </optional>
+      <optional>
+        <attribute name="xtr:disamb"/>
+      </optional>
+      <optional>
+        <attribute name="xtr:form"/>
+      </optional>
+      <ref name="id"/>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="rspan"/>
+          <ref name="bspan"/>
+          <ref name="ispan"/>
+          <ref name="bispan"/>
+          <ref name="smaller"/>
+          <ref name="sc"/>
+          <ref name="sup"/>
+          <ref name="lab"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="trcell">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>cell</value>
+      </attribute>
+      <optional>
+        <attribute name="xtr:span">
+          <data type="nonNegativeInteger"/>
+        </attribute>
+      </optional>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="comment">
+    <attribute name="class">
+      <value>tr-comment</value>
+    </attribute>
+  </define>
+  <define name="foreign">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>foreign</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="literal">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>literal</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="supplied">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>supplied</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="uncertain">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>uncertain</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="rspan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>r</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="bspan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>b</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="ispan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>i</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="bispan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>bi</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="gdlspan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>gdl</value>
+      </attribute>
+      <ref name="l.inner"/>
+    </element>
+  </define>
+  <define name="lab">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>lab</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="sc">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>sc</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="sign">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>sign</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="smaller">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>smaller</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="sup">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>sup</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="cun">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>cun</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="marker">
+    <element name="xh:a">
+      <attribute name="class">
+        <value>marker</value>
+      </attribute>
+      <optional>
+        <ref name="nrefs"/>
+      </optional>
+      <data type="string">
+        <param name="pattern">\d+[a-z]*</param>
+      </data>
+    </element>
+  </define>
+  <define name="marker-ref">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>marker</value>
+      </attribute>
+      <data type="string">
+        <param name="pattern">\d+[a-z]*</param>
+      </data>
+    </element>
+  </define>
+  <define name="ref">
+    <attribute name="xtr:ref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="hdr-ref">
+    <attribute name="xtr:hdr-ref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="refs">
+    <ref name="start-ref"/>
+    <ref name="end-ref"/>
+    <optional>
+      <ref name="all-refs"/>
+    </optional>
+    <optional>
+      <ref name="new-labels"/>
+    </optional>
+    <ref name="rows"/>
+  </define>
+  <define name="start-ref">
+    <attribute name="xtr:sref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="end-ref">
+    <attribute name="xtr:eref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="all-refs">
+    <attribute name="xtr:refs">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="uref">
+    <attribute name="xtr:uref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="nrefs">
+    <attribute name="xtr:nrefs">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="rows">
+    <attribute name="xtr:rows">
+      <data type="integer"/>
+    </attribute>
+  </define>
+  <define name="overlap">
+    <attribute name="xtr:overlap">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <define name="silent">
+    <attribute name="xtr:silent">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="spanall">
+    <attribute name="xtr:spanall">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="standalone">
+    <attribute name="xtr:standalone">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="xtr-label">
+    <attribute name="xtr:label"/>
+    <optional>
+      <attribute name="xtr:rend-label"/>
+    </optional>
+  </define>
+  <define name="se-label">
+    <attribute name="xtr:se_label"/>
+  </define>
+  <define name="unit">
+    <attribute name="xtr:unit"/>
+  </define>
+  <define name="new-labels">
+    <attribute name="xtr:lab-start-lnum"/>
+    <optional>
+      <attribute name="xtr:lab-end-lnum"/>
+    </optional>
+    <attribute name="xtr:lab-start-label"/>
+    <optional>
+      <attribute name="xtr:lab-end-label"/>
+    </optional>
+  </define>
+  <define name="map">
+    <element name="xtr:map">
+      <zeroOrMore>
+        <element name="xtr:l2t">
+          <attribute name="lid">
+            <data type="IDREF"/>
+          </attribute>
+          <attribute name="tid">
+            <data type="IDREF"/>
+          </attribute>
+        </element>
+      </zeroOrMore>
+    </element>
+  </define>
+</grammar>

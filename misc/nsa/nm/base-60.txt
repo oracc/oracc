@@ -1,0 +1,65 @@
+# base-60.txt
+
+@nm Sexagesimal Counting
+
+@system sexagesimal type=num time=* place=* meb=sze mev=1/10800
+
+@step sze atf=sze aev=1/10800
+
+#     count unit	range		aev		count-glyph
+
+@inst igi.n.jal sze	n=6,5,4,3	1/n×10800	igi-#(disz)-gal2 sze
+@inst 1/3 sze		1		1/32400		1/3~a=1/3(disz) sze
+@inst 1/2 sze		1		1/21600		1/2~a=1/2(disz) sze
+@inst 2/3 sze		1		1/16200		2/3~a=2/3(disz) sze
+@inst 5/6 sze		1		1/12960		5/6~a=5/6(disz) sze
+
+@inst disz sze		1..9		1/10800		#(disz) sze
+@inst u sze		1..5		1/1080		#(u) sze
+
+@newpage
+
+@step gij atf=gin2 aev=1/6
+
+@inst igi.n.jal gij	n=6,5,4	1/n×60		igi-#(disz)-gal2 gin2
+@inst 1/3 gij		1	1/180		1/3~a=1/3(disz) gin2
+@inst 1/2 gij		1	1/120		1/2~a=1/2(disz) gin2
+@inst 2/3 gij		1	1/90		2/3~a=2/3(disz) gin2
+@inst 5/6 gij		1	1/72		5/6~a=5/6(disz) gin2
+@inst disz gij		1..9	1/60		#(disz) gin2
+@inst u gij		1..5	1/6		#(u) gin2
+@inst 1/3 *		1	1/3		1/3~a=1/3(disz)
+@inst 1/2 *		1	1/2		1/2~a=1/2(disz)
+@inst 2/3 *		1	2/3		2/3~a=2/3(disz)
+@inst 5/6 *		1	5/6		5/6~a=5/6(disz)
+
+@newpage
+
+@step disz atf=disz aev=1
+@inst disz *		1..9  	1		#(disz)
+
+@step u atf=u aev=10
+@inst u *		1..5	10		#(u)
+
+@step jesz atf=gesz2 aev=60
+@inst jesz *		1..9	60		#(gesz2)
+
+@step jeszu atf=geszu aev=600
+@inst jeszu *		1..5	600		#(geszu)
+
+@newpage
+
+@step szar atf=szar2 aev=3600
+@inst szar *		1..9	3600		#(szar2)
+
+@step szaru atf=szar'u aev=36000
+@inst szaru *		1..5	36000		#(szar'u)
+
+@step szargal atf="szargal{gal}" aev=216000
+@inst szargal * 	1..n=2	216000		#(szargal){gal}
+
+@examples
+
+@ex 2(szargal){gal} 3(szar'u) 4(szar2) 5(geszu) 1(gesz2) 3(u) 5(disz)
+
+@ex 3(disz) 1/3(disz) 9(disz) 2/3(disz) gin2 4(disz) igi-4(disz)-gal2 sze

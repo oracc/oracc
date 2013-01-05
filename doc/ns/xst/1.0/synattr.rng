@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:syn="http://oracc.org/ns/syntax/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
+  <define name="syntax.attributes">
+    <choice>
+      <attribute name="syn:brack-before"/>
+      <attribute name="syn:brack-after"/>
+      <attribute name="syn:ub-before">
+        <choice>
+          <value>+</value>
+          <value>-</value>
+        </choice>
+      </attribute>
+      <attribute name="syn:ub-after">
+        <choice>
+          <value>+</value>
+          <value>-</value>
+        </choice>
+      </attribute>
+    </choice>
+  </define>
+</grammar>

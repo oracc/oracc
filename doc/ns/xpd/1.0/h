@@ -1,0 +1,1043 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xpd="http://oracc.org/ns/xpd/1.0" xpd:dummy="I am the Fly">
+  <head>
+    <link href="/config.css" type="text/css" rel="stylesheet"/>
+    <title>Oracc Configuration</title>
+    
+  </head>
+  <body>
+    <h1>Oracc Configuration for project: 
+      </h1>
+    <p class="readonlies">Project type: ; 
+      public: </p>
+    <div class="submits">
+      <p>
+        <span class="savequit">
+          
+        </span>
+        <span class="savequit">
+          
+        </span>
+      </p>
+    </div>
+    <div id="horiz-tab-menu">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </div>
+    <div id="div-core" class="optgroup">
+          <h2>core —
+      <span class="groupdoc">required for all projects.</span></h2>
+          <fieldset class="core">
+            <table>
+              <tr>
+                <td class="option">name: </td>
+                <td class="control">
+                  
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The long human-readable name of the project, 
+e.g., electronic Pennsylvania Sumerian Dictionary</span>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">abbrev: </td>
+                <td class="control">
+                  
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The short human-readable name of the project, e.g., ePSD.</span>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">logo: </td>
+                <td class="control">
+                  
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The logo to display in the top left corner of the page</span>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">blurb: </td>
+                <td colspan="2" class="double">
+                  <p>
+                    
+                    <br/>
+                    <span class="docsolo">Short description for the Featured Project panel</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">image: </td>
+                <td class="control">
+                  
+                </td>
+                <td class="doco">
+                  <span class="docsolo">A 4:3 ratio image for the Featured Project panel</span>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">alt: </td>
+                <td class="control">
+                  
+                </td>
+                <td class="doco">
+                  <span class="docsolo">Brief description of image for the 'alt' attribute</span>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-build" class="optgroup">
+          <h2>build —
+      <span class="groupdoc">affects the project rebuilding process.</span></h2>
+          <fieldset class="lists">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>approved.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">list is derived from project's ATF sources</span></p>
+                    <p class="choicedoc"><span class="valval">catalog</span>: <span class="valdoc">list is derived from project catalogs</span></p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">list combined ATF sources and existing approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>outlined.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">outline gives the texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">outline gives all texts for which project has ATF source</span></p>
+                    <p class="choicedoc"><span class="valval">P</span>: <span class="valdoc">outline gives all P-id and X-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">Q</span>: <span class="valdoc">outline gives all Q-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>catalog: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">auto</span>: <span class="valdoc">data comes from CDLI main catalog</span></p>
+                    <p class="choicedoc"><span class="valval">local</span>: <span class="valdoc">project maintains its own catalog in CDLI format</span></p>
+                    <p class="choicedoc"><span class="valval">custom</span>: <span class="valdoc">project maintains its own catalog in its own format</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>eXist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build eXist version of project</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI version of project</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.list: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">all ATF files</span></p>
+                    <p class="choicedoc"><span class="valval">lem</span>: <span class="valdoc">only lemmatized files</span></p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">all files list in approved.lst</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.dist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.trim: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">trim TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-atf" class="optgroup">
+          <h2>ATF processor —
+      <span class="groupdoc">controls ATF processor behaviour.</span></h2>
+          <fieldset class="atf">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>lem-system: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">projects to search for words when lemmatizing</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>cuneify-notices: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">issue warning notices about cuneify failures</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-cbd" class="optgroup">
+          <h2>glossary —
+      <span class="groupdoc">controls glossary building behaviour.</span></h2>
+          <fieldset class="cbd">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>cbd-mode: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">glossary files can be combined with harvested data</span></p>
+                    <p class="choicedoc"><span class="valval">dynamic</span>: <span class="valdoc">glossaries are always generated from lemmatized sources</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">glossaries are never changed by a program</span></p>
+                    <p class="choicedoc"><span class="valval">none</span>: <span class="valdoc">project does not use glossaries (portals, for example)</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>periods: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display periods in glossary</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-pager" class="optgroup">
+          <h2>pager —
+      <span class="groupdoc">controls pager behaviour.</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>back-button: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">text to display on 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>back-url: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">URL to visit when user clicks 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>translations: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">translation languages available in the pager</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-render" class="optgroup">
+          <h2>render —
+      <span class="groupdoc">controls rendering (HTML, print).</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>accents: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display graphemes with index 2 and 3 as accented</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>allographs: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display allographs</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>heth: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display ḫ not h</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>inter-det-char: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character between adjacent determinatives</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>lnum-opener: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character before line numbers in transliterations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>lnum-closer: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character(s) after line numbers in transliterations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>rulings: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">set the characters for horizontal rulings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>tlat-opener: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character before line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>tlat-closer: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character after line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>tlat-separator: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character between line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-outline" class="optgroup">
+          <h2>outline —
+      <span class="groupdoc">controls how catalogue contents and search results are sorted and outlined </span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>def.select: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">Switches the default outline mode on and off.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.sort.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.sort.labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.hdg.template: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">template for formatting headings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.cat.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the fields for displaying catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.cat.widths: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the field widths for displayed catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>spe.select: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">Switches the special outline mode on and off</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.list.name: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">all</span>: <span class="valdoc">(not sure)</span></p>
+                    <p class="choicedoc"><span class="valval">outline</span>: <span class="valdoc">(not sure)</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.sort.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.sort.labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.hdg.template: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">template for formatting headings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.cat.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the fields for displaying catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.cat.widths: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the field widths for displayed catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-views" class="optgroup">
+          <h2>views —
+      <span class="groupdoc">adds extra views of texts in the corpus</span></h2>
+          <fieldset class="views">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>cuneify: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'Cuneify' link to display
+text in cuneiform in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>proofing: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'Proofing' link to display the
+annotation of a text aligned by word
+in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'TEI' link to display TEI version
+of a text in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>buy-book: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates a 'Buy the Book' link to the URL provided in the option.  </span>
+                  </p>
+                </td>
+                <td class="help">
+                  
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div><div id="div-undocumented" class="optgroup">
+          <h2>undocumented —
+      <span class="groupdoc">odds and ends </span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>flags: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">ATF options to use when converting ATF to XML</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>saa-mode: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">double hyphens in QPNs</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>rws: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">register/writing-system</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">saa-style labels</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            
+          </p>
+        </div>
+    <br/>
+    <p>Waiting for results from server...</p><p>Submit error</p><p>Submit done</p>
+  </body>
+</html>

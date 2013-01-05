@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>The Oracc Command</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney and Eleanor Robson</dc:creator>
+  <dc:date>29 June 2010</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page documents the various project management tasks you can carry out using the oracc programme on the Oracc server<!-- and/or the ORACC menu in Emacs-->. </dc:description>
+</d:meta>
+
+<!--<p>The commands marked "ORACC menu" can be accessed from the <a href="/doc/manager/projemacs/">ORACC menu in Emacs</a>. To use the full range of commands you need to log in to Oracc from a Unix terminal on your Mac or PC, as described on the page about <a href="/doc/manager/projunix/">Project Management with Unix</a>.</p> -->
+
+<p>Log in to Oracc with Putty or Terminal. To carry out any of these commands type <code class="cookbook">oracc OPTION</code> and press return, where OPTION is any one of the options listed below. For instance, <code class="example">oracc config</code> puts into effect any changes you have made to your <a href="/doc/manager/projconfig/">project configuration file</a>.</p>
+<p>Some commands will generate several lines of response from the server; others will not. In every case you will know when the command has been executed because the prompt will reappear. (It looks something like this: <code>[PROJ@oracc] $</code>, where PROJ is the short name of your project.)</p>
+
+<p>The <code>oracc</code> programme must be run in your project's main directory; if you are in a subdirectory such as <code>00atf</code> it will not work. (The prompt and/or the window header of the terminal will tell you where you are in the directory structure; for instructions on moving between directories see the <a href="/doc/manager/projunix/#Some_useful_Unix_commands">list of Unix commands</a>.)</p>
+
+<h1>Options for all project managers</h1>
+<p>The <code>oracc</code> programme understands the following commands:</p>
+<dl>
+
+    <dt>check<!-- (ORACC menu: check project)--></dt>
+<dd><p>Checks the whole project for errors. If no errors are discovered, no output is produced, unless you have glossaries. Error messages are, we hope self-explanatory but will documented in due course. Meanwhile, please email your project liaison or <a href="mailto:osc@oracc.org">the Oracc Steering Committee</a> for help with mystery error messages.</p>
+</dd>
+
+    <dt>harvest<!-- (ORACC menu: harvest glossary)--></dt>
+<dd><p>Collects new words from the corpus and places them in
+                <code>01bld/new/[LANGUAGE].new</code>; the new material can be reviewed but
+                corrections *MUST* be made in the ATF files and/or
+                in <code>00lib/[LANGUAGE].glo</code> (the main glossary file). See <a href="/doc/manager/projunix/#Harvesting_new_lemmatisation_data">this description of harvesting</a> for more information.</p></dd> 
+
+   <dt>merge [LANGUAGE]<!-- (ORACC menu: merge glossaries)--></dt>
+<dd><p>Redoes the harvest and then merges the <code>01bld/new/[LANGUAGE].new</code>
+                file with the main glossary file. See <a href="/doc/manager/projemacs/#Merging_the_glossaries">this description of merging</a> for more information.</p></dd>
+
+    <dt>update</dt>
+<dd><p>Rebuilds the glossaries. There is no need to run this command if you are planning to rebuild the whole website too.</p></dd>
+
+    <dt>rebuild<!-- (ORACC menu: rebuild project)--></dt>
+<dd><p>Rebuilds the corpus, glossaries and website; this does
+                not doing any harvesting or merging.</p>
+<p>Instead of <code>oracc rebuild</code> you can run <code class="cookbook">nor</code> ("no-hang oracc rebuild") if you need shut down your connection to Oracc while it is running; or <code class="cookbook">ncr</code> ("no-hang clean rebuild") for a completely fresh rebuild.</p></dd>
+
+    <dt>web</dt>
+    <dd><p>Rebuilds the project website, including reinstallation of your <a href="/doc/manager/portals/esp/">ESP portal</a> if you have one (so there is no need to run <code>oracc esp</code> and <code>oracc esp live</code>, described below).</p></dd>
+	      </dl>
+
+<h1>Options for steerers and experienced project managers</h1>
+<dl>
+  <dt>build [COMMAND]</dt>
+  <dd>This provides an interface to the Oracc project manager, currently named <code>xpd2.plx</code>, which takes care of rebuilding projects.  A rebuild involves several different steps which can be run separately via <code>oracc build</code>.  The following <code>COMMAND</code> names are recognized and are listed in the order in which <code>oracc rebuild</code> carries them out:
+  <dl>
+    <dt>prepare</dt>
+    <dd>updates the configuration and rebuilds the catalogue-based metadata and the glossary signature files.</dd>
+    <dt>corpus</dt>
+    <dd>rebuilds the corpus, processing the contents of <code>00atf/</code></dd>
+    <dt>glosses</dt>
+    <dd>rebuilds the glossaries based on both the <code>*.glo</code> files and the corpus</dd>
+    <dt>indexes</dt>
+    <dd>rebuilds indexes of texts, translations, metadata and glossaries</dd>
+    <dt>web</dt>
+    <dd>rebuilds the website</dd>
+    <dt>perms</dt>
+    <dd>sets file and directory permissions appropriately</dd>
+  </dl>
+  </dd>
+
+    <dt>cat</dt>
+<dd><p>Updates catalogue installation after you have put a new <a href="/doc/manager/projcats/">xml catalogue</a> on the server. Use this if you want to update the catalogue only; if you are planning to rebuild the whole site, the <code>rebuild</code> command (below) will also update the catalogue installation.</p></dd> 
+
+<dt>check [SUBTASK]</dt>
+<dd>
+<p>To run specific check sub-tasks, you can specify one or more of the following 
+sub-task names, e.g., <code class="example">oracc check links dups</code>:</p>
+<dl>
+    <dt>dups</dt>
+<dd>checks for duplicate P-numbers in the corpus.</dd>
+
+    <dt>gloss</dt><dd>checks that the glossary files are loadable.</dd>
+
+    <dt>links</dt><dd>checks that the links are correct.</dd>
+
+    <dt>texts</dt><dd>checks that the corpus ATF files are correct.</dd></dl>
+</dd>
+
+    <dt>clean</dt>
+<dd><p>Removes unneeded files; currently just */*~ (i.e., emacs
+                backup files).</p></dd>
+
+    <dt>colors , colours</dt>
+<dd><p>Updates the colours used by the web display after you have <a href="/doc/manager/projconfig/#Website_Colours">changed them</a> in the configuration file.</p></dd>
+
+    <dt>config</dt>
+<dd><p>Updates the configuration used by the web display after you have <a href="/doc/manager/projconfig/">edited the configuration file.</a></p></dd>
+
+    <dt>esp</dt>
+<dd><p>Rebuilds an <a href="/doc/manager/portals/esp/">ESP portal site</a> hosted in <code>00web/esp/</code>.</p></dd>
+
+<dt>esp init</dt>
+<dd>Creates the directories and files needed to make an <a href="/doc/manager/portals/esp/">ESP portal site</a> in <code>00web/</code>.</dd>
+  
+     <dt>esp live</dt>
+<dd><p>Makes the development <a href="/doc/manager/portals/esp/">ESP site</a> go live on Oracc.</p></dd>
+
+    <dt>fix</dt>
+<dd><p>Checks some files and links and run the permissions scripts.</p></dd>
+
+    <dt>init</dt>
+<dd><p>Initializes a new project; see <code>subproject</code> below for additional
+                arguments.  (Only Oracc steerers and sysadmins are likely to use this
+command because new project creation involves making a new user on the server.)</p></dd>
+
+   <dt>odt</dt>
+   <dd>
+   <p><strong>N.B.: This is not yet fully implemented so your mileage may vary.</strong></p>
+   <p>Creates an OpenDocument (.odt) file.  After <code>odt</code> you can
+   give one or more arguments which are interpreted as file names.  The file names
+   must end in <code>.lst</code>, <code>.atf</code>, or <code>.cdf</code>.  If
+   no file names are given, all of the <code>00atf/*.cdf</code> files are processed;
+   if there are no <code>.cdf</code> files, all <code>00atf/*.atf</code> files are
+   processed.  Oracc automatically creates the appropropriate driver file, expanding
+   the contents of <code>.lst</code> and <code>.atf</code> files as necessary.</p></dd>
+
+   <dt>pdf</dt>
+   <dd><p>Creates a PDF; see above under <code>odt</code> for options</p></dd>
+
+    <dt>subproject</dt>
+    <dd><p>Creates a subproject. You need to give the short and long names
+    of the subproject as well:</p> 
+    
+    <blockquote><p><code class="example">oracc subproject EDAdm 'ED Administrative Texts'</code></p></blockquote>
+
+    <p><strong>N.B.: the subproject name must be at least four
+    characters long, must  begin with a letter and must
+    consist of entirely of the letters 'a' to 'z' or digits '0' to
+    '9'. The directory name for the subproject is created by
+    converting any uppercase letters to lowercase ones.</strong></p></dd>
+
+<!--    <dt>help</dt>
+<dd><p>Displays a short version of this help.</p></dd> out of date -->
+</dl>
+
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+<d:resources/>
+
+</d:doc>

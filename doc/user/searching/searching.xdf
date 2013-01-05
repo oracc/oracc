@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Searching the new-look Oracc 2 corpora</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2011-11-29</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>There are many ways to search the Oracc 2 corpora. This page describes how to search the transliterations, lemmatisations, translations, and catalogue data. Instructions on searching the <a href="/doc/user/glossaries/">glossaries</a> and on <a href="advanced/">advanced search</a> are given on separate pages.</dc:description>
+</d:meta>
+
+<p>Quick links to more user help pages:</p>
+<ul>
+<li><a href="/doc/user/p2/">Using the Oracc 2 corpora</a></li>
+<li><a href="/doc/user/glossaries/">Using the Oracc 2 glossaries</a></li>
+<li><a href="/doc/user/advanced/">Advanced searching</a></li>
+</ul>
+
+     
+<h1>General principles</h1>
+<p>Read the help section about <a href="/doc/user/p2/#The_search_bar">the search bar</a> before you begin.</p>
+                 
+<div>                         
+<a name="transliterations"></a>
+<h1>Searching the transliterations</h1>
+
+<p>You can use <a href="/doc/user/p2/#The_search_bar">the search bar</a> in <a href="/doc/user/p2/#The_Header">the header</a> to search for sequences of signs within the transliterations. However, searching for Akkadian or Sumerian words, regardless of spelling, is best done within the <a href="/doc/user/glossaries/">glossaries</a>.</p>
+
+
+<p>To search within the transliterations, type the
+sequence of signs you want to find into <a href="/doc/user/p2/#The_search_bar">the search box</a> and click "Search". The lines containing that sequence will be displayed in the <a href="/doc/user/p2/#Outline_Main_Pane">the Main Pane</a>, with the relevant word highlighted. You can choose whether to see the results within lines, sentences, or keyword-in-context.</p>
+<p>Click on the coloured designation (publication number or composition name) to
+the right to see the whole text of each tablet or composition found. Place
+the cursor over a word to see its outline <a href="/doc/user/glossaries/">glossary</a> entry, and click on the
+word to go to its full <a href="/doc/user/glossaries/">glossary</a> entry. In some Oracc Projects you can sort the found records by
+genre, period, and provenance as described for <a href="/doc/user/p2/#Outline_Outline_Pane">Outline Mode</a>.</p>
+
+<p>Use the following conventions when you type in the search box depending on whether or not you have ticked the Unicode box:</p>
+
+<h2>Unicode</h2>
+<ul>
+<li>type consonants such as <code>ḫ</code>, <code>ŋ</code>, <code>ṣ</code>, <code>š</code>, and <code>ṭ</code> in the usual way. You can find suitable Unicode fonts and keyboards <a href="/doc/user/">here</a>.</li> 
+<li>type diacritics as subscript numerals <i>not</i> as acute or grave accents (e.g., <code>ša₂</code> and <code>ša₃</code>)</li>
+<li>type logograms in capital letters, preceded by <code>l:</code> (ell then colon) (e.g., <code>l:ŠA₃</code> finds all occurrences of &#352;&#192; in logograms)</li>
+<li>type sign names in capital letters, preceded by <code>s:</code> (s colon) (e.g., <code>s:ŠA₃</code> finds all occurrences of  &#352;&#192; in logograms and syllabic writings <i>l&#236;b</i>)</li></ul>
+
+
+<h2>ASCII (non-Unicode)</h2>
+<ul>
+<li>type <code>h</code> for <i>ḫ</i> (e.g., <code>ha</code> finds <i>ḫa</i>)</li>
+<li>type <code>j</code> for <i>ŋ</i> (e.g., <code>jen</code> finds <i>ŋen</i>)</li>
+<li>type <code>s,</code> (s comma) for <i>ṣ</i> (e.g., <code>s,a</code> finds <i>ṣa</i>)</li>
+<li>type <code>sz</code> for <i>&#353;</i> (e.g., <code>sza</code> finds <i>&#353;a</i>)</li>
+<li>type <code>t,</code> (t comma) for <i>ṭ</i> (e.g., <code>t,a</code> finds <i>ṭa</i>)</li>
+<li>type diacritics as normal numerals 0-9 (e.g., <code>sza2</code> finds <i>&#353;&#225;</i> and <code>sza3</code> finds <i>&#353;&#224;</i>)</li>
+<li>type logograms in capital letters, preceded by <code>l:</code> (ell then colon) (e.g., <code>l:SZA3</code> finds all occurrences of &#352;&#192; in logograms)</li>
+<li>type sign names are in capital letters, preceded by <code>s:</code> (s colon) (e.g., <code>s:SZA3</code> finds all occurrences of  &#352;&#192; in logograms and syllabic writings <i>l&#236;b</i>)</li></ul>
+
+<h2>Either/both</h2>
+<ul>
+<li>type hyphens <code>-</code> to connect signs within words (e.g., <code>i-na</code> finds the sequence <i>i-na</i> in any word)</li>
+<li>type underscores <code>_</code> to connect adjacent signs in different words (e.g., <code>i_na</code> finds all words that end with <i>-i</i> and that are followed by a word beginning with <i>na-</i>)</li>
+<li>type tildes <code>~</code> to connect adjacent signs, whether they are in the same word or not (e.g., <i>i~na</i> finds both of the above)</li>
+</ul>
+
+<p>There is a <a href="/doc/user/unicode">list of unicode characters for cuneiform transliteration</a> elsewhere on these help pages, and an explanation of the difference between unicode and ASCII transliteration on the <a href="http://knp.prs.heacademy.ac.uk/cuneiformrevealed/aboutcuneiform/computercuneiform/">Cuneiform Revealed</a> website.</p>
+</div>
+<div>
+<a name="lemmatisations"></a>
+<h1>Searching the lemmatisations</h1>
+<p>Use this search box to search for Akkadian or Sumerian words, regardless of how they are spelled, by entering their citation form(s) (dictionary headwords). The project's <a href="/doc/user/glossaries/#Outline_Pane">glossary outlines</a> give complete lists of citation forms found in the current corpus.</p>
+<p>You can only search for one or more whole words. Separate words by spaces (e.g., <code>kugsig zagin</code>), not underscores or hyphens.</p>
+
+</div>
+<div>
+<a name="translations"></a>
+<h1>Searching the translations</h1>
+<p>You can use the search box to search for words within the English translations.</p>
+
+<p>The search engine understands the basics of English morphology so that if, for instance, you search for "king", it will find "king" and related words such as "kings" and "kingly". But it will not find words such as "asking", "speaking" or "waking" which contain the characters "king" but have nothing to do with monarchs.</p>
+
+<p>The search engine will display all relevant paragraphs with your search term highlighted. You can click on the link on the right of each entry to see the word in the context of the entire text. You can sort your finding by period, provenance, and genre using the outline of the left.</p>
+
+<p>You can also search for English words in any of the project's <a href="/doc/user/glossaries/">glossaries</a>.</p>
+</div>
+
+<div>
+<a name="cataloguedata"></a>
+<h1>Searching the catalogue data</h1>
+
+<p>To search within the catalogue data, type into the search box. Here are some  hints for more efficient catalogue
+searching:</p>
+
+<ul>
+<li>You don't need to use long vowels to search the catalogue data: just use
+normal vowel characters.</li>
+<li>The catalogue search is not case-sensitive: do not worry about capital letters.</li>
+<li>Do not use leading (initial) zero in numbers or commas between words.</li>
+
+<li>To search for multi-word phrases, separate the words with
+an underscore (e.g., <code>STT_1_15</code> finds <i>STT 1, 015</i>)</li>
+
+<!-- <li>You can use the wildcard character <code>*</code>. For instance, <code>Nabu-*</code> will find all occurrences in the catalogue date of names
+beginning with <i>Nabu-</i>. For more help with wildcards, click [?] to the top right of the search box.</li> -->
+
+</ul>
+
+<p>You can restrict your catalogue searches to particular fields, by
+entering the field name followed by a colon and then what you are searching
+for, with no space between. Not every project uses the same catalogue fields; see the project's website for more information about these.</p>
+
+<ul>
+<li>Designation (publication number) - e.g., <code>designation:CTN_4_117</code></li>
+<li>CDLI catalogue number - e.g., <code>id_text:p363531</code></li>
+<li>Museum collection - e.g., <code>owner:National_Museum_of_Iraq</code></li>
+<li>Museum number - e.g., <code>museum_no:IM_67576</code></li>
+<li>Joins - e.g., <code>join_information:VAT_7828</code></li>
+</ul>
+
+<ul>
+<li>Genre - e.g., <code>genre:medical</code></li>
+<li>One or more words (in sequence) of the subgenre (including composition
+names), e.g, <code>subgenre:medical_recipe</code></li>
+<li>Language - e.g., <code>language:bilingual</code></li>
+</ul>
+
+<ul>
+<li>Period - e.g., <code>period:Neo-Assyrian</code></li>
+<li>Ancient date, as recorded on the tablet - e.g.,
+<code>date_of_origin:SE_61</code> (where SE = Seleucid Era)</li>
+<li>Date BC, as calculated from ancient date - e.g.,
+<code>date_remarks:250_BC</code></li>
+</ul>
+
+<ul>
+<li>Provenance - e.g., <code>provenience:Kalhu</code> (note US spelling)</li>
+<li>Findspot - e.g., <code>findspot:Ue_XVIII_1</code></li>
+<li>Excavation number - e.g, <code>excavation_no:ND_4404</code></li>
+</ul>
+</div>
+
+<div>
+<a name="more" />
+<h1>More on using Oracc corpora</h1>
+<ul>
+<li><a href="/doc/user/p2">Using the new-look Oracc corpora</a></li>
+<li><a href="/doc/user/glossaries/">Using the Oracc glossaries</a></li>
+<li><a href="/doc/user/advanced/">Advanced searching</a></li>
+</ul>
+</div>
+
+<!--<d:resources/>-->
+
+</d:doc>

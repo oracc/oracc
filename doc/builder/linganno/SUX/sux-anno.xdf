@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>SUX: Oracc Linguistic Annotation for Sumerian</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2006-09-26</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Sumerian used in Oracc.  
+  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.
+</dc:description>
+</d:meta>
+
+<h2>Overview</h2>
+
+<p>Sumerian lemmatization works by drawing information from four
+places (unless a project has been configured in a non-standard
+manner):</p>
+
+<ul>
+<li>New entries in the interlinear lemmatization in the file</li>
+<li>The project glossary, <code>00lib/sux.glo</code></li>
+<li>ePSD, from the development version which is searchable <a
+href="http://oracc.museum.upenn.edu/epsd/cbd/sux">on oracc</a></li>
+<li>The morphological analyzer</li>
+</ul>
+
+<p>This structure results in the phenomemon of clean files producing
+the occasional harvestable item.  What is happening is that the
+lemmatizer finds a match in ePSD, and that satisfies it.  But
+harvesting is done by reference only to the project glossary, so the
+harvester finds something new to give notice about.</p>
+
+
+<h2>Fields</h2>
+
+<p>Sumerian uses the same basic parts of speech as Akkadian, but with
+the addition of three important ones:</p>
+
+<ul>
+<li>MORPH: the morphological analysis</li>
+<li>BASE: the base form of the dictionary word as it occurs in the
+writing</li>
+<li>CONT: a continuation grapheme, i.e., normally a sign whose
+consonant is the same as the end of the citation form of the word, and
+whose vowel is either non-functional or contributes to the post-verbal
+morphology.</li>
+</ul>
+
+
+<h2>Principles</h2>
+
+<p>As a matter of principle, it is best to do as little as possible
+when lemmatizing Sumerian--let the machine do the work wherever
+possible.  In the normal case, it is enough to lemmatize with a
+citation form and a sense--all of the other components will get filled
+in for you by either ePSD or the morphological analyzer.</p>
+
+<p>In particular, ePSD's approach to adjectives in Sumerian is that
+almost all of them are simply verbs, whose nonfinite forms can be used
+in a variety of ways including modifiers and participles.  We
+generally do not tag these using the Extended POS (EPOS), even where a
+word has more than one listed POS in ePSD.  For example, you can
+lemmatize <code>nir</code> as <code>nir[lordly]</code> or
+<code>nir[lord]</code> and the lemmatizer will find the right POS/EPOS
+combination for you.</p>
+
+<p>In the absence of proper documentation on how to do ePSD-style
+morphology, it is best simply to leave <code>X</code> for the
+morphology field for now.</p>
+
+<h1>Additional Fields</h1>
+
+<p>For Sumerian two non-standard fields are used: the BASE and the
+CONT (continuation).  Additionally, morphological analysis is
+implemented for Sumerian, and the lemmatizer automatically calls the
+morphological analyzer (SMA, Sumerian Morphological Analyzer) to
+fill in the BASE, CONT and MORPH fields if possible.  This means
+that most Sumerian lemmatization is the same as any other language.</p>
+
+<h2>BASE</h2>
+
+<p>For some languages part of the written instance gives a particular
+base form of the word, for example in Sumerian <code>mu-un-du3</code>
+the base is <code>du3</code>.  It is normally unnecessary to specify
+this unless the form being lemmatized uses a base which is new.  When
+given as part of the lemmatization this must come after the closing
+square bracket and is introduced by a forward slash (<code>/</code>)
+character:</p>
+
+<pre class="example">
+1.     mu-un-du6
+#lem:  +du[build]/du6
+</pre>
+
+<p>Two special conventions are implemented for bases which combine the
+writing of a non-base component with a base component, like the use
+of <code>be2</code> for the preverbal <code>b</code> and the
+base <code>e</code>.</p>
+
+<ul>
+<li>The centered dot, ·, means that a base component is followed by a
+non-base component, e.g., ar[praise], has a base
+<code>a-r·e</code></li>
+<li>The degree symbol, °, means that a non-base component is followed by a base
+  component, e.g., e[speak] has base writings
+  like <code>m°e</code>.</li>
+</ul>
+
+<h2>CONT</h2>
+
+<p>For Sumerian the continuation is the grapheme which encodes the
+final consonant of the base as its initial consonant.  It is normally
+unnecessary to specify this unless the form being lemmatized is new.
+When specified, it must come immediately after the base, separated
+from it by a plus sign and then a hyphen (<code>+-</code>):</p>
+
+<pre class="example">
+1.     du-ga
+#lem:  dug[speak]/du+-ga=g+a
+</pre>
+
+<h1>Morphology</h1>
+
+<p>In Sumerian data-input notation, verbal prefixes are separated from
+the base by a colon (<code>:</code>).  Sumerian morphology conventions
+are further described [REF]here[REF].  A simple Sumerian example looks
+like this: <span class="cookbook">mu.na.ni:~</span>.  A noun with
+terminative case-marker looks like this: <span
+class="cookbook">~,esze</span> (the character which introduces noun
+morphemes is the comma (,); subsequent noun-morphemes are separated by
+periods.</p>
+
+<p>Morphology may be included directly on the lemmatization, following
+any POS.  In such cases, the separator is a hash character
+(<code>#</code>) with no surrounding spaces, and the morphology string
+following directly afterwards: <span
+class="cookbook">du[build]V#mu.na.ni:~</span>.  This is mainly needed
+for syllabic writings.</p>
+
+<h1>Disambiguation</h1>
+
+<p>Two common forms of annotation carried out manually are
+disambiguation and augmentation; the difference between them is that
+disambiguation is necessary when a form give part of a morpheme but
+that part could be analyzed more than one way.  The three cases that
+are recognized in Sumerian are: Locative-Terminative vs. Ergative when
+the form ends in /e/; Locative vs. Genitive when a nominal form ends in /a/;
+and Nominalizer vs. Copula when a verbal form ends in /a/.</p>
+
+<p>Augmentation is used when no part of the morpheme is preserved in
+the writing of the form; it is an easy way of adding unexpressed
+morphemes such as Sumerian /ak/ and other case-markers.  Augmentation
+is discussed further below.</p>
+
+<h2>Transitivity</h2>
+
+<p>Disambiguation can be given as part of the sense immediately
+before the closing square bracket in a lemmatization string; these
+disambiguations refer to choices available in the lexicon.  For
+Sumerian a common lexical disambiguation is the choice between
+intransitive and transitive in labile verbs or so-called
+causatives:</p>
+
+<pre class="example">
+\i = select intransitive
+\t = select transitive</pre>
+
+<p>We specify the unmarked case to be intransitive so that, e.g.,
+<code>gub[stand]</code> needs no further annotation when intransitive;
+when transitive it should be annotated as <code>gub[stand\t]</code>.</p>
+
+<p>Further, if distinct words are used in the sense of a verb which
+has intransitive and transitive senses it is not necessary to add the
+transitivity or the POS.  Thus, <code>dadara[tied]</code> and
+<code>dadara[bind]</code> would be taken as intransitive and transitive
+respectively without further annotation.</p>
+
+<h2>Morphology</h2>
+
+<p>Ambiguous forms which are susceptible to multiple analyses even
+within the same CFGW can be disambiguated using the syntax <code
+class="example">\&lt;DISAMBIGUATOR></code>.  The particular
+disambiguators are language-specific; examples in Sumerian
+include:</p>
+
+<p><strong>Note that this kind of disambiguation only needs to be
+carried out when a corpus is destined for syntactic analysis.</strong></p>
+
+<pre class="example">
+\a = select locative form
+\k = select genitive form
+
+\l = select locative-terminative form (default)
+\e = select ergative form
+
+\a = nominalizer
+\m = copula (am)
+</pre>
+
+<p>For examples see the next version of Gudea 1 below.</p>
+
+<h1>Augmentation</h1>
+
+<p>Augmentation consists of adding to morphological sequences.
+Augmentation is currently primitive and consists exclusively of the
+ability to append morphemes at the end of the morphology given in the
+forms file.  This is probably only useful for the common case of
+adding unexpressed case-markers to Sumerian annotation; for more
+complex cases, the entire morphology string must be given inline as
+described under 'Inlining' above.</p>
+
+<p>Augmentation is given after POS and the optional disambiguation,
+but before any morphology string; it is indicated using the plus sign
+(<code>+</code>).</p>
+
+<h1>Gudea 1</h1>
+
+<p>Given the Disambiguation and Augmentation conventions above, a
+sample text can be annotated:</p>
+
+<pre>
+&amp;Q000887 = Gudea 1
+@composite
+1. {d}ba-u2
+#lem: DN
+
+2. dumu an-na
+#lem: dumu[child]; An[]DN\k
+
+3. nin-a-ni
+#lem: nin[lady]+.*ra
+</pre>
+
+</d:doc>

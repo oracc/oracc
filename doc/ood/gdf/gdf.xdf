@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>GDF</dc:title>
+  <dcterms:alternative>Generic Data Framework</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>GDF provides a way of turning arbitrary datasets into linked open data
+  quickly and easily.</dc:description>
+</d:meta>
+
+<p>GDF is designed with an emphasis on simplicity: the data is
+minimally processed and accessible via a general full-text search
+engine.  It is particularly well-suited to rescuing legacy data from
+obscurity, and as such users should expect that the data will often be
+unpolished.</p>
+
+<p>We encourage users of GDF datasets to think about similar works
+they may have created as part of their research and which they might
+think of as useful but imperfect.  Please send us such datasets with
+written permission (e-mail is fine) to convert and distribute them!
+We will reformat them as necessary and distribute them under the
+Creative Commons BY-SA licence.</p>
+
+<h2>Using a GDF Dataset</h2>
+
+<p>GDF datasets are easy to use: you should read the home-page for any
+information on abbreviations, conventions, etc., and then you can
+normally browse some fields to get a sense of what to search for.</p>
+
+<h2>Technical Notes</h2>
+
+<p>At the very least, the data will have been structured into records
+with stable XML IDs which are then used in the URIs to provide
+persistent access.  The data will also be in the Unicode character set
+in UTF-8 encoding.</p>
+
+<p>GDF datasets generally provide their records in XML format if you
+add <code>/xml</code> to the URI.  If the status-field
+<code>stable-uris</code> is set to <code>yes</code> (as it normally
+will be) you can safely refer to the data by the URI and know that
+the URI will not disappear.</p>
+
+<h2>Future Plans</h2>
+
+<p>While GDF prides itself on its simplicity, there are plans for a few key improvements:</p>
+
+<ul>
+<li>improved formatting of records--the present simple list of fields
+and data will be supplemented by a more database-like layout
+option</li>
+<li>a facility to get a row-oriented view of the data and search
+results, and to browse the pages of data or search results in
+order.</li>
+</ul>
+
+<p>There is no timetable for these developments.</p>
+
+</d:doc>

@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 7:<br/>XForms Hello</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>First steps with XForms on Oracc with a page to say
+  hello.</dc:description>
+</d:meta>
+
+<h1>XForms Hello</h1>
+
+<p>Using XForms with eXist on Oracc is straightforward as long as a
+few basic catches are learned and avoided.</p>
+
+<p>Everyone using eXist/XSLTForms should read <a
+href="http://en.wikibooks.org/wiki/XRX/XSLTForms_and_eXist">this page
+on XRX/XSLTForms and eXist</a>.</p>
+
+<h2>Clientside</h2>
+
+<p>The recommended approach with Oracc is to use client-side XForms
+generation using the <a
+href="http://www.agencexml.com/xsltforms">XSLTforms processor</a>.
+This is used by specifying an XML stylesheet processing
+instruction (PI). Although eXist is shipped with a version of XSLTforms, we
+recommend using the version in <code>/db/oracc/lib/xsltforms</code> as
+that may be more up to date than system version.  The PI should look
+like this:</p>
+
+<pre class="example">
+&lt;?xml-stylesheet href="/db/oracc/lib/xsltforms/xsltforms.xsl" 
+                    type="text/xsl"?>
+</pre>
+
+<h2>Namespaces</h2>
+
+<p>Next, you must declare the XForms namespace(s) on the
+<code>html</code> root element.  As you use more sophisticated XForms
+you will likely need to define additional namespaces for schema
+datatypes, XML events and possibly others.  For now, we only need the
+XForms namespace itself.  You also need to declare the namespace for
+any data you are referencing: in the case of our example, we are going
+to pull the project name from the configuration file, so we need to
+declare the <code>xpd</code> namespace as well:</p>
+
+<pre class="example">
+&lt;html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+      >
+</pre>
+
+<h2>Model</h2>
+
+<p>Next, declare the XForms model inside the XHTML <code>head</code>
+element.  In our case, we source the data from the 'test' project's
+configuration file:</p>
+
+<pre class="example">
+&lt;head>
+&lt;title>XForms Hello&lt;/title>
+  &lt;xf:model>
+    &lt;xf:instance id="default" src="/db/test/oml/00config.xml"/>
+  &lt;/xf:model>
+&lt;/head>
+</pre>
+
+<h2>Data Display</h2>
+
+<p>To display data we can use the <code>xf:output</code> element.
+Note that when referencing an instance, the path following the
+<code>instance()</code> function is relative to the document element
+of the instance data:</p>
+
+<pre class="example">
+&lt;p>Hello &lt;xf:output ref="instance('default')/xpd:name"/>&lt;/p>
+</pre>
+
+<h2>All together</h2>
+
+<p>Here is the page all in one place:</p>
+
+<pre class="cookbook">
+&lt;?xml-stylesheet href="/db/oracc/lib/xsltforms/xsltforms.xsl" 
+                 type="text/xsl"?>
+&lt;html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+      >
+&lt;head>
+&lt;title>XForms Hello&lt;/title>
+  &lt;xf:model>
+    &lt;xf:instance id="default" src="/db/test/oml/00config.xml"/>
+  &lt;/xf:model>
+&lt;/head>
+&lt;body>
+  &lt;h1>XForms Hello&lt;/h1>
+  &lt;p>Hello &lt;xf:output ref="instance('default')/xpd:name"/>&lt;/p>
+&lt;/body>
+&lt;/html>
+</pre>
+
+<p>You can access this page at: <a href="http://oracc.museum.upenn.edu/db/oracc/lib/examples/xforms/hello.xml">http://oracc.museum.upenn.edu/db/oracc/lib/examples/xforms/hello.xml</a>.</p>
+
+<h2>Indentation</h2>
+
+<p>Indentation can be an issue when using clientside XForms. One symptom of this is that you will get exceptions that look something like this:</p>
+
+<img src="indent-except.png" alt="eXist XSLTforms indentation exception"/>
+
+<p>If you are having this, append <code>_indent=no</code> to the query parameters:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/db/oracc/lib/examples/xforms/hello.xml?_indent=no
+</pre>
+
+<d:resources>
+<d:resource copy="yes" href="etc/indent-except.png"/>
+</d:resources>
+
+</d:doc>

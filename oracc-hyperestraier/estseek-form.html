@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate, no-transform" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="generator" content="Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Hyper Estraier: a full-text search system for communities</title>
+<style type="text/css">html {
+  margin: 0em 0em; padding: 0em 0em;
+  background: #eeeeff none;
+}
+body {
+  margin: 0em 0em; padding: 0em 0em;
+  background: #eeeeff none;
+  color: #111111;
+}
+div.estform {
+  margin: 0.8em 1.0em; padding: 0em 1.0em;
+  -moz-border-radius: 0.4em;
+}
+div.form_basic {
+  margin: 0.6em 0em 0em 0em; padding: 0em 0em;
+  font-size: smaller;
+}
+</style>
+<script type="text/javascript">var timerid = -1;
+function gosubmit(){
+  document.getElementById('form_self').submit();
+}
+function setsubmit(){
+  if(timerid != -1){
+    clearTimeout(timerid);
+  }
+  timerid = setTimeout(gosubmit, 100);
+}
+function startup(){
+  document.getElementById('phrase').focus();
+  document.getElementById('phrase').onkeyup = setsubmit;
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<div class="estform">
+<form action="estseek.cgi" method="get" name="form_self" id="form_self" target="result">
+<div class="form_basic">
+<input type="text" name="phrase" value="" size="80" id="phrase" class="text incremental" tabindex="1" accesskey="0" />
+</div>
+</form>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 3:<br/>Modularization</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>The query in Example 2 is refactored again to put the function in a module.</dc:description>
+</d:meta>
+
+<h1>Modules</h1>
+
+<p>Whenever code is likely to be reused it should be removed to a
+module so that other queries can use the code simply by importing the
+module.  A good quick start on XQuery modules is contained in the
+latter part
+of <a href="http://www.stylusstudio.com/xquery/xquery_functions.html">Defining
+your own Functions in XQuery by Michael Kay</a>.</p>
+
+<p>To rewrite our function-based statistics program as a module we
+simply remove the function to a separate file, named
+<code>stats.xqm</code>, add the module definition header, and add the
+module import to the statistics file.</p>
+
+<h2>The Module</h2>
+
+<p>The module first defines its namespace and URI. By convention, all
+modules on Oracc should form their URI by appending the project name
+and the module directory to the base URI
+<code>http://oracc.org/xqm/</code>.  Following the module declaration
+the module is similar to any other query.  Of the contents of a
+module, only variables and functions are actually imported into the
+query using it: you can't import namespaces in this way, for
+example.</p>
+
+<pre class="cookbook">
+module namespace stats = "http://oracc.org/xqm/oracc/stats";
+
+declare function stats:node-count($what as xs:string, 
+                                  $nodes as element()*)
+as element() 
+{
+  &lt;count>
+    &lt;what>{ $what }&lt;/what>
+    &lt;number>{ count($nodes) }&lt;/number>
+  &lt;/count>    
+};
+</pre>
+
+<h2>The Import</h2>
+
+<p>To use the module, you specify the namespace and URI, and a
+location in which to find the module.  For Oracc/eXist this is simply
+the base path of the file, starting at the top-level <code>/db/</code>
+path node.</p>
+
+<pre class="cookbook">
+import module namespace stats = "http://oracc.org/xqm/oracc/stats"
+       at "/db/oracc/lib/stats/stats.xqm";
+</pre>
+
+<p>The body of the program only needs to use the <code>stats:</code>
+namespace on the function call instead of the <code>local:</code>
+namespace.  You can see this in the full program listing below.</p>
+
+<h1>Try it</h1>
+
+<p>You can try the modularized query as before, but with the query name
+now being <code>stats-m.xql</code>:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/db/oracc/lib/stats/stats-m.xql?project=test
+</pre>
+
+<h1>Altogether</h1>
+
+<p>Here is the entire script:</p>
+
+<pre class="cookbook">
+import module namespace stats = "http://oracc.org/xqm/oracc/stats"
+       at "/db/oracc/lib/stats/stats.xqm";
+
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace gdl  = "http://oracc.org/ns/gdl/1.0";
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+declare namespace xcl  = "http://oracc.org/ns/xcl/1.0";
+declare namespace xff  = "http://oracc.org/ns/xff/1.0";
+declare namespace xtf  = "http://oracc.org/ns/xtf/1.0";
+
+
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=yes";
+
+
+declare variable $project as xs:string := request:get-parameter('project','');
+
+declare variable $P as document-node()* := collection(concat('/db/',$project,'/oml'));
+
+declare variable $graphemes as element()* :=
+         $P/(xtf:transliteration|xtf:composite)//
+	 (gdl:v[not(parent::gdl:n)]|gdl:s[parent::gdl:w]|gdl:n|gdl:c);
+
+
+document {
+
+processing-instruction
+  xml-stylesheet
+  { 'href="http://oracc.museum.upenn.edu/css/stats-xql.css" type="text/css"' },
+
+&lt;stats>
+&lt;title>Statistics for project { $project }&lt;/title>
+{ stats:node-count('Number of graphemes',
+                   $graphemes),
+  stats:node-count('Number of words',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w or self::norm:w]),
+  stats:node-count('Number of words written with one grapheme',
+                   $P/(xtf:transliteration|xtf:composite)//*
+		      [self::gdl:w][count(*)=1]),
+  stats:node-count('Number of lemmata',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l),
+  stats:node-count('Number of lemmata with Citation Form',
+                   $P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf]) }
+&lt;/stats>
+
+}
+</pre>
+
+</d:doc>

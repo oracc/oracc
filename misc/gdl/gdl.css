@@ -1,0 +1,10 @@
+@namespace gdl "http://oracc.org/ns/gdl/1.0";
+@namespace xml "http://www.w3.org/XML/1998/namespace";
+
+gdl|v { color: red; font-style: italic; }
+
+gdl|v:after { content: "]"; font-style: normal; 
+	      font-size: 100% !important;
+	      vertical-align: baseline !important; }
+
+gdl|d gdl|v { font-size: 70%; vertical-align: super; font-style: normal; color: blue; }

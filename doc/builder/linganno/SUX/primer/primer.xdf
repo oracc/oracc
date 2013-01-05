@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Sumerian Lemmatization Primer</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2007-02-08</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>A very quick start to get you lemmatizing
+  Sumerian texts with the minimum effort possible.</dc:description>
+</d:meta>
+
+<h2>Overview</h2>
+
+<p>Sumerian lemmatization works by drawing information from four
+places:</p>
+
+<ul>
+<li>New entries in the interlinear lemmatization in the file</li>
+<li>The project glossary, <code>00lib/sux.glo</code></li>
+<li>ePSD, from the development version which is searchable <a
+href="http://oracc.museum.upenn.edu/epsd/cbd/sux">on oracc</a></li>
+<li>The morphological analyzer</li>
+</ul>
+
+<p>Sumerian uses the same basic parts of speech as Akkadian, but with
+the addition of three important ones:</p>
+
+<ul>
+<li>MORPH: the morphological analysis</li>
+<li>BASE: the base form of the dictionary word as it occurs in the
+writing</li>
+<li>CONT: a continuation grapheme, i.e., normally a sign whose
+consonant is the same as the end of the citation form of the word, and
+whose vowel is either non-functional or contributes to the post-verbal
+morphology.</li>
+</ul>
+
+
+<h2>Principles</h2>
+
+<p>As a matter of principle, it is best to do as little as possible
+when lemmatizing Sumerian.  In the normal case, it is enough to
+lemmatize with a citation form and a sense--all of the other
+components will get filled in for you by either ePSD or the
+morphological analyzer.</p>
+
+<p>In particular, ePSD's approach to adjectives in Sumerian is that
+almost all of them are simply verbs, whose nonfinite forms can be used
+in a variety of ways including modifiers and participles.  We
+generally do not tag these using the Extended POS (EPOS), even where a
+word has more than one listed POS in ePSD.  For example, you can
+lemmatize <code>nir</code> as <code>nir[lordly]</code> or
+<code>nir[lord]</code> and the lemmatizer will find the right POS/EPOS
+combination for you.</p>
+
+
+<h2>New items</h2>
+
+
+</d:doc>

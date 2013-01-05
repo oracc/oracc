@@ -1,0 +1,105 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use GDBM_File;
+use Fcntl;
+use Encode;
+
+my $cat = '@@ORACC@@/catalog';
+my $txt = '@@ORACC@@/texts/lib';
+
+my @p = ();
+my @q = ();
+my $count = 0;
+my $nullpack = pack("ccsl",0,0,0,0);
+my %triples = ();
+
+my @T = ();
+my @P = ();
+my @G = ();
+
+my $codes = load_xml("$cat/results/sortvals.xml");
+foreach my $type ($codes->getDocumentElement()->childNodes()) {
+    if ($type->localName() eq 'places') {
+	foreach my $c ($type->childNodes()) {
+	    my($c,$v) = ($c->getAttribute('c'),$c->getAttribute('n'));
+	    $P[$c] = $v;
+	}
+    } elsif ($type->localName() eq 'periods') {
+	foreach my $c ($type->childNodes()) {
+	    my($c,$v) = ($c->getAttribute('c'),$c->getAttribute('n'));
+	    $T[$c] = $v;
+	}
+    } elsif ($type->localName() eq 'supergenres') {	
+	foreach my $c ($type->childNodes()) {
+	    my($c,$v) = ($c->getAttribute('c'),$c->getAttribute('n'));
+	    $G[$c] = $v;
+	}
+    }
+}
+
+open(IN,"$cat/results/sortinfo.tab");
+while (<IN>) {
+    my($pq,$id,$keys) = (/^(.)(.*?)\t(.*)$/);
+    my %keys = split(/[\t=]/,$keys);
+    # WATCH THE LADY!  The actual value of undefined keys is -1, but we
+    # emit MAX_XXX values for supergenre/period/provenience to make them
+    # sort at the end; this means that the keys of the %triples db need to
+    # be adjusted accordingly.
+    my $s_G = $keys{'supergenre'}==-1?127:$keys{'supergenre'};
+    my $s_T = $keys{'period'}==-1?127:$keys{'period'};
+    my $s_P = $keys{'provenience'}==-1?32767:$keys{'provenience'};
+    my $pack = pack("ccsl",$s_G,$s_T,$s_P, $keys{'designation'}||$keys{'name'});
+    $triples{"$s_T:$s_P:$s_G"} = 
+	val($keys{'period'},@T)
+	."\t".val($keys{'provenience'},@P)
+	."\t".val($keys{'supergenre'},@G);
+    if ($pq eq 'P') {
+	$p[$id] = $pack;
+    } else {
+	$q[$id] = $pack;
+    }
+}
+close(IN);
+
+open(P,">$txt/sortinfo.p");
+for (my $i = 0; $i <= $#p; ++$i) {
+    if ($p[$i]) {
+	syswrite(P,$p[$i]);
+    } else {
+	syswrite(P,$nullpack);
+    }
+}
+close(P);
+open(P,">$txt/sortinfo.q");
+for (my $i = 0; $i <= $#q; ++$i) {
+    if ($q[$i]) {
+	syswrite(P,$q[$i]);
+    } else {
+	syswrite(P,$nullpack);
+    }
+}
+close(P);
+
+my %t;
+tie(%t, 'GDBM_File',"$txt/triples.db", O_CREAT|O_TRUNC|O_RDWR,0644)
+    || die "open failed";
+foreach my $t (sort keys %triples) {
+    Encode::_utf8_off($triples{$t});
+    $t{$t} = $triples{$t};
+}
+untie %t;
+
+###################################################
+sub
+val {
+    my($c,@vals) = @_;
+    if ($c == -1 || $c > $#vals) {
+	return "?";
+    } else {
+	return $vals[$c];
+    }
+}
+
+1;

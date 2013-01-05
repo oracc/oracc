@@ -1,0 +1,427 @@
+URNs in Oracc
+=========
+
+Oracc defines URNs for all of the data types which may be referenced
+in the system.
+
+The URNs are non-standard and use the NID "oracc".  
+
+The NIS may contain any UCS character except colon (':') or solidus
+('/') which must be mapped as follows to create valid Oracc URNs:
+
+      U+002F SOLIDUS (/) must be translated to U+2044 FRACTION SLASH
+      U+003A COLON (:) must be translated to U+FF1A FULLWIDTH COLON
+
+Characters which are not in the USASCII repertoire must be encoded as
+UTF-8.
+
+The repertoire and patterning of URNs follows the domain requirements
+of Oracc and does not pretend to greater generality.
+
+Principles
+======
+
+For data points we always define a type for the data point.
+
+Accessing the URI formed from the type for the data point returns a
+list of known data point values.
+
+The type may optionally be followed by a value.
+
+URNs are required to be completely orthogonal within their respective
+domains.  Thus, the URN for urn:oracc:scr:Xsux must always consist of a 
+triple, sign/form/read, even though :form: is often unexpressed in the
+sign list from which it is derived, urn:oracc:prj:ogsl.  To indicate
+that the segment is defaulted, use '*':
+
+ urn:oracc:scr:Xscr:sign:BU:form:*:read:pu
+
+Top Level Oracc Entities
+===============
+
+Top level Oracc entities are distinct by virtue of their syntactic
+properties and do not require prefixes.  They fall into the following
+categories:
+
+urn:oracc:
+
+	* nis1: object types:
+
+	cmp
+	ent
+	lng
+	nam
+	obj
+	prj
+	scr
+
+	With the exception of prj, any object type may occur both at
+	the top level (the urn:oracc level) and at the project level
+	(the urn:oracc:prj:PROJECT level).  Subprojects hierarchy is
+	represented in the URN structure in the normal Oracc way, by
+	the use of directory path-like names using '/' to separate
+	components.  Thus we may have:
+
+		urn:oracc:lng:sux
+		urn:oracc:prj:epsd2:lng:sux
+		urn:oracc:prj:dcclt/nineveh:lng:sux
+
+   	* cmp: Compositions: names consisting of a Q followed by
+	    six digits are compositions as defined in the Oracc
+	    Qcat project (urn:oracc:prj:qcat).
+
+ 	    [Note: Oracc uses IDs starting with an X followed by six
+	     digits as temporary, project-local identifiers for
+	     objects or compositions which are not yet defined in
+	     the standard catalogues: these are not exposed via 
+	     URNs]
+
+
+	* lng: Languages: based on ISO 693-3 two or three letter
+          language codes for each of the ancient languages covered by
+          Oracc.  Examples:
+
+	      sux Sumerian
+	      akk Akkadian
+
+	   and augmented by the sublangs, e.g.:
+
+	       akk-x-oldbab
+	       sux-x-emegir
+
+	   = Language Features
+	   
+	   Following a language segment comes a WORD or INSTANCE 
+	   signature consisting of the following signature fields in
+	   the given order:
+
+	   word:CF:GW:POS
+	   inst:CF:GW:POS:SENSEGW:EPOS:FORM:NORM
+
+	   Note that for sublangs, the CF is the language-specific 
+	   CF; the CACF is given in another URN.
+
+	   It is not necessary to include further features in the URN
+	   because Oracc signatures must by definition be uniquely
+	   identified by their CF:GW:POS:FORM:NORM elements. They
+	   may occur in more than one SENSE, however.
+
+	   In the URN space, each SENSE is reduced to a SENSEGW so
+ 	   that there is only one URN for each SENSE.
+
+	    COFs and PSUs ???
+
+	    Peripheral features are assigned URNs with a namespace
+	    segment and a value segment as follows:
+
+	    altb:	Alternate bases, for example ša₃ vs. šag₄
+	    altf:	Alternate forms, for example ša₃-bi vs. šag₄-be₂
+	    base: 	BASE, for example inim in inim-ma
+	    cacf:	Canonical Akkadian Citation Form
+	    clng:	Context Lang, for entity name instances
+	    cont:	CONT, for example ma in inim; given in Oracc format
+	    mrp1:	MORPH1
+	    mrp2:   MORPH2
+	    pref:     PREF, Sumerian verbal prefix e.g., ba.n in ba.n:gi
+	    root:     ROOT for Semitic words
+	    stem:	 STEM for reduplication in sux and verbal stem
+	    		 in akk
+
+	 * scr: Scripts: ISO 15924 codes
+
+	 * prj: Projects: names consisting of a sequence of four or more
+	    lowercase USASCII letters, numbers and forward slashes, 
+	    beginning with a letter, are project names.  Names 
+	    containing forward slashes are subproject names, but this
+	    distinction can be safely ignored by user agents.
+
+	 * obj: Objects: names consisting of a P followed by six digits are
+	    names of ancient objects which are aligned with P-IDs in
+	    the CDLI catalogue.
+
+
+          * nam: Entity-Names: entity names are proper nouns which 
+	     are used to refer to entities.  An Entity-Name may
+	     refer to more than one entity.
+
+	     Entity-Names consist of a TYPE component which is
+	     formed of two uppercase USASCII letters, followed by
+	     a NAME, which is a lowercase UTF-8 string containing 
+	     no colon characters.
+
+	     The repertoire of TYPEs is that of Oracc's proper noun
+	     glossaries:
+
+		PN GN SN EN 
+
+   	     etc.
+
+	     The NAME is the Citation Form of the proper noun
+	     glossary entry, with length marks and circumflexes
+	     removed.  In other words, Rîm-Sîn is reduced to 
+	     Rim-Sin for the purposes of URN creation.
+
+  	   * ent: Entities: entities are the referents of entity-names.
+	     They are by definition unique.  Entities consist of
+	     a TYPE followed by a NAME.
+	     
+	     The repertoire of TYPEs is related to the repertoire
+	     of Entity-Name TYPEs but the range of Entity TYPEs
+	     is smaller than the range of annotated Entity-Name
+	     TYPEs:
+
+	     	PN persons
+		EN ethnoi
+		LN lineages
+		SN places
+		GN places
+		DN deities
+	
+	      etc.
+
+Implementation
+==============
+
+URNs are managed in the /urn directory.  This directory contains files
+and subdirectories defining urn segments.  For terminal segments, the
+NIS components are given in .def files.  For non-terminal segments,
+the segments are subdirectories.
+
+subdirectories may also contain .urn files, which list not segments
+but full, terminal URNs.
+
+.def files
+----------
+
+.def files are tab-delimited and consist of one line per segment.  The
+first field in the line is the NIS segment.  The remainder of the
+line is either a cross-reference, a description, or an alias.
+
+.urn files have the same format as .def files, but give terminal URN
+values rather than segment definitions.
+
+Descriptions are short human-readable labels for the NIS component.
+
+Cross-references indicate that the URN has moved.  The syntax of a
+cross-reference is:
+
+		NIS > NIS | URN
+
+An alias indicates that the URN is an alternative name for another
+URN, this is used to provide URNs for sign readings which map to the
+URN containing the sign name, form name and reading.
+
+
+#if 0
+
+Belongs-to lines indicate the the value is a child of the referenced
+URN.  Thus, to indicate that pu is a reading of BU, the entry in
+Xscr:read.def would read:
+
+  pu	<= urn:oracc:scr:Xscr:sign:BU
+
+This implies that:
+
+  urn:oracc:scr:Xscr:read:pu
+
+is equivalent to:
+
+ urn:oracc:scr:Xscr:sign:BU:read:pu
+
+Similarly the entry in urn/scr/Xscr/read.def:
+
+ pu₄₄	<= urn:oracc:scr:Xscr:form:BU~b
+
+and in urn/scr/Xscr/form.def
+
+ BU~b  <= urn:oracc:scr:Xscr:sign:BU
+
+allows the inference that:
+
+ urn:oracc:scr:Xscr:pu₂
+
+is equivalent to:
+
+ urn:oracc:scr:Xscr:sign:BU:form:BU~b:read:pu₄₄
+
+#endif
+
+Values:
+*******
+
+The values that a segment may take are defined in seg.def.  The 
+values of the next segment may be given either in a directory or in a
+.def file named for the segment value.
+
+Thus, script values are defined in urn/scr/seg.def, meaning that one
+can construct from:
+
+ Xscr	ISO 15924 020 = Sumero-Akkadian cuneiform script
+
+the URN:
+
+ urn:scr:Xsux
+
+Now, to find the permitted values of urn:scr:Xsux, look first for:
+
+ urn/scr/sub.def
+
+This indicates that there are types:
+
+     sign	a grapheme in the script, defined by a Unicode codepoint which may be in the PUA
+     form	an alternate form of a sign, defined by a Unicode codepoint which may be in the PUA
+     read	an interpreted value of a grapheme, e.g., the pu value of the sign BU is urn:oracc:scr:Xsux:sign:BU:read:pu
+
+To give the values of
+
+ urn:scr:Xsux:sign
+
+Look first for Xsux:sign.def.  If that exists, then this is the set of
+allowed values after urn:scr:Xsux:sign
+
+This set of values must be a complete set of terminals, which may
+include NIS hierarchy.  Thus, urn/scr/Xsux/val.def may contain:
+
+sign:BU:read:pu
+sign:BU:form:BU~b:read:pu₄₄
+
+and so on.
+
+Subtypes
+********
+
+The subtypes that may follow a value are defined in sub.def, avoiding
+the need to give a seg.def file for every value.  This enables some
+economy of expression in the Oracc urn/ tree.  For example, the values
+of oracc:urn:scr:Xsux can be given in values.def
+
+============================================================
+
+There are no project-specific sub-URNs, i.e., you can't say:
+
+ urn:oracc:cams/gkab:akk-x-stdbab
+
+But you can say:
+
+  /cams/gkab/akk-x-stdab 
+
+which returns the urn:oracc:akk-x-stdbab:* URNs which cams/gkab
+provides.
+
+Project URNs are generated from the data and then aligned with 
+global Oracc URNs, giving an additional validation layer.
+ 
+urn:oracc:[PROJ] - four+letters, [a-z][a-z0-9/]+
+urn:oracc:Q[6+digits] composition
+urn:oracc:P[6+digits] object
+urn:oracc:[LANG] - ISO-639-3 plus optional -x-SUBLANG
+urn:oracc:[LANG]:[WORD] word sig
+urn:oracc:[LANG]:[INST] instance sig
+urn:oracc:[LANG]:[FEAT]:[VALUE] feature
+urn:oracc:[NN] - entity names, based on NN POS tags
+urn:oracc:[NN]:[WORD] word sig
+urn:oracc:[NN]:[INST] instance sig
+urn:oracc:[NN]:[FEAT]:[VALUE] feature
+
+urn:oracc:[places|persons|deities|things]:[INDEX] - entities; reserved Oracc
+			words not available as project names; INDEX is
+			a number disambiguating, say deities:Enki:1 
+			from deities:Enki:2
+urn:oracc:sl: - signlist entry, SIGN:READ or SIGN:VARFORM:READ
+urn:oracc:Xscript - ISO15924 Script
+
+=====
+
+provided types in order of search ranking:
+
+ page : urn is the subject of a page
+ defn : urn is defined in esp:definition (and presumably others)
+ head : urn is head word in a glossary
+ tran : urn occurs in a translation
+ refd : urn is referenced in a page or glossary
+
+=====
+
+URI mapping:
+
+URIs rooted at Oracc map to URNs and provide information about those
+URNs. Oracc URIs can only provide metadata.
+
+URNs rooted at a project map to URNs or project components;
+Project-URIs can provide data.
+
+
+TYPES:
+====
+
+CORPUS
+CATALOGUE
+COMPOSITION
+ENTITY
+LANGUAGE
+NAME
+OBJECT
+PROJECT
+
+EXTENTS:
+======
+
+FULL
+POPUP
+SUMMARY
+
+FORMATS:
+======
+
+CATF (i.e., CDLI C-ATF)
+CSV
+HTML (i.e., XHTML)
+ODF (Open Document)
+OATF (i.e., Oracc O-ATF)
+PTB (Penn Tree Bank)
+RDF
+TEI
+XML (i.e., OML)
+
+=====
+
+requestable components of in a /[PROJECT] URI:
+
+(empty) : project home page or corpus
+catalogue : catalogue
+corpus : public transliterations
+metadata : project metadata
+
+Catalogue formats:
+==================
+
+(empty) : load pager in catalogue-item mode
+csv : CSV format
+xml : OML
+
+Corpus formats:
+===============
+
+(empty) : load pager in text-outline mode
+atf : CDLI C-ATF
+otf : Oracc O-ATF
+ptb : Penn Tree Bank format
+xml : OML
+
+Metadata formats:
+=================
+
+(empty) : project metadata and statistics page
+rdf : RDF machine-readable description of project's contents
+xml : OML
+
+=====
+
+requestable types in URIs:
+
+ (empty) : html
+ xml : xml source for the object in OML
+ rdf : rdf metadata for the object
+ tei :
+ odf :
+ csv :

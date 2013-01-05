@@ -1,0 +1,116 @@
+Implementation Notes for Smart Aliasing
+=======================================
+
+0. Introduction
+---------------
+
+Smart aliasing is necessary for handling Sumerian transliteration.
+Sign values need to be aliased depending on lemma (ti[rib]
+vs. til[live]) and morphology (-ti- infix vs. ti base).  This document
+sketches the implementation of smart aliasing for GDL.
+
+1. Value and Context
+--------------------
+
+The key to the implementation is that values exist in a context.  This
+context may be the adjacent graphemes (the environment) or the
+lemmatization.  Some aliasing is context-free, however (e.g.,
+dingir/dinger/dijer => dijir).
+
+2. Environment
+--------------
+
+The environment is considered twice in the aliasing sequence: once on
+initial aliasing and again after aliasing.
+
+During the initial aliasing a candidate alias is checked against its
+environment constraints.  If it meets all constraints, the aliasing is
+performed.
+
+After aliasing, a completed form is available.  Smart aliasing data
+may include a list of final forms to be remapped as a whole.  Thus, an
+aliasing procedure which results in he2-til3-e-til3-e, say, can be
+remapped to he2-ti-e-til3-e (i.e., the first TI is presumably a
+writing of a verbal morpheme).
+
+3. Lemmatization
+----------------
+
+Candidate aliases can be constrained to one or more lemmata.  Each
+time a candidate alias is identified, the lemmatization constraints
+are evaluated and if all are met, the aliasing is performed.
+
+4. Input Format
+---------------
+
+4a. Aliases
+***********
+
+Aliases are entered by giving the map-to alias at the head of a list
+of map-from aliases:
+
+  ja2 ga2 je26 ge26
+
+
+4b. Environment Constraints
+***************************
+
+Environment constraints are entered after an alias list, one per line.
+Each constraint may give a list of graphemes which must (not) come
+before the alias and/or a list of graphemes which must (not) come
+before the alias.  If both pre and post lists are given, then both
+must be satisfied, they are not alternates.  Lists may contain more
+than one grapheme: the list is split on hyphens and matched
+sequentially, working right-to-left for pre lists and left to right
+for post lists.  Determinatives must be rendered as normal graphemes
+in lists.
+
+A pre-alias list begins with '<'; a post-alias list begins with '>'.
+A not-list is preceded by '!':
+
+ja2 ga2
+ 	!<in !>ar
+	<mu-un
+	>gar-ar
+
+4c. Lemmatization Constraints
+*****************************
+
+Lemmatization constraints are entered after an alias, one per line.
+They may be negated by being preceded by '!'.  Where a lemma may be
+written with long and short readings of the same sign (e.g., kurx and
+ku4) it is likely to be easiest to suppress the aliasing for that
+lemma completely with '!'.
+
+kurx(KU4) ku4
+	!kur[enter]V/i
+
+til3 ti
+	!ti[rib]N
+
+4d. Post-aliasing forms
+***********************
+
+These have their own syntax and may be scattered throughout the
+aliases file or placed together, or both.  They are given by simply
+giving the post-alias form first, then an equals-arrow surrounded by
+spaces, then the post-alias fix form:
+
+he2-til3-ib2-jar => he2-ti-ib2-jar
+
+When a post-alias form fix is matched at the form level, the grapheme
+sequence is also corrected.
+
+5. Implementation
+-----------------
+
+The entries in an alias list are inverted to produce a hash of
+candidates for aliasing.  The hash points to a list of alias blocks
+which is evaluated in sequence until a block is found for which the
+current context (normally an xcl_l node) meets all the constraints.
+
+A consequence of this implementation is that some care must be taken
+with the ordering of alias blocks for common candidates; in
+particular, unconstrained aliases must be given at the end of the
+aliases list so that they are not matched before aliases with
+constraints.

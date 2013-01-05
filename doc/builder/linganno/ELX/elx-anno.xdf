@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>ELX: Oracc Linguistic Annotation for Elamite</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Elamite used in Oracc.
+<!--  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.  This document assumes knowledge of its parent
+  page on linguistic annotation (see top of menu at left).
+ -->
+</dc:description>
+</d:meta>
+
+<h1>Divided Signs</h1>
+
+<p>A very few signs may be split in the middle; these are annotated
+using the new ATF <code>@d</code> ("divided") notation as follows:</p>
+
+<table>
+<tr><td>ANŠE</td><td>_ansze@d_</td></tr>
+<tr><td>NUMUN</td><td>_numun@d_</td></tr>
+<tr><td>GEŠTIN</td><td>_gesztin@d_</td></tr>
+</table>
+
+<h1>Split Words</h1>
+
+<p>A new notation has been added to ATF to support splitting words
+over lines.  We call the first part of the split word the head, and
+the following parts the continuations; a split word may be written
+over several lines, and thus may have multiple continuations.</p>
+
+<p>A split word head always ends with the character sequence
+<code>-;</code> (hyphen semi-colon), even if the split occurs before a
+determinative.  A split word continuation always begins with a hyphen,
+even if the split occurs before a determinative.  A split word
+continuation which is not the final element in the chain always ends
+with <code>-;</code>.</p>
+
+<pre class="cookbook">
+1. a-;
+2. -ba-;
+3. -am3
+</pre>
+
+<p>Any structural labels are permitted between the lines containing
+split words.</p>
+
+<h1>Number Notations</h1>
+
+<p>In general Elamite numbers are notated in the CDLI style as <code
+class="cookbook">1(u) 1(disz)</code>, etc.</p>
+
+<p>Several unusual signs are used for certain numbers, and these are
+annotated using the ATF <code>@v</code> ("variant") notation; in this
+case, the variation is relative to the normal Sumero-Akkadian
+cuneiform practice rather than implying variation within Elamite
+practice.</p>
+
+<table width="60%" class="vcenter">
+<caption>Elamite numbers and CDLI transliterations</caption>
+<tr valign="baseline"><td><img src="etc/elx-1third.png" alt="elx-1third" height="30"/></td><td>1/3(disz)@v</td><td>1/3</td></tr>
+<tr><td><img src="etc/elx-1half.png" alt="elx-1half" height="30"/></td><td>1/2(disz)</td><td>1/2</td></tr>
+<tr><td><img src="etc/elx-2thirds.png" alt="elx-2thirds" height="30"/></td><td>2/3(disz)@v</td><td>2/3</td></tr>
+<tr><td><img src="etc/elx-1disz.png" alt="elx-1disz" height="30"/></td><td>1(disz)</td><td>1</td></tr>
+<tr><td><img src="etc/elx-2disz.png" alt="elx-2disz" height="30"/></td><td>2(disz)</td><td>2</td></tr>
+<tr><td><img src="etc/elx-3disz.png" alt="elx-3disz" height="30"/></td><td>3(disz)</td><td>3</td></tr>
+<tr><td><img src="etc/elx-4disz.png" alt="elx-4disz" height="30"/></td><td>4(disz)@v</td><td>4</td></tr>
+<tr><td><img src="etc/elx-5disz.png" alt="elx-5disz" height="30"/></td><td>5(disz)</td><td>5</td></tr>
+<tr><td><img src="etc/elx-6disz.png" alt="elx-6disz" height="30"/></td><td>6(disz)</td><td>6</td></tr>
+<tr><td><img src="etc/elx-7disz.png" alt="elx-7disz" height="30"/></td><td>7(disz)</td><td>7</td></tr>
+<tr><td><img src="etc/elx-8disz.png" alt="elx-8disz" height="30"/></td><td>8(disz)</td><td>8</td></tr>
+<tr><td><img src="etc/elx-9disz.png" alt="elx-9disz" height="30"/></td><td>9(disz)@v</td><td>9</td></tr>
+<tr><td><img src="etc/elx-1u.png" alt="elx-1u" height="30"/></td><td>1(u)</td><td>10</td></tr>
+<tr><td><img src="etc/elx-2u.png" alt="elx-2u" height="30"/></td><td>2(u)</td><td>20</td></tr>
+<tr><td><img src="etc/elx-3u.png" alt="elx-3u" height="30"/></td><td>3(u)</td><td>30</td></tr>
+<tr><td><img src="etc/elx-4u.png" alt="elx-4u" height="30"/></td><td>4(u)@v</td><td>40</td></tr>
+<tr><td><img src="etc/elx-5u.png" alt="elx-5u" height="30"/></td><td>5(u)@v</td><td>50</td></tr>
+<tr><td><img src="etc/elx-1shu.png" alt="elx-1shu" height="30"/></td><td>1(szu)</td><td>60</td></tr>
+<tr><td><img src="etc/elx-1gesz1u.png" alt="elx-1gesz1u" height="30"/></td><td>1(gesz2) 1(u)</td><td>70</td></tr>
+<tr><td><img src="etc/elx-1gesz2u.png" alt="elx-1gesz2u" height="30"/></td><td>1(gesz2) 2(u)</td><td>80</td></tr>
+<tr><td><img src="etc/elx-1gesz3u.png" alt="elx-1gesz3u" height="30"/></td><td>1(gesz2) 3(u)</td><td>90</td></tr>
+<tr><td><img src="etc/elx-1disz1me.png" alt="elx-1disz1me" height="30"/></td><td>1(disz) _me_</td><td>100</td></tr>
+<tr><td><img src="etc/elx-1disz1lim.png" alt="elx-1disz1lim" height="30"/></td><td>1(disz) _lim_</td><td>1000</td></tr>
+<tr><td><img src="etc/elx-1disz1pi.png" alt="elx-1disz1pi" height="30"/></td><td>1(disz) _pi_</td><td>10000</td></tr>
+</table>
+
+<h1>Sign Values with sub-zero</h1>
+
+<p>In the last column are values in Borger ABZ; I have not yet checked
+Borger MZL to see if the not-in-list (nil) values are there.</p>
+
+<pre>
+  dam0   = EL               (nil)
+  mak0   = KUR              (nil)
+  maz0   = MASZ2            maz2
+  muk0   = SAL              muk3
+  muz0   = MUSZ             (nil)
+  rak0   = |SAL+BAR|        (nil)
+  ram0   = EL               (nil)
+  szab0  = "SZAB6"          szab6
+  szap0  = "SZAB6"          szap6
+  szib0  = ESZ              (nil)
+  szip0  = ESZ              (nil)
+  zik0   = ZAK              (nil)
+  zil0   = TAR              zil3
+  zir0   = SZUD             zir4
+</pre>
+
+<d:resources>
+<d:resource copy="yes" href="etc/elx-1third.png" />
+<d:resource copy="yes" href="etc/elx-1half.png" />
+<d:resource copy="yes" href="etc/elx-2thirds.png" />
+<d:resource copy="yes" href="etc/elx-1disz.png" />
+<d:resource copy="yes" href="etc/elx-2disz.png" />
+<d:resource copy="yes" href="etc/elx-3disz.png" />
+<d:resource copy="yes" href="etc/elx-4disz.png" />
+<d:resource copy="yes" href="etc/elx-5disz.png" />
+<d:resource copy="yes" href="etc/elx-6disz.png" />
+<d:resource copy="yes" href="etc/elx-7disz.png" />
+<d:resource copy="yes" href="etc/elx-8disz.png" />
+<d:resource copy="yes" href="etc/elx-9disz.png" />
+<d:resource copy="yes" href="etc/elx-1u.png" />
+<d:resource copy="yes" href="etc/elx-2u.png" />
+<d:resource copy="yes" href="etc/elx-3u.png" />
+<d:resource copy="yes" href="etc/elx-4u.png" />
+<d:resource copy="yes" href="etc/elx-5u.png" />
+<d:resource copy="yes" href="etc/elx-1shu.png" />
+<d:resource copy="yes" href="etc/elx-1gesz1u.png" />
+<d:resource copy="yes" href="etc/elx-1gesz2u.png" />
+<d:resource copy="yes" href="etc/elx-1gesz3u.png" />
+<d:resource copy="yes" href="etc/elx-1disz1me.png" />
+<d:resource copy="yes" href="etc/elx-1disz1lim.png" />
+<d:resource copy="yes" href="etc/elx-1disz1pi.png" />
+</d:resources>
+</d:doc>

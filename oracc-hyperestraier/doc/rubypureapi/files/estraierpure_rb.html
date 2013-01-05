@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: estraierpure.rb [estraierpure]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }<\/style>" )
+
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+  <div id="fileHeader">
+    <h1>estraierpure.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>estraierpure.rb
+
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>2007-04-12 10:52:50 +0900</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Pure Ruby Interface of Hyper Estraier</h1>
+<p>
+Hyper Estraier is a full-text search system for communities.
+</p>
+<h2>Introduction</h2>
+<p>
+This is a package implementing the node API of <a
+href="http://fallabs.com/hyperestraier/">Hyper Estraier</a>. This is a pure
+ruby package. So, it works on Linux, Mac OS X, Windows, and so on. It does
+not depend on the core library of Hyper Estraier. Applications are
+implemented as clients of node servers running on local or remote machines.
+This package requires Ruby 1.8.4 or later versions.
+</p>
+<p>
+Though Hyper Estraier itself is released under the terms of the GNU LGPL,
+this package is released under the terms of a BSD-style license.
+</p>
+<h2>Setting</h2>
+<p>
+Get the package of the latest version of Hyper Estraier.
+</p>
+<p>
+Extract the package and enter the sub directory `rubypure&#8217; and
+perform installation.
+</p>
+<pre>
+ cd rubypure
+ ./configure
+ make
+ su
+ make install
+</pre>
+<p>
+The package `estraierpure&#8217; should be required in each source file of
+application programs and include the module `EstraierPure&#8217; at
+pleasure.
+</p>
+<h2>Example of Gatherer</h2>
+<p>
+The following is the simplest implementation of a gatherer.
+</p>
+<pre>
+ require &quot;estraierpure&quot;
+ include EstraierPure
+
+ # create and configure the node connecton object
+ node = Node::new
+ node.set_url(&quot;http://localhost:1978/node/test1&quot;)
+ node.set_auth(&quot;admin&quot;, &quot;admin&quot;)
+
+ # create a document object
+ doc = Document::new
+
+ # add attributes to the document object
+ doc.add_attr(&quot;@uri&quot;, &quot;http://estraier.gov/example.txt&quot;)
+ doc.add_attr(&quot;@title&quot;, &quot;Over the Rainbow&quot;)
+
+ # add the body text to the document object
+ doc.add_text(&quot;Somewhere over the rainbow.  Way up high.&quot;)
+ doc.add_text(&quot;There's a land that I heard of once in a lullaby.&quot;)
+
+ # register the document object to the node
+ unless node.put_doc(doc)
+   STDERR.printf(&quot;error: %d\n&quot;, node.status)
+ end
+</pre>
+<h2>Example of Searcher</h2>
+<p>
+The following is the simplest implementation of a searcher.
+</p>
+<pre>
+ require &quot;estraierpure&quot;
+ include EstraierPure
+
+ # create and configure the node connecton object
+ node = Node::new
+ node.set_url(&quot;http://localhost:1978/node/test1&quot;)
+
+ # create a search condition object
+ cond = Condition::new
+
+ # set the search phrase to the search condition object
+ cond.set_phrase(&quot;rainbow AND lullaby&quot;)
+
+ # get the result of search
+ nres = node.search(cond, 0);
+ if nres
+   # for each document in the result
+   for i in 0...nres.doc_num
+     # get a result document object
+     rdoc = nres.get_doc(i)
+     # display attributes
+     value = rdoc.attr(&quot;@uri&quot;)
+     printf(&quot;URI: %s\n&quot;, value) if value
+     value = rdoc.attr(&quot;@title&quot;)
+     printf(&quot;Title: %s\n&quot;, value) if value
+     # display the snippet text */
+     printf(&quot;%s&quot;, rdoc.snippet)
+   end
+ else
+   STDERR.printf(&quot;error: %d\n&quot;, node.status)
+ end
+</pre>
+<h2>License</h2>
+<pre>
+ Copyright (C) 2004-2006 Mikio Hirabayashi
+ All rights reserved.
+</pre>
+<p>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+</p>
+<ul>
+<li>Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+</li>
+<li>Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+</li>
+<li>Neither the name of Mikio Hirabayashi nor the names of its contributors may
+be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+</li>
+</ul>
+<p>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+&#8220;AS IS&#8221; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</p>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+
+        uri&nbsp;&nbsp;
+
+        cgi&nbsp;&nbsp;
+
+        socket&nbsp;&nbsp;
+
+        stringio&nbsp;&nbsp;
+
+      </div>
+    </div>
+
+   </div>
+
+
+  </div>
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+    <!-- if method_list -->
+
+
+
+
+  </div>
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+#!/bin/sh
+for a in `@@ORACC@@/bin/allprojlist.sh` ; \
+    do @@ORACC@@/bin/projsave-$1.sh $a ; \
+done

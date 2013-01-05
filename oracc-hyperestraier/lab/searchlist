@@ -1,0 +1,112 @@
+#! /bin/sh
+
+#================================================================
+# searchlist
+# Search documents with a list
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:.:.." ; export PATH
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:.:..:../.." ; export LD_LIBRARY_PATH
+casket="casket"
+
+
+# set the casket
+if [ "$#" -ge 1 ]
+then
+  casket="$1"
+fi
+
+
+# function to generate words
+wordlist(){
+cat <<__EOF
+mikio
+unix
+gnu
+Estraier
+Hyper Estraier
+This is the simplest sample document draft.
+This
+This is
+This is the simplest
+document
+document draft
+draft.
+.
+My name is Mikio Hirabayashi
+これは最も単純な文書ドラフトです。
+こ
+これ
+これは
+これは最も単純
+文書ドラフト
+ドラフト
+です。
+。
+、
+桃太郎
+桃
+そこに
+しかも
+検索
+検索が高速
+バグ
+来る
+日本
+ファイル
+インストール
+野球 AND サッカー
+Hyper AND Estraier
+これ AND 京都
+こ AND です
+本文 OR テキスト AND も
+しかし AND しかも OR でも ANDNOT だけ
+あ OR い OR う OR ア OR イ OR ウ OR 行
+。 ANDNOT 検索
+を OR に OR が OR へ OR や OR の OR から OR で OR より AND ソフトウェア
+これにて AND 一件 AND 落着 AND 大岡 AND 越前 OR 忠相
+驚き AND 桃の木 AND 山椒の木
+畏れ AND 入谷 AND の AND 鬼子母神
+とんだ AND ところ AND に AND 北村大膳
+a AND A
+a OR A
+a NOT A
+abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 \!\"#$%&'()~=~|\`\{+\*\}\<\>?_ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&'()~=~|\`\{+\*\}\<\>?_
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\!\"#$%&'()~=~|\`\{+\*\}\<\>?_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\!\"#$%&'()~=~|\`\{+\*\}\<\>?_
+[UVSET] AND 文書
+[UVSET] ANDNOT a OR the OR is
+[UVSET] ANDNOT を OR に OR が OR へ OR や OR の OR から OR で OR より
+[SIMILAR] WITH 100000 開発 WITH 90000 平林 WITH 80000 幹雄 WITH 70000 estraier WITH 60000 hyper WITH 50000 qdbm WITH 40000 unix WITH 30000 全文検索 WITH 20000 検索 WITH 10000 システム WITH 9000 ビルド WITH 8000 ファイル WITH 7000 インストール WITH 6000 分散 WITH 5000 p2p WITH 4000 する WITH 3000 る。 WITH 2000 、 WITH 1000 超迷子 WITH 90 バカ
+[SIMILAR] WITH 300 グー WITH 200 チョキ WITH 100 パー
+[SIMILAR] WITH 900 じゃじゃ丸 WITH 800 ピッコロ WITH 700 ポロリ
+[SIMILAR] WITH 3 ドロンジョ WITH 2 ボヤッキー WITH 1 トンズラー
+[SIMILAR] WITH 300 男 WITH 200 女
+[SIMILAR] WITH 1 加熱 WITH 1 冷却
+[SIMILAR] WITH 100 Hyper Estraier WITH 100 Quick Database Manager
+[SIMILAR] WITH 10000000 てめえらの血は何色だ WITH 100000 お前はもう死んでいる WITH 10000 我が生涯に一片の悔い無し WITH 1000 帝王は引かぬ媚びぬ省みぬ WITH 300 北斗 WITH 200 南斗 WITH 100 元斗
+[ID] 1
+[URI] data001
+__EOF
+}
+
+
+# perform test
+wordlist |
+while read word
+do
+  printf '====[ %s ]====\n' "$word"
+  estcmd search -gs -max 8 -vu "$casket" "$word" | egrep -v '^(TIME|----)'
+  printf '\n\n'
+done
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

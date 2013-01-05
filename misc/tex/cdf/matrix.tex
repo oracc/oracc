@@ -1,0 +1,113 @@
+%% should make this configurable by reading a file of parameters
+%% called \jobname.mtp (matrix-tex-parameters)
+\def\setupfonts{%
+	\savecurrsize
+	\numfonts@ze{ten}%
+	\txtfonts@ze{ten}%
+	\scofonts@ze{ten}%
+	\edef\txtfnt@{ten}%
+	\edef\scofnt@{ten}}
+
+\def\lsquare{[}
+\def\rsquare{]}
+\def\plussize{\six}
+\def\damdotsize{\seven}
+
+\def\meta#1{\kern-1pt\rlap{\lower1pt\hbox{#1}}}
+
+% normal space
+\def\normalspacewidth{3pt}
+\def\Tn{\tabskip\normalspacewidth}
+\def\kernTn{\kern\normalspacewidth}
+
+\newbox\Sprsbox
+\setbox\Sprsbox=\hbox{\raise0pt\hbox{\plussize\rm+}}
+\def\Sprs#1{\Hw\unhcopy\Sprsbox\meta{#1}\Hw}
+
+\newbox\Sabsbox
+\setbox\Sabsbox=\hbox{\raise0pt\hbox{\seven\rm-}}
+\def\Sabs#1{\Hw\unhcopy\Sabsbox\meta{#1}\Hw}
+
+\newbox\Sdambox
+\setbox\Sdambox=\hbox{\rlap{\copy\Sprsbox}\lower2pt\hbox to\wd\Sprsbox{\hss\eight\rm.\hss}}
+\def\Sdam#1{\Hw\unhcopy\Sdambox\meta{#1}\Hw}
+
+\newbox\Strcbox
+\setbox\Strcbox=\hbox{\d{\six\rm x}}
+\def\Strc#1{\Hw\copy\Strcbox\meta{#1}\Hw}
+
+\newbox\Sbrkbox
+\setbox\Sbrkbox=\hbox{\raise1pt\hbox{.}}
+\def\Sbrk#1{\Hw\unhcopy\Sbrkbox\rlap{#1}\Hw}
+
+\def\Tabloc#1{\lower1pt\hbox{\six\rm#1}}
+\def\siglumfnt{\seven\rm}
+\newdimen\savedhfuzz
+\newdimen\siglumboxwd \siglumboxwd17pt
+\def\Sig#1#2{%
+  \global\sigtoks={#1}%
+  \ifchop
+    \hbox to\contfirstcolwd{\kern\contblockleft
+	\kern\numgutter\siglumfnt\the\sigtoks\ \Tabloc{#2}\hfil}%
+  \else
+    \savedhfuzz\hfuzz
+    \hfuzz.75\spacewidth
+    \hbox to\contblockleft{\hbox to\siglumboxwd{\siglumfnt\the\sigtoks\hfil}\ \Tabloc{#2}\hfil}%
+    \hfuzz\savedhfuzz
+  \fi
+  \setscofnt}
+
+\def\Sempty{}
+
+\def\sqbsize{\eight}
+\def\iBreakage#1{\rm\lsquare\kern.5pt\hfill\rsquare\rlap{#1}}
+\def\Breakage#1{{\sqbsize\rm\lsquare\kern.5pt\hfill\rsquare\rlap{\ #1}}}
+\def\BreakageL#1{{\sqbsize\rm\lsquare\hfill\hbox{\hfil}\rlap{\ #1}}}
+\def\BreakageR#1{{\sqbsize\rm\hfill\rsquare\rlap{\ #1}}}
+\def\BreakageLR#1{{\sqbsize\rm\hfill\rlap{\ #1}}}
+\def\MTXnl{{\six\rm/}}
+\def\MTXthinsp{\kern1pt}
+\def\scorehook{\contblockleft=.85in\relax}
+\def\scorestrut{}
+\notewidth3in
+\notebaselineskip9pt
+\noblackboxes
+
+\leftftrinfo{\vbox to0pt{\kern10pt\vfill
+             \hbox to\fullhsize{\seven\rm 
+				\unhcopy\Sprsbox\ =\ present\hfil 
+				\unhcopy\Sdambox\ =\ damaged\hfil 
+				\unhcopy\Strcbox\ =\ trace\hfil 
+				\unhcopy\Sbrkbox\ =\ broken away\hfil 
+				\unhcopy\Sabsbox\ =\ absent\hfil 
+				\MTXnl\ =\ new line\hfil
+				;\ =\ indented line}\vss}}
+
+\def\brackets#1{[\kern-1pt#1\kern-1pt]}
+%\def\halfbrackets#1#2#3{#1\d#2#3}
+
+\def\d#1{\setbox0=\hbox{#1}\rlap{\lower2pt\hbox to\wd0{\hss.\hss}}#1}%
+ % \oalign{\the\font#1\crcr\hidewidth.\hidewidth}}
+\let\[\relax \let\]\relax \let\\\d
+
+\def\Lic#1#2{\unskip\rlap{\hbox to#1{{\ #2}\hfil}}\hidewidth}
+
+\def\Mappend#1{\rlap{\kern.25em#1}}
+
+%\settypefieldbymargins{1.5in}{.5in}{1in}{.5in}
+
+\def\Thzero#1{\hbox to2#1{\hfil}}
+
+\let\phantom\relax \let\phantoms\gobbleone
+
+\def\sp{\kern3pt}
+
+%\makeactive{[}\def[{{\rm\lsquare}}
+%\makeactive{]}\def]{{\rm\rsquare}}
+
+% \usefontcollection{\DATimesRoman}\DATM\ten\rm
+
+\def\Matrix{\newpage\heading Textual Matrix\par}
+\let\endMatrix\relax
+
+\endinput

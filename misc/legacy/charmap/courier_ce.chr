@@ -1,0 +1,8 @@
+subdigits=1
+
+copy = áéíóúàèìòùÁÉÍÓÚÀÈÌÒÙšŠ
+
+remove = 
+
+replace = 
+	ğ => ŋ

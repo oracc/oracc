@@ -1,0 +1,40 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994,1995,1996.  It is distributed under 
+% the terms of the Gnu General Public License version 2 (see
+% /da/doc/COPYING or ftp://prep.ai.mit.edu:/pub/gnu/COPYING).
+%
+% $Id: onepage.tex,v 1.1 1996/09/20 11:31:05 s Exp $
+
+%% Simple stuff to help doing generic one-off pages
+
+\def\finishparflush{\ifhmode\unskip\bgroup\parfillskip0pt \endgraf\egroup\fi}
+
+\def\onepage@setup#1#2{\global\count0=#1 
+  \global\fnotecounter=#2 \global\advance\fnotecounter-1}
+
+% #1 = page number; #2 = first footnote number
+\def\beginonepage#1#2{\onepage@setup{#1}{#2}\noindent}
+\def\endonepage{\finishparflush}
+
+% use this if the page begins in vertical mode (to avoid spurious
+% top of page spacing)
+\def\beginonepagevmode#1#2{\onepage@setup{#1}{#2}}
+\def\endonepagevmode{}
+
+\def\beginonepagebox#1{\onepage@setup{#1}{0}}
+\def\endonepagebox{}
+
+\def\xref{\errmessage{Page has a xref: replace it with hard-wired value!}}
+\def\pxref{\errmessage{Page has a pxref: replace it with hard-wired value!}}
+\def\nxref{\errmessage{Page has a nxref: replace it with hard-wired value!}}
+\def\sxref{\errmessage{Page has a sxref: replace it with hard-wired value!}}
+\def\cxref{\errmessage{Page has a cxref: replace it with hard-wired value!}}
+
+\def\beginwithchapter#1{\global\chapterno#1 \global\advance\chapterno-1\relax}
+
+\endinput
+
+% $Log: onepage.tex,v $
+% Revision 1.1  1996/09/20 11:31:05  s
+% Initial revision
+%

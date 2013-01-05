@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <!-- include "xtf.rnc" -->
+  <define name="cdf-inline">
+    <zeroOrMore>
+      <choice>
+        <text/>
+        <ref name="rspan"/>
+        <ref name="ispan"/>
+        <ref name="sign"/>
+        <ref name="bispan"/>
+        <ref name="gdl"/>
+      </choice>
+    </zeroOrMore>
+  </define>
+</grammar>

@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Sort transliteration records.
+#
+# ARG1 = input
+# ARG2 = output
+#
+# Input is tab-delimited fields.
+# 
+# F1 = literal transliteration
+# F2 = tlit without determinatives
+# F3 = grouping key
+#
+#
+msort -jlq -d'\t' --out $2 \
+    -n2 -n1 -n3 \
+    -s @@ORACC@@/lib/config/msort.order \
+    -x @@ORACC@@/lib/config/msort.exclude \
+    $1

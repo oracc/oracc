@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: estraier-doc.rb [estraier]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }<\/style>" )
+
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+  <div id="fileHeader">
+    <h1>estraier-doc.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>estraier-doc.rb
+
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>2007-04-12 10:52:50 +0900</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Ruby Binding of Hyper <a href="../classes/Estraier.html">Estraier</a></h1>
+<p>
+Hyper <a href="../classes/Estraier.html">Estraier</a> is a full-text search
+system for communities.
+</p>
+<h2>Introduction</h2>
+<p>
+This is a package implementing the core API of <a
+href="http://fallabs.com/hyperestraier/">Hyper Estraier</a>, including
+native codes written in C. As it works on Linux, Mac OS X, Windows, and so
+on, native libraries for each environment are required to run programs.
+This package requires Ruby 1.8.4 or later versions.
+</p>
+<h2>Setting</h2>
+<p>
+Install the latest version of Hyper <a
+href="../classes/Estraier.html">Estraier</a>.
+</p>
+<p>
+Enter the sub directory `rubynative&#8217; in the extracted package then
+perform installation.
+</p>
+<pre>
+ cd rubynative
+ ./configure
+ make
+ su
+ make install
+</pre>
+<p>
+The package `estraier&#8217; should be required in each source file of
+application programs and include the module `Estraier&#8217; at pleasure.
+</p>
+<h2>Example of Gatherer</h2>
+<p>
+The following is the simplest implementation of a gatherer.
+</p>
+<pre>
+ require &quot;estraier&quot;
+ include Estraier
+
+ # create the database object
+ db = Database::new
+
+ # open the database
+ unless db.open(&quot;casket&quot;, Database::DBWRITER | Database::DBCREAT)
+   printf(&quot;error: %s\n&quot;, db.err_msg(db.error))
+   exit
+ end
+
+ # create a document object
+ doc = Document::new
+
+ # add attributes to the document object
+ doc.add_attr(&quot;@uri&quot;, &quot;http://estraier.gov/example.txt&quot;)
+ doc.add_attr(&quot;@title&quot;, &quot;Over the Rainbow&quot;)
+
+ # add the body text to the document object
+ doc.add_text(&quot;Somewhere over the rainbow.  Way up high.&quot;)
+ doc.add_text(&quot;There's a land that I heard of once in a lullaby.&quot;)
+
+ # register the document object to the database
+ unless db.put_doc(doc, Database::PDCLEAN)
+   printf(&quot;error: %s\n&quot;, db.err_msg(db.error))
+ end
+
+ # close the database
+ unless db.close
+   printf(&quot;error: %s\n&quot;, db.err_msg(db.error))
+ end
+</pre>
+<h2>Example of Searcher</h2>
+<p>
+The following is the simplest implementation of a searcher.
+</p>
+<pre>
+ require &quot;estraier&quot;
+ include Estraier
+
+ # create the database object
+ db = Database::new
+
+ # open the database
+ unless db.open(&quot;casket&quot;, Database::DBREADER)
+   printf(&quot;error: %s\n&quot;, db.err_msg(db.error))
+   exit
+ end
+
+ # create a search condition object
+ cond = Condition::new
+
+ # set the search phrase to the search condition object
+ cond.set_phrase(&quot;rainbow AND lullaby&quot;)
+
+ # get the result of search
+ result = db.search(cond)
+
+ # for each document in the result
+ dnum = result.doc_num
+ for i in 0...dnum
+   # retrieve the document object
+   doc = db.get_doc(result.get_doc_id(i), 0)
+   next unless doc
+   # display attributes
+   uri = doc.attr(&quot;@uri&quot;)
+   printf(&quot;URI: %s\n&quot;, uri) if uri
+   title = doc.attr(&quot;@title&quot;)
+   printf(&quot;Title: %s\n&quot;, title) if title
+   # display the body text
+   doc.texts.each do |text|
+     printf(&quot;%s\n&quot;, text)
+   end
+ end
+
+ # close the database
+ unless db.close
+   printf(&quot;error: %s\n&quot;, db.err_msg(db.error))
+ end
+</pre>
+<h2>License</h2>
+<pre>
+ Copyright (C) 2004-2006 Mikio Hirabayashi
+ All rights reserved.
+</pre>
+<p>
+Hyper <a href="../classes/Estraier.html">Estraier</a> is free software; you
+can redistribute it and/or modify it under the terms of the GNU Lesser
+General Public License as published by the Free Software Foundation; either
+version 2.1 of the License or any later version. Hyper <a
+href="../classes/Estraier.html">Estraier</a> is distributed in the hope
+that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details. You should have
+received a copy of the GNU Lesser General Public License along with Hyper
+<a href="../classes/Estraier.html">Estraier</a>; if not, write to the Free
+Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA.
+</p>
+
+    </div>
+
+   </div>
+
+
+  </div>
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+    <!-- if method_list -->
+
+
+
+
+  </div>
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

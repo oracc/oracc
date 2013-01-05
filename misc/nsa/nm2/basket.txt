@@ -1,0 +1,12 @@
+@nm Basket Metrology
+
+1(disz/sila) 	[=1/10 ban2]
+1(disz/sila) 	[=1/3 giri3-lam]
+1(disz/sila) 	[=1/2 giri3-lam]
+1(disz/giri3-lam)	[=1/2 ban2]
+1(ban2) 	[=1/3 ma-sab]
+1(ban2) 	[=1/6 ma-sab]
+1(ban2) 	[=1/6 gi-hal]
+1(ban2) 	[=1/6 kaskal]
+1(barig)	[=1/2 KAB2-IL2]
+1(disz/KAB2-IL2)

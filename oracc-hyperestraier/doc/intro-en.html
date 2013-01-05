@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="Mikio Hirabayashi" />
+<meta name="keywords" content="Hyper Estraier, Estraier, full-text search, introduction" />
+<meta name="description" content="Introduction of Hyper Estraier" />
+<link rel="contents" href="./" />
+<link rel="alternate" href="intro-en.html" hreflang="en" title="the English version" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:mikio@fallabs.com" />
+<title>Introduction of Hyper Estraier Version 1</title>
+</head>
+
+<body>
+
+<h1>Introduction</h1>
+
+<div class="note">Copyright (C) 2004-2007 Mikio Hirabayashi</div>
+<div class="note">Last Update: Tue, 06 Mar 2007 12:05:18 +0900</div>
+<div class="navi">[<span class="void">English</span>/<a href="intro-ja.html" hreflang="ja">Japanese</a>] [<a href="index.html">HOME</a>]</div>
+
+<hr />
+
+<h2 id="tableofcontents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#deployment">Deployment</a></li>
+<li><a href="#complement">Complement</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Hyper Estraier is a full-text search system.  You can search lots of documents for some documents including specified words.  If you run a web site, it is useful as your own search engine for pages in your site.  Also, it is useful as search utilities of mail boxes and file servers.</p>
+
+<p>The characteristic of Hyper Estraier is the following.</p>
+
+<ul>
+<li>High performance of search</li>
+<li>High scalability of target documents</li>
+<li>Perfect recall ratio by N-gram method</li>
+<li>High precision by hybrid mechanism of N-gram and morphological analyzer</li>
+<li>Phrase search, regular expressions, attribute search, and similarity search</li>
+<li>Multilingualism with Unicode</li>
+<li>Independent of file format and repository</li>
+<li>Intelligent web crawler</li>
+<li>Simple and powerful API</li>
+<li>Supporting P2P architecture</li>
+</ul>
+
+<p>Hyper Estraier has two aspects.  One is as a library to construct a full-text search system.  That is, API (application programming interface) is provided for programmers.  It enables for you to embed advanced functions of full-text search into your applications.</p>
+
+<p>The other is as an application of the API described above.  A command and a CGI script are provided.  Using them, you can construct a typical full-text search system without any programming.</p>
+
+<p>This document describes how to construct a full-text search system with the command and the CGI script, seeing a subject matter of a search system of a web site.  Let's start with learning of the command and then step to the API.</p>
+
+<hr />
+
+<h2 id="installation">Installation</h2>
+
+<p>This section describes how to install Hyper Estraier with the source package.  As for a binary package, see its installation manual.</p>
+
+<h3>Preparation</h3>
+
+<p>Hyper Estraier is available on UNIX-like systems and Windows NT series.  At least, the following environment are supported.</p>
+
+<ul>
+<li>Linux 2.2 and later (IA32/IA64/AMD64/SPARC/Alpha)</li>
+<li>FreeBSD 4.9 and later (IA32/Alpha)</li>
+<li>Solaris 8 and later (IA32/SPARC)</li>
+<li>Mac OS X 10.2 and later (IA32/PowerPC)</li>
+<li>HP-UX 11.11 and later (IA64/PA-RISC)</li>
+<li>Windows 2000 and later (IA32/IA64/AMD64)</li>
+</ul>
+
+<p><code>gcc</code> 2.95 or later and <code>make</code> are required to install Hyper Estraier with the source package.  They are installed by default on Linux, FreeBSD and so on.</p>
+
+<p>As Hyper Estraier depends on the following libraries, install them beforehand.</p>
+
+<ul>
+<li><a href="http://www.gnu.org/software/libiconv/">libiconv</a> : for conversion of character encodings.  1.9.1 or later is suggested (glibc includes it).</li>
+<li><a href="http://www.gzip.org/zlib/">zlib</a> : for loss-less data compression.  1.2.1 or later is suggested.</li>
+<li><a href="http://fallabs.com/qdbm/">QDBM</a> : for embedded database.  1.8.75 or later is required.</li>
+</ul>
+
+<p>As well, it is suggested to build QDBM with enabling zlib (<code>./configure --enable-zlib</code>) so that the index of Hyper Estraier becomes smaller.  Note that QDBM 1.8.74 or earlier is not supported.</p>
+
+<h3>Installation</h3>
+
+<p>When an archive file of Hyper Estraier is extracted, change the current working directory to the generated directory and perform installation.</p>
+
+<p>Run the configuration script.</p>
+
+<pre>./configure
+</pre>
+
+<p>Build programs.</p>
+
+<pre>make
+</pre>
+
+<p>Perform self-diagnostic test.</p>
+
+<pre>make check
+</pre>
+
+<p>Install programs.  This operation must be carried out by the <code>root</code> user.</p>
+
+<pre>make install
+</pre>
+
+<h3>Result</h3>
+
+<p>When a series of work finishes, the following files will be installed.</p>
+
+<pre>/usr/local/include/estraier.h
+/usr/local/include/estmtdb.h
+/usr/local/include/estnode.h
+/usr/local/lib/libestraier.a
+/usr/local/lib/libestraier.so.8.38.0
+/usr/local/lib/libestraier.so.8
+/usr/local/lib/libestraier.so
+/usr/local/lib/pkgconfig/hyperestraier.pc
+/usr/local/bin/estcmd
+/usr/local/bin/estmttest
+/usr/local/bin/estmaster
+/usr/local/bin/estbutler
+/usr/local/bin/estcall
+/usr/local/bin/estwaver
+/usr/local/bin/estload
+/usr/local/bin/estconfig
+/usr/local/bin/estwolefind
+/usr/local/libexec/estseek.cgi
+/usr/local/libexec/estfraud.cgi
+/usr/local/libexec/estproxy.cgi
+/usr/local/libexec/estscout.cgi
+/usr/local/libexec/estsupt.cgi
+/usr/local/share/hyperestraier/estseek.conf
+/usr/local/share/hyperestraier/estseek.tmpl
+/usr/local/share/hyperestraier/estseek.top
+/usr/local/share/hyperestraier/estseek.help
+/usr/local/share/hyperestraier/estfraud.conf
+/usr/local/share/hyperestraier/estproxy.conf
+/usr/local/share/hyperestraier/estscout.conf
+/usr/local/share/hyperestraier/estsupt.conf
+/usr/local/share/hyperestraier/estresult.dtd
+/usr/local/share/hyperestraier/estraier.idl
+/usr/local/share/hyperestraier/locale/...
+/usr/local/share/hyperestraier/filter/...
+/usr/local/share/hyperestraier/increm/...
+/usr/local/share/hyperestraier/doc/...
+/usr/local/man/man1/...
+/usr/local/man/man3/...
+</pre>
+
+<h3>Mac OS X, HP-UX, and Windows</h3>
+
+<p>On Mac OS X, perform `<code>make mac</code>' instead of `<code>make</code>', and `<code>make check-mac</code>' instead of `<code>make check</code>', and `<code>make install-mac</code>' instead of `<code>make install</code>'.  As well, `<code>libqdbm.dylib</code>' and so on are created instead of `<code>libestraier.so</code>' and so on.</p>
+
+<p>On HP-UX, perform `<code>make hpux</code>' instead of `<code>make</code>', and `<code>make check-hpux</code>' instead of `<code>make check</code>', and `<code>make install-hpux</code>' instead of `<code>make install</code>'.  As well, `<code>libqdbm.sl</code>' is created instead of `<code>libestraier.so</code>' and so on.</p>
+
+<p>On Windows, the Cygwin environment is required for building.  Moreover, MinGW versions of zlib, libiconv, regex, QDBM, and Pthreads are required.  On that basis, perform `<code>make win</code>'.  No installation command is provided for Windows.</p>
+
+<h3>Options of configure</h3>
+
+<p>The following options can be specified with `./configure'.</p>
+
+<ul>
+<li><kbd>--enable-debug</kbd> : build for debugging.  Enable debugging symbols, do not perform optimization, and perform static linking.</li>
+<li><kbd>--enable-devel</kbd> : build for development.  Enable debugging symbols, perform optimization, and perform dynamic linking.</li>
+<li><kbd>--enable-mecab</kbd> : enable MeCab for keyword extraction.</li>
+<li><kbd>--disable-zlib</kbd> : disable ZLIB compression of the index.</li>
+<li><kbd>--enable-lzo</kbd> : use LZO compression instead of ZLIB.</li>
+<li><kbd>--enable-bzip</kbd> : use BZIP2 compression instead of ZLIB.</li>
+<li><kbd>--enable-vista</kbd> : use Vista database instead of Villa.</li>
+</ul>
+
+<hr />
+
+<h2 id="deployment">Deployment</h2>
+
+<p>This section describes how to create an index, and deploy the CGI script.</p>
+
+<h3>Administration Command</h3>
+
+<p>A database called inverted index is used in order to search for documents quickly.  That is, you should make the index containing target documents before you search some of them.</p>
+
+<p><code>estcmd</code> is provided to administrate indexes.  <code>estcmd</code> handles each file on the file system of the local host, as each document.  <code>estcmd</code> can register documents to the index and remove them from the index.  Moreover, <code>estcmd</code> can gather documents under a directory and register them as a job lot.  Supported file formats are plain-text, HTML, and e-mail (MIME).</p>
+
+<p>As other formats are also supported by using filters, the method is mentioned later.</p>
+
+<h3>Indexing</h3>
+
+<p>It is presupposed that you run a web site and its contents are under `<code>/home/www/public_html</code>'.  Then, let's register them into the index as `<code>/home/www/casket</code>'.</p>
+
+<pre>cd /home/www
+estcmd gather -sd casket /home/www/public_html
+</pre>
+
+<p>Files under `<code>/home/www/public_html</code>' are gathered and registered into a new index named as `<code>casket</code>'.  That's all for indexing.</p>
+
+<h3>Deployment of the CGI Script</h3>
+
+<p>It is presupposed that the URL of a directory for CGI scripts is `<code>http://www.estraier.ad.jp/cgi-bin/</code>' and its local path is `<code>/home/www/cgi-bin</code>'.  Then, let's deploy requisite files into there.</p>
+
+<pre>cd /home/www/cgi-bin/
+cp /usr/local/libexec/estseek.cgi .
+cp /usr/local/share/hyperestraier/estseek.* .
+</pre>
+
+<p>`<code>/usr/local/libexec/estseek.cgi</code>', `<code>estseek.(conf|tmpl|top|help)</code>' in `<code>/usr/local/share/hyperestraier/</code>' are copied into `<code>/home/www/cgi-bin/</code>'.  <code>estseek.cgi</code> is the CGI script.  <code>estseek.conf</code> is the configuration file.  <code>estseek.tmpl</code> is the template file.  <code>estseek.top</code> is for the message of the top page.  <code>estseek.help</code> is for the usage of search functions.</p>
+
+<p>Open <code>estseek.conf</code> with a text editor and modify it.  Most items are not needed to be modified, except for `<code>indexname</code>' and `<code>replace</code>'.  Do as the following.</p>
+
+<pre>indexname: /home/www/casket
+...
+replace: file:///home/www/public_html/{{!}}http://www.estraier.ad.jp/
+...
+</pre>
+
+<p>`<code>indexname</code>' specifies the path of the index.  `<code>replace</code>' specifies regular expressions and replacement strings to convert the local URL of each document for the web server.</p>
+
+<h3>Let's Try It</h3>
+
+<p>All set?  Let's access the URL `<code>http://www.estraier.ad.jp/cgi-bin/estseek.cgi</code>' with your favorite web browser.  How to use is described on the page.</p>
+
+<h3>Updating the Index</h3>
+
+<p>When some documents in your site are modified or new documents are added, please update the index at regular intervals.  Though it is okay to delete the index and remake it, incremental registration is useful.</p>
+
+<p>The `<code>-sd</code>' option added when indexing is to record modification time of each document.  And it is useful for incremental registration.  Let's perform the following command.</p>
+
+<pre>cd /home/www
+estcmd gather -cl -sd -cm casket /home/www/public_html
+</pre>
+
+<p>The option `<code>-cm</code>' is to ignore files which are not modified.  The option `<code>-cl</code>' is to clean up data of overwritten documents.</p>
+
+<h3>Reflection of Deleted Documents</h3>
+
+<p>If some documents in your site are deleted, please reflect them to the index.  Let's perform the following command.</p>
+
+<pre>cd /home/www
+estcmd purge -cl casket
+</pre>
+
+<p>All records in the index are scanned and records of deleted documents are removed.  The option `<code>-cl</code>' is to clean up data of overwritten documents.</p>
+
+<h3>Optimization</h3>
+
+<p>Iteration of `<code>gather</code>' and `<code>purge</code>' makes the index fat gradually.  Optimization is to eliminate the dispensable regions and keeps the index small.</p>
+
+<pre>cd /home/www
+estcmd optimize casket
+</pre>
+
+<p>If `<code>gather</code>' or `<code>purge</code>' is performed without the `<code>-cl</code>' option, records of deleted documents are not deleted though deletion marks was applied to them.  `<code>optimize</code>' is useful to delete such void regions.</p>
+
+<h3>Automated Administration</h3>
+
+<p>`<code>cron</code>' enables you to automate operations for administration.  Register the following script to `<code>crontab</code>'.</p>
+
+<pre>/usr/local/bin/estcmd gather -cl -sd -cm /home/www/casket /home/www/public_html
+/usr/local/bin/estcmd purge -cl /home/www/casket
+</pre>
+
+<h3>For more detail</h3>
+
+<p>Detail information of the command and the CGI script is described in <a href="uguide-en.html">the user's guide</a>.  Moreover, for information of the API, see <a href="pguide-en.html">the programming guide</a>.</p>
+
+<hr />
+
+<h2 id="complement">Complement</h2>
+
+<p>This section describes how to contact the author and the license of Hyper Estraier.</p>
+
+<h3>Contact</h3>
+
+<p>Hyper Estraier was written and is maintained by <a href="http://fallabs.com/mikio/">Mikio Hirabayashi</a>.  You can contact the author by e-mail to `<code>mikio@fallabs.com</code>'.</p>
+
+<h3>License</h3>
+
+<p>Hyper Estraier is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License or any later version.</p>
+
+<p>Hyper Estraier is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Lesser General Public License along with Hyper Estraier (See the file `<code>COPYING</code>'); if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.</p>
+
+<h3>Acknowledgment</h3>
+
+<p>Hyper Estraier was developed under management by Fumitoshi Ukai and supports by Exploratory Software Project of <a href="http://www.ipa.go.jp/">Information-technology Promotion Agency, Japan (IPA)</a>.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

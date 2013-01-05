@@ -1,0 +1,30 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: da.tex,v 0.12 1996/08/11 12:13:48 s Exp $
+
+\input daplain
+\input replain
+\input utility
+
+\newif\ifAFOURpaper
+\input output
+\input fonts
+\input paper
+\input spacing
+\input document
+\input env
+\input styles
+\input polyglot
+
+% That's the end of macro definitions
+
+\input hyphen
+
+\def\fmtname{CDF}\def\fmtversion{4.0 for TeX \TeXversion}
+\errorcontextlines10000
+
+\global\catcode`_=10
+
+\draftstyle\Serifed\def\folioface{\UBB}\readxrf

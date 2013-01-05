@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>NSA</dc:title>
+  <dcterms:alternative>Number System Analyzer</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-01-09</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document contains a brief explanation of the
+  rationale and implementation of the Oracc Number System
+  Analyzer.</dc:description>
+</d:meta>
+
+<p>Parts of this document assume some familiarity with the
+architecture of the XML representation of texts used by the Oracc; see
+<a href="../xmlarch/">the XML Architecture</a> overview for an
+introduction.</p>
+
+<h1>Definitions</h1>
+
+<d:resources/>
+
+<d:references>
+<d:ref name="XML Architecture Overview" uri="../xmlarch/"/>
+</d:references>
+</d:doc>

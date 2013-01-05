@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>COFs: Compound Orthographic Forms</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2009-10-25</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes how L2 handles Compound
+  Orthographic Forms, or written words which contain more than one
+  lemma.</dc:description>
+</d:meta>
+
+<h1>Introduction</h1>
+
+<p>COFs are forms that are written as one word but in fact should
+be understood as more than one lemma. Their meanings are transparent
+and they do not justify a separate entry in the glossary.</p>
+
+<h2>Lemmatizing</h2>
+
+<p>COFs are lemmatized by giving the individual lemmata joined by
+ampersands (<code>&amp;</code>) with no whitespace or semi-colons.
+Examples in Akkadian include:</p>
+
+<ul>
+<li>
+<p>Linking two crasis words, e.g., <code>ip-pan = ina[in]PRP&amp;pān[front]N</code>, "in front of".</p>
+</li>
+<li>
+<p>Lemmatizing compound logograms e.g., <code>BAR.RA.NA =
++ina[in//on]PRP$&amp;+ahu[arm//side]N$ahišu</code>, "on his side".</p>
+</li>
+</ul>
+
+<h2>Glossarizing</h2>
+
+<p>Although the entire COF does not get its own glossary entry, every
+word in a COF must contain a <code>@form</code> entry for the
+spelling.  In this <code>@form</code> entry, the normalization which
+corresponds to the glossary <code>@entry</code> is called the primary
+component, and is given without parentheses.  The other words, the
+secondary components, have their appropriate normalization given in
+parentheses:</p>
+
+<pre class="cookbook">
+@entry ina [in] PRP
+@form ip-pa-ni-šu₂ $ina $(pānišu)
+@form ip-pa-ni-šu₂-nu $ina $(pānišunu)
+@form ...
+@sense PRP ina
+@sense ...
+@end entry
+
+...
+
+entry pānu [front] N
+@form ip-pa-ni-šu₂ $(ina) $pānišu
+@form ip-pa-ni-šu₂-nu $(ina) $pānišunu
+@form ...
+@sense N front
+@end entry
+</pre>
+
+<p>COFs may contain more than two elements, and the same principles apply.</p>
+
+<h2>Sumerian COFs</h2>
+
+<p>COFs require a little extra care in Sumerian, because Sumerian
+<code>@form</code> entries also have BASE, MORPH and perhaps other
+additional fields.  Further, Sumerian glossaries do not contain NORM
+fields directly, because they are computed from the MORPH.</p>
+
+<p>For simplicity of parsing, the rules with Sumerian COFs are as
+follows:</p>
+<ul>
+<li>NORM must be given explicitly; simply use the value of MORPH and
+replace the <code>~</code> (tilde) component with the citation
+form;</li>
+<li>all NORMs must be given consecutively, at the start of the @form,
+but after any LANG field (as occurs in Sumerian entries in QPN
+glossaries);</li>
+<li>all other fields in the <code>@form</code> line must be given
+after the last NORM entry in the line, even if that entry is a
+secondary one (i.e., one which is enclosed in parentheses);</li>
+<li>BASE should be specified using the centre-dot to indicate that
+what precedes the centre-dot is part of the base, and the degree
+symbol to indicate that what follows the degree symbol is part of the
+base.  The two symbols may be combined where several words are written
+using a COF.  The BASE should be included in the <code>@bases</code>
+line.</li>
+</ul>
+
+<p>Here is a real life example (edited for clarity), in which the sign
+<code>ušu₂</code> is used to write <code>u₄ šu₂</code>:</p>
+
+<pre class="cookbook">
+@entry šuš [cover] V/t
+@bases suš₂; u°šu₂
+@form   ušu₂ $(ud) $šuš /u°šu₂ #~
+@sense V/t to cover, to spread over
+@end entry
+
+@entry ud [sun] N
+@bases ud; u·šu₂
+@form   ušu₂ $ud $(šuš) /u·šu₂ #~
+@sense N sun
+@end entry</pre>
+
+<h2>Cross-glossary COFs</h2>
+
+<p>COFs whose components are in different glossaries only occur on
+Oracc when a COF combines a common noun with a proper noun.  No
+special treatment is needed for this case, but the relevant
+<code>@form</code> lines do have to be present for each component just
+as they do when the components are in the same glossary.</p>
+
+<p>Thus, in <code>akk.glo</code> one would have:</p>
+
+<pre class="cookbook">
+@entry kabūtu [(animal) dung] N
+@form {na₄}ŠURIM.{d}GU₄ $kabūt $(Šeriš)
+...
+</pre>
+
+<p>And in the proper noun glossary, <code>qpn.glo</code>, the relevant
+lines under Šeriš is:</p>
+
+<pre class="cookbook">
+@entry Šeriš [1] DN
+@form {na₄}ŠURIM.{d}GU₄ $(kabūt) $Šeriš
+...
+</pre>
+
+<h2>L2 Diagnostics</h2>
+
+<h3>unknown COF component</h3>
+
+<p>This diagnostic is generated when processing a <code>@form</code>
+line which contains COF components indicated with parentheses.  The
+diagnostic gives the line number of the COF <code>@form</code> which
+is being processed, and indicates the spelling and an expected
+normalization which has not been found.  Since the COF handling is not
+tied to entries, but to spelling and normalization combinations, the
+diagnostic cannot tell you which <code>@entry</code> it expected to
+find the component in.</p>
+
+<p>Here is an actual example:</p>
+
+<pre class="example">
+00lib/akk-x-neoass.glo:3114: `i-da-a-ti=dāti': unknown COF component</pre>
+
+<p>This tells you that at line 3114 in 00lib/akk-x-neoass.glo, a COF
+occurs which has a component <code>$(dāti)</code> that has not been
+found.  Sometimes these may be typos, and sometimes they are missing
+<code>@form</code> lines.</p>
+
+<p>To debug such errors, visit the offending line in the glossary and
+look at the context.  That usually makes it obvious which word the
+error applies to--in this case <code>dāt[behind]PRP</code>.  Then look
+at the <code>@entry</code> for the word.  Unless there is a bug in L2,
+you will find that the expected form line is missing, in this
+case:</p>
+
+<pre class="example">
+@form i-da-ti $(ina) $dāti
+</pre>
+
+<p>Assuming that there is no typo and that the <code>@form</code>
+entry really should be there, you can now fix it by simply editing the
+glossary to add the <code>@form</code> line.</p>
+
+</d:doc>

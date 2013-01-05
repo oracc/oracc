@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>CDF</dc:title>
+  <dcterms:alternative>CDL Document Format</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://oracc.ns/cdf/1.0</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-01-01</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>CDF is an XML format for representing a variety of
+  document types from text transliterations to books.  The format
+  combines narrative facilities with technical data types such as XTF
+  data and corpus-based dictionaries.</dc:description>
+</d:meta>
+
+<d:schema name="cdf" uri="http://oracc.org/ns/cdf/1.0">
+<d:rnc>
+namespace c = "http://oracc.org/cdf/1.0"
+include "xtf.rnc"
+include "cdfi.rnc"
+cdf = element c:cdf { (document | transliteration | composite | translation)* }
+
+document = element c:document { section | toplev }
+
+toplev = ( bibliography | catalog | p | section | xtf )*
+
+bibliography = element c:bibliography { attribute type { "by-year" }? , bib+ }
+
+bib     = element c:bib     { (year , data) | (cdf-inline) }
+year    = element c:biby    { text }
+data    = element c:bibd    { text }
+
+catalog = element c:catalog { record* }
+record  = element c:record  { field*  }
+field   = element c:field   { key , val }
+key     = element c:key     { xsd:NMTOKEN }
+val     = element c:val     { cdf-inline }
+
+p       = element c:p       { cdf-inline }
+
+section = element c:section { attribute type { xsd:NMTOKEN } , toplev }
+
+gdl     = element c:gdl { words }
+
+</d:rnc>
+</d:schema>
+
+<d:schema name="cdfi" uri="http://oracc.org/ns/cdf-inline/1.0">
+
+<d:rnc>
+namespace ci = "http://oracc.org/cdf-inline/1.0"
+# include "xtf.rnc"
+cdf-inline = (text | rspan | ispan | sign | bispan | gdl )*
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

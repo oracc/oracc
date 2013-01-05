@@ -1,0 +1,2 @@
+This library currently contains both the old ATF->UTF mapper, atf2utf,
+and the new implementation, charsets.

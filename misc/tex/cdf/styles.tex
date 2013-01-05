@@ -1,0 +1,69 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: styles.tex,v 0.3 1996/05/27 16:19:37 s Exp $
+
+% Style Sheets module for DA TeX
+% ==============================
+%
+% Page layout and indentions, can all be set via an overarching document
+% styling command which accepts a list of parameterizations and then
+% calls all the appropriate setxxx macros
+%
+% Note that sequence is important here. The document size command must
+% come before any dimens are set, which basically means that it must
+% come first of all.
+
+% This is the nicer draft style, but a bigger text/wider spaced one 
+% is also defined just after this.
+\def\draftstyle{\documentsize{11}%
+  \settypefieldbymargins{1truein}{1truein}{1truein}{1truein}%
+  \headersep.5truein \footersep0pt
+  \spaceandahalf\sethspacing{2em}{2em}\cmpdimens
+  \righthdrinfo{\folio}\sloppy\raggedbottom}
+
+% Ugly draft style.
+\def\largedraftstyle{\documentsize{12}%
+  \settypefieldbymargins{1truein}{1truein}{1truein}{1truein}%
+  \headersep.5truein \footersep0pt
+  \doublespace\sethspacing{2em}{2em}\cmpdimens
+  \righthdrinfo{\folio}\sloppy\raggedbottom}
+
+% Most books will need to modify this: it's just intended as a starting
+% point.
+\def\bookstyle{\documentsize{10}%
+  \setmarginsbytypefield{49truepc}{30truepc}%
+  \headersep.5truein \footersep0pt
+  \singlespace\sethspacing{2em}{2em}\cmpdimens
+  \righthdrinfo{\folio}\fussy\normalbottom}
+
+% a basic style for writing letters with
+\def\letterstyle{\documentsize{11}%
+  \settypefieldbymargins{1.25truein}{1truein}{1.25truein}{.35truein}%
+  \headersep0pt \footersep0pt % no headers or footers in letters
+  \singlespace % this does a \setvspacing
+  \sethspacing{0pt}{2.5em} \cmpdimens
+  \righthdrinfo{}\lefthdrinfo{} % all headings empty
+  \rightftrinfo{}\leftftrinfo{}
+  \centrehdrinfo{}\centreftrinfo{}
+  \headersep0pt \footersep0pt
+  \fussy \hfuzz=1pt \parskip2pt plus1pt % \raggedbottom 
+  \checkfile{address.tex}% the address business is not yet documented
+  \ifitexists\def\next{\macrofile{address}}\else\let\next\relax\fi
+  \next }
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: styles.tex,v $
+Revision 0.3  1996/05/27 16:19:37  s
+*** empty log message ***
+
+% Revision 0.2  1994/12/30  05:25:53  s
+% globally replace \defCTdimens for \cmpdimens
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

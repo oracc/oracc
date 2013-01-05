@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jrnsermap>
+   <jrnser key="AAA">
+      <aka>Annals of Archaeology and Anthropology</aka>
+   </jrnser>
+   <jrnser key="AAASH">
+      <aka>Acta Antiqua Academiae Scientiarum Hungaricae</aka>
+   </jrnser>
+   <jrnser key="AASF">
+      <aka>Annales Academiae Scientiarum Fennicae, Series B (Helsinki)</aka>
+   </jrnser>
+   <jrnser key="AASOR">
+      <aka>Annual of the American Schools of Oriental Research</aka>
+      <aka>The Annual of the American Schools of Oriental Research</aka>
+   </jrnser>
+   <jrnser key="ABAW">
+      <aka>Bayerische Akademie der Wissenschaften, Philosophisch-historische Klasse, Abhandlungen</aka>
+   </jrnser>
+   <jrnser key="AcOr">
+      <aka>Acta Orientalia</aka>
+      <aka>Acta Orientalia (Budapest)</aka>
+   </jrnser>
+   <jrnser key="Aegyptus">
+      <aka>Rivista italiana di Egittologia e di Papirologia</aka>
+   </jrnser>
+   <jrnser key="AEPHE">
+      <aka>AEPHE</aka>
+   </jrnser>
+   <jrnser key="AfO">
+      <aka>Archiv für Orientforschung</aka>
+   </jrnser>
+   <jrnser key="AfO Beiheft">
+      <aka>AfO Beiheft</aka>
+      <aka>Archiv für Orientforschung Beiheft</aka>
+   </jrnser>
+   <jrnser key="AHAW">
+      <aka>Abhandlungen der Heidelberger Akademie der Wissenschaften, Phil.-hist. Kl.,</aka>
+      <aka>Abhandlungen der Heidelberger Akademie der Wissenschaften, Phil.-Hist. Klasse</aka>
+   </jrnser>
+   <jrnser key="AION">
+      <aka>AION</aka>
+   </jrnser>
+   <jrnser key="AJA">
+      <aka>American Journal of Archaeology</aka>
+   </jrnser>
+   <jrnser key="AJSL">
+      <aka>American Journal of Semitic Languages and Literatures</aka>
+   </jrnser>
+   <jrnser key="Akkadica">
+      <aka>Akkadica: Périodique bimestriel de la Fondation Assyriologique Georges Dossin</aka>
+   </jrnser>
+   <jrnser key="Anadolu Arast.">
+      <aka>Anadolu. Revue des études d'archéologie et d'histoire en Turquie</aka>
+   </jrnser>
+   <jrnser key="AnBibl">
+      <aka>Analecta Biblica</aka>
+   </jrnser>
+   <jrnser key="ANET3">
+      <aka>ANET<sp>3</sp>
+      </aka>
+   </jrnser>
+   <jrnser key="ANETS">
+      <aka>Ancient Near Eastern Text and Studies</aka>
+   </jrnser>
+   <jrnser key="Annali di Napoli">
+      <aka>Annali dell'Istituto Orientale di Napoli</aka>
+   </jrnser>
+   <jrnser key="Annali Pisa">
+      <aka>Annali della Scuola normale superiore di Pisa. Classe di Lettere e  Filosofia</aka>
+   </jrnser>
+   <jrnser key="AnOr">
+      <aka>Analecta Orientalia</aka>
+   </jrnser>
+   <jrnser key="AnSt">
+      <aka>Anatolian Studies</aka>
+   </jrnser>
+   <jrnser key="AOAT">
+      <aka>Alter Orient Und Altes Testament</aka>
+      <aka>Alter Orient und Altes Testament</aka>
+      <aka>Altes Orient und Altes Testament</aka>
+   </jrnser>
+   <jrnser key="AOATS">
+      <aka>Alter Orient und Altes Testament Sonderreihe</aka>
+   </jrnser>
+   <jrnser key="AoF">
+      <aka>Altorientalische Forschungen</aka>
+      <aka>Altorientalische Forschungen, Schriften zur Geschichte und Kultur des Alten Orients, Berlin</aka>
+   </jrnser>
+   <jrnser key="AOS">
+      <aka>American Oriental Series</aka>
+   </jrnser>
+   <jrnser key="AOSTS">
+      <aka>American Oriental Society Translations Series</aka>
+   </jrnser>
+   <jrnser key="APEANES">
+      <aka>Athlone Publications in Egyptology and Ancient Near Eastern Studies</aka>
+   </jrnser>
+   <jrnser key="APHAOM">
+      <aka>Association pour la Promotion de l'Histoire et de l'Archéologie Orientales, Memoires</aka>
+   </jrnser>
+   <jrnser key="Archaeology">
+      <aka>Archaeology (Archaeological Institute of America)</aka>
+   </jrnser>
+   <jrnser key="Archéologia">
+      <aka>Archéologia</aka>
+   </jrnser>
+   <jrnser key="ARET">
+      <aka>Archivi reali di Ebla, Testi</aka>
+   </jrnser>
+   <jrnser key="ArOr">
+      <aka>Archiv Orientální</aka>
+      <aka>Archív Orientálni</aka>
+      <aka>Archív Orientální</aka>
+   </jrnser>
+   <jrnser key="ARRIM">
+      <aka>Annual Review of the Royal Inscriptions of Mesopotamia Project</aka>
+   </jrnser>
+   <jrnser key="AS">
+      <aka>Assyriological Studies</aka>
+      <aka>Assyriological Studies (Oriental Institute, Univ. of Chicago)</aka>
+   </jrnser>
+   <jrnser key="ASAW">
+      <aka>Abhandlungen der Sächsischen Akademie der Wissenschaften</aka>
+   </jrnser>
+   <jrnser key="ASJ">
+      <aka>Acta Sum</aka>
+      <aka>Acta Sumerologica</aka>
+      <aka>Acta Sumerologica (Japan)</aka>
+   </jrnser>
+   <jrnser key="ASSF">
+      <aka>Acta Societatis Scientiarum Fennicae (Helsingfors)</aka>
+      <aka>Acta Societatis Scientiarum Fennicae</aka>
+   </jrnser>
+   <jrnser key="Assur">
+      <aka>Assur</aka>
+   </jrnser>
+   <jrnser key="Assyriological Miscellanies">
+      <aka>Assyriological Miscellanies (Institute of Assyriology, Copenhagen)</aka>
+   </jrnser>
+   <jrnser key="ATU">
+      <aka>Archaische Texte aus Uruk</aka>
+   </jrnser>
+   <jrnser key="AUCT">
+      <aka>Andrews University Cuneiform Texts (Berrien Springs, Michigan)</aka>
+   </jrnser>
+   <jrnser key="AuOr">
+      <aka>Aula Orientalis</aka>
+      <aka>Aula Or</aka>
+   </jrnser>
+   <jrnser key="AuOr Sup">
+      <aka>Aula Orientalis Supplementa</aka>
+   </jrnser>
+   <jrnser key="BA">
+      <aka>Beiträge zur Assyriologie und semitischen Sprachwissenschaft</aka>
+   </jrnser>
+   <jrnser key="Babyloniaca">
+      <aka>Babyloniaca: Études de philologie assyrobabylonienne</aka>
+   </jrnser>
+   <jrnser key="BaM">
+      <aka>Baghdader Mitteilungen</aka>
+   </jrnser>
+   <jrnser key="BARI">
+      <aka>BAR International Series</aka>
+   </jrnser>
+   <jrnser key="BASOR">
+      <aka>Bulletin of the American Schools of Oriental Research</aka>
+   </jrnser>
+   <jrnser key="BAW">
+      <aka>Bayerische Akademie der Wissenschaften</aka>
+   </jrnser>
+   <jrnser key="BBVO">
+      <aka>Berliner Beiträge zum Vorderen Orient</aka>
+   </jrnser>
+   <jrnser key="BE">
+      <aka>Babylonian Expedition of the Univ. of Pennsylvania, Series A: Cuneiform Texts</aka>
+   </jrnser>
+   <jrnser key="Beer-Sheva">
+      <aka>Beer-Sheva</aka>
+   </jrnser>
+   <jrnser key="Belleten">
+      <aka>Türk Tariḫ Kurumu, Belleten (Ankara)</aka>
+   </jrnser>
+   <jrnser key="Biblica">
+      <aka>Biblica</aka>
+   </jrnser>
+   <jrnser key="Bibliothèque de l'École des Hautes Études, IVe Section: Sciences Historiques et Philologiques">
+      <aka>Bibliothèque de l'École des Hautes Études, IVe Section: Sciences Historiques et Philologiques</aka>
+   </jrnser>
+   <jrnser key="Bibliothèque des histoires">
+      <aka>Bibliothèque des histoires</aka>
+   </jrnser>
+   <jrnser key="Biblischer Kommentar: Altes Testament">
+      <aka>Biblischer Kommentar: Altes Testament</aka>
+   </jrnser>
+   <jrnser key="Bilinguismo">
+      <aka>Il bilinguismo a Ebla, ed. L. Cagni</aka>
+   </jrnser>
+   <jrnser key="BiMes">
+      <aka>Bibliotheca Mesopotamica (Malibu)</aka>
+      <aka>Bibliotheca Mesopotamica</aka>
+      <aka>BiMesop.</aka>
+   </jrnser>
+   <jrnser key="BIN">
+      <aka>Babylonian Inscriptions in the Collection of James B. Nies</aka>
+   </jrnser>
+   <jrnser key="BiOr">
+      <aka>Bibliotheca Orientalis</aka>
+   </jrnser>
+   <jrnser key="BIS">
+      <aka>Bar-Ilan Studies in Near Eastern Languages and Culture</aka>
+      <aka>Bar-Ilan Studies in Near Eastern Languages and Culture. Publications of the Samuel N. Kramer Institute of Assyriology</aka>
+   </jrnser>
+   <jrnser key="BMQ">
+      <aka>British Museum Quarterly</aka>
+   </jrnser>
+   <jrnser key="BRM">
+      <aka>Babylonian Records in the Library of J. Pierpont Morgan</aka>
+   </jrnser>
+   <jrnser key="BSA">
+      <aka>Bulletin on Sumerian Agriculture</aka>
+   </jrnser>
+   <jrnser key="BSOAS">
+      <aka>Bulletin of the School of Oriental and African Studies</aka>
+   </jrnser>
+   <jrnser key="BT">
+      <aka>Brockman Tablets</aka>
+   </jrnser>
+   <jrnser key="CA">
+      <aka>Current Anthropology</aka>
+   </jrnser>
+   <jrnser key="CAD">
+      <aka>The Assyrian Dictionary of the Oriental Institute of the Univ. of Chicago</aka>
+   </jrnser>
+   <jrnser key="CAH">
+      <aka>Cambridge Ancient History</aka>
+   </jrnser>
+   <jrnser key="CAI">
+      <aka>Cambridge History of Iran</aka>
+   </jrnser>
+   <jrnser key="CBQ">
+      <aka>CBQ</aka>
+   </jrnser>
+   <jrnser key="CM">
+      <aka>Cuneiform Monographs</aka>
+   </jrnser>
+   <jrnser key="CMET">
+      <aka>Catalogo del Museo Egizio di Torino, serie seconda, collezioni</aka>
+   </jrnser>
+   <jrnser key="CNIP">
+      <aka>Carsten Niebuhr Institute Publications</aka>
+   </jrnser>
+   <jrnser key="Colloquium Rauricum">
+      <aka>Colloquium Rauricum</aka>
+   </jrnser>
+   <jrnser key="CRAIB">
+      <aka>Académie des Inscriptions et Belles Lettres, Comptes rendus</aka>
+   </jrnser>
+   <jrnser key="Critical Inquiry">
+      <aka>Critical Inquiry</aka>
+   </jrnser>
+   <jrnser key="Crozer Theological Seminary Babylonian Publications">
+      <aka>Crozer Theological Seminary Babylonian Publications</aka>
+   </jrnser>
+   <jrnser key="CRRAI">
+      <aka>Comptes Rendus des Rencontres Assyriologiques Internationales</aka>
+      <aka>Comptes rendus des Rencontres Assyriologiques Internationales</aka>
+      <aka>Comptes-Rendus des Rencontres Assyrologiques Internationales</aka>
+      <aka>CRRAI</aka>
+   </jrnser>
+   <jrnser key="CT">
+      <aka>Cuneiform Texts from Babylonian Tablets in the British Museum</aka>
+   </jrnser>
+   <jrnser key="CT Metropolitan">
+      <aka>Cuneiform Texts in the Metropolitan Museum of Art</aka>
+   </jrnser>
+   <jrnser key="Culture and History">
+      <aka>Culture and History</aka>
+   </jrnser>
+   <jrnser key="Cuneiform Monographs">
+      <aka>Cuneiform Monographs</aka>
+   </jrnser>
+   <jrnser key="DS-NELL">
+      <aka>DS-NELL</aka>
+   </jrnser>
+   <jrnser key="Entretiens sur l'antiquité classique">
+      <aka>Entretiens sur l'antiquité classique</aka>
+   </jrnser>
+   <jrnser key="Eretz-Israel">
+      <aka>Eretz-Israel</aka>
+      <aka>Eretz Israel</aka>
+      <aka>Eretz-Israel: Archaeological, Historical and Geographical Studies</aka>
+   </jrnser>
+   <jrnser key="Expedition">
+      <aka>Expedition: The Univ. Museum Magazine of Archaeology/Anthropology</aka>
+   </jrnser>
+   <jrnser key="FAOS">
+      <aka>Freiburger Altorientalische Studien</aka>
+      <aka>Freiburger altorientalische Studien</aka>
+   </jrnser>
+   <jrnser key="Forschungen zum Alten Testament">
+      <aka>Forschungen zum Alten Testament</aka>
+   </jrnser>
+   <jrnser key="Foundations of Language, Supplementary Series">
+      <aka>Foundations of Language, Supplementary Series</aka>
+   </jrnser>
+   <jrnser key="Genava">
+      <aka>Bulletin du Musée d'Art et d'Histoire de Genève</aka>
+   </jrnser>
+   <jrnser key="Genre">
+      <aka>Genre</aka>
+   </jrnser>
+   <jrnser key="Harvard Magazine">
+      <aka>Harvard Magazine</aka>
+   </jrnser>
+   <jrnser key="Harvard Semitic Monographs">
+      <aka>Harvard Semitic Monographs</aka>
+   </jrnser>
+   <jrnser key="Hellenistic Culture and Society">
+      <aka>Hellenistic Culture and Society</aka>
+   </jrnser>
+   <jrnser key="Historia Mathematica">
+      <aka>Historia Mathematica (Toronto)</aka>
+   </jrnser>
+   <jrnser key="History of Religions">
+      <aka>History of Religions</aka>
+   </jrnser>
+   <jrnser key="HSAO">
+      <aka>Heidelberger Studien zum Alten Orient</aka>
+   </jrnser>
+   <jrnser key="HSS">
+      <aka>Harvard Semitic Series</aka>
+      <aka>Harvard Semitic Studies</aka>
+   </jrnser>
+   <jrnser key="HUCA">
+      <aka>Hebrew Union College Annual</aka>
+   </jrnser>
+   <jrnser key="IEJ">
+      <aka>IEJ</aka>
+   </jrnser>
+   <jrnser key="IF">
+      <aka>Indogermanische Forschungen</aka>
+   </jrnser>
+   <jrnser key="Incognita">
+      <aka>Incognita</aka>
+   </jrnser>
+   <jrnser key="Institut français d'études anatoliennes, Mémoire">
+      <aka>Institut français d'études anatoliennes, Mémoire</aka>
+   </jrnser>
+   <jrnser key="IOS">
+      <aka>IOS</aka>
+   </jrnser>
+   <jrnser key="Iran">
+      <aka>Iran</aka>
+   </jrnser>
+   <jrnser key="Iraq">
+      <aka>Iraq (British School of Archaeology in Iraq)</aka>
+   </jrnser>
+   <jrnser key="ISET">
+      <aka>Istanbul Arkeoloji Müzelerinde Bulunan Sumer Edebî Tablet ve Parcalari</aka>
+   </jrnser>
+   <jrnser key="Istituto Universitario Orientale: Seminario di Studi Asiatici Series Minor">
+      <aka>Istituto Universitario Orientale: Seminario di Studi Asiatici Series Minor</aka>
+   </jrnser>
+   <jrnser key="ITT">
+      <aka>Inventaire des tablettes de Tello</aka>
+   </jrnser>
+   <jrnser key="JA">
+      <aka>JA</aka>
+   </jrnser>
+   <jrnser key="JAC">
+      <aka>Journal of Ancient Civilizations (Changchun)</aka>
+   </jrnser>
+   <jrnser key="JANES">
+      <aka>Journal of the Ancient Near Eastern Society of Columbia Univ.</aka>
+   </jrnser>
+   <jrnser key="JAOS">
+      <aka>Journal of the American Oriental Society</aka>
+   </jrnser>
+   <jrnser key="JARS">
+      <aka>Journal of the American Royal Society</aka>
+   </jrnser>
+   <jrnser key="JBL">
+      <aka>Journal of Biblical Literature</aka>
+   </jrnser>
+   <jrnser key="JCS">
+      <aka>Journal Of Cuneiform Studies</aka>
+      <aka>Journal of Cuneiform Studies</aka>
+   </jrnser>
+   <jrnser key="JEOL">
+      <aka>Jaarbericht Ex Oriente Lux</aka>
+      <aka>JEOL</aka>
+   </jrnser>
+   <jrnser key="JESHO">
+      <aka>JESHO</aka>
+   </jrnser>
+   <jrnser key="JHNES">
+      <aka>The Johns Hopkins Near Eastern Studies</aka>
+   </jrnser>
+   <jrnser key="JHS">
+      <aka>JHS</aka>
+   </jrnser>
+   <jrnser key="JNES">
+      <aka>Journal Of Ancient Near Eastern Studies</aka>
+      <aka>Journal of Ancient Near Eastern Studies</aka>
+      <aka>Journal Of Near Eastern Studies</aka>
+      <aka>Journal of Near Eastern Studies</aka>
+   </jrnser>
+   <jrnser key="Journal of Ancient Civilizations">
+      <aka>Journal of Ancient Civilizations</aka>
+   </jrnser>
+   <jrnser key="Journal of Ritual Studies">
+      <aka>Journal of Ritual Studies</aka>
+   </jrnser>
+   <jrnser key="Journal of the Royal Asiatic Society, Third Series">
+      <aka>Journal of the Royal Asiatic Society, Third Series</aka>
+   </jrnser>
+   <jrnser key="Journal of Theological Studies NS">
+      <aka>Journal of Theological Studies NS</aka>
+   </jrnser>
+   <jrnser key="JRAS">
+      <aka>Journal of the Royal Asiatic Society</aka>
+   </jrnser>
+   <jrnser key="JSOR">
+      <aka>Journal of the Society of Oriental Research</aka>
+   </jrnser>
+   <jrnser key="JSOT Sup">
+      <aka>JSOT Sup</aka>
+   </jrnser>
+   <jrnser key="JSOT Supplement Series">
+      <aka>JSOT Supplement Series</aka>
+   </jrnser>
+   <jrnser key="JSS">
+      <aka>JSS</aka>
+   </jrnser>
+   <jrnser key="JTVI">
+      <aka>Journal of the Transactions of the Victoria Institute (London)</aka>
+   </jrnser>
+   <jrnser key="Kadmos">
+      <aka>Kadmos</aka>
+   </jrnser>
+   <jrnser key="KBo">
+      <aka>Keilschrifttexte aus Boghazköi</aka>
+   </jrnser>
+   <jrnser key="KUB">
+      <aka>Keilschrifturkunden aus Boghazköi</aka>
+   </jrnser>
+   <jrnser key="Le Savoir Historique">
+      <aka>Le Savoir Historique</aka>
+   </jrnser>
+   <jrnser key="Les cahiers du CEPOA">
+      <aka>Les cahiers du CEPOA</aka>
+   </jrnser>
+   <jrnser key="LSS">
+      <aka>Leipziger semitistische Studien</aka>
+   </jrnser>
+   <jrnser key="Manchester Memoirs">
+      <aka>Memoirs and Proceedings of the Manchester Literary and Philosophical Society</aka>
+   </jrnser>
+   <jrnser key="MANE">
+      <aka>MANE</aka>
+   </jrnser>
+   <jrnser key="MAOG">
+      <aka>Mitteilungen der Alt\-oriental\-ischen Gesellschaft</aka>
+   </jrnser>
+   <jrnser key="MARI">
+      <aka>Mari, Annales de Recherches Interdisciplinaires</aka>
+   </jrnser>
+   <jrnser key="MC">
+      <aka>Mesopotamian Civilisations</aka>
+      <aka>Mesopotamian Civilizations</aka>
+      <aka>Mesopotamian Civilizations (Winona Lake, Indiana)</aka>
+   </jrnser>
+   <jrnser key="MCAAS">
+      <aka>Memoirs of the Connecticut Academy of Arts and Sciences</aka>
+   </jrnser>
+   <jrnser key="MCAS">
+      <aka>Memoirs of the Connecticut Academy of Sciences</aka>
+   </jrnser>
+   <jrnser key="MCS">
+      <aka>Manchester Cuneiform Studies</aka>
+   </jrnser>
+   <jrnser key="MDI">
+      <aka>Mémoires de la Délégation Archéologique en Iran</aka>
+   </jrnser>
+   <jrnser key="MDOG">
+      <aka>Mitteilungen der Deutschen Orient-Gesellschaft</aka>
+   </jrnser>
+   <jrnser key="MDP">
+      <aka>Mémoires de la Délégation en Perse</aka>
+   </jrnser>
+   <jrnser key="Med. Kon. Ak., Ak. van Wetenshappen">
+      <aka>Med. Kon. Ak., Ak. van Wetenshappen</aka>
+   </jrnser>
+   <jrnser key="Mededelingen en verhandelingen van het Vooraziatisch-Egyptisch Genootschap ``Ex Oriente Lux''">
+      <aka>Mededelingen en verhandelingen van het Vooraziatisch-Egyptisch Genootschap ``Ex Oriente Lux''</aka>
+   </jrnser>
+   <jrnser key="MEE">
+      <aka>Materiali Epigrafici di Ebla</aka>
+   </jrnser>
+   <jrnser key="Memoirs of the Connecticut Academy of Arts &amp; Sciences">
+      <aka>Memoirs of the Connecticut Academy of Arts &amp; Sciences</aka>
+   </jrnser>
+   <jrnser key="Mesop.">
+      <aka>Mesopotamia (Univ. of Torino)</aka>
+   </jrnser>
+   <jrnser key="Mesopotamia">
+      <aka>Mesopotamia. Copenhagen Studies in Assyriology</aka>
+      <aka>Mesopotamia: Copenhagen Studies in Assyriology</aka>
+   </jrnser>
+   <jrnser key="Mesopotamian History and Environment Occasional Publications">
+      <aka>Mesopotamian History and Environment Occasional Publications</aka>
+   </jrnser>
+   <jrnser key="Mesopotamian History and Environment, Series II, Memoirs">
+      <aka>Mesopotamian History and Environment, Series II, Memoirs</aka>
+   </jrnser>
+   <jrnser key="Michmanim">
+      <aka>Michmanim</aka>
+   </jrnser>
+   <jrnser key="MIO">
+      <aka>Mitteilungen des Instituts für Orientforschung</aka>
+   </jrnser>
+   <jrnser key="Mittheilungen aus den Orientalisches Sammlungen">
+      <aka>Mittheilungen aus den Orientalisches Sammlungen</aka>
+   </jrnser>
+   <jrnser key="MJ">
+      <aka>Museum Journal (Univ. Museum, Univ. of Pennsylvania)</aka>
+   </jrnser>
+   <jrnser key="MP">
+      <aka>Monuments et mémoires publiés par l'Académie des Inscriptions et des Belles-Lettres (Fondation Eugène Piot)</aka>
+   </jrnser>
+   <jrnser key="MSL">
+      <aka>Materialien zum sumerischen Lexikon; Materials for the Sumerian Lexicon</aka>
+   </jrnser>
+   <jrnser key="MSL SS">
+      <aka>Materials for the Sumerian Lexicon Supplementary Series</aka>
+   </jrnser>
+   <jrnser key="Museum Monograph">
+      <aka>Monograph of the Univ. Museum, Univ. of Pennsylvania</aka>
+   </jrnser>
+   <jrnser key="Museum Tusculanum">
+      <aka>Museum Tusculanum</aka>
+   </jrnser>
+   <jrnser key="MVN">
+      <aka>Materiali per il vocabolario neosumerico</aka>
+   </jrnser>
+   <jrnser key="NABU">
+      <aka>Nouvelles Assyriologiques Brèves et Utilitaires</aka>
+   </jrnser>
+   <jrnser key="New Literary History">
+      <aka>New Literary History</aka>
+   </jrnser>
+   <jrnser key="NF">
+      <aka>Neue Folge</aka>
+   </jrnser>
+   <jrnser key="Niebuhr Institute">
+      <aka>Carsten Niebuhr Institute of Ancient Near Eastern Studies</aka>
+   </jrnser>
+   <jrnser key="OA">
+      <aka>Oriens Antiquus</aka>
+   </jrnser>
+   <jrnser key="OECT">
+      <aka>Oxford Editions of Cuneiform Texts</aka>
+   </jrnser>
+   <jrnser key="OIC">
+      <aka>Oriental Institute Communications</aka>
+   </jrnser>
+   <jrnser key="Oikumene">
+      <aka>Oikumene</aka>
+   </jrnser>
+   <jrnser key="OIP">
+      <aka>Oriental Institute Publications</aka>
+   </jrnser>
+   <jrnser key="OLA">
+      <aka>Orientalia Lovaniensia Analecta</aka>
+      <aka>Orientalia Lovaniensa Analecta</aka>
+   </jrnser>
+   <jrnser key="OLP">
+      <aka>Orientalia Lovaniensia Periodica</aka>
+      <aka>Orientalia Lovaniensa Periodica</aka>
+   </jrnser>
+   <jrnser key="OLZ">
+      <aka>OLZ</aka>
+      <aka>Orientalische Literaturzeitung</aka>
+      <aka>Orientalistische Literaturzeitung</aka>
+   </jrnser>
+   <jrnser key="OPB">
+      <aka>OPB</aka>
+   </jrnser>
+   <jrnser key="OPBF">
+      <aka>Occasional Publications of the Babylonian Fund</aka>
+   </jrnser>
+   <jrnser key="OPSNKF">
+      <aka>Occasional Publications of the Samuel Noah Kramer Fund</aka>
+   </jrnser>
+   <jrnser key="Or">
+      <aka>Orientalia</aka>
+   </jrnser>
+   <jrnser key="OrAn">
+      <aka>OrAn</aka>
+   </jrnser>
+   <jrnser key="OrAnt">
+      <aka>OrAnt</aka>
+   </jrnser>
+   <jrnser key="Orbis Biblicus et Orientalis">
+      <aka>Orbis Biblicus et Orientalis</aka>
+   </jrnser>
+   <jrnser key="Orient">
+      <aka>Bulletin of the Society for Near Eastern Studies in Japan</aka>
+   </jrnser>
+   <jrnser key="OrNS">
+      <aka>Orientalia NS</aka>
+      <aka>Orientalia N.S.</aka>
+   </jrnser>
+   <jrnser key="OrSuec">
+      <aka>Orientalia Suecana</aka>
+   </jrnser>
+   <jrnser key="Paléorient">
+      <aka>Paléorient</aka>
+   </jrnser>
+   <jrnser key="PAPS">
+      <aka>Proceedings of the American Philosophical Society</aka>
+   </jrnser>
+   <jrnser key="PBS">
+      <aka>Publications of the Babylonian Section (Univ. Museum, Univ. of Pennsylvania)</aka>
+   </jrnser>
+   <jrnser key="PCB">
+      <aka>Publications de Comite Belge de Recherches Historiques, Épigraphiques et Archéologiques en Mésopotamie</aka>
+      <aka>Publications de Comité belge de recherches historiques, épigraphiques et archéologiques en Mésopotamie</aka>
+   </jrnser>
+   <jrnser key="PGG">
+      <aka>Proceedings of the Groningen Group for the Study of Mesopotamian Literature</aka>
+   </jrnser>
+   <jrnser key="Philosophisch-historische Klasse, Abhandlungen">
+      <aka>Philosophisch-historische Klasse, Abhandlungen</aka>
+   </jrnser>
+   <jrnser key="Phoenix">
+      <aka>Phoenix</aka>
+   </jrnser>
+   <jrnser key="PRU">
+      <aka>Palais Royal d'Ugarit</aka>
+   </jrnser>
+   <jrnser key="PSBA">
+      <aka>Proceedings of the Society of Biblical Archaeology</aka>
+   </jrnser>
+   <jrnser key="PSD">
+      <aka>The Pennsylvania Sumerian Dictionary</aka>
+   </jrnser>
+   <jrnser key="Publications de l'Institut historique et archéologique néerlandais de Stamboul">
+      <aka>Publications de l'Institut historique et archéologique néerlandais de Stamboul</aka>
+   </jrnser>
+   <jrnser key="Quaderni di Semitistica">
+      <aka>Quaderni di Semitistica</aka>
+   </jrnser>
+   <jrnser key="RA">
+      <aka>Revue d'Assyriologie</aka>
+      <aka>Revue d'assyriologie</aka>
+      <aka>Revue d'Assyriologie et d'Archeologie orientale</aka>
+      <aka>Revue d'assyriologie et d'archéologie orientale</aka>
+   </jrnser>
+   <jrnser key="RAI XXX">
+      <aka>RAI XXX</aka>
+   </jrnser>
+   <jrnser key="RB">
+      <aka>Révue Biblique</aka>
+   </jrnser>
+   <jrnser key="Religion">
+      <aka>Religion</aka>
+   </jrnser>
+   <jrnser key="Rencontre 1">
+      <aka>Comptes rendus de la première Rencontre Assyriologique (Paris 1950); cf. RA 59, 189</aka>
+   </jrnser>
+   <jrnser key="Rencontre 11">
+      <aka>Compte rendu de l'onzième Rencontre Assyriologique Internationale (Leiden 1962)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 12">
+      <aka>Iraq 25/2 (London 1963)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 13">
+      <aka>RA 58/4 (Paris 1964)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 14">
+      <aka>La Divination en Mésopotamie ancienne (Strasbourg 1965)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 17">
+      <aka>Actes de la XVII<sp>e</sp> Rencontre Assyriologique Internationale (Brussels 1969)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 18">
+      <aka>Gesellschaftsklassen im alten Zweistromland (= ABAW NF 75) (Munich 1970)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 19">
+      <aka>Le Palais et la royauté (Paris 1971)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 2">
+      <aka>Compte rendu de la seconde Rencontre Assyriologique Internationale (Paris 1951)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 20">
+      <aka>Le Temple et le culte (Leiden 1972)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 21">
+      <aka>OrNS 45 (Rome 1974)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 23">
+      <aka>Iraq 39 (Birmingham 1976)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 25">
+      <aka>Mesopotamien und seine Nachbarn (Berlin 1978)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 26">
+      <aka>Mesopotamia 8 (Copenhagen 1979)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 28">
+      <aka>AfO Beiheft 19 (Vienna 1981)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 29">
+      <aka>Iraq 45/1 (London 1982)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 3">
+      <aka>Compte rendu de la troisième Rencontre Assyriologique Internationale (Leiden 1952)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 30">
+      <aka>Cuneiform Archives and Libraries (Leiden 1986)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 32">
+      <aka>Keilschriftliche Literaturen (Berlin 1986)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 33">
+      <aka>La Femme dans le proche-orient Antique (Paris 1987)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 35">
+      <aka>Nippur at the Centennial (Philadelphia 1988)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 36">
+      <aka>Mesopotamie et Elam (Ghent 1989)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 38">
+      <aka>La circulation des biens, des personnes et des idées dans le Proche-Orient ancien (Paris 1991)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 4">
+      <aka>Le Problème des Ḫabiru (= Cahiers de la Société Asiatique 12) (Paris 1955)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 40">
+      <aka>Houses and Households in Ancient Mesopotamia (Leiden 1993)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 7">
+      <aka>Gilgameš et sa légende (Paris 1958)</aka>
+   </jrnser>
+   <jrnser key="Rencontre 9">
+      <aka>Aspects du contact suméro-akkadien (= Genava NS 8, 241ff.) (Geneva 1960)</aka>
+   </jrnser>
+   <jrnser key="Rendiconti dell'Academia Nazionale dei Lincei">
+      <aka>Rendiconti dell'Academia Nazionale dei Lincei</aka>
+   </jrnser>
+   <jrnser key="Rép. géogr.">
+      <aka>Répertoire géographique des textes cunéiformes</aka>
+   </jrnser>
+   <jrnser key="Res Orientales">
+      <aka>Res Orientales</aka>
+   </jrnser>
+   <jrnser key="Revue des Arts Asiatiques">
+      <aka>Revue des Arts Asiatiques</aka>
+   </jrnser>
+   <jrnser key="RIM">
+      <aka>Royal Inscriptions of Mesopotamia</aka>
+   </jrnser>
+   <jrnser key="RIMA">
+      <aka>Royal Inscriptions of Mesopotamia, Assyrian periods</aka>
+      <aka>RIM Ass. Periods</aka>
+      <aka>RIM Assyrian Periods</aka>
+   </jrnser>
+   <jrnser key="RIMB">
+      <aka>Royal Inscriptions of Mesopotamia, Babylonian periods</aka>
+      <aka>RIM Babylonian Periods</aka>
+   </jrnser>
+   <jrnser key="RIME">
+      <aka>RIM Early Periods</aka>
+      <aka>Royal Inscriptions of Mesopotamia, Early periods</aka>
+      <aka>The Royal Inscriptions of Mesopotamia. Early Periods</aka>
+   </jrnser>
+   <jrnser key="Rivista Biblica">
+      <aka>Rivista Biblica, Associazione Biblica Italiana</aka>
+   </jrnser>
+   <jrnser key="RlA">
+      <aka>Reallexikon der Assyriologie und vorderasiatischen Archäologie</aka>
+      <aka>Reallexikon der Assyriologie</aka>
+   </jrnser>
+   <jrnser key="RO">
+      <aka>Rocznik Orientalistyczny</aka>
+   </jrnser>
+   <jrnser key="Rostocker Orientalistische Studien">
+      <aka>Rostocker Orientalistische Studien</aka>
+   </jrnser>
+   <jrnser key="RS">
+      <aka>RS</aka>
+   </jrnser>
+   <jrnser key="RSO">
+      <aka>Rivista degli Studi Orientali</aka>
+      <aka>Rivista degli studi orientali</aka>
+   </jrnser>
+   <jrnser key="RT">
+      <aka>Recueil de travaux relatifs à la philologie et à l'archéologie égyptiennes et assyriennes</aka>
+   </jrnser>
+   <jrnser key="SAA">
+      <aka>State Archives of Assyria</aka>
+   </jrnser>
+   <jrnser key="SAAB">
+      <aka>State Archives of Assyria Bulletin</aka>
+   </jrnser>
+   <jrnser key="Saeculum">
+      <aka>Saeculum</aka>
+   </jrnser>
+   <jrnser key="SANE">
+      <aka>SANE</aka>
+   </jrnser>
+   <jrnser key="SANTAG">
+      <aka>SANTAG</aka>
+   </jrnser>
+   <jrnser key="SAOC">
+      <aka>Studies in Ancient Oriental Civilization (Oriental Institute, Univ. of Chicago)</aka>
+   </jrnser>
+   <jrnser key="SBAW">
+      <aka>Bayerische Akademie der Wissenschaften, Philologisch-Historische Klasse, Sitzungsberichte</aka>
+      <aka>Sitzungberichte der Bayerischen Akademie der Wissenschaften. Philosophisch-historische Klasse.</aka>
+   </jrnser>
+   <jrnser key="SBL Writings from the ancient World">
+      <aka>SBL Writings from the ancient World</aka>
+   </jrnser>
+   <jrnser key="Scripta Hierosolymitana">
+      <aka>Scripta Hierosolymitana</aka>
+   </jrnser>
+   <jrnser key="Scripta Instituti Donneriani Aboensis III">
+      <aka>Scripta Instituti Donneriani Aboensis III</aka>
+   </jrnser>
+   <jrnser key="Scripture Bulletin">
+      <aka>Scripture Bulletin</aka>
+   </jrnser>
+   <jrnser key="SD">
+      <aka>SD</aka>
+   </jrnser>
+   <jrnser key="SEb">
+      <aka>SEb</aka>
+   </jrnser>
+   <jrnser key="SEL">
+      <aka>Studi Epigrafici e Linguistici</aka>
+   </jrnser>
+   <jrnser key="SLB">
+      <aka>Studia ad tabulas cuneiformes collectas a F.M. Th. de Liagre Böhl pertinentia</aka>
+   </jrnser>
+   <jrnser key="SM">
+      <aka>Series Maior</aka>
+   </jrnser>
+   <jrnser key="SMALPB">
+      <aka>Studies in Mediterranean Archaeology and Literature Pocket Book</aka>
+   </jrnser>
+   <jrnser key="SMEA">
+      <aka>SMEA</aka>
+   </jrnser>
+   <jrnser key="SMS">
+      <aka>Syro-Mesopotamian Studies</aka>
+   </jrnser>
+   <jrnser key="SS">
+      <aka>Supplementary Series</aka>
+   </jrnser>
+   <jrnser key="SSU">
+      <aka>Acta Universitatis Upsaliensis, Studia Semitica Upsaliensia</aka>
+   </jrnser>
+   <jrnser key="StBoT">
+      <aka>Studien zu den Boghazköy-Texten</aka>
+   </jrnser>
+   <jrnser key="StEb">
+      <aka>Studi Eblaiti</aka>
+   </jrnser>
+   <jrnser key="StOr">
+      <aka>Studia Orientalia</aka>
+   </jrnser>
+   <jrnser key="Studi Semitici">
+      <aka>Studi Semitici</aka>
+      <aka>Studi semitici</aka>
+   </jrnser>
+   <jrnser key="Studia et documenta ad Jura Orientis Antiqui Pertinentia">
+      <aka>Studia et documenta ad Jura Orientis Antiqui Pertinentia</aka>
+   </jrnser>
+   <jrnser key="Studia Pohl">
+      <aka>Studia Pohl</aka>
+      <aka>Studia Pohl, series minor</aka>
+   </jrnser>
+   <jrnser key="Studia Pohl Series Maior">
+      <aka>Studia Pohl Series Maior</aka>
+      <aka>Studia Pohl Series Major</aka>
+   </jrnser>
+   <jrnser key="Studia Semitica Neerlandica">
+      <aka>Studia Semitica Neerlandica</aka>
+   </jrnser>
+   <jrnser key="Studies in Philology">
+      <aka>Studies in Philology</aka>
+   </jrnser>
+   <jrnser key="Studies in the History of Religions (Supplements to Numen)">
+      <aka>Studies in the History of Religions (Supplements to Numen)</aka>
+   </jrnser>
+   <jrnser key="Sumer">
+      <aka>Sumer: A Journal of Archaeology and History in Iraq</aka>
+   </jrnser>
+   <jrnser key="SUNY Series in Near Eastern Studies">
+      <aka>SUNY Series in Near Eastern Studies</aka>
+   </jrnser>
+   <jrnser key="Syria">
+      <aka>Syria: Revue d'art oriental et d'archéologie</aka>
+   </jrnser>
+   <jrnser key="TAD">
+      <aka>Türk Arkeoloji Dergisi</aka>
+   </jrnser>
+   <jrnser key="TAPS">
+      <aka>Transactions of the American Philosophical Society</aka>
+   </jrnser>
+   <jrnser key="TCL">
+      <aka>Textes cunéiformes, Musée du Louvre</aka>
+   </jrnser>
+   <jrnser key="TCS">
+      <aka>Texts from Cuneiform Sources</aka>
+   </jrnser>
+   <jrnser key="Tel Aviv Occasional Publications">
+      <aka>Tel Aviv Occasional Publications</aka>
+   </jrnser>
+   <jrnser key="Texte und Studien zur Orientalistik">
+      <aka>Texte und Studien zur Orientalistik</aka>
+   </jrnser>
+   <jrnser key="TIM">
+      <aka>Texts in the Iraq Museum</aka>
+   </jrnser>
+   <jrnser key="TLB">
+      <aka>Tabulae cuneiformes a F.M. Th. de Liagre Böhl collectae</aka>
+   </jrnser>
+   <jrnser key="TUAT">
+      <aka>Texte Aus der Umwelt des Alten Testaments</aka>
+      <aka>Texte aus der Umwelt des Alten Testaments</aka>
+   </jrnser>
+   <jrnser key="TuM">
+      <aka>Texte und Materialien der Frau Professor Hilprecht-Sammlung</aka>
+      <aka>Texte und Materialien der Frau Professor Hilprecht-Sammlung Jena</aka>
+   </jrnser>
+   <jrnser key="UAVA">
+      <aka>Untersuchungen zur Assyriologie und Vorderasiatische Archäologie</aka>
+   </jrnser>
+   <jrnser key="UCP">
+      <aka>Univ. of California Publications in Semitic Philology</aka>
+   </jrnser>
+   <jrnser key="UET">
+      <aka>Ur Excavations Texts</aka>
+   </jrnser>
+   <jrnser key="UF">
+      <aka>Ugarit Forschungen</aka>
+      <aka>Ugarit-Forschungen</aka>
+   </jrnser>
+   <jrnser key="Ugaritica">
+      <aka>Ugaritica (Paris)</aka>
+   </jrnser>
+   <jrnser key="Université des sciences humaines de Strasbourg, Travaux du centre de recherche sur le Proche-Orient et la Grèce antiques">
+      <aka>Université des sciences humaines de Strasbourg, Travaux du centre de recherche sur le Proche-Orient et la Grèce antiques</aka>
+   </jrnser>
+   <jrnser key="UVB">
+      <aka>Vorläufiger Bericht über die ... Ausgrabungen in Uruk-Warka</aka>
+   </jrnser>
+   <jrnser key="VAB">
+      <aka>Vorderasiatische Bibliothek</aka>
+   </jrnser>
+   <jrnser key="VAS">
+      <aka>Vorderasiatische Schriftdenkmäler</aka>
+      <aka>Vorderasiatische Schriftdenkmäler der Staatlichen Museen zu Berlin</aka>
+   </jrnser>
+   <jrnser key="Vetus Testamentum Supplement">
+      <aka>Vetus Testamentum Supplement</aka>
+   </jrnser>
+   <jrnser key="VIO">
+      <aka>Veröffentlichungen des Instituts für Orientforschung (Berlin)</aka>
+   </jrnser>
+   <jrnser key="Visible Language">
+      <aka>Visible Language</aka>
+   </jrnser>
+   <jrnser key="VT">
+      <aka>Vetus Testamentum</aka>
+   </jrnser>
+   <jrnser key="VT Suppl">
+      <aka>Supplements to Vetus Testamentum</aka>
+      <aka>Vetus Testamentum Supplementum</aka>
+   </jrnser>
+   <jrnser key="WO">
+      <aka>Die Welt des Orients</aka>
+      <aka>Welt des Orients</aka>
+   </jrnser>
+   <jrnser key="Writings from the Ancient World">
+      <aka>Writings from the Ancient World</aka>
+   </jrnser>
+   <jrnser key="WVDOG">
+      <aka>Wissenschaftliche Veröffentlichungen der Deutschen Orientgesellschaft</aka>
+   </jrnser>
+   <jrnser key="WZJ">
+      <aka>Wissenschaftliche Zeitschrift der Friedrich-Schiller-Univ. Jena</aka>
+      <aka>Wissenschaftliche Zeitschrift der Friedrich-Schiller-Universität Jena</aka>
+   </jrnser>
+   <jrnser key="WZKM">
+      <aka>Wiener Zeitschrift für die Kunde des Morgenlandes</aka>
+   </jrnser>
+   <jrnser key="YNER">
+      <aka>Yale Near Eastern Researches</aka>
+   </jrnser>
+   <jrnser key="YOS">
+      <aka>Yale Oriental Series, Babylonian Texts</aka>
+   </jrnser>
+   <jrnser key="ZA">
+      <aka>Zeitschrift für Assyriologie und vorderasiatische Archäologie</aka>
+      <aka>Zeitschrift für Assyriologie</aka>
+   </jrnser>
+   <jrnser key="ZANF">
+      <aka>Zeitschrift für Assyriologie und vorderasiatische Archäologie, Neue Folge</aka>
+   </jrnser>
+   <jrnser key="ZDMG">
+      <aka>Zeitschrift der Deutschen Morgenländischen Gesellschaft</aka>
+      <aka>Zeitschrift der deutschen Morgenländischen Gesellschaft</aka>
+      <aka>Zeitschrift der Deutschen Morgenländischen Gesellschaft. XVII. Deutscher Orientalistentag</aka>
+   </jrnser>
+   <jrnser key="ZIF">
+      <aka>Zeitschrift für Indogermanische Forschungen</aka>
+   </jrnser>
+   <jrnser key="Zinbun">
+      <aka>Zinbun</aka>
+   </jrnser>
+   <jrnser key="ʿAtiqot">
+      <aka>Journal of the Israel Department of Antiquities</aka>
+   </jrnser>
+</jrnsermap>

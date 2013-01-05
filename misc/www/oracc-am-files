@@ -1,0 +1,4 @@
+httpd.conf	noinst_DATA
+new-urls.txt	ignore
+robots.txt	noinst_DATA
+xhtml-strict-doctype.txt	ignore

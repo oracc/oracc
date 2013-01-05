@@ -1,0 +1,31 @@
+INSTRUCTIONS FOR MIGRATING PROJECTS FROM CDL TO ORACC
+=====================================================
+
+1) run the new project creation script on oracc:
+
+   su
+   /usr/share/oracc/00/sys/newproj.sh PROJECT
+
+   If you get warnings about the existence of the user or the
+   group, you can safely run delproj, then newproj again. So,
+   while still logged in as root:
+
+   /usr/local/oracc/00/sys/delproj.sh PROJECT
+   /usr/local/oracc/00/sys/newproj.sh PROJECT   
+
+   When you run delproj, you may get warnings about no tarball
+   being created, or the user not existing--these can be 
+   ignored, as the script goes ahead and goes through all the
+   steps for complete removal of a project regardless of
+   whether some earlier step has failed.
+
+2) login to the project on the *ORACC* server
+
+3) run the migrate script, entering the password to the
+   project on the *CDL* server when prompted
+
+   migrate-user.sh PROJECT
+
+4) rebuild the project:
+
+   oracc rebuild

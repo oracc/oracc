@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+use warnings; use strict; use open ':utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XMD::Fields;
+use ORACC::Expand2;
+use Getopt::Long;
+my $project = 'cdli';
+GetOptions(
+    'project:s'=>\$project,
+    );
+my @fields = @ARGV;
+@ARGV = ();
+binmode STDOUT, ':utf8';
+while (<>) {
+    chomp;
+    my $fields = ORACC::XMD::Fields::get_in_project($project,$_);
+    my @values = ($_);
+    foreach my $f (@fields) {
+	my $value = '';
+	foreach my $ff (split(/\|/,$f)) {
+	    $value = $$fields{$ff} and last if $$fields{$ff};
+	}
+	push @values, $value;
+    }
+    print join("\t", @values), "\n";
+    ORACC::XMD::Fields::drop_in_project($project,$_);
+}
+1;

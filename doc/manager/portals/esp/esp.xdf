@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Creating a Portal Website with ESP</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson and Ruth Horry</dc:creator>
+  <dc:date>2011-04-30</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>ESP is a package for creating XHTML websites that are static in nature, i.e. that contain mainly text and images. These pages explain how to install the ESP templates in your Oracc project and edit them with Emacs in order to create a portal website. To use ESP you will need to know the basics of HTML.</dc:description>
+</d:meta>
+
+<h1>Installing the ESP templates and schemas</h1>
+<p>If you don't already have a copy of <a href="~/doc/builder/emacs">Emacs</a> you will need to <a href="/doc/builder/emacs/#Obtaining_Emacs">install it on your computer</a> before you start.</p> 
+
+<p>You will also need to initiate ESP, to install the templates in your Oracc project, and install a set of schemas on your own computer that Emacs will use automatically to ensure that your files are valid.</p>
+
+<h4>On your own computer:</h4>
+<ul>
+<li><p>Download this zip file: <a href="/downloads/oracc-schemas.zip"><code>oracc-schemas.zip</code></a>.</p></li>
+<li><p>Create a directory (folder) called, say, <code>oracc</code>, in the directory <a href="/doc/builder/emacs/#For_Unix_and_Mac_OS_X_users">where your <code>.emacs</code> file lives</a>.</p></li>
+<li><p>Unzip <code>oracc-schemas.zip</code> into the directory you just created (e.g., <code>oracc</code>).</p></li>
+<li><p><a href="/doc/builder/emacs/#For_Unix_and_Mac_OS_X_users">Open your <code>.emacs</code> file</a> and add this line of code to it:</p>
+<pre class="cookbook">(eval-after-load 'rng-loc '(add-to-list 'rng-schema-locating-files
+ "~/oracc/schemas/schemas.xml"))</pre>
+<p>(Note that if you chose a different name/place for what we are calling the <code>oracc</code> directory, you should replace <code>~/oracc</code> with the directory name you chose.</p></li>
+<li><p>Save your <code>.emacs</code> file, quit Emacs and restart.</p></li>
+</ul>
+
+<h4>On your Oracc project account on the Oracc server:</h4>
+<ul>
+<li>At the top level of your project run the <a href="/doc/manager/the-oracc-command">Oracc command</a> <code class="cookbook">oracc esp init</code>. This installs all the templates you will need in your <code>00web/esp/</code> directory.</li>
+</ul>
+
+<p>You only need to do this once; now you are ready to use ESP.</p>
+
+<h1>Overview of ESP</h1>
+<p>The ESP template package contains the following files and directories, which are explained in more detail <a href="#Editable_ESP_folders">below</a>:</p>
+<pre class="listing">
+esp/site-content/
+    00web/
+        downloads/
+	favicon.ico
+	images/
+	    homeimage.jpg
+	    tab-bottom.gif
+	    tab-middle.gif
+	    tab-top.gif
+	w3c/p3p.xml
+    pages/
+        404.xml
+        accesskeys.xml
+	glossarypage.xml
+        home.xml
+        indexpage.xml
+        privacy.xml
+        sitemap.xml
+        standards.xml
+	techtermspage.xml
+        template-blank.xml
+    appearance.xml
+    parameters.xml
+    referents.xml
+    structure.xml
+</pre>
+
+<p>In the course of making your website you will be editing some of these files, as well as adding more as you need them.</p>
+
+<p>When you have created a first draft of your site, you will use <a href="/doc/manager/the-oracc-command">the Oracc command</a> <code class="cookbook">oracc esp</code> to <a href="../espbuild/">check and build</a> your portal site and <code class="cookbook">oracc esp live</code> to make it accessible on the web. When you have run the these commands at least once you will also see the following folders in <code>00web/esp/</code>, which are described in more detail <a href="#Non-editable_ESP_folders">below</a>. Do not edit or delete them:</p>
+<pre class="listing">
+backups
+httproot_changed
+httproot_dev
+httproot_live
+temporary-files
+</pre>
+
+<p>You can, of course, continue to edit and work with all the files and folders in <code>00web/esp/site-content</code> as before.</p>
+
+<h1>Editable ESP folders</h1>
+<dl>
+<dt><code>esp/site-content/00web/</code></dt>
+<dd>The <code>esp/00web/</code> folder contains all the information that is present on the site but does not need any processing, such as images, PDFs, Flash, KML/KMZ and JavaScript files. (Find out more about how to deal with these on the <a href="../espimages">page about images and other non-textual content</a>.) The contents of this folder are copied directly to the <code>httproot_dev/</code> folder when the site is regenerated.</dd>
+<dt><code>esp/site-content/00web/downloads/</code></dt>
+<dd><p>Any files for the site that are intended to be downloadable, such as copies of PDFs, large images for download, Word documents etc. should be placed in this folder.  Google Earth and Google Maps KML/KMZ content should also be placed here.</p> 
+<p>When creating links to downloadable content, use the <a href="../espcontent/#esp:link">&lt;esp:link&gt;</a> tag with the <code>url</code> attribute and the file path relative to the downloads folder. E.g.,</p>
+<pre class="example">
+&lt;esp:link url="~/downloads/example.kmz" title="example file"&gt;Example 
+text&lt;/esp:link&gt;
+</pre>
+</dd>
+<dt><code>esp/site-content/00web/images/</code></dt>
+<dd>
+<p>All images that are to be displayed on the site should be placed in this folder.  When using the <a href="../espimages/#esp:image"><code>&lt;esp:image&gt;</code></a> tag to insert images into a page, the processor will look for the images in the <code>00web/esp/site-content/00web/images</code> folder by default.  You can create subfolders with the same names as your site folder structure to organise your images, but remember to specify the correct location of the image in the <code>file</code> attribute. </p>
+<p>Instructions on how to edit or replace the default images are given on the <a href="../espsetup/#tabs">ESP setup page</a>.</p></dd>
+<dt><code>esp/site-content/00web/w3c/</code></dt>
+<dd><p>This folder contains standard data on ESP websites' privacy practices, in compliance with the <a href="http://www.w3.org/P3P/">Platform for Privacy Preferences</a> project. It is described further on the <a href="../espsetup/#Privacy_preferences">ESP setup page</a>.</p></dd>
+<dt><code>esp/site-content/pages/</code></dt>
+<dd>This folder contains the text pages for the website. There are detailed instructions on how to edit or create these pages on the <a href="../espsetup/#Page_structure">ESP Setup page</a> and the <a href="../espcontent.xml">Content Creation</a> page. Some pages (<code>404.xml</code>, <a href="../espcontent/#accesskeys-listing"><code>accesskeys.xml</code></a>, <a href="../espcontent/#Index_functionality"><code>indexpage.xml</code></a>, <a href="../espcontent/#site-map"><code>sitemap.xml</code></a>) do not need editing at all.</dd>
+<dt><code>esp/site-content/appearance.xml</code></dt>
+<dd>This file contains details of the colours, fonts and tabs used by the website. There are instructions on the <a href="../espsetup/#Site_style">ESP Setup page</a> on how to edit it.</dd>
+<dt><code>esp/site-content/parameters.xml</code></dt>
+<dd>Some parameters for the site are defined in the file <code>parameters.xml</code>. Most of these parameters will need to be set up initially and then do not need to be altered. There are instructions on the <a href="../espsetup/#Site_parameters">ESP setup page</a> on how to do this.</dd>
+<dt><code>esp/site-content/referents.xml</code></dt>
+<dd>ESP has extensive functionality for referencing articles, journals, books, websites etc. within the site’s pages. References are stored in this file. There are instructions on the <a href="../espsetup/#References">ESP Content page</a> on how to edit it.</dd>
+<dt><code>esp/site-content/structure.xml</code></dt>
+<dd>The structure of the website is defined in this file, which is described in more detail on the <a href="../espsetup/#Site_structure">ESP Setup page</a>.</dd>
+</dl>
+
+<h1>Non-editable ESP folders</h1>
+<dl>
+<dt><code>esp/backups/</code></dt>
+<dd>This folder is generated automatically <a href="../espbuild">when the site is rebuilt</a> with the <code>oracc esp live</code> command. It contains old versions of the live website.</dd>
+<dt><code>esp/httproot_changed/</code></dt>
+<dd>This folder contains copies of all files that are new or have changed in the <code>httproot_live</code> folder when the <code>oracc esp live</code> command is run.</dd>
+<dt><code>esp/httproot_dev/</code></dt>
+<dd>The <code>httproot_dev/</code> folder contains the HTML which is generated from the files in <code>esp/site-content/</code> when you run the <code>oracc esp</code> command. The contents of this folder are deleted and regenerated whenever the <code>oracc esp</code> command is run. This means that nothing in this folder should be manually removed or edited, and nothing should be added.</dd>
+<dt><code>esp/httproot_live/</code></dt>
+<dd>When you run the <code>oracc esp live</code> command, the contents of this folder are deleted and replaced with the contents of <code>esp/httproot_dev/</code> and become the live pages viewable online. The old version is moved to <code>esp/backups/</code>. This means that nothing in this folder should be manually removed or edited, and nothing should be added.</dd>
+</dl>
+ 
+<h1>Next steps</h1>
+<p>Now that you have a general overview of the ESP folder structure, you can <a href="../espsetup/">set up the basic parameters</a> of your ESP portal website.</p>
+
+<p>See also:</p>
+<ul>
+<!-- <li><a href="../esp/">Overview of ESP</a></li> -->
+<li><a href="../espsetup/">How to set up your ESP site</a></li>
+<li><a href="../espcontent/">How to mark up textual content</a></li>
+<li><a href="../espimages/">How to embed images and other non-textual content</a></li>
+<li><a href="../espbuild/">How to check and rebuild your ESP website</a></li>
+<li><a href="../espelements/">Alphabetical list of ESP system elements</a></li>
+<li><a href="/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+<d:resources>
+<d:resource href="esp-templates.zip" copy="yes"/>
+</d:resources>
+
+</d:doc>

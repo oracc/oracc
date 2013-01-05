@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ "$1" = "" ]; then
+    echo projsave-full.sh: must give project name as argument
+    exit 1
+fi
+if [ -d @@ORACC@@/$1 ]; then
+    cd @@ORACC@@/$1
+    backdir=/oraccbak/$1 ; mkdir -p $backdir
+    tarball=$backdir/$1-full-`date +%Y-%m-%d`.tar.gz
+    echo projsave-full.sh: backing up $1 to $tarball
+    @@ORACC@@/bin/proj-backup-list.plx >01tmp/dist.lst
+    @@ORACC@@/bin/projsave-sub.sh $1 $backdir $tarball
+else
+    echo projsave-full.sh: no such project '$1'
+    exit 1
+fi

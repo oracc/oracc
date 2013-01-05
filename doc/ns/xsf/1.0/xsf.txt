@@ -1,0 +1,51 @@
+Scores in Oracc
+
+Oracc supports both matrices and longhand scores, which we 
+call synoptica.  In the case of matrices, a score may be
+parsed or unparsed.  In the initial implementation, all
+matrices are unparsed, but they are displayed using a fixed
+pitch font, so if they align in the data source they should
+also align onscreen.
+
+The command for a score is @score.  It takes up to two 
+arguments:
+
+ @score matrix parsed
+ @score matrix unparsed
+ @score synopticon parsed
+ @score synopticon unparsed
+
+The lines in a synopticon may be given inline or as references.
+In the latter case, the reference must be a link using << to
+pull the text from the source.
+
+Parsed means two different things for matrices and synoptica.
+
+For a matrix, it means that the tabular content is parsed into
+a matrix.  The conventions for this are not yet defined.
+
+For a synopticon, it means that the label is parsed and validated to
+ensure that it meets ATF rules.  This allows the exemplar text of a
+synopticon to be rewritten as a transliteration of the witness.
+
+The structure of a score is:
+
+X. xxx
+Y: yyy
+
+Where X is a line number per usual ATF conventions, and Y is a
+siglum; xxx and yyy are the text of the composite and exemplar
+respectively.
+
+The content of the composite may be omitted.
+
+The structure of a siglum is:
+
+ S'|'L
+
+Where S is the siglum proper and L is a label giving the location
+of the text on the original object. '|' is the vertical bar 
+character, used as a delimiter between S and L.
+
+The components of a label may not contain spaces; the underscore
+character must be used instead.

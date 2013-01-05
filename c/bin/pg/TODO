@@ -1,0 +1,3 @@
+check that strings don't contain \n #[ ]# at compile time
+
+

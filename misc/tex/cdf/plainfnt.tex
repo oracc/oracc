@@ -1,0 +1,19 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: plainfnt.tex,v 0.1 1994/12/12 03:56:05 s Exp $
+
+% This file can be included to use the DA fontload macros
+% over Plain TeX.  The contents of replain and utility should
+% really be gone over to select only those macros that are 
+% actually needed by fontload.
+\input replain
+\input utility
+\input fontload
+\input fontlist
+\pathdefine{TFMpath}{/da/tex/fonts/tfm/}
+\usefontcollection{\ComputerModernMath}
+\usefontcollection{\DAComputerModern}
+\CMM\DACMR\ten\rm
+\endinput

@@ -1,0 +1,644 @@
+$VAR1 = {
+          'label' => 'NP-GEN-LFD-1',
+          'children' => [
+                          {
+                            'label' => 'NP',
+                            'children' => [
+                                            {
+                                              'wid' => 'X121212.1.1',
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'pos' => 'lu[person]N',
+                                                           'root' => [
+                                                                       -1,
+                                                                       "lu\x{2082}",
+                                                                       "lu\x{2082}"
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ]
+                                                         },
+                                              'form' => 'lu[person]',
+                                              'children' => [],
+                                              'orth' => "lu\x{2082}",
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'type' => 'leaf',
+                                              'pos' => 'N'
+                                            },
+                                            {
+                                              'label' => 'S-REL',
+                                              'children' => [
+                                                              {
+                                                                'wid' => '',
+                                                                'orth' => '',
+                                                                'ro' => 0,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => '*',
+                                                                'pos' => 'RPRO-1',
+                                                                'type' => 'leaf'
+                                                              },
+                                                              {
+                                                                'label' => 'S-SUB',
+                                                                'children' => [
+                                                                                {
+                                                                                  'label' => 'NP-ERG',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => '',
+                                                                                                    'orth' => '',
+                                                                                                    'ro' => 0,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => '*',
+                                                                                                    'pos' => '*T*-1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'NP-ABL',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.1.2',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'Eanak[1]',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => "e\x{2082}-an-na",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'TN'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.1.2',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'ta',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => "e\x{2082}-an-na",
+                                                                                                    'ro' => undef,
+                                                                                                    'userdata' => 1,
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'ABL'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'VC-F',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.2.1',
+                                                                                                    'orth' => "e\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'V',
+                                                                                                    'pos' => 'CN',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.2.1',
+                                                                                                    'orth' => "e\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'b',
+                                                                                                    'pos' => 'P2',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.2.1',
+                                                                                                    'orth' => "e\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'ta',
+                                                                                                    'pos' => 'ABL',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.2.1',
+                                                                                                    'orth' => "e\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'b',
+                                                                                                    'pos' => 'P1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.2.1',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'V',
+                                                                                                                              undef,
+                                                                                                                              'b',
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'ta',
+                                                                                                                              undef,
+                                                                                                                              'b'
+                                                                                                                            ]
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'pos' => 'e[leave]V/i',
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             "e\x{2083}",
+                                                                                                                             "e\x{2083}"
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'a'
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => 'e[leave]',
+                                                                                                    'orth' => "e\x{2083}",
+                                                                                                    'ro' => undef,
+                                                                                                    'userdata' => 1,
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'V'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'clause'
+                                                              },
+                                                              {
+                                                                'wid' => 'X121212.2.1',
+                                                                'orth' => "e\x{2083}",
+                                                                'ro' => 1,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => 'a',
+                                                                'pos' => 'NOM',
+                                                                'type' => 'leaf'
+                                                              }
+                                                            ],
+                                              'type' => 'clause'
+                                            },
+                                            {
+                                              'label' => 'S-REL-PRN',
+                                              'children' => [
+                                                              {
+                                                                'wid' => '',
+                                                                'orth' => '',
+                                                                'ro' => 0,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => '*',
+                                                                'pos' => 'RPRO-1',
+                                                                'type' => 'leaf'
+                                                              },
+                                                              {
+                                                                'label' => 'S-SUB',
+                                                                'children' => [
+                                                                                {
+                                                                                  'label' => 'NP-ERG',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => '',
+                                                                                                    'orth' => '',
+                                                                                                    'ro' => 0,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => '*',
+                                                                                                    'pos' => '*T*-1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'VC-F',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.3.1',
+                                                                                                    'orth' => 'zi',
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'V',
+                                                                                                    'pos' => 'CN',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.3.1',
+                                                                                                    'orth' => 'zi',
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'b',
+                                                                                                    'pos' => 'P1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.3.1',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'V',
+                                                                                                                              undef,
+                                                                                                                              'b'
+                                                                                                                            ]
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'pos' => 'zir[break]V/t',
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             'zi',
+                                                                                                                             'zi'
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              'e',
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'a'
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => 'zir[break]',
+                                                                                                    'orth' => 'zi',
+                                                                                                    'ro' => undef,
+                                                                                                    'userdata' => 1,
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'V'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.3.1',
+                                                                                                    'orth' => 'zi',
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'e',
+                                                                                                    'pos' => 'E',
+                                                                                                    'type' => 'leaf'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'clause'
+                                                              },
+                                                              {
+                                                                'wid' => 'X121212.3.1',
+                                                                'orth' => 'zi',
+                                                                'ro' => 1,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => 'a',
+                                                                'pos' => 'NOM',
+                                                                'type' => 'leaf'
+                                                              }
+                                                            ],
+                                              'type' => 'clause'
+                                            },
+                                            {
+                                              'label' => 'S-REL-PRN',
+                                              'children' => [
+                                                              {
+                                                                'wid' => '',
+                                                                'orth' => '',
+                                                                'ro' => 0,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => '*',
+                                                                'pos' => 'RPRO-1',
+                                                                'type' => 'leaf'
+                                                              },
+                                                              {
+                                                                'label' => 'S-SUB',
+                                                                'children' => [
+                                                                                {
+                                                                                  'label' => 'NP-ERG',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => '',
+                                                                                                    'orth' => '',
+                                                                                                    'ro' => 0,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => '*',
+                                                                                                    'pos' => '*T*-1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'NP-LOC',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'label' => 'NP-POS',
+                                                                                                    'children' => [
+                                                                                                                    {
+                                                                                                                      'label' => 'NP-GEN',
+                                                                                                                      'children' => [
+                                                                                                                                      {
+                                                                                                                                        'wid' => 'X121212.4.1',
+                                                                                                                                        'dsu' => undef,
+                                                                                                                                        'parse' => {
+                                                                                                                                                     'isf' => [
+                                                                                                                                                                10000,
+                                                                                                                                                                []
+                                                                                                                                                              ],
+                                                                                                                                                     'vpr' => [
+                                                                                                                                                                10000,
+                                                                                                                                                                []
+                                                                                                                                                              ],
+                                                                                                                                                     'nsf' => [
+                                                                                                                                                                10000,
+                                                                                                                                                                [
+                                                                                                                                                                  undef,
+                                                                                                                                                                  'ak',
+                                                                                                                                                                  'bi',
+                                                                                                                                                                  undef,
+                                                                                                                                                                  undef,
+                                                                                                                                                                  undef,
+                                                                                                                                                                  undef,
+                                                                                                                                                                  'a'
+                                                                                                                                                                ]
+                                                                                                                                                              ],
+                                                                                                                                                     'pos' => 'musara[inscription]N',
+                                                                                                                                                     'root' => [
+                                                                                                                                                                 -1,
+                                                                                                                                                                 'mu-sar',
+                                                                                                                                                                 'mu-sar'
+                                                                                                                                                               ],
+                                                                                                                                                     'vsf' => [
+                                                                                                                                                                10000,
+                                                                                                                                                                []
+                                                                                                                                                              ]
+                                                                                                                                                   },
+                                                                                                                                        'form' => 'musara[inscription]',
+                                                                                                                                        'children' => [],
+                                                                                                                                        'orth' => 'mu-sar',
+                                                                                                                                        'ro' => 1,
+                                                                                                                                        'userdata' => '',
+                                                                                                                                        'type' => 'leaf',
+                                                                                                                                        'pos' => 'N'
+                                                                                                                                      },
+                                                                                                                                      {
+                                                                                                                                        'wid' => 'X121212.4.1',
+                                                                                                                                        'dsu' => undef,
+                                                                                                                                        'form' => 'ak',
+                                                                                                                                        'children' => [],
+                                                                                                                                        'orth' => 'mu-sar',
+                                                                                                                                        'ro' => undef,
+                                                                                                                                        'userdata' => 1,
+                                                                                                                                        'type' => 'leaf',
+                                                                                                                                        'pos' => 'GEN'
+                                                                                                                                      }
+                                                                                                                                    ],
+                                                                                                                      'type' => 'phrase'
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                      'wid' => 'X121212.4.1',
+                                                                                                                      'dsu' => undef,
+                                                                                                                      'form' => 'bi',
+                                                                                                                      'children' => [],
+                                                                                                                      'orth' => 'mu-sar',
+                                                                                                                      'ro' => undef,
+                                                                                                                      'userdata' => 1,
+                                                                                                                      'type' => 'leaf',
+                                                                                                                      'pos' => 'POS'
+                                                                                                                    }
+                                                                                                                  ],
+                                                                                                    'type' => 'phrase'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.1',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'a',
+                                                                                                    'children' => [],
+                                                                                                    'orth' => 'mu-sar',
+                                                                                                    'ro' => undef,
+                                                                                                    'userdata' => 1,
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'LOC'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'NP-ABS',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.2',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'pos' => "\x{161}u[hand]N",
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             "\x{161}u",
+                                                                                                                             "\x{161}u"
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => "\x{161}u[hand]",
+                                                                                                    'children' => [],
+                                                                                                    'orth' => "\x{161}u",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'N'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                },
+                                                                                {
+                                                                                  'label' => 'VC-F',
+                                                                                  'children' => [
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.3',
+                                                                                                    'orth' => "ur\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'ba',
+                                                                                                    'pos' => 'CN',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.3',
+                                                                                                    'orth' => "ur\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'i',
+                                                                                                    'pos' => 'LT',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.3',
+                                                                                                    'orth' => "ur\x{2083}",
+                                                                                                    'ro' => 1,
+                                                                                                    'userdata' => '',
+                                                                                                    'dsu' => undef,
+                                                                                                    'form' => 'b',
+                                                                                                    'pos' => 'P1',
+                                                                                                    'type' => 'leaf'
+                                                                                                  },
+                                                                                                  {
+                                                                                                    'wid' => 'X121212.4.3',
+                                                                                                    'dsu' => undef,
+                                                                                                    'parse' => {
+                                                                                                                 'isf' => [
+                                                                                                                            10000,
+                                                                                                                            []
+                                                                                                                          ],
+                                                                                                                 'vpr' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'ba',
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'i',
+                                                                                                                              'b'
+                                                                                                                            ]
+                                                                                                                          ],
+                                                                                                                 'nsf' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              '*ak',
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'STOP'
+                                                                                                                            ]
+                                                                                                                          ],
+                                                                                                                 'pos' => 'ur[drag]V/t',
+                                                                                                                 'root' => [
+                                                                                                                             -1,
+                                                                                                                             "ur\x{2083}",
+                                                                                                                             "ur\x{2083}"
+                                                                                                                           ],
+                                                                                                                 'vsf' => [
+                                                                                                                            10000,
+                                                                                                                            [
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              undef,
+                                                                                                                              'a'
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                               },
+                                                                                                    'form' => 'ur[drag]',
+                                                                                                    'orth' => "ur\x{2083}",
+                                                                                                    'ro' => undef,
+                                                                                                    'userdata' => 1,
+                                                                                                    'type' => 'leaf',
+                                                                                                    'pos' => 'V'
+                                                                                                  }
+                                                                                                ],
+                                                                                  'type' => 'phrase'
+                                                                                }
+                                                                              ],
+                                                                'type' => 'clause'
+                                                              },
+                                                              {
+                                                                'wid' => 'X121212.4.3',
+                                                                'orth' => "ur\x{2083}",
+                                                                'ro' => 1,
+                                                                'userdata' => '',
+                                                                'dsu' => undef,
+                                                                'form' => 'a',
+                                                                'pos' => 'NOM',
+                                                                'type' => 'leaf'
+                                                              }
+                                                            ],
+                                              'type' => 'clause'
+                                            }
+                                          ],
+                            'type' => 'phrase'
+                          },
+                          {
+                            'wid' => 'X121212.4.3',
+                            'dsu' => undef,
+                            'form' => '*',
+                            'children' => [],
+                            'orth' => "ur\x{2083}",
+                            'ro' => undef,
+                            'userdata' => 1,
+                            'type' => 'leaf',
+                            'pos' => 'GEN'
+                          }
+                        ],
+          'type' => 'phrase'
+        };

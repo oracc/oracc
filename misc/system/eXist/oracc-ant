@@ -1,0 +1,2 @@
+#!/bin/sh
+ANT_HOME=/usr/local/share/ant /usr/local/share/ant/bin/ant $*

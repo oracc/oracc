@@ -1,0 +1,350 @@
+$VAR1 = {
+          'file' => 'MakeLeaves',
+          'type' => 'phrase',
+          'children' => [
+                          {
+                            'file' => 'Phrasal',
+                            'type' => 'phrase',
+                            'children' => [
+                                            {
+                                              'wid' => 'Q001543.1.1',
+                                              'lnode' => bless( do{\(my $o = 45838128)}, 'XML::LibXML::Element' ),
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        'e'
+                                                                      ]
+                                                                    ],
+                                                           'pos' => 'kur[mountain]N',
+                                                           'root' => [
+                                                                       -1,
+                                                                       'kur',
+                                                                       'kur'
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ]
+                                                         },
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'kur[mountain]',
+                                              'orth' => 'kur',
+                                              'subtype' => 'lemma',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 2,
+                                              'type' => 'leaf',
+                                              'pos' => 'N',
+                                              'line' => 129
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.1',
+                                              'lnode' => $VAR1->{'children'}[0]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'e',
+                                              'orth' => 'kur',
+                                              'subtype' => 'nsf',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 3,
+                                              'type' => 'leaf',
+                                              'pos' => 'ERG',
+                                              'line' => 151
+                                            }
+                                          ],
+                            'id' => 11,
+                            'label' => 'NP-ERG',
+                            'line' => 1222
+                          }
+                        ],
+          'id' => 4,
+          'label' => '#none',
+          'line' => 181
+        };
+Use of uninitialized value $2 in substitution iterator at /usr/local/oracc/lib/ORACC/SSA3/Parser.pm line 42.
+$VAR1 = {
+          'file' => 'MakeLeaves',
+          'type' => 'phrase',
+          'children' => [
+                          {
+                            'file' => 'MakeLeaves',
+                            'type' => 'phrase',
+                            'children' => [
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => bless( do{\(my $o = 48007904)}, 'XML::LibXML::Element' ),
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'nu',
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'vpr',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 5,
+                                              'type' => 'leaf',
+                                              'pos' => 'NEG',
+                                              'line' => 248
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => $VAR1->{'children'}[0]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        'nu'
+                                                                      ]
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'pos' => 'il[raise]V/t',
+                                                           'root' => [
+                                                                       -1,
+                                                                       "il\x{2082}",
+                                                                       "il\x{2082}"
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        'e'
+                                                                      ]
+                                                                    ]
+                                                         },
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'il[raise]',
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'lemma',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 6,
+                                              'type' => 'leaf',
+                                              'pos' => 'V',
+                                              'line' => 263
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => $VAR1->{'children'}[0]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'e',
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'vsf',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 7,
+                                              'type' => 'leaf',
+                                              'pos' => 'E',
+                                              'line' => 270
+                                            }
+                                          ],
+                            'id' => 8,
+                            'label' => 'VC-F',
+                            'line' => 272
+                          }
+                        ],
+          'id' => 9,
+          'label' => '#auto',
+          'line' => 181
+        };
+Use of uninitialized value $2 in substitution iterator at /usr/local/oracc/lib/ORACC/SSA3/Parser.pm line 42.
+Use of uninitialized value $result_node in string eq at /usr/local/oracc/lib/ORACC/SSA3/Phrasal.pm line 409.
+parse_sentence: < yields no result type
+$VAR1 = {
+          'file' => 'MakeLeaves',
+          'type' => 'phrase',
+          'children' => [
+                          {
+                            'done' => 1,
+                            'file' => 'MakeLeaves',
+                            'type' => 'phrase',
+                            'children' => [
+                                            {
+                                              'wid' => 'Q001543.1.1',
+                                              'lnode' => bless( do{\(my $o = 45838128)}, 'XML::LibXML::Element' ),
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        undef,
+                                                                        'e'
+                                                                      ]
+                                                                    ],
+                                                           'pos' => 'kur[mountain]N',
+                                                           'root' => [
+                                                                       -1,
+                                                                       'kur',
+                                                                       'kur'
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ]
+                                                         },
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'kur[mountain]',
+                                              'children' => [],
+                                              'orth' => 'kur',
+                                              'subtype' => 'lemma',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 2,
+                                              'type' => 'leaf',
+                                              'pos' => 'N',
+                                              'line' => 129
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.1',
+                                              'lnode' => $VAR1->{'children'}[0]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'e',
+                                              'children' => [],
+                                              'orth' => 'kur',
+                                              'subtype' => 'nsf',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 3,
+                                              'type' => 'leaf',
+                                              'pos' => 'ERG',
+                                              'line' => 151
+                                            }
+                                          ],
+                            'id' => 4,
+                            'label' => 'NP-ERG',
+                            'line' => 181
+                          },
+                          {
+                            'done' => 1,
+                            'file' => 'MakeLeaves',
+                            'type' => 'phrase',
+                            'children' => [
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => bless( do{\(my $o = 48007904)}, 'XML::LibXML::Element' ),
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'nu',
+                                              'children' => [],
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'vpr',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 5,
+                                              'type' => 'leaf',
+                                              'pos' => 'NEG',
+                                              'line' => 248
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => $VAR1->{'children'}[1]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'parse' => {
+                                                           'isf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'vpr' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        'nu'
+                                                                      ]
+                                                                    ],
+                                                           'nsf' => [
+                                                                      10000,
+                                                                      []
+                                                                    ],
+                                                           'pos' => 'il[raise]V/t',
+                                                           'root' => [
+                                                                       -1,
+                                                                       "il\x{2082}",
+                                                                       "il\x{2082}"
+                                                                     ],
+                                                           'vsf' => [
+                                                                      10000,
+                                                                      [
+                                                                        undef,
+                                                                        'e'
+                                                                      ]
+                                                                    ]
+                                                         },
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'il[raise]',
+                                              'children' => [],
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'lemma',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 6,
+                                              'type' => 'leaf',
+                                              'pos' => 'V',
+                                              'line' => 263
+                                            },
+                                            {
+                                              'wid' => 'Q001543.1.2',
+                                              'lnode' => $VAR1->{'children'}[1]{'children'}[0]{'lnode'},
+                                              'dsu' => undef,
+                                              'file' => 'MakeLeaves',
+                                              'form' => 'e',
+                                              'children' => [],
+                                              'orth' => "il\x{2082}",
+                                              'subtype' => 'vsf',
+                                              'ro' => 1,
+                                              'userdata' => '',
+                                              'id' => 7,
+                                              'type' => 'leaf',
+                                              'pos' => 'E',
+                                              'line' => 270
+                                            }
+                                          ],
+                            'id' => 9,
+                            'label' => 'VC-F',
+                            'line' => 181
+                          }
+                        ],
+          'id' => 10,
+          'label' => 'S',
+          'line' => 181
+        };

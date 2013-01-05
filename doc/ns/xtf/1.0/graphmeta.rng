@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="g.meta">
+    <optional>
+      <ref name="break"/>
+    </optional>
+    <optional>
+      <ref name="status.flags"/>
+    </optional>
+    <optional>
+      <ref name="status.spans"/>
+    </optional>
+    <optional>
+      <ref name="paleography.attr"/>
+    </optional>
+    <optional>
+      <ref name="linguistic.attr"/>
+    </optional>
+    <optional>
+      <ref name="proximity.attr"/>
+    </optional>
+    <optional>
+      <ref name="opener"/>
+    </optional>
+    <optional>
+      <ref name="closer"/>
+    </optional>
+    <optional>
+      <ref name="hsqb_o"/>
+    </optional>
+    <optional>
+      <ref name="hsqb_c"/>
+    </optional>
+    <optional>
+      <ref name="emhyph"/>
+    </optional>
+    <optional>
+      <ref name="varnum"/>
+    </optional>
+    <optional>
+      <ref name="sign_attr"/>
+    </optional>
+    <optional>
+      <ref name="utf8"/>
+    </optional>
+    <optional>
+      <ref name="delim"/>
+    </optional>
+    <optional>
+      <ref name="notemark"/>
+    </optional>
+    <optional>
+      <attribute name="xml:id">
+        <data type="ID"/>
+      </attribute>
+    </optional>
+    <optional>
+      <ref name="breakStart"/>
+    </optional>
+    <optional>
+      <ref name="breakEnd"/>
+    </optional>
+    <optional>
+      <ref name="damageStart"/>
+    </optional>
+    <optional>
+      <ref name="damageEnd"/>
+    </optional>
+    <optional>
+      <ref name="surroStart"/>
+    </optional>
+    <optional>
+      <ref name="surroEnd"/>
+    </optional>
+    <optional>
+      <ref name="statusStart"/>
+    </optional>
+    <optional>
+      <ref name="statusEnd"/>
+    </optional>
+    <optional>
+      <ref name="accented"/>
+    </optional>
+  </define>
+  <define name="accented">
+    <attribute name="g:accented"/>
+  </define>
+  <define name="breakStart">
+    <attribute name="g:breakStart">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="breakEnd">
+    <attribute name="g:breakEnd">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="damageStart">
+    <attribute name="g:damageStart">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="damageEnd">
+    <attribute name="g:damageEnd">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="surroStart">
+    <attribute name="g:surroStart">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="surroEnd">
+    <attribute name="g:surroEnd">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="statusStart">
+    <attribute name="g:statusStart">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="statusEnd">
+    <attribute name="g:statusEnd">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="notemark">
+    <attribute name="notemark"/>
+    <attribute name="noteref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="break">
+    <attribute name="g:break">
+      <choice>
+        <value>damaged</value>
+        <value>missing</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="opener">
+    <attribute name="g:o"/>
+  </define>
+  <define name="closer">
+    <attribute name="g:c"/>
+  </define>
+  <define name="hsqb_o">
+    <attribute name="g:ho">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="hsqb_c">
+    <attribute name="g:hc">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="emhyph">
+    <attribute name="g:em">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="sign_attr">
+    <attribute name="g:sign"/>
+  </define>
+  <define name="utf8">
+    <attribute name="g:utf8"/>
+  </define>
+  <define name="delim">
+    <attribute name="g:delim"/>
+  </define>
+  <define name="varnum">
+    <optional>
+      <attribute name="g:varo"/>
+    </optional>
+    <optional>
+      <attribute name="g:vari"/>
+    </optional>
+    <optional>
+      <attribute name="g:varc"/>
+    </optional>
+  </define>
+  <define name="status.flags">
+    <optional>
+      <attribute name="g:collated">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="g:queried">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="g:remarked">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+  </define>
+  <define name="gloss">
+    <choice>
+      <ref name="det"/>
+      <ref name="glo"/>
+    </choice>
+  </define>
+  <define name="pos">
+    <attribute name="g:pos">
+      <choice>
+        <value>pre</value>
+        <value>post</value>
+        <value>free</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="det">
+    <element name="g:d">
+      <ref name="pos"/>
+      <ref name="dtyp"/>
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <optional>
+        <ref name="emhyph"/>
+      </optional>
+      <optional>
+        <ref name="notemark"/>
+      </optional>
+      <optional>
+        <ref name="surroStart"/>
+      </optional>
+      <choice>
+        <ref name="dingir"/>
+        <ref name="mister"/>
+        <zeroOrMore>
+          <ref name="word.content"/>
+        </zeroOrMore>
+      </choice>
+    </element>
+  </define>
+  <define name="dtyp">
+    <attribute name="g:role">
+      <choice>
+        <value>phonetic</value>
+        <value>semantic</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="glo">
+    <element name="g:gloss">
+      <attribute name="g:type">
+        <choice>
+          <value>lang</value>
+          <value>text</value>
+        </choice>
+      </attribute>
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <ref name="pos"/>
+      <ref name="words"/>
+    </element>
+  </define>
+  <define name="status.spans">
+    <attribute name="g:status">
+      <choice>
+        <value>ok</value>
+        <value>erased</value>
+        <value>excised</value>
+        <value>implied</value>
+        <value>maybe</value>
+        <value>supplied</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="paleography.attr">
+    <attribute name="g:script">
+      <data type="NCName"/>
+    </attribute>
+  </define>
+  <define name="linguistic.attr">
+    <optional>
+      <attribute name="xml:lang">
+        <data type="language"/>
+      </attribute>
+    </optional>
+    <!--  attribute g:rws         { "emegir" | "emesal" | "udgalnun" }? , -->
+    <choice>
+      <attribute name="g:role">
+        <choice>
+          <value>sign</value>
+          <value>ideo</value>
+          <value>num</value>
+          <value>syll</value>
+        </choice>
+      </attribute>
+      <group>
+        <attribute name="g:role">
+          <value>logo</value>
+        </attribute>
+        <attribute name="g:logolang">
+          <data type="language"/>
+        </attribute>
+      </group>
+    </choice>
+  </define>
+  <define name="proximity.attr">
+    <attribute name="g:prox">
+      <data type="integer"/>
+    </attribute>
+  </define>
+  <define name="nongrapheme">
+    <element name="g:x">
+      <choice>
+        <attribute name="g:type">
+          <choice>
+            <value>disambig</value>
+            <value>empty</value>
+            <value>newline</value>
+            <value>user</value>
+          </choice>
+        </attribute>
+        <group>
+          <attribute name="g:type">
+            <choice>
+              <value>ellipsis</value>
+              <value>word-absent</value>
+              <value>word-broken</value>
+              <value>word-linecont</value>
+            </choice>
+          </attribute>
+          <ref name="status.spans"/>
+          <optional>
+            <ref name="opener"/>
+          </optional>
+          <optional>
+            <ref name="closer"/>
+          </optional>
+          <optional>
+            <ref name="break"/>
+          </optional>
+          <optional>
+            <ref name="notemark"/>
+          </optional>
+        </group>
+      </choice>
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <optional>
+        <text/>
+      </optional>
+      <optional>
+        <ref name="varnum"/>
+      </optional>
+      <optional>
+        <attribute name="xml:id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="breakStart"/>
+      </optional>
+      <optional>
+        <ref name="breakEnd"/>
+      </optional>
+      <optional>
+        <ref name="damageStart"/>
+      </optional>
+      <optional>
+        <ref name="damageEnd"/>
+      </optional>
+      <optional>
+        <ref name="emhyph"/>
+      </optional>
+      <optional>
+        <ref name="surroStart"/>
+      </optional>
+      <optional>
+        <ref name="surroEnd"/>
+      </optional>
+      <optional>
+        <ref name="statusStart"/>
+      </optional>
+      <optional>
+        <ref name="statusEnd"/>
+      </optional>
+    </element>
+  </define>
+</grammar>

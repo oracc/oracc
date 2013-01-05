@@ -1,0 +1,53 @@
+block.c: In function ‘parse_block’:
+block.c:798: warning: passing argument 1 of ‘lem_save_line’ from incompatible pointer type
+lemline.h:10: note: expected ‘unsigned char *’ but argument is of type ‘unsigned char **’
+block.c:830: warning: passing argument 1 of ‘lem_save_line’ from incompatible pointer type
+lemline.h:10: note: expected ‘unsigned char *’ but argument is of type ‘unsigned char **’
+block.c:888: warning: implicit declaration of function ‘word_matrix_rewrite’
+block.c: In function ‘block’:
+block.c:960: warning: unused variable ‘block_tok_name’
+block.c: In function ‘ntoken’:
+block.c:2121: warning: pointer targets in passing argument 1 of ‘strlen’ differ in signedness
+/usr/include/string.h:399: note: expected ‘const char *’ but argument is of type ‘unsigned char *’
+../../../libtool: line 8430: func_len: command not found
+../../../libtool: line 8432: test: : integer expression expected
+../../../libtool: line 8449: func_len: command not found
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected
+../../../libtool: line 8454: func_len: command not found
+../../../libtool: line 8455: func_arith: command not found
+../../../libtool: line 8458: test: : integer expression expected

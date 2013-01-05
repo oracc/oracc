@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Installing Oracc</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#Installing_Oracc">Installing Oracc</a>
+        </p>
+        <p class="toc h2">
+          <a href="#The_Oracc_User">The Oracc User</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Pre_install">Pre-install</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Obtain/Install">Obtain/Install</a>
+        </p>
+        <p class="toc h2">
+          <a href="#Finishing">Finishing</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">Installing Oracc</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-30
+</h2></div><h1><a name="intro">Introduction</a></h1><p>This document explains how to create Oracc.</p>
+
+<h1><a name="Installing_Oracc">Installing Oracc</a></h1>
+
+<h2><a name="The_Oracc_User">The Oracc User</a></h2>
+
+<ul>
+
+<li><p>create the directory where the Oracc installation will live;
+   until path handling is abstracted out into a library routine
+   the only paths that will work in practice are:</p>
+<pre class="cookbook">
+/usr/local/oracc
+/var/local/oracc
+</pre></li>
+
+<li><p>create a user 'oracc' with home set to /usr/local/oracc:</p>
+<pre class="cookbook">
+/usr/sbin/useradd -d /usr/local/oracc oracc
+</pre></li>
+
+<li><p>set a password:</p>
+<pre class="cookbook">
+/sbin/passwd oracc
+</pre></li>
+
+<li><p>create a group 'oracc' if necessary:</p>
+<pre class="cookbook">
+/usr/sbin/groupadd oracc
+</pre></li>
+
+<li><p>change ownership of /{usr,var}/local/oracc to oracc:</p>
+<pre class="cookbook">
+chown oracc:oracc /{usr,var}/local/oracc
+</pre></li>
+
+<li><p>set /usr/local/oracc to be non-world-readable:</p>
+<pre class="cookbook">
+chmod o-r /usr/local/oracc
+</pre></li>
+
+</ul>
+
+<h2><a name="Pre_install">Pre-install</a></h2>
+
+<ul>
+
+<li><p>log in as root and create necessary directories:</p>
+<pre class="cookbook">
+mkdir -p /deleted_home /oraccbak
+</pre></li>
+
+<li><p>log in as oracc and create necessary directories:</p>
+<pre class="cookbook">
+mkdir -p 00/sys
+mkdir -p /var/tmp/oracc/{atfserver,pager}
+chmod o+w /var/tmp/oracc/*
+</pre></li>
+
+</ul>
+
+<h2><a name="Obtain/Install">Obtain/Install</a></h2>
+
+<ul>
+
+<li><p>obtain the Oracc distribution from <a href="http://oracc.museum.upenn.edu/downloads/oracc/">the
+distributions directory</a>.</p></li>
+
+<li><p>put the current Oracc distribution in 00, and unpack it, then
+link it to src (let's say you've downloaded it to /tmp):</p>
+<pre class="cookbook">
+cd ~/00
+cp /tmp/oracc-2010-06-23.tar.gz 00
+tar zxf ~/00/oracc-2010-06-23.tar.gz
+ln -sf ~/00/oracc-2010-06-23 ~/src
+</pre></li>
+
+<li><p>edit <code>src/misc/admin/oraccenv.sh</code> appropriately 
+for your environment.  If you are not going to host the webservices
+yourself you can set ORACC_HOST to oracc.museum.upenn.edu.</p></li>
+
+<li><p>edit <code>src/sys/skel/.bash_profile</code> if necessary; depending on 
+the system, it may be necessary to copy the system skel
+files (e.g., from /etc/skel) and add the following line to
+the end:</p>
+<pre class="cookbook">
+. /usr/local/oracc/bin/oraccenv.sh
+</pre>
+<p>The path to <code>bin/oraccenv.sh</code> should be the the same as ORACC in oraccenv.sh</p></li>
+
+<li><p>copy the skeleton files to the oracc user home:</p>
+<pre class="cookbook">
+cp src/sys/skel/.* ~
+</pre></li>
+
+<li><p>source the environment so the build will work:</p>
+<pre class="cookbook">
+. src/misc/admin/oraccenv.sh
+</pre>
+
+<p><strong>Note:</strong> if you log out and log in before the
+installation has at least reached the point of copying the misc/admin
+files, you will need to source this file manually each time.</p>
+</li>
+
+<li><p>Now build everything:</p>
+
+<pre class="cookbook">
+cd ~/src 
+./install-all.sh
+</pre>
+
+<p>After the build completes, you should review the log files in
+~/00/tmp/install*.log; this will tell you if everything has installed
+successfully.</p></li>
+
+</ul>
+
+<h2><a name="Finishing">Finishing</a></h2>
+
+<p>now that Oracc is installed, you need to finish up the
+installation of the root-only tools:</p>
+
+<pre class="cookbook">
+cd ${ORACC}src/sys
+./install.sh
+cd ${ORACC}/00
+su
+chown root:oracc sys
+chmod go-rx sys
+</pre>
+
+<p>Finally, edit the root-only script newproj.sh to set
+a default password for new project accounts.  Change
+the line:</p>
+
+<pre class="example">
+## echo -n ******** /usr/bin/passwd --stdin $project
+</pre>
+
+<p>To uncomment it, and replace ******** with the
+default password.  The root ownership and restrictive
+permissions will ensure that no one is able to see
+this.</p>
+
+<p>After saving the file and exiting your text editor,
+use `exit' to logout of being root.</p>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

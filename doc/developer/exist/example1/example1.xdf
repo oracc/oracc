@@ -1,0 +1,424 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Working with eXist on Oracc, Example 1:<br/>XPaths</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>06/16/06</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>An example XQuery to produce some elementary
+  statistics from an Oracc project using XPaths is described section
+  by section, with some background explanation to provide a model for
+  simple XQuery development.</dc:description>
+</d:meta>
+
+<h1>XQuery</h1>
+
+<h2>Prolog</h2>
+
+<p>Most queries will be begin with a prolog containing namespace and
+variable declarations.</p>
+
+<h3>Namespaces</h3>
+
+<p>XML Namespaces consist of a prefix and a URI, and an XQuery.  You
+use the prefix when specifying element names, and the URI must match
+the URI used for the prefix in the XML data.  The <a
+href="http://www.w3schools.com/xml/xml_namespaces.asp">discussion on
+w3schools.com</a> will explain more about them if you are curious.  A
+fairly full list of namespace declarations can be found <a
+href="http://oracc.museum.upenn.edu/downloads/ns.txt">on the Oracc
+server</a>.</p>
+
+<pre class="cookbook">
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace gdl = "http://oracc.org/ns/gdl/1.0";
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+declare namespace xcl = "http://oracc.org/ns/xcl/1.0";
+declare namespace xff = "http://oracc.org/ns/xff/1.0";
+declare namespace xtf = "http://oracc.org/ns/xtf/1.0";
+</pre>
+
+<h3>Variables</h3>
+
+<p>Variable declarations are a bit more complicated, and the two in
+this script perform quite different tasks so we'll describe them
+separately.</p>
+
+<p>First, we get input from the REST request: this is how you can pass
+variable data into your XQueries:</p>
+
+<pre class="cookbook">
+declare variable $project as xs:string := request:get-parameter('project','');
+</pre>
+
+<p>Suppose this query were available as <code>oracc/stats.xql</code> in
+the Oracc database, the following URL would call the query and pass the
+project name into the query:</p>
+
+<pre class="example">
+  http://oracc.museum.upenn.edu/db/oracc/lib/example1/stats.xql?project=cams/gkab
+</pre>
+
+<p>The URL syntax is the same as that of CGI parameters.</p>
+
+<p>Next, we define a convenience variable to refer to the OML version
+of the project data, using the variable we just defined:</p>
+
+<pre class="cookbook">
+declare variable $P as document-node()* := collection(concat('/db/',$project,'/oml'));
+</pre>
+
+<p>Now, the script can refer to
+<code>collection(concat('/db/',$project,'/oml'))</code> simply as
+<code>$P</code>.  In this definition, <code>concat()</code> is a
+function that concatenates its arguments to make a single string of
+them.</p>
+
+<h3>Options</h3>
+
+<p>There is also a declaration to set eXist options for output
+("serialization").  This is not always required, but if you are
+returning XML data to a browser you should use this option to ensure
+that an XML declaration is sent as part of the returned data.</p>
+
+<pre class="cookbook">
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=yes";
+</pre>
+
+<h2>Body</h2>
+
+<h3>Document Constructor</h3>
+
+<p>Many scripts will not need to use the document constructor
+<code>document { ... }</code>, but this one does because we want to
+define an <code>xml-stylesheet</code> instruction.  The general
+structure of the body of the query is that anything inside curly
+braces is XQuery, anything outside of curly braces is XML destined for
+output.  If you include XML inside curly braces, as we do within the
+document constructor, then you must enclose further levels of XQuery
+inside curly braces, and so on.</p>
+
+<pre class="cookbook">
+document {
+</pre>
+
+<h3>PI</h3>
+
+<p>Now we construct a PI which will be at the start of our XML
+output.  We do this so that we can style the XML output and make it
+tabular using CSS as explained at the end of this document.  Note the
+comma after the closing curly brace.</p>
+
+<pre class="cookbook">
+processing-instruction
+  xml-stylesheet
+  { 'href="http://oracc.museum.upenn.edu/css/stats-xql.css" type="text/css"' },
+</pre>
+
+<h3>Document Element</h3>
+
+<p>XML documents have a top-level element called the Document
+Element, and if you fail to include a document element you will find
+that the XQuery processor emits only the first of a list of results
+rather than the entire list.  If you are creating documents that need
+to interact with other documents and fragments, it is good practice to
+use a namespace for your elements, but we are using non-namespaced
+elements here for simplicity.</p>
+
+<pre class="cookbook">
+&lt;stats>
+</pre>
+
+<h3>Strings</h3>
+
+<p>Our next element, <code>title</code> illustrates two points, or at
+least its content does:</p>
+
+<ol>
+<li>Strings do not have to be quoted.  Text outside of curly braces is
+text for inclusion in the XML output.</li>
+<li>To use XQuery commands you enclose them in braces.  Here we simply
+use the value of the variable, <code>$project</code>.</li>
+</ol>
+
+<pre class="cookbook">
+&lt;title>Statistics for project { $project }&lt;/title>
+</pre>
+
+<h3>XPaths</h3>
+
+<p>XPaths are essential to XQuery: any legal XPath is a legal XQuery.
+Although we explain the constructs used in the XPaths which occur
+below, this document is not a complete tutorial on XPath.  You can go
+through
+<a href="http://zvon.org/comp/r/tut-XPath_1.html">the one from Zvon if
+you are not familiar with XPath.</a>.</p>
+
+<p>An XPath returns one or more nodes (elements or attributes from the
+document).  The <code>count()</code> function gives the number of
+nodes in the node set.  So in each case below, we use an XPath to
+select a set of nodes, and then output the count of those nodes with a
+short descriptive label.</p>
+
+<p>In the first count, we start by selecting all of the
+transliterations or composites in the project, but starting with our
+predefined collection, <code>$P</code>, then giving a path group using
+the "union" operator, a vertical bar (<code>|</code>) which selects
+the union of all transliteration and composite elements which are
+children of the collection defined as <code>$P</code>.  Now we select
+all of the children of the transliterations and composites using the
+short-hand for descendants, <code>//</code>.  Finally, we constrain
+the selection to use only the <code>v</code>-elements in the
+<code>gdl</code> namespace.  (Of course, this is not a perfect
+grapheme counter, but then this is just an example query.)</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of graphemes&lt;/what>
+  &lt;number>{
+    count($P/(xtf:transliteration|xtf:composite)//gdl:v)
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>The next query illustrates another facet of XPaths: predicates
+enclosed in square brackets (<code>[...]</code>).  A predicate is a
+test which is applied to the node to see if it should be included in
+the set.  Here, we select all the descendants using <code>//</code> as
+before, then we constrain the selection to all elements using
+<code>*</code>, then we apply the predicate to select only some of the
+elements.  The reason for doing this is that the <code>//</code>
+operation can be expensive (in general, it is often best to avoid
+using it).  By using the predicate we can get the descendants only
+once, and then select the ones we want, rather than getting all of the
+descendants several times, once for each type of element we want to
+select.</p>
+
+<p>The predicate uses the <code>self</code> axis, which means: apply
+the test to the current element (rather than a parent, sibling or
+descendant, each of which have their own axes).  Then the namespaces
+and element components that we above.  The <code>or</code> keyword is the
+boolean operator for tests inside predicates (yes, there is also
+<code>and</code>).  Note how we need to select the
+<code>w</code>-elements in each of the two namespaces (GDL and
+normalizations) explicitly.</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of words&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//*
+		[self::gdl:w or self::norm:w])
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>Now for another step: we can use more than one predicate.  Here,
+the second predicate calls the <code>count()</code> function itself,
+and the argument is an XPath which is relative to the current element,
+the <code>*</code> meaning "all child elements".  So, the second
+predicate tests whether the word element has only one child.</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of words written with one grapheme&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//*
+	    [self::gdl:w][count(*)=1])
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>This one is straightforward:</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of lemmata&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//xcl:l)
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>And this one just adds one detail, i.e., you can test an attribute
+using the <code>@</code>-sign (on its own this tests the simple
+presence of the attribute, but you can use all the string functions
+with attributes as well, so you can say, e.g.,
+<code>contains(@cf,'dub')</code> to see if the <code>cf</code>
+attribute contains the substring <code>dub</code>.):</p>
+
+<pre class="cookbook">
+&lt;count>
+  &lt;what>Number of lemmata with Citation Form&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf])
+  }&lt;/number>
+&lt;/count>
+</pre>
+
+<p>Now we just have to close the document element and the curly brace
+that we started after the document constructor:</p>
+
+<pre class="cookbook">
+&lt;/stats>
+
+}
+</pre>
+
+<h2>Altogether...</h2>
+
+<p>Here is the script all together, to reread as a whole.</p>
+
+<pre class="cookbook">
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+declare namespace request = "http://exist-db.org/xquery/request";
+
+declare namespace gdl  = "http://oracc.org/ns/gdl/1.0";
+declare namespace norm = "http://oracc.org/ns/norm/1.0";
+declare namespace xcl  = "http://oracc.org/ns/xcl/1.0";
+declare namespace xff  = "http://oracc.org/ns/xff/1.0";
+declare namespace xtf  = "http://oracc.org/ns/xtf/1.0";
+
+declare variable $project as xs:string 
+                          := request:get-parameter('project','');
+declare variable $P as document-node()* 
+                    := collection(concat('/db/',$project,'/oml'));
+declare option exist:serialize 
+        "method=xml media-type=text/xml omit-xml-declaration=no indent=yes";
+
+document {
+
+processing-instruction
+  xml-stylesheet
+  { 'href="http://oracc.museum.upenn.edu/css/stats-xql.css" 
+     type="text/css"' },
+
+&lt;stats>
+&lt;title>Statistics for project { $ project }&lt;/title>
+&lt;count>
+  &lt;what>Number of graphemes&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//gdl:v)
+  }&lt;/number>
+&lt;/count>
+&lt;count>
+  &lt;what>Number of words&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//*
+		[self::gdl:w or self::norm:w])
+  }&lt;/number>
+&lt;/count>
+&lt;count>
+  &lt;what>Number of words written with one grapheme&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//*
+	    [self::gdl:w][count(*)=1])
+  }&lt;/number>
+&lt;/count>
+&lt;count>
+  &lt;what>Number of lemmata&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//xcl:l)
+  }&lt;/number>
+&lt;/count>
+&lt;count>
+  &lt;what>Number of lemmata with Citation Form&lt;/what>
+  &lt;number>{
+      count($P/(xtf:transliteration|xtf:composite)//xcl:l[xff:f/@cf])
+  }&lt;/number>
+&lt;/count>
+&lt;/stats>
+
+}
+</pre>
+
+<h2>Output</h2>
+
+<p>When you execute the following URL:</p>
+
+<pre class="cookbook">
+http://oracc.museum.upenn.edu/db/oracc/lib/stats/stats.xql?project=test
+</pre>
+
+<p>The following output is created:</p>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;?xml-stylesheet href="http://oracc.museum.upenn.edu/css/stats-xql.css" 
+                    type="text/css"?>
+&lt;stats>
+    &lt;title>Statistics for project test&lt;/title>
+    &lt;count>
+        &lt;what>Number of graphemes&lt;/what>
+        &lt;number>35&lt;/number>
+    &lt;/count>
+    &lt;count>
+        &lt;what>Number of words&lt;/what>
+        &lt;number>20&lt;/number>
+    &lt;/count>
+    &lt;count>
+        &lt;what>Number of words written with one grapheme&lt;/what>
+        &lt;number>10&lt;/number>
+    &lt;/count>
+    &lt;count>
+        &lt;what>Number of lemmata&lt;/what>
+        &lt;number>20&lt;/number>
+    &lt;/count>
+    &lt;count>
+        &lt;what>Number of lemmata with Citation Form&lt;/what>
+        &lt;number>19&lt;/number>
+    &lt;/count>
+&lt;/stats>
+</pre>
+
+<h1>Styling</h1>
+
+<p>Most browsers will not treat the output above well.  Firefox, for example,
+displays all the text content, without any of the element structure,
+on a single line.  That is why we went to the effort of using the
+xml-stylesheet PI.  With CSS you can style XML by giving the elements
+display roles that are the equivalent to some HTML tags (this is well
+supported by Firefox, IE 8.0 and Chrome, and in Safari though there
+are occasional bugs with the Safari support).  So, the following CSS
+stylesheet gives us a much nicer, tabular display with very little
+extra effort:</p>
+
+<pre class="cookbook">
+stats  { display: table; 
+	 width: 60%; margin: auto; }
+title  { display: table-caption; 
+	 margin-top: 10px; margin-bottom: 10px; 
+	 text-align: center; font-weight: bold; }
+count  { display: table-row; }
+what   { display: table-cell; }
+number { display: table-cell; }
+</pre>
+
+<p>If your browser understands this stylesheet you will see something
+like:</p>
+
+<div class="center">
+<img width="500px" src="stats-xql.png" alt="Screen shot of formatted stats.xql output"/>
+</div>
+
+
+<d:resources>
+<d:resource copy="yes" href="etc/stats.xql"/>
+<d:resource copy="yes" href="etc/stats-xql.css"/>
+<d:resource copy="yes" href="etc/stats-xql.png"/>
+</d:resources>
+
+</d:doc>

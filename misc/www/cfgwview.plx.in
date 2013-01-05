@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+use warnings; use strict; use open ':utf8';
+use Encode;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+my %urn = ();
+my($project,$cfgw) = @ARGV;
+Encode::_utf8_on($cfgw);
+my $hack = "@@ORACC@@/pub/$project/urn-hack.txt";
+open(H, $hack) || die "cfgwview.plx: can't open $hack\n";
+while (<H>) {
+    chomp;
+    /^(.*?)\"(.*?)$/;
+    $urn{$2} = $1;
+}
+close(H);
+
+if ($urn{$cfgw}) {
+    my $l = $urn{$cfgw};
+    $l =~ s/\..*$//;
+#    warn "cfgwview.plx: handling $project $cfgw via $ENV{'ORACC'}/www/$project/cbd/$l/$urn{$cfgw}.html\n";
+#    exec 'cat', "$ENV{'ORACC'}/www/$project/cbd/$l/$urn{$cfgw}.html";
+    open(C,"@@ORACC@@/www/$project/cbd/$l/$urn{$cfgw}.html");
+    <C>;
+    while (<C>) { print }
+    close(C);
+} else {
+    warn "cfgwview.plx: no such URN $cfgw\n";
+}
+
+1;

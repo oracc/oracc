@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns:syn="http://oracc.org/ns/syntax/1.0" xmlns:n="http://oracc.org/ns/norm/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="word.content">
+    <choice>
+      <text/>
+      <ref name="group"/>
+      <ref name="grapheme"/>
+      <ref name="nongrapheme"/>
+    </choice>
+  </define>
+  <define name="words">
+    <zeroOrMore>
+      <choice>
+        <ref name="word"/>
+        <ref name="sword.head"/>
+        <ref name="sword.cont"/>
+        <ref name="nonword"/>
+        <ref name="nongrapheme"/>
+      </choice>
+    </zeroOrMore>
+  </define>
+  <define name="word">
+    <element name="g:w">
+      <ref name="word.attributes"/>
+      <zeroOrMore>
+        <ref name="word.content"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="sword.head">
+    <element name="g:w">
+      <attribute name="headform"/>
+      <attribute name="contrefs">
+        <data type="IDREFS"/>
+      </attribute>
+      <ref name="word.attributes"/>
+      <zeroOrMore>
+        <ref name="word.content"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="sword.cont">
+    <element name="g:swc">
+      <attribute name="xml:id">
+        <data type="ID"/>
+      </attribute>
+      <attribute name="xml:lang">
+        <data type="language"/>
+      </attribute>
+      <optional>
+        <attribute name="form"/>
+      </optional>
+      <attribute name="headref">
+        <data type="IDREF"/>
+      </attribute>
+      <attribute name="swc-final">
+        <choice>
+          <value>1</value>
+          <value>0</value>
+        </choice>
+      </attribute>
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="word.content"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="word.attributes">
+    <attribute name="xml:id">
+      <data type="ID"/>
+    </attribute>
+    <attribute name="xml:lang">
+      <data type="language"/>
+    </attribute>
+    <optional>
+      <attribute name="form"/>
+    </optional>
+    <optional>
+      <attribute name="lemma"/>
+    </optional>
+    <optional>
+      <attribute name="guide"/>
+    </optional>
+    <optional>
+      <attribute name="sense"/>
+    </optional>
+    <optional>
+      <attribute name="pos"/>
+    </optional>
+    <optional>
+      <attribute name="morph"/>
+    </optional>
+    <optional>
+      <attribute name="base"/>
+    </optional>
+    <optional>
+      <attribute name="norm"/>
+    </optional>
+    <optional>
+      <ref name="delim"/>
+    </optional>
+    <zeroOrMore>
+      <ref name="syntax.attributes"/>
+    </zeroOrMore>
+  </define>
+  <define name="nonword">
+    <element name="g:nonw">
+      <optional>
+        <attribute name="xml:id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="xml:lang">
+          <data type="language"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="type">
+          <choice>
+            <value>comment</value>
+            <value>dollar</value>
+            <value>excised</value>
+            <value>punct</value>
+            <value>vari</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="form"/>
+      </optional>
+      <optional>
+        <attribute name="lemma"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="syntax.attributes"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="break"/>
+      </optional>
+      <optional>
+        <ref name="status.flags"/>
+      </optional>
+      <optional>
+        <ref name="status.spans"/>
+      </optional>
+      <optional>
+        <ref name="opener"/>
+      </optional>
+      <optional>
+        <ref name="closer"/>
+      </optional>
+      <optional>
+        <ref name="delim"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="word.content"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="group">
+    <element name="g:gg">
+      <attribute name="g:type">
+        <choice>
+          <value>correction</value>
+          <value>alternation</value>
+          <value>group</value>
+          <value>reordering</value>
+          <value>ligature</value>
+          <value>implicit-ligature</value>
+          <value>logo</value>
+          <value>numword</value>
+        </choice>
+      </attribute>
+      <ref name="g.meta"/>
+      <oneOrMore>
+        <choice>
+          <ref name="group"/>
+          <ref name="grapheme"/>
+          <ref name="normseg"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="groupgroup">
+    <element name="g:gg">
+      <attribute name="g:type">
+        <value>group</value>
+      </attribute>
+      <ref name="g.meta"/>
+      <oneOrMore>
+        <choice>
+          <ref name="group"/>
+          <ref name="grapheme"/>
+          <ref name="normword"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="syntax.attributes">
+    <choice>
+      <attribute name="syn:brk-before"/>
+      <attribute name="syn:brk-after"/>
+      <attribute name="syn:ub-before"/>
+      <attribute name="syn:ub-after"/>
+    </choice>
+  </define>
+  <define name="normword">
+    <element name="n:w">
+      <ref name="word.attributes"/>
+      <optional>
+        <ref name="break"/>
+      </optional>
+      <optional>
+        <ref name="status.flags"/>
+      </optional>
+      <optional>
+        <ref name="status.spans"/>
+      </optional>
+      <optional>
+        <ref name="opener"/>
+      </optional>
+      <optional>
+        <ref name="closer"/>
+      </optional>
+      <optional>
+        <ref name="hsqb_o"/>
+      </optional>
+      <optional>
+        <ref name="hsqb_c"/>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="normwordword"/>
+          <ref name="normwordgroup"/>
+          <ref name="gloss"/>
+          <ref name="nongrapheme"/>
+          <ref name="group"/>
+        </choice>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="syntax.attributes"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="breakStart"/>
+      </optional>
+      <optional>
+        <ref name="breakEnd"/>
+      </optional>
+      <optional>
+        <ref name="damageStart"/>
+      </optional>
+      <optional>
+        <ref name="damageEnd"/>
+      </optional>
+      <optional>
+        <ref name="statusStart"/>
+      </optional>
+      <optional>
+        <ref name="statusEnd"/>
+      </optional>
+    </element>
+  </define>
+  <define name="normwordgroup">
+    <element name="n:word-group">
+      <attribute name="g:type">
+        <value>alternation</value>
+      </attribute>
+      <oneOrMore>
+        <element name="n:grouped-word">
+          <ref name="normwordword"/>
+        </element>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="normwordword">
+    <choice>
+      <text/>
+      <oneOrMore>
+        <choice>
+          <ref name="normseg"/>
+          <ref name="normgroup"/>
+        </choice>
+      </oneOrMore>
+    </choice>
+  </define>
+  <define name="normseg">
+    <element name="n:s">
+      <ref name="n.meta"/>
+      <ref name="g.meta"/>
+      <text/>
+    </element>
+  </define>
+  <define name="n.meta">
+    <optional>
+      <ref name="normnum"/>
+    </optional>
+  </define>
+  <define name="normnum">
+    <attribute name="n:num">
+      <value>yes</value>
+    </attribute>
+  </define>
+  <define name="normgroup">
+    <element name="n:g">
+      <attribute name="g:type">
+        <choice>
+          <value>correction</value>
+          <value>alternation</value>
+          <value>group</value>
+          <value>reordering</value>
+          <value>ligature</value>
+          <value>numword</value>
+        </choice>
+      </attribute>
+      <ref name="g.meta"/>
+      <oneOrMore>
+        <choice>
+          <ref name="normgroup"/>
+          <ref name="normseg"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+</grammar>

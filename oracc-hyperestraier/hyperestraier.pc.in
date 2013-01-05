@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
+libexecdir=@libexecdir@
+includedir=@includedir@
+datadir=@datadir@
+
+Name: Hyper Estraier
+Description: a full-text search system for communities
+Version: @PACKAGE_VERSION@
+Requires: qdbm >= 1.8.75
+Libs: -L${libdir} @MYLDOPTS@ -lestraier @MYSKLIBS@ @MYMTLIBS@ @LIBS@
+Cflags: -I${includedir} @MYCPPOPTS@

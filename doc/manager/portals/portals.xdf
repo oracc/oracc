@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Portal Websites</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>29 June 2010</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page gives very simple instructions on setting up portal websites that serve as the introductory front-end to your Oracc corpus.</dc:description>
+</d:meta>
+<p>There are four different ways to create a portal for your Oracc corpus, depending on your particular needs:</p>
+<ol>
+<li><p><a name="option1" />If you choose none of the following options, the 40-word blurb and a 320×240 pixel image in your project <a href="../projconfig/#Editable_elements">configuration file</a> will by default serve as your project's front page on the Oracc website (e.g., <a href="/cams/">CAMS</a>).</p></li>
+<li><p><a name="option2" />You can create and maintain a portal site on a different server and have your Oracc project link to it by editing the <a href="projconfig/">configuration file</a>. This can be helpful if, for instance, your university or funding body expects you to have a web presence on their server (e.g., <a href="http://knp.prs.heacademy.ac.uk">K&amp;P</a> on the UK Higher Education Academy's website, as a portal for <a href="/saao/">SAAo</a>).</p></li>
+<li><p><a name="option3" />You can write your own html page(s) <a href="#Creating_portal_pages_for_Oracc">following the instructions below</a>, and <a href="#uploading_portal_pages_to_Oracc">upload them</a> to your project's <code>00web</code> directory on Oracc (e.g., <a href="/dccmt">DCCMT</a>). Upload all images for these pages to <code>00web/images</code>. Ideally your images should be PNG or JPGs. Rebuild your website with the <a href="/doc/manager/the-oracc-command">oracc command</a> <code class="cookbook">oracc web</code>.</p> </li>
+<li><p><a name="option4" />Alternatively, if you would like a site that looks like <a href="http://knp.prs.heacademy.ac.uk">K&amp;P</a>, <a href="~/gkab/">GKAB</a>, and <a href="http://www.ucl.ac.uk/sargon/">AEB</a>, you can use <a href="esp/">ESP</a> to build your portal site in situ in your project's <code>00web/</code> directory.</p></li>
+<li><p><a name="option5" />You can ask your project liaison to create a separate project on Oracc to host your portal site, and build it using <a href="esp/">ESP</a> or your own software. This is particularly useful if the project and corpus have different remits, managers, funders, etc. (e.g., <a href="/gkab/">GKAB</a> as a portal for <a href="/cams/">CAMS</a>). In this case, your html files will live in your portal project's (not your corpus project's) <code>00web</code> directory on Oracc, with subdirectories as dictated by the structure of the website.</p> 
+</li></ol>
+<p><strong>N.B.:</strong> If you choose any of options 2 to 5 you must still complete the image and blurb entries in your <a href="../projconfig/#Editable_elements">configuration file</a>, and also set the public status appropriately in the configuration file; read the section on <a href="Listing_portal_projects">Listing portal projects</a> for more information.</p>
+
+<h1>Creating portal pages for Oracc</h1>
+<p>If you are creating html pages or whole websites for your Oracc portal, whether on Oracc or on your own computer, you will need to follow these simple guidelines:</p>
+<ul>
+<li>Your filenames must end with the extension <code class="cookbook">.html</code>, not <code>.htm</code> (e.g., <code class="cookbook">biblio.html</code>).</li>
+<li>The website's home page must have filename <code class="cookbook">index.html</code> or it will not show up as the homepage.</li>
+<li>You must link to other web pages, whether on Oracc or elsewhere using full URLs, not the short forms ("tiny URLs") offered by services such as tiny.cc.</li> 
+<li>For links within Oracc follow our <a href="/doc/user/citing/">citing</a> guidelines, don't just cut and paste from your browser.</li>
+</ul>
+<h2>Linking to Oracc projects and corpora</h2>
+<p>Whatever method you use to write portal pages, there is a concise set of recommendations for linking to pages within your corpus and to other Oracc projects. They are set out in <a href="/doc/manager/portals/projurls/">a separate document</a>.</p>
+ 
+<h2>Validating as XHTML Strict</h2>
+<p>The <code>oracc web</code> and <code>oracc rebuild</code> commands both check that your html pages are valid XHTML Strict and generate error messages if they are not. It is thus important that you validate and clean your html pages with a webservice such as <a href="http://infohound.net/tidy/">Infohound's HTML Tidy page</a> and check and fix links with <a href="http://validator.w3.org/checklink">W3C Link Checker</a>.</p> 
+<p>To validate your HTML or to convert your HTML to XHTML Strict visit the <a href="http://infohound.net/tidy/">Infohound Tidy webservice</a>, click on the 'Advanced' selection, and ensure that the following options are selected:</p>
+<table>
+<tr><th>HTML/XHTML</th><th>Pretty printing</th><th>Encoding</th></tr>
+<tr>
+  <td>
+    <ul>
+      <li>Clean</li>
+      <li><code>strict</code> Doctype</li>
+      <li>Drop empty paras</li>
+      <li>Numeric Character Refs</li>
+      <li>Output XHTML</li>
+      <li>Word 2000 (if you have <br />
+      generated html from <br />Word 2000)</li>
+      <li>Numeric entities (this is only visible in Advanced mode, but is very important)</li>
+     </ul>
+   </td>
+   <td>(leave the defaults <br />unchanged)</td>
+   <td><ul>
+     <li><code>UTF8</code> Char encoding</li>
+     <li><code>Warnings</code> Output</li>
+   </ul></td>
+   </tr>
+</table>
+<p>If you have problems with conversion of characters like em-dashes or smart quotes, try changing the Encoding options--if you are converting an existing web page, you can try looking at the HTML source to see what encoding the document is in.  For example, HTML generated by Word on the Mac is likely to be in the 'macintosh' encoding: set the Input Encoding to Mac and the Output Encoding to UTF8 and all will be well.  Note that if you are cleaning Word HTML to use in ESP, then if your HTML includes UTF8 characters (as it likely will, for example, <code>š</code>) you will probably need to download the Tidy output then open it in your text editor (e.g., Emacs) and then cut and paste the sections you need into your ESP document--you cannot simply view the Tidy output and cut-paste from that (because Tidy does not include a UTF8 header in its output and the UTF8 characters will be garbled in the Tidy output view).</p>
+<p><strong>Note that all text content on Oracc must be in the UTF8 encoding</strong>.</p>
+<p>We also strongly recommend that you make efforts to ensure your web pages are as accessible as possible to users with disabilities,  low-bandwidth internet services, or using mobile devices. The <a href="http://www.w3.org/WAI/gettingstarted/Overview.html">Web Accessibility Initiative's website</a> is a good place to start.</p>
+
+<p>You can address accessibility very easily by <a href="#option4">using ESP</a> to write your portal pages.</p>
+<p>When your portal pages are valid, well linked and accessible, you can <a href="#Uploading_portal_pages_to_Oracc">upload them to Oracc</a>.</p>     
+
+<h1>Uploading portal pages to Oracc</h1>
+<p>If you are creating html pages or whole websites on your own computer to upload to Oracc (<a href="#option3">option 3</a> or <a href="option5">5</a> above), you will need to <a href="/doc/manager/projunix/#Before_you_begin">use a Unix terminal</a> such as Putty (PC) or Terminal (Mac).</p>
+<p class="alert">Before you upload, please check and clean your html pages with a webservice such as <a href="http://infohound.net/tidy/">HTML Tidy</a> and check and fix links with <a href="http://validator.w3.org/checklink">W3C Link Checker.</a></p> 
+<ul>
+ <li>First compress your finished site into a single file (e.g., with <code>File -&gt; Compress</code> in the Finder on a Mac, or with a utility such as <a href="http://www.7-zip.org/">7-Zip</a> on a PC). Run the zip utility <strong>inside</strong> the folder with your files in; don't zip the folder itself or you will run into difficulties at the Oracc end.</li>
+<li>Then upload the ZIP file to your <code>00web</code> directory on Oracc as <a href="/doc/manager/projunix/#Uploading_ATF__ODS_and_catalogue_files_to_Oracc">described here</a>.</li>
+<li>Log on to Oracc with a Unix terminal utility and move to your <code>00web</code> directory by typing <code class="cookbook">cd 00web</code>. Uncompress the ZIP file by typing <code class="cookbook">unzip FILENAME.zip</code> and pressing return. Then delete the ZIP file by typing <code class="cookbook">rm FILENAME.zip</code> and pressing return.</li>
+<li>Finally, you need to reinstall the new website. Move back to your top level directory by typing <code class="cookbook">cd ..</code> and pressing return. Type <code class="cookbook">oracc web</code> and press return. (For more information, see the page on <a href="the-oracc-command/">The Oracc Command</a>.) Log out of Oracc.</li>
+</ul>
+<p>If the <code>oracc web</code> command takes an inordinately long time to execute, edit the <code>&lt;!DOCTYPE /></code> element in your
+html files to reference <code>/xhtml-strict.dtd</code> instead of
+<code>http://www.w3.org/xhtml-strict.dtd</code> - ask your liaison if you need help with this.</p>
+
+<h1>Linking portal and corpus</h1>
+<p>For both <a href="#option2">options 2</a> and <a href="#option5">5</a> above, you will need to edit the <code>pager-back-button</code> and <code>pager-back-url</code> options in your <strong>corpus</strong> project's <a href="/doc/manager/projconfig/#Pager">configuration file</a> in order to link the two together.</p>
+
+<h1>Listing portal projects</h1>
+<p>Portal projects that are hosted on Oracc  (i.e., <a href="#option5">option 5 above</a>) are included in the public <a href="/project-list.html">Project List</a> by default. You can set the blurb and image in that list by editing the  your project's <a href="../projconfig/#Editable_elements">configuration file</a>.</p> 
+
+<p>If you would like your non-Oracc portal site (i.e., <a href="#option2">option 2</a> above) to be included in the <a href="/project-list.html">Project List</a>, then you need to make a configuration file for it, following this model:</p>
+<pre class="example">
+&lt;project xmlns="http://oracc.org/ns/xpd/1.0" 
+	 xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+	 n="knp"&gt;
+  &lt;name&gt;Knowledge and Power in the Neo-Assyrian Empire&lt;/name&gt;
+  &lt;abbrev&gt;K&amp;P&lt;/abbrev&gt;
+  &lt;url&gt;http://knp.prs.heacademy.ac.uk&lt;/url&gt;
+  &lt;public&gt;yes&lt;/public&gt;
+  &lt;blurb&gt;This website presents Neo-Assyrian scholars' letters, queries, and 
+  reports to their kings in seventh-century Nineveh and provides resources 
+  to support their use in undergraduate teaching.&lt;/blurb&gt;
+  &lt;image&gt;palace.jpg&lt;/image&gt;
+  &lt;image-alt&gt;An Assyrian king with his scribes and scholars, as imagined 
+  in the mid-19th century. (A.H. Layard, A Second Series of the Monuments 
+  of Nineveh, London 1853, pl. 2 detail, after a sketch by J. 
+  Fergusson).&lt;/image-alt&gt;
+&lt;/project&gt;
+</pre> 
+<p>Copy this text, edit it in Emacs to suit your portal, and save the file as <code class="cookbook">config.xml</code>. Email it, together with a suitable 320×240 pixel image, to your project liaison for him or her to install it in the projects listing directory on Oracc.</p>
+<!-- <d:schema name="" uri="">
+</d:schema> -->
+
+<d:resources/>
+
+</d:doc>

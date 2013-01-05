@@ -1,0 +1,31 @@
+@system Liquid Capacity Metrology
+
+@code liqcap 
+@place * 
+@time * 
+@meb še 
+@mev 1/3600l
+
+@comh kaš[beer]N
+
+@step giŋtur 	  1/160*giŋ	SD giŋ tur[unit]N
+@step sila 	  1/30*dug	SD sila[unit]N
+@step dug	  30*sila		SD dug[unit]N
+
+@end system
+
+@system Liquid Capacity Metrology, Variant 1
+
+@code liqcap-var1
+@place *
+@time *
+@meb še 
+@mev 1/3600l
+
+@comh kaš[beer]N
+
+@step xxx 	  1/160*giŋ	SD giŋ tur[unit]N
+@step sila 	  1/30*dug	SD sila[unit]N
+@step dug	  30*sila		SD dug[unit]N
+
+@end system

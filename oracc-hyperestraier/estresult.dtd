@@ -1,0 +1,145 @@
+<!-- The Document Type Definition for Output of the Command `estcmd' -->
+
+
+<!-- root element -->
+<!ELEMENT estresult (meta?,document*)>
+  <!-- meta: meta information -->
+  <!-- document: a document -->
+<!ATTLIST estresult
+  xmlns CDATA #FIXED "http://hyperestraier.sourceforge.net/xmlns/search"
+  version NMTOKEN #REQUIRED>
+  <!-- @xmlns: namespace of search result of Hyper Estraier -->
+  <!-- @version: version number of Hyper Estraier -->
+
+
+<!-- element for meta information -->
+<!ELEMENT meta (node?,hit+,time?,total,link*)>
+  <!-- node: information of the node server -->
+  <!-- hit: a hint of a word in the phrase -->
+  <!-- time: elapsed time for search -->
+  <!-- total: information of the index -->
+  <!-- link: information of a link -->
+
+
+<!-- element for information of the node server -->
+<!ELEMENT node EMPTY>
+<!ATTLIST node
+  url CDATA #REQUIRED>
+  <!-- @url: the URL of the server -->
+
+
+<!-- element for a hint of a word in the phrase -->
+<!ELEMENT hit EMPTY>
+<!ATTLIST hit
+  key CDATA #IMPLIED
+  number NMTOKEN #REQUIRED
+  auxiliary NMTOKEN #IMPLIED>
+  <!-- @key: the normalized string -->
+  <!-- @number: the number of corresponding documents -->
+
+
+<!-- element for elapsed time for search -->
+<!ELEMENT time EMPTY>
+<!ATTLIST time
+  total NMTOKEN #REQUIRED
+  index NMTOKEN #IMPLIED>
+  <!-- @total: total elapsed time -->
+  <!-- @index: elapsed time for the local inverted index only -->
+
+
+<!-- element for information of the index -->
+<!ELEMENT total EMPTY>
+<!ATTLIST total
+  docnum NMTOKEN #REQUIRED
+  wordnum NMTOKEN #REQUIRED>
+  <!-- @docnum: the number of documents -->
+  <!-- @wordnum: the number of unique words -->
+
+
+<!-- element for information of a link -->
+<!ELEMENT link EMPTY>
+<!ATTLIST link
+  url CDATA #REQUIRED
+  label CDATA #REQUIRED
+  credit NMTOKEN #REQUIRED
+  docnum NMTOKEN #REQUIRED
+  wordnum NMTOKEN #REQUIRED
+  size NMTOKEN #REQUIRED
+  hit CDATA #REQUIRED
+  time CDATA #IMPLIED>
+  <!-- @url: URL -->
+  <!-- @label: label -->
+  <!-- @credit: credit -->
+  <!-- @docnum: number of documents -->
+  <!-- @wordnum: number of words -->
+  <!-- @size: size of the database -->
+  <!-- @hit: number of hits -->
+  <!-- @time: elapsed time -->
+
+
+<!-- element for a document -->
+<!ELEMENT document (attribute*,vector?,shadow*,snippet?)>
+  <!-- attribute: an attribute -->
+  <!-- vector: the keyword vector -->
+  <!-- shadow: an eclipsed document -->
+  <!-- snippet: the body text -->
+<!ATTLIST document
+  id NMTOKEN #REQUIRED
+  uri CDATA #REQUIRED>
+  <!-- @id: the ID number -->
+  <!-- @uri: the URI -->
+
+
+<!-- element for an attribute -->
+<!ELEMENT attribute EMPTY>
+<!ATTLIST attribute
+  name CDATA #REQUIRED
+  value CDATA #REQUIRED>
+  <!-- @name: the name -->
+  <!-- @value: the value -->
+
+
+<!-- element for the keyword vector -->
+<!ELEMENT vector (element)*>
+  <!-- element: an element -->
+
+
+<!-- element for the keyword vector -->
+<!ELEMENT element EMPTY>
+<!ATTLIST element
+  key CDATA #REQUIRED
+  number NMTOKEN #REQUIRED>
+  <!-- @key: the normalized string -->
+  <!-- @number: the number of corresponding documents -->
+
+
+<!-- element for an eclipsed document -->
+<!ELEMENT shadow EMPTY>
+<!ATTLIST shadow
+  uri CDATA #REQUIRED
+  similarity NMTOKEN #REQUIRED>
+  <!-- @uri: the URI -->
+  <!-- @similarity: similarity to the front document -->
+
+
+<!-- element for the snippet -->
+<!ELEMENT snippet (#PCDATA|key|delimiter)*>
+  <!-- #PCDATA: an arbitarary string -->
+  <!-- key: a keyword string -->
+  <!-- delimiter: a delimiter -->
+
+
+<!-- element for a keyword string -->
+<!ELEMENT key (#PCDATA)>
+  <!-- #PCDATA: an arbitarary string -->
+<!ATTLIST key
+  normal CDATA #REQUIRED>
+  <!-- @normal: the normalized string -->
+
+
+<!-- element for a delimiter -->
+<!ELEMENT delimiter EMPTY>
+
+
+
+<!-- END OF FILE -->

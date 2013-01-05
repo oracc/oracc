@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>PEO: Oracc Linguistic Annotation for Old Persian</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Old Persian used in Oracc.
+<!--  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.  This document assumes knowledge of its parent
+  page on linguistic annotation (see top of menu at left).
+ -->
+</dc:description>
+</d:meta>
+
+<h1>Transliteration</h1>
+
+<p>Old Persian is indicated by the language shift <code>%peo</code>;
+following this language shift, the ATF processor reads Old Persian 
+transliterated as a sequence of graphemes joined by hyphens as with
+other graphemic input.</p>
+
+<p>To write in transcription, use the convention for 'normalized'
+input, as in Akkadian: i.e., follow the language shift with
+<code>/n</code>.</p>
+
+<h2>Graphemic</h2>
+
+<p>The following table shows how to transliterate Old Persian
+graphemically; the table contains Old Persian cuneiform in the first
+column, so you may need to install a suitable font, such as <a
+href="/fonts.html">George Douros's "Aegean"</a>.</p>
+
+<table>
+  <thead>
+    <tr><th>Cuneiform</th><th>Unicode</th><th>Name</th><th>ASCII Translit</th><th>Unicode Translit</th></tr></thead><tbody>
+  <tr><td class="aegean center">&#x103A0;</td><td>U+103A0</td><td>OLD
+  PERSIAN SIGN A</td><td>a</td><td>a</td></tr>
+  <tr><td class="aegean center">&#x103A1;</td><td>U+103A1</td><td>OLD PERSIAN SIGN I</td><td>i</td><td>i</td></tr>
+  <tr><td class="aegean center">&#x103A2;</td><td>U+103A2</td><td>OLD PERSIAN SIGN U</td><td>u</td><td>u</td></tr>
+  <tr><td class="aegean center">&#x103A3;</td><td>U+103A3</td><td>OLD PERSIAN SIGN KA</td><td>k</td><td>k</td></tr>
+  <tr><td class="aegean center">&#x103A4;</td><td>U+103A4</td><td>OLD PERSIAN SIGN KU</td><td>ku</td><td>ku</td></tr>
+  <tr><td class="aegean center">&#x103A5;</td><td>U+103A5</td><td>OLD PERSIAN SIGN GA</td><td>g</td><td>g</td></tr>
+  <tr><td class="aegean center">&#x103A6;</td><td>U+103A6</td><td>OLD PERSIAN SIGN GU</td><td>gu</td><td>gu</td></tr>
+  <tr><td class="aegean center">&#x103A7;</td><td>U+103A7</td><td>OLD PERSIAN SIGN XA</td><td>x</td><td>x</td></tr>
+  <tr><td class="aegean center">&#x103A8;</td><td>U+103A8</td><td>OLD PERSIAN SIGN CA</td><td>c'</td><td>&#x10D;</td></tr>
+  <tr><td class="aegean center">&#x103A9;</td><td>U+103A9</td><td>OLD PERSIAN SIGN JA</td><td>j</td><td>j</td></tr>
+  <tr><td class="aegean center">&#x103AA;</td><td>U+103AA</td><td>OLD PERSIAN SIGN JI</td><td>ji</td><td>ji</td></tr>
+  <tr><td class="aegean center">&#x103AB;</td><td>U+103AB</td><td>OLD PERSIAN SIGN TA</td><td>t</td><td>t</td></tr>
+  <tr><td class="aegean center">&#x103AC;</td><td>U+103AC</td><td>OLD PERSIAN SIGN TU</td><td>tu</td><td>tu</td></tr>
+  <tr><td class="aegean center">&#x103AD;</td><td>U+103AD</td><td>OLD PERSIAN SIGN DA</td><td>d</td><td>d</td></tr>
+  <tr><td class="aegean center">&#x103AE;</td><td>U+103AE</td><td>OLD PERSIAN SIGN DI</td><td>di</td><td>di</td></tr>
+  <tr><td class="aegean center">&#x103AF;</td><td>U+103AF</td><td>OLD PERSIAN SIGN DU</td><td>du</td><td>du</td></tr>
+  <tr><td class="aegean center">&#x103B0;</td><td>U+103B0</td><td>OLD PERSIAN SIGN THA</td><td>t'</td><td>&#x3B8;</td></tr>
+  <tr><td class="aegean center">&#x103B1;</td><td>U+103B1</td><td>OLD PERSIAN SIGN PA</td><td>p</td><td>p</td></tr>
+  <tr><td class="aegean center">&#x103B2;</td><td>U+103B2</td><td>OLD PERSIAN SIGN BA</td><td>b</td><td>b</td></tr>
+  <tr><td class="aegean center">&#x103B3;</td><td>U+103B3</td><td>OLD PERSIAN SIGN FA</td><td>f</td><td>f</td></tr>
+  <tr><td class="aegean center">&#x103B4;</td><td>U+103B4</td><td>OLD PERSIAN SIGN NA</td><td>n</td><td>n</td></tr>
+  <tr><td class="aegean center">&#x103B5;</td><td>U+103B5</td><td>OLD PERSIAN SIGN NU</td><td>nu</td><td>nu</td></tr>
+  <tr><td class="aegean center">&#x103B6;</td><td>U+103B6</td><td>OLD PERSIAN SIGN MA</td><td>m</td><td>m</td></tr>
+  <tr><td class="aegean center">&#x103B7;</td><td>U+103B7</td><td>OLD PERSIAN SIGN MI</td><td>mi</td><td>mi</td></tr>
+  <tr><td class="aegean center">&#x103B8;</td><td>U+103B8</td><td>OLD PERSIAN SIGN MU</td><td>mu</td><td>mu</td></tr>
+  <tr><td class="aegean center">&#x103B9;</td><td>U+103B9</td><td>OLD PERSIAN SIGN YA</td><td>y</td><td>y</td></tr>
+  <tr><td class="aegean center">&#x103BA;</td><td>U+103BA</td><td>OLD PERSIAN SIGN VA</td><td>v</td><td>v</td></tr>
+  <tr><td class="aegean center">&#x103BB;</td><td>U+103BB</td><td>OLD PERSIAN SIGN VI</td><td>vi</td><td>vi</td></tr>
+  <tr><td class="aegean center">&#x103BC;</td><td>U+103BC</td><td>OLD PERSIAN SIGN RA</td><td>r</td><td>r</td></tr>
+  <tr><td class="aegean center">&#x103BD;</td><td>U+103BD</td><td>OLD PERSIAN SIGN RU</td><td>ru</td><td>ru</td></tr>
+  <tr><td class="aegean center">&#x103BE;</td><td>U+103BE</td><td>OLD PERSIAN SIGN LA</td><td>l</td><td>l</td></tr>
+  <tr><td class="aegean center">&#x103BF;</td><td>U+103BF</td><td>OLD PERSIAN SIGN SA</td><td>s</td><td>s</td></tr>
+  <tr><td class="aegean center">&#x103C0;</td><td>U+103C0</td><td>OLD PERSIAN SIGN ZA</td><td>z</td><td>z</td></tr>
+  <tr><td class="aegean center">&#x103C1;</td><td>U+103C1</td><td>OLD PERSIAN SIGN SHA</td><td>$</td><td>&#x161;</td></tr>
+  <tr><td class="aegean center">&#x103C2;</td><td>U+103C2</td><td>OLD PERSIAN SIGN SSA</td><td>c,</td><td>&#xE7;</td></tr>
+  <tr><td class="aegean center">&#x103C3;</td><td>U+103C3</td><td>OLD PERSIAN SIGN HA</td><td>h</td><td>h</td></tr>
+  <tr><td class="aegean center">&#x103C8;</td><td>U+103C8</td><td>OLD PERSIAN SIGN AURAMAZDAA</td><td>AM</td><td>AM</td></tr>
+  <tr><td class="aegean center">&#x103C9;</td><td>U+103C9</td><td>OLD PERSIAN SIGN AURAMAZDAA-2</td><td>AM2</td><td>AM&#x2082;</td></tr>
+  <tr><td class="aegean center">&#x103CA;</td><td>U+103CA</td><td>OLD PERSIAN SIGN AURAMAZDAAHA</td><td>AMha</td><td>AMha</td></tr>
+  <tr><td class="aegean center">&#x103CB;</td><td>U+103CB</td><td>OLD PERSIAN SIGN XSHAAYATHIYA</td><td>X$</td><td>X&#x160;</td></tr>
+  <tr><td class="aegean center">&#x103CC;</td><td>U+103CC</td><td>OLD PERSIAN SIGN DAHYAAUSH</td><td>DH</td><td>DH</td></tr>
+  <tr><td class="aegean center">&#x103CD;</td><td>U+103CD</td><td>OLD PERSIAN SIGN DAHYAAUSH-2</td><td>DH2</td><td>DH&#x2082;</td></tr>
+  <tr><td class="aegean center">&#x103CE;</td><td>U+103CE</td><td>OLD PERSIAN SIGN BAGA</td><td>BG</td><td>BG</td></tr>
+  <tr><td class="aegean center">&#x103CF;</td><td>U+103CF</td><td>OLD PERSIAN SIGN BUUMISH</td><td>BU</td><td>BU</td></tr>
+  <tr><td class="aegean center">&#x103D0;</td><td>U+103D0</td><td>OLD PERSIAN WORD DIVIDER</td><td>:</td><td>:</td></tr>
+  <tr><td class="aegean center">&#x103D1;</td><td>U+103D1</td><td>OLD PERSIAN NUMBER ONE</td><td>1</td><td>1</td></tr>
+  <tr><td class="aegean center">&#x103D2;</td><td>U+103D2</td><td>OLD PERSIAN NUMBER TWO</td><td>2</td><td>2</td></tr>
+  <tr><td class="aegean center">&#x103D3;</td><td>U+103D3</td><td>OLD PERSIAN NUMBER TEN</td><td>10</td><td>10</td></tr>
+  <tr><td class="aegean center">&#x103D4;</td><td>U+103D4</td><td>OLD PERSIAN NUMBER TWENTY</td><td>20</td><td>20</td></tr>
+  <tr><td class="aegean center">&#x103D5;</td><td>U+103D5</td><td>OLD PERSIAN NUMBER HUNDRED</td><td>100</td><td>100</td></tr>
+</tbody></table>
+
+<h2>Normalized</h2>
+
+<p>For transcription (normalized text) the following character repertoire
+is supported:</p>
+
+<table>
+  <thead>
+    <tr><th>Literal</th><th>U+</th><th>Name</th><th>ASCII</th></tr></thead>
+<tbody>
+<tr class="vcenter"><td class="center">abdefghijklmnpqrstuvxyz</td><td colspan="4">(themselves)</td></tr>
+<tr class="vcenter"><td class="center">ā</td><td>U+0101</td><td class="fixed">LATIN SMALL LETTER A WITH MACRON</td><td>=a</td></tr>
+<tr class="vcenter"><td class="center">ē</td><td>U+0113</td><td class="fixed">LATIN SMALL LETTER E WITH MACRON</td><td>=e</td></tr>
+<tr class="vcenter"><td class="center">ī</td><td>U+012B</td><td class="fixed">LATIN SMALL LETTER I WITH MACRON</td><td>=i</td></tr>
+<tr class="vcenter"><td class="center">ū</td><td>U+016B</td><td class="fixed">LATIN SMALL LETTER U WITH MACRON</td><td>=u</td></tr>
+<tr class="vcenter"><td class="center">ç</td><td>U+00E7</td><td class="fixed">LATIN
+SMALL LETTER C WITH CEDILLA</td><td>c,</td></tr>
+<tr class="vcenter"><td class="center">č</td><td>U+010D</td><td class="fixed">LATIN
+SMALL LETTER S WITH CARON</td><td>c'</td></tr>
+<tr class="vcenter"><td class="center">ṛ</td><td>U+1E5B</td><td class="fixed">LATIN
+SMALL LETTER R WITH DOT BELOW</td><td>r,</td></tr>
+<tr class="vcenter"><td class="center">š</td><td>U+0161</td><td class="fixed">LATIN
+SMALL LETTER S WITH CARON</td><td>$</td></tr>
+<tr class="vcenter"><td class="center">θ</td><td>U+03B8</td><td class="fixed">GREEK
+SMALL LETTER THETA</td><td>t'</td></tr>
+</tbody>
+</table>
+
+<p>All but one uppercase transcription is the simple uppercase
+equivalent of the lowercase versions in the table above.  The
+exception is uppercase SHIN, which in ASCII transcription may
+be obtained via the percent-sign (<code>%</code>).</p>
+
+<h2>Examples</h2>
+
+<h3>Graphemic </h3>
+
+<pre class="cookbook">
+%peo b-g : v-z-r-k : a-u-r-m-z-d-a : ...h-y
+$-i-y-a-t-i-m a-d-a : m-r-t-i-y-h-y-a : h-y :
+x-$-a-y-r-$-a-m : x-$-a-y-t'-i-y-m : a-ku-u-n-u-$
+: a-i-v-m : p-ru-u-n-a-m : x-$-a-y-t'-i-y-m
+</pre>
+
+<h3>Normalized </h3>
+
+<pre class="cookbook">
+%peo/n r,=a
+
+=>      ṛā
+</pre>
+
+</d:doc>

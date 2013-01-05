@@ -1,0 +1,562 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>AKK: Oracc Linguistic Annotation for Akkadian</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson and Steve Tinney</dc:creator>
+  <dc:date>2009-09-03</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Akkadian used in Oracc.  We focus here on the data-entry view of
+  linguistic annotation giving only enough additional technical
+  background to ensure that correct annotation of ATF files can be
+  carried out.  This document assumes knowledge of the introductory page
+  on Oraccc linguistic annotation.</dc:description>
+</d:meta>
+
+<h1>General principles</h1>
+<p>If you haven't done so already, start by reading some or all of the page on <a href="../">Oracc
+Linguistic Annotation</a> page.</p>
+<p>Lemmatisations take one of two forms:</p>
+<ul>
+<li>
+<p><strong>short:</strong>
+<code>NORM0[SENSE]POS</code> if the lemmatisation is already fully
+known by the system (e.g. <code>kalbi[dog]N</code>).</p>
+</li>
+<li>
+<p>
+<strong>long:</strong>
+<code>+CF[GW//SENSE]POS'EPOS$NORM0</code> if the lemmatisation contains any
+new information (e.g. <code>+kalbu[dog]N$kalbika</code>).</p>
+</li>
+</ul>
+<p>The main thing to remember is that you are not lemmatising for
+other people but for the computer, and that the computer has no
+intuition. Inconsistencies produce duplicate entries in the
+glossaries, which are fiddly and time-consuming to fix.</p>
+
+<p>After establishing some general principles, we describe in more detail how to manage the different
+components of the lemmatisation entry. At the end we show you how
+to deal with compound orthographic forms (crasis and logograms which straightforwardly resolve into two or more Akadian words), phrasal semanitic units (multi-word idioms), and proper
+nouns.</p>
+
+<h1>Transliteration Stylesheet</h1>
+<p>Unless your project is primarily working with legacy data, you should follow the <a href="/doc/builder/linganno/AKK/akkstyle/">Oracc stylesheet for Akkadian transliteration</a>. This will save you a lot of work by enabling your project to use a related, more mature project's glossaries as the starting point for your lemmatisation, such as <a href="/cams/">CAMS</a>. But this will only work optimally if you use these same spelling and ATF formatting conventions. </p>
+
+<h1>Good work habits</h1>
+<ul>
+<li>
+<p>Run the checker and lemmatiser every line or so, for maximum
+efficiency.</p>
+</li>
+<li>
+<p>When you have finished editing a text, run the Harvest Notices
+tool on the ATF menu. This will list all the long-form
+lemmatisations you have added, enabling you to check them
+again.</p>
+</li>
+</ul>
+<p>Check automatically entered lemmatisations for:</p>
+<ul>
+<li>
+<p>correct normalisation;</p>
+</li>
+<li>
+<p>correct sense.</p>
+</li>
+</ul>
+<p>If you need to change either of them, use the long form of
+lemmatisation.</p>
+<p>Sometimes the lemmatiser will make several suggestions for alternative lemmatisations, like this: <code>pān[front]N|immar[see]V|innamir[appear]V|igi[reciprocal]N</code> for the transliteration <code>IGI</code>. Just delete all but the relevant lemmatisation (making sure you delete all the <code>|</code>'s too).</p>
+
+<p>When adding new lemmatisations check whether the word already
+exists in the online glossary for your project:</p>
+<ul>
+<li>
+<p>If it is already in the glossary, with a different spelling or
+sense (but check you have not mistyped the transliteration!) use
+the same CF and GW in the long form, adding new normalisation and
+sense as necessary.</p>
+</li>
+<li>
+<p>If it is not yet in the glossary, add it with the the long form
+of lemmatisation.</p>
+</li>
+</ul>
+
+<div>
+<a name="cfs" />
+<h1>Citation Forms (CF)</h1>
+<p>We call the “dialect” of CFs “Conventional Akkadian” (CA)
+because it does not consistently represent any actually attested
+variety of the language. It is essential to follow the <i>Concise
+Dictionary of Akkadian</i> for CFs, even when it differs from CAD. This is important for inter-project
+compatibility and the ePAD.</p> 
+<p>However, there are some small but
+consistent ways in which Conventional Akkadian diverges from CDA's
+conventions:</p>
+<ul>
+<li>
+<p>There is no mimation in CFs (but of course you can give mimation
+in NORM0s).</p>
+</li>
+<li>
+<p>All verbal adjectives and participles have independent CFs even
+if they are not listed separately in CDA.</p>
+</li>
+<li>
+<p>Conventional Akkadian ignores the parentheses in CDA CFs but
+keeps their contents, e.g., CDA <i>a(p)puttum</i> becomes CA
+<code>+apputtu[difficult situation]N$</code>.</p>
+</li>
+<li>
+<p>Where CDA has alternatives marked with a slash (/), choose the
+first, e.g., CDA <i>anḫullû/u?</i> becomes CA <code>+anhullû[(a
+plant?)]N$</code>.</p>
+</li>
+</ul>
+</div>
+<h1>Guide Words (GW) and Senses</h1>
+<p>Generally, we use the first translation in CDA as the GW. So when there are alternatives separated by commas, we
+use the first one, e.g., CDA's <i>adirtu</i>, "fear, apprehension" becomes <code>+adirtu[fear]N</code>.</p> 
+<p>Exceptions include:</p>
+<ul>
+<li>
+<p>GWs from volumes of CAD that are more recent than CDA (but the
+CDA citation form must still be used).</p>
+</li>
+<li>
+<p>If the lemma is a substantivised adjective and CDA gives an
+adjectival translation, e.g. <i>qardu</i> (CDA “valiant”, give a
+generalised nominal meaning as GW, e.g., <code>+qardu[valiant
+one]N$</code>. If CDA gives a nominal meaning, e.g., “hero”, then use
+that one.</p>
+</li>
+<li>
+<p>For uncertain meanings use ? after GW, e.g., <code>+karmittu[butterfly?]N$</code>, but
+don't use initial ~ as CDA does.</p>
+</li>
+<li>
+<p>For generic meanings use parenthesised GWs, e.g. [(a tree)].</p>
+</li>
+<li>
+<p>For unknown meanings also use parentheses, e.g. [(meaning
+unknown)].</p>
+</li>
+<li>
+<p>Do not use @ to indicate Akkadian in GWs.</p>
+</li>
+<li>
+<p>The GW or sense for all weights and measures is [unit], e.g.,
+<code>+biltu[load//unit]N'N$bilat</code>.</p>
+</li>
+<li>
+<p>If a CDA entry has no overall GW, but a different GW for each
+numbered part of the entry, use the first as GW and then choose
+whichever is most appropriate as the sense.</p>
+</li>
+<li>
+<p>Keep the GW as short as possible, e.g., avoid the definite
+article. Don't use "to" in the GWs of verbs.</p>
+</li>
+<li>
+<p>But expand abbreviations, e.g., CDA "s.o." becomes <code>someone</code>, "s.th." becomes <code>something</code>, and "o.s." becomes <code>oneself</code>.</p></li>
+<li>
+<p>For state verbs use the convention [be(come) something] rather than
+[be something], e.g., CDA <i>adāru,</i> “be dark, gloomy” becomes
+<code>+adāru[be(come) dark]V$īdur</code>.</p>
+</li>
+</ul>
+<p>If you want to add a local meaning (sense), follow the GW with
+// and then the sense, e.g.
+<code>+hiāṭu[supervise//survey]V'V$hīṭma</code>. List a sense only when
+there is significant variation from the GW. For a verb with a G
+stem GW, list the meaning of another verbal stem as a subsense only
+if there is significant variation in meaning, e.g., do not list an
+N stem passive meaning as a subsense if it is a simple passive form
+of the G stem active GW.</p>
+<h1>Parts of Speech (POS and EPOS)</h1>
+<p>Whenever you add a SENSE you also need to specificy a new, locally valid POS for a
+word, even if it is the same as that for the GW. We call this an EPOS (Effective Part of Speech) and mark it
+immediately after the POS, like this:
+<code>+kī[like//when]PRP'SBJ$</code>.</p> 
+
+<p>Here are some useful rules about
+POS and EPOS:</p>
+<ul>
+<li>
+<p>Infinitives are nouns. Classify them as V'N, with gerund sense,
+e.g., <code>+qabû[say//saying]V'N$</code>.</p>
+</li>
+<li>
+<p><a href="http://knp.prs.heacademy.ac.uk/cuneiformrevealed/akkadianlanguage/possessionandexistence/#statives">Statives are a form of verbal adjective.</a> Classify them as AJ
+(with no EPOS), e.g., <code>+šaṭru[written]AJ$šaṭirma</code>.</p>
+</li>
+<li>
+<p>Classify verbal adjectives and participles as AJ (with no EPOS)
+when they modify a noun, e.g., <code>+šaṭru[written]AJ$šaṭrūti</code>.</p>
+</li>
+<li>
+<p>Classify verbal adjectives and participles as N (with no EPOS)
+when used as substantives, e.g., e.g., <code>+qardu[valiant
+one]N$</code>.</p>
+</li>
+<li>
+<p>Classify substantives as N when used in stative.</p>
+</li>
+</ul>
+<p>Other important points to note:</p>
+<ul>
+<li>
+<p><i>šū</i> etc. are IPs not DPs, although they can have a
+demonstrative sense.</p>
+</li>
+<li>
+<p>Most of the pronouns can also be used to modify a noun, but
+remain pronouns in our conventions.</p>
+</li>
+<li>
+<p>Be careful not to mark adjectives as nouns.</p>
+</li>
+<li>
+<p>Similarly, distinguish nouns from prepositions: in prepositional
+phrases such as <i>ina muhhi</i>, <i>muhhu</i> is a noun.</p>
+</li>
+<li>
+<p>But reanalyse N as PRP (i.e., as N'PRP) when the PRP is omitted
+from phrases such as <i>ina mahar</i>. Compare, for instance, <code>ina[in]PRP; mahar[front]N; ili[god]N</code> with <code>mahar[before]'PRP ili[god]N</code>.</p>
+</li>
+<li>
+<p>You can use POS and EPOS in proper nouns too, where appropriate,
+e.g., <code>{mul}DA.MU = +Damu[]DN'CN$</code>.</p>
+</li>
+</ul>
+<h1>Normalisations (NORM0)</h1>
+<ul>
+<li>
+<p>Do not use secondary length. Maintain final vowel length as if
+no suffix were present (includes possessive suffixes and -ma).</p>
+</li>
+<li>
+<p>-ma is not hyphenated in normalisations, e.g.,
+<code>+šaṭru[written]AJ$šaṭirma</code>.</p>
+</li>
+<li>
+<p>For words with
+non-standard morphology, normalise what is written, e.g. tuš-za-zi
+= tušzazi not tušzaz. Mark vowel length where appropriate. Don't
+try to guess what the scribe “meant” to write.</p>
+</li>
+<li>
+<p>If in doubt over i/e choose i.</p>
+</li>
+<li>
+<p>Write the first person gen. possessive suffix as <i>iya,</i> not
+<i>ia,</i> e.g., <code>+bēlu[lord]N$bēliya</code>.</p>
+</li>
+<li>
+<p>For <i>pû</i> "mouth" normalise construct state <i>pî</i> and
+suffixed form <i>pîšu</i> etc.</p>
+</li>
+<li>
+<p>* I-w verbs in preterite and precative have long first vowel,
+unless shown to be short by syncope, e.g., <i>ūbil</i> but
+<i>ubla</i>.</p>
+</li>
+</ul>
+
+<h1>Difficult words</h1>
+<p>It's not always possible to fully lemmatise every word in a text.</p>
+<ul>
+<li><p>For numbers, only lemmatise writings that start syllabically or
+have a phonetic complement (e.g. <code>2{+u} = +šanû[two]NU$</code>;
+otherwise leave them as <code>n</code>. Note that the POS for both
+cardinal and ordinal numbers is NU.</p></li>
+<li><p>If you can identify a word's citation form then you should also try to normalise it too.</p></li>
+<li><p>Don't bother trying to lemmatise partially preserved words which you cannot restore, such as <code class="example">tu-ša-[...]</code>. The lemmatiser will class them as unlemmatisable by default; don't try to override this.</p></li>
+<li><p>Sometimes, especially in very technical contexts such as mathematical astronomy, the meaning of a logogram is known but its Akkadian reading is not. For instance, BAR (Akkadian reading unknown) can mean "lunar velocity". In such cases the logogram becomes the citation form: <code class="example">+BAR[(lunar velocity)]N$</code>.</p></li>
+<li><p>However, if you can identify the word but don't know
+what it means, you can lemmatise like this: <code class="example">+šahû[(meaning
+unknown)]V$ištahhi</code>.</p></li>
+<li><p>Sometimes, especially in highly technical contexts, it is desirable to gloss GWs with further explanation. This is done in the context of <a href="../../../manager/projemacs/#linganno">glossary management</a>.</p></li>
+</ul>
+
+<h1>Marking sentences</h1>
+<p>Insert <code>+.</code> in the lemmatisation line to mark sentences, not
+clauses – that is, wherever you judge the translation needs a full
+stop. A good rule of thumb is that <code>+.</code> follows indicative verbs that
+lack the <i>-ma</i> suffix. Its primary aim is to allow for
+transliteration-translation sentence-alignment in due course. It is
+not necessary (or perhaps is pointless to try and add it) in
+fragmentary texts. It is preceded and (unless at the end of a line)
+followed by white space.</p>
+
+<h1>Compound Orthographic Forms (COF)</h1>
+
+<p>COFs are forms that are written as one word but in fact should be understood as more than one lemma. Their meanings are transparent and they do not justify a separate entry in the glossary.</p>
+<ul>
+<li>
+<p>Link two crasis words in Akkadian by <code>&amp;</code> (no white space or
+semi-colon), e.g., <code>ip-pan = ina[in]PRP&amp;pān[front]N</code>, "in front of".</p>
+</li>
+<li>
+<p>Compound logograms should be treated in the same way: e.g., <code>BAR.RA.NA = +ina[in//on]PRP'PRP$&amp;+ahu[arm//side]N'N$ahišu</code>, "on his side".</p>
+</li>
+</ul>
+<h1>Phrasal Semantic Units (PSU)</h1>
+<p>A PSU is a multi-word idiom, whose meaning cannot be inferred from the lemmatisation of its component parts. Each PSU needs its own, manually entered glossary entry. We try to keep PSUs to a minimum.</p>
+<ul>
+<li>
+<p>If it's written logographically, treat the logogram as a single
+word and lemmatise the Akkadian words individually with an ampersand in
+between: <code>EME.UR.GI₇ = +lišānu[tongue]N$lišān&amp;+kalbu[dog]N$kalbi</code>.</p>
+</li>
+<li>
+<p>If it's written two (or more) Akkadian words, transliterate and
+lemmatise them separately, as normal words.</p>
+</li>
+<li>
+<p>Either way, write a comment line underneath: <code># psu: lišān
+kalbi [hound's-tongue] N</code> so that it can be added into the
+glossary manually. You only need to so this if the PSU or its
+spelling is new.</p>
+</li>
+<li>
+<p>Don't use senses in PSUs – they're not needed and can seriously
+complicate the process of adding them to the glossaries.</p>
+</li>
+<li>
+<p>Some phrases can be idiomatic or non-idiomatic, depending on the context. Use <code>!</code> before the first lemma of a PSU to show that it is NOT a PSU in this instance. For instance, if <code>ana[to]PRP;
+ṭarsi[extent]N</code> is in your glossary with the meaning "opposite", write <code>!ana[to]PRP;
+ṭarsi[extent]N</code> when you want this phrase to keep its literal meaning, "to an extent".</p>
+</li>
+<li>
+<p>Use - before a lemma to omit a word (usually a MOD or AV) from
+the middle of a PSU, e.g., <code>libbašu[interior]N; -ul[not]MOD;
+iṭâb[be(come) good]V</code> for <code>libba ṭiābu [be(come) satisfied]
+V</code>.</p>
+</li>
+<li>
+<p>Specify the sense of an idiom, in the GW of the first Akkadian
+element, like this: <code>ŠA₃.HUL = +lumnu[evil+=eclipsed
+state]N$lumun&amp;+libbu[interior]N$libbi,</code> where <i>lumun
+libbi</i> has the GW “sorrow” but in some (mostly astronomical)
+contexts means “eclipsed state”.</p>
+</li>
+<li>
+<p>You can use PSUs for proper nouns too. However, as we have said, it's a good idea to keep their use to a minimum, as
+they are fiddly to implement.</p>
+</li>
+</ul>
+<h1>Proper Nouns</h1>
+<ul>
+<li>
+<p>In lemmatisation and translation proper nouns have an initial
+capital (also for any internal instance of a proper noun) and are
+hyphenated at any internal word boundary, e.g., <code>ri-hat-{d}60 =
++Rihat-Anu[]PN$</code>.</p>
+</li>
+<li>
+<p>The CF used in lemmatisation and the form used in translation
+should match. If you want to use a modern equivalent in the
+translation, this should be your GW, e.g.,
+<code>+Purattu[Euphrates]WN</code>$.</p>
+</li>
+<li>
+<p>In lemmatisation and translation, DO NOT mark long vowels in
+proper nouns.</p>
+</li>
+<li>
+<p>If the writing of a proper noun displays a case ending, then in
+lemmatisation give the appropriate declined form as the NORM0.
+Otherwise don't try to guess the NORM0, and leave it to match the
+CF. Note that Anu(m) is not declined: several instances of the
+writing {d}a-nu-um follow <i>ša</i>.</p>
+</li>
+<li>
+<p>In lemmatisation and translation of Sumerian names, use single
+rather than reduplicated consonants, e.g., Ezida not Ezidda.</p>
+</li>
+<li>
+<p>Use divine numbers in transliteration and the name in
+lemmatisation and translation, e.g., <code>ri-hat-{d}60 =
++Rihat-Anu[]PN$</code>.</p>
+</li>
+<li>
+<p>If a god is an 'anthropomorphic' being, heavenly body, or
+mythical location, lemmatise as DN (or DN'GN if appropriate, e.g.,
+Apsu) with CF in the absolute state if used, e.g., <code>+Nisaba[]DN$;
++Bel[]DN$</code>.</p>
+</li>
+<li>
+<p>Otherwise, even if written with {d}, lemmatise as a common noun
+with CF in the nominative singular if used, e.g.,
+<code>nissabu[grain]N; bēlu[lord]N</code>.</p>
+</li>
+</ul>
+<p>See the page on <a href="/doc/builder/linganno/QPN/">Linguistic Annotation of Proper Nouns</a> for more information.</p>
+
+<h1>POS Tags</h1>
+
+<p>The following lists of pronouns and function words are exemplary
+rather than exhaustive; the POS categorizations are based on W. von
+Soden, <i>Grundriss der akkadischen Grammatik</i>, 3rd edition
+(Analecta Orientalia 33).  Biblical Institute Press, 1995.</p>
+
+<div><table class="eighty">
+<tr class="caption"><td class="caption" colspan="4">BASIC WORD CLASSES</td></tr>
+<tr><td class="ten">AJ</td><td colspan="3">adjective (including statives)</td></tr>
+<tr><td class="ten">AV</td><td colspan="3">adverb</td></tr>
+<tr><td class="ten">N</td><td colspan="3">noun (including statives)</td></tr>
+<tr><td class="ten">NU</td><td colspan="3">number</td></tr>
+<tr><td class="ten">V</td><td colspan="3">verb (including infinitives, marked with EPOS 'N and gerundive GW)</td></tr>
+</table>
+<p>Adverbs include temporal adverbs (e.g., inanna[now], anumma[now//herewith], šattišam[yearly]), interrogative adverbs (e.g., ali[where?], ammīni[why?], kī[how?], mati[when?]), and demonstrative adverbs (e.g., kīam[thus]).</p><table class="eighty">
+<tr class="caption"><td class="caption" colspan="4">PRONOUNS</td></tr>
+<tr><td class="ten">DP</td><td colspan="3">demonstrative pronoun</td></tr>
+<tr><td> </td><td colspan="3">annû[this]</td></tr>
+<tr><td> </td><td colspan="3">ullû[that]</td></tr>
+<tr><td class="ten">IP</td><td colspan="3">independent/anaphoric pronoun</td></tr>
+<tr><td> </td><td>nom.</td><td>acc./gen.</td><td>dat.</td></tr>
+<tr><td> </td><td>anāku[I]</td><td>yâti[me]</td><td>yâšim[to me]</td></tr>
+<tr><td> </td><td>attā[you]</td><td>kâta[you]</td><td>kâšim[to you]</td></tr>
+<tr><td> </td><td colspan="3">attī[you]</td></tr>
+<tr><td> </td><td>šū[he//it]</td><td>šuāti[him//it]</td><td>šuāšim[to him//to it]</td></tr>
+<tr><td> </td><td>šī[she//it]</td><td>šiāti[her//it]</td><td>šiāšim[to her//to it]</td></tr>
+<tr><td> </td><td>nīnu[we]</td><td>niāti[us]</td><td>niāšim[to us]</td></tr>
+<tr><td> </td><td>attunu[you]</td><td>kunūti[you]</td><td>kunūšim[to you]</td></tr>
+<tr><td> </td><td>attina[you]</td><td>kināti[you]</td><td>kināšim[to you]</td></tr>
+<tr><td> </td><td>šunu[they]</td><td>šunūti[them]</td><td>šunūšim[to them]</td></tr>
+<tr><td> </td><td>šina[they]</td><td>šināti[them]</td><td>šināšim[to them]</td></tr>
+<tr><td class="ten">PP</td><td colspan="3">possessive pronoun</td></tr>
+<tr><td> </td><td colspan="3">yû[mine]</td></tr>
+<tr><td> </td><td colspan="3">kû[yours]</td></tr>
+<tr><td> </td><td colspan="3">šû[his//hers//its]</td></tr>
+<tr><td> </td><td colspan="3">nû[ours]</td></tr>
+<tr><td> </td><td colspan="3">kunû[yours]</td></tr>
+<tr><td> </td><td colspan="3">šunû[theirs]</td></tr>
+<tr><td class="ten">QP</td><td colspan="3">interrogative pronoun</td></tr>
+<tr><td> </td><td colspan="3">ayyû[which?]</td></tr>
+<tr><td> </td><td colspan="3">mīnu[what?]</td></tr>
+<tr><td> </td><td colspan="3">mannu[who?]</td></tr>
+<tr><td class="ten">RP</td><td colspan="3">reflexive/reciprocal pronoun</td></tr>
+<tr><td> </td><td colspan="3">ramānu[self//own]</td></tr>
+<tr><td> </td><td colspan="3">ahāmiš[one another]</td></tr>
+<tr><td class="ten">XP</td><td colspan="3">indefinite pronoun</td></tr>
+<tr><td> </td><td colspan="3">ayyumma[whoever//whichever]</td></tr>
+<tr><td> </td><td colspan="3">mamman[someone//anyone]</td></tr>
+<tr><td> </td><td colspan="3">mimma[something//anything]</td></tr>
+<tr><td class="ten">REL</td><td colspan="3">relative pronoun</td></tr>
+<tr><td> </td><td colspan="3">ša[that]</td></tr>
+<tr><td> </td><td colspan="3">šūt[that]</td></tr>
+<tr><td> </td><td colspan="3">šīt[that]</td></tr>
+<tr><td> </td><td colspan="3">mala[as much as]</td></tr>
+<tr><td> </td><td colspan="3">mimmû[all that]</td></tr>
+<tr><td class="ten">DET</td><td colspan="3">determinative pronoun</td></tr>
+<tr><td> </td><td colspan="3">ša[of]</td></tr>
+<tr><td> </td><td colspan="3">šūt[of]</td></tr>
+<tr><td> </td><td colspan="3">šīt[of]</td></tr>
+</table>
+<table class="eighty">
+<tr class="caption"><td class="caption" colspan="4">OTHER PARTS OF SPEECH</td></tr>
+<tr><td class="ten">CNJ</td><td colspan="3">conjunction</td></tr>
+<tr><td> </td><td colspan="3">lū[either]</td></tr>
+<tr><td> </td><td colspan="3">u[and]</td></tr>
+<tr><td> </td><td colspan="3">ū[or]</td></tr>
+<tr><td class="ten">J</td><td colspan="3">interjection</td></tr>
+<tr><td> </td><td colspan="3">anna[yes]</td></tr>
+<tr><td> </td><td colspan="3">ai[alas]</td></tr>
+<tr><td> </td><td colspan="3">ullu[no]</td></tr>
+<tr><td class="ten">MOD</td><td colspan="3">modal, negative, or conditional particle</td></tr>
+<tr><td> </td><td colspan="3">ai[not]</td></tr>
+<tr><td> </td><td colspan="3">lā[not]</td></tr>
+<tr><td> </td><td colspan="3">lu[either]</td></tr>
+<tr><td> </td><td colspan="3">lū[indeed]</td></tr>
+<tr><td> </td><td colspan="3">lū[may]</td></tr>
+<tr><td> </td><td colspan="3">šumma[if]</td></tr>
+<tr><td> </td><td colspan="3">ul[not]</td></tr>
+<tr><td class="ten">PRP</td><td colspan="3">preposition</td></tr>
+<tr><td> </td><td colspan="3">adi[until]</td></tr>
+<tr><td> </td><td colspan="3">ana[at//to]</td></tr>
+<tr><td> </td><td colspan="3">aššu[about]</td></tr>
+<tr><td> </td><td colspan="3">balu[without]</td></tr>
+<tr><td> </td><td colspan="3">eli[on//over]</td></tr>
+<tr><td> </td><td colspan="3">ina[in//from]</td></tr>
+<tr><td> </td><td colspan="3">ištu[from]</td></tr>
+<tr><td> </td><td colspan="3">itti[with]</td></tr>
+<tr><td> </td><td colspan="3">kī[like]</td></tr>
+<tr><td> </td><td colspan="3">kīma[like//instead of]</td></tr>
+<tr><td> </td><td colspan="3">lāma[before]</td></tr>
+<tr><td> </td><td colspan="3">mala[as much as]</td></tr>
+<tr><td> </td><td colspan="3">qadu[with]</td></tr>
+<tr><td class="ten">SBJ</td><td colspan="3">subjunction</td></tr>
+<tr><td> </td><td colspan="3">adi[until]</td></tr>
+<tr><td> </td><td colspan="3">ašar[where]</td></tr>
+<tr><td> </td><td colspan="3">aššu[because]</td></tr>
+<tr><td> </td><td colspan="3">ēma[wherever//whenever]</td></tr>
+<tr><td> </td><td colspan="3">inūma[when]</td></tr>
+<tr><td> </td><td colspan="3">ištu[since]</td></tr>
+<tr><td> </td><td colspan="3">kī[when]</td></tr>
+<tr><td> </td><td colspan="3">kīma[as]</td></tr>
+<tr><td> </td><td colspan="3">lāma[before]</td></tr>
+<tr><td> </td><td colspan="3">warka[after]</td></tr>
+</table>
+</div>
+
+<h1>Roots</h1>
+<p>If you want to assign <a href="akk-roots/">roots</a> to Akkadian content words (nouns, adjectives, verbs and adverbs), you must do this in your project's Akkadian glossary (the <code>akk.glo</code> file). See the <a href="../../../manager/projemacs/#linganno">Projects and Emacs</a> page for more information.</p>
+
+<p>There is a list of Akkadian roots on a <a href="akk-roots/">separate page</a>.</p>
+
+<h1>Dialects</h1>
+<p>You must always explicitly mark the dialects of Akkadian used in your texts. You may also wish to use dialect forms as the headwords of your glossary.</p>
+<ul>
+<li><p>For texts that are entirely in a single dialect, add that information to the language declaration protocol at the top of the file. For instance, for a Neo-Assyrian text you would type:</p>
+<pre class="example">#atf: lang akk-x-neoass</pre>
+<p>The dialect codes are given in the <a href="/ns/gdl/1.0/gdltut.html#Languages">Languages section of the GDL tutorial</a>.</p>
+</li>
+<li><p>You can mark dialect-switching in the middle of a text too (as, for instance, when Neo-Assrian letter writers quote Standard Babylonian works). To do this, write the short, inline form of the dialect code in the transliteration line before each dialect-switch. Almost all of them are self-explanatory: <code class="cookbook">%na</code> for Neo-Assyrian, <code class="cookbook">%ob</code> for Old Babylonian; they are all listed in the <a href="/ns/gdl/1.0/gdltut.html#Languages">Languages section of the GDL tutorial</a>.</p>  
+
+<p>For instance, here a scholar quotes a two-line omen in Standard Babylonian (<code class="cookbook">%sb</code>), then comments on it in Neo-Assyrian )<code class="cookbook">%na</code>) with an occasional Neo-Babylonian (<code class="cookbook">%nb</code>) word:</p>
+
+<pre class="example">
+&amp;P336511 = SAA 08, 051
+
+#atf: lang akk-x-neoass
+#project: saao/saa08
+#atf: use unicode
+
+@tablet
+@reverse
+1. %sb [*] {mul#}.dil-bat AGA GI₆  ap-[rat MI₂.(PEŠ₂)-MEŠ] 
+    ; a-gu-u ṣa-al-mu
+2. %sb [NITA]-MEŠ#  U₃.TU-MEŠ# ; u₂-la-a-[da]
+$ single ruling
+3. {mul}UDU.IDIM %nb it-ti %na {mul}[dil-bat GUB-ma]
+</pre>
+<p>In the first two lines of this example, the dialect switching always runs to the end of the line, so there is no need to explicitly switch back.</p></li>
+
+<li>Dialect CFs can be added by hand to the glossary; see  the <a href="../../../manager/projemacs/#linganno">Projects and Emacs</a> page for more information.
+</li>
+</ul>
+
+<h1>Morphology</h1>
+
+<h1>Syntax</h1>
+
+<h1>More documents</h1>
+<h2><a href="/doc/builder/linganno/AKK/akkstyle/">Oracc stylesheet for Akkadian transliteration</a></h2>
+<h2><a href="/doc/builder/linganno/AKK/akk-ob/">Akkadian OB guidelines</a></h2>
+
+<d:resources/>
+</d:doc>

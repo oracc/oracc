@@ -1,0 +1,111 @@
+\input oraccrandom
+
+\def\atfcodes{\catcode`&=11 \catcode`|=11\relax}
+
+\randomseed{60}
+
+\newcount\ranRight
+
+\newtoks\chrestoBase
+\newtoks\chrestoChapter
+\newtoks\chrestoHeader
+\newtoks\chrestosectiontoks
+
+\font\c="CuneiformOB" at 14pt
+\newdimen\tabletwidth \tabletwidth=4.25in
+
+\def\tabletruling{\penalty0 \hrule height.1pt width\tabletwidth 
+  \nobreak\kern-6pt\nobreak}
+
+\def\cuneifyLine#1#2{\leftskip1in
+  \leavevmode\llap{\hbox to.25in{\ten\rm#1\hfil}}%
+  \raise\baselineskip\vtop{
+    \tabletruling
+    \leftskip0pt plus1fil 
+    \setrannum{\ranRight}{0}{9}%\message{ranRight = \the\ranRight}%
+    \rightskip=.75pt \multiply\rightskip\ranRight
+    \hsize\tabletwidth \parfillskip-.5\rightskip
+    \leavevmode\hfilneg\c#2\endgraf
+  }\endgraf\smallskip}
+
+\def\cuneifySquare#1{{\fourteen\rm[}#1{\fourteen\rm]}}
+
+\def\vocabstrut{\vrule height9pt depth3pt width0pt}
+
+\def\runninghdrfont{\nine\rm}
+\def\foliofont{\nine\rm}
+
+\rightftrinfo{\vbox to0pt{\kern10pt\vtop to100pt{\vfill
+  \hbox to\fullhsize{\hfil\seven\rm\spaceskip0pt Produced by Chresto at \datestamp}}\vss}}
+
+\def\chrestostyle{%
+  \setmarginsbytypefield{43pc}{27pc} \vfuzz1pc%
+  \headersep1.5pc \footersep0pt
+  \singlespace\sethspacing{2em}{2em}%
+  \lefthdrinfo{\ifchapterpage\else\ifodd\pageno\else\ten\rm\folio\fi\fi}%
+  \centrehdrinfo{\ifchapterpage\else\runninghdrfont\the\chaptertitletoks 
+    \the\chrestosectiontoks\fi}%
+  \righthdrinfo{\ifchapterpage\else\ifodd\pageno\ten\rm\folio\fi\fi}%
+  \fussy\normalbottom\twosidedtrue}
+
+\def\cuneifiedstyle{%
+  \chrestosectiontoks{Cuneified Text}%
+  \spaceskip1em plus1fil minus0pt
+  \looseness-1 \hfuzz.25in
+}
+
+\def\vocabstyle{
+  \chrestosectiontoks{Vocabulary}%
+  \rightskip0pt plus1fil \leftskip0pt \parindent0pt
+  \gutterrulestrue \intercolgutter1pc
+  \atfcodes
+}
+
+\newif\ifdoparens \newif\ifoccurrences
+
+\def\vocitem#1#2#3#4{%
+  \setbox0=\hbox{#2}%
+  \ifdim\wd0>0pt \doparenstrue\else\doparensfalse\fi
+  \setbox0=\hbox{#4}%
+  \ifdim\wd0>0pt \occurrencestrue\else\occurrencesfalse\fi
+  \line{\vtop{\hsize12pc \parindent0pt \everypar{\hangindent1pc}%
+              \leavevmode \rightskip0pt plus1fil \nine\rm
+              #1\ifdoparens\space(#2)\fi\hss}%
+        \vtop{\hsize20pc \parindent0pt \everypar{\hangindent1pc}%
+              \leavevmode \rightskip0pt plus1fil \nine\rm
+              #3\ifoccurrences: #4.\fi}\hss}}
+
+\def\signliststyle{
+  \chrestosectiontoks{Sign List}%
+  \parindent0pt \rightskip0pt plus1fil \leftskip3pc
+  \singlespace \parskip2pt plus1pt minus.5pt \tolerance10000 
+  \atfcodes
+}
+
+\def\SLsign#1#2#3#4{\leavevmode\hangindent18pc\hboxtomin{8pc}{\c#1\hfil}%
+  \hbox to9pc{\Sans\eight\rm #2 \setbox0=\hbox{#3}%
+              \ifdim\wd0>0pt(#3)\fi\hfil}%
+             {\Sans\nine\rm #4}\endgraf}
+
+\def\SLidxitem#1#2{\hbox to\hsize{%
+  \hboxtomin{4pc}{\Sans\nine\rm #1}\ →\ {\Sans\eight\rm #2}\hfil}\vskip0pt plus1pt minus1pt\relax}
+
+\def\chrestoConfig#1#2#3{
+  \chrestoChapter{Inana and Ebih}%
+  \chrestoHeader{IEb: }%
+  \chrestoBase{tex/IEb}%
+  \chrestoTexts{\the\chrestoBase-texts}%
+  \chrestoSigns{\the\chrestoBase-signs}%
+  \chrestoWords{\the\chrestoBase-sux}%
+}
+
+\def\includetoks#1{\begingroup\effectmacroformat
+  \edef\next{\the#1}\expandafter\input\next\endgroup}
+
+\newtoks\chrestoSigns
+\newtoks\chrestoTexts
+\newtoks\chrestoWords
+
+\def\up#1{\raise3pt\hbox{\seven\rm #1}}
+
+\endinput

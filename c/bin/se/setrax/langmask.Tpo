@@ -1,0 +1,45 @@
+../langmask.o ../langmask.o: ../langmask.c /usr/include/string.h \
+  /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-64.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/stddef.h ../se.h \
+  ../types.h /usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/limits.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/syslimits.h \
+  /usr/include/limits.h /usr/include/stdint.h /usr/include/bits/wchar.h \
+  ../../../c/include/psdtypes.h ../selib.h /usr/include/stdlib.h ../ce.h
+
+/usr/include/string.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-64.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/stddef.h:
+
+../se.h:
+
+../types.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/limits.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.1/include/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+../../../c/include/psdtypes.h:
+
+../selib.h:
+
+/usr/include/stdlib.h:
+
+../ce.h:

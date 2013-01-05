@@ -1,0 +1,475 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use ORACC::NS;
+use ORACC::Expand2;
+use ORACC::XMD::Fields;
+use ORACC::XMD::SortCodes;
+use ORACC::XMD::SortLabels; ORACC::XMD::SortLabels::init();
+use ORACC::CE;
+use Getopt::Long;
+use Pod::Usage;
+
+use Data::Dumper;
+
+my $dryrun = 0;
+my $force = 0;
+my $project = `oraccopt`;
+my $quiet = 0;
+my $xtl_only = 0;
+my $verbose = 0;
+
+die "scoregen.plx: must be run from a project directory\n"
+    unless $project;
+
+GetOptions(
+    'dryrun'=>\$dryrun,
+    'force'=>\$force,
+    'link'=>\$xtl_only,
+    'project:s'=>\$project,
+    'quiet'=>\$quiet,
+    'verbose'=>\$verbose,
+    ) || pod2usage(1);
+
+my $linkbase = '';
+
+if ($project && $project ne 'cdli') {
+    $linkbase = "01bld/linkbase.xml";
+}
+
+my %P = ();
+my %Q = ();
+my %PQ = ();
+
+my %codes = ();
+my %exemplar_lists = ();
+my %exemplar_links = ();
+my %parallel_lists = ();
+my %source_lists = ();
+my %seen_line = ();
+my %sp = ();
+
+my $file = '';
+my $line = 0;
+
+my @nocodes = ('designation',100000,'period',100000);
+
+create_rel_lists();
+cache_sort_codes();
+#use Data::Dumper; print Dumper(\%codes); exit;
+create_scores() unless $xtl_only;
+create_xtls();
+exemplar_links() unless $xtl_only;
+
+## FIXME: who uses this and why? I don't think it is used in O2...
+system '@@ORACC@@/bin/linkmap.plx', $project;
+
+#################################################################
+
+sub
+cache_sort_codes {
+    foreach my $PQ (keys %PQ) {
+	load_codes($PQ);
+    }
+}
+
+sub
+exemplar_links {
+    foreach my $e (keys %exemplar_links) {
+	my $efn = '';
+	if ($e =~ /:/) {
+	    $efn = expand_in_project(undef, "$e.txh");
+	} else {
+	    $efn = expand_in_project(undef, "$e.txh", $project);
+	}
+	my $xe = load_xml($efn);
+	if (!$xe) {
+	    unless ($e =~ /:/) {
+		my $cfn = expand_in_project(undef,"$e.txh");
+		if (-e $cfn) {
+		    $xe = load_xml($efn);
+		}
+	    }
+	    if (!$xe) {
+		warn("scoregen: can't open $efn\n");
+		next;
+	    }
+	}
+	foreach my $el (@{$exemplar_links{$e}}) {
+	    next unless $el && $$el[0];
+	    my $lnode = $xe->getElementsById($$el[0]);
+	    if (!$lnode) {
+		print STDERR "id $$el[0] not found in $efn\n";
+		next;
+	    }
+	    my $a = $lnode->firstChild();
+	    while ($a && !$a->isa('XML::LibXML::Element')) {
+		$a = $a->nextSibling();
+	    }
+	    $a = $a->firstChild();
+	    while ($a && !$a->isa('XML::LibXML::Element')) {
+		$a = $a->nextSibling();
+	    }
+	    my $id = $$el[1];
+	    my $Q = $id;
+	    $Q =~ s/\..*$//;
+	    if ($a && $a->isa('XML::LibXML::Element') && $a->nodeName() eq 'a') {
+		$a->setAttribute('href',"javascript:showblock('$project','$Q','sb.$id')");
+	    } else {
+		print STDERR "expected a not found in exemplar_links\n";
+	    }
+	}
+	open(XE,">$efn");
+	binmode XE, ':raw';
+	print XE $xe->toString();
+	close(XE);
+	undef $xe;
+    }
+}
+
+sub
+load_codes {
+    my $PQ = shift;
+    my $local_project = shift || $project;
+    my $xmd = expand_in_project(undef,"$PQ.xmd",$local_project);
+    my %c = ORACC::XMD::SortCodes::get($xmd);
+
+    if (scalar keys %c) {
+	$c{'designation'} = $c{'name'} unless $c{'designation'};
+	$codes{$PQ} = { %c };
+    } else {
+	warn("no codes for $PQ\n");
+	$codes{$PQ} = { @nocodes };
+    }
+}
+
+sub
+findProjNode {
+    foreach my $c ($_[0]->childNodes()) {
+	next unless $c->isa('XML::LibXML::Element');
+	return $c if $project eq $c->getAttribute('n');
+    }
+    undef;
+}
+
+sub
+create_rel_lists {
+    my $xlinkbase = load_xml($linkbase);
+    my $projNode = findProjNode($xlinkbase->getDocumentElement());
+    
+    foreach my $l ($projNode->childNodes()) {
+	next unless $l->isa('XML::LibXML::Element');
+	if ($l->localName() eq 'link') {
+	    my $rel = $l->getAttribute('rel');
+	    my($f,$t) = ($l->firstChild(),$l->lastChild());
+	    my $from_ref = $f->getAttribute('ref');
+	    my $to_ref   = $t->getAttribute('ref');
+	    my $from_line = $f->getAttribute('line');
+	    my $to_line   = $t->getAttribute('line');
+	    ++$PQ{$from_ref};
+	    ++$PQ{$to_ref};
+	    ++$P{$from_ref};
+	    ++$Q{$to_ref};
+	    if ($rel eq 'goesto') {
+		push @{$exemplar_lists{$to_line}}, $from_line;
+		push @{$exemplar_links{$from_ref}}, [ $from_line, $to_line ];
+#		${$sources{$to_ref}}{$from_ref} = 1;
+	    } elsif ($rel eq 'parallels') {
+		push @{$parallel_lists{$f->getAttribute('line')}}, $t->getAttribute('line');
+		push @{$parallel_lists{$t->getAttribute('line')}}, $f->getAttribute('line');
+#		${$parallels{$to_ref}}{$from_ref} = 1;
+#		${$parallels{$from_ref}}{$to_ref} = 1;
+	    } elsif ($rel eq 'comesfrom') {
+		push @{$source_lists{$f->getAttribute('line')}}, $t->getAttribute('line');
+#		${$sources{$from_ref}}{$to_ref} = 1;
+	    } else {
+		die; #can't happen unless the system is goofed up
+	    }
+	} elsif ($l->localName() eq 'refs') {
+	    my $t = $l->getAttribute('type');
+	    if ($t eq 'sources') {
+		${$sp{$l->getAttribute('ref')}}[0] = $l;
+	    } elsif ($t eq 'parallels') {
+		${$sp{$l->getAttribute('ref')}}[1] = $l;
+	    } else {
+		die; #can't happen unless linkbase is bad
+	    }
+	} else {
+	    die; #can't happen unless linkbase is bad
+	}
+    }
+}
+
+sub
+create_scores {
+    binmode STDOUT, ':utf8';
+    print xmldecl();
+    print '<scores>';
+    foreach my $Q (sort keys %Q) {
+	next unless $Q =~ /^Q/;
+	print STDERR "generating score for $Q\n" unless $quiet;
+	my $fname = '';
+	if ($Q =~ /:/) {
+	    $fname = expand_in_project(undef,"$Q.txh");
+	} else {
+	    $fname = expand_in_project(undef,"$Q.txh",$project);
+	}
+	next unless -r $fname;
+	my $txh = load_xml($fname);
+	next unless $txh;
+	my $sxh = $fname;
+	$sxh =~ s/\.txh/\.sxh/;
+	my $txh_table_node = $txh->getDocumentElement();
+	if ($txh_table_node->localName() ne 'table') {
+	    foreach my $x ($txh_table_node->childNodes()) {
+		next unless $x->isa('XML::LibXML::Element');
+		$txh_table_node = $x;
+		last;
+	    }
+	}	
+	my $n = xmlify($txh_table_node->getAttribute('n'));
+	print "<?destfile $sxh?>";
+	print_html_header($n, $project);
+	foreach my $t ($txh_table_node->childNodes()) {
+	    next unless $t->isa('XML::LibXML::Element') && xid($t);
+	    next if $t->getAttribute("class") =~ /^nonl/;
+	    my $tr = $t->toString();
+	    $tr =~ s/\s+xml:id=\"(.*?)\"//;
+	    $tr =~ s/<span class=\"xlabel\">(.*?)<\/span>//;
+	    my $n = $1;
+	    $tr =~ s,<span class=\"lnum\"><a.*?>(.*?)</a></span>,$1,;
+	    my $id = xid($t);
+	    warn "scoregen: tr\@$id\n" if $verbose;
+	    print "<div xmlns=\"http://www.w3.org/1999/xhtml\" n=\"$n\" class=\"score_map\">";
+	    print "<table class=\"score_block\" xml:id=\"sb.$id\" n=\"$n\">";
+#	    $tr =~ s/<a /<a href="javascript:showblock('$Q','sb.$id')" /;
+	    print $tr;
+	    # find the <a>
+	    my $a = $t->firstChild();
+	    while ($a && !$a->isa('XML::LibXML::Element')) {
+		$a = $a->nextSibling();
+	    }
+	    # find the <span>
+	    $a = $a->firstChild();
+	    while ($a && !$a->isa('XML::LibXML::Element')) {
+		$a = $a->nextSibling();
+	    }
+	    if ($a->isa('XML::LibXML::Element')) {
+		$a->setAttribute('href',"javascript:showblock('$project','$Q','sb.$id')");
+	    } elsif ($t->getAttribute('class') ne 'nonl') {
+		my $txh_id = xid($t);
+		print STDERR "$Q: $txh_id: expected <a> not found\n";
+	    }
+	    dump_exemplars($id);
+	    dump_parallels($id);
+	    print "</table>\n";
+	    print "</div>\n";
+	    print "<hr class=\"score-block-sep\"/>\n";
+	}
+        print "</body></html>";
+	print STDERR "scoregen: rewriting $fname\n" if $verbose;
+	open(TXH,">$fname");
+	binmode TXH, ':raw';
+	print TXH $txh->toString();
+	close(TXH);
+	undef $txh;
+    }
+    print "<?destfile?>";
+    print '</scores>';
+}
+
+sub
+create_xtls {
+    open(XLST,">@@ORACC@@/$project/01tmp/xtl.lst");
+    foreach my $pq (sort keys %sp) {
+	load_codes($pq) unless $codes{$pq};
+#	my $n = ORACC::XMD::SortLabels::get('N',${$codes{$pq}}{'designation'});
+	print XLST "$pq\n";
+	my $xtl = '';
+	if ($xtl =~ /:/) {
+	    $xtl = expand_in_project(undef,"$pq.xtl");
+	} else {
+	    $xtl = expand_in_project(undef,"$pq.xtl",$project);
+	}
+	unless (open(XTL,">$xtl")) {
+	    warn "scoregen.plx: unable to write to $xtl\n";
+	    next;
+	}
+	print XTL xmldecl();
+	print XTL "<list xmlns=\"http://oracc.org/ns/list\/1.0\">";
+	my($s,$p) = @{$sp{$pq}};
+	if ($s) {
+	    print XTL '<group type="Sources">';
+	    sprefs($s->childNodes());
+	    print XTL '</group>';
+	}
+	if ($p) {
+	    print XTL '<group type="Parallels">';
+	    sprefs($p->childNodes());
+	    print XTL '</group>';
+	}
+	print XTL '</list>';
+	close(XTL);
+    }
+    close(XLST);
+}
+
+sub
+dump_exemplars {
+    my $id = shift;
+    my $aref = $exemplar_lists{$id};
+#    warn "aref for $id = $aref\n";
+#    warn Dumper $aref;
+    return unless $aref && ref($aref) eq 'ARRAY';
+    %seen_line = ();
+    foreach my $e (sort { &ecmp($a,$b) } @$aref) {
+	dump_tr($e,'e','');
+    }
+}
+
+sub
+dump_parallels {
+    my $aref = $parallel_lists{$_[0]};
+    return unless $aref && ref($aref) eq 'ARRAY';
+    foreach my $p (sort { &pcmp($a,$b) } @{$aref}) {
+	dump_tr($p,'p','||');
+    }
+}
+
+sub
+dump_tr {
+    my($lid,$class,$td1) = @_;
+    return if $seen_line{$lid}++;
+    my($label,$p,$ce_lid,$ce_cid) = ORACC::CE::line($lid,undef,$project);
+#    warn "dump_tr $lid: label=$label; p=$p\n";
+    if ($label =~ /NO LINE FOR/ || !$p) {
+#	warn "scoregen.plx: no line for $lid\n";
+    } else {
+	$p =~ s/<p(?:\s+.*?)?>//g;
+	$p =~ s,</p>,,g;
+	print "<tr class=\"$class\">";
+	if ($td1) {
+	    print "<td class=\"parallel\">$td1</td>";
+	} else {
+	    print "<td/>";
+	}
+	if ($p =~ /<td/) {
+	    print $p;
+	} else {
+	    print "<td>$p</td>";
+	}
+	$label =~ s/^\((.*?)\s*\)$/$1/;
+	my $pqid = $lid;
+	$pqid =~ s/\..*$//;
+	my $type = ($pqid =~ /^Q/ ? 'composite' : 'exemplar');
+	$label = "<a href=\"javascript:show$type('$project','$pqid','$lid','$ce_cid')\">$label</a>";
+	print "<td class=\"enum\">$label</td>";
+	print "</tr>";
+    }
+}
+
+sub
+ecmp {
+    my($a_pq,$b_pq) = @_;
+    $a_pq =~ s/\..*$//;
+    $b_pq =~ s/\..*$//;
+    ${$codes{$a_pq}}{'designation'} <=> ${$codes{$b_pq}}{'designation'};
+}
+
+sub
+pcmp {
+    my($a_pq,$b_pq) = @_;
+    $a_pq =~ s/\..*$//;
+    $b_pq =~ s/\..*$//;
+    ${$codes{$a_pq}}{'period'} <=> ${$codes{$b_pq}}{'period'}
+    ||
+    ${$codes{$a_pq}}{'designation'} <=> ${$codes{$b_pq}}{'designation'};
+}
+
+sub
+sprefs {
+    my $sp_project = $project;
+    my @items = ();
+    foreach my $c (@_) {
+	my $r = $c->getAttribute('ref');
+	my $r_noproj = $r;
+	$r_noproj =~ s,^[^/]+/,,;
+	my $path = '';
+	if ($r =~ /:/) {
+	    $path = expand_in_project(undef,$r,);
+	} else {
+	    $path = expand_in_project(undef,$r,$project);
+	}
+	if (!-r $path && $project ne 'cdli') {
+	    $sp_project = 'cdli';
+	    $path = expand_in_project(undef,$r,'cdli');
+	}
+	load_codes($r,$sp_project) unless $codes{$r};
+#	my $n = ORACC::XMD::SortLabels::get('N',${$codes{$r}}{'designation'});
+#	print XTL "<item path=\"$path\" text=\"$r\" n=\"$n\"/>";
+	my $xmd = ORACC::XMD::Fields::get_in_project($sp_project,$r);
+	my $xmdproj = 1;
+	if ($$xmd{'designation'}) {
+#	    print STDERR "$$xmd{'designation'} = ${$codes{$r}}{'designation'}\n";
+#	    print XTL "<item path=\"$path\" text=\"$r\" n=\"$$xmd{'designation'}\"/>";
+	    push @items, [ ${$codes{$r}}{'designation'} , 
+			   "<item proj=\"$sp_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'designation'}\"/>" ];
+	} elsif ($$xmd{'name'}) {
+#	    print STDERR "$$xmd{'name'} = ${$codes{$r}}{'name'}\n";
+#	    print XTL "<item path=\"$path\" text=\"$r\" n=\"$$xmd{'name'}\"/>";
+	    push @items, [ ${$codes{$r}}{'name'} , 
+			   "<item proj=\"$sp_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'name'}\"/>" ];
+
+	} else {
+	    print STDERR "no designation for $r\n";
+	}
+	if ($xmdproj) {
+	    ORACC::XMD::Fields::drop_in_project($sp_project,$r);
+	}
+    }
+
+    print XTL map { $$_[1] } sort { $$a[0] <=> $$b[0] } @items;
+}
+
+sub
+print_html_header {
+# <link rel="stylesheet" type="text/css" href="/css/score.css"/> ?? 
+    my($n,$project) = @_;
+    print <<EOH;
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>$project Score of $n</title>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print" />
+<link rel="stylesheet" type="text/css" href="/css/p2-p1.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/score.css" />
+<link rel="stylesheet" type="text/css" href="/$project/p2.css"/>
+<script src="/js/p2.js" type="text/javascript">
+</script>
+<script src="/js/p2-shortcuts.js" type="text/javascript">
+</script>
+<script src="/js/p2-keys.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+<h1 class="score">$project Score of $n</h1>
+EOH
+}
+
+1;

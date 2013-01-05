@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  	>
+
+<d:meta>
+  <dc:title>Akkadian Stylesheet</dc:title>
+  <dcterms:alternative>Stylesheet for Transliteration of Akkadian in ATF</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2009-10-31</dc:date>
+  <dc:publisher></dc:publisher>
+  <dc:description>There are many valid ways to transliterate Akkadian in ATF, but the more similarly people transliterate texts for Oracc, the better the corpora will work together. This document sets out Oracc's recommended transliteration conventions for Akkadian.</dc:description>
+</d:meta>
+
+<h1>Syllabic signs</h1>
+<p>ATF determines only that syllabic signs be written in lower case, and separated by hyphens. The choice of sign values is constrained by the Oracc Global Sign List<!-- explain? -->, which  is essentially the sign values given in Borger, <i>Mesopotamisches Zeichenlexikon</i> (MZL), 2003. Oracc corpora use the following conventions:</p>
+
+<ul>
+<li>although the ATF checker recognises acute and grave accents in legacy data (pre-existing material converted to ATF format), their use is deprecated in the creation of new ATF. Subscript ₂ and ₃ are strongly recommended instead (but note that the HTML versions of ATF texts can be displayed using acutes and graves, however the diacritics are marked in the ATF);</li>
+<li>first-millennium corpora, such as <a href="http://oracc.museum.upenn.edu/cams/">CAMS</a>, generally avoid mimation (e.g., <span class="akk-xlit">tu₄</span>, not <span class="akk-xlit">tum</span>), unless this entails using very rare values of a sign, or it's otherwise apparent that mimation is prevalent in the text;</li>
+<li>similarly, we do not hyper-correct case endings, so that for instance in accusative feminine nouns final <span class="akk-xlit">UD</span> is read as <span class="akk-xlit">tu₂</span>, not <span class="akk-xlit">ta₅</span> (e.g., <span class="akk-xlit">na-piš-tu₂</span>, not <span class="akk-xlit">na-piš-ta₅</span>); </li>
+<li>although <span class="akk-xlit">ʾ</span> alone is a valid value, for reasons of legibility <span class="akk-xlit">ʾa</span> and, where appropriate, <span class="akk-xlit">aʾ</span> are preferred.</li>
+<li>as required by ATF, sign values that are not in Borger's <i>MZL</i> are written with subscript ₓ and the sign name (e.g., <span class="akk-xlit">sutₓ(BAN₂)</span> ). </li>
+</ul>
+ 
+<h1>Logograms</h1>
+<p>Logograms are written in capitals, of course, and separated internally by dots (e.g., <span class="akk-xlit">GIR₂.TAB</span>). </p>
+<ul>
+<li>Vowel-final values of logograms are normally preferred to consonant final values (e.g., <span class="akk-xlit">U₄</span> rather than <span class="akk-xlit">UD</span>), unless this entails using very rare values of the sign;</li>
+<li>logographic suffixes (which indicate Akkadian morphology, such as plurality, or suffixes) are separated from the logogram itself with a hyphen (e.g., <span class="akk-xlit">U₄-ME</span>, <span class="akk-xlit">E₂-BI</span>, <span class="akk-xlit">3-TA.AM₃</span>). Further examples: <span class="akk-xlit">-A.NI</span>, <span class="akk-xlit">-E.NE</span>, <span class="akk-xlit">-HI.A</span>, <span class="akk-xlit">-KAM</span>, <span class="akk-xlit">-KAM₂</span>, <span class="akk-xlit">-MEŠ</span>, <span class="akk-xlit">-MIN</span>. </li>
+</ul>
+<p>It is not always clear in <strong>Old Babylonian texts</strong> whether one is dealing with logograms or genuine Sumerian. A useful rule of thumb is that the presence of syllabically written Akkadian words suggests that the whole text is in Akkadian. However, year names are best treated as 'real' Sumerian, even in otherwise Akkadian texts. If in doubt, consult your OSC liaison, who will be happy to help. There is a separate documentation page on how to mark <a href="../../l2/languages">language (and dialect) shifts</a> in ATF.</p>
+
+<h1>Determinatives</h1>
+<p>In ATF determinatives are written lower-case in curly brackets (e.g., <span class="akk-xlit">{d}IŠKUR</span>, <span class="akk-xlit">sip-par{ki}</span>). Determinatives specify the semantic set to which a noun belongs, and therefore exclude instances such as plural markers. Note that the <i>Concise Dictionary of Akkadian</i> treats determinatives as logograms. So, for instance, where <i>CDA</i> writes, e.g., <span class="akk-xlit">Ú.GÍR.HAB</span>, CAMS writes <span class="akk-xlit">{u₂}GIR₂.HAB</span>.</p>
+
+
+<ul>
+<li>Oracc corpora use <span class="akk-xlit">{iti}NE</span> etc. for month names, not <span class="akk-xlit">ITI NE</span> ;</li>
+<li>we use <span class="akk-xlit">{tu₁₅}MAR.TU</span> etc. for winds and directions, not <span class="akk-xlit">{im}MAR.TU</span>;</li>
+<li><span class="akk-xlit">{m}</span> and <span class="akk-xlit">{f}</span> are used for male and female and PNs, such as <span class="akk-xlit">{m}na-di-nu</span> <span class="akk-xlit">{f}tab-luṭ</span></li> 
+<li>but  <span class="akk-xlit">{lu₂}</span> and <span class="akk-xlit">{munus}</span> mark male and female professions such as <span class="akk-xlit">{lu₂}UŠ₁₁.DU</span> = <span class="akk-norm">kaššāpu</span> and <span class="akk-xlit">{munus}UŠ₁₁.DU</span> = <span class="akk-norm">kaššaptu</span>;</li>
+<li>and note <span class="akk-xlit">{iri}</span> (not {uru}).</li>
+</ul>
+<p>Sometimes it is not immediately obvious if a sign should be treated as a standalone logogram or as a determinative. As a general rule of thumb, if you wouldn't lemmatise it as a word, treat it as a determinative.</p>
+
+<h1>Phonetic complements</h1>
+<p>Phonetic complements are preceded by a + inside curly brackets (e.g., <span class="akk-xlit">KUR{+ud}</span> = <span class="akk-norm">ikšud</span>). We distinguish them from suffixes, which are written as lower-case syllabic signs, separated from the logogram with a hyphen (e.g., <span class="akk-xlit">KUR{+ud}-an-ni</span> = <span class="akk-norm">ikšudanni</span>).</p>
+<p>Thus abstract endings on logograms are treated as phonetic complements (e.g., <span class="akk-xlit">LUGAL{+u-tu₂}</span>),, not suffixes, because <span class="akk-norm">šarru</span> and <span class="akk-norm">šarrūtu</span> are different words.</p>
+
+
+
+<h1>Proper nouns</h1>
+<p>It is Oracc-wide style that proper nouns are always lemmatised and translated with short vowels throughout.  Note that initial capitals are not used in transliteration, only in lemmatisation and normalisation.</p>
+
+<p>Following the practice of the State Archives of Assyria project, inside Akkadian proper nouns CAMS marks internal word boundaries with double hyphens in ATF, so that they can be clearly distinguished (e.g., <span class="akk-xlit">{d}a-nu--ŠEŠ-šu--DIN</span> = <span class="akk-norm">Anu-ahšu-uballiṭ</span>). However, new projects are encouraged not to use double hyphenation.</p>
+
+<h1>Numbers</h1>
+<p>Transliterate numbers as they are written—do not convert them into modern decimal notation. It is always important to note whether the scribe has written "a hundred" as, say <span class="akk-xlit">1 ME</span> or <span class="akk-xlit">1 ŠU 40</span>. Always note which sign has been used to write the numeral unless the writing is in purely sexagesimal notation. </p>
+<ul>
+<li>We treat syllabic suffixes on numerals as phonetic complements (e.g., <span class="akk-xlit">1{+en}</span> = <span class="akk-norm">ištēn</span>) and lemmatise them as number words, not as numerals;</li>
+<li>we group the constituent parts of a sexagesimal number with full stops, so that it is lemmatised as a single number (e.g., <span class="akk-xlit">1.40</span> is one number but <span class="akk-xlit">1 40</span> is two numbers). This is essentially a shorthand for the more explicit notation 1(DIŠ).4(U) used in other contexts (for more details see the page on <a href="../../../ATF/math.html">mathematical notations</a> in ATF).</li>
+<li>we transliterate numerical divine names as <span class="akk-xlit">{d}60</span>, <span class="akk-xlit">{d}30</span> etc., but lemmatise as the god's name: <span class="akk-norm">Anu</span>, <span class="akk-norm">Sin</span>, etc.;</li>
+<li>and note <span class="akk-xlit">15</span> = <span class="akk-norm">imittu</span> and <span class="akk-xlit">2.30</span> (not 150) = <span class="akk-norm">šumēlu</span>.</li>
+</ul>
+
+<h1>Reporting errors in the CAMS glossaries</h1>
+<p>Many projects use CAMS as their base glossary. Although we try to keep CAMS as consistent and error-free as possible, its size and diversity mean that is impossible to have complete control over it. You will almost certainly find inadvertent exceptions to this stylesheet in the CAMS glossaries. We welcome notifications of such errors to gkab@camtools.cam.ac.uk. We will then endeavour to correct or document them as soon as possible.</p>
+<d:resources/>
+
+
+
+</d:doc>

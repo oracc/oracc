@@ -1,0 +1,137 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>ATF Tools</title>
+  <link rel="stylesheet" type="text/css" href="/cdl/www/cdl.css">
+</head><body>
+<h1 class="title">ATF Tools Release Notes</h1>
+
+<h2>version 1.9e, 10/28/05</h2>
+
+<ul>
+<li>atfcheck.plx now traps multiply defined P-IDs</li>
+<li>atfsquare.plx more bug fixes; output is now reliable but should still be diff'd</li>
+<li>atf2xtf.plx new option -digest</li>
+<li>ATF LibXML ID fixes: ID generation is now 100% stable and unique</li>
+<li>ATF Parser bug with ~x fixed</li>
+</ul>
+
+<h2>version 1.9d, 10/28/05</h2>
+
+<ul>
+<li>Fix bug which resulted in bad line ids in .xlk files</li>
+<li>Fix bug related to primes in line numbers; ASCII apostrophe is now
+mapped to U+2032 by atf2xtf.</li>
+<li>atfcheck.plx now validates @column values</li>
+<li>atfcheck.plx now traps misplaced square brackets li[ke th]is</li>
+<li>atfsquare.plx bug fixes</li>
+<li>Parser now handles backtick (`) as aleph in grapheme bodies</li>
+<li>Unicode routines now translate x4 idiom correctly</li>
+<li>CDL::ATF::GDL library bugfixes</li>
+</ul>
+
+<h2>version 1.9c, 10/21/05</h2>
+
+<ul>
+<li>Collection of improvements to support programs; no changes in atf2xtf</li>
+<li>atfsquare.plx reimplementation (again!).  Apparently actually works now</li>
+<li>atfsquare.plx now understands [# ... #] for half-bracket conversion</li>
+<li>atf2ascii.plx now converts accented vowels to numeric indices</li>
+<li>atf2ascii.plx now converts h+rocker to h and left/right ceiling to [#/#]</li>
+<li>atfgrabpq.plx now has several options</li>
+<li>atfsplit.plx, atfcheck.plx several minor bug fixes</li>
+<li>atftriage.plx improved support for triaging lemmatized ATF</li>
+<li>atflog.plx is a new program to help convert logograms</li>
+</ul>
+
+<h2>version 1.9b, 9/19/05</h2>
+
+<ul>
+<li>Remove dependency on String::CRC32 for IDs; new ID system fully serviceable (should 
+    never produce bad XML) but needs minor tweaks</li>
+<li>Fix bug in @div handling that affected atf2xtf and atfcheck</li>
+<li>Eagles beat SF 42-3</li>
+</ul>
+
+<h2>version 1.9a, 9/16/05</h2>
+
+<ul>
+<li>Fixes to tests; distribution should now pass all tests</li>
+<li>Minor bugfixes for processing multiple files</li>
+</ul>
+
+<h2>version 1.9, 7/16/05</h2>
+
+<ul>
+<li>Various bug-fixes occasioned by getting the DCCLT P/Q files down to 0 errors</li>
+<li>atfcheck.plx now detects several more errors including invalid text links</li>
+<li>#atf use lexical now automatically implies #atf use mylines</li>
+</ul>
+
+<h2>version 1.8, 6/16/05</h2>
+
+<ul>
+<li>xml:id's produced by atf2xtf.plx are now unique system-wide</li>
+<li>New programs atf2ascii.plx, atfgrabpq.plx</li>
+<li>Serializer no longer produces empty words for &lt;&lt;...>></li>
+<li>atf2xtf.plx now produces W nodes for standalone ellipsis</li>
+<li>atf2xtf.plx now handles multiple glosses ({disz}{d}) and hyphenated
+    glosses ({u-du}udu) correctly</li>
+<li>Various fixes to atflemma.plx</li>
+</ul>
+
+<h2>version 1.7, 6/15/05</h2>
+
+<ul>
+<li><strong>Interface change to atf2xtf.plx: reading STDIN now means
+reading a list of files to process (used to mean read input to process
+but that was never used to my knowledge).</strong></li>
+<li>Number bugfix in ATF/Parser; {gi} determinative no longer considered 
+a unit</li>
+<li>Numerous additions, improvements and fixes to atflemma.plx</li>
+<li>Add -list option to atfsplit.plx</li>
+<li>Add -lemma option to atftriage.plx</li>
+<li>Code cleanups and -alpha option in atfwords.plx</li>
+</ul>
+
+<h2>version 1.6, 6/02/05</h2>
+
+<ul>
+<li>Add new program atflemma.plx</li>
+<li>Add link to atf2gdl.plx documentation</li>
+<li>Add -verbose option to atfwords.plx</li>
+<li>Lang/RWS bugfixes to ATF Parser (and Tokenizer/Serializer)</li>
+<li>Various small bugfixes to atftokens.plx, atfchars.plx and atftriage.plx</li>
+<li>Update documentation in programs and web docs</li>
+</ul>
+
+<h2>version 1.5, 5/25/05</h2>
+
+<ul>
+<li>Implement understanding of #lem: comments in ATF files
+    to prepare for proper XTF lemmatization</li>
+<li>Add new programs <code>atfchars.plx</code>, <code>atfcase.plx</code></li>
+<li>Reimplement <code>atfsquare.plx</code> with new algorithm which works
+    properly for more cases</li>
+</ul>
+
+<h2>version 1.4, 5/23/05</h2>
+
+<ul>
+<li>Additional features--see <a href="xtf-dtd.htm">xtf.dtd</a> 
+    until ATF docs are updated</li>
+<li>Fix bug in _..._ processing</li>
+</ul>
+
+<h2>version 1.2, 6/31/04</h2>
+
+Minor bug fixes related to archaic text processing.
+
+<h2>version 1.1, 6/29/04</h2>
+
+Add atftriage.plx and atf2xtf support for emptying invalid files.
+
+<h2>version 1.0, 6/24/04</h2>
+
+Initial release.
+
+</body></html>

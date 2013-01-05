@@ -1,0 +1,255 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: document.tex,v 0.3 1996/05/27 16:18:34 s Exp sjt $
+
+% Macros to support document definition.
+%
+% This file defines the macros which give documents structure.
+% Titles, chapter and heading divisions, indexing and cross-referencing,
+% table-of-contents production and so on. Organisation is pretty much
+% front to back, simultaneously defining features useful for editions,
+% papers and books.
+
+% 1) Font switching at the document level
+% =======================================
+%
+% Three main user commands are defined:
+%    \documentsize
+%    \localdocsize
+%    \definesize
+% The first may be used only once, before any typesetting has taken
+% place, since it uses magnification to achieve its effect. The 
+% second is a variant of the first which can be used to provide local
+% differences in the fonts used in a document (e.g. an appendix set in 
+% smaller type). The third is used to redefine a given major type size,
+% either title, text or footnote. Besides these three, a full range of
+% xxxpoint commands are defined which simply expand to \definesize macros
+% in which the first argument is the current type size. Finally the
+% means to set the current environment are provided with the macros
+%    \titlesize
+%    \textsize
+%    \fnotesize
+% which are defined automatically when a \definesize command is given.
+%
+% The macros are presented here in top-down sequence.
+
+% The highest level command is that which sets the document size.
+% This involves setting a titlesize, textsize and footnotesize, and
+% establishing the value of leading parameters. It doesn't affect the
+% size of the typefield, header location etc.
+%
+% We understand 10, 11 and 12 point for document sizes, and since
+% 10 point is preloaded we can simply set a magnification factor
+% if the user can do dynamic magnification. Otherwise we need to
+% load the relevant fonts and set the environment.
+\def\documentsize#1{}%\magnifydocument{#1}}
+%  \ifnomag\def\next{\d@csize{#1}}\else\def\next{\magnifydocument{#1}}\fi
+%  \next}
+
+% Entry point for local resetting of type sizes without using magnification
+\def\localdocsize#1{\d@csize{#1}}
+
+% This macro always sets the document in 10pt and relies on .dvi 
+% magnification to handle size shifts
+\def\magnifydocument#1{\count255=#1 \advance\count255-10
+  \mag
+  \ifcase\count255 1000\or 1095\or 1200\or 1440\or 1728\or 2074\or 2488\fi
+  \relax\d@csize{10}}
+
+% one nicety in this macro is that by defining \textsize last we avoid the
+% need to reset the size explicitly.
+\def\d@csize#1{%
+  \ifnum#1=12 \def\next{%
+      \definesize{\titlesize}{17}%
+      \definesize{\fnotesize}{10}%
+      \definesize{\textsize}{12}}%
+  \else
+    \ifnum#1=11 \def\next{%
+      \definesize{\titlesize}{14}%
+      \definesize{\fnotesize}{9}%
+      \definesize{\textsize}{11}}%
+    \else
+      \ifnum#1=10 \def\next{%
+        \definesize{\titlesize}{12}%
+	\definesize{\fnotesize}{8}%
+        \definesize{\textsize}{10}}%
+      \else
+        \errhelp=
+	{The permitted sizes for \string\documentsize\space and \string\localdocsize^^J%
+	 are 10, 11 or 12. I'm going to use 10 now, just to get us through this run.}%
+        \errmessage{Illegal size for document size (#1)---using 10 instead}%
+        \def\next{%
+          \definesize{\titlesize}{12}%
+  	  \definesize{\fnotesize}{8}%
+          \definesize{\textsize}{10}}%
+      \fi
+    \fi
+  \fi
+  \next
+  \textsize\unem} % initialize to normal size and set up \sum and \akk
+
+% This is the primary entry point for resetting the font environment
+% locally or globally. One can say, e.g., 
+%   \definesize\titlesize{12}
+% to set the text size for the given environment size. The command
+% sequence #1 is defined to invoke, say, \@12, which will set up 12
+% point text size with whatever was associated with that in the 
+% current \FLODsetsizes command.
+\def\definesize#1#2{\edef\next{\csname FLOD#2\endcsname}%
+  \edef#1{\expandafter\noexpand\csname\next\endcsname\noexpand\rm\noexpand\setleading}}
+
+% 2) Document Preamble
+% ====================
+
+% The principle for preamble is that a document typically has a 
+% collection of variable attributes which are set before 
+% processing begins. The variables currently available are:
+%	\title
+%	\author
+%	\affiliation
+%	\paperinfo
+%	\editor
+%	\publisher
+%	\placeofpublication
+%	\year
+%	\draftnumber
+%	\date
+%	\dedication
+% These are all defined as \toks registers, so they can be set by the
+% user just by saying, e.g., \title{The Title}
+\newtoks\title
+\newtoks\subtitle
+\newtoks\author
+\newtoks\affiliation
+\newtoks\paperinfo
+\newtoks\editor
+\newtoks\publisher
+\newtoks\placeofpublication
+\newtoks\yearofpublication
+\newtoks\drafttitle
+\newtoks\draftnumber
+\newtoks\date
+\newtoks\dedication
+\newtoks\epigraph
+
+\def\draftheading{\lefthdrinfo{\the\drafttitle\ \the\draftnumber}\centerhdrinfo{\datestamp}}
+
+% After the user has set up the variables there are several predefined 
+% formats for utilising their contents.
+% 
+% Simplest is the paper which has a title at its head, then gives the
+% author, affiliation and any miscellaneous information such as the
+% reason the paper is being written, where it will be published, etc.
+%
+\def\titleheader{\titleheadersizes
+  \vglue\abovetitleskip
+  {\titleformat\the\title\par}%
+  \testtoks\subtitle
+  \ifemptytoks\else\vglue\intertitleskip\fi
+  {\subtitleformat\the\subtitle\par}%
+  \testtoks\title
+  \ifemptytoks\else\vglue\belowtitleskip\fi
+  {\authorformat\the\author\par}%
+  \testtoks\author
+  \ifemptytoks\else\vglue\belowauthorskip\fi
+  {\affiliationformat\the\affiliation\par}%
+  \testtoks\affiliation
+  \ifemptytoks\else\vglue\belowaffiliationskip\fi
+  {\paperinfoformat\the\paperinfo\break\the\date\par}%
+  \vglue\belowpaperinfoskip
+  \testtoks\epigraph
+  \ifemptytoks\else
+    {\epigraphformat\the\epigraph\par}\vglue\belowepigraphskip\fi
+}
+\newif\ifemptytoks
+\def\testtoks#1{%
+  \def\next{\the#1}\ifx\next\empty\emptytokstrue\else\emptytoksfalse\fi}
+\newskip\abovetitleskip
+\newskip\intertitleskip
+\newskip\belowtitleskip
+\newskip\belowauthorskip
+\newskip\belowaffiliationskip
+\newskip\belowpaperinfoskip
+\newskip\belowepigraphskip
+\def\titleformat{\centerpar\titlesize\bem}
+\def\subtitleformat{\centerpar\textsize\bem}
+\def\authorformat{\centerpar}
+\def\epigraphformat{\rightpar}
+\def\affiliationformat{\centerpar\em}
+\def\paperinfoformat{\leftskip.5\hsize\rightpar}
+\def\titleheadersizes{
+  \abovetitleskip4pc
+  \intertitleskip1pc
+  \belowtitleskip2pc	
+  \belowauthorskip1pc
+  \belowaffiliationskip2pc
+  \belowepigraphskip2pc
+  \belowpaperinfoskip4pc\relax}
+
+% next simplest is the paper with a title page
+\def\titlepage{\titlepagesizes
+  \nonumberthispage
+  \vskip\abovetitleskip
+  {\titleformat\the\title\par}%
+  \vskip\belowtitleskip
+  {\authorformat\the\author\par}%
+  \vskip\belowauthorskip
+  {\affiliationformat\the\affiliation\par}%
+  \vskip\belowaffiliationskip
+  {\paperinfoformat\the\paperinfo\par}%
+  \vskip\belowpaperinfoskip
+  \newpage
+}
+\def\titlepagesizes{
+  \abovetitleskip2in plus1fill
+  \belowtitleskip1in	
+  \belowauthorskip.5in
+  \belowaffiliationskip1in
+  \belowpaperinfoskip0pt plus1fill\relax}
+
+%% more complicated is the use of several pages of frontmatter
+%\begin{frontmatter}
+%\titlepage
+%\halftitlepage
+%\copyrightpage
+%\preface
+%\listofabbreviations
+%\tableofcontents
+%\listofplates
+%\listoftables
+%\listoffigures
+%\end{frontmatter}
+%
+%\epigraph ...		% multiple epigraphs should be OK
+%\attribution... \par	% the attribution should be optional
+%
+
+\def\endfrontmatter{\newpage
+  % ensure front matter has even number of pages
+  \ifodd\pageno\else\blankpage\fi 
+  \pageno1\relax}
+%  \rightpagechapterstrue
+
+\def\frontnote#1{\vbox to.9\vsize{\vfill
+  \centerline{[#1 = page \romannumeral-\pageno]}\vfill}}
+
+\input div
+\input toc
+\input xref
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: document.tex,v $
+Revision 0.3  1996/05/27 16:18:34  s
+*** empty log message ***
+
+% Revision 0.2  1996/02/20  01:27:24  s
+% futz with \draftheading and \paperinfoformat
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

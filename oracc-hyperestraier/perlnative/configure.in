@@ -1,0 +1,130 @@
+# Source of configuration for the Perl binding of Hyper Estraier
+
+
+
+#================================================================
+# Generic Settings
+#================================================================
+
+
+# Targets
+AC_INIT(hyperestraier-perlnative, 1.0.0)
+
+# Export variables
+PERL="perl"
+POD2HTML="pod2html"
+MYOPTIMIZE="-O3 -fomit-frame-pointer -fforce-addr"
+MYPLLIBDIR=/usr/lib/perl5/site_perl
+MYRUNPATH=""
+
+# Building paths
+pathtmp="$PATH"
+PATH="..:$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+PATH="$PATH:/usr/ccs/bin:/usr/ucb:/usr/xpg4/bin:/usr/xpg6/bin:$pathtmp"
+LIBRARY_PATH="..:$HOME/lib:/usr/local/lib:$LIBRARY_PATH"
+LD_LIBRARY_PATH="..:$HOME/lib:/usr/local/lib:$LD_LIBRARY_PATH"
+CPATH="..:$HOME/include:/usr/local/include:$CPATH"
+PKG_CONFIG_PATH="..:$HOME/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
+if type pkg-config > /dev/null 2>&1
+then
+  PATH="$PATH:`pkg-config --variable=bindir qdbm`"
+  PATH="$PATH:`pkg-config --variable=bindir hyperestraier`"
+  LIBRARY_PATH="$LIBRARY_PATH:`pkg-config --variable=libdir qdbm`"
+  LIBRARY_PATH="$LIBRARY_PATH:`pkg-config --variable=libdir hyperestraier`"
+  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pkg-config --variable=libdir qdbm`"
+  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pkg-config --variable=libdir hyperestraier`"
+  CPATH="$CPATH:`pkg-config --variable=includedir qdbm`"
+  CPATH="$CPATH:`pkg-config --variable=includedir hyperestraier`"
+  export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
+fi
+
+# Setting the default prefix
+if test "$prefix" = NONE
+then
+  prefix=`perl -mConfig -e 'print $Config::Config{prefix}'`
+fi
+
+
+
+#================================================================
+# Options
+#================================================================
+
+
+# Stable mode
+AC_ARG_ENABLE(stable,
+  AC_HELP_STRING([--enable-stable], [build for stable release]))
+if test "$enable_stable" = "yes"
+then
+  MYOPTIMIZE="-O2"
+  stable="yes"
+fi
+
+
+
+#================================================================
+# Checking Commands and Libraries
+#================================================================
+
+
+# Perl interpreter
+printf 'checking PERL... '
+if which perl > /dev/null
+then
+  PERL=`which perl`
+fi
+printf '%s\n' "$PERL"
+
+# Other building tools
+printf 'checking POD2HTML... '
+if which pod2html > /dev/null
+then
+  POD2HTML=`which pod2html`
+fi
+printf '%s\n' "$POD2HTML"
+
+
+# Librarh path
+mypllibdir=`perl -mConfig -e 'print $Config::Config{sitelib}'`
+if test -n "$mypllibdir"
+then
+  MYPLLIBDIR="$mypllibdir"
+fi
+
+# Underlying libraries
+AC_CHECK_LIB(c, main)
+AC_CHECK_LIB(m, main)
+AC_CHECK_LIB(iconv, main)
+AC_CHECK_LIB(z, main)
+AC_CHECK_LIB(lzo2, main)
+AC_CHECK_LIB(bz2, main)
+AC_CHECK_LIB(qdbm, main)
+AC_CHECK_LIB(estraier, main)
+
+# Checking the version of QDBM with pkg-config
+if type pkg-config > /dev/null 2>&1 && pkg-config --atleast-version=1.0.0 qdbm
+then
+  MYRUNPATH="$MYRUNPATH:`pkg-config --variable=libdir qdbm`"
+fi
+
+
+
+#================================================================
+# Generic Settings
+#================================================================
+
+
+# Export variables
+AC_SUBST(PERL)
+AC_SUBST(POD2HTML)
+AC_SUBST(MYOPTIMIZE)
+AC_SUBST(MYPLLIBDIR)
+AC_SUBST(MYRUNPATH)
+
+# Targets
+AC_OUTPUT(Makefile)
+
+
+
+# END OF FILE

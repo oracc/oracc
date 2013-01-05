@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><title>Oracc builder Documentation</title><link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/><script src="/js/oraccdoc.js" type="text/javascript">
+</script></head><body class="subpage"><div class="subpage"><h1>Oracc builder Documentation</h1><h2 class="index-h">First Steps</h2><dl><dt><a href="cdli">CDLI ATF Primer</a></dt><dd>If you are preparing texts for insertion directly into
+the CDLI repository you should read this document first.</dd><dt><a href="primer">ATF Primer</a></dt><dd>A very quick start to get you up and running with
+    your first ATF texts by giving some annotated examples.</dd><dt><a href="quickref">ATF Quick Reference</a></dt><dd>A quick reference sheet for the ATF
+    format.</dd><dt><a href="linganno/AKK/akkstyle">Akkadian Stylesheet</a></dt><dd>There are many valid ways to transliterate Akkadian in ATF, but the more similarly people transliterate texts for Oracc, the better the corpora will work together. This document sets out Oracc's recommended transliteration conventions for Akkadian.</dd></dl><h2 class="index-h">Next Steps</h2><dl><dt><a href="/ns/xtf/1.0">ATF Structure Tutorial</a></dt><dd>This document gives a tutorial on how to type the
+    block structure features of texts in ATF, the ASCII Transliteration
+    Format.</dd><dt><a href="/ns/gdl/1.0">ATF Inline Tutorial</a></dt><dd>This document gives a tutorial on how to type
+    graphemes and other inline content in ATF.</dd><dt><a href="emacs">Working with ATF in Emacs using atf-mode</a></dt><dd>An Emacs major mode is available which makes editing ATF files a
+bit easier and gives access to the template generator and checker.</dd><dt><a href="linganno">Linguistic Annotation</a></dt><dd>This document provides an overview of linguistic
+  annotation facilities, such as lemmatization, used in Oracc.</dd><h3 class="index-sub"><a href="index00.html">More ATF Documentation</a></h3></dl></div></body></html>

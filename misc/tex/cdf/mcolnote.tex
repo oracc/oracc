@@ -1,0 +1,66 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: mcolnote.tex,v 1.3 1996/09/20 11:30:09 s Exp $
+
+% This module provides output routines that typeset footnotes
+% in multiple columns
+
+\newcount\numfnotec@ls
+\newif\ifmc@lfnotes
+\newdimen\fn@tehsize
+\newdimen\fnoteintercolgutter \fnoteintercolgutter.1in
+\newdimen\saved@gutter \newdimen\saved@minfirstcollength
+\newdimen\saved@topskip
+
+\def\fnotecolumns#1{\mc@lfnotestrue\numfnotec@ls#1\relax
+  \dimen@=\fnoteintercolgutter \count255\numfnotec@ls \advance\count255by-1
+  \ifnum\count255>1\multiply\dimen@ by\count255 \fi
+  \fn@tehsize\fullhsize
+  \advance\fn@tehsize by-\dimen@ \divide\fn@tehsize by\numfnotec@ls
+  \divide\count\footins by\numfnotec@ls }
+
+\def\vfootnote#1{\insert\footins\bgroup\everypar{}% in case a note is in an enumerate
+  \ifmc@lfnotes\hsize\fn@tehsize\fi
+  \widowpenalty100 \clubpenalty100
+  \interlinepenalty\interfootnotelinepenalty
+  \topskip\foottopskip
+  \splittopskip\foottopskip
+  \splitmaxdepth\dp\strutbox \floatingpenalty\@MM
+  \leftskip\z@skip \rightskip\z@skip \spaceskip\z@skip \xspaceskip\z@skip
+  \fntextindent{#1}\fnotesize\notespacing\footbeginstrut\footnotehook
+  \futurelet\next\fo@t}
+
+\newbox\testbox
+
+\def\pagecontents{\ifvoid\topins\else\unvbox\topins\fi
+  \dimen@=\dp\@cclv
+  \unvbox\@cclv % open up \box255
+  \ifnum\mc@added>0 \mc@removeaddedstuff %\message{pagecontents}
+  \fi
+  \ifvoid\footins\else % footnote info is present
+    \vskip\skip\footins
+    \iffootsplit\footsplitrule\else\footnonsplitrule\fi
+    \ifdim\dp\footins=\footlastlinedp \global\footsplitfalse
+    \else\global\footsplittrue
+    \fi
+    \ifmc@lfnotes
+      \saved@mincoltarget\mincoltarget
+      \mincoltarget\footmincoltarget
+      \saved@gutter\intercolgutter
+      \intercolgutter\fnoteintercolgutter
+      \saved@topskip\topskip
+      \topskip\foottopskip
+      \boxcolumns\numfnotec@ls
+      \columnfilltrue
+      \balancebox\footins
+      \box\boxincolsb@x
+      \intercolgutter\saved@gutter
+      \mincoltarget\saved@mincoltarget
+      \topskip\saved@topskip
+    \else\unvbox\footins
+    \fi
+  \fi
+  \ifr@ggedbottom \kern-\dimen@ \vfil \fi}
+

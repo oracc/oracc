@@ -1,0 +1,166 @@
+#else
+	    shiftp = l++;
+	    shift_tok_type = lang;
+	    if (isdigit(*l))
+	      {
+		++l;
+		shift_tok_type = hand;
+	     }
+	    else
+	      while (isalpha(*l))
+		++l;
+	    /*FIXME: poking the mode into current_state at a time when
+	      we're not consistently setting/getting current_state is
+	      a bit hacky (current_state is really intended for the
+	      second-stage processing of the tokenized stream) */
+	    /*N.B.: %a means %akk, not %/alphabetic*/
+	    if (l-shiftp == 2 
+		&& (l[-1] == 'n' || l[-1] == 'g' || l[-1] == 'm'))
+	      {
+		l = shiftp;
+		*l = '/';
+		shift_tok_type = mtype;
+	      }
+	    else if (islower(shiftp[1]))
+	      {
+		char save = *l;
+		shift_tok_type = lang;
+		*l = '\0';
+		current_state.lang = langtok(cc(shiftp+1),xxstrlen(shiftp+1));
+		if (current_state.lang)
+		  {
+		    current_state.mode = current_state.lang->tmode;
+		    if (current_state.lang && curr_project)
+		      load_lang_in_project(current_state.lang); /*sets curr_data as side effect*/
+		    else if (curr_project)
+		      curr_data = curr_project->data[c_sux];
+		    else
+		      curr_data = null_project.data[c_sux];
+		    curr_data->cset = curr_data->this->cset[current_state.lang->tmode];
+		  }
+#if 0
+		else
+		  vwarning("unknown language code %s has been ignored",shiftp);
+#endif
+		*l = save;
+	      }
+	    else if (isupper(shiftp[1]))
+	      {
+		/* This is a dialect code; just store it for now */
+		++shiftp;
+		shift_tok_type = dialect;
+	      }
+	    else if (isdigit(shiftp[1]))
+	      {
+		;
+	      }
+	    else
+	      {
+		vwarning("ignoring strange shift %s", shiftp);
+		shift_tok_type = noop;
+	      }
+
+	    if ('/' == *l)
+	      {
+		++l;
+		if (islower(*l))
+		  {
+		    switch (*l)
+		      {
+		      case 'a':
+			current_state.mode = m_alphabetic;
+			break;
+		      case 'n':
+			current_state.mode = m_normalized;
+			break;
+		      case 'm':
+			current_state.mode = m_morphology;
+			break;
+		      case 'g':
+			current_state.mode = m_graphemic;
+			break;
+		      default:
+			vwarning("%s: unknown mode in %%shift/mode sequence",shiftp);
+			goto ret;
+		      }
+		    ++l;
+		  }
+		else
+		  {
+		    vwarning("%s: bad character in %%shift/mode sequence",shiftp);
+		    goto ret;
+		  }
+	      }
+
+	    curr_data->cset = curr_data->this->cset[current_state.mode];
+
+	    if (*l && !isspace(*l))
+	      {
+		warning("shift(/mode) must be followed by space");
+		goto ret;
+	      }
+	    *l++ = '\0';
+	    while (isspace(*l))
+	      ++l;
+	    if (NULL != (tp = hash_lookup(shiftp,&table)))
+	      tokens[tokindex++] = tp;
+	    else
+	      {
+		unsigned char*pooled = pool_copy(shiftp);
+		tokens[tokindex++] = hash_insert(pooled,
+						 create_token(meta,
+							      shift_tok_type,
+							      pooled),
+						 &table );
+	      }
+
+#########
+
+#if 1
+#else
+	    if (in_uscore)
+	      {
+		curr_data = saved_data;
+		current_state = saved_state;
+	      }
+	    else
+	      {
+		/* current_state.lang can be NULL after a bad %-shift */
+		if (current_state.lang)
+		  {
+		    if (curr_project)
+		      {
+			saved_data = curr_project->data[current_state.lang->code];
+			saved_state = current_state;
+		      }
+		    else
+		      saved_data = null_project.data[c_sux];
+		    if (current_state.lang->underscore != m_logo)
+		      {
+			current_state.lang = langtok(current_state.lang->alt,
+						     xxstrlen(current_state.lang->alt));
+			current_state.mode = current_state.lang->tmode;
+			/*sets curr_data as side effect*/
+			load_lang_in_project(current_state.lang);
+			curr_data->cset = curr_data->this->cset[current_state.mode];
+		      }
+		    else
+		      {
+			load_lang_in_project(langtok(current_state.lang->alt,
+						     xxstrlen(current_state.lang->alt)));
+			curr_data->cset = curr_data->this->cset[current_state.mode];
+		      }
+		  }
+	      }
+#endif
+	    /* create a token */
+	    tokens[tokindex] = create_token(meta, uscoreo, NULL);
+	    /* rewrite it using the static data */
+	    *tokens[tokindex++] = *static_tokens[in_uscore 
+						 ? uscorec
+						 : uscoreo];
+	    /* enter or exit uscore mode */
+	    in_uscore = !in_uscore;
+	    /* the actual lang switching will be done in phase 2
+	       processing */
+	    ++l;

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>Oracc URI Text Patterns</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2012-06-23</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Oracc's stable URIs are formed according to simple
+  patterns.  This document demonstrates the patterns which are used for
+  requesting different parts and forms of texts.</dc:description>
+</d:meta>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER</h4>
+<p class="example"><a href="/cams/gkab/P338652"><code class="cookbook">/cams/gkab/P338652</code></a></p>
+<p class="example"><a href="/saao/knpp/P223388"><code class="cookbook">/saao/knpp/P223388</code></a></p>
+<p class="comments">HTML facing-page transliteration and translation, with pager.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER,NUMBER ...</h4>
+<p class="example"><a href="/cams/gkab/P338652,P338628"><code class="cookbook">/cams/gkab/P338652,P338628</code></a></p>
+<p class="example"><a href="/saao/P223388,P334194"><code class="cookbook">/saao/P223388,P334194</code></a></p>
+<p class="comments">Item list with pager.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/html</h4>
+<p class="example"><a href="/cams/gkab/P338652/html"><code class="cookbook">/cams/gkab/P338652/html</code></a></p>
+<p class="example"><a href="/saao/P223388/html"><code class="cookbook">/saao/P223388/html</code></a></p>
+<p class="comments">HTML facing-page transliteration and translation, no pager.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/translit</h4>
+<p class="example"><a href="/cams/gkab/P338652/translit"><code class="cookbook">/cams/gkab/P338652/translit</code></a></p>
+<p class="example"><a href="/saao/P223388/translit"><code class="cookbook">/saao/P223388/translit</code></a></p>
+<p class="comments">HTML transliteration only.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/translation</h4>
+<p class="example"><a href="/cams/gkab/P338652/translation"><code class="cookbook">/cams/gkab/P338652/translation</code></a></p>
+<p class="example"><a href="/saao/P223388/translation"><code class="cookbook">/saao/P223388/translation</code></a></p>
+<p class="comments">HTML translation only.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/score</h4>
+<p class="example"><a href="/dcclt/Q000001/score"><code class="cookbook">/dcclt/Q000001/score</code></a></p>
+<p class="comments">Full HTML score.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/cuneified</h4>
+<p class="example"><a href="/saao/saa01/P334194/cuneified"><code class="cookbook">/saao/saa01/P334194/cuneified</code></a></p>
+<p class="comments">Cuneified transliteration.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/proofing</h4>
+<p class="example"><a href="/etcsri/Q001253/proofing"><code class="cookbook">/etcsri/Q001253/proofing</code></a></p>
+<p class="comments">Proofing output (beta).</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/tei</h4>
+<p class="example"><a href="/hbtin/P342428/tei"><code class="cookbook">/hbtin/P342428/tei</code></a></p>
+<p class="comments">TEI version of text served as CSS-styled XML.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/cat</h4>
+<p class="example"><a href="/hbtin/P342428/cat"><code class="cookbook">/hbtin/P342428/cat</code></a></p>
+<p class="comments">HTML version of catalogue data.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/xml</h4>
+<p class="example"><a href="/hbtin/P342428/xml"><code class="cookbook">/hbtin/P342428/xml</code></a></p>
+<p class="comments">XML version of text data in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/cat/xml</h4>
+<p class="example"><a href="/hbtin/P342428/cat/xml"><code class="cookbook">/hbtin/P342428/cat/xml</code></a></p>
+<p class="comments">XML version of catalogue data in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/translit/xml</h4>
+<p class="example"><a href="/hbtin/P342428/translit/xml"><code class="cookbook">/hbtin/P342428/translit/xml</code></a></p>
+<p class="comments">XML version of transliteration in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/translation/xml</h4>
+<p class="example"><a href="/hbtin/P342428/translation/xml"><code class="cookbook">/hbtin/P342428/translation/xml</code></a></p>
+<p class="comments">XML version of translation in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: PROJECT/NUMBER/score/xml</h4>
+<p class="example"><a href="/dcclt/Q000001/score/xml"><code class="cookbook">/dcclt/Q000001/score/xml</code></a></p>
+<p class="comments">XML version of score in Oracc markup.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: cdli/NUMBER/images</h4>
+<p class="example"><a href="/cdli/P000001/images"><code class="cookbook">/cdli/P313915/images</code></a></p>
+<p class="comments">HTML with links to all CDLI images for the text.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: cdli/NUMBER/image</h4>
+<p class="example"><a href="/cdli/P000001/image"><code class="cookbook">/cdli/P000001/image</code></a></p>
+<p class="comments">Wrapper returning best available CDLI image.</p>
+</div>
+
+<div class="pattern">
+<h4>Pattern: cdli/NUMBER/thumb</h4>
+<p class="example"><a href="/cdli/P000001/thumb"><code class="cookbook">/cdli/P000001/thumb</code></a></p>
+<p class="comments">Wrapper returning best available CDLI thumbnail.</p>
+</div>
+
+</d:doc>

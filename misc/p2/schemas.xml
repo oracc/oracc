@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+<uri resource="as-base.xml" uri="../schemas/xhtml+xforms11/xhtml+xforms.rnc"/>
+<uri resource="p2-base.xml" uri="../schemas/xhtml+xforms11/xhtml+xforms.rnc"/>
+</locatingRules>

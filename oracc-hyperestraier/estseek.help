@@ -1,0 +1,94 @@
+<div class="help">
+<h1 class="title">Help</h1>
+<h2>What is This?</h2>
+<p>This is a full-text search system.  You can search for documents including some specified words.</p>
+<h2>How to Use</h2>
+<p>Input search phrase into the field at the top of the page.  For example, if you search for documents including "computer", input the following.</p>
+<pre>computer
+</pre>
+<p>If you search for documents including both of "network" and "socket", input the following.</p>
+<pre>network socket
+</pre>
+<p>It is the same as the following.</p>
+<pre>network &amp; socket
+</pre>
+<p>If you search for documents including "network" followed by "socket", input the following.</p>
+<pre>"network socket"
+</pre>
+<p>If you search for documents including one or both of "network" and "socket", input the following.</p>
+<pre>network | socket
+</pre>
+<p>If you search for documents including "network" but without "socket", input the following.</p>
+<pre>network ! socket
+</pre>
+<p>Note that the priority of "<code>|</code>" is higher than that of space, "<code>&amp;</code>", and "<code>!</code>".  So, the following is to search for documents including one of "F1", "F-1", "Formula One", and including one of "champion" and "victory".</p>
+<pre>F1 | F-1 | "Formula One" &amp; champion | victory
+</pre>
+<p>If you search for documents including some words beginning with "inter", input the following.</p><pre>inter*
+</pre>
+<p>If you search for documents including some words ending with "sphere", input the following.</p>
+<pre>*sphere
+</pre>
+<p>If you search for documents matching some words matching regular expressions of "^un.*able$", input the following.</p>
+<pre>*^un.*able$*
+</pre>
+<h2>Search with an Attribute</h2>
+<p>If you search for documents whose title includes "introduction", input the following into "<code>with [...]</code>" field.</p>
+<pre>@title STRINC introduction
+</pre>
+<p>If you want to ignore case, input the following.</p>
+<pre>@title ISTRINC introduction
+</pre>
+<p>If you search for documents whose size is less than 10000 bytes, input the following.</p>
+<pre>@size NUMLT 10000
+</pre>
+<p>The following attributes are supported.</p>
+<ul>
+<li>@uri : the URI (URL)</li>
+<li>@title : the title, as with "Subject" of mail</li>
+<li>@author : the name of the author, as with "From" of mail</li>
+<li>@cdate : the creation date, as with "Date" of mail</li>
+<li>@mdate : the modification date, as with "Date" of mail</li>
+<li>@size : the size (file size)</li>
+</ul>
+<p>The following operators for attributes are supported.</p>
+<ul>
+<li>STREQ : is equal to the string</li>
+<li>STRNE : is not equal to the string</li>
+<li>STRINC : includes the string</li>
+<li>STRBW : begins with the string</li>
+<li>STREW : ends with the string</li>
+<li>STRAND : includes all tokens in the string</li>
+<li>STROR : includes at least one token in the string</li>
+<li>STROREQ : is equal to at least one token in the string</li>
+<li>STRRX : matches regular expressions of the string</li>
+<li>NUMEQ : is equal to the number or date</li>
+<li>NUMNE : is not equal to the number or date</li>
+<li>NUMGT : is greater than the number or date</li>
+<li>NUMGE : is greater than or equal to the number or date</li>
+<li>NUMLT : is less than the number or date</li>
+<li>NUMLE : is less than or equal to the number or date</li>
+<li>NUMBT : is between the two numbers or dates</li>
+</ul>
+<p>If an operator is leaded by "<code>!</code>", the meaning is inverted.  If an operator is leaded by "<code>I</code>", case of the value is ignored.  If no operator is specified, all documents with the attribute correspond regardless of the value.  <code>STRAND</code>, <code>STROR</code>, <code>STROREQ</code>, and <code>NUMBT</code> take plural parameters separated by space.  Range of <code>NUMBT</code> is inclusive of border values.  Two or more attribute names can be listed with separated by "<code>,</code>" to mean logical addition.</p>
+<h2>Order of the Result</h2>
+<p>By default, the order of the result is descending by score.  If you want ascending order of title, input the following into the "<code>order by [...]</code>" field.</p>
+<pre>@title STRA
+</pre>
+<p>If you want descending order of the size, input the following.</p>
+<pre>@size NUMD
+</pre>
+<p>The following operators for order are supported.</p>
+<ul>
+<li>STRA : ascending by string</li>
+<li>STRD : descending by string</li>
+<li>NUMA : ascending by number or date</li>
+<li>NUMD : descending by number or date</li>
+</ul>
+<h2>Other Faculties</h2>
+<p>"<code>[...] per page</code>" specifies the number of shown documents per page.  If documents over one page correspond, you can move to another page via anchors of "<code>PREV</code>" and "<code>NEXT</code>" at the bottom of the page.</p>
+<p>"<code>clip by [...]</code>" specifies strength of clipping similar documents.  It is useful if too similar documents occupy the page.</p>
+<p>Each of "<code>[detail]</code>" links in the result is to show detail information.  Each of "<code>[similar]</code>" links in the result is to search for similar documents.  Each of "<code>[include]</code>" links in the result is to include clipped documents.</p>
+<h2>Information</h2>
+<p>See <a href="http://hyperestraier.sourceforge.net/">the project site</a> for more detail.</p>
+</div>

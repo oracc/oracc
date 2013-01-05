@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Images and other embedded content in ESP</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Ruth Horry and Eleanor Robson</dc:creator>
+  <dc:date>2011-05-02</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes how to mark up images, videos, Google Earth files, and other types of non-textual data in <a href="../esp/">ESP</a>.</dc:description>
+</d:meta>
+
+<h1>Images</h1>
+<h2>Preparing images for the web</h2>
+<p>Decide on a certain width for both small and large images and keep them consistent.  (The small images on the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> site are 9cm in width but have varying heights.)</p>
+
+<p>Images used on the web need to be 72dpi resolution JPG or GIF files.  Photographs should be in JPG format, graphics in GIF format.  Use a graphics editor to manipulate the image size and resolution.  Some graphics editors have a ‘Save for web’ option that optimises images for the web.</p>
+
+<p>Good free graphics editors include <a href="http://paintbrush.sourceforge.net">Paintbrush</a> and <a href="http://seashore.sourceforge.net">Seashore</a> for Mac and <a href="www.getpaint.net">Paint.NET</a> for Windows.</p>
+
+<p>Store all images for use on the site in the <code>00web/esp/site-content/00web/images</code> folder, or in subfolders inside it.  To organise your images, consider creating subfolders with the same hierarchy as your site’s navigational structure.</p>
+
+<p>Some images come included in the <a href="../esp/esp/#Installing_the_ESP_templates_and_schemas">ESP templates</a>. The tab and <code>favicon.ico</code> files are explained on the <a href="../espsetup/#tabs">ESP setup</a> page. You will almost certainly also want to edit or replace <code>images/homeimage.jpg</code>, which serves as the central <a href="#Image_maps">image map</a> on the site's home page (defined by <code>home.xml</code>).</p>
+
+<h2>Markup for images</h2>
+<h4><a name="esp:image"><code>&lt;esp:image&gt;</code></a></h4>
+<p>Images are inserted using the <code>&lt;esp:image&gt;</code> element.  Image width and height are retrieved and used automatically by the processor.</p>
+
+<p>By default, the processor will look for the images in the <code>00web/esp/site-content/00web/images</code> folder. The <code>file</code> attribute within <code>&lt;esp:image&gt;</code> specifies the location of the image relative to the <code>.../images</code> folder.  So for an image entitled <code>esarhaddon.jpg</code> located in the folder <code>.../images/contexts</code>, the <code>file</code> attribute should read: <code class="example">file="contexts/esarhaddon.jpg"</code>.</p>
+
+<p>Do not include a leading forward slash when specifying the image location (i.e., do not do this: <code class="example">file="/contexts/esarhaddon.jpg"</code>) or the image and its caption will not float correctly.</p>
+
+<p>The specification for how to use the <code>&lt;esp:image&gt;</code> element is given below:</p>
+
+<pre class="listing">&lt;esp:image
+	file="example.jpg"
+	description="Example image"
+	position="float" or position="inline" (default)	
+&gt;
+        &lt;esp:link page=blah/&gt; (optional)
+	&lt;esp:flash-movie .../&gt; (optional)
+	&lt;esp:image-map&gt;&lt;area .../&gt;&lt;/esp:image-map&gt; (optional)
+	&lt;esp:caption&gt;Here is a caption.&lt;/esp:caption&gt;
+&lt;/esp:image&gt;
+</pre>
+
+<dl>
+<dt><code>file</code></dt>
+<dd>Mandatory. The location of the image relative to the <code>00web/esp/site-content/00web/images</code> folder. Image files must be JPG or GIF format.</dd>
+
+<dt><code>description</code></dt>
+<dd>Mandatory. Will be presented to users of text browsers or screen readers, and is required for <a href="http://www.w3.org/WAI/">WAI</a> compliance. Should give a concise description of the image.</dd>
+
+<dt><code>position</code></dt>
+<dd>Optional. May be <code>float</code>, which causes the image to appear on the right and text to flow around it, or <code>inline</code> (the default), which causes the image to break up the text above and below it.  (The images for the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> site are all aligned to the right using the <code>float</code> attribute.)</dd>
+</dl>
+
+<h2>Image captions</h2>
+<h4><a name="esp:caption"><code>&lt;esp:caption&gt;</code></a></h4>
+<p>The <code>&lt;esp:image&gt;</code> element can contain a <code>&lt;esp:caption&gt;</code> element, which will display caption text underneath the image.  The caption can contain links, e.g., to a large version of the image, as described in the section on <a href="../#Links_within_image_captions">Links within image captions</a>.</p>
+
+<p>The <code>&lt;esp:image&gt;</code> element itself may contain zero or one empty <a href="../espcontent/#esp:link"><code>&lt;esp:link&gt;</code></a> elements, which will make the image into a link, as described in the section on <a href="../#Links_within_image_captions">Links within image captions</a>.</p>
+
+<p>If there is no <code>&lt;esp:link&gt;</code> tag, it may contain zero or one <code>&lt;esp:image-map&gt;</code> tags, as described in the section on <a href="#Image_maps">Image maps</a>.</p>
+
+<p>If there is neither of these, it may contain zero or one <a href="#esp:flash-movie"><code>&lt;esp:flash-movie&gt;</code></a> tags, such that the image will end up linking to the movie.</p>
+
+<h2>Externally-hosted images</h2>
+<p>The <code>&lt;esp:image&gt;</code> tag can be utilised to include images hosted on other websites, using the <code>url</code> attribute instead of the <code>file</code> attribute:</p>
+
+<pre class="listing">&lt;esp:image
+	url="http://www.example.com/example.jpg"
+	description="Example image"
+	position="float" or position="inline" (default)	
+&gt;
+Example image caption (optional)
+&lt;/esp:image&gt;</pre>
+
+<dl>
+<dt><code>url</code></dt>
+<dd>Mandatory. The location of the image.</dd>
+
+<dt><code>description</code></dt>
+<dd>Mandatory. Will be presented to users of text browsers or screen readers, and is required for <a href="http://www.w3.org/WAI/">WAI</a> compliance. Should give a concise description of the image.</dd>
+
+<dt><code>position</code></dt>
+<dd>Optional. May be <code>float</code>, which causes the image to appear on the right and text to flow around it, or <code>inline</code> (the default), which causes the image to break up the text above and below it.</dd>
+</dl>
+ 
+<p>The element may contain zero or one empty <code>&lt;esp:link&gt;</code> tags, which will end up placed around the image itself. If there is no <code>&lt;esp:link&gt;</code> tag, it may contain zero or one <code>&lt;esp:image-map&gt;</code> tags. It may also always contain zero or one <code>&lt;esp:caption&gt;</code> tags.</p>
+
+<h1>Image maps</h1>
+<p>An image map is a single image containing one or more ‘hotspot’ <code>&lt;esp:area&gt;</code> elements that function as links. </p>
+
+<h4><a name="esp:image-map"><code>&lt;esp:image-map&gt;</code></a></h4>
+
+<p>Image maps are created by using the <code>&lt;esp:image-map&gt;</code> element within the <code>&lt;esp:image&gt;</code> element.  You must specify the width and height of your image (in pixels) when creating an image map.</p>
+
+<h2>Defining hotspots</h2>
+<p>Each hotspot area is defined using the <code>&lt;esp:area&gt;</code> tag within  <code>&lt;esp:image-map&gt;</code>. Hotspot areas can be rectangular, circular or polygonal – the rectangular area is easiest to create and effective for most images.</p>
+
+<h4><a name="esp:area"><code>&lt;esp:area&gt;</code></a></h4>
+
+<p>The specification for <code>&lt;esp:area&gt;</code> is given below:</p>
+
+<pre class="listing">&lt;esp:area 
+	page="pageid" OR url="http://blah.com/"
+	shape="rect | etc." 
+	coords="0,0,50,50" 
+	description="Click here for laughs"
+	site-name="Example and Sons Ltd." [if used url]
+	title="Example title"
+	accesskey="X"
+/&gt;</pre>
+	
+<dl>
+<dt><code>shape</code></dt>
+<dd><p>Mandatory. This attribute specifies the shape of a region. Possible values are:</p>
+<ul>
+        <li><code>default</code>: Specifies the entire region.</li>
+        <li><code>rect</code>: Define a rectangular region.</li>
+        <li><code>circle</code>: Define a circular region.</li>
+        <li><code>poly</code>: Define a polygonal region.</li>
+</ul>
+</dd>
+
+<dt><code>coords</code></dt>
+<dd><p>Mandatory. This attribute specifies the position and shape on the screen. The number and order of values depends on the shape being defined. Possible combinations:</p>
+<ul>
+        <li>rect: <code class="cookbook">coords="x1,y1,x2,y2"</code> (left-x, top-y, right-x, bottom-y).</li>
+
+        <li>circle: <code class="cookbook">coords="centre-x,centre-y,radius"</code>. Note. When the radius value is a percentage value, user agents should calculate the final radius value based on the associated object's width and height. The radius should be the smaller value of the two.</li>
+
+        <li>poly: <code class="cookbook">coords="x1,y1,x2,y2,...,xN,yN"</code>. The first x and y coordinate pair and the last should be the same to close the polygon. When these coordinate values are not the same, user agents should infer an additional coordinate pair to close the polygon.</li>
+</ul>
+<p>Coordinates are relative to the top, left corner of the object. All values are lengths. All values are separated by commas.</p>
+</dd>
+
+<dt>(<code>page</code> and/or <code>bookmark</code>) or <code>url</code>, <code>description</code>, <code>site-name</code>, <code>title</code>, <code>accesskey</code></dt>
+<dd>These attributes all work exactly as in a <code>&lt;esp:link&gt;</code> tag: see the section on <a href="../#Links">Links</a>.</dd>
+</dl>
+
+<h2>Example image map code</h2>
+<p>The following example is the code used to create the image map for the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website's home page.  This image map contains three rectangular hotspot areas; each links to a different page within the site.</p>
+
+<pre class="example">&lt;esp:image file="homeimage.jpg" description="about the site, 
+read letters and reports, teaching resources" width="535" height="293"&gt;
+
+	&lt;esp:image-map&gt;
+
+		&lt;esp:area shape="rect" page="about" title="About the project" 
+		     coords="0,9,165,292"/&gt;
+		&lt;esp:area shape="rect" page="lqr-index" title="Letters, 
+		     queries and reports" coords="183,9,351,292"/&gt;
+		&lt;esp:area shape="rect" page="res-index" title="Teaching 
+		     resources" coords="368,9,534,292"/&gt;
+
+	&lt;/esp:image-map&gt;
+
+&lt;/esp:image&gt;</pre>
+
+
+<h1>Google Earth and Google Maps content</h1>
+<p>Google allows people to make their own content that will display in both Google Earth (GE) and Google Maps (GM).  On the <a href="http://knp.prs.heacademy.ac.uk/">Knowledge &amp; Power</a> website, we created overlays of archaeological sites and tags showing place names etc.  The content are saved as .KML or .KMZ (compressed archive) formats.</p>
+
+<p>Create the KMZ files within GE itself.  Place the files within the <code>00web/esp/site-content/00web/downloads</code> folder.  The same KMZ files will open in both Google Earth and Google Maps, however the method of linking them is different.</p>
+
+<h2>Displaying KMZ files in Google Earth</h2>
+<p>To allow website visitors to view KMZ content in GE, create a link to the KMZ file using the <code>&lt;esp:link&gt;</code> element with a relative URL, as described in the section on <a href="../espcontent/#Links_to_downloadable_content">Links to downloadable content</a>.</p>
+
+<p>NB. If the user has GE installed on their computer, the file should automatically open in GE.  If the user does not have GE installed, they will receive a prompt asking what they want to do with the file.  Currently there is no means of automatically asking the user whether they want to download Google Earth.</p>
+
+<h2>Displaying KMZ files in Google Maps</h2>
+<p>For users who do not want to install GE, the same KMZ files will also display within a GM web page.  To display the content in this way, create a link to the GM web page using <code>&lt;esp:link&gt;</code>.  Append the complete location of the specific KMZ file on your webserver to the end of the URL for the GM web page.</p>
+
+<p>So, to display the KMZ file entitled <code>adian_eski_kalak.kmz</code> that sits in the <code>downloads</code> folder for the site <code>http://oracc.museum.upenn.edu/knp</code> you would use the following URL in the element <code>&lt;esp:link&gt;</code>:</p>
+
+<pre class="example">&lt;esp:link url="http://maps.google.com/maps?q=http://oracc.museum.upenn.edu/
+knp/downloads/adian_eski_kalak.kmz&amp;t=k" 
+      title="View location of Adian using Google Earth"&gt;
+
+      View location using Google Maps
+
+&lt;/esp:link&gt;</pre>
+
+<p>Note that appending <code>&amp;t=k</code> to the end of the URL forces GM to open satellite view rather than the default map view.</p>
+
+<h2>Example code for linking to GE and GM content</h2>
+
+<p>Example code showing links to Google Earth and Google Maps within a glossary definition is given below.</p>
+
+<pre class="example">
+&lt;esp:definition term="Adian (place)"&gt;A town in central Assyria, possibly now 
+Eski Kalak.
+   &lt;esp:link url="~/downloads/adian_eski_kalak.kmz" title="View location of 
+   Adian using Google Earth"&gt;View location using Google Earth
+   &lt;/esp:link&gt; |
+   &lt;esp:link url="http://maps.google.com/maps?q=http://oracc.museum.upenn.edu/
+   knp/downloads/adian_eski_kalak.kmz&amp;t=k" title="View location of Adian using 
+   Google Maps"&gt;View location using Google Maps
+   &lt;/esp:link&gt;
+&lt;/esp:definition&gt;
+</pre>
+
+<h1>Flash content</h1>
+<p>To create a link to Flash content that will launch in a new window (using Javascript) use the <code>&lt;esp:flash-movie&gt;</code> element.  The specification of the <code>&lt;esp:flash-movie&gt;</code> element is given below:</p>
+
+<h4><a name="esp:flash-movie"><code>&lt;esp:flash-movie&gt;</code></a></h4>
+<pre class="listing">&lt;esp:flash-movie
+	id="exampleid"
+	file="flashexample.swf"
+	title="An example Flash Movie"
+	width="500"
+	height="400"
+&gt;
+	Arbitrary inline content
+&lt;/esp:flash-movie&gt;</pre>
+
+<dl>
+<dt><code>id</code></dt>
+<dd>Mandatory. This must be unique for each different movie, but the same for each link to the same movie. It is used as part of the URL to the page the movie sits on.</dd>
+
+<dt><code>file</code></dt>
+<dd>Mandatory. The name (and path) of the file relative to <code>00web/esp/site-content/00web/flashmovies</code>, where the Flash movie file should be located. (You may have to create this directory on Oracc.)</dd>
+
+<dt><code>title</code></dt>
+<dd>Mandatory. This will be used as part of the title of the page which pops up.</dd>
+
+<dt><code>width, height</code></dt>
+<dd>Mandatory. The width and height of the Flash movie, in pixels.</dd>
+</dl>
+
+<p>You can also make an image into a link to Flash content by placing the <code>&lt;esp:flash-movie&gt;</code> element inside <code>&lt;esp:image&gt;</code>.  For more details see the section on <a href="#Images">images</a>.</p>
+
+<h1>Video content</h1>
+
+<p>Upload Quicktime movies to <a href="http://www.youtube.com">youtube</a>.</p>
+
+<p>Embed youtube Flash videos using standards compliant tags, using the method described at: <a href="http://www.alistapart.com/articles/byebyeembed/">http://www.alistapart.com/articles/byebyeembed/</a>.</p>
+
+<p>The code used is:</p>
+
+<pre class="cookbook">&lt;object type="application/x-shockwave-flash"
+ data="http://www.youtube.com/v/mADrWB6F5CU&amp;hl=en&amp;fs=1&amp;rel=0&amp;showinfo=0" 
+ width="425" height="344" id="VideoPlayback"&gt;
+ &lt;param name="movie" 
+  value="http://www.youtube.com/v/mADrWB6F5CU&amp;hl=en&amp;fs=1&amp;rel=0&amp;showinfo=0" /&gt;
+  &lt;param name="allowScriptAcess" value="sameDomain" /&gt;
+  &lt;param name="quality" value="best" /&gt;
+  &lt;param name="bgcolor" value="#FFFFFF" /&gt;
+  &lt;param name="scale" value="noScale" /&gt;
+  &lt;param name="salign" value="TL" /&gt;
+  &lt;param name="FlashVars" value="playerMode=embedded" /&gt;
+&lt;/object&gt;
+</pre>
+
+<p>This places the video left-aligned onto the page.</p>
+
+<p>NB. Added on to the end of the URL (<code class="example">http://www.youtube.com/v/mADrWB6F5CU&amp;hl=en&amp;fs=1&amp;rel=0&amp;showinfo=0</code>) are two modifiers: <code>&amp;rel=0</code> means that it doesn't display the 'related videos' link, and  <code>'&amp;showinfo=0'</code> remove the stars and crap that youtube wants to overlay onto the video.   </p>
+
+<h1>Next steps</h1>
+<p>Once you have some textual and image content you are ready to <a href="../espbuild/">check and (re)build</a> your ESP website.</p>
+<p>See also:</p>
+<ul>
+<li><a href="../esp/">Overview of ESP</a></li>
+<li><a href="../espsetup/">How to set up your ESP site</a></li>
+<li><a href="../espcontent/">How to mark up textual content</a></li>
+<!-- <li><a href="../espimages/">How to embed images and other non-textual content</a></li> -->
+<li><a href="../espbuild/">How to check and rebuild your ESP website</a></li>
+<li><a href="../espelements/">Alphabetical list of ESP system elements</a></li>
+<li><a href="/ns/esp/1.0/">The ESP schema</a></li>
+</ul>
+
+<d:resources/>
+
+</d:doc>

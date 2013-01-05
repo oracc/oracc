@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- @SUMMARY@= default reference abbreviations list for XDF -->
+<refs>
+<ref xml:id="XHTML" uri="http://www.w3.org/TR/xhtml1"
+>The W3C XHTML recommendation.</ref>
+</refs>

@@ -1,0 +1,9 @@
+&Q001543 = Gudea Statue D [E3/1.01.07]
+@composite
+#project: epsd2/epsdc/royal
+#atf: use mylines
+#link: source P232277 = RIME 3/1, p. 040, E3/1.1.7, St D
+#@m=object statue
+
+2.	lugal dijir-re-ne-ra
+#lem: lugal[king]; dijir[deity]\ak#~,ene.ak.ra

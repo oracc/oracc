@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+
+    Methods [estraier]
+
+  -->
+<head>
+  <title>Methods [estraier]</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="rdoc-style.css" type="text/css" />
+  <base target="docwin" />
+</head>
+<body>
+<div class="index">
+  <h1 class="section-bar">Methods</h1>
+  <div id="index-entries">
+
+    <a href="classes/Estraier/Document.html#M000001">add_attr (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000017">add_attr (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000041">add_attr_index (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000003">add_hidden_text (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000059">add_pseudo_index (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000002">add_text (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000008">attr (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000007">attr_names (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000010">cat_texts (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000038">close (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000053">doc_num (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000027">doc_num (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000013">dump_draft (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000048">edit_doc (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000036">err_msg (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000039">error (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000040">fatal (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000042">flush (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000029">get_dbidx (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000049">get_doc (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000050">get_doc_attr (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000028">get_doc_id (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000032">get_score (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000033">get_shadows (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000031">hint (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000030">hint_words (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000006">id (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000011">keywords (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000014">make_snippet (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000045">merge (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000052">name (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000015">new (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000026">new (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Result.html#M000034">new (Estraier::Result)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000062">new (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000037">open (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000044">optimize (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000047">out_doc (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000046">put_doc (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000057">scan_doc (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000012">score (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000056">search (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000035">search_meta (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000022">set_auxiliary (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000058">set_cache_size (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000024">set_distinct (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000023">set_eclipse (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000061">set_informer (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000004">set_keywords (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000025">set_mask (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000019">set_max (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000021">set_options (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000018">set_order (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000016">set_phrase (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000005">set_score (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Condition.html#M000020">set_skip (Estraier::Condition)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000060">set_wildmax (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000055">size (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000043">sync (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Document.html#M000009">texts (Estraier::Document)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000051">uri_to_id (Estraier::Database)</a><br />
+
+    <a href="classes/Estraier/Database.html#M000054">word_num (Estraier::Database)</a><br />
+
+  </div>
+</div>
+</body>
+</html>

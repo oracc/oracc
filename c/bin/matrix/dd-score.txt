@@ -1,0 +1,2068 @@
+&Q000347 = Dumuzid's dream
+@score matrix parsed
+
+#link: def Ki₁  = P344919 = PRAK II C 45 + PRAK II D 53 = D₁ + D₂
+#link: def N₁   = P263159 = CBS 8318+ = A₁ + A₂ + C'
+#link: def N₂   = P356541 = 3N-T919,490 = B
+#link: def N₃	= P343685 = Ni 4570 (ISET 2 51) = A'
+#link: def N₄ 	= P278626 = N 3608 + Ni 9595 = E
+#link: def N₅	= P357048 = Ni 4596 = F
+#link: def N₆	= P276849 = N 1729 = G
+#link: def N₇	= P356256 = 3N-T905,195 = I
+#link: def N₈	= P345167 = Ni 4250 + Ni 4258 = K + N'
+#link: def N₉	= X000001 = Ni 4447 = L
+#link: def N₁₀  = X000002 = Ni 4506 = R
+#link: def N₁₁  = P343141 = Ni 4550 = T
+#link: def N₁₂  = P278337 = CBS 13380A + N2743 + N 3295 + N 5270 + N 6467 = I' + v + V
+#link: def N₁₃  = P256316 = UM 29-15-559 + N 5499 = W
+#link: def N₁₄  = P343238 = Ni 4240 = X
+#link: def N₁₅  = P356243 = 3N-T905,180 = Y
+#link: def N₁₆  = X000003 = Ni 4481 = Z
+#link: def N₁₇  = X000004 = Ni 4232 = b
+#link: def N₁₈  = X000005 = Ni 4524 = c
+#link: def N₁₉  = P356376 = 3N-T916,321 = g
+#link: def N₂₀  = X000005 = Ni 9825 = h
+#link: def N₂₁  = P356652 = 3N-T368 = O
+#link: def N₂₂  = P356532 = 3N-T919,481 = P
+#link: def N₂₃  = P356789 = 3N-T661 = Q
+#link: def N₂₄  = P356298 = 3N-T906,240 = SLFN 5 = B'
+#link: def N₂₅  = X000006 = Ni 9966 = D'
+#link: def N₂₆  = P356462 = 3N-T918,406 = SLFN 11 = K'
+#link: def N₂₇  = P356313 = 3N-T906,257 = SLFN 6 = L'
+#link: def N₂₈  = P356187 = 3N-T903,121 = SLFN 82 = M'
+#link: def N₂₉  = P356774 = 3N-T559 = A 30289 = S
+#link: def N₃₀  = P356744 = 3N-T511 = A 30256 = f
+#link: def N₃₁  = P356344 = 3N-T908,289 = SLFN 4 = ZZc
+#link: def N₃₂  = X000007 = Ni 9632 (this number is supposed to join CBS 13551, not DD) = ISET 3 xxx = ZZd
+#link: def N₃₃  = P256147 = UM 29-15-326 + UM 29-15-412 + N 2994 = i
+#link: def N₃₄  = X000008 = Ni 4081 = TAD VIII/2 Lev. XXXV = k
+#link: def N₃₅  = P356435 = 3N-T917,381 = l
+#link: def N₃₆  = P257243 = UM 55-21-284 = m
+#link: def N₃₇  = P259228 = CBS 2160 + N 5487 = n
+#link: def N₃₈  = P345169 = Ni 4002 = SLTNi 34 = p
+#link: def N₃₉  = P343168 = Ni 4070 = ISET I 70/128 = q
+#link: def N₄₀  = P356555 = 3N-T925,505 = s
+#link: def N₄₁  = P356573 = 3N-T927,524 = t
+#link: def N₄₂  = P356625 = 3N-T285 = A 30195 = u
+#link: def N₄₃  = P259363 = CBS 2358 = w
+#link: def N₄₄  = P356771 = 3N-T555 = A 30267 = x
+#link: def N₄₅  = X000009 = Ni 4495 = Alster pl. XX = y
+#link: def N₄₆  = P257261 = UM 55-21-369 = z
+#link: def N₄₇  = P278211 = N 3155 = Alster pl. XVII = Aa
+#link: def N₄₈  = P356294 = 3N-T906,235 = Ac
+#link: def N₄₉  = X000010 = Ni 4397 = ISET I 89/147 = Ae
+#link: def N₅₀  = P356848 = 3N-T909m = A 33264 = F'
+#link: def N₅₁  = P280228 = N 4498 + N 6464 = G'
+#link: def N₅₂  = P280746 = N 7000 = H'
+
+#link: def Šad₁ = P223447 = TIM 9, 3 = C
+#link: def Si₁  = P258923 = CBS 1590 = U
+#link: def Si₂  = P283744 = BM 16900 = d
+#link: def Si₃  = P259145 = CBS 1841 = ZZa
+#link: def Su₁  = P368666 = AO 24146 = 'Dur.' = O'
+#link: def Uk₁  = P349105 = AUWE 23 102 = P'
+#link: def Ur₁	= P346103 = UET 6/1 18 (No join to Ur₆ etc. because of border rulings) = a
+#link: def Ur₂	= P346104 = UET 6/1 19 = o
+#link: def Ur₃	= P346105 = UET 6/1 20 = Ab
+#link: def Ur₄	= P346107 = UET 6/1 21 = Ad
+#link: def Ur₅  = P346271 = UET 6/2 186 = N
+#link: def Ur₆  = P346272 = UET 6/2 187 + UET 6/3 466 (+)? Ur₇ = e
+#link: def Ur₇  = P346502 = UET 6/3 464 (+)? Ur₈ = H
+#link: def Ur₈  = P346503 = UET 6/3 465 = M₁ and M₂
+#link: def Ur₉  = P346505 = UET 6/3 467 = Q'
+
+#link: def X₁	= P252263 = MS 3322 = T'
+
+#link: def X₂ 	= P252246 = MS 3305 = U'
+#link: def X₃	= P247867 = CMAA 022-C0002L = R'
+#link: def X₄	= P247868 = CMAA 022-C0001L = S'
+
+#link: def X₅	= P355697 = BM 113234 = J'
+
+#link: def X₆	= P223404 = IM 11053,54b + IM 11053,329 = r
+
+#note: N₃ should be checked for join to N₅.
+#note: is X₆ a Harmal text?
+
+### joins Ni 4250 #link: def N₃₁  =  = Ni 4258 = SLTNi pl. 82 = ZZb
+
+
+## Matrix conventions
+
+## Composite Text
+
+#  # in composite creates empty column for alignment; used
+#    when one or more sources contains additional signs or
+#    words which are not reconstructed as part of the 
+#    composite line.
+
+## Exemplars
+# . = broken
+# , = traces fit composite
+# x = traces do not fit composite
+# + = positively preserved
+# - = positively omitted
+# ~ = source adds following sign relative to composite
+# ; = indented line split point
+# / = line division
+# ! = correction or unusual sign form
+# ? = uncertain reading
+# * = collated
+# # = blank as in composite; if text is broken, use #
+#     or . depending on whether it is likely that the
+#     text could have had the insertion for which the
+#     # was introduced into the main text.
+
+# & at start of alignment column means text occupies how
+# ever many columns the corresponding word occupies in the
+# main text; must come at the start of a word.
+
+# &[0-9] at start of alignment column means text occupies how 
+# ever many columns the corresponding number of words occupy 
+# in the main text; must come at the start of a word.
+
+# ^ at start of alignment column means following text occupies
+# rest of line; no word alignment is done in this case.
+
+# $ at start of line = ATF $-line; 
+#   if exemplar has label, $-line goes after label
+#   else $-line goes after preceding label for the examplar
+
+# Text in columns replaces the text in the composite line.
+# If the text involves different hyphenation the word or 
+# words should be given in their entirety, with the 
+# relevant &-span notation (to enable correct derivation
+# of exemplar transliterations from the matrix).  Where
+# reasonable, word alignment should be maintained, but
+# where texts diverge extensively there may be no 
+# alternative to transliterating the exemplar in full
+# (see line 13, exemplar Ki₁ for examples of both word
+# alignment and rest-of-line transliteration).  Also see
+# line 25 where both of the words must vary from the 
+# composite and so it might be tempting to use rest-of-line
+# transliteration.  Instead, we do word alignment for each
+# word so that variant searching can work.
+
+# The note marker ^[DIGITS]^ may also be used in the matrix.
+# If the text immediately following the corresponding note
+# label begins with a + is included with the matrix line's
+# text when the source is rendered as a witness 
+# transliteration; this text is terminated by a period
+# followed by a space. Example:
+#
+#  55:       ... szu-na ba-...
+#  N₂₁_r_5':     +   +^1^
+#
+#  #note: +{{NI?}} . Any note begins here ...
+#
+#  Is rendered as:
+#
+#  5. ... szu-na{{NI?}} ba-...
+#
+# After the initial +, text is inserted literally--to get
+# a space or hyphen before the text it must be given after
+# the +.  The same rules apply at the end of the text.
+
+0.	   
+Su₁_1':	   [...] x [...]
+
+# Not clear if Su₁ 1' is the first line on the tablet; collate.
+
+1.     	   szag4-ga-ne2 er2 im-si  edin-sze3 ba-ra-e3
+
+N₁_i_1:    .     .  ,   +   +  +   +    ,    +  +  +
+N₂_1:	   +	 +  +   .   .  .   .    .    .  .  .
+N₃_1:	   +     .  .   .   .  .   .    .    .  .  .
+Ki₁_1:	   .	 .  .   .   .  .   ,    +    +  +  +
+Šad₁_1:	   .	 +  +   +   +  +   +    +    ,  .  .
+Su₁_2':	   .	 .  .   .   .  szi +    .    .  .  .
+X₅_i_1:	   .	 .  .   .   .  .   .    .    .  .  .
+
+2. 	   jurusz szag4-ga-ne2     er2  im-si        edin-sze3 ba-ra-e3
+
+N₁_i_2:    .      .     +  +  	   +    +  +         +    ,    +  +  +
+N₂_2:      +      +     +  +  	   .    .  .         .    .    .  .  .
+N₃_2:	   +	  .  	.  .  	   .    .  .	     .    .    .  .  .
+Ki₁_2:	   .	  .	.  .  	   .    &ba-ni-jal2  +    +    +  +  +
+Šad₁_2:	   ,	  ,	+  +  	   +    +  +	     +    .    .  .  .
+Su₁_3':	   +	  &szag4-ga-a-ni   e-re &il#*-szi    +	  .    .  .  .
+X₅_i_2:	   .	  .     .  .       .    .  .         .	  .    .  .  .
+
+
+3. 	   {d}dumu-zid szag4-ga-ni     er2  im-si      edin-sze3 ba-ra-e3
+
+N₁_i_3:    .  .    +   +     +  +      +    +  +       -    -    -  -  -
+N₂_3:	   +  +    +   +     +  .      .    .  .       .    .    .  .  .
+N₃_3:	   +  +	   .   .     .	.      .    .  .       .    .    .  .  .
+Ki₁_3:	   .  .	   .   .     .	.      .    .  .       +    +    +  +  +
+Šad₁_3:	   +  +    +   ,     +	+      +    +  +       .    .    .  .  .
+Su₁_4':	   +  +	   +   &szag4-ga-a-ni e-re &il#*-szi   +    .    .  .  .
+X₅_i_3:	   .  .	   +   .     .  .      .    .  .       .    .	 .  .  .
+
+
+3a.	   [x x x x x] jar#-u3 edin-sze3 ba-ra-e3
+
+Ki₁_4:	   .  .	. . .  ,    +  +    +    +  +  +
+
+
+4. 	   jidru       #   #    #  #  #  #  gu2-na  mu-un-di-la2 i-lu mu-un-sza4-sza4
+
+N₁_i_4:	   +           #   # 	#  #  #  #  +   +   +  +  +  +   + +  +  +  +    +
+N₂_4:      .           #   #	#  #  #  #  ,   +   +  na x  .   . .  .  .  .    .
+N₃_4:	   +	       #   #	#  #  #  #  .   .   .  .  .  .   . .  .  .  .    .
+Ki₁:	   $ Omits.
+Šad₁_4:    +           #   #    #  #  #  #  x   x   .  .  .   +!? + +! x .  .    .
+Su₁_5':	   {jesz}jidru nam-sipa-da-qa-an-ni gu  ni  +  .  .   .   . .	. .  .	  .
+X₅_i_4:	   jidru-ni    #   #    #  #  #  #  +   +   +  ni in  ,	  . .	. .  .	  .
+
+
+5. 	   i-lu jar-u3 i-lu jar-u3 edin i-lu jar-u3
+
+N₁_i_5:	   + +  +   +  + +  +   +  +    . +  +   +
+N₂_5:	   . .  +   +  + +  .   .  .    . .  .   .
+N₃_5:	   . .	.   .  . .  .	.  .	. .  .	 .
+Ki₁_5:	   . x	.   .  - -  -	-  -	+ +  +	 +
+Šad₁_5:	   , ,	,   .  . .  .	.  .	. .  .	 .
+Su₁_6':	   + +	+   ru + +  +	ru -	- -  -	 -
+X₅_i_5:	   + +	+   +  + +  +	+  -	- -  -	 - 
+
+
+6. 	   edin i-lu jar-u3 ambar   gu3 jar-u3
+
+N₁_i_6:	   +  	+ +  +   +  +       +   +   +
+N₂_6:	   .    , +  +   +  .       .   .   .
+N₃_6:	   .	. .  .	 .  .	    .	.   .
+N₄_1:	   .	. .  .	 +  +	    +	+   +
+Ki₁_6:	   +	+ +  .	 .  +	    +   +   +
+Su₁_7':	   +	+ +  +	 ru a-ba-ar mu	+   ru
+X₅_i_6:	   +	+ +  +	 +  +	    +	+   +
+
+# Is N₄ 1 really the first line on the tablet? Is this really obverse?
+
+
+7. 	   al-lub id2-da girid2 i-lu   jar-u3
+
+N₁_i_7:    +  +   +  +   x      + +    +   +
+N₂_7:	   .  ,   +  +   .      . .    .   .
+N₃_7:	   ,  .	  .  .	 .	. .    .   .
+N₄_2:	   .  .	  .  ,	 +	+ +    +   +
+Ki₁_7:	   +  +	  +  .	 .	&gu3   +   +
+Su₁_8':	   +  lu  i  +   &2ki-ri-lu    +?  .
+X₅_i_7:	   +  +	  +  +	 +	+ +    +   +
+
+
+8. 	   bi2-za-za id2-da gu3 jar-u3  ama-ju10 gu3 he2-em-me
+
+N₁_i_8:	   +!  +  +  +   +  +   +   + ; +   +    +   +   +  ,  
+N₂_8:	   .   .  +  +   .  .   .   .   .   .    .   .   .  .
+N₃_8:	   x   .  .  .	 .  .   .   .   .   .    .   .   .  .
+N₄_3:	   .   .  .  .	 .  +	+   +	+   +	 +   +	 .  .
+N₅_1':	   .   .  .  .	 .  .	.   +	+   +	 +   +	 ,  +
+N₂₆_1':	   .   .  .  .	 .  .	.   .	.   .	 x   .	 .  .
+Ki₁_8:	   +   +  +  +	 +  +   +   +   +   +	 +   +   +  +
+Su₁_9':	   pi  +  +  i	 +  lu	+   ru	^a-ba-ar i-lu jar-u3
+X₅_i_8:	   +   +  +  +	 +  +	+   +	+   +    +   +   +  +
+
+
+9. 	   ama-ju10 {d}dur7-tur-ju10 gu3 he2-em-me
+
+N₁_i_9:    ,   +    +  +    +   +    +   ,   .  +
+N₂_9:	   .   ,    +  ,    .   .    .   .   .  .
+N₃_9:	   +   .    .  .    .	.    .   .   .	.
+N₄_4:	   .   .    .  .    .	+    +	 +   +	.
+N₅_2':	   .   .    .  .    .	+    +	 +   +	+
+N₆_1':	   .   .    -? ,?   .	.    .	 .   .	.
+N₂₆_2':	   .   .    .  .    .	.    +	 ,   .	.
+Ki₁_9:	   +   +    -  tur  +	+    +   +   +	+
+Su₁_10':   +   +    -  tur  +	-    gu	 &he-me-en
+X₅_i_9:	   +   +    -  tur  +	+    +	 +   +  +
+
+
+10. 	   ama-ju10 nij2 ia2-am3   gu3  he2-em-me
+
+N₁_i_10:   .   .    ,    ,   +     +    ,   .  .
+N₂_10:	   .   ,    +    .   .     .    .   .  .
+N₃_10:	   +   .    .	 .   .	   .    .   .  .
+N₄_5:	   .   .    .	 .   ju10# +	+   +  .
+N₅_3':	   .   .    .	 .   .	   +	+   +  +
+N₆_2':	   +   +    +	 ,   .	   .	.   .  .
+N₂₆_3':	   .   .    .	 .   .	   +	.   .  .
+Ki₁_10:	   +   +    +	 +   nu	   ,    .   .  ,
+Su₁_11':   +   +    -	 +   -	   gu   &he-me-en
+X₅_i_10:   +   +    +	 +   ju10  +    +   +  +
+
+
+11. 	   ama-ju10 nij2 u-am3   gu3 he2-em-me
+
+N₁_i_11:   .   .    .    . +     +   ,   .  .
+N₂_11:     .   ,    +    . .     .   .   .  .
+N₄_6:	   .   .    .	 . ju10# +   +	 +  .
+N₅_4':	   .   .    .	 . .	 +   +	 +  +
+N₆_3':	   +   +    +	 + +	 ,   .	 .  .
+N₂₆_4':	   .   .    .	 . .	 +   .	 .  .
+Ki₁_11:	   +   +    +	 + nu    x   .	 .  ,
+Su₁_12':   +   +    -	 + -     gu  &he-me-en
+X₅_i_11:   +   +    +	 + ju10  +   +   +  +
+
+
+12.	   ud-da    # ug5-ga-ju10 nu-un-zu
+
+N₁_i_12:   .  .     .  .   .  x    .  ,  +
+N₄_7:	   .  .	    .  .   .  +	   +  +	 +
+N₅_5':	   .  .	    .  .   .  +!   +  +	 +
+N₆_4':	   +  +	    #  +   ge +    .  .	 .
+N₇_1':	   +  .	    .  .   .  .	   .  .	 .
+N₂₄_1':	   .  .	    .  .   .  +	   .  .	 .
+N₂₆_5':	   .  .	    .  .   .  +	   +  .	 .
+Ki₁_12:	   +  +	    +  +   +  ,	   .  .  +
+Su₁_13':   ud-da-a  &2u4-ga#-ju10  +  -	 +
+Ur₇_1':	   .  .     .  +   +  .    .  .  .
+X₅_i_12:   +  +     #  +   +  +    +  um +
+
+
+13. 	   edin   ama  ugu-ju10    inim mu-e-de3-zu-un
+
+N₁_i_13:   .      .    .   .       .    .  . .   .  +
+N₄_8:	   .	  .    .   .	   +    +  + +	 .  .
+N₅_6':	   .	  .    .   .	   .    +  +! +! +  -?
+N₆_5':	   edin-e -    +   +	   +    x  .  .	 .  .
+N₇_2':	   +	  .    .   .	   .    .  .  .	 .  .
+N₂₄_2':	   .	  .    +   +	   ^x NE x [...]
+N₂₆_6':	   .	  &[ama-ju10]-gin7 +   he2#? . . .  .
+Ki₁_13:	   edin-e &ama-ju10-gin7   ^u3-mu?-un?# [(x x)] me-en
+Su₁_14':   +      &ama-ju10-ki     gu  &i3-ba-al-la2#?*
+Ur₇_2':	   .^[e?] &ama#?-mu-gin7#? .    .  . .   .  .
+X₅_i_13:   +	  +    ju10-gin7   +    +  + +   +  - ^ <<im-me>>
+
+#note: Composite text assumes Susa is an error for inim bala "converse"
+#as variant of inim zu "inform about a matter".
+
+
+14. 	   nin9 banda3{da}-ju10-gin7 er2-ju10 he2-sze8-sze8
+
+N₁_i_14:   .    .      .   .    .    .   .    .   .    x
+N₄_9:	   .	.      .   .	,    +	 +    +	  .    .
+N₅_7':	   .	.      .   .	.    .	 +    +	  +    +
+N₆_6':	   .	.      +   +	+    +	 +    .	  .    .
+N₇_3':	   +	.      .   .	.    .	 .    .	  .    .
+N₈_a_1':   +	+      ,   .	.    .	 .    .	  .    .
+N₂₄_3':	   .	.      .   .	.    +	 +    +	  .    .
+N₂₆_7':	   .	.      .   .	,    +	 +    ,	  .    .
+Ki₁_14:	   +	+      +   +    +    +   +    .   .    x
+Su₁_15':   +	+      -   -	-    +	 ra?  &i-sze-esz-[sze?]
+Ur₇_3':	   +	+      +   +	+    .	 .    .	  .    .
+X₅_i_14:   +	+      +   +	+    +	 +    +	  +    +
+
+
+15. 	   ud     ul-e   ba-nu2 ud ul-e   ba-nu2 sipad ud ul-e     ba-nu2
+
+N₄_10:	   .      .  .   .  .   .  .  .   ,  +   +!    .  .  .     .  .
+N₅_8':	   .      .  .   .  .   .  .  .   +  +   +     -  &i-lu    +  +
+N₆_7':	   .      .  .   .  .   .  .  .   .  .   .     .  &[i]-lu  +  ,
+N₇_4':	   -      i-lu#? .  .   .  .  .	  .  .	 .     .  .  .     .  .
+N₈_a_2':   -      u18-lu +  +	.  .  .	  .  .	 .     .  .  .	   .  .
+N₂₄_4':	   .	  .  . 	 .  .	.  ,  +	  +  .	 .     .  .  .	   .  .
+N₂₆_8':    .  	  .  .	 .  .	.  .  .	  .  .	 +     -  -  -	   +  +
+Ki₁_15:	   -      +  +   +  +   -  +  +   +  +   +     .  .  ,     +  +
+Su₁_16':   .      .  .   +  nu  -  +  le# .  .   .     .  .  .     .  .
+Ur₇_4':	   -	  +  +   +  +   -  +  +	  +  +	 .     .  .  .	   .  .
+X₅_i_15:   +  	  +  +   +  +   +  +  +   +  +   -     -  -  -     -  -
+
+
+16. 	   sipad ud ul-e   ba-nu2-gin7 ma-mu2-de3 # #   ba-nu2
+
+N₄_11:	   .	 .  .  .   .  .   .    +  +   .   # #   .  .
+N₅_9':	   .	 .  .  .   .  .	  +    +  +   +	  # #   +  +
+N₆_8':	   .	 .  .  .   .  .	  .    .  .   ,	  # #   +  .
+N₇_5':	   +	 .  .  .   .  .	  .    .  .   .	  # #   .  .
+N₈_a_3':   +	 -  u18-lu +  +	  .    .  .   .	  # # 	.  .
+N₂₆_9':   .	 .  .  .   +  ,   +    +  .   .	    	.  .
+Ki₁_16:	   +     -  +  +   +  +   +    +  +   +   # #   .  +
+Su₁_17':   .	 .  +  le  +  nu  -    +  mu  da# ba-al .  .
+Ur₇_5':	   +	 -  +  +   +  +	  +    .  .   .	  # #	.  .
+X₅_i_16:   +	 +  +  +   +  +	  +    +  +   +	  # #   +  +
+
+
+17. 	   i-im-zig3 ma-mu2-da i-im-bu-lu-uh2 u3-sa2-ga-am3
+
+N₅_10':	   . .  .    .  .   ,  , +  +  -  +   +  +   +  -
+N₆_r_1':   . .	.    ,	.   .  . .  .  .  .   .	 .   .	.
+N₇_6':	   + +	.    .	.   .  . .  .  .  .   .	 .   .	.
+N₈_a_4':   + +	+    +	+   .  . .  .  .  .   .	 .   .	.
+N₉_i_1':   . .	.    .	.   .  . .  .  .  .   +	 +   +	+
+N₂₆_10':   . .	.    .	+   +  . .  .  .  .   .	 .   .	.
+Ki₁_17:	   + +  +    +  +   +  + +  +  -  +   ,  x   +  -
+Su₁_18':   . .	im#  +	mu  +  - +  +  +  ha  szu .  .	.    
+Ur₇_6':	   + +	+    +	+   +  + ni? . .  .   .	  .  .	.
+X₅_i_17:   + +	+    +	+   +  + +  +  +  +   +	 +   +	-
+
+
+18. 	   igi-ni szu bi2-in-kij2 nij2-me-jar sug4-ga-am3
+
+N₅_11':	   .   .  .   .   .  .    +    +  +   +    +! +
+N₆_r_2':   +   .  +   +	  .  .	  .    .  .   .	   .  ,
+N₇_7':	   +   +  .   .	  .  .	  .    .  .   .	   .  .
+N₈_a_5':   +   +  +   +	  ,  .	  .    .  .   .	   .  .
+N₉_i_2':   .   .  +   +	  +  + ;  +    +  +   +	   +  +
+N₂₆_11':   .   .  .   .	  .  + 	  +    .  .   .	   .  .
+Ki₁_18:	   +   +  +   +   +  +    +    +  +   +    +  -
+Su₁_19':   ,?  .  +   bi  x  ??	  ^NI A MA AN BA#? [(x x)]
+Ur₇_7':	   .   +  +   +	  +  +	  +    +  ,   .    .  .
+X₅_i_18:   +   +  +   +	  +  +	  +    +  +   +	   +  -
+
+
+19. 	   tum2-mu-un-ze2-en tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₅_12':	   .	.  .  .	  .  .	  .  .	.   .   .    x	  +    .  .  ,	 +
+N₆_r_3':   +	+  +  +	  +  ,	  .  .	,   , ; +    +	  .    .  ,  +	 +
+N₈_a_6':   .	+  +  +	  +  ,	  .  .	.   . ;	.    .	  +    +  .  .	 .
+N₉_i_3':   .	+  +  +	  +  -	  -  -	-   - ; +    +	  +    +  +  +	 +
+N₂₄_r_1':  .	.  .  .	  +  +	  .  .	.   .  	.    .	  .    .  .  .	 .
+Ki₁_19:	   +    +  +  +   +  +!   +  +  +   +   -    -    -    -  -  -   -
+Su₁_20':   +	+  +  ze  -  +	  +  +	ze  -   +    +	  +    +  .  .	 .
+Ur₇_8':	   +	+  +  +	  +  +	  +  +	.   . ; +    +	  +    +  +  .	 .
+X₅_i_19:   +	+  +  ze  -  +	  +  +	ze  -   +    +	  +    +  +  ze	 -
+
+
+20. 	   {d}jesztin-an-na-ju10 tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₅_r_1':   .  .	      .	 .  .	 .    .	 .  .	.   .	 .    .	   .  .	 .   ,
+N₆_r_4':   +  +	      +	 +  +	 .    +	 +  +	+ ; ,	 .    .	   +  +	 +   +
+N₈_a_7':   +  +	      +	 +  +	 .    .	 .  .	. ; +	 +    +	   .  .	 .   .
+N₉_i_4':   .  .	      .	 +  +	 +    +	 +  +	+ ; +	 +    +	   +  +	 +   +
+N₂₄_r_2':  .  .	      .	 .  +	 +    +	 +  +	.   .	 .    .	   .  .	 .   .
+Ki₁_20:	   +  +       +  +  +    +    +  +  +   +   +    +    +    +  +  +   +
+Su₁_21':   +  +	      +	 +  ke4? .    .	 +  ze 	-   +	 +    +	   +  +	 +   -
+Ur₇_9':	   .  ,	      +	 +  +	 +    +	 +  +	. ; +	 +    +	   +  +	 .   .
+X₅_i_20:   +  +	      +	 +  ke4	 +    +	 +  ze	-   +	 +    +	   +  +	 +   -
+
+
+21. 	   dub-sar im    zu-ju10 tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₃_r_1':   ,   .   .     .  .    .    .  .  .   .   .    .    .    .  .  .   .
+N₅_r_2':   .   .   .	 .  .	 .    .	 .  .	.   .	 .    .	   .  .	 +   +
+N₆_r_5':   .   .   .	 .  .	 .    +	 +  + 	. ; .	 .    .	   .  .	 .   .
+N₈_a_8':   +   +   +	 +  +	 .    .	 .  .	. ; +	 +    +	   .  .	 .   .
+N₉_i_5':   .   .   .	 ,  +	 +    +	 +  +	+ ; ,	 +    +	   +  +	 +   +
+N₂₄_r_3':  .   .   .	 .  ,	 +    +	 +  +	.   .	 .    .	   .  .	 .   .
+Ki₁_21:	   +   +  im-da +  +    +    +  +  +   +   +    +    +    +  +  +   +
+Su₁_22':   +   +   +	 +  .	 +    +	 +  ze	-   +	 +    +	   +  +	 ze  -
+Ur₇_10':   .   ,   im-da!? + +   +    +	 +  +	. ; +	 +    +	   +  +	 +   .
+X₅_i_21:   +   +   im-da*  +  +	 +    +	 +  ze 	-   +	 +    +	   +  +	 ze  -
+
+
+22. 	   nar en3-du      zu-ju10 tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₃_r_2':   +   +   +	   +  +    .    .  .  .   . ; +    +    .    .  .  .   .
+N₅_r_2':   .   .   .	   .  .	   .	.  .  .	  .   .	   .	.    +	+  +   +
+N₈_a_9':   .   .   .	   .  .	   .	.  ,  .	  .   .	   .	.    .	.  .   .
+N₉_i_6':   .   .   +	   +  +	   +	+  +  +	  + ; +	   +	+    +	+  +   +
+N₂₄_r_4':  .   .   .	   .  .	   .	+  +  +	  +   .	   .	.    .	.  .   .
+Ki₁_22:	   +   en3{en}-du  +  +    +    +  +  +   +   +    +    +    +  +  +   +
+Su₁_23':   +   &IM-ju10#?  -  -	   +	+  +  ze  -   +	   +	+    +	+  ze  -
+Ur₇_11':   .   .   +       +  +    +	+  +  +	  , ; .	   ,	+    +	,  .   .
+X₅_i_22:   +   +   +       +  +	   +	+  +  ze  -   +	   +	+    +	+  ze  -
+
+
+23. 	    {lu2}banda3{da} szag4 inim-ma zu-ju10 tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₃_r_3':    +    +      +   +     +    .  .  .    .    .  .  .   . ; +    +    .    .  .  .   .
+N₅_r_3':    .	 .      .   .	  .    .  .  .	  .    +  +  +	 + ; .	  .    ,    +  +  +   +
+N₉_i_7':    ,	 +      +   +	  +    +  +  + ;  .    +  +  +	 +   +	  +    +    .  .  .   .
+N₂₄_r_5':   .	 .	.   .	  .    .  .  .    .    ,  +  +	 +   .	  .    .    .  .  .   .
+Ki₁_l.e._1: +    +      +   +     +    +  +  +    +    .  +  +   +   +    +    +    +  +  +   +
+Su₁_24':    +	 +      +   +	  +    .  .  .	  .    +  ,  .	 .   +	  +    +    +  +  ze  -
+X₅_i_23:    +	 +      +   +	  +    +  +  +	  +    +  +  ze	 -   +	  +    +    +  -  ze  -
+
+
+24. 	   um-ma szag4 ma-mu2-da   zu-ju10 tum2-mu-un-ze2-en  nin9-ju10 tum2-mu-un-ze2-en
+
+N₃_r_4'a:  ,  ,  ,     ,  +   +    .  .    .    .  .  .   .   .    .    .    .  .  .   . ;
+N₅_r_4'a:  .  .	 .     .  .   .	   .  .	   .	+  +  +	  +   .	   +    +    +  +  +   + ;
+N₉_i_8':   .  +	 +     +  ,   .	   .  .	   .	.  .  .	  .   .	   .	.    .	.  .   . 
+Ki₁_23:	   +  +  +     +  +   +    +  +    +    +  +  +   + ; +    +    +    +  +  +   +
+Su₁_25':   +  +	 +     &im-mu-da?  .  .	   .	.  +  ze  -   +	   +    +    +  +  ze  -
+X₅_i_24:   +  +	 +     +  +   +    +  +	   +	+  +  ze  -   +	   +    +    +  -  ze  -
+
+#note: The indented line reconstructed for N₅ here is tentative, but would be consistent
+#with a join to N₃; the fact that the first half of the line runs on over the edge in N₅
+#is also consistent with this reconstruction.
+
+25. 	   ma-mu2        ga-mu-un-na-bur2
+
+N₃_r_4'b:  +  ,          +  x  .  .  .
+N₅_r_4'b:  .  .		 .  ,? -? +  +
+Ki₁_24:	   +  +          +  +  +  +  +
+Su₁_26':   &[im-mu]-da#  &[ga]-bu#?-ur2
+Ur₈_1':    .  +          .  .  .  .  .
+X₅_i_25:   +  +          +  +  +  +  +
+
+
+26. 	   ma-mu2-da nin9-ju10 ma-mu2-da szag4 ma-mu2-da-ja2
+
+N₃_r_5':   +  +   .  ,    ,    ,  .   .  .     .  .   .  .
+N₅_r_5':   .  .	  .  .	  .    .  .   x	 +     +  +   +	 +
+Ki₁_25:    +  +   +  +    +    +  +   +  +     +  +   .  .
+Su₁_27':   .  .	  da +?	  +    .  .   .	 +?    +  mu  +	 -
+Ur₈_2':    +  +	  +  +	  ,    .  .   .	 .     .  .   .	 .
+X₁_1:	   +  +	  +  +	  +    +  +   +	 +     +  +   +	 +
+X₅_i_26:   +  +	  +  +	  +    +  +   +	 +     +  +   +	 - ^ an-jal2
+
+
+27. 	   {u2}numun2 ma-ra-zi-zi         {u2}numun2 ma-ra-mu2-mu2
+
+N₃_r_6':   x   .      +  .  +  +          .   .      .  .  .   .
+N₅_r_6':   .   .      .	 .  .  ,	  ,   ,	     x	,  ,   ,
+N₇_r_1':   .   KUG    .	 .  .  .	  .   .	     .	.  .   .
+Ki₁_26:	   .   +      mu +  +  +          +   +      +  +  .   .
+Su₁_28':   .   .      [mu?-ra]-zi#-iz#-zi &nin-ju10  +	+  mu  mu
+Ur₅_i_1':  .   .      .	 .  .  +  ;       .   .      .  .  .   +
+Ur₈_3':    +   +      +	 +  +  .  	  .   .	     .	.  .   .
+X₁_2:	   +   +      +	an? +  ga	  +   +      .	.  .   .
+X₅_i_27:   +   +      &ma-zi-zi-i-zi	  +   +	     +	+  +   a
+
+
+28. 	   gi dili du3-e   saj       ma-ra-an-sag3-ge
+
+N₃_r_7':   +  +    +   +   +         .  .  .  .    .
+N₅_r_7':   .  .	   .   .   .	     ,? .  .  .	   .
+N₇_r_2':   +  +	   .   .   .	     .  .  .  .	   .
+Ki₁_27:    .  +    +   +   ni2-gin7? &mu-NE-[x-(x)]
+Su₁_29':   .  .	   .   .   .	     &[ma]-ra-ab-sza3-ak-ke
+Ur₅_i_2':  .  .	   .   + ; .	     .  .  .  .    +
+Ur₈_4':    +  +	   +   +   +	     ,	.  .  .	   .
+X₁_3:	   +  +	   +!  +   +	     +  +  +  +    +
+X₅_i_28:   +  +^e   +   +   +	     +  -  -  +	   +
+
+
+29. 	   gi dili-dili du3-e  dili ma-ra-an-bad-re6
+
+N₇_r_2':   +  +    +    .   .  .    .  .  .  .   .
+Ki₁_r_1:   .  .    .    +   +  +    +  +  +  x   .
+Su₁_30':   .  .	   .	.   .  .	   ma-ra-a-pa-pa-de3
+Ur₅_i_3':  .  .	   .	.   +; .    .  .  .  .   +
+Ur₈_5':    +  +	   +	+   +  +    + szi? . .	 .
+X₁_4':	   +  +	   +	+   +  +    +  +  +  +   +
+X₅_i_29:   +  +	   +	+   +  +    +  +  -  +	 +
+
+
+30. 	   {jesz}tir-ra jesz an-gin7 ni2-bi  ma-ra-an-zig3-ga
+
+N₇_r_3':   +     +   +  +    +  +    +   +   +  +  +  +    +
+Ki₁_r_2:   +     +   +  +    +  +    +   +   +  +  +  +    -
+Su₁_31':   .	 .   .	.    .	.    ip-pa-a .	.  ab +	   +
+Ur₅_i_4':  .	 .   .	.    +	+ ;  .   .   .	.  .  .	   .
+Ur₈_6':    +	 +   +	+    +	+    ,	 .   .	.  .  .	   .
+X₁_5':	   -	 +   +	+    +	-    +	 ba  +	+  +  +	   zig₃
+X₅_i_30:   -	 +   +	+    +	-    +   +   +	+  +  +	   +
+
+
+31. 	   ne-mur kug-ja2 a    mu-da-an-de2
+
+N₇_r_4':   +  +   .   .   .    .  .  .  .
+Ki₁_r_3:   +  +   +   +   +    +  +  +  +
+Su₁_32':   .  .	  .   .	  +    &mu-[da]-an-gid2-de3?
+Ur₈_7':    +  +	  +  ju10 +    +  +  +  .
+X₁_6':	   +  +	  +   +	  a-e? +  +  +  +
+X₅_i_31:   &nemur +   +	  +    +  +  +	+
+
+
+32. 	   {dug}szakir3 kug-ja2 dulₓ(TUN3)-bi ba-ra-an-bad-re6
+
+N₇_r_5':   +	+	.   .   .          .  .  .  .  .   .  
+Ki₁_r_4:   +    +       +   +   +          +  +  +  +  +   +
+Su₁_33':   ^[...] MI? ma-ra-an-ga-az?
+Ur₈_8':    +    +       +  ju10 +          +  +  ,  .  .   .
+X₅_i_32:   +    +       +   +   +	   +  ma-ra-an-pad
+
+
+33. 	   {jesz}an-za-am kug-ju10 {jesz}gag-ta la2-a       {jesz}gag-ta ba-ra-an-si-ig
+
+N₂₁_1':	   .     .  .  .  .   .    .     .   +  +   +  ;    .     .   +  +  +  +  .  .
+N₂₇_1':	   .	 .  .  .  .   .	   .	 .   +	.   .  ;    .	  +   +	 .  .  .  .  .
+Ki₁_r_5:   -     +  +  +  +   ja2  -     +   +  +   +       .     .   +  +  +  da#? . .
+Su₁_34':   .	 .  .  .  .   .	   .	 .   .	.   .       .     .   +  ma +  +  zi +
+Ur₈_9':    +	 +  +  +  +   +	   +	 +   .	.   .  ;    +	  +   +	 +  +  .  .  .
+X₅_i_33:   -	 +  +  +  +   -	   +	 +   +	&la2-a-ju10 +	  +   +	 +  +  +  +  + 
+
+
+34. 	   {jesz}ma-nu-ju10 u2-gu mu-da-an-de2
+
+N₂₁_2':	   .     .  .  .    .  ,  +  +  ,  .
+N₂₇_2':	   .	 ,  +  +    +  +  +  ,	.  .
+Ki₁_r_6:   +     +  +  +    +  +  +  +  +  +
+Su₁_35':   .	 .  .  .    .  .  .  .	.  x
+Ur₈_10':   +	 +  +  +    +  +  +  +	.  .
+X₅_i_34:   +	 +  +  +    +  +  &ba-e-da-an-de2
+
+
+35. 	   {d}nin-ninna2{muszen}-ta-e    ja2 udu-ka     sila4 szu ba-ni-ib-ti
+
+N₂₁_3':	   ,  ,   ,     +        +  +    +   +   +      +     +   .  .  .  .
+N₂₇_3':	   .  .	  .	.	 .  +    +   +   ta ;   ,     +   +  +  +  +
+Ki₁_r_7:   +  +   +     +        -  -    +   +   +^[ta] +     +   +  +  +  +
+Su₁_36':   .  .	  .	.	 .  .    .   .   ,	,     +   [ba]-szi#-in#-[ti]
+Ur₈_11':   {d}nin-imma2-ama{muszen}-ta-e +   +	 + ; 	+     +	  +  +  +  +
+X₅_i_35:   ,  ,	  .	,	 +  +    +   +   +      +     +   +  +  -  +
+
+#note: In Ur₈ imma2-ama is probably to be understood as a variant gloss, 
+#imma2{{ama}}.
+
+36. 	    sur2-du3{muszen}-e gi dub-ba-an-na-ka   buru5{muszen} szu ba-ni-ib-ti
+
+N₂₁_4':	    .    ,  +        + +  +   +  -  +  -    +     +       +   +  .  .  .
+N₂₇_r_1':   .	 .  ,	     + +  +   +	 -  +  ,? ; +	  +	  +   +	 +  +  +^a
+Ki₁_r_8:    +    +  +        - +  +   +  -  +  +    +     -       +   +  +  -? +?
+Šad₁_r_1':  .    .  +        , +  +   ,  .  .  .    .     .       .   .  .  .  .
+Ur₈_12':    .	 ,  +	     + +  +   +	 +  +  , ;  +	  +	  +   +	 +  +  +
+X₅_i_36:    .	 .  .	     . +  +   +	 +  +  +    +	  +	  +   +  +  -  +
+
+
+37. 	    masz2-ud5-da-ju10 sun4 za-gin3-bi        sahar-ra ma-ra-an-gid2-e
+
+N₁_ii_1':   +     +   ,  .    .    .  ,    +  ;      +     +  mu .  .  +    +
+N₂₁_5':	    +     +   +  +    +    +  +    +         +!    +  +  +  +  +    -
+N₂₇_r_2':   .	  ,   +	 +    +	   +  +	   +	     +	   +  .	 x  .  .    .
+Ki₁_r_9:    +     +   +  +    +!   &{na4}za-gin3-bi  +     +  +  +  +  +    +
+Šad₁_r_3':  +     +   -  +    +    ,  ,    +         ,     .  .  .  .  .    .
+Ur₈_15':    .	  .   +	 +    .	   .  .	   .  ;      ,	   +  +	 .  .  .    .
+X₅:    	    $ Omits.
+
+
+38. 	    udu-utua2-ju10 a2 gur-gur-ra-bi ki ma-ra-ab-hur-hur-re
+
+N₁_ii_2':   +   +     +    +  .   ,   +  +; +  +  +  .  .   +   +
+N₂₁_6':	    +   +     +    +  +   +   +  +  +  +  +  +  +   +   +
+N₂₇_r_3':   .	.     +	   +  +	  +   +	 +  +  +  +  .	.   .	+
+Ki₁_r_10:   +   +     +    +  +   +   +  -? +  +  +  +  +   +   +
+Šad₁_r_2':  .   +     +    +  +   +   +  +  .  .  .  .  .   .   .
+Ur₈_16':    .	.     +	   +  .	  .   .	 .  .  .  .  .	.   .	.
+X₅:    	    $ Omits.
+
+
+39. 	    {dug}szakir3 i3-dur2-dur2 ga nu-mu-un-de2
+
+N₁_ii_3':    +   +       +  ,    .    .  +  -  -  +
+N₂₁_7':	     +   +       +  +    +    +  +  +  +  +
+N₂₇_r_4':    .	 .	 .  .	 +    +	 +  -  +  +
+Ki₁_r_11:    +   +       +  +    +    +  +  +  +  +
+Šad₁_r_4':   .   +	 +  +	 +    +  +  .  .  .
+Ur₈_13':     .	 .	 +  +	 +    +	 +  -  -  +
+X₅_i_37:     .	 .	 .  .	 +    +	 +  -  +  +
+
+
+40. 	    an-za-am i3-dur2-dur2 {d}dumu-zid nu-un-til3           amasz lil2-la2-am3 al-du3
+
+N₁_ii_4':   +  +  +  +  +    +    .  .    ,   +  -  + ;            +     +    .   .   ,  ,^a#
+N₂₁_8':	    +  +  +  +  +    +    +  +    +   +  +  + ;		   +	 +    +   +   +  +
+Ki₁_r_12:   +  +  +  +  +    +    +  +    +   &nu-mu-un-til3-le ;  +     +    +   -   &ma-an-du3  
+Šad₁_r_5':  +  +  +  .  .    ,    +  +    +   +  -  ,              .     .    .   .   .  .
+Ur₈_14':    .  .  +  +	+    +	  +  +	  +   ,  ,  . ;		   +	 ,    .	  .   .	 .
+Ur₉_1':	    .  .  .  +  +    +    +  .    .   .  .  . ;		   +	 +    .	  .   .	 .
+X₅_i_38:    .  .  .  .	.    .	  .  ,	  +   +  +  +	           +     +    -	  +   +  +^a
+
+#note: a at the end of X₅ is written underneath du₃.
+
+#note: Ur₉ is perhaps to be placed at line 64 instead of here.
+
+Šad₁: 	    $ double ruling
+
+Ur₉: @colophon
+Ur₉_2': [n] mu# szid#-[bi]
+
+
+41. 	    {d}jesztin-an-na-ke4 {d}dumu-zid mu-un-na-ni-ib-gi4-gi4
+
+N₁_ii_5':   +  +       +  +  +   .  .    .;  +  -  +  +  .  .   .
+N₂₁_9':	    +  +       +  +  +   +  +    +   +  +  +  +  +  ,   ,
+N₂₂_1':	    .  .       .  .  .	 .  .	 .   .	.  x  x  .  .	.
+Ki₁:   	    $ Omits.
+X₅:    	    $ Omits.
+
+42. 	    szesz-ju10 ma-mu2-zu nu-sag9-sag9 nam-ma-an-bur2-e
+
+N₁_ii_6':   +     +    +  +   +  .  .    . ;  +   +  ab .    .
+N₂₁_10':    +     +    +  +   +  +  +    +    +   +  .  .    .
+N₂₂_2':	    .	  .    .  .   .	 .  .	 .    +	  +  .	.    .
+N₂₃_1:	    +	  +    +  +   +	 +  +	 +    +	  +  ab! +   +
+Ki₁_r_13:   +     +    +  +   +  +  +    +    +   +  +  +    +
+X₅_i_39:    .	  .    .  .   .	 .  .	 .    .	  +  +	x    +
+
+
+43. 	    {d}dumu-zid ma-mu2-zu nu-sag9-sag9 nam-ma-an-bur2-e
+
+N₁_ii_7':   +  +    +   +  .   .  .  .    . ;  +   +  ab .    .
+N₂₁_11':    +  +    +   +  +   +  +  +    +    +   ,  .  .    .
+N₂₂_3':	    .  .    .	.  .   .  .  .	  ,    +   +  .	 .    .
+N₂₃_2:	    +  +    +	+  +   +  +  +	  +    +   +  ab +    +
+Ki₁_r_14:   +  +    +   +  +   +  +  +    +    +   +  +  +    +
+Ur₅_ii_1':  ,  .    .	.  .   .  .  .	  . ;  na  ba ab .    .
+
+44. 	    {u2}numun2 ma-ra-an-zi-zi  {u2}numun2 ma-ra-an-mu2-mu2
+
+N₁_ii_8':   +   +      -  -  -  +! +!  -   +      .  .  .  .   .
+N₂₁_12':    +	+      mu +  +  +! +   +   +      .  .  .  .   .
+N₂₂_4':	    .	.      .  .  .	.  .   .   .      +  +  .  .   .
+N₂₃_3:	    +	+      -  -  -	+  +^i +   +	  +  -	-  +   +
+Ki₁_r_15:   +   +      +  +  +  +  +   +   +      +  +  +  +   +
+Ur₅_ii_2':  +	+      +  .  .	.  . ; +   +	  +  + 	.  .   .
+
+#note: In Ur₅ the end of the first part of the line was probably
+#written as an indented line judging by the blank line which
+#separates the first and second halves of the line.  The second
+#half of the line is not indented, but there is no ruling before
+#it (Ur₅ is a case-ruled short-line tablet).
+
+45. 	    sa-gaz szubtum6-ta ma-ra-  an-zig3-ga
+
+N₁_ii_9':   +  +   +        +  .  .    .  .    .
+N₂₁_13':    +  +   ,        +  mu +^ra +  +    +
+N₂₂_5':	    .  .   .	    .  .  .    ab ,    .
+N₂₃_4:	    +  +   +	    +  mu +^ra +  +    +
+Ki₁_r_16:   +  +   +        +  +  +    +  +    +
+Ur₅_ii_3':  +  +   +	    .; +^1^ +  +  zi   zi
+
+#note: ^1^ +{{mu}}.  Unless ma-mu- is a simple mistake conditioned
+#by the previous occurrences of ma-mu2, {{mu}} must be a variant
+#gloss to ma.
+
+
+46. 	    gi dili du3-e  saj ma-ra-an-sag3-ge
+
+N₁_ii_10':  +  +    +   +  .   .  .  .  .    .
+N₂₁_14':    +  +    +   +  +   +  +  +  .    .
+N₂₂_6':	    .  .    .	.  .   .  .  +  +    .
+N₂₃_5:	    +  +    +	+  +   +  +  +  +    +
+Ki₁_r_17:   +  +    +	+  +   +  .  .  +    +
+Ur₅_ii_4':  +  +    +	+; .   .  .  .	.    .
+
+
+47. 	   ama ugu-zu saj ma-ra-an-sag3-ge
+
+N₁_ii_11': +   +   +  .   .  .  .  .    .
+N₂₁_15':   +   +   +  +   +  +  +  +    +
+N₂₂_7':	   .   .   .  .	  .  .	+  +	.
+N₂₃:	   $ Omits.
+N₂₅_1':    .   .   .  ,	  .  .  .  .    .
+Ki₁_r_18:  +   +   za .	  .  .  .  +	+
+
+
+48. 	   gi dili-dili du3-e dili ma-ra-an-bad-re6
+
+N₁_ii_12': +  .    .    .   . .    .  .  .  .   .
+N₁₀_1:	   +  +	   +	+   + +	   +  +	 .  .	.
+N₂₁_16':   +  +    +    +   + +    +  +  +  +   +
+N₂₂_8':	   .  .	   .	.   . .	   .  .	 ,  +^bad .
+N₂₃_6:	   .  .	   .	+   + +	   +  +	 +  +	+
+N₂₅_2':    .  .    .    .   . +    +  .	 .  .	.
+Ki₁_r_19:  +  +    +    +   + +    &ma-ra-an-[bad]-bad-re6
+
+
+49. 	   je26-e u3 za-e dili ma-ra-an-bad-bad-re6
+
+N₁₀_2:	   .    + +  +  + +    +  +  +  .   .   .
+N₂₁_17':   +    + +  +  + +    +  +  +	+   +	+
+N₂₂_9':	   .	. .  .	. .    .  +  +	+   +	.
+N₂₃_7:	   .	. .  .	+ +    +  +  +	+   +	+
+N₂₅_3':    .	. .  .	. +    +  .  .	.   .	.
+Ki₁_r_20:  +    + +  +  + .    +  +  +  +   +   +
+
+
+50. 	   {jesz}tir-ra jesz an ni2-bi ma-ra-an-zi-zi
+
+N₁₀_3:	   .     ,   +  +    +  +   +  +  +  +  .  .
+N₂₁_18':   +	 +   +	+    +	+   +  +  +  -	+  +
+N₂₂_10':   .	 .   .	.    .	.   +  +  +  +	.  .
+N₂₃_8:	   .	 .   .	.    .	+   +  +  +  .	.  .
+N₂₅_4':    .	 .   .	.    +	+   +  .  .  .	.  .
+Ki₁_r_21:  +	 +   -  +    +  +   .  +  +  +  +  +
+
+
+51. 	   lu2 hul-jal2-e i-zi-a im-mu-e-ni-dab5-be2
+
+N₁₀_4:	   .   +!  +    + + +  + &IM TUR RI [...]
+N₂₁_r_1':  +   +   +	+ + +  + +  +  + +  +	+
+N₂₂_11':   .   .   .	. . .  . +  me - +  +   .
+N₂₃:	   $ Omits.
+N₂₅_5':    .   .   +    + + +  . .  .  . .  .   .
+N₂₉_1':	   +   +   +	+ + +  + +  +  - +  +	.
+Ki₁_r_22:  .   +   +    . . .  x &[ba]-e#-ni-in-ku4-ku4
+
+
+52. 	   ne-mur kug-zu    a mu-da-an-de2
+
+N₉_ii_1':  +  +   .   .     . .  .  .  .
+N₁₀_5:	   .  x   ,   +     + +  +  +  +
+N₂₁_r_2':  +  +	  +   +	    + +  +  +  +
+N₂₂_12':   .  .	  .   .	    . .  ,  +  .
+N₂₃_9:	   .  .	  .   .	    . +  +  +  .
+N₂₅_6':    .  .	  +   +^am3 + .	 .  .  .
+N₂₉_2':	   +  +	  +   +	    + &ba-e-da-an-de2-a
+Ki₁_r_23:  .  .   .   .     . +  +  +  +
+
+
+53. 	   amasz e2 sig9-ga ba-e-de3-ja2-ja2
+
+N₉_ii_2':  +     +  +    .  .  . .   .   .
+N₁₀_6:	   x     +  +    +  +  + +   +   +
+N₂₁_r_3':  +	 +  +	 +  +  + +   +	 +
+N₂₂_13':   .	 .  .	 .  .  . +   +	 .
+N₂₃_10:	   .	 .  .	 .  .  x .   .	 .
+N₂₅_7':    .	 +  +	 +  .  . .   .	 .
+N₂₉_3':	   +	 +  +	 +  +  + +   +	 +
+Ki₁_r_24:  .     .  .    .  .  . +   +   +
+X₅_ii_1':  +	 +  +	 .  .  . .   .	 .
+
+
+54. 	   {dug}szakir3 kug-zu dulx(TUN3)-bi ma-ra-an-bad-re6
+
+N₉_ii_3':  +    +       +   ,  .          .  .  .  .  .   .
+N₁₀_7:	   x    x       x   x  ,          +  +  +  .  .   .
+N₂₁_r_4':  +	+	+   +  +	  +  +	+  +  .	  .
+N₂₂_14':   .	.	.   .  .	  .  +	+  +  .	  .
+N₂₃_11:	   .	.	.   .  .	  .  .	x  .  .	  .
+N₂₅_8':    .	,	+   +  +!?	  .  .	.  .  .	  .
+N₂₉_4':	   +	+	+   +  +	  +  +	+  +  pad +
+Ki₁_r_25:  .    .       .   .  .          .  ,  +  +  +   +
+X₅_ii_2':  +	+	+   +  ,	  .  .	.  .  .	  .
+
+
+55. 	   lu2 hul-jal2-e     szu-na   ba-e-ni-in-ku4-ku4
+
+N₉_ii_4':  +   +   +!   .     .   .    .  . .  .  .   .
+N₁₀_8:	   +   +   +    +     +   +    +  , +  .  .   .
+N₁₁_i_1':  .   .   .	.     .   .    .  . .  .  +   +
+N₂₁_r_5':  +   +   +	+     +   +^1^ +  + +  +  +   .
+N₂₂_15':   .   .   .	.     .   .    .  + +  +  .   .
+N₂₅_9':    .   +   +	+     +   +    .  . .  .  .   .
+N₂₉_5':	   +   +   +	.     ,   +    +  - +  +  +   +
+Ki₁_r_26:  .   .   .    .     .   .    &[ba?]-an-dab5-be2
+Si₁_ii_1:  .   .   +	.^2^  +   ne2  +  - -  an +   +
+X₅_ii_3':  +   +   +	+     +   +    +  . .  .  .   .
+
+#note: ^1^ +{~ne2} . Alster understood the gloss as being 
+#given beneath the NA but did not offer a reading.  His copy
+#supports the reading NI, and if this is correct it would
+#make good sense as a variant gloss for na ~ ne₂, 
+#particularly in view of Si₁.
+
+#note: ^2^ + {{%a lem-nu a-na qa2-ti-szu}} .
+
+56. 	   an-za-am kug {jesz}gag-ta la2-a-zu    {jesz}gag-ta ba-ra-an-si-ig
+
+N₉_ii_5':  +  +  +  .   .     .   .  .   . .    ; .     .  .  .  .  .  .  .
+N₁₀_9:	   +  +  +  +   +     +   +  .   . .    ; +     +  +  ma .  .  .  .
+N₁₁_i_2':  .  .	 .  .	.     .	  .  +	 + +	; .	.  .  .	 .  +  +  +~ga
+N₂₁_r_6':  +  +	 +  +	+     +	  +  +	 + -    ; +	+  +  +	 +  +  +  +
+N₂₂_16':   .  .	 .  .	.     .	  .  .	 . .	  .	.  +  +	 .  .  .  .
+N₂₅_10':   .  .	 .  +!	+     +	  +  +	 + .	  .	.  .  .	 .  .  .  .
+N₂₉_6':	   +  +	 +  ,	.     .	  ,  +	 + -	  +	+  +  +	 +  +  +  +
+Si₁_ii_2': 
+X₅_ii_4':  +  +  +  +	+     +   +  +	 + ju10   +     +  +  +  +  .  .  .
+
+
+57. 	   du10-ub ama ugu-za-ta   ba-ra-  szub-bu-de3
+
+N₉_ii_6':  +    x  .   .   .  .    .  .    .    .  .
+N₁₀_10:    +    ,  ,   +   zu x    x  .    .    .  .
+N₁₁_i_3':  .	.  .   .   .  .	   .  .    +    +  +
+N₂₁_r_7':  +  	+  +   +   +  +	   +  +    +    +  +
+N₂₂_17':   .	.  .   .   .  .	   .  +    +    .  .
+N₂₅_11':   .	.  .   +   -  -	   +  ta   .    .  .
+N₂₉_7':	   + 	+  +   ,   .  .	   +  +    +    .  .
+Si₁_ii_3': .	.  .   +   zu +^1^ ,? .~de3 +   +  +
+X₅_ii_5':  +    +  +   +   zu +    +  +    +    +  +
+
+#note: ^1^ + {{%a i-ma-qu2-ut2}} .
+
+58. 	   {jesz}ma-nu-zu u2-gu mu-un-da-an-de2
+
+N₉_ii_7':  +!    .  .  .  .  .  .  .  .  .  .
+N₁₀_11:    .     .  .  +  +  +  .  .  x  .  .
+N₁₁_i_4':  .	 .  .  .  .  .	.  .  .	 +! +!
+N₂₁_r_8':  +     +  ,  +  +  +  ba e  +  +  +~a
+N₂₂_18':   .	 .  .  .  .  .	.  .  x	 .  .
+N₂₅_12':   .	 .  .  .  +  +	.  .  .	 .  .
+Si₁_ii_4': .	 .  .  +  ,  .	+  +  +	 +  +
+X₅_ii_6':  +     +  +  +  +  +  ba e  +  +  +
+
+
+59. 	   gal5-la2-e        izi  bi2-ra-ra-am3
+
+N₉_ii_8':  +    .   .        .    .   .  .  .
+N₁₀_12:    .    .   .        nij2 ,   +! +  ,
+N₂₁_r_9':  ,	.   +        nij2 +   +  +  +
+Si₁_ii_5': .	+   -~tur^1^ .	  ,   +	 +  +!
+X₅_ii_7':  +    +   +        nij2 ba-e + +  -
+
+#note: ^1^ + {{%a i-ne-er-szu}} .
+
+### what is going on with composite here???
+
+60. 	   {d}nin-ninna2{muszen}-ta-e          ja2 udu-ka   sila4 szu ba-ni-ib-ti
+
+N₁₂_1':	   +  +   .      .       .  .          .   .   .    .     .   .  .  .  .
+N₂₁_r_10': +  +   +      +       +  ,          +   +   ta ; +     +   +  +  +  +~a
+Si₁_ii_6': .  .	  +	 +	 .  .          +   +   +    +	 .   + szi in +
+X₅_ii_8':  {d}nin-ninna2-ta!(UŠ){muszen}-e     +   +   +    +     +   +  +  +  +
+
+
+61. 	   lu2 hul-jal2-e    te-[zu ma-ra]-an-sag3-ge 
+
+N₁₂_2':	   +   +   .    .    .   .  .  .   .  .    .
+N₂₁_r_11': +   +   +    +    ^ja2 udu-ta am3-mu-e-re-szub
+Si₁_ii_7': .   +   +	+^1^ +   .  .  .   +  +    +  
+X₅_ii_9':  +   +   +    +    ^szu-na ba-e-ni-in-ku4-ku4
+
+#note: ^1^ + {{%a le-su2 i-mah-as,?}} .
+
+
+62. 	   sur2-du3{muszen}-e gi dub-ba-an-na-ka buru5 szu ba-ni-ib-ti
+
+N₁₂_3':	   +    +  +        + .  .   .  .  .  .  .     .   .  .  .  .
+N₂₁_r_12': +    +  +	    + +	 +   -	-  +  +	 sila4 +   +  +	 -  +!
+Si₁_ii_8': ,	+  +	    + +	 +   +	+  -  +	 +     ,   . szi# in +
+X₅_ii_10': +    du +	    + +  +   +  +  +  +  +     +   +  +  -  +
+
+
+63. 	   gal5-la2 gal-e ja2 udu-ta am3-mu-e-re-ed3-ed3
+
+N₁₂_4':	   +    +   +   . .   .   .  .   .  . .  .   .
+N₂₁_r_13': +	+   +	+ +   +	  +  +	 +  + +	 +   ,
+Si₁_ii_9': +	+   +	+ ,   .	  +  +	 ma . ra? +  -
+X₅_ii_11': +	+   -   - &2amasz tur3-ta im-mu-e-re-a-e3
+
+
+64. 	       {dug}szakir3 i3-dur2-dur2 ga nu-un-de2  an-za-am i3-dur2-dur2 {d}dumu-zid nu-un-til3 amasz lil2-la2    al-du3
+
+N₁₂:	       $ Omits.
+N₂₁:           $ Omits.
+Si₁_ii_10':    +    ,       +  +    .    .  .  .  .    +  +  +  +  +    +    +  +    +   +  +  +    +     +    +~am3  -  +
+X₅_ii_12'-13': +    +       i  +    +    +  +  +  +  / +  +  +  i  +    +    +  +    +   +  +  +    +     +    +~am3 ;+  +~a
+
+#note: Although there does not appear to be a line ruling between X₅ ii 12' and 13' 
+#the ten-marks indicate that they were counted as separate lines.
+
+65. 	      szu-zu szu-du3-a ba-e-dab5-be2  a2-zu a2-la2-e  ba-e-la2
+
+N₁₂:	      $ Omits.
+N₂₁:  	      $ Omits.
+Si₁_ii_11':   +   ni +   +   . .  . .    .^1^ +  .  +  ,   +  +  + +^2^
+X₅_ii_14-15': +   +  +   +   + +  + +    +  / +  +  +  +   bi &ba#-ja2-ja2
+
+#note: ^1^ + {{%a is,#-ba-tu}} .
+
+#note: ^2^ + {{%a u2-ka-ma-ka}}.
+
+
+66. 	    masz2-ud5-da-zu sun4 za-gin3-bi sahar-ra ma-ra-an-gid2-e
+
+N₁₂_5':	    +     +   +  .  .    .  .    .  .     .  .  .  .  .    .
+N₂₁_r_14':  +	  +   +	 +  +	 +  +	 +  ,	  +  +  +  .  .	   .
+Si₁_ii_12': + 	  +   +	 +  +	 +  +	 -  +	  +  +	+  +  +	   +
+X₅_ii_16':  +     +   +  +  +    +  +    +  +     +  +  +  -  +    +
+
+
+67. 	    siki-ju10 mar-uru5-gin7 an-na ma-ra-ni10-ni10-e
+
+N₁₂_6':	    +    +    +   +    .    .  .  .  .  .    .    .
+N₁₃_1':	    .    .    +   +    +    +  +  +  .  .    .    .
+N₂₁_r_1':   .	 +    +   +    +    +  +  +  +  +    +	  +
+Si₁_ii_13': .	 +    +	  +    +^1^ +  +  +  +	+    +	  -
+X₅_ii_17':  +    +    +   +    +    +  +  +  +  +    +    -
+
+#note: ^1^ + {{%a e-li-szu i-ru-u2}} .
+
+
+68. 	    udu-utua2-zu   a2 gur-gur-ra-bi ki ma-ra-ab-hur-hur-re
+
+N₁₂_7':	    +   +     +    .  .   .   .  .  .  .  .  .  .   .   .
+N₁₃_2':	    +   +     +    +  +   +   +  .; +  +  +  +  +   .   .
+N₂₁_r_1':   .   +     ju10 ,  +	  +   +	 +  +  +  +  -  +   +   +
+Si₁_ii_14': .	+     +	   +  +	  +   +	 +  +  +  +  +	+   +	+
+X₅_ii_18':  +   +     -
+    +  +   +   +  zu +  +  +  +  +   +   +
+
+
+69. 	    szu-si-ju10 {jesz}bulug       {jesz}taszkarin-gin7 te ma-ra-ab-hur-hur-re
+
+N₁₂_8':	    +   +  ja2  -     minbulug2   -     +!?       .    .  .  .  .  .   .   .
+N₁₃_3':	    +   +  +    +     +           +     +         x    .  .  .  .  .   .   .
+N₂₁_r_1':   .   .  +    +     +		  +     +	  -    ,  +  +  .  .   .   .
+Si₁_ii_15': .	.  +	+     +		  +	+	  +^1^ +  +  +	+  +   +   .
+X₅_ii_19':  +   +  +    +     +           -     +         +    +  +  +  +  +   +   +
+
+#note: ^1^ + {{%a le-ti-i-a}}.
+
+N₂₁:  	   $ double ruling
+
+70. 	    inim-bi ka-ga14-ni um-ma-da-ja2-ja2
+
+N₁₂_9':	    +    +  +  .    .  .  .  .  .   .
+N₁₃_4':	    +    +  +  +    +  &nam-[...]
+Si₁_ii_16': .	 .  +  +    na +  +  +  +   .
+X₂_1':	    .    .  .  .    +  &nu-um-ma-[...]
+X₅_ii_20':  +    +  +  za   -  ^nam-ba-e-dug4 NE NU? x (x)
+
+
+71. 	    nin9 du6-da ed3-bi2  nin9 du6-da ed3-[bi2]
+
+N₁_iii_1':  +    +   +  +   .    .    .   .  .   .
+N₁₂_10':    +    +   +  .   .    .    .   .  .   .
+N₁₃_5':	    +  	 +   +  +   bi#  +    +   +  .   .
+Si₁_ii_17': .	 .   .	+   +^1^ +    +	  +  +	 .
+X₂_2':	    .    .   .  .   ,    +    +   +  +   .
+X₅_ii_21':  +    +   +  +   bi   +    +   +  ,   .
+
+#note: ^1^ +{{%a szu-li-i}} .
+
+
+72. 	    nin9 du6-da ed3-da-zu#-[ne]
+
+N₁_iii_2':  +    +   +  +   .  .   .
+N₁₂_11':    +    +   +  .   .  .   .
+N₁₃_6':	    + 	 +   +  +   +  +   .
+Si₁_ii_18': .	 .   .	+   +  x   .
+X₂_3':	    .    .   .  .   .  +?  .
+X₅_ii_22':  +    +   +  +   ,  .   .
+
+
+73. 	    du6-da lu2-ulu3-gin7      nam-ed3-da-[nam]
+
+N₁_iii_3':  +   +  +   .    .         .   .   .   .
+N₁₂_12':    +   +  +   .    .         .   .   .   .
+N₁₃_7':	    .   ,  +   +    +         x   ,   .	  .
+Si₁_ii_19': .	.  .   .    .^1^      +	  +   +	  .
+X₂_4':	    .   .  .   .    x         mu-e#?-da-ed3-de3?
+X₅_ii_23':  +   +  &nam-lu2-ulu3-gin7 &nam-ba-[ed3-de3]
+
+#note: ^1^ + {{%a [x]-li#-i}} .
+
+
+74. 	    szag4-za bar-za u3-mu#-ni-hur
+
+N₁_iii_4':  +     +  +   +  .  .   .  .
+N₁₂_13':    +     zu +   zu .  .   .  .
+N₁₃_8':	    + 	  +  +   +  +  +   .  .
+Si₁_ii_20': .	  .  .	 .  .  ,   x  .
+X₂_5'a:	    .     .  .   .  .  +   +  +
+X₅_ii_24':  &siki-zu +   zu +  .   .  .
+
+
+75. 	   tug2-za   hasz4-za u3-mu-ni-hur
+
+N₁_iii_5'a: +   +    +     +  .  .  .  . ;
+N₁₂_14':   .    zu#? +	   zu .  .  .  .
+N₁₃_9':	   +    +    +     +  +  +  .  .
+X₂_5'b:	   +	zu   +     zu +  +  +  +   
+X₅_ii_25': +    zu   +     zu ,  .  .  .
+
+
+76. 	    nin9 du6-da ed3-bi2
+
+Ni_iii_5'b: +    .   .  .   .
+N₁₂_15':    .    .   +  ,   .
+N₁₃_10':    +    +   +  +   ,
+X₂_6'a:	    .	 ,   +  +   + ;
+X₅_ii_26':  +    +   +  .   .
+
+
+77. 	    nin9 du6-da ed3-da-zu-[ne]
+
+N₁₂_16':    .    .   ,  ,   .  .   .
+N₁₃_11':    +    +   +  +   +  .   .
+X₂_6'a:	    +	 +   +  +   +  ni  -
+X₅_ii_27'a: +    +   +  +   +  +   -
+
+
+78. 	    du6-da igi il2-la-[ab]
+
+N₁₃_12':    +   +  +   +   +  .
+X₂_6'b:     +   +  +   +   +  ni 
+X₅_ii_27'b: .   .  .   .   .  .
+
+
+79. 	   am3-ma-DU-DU am3-ma-DU-DU  nam {d#}dumu-zid-da-sze3
+
+N₁₀_r_1':  ,   ,  ,! .  .   .  .  . ; ,   .   .    .   .  .
+N₁₃_13':   ^am3#-ma-an-gig AB2 x x [...] ; nam-lu2-ulu3-gin7#? [...]
+N₁₄_1':	   ,   .  .  .  .   .  .  .   .   .   .    .   .  .
+X₂_7':	   +   +  +  +  +   +  +  +   +   +   +    +   +  +
+X₅_ii_28': ^am3-an-gig? am3-ma#-[...]
+
+#note: Reconstruction remains problematic; composite follows 
+#X₂, collated from photo.
+
+#note: X₅ needs collation.
+
+80. 	   {jesz}ma2-gur8 id2-da am3-DU-DU nam {d}dumu-zid-da-sze3
+
+N₁₀_r_2':  +     +   +    +   +  .   .  .  .   .  .    .   .  .
+N₁₃_r_1:   .	 .   .	  x   x	 x   x  .; .   .  .    .   .  .	 
+N₁₄_2':	   +     +   +    .   .	 .   .	.  .   .  .    .   .  .
+X₂_8':	   .     .   .    +   +  +   +  +  +   +  +    +   +  +
+X₅_ii_29': +     +   +    +   +  +   ,  &[...]
+
+
+81. 	   jesz szu-ka tug2 am3-dul nam {d}dumu-zid-da-sze3
+
+N₁₀_r_3':  +    +   +  +    +   .   .   .  .    .   .  .
+N₁₃_r_2:   .	.   .  +    +	,   .	.  .	.   .  .
+N₁₄_3':	   +	+   +  +?   .	.   .	.  .	.   .  .
+X₂_9':	   .    .   .  +    +   +   +   +  +    +   +  +
+X₅_ii_30': +    +   +  +!   +   +   .   .  .    .   .  .
+
+
+82. 	   jesz gu2-ka gada am3-bur2 nam {d}dumu-zid-da-sze3
+
+N₁₀_r_4':  +    +   +  .    .   ,    x   .  .    .   .  .
+N₁₃_r_3:   .	.   +  +    +!?	+?   .	 .  .	 .   .	.
+N₁₄_4':	   +	+   +  +    +	.    .	 .  .	 .   .	.
+X₂_10':	   +    +~a +  +    +   +    +   +  +    +   +  +  
+X₅_ii_31': +    +   +  ^gada am3-[...]
+
+
+83. 	   ama {d}jesztin-an-na-ke4 du6-da DU-DU lu2  ki-bi-sze3 szar2-ra-a
+
+N₁₀_r_5':  +   +  +       +  +  .   ,   ,  ,  ,  .? ; +  .  .    NE    ,  .
+N₁₃_r_4:   +   +  +	  +  +	-   +	+  .  .	 .  ; +  +? + 	 .     .  .
+N₁₄_5':	   -?  ,? +	  +  +	+   +	+! .  .	 .    .	 .  .	 .     .  .
+X₂_11':	   +   +  +       +  +  +   +   +  +? +  +    +  +  +    +     +  + 
+X₅_ii_32': +   +  +       +  +  .   .	.  .  .  .    .  .  .    .     .  .
+
+
+84. 	   #     {d}jesztin-an-na-ke4 gu2 um-ma-da-[gid2]
+
+N₁₀_r_6':  #     +  +       +  +  +   +   .  ,  ,  .
+N₁₃_r_5:   #     +  +       +  +  +   +   +  +  +  .
+N₁₄_6':	   [ama] .  +       +  +  +   +   +  .  .  .
+X₂_12':	   #     +  +       +  +  +   +   &mu-un-da-an-gid2
+
+#note: The spacing of the copy in Alster, DD pl. XXII suggests that N₁₄
+#omitted ama in 83 and included it in 84.
+
+85. 	   ma-la-ga-ni {d}BU-du3-du3-e ab-[...]
+
+N₁₀_r_7':  +  +  +  +  +  ,  .   .   . .  .
+N₁₃_r_6:   +  +	 +  ,  +  +  +	 +   + +  .
+N₁₄_7':	   .  +  +  +  +  .  .	 .   . .  .
+N₂₃_r_1':  .  .	 .  .  ,  ,  ,	 ,   . .  .
+X₂_13':	   +  +  +  +  ^ x# x# gig# KIN-ni AB?-sur-ra IGI?-sze3
+
+
+85a.	   
+
+N₁₃_r_7:   ^AB?-sur-ra#? [ma]-la-ju10 mu-pad3-de3#
+N₁₄_8':	   ^[x]-sur/jar-ra ma-la-ju10# [...]
+N₂₃_r_2':  ^[...] ma-la-ju10 mu-un#-[...]
+X₂_14':    ^AB?-sur-ra ma-la!-<ju10> mu#-un#?-pad3-de3-x
+
+# This line is probably to be unified with 87 somehow.
+
+86. 	   gu2 kesze2-da gal-gal mu-un-szi-re7#-[esz]  mu-un-szi-[re7-esz]
+
+N₁₀_r_8':  +?  +!     +  +   +   +  +  +    ,    .   ; +  usz +  .    .
+N₁₃_r_8:   +   +      +	 ^ja2-e mu-ni-in-szi-[...]
+N₂₃_r_3':  .   .      +	 ^ja2-e mu-un-szi-x#-[...]
+X₂_15':	   ^[x x] NIM#? ma-la-<ju10> mu-un-[x x ...]
+
+
+87. 	   ad jar-ra ma-la-ju10 mu-un-szi-re7{re}-[esz] x mu-szi-in-[x]
+
+N₁₀_r_1':  ,? x   .  .  +  ,    ,  +  +   x   .   . ;   + +  +   +   .
+N₁₃:       $ Omits.
+N₂₃':  	   $ Omits.
+X₂_16':	   $ Omits.
+
+
+88. 	   ($Vacat$)
+
+#########
+
+89. 	   szesz-ju10 gal5-la2-zu im-szi-re7-[esz    saj u2-a szub-u3]
+
+N₁₃_r_9:   .	 .    .    ,   +  +  +   +   .       .   .  . .    .
+N₁₅_1':	   .	 +    +	   +   +! .  .   .   .       .   .  . .    .
+N₂₃_r_4':  .	 ,    +	   +   +  &um-mu-e-re7-[esz] .	 .  . .	   .
+
+90. 	   {[d]}[dumu]-zid gal5-la2-zu im-szi-re7-esz   saj u2-[a szub-u3]
+
+N₁₃_r_10:   .   .      +   +    +   +  +  +   +   .   	.   .   . .    .
+N₁₅_2':	    .	.      +   +	+   +  +  x   .	  .	.   .	. .    .
+N₂₃_r_5':   .	.      +   +	+   +  &um-mu-e-re7-esz .   .	. .    .
+
+
+91. 	   nin9-ju10 saj u2-a ga-an-szub ki-ju10 na-ab-pad3#-[de3]
+
+N₁₃_r_11:  .    .    +   +  + +  +  +    +  ,    .  .  .     .
+N₁₅_3':	   .	.    +	 +  + +	 +  +	 +  .	 .  .  .     .
+N₁₆_1':	   ,	+    +	 ,  . +	 +  +	 +  +	 .  .  .     .
+N₂₃_r_6':  .	+    +	 +  - +  +  +    +  +    +  +  +     .
+
+
+92. 	   saj u2 di4-di4-la2 ga-an-szub ki-ju10 na-ab-pad3-de3
+
+N₁₃_r_12:  .   .  +   +   +   +  +  +    +  ,    .  .  .    .
+N₁₅_4':	   .   .  .   +	  +   +	 +  +	 +  .	 .  .  .    .
+N₁₆_2':	   +   +  +   +	  +   +	 +  +	 +  +	 +  .  .    .
+N₂₃_r_7':  .   +  +   +	  +   +	 +  +	 +  +	 +  +  +    .
+
+
+93. 	   saj u2 gal-gal-la  ga-an-szub ki-ju10 na-ab-pad3-de3
+
+N₁₃_r_13:  .   .  +   +   +   +  +  +    +  .    .  .  .    .
+N₁₅_5':	   .   .  .   +	  -   +	 +  +	 +  .	 .  .  .    .
+N₁₆_3':	   +   +  +   +	  la2 +	 +  +	 +  +	 .  .  .    .
+N₂₃_r_8':  +   +  +   +	  +   +	 +  +	 +  +	 +  +  +    ,
+
+
+94. 	   eg2 a-ra-li-ka ga-an-szub ki-ju10 na-ab-pad3-de3
+
+N₁₃_r_14:  .   . .  .  +  +  +  +    ,  .    .  .  .    .
+N₁₅_6':	   .   . .  .  .  +  +	+    +	.    .	.  .	.
+N₁₆_4':	   +   + +  +  +  +  +	+    +	+    .	.  .	.
+N₂₃_r_9':  +   + +  +  +  +  +	+    +	+    +	+  +	+
+
+
+95. 	   ud ki-zu ab-pad3-de3-en-na-a ur-zu hu-mu-gu7-e
+
+N₁₁_ii_1': +  +  ,  .  .    .   .  .  . .  .  .  .  .   .
+N₁₃_r_15:  .  .  .  .  .    .   ,  +  + +  +! .  .  .   .
+N₁₅_7':	   .  .	 .  .  ,    .	.  .  .	.  .  .	 .  .	.
+N₁₆_r_1':  +  +	 +  +  +    +	+  .  .	.  .  .	 .  .	.
+N₂₃_r_10': +  +	 +  ud +    +	-  ni +	+  +  +	 +  +	+
+
+
+96. 	   ur gig2 ur nam-sipad-da-zu
+
+N₁₁_ii_2': +  ,	   .  .   .     .  .
+N₁₃_r_16:  .  .    .  .   +     .  .
+N₁₆_r_2':  +  +	   +! .	  .	.  .
+N₂₃_r_11': +  +	   +  +	  +	+  +
+
+
+97. 	   ur gir15 ur nam-en-na-zu ur-zu hu-mu-gu7-e
+
+N₁₁_ii_3': +  ,	    .  .   .  .  .  .  .  .  .  .   .
+N₁₆_r_3':  +  +	    +  +   +  +	 +  .  .  .  .	.   .
+N₂₃_r_12': +  +!    +  +   +  +	 +  +  +  +  +	+   +
+
+
+N₂₃_t_e_1: ^{d}en-lil2 nam e2-kur ki-aj2-ja2-a-ni ba-hul-a-sze3 a-na-am3 in-gul-[x]
+
+
+98. 	   jesztug2 mu-un-de5-ge [...] X na-ba gu5-li-zu de5-ga
+
+N₁₆_r_4':  ,	    +  +  +   +  .     . .  .  .   .  .  .   .
+
+
+99. 	   [a szesz-ju10] gu5-li du10-sa
+
+N₁₆_r_5':  .  .     .    +   +  .    .
+
+
+100. 	   [...] X-gin7 na-an-tuku-nam
+
+N₁₆_r_6':  .    + ,    ,  +  .    .
+
+
+101. 	   [... ...] X X [mi-ni-in]-kij2#-kij2-a-ta
+
+
+102. 	   X-bi-a inim X [...] u3-mu-ra-ab-dug4
+
+
+103. 	   gu5-li-ju10 saj u2-a ga-an-szub ki-ju10 na-ab-pad3-de3
+
+Si2_1:	   +   +  +    +   +  + +  +  +    +  +    +  +  +    +
+Ur_6_i_1': .   .  .    .   .  . .  .  . ;  .  .    .  .  .    .
+
+#note: The traces in Ur6 could belong to 103-104 or 104-105 as the
+#tablet profile suggests that this source had 24 or 25 lines per
+#column.
+
+
+104. 	   saj u2 di4-di4-la2 ga-an-szub ki-ju10 na-ab-pad3-de3
+
+Si2_2:	   +   +  +   +   +   +  +  +    +  +    +  +  +    +
+Ur6_i_2':  .   .  .   .   .   .  .  + ;  .  .    .  .  .    .
+
+
+105. 	   saj u2 gal-gal-la ga-an-szub ki-ju10 na-ab-pad3-de3
+
+Si2_3:	   +   +  +   +   +  +  +  +    +  +    +  +  +    +
+
+
+106. 	   eg2 a-ra-li ga-an-szub ki-ju10 na-ab-pad3-de3
+
+Si2_4:	   +   + +  +  +  +  +    +  +    +  +  +    +
+
+
+107. 	   ud ki-zu ab-pad3-de3-en-na-a ur-zu hu-mu-gu7-e-en
+
+Si2_5:	   +  +  +  +  +    +   +  +  + +  +  +  +  +   + +
+
+
+108. 	   ur gig2 ur nam-sipad-da-zu
+
+Si2_6:	   .  +    +  +   +     +  +
+
+
+109. 	   ur gir15 ur nam-en-na-zu ur-zu hu-mu-gu7-en
+
+Si2_7:	   .  .     .  .   ,  +  +  +  +  +  +  +   +
+
+
+110. 	   lugal-ra lu2 mu-<szi>-re7-esz-am3 lu2 hi-hi-a-me-esz
+
+Si2_8:	   .     .  .   .  .     +   +   +   +   +  +  + +  +
+
+111. 	   u2 nu-zu-me-esz a nu-zu-me-esz
+
+Si2_9:	   .  .  .  .  .   . +  +  +  +
+
+
+112. 	   zid2 dub-dub-ba nu-gu7-me-esz
+
+Si2_10:	   .    +   +   +  +  +   +  .
+
+
+113. 	   a bal-bal-a nu-na8-na8-me-esz
+
+Si2_11:	   . ,   +   + +  +   +   +  +
+
+
+114. 	   kadra nij2 dug3-ga szu nu-gid2-i-me-esz
+
+Si2_12:	   +	 +    +    ge +   +  +    + .  .
+
+
+115. 	   ur2 dam nij2 dug3-ge-esz2 nu-sig9-ge-me-esz
+
+Si2_13:	   .   +   +    +    .  +    +  +    +  .  .
+
+
+116. 	   dumu nij2 ku7-ku7-da ne nu-su-ub-ba-me-esz
+
+Si2_14:	   .    .    +   +   +  ,  +  +  ,  +  .  .
+
+
+117. 	   szum2{sar} nij2 sis-am3 zu2 nu-gub-bu-me-esz
+
+Si2_15:	   .     .    .    .   .   +   +  +   +  .  .
+
+
+118. 	   lu2 ku6 nu-gu7-me-esz lu2 ga-rasz{sar} nu-gu7-me-esz
+
+119. 	   lugal-ra dumu adab{ki}-a 2-am3  mu-un-szi-re7{re}-esz
+
+Ur6_ii_1': .     .  ,    ,?    ,   - + +  ; +  +  +   +   +   +
+
+#note: or possibly dumu# unug#{ki#}
+
+120. 	   {jesz}kiszi16 a szu-ru-ug-ga    {jesz}dala2 a hab2-ba
+
+Ur6_ii_2'a: .     +       + +   +  ub ba ; ,     +     + +    +
+
+
+121. 	    szu-ni {jesz}banszur-ra eme-ni e2-gal-la
+
+Ur6_ii_2'b: +   +  +     +       +  +~a +  +  +   +
+
+
+122. 	   lugal-ra  dumu akszak{ki} 2-am3 mu-un-szi-re7{re}-esz
+
+Ur6_ii_3': ,     am3 +    +      +   + + ; +  +  +   +  +    +
+
+
+123. 	   X nim-|AH.ME|-da gu2-ba la2-a
+
+Ur6_ii_4': ^ {jesz}tukul saj kud-a ur2-ra la2-a
+
+
+124. 	   lugal-ra dumu unug{ki}-ga 2-am3 mu-un-szi-re7{re}-esz
+
+Ur6:  	   $ Omits.
+
+
+125. 	   {jesz}tukul saj kud-a ur2-ra la2-a
+
+Ur6: 	   $ Omits.
+
+
+126. 	   lugal-ra  dumu urim2{ki}-ma 2-am3 mu-un-szi-re7{re}-esz
+
+Ur6_ii_5': +     am3 +    +     +   +  + + ; +  +  +   +   +   +
+
+
+127. 	    tug2 szen-na kar-ra jal2-la
+
+Ur6_ii_9':  +    x    +  +   +  +    +
+
+
+128. 	     lugal-ra  dumu nibru{ki} 2-am3 mu-un-szi-re7{re}-esz
+
+Ur6_ii_10':  +     am3 +    +     +   + + ; +  +  +   +   +   +
+
+
+129. 	     lu2 lu2-ra im2-ma-ni-ib amasz {e2}tur3-sze3 <mu-un>-szi-re7{re}-esz
+
+Ur6_ii_11':  +   +   +  +   +  +  + ; +     +  +    +     -  -   +   +   +   +
+
+
+130. 	     {d}jesztin-an-na-ke4 amasz tur3-sze3 mu-ni-in-dab5-be2-ne
+
+Ur6_ii_12':  +  +       +  +  +   +     +    +    +  +  +  +    +   +
+
+
+131. 	     id2 a-ba   mu-un-na-ba-e-ne szu nu#-[um]-ma-gid2-de3
+
+Ur6_ii_13':  &2a_id2-ba +  +  +  +  + +  +   ,   . ;  +  +    +
+
+
+132. 	     a-szag4 sze-ba mu-un-na#-[ba]-e-ne  szu nu#-um-ma-gid2-de3
+
+Ur6_r_i_1':  + +     +   +  +  .  .    .   + , ; +   ,   +  +  +    +
+
+
+133. 	     gal5-la2 tur-re gal5-la2 gu-la-[ra gu3 mu]-un#-na-de2-e
+
+Ur6_r_i_2':  +    ,   +   -  +    .   +  ,  . ; .   .   ,   +  +   .
+
+
+134. 	     gal5-la2 kug-zu gal5-la2 til3-la
+
+Ur6:  $ 3 lines broken
+
+
+135. 	     gal5-la2 gal-bi# murub4-bi til3-la
+
+
+136. 	     kug-zu [... ba]-an#-da-ha-lam-ma-gin7
+
+
+137. 	     X X X-sze3 ba-an-gib-ba-gin7
+
+
+138. 	     nin9 ki szesz am3-mu-un-pad3-de3-a
+
+Ur6_r_i_1'': ,    ,  +     +   +  +  +    .   .
+
+
+139. 	     ud ul-la2-ta a-ba-a    igi mi-ni-in-du8-a
+
+Ur6_r_i_2'':  ,  ,  ,   +  + +  gin7 -   mu +  .  .   .
+
+
+140. 	     ja2-nam-ma-an-ze2-en gu5-li-ni-ir  ga-an-szi-re7-en-de3-en
+
+Ur6_r_i_3'': +   +   +  -  +   +  +   +~a = x ; +  +  +   +   +  +   ,
+
+
+141. 		e-ne gu5-li-ni-ir
+
+Ur6_r_i_4'':    . +  +   +  +~a +
+X₅_r_i_1': 	+ +  +!   .  .   .
+
+#note: KU written as TUG2 in X5.
+
+
+142. 		id2 a-ba   mu-un-na-ba-e-ne  szu am3-ma-gid2-de3-<<en>>
+
+Ur6_r_i_5'': 	&2a_id2-ba +  +  +  +  + + ; +   +   +  +    +    -
+X₅_r_i_2': 	+   + +    +? +? .  .  . .   .   .   .  .    .    .  
+
+#note: X5: a-ba written BA A
+#note: X5: mu- epigraphically uncertain; NAM possible, in which case the traces of UN are difficult to interpret.
+
+143. 		a-szag4 sze-ba mu-un-na-ba-e-ne szu am3-ma-gid2-de3
+
+Ur6_r_i_6'': 	, ,      ,  +  +  +  +  +  + +  +   +   +  +    +
+X₅_r_i_3': 	+ +      +  +  .  ,  .  .  . .  .   .   .  .    .
+
+144. 		gu5-li-ju10 saj u2-a he2-en-szub ki-ni ba-ra-zu
+
+Ur6_r_i_7'': 	.   +  +    +   +  + +   +  + ;  ,  +  +  +  +
+X₅_r_i_4': 	+   +  +    ,   +  + .   .  .    .  .  .  .  .
+
+
+144a.		[{d}dumu-zid]-de3 saj u2-a he2-en-szub ki-ni ba-ra-zu
+
+Ur6_r_i_8'': 	 .  .    .    +   +   +  + +   +  + ;  +  +  +  +  +
+
+ 	
+145.		{d}dumu-zid-de3 saj u2-a mu-ni-in-kij2-kij2-ne nu-mu-un-pad3-de3
+
+Si2_r_1':	.  .    .   ,   +   +  + +  +  +  ,    .    .  .  .  .  .    .
+Ur6_r_i_9'': 	$ Traces.
+X₅_r_i_5': 	+  +    +   -   +   +  + ,  .  .  .    .    .  .  .  .  .    .
+
+
+146.		saj u2  di4-di4-la2 he2-en-szub ki-ni ba-ra-zu
+
+Si2_r_2':	.   .   .   .   .   +   +   +   +  +  +  +  . 
+X₅_r_i_6': 	+   +~a +   +   +   ga  .   .   .  .  .  .  .
+
+
+147. 		{d}dumu-zid-de3 saj u2  di4-di4-la2 mu-ni-in-kij2-kij2-ne nu-mu-un-pad3-[de3]
+
+Si2_r_3':	.  .    +   +   +   +   +   +   +   +  +  +  +    +    .  .  .  .  .     .
+X₅_r_i_7': 	+  +    +   -   +   +~a +   +   +   .  .  .  .    .    .  .  .  .  .     .
+
+
+148. 		saj u2 gal-gal-la he2-en-szub   ki-ni ba-ra-zu
+
+Si2_r_4':	+   +  +   +   +  +   +  +      +  +  +  +  +
+X₅_r_i_8': 	+   +  +   +   +  &ga-an-[szub] .  .  .  .  .
+
+
+149. 		{d}dumu-zid-de3 saj u2 gal-gal-la mu-ni-in-kij2-kij2-ne [nu-mu-un]-pad3-de3
+
+Si2_r_5':	+  +    +   +   +   +  +   +   +  +  +  +  +    +    +   .  .  .   .     .
+X₅_r_i_9': 	+  +    +   -   +   +  +   ,   .  .  .  .  .    .    .   .  .  .   .     .
+
+
+150. 		eg2 a-ra-li-ka he2-en-szub ki-ni ba-ra-zu
+
+Si2_r_6':	+   + +  +  +  +   +  +    +  +  +  +  .
+X₅_r_i_10': 	+   + +  +  ke4 ga an  .   .  .  .  .  .
+
+
+151. 		{d}dumu-zid-de3 eg2 a-ra-li-ka  mu-ni-in-dab5-be2-ne
+
+Si2_r_7':	+  +    +   +   +   + +  +  +   ,  ,  ,  .    .   .
+X₅_r_i_11': 	+  +    +   -   +   + +  +  ke4 .  .  .  .    .   .
+
+
+152. 		{d}dumu-zid-de3 er2 im-ma-an-pad3 szex(SIG7)-szex(SIG7) i3-ja2-ja2
+
+Si2_r_8':	+  +    .   +   +   +  +  .  .    +          +          +  +   .
+X₅: 		$ Omits.
+
+
+153. 		iri-a nin9-ju10 mu-un-til3-le-en gu5-li-ju10 mu-un-ug5-ge-en
+
+Si2_r_9':	+   + ,    +    +  ,  +    +  +  +   +  +    +  +  +   +  +
+X₅_r_i_12': 	+   + +    +    +  +  +    +  +  .   .  .    .  .  .   .   .
+
+
+154. 		dumu nin9-e sila-a he2-en-gub lu2 ne he2-su-ub-be2
+
+Si2_r_10':	+    +    + +    + +   +  +   +   +  +   +  +  +
+X₅_r_i_13': 	+    +    + +    + +   +  +   ,   .  .   .  .  .
+
+
+155. 		dumu gu5-li sila-a he2-en-gub lu2 ne na-an-su-ub-be2
+
+Si2_r_11':	+    +   +  +    + +   +  +   +   +  +  +  +  +! ,
+X₅_r_i_14': 	+    +   +  +    + +   +  +   ,   .  .  .  .  .  .
+
+
+156. 		lu2 ba-an-nijin2-nijin2-ne-esz a-nijin2 ba-ni-in-du8-usz
+
+Si2_r_12':	+   +  +  +      +      +  +   + +      +  +  +  +   +
+X₅_r_i_15': 	+   +  -  +      +      +  +   + +      +  .  .  .   .
+
+
+157. 		gu mu-un-na-sur-ru-ne sa mu-un-na-kesze2-da#-[ne]
+
+X₅_r_i_16': 	+  +   +  +   +   +   +  +  +   .   .  .       .    .
+
+
+158. 		gu zi-ip-pa-tum mu-un-na-sur-ru-ne
+
+X₅_r_i_17': 	+  zi2 +  +   +   +   +  +   .    .  .
+
+
+159. 		{jesz}ma-nu mu-un-na-hur-ru-ne
+
+X₅_r_i_18': 	+      +  + +  +  +  .   .  .
+
+
+160. 		lu2 igi-na-ke4 nij2 mu-un-ra-ra
+
+X₅_r_i_19': 	+    +  +  +   +    +  .   .  .
+
+
+161. 		lu2 murgu-na-ke4 1(disz) kusz3-gin7 mu-un-bur2-[re]
+
+X₅_r_i_20': 	+   +     +  +   -       +     x    .  .  .     .
+
+
+162. 		szu-ni szu-du3-a ba-e-dab5-be2
+
+X₅_r_i_21': 	+   +  +   +   + +  . .    .
+
+
+163. 		a2-ni a2-la2-a    ba-e-la2-e
+
+X₅_r_i_22': 	+  +  +  +   +~bi &ja2-[ja2]
+
+
+164. 		jurusz-e {d}utu-ra an-sze3 szu-ni ba-ni-in-zig3
+
+X₅_r_i_23': 	+      +! + +   +  +  +    .   .  .  .  .  .
+
+
+#note: Ur6 r iv traces should belong somewhere near here.
+
+165. 		{d}utu murum5-ju10 me-en je26-e mussa-zu# [me-en]
+
+X₅_r_i_24': 	+  +   +      +    +  .  .    . .     .    .  .
+
+
+166. 		e2-an-na-sze3 u2 gur3-ru me#-[en]
+
+X₅_r_i_25': 	+  +  +  +    .  .    .  .    .
+
+
+167. 		unug{ki}-sze3 nij2-mussa ak-a me-en
+
+N₂₈_1':
+
+X₅_r_i_26': 	+    +   +    .    .     .  . .  .
+
+
+168. 		nundum kug-ge ne su-ub-ba [me-en]
+
+X₅_r_i_27': 	+      +   +  .  .  .  .   .  .
+
+#note: X5: Line has been squeeze in over the ruling between 27' and 28'
+
+
+169. 		dub3 kug-ga dub3 {d}inana-ka e-ne di dug4-ga# [me-en]
+
+X₅_r_i_28': 	+    +   ge +     + +     +  . .  .  .    .    .  .
+
+
+170. 		szu-ju10 szu masz-da3   u3-mu-e-ni-[sig10]
+
+X₅_r_i_29': 	+   ni   +   +    +~ra  ,  .  . .   .  
+
+
+171. 		jiri3-ju10 jiri3 masz-da3 u3-mu-e-ni-[sig10]
+
+X₅_r_i_30': 	+     ni   +     +*   +   ,  .  . .   .
+
+
+172. 		[gal5-la2]-gal5-la2-ju10 ga-ba-da-an-ze2-er
+
+X₅: 		$ Omits.
+
+
+173. 		KU-{jesz}bir5-re-esz-dil-da-re#-[esz] zi-ju10 ga-ba-szi-de6
+
+X₅_r_i_31': 	+   +    +    +~e .  .   .  .    .    .  .    .  .  .   .
+
+
+174. 		{d}utu er2-na  szu ba-szi-in-ti
+
+X₅_r_i_32': 	+  +    +  +   .   .  .   .  .
+
+
+175. lu2 arhusz-a-gin7 arhusz ba#-[ni-in-ak]
+
+176. szu-ni szu masz-da3 u3-mu-ni-in-sig10
+
+177. jiri3-ni jiri3 masz-da3 u3-mu-ni-in-sig10
+
+178. gal5-la2-gal5-la2-e-ne ba-da-an-ze2-er
+
+179. KU-{jesz}bir5-re-esz-dil-da-re-esz zi-ni ba-szi-in-de6
+
+180. gal5-la2-ne-ne mu-ni-in#-[kij2-kij2-ne] nu-mu-[un-pad3-de3]
+
+181. ja2-nam-ma-an-ze2-en KU-{jesz}bir5-re-[esz] ga-an-szi-re7{re}-de3-en
+
+181a. [...] X X sa-par3-gin7 [...]
+
+182. {d}dumu-zid KU-{jesz}bir5-re-esz mu-ni-in-dab5-be2-ne
+
+183. lu2 ba-an-nijin2-nijin2-ne-esz a-nijin2 ba-ni-in-du8-usz
+
+184. gu mu-un-na-sur-ru-ne sa mu-un-na-kesze2-da#-[ne] 
+
+
+185. gu zi-ip-pa-tum mu-un-na-sur-ru-ne
+
+186. {jesz}ma-nu mu-un-na-hur-ru-ne
+
+187. lu2 igi-na-ke4 nij2 mu-un-ra-ra
+
+188. lu2 murgu-na#-ke4 1 kusz3-gin7 mu-un-bur2-re
+
+189. 		szu-ni szu-du3-a ba-e-dab5-be2
+
+X₅_r_ii_1':	+   +  +   +   + +  + +    +
+
+
+190. 		a2-ni a2-la2-a    ba-e-la2-e
+
+X₅_r_ii_2':	+  +  +  +   +~bi &ja2-ja2
+
+
+191. 		jurusz-e {d}utu-ra an-sze3 szu-ni ba-ni-in-zig3
+
+X₅_r_ii_3':	+      +  + +   +  +  +    +   +  +  na an +
+
+
+192. 		{d}utu murum5-ju10 me-en je26-e mussa-zu me-en
+
+X₅_r_ii_4':	+  +   +      +    +  +  +    + +     -  -  -
+
+
+193. 		e2-an-na-sze3 u2 gur3-ru me-en
+
+X₅_r_ii_5':	+  +  +  +    +  +    -  +  +
+
+
+194. 		unug{ki}-sze3 nij2-mussa ak-a me-en
+
+X₅_r_ii_6':	+    +   +    +    +     ka - +  +
+
+
+195. 		nundum kug-ge ne su-ub-ba        me-en
+
+X₅_r_ii_7':	+      +   +  +  &mu-un-su-ub-ba +  +
+
+
+196. 		dub3 kug-ge dub3 {d}inana-ke4 e-ne di dug4-ga me-en
+
+X₅_r_ii_8':	+    +      +     + +     +   + +  +  -    -  -  -
+
+
+197. 		szu-ju10 szu masz-da3    u3-mu-e-ni-sig10
+
+X₅_r_ii_9':	+   ni   +   &bur2-a^1^  +  +  + +  +
+
+#note: ^1^ X5: there is a clear ASZ on the tablet after da3 which
+#Alster appears to have interpreted as having been erased, however
+#this is not certain.  In the next line, there is a more plausible
+#erasure at the same point in the line, and this may be an erased
+#ASZ.
+
+
+198. 		jiri3-ju10 jiri3 masz-da3 u3-mu-e-ni-sig10
+
+X₅_r_ii_10':	+     ni   +     &bur2-a  +  +  + +  +
+
+
+199. 		e2 um-ma {d}be-li-li zi-ju10 ga-ba-szi-in-de6
+
+X₅_r_ii_11':	+  +  +  +  +  +  +  +  ni   +  +  +   -  -
+
+
+200. 		{d}utu er2-na szu ba-szi-in-ti
+
+X₅_r_ii_12':	+  +   +   +  +   ,  +   +  +
+
+#note: X5: Line is squeezed in between 11' and 13'.
+
+201. 		szu-ni szu masz-da3 u3-mu-ni-in-sig10
+
+X₅_r_ii_13a':	+   +  +   &bur2-a  -  +  +  -  +
+
+
+202. 		jiri3-ni jiri3 masz-da3 u3-mu-ni-in-sig10
+
+X₅_r_ii_13b':	+     +  +     &bur2-a! -  -  -  -  -
+
+
+203. 		[gal5-la2-gal5-la2]-e-ne im-ma-da-an#-[ze2-er]
+
+X₅:		$ Omits.
+
+
+204. 		e2 um-ma {d}be-li-li zi-ni ba-szi-in-de6
+
+X₅_r_ii_14':	+  +  +   + +  +  +  +  +  -  -   -  -
+
+#note: X5: Line is squeezed between 14' and 16'.
+
+205. 		e2 um-ma {d}be-li-li-sze3 ba-an-na-te
+
+X₅:		$ Omits.
+
+
+206. 		um-ma lu2 nu-me-en dam dijir-ra me-en
+
+X₅_r_ii_15':	+  +  +   +  +  +  +   +     +  +  +
+
+
+207. 		a ub-ta-an-bal-bal a tukum-bi ga-naj
+X₅_r_ii_16':	+ +  +  -  +   +~e + &tukumbi +  +
+
+
+208. 		zid2 ub-ta-an-dub-dub   zid2 tukum-bi ga-gu7
+
+Ur₄_1':		,    .  .  .  .   .     .  ; +     +  +  +
+
+X₅_r_ii_17':	+    +  +  -  bal bal-e +    &tukumbi +  +
+
+
+
+209. 		a ub-ta-an-bal zid2 ub-ta-an-dub     szag4-bi-a ba-an-tusz
+
+Ur₄_2': 		+ +  +  +  + ; +    +  +  +  + ;     +     +  ta + e  +?
+
+X₅_r_ii_18-19':	+ +  +  -  +   +    +  +  -  + / ^1^ +     +  +  +  - +
+
+#note: ^1^ X5: +  a tukum-bi ga-naj .
+
+210. 		um-ma e2-ta ba-ra-e3
+
+Ur₄_3': 		um-ma e2-ta bar!(sic)-ra-e3
+
+X₅_r_ii_20':	+  +  +  +  +  +  +	
+
+
+211. 		um-ma e2-ta ed2-da-ni
+
+Ur₄_4': 		um-ma e2-ta-a-ni (for e2-ta e3-a-ni)
+
+X₅_r_ii_21':	+  +  +  +  +   +  +
+
+
+212. 		gal5-la2-e-ne  igi ba-ni-in-du8-usz-am3
+
+Ur₄_5': 		+    +   + ,   .   .  .  .  .   .   .
+
+X₅_r_ii_22':	+    +   + +   +   +  +  +  +   +   +
+
+
+213. 		tukum-bi ud-da um-ma ki {d}dumu-zid til3-la nu-ub-zu
+
+X₅_r_ii_23':	+     +  +  +  +  +  +   + +    +   +    +  +  -  +
+
+
+214. 		igi ni2 te-a na-bar-bar-re
+
+X₅_r_ii_24':	^igi-ne-ta a-na am3-bar-bar-re
+
+
+215. 		gu3 ni2 te-a na-de2-de2-e
+
+X₅_r_ii_25':	^gu3-ne-ta a-na am3-de2-de2-e
+
+
+216. 		ja2-nam-ma-an-ze2-en e2 um-ma {d}be-li-li-sze3 ga-an-szi-re7-en-de3-en
+
+X₅_r_ii_26':	+   +   +  +  +   +  +  ,  ,   + +  +  +  + ;  +  +  +   +   +  +   +
+
+
+217. 		{d}dumu-zid-de3 e2 um-ma {d}be-li-li-sze3 mu-un-dab5-be2-ne
+
+X₅_r_ii_27':	+  +    +   -   +  +  +   + +  +  +  +    mu-ni-in;-dab5-be2-ne
+
+
+218. 		lu2 ba-an-nijin2-nijin2-ne-esz a-nijin2 ba-ni-in-du8-usz
+
+X₅_r_ii_28':	+   +  +  +      +      +  +   + +      +  +  +  +   +
+
+
+219. 		gu mu-na-ab-sur-ru-ne sa mu-un-na-kesze2-de6-ne
+
+X₅_r_ii_29':	+  +~un + - +   +  +  +  +  +  +  +      +   +
+
+# check other mss -- probably make composite use mu-un-na-R in both
+# halves of line.
+
+
+220. 		gu zi-ip-pa-tum mu-un-na-sur-ru-ne
+
+X₅_r_ii_30':	+  &zi-ba-tum   +  +  +  +   +  +
+
+
+221. 		{jesz}ma-nu mu-na-an-hur-ru-ne
+
+X₅_r_ii_31':	+     +  +  +  +  +  +   +  +
+
+
+222. 		lu2 igi-na-ke4 nij2 mu-un-ra-ra
+
+X₅_r_ii_32':	+   +   +  +   +    +  -  +  +
+
+
+223. 		lu2 murgu-na-ke4 1(disz) kusz3-gin7 mu-un-bur2-re
+
+X₅_r_ii_33':	+   +     +  +   -       +     ,    +  +  ,    .
+
+
+224. szu-[ni szu-du3-a ba-e]-dab5-be2
+
+225. a2-[ni a2-la2-a ba-e-la2]-e
+
+226. jurusz-[e] {d}utu-ra an-sze3 szu-ni ba-ni-in-zig3
+
+227. {d}utu murum5-ju10-me-en# je26-e mussa-zu-me-en
+
+228. e2-an-na-sze3# [u2 gur3]-ru#-me-en
+
+229. unug{ki}-sze3 nij2-mussa(|MI2#.[US2].SA2#|) ak-me-en
+
+230. nundum kug-ge ne [su-ub]-ba#-me-en
+
+231. dub3 kug-ge dub3 {d}inana-[ke4] e-ne di dug4-ga-me-en
+
+232. szu-ni szu masz-da3 [u3]-mu-ni-in-sig10
+
+233. jiri3-ni jiri3 masz-da3 u3-mu-ni-in-sig10
+
+234. amasz kug amasz nin9-ja2-sze3 zi-ju10 ga-ba-szi-in-de6
+
+235. 		{d}utu er2-na szu ba-szi-ni-in-ti
+
+X₅_r_iii_1':	.  .   .   .  +   +  +   -  +  ,
+
+
+236. 		szu-ni szu masz-da3 u3-mu-ni-in-sig10
+
+X₅_r_iii_2':	,   .  +   &bur2-a  -  +~e + +  +
+
+
+237. 		jiri3-ni jiri3 masz-da3 u3-mu-ni-in-sig10
+
+X₅_r_iii_3':	+     +  +     &bur2-a  -  +~e + +  +
+
+
+238. 		amasz kug amasz nin9-na-sze3    zi-ni  ba-szi-in-tum3
+
+X₅_r_iii_4':	+     tur3 +!   &nin9-a-ni-sze3 +  + ; +  +   +  +
+
+
+239. 		amasz kug amasz nin9-na-sze3 ba-an-na-te
+
+X₅:		$ Omits.
+
+239a.
+X₅_r_iii_5': 	gal5-la2-e-ne igi ba-ni-in-duh-am3
+
+239b.		
+X₅_r_iii_6':	ja2-nam-ma-an-ze2-en amasz tur3-sze3 ; amasz nin-a-ni ga-an-szi-re7-de3-en
+
+239c.		
+X₅_r_iii_7':	{d}jesztin-an-na-ke4 amasz tur3-sze3 amasz-zu ; mu-ni-in-dab5-be2-ne2{ne}
+
+
+240. 		{d}jesztin-an-na-ke4 gu3 an-sze3 ba-te gu3 ki-sze3 ba-te
+
+X₅_r_iii_8':	+  +       +  +  +   +   +  ne2  +  +  +   +  +    +  +
+
+
+241. 		gu3 szu nijin2-bi    an-ur2-ra tug2-gin7 i-im-dul   x   gada-gin7 i-im-bur2
+
+X₅_r_iii_9':	+   +   nijin2-na-ni +  +   +  +    +    - +  +~lu  + ; +    +    bi2 - +
+
+
+242. 		igi mu-un-na-hur kiri3 mu-un-na-hur
+
+
+
+243. 		jesztug2 ki u6 di mu-un-na-hur
+
+
+
+244. 		ki lu2-da nu-di hasz4-gal mu-un-[na-hur]
+
+
+
+245. 		szesz-ju10 sila-a ga-[...]-nijin2-nijin2 je26-e [...]
+
+
+246. 		tukum-bi {d}jesztin-an-na-ke4 ki {[d]}[dumu-zid] til3-la nu-[ub-zu]
+
+
+247. 		igi ni2 te-a na-bar-bar-[re]-<<en>>
+
+
+
+248. 		gu3 ni2 te-[a] na-de2-de2-e
+
+
+249. 		ja2-nam-ma-an-ze2-en amasz tur3-sze3 [ga-ba]-szi-jen
+
+
+250. 		gal5-la2    1(disz) amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_10':	+    +~e-ne =       +     +    +    +    +  +
+
+
+@variants
+
+251. 		{jesz}gag-ga-ra izi ba#-[ni]-in-ra
+
+@variant
+
+251A. 		GISZ NI X izi* ba-ni-ra
+
+X₅_r_iii_11':	+    +  + +    +  +  +
+
+@endvariants
+
+252. 		2-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_12':	+ +   +  +     +    +    +    +  +
+
+
+253. 		{jesz}ma-nu izi ba-ni-ra
+
+X₅_r_iii_13':	+     +  +  +   +  +  +
+
+
+254. 		3-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_14':	+ +   +  +     +    +    +    +  +
+
+
+255. 		{dug}szakir3 kug-ga-a TUN3-bi ba-ra-[bad-re6]
+
+X₅_r_iii_15':	+    +       +   ja2 - +   +  +  +  pad  -
+
+
+256. 		4-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_16':	+ +   +  +     +    +    +    +  +
+
+
+257. 		an-za-am {jesz}gag-ta la2-a {jesz}gag-ta ba-ra-ab-si-ig
+
+X₅_r_iii_17':	^nemur kug-ja2 a mu-da-an-de2
+
+
+258. 		5-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_18':	+ +   +  +     +    +    +    +  +
+
+
+259. 		{dug}szakir3 i3-dur2-dur2 ga nu-un-de2
+
+X₅_r_iii_19':	an-za-am kug {jesz}gag-ta la2-ju10 {jesz}gag-ta ba-ra-ab-si-ig
+
+
+259a. 		6-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_20':	+ +   +  +     +    +    +    +  +
+
+
+259b.
+X₅_r_iii_21':	{dug}szakir3 i3-dur2-dur2 ga nu-un-de2
+
+
+259c. 		7-kam-ma amasz tur3-sze3 kur9-ra-ni
+
+X₅_r_iii_22':	+ +   +  +     +    +    +    +  +
+
+
+260.		an-za-am i3-dur2-dur2 {d}dumu-zid nu-un-til3  amasz lil2-la2 al-du3
+
+X₅_r_iii_23':	+  +  +  +  +    +    +  +    +   +  um +   ; +     +    am3 +  +~a
+
+
+@trailer
+
+261. 		{d}dumu-zid ug5-ga szir3-kal-kal#-[am3]
+
+X₅_r_iii_24':	+  +    +   +   +  -     -   -     -
+
+
+@end trailer

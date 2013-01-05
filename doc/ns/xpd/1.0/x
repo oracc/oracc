@@ -1,0 +1,2312 @@
+<?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xpd="http://oracc.org/ns/xpd/1.0" xpd:dummy="I am the Fly">
+  <head>
+    <link href="/config.css" type="text/css" rel="stylesheet"/>
+    <title>Oracc Configuration</title>
+    <xf:model>
+      <xf:instance xmlns="http://oracc.org/ns/xpd/1.0" id="config">
+        <project>
+          <n/>
+          <name/>
+          <abbrev/>
+          <type>corpus</type>
+          <logo/>
+          <public>false</public>
+          <blurb/>
+          <image/>
+          <image-alt/>
+          <option name="build-approved-policy" value="atf"/>
+          <option name="build-outlined-policy" value="approved"/>
+          <option name="catalog-build-policy" value="auto"/>
+          <option name="build-tei" value="false"/>
+          <option name="views-TEI" value="false"/>
+          <option name="build-tei-list" value="atf"/>
+          <option name="build-tei-dist" value="false"/>
+          <option name="build-tei-trim" value="false"/>
+          <option name="build-exist" value="false"/>
+          <option name="atf-lem-system" value=""/>
+          <option name="atf-cuneify-notices" value="false"/>
+          <option name="cbd-mode" value="mixed"/>
+          <option name="cbd-periods" value="false"/>
+          <option name="pager-back-button" value=""/>
+          <option name="pager-back-url" value=""/>
+          <option name="pager-translations" value=""/>
+          <option name="render-accents" value="false"/>
+          <option name="render-heth" value="false"/>
+          <option name="render-lnum-opener" value=""/>
+          <option name="render-tlat-opener" value=""/>
+          <option name="render-inter-det-char" value=""/>
+          <option name="render-rulings" value=""/>
+          <option name="render-allographs" value="false"/>
+          <option name="render-tlat-opener" value=""/>
+          <option name="render-tlat-closer" value=""/>
+          <option name="render-tlat-separator" value=""/>
+          <option name="outline-default-select" value="true"/>
+          <option name="outline-default-sort-fields" value=""/>
+          <option name="outline-default-sort-labels" value=""/>
+          <option name="outline-default-heading-template" value=""/>
+          <option name="outline-default-catalog-fields" value=""/>
+          <option name="outline-default-catalog-widths" value=""/>
+          <option name="outline-special-select" value="false"/>
+          <option name="outline-special-list-name" value="all"/>
+          <option name="outline-special-sort-fields" value=""/>
+          <option name="outline-special-sort-labels" value=""/>
+          <option name="outline-special-heading-template" value=""/>
+          <option name="outline-special-catalog-fields" value=""/>
+          <option name="outline-special-catalog-widths" value=""/>
+          <option name="views-cuneify" value="false"/>
+          <option name="views-proofing" value="false"/>
+          <option name="build-tei" value="false"/>
+          <option name="views-TEI" value="false"/>
+          <option name="views-buy-book" value=""/>
+          <option name="atf-lem-flags" value=""/>
+          <option name="atf-saa-mode" value="false"/>
+          <option name="cbd-rws" value=""/>
+          <option name="render-labels" value=""/>
+        </project>
+      </xf:instance>
+      <xf:instance xmlns="http://oracc.org/ns/xpd/1.0" id="template">
+        <project>
+          <n/>
+          <name/>
+          <abbrev/>
+          <type>corpus</type>
+          <logo/>
+          <public>false</public>
+          <blurb/>
+          <image/>
+          <image-alt/>
+          <option name="build-approved-policy" value="atf"/>
+          <option name="build-outlined-policy" value="approved"/>
+          <option name="catalog-build-policy" value="auto"/>
+          <option name="build-tei" value="false"/>
+          <option name="views-TEI" value="false"/>
+          <option name="build-tei-list" value="atf"/>
+          <option name="build-tei-dist" value="false"/>
+          <option name="build-tei-trim" value="false"/>
+          <option name="build-exist" value="false"/>
+          <option name="atf-lem-system" value=""/>
+          <option name="atf-cuneify-notices" value="false"/>
+          <option name="cbd-mode" value="mixed"/>
+          <option name="cbd-periods" value="false"/>
+          <option name="pager-back-button" value=""/>
+          <option name="pager-back-url" value=""/>
+          <option name="pager-translations" value=""/>
+          <option name="render-accents" value="false"/>
+          <option name="render-heth" value="false"/>
+          <option name="render-lnum-opener" value=""/>
+          <option name="render-tlat-opener" value=""/>
+          <option name="render-inter-det-char" value=""/>
+          <option name="render-rulings" value=""/>
+          <option name="render-allographs" value="false"/>
+          <option name="render-tlat-opener" value=""/>
+          <option name="render-tlat-closer" value=""/>
+          <option name="render-tlat-separator" value=""/>
+          <option name="outline-default-select" value="true"/>
+          <option name="outline-default-sort-fields" value=""/>
+          <option name="outline-default-sort-labels" value=""/>
+          <option name="outline-default-heading-template" value=""/>
+          <option name="outline-default-catalog-fields" value=""/>
+          <option name="outline-default-catalog-widths" value=""/>
+          <option name="outline-special-select" value="false"/>
+          <option name="outline-special-list-name" value="all"/>
+          <option name="outline-special-sort-fields" value=""/>
+          <option name="outline-special-sort-labels" value=""/>
+          <option name="outline-special-heading-template" value=""/>
+          <option name="outline-special-catalog-fields" value=""/>
+          <option name="outline-special-catalog-widths" value=""/>
+          <option name="views-cuneify" value="false"/>
+          <option name="views-proofing" value="false"/>
+          <option name="build-tei" value="false"/>
+          <option name="views-TEI" value="false"/>
+          <option name="views-buy-book" value=""/>
+          <option name="atf-lem-flags" value=""/>
+          <option name="atf-saa-mode" value="false"/>
+          <option name="cbd-rws" value=""/>
+          <option name="render-labels" value=""/>
+        </project>
+      </xf:instance>
+      <xf:instance xmlns="" id="display">
+        <data>
+          <x/>
+          <no>no</no>
+          <yes>yes</yes>
+        </data>
+      </xf:instance>
+      <xf:instance xmlns="" id="help">
+        <data>
+          <blob name="#empty"/>
+          <blob name="n">The basename of the project as used in directories, e.g., epsd.
+For subprojects this includes the parent projects separated by
+slashes, e.g., epsd/late. This parameter is set when the project
+is created and cannot be altered without consultation with your
+project liaison.</blob>
+          <blob name="name">The full name of the project is not restricted in the same way as
+the abbreviated name and the project name itself.</blob>
+          <blob name="abbrev">The abbreviation for the project should be a single word, which can
+mix case, like ePSD.</blob>
+          <blob name="type">Oracc recognizes several different project types which affect things
+like how the default home page is constructed, and how the pager
+formats a browsable view of the project data.  This parameter is 
+set when the project is created and cannot be altered without 
+consultation with your project liaison.</blob>
+          <blob name="public"> This parameter cannot be altered without consultation with your
+project liaison.</blob>
+          <blob name="blurb">You have 40 words, about 300 characters including spaces, to give
+the most interesting and relevant information about your project,
+which is used in the Oracc project list and in the Featured Project
+on the Oracc home page.
+
+You do not need to repeat the title and abbreviation, because that
+is already in the heading. You may include links in the blurb--they
+do not count against your word or character limit.
+ 
+If you want split your blurb into two or more paragraphs, each
+paragraph must start with a &lt;p&gt; tag and end with a &lt;/p&gt; tag.  </blob>
+          <blob name="image">This image accompanies the blurb. It is always scaled to 320 x 240
+pixels (i.e., a 4:3 ratio), so should be chosen with this
+constraint in mind. It does not need to be an image that is used
+elsewhere in the project, but it must be placed in the 00web/images
+directory.
+
+Please scale your images so that they are a reasonable size: images
+over 100K in size will be rejected by the system. The best format
+is .png, but .jpg files are also acceptable.
+
+PLEASE TRY NOT TO USE PICTURES OF TABLETS! For some projects, that
+may be inevitable, but since we have so many pictures of tablets in
+so many places, it is more interesting to promote your project with
+a scene of relevance either to the context of the work you are
+doing or to the content of the tablets. If you do use a tablet
+image, please choose a relevant section of a relevant text, and
+present something that is meaningful to those able to read it. The
+section presented should be scaled and processed so that it is
+clearly readable online.</blob>
+          <blob name="image-alt">When the image is displayed online it is accompanied by
+a short description which is used by browsers which do not
+display the image.  This alternate text is required.</blob>
+          <blob name="build-approved-policy">The automatically generated file 00lib/approved.lst gives 
+all the texts which are considered part of the project. 
+You can choose how that list is made: 
+
+(a) "atf" harvests p-numbers and q-numbers from the ATF 
+files in 00atf/ ; 
+
+(b) "catalog" takes all the p- and q-numbers from the 
+project's catalogue (if it has one); 
+
+(c) "mixed" finds all the p- and q-numbers that are in 
+the ATF files and/or the catalogue; 
+
+(d) "static" makes no changes to 00lib/approved.lst 
+(which you will have to edit by hand if you want to change it).</blob>
+          <blob name="build-outlined-policy">The file 00lib/outlined.lst defines the texts in 00lib/approved.lst
+which are displayed by the pager. The options are: 
+(a) "approved" displays all the texts in approved.lst; 
+(b) "atf" displays only the texts in approved.lst which already have 
+ATF files; 
+(c) "P" displays only the texts in approved.list that have p-numbers 
+and x-numbers  (i.e., the mss or tablets); 
+(d) "Q" only the texts in approved.list that have q-numbers (i.e., 
+the composite texts); and 
+(e) "static" means that you will need to manually edit 
+00lib/outlined.lst in order to change it. 
+
+You can control whether or not the pager actually uses 
+00lib/outlined.lst with the option pager-outlined-lst on the Pager
+tab.</blob>
+          <blob name="catalog-build-policy"> Catalog options control the source of your project's metadata.
+
+ The default is "auto", which takes data from the CDLI main 
+catalogue as installed on Oracc. This is the recommended approach, 
+since it encourages corrections to be propagated directly back to 
+the CDLI catalogue.
+
+If you use your own version of the CDLI catalogue with the same 
+fields, then set the value to "local". 
+
+"If, unusually, your project has a customised catalogue, set the 
+value to "custom".
+
+If you use a custom xml catalogue the catalogue configuration is 
+more complicated and is not yet documented. If you do need a custom 
+catalogue, please consult your project liaison about configuration 
+options.</blob>
+          <blob name="build-exist">The default is "no".
+
+If this is 'yes', the project is inserted in the XML 
+database running on Oracc, eXist. See the eXist page 
+for more information.</blob>
+          <blob name="build-tei">The default is "no".
+
+If you set it to "yes:, a TEI version of the project 
+is created. See the TEI page for more information.</blob>
+          <blob name="build-tei-list">This options sets which texts in a project are included 
+in the TEI version. There are three options:
+
+(a) "atf" includes all the project's ATF files in the TEI 
+version.
+
+(b) "lem" includes only the project's lemmatised ATF files.
+
+(c) approved.lst includes all the texts listed in the file
+00lib/approved.lst (which are set using the approved.lst
+option above).</blob>
+          <blob name="build-tei-dist">When you select this option, every time you rebuild the 
+project a zipped version of the TEI corpus is also created,
+which can be downloaded from your project's url/downloads/teiCorpus.zip.</blob>
+          <blob name="build-tei-trim">By selecting this option you ensure that only the 
+glossary data relating to your TEI corpus are included in 
+the TEI distribution. This is particularly useful if you 
+have set your TEI corpus to be a subset of your project's
+corpus.</blob>
+          <blob name="atf-lem-system">Gives a list of projects to use as system dictionaries when 
+lemmatizing, e.g., cams/gkab.
+
+Note that the present implementation only uses the first project 
+in the list, but a future implementation will search each of 
+the list members in turn.      </blob>
+          <blob name="atf-cuneify-notices">If you tick this box, when you rebuild the project you 
+will receive warning notices about signs in your project 
+which Cuneify does not recognise.</blob>
+          <blob name="cbd-mode">This option allows you to set how your project's 
+glossaries are built. There are four possibilities:
+
+(a) "mixed": existing glossary files (e.g., 00lib/akk.glo) 
+are merged with new glossary data (e.g., from 00lib/akk.new)
+when you run the harvest-merge sequence prior to rebuilding 
+a project.
+
+(b) "dynamic": your project's glossaries are created anew 
+from your lemmatised ATF files every time you rebuild your 
+project.
+
+(c) "static": the only way to change your project's 
+glossaries is to edit them by hand.
+
+(d) "none": your project has no glossaries.</blob>
+          <blob name="cbd-periods">Tick this box if you want time periods to be displayed in your  
+glossaries. Leave it unticked if you have a single-period project.</blob>
+          <blob name="pager-back-button">If your project maintains its portal pages on another server or 
+another Oracc project, this option enables the  button in the top 
+of the outline pane which says, e.g., "Back to Knowledge and Power". 
+
+Simply give the text you want to appear in the value attribute of 
+this option, and also set the back-url option to the relevant URL.</blob>
+          <blob name="pager-back-url">This is the URL to be used in the `Back to ...' link whose text is 
+set with the back-button option. It does not have to be an Oracc URL.</blob>
+          <blob name="pager-translations">Use this option to list the ISO 639 language codes of 
+the translations in your project. When you rebuild the 
+project, this will generate a pull-down menu in the pager 
+of your online coprus which allows users to choose 
+between available translation languages. 
+
+Separate them with spaces (e.g., "en hu" for English and
+Hungarian).</blob>
+          <blob name="render-accents">Tick this box if you want your online corpus to display
+acute and grave accents (e.g, ú, ù) rather than subscript 
+numerals (e.g., u₂, u₃).</blob>
+          <blob name="render-allographs">Tick this box if you want your online corpus to display any allographs you have marked in your ATF files.</blob>
+          <blob name="render-heth">Tick this box if you want your online corpus to display
+ḫ instead of h in transliterations.</blob>
+          <blob name="render-inter-det-char">Use this option to add one or more characters or spaces between adjacent determinatives.</blob>
+          <blob name="render-lnum-opener">Use this option to add one or more characters before line numbers in the online 
+transliterations. The default is blank.</blob>
+          <blob name="render-tlat-opener">Use this option to add one or more characters after line numbers in the online 
+transliterations. The default is blank.</blob>
+          <blob name="render-rulings">Leave this box blank to display horizontal rulings as simple straight lines. Enter "char" if you want them displayed as text characters (----).</blob>
+          <blob name="render-tlat-opener">Use this option to add one or more characters before line numbers in the online 
+translations. The default is blank.</blob>
+          <blob name="render-tlat-closer">Use this option to add one or more characters after line numbers in the online 
+translations. The default is blank.</blob>
+          <blob name="render-tlat-separator">Use this option to change the character between ranges of line numbers
+in the online translations. The default is – (en-dash)</blob>
+          <blob name="outline-default-sort-fields">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</blob>
+          <blob name="outline-default-sort-labels">Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</blob>
+          <blob name="outline-default-heading-template">The headings are the fields specified in def.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</blob>
+          <blob name="outline-default-catalog-fields">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </blob>
+          <blob name="outline-default-catalog-widths">Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</blob>
+          <blob name="outline-special-sort-fields">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</blob>
+          <blob name="outline-special-sort-labels">Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</blob>
+          <blob name="outline-special-heading-template">The headings are the fields specified in spe.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</blob>
+          <blob name="outline-special-catalog-fields">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </blob>
+          <blob name="outline-special-catalog-widths">Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</blob>
+          <blob name="views-buy-book">If you need  to link to more than one bookseller or publisher, 
+simply create a web page of your own in the project and link to that.</blob>
+        </data>
+      </xf:instance>
+      <xf:submission id="put-and-quit" method="post" action="/db/oracc/manager/manager.xql?module=config-savequit">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="put-only" method="post" action="/db/oracc/manager/manager.xql?module=config-save">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="cancel" method="post" action="/db/oracc/manager/manager.xql?module=config-cancel">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+      </xf:submission>
+      <xf:submission id="reset" method="get" replace="instance" resource="{$configxml}">
+        <xf:toggle case="case-busy" ev:event="xforms-submit"/>
+        <xf:toggle case="case-submit-error" ev:event="xforms-submit-error"/>
+        <xf:toggle case="case-submit-done" ev:event="xforms-submit-done"/>
+      </xf:submission>
+      <xf:action ev:event="xforms-ready">
+        <xf:action if="not(instance('config')/xpd:n)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:n" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:name)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:name" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:abbrev)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:abbrev" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:type)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:type" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:logo)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:logo" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:public)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:public" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:blurb)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:blurb" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:image)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:image" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/xpd:image-alt)">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/xpd:image-alt" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-approved-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-approved-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-outlined-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-outlined-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='catalog-build-policy'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='catalog-build-policy']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='views-TEI'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='views-TEI']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-list'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-list']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-dist'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-dist']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei-trim'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei-trim']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-exist'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-exist']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-lem-system'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-lem-system']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-cuneify-notices'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-cuneify-notices']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='cbd-mode'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='cbd-mode']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='cbd-periods'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='cbd-periods']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='pager-back-button'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='pager-back-button']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='pager-back-url'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='pager-back-url']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='pager-translations'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='pager-translations']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-accents'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-accents']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-heth'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-heth']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-lnum-opener'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-lnum-opener']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-tlat-opener'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-tlat-opener']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-inter-det-char'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-inter-det-char']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-rulings'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-rulings']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-allographs'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-allographs']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-tlat-opener'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-tlat-opener']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-tlat-closer'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-tlat-closer']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-tlat-separator'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-tlat-separator']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-select'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-select']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-sort-fields'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-sort-fields']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-sort-labels'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-sort-labels']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-heading-template'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-heading-template']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-catalog-fields'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-catalog-fields']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-default-catalog-widths'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-default-catalog-widths']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-select'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-select']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-list-name'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-list-name']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-sort-fields'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-sort-fields']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-sort-labels'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-sort-labels']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-heading-template'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-heading-template']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-catalog-fields'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-catalog-fields']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='outline-special-catalog-widths'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='outline-special-catalog-widths']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='views-cuneify'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='views-cuneify']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='views-proofing'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='views-proofing']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='build-tei'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='build-tei']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='views-TEI'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='views-TEI']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='views-buy-book'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='views-buy-book']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-lem-flags'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-lem-flags']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='atf-saa-mode'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='atf-saa-mode']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='cbd-rws'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='cbd-rws']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+        <xf:action if="not(instance('config')/*[@name='render-labels'])">
+          <xf:insert nodeset="instance('config')/*" origin="instance('template')/*[@name='render-labels']" position="after" at="last()"/>
+          <xf:rebuild/>
+          <xf:recalculate/>
+          <xf:refresh/>
+        </xf:action>
+      </xf:action>
+      <xf:bind nodeset="instance('config')/xpd:public" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-exist']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei-dist']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='build-tei-trim']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='atf-cuneify-notices']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='cbd-periods']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='render-accents']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='render-allographs']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='render-heth']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='outline-default-select']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='outline-special-select']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='views-cuneify']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='views-proofing']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='views-TEI']/@value" type="xs:boolean"/>
+      <xf:bind nodeset="instance('config')/xpd:option[@name='atf-saa-mode']/@value" type="xs:boolean"/>
+      <xf:submission id="save" method="put" replace="none" action="file://">
+        <xf:message level="modeless" ev:event="xforms-submit-error">Submit
+	  error.</xf:message>
+      </xf:submission>
+      <xf:submission id="load" method="get" serialization="none" replace="instance" action="file://">
+        <xf:message level="modeless" ev:event="xforms-submit-error">Submit
+	  error.</xf:message>
+      </xf:submission>
+    </xf:model>
+  </head>
+  <body>
+    <h1>Oracc Configuration for project: 
+      <xf:output value="instance('config')/xpd:n"/></h1>
+    <p class="readonlies">Project type: <xf:output ref="instance('config')/xpd:type"/>; 
+      public: <xf:output ref="if(instance('config')/xpd:public='false',            instance('display')/no,      instance('display')/yes)"/></p>
+    <div class="submits">
+      <p>
+        <span class="savequit">
+          <xf:submit submission="save">
+            <xf:label>Save to local disk</xf:label>
+          </xf:submit>
+        </span>
+        <span class="savequit">
+          <xf:submit submission="load">
+            <xf:label>Restore from local disk</xf:label>
+          </xf:submit>
+        </span>
+      </p>
+    </div>
+    <div id="horiz-tab-menu">
+      <xf:trigger id="tab-core" appearance="minimal">
+        <xf:label>core</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-core"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-build" appearance="minimal">
+        <xf:label>build</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-build"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-atf" appearance="minimal">
+        <xf:label>ATF processor</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-atf"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-cbd" appearance="minimal">
+        <xf:label>glossary</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-cbd"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-pager" appearance="minimal">
+        <xf:label>pager</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-pager"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-render" appearance="minimal">
+        <xf:label>render</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-render"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-outline" appearance="minimal">
+        <xf:label>outline</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-outline"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-views" appearance="minimal">
+        <xf:label>views</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-views"/>
+        </xf:action>
+      </xf:trigger>
+      <xf:trigger id="tab-undocumented" appearance="minimal">
+        <xf:label>undocumented</xf:label>
+        <xf:refresh/>
+        <xf:action ev:event="DOMActivate">
+          <xf:setvalue ref="instance('display')/x" value="instance('help')/blob[@name='#empty']"/>
+          <xf:toggle case="case-undocumented"/>
+        </xf:action>
+      </xf:trigger>
+    </div>
+    <xf:switch>
+      <xf:case id="case-core" appearance="minimal">
+        <div id="div-core" class="optgroup">
+          <h2>core —
+      <span class="groupdoc">required for all projects.</span></h2>
+          <fieldset class="core">
+            <table>
+              <tr>
+                <td class="option">name: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:name">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The long human-readable name of the project, 
+e.g., electronic Pennsylvania Sumerian Dictionary</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='name']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">abbrev: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:abbrev">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The short human-readable name of the project, e.g., ePSD.</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='abbrev']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">logo: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:logo">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">The logo to display in the top left corner of the page</span>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">blurb: </td>
+                <td colspan="2" class="double">
+                  <p>
+                    <xf:textarea class="blurb" ref="instance('config')/xpd:blurb">
+                      <xf:label/>
+                    </xf:textarea>
+                    <br/>
+                    <span class="docsolo">Short description for the Featured Project panel</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='blurb']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">image: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:image">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">A 4:3 ratio image for the Featured Project panel</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='image']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">alt: </td>
+                <td class="control">
+                  <xf:input ref="instance('config')/xpd:image-alt">
+                    <xf:label/>
+                  </xf:input>
+                </td>
+                <td class="doco">
+                  <span class="docsolo">Brief description of image for the 'alt' attribute</span>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='image-alt']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-build" appearance="minimal">
+        <div id="div-build" class="optgroup">
+          <h2>build —
+      <span class="groupdoc">affects the project rebuilding process.</span></h2>
+          <fieldset class="lists">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>approved.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-approved-policy']/@value">
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>catalog</xf:label>
+                        <xf:value>catalog</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>mixed</xf:label>
+                        <xf:value>mixed</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">list is derived from project's ATF sources</span></p>
+                    <p class="choicedoc"><span class="valval">catalog</span>: <span class="valdoc">list is derived from project catalogs</span></p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">list combined ATF sources and existing approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-approved-policy']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>outlined.lst: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-outlined-policy']/@value">
+                      <xf:item>
+                        <xf:label>approved</xf:label>
+                        <xf:value>approved</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>P</xf:label>
+                        <xf:value>P</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>Q</xf:label>
+                        <xf:value>Q</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">outline gives the texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">outline gives all texts for which project has ATF source</span></p>
+                    <p class="choicedoc"><span class="valval">P</span>: <span class="valdoc">outline gives all P-id and X-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">Q</span>: <span class="valdoc">outline gives all Q-id texts in approved.lst</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-outlined-policy']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>catalog: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='catalog-build-policy']/@value">
+                      <xf:item>
+                        <xf:label>auto</xf:label>
+                        <xf:value>auto</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>local</xf:label>
+                        <xf:value>local</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>custom</xf:label>
+                        <xf:value>custom</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">auto</span>: <span class="valdoc">data comes from CDLI main catalog</span></p>
+                    <p class="choicedoc"><span class="valval">local</span>: <span class="valdoc">project maintains its own catalog in CDLI format</span></p>
+                    <p class="choicedoc"><span class="valval">custom</span>: <span class="valdoc">project maintains its own catalog in its own format</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='catalog-build-policy']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>eXist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-exist']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build eXist version of project</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-exist']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI version of project</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-tei']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.list: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='build-tei-list']/@value">
+                      <xf:item>
+                        <xf:label>atf</xf:label>
+                        <xf:value>atf</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>lem</xf:label>
+                        <xf:value>lem</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>approved</xf:label>
+                        <xf:value>approved</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">all ATF files</span></p>
+                    <p class="choicedoc"><span class="valval">lem</span>: <span class="valdoc">only lemmatized files</span></p>
+                    <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">all files list in approved.lst</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-tei-list']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.dist: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei-dist']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">build TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-tei-dist']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI.trim: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='build-tei-trim']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">trim TEI distribution</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='build-tei-trim']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-atf" appearance="minimal">
+        <div id="div-atf" class="optgroup">
+          <h2>ATF processor —
+      <span class="groupdoc">controls ATF processor behaviour.</span></h2>
+          <fieldset class="atf">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>lem-system: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-lem-system']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">projects to search for words when lemmatizing</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='atf-lem-system']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>cuneify-notices: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-cuneify-notices']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">issue warning notices about cuneify failures</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='atf-cuneify-notices']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-cbd" appearance="minimal">
+        <div id="div-cbd" class="optgroup">
+          <h2>glossary —
+      <span class="groupdoc">controls glossary building behaviour.</span></h2>
+          <fieldset class="cbd">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>cbd-mode: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='cbd-mode']/@value">
+                      <xf:item>
+                        <xf:label>mixed</xf:label>
+                        <xf:value>mixed</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>dynamic</xf:label>
+                        <xf:value>dynamic</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>static</xf:label>
+                        <xf:value>static</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>none</xf:label>
+                        <xf:value>none</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">glossary files can be combined with harvested data</span></p>
+                    <p class="choicedoc"><span class="valval">dynamic</span>: <span class="valdoc">glossaries are always generated from lemmatized sources</span></p>
+                    <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">glossaries are never changed by a program</span></p>
+                    <p class="choicedoc"><span class="valval">none</span>: <span class="valdoc">project does not use glossaries (portals, for example)</span></p>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='cbd-mode']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>periods: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='cbd-periods']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display periods in glossary</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='cbd-periods']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-pager" appearance="minimal">
+        <div id="div-pager" class="optgroup">
+          <h2>pager —
+      <span class="groupdoc">controls pager behaviour.</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>back-button: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='pager-back-button']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">text to display on 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='pager-back-button']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>back-url: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='pager-back-url']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">URL to visit when user clicks 'Back to ...' button</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='pager-back-url']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>translations: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='pager-translations']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">translation languages available in the pager</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='pager-translations']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-render" appearance="minimal">
+        <div id="div-render" class="optgroup">
+          <h2>render —
+      <span class="groupdoc">controls rendering (HTML, print).</span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>accents: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-accents']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display graphemes with index 2 and 3 as accented</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-accents']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>allographs: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-allographs']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display allographs</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-allographs']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>heth: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-heth']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">display ḫ not h</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-heth']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>inter-det-char: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-inter-det-char']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character between adjacent determinatives</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-inter-det-char']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>lnum-opener: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-lnum-opener']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character before line numbers in transliterations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-lnum-opener']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>lnum-closer: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-tlat-opener']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">character(s) after line numbers in transliterations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-tlat-opener']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>rulings: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-rulings']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">set the characters for horizontal rulings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-rulings']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>tlat-opener: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-tlat-opener']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character before line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-tlat-opener']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>tlat-closer: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-tlat-closer']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character after line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-tlat-closer']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>tlat-separator: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-tlat-separator']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">the character between line numbers in translations</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='render-tlat-separator']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-outline" appearance="minimal">
+        <div id="div-outline" class="optgroup">
+          <h2>outline —
+      <span class="groupdoc">controls how catalogue contents and search results are sorted and outlined </span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>def.select: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-select']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">Switches the default outline mode on and off.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.sort.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-sort-fields']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-default-sort-fields']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.sort.labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-sort-labels']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-default-sort-labels']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.hdg.template: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-heading-template']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">template for formatting headings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-default-heading-template']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.cat.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-catalog-fields']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the fields for displaying catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-default-catalog-fields']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>def.cat.widths: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-default-catalog-widths']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the field widths for displayed catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-default-catalog-widths']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>spe.select: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-select']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">Switches the special outline mode on and off</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.list.name: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:select1 ref="instance('config')/xpd:option[@name='outline-special-list-name']/@value">
+                      <xf:item>
+                        <xf:label>all</xf:label>
+                        <xf:value>all</xf:value>
+                      </xf:item>
+                      <xf:item>
+                        <xf:label>outline</xf:label>
+                        <xf:value>outline</xf:value>
+                      </xf:item>
+                    </xf:select1>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <p class="choicedoc"><span class="valval">all</span>: <span class="valdoc">(not sure)</span></p>
+                    <p class="choicedoc"><span class="valval">outline</span>: <span class="valdoc">(not sure)</span></p>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.sort.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-sort-fields']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-special-sort-fields']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.sort.labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-sort-labels']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-special-sort-labels']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.hdg.template: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-heading-template']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">template for formatting headings</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-special-heading-template']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.cat.fields: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-catalog-fields']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the fields for displaying catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-special-catalog-fields']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>spe.cat.widths: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='outline-special-catalog-widths']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">sets the field widths for displayed catalogue records</span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='outline-special-catalog-widths']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-views" appearance="minimal">
+        <div id="div-views" class="optgroup">
+          <h2>views —
+      <span class="groupdoc">adds extra views of texts in the corpus</span></h2>
+          <fieldset class="views">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>cuneify: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='views-cuneify']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'Cuneify' link to display
+text in cuneiform in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>proofing: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='views-proofing']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'Proofing' link to display the
+annotation of a text aligned by word
+in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>TEI: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='views-TEI']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates 'TEI' link to display TEI version
+of a text in a popup window.</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>buy-book: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='views-buy-book']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">creates a 'Buy the Book' link to the URL provided in the option.  </span>
+                  </p>
+                </td>
+                <td class="help">
+                  <xf:trigger>
+                    <xf:label>+</xf:label>
+                    <xf:message ev:event="DOMActivate" level="modeless">
+                      <xf:output ref="instance('help')/blob[@name='views-buy-book']"/>
+                    </xf:message>
+                  </xf:trigger>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+      <xf:case id="case-undocumented" appearance="minimal">
+        <div id="div-undocumented" class="optgroup">
+          <h2>undocumented —
+      <span class="groupdoc">odds and ends </span></h2>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>flags: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-lem-flags']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">ATF options to use when converting ATF to XML</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+              <tr>
+                <td class="option">
+                  <p>saa-mode: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='atf-saa-mode']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">double hyphens in QPNs</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>rws: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='cbd-rws']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">register/writing-system</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <fieldset class="">
+            <table>
+              <tr>
+                <td class="option">
+                  <p>labels: </p>
+                </td>
+                <td class="control">
+                  <p>
+                    <xf:input ref="instance('config')/xpd:option[@name='render-labels']/@value">
+                      <xf:label/>
+                    </xf:input>
+                  </p>
+                </td>
+                <td class="doco">
+                  <p>
+                    <span class="docsolo">saa-style labels</span>
+                  </p>
+                </td>
+                <td class="help"/>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="help">
+            <xf:output ref="instance('display')/x" incremental="all"/>
+          </p>
+        </div>
+      </xf:case>
+    </xf:switch>
+    <br/>
+    <xf:switch>
+      <xf:case id="ready"/>
+      <xf:case id="case-busy">
+        <p>Waiting for results from server...</p>
+      </xf:case>
+      <xf:case id="case-submit-error">
+        <p>Submit error</p>
+      </xf:case>
+      <xf:case id="case-submit-done">
+        <p>Submit done</p>
+      </xf:case>
+    </xf:switch>
+  </body>
+</html>

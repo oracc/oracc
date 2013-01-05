@@ -1,0 +1,33 @@
+h1 { font-size: 13pt; }
+h2 { font-size: 11pt; }
+h2.view { font-size: 11pt; background-color: pink; }
+h2.cview { font-size: 11pt; }
+h3 { font-size: 9pt; }
+
+div.navigator   { background-color: red; }
+table.nav { width: 100%; margin: 0px; }
+table.nav tr { margin: 0px; }
+td.prev   { width: 30%; text-align: left; margin: 0px; }
+td.curr   { width: 40%; text-align: center; background-color: white; }
+td.next   { width: 30%; text-align: right; margin: 0px; }
+
+table { width: 95%; margin: auto; vertical-align: top; }
+tr   { vertical-align: top; }
+td p { margin: 0px; vertical-align: top; }
+td.tlt { width: 40%; vertical-align: top; }
+td.syn { width: 60%; vertical-align: top; }
+
+pre { width: 95%; margin: auto; }
+
+a { text-decoration: none; background-color: white; color: black; }
+
+div.trans { margin-top: 5px; padding-top: 10px; border-top: solid 2px silver; }
+span.marker { font-size: 80%; vertical-align: super; 
+	    background-color: black; color: white; }
+hr.notesep { width: 50px; margin-left: 0px; margin-right: auto; }
+
+span.xlabel { display: none }
+
+span.uncertain { font-style: italic; }
+
+span.foreign { font-style: italic; }

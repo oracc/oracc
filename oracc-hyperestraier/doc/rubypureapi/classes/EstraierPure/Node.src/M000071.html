@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>search (EstraierPure::Node)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File estraierpure.rb, line 838</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">search</span>(<span class="ruby-identifier">cond</span>, <span class="ruby-identifier">depth</span>)
+      <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">check_types</span>({ <span class="ruby-identifier">cond</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Condition</span>, <span class="ruby-identifier">depth</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Integer</span> }) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG</span>
+      <span class="ruby-ivar">@status</span> = <span class="ruby-value">-1</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@url</span>
+      <span class="ruby-identifier">turl</span> = <span class="ruby-ivar">@url</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;/search&quot;</span>
+      <span class="ruby-identifier">reqheads</span> = [ <span class="ruby-value str">&quot;Content-Type: application/x-www-form-urlencoded&quot;</span> ]
+      <span class="ruby-identifier">reqheads</span>.<span class="ruby-identifier">push</span>(<span class="ruby-value str">&quot;Authorization: Basic &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">base_encode</span>(<span class="ruby-ivar">@auth</span>)) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@auth</span>
+      <span class="ruby-identifier">reqbody</span> = <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">cond_to_query</span>(<span class="ruby-identifier">cond</span>, <span class="ruby-identifier">depth</span>, <span class="ruby-ivar">@wwidth</span>, <span class="ruby-ivar">@hwidth</span>, <span class="ruby-ivar">@awidth</span>)
+      <span class="ruby-identifier">resbody</span> = <span class="ruby-constant">StringIO</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">rv</span> = <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">shuttle_url</span>(<span class="ruby-identifier">turl</span>, <span class="ruby-ivar">@pxhost</span>, <span class="ruby-ivar">@pxport</span>, <span class="ruby-ivar">@timeout</span>, <span class="ruby-identifier">reqheads</span>, <span class="ruby-identifier">reqbody</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">resbody</span>)
+      <span class="ruby-ivar">@status</span> = <span class="ruby-identifier">rv</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rv</span> <span class="ruby-operator">!=</span> <span class="ruby-value">200</span>
+      <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">resbody</span>.<span class="ruby-identifier">string</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\n/</span>, <span class="ruby-value">-1</span>)
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+      <span class="ruby-identifier">docs</span> = []
+      <span class="ruby-identifier">hints</span> = {}
+      <span class="ruby-identifier">nres</span> = <span class="ruby-constant">NodeResult</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>(<span class="ruby-identifier">docs</span>, <span class="ruby-identifier">hints</span>)
+      <span class="ruby-identifier">border</span> = <span class="ruby-identifier">lines</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-identifier">isend</span> = <span class="ruby-keyword kw">false</span>
+      <span class="ruby-identifier">lnum</span> = <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">lnum</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">length</span>
+        <span class="ruby-identifier">line</span> = <span class="ruby-identifier">lines</span>[<span class="ruby-identifier">lnum</span>]
+        <span class="ruby-identifier">lnum</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">border</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">border</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+          <span class="ruby-identifier">isend</span> = <span class="ruby-keyword kw">true</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>[<span class="ruby-identifier">border</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">...</span><span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;:END&quot;</span>
+          <span class="ruby-keyword kw">break</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">lidx</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">index</span>(<span class="ruby-value str">&quot;\t&quot;</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lidx</span>
+          <span class="ruby-identifier">key</span> = <span class="ruby-identifier">line</span>[<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">lidx</span>]
+          <span class="ruby-identifier">value</span> = <span class="ruby-identifier">line</span>[(<span class="ruby-identifier">lidx</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>)<span class="ruby-operator">...</span><span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span>]
+          <span class="ruby-identifier">hints</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">snum</span> = <span class="ruby-identifier">lnum</span>
+      <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">isend</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">lnum</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">length</span>
+        <span class="ruby-identifier">line</span> = <span class="ruby-identifier">lines</span>[<span class="ruby-identifier">lnum</span>]
+        <span class="ruby-identifier">lnum</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">border</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">border</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lnum</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">snum</span>
+            <span class="ruby-identifier">rdattrs</span> = {}
+            <span class="ruby-identifier">sb</span> = <span class="ruby-constant">StringIO</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>
+            <span class="ruby-identifier">rdvector</span> = <span class="ruby-value str">&quot;&quot;</span>
+            <span class="ruby-identifier">rlnum</span> = <span class="ruby-identifier">snum</span>
+            <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">rlnum</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">lnum</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+              <span class="ruby-identifier">rdline</span> = <span class="ruby-identifier">lines</span>[<span class="ruby-identifier">rlnum</span>].<span class="ruby-identifier">strip</span>
+              <span class="ruby-identifier">rlnum</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+              <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rdline</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+              <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rdline</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^%/</span>
+                <span class="ruby-identifier">lidx</span> = <span class="ruby-identifier">rdline</span>.<span class="ruby-identifier">index</span>(<span class="ruby-value str">&quot;\t&quot;</span>)
+                <span class="ruby-identifier">rdvector</span> = <span class="ruby-identifier">rdline</span>[(<span class="ruby-identifier">lidx</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>)<span class="ruby-operator">...</span><span class="ruby-identifier">rdline</span>.<span class="ruby-identifier">length</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rdline</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/%VECTOR/</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">lidx</span>
+              <span class="ruby-keyword kw">else</span>
+                <span class="ruby-identifier">lidx</span> = <span class="ruby-identifier">rdline</span>.<span class="ruby-identifier">index</span>(<span class="ruby-value str">&quot;=&quot;</span>)
+                <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lidx</span>
+                  <span class="ruby-identifier">key</span> = <span class="ruby-identifier">rdline</span>[<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">lidx</span>]
+                  <span class="ruby-identifier">value</span> = <span class="ruby-identifier">rdline</span>[(<span class="ruby-identifier">lidx</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>)<span class="ruby-operator">...</span><span class="ruby-identifier">rdline</span>.<span class="ruby-identifier">length</span>]
+                  <span class="ruby-identifier">rdattrs</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+                <span class="ruby-keyword kw">end</span>
+              <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">rlnum</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">lnum</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+              <span class="ruby-identifier">rdline</span> = <span class="ruby-identifier">lines</span>[<span class="ruby-identifier">rlnum</span>]
+              <span class="ruby-identifier">rlnum</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+              <span class="ruby-identifier">sb</span>.<span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;%s\n&quot;</span>, <span class="ruby-identifier">rdline</span>)
+            <span class="ruby-keyword kw">end</span>
+            <span class="ruby-identifier">rduri</span> = <span class="ruby-identifier">rdattrs</span>[<span class="ruby-value str">&quot;@uri&quot;</span>]
+            <span class="ruby-identifier">rdsnippet</span> = <span class="ruby-identifier">sb</span>.<span class="ruby-identifier">string</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rduri</span>
+              <span class="ruby-identifier">rdoc</span> = <span class="ruby-constant">ResultDocument</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>(<span class="ruby-identifier">rduri</span>, <span class="ruby-identifier">rdattrs</span>, <span class="ruby-identifier">rdsnippet</span>, <span class="ruby-identifier">rdvector</span>)
+              <span class="ruby-identifier">docs</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">rdoc</span>)
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">snum</span> = <span class="ruby-identifier">lnum</span>
+          <span class="ruby-identifier">isend</span> = <span class="ruby-keyword kw">true</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>[<span class="ruby-identifier">border</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">...</span><span class="ruby-identifier">line</span>.<span class="ruby-identifier">length</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;:END&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">isend</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">nres</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

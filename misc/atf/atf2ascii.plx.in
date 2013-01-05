@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use warnings; use strict; use open ':utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::ATF::Unicode;
+binmode STDIN, 'utf8';
+binmode STDOUT, 'utf8';
+while (<>) {
+    print ORACC::ATF::Unicode::asciify($_,1);
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+atf2ascii.plx -- convert Unicode characters to ATF ASCII
+
+=head1 SYNOPSIS
+
+atf2ascii.plx [file]
+
+=head1 DESCRIPTION
+
+atf2ascii.plx substitutes Unicode characters that may be part of
+    transliteration for their ATF ASCII equivalents.  It is quite
+    simple-minded about this and has no understanding of context.
+
+Accented vowels are converted to numbers on the assumption that what
+is being processed is a sequence of graphemes; this will mess up your
+French so be careful if you are processing mixed input (this program
+shouldn't be used to process mixed input...).
+
+=head1 AUTHOR
+
+Steve Tinney (stinney@sas.upenn.edu)
+
+=head1 COPYRIGHT
+
+Copyright(c) Steve Tinney 2005.
+
+Released under the Gnu General Public License
+(http://www.gnu.org/copyleft/gpl.html).

@@ -1,0 +1,5 @@
+@import '/css/xtf-common.css';
+
+@namespace xtf "http://oracc.org/ns/xtf/1.0";
+
+xtf|l { display: block }

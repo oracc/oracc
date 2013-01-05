@@ -1,0 +1,121 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: polyglot.tex,v 0.3 1995/11/12 03:16:13 b Exp $
+
+% This file implements multiple output language and hyphenation patterns
+% for the DA TeX format.
+%
+% There are two issues here. Firstly, control sequences such as @obverse
+% produce an actual heading in the output. We need to be able to allow users
+% to specify that their document is written in French or whatever and have
+% the words produced be appropriate to that language. Secondly, hyphenation
+% must be modifiable both at the default level, so that a paper written in
+% German will be hyphenated correctly, and on an ad hoc basis so that, for
+% example, bibliography entries can be correctly hyphenated be they in 
+% English, French, German, Italian or Spanish.
+%
+
+% The strategy for language specific label selection is as follows:
+%
+%	We define a means of specifying a control sequence and its values
+%	  in each of the target languages
+%	We define a means of selecting a target language as the default
+%	Upon selection of the language, we read two files of polyglot 
+%	  definitions, the base set in polybase.tex and the user's additions
+%	  in polyuser.tex
+%
+\chardef\English=0
+\newlanguage\French
+\newlanguage\German
+\newlanguage\Italian
+\newlanguage\Spanish
+
+% This method means we have only 3 spaces for expansion, but we'll drive off
+% that bridge when we come to it.
+%
+%   #1 = control sequence, without escape character
+%   #2 = English language label
+%   #3 = French language label
+%   #4 = German language label
+%   #5 = Italian language label
+%   #6 = Spanish language label
+%
+% We actually define a control sequence \#1str, so that one can define the
+% control sequences themselves to have other formatting information, and use
+% the string value only where needed, e.g. \def\obverse{\heading{\obversestr}}.
+% Of course, there need be no control sequence corresponding to obverse. For
+% example, the abbreviations used in running text with @obverse and friends
+% are implemented by saying 
+%	\polyglot{obverseabb}{obv.}{...} etc
+\def\polyglot#1#2#3#4#5#6{
+  \ifcase\language
+     \expandafter\def\csname#1str\endcsname{#2}% English
+  \or\expandafter\def\csname#1str\endcsname{#3}% French
+  \or\expandafter\def\csname#1str\endcsname{#4}% German
+  \or\expandafter\def\csname#1str\endcsname{#5}% Italian
+  \or\expandafter\def\csname#1str\endcsname{#6}% Spanish
+  \fi}
+\def\polyread{
+  \checkfile{polybase}%
+  \ifitexists\def\next{\macrofile{polybase}}\else\let\next\relax\fi
+  \next
+  \checkfile{polyuser}%
+  \ifitexists\def\next{\macrofile{polybase}}\else\let\next\relax\fi
+  \next }
+\def\EnglishLanguage{\language\English \polyread}
+\def\FrenchLanguage{\language\French \polyread}
+\def\GermanLanguage{\language\German \polyread}
+\def\ItalianLanguage{\language\Italian \polyread}
+%\def\SpanishLanguage{\language\Spanish \polyread}
+\def\EnglishHyphens{\language\English }
+%\def\FrenchHyphens{\language\French }
+%\def\GermanHyphens{\language\German }
+%\def\ItalianHyphens{\language\Italian }
+%\def\SpanishHyphens{\language\Spanish }
+
+% Hyphenation, miscellaneous macros, and initial values for standard layout
+\EnglishHyphens
+\message{English hyphenation}
+\lefthyphenmin=2 \righthyphenmin=3 % disallow x- or -xx breaks
+%\input hyphen
+
+%\ifISOfonts
+%\else
+%\FrenchHyphens
+%\input hyphfrda
+%\fi
+
+%\ifISOfonts
+%\else
+%\GermanHyphens
+%\input hyphgeda
+%\fi
+
+%\language\English
+
+%\EnglishLanguage
+
+\def\showhyphens#1{\setbox0\vbox{\parfillskip\z@skip\hsize\maxdimen\tenrm
+  \pretolerance\m@ne\tolerance\m@ne\hbadness0\showboxdepth0\ #1}}
+\def\nohyphenation{\hyphenpenalty\@M \exhyphenpenalty\@M \finalhyphendemerits\@M}
+\def\dohyphenation{\hyphenpenalty50  \exhyphenpenalty50  \finalhyphendemerits5000 }
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: polyglot.tex,v $
+Revision 0.3  1995/11/12 03:16:13  b
+don't include hyphens when using ISO fonts: the hyphenation needs
+to use different inputs for different charsets
+
+Revision 0.2  1995/11/09 12:42:15  s
+initial checkin
+
+% Revision 0.2  1995/11/09  12:42:15  s
+% fixed typo in comment to \polyglot
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

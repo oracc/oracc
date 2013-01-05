@@ -1,0 +1,100 @@
+= Pure Ruby Interface of Hyper Estraier
+
+Hyper Estraier is a full-text search system for communities.
+
+== Introduction
+
+This is a package implementing the node API of {Hyper Estraier}[http://fallabs.com/hyperestraier/].  This is a pure ruby package.  So, it works on Linux, Mac OS X, Windows, and so on.  It does not depend on the core library of Hyper Estraier.  Applications are implemented as clients of node servers running on local or remote machines.  This package requires Ruby 1.8.4 or later versions.
+
+Though Hyper Estraier itself is released under the terms of the GNU LGPL, this package is released under the terms of a BSD-style license.
+
+== Setting
+
+Get the package of the latest version of Hyper Estraier.
+
+Extract the package and enter the sub directory `rubypure' and perform installation.
+
+ cd rubypure
+ ./configure
+ make
+ su
+ make install
+
+The package `estraierpure' should be required in each source file of application programs and include the module `EstraierPure' at pleasure.
+
+== Example of Gatherer
+
+The following is the simplest implementation of a gatherer.
+
+ require "estraierpure"
+ include EstraierPure
+
+ # create and configure the node connecton object
+ node = Node::new
+ node.set_url("http://localhost:1978/node/test1")
+ node.set_auth("admin", "admin")
+
+ # create a document object
+ doc = Document::new
+
+ # add attributes to the document object
+ doc.add_attr("@uri", "http://estraier.gov/example.txt")
+ doc.add_attr("@title", "Over the Rainbow")
+
+ # add the body text to the document object
+ doc.add_text("Somewhere over the rainbow.  Way up high.")
+ doc.add_text("There's a land that I heard of once in a lullaby.")
+
+ # register the document object to the node
+ unless node.put_doc(doc)
+   STDERR.printf("error: %d\n", node.status)
+ end
+
+==Example of Searcher
+
+The following is the simplest implementation of a searcher.
+
+ require "estraierpure"
+ include EstraierPure
+ 
+ # create and configure the node connecton object
+ node = Node::new
+ node.set_url("http://localhost:1978/node/test1")
+
+ # create a search condition object
+ cond = Condition::new
+
+ # set the search phrase to the search condition object
+ cond.set_phrase("rainbow AND lullaby")
+
+ # get the result of search
+ nres = node.search(cond, 0);
+ if nres
+   # for each document in the result
+   for i in 0...nres.doc_num
+     # get a result document object
+     rdoc = nres.get_doc(i)
+     # display attributes
+     value = rdoc.attr("@uri")
+     printf("URI: %s\n", value) if value
+     value = rdoc.attr("@title")
+     printf("Title: %s\n", value) if value
+     # display the snippet text */
+     printf("%s", rdoc.snippet)
+   end
+ else
+   STDERR.printf("error: %d\n", node.status)
+ end
+
+== License
+
+ Copyright (C) 2004-2006 Mikio Hirabayashi
+ All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- Neither the name of Mikio Hirabayashi nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

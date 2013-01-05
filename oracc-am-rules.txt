@@ -1,0 +1,25 @@
+ORACCIFY = @abs_top_builddir@/oracc-subst.sh $(DESTDIR)$(prefix)
+
+cgibindir     = $(prefix)/www/cgi-bin
+cgidatadir     = $(prefix)/www/cgi-bin
+charmapdir    = $(prefix)/lib/charmap
+configdir     = $(prefix)/lib/config
+cssdir        = $(prefix)/www/css
+datadir       = $(prefix)/lib/data
+emacsdatadir  = $(prefix)/lib/emacs
+espdatadir    = $(prefix)/lib/esp
+htmldir       = $(prefix)/www
+imgdir        = $(prefix)/www/img
+javadir       = $(prefix)/lib/java
+jsdir         = $(prefix)/www/js
+scriptdatadir = $(prefix)/lib/scripts
+texdatadir    = $(prefix)/lib/tex
+schemadir     = $(prefix)/www/lib/schemas
+webscriptdatadir = $(prefix)/www/lib/scripts
+webdatadir   = $(prefix)/www/lib/data
+
+clean-local:
+	$(top_srcdir)/oracc-clean-in.sh
+
+install-exec-local:
+	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)

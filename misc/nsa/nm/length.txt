@@ -1,0 +1,44 @@
+@nm Length Metrology
+
+@system length time=* place=* meb=szusi mev=3000/180mm
+
+@step szusi atf=szu-si aev=1/30*kusz
+@inst disz szusi	1	1/30*kusz	#(disz) szu-si
+
+@step SZU.BAD atf=|SZU.BAD| aev=1/2*kusz
+@inst disz SZU.BAD 1 	1/2*kusz	#(disz) |SZU.BAD|
+
+@step kusz atf=kusz3 aev=1/6*gi
+@inst disz kusz	1	1/6*gi		#(disz) kusz3
+
+@step gi atf=gi aev=1/2*nindan
+@inst 1/3 gi	1	1/3*gi		1/3~a=1/3(disz) gi
+@inst 1/2 gi	1	1/2*gi		1/2~a=1/2(disz) gi
+@inst 2/3 gi	1	2/3*gi		2/3~a=2/3(disz) gi
+@inst 5/6 gi	1	5/6*gi		5/6~a=5/6(disz) gi
+@inst disz gi	1	1/2*nindan	#(disz) gi
+
+@step nindan atf=ninda aev=1/10*esze
+@inst disz nindan 	1       1/10*esze	#(disz) ninda
+@inst-system sexagesimal
+
+@step esze atf=esz2 aev=1/6*USZ
+@inst 1/2 esz 	1	1/12*USZ	1/2~a=1/2(disz) esz2
+@inst disz esze 	1	1/6*USZ		#(disz) esz2
+
+@step USZ atf=USZ aev=1/30*danna
+@inst 1/3 USZ	1	1/3*USZ		1/3~a=1/3(disz) USZ
+@inst 1/2 USZ	1	1/2*USZ		1/2~a=1/2(disz) USZ
+@inst 2/3 USZ	1	2/3*USZ		2/3~a=2/3(disz) USZ
+@inst 5/6 USZ	1	5/6*USZ		5/6~a=5/6(disz) USZ
+@inst disz USZ	1	1/30*danna	#(disz) USZ
+
+@step danna atf=danna
+@inst 1/3 danna	1	1/3*danna	1/3~a=1/3(disz) danna
+@inst 1/2 danna	1	1/2*danna	1/2~a=1/2(disz) danna
+@inst 2/3 danna	1	2/3*danna	2/3~a=2/3(disz) danna
+@inst disz danna	1	1*danna		#(disz) danna
+@inst-system sexagesimal
+
+@examples
+@ex 1(gesz2) 2(u) 1(disz) 1/2(disz) ninda gid2 2(disz) kusz3 dagal 2(disz) kusz3 sukud

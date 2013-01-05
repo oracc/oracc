@@ -1,0 +1,15 @@
+#lem needs:
+
+     insert or suppress sentence boundary after word
+
+     #lem: sa[call] -.; dim[create] +.;
+
+     insert clause-begin before word, with typing
+
+     insert clause-end after word, with match to clause-begin
+
+     probably OK to require that if one clause is given they all must be
+
+e.g:
+
+	#lem: (1:DE3 kalam[land]; szu[hand]; bala[turn] 1)

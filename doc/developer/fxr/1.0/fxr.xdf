@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>FXR</dc:title>
+  <dcterms:alternative>FileMaker XML Result Tools</dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI">http://www.fmpxmlresult.com</dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>02/06/06</dc:date>
+  <dc:publisher>CDLG</dc:publisher>
+  <dc:description>FXR is a simple toolkit for converting FM XML files
+  into a form similar to that which used to be used for FM DSO.  The
+  tools are designed to work quickly on large files.</dc:description>
+</d:meta>
+
+<d:schema name="fxr" uri="//www.filemaker.com/fmpxmlresult">
+<p>Here is a schema for FM XML results as created by Trang.</p>
+<d:rnc>
+default namespace = "http://www.filemaker.com/fmpxmlresult"
+
+start =
+  element FMPXMLRESULT {
+    element ERRORCODE { xsd:integer },
+    element PRODUCT {
+      attribute BUILD { xsd:NMTOKEN },
+      attribute NAME { text },
+      attribute VERSION { xsd:NMTOKEN }
+    },
+    element DATABASE {
+      attribute DATEFORMAT { text },
+      attribute LAYOUT { text },
+      attribute NAME { xsd:NCName },
+      attribute RECORDS { xsd:integer },
+      attribute TIMEFORMAT { text }
+    },
+    element METADATA {
+      element FIELD {
+        attribute EMPTYOK { xsd:NCName },
+        attribute MAXREPEAT { xsd:integer },
+        attribute NAME { xsd:NCName },
+        attribute TYPE { xsd:NCName }
+      }+
+    },
+    element RESULTSET {
+      attribute FOUND { xsd:integer },
+      element ROW {
+        attribute MODID { xsd:integer },
+        attribute RECORDID { xsd:integer },
+        element COL {
+          element DATA { text }
+        }+
+      }+
+    }
+  }
+</d:rnc>
+</d:schema>
+
+<d:resources/>
+
+</d:doc>

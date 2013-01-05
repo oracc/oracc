@@ -1,0 +1,358 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::G2::Util;
+use Getopt::Long;
+use Data::Dumper;
+
+my $COF_NONE = 0;
+my $COF_HEAD = 1;
+my $COF_TAIL = 2;
+
+my $basesig = '';
+my @compound_parts = ();
+my %cof_lines = ();
+my $coresig = '';
+#my %coresigs = ();
+my $currsig = '';
+my $g2a_file = '';
+my %header = ();
+my $in_sense = '';
+my @instsigs = ();
+my $out = '01tmp/l2p1-simple.sig';
+my $arglang = '';
+my $project = `oraccopt`;
+my %sig = ();
+my @cof_template_heads = ();
+my @cof_template_tails = ();
+my %cof_heads = ();
+my %cof_tails = ();
+my $compound = 0;
+my $compound_cfgw = '';
+my %compounds = ();
+my $current_first_base = '';
+my $debug_type = '';
+my $debug_arg = '';
+my %default_senses = ();
+my @externals = ();
+my %externals = ();
+my $found_simple_sig = 0;
+my %noprintsigs = ();
+my $parts_line = 0;
+my %partsigs = ();
+my %parts_map = ();
+my %printsigs = ();
+my $simple = 0;
+my $verbose = 0;
+my $cof_verbose = 0;
+my $psu_verbose = 0;
+
+my $load_simple_counter = 0;
+
+my $simple_loaded = 0;
+my %simple;
+
+my $ignorable = '(?:\(to be\)|a|to|the|\s)*?';
+my $finalparens = '(?:\s+\(.*?\)\s*)?';
+
+GetOptions (
+    'a:s'=> \$debug_arg,
+    'd:s'=> \$debug_type,
+    'g2a:s' => \$g2a_file,
+    'lang:s'=> \$arglang,
+    'out:s' => \$out,
+    'project:s'=>\$project,
+    'simple'=>\$simple,
+    'verbose+'=>\$verbose
+    );
+
+$psu_verbose = 1 if $verbose > 1;
+
+if ($debug_arg || $debug_type) {
+    die "g2a-sig: must give debug_arg and debug_type together\n"
+	unless $debug_arg && $debug_type;
+    if ($debug_type eq 'ec') {
+	debug_lookup_external_cof($debug_arg);
+    } else {
+	die "g2a-sig: unknown debug_type `$debug_type'\n";
+    }
+    exit 0;
+}
+
+$g2a_file = shift @ARGV unless $g2a_file;
+
+if ($out) {
+    open(O,">$out") || die "g2a-sig.plx: can't open `$out' for output\n";
+    select O;
+}
+
+open(CORESIGS, ">01bld/coresigs.txt");
+if ($g2a_file) {
+    do_g2a($g2a_file);
+} else {
+    foreach my $g2a_file (<00lib/*.glo>) {
+	do_g2a($g2a_file);
+    }
+}
+close(CORESIGS);
+
+######################################################################################
+
+sub
+do_g2a {
+    my $header_ok = 0;
+    my $g2a = shift;
+
+    warn "g2a-simple.plx: .glo file `$g2a' non-existent or not readable\n" and return unless -r $g2a;
+
+    my $err_g2a = $g2a;
+    $err_g2a =~ s#^.*?00lib#00lib#;
+
+    if ($g2a =~ m#/(?:sux|qpn)#) {
+	$g2a =~ s/00lib/01bld/;
+	$g2a .= ".norm";
+    }
+    warn "l2p1-simple.plx: processing $g2a\n";
+    
+    open(G, $g2a) || die "g2a-sig.plx: can't open `$g2a' for input\n";
+    while (<G>) {
+	next if /^\s*$/;
+	chomp;
+
+	warn "input: $_\n" if $verbose;
+
+	if (s/^\@entry\*?\s+//) {
+	    
+	    if (!$header_ok) {
+		if (!$header{'project'} || !$header{'lang'}) {
+		    die "g2a-sig.plx: $g2a: must give \@project and \@lang at start of file\n";
+		} elsif (!$header{'name'}) {
+		    $header{'name'} = "$header{'project'} $header{'lang'}";
+		}
+		$header_ok = 1;
+	    }
+	    @compound_parts = ();
+	    $parts_line = 0;
+	    $current_first_base = '';
+	    %sig = ();
+	    @sig{qw/cf gw pos/} = /^(.*?)\s+\[(.*?)\]\s*(\S+)\s*$/;
+	    if ($sig{'cf'}) {
+		$basesig = "$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}";
+	    } else {
+		warn "$err_g2a:$.: (g2a) bad syntax in \@entry; entry ignored\n";
+		while (<G>) {
+		    last if /^\@end\s+entry/;
+		}
+		next;
+	    }
+	} elsif (/^\@end\s+entry/) {
+	    unless (defined $coresig) {
+		warn "$g2a:$.: undefined coresig--bad entry\n" and next;
+	    }
+   
+	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
+		my $instsig1 = "\@$header{'project'}\%$header{'lang'}:$current_first_base=";
+		++$noprintsigs{ "$instsig1$coresig\n" };
+	    }
+	    
+	    $compound = $in_sense = 0;
+	    @instsigs = ();
+	    $basesig = undef;
+	    $coresig = undef;
+	} elsif (s/^\@parts\s+//) {
+	    while (<G>) {
+		last if /^\@end\s+entry/;
+	    }
+	    $in_sense = 0;
+	    @instsigs = ();
+	    $basesig = undef;
+	    $coresig = undef;
+	} elsif (/^\@sense/) {
+	    $in_sense = 1;
+	    @sig{qw/epos sense/} = /\s+([A-Z]\S*)\s+(.*?)\s*$/;
+	    if (!$sig{'epos'}) {
+		warn "$err_g2a:$.: (g2a) no POS in SENSE\n";
+		/\s(.*?)\s*$/;
+		$sig{'sense'} = $1;
+		$sig{'epos'} = $sig{'pos'};
+	    }
+	    
+	    if (!defined $default_senses{$basesig}) {
+		$default_senses{$basesig} = [ $sig{'sense'} , $sig{'epos'} ];
+	    }
+	    
+	    $coresig = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
+	    print CORESIGS "$coresig\n";
+	    
+	    if ($#instsigs >= 0) {
+		foreach my $instsig (@instsigs) {
+		    ++$printsigs{ "$$instsig[0]$coresig$$instsig[1]\n" };
+		    $found_simple_sig = 1;
+		}
+	    } else {
+		unless ($sig{'cf'} =~ / /) {
+		    if ($current_first_base) {
+			my $instsig0 = "\@$header{'project'}\%$header{'lang'}:$current_first_base";
+			++$printsigs{ "$instsig0=$coresig\n" };
+			$found_simple_sig = 1;
+		    } else {
+#			my $instsig0 = "\@$header{'project'}\%$header{'lang'}:$sig{'cf'}";
+#			$found_simple_sig = 1;
+#			++$printsigs{ "$instsig0=$coresig\n" };
+		    }
+		}
+	    }
+	    
+	} elsif (/\@bases\s+(\S+)/) {
+	    
+	    $current_first_base = $1;
+	    $current_first_base =~ s/;$//;
+	    $current_first_base =~ s/^\*//;
+	    
+	} elsif (s/^\@form\s+(\S+)//) {
+	    my @cof_tails = ();
+	    my $cof = $COF_NONE;
+	    my $cof_part = '';
+	    my $cof_sig = '';
+	    my $cof_core = '';
+	    my $cof_template = '';
+	    
+	    @sig{qw/norm morph morph2 base cont stem root/} = ();
+
+	    my $cof_nth = 0;
+
+	    $sig{'form'} = $1;
+	    if (s/\s+\%(\S+)//) {
+		$sig{'lang'} = $1;
+		$sig{'lang'} =~ s#/n$#-949# if $sig{'lang'};
+	    } else {
+		$sig{'lang'} = $header{'lang'};
+	    }
+
+	    if (/\$\(/) {
+		warn "identified COF\n" if $verbose;
+		
+		if (/(^|\s)\$[^\(\s]+?\[/) {
+		    warn("$err_g2a:$.: COF head should not have CF[GW]POS form; use only NORM\n");
+		}
+		
+		my $cof_epos = $sig{'epos'} || $sig{'pos'};
+		if ($coresig) {
+		    # this happens if the COF FORM occurs within a @sense
+		    $cof_core = $coresig;
+		} else {
+		    # this is a COF FORM before any @sense
+		    $cof_core 
+			= "$sig{'cf'}\[$sig{'gw'}//$sig{'gw'}\]$sig{'pos'}'$cof_epos";
+		    $cof_template = "$sig{'cf'}\[$sig{'gw'}//\]$sig{'pos'}'";
+		}
+
+		my @cofvals = ();
+
+		if (/^\s*\$\(/) {
+		    $cof = $COF_TAIL;
+		    s/^\s*//;
+		    my @d = (m/\s+(\$\(?)/g);
+		    for ($cof_nth = 2, my $i = 0; $i <= $#d; ++$i) {
+			if ($d[$i] =~ /^\$\(/) {
+			    ++$cof_nth;
+			} else {
+			    last;
+			}
+		    }
+		    warn "found COF TAIL\n" if $verbose;
+		} else {
+		    $cof = $COF_HEAD;
+		    $cof_nth = 1;
+		    warn "found COF HEAD\n" if $verbose;
+		}
+
+		# get the form/sig belonging to the current word
+		my $tmp = $_;
+		$tmp =~ s/\$\(.*?\)//g;
+		$tmp =~ s/^\s*(.*?)\s*$/$1/;
+		$tmp =~ s/\s+/ /g;
+		$tmp =~ s/^/ /;
+
+		$_ = $cof_part = $tmp;
+
+	    } else {
+		$cof_part = '';
+	    }
+
+	    $sig{'norm'} = $1 if s/\s+\$(\S+)//;
+	    $sig{'morph2'} = $1 if s/\s+\#\#(\S+)//;
+	    $sig{'morph'} = $1 if s/\s+\#(\S+)//;
+	    $sig{'base'} = $1 if s/\s+\/(\S+)//;
+	    $sig{'cont'} = $1 if s/\s+\+(\S+)//;
+	    $sig{'stem'} = $1 if s/\s+\*(\S+)//;
+
+	    if (s/\s\@(\S+)//) {
+		my $rws = $1;
+		if (defined $ORACC::G2::Util::rws_map{$rws}) {
+		    $sig{'lang'} = $ORACC::G2::Util::rws_map{$rws};
+		    if ($rws eq 'EG' 
+			&& (($header{'lang'} && $header{'lang'} ne 'sux')
+			    || ($arglang && $arglang ne 'sux'))) {
+			$sig{'lang'} = 'sux';
+		    }
+		} else {
+		    warn "$err_g2a:$.: (g2a) unknown RWS code \@$rws has been ignored\n";
+		}
+	    }
+	    my $lang = $sig{'lang'} || $header{'lang'} || $arglang;
+	    my $proj = $header{'project'} || $project;
+
+	    if ($sig{'form'}) {
+		my $instsig1 = "\@$proj\%$lang:$sig{'form'}=";
+		my $instsig2 = '';
+		foreach my $field (@ORACC::G2::Util::instfields) {
+		    $instsig2 .= "$ORACC::G2::Util::fieldchars{$field}$sig{$field}" if $sig{$field};
+		}
+		
+		if ($cof == $COF_HEAD) {
+
+#		    ++$noprintsigs{ "$instsig1$cof_core$instsig2!0x01\n" };
+#		    $found_simple_sig = 1;
+
+		    $instsig2 .= '!0x01';
+		    
+		} elsif ($cof == $COF_TAIL) {
+
+#		    ++$noprintsigs{ "$instsig1$cof_core$instsig2!0x02\n" };
+		    $instsig2 .= sprintf("\!0x%02d", $cof_nth);
+
+		}
+
+#		} else {
+
+		    if ($in_sense) {
+			++$printsigs{ "$instsig1$coresig$instsig2\n" };
+		    } else {
+			$found_simple_sig = 1;
+			push @instsigs, [ $instsig1, $instsig2 ];
+		    }
+
+#		}
+	    }
+	} elsif (/^\@(project|name|lang)\s*(\S+)/) {
+	    $header{$1} = $2;
+	    # don't print header fields into simple
+	}
+    }
+    close(G);
+
+#    if ($header{'lang'} && $header{'lang'} =~ /^qpn/) {
+#	foreach (sort (keys %printsigs, keys %noprintsigs)) {
+#	    s/\%\S+?:/%qpn:/;
+#	    print;
+#	}
+#    } else {
+#       print sort (keys %printsigs, keys %noprintsigs);
+#    }
+}
+
+print sort (keys %printsigs, keys %noprintsigs);
+
+1;

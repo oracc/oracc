@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+use strict; use warnings;
+use lib '@@ORACC@@/lib';
+use ORACC::NS;
+use ORACC::BIB::Config;
+use ORACC::BIB::QueryContext;
+use ORACC::BIB::CiteResolver;
+use Getopt::Long;
+
+my $dbpath = '/var/local/oracc/bib';
+my @dblist = ();
+my @ixlist = ();
+my $html_results = 0;
+my $reflist_file = 'xbiblist.xml';
+my $style_attr = ' style="namedate"';
+
+#use Pod::Usage;
+GetOptions("h+"      =>\$html_results,
+	   "db=s"    =>\@dblist,
+	   "dbpath=s"=>\$dbpath); # or pod2usage(1);
+
+$dbpath .= '/' if length $dbpath;
+
+@dblist = split(/,/,join(',',@dblist));
+
+@dblist = qw/oracc/ unless $#dblist >= 0;
+
+ORACC::BIB::Config::init();
+$ORACC::BIB::env->set('dbpath', $dbpath);
+$ORACC::BIB::env->set('dblist', [ @dblist ]);
+
+my $context = ORACC::BIB::QueryContext->new();
+my $resolver = ORACC::BIB::CiteResolver->new(context => $context);
+my $parser = XML::LibXML->new();
+
+my $refs_ref = '';
+
+foreach my $f (@ARGV) {
+    my $doc = $parser->parse_file($f);
+    $resolver->resolve_cites($doc->getDocumentElement());
+    print $doc->toString();
+}
+
+my %refs = $resolver->get_refs();
+my %db   = $resolver->get_db();
+
+my $reflist = "<listBibl xmlns=\"$TEI\" xmlns:tei=\"$TEI\"\n>";
+foreach my $r (keys %refs) {
+#    $refs{$r} =~ s/biblStruct/biblStruct bib:id=\"$r\" bib:db=\"$db{$r}\"/;
+    $reflist .= $refs{$r};
+}
+$reflist .= "</listBibl\n>";
+
+open OUT, ">$reflist_file" or die "biblcites.plx: unable to write reflist to $reflist_file\n";
+print OUT $reflist;
+close OUT;
+
+1;

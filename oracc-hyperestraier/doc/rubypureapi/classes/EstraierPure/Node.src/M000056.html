@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>get_doc_by_uri (EstraierPure::Node)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File estraierpure.rb, line 653</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_doc_by_uri</span>(<span class="ruby-identifier">uri</span>)
+      <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">check_types</span>({ <span class="ruby-identifier">uri</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">String</span> }) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG</span>
+      <span class="ruby-ivar">@status</span> = <span class="ruby-value">-1</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@url</span>
+      <span class="ruby-identifier">turl</span> = <span class="ruby-ivar">@url</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;/get_doc&quot;</span>
+      <span class="ruby-identifier">reqheads</span> = [ <span class="ruby-value str">&quot;Content-Type: application/x-www-form-urlencoded&quot;</span> ]
+      <span class="ruby-identifier">reqheads</span>.<span class="ruby-identifier">push</span>(<span class="ruby-value str">&quot;Authorization: Basic &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">base_encode</span>(<span class="ruby-ivar">@auth</span>)) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@auth</span>
+      <span class="ruby-identifier">reqbody</span> = <span class="ruby-value str">&quot;uri=&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">CGI</span><span class="ruby-operator">::</span><span class="ruby-identifier">escape</span>(<span class="ruby-identifier">uri</span>)
+      <span class="ruby-identifier">resbody</span> = <span class="ruby-constant">StringIO</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">rv</span> = <span class="ruby-constant">Utility</span><span class="ruby-operator">::</span><span class="ruby-identifier">shuttle_url</span>(<span class="ruby-identifier">turl</span>, <span class="ruby-ivar">@pxhost</span>, <span class="ruby-ivar">@pxport</span>, <span class="ruby-ivar">@timeout</span>, <span class="ruby-identifier">reqheads</span>, <span class="ruby-identifier">reqbody</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">resbody</span>)
+      <span class="ruby-ivar">@status</span> = <span class="ruby-identifier">rv</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">rv</span> <span class="ruby-operator">!=</span> <span class="ruby-value">200</span>
+      <span class="ruby-constant">Document</span><span class="ruby-operator">::</span><span class="ruby-identifier">new</span>(<span class="ruby-identifier">resbody</span>.<span class="ruby-identifier">string</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Project configuration for Oracc 2</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2011-12-18</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>Project configuration is very straightforward under Oracc 2. This page explains how to use the new tools to change the appearance and content of your project's Oracc 2 website, whether portal pages or corpus.</dc:description>
+</d:meta>
+
+<!-- STILL TO DO: 
+- views.txt
+- pll.txt
+- ol.txt -->
+
+<h1>Basic principles</h1>
+
+<p>Oracc project configuration is handled by several files:</p>  
+<ul>
+<li><p>The project configuration is handled by an XML project definition file, by convention <code>00lib/config.xml</code>. This is the file you are most likely to need to edit. We give more detailed instructions <a href="#Corpus_configuration">below</a>.</p></li>  
+<li><p>The colours of your project website are given in the file <code>00web/colours.txt</code>, as described <a href="colours/">on a separate page</a>.</p></li>
+<li><p>The file <code>00lib/pll.xml</code> defines the contents of the Projects, Lists and Links (PLL) menu. A <a href="pll/">separate page</a> tells you how to do customise this list if you want to.</p></li>
+<li><p>You may also define <a href="views/">custom views</a> for the texts in your corpus, as defined in <code>00lib/views.xml</code>. A <a href="views/">separate page</a> tells you how to do this.</p></li>
+<li><p>Finally, you can create <a href="ol/">custom lists</a> of texts in your corpus, as described on a <a href="ol/">separate page</a>.</p></li>
+</ul>
+
+<h2>Lists</h2>
+
+<p>Several lists of ID-numbers provide control over what is included
+in the project and what is displayed. </p>
+
+<p>The two important lists are <code>00lib/approved.lst</code> and
+<code>00lib/outlined.lst</code>.  The first gives all the texts which
+are considered part of the project.  The second gives the texts which
+are displayed by the pager.  Whether or not the pager actually uses
+<code>00lib/outlined.lst</code> is controlled by the pager
+option <code>pager-outlined-lst</code> in <code>00lib/config.xml</code>, as described <a href="#Pager">below</a>.</p>
+<p>The other two lists
+(<code>00lib/new.lst</code> and <code>00lib/rejected.lst</code>) are
+presently irrelevant as they are intended to support dynamic tracking
+of new additions to the CDLI catalogue in a manner that is not yet
+implemented.</p>
+
+<p>Secondary lists influence the build process if any kind of dynamic
+editing is being done by the system.  They are:</p>
+
+<dl>
+<dt>not-approved.lst</dt>
+<dd>Any numbers in this list are removed from the generated
+  <code>approved.lst</code></dd>
+<dt>add-approved.lst</dt>
+<dd>Any numbers in this list are added to the generated
+  <code>approved.lst</code></dd>
+</dl>
+
+<p>Similar lists influence the creation of <code>outlined.lst</code>:
+  <code>not-outlined.lst</code> and <code>add-outlined.lst</code>
+  contain numbers to be excluded or included in the generated
+  <code>outlined.lst</code> respectively.</p>
+
+
+<h1>Corpus configuration</h1>
+
+<h2>Webservice</h2>
+<p>We do not recommend that you edit <code>00lib/config.xml</code> by hand. Instead you should use this web service:</p>
+<ul>
+<li><a href="/test-config.xml">Oracc Configuration</a></li>
+</ul>
+<p>All the instructions you should need are built into that tool. However, if you have problems understanding any of it, please ask your project liaison or the Oracc Steering Committee for help.</p>
+
+<p>Once you have selected all the options you require, click the button <code>Save to local disk</code>. This will open a pop-up save window inviting you to save the file to your own computer. Save it with the name <code class="cookbook">config.xml</code>.</p>
+
+<h2>Uploading, updating and modifying</h2> 
+<p>Now upload <code class="cookbook">config.xml</code> to your <code>00lib/</code> directory on Oracc. There are general instructions for uploading to Oracc on the <a href="/doc/manager/projunix/#Uploading_ATF__ODS_and_catalogue_files_to_Oracc">Project Management</a> page. If you are using PuTTy or Terminal, the command is:</p>
+<pre class="cookbook">scp ~/proj/00lib/config.xml proj@oracc.museum.upenn.edu:00lib</pre>
+
+<p>Then log into Oracc and use <a href="../the-oracc-command/">the <code>oracc</code> command</a> to
+update the web version of the configuration file:</p>
+
+<pre class="cookbook">
+oracc config
+</pre>
+
+<p>If the options you have chosen for <code>config.xml</code> do not give you the results you expect, or if you want to change the options for another reason, download <code>00lib/config.xml</code> from Oracc to somewhere on your computer and return to the <a href="/test-config.xml">Oracc Configuration</a> webservice.</p>
+<p>Click the button <code>Restore from local disk</code>. This will open a pop-up window inviting you to find the copy of <code>config.xml</code> that is on your computer. You can then edit the options, save the file (keeping the same name), and upload it to Oracc once again.</p>
+
+
+<!--<d:schema name="" uri="">
+</d:schema>
+
+<d:resources/> -->
+
+</d:doc>

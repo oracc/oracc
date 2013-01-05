@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Oracc URIs</title>
+    <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
+    <script src="/js/oraccdoc.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body onload="onresize=setTOCoffset; setTOCoffset()">
+    <div class="docbuttons">
+      <div class="form">
+        <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
+          <p class="buttonbar">
+            <a href="/readme.html">
+              <span class="button">README</span>
+            </a>
+            <a href="/">
+              <span class="button">Oracc Home</span>
+            </a>
+            <a href="javascript:void()" onclick="document.forms['form1'].submit(); return false;">
+              <span class="button">SEARCH DOCUMENTATION</span>
+            </a>
+            <input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""/>
+          </p>
+        </form>
+      </div>
+      <div class="docsocial">
+        <p>
+          <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page" class="facebook">
+            <img width="19" height="19" src="/img/f_logo.png"/>
+          </a>
+          <a href="http://oracc.blogspot.com" title="Oracc Blog" class="blogspot">
+            <img width="19" height="19" src="/img/blogspot-icon.png"/>
+          </a>
+          <a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)" class="twitter">
+            <img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/>
+          </a>
+          <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa">
+            <img height="20" alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/>
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="withtoc">
+      <div class="speedbar" id="speedbar">
+        <p class="toc h1">
+          <a href="/index.html">ORACC Home</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#top">Introduction</a>
+        </p>
+        <hr class="toc"/>
+        <p class="toc h1">
+          <a href="#URI_Components">URI Components</a>
+        </p>
+        <p class="toc h2">
+          <a href="#HOST">HOST</a>
+        </p>
+        <p class="toc h2">
+          <a href="#RESOURCE">RESOURCE</a>
+        </p>
+        <p class="toc h2">
+          <a href="#SELECTION">SELECTION</a>
+        </p>
+        <p class="toc h2">
+          <a href="#VIEW">VIEW</a>
+        </p>
+        <p class="toc h2">
+          <a href="#FORMAT">FORMAT</a>
+        </p>
+        <p class="toc h2">
+          <a href="#QUERY">QUERY</a>
+        </p>
+      </div>
+      <div class="body">
+
+<div class="doc-banner"><h1 class="title">Oracc URIs</h1><h2 class="author">Steve Tinney<br/>Version of 2012-11-16
+</h2></div><h1><a name="intro">Introduction</a></h1><p>Oracc's stable URIs are formed according to simple
+  patterns.  This document defines the patterns on which
+  Oracc URIs are built.</p>
+
+<h1><a name="URI_Components">URI Components</a></h1>
+
+<p>URI path segments consist of several types, most of which can be
+defaulted:</p>
+
+<dl>
+<dt>PROTOCOL</dt><dd>The protocol for OOD URIs is always
+<code>http://</code></dd>
+
+<dt>HOST</dt><dd>The name of an Oracc server, e.g.,
+oracc.museum.upenn.edu; the PROTOCOL+HOST component of the URI is often
+abbreviated in this document as <code>[HOST]</code>.</dd>
+
+<dt>RESOURCE</dt><dd>The name of an Oracc resource.</dd>
+
+<dt>SELECTION</dt><dd>A selection from the resource, for example the
+translation of a text.</dd>
+
+<dt>VIEW</dt><dd>A view of the selection from the resource, e.g, a
+view of a transliteration rendered into cuneiform signs.</dd>
+
+<dt>FORMAT</dt><dd>The format of the response, e.g., HTML, XML or
+RDF.</dd>
+
+<dt>UI</dt><dd>The UI component used to render the URI; this should be
+only rarely be needed as the server defaults will usually
+suffice.</dd>
+
+<dt>QUERY</dt><dd>Some stable URIs may have a query appended to them
+with the same effect as running a simple search against the resource
+referenced by the URI.</dd>
+
+</dl>
+
+<h2><a name="HOST">HOST</a></h2>
+
+<p>The HOST component is normally
+<code>http://oracc.museum.upenn.edu</code>, but could point to other
+Oracc servers without changing the meaning of the remainder of the
+URI.</p>
+
+<h2><a name="RESOURCE">RESOURCE</a></h2>
+
+<dl>
+<dt>PROJECT</dt><dd>The optional PROJECT component must come first in
+the URI and may contain forward-slashes because Oracc subprojects are
+implemented as subdirectories of parent projects. E.g.: <code>[HOST]/dcclt</code>;
+<code>[HOST]/saao/saa01</code>.</dd>
+
+<dt>LIST</dt><dd>A list consists of a lowercase alphabetic string and
+corresponds to a system- or project-defined list name. List URIs
+names consist of path segment 'list' followed by the list name proper,
+e.g., <code>[HOST]/dcclt/list/withatf</code>.</dd>
+
+<dt>TEXT</dt>
+<dd>A text ID consists of an uppercase 'P', 'Q', or 'X',
+followed by six or more digits.  E.g., <code>[HOST]/P123456</code>.</dd>
+<dt>LANG</dt>
+
+<dd>A language URI references a glossary via its ISO 639-3 language
+code: e.g., <code>[HOST]/cams/anzu/akk-x-stdbab</code>.</dd>
+
+<dt>WORD</dt><dd><p>At the Oracc level, WORD may only occur without a
+preceding language and the response value is a list of all glossary
+resources which include an entry for the word URN.  At the project
+level, WORD may occur with or without a preceding language.  Thus, we
+have <code>[HOST]/lugal[king]N</code>;
+<code>[HOST]/dcclt/lugal[king]N</code>; and
+<code>[HOST]/dcclt/sux/lugal[king]N</code>.</p></dd>
+
+<dt>SIGN</dt><dd>A sign is a valid sign-name as included in the Oracc
+Global Sign List, preceded either by the prefix <code>Xsux</code> (the
+script code for Sumero-Akkadian Cuneiform) or by the more common
+Assyriological label <code>sign</code>.  E.g.,
+<code>[HOST]/etcsri/sign/BA</code> or its equivalent
+<code>[HOST]/etcsri/Xsux/BA</code>.</dd>
+</dl>
+
+<h2><a name="SELECTION">SELECTION</a></h2>
+
+<p>Valid selections depend on the resource type.  In the enumeration
+which follows, a lowercase name is a URI path component, e.g.,
+HOST/statistics; an uppercase name is a RESOURCE used as a SELECTION.
+These resources may in turn have their own SELECTION.</p>
+
+<p>SELECTION responses are either lists or resources.  The SELECTION
+mechanism may thus be used for discovery of values of selectable
+segments of the parent resource.</p>
+
+<ul>
+<li>(NO PROJECT)
+<dl>
+<dt>LANG</dt><dd/>
+<dt>LIST</dt><dd/>
+<dt>PROJECT</dt><dd/>
+<dt>TEXT</dt><dd/>
+<dt>WORD</dt><dd/>
+<dt>langs</dt><dd>A list of languages for which Oracc defines URNs.</dd>
+<dt>lists</dt><dd>A list of lists for which Oracc defines URNs.</dd>
+<dt>projects</dt><dd>A list of Oracc's public projects for which Oracc
+defines a URN.</dd>
+<dt>statistics</dt><dd>Various Oracc-related statistics</dd>
+<dt>texts</dt><dd>A list of texts for which Oracc defines a URN.</dd>
+<dt>words</dt><dd>A list of words for which Oracc defines a URN.</dd>
+</dl>
+</li>
+<li>PROJECT
+<dl>
+<dt>corpus</dt><dd>A listing of all the texts in the project.</dd>
+<dt>lists</dt><dd>A listing of the project-defined lists.</dd>
+<dt>statistics</dt><dd>Various project-related statistics.</dd>
+<dt>LIST</dt><dd/>
+<dt>TEXT</dt><dd/>
+<dt>LANG</dt><dd/>
+<dt>WORD</dt><dd/>
+</dl>
+</li>
+<li><p>TEXT</p>
+<p>The nature of a TEXT selection depends on whether it is a selection
+from Oracc or from a project.  If it is from Oracc, then it is a
+LIST of all of the resources on Oracc that meet the selection
+criteria, for example, of all transliterations of a text listed by
+project.  If the selection is from a project then by definition there
+is only one TEXT resource that can match the request (by design, a
+project can only edit a text once).  The response to a request from a
+project is therefore the relevant project data for the text.</p>
+<dl>
+<dt>full</dt><dd>Metadata, transliteration and translation of the
+text.</dd>
+<dt>meta</dt><dd>A metadata record for the text, drawn from either a
+project catalogue or one of the system catalogues.</dd>
+<dt>tlit</dt><dd>A transliteration of the text.</dd>
+<dt>tlat</dt><dd>A translation of the text.  A language may be
+suffixed to <code>tlat</code> to request a translation in any of a
+list of comma-separated languages, e.g.,
+HOST/etcsri/P123456/tlat.hu,en.  The response is then the translation
+in the first matching language in the list, or an error if no match is
+found.</dd>
+<dt>image</dt><dd>Images of the text available at CDLI</dd>
+<dt>thumb</dt><dd>Thumbnails of the text available at CDLI</dd>
+<dt>score</dt><dd>The full text of the score.</dd>
+<dt>block</dt><dd>An individual score block; used with a score-block ID, e.g., block=sb.Q000001.1</dd>
+</dl>
+<p>Some TEXT selections may be combined, i.e., the metadata and translation
+for CAMS/GKAB's version of P123456 can be requested via the URI
+<code>HOST/cams/gkab/P123456/meta+tlat</code>.  The default is
+<code>tlit+tlat</code>.</p>
+</li>
+<li>LANG
+<dl>
+<dt>WORD</dt><dd/>
+</dl>
+</li>
+<li>WORD
+<dl>
+<dt>(NONE)</dt><dd>The default selection is the entry for the word</dd>
+<dt>summary</dt><dd>The summary for the entry.</dd>
+<dt>instances</dt><dd>The instances for the entry.</dd>
+</dl>
+</li>
+<li>SIGN
+<dl>
+<dt>VALUE</dt><dd>A sign may be followed by a value, e.g.: <code>[HOST]/sign/BA/ba</code>.</dd>
+</dl>
+</li>
+</ul>
+
+<h2><a name="VIEW">VIEW</a></h2>
+
+<p>VIEWs are indicated by a restricted set of keywords relating to
+Oracc system-defined views or by a URI-component beginning with the
+prefix <code>view:</code> relating to project-defined views.</p>
+
+<dl>
+<dt>cuneified</dt><dd>applicable only to texts which have a
+transliteration; the transliteration is rendered into cuneiform
+according to the Unicode standard repertoire. E.g.:
+<code>[HOST]/saao/saa18/P123456/cuneified</code>.</dd>
+<dt/><dd/>
+</dl>
+
+<h2><a name="FORMAT">FORMAT</a></h2>
+
+<p>In time Oracc will support several response formats including XML
+and RDF.  At present the supported formats are:</p>
+
+<dl>
+<dt>html</dt><dd>Unless otherwise specified, Oracc's default response format is XHTML
+1.0-strict HTML.</dd>
+<dt>csv</dt><dd>Comma-Separated-Values, a database distribution
+format which may be requested for projects whose type is
+<code>catalogue</code> or <code>database</code>.</dd>
+<dt>tei</dt><dd>XML in the TEI vocabulary.</dd>
+</dl>
+
+<h2><a name="QUERY">QUERY</a></h2>
+
+<p>The query component consists of a question mark followed by some
+search keys, e.g., <code>?Neo-Assyrian</code>.  The following table
+shows which resource URIs understand what to do with such queries,
+what they do with them and what they return; other resources silently
+ignore any query component.</p>
+
+<table>
+<tr>
+<td>PROJECT type=corpus|catalogue</td>
+<td>search catalogue for keys</td>
+<td>pager display with result texts</td>
+<td><code>[HOST]/dcclt?neo-assyrian</code></td>
+</tr>
+<tr>
+<td>PROJECT type=glossary</td>
+<td>search glossary for keys</td>
+<td>pager display with result article summaries</td>
+<td><code>[HOST]/epsd2?lugal</code></td>
+</tr>
+<tr>
+<td>PROJECT type=portal</td>
+<td>full text search for keys</td>
+<td>full text result navigator</td>
+<td><code>[HOST]/gkab/Esarhaddon</code></td>
+</tr>
+<tr>
+<td>Project/Glossary</td>
+<td>search glossary for keys</td>
+<td>pager display with result article summaries</td>
+<td><code>[HOST]/cams/gkab/akk?king</code></td>
+</tr>
+<tr>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td/>
+<td/>
+<td/>
+</tr>
+</table>
+
+<hr/><p class="qn">
+ Questions about this document may be directed to
+the Oracc Steering Committee (osc at oracc dot org).</p></div>
+    </div>
+  </body>
+</html>

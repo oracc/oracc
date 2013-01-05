@@ -1,0 +1,43 @@
+&Q000901 = Gudea 25 [E3/1.1.7.25]
+@composite
+#project: pccss
+#project: epsd2/epsdc/royal
+
+1.	{d}nansze
+#lem: Nanše[1]DN
+
+2.	nin uru16
+#lem: nin[lady]; urun[exalted]
+
+3.	nin in-dub-ba
+#lem: nin[lady]; induba[boundary]\ak
+
+4.	nin-a-ni
+#lem: nin[lady]\ra
+
+5.	gu3-de2-a
+#lem: Gudea[1]RN
+
+6.	ensi2
+#lem: ensik[ruler]
+
+7.	lagasz{ki}-ke4
+#lem: Lagaš[1]SN
+
+8.	nij2-ul-e pa mu-na-e3
+#lem: nijul[everlasting]\l; pa[branch]; e[bring out\t] +.
+
+9.	nijin6{ki} iri ki aj2-ja2-ni-a
+#lem: Niŋin[1]SN; iri[city]; ki[place]; aj[measure]
+
+10.	e2-sirara6
+#lem: Esirara[1]TN
+
+11.	kur e2-ta il2-la-ni
+#lem: kur[land]; e[house]; il[raise]
+
+12.	mu-na-du3
+#lem: du[build] +.
+
+13.	ki-be2 mu-na-gi4
+#lem: ki[place]\l; gi[turn]

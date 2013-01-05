@@ -1,0 +1,77 @@
+%\input wedgname \TINYw
+
+\setmarginsbytypefield{47pc}{29pc}
+
+\font\Wfont="CuneiformComposite" at 12pt
+
+%\font\Wfont="Lynn Serif" at 10pt
+
+\def\halfspace{\hbox{\hfil}\kern1pt\hbox{\hfil}\relax}
+\def\wdgcolwd{.48\fullhsize\relax}
+
+\def\WD{\hskip0pt plus.005fil\relax}
+\def\WP{\hskip0pt plus.1fil\relax}
+\def\WH{\hskip0pt plus1fil minus2pt\relax
+       \hbox{\hfil}\penalty0\halfspace\hbox{\hfil}\hskip0pt plus1fil minus2pt\relax}
+\def\WHH{\hskip-1pt plus1.1fil minus2pt \relax
+       \hbox{\hfil}\penalty0\ \hbox{\hfil}\hskip0pt plus1fil minus2pt\relax}
+\def\WS{\hskip-1pt plus1fill minus2pt\relax
+       \hbox{\hfil}\penalty0\ \penalty1\hbox{\hfil}\hskip-1pt plus1fill minus2pt\relax}
+\def\WB{\hbox{\hfil}\hskip0pt plus.0001fil\relax}
+
+\newif \iftwocolumn \twocolumntrue
+\newif \ifLcolumn \Lcolumntrue
+
+\def\Wr{\vadjust{\kern1pt\hrule height.15pt\kern-5pt\relax}}
+\def\Wsetup#1{\Wfont 
+  \parindent0pt \parfillskip0pt 
+  \rightskip2pt \leftskip2pt
+  \tolerance10000 
+%  \baselineskip0pt \lineskiplimit-1.5pt
+  \hsize#1\relax
+}
+\def\Wstrut{\vrule height0pt depth0pt width0pt}
+
+\def\textbegin{\kern2pt\leavevmode}
+\def\textbreak{\Wr\Wstrut\break}
+\def\textend{\endgraf\kern3pt\ifLcolumn\global\Lcolumnfalse\else\global\Lcolumntrue\fi}
+\newbox\numbox
+\def\textlinenum#1{%
+\setbox\numbox\hbox{\seven\bf#1}\dp\numbox0pt \ht\numbox0pt
+\ifLcolumn
+  \vadjust{\kern-5pt\relax\llap{\hbox{\hss\box\numbox\hskip.5em}}\kern5pt}%
+\else
+  \vadjust{\kern-5pt\hbox to\hsize{\hfill\rlap{\hskip.5em\hbox{\box\numbox\hss
+  }}}\kern5pt\relax}%
+\fi}
+%}
+
+\def\begintexts{\iftwocolumn\begin{2column}\fi}
+\def\betweentexts{\vskip1pc plus1fill\relax}
+\def\endtexts{\iftwocolumn\end{2column}\fi}
+
+\let\lr=L \newbox\leftcolumn
+\output={\if L\lr
+	  \global\setbox\leftcolumn=\columnbox \global\let\lr=R
+	\else
+	  \doubleformat \global\let\lr=L
+	\fi
+	\ifnum\outputpenalty>-20000 \else\dosupereject\fi}
+\def\doubleformat{\shipout\vbox{\makeheadline
+	\fullline{\box\leftcolumn\hfil\columnbox}
+	\makefootline}
+	\advancepageno}
+\def\columnbox{\leftline{\pagebody}}
+
+%\settypefieldbymargins{4pc}{4pc}{2pc}{3pc}
+%\setmarginsbytypefield{54pc}{33pc}
+%\raggedbottom \singlespace
+%\belowheadingskip1pc plus0pt minus0pt
+\hsize=\wdgcolwd
+%\vfuzz1pc
+
+\def\subheading#1\par{}
+
+\parskip0pt \baselineskip10pt 
+
+\endinput

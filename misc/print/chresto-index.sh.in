@@ -1,0 +1,13 @@
+#!/bin/sh
+chrestmp=01tmp/chresto
+scripts=@@ORACC@@/lib/scripts
+lang=$1
+chresto=$2
+xsltproc --xinclude $scripts/chresto-selector.xsl $chrestmp/chresto.xml \
+    | xsltproc $scripts/chresto-strip-cpd-refs.xsl - >$chrestmp/index-$lang.cbd
+xsltproc $scripts/chresto-sortkeys.xsl $chrestmp/index-$lang.cbd >$chrestmp/indexkeys-$lang.txt
+gdlsort.plx -x $chrestmp/indexkeys-$lang.txt >$chrestmp/indexcodes-$lang.xml
+xsltproc --stringparam codesfile indexcodes-$lang.xml \
+    $scripts/chresto-sortcodes.xsl $chrestmp/index-$lang.cbd >$chrestmp/indexcoded-$lang.cbd
+xsltproc $scripts/chresto-sort.xsl $chrestmp/indexcoded-$lang.cbd >$chrestmp/indexsorted-$lang.cbd
+xsltproc $scripts/chresto-index-TeX.xsl $chrestmp/indexsorted-$lang.cbd >tex/$chresto-$lang.tex

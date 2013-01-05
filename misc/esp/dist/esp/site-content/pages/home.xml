@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<esp:page
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+
+	<esp:name>Home</esp:name>
+	<esp:title>The Geography of Knowledge in Assyria and Babylonia:  A Diachronic Analysis of Four Scholarly Libraries</esp:title>
+
+	<html><head></head><body>
+		
+	<esp:image file="homeimage.jpg" description="about the site, how to use CAMS, context"
+		width="535" height="293">
+		<esp:image-map>
+			<esp:area shape="rect" page="about" title="About the project" coords="0,9,165,292"/>
+			<esp:area shape="rect" page="cams-index" title="How to use CAMS" coords="183,9,351,292"/>
+			<esp:area shape="rect" page="contexts-index" title="Contexts" coords="360,11,527,292"/>
+		</esp:image-map>
+		</esp:image>
+
+<p>This research project aims to study the scholarship of Assyria and Babylonia by editing the contents of four ancient libraries as the Corpus of Ancient Mesopotamian Scholarship (<esp:link page="cams-index">CAMS</esp:link>), and by analysing their changing socio-political contexts.</p>
+
+		<esp:image file="ahrc_logo.gif" description="AHRC logo"><esp:link url="http://www.ahrc.ac.uk"/></esp:image>	
+	</body></html>
+
+</esp:page>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xcf xmlns="http://oracc.org/ns/xcf/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- this is project-specific config info; we need to set it in the
+       project config and inherit from there -->
+  <set var="use_gw" to="yes"/>
+  <set var="proj_type" to="corpus"/>
+  <set var="scripts" to="/usr/local/oracc/lib/scripts"/>
+  <set var="webtype" to="cbd"/>
+
+  <!-- webdir is set from l2-glomanager -->
+  <set var="webcbd" to="$webdir/cbd"/>
+
+  <!--processing phases-->
+
+  <set var="process">
+    <key k="action" to="mkdir -p $webcbd/$cbdlang"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/p2-summaries.xsl"/>
+    <key k="input" to="01bld/$cbdlang/articles.xml"/>
+    <key k="cbdresult" to="0"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/g2-HTML-summaries.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/summaries.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/p2-summaries-HTML.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/p2-summaries.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-overview.xsl"/>
+    <key k="input"    to="$webcbd/$cbdlang/summaries.html"/>
+    <key k="output"    to="$webcbd/$cbdlang/overview.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/l2-cbd-letters.xsl"/>
+    <key k="input"    to="$webcbd/$cbdlang/overview.html"/>
+    <key k="output"    to="$webcbd/$cbdlang/overview.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-HTML-articles.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="$webcbd/$cbdlang/articles.html"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/cbd-HTML-OBF.xsl"/>
+    <key k="output"   to="$webcbd/$cbdlang/onebigfile.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-chunk-html.xsl"/>
+    <key k="input"    to="$webcbd/$cbdlang/onebigfile.html"/>
+    <key k="output"   to="$webcbd/$cbdlang/toc.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/p2-cbd-toc.xsl"/>
+    <key k="input"     to="$webcbd/$cbdlang/toc.html"/>
+    <key k="output"    to="$webcbd/$cbdlang/p2-toc.html"/>
+  </set>
+
+  <!-- move next three to l2p2? -->
+
+  <set var="process">
+    <key k="action" to="mkdir -p /var/local/oracc/pub/$project/cbd/$cbdlang"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="/usr/local/oracc/bin/secbdx"/>
+    <key k="args"     to="-p $basename -l $cbdlang 01bld/$cbdlang/articles.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="action" to="chmod -R o+r /var/local/oracc/pub/$project/cbd/$cbdlang"/>
+  </set>
+
+</xcf>

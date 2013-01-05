@@ -1,0 +1,800 @@
+% This file is part of the Digital Assyriologist.  Copyright
+% (c) Steve Tinney, 1994, 1995.  It is distributed under the
+% Gnu General Public License as specified in /da/doc/COPYING.
+%
+% $Id: editions.tex,v 0.21 1996/09/20 01:57:09 s Exp sjt $
+
+% This file defines all the macros directly connected with producing 
+% editions of texts. It is arranged in a more or less top-down fashion,
+% much as one would encounter the various parts of a model edition.
+
+\newif\if@composition	\newtoks\composition@toks
+\newif\if@longname	\newtoks\longname@toks
+\newif\if@citeas	\newtoks\citeas@toks
+\newif\if@PSDname	\newtoks\PSDname@toks
+\newif\if@text		\newtoks\text@toks
+
+% At the very top level are three macros which are not currently used
+% by DA-TeX (though they might be in the future).
+\def\literary{}
+\def\lexical{}
+\def\economic{}
+
+% Every edition begins with an @composition{} or an @text{}.
+\def\composition#1{\def\next{#1}%
+  \ifx\empty\next\@compositionfalse
+  \else\@compositiontrue\composition@toks{#1}\fi
+  \@textfalse\comp@startedfalse
+  \compositionhdr}
+\let\edition\composition % backward compatibility
+\def\text#1{\def\next{#1}%
+  \ifx\empty\next\@textfalse
+  \else\@texttrue\text@toks{#1}\fi
+  \comp@startedfalse}
+\def\longname#1{\def\next{#1}%
+  \ifx\empty\next\@longnamefalse
+  \else\@longnametrue\longname@toks{#1}\fi}
+\def\citeas#1{\def\next{#1}%
+  \ifx\empty\next\@citeasfalse
+  \else\@citeastrue\citeas@toks{#1}\fi}
+\def\PSDname#1{\def\next{#1}%
+  \ifx\empty\next\@PSDnamefalse
+  \else\@PSDnametrue\PSDname@toks{#1}\fi}
+\def\start@composition{\def\next{\st@rt@composition}%
+  \if@composition
+    \else\if@text
+        \else\def\next{\relax}\fi\fi
+  \ifcomp@started\def\next{\relax}\fi
+  \next}
+\newif\ifcomp@started
+\def\st@rt@composition{\comp@startedtrue
+  \ifnum\pageno>1\newpage\fi
+  \if@composition
+    \if@longname\def\next{\heading{\the\composition@toks\ (\the\longname@toks)}}%
+    \else\def\next{\heading{\the\composition@toks}}\fi
+  \else\def\next{\heading{\the\text@toks}}\fi
+  \next}
+
+% After the composition is begun several optional sections of text are
+% supported. The first of these is the textnotes environment, which is
+% intended to provide a home for miscellaneous preamble concerning the
+% edition.
+\def\textnotes{\textnotehdr\parindent\indention \parskip2pt plus1pt}
+\def\endtextnotes{}
+
+% A home for crediting others (and oneself!)
+\def\credits{\creditshdr\parindent\indention \parskip2pt plus1pt}
+
+% The next is a place to list previous bibliography in an informal and
+% possibly annotated manner
+\def\prevlit{\prevlithdr \nextpar{\hangindent\indention} 
+  \parindent0pt \parskip2pt plus1pt \relax}
+\def\endprevlit{}
+
+% The heading for each section can be redefined easily
+\def\compositionhdr{\heading\the\composition@toks\par}
+\def\textnotehdr{\heading\introductionstr\par}
+\def\creditshdr{\heading\creditsstr\par}
+\def\prevlithdr{\heading\previousliteraturestr\par}
+
+% for backward compatibility we define a control sequence that
+% places its argument in roman 
+\def\obs#1{{\rm#1}}
+
+% When more than one text is being used the @text command is not
+% appropriate. Instead we define a way of presenting the sources
+% in a descriptive environment in which each element is accorded its
+% own label. This is divided into two parts, the first being the 
+% sources environment, the second the macros used for producing bar
+% diagrams of the lines of the composition preserved by each source.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%		PART ONE: SOURCE LISTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% The siglum macro is the key to the regular sources table, and
+%% can be redefined to change the organisation there.
+\newbox\siglumb@x \newbox\musnob@x \newbox\linesb@x \newbox\descb@x
+\newbox\bibb@x    \newbox\provb@x  \newbox\typeb@x  \newbox\ltypeb@x
+\newbox\withb@x
+\newdimen\Sousiglumwd	\newdimen\Soumusnowd	\newdimen\Soubibwd
+\newdimen\Souprovwd	\newdimen\Soulineswd	\newdimen\Soudescwd
+\newdimen\Souhangindent \Souhangindent0pt
+\newdimen\Souparindent  \Souparindent0pt 
+\newskip\Sougutter	
+\newskip\Souintersourceskip  \Souintersourceskip2pt plus3pt
+\newif\iffirstsource
+\newif\ifgivingprov	\givingprovfalse
+
+\newif\ifpara@format
+\def\paraformat{\para@formattrue}
+\def\tableformat{\para@formatfalse}
+
+\newif\ifsources
+\newif\ifmoresources
+\def\sources{\tableformat \disabledots
+  \callsetsouwds \parindent\Souparindent \global\firstsourcetrue
+  \sourcestrue}
+\def\endsources{}
+\def\defaultsouwds{\setsouwds{.05}{.275}{0}{.05}{.3}{.225}{1pt plus1fil}}
+\def\callsetsouwds{\defaultsouwds}
+
+\def\giveprovenience{\givingprovtrue}
+\def\omitprovenience{\givingprovfalse}
+
+\def\setsouwds#1#2#3#4#5#6#7{%
+  \Sousiglumwd#1\hsize
+  \Soumusnowd#2\hsize
+  \Soubibwd#3\hsize
+  \Souprovwd#4\hsize
+  \Soudescwd#5\hsize
+  \Soulineswd#6\hsize
+  \Sougutter#7
+  \ifgivingprov\else
+    \ifdim\Souprovwd>0pt 
+      \dimen0=\Souprovwd \divide\dimen0by3
+      \Souprovwd0pt
+      \advance\Soumusnowd\dimen0
+      \advance\Soudescwd\dimen0
+      \advance\Soulineswd\dimen0
+    \fi
+  \fi
+}
+
+\def\dob@xes{\do{siglum}\do{musno}\do{bib}\do{prov}\do{lines}%
+             \do{type}\do{ltype}\do{with}\do{desc}}
+\def\emptyb@xes{\def\do##1{\setbox\csname##1b@x\endcsname\hbox{}}\dob@xes}
+\def\siglum{\emptyb@xes\setbox\siglumb@x\hbox\bgroup}
+\def\musno{\egroup\setbox\musnob@x\hbox\bgroup}
+\def\bib{\egroup\setbox\bibb@x\hbox\bgroup}
+\def\prov{\egroup\setbox\provb@x\hbox\bgroup}
+\def\lines{\egroup\setbox\linesb@x\hbox\bgroup}
+\def\type{\egroup\setbox\typeb@x\hbox\bgroup}
+\def\ltype{\egroup\setbox\ltypeb@x\hbox\bgroup}
+\def\with{\egroup\setbox\withb@x\hbox\bgroup}
+\def\desc{\egroup\setbox\descb@x\hbox\bgroup}
+\def\done{\egroup\formatsiglum}
+\let\exemplar\siglum
+\let\from\prov
+\let\pub\bib
+
+\def\soubox#1{\setbox0\hbox{\ignorespaces\unhbox\csname#1b@x\endcsname\unskip}}
+\def\putclean#1{\ignorespaces#1\unskip}
+\def\Soupar{\leavevmode \indent \hangindent\Souhangindent \rightskip.5em plus1fil \nohyphenation\relax}
+
+\def\basicsourceformat{\line{\hskip\Sougutter%
+  \hbox to\Sousiglumwd{\hss\putclean{\strut\unhbox\siglumb@x}\hss}%
+  \hskip\Sougutter
+  \vtop{\hsize\Soumusnowd \Soupar \strut \ignorespaces
+    \soubox{musno}\def\next{}%
+    \ifdim\wd0>0pt \unhbox0\ %
+      \soubox{bib}\ifdim\wd0>0pt \def\next{)}(\fi
+    \fi
+    \putclean{\unhbox0}%
+    \next
+    \unskip\strut}%
+  \hskip\Sougutter
+  \ifgivingprov
+    \vtop{\hsize\Souprovwd \Soupar \putclean{\unhbox\provb@x}\strut}\hskip\Sougutter
+  \fi  
+  \vtop{\hsize\Soudescwd \Soupar \putclean{\unhbox\descb@x}\strut}%
+  \hskip\Sougutter
+  \vtop{\hsize\Soulineswd \Soupar \putclean{\unhbox\linesb@x}\strut}%
+  }}
+
+\def\basicsourceheader{\vbox{\hrule\kern3pt\line{\hskip\Sougutter%
+  \hbox to\Sousiglumwd{\hss\it\sourcestr\hss}%
+  \hskip\Sougutter
+  \vbox{\hbox to\Soumusnowd{\hss\it\museumnumbersstr\hss}%
+        \hbox to\Soumusnowd{\hss\it\andpublicationstr\hss}}%
+  \hskip\Sougutter
+  \ifgivingprov \hbox to\Souprovwd{\hss\it\provstr\hss}\hskip\Sougutter \fi
+  \hbox to\Soudescwd{\hss\it\descriptionstr\hss}%
+  \hskip\Sougutter
+  \hbox to\Soulineswd{\hss\it\linesstr\hss}}\kern3pt\hrule}}
+
+\def\basicparasourceformat{\par\noindent\hangindent\Sousiglumwd
+  \hbox to\Sousiglumwd{\putclean{\strut\unhbox\siglumb@x}\hfil}%
+  \soubox{musno}\def\next{}%
+  \ifdim\wd0>0pt \unhbox0
+    \soubox{bib}\ifdim\wd0>0pt \def\next{). }\ (\else\hbox{. }\fi
+  \fi
+  \putclean{\unhbox0}\next\hbox{}%
+  \ifgivingprov\putclean{\unhbox\provb@x. }\fi
+  \putclean{\unhbox\descb@x}\space\hbox{}%
+  \putclean{\unhbox\linesb@x}}
+
+\newif\ifmoresources
+\def\formatsiglum{%
+  \iffirstsource\global\firstsourcefalse
+    \ifmoresources\global\moresourcesfalse\fi
+    \ifpara@format\let\next\relax
+    \else\def\next{\MIDinsert
+    	           \basicsourceheader
+		   \vskip5pt
+		   \endinsert}%
+    \fi
+  \else
+    \ifmoresources\global\moresourcesfalse
+         \ifpara@format\let\next\relax
+         \else\def\next{\topinsert
+			\basicsourceheader
+			\vskip5pt
+			\endinsert
+			\vskip\Souintersourceskip}%
+	 \fi
+    \else\def\next{\vskip\Souintersourceskip}%
+    \fi
+  \fi
+  \next
+  \ifpara@format\def\next{\basicparasourceformat}%
+  \else\def\next{\basicsourceformat}\fi
+  \next}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%		PART TWO: SOURCE DIAGRAMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% these macros facilitate the drawing of bar-graph like 
+%% representations of which lines are preserved in different 
+%% exemplars of a text.
+%%
+
+\newdimen\exxrulewd
+\newdimen\exxunit
+\newdimen\exxtablesize
+\newdimen\vlistheight
+\newcount\currtop
+\newcount\currbot
+\newcount\lastbot
+\newcount\startline
+\newcount\endline
+\newcount\countx
+\newbox\vlistbox
+\newbox\leftscalebox
+\newbox\rightscalebox
+\newif\ifneedsiglum
+\newtoks\currexemplar
+\newif\ifExxfontsloaded	\Exxfontsloadedfalse
+\def\Exxloadfonts{%
+  \global\Exxfontsloadedtrue
+  \font\Exxsc@lefont=cmrr4 at7pt 
+  \font\Exxsigl@mfont=cmrr4 at7pt }
+\def\Exxscalefont{\Exxsc@lefont}
+\def\Exxsiglumfont{\Exxsigl@mfont}
+
+% This is merely sugar in the source file
+\def\sourcediagram#1{}
+
+\def\addsiglum#1{%
+  \global\setbox\vlistbox=
+    \vbox{\unvbox\vlistbox%
+	\vbox to0pt{\vss%
+	\setbox1=\hbox spread2pt{\hfil\kern\exxrulewd\Exxsiglumfont#1\hfil}%
+	\moveleft.5\wd1\box1
+	\vskip1pt}}}
+\def\addrule#1{%
+  \global\setbox\vlistbox=
+    \vbox{\unvbox\vlistbox\tophtick\exxrule{#1}\bothtick}}
+\def\addspace#1{%
+  \global\setbox\vlistbox=
+    \vbox{\unvbox\vlistbox\vskip#1\exxunit}}
+\def\exxrule#1{% this makes the graph lines
+  \hrule height#1\exxunit depth0pt width\exxrulewd}
+\def\tick{\hrule height .5pt depth0pt width3pt \kern-.5pt} % for scale
+\def\htick{% for top and bottom of graph lines
+  \hbox to0pt{\hss\hskip\exxrulewd\vrule height.25pt depth0pt width2pt\hss}}
+\def\tophtick{\htick\kern-.25pt}
+\def\bothtick{\kern-.25pt\htick}
+
+%#1=heading, #2=beginning line, #3=end line
+\def\beginexemplartable#1#2#3{\endgraf % we get into vmode, and stay there
+  \ifExxfontsloaded\else\Exxloadfonts\fi
+  \ifdim\exxtablesize=0pt \exxtablesize\hsize \fi
+  \ifdim\exxrulewd=0pt \exxrulewd.75truept \fi
+  \ifdim\exxunit=0pt \exxunit1.8truept \fi% size of 1 text line
+  \begingroup
+    \hbox to\exxtablesize{\hss#1\hss}%
+	\vskip\baselineskip % because \addsiglum uses 0 height for exemplar letter
+	\bigskip
+	\offinterlineskip \parskip0pt \parindent0pt
+	\global\setbox1=\hbox{}%
+	\global\startline#2
+	\global\endline#3
+	\count255=\endline \advance\count255-\startline
+	\vlistheight=\count255\exxunit
+	\makescale
+	\global\setbox1=\hbox{\box\leftscalebox\hfil}}
+\def\endexemplartable{%
+  \endgroup
+  \global\setbox1=\hbox to\exxtablesize{\unhbox1\box\rightscalebox}%
+  \dimen0\pagegoal \advance\dimen0\pagetotal
+  \dimen2\ht1 \advance\dimen2\dp1 %
+  \ifdim\dimen0 > \dimen2 \else\newpage\fi
+  \box1}
+
+%% the scale is built in 3 phases, then assembled twice at the end.
+%% phase 1 is the numbers, phase 2 the tickmarks, phase 3 the rule
+\def\makescale{%
+  \global\setbox\leftscalebox=\vbox{}%
+  \global\setbox\rightscalebox=\vbox{}%
+  \count255=5
+  \global\setbox1=
+    \vbox{\hbox{$\smash{\hbox{\Exxscalefont\number\startline}}$}\vskip4\exxunit}%
+  \loop
+    \global\setbox1=
+      \vbox{\unvbox1\hbox{$\smash{\hbox{\Exxscalefont\number\count255}}$}\vskip5\exxunit}%
+      \advance\count255by5
+  \ifnum\count255<\endline
+  \repeat
+  \global\setbox3=\vbox{}%
+  \count255=5
+  \global\setbox3=\vbox{\tick\vskip4\exxunit}%
+  \loop
+	\global\setbox3=
+	  \vbox{\unvbox3\tick\vskip5\exxunit}%
+	\advance\count255by5
+  \ifnum\count255<\endline
+  \repeat
+  \advance\count255by-5 % knock off excess
+  \countx=\endline \advance\countx-\count255 % calculate remaining lines
+  \global\setbox3=\vbox{\unvbox3\unskip\vskip\countx\exxunit\tick}%
+  \global\setbox1=
+	\vbox{\unvbox1\unskip\vskip\countx\exxunit%
+	  \vbox to0pt{\hbox{\Exxscalefont\number\endline}\vss}%
+	}%
+  \global\setbox\vlistbox=\vbox{%
+	\hrule height\vlistheight depth0pt width.5\exxrulewd}%
+  \global\setbox\leftscalebox=\hbox{\copy1\copy3\copy\vlistbox}%
+  \global\setbox\rightscalebox=\hbox{\box\vlistbox\box3\box1}}
+
+%% to process \beginexemplar A 5-20,23-34,\endexemplar
+\def\beginexemplar#1{%
+  \currexemplar={#1}%
+  \lastbot=0
+  \needsiglumtrue
+  \futurelet\testee\testendexemplar}
+\def\testendexemplar{%
+  \ifx\testee\endexemplar \let\next\finishexemplar 
+  \else \let\next\buildexemplar \fi
+  \next}
+
+\def\buildexemplar#1,{%
+  \parsenumber#1-\sentinel
+  \ifneedsiglum
+    \count255=\currtop
+    \advance\count255-\startline
+    \ifnum\count255 > 0 \addspace{\count255}\fi
+    \addsiglum{\the\currexemplar}%
+    \needsiglumfalse
+  \else
+    \count255=\currtop \advance\count255-\lastbot
+    \ifnum\count255 > 0 \addspace{\count255}\fi
+  \fi
+    \count255=\currbot \advance\count255-\currtop
+    \ifnum\count255=0 
+    \addrule{.75}% if only 1 line we make a little blob, not nothing
+    \addspace{-.75}% and must compensate for the addition
+    \else
+      \addrule{\count255}%
+    \fi
+  \global\lastbot=\currbot
+  \futurelet\testee\testendexemplar}
+\def\parsenumber#1-#2\sentinel{\def\next{#2}%
+  \currtop=#1 
+  \ifx\next\empty\currbot=\currtop\else\@setcurrbot#2\sentinel\fi
+  \ifnum\currbot<0 \multiply\currbot-1 \fi}
+\def\@setcurrbot#1-\sentinel{\currbot=#1 }
+\def\endexemplar{\relax}
+
+% pad the vlist with whitespace and add it to box0
+\def\finishexemplar{%
+  \global\setbox\vlistbox=\vbox to\vlistheight{\unvbox\vlistbox\vfill}%
+  \global\setbox1=\hbox{\unhbox1\box\vlistbox\hfil}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% END OF SOURCES MACROS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Composite Macros: Introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New composite text macros for DA user interface. In this version 
+% the tab no longer separates columns: in future it will be possible
+% to achieve the same effect by using {facingpage} inside an {Ncolumns}
+% environment.
+%
+% Strategy: each line is scanned as an argument by the top-level macro.
+%	It is then parsed and the sections saved in three token registers.
+%	The syntax of the line is: 
+%		<text>.<SPACE|TAB>	taken as line number
+%		<text>:<SPACE|TAB>	taken as siglum
+%		<text>			remainder is text of line
+%	Blank lines are ignored. Lines beginning with a hyphen (-) 
+%	are replace by a single page-wide ruling.
+%	Lines beginning with at least an equals signs (=)
+%	are replaced by a page-wide double ruling. 
+%	Both of these effects can be suppressed by putting @relax before
+%	any '-' or '=' which starts the line and should be treated 
+%	literally.
+%	
+%	Formatting considerations are kept separate so that other 
+%	interfaces can also use the parsed parts of the line.
+
+% see local.tex for now.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SCORE ENVIRONMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros for typesetting scores; code using these macros is generated with
+% the preprocessor sco.
+%
+\newif\ifmesslines      \messlinesfalse
+\newif\ifdiagnos        \diagnosfalse
+\newif\ifinscore        \inscorefalse
+\newif\ifchop		\chopfalse
+ 
+\newcount\toobigct      \toobigct = 0
+\newcount\donebits      \donebits = 0
+\newcount\incontinuation \incontinuation = 0
+\newcount\notect	\notect = 0
+ 
+\newtoks\txttoks        % txttoks always holds the current txtlinenumber
+\newtoks\sigtoks	% sigtoks always holds the current siglum
+\newtoks\everyscore	% inserted before each score begins---usually once
+\newtoks\conttoks	% inserted after a continuation line number
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       'pre-output' option :  \diagnostics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+\def\diagnostics{\diagnostrue\messlinestrue\scrollmode
+  \output={\global\setbox255\vbox{}\shipout\box255\global\advance\count0 by1}}
+ 
+\def\nodiagnostics{\diagnosfalse\messlinesfalse\errorstopmode
+  \global\output={\plainoutput}}
+
+\newtoks\txtfonts@ze  \newtoks\numfonts@ze  \newtoks\scofonts@ze 
+\newtoks\txtpoints@ze \newtoks\sigpoints@ze
+
+\def\settxtfnt{\globaldefs1 \csname\txtfnt@ point\endcsname \globaldefs0 \sum }
+\def\setscofnt{\globaldefs1 \csname\scofnt@ point\endcsname \globaldefs0 \sum }
+\def\txtfnt{\csname\the\txtfonts@ze\endcsname\sum}
+\def\numfnt{\csname\the\numfonts@ze\endcsname\bf}
+\def\siglumfnt{\csname\the\txtfonts@ze\endcsname\sum}
+\def\scofnt{\csname\the\scofonts@ze\endcsname\sum}
+
+\def\setupfonts{%
+	\savecurrsize
+	\numfonts@ze{ten}%
+	\txtfonts@ze{ten}%
+	\scofonts@ze{eight}%
+	\edef\txtfnt@{ten}%
+	\edef\scofnt@{eight}}
+\def\savecurrsize{\edef\svdfnt@{\the\FLODintsize}}
+\def\restoresize{\globaldefs1 \csname\svdfnt@ point\endcsname\rm\globaldefs0 }
+
+\conttoks={{\it(cont.)}\ }
+
+\let\Hw\hidewidth
+\let\Ms\multispan
+\let\Om\omit
+\let\@\span % was \! but this conflicts with ^!
+
+\def\BeginBlock{%
+	\global\advance\donebits by 1
+        \ifnum\donebits = 1 % no extra space before the first one
+	  \else\vskip\interscoreskip
+	\fi
+        \global\setbox0=\vbox\bgroup}
+
+%% by allowing the \halign to be natural size we can meaningfully test
+%% \wd0. If we use \halign to\hsize \wd0 always == \hsize, even when
+%% the alignment is too big.
+\def\Template{\settxtfnt \halign\bgroup\tabskip=\numgutter \scorestrut}
+
+\def\scorestrut{\vrule height15pt depth5pt width0pt}
+
+%\showboxbreadth10000 \showboxdepth10000
+
+\def\EndBlock{\egroup\egroup
+  \ifdim \wd0 > \hsize
+     \toobig = \wd0 \advance \toobig by -\hsize
+     \ifdim \toobig > \toobigfuzz
+        \immediate\write15{Score block \the\txttoks\space is \the\toobig \space too wide [page \the\count0]}
+        \global\advance\toobigct by 1
+     \fi
+  \fi
+  \box0
+  \filbreak
+  \global\notect=0 \global\inscorefalse
+  \ifmesslines \message{\the\txttoks} \fi
+}
+
+\let\BeginChopBlock\BeginBlock %???
+
+\def\SuspendChopBlock{\egroup\egroup\box0}
+
+\def\InterChopBlock{\nobreak\vskip\intercontskip}
+
+\def\RebeginChopBlock{\choptrue\global\setbox0=\vbox\bgroup}
+
+\def\ChopTemplate{\settxtfnt \halign\bgroup \tabskip=\numgutter \scorestrut}
+
+\def\EndChopBlock{\tabskip=0pt plus1fil\cr\egroup\egroup
+    \global\incontinuation=0
+    \ifdim \wd0 > \hsize
+       \toobig = \wd0 \advance \toobig by -\hsize
+       \ifdim \toobig > \toobigfuzz
+          \immediate\write15{alignment \the\txttoks\space is \the\toobig \space too wide [page \the\count0]}
+          \global\advance\toobigct by 1
+       \fi
+    \fi
+  \box0
+  \filbreak
+  \global\notect=0 \global\inscorefalse
+  \ifmesslines \message{\the\txttoks} \fi
+  \chopfalse
+}
+
+\def\scorenote{\noalign\bgroup\global\advance\notect by1
+  \ifnum\notect > 1 \kern\internoteamt \else\kern\scoretonoteamt\fi
+  \vbox\bgroup\hsize=\notewidth \leftskip=\noteleftmargin \rightskip2em plus2em
+  \baselineskip\notebaselineskip \parindent2em \rm
+  \aftergroup\nointerlineskip\aftergroup\par\aftergroup\egroup
+  \let\next }
+
+\def\Num#1{%
+  \global\txttoks={#1}%
+  \ifchop
+    \hbox to\contfirstcolwd{%
+      \kern\contblockleft\kern\numgutter{\numfnt\the\txttoks.\ \the\conttoks}\hfil}%
+  \else
+    \hbox to\contblockleft{\numfnt\the\txttoks.\ \hfil}%
+  \fi
+  \settxtfnt}
+
+\def\Sig#1{%
+  \global\sigtoks={#1}%
+  \ifchop
+    \hbox to\contfirstcolwd{\kern\contblockleft\kern\numgutter\siglumfnt\the\sigtoks\hfil}%
+  \else
+    \hbox to\contblockleft{\siglumfnt\the\sigtoks\ \hfil}%
+  \fi
+  \setscofnt}
+
+\newbox\hyphbox		\newdimen\hyphwidth
+\newbox\dotbox		\newdimen\dotwidth
+\newbox\colonbox	\newdimen\colonwidth
+\newdimen\spacewidth
+\newbox\hybox
+\newbox\astbox
+\def\setupboxes{%
+  \setbox\hyphbox\hbox{\txtfnt-}\hyphwidth\wd\hyphbox
+  \setbox\dotbox\hbox{\txtfnt.}\dotwidth\wd\dotbox
+  \setbox\colonbox\hbox{\txtfnt:}\colonwidth\wd\colonbox
+  \ifnewfonts
+    \setbox\hybox\hbox{{\scofnt\char254}}%
+    \setbox\astbox\hbox{{\DACMR\eight\rm\char253}}%
+  \else
+    \setbox\hybox\hbox{\vrule height3.5pt depth-2.8pt width4pt}%
+    \setbox\astbox\hbox{\lower4pt\hbox{\txtfnt*}}%
+  \fi }
+
+\def\Th{\tabskip\hyphwidth}
+\def\Td{\tabskip\dotwidth}
+\def\Tc{\tabskip\colonwidth}
+\def\Ts{\tabskip\spacewidth}
+\def\Te{\tabskip0pt}
+\def\Ta{\tabskip0pt}
+\def\Rh{\rlap{\copy\hyphbox}}
+\def\Rd{\rlap{\copy\dotbox}}
+\def\Rc{\rlap{\copy\colonbox}}
+\let\Ra\relax
+\let\Re\relax
+\let\Rs\relax
+\def\Lic#1#2{\rlap{\hbox to#1{{#2}\hfil}}}
+\def\Cic#1#2{\rlap{\hbox to#1{\hfil{#2}\hfil}}}
+\def\Ric#1#2{\rlap{\hbox to#1{\hfil{#2}}}}
+
+%% versions of hyphen and asterisk for use alone in their own columns
+\def\Hy{\Hw\unhcopy\hybox\Hw}
+\def\Ast{\Hw\unhcopy\astbox\Hw}
+%% versions of hyphen and asterisk for use when they have an lpend or rpend
+%% with them
+\def\HY{\unhcopy\hybox}
+\def\AST{\unhcopy\astbox}
+
+\def\Thin{}
+\def\Space#1{\hbox to#1{\hfil}}
+\def\DefSpace{10}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       User definable parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newdimen\toobig		\newdimen\toobigfuzz
+\newdimen\txttoscoreamt		
+\newdimen\scoretonoteamt	
+\newdimen\internoteamt
+\newskip\notebaselineskip	\newdimen\noteleftmargin
+\newskip\noterightskip		\newdimen\notewidth 
+\newdimen\alwidth
+\newdimen\contfirstcolwd	\newdimen\contblockleft
+\newdimen\numgutter		
+\newskip\interscoreskip
+\newskip\intersinglineskip
+\newskip\intercontskip
+ 
+\def\workingcopy{
+  \notewidth\hsize	% overall width of notes
+  \notebaselineskip\basicleading	% space between baselines in notes
+  \baselineskip2\basicleading
+  \lineskip0pt \lineskiplimit0pt
+  \contfirstcolwd1.36in
+  \contblockleft.36in
+  \noteleftmargin2em   % space the note block is indented from left margin
+  \noterightskip2em plus2em % ragged effect for notes mimics score's raggedness
+  \txttoscoreamt5pt	% space between txtline and score-block
+  \scoretonoteamt5pt	% space between score-block and note
+  \internoteamt6pt	% space between consecutive notes
+  \interscoreskip2pc plus.5pc minus.5pc  % space between txt-score blocks
+  \intersinglineskip1.5pc plus.5pc % space between `blocks' with only txt-line
+  \intercontskip.1in % plus.1in % space between broken score block and its continuation
+  \toobigfuzz1pc % ignore oversize alignments if they are less than this much 
+                 % too big (c.f. \hfuzz and \vfuzz in Plain TeX)
+  \numgutter=.15in
+  \spacewidth1em \relax}
+
+\def\verbnum#1.{{\bf#1.}\quad}
+\def\BeginVerbBlock{
+	\global\advance\donebits by 1
+        \ifnum\donebits = 1 % no extra space before the first one
+	  \else\vskip\interscoreskip
+	\fi
+        \vbox\bgroup\settxtfnt\parskip10pt\verbnum}
+\def\EndVerbBlock{\egroup\filbreak\global\notect=0 \global\inscorefalse}
+
+\let\Ell\ellipsis
+\let\Eell\endellipsis
+%\def\Slb{/\kern-2pt/}
+\def\Slb{//}
+\newdimen\pt \pt1pt
+
+\def\zerowidth{0pt}
+\def\score{\disabledots % halign swallows dots!
+  \setupfonts \setupboxes
+  \tabskip=0pt \parindent=0pt \parskip=0pt \hbadness=10000
+  \vbadness=10000 \spaceskip=0pt \leftskip=0pt
+  \hfuzz=\toobigfuzz % same as \toobigfuzz, but more widespread
+  \workingcopy % default to a loose format
+  \scorehook}
+\def\endscore{\restoresize}
+
+\def\scorehook{}
+
+% This is put between parts of a split multispan
+\def\Mfill{\hbox to1pt{\hfil}\hfill\hbox to1pt{\hfil}}
+% This is put between adjacent square brackets
+\def\Afill{\hbox to.25pt{\hfil}\hfill\hbox to.25pt{\hfil}}
+
+% An edition will often have some commentary, so we provide a simple
+% way of formatting that. If the user sets \showctyindexentriestrue
+% the terms to be entered in the index are set in the left margin of the 
+% commentary.
+\newif\ifctylabelactive
+\newskip\ctyinterskip
+\def\ctydimens{\parskip2pt plus1pt \ctyinterskip6pt plus 1pt minus1pt \relax}
+
+\newif\ifshowctyindexentries \showctyindexentriesfalse %true
+\def\commentary{\ctydimens\commentaryhook}
+\def\endcommentary{\indentnextpar}
+\def\commentaryhook{}
+\def\real@comma{,}
+\newif\ifzeronextpar \zeronextpartrue
+{\makeactive{,}%
+\gdef\ad{\ifdim\lastskip=\ctyinterskip \else\vskip\ctyinterskip\fi
+  \makeactive{,}\let,\allowbreak\real@ad}
+\gdef\real@ad#1\on#2\par{\makeother{,}%
+  \global\ctylabelactivetrue
+  \nextpar{%
+    \ifctylabelactive\def\next{\cty@formatlabel{#1}{#2}}\else\let\next\relax\fi
+    \next
+    \global\ctylabelactivefalse\ifzeronextpar\global\nextpar{}\fi}}%
+\gdef\cty@formatlabel#1#2{%
+  \ifshowctyindexentries\def\next{\cty@on@idx{#2}}\else\let\next\relax\fi
+    \kern-\parindent
+    \next \let,\real@comma
+    \ctyformatlabel{#1}\ignorespaces}%
+\gdef\cty@on@idx#1{%
+  \llap{\setbox0=\hbox{\vtop{\nextpar{}\def,{\break\ignorespaces}%
+    \parindent0pt \parfillskip0pt
+    \baselineskip9pt\leftskip0pt plus1fill \rightskip0pt
+    \relax\eightpoint\hsize1in\relax#1\endgraf}%
+    \hbox to10pt{\hfil}}\ht0=0pt \dp0\ht0
+    \box0}}}
+
+\def\ctyformatlabel#1{\leavevmode
+  \hboxtomin\indention{\bf\ignorespaces#1\unskip.\ }}
+
+\def\clearctylabel{\global\ctylabelactivefalse}
+\def\cref#1#2{#2}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$Log: editions.tex,v $
+Revision 0.21  1996/09/20 01:57:09  s
+zero lineskip and lineskiplimit in default version of \workingcopy
+
+Revision 0.20  1996/09/01 12:33:57  s
+undo incorrect correction of \sum to \rm in \def\siglumfnt
+
+Revision 0.19  1996/05/27 16:21:17  s
+*** empty log message ***
+
+% Revision 0.18  1996/02/20  01:31:41  s
+% add support for \commentaryhook
+%
+% add \ifzeronextpar --- MUST MOVE THIS TO THE RIGHT PLACE!!!
+%
+% Revision 0.17  1996/02/17  23:32:07  s
+% new definition of \formatsiglum
+%
+% Revision 0.16  1996/02/17  23:31:18  s
+% new definition of \setupboxes using new font defs
+%
+% Revision 0.15  1995/11/18  11:24:08  s
+% \cty@formatlabel now uses \hboxtomin so that the start of each numbered
+% cty para is aligned with \indention
+%
+% Revision 0.14  1995/11/17  12:53:36  s
+% fixed several stupid oversights in \ifshowctyindexentries change
+%
+% Revision 0.13  1995/11/17  12:04:16  s
+% fixed printing of index entries for commentary
+%
+% Revision 0.12  1995/10/28  00:06:21  s
+% added \scorehook to \def\score
+%
+% Revision 0.11  1995/10/13  10:13:38  s
+% Use // for \Slb now that // is kerned properly in the fonts themselves
+%
+% Revision 0.10  1995/10/13  01:09:00  s
+% added \def\scofnt to go with \txtfnt etc.
+%
+% Revision 0.9  1995/10/12  01:46:01  s
+% fix boneheaded redefinition of \ad which was suppressing use of \ctyinterskip
+%
+% Revision 0.8  1995/10/10  01:34:16  s
+% fixed all font calls from the old \csname<point><face>\endcsname
+% notation to the new \csname<point>\endcsname\<face> notation.
+%
+% Revision 0.7  1995/09/21  01:04:01  s
+% moresources magic
+%
+% Revision 0.6  1995/06/16  11:20:02  s
+% slight reorganisation of \EndBlock
+%
+% added code to enable suppression of cty label formatting: headings now
+% automatically \clearctylabel
+%
+% added \ctydimens called when a \commentary is begun
+%
+% added \ctyinterskip to control spacing between commentary blocks
+%
+% Revision 0.5  1995/03/01  16:11:48  s
+% more undisciplined hacking for .edn files
+%
+% Revision 0.4  1995/02/24  13:25:14  s
+% more fiddling with sources formatting
+%
+% Revision 0.3  1995/02/24  13:16:55  s
+% More ad hoc hacking to make newstyle source-lists print OK
+%
+% Revision 0.2  1994/12/13  02:29:54  s
+% Fixed \restoresize by moving \rm inside of globaldefs1
+%
+% Revision 0.1  1994/12/12  03:56:05  s
+% initial checkin
+%

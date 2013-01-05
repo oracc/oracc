@@ -1,0 +1,41 @@
+\def\pagecontents{\ifvoid\topins
+   \else
+     \ifdim\ht\topins=0pt\peek
+       \ifdim\ht\popped=0pt\pop
+         \wlog{pop@0pt: \ht\popped=\the\ht\popped}%
+         \voidpop\fi
+     \else\unvbox\topins
+       \pop
+       \wlog{pop@+pt: \ht\popped=\the\ht\popped}%
+       \voidpop\fi
+   \fi
+  \dimen@=\dp\@cclv
+  \unvbox\@cclv % open up \box255
+  \ifnum\mc@added>0 \mc@removeaddedstuff %\message{pagecontents}
+  \fi
+  \ifvoid\footins\else % footnote info is present
+    \global\advance\footnoteSize-\ht\footins
+    \message{\ht\footins=\the\ht\footins}%
+    \vskip\skip\footins
+    \iffootsplit\footsplitrule\else\footnonsplitrule\fi
+    \ifdim\dp\footins=\footlastlinedp \global\footsplitfalse
+    \else\global\footsplittrue
+    \fi
+    \ifmc@lfnotes
+      \saved@mincoltarget\mincoltarget
+      \mincoltarget\footmincoltarget
+      \saved@gutter\intercolgutter
+      \intercolgutter\fnoteintercolgutter
+      \saved@topskip\topskip
+      \topskip\foottopskip
+      \boxcolumns\numfnotec@ls
+      \columnfilltrue
+      \balancebox\footins
+      \box\boxincolsb@x
+      \intercolgutter\saved@gutter
+      \mincoltarget\saved@mincoltarget
+      \topskip\saved@topskip
+    \else\unvbox\footins
+    \fi
+  \fi
+  \ifr@ggedbottom \kern-\dimen@ \vfil \fi}

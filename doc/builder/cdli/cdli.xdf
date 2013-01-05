@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>CDLI ATF Primer</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2007-02-08</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>If you are preparing texts for insertion directly into
+the CDLI repository you should read this document first.</dc:description>
+</d:meta>
+
+<h1>ATF in CDLI and Oracc</h1>
+
+<p>Before learning any ATF it is useful to know a little about the
+history and current state of ATF.  ATF was developed for use in CDLI,
+and was first defined as a relatively small specification which used
+only ASCII characters.  Over time, two things have happened.
+Firstly, the range of texts encoded in ATF has grown, and ATF has
+grown with it.  Secondly, ATF has been extended to allow
+Assyriologists to process legacy data more quickly and to type new
+texts in a format that is very close to the way things look on
+screen.</p>
+
+<p>Because of the archival nature of the CDLI repository, we do not
+allow extended ATF to be used in the repository itself.  Texts in
+Oracc's extended ATF will be converted to the archival core ATF format
+that we call Canonical ATF (C-ATF).  <strong>Although C-ATF does not
+imitate the print versions of texts, C-ATF can be converted to a
+pretty-printed version using <a href="">this
+webservice</a>.</strong></p>
+
+<p><strong>If you are typing texts to go directly into the CDLI
+repository you must follow the instructions in this document so that
+you create Canonical ATF (C-ATF) directly.</strong></p>
+
+<h1>Oracc Documentation</h1>
+
+<p>Oracc documentation is generally written using extended ATF; when
+you are writing C-ATF you need to be careful to adjust the examples
+appropriately.</p>
+
+<h1>C-ATF Main Points</h1>
+
+<ul>
+<li>ASCII Characters only</li>
+<li>Sign values in Sumerian must conform to the set of CDLI values;
+See <a href="http://cdli.ucla.edu/downloads.html"
+>http://cdli.ucla.edu/downloads.html</a> and contact
+<code>cdli@cdli.ucla.edu</code> if you wish to recommend values which
+are not listed there.</li>
+<li>readings not assigned indices by Borger, MZL, must be followed by
+'x' (the letter lowercase ex) and a description of the sign using sign
+names in upper case, for instance <code>sudx(|SU.KUR|)</code>.</li>
+<li>Never put brackets inside graphemes: write <code>ab#</code> not
+<code>[a]b</code>.</li>
+<li>For purposes of qualifying state of preservation, both simple and
+complex signs are considered atoms; thus, a component of a complex sign 
+such as <code>|UR2x(A.HA)|</code> is never qualified as damaged or
+broken, only the whole sign.  Similarly, a damaged number notation,
+for instance <code>[5(disz)]+4(disz)</code> must be coded as
+<code>9(disz)#</code>.</li>
+<li>Never put logograms in capitals: only uninterpreted sign names,
+and complex signs are in upper case in C-ATF</li>
+<li>For logograms in non-Sumerian texts use underscores
+and lower case, i.e., write <code>%a
+_lugal_</code>, not <code>%a LUGAL</code>.</li>
+<li>For logograms where the logogram language is not Sumerian, use a
+language switch after the underscore: <code>(%hit ...) _%a mu-u2_</code></li>
+<li>All numbers must be qualified (<code>3(disz)</code>,
+<code>4(u)</code> etc.) <strong>except</strong> sexagesimal
+numbers in Place Value notation (PVN).</li>
+<li>The only ATF protocols that are allowed in C-ATF are:
+<ul>
+  <li><code>#atf: lang XXX</code>, where XXX is a language code</li>
+  <li><code>#atf: use math</code>, where PVN is to be used</li>
+</ul>
+</li>
+<li>The <code>#</code>-sign ("hash"-sign) introduces comments about
+individual line content and always follows the commented line</li>
+<li>The <code>$</code>-sign introduces comment of text structure,
+never of line content</li>
+<li><code>$</code>-lines for breakage of uncertain length must conform 
+to the following patterns:<ul>
+<li><code>$ broken</code> (for instances of loss of full surface or column)</li>
+<li><code>$ beginning broken</code> (after this, use primes on
+subsequent line numbers but where the length of the break is known,
+instead enter all line numbers and use <code>[...]</code> for the line
+content; <code>beginning broken</code> may also refer to some unknown
+number of columns missing, after which the first preserved column is
+to be qualified <code>@column 1'</code> and so on)</li>
+<li><code>$ rest broken</code> (see above for both missing lines and columns)</li>
+<li><code>$ n lines broken</code> (within column and surface; line
+numbering after resumption of preserved text is in sequence with the
+number preceding the break with, for example, <code>5'.</code>
+following either <code>4.</code> or <code>4'.</code>.)</li>
+</ul>
+</li>
+</ul>
+
+<h1>Examples in C-ATF</h1>
+
+
+<h2>Example 1</h2>
+<pre class="cookbook">
+&amp;P100003 = AAS 015
+#atf: lang sux
+@tablet
+@obverse
+1. 1(disz) geme2 u4 1(disz)-sze3
+2. ki dingir-ra-ta
+3. da-da-ga
+4. szu ba-ti
+@reverse
+1. mu ki-masz{ki} ba-hul</pre> 
+
+<p>The various ATF features illustrated here are:</p>
+<dl>
+<dt>The <code>&amp;-line</code></dt>
+<dd>Every text begins with an <code>&amp;-line</code> giving the ID
+and the text's designation according to the CDLI catalog; if your text
+is not yet in the catalog, e-mail cdli@cdli.ucla.edu to get the ID and
+designation.</dd>
+<dt><code>#atf: lang sux</code></dt>
+<dd>You can specify the main language for the text; for Akkadian just
+write <code class="cookbook">#atf: lang akk</code>.</dd>
+<dt><code>@tablet</code></dt>
+<dd>You can specify an object type; this is normally @tablet, but
+others include @bulla and @envelope.  If an object type which is used
+in the CDLI catalog is not understood by the ATF processor, you can
+use the exactly equivalent form <code>@object OBJECT_TYPE</code>,
+e.g., <code>@object head</code>.</dd>
+<dt><code>@obverse, @reverse</code></dt>
+<dd>You can specify the part of the object you are transliterating;
+the edges are given using: <code class="cookbook">@left @right @top
+@bottom</code> (but note that no physical surface of a tablet is to be
+included in C-ATF unless it, such as <code>@left</code> or in the case
+of occasional partial sums at the bottom of colums in Ur III
+administrative texts, assumes an explicit function in text
+format)</dd>
+<dt>Lines of text</dt>
+<dd>Lines of text are for the most part just like regular
+Assyriological practice.  See <a href="#Example_2">Example 2</a> for how to do breakage.</dd>
+<dt>Determinatives, phonetic complements and glosses</dt>
+<dd><p>Determinatives are given in curly brackets.</p> 
+<p>Phonetic complements and glosses are marked with a <code>+</code> immediately after the first curly bracket; they are assumed to be in the same language as the rest of the word.</p> </dd>
+<dt>Rulings and Blank Spaces</dt>
+<dd>Lines ruled on the tablet as paragraph separators, as well as
+empty space or space used for seal impressions, can be marked with
+$-lines ("dollar-lines").</dd>
+<dt>Numbers</dt>
+<dd>All numbers are qualified.</dd>
+</dl>
+
+<h2>Example 2</h2>
+
+<pre class="cookbook">
+&amp;P348658 = SpTU 2, 055
+#atf: lang akk
+@tablet
+
+@obverse
+1.	t,up-pi _a-sza3_ ki-szub-ba#-[a ...]
+2.	{i7}har-ri sza2 {d}muati? x [...]
+3.	ša2 qe2-reb unu#[{ki}]
+</pre>
+
+<dl>
+<dt>Damage and breakage</dt>
+<dd><p>There are no half-brackets in ATF: signs which are damaged are
+flagged with the hash-sign (<code>#</code>) after the grapheme.</p>
+<p>Signs which are completely broken away are placed in square
+brackets; square brackets may not occur inside a grapheme, only before
+or after it.  The ellipsis (<code>...</code>) may be used to indicate that an
+undeterminable number of signs is missing.</p>
+<p>Signs which cannot be identified are transliterated as
+<code>x</code>; when a number is missing the convention is to use
+<code>n</code> as in <code class="cookbook">n(disz)</code>.  Both
+within or after the parentheses further qualification of
+<code>n</code> as <code>n(disz)</code> is allowed.</p></dd>
+<dt>Querying, Correction and Collation</dt>
+<dd>The other flags are the query (<code>?</code>) which can be placed
+after a grapheme to indicate uncertainty of reading; the asterisk
+(<code>*</code>) which indicates a collated reading; and the
+exclamation mark which indicates correction.  After a corrected sign,
+the actual sign on the tablet may optionally be given, using sign
+names in upper case: <code
+class="cookbook">a!</code> or <code class="cookbook">ki!(DI)</code>.</dd>
+</dl>
+
+<d:resources/>
+
+</d:doc>

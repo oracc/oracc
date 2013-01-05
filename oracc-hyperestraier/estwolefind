@@ -1,0 +1,107 @@
+#! /bin/sh
+
+#================================================================
+# estwolels
+# List the path of cache files of wwwoffle
+#================================================================
+
+
+# set variables
+LANG=C ; export LANG
+LC_ALL=C ; export LC_ALL
+PATH="$PATH:/usr/local/bin:$HOME/bin" ; export PATH
+progname="estwolels"
+spooldir="/var/spool/wwwoffle"
+conffile="/etc/wwwoffle/wwwoffle.conf"
+denysufs="css|js|csv|tsv|log|md5|crc|conf|ini|inf|lnk|sys|tmp|bak"
+denysufs="$denysufs|xml|xsl|xslt|rdf|rss|dtd|sgml|sgm"
+denysufs="$denysufs|pgp|sig|cer|csr|pem|b64|uu|uue|[0-9]"
+denysufs="$denysufs|rtf|pdf|ps|eps|ai|doc|xls|ppt|sxw|sxc|sxi"
+denysufs="$denysufs|xdw|jtd|oas|swf|mht|mhtml|mime|eml|msg"
+denysufs="$denysufs|zip|tar|tgz|gz|bz2|tbz2|z|lha|lzh"
+denysufs="$denysufs|7z|lzo|lzma|cpio|shar|cab|rar|sit|ace|hqx"
+denysufs="$denysufs|bin|o|a|so|exe|dll|lib|obj|ocx|class|jar|war"
+denysufs="$denysufs|rpm|deb|qdb|qdb|dbx|dbf|dat|bat|com"
+denysufs="$denysufs|png|gif|jpg|jpeg|tif|tiff|bmp|ico|pbm|pgm|ppm|xbm|xpm|dvi"
+denysufs="$denysufs|au|snd|mid|midi|kar|smf|mp2|mp3|m3u|wav|wma|wmp|asx|at3|aif"
+sizemax="1048576"
+
+# show help message
+if [ "$1" = "--help" ]
+then
+  printf 'List the path and the URL of cache files of wwwoffle\n'
+  printf '\n'
+  printf 'Usage:\n'
+  printf '  %s [spooldir]\n' "$progname"
+  printf '\n'
+  exit 0
+fi
+
+
+# check the spool directory
+if [ -n "$1" ]
+then
+  spooldir="$1"
+fi
+if [ -d "$spooldir/http" ] && [ -r "$spooldir/http" ] && [ -x "$spooldir/http" ]
+then
+  true
+else
+  printf '%s: cannot scan %s\n' "$progname" "$spooldir/http" 1>&2
+  exit 1
+fi
+
+
+# check the configuration file
+confopt=""
+if [ -f "$conffile" ]
+then
+  confopt="-c $conffile"
+fi
+
+
+# function to output URL list
+outputlist(){
+  \ls "$spooldir/http" |
+  while read domain
+  do
+    wwwoffle-ls $confopt "http/$domain"
+  done
+  \ls "$spooldir/ftp" |
+  while read domain
+  do
+    wwwoffle-ls $confopt "ftp/$domain"
+  done
+}
+
+
+# list the path and the URL of cache files
+outputlist |
+egrep " (http|ftp)://" |
+egrep -i -v "\.($denysufs)$" |
+awk -F ' ' -v sdir="$spooldir" -v sizemax="$sizemax" '
+{
+  if($2 < 1 || $2 > sizemax) next
+  path = $0
+  sub(/ .*/, "", path)
+  prot = "http"
+  if($0 ~ / ftp:\/\//) prot = "ftp"
+  domain = $0
+  sub(/.* [A-Za-z]+:\/\//, "", domain)
+  sub(/\/.*/, "", domain)
+  url = $0
+  sub(/.* [A-Za-z]+:\/\//, "", url)
+  lfile = url
+  sub(/\?.*/, "", lfile)
+  sub(/.*\//, "", lfile)
+  printf("%s/%s/%s/%s\t%s://%s\t%s\n", sdir, prot, domain, path, prot, url, lfile)
+}
+'
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

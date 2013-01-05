@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use ORACC::NS;
+my @cats = @ARGV;
+if ($#cats < 0) {
+    @cats = <00cat/*.xml>;
+}
+
+# FIXME: Need to convert .fxr to .xmd dynamically
+
+foreach my $c (@cats) {
+    next if $c =~ m#/dynamic#;
+    my $x = load_xml($c);
+    my @ids = tags($x,$XMD,'id_text');
+    if ($#ids < 0) {
+	@ids = tags($x,$XMD,'id_composite');
+    }
+    map { print $_->textContent(), "\n" } @ids;
+}
+
+1;

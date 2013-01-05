@@ -1,0 +1,421 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<d:meta>
+  <dc:title>Project Management with Unix</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Eleanor Robson</dc:creator>
+  <dc:date>2010-06-15</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This page describes how to manage your Oracc corpus through a Unix terminal from a PC or Mac. It takes you through uploading files to Oracc, checking the project, adding new entries to the glossaries, making corrections to texts that are already online, and rebuilding the project website.</dc:description>
+</d:meta>
+
+<p>Throughout these instructions, substitute <code>proj</code> for the name of your project (e.g, obstn, cams, hbtin) and <code>subproj</code> for any subprojects you are running. <code>[LANGUAGE]</code> stands for any one of the <a href="/ns/gdl/1.0/gdltut.html#Languages">Oracc language codes</a> for the ancient languages ini your project.</p>
+
+
+<p>For more information on the <code>oracc</code> command, see the page on <a href="/doc/manager/the-oracc-command/">The Oracc Command</a>.</p>
+
+
+<div>
+<h1><a name="before" />Before you begin</h1>
+<p>Managing an Oracc project entails two types of communication with the Oracc server:</p>
+<ol>
+<li>Uploading files to Oracc; and</li>
+<li>Connecting to Oracc with a command-line (text-based) terminal programme to enable you to manage the files on the Oracc server.</li>
+</ol>
+
+<p>To do this on a Mac, you will need to use the Terminal utility, which you will find in Applications/Utilities. You might find it useful to keep the Terminal in your Dock if you will be using it regularly. When the Terminal is open, hold your mouse down on its icon in the Dock (a black computer screen) and choose <code>Keep in Dock</code>. </p>
+
+<p>On a PC, you will need to install a terminal utility such <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTy</a>.</p>
+ 
+<p>When uploading files to Oracc, you may prefer to use a programme that gives a view of the local and remote folders and allows you to drag files from one to the other. If you are using a Mac, it is worth trying <a href="http://rsug.itd.umich.edu/software/fugu/">Fugu</a> and for PCs there is <a href="http://winscp.net/eng/index.php">WinSCP</a>.</p> 
+
+
+
+<p>Once you have installed the software you want, you need to set up your connection to the Oracc server. Generally speaking, you will only need to do this once.</p> 
+<ul>
+<li><p>If you are using a PC, you need to run PuTTy. In the dialogue box  give the following information:</p>
+<pre class="cookbook">
+Host Name: oracc.museum.upenn.edu
+Connection Type: SSH
+</pre>
+<p>The <code>Port</code> number will change automatically when you select <code>SSH</code>; do not change it. Now press the Open button at the bottom of the dialogue box.</p>
+</li>  
+<li><p>If you are using a Mac, open the Terminal (in Applications/Utilities) and
+type:</p>
+
+<pre class="cookbook">
+ssh proj@oracc.museum.upenn.edu
+</pre>
+
+<p>and press return.</p>
+</li>
+</ul>
+
+<p>On either PC or Mac, you will then see a message that looks something like this:</p>
+
+<pre class="example">
+The server's host key is not cached in the registry. You
+have no guarantee that the server is the computer you think it is.
+The server's rsa2 key fingerprint is:
+ssh-rsa 1024 7b:e5:6f:a7:f4:f9:81:62:5c:e3:1f:bf:8b:57:6c:5a
+If you trust this host, hit Yes to add the key to
+PuTTY's cache and carry on connecting.
+If you want to carry on connecting just once, without
+adding the key to the cache, hit No.
+If you do not trust this host, hit Cancel to abandon the
+connection.</pre>
+
+<p>Type <code>yes</code> and press return to set up the connection to the Oracc server. Next:</p>
+
+<ul>
+<li>PuTTy (PC) will ask for your user name (<code>proj</code>) and password</li>
+<li>Terminal (Mac) will ask for your password</li>
+</ul>
+
+<p>Once you have entered this information and pressed return, you will see a prompt that says something like <code>[proj@oracc ~]</code>. You should now log out by typing <code>logout</code> and pressing return. You can now quit PuTTy/Terminal and proceed to the next relevant section on this page.</p>
+
+</div>
+
+<div>
+<h1><a name="uploading" />Uploading ATF, ODS and catalogue files to Oracc</h1>
+
+<p>This stage is only necessary if your <a href="/doc/builder/">ATF</a> and/or <a href="/doc/builder/layouts/#Complex_tables">ODS</a> files are not on Oracc already but are on your own computer and/or you have your own <a href="doc/manager/projcats/">project catalogue</a>. If you access your ATF files remotely from Oracc, <strong>and</strong> your project uses the <a href="http://cdli.ucla.edu">CDLI catalogue</a>, you can skip straight to <a href="#checking">Checking the Project</a>.</p>
+
+<p class="alert">Before you upload ATF or ODS files to Oracc, you must check that they are clean with the <a href="/util/atfproc.html">Checker webservice</a>.</p>
+
+<p>If you are using FuGu or WinSCP, you will need to enter the following information in the login dialogue box:</p>
+
+<pre class="cookbook">
+host: oracc.museum.upenn.edu
+user name: proj
+password: [your project's password]
+</pre> 
+
+<p>Copy ATF files into your project's (or subproject's) <code>00atf/</code> folder and (if applicable) the XML file <a href="../projcats/#exporting">exported</a> from your catalogue into your project's <code>00cat/</code> folder.</p>
+
+<p>If you are comfortable using a command line interface such as Terminal (for Mac) or PuTTy (on a PC), then follow these instructions instead:</p> 
+<ul>
+<li><p>Before you do this for the first time, locate the root (PC) or home (Mac) directory of your computer. On a Mac, this is <code>Users/username</code> (e.g., <code>Users/er264</code>) and on a PC it is <code>c:\Documents and Settings\username\</code> (e.g, <code>c:\Documents and Settings\er264\</code>). Inside it, make a new folder called <code>proj</code> and inside that, make two new folders <code>00atf</code> and <code>00cat</code>. You will use these folders as a convenient place to put files that are to be copied to and from Oracc.</p></li>
+<li><p>Copy ATF and ODS files to be uploaded into your <code>proj/00atf</code> folder and/or export your catalogue to <code>proj/00cat</code>. Delete or move any old files that are still in that folder if you have followed this procedure before. This is IMPORTANT as you don't want to over-write files that are already on  Oracc.</p></li>
+<li><p>Open the Terminal or PuTTy.</p></li>
+<li><p>To copy ATF files, at the prompt type:</p> 
+<pre class="cookbook">scp ~/proj/00atf/*.atf proj@oracc.museum.upenn.edu:00atf</pre> 
+<p>or, for a subproject:</p>
+<pre class="cookbook">scp ~/proj/00atf/*.atf proj@oracc.museum.upenn.edu:subproj/00atf</pre> 
+<p>and press return.</p>
+<p>To copy ODS files, at the prompt type:</p> 
+<pre class="cookbook">scp ~/proj/00atf/*.ods proj@oracc.museum.upenn.edu:00atf</pre> 
+<p>or, for a subproject:</p>
+<pre class="cookbook">scp ~/proj/00atf/*.ods proj@oracc.museum.upenn.edu:subproj/00atf</pre> 
+<p>and press return.</p>
+<p>To copy the XML file of your project catalogue, at the prompt type:</p> 
+<pre class="cookbook">scp ~/proj/00cat/*-P.xml proj@oracc.museum.upenn.edu:00cat</pre> 
+<p>or</p>
+<pre class="cookbook">scp ~/proj/00cat/*-P.xml proj@oracc.museum.upenn.edu:subproj/00cat</pre> 
+<p>and press return.</p>
+</li>
+
+<li><p>When prompted for the password, type it and press return.</p></li>
+
+<li><p>Watch while the machine describes its progress. Leave the window open, as you'll need it again later.</p></li>
+</ul>
+</div>
+
+<div>
+<h1><a name="downloading" />Downloading files from Oracc</h1>
+<p>For several steps in the project management process you will need to edit files. It is best to work with the file(s) on Oracc, even if you originally created them on your own computer, so that you can be confident that it is the latest version. To download files from Oracc follow these instructions:</p>
+
+<p>If you are using FuGu or WinSCP, you will need to enter the following information in the login dialogue box:</p>
+
+<pre class="cookbook">
+host: oracc.museum.upenn.edu
+user name: proj
+password: [your project's password]
+</pre> 
+
+<p>Copy ATF and/or ODS files from your project's <code>00atf</code> folder onto your own computer. Copy [LANGUAGE].glo files from your project's <code>00lib</code> folder.</p>
+
+<p>If you are using Terminal (for Mac) or PuTTy (on a PC), then follow these instructions instead:</p> 
+<ul>
+<li><p>Open the Terminal or PuTTy.</p></li>
+<li><p>To copy an ATF file called <code class="example">example.atf</code> from <code>00atf</code> into the <code>proj/00atf</code> folder on your own computer, at the prompt type:</p> 
+<pre class="cookbook">scp proj@oracc.museum.upenn.edu:00atf/example.atf ~/proj/00atf</pre> 
+<p>and press return.</p>
+<p>To copy an ODS file from <code>00atf</code>, at the prompt type:</p> 
+<pre class="cookbook">scp proj@oracc.museum.upenn.edu:00atf/example.ods ~/proj/00atf</pre> 
+<p>and press return.</p></li>
+<li><p>To copy a [LANGUAGE].glo file from <code>00lib</code>, at the prompt type:</p> 
+<pre class="cookbook">scp proj@oracc.museum.upenn.edu:00lib/[LANGUAGE].glo ~/proj/00lib</pre> 
+<p>and press return.</p></li>
+<li><p>If you are working with a subproject add <code class="cookbook">subproj/</code> after the colon, e.g., <code class="cookbook">scp proj@oracc.museum.upenn.edu:subproj/00lib/[LANGUAGE].glo ~/proj/00lib</code></p></li>
+<li><p>When prompted for the password, type it and press return.</p></li>
+
+<li><p>Watch while the machine describes its progress. Leave the window open, as you'll need it again later.</p></li>
+
+</ul>
+
+<div><a name="checking"/>
+<h1>Checking the project</h1>
+
+<p>Now you need to check that all is will with your corpus as a whole.</p>
+
+<ul>
+<li><p>Open a new window in the Terminal.</p></li>
+<li><p>Type <code class="cookbook">ssh proj@oracc.museum.upenn.edu</code></p></li>
+
+<li><p>Enter the password when asked. The prompt should now begin with something like <code>[proj@oracc ~]:</code></p></li>
+<li><p>If necessary move to your subproject by typing <code class="cookbook">cd subproj</code> and pressing return.</p></li>
+<li>Type <code class="cookbook">oracc check</code> at the prompt and press return.</li>
+
+<li><p>If a list of ATF errors appears, follow the instructions in <a href="#correcting">Correcting errors in online data</a>.</p></li>
+
+<li><p>If instead you just get a message like this:</p>
+<pre class="example">
+Glossary lib/akk-x-oldbab.glo OK
+Glossary lib/qpn.glo OK
+Glossary lib/sux.glo OK</pre>
+
+<p>all is well and you can proceed to the next steps.</p></li>
+
+</ul>
+<p>You can now move to <a href="#adding">Adding new PSUs to the glossary</a> or straight to <a href="#harvesting">Harvesting new lemmatisation data</a>.</p> 
+</div>
+
+<div><a name="adding" />
+<h1>Adding PSUs to the glossary</h1>
+
+<p>New <a href="/doc/builder/linganno/AKK/#Phrasal_Semantic_Units__PSU_">Phrasal Semantic Units</a> such as <code>lumun libbi [sorrow] N</code> and <code>karṣa akālu [slander] V</code> have to be added to the glossary by hand. Here's how to do it. First you need to <a href="#Downloading_files_from_Oracc">download</a> and open the glossary in an editor if you haven't already got it open.</p>
+
+<ul>
+<li><p>Create a new entry that looks like this:</p>
+
+<pre class="example">
+@entry lumun libbi [sorrow] N
+@parts lumnu[evil]N libbu[interior]N
+@form ŠA₃.HUL $lumun $libbi
+@sense N sorrow
+@end entry
+</pre> 
+
+<p>or</p>
+
+<pre class="example">
+@entry karṣa akālu [slander] V
+@parts karṣu[slander]N akālu[eat]V
+@form kar-ṣa_GU₇ $karṣa $ikkalū
+@sense V slander
+@end entry
+</pre>
+
+<p>where in <code>@parts</code> each bit is of the form <code>CF[GW]POS</code> and in <code>@form</code> the transliterated words are connected by an underscore and EVERY normalised word is preceded with a <code>$</code>.</p></li>
+
+<li><p>If an idiom has more than one form (spelling) and/or sense, you can add them too. For instance:</p>
+
+<pre class="example">
+@entry lumun libbi [sorrow] N
+@parts lumnu[evil]N libbu[interior]N
+@form ŠA₃.HUL $lumun $libbi
+@form ŠA₃.HUL-šu $lumun $libbišu
+@sense N sorrow
+@sense N eclipsed stat
+@end entry
+</pre> 
+<p>Make sure that in the lemmatisation (in the ATF file) you <a href="/doc/builder/linganno/AKK/#Guide_Words__GW__and_Senses">indicate the SENSE correctly</a>.</p>
+</li>
+
+<li><p>If the PSU is written with two or more words in the transliteration (i.e., like <code>kar-ṣa GU₇</code> but not like <code>ŠA₃.HUL</code>), you now need to add an extra <code>@form</code> line to the glossary entries for each of the consituent parts of the PSU. In the first example above, written with a single logogram, the extra <code>@form</code> lines are added automatically when the glossaries are <a href="#merging">merged</a>. But for for the PSU <code>karṣa akālu [slander] V</code>, you need to add this line in the entry for <code>karṣu [slander] N</code>:</p>
+<pre class="example">
+@form kar-ṣu_GU₇ $karṣa $(ikkalū)
+</pre>
+<p>and this line to the glossary entry for <code>akālu[eat]V</code>:</p>
+<pre class="example">
+@form kar-ṣu_GU₇ $(karṣa) $ikkalū
+</pre>
+<p>If the individual constituents of the PSU are not yet in [LANGUAGE].glo, you must add these lines later, after you have <a href="#merging">merged</a> the glossaries.</p></li>
+</ul>
+<p>When you have finished and saved [LANGUAGE].glo (you will need to give the password when prompted), you need to check it, either by using the <a href="/util/atfproc.html">ATF processor</a> or by <a href="#uploading">uploading</a> the file to the <code>00lib/</code> directory on Oracc and <a href="#checking">checking</a> the project.</p>
+
+<p>Correct any errors that are listed, save [LANGUAGE].glo, and check again until no errors are listed.</p>
+
+<p>If you just want to update the glossaries, type:</p>
+<pre class="cookbook">oracc rebuild glosses</pre> 
+<p>at the command line prompt of your open Oracc terminal (See the <a href="/doc/manager/the-oracc-command/#Options">Oracc command</a> page). Otherwise, move on to <a href="#harvesting">Harvesting your new lemmatisation data</a>.</p>
+</div>
+
+<div><a name="linganno" />
+<h1>Adding linguistic annotations to the glossary</h1>
+
+<p>Optionally, you can manually add information ṭo the glossary about roots and dialects, and further explanations of guidewords.</p>
+<ul>
+<li><p>To gloss a guideword, simply add your comment after a semicolon and space. This is particularly useful for technical logograms which can't easily be translated by single words and short phrases. For instance:</p>
+<pre class="example">
+@entry KUR [KUR; in mathematical astronomy, the time difference between 
+the full or new moon and sunrise or sunset] N
+@form KUR $KUR
+@sense N KUR
+@end entry
+</pre>
+<p>For more information, see the documentation on <a href="../../builder/linganno/AKK/#Difficult_words">difficult words</a> in Akkadian linguistic annotation.</p></li>
+<li>
+<p>To add roots, you manually add a <code>@root</code> line to that word's entry in the glossary. For instance:</p>
+
+<pre class="example">
+@entry parāsu [cut (off)] V
+@root prs
+@form ip-ru-us $iprus
+@sense V cut (off)
+@end entry
+</pre>
+
+<p>Just as Oracc policy is for citation forms to follow the <i>Concise Dictionary of Akkadian</i>, so must roots follow the <a href="/doc/builder/linganno/AKK/akkroots/"><i>CDA</i> roots list</a>. They must be written in <a href="/doc/user/unicode/">Unicode</a>, with ʾ (aleph) where appropriate, not single quote marks or ther similar characters. For instance <code>@root ʾpš</code> would be the correct annotation for <i>epēšu</i>. As <i>CDA</i> does not use ʿ (ayin), then nor does Oracc.</p></li>
+<li>
+<p>Even though every Akkadian citation form must be in CDA-style "conventional Akkadian", you can add dialect CFs to the glossary by hand, as follows:</p>
+
+<pre class="example">
+@entry awātu [word] N
+@NA abūtu
+@form a-mat $amāt
+@form INIM $amāta
+@end entry
+</pre>
+</li>
+</ul>
+</div>
+<div><a name="harvesting" />
+<h1>Harvesting new lemmatisation data</h1>
+
+<p>This process collects together all the newly lemmatised data so that you can check it for errors and correct them before the big glossaries are rebuilt.</p>
+
+<ul>
+<li><p>Type:</p>
+<pre class="cookbook">oracc harvest</pre> 
+<p>at the command line prompt of your open Oracc terminal (See the <a href="/doc/manager/the-oracc-command/#Options">Oracc command</a> page).</p></li>
+<li><p>Wait while the processor describes its progress. The final lines should say something like:</p>
+<pre class="example">
+harvested 4 forms with new qpn data; see 01bld/new/qpn.new
+harvested 7 forms with new sum data; see 01bld/new//sux.new
+harvested 33 forms with new akk-x-oldbab data; see 01bld/new/akk-x-oldbab.new</pre>
+</li>
+</ul>
+
+<p>Now you need to check and correct the harvested lemmatisations.</p>
+
+<ul>
+<li><p>At the terminal prompt type:</p>
+
+<pre class="cookbook">less 01bld/new/[LANGUAGE].new</pre>
+
+<p>to see the mini-glossary file containing new entries to be merged into the existing glossaries. Use the arrow keys or space bar to move through it, and type <code>q</code> to exit. The file is read-only.</p></li>
+<li><p>Each glossary entry takes the form:</p>
+<pre class="example">
+@entry alāku [go] V
+@form DU{+ku} $illakū
+@sense V flow
+@end entry</pre>
+
+<p>If you spot a mistake here,  find where it originates in the original ATF file (which is currently in your home or root directory on your own computer, or in the <code>00atf/</code> directory on Oracc) and correct it there.</p></li>
+
+<li><p>When you have corrected all the mistakes you can see, upload the corrected ATF files again (if they are on your computer), as described in <a href="#uploading">Uploading completed work</a>, and run <code>oracc harvest</code> again.</p></li>
+<li><p>Repeat this process until you are confident that the new lemmatisation data is correct.</p></li>
+</ul>
+
+
+<p>Now you need to <a href="#merging">merge</a> the new data with the existing glossaries.</p>
+</div>
+
+<div><a name="merging" />
+<h1>Merging the glossaries</h1>
+
+<p>Only do this step when you are confident that all the lemmatisation data in the <code>[LANGUAGE].new</code> files is correct (see the section on <a href="#harvesting">Harvesting</a>).</p>
+
+<ul>
+
+<li><p>For each ancient language in your project type <code class="cookbook">oracc harvest [LANGUAGE]</code> at the terminal prompt. This routine merges the new data with the old. You don't have to do them all at once: you can manage each language glossary entirely separately.</p></li>
+</ul>
+
+<p>If you <a href="#adding">added new PSU data</a> to a [LANGUAGE].glo earlier in the process, that involved words that were not yet in the glossaries, you need to finish that job. Otherwise, go on to <a href="#rebuilding">rebuild the website</a>.</p>
+
+<ul>
+<li><p>Close [LANGUAGE].glo and open it again (so that the new version contains the freshly merged data from [LANGUAGE].new).</p></li>
+<li><p>Follow the instructions given in the <a href="#adding">Adding PSUs</a> section to add <code>@form</code> lines to new entries in [LANGUAGE].glo.</p></li>
+<li><p>Save [LANGUAGE].glo and check it.</p></li>
+<li><p>Correct any errors in [LANGUAGE].glo, save and repeat until [LANGUAGE].glo is clean.</p></li>
+</ul>
+<p>Now you are ready to <a href="#rebuilding">rebuild</a> the website.</p>
+</div>
+<div>
+<a name="rebuilding" />
+<h1>Rebuilding the website</h1>
+
+<p>This is the final step in putting edited material online.</p>
+
+<ul>
+<li><p>If you have your own project catalogue, make sure that an XML copy of the latest version has been <a href="#uploading">uploaded</a> to Oracc. If you just use the CDLI catalogue, ignore this step.</p></li>
+<li><p>At the terminal prompt, type</p> 
+<pre class="cookbook">oracc rebuild</pre>
+<p>and press return. This makes the new texts, glossary entries, and metadata publicly available. Be patient; depending on the size of your corpus it may take several minutes to complete. Do not close your terminal connection to Oracc while it is running.</p></li>
+<li><p>If your project is large, and/or you need to disconnect from Oracc, you can rebuild your project by typing <code class="cookbook">nor</code> (and return) instead. This stands for "no-hangup oracc rebuild" and will run whether or not you are connected to Oracc.</p> 
+<p>If you choose this method, it is necessary to log in to Oracc again later to check for errors. You can do this by typing <code class="cookbook">less nohup.out"</code> at the prompt and pressing return. You can scroll through the listing using the up and down arrow keys on your keyboard, and exit the listing by typing <code>q</code> (for "quit").</p></li>
+</ul>
+
+<p>If you later notice mistakes in the published material, you will need to know about <a href="#correcting">correcting errors</a> in online data.</p>
+
+<a name="correcting" />
+<h1>Correcting errors in online data</h1>
+
+<p>Sometimes it's necessary to correct mistakes in, or or make improvements to, transliterations, translations, or glossary entries, or metadata that has already been published to the server.</p>
+
+<h2>Correcting errors in the metadata</h2>
+
+<p>If you see mistakes in the metadata displayed in the left-hand sidebar on your project's website:</p>
+
+<ul>
+<li><p>If your project has its own catalogue, make corrections in the Filemaker database and <a href="#uploading">upload</a> a new XML copy to Oracc. (See the <a href="../projcats/">project catalogues</a> page for more details.)</p></li>
+<li><p>If your project uses the CDLI catalogue for its metadata, contact CDLI or osc@oracc.org to ask for corrections.</p>
+</li>
+</ul>
+
+<p>If you ONLY want to add the corrected metadata, you can update the catalogue installation by typing</p>
+<pre class="cookbook">oracc catalog</pre> 
+<p>at the prompt, and press return, as soon as the corrected metadata has been uploaded. If you also want to make changes to ATF or ODS files, continue to the following section without rebuilding yet.</p>
+
+
+<h2>Correcting errors in ATF or ODS files</h2>
+
+<p>When correcting errors in ATF or ODS files, it is best to work with the file(s) on Oracc, even if you originally created them on your own computer, so that you can be confident that it is the latest version. </p>
+<ul>
+<li><p><a href="#downloading">Download</a> them using the instructions given above.</p></li>
+<li><p>Don't forget to use the ATF checker webservice before you <a href="#uploading">upload the corrected file(s) to Oracc</a> again.</p></li>
+</ul>
+
+<p>If you are correcting a lemmatised file, you will also have to delete the incorrect lemmatisation from the relevant glossary entry in [LANGUAGE].glo. Following the <a href="#harvesting">harvest</a> and <a href="#merging">merge</a> routine will add the correct new lemmatisation to [LANGUAGE].glo.</p>
+
+
+<p>When you are done, <a href="#checking">check the project</a>, fix any errors, and <a href="#rebuilding">rebuild</a> the website.</p>
+</div>
+<h1>Some useful Unix commands</h1>
+<p>There may be times when you need to move or delete project files on Oracc. Do this very carefully! The basic commands you need are:</p>
+
+<dl>
+<dt>cd</dt> <dd>change directories, e.g., <code class="example">cd sources</code> to move to the <code>sources</code> directory from your project's home directory; <code class="example">cd ..</code> to move up a level in the directory hierarchy (for instance from <code>sources</code> to your home directory)</dd>
+<dt>less</dt> <dd>a pager to read text files, e.g., <code class="example">less nohup.out</code></dd>
+<dt>ls</dt> <dd>get a listing of the files and directories in the current directory</dd>
+<dt>man</dt> <dd>get documentation about a command, e.g., <code class="example">man ls</code></dd>
+<dt>mkdir</dt> <dd>create new directory, e.g., <code class="example">mkdir photos</code></dd>
+<dt>mv</dt> <dd>move files (copy and delete the original, effectively; good for when you need to rename files), e.g., <code class="example">mv mb12345.atf bm12345.atf</code></dd>
+<dt>passwd</dt> <dd>change the password for your project; you will be asked for the current one (once) and the new one (twice)</dd>
+<dt>rm</dt> <dd>remove or delete files -- use with caution!. E.g., <code class="example">rm bm12345.atf"</code></dd>
+<dt>rmdir</dt> <dd>delete empty directory (will not work if there are files in it), e.g., <code class="example">rmdir photos</code></dd>
+</dl>
+</div>
+<d:resources/>
+
+</d:doc>

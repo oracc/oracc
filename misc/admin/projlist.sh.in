@@ -1,0 +1,2 @@
+#!/bin/sh
+(cd @@ORACC@@/pub ; ls -1)

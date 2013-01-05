@@ -1,0 +1,53 @@
+remove build-approved-policy=umbrella
+
+build-proxies
+
+  value=sources
+  value=umbrella: auto include all public subprojects
+
+When build-proxies is set, catalog-build-policy must
+be 'virtual'--any other value is ignored
+
+content-model:
+
+ build-proxies = umbrella-proxy | sources-proxy
+
+ umbrella-proxy = element option { 
+                     attribute name  { "build-proxies" } ,
+		     attribute value { "umbrella" }
+		  }
+
+ sources-proxy  = element option { 
+                     attribute name  { "build-proxies" } ,
+		     attribute value { "sources" } ,
+		     sources
+		  }
+
+ sources = (list | numbers | project | search)+
+
+ list = element list {  proxattr ,
+          	     	( attribute file { text },
+		        | attribute uri  { xsd:anyUri })
+	}
+
+ numbers = element numbers { proxattr , projattr?, (text | n+) }
+
+ n = element n { proxattr , text }
+
+ projattr = attribute project { text }
+
+ project = element project { proxattr , projattr }
+
+ search = element search { proxattr ,
+ 	   	  	   ( (attribute project { text } ,
+ 			      attribute index   { text } ,
+			      attribute keys    { text })
+ 			     | se { text }
+			   )
+	  }
+
+ proxattr = priority? , inex?
+
+ priority = attribute priority { xsd:Integer }
+
+ inex     = attribute inex { "include" | "exclude" }
