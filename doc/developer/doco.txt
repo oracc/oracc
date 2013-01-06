@@ -1,6 +1,0 @@
-All doco in a directory below src/doc (i.e., excluding
-src/doc/index.html) must be in .xdf format.
-
-All doco must use src/doc/00css/doco.css for styling; if
-there is any js, it must be in src/doc/00js/doco.js.
-

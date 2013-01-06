@@ -1,4 +1,10 @@
+HTMLINDEX = @abs_top_builddir@/doc/00tools/mk-index.plx -s <order.txt
+
 ORACCIFY = @abs_top_builddir@/oracc-subst.sh $(DESTDIR)$(prefix)
+
+ORDERXML = @abs_top_builddir@/doc/00tools/mk-index.plx -s <order.txt
+
+
 
 #all-local:
 #	$(bindir)/xdfmanager.plx

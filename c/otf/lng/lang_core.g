@@ -17,7 +17,7 @@ qcu, "020", "qcu", m_sign, m_lang, c_qcu, LF_SAC
 xhu, "020", "xhu", m_sign, m_lang, c_xhu, LF_SAC
 qeb, "020", "qeb", m_sign, m_lang, c_qeb, LF_SAC
 xur, "020", "xur", m_sign, m_lang, c_xur, LF_SAC
-uga, "040", "uga", m_sign, m_lang, c_uga, LF_SAC
+uga, "020", "uga", m_logo, m_lang, c_uga, LF_SAC
 qpn, "999", "qpn", m_sign, m_lang, c_qpn, LF_SAC
 %%
 struct langcore *

@@ -11,10 +11,12 @@
 
 <xsl:key name="groups" match="/*/xh:body/xh:p/*[1]/*[1]/xh:a|/*/*"
 	use="translate(substring(*[1]/text(),1,1),
-		       'ABCDEFGHḪIJKLMNOPQRSTUVWXYZŠŊṢṬŚāēīūĀĒĪŪâêîû',
-		       'abcdefghḫijklmnopqrstuvwxyzšŋṣṭśaeiuaeiuaeiu')"/>
+		       'ʾʿABCDEFGHḪIJKLMNOPQRSTUVWXYZŠŊṢṬŚāēīūĀĒĪŪâêîûʾʿǴḤ',
+		       'ʾʿabcdefghḫijklmnopqrstuvwxyzšŋṣṭśaeiuaeiuaeiuǵḥ')"/>
 
 <xsl:template name="initials">
+  <i l="ʾ" u="ʾ"/>
+  <i l="ʿ" u="ʿ"/>
   <i l="a" u="A"/>
   <i l="b" u="B"/>
   <i l="c" u="C"/>
@@ -22,9 +24,11 @@
   <i l="e" u="E"/>
   <i l="f" u="F"/>
   <i l="g" u="G"/>
+  <i l="ǵ" u="Ǵ"/>
   <i l="ŋ" u="Ŋ"/>
   <i l="h" u="H"/>
   <i l="ḫ" u="Ḫ"/>
+  <i l="ḥ" u="Ḥ"/>
   <i l="i" u="I"/>
   <i l="j" u="J"/>
   <i l="k" u="K"/>
