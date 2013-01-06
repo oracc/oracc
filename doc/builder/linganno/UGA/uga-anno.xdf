@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<d:doc  xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:d="http://oracc.org/ns/xdf/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:h="http://www.w3.org/1999/xhtml" 
+   	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+
+<d:meta>
+  <dc:title>UGA: Oracc Linguistic Annotation for Ugaritic</dc:title>
+  <dcterms:alternative></dcterms:alternative>
+  <dcterms:identifier 
+      xsi:type="dcterms:URI"></dcterms:identifier>
+  <dc:creator>Steve Tinney</dc:creator>
+  <dc:date>2008-05-21</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
+  <dc:description>This document provides an overview of
+  language-specific annotation conventions for Ugaritic used in Oracc.
+</dc:description>
+</d:meta>
+
+<h1>Transliteration</h1>
+
+<p>Ugaritic is indicated by the language shift <code>%uga</code>.
+Ugaritic is written both with Sumero-Akkadian Cuneiform (SAC) and
+Ugaritic Cuneiform (UC): the notation %uga or %uga/g means tells the
+ATF processor to treat the text as graphemic SAC.  The notation
+%uga-040 tells the ATF processor to treat the text as alphabetic UC.</p>
+
+<p>To write in transcription, use the convention for 'normalized'
+input, as in Akkadian: i.e., follow the language shift with
+<code>/n</code>.</p>
+
+<h2>Graphemic</h2>
+
+<p>The following table shows how to transliterate the UC--for
+conventions on breakage etc., see the <a href="../ARC/">Aramaic
+notations page</a>. The table contains UC in the first
+column, so you may need to install a suitable font, such as <a
+href="/fonts.html">George Douros's "Aegean"</a>.</p>
+
+<p><strong>No ASCII notation is provided at present for UC transliteration</strong>.</p>
+
+<table>
+  <thead>
+    <tr><th>Cuneiform</th><th>Unicode</th><th>Unicode Name</th><th>ASCII Translit</th><th>Unicode Translit</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="aegean center">&#x10380;</td><td>U+10380</td><td>UGARITIC LETTER ALPA</td><td>-</td><td>ʾa</td></tr>
+    <tr><td class="aegean center">&#x10381;</td><td>U+10381</td><td>UGARITIC LETTER BETA</td><td>-</td><td>b</td></tr>
+    <tr><td class="aegean center">&#x10382;</td><td>U+10382</td><td>UGARITIC LETTER GAMLA</td><td>-</td><td>g</td></tr>
+    <tr><td class="aegean center">&#x10383;</td><td>U+10383</td><td>UGARITIC LETTER KHA</td><td>-</td><td>ḫ</td></tr>
+    <tr><td class="aegean center">&#x10384;</td><td>U+10384</td><td>UGARITIC LETTER DELTA</td><td>-</td><td>d</td></tr>
+    <tr><td class="aegean center">&#x10385;</td><td>U+10385</td><td>UGARITIC LETTER HO</td><td>-</td><td>h</td></tr>
+    <tr><td class="aegean center">&#x10386;</td><td>U+10386</td><td>UGARITIC LETTER WO</td><td>-</td><td>w</td></tr>
+    <tr><td class="aegean center">&#x10387;</td><td>U+10387</td><td>UGARITIC LETTER ZETA</td><td>-</td><td>z</td></tr>
+    <tr><td class="aegean center">&#x10388;</td><td>U+10388</td><td>UGARITIC LETTER HOTA</td><td>-</td><td>ḥ</td></tr>
+    <tr><td class="aegean center">&#x10389;</td><td>U+10389</td><td>UGARITIC LETTER TET</td><td>-</td><td>ṭ</td></tr>
+    <tr><td class="aegean center">&#x1038A;</td><td>U+1038A</td><td>UGARITIC LETTER YOD</td><td>-</td><td>y</td></tr>
+    <tr><td class="aegean center">&#x1038B;</td><td>U+1038B</td><td>UGARITIC LETTER KAF</td><td>-</td><td>k</td></tr>
+    <tr><td class="aegean center">&#x1038C;</td><td>U+1038C</td><td>UGARITIC LETTER SHIN</td><td>-</td><td>š</td></tr>
+    <tr><td class="aegean center">&#x1038D;</td><td>U+1038D</td><td>UGARITIC LETTER LAMDA</td><td>-</td><td>l</td></tr>
+    <tr><td class="aegean center">&#x1038E;</td><td>U+1038E</td><td>UGARITIC LETTER MEM</td><td>-</td><td>m</td></tr>
+    <tr><td class="aegean center">&#x1038F;</td><td>U+1038F</td><td>UGARITIC LETTER DHAL</td><td>-</td><td>&#x1e0f; (U+01E0F)</td></tr>
+    <tr><td class="aegean center">&#x10390;</td><td>U+10390</td><td>UGARITIC LETTER NUN</td><td>-</td><td>n</td></tr>
+    <tr><td class="aegean center">&#x10391;</td><td>U+10391</td><td>UGARITIC LETTER ZU</td><td>-</td><td>&#x1e93; (U+01E93)</td></tr>
+    <tr><td class="aegean center">&#x10392;</td><td>U+10392</td><td>UGARITIC LETTER SAMKA</td><td>-</td><td>s</td></tr>
+    <tr><td class="aegean center">&#x10393;</td><td>U+10393</td><td>UGARITIC LETTER AIN</td><td>-</td><td>ʿ</td></tr>
+    <tr><td class="aegean center">&#x10394;</td><td>U+10394</td><td>UGARITIC LETTER PU</td><td>-</td><td>p</td></tr>
+    <tr><td class="aegean center">&#x10395;</td><td>U+10395</td><td>UGARITIC LETTER SADE</td><td>-</td><td>ṣ</td></tr>
+    <tr><td class="aegean center">&#x10396;</td><td>U+10396</td><td>UGARITIC LETTER QOPA</td><td>-</td><td>q</td></tr>
+    <tr><td class="aegean center">&#x10397;</td><td>U+10397</td><td>UGARITIC LETTER RASHA</td><td>-</td><td>r</td></tr>
+    <tr><td class="aegean center">&#x10398;</td><td>U+10398</td><td>UGARITIC LETTER THANNA</td><td>-</td><td>ṯ</td></tr>
+    <tr><td class="aegean center">&#x10399;</td><td>U+10399</td><td>UGARITIC LETTER GHAIN</td><td>-</td><td>ǵ</td></tr>
+    <tr><td class="aegean center">&#x1039A;</td><td>U+1039A</td><td>UGARITIC LETTER TO</td><td>-</td><td>t</td></tr>
+    <tr><td class="aegean center">&#x1039B;</td><td>U+1039B</td><td>UGARITIC LETTER I</td><td>-</td><td>ʾi</td></tr>
+    <tr><td class="aegean center">&#x1039C;</td><td>U+1039C</td><td>UGARITIC LETTER U</td><td>-</td><td>ʾu</td></tr>
+    <tr><td class="aegean center">&#x1039D;</td><td>U+1039D</td><td>UGARITIC LETTER SSU</td><td>-</td><td>ś</td></tr>
+    <tr><td class="aegean center">&#x1039F;</td><td>U+1039F</td><td>UGARITIC WORD DIVIDER</td><td>-</td><td>|</td></tr>
+</tbody></table>
+
+</d:doc>
