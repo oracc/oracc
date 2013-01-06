@@ -417,10 +417,14 @@ process_fields(struct node *parent, int start, int end)
 	    w_sparse_lem = 1;
 	  else
 	    w_sparse_lem = 0;
+	  cp->data = strdup(tokens[start]->data);
 	  appendAttr(cp,attr(a_type,ucc(tokens[start++]->data)));
 	}
       else
-	appendAttr(cp,attr(a_type,default_ftype));
+	{
+	  appendAttr(cp,attr(a_type,default_ftype));
+	  cp->data = default_ftype;
+	}
       next_field = nextfield(start);
       if (!next_field)
 	next_field = nextfield(start+1);

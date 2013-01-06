@@ -319,11 +319,12 @@ xcl_hash_lemm_meta(const char *const*lmeta, const char *xml_id,
 }
 
 void
-xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t)
+xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t, const char *st)
 {
   struct xcl_d *c = new_node(&d_mm_info);
   c->node_type = xcl_node_d;
   c->type = t;
+  c->subtype = st;
   c->xc = xc;
   c->ref = ref;
   add_child(xc->curr, c, c->node_type);

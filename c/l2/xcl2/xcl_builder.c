@@ -102,7 +102,8 @@ xcl_sH(void *userData, const char *name, const char **atts)
 	    {
 	      xcl_discontinuity(xcp, 
 				xpool_copy(findAttr(atts,"ref"),xcp->pool),
-				ttp->subtype);
+				ttp->subtype,
+				NULL);
 	    }
 	  else
 	    fprintf(stderr,"unknown xcl discontinuity token type '%s'\n",strtok);

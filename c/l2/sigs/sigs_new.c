@@ -38,8 +38,11 @@ sigs_d_new(struct xcl_context *xcp, struct xcl_d *d)
 static void
 sigs_l_new(struct xcl_context *xcp, struct xcl_l *l)
 {
-  if (sparse_lem)
-    return;
+  if (sparse_skipping)
+    {
+      BIT_SET(l->f->instance_flags, ILEM_FLAG_SPARSE_SKIP);
+      return;
+    }
 
   if (!l->f)
     {

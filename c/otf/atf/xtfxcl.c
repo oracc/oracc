@@ -82,14 +82,14 @@ process(struct xcl_context *xc, struct node*n)
 	  break;
 	case e_surface:
 	  /* fix_context(xc,NULL); */
-	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_surface);
+	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_surface, NULL);
 	  break;
 	case e_column:
 	  /* fix_context(xc,NULL); */
 	  {
 	    const char *ref = (const char *)getAttr(n,"xml:id");
 	    if (*ref)
-	      xcl_discontinuity(xc, ref, xcl_d_column);
+	      xcl_discontinuity(xc, ref, xcl_d_column, NULL);
 	    /* no discontinuity emitted for implicit column breaks */
 	  }
 	  break;
@@ -100,7 +100,7 @@ process(struct xcl_context *xc, struct node*n)
 	case e_l:
 	case e_lg:
 	  xcl_fix_context(xc,NULL);
-	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_line_start);
+	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_line_start, NULL);
 	  break;
 	case e_g_w:
 	case e_n_w:
@@ -108,16 +108,16 @@ process(struct xcl_context *xc, struct node*n)
 	  ilem_parse(xc, hash_find(word_form_index,getAttr(n,"xml:id")));
 	  break;
 	case e_g_nonw:
-	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonw);
+	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonw, NULL);
 	  break;
 	case e_nonx:
-	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonx);
+	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonx, NULL);
 	  break;
 	case e_c:
-	  xcl_discontinuity(xc, NULL, xcl_d_cell_start);
+	  xcl_discontinuity(xc, NULL, xcl_d_cell_start, NULL);
 	  break;
 	case e_f:
-	  xcl_discontinuity(xc, NULL, xcl_d_field_start);
+	  xcl_discontinuity(xc, NULL, xcl_d_field_start, n->data);
 	  break;
 	default:
 	  break;
@@ -132,10 +132,10 @@ process(struct xcl_context *xc, struct node*n)
       switch (n->etype)
 	{
 	case e_c:
-	  xcl_discontinuity(xc, NULL, xcl_d_cell_end);
+	  xcl_discontinuity(xc, NULL, xcl_d_cell_end, NULL);
 	  break;
 	case e_f:
-	  xcl_discontinuity(xc, NULL, xcl_d_field_end);
+	  xcl_discontinuity(xc, NULL, xcl_d_field_end, n->data);
 	  break;
 	default:
 	  break;

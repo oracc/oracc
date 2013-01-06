@@ -47,14 +47,13 @@ xcl_set_sparse_fields(const char *f)
 void
 xcl_set_sparse_skipping(const char *f)
 {
-  if (f && strlen(f) == 2)
+  if (f)
     {
-      char field_buf[5];
-      field_buf[1] = f[0]; field_buf[2] = f[1];
-      field_buf[0] = field_buf[3] = ' ';
-      field_buf[4] = '\0';
+      char *field_buf = malloc(strlen(f) + 3);
+      sprintf(field_buf, " %s ", f);
       sparse_skipping = (strstr(sparse_lem_fields,field_buf) ? 0 : 1);
+      free(field_buf);
     }
   else
-    sparse_skipping = 0;
+    sparse_skipping = 0; /* NULL means switch off */
 }

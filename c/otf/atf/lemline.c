@@ -390,6 +390,9 @@ lem_serialize(FILE *fp)
 	      struct ilem_form *f = lem_lines[i].forms[j];
 	      static struct serializer_frame sframe;
 
+	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
+		continue;
+
 	      set_sframe(&sframe, f->literal);
 	      if (sframe.lit)
 		{
