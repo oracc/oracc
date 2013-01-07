@@ -1,5 +1,6 @@
 include @top_srcdir@/oracc-doc-rules.txt
 
+SUBDIRS = 
 
 all-local:
 	$(bindir)/xdfmanager.plx

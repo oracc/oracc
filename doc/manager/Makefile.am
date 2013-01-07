@@ -1,9 +1,7 @@
 include ../../oracc-doc-rules.txt
 
 SUBDIRS = \
-	atftools \
 	filesystem \
-	index.xml \
 	portals \
 	projcats \
 	projconfig \
@@ -15,11 +13,13 @@ SUBDIRS = \
 	the-oracc-command \
 	webcolours
 
+#	atftools 
+
 index.xml: order.txt
 	$(ORDERXML)
 
 all-local: index.xml
-	$(HTMLINDEX) builder @htmldir@/doc/builder
+	$(HTMLINDEX) manager $(PREFIX)$(htmldir)/doc/manager
 
 clean-local:
 	rm index*.xml

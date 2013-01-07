@@ -1,5 +1,6 @@
 include @top_srcdir@/oracc-doc-rules.txt
 
+SUBDIRS = example1 example2 example3 example4 example5 example6 example7 example8 install projects starting
 
 all-local:
 	$(bindir)/xdfmanager.plx

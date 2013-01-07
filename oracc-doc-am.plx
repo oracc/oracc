@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+my @subdirs = grep(-d $_ && -e "$_/Makefile.am", <*>);
+
 my @EXTRA = @ARGV;
 push @EXTRA, <etc/*>;
 my $last_extra = pop @EXTRA;
@@ -9,6 +11,7 @@ open(M,">Makefile.am"); select M;
 print "include \@top_srcdir\@/oracc-doc-rules.txt\n\n";
 
 print <<EOM;
+SUBDIRS = @subdirs
 
 all-local:
 	\$(bindir)/xdfmanager.plx

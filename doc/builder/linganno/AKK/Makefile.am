@@ -1,5 +1,6 @@
 include @top_srcdir@/oracc-doc-rules.txt
 
+SUBDIRS = akk-ob akk-roots akkstyle
 
 all-local:
 	$(bindir)/xdfmanager.plx

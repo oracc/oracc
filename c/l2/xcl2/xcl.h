@@ -159,7 +159,7 @@ extern void xcl_chunkify_part(struct xcl_context *xc,
 extern struct xcl_context *xcl_create(void);
 extern Hash_table *xcl_create_meta(struct xcl_context *xc,const char *xml_id);
 extern void xcl_destroy(struct xcl_context **xc);
-extern void xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t);
+extern void xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t, const char *st);
 extern struct xcl_l* xcl_lemma(struct xcl_context *xc, const char *xml_id, 
 			       const char *ref, struct ilem_form *fp, void *user,
 			       enum ll_types t);

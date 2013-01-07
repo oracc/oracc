@@ -1,5 +1,6 @@
 include @top_srcdir@/oracc-doc-rules.txt
 
+SUBDIRS = esp espbuild espcontent espelements esperrors espimages espsetup projurls
 
 all-local:
 	$(bindir)/xdfmanager.plx

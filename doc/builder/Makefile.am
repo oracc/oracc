@@ -21,7 +21,7 @@ index.xml: order.txt
 	$(ORDERXML)
 
 all-local: index.xml
-	$(HTMLINDEX) builder @htmldir@/doc/builder
+	$(HTMLINDEX) builder $(DESTDIR)$(htmldir)/doc/builder
 
 clean-local:
 	rm index*.xml

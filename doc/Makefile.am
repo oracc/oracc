@@ -1,6 +1,6 @@
-SUBDIRS = ns builder developer install manager user ood wwwhome
+SUBDIRS = 00tools ns builder developer install manager user ood wwwhome urn sysadmin
 html_DATA = index.html
 EXTRA_DIST = index.html
 
 all-local:
-	@abs_top_builddir@/doc/00tools/estindex.sh @htmldir@/doc
+	ORACC=$(DESTDIR)$(prefix) @abs_top_builddir@/doc/00tools/estindex.sh $(DESTDIR)$(prefix)/www/doc

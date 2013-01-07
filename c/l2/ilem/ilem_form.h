@@ -3,6 +3,8 @@
 
 #include "f2.h"
 
+#define ILEM_FLAG_SPARSE_SKIP 0x20
+
 #define M_CF		0x0001
 #define M_MIN		M_CF
 #define M_GW		0x0002
@@ -72,6 +74,7 @@ struct lem_single
 			 * 0x10 == internal use by xffharvest -n; indicates
 			 *           that the form is part of a COF sequence
 			 *           with one or more new elements
+			 * 0x20 == unlemmatized because it's in a sparse-skip field
 			 */
 };
 
@@ -142,6 +145,7 @@ struct ilem_form
 			 * 0x10 == internal use by xffharvest -n; indicates
 			 *           that the form is part of a COF sequence
 			 *           with one or more new elements
+			 * 0x20 == unlemmatized because it's in a sparse-skip field
 			 */
   const char *type;
   struct form_MD*meta;

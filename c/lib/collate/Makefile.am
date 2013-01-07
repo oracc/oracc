@@ -17,10 +17,8 @@ DISTCLEANFILES = $(COLLSRCS) tablist.c
 
 EXTRA_DIST=unicode.seq colltype.h collate.h
 
-#tablist.c: mktablst $(COLLSRCS)
-#	./mktablst $(COLLSRCS)
+tablist.c: mktablst unicode.c
+	perl ./mktablst unicode.c
 
-#unicode.c: seq2c unicode.seq ../../unicode/iso10646.psd
-#	./seq2c $(srcdir)/unicode.seq
-
-#../../unicode/iso10646.psd:; (cd ../../unicode ; $(MAKE))
+unicode.c: seq2c unicode.seq iso10646
+	perl ./seq2c $(srcdir)/unicode.seq

@@ -7475,6 +7475,481 @@ struct charset xhu_g =
   };
 
 static int
+uga_a_val(wchar_t *w, ssize_t len)
+{
+  int errs = 0;
+  ssize_t i;
+  for (i = 0; i < len; ++i)
+    {
+      switch (w[i])
+        {
+        case 0x00053:
+        case 0x00000:
+        case 0x00037:
+        case 0x02085:
+        case 0x0004b:
+        case 0x00064:
+        case 0x00059:
+        case 0x00045:
+        case 0x00079:
+        case 0x01e6d:
+        case 0x01e2b:
+        case 0x02082:
+        case 0x00067:
+        case 0x00121:
+        case 0x00065:
+        case 0x02084:
+        case 0x02081:
+        case 0x00071:
+        case 0x00044:
+        case 0x00062:
+        case 0x0007a:
+        case 0x00077:
+        case 0x01e6c:
+        case 0x00051:
+        case 0x0004d:
+        case 0x00043:
+        case 0x0014a:
+        case 0x0004c:
+        case 0x01e6f:
+        case 0x00058:
+        case 0x00050:
+        case 0x01e24:
+        case 0x01e25:
+        case 0x00027:
+        case 0x01e6e:
+        case 0x01e2a:
+        case 0x00160:
+        case 0x0014b:
+        case 0x01e62:
+        case 0x02093:
+        case 0x02088:
+        case 0x00054:
+        case 0x00061:
+        case 0x00161:
+        case 0x0004e:
+        case 0x00032:
+        case 0x0005a:
+        case 0x00031:
+        case 0x00075:
+        case 0x0006b:
+        case 0x00074:
+        case 0x002bf:
+        case 0x00057:
+        case 0x001f4:
+        case 0x00073:
+        case 0x001f5:
+        case 0x00042:
+        case 0x00048:
+        case 0x02086:
+        case 0x00049:
+        case 0x00047:
+        case 0x02089:
+        case 0x00055:
+        case 0x00072:
+        case 0x02087:
+        case 0x00078:
+        case 0x00068:
+        case 0x002be:
+        case 0x00030:
+        case 0x02083:
+        case 0x00066:
+        case 0x01e63:
+        case 0x00069:
+        case 0x00120:
+        case 0x00036:
+        case 0x00041:
+        case 0x0006e:
+        case 0x00033:
+        case 0x00039:
+        case 0x0006d:
+        case 0x00038:
+        case 0x0006c:
+        case 0x00034:
+        case 0x00070:
+        case 0x00052:
+        case 0x02080:
+        case 0x00035:
+        case 0x0006f:
+          break;
+        default:
+          vwarning("Character %s (hex %x) not allowed in %%uga/a",wcs2utf(&w[i],1),(int)w[i]);
+          ++errs;
+          break;
+	}
+    }
+  return errs;
+}
+
+static char *
+uga_a_asc(wchar_t *w, ssize_t len)
+{
+  static char *buf;
+  static int buf_alloced, buf_used;
+  ssize_t i;
+
+  if (!w)
+    {
+      if (buf)
+        {
+	  free(buf);
+	  buf_alloced = buf_used = 0;
+	}
+      return buf = NULL;
+    }
+
+  if (buf_alloced < (2 * len))
+    {
+      while  (buf_alloced <= (2 * len))
+	buf_alloced += 128;
+      buf = realloc(buf,buf_alloced);
+    }
+  for (i = 0; i < len; ++i)
+    {
+      switch (w[i])
+        {
+        case 0x00053:
+          append("S");
+          break;
+        case 0x00037:
+          append("7");
+          break;
+        case 0x02085:
+          append("₅");
+          break;
+        case 0x0004b:
+          append("K");
+          break;
+        case 0x00064:
+          append("d");
+          break;
+        case 0x00059:
+          append("Y");
+          break;
+        case 0x00045:
+          append("E");
+          break;
+        case 0x00079:
+          append("y");
+          break;
+        case 0x01e6d:
+          append("t,");
+          break;
+        case 0x01e2b:
+          append("ḫ");
+          break;
+        case 0x02082:
+          append("₂");
+          break;
+        case 0x00067:
+          append("g");
+          break;
+        case 0x00121:
+          append("ġ");
+          break;
+        case 0x00065:
+          append("e");
+          break;
+        case 0x02084:
+          append("₄");
+          break;
+        case 0x02081:
+          append("₁");
+          break;
+        case 0x00071:
+          append("q");
+          break;
+        case 0x00044:
+          append("D");
+          break;
+        case 0x00062:
+          append("b");
+          break;
+        case 0x0007a:
+          append("z");
+          break;
+        case 0x00077:
+          append("w");
+          break;
+        case 0x01e6c:
+          append("T,");
+          break;
+        case 0x00051:
+          append("Q");
+          break;
+        case 0x0004d:
+          append("M");
+          break;
+        case 0x00043:
+          append("C");
+          break;
+        case 0x0014a:
+          append("J");
+          break;
+        case 0x0004c:
+          append("L");
+          break;
+        case 0x01e6f:
+          append("ṯ");
+          break;
+        case 0x00058:
+          append("X");
+          break;
+        case 0x00050:
+          append("P");
+          break;
+        case 0x01e24:
+          append("Ḥ");
+          break;
+        case 0x01e25:
+          append("ḥ");
+          break;
+        case 0x00027:
+          append("'");
+          break;
+        case 0x01e2a:
+          append("Ḫ");
+          break;
+        case 0x00160:
+          append("SZ");
+          break;
+        case 0x0014b:
+          append("j");
+          break;
+        case 0x01e62:
+          append("S,");
+          break;
+        case 0x02093:
+          append("ₓ");
+          break;
+        case 0x02088:
+          append("₈");
+          break;
+        case 0x00054:
+          append("T");
+          break;
+        case 0x00061:
+          append("a");
+          break;
+        case 0x00161:
+          append("sz");
+          break;
+        case 0x0004e:
+          append("N");
+          break;
+        case 0x00032:
+          append("2");
+          break;
+        case 0x0005a:
+          append("Z");
+          break;
+        case 0x00031:
+          append("1");
+          break;
+        case 0x00075:
+          append("u");
+          break;
+        case 0x0006b:
+          append("k");
+          break;
+        case 0x00074:
+          append("t");
+          break;
+        case 0x002bf:
+          append("ʿ");
+          break;
+        case 0x00057:
+          append("W");
+          break;
+        case 0x001f4:
+          append("Ǵ");
+          break;
+        case 0x00073:
+          append("s");
+          break;
+        case 0x001f5:
+          append("ǵ");
+          break;
+        case 0x00042:
+          append("B");
+          break;
+        case 0x00048:
+          append("H");
+          break;
+        case 0x02086:
+          append("₆");
+          break;
+        case 0x00049:
+          append("I");
+          break;
+        case 0x00047:
+          append("G");
+          break;
+        case 0x02089:
+          append("₉");
+          break;
+        case 0x00055:
+          append("U");
+          break;
+        case 0x00072:
+          append("r");
+          break;
+        case 0x02087:
+          append("₇");
+          break;
+        case 0x00078:
+          append("x");
+          break;
+        case 0x00068:
+          append("h");
+          break;
+        case 0x002be:
+          append("ʾ");
+          break;
+        case 0x00030:
+          append("0");
+          break;
+        case 0x02083:
+          append("₃");
+          break;
+        case 0x00066:
+          append("f");
+          break;
+        case 0x01e63:
+          append("s,");
+          break;
+        case 0x00069:
+          append("i");
+          break;
+        case 0x00120:
+          append("Ġ");
+          break;
+        case 0x00036:
+          append("6");
+          break;
+        case 0x00041:
+          append("A");
+          break;
+        case 0x0006e:
+          append("n");
+          break;
+        case 0x00033:
+          append("3");
+          break;
+        case 0x00039:
+          append("9");
+          break;
+        case 0x0006d:
+          append("m");
+          break;
+        case 0x00038:
+          append("8");
+          break;
+        case 0x0006c:
+          append("l");
+          break;
+        case 0x00034:
+          append("4");
+          break;
+        case 0x00070:
+          append("p");
+          break;
+        case 0x00052:
+          append("R");
+          break;
+        case 0x02080:
+          append("₀");
+          break;
+        case 0x00035:
+          append("5");
+          break;
+        case 0x0006f:
+          append("o");
+          break;
+        default:
+          break;
+	}
+    }
+  return buf;
+}
+
+struct charset_keys uga_a_keys[] =
+  {
+    { "T,"	, "\xe1\xb9\xac" },
+    { "t,"	, "\xe1\xb9\xad" },
+    { "SZ"	, "\xc5\xa0" },
+    { "sz"	, "\xc5\xa1" },
+    { "S,"	, "\xe1\xb9\xa2" },
+    { "s,"	, "\xe1\xb9\xa3" },
+    { "S"	, "S" },
+    { "7"	, "7" },
+    { "K"	, "K" },
+    { "d"	, "d" },
+    { "Y"	, "Y" },
+    { "E"	, "E" },
+    { "y"	, "y" },
+    { "g"	, "g" },
+    { "e"	, "e" },
+    { "q"	, "q" },
+    { "D"	, "D" },
+    { "b"	, "b" },
+    { "z"	, "z" },
+    { "w"	, "w" },
+    { "Q"	, "Q" },
+    { "M"	, "M" },
+    { "C"	, "C" },
+    { "L"	, "L" },
+    { "X"	, "X" },
+    { "P"	, "P" },
+    { "'"	, "'" },
+    { "T"	, "T" },
+    { "a"	, "a" },
+    { "N"	, "N" },
+    { "2"	, "2" },
+    { "Z"	, "Z" },
+    { "1"	, "1" },
+    { "u"	, "u" },
+    { "k"	, "k" },
+    { "t"	, "t" },
+    { "W"	, "W" },
+    { "s"	, "s" },
+    { "B"	, "B" },
+    { "H"	, "H" },
+    { "I"	, "I" },
+    { "G"	, "G" },
+    { "U"	, "U" },
+    { "r"	, "r" },
+    { "x"	, "x" },
+    { "h"	, "h" },
+    { "0"	, "0" },
+    { "f"	, "f" },
+    { "i"	, "i" },
+    { "6"	, "6" },
+    { "A"	, "A" },
+    { "n"	, "n" },
+    { "3"	, "3" },
+    { "9"	, "9" },
+    { "m"	, "m" },
+    { "8"	, "8" },
+    { "l"	, "l" },
+    { "4"	, "4" },
+    { "p"	, "p" },
+    { "R"	, "R" },
+    { "5"	, "5" },
+    { "o"	, "o" },
+    { NULL, NULL },
+  };
+struct charset uga_a =
+  {
+    "uga", c_uga , "a", m_alphabetic,
+    uga_a_keys,
+    0,
+    uga_a_val,
+    uga_a_asc,
+    0,
+  };
+
+static int
 uga_g_val(wchar_t *w, ssize_t len)
 {
   int errs = 0;
@@ -7512,6 +7987,8 @@ uga_g_val(wchar_t *w, ssize_t len)
         case 0x0004c:
         case 0x00058:
         case 0x00050:
+        case 0x01e24:
+        case 0x01e25:
         case 0x00027:
         case 0x01e2a:
         case 0x00160:
@@ -7529,8 +8006,11 @@ uga_g_val(wchar_t *w, ssize_t len)
         case 0x00075:
         case 0x0006b:
         case 0x00074:
+        case 0x002bf:
         case 0x00057:
+        case 0x001f4:
         case 0x00073:
+        case 0x001f5:
         case 0x00042:
         case 0x00048:
         case 0x02086:
@@ -7542,6 +8022,7 @@ uga_g_val(wchar_t *w, ssize_t len)
         case 0x02087:
         case 0x00078:
         case 0x00068:
+        case 0x002be:
         case 0x00030:
         case 0x02083:
         case 0x00066:
@@ -7682,6 +8163,12 @@ uga_g_asc(wchar_t *w, ssize_t len)
         case 0x00050:
           append("P");
           break;
+        case 0x01e24:
+          append("Ḥ");
+          break;
+        case 0x01e25:
+          append("ḥ");
+          break;
         case 0x00027:
           append("'");
           break;
@@ -7733,11 +8220,20 @@ uga_g_asc(wchar_t *w, ssize_t len)
         case 0x00074:
           append("t");
           break;
+        case 0x002bf:
+          append("ʿ");
+          break;
         case 0x00057:
           append("W");
           break;
+        case 0x001f4:
+          append("Ǵ");
+          break;
         case 0x00073:
           append("s");
+          break;
+        case 0x001f5:
+          append("ǵ");
           break;
         case 0x00042:
           append("B");
@@ -7771,6 +8267,9 @@ uga_g_asc(wchar_t *w, ssize_t len)
           break;
         case 0x00068:
           append("h");
+          break;
+        case 0x002be:
+          append("ʾ");
           break;
         case 0x00030:
           append("0");
@@ -8658,6 +9157,7 @@ charsets_init(void)
   set_charset(&sux_g);
   set_charset(&sux_n);
   set_charset(&xhu_g);
+  set_charset(&uga_a);
   set_charset(&uga_g);
   set_charset(&qse_n);
     subdig_init();
@@ -8684,6 +9184,7 @@ charsets_term(void)
   free_charset(&sux_g);
   free_charset(&sux_n);
   free_charset(&xhu_g);
+  free_charset(&uga_a);
   free_charset(&uga_g);
   free_charset(&qse_n);
     subdig_term();

@@ -1,7 +1,7 @@
-ORACCIFY = @abs_top_builddir@/oracc-subst.sh $(DESTDIR)$(prefix)
+ORACCIFY = $(abs_top_builddir)/oracc-subst.sh $(DESTDIR)$(prefix)
 
 cgibindir     = $(prefix)/www/cgi-bin
-cgidatadir     = $(prefix)/www/cgi-bin
+cgidatadir    = $(prefix)/www/cgi-bin
 charmapdir    = $(prefix)/lib/charmap
 configdir     = $(prefix)/lib/config
 cssdir        = $(prefix)/www/css

@@ -192,7 +192,7 @@
       </div>
       <div class="body">
 
-<div class="doc-banner"><h1 class="title">GDL: Grapheme Description Language</h1><h2 class="ns">(http://oracc.org/ns/gdl/1.0)</h2><h2 class="author">Steve Tinney<br/>Version of 2013-01-05
+<div class="doc-banner"><h1 class="title">GDL: Grapheme Description Language</h1><h2 class="ns">(http://oracc.org/ns/gdl/1.0)</h2><h2 class="author">Steve Tinney<br/>Version of 2013-01-06
 </h2></div><h1><a name="intro">Introduction</a></h1><p>Grapheme Description Language for embedding in
   higher-order document types such as text editions and
   signlists.  A formal definition with RNC schema is given interwoven
@@ -248,7 +248,7 @@ uses only the specific Unicode codepoints listed below for the
 representation of these characters.  Details and images of the Unicode
 characters can be found at <a href="http://www.unicode.org/charts/">http://www.unicode.org/charts</a>.</p>
 
-<div class="atf tutorial"><a name="idm2720"/>
+<div class="atf tutorial"><a name="idm331632"/>
 
 <p>These days most ATF is generated in <a href="/doc/user/unicode/">Unicode</a>. However, it can also be
 restricted to ASCII characters, for which we define simple equivalents
@@ -614,7 +614,7 @@ v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
 dingir   = element g:v { g.meta , lang? , ("d") }
 mister   = element g:v { g.meta , lang? , ("m") }</pre>
 
-<div class="atf tutorial"><a name="idp471856"/>
+<div class="atf tutorial"><a name="idp143200"/>
 <p>In ATF a sign value is a sequence of lowercase letters
 followed by optional subscript digits:</p>
 
@@ -637,7 +637,7 @@ num      = xsd:string { pattern = "N|N\d+[ABCD]?" }
 
 s        = element g:s { form? , g.meta , (s.model | (sb , mods+)) }</pre>
 
-<div class="atf tutorial"><a name="idp475488"/>
+<div class="atf tutorial"><a name="idp146832"/>
 <p>In ATF a simple sign name is a sequence of uppercase letters
 followed by optional subscript digits:</p>
 
@@ -679,7 +679,7 @@ consist of any one or two uppercase letters followed by
 <code>PCSL</code> are all valid signlist prefixes.  The second group
 is the built-in set of historic sign lists.</p></div>
 
-<div class="atf tutorial"><a name="idp490272"/>
+<div class="atf tutorial"><a name="idp161616"/>
 <p>In ATF  signlist names and numerical sign names look like this:</p>
 
 <pre class="cookbook">N01       N34       LAK37        ZATU777</pre></div>
@@ -723,7 +723,7 @@ for the normalized form, e.g., <code>%akk/n bēlu(EN)</code>.)</p>
 <pre class="listing"># Qualified graphemes
 q        = element g:q { form? , g.meta , (v|s|c) , (s|c|n) }</pre>
 
-<div class="atf tutorial"><a name="idp518864"/>
+<div class="atf tutorial"><a name="idp190208"/>
 
 <p>Signs which have the special subscript <code>ₓ</code>
 must be qualified in ATF by placing the sign name in parentheses
@@ -771,7 +771,7 @@ r        = element g:r {
 
 n        = element g:n { form? , g.meta , n.model , mods* }</pre>
 
-<div class="atf tutorial"><a name="idp531136"/>
+<div class="atf tutorial"><a name="idp202480"/>
 <p>In ATF a number sign conforms to the pattern:</p>
 
 <pre class="listing">REPETITION '(' GRAPHEME ')'</pre>
@@ -819,7 +819,7 @@ mods     = modifier | allograph | formvar
 
 modifier = element g:m { xsd:string { pattern = "[a-z]|[0-9]{1,3}" } }</pre>
 
-<div class="atf tutorial"><a name="idp547872"/>
+<div class="atf tutorial"><a name="idp219216"/>
 <p>In ATF the at-sign (<code>@</code>) precedes each modifier;
 multiple modifiers may be given in which case each modifier requires
 its own at-sign.  The entire sequence of modifiers (and allographs,
@@ -937,7 +937,7 @@ operator.</p>
 
 <pre class="listing">allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }</pre>
 
-<div class="atf tutorial"><a name="idp607328"/>
+<div class="atf tutorial"><a name="idp278672"/>
 <p>In ATF an allograph, or systemic sign variant, is introduced by the
 tilde-prefix (<code>~</code>); the sequence of characters following
 the tilde is restricted to ASCII digits and lowercase letters,
@@ -975,7 +975,7 @@ for handwritings, but which are not important enough to be displayed
 or included in the version of the writing used for linguistic
 analysis.</p>
 
-<div class="atf tutorial"><a name="idp618336"/>
+<div class="atf tutorial"><a name="idp289680"/>
 
 <p>Form variants are preceded by the backslash character
 (<code>\</code>) and consist of lowercase letters and or digits.</p>
@@ -1062,7 +1062,7 @@ o.binary =
     }
   }</pre>
 
-<div class="atf tutorial"><a name="idp639056"/>
+<div class="atf tutorial"><a name="idp310400"/>
 <p>The difference between a simple sign and a compound sign is that a
 a compound sign is a sequence of sign names which contains at least
 one operator, i.e., a character which represents a relationship
@@ -1339,7 +1339,7 @@ statusEnd = attribute g:statusEnd { xsd:IDREF }
 notemark  = (attribute notemark  { text } , 
              attribute noteref { xsd:IDREF })</pre>
 
-<div class="atf tutorial"><a name="idp723872"/>
+<div class="atf tutorial"><a name="idp395216"/>
 <p>In ATF there are several general ways of specifying information
 about graphemes:</p>
 <dl>
@@ -1368,7 +1368,7 @@ tutorial.  Shifts are not permitted within compound signs.  Shifts
 must always be followed by one or more spaces.</dd>
 </dl></div>
 <h2 class="tutorial"><a name="Breakage">Breakage</a></h2>
-<div class="atf tutorial"><a name="idp732128"/>
+<div class="atf tutorial"><a name="idp403472"/>
 <p>Partially broken signs are flagged by putting a hash
 (<code>#</code>) after the grapheme.  Signs which are completely
 missing from the tablet are enclosed in square brackets.</p>
@@ -1392,7 +1392,7 @@ varnum = (
 )</pre>
 
 <h2 class="tutorial"><a name="Other_flags">Other flags</a></h2>
-<div class="atf tutorial"><a name="idp736512"/>
+<div class="atf tutorial"><a name="idp407856"/>
 <p>Collation, uncertainty and remarkability are flagged by
 <code>*</code>, <code>?</code> and <code>!</code> respectively.  If a
 grapheme is flagged as remarkable it may indicate a correction or an
@@ -1408,7 +1408,7 @@ a*               ki?            šum!              ki!?*(DI)
   attribute g:queried  { xsd:boolean } ? ,
   attribute g:remarked { xsd:boolean } ?</pre>
 <h2 class="tutorial"><a name="Glosses">Glosses</a></h2>
-<div class="atf tutorial"><a name="idp741712"/>
+<div class="atf tutorial"><a name="idp413056"/>
 <p>ATF divides glosses into three types:</p>
 <dl>
 <dt>Determinatives</dt>
@@ -1462,7 +1462,7 @@ dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }</pre>
 <div>
 <a name="presence"/><h2 class="tutorial"><a name="Presence">Presence</a></h2>
-<div class="atf tutorial"><a name="idp759184"/>
+<div class="atf tutorial"><a name="idp430528"/>
 <p>The status of one or more graphemes' presence/absence often
 requires notation.  The following bracketings support the common
 practices in Assyriological transliteration:</p>
@@ -1515,7 +1515,7 @@ which have no explicit presence-status have
 <code>g:status="ok"</code>.</p>
 
 <div><a class="tutorial" name="scripts"/><h2 class="tutorial"><a name="Scripts">Scripts</a></h2>
-<div class="atf tutorial"><a name="idp781312"/>
+<div class="atf tutorial"><a name="idp452656"/>
 <p>A simple mechanism for identifying distinct scripts on a single
 document is provided by the percent-digit commands which consist of a
 percent sign followed by a single digit: <code>%0 %1 %2 %3 %4 %5 %6 %7
@@ -1610,7 +1610,7 @@ e.g., <code>SAL(=mimma)</code>.</p>
 
 <h1 class="tutorial"><a name="Proximity">Proximity</a></h1>
 
-<div class="atf tutorial"><a name="idp854144"/>
+<div class="atf tutorial"><a name="idp525488"/>
 <p>A general facility for annotating graphemic proximity is provided
 with the notation <code>$&lt;zone&gt;</code>, where <code>zone</code> is
 an arbitrary region of the surface defined only by the transliterator
@@ -1628,7 +1628,7 @@ texts.</p>
   attribute g:prox { xsd:integer }</pre>
 
 <h1 class="tutorial"><a name="Intrusions">Intrusions</a></h1>
-<div class="atf tutorial"><a name="idp860128"/>
+<div class="atf tutorial"><a name="idp531472"/>
 <p>To indicate that there is any kind of newline within a
 transliterated sequence of words or graphemes, use the semi-colon
 (<code>;</code>).</p>
@@ -1817,7 +1817,7 @@ the colon (<code>:</code>) as a grapheme joiner in transliterations.
 The original order of the signs on the tablet is not indicated within
 a word; the structural mechanism Multiplexing must be used instead.</dd>
 </dl>
-<div class="atf tutorial"><a name="idp885136"/>
+<div class="atf tutorial"><a name="idp556480"/>
 <p>In ATF words are separated by spaces, and graphemes within words
 are joined by hyphens. Note that periods (<code>.</code>) are only
 permitted inside compound graphemes.</p>

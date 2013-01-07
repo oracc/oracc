@@ -177,6 +177,17 @@ AC_OUTPUT([Makefile
 	misc/xtr/Makefile
 	misc/xvl/Makefile
 	doc/Makefile
+	doc/00tools/Makefile
+	doc/builder/Makefile
+	doc/developer/Makefile
+	doc/install/Makefile
+	doc/manager/Makefile
+	doc/ns/Makefile
+	doc/ood/Makefile
+	doc/sysadmin/Makefile
+	doc/urn/Makefile
+	doc/user/Makefile
+	doc/wwwhome/Makefile
 	doc/ood/resources/Makefile
 	doc/ood/urns/Makefile
 	doc/ood/uris/Makefile
@@ -184,8 +195,8 @@ AC_OUTPUT([Makefile
 	doc/ood/uri-examples/Makefile
 	doc/ood/uri-patterns/Makefile
 	doc/ood/gdf/Makefile
-	doc/ood/Makefile
 	doc/builder/linganno/ARC/Makefile
+	doc/builder/linganno/UGA/Makefile
 	doc/builder/linganno/PEO/Makefile
 	doc/builder/linganno/Makefile
 	doc/builder/linganno/GRC/Makefile
@@ -198,6 +209,7 @@ AC_OUTPUT([Makefile
 	doc/builder/linganno/AKK/akk-roots/Makefile
 	doc/builder/linganno/AKK/akk-ob/Makefile
 	doc/builder/linganno/AKK/Makefile
+	doc/builder/l2/Makefile
 	doc/builder/l2/PSUs/Makefile
 	doc/builder/l2/BFFs/Makefile
 	doc/builder/l2/F2/Makefile
@@ -284,6 +296,7 @@ AC_OUTPUT([Makefile
 	doc/ns/cbd/1.0/Makefile
 	doc/ns/xcf/1.0/Makefile
 	doc/ns/xtc/1.0/Makefile
+	doc/ns/xpd/1.0/Makefile
 	doc/ns/cdf/1.0/Makefile
 	doc/ns/gdl/1.0/Makefile
 	doc/ns/sl/1.0/Makefile

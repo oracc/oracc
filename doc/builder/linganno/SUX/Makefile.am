@@ -1,5 +1,6 @@
 include @top_srcdir@/oracc-doc-rules.txt
 
+SUBDIRS = primer syntax
 
 all-local:
 	$(bindir)/xdfmanager.plx

@@ -7,8 +7,7 @@
 
 use integer;
 
-$iso10646 = "../../unicode/iso10646.psd";
-
+$iso10646 = "iso10646";
 $equiv = 0;
 $currval = 0;
 $digit_offset = 0;
@@ -33,7 +32,8 @@ for ($i = 0; $i < 4; ++$i) {
 }
 while (<ISO>) {
     print STDERR " ." unless $i++ % 1000;
-    ($hex,$uname) = (/^(.*?)\t.*?\t(.*)$/);
+#    ($hex,$uname) = (/^(.*?)\t.*?\t(.*)$/);
+    ($hex,$uname) = (/^(.*?);(.*?)$/);
     die "seq2c: bad iso input `$_'\n" unless length($uname) && length($hex);
     $uvals{$uname} = hex($hex);
 }
