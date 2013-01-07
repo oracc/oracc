@@ -87,7 +87,6 @@ EXTRA_DIST = \
 	htmlview.plx.in \
 	httpd.conf \
 	image.css \
-	index.html \
 	lar40x22.png \
 	na.css \
 	nafilled.css \
