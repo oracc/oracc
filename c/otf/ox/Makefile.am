@@ -3,6 +3,8 @@ SUFFIXES=.g .c .o
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
+datadir=$(prefix)/lib/data
+
 AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
 bin_PROGRAMS=ox gdlme2
@@ -53,4 +55,7 @@ INCLUDES=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/lib/rnv
 
-EXTRA_DIST=*.h
+data_DATA=ogsl.xml catpnums.vec
+
+EXTRA_DIST=*.h $(inst_DATA)
+

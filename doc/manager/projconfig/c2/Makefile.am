@@ -3,7 +3,7 @@ include @top_srcdir@/oracc-doc-rules.txt
 SUBDIRS = colours ol pll views
 
 all-local:
-	$(bindir)/xdfmanager.plx
+	perl $(top_srcdir)/misc/xdf/xdfmanager.plx
 
 clean-local:
 	rm -fr html

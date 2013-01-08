@@ -22,7 +22,7 @@ extern char *strdup(const char *);
 int l2 = 1;
 
 const char *arg_fields;
-const char *id, *index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL;
+const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL;
 const char *idattr = "xml:id";
 int echoing = 0;
 int langmask; /* just for selib.c; not used by ce */
@@ -514,23 +514,23 @@ main(int argc, char * const*argv)
   exit_on_error = TRUE;
   options(argc, argv, "2c:f:i:l:m:p:tvx");
 
-  if (!project || !index)
+  if (!project || !ce_index)
     {
       fprintf(stderr,"ce: must give -p and -i on command line\n");
       usage();
     }
 
   if (lang)
-    sprintf(langindex,"%s/%s",index,lang);
+    sprintf(langindex,"%s/%s",ce_index,lang);
   else
-    strcpy(langindex,index);
+    strcpy(langindex,ce_index);
 
 #if 0
   if (l2)
     {
       /* This is a hack until tra indexes store the
 	 name/lang of their files somehow */
-      if (!strcmp(index,"tra"))
+      if (!strcmp(ce_index,"tra"))
 	project_en = "_project-en";
     }
 #endif
@@ -553,11 +553,11 @@ main(int argc, char * const*argv)
 	  else
 #else
 	    sprintf(fn,"/var/local/oracc/www/%s/%s/%s/summaries.html",
-		    project,index,lang);
+		    project,ce_index,lang);
 #endif
 	}
       else
-	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,index);
+	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }
@@ -590,7 +590,7 @@ opts(int argc, char *arg)
       arg_fields = arg;
       break;
     case 'i':
-      index = arg;
+      ce_index = arg;
       break;
     case 'l':
       lang = arg;

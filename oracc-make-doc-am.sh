@@ -1,5 +1,6 @@
 #!/bin/sh
-cd /usr/local/oracc/src/doc
+x=`pwd`
+#cd /usr/local/oracc/src/doc
 #echo SUBDIRS = >Makefile.am
 #for a in `find . -name '*.xdf'` ; do 
 #    (d=`dirname $a`; echo '	'$d' \' >>Makefile.am ; \
@@ -7,5 +8,5 @@ cd /usr/local/oracc/src/doc
 #done
 
 for a in `find . -name '*.xdf'` ; do 
-    (d=`dirname $a`; cd $d ; /usr/local/oracc/src/oracc-doc-am.plx `basename $a` )
+    (d=`dirname $a`; cd $d ; $x/oracc-doc-am.plx `basename $a` )
 done

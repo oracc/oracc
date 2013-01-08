@@ -12,4 +12,4 @@ install-data-local:
 	$(top_srcdir)/oracc-doc-install.sh $(DESTDIR)$(prefix) $(top_srcdir)
 
 EXTRA_DIST = \
-	install.xdf
+	xdf-template.xdf

@@ -3,7 +3,7 @@ include @top_srcdir@/oracc-doc-rules.txt
 SUBDIRS = gdf resources uri-examples uri-patterns uri-text uris urns
 
 all-local:
-	$(bindir)/xdfmanager.plx
+	perl $(top_srcdir)/misc/xdf/xdfmanager.plx
 
 clean-local:
 	rm -fr html

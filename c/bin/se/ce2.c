@@ -23,7 +23,7 @@ extern char *strdup(const char *);
 
 extern const char *xmd_fields, *xmd_widths;
 
-const char *id, *index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
+const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
 const char *idattr = "xml:id";
 int echoing = 0;
 int item_offset;
@@ -515,16 +515,16 @@ main(int argc, char * const*argv)
   exit_on_error = TRUE;
   options(argc, argv, "2c:f:i:l:m:o:p:S:tvx");
 
-  if (!project || !index)
+  if (!project || !ce_index)
     {
       fprintf(stderr,"ce: must give -p and -i on command line\n");
       usage();
     }
 
   if (lang)
-    sprintf(langindex,"%s/%s",index,lang);
+    sprintf(langindex,"%s/%s",ce_index,lang);
   else
-    strcpy(langindex,index);
+    strcpy(langindex,ce_index);
 
   ce_pool = npool_init();
   files = list_create(LIST_SINGLE);
@@ -541,10 +541,10 @@ main(int argc, char * const*argv)
       if (lang)
 	{
 	  sprintf(fn,"/var/local/oracc/www/%s/%s/%s/summaries.html",
-		  project,index,lang);
+		  project,ce_index,lang);
 	}
       else
-	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,index);
+	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }
@@ -560,7 +560,7 @@ main(int argc, char * const*argv)
     }
   else if (cfg.f == ce_byid)
     {
-      fprintf(stdout, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" cetype=\"%s\">", index);
+      fprintf(stdout, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" cetype=\"%s\">", ce_index);
       runexpat(i_list, list2charstarstar(files), sH, eH);
     }
   else
@@ -584,7 +584,7 @@ opts(int argc, char *arg)
       xmd_fields = arg;
       break;
     case 'i':
-      index = arg;
+      ce_index = arg;
       break;
     case 'l':
       lang = arg;

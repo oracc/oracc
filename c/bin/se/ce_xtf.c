@@ -41,7 +41,7 @@ int this_node_terminates = 0;
 enum rd_state { RD_START , RD_END , RD_SELECT };
 
 const char *arg_fields;
-const char *id, *index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL;
+const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL;
 const char *idattr = "xml:id";
 const char *kwic_attr = "";
 int echoing = 0;
@@ -696,7 +696,7 @@ main(int argc, char * const*argv)
 
   options(argc, argv, "2c:f:i:lkm:p:tuvx");
 
-  if (!project || (!index && !xtf_context))
+  if (!project || (!ce_index && !xtf_context))
     {
       fprintf(stderr,"ce: must give -p and -i on command line\n");
       usage();
@@ -705,9 +705,9 @@ main(int argc, char * const*argv)
   if (!xtf_context)
     {
       if (lang)
-	sprintf(langindex,"%s/%s",index,lang);
+	sprintf(langindex,"%s/%s",ce_index,lang);
       else
-	strcpy(langindex,index);
+	strcpy(langindex,ce_index);
     }
 
   ce_out_fp = stdout;
@@ -760,7 +760,7 @@ opts(int argc, char *arg)
       arg_fields = arg;
       break;
     case 'i':
-      index = arg;
+      ce_index = arg;
       break;
     case 'k':
       cetype = KU_KWIC;

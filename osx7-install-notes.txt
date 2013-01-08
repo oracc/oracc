@@ -1,0 +1,31 @@
+Prerequisites
+========
+
+[ other prereq packages for osx? ]
+
+msort is available as a package from the msort site
+
+add qdbm to prereqs: *make mac* then *make mac-check* then *make install-mac*
+
+Colorer and Hyperestraier no longer need to be installed
+
+For oracc-hyperestraier:
+
+  remove /usr/local/include/iconv.h and /usr/local/lib/*iconv* if you 
+  	 have /usr/include and /usr/bin iconv (if you get bad iconv symbols)
+
+  install zlib (-lz)
+
+
+---
+
+github clone oracc (or use dist)
+
+glibtoolize
+aclocal
+automake
+autoconf
+./configure --prefix=/usr/local/oracc
+make
+make install
+
