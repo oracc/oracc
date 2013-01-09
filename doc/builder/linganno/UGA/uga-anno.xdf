@@ -32,13 +32,13 @@ ATF processor to treat the text as graphemic SAC.  The notation
 input, as in Akkadian: i.e., follow the language shift with
 <code>/n</code>.</p>
 
-<h2>Graphemic</h2>
+<h2>Ugaritic Cuneiform Transliteration</h2>
 
 <p>The following table shows how to transliterate the UC--for
 conventions on breakage etc., see the <a href="../ARC/">Aramaic
 notations page</a>. The table contains UC in the first
 column, so you may need to install a suitable font, such as <a
-href="/fonts.html">George Douros's "Aegean"</a>.</p>
+href="/doc/user/fonts/">George Douros's "Aegean"</a>.</p>
 
 <p><strong>No ASCII notation is provided at present for UC transliteration</strong>.</p>
 
@@ -79,5 +79,44 @@ href="/fonts.html">George Douros's "Aegean"</a>.</p>
     <tr><td class="aegean center">&#x1039D;</td><td>U+1039D</td><td>UGARITIC LETTER SSU</td><td>-</td><td>ś</td></tr>
     <tr><td class="aegean center">&#x1039F;</td><td>U+1039F</td><td>UGARITIC WORD DIVIDER</td><td>-</td><td>|</td></tr>
 </tbody></table>
+
+<h2>Lemmatization</h2>
+
+<p>Lemmatization of Ugaritic follows the guidelines for Akkadian, with
+a few adjustments explained below. If you are not familiar with the
+rules and conventions of Akkadian lemmatization, please consult the <a
+href="http://oracc.museum.upenn.edu/doc/builder/linganno/AKK/">Oracc
+Linguistic Annotation for Akkadian</a> page.</p>
+
+<p>The reference dictionary that is used for Ugaritic is G. Del Olmo
+Lete and J. Sanmartín, <i>A Dictionary of the Ugaritic Language in the
+Alphabetic Tradition</i>, trans. W. G. E. Watson, 2 volumes, Leiden:
+Brill, 2003</p>
+
+<p>Syllabically written Ugaritic is normalized with vowels and vowel length:</p>
+
+<pre class="cookbook">
+1. ka-al-bu
+#lem: klb[dog]N$kalbu
+</pre>
+
+<p>Alphabetically written Ugaritic is normalized without vowels:</p>
+<pre class="cookbook">
+2. lmlk
+#lem: mlk[king]N$lmlk
+</pre>
+
+<p>Occasionally the dictionary gives two possible reconstructions of
+the word, for instance ks/śmn "grain similar to wheat." In such cases
+always use the first option for the Citation Form, and the
+contextually appropriate form in the normalization:</p>
+<pre class="cookbook">
+3. ku-su₂-mu
+#lem: ksmn[grain similar to wheat]N$kussumu
+</pre>
+
+<p>For the Part of Speech (POS) abbreviations and the rules for POS
+and EPOS (Effective Part of Speech) see the documentation for <a
+href="http://oracc.museum.upenn.edu/doc/builder/linganno/AKK/">Akkadian</a>.</p>
 
 </d:doc>
