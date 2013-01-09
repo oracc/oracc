@@ -3,7 +3,7 @@ include @top_srcdir@/oracc-doc-rules.txt
 SUBDIRS = akk-ob akk-roots akkstyle
 
 all-local:
-	perl $(top_srcdir)/misc/xdf/xdfmanager.plx
+	perl $(top_srcdir)/misc/xdf/xdfmanager.plx -prefix $(top_srcdir)
 
 clean-local:
 	rm -fr html

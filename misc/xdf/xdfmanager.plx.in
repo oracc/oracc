@@ -11,6 +11,7 @@ my $XDF = 'http://oracc.org/ns/xdf/1.0';
 my $XHTML = 'http://www.w3.org/1999/xhtml';
 
 my $htmldump = '';
+my $prefix = '';
 my $quiet = 1;
 #my $revdate = `date --iso-8601`;
 my $revdate = `date +%F`;
@@ -23,6 +24,7 @@ my $verbose = 0;
 
 GetOptions (
     'htmldump:s'=>\$htmldump,
+    'prefix:s'=>\$prefix,
     'quiet'=>\$quiet,
     'revdate'=>\$revdate,
     'rnc'=>\$rnc_only,
@@ -32,9 +34,17 @@ GetOptions (
     'verbose'=>\$verbose,
     ) || pod2usage(1);
 
-my $refsxml_fn = '@@ORACC@@/lib/ORACC/XDF/refs.xml';
-my $xdf_rnc = '@@ORACC@@/lib/ORACC/XDF/xdf.rnc';
-my $xdf_xsl = '@@ORACC@@/lib/scripts/xdf-HTML.xsl';
+my $build_mode = length $prefix;
+
+my $refsxml_fn = ($build_mode 
+		  ? "$prefix/misc/xdf/refs.xml" 
+		  : '@@ORACC@@/lib/data/refs.xml');
+my $xdf_rnc = ($build_mode
+	       ? "$prefix/misc/xdf/xdf.rnc"
+	       : '@@ORACC@@/lib/data/xdf.rnc');
+my $xdf_xsl = ($build_mode 
+	       ? "$prefix/misc/xdf/xdf-HTML.xsl"
+	       : '@@ORACC@@/lib/scripts/xdf-HTML.xsl');
 my $xdf = shift(@ARGV);
 my @schemas = ();
 my $index_dir = '';
@@ -98,57 +108,6 @@ process {
     references();
     generate_xhtml();
     secondary();
-}
-
-sub
-colorize_script {
-    my ($script,$mode,$submode) = @_;
-    my %flowWords = (
-		     perl=>'if|else|elsif|unless|next|for|foreach|while|use',
-		     );
-    my %defWords = (
-		    perl=>'my|our|local',
-		    );
-    my $cmd = undef;
-    if ($mode eq 'text') {
-	$cmd = "/usr/bin/expand $script";
-    } elsif ($mode eq 'xml' || $mode eq 'xslt') {
-	my $nofill = ($mode eq 'xslt' || $submode eq 'xxx') ? '-nofill' : '';
-	$cmd = "@@ORACC@@/bin/xmlformat.plx $nofill $script";
-    } else {
-	$cmd = "/usr/bin/expand $script|/usr/local/bin/colorer -ht -eiutf-8 -eoutf-8 -t $mode 2>colorer.log";
-    }
-
-    my @h = ();
-    verbose($cmd);
-    open(S, "$cmd|");
-    unless ($mode eq 'text') {
-	while (<S>) {
-	    last if /<span/;
-	}
-	until (m,</pre>,) {
-	    if ($mode eq 'perl') {
-		s/($perlStringB.*?$perlStringE)/&defString($1)/eg;
-	    }
-	    s/_Keyword([\'\"])>($flowWords{$mode})</_Flowword$1>$2</g
-		if $flowWords{$mode};
-	    s/_Keyword([\'\"])>($defWords{$mode})</_Defword$1>$2</g
-		if $defWords{$mode};
-	    s/(<span[^<]+_Var[\'\"]>)([^A-Za-z])/$2$1/g
-		if $mode eq 'perl';
-	    if ($submode eq 'rng') {
-		s/(def_Parameter.>ns<)/xml_Attribute-nsprefix $1/;
-	    }
-	    push @h, $_;
-	    last unless defined($_ = <S>);
-	}
-    } else {
-	while (<S>) {
-	    push @h, $_;
-	}
-    }
-    close(S);
-    @h;
 }
 
 sub
@@ -520,7 +479,11 @@ generate_rng {
     if (-e 'rnc2rng.sh') {
 	$rnc2rng = './rnc2rng.sh';
     } else {
-	$rnc2rng = 'java -jar @@ORACC@@/lib/java/trang.jar';
+	my $trang = ($build_mode 
+		     ? "$prefix/misc/schemas/trang.jar"
+		     : '@@ORACC@@/lib/java/trang.jar');
+	$rnc2rng = "java -jar $trang";
+	warn "xdfmanager.plx: rnc2rng = $rnc2rng\n";
     }
     foreach my $s (@schemas) {
 	my $rnc = $$s{'name'}.'.rnc';
@@ -774,7 +737,7 @@ resources {
 	}
 
 	@tools = sort @tools if $sort;
-	my @html_files = grep(process_resource($_),@tools);
+	my @html_files = (); # grep(process_resource($_),@tools);
 
 	my @h = ();
 	push @h, "<div xmlns=\"$XHTML\">" if $wrap;
@@ -809,6 +772,7 @@ sub
 process_resource {
     my $script = shift;
     return 0 unless -f $script && !$files_done{$script};
+    my @h = ();
     ++$files_done{$script};
 
     my $script_no_path = $script;
@@ -828,8 +792,6 @@ process_resource {
     system "mkdir -p ${index_dir}html"
 	unless $made_html_dir++;
 
-    my @h = colorize_script($script,$mode,$submode);
-
     my $pod = ($mode eq 'perl') ? `grep -c '^=head1' $script` : 0;
     chomp $pod;
     my $desc;
@@ -841,7 +803,10 @@ process_resource {
 	$lfile =~ s/.plx$/-listing.html/;
 	open(H,">${index_dir}html/$lfile");
 	$listing{$script} = "$lfile";
-	system "pod2html $script | @@ORACC@@/bin/podhtml-filter.plx >${index_dir}html/$script.html ; rm -f pod2htm[di].x~~";
+	my $podfilter = ($build_mode 
+			 ? "$prefix/misc/xdf/podhtml-filter.plx"
+			 : '@@ORACC@@/bin/podhtml-filter.plx');
+	system "pod2html $script | perl $podfilter >${index_dir}html/$script.html ; rm -f pod2htm[di].x~~";
     } else {
 	$desc = `grep -m1 '\@SUMMARY\@=' $script`;
 	if ($desc) {
@@ -970,7 +935,7 @@ rnv {
 	    print STDERR "checking grammar $rnc ...\n";
 	}
     }
-    system("@@ORACC@@/bin/rnv -q -c $rnc $doc 2>rnv.log");
+    system("rnv -q -c $rnc $doc 2>rnv.log");
     unless (-z 'rnv.log') {
 	# seems like there should be an easier way to cat
 	# to stderr than the following...
