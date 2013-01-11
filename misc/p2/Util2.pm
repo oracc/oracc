@@ -45,8 +45,10 @@ emit_instance {
     my($tmpdir,$xdata,$type,$serialize,$launch,$project,$session,$nohttp) = @_;
 
     my $gnode = get_node($xdata, 'glossary');
-    unless ($gnode->hasChildNodes()) {
-	$gnode->appendText('#none');
+    if ($gnode) {
+	unless ($gnode->hasChildNodes()) {
+	    $gnode->appendText('#none');
+	}
     }
 
     open(RET,">$tmpdir/returned-$type.xml") 

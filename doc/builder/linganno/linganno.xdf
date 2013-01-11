@@ -548,14 +548,15 @@ relevant in the construction of forms files.</p>
 
 <d:references>
 <p>For more detailed language-specific information about lemmatization, please refer to the following pages:</p>
-<d:ref name="AKK" uri="AKK/">Akkadian Language Information</d:ref>
-<d:ref name="ARC" uri="ARC/">Aramaic Language Information</d:ref>
-<d:ref name="ELX" uri="ELX/">Elamite Language Information</d:ref>
-<d:ref name="GRC" uri="GRC/">Greek Language Information</d:ref>
-<d:ref name="PEO" uri="PEO/">Old Persian Language Information</d:ref>
-<d:ref name="SUX" uri="SUX/">Sumerian Language Information</d:ref>
+<d:ref name="AKK" uri="linganno/AKK/">Akkadian Language Information</d:ref>
+<d:ref name="ARC" uri="linganno/ARC/">Aramaic Language Information</d:ref>
+<d:ref name="ELX" uri="linganno/ELX/">Elamite Language Information</d:ref>
+<d:ref name="GRC" uri="linganno/GRC/">Greek Language Information</d:ref>
+<d:ref name="PEO" uri="linganno/PEO/">Old Persian Language Information</d:ref>
+<d:ref name="SUX" uri="linganno/SUX/">Sumerian Language Information</d:ref>
+<d:ref name="UGA" uri="linganno/UGA/">Ugaritic Language Information</d:ref>
 <p>and, for all languages:</p>
-<d:ref name="QPN" uri="QPN/">Proper Noun Information</d:ref>
+<d:ref name="QPN" uri="linganno/QPN/">Proper Noun Information</d:ref>
 </d:references>
 
 </d:doc>

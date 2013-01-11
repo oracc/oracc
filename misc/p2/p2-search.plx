@@ -71,7 +71,7 @@ unless ($res) {
     print STDERR " ok\n" if $verbose;
 }
 
-$serialize = 0 if $values{'serialize'} eq 'false';
+$serialize = 0 if $values{'serialize'} && $values{'serialize'} eq 'false';
 ORACC::P2::Util2::emit_instance($tmpdir, $res, 'search', $serialize);
 
 1;
