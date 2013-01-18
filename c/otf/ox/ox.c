@@ -48,7 +48,7 @@ signals(int argc, char **argv)
   signal(SIGABRT , clean_exit_on_sig);
   signal(SIGILL  , clean_exit_on_sig);
   signal(SIGFPE  , clean_exit_on_sig);
-  signal(SIGSEGV , clean_exit_on_sig); // <-- this one is for segmentation fault
+  signal(SIGSEGV , clean_exit_on_sig);
   signal(SIGTERM , clean_exit_on_sig);
 }
 

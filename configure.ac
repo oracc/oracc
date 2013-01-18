@@ -98,6 +98,8 @@ AC_OUTPUT([Makefile
 	   c/otf/lng/Makefile
 	   c/otf/otf/Makefile
 	   c/otf/ox/Makefile
+	   c/otf/oxx/Makefile
+	   c/otf/oxx/xincludify.sh
 	   c/otf/prj/Makefile
 	   c/otf/run/Makefile
 	   c/l2/Makefile

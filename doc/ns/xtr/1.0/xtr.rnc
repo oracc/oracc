@@ -42,10 +42,15 @@ trans-note =
   element xh:div {
     attribute class { "note" },
     id?,
-    element xh:p { ctr , marker-ref , htext } ,
-    (element xh:p { ctr , htext } 
-     | trans-comment)*
+    trans-first-para,
+    (trans-next-para | trans-comment)*
   }
+
+trans-first-para =
+  element xh:p { ctr , marker-ref , htext }
+
+trans-next-para = 
+  element xh:p { ctr , htext } 
 
 trans-unit = 
   element xh:p {
@@ -138,8 +143,11 @@ new-labels =
 
 map =
   element xtr:map {
-    element xtr:l2t {
-      attribute lid { xsd:IDREF },
-      attribute tid { xsd:IDREF }
-    }*
+    l2t*
+  }
+
+l2t = 
+  element xtr:l2t {
+    attribute lid { xsd:IDREF },
+    attribute tid { xsd:IDREF }
   }

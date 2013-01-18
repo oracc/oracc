@@ -106,20 +106,26 @@
       <optional>
         <ref name="id"/>
       </optional>
-      <element name="xh:p">
-        <ref name="ctr"/>
-        <ref name="marker-ref"/>
-        <ref name="htext"/>
-      </element>
+      <ref name="trans-first-para"/>
       <zeroOrMore>
         <choice>
-          <element name="xh:p">
-            <ref name="ctr"/>
-            <ref name="htext"/>
-          </element>
+          <ref name="trans-next-para"/>
           <ref name="trans-comment"/>
         </choice>
       </zeroOrMore>
+    </element>
+  </define>
+  <define name="trans-first-para">
+    <element name="xh:p">
+      <ref name="ctr"/>
+      <ref name="marker-ref"/>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="trans-next-para">
+    <element name="xh:p">
+      <ref name="ctr"/>
+      <ref name="htext"/>
     </element>
   </define>
   <define name="trans-unit">
@@ -519,15 +525,18 @@
   <define name="map">
     <element name="xtr:map">
       <zeroOrMore>
-        <element name="xtr:l2t">
-          <attribute name="lid">
-            <data type="IDREF"/>
-          </attribute>
-          <attribute name="tid">
-            <data type="IDREF"/>
-          </attribute>
-        </element>
+        <ref name="l2t"/>
       </zeroOrMore>
+    </element>
+  </define>
+  <define name="l2t">
+    <element name="xtr:l2t">
+      <attribute name="lid">
+        <data type="IDREF"/>
+      </attribute>
+      <attribute name="tid">
+        <data type="IDREF"/>
+      </attribute>
     </element>
   </define>
 </grammar>

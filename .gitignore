@@ -11,6 +11,7 @@ Makefile.in
 .libs
 rnv.log
 rnc2rng.log
+*.rng
 doc/builder/bilinguals/html/
 doc/builder/cdli/html/
 doc/builder/dates/html/
@@ -127,7 +128,9 @@ doc/user/searching/html/
 doc/user/unicode/html/
 doc/user/userguide/html/
 autom4te.cache/
+a.out.dSYM
 c.log
+configure
 c/bin/despatcher/oracc-resolver
 c/bin/lemmer/bigrams
 c/bin/lemmer/lemmer

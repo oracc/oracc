@@ -229,8 +229,14 @@ process_text(struct run_context *run, unsigned char **lines)
 	    }
 	}
 
+#if 0
+      /* if we do the getAttr the xtf:transliteration tag always has xml:lang=sux */
       if (!*(getAttr(text,"xml:lang")))
 	setAttr(text,a_xml_lang,ucc(curr_lang->fulltag));
+#else
+      if (text_lang && text_lang->fulltag)
+	setAttr(text,a_xml_lang,ucc(text_lang->fulltag));
+#endif	
 #if 0
       appendAttr(text,attr(a_hand,ucc(current_state.hand)));
 #endif

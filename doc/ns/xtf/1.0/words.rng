@@ -269,10 +269,13 @@
         <value>alternation</value>
       </attribute>
       <oneOrMore>
-        <element name="n:grouped-word">
-          <ref name="normwordword"/>
-        </element>
+        <ref name="n-grouped-word"/>
       </oneOrMore>
+    </element>
+  </define>
+  <define name="n-grouped-word">
+    <element name="n:grouped-word">
+      <ref name="normwordword"/>
     </element>
   </define>
   <define name="normwordword">
