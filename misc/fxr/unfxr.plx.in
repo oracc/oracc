@@ -3,8 +3,10 @@ use warnings; use strict; use open 'utf8';
 use lib '@@ORACC@@/lib';
 use Getopt::Long;
 use Pod::Usage;
+use ORACC::XML;
 use ORACC::FXR::Util;
 
+my $fix_000 = 0;
 my $rs_tag = 'xmd';
 my $rs_ns_prefix = 'xmd';
 my $rs_ns_uri = 'http://oracc.org/ns/xmd/1.0';
@@ -13,6 +15,7 @@ my $fxr_fn = '';
 my $rs_fn = '';
 
 GetOptions(
+    'fix0'=>\$fix_000,
     'rs:s'=>\$rs_tag,
     'rs-ns-prefix:s'=>\$rs_ns_prefix,
     'rs-ns-uri:s'=>\$rs_ns_uri,
@@ -40,7 +43,18 @@ foreach my $r (@$rows) {
     foreach my $f (@$r) {
 	print RS "<$$fieldnames[$i]";
 	if ($f) {
-	    print RS ">$f</$$fieldnames[$i]>";
+	    if ($f =~ / \000 / && $fix_000) {
+		print RS '>';
+		foreach my $fbit (split(/ \000 /,$f)) {
+		    my $xf = xmlify($fbit);
+		    print RS '<subfield>';
+		    print RS $xf;
+		    print RS '</subfield>';
+		}
+	    } else {
+		print RS '>', xmlify($f);
+	    }
+	    print RS "</$$fieldnames[$i]>";
 	} else {
 	    print RS "/>";
 	}
