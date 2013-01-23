@@ -21,8 +21,47 @@ create_have_atf();
 proxy_lists();
 update_lists();
 lemindex_list();
+all_triple();
 
 ##############################################################
+
+sub
+all_triple {
+    my %triples = ();
+    open(P, '01bld/lists/proxy.lst');
+    while (<P>) {
+	chomp;
+	my $cat = undef;
+	if (s/\@(.*?)$//) {
+	    $cat = $1;
+	}
+	my ($prx,$pqx) = (/^(.*?):(.*?)$/);
+	$triples{$pqx} = [ $prx , $cat ];
+    }
+    close(P);
+    open(C, '01bld/lists/cat-ids.lst');
+    while (<C>) {
+	chomp;
+	my $cat = undef;
+	if (s/\@(.*?)$//) {
+	    $cat = $1;
+	}
+	my ($prj,$pqx) = (/^(.*?):(.*?)$/);
+	if ($triples{$pqx}) {
+	    my($prx,$prxcat) = @{$triples{$pqx}};
+	    $triples{$pqx} = [ $prx , $prxcat || $cat || $prj ];
+	} else {
+	    $triples{$pqx} = [ $prj , $cat || $prj ];
+	}
+    }
+    close(C);
+    open(T, '>01bld/lists/master.lst');
+    foreach my $pqx (sort keys %triples) {
+	my($prj,$cat) = @{$triples{$pqx}};
+	print T "$prj\:$pqx\@$cat\n";
+    }
+    close(T);
+}
 
 sub
 atf_sources {
