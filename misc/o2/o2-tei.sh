@@ -19,6 +19,8 @@ if [ "$tei_list" == "" ]; then
 fi
 if [ "$tei_list" == "atf" ]; then
     tei_list_file=01bld/lists/have-atf.lst
+elif [ "$tei_list" == "master" ]; then
+    tei_list_file=01bld/lists/master.lst
 elif [ "$tei_list" == "lem" ]; then
     tei_list_file=01bld/lists/lemindex.lst
 elif [ "$tei_list" == "all" ]; then
@@ -35,6 +37,9 @@ if [ "$tei_trim" == "yes" ]; then
 else
     xmlfile=`tei-no-trim.sh $project`
 fi
+
+rnv $ORACC/lib/schemas/xtf-tei.rnc $xmlfile 2>01tmp/tei-valid.log
+wc -l 01tmp/tei-valid.log
 
 if [ "$tei_dist" == "yes" ]; then
     tei-dist.sh $xmlfile
