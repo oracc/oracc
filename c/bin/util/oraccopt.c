@@ -11,11 +11,16 @@ main(int argc, char **argv)
       struct xpd *x = NULL;
       const char *project = NULL;
       const char *option = NULL;
+      const char *deflt = NULL;
 
-      if (argc == 3)
+      if (argc == 3 || argc == 4)
 	{
 	  project = argv[1];
 	  option = argv[2];
+	  if (argc == 4)
+	    deflt = argv[3];
+	  else
+	    deflt = "";
 	}
       else if (argc == 1)
 	{
@@ -31,8 +36,10 @@ main(int argc, char **argv)
 
       if ((x = xpd_init(project,pool)))
 	{
-	  const char *val = NULL;
-	  if ((val = xpd_option(x,option)))
+	  const char *val = xpd_option(x,option);
+	  if (!val && deflt)
+	    val = deflt;
+	  if (val)
 	    {
 	      fputs(val,stdout);
 	      return 0;
@@ -49,9 +56,12 @@ const char *usage_string = "[PROJ] [OPTION]";
 void help()
 {
   fprintf(stderr, 
-	  "oraccopt takes 0 or 2 arguments.  With 0 arguments it prints\n"
-	  "the name of the current project.  With 2 arguments, the first\n"
-	  "must be a known project, the second a config option.  The value\n"
-	  "of the config option in the project is printed and may be empty\n");
+	  "oraccopt takes 0, 2 or 3 arguments.\n\n"
+	  "With 0 arguments it prints the name of the current project.\n\n"
+	  "With 2 arguments, the first must be a known project (or a period, ., to mean the current project).\n"
+	  "The second option must be a config option.  The value of the option in 02xml/config.xml\n"
+	  "is printed and may be empty.\n"
+	  "A third argument may be given which is the default value to print if\n"
+	  "the config option is empty.\n");
 }
 int opts(int argc, char *arg) { return 0; }
