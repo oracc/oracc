@@ -24,17 +24,35 @@ echo teilist=$teilist
 libscripts=@@ORACC@@/lib/scripts
 rm -fr $teidir
 mkdir -p $teidir
-# trim listNym if necessary
+# create listNym (will be trimmed later if necessary)
 xsltproc --stringparam project $1 $libscripts/cbd2listNym.xsl 01bld/qpn/qpn.g2c >$teidir/01listNym.xml
-# trim listPerson if necessary
+# create listPerson (will be trimmed later if necessary)
 xsltproc --stringparam project $1 $libscripts/cbd2listPerson.xsl 01bld/qpn/qpn.g2c >$teidir/02listPerson.xml
+# create biblio file if there is a shell script to do so
+if [ -x 00bin/bib2xml.sh ]; 
+then 
+    00bin/bib2xml.sh
+fi
+hdrs=`oraccopt . build-tei-header basic`
+if [ "$hdrs" = "full" ];
+then
+    tei-xmd-headers.sh
+fi
+tei-translations.sh $project $teilist
 echo Creating TEI for texts listed in $teilist
 cat $teilist | while read line; do
-    pqx=`echo -n $line | sed 's/^.*://'`
+    pqx=`echo -n $line | cut -d'@' -f1 | sed 's/^.*://'`
     prj=`echo -n $line | sed 's/:.*$//'`
+    cat=`echo -n $line';'$prj | perl -pe 's/^.*?\@(.*?)\;.*$/$1/||s/^.*?;//'`
+    xmdbase=${ORACC}/bld/$cat/${pqx:0:4}/$pqx/$pqx 
+    xtfbase=${ORACC}/bld/$prj/${pqx:0:4}/$pqx/$pqx
+    file=`if [ -e $xtfbase.xtf ]; then echo -n "$xtfbase.xtf"; else echo -n "$xmdbase.xmd"; fi`
     echo Generating $teidir/${pqx}.xml from $prj:$pqx
-    xsltproc --stringparam project $prj @@ORACC@@/lib/scripts/xtf2tei.xsl \
-	${ORACC}/bld/$prj/${pqx:0:4}/$pqx/$pqx.xtf \
+    xsltproc --stringparam this-project $project \
+	--stringparam project $prj \
+	--stringparam tei-hdr-type $hdrs \
+	@@ORACC@@/lib/scripts/xtf2tei.xsl \
+	$file \
 	> $teidir/$pqx.xml
 done
 rm -fr 02www/tei

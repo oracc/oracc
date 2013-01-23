@@ -1,0 +1,16 @@
+surro => choice/abbr/expan
+
+ll => L1||l2||L3
+
+g:g => (...)
+
+<xcl:d type="cell-start|cell-end|field-start|field-end"/> => milestone type=@type subtype=@subtype for field
+
+more proxy-fixing in list processors is needed; the format of master.lst needs to be universally observed (perhaps it already is though)
+
+biblio conversion
+
+master as value for build-tei-file or whatev
+
+refactor tei-translation building to work off a list of the translations to speed it up (process one-big-file and split it)
+

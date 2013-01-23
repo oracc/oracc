@@ -1,4 +1,13 @@
 #!/bin/sh
+if [ ! -e 00lib/config.xml ]; then
+    echo tei-project.sh: must run from a project or subproject directory
+    exit 1
+fi
+if [ "$1" = "" ];
+then
+    echo tei-project.sh: must give project name as argument
+    exit 1
+fi
 project=$1
 projxml=02pub/tei-project.xml
 echo '<teiCorpus ' >$projxml
