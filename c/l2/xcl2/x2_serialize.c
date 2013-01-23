@@ -341,9 +341,12 @@ serialize_one_node(FILE*f_xcl,void *vp)
 	fprintf(f_xcl,"</c>");
       break;
     case xcl_node_d:
-      fprintf(f_xcl,"<d type=\"%s\" ref=\"%s\"/>",
-	      xcl_d_type_str[dp->type],
-	      dp->ref);
+      fprintf(f_xcl,"<d type=\"%s\"",xcl_d_type_str[dp->type]);
+      if (dp->ref)
+	fprintf(f_xcl, " ref=\"%s\"", dp->ref);
+      if (dp->subtype)
+	fprintf(f_xcl, " subtype=\"%s\"", dp->subtype);
+      fputs("/>", f_xcl);
       break;
     case xcl_node_l:
 #if 0

@@ -487,6 +487,7 @@ get_discourse_type(const char *d)
   if (!d)
     return 1;
   else if (!strcmp(d, "body") 
+	   || !strcmp(d, "catchline")
 	   || !strcmp(d, "colophon")
 	   || !strcmp(d, "sealings")
 	   || !strcmp(d, "signatures")
