@@ -1703,19 +1703,35 @@ numerical(register unsigned char *g)
 	  struct node *r;
 	  int nmods = 0;
 	  static struct mods modsbuf[MODS_MAX];
+	  unsigned char *qnum = NULL, *qtmp = NULL;
 	  gp = calloc(1,sizeof(struct grapheme));
 	  gp->g.n.r = orig_g;
 	  g = orig_g;
 	  while (is_grapheme_base[*g] || '/' == *g)
 	    ++g;
 	  if (*g)
-	    nmods = gmods(g,modsbuf);
+	    {
+	      nmods = gmods(g,modsbuf);
+	      warning("mods on unqualified number are not allowed, say, e.g., 1(disz@c) not 1@c");
+	    }
+	  if (strchr(gp->g.n.r, '/'))
+	    {
+	      qnum = qtmp = malloc(strlen(gp->g.n.r) + 7);
+	      sprintf(qnum, "%s(disz)", gp->g.n.r);
+	    }
+	  else
+	    {
+	      qnum = sexify(atoi(gp->g.n.r), "disz");
+	    }
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
 	  gp->xml = build_singleton((unsigned char*)"",g_n,nmods,modsbuf);
 	  gp->type = g_n;
 	  /* replace the empty text child with the "n" node in g:r */
 	  replaceChild(gp->xml,0,r);
+	  gsetAttr(gp->xml,a_sexified,qnum);
+	  if (qtmp)
+	    free(qtmp);
 	}
       else
 	{

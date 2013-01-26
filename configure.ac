@@ -95,6 +95,7 @@ AC_OUTPUT([Makefile
 	   c/otf/chr/Makefile
 	   c/otf/gdl/Makefile
 	   c/otf/lib/Makefile
+	   c/otf/lib/mk_rnc.sh
 	   c/otf/lng/Makefile
 	   c/otf/otf/Makefile
 	   c/otf/ox/Makefile

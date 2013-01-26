@@ -538,7 +538,8 @@ r        = element g:r {
              xsd:string {
 	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
 
-n        = element g:n { form? , g.meta , n.model , mods* }
+n        = element g:n { form? , g.meta , sexified?, n.model , mods* }
+sexified = attribute sexified { text }
 </d:rnc>
 
 <div class="atf tutorial">
@@ -1667,11 +1668,8 @@ normword =
 normwordgroup = 
   element n:word-group {
      attribute g:type { "alternation" } ,
-     n-grouped-word+     
+     element n:grouped-word { normwordword }+
   }
-
-n-grouped-word = 
-  element n:grouped-word { normwordword }
 
 normwordword = ( text | (normseg | normgroup)+)
 
