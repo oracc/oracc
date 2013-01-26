@@ -9,10 +9,13 @@
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
 
+<xsl:variable name="lower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
+<xsl:variable name="upper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
+
 <xsl:variable name="text-lang">
   <xsl:choose>
-    <xsl:when test="contains(/*/x:transliteration/@xml:lang,'_')">
-      <xsl:value-of select="substring-before(/*/x:transliteration,'_')"/>
+    <xsl:when test="contains(/*/x:transliteration/@xml:lang,'-')">
+      <xsl:value-of select="substring-before(/*/x:transliteration/@xml:lang,'-')"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="/*/x:transliteration/@xml:lang"/>
@@ -27,9 +30,23 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="g:b|g:r|g:s|g:v">
+<xsl:template match="g:b|g:r|g:v|g:p">
   <xsl:call-template name="g-begin"/>
   <xsl:apply-templates/>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
+</xsl:template>
+
+<xsl:template match="g:s">
+  <xsl:call-template name="g-begin"/>
+  <xsl:choose>
+    <xsl:when test="@g:role='logo'">
+      <xsl:value-of select="translate(.,$upper,$lower)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:call-template name="g-end"/>
   <xsl:call-template name="g-delim"/>
 </xsl:template>
@@ -95,12 +112,15 @@
         <xsl:text>)</xsl:text>
       </xsl:for-each>
      </xsl:when>
-    <xsl:otherwise>
-      <xsl:apply-templates select="g:r"/>
-      <xsl:text>(</xsl:text>
-      <xsl:apply-templates select="*[2]"/>
-      <xsl:text>)</xsl:text>
-    </xsl:otherwise>
+     <xsl:when test="@sexified">
+       <xsl:value-of select="@sexified"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:apply-templates select="g:r"/>
+       <xsl:text>(</xsl:text>
+       <xsl:apply-templates select="*[2]"/>
+       <xsl:text>)</xsl:text>
+     </xsl:otherwise>
   </xsl:choose>
   <xsl:apply-templates select="g:a|g:m"/>
 </xsl:template>
@@ -153,9 +173,7 @@
     <xsl:when test="@g:type='reordering'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
-	  <xsl:text>:</xsl:text>
-	</xsl:if>
+	<!-- no need to emit ':' here because it comes in from @g:delim -->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='ligature'">
@@ -175,6 +193,7 @@
       <xsl:message>gdl-CATF.xsl: can't handle g:gg with type=<xsl:value-of select="@g:type"/></xsl:message>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:call-template name="g-delim"/>
 </xsl:template>
 
 <!-- TODO: split-word support -->
@@ -189,13 +208,6 @@
       </xsl:if>
     </xsl:when>
   </xsl:choose>
-  <xsl:if test="g:gg[@g:type='logo'] or g:s[@g:role='logo']">
-    <xsl:if test="not(preceding-sibling::*) 
-		  or (not(preceding-sibling::g:w[1]/g:gg[@g:type='logo'])
-		      and not(preceding-sibling::g:w[1]/g:s[@g:role='logo']))">
-      <xsl:call-template name="logo-open"/>
-    </xsl:if>
-  </xsl:if>
   <xsl:apply-templates/>
   <xsl:choose>
     <xsl:when test="count(following-sibling::*) = 0">
@@ -208,39 +220,48 @@
       <!-- do nothing -->
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:choose>
-    <xsl:when test="g:gg[@g:type='logo'] or g:s[@g:role='logo']">
-      <xsl:message>logo 2: count(foll)=<xsl:value-of select="count(following-sibling::*)"/></xsl:message>
-      <xsl:if test="count(following-sibling::*)=0
-			  or (not(following-sibling::g:w[1]/g:gg[@g:type='logo'])
-			  and not(following-sibling::g:w[1]/g:s[@g:role='logo']))">
-	<xsl:call-template name="logo-close"/>
-      </xsl:if>
-    </xsl:when>
-    <xsl:otherwise>
-    </xsl:otherwise>
-  </xsl:choose>
   <xsl:call-template name="g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:nonw">
   <xsl:choose>
-    <xsl:when test="@g:type='comment' or @g:type='dollar'">
+    <xsl:when test="@type='comment' or @type='dollar'">
       <!-- inline comments and dollar-lines are dropped in CATF -->
     </xsl:when>
-    <xsl:when test="@g:type='excised'">
+    <xsl:when test="@type='excised'">
       <xsl:text>&lt;&lt;</xsl:text>
       <xsl:apply-templates/>
       <xsl:text>&gt;&gt;</xsl:text>
     </xsl:when>
+    <xsl:when test="@type='punct'">
+      <xsl:value-of select="g:p/@g:type"/>
+      <xsl:value-of select="@g:delim"/>
+    </xsl:when>
     <xsl:otherwise>
-      <xsl:message>gdl-CATF.xsl: can't handle g:nonw with type=<xsl:value-of select="@g:type"/></xsl:message>
+      <xsl:message>xtf-CATF.xsl:<xsl:value-of select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: can't handle g:nonw with type=<xsl:value-of select="@type"/></xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="g:x">
+  <xsl:call-template name="g-begin"/>
+  <xsl:choose>
+    <xsl:when test="@g:type='ellipsis'">
+      <xsl:text>...</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='newline'">
+      <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>gdl-CATF:<xsl:value-of select="ancestor-or-self::*[@xml:id]/@xml:id"/>: unhandled g:x/@g:type value <xsl:value-of select="@g:type"/></xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
+</xsl:template>
+
 <xsl:template match="g:*">
-  <xsl:message>gdl-CATF: unhandled GDL tag <xsl:value-of select="name()"/></xsl:message>
+  <xsl:message>xtf-CATF:<xsl:value-of select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: unhandled GDL tag <xsl:value-of select="name()"/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -249,6 +270,9 @@
  -->
 <xsl:template name="g-begin">
   <xsl:value-of select="@g:o"/>
+  <xsl:if test="@g:role='logo' and not(preceding-sibling::*[1][@g:role='logo'])">
+    <xsl:call-template name="logo-open"/>
+  </xsl:if>
 </xsl:template>
 
 <!-- Varnum is dropped in CATF -->
@@ -263,12 +287,18 @@
       <xsl:value-of select="'#'"/>
     </xsl:when>
   </xsl:choose>
+  <xsl:if test="@g:role='logo' and not(following-sibling::*[@g:role='logo'])">
+    <xsl:call-template name="logo-close"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="g-delim">
   <xsl:choose>
     <xsl:when test="@g:delim='--'">
       <!-- Double-hyphen delimiters (sometimes used to separate name segments) are rendered as single hyphens in C-ATF. -->
+      <xsl:text>-</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:delim='.' and @g:role='logo'">
       <xsl:text>-</xsl:text>
     </xsl:when>
     <xsl:otherwise>
@@ -328,7 +358,9 @@
 
 <xsl:template match="x:transliteration">
   <xsl:value-of select="concat('&amp;',@xml:id,' = ',@n,'&#xa;')"/>
+  <xsl:value-of select="concat('#atf: lang ', $text-lang, '&#xa;')"/>
   <xsl:apply-templates/>
+  <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
 <xsl:template match="x:composite">
@@ -399,7 +431,7 @@
       <!-- Gloss-underneath lines are dropped in CATF -->
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="concat(@label, '. ')"/>
+      <xsl:value-of select="concat(@n, '. ')"/>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:apply-templates/>
@@ -437,9 +469,13 @@
 </xsl:template>
 
 <xsl:template name="x-non-whatever">
+  <xsl:text>$ </xsl:text>
   <xsl:choose>
     <xsl:when test="starts-with(., '(')">
       <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:when test="@strict='1'">
+      <xsl:apply-templates/>      
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>(</xsl:text>
@@ -476,18 +512,8 @@
 
 <xsl:template name="logo-open">
   <xsl:text>_</xsl:text>
-  <xsl:variable name="logo-lang">
-    <xsl:choose>
-      <xsl:when test="g:gg">
-	<xsl:value-of select="g:gg/g:s/@g:logolang"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="g:s/@g:logolang"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:if test="not(starts-with($logo-lang,'sux'))">
-    <xsl:value-of select="concat('%',$logo-lang,' ')"/>
+  <xsl:if test="not(starts-with(@g:logolang,'sux'))">
+    <xsl:value-of select="concat('%',@g:logolang,' ')"/>
   </xsl:if>
 </xsl:template>
 
