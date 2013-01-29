@@ -46,7 +46,7 @@ esp-block =
   | esp-techterms-list | esp-reading | esp-ref
 
 esp-inline = 
-  esp-content-last-modified | esp-link | esp-bookmark
+  esp-content-last-modified | esp-link | esp-twitter | esp-bookmark
   | esp-glossary | esp-index | esp-techterms | esp-email | esp-page-name
   | esp-page-title
 
@@ -162,6 +162,20 @@ esp-link =
     attribute type { "link" }?,
     Inline.model
   }*
+
+esp-twitter = 
+  element link {
+    ( 	 
+      ( attribute class { "twitter-timeline" }, 
+        attribute dnt-data { text },
+	attribute dnt-widget { text }
+      ) 
+    ),
+    attribute hide-print { "yes" | "no" }?,
+    attribute title { text }?,
+    attribute rel { "external" },
+    Inline.model
+  }
 
 esp-page =
   element page {

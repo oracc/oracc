@@ -366,71 +366,108 @@
   </xsl:if>
 </xsl:template>
 
-<!-- process external links (RH replaced text 'External site' with 'Link opens in new window')-->
-<xsl:template match="wm:link[string ( @url )] | wm:area[string ( @url )]">
+<xsl:template name="twitter">
+  <xsl:message>Processing twitter-timeline ...</xsl:message>
   <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
   <xsl:variable name="processed-url" select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( $parameters/param:root, substring ( @url, 2 ) ) else @url"/>
-  <xsl:if test="self::wm:link">
-    <a href="{$processed-url}" class="external">
-	<xsl:if test="string ( @accesskey )">
-	  <xsl:attribute name="accesskey" select="@accesskey"/>
-	</xsl:if>
-	<xsl:variable name="link-title">
-	  <xsl:if test="substring ( @url, 1, 7 ) = 'http://'">
-	    <xsl:text>Link opens in new window</xsl:text>
+  <a href="{$processed-url}" class="external">
+    <xsl:copy-of select="@class|@data-dnt|@data-widget-id"/>
+    <xsl:if test="string ( @accesskey )">
+      <xsl:attribute name="accesskey" select="@accesskey"/>
+    </xsl:if>
+    <xsl:variable name="link-title">
+      <xsl:if test="substring ( @url, 1, 7 ) = 'http://'">
+	<xsl:text>Link opens in new window</xsl:text>
+      </xsl:if>
+      <xsl:if test="substring ( @url, 1, 7 ) = 'http://' and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
+	<xsl:text>: </xsl:text>
+      </xsl:if>
+      <xsl:choose>
+	<xsl:when test="string ( @title )">
+	  <xsl:value-of select="@title"/>
+	</xsl:when>
+	<xsl:when test="$tag-has-content and string ( @site-name )">
+	  <xsl:value-of select="@site-name"/>
+	</xsl:when>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:attribute name="title" select="$link-title"/>
+    <xsl:copy-of select="script"/>
+  </a>
+</xsl:template>
+
+<!-- process external links (RH replaced text 'External site' with 'Link opens in new window')-->
+<xsl:template match="wm:link[string ( @url )] | wm:area[string ( @url )]">
+  <xsl:choose>
+    <xsl:when test="@class='twitter-timeline'">
+      <xsl:call-template name="twitter"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
+      <xsl:variable name="processed-url" select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( $parameters/param:root, substring ( @url, 2 ) ) else @url"/>
+      <xsl:if test="self::wm:link">
+	<a href="{$processed-url}" class="external">
+	  <xsl:if test="string ( @accesskey )">
+	    <xsl:attribute name="accesskey" select="@accesskey"/>
 	  </xsl:if>
-	  <xsl:if test="substring ( @url, 1, 7 ) = 'http://' and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
-	    <xsl:text>: </xsl:text>
-	  </xsl:if>
-	  <xsl:choose>
-	    <xsl:when test="string ( @title )">
-	      <xsl:value-of select="@title"/>
-	    </xsl:when>
-	    <xsl:when test="$tag-has-content and string ( @site-name )">
-	      <xsl:value-of select="@site-name"/>
-	    </xsl:when>
-	  </xsl:choose>
-	</xsl:variable>
-	<xsl:attribute name="title" select="$link-title"/>
-	<xsl:choose>
-	  <xsl:when test="$tag-has-content">
-	    <xsl:apply-templates/>
-	  </xsl:when>
-	  <xsl:otherwise>
+	  <xsl:variable name="link-title">
+	    <xsl:if test="substring ( @url, 1, 7 ) = 'http://'">
+	      <xsl:text>Link opens in new window</xsl:text>
+	    </xsl:if>
+	    <xsl:if test="substring ( @url, 1, 7 ) = 'http://' and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
+	      <xsl:text>: </xsl:text>
+	    </xsl:if>
 	    <xsl:choose>
-	      <xsl:when test="string ( @site-name )">
+	      <xsl:when test="string ( @title )">
+		<xsl:value-of select="@title"/>
+	      </xsl:when>
+	      <xsl:when test="$tag-has-content and string ( @site-name )">
 		<xsl:value-of select="@site-name"/>
 	      </xsl:when>
-	      <xsl:otherwise>
-		<xsl:value-of select="@url"/>
-	      </xsl:otherwise>
 	    </xsl:choose>
-	  </xsl:otherwise>
-	</xsl:choose>
-    </a>
-    <xsl:if test="not ( @hide-print = 'yes' )">
-	<span class="externallinktext"> [<xsl:value-of select="@url"/>]</span>
-    </xsl:if>
-  </xsl:if>
-  <xsl:if test="self::wm:area">
-    <area href="{$processed-url}" alt="{@description}" shape="{@shape}" coords="{@coords}">
-	<xsl:if test="string ( @accesskey )">
-	  <xsl:attribute name="accesskey" select="@accesskey"/>
-	</xsl:if>
-	<xsl:variable name="link-title">
-	  <xsl:text>Link opens in new window</xsl:text>
+	  </xsl:variable>
+	  <xsl:attribute name="title" select="$link-title"/>
 	  <xsl:choose>
-	    <xsl:when test="string ( @title )">
-	      <xsl:text>: </xsl:text><xsl:value-of select="@title"/>
+	    <xsl:when test="$tag-has-content">
+	      <xsl:apply-templates/>
 	    </xsl:when>
-	    <xsl:when test="$tag-has-content and string ( @site-name )">
-	      <xsl:text>: </xsl:text><xsl:value-of select="@site-name"/>
-	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:choose>
+		<xsl:when test="string ( @site-name )">
+		  <xsl:value-of select="@site-name"/>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:value-of select="@url"/>
+		</xsl:otherwise>
+	      </xsl:choose>
+	    </xsl:otherwise>
 	  </xsl:choose>
-	</xsl:variable>
-	<xsl:attribute name="title" select="$link-title"/>
-    </area>
-  </xsl:if>
+	</a>
+	<xsl:if test="not ( @hide-print = 'yes' )">
+	  <span class="externallinktext"> [<xsl:value-of select="@url"/>]</span>
+	</xsl:if>
+      </xsl:if>
+      <xsl:if test="self::wm:area">
+	<area href="{$processed-url}" alt="{@description}" shape="{@shape}" coords="{@coords}">
+	  <xsl:if test="string ( @accesskey )">
+	    <xsl:attribute name="accesskey" select="@accesskey"/>
+	  </xsl:if>
+	  <xsl:variable name="link-title">
+	    <xsl:text>Link opens in new window</xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="string ( @title )">
+		<xsl:text>: </xsl:text><xsl:value-of select="@title"/>
+	      </xsl:when>
+	      <xsl:when test="$tag-has-content and string ( @site-name )">
+		<xsl:text>: </xsl:text><xsl:value-of select="@site-name"/>
+	      </xsl:when>
+	    </xsl:choose>
+	  </xsl:variable>
+	  <xsl:attribute name="title" select="$link-title"/>
+	</area>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- process page names and title -->
