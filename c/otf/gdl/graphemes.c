@@ -1554,14 +1554,11 @@ punct(register unsigned char *g)
   register unsigned char *g2;
   struct grapheme *gp = NULL;
   struct grapheme *p_q = NULL;
-  char ptok[3];
   char ptok[4];
   *ptok = g[0];
-  if (g[1] == ':' || g[1] == '.' || g[1] == '\'' || g[1] == '"')
   if (g[1] == ':' || g[1] == '.' || g[1] == '\'' || g[1] == '"' || (g[1] == 'r' && g[2] == ':'))
     {
       ptok[1] = g[1];
-      ptok[2] = '\0';
       if (g[1] == 'r')
 	{
 	  ptok[2] = ':';
@@ -1578,7 +1575,6 @@ punct(register unsigned char *g)
       || (ptok[0] == '/' && !ptok[1])
       || (ptok[0] == '|' && !ptok[1])
       || (ptok[0] == ':' 
-	  && (!ptok[1] || ptok[1] == ':' || ptok[1] == '.' || ptok[1] == '\'' || ptok[1] == '"')))
 	  && ((!ptok[1] || ptok[1] == ':' || ptok[1] == '.' || ptok[1] == '\'' || ptok[1] == '"')
 	      || (ptok[1] == 'r' && ptok[2] == ':'))))
     {
@@ -1723,7 +1719,8 @@ numerical(register unsigned char *g)
 	  if (*g)
 	    {
 	      nmods = gmods(g,modsbuf);
-	      warning("mods on unqualified number are not allowed, say, e.g., 1(disz@c) not 1@c");
+	      if (nmods > 1 || modsbuf[0].data[0] != 'v' || modsbuf[0].data[1])
+		warning("mods on unqualified number are not allowed, say, e.g., 1(disz@c) not 1@c");
 	    }
 	  if (strchr(gp->g.n.r, '/'))
 	    {
@@ -1732,7 +1729,14 @@ numerical(register unsigned char *g)
 	    }
 	  else
 	    {
-	      qnum = sexify(atoi(gp->g.n.r), "disz");
+	      unsigned char *sx = sexify(atoi(gp->g.n.r), "disz");
+	      if (!sx)
+		sx = "00(disz)";
+	      qnum = malloc(strlen(sx) + 3);
+	      if (nmods == 1 && modsbuf[0].data[0] == 'v')
+		sprintf(qnum, "%s@v", sx);
+	      else
+		strcpy(qnum, sx);
 	    }
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
