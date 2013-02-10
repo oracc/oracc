@@ -26,7 +26,7 @@
 </xsl:template>
 
 <xsl:template mode="pull" match="cbd:letter">
-  <xsl:apply-templates mode="pull"/>
+  <xsl:apply-templates mode="pull" select="cbd:entry"/>
 </xsl:template>
 
 <xsl:template mode="pull" match="cbd:entry">
@@ -77,17 +77,18 @@
       <xsl:copy-of select="cbd:senses"/>
     </xsl:if>
     <xsl:if test="$inline-refs='yes'">
-      <xsl:variable name="xis-id" select="concat(ancestor::cbd:entries/@n,'_',@xml:id)"/>
-      <!-- <xsl:message>xis-id = <xsl:value-of select="$xis-id"/></xsl:message> -->
+      <xsl:variable name="xis-id" select="substring-after(concat(ancestor::cbd:entries/@n,'_',@xml:id), 'glossary_')"/>
+<!--      <xsl:message>xis-id = <xsl:value-of select="$xis-id"/></xsl:message> -->
       <xsl:for-each select="id($xis-id)">
-	<xsl:for-each select="*">
-	  <xsl:variable name="text" select="substring-before(text(),'.')"/>
+	<xsl:for-each select="id(@xis)/*">
+	  <xsl:variable name="ref" select="substring-after(text(),':')"/>
+	  <xsl:variable name="text" select="substring-before($ref,'.')"/>
 	  <r ref="{text()}" tref="{$text}">
 	    <xsl:attribute name="lref">
-	      <xsl:value-of select="substring-before(substring-after(text(),'.'),'.')"/>
+	      <xsl:value-of select="substring-before(substring-after($ref,'.'),'.')"/>
 	    </xsl:attribute>
 	    <xsl:attribute name="wref">
-	      <xsl:value-of select="substring-after(substring-after(text(),'.'),'.')"/>
+	      <xsl:value-of select="substring-after(substring-after($ref,'.'),'.')"/>
 	    </xsl:attribute>
 	    <xsl:variable name="name-node" 
 			  select="document('names.xml',/)/*/group[@name='index']/n[@text=$text]"/>
@@ -96,7 +97,7 @@
 	    </text>
 	    <line>
 	      <xsl:call-template name="xtr-format-label">
-		<xsl:with-param name="format" select="id(text())/../@label"/>
+		<xsl:with-param name="format" select="id($ref)/../@label"/>
 	      </xsl:call-template>
 	    </line>
 	  </r>
@@ -105,5 +106,7 @@
     </xsl:if>
   </xsl:copy>
 </xsl:template>
+
+<xsl:template match="text()"/>
 
 </xsl:stylesheet>
