@@ -158,6 +158,9 @@
 	  <xsl:when test="xpd:abbrev = xpd:name">
 	    <xsl:value-of select="xpd:abbrev"/>
 	  </xsl:when>
+	  <xsl:when test="starts-with(xpd:name, xpd:abbrev)">
+	    <xsl:value-of select="xpd:name"/>
+	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:value-of select="xpd:abbrev"/>
 	    <xsl:text>: </xsl:text>
