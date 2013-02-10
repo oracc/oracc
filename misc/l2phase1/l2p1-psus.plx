@@ -36,7 +36,10 @@ while (<S>) {
     m#=(.*?)\$#;
     my $keysig = $1;
     s/\!0x.*$//;
-    push @{$simple{$keysig}}, $_;
+    if (defined $keysig) {
+	push(@{$simple{$keysig}}, $_) ;
+    }
+#	if $keysig && $simple{$keysig};
 }
 close(S);
 
@@ -394,7 +397,8 @@ validate_parts {
 #	    warn "csig = $csig\n";
 	    my @simple_matches = ();
 	    foreach my $ptm (@pt_matches) {
-		push @simple_matches, @{$simple{$ptm}};
+		push(@simple_matches, @{$simple{$ptm}});
+#		    if $simple{$ptm};
 	    }
 	    push @ret, [ $pt , $csig , @simple_matches ];
 	} else {
