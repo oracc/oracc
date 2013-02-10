@@ -722,6 +722,11 @@ word_matrix_char(register unsigned char *l, wchar_t *bufp)
   return 0;
 }
 
+{
+  while (*l == '#' || *l == '*' || *l == '?' || *l == '!')
+    ++l;
+}
+
 void
 tokenize(register unsigned char *l,unsigned char *e)
 {
