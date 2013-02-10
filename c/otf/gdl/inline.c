@@ -101,7 +101,6 @@ static int split_flag = 0;
 #define set_ub(wdp,ubtype,ubp) appendAttr((wdp),attr((ubtype),(ubp)->data))
 
 #define no_norm(err) \
-  if (tp->lang->mode == m_normalized) \
   if (tp->lang && tp->lang->mode == m_normalized) \
     { \
       vwarning("'%s' not allowed in normalized text",err); \
@@ -564,7 +563,7 @@ next_b_or_g(ssize_t tindex)
       else if (tokens[tindex]->class == bound)
 	{
 	  if (tokens[tindex]->type == hyphen 
-	      && tindex < last_token
+	      && (tindex+1) < last_token
 	      && tokens[tindex+1]->type == newline
 	      && !tokens[tindex+2])
 	    {
@@ -980,7 +979,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      && xstrcmp(getAttr(lastc,"g:type"),"logo"))
 			    {
 			      if (!xstrcmp(getAttr(lastc,"g:type"),"reordering")
-				  || !xstrcmp(getAttr(lastc,"g:type"),"ligature"))
+				  || !xstrcmp(getAttr(lastc,"g:type"),"ligature")
+				  || !xstrcmp(getAttr(lastc,"g:type"),"correction")
 				  )
 				{
 				  struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
@@ -1178,6 +1178,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else
 		appendAttr(np,attr(a_g_role,ucc("semantic")));
+	      if (*cued_opener)
+		{
+		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
+		  *cued_opener = '\0';
+		}
 	      /* ->user is utilized for label storage as well as b_or_g 
 		 tracking; need to make sure that this doesn't conflict 
 		 (which it won't as long as np is not a block element) */
@@ -1268,14 +1273,37 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      np = elem(e_g_gloss,NULL,lnum,GRAPHEME);
 	      appendAttr(np,attr(a_g_type, ucc(((tp->type == glosso)
 					      ? "lang" : "text"))));
+
+#if 0	      
 	      if (tp->type == glosso)
 		appendAttr(np,attr(a_g_pos,ucc("post"))); /* FIXME!!*/
 	      else
 		appendAttr(np,attr(a_g_pos,ucc("free"))); /* FIXME!!*/
+#endif
 	      if (wp)
-		parent = appendChild(wp,np);
+		{
+		  const char *pos = "pre";
+		  int i;
+		  for (i = wp->children.lastused-1; i >= 0; --i)
+		    {
+		      struct node *cp = (struct node*)(wp->children.nodes[i]);
+		      const char *pname = cp->names->pname;
+		      if (np->type == 'e' && !strcmp(pname, "g:d"))
+			break;
+		      else if (np->type == 'e' && (!strcmp(pname, "g:x")))
+			{
+			  pos = "post";
+			  break;
+			}
+		    }
+		  appendAttr(np,attr(a_g_pos,ucc(pos)));
+		  parent = appendChild(wp,np);
+		}
 	      else
-		parent = appendChild(parent,np);
+		{
+		  appendAttr(np,attr(a_g_pos,ucc("pre")));
+		  parent = appendChild(parent,np);
+		}
 	      wp = NULL;
 	      break;
 	    case glossc:
@@ -1564,12 +1592,17 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      warning("misplaced prox");
 	      break;
 	    case icmt:
-	      np = elem(e_g_nonw,NULL,lnum,WORD);
+	      last_g = np = elem(e_g_nonw,NULL,lnum,WORD);
 	      {
 		char type = *(char*)tp->data;
 		appendAttr(np,attr(a_type,
 				   ucc((type == '#' ? "comment" : "dollar"))));
 	      }
+	      if (*cued_opener)
+		{
+		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
+		  *cued_opener = '\0';
+		}
 	      appendChild(np,textNode(((unsigned char*)(tp->data))+1));
 	      if (!strcmp((((char*)(tp->data))+1), "DUMMY"))
 		setAttr(parent,a_silent,(unsigned char *)"1");
@@ -1726,7 +1759,10 @@ finish_word(struct node *wp)
 	}
       if (*cp->type == 't')
 	forms_insertp = render_g_text(cp, forms_insertp);
+      else if (*cp->type == 'e' && !strcmp(cp->names->pname, "g:p"))
 	{
+	  if (forms_insertp > form && forms_insertp[-1] == '-')
+	    *--forms_insertp = '\0';
 	}
       else
 	forms_insertp = render_g(cp, forms_insertp,form);
@@ -1740,7 +1776,10 @@ finish_word(struct node *wp)
   
   rendering_word_form = 0;
   
-  *forms_insertp++ = '\0';
+  if (forms_insertp[-1] == '-')
+    forms_insertp[-1] = '\0';
+  else
+    *forms_insertp++ = '\0';
   if (forms_insertp >= (formsbuf + formsbuf_size))
     {
       fprintf(stderr, "ox: internal error, formsbuf overflow (text too big).  Stop.\n");
