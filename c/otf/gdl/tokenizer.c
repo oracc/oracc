@@ -533,9 +533,6 @@ tokenize_init()
       if (type_data[i])
 	static_tokens[i] = hash_insert((unsigned char*)type_data[i],
 				       s_create_token((!type_data[i][1]
-						     && boundary[(int)*type_data[i]])
-						    ? bound : meta,
-						    i, type_data[i]),
 						       && boundary[(int)*type_data[i]])
 						      ? bound : meta,
 						      i, type_data[i]),
@@ -722,9 +719,12 @@ word_matrix_char(register unsigned char *l, wchar_t *bufp)
   return 0;
 }
 
+int
+is_wordnum(unsigned char *l)
 {
   while (*l == '#' || *l == '*' || *l == '?' || *l == '!')
     ++l;
+  return *l && (isdigit(*l) || ('n' == *l && !is_grapheme1[l[1]]));
 }
 
 void
@@ -771,7 +771,7 @@ tokenize(register unsigned char *l,unsigned char *e)
       /* WATCHME: the new is_grapheme1[l[1]] may break some texts;
 	 although ':' as punct should require following space */
       if ((is_grapheme1[*l] 
-	   || (('*' == *l || (':' == *l && !is_varc(l+1) && !is_grapheme1[l[1]])
+	   || (('*' == *l || (':' == *l && !is_varc(l+1) && (!is_grapheme1[l[1]] || is_wordnum(l+1) || ('r' == l[1] && ':' == l[2]) ))
 		|| ('/' == *l && (isspace(l[1]) || !l[1] || '(' == l[1])))
 	       && last_text_or_bound != text))
 	  || (curr_lang->mode != m_graphemic 
@@ -842,7 +842,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 	  if (last_text_or_bound == text)
 	    {
 	      if (tokens[tokindex-1]->data
-		  && !strcmp((char*)tokens[tokindex-1]->data, ":")
+		  /*		  && !strcmp((char*)tokens[tokindex-1]->data, ":") */
+		  && !strcmp(((struct grapheme*)(tokens[tokindex-1]->data))->atf, ":")
 		  && isdigit(first_alnum(l)))
 		{
 		  /* Insert implicit ligature */
@@ -863,7 +864,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  unsigned char save = *following;
 		  struct medial_info *mip = NULL;
 		  *following = '\0';
-		  if (strpbrk((const char *)g,"[]"))
+		  if ('|' != *g && strpbrk((const char *)g,"[]"))
 		    {
 		      mip = new_medial_info();
 		      g = medial_square(g, mip);
@@ -1860,7 +1861,9 @@ tokenize_grapheme(register unsigned char*l,
 	  else if (*tp == g_p)
 	    {
 	      ++l;
-	      if (*l == ':' || *l == '.' || *l == '\'' || *l == '"')
+	      if (*l == ':' || *l == '.' || *l == '\'' || *l == '"' || (*l == 'r' && l[-1] == ':' && l[1] == ':'))
+		++l;
+	      if ('r' == l[-1])
 		++l;
 	    }
 	  else
