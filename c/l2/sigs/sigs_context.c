@@ -146,9 +146,12 @@ sig_context_register(struct sig_context *scp,
       else
 	{
 	  if (!auto_ok)
-	    fprintf(stderr,
-		    "sig_context: can't register sigs for %s:%s: can't read `%s'\n", 
-		    proj_to_be_lemmed, lang_to_be_lemmed, fname);
+	    {
+	      if (strcmp(lang_to_be_lemmed, "qcu"))
+		fprintf(stderr,
+			"sig_context: can't register sigs for %s:%s: can't read `%s'\n", 
+			proj_to_be_lemmed, lang_to_be_lemmed, fname);
+	    }
 	    no_sigfile = 1;
 	}
     }
