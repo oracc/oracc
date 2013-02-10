@@ -180,11 +180,11 @@ compute_project_hierarchy {
     my $project_base = $project_parts[$#project_parts];
     do {
 	pop @p_tmp;
-	my $c = catfile(@p_tmp, '00lib', 'config.xml');
+	my $c = catfile(@p_tmp, '02xml', 'config.xml');
 	push @superproj, $c if -r $c;
     } while ($#p_tmp > 0);
 
-    @subproj = grep !/^00lib/, `find * -name 'config.xml'`; chomp(@subproj);
+    @subproj = grep /02xml/, `find [a-z]* -follow -name 'config.xml'`; warn @subproj; chomp(@subproj);
 
 #    warn "super_path/project_base = $super_path/$project_base\n";
 
