@@ -65,7 +65,8 @@
     <link rel="stylesheet" type="text/css" media="handheld" href="{$parameters/param:root}/css/handheld.css"/>
 <!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$parameters/param:root}/my-handheld.css"/> -->
     <link rel="stylesheet" type="text/css" media="screen,projection" href="{$parameters/param:root}/css/screen.css"/>
-<!--    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$parameters/param:root}/my-screen.css"/> -->
+    <!-- why were all the my-xxx.css files commented out? -->
+    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$parameters/param:root}/my-screen.css"/>
     <link rel="stylesheet" type="text/css" media="browsers_that_ignore_the_media_type_attribute" href="{$parameters/param:root}/css/browsersthatsuck.css"/>
 
     <xsl:choose>
