@@ -9,8 +9,13 @@
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
 
+<xsl:param name="curated" select="'no'"/>
+<xsl:param name="project" select="''"/>
+
 <xsl:variable name="lower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
 <xsl:variable name="upper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
+
+<xsl:key name="alias" match="a" use="@g"/>
 
 <xsl:variable name="text-lang">
   <xsl:choose>
@@ -30,7 +35,16 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="g:b|g:r|g:v|g:p">
+<xsl:template match="g:v|g:p">
+  <xsl:call-template name="g-begin"/>
+  <xsl:call-template name="alias">
+    <xsl:with-param name="g" select="text()|@g:type"/>
+  </xsl:call-template>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
+</xsl:template>
+
+<xsl:template match="g:b|g:r">
   <xsl:call-template name="g-begin"/>
   <xsl:apply-templates/>
   <xsl:call-template name="g-end"/>
@@ -41,10 +55,14 @@
   <xsl:call-template name="g-begin"/>
   <xsl:choose>
     <xsl:when test="@g:role='logo'">
-      <xsl:value-of select="translate(.,$upper,$lower)"/>
+      <xsl:call-template name="alias">
+	<xsl:with-param name="g" select="translate(.,$upper,$lower)"/>
+      </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates/>
+      <xsl:call-template name="alias">
+	<xsl:with-param name="g" select="text()"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="g-end"/>
@@ -58,19 +76,25 @@
 
 <xsl:template match="g:c">
   <xsl:call-template name="g-begin"/>
+  <xsl:value-of select="@form"/>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
+<!--
+  <xsl:call-template name="g-begin"/>
   <xsl:text>|</xsl:text>
   <xsl:apply-templates mode="no-breakage"/>
   <xsl:text>|</xsl:text>
   <xsl:call-template name="g-end"/>
   <xsl:call-template name="g-delim"/>
+-->
 </xsl:template>
 
 <xsl:template match="g:d">
-  <xsl:text>{</xsl:text>
   <xsl:call-template name="g-begin"/>
+  <xsl:text>{</xsl:text>
   <xsl:apply-templates/>
-  <xsl:call-template name="g-end"/>
   <xsl:text>}</xsl:text>
+  <xsl:call-template name="g-end"/>
   <xsl:call-template name="g-delim"/>
 </xsl:template>
 
@@ -107,7 +131,9 @@
       <xsl:for-each select="g:b">
         <xsl:apply-templates select="g:r"/>
         <xsl:text>(</xsl:text>
-        <xsl:apply-templates select="*[2]"/>
+	<xsl:call-template name="alias">
+	  <xsl:with-param name="g" select="*[2]"/>
+	</xsl:call-template>
 	<xsl:apply-templates select="g:a|g:m"/>
         <xsl:text>)</xsl:text>
       </xsl:for-each>
@@ -137,7 +163,9 @@
       <xsl:value-of select="concat(.,'x')"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>gdl-CATF: <xsl:value-of select="@g:type"/> not handled</xsl:message>
+      <xsl:call-template name="error">
+	<xsl:with-param name="msg" select="concat(@g:type, ' not handled')"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -147,22 +175,33 @@
 </xsl:template>
 
 <xsl:template match="g:q">
-  <xsl:apply-templates select="*[1]"/>
-  <xsl:text>(</xsl:text>
-  <xsl:apply-templates select="*[2]"/>
-  <xsl:text>)</xsl:text>
+  <xsl:call-template name="g-begin"/>
+  <xsl:call-template name="alias">
+    <xsl:with-param name="g" select="@form"/>
+  </xsl:call-template>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:gg|n:g">
   <xsl:choose>
     <xsl:when test="@g:type='correction'">
+      <xsl:apply-templates select="*[1]"/>
+      <xsl:if test="count(*)>1">
+	<xsl:text>(</xsl:text>
+	<xsl:apply-templates select="*[position()>1]"/>
+	<xsl:text>)</xsl:text>
+      </xsl:if>
     </xsl:when>
     <xsl:when test="@g:type='alternation'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
+	<!-- no need to emit '/' here because it comes in from @g:delim -->
+<!--
 	<xsl:if test="not(position()=last())">
 	  <xsl:text>/</xsl:text>
 	</xsl:if>
+ -->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='group'">
@@ -179,18 +218,23 @@
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
+	<!-- no need to emit '+' here because it comes in from @g:delim -->
+<!--
 	<xsl:if test="not(position()=last())">
 	  <xsl:text>+</xsl:text>
 	</xsl:if>
+ -->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='logo'">
-      <!-- drop grouping in ATF -->
+      <xsl:call-template name="logo-open"/>
       <xsl:apply-templates/>
+      <xsl:call-template name="logo-close"/>
     </xsl:when>
     <xsl:otherwise>
-      <!-- TODO: implicit-ligature -->
-      <xsl:message>gdl-CATF.xsl: can't handle g:gg with type=<xsl:value-of select="@g:type"/></xsl:message>
+      <xsl:call-template name="error">
+	<xsl:with-param name="msg" select="concat('g:gg with type=', @g:type, ' not handled')"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="g-delim"/>
@@ -224,21 +268,40 @@
 </xsl:template>
 
 <xsl:template match="g:nonw">
+  <xsl:call-template name="g-begin"/>
   <xsl:choose>
-    <xsl:when test="@type='comment' or @type='dollar'">
-      <!-- inline comments and dollar-lines are dropped in CATF -->
+    <xsl:when test="@type='comment'">
+      <!-- inline comments are dropped in CATF -->
+    </xsl:when>
+    <xsl:when test="@type='dollar'">
+      <xsl:value-of select="concat('($',text(),'$)')"/>
     </xsl:when>
     <xsl:when test="@type='excised'">
-      <xsl:text>&lt;&lt;</xsl:text>
+      <!-- the << and >> are provided by @g:o -->
+<!--      <xsl:text>&lt;&lt;</xsl:text> -->
       <xsl:apply-templates/>
-      <xsl:text>&gt;&gt;</xsl:text>
+<!--      <xsl:text>&gt;&gt;</xsl:text> -->
     </xsl:when>
     <xsl:when test="@type='punct'">
-      <xsl:value-of select="g:p/@g:type"/>
+      <xsl:for-each select="g:p">
+	<xsl:call-template name="g-begin"/>
+	<xsl:value-of select="@g:type"/>
+	<xsl:call-template name="g-end"/>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="error">
+	<xsl:with-param name="msg" select="concat('g:nonw with type=', @type, ' not handled')"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:call-template name="g-end"/>
+  <xsl:choose>
+    <xsl:when test="@g:delim">
       <xsl:value-of select="@g:delim"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>xtf-CATF.xsl:<xsl:value-of select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: can't handle g:nonw with type=<xsl:value-of select="@type"/></xsl:message>
+      <xsl:text> </xsl:text>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -253,16 +316,33 @@
       <xsl:text>;</xsl:text>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>gdl-CATF:<xsl:value-of select="ancestor-or-self::*[@xml:id]/@xml:id"/>: unhandled g:x/@g:type value <xsl:value-of select="@g:type"/></xsl:message>
+      <xsl:call-template name="error">
+	<xsl:with-param name="msg" select="concat('g:x with @g:type=',@g:type,' not handled')"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="g-end"/>
-  <xsl:call-template name="g-delim"/>
+  <xsl:choose>
+    <xsl:when test="@g:delim">
+      <xsl:call-template name="g-delim"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:choose>
+	<xsl:when test="following-sibling::g:w or following-sibling::g:nonw">
+	  <xsl:text> </xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	  <!-- emit nothing if no following g:w/g:nonw ??? -->
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:*">
-  <xsl:message>xtf-CATF:<xsl:value-of select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: unhandled GDL tag <xsl:value-of select="name()"/></xsl:message>
-  <xsl:apply-templates/>
+  <xsl:call-template name="error">
+    <xsl:with-param name="msg" select="concat('unhandled GDL tag', name())"/>
+  </xsl:call-template>
 </xsl:template>
 
 <!-- TODO:
@@ -287,7 +367,7 @@
       <xsl:value-of select="'#'"/>
     </xsl:when>
   </xsl:choose>
-  <xsl:if test="@g:role='logo' and not(following-sibling::*[@g:role='logo'])">
+  <xsl:if test="@g:role='logo' and not(following-sibling::*[1][@g:role='logo'])">
     <xsl:call-template name="logo-close"/>
   </xsl:if>
 </xsl:template>
@@ -301,6 +381,9 @@
     <xsl:when test="@g:delim='.' and @g:role='logo'">
       <xsl:text>-</xsl:text>
     </xsl:when>
+    <xsl:when test="@g:delim='.' and ../@g:type='logo'">
+      <xsl:text>-</xsl:text>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="@g:delim"/>
     </xsl:otherwise>
@@ -308,13 +391,13 @@
 </xsl:template>
 
 <xsl:template name="g-status-flags">
-  <xsl:if test="@g:collated = 'yes' or g:collated='true'">
+  <xsl:if test="@g:collated = '1'">
     <xsl:text>*</xsl:text>
   </xsl:if>
-  <xsl:if test="@g:queried = 'yes' or g:queried='true'">
+  <xsl:if test="@g:queried = '1'">
     <xsl:text>?</xsl:text>
   </xsl:if>
-  <xsl:if test="@g:remarked = 'yes' or g:remarked='true'">
+  <xsl:if test="@g:remarked = '1'">
     <xsl:text>!</xsl:text>
   </xsl:if>
 </xsl:template>
@@ -359,6 +442,10 @@
 <xsl:template match="x:transliteration">
   <xsl:value-of select="concat('&amp;',@xml:id,' = ',@n,'&#xa;')"/>
   <xsl:value-of select="concat('#atf: lang ', $text-lang, '&#xa;')"/>
+  <xsl:value-of select="concat('#From Oracc, see http://oracc.org/',@project,'/',@xml:id,'&#xa;')"/>
+  <xsl:if test="not($curated='no')">
+    <xsl:text>#(this text is part of an ongoing Oracc project)</xsl:text>
+  </xsl:if>
   <xsl:apply-templates/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>
@@ -395,16 +482,15 @@
       <xsl:value-of select="concat(' ',@n)"/>
     </xsl:when>
   </xsl:choose>
+  <xsl:call-template name="g-status-flags"/>
   <xsl:text>&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="x:column">
   <xsl:if test="not(@implicit='1')">
-    <xsl:value-of select="concat('@',type)"/>
-    <xslif test="@g:type='object'">
-      <xsl:value-of select="concat(' ',@n)"/>
-    </xslif>
+    <xsl:value-of select="concat('@column ', @n)"/>
+    <xsl:call-template name="g-status-flags"/>
     <xsl:text>&#xa;</xsl:text>
   </xsl:if>
   <xsl:apply-templates/>
@@ -491,8 +577,9 @@
 </xsl:template>
 
 <xsl:template match="x:*">
-  <xsl:message>gdl-OATF: xtf:<xsl:value-of select="name()"/> not handled</xsl:message>
-  <xsl:apply-templates/>  
+  <xsl:call-template name="error">
+    <xsl:with-param name="msg" select="concat('unhandled GDL tag', name())"/>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="lang-open">
@@ -511,14 +598,43 @@
 </xsl:template>
 
 <xsl:template name="logo-open">
-  <xsl:text>_</xsl:text>
-  <xsl:if test="not(starts-with(@g:logolang,'sux'))">
-    <xsl:value-of select="concat('%',@g:logolang,' ')"/>
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo'])">
+    <xsl:text>@_</xsl:text>
+    <xsl:variable name="logolang" select="@g:logolang|*[@g:logolang][1]/@g:logolang"/>
+    <xsl:if test="string-length($logolang)>0 and not(starts-with($logolang,'sux'))">
+      <xsl:value-of select="concat('%',$logolang,' ')"/>
+    </xsl:if>
   </xsl:if>
 </xsl:template>
 
 <xsl:template name="logo-close">
-  <xsl:text>_</xsl:text>
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo'])">
+    <xsl:text>_@</xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="alias">
+  <xsl:param name="g"/>
+  <xsl:variable name="a">
+    <xsl:for-each select="document('catf-aliases.xml',/)">
+      <xsl:value-of select="key('alias',$g)/text()"/>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="string-length($a) > 0">
+<!--      <xsl:message><xsl:value-of select="concat($g, '=&gt;',$a)"/></xsl:message> -->
+      <xsl:value-of select="$a"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$g"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="error">
+  <xsl:param name="msg"/>
+  <xsl:message>xtf-CATF.xsl:<xsl:value-of 
+  select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
 </xsl:template>
 
 </xsl:stylesheet>
