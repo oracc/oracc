@@ -1003,7 +1003,7 @@ alt="cuneiform triple wedge colon"/>); MZL592~b (as <code>:'</code>).</p>
 <d:rnc>
 # Punctuation
 p.model =
-    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/" } , 
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
     g.meta , 
     (v|q|s|n|c)? 
 </d:rnc>
@@ -1171,7 +1171,7 @@ when the gloss has no space or boundary preceding it; and
 <d:rnc>
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
-det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? ,
+det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
                     (dingir | mister | word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
