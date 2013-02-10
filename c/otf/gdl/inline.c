@@ -102,6 +102,7 @@ static int split_flag = 0;
 
 #define no_norm(err) \
   if (tp->lang->mode == m_normalized) \
+  if (tp->lang && tp->lang->mode == m_normalized) \
     { \
       vwarning("'%s' not allowed in normalized text",err); \
     }
