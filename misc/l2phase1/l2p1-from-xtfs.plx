@@ -66,7 +66,8 @@ while (<T>) {
 	warn("l2p1-from-xtfs.plx: reading $p\n")
 	    if $verbose;
     } else {
-	warn("l2p1-from-xtfs.plx: can't read $p\n");
+	warn("l2p1-from-xtfs.plx: can't read $p\n")
+	    unless $proxy_mode;
     }
 }
 close(T);
