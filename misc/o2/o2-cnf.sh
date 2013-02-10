@@ -11,4 +11,8 @@ else
 fi
 cp -u 02xml/config.xml 02www
 chmod -f o+r 02xml/config.xml 02www/config.xml
+if [ -r 00lib/names.xml ]; then
+    cp -u 00lib/names.xml 02pub
+    chmod o+r 02pub/names.xml
+fi
 exit 0
