@@ -265,6 +265,51 @@ Eski Kalak.
 
 <p>NB. Added on to the end of the URL (<code class="example">http://www.youtube.com/v/mADrWB6F5CU&amp;hl=en&amp;fs=1&amp;rel=0&amp;showinfo=0</code>) are two modifiers: <code>&amp;rel=0</code> means that it doesn't display the 'related videos' link, and  <code>'&amp;showinfo=0'</code> remove the stars and crap that youtube wants to overlay onto the video.   </p>
 
+<h1>Twitter feeds</h1>
+<p>You need to have your own <a href="https://twitter.com/signup">Twitter account</a> in order to do this.</p>
+
+<p>First log in to Twitter. Then:</p>
+<ul>
+<li>Go to your <a href="https://twitter.com/settings/widgets">widgets page</a> in Twitter and click on the <code>Create new</code> button in the top right corner.</li>
+<li>A new page will open, called "Configure a user widget". Fill in the form as you want (there is further help on a separate <a href="https://dev.twitter.com/docs/embedded-timelines">Twitter page</a>). In the "Domains" box, make sure you enter <code class="cookbook">oracc.museum.upenn.edu</code>.</li>
+<li>When you click the blue "Create a widget" button at the bottom of the page, a piece of HTML code will appear next to it, which will look something like this:<br/> <br/>
+<code class="example">&lt;a class="twitter-timeline" data-dnt=true
+href="https://twitter.com/Eleanor_Robson"<br/>
+data-widget-id="296639878718947328">Tweets by @Eleanor_Robson&lt;/><br/>
+&lt;script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)<br/>
+[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;<br/>
+js.src="//platform.twitter.com/widgets.js";fjs.parentNode.<br/>
+insertBefore(js,fjs);}}(document,"script","twitter-wjs");&lt;/script></code>
+
+<br/><br/>
+Copy that code and click the blue "Save changes" button.</li>
+</ul>
+
+<p>Then use Emacs to open the ESP page in which you want to embed the Twitter feed, if it's not already open.</p> 
+<ul>
+<li>Paste the code into the relevant part of your ESP page. You will now need to edit it to make it valid XML. (It is already valid HTML.)
+<ul>
+<li>Change the opening and closing <code>a</code> tags to <code class="cookbook">esp:link</code>.</li>
+<li>Change the <code>href</code> attribute to <code class="cookbook">url</code>.</li>
+<li>Add double quotes around any attribute values which are currently lacking them (e.g., <code>data-dnt=true</code> should become <code class="cookbook">data-dnt="true"</code>).</li> 
+<li>Add a paragraph (<code>p</code>) element around the whole.</li>
+</ul>
+</li>
+<li>Your modified code should look something like this:
+<br/><br/>
+<code class="example">&lt;p>&lt;esp:link class="twitter-timeline" data-dnt="true"
+url="https://twitter.com/Eleanor_Robson"<br/>
+data-widget-id="296639878718947328">Tweets by @Eleanor_Robson&lt;/esp:link><br/>
+&lt;script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)<br/>
+[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;<br/>
+js.src="//platform.twitter.com/widgets.js";fjs.parentNode.<br/>
+insertBefore(js,fjs);}}(document,"script","twitter-wjs");&lt;/script>&lt;/p></code>
+<br/><br/>
+<strong>NB:</strong> do not just copy and modify the code on this page: it will not work!
+</li>
+<li>Save the ESP page. Don't worry if certain attributes of the <code>esp:link</code> element show up red in Emacs: that just means you are using an old ESP schema for Emacs which does not include Twitter attributes. It will not affect ESP's ability to update your website.</li> 
+<li>When you <a href="/doc/manager/portals/espbuild/#Rebuilding">do <code>oracc esp</code></a> you may see an error message about <code>data-dnt</code>, which you can ignore. However, if you see other ESP error messages which you think may be related to the Twitter code, do contact your liaison.</li>
+</ul>
 <h1>Next steps</h1>
 <p>Once you have some textual and image content you are ready to <a href="../espbuild/">check and (re)build</a> your ESP website.</p>
 <p>See also:</p>
