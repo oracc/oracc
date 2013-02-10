@@ -85,6 +85,8 @@ process_either(struct run_context *run, unsigned const char *input)
 	    atffile = (const char*)input;
 	  else if (!strcmp(ext, ".otf"))
 	    cdtfile = (const char*)input;
+	  else if (!strcmp(ext, ".ods"))
+	    atffile = (const char*)input;
 	  else
 	    fprintf(stderr,"ox: file must end in .atf or .otf, or use -a or -o options (found '%s')\n", ext);
 	}
