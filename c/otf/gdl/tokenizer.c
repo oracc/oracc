@@ -536,6 +536,9 @@ tokenize_init()
 						     && boundary[(int)*type_data[i]])
 						    ? bound : meta,
 						    i, type_data[i]),
+						       && boundary[(int)*type_data[i]])
+						      ? bound : meta,
+						      i, type_data[i]),
 				       &table);
     }
 
