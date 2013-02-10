@@ -981,6 +981,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			    {
 			      if (!xstrcmp(getAttr(lastc,"g:type"),"reordering")
 				  || !xstrcmp(getAttr(lastc,"g:type"),"ligature"))
+				  )
 				{
 				  struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
 				  setAttr(n,a_g_type,ucc("logo"));
@@ -1725,6 +1726,8 @@ finish_word(struct node *wp)
 	}
       if (*cp->type == 't')
 	forms_insertp = render_g_text(cp, forms_insertp);
+	{
+	}
       else
 	forms_insertp = render_g(cp, forms_insertp,form);
       
