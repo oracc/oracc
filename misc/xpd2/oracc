@@ -2,6 +2,8 @@
 use warnings; use strict;
 use Getopt::Long;
 
+# warn "oracc @ARGV\n";
+
 my $oraccenv = $ENV{'ORACC'};
 my $oraccvar = $ENV{'ORACC_VAR'};
 
@@ -9,7 +11,7 @@ die "oracc: the environment variable 'ORACC' is not set. Stop.\n"
     unless $oraccenv;
 
 die "oracc: the environment variable 'ORACC_VAR' is not set. Stop.\n"
-    unless $oraccenv;
+    unless $oraccvar;
 
 my $l2 = 'yes';
 
@@ -26,7 +28,8 @@ my @build_commands = qw/atf cat glo lem lst odf pdf ptb tei web xml xtf/;
 my %build_commands = ();
 @build_commands{@build_commands} = ();
 
-my @commands = qw/check clean clone
+my @commands = qw/catf
+		  check clean clone
 		  colors colours config esp
                   exist eXist freeze query
                   fix help init name
@@ -120,8 +123,7 @@ if ($oracc_uid == $>) {
 		if ($command eq 'create') {
 		    if ($#ARGV > 0) {
 			xsystem '/usr/local/oracc/00/sys/newproj.sh', $project;
-			exec 'sudo', '-u', $project, '-s', '/usr/local/oracc/bin/oracc.sh', 
-				$ENV{'ORACC'}, 'init', @ARGV;
+			exec '/usr/local/oracc/00/sys/newinit.sh', $project, @ARGV;
 		    } elsif ($#ARGV < 0) {
 			exec '/usr/local/oracc/00/sys/newproj.sh', $project;
 		    } else {
@@ -234,14 +236,16 @@ if ($command =~ /^odf|pdf|tei|xml$/) {
 unless ($command eq 'init') {
     $project = `oraccopt`;
     if (!$project) {
-        die "oracc: must run in project directory with valid 00lib/config.xml\n";
+        die "oracc: must run `$command' command in project directory with valid 00lib/config.xml\n";
         exit(1);
     }
     $project_user = $project;
     $project_user =~ s#/.*$## if $project_user =~ m#/#;
 }
 
-if ($command eq 'check') {
+if ($command eq 'catf') {
+    exec 'o2-catf.sh';
+} elsif ($command eq 'check') {
     my @check = @ARGV;
     if ($#check < 0) {
 	check(@all_tasks);
