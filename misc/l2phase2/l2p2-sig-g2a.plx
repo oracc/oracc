@@ -186,7 +186,7 @@ if ($make_sigtab) {
 		$pform =~ s/^\%.*?://;
 		$$info{'base'} =~ s/^\%.*?:// if $$info{'base'};
 		push @sigtab, [ $sid , $$info{'sig'} ]; # , $$info{'freq'} , $$info{'instances'}
-		
+
 		my @fbits = ('@form', $pform);
 		if ($$info{'lang'} =~ /-949/) {
 		    my $nlang = $$info{'lang'};
@@ -212,6 +212,7 @@ if ($make_sigtab) {
 		    $formline =~ s/\s+(?!\$)/_/g;
 		    $formline =~ s/_/ /;
 		}
+		$formline =~ s/\s\(/ \$(/g;
 # 		warn "formline: $formline\n";
 		print "$formline\n"
 		    unless $printed_forms{$formline}++;
@@ -243,7 +244,7 @@ make_cof_norm {
     my @norm = ($f =~ m/\$(\p{L}+)/g);
     for (my $j = 0; $j <= $#norm; ++$j) {
 	if ($i != $j) {
-	    $norm[$j] =~ s/^(.*?)$/($1)/;
+#	    $norm[$j] =~ s/^(.*?)$/($1)/;
 	}
     }
     join(' ', @norm);
