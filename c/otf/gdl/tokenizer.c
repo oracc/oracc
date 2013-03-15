@@ -105,9 +105,9 @@ const char *const type_data[] =
     "(nothing)",
     "&", NULL, ",", NULL, NULL, NULL,
     "%", "$", "~", 
-    "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<{", "(=", "((",
-    "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "}>", ")", "))",
-    " ", "-", "/", ":", "...", ";", "(#...#)","+",".","",
+    "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",
+    "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",
+    " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "---", "[-]","-->",
     NULL, NULL, NULL, NULL,
     NULL, NULL, "$",
@@ -841,7 +841,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 
 	  if (last_text_or_bound == text)
 	    {
-	      if (tokens[tokindex-1]->data
+	      if (tokens[tokindex-1]->type == g_p
+		  && tokens[tokindex-1]->data
 		  /*		  && !strcmp((char*)tokens[tokindex-1]->data, ":") */
 		  && !strcmp(((struct grapheme*)(tokens[tokindex-1]->data))->atf, ":")
 		  && isdigit(first_alnum(l)))
@@ -1272,7 +1273,15 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  }
 	      }
 	      /* falls through */
-	    case '/': 
+	    case '/':
+	      if (*l == '/' && '/' == l[1])
+		{
+		  /* fprintf(stderr, "%d: linebreak\n", lnum); */
+		  tokens[tokindex++] = static_tokens[linebreak];
+		  l += 2;
+		  last_text_or_bound = meta;
+		  break;
+		}
 	      /* / = word-divider can't get here b/c it's tokenized as grapheme */
 	    case '-':
 	    case ':':

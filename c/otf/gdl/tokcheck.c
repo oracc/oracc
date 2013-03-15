@@ -22,9 +22,9 @@ const enum t_type g_ftype_m[] = { ftype , type_top };
 const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , period ,
 				     cell , field , eol , ilig , type_top };
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
-				     g_corr , g_g , ellipsis , newline , icmt ,
+				     g_corr , g_g , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
-				     wm_absent , wm_broken , wm_linecont ,
+				     wm_absent , wm_broken , wm_linecont , 
 				     type_top };
 const enum t_type g_flag_m[] = { flag, type_top };
 const enum t_type g_opener_m[] = { deto , glosso , damago , hdamago , supplo , exciso ,
@@ -368,6 +368,8 @@ tokcheck_init()
   allow_token(cell,eol);
   allow_token(space,slash);
   allow_token(slash,space);
+  allow_token(space,linebreak);
+  allow_token(linebreak,space);
   allow_token(deto,plus);
   allow_token(deto,ilig);
   allow_token(detc,damago);
