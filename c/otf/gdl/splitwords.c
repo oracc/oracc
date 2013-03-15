@@ -70,6 +70,21 @@ sw_refs()
   return ret;
 }
 
+static char *
+sw_last_open_curly(char *r)
+{
+  char *start = r;
+  r += strlen(r);
+  while (r > start)
+    {
+      if (r[-1] == '{')
+	return --r;
+      else
+	--r;
+    }
+  return NULL;
+}
+
 char *
 sw_form()
 {
@@ -99,6 +114,21 @@ sw_form()
 	    {
 	      if (ret[strlen(ret)-1] != '}')
 		strcat(ret,"-");
+	      else
+		{
+		  char *prev_curly = sw_last_open_curly(ret);
+		  if (prev_curly)
+		    {
+		      if (prev_curly > ret)
+			{
+			  if (!strchr("-.:", prev_curly[-1]))
+			    strcat(ret, "-");
+			}
+		      /* else it must be a pre-det so no hyphen */
+		    }
+		  else
+		    fprintf(stderr, "ox: internal error: no previous '{' in split word\n");
+		}
 	    }
 	  strcat(ret, frm);
 	}
