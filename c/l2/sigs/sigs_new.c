@@ -192,8 +192,33 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
     BIT_SET(fp->f2.flags, F2_FLAGS_PARTIAL);
 
   fp->f2.project = (unsigned char*)xcp->project;
-    
-  fp->f2.sig = f2_sig(&fp->f2, xcp->pool);
+  if (fp->mcount > 0) /* COF HEAD */
+    {
+      int cofsig_len = 1024;
+      unsigned char *cofsig = malloc(cofsig_len);
+      struct ilem_form *tmpfp = fp;
+      *cofsig = '\0';
+      while (1)
+	{
+	  unsigned char *sig = f2_sig(&tmpfp->f2, xcp->pool);
+	  if (strlen(cofsig) + strlen(sig) + 3 > cofsig_len)
+	    cofsig = realloc(cofsig, cofsig_len += cofsig_len);
+	  if (*cofsig)
+	    sprintf(((char*)cofsig)+strlen((char *)cofsig), "&&%s", sig);
+	  else
+	    strcpy((char*)cofsig, (char*)sig);
+	  if (tmpfp->multi)
+	    tmpfp = tmpfp->multi;
+	  else
+	    break;
+	}
+      fp->f2.sig = npool_copy(cofsig, xcp->pool);
+      free(cofsig);
+    }
+  else
+    {
+      fp->f2.sig = f2_sig(&fp->f2, xcp->pool);
+    }
 
   return status;
 }
@@ -207,24 +232,24 @@ sigs_early_sig(struct xcl_context *xcp, struct ilem_form *fp)
 {
   struct sig ** ret = calloc(2, sizeof(struct sig*));
   List *sigs_for_lang = NULL;
+  int status = 0;
 
-#if 0
-  if (!fp->f2.cf && fp->f2.norm)
-    fp->f2.cf = fp->f2.norm;
-
-  if (!fp->f2.gw && fp->f2.sense)
-    fp->f2.gw = fp->f2.sense;
-  else if (fp->f2.gw && !fp->f2.sense)
-    fp->f2.sense = fp->f2.gw;
-
-  if (!fp->f2.pos && fp->f2.epos)
-    fp->f2.pos = fp->f2.epos;
-
-  if (fp->f2.pos && !fp->f2.epos)
-    fp->f2.epos = fp->f2.pos; /* This is a change in early versions of L2 which required explicit EPOS */
-#endif
+  /* Although the errors will be in the wrong order we have to do this first 
+     so that the sig-building for the COF-HEAD will work properly */
+  if (fp->multi)
+    {
+      struct ilem_form *mp;
+      for (mp = fp->multi; mp; mp = mp->multi)
+	{
+	  if (sigs_new_sig(xcp, mp))
+	    ++status;
+	}
+    }
 
   if (sigs_new_sig(xcp, fp))
+    status = 1;
+
+  if (status)
     return NULL;
 
   ret[0] = mb_new(xcp->sigs->mb_sigs);
