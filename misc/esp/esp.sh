@@ -15,22 +15,22 @@ XMLSAP=$ORACC/$project/00web/esp
 HTTPROOT=$XMLSAP/httproot_dev
 XSL=$ORACC/lib/scripts
 
-echo Removing existing development folder
+#echo Removing existing development folder
 rm -rf $HTTPROOT
 mkdir $HTTPROOT
 
-echo Copying ESP default site content
+#echo Copying ESP default site content
 cd $ORACC/lib/esp
 cp -R 00web/* $HTTPROOT
 cp 00web/.* $HTTPROOT
 
-echo Copying project site content
+#echo Copying project site content
 cd $XMLSAP/site-content
 cp -R 00web/* $HTTPROOT
 # Next line required or * misses hidden files like .htaccess that are direct children of static
 cp 00web/.* $HTTPROOT
 
-echo Getting image info
+#echo Getting image info
 rm $XMLSAP/temporary-files/images-info.txt
 cd $XMLSAP
 
@@ -47,7 +47,7 @@ find site-content '(' -name '*.jpg' -or -name '*.png' -or -name '*.gif' ')' -pri
     | xargs -0 java -classpath $ORACC/lib/java ImageInfo \
     >> $XMLSAP/temporary-files/images-info.txt
 
-echo Getting page last-modified times
+#echo Getting page last-modified times
 cd $XMLSAP/site-content/pages
 find . -iname "*.xml" | esp-lmt.plx > $XMLSAP/temporary-files/last-modified-times.xml
 ##echo '<?xml version="1.0" encoding="utf-8"?>' > $XMLSAP/temporary-files/last-modified-times.xml
@@ -79,8 +79,8 @@ cd $XMLSAP
 LIST="$(find $HTTPROOT -iname "*.html" | grep -v '/flashpages/')"
 java -jar $ORACC/lib/java/msv.jar -standalone $ORACC/lib/schemas/xhtml/xhtml1-strict.dtd $LIST | grep -A 1 'Error' | esp-no-nmtok-err.plx
 
-echo "Setting X bits (chmod g+x) to enable SSIs, used for 'accessed' dates"
-echo
+#echo "Setting X bits (chmod g+x) to enable SSIs, used for 'accessed' dates"
+#echo
 for FILE in $LIST                        
 do
 	chmod g+x $FILE
