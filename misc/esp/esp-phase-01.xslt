@@ -27,8 +27,7 @@
 <xsl:param name="output-file"/>
 
 <xsl:template match="/">
-	<xsl:message>
-Phase 1: Resolve and filter source tree</xsl:message>
+<!--	<xsl:message>Phase 1: Resolve and filter source tree</xsl:message> -->
 	<xsl:result-document href="{$output-file}"> 
 		<xsl:apply-templates/>
 	</xsl:result-document>

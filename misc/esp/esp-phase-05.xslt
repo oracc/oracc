@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"	
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0"
@@ -36,8 +36,7 @@
 <xsl:param name="output-directory"/>
 
 <xsl:template match="/">
-	<xsl:message>
-Phase 5: Split into pages (any warning refers to the file named *before* the warning)</xsl:message>
+<!--	<xsl:message>Phase 5: Split into pages (any warning refers to the file named *before* the warning)</xsl:message> -->
 	<xsl:for-each select="//html">
 		<xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
 		<xsl:variable name="output-file">
@@ -45,9 +44,9 @@ Phase 5: Split into pages (any warning refers to the file named *before* the war
 			<xsl:value-of select="$current-page/@url"/>
 			<xsl:text>index.html</xsl:text>
 		</xsl:variable>
-		<xsl:message>	Page: <xsl:value-of select="$output-file"/></xsl:message>
+		<xsl:message>ESP processing <xsl:value-of select="$output-file"/></xsl:message>
 		<xsl:result-document href="{$output-file}" format="xhtml" >
-			<xsl:copy copy-namespaces="no" exclude-result-prefixes="wm">
+			<xsl:copy copy-namespaces="no" exclude-result-prefixes="esp">
 				<xsl:attribute name="xml:lang">en</xsl:attribute>
 				<xsl:attribute name="lang">en</xsl:attribute>
 				<xsl:comment> This page is automatically generated from XML data files. Please do not edit by hand. Instead, modify the source XML and regenerate. </xsl:comment>
@@ -58,14 +57,14 @@ Phase 5: Split into pages (any warning refers to the file named *before* the war
 	<xsl:apply-templates/>
 </xsl:template>
 
-<!-- convert wm:comments -->
-<xsl:template match="wm:comment" mode="page">
+<!-- convert esp:comments -->
+<xsl:template match="esp:comment" mode="page">
 	<xsl:comment><xsl:apply-templates mode="#current"/></xsl:comment>
 </xsl:template>
 
-<!-- strip and complain about any remaining wm:* tags -->
-<xsl:template match="wm:*" mode="page">
-	<xsl:message>	WARNING! Remaining wm: tag '<xsl:value-of select="name ()"/>'</xsl:message>
+<!-- strip and complain about any remaining esp:* tags -->
+<xsl:template match="esp:*" mode="page">
+	<xsl:message>	WARNING! Remaining esp: tag '<xsl:value-of select="name ()"/>'</xsl:message>
 	<xsl:apply-templates mode="#current"/>
 </xsl:template>
 

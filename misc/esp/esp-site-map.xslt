@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"	
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0" 	
@@ -27,13 +27,13 @@
 					<xsl:choose>
 						<xsl:when test="@id = $current-page/@id">
 							<xsl:call-template name="outline-numbering"/>
-							<xsl:value-of select="wm:title"/>
+							<xsl:value-of select="esp:title"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<wm:link page="{@id}" title="">
+							<esp:link page="{@id}" title="">
 								<xsl:call-template name="outline-numbering"/>
-								<xsl:value-of select="wm:title"/>
-							</wm:link>						
+								<xsl:value-of select="esp:title"/>
+							</esp:link>						
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:element>				

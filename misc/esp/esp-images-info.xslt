@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0" 
 	xpath-default-namespace="http://www.w3.org/1999/xhtml"
@@ -26,17 +26,17 @@
 	<xsl:message>
 Retrieving image dimensions</xsl:message>
 	<xsl:result-document href="{$output-file}" format="xml">
-		<wm:images-info>
+		<esp:images-info>
 			<xsl:analyze-string select="$text-file" regex=";[^\n]*site-content.00web.images.([^\n]+\.jpg|[^\n]+\.gif|[^\n]+\.png)\r?\n[^0-9]+Width \(pixels\):  ([0-9]+)[^0-9]+Height \(pixels\):  ([0-9]+)" flags="s">
 				<xsl:matching-substring>
-					<wm:image-info>
+					<esp:image-info>
 						<xsl:attribute name="file" select="translate ( regex-group ( 1 ), '\', '/' )"/>
 						<xsl:attribute name="width" select="regex-group ( 2 )"/>
 						<xsl:attribute name="height" select="regex-group ( 3 )"/>
-					</wm:image-info>
+					</esp:image-info>
 				</xsl:matching-substring>
 			</xsl:analyze-string>
-		</wm:images-info>		
+		</esp:images-info>		
 	</xsl:result-document>
 </xsl:template>
 

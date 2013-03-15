@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns:param="http://oracc.org/ns/esp-param/1.0"
 	xmlns:app="http://oracc.org/ns/esp-appearance/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -496,7 +496,7 @@ a:visited {
                     /> url(<xsl:value-of select="concat($parameters/param:root,'/',
                                                         $appearance/app:images/app:highlight-corner)"
                                         />) no-repeat top right;
-	}  <!--colours for #Menu a.open:hover, #Menu a.closed:hover were wm:dark (background) and wm:page (color) but it seemed too harsh-->
+	}  <!--colours for #Menu a.open:hover, #Menu a.closed:hover were esp:dark (background) and esp:page (color) but it seemed too harsh-->
 	#Menu a.open {
 		background: <xsl:value-of select="$appearance/app:colours/app:light"
                     /> url(<xsl:value-of select="concat($parameters/param:root,'/',

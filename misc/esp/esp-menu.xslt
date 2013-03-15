@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0"
@@ -18,12 +18,12 @@
 	<li class="only">
 	  <xsl:choose>
 	    <xsl:when test="$first-link-page/@id = $current-page/@id">
-	      <div id="SelfInMenu" class="only"><xsl:value-of select="$first-link-page/wm:name"/></div>
+	      <div id="SelfInMenu" class="only"><xsl:value-of select="$first-link-page/esp:name"/></div>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <wm:link page="{$first-link-page/@id}" class="only">
+	      <esp:link page="{$first-link-page/@id}" class="only">
 		<xsl:copy-of select="@type"/>
-	      </wm:link>
+	      </esp:link>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</li>
@@ -44,12 +44,12 @@
 	<li class="{$li-class}">
 	  <xsl:choose>
 	    <xsl:when test="@id = $current-page/@id">
-	      <div id="SelfInMenu" class="{$li-class}"><xsl:value-of select="wm:name"/></div>
+	      <div id="SelfInMenu" class="{$li-class}"><xsl:value-of select="esp:name"/></div>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <wm:link page="{@id}" class="{$li-class}">
+	      <esp:link page="{@id}" class="{$li-class}">
 		<xsl:copy-of select="@type"/>
-	      </wm:link>
+	      </esp:link>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	  <xsl:if test="$is-open">

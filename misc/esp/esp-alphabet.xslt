@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"	
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:wm="http://oracc.org/ns/esp/1.0"
+	xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0" 	
 	xpath-default-namespace="http://www.w3.org/1999/xhtml"
@@ -16,7 +16,7 @@
 		       'X', 'Y', 'Z', '[')"/>
   <div id="Alphabet">
     <xsl:for-each select="$usedletters">
-      <wm:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</wm:link>
+      <esp:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</esp:link>
       <xsl:text> </xsl:text>
     </xsl:for-each>  
 <!--
@@ -26,7 +26,7 @@
           <xsl:text>&#160;</xsl:text><xsl:value-of select="."/><xsl:text>&#160;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <wm:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</wm:link>
+          <esp:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</esp:link>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> </xsl:text>

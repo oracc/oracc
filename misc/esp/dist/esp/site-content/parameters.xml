@@ -20,5 +20,5 @@
 	</param:common-headers>
 	<param:dc-id-prefix>gkab-oracc-museum-upenn-edu/page/</param:dc-id-prefix>
 	<param:main-menu-caption>Main menu</param:main-menu-caption>
-	<param:footer>&#169; <wm:link url="http://www.prs.heacademy.ac.uk/" hide-print="yes">Higher Education Academy</wm:link>, 2007-10</param:footer>
+	<param:footer>&#169; <esp:link url="http://www.prs.heacademy.ac.uk/" hide-print="yes">Higher Education Academy</esp:link>, 2007-10</param:footer>
 </param:parameters>
