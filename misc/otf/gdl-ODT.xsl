@@ -614,7 +614,8 @@
 	<xsl:text>.</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>-</xsl:text>
+	<!-- NEW DEFAULT: DO NOT OUTPUT ANYTHING WHEN @g:delim IS ABSENT -->
+<!--	<xsl:text>-</xsl:text> -->
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
