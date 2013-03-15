@@ -45,6 +45,7 @@ my $inplace = 0;
 my $merge = 0;
 my $mlist = 0;
 my $mlang = 'en';
+my $noconfig = 0;
 my $noletters = 0;
 my $output = '';
 my $project = '';
@@ -77,6 +78,7 @@ GetOptions(
     'merge'=>\$merge,
     'mlist:s'=>\$mlist,
     'mnglang:s'=>\$mlang,
+    'noconfig'=>\$noconfig,
     'noletters'=>\$noletters,
     'output:s'=>\$output,
     'project:s'=>\$project,
@@ -352,7 +354,7 @@ setprojparm {
     $project_params{'lang'} = "'$clang'";
     $project_params{'abbrev'} = "'$abbrev'";
 
-    add_project_options();
+    add_project_options() unless $noconfig;
 }
 
 1;
