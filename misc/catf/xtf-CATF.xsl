@@ -3,22 +3,32 @@
 <xsl:stylesheet version="1.0" 
   xmlns:g="http://oracc.org/ns/gdl/1.0"
   xmlns:x="http://oracc.org/ns/xtf/1.0"
+  xmlns:t="http://oracc.org/ns/xtr/1.0"
   xmlns:c="http://oracc.org/ns/xcl/1.0"
   xmlns:n="http://oracc.org/ns/norm/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
 
+<xsl:param name="credit" select="''"/>
 <xsl:param name="curated" select="'no'"/>
 <xsl:param name="project" select="''"/>
 
 <xsl:variable name="lower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
 <xsl:variable name="upper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
 
+<xsl:variable name="q"><xsl:text>'</xsl:text></xsl:variable>
+
 <xsl:key name="alias" match="a" use="@g"/>
 
 <xsl:variable name="text-lang">
   <xsl:choose>
+    <xsl:when test="contains(/x:transliteration/@xml:lang,'-')">
+      <xsl:value-of select="substring-before(/x:transliteration/@xml:lang,'-')"/>
+    </xsl:when>
+    <xsl:when test="string-length(/x:transliteration/@xml:lang) > 0">
+      <xsl:value-of select="/x:transliteration/@xml:lang"/>
+    </xsl:when>
     <xsl:when test="contains(/*/x:transliteration/@xml:lang,'-')">
       <xsl:value-of select="substring-before(/*/x:transliteration/@xml:lang,'-')"/>
     </xsl:when>
@@ -31,11 +41,29 @@
 <!-- GDL -->
 
 <xsl:template match="g:a">
+<!-- This is not clear: can we simply drop these?
   <xsl:text>~</xsl:text>
   <xsl:apply-templates/>
+ -->
 </xsl:template>
 
 <xsl:template match="g:v|g:p">
+  <xsl:call-template name="g-begin"/>
+  <xsl:choose>
+    <xsl:when test="g:b">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="alias">
+	<xsl:with-param name="g" select="text()|@g:type"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:call-template name="g-end"/>
+  <xsl:call-template name="g-delim"/>
+</xsl:template>
+
+<xsl:template match="g:b|g:r">
   <xsl:call-template name="g-begin"/>
   <xsl:call-template name="alias">
     <xsl:with-param name="g" select="text()|@g:type"/>
@@ -44,20 +72,26 @@
   <xsl:call-template name="g-delim"/>
 </xsl:template>
 
-<xsl:template match="g:b|g:r">
-  <xsl:call-template name="g-begin"/>
-  <xsl:apply-templates/>
-  <xsl:call-template name="g-end"/>
-  <xsl:call-template name="g-delim"/>
-</xsl:template>
-
 <xsl:template match="g:s">
   <xsl:call-template name="g-begin"/>
   <xsl:choose>
     <xsl:when test="@g:role='logo'">
-      <xsl:call-template name="alias">
-	<xsl:with-param name="g" select="translate(.,$upper,$lower)"/>
-      </xsl:call-template>
+      <xsl:choose>
+	<xsl:when test="g:b">
+	  <xsl:call-template name="alias">
+	    <xsl:with-param name="g" select="translate(g:b,$upper,$lower)"/>
+	  </xsl:call-template>
+	  <xsl:apply-templates select="*[position()>1]"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:call-template name="alias">
+	    <xsl:with-param name="g" select="translate(.,$upper,$lower)"/>
+	  </xsl:call-template>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="g:b">
+      <xsl:apply-templates/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="alias">
@@ -140,6 +174,9 @@
      </xsl:when>
      <xsl:when test="@sexified">
        <xsl:value-of select="@sexified"/>
+     </xsl:when>
+     <xsl:when test="starts-with(@form, 'n')">
+       <xsl:value-of select="@form"/>
      </xsl:when>
      <xsl:otherwise>
        <xsl:apply-templates select="g:r"/>
@@ -341,7 +378,7 @@
 
 <xsl:template match="g:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled GDL tag', name())"/>
+    <xsl:with-param name="msg" select="concat('unhandled GDL tag `', name(), $q)"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -442,10 +479,18 @@
 <xsl:template match="x:transliteration">
   <xsl:value-of select="concat('&amp;',@xml:id,' = ',@n,'&#xa;')"/>
   <xsl:value-of select="concat('#atf: lang ', $text-lang, '&#xa;')"/>
-  <xsl:value-of select="concat('#From Oracc, see http://oracc.org/',@project,'/',@xml:id,'&#xa;')"/>
-  <xsl:if test="not($curated='no')">
-    <xsl:text>#(this text is part of an ongoing Oracc project)</xsl:text>
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="string-length($credit) > 0">
+      <xsl:value-of select="concat('#',$credit)"/>
+    </xsl:when>
+    <xsl:when test="$curated='no'">
+      <xsl:value-of select="'#From Oracc.'"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="'#Maintained on Oracc.'"/>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:value-of select="concat(' See http://oracc.org/',@project,'/',@xml:id,'&#xa;')"/>
   <xsl:apply-templates/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>
@@ -557,9 +602,6 @@
 <xsl:template name="x-non-whatever">
   <xsl:text>$ </xsl:text>
   <xsl:choose>
-    <xsl:when test="starts-with(., '(')">
-      <xsl:apply-templates/>
-    </xsl:when>
     <xsl:when test="@strict='1'">
       <xsl:apply-templates/>      
     </xsl:when>
@@ -571,14 +613,15 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="x:v|x:ag">
+<xsl:template match="x:v|x:ag|x:atf">
   <!-- Variants are dropped in CATF -->
   <!-- Alignment groups are dropped in CATF -->
+  <!-- Bad ATF files are dropped in CATF -->
 </xsl:template>
 
 <xsl:template match="x:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled GDL tag', name())"/>
+    <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name(), $q)"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -598,7 +641,7 @@
 </xsl:template>
 
 <xsl:template name="logo-open">
-  <xsl:if test="not(ancestor::g:gg[@g:type='logo'])">
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo']) and not(ancestor::g:d)">
     <xsl:text>@_</xsl:text>
     <xsl:variable name="logolang" select="@g:logolang|*[@g:logolang][1]/@g:logolang"/>
     <xsl:if test="string-length($logolang)>0 and not(starts-with($logolang,'sux'))">
@@ -608,7 +651,7 @@
 </xsl:template>
 
 <xsl:template name="logo-close">
-  <xsl:if test="not(ancestor::g:gg[@g:type='logo'])">
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo']) and not(ancestor::g:d)">
     <xsl:text>_@</xsl:text>
   </xsl:if>
 </xsl:template>
@@ -616,7 +659,7 @@
 <xsl:template name="alias">
   <xsl:param name="g"/>
   <xsl:variable name="a">
-    <xsl:for-each select="document('catf-aliases.xml',/)">
+    <xsl:for-each select="document('../data/catf-aliases.xml')">
       <xsl:value-of select="key('alias',$g)/text()"/>
     </xsl:for-each>
   </xsl:variable>
@@ -636,5 +679,7 @@
   <xsl:message>xtf-CATF.xsl:<xsl:value-of 
   select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
 </xsl:template>
+
+<xsl:template match="c:xcl|t:translation"/>
 
 </xsl:stylesheet>

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8'; use utf8;
+use warnings; use strict; use open 'utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my @text = ();
 
@@ -38,11 +38,17 @@ fix_uchars {
 	Ḫ=>'H',
 	ŋ=>'j',
 	Ŋ=>'J',
+	'ä'=>'ae',
+	'ö'=>'oe',
+	'ü'=>'ue',
 	);
     
     for (my $i = 0; $i <= $#text; ++$i) {
 	$text[$i] =~ tr/₀-₉ₓʾ×/0-9x'x/;
-	$text[$i] =~ s/([ṣṢšŠṭṬḫḪŋŊ])/$digram{$1}/eg;
+	$text[$i] =~ s/([äöüṣṢšŠṭṬḫḪŋŊ])/$digram{$1}/eg;
+	$text[$i] =~ s/\&apos;/'/g;
+	$text[$i] =~ s/\[_/_[/g;
+	$text[$i] =~ s/_\]/]_/g;
     }
 }
 
