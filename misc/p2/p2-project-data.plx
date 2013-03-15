@@ -184,7 +184,7 @@ compute_project_hierarchy {
 	push @superproj, $c if -r $c;
     } while ($#p_tmp > 0);
 
-    @subproj = grep /02xml/, `find [a-z]* -follow -name 'config.xml'`; warn @subproj; chomp(@subproj);
+    @subproj = grep /02xml/, `find [a-z]* -follow -name 'config.xml'`; chomp(@subproj);
 
 #    warn "super_path/project_base = $super_path/$project_base\n";
 
