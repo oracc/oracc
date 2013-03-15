@@ -11,6 +11,7 @@
 
 <xsl:param name="cf-type" select="'writing'"/>
 <xsl:param name="cbd-lang" select="'sux'"/>
+<xsl:param name="project"/>
 <xsl:param name="with-sense" select="'yes'"/>
 <xsl:param name="inline-refs" select="'yes'"/>
 
@@ -78,7 +79,7 @@
     </xsl:if>
     <xsl:if test="$inline-refs='yes'">
       <xsl:variable name="xis-id" select="substring-after(concat(ancestor::cbd:entries/@n,'_',@xml:id), 'glossary_')"/>
-<!--      <xsl:message>xis-id = <xsl:value-of select="$xis-id"/></xsl:message> -->
+      <!--      <xsl:message>xis-id = <xsl:value-of select="$xis-id"/></xsl:message> -->
       <xsl:for-each select="id($xis-id)">
 	<xsl:for-each select="id(@xis)/*">
 	  <xsl:variable name="ref" select="substring-after(text(),':')"/>
@@ -92,14 +93,21 @@
 	    </xsl:attribute>
 	    <xsl:variable name="name-node" 
 			  select="document('names.xml',/)/*/group[@name='index']/n[@text=$text]"/>
-	    <text sort="{$name-node/@sort}">
-	      <xsl:value-of select="$name-node/text()"/>
-	    </text>
-	    <line>
-	      <xsl:call-template name="xtr-format-label">
-		<xsl:with-param name="format" select="id($ref)/../@label"/>
-	      </xsl:call-template>
-	    </line>
+	    <xsl:choose>
+	      <xsl:when test="$name-node">
+		<text sort="{$name-node/@sort}">
+		  <xsl:value-of select="$name-node/text()"/>
+		</text>
+		<line>
+		  <xsl:call-template name="xtr-format-label">
+		    <xsl:with-param name="format" select="id($ref)/../@label"/>
+		  </xsl:call-template>
+		</line>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:message>chresto-selector.xsl: no name entry for <xsl:value-of select="$text"/> in <xsl:value-of select="$project"/>/00lib/names.xml</xsl:message>
+	      </xsl:otherwise>
+	    </xsl:choose>	      
 	  </r>
 	</xsl:for-each>
       </xsl:for-each>
