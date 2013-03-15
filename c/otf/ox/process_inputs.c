@@ -81,7 +81,7 @@ process_either(struct run_context *run, unsigned const char *input)
       ext = strrchr((char*)input, '.');
       if (ext)
 	{
-	  if (!strcmp(ext, ".atf"))
+	  if (!strcmp(ext, ".atf") || !strcmp(ext, ".catf"))
 	    atffile = (const char*)input;
 	  else if (!strcmp(ext, ".otf"))
 	    cdtfile = (const char*)input;
