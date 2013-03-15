@@ -589,6 +589,9 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       else if (curr_lang->snames)
 	{
+	  if (is_xvalue(g) && !inner_qual)
+	    vwarning("%s: x-values must be qualified with sign name", g);
+
 	  if (!hash_find(curr_lang->snames,g))
 	    {
 	      const unsigned char *utf8g = g2utf(g), *lc;
@@ -627,6 +630,10 @@ gparse(register unsigned char *g, enum t_type type)
 	  unsigned char *gcheck = g, *g_end,*g_utf;
 	  const unsigned char *noheth = NULL;
 	  int len = 0;
+
+	  if (is_xvalue(g) && !inner_qual)
+	    vwarning("%s: x-values must be qualified with sign name", g);
+
 	  if (use_unicode)
 	    {
 	      gcheck = accnum(gcheck);
@@ -1961,7 +1968,6 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		      {
 			if (i)
 			  {
-#if 1
 			    if (last_was_logo)
 			      {
 				if (!suppress_next_hyphen || suppress_hyphen_delay)
@@ -1976,25 +1982,12 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 				else if (!suppress_hyphen_delay)
 				  suppress_next_hyphen = 0;
 			      }
-#else	
-			    /* This should be wrong; suppress_next_hyphen
-			       should be applied after the group, but within
-			       the group we should still need our delims */
-			    if (!suppress_next_hyphen)
-			      *insertp++ = last_was_logo ? '.' : '-';
-			    else
-			      suppress_next_hyphen = 0;
-#endif
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
 			  insertp = render_g_text(np->children.nodes[i], insertp);
 			else
 			  {
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
-#if 0
-			    last_was_logo = !xstrcmp(getAttr(np->children.nodes[i],
-							     "g:role"),"logo");
-#endif
 			  }
 		      }
 		    if (!xstrcmp(gtype, "group"))
