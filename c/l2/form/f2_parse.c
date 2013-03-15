@@ -33,7 +33,11 @@ static void
 validate_base(const char *file, size_t line, const Uchar *p)
 {
   const Uchar *b = p;
-  if (p && file && strcmp(file, "cache"))
+  if (p && !strlen(p))
+    {
+      vwarning2(file, line, "empty BASE in Sumerian lemmatization");
+    }
+  else if (p && file && strcmp(file, "cache"))
     {
       if (isupper(p[0]) && islower(p[1]))
 	vwarning2((const char *)file, line, "%s: mixed case in BASE", p);
