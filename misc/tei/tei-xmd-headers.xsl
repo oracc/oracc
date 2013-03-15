@@ -113,20 +113,47 @@
 	<xsl:value-of select="$xmd/xmd:credits"/>
       </creation>
       <xsl:if test="string-length($xmd/xmd:language)>0">
+	<xsl:variable name="ident-lang">
+	  <xsl:choose>
+	    <xsl:when test="contains($xmd/xmd:language, 'lingual')">
+	      <xsl:choose>
+		<xsl:when test="contains($xmd/xmd:language, '/')">
+		  <xsl:value-of select="substring-before($xmd/xmd:language, '/')"/>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:message>tei-xmd-headers.xsl: no / in xxxlingual language</xsl:message>
+		</xsl:otherwise>
+	      </xsl:choose>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$xmd/xmd:language"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="type-lang">
+	  <xsl:choose>
+	    <xsl:when test="contains($xmd/xmd:language, 'lingual')">
+	      <xsl:value-of select="$xmd/xmd:language"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:text/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
 	<langUsage>
 	  <language>
 	    <xsl:attribute name="ident">
 	      <xsl:choose>
-		<xsl:when test="$xmd/xmd:language='Akkadian'">
+		<xsl:when test="$ident-lang='Akkadian'">
 		  <xsl:text>akk</xsl:text>
 		</xsl:when>
-		<xsl:when test="$xmd/xmd:language='Hittite'">
+		<xsl:when test="$ident-lang='Hittite'">
 		  <xsl:text>hit</xsl:text>
 		</xsl:when>
-		<xsl:when test="$xmd/xmd:language='Sumerian'">
+		<xsl:when test="$ident-lang='Sumerian'">
 		  <xsl:text>sux</xsl:text>
 		</xsl:when>
-		<xsl:when test="$xmd/xmd:language='Ugaritic'">
+		<xsl:when test="$ident-lang='Ugaritic'">
 		  <xsl:text>uga</xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
@@ -135,7 +162,11 @@
 		</xsl:otherwise>
 	      </xsl:choose>
 	    </xsl:attribute>
-	  <xsl:value-of select="$xmd/xmd:language"/></language>
+	    <xsl:if test="string-length($type-lang)>0">
+	      <xsl:attribute name="type"><xsl:value-of select="$type-lang"/></xsl:attribute>
+	    </xsl:if>
+	    <xsl:value-of select="$xmd/xmd:language"/>
+	  </language>
 	</langUsage>
       </xsl:if>
       <textClass>
