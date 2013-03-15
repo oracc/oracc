@@ -253,7 +253,7 @@ foreach my $lang (sort keys %data) {
 	    print '</compound>';
 	}
 
-	compute_and_print_entry_data($entry, %{${$data{$lang}}{$entry}});
+	compute_and_print_entry_data($lang, $entry, %{${$data{$lang}}{$entry}});
 
 	print '<senses>';
 	foreach my $sense (sort keys %{${$data{$lang}}{$entry}}) {
@@ -489,6 +489,7 @@ add_sig {
 
 sub
 compute_and_print_entry_data {
+    my $lang = shift;
     my $entry = shift;
     my %entry = @_;
     my %freqs = ();
@@ -761,7 +762,7 @@ xis {
     $xis_info{'p_icount'} = (defined($icount) ? $icount : -1);
     $xrefid = $xrefs{join(' ',@xrefs)};
     if (!defined($xrefid)) {
-	$xrefs{"@xrefs"} = $xrefid = sprintf("r%05x", ++$xrefid_counter);
+	$xrefs{"@xrefs"} = $xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
     }
     $xis_info{'xrefid'} = $xrefid;
     my @s = ORACC::L2GLO::Util::xis_stats($lang,@xrefs);
