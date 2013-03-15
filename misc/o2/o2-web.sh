@@ -1,5 +1,6 @@
 #!/bin/sh
 [ -r 01bld/cancel ] && exit 1
+shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
 mkdir -p $webdir/t $webdir/cbd
 cp -u 02xml/config.xml $webdir/config.xml
@@ -18,7 +19,10 @@ if [ "$otl" != "" ]; then
     fi
 fi
 mkdir -p $webdir/lists
-cp -a 00lib/lists/* $webdir/lists
+liblists=`echo -n 00lib/lists/*`;
+if [ "$liblists" != "" ]; then
+    cp -a 00lib/lists/* $webdir/lists
+fi
 for a in `ls 01bld/lists/* | egrep -v '.lst$'` ; do
     cp -fp $a $webdir/lists
 done
