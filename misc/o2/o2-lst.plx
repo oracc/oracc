@@ -28,39 +28,47 @@ all_triple();
 sub
 all_triple {
     my %triples = ();
-    open(P, '01bld/lists/proxy.lst');
-    while (<P>) {
-	chomp;
-	my $cat = undef;
-	if (s/\@(.*?)$//) {
-	    $cat = $1;
+    if (-r '01bld/lists/proxy.lst') {
+	open(P, '01bld/lists/proxy.lst');
+	while (<P>) {
+	    chomp;
+	    my $cat = undef;
+	    if (s/\@(.*?)$//) {
+		$cat = $1;
+	    }
+	    my ($prx,$pqx) = (/^(.*?):(.*?)$/);
+	    $triples{$pqx} = [ $prx , $cat ];
 	}
-	my ($prx,$pqx) = (/^(.*?):(.*?)$/);
-	$triples{$pqx} = [ $prx , $cat ];
+	close(P);
     }
-    close(P);
-    open(C, '01bld/lists/cat-ids.lst');
-    while (<C>) {
-	chomp;
-	my $cat = undef;
-	if (s/\@(.*?)$//) {
-	    $cat = $1;
+    if (-r '01bld/lists/cat-ids.lst') {
+	open(C, '01bld/lists/cat-ids.lst');
+	while (<C>) {
+	    chomp;
+	    my $cat = undef;
+	    if (s/\@(.*?)$//) {
+		$cat = $1;
+	    }
+	    my ($prj,$pqx) = (/^(.*?):(.*?)$/);
+	    if ($triples{$pqx}) {
+		my($prx,$prxcat) = @{$triples{$pqx}};
+		$triples{$pqx} = [ $prx , $prxcat || $cat || $prj ];
+	    } else {
+		$triples{$pqx} = [ $prj , $cat || $prj ];
+	    }
 	}
-	my ($prj,$pqx) = (/^(.*?):(.*?)$/);
-	if ($triples{$pqx}) {
-	    my($prx,$prxcat) = @{$triples{$pqx}};
-	    $triples{$pqx} = [ $prx , $prxcat || $cat || $prj ];
-	} else {
-	    $triples{$pqx} = [ $prj , $cat || $prj ];
+	close(C);
+    }
+    if (scalar keys %triples == 0) {
+	warn "o2-lst.plx: master.lst is empty, no proxy.lst or cat-ids.lst\n";
+    } else {
+	open(T, '>01bld/lists/master.lst');
+	foreach my $pqx (sort keys %triples) {
+	    my($prj,$cat) = @{$triples{$pqx}};
+	    print T "$prj\:$pqx\@$cat\n";
 	}
+	close(T);
     }
-    close(C);
-    open(T, '>01bld/lists/master.lst');
-    foreach my $pqx (sort keys %triples) {
-	my($prj,$cat) = @{$triples{$pqx}};
-	print T "$prj\:$pqx\@$cat\n";
-    }
-    close(T);
 }
 
 sub
@@ -178,8 +186,10 @@ lemindex_list {
 	    'atflists.plx', '-o', "$listdir/lemindex.lst",
 	    $have_lem,
 	    '+?',"$listdir/proxy-lem.lst";
-    } else {
+    } elsif (-r "$listdir/proxy-lem.lst") {
 	xsystem 'cp', "$listdir/proxy-lem.lst", "$listdir/lemindex.lst";
+    } else {
+	xsystem 'touch', "$listdir/lemindex.lst";
     }
 }
 
@@ -280,38 +290,39 @@ update_lists {
 
     $opt = `oraccopt . build-outlined-policy`;
 
-    if ($opt) {
-	if ($opt eq 'approved') {
-	    xsystem 
-		'atflists.plx', "-o$out_outlined", '-p', $project,
-		$out_approved,
-		'-?', '00lib/not-outlined.lst',
-		'+?', '00lib/add-outlined.lst';
-	} elsif ($opt eq 'P') {
-	    xsystem 
-		"grep :[PX] $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
-	} elsif ($opt eq 'Q') {
-	    xsystem 
-		"grep :Q $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
-	} elsif ($opt eq 'atf') {
-	    xsystem 
-		"atflists.plx -p$project -o$out_outlined $have_atf -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
-	} elsif ($opt eq 'static') {
-	    # no action
-	} elsif ($opt =~ /\.ol/) {
-	    ## ol('outlined.lst', $opt);
-	    warn "o2-lst.plx: .ol lists not yet implemented\n";
-	} else {
-	    warn "o2-lst.plx: unknown build-outlined-policy value `$opt'\n";
-	}
+    if (!$opt || $opt eq 'approved') {
+	xsystem 
+	    'atflists.plx', "-o$out_outlined", '-p', $project,
+	    $out_approved,
+	    '-?', '00lib/not-outlined.lst',
+	    '+?', '00lib/add-outlined.lst';
+    } elsif ($opt eq 'P') {
+	xsystem 
+	    "grep :[PX] $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
+    } elsif ($opt eq 'Q') {
+	xsystem 
+	    "grep :Q $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
+    } elsif ($opt eq 'atf') {
+	xsystem 
+	    "atflists.plx -p$project -o$out_outlined $have_atf -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
+    } elsif ($opt eq 'static') {
+	# no action
+    } elsif ($opt =~ /\.ol/) {
+	## ol('outlined.lst', $opt);
+	warn "o2-lst.plx: .ol lists not yet implemented\n";
+    } else {
+	warn "o2-lst.plx: unknown build-outlined-policy value `$opt'\n";
     }
     
     if (-r $have_atf && !-z _) {
 	xsystem 'cp', '-p', "$have_atf", "$listdir/withatf"; ### FIXME: rationalize these
-	xsystem 'cp', '-p', "$listdir/have-lem.lst", "$listdir/withlem";
 	xsystem "atflists.plx -p$project $out_approved - $have_atf >$listdir/sansatf";
-#	xsystem "atfhavelem.plx >$listdir/withlem";
-	xsystem "atflists.plx -p$project $out_approved - $listdir/withlem >$listdir/sanslem";
+	if (-r "$listdir/have-lem.lst") {
+	    xsystem 'cp', '-p', "$listdir/have-lem.lst", "$listdir/withlem";
+	    xsystem "atflists.plx -p$project $out_approved - $listdir/withlem >$listdir/sanslem";
+	} else {
+	    xsystem 'touch', "$listdir/withlem", "$listdir/sanslem";
+	}
     }
 }
 
