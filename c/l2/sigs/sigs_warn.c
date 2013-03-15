@@ -56,7 +56,7 @@ cof_form(struct ilem_form *fp, int curr)
     {
       n = strlen((char*)fp->f2.norm) + 4;
       for (i = 0; i < fp->mcount-1; ++i)
-	if (fp->f2.norm)
+	if (fp->multi[i].f2.norm)
 	  n += strlen((char*)fp->multi[i].f2.norm) + 4;
 	else
 	  return NULL;
@@ -220,7 +220,9 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
     }
  else
    {
-     if (fp->fcount == 0 && !BIT_ISSET(fp->f2.flags,F2_FLAGS_LEM_NEW))
+     if ((fp->fcount == 0 && (!BIT_ISSET(fp->f2.flags,F2_FLAGS_LEM_NEW)))
+	 )
+       /*	 || BIT_ISSET(fp->f2.flags,F2_FLAGS_COF_INVALID)) */
        {
 	 const char *tsig = trysig(fp);
 	 const char *tinst = tryinst(l,fp);
@@ -228,7 +230,9 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
 	 if (sp)
 	   {
 	     strcpy(tlang,(char*)sp->lang);
-	      
+
+#if 0
+	     /* THIS NEEDS MORE WORK */
 	     if (BIT_ISSET(fp->f2.flags, F2_FLAGS_COF_INVALID))
 	       {
 		 /* This means that a COF has matched on the HEAD
@@ -238,29 +242,37 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
 		   {
 		     if (BIT_ISSET(fp->multi[i].f2.flags, F2_FLAGS_COF_INVALID))
 		       {
-			 char *sublem = strchr(fp->multi[i].sublem, ':');
-			 char *esig = NULL, *cform = NULL;
-			 if (sublem)
-			   ++sublem;
-			 else
-			   sublem = fp->multi[i].sublem;
-			 vwarning2(fp->file,fp->lnum,
-				   "%s (segment #%d of COF): not found in %s:%s",
-				   sublem, i+2,
-				   sp->project, sp->lang);
-			 esig = entrysig(&fp->multi[i]);
-			 cform = cof_form(fp, i);
-			 if (esig && cform)
-			   vnotice("\t%s may need @form %s", esig, cform);
-			 if (esig)
-			   free(esig);
-			 if (cform)
-			   free(cform);
+			 if (!BIT_ISSET(fp->multi[i].f2.flags, F2_FLAGS_LEM_NEW))
+			   {
+			     char *sublem = strchr(fp->multi[i].sublem, ':');
+			     char *esig = NULL, *cform = NULL;
+			     if (sublem)
+			       ++sublem;
+			     else
+			       sublem = fp->multi[i].sublem;
+			     vwarning2(fp->file,fp->lnum,
+				       "%s (segment #%d of COF): not found in %s:%s",
+				       sublem, i+2,
+				       sp->project, sp->lang);
+			     esig = entrysig(&fp->multi[i]);
+			     cform = cof_form(fp, i);
+			     if (esig && cform)
+			       vnotice("\t%s may need @form %s", esig, cform);
+			     if (esig)
+			       free(esig);
+			     if (cform)
+			       free(cform);
+			   }
+			 /* we need to break after the first error, even if that is a LEM_NEW fail
+			    because if one element in the chain fails they all do so not breaking
+			    effectively causes spurious knock-on errors */
 			 break;
 		       }
 		   }
 	       }
-	     else if (BIT_ISSET(fp->f2.flags,F2_FLAGS_NO_FORM))
+	     else 
+#endif
+	     if (BIT_ISSET(fp->f2.flags,F2_FLAGS_NO_FORM))
 	       vwarning2(fp->file,fp->lnum,
 			 "no FORM `%s' and no matches for %s in glossary %s:%s",
 			 fp->f2.form,
