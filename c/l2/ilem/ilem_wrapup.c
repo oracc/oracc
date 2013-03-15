@@ -180,12 +180,14 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
       if (fp->fcount)
 	wrapup_props(lp, fp);
 
+      fp->f2.project = (unsigned char *)xcp->project;
+      
       /* Now attach the final version of the form to the lem node as a sig;
        *  - failed matches don't get a sig as it pollutes the glossary
        *  - COF tails don't get a sig either
        */
-      fp->f2.project = (unsigned char *)xcp->project;
-      fp->f2.sig = (unsigned char *)f2_sig(&fp->f2, xcp->pool);
+      if (!fp->f2.sig && !BIT_ISSET(fp->f2.flags, F2_FLAGS_COF_TAIL))
+	fp->f2.sig = (unsigned char *)f2_sig(&fp->f2, xcp->pool);
 
       if (fp->multi && lp->f->mcount > 0)
 	{
