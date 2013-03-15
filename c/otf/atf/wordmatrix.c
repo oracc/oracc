@@ -101,13 +101,14 @@ static void
 wm_count_cells(struct wm_row *row, int *n_intra_p, int *n_inter_p)
 {
   int i, n_intra, n_inter;
-  for (i = n_intra = n_inter = 0; i < wm_childCount(row); ++i)
+  for (i = n_intra = n_inter = 0; row->line && i < wm_childCount(row); ++i)
     {
       const char *nonw_type;
       switch (wm_childEtype(i))
 	{
 	case e_n_w:
 	case e_g_w:
+	case e_g_gloss:
 	  ++n_intra;
 	  break;
 	case e_g_nonw:
@@ -153,7 +154,7 @@ static void
 wm_set_cells(enum wm_cell_type *master, struct wm_row *row)
 {
   int i, intra_nth;
-  for (i = intra_nth = 0; i < wm_childCount(row); ++i)
+  for (i = intra_nth = 0; row->line && i < wm_childCount(row); ++i)
     {
       int cell_index = 0;
       const char *nonw_type;
@@ -162,6 +163,7 @@ wm_set_cells(enum wm_cell_type *master, struct wm_row *row)
 	{
 	case e_n_w:
 	case e_g_w:
+	case e_g_gloss:
 	  ++intra_nth;
 	  master[intra_nth * 2] = WM_INTRA;
 	  row->cells[intra_nth * 2].word = wm_child(i);
@@ -226,13 +228,15 @@ wm_rewrite_cells(int ncells, enum wm_cell_type *master, struct wm_row *row)
 	  for (tmp = row->cells[i].next; tmp; tmp = tmp->next)
 	    appendChild(wrapper, row->cells[i].word);
 	}
-      else
+      else if (row->line)
 	{
 	  wrapper = elem(e_c, row->line, row->line->lnum, CELL);
 	}
-      addToNodeList(nl, wrapper);
+      if (wrapper)
+	addToNodeList(nl, wrapper);
     }
-  row->line->children = *nl;
+  if (row->line)
+    row->line->children = *nl;
   free(nl);
 }
 
