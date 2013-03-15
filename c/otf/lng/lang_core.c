@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.3 */
+/* C code produced by gperf version 3.0.4 */
 /* Command-line: gperf -N lang_core -tT lang_core.g  */
 /* Computed positions: -k'1,3' */
 
@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "lang.h"
 
-#define TOTAL_KEYWORDS 15
+#define TOTAL_KEYWORDS 16
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 3
-#define MIN_HASH_VALUE 3
-#define MAX_HASH_VALUE 33
-/* maximum key range = 31, duplicates = 0 */
+#define MIN_HASH_VALUE 0
+#define MAX_HASH_VALUE 50
+/* maximum key range = 51, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -48,6 +48,7 @@ __inline
 inline
 #endif
 #endif
+/*ARGSUSED*/
 static unsigned int
 hash (str, len)
      register const char *str;
@@ -55,39 +56,39 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34,  4,  2, 15,
-      34, 10, 34, 34, 15, 34, 34, 14, 34,  8,
-       3, 15, 10,  5, 14,  9, 15,  0, 34, 34,
-       0, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34, 34, 34, 34, 34,
-      34, 34, 34, 34, 34, 34
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 25, 18, 15,
+      51, 10, 51,  3, 25, 51, 51, 20, 51,  8,
+       3, 20, 15,  5,  3, 30, 25,  0, 51, 51,
+       0, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+      51, 51, 51, 51, 51, 51
     };
-  return len + asso_values[(unsigned char)str[2]] + asso_values[(unsigned char)str[0]];
+  return asso_values[(unsigned char)str[2]] + asso_values[(unsigned char)str[0]];
 }
 
 #ifdef __GNUC__
 __inline
-#ifdef __GNUC_STDC_INLINE__
+#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif
@@ -98,43 +99,53 @@ lang_core (str, len)
 {
   static struct langcore wordlist[] =
     {
-      {""}, {""}, {""},
-#line 17 "lang_core.g"
-      {"xhu", "020", "xhu", m_sign, m_lang, c_xhu, LF_SAC},
-      {""}, {""}, {""},
-#line 20 "lang_core.g"
-      {"uga", "020", "uga", m_logo, m_lang, c_uga, LF_SAC},
-#line 16 "lang_core.g"
-      {"qcu", "020", "qcu", m_sign, m_lang, c_qcu, LF_SAC},
-      {""},
 #line 18 "lang_core.g"
-      {"qeb", "020", "qeb", m_sign, m_lang, c_qeb, LF_SAC},
-#line 21 "lang_core.g"
+      {"xhu", "020", "xhu", m_sign, m_lang, c_xhu, LF_SAC},
+      {""}, {""},
+#line 20 "lang_core.g"
+      {"xur", "020", "xur", m_sign, m_lang, c_xur, LF_SAC},
+      {""},
+#line 17 "lang_core.g"
+      {"qcu", "020", "qcu", m_sign, m_lang, c_qcu, LF_SAC},
+      {""}, {""},
+#line 22 "lang_core.g"
       {"qpn", "999", "qpn", m_sign, m_lang, c_qpn, LF_SAC},
-#line 7 "lang_core.g"
-      {"sux", "020", "akk", m_sign, m_lang, c_sux, LF_BASE|LF_SAC},
-#line 13 "lang_core.g"
+      {""},
+#line 14 "lang_core.g"
       {"elx", "020", "sux", m_sign, m_logo, c_elx, LF_SAC},
       {""}, {""},
-#line 15 "lang_core.g"
+#line 16 "lang_core.g"
       {"qam", "020", "qam", m_sign, m_lang, c_qam, LF_SAC},
-#line 19 "lang_core.g"
-      {"xur", "020", "xur", m_sign, m_lang, c_xur, LF_SAC},
-#line 12 "lang_core.g"
+      {""},
+#line 13 "lang_core.g"
       {"qpe", "938", "qpe", m_sign, m_lang, c_qpe, 0},
       {""}, {""},
-#line 8 "lang_core.g"
-      {"akk", "020", "sux", m_logo, m_lang, c_akk, LF_NORM|LF_SAC},
-#line 9 "lang_core.g"
-      {"arc", "124", "akk", m_sign, m_lang, c_arc, 0},
-#line 11 "lang_core.g"
+#line 10 "lang_core.g"
+      {"grc", "200", "akk", m_sign, m_lang, c_grc, 0},
+      {""},
+#line 12 "lang_core.g"
       {"qpc", "900", "qpc", m_sign, m_lang, c_qpc, 0},
+      {""}, {""},
+#line 19 "lang_core.g"
+      {"qeb", "020", "qeb", m_sign, m_lang, c_qeb, LF_SAC},
+      {""},
+#line 21 "lang_core.g"
+      {"uga", "020", "uga", m_logo, m_lang, c_uga, LF_SAC},
       {""}, {""}, {""}, {""},
-#line 14 "lang_core.g"
+#line 7 "lang_core.g"
+      {"sux", "020", "akk", m_sign, m_lang, c_sux, LF_BASE|LF_SAC},
+      {""}, {""}, {""}, {""},
+#line 15 "lang_core.g"
       {"peo", "030", "peo", m_sign, m_lang, c_peo, 0},
       {""}, {""}, {""}, {""},
-#line 10 "lang_core.g"
-      {"hit", "020", "akk", m_logo, m_logo, c_hit, LF_SAC}
+#line 9 "lang_core.g"
+      {"arc", "124", "akk", m_sign, m_lang, c_arc, 0},
+      {""}, {""}, {""}, {""},
+#line 8 "lang_core.g"
+      {"akk", "020", "sux", m_logo, m_lang, c_akk, LF_NORM|LF_SAC},
+      {""}, {""}, {""}, {""},
+#line 11 "lang_core.g"
+      {"hit", "020", "sux", m_logo, m_logo, c_hit, LF_SAC}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
@@ -151,7 +162,7 @@ lang_core (str, len)
     }
   return 0;
 }
-#line 22 "lang_core.g"
+#line 23 "lang_core.g"
 
 struct langcore *
 langcore_of(const char *lang)

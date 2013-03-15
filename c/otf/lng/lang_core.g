@@ -7,7 +7,8 @@ struct langcore;
 sux, "020", "akk", m_sign, m_lang, c_sux, LF_BASE|LF_SAC
 akk, "020", "sux", m_logo, m_lang, c_akk, LF_NORM|LF_SAC
 arc, "124", "akk", m_sign, m_lang, c_arc, 0
-hit, "020", "akk", m_logo, m_logo, c_hit, LF_SAC
+grc, "200", "akk", m_sign, m_lang, c_grc, 0
+hit, "020", "sux", m_logo, m_logo, c_hit, LF_SAC
 qpc, "900", "qpc", m_sign, m_lang, c_qpc, 0
 qpe, "938", "qpe", m_sign, m_lang, c_qpe, 0
 elx, "020", "sux", m_sign, m_logo, c_elx, LF_SAC
