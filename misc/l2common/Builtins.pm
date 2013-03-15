@@ -683,6 +683,7 @@ acdentry {
 #	my %localfids = ();
 	my $localfid = '000';
 	$field_index = 0;
+	my %seen_forms = ();
 	foreach my $f (@{$e{'form'}}) {
 	    my ($base,$cont,$stem,$morph,$pref,$rws,$morph2) = ();
 	    my $flang = '';
@@ -693,6 +694,12 @@ acdentry {
 		$f =~ s/^\s*//;
 	    }
 	    my($fo) = ($f =~ /^(\S+)/);
+
+#	    if ($seen_forms{$fo,$flang}++) {
+#		bad('form',"duplicate form: $fo");
+#		next;
+# 	    }
+
 	    if ($fo =~ tr/_/ / && !$e{'parts'}) {
 		bad('form', "underscore (_) not allowed in form except in compounds");
 	    }
@@ -1686,15 +1693,37 @@ merge_exec {
 		    my %known = ();
 		    foreach my $l (@{$$$i{$fld}}) {
 			my $tmp = $l;
-			$tmp =~ s/\s+\@\S+//;
-			++$known{$tmp};
+			$tmp =~ s/\s+\@\S+\s*//;
+			if ($fld eq 'bases') {
+			    foreach my $b (split(/;\s+/, $tmp)) {
+				++$known{$b};
+			    }
+			    my @b = sort keys %known;
+#			    warn "known bases = @b\n";
+			} else {
+			    ++$known{$tmp};
+			}
 		    }
 		    foreach my $l (@{$$$f{$fld}}) {
 			my $tmp = $l;
-			$tmp =~ s/\s+\@\S+//;
-			if (!defined $known{$tmp}) {
-			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-			    push @{$$$i{$fld}}, $l;
+			$tmp =~ s/\s+\@\S+\s*//;
+			if ($fld eq 'bases') {
+			    foreach my $b (split(/;\s+/, $tmp)) {
+				if (!defined $known{$b}) {
+#				    warn "adding base = $b\n";
+				    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+#				    use Data::Dumper;
+#				    warn Dumper \@{$$$i{'bases'}};
+				    ${$$$i{'bases'}}[0] .= "; $b";
+#				    warn Dumper \@{$$$i{'bases'}};
+#				    $$$i{'bases'} = $$$i{'bases'} . $b;
+				}
+			    }
+			} else {
+			    if (!defined $known{$tmp}) {
+				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+				push @{$$$i{$fld}}, $l;
+			    }
 			}
 		    }
 		}
