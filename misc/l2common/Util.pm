@@ -49,6 +49,9 @@ my %periods_sux = (
     'Neo-Babylonian'=>LS,
     'Neo-Assyrian'=>LS,
     'Hellenistic'=>LS,
+    'Uncertain'=>XX,
+    'uncertain'=>XX,
+    'Unknown'=>XX,
     'unknown'=>XX
     );
 
@@ -77,7 +80,10 @@ my %periods_qqq = (
     'Hellenistic'=>SEL,
     'Seleucid'=>SEL,
     'Parthian'=>PAR,
-    'unknown'=>XXX
+    'unknown'=>XXX,
+    'Unknown'=>XXX,
+    'uncertain'=>XXX,
+    'Uncertain'=>XXX
     );
 
 my $tmp_debug = 0;
@@ -327,14 +333,14 @@ xis_stats {
 		$s[$periods_sux{$ptmp}] += $2 if $2;
 	    } else {
 		my $per = $1 || '';
-		warn "xis-periods.plx: unknown SUMERIAN period `$per'\n"
+		warn "ORACC::L2GLO::Util: unknown SUMERIAN period `$per'\n"
 		    unless $warned_periods{$per}++;
 	    }
 	} else {
 	    if (defined $periods_qqq{$ptmp}) {
 		$s[$periods_qqq{$ptmp}] += $2;
 	    } else {
-		warn "xis-periods.plx: unknown GENERIC period `$1'\n"
+		warn "ORACC::L2GLO::Util: unknown GENERIC period `$1'\n"
 		    unless $warned_periods{$1}++;
 	    }
 	}
