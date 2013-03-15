@@ -31,9 +31,11 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 	  && l->inst && l->inst[strlen(l->inst)-1] != '='))
     {
       sigs_lookup(xcp, l, &look_check);
-      if (/* !l->f->fcount */ /* UM? WHY ADD SOMETHING WITH NO HITS TO THE CACHE? */
-	  /* && */ /* || */
-	  BIT_ISSET(l->f->f2.flags, F2_FLAGS_LEM_NEW))
+
+      if (l->cof_tails)
+	sigs_cof_finds(l);
+
+      if (BIT_ISSET(l->f->f2.flags, F2_FLAGS_LEM_NEW))
 	{
 	  if (l->f->sp && l->f->sp->file && strcmp((const char *)l->f->sp->file, "cache"))
 	    {
@@ -42,8 +44,6 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 		sigs_cache_add(l->f, early_sigs);
 	    }
 	}
-      else if (l->cof_tails)
-	sigs_cof_finds(l);
     }
 }
 
@@ -231,6 +231,7 @@ cof_ok(struct ilem_form *ifp, struct f2 *f2p, int force_sense)
 {
   int i, sense_null = 0;
   struct ilem_form *m;
+
   if (!f2p->parts)
     return 0;
 
