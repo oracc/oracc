@@ -767,7 +767,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  struct node *seg = elem(e_n_s,NULL,lnum,GRAPHEME);
 		  if (!lastC)
 		    lastC = wp;
-		  if (lastC && lastC->etype == e_n_word_group)
+		  if (lastC && lastC->etype == e_n_word_group && group_flag != notoken)
 		    {
 		      struct node *gw = elem(e_n_grouped_word,NULL,lastC->lnum,WORD);
 		      appendChild(seg,textNode(datap));
@@ -1073,22 +1073,29 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (((char*)tp->data)[1])
 		setAttr(lastChild(wp),a_g_em,ucc("1"));
 	      break;
+	    case ilig:
 	    case colon:
 	    case period:
 	    case plus:
-	    case ilig:
 	      no_norm(type_data[tp->type]);
 	    case slash:
 	      if (group_flag == notoken)
 		{
 		  struct node *hyphme = lastChild(wp);
 		  if (!hyphme)
-		    hyphme = wp;
-		  setAttr(hyphme,a_g_delim,tp->data);
+		    {
+		      hyphme = wp;
+		      setAttr(hyphme,a_g_delim,tp->data);
+		    }
+		  else if (hyphme->etype != e_n_s)
+		    setAttr(hyphme,a_g_delim,tp->data);
 		}
 	      else
 		{
-		  setAttr(lastChild(group_node),a_g_delim,tp->data);
+		  if (tp->data)
+		    setAttr(lastChild(group_node),a_g_delim,tp->data);
+		  else
+		    setAttr(lastChild(group_node),a_g_delim,"");
 		}
 	      if (wp)
 		{
@@ -1483,12 +1490,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      break;
 	    case eraso:
 	      set_mutex(eraso,notoken,eraso);
-	      cue_opener("<{");
+	      cue_opener("<$");
 	      statusStart = (unsigned char *)"\x1";
 	      break;
 	    case erasc:
 	      set_mutex(notoken,eraso,erasc);
-	      appendCloser(last_g,"}>");
+	      appendCloser(last_g,"$>");
 	      setAttr(last_g,a_g_statusEnd,statusStart);
 	      statusStart = NULL;
 	      break;
@@ -1502,6 +1509,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      appendCloser(last_g,")");
 	      setAttr(last_g,a_g_statusEnd,statusStart);
 	      statusStart = NULL;
+	      break;
+	    case linebreak:
+	      np = elem(e_g_x,NULL,lnum,GRAPHEME);
+	      appendAttr(np,attr(a_g_type,ucc("linebreak")));
+	      appendChild(wp ? wp : parent,np);
 	      break;
 	    case newline:
 	      /* this is the least intrusive place to detect split words because
@@ -1673,6 +1685,20 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		pending_disamb = m;
 	      }
 	      break;
+#if 0
+	    case g_emptyten:
+	      {
+		struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME), *np;
+		setAttr(n,a_g_type,ucc("emptyten"));
+		appendChild(wp,n);
+		np = elem(e_g_x,NULL,lnum,GRAPHEME);
+		setAttr(np, a_g_type, ucc("emptyten"));
+		appendChild(n, np);
+		
+		group_node = lastc;
+	      }
+	      break;
+#endif
 	    default:
 	      vwarning("unhandled token type %s", type_names[tp->type]);
 	      /*exit(2);*/
@@ -1694,6 +1720,35 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 
   if (wp)
     wrapup_word(wp,eol);
+}
+
+static struct node *
+next_child_with_status(struct node *parent)
+{
+  if (parent->children.lastused)
+    {
+      if (*(getAttr(parent->children.nodes[0], "g:status")))
+	return parent->children.nodes[0];
+      else
+	return next_child_with_status(parent->children.nodes[0]); 
+    }
+  return NULL;
+}
+
+/* word-rendering emits delimiters on the next grapheme, instead of using g:delim: this is probably a bug */
+static struct node *
+next_node_with_status(struct node *wp, int i)
+{
+  if (i < wp->children.lastused)
+    {
+      unsigned char *s = getAttr(wp->children.nodes[i], "g:status");
+      if (*s)
+	return wp->children.nodes[i];
+      else
+	return next_child_with_status(wp->children.nodes[i]);
+    }
+  else
+    return NULL;
 }
 
 static void
@@ -1753,7 +1808,11 @@ finish_word(struct node *wp)
       if (i)
 	{
 	  if (suppress_next_hyphen)
-	    suppress_next_hyphen = 0;
+	    {
+	      struct node *next_np = next_node_with_status(wp, i);
+	      if (!next_np || xstrcmp(getAttr(next_np, "g:status"),"excised"))
+		suppress_next_hyphen = 0;
+	    }
 	  else if (curr_lang->mode == m_graphemic)
 	    *forms_insertp++ = '-';
 	}
