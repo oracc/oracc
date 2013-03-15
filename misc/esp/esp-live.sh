@@ -66,13 +66,13 @@ cd $HDEV
 HDEVFILES="$(find . -type f)"
 # -type f => files only
 
-echo Creating new live and changed directories...
+#echo Creating new live and changed directories...
 
 for HDEVFILE in $HDEVFILES
 do 
-	echo
-	echo File: $HDEVFILE
-	echo Directory: `dirname "$HLIVENEW/$HDEVFILE"`
+#	echo
+#	echo File: $HDEVFILE
+#	echo Directory: `dirname "$HLIVENEW/$HDEVFILE"`
 
 	mkdir -p `dirname "$HLIVENEW/$HDEVFILE"`
 	
@@ -90,7 +90,7 @@ do
 	fi
 done
 
-echo Creating gone list...
+#echo Creating gone list...
 
 cd $HLIVE
 HLIVEFILES="$(find . -type f)"
@@ -98,7 +98,7 @@ HLIVEFILES="$(find . -type f)"
 for HLIVEFILE in $HLIVEFILES
 do
     if ! find "$HLIVENEW/$HLIVEFILE"; then
-	echo $HLIVEFILE >> $HGONENEW
+#	echo $HLIVEFILE >> $HGONENEW
 	if [ -r 02www/$HLIVEFILE ]; then
 	    rm -fr 02www/$HLIVEFILE
 	fi
