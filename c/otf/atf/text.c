@@ -182,7 +182,7 @@ process_text(struct run_context *run, unsigned char **lines)
   current_level = TEXT;
   curr_lang = text_lang = global_lang;
   protocol_state = s_text;
-  has_links = header_id = line_id = sym_warning = mylines = use_unicode = 0;
+  has_links = header_id = line_id = sym_warning = use_unicode = 0;
   curr_dialect = NULL;
   reset_lninfo();
   reset_forms_insertp();
