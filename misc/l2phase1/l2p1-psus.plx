@@ -122,6 +122,7 @@ bad2 {
 sub
 do_psu {
     my($psulang,$formline) = @_;
+    warn "do_psu: psulang=$psulang; formline=$formline" if $verbose;
     $formline =~ s/^\@form\s+//;
 #    my ($forms, $norms) = ($formline =~ /^(\S+)\s*(\S.*)\s*$/);
     my ($forms, $rest) = ($formline =~ /^(\S+)\s*(.*)\s*$/);
@@ -278,16 +279,36 @@ parts_match {
 	}
 	my ($pt, $csig, @candidates) = @{$parts_data[$i]};
 	my $this_form_matched = 0;
-	for (my $j = 0; $j <= $#candidates; ++$j) {
-	    my($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
-	    if ($form && $form eq $forms[$i] && ($norm eq '*' || $norm eq $norms[$i])) {
-		warn "matched $form eq $forms[$i]/$norm eq $norms[$i] in $candidates[$j]\n"
-		    if $verbose;
-		$this_form_matched = 1;
-		$matched_candidates[$i] = $candidates[$j];
-		last;
+	my @tmp_matches = ();
+	my $pass_1 = 1;
+      match_pass_1:
+	{
+	    for (my $j = 0; $j <= $#candidates; ++$j) {
+		my($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
+		if ($form && $form eq $forms[$i] && ($norm eq '*' || $norm eq $norms[$i])) {
+		    if ($pass_1) {
+			if ($candidates[$j] =~ /\%$psulang\:/) {
+			    warn "pass_1_matched $form eq $forms[$i]/$norm eq $norms[$i] in $candidates[$j]\n"
+				if $verbose;
+			    $this_form_matched = 1;
+			    $matched_candidates[$i] = $candidates[$j];
+			    last match_pass_1;
+			}
+		    } else {
+			warn "pass_2_matched $form eq $forms[$i]/$norm eq $norms[$i] in $candidates[$j]\n"
+			    if $verbose;
+			$this_form_matched = 1;
+			$matched_candidates[$i] = $candidates[$j];
+			last match_pass_1;
+		    }
+		}
+	    }
+	    if ($pass_1) {
+		$pass_1 = 0;
+		goto match_pass_1;
 	    }
 	}
+
 	unless ($this_form_matched) {
 	    $matched = 0;
 	    push @parts_errors, "no form/norm match for $forms[$i]=$csig\$$norms[$i] in `$psulang.glo'"
