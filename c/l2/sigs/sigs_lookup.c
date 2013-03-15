@@ -218,8 +218,8 @@ setup_ilem_finds(struct sig_context *scp, struct ilem_form *ip,
 }
 
 static void
-sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l, 
-		struct siglook *look, struct ilem_form *ifp)
+sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l, 
+		    struct siglook *look, struct ilem_form *ifp)
 {
   List *sigsets = NULL;
   const char *lem_lang = NULL;
@@ -559,6 +559,20 @@ sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l,
   if (sp && !strcmp((const char *)sp->file, "cache"))
     {
       ifp->fcount = sigs_found[0]->ifp->fcount;
+      if (!ifp->f2.norm
+	  || (!strcmp((char *)ifp->f2.cf, (char *)ifp->f2.norm) 
+	      && strcmp((char *)ifp->f2.cf, (char *)sigs_found[0]->ifp->f2.cf)))
+	{
+	  ifp->f2.norm = ifp->f2.cf;
+	  ifp->f2.cf = sigs_found[0]->ifp->f2.cf;
+	}
+      if (!ifp->f2.sense
+	  || (!strcmp((char*)ifp->f2.gw, (char*)ifp->f2.sense) 
+	      && strcmp((char*)ifp->f2.gw, (char*)sigs_found[0]->ifp->f2.gw)))
+	{
+	  ifp->f2.sense = ifp->f2.gw;
+	  ifp->f2.gw = sigs_found[0]->ifp->f2.gw;
+	}
       ifp->f2.sig = sigs_found[0]->ifp->f2.sig;
       if (sigs_found[0]->ifp->f2.pos && !ifp->f2.pos)
 	ifp->f2.pos = sigs_found[0]->ifp->f2.pos;
@@ -656,6 +670,29 @@ sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l,
     }
 
   free(tmplang);
+}
+
+static void
+sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l, struct siglook *look, struct ilem_form *ifp)
+{
+  if (ifp->multi)
+    {
+      struct ilem_form *mp;
+#if 0
+      if (!ifp->f2.parts)
+	ifp->f2.parts = malloc(ifp->mcount * sizeof(struct f2*));
+#endif
+      for (mp = ifp->multi; mp; mp = mp->multi)
+	{
+	  sigs_lookup_sub_sub(xcp, l, look, mp);
+	  if (mp->fcount == 0)
+	    {
+	      BIT_SET(mp->f2.flags, F2_FLAGS_COF_INVALID);
+	      BIT_SET(ifp->f2.flags, F2_FLAGS_COF_INVALID);
+	    }
+	}
+    }
+  sigs_lookup_sub_sub(xcp, l, look, ifp);
 }
 
 void
