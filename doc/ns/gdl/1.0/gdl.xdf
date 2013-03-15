@@ -1306,13 +1306,14 @@ paleography.attr =
 <tr><td>&#xa0;&#xa0;Ur III Akkadian</td><td>ua</td><td>ur3akk</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Old Assyrian</td><td>akk-x-oldass</td><td>oa</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Old Babylonian</td><td>akk-x-oldbab</td><td>ob</td><td></td></tr>
-<tr><td>>&#xa0;&#xa0;Old Babylonian peripheral</td><td>akk-x-obperi</td><td></td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Old Babylonian peripheral</td><td>akk-x-obperi</td><td></td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Middle Assyrian</td><td>akk-x-midass</td><td>ma</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Middle Babylonian</td><td>akk-x-midbab</td><td>mb</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Middle Babylonian peripheral</td><td>akk-x-mbperi</td><td></td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Neo-Assyrian</td><td>akk-x-neoass</td><td>na</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Neo-Babylonian</td><td>akk-x-neobab</td><td>nb</td><td></td></tr>
-<tr><td>&#xa0;&#xa0;Late Babylonian</td><td>akk-x-ltebab</td><td>nb</td><td></td></tr><tr><td>&#xa0;&#xa0;Standard Babylonian</td><td>akk-x-stdbab</td><td>sb</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Late Babylonian</td><td>akk-x-ltebab</td><td>nb</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;Standard Babylonian</td><td>akk-x-stdbab</td><td>sb</td><td></td></tr>
 <tr><td>&#xa0;&#xa0;Conventional Akkadian</td><td>akk-x-conakk</td><td>ca</td><td>The artificial form of Akkadian used in lemmatisation <a href="http://oracc.museum.upenn.edu/doc/builder/linganno/AKK/#Citation_Forms__CF_">Citation Forms</a>.</td></tr>
 <tr><td>&#xa0;&#xa0;normalised</td><td>(none: main text must be transliteration)</td><td>n</td><td>Used in lexical lists and restorations; try to avoid wherever possible.</td></tr>
 <tr><td>&#xa0;&#xa0;transliterated (graphemic) Akkadian</td><td>(none: must specify dialect too)</td><td>g</td><td>Only for use when switching from normalised Akkadian.</td></tr>
@@ -1469,8 +1470,12 @@ proximity.attr =
 <h1 class="tutorial">Intrusions</h1>
 <div class="atf tutorial">
 <p>To indicate that there is any kind of newline within a
-transliterated sequence of words or graphemes, use the semi-colon
+transliterated sequence of words or graphemes that is in the same
+ruled case (usually, but not always, indented), use the semi-colon
 (<code>;</code>).</p>
+<p>To indicate that there is a line-break in the transliterated line
+(i.e., normally one which is separately ruled), use a double slash
+sequence (<code>//</code>).</p>
 <p>To indicate that an unknown number of signs is missing, use an
 ellipsis (<code>...</code>).</p>
 <p>If it is necessary to indicate any other information which is not
@@ -1502,7 +1507,7 @@ should be expressed using either an <code>@</code>-modifier or a
 <d:rnc>
 nongrapheme = 
   element g:x {
-    ( attribute g:type { "disambig" | "empty" | "newline" | "user" }
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
     | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
         , status.spans , opener? , closer? , break? , notemark?)),
     delim? , text? , varnum? ,
@@ -1668,6 +1673,7 @@ normword =
 normwordgroup = 
   element n:word-group {
      attribute g:type { "alternation" } ,
+     attribute g:delim { "-" }? ,
      element n:grouped-word { normwordword }+
   }
 
