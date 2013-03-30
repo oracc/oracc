@@ -285,6 +285,7 @@ tokcheck_init()
 	  allow_token(t,newline);
 	  allow_token(t,notemark);
 	  allow_token(t,norm);
+	  allow_group(t,g_grapheme);
 	  break;
 	case ellipsis:
 	  allow_group(t,g_boundary);
@@ -297,6 +298,7 @@ tokcheck_init()
 	case newline:
 	  allow_group(t,g_boundary);
 	  allow_group(t,g_opener);
+	  allow_token(t,flag);
 	  /*allow_token(t,damago);*/
 	  break;
 	case uscoreo:
@@ -370,6 +372,7 @@ tokcheck_init()
   allow_token(slash,space);
   allow_token(space,linebreak);
   allow_token(linebreak,space);
+  allow_token(linebreak,flag);
   allow_token(deto,plus);
   allow_token(deto,ilig);
   allow_token(detc,damago);
