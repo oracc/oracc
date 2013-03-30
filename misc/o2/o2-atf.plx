@@ -23,6 +23,7 @@ atf_options {
     my $atf_flags = `oraccopt $project atf-flags`;
     my $atf_lem_psa = `oraccopt $project atf-lem-psa`;
     my $atf_lem_extended = `oraccopt $project atf-lem-extended`;
+    my $views_cuneify = `oraccopt $project views-cuneify`;
     if ($atf_lem_psa) {
 	if ($atf_lem_psa eq 'properties') {
 	    $O2ARGS .= 'y';
@@ -41,6 +42,9 @@ atf_options {
 	}
     } elsif ($atf_flags) {
 	$O2ARGS .= $atf_flags;
+    }
+    if ($views_cuneify && $views_cuneify =~ /tru|yes/) {
+	$O2ARGS .= ' -w';
     }
 }
 
