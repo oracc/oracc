@@ -189,6 +189,7 @@ inline_init()
   fixed_attr_n[exciso] = a_g_status;
   fixed_attr_n[eraso] = a_g_status;
   fixed_attr_n[maybeo] = a_g_status;
+  fixed_attr_n[someo] = a_g_status;
   fixed_attr_n[glosso] = a_g_type;
   fixed_attr_n[smetao] = a_g_type;
   fixed_attr_n[damago] = a_g_break;
@@ -199,6 +200,7 @@ inline_init()
   fixed_attr_v[exciso] = ucc("excised");
   fixed_attr_v[eraso] = ucc("erased");
   fixed_attr_v[maybeo] = ucc("maybe");
+  fixed_attr_v[someo] = ucc("some");
   fixed_attr_v[glosso] = ucc("lang");
   fixed_attr_v[smetao] = ucc("text");
   fixed_attr_v[damago] = ucc("missing");
@@ -1530,6 +1532,16 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  np = elem(e_g_x,NULL,lnum,GRAPHEME);
 		  appendAttr(np,attr(a_g_type,ucc("newline")));
+		  if ((end-start>1) && tokens[start+1]->type == flag)
+		    {
+		      struct flags *fp = (struct flags *)tokens[++start]->data;
+		      set_flags(np,fp);
+		      if (in_hash && !fp->h)
+			{
+			  appendAttr(prev_g?prev_g:np,attr(a_g_hc,ucc("1")));
+			  in_hash = 0;
+			}
+		    }
 		  appendChild(wp ? wp : parent,np);
 		}
 	      break;
@@ -1948,6 +1960,11 @@ void
 set_flags(struct node *np, struct flags *fp)
 {
   int i;
+  if (NULL == np)
+    {
+      fprintf(stderr, "ox: internal error, attempt to set flag on NULL node. Ignoring flags\n");
+      return;
+    }
   for (i = 0; i < fp->nattr; ++i)
     if (setAttr(np,fp->a[i].a, ucc(fp->a[i].s)))
       vwarning("%c: superfluous flag", fp->atf);
