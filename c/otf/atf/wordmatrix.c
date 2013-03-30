@@ -194,7 +194,6 @@ wm_set_cells(enum wm_cell_type *master, struct wm_row *row)
 	    cell_index = 1;
 	  master[cell_index] = WM_INTER;
 	  wm_append_cell_node(row, cell_index, wm_child(i));
-	  /* wm_append_cell_node(row->cells[(intra_nth * 2) + 1] = row->line->children[i]); */
 	  break;
 	default:
 	  vwarning("wm_set_cells: child type %s not handled", wm_child(i)->names->pname);
@@ -226,7 +225,7 @@ wm_rewrite_cells(int ncells, enum wm_cell_type *master, struct wm_row *row)
 			 row->cells[i].word->lnum, CELL);
 	  appendChild(wrapper, row->cells[i].word);
 	  for (tmp = row->cells[i].next; tmp; tmp = tmp->next)
-	    appendChild(wrapper, row->cells[i].word);
+	    appendChild(wrapper, tmp->word);
 	}
       else if (row->line)
 	{
