@@ -147,15 +147,10 @@ trans-note =
   element xh:div {
     attribute class { "note" },
     id?,
-    trans-first-para,
-    (trans-next-para | trans-comment)*
+    element xh:p { ctr , marker-ref , htext } ,
+    (element xh:p { ctr , htext } 
+     | trans-comment)*
   }
-
-trans-first-para =
-  element xh:p { ctr , marker-ref , htext }
-
-trans-next-para = 
-  element xh:p { ctr , htext } 
 
 trans-unit = 
   element xh:p {
@@ -206,7 +201,7 @@ lab       = element xh:span { attribute class { "lab" },      htext }
 sc        = element xh:span { attribute class { "sc" },       htext }
 sign      = element xh:span { attribute class { "sign" },     htext }
 smaller   = element xh:span { attribute class { "smaller" },  htext }
-sup       = element xh:span { attribute class { "sup" },      htext }
+sup       = element xh:span { attribute class { "sup" | "up" },      htext }
 cun       = element xh:span { attribute class { "cun" },      htext }
 
 marker = 
@@ -248,15 +243,11 @@ new-labels =
 
 map =
   element xtr:map {
-    l2t*
+    element xtr:l2t {
+      attribute lid { xsd:IDREF },
+      attribute tid { xsd:IDREF }
+    }*
   }
-
-l2t = 
-  element xtr:l2t {
-    attribute lid { xsd:IDREF },
-    attribute tid { xsd:IDREF }
-  }
-
 </d:rnc>
 </d:schema>
 
