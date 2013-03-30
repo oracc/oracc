@@ -4,18 +4,12 @@
 #include <fname.h>
 #include <string.h>
 #include <hash.h>
-#include <list.h>
+#include <npool.h>
 #include "xmd.h"
 
 static Hash_table *xmd_vals = NULL;
-/*static Hash_table *xmd_keys = NULL; */
 static int in_cat_data;
-static char *xmd_pool = NULL;
-static int xmd_pool_used = 0;
-static int xmd_pool_alloced = 0;
-static List *xmd_pool_blocks = NULL;
-static List_node *xmd_pool_rover;
-static void xmd_pool_reset(void);
+static struct npool * xmd_pool = NULL;
 
 void
 xmd_init(void)
@@ -23,11 +17,12 @@ xmd_init(void)
   if (xmd_vals)
     {
       hash_free(xmd_vals, NULL);
-      if (xmd_pool_blocks)
-	xmd_pool_reset();
+      if (xmd_pool)
+	npool_term(xmd_pool);
     }
   
   xmd_vals = hash_create(1);
+  xmd_pool = npool_init();
 }
 
 void
@@ -38,53 +33,11 @@ xmd_term(void)
       hash_free(xmd_vals,NULL);
       xmd_vals = NULL;
     }
-  list_free(xmd_pool_blocks, list_xfree);
-  xmd_pool_blocks = NULL;
-  xmd_pool_rover = NULL;
-  xmd_pool_alloced = xmd_pool_used = 0;
-}
-
-static void
-xmd_pool_reset(void)
-{
-  xmd_pool_rover = xmd_pool_blocks->first;
-  xmd_pool = xmd_pool_rover->data;
-  xmd_pool_used = 0;
-}
-
-static const char *
-xmd_pool_copy(const char *s)
-{
-  const char *ret;
-  if (xmd_pool_used + strlen(s) + 1 > xmd_pool_alloced)
+  if (xmd_pool)
     {
-      if (xmd_pool_blocks == NULL)
-	{
-	  xmd_pool_blocks = list_create(LIST_SINGLE);
-	  xmd_pool = calloc(8192,1);
-	  xmd_pool_alloced = 8192;
-	  list_add(xmd_pool_blocks, xmd_pool);
-	  xmd_pool_rover = xmd_pool_blocks->first;
-	}
-      else
-	{
-	  if (xmd_pool_rover->next == NULL)
-	    {
-	      xmd_pool = calloc(8192,1);
-	      list_add(xmd_pool_blocks, xmd_pool);
-	      xmd_pool_rover = xmd_pool_blocks->last;
-	    }
-	  else
-	    {
-	      xmd_pool_rover = xmd_pool_rover->next;
-	      xmd_pool = xmd_pool_rover->data;
-	    }	      
-	}
-      xmd_pool_used = 0;
+      npool_term(xmd_pool);
+      xmd_pool = NULL;
     }
-  ret = strcpy(xmd_pool+xmd_pool_used, s);
-  xmd_pool_used += strlen(s)+1;
-  return ret;
 }
 
 static void
@@ -110,8 +63,8 @@ xmd_eH(void *userData, const char *name)
       else if (strcmp(name,"subfield")) /*FIXME: should do something
 					  with subfields */
 	hash_add(xmd_vals, 
-		 (unsigned char*)xmd_pool_copy(name), 
-		 (unsigned char *)xmd_pool_copy(charData_retrieve()));
+		 (unsigned char*)npool_copy(name, xmd_pool), 
+		 (unsigned char *)npool_copy(charData_retrieve(), xmd_pool));
     }
   else if (!strcmp(name,"images"))
     in_cat_data = 1;
