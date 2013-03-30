@@ -13,3 +13,4 @@ for a in `agg-list-public-projects.sh` ; do
     fi
 done
 sort -u -o $outxtf $outxtf
+chmod o+r $outxtf
