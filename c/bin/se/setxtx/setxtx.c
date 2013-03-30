@@ -166,6 +166,13 @@ startElement(void *userData, const char *name, const char **atts)
 	  loc_project(atts);
 	}
       break;
+    case 's':
+      if (!strcmp(name,"score"))
+	{
+	  reset(indexed_mm);
+	  loc_project(atts);
+	}
+      break;
     case 'l':
       if (name[1] == '\0')
 	{
