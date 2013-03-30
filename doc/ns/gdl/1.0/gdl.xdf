@@ -1218,7 +1218,7 @@ bracket and after the closing bracket.</p></div>
 <d:rnc>
 status.spans =
   attribute g:status {
-    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied"
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied" | "some"
   }
 </d:rnc>
 
@@ -1515,7 +1515,8 @@ nongrapheme =
     breakStart? , breakEnd? ,
     damageStart? , damageEnd? , emhyph? ,
     surroStart? , surroEnd? ,
-    statusStart? , statusEnd?
+    statusStart? , statusEnd? ,
+    status.flags?
     }
 </d:rnc>
 
