@@ -16,9 +16,9 @@
 <xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
 
 <xsl:param name="frag-id"/>
+<xsl:param name="host"/>
 <xsl:param name="line-id"/>
 <xsl:param name="project" select="''"/>
-<xsl:param name="proxy"/>
 <xsl:param name="trans" select="'en'"/>
 <xsl:param name="transonly" select="'false'"/>
 
@@ -143,6 +143,7 @@ hideNote(e,nid) {
       </xsl:choose>
       <xsl:call-template name="corpusview-project-pqid">
 	<xsl:with-param name="project" select="$project"/>
+	<xsl:with-param name="host" select="$host"/>
 	<xsl:with-param name="pqid" select="/*/@xml:id"/>
       </xsl:call-template>
     </body>

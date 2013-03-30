@@ -107,13 +107,13 @@
   </xsl:variable>
 
   <xsl:if test="$views-cuneify='true'">
-    <li><a href="javascript:viewsCuneify('{$project}','{$text}')">Cuneified</a></li>
+    <li><a href="javascript:cuneifyPopup('{$project}','{$text}')">Cuneified</a></li>
   </xsl:if>
   <xsl:if test="$views-proofing='true'">
     <li><a href="javascript:viewsProofing('{$project}','{$text}')">Proofing</a></li>
   </xsl:if>
   <xsl:if test="$views-TEI='true'">
-    <li><a href="/{$project}/tei/{$text}.xml">TEI</a></li>
+    <li><a target="_blank" href="/{$project}/tei/{$text}.xml">TEI</a></li>
   </xsl:if>
   <xsl:if test="string-length($views-buy-book) > 0">
     <li><a href="javascript:viewsBuyBook('{$views-buy-book}')">Buy the Book</a></li>
