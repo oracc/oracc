@@ -1083,7 +1083,15 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      exit(2);
 	    }
 	}
-      else if (is_flag[*l] && last_text_or_bound == text && !in_icomment)
+      else if (is_flag[*l] 
+	       && (last_text_or_bound == text 
+		   || (last_text_or_bound == meta
+		       && tokindex 
+		       && tokens[tokindex-1]->type != cell
+		       && tokens[tokindex-1]->type != cellspan
+		       && tokens[tokindex-1]->type != field
+		       ))
+	       && !in_icomment)
 	{
 	  int nflags;
 	  enum f_type type;
