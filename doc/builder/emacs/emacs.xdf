@@ -210,7 +210,7 @@ everything.</li>
 <li>Double-click <code>Path</code> variable</li>
 <li>Append your PuTTy install directory to the <code>Variable
 value</code> field, for example <br/>
-<code class="cookbook">;C:\Program Files\PuTTy</code> (or, for <strong>Windows 7</strong>, <code class="cookbook">;C:\Program Files (x86)\PuTTy></code>),
+<code class="cookbook">;C:\Program Files\PuTTy</code> (or, for <strong>Windows 7</strong>, <code class="cookbook">;C:\Program Files (x86)\PuTTy</code>),
 to the end of  the line. Remember the semi-colon first -
 It's important.</li>
 <li>Apply settings, get back to desktop.</li>
