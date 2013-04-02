@@ -10,7 +10,7 @@ noinst_LTLIBRARIES=librun.la
 librun_la_SOURCES = \
 	run.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,prj} \
 	-I@top_srcdir@/c/l2/include
 

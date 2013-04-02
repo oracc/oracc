@@ -15,10 +15,12 @@ SUBDIRS = \
 	xdftut \
 	xmlarch
 
-index.xml: 
-	$(ORDERXML)
+index.xml:
+	$(NO_ORDERXML)
 
 all-local: index.xml
+
+install-data-local:
 	$(HTMLINDEX) developer $(PREFIX)$(htmldir)/doc/builder
 
 clean-local:

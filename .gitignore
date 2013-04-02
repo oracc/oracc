@@ -1,4 +1,4 @@
-m.log
+*.log
 .deps
 *~
 *.o
@@ -9,8 +9,6 @@ m.log
 Makefile
 Makefile.in
 .libs
-rnv.log
-rnc2rng.log
 *.atf
 *.catf
 *.xtf

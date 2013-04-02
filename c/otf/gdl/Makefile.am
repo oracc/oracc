@@ -15,7 +15,7 @@ libgdl_la_SOURCES = \
 	gdlopts.c \
 	splitwords.c tokcheck.c tokenizer.c
 
-INCLUDES=\
+AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,lib,lng,run,ox} \
 	-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/l2/include \

@@ -1,0 +1,44 @@
+Prerequisites
+=============
+
+as of XCode 4.4.1 libtool/autoconf/automake are not in Mac dist so:
+
+  install base macports package for your OS version from macports.org
+  cd ~
+  . .profile
+  sudo port install autoconf
+  sudo port install automake
+  sudo port install libtool
+  sudo port install gdbm
+  sudo port install pcre
+  sudo port install msort
+  sudo port install qdbm
+
+(occasionally you may get an empty reply from server; just try again a few minutes later)
+
+---
+
+github clone oracc (or use dist)
+
+rm aclocal.m4 acinclude.m4
+
+glibtoolize
+aclocal
+automake
+autoconf
+./configure --prefix=/usr/local/oracc
+make
+make install
+
+
+Build notes:
+============
+
+For oracc-hyperestraier:
+
+  remove /usr/local/include/iconv.h and /usr/local/lib/*iconv* if you 
+  	 have /usr/include and /usr/bin iconv (if you get bad iconv symbols)
+
+  ??  install zlib (-lz)  ?? didn't do this for bfos1 install
+
+---

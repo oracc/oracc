@@ -37,6 +37,7 @@
     <choice>
       <ref name="esp-content-last-modified"/>
       <ref name="esp-link"/>
+      <ref name="esp-twitter"/>
       <ref name="esp-bookmark"/>
       <ref name="esp-glossary"/>
       <ref name="esp-index"/>
@@ -267,6 +268,32 @@
         <ref name="Inline.model"/>
       </element>
     </zeroOrMore>
+  </define>
+  <define name="esp-twitter">
+    <element name="link">
+      <group>
+        <attribute name="class">
+          <value>twitter-timeline</value>
+        </attribute>
+        <attribute name="dnt-data"/>
+        <attribute name="dnt-widget"/>
+      </group>
+      <optional>
+        <attribute name="hide-print">
+          <choice>
+            <value>yes</value>
+            <value>no</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="title"/>
+      </optional>
+      <attribute name="rel">
+        <value>external</value>
+      </attribute>
+      <ref name="Inline.model"/>
+    </element>
   </define>
   <define name="esp-page">
     <element name="page">

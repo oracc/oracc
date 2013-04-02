@@ -228,6 +228,7 @@
       <optional>
         <ref name="surroStart"/>
       </optional>
+      <ref name="g.meta"/>
       <choice>
         <ref name="dingir"/>
         <ref name="mister"/>
@@ -269,6 +270,7 @@
         <value>implied</value>
         <value>maybe</value>
         <value>supplied</value>
+        <value>some</value>
       </choice>
     </attribute>
   </define>
@@ -315,6 +317,7 @@
           <choice>
             <value>disambig</value>
             <value>empty</value>
+            <value>linebreak</value>
             <value>newline</value>
             <value>user</value>
           </choice>
@@ -383,6 +386,9 @@
       </optional>
       <optional>
         <ref name="statusEnd"/>
+      </optional>
+      <optional>
+        <ref name="status.flags"/>
       </optional>
     </element>
   </define>

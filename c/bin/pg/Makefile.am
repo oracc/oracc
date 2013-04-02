@@ -5,9 +5,11 @@
 # 
 #  $Id: Makefile.am,v 0.5 1997/09/08 13:01:43 sjt Exp $
 
-INCLUDES=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse
+AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse -I/opt/local/include
 
 AM_CFLAGS=-pedantic -g -Wall
+
+AM_LDFLAGS=-L/opt/local/lib
 
 bin_PROGRAMS=pgcsi pg pgu showcsi ptoqtest pd pg2
 
@@ -16,7 +18,7 @@ pgcsi_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 pg_SOURCES=pg.c sortinfo.c sort.c redblack.c sicache.c \
 	debug.c page.c outline.c ptoq.c
-pg_LDADD = @top_srcdir@/c/lib/liboracc.la -lgdbm
+pg_LDADD = -L/opt/local/lib @top_srcdir@/c/lib/liboracc.la -lgdbm
 
 pg2_SOURCES=pg2.c sortinfo.c sort.c redblack.c sicache.c \
 	debug.c page.c outline.c ptoq.c p2.c

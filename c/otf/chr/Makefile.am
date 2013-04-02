@@ -5,7 +5,7 @@ noinst_LTLIBRARIES=libchr.la
 libchr_la_SOURCES = atf2utf.c utf.c wcs.c atf.c utf8check.c charsets.c \
 	subdig.c accnum.c sexify.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{lib,lng}
 
 charsets.c: charsets.txt charsets.plx

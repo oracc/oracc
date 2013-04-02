@@ -41,7 +41,8 @@ r        = element g:r {
              xsd:string {
 	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
 
-n        = element g:n { form? , g.meta , n.model , mods* }
+n        = element g:n { form? , g.meta , sexified?, n.model , mods* }
+sexified = attribute sexified { text }
 
 # Modifiers
 mods     = modifier | allograph | formvar
@@ -82,6 +83,6 @@ o.binary =
 
 # Punctuation
 p.model =
-    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/" } , 
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
     g.meta , 
     (v|q|s|n|c)?

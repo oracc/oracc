@@ -46,14 +46,14 @@ status.flags =
 
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
-det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? ,
+det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
                     (dingir | mister | word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
 
 status.spans =
   attribute g:status {
-    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied"
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied" | "some"
   }
 
 paleography.attr =
@@ -71,7 +71,7 @@ proximity.attr =
 
 nongrapheme = 
   element g:x {
-    ( attribute g:type { "disambig" | "empty" | "newline" | "user" }
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
     | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
         , status.spans , opener? , closer? , break? , notemark?)),
     delim? , text? , varnum? ,
@@ -79,5 +79,6 @@ nongrapheme =
     breakStart? , breakEnd? ,
     damageStart? , damageEnd? , emhyph? ,
     surroStart? , surroEnd? ,
-    statusStart? , statusEnd?
+    statusStart? , statusEnd? ,
+    status.flags?
     }

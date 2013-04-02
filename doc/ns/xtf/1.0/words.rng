@@ -268,14 +268,16 @@
       <attribute name="g:type">
         <value>alternation</value>
       </attribute>
+      <optional>
+        <attribute name="g:delim">
+          <value>-</value>
+        </attribute>
+      </optional>
       <oneOrMore>
-        <ref name="n-grouped-word"/>
+        <element name="n:grouped-word">
+          <ref name="normwordword"/>
+        </element>
       </oneOrMore>
-    </element>
-  </define>
-  <define name="n-grouped-word">
-    <element name="n:grouped-word">
-      <ref name="normwordword"/>
     </element>
   </define>
   <define name="normwordword">

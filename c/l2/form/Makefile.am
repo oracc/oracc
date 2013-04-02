@@ -6,7 +6,7 @@ noinst_LTLIBRARIES=libf2.la
 
 libf2_la_SOURCES=f2_parse.c f2_serialize.c f2_sig.c f2_alias.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{gdl,lib,lng} \
 	-I@top_srcdir@/c/lib/sas \

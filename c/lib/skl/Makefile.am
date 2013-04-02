@@ -17,5 +17,5 @@ libskl_la_SOURCES = skl_copy.c skl_file.c skl_load.c sky_find.c smp_load.c
 #sklshow_SOURCES=sklshow.c
 #sklshow_LDADD=./libskl.la ../lib/liboracc.la
 
-INCLUDES=-I@top_srcdir@/c/include
+AM_CPPFLAGS=-I@top_srcdir@/c/include
 

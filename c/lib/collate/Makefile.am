@@ -4,7 +4,7 @@
 #  1997 under the GNU General Public License (see /psd/COPYING).
 # 
 #  $Id: Makefile.am,v 0.5 1997/09/08 13:01:43 sjt Exp $
-INCLUDES=-I@top_srcdir@/c/include
+AM_CPPFLAGS=-I@top_srcdir@/c/include
 
 COLLSRCS=unicode.c
 

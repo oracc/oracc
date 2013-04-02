@@ -6,7 +6,7 @@
 .g.c:
 	gperf -N$* -tT $< >$@
 
-INCLUDES=-I@top_srcdir@/c/bin/se \
+AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 	 -I@top_srcdir@/c/bin/se/setxtx \
 	-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \

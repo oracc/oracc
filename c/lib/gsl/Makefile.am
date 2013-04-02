@@ -7,6 +7,6 @@ noinst_LTLIBRARIES=libgsl.la
 
 libgsl_la_SOURCES = gsl.c
 
-INCLUDES=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse
+AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse
 
 # EXTRA_DIST=gsl.h

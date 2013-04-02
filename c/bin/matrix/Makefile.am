@@ -7,7 +7,7 @@
 
 AM_CFLAGS=-ansi
 
-INCLUDES=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/collate \
+AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/collate \
 	 -I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
 	 -I@top_srcdir@/c/otf/{otf,ox}
 

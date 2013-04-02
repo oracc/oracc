@@ -24,6 +24,8 @@ index.xml:
 	$(NO_ORDERXML)
 
 all-local: index.xml
+
+install-data-local:
 	mkdir -p $(DESTDIR)$(htmldir)/ns
 	$(HTMLINDEX) ns $(DESTDIR)$(htmldir)/ns
 

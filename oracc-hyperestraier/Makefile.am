@@ -19,7 +19,7 @@ libestraier_la_SOURCES = estraier.c estmtdb.c estnode.c md5.c
 
 x_LDADD = -liconv -lestraier -lqdbm -lm -lz
 
-INCLUDES = -I/usr/local/include -I/usr/include/qdbm @QDBMINCLUDE@
+AM_CPPFLAGS = -I/usr/local/include -I/usr/include/qdbm @QDBMINCLUDE@
 
 AM_CFLAGS = -fPIC @QDBMLIBDIR@
 

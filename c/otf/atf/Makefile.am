@@ -13,7 +13,7 @@ libatf_la_SOURCES = \
 	protocols.c text.c translate.c transtok.c \
 	xtfxcl.c wordmatrix.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,prj,run,ox} \
 	-I@top_srcdir@/c/l2 \
 	-I@top_srcdir@/c/l2/{bigrams,dsa,form,ilem,link,ngram,nsa,prop,psa,psus,sigs,word,xcl2,xli}

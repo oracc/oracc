@@ -5,7 +5,7 @@
 # 
 #  $Id: Makefile.lam,v 0.5 1997/09/08 13:01:43 sjt Exp $
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
 	-I@top_srcdir@/c/lib/{collate,sas} \

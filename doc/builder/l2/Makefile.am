@@ -15,5 +15,7 @@ index.xml:
 	$(NO_ORDERXML)
 
 all-local: index.xml
+
+install-data-local:
 	$(HTMLINDEX) builder/l2 $(DESTDIR)$(htmldir)/doc/builder/l2
 

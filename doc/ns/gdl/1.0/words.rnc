@@ -94,11 +94,9 @@ normword =
 normwordgroup = 
   element n:word-group {
      attribute g:type { "alternation" } ,
-     n-grouped-word+     
+     attribute g:delim { "-" }? ,
+     element n:grouped-word { normwordword }+
   }
-
-n-grouped-word = 
-  element n:grouped-word { normwordword }
 
 normwordword = ( text | (normseg | normgroup)+)
 

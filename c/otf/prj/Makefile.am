@@ -10,7 +10,7 @@ noinst_LTLIBRARIES=libprj.la
 libprj_la_SOURCES = \
 	proj_load.c set_project.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,run,ox} \
 	-I@top_srcdir@/c/l2/include
 

@@ -20,7 +20,7 @@ libnsa_la_SOURCES=nsa_init.c nsa_parse.c nsa_print.c nsa_mem.c sexnum.c \
 #	../atf/libatf.la ../lib/libpsd.la ../rnv/librnv.la \
 #	../skl/libskl.la ../sas/libsas.la ../expat/libexpat.la 
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2}
 

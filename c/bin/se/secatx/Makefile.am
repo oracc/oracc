@@ -4,7 +4,7 @@
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/expat/xmlparse \

@@ -18,6 +18,8 @@ index.xml: order.txt
 	$(ORDERXML)
 
 all-local: index.xml
+
+install-data-local:
 	$(HTMLINDEX) user $(DESTDIR)$(htmldir)/doc/user
 
 clean-local:

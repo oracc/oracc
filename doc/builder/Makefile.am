@@ -21,6 +21,8 @@ index.xml: order.txt
 	$(ORDERXML)
 
 all-local: index.xml
+
+install-data-local:
 	$(HTMLINDEX) builder $(DESTDIR)$(htmldir)/doc/builder
 
 clean-local:

@@ -1,8 +1,10 @@
 dnl $Id: configure.in,v 1.1 1998/11/05 03:26:43 s Exp s $
-AC_INIT(c/include/psd_base.h)
-AM_INIT_AUTOMAKE(oracc,1.0)
-LT_INIT()
-AM_CONFIG_HEADER(config.h)
+AC_INIT(Oracc,1.0)
+AC_LANG(C)
+AC_CONFIG_SRCDIR(c/include/psd_base.h)
+AM_INIT_AUTOMAKE
+LT_INIT
+AC_CONFIG_HEADERS(config.h)
 AM_CONDITIONAL(AMDEP,true)
 
 dnl Checks for programs.
@@ -99,8 +101,6 @@ AC_OUTPUT([Makefile
 	   c/otf/lng/Makefile
 	   c/otf/otf/Makefile
 	   c/otf/ox/Makefile
-	   c/otf/oxx/Makefile
-	   c/otf/oxx/xincludify.sh
 	   c/otf/prj/Makefile
 	   c/otf/run/Makefile
 	   c/l2/Makefile

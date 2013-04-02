@@ -27,4 +27,4 @@ EXTRA_libexpat_la_SOURCES = \
   xmlparse/xmlparse.h \
   xmlparse/hashtable.h
 
-INCLUDES = -I@top_srcdir@/c/lib/expat/xmltok
+AM_CPPFLAGS = -I@top_srcdir@/c/lib/expat/xmltok

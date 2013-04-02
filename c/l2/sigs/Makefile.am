@@ -8,7 +8,7 @@ libsigs_la_SOURCES=sigs_context.c sigs_lib.c sigs_check.c \
 	sigs_new.c sigs_lookup.c sigs_cache.c sigs_warn.c \
 	sigs_cof.c
 
-INCLUDES=-I@top_srcdir@/c/include \
+AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/lib \
 	-I@top_srcdir@/c/lib/sas \
