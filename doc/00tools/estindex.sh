@@ -2,8 +2,8 @@
 d=$1
 x=$1/estindex
 rm -fr $x
-estcmd create -tr -xs $x
+${ORACC}/bin/estcmd create -tr -xs $x
 find ${ORACC}/www/doc ${ORACC}/www/ns \
     | grep -v '\.[a-z0-9]\+\.' | grep -v cuneitab | \
-    estcmd gather $x -
+    ${ORACC}/bin/estcmd gather $x -
 chmod -R o+r $x

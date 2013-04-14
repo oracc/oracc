@@ -26,8 +26,9 @@ index.xml:
 all-local: index.xml
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(htmldir)/ns
-	$(HTMLINDEX) ns $(DESTDIR)$(htmldir)/ns
+	$(HTMLINDEX) ns $(DESTDIR)$(htmldir)/doc/ns
+	rm -f $(DESTDIR)$(htmldir)/ns
+	ln -sf $(DESTDIR)$(htmldir)/doc/ns $(DESTDIR)$(htmldir)/ns
 
 clean-local:
 	rm index*.xml

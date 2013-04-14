@@ -47,9 +47,11 @@ my %known_ignore = (
     'TODO'=> 1,
     'x' => 1
     );
-
+my %mam = ();
 my %oracc_am_files = ();
 my $verbose = 0;
+
+my $makefile_am = `pwd`; chomp $makefile_am; $makefile_am .= "/Makefile.am";
 
 if (-r 'oracc-am-files') {
     push @{$inst_files{'#ignore'}}, 'oracc-am-files';
@@ -67,16 +69,18 @@ if (-r 'oracc-am-files') {
     }
     close(OAM);
 }
-
 foreach my $f (grep /\.in$/, @files) {
     add_file($f);
 }
-
 foreach my $f (grep !/\.in$/, @files) {
     add_file($f);
 }
 
-emit_makefile_am();
+if (-r 'Makefile.am') {
+    check_makefile_am();
+} else {
+    emit_makefile_am();
+}
 
 #############################################################################################
 
@@ -119,6 +123,36 @@ add_file {
 }
 
 sub
+all_inst_files {
+    map { @{$inst_files{$_}} } keys %inst_files;
+}
+
+sub
+am_error {
+    warn "$makefile_am: ", @_, "\n";
+}
+
+sub
+check_makefile_am {
+    load_makefile_am();
+    foreach my $var (sort keys %inst_files) {
+	if ($mam{$var}) {
+	    foreach my $f (@{$inst_files{$var}}) {
+		am_error("$f not in Makefile's $var")
+		    unless exists ${$mam{$var}}{$f};
+	    }
+	} else {
+	    am_error("$var should be in Makefile.am but isn't")
+		unless $var =~ m/^#/;
+	}
+    }
+    foreach my $f (all_inst_files()) {
+	am_error("$f not in Makefile's EXTRA_DIST")
+	    unless exists ${$mam{'EXTRA_DIST'}}{$f};
+    }
+}
+
+sub
 emit_makefile_am {
     if (-r "Makefile.am") {
 	warn "oracc-misc-am.plx: remove $dir/Makefile.am before generating new one\n";
@@ -154,6 +188,30 @@ emit_makefile_am {
 	print "\t$last\n";
     }
     close(AM);
+}
+
+sub
+load_makefile_am {
+    my @mam = ();
+    open(MAM, 'Makefile.am');
+    while (<MAM>) { 
+	chomp;
+	s{#.*}{};             # suppress comments
+	next unless m{\S};  # skip blank lines
+	s#\\$##;
+	if (s{^\s+}{ }) {      # does the line start with spaces?
+	    $mam[-1] .= $_; # yes, continuation, add to last line
+	} else {
+	    push @mam, $_;   # no, add as new line
+	}
+    }
+    close(MAM);
+    foreach my $m (@mam) {
+	if ($m =~ /^(\S+)\s*=\s*(.*?)\s*$/) {
+	    my($var,$val) = ($1,$2);
+	    @{$mam{$var}}{grep(defined && length, split(/\s+/, $val))} = ();
+	}
+    }
 }
 
 1;
