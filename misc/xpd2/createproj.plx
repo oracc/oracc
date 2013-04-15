@@ -56,20 +56,19 @@ create_project {
 	$project_proj = $project;
 	$projperm = 'userperm';
     }
-
-    my $projuid = getpwnam($project_user);
-    if (!$projuid) {
-	die "createproj.plx: no such project user $project_user\n";
+    
+    if ($ENV{'ORACC_MODE'} ne 'single') {
+	my $projuid = getpwnam($project_user);
+	if (!$projuid) {
+	    die "createproj.plx: no such project user $project_user\n";
+	}
+	if ($projuid != $>) {
+	    die "createproj.plx: ${project_user}'s uid = $projuid but EUID = $>\n";
+	}
     }
-    if ($projuid != $>) {
-	die "createproj.plx: ${project_user}'s uid = $projuid but EUID = $>\n";
-    }
 
-    use Cwd;
-    my $cdir = getcwd();
-
-    if ($cdir ne "$ENV{'ORACC_HOME'}/$project") {
-	die "createproj.plx: must run createproj.plx -create from $ENV{'ORACC_HOME'}/$project not $cdir\n";
+    unless (chdir "$ENV{'ORACC_HOME'}/$project") {
+	die "createproj.plx: could not change directory to $ENV{'ORACC_HOME'}/$project\n";
     }
 
     open(INDEX,">00web/index.html");

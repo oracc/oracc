@@ -4,6 +4,8 @@ use Getopt::Long;
 
 # warn "oracc @ARGV\n";
 
+use constant { MODE_SINGLE=>0 , MODE_MULTI=>1 , USER_NO=>2 , USER_YES=>3 };
+
 my $oraccenv = $ENV{'ORACC'};
 my $oraccvar = $ENV{'ORACC_VAR'};
 
@@ -12,6 +14,9 @@ die "oracc: the environment variable 'ORACC' is not set. Stop.\n"
 
 die "oracc: the environment variable 'ORACC_VAR' is not set. Stop.\n"
     unless $oraccvar;
+
+my $oracc_mode = ($ENV{'ORACC_MODE'} eq 'single' ? MODE_SINGLE : MODE_MULTI);
+my $oracc_user = ($ENV{'ORACC_MODE'} eq 'yes' ? USER_YES : USER_NO);
 
 my $l2 = 'yes';
 
@@ -104,16 +109,20 @@ unless (exists $commands{$command} || exists $build_commands{$command}) {
 }
 
 my $oracc_uid = getpwnam('root');
+
 if (!defined($oracc_uid)) {
-    die "oracc: weird: there doesn't seem to be a 'root' user\n";
+    die("oracc: weird: there doesn't seem to be a 'root' user\n")
+        unless $ENV{'ORACC_MODE'} eq 'single';
 }
+
+
 my $project;
 my $project_user;
 
 ### All oracc root commands must be handled in this
 ### block.
 
-if ($oracc_uid == $>) {
+if ($oracc_mode==MODE_MULTI && $oracc_uid == $>) {
     if (exists $oracc_root_commands{$command}) {
 	die "oracc: unhandled `root' user command `$command'\n"
 	    unless $command =~ /^create|delete$/;
@@ -122,15 +131,15 @@ if ($oracc_uid == $>) {
 	    if (length($project) > 3 && $project =~ /^[a-z][a-z0-9]+$/) {
 		if ($command eq 'create') {
 		    if ($#ARGV > 0) {
-			xsystem '/usr/local/oracc/00/sys/newproj.sh', $project;
-			exec '/usr/local/oracc/00/sys/newinit.sh', $project, @ARGV;
+			xsystem '$oraccenv/00/sys/newproj.sh', $project;
+			exec '$oraccenv/00/sys/newinit.sh', $project, @ARGV;
 		    } elsif ($#ARGV < 0) {
-			exec '/usr/local/oracc/00/sys/newproj.sh', $project;
+			exec '$oraccenv/00/sys/newproj.sh', $project;
 		    } else {
 			die "oracc: `create' must take 1 or 3+ arguments, never 2\n";
 		    }
 		} elsif ($command eq 'delete') {
-		    exec '/usr/local/oracc/00/sys/delproj.sh', $project;
+		    exec '$oraccenv/00/sys/delproj.sh', $project;
 		} else {
 		    
 		}
@@ -143,24 +152,49 @@ if ($oracc_uid == $>) {
     } else {
 	die "oracc: the `$command' command cannot be run as root\n";
     }
-} else {
-    if (exists $oracc_root_commands{$command}) {
-	die "oracc: only the `root' user can run the `$command' command\n";
+} elsif (exists $oracc_root_commands{$command}) {
+    die("oracc: unhandled `root' user command `$command'\n")
+    unless $command =~ /^create|delete$/;
+    $project = shift @ARGV;
+    if ($project) {
+	if (length($project) > 3 && $project =~ /^[a-z][a-z0-9]+$/) {
+	    if ($command eq 'create') {
+		if ($#ARGV > 0) {
+		    xsystem "$bin/create-single.sh", $project;
+		    xsystem 'oracc', 'init', @ARGV;
+		    exit 0;
+		} elsif ($#ARGV < 0) {
+		    exec "$bin/create-single.sh", $project;
+		} else {
+		    die "oracc: `create' must take 1 or 3+ arguments, never 2\n";
+		}
+	    } elsif ($command eq 'delete') {
+		exec "$bin/delete-single.sh", $project;
+	    } else {
+		# no-op
+	    }
+	} else {
+	    die "oracc: project names must start with a-z then have 3 or more a-z0-9\n";
+	}
+    } else {
+	die "oracc: the `$command' command requires a project name argument\n";
     }
 }
 
 ### All oracc user commands must be handled in this
 ### block.
 if (exists $oracc_user_commands{$command}) {
-    my $oracc_uid = getpwnam('oracc');
+    $oracc_uid = getpwnam('oracc');
     if (!$oracc_uid) {
-	die "oracc: weird: there doesn't seem to be an 'oracc' user\n";
+	die "oracc: weird: there doesn't seem to be an 'oracc' user\n"
+	    unless $oracc_user == USER_NO;
     }
     if ($oracc_uid != $>) {
-	die "oracc: only the `oracc' user can run the `$command' command\n";
+	die "oracc: only the 'oracc' user can run the '$command' command\n"
+	    unless $oracc_user == USER_NO;
     }
     if ($command eq 'projectlist') {
-	exec "$oraccenv/bin/mk-projlist.sh";
+	exec "$bin/mk-projlist.sh";
     } else {
 	die "oracc: unhandled `oracc' user command `$command'\n";
     }
