@@ -1,3 +1,6 @@
+m4/*
+aclocal.m4
+log
 *.log
 .deps
 *~
@@ -13,6 +16,7 @@ Makefile.in
 *.catf
 *.xtf
 *.rng
+1.0/index.html
 doc/builder/bilinguals/html/
 doc/builder/cdli/html/
 doc/builder/dates/html/
@@ -79,6 +83,10 @@ doc/developer/uri/html/
 doc/developer/versions/html/
 doc/developer/xdftut/html/
 doc/developer/xmlarch/html/
+doc/install/basics/html/index.html
+doc/install/neworacc/html/
+doc/install/ports/html/
+doc/install/prereqs/html/
 doc/manager/filesystem/html/
 doc/manager/portals/esp/html/
 doc/manager/portals/espbuild/html/
