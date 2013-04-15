@@ -1,1 +1,5 @@
-lib/data needs g+w
+To install on mac use 'mac-install.sh'.
+
+OUSTANDING ISSUE FOR ORACC_MODE=multi installations?
+
+	   lib/data needs g+w
