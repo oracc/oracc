@@ -2,7 +2,7 @@
 use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
-use ORACC::G2::Util;
+use ORACC::L2GLO::Util;
 use Getopt::Long;
 
 my $lang = '';

@@ -2,7 +2,7 @@
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
-use ORACC::G2::Util;
+use ORACC::L2GLO::Util;
 use Getopt::Long;
 use Data::Dumper;
 
@@ -290,8 +290,8 @@ do_g2a {
 
 	    if (s/\s\@(\S+)//) {
 		my $rws = $1;
-		if (defined $ORACC::G2::Util::rws_map{$rws}) {
-		    $sig{'lang'} = $ORACC::G2::Util::rws_map{$rws};
+		if (defined $ORACC::L2GLO::Util::rws_map{$rws}) {
+		    $sig{'lang'} = $ORACC::L2GLO::Util::rws_map{$rws};
 		    if ($rws eq 'EG' 
 			&& (($header{'lang'} && $header{'lang'} ne 'sux')
 			    || ($arglang && $arglang ne 'sux'))) {
@@ -307,8 +307,8 @@ do_g2a {
 	    if ($sig{'form'}) {
 		my $instsig1 = "\@$proj\%$lang:$sig{'form'}=";
 		my $instsig2 = '';
-		foreach my $field (@ORACC::G2::Util::instfields) {
-		    $instsig2 .= "$ORACC::G2::Util::fieldchars{$field}$sig{$field}" if $sig{$field};
+		foreach my $field (@ORACC::L2GLO::Util::instfields) {
+		    $instsig2 .= "$ORACC::L2GLO::Util::fieldchars{$field}$sig{$field}" if $sig{$field};
 		}
 		
 		if ($cof == $COF_HEAD) {

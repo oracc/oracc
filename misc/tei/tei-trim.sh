@@ -1,5 +1,5 @@
 #!/bin/sh
-xmlfile=teiCorpus-`date --iso`.xml
+xmlfile=teiCorpus-`date +%Y-%m-%d`.xml
 xsltproc --xinclude \
     ${ORACC}/lib/scripts/trim-tei-project.xsl 02pub/tei-project.xml \
     >01tmp/$xmlfile

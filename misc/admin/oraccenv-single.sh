@@ -1,7 +1,7 @@
 #!/bin/sh
 umask 026
 ORACC=/usr/local/oracc
-ORACC_VAR=/var/local/oracc
+ORACC_VAR=$ORACC
 ORACC_HOME=~/oracc-projects
 ORACC_HOST=localhost
 ORACC_MODE=single

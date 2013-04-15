@@ -9,11 +9,12 @@ my $xcf_rnc = '@@ORACC@@/lib/schemas/xcf.rnc';
 my %builtins = (
     'oracc'=>'@@ORACC@@',
     'varoracc'=>'/var/local/oracc',
-    'datestamp'=>`date --iso-8601`,
+    'datestamp'=>`date +%Y-%m-%d`,
     'timestamp'=>`date`,
-    'dateversion'=>`date --iso-8601=seconds`,
+    'dateversion'=>`date +%Y-%m-%d:%HH:%MM:%ss`,
     );
 
+#### dateversion needs ADD HH:MM:ss
 sub
 load {
     my ($fn,$set_rnc) = (shift,shift);

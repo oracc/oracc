@@ -131,7 +131,7 @@ if ($sort) {
     close(O) if $inplace;
     exit 0;
 } elsif ($merge) {
-    my $d = `date --iso`;
+    my $d = `date +%Y-%m-%d`;
     $d =~ tr/-//d;
     chomp $d;
     if ($mlist) {

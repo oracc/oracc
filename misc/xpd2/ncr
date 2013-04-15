@@ -6,5 +6,6 @@ if [ "$project" == "" ]; then
 fi
 rm -f nohup.out
 echo ncr: Performing clean rebuild of $project ...
-/usr/bin/time -f "ncr elapsed time: %E" nohup o2-clean-build.sh
+#time -f "ncr elapsed time: %E" nohup o2-clean-build.sh
+time nohup o2-clean-build.sh
 echo `wc -l nohup.out | cut -d' ' -f1` lines written to nohup.out

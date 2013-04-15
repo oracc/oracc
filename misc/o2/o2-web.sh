@@ -3,7 +3,7 @@
 shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
 mkdir -p $webdir/t $webdir/cbd
-cp -u 02xml/config.xml $webdir/config.xml
+cp 02xml/config.xml $webdir/config.xml
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
