@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "atf.h"
+#include "../ox/globals.h"
 
 int
 u_charbytes(const unsigned char *g)
@@ -85,7 +86,8 @@ utf1char(const unsigned char *src,size_t *len)
       if (ret < 0)
 	{
 	  int i;
-	  fprintf(stderr,"%s:%d: bad utf8: mbtowc failed on:", file, lnum);
+	  fprintf(stderr,"%s:%d: bad utf8: mbtowc failed on:", 
+		  file, atf_cbd_err ? cbd_err_line : lnum);
 	  for (i = 0; i < todo; ++i)
 	    fprintf(stderr," %x",src[i]);
 	  fprintf(stderr,"\n");
@@ -140,7 +142,8 @@ utf2wcs(const unsigned char *src, size_t *len)
 
   if (nbytes == (size_t)-1)
     {
-      fprintf(stderr,"utf2wcs: conversion of '%s' failed\n", src);
+      fprintf(stderr,"%d: conversion of '%s' from UTF-8 to wide chars failed\n", 
+	      (atf_cbd_err ? cbd_err_line : lnum), src);
       return NULL;
     }
 

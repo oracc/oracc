@@ -45,7 +45,7 @@ gdl(unsigned char *atf, int frag_ok)
   struct node *res = elem(e_l,NULL,1,LINE);
   int saved_frag_ok = gdl_fragment_ok;
   gdl_fragment_ok = frag_ok;
-  sprintf(l_id_buf,"gdl.%8x.%04x",lid_base,lid++);
+  sprintf(l_id_buf,"gdl.%08x.%04x",lid_base,lid++);
   tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
 		    (unsigned char*)l_id_buf);
   gdl_fragment_ok = saved_frag_ok;
@@ -59,7 +59,7 @@ gdl_string(unsigned char *atf, int frag_ok)
   struct node *res = elem(e_l,NULL,1,LINE);
   int saved_frag_ok = gdl_fragment_ok;
   gdl_fragment_ok = frag_ok;
-  sprintf(l_id_buf,"gdl.%8x.%04x",lid_base,lid++);
+  sprintf(l_id_buf,"gdl.%08x.%04x",lid_base,lid++);
   /* fprintf(stderr,"gdl_string: %s\n",atf); */
   tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
 		    (unsigned char*)l_id_buf);

@@ -3,8 +3,11 @@
 void
 atf_init(void)
 {
-  setlocale(LC_ALL,LOCALE /*"en_GB.utf8"*/);
-  atf2utf_init();
+  char *locret = setlocale(LC_ALL,LOCALE /*"en_GB.utf8"*/);
+  if (locret)
+    atf2utf_init();
+  else
+    fprintf(stderr, "ox: failed to set LOCALE to %s; stop.", LOCALE);
 }
 
 void

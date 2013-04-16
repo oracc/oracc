@@ -23,6 +23,10 @@
 #include "inline.h"
 #include "lemline.h"
 
+#define block_isspace(c) ((c)<128&&isspace((c)))
+
+#define isspace(c) block_isspace(c)
+
 extern int lem_autolem, mylines;
 
 struct lno
@@ -1327,7 +1331,7 @@ block(unsigned char *line,unsigned char *eol,struct block_token *bp)
 		    {
 		      char lbuf[128], *lp;
 		      lp = (char*)l + strlen(cc(l));
-		      while (isspace(lp[-1]))
+		      while (isspace((unsigned char)lp[-1]))
 			--lp;
 		      if (*lp)
 			*lp = '\0';

@@ -1,4 +1,5 @@
 htmldir = $(prefix)/www
+schemadir = $(prefix)/www/lib/schemas
 
 HTMLINDEX = $(abs_top_builddir)/doc/00tools/mk-index-html.sh
 

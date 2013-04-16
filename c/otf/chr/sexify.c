@@ -70,5 +70,5 @@ sexify(int n, const char *aszdisz)
 	append(ret,disz,disz_str);
     }
   
-  return ret;
+  return &ret[0];
 }

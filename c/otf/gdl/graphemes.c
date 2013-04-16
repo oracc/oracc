@@ -12,6 +12,7 @@
 #include "warning.h"
 #include "tree.h"
 #include "atf.h"
+#include "sexify.h"
 #include "charsets.h"
 #include "gdl.h"
 #include "gsl.h"
@@ -267,7 +268,7 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	  *g++ = '\0';
 	  mp->type = g_a;
 	  datap = mp->data;
-	  while (isalnum(*g) && 'x' != *g)
+	  while (*g < 128 && isalnum(*g) && 'x' != *g)
 	    {
 	      /* FIXME: make this open-ended */
 	      if (datap - mp->data == MODS_MAX)
@@ -298,7 +299,7 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	      *g++ = '\0';
 	      *datap++ = '\\';
 	    }
-	  while (isalnum(*g) || '\\' == *g)
+	  while (*g < 128 && (isalnum(*g) || '\\' == *g))
 	    {
 	      /* FIXME: make this open-ended */
 	      if (datap - mp->data == MODS_MAX)
@@ -646,8 +647,16 @@ gparse(register unsigned char *g, enum t_type type)
 	    gcheck = (unsigned char *)g2utf(gcheck);
 	  g_utf = gcheck;
 	  gcheck = (unsigned char *)sname_to_check(gcheck);
-	  len = strlen((const char *)gcheck);
-	  g_end = &gcheck[len];
+	  if (gcheck)
+	    {
+	      len = strlen((const char *)gcheck);
+	      g_end = &gcheck[len];
+	    }
+	  else
+	    {
+	      gcheck = g_utf;
+	      g_end = g_utf+strlen(g_utf);
+	    }
 	  while (is_flag[((unsigned char *)g_end)[-1]])
 	    --g_end;
 	  *g_end = '\0';
@@ -1199,7 +1208,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  while (('@' == *endp && !u_isupper(endp+1)) || '~' == *endp)
 	    {
 	      ++endp;
-	      while (isalnum(*endp) && 'x' != *endp)
+	      while (*endp < 128 && isalnum(*endp) && 'x' != *endp)
 		++endp;
 	    }
 	  if ('(' == *endp)
@@ -1262,7 +1271,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		      while ('@' == *g || '~' == *g)
 			{
 			  ++g;
-			  while (isalnum(*g) && 'x' != *g)
+			  while (*g < 128 && isalnum(*g) && 'x' != *g)
 			    ++g;
 			}
 		    }

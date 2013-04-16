@@ -21,6 +21,7 @@ extern FILE *f_forms;
 extern FILE *f_graphemes;
 
 extern int atf_cbd_err;
+extern int cbd_err_line;
 extern int cbd_lem_sigs;
 extern int check_lem;
 extern int fuzzy_aliasing;
