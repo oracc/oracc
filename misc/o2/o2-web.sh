@@ -19,15 +19,18 @@ if [ "$otl" != "" ]; then
     fi
 fi
 mkdir -p $webdir/lists
-liblists=`echo -n 00lib/lists/*`;
+liblists=`(cd 00lib/lists ; ls)`
 if [ "$liblists" != "" ]; then
-    cp -a 00lib/lists/* $webdir/lists
+    cp -f 00lib/lists/* $webdir/lists
 fi
-for a in `ls 01bld/lists/* | egrep -v '.lst$'` ; do
-    cp -fp $a $webdir/lists
-done
+bldlists=`(cd 01bld/lists ; ls)`
+if [ "$bldlists" != "" ]; then
+    for a in `ls 01bld/lists/* | egrep -v '.lst$'` ; do
+	cp -f $a $webdir/lists
+    done
+fi
 if [ -r 01bld/lists/outlined.lst ]; then
-    cp -fp 01bld/lists/outlined.lst $webdir/lists
+    cp -f 01bld/lists/outlined.lst $webdir/lists
 fi
 l2p3.sh $webdir
 web-PQX-html.plx -list 01bld/lists/have-xtf.lst -webdir $webdir 2>01tmp/web-PQX.log
