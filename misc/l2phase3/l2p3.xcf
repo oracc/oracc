@@ -5,7 +5,7 @@
        project config and inherit from there -->
   <set var="use_gw" to="yes"/>
   <set var="proj_type" to="corpus"/>
-  <set var="scripts" to="/usr/local/oracc/lib/scripts"/>
+  <set var="scripts" to="$oracc/lib/scripts"/>
   <set var="webtype" to="cbd"/>
 
   <!-- webdir is set from l2-glomanager -->
@@ -80,16 +80,16 @@
   <!-- move next three to l2p2? -->
 
   <set var="process">
-    <key k="action" to="mkdir -p /var/local/oracc/pub/$project/cbd/$cbdlang"/>
+    <key k="action" to="mkdir -p $varoracc/pub/$project/cbd/$cbdlang"/>
   </set>
 
   <set var="process">
-    <key k="action"   to="/usr/local/oracc/bin/secbdx"/>
+    <key k="action"   to="$oracc/bin/secbdx"/>
     <key k="args"     to="-p $basename -l $cbdlang 01bld/$cbdlang/articles.xml"/>
   </set>
 
   <set var="process">
-    <key k="action" to="chmod -R o+r /var/local/oracc/pub/$project/cbd/$cbdlang"/>
+    <key k="action" to="chmod -R o+r $varoracc/pub/$project/cbd/$cbdlang"/>
   </set>
 
 </xcf>

@@ -5,9 +5,9 @@
        project config and inherit from there -->
   <set var="use_gw" to="yes"/>
   <set var="proj_type" to="corpus"/>
-  <set var="scripts" to="/usr/local/oracc/lib/scripts"/>
+  <set var="scripts" to="$oracc/lib/scripts"/>
 
-<!--  <xi:include href="/usr/local/oracc/lib/config/cbd-var.xcf"/> -->
+<!--  <xi:include href="$oracc/lib/config/cbd-var.xcf"/> -->
 
   <!--processing phases-->
 
@@ -56,7 +56,7 @@
   </set>
 
   <set var="process">
-    <key k="action" to="/usr/local/oracc/bin/l2p2-rewrite-ids.plx"/>
+    <key k="action" to="$oracc/bin/l2p2-rewrite-ids.plx"/>
     <key k="args"   to="$cbdlang"/>
   </set>
 
