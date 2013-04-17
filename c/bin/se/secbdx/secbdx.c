@@ -39,7 +39,7 @@ Dbi_index *dip;
 
 static int aliases_only = 0;
 
-static char curr_id[10];
+static char curr_id[32];
 int one_big_stdin = 0;
 extern int branch_id;
 
@@ -163,7 +163,7 @@ endElement(void *userData, const char *name)
 
 /*#define HYPHEN(c) ((c)=='.'||(c)=='-'||(c)==':'||(c)=='+'||(c)=='*') */
 #define HYPHEN(c) ((c)=='-')
-#define SPACE(c)  (isspace(c)||(c)==','||(c)==';')
+#define SPACE(c)  ((c <  128)&&(isspace(c)||(c)==','||(c)==';'))
 #define JUNK(c)   ((c)=='['||(c)==']'||(c)=='?'||(c)=='!')
 
 static void
