@@ -49,6 +49,7 @@ est_init(const char *project, const char *index)
   estp->filename = (const char*)npool_copy((const unsigned char *)
 					   se_file(project, index, "keys.est"), 
 					   estp->p);
+  return estp;
 }
 
 void
