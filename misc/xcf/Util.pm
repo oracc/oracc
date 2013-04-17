@@ -1,14 +1,14 @@
 package ORACC::XCF::Util;
 use warnings; use strict;
-use lib '@@ORACC@@/lib';
+use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::NS;
 
-my $xcf_rnc = '@@ORACC@@/lib/schemas/xcf.rnc';
+my $xcf_rnc = "$ENV{'ORACC'}/lib/schemas/xcf.rnc";
 
 my %builtins = (
-    'oracc'=>'@@ORACC@@',
-    'varoracc'=>'/var/local/oracc',
+    'oracc'=>$ENV{'ORACC'},
+    'varoracc'=>$ENV{'ORACC_VAR'},
     'datestamp'=>`date +%Y-%m-%d`,
     'timestamp'=>`date`,
     'dateversion'=>`date +%Y-%m-%d:%HH:%MM:%ss`,
