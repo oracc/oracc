@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 #include <stdio.h>
 #include "psd_base.h"
@@ -56,6 +56,8 @@ static void coerce_document_section(struct cdt_node *np);
 void
 cdt_reader_init(void)
 {
+  if (!output_dir)
+    output_dir = "01tmp";
   pictures_fname = malloc(strlen(output_dir)+strlen("odtpictures.lst") + 2);
   sprintf(pictures_fname, "%s/%s", output_dir, "odtpictures.lst");
   if (!curr_section_stack)
@@ -242,6 +244,13 @@ process_cdt_list(struct run_context *run,
 		      curr_section = list_pop(curr_section_stack);
 		      goto ret;
 		    }
+#if 0
+		  else if (np->code == cdt_xml_file)
+		    {
+		      (void)list_pop(nodelist); /* first discard the @xmlfile node */
+		      cdt_xinclude(run, (const char *)np->text, nodelist, metalist,np);
+		    }
+#endif
 		  else if (np->code == cdt_include)
 		    {
 		      (void)list_pop(nodelist); /* first discard the @include node */

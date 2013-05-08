@@ -26,6 +26,12 @@
   </xsl:call-template>
 </xsl:param>
 
+<xsl:param name="render-hyphenate-phondets">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="option" select="'render-hyphenate-phondets'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <xsl:param name="render-inter-det-char">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="option" select="'render-inter-det-char'"/>
@@ -66,13 +72,28 @@
 </xsl:template>
 
 <xsl:template match="g:v|norm:s">
-  <xsl:variable name="lang" select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+  <xsl:variable name="lang1" select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+  <xsl:variable name="lang">
+    <xsl:choose>
+      <xsl:when test="contains($lang1, '-')">
+	<xsl:value-of select="substring-before($lang1,'-')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$lang1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="g-d" select="ancestor::g:d[1]"/>
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d">
+<!--      <xsl:message>render-hyphenate-phondets=<xsl:value-of select="$render-hyphenate-phondets"/></xsl:message> -->
       <text:span text:style-name="sup">
 	<xsl:choose>
-	  <xsl:when test="ancestor::g:d[@g:role='phonetic']">
+	  <xsl:when test="ancestor::g:d[1][@g:role='phonetic']">
+	    <xsl:if test="$g-d and $render-hyphenate-phondets = 'yes' and $g-d/@g:pos='post'">
+	      <xsl:text>-</xsl:text>
+	    </xsl:if>
 	    <text:span text:style-name="{$lang}">
 	      <xsl:call-template name="render-g"/>
 	    </text:span>
@@ -84,8 +105,11 @@
 	<text:span text:style-name="r">
 	  <xsl:call-template name="render-flags"/>
 	</text:span>
-	<xsl:value-of select="@g:delim"/>
+	<xsl:if test="$g-d and $render-hyphenate-phondets = 'yes' and $g-d/@g:pos=pre">
+	  <xsl:text>-</xsl:text>
+	</xsl:if>
       </text:span>
+      <xsl:value-of select="@g:delim"/>
     </xsl:when>
     <xsl:otherwise>
       <text:span>
@@ -515,7 +539,7 @@
 
 <xsl:template name="gdl-w">
   <xsl:param name="allow-space" select="true()"/>
-  <xsl:variable name="lang" select="ancestor::*[@xml:lang][1]/@xml:lang"/>
+  <xsl:variable name="lang1" select="ancestor::*[@xml:lang][1]/@xml:lang"/>
 
   <xsl:variable name="lnodes" select="key('lnodes',@xml:id)"/>
   <xsl:variable name="xnode" select="key('xnodes',$lnodes[1]/@xml:id)"/>

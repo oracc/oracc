@@ -5,7 +5,7 @@
  $Id: alias.c,v 0.5 1997/09/08 14:50:18 sjt Exp $
 */
 #include <psd_base.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <messages.h>
 #include <hash.h>
 #include <dbi.h>

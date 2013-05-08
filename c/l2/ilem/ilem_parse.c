@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <psd_base.h>
 #include <hash.h>
 #include <list.h>

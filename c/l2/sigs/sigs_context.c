@@ -5,7 +5,7 @@
 #include <npool.h>
 #include <memblock.h>
 #include <loadfile.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "warning.h"
 #include "globals.h"
 #include "xpd2.h"

@@ -7,7 +7,7 @@
   <typeId id="XDF" uri="xdf.rnc"/>
 
   <namespace ns="http://oracc.org/ns/esp/1.0" typeId="ESP"/>
-  <typeId id="ESP" uri="esp.rnc"/>
+  <typeId id="ESP" uri="esp2.rnc"/>
 
   <namespace ns="http://oracc.org/ns/esp-reuse/1.0" typeId="ESP-REUSE"/>
   <typeId id="ESP-REUSE" uri="esp-reuse.rnc"/>

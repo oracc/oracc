@@ -20,7 +20,7 @@ index.xml: order.txt
 all-local: index.xml
 
 install-data-local:
-	$(HTMLINDEX) user $(DESTDIR)$(htmldir)/doc/user
+	$(HTMLINDEX) user $(DESTDIR)$(htmldir)/doc/user $(top_srcdir)
 
 clean-local:
 	rm index*.xml

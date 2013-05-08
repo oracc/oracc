@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <gdbm.h>
 #include <psd_base.h>
 #include <hash.h>

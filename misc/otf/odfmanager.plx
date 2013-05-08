@@ -23,7 +23,7 @@ GetOptions (
 @files = @ARGV;
 
 if ($list && $#files >= 0) {
-    die "odtmanager.plx: can't use -list and give filenames on command line\n";
+    die "odfmanager.plx: can't use -list and give filenames on command line\n";
 }
 
 if (!$list && $#files < 0) {
@@ -39,7 +39,11 @@ if (!$title) {
     $title = ORACC::XPD::Util::option('name');
 }
 
-$driver = make_driver();
+if ($#files == 0) {
+    $driver = $files[0];
+} else {
+    $driver = make_driver();
+}
 
 if ($driver_only) {
     print "$driver\n";
@@ -86,7 +90,7 @@ make_driver {
     if ($#listfiles == 0 && $listfiles[0] =~ /\.otf/) {
 	system 'cp', $listfiles[0], $d;
     } else {
-	open(D,">$d") || die "odtmanager.plx: can't create driver `$d'\n";
+	open(D,">$d") || die "odfmanager.plx: can't create driver `$d'\n";
 	select D;
 	print "\@document\n";
 	print "\@project $project\n";
@@ -128,7 +132,7 @@ sub
 list2files {
     my $l = shift;
     my @f = ();
-    open(L,$l) || die "odtmanager.plx: can't open $l\n";
+    open(L,$l) || die "odfmanager.plx: can't open $l\n";
     while (<L>) {
 	chomp;
 	if (/\.lst$/) {
@@ -138,7 +142,7 @@ list2files {
 	} elsif (/\.atf$/) {
 	    push @f, atf2files($_);
 	} else {
-	    warn "odtmanager.plx: unknown file type `$_'\n";
+	    warn "odfmanager.plx: unknown file type `$_'\n";
 	}
     }
     @f;

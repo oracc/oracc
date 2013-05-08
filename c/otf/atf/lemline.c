@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "hash.h"
 #include "warning.h"
 #include "tree.h"
@@ -279,28 +279,36 @@ lem_unform(void)
 static void
 lem_f2_serialize(FILE *fp, struct f2 *f2)
 {
-  if (f2->norm || f2->cf)
+  if (BIT_ISSET(f2->flags, F2_FLAGS_NOT_IN_SIGS))
     {
-      if (strncmp((char*)f2->lang,"sux",3) && f2->norm)
-	fputs((char*)f2->norm,fp);
+      if (f2->pos)
+	{
+	  fputs((char*)f2->pos,fp);
+	}
       else
-	fputs((char*)f2->cf,fp);
-      if (f2->sense)
-	fprintf(fp,"[%s]",(char*)f2->sense);
-      else
-	fprintf(fp,"[%s]",f2->gw);
-      if (f2->epos && strcmp((char*)f2->pos,(char*)f2->epos))
-	fprintf(fp,"'%s",f2->epos);
-      else
-	fputs((char*)f2->pos,fp);
-    }
-  else if (f2->pos)
-    {
-      fputs((char*)f2->pos,fp);
+	fputs("X",fp);
     }
   else
     {
-      fputs("X",fp);
+      if (f2->norm || f2->cf)
+	{
+	  if (strncmp((char*)f2->lang,"sux",3) && f2->norm)
+	    fputs((char*)f2->norm,fp);
+	  else
+	    fputs((char*)f2->cf,fp);
+	  if (f2->sense)
+	    fprintf(fp,"[%s]",(char*)f2->sense);
+	  else
+	    fprintf(fp,"[%s]",f2->gw);
+	  if (f2->epos && strcmp((char*)f2->pos,(char*)f2->epos))
+	    fprintf(fp,"'%s",f2->epos);
+	  else
+	    fputs((char*)f2->pos,fp);
+	}
+      else
+	{
+	  fputs("X",fp);
+	}
     }
 }
 

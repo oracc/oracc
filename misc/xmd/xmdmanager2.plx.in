@@ -35,6 +35,7 @@ my %vid = ();
 my @vid = ();
 
 my $config = '';
+my %extra_catd = ();
 my $no_xmd = 0;
 my $onebigfile = 1;
 my $output_all = 1;
@@ -143,6 +144,8 @@ unless ($project eq 'cdli') {
 if (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
 }
+
+extra_init();
 
 my $pub_cat = `oraccopt . catalog-publish`;
 foreach my $c (split(/,/,$pub_cat)) {
@@ -445,9 +448,9 @@ if ($onebigfile) {
     if (scalar keys %valtab) {
 	my $xproject = ($project ? $project : 'cdli');
 	my $l2 = ($l2 ? '-2' : '');
-	system 'mkdir', '-p', "/var/local/oracc/pub/$project/cat";
+	system 'mkdir', '-p', "@@ORACC@@/pub/$project/cat";
 	if ($l2) {
-	    dump_vid("/var/local/oracc/pub/$project/cat/vid.dat");
+	    dump_vid("@@ORACC@@/pub/$project/cat/vid.dat");
 	}
 	#FIXME: does this work with subprojects?
 	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
@@ -1372,6 +1375,10 @@ xmd_end {
 #    warn "$id => $valtab{$id}";
     @currvt = ();
     dump_images($id);
+
+    ### This is where to insert extra fields
+    extra_meta($id);
+
 #    print '</cat>';
 #    print "</xmd>";
     push @{$xmd_outputs{$curr_xmd}}, '</cat></xmd>';
@@ -1609,6 +1616,35 @@ load_designation_sort_codes {
     }
     close(IN);
     $project_designation_codes = 1;
+}
+
+sub
+extra_init {
+    my @cat = (<00lib/cat.d/*.xml>);
+    foreach my $cat (@cat) {
+	my $xcat = load_xml($cat) || warn "xmdmanager.plx: failure loading $cat: $!\n";
+	if ($xcat) {
+	    foreach my $r ($xcat->getDocumentElement()->childNodes()) {
+		next unless $r->isa('XML::LibXML::Element');
+		my $xid = xid($r);
+		my @tmp = ();
+		foreach my $c ($r->childNodes()) {
+		    next unless $c->isa('XML::LibXML::Element');
+		    my $t = $c->toString(0);
+		    $t =~ s/\sxmlns:xmd=\".*?\"//;
+		    push @tmp, $t;
+		}
+		push @{$extra_catd{$xid}}, @tmp;
+	    }
+	}
+    }
+}
+
+sub
+extra_meta {
+    if (defined $extra_catd{$_[0]}) {
+	push @{$xmd_outputs{$curr_xmd}}, @{$extra_catd{$_[0]}};
+    }
 }
 
 1;

@@ -6,7 +6,7 @@ use ORACC::BIB::QueryContext;
 use Getopt::Long;
 
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
-my $dbpath = '/var/local/oracc/bib';
+my $dbpath = '@@ORACC@@/bib';
 my @dblist = ();
 my @ixlist = ();
 my $html_results = 0;

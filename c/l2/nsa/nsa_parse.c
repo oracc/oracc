@@ -1,5 +1,5 @@
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "nsa.h"
 
 static nsa_system_override = NULL;

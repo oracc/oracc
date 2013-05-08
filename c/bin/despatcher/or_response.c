@@ -69,8 +69,8 @@ corpus(void)
 {
   if (project)
     {
-      char *projp2 = malloc(1+strlen(project)+strlen("/var/local/oracc/xml//p2.xml"));
-      sprintf(projp2, "/var/local/oracc/xml/%s/p2.xml", project);
+      char *projp2 = malloc(1+strlen(project)+strlen("/usr/local/oracc/xml//p2.xml"));
+      sprintf(projp2, "/usr/local/oracc/xml/%s/p2.xml", project);
       if (!access(projp2,R_OK))
 	{
 	  const char *sess = create_session();
@@ -90,7 +90,7 @@ corpus(void)
 	}
     }
   else
-    cat_html_file("/var/local/oracc/www/corpus.html");
+    cat_html_file("/usr/local/oracc/www/corpus.html");
 }
 
 void
@@ -167,8 +167,8 @@ statistics(void)
   if (project)
     {
       char *data;
-      data = malloc(strlen(project) + strlen("/var/local/oracc/xml//project-data.xml") + 1);
-      sprintf(data, "/var/local/oracc/xml/%s/project-data.xml", project);
+      data = malloc(strlen(project) + strlen("/usr/local/oracc/xml//project-data.xml") + 1);
+      sprintf(data, "/usr/local/oracc/xml/%s/project-data.xml", project);
       print_hdr();
       execl("/usr/bin/xsltproc", "xsltproc", stats_html, data, NULL);
       do404();
@@ -189,7 +189,7 @@ void
 tei(const char *item)
 {
   char buf[1024];
-  sprintf(buf,"/var/local/oracc/www/%s/tei/%s.xml",project,item);
+  sprintf(buf,"/usr/local/oracc/www/%s/tei/%s.xml",project,item);
   print_hdr_xml();
   fflush(stdout);
   execl("/bin/cat", "cat", buf, NULL);

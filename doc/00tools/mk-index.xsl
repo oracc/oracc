@@ -11,6 +11,7 @@
 
 <xsl:param name="doco-type"/>
 <xsl:param name="ns" select="false()"/>
+<xsl:param name="prefix"/>
 
 <xsl:include href="dirname.xsl"/>
 
@@ -19,9 +20,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <title>Oracc <xsl:value-of select="$doco-type"/> Documentation</title>
-<link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
-<script src="/js/oraccdoc.js" type="text/javascript"><xsl:text>
-</xsl:text></script>
+<link rel="stylesheet" type="text/css" href="{$prefix}/css/oraccdoc.css"/>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -41,8 +40,8 @@
   <div class="form">
     <form method="get" action="http://oracc.museum.upenn.edu/doc/find" id="form1">
       <p class="buttonbar"> <!-- tabindex="1" etc; accesskey="0" etc -->
-	<a href="/readme.html"><span class="button">README</span></a
-	><a href="/"><span class="button">Oracc Home</span></a
+	<a href="{$prefix}/readme.html"><span class="button">README</span></a
+	><a href="{$prefix}/"><span class="button">Oracc Home</span></a
 	><a href="javascript:void()" 
 	onclick="document.forms['form1'].submit(); return false;"><span class="button">SEARCH DOCUMENTATION</span></a
 	><input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""
@@ -52,11 +51,11 @@
   <div class="docsocial">
     <p>
       <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page"
-	 class="facebook"><img width="19" height="19" src="/img/f_logo.png"/></a
+	 class="facebook"><img width="19" height="19" src="{$prefix}/img/f_logo.png"/></a
 	 ><a href="http://oracc.blogspot.com" title="Oracc Blog"
-	 class="blogspot"><img width="19" height="19" src="/img/blogspot-icon.png"/></a
+	 class="blogspot"><img width="19" height="19" src="{$prefix}/img/blogspot-icon.png"/></a
 	 ><a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)"
-	 class="twitter"><img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/></a
+	 class="twitter"><img width="22" height="22" src="{$prefix}/img/twitter-bird-light-bgs.png"/></a
 	 ><a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-by-sa"><img height="20" alt="Creative Commons License"
 	 src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a
 	 ></p>

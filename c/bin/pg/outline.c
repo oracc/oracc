@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "xmlutil.h"
 #include "sortinfo.h"
 #include "pg.h"

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 #include <f2.h>
 #include <ilem_form.h>

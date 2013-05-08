@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "cdt.h"
 #include "loadfile.h"
 

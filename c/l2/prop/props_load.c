@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "npool.h"
 #include "hash.h"
 #include "runexpat.h"

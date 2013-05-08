@@ -8,6 +8,9 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png cdli-icon.png cdli.png
 html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico
 noinst_DATA = httpd.conf robots.txt
 
+httpd.conf: httpd.conf.in
+	$(ORACCIFY) httpd.conf.in
+
 htmlview.plx: htmlview.plx.in
 	$(ORACCIFY) htmlview.plx.in
 

@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "warning.h"
 #include "f2.h"
 #include "npool.h"

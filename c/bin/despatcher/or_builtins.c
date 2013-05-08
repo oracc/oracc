@@ -100,7 +100,7 @@ or_builtins(void)
 static void
 as_handler(const char *session)
 {
-  sed_project("/var/local/oracc/www/p2/as-base.xml", session);
+  sed_project("/usr/local/oracc/www/p2/as-base.xml", session);
 }
 
 static void
@@ -137,7 +137,7 @@ find(const char *project, const char *phrase)
   if (project)
     setenv("ORACC_PROJECT", project, 1);
   setenv("QUERY_STRING", make_find_phrase(NULL,phrase,0), 1);
-  execl("/var/local/oracc/www/cgi-bin/estseek.cgi", "/var/local/oracc/www/cgi-bin/estseek.cgi", NULL);
+  execl("/usr/local/oracc/www/cgi-bin/estseek.cgi", "/usr/local/oracc/www/cgi-bin/estseek.cgi", NULL);
   do404();
 }
 

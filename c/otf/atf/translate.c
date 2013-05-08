@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "cdf.h"
 #include "gdl.h"
 #include "nonx.h"
@@ -434,11 +434,14 @@ trans_finish_labels(struct node *text, struct translation *tp)
 	    last_col = text; /* lastChild(text) gives l/nonx level */
 	  else
 	    last_col = lastChild(lastChild(lastChild(text)));
-	  for (j = last_col->children.lastused-1; j>=0; --j)
+	  if (last_col)
 	    {
-	      xid = (const char*)getAttr(last_col->children.nodes[j], "xml:id");
-	      if (*xid)
-		break;
+	      for (j = last_col->children.lastused-1; j>=0; --j)
+		{
+		  xid = (const char*)getAttr(last_col->children.nodes[j], "xml:id");
+		  if (*xid)
+		    break;
+		}
 	    }
 #endif
 	  if (xid && *xid)
@@ -1079,13 +1082,24 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
   else
     {
       struct node *cc = p;
-      if (!nocellspan)
+      while (isspace(*text))
+	++text;
+      if (*text)
 	{
-	  cc = appendChild(p,elem(e_xh_span,NULL,lnum,CELL));
-	  setClass(cc,"cell");
-	  appendAttr(cc,attr(a_xtr_span,ucc("1")));
+	  if (!nocellspan)
+	    {
+	      cc = appendChild(p,elem(e_xh_span,NULL,lnum,CELL));
+	      setClass(cc,"cell");
+	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
+	    }
+	  (void)trans_inline(cc,text,NULL,1);
 	}
-      (void)trans_inline(cc,text,NULL,1);
+      else
+	{
+	  /* unwind the spurious innerp node */
+	  p = p->parent;
+	  removeLastChild(p);
+	}
     }
  stop:
   if (lnum == start_lnum)
@@ -1285,7 +1299,7 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
   unsigned char *s = text, *start = text;
   int ocurly = 0, nested_curly = 0;
 
-  discretionary(s);
+  /*  discretionary(s); now a no-op */
 
   while (*s)
     {

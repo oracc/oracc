@@ -1,0 +1,49 @@
+The oracc conf.httpd requires a few tweaks and the
+oracc config info.
+
+Tweaks:
+
+	AddType application/xml xml xsl
+
+	(This is needed for XSLTForms.)
+
+Here is the virtual host block for Oracc:
+
+# Use name-based virtual hosting.
+#
+NameVirtualHost *:80
+
+# NOTE: NameVirtualHost cannot be used without a port specifier 
+# (e.g. :80) if mod_ssl is being used, due to the nature of the
+# SSL protocol.
+#
+<VirtualHost *:80>
+    ServerAdmin stinney
+    ServerName localhost
+    ErrorLog logs/oracc-error_log
+    CustomLog logs/oracc-access_log common
+
+    DocumentRoot "/Library/WebServer/Documents/"
+    <Directory "/Library/WebServer/Documents/">
+    	       Options Indexes FollowSymLinks
+    	       AllowOverride None
+    	       Order allow,deny
+   	       Allow from all
+    </Directory>
+
+    ScriptAlias /cgi-bin/ "/Library/WebServer/CGI-Executables/"
+    <Directory "/Library/WebServer/CGI-Executables/">
+    	       AllowOverride None
+    	       Options +ExecCGI
+    	       Order allow,deny
+    	       Allow from all
+     </Directory>
+
+     RewriteEngine on
+     RewriteLog "logs/oracc-rewrite.log"
+     RewriteLogLevel 0
+
+     RewriteRule ^(/.*)$ /cgi-bin/oracc-despatcher$1 [T=application/x-httpd-cgi,L]
+</VirtualHost>
+
+ 

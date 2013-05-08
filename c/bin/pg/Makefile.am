@@ -5,6 +5,8 @@
 # 
 #  $Id: Makefile.am,v 0.5 1997/09/08 13:01:43 sjt Exp $
 
+include ../../../oracc-am-rules.txt
+
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse -I/opt/local/include
 
 AM_CFLAGS=-pedantic -g -Wall
@@ -36,3 +38,6 @@ ptoqtest_LDADD=@top_srcdir@/c/lib/liboracc.la -lgdbm
 showcsi_SOURCES=showcsi.c sortinfo.c
 
 EXTRA_DIST=*.h sk_lookup.c pg_load.c
+
+sortinfo.c: sortinfo.c.in
+	$(ORACCIFY) sortinfo.c.in

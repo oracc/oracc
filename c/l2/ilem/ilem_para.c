@@ -1,5 +1,5 @@
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "warning.h"
 #include "xcl.h"
 #include "ilem_para.h"

@@ -13,7 +13,7 @@ ox_options(int argc, char **argv)
   while (1)
     {
       int optch = getopt(argc,argv,
-			 "$+a:Ab:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNo:OpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?");
+			 "$+a:Ab:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNo:OpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?1");
       if (optch < 0)
 	break;
       switch (optch)
@@ -191,6 +191,9 @@ ox_options(int argc, char **argv)
 	  break;
 	case '?':
 	  help();
+	case '1':
+	  odt_serial = 1;
+	  break;
 	default:
 	  fprintf(stderr,"unhandled option %c",optch);
 	  help();

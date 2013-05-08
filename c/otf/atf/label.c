@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "cdf.h"
 #include "block.h"
 #include "blocktok.h"

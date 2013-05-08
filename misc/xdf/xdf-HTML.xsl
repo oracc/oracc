@@ -17,6 +17,7 @@
 
 <xsl:param name="parent-title"/>
 <xsl:param name="parent-href"/>
+<xsl:param name="prefix"/>
 <xsl:param name="rev-date"/>
 
 <xsl:variable name="href_in"  select="' #:()[]+-,&#xa;'"/>
@@ -239,8 +240,8 @@
   </xsl:variable>
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title><xsl:value-of select="$title"/></title>
-  <link rel="stylesheet" type="text/css" href="/css/oraccdoc.css"/>
-  <script src="/js/oraccdoc.js" type="text/javascript"><![CDATA[ ]]></script>
+  <link rel="stylesheet" type="text/css" href="{$prefix}/css/oraccdoc.css"/>
+<!--  <script src="/js/oraccdoc.js" type="text/javascript"><![CDATA[ ]]></script> -->
 <script type="text/javascript">
 
   var _gaq = _gaq || [];

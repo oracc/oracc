@@ -1,5 +1,5 @@
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "list.h"
 #include "memblock.h"
 #include "ngram.h"

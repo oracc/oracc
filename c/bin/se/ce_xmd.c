@@ -148,9 +148,9 @@ xmdinit(const char *project)
   const char *fields = arg_fields;
   
   /* load project config or use default_fields/default_template */;
-  sprintf(config_fn,"/var/local/oracc/www/%s/config",project);
+  sprintf(config_fn,"/usr/local/oracc/www/%s/config",project);
   if (xaccess(config_fn,R_OK,0))
-    sprintf(config_fn,"/var/local/oracc/www/%s/config.new",project);
+    sprintf(config_fn,"/usr/local/oracc/www/%s/config.new",project);
 
   if (!stat(config_fn,&sbuf))
     {

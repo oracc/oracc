@@ -1,4 +1,5 @@
 #!/bin/sh
+echo Setting docperms in $1
 (cd $1 ; \
     [ -d css ] && chmod -R o+r css ; \
     [ -d doc ] && chmod -R o+r doc ; \

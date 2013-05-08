@@ -113,5 +113,5 @@ run_search {
     my $use_unicode = $values{'use-unicode'};
     my $arg8 = '';
     $arg8 = "8" if $use_unicode eq 'true';
-    system 'se', "-s${arg8}2x", $tmpdir;
+    system "$ENV{'ORACC'}/bin/se", "-s${arg8}2x", $tmpdir;
 }

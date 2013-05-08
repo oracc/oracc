@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <stdio.h>
 #include "globals.h"
 #include "l2.h"

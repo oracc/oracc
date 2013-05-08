@@ -1,5 +1,5 @@
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

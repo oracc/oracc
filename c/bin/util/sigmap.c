@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <locale.h>
 #include <wchar.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "fname.h"
 #include "atflocale.h"
 

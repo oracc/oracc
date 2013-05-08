@@ -33,6 +33,7 @@ extern  void slashes (char *fn);
 extern  char *fname_from_prog(char *fn);
 extern char * da_file (const char *base, const char *subdir, int subsub);
 extern const char *oracc_home (void);
+extern const char *oracc_project_home (void);
 extern const char *oracc_var (void);
 
 #define cdl_home oracc_home

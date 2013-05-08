@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <stdlib.h>
 #include <string.h>
 #include "warning.h"
@@ -46,6 +46,8 @@ int in_split_word = 0;
 int max_cells = 1, curr_cell = 0;
 int punct_word = 0;
 int w_sparse_lem = 0;
+
+struct lang_context *word_lang = NULL;
 
 int nline_words = 0, line_words_alloced = 0;
 struct node *group_node = NULL;
@@ -618,6 +620,9 @@ init_word_func(struct node *parent, struct token *tp,
       emit_vari();
       *pending_varo_p = pending_varo;
     }
+
+  word_lang = tp->lang;
+
   if (logo_word)
     *logo_word = 0;
   wp = elem(tp->lang->mode==m_graphemic ? e_g_w : e_n_w,NULL,lnum,WORD);
@@ -1770,6 +1775,9 @@ finish_word(struct node *wp)
   int i;
   extern int rendering_word_form;
 
+  if (!word_lang)
+    word_lang = curr_lang;
+
   if (pending_disamb)
     {
       appendChild(wp,pending_disamb);
@@ -1804,7 +1812,7 @@ finish_word(struct node *wp)
 	}
       else if (curr_logolang)
 	{
-	  if (forms_insertp[-1] == '-')
+	  if (forms_insertp > formsbuf && forms_insertp[-1] == '-')
 	    {
 	      forms_insertp[-1] = forms_insertp[0] = '%';
 	      *++forms_insertp = '-';
@@ -1825,14 +1833,20 @@ finish_word(struct node *wp)
 	      if (!next_np || xstrcmp(getAttr(next_np, "g:status"),"excised"))
 		suppress_next_hyphen = 0;
 	    }
-	  else if (curr_lang->mode == m_graphemic)
-	    *forms_insertp++ = '-';
+	  else if (word_lang->mode == m_graphemic)
+	    *forms_insertp++ = '-'; /* the renderer needs rewriting to emit g:delim after graph not before next graph, but this is what works for now */
+	  else
+	    {
+	      const char *gdelim = getAttr(wp->children.nodes[i-1], "g:delim");
+	      if (*gdelim)
+		*forms_insertp++ = *gdelim;
+	    }
 	}
       if (*cp->type == 't')
 	forms_insertp = render_g_text(cp, forms_insertp);
       else if (*cp->type == 'e' && !strcmp(cp->names->pname, "g:p"))
 	{
-	  if (forms_insertp > form && forms_insertp[-1] == '-')
+	  if (forms_insertp > formsbuf && forms_insertp[-1] == '-')
 	    *--forms_insertp = '\0';
 	}
       else
@@ -1847,7 +1861,7 @@ finish_word(struct node *wp)
   
   rendering_word_form = 0;
   
-  if (forms_insertp[-1] == '-')
+  if (forms_insertp > formsbuf && forms_insertp[-1] == '-')
     forms_insertp[-1] = '\0';
   else
     *forms_insertp++ = '\0';
@@ -1892,6 +1906,7 @@ finish_word(struct node *wp)
     }
   last_word = wp;
   word_tokp = NULL;
+  word_lang = NULL;
 }
 
 static void

@@ -1,15 +1,24 @@
 #!/bin/sh
-oraccid=`id -u oracc`
-if [ "$EUID" != "$oraccid" ]; then
-    echo aggregation can only be done by the 'oracc' user
-    exit 1
+
+if [ "$ORACC_MODE" != "single" ]; then
+    oraccid=`id -u oracc`
+    if [ "$EUID" != "$oraccid" ]; then
+	echo aggregation can only be done by the 'oracc' user
+	exit 1
+    fi
 fi
 
 mkdir -p ${ORACC}/agg/projects
 cd ${ORACC}/agg/projects
 xsl=${ORACC}/lib/scripts
 echo '<projects>' >all-projects.xml
-for a in `find ${ORACC}/etc/projects ${ORACC}/xml -follow -name 'config.xml'`; do
+if [ -d "${ORACC}/etc/projects" ]; then
+    for a in `find ${ORACC}/etc/projects -follow -name 'config.xml'`; do
+	echo "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\" href=\"$a\"/>" \
+	    >>all-projects.xml
+    done
+fi
+for a in `find ${ORACC}/xml -follow -name 'config.xml'`; do
     echo "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\" href=\"$a\"/>" \
 	>>all-projects.xml
 done
@@ -20,12 +29,11 @@ xsltproc --xinclude $xsl/agg-public-projects.xsl \
 
 agg-thumbs.sh
 
-mkdir -p ~/www/agg
-cp -a ${ORACC}/agg/projects/images/* ${ORACC}/www/agg/
+mkdir -p ${ORACC}/www/agg
+#cp -a ${ORACC}/agg/projects/images/* ${ORACC}/www/agg/
 
 xsltproc -xinclude $xsl/agg-html-projects.xsl public-projects.xml \
     >${ORACC}/www/agg/project-list.html
-
 chmod +w ${ORACC}/www/index.html
 xsltproc -xinclude $xsl/agg-index.xsl public-projects.xml \
     >${ORACC}/www/index.html

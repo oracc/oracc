@@ -7,7 +7,7 @@
 #include <locale.h>
 #include "resolver.h"
 
-const char *docroot = "/var/local/oracc/www";
+const char *docroot = "/usr/local/oracc/www";
 const char *project = NULL;
 const char *query_string = NULL;
 const char *script_url = NULL;

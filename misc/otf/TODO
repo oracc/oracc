@@ -1,0 +1,4 @@
+make office-master-styles.xml project-local
+
+define known inline tags and a method for extending them
+

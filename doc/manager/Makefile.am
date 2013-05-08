@@ -21,7 +21,7 @@ index.xml: order.txt
 all-local: index.xml
 
 install-data-local:
-	$(HTMLINDEX) manager $(PREFIX)$(htmldir)/doc/manager
+	$(HTMLINDEX) manager $(DESTDIR)$(htmldir)/doc/manager $(top_srcdir)
 
 clean-local:
 	rm index*.xml

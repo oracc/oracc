@@ -7,7 +7,7 @@ use ORACC::BIB::QueryContext;
 use ORACC::BIB::CiteResolver;
 use Getopt::Long;
 
-my $dbpath = '/var/local/oracc/bib';
+my $dbpath = '@@ORACC@@/bib';
 my @dblist = ();
 my @ixlist = ();
 my $html_results = 0;

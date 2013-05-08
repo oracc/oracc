@@ -7,7 +7,7 @@
 
 #include <psd_base.h>
 #include <fname.h>
-#include <ctype.h>
+#include <ctype128.h>
 
 const char *
 oracc_home ()
@@ -22,15 +22,30 @@ oracc_home ()
   return cached_home;
 }
 
+/* this should really be called oracc_home but that function
+   returns the ORACC env var */
+const char *
+oracc_project_home ()
+{
+  static char *cached_home = NULL;
+  if (NULL == cached_home)
+    {
+      cached_home = getenv ("ORACC_HOME");
+      if (NULL == cached_home)
+	cached_home = "/usr/local/oracc";
+    }
+  return cached_home;
+}
+
 const char *
 oracc_var ()
 {
   static char *cached_var = NULL;
   if (NULL == cached_var)
     {
-      cached_var = getenv ("ORACC_VAR");
+      cached_var = getenv ("ORACC");
       if (NULL == cached_var)
-	cached_var = "/var/local/oracc";
+	cached_var = "/usr/local/oracc";
     }
   return cached_var;
 }

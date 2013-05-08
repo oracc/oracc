@@ -130,7 +130,7 @@ typedef unsigned char Uchar;
 #if (1 - BellC & 1 - CI_C86)
 #include <stdlib.h>
 #endif
-#include <ctype.h>
+#include <ctype128.h>
 #if (1 - BellC & 1 - CI_C86)
 #include <string.h>
 #include <stdlib.h>

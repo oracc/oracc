@@ -33,7 +33,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>

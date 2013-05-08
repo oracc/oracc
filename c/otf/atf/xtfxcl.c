@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 #include "tree.h"
 #include "warning.h"

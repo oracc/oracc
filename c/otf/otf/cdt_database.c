@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "cdt.h"
 #include "cdt_foreign.h"
 #include "xmlutil.h"

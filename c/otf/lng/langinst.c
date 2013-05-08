@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "sas.h"
 #include "fname.h"
 #include "npool.h"

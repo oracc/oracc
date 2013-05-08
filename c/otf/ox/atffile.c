@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <ctype128.h>
 
 #include "pool.h"
 #include "block.h"

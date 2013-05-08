@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h> /* for malloc, free */
 #include <string.h> /* for memmove */
-#include <ctype.h>  /* for isupper, tolower */
+#include <ctype128.h>  /* for isupper, tolower */
 
 #include "libstemmer.h"
 

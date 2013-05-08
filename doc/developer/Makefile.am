@@ -21,7 +21,7 @@ index.xml:
 all-local: index.xml
 
 install-data-local:
-	$(HTMLINDEX) developer $(PREFIX)$(htmldir)/doc/builder
+	$(HTMLINDEX) developer $(DESTDIR)$(htmldir)/doc/developer $(top_srcdir)
 
 clean-local:
 	rm index*.xml

@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "pool.h"
 #include "xcl.h"
 #include "props.h"

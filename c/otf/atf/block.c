@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,10 +22,6 @@
 #include "label.h"
 #include "inline.h"
 #include "lemline.h"
-
-#define block_isspace(c) ((c)<128&&isspace((c)))
-
-#define isspace(c) block_isspace(c)
 
 extern int lem_autolem, mylines;
 
@@ -804,7 +800,8 @@ $ start of reverse missing
 		      ++lines;
 		      if (!xstrncmp(*lines, "#lem:",5))
 			concat_continuations(lines);
-		      lem_save_line(lines);
+		      else
+			lem_save_line(lines);
 		      if (xstrncmp(*lines,"#eid:",5))
 			protocol(run, protocol_state, LINE, current, *lines);
 		    }

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 my $vec = '';
-open(P,"/var/local/oracc/pub/cdli/cat/pqids.lst");
+open(P,"@@ORACC@@/pub/cdli/cat/pqids.lst");
 while (<P>) {
     s/^cdli:P// || next; chomp;
 #    warn "$_\n";

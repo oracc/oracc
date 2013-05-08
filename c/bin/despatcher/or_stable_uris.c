@@ -96,7 +96,7 @@ ent_handler(struct component *components)
       char *tmp = malloc(strlen(components[0].text)+strlen("phrase=&clip=6")+1);
       sprintf(tmp,"phrase=%s&clip=6", components[0].text);
       setenv("QUERY_STRING", tmp, 1);
-      execl("/var/local/oracc/www/cgi-bin/estseek.cgi", "/var/local/oracc/www/cgi-bin/estseek.cgi", NULL);
+      execl("/usr/local/oracc/www/cgi-bin/estseek.cgi", "/usr/local/oracc/www/cgi-bin/estseek.cgi", NULL);
       do404();
     }
 }
@@ -116,8 +116,8 @@ lng_handler(struct component *components)
       exit(1);
 #else
       char *tmp = malloc(strlen(project) + strlen(elements[0]) 
-			 + strlen("/var/local/oracc/www//cbd//overview.html") + 1);
-      sprintf(tmp, "/var/local/oracc/www/%s/cbd/%s/overview.html", project, elements[0]);
+			 + strlen("/usr/local/oracc/www//cbd//overview.html") + 1);
+      sprintf(tmp, "/usr/local/oracc/www/%s/cbd/%s/overview.html", project, elements[0]);
       cat_html_file(tmp);
 #endif
     }

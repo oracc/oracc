@@ -1,5 +1,5 @@
 #include <psd_base.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <dbi.h>
 #include <index.h>
 #include <alias.h>

@@ -6,7 +6,7 @@
 #define _GNU_SOURCE
 #include <getopt.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <stdarg.h>
 #include "warning.h"
 #include "atffile.h"

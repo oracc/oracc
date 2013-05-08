@@ -7,7 +7,7 @@
 #
 #  s2-pipeline.sh LISTDIR PROJECT CETYPE
 #
-# e.g., s2-pipeline.sh /var/local/oracc/pager/s3DS4a7 etcsri -u
+# e.g., s2-pipeline.sh /usrx/local/oracc/pager/s3DS4a7 etcsri -u
 #
 listdir=$1
 project=$2

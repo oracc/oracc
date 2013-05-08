@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 
 #undef TEST

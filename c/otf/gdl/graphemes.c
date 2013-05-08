@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <wctype.h>
 #include <psdtypes.h>
 #include <assert.h>

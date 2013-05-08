@@ -3,13 +3,17 @@ include ../../oracc-am-rules.txt
 bin_SCRIPTS = install.sh mk-dist-schemas.sh
 java_DATA = trang.jar
 data_DATA = schemas.xml
-schema_DATA = OpenDocument-manifest-schema-v1.1.rnc OpenDocument-schema-v1.1.rnc xslt20.rnc
+schema_DATA =  	od-manifest-schema-v1.2-cs01.rnc od-schema-v1.2-cs01.rnc xslt20.rnc
+
+install-local-data:
+	cp -pR xhtml $(DESTDIR)$(prefix)/lib/schemas
 
 EXTRA_DIST = \
-	OpenDocument-manifest-schema-v1.1.rnc \
-	OpenDocument-schema-v1.1.rnc \
 	install.sh \
+	od-manifest-schema-v1.2-cs01.rnc \
+	od-schema-v1.2-cs01.rnc \
 	mk-dist-schemas.sh \
 	schemas.xml \
 	trang.jar \
-	xslt20.rnc
+	xslt20.rnc \
+	xhtml/*

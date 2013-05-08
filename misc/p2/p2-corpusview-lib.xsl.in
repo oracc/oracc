@@ -38,8 +38,8 @@
 
 <xsl:template name="corpusview-project-pqid">
   <xsl:param name="project"/>
+  <xsl:param name="host"/>
   <xsl:param name="pqid"/>
-  <xsl:param name="proxy-project" select="$project"/>
   
   <xsl:variable name="config-xml-file" 
 		select="concat('@@ORACC@@/xml/',$project,'/','config.xml')"/>
@@ -92,7 +92,7 @@
       <xsl:when test="count($uxh) > 0 and $uxh/xh:p/xh:span">
 	<xsl:call-template name="unitary-view">
 	  <xsl:with-param name="config-xml-file" select="$config-xml-file"/>
-	  <xsl:with-param name="proxy-project" select="$proxy-project"/>
+	  <xsl:with-param name="host" select="host"/>
 	  <xsl:with-param name="pqid" select="$pqid"/>
 	  <xsl:with-param name="xmd" select="$xmd"/>
 	  <xsl:with-param name="txh" select="$txh"/>
@@ -105,7 +105,7 @@
       <xsl:otherwise>
 	<xsl:call-template name="linear-view">
 	  <xsl:with-param name="config-xml-file" select="$config-xml-file"/>
-	  <xsl:with-param name="proxy-project" select="$proxy-project"/>
+	  <xsl:with-param name="host" select="$host"/>
 	  <xsl:with-param name="pqid" select="$pqid"/>
 	  <xsl:with-param name="xmd" select="$xmd"/>
 	  <xsl:with-param name="txh" select="$txh"/>
@@ -117,16 +117,16 @@
 	</xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="xmd:cat/xmd:credits">
+    <xsl:if test="$xmd/xmd:cat/xmd:credits">
       <hr class="credits"/>
-      <p><xsl:apply-templates select="xmd:cat/xmd:credits"/></p>
+      <p><xsl:apply-templates select="$xmd/xmd:cat/xmd:credits"/></p>
     </xsl:if>
   </div>
 </xsl:template>
 
 <xsl:template name="unitary-view">
   <xsl:param name="config-xml-file"/>
-  <xsl:param name="proxy-project"/>
+  <xsl:param name="host"/>
   <xsl:param name="xmd"/>
   <xsl:param name="txh"/>
   <xsl:param name="uxh"/>
@@ -192,7 +192,7 @@
 <xsl:template name="linear-view">
   <xsl:param name="config-xml-file"/>
   <xsl:param name="pqid"/>
-  <xsl:param name="proxy-project"/> 
+  <xsl:param name="host"/> 
   <xsl:param name="xmd"/>
   <xsl:param name="txh"/>
   <xsl:param name="uxh"/>
@@ -217,9 +217,9 @@
 	    <xsl:text>]</xsl:text>
 	  </xsl:if>
 	</a>
-	<xsl:if test="string-length($proxy-project) > 0 
-		      and not($project=$proxy-project)">
-	  <xsl:value-of select="concat(' &lt;from ',$proxy-project,'>')"/>
+	<xsl:if test="string-length($host) > 0 
+		      and not($project=$host)">
+	  <xsl:value-of select="concat(' &lt;from ',$project,'>')"/>
 	</xsl:if>
       </h1>
     </xsl:when>
@@ -232,6 +232,11 @@
 	  <xsl:text> (</xsl:text>
 	  <xsl:value-of select="$xmd/xmd:cat/xmd:primary_publication"/>
 	  <xsl:text>)</xsl:text>
+	</xsl:if>
+
+	<xsl:if test="string-length($host) > 0 
+		      and not($project=$host)">
+	  <xsl:value-of select="concat(' &lt;from ',$project,'>')"/>
 	</xsl:if>
       </h1>
     </xsl:otherwise>
@@ -347,11 +352,11 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:for-each>
-
+ 
   <!-- this code needs revising to check that the cases where there is no translation
        or no matching translation-heading work correctly -->
   <xsl:choose>
-    <xsl:when test="$txh/xh:table[@class='score']|$txh/*/xh:table[@class='score']">
+    <xsl:when test="$txh and $txh/xh:table[@class='score']|$txh/*/xh:table[@class='score']">
       <xsl:copy-of select="."/>
     </xsl:when>
     <xsl:otherwise>
@@ -615,6 +620,9 @@
     <xsl:when test="not(xh:table)">
       <xsl:variable name="tlit-cols">
 	<xsl:choose>
+	  <xsl:when test="$txh/*/*/@cols">
+	    <xsl:value-of select="number($txh/*/*/@cols)"/>
+	  </xsl:when>
 	  <xsl:when test="$txh/*/@cols">
 	    <xsl:value-of select="number($txh/*/@cols)"/>
 	  </xsl:when>

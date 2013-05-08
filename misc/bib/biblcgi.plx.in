@@ -7,7 +7,7 @@ use CGI;
 use ORACC::BIB::QueryContext;
 
 my $qc = ORACC::BIB::QueryContext->new(dblist => [ qw/oracc/ ],
-				     dbdir  => '/var/local/oracc/bib');
+				     dbdir  => '@@ORACC@@/bib');
 
 print "Content-type: text/html\n\n";
 print <<EOH;

@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "list.h"
 #include "xpd2.h"
 #include "cdt.h"
 #include "xmlutil.h"
+#include "globals.h"
 
 extern struct styles common_styles;
 extern void write_style(struct style_node *sp);
@@ -382,21 +383,36 @@ static const char *xmlns4 =
   ;
 
 static const char *
-otfODTstyler(void)
+otfODTstylerParallel(void)
 {
-  return "file:///usr/local/oracc/lib/scripts/otf-ODT.xsl";
+  return "file:///usr/local/oracc/lib/scripts/otf-ODT-parallel.xsl";
+}
+
+static const char *
+otfODTstylerSerial(void)
+{
+  return "file:///usr/local/oracc/lib/scripts/otf-ODT-serial.xsl";
 }
 
 void
 preamble(void)
 {
-  const char *xslpi = "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstyler\"?>";
-  static char xslinc[2048];
-  sprintf(xslinc,
-	  "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "
-	  "href=\"%s\"/>",otfODTstyler());
+  const char *xslpi = (odt_serial 
+		       ? "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerSerial\"?>"
+		       : "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerParallel\"?>");
+
+  static char xslinc1[2048];
+  static char xslinc2[2048];
+  if (odt_serial)
+    sprintf(xslinc1,
+	    "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "
+	    "href=\"%s\"/>",otfODTstylerSerial());
+  else
+    sprintf(xslinc1,
+	    "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "
+	    "href=\"%s\"/>",otfODTstylerParallel());
   fprintf(wfile,"%s\n%s\n<office:document %s%s%s%s>%s\n",xmldecl,xslpi,xmlns1,xmlns2,
-	  xmlns3,xmlns4,xslinc);
+	  xmlns3,xmlns4,xslinc1);
 }
 
 void

@@ -81,8 +81,12 @@ sigs_form_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
   int ncand = 0;
   struct f2 *f = &ifp->f2;
 
-  if ((candidates = hash_find(BIT_ISSET(f->flags,F2_FLAGS_LEM_BY_NORM)?sp->norms:sp->forms,
-			      f->form)))
+  if (BIT_ISSET(f->flags,F2_FLAGS_LEM_BY_NORM))
+    candidates = hash_find(sp->norms, f->norm);
+  else
+    candidates = hash_find(sp->forms, f->form);
+
+  if (candidates)
     {
       *nfinds = candidates->count;
       res = calloc((1+candidates->count),sizeof(struct sig *));

@@ -24,7 +24,7 @@ void
 do404(void)
 {
   print_hdr();
-  execl("/bin/cat", "cat", "/var/local/oracc/www/404.html", NULL);
+  execl("/bin/cat", "cat", "/usr/local/oracc/www/404.html", NULL);
 }
 
 const char *
@@ -48,7 +48,7 @@ oracc_var ()
     {
       cached_var = getenv ("ORACC_VAR");
       if (NULL == cached_var)
-	cached_var = "/var/local/oracc";
+	cached_var = "/usr/local/oracc";
     }
   return cached_var;
 }

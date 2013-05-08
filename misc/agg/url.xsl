@@ -9,7 +9,7 @@
       <xsl:value-of select="xpd:url"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="concat('http://oracc.museum.upenn.edu/',@n)"/>
+      <xsl:value-of select="concat('./',@n)"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>

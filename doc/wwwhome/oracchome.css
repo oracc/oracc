@@ -1,4 +1,4 @@
-@import url(/oraccbuttonbar.css);
+@import url(./oraccbuttonbar.css);
 
 div.redirect  { border: 4px solid red; padding: 5px; }
 
@@ -8,7 +8,7 @@ body { width: 700px; margin: auto;
      }
 
 div.banner { font-size: 16pt; line-height: 1.4em; height: 175px;
-	   background-image: url(/cbs16-oracc-banner.png); 
+	   background-image: url(../img/cbs16-oracc-banner.png); 
 	   background-position: left;
 	   background-color: #fcf9d8;
 	   background-repeat: no-repeat;

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <string.h>
 #include "hash.h"
 #include "pool.h"

@@ -206,7 +206,7 @@ if ($view_type eq 'item') {
 		$eid = $id;
 	    }
 	    ORACC::P2::Util2::set_data($xdata,
-				      content=>"javascript:urlResults('/$eproject/cat/$eid')",
+				      content=>"javascript:urlResults('/$eproject/$eid/cat')",
 				      outline=> "javascript:oasOutline('$values{'project'}','$values{'session'}','$values{'list'}')");
 	    
 	    ORACC::P2::Util2::emit_instance($tmpdir,$xdata,'pager',
@@ -240,6 +240,7 @@ if ($view_type eq 'item') {
 	    }
 	    xsystem('xsltproc', 
 		    '-stringparam', 'p2', 'yes',
+		    '-stringparam', 'host', $project,
 		    '-stringparam', 'project', $eproject,
 		    '-stringparam', 'trans', $values{'translation'},
 		    '-stringparam', 'transonly', $values{'transonly'},

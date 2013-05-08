@@ -16,6 +16,7 @@ p,               odt_text,    odt_p,                cdt_para,  cdt_text
 caption,         odt_text,    cdt_caption,          cdt_para,  cdt_text
 atf,             odt_foreign, foreign_atf,          cdt_end,   cdt_data
 atffile,         odt_none,    cdt_atf_file,         cdt_line,  cdt_none
+xmlfile,         odt_none,    cdt_xml_file,         cdt_line,  cdt_none
 bibliography,    odt_foreign, foreign_bibliography, cdt_end,   cdt_data
 catalog,         odt_foreign, foreign_catalog,      cdt_end,   cdt_data
 include,         odt_none,    cdt_include,          cdt_line,  cdt_none

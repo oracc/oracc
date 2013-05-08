@@ -18,7 +18,7 @@
  *  options (argc, argv, "a string of opts as in getopt");
  */
 #include <psd_base.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <options.h>
 
 static void def_opts (int argc, char *const *argv);

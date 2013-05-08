@@ -1,5 +1,5 @@
 #include <unistd.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <psd_base.h>
 #include <runexpat.h>
 #include <fname.h>

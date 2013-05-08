@@ -5,6 +5,8 @@
 # 
 #  $Id: Makefile.lam,v 0.5 1997/09/08 13:01:43 sjt Exp $
 
+include ../../../oracc-am-rules.txt
+
 # sel24x
 SUBDIRS = secatx setxtx secbdx setrax selemx 
 @SET_MAKE@
@@ -56,3 +58,13 @@ wmdebug_SOURCES=wmdebug.c wm_lib.c
 wmdebug_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 EXTRA_DIST = *.h mapaccent.c xfuncs.c strndup.c
+
+ce.c: ce.c.in
+	$(ORACCIFY) ce.c.in
+
+ce2.c: ce2.c.in
+	$(ORACCIFY) ce2.c.in
+
+ce_xmd.c: ce_xmd.c.in
+	$(ORACCIFY) ce_xmd.c.in
+

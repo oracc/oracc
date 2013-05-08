@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "sortinfo.h"
 #include "pg.h"
 

@@ -26,7 +26,7 @@ index.xml:
 all-local: index.xml
 
 install-data-local:
-	$(HTMLINDEX) ns $(DESTDIR)$(htmldir)/doc/ns
+	$(HTMLINDEX) ns $(DESTDIR)$(htmldir)/doc/ns $(top_srcdir)
 	rm -f $(DESTDIR)$(htmldir)/ns
 	ln -sf $(DESTDIR)$(htmldir)/doc/ns $(DESTDIR)$(htmldir)/ns
 

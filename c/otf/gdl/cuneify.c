@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "warning.h"
 #include "hash.h"
 #include "runexpat.h"

@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "cdt.h"
 extern const char *file;
 extern size_t lnum;

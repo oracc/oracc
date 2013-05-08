@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.4 */
+/* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N cdttoks -tT cdttoks.g  */
 /* Computed positions: -k'1,3' */
 
@@ -35,12 +35,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 /* N.B.: do not include any inline tokens here as it breaks
    block_tester in cdt_reader */
 
-#define TOTAL_KEYWORDS 21
+#define TOTAL_KEYWORDS 22
 #define MIN_WORD_LENGTH 1
 #define MAX_WORD_LENGTH 12
 #define MIN_HASH_VALUE 1
-#define MAX_HASH_VALUE 42
-/* maximum key range = 42, duplicates = 0 */
+#define MAX_HASH_VALUE 52
+/* maximum key range = 52, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -56,32 +56,32 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43,  5, 15,  0,
-       0,  0,  5,  0, 15, 15, 43, 43, 43, 43,
-      15, 30,  0, 43, 43, 20,  5, 43, 43, 10,
-      43,  5, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53,  5, 20,  0,
+       0,  0,  5,  0, 15, 15, 53, 53, 20, 53,
+      15, 30,  0, 53, 53, 20,  5, 53, 53, 10,
+      15,  5, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53
     };
   register int hval = len;
 
@@ -100,7 +100,7 @@ hash (str, len)
 
 #ifdef __GNUC__
 __inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+#ifdef __GNUC_STDC_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif
@@ -115,21 +115,21 @@ cdttoks (str, len)
 #line 15 "cdttoks.g"
       {"p",               odt_text,    odt_p,                cdt_para,  cdt_text},
       {""},
-#line 23 "cdttoks.g"
+#line 24 "cdttoks.g"
       {"end",             odt_none,    cdt_end_tag,          cdt_line,  cdt_none},
       {""}, {""},
-#line 26 "cdttoks.g"
+#line 27 "cdttoks.g"
       {"pageno",		     odt_text,	  cdt_pageno,			cdt_line, cdt_none},
 #line 16 "cdttoks.g"
       {"caption",         odt_text,    cdt_caption,          cdt_para,  cdt_text},
 #line 8 "cdttoks.g"
       {"document",        odt_text,    odt_document,         cdt_white, cdt_list},
       {""},
-#line 28 "cdttoks.g"
+#line 29 "cdttoks.g"
       {"figno",		     odt_text,	  cdt_figno,			cdt_line, cdt_none},
 #line 12 "cdttoks.g"
       {"figure",          odt_text,    cdt_figure,           cdt_line,  cdt_list},
-#line 20 "cdttoks.g"
+#line 21 "cdttoks.g"
       {"catalog",         odt_foreign, foreign_catalog,      cdt_end,   cdt_data},
 #line 17 "cdttoks.g"
       {"atf",             odt_foreign, foreign_atf,          cdt_end,   cdt_data},
@@ -141,10 +141,10 @@ cdttoks (str, len)
 #line 18 "cdttoks.g"
       {"atffile",         odt_none,    cdt_atf_file,         cdt_line,  cdt_none},
       {""}, {""}, {""}, {""},
-#line 21 "cdttoks.g"
+#line 22 "cdttoks.g"
       {"include",         odt_none,    cdt_include,          cdt_line,  cdt_none},
       {""}, {""},
-#line 27 "cdttoks.g"
+#line 28 "cdttoks.g"
       {"image",           odt_text,    cdt_image,            cdt_self,  cdt_none},
       {""},
 #line 11 "cdttoks.g"
@@ -153,18 +153,21 @@ cdttoks (str, len)
 #line 10 "cdttoks.g"
       {"style",           odt_style,   cdt_style,            cdt_para,  cdt_style},
       {""},
-#line 24 "cdttoks.g"
+#line 25 "cdttoks.g"
       {"newpage",		 odt_text,	  cdt_newpage,			cdt_white, cdt_none},
       {""}, {""},
-#line 25 "cdttoks.g"
+#line 26 "cdttoks.g"
       {"newoddpage",	     odt_text,	  cdt_newoddpage,		cdt_white, cdt_none},
       {""},
-#line 22 "cdttoks.g"
+#line 23 "cdttoks.g"
       {"project",         odt_meta,    cdt_project_c,        cdt_line,  cdt_none},
       {""}, {""}, {""},
 #line 13 "cdttoks.g"
       {"insert",          odt_text,    cdt_insert,           cdt_line,  cdt_list},
 #line 19 "cdttoks.g"
+      {"xmlfile",         odt_none,    cdt_xml_file,         cdt_line,  cdt_none},
+      {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
+#line 20 "cdttoks.g"
       {"bibliography",    odt_foreign, foreign_bibliography, cdt_end,   cdt_data}
     };
 

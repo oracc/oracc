@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include <psd_base.h>
 #include "loadfile.h"
 #include "list.h"

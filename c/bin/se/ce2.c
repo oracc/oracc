@@ -540,11 +540,11 @@ main(int argc, char * const*argv)
       static char fn[_MAX_PATH];
       if (lang)
 	{
-	  sprintf(fn,"/var/local/oracc/www/%s/%s/%s/summaries.html",
+	  sprintf(fn,"/usr/local/oracc/www/%s/%s/%s/summaries.html",
 		  project,ce_index,lang);
 	}
       else
-	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,ce_index);
+	sprintf(fn,"/usr/local/oracc/www/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }

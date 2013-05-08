@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "psdtypes.h"
 #include "messages.h"
 #include "options.h"

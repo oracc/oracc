@@ -1,2 +1,2 @@
 #!/bin/sh
-odtmanager.plx $*
+odfmanager.plx $*

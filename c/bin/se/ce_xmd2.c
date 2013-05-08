@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <psdtypes.h>
 #include <hash.h>
 #include <messages.h>

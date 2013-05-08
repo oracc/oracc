@@ -15,10 +15,10 @@
       <!--  <meta http-equiv="Refresh" content="850" /> -->
       <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-      <link rel="stylesheet" type="text/css" href="oracchome.css" />
+      <link rel="stylesheet" type="text/css" href="./css/oracchome.css" />
       <link rel="alternate" type="application/atom+xml" title="Oracc News - Atom" href="http://oracc.blogspot.com/feeds/posts/default" />
       <link rel="alternate" type="application/rss+xml" title="Oracc News - RSS" href="http://oracc.blogspot.com/feeds/posts/default?alt=rss" />
-      <script src="/oracchome.js" type="text/javascript">var x;
+      <script src="./js/oracchome.js" type="text/javascript">var x;
 </script>
 <script type="text/javascript">
 
@@ -38,11 +38,11 @@
 
       <div class="buttons">
 	<div class="form">
-	  <form method="get" action="http://oracc.museum.upenn.edu/find" id="form1">
+	  <form method="get" action="./find" id="form1">
 	    <p class="buttonbar"> <!-- tabindex="1" etc; accesskey="0" etc -->
-	      <a href="/readme.html"><span class="button">README</span></a
-	      ><a href="webservices.html"><span class="button">WEB SERVICES</span></a
-	      ><a href="/doc"><span class="button">DOCUMENTATION</span></a
+	      <a href="./readme.html"><span class="button">README</span></a
+	      ><a href="./webservices.html"><span class="button">WEB SERVICES</span></a
+	      ><a href="./doc"><span class="button">DOCUMENTATION</span></a
 	      ><a href="javascript:void()" 
 	      onclick="document.forms['form1'].submit(); return false;"><span class="button">SEARCH ORACC</span></a
 	      ><input class="textbox" name="phrase" id="phrase" type="text" size="14" accesskey="s" value=""
@@ -52,11 +52,11 @@
 	<div class="social">
 	  <p>
 	    <a href="http://www.facebook.com/opencuneiform" title="Oracc Facebook Page"
-	       class="facebook"><img width="19" height="19" src="/img/f_logo.png"/></a
+	       class="facebook"><img width="19" height="19" src="./img/f_logo.png"/></a
 	       ><a href="http://oracc.blogspot.com" title="Oracc Blog"
-	       class="blogspot"><img width="19" height="19" src="/img/blogspot-icon.png"/></a
+	       class="blogspot"><img width="19" height="19" src="./img/blogspot-icon.png"/></a
 	       ><a href="http://www.twitter.com/opencuneiform" title="Oracc Twitter Account (@opencuneiform)"
-	       class="blogspot"><img width="22" height="22" src="/img/twitter-bird-light-bgs.png"/></a
+	       class="blogspot"><img width="22" height="22" src="./img/twitter-bird-light-bgs.png"/></a
 	       ><a href="http://creativecommons.org/licenses/by-sa/3.0/"><img height="20" alt="Creative Commons License"
 	       src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"/></a
 	       ></p>

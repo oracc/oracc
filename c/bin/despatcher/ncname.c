@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <wctype.h>
-#include <ctype.h>
+#include <ctype128.h>
 
 static wchar_t utf1char(const unsigned char *src,size_t *len);
 

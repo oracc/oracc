@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <ctype128.h>
 #include "hash.h"
 #include "npool.h"
 #include "runexpat.h"

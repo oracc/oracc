@@ -284,7 +284,7 @@ si_load_csi()
   void *csimap;
   char csiname[MAX_PATH];
 
-  sprintf(csiname,"/var/local/oracc/pub/%s/sortinfo.csi",project);
+  sprintf(csiname,"/usr/local/oracc/pub/%s/sortinfo.csi",project);
 
   if (stat(csiname,&csistat))
     {

@@ -12,7 +12,7 @@ set_project(struct proj_context *p, const char *proj)
 
   project = proj;
   project_dir = project;
-  sprintf(project_base,"%s/%s",oracc_home(),proj);
+  sprintf(project_base,"%s/%s",oracc_project_home(),proj);
   
   sprintf(projstyles,"/usr/local/oracc/www/%s/office-master-styles.xml",
 	  project_dir);

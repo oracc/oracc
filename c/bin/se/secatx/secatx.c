@@ -3,7 +3,7 @@
 #include <list.h>
 #include <dbi.h>
 #include <options.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include <locale.h>
 #include <runexpat.h>
 #include "atflocale.h"

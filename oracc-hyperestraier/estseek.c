@@ -200,7 +200,7 @@ static int realmain(int argc, char **argv){
   setvbuf(stdout, g_outbuf, _IOFBF, OUTBUFSIZ);
   g_scriptname = argv[0];
   if((rp = getenv("SCRIPT_NAME")) != NULL && *rp) g_scriptname = rp;
-  /*  fprintf(stderr, "estseek: argv0=%s; rp=%s; g_scriptname=%s\n", argv[0], rp,g_scriptname); */
+  fprintf(stderr, "estseek: argv0=%s; rp=%s; g_scriptname=%s\n", argv[0], rp,g_scriptname);
   /* sjt--this means that estseek only works when conf is in . */
   /*  if((rp = strrchr(g_scriptname, '/')) != NULL) g_scriptname = rp + 1; */
   if (access(g_scriptname, F_OK))
@@ -211,7 +211,17 @@ static int realmain(int argc, char **argv){
   sprintf(tmp, "%s", g_scriptname);
   cbglobalgc(tmp, free);
   /*  fprintf(stderr, "estseek: tmp=%s\n", tmp, g_conffile); */
-  if(!(wp = strrchr(tmp, '.'))) wp = tmp + strlen(tmp);
+  tmp2 = tmp;
+  while (*tmp2 && '.' != tmp2[0] && '/' != tmp2[1])
+    ++tmp2;
+  if (*tmp2)
+    {
+      if(!(wp = strrchr(tmp2+1, '.'))) wp = tmp + strlen(tmp);
+    }
+  else
+    {
+      wp = tmp + strlen(tmp);
+    }
   if (!(slash = strrchr(tmp, '/'))) slash = tmp + strlen(tmp);
   tmp2 = cbmalloc(slash - tmp + 2);
   strncpy(tmp2, tmp, (slash+1)-tmp);
@@ -219,7 +229,7 @@ static int realmain(int argc, char **argv){
   g_script_dir = tmp2;
   sprintf(wp, "%s", CONFSUFFIX);
   g_conffile = tmp;
-  /* fprintf(stderr, "estseek: g_conffile=%s\n", g_conffile); */
+  fprintf(stderr, "estseek: g_conffile=%s\n", g_conffile);
   if(!(lines = cbreadlines(g_conffile))) showerror("the configuration file is missing.");
   cbglobalgc(lines, (void (*)(void *))cblistclose);
   plist = cblistopen();

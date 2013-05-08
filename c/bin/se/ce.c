@@ -548,16 +548,16 @@ main(int argc, char * const*argv)
 	{
 #if 0
 	  if (l2)
-	    sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",
+	    sprintf(fn,"/usr/local/oracc/www/%s/%s/summaries.html",
 		    project,lang);
 	  else
 #else
-	    sprintf(fn,"/var/local/oracc/www/%s/%s/%s/summaries.html",
+	    sprintf(fn,"/usr/local/oracc/www/%s/%s/%s/summaries.html",
 		    project,ce_index,lang);
 #endif
 	}
       else
-	sprintf(fn,"/var/local/oracc/www/%s/%s/summaries.html",project,ce_index);
+	sprintf(fn,"/usr/local/oracc/www/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }

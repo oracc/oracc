@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <string.h>
-#include <ctype.h>
+#include <ctype128.h>
 #include "ilem_para.h"
 #include "nsa.h"
 
