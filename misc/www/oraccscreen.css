@@ -279,6 +279,8 @@ p.label { text-align: right; }
 	font-family: "Verdana", arial, sans-serif; font-size: 70%; font-weight: normal;
        }
 
+tr { vertical-align: baseline; }
+
 tr.h td { font-size: 5pt; display: none; }
 
 tr.hforce td { font-weight: bold; padding-top: 6px; }
@@ -288,7 +290,7 @@ tr.hforce td.xtr-h1 { padding-left: .5em; font-weight: bold; padding-top: 6px; }
 
 td { padding-right: .5em; }
 td.lnum { padding-right: 1em; color: #777; text-align: right; }
-td.lnuml { padding-right: 1em; color: #777; text-align: left; }
+td.lnuml { padding-right: 1em; color: #777; text-align: left; width: 6rem; }
 td>span.lnuml { padding-right: 1em; color: #777; text-align: left; font-size: 70%; }
 
 tr.score-spacer td { padding-bottom: 1em; }
@@ -322,6 +324,21 @@ tr.p10 td.lnum  { padding-right: 1em; color: #777; width: 4%; }
 .pc35 { width: 35%; }
 .pc40 { width: 40%; }
 .pc45 { width: 45%; }
+.pc50 { width: 50%; }
+.pc55 { width: 55%; }
+.pc60 { width: 60%; }
+.pc65 { width: 65%; }
+.pc70 { width: 70%; }
+.pc75 { width: 75%; }
+.pc80 { width: 80%; }
+.pc85 { width: 85%; }
+
+body.standalone { padding-left: .5rem; }
+
+table.score-block { text-align: left; width: auto; padding-bottom: 1rem; }
+.score-block tr { text-align: left; width: auto; }
+.score-block .lnum { padding-right: 1rem; text-align: left; width: auto; }
+.score-block .c { padding-right: 1rem; text-align: left; width: auto; }
 
 table.btn { width: 100%; background-color: #9cf; color: black; }
 .btnlabel { font-size: 80%; font-weight: bold; font-family: arial,sans-serif; 
@@ -393,6 +410,7 @@ p.refline { margin-left: 1em; text-indent: -1em; }
 
 span.xtr-label { font-weight: normal; font-size: 8pt; color: gray; vertical-align: super; }
 
+.up { font-size: 70%; vertical-align: super; }
 .sup { font-size: 70%; vertical-align: super; }
 .lab { font-size: 8pt; color: gray; vertical-align: super; }
 .lab:before { content: "("; }

@@ -267,7 +267,7 @@ xmdprinter2(const char *pq)
 	      pctbuf[3] = '\0';
 	      pct = pctbuf;
 	    }
-	  if (this_is_designation)
+	  if (this_is_designation || i < link_fields)
 	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
 	  else
 	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));

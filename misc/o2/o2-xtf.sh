@@ -8,6 +8,13 @@ shopt -s nullglob
 project=`oraccopt`
 rm -f 01tmp/xtfmanager.log
 rm -f 01bld/lists/have-xtf.lst
+
+function xsf_scores {
+    for a in `cat 01bld/lists/xsf-scores.lst`; do
+	g2-xsf2sxh.plx -proj $project $a
+    done
+}
+
 o2-xtf-lst.sh
 xtfmanager.plx -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
 [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
@@ -26,6 +33,7 @@ proj-linkbase.sh
 rm -f 01tmp/scoregen.log
 [ -s 01bld/lists/linktexts.lst ] && scoregen.plx 2>01tmp/scoregen.log | xmlsplit
 [ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
+[ -s 01bld/lists/xsf-scores.lst ] && xsf_scores
 
 # indexes
 dir=$ORACC/pub/$project

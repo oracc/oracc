@@ -9,6 +9,7 @@ extern int patterns_debug;
 const char *catentry_html = "/usr/local/oracc/lib/scripts/g2-xmd-HTML.xsl";
 const char *pqx_html = "/usr/local/oracc/lib/scripts/p2-htmlview.xsl";
 const char *proofing_html = "/usr/local/oracc/lib/scripts/g2-xtf-HTML.xsl";
+const char *sxh_html = "/usr/local/oracc/lib/scripts/sxh-view.xsl";
 
 extern struct component *have_component[];
 static void or_image(const char *project, const char *pqx, const char *type);
@@ -287,6 +288,7 @@ h_pqx_score_html(const char *project, struct component *components)
 		      if (!*q)
 			{
 			  /* OK, we have a valid score block ID */
+			  /* do we want frag or hilited block? */
 			  print_hdr();
 			  execl("/usr/local/oracc/bin/xfrag", "xfrag", 
 				"-hs", "-p", project,
@@ -305,6 +307,15 @@ h_pqx_score_html(const char *project, struct component *components)
     }
   else
     {
+      free(tmp);
+      tmp = or_find_pqx_file(project, 
+			     components[0].replace 
+			     ? components[0].replace 
+			     : components[0].text, "xsf");
+      if (!access(tmp, R_OK))
+	{
+	  h_pqx_html_handler(project, components, 1, "score");	  
+	}
       free(tmp);
       do404();
     }

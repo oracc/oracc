@@ -35,7 +35,7 @@
 
 <xsl:param name="project"/>
 <xsl:param name="proofing-mode" select="false()"/>
-<xsl:param name="standalone" select="false()"/>
+<xsl:param name="standalone" select="true()"/>
 
 <xsl:variable name="config-file" 
 	      select="concat('@@ORACC@@/xml/',$project,'/config.xml')"/>
@@ -136,13 +136,15 @@
   </xsl:attribute>
 </xsl:template>
 
-<xsl:template match="xtf:transliteration|xtf:composite">
+<xsl:template match="xtf:transliteration|xtf:composite|xtf:score">
+  <xsl:message>processing <xsl:value-of select="local-name()"/></xsl:message>
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
 	<xsl:with-param name="title" select="'proofing'"/>
 	<xsl:with-param name="webtype" select="'oraccscreen'"/>
 	<xsl:with-param name="with-trailer" select="false()"/>
+	<xsl:with-param name="standalone" select="true()"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
@@ -155,10 +157,25 @@
   <h1 class="h2">
     <xsl:value-of select="@n"/>
   </h1>
-  <xsl:call-template name="render-top-level"/>
+  <xsl:choose>
+    <xsl:when test="self::xtf:score">
+      <xsl:variable name="pid" select="substring-after(/*/@xml:id,'s.')"/>
+      <xsl:for-each select=".//xtf:lg">
+	<table class="score-block">
+	  <xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',/*/@xml:id,'.',position())"/></xsl:attribute>
+	  <xsl:call-template name="base-attr"/>
+	  <xsl:apply-templates/>
+	</table>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="render-top-level"/>      
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="render-top-level">
+  <xsl:message>processing <xsl:value-of select="local-name()"/></xsl:message>
   <div>
     <table class="{local-name(.)}">
       <xsl:call-template name="base-attr"/>
@@ -209,11 +226,13 @@
   </tr>
 </xsl:template>
 
+<!--
 <xsl:template match="xtf:score">
   <table class="score">
     <xsl:apply-templates/>
   </table>
 </xsl:template>
+-->
 
 <xsl:template match="xtf:div">
   <xsl:if test="not(@type='segment') or not(@n='0')">
@@ -1077,13 +1096,6 @@
       <xsl:when test="@xml:id">
 	<xsl:if test="not(@silent) or not(@silent='1')">
 	  <a name="a.{@xml:id}">
-	    <xsl:if test="@score-block-ref">
-	      <xsl:variable name="q"><xsl:text>'</xsl:text></xsl:variable>
-	      <xsl:attribute name="href">
-		<xsl:value-of 
-		   select="concat('javascript:scorejump(',$q,$project,$q,',',$q,/*/@xml:id,$q,',',$q,@score-block-ref,$q,')')"/>
-	      </xsl:attribute>
-	    </xsl:if>
 	    <span class="xlabel">
 	      <xsl:value-of select="$label"/>
 	    </span>

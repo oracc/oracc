@@ -93,6 +93,17 @@ function popupLoc(url,windowName,height,width,screenX,screenY,loc) {
   return popupWindow;
 }
 
+function
+popupXSF(project,text) {
+    var url = '/'+project+'/'+text+'/score';
+    popupLoc(url,'XSF',500,600,100,100,'');
+}
+
+function scorejump(project,text,block) {
+    var url = '/'+project+'/'+text+'/score?'+block;
+    popupLoc(url,'XSF',500,600,100,100,'');
+}
+
 /* This is for backward compatibility with P1 */
 function pz(page, zoom) {
     outlineNotify(zoom);

@@ -46,7 +46,7 @@
 
   <xsl:variable 
       name="basedir" 
-      select="concat('/usr/local/oracc/bld/',$project,'/',substring($pqid,1,4),'/',$pqid,'/')"/>
+      select="concat('@@ORACC@@/bld/',$project,'/',substring($pqid,1,4),'/',$pqid,'/')"/>
   <xsl:variable name="basename" select="concat($basedir,$pqid)"/>
 
   <xsl:message><xsl:value-of select="$basename"/></xsl:message>
@@ -59,6 +59,9 @@
 
   <xsl:variable name="name">
     <xsl:choose>
+      <xsl:when test="string-length($xmd/xmd:cat/xmd:c_name)>0">
+	<xsl:value-of select="$xmd/xmd:cat/xmd:c_name"/>
+      </xsl:when>
       <xsl:when test="string-length($xmd/xmd:cat/xmd:xname)>0">
 	<xsl:value-of select="$xmd/xmd:cat/xmd:xname"/>
       </xsl:when>

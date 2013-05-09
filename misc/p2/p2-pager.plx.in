@@ -2,7 +2,7 @@
 use warnings; use strict;
 use integer;
 use utf8; use open 'utf8'; binmode(STDOUT, ':utf8');
-use lib '/usr/local/oracc/lib';
+use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use ORACC::P2::Util2;
 use Encode;
@@ -18,7 +18,7 @@ GetOptions(
     'param=s' => \%param,
     );
 
-my $bin = '/usr/local/oracc/bin';
+my $bin = '@@ORACC@@/bin';
 my $browse_ready = 'false';
 my $ce_arg = '';
 my $data_type = '';
@@ -182,7 +182,7 @@ if ($view_type eq 'item') {
 	);
 
     if ($list_type eq 'xtf') {
-	xsystem('/usr/local/oracc/bin/wm', "-p$values{'project'}", $ce_arg, "-i$tmpdir/results.lst", "-o$tmpdir/wm.out");
+	xsystem('@@ORACC@@/bin/wm', "-p$values{'project'}", $ce_arg, "-i$tmpdir/results.lst", "-o$tmpdir/wm.out");
 	$pg_wrapper_input = "$tmpdir/wm.out";
     } else {
 	$pg_wrapper_input = "$tmpdir/results.lst";
@@ -246,14 +246,14 @@ if ($view_type eq 'item') {
 		    '-stringparam', 'transonly', $values{'transonly'},
 		    @idinfo,
 		    '-o', "$tmpdir/itemmain.html",
-		    '/usr/local/oracc/lib/scripts/p2-htmlview.xsl', 
-		    "/usr/local/oracc/bld/$eproject/$base/$eid/$eid.xmd");
+		    '@@ORACC@@/lib/scripts/p2-htmlview.xsl', 
+		    "@@ORACC@@/bld/$eproject/$base/$eid/$eid.xmd");
 	    sig_fixer($values{'project'});
 	    xsystem('xsltproc', 
 		    '-stringparam', 'project', $eproject,
 		    '-o', "$tmpdir/itemside.html",
 		    find_xmdoutline(),
-		    "/usr/local/oracc/bld/$eproject/$base/$eid/$eid.xmd");
+		    "@@ORACC@@/bld/$eproject/$base/$eid/$eid.xmd");
 	}
 
 	ORACC::P2::Util2::set_data($xdata,
@@ -271,7 +271,7 @@ if ($view_type eq 'item') {
 }
 
 if ($list_type eq 'xtf') {
-    xsystem('/usr/local/oracc/bin/wm', "-p$values{'project'}", $ce_arg, "-i$tmpdir/results.lst", "-o$tmpdir/wm.out");
+    xsystem('@@ORACC@@/bin/wm', "-p$values{'project'}", $ce_arg, "-i$tmpdir/results.lst", "-o$tmpdir/wm.out");
     $pg_wrapper_input = "$tmpdir/wm.out";
 } else {
     $pg_wrapper_input = "$tmpdir/results.lst";
@@ -370,7 +370,7 @@ fake_browse {
 	die "p2-pager: project parameter is required\n"
 	    unless $project;
 	warn "p2-pager: (1) adhoc=$adhoc\n" if $verbose;
-	xsystem('/usr/local/oracc/bin/p2-browse.plx', 
+	xsystem('@@ORACC@@/bin/p2-browse.plx', 
 		'-p', "project=$project", 
 		'-p', "session=$session", 
 		'-p', "list=$list",
@@ -383,7 +383,7 @@ fake_browse {
 	die "p2-pager: project parameter is required\n"
 	    unless $project;
 	warn "p2-pager: browse=$browse\n" if $verbose;
-	xsystem('/usr/local/oracc/bin/p2-browse.plx', 
+	xsystem('@@ORACC@@/bin/p2-browse.plx', 
 		'-p', "project=$project", 
 		'-p', "session=$session", 
 		'-p', "list=$list",
@@ -397,7 +397,7 @@ fake_browse {
 	die "p2-pager: project parameter is required\n"
 	    unless $project;
 	warn "p2-pager: glossary=$glossary\n" if $verbose;
-	xsystem('/usr/local/oracc/bin/p2-browse.plx', 
+	xsystem('@@ORACC@@/bin/p2-browse.plx', 
 		'-p', "project=$project", 
 		'-p', "session=$session", 
 		'-p', "glossary=$glossary", 
@@ -414,7 +414,7 @@ fake_browse {
 	    die "p2-pager: project parameter is required\n"
 		unless $project;
 	    warn "p2-pager: xis=$xis_lang $xis_id\n" if $verbose;
-	    xsystem('/usr/local/oracc/bin/p2-browse.plx', 
+	    xsystem('@@ORACC@@/bin/p2-browse.plx', 
 		    '-p', "project=$project", 
 		    '-p', "session=$session", 
 		    '-p', "list=$list",
@@ -514,14 +514,17 @@ run_content_maker {
     my @offset_arg = ('-o', $item_offset);
     my @offset_param = ('-stringparam', 'item-offset', $item_offset);
     if ($list_type eq 'xtf') { ## sigfixer may need adding to end of pipe here some day
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce_xtf $ce_arg -p $values{'project'} | /usr/local/oracc/bin/s2-ce_trim.plx >$tmpdir/content.xml");
-	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");
+	xsystem("cat $tmpdir/pgwrap.out | @@ORACC@@/bin/ce_xtf $ce_arg -p $values{'project'} | @@ORACC@@/bin/s2-ce_trim.plx >$tmpdir/content.xml");
+	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '@@ORACC@@/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");
     } elsif ($list_type eq 'cat' || $list_type eq 'tra') {
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -S$values{'state'} @offset_arg -i$list_type -p $values{'project'} >$tmpdir/content.xml");
-	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");
+	my $link_fields = `oraccopt $values{'project'} catalog-link-fields`;
+	my $lfopt = ($link_fields ? "-a$link_fields" : '');
+	warn "lfopt=$lfopt\n";
+	xsystem("cat $tmpdir/pgwrap.out | @@ORACC@@/bin/ce2 $lfopt -S$values{'state'} @offset_arg -i$list_type -p $values{'project'} >$tmpdir/content.xml");
+	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '@@ORACC@@/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");
     } elsif ($list_type eq 'cbd') {
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -S$values{'state'} -icbd/$values{'glossary'} -p $values{'project'} >$tmpdir/content.xml");
-	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");    
+	xsystem("cat $tmpdir/pgwrap.out | @@ORACC@@/bin/ce2 -S$values{'state'} -icbd/$values{'glossary'} -p $values{'project'} >$tmpdir/content.xml");
+	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '@@ORACC@@/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");    
     }
 }
 
@@ -531,7 +534,7 @@ run_content_maker {
 sub
 run_pager {
     my $pgargs = setup_pgargs();
-    xsystem('/usr/local/oracc/bin/s2-pg2wrapper.plx', $ce_arg, 
+    xsystem('@@ORACC@@/bin/s2-pg2wrapper.plx', $ce_arg, 
 	    '-s', $values{'state'}, 
 	    '-P', $values{'project'}, 
 	    '-p', $pgargs, 

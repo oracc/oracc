@@ -28,6 +28,7 @@ const char *idattr = "xml:id";
 int echoing = 0;
 int item_offset;
 int langmask; /* just for selib.c; not used by ce */
+int link_fields = 0;
 int selecting_w = 0;
 int tabbed = 0;
 int verbose = 0;
@@ -513,7 +514,7 @@ int
 main(int argc, char * const*argv)
 {
   exit_on_error = TRUE;
-  options(argc, argv, "2c:f:i:l:m:o:p:S:tvx");
+  options(argc, argv, "2a:c:f:i:l:m:o:p:S:tvx");
 
   if (!project || !ce_index)
     {

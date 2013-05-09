@@ -23,6 +23,7 @@
   <xsl:param name="p2" select="'yes'"/>
   <xsl:param name="with-hr" select="false()"/>
   <xsl:param name="with-trailer" select="false()"/>
+  <xsl:param name="standalone" select="false()"/>
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -43,7 +44,7 @@
       <link rel="stylesheet" type="text/css" href="/css/{$webtype}.css"/>
 <!--      <link rel="stylesheet" type="text/css" href="/{$project}/pager.css"/> -->
       <link rel="stylesheet" type="text/css" href="/{$project}/p2.css"/>
-      <xsl:if test="string-length($webtype) > 0">
+      <xsl:if test="string-length($webtype) > 0 and not($webtype='oraccscreen')">
 	<script src="/js/{$webtype}.js" type="text/javascript">
 	  <xsl:text> </xsl:text>
 	</script>
@@ -85,6 +86,9 @@
 	    <xsl:attribute name="onload">p2Keys()</xsl:attribute>
 	  </xsl:otherwise>
 	</xsl:choose>
+      </xsl:if>
+      <xsl:if test="$standalone">
+	<xsl:attribute name="class"><xsl:text>standalone</xsl:text></xsl:attribute>
       </xsl:if>
       <xsl:call-template name="call-back"/>
       <xsl:if test="$with-hr">

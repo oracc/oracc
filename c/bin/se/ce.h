@@ -11,6 +11,7 @@ struct ce_config
   const char **proxies;
 };
 
+extern int link_fields;
 extern int xml_output;
 extern void xmdinit(const char *project);
 extern int xmdinit2(const char *project);
