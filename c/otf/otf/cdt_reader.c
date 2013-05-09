@@ -142,7 +142,7 @@ process_cdt_list(struct run_context *run,
 		  if (in_document)
 		    coerce_document_section(np);
 		  else
-		    process_cdt_input(run, "/usr/local/oracc/lib/config/default.sty", 
+		    process_cdt_input(run, "@@ORACC@@/lib/config/default.sty", 
 				      nodelist, metalist, np);
 		}
 	      if (np->code == odt_h && isdigit(*endtok))
@@ -278,7 +278,7 @@ process_cdt_list(struct run_context *run,
 		      char projstyles[_MAX_PATH];
 		      proj_init(run, cdt_project = (const char *)np->text);
 		      set_project(run->proj, cdt_project);
-		      sprintf(projstyles,"/usr/local/oracc/pub/%s/project.sty",
+		      sprintf(projstyles,"@@ORACC@@/pub/%s/project.sty",
 			      project);
 		      if (!xaccess(projstyles,R_OK,0))
 			process_cdt_input(run, projstyles, nodelist, metalist,np);

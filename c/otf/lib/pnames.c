@@ -18,7 +18,7 @@ int pmax = 0;
 int *pvalues;
 unsigned char **plines;
 unsigned char **pnames;
-static const char *pfname = "/usr/local/oracc/pub/cdli/Pnames.tab";
+static const char *pfname = "@@ORACC@@/pub/cdli/Pnames.tab";
 
 void
 init_pnames()

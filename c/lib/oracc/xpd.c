@@ -36,11 +36,11 @@ xpd_init(void)
   if (!*xpd_project || strcmp(xpd_project,project))
     {
       xpd_term();
-      sprintf(buf,"/usr/local/oracc/www/%s/config.xml",project);
+      sprintf(buf,"@@ORACC@@/www/%s/config.xml",project);
       if (xaccess(buf,R_OK,0))
 	{
 	  /* temporary, while we switch to config.xml permanently */
-	  sprintf(buf,"/usr/local/oracc/xml/%s/config.xml",project);
+	  sprintf(buf,"@@ORACC@@/xml/%s/config.xml",project);
 	}
       if (!xaccess(buf,R_OK,0))
 	{
@@ -106,7 +106,7 @@ xpd_echo(const char *xpd_project, FILE *fp)
   char tmp[_MAX_PATH];
   FILE *cfg = NULL;
   int ch;
-  (void)sprintf(tmp,"/usr/local/oracc/xml/%s/config.xml", xpd_project);
+  (void)sprintf(tmp,"@@ORACC@@/xml/%s/config.xml", xpd_project);
   cfg = xfopen(tmp,"r");
   while (EOF != (ch = fgetc(cfg)))
     fputc(ch,fp);

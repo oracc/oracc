@@ -25,7 +25,7 @@
 <p>The database running on oracc.museum.upenn.edu listens on port 8680
 and executes using the Jetty server packaged with eXist as a webapp
 installed at root and named <code>Oracc</code>.  The home directory
-for the webapp is <code>/usr/local/oracc/lib/java/eXist/webapp</code>
+for the webapp is <code>@@ORACC@@/lib/java/eXist/webapp</code>
 and the index.html that lives in that directory is the entry point
 arrived at via the URL <a
 href="http://oracc.museum.upenn.edu:8680"><code>http://oracc.museum.upenn.edu:8680</code></a>.</p>
@@ -92,9 +92,9 @@ for the section 'Configure the Contexts'.  After the first call to
 <pre>
 &lt;Call name="addWebApplication">
   &lt;Arg>/&lt;/Arg>
-  &lt;Arg>/usr/local/oracc/www/&lt;/Arg>
+  &lt;Arg>@@ORACC@@/www/&lt;/Arg>
   &lt;Set name="defaultsDescriptor">
-     /usr/local/oracc/eXist/tools/jetty/etc/webdefault.xml&lt;/Set>
+     @@ORACC@@/eXist/tools/jetty/etc/webdefault.xml&lt;/Set>
   &lt;Set name="displayName">Oracc&lt;/Set>
 &lt;/Call>
 </pre>
@@ -111,7 +111,7 @@ question.</p>
 
 <p>To load the Oracc portion of the database run the script:</p>
 
-<pre>/usr/local/oracc/bin/oracc-eXist-system.sh</pre>
+<pre>@@ORACC@@/bin/oracc-eXist-system.sh</pre>
 </dd>
 
 <dt>Load the project data</dt>

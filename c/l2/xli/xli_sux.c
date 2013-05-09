@@ -10,7 +10,7 @@ static void sux_norm0(struct f2 *f, struct npool *pool);
 
 const char *xli_sux_argp[] = 
 { 
-  "perl","/usr/local/oracc/bin/sma.plx","-slave","-xli",(const char*)0 
+  "perl","@@ORACC@@/bin/sma.plx","-slave","-xli",(const char*)0 
 };
 void
 xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)

@@ -63,7 +63,7 @@ void
 props_auto_init(void)
 {
   const char *fnlist[2];
-  const char *prop_data = "/usr/local/oracc/lib/data/props-qpn.xml";
+  const char *prop_data = "@@ORACC@@/lib/data/props-qpn.xml";
 
   pc = malloc(sizeof(struct prop_context));
   pc->names = hash_create(10);

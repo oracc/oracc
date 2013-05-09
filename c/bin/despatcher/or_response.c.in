@@ -6,8 +6,8 @@
 
 const char *mode = "full";
 const char *perlprog = NULL;
-const char *xtf2html = "/usr/local/oracc/lib/scripts/g2-xtf-HTML.xsl";
-const char *stats_html = "/usr/local/oracc/lib/scripts/stats-HTML.xsl";
+const char *xtf2html = "@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl";
+const char *stats_html = "@@ORACC@@/lib/scripts/stats-HTML.xsl";
 
 void
 adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id)
@@ -17,7 +17,7 @@ adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id)
     line_id = "none";
   if (!frag_id)
     frag_id = "none";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p2-pager.plx", 
 	"-p", cgi_arg("project", project),
 	"-p", cgi_arg("adhoc", adhoc_texts),
 	"-p", cgi_arg("line-id", line_id),
@@ -77,9 +77,9 @@ corpus(void)
 	  fprintf(stderr,"oracc-despatcher: project=%s; session=%s\n", project, sess);
 	  print_hdr_xml();
 	  print_xforms_pi();
-	  if (execl("/usr/local/oracc/bin/sessionify", "sessionify", sess, projp2, NULL))
+	  if (execl("@@ORACC@@/bin/sessionify", "sessionify", sess, projp2, NULL))
 	    {
-	      fprintf(stderr, "oracc-despatcher: /usr/local/oracc/bin/sessionify: execl failed\n");
+	      fprintf(stderr, "oracc-despatcher: @@ORACC@@/bin/sessionify: execl failed\n");
 	      exit(1);
 	    }
 	}
@@ -104,7 +104,7 @@ html(const char *xlang, const char *xid)
 {
   /* print_hdr_xml(); */
   mode = "minimal";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p2-pager.plx", 
 	"-p", cgi_arg("project", project), 
 	"-p", cgi_arg("xis-lang", xlang),
 	"-p", cgi_arg("xis-id", xid),
@@ -149,7 +149,7 @@ results(const char *session, const char *list)
 void
 sigfixer(const char *file)
 {
-  execl("/usr/local/oracc/bin/sigfixer", "sigfixer", project, file, NULL);
+  execl("@@ORACC@@/bin/sigfixer", "sigfixer", project, file, NULL);
   perror("execl failed");
 }
 
@@ -157,7 +157,7 @@ void
 sigfixer_html(const char *file)
 {
   print_hdr();
-  execl("/usr/local/oracc/bin/sigfixer", "sigfixer", project, file, NULL);
+  execl("@@ORACC@@/bin/sigfixer", "sigfixer", project, file, NULL);
   perror("execl failed");
 }
 
@@ -181,7 +181,7 @@ void
 sig(const char *sig)
 {
   fprintf(stderr, "oracc-despatcher: project=`%s'; literal sig=`%s'\n", project, query_string);
-  execl("/usr/local/oracc/bin/sigmap", "sigmap", project, query_string, NULL);
+  execl("@@ORACC@@/bin/sigmap", "sigmap", project, query_string, NULL);
   perror("execl failed");
 }
 
@@ -201,7 +201,7 @@ xis(const char *xlang, const char *xid)
 {
   /* print_hdr_xml(); */
   mode = "minimal";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p2-pager.plx", 
 	"-p", cgi_arg("project", project), 
 	"-p", cgi_arg("xis-lang", xlang),
 	"-p", cgi_arg("xis-id", xid),
@@ -215,7 +215,7 @@ void
 list(const char *list)
 {
   /* print_hdr_xml(); */
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p2-pager.plx", 
 	"-p", cgi_arg("project", project),
 	"-p", cgi_arg("browse-list", list),
 	"-p", cgi_arg("mode", mode),

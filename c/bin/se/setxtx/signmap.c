@@ -49,7 +49,7 @@ signmap_init()
 {
   const char *mapfile[2] = 
     { 
-      "/usr/local/oracc/xml/ogsl/ogsl.xml", 
+      "@@ORACC@@/xml/ogsl/ogsl.xml", 
       NULL 
     };
   signmap = hash_create(8000);

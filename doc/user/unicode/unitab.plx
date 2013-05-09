@@ -35,7 +35,7 @@ my %kb = (
     );
 
 my %names = ();
-open(N,"/usr/local/oracc/lib/data/NamesList.txt") || die;
+open(N,"@@ORACC@@/lib/data/NamesList.txt") || die;
 while (<N>) {
     if (/^(\S+)\s+(.*?)$/) {
 	chomp;

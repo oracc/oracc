@@ -343,9 +343,9 @@ static int realmain(int argc, char **argv){
     {
       char *tmp = NULL;
       fprintf(stderr, "estseek: ORACC_PROJECT=%s\n", g_oracc_project);
-      tmp = malloc(strlen("/usr/local/oracc/www//estindex")
+      tmp = malloc(strlen("@@ORACC@@/www//estindex")
 		   + strlen(g_oracc_project) + 1);
-      sprintf(tmp, "/usr/local/oracc/www/%s/estindex", g_oracc_project);
+      sprintf(tmp, "@@ORACC@@/www/%s/estindex", g_oracc_project);
       g_indexname = tmp;
       tmp = malloc(strlen("http://oracc.museum.upenn.edu//find")
 		   + strlen(g_oracc_project) + 1);

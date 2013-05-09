@@ -87,7 +87,7 @@ process_file(struct run_context *run, const char *fname)
       odslem_fn = malloc(strlen(odsatf_fn)+1);
       sprintf(odslem_fn,"%s.lem",fname);
       setenv("ODS2ATF",fname,1);
-      system("/usr/local/oracc/bin/ods2atf.sh");
+      system("@@ORACC@@/bin/ods2atf.sh");
       fname = odsatf_fn;
       ods_mode = 1;
     }

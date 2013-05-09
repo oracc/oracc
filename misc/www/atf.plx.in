@@ -298,7 +298,7 @@ EOZ
 	<p>$filename contained $nerrs error$errs_s which you can <a href="$dl_logfile">view here</a>; up to <strong>50</strong> errors are listed below:</p>
 <hr/>
 EOE
-        system '/usr/local/oracc/bin/atflog50.sh', $logfile;
+        system '@@ORACC@@/bin/atflog50.sh', $logfile;
     }
 #<pre>
 #EOE

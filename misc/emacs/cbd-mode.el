@@ -18,7 +18,7 @@
 
 (defun cbd-shell-command (cmd)
   (interactive)
-  (shell-command (concat "cd ~ ; PATH=$PATH:/usr/local/oracc/bin " cmd)))
+  (shell-command (concat "cd ~ ; PATH=$PATH:@@ORACC@@/bin " cmd)))
 
 (defun cbd-check ()
   (interactive)

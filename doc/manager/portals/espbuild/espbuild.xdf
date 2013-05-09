@@ -57,18 +57,18 @@ to be output as is), and add structural page components to head
 
 Phase 5: Split into pages (any warning refers to the file named *before* 
 the warning)
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/abouttheproject/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/listofdeities/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/listofdeities/aya/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/listofdeities/ninisinna/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/bibliography/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/accesskeys/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/sitemap/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/privacy/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/webstandards/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/creditscopyright/index.html
-   Page: file:/usr/local/oracc/amgg/00web/esp/httproot_dev/404/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/abouttheproject/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/listofdeities/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/listofdeities/aya/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/listofdeities/ninisinna/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/bibliography/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/accesskeys/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/sitemap/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/privacy/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/webstandards/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/creditscopyright/index.html
+   Page: file:@@ORACC@@/amgg/00web/esp/httproot_dev/404/index.html
 
 Validating pages as XHTML (only non-validating pages reported)
 

@@ -1,12 +1,12 @@
-Install tomcat in /usr/local/oracc/lib/java/tomcat
+Install tomcat in @@ORACC@@/lib/java/tomcat
 
 Log in as root and copy the file 
 
-  /usr/local/oracc/src/misc/tomcat/tomcat-users.xml 
+  @@ORACC@@/src/misc/tomcat/tomcat-users.xml 
 
 to 
  
-  /usr/local/oracc/lib/java/tomcat/conf/tomcat-users.xml
+  @@ORACC@@/lib/java/tomcat/conf/tomcat-users.xml
 
 set the permissions to be -r-------- so that only the oracc
 user can read the file: THIS IS IMPORTANT!  tomcat-users.xml

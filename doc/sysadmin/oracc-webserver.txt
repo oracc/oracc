@@ -23,16 +23,16 @@ NameVirtualHost *:80
     ErrorLog logs/oracc-error_log
     CustomLog logs/oracc-access_log common
 
-    DocumentRoot "/var/local/oracc/www"
-    <Directory "/var/local/oracc/www">
+    DocumentRoot "@@ORACC@@/www"
+    <Directory "@@ORACC@@/www">
     	       Options Indexes FollowSymLinks
     	       AllowOverride None
     	       Order allow,deny
    	       Allow from all
     </Directory>
 
-    ScriptAlias /cgi-bin/ "/var/local/oracc/www/cgi-bin/"
-    <Directory "/var/local/oracc/www/cgi-bin/">
+    ScriptAlias /cgi-bin/ "@@ORACC@@/www/cgi-bin/"
+    <Directory "@@ORACC@@/www/cgi-bin/">
     	       AllowOverride None
     	       Options +ExecCGI
     	       Order allow,deny

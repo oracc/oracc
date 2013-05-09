@@ -385,13 +385,13 @@ static const char *xmlns4 =
 static const char *
 otfODTstylerParallel(void)
 {
-  return "file:///usr/local/oracc/lib/scripts/otf-ODT-parallel.xsl";
+  return "file://@@ORACC@@/lib/scripts/otf-ODT-parallel.xsl";
 }
 
 static const char *
 otfODTstylerSerial(void)
 {
-  return "file:///usr/local/oracc/lib/scripts/otf-ODT-serial.xsl";
+  return "file://@@ORACC@@/lib/scripts/otf-ODT-serial.xsl";
 }
 
 void

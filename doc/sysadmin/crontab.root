@@ -1,9 +1,9 @@
 PATH=/bin:/usr/bin/
-bin=/usr/local/oracc/bin
+bin=@@ORACC@@/bin
 #
 # Back up all the projects; full backup on first of month,
 # incremental all other nights
 #
-bin=/usr/local/oracc/bin
+bin=@@ORACC@@/bin
 0 3 1 * * $bin/projsave-all.sh full 2>$HOME/projsave-full.log
 0 3 2-31 * * $bin/projsave-all.sh incr 2>$HOME/projsave-incr.log

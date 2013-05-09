@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use open ':utf8';
-use lib '/usr/local/oracc/lib'; # '@@ORACC@@/lib';
+use lib '@@ORACC@@/lib'; # '@@ORACC@@/lib';
 use ORACC::Expand2;
 use ORACC::XML;
 use ORACC::NS;

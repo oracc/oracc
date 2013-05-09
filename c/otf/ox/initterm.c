@@ -45,7 +45,7 @@ ox_init(void)
 
   if (perform_nsa)
     {
-      const char *nsa_data = "/usr/local/oracc/lib/data/nm.xml";
+      const char *nsa_data = "@@ORACC@@/lib/data/nm.xml";
       if (!(global_nsa_context = nsa_init(nsa_data)))
 	{
 	  fprintf(stderr,"atf2xtf: NSA init failed on `%s'\n",nsa_data);

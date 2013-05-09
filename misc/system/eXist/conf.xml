@@ -119,7 +119,7 @@
         collections, you can also increase the collectionCacheSize value 
     -->
     <db-connection cacheSize="48M" collectionCache="24M" database="native"
-        files="/usr/local/oracc/lib/java/eXist/webapp/WEB-INF/data" pageSize="4096" nodesBuffer="-1">
+        files="@@ORACC@@/lib/java/eXist/webapp/WEB-INF/data" pageSize="4096" nodesBuffer="-1">
 
         <!--
             Specifies the default permissions for all resources and collections
@@ -252,7 +252,7 @@
 				backup to the same directory.
         -->
         <recovery enabled="yes" group-commit="no" 
-			journal-dir="/usr/local/oracc/lib/java/eXist/webapp/WEB-INF/data" size="100M"
+			journal-dir="@@ORACC@@/lib/java/eXist/webapp/WEB-INF/data" size="100M"
             sync-on-commit="no" force-restart="no"
 			consistency-check="yes"/>
 

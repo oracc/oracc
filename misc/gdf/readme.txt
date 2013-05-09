@@ -7,14 +7,14 @@ All GDF data lives in the oracc directory in a subdirectory
 'ood/PROJECT/data', a physical directory owned by the project.
 So, for penn GDF there is a directory 
 
-  /usr/local/oracc/ood/penn/data
+  @@ORACC@@/ood/penn/data
 
 A soft link from the penn home account is made from penn/03ood to 
 ood/penn/data, and each dataset is then housed in its own 
 directory beneath that.
 
 A soft link is also needed from PROJECT/02www/data to 
-/usr/local/oracc/PROJECT/data.
+@@ORACC@@/PROJECT/data.
 
 2) Installation and Backup
 ==========================

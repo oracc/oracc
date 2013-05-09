@@ -259,7 +259,7 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="basename">
-    <xsl:text>/usr/local/oracc/bld/</xsl:text>
+    <xsl:text>@@ORACC@@/bld/</xsl:text>
     <xsl:value-of select="$refproject"/>
     <xsl:text>/</xsl:text>
     <xsl:value-of select="substring($refid,1,4)"/>

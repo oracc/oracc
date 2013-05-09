@@ -45,7 +45,7 @@ project files, which is usually the home directory of the project
 user, but this is not a requirement.  So, when a program refers to the
 <code>00atf</code> directory in an error message, it will probably
 call it, following the standard Oracc installation,
-<code>/usr/local/oracc/PROJECT/00atf</code>.</p>
+<code>@@ORACC@@/PROJECT/00atf</code>.</p>
 
 <p>This access route is the reason why project names must all be four
 characters or more in length: Oracc reserves names of three or less
@@ -127,7 +127,7 @@ from which the proxied data is taken.</p>
 <p>There is also a working directory named <code>01tmp</code>.</p>
 
 <p>Both of these directories actually live in the variable part of the
-filesystem, by convention in /var/local/oracc.  The entries in the project
+filesystem, by convention in @@ORACC@@.  The entries in the project
 home directory are links.</p>
 
 
@@ -135,7 +135,7 @@ home directory are links.</p>
 
 <p>There are several different kinds of public data besides the raw build results.
 Like <code>01bld</code> these directories are also links to the Oracc directory
-<code>/var/local/oracc</code>.</p>
+<code>@@ORACC@@</code>.</p>
 
 <dl>
 

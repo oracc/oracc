@@ -11,7 +11,7 @@
 
 <taskdef resource="net/sf/antcontrib/antcontrib.properties">
   <classpath>
-    <pathelement location="/usr/local/oracc/lib/java/ant-contrib-1.0b3.jar"/>
+    <pathelement location="@@ORACC@@/lib/java/ant-contrib-1.0b3.jar"/>
   </classpath>
 </taskdef>
 

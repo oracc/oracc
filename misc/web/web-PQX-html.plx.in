@@ -8,7 +8,7 @@ my $invocation = "ORACC/mk-wrapper.plx -name htmlview.plx -type xslt -script /us
 
 ORACC::Wrapper2::xslt(from=>'xmd',
 		    to=>'html',
-		    script=>'/usr/local/oracc/lib/scripts/htmlview.xsl',
+		    script=>'@@ORACC@@/lib/scripts/htmlview.xsl',
     );
 
 1;

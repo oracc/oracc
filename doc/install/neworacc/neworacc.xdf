@@ -27,13 +27,13 @@
    until path handling is abstracted out into a library routine
    the only paths that will work in practice are:</p>
 <pre class="cookbook">
-/usr/local/oracc
-/var/local/oracc
+@@ORACC@@
+@@ORACC@@
 </pre></li>
 
-<li><p>create a user 'oracc' with home set to /usr/local/oracc:</p>
+<li><p>create a user 'oracc' with home set to @@ORACC@@:</p>
 <pre class="cookbook">
-/usr/sbin/useradd -d /usr/local/oracc oracc
+/usr/sbin/useradd -d @@ORACC@@ oracc
 </pre></li>
 
 <li><p>set a password:</p>
@@ -51,9 +51,9 @@
 chown oracc:oracc /{usr,var}/local/oracc
 </pre></li>
 
-<li><p>set /usr/local/oracc to be non-world-readable:</p>
+<li><p>set @@ORACC@@ to be non-world-readable:</p>
 <pre class="cookbook">
-chmod o-r /usr/local/oracc
+chmod o-r @@ORACC@@
 </pre></li>
 
 </ul>
@@ -102,7 +102,7 @@ the system, it may be necessary to copy the system skel
 files (e.g., from /etc/skel) and add the following line to
 the end:</p>
 <pre class="cookbook">
-. /usr/local/oracc/bin/oraccenv.sh
+. @@ORACC@@/bin/oraccenv.sh
 </pre>
 <p>The path to <code>bin/oraccenv.sh</code> should be the the same as ORACC in oraccenv.sh</p></li>
 

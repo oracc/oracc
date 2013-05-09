@@ -1,4 +1,4 @@
-Install eXist in /usr/local/oracc/lib/java/eXist
+Install eXist in @@ORACC@@/lib/java/eXist
 
 copy ~/src/misc/system/eXist/conf.xml to lib/java/eXist
 

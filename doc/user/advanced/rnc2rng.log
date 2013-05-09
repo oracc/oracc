@@ -1,1 +1,1 @@
-fatal: file not found: /usr/local/oracc/src/doc/user/p2/advanced/.rnc (No such file or directory)
+fatal: file not found: @@ORACC@@/src/doc/user/p2/advanced/.rnc (No such file or directory)

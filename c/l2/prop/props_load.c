@@ -66,7 +66,7 @@ props_init(struct xcl_context *xc, const char *name)
   if ((props = known_props(name)))
     return props;
 
-  sprintf(buf,"/usr/local/oracc/lib/data/%s.xml",name);
+  sprintf(buf,"@@ORACC@@/lib/data/%s.xml",name);
   if (!xaccess(buf,R_OK,0))
     props = props_load(buf, name, xc);
 

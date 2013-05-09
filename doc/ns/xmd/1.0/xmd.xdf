@@ -59,7 +59,7 @@ results in termination of the run.</p>
 specified in an <a href="../XCF/">XCF configuration file</a>; the <a
 href="http://cdl.museum.upenn.edu/doc/catalog/">CDL XML
 catalog implementation</a> offers a working demonstration.</p>
-<d:config name="xmd-config" path="/usr/local/oracc/lib/ORACC/XMD">
+<d:config name="xmd-config" path="@@ORACC@@/lib/ORACC/XMD">
 <d:for name="xmdmanager.plx"/>
 <d:var name="catdir" times="1">location of the catalogs directory</d:var>
 <d:var name="catalog" times="+">

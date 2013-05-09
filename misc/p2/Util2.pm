@@ -1,6 +1,6 @@
 package ORACC::P2::Util2;
 use utf8; use open 'utf8'; binmode(STDOUT, ':utf8');
-use lib '/usr/local/oracc/lib';
+use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use File::Temp qw/tempdir tempfile/;
 use Encode;
@@ -92,13 +92,13 @@ get_node {
 
 sub
 load_default_instance {
-    load_xml("/usr/local/oracc/lib/data/default-$_[0].xml");
+    load_xml("@@ORACC@@/lib/data/default-$_[0].xml");
 }
 
 sub
 load_p2_with_instances {
     my ($tmpdir,$project) = @_;
-    my $p2 = load_xml("/usr/local/oracc/xml/$project/p2.xml")
+    my $p2 = load_xml("@@ORACC@@/xml/$project/p2.xml")
 	|| die "P2::Util: failed to load $project/p2.xml\n";
     my @instances = tags($p2,$xforms_ns,'instance');
     foreach my $i (@instances) {

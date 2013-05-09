@@ -7,7 +7,7 @@ is only readable by the oracc user.  When a program is named in this
 documentation, the full path to the program is the path of the oracc
 installation followed by 00/sys followed by the program name.  For a
 typical installation, then, the full path to the program newproj.sh
-is /usr/local/oracc/00/sys/newproj.sh.
+is @@ORACC@@/00/sys/newproj.sh.
 
 Some of these scripts can only run as root; they will complain when
 run as a regular user.
@@ -22,12 +22,12 @@ the root user when root is performing Oracc sysadmin tasks.
 
 ++ ORACC
 
-   This is the path to the Oracc installation, by default /usr/local/oracc.
+   This is the path to the Oracc installation, by default @@ORACC@@.
 
 
 ++ ORACC_VAR
 
-   This is the path to the Oracc variable data tree, by default /var/local/oracc.
+   This is the path to the Oracc variable data tree, by default @@ORACC@@.
 
 ++ ORACC_HOME
 
@@ -48,10 +48,10 @@ To call oraccenv.sh you may be able simply to copy or link it to
 load the files in that directory, you can add to /etc/profile the
 line:
 
-	. /usr/local/oracc/bin/oraccenv.sh
+	. @@ORACC@@/bin/oraccenv.sh
 
 Where the first token is a single period, followed by a space, and the path
-/usr/local/oracc must be replaced by the path to Oracc's bin directory
+@@ORACC@@ must be replaced by the path to Oracc's bin directory
 on the installation in question.
 
 Instructions for other shells and non-Unix systems will vary.
@@ -91,7 +91,7 @@ digits after that.
 So, to create a new project 'amarna' on a standard installation, the 
 full command would be (executed as root):
 
-  /usr/local/oracc/00/sys/newproj.sh amarna
+  @@ORACC@@/00/sys/newproj.sh amarna
 
 New sub-projects (those which belong to a user-project) can be created
 by users themselves, and must be created while logged in as the user.
@@ -120,7 +120,7 @@ deleted, and may be removed when no further use for it is likely.
 So, to delete a project 'amarna' on a standard installation, the full
 command would be (executed as root):
 
-  /usr/local/oracc/00/sys/delproj.sh amarna
+  @@ORACC@@/00/sys/delproj.sh amarna
 
 Sub-project deletion is described in the Manager documentation.
 

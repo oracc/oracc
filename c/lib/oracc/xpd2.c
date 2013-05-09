@@ -153,7 +153,7 @@ xpd_echo(const char *xpd_project, FILE *fp)
 {
   char tmp[_MAX_PATH], *text;
   size_t nbytes;
-  (void)sprintf(tmp,"/usr/local/oracc/xml/%s/config.xml", xpd_project);
+  (void)sprintf(tmp,"@@ORACC@@/xml/%s/config.xml", xpd_project);
   text = (char*)loadfile((unsigned char *)tmp, &nbytes);
   if (text)
     {

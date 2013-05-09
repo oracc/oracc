@@ -5,6 +5,8 @@
 # 
 #  $Id: Makefile.lam,v 0.5 1997/09/08 13:01:43 sjt Exp $
 
+include ../../../oracc-am-rules.txt
+
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
@@ -19,6 +21,15 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	xmlns xmlsplit utf8v xalias xfrag
 
 #pqoutline pqsort  
+
+haslinks.c: haslinks.c.in
+	$(ORACCIFY) haslinks.c.in
+
+pqoutline.c: pqoutline.c.in
+	$(ORACCIFY) pqoutline.c.in
+
+sigmap.c: sigmap.c.in
+	$(ORACCIFY) sigmap.c.in
 
 concord_SOURCES=concord.c
 concord_LDADD=@top_srcdir@/c/lib/liboracc.la

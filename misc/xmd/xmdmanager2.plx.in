@@ -1410,8 +1410,8 @@ sub
 splitkeys {
     my @res = ();
     my $tmp = $_[0];
-    $tmp =~ tr/a-zA-Z0-9 //cd;
-    foreach my $r (split(/\s+/, $tmp)) {
+    $tmp =~ tr/a-zA-Z0-9 .//cd;
+    foreach my $r (split(/[\s\.]+/, $tmp)) {
 	my $r2 = undef;
 	my $intval = 0;
 	if ($r =~ /^\d/) {

@@ -1,6 +1,6 @@
-PATH=/bin:/usr/bin:/usr/local/bin:/home/cdl/bin:/usr/local/oracc/bin
+PATH=/bin:/usr/bin:/usr/local/bin:/home/cdl/bin:@@ORACC@@/bin
 #
 # update CDLI catalog installation
 #
 # note: should be 0 5 * but this will kick it at 2pm for testing
-0 5 * * * /usr/local/oracc/cdli/00bin/cdli-nightly.plx 2>$HOME/00any/nightly.log
+0 5 * * * @@ORACC@@/cdli/00bin/cdli-nightly.plx 2>$HOME/00any/nightly.log

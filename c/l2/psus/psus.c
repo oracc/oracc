@@ -55,7 +55,7 @@ xpsus2_init(struct sigset *sp)
     }
   else
     {
-      sprintf(buf,"/usr/local/oracc/bld/%s/%s/glossary.psu",sp->project,sp->lang);
+      sprintf(buf,"@@ORACC@@/bld/%s/%s/glossary.psu",sp->project,sp->lang);
     }
   if (!xaccess(buf,R_OK,0))
     nlcp = nl_load(nlcp,buf,nlcp_action_psu, (char*)sp->lang);
