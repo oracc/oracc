@@ -29,6 +29,9 @@ cdlhtml.plx: cdlhtml.plx.in
 corpusview.xsl: corpusview.xsl.in
 	$(ORACCIFY) corpusview.xsl.in
 
+xmdoutline.xsl: xmdoutline.xsl.in
+	$(ORACCIFY) xmdoutline.xsl.in
+
 atf.plx: atf.plx.in
 	$(ORACCIFY) atf.plx.in
 

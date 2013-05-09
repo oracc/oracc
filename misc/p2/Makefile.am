@@ -10,15 +10,6 @@ bin_SCRIPTS = p2-pager.plx install.sh p2-browse.plx p2-project-data.plx p2-proje
 css_DATA = oas.css p2-p1.css p2.css
 htmlp2_DATA = p2-cbd-init.html p2-content.html p2-outline.html
 
-p2-pager.plx: p2-pager.plx.in
-	$(ORACCIFY) p2-pager.plx.in
-
-p2-corpusview.xsl: p2-corpusview.xsl.in
-	$(ORACCIFY) p2-corpusview.xsl.in
-
-p2-corpusview-lib.xsl: p2-corpusview-lib.xsl.in
-	$(ORACCIFY) p2-corpusview-lib.xsl.in
-
 default-browse.xml: default-instance.xsl
 	xsltproc -stringparam instance browse default-instance.xsl p2-base.xml >default-browse.xml
 
@@ -27,6 +18,33 @@ default-pager.xml: default-instance.xsl
 
 default-search.xml: default-instance.xsl
 	xsltproc -stringparam instance search default-instance.xsl p2-base.xml >default-search.xml
+
+p2-browse.plx: p2-browse.plx.in
+	$(ORACCIFY) p2-browse.plx.in
+
+p2-corpusview.xsl: p2-corpusview.xsl.in
+	$(ORACCIFY) p2-corpusview.xsl.in
+
+p2-corpusview-lib.xsl: p2-corpusview-lib.xsl.in
+	$(ORACCIFY) p2-corpusview-lib.xsl.in
+
+p2-pager.plx: p2-pager.plx.in
+	$(ORACCIFY) p2-pager.plx.in
+
+p2-project-data.plx: p2-project-data.plx.in
+	$(ORACCIFY) p2-project-data.plx.in
+
+p2-project.xsl: p2-project.xsl.in
+	$(ORACCIFY) p2-project.xsl.in
+
+p2-search.plx: p2-search.plx.in
+	$(ORACCIFY) p2-search.plx.in
+
+p2-sig.plx: p2-sig.plx.in
+	$(ORACCIFY) p2-sig.plx.in
+
+p2-xmd-div.plx: p2-xmd-div.plx.in
+	$(ORACCIFY) p2-xmd-div.plx.in
 
 EXTRA_DIST = \
 	Util2.pm \
@@ -39,7 +57,7 @@ EXTRA_DIST = \
 	oas.css \
 	oas.js \
 	p2-base.xml \
-	p2-browse.plx \
+	p2-browse.plx.in \
 	p2-cbd-init.html \
 	p2-cbd-toc.xsl \
 	p2-content.html \
@@ -51,13 +69,13 @@ EXTRA_DIST = \
 	p2-outline.html \
 	p2-p1.css \
 	p2-pager.plx.in \
-	p2-project-data.plx \
+	p2-project-data.plx.in \
 	p2-project.sh \
-	p2-project.xsl \
-	p2-search.plx \
+	p2-project.xsl.in \
+	p2-search.plx.in \
 	p2-shortcuts.js \
-	p2-sig.plx \
-	p2-xmd-div.xsl \
+	p2-sig.plx.in \
+	p2-xmd-div.xsl.in \
 	p2-xmd.xsl \
 	p2-xtl-div.xsl \
 	p2.css \

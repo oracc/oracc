@@ -13,6 +13,7 @@ my @fields = @ARGV;
 binmode STDOUT, ':utf8';
 while (<>) {
     chomp;
+    $project = $1 if s/^(.*?)://;
     my $fields = ORACC::XMD::Fields::get_in_project($project,$_);
     my @values = ($_);
     foreach my $f (@fields) {

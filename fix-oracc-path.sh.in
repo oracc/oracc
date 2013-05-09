@@ -1,0 +1,4 @@
+#!/bin/sh
+for a in `grep -lr 'al/oracc/' *` ; do
+    perl -pi -e 's,@@ORACC@@,\@\@ORACC\@\@,g' $a
+done

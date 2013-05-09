@@ -47,7 +47,7 @@ cat $teilist | while read line; do
     xmdbase=${ORACC}/bld/$cat/${pqx:0:4}/$pqx/$pqx 
     xtfbase=${ORACC}/bld/$prj/${pqx:0:4}/$pqx/$pqx
     file=`if [ -e $xtfbase.xtf ]; then echo -n "$xtfbase.xtf"; else echo -n "$xmdbase.xmd"; fi`
-    echo Generating $teidir/${pqx}.xml from $prj:$pqx
+#    echo Generating $teidir/${pqx}.xml from $prj:$pqx
     xsltproc --stringparam this-project $project \
 	--stringparam project $prj \
 	--stringparam tei-hdr-type $hdrs \

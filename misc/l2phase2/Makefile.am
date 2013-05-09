@@ -10,10 +10,13 @@ l2p2-g2c.plx: l2p2-g2c.plx.in
 l2p2-langs.plx: l2p2-langs.plx.in
 	$(ORACCIFY) l2p2-langs.plx.in
 
+g2-articles.xsl: g2-articles.xsl.in
+	$(ORACCIFY) g2-articles.xsl.in
+
 EXTRA_DIST = \
 	cbd-super-periods.xsl \
 	cbd-usage-ids.xsl \
-	g2-articles.xsl \
+	g2-articles.xsl.in \
 	g2-base-s.xsl \
 	g2-primary-base.xsl \
 	g2-see-cpds.xsl \

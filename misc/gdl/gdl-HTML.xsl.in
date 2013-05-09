@@ -650,7 +650,8 @@
 	<xsl:text>—</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>-</xsl:text>
+	<!-- <xsl:text>-</xsl:text> -->
+	<xsl:value-of select="@g:delim"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>

@@ -14,6 +14,12 @@ scriptdata_DATA = bib-ODT.xsl cat-ODT.xsl doc-split.xsl gdl-ODT.xsl \
 	xtf-ODT-serial.xsl \
 	xtr-ODT.xsl
 
+odfmanager.plx: odfmanager.plx.in
+	$(ORACCIFY) odfmanager.plx.in
+
+oracc-odtTeX.xsl: oracc-odtTeX.xsl.in
+	$(ORACCIFY) oracc-odtTeX.xsl.in
+
 EXTRA_DIST = \
 	bib-ODT.xsl \
 	cat-ODT.xsl \
@@ -27,12 +33,12 @@ EXTRA_DIST = \
 	office-automatic-styles.xml \
 	office-master-styles.xml \
 	office-styles.xml \
-	oracc-odtTeX.xsl \
+	oracc-odtTeX.xsl.in \
 	otf-ODT.xsl \
 	otf2odt.sh \
 	otf2pdf.sh \
 	otf2tex.sh \
-	odfmanager.plx \
+	odfmanager.plx.in \
 	xtf-ODT.xsl \
 	xtr-ODT.xsl \
 	otf-ODT-parallel.xsl \

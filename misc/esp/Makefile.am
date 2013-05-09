@@ -7,6 +7,24 @@ scriptdata_DATA = esp-alphabet.xslt esp-chars-iso-8859-1.xslt esp-chars-markup-i
 img_DATA = blank.gif
 java_DATA = ImageInfo.class
 
+esp-images-info.xslt: esp-images-info.xslt.in
+	$(ORACCIFY) esp-images-info.xslt.in
+
+esp-live.sh: esp-live.sh.in
+	$(ORACCIFY) esp-live.sh.in
+
+esp-phase-01.xslt: esp-phase-01.xslt.in
+	$(ORACCIFY) esp-phase-01.xslt.in
+
+esp-phase-03.xslt: esp-phase-03.xslt.in
+	$(ORACCIFY) esp-phase-03.xslt.in
+
+esp-phase-04.xslt: esp-phase-04.xslt.in
+	$(ORACCIFY) esp-phase-04.xslt.in
+
+esp-stylesheets.xslt: esp-stylesheets.xslt.in
+	$(ORACCIFY) esp-stylesheets.xslt.in
+
 EXTRA_DIST = \
 	ImageInfo.class \
 	blank.gif \
@@ -16,22 +34,22 @@ EXTRA_DIST = \
 	esp-chars-symbols-maths-greek.xslt \
 	esp-dumb-quotes.xslt \
 	esp-functions.xslt \
-	esp-images-info.xslt \
+	esp-images-info.xslt.in \
 	esp-init.sh \
-	esp-live.sh \
+	esp-live.sh.in \
 	esp-lmt.plx \
 	esp-menu.xslt \
 	esp-no-nmtok-err.plx \
-	esp-phase-01.xslt \
+	esp-phase-01.xslt.in \
 	esp-phase-02.xslt \
-	esp-phase-03.xslt \
-	esp-phase-04.xslt \
+	esp-phase-03.xslt.in \
+	esp-phase-04.xslt.in \
 	esp-phase-05.xslt \
 	esp-references.xslt \
 	esp-remove-webfiles.sh \
 	esp-saxon-collate.xslt \
 	esp-site-map.xslt \
-	esp-stylesheets.xslt \
+	esp-stylesheets.xslt.in \
 	esp.sh \
 	library.js \
 	textsizeminus1.css \

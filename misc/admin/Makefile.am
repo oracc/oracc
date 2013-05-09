@@ -2,6 +2,9 @@ include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave-full.sh projsave-incr.sh allprojatf.sh allprojlist.sh backup-list.plx grepatf.sh oraccenv.sh proj-backup-list.plx projbackup.sh projlist-depth-first.plx projpublic.sh projsave-sub.sh projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh
 
+dmg.sh: dmg.sh.in
+	$(ORACCIFY) dmg.sh.in
+
 projsave-incr.sh: projsave-incr.sh.in
 	$(ORACCIFY) projsave-incr.sh.in
 
@@ -14,20 +17,34 @@ projsave-full.sh: projsave-full.sh.in
 incr-backup.sh: incr-backup.sh.in
 	$(ORACCIFY) incr-backup.sh.in
 
+oraccenv-single.sh: oraccenv-single.sh.in
+	$(ORACCIFY) oraccenv-single.sh.in
+
+oraccenv.sh: oraccenv.sh.in
+	$(ORACCIFY) oraccenv.sh.in
+
 projlist.sh: projlist.sh.in
 	$(ORACCIFY) projlist.sh.in
 
 projsave-all.sh: projsave-all.sh.in
 	$(ORACCIFY) projsave-all.sh.in
 
+wwwify.sh: wwwify.sh.in
+	$(ORACCIFY) wwwify.sh.in
+
+wwwperm.sh: wwwperm.sh.in
+	$(ORACCIFY) wwwperm.sh.in
+
 EXTRA_DIST = \
 	allprojatf.sh \
 	allprojlist.sh \
 	backup-list.plx \
+	dmg.sh.in \
 	full-backup.sh.in \
 	grepatf.sh \
 	incr-backup.sh.in \
-	oraccenv.sh \
+	oraccenv.sh.in \
+	oraccenv-single.sh.in \
 	proj-backup-list.plx \
 	projbackup.sh \
 	projlist-depth-first.plx \
@@ -44,5 +61,5 @@ EXTRA_DIST = \
 	sudo-map-exec.sh \
 	sudo-map.sh \
 	userperm.sh \
-	wwwify.sh \
-	wwwperm.sh
+	wwwify.sh.in \
+	wwwperm.sh.in

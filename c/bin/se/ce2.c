@@ -578,6 +578,9 @@ opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case 'a':
+      link_fields = atoi(arg);
+      break;
     case 'c':
       id = arg;
       break;

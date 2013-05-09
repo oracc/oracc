@@ -681,13 +681,13 @@
 	    </xsl:variable>
 	    <a class="cbd" 
 	       href="javascript:pop1sig('{translate($sig,$quote,$acute)}')">
-	      <xsl:apply-templates/>
+	      <xsl:call-template name="render-word"/>
 	      <xsl:call-template name="render-flags"/>
 	      <xsl:call-template name="render-c"/>
 	    </a>
 	  </xsl:when>
 	  <xsl:otherwise>
-	    <xsl:apply-templates/>
+	    <xsl:call-template name="render-word"/>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:when>
@@ -744,7 +744,8 @@
 	<xsl:text>—</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>-</xsl:text>
+<!--	<xsl:text>-</xsl:text>-->
+	<xsl:value-of select="@g:delim"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>

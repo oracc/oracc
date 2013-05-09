@@ -1,0 +1,4 @@
+#!/bin/sh
+for a in `./missing-in.sh` ; do
+    perl -p -e 's,@@ORACC@@,\@\@ORACC\@\@,g' $a >$a.in
+done

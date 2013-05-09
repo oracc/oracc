@@ -1,0 +1,8 @@
+#!/bin/sh
+glibtoolize
+aclocal
+automake
+autoconf
+./configure --prefix=@@ORACC@@
+make
+make install

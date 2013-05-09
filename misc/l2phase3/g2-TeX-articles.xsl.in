@@ -1,0 +1,612 @@
+<?xml version='1.0'?>
+
+<xsl:stylesheet version="1.0" 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:xh="http://www.w3.org/1999/xhtml"
+  xmlns:cbd="http://oracc.org/ns/cbd/1.0"
+  xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
+  xmlns:ex="http://exslt.org/common"
+  xmlns:g="http://oracc.org/ns/gdl/1.0"
+  xmlns:i="http://oracc.org/ns/instances/1.0"
+  xmlns:xcl="http://oracc.org/ns/xcl/1.0"
+  xmlns:norm="http://oracc.org/ns/norm/1.0"
+  xmlns:stt="http://oracc.org/ns/stats/1.0"
+  xmlns:xl="http://www.w3.org/1999/xlink"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  extension-element-prefixes="ex"
+  exclude-result-prefixes="cbd dc ex g i xl stt norm xcl">
+
+<xsl:import href="g2-gdl-TeX.xsl"/>
+
+<xsl:param name="basename"/>
+<xsl:param name="project"/>
+<xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
+<xsl:param name="cbd-bases-table" select="'no'"/>
+<xsl:param name="cbd-article-summaries" select="'no'"/>
+
+<xsl:variable name="q">'</xsl:variable>
+
+<xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
+<xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+
+<xsl:variable name="summaries-doc" select="concat('@@ORACC@@/web/',$basename,'/',/*/@xml:lang,'/summaries.html')"/>
+
+<!--<xsl:strip-space elements="*"/>-->
+
+<xsl:key name="signmap" match="do" use="@from"/>
+<xsl:key name="summary-id" match="xh:p" use="@id"/>
+
+<xsl:output method="text" encoding="utf-8"/>
+
+<xsl:template match="cbd:articles">
+\macrofile{00lib/epsdpv}
+\beginglossary
+
+<xsl:apply-templates/>
+
+\endglossary\bye
+
+</xsl:template>
+
+<xsl:template match="cbd:letter">
+\letter{<xsl:value-of select="@dc:title"/>}
+
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template name="make-cf">
+  <xsl:param name="with-initial-gw"/>
+  <xsl:choose>
+    <xsl:when test="cbd:compound">
+      <xsl:for-each select="cbd:compound[1]/cbd:cpd">
+	<xsl:variable name="id-node" select="id(@eref)"/>
+	<xsl:choose>
+	  <xsl:when test="$id-node and $id-node/cbd:bases">
+	    <xsl:apply-templates select="$id-node/cbd:bases/cbd:base[@primary='1']/cbd:text[1]"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="cbd:cf"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<xsl:if test="position()=1 and $with-initial-gw=true()"
+		><xsl:value-of select="concat('[',$id-node/cbd:gw, ']')"/></xsl:if>
+	<xsl:if test="not(position()=last())"><xsl:text> </xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="xml-tex-escape">
+	<xsl:with-param name="arg" select="cbd:cf"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="cbd:entry">
+\beginentry
+\cfgw{<xsl:call-template name="make-cf"/>}{<xsl:value-of select="cbd:gw"
+       />}{<xsl:value-of select="cbd:pos"
+       />}{<xsl:apply-templates select="cbd:phon"
+       />}{<xsl:apply-templates select="@icount"
+       />}{<xsl:value-of select="cbd:overview/@periods"
+       />}<!--      {<xsl:call-template name="instref">
+         <xsl:with-param name="instances-only" select="true()"/>
+       </xsl:call-template>}%
+-->
+  <xsl:apply-templates mode="do-it" select="cbd:compound"
+  /><xsl:apply-templates select="cbd:senses"
+  /><xsl:apply-templates select="cbd:bases"
+  /><xsl:apply-templates select="cbd:equivs"
+  /><xsl:apply-templates select="cbd:bib"
+  /><xsl:if test="cbd:see-compounds/cbd:xcpd[@primary='']">\beginsee
+<xsl:for-each select="cbd:see-compounds/cbd:xcpd[@primary='']"
+    ><xsl:apply-templates mode="see-cpd" select="id(@eref)"
+    /><xsl:if test="not(position()=last())">; </xsl:if></xsl:for-each>\endsee</xsl:if
+  ><xsl:if test="cbd:see-compounds/cbd:xcpd[@primary='1']">\beginsubentries
+<xsl:for-each select="cbd:see-compounds/cbd:xcpd[@primary='1']"
+    ><xsl:apply-templates select="id(@eref)"/></xsl:for-each>\endsubentries</xsl:if>
+\endentry
+
+</xsl:template>
+
+<xsl:template mode="see-cpd" match="cbd:entry">\see{<xsl:call-template name="make-cf"
+  ><xsl:with-param name="with-initial-gw" select="true()"
+  /></xsl:call-template>}{<xsl:value-of select="concat('[',cbd:gw,']')"
+  />}{<xsl:value-of select="cbd:pos"
+/>}</xsl:template>
+
+<xsl:template mode="print" match="cbd:phon">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template mode="print" match="cbd:cf">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="cbd:cf|cbd:dcf|cbd:gw|cbd:phon|cbd:pos|cbd:root"/>
+
+<xsl:template match="cbd:compound|cbd:see-compounds"/>
+
+<xsl:template mode="do-it" match="cbd:compound">
+\parts <xsl:text>(</xsl:text>
+<xsl:for-each select="*">
+  <xsl:call-template name="format-cpd"/>
+  <xsl:if test="not(position() = last())"> + </xsl:if>
+</xsl:for-each>)
+
+</xsl:template>
+
+<xsl:template name="format-cpd">
+  <xsl:value-of select="concat(cbd:cf,'[',cbd:gw)"/>
+  <xsl:if test="cbd:sense">
+    <xsl:value-of select="concat('//',cbd:sense)"/>
+  </xsl:if>
+  <xsl:value-of select="concat(']',cbd:pos)"/>
+  <xsl:if test="cbd:epos">
+    <xsl:value-of select="concat($q,cbd:epos)"/>
+  </xsl:if>
+  <xsl:if test="cbd:morph">
+    <xsl:value-of select="concat('#',cbd:morph)"/>
+  </xsl:if>
+</xsl:template>
+
+<!--
+<xsl:template mode="do-it" match="cbd:see-compounds">\see
+<xsl:for-each select="*">
+  <xsl:apply-templates
+  /><xsl:if test="not(position() = last())">, </xsl:if>
+</xsl:for-each>.
+
+</xsl:template>
+-->
+<xsl:template match="cbd:prefs">\prefixes
+<xsl:for-each select="cbd:pref">
+  <xsl:apply-templates
+  /><xsl:if test="position() &lt; last()">; </xsl:if>
+</xsl:for-each>.
+
+</xsl:template>
+
+<xsl:template mode="print" match="cbd:root">
+  <xsl:value-of select="concat(' (&#x221A;',text(),')')"/>
+</xsl:template>
+
+<xsl:template match="cbd:stems">
+<xsl:if test="cbd:stem">
+\stems 
+<xsl:for-each select="cbd:stem">
+  <xsl:value-of select="@n"/>
+  <xsl:if test="position() &lt; last()">; </xsl:if>
+</xsl:for-each>
+.
+
+</xsl:if>
+</xsl:template>
+
+<!--
+<xsl:template match="cbd:conts">
+  <xsl:if test="$cbd-bases-table='no'">
+    <p class="norms">
+      <span class="iheader">Continuations:</span>
+      <xsl:for-each select="cbd:cont">
+	<xsl:apply-templates select="."/>
+	<xsl:if test="position() &lt; last()">
+	  <span class="punct-sc"><xsl:text>; </xsl:text></span>
+	</xsl:if>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="cbd:cont">
+  <a class="icountu" 
+     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+    <xsl:apply-templates/>
+  </a>
+</xsl:template>
+
+<xsl:template mode="do-it" match="cbd:conts">
+  <xsl:if test="*">
+    <tr class="orth cont">
+      <td class="orthindex">+</td>
+      <td class="orth" colspan="2">
+      <xsl:for-each select="*">
+	<span class="cont">
+	  <xsl:text>-</xsl:text>
+	    <xsl:call-template name="html-text">
+	      <xsl:with-param name="text" select="text()"/>
+	    </xsl:call-template>
+	  <xsl:call-template name="instref"/>
+	</span>
+	<xsl:if test="not(position()=last())">
+	  <xsl:text>; </xsl:text>
+	</xsl:if>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+      </td>
+    </tr>
+  </xsl:if>
+</xsl:template>
+-->
+
+<xsl:template match="cbd:bases">
+  <xsl:choose>
+    <xsl:when test="$cbd-bases-table='no'">
+      <xsl:call-template name="bases-para"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="bases-table"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="bases-para">
+\begin{bases}
+  <xsl:for-each select="cbd:base"
+  ><xsl:apply-templates mode="base" select="cbd:text[1]"
+/></xsl:for-each
+>\end{bases}
+</xsl:template>
+
+<xsl:template mode="base" match="cbd:text">\base{<xsl:apply-templates mode="cuneify"/>}{<xsl:apply-templates
+/>}{<xsl:call-template name="inst-bar"/>}
+</xsl:template>
+
+<xsl:template name="inst-pct">
+  <xsl:variable name="p" select="number(.)"/>
+  <xsl:choose>
+    <xsl:when test="$p=0">0</xsl:when>
+    <xsl:when test="$p&lt;20">1</xsl:when>
+    <xsl:when test="$p&lt;40">2</xsl:when>
+    <xsl:when test="$p&lt;60">3</xsl:when>
+    <xsl:when test="$p&lt;80">4</xsl:when>
+    <xsl:otherwise>5</xsl:otherwise>
+  </xsl:choose>    
+</xsl:template>
+
+<xsl:template name="inst-cnt">
+  <xsl:variable name="p" select="number(.)"/>
+  <xsl:choose>
+    <xsl:when test="$p=0">0</xsl:when>
+    <xsl:when test="$p&lt;5">1</xsl:when>
+    <xsl:when test="$p&lt;20">2</xsl:when>
+    <xsl:when test="$p&lt;50">3</xsl:when>
+    <xsl:when test="$p&lt;100">4</xsl:when>
+    <xsl:otherwise>5</xsl:otherwise>
+  </xsl:choose>    
+</xsl:template>
+
+<xsl:template name="inst-bar">
+  <xsl:for-each select="ancestor::cbd:base">
+    <xsl:if test="@icount and @icount > 0"
+      >\instbar{<xsl:value-of select="@icount"
+      />}<xsl:for-each select="id(@xis-periods)/*[position()&lt;10]"
+      >{<xsl:call-template name="inst-cnt"/>}</xsl:for-each>
+    </xsl:if>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template match="*" mode="cuneify">
+  <xsl:value-of select="@g:utf8"/>
+  <xsl:apply-templates mode="cuneify"/>
+</xsl:template>
+
+<xsl:template mode="cuneify" match="text()"/>
+
+<!--
+<xsl:template name="bases-table">
+  <div class="orth">
+    <table>
+      <xsl:for-each select="cbd:base">
+	<tr class="orth">
+	  <td class="orthindex">
+	    <xsl:text>[</xsl:text>
+	    <xsl:value-of select="position()"/>
+	    <xsl:text>]</xsl:text>
+	  </td>
+	  <td class="orth">
+	    <span class="cuneiform">
+	      <xsl:for-each select="cbd:t[1]//*[@g:utf8]">
+		<xsl:value-of select="@g:utf8"/>
+	      </xsl:for-each>
+	    </span>
+	  </td>
+	  <td class="orth">
+	    <span class="orth1">
+	      <xsl:apply-templates select="cbd:t[1]"/>
+	    </span>
+	    <xsl:if test="count(cbd:t) > 1">
+	      <span class="orth2">
+		<xsl:text> (</xsl:text>
+		<xsl:for-each select="cbd:t[position() > 1]">
+		  <xsl:apply-templates select="."/>
+		  <xsl:if test="not(position()=last())">
+		    <xsl:text>, </xsl:text>
+		  </xsl:if>
+		</xsl:for-each>
+		<xsl:text>)</xsl:text>
+	      </span>
+	    </xsl:if>
+	  </td>
+	</tr>
+      </xsl:for-each>
+      <xsl:apply-templates mode="do-it" select="../cbd:conts"/>
+    </table>
+    <xsl:call-template name="orth-overview"/>
+  </div>
+</xsl:template>
+
+<xsl:template name="orth-overview">
+  <xsl:if test="*">
+    <div class="orth oview">
+      <table class="oview">
+	<thead>
+	  <tr>
+	    <th class="ovcorner"></th>
+	    <th class="ovyear" title="Proto-Cuneiform">PC</th>
+	    <th class="ovyear" title="Early Dynastic">ED</th>
+	    <th class="ovyear" title="Old Akkadian">OAkk</th>
+	    <th class="ovyear" title="Lagash II">Lag II</th>
+	    <th class="ovyear" title="Ur III">Ur III</th>
+	    <th class="ovyear" title="Old Babylonian">OB</th>
+	    <th class="ovyear" title="Post-Old Babylonian">Post-OB</th>
+	    <th class="ovyear">(unknown)</th>
+	  </tr>
+	</thead>
+	<xsl:for-each select="../cbd:bases/*">
+	  <tr>
+	    <xsl:if test="not(position() mod 2)">
+	      <xsl:attribute name="class">even</xsl:attribute>
+	    </xsl:if>
+	    <xsl:variable name="og" select="id(@ref)"/>
+	    <xsl:choose>
+	      <xsl:when test="$og/@icount>0">
+		<td class="ovindex">
+		  <xsl:call-template name="instref">
+		    <xsl:with-param name="content" select="concat('[',position(),']')"/>
+		  </xsl:call-template>
+		</td>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<td class="ovindex">[<xsl:value-of select="position()"/>]</td>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	    <xsl:for-each select="cbd:periods/*">
+	      <td class="ovfreq">
+		<xsl:variable name="total" select="sum(*/@icount)"/>
+		<xsl:if test="$total>0"><xsl:value-of select="$total"/></xsl:if>
+	      </td>
+	    </xsl:for-each>
+	  </tr>
+      </xsl:for-each>
+      </table>
+    </div>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="cbd:fpar">
+  <div class="morphology">
+    <p>
+      <a href="javascript:popxff('{ancestor::cbd:entry/@xml:id}')">
+	<xsl:value-of select="@icount"/>
+	<xsl:text> distinct form</xsl:text>
+	<xsl:if test="not(@icount=1)"><xsl:text>s</xsl:text></xsl:if>
+	<xsl:text> attested; click to view forms table.</xsl:text>
+      </a>
+    </p>
+  </div>
+</xsl:template>
+
+<xsl:template match="cbd:ipar">
+  <p class="ipar">
+    <span class="iparh">
+      <xsl:value-of select="@type"/>
+      <xsl:text>: </xsl:text>
+    </span>
+    <xsl:apply-templates/>
+    <xsl:text>.</xsl:text>
+  </p>
+</xsl:template>
+
+<xsl:template match="cbd:ielt">
+  <xsl:if test="position() > 1">
+    <xsl:text>; </xsl:text>
+  </xsl:if>
+  <span class="ielt">
+    <xsl:apply-templates/>
+    <xsl:call-template name="instref"/>
+  </span>
+</xsl:template>
+-->
+
+<xsl:template match="cbd:senses">\beginsenses
+<xsl:apply-templates/>\endsenses
+</xsl:template>
+
+<xsl:template match="cbd:usages">
+  <div class="usages">
+    <xsl:for-each select="cbd:u0">
+      <p class="usolo">
+	<xsl:call-template name="instref">
+	  <xsl:with-param name="content" select="ancestor::cbd:cf"/>
+	</xsl:call-template>
+      </p>
+    </xsl:for-each>
+    <xsl:for-each select="cbd:u1">
+      <xsl:variable name="r" select="@ref"/>
+      <xsl:for-each select="document('inline-usages.html',/)">
+	<xsl:for-each select="id($r)">
+	  <xsl:copy-of select="*|text()"/>
+	</xsl:for-each>
+      </xsl:for-each>
+    </xsl:for-each>
+    <xsl:if test="cbd:u2">
+      <p class="uxrefs"><span class="usee">See:</span>
+      <xsl:for-each select="cbd:u2">
+	<xsl:variable name="r" select="@ref"/>
+	<xsl:variable name="last" select="position()=last()"/>
+	<xsl:for-each select="document('../../lib/usage-db.xml',/)">
+	  <xsl:if test="id($r)">
+	    <span>
+	      <xsl:attribute name="class">
+		<xsl:text>uxref </xsl:text>
+		<xsl:choose>
+		  <xsl:when test="$last">
+		    <xsl:text>refterm</xsl:text>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:text>refsep</xsl:text>
+		  </xsl:otherwise>
+		</xsl:choose>
+	      </xsl:attribute>
+	      <a href="{substring-before(id($r)/srefs/s[1]/@ref,'.')}.html#u.{id($r)/srefs/s[1]/@ref}">
+		<xsl:call-template name="html-text">
+		  <xsl:with-param name="text" select="id($r)/@p"/>
+		</xsl:call-template>
+		<xsl:choose>
+		  <xsl:when test="$last">
+		    <xsl:text>.</xsl:text>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:text>;</xsl:text>
+		  </xsl:otherwise>
+		</xsl:choose>
+	      </a>
+	    </span>
+	  </xsl:if>
+	</xsl:for-each>
+      </xsl:for-each>
+      </p>
+    </xsl:if>
+  </div>
+</xsl:template>
+
+<xsl:template match="cbd:sense"
+>\sense{<xsl:value-of select="@num"
+      />}{<xsl:value-of select="cbd:mng"
+      />}{<xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)">
+         <xsl:value-of select="concat(' (',cbd:pos,') ')"/>
+       </xsl:if>}
+<!--<xsl:apply-templates select="cbd:usages"/>
+--></xsl:template>
+
+<!--
+<xsl:template match="i:instances">
+  <div class="instances">
+    <h1 class="instances">
+      <xsl:value-of select="../@num"/>
+      <xsl:text>&#xa0;</xsl:text>
+      <xsl:value-of select="../cbd:mng"/>
+    </h1>
+    <xsl:apply-templates/>
+  </div>
+</xsl:template>
+
+<xsl:template match="i:g">
+  <div class="g{1+count(ancestor::i:g)}">
+    <xsl:choose>
+      <xsl:when test="i:g">
+	<xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="i:h"/>
+	<xsl:choose>
+	  <xsl:when test="i:i">
+	    <p class="instances"><xsl:apply-templates select="i:i"/></p>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:apply-templates select="i:a"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </div>
+</xsl:template>
+
+<xsl:template match="i:h">
+  <xsl:element name="{concat('h',1+count(ancestor::i:g))}">
+    <xsl:attribute name="class"><xsl:text>instances</xsl:text></xsl:attribute>
+    <span class="{@class}">
+      <xsl:apply-templates/>
+    </span>
+  </xsl:element>
+</xsl:template>
+
+<xsl:template match="i:a">
+  <p class="xref"><a href="{@xl:href}"><xsl:apply-templates/></a></p>
+</xsl:template>
+
+<xsl:template match="i:span">
+  <span class="{@class}"><xsl:apply-templates/></span>
+</xsl:template>
+
+<xsl:template match="i:i">
+  <xsl:variable name="url">
+    <xsl:text>/epsd/corpus/epsd/</xsl:text>
+    <xsl:value-of select="substring-before(@u,'.')"/>
+    <xsl:text>.html#</xsl:text>
+    <xsl:value-of select="substring-after(@u,'.')"/>
+  </xsl:variable>
+  <a href="javascript:popepsdref('{$url}')"
+	  ><xsl:value-of select="@n"/></a>
+  <xsl:choose>
+    <xsl:when test="position()=last()"><xsl:text>.</xsl:text></xsl:when>
+    <xsl:otherwise><xsl:text>;&#xa;</xsl:text></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+-->
+
+<xsl:template match="cbd:t">
+  <xsl:apply-templates/>
+  <xsl:if test="@rws">
+    <xsl:text> (</xsl:text>
+    <xsl:value-of select="translate(@rws,$lower,$upper)"/>
+    <xsl:text>)</xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="cbd:equivs">
+\equivs{<xsl:value-of select="concat(translate(substring(*[1]/@xml:lang,1,1),$lower,$upper),
+				substring(*[1]/@xml:lang,2),'. ')"
+/><xsl:for-each select="cbd:equiv"
+>{<xsl:value-of select="concat('\', @xml:lang, ' ')"/><xsl:apply-templates select="cbd:term"
+/>}<xsl:if test="string-length(cbd:mean) > 0"> &quot;<xsl:apply-templates select="cbd:mean"
+/>&quot;</xsl:if
+><xsl:choose
+  ><xsl:when test="not(position() = last())">;
+</xsl:when
+  ><xsl:otherwise>.</xsl:otherwise
+></xsl:choose
+></xsl:for-each
+><xsl:text>}
+</xsl:text
+></xsl:template>
+
+<xsl:template match="cbd:bib">
+\beginbib
+<xsl:apply-templates/>\endbib
+</xsl:template>
+
+<xsl:template match="cbd:ref">\ref{<xsl:value-of select="@year"/>}{<xsl:apply-templates/>}<xsl:choose
+  ><xsl:when test="position()=last()">.</xsl:when><xsl:otherwise>; </xsl:otherwise></xsl:choose>
+</xsl:template>
+
+<xsl:template match="cbd:sup">
+\up{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:variable name="tex-from">%~</xsl:variable>
+<xsl:variable name="tex-to">&#x2052;&#x223c;</xsl:variable>
+<xsl:template name="xml-tex-escape">
+  <xsl:param name="arg"/>
+  <xsl:choose>
+    <xsl:when test="contains($arg,'&amp;')">
+      <xsl:value-of select="translate(concat(substring-before($arg,'&amp;'), '+', substring-after($arg,'&amp;')),
+			    $tex-from, $tex-to)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="translate($arg,$tex-from,$tex-to)"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+</xsl:stylesheet>
