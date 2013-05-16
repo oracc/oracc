@@ -1,8 +1,13 @@
+include ../../../oracc-am-rules.txt
+
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libxli.la
+
+xli_sux.c: xli_sux.c.in
+	$(ORACCIFY) xli_sux.c.in
 
 libxli_la_SOURCES=xli.c
 

@@ -1,3 +1,5 @@
+include ../../../oracc-am-rules.txt
+
 SUFFIXES=.g .c .o
 
 .g.c:
@@ -6,6 +8,9 @@ SUFFIXES=.g .c .o
 AM_CFLAGS=-ansi -pedantic -Wall -g -std=c99
 SUBDIRS=
 noinst_LTLIBRARIES=libprj.la
+
+set_project.c: set_project.c.in
+	$(ORACCIFY) set_project.c.in
 
 libprj_la_SOURCES = \
 	proj_load.c set_project.c

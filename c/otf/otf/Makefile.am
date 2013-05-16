@@ -1,3 +1,5 @@
+include ../../../oracc-am-rules.txt
+
 SUFFIXES=.g .c .o
 
 .g.c:
@@ -6,6 +8,9 @@ SUFFIXES=.g .c .o
 AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libotf.la
+
+cdt_reader.c: cdt_reader.c.in
+	$(ORACCIFY) cdt_reader.c.in
 
 libotf_la_SOURCES = \
 	cdt_atf.c cdt_database.c cdt_data.c cdt_findfile.c \

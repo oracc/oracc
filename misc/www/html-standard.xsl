@@ -24,6 +24,7 @@
   <xsl:param name="with-hr" select="false()"/>
   <xsl:param name="with-trailer" select="false()"/>
   <xsl:param name="standalone" select="false()"/>
+
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -60,6 +61,7 @@
 	  <xsl:text> </xsl:text>
 	</script>
       </xsl:if>
+      <xsl:if test="not(document('/usr/local/oracc/lib/data/usermode.xml')/*/text() = 'single')">
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -73,6 +75,7 @@
   })();
 
 </script>
+      </xsl:if>
     </head>
     <body>
       <xsl:if test="$p2 = 'yes'">

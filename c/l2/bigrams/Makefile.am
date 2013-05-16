@@ -1,3 +1,5 @@
+include ../../../oracc-am-rules.txt
+
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 AM_CFLAGS=-ansi -pedantic -Wall -g
@@ -5,6 +7,9 @@ SUBDIRS=
 noinst_LTLIBRARIES=libbigrams.la
 
 libbigrams_la_SOURCES=bigrams.c
+
+bigrams.c: bigrams.c.in
+	$(ORACCIFY) bigrams.c.in
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/{lib} \

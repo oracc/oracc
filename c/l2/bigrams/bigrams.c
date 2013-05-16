@@ -12,7 +12,7 @@ void
 bigrams_init(struct sigset *sp)
 {
   static char buf[128];
-  sprintf(buf,"@@ORACC@@/pub/%s/bgrm-%s.ngm", sp->project, sp->lang);
+  sprintf(buf,"/usr/local/oracc/pub/%s/bgrm-%s.ngm", sp->project, sp->lang);
   if (!xaccess(buf,R_OK,0))
     {
       bigrams_nlcp = nl_load_file(sp, bigrams_nlcp, buf, nlcp_action_rewrite, sp->lang);

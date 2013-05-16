@@ -8,8 +8,8 @@ s2-ce_trim.plx: s2-ce_trim.plx.in
 s2-debug.sh: s2-debug.sh.in
 	$(ORACCIFY) s2-debug.sh.in
 
-s2-pg2wrapper.sh: s2-pg2wrapper.sh.in
-	$(ORACCIFY) s2-pg2wrapper.sh.in
+s2-pg2wrapper.plx: s2-pg2wrapper.plx.in
+	$(ORACCIFY) s2-pg2wrapper.plx.in
 
 s2-pipeline.sh: s2-pipeline.sh.in
 	$(ORACCIFY) s2-pipeline.sh.in

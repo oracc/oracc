@@ -15,7 +15,7 @@
 
 static int psl_initialized = 0;
 
-static const char *sl_fn = "@@ORACC@@/lib/data/ogsl.xml";
+static const char *sl_fn = "/usr/local/oracc/lib/data/ogsl.xml";
 
 static Hash_table *psl, *psl_id, *psl_v, *cuneify_tab;
 static unsigned char *sign_sn,*curr_sn = NULL,*curr_unitary_sn = NULL, *curr_form = NULL, *curr_utf8;

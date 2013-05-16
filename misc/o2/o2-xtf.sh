@@ -20,11 +20,12 @@ xtfmanager.plx -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
 [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
 
 o2-xtfindex.plx
-sort -t: -k2 -o 01bld/lists/xtfindex.lst 01bld/lists/xtfindex.lst
-wmapper -i 01bld/lists/xtfindex.lst -p $project
 
-# bigrams
-cat 01bld/lists/xtfindex.lst | bigrams -p $project
+if [ -r 01bld/lists/xtfindex.lst ]; then
+    sort -t: -k2 -o 01bld/lists/xtfindex.lst 01bld/lists/xtfindex.lst
+    wmapper -i 01bld/lists/xtfindex.lst -p $project
+    cat 01bld/lists/xtfindex.lst | bigrams -p $project
+fi
 
 # linkbase
 proj-linkbase.sh

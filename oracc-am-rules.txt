@@ -23,6 +23,4 @@ clean-local:
 
 install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
-	if [ -r oracc-resolver ]; then
-		./cgi-install.sh ${ORACC_VAR}/www/cgi-bin
-	fi
+	$(top_srcdir)/maybe-install-cgi-bin.sh

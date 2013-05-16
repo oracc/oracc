@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8';
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
+my $all = 0;
 my %header = ();
 my $quiet = 0;
 my %sig = ();
@@ -10,6 +11,9 @@ my %sig = ();
 GetOptions(
     'quiet'=>\$quiet,
     );
+
+my $withall = `oraccopt . cbd-with-all`;
+$all = 1 if $withall && $withall eq 'yes';
 
 foreach my $s (@ARGV) {
     unless (open(S,$s)) {
@@ -28,7 +32,7 @@ foreach my $s (@ARGV) {
 	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
 	unless ($sig{$_}) {
 	    my @r = split(/\s/, $r);
-	    if ($#r >= 0) {
+	    if ($all || $#r >= 0) {
 		@{$sig{$t[0]}}{@r} = ();
 	    }
 	}

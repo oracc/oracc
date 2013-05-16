@@ -19,18 +19,44 @@
 <xsl:import href="html-standard.xsl"/>
 <xsl:import href="g2-gdl-HTML.xsl"/>
 
+<xsl:include href="xpd.xsl"/>
+
 <xsl:param name="basename"/>
 <xsl:param name="project"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
-<xsl:param name="cbd-bases-table" select="'no'"/>
-<xsl:param name="cbd-article-summaries" select="'no'"/>
+
+<xsl:variable name="config-file" select="concat('/usr/local/oracc/xml/',$project,'/config.xml')"/>
+
+<xsl:param name="cbd-article-summaries">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-article-summaries'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="cbd-bases-table">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-bases-table'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="cbd-inline-forms">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-inline-forms'"/>
+    <xsl:with-param name="default" select="'yes'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <xsl:variable name="q">'</xsl:variable>
 
 <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
 <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
-<xsl:variable name="summaries-doc" select="concat('/usr/local/oracc/web/',$basename,'/',/*/@xml:lang,'/summaries.html')"/>
+<xsl:variable name="summaries-doc" select="concat('/usr/local/oracc/www/',$basename,'/cbd/',/*/@xml:lang,'/summaries.html')"/>
 
 <!--<xsl:strip-space elements="*"/>-->
 
@@ -139,16 +165,20 @@
 <!--  </xsl:if>-->
 
   <xsl:apply-templates select="cbd:bases"/>
-  <xsl:choose>
-    <xsl:when test="cbd:form-sanss">
-      <xsl:apply-templates select="cbd:form-sanss"/>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:apply-templates select="cbd:forms"/>
-    </xsl:otherwise>
-  </xsl:choose>
-  <xsl:apply-templates select="cbd:norms"/>
-  <xsl:apply-templates select="cbd:morphs"/>
+
+  <xsl:if test="not($cbd-inline-forms='no')">
+    <xsl:choose>
+      <xsl:when test="cbd:form-sanss">
+	<xsl:apply-templates select="cbd:form-sanss"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates select="cbd:forms"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="cbd:norms"/>
+    <xsl:apply-templates select="cbd:morphs"/>
+  </xsl:if>
+
   <xsl:apply-templates select="cbd:senses"/>
   <xsl:apply-templates select="cbd:bib"/>
 
@@ -638,20 +668,20 @@
 	  </td>
 	  <td class="orth">
 	    <span class="cuneiform">
-	      <xsl:for-each select="cbd:t[1]//*[@g:utf8]">
+	      <xsl:for-each select="cbd:text[1]//*[@g:utf8]">
 		<xsl:value-of select="@g:utf8"/>
 	      </xsl:for-each>
 	    </span>
 	  </td>
 	  <td class="orth">
 	    <span class="orth1">
-	      <xsl:apply-templates select="cbd:t[1]"/>
+	      <xsl:apply-templates select="cbd:text[1]"/>
 	    </span>
-	    <xsl:if test="count(cbd:t) > 1">
+	    <xsl:if test="count(cbd:text) > 1">
 	      <span class="orth2">
 		<xsl:text> (</xsl:text>
-		<xsl:for-each select="cbd:t[position() > 1]">
-		  <xsl:apply-templates select="."/>
+		<xsl:for-each select="cbd:text[position() > 1]">
+		  <xsl:apply-templates/>
 		  <xsl:if test="not(position()=last())">
 		    <xsl:text>, </xsl:text>
 		  </xsl:if>

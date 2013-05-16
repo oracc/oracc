@@ -170,7 +170,7 @@ forms_init()
 {
   /*FIXME: formsbuf needs to be resized dynamically with tests against
     overflow */
-  formsbuf_size = 2048000;
+  formsbuf_size = 4096000;
   formsbuf = malloc(formsbuf_size);
   forms_insertp = formsbuf;
 }

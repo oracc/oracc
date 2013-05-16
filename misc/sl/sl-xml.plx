@@ -34,7 +34,7 @@ my $utf8 = undef;
 my $xid = 'x0000';
 
 print '<?xml version="1.0" encoding="utf-8"?>',"\n";
-print "<signlist xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\"\n>";
+print "<signlist xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\"\n>";
 while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
@@ -55,7 +55,7 @@ while (<SL>) {
 	    # warn "undefined n\n";
 	    $n = '';
 	}
-	print "<sign$deprecated n=\"$n\" xml:id=\"$xid\">";
+	print "<sign$deprecated n=\"$n\" xml:id=\"$xid\"><name g:me=\"1\">$n</name>";
 	++$xid;
     } else {
 	unless ($in_sign) {
@@ -96,7 +96,7 @@ while (<SL>) {
 		$v = xmlify($v);
 		my $uattr = "";
 		$uattr = " utf8=\"$u\"" if $u;
-		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr>";
+		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr><name g:me=\"1\">$n</name>";
 		++$xid;
 		$in_form = 1;
 	    }

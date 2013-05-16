@@ -2,7 +2,12 @@
 
 function g2x {
     echo creating $ldir/$l.g2x from $ldir/union.sig
-    l2p2-g2x.plx -h $ldir/union.sig
+    withall=`oraccopt . cbd-with-all`
+    if [ "$withall" = "yes"]; then
+	l2p2-g2x.plx -all -h $ldir/union.sig
+    else
+	l2p2-g2x.plx -h $ldir/union.sig
+    fi
     if [ -s $ldir/$l.map ]; then
 	l2p2-g2c.plx $l
 	l2-glomanager.plx -conf l2p2.xcf -cbdlang $l

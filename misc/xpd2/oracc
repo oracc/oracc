@@ -29,7 +29,7 @@ my %check_tasks = (
     texts=>\&check_texts
     );
 
-my @build_commands = qw/atf cat glo lem lst odf pdf ptb tei web xml xtf/;
+my @build_commands = qw/atf cat fastweb glo lem lst odf pdf ptb tei web xml xtf/;
 my %build_commands = ();
 @build_commands{@build_commands} = ();
 
@@ -229,11 +229,12 @@ if ($command eq 'build') {
 if ($command eq 'rebuild') {
     maybe_exec('prebuild.sh');
     if (-x '00bin/rebuild.sh') {
-	exec '00bin/rebuild.sh' || die;
+	system '00bin/rebuild.sh' || die;
     } else {
-	exec "o2-rebuild.sh", @ARGV;
+	system "o2-rebuild.sh", @ARGV;
     }
     maybe_exec('postbuild.sh');
+    exit 0;
 }
 
 if ($command =~ /colou?rs/) {
@@ -256,6 +257,8 @@ if ($command =~ /colou?rs/) {
 
 if ($command eq 'web') {
     exec "$bin/o2-web.sh";
+} elsif ($command eq 'fastweb') {
+    exec "$bin/o2-fastweb.sh";
 }
 
 if ($command =~ /^odf|pdf|tei|xml$/) {

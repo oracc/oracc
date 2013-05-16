@@ -44,6 +44,9 @@ htmlimage.plx: htmlimage.plx.in
 cfgwview.plx: cfgwview.plx.in
 	$(ORACCIFY) cfgwview.plx.in
 
+html-standard.xsl: html-standard.xsl.in
+	$(ORACCIFY) html-standard.xsl.in
+
 EXTRA_DIST = \
 	Qcat-icon.png \
 	SHU-white.css \
@@ -85,7 +88,7 @@ EXTRA_DIST = \
 	f_logo.png \
 	facebook16x16.ico \
 	help.css \
-	html-standard.xsl \
+	html-standard.xsl.in \
 	html-template.xsl \
 	html-util.xsl \
 	htmlbase.plx \

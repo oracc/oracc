@@ -16,7 +16,7 @@ my $ix = $xp->parse_file($ix_file);
 $ix->setEncoding('utf-8');
 my $ix_root = $ix->getDocumentElement();
 
-my $sort_file = "$$.sort";
+my $sort_file = (-d '01tmp' ? "01tmp/$$.sort" : "$$.sort");
 open SORT, "|$ENV{'ORACC'}/bin/psdsort +1 +2 +3 -G >$sort_file";
 foreach my $n ($ix_root->childNodes()) {
     my $p = printkey($n);

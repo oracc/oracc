@@ -15,7 +15,7 @@ void
 catvec_init()
 {
   size_t vecsize;
-  catvec = loadfile((unsigned const char *)"@@ORACC@@/lib/data/catpnums.vec",&vecsize);
+  catvec = loadfile((unsigned const char *)"/usr/local/oracc/lib/data/catpnums.vec",&vecsize);
   max_cat_id = vecsize * 8;
 }
 

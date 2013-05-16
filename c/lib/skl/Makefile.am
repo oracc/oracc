@@ -5,11 +5,16 @@
 # 
 #  $Id: Makefile.am,v 0.5 1997/09/08 13:02:15 sjt Exp $
 
+include ../../../oracc-am-rules.txt
+
 AM_CFLAGS=-ansi -pedantic -Wall
 SUBDIRS=
 noinst_LTLIBRARIES=libskl.la
 # noinst_PROGRAMS=sklfind sklshow
 libskl_la_SOURCES = skl_copy.c skl_file.c skl_load.c sky_find.c smp_load.c
+
+skl_file.c: skl_file.c.in
+	$(ORACCIFY) skl_file.c.in
 
 #sklfind_SOURCES=sklfind.c
 #sklfind_LDADD=./libskl.la ../lib/liboracc.la

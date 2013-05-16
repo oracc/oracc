@@ -5,7 +5,7 @@ use open 'utf8'; binmode STDERR, 'utf8';
 use XML::LibXML;
 use Encode;
 use Fcntl;
-use GDBM_File;
+use NDBM_File;
 
 # This database uses the value as the primary key, with extensions
 # to index homophones, containers, etc.  The value may be lower or
@@ -211,7 +211,7 @@ add_aliases {
 sub
 dump_db {
     unlink "$dbdir/$dbname";
-    tie(%db, 'GDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
+    tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
 	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
     foreach my $k (keys %values) {
 	my $dbk = $k;

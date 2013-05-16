@@ -1,9 +1,11 @@
+include ../../../oracc-am-rules.txt
+
 SUFFIXES=.g .c .o
 
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-datadir=$(prefix)/lib/data
+#datadir=$(prefix)/lib/data
 
 AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
@@ -13,6 +15,18 @@ noinst_PROGRAMS=prj tok
 ox_SOURCES = \
 	atffile.c help.c initterm.c odt_writer.c options.c \
 	ox.c post_option_setup.c process_inputs.c globals.c
+
+atffile.c: atffile.c.in
+	$(ORACCIFY) atffile.c.in
+
+initterm.c: initterm.c.in
+	$(ORACCIFY) initterm.c.in
+
+odt_writer.c: odt_writer.c.in
+	$(ORACCIFY) odt_writer.c.in
+
+post_option_setup.c: post_option_setup.c.in
+	$(ORACCIFY) post_option_setup.c.in
 
 xLDADD = \
 	../atf/libatf.la \

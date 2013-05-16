@@ -43,8 +43,8 @@ p2-search.plx: p2-search.plx.in
 p2-sig.plx: p2-sig.plx.in
 	$(ORACCIFY) p2-sig.plx.in
 
-p2-xmd-div.plx: p2-xmd-div.plx.in
-	$(ORACCIFY) p2-xmd-div.plx.in
+p2-xmd-div.xsl: p2-xmd-div.xsl.in
+	$(ORACCIFY) p2-xmd-div.xsl.in
 
 EXTRA_DIST = \
 	Util2.pm \
