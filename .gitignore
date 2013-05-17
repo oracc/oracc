@@ -437,3 +437,17 @@ misc/oss2/tests/xxx
 misc/p2/log
 
 oracc-hyperestraier/nohup.out
+
+doc/ns/*/*/html/*
+
+doc/builder/index00.xml
+
+doc/builder/index.xml
+
+doc/developer/index.xml
+
+doc/manager/index.xml
+
+doc/ns/index.xml
+
+doc/user/index.xml

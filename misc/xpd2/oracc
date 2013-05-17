@@ -37,7 +37,7 @@ my @commands = qw/catf
 		  check clean clone
 		  colors colours config esp
                   exist eXist freeze query
-                  fix help init name
+                  fix help init install name
 		  project public unpublic
 		  rebuild 
                   subproject 
@@ -57,13 +57,14 @@ my %oracc_user_commands = ();
 @oracc_user_commands{@oracc_user_commands} = ();
 @commands{@oracc_user_commands} = ();
 
-my @oracc_wrappers = qw/clone freeze unfreeze unplus unsub version/;
+my @oracc_wrappers = qw/clone freeze unfreeze unplus unsub version install/;
 my %oracc_wrappers = ();
 @oracc_wrappers{@oracc_wrappers} = ();
 @commands{@oracc_wrappers} = ();
 my %wrapper_data = (
     clone    => [ '.plx', 1 ],
     freeze   => [ '.sh',  0 ],
+    install  => [ 'project-installer.sh',  0 ],
     unfreeze => [ '.sh',  0 ],
     unplus   => [ 'l2unplus.plx',  0 ],
     unsub    => [ '.sh',  0 ],
