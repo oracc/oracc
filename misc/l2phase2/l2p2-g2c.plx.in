@@ -131,6 +131,18 @@ augment {
 			unless $ignore_errors;
 		}
 	    }
+	    my @equiv = tags($anode, $CBD, 'equiv');
+	    if ($#equiv >= 0) {
+		foreach $n (@equiv) {
+		    $enode->appendChild($n);
+		}
+	    }
+	    my @bib = tags($anode, $CBD, 'bib');
+	    if ($#bib >= 0) {
+		foreach $n (@bib) {
+		    $enode->appendChild($n);
+		}		
+	    }
 	} else {
 	    my $xis = $enode->getAttribute('xis');
 	    maybe_warn("corpus entry $e not in glossary $add: xis=$xis")
