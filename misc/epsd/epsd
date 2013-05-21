@@ -1,0 +1,179 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '/Users/stinney/oracc-projects/epsd2/00bin';
+use ORACC::SE::Compiler;
+use ORACC::SE::Evaluator;
+use ORACC::SE::Display;
+use CGI qw/:cgi/;
+
+my $q = new CGI;
+my $p = $q->Vars;
+my $n = $p->{'n'};
+my $index = $p->{'x'};
+my $query = $p->{'k1'};
+my $reqpage = $p->{'p'};
+my $pquery = $query;
+my $uquery;
+my $div = '';
+my $dump_search = 0;
+
+my %title_x = (epsd=>'ePSD',
+	       illl=>'ILLL',
+	       issl=>'ISSL',
+	       );
+
+my $title_x = 'ePSD'; # $title_x{$index};
+
+if ($#ARGV >= 0 && $ARGV[0] eq '-dump') {
+    shift @ARGV;
+    $dump_search = 2;
+}
+
+if (defined $reqpage) {
+    my $saveset = $p->{'s'};
+    my ($tx,$search,$rtotal,$lastpage,$refs) 
+	= ORACC::SE::Display::retrieve_page($saveset,$reqpage);
+    $title_x = $tx;
+    if (!defined $search) {
+	$pquery = $search = '[expired]';
+	$div = ORACC::SE::Display::expired();
+    } else {
+	$pquery = $search;
+	$div = ORACC::SE::Display::show($title_x, '/cgi-bin/epsd',
+				      $saveset, $search,
+				      $rtotal, $lastpage,
+				      $reqpage, $refs);
+    }
+} else {
+    $query =~ tr/\'//d;
+
+    if ($index eq 'epsd' && $query =~ /^(.*?)(\[.*?\])[A-Z]*$/) {
+	my($cf,$gw) = ($1,$2);
+#	$cf =~ tr/\'//d;
+	eval("use ORACC::ATF::Unicode;");
+	$uquery = ORACC::ATF::Unicode::gconv($cf).$gw;
+	$uquery =~ tr/_/ /;
+#	print STDERR "epsd: uquery = $uquery\n";
+#	push @INC, '/usr/local/share/epsd/lib';
+	eval("use ePSD; ePSD::load()");
+	my $r = ePSD::id_from_cfgw($uquery)
+	    ||  ePSD::id_from_cfgw($uquery.'V')
+	    ||  ePSD::id_from_cfgw($uquery.'N')
+	    ;
+	if ($r) {
+	    $r =~ s/\..*$//;
+	    print $q->redirect("/cbd/sux/$r.html");
+	    exit 0;
+	}
+	# if CFGW lookup fails eliminate square brackets
+	$query =~ tr/[]/  /;
+    }
+
+    # my $se = "$index"; $se .= 'FFS';
+    my $se = 'epsd-se';
+    print STDERR "epsd: $se: about to try ... index\n";
+    print STDERR "epsd: trying '$se' (really) ...\n";
+    ORACC::SE::Evaluator::init("$se");
+    warn "... tried\n";
+    my $term = ORACC::SE::Compiler::parse($query);
+
+    if ($dump_search == 1) {
+	eval("use ORACC::SE::Dumper");
+	ORACC::SE::Dumper::dump_init('epsd.dump');
+	ORACC::SE::Dumper::dump($term,'parsed');
+	ORACC::SE::Dumper::dump_term();
+    }
+
+    my ($rtotal,@results) = ORACC::SE::Evaluator::lookup($term,0,0);
+
+    if ($n) {
+	print STDERR "$rtotal hits\n";
+	exit(2);
+    }
+
+    if ($dump_search == 2) {
+	eval("use ORACC::SE::Dumper");
+	ORACC::SE::Dumper::dump_init('epsd.dump');
+	ORACC::SE::Dumper::dump($term,'expanded');
+	ORACC::SE::Dumper::dump_term();
+    }
+
+    my ($tname,$lastpage,$page0) 
+	= ORACC::SE::Display::save($title_x,$$term{'string'},$rtotal,@results);
+    $div = ORACC::SE::Display::show($title_x, '/cgi-bin/epsd',
+				  $tname, $$term{'string'},
+				  $rtotal, $lastpage,
+				  0, $page0);
+    
+    if ($index eq 'epsd' && $rtotal == 1) {
+	$div =~ /'(e\d+\.html)'/;
+	print $q->redirect("/epsd/epsd/$1");
+	exit 0;
+    }
+}
+
+if ($div =~ /<tr>/) {
+    $div =~ s/<p>/<table class="illl">/;
+    $div =~ s/<\/p>\s*<\/div>/<\/table><\/div>/;
+}
+
+$div =~ s/<h1>(.*?)<\/h1>//;
+my $h1 = $1;
+my ($match_string) = ($h1 =~ /(\d+ hits?)/);
+
+my $pagelinks = '::';
+if ($div =~ s/<h2>(.*?)<\/h2>//) {
+    $pagelinks = $1;
+}
+
+print "Content-type: text/html; charset=utf-8\n\n";
+
+print <<EOH;
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sux" xml:lang="sux">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$title_x search for $pquery</title>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="/epsd2/css/epsd2-cbd.css" />
+<script src="/epsd2/js/epsd2-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
+<script src="/js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
+</head>
+<body>
+<div class="tocbanner">
+<p class="toctitle">$title_x</p>
+<p class="tocletter">$match_string for $pquery</p>
+<p class="toccenter">$pagelinks</p>
+</div>
+EOH
+
+    print $div;
+
+
+print <<EOT;
+  <hr class="trailer" />
+
+    <div class="trailer">
+      <p class="qn">
+        <a href="http://oracc.bfos/epsd2/">
+	  <img class="topimg" src="/epsd2/images/epsd.png" alt="ePSD icon"/></a>
+        <xsl:text> </xsl:text>
+        <a href="http://psd.museum.upenn.edu/" 
+           title="electronic Pennsylvania Sumerian Dictionary">$title_x</a> 
+        contacts: <a href="mailto:stinney\@sas.upenn.edu">Steve 
+        Tinney</a> and <a href="mailto:phjones\@sas.upenn.edu">Philip Jones</a>.
+      </p>
+    </div>
+  </body>
+</html>
+EOT
+
+#        <a href="http://validator.w3.org/check?uri=referer"><img
+#               src="/epsd/valid-xhtml10.png" alt="Valid XHTML 1.0!" 
+#               height="21" width="60" /></a>
+#        <a href="http://jigsaw.w3.org/css-validator/check/referer"><img
+#               src="/epsd/vcss.png" 
+#               style="border:0;width:60px;height:21px"
+#               alt="Valid CSS!" />
+#        </a>
+
+1;

@@ -126,6 +126,7 @@ AC_OUTPUT([Makefile
 	misc/ce/Makefile
 	misc/cs/Makefile
 	misc/emacs/Makefile
+	misc/epsd/Makefile
 	misc/esp/Makefile
 	misc/est/Makefile
 	misc/fonts/Makefile

@@ -1,0 +1,199 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use Encode; use utf8;
+use NDBM_File; use Fcntl;
+use open 'utf8'; binmode STDOUT, 'utf8';
+use CGI;
+use lib '/Users/stinney/oracc-projects/epsd2/00bin';
+use ORACC::ATF::Unicode;
+
+my $q = new CGI;
+my $p = $q->Vars();
+
+my $install_base = '/usr/local/share';
+my $install_type = 'epsd'; # $ENV{HTTP_REFERER};
+#print STDERR "referer = $install_type\n";
+#$install_type =~ s,^.*?/([^/]+?)/unisearch.html,$1,;
+my $db_base = "$install_base/$install_type/db";
+#my $db_file = "$db_base/pslu";
+my $db_file = "/Users/stinney/oracc-projects/epsd2/02www/db/pslu";
+
+my $dbm = 'NDBM_File';
+#my $db_base = '../db';
+#my $db_file = "$db_base/pslu";
+my %psl;
+
+my @uc_ext = qw/c cinit clast contains contained m multi/;
+
+my %ext_pre = (
+	       'c'=>'',
+	       'cinit'=>'Initial ',
+	       'clast'=>'Final ',
+	       'contains'=>'',
+	       'contained'=>'Contained ',
+	       'h'=>'',
+	       'm'=>'Modified ',
+	       'multi'=>'',
+	       );
+my %ext_post = (
+	       'c'=>' Compounds',
+	       'cinit'=>'',
+	       'clast'=>'',
+	       'contains'=>' Container',
+	       'contained'=>'',
+	       'h'=>' Homophones',
+	       'signlist'=>' Numbers',
+	       'm'=>'',
+	       'multi'=>' Repeated',
+		);
+
+my %uc_ext;
+@uc_ext{@uc_ext} = ();
+
+tie(%psl,'NDBM_File',$db_file,O_RDONLY,0640)
+    || die "psl.plx: can't open `$db_file': $!\n";
+
+my $v = $p->{'k1'};
+my $ext = $p->{'ext'} || '';
+
+if ($v =~ s/([a-z])0$/$1/) {
+    $ext = 'h';
+}
+
+my $signlist_hack = 0;
+
+$v = ORACC::ATF::Unicode::gconv($v);
+if ($ext) {
+    if (exists($uc_ext{$ext})) {
+	$v =~ tr/a-zšŋ/A-ZŠŊ/;
+    } else {
+	if ($ext eq 'h') {
+	    $v =~ s/[0-9₀-₉₊]+$//;
+	    if (is_signlist($v)) {
+		$signlist_hack = 1;
+	    } else {
+		$v =~ tr/A-ZŠŊ/a-zšŋ/;
+	    }
+	} else {
+	    $v =~ tr/A-ZŠŊ/a-zšŋ/;
+	}
+    }
+}
+
+# Map a bad sign name to its proper known one if possible
+if ($v =~ /[AEIU]/) {
+    my $v2 = $v;
+    Encode::_utf8_off($v2);
+    unless (defined $psl{$v2}) {
+	my $nv = $v;
+	$nv =~ tr/A-ZŠŊ/a-zšŋ/;
+	Encode::_utf8_off($nv);
+	if (defined $psl{$nv}) {
+	    $v = $psl{$psl{$nv},'name'};
+	    Encode::_utf8_on($v);
+	}
+    }
+}
+
+my $pr;
+
+if ($ext) {
+    Encode::_utf8_off($v);
+    $pr = $psl{$v,$ext} || '';
+} else {
+    Encode::_utf8_off($v);
+    $pr = $psl{$v} || '';
+}
+
+if ($pr) {
+    if ($ext) {
+	html_header();
+	my %known = ();
+	foreach my $s (split(/\s+/,$pr)) {
+	    next if $known{$s}++;
+	    if ($s =~ m,/,) {
+		my ($id,$n) = ($s =~ m,^(.*?)/(.*?)$,);
+		my $l = $psl{$id,'link'};
+		Encode::_utf8_on($l);
+		Encode::_utf8_on($v);
+#		$l =~ s/showsign\(/showsign\(\'$install_type\',/;
+		if ($n >= 1000) {
+		    $n = 'x';
+		} elsif ($n == 0) {
+		    $n = '';
+		}
+		my $vh = $v;
+		$vh =~ tr/ŋŊ/ĝĜ/;
+		if (is_signlist($vh)) {
+		    $l =~ s/(<a .*?>)/$1$vh$n = <span class="sign">/;
+		    $l =~ s,</a>,</span></a>,;
+		} else {
+		    $l =~ s/(<a .*?>)/$1$vh<sub>$n<\/sub> = <span class="sign">/;
+		    $l =~ s,</a>,</span></a>,;
+		}
+		print "$l\n";
+	    } else {
+		my $l = $psl{$s,'link'};
+		Encode::_utf8_on($l);
+		print $l, "\n";
+	    }
+	}
+	html_trailer();
+    }else {
+	$pr =~ s/\s+.*$//;
+# 	system 'cat', "/usr/local/share/$install_type/psl/html/$pr.html";
+#	my $redir = $ENV{HTTP_REFERER};
+#	$redir =~ s,unisearch.html$,psl/html/$pr.html,;
+#	$redir = "/epsd/psl/html/$pr.html";
+	print $q->redirect("/ogsl/brief/$pr.html");
+    }
+} else {
+    html_header();
+    print '<p class="nomatch">No matches</p>';
+    html_trailer();
+}
+
+untie(%psl);
+
+sub
+html_header {
+    my $vcat = $v;  
+    $vcat =~ tr/ŋŊ/ĝĜ/;
+    $vcat =~ s/([₀-₉₊]+)/&subify($1)/eg;
+    if ($ext) {
+	$ext = 'signlist' if $signlist_hack;
+	$vcat = "$ext_pre{$ext}$vcat$ext_post{$ext}";
+    }
+    print $q->header(-charset=>'utf-8');
+    print <<EOH;
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sux" xml:lang="sux">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PSL Results for $vcat</title>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="/css/epsd2-cbd.css" />
+<script src="/js/epsd2-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
+</head><body><h1 class="pslres">$vcat</h1>
+EOH
+
+}
+
+sub
+html_trailer {
+    print '</body></html>',"\n";
+}
+
+sub
+subify {
+    my $sub = shift;
+    $sub =~ tr/₀-₉₊/0-9x/;
+    "<sub>$sub</sub>";
+}
+
+sub
+is_signlist {
+    $_[0] =~ /^[A-Z]SL/;
+}
+
+1;

@@ -6,6 +6,7 @@ SUBDIRS = \
 	ce \
 	cs \
 	emacs \
+	epsd \
 	esp \
 	est \
 	fonts \
