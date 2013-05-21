@@ -42,3 +42,15 @@ For oracc-hyperestraier:
   ??  install zlib (-lz)  ?? didn't do this for bfos1 install
 
 ---
+
+N.B.:
+=====
+
+Macports installs its own perl in /opt/local/bin, but Oracc's perl scripts currently use #!/usr/bin/perl (this should be fixed).
+
+Until it is fixed:
+
+      sudo su
+      cd /usr/bin
+      mv perl perl-mac-os-orig
+      ln -sf /opt/local/bin/perl perl

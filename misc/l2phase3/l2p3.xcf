@@ -40,13 +40,13 @@
   <set var="process">
     <key k="action"   to="$scripts/g2-overview.xsl"/>
     <key k="input"    to="$webcbd/$cbdlang/summaries.html"/>
-    <key k="output"    to="$webcbd/$cbdlang/overview.html"/>
+    <key k="output"   to="$webcbd/$cbdlang/overview.html"/>
   </set>
 
   <set var="process">
     <key k="action"   to="$scripts/l2-cbd-letters.xsl"/>
     <key k="input"    to="$webcbd/$cbdlang/overview.html"/>
-    <key k="output"    to="$webcbd/$cbdlang/overview.html"/>
+    <key k="output"   to="$webcbd/$cbdlang/overview.html"/>
   </set>
 
   <set var="process">
