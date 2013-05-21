@@ -152,7 +152,8 @@ do_g2a {
 	    }
    
 	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
-		my $instsig1 = "\@$header{'project'}\%$header{'lang'}:$current_first_base=";
+		my $lang = ($header{'lang'} =~ /^qpn/ ? 'sux' : $header{'lang'});
+		my $instsig1 = "\@$header{'project'}\%$lang:$current_first_base=";
 		++$noprintsigs{ "$instsig1$coresig\n" };
 	    }
 	    
@@ -193,7 +194,8 @@ do_g2a {
 	    } else {
 		unless ($sig{'cf'} =~ / /) {
 		    if ($current_first_base) {
-			my $instsig0 = "\@$header{'project'}\%$header{'lang'}:$current_first_base";
+			my $lang = ($header{'lang'} =~ /^qpn/ ? 'sux' : $header{'lang'});
+			my $instsig0 = "\@$header{'project'}\%$lang:$current_first_base";
 			++$printsigs{ "$instsig0=$coresig\n" };
 			$found_simple_sig = 1;
 		    } else {

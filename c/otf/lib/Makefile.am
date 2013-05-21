@@ -14,6 +14,12 @@ libcdf_la_SOURCES = \
 catvec.c: catvec.c.in
 	$(ORACCIFY) catvec.c.in
 
+cdf_rnc.c: mk_rnc.sh
+	/bin/sh	mk_rnc.sh
+
+#mk_rnc.sh: mk_rnc.sh.in
+#	$(ORACCIFY) mk_rnc.sh.in
+
 pnames.c: pnames.c.in
 	$(ORACCIFY) pnames.c.in
 

@@ -3,6 +3,7 @@ include @top_srcdir@/oracc-doc-rules.txt
 SUBDIRS = 
 
 all-local:
+	/bin/sh mklinks.sh
 	perl $(top_srcdir)/misc/xdf/xdfmanager.plx -prefix $(top_srcdir)
 
 clean-local:

@@ -1839,12 +1839,15 @@ appendCloser(struct node *gp,const char *c)
 }
 
 unsigned char *
-render_g_text(struct node*tp, unsigned char *insertp)
+render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp)
 {
   if (tp->data)
     insertp += xxstrlen(xstrcpy(insertp, tp->data));
   else
-    warning("attempt to render null tp->data");
+    {
+      *insertp = '\0';
+      vwarning("attempt to render null tp->data: form so far=%s", startp);
+    }
   return insertp;
 }
 
@@ -1875,14 +1878,14 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
       {
       case 'b':
 	if (np->children.nodes)
-	  insertp = render_g_text(np->children.nodes[0], insertp);
+	  insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	break;
       case 'v':
       case 's':
 	if (np->names->pname[3] && !strcmp(np->names->pname,"g:surro"))
 	  {
 	    if (*((struct node *)(np->children.nodes[1]))->type == 't') /* normalization */
-	      insertp = render_g_text(np->children.nodes[1], insertp);
+	      insertp = render_g_text(np->children.nodes[1], insertp, startp);
 	    else
 	      insertp = render_g(np->children.nodes[1],insertp,startp);
 	  }
@@ -1894,7 +1897,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		if (!strcmp((char*)getAttr(np,"g:role"),"sign"))
 		  *insertp++ = '$';
 		if (*cp1->type == 't')
-		  insertp = render_g_text(cp1, insertp);
+		  insertp = render_g_text(cp1, insertp, startp);
 		else
 		  for (i = 0; i < np->children.lastused; ++i)
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
@@ -1993,7 +1996,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			      }
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
-			  insertp = render_g_text(np->children.nodes[i], insertp);
+			  insertp = render_g_text(np->children.nodes[i], insertp, startp);
 			else
 			  {
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
@@ -2042,14 +2045,14 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	if (!xstrcmp(np->names->pname,"surro"))
 	  {
 	    if (*((struct node *)(np->children.nodes[1]))->type == 't') /* normalization */
-	      insertp = render_g_text(np->children.nodes[1], insertp);
+	      insertp = render_g_text(np->children.nodes[1], insertp, startp);
 	    else
 	      insertp = render_g(np->children.nodes[1],insertp,startp);
 	  }
 	else
 	  {
 	    if (np->children.nodes)
-	      insertp = render_g_text(np->children.nodes[0], insertp);
+	      insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	  }
 	break;
       case 'a':
@@ -2059,7 +2062,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	if (!rendering_word_form || curr_lang->core->code == c_qcu) {
 	  *insertp++ = '~';
 	  if (np->children.nodes)
-	    insertp = render_g_text(np->children.nodes[0], insertp);
+	    insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	}
 	break;
       case 'f':
@@ -2068,7 +2071,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
       case 'm':
 	*insertp++ = '@';
 	if (np->children.nodes)
-	  insertp = render_g_text(np->children.nodes[0], insertp);
+	  insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	break;
       case 'd':
 	if (np->names->pname[3])
@@ -2109,7 +2112,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		if (i)
 		  *insertp++ = '-';
 		if (*((struct node*)(np->children.nodes[i]))->type == 't')
-		  insertp = render_g_text(np->children.nodes[i], insertp);
+		  insertp = render_g_text(np->children.nodes[i], insertp, startp);
 		else
 		  insertp = render_g(np->children.nodes[i], insertp, startp);
 	      }
@@ -2134,7 +2137,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	  {
 	    --insertp; /* unhyphenate */
 	    suppress_next_hyphen = 1;
-	    insertp = render_g_text(np->children.nodes[0], insertp);
+	    insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	  }
 	break;
       case 'p':
@@ -2148,11 +2151,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		struct node *n_seg = ((struct node*)np->children.nodes[i])->children.nodes[0];
 		if (i)
 		  *insertp++ = '/';
-		insertp = render_g_text(n_seg->children.nodes[0], insertp);
+		insertp = render_g_text(n_seg->children.nodes[0], insertp, startp);
 	      }
 	  }
 	else
-	  insertp = render_g_text(np->children.nodes[0], insertp);
+	  insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	break;
       default:
 	fprintf(stderr,"render_g passed non-grapheme: %s\n",np->names->pname);

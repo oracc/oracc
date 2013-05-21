@@ -1843,14 +1843,14 @@ finish_word(struct node *wp)
 	    }
 	}
       if (*cp->type == 't')
-	forms_insertp = render_g_text(cp, forms_insertp);
+	forms_insertp = render_g_text(cp, forms_insertp, form);
       else if (*cp->type == 'e' && !strcmp(cp->names->pname, "g:p"))
 	{
 	  if (forms_insertp > formsbuf && forms_insertp[-1] == '-')
 	    *--forms_insertp = '\0';
 	}
       else
-	forms_insertp = render_g(cp, forms_insertp,form);
+	forms_insertp = render_g(cp, forms_insertp, form);
       
       if (!forms_insertp)
 	{

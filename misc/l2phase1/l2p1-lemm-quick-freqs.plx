@@ -8,7 +8,7 @@ my @freq_sigs = ('01bld/from-xtf-glo.sig', '01bld/from-prx-glo.sig');
 foreach my $f (@freq_sigs) {
     unless (open(F, $f)) { 
 	warn "l2p1-lemm-quick_freqs.plx: no signatures file $f\n"
-	    unless $f =~ /prx/ && -z '00lib/proxy.lst';
+	    unless $f =~ /prx/ && !-s '00lib/proxy.lst';
 	next;
     }
     while (<F>) {

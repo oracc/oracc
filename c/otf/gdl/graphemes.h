@@ -54,6 +54,6 @@ extern void cue_opener(const char *o);
 extern void appendCloser(struct node *gp, const char *c);
 extern int is_signlist(register const unsigned char *s);
 extern unsigned char *render_g(struct node *np, unsigned char *insertp, unsigned char *startp);
-extern unsigned char *render_g_text(struct node*tp, unsigned char *insertp);
+extern unsigned char *render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp);
 extern void grapheme_id_reset(void);
 #endif
