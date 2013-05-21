@@ -34,6 +34,11 @@ main(int argc, char *argv[])
       const char *env_docroot = NULL;
       setlocale(LC_ALL, LOCALE);
       setenv("ORACC", "/usr/local/oracc", 1);
+      if (!strncmp(script_url,"/d/",3))
+	{
+	  script_url += 2;
+	  debug = 1;
+	}
       decompose_script_url(script_url);
       if (elements[0] && legacy(elements[0], strlen(elements[0])))
 	{

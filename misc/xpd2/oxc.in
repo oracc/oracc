@@ -1,0 +1,3 @@
+#!/bin/sh
+ORACC=@@ORACC@@ ; export ORACC
+$ORACC/bin/ox -cvm $*

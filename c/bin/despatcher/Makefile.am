@@ -1,10 +1,11 @@
 include ../../../oracc-am-rules.txt
+
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-AM_CPPFLAGS=-I@top_srcdir@/c/include
+AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic -ansi
 
-noinst_PROGRAMS=oracc-resolver
+cgibin_PROGRAMS=oracc-resolver
 
 oracc_resolver_SOURCES=oracc-resolver.c or_builtins.c or_stable_uris.c \
 	selections.c builtins.c or_response.c or_session.c or_common.c \

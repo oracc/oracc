@@ -174,7 +174,7 @@ res_is_entity(const char *e)
 {
   if (e)
     {
-      if (isupper(*e) || *e > 127)
+      if (*(int*)e > 127 || isupper(*(int*)e))
 	++e;
       return *e;
     }

@@ -12,6 +12,20 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 while (<>) {
     if (/^[0-9a-zA-Z]/) {
 	print ORACC::ATF::Unicode::gconv($_);
+    } elsif (s/^(\#lem:\s+)//) {
+	print $1;
+	chomp;
+	my @bits = grep(defined, split(/;\s+/, $_));
+	for (my $i = 0; $i <= $#bits; ++$i) {
+	    if ($bits[$i] =~ /\[/) {
+		my($cf,$rest) = ($bits[$i] =~ /^(.*?)(\[.*)$/);
+		print ORACC::ATF::Unicode::gconv($cf), $rest;
+	    } else {
+		print $bits[$i];
+	    }
+	    print '; ' if $i < $#bits;
+	}
+	print "\n";
     } else {
 	print;
     }

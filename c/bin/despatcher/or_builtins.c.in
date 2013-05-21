@@ -298,14 +298,22 @@ xml_handler(char *xml, size_t len)
 	  sprintf(prg, "@@ORACC@@/bin/p2-%s.plx", xml_type);
 	  fprintf(stderr, "writing to %s", out);
 	  FILE *x = fopen(out, "w");
-	  xml[len] = 0;
-	  fwrite(xml, 1, len, x);
-	  fclose(x);
-	  fprintf(stderr, "calling %s %s", prg, out);
-	  unsetenv("SCRIPT_URL");
-	  execl(prg, xml_type, out, NULL);
-	  perror("execl failed");
-	  exit(1);
+	  if (x)
+	    {
+	      xml[len] = 0;
+	      fwrite(xml, 1, len, x);
+	      fclose(x);
+	      fprintf(stderr, "calling %s %s", prg, out);
+	      unsetenv("SCRIPT_URL");
+	      execl(prg, xml_type, out, NULL);
+	      perror("execl failed");
+	      exit(1);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "unable to write to %s; exiting", out);
+	      do404();
+	    }
 	}
       else
 	do404();
@@ -421,4 +429,5 @@ xml_read_sans_content_length(size_t *lenp)
     }
   xml[used] = '\0';
   *lenp = used;
+  return xml;
 }

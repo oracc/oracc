@@ -15,7 +15,7 @@ if ($asl) {
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
 $xl =~ s#00lib#02xml#;
-$xl =~ s/\.a?sl$/.xml/;
+$xl =~ s/\.a?sl$/-sl.xml/;
 open(XL,">$xl") || die "sl-xml.plx: can't write to $xl";
 select XL;
 

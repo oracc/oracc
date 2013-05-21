@@ -80,7 +80,7 @@
   <!-- move next three to l2p2? -->
 
   <set var="process">
-    <key k="action" to="mkdir -p $varoracc/pub/$project/cbd/$cbdlang"/>
+    <key k="action" to="mkdir -p $oracc/pub/$project/cbd/$cbdlang"/>
   </set>
 
   <set var="process">
@@ -89,7 +89,7 @@
   </set>
 
   <set var="process">
-    <key k="action" to="chmod -R o+r $varoracc/pub/$project/cbd/$cbdlang"/>
+    <key k="action" to="chmod -R o+r $oracc/pub/$project/cbd/$cbdlang"/>
   </set>
 
 </xcf>

@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 #include "resolver.h"
+
+static char dirbuf[512];
 
 static const char *
 ip4_hex(const char *ip)
@@ -18,7 +21,6 @@ ip4_hex(const char *ip)
 const char *
 create_session(void)
 {
-  static char dirbuf[512];
   char *last_slash = NULL, *d = NULL;
   const char *remote_addr = getenv("REMOTE_ADDR");
   if (remote_addr)

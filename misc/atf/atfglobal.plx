@@ -1,6 +1,7 @@
 #!/usr/bin/perl
-use warnings; use strict;
+use warnings; use strict; use open ':utf8'; use utf8;
 use Getopt::Long;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my %edits = ();
 my %whens = ();
@@ -57,13 +58,14 @@ while (<>) {
 	    $lem =~ s/\s$//;
 	    $line =~ s/<<.*?>>//g;
 	    $line =~ s/--/-/;
-	    $line =~ tr/-:. a-zA-Z0-9\|\@&~%//cd;
+	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%//cd;
 	    $line =~ s/\s+/ /g;
 	    my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
 	    my @lem = grep(defined&&length, split(/;\s+/, $lem));
 	    if ($#line != $#lem) {
 		warn("$.: $#line != $#lem\n");
 		warn("$.: ", join('|',@line),"\n");
+		print "#lem: ", join('; ', @lem), "\n";
 	    } else {
 		for (my $i = 0; $i <= $#line; ++$i) {
 		    my $w = $line[$i];

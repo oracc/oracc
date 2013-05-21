@@ -2,14 +2,18 @@
 use warnings; use strict; use open ':utf8';
 binmode STDIN,':utf8'; binmode STDOUT, ':utf8';
 my %bad = ();
-my $badlem = shift @ARGV;
-open(B,$badlem) || die;
-while (<B>) {
-    next if /^\#/;
-    die unless /^(.*?\[.*?\]\S*)\t(.+?(?:\[.*?\]\S*)?)$/;
-    $bad{$1} = $2;
+
+my @badlem = @ARGV; @ARGV = ();
+
+foreach my $badlem (@badlem) {
+    open(B,$badlem) || die;
+    while (<B>) {
+	next if /^\#/;
+	die unless /^(.*?\[.*?\]\S*)\t(.+?(?:\[.*?\]\S*)?)$/;
+	$bad{$1} = $2;
+    }
+    close(B);
 }
-close(B);
 
 while (<>) {
     print and next unless s/^\#lem:\s*//;

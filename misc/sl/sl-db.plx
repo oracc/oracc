@@ -2,7 +2,7 @@
 use warnings; use strict; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use open 'utf8'; binmode STDERR, 'utf8';
-use XML::LibXML;
+use ORACC::XML;
 use Encode;
 use Fcntl;
 use NDBM_File;
@@ -50,11 +50,14 @@ my %db;
 my %values = ();
 
 my $xp = XML::LibXML->new();
-my $sl = $xp->parse_file("02xml/$dbbase.xml");
+my $sl = $xp->parse_file("02xml/$dbbase-sl.xml");
+my $do_aliases = 1;
+my $global_id = '';
 
 # first load up %values with the sign names and values
 foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 								 'sign')) {
+    next if $s->hasAttribute('deprecated') && $s->getAttribute('deprecated') eq '1';
     my $type = $s->getAttribute('type');
 #    next unless $type eq 'normal' || $type eq 'numeric';
     my $id = $s->getAttributeNS($xml_uri,'id');
@@ -74,19 +77,8 @@ foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 	$values{$n} = $id;
     }
 
-#    my $name = $s->firstChild();
-#    my $nameg = $name->firstChild();
-#    if (!defined $nameg) {
-#	print STDERR "mk-pslu.plx: bad name format in $sn\n";
-#	next;
-#    }
-#    if ($nameg->localName() eq 'g' && $nameg->nextSibling()) {
-#	gtext($nameg,$nameg->nextSibling(),$id);
-#    }
-#
     foreach my $vnode ($s->getElementsByTagNameNS($sl_uri,'v')) {
 	my $v = $vnode->getAttribute('n');
-	
 	$v =~ tr/?//d;
 	$v =~ s/\{.*?\}//g;
 	$values{$v} = $id;
@@ -108,15 +100,15 @@ foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 }
 
 # now process the elements of composite signs
-#foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
-#								 'sign')) {
-#    my $id = $s->getAttributeNS($xml_uri,'id');
-#    foreach my $cg ($s->getElementsByTagNameNS($gdl_uri,'cg')) {
-#	add_comp($id,$cg);
-#    }
-#}
+foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
+								 'sign')) {
+    my $id = $s->getAttributeNS($xml_uri,'id');
+    foreach my $cg ($s->getElementsByTagNameNS($gdl_uri,'c')) {
+	add_comp($id,$cg);
+    }
+}
 
-#add_aliases();
+add_aliases() if $do_aliases;
 
 dump_db();
 
@@ -133,30 +125,44 @@ dump_db();
 sub
 add_comp {
     my($id,$cg) = @_;
-    my $atf = $cg->getAttribute('atf');
+    my $atf = $cg->getAttribute('form');
     $atf =~ tr/\|//d;
     $values{$atf} = $id;
-    $values{$id,'atf'} = "|$atf|";
-    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
-    foreach (my $i = 0; $i <= $#g; ++$i) {
-	my $g = $g[$i];
-	my $n = $g->nextSibling();
-	my $gt = gtext($g,$n,$id);
-	push @{$values{$gt,'c'}}, $id;
-	if ($i == 0) {
-	    push @{$values{$gt,'cinit'}}, $id;
-	} elsif ($i == $#g) {
-	    push @{$values{$gt,'clast'}}, $id;
-	}
-	if ($n && $n->localName() eq 'rel') {
-	    my $ng = $g[$i+1];
-	    my $ngt = gtext($ng,$ng->nextSibling(),$id);
+    $values{$id,'values'} = "|$atf|";
+#    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
+    add_comp_children($cg,$id);
+}
 
-	    if ($n->getAttribute('c') eq 'times') {
-		push @{$values{$gt,'contains'}}, $id;
-		push @{$values{$ngt,'contained'}}, $id;
-	    } elsif ($gt eq $ngt) {
-		push @{$values{$gt,'multi'}}, $id;
+sub
+add_comp_children {
+    my($parent,$id) = @_;
+    my @g = grep ($_->isa('XML::LibXML::Element'), $parent->childNodes());
+    foreach (my $i = 0; $i <= $#g; ++$i) {
+	if ($g[$i]->localName() eq 'g') {
+	    add_comp_children($g[$i]);
+	} else {
+	    next if $g[$i]->localName() eq 'o';
+	    my $g = $g[$i];
+	    my $n = $g->nextSibling();
+	    my $gt = gtext($g,$n,$id);
+	    push @{$values{$gt,'c'}}, $id;
+	    if ($i == 0) {
+		push @{$values{$gt,'cinit'}}, $id;
+	    } elsif ($i == $#g) {
+		push @{$values{$gt,'clast'}}, $id;
+	    }
+	    if ($n && $n->localName() eq 'o') {
+		my $ng = $g[$i+2];
+		if ($ng) {
+		    my $ngt = gtext($ng,$ng->nextSibling(),$id);
+		    if ($n->getAttributeNS($gdl_uri,'type') eq 'containing') {
+			push @{$values{$gt,'contains'}}, $id;
+			push @{$values{$ngt,'contained'}}, $id;
+		    } elsif ($gt eq $ngt) {
+			push @{$values{$gt,'multi'}}, $id;
+		    }
+		}
+		++$i; # don't gtext this node
 	    }
 	}
     }
@@ -165,46 +171,56 @@ add_comp {
 sub
 gtext {
     my ($g,$n,$id) = @_;
-    my $gt = $g->textContent();
-    $gt =~ tr/a-zšŋ/A-ZŠŊ/;
-    if ($n && $n->localName() eq 'mod') {
-	my $mod = $n->getAttribute('c');
-	push @{$values{$gt,'m'}}, $id;
-	$gt .= '@' . $mod;
-	if ($values{$gt}) {
-	    push @{$values{'m',$mod}}, $values{$gt};
-	} else {
-	    my $xid = ($g->findnodes("ancestor::*[\@xml:id]/\@xml:id"))[0]->getValue();
-	    print STDERR "$xid: Component $gt not independently listed\n";
+    my $gt = $g->getAttribute('n') || $g->getAttribute('form') || $g->textContent();
+    if ($gt) {
+	$gt =~ tr/a-zšŋ/A-ZŠŊ/;
+	if ($n && $n->localName() eq 'mod') {
+	    my $mod = $n->getAttribute('c');
+	    push @{$values{$gt,'m'}}, $id;
+	    $gt .= '@' . $mod;
+	    if ($values{$gt}) {
+		push @{$values{'m',$mod}}, $values{$gt};
+	    } else {
+		my $xid = ($g->findnodes("ancestor::*[\@xml:id]/\@xml:id"))[0]->getValue();
+		print STDERR "$xid: Component $gt not independently listed\n";
+	    }
 	}
+	$gt;
+    } else {
+	my $xid = ($g->findnodes("ancestor::*[\@xml:id]/\@xml:id"))[0]->getValue();
+	print STDERR "$xid: couldn't set \$gt\n";
+	'';
     }
-    $gt;
 }
 
 sub
 add_aliases {
-    open(IN,'sources/aliases');
-    while (<IN>) {
-	next if /^\#/ || /^\s*$/;
-	my @v = split(/\s+/,$_);
-	my $aka = shift @v;
-	foreach my $v (@v) {
-	    $values{$v,'aka'} = $aka;
+    if (open(IN,'00lib/aliases.asa')) {
+	while (<IN>) {
+	    next if /^\#/ || /^\s*$/;
+	    my @v = split(/\s+/,$_);
+	    my $aka = shift @v;
+	    foreach my $v (@v) {
+		$values{$v,'aka'} = $aka;
+	    }
 	}
+	close(IN);
+    } else {
+	warn "sl-db.plx: no aliases file 00lib/aliases.asa\n";
+	return;
     }
-    close(IN);
 }
 
 sub
 dump_db {
     unlink "$dbdir/$dbname";
     tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
-	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
+	|| die "sl-db.plx: can't write $dbdir/$dbname\n";
     foreach my $k (keys %values) {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode)$/) {
+	if ($dbk =~ /(?:link|name|aka|uchar|ucode|values)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
@@ -213,18 +229,27 @@ dump_db {
 	    $db{$dbk} = $str;
 	    if ($k =~ /₊/) {
 		$k =~ s/h$//;
-#		print STDERR "mk-pslu.plx: h-str for $k = $str\n";
 	    }
 	} elsif ($dbk =~ //) {
-	    my $v = join(' ', sort uniq(@{$values{$k}}));
-	    Encode::_utf8_off($v);
-	    $db{$dbk} = $v;
+	    if (defined $values{$k}) {
+		use Data::Dumper; warn "dbk=$dbk\n"; warn Dumper $values{$k}; exit 1;
+		my $v = join(' ', sort uniq(@{$values{$k}}));
+		Encode::_utf8_off($v);
+		$db{$dbk} = $v;
+	    } else {
+		warn "sl-db.plx: unhandled key type $dbk\n";
+	    }
 	} else {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
 	}
     }
+#    ORACC::SE::DBM::setdir('./02www/db');
+    $db{'#name'} = $dbname;
+    $db{'#fields'} = join(' ', qw/h aka c cinit clast contains contained multi mod link values/);
+#    ORACC::SE::XML::toXML(\%db);
+    use Data::Dumper; open(D,">./02pub/$dbname.dump"); binmode(D, ':raw'); print D Dumper(\%db); close(D);
     untie %db;
 }
 

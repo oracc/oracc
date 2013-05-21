@@ -15,17 +15,36 @@ if [ "$ORACC_MODE" != "single" ]; then
     echo oracc install only works in single user mode for now. Stop.
     exit 1
 fi
+
 project=$1
+
 if [ "$project" == "" ]; then
     echo usage: oracc install [PROJECT]
     exit 1
 fi
+
 projdir=$ORACC_HOME/$project
+
+if [ ! -d $projdir ]; then
+    if [ -r $project-runtime.tar.gz ]; then
+	tar -C $ORACC -zxf $project-runtime.tar.gz
+	echo oracc install: installed runtime version of $project
+	exit 0
+    else
+	if [ -r $project-00data.tar.gz ]; then
+	    tar zxf $project-00data.tar.gz
+	else
+	    echo oracc-install.sh: no directory $projdir and no file $project-00data.tar.gz or $project-runtime.tar.gz
+	    exit 1
+	fi
+    fi
+fi
+
 if [ -d $projdir ]; then
-    if [ -d $projdir/.git ]; then
+    if [ -r $projdir/00lib/config.xml ]; then
 	dirlinks
     else
-	echo oracc install only handles git install completion for now. Stop.
+	echo oracc install only handles completing installation for now. Stop.
 	exit 1
     fi
 else

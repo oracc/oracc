@@ -8,7 +8,7 @@ if ! [ "$cbdmode" = "super" ]; then
     l2p1-project-sig.plx
     quick=`oraccopt . l2-quick-freqs`
     if [ "$quick" == "yes" ]; then
-	l2p1-proxy-xtf-data.plx
+#	l2p1-proxy-xtf-data.plx  ## THIS MUST BE DEPRECATED
 	l2p1-lemm-quick-freqs.plx 
 	(cd 02pub ; mv lemm-sux.sig.freq lemm-sux.sig)
     fi

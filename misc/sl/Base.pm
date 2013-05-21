@@ -43,7 +43,7 @@ init {
     $silent = 1 if defined $_[0];
     $loaded = 1;
     binmode STDERR, ':utf8';
-    die "can't read $ogsl_db\n" unless -r $ogsl_db;
+    die "can't read $ogsl_db\n" unless (-r $ogsl_db || -r "$ogsl_db.db");
     tie (%db, 'NDBM_File', "$ogsl_db", O_RDONLY, 0640) or die;
 }
 sub

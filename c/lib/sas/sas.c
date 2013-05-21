@@ -208,11 +208,9 @@ sas_alias_form(struct sas_info *sip, const unsigned char *form,
       else
 	{
 	  if (strcmp((char*)form,(char*)atmp))
-	    fprintf(stderr,"sas: dumb aliasing %s => %s\n",
-		    form,cf,gw,(char*)(pos?pos:(unsigned char*)""), atmp);
+	    fprintf(stderr,"sas: dumb aliasing %s => %s\n", form, atmp);
 	  else
-	    fprintf(stderr,"sas: no dumb alias for %s\n",
-		    form,cf,gw,(char*)(pos?pos:(unsigned char*)""));
+	    fprintf(stderr,"sas: no dumb alias for %s\n", form);
 	}
     }
 
@@ -222,13 +220,12 @@ sas_alias_form(struct sas_info *sip, const unsigned char *form,
     {
       if (xstrlen(s) > xstrlen(atmp))
 	atmp = realloc(atmp,xstrlen(s)+1);
-      fprintf(stderr,"sas: post-alias forces %s => %s\n", atmp, s);
+      if (verbose)
+	fprintf(stderr,"sas: post-alias forces %s => %s\n", atmp, s);
       xstrcpy(atmp,s);
     }
-  else if (verbose)
-    
-  free(tmp);
 
+  free(tmp);
   return atmp;
 }
 

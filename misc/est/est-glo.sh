@@ -19,7 +19,7 @@ est_gloss()
 	>01bld/est/$l/glossary.est
 }
 
-for l in `ls 02www/cbd|grep -v ^qpn-x`; do
+for l in `ls -1 02www/cbd|grep -v ^qpn-x`; do
     rm -fr 01bld/est/$l
     mkdir -p 01bld/est/$l
     est_gloss $l

@@ -19,9 +19,11 @@ if [ "$otl" != "" ]; then
     fi
 fi
 mkdir -p $webdir/lists
-liblists=`(cd 00lib/lists ; ls)`
-if [ "$liblists" != "" ]; then
-    cp -f 00lib/lists/* $webdir/lists
+if [ -d 00lib/lists ]; then
+    liblists=`(cd 01bld/lists ; ls)`
+    if [ "$liblists" != "" ]; then
+	cp -f 00lib/lists/* $webdir/lists
+    fi
 fi
 bldlists=`(cd 01bld/lists ; ls)`
 if [ "$bldlists" != "" ]; then
