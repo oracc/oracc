@@ -286,7 +286,7 @@
       <xsl:for-each select="*">
 	<xsl:choose>
 	  <xsl:when test="@ref">
-  	    <a href="javascript:showarticle('{@ref}.html')">
+  	    <a href="javascript:showarticle(concat('/', /*/@project, '/cbd/', /*/@xml:lang, '{@ref}.html')">
 	      <xsl:call-template name="format-cpd"/>
   	    </a>
 	  </xsl:when>
@@ -328,7 +328,7 @@
       <xsl:if test="count(cbd:bff)>1"><xsl:text>s</xsl:text></xsl:if>
       <xsl:text>: </xsl:text>
       <xsl:for-each select="cbd:bff">
-	<a href="javascript:showarticle('{@ref}.html')">
+  	<a href="javascript:showarticle(concat('/', /*/@project, '/cbd/', /*/@xml:lang, '{@ref}.html')">
 	  <xsl:for-each select="id(@ref)">
 	    <xsl:call-template name="format-cfgwpos"/>
 	  </xsl:for-each>
@@ -352,7 +352,7 @@
       <xsl:text>Byform of </xsl:text>
       <xsl:for-each select="cbd:bffl[1]">
 	<xsl:variable name="ref" select="id(@ref)/ancestor::cbd:entry/@xml:id"/>
-	<a href="javascript:showarticle('{$ref}.html')">
+  	<a href="javascript:showarticle(concat('/', /*/@project, '/cbd/', /*/@xml:lang, '{@ref}.html')">
 	  <xsl:for-each select="id($ref)">
 	    <xsl:call-template name="format-cfgwpos"/>
 	  </xsl:for-each>
@@ -369,7 +369,7 @@
       <xsl:for-each select="*">
 	<xsl:choose>
 	  <xsl:when test="@ref">
-  	    <a href="javascript:showarticle('{@ref}.html')">
+  	    <a href="javascript:showarticle(concat('/', /*/@project, '/cbd/', /*/@xml:lang, '{@ref}.html')">
 	      <xsl:apply-templates/>
 	    </a>
 	  </xsl:when>
