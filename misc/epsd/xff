@@ -1,0 +1,198 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+BEGIN { push @INC, '/usr/local/share/cdl/tools' }
+#use CDL::Expand;
+#use CDL::XFF::Selector;
+use XML::LibXML; my $xp = XML::LibXML->new();
+use XML::LibXSLT;
+use Getopt::Long;
+use CGI; my $cgi = undef;
+
+binmode STDIN, ':utf8'; binmode STDOUT, ':raw';
+my $pS = 0;
+#pS();
+
+my $XFF = 'http://oracc.org/ns/xff/1.0';
+my $xml_uri = 'http://www.w3.org/XML/1998/namespace';
+my $styler = undef;
+my $cgi_mode = 0;
+my $edit_form = '';
+my $html = 0;
+my $inplace = 0;
+my $reverse = '';
+my $sortopt = '';
+my $update = '';
+my %uvars = ();
+my $edit = 'no';
+my $xff_file = '';
+my $xff_name = '';
+my $no_formset = 0;
+
+my @edit_attr = qw/form pos base morph cfgw/;
+
+# This cannot be allowed because xff is a cgi script -- we don't want
+# someone without privileges to be able to edit.
+#'with-edit:s'=>\$edit,
+
+if ($#ARGV >= 0 && $ARGV[0] =~ /^-/) {
+    print STDERR "xff.plx: ARGV mode\n";
+    GetOptions(
+	       'html'   =>\$html,
+	       'inplace'=>\$inplace,
+	       'reverse'=>\$reverse,
+	       'sortopt:s'=>\$sortopt,
+	       'xff:s'=>\$xff_file,
+	       );
+} else {
+    $cgi_mode = 1;
+    $html = 1;
+    $cgi = new CGI;
+    my $v = $cgi->Vars();
+    ($sortopt,$xff_file) = ($v->{'sortopt'}||'',$v->{'xff'});
+#    print STDERR "xff.plx: CGI mode sortopt=$sortopt; xff=$xff_file\n";
+    if ($v->{'arrow'}) {
+	$reverse = $v->{'arrow'} eq 'down'; # FIXME: is this right?
+    } else {
+	$reverse = 0;
+    }
+#    if ($v->{'editform'}) {
+#	$edit_form = $v->{'editform'};
+#    } elsif ($v->{'update'}) {
+#	$update = $v->{'update'};
+#	my @u = @edit_attr;
+#	@uvars{@u} = map { eval("\$v->{u$_}") } @edit_attr;
+#    }
+#    $edit = $v->{'edit'} if $v->{'edit'};
+}
+
+if ($xff_file =~ /^[PQ]\d+[a-z]*(\.xff)?$/) {
+#    $xff_file =~ s/.xff$// if $1;
+#    $xff_file = expand("$xff_file.xff");
+} elsif ($xff_file =~ /^sux\.x\d+$/) {
+    $xff_file = "01bld/sux/xff/$xff_file.xff";
+    $no_formset = 1;
+} else {
+    # FIXME: SHOULD LOOK UP RELATIVE NAMES ON A PATH
+}
+
+my $xff_xml = $xp->parse_file($xff_file);
+my $xff_doc = $xff_xml->getDocumentElement();
+$xff_name = $xff_doc->getAttribute('formset');
+
+#### Optional Update Phase
+#if ($update) {
+#    # perform update
+#    my $node = $xff_xml->getElementsById($update);
+#    die unless $node; # can't happen as long as we lock the forms files
+#
+#    map { $node->setAttribute($_,$uvars{$_}) } @edit_attr;
+#
+#    # save updated forms file
+#    my @selectors = ();
+#    if (has_selectors($xff_file)) {
+#	my $selfile = $xff_file;
+#	($xff_file,@selectors) = strip_selectors($xff_file);
+#	unlink $selfile if $xff_file ne $selfile; # REMOVE IF TEST AFTER DEBUGGING
+#    }
+#    open(XFF,">$xff_file") || die "xff.plx: can't update $xff_file\n";
+#    print XFF $xff_xml->toString();
+#    close(XFF);
+#
+#    # reflow the selectors if necessary
+#    if ($#selectors >= 0) {
+#	($xff_file,$xff_name) = apply_selectors($xff_xml,$xff_file,$xff_name,
+#						@selectors);
+#	$xff_xml = $xp->parse_file($xff_file);
+#	$xff_doc = $xff_xml->getDocumentElement();
+#    }
+#
+#}
+
+### Optional Sort Phase
+if ($sortopt) {
+
+    $xff_doc->setAttribute('sortopt',$sortopt);
+    $xff_doc->setAttribute('reverse',$reverse ? 'yes' : 'no');
+    
+    my %sortopt = (
+		   'base' =>"-G",
+		   'cfgw' =>"-G",
+		   'form' =>"-G",
+		   'morph'=>"-G",
+		   'pos'  =>"-d",
+		   'freq' =>"-n",
+		   );
+    
+    my @sortcmd = ('|/usr/local/oracc/bin/psdsort');
+    # hack around a bug in psdsort until I fix it...
+    if ($sortopt{$sortopt} eq '-n') {
+	$sortcmd[0] = '|/bin/sort';
+    }
+    my $tmpfile = "/tmp/$$.srt";
+    push @sortcmd, '-r' if $reverse;
+    push @sortcmd, $sortopt{$sortopt};
+    push @sortcmd, "-t\"	\"";
+    push @sortcmd, ">$tmpfile";
+    my $sortcmd = join(' ', @sortcmd);
+#print STDERR $sortcmd,"\n";
+    open(SRT,$sortcmd);
+    foreach my $c ($xff_doc->childNodes()) {
+	print SRT getValue($sortopt), "\t", $c->getAttributeNS($xml_uri,
+							       'id'), "\n";
+    }
+    close(SRT);
+
+    my @new_order = ();
+    open(IN,$tmpfile);
+    while (<IN>) {
+	/\s(\S+)$/ && push(@new_order, $xff_xml->getElementsById($1));
+    }
+    close(IN);    
+    unlink $tmpfile;
+
+    $xff_doc->removeChildNodes();
+    foreach my $n (@new_order) {
+	$xff_doc->appendChild($n);
+    }
+}
+
+### Output Phase
+if ($edit_form || $html) {
+    my $xsl = '/usr/local/oracc/lib/scripts/xff-HTML.xsl';
+    my $xsldoc = $xp->parse_file($xsl);
+    $styler = XML::LibXSLT->new()->parse_stylesheet($xsldoc);
+    print $cgi->header(-charset=>'utf8') if $cgi_mode;
+}
+
+if ($edit_form) {
+    print $styler->transform($xff_xml, 
+			     'edit-form'=>"'$edit_form'",
+			     'formset'=>"'$xff_file'")->toString(1);
+} elsif ($html) {
+    my %parms = ();
+#    $parms{'edit'} = "'$edit'" if $edit;
+    $parms{'formset'} = "'$xff_file'" unless $no_formset;
+    print $styler->transform($xff_xml, %parms)->toString(1);
+} elsif ($inplace) {
+    open(XFF,">$xff_file");
+    print XFF $xff_xml->ownerDocument()->toString();
+    close(XFF);
+} else {
+    print $xff_xml->ownerDocument()->toString();
+}
+
+##########################################################################
+
+sub
+getValue {
+    my ($sig_node,$field) = @_;
+    my $node = (tags($sig_node,$XFF,$field))[0];
+    $node->getAttribute('n');
+}
+
+sub
+pS {
+    print STDERR $pS++, "\n";
+}
+
+1;

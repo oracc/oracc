@@ -133,13 +133,13 @@ augment {
 	    }
 	    my @equiv = tags($anode, $CBD, 'equiv');
 	    if ($#equiv >= 0) {
-		foreach $n (@equiv) {
+		foreach my $n (@equiv) {
 		    $enode->appendChild($n);
 		}
 	    }
 	    my @bib = tags($anode, $CBD, 'bib');
 	    if ($#bib >= 0) {
-		foreach $n (@bib) {
+		foreach my $n (@bib) {
 		    $enode->appendChild($n);
 		}		
 	    }

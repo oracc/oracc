@@ -145,7 +145,7 @@ if ($pr) {
 #	my $redir = $ENV{HTTP_REFERER};
 #	$redir =~ s,unisearch.html$,psl/html/$pr.html,;
 #	$redir = "/epsd/psl/html/$pr.html";
-	print $q->redirect("/ogsl/brief/$pr.html");
+	print $q->redirect("/epsd2/ogsl/brief/$pr.html");
     }
 } else {
     html_header();

@@ -105,6 +105,16 @@ if (!$project && !$sort && !$xml) {
     }
 }
 
+my $cbd_post_process = undef;
+$project = `oraccopt` unless $project;
+$cbd_post_process = `oraccopt $project cbd-post-process`
+    if $project;
+if ($cbd_post_process && !$clang) {
+    if ($xml =~ m#(?:^|/)([^/.]).glo$#) {
+	$clang = $xml;
+    }
+}
+
 $projectDir = $project;
 
 $output =~ s/glo\.normcbd/cbd/ if $output;
@@ -179,6 +189,7 @@ if ($sort) {
 	binmode STDOUT,':raw';
 	print $xdoc->toString();
     }
+    maybe_cbd_post_process();
     exit 0;
 } elsif ($web) {
     my @verbose = ();
@@ -319,6 +330,8 @@ foreach my $p (@{$cfg{'process'}}) {
     }
 }
 
+maybe_cbd_post_proces();
+
 if ($verbose) {
     my $elapsed = tv_interval($t0);
     my $elstr = sprintf("%.02fs",$elapsed);
@@ -334,6 +347,13 @@ add_project_options {
 	$project_params{$o} = ORACC::XPD::Util::option($o);
 	$ORACC::L2GLO::Builtins::accents = 1 
 	    if $o eq 'render-accents' && $project_params{$o} eq 'yes';
+    }
+}
+
+sub
+maybe_cbd_post_process {
+    if ($cbd_post_process) {
+	system "00bin/$cbd_post_process", $clang;
     }
 }
 
