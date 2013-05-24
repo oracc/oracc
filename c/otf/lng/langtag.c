@@ -58,7 +58,7 @@ static int
 valid_x(const char *s)
 {
   return !s || !*s || (*s == 'x' && s[1] == '-' 
-		       && strlen(&s[2]) >= 1 && strlen(&s[1]) < 9
+		       && strlen(&s[2]) >= 1 && strlen(&s[2]) < 9
 		       && all_alpha(&s[2]));
 }
 
@@ -205,6 +205,17 @@ langtag_parse(const char *tag, const char *file, int lnum)
       langtag_error(file,lnum,tag,"script must be 4 letters (Abcd) or 3 digits");
       free(tmp);
       tmp = NULL;
+    }
+
+  if (tmp->xlang && !strcmp(tmp->xlang, "x-syllabic"))
+    {
+      tmp->xlang = NULL;
+      tmp->script = "947";
+    }
+  else if (tmp->xlang && !strcmp(tmp->xlang, "x-udgalnun"))
+    {
+      tmp->xlang = NULL;
+      tmp->script = "948";
     }
 
   return tmp;
