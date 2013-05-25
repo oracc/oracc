@@ -9,6 +9,8 @@ function dirlinks {
 	mkdir -p $ORACC/$a/$project
 	ln -s $ORACC/$a/$project $ORACC_HOME/$project/02$a	
     done
+    rm -fr $ORACC/$project
+    ln -sf $ORACC_HOME/$project $ORACC/$project
 }
 
 if [ "$ORACC_MODE" != "single" ]; then

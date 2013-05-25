@@ -43,10 +43,18 @@
   </xsl:call-template>
 </xsl:param>
 
-<xsl:param name="cbd-inline-forms">
+<xsl:param name="cbd-forms-table">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="config-xml" select="$config-file"/>
-    <xsl:with-param name="option" select="'cbd-inline-forms'"/>
+    <xsl:with-param name="option" select="'cbd-forms-table'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="cbd-forms-inline">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-forms-inline'"/>
     <xsl:with-param name="default" select="'yes'"/>
   </xsl:call-template>
 </xsl:param>
@@ -69,6 +77,7 @@
    indent="no"/>
 
 <xsl:template match="cbd:articles">
+  <xsl:message>config-file=<xsl:value-of select="$config-file"/>; cbd-forms-table=<xsl:value-of select="$cbd-forms-table"/></xsl:message>
   <xsl:call-template name="make-html">
     <xsl:with-param name="webtype" select="'cbd'"/>
     <xsl:with-param name="with-hr" select="false()"/>
@@ -166,7 +175,16 @@
 
   <xsl:apply-templates select="cbd:bases"/>
 
-  <xsl:if test="not($cbd-inline-forms='no')">
+  <xsl:if test="$cbd-forms-table = 'yes'">
+    <div class="morphology">
+      <p>
+        <a href="javascript:popxff('{$project}','{@xml:id}')"
+	   ><xsl:value-of select="count(cbd:forms/cbd:form[not(@icount='0')])"/> distinct forms attested; click to view forms table.</a>
+      </p>
+    </div>
+  </xsl:if>
+
+  <xsl:if test="not($cbd-forms-inline='no')">
     <xsl:choose>
       <xsl:when test="cbd:form-sanss">
 	<xsl:apply-templates select="cbd:form-sanss"/>

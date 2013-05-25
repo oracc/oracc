@@ -330,7 +330,7 @@ foreach my $p (@{$cfg{'process'}}) {
     }
 }
 
-maybe_cbd_post_proces();
+maybe_cbd_post_process();
 
 if ($verbose) {
     my $elapsed = tv_interval($t0);

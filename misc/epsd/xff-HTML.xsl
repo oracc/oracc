@@ -16,6 +16,7 @@
 <xsl:param name="formset" select="/*/@formset"/>
 <xsl:param name="edit"/>
 <xsl:param name="edit-form" select="''"/>
+<xsl:param name="project"/>
 
 <xsl:variable name="cgi" select="'/cgi-bin/xff'"/>
 
@@ -34,7 +35,7 @@
     <head>
       <title>ePSD Forms: <xsl:value-of select="$formset"/></title>
       <link rel="stylesheet" type="text/css" href="/epsd2/css/cbd.css"/>
-      <script src="/epsd2/js/cbd.js" type="text/javascript">
+      <script src="/js/cbd.js" type="text/javascript">
         <xsl:text> </xsl:text>
       </script>
     </head>
@@ -74,12 +75,12 @@
        	          </xsl:choose>
 	        </xsl:variable>
 <!-- removed edit=$edit -->
- 	        <a href="{$cgi}?sortopt={@attr}&amp;arrow={$arrow}&amp;xff={$forms/@eid}" class="xff">
-	 	  <img class="xff" src="/icons/{$arrow}.gif"/>
+ 	        <a href="{$cgi}?project={$project}&amp;sortopt={@attr}&amp;arrow={$arrow}&amp;xff={$forms/@eid}" class="xff">
+	 	  <img class="xff" src="/img/{$arrow}.gif"/>
  	        </a>
 	      </xsl:if>
 	      <xsl:text>&#xa0;</xsl:text>
-  	      <a href="{$cgi}?sortopt={@attr}&amp;xff={$forms/@eid}" class="xff">
+  	      <a href="{$cgi}?project={$project}&amp;sortopt={@attr}&amp;xff={$forms/@eid}" class="xff">
 		<xsl:value-of select="@th"/>
 	      </a>
 	    </xsl:when>
@@ -100,20 +101,20 @@
     <xsl:if test="position() mod 2 = 0">
       <xsl:attribute name="class">even</xsl:attribute>
     </xsl:if>
-    <xsl:call-template name="tda">
-      <xsl:with-param name="at" select="xff:form/@n"/></xsl:call-template>
 <!--
     <xsl:call-template name="td">
       <xsl:with-param name="at" select="@cfgw"/></xsl:call-template>
     <xsl:call-template name="td">
       <xsl:with-param name="at" select="@pos"/></xsl:call-template>
  -->
+    <xsl:call-template name="tda">
+      <xsl:with-param name="at" select="xff:form/@n"/></xsl:call-template>
     <xsl:call-template name="tda-node">
       <xsl:with-param name="at" select="xff:base"/></xsl:call-template>
     <xsl:call-template name="tda-node">
       <xsl:with-param name="at" select="xff:morph"/></xsl:call-template>
-    <xsl:call-template name="tda-node">
-      <xsl:with-param name="at" select="@icount"/></xsl:call-template>
+    <xsl:call-template name="tda">
+      <xsl:with-param name="at" select="xff:form/@icount"/></xsl:call-template>
 <!--
     <xsl:if test="$edit='yes'">
        <td class="edit"><a
@@ -127,7 +128,7 @@
 <xsl:template name="tda">
   <xsl:param name="at"/>
   <td class="xff">
-    <a href="javascript:distprof('{/*/@formset}','{/*/@eid}','{@xis}')">
+    <a href="javascript:distprof2('{$project}','{/*/@xml:lang}','{@xis}')">
       <xsl:call-template name="html-text">
         <xsl:with-param name="text" select="$at"/>
       </xsl:call-template>
@@ -138,7 +139,7 @@
 <xsl:template name="tda-node">
   <xsl:param name="at"/>
   <td class="xff">
-    <a href="javascript:distprof('{/*/@formset}','{/*/@eid}','{$at/@xis}')">
+    <a href="javascript:distprof2('{$project}','{/*/@eid}','{$at/@xis}')">
       <xsl:call-template name="html-text">
         <xsl:with-param name="text" select="$at/@n"/>
       </xsl:call-template>

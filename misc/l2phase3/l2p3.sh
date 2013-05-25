@@ -14,6 +14,10 @@ if [ "$g2c" != "" ]; then
 	l=`basename $ldir`
 	echo producing web version of $l
 	l2-glomanager.plx -webdir=$webdir -conf l2p3.xcf -cbdlang $l $*
+	xfftab=`oraccopt . cbd-forms-table`
+	if [ "$xfftab" = 'yes' ]; then
+	    rm -fr $webdir/cbd/$l/xff
+	    art2xff.plx -l sux
+	fi
     done
 fi
-

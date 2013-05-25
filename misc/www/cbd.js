@@ -61,8 +61,8 @@ xdistprof(cfgw,eid,pagefile) {
 }
 
 function
-popxff(eid) {
-    cbdPopup('/cgi-bin/xff?xff='+eid,
+popxff(project,eid) {
+    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
 	'xffwin',600,400,700,0,1);
 }
 

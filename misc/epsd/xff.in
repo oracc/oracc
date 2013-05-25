@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
-use lib '/usr/local/oracc/lib';
+use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use Getopt::Long;
 use CGI; my $cgi = undef;
@@ -68,7 +68,7 @@ if ($xff_file =~ /^[PQ]\d+[a-z]*(\.xff)?$/) {
 #    $xff_file =~ s/.xff$// if $1;
 #    $xff_file = expand("$xff_file.xff");
 } elsif ($xff_file =~ /^sux\.x\d+$/) {
-    $xff_file = "/usr/local/oracc/www/$project/cbd/sux/xff/$xff_file.xff";
+    $xff_file = "@@ORACC@@/www/$project/cbd/sux/xff/$xff_file.xff";
     $no_formset = 1;
 } else {
     # FIXME: SHOULD LOOK UP RELATIVE NAMES ON A PATH

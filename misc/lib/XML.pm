@@ -135,7 +135,6 @@ tags {
     }
 }
 
-
 # Convenience function to transform a flat list of LibXML nodes into
 # a hierarchical structure.
 sub
