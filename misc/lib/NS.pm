@@ -34,6 +34,7 @@ $ORACC::NS::XST   = 'http://oracc.org/ns/syntax-tree/1.0';
 $ORACC::NS::XTC   = 'http://oracc.org/ns/xtc/1.0';
 $ORACC::NS::XTF   = 'http://oracc.org/ns/xtf/1.0';
 $ORACC::NS::XTF2  = 'http://oracc.org/ns/xtf/1.0';
+$ORACC::NS::XTR   = 'http://oracc.org/ns/xtr/1.0';
 $ORACC::NS::XVL   = 'http://oracc.org/verblist';
 
 $ORACC::NS::ODFOFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
@@ -46,7 +47,7 @@ $ORACC::NS::ODFTEXT =  'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
 	     $LEM $NGM $SKL $STT $TEI
              $XCL $XTF $XTF2 $XFF $XLF $XST $XIM $XIX $XVL 
 	     $XOC $XMD $XML $XHTML $XPD
-             $XLINK $XDF $XRU $XCF $XTC $XI
+             $XLINK $XDF $XRU $XCF $XTC $XI $XTR
              $ODFSTYLE $ODFTABLE $ODFTEXT/;
 
 1;

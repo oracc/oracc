@@ -41,7 +41,8 @@ dump_nle(struct NLE*nlep)
       for (i = 0; nlep->tts[i]; ++i)
 	{
 	  fputs("<ct>",dump_fp);
-	  dump_cf_tts(nlep->cfs[i]);
+	  if (nlep->cfs[i])
+	    dump_cf_tts(nlep->cfs[i]);
 	  fputs("</ct>",dump_fp);
 	}
       fputs("</cts>",dump_fp);
@@ -51,7 +52,8 @@ dump_nle(struct NLE*nlep)
 	  for (i = 0; i < nlep->ncfs; ++i)
 	    {
 	      fputs("<tt>",dump_fp);
-	      dump_cf_tts(nlep->cfs[i]);
+	      if (nlep->cfs[i])
+		dump_cf_tts(nlep->cfs[i]);
 	      fputs("</tt>",dump_fp);
 	    }
 	  fputs("</tts>",dump_fp);
