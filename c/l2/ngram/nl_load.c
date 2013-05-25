@@ -191,6 +191,15 @@ parse_ngram_line(struct NL*nlp, const char *line, int ngram_index,
     }
 
   nleps_add(nlcp->active_hash,nlep);
+  if (nlp->parsed_ngrams)
+    {
+      nlp->last_parsed_ngram->next = nlep;
+      nlp->last_parsed_ngram = nlep;
+    }
+  else
+    {
+      nlp->parsed_ngrams = nlp->last_parsed_ngram = nlep;
+    }
 
   return psu_form;
 }
@@ -296,15 +305,15 @@ nl_load_file(struct sigset *sp,
 	     struct NL_context*nlcp, const char *fname, 
 	     enum nlcp_actions act, const char *lang)
 {
-  struct NL *nlp;
   char **ngram_lines;
   unsigned char *fmem;
   size_t nlines, i, nngrams;
-
-  nl_set_location(file,1);
-  if (!nlcp)
-    nlcp = nl_new_context(sp, act, lang);
-  nlp = nl_new_nl(nlcp);
+  struct NL *nlp = nl_setup(NULL, act, lang);
+  nlcp = nlp->owner;
+  nlcp->nlp = nlp;
+  nlcp->owner = sig_new_context_free_sigset();
+  nlp->file = fname;
+  nl_set_location(fname,1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
   for (nngrams = i = 0; i < nlines; ++i)
     nl_process_one_line(nlp, ngram_lines[i], NULL);

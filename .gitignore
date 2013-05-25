@@ -451,3 +451,5 @@ doc/manager/index.xml
 doc/ns/index.xml
 
 doc/user/index.xml
+
+c/bin/lemmer/.gdbinit

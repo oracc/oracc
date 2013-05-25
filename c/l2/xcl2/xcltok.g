@@ -27,3 +27,6 @@ break,	   xcl_node_d, xcl_d_break
 punct,	   xcl_node_d, xcl_d_punct
 surface,   xcl_node_d, xcl_d_surface
 nonx, 	   xcl_node_d, xcl_d_nonx
+column,    xcl_node_d, xcl_d_column
+field-start,xcl_node_d, xcl_d_field_start
+field-end,  xcl_node_d, xcl_d_field_end

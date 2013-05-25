@@ -48,6 +48,7 @@ struct NL
   struct NL *next;
   int nngrams;
   struct NL_context *owner;
+  struct NLE *last_parsed_ngram;
 };
 
 /*
@@ -100,6 +101,7 @@ struct NLE
   void *user;
   struct NL *owner;
   int deleted;
+  struct NLE *next;
 };
 
 struct NLE_set

@@ -8,6 +8,8 @@
 #include "ilem_form.h"
 #include "sigs.h"
 
+int psus_sig_check = 1;
+
 static void set_instance_fields(struct xcl_context *xc, struct ML *mlp);
 
 static char *
@@ -65,13 +67,13 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 
       lsp->form->sig = f2_psu_sig(mlp->matches[0].psu_form,
 				  xc->pool);
-#if 1
       lp->inst = psu_inst((char*)lsp->form->sig);
       lp->f = calloc(1,sizeof(struct ilem_form));
       lp->f->file = (char*)mlp->matches[0].psu_form->file;
       lp->f->lnum = mlp->matches[0].psu_form->lnum;
       lp->f->f2 = *mlp->matches[0].psu_form;
-      sigs_l_check(xc, lp);
+      if (psus_sig_check)
+	sigs_l_check(xc, lp);
       mlp->matches[0].psu_nfinds = lp->f->fcount;
       /* WATCHME: should I be using psu_finds and reporting ambig here? 
        * For now, just use the first sig.
@@ -81,28 +83,25 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       /* can't free this now because it may be referenced via the cache */
       /* free(lp->f); */
       free(lp);
-#else
-      mlp->matches[0].psu_finds = sigs_inst_in_sigset(xc,
-						      mlp->matches[0].psu_form,
-						      mlp->matches[0].lp->sp,
-						      &mlp->matches[0].psu_nfinds);
-#endif
       /* clear the newflag so it doesn't carry over to further occurrences of
 	 this psu_form */
       /*mlp->matches[0].psu_form->newflag = 0;*/
-      if (!mlp->matches[0].psu_nfinds)  /*NB: NO AMBIGUITY YET*/
+      if (psus_sig_check)
 	{
-	  struct f2 *e = mlp->matches[0].psu_form;
-	  vwarning2((const char *)e->file, e->lnum, 
-		   "psu: %s[%s]%s: compound not found",
-		   e->cf,e->gw,e->pos);
-	}
-      else if (verbose)
-	{
-	  struct f2 *e = mlp->matches[0].psu_form;
-	  vwarning2((const char *)e->file, e->lnum, 
-		    "psu: %s[%s]%s found OK",
-		    e->cf,e->gw,e->pos);
+	  if (!mlp->matches[0].psu_nfinds)  /*NB: NO AMBIGUITY YET*/
+	    {
+	      struct f2 *e = mlp->matches[0].psu_form;
+	      vwarning2((const char *)e->file, e->lnum, 
+			"psu: %s[%s]%s: compound not found",
+			e->cf,e->gw,e->pos);
+	    }
+	  else if (verbose)
+	    {
+	      struct f2 *e = mlp->matches[0].psu_form;
+	      vwarning2((const char *)e->file, e->lnum, 
+			"psu: %s[%s]%s found OK",
+			e->cf,e->gw,e->pos);
+	    }
 	}
     }
   preallocate_links(lsp,mlp->matches_used);

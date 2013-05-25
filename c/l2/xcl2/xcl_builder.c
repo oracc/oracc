@@ -2,6 +2,7 @@
 #include <ctype128.h>
 #include <psd_base.h>
 #include <runexpat.h>
+#include <memblock.h>
 #include <fname.h>
 #include <string.h>
 #include <hash.h>
@@ -79,7 +80,7 @@ xcl_sH(void *userData, const char *name, const char **atts)
       else if (!strcmp(vbar, "xcl"))
 	{
 	  xcp->project = xpool_copy(findAttr(atts,"project"),xcp->pool);
-	  xcp->textid = xpool_copy(findAttr(atts,"textid"),xcp->pool);
+	  xcp->linkbase->textid = xcp->textid = xpool_copy(findAttr(atts,"textid"),xcp->pool);
 	  xcp->file = xpool_copy(findAttr(atts,"file"),xcp->pool);
 	  xcp->langs = xpool_copy(findAttr(atts,"langs"),xcp->pool);
 	}
@@ -166,9 +167,32 @@ xcl_eH(void *userData, const char *name)
 					   curr_form,
 					   NULL, ll_type);
 	      lp->inst = curr_inst;
-	      lp->sig = curr_sig;
+	      lp->sig = npool_copy(curr_sig,xcp->pool);
 	      lp->lnum = curr_lnum;
+	      lp->f = mb_new(xcp->sigs->mb_ilem_forms);
+	      lp->f->ref = (char*)npool_copy((unsigned char *)curr_ref, xcp->pool);
+	      /* FIXME: this is not good enough for COF and PSU */
+	      lp->f->f2.sig = lp->sig;
+	      f2_parse((unsigned char *)xcp->file, lp->lnum, npool_copy((unsigned char*)curr_sig,xcp->pool), &lp->f->f2, NULL, xcp->sigs);	      
 	    }
+#if 0
+    {
+      form->f2.lang = (unsigned char*)lang;
+      form->f2.core = langcore_of(lang);
+      if (strstr(lang,"949"))
+	  BIT_SET(form->f2.flags,F2_FLAGS_LEM_BY_NORM);
+    }
+  if (BIT_ISSET(form->f2.flags,F2_FLAGS_LEM_BY_NORM))
+    {
+      form->f2.norm = (unsigned char *)formstr;
+      form->f2.form = (const unsigned char *)"*";
+    }
+  else
+    form->f2.form = (unsigned char *)formstr;
+  form->file = (char*)file;
+  form->lnum = lnum;
+  form->lang = langcon;
+#endif
 	}
       else if (!strcmp(vbar,"ll"))
 	{
@@ -204,6 +228,8 @@ xcl_load(const char *xcl_fn, int setup_formsets)
   const char *fname[2];
   struct xcl_context *xcp = xcl_create();
   char ns_char[2];
+  xcp->sigs = sig_context_init();
+  xcp->linkbase = new_linkbase();
   ns_char[0] = EXPAT_NS_CHAR; ns_char[1] = '\0';
   fname[0] = xcl_fn;
   fname[1] = NULL;

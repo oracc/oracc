@@ -59,4 +59,6 @@ extern struct xcl_chunk_spec *links_chunks_part(struct linkbase *lbp,
 						int with_chunkified);
 extern void linkbase_free(struct linkbase *lbp);
 
+extern void links_serialize(FILE*fp,struct linkbase *lbp, int with_xml);
+
 #endif /*_LINKS_H*/

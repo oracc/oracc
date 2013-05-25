@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "f2.h"
 #include "ngram.h"
 
 static FILE *dump_fp;
@@ -9,9 +10,12 @@ dump_cf_tts(struct CF *cfp)
   int i;
   fprintf(dump_fp,"<cf bad=\"%d\" neg=\"%d\" wild=\"%d\">%s</cf>",
 	  cfp->bad, cfp->neg, cfp->wild,cfp->cf);
-  for (i = 0; cfp->preds[i]; ++i)
-    fprintf(dump_fp,"<pred neg=\"%d\" attr=\"%s\" value=\"%s\"/>",
-	    cfp->preds[i]->neg, cfp->preds[i]->key, cfp->preds[i]->value);
+  if (cfp->f2)
+    f2_serialize_form(dump_fp, cfp->f2);
+  if (cfp->preds)
+    for (i = 0; cfp->preds[i]; ++i)
+      fprintf(dump_fp,"<pred neg=\"%d\" attr=\"%s\" value=\"%s\"/>",
+	      cfp->preds[i]->neg, cfp->preds[i]->key, cfp->preds[i]->value);
 }
 
 static void
@@ -67,11 +71,12 @@ nl_dump(FILE *fp, struct NL_context*nlcp)
 
   if (nlcp)
     {
+      struct NLE *nlep;
       dump_fp = fp;
-      fprintf(fp,"<nl xmlns=\"%s\" xmlns:ngram=\"%s\"\n>",ns,ns);
+      fprintf(fp,"<nl xmlns=\"%s\" xmlns:ngram=\"%s\" xmlns:xff=\"http://oracc.org/ns/xff/1.0\"\n>",ns,ns);
       for (nlp = nlcp->nlp; nlp; nlp = nlp->next)
-	for (i = 0; i < nlp->nngrams; ++i)
-	  dump_nle(&nlp->parsed_ngrams[i]);
+	for (nlep = nlp->parsed_ngrams; nlep; nlep = nlep->next)
+	  dump_nle(nlep);
       fputs("</nl>",fp);
     }
 }

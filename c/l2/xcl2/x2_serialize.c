@@ -119,11 +119,13 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
     }
 
   fputs(">",f_xcl);
-  if (lp->f)
-    f2_serialize_form(f_xcl, &lp->f->f2);
 
-  if (lp->f->props)
-    props_dump_props(lp->f,f_xcl);
+  if (lp->f)
+    {
+      f2_serialize_form(f_xcl, &lp->f->f2);
+      if (lp->f->props)
+	props_dump_props(lp->f,f_xcl);
+    }
 
   ilem_para_dump(f_xcl, lp);
   fputs("</l>",f_xcl);

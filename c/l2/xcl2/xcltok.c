@@ -1,6 +1,6 @@
 /* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N xcltok -tT xcltok.g  */
-/* Computed positions: -k'1' */
+/* Computed positions: -k'1-2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -35,12 +35,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <stddef.h>
 #include "xcl.h"
 
-#define TOTAL_KEYWORDS 17
+#define TOTAL_KEYWORDS 20
 #define MIN_WORD_LENGTH 4
 #define MAX_WORD_LENGTH 11
 #define MIN_HASH_VALUE 4
-#define MAX_HASH_VALUE 25
-/* maximum key range = 22, duplicates = 0 */
+#define MAX_HASH_VALUE 31
+/* maximum key range = 28, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -56,34 +56,34 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 20,  5,
-      10, 26, 26,  5, 26, 26, 26, 26, 10, 26,
-       5, 26,  0, 26, 26,  0,  0, 26, 26, 15,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
-      26, 26, 26, 26, 26, 26
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 10,  5,
+       0,  0, 15, 10, 10,  0, 32, 32,  0, 32,
+       5, 20,  0, 32, 10, 10,  0,  0, 32,  0,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32
     };
-  return len + asso_values[(unsigned char)str[0]];
+  return len + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]];
 }
 
 #ifdef __GNUC__
@@ -104,40 +104,48 @@ xcltok (str, len)
       {"text",	   xcl_node_c, xcl_c_text},
 #line 27 "xcltok.g"
       {"punct",	   xcl_node_d, xcl_d_punct},
-#line 18 "xcltok.g"
-      {"phrase",	   xcl_node_c, xcl_c_phrase},
-#line 28 "xcltok.g"
-      {"surface",   xcl_node_d, xcl_d_surface},
-#line 16 "xcltok.g"
-      {"sentence",  xcl_node_c, xcl_c_sentence},
-#line 29 "xcltok.g"
-      {"nonx", 	   xcl_node_d, xcl_d_nonx},
-#line 15 "xcltok.g"
-      {"chunk",	   xcl_node_c, xcl_c_chunk},
-#line 17 "xcltok.g"
-      {"clause",	   xcl_node_c, xcl_c_clause},
-      {""},
-#line 23 "xcltok.g"
-      {"cell-end",  xcl_node_d, xcl_d_cell_end},
-#line 25 "xcltok.g"
-      {"gloss-end", xcl_node_d, xcl_d_gloss_end},
-#line 22 "xcltok.g"
-      {"cell-start",xcl_node_d, xcl_d_cell_start},
-#line 24 "xcltok.g"
-      {"gloss-start",xcl_node_d, xcl_d_gloss_start},
-      {""},
+      {""}, {""},
 #line 19 "xcltok.g"
       {"line-var",  xcl_node_c, xcl_c_line_var},
 #line 14 "xcltok.g"
       {"discourse", xcl_node_c, xcl_c_discourse},
 #line 21 "xcltok.g"
       {"line-start",xcl_node_d, xcl_d_line_start},
+#line 17 "xcltok.g"
+      {"clause",	   xcl_node_c, xcl_c_clause},
+      {""},
+#line 23 "xcltok.g"
+      {"cell-end",  xcl_node_d, xcl_d_cell_end},
+      {""},
+#line 22 "xcltok.g"
+      {"cell-start",xcl_node_d, xcl_d_cell_start},
+#line 18 "xcltok.g"
+      {"phrase",	   xcl_node_c, xcl_c_phrase},
+#line 28 "xcltok.g"
+      {"surface",   xcl_node_d, xcl_d_surface},
+#line 16 "xcltok.g"
+      {"sentence",  xcl_node_c, xcl_c_sentence},
+#line 25 "xcltok.g"
+      {"gloss-end", xcl_node_d, xcl_d_gloss_end},
+#line 15 "xcltok.g"
+      {"chunk",	   xcl_node_c, xcl_c_chunk},
+#line 24 "xcltok.g"
+      {"gloss-start",xcl_node_d, xcl_d_gloss_start},
       {""}, {""},
+#line 32 "xcltok.g"
+      {"field-end",  xcl_node_d, xcl_d_field_end},
+#line 26 "xcltok.g"
+      {"break",	   xcl_node_d, xcl_d_break},
+#line 31 "xcltok.g"
+      {"field-start",xcl_node_d, xcl_d_field_start},
+      {""},
 #line 20 "xcltok.g"
       {"word-var",  xcl_node_c, xcl_c_text},
+#line 29 "xcltok.g"
+      {"nonx", 	   xcl_node_d, xcl_d_nonx},
       {""},
-#line 26 "xcltok.g"
-      {"break",	   xcl_node_d, xcl_d_break}
+#line 30 "xcltok.g"
+      {"column",    xcl_node_d, xcl_d_column}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)

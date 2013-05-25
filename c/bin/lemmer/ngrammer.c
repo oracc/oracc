@@ -23,13 +23,22 @@ int bootstrap_mode, lem_autolem, verbose, lem_standalone, shadow_lem,
   ignore_plus, slow_lem_utf8;
 const char *textid, *project, *lang;
 int pretty = 0, psu = 0, use_unicode = 0;
-
 int
 main(int argc, char **argv)
 {
+  struct sigset *sp = NULL;
+  extern int psus_sig_check, links_standalone;
+
+  links_standalone = 1;
+  psus_sig_check = 0;
+  
+  (void)sig_context_init();
+  sp = sig_new_context_free_sigset();
+
   f_log = stderr;
   nl_init();
   options(argc, argv, "dl:n:p:x:");
+  nlcp = nl_load_file(sp,NULL,nl_file,nlcp_action_psu,lang);
   f_nlx = fopen(nlx_file,"w");
   if (f_nlx)
     nl_dump(f_nlx,nlcp);
@@ -51,7 +60,8 @@ main(int argc, char **argv)
       xc = xcl_load(xcl_file,0);
       xc->user = nlcp;
       xcl_map(xc,ngramify,NULL,NULL,NULL);
-      x2_serialize(xc,stdout,1);
+      /* x2_serialize(xc,stdout,1); */
+      links_serialize(stdout, xc->linkbase, 1);
       ngramify_term();
     }
 
@@ -64,6 +74,9 @@ opts (int o, char *c)
   int ret = 0;
   switch (o)
     {
+    case 'a':
+      fprintf(stderr, "ngrammer: -a argument (set action) not yet supported\n");
+      break;
     case 'd':
       ++ng_debug;
       break;
@@ -71,7 +84,7 @@ opts (int o, char *c)
       lang = c;
       break;
     case 'n':
-      nlcp = nl_load_file(NULL,nlcp,nl_file = c,nlcp_action_rewrite,lang);
+      nl_file = c;
       break;
     case 'p':
       project = c;
