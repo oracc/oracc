@@ -20,16 +20,18 @@ if [ "$otl" != "" ]; then
 fi
 mkdir -p $webdir/lists
 if [ -d 00lib/lists ]; then
-    liblists=`(cd 01bld/lists ; ls)`
+    liblists=`(cd 00lib/lists ; ls)`
     if [ "$liblists" != "" ]; then
 	cp -f 00lib/lists/* $webdir/lists
     fi
 fi
-bldlists=`(cd 01bld/lists ; ls)`
-if [ "$bldlists" != "" ]; then
-    for a in `ls 01bld/lists/* | egrep -v '.lst$'` ; do
-	cp -f $a $webdir/lists
-    done
+if [ -d 01bld/lists ]; then
+    bldlists=`(cd 01bld/lists ; ls)`
+    if [ "$bldlists" != "" ]; then
+	for a in `ls 01bld/lists/* | egrep -v '.lst$'` ; do
+	    cp -f $a $webdir/lists
+	done
+    fi
 fi
 if [ -r 01bld/lists/outlined.lst ]; then
     cp -f 01bld/lists/outlined.lst $webdir/lists

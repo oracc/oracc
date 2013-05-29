@@ -53,6 +53,8 @@ make_cache(struct item **items, int nitems, int*sic_size)
   int i;
   static u4 top;
 
+  sic_id = 0;
+
   /* No cache unless there are keys; NB: we use a cache
      even for 1 key because it simplifies X-processing */
   if (nsortfields == 0)
@@ -67,11 +69,17 @@ make_cache(struct item **items, int nitems, int*sic_size)
       static u4 id = -1, new_id;
       static int j = 0, last_j;
 
+      if (0 == i)
+	{
+	  j = 0;
+	  id = -1;
+	}
+
       new_id = strtoul((const char *)items[i]->pq+1,NULL,10);
       if (*items[i]->pq == 'X')
 	new_id += 2000000;
 
-      if (id  == new_id) 
+      if (id  == new_id)
 	{
 	  items[i]->skey = items[i-1]->skey;
 	  items[i]->grp = items[i-1]->grp;

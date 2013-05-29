@@ -23,6 +23,7 @@ my $curr_periods_int = 0;
 my %data = ();
 my %entry_ids = ();
 my %entry_lines = ();
+my %entry_xis = ();
 my %header = ();
 my $header_vars = 0;
 my $have_disamb = 0;
@@ -100,6 +101,7 @@ my %sig_lines = ();
 my $xrefid = '';
 my $xrefid_counter = -1;
 my %xrefs = ();
+my %xrefs_infos = ();
 
 my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdlme} = ();
 
@@ -181,7 +183,7 @@ if ($have_disamb) {
 
 open(XIS,">$dirname$header{'lang'}.xis");
 print XIS '<?xml version="1.0" encoding="utf-8"?>', "\n";
-print XIS '<xis xmlns="http://oracc.org/ns/xis/1.0" xmlns:xis="http://oracc.org/ns/xis/1.0">';
+print XIS '<xisses xmlns="http://oracc.org/ns/xis/1.0" xmlns:xis="http://oracc.org/ns/xis/1.0">';
 
 #open(G, "|gdlme2 -s>$dirname$header{'name'}.g2x") 
 if ($outfile) {
@@ -209,8 +211,10 @@ foreach my $lang (sort keys %data) {
 	}
 	my $entry_xid;
 	my $xid = $entry_xid = $entry_ids{$entry};
-	my %xis_info = xis($lang,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
+	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
+	$entry_xis{$entry_xid} = { %xis_info };
+
 	my $xentry = xmlify($entry);
 	my $p_icount = $entry_freqs{$entry} || -1;
 	print "<entry xml:id=\"$xid\" n=\"$xentry\"";
@@ -259,7 +263,7 @@ foreach my $lang (sort keys %data) {
 	foreach my $sense (sort keys %{${$data{$lang}}{$entry}}) {
 	    my $pct = ipct($sense_freqs{$sense},$entry_freqs{$entry});
 	    $xid = next_xid();
-	    my %xis_info = xis($lang,$xid,$sense_freqs{$sense},$pct,@{$sense_sigrefs{$sense}});
+	    my %xis_info = xis($lang,$entry_xid,$xid,$sense_freqs{$sense},$pct,@{$sense_sigrefs{$sense}});
 	    my $p_icount = $sense_freqs{$sense} || -1;
 	    my $sense_no_norm = $sense;
 	    $sense_no_norm =~ s/\$.*$//;
@@ -278,7 +282,7 @@ foreach my $lang (sort keys %data) {
 		    foreach my $k (sort keys %{${$s_field_freqs{$sense}}{$f}}) {
 			my $pct = ipct(${${$s_field_freqs{$sense}}{$f}}{$k}, $sense_freqs{$sense});
 			$xid = next_xid();
-			%xis_info = xis($lang,$xid,${${$s_field_freqs{$sense}}{$f}}{$k},$pct,
+			%xis_info = xis($lang,$entry_xid,$xid,${${$s_field_freqs{$sense}}{$f}}{$k},$pct,
 					@{${${$s_field_insts{$sense}}{$f}}{$k}});
 			my $kn = $k;
 			$kn =~ s/^\%...://;
@@ -300,7 +304,7 @@ foreach my $lang (sort keys %data) {
 	    foreach my $sig (@{${${$data{$lang}}{$entry}}{$sense}}) {
 		my $ipct = ipct($$sig[2],$sense_freqs{$sense});
 		$xid = next_xid();
-		my %xis_info = xis($lang,$xid,$$sig[2],$ipct, $$sig[0]);
+		my %xis_info = xis($lang,$entry_xid,$xid,$$sig[2],$ipct, $$sig[0]);
 		my $psig = $cof_index{$$sig[0]} || $$sig[1];
 		my $xsig = xmlify($psig);
 		my $p_icount = $$sig[2] || -1;
@@ -329,7 +333,7 @@ foreach my $lang (sort keys %data) {
 	    print '</sense>';
 	}
 	print '</senses>';
-	print "<overview periods=\"$entry_periods\"/>";
+#	print "<overview periods=\"$entry_periods\"/>";
 	print '</entry>';
     }
 }
@@ -338,7 +342,7 @@ xis_dump_periods();
 print '</entries>';
 
 xis_rr();
-print XIS '</xis>'; close XIS;
+print XIS '</xisses>'; close XIS;
 close(G);
 
 open(M,">$dirname$header{'lang'}.map") 
@@ -495,6 +499,7 @@ compute_and_print_entry_data {
     my %freqs = ();
     my %insts = ();
     my %form_ids = ();
+    my $entry_xid = $entry_ids{$entry};
 
     foreach my $sense (keys %entry) {
 	foreach my $f (@sigfields) {
@@ -503,7 +508,7 @@ compute_and_print_entry_data {
 		    ${$freqs{$f}}{$k} += ${${$s_field_freqs{$sense}}{$f}}{$k};
 		    @{${$insts{$f}}{$k}}{@{${${$s_field_insts{$sense}}{$f}}{$k}}} = ();
 		    if ($f eq 'form') {
-			foreach my $fc (sort keys %{$form_cofs{"$entry_ids{$entry}\:$k"}}) {
+			foreach my $fc (sort keys %{$form_cofs{"$entry_xid\:$k"}}) {
 			    my $fkc .= "$k\:$fc";
 			    if (${${$s_field_freqs{$sense}}{'cof_norm'}}{$fkc}) {
 				${$freqs{'cof_norm'}}{$fkc} += ${${$s_field_freqs{$sense}}{'cof_norm'}}{$fkc};
@@ -527,7 +532,7 @@ compute_and_print_entry_data {
 		my $icount = ${$freqs{$f}}{$k};
 		my $ipct = ipct($icount, $entry_freqs{$entry});
 		my $xid = $pre_ids{$entry_ids{$entry},$f,$k} || next_xid();
-		my %xis_info = xis($lang,$xid,$icount,$ipct,@sigs);
+		my %xis_info = xis($lang,$entry_xid,$xid,$icount,$ipct,@sigs);
 
 		if (exists $gdlme{$f}) {
 		    my $gme = ' g:me="1"';
@@ -572,7 +577,7 @@ compute_and_print_entry_data {
 				$n = xmlify($n);
 				my $xid = next_xid();
 
-				my %xis_info = xis($lang,$xid,$xcount,$xpct,@xsigs);
+				my %xis_info = xis($lang,$entry_xid,$xid,$xcount,$xpct,@xsigs);
 				$form_ids{"$k\:$fc"} = $xid;
 				print "<cof-form-norm xml:id=\"$xid\" n=\"$n\"";
 				xis_attr(%xis_info);
@@ -603,7 +608,7 @@ compute_and_print_entry_data {
 			    my $freq = ${$norm_form_freqs{$normform}}{$f};
 			    $xid = next_xid();
 			    my $ipct = ipct($freq,$entry_freqs{$entry});
-			    my %xis_info = xis($lang,$xid,$freq,$ipct,@{$norm_form_insts{"$normform\:$f"}});
+			    my %xis_info = xis($lang,$entry_xid,$xid,$freq,$ipct,@{$norm_form_insts{"$normform\:$f"}});
 #			    if ($f =~ /\s/) {
 #				print "<f xml:id=\"$xid\" icount=\"$freq\" ipct=\"$ipct\" xis=\"$xrefid\">";
 #				foreach my $ff (split(/\s+/,$f)) {
@@ -755,43 +760,53 @@ sig_map {
 
 sub
 xis {
-    my($lang,$xid,$icount,$ipct,@refs) = @_;
+    my($lang,$entry_id,$xid,$icount,$ipct,@refs) = @_;
     my @xrefs = xis_refs(@refs);
     my %xis_info = ();
     @xis_info{'xid','icount','ipct'} = ($xid,$icount,$ipct);
     $xis_info{'p_icount'} = (defined($icount) ? $icount : -1);
-    $xrefid = $xrefs{join(' ',@xrefs)};
-    if (!defined($xrefid)) {
-	$xrefs{"@xrefs"} = $xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
-    }
-    $xis_info{'xrefid'} = $xrefid;
-    my @s = ORACC::L2GLO::Util::xis_stats($lang,@xrefs);
-    $xis_info{'periods'} = shift @s;
-    my $skey = join(':',@s);
-    if ($xis_periods{$skey}) {
-	$xis_info{'periods-id'} = $xis_periods{$skey};
+    
+#    $xrefid = $xrefs{"@xrefs")};
+#    if (!defined($xrefid)) {
+#	$xrefs{"@xrefs"} = $xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
+#    }
+    my $xis_pair = undef;
+    if (($xis_pair = $xrefs{"@xrefs"})) {
+	$xrefid = $$xis_pair[0];
     } else {
-	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
-	$xis_periods{$skey} = $curr_periods_id;
-	$xis_info{'periods-id'} = $curr_periods_id;
+	$xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
+	$xrefs{"@xrefs"} = [ $xrefid , $entry_id ];
     }
 
-    my @pct = ();
-    for (my $i = 0; $i <= $#s; ++$i) {
-	if ($s[$i]) {
-	    $pct[$i] = ipct($s[$i],$icount);
-	} else {
-	    $pct[$i] = 0;
-	}
-    }
-    my $pkey = join(':',@pct);
-    if ($xis_periods{$pkey}) {
-	$xis_info{'periods-pct-id'} = $xis_periods{$pkey};
-    } else {
-	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
-	$xis_periods{$pkey} = $curr_periods_id;
-	$xis_info{'periods-pct-id'} = $curr_periods_id;
-    }    
+    $xis_info{'xrefid'} = $xrefid;
+
+#    my @s = ORACC::L2GLO::Util::xis_stats($lang,@xrefs);
+#    $xis_info{'periods'} = shift @s;
+#    my $skey = join(':',@s);
+#    if ($xis_periods{$skey}) {
+#	$xis_info{'periods-id'} = $xis_periods{$skey};
+#    } else {
+#	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
+#	$xis_periods{$skey} = $curr_periods_id;
+#	$xis_info{'periods-id'} = $curr_periods_id;
+#   }
+
+#    my @pct = ();
+#    for (my $i = 0; $i <= $#s; ++$i) {
+#	if ($s[$i]) {
+#	    $pct[$i] = ipct($s[$i],$icount);
+#	} else {
+#	    $pct[$i] = 0;
+#	}
+#    }
+#    my $pkey = join(':',@pct);
+#    if ($xis_periods{$pkey}) {
+#	$xis_info{'periods-pct-id'} = $xis_periods{$pkey};
+#    } else {
+#	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
+#	$xis_periods{$pkey} = $curr_periods_id;
+#	$xis_info{'periods-pct-id'} = $curr_periods_id;
+#   }    
 
     ( %xis_info );
 }
@@ -800,7 +815,8 @@ sub
 xis_attr {
     my %xi = @_;
     $xi{'ipct'} = 0 unless $xi{'ipct'};
-    print " icount=\"$xi{'p_icount'}\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\" xis-periods=\"$xi{'periods-id'}\" xis-percents=\"$xi{'periods-pct-id'}\"";
+#    print " icount=\"$xi{'p_icount'}\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\" xis-periods=\"$xi{'periods-id'}\" xis-percents=\"$xi{'periods-pct-id'}\"";
+    print " icount=\"$xi{'p_icount'}\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\"";
 }
 
 sub
@@ -816,7 +832,11 @@ xis_dump_periods {
 sub
 xis_rr {
     foreach my $rr (sort { $xrefs{$a} cmp $xrefs{$b} } keys %xrefs) {
-	printf XIS "<xis xml:id=\"$xrefs{$rr}\">";
+	my $xispair = $xrefs{$rr};
+	my $xid = $$xispair[0];
+	my %exis = %{$entry_xis{$$xispair[1]}};
+	my $icount = $exis{'icount'} || 0;
+	printf XIS "<xis xml:id=\"$xid\" efreq=\"$icount\">";
 	foreach my $r (split(/\s+/,$rr)) {
 	    print XIS "<r>$r</r>";
 	}

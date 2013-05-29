@@ -3,9 +3,12 @@ use warnings; use strict; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use open 'utf8'; binmode STDERR, 'utf8';
 use ORACC::XML;
+use ORACC::NS;
 use Encode;
 use Fcntl;
 use NDBM_File;
+
+use constant { TOP=>0, SUB=>1 };
 
 # This database uses the value as the primary key, with extensions
 # to index homophones, containers, etc.  The value may be lower or
@@ -17,6 +20,7 @@ use NDBM_File;
 #  <lower>		sign value
 #  <lower>,h    	sign value homophones (gi1, gi2, gi3 etc.)
 #  <lower>,aka    	sign value aliases (ga2 => ja2 etc.)
+#  <lower>,forms    	sign forms (KA×GU, URU×GU etc.)
 #
 #  <upper>		sign name
 #  <upper>,uchar       	sign in Unicode/utf8
@@ -57,54 +61,9 @@ my $global_id = '';
 # first load up %values with the sign names and values
 foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 								 'sign')) {
-    next if $s->hasAttribute('deprecated') && $s->getAttribute('deprecated') eq '1';
-    my $type = $s->getAttribute('type');
-#    next unless $type eq 'normal' || $type eq 'numeric';
-    my $id = $s->getAttributeNS($xml_uri,'id');
-    my $sn = $s->getAttribute('n');
-    my $unode = ($s->getElementsByTagNameNS($sl_uri,'utf8'))[0];
-    my $ucode = $unode ? $unode->getAttribute("hex") : '';
-    my $uchar = $unode ? $unode->textContent() : '';
-    my $xsn = $sn;
-    $xsn =~ tr/|//d;
-    $values{$xsn} = $id;
-    $values{$id,'values'} = join(', ', map { $s->getAttribute('n') } tags($s,$sl_uri,'v'));
-    $values{$id,'ucode'} = $ucode if $ucode;
-    $values{$id,'uchar'} = $uchar if $uchar;
-    $values{$id,'name'} = $sn;
-    foreach my $l ($s->getElementsByTagNameNS($sl_uri,'list')) {
-	my $n = $l->getAttribute('n');
-	$values{$n} = $id;
-    }
-
-    foreach my $vnode ($s->getElementsByTagNameNS($sl_uri,'v')) {
-	my $v = $vnode->getAttribute('n');
-	$v =~ tr/?//d;
-	$v =~ s/\{.*?\}//g;
-	$values{$v} = $id;
-	# homophones: each value is a space-delimited string of IDs
-	#   strip off the digits
-	#   add the id to the entry $v,h
-	my $v_orig = $v;
-	$v =~ s/[₊₀-₉]*$//;
-	push @{$values{$v,'h'}}, [$id,$v_orig];
-    }
-    # add the num entries (e.g. REC144)
-    foreach my $numnode ($s->getElementsByTagNameNS($sl_uri,'list')) {
-	my $d = $numnode->getAttribute('n');
-	my $d_orig = $d;
-	$values{$d} = $id;
-	$d =~ s/\d+[a-z]*$//;
-	push @{$values{$d,'h'}}, [$id,$d_orig];
-    }
-}
-
-# now process the elements of composite signs
-foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
-								 'sign')) {
-    my $id = $s->getAttributeNS($xml_uri,'id');
-    foreach my $cg ($s->getElementsByTagNameNS($gdl_uri,'c')) {
-	add_comp($id,$cg);
+    my $parent_id = subsign($s,TOP,undef);
+    foreach my $f ($s->getElementsByTagNameNS($sl_uri,'form')) {
+	subsign($f,SUB,$parent_id);
     }
 }
 
@@ -125,10 +84,11 @@ dump_db();
 sub
 add_comp {
     my($id,$cg) = @_;
+#    warn "add_comp $id ", $cg->toString(), "\n";
     my $atf = $cg->getAttribute('form');
     $atf =~ tr/\|//d;
     $values{$atf} = $id;
-    $values{$id,'values'} = "|$atf|";
+#    push @{$values{$id,'values'}}, "|$atf|";
 #    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
     add_comp_children($cg,$id);
 }
@@ -219,20 +179,22 @@ dump_db {
     foreach my $k (keys %values) {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
-	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|aka|uchar|ucode|values)$/) {
+	# This first group is keys which have singleton values
+	if ($dbk =~ /(?:link|name|aka|uchar|ucode)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
 	} elsif ($dbk =~ /h$/) {
+	    # sort homophones
 	    my $str = hsort(@{$values{$k}});	    
 	    $db{$dbk} = $str;
-	    if ($k =~ /₊/) {
-		$k =~ s/h$//;
-	    }
+### WHAT WAS THIS SUPPOSED TO DO?
+#	    if ($k =~ /ₓ/) {
+#		$k =~ s/h$//;
+#	    }
 	} elsif ($dbk =~ //) {
 	    if (defined $values{$k}) {
-		use Data::Dumper; warn "dbk=$dbk\n"; warn Dumper $values{$k}; exit 1;
+#		use Data::Dumper; warn "dbk=$dbk\n"; warn Dumper $values{$k};
 		my $v = join(' ', sort uniq(@{$values{$k}}));
 		Encode::_utf8_off($v);
 		$db{$dbk} = $v;
@@ -284,9 +246,84 @@ vkey {
 	$num = 0;
     }
 
-    if ($v =~ /₊/) {
+    if ($v =~ /ₓ/) {
 	$num += 1000;
     }
 
     $num;
+}
+
+sub
+subsign {
+    my($node,$mode,$parent_id) = @_;
+
+    return if $node->hasAttribute('deprecated') && $node->getAttribute('deprecated') eq '1';
+
+    my $type = $node->getAttribute('type');
+#    next unless $type eq 'normal' || $type eq 'numeric';
+
+    my $id = $node->getAttributeNS($xml_uri,'id');
+    my $sn = $node->getAttribute('n');
+
+#    if ($parent_id) {
+#	warn "FORM: parent-id=$parent_id; form id=$id; sn=$sn\n";
+#    } else {
+#	warn "SIGN: id=$id; sn=$sn\n";
+#    }
+
+    my($ucode,$uchar) = ('','');
+    my @v = ();
+
+    if ($parent_id) {
+	my $var = $node->getAttribute('var');
+	warn "FORM $sn in SIGN $values{$parent_id,'name'} has no VAR attribute\n" unless $var;
+	push @{$values{$parent_id,'forms'}}, "$id/$var";
+    }
+
+    foreach my $c ($node->childNodes()) {
+	my $lname = $c->localName();
+
+	last if $lname eq 'form' && $mode == TOP;
+	if ($lname eq 'utf8') {
+	    $ucode = $c->getAttribute("hex");
+	    $uchar = $c->textContent();
+	} elsif ($lname eq 'list') {
+	    # add the num entries (e.g. REC144)
+	    my $n = $c->getAttribute('n');
+	    my $n_orig = $n;
+	    $values{$n} = $id;
+	    $n =~ s/\d+[a-z]*$//;
+	    push @{$values{$n,'h'}}, [$id,$n_orig];
+	} elsif ($lname eq 'v') {
+	    my $v = $c->getAttribute('n');
+	    $v =~ tr/?//d;
+	    $v =~ s/\{.*?\}//g;
+	    if ($values{$v}) {
+		### FIXME: THIS IS A TODO LIST ITEM IN OGSL
+#		warn "duplicate value in ogsl-sl.xml: $v occurs in $values{$values{$v},'name'} and $sn\n"
+#		    unless !defined($v) || !length($v) || $v  =~ /ₓ/ || $v =~ /\.\.\./;
+	    } else {
+		$values{$v} = $id;
+	    }
+	    push(@{$values{$id,'values'}}, $v) if $v;
+	    # homophones: each value is a space-delimited string of IDs
+	    #   strip off the digits
+	    #   add the id to the entry $v,h
+	    my $v_orig = $v;
+	    $v =~ s/[₊₀-₉]*$//;
+	    push @{$values{$v,'h'}}, [$id,$v_orig];
+	} elsif ($lname eq 'name') {
+	    foreach my $gc (tags($c,$GDL,'c')) {
+		add_comp($id,$gc);
+	    }
+	}
+    }
+    
+    my $xsn = $sn;
+    $xsn =~ tr/|//d;
+    $values{$xsn} = $id;
+    $values{$id,'ucode'} = $ucode if $ucode;
+    $values{$id,'uchar'} = $uchar if $uchar;
+    $values{$id,'name'} = $sn;
+    $id;
 }

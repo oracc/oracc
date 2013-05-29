@@ -13,7 +13,7 @@ AM_CFLAGS=-pedantic -g -Wall
 
 AM_LDFLAGS=-L/opt/local/lib
 
-bin_PROGRAMS=pgcsi pg pgu showcsi ptoqtest pd pg2
+bin_PROGRAMS=pgcsi pg pgu showcsi ptoqtest pd pg2 xisperiods
 
 pd.c: pd.c.in
 	$(ORACCIFY) pd.c.in
@@ -48,6 +48,10 @@ ptoqtest_SOURCES=ptoqtest.c ptoq.c
 ptoqtest_LDADD=@top_srcdir@/c/lib/liboracc.la -lgdbm
 
 showcsi_SOURCES=showcsi.c sortinfo.c
+
+xisperiods_SOURCES=xisperiods.c sortinfo.c sort.c redblack.c sicache.c \
+	debug.c
+xisperiods_LDADD = @top_srcdir@/c/lib/liboracc.la -lgdbm
 
 EXTRA_DIST=*.h sk_lookup.c pg_load.c
 

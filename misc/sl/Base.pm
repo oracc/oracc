@@ -59,6 +59,12 @@ xid {
     $db{$x};
 }
 sub
+xid_form {
+    my $x = shift;
+    Encode::_utf8_off($x);
+    $db{$x,'form'};
+}
+sub
 is_sign {
     my $x = shift;
     Encode::_utf8_off($x);
@@ -106,6 +112,49 @@ alias_words {
 	$res;
     }
 }
+
+sub
+cinit {
+    my $id = sign_of(xid($_[0]));
+    my $forms = $db{$id,'cinit'};
+    Encode::_utf8_on($forms);
+    ($forms);
+}
+
+sub
+contains {
+    my $id = sign_of(xid($_[0]));
+    my $forms = $db{$id,'contains'};
+    Encode::_utf8_on($forms);
+    ($forms);
+}
+
+sub
+contained {
+    my $id = sign_of(xid($_[0]));
+    my $forms = $db{$id,'contained'};
+    Encode::_utf8_on($forms);
+    ($forms);
+}
+
+sub
+forms {
+    my $id = xid($_[0]);
+    my $forms = $db{$id,'forms'};
+    Encode::_utf8_on($forms);
+    my @f = ();
+    my $sign = $db{$id,'name'};
+    Encode::_utf8_on($sign);
+    push @f, "var\t$sign";
+    foreach my $form (split(/\s+/,$forms)) {
+	my($f,$v) = ($form =~ m#(.*?)/(.*)$#);
+	my $n = $db{$f,'name'};
+	Encode::_utf8_on($n);
+	push @f, "$v\t$n";
+    }
+    @f;
+}
+
 sub
 homophones {
     my ($hlist,$alias) = ($db{$_[0],'h'}, $_[1]);
@@ -333,7 +382,9 @@ uchar {
 sub
 values {
     my $id = xid($_[0]);
-    ($db{$id,'values'});
+    my $v = $db{$id,'values'};
+    Encode::_utf8_on($v);
+    $v;
 }
 
 1;

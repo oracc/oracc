@@ -179,6 +179,16 @@ if ($sort) {
     my $xdoc = ORACC::L2GLO::Builtins::acd2xml($glofile,$clang||'sux',$title || 'Glossary',$title || 'Glossary');
     if ($check) {
 	#  on error we died in acd2xml
+	if ($glofile =~ /sux/) {
+	    if (-r '00src/sux.glo') {
+		$glofile =~ s/01bld/00src/;
+		$glofile =~ s/\.norm$//;		
+	    } else {
+		$glofile =~ s/01bld/00lib/;
+		$glofile =~ s/\.norm$//;
+	    }
+	    system 'cbdbases.plx', '-check', $glofile;
+	}
 	warn "Glossary $check OK\n";
 	exit 0;
     } elsif ($output) {

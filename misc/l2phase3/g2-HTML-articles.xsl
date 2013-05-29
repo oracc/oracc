@@ -527,7 +527,7 @@
 <xsl:template match="cbd:cont">
   <a class="icountu" 
      href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
-    <xsl:apply-templates/>
+    <xsl:value-of select="@n"/>
   </a>
 </xsl:template>
 
@@ -539,9 +539,7 @@
       <xsl:for-each select="*">
 	<span class="cont">
 	  <xsl:text>-</xsl:text>
-	    <xsl:call-template name="html-text">
-	      <xsl:with-param name="text" select="text()"/>
-	    </xsl:call-template>
+	  <xsl:value-of select="@n"/>
 	  <xsl:call-template name="instref"/>
 	</span>
 	<xsl:if test="not(position()=last())">
