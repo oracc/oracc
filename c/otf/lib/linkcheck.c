@@ -19,45 +19,66 @@ extern int sym_warning;
 static const char *
 scan_pair(const char *line)
 {
-  static char xidbuf[8];
-  int i = 1;
-  *xidbuf = *line++;
-  while (isdigit(*line) && i < 8)
-    xidbuf[i++] = *line++;
-  if (i == 7)
+  char *tokend = NULL, *colon = NULL, *pqid = NULL, *idstart;
+
+  tokend = line;
+  while (*tokend && !isspace(*tokend) && '=' != *tokend)
     {
-      xidbuf[7] = '\0';
-      if (*xidbuf == 'P')
+      if (':' == *tokend)
+	colon = tokend;
+      ++tokend;
+    }
+  
+  pqid = malloc((tokend - line) + 1);
+  strncpy(pqid, line, tokend - line);
+  pqid[tokend-line] = '\0';
+
+  if (colon)
+    idstart = pqid + (colon - line) + 1;
+  else
+    idstart = pqid;
+
+  if (*idstart == 'P')
+    {
+      if (check_and_register(idstart,0))
 	{
-	  if (check_and_register(xidbuf,0))
-	    return NULL;
-	}
-      while (isspace(*line))
-	++line;
-      if ('=' != *line || !isspace(line[1]))
-	{
-	  warning("malformed link: protocol: expected '= '");
-	  return NULL;
-	}
-      ++line;
-      while (isspace(*line))
-	++line;
-      if (*line)
-	{
-	  if (pnames && 'P' == *xidbuf)
-	    (void)check_pname(xidbuf,(const unsigned char *)line);
-	  return xidbuf;
-	}
-      else
-	{
-	  warning("malformed link: protocol: expected text name");
+	  free(pqid);
 	  return NULL;
 	}
     }
   else
     {
-      xidbuf[i] = '\0';
-      vwarning("%s: malformed ID in link: protocol", xidbuf);
+      if (*idstart != 'Q' && *idstart != 'X')
+	{
+	  warning("malformed link: protocol: expected PQX-ID");
+	  return NULL;
+	}
+    }
+
+  line = tokend;
+  while (isspace(*line))
+    ++line;
+
+  if ('=' != *line || !isspace(line[1]))
+    {
+      warning("malformed link: protocol: expected '= '");
+      return NULL;
+    }
+
+  ++line;
+  while (isspace(*line))
+    ++line;
+
+  if (*line)
+    {
+      if (pnames && 'P' == *idstart)
+	(void)check_pname(idstart,(const unsigned char *)line);
+
+      return pqid;
+    }
+  else
+    {
+      warning("malformed link: protocol: expected text name");
       return NULL;
     }
 }
