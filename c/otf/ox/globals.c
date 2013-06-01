@@ -15,6 +15,7 @@ FILE *f_graphemes = NULL;
 int cbd_lem_sigs = 0;
 int check_lem = 0;
 int fuzzy_aliasing = 0;
+int gdl_bootstrap = 0;
 int need_lemm = 0;
 int no_destfile = 0;
 int no_pi = 0;

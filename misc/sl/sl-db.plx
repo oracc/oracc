@@ -195,7 +195,7 @@ dump_db {
 	} elsif ($dbk =~ //) {
 	    if (defined $values{$k}) {
 #		use Data::Dumper; warn "dbk=$dbk\n"; warn Dumper $values{$k};
-		my $v = join(' ', sort uniq(@{$values{$k}}));
+		my $v = join(' ', sort uniq(grep(defined, @{$values{$k}})));
 		Encode::_utf8_off($v);
 		$db{$dbk} = $v;
 	    } else {

@@ -7,7 +7,7 @@ if [ "$webdir" == "" ]; then
     exit 1
 fi
 rm -fr $webdir/cbd ; mkdir -p $webdir/cbd
-g2c=`echo -n 01bld/*/*.g2c`
+g2c=`find 01bld/* -name '*.g2c'`
 if [ "$g2c" != "" ]; then
     for g2c in `ls 01bld/*/*.g2c` ; do
 	ldir=`dirname $g2c`

@@ -25,6 +25,7 @@ extern int cbd_err_line;
 extern int cbd_lem_sigs;
 extern int check_lem;
 extern int fuzzy_aliasing;
+extern int gdl_bootstrap;
 extern int lnum;
 extern int need_lemm;
 extern int no_destfile;

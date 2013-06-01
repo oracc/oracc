@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = sametlit.plx nsl-db.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh sl-se.plx sl-xml.plx slmanager.plx x.plx
+bin_SCRIPTS = sametlit.plx nsl-db.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh sl-se.plx sl-xml.plx slmanager.plx
 texdata_DATA = gslmac.tex
 scriptdata_DATA = gsl-TeX.xsl sl-HTML.xsl
 
@@ -20,5 +20,4 @@ EXTRA_DIST = \
 	sl-pdf.sh \
 	sl-se.plx \
 	sl-xml.plx \
-	slmanager.plx \
-	x.plx
+	slmanager.plx

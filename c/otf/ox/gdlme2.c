@@ -80,26 +80,13 @@ gdlme_eH(void *userData, const char *name)
     {
       unsigned char *gdlinput = (unsigned char *)charData_retrieve();
       struct node *res = NULL;
-#if 0
-      if (gdl_file)
-	{
-	  file = gdl_file;
-	  lnum = gdl_line;
-	}
-      else
-	{
-	  file = (char*)pi_file;
-	  lnum = pi_line;
-	}
-#else
       if (pi_file)
 	{
 	  file = (char*)pi_file;
 	  lnum = pi_line;
 	}
-#endif
       if (gdlme_debug)
-	fprintf(f_log, "%s:%d: gdlme processing `%s'\n",gdl_file, gdl_line, gdlinput);
+	fprintf(f_log, "%s:%d: gdlme processing `%s'\n", pi_file, pi_line, gdlinput);
 
       res = gdl(gdlinput, GDL_FRAG_OK);
       if (res && res->children.lastused)
@@ -109,7 +96,7 @@ gdlme_eH(void *userData, const char *name)
 	    serialize(res->children.nodes[i],0);
 	}
       else
-	fprintf(f_log,"%s:%d: conversion of '%s' failed\n", gdl_file, gdl_line, gdlinput);
+	fprintf(f_log,"%s:%d: conversion of '%s' failed\n", pi_file, pi_line, gdlinput);
       gdlme = 0;
     }
   else
@@ -126,7 +113,7 @@ main(int argc, char **argv)
 {
   const char *fname[2];
 
-  options(argc,argv,"cdgno:p:su");
+  options(argc,argv,"bcdgno:p:su");
 
   if (!stdin_input)
     {
@@ -195,6 +182,9 @@ int opts(int och,char *oarg)
 {
   switch (och)
     {
+    case 'b':
+      gdl_bootstrap = 1;
+      break;
     case 'c':
       cbd_rules = 1;
       backslash_is_formvar = 1;

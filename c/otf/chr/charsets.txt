@@ -266,14 +266,14 @@ T, Ṭ
 @end chars
 
 #Note that some characters need to be allowed in sux/g and n
-#for sign-names like REC107
+#for sign-names like REC107 and F for F(raction)₁ ...
 #Need to allow cdot for cbd bases which say, e.g., a-r·e
 #and degree for cbd bases like m°e
 #
 #FIXME: implement sux/m(orph) and remove ,:; from sux/g
 #
 @chars %sux/g
-@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNoOpPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙʾ;,:
+@allow aAbBCdDeEfFgGŋŊhHḫḪiIkKlLmMnNoOpPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙʾ;,:
 @nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°
 @trans
 j ŋ
@@ -317,7 +317,7 @@ T, Ṭ
 
 @chars %uga/a
 @allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
-@nokey ʾʿǵǴġĠḫḪḥḤṬṯ₀₁₂₃₄₅₆₇₈₉ₓ
+@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 s, ṣ
 S, Ṣ

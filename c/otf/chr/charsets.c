@@ -1,4 +1,4 @@
-#include <ctype128.h>
+#include <ctype.h>
 #include "warning.h"
 #include "atf.h"
 #include "charsets.h"
@@ -6100,6 +6100,7 @@ sux_g_val(wchar_t *w, ssize_t len)
         case 0x000b7:
         case 0x02089:
         case 0x00055:
+        case 0x00046:
         case 0x00072:
         case 0x0003a:
         case 0x02087:
@@ -6375,6 +6376,9 @@ sux_g_asc(wchar_t *w, ssize_t len)
         case 0x00055:
           append("U");
           break;
+        case 0x00046:
+          append("F");
+          break;
         case 0x00072:
           append("r");
           break;
@@ -6523,6 +6527,7 @@ struct charset_keys sux_g_keys[] =
     { "I"	, "I" },
     { "G"	, "G" },
     { "U"	, "U" },
+    { "F"	, "F" },
     { "r"	, "r" },
     { ":"	, ":" },
     { "x"	, "x" },

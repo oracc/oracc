@@ -1,7 +1,7 @@
 #!/bin/sh
 webdir=01bld/www
 project=`oraccopt`
-prjdir=${ORACC}/$project
+prjdir=${ORACC_HOME}/$project
 if [ ! -d $webdir ]; then
     echo o2-weblive.sh: no directory 01bld/www to make live
     exit 1

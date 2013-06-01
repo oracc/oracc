@@ -15,6 +15,7 @@ my $began_merging = 0;
 my $bstatus = 0;
 my $cbd = '';
 my $check = '';
+my $check_dups = 0;
 my $found_bases = 1;
 my $from_forms = 0;
 my %current_mergers = ();
@@ -26,6 +27,7 @@ GetOptions(
     "bases:s"=>\$bases,
     "cbd:s"=>\$cbd,
     "check:s"=>\$check,
+    "dups+"=>\$check_dups,
     "from-forms"=>\$from_forms,
     "rewrite"=>\$rewrite,
     "verbose"=>\$verbose,
@@ -89,7 +91,8 @@ check_bases {
     }
     foreach my $b_sig (sort keys %b_seen) {
 	if ($#{$b_seen{$b_sig}} > 0) {
-	    warn "$check:$.: $b_sig occurs as @{$b_seen{$b_sig}}\n";
+	    warn "$check:$.: $b_sig occurs as @{$b_seen{$b_sig}}\n" 
+		if $check_dups;
 	}
     }
 }

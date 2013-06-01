@@ -19,6 +19,7 @@
 
 extern int math_mode, saa_mode;
 extern int cuneify_fuzzy_allographs;
+extern int gdl_bootstrap;
 int do_signnames = 0;
 int backslash_is_formvar = 1;
 static struct npool *graphemes_pool;
@@ -662,6 +663,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  *g_end = '\0';
 	  if (curr_lang->signlist
 	      && '#' == *curr_lang->signlist
+	      && !gdl_bootstrap
 	      && !psl_is_sname(g_utf)
 	      && !psl_is_value(gcheck)
 	      && gcheck[len-1] != 'x')
@@ -1265,7 +1267,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		      return 1;
 		    }
 		  g = eptr+1;
-		  if ('@' == *g || '~' == *g)
+		  if (('@' == *g && (g[1] && !u_isupper(g+1) && '(' != g[1])) || '~' == *g)
 		    {
 		      mods = g;
 		      while ('@' == *g || '~' == *g)
