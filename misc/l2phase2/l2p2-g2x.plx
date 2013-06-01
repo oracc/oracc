@@ -7,6 +7,7 @@ use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::L2GLO::Util;
+use ORACC::SL::Base;
 use Getopt::Long;
 
 use constant {
@@ -21,6 +22,7 @@ my $baselang = '';
 my %compound_parts = ();
 my $curr_periods_int = 0;
 my %data = ();
+my $done = 0;
 my %entry_ids = ();
 my %entry_lines = ();
 my %entry_xis = ();
@@ -104,6 +106,8 @@ my %xrefs = ();
 my %xrefs_infos = ();
 
 my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdlme} = ();
+
+ORACC::SL::Base::init();
 
 $ORACC::L2GLO::Util::project = $project;
 
@@ -527,6 +531,11 @@ compute_and_print_entry_data {
     foreach my $f (@sigfields) {
 	if ($freqs{$f} || $with_zero_freqs) {
 	    print "<${f}s>";
+	    if ($f eq 'base') {
+		rewrite_bases(\%freqs, \%insts);
+#		%freqs = { %$nfreqs };
+#		%insts = { %$ninsts };
+	    }
 	    foreach my $k (sort keys %{$freqs{$f}}) {
 		my @sigs = sort keys %{${$insts{$f}}{$k}};
 		my $icount = ${$freqs{$f}}{$k};
@@ -656,6 +665,7 @@ compute_and_print_entry_data {
 sub
 ipct {
     my($amount,$total) = @_;
+    return 0 unless defined $amount && $total;
     if ($total) {
 	my $pct = 100 * ($amount/$total);
 	return int($pct+.5);
@@ -860,6 +870,52 @@ make_cof_norm {
     my $f = shift;
     my @norm = ($f =~ m/\$(\p{L}+)/g);
     join(' ', @norm);
+}
+
+sub
+rewrite_bases {
+    my($origf,$originst) = @_;
+    my %new_b = ();
+    my %new_i = ();
+#    use Data::Dumper;
+
+    return unless $$origf{'base'};
+
+    my %b = %{$$origf{'base'}};
+    my %i = %{$$originst{'base'}};
+
+#    warn "b=", Dumper(\%b);
+#    warn "i=", Dumper(\%i);
+
+    my %sig = ();
+    foreach my $b (keys %b) {
+	my $sig = ORACC::SL::Base::_signature(ORACC::SL::Base::tlitsplit($b));
+	push @{$sig{$sig}}, $b;
+    }
+ 
+#    warn "sigs=", Dumper(\%sig);
+
+    foreach my $s (keys %sig) {
+	my @b = @{$sig{$s}};
+	if ($#b > 0) {
+	    @b = sort { $b{$b} <=> $b{$a} } @b;
+	    for (my $i = 0; $i <= $#b; ++$i) {
+		$new_b{$b[0]} += $b{$b[$i]}; # total freqs
+		@{$new_i{$b[0]}}{keys %{$i{$b[$i]}}} = ();
+	    }
+	} else {
+	    $new_b{$b[0]} = $b{$b[0]};
+	    $new_i{$b[0]} = $i{$b[0]};
+	}
+    }
+
+#    warn "new_b=", Dumper(\%new_b);
+#    warn "new_i=", Dumper(\%new_i);
+
+#    exit 0 if ++$done == 10;
+
+    $$origf{'base'} = { %new_b };
+    $$originst{'base'} = { %new_i };
 }
 
 1;

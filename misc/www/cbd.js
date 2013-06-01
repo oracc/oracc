@@ -147,7 +147,7 @@ function showpage(url,win) {
 }
 
 function showarticle(url) {
-    cbdPopup('/epsd/epsd/'+url,'tocbrowser',300,500,0,0,1);
+    cbdPopup('/epsd2/cbd/sux/'+url,'tocbrowser',300,500,0,0,1);
 }
 
 function showsign(id) {

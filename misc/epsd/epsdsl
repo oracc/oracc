@@ -172,8 +172,8 @@ html_header {
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>PSL Results for $vcat</title>
 <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="/css/epsd2-cbd.css" />
-<script src="/js/epsd2-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
+<link rel="stylesheet" type="text/css" href="/epsd2/css/epsd2-cbd.css" />
+<script src="/epsd2/js/epsd2-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
 </head><body><h1 class="pslres">$vcat</h1>
 EOH
 

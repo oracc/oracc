@@ -41,8 +41,21 @@ icmp(const void *a,const void *b)
 static int
 pg_cmp(const void *a, const void *b)
 {
-  if (!sicache[(*((struct item**)a))->grp]
-      || !sicache[(*((struct item**)b))->grp])
+  if ((*((struct item**)a))->grp == -1
+      || (*((struct item**)b))->grp == -1)
+    {
+      if ((*((struct item**)a))->grp == -1)
+	{
+	  if ((*((struct item**)b))->grp == -1)
+	    return 0;
+	  else
+	    return -1;
+	}
+      else
+	return 1;
+    }
+  else if (!sicache[(*((struct item**)a))->grp]
+	   || !sicache[(*((struct item**)b))->grp])
     {
       if (!sicache[(*((struct item**)a))->grp])
 	{
