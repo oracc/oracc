@@ -10,12 +10,17 @@
 #include "runexpat.h"
 #include "sortinfo.h"
 #include "pg.h"
+#include "periodmap.h"
 
 const char *xis_uri = "http://oracc.org/ns/xis/1.0";
 const char *xisfile = NULL;
 FILE *xisfp = NULL;
 
 extern void pd_sort_cache(void);
+
+int period_index = 0;
+int pmap_counts[PCODE_MAX];
+int *pmaptab;
 
 const char *curr_ref = NULL;
 int percent = 0;
@@ -166,9 +171,12 @@ xis_dump(void)
 
   pd_sort_cache();
 
+  memset(pmap_counts, '\0', PCODE_MAX*sizeof(int));
+
   fprintf(xisfp, "<periods xml:id=\"%s.p\">", curr_ref);
   for (i = j = 0; i < sic_size; ++i)
     {
+      s4*sindex = sip->scodes + (sicache[i]->codes - sip->scodes);
       u4*pindex = sip->pindex + (sicache[i]->codes - sip->scodes);
       u4 poff = pindex[headfields[0]];
       int curr_group, init_j;
@@ -180,6 +188,8 @@ xis_dump(void)
 	;
       count = j - init_j;
 
+      pmap_counts[pmaptab[sindex[headfields[0]]]] += count;
+
       fprintf(xisfp, 
 	      "<p icount=\"%d\" ipct=\"%d\">%s</p>", 
 	      count, ipct(count,percent), (char*)&sip->pool[poff]);
@@ -188,9 +198,12 @@ xis_dump(void)
 	fputs("; ",stdout);
 #endif
     }
-  fprintf(xisfp, "</periods>");
+  fprintf(xisfp, "</periods><instbar xml:id=\"%s.i\">", curr_ref);
+  for (i = 0; i < PCODE_MAX; ++i) {
+    fprintf(xisfp, "<i>%d</i>", pmap_counts[i]);
+  }
+  fprintf(xisfp, "</instbar>");
 }
-
 
 static void
 sH(void *userData, const char *name, const char **atts)
@@ -241,7 +254,11 @@ set_keys(const char *s, int *nfields)
       if (isdigit(*t))
 	fields[nkeys] = atoi(t);
       else
-	fields[nkeys] = sk_lookup(t);
+	  fields[nkeys] = sk_lookup(t);
+
+      if (!strncmp(t,"period",6))
+	period_index = fields[nkeys];
+
       while (*t && ',' != *t)
 	++t;
       if (',' == *t)
@@ -250,6 +267,38 @@ set_keys(const char *s, int *nfields)
   *nfields = nkeys;
   fields[nkeys] = -1;
   return fields;
+}
+
+void
+create_pmap(void)
+{
+  int i, val_max = -1;
+
+  for (i = 0; i < sip->nmember; ++i)
+    {
+      int mindex = (i * sip->nfields)+period_index;
+      if (sip->scodes[mindex] > val_max)
+	val_max = sip->scodes[mindex];
+    }
+
+  pmaptab = calloc((1+val_max), sizeof(int));
+
+  for (i = 0; i < sip->nmember; ++i)
+    {
+      int mindex = (i * sip->nfields)+period_index;
+      struct periodmap *pm = periodmap((char*)&sip->pool[sip->pindex[mindex]],
+				       strlen((char*)&sip->pool[sip->pindex[mindex]]));
+      if (0)
+	printf("%d=%s=%d\n", 
+	       sip->scodes[mindex], 
+	       &sip->pool[sip->pindex[mindex]],
+	       pm ? pm->p : -1);
+      else if (!pm)
+	fprintf(stderr, "xisperiods: no entry for '%s' in periodmap\n", &sip->pool[sip->pindex[mindex]]);
+
+      if (!pmaptab[sip->scodes[mindex]])
+	pmaptab[sip->scodes[mindex]] = pm->p;
+    }
 }
 
 int
@@ -282,6 +331,9 @@ main(int argc, char **argv)
   
   if (heading_keys)
     headfields = set_keys(heading_keys, &nheadfields);
+
+  /* must do set_keys first because that sets period_index */
+  create_pmap();
 
   fprintf(xisfp, "<xis-periods xmlns=\"%s\" xmlns:xis=\"%s\">", xis_uri, xis_uri);
 

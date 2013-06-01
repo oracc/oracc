@@ -1,4 +1,5 @@
 #!/bin/sh
+project=`oraccopt`
 
 function g2x {
     echo creating $ldir/$l.g2x from $ldir/union.sig
@@ -8,8 +9,10 @@ function g2x {
     else
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
+    xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
     if [ -s $ldir/$l.map ]; then
 	l2p2-g2c.plx $l
+	export ORACC_HOME
 	l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
     else
 	echo Glossary $l is empty.  Exterminate.
@@ -48,6 +51,7 @@ if [ "$super" = "" ]; then
 	fi
 	echo creating $ldir/$l.g2x from $ldir/union.sig
 	l2p2-g2x.plx -h $ldir/union.sig
+	xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
 	if [ -s $ldir/$l.map ]; then
 	    l2p2-g2c.plx $l
 	    l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
@@ -62,4 +66,12 @@ else
 	l=`basename $ldir`
 	g2x $ldir $l
     done
+fi
+usages=`oraccopt . cbd-usages`
+if [ "$usages" = "yes" ]; then
+    if [ "$project" = "epsd2"; then
+	00bin/usages.sh
+    else
+	echo l2p2.sh: "cbd-usages only works with epsd2 at the moment--tell Steve to fix this!"
+    fi
 fi

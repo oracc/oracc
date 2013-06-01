@@ -131,7 +131,7 @@ augment {
 			unless $ignore_errors;
 		}
 	    }
-	    my @equiv = tags($anode, $CBD, 'equiv');
+	    my @equiv = tags($anode, $CBD, 'equivs');
 	    if ($#equiv >= 0) {
 		foreach my $n (@equiv) {
 		    $enode->appendChild($n);

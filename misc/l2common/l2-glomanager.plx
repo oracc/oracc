@@ -115,7 +115,7 @@ if ($cbd_post_process && !$clang) {
     }
 }
 
-$projectDir = $project;
+my $projectPath = "$ENV{'ORACC_HOME'}/$project";
 
 $output =~ s/glo\.normcbd/cbd/ if $output;
 
@@ -227,7 +227,8 @@ unless ($abbrev) {
 if ($config) {
     my $ret = ORACC::XCF::Util::load($config,0,
 				   abbrev=>$abbrev,
-				   basename=>$projectDir,
+				   basename=>$project,
+				   projectDir=>$projectPath,
 				   cbdlang=>$clang,
 				   mnglang=>$mlang,
 				   title=>$title,
@@ -380,7 +381,7 @@ setprojparm {
     }
     $project_params{'dateversion'} = "'${$cfg{'dateversion'}}[0]'";
     $project_params{'project'} = "'$project'";
-    $project_params{'projectDir'} = "'$projectDir'";
+    $project_params{'projectDir'} = "'$projectPath'";
     $project_params{'lang'} = "'$clang'";
     $project_params{'abbrev'} = "'$abbrev'";
 

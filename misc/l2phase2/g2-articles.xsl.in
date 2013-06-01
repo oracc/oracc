@@ -88,25 +88,9 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="cbd:equiv">
+<xsl:template match="cbd:equivs">
 <!--  <xsl:variable name="id" select="@epad:external-id"/> -->
-  <xsl:copy>
-    <xsl:copy-of select="@*"/>
-    <xsl:variable name="mng">
-<!--
-      <xsl:for-each 
-       	    select="document('/usr/local//projects/epad/cbd/epad.cbd')">
-        <xsl:value-of select="id($id)/cbd:sense/cbd:meaning"/>
-      </xsl:for-each>
- -->
-    </xsl:variable> 
-    <term>
-      <xsl:value-of select="text()"/>
-    </term>
-    <mean>
-       <xsl:value-of select="$mng"/>
-    </mean>
-  </xsl:copy>
+  <xsl:copy-of select="."/>
 </xsl:template>
 
 <xsl:template match="cbd:phon|cbd:t|cbd:bff|cbd:bff-listings">

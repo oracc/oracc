@@ -7,6 +7,9 @@
 
 include ../../../oracc-am-rules.txt
 
+.g.c:
+	gperf -N `basename $*` -tT $< >$@
+
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse -I/opt/local/include
 
 AM_CFLAGS=-pedantic -g -Wall
@@ -50,7 +53,8 @@ ptoqtest_LDADD=@top_srcdir@/c/lib/liboracc.la -lgdbm
 showcsi_SOURCES=showcsi.c sortinfo.c
 
 xisperiods_SOURCES=xisperiods.c sortinfo.c sort.c redblack.c sicache.c \
-	debug.c
+	debug.c periodmap.c
+
 xisperiods_LDADD = @top_srcdir@/c/lib/liboracc.la -lgdbm
 
 EXTRA_DIST=*.h sk_lookup.c pg_load.c

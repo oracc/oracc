@@ -10,11 +10,11 @@
   xmlns:i="http://oracc.org/ns/instances/1.0"
   xmlns:xcl="http://oracc.org/ns/xcl/1.0"
   xmlns:norm="http://oracc.org/ns/norm/1.0"
-  xmlns:stt="http://oracc.org/ns/stats/1.0"
+  xmlns:usg="http://oracc.org/ns/usg/1.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   extension-element-prefixes="ex"
-  exclude-result-prefixes="cbd dc ex g i xl stt norm xcl">
+  exclude-result-prefixes="cbd dc ex g i xl norm xcl usg">
 
 <xsl:import href="html-standard.xsl"/>
 <xsl:import href="g2-gdl-HTML.xsl"/>
@@ -23,7 +23,10 @@
 
 <xsl:param name="basename"/>
 <xsl:param name="project"/>
+<xsl:param name="projectDir"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
+
+<xsl:variable name="periods-xis" select="concat('/usr/local/oracc/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
 
 <xsl:variable name="config-file" select="concat('/usr/local/oracc/xml/',$project,'/config.xml')"/>
 
@@ -198,6 +201,9 @@
   </xsl:if>
 
   <xsl:apply-templates select="cbd:senses"/>
+
+  <xsl:apply-templates select="cbd:usages"/>
+
   <xsl:apply-templates select="cbd:bib"/>
 
 <!--
@@ -722,7 +728,9 @@
 	  <tr>
 	    <th class="ovcorner"></th>
 	    <th class="ovyear" title="Proto-Cuneiform">PC</th>
-	    <th class="ovyear" title="Early Dynastic">ED</th>
+	    <th class="ovyear" title="Early Dynastic">ED IIIa</th>
+	    <th class="ovyear" title="Early Dynastic">ED IIIb</th>
+	    <th class="ovyear" title="Early Dynastic">Ebla</th>
 	    <th class="ovyear" title="Old Akkadian">OAkk</th>
 	    <th class="ovyear" title="Lagash II">Lag II</th>
 	    <th class="ovyear" title="Ur III">Ur III</th>
@@ -731,14 +739,13 @@
 	    <th class="ovyear">(unknown)</th>
 	  </tr>
 	</thead>
-	<xsl:for-each select="../cbd:bases/*">
+	<xsl:for-each select="*">
 	  <tr>
 	    <xsl:if test="not(position() mod 2)">
 	      <xsl:attribute name="class">even</xsl:attribute>
 	    </xsl:if>
-	    <xsl:variable name="og" select="id(@ref)"/>
 	    <xsl:choose>
-	      <xsl:when test="$og/@icount>0">
+	      <xsl:when test="@icount>0">
 		<td class="ovindex">
 		  <xsl:call-template name="instref">
 		    <xsl:with-param name="content" select="concat('[',position(),']')"/>
@@ -759,11 +766,15 @@
 		<td class="ovindex">[<xsl:value-of select="position()"/>]</td>
 	      </xsl:otherwise>
 	    </xsl:choose>
-	    <xsl:for-each select="cbd:periods/*">
-	      <td class="ovfreq">
-		<xsl:variable name="total" select="sum(*/@icount)"/>
-		<xsl:if test="$total>0"><xsl:value-of select="$total"/></xsl:if>
-	      </td>
+	    <xsl:variable name="i-id" select="concat(@xis,'.i')"/>
+<!--	    <xsl:message>i-id=<xsl:value-of select="$i-id"/>; periods-xis=<xsl:value-of select="$periods-xis"/></xsl:message> -->
+	    <xsl:for-each select="document($periods-xis)">
+<!--	      <xsl:message>looking for id in <xsl:value-of select="$periods-xis"/>; id function=<xsl:value-of select="id($i-id)"/></xsl:message> -->
+	      <xsl:for-each select="id($i-id)/*">
+		<td class="ovfreq">
+		  <xsl:if test=".>0"><xsl:value-of select="."/></xsl:if>
+		</td>
+	      </xsl:for-each>
 	    </xsl:for-each>
 	  </tr>
       </xsl:for-each>
@@ -828,6 +839,37 @@
 </xsl:template>
 
 <xsl:template match="cbd:usages">
+  <xsl:if test="*">
+    <div class="usages">
+      <xsl:apply-templates/>
+    </div>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="usg:usage">
+  <xsl:variable name="inst-content">
+    <xsl:for-each select="usg:cfs/*">
+      <xsl:value-of select="."/>
+      <xsl:if test="not(position()=last())">
+	<xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+  <p class="usolo">
+    <xsl:call-template name="instref">
+      <xsl:with-param name="content" select="$inst-content"/>
+    </xsl:call-template>  
+    <xsl:if test="*/*/usg:trans">
+      <xsl:text> = "</xsl:text>
+      <xsl:for-each select=".//usg:trans[1]">
+	<xsl:apply-templates/>
+      </xsl:for-each>
+      <xsl:text>"</xsl:text>
+    </xsl:if>
+  </p>
+</xsl:template>
+
+<xsl:template match="cbd:xusages">
   <div class="usages">
     <xsl:for-each select="cbd:u0">
       <p class="usolo">
@@ -925,7 +967,7 @@
 	</xsl:call-template>
  -->
       </h3>
-      <xsl:apply-templates select="cbd:usages"/>
+<!--      <xsl:apply-templates select="cbd:usages"/> -->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
