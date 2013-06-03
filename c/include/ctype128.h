@@ -10,6 +10,13 @@
 #define ORACC_isspace(c) (((unsigned)(c))<128&&isspace(((unsigned)(c))))
 #define ORACC_isupper(c) (((unsigned)(c))<128&&isupper(((unsigned)(c))))
 
+#undef isalnum
+#undef isalpha
+#undef isdigit
+#undef islower
+#undef isspace
+#undef isupper
+
 #define isalnum(c) ORACC_isalnum(c)
 #define isalpha(c) ORACC_isalpha(c)
 #define isdigit(c) ORACC_isdigit(c)

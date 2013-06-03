@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdarg.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -111,11 +112,11 @@ find_project(char *script_url)
     {
       int ok = 0;
       sprintf(buf,"%s%s",xmlroot,script_url);
-      ok = (!stat(buf,&st_buf) && (st_buf.st_mode & S_IFDIR));
+      ok = (!stat(buf,&st_buf) && (S_ISDIR(st_buf.st_mode)));
       if (!ok)
 	{
 	  sprintf(buf,"%s%s",oodroot,script_url);
-	  ok = (!stat(buf,&st_buf) && (st_buf.st_mode & S_IFDIR));
+	  ok = (!stat(buf,&st_buf) && (S_ISDIR(st_buf.st_mode)));
 	}
       if (ok)
 	{

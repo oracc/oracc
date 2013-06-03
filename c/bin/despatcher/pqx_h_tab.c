@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.4 */
+/* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N pqx_h_tab -tT pqx_h_tab.g  */
 /* Computed positions: -k'1,10' */
 
@@ -105,7 +105,7 @@ hash (str, len)
 
 #ifdef __GNUC__
 __inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+#ifdef __GNUC_STDC_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif

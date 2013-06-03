@@ -17,7 +17,7 @@ noinst_LTLIBRARIES=libestraier.la
 
 libestraier_la_SOURCES = estraier.c estmtdb.c estnode.c md5.c
 
-x_LDADD = -liconv -lestraier -lqdbm -lm -lz
+x_LDADD = -lestraier -lqdbm -lm -lz
 
 AM_CPPFLAGS = -I/usr/local/include -I/usr/include/qdbm @QDBMINCLUDE@
 
