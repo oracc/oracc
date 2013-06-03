@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave-full.sh projsave-incr.sh allprojatf.sh allprojlist.sh backup-list.plx grepatf.sh oraccenv.sh proj-backup-list.plx projbackup.sh projlist-depth-first.plx projpublic.sh projsave-sub.sh projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh
+bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave-full.sh projsave-incr.sh allprojatf.sh allprojlist.sh backup-list.plx grepatf.sh oraccenv.sh proj-backup-list.plx projbackup.sh projlist-depth-first.plx projpublic.sh projsave-sub.sh projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh oracc-project-data.sh oracc-project-runtime.sh
 
 data_DATA = usermode.xml
 
