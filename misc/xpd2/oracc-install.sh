@@ -6,7 +6,7 @@ if [ "$project" == "" ]; then
 fi
 mode=$ORACC_MODE
 if [ -x $ORACC/bin/oracc-install-$mode.sh ]; then
-    oracc-install$mode.sh $project
+    oracc-install-$mode.sh $project
 else
     echo oracc-install.sh: no installation procedure for mode=$mode
     exit 1
