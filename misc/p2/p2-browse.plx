@@ -53,6 +53,7 @@ unless ($xdata) {
 #use Data::Dumper; warn Dumper(\%values);
 
 my $browse_list = '';
+my $no_cp = 0;
 if ($values{'glossary'} && $values{'glossary'} ne '#none') {
     ORACC::P2::Util2::set_data($xdata,'glossary',$values{'glossary'});
 } elsif ($values{'xis-id'}) {
@@ -74,9 +75,14 @@ if ($values{'glossary'} && $values{'glossary'} ne '#none') {
 	$browse_list = $values{'browse-list'};
     } else {
 	$browse_list = "$oracc/www/$values{'project'}/lists/$values{'browse-list'}";
+	unless (-r $browse_list) {
+	    xsystem('/usr/local/oracc/bin/se', '-o', "$tmpdir/results.lst", "#$values{'project'}", '!cat', $values{'browse-list'});
+	    $no_cp = 1;
+	}
     }
     if (-s $browse_list) {
-	xsystem('cp', $browse_list, "$tmpdir/results.lst");
+	xsystem('cp', $browse_list, "$tmpdir/results.lst")
+	    unless $no_cp;
     } else {
 	xsystem('touch', "$tmpdir/results.lst");
     }

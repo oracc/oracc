@@ -69,7 +69,7 @@ else
 fi
 usages=`oraccopt . cbd-usages`
 if [ "$usages" = "yes" ]; then
-    if [ "$project" = "epsd2"; then
+    if [ "$project" = "epsd2" ]; then
 	00bin/usages.sh
     else
 	echo l2p2.sh: "cbd-usages only works with epsd2 at the moment--tell Steve to fix this!"
