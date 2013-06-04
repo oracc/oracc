@@ -455,3 +455,7 @@ doc/user/index.xml
 c/bin/lemmer/.gdbinit
 
 c/bin/pg/xisperiods
+
+misc/epsd/db-undump.plx
+
+misc/epsd/db-undump.plx.in

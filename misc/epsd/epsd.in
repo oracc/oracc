@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict;
-use lib '/usr/local/oracc/lib';
+use lib '@@ORACC@@/lib';
 use ORACC::SE::Compiler;
 use ORACC::SE::Evaluator;
 use ORACC::SE::Display;

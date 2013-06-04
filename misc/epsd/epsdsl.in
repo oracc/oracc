@@ -4,7 +4,7 @@ use Encode; use utf8;
 use NDBM_File; use Fcntl;
 use open 'utf8'; binmode STDOUT, 'utf8';
 use CGI;
-use lib '/usr/local/oracc/lib';
+use lib '@@ORACC@@/lib';
 use ORACC::ATF::Unicode;
 
 my $q = new CGI;
