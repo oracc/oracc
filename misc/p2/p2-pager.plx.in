@@ -517,7 +517,7 @@ run_content_maker {
 	xsystem("cat $tmpdir/pgwrap.out | @@ORACC@@/bin/ce_xtf $ce_arg -p $values{'project'} | @@ORACC@@/bin/s2-ce_trim.plx >$tmpdir/content.xml");
 	xsystem('xsltproc', '-stringparam', 'project', $values{'project'}, @offset_param, '-o', "$tmpdir/results.html", '@@ORACC@@/lib/scripts/s2-ce-xtf-HTML.xsl', "$tmpdir/content.xml");
     } elsif ($list_type eq 'cat' || $list_type eq 'tra') {
-	my $link_fields = `oraccopt $values{'project'} catalog-link-fields`;
+	my $link_fields = `@@ORACC@@/bin/oraccopt $values{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
 	xsystem("cat $tmpdir/pgwrap.out | @@ORACC@@/bin/ce2 $lfopt -S$values{'state'} @offset_arg -i$list_type -p $values{'project'} >$tmpdir/content.xml");

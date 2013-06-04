@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$ORACC_MODE" != "single" ]; then
+if [ "$ORACC_MODE" = "multi" ]; then
     oraccid=`id -u oracc`
     if [ "$EUID" != "$oraccid" ]; then
 	echo aggregation can only be done by the 'oracc' user
