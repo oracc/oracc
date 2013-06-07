@@ -8,10 +8,11 @@ use Encode;
 my $q = new CGI;
 my $p = $q->Vars;
 my $n = $p->{'n'};
+my $hits_str = '';
 my $index = $p->{'x'};
 my $query = decode utf8=>$p->{'k1'};
 my $reqpage = $p->{'p'};
-my $project = $p->{'project'};
+my $project = $p->{'project'} || 'epsd2';
 my $pagesize = 25;
 
 my $thispage = $reqpage || 1;
@@ -23,11 +24,35 @@ if ($#res == 0) {
     print $q->redirect("/epsd2/cbd/sux/$res[0]");
     exit 0;
 } else {
-    my $hits = $#res + 1;
-    @res = @res[($thispage-1)*25 .. $thispage*25];
-    open(CE, "|/usr/local/oracc/bin/ce2 -p epsd2 -i cbd/sux -x");
-    print CE join("\n", @res);
-    close(CE);
+    if ($#res) {
+	my $hits = $#res + 1;
+	if ($hits == 1) {
+	    $hits_str = "1 hit";
+	} else {
+	    $hits_str = "$hits hits";
+	}
+	my $prev_page = 0;
+	my $next_page = 0;
+	my $prev_param = '';
+	my $next_param = '';
+	if ($thispage > 1) {
+	    $prev_page = $thispage - 1;
+	    $prev_param = "-stringparam prev-page $prev_page";
+	}
+	my $lastpage = int(($hits / $pagesize));
+	if ($thispage < ($hits / $pagesize)) {
+	    $next_page = $thispage + 1;
+	    $next_param = "-stringparam next-page $next_page";
+	}
+	my $page_of_page = "$thispage/$lastpage";
+	@res = @res[($thispage-1)*25 .. $thispage*25];
+	print "Content-type: text/html; charset=utf-8\n\n";
+	open(CE, "|/usr/local/oracc/bin/ce2 -p epsd2 -i cbd/sux -x|xsltproc -stringparam page-of-page $page_of_page -stringparam hits '$hits_str' -stringparam query '$query' $prev_param $next_param /usr/local/oracc/lib/scripts/epsdse.xsl -");
+	print CE join("\n", @res);
+	close(CE);
+    } else {
+	
+    }
 }
 
 1;

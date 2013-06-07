@@ -11,7 +11,6 @@
     version="1.0">
 
 <xsl:import href="html-standard.xsl"/>
-<xsl:import href="gdl-HTML.xsl"/>
 
 <xsl:param name="hits"/>
 <xsl:param name="query"/>
@@ -22,7 +21,7 @@
 <xsl:template match="ce:ce">
   <xsl:call-template name="make-html">
     <xsl:with-param name="title" select="'ePSD2'"/>
-    <xsl:with-param name="project" select="epsd2'"/>
+    <xsl:with-param name="project" select="'epsd2'"/>
     <xsl:with-param name="webtype" select="'cbd'"/>
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>
@@ -40,7 +39,7 @@
 	  <span class="arrow">&#xAB;</span>
 	</a>
       </xsl:if>
-      <xsl:value-of select="$page-of-page/>
+      <xsl:value-of select="$page-of-page"/>
       <xsl:if test="string-length($next-page) > 0">
 	<a href="/cgi-bin/epsdse?p={$next-page}&amp;k1={$query}">
 	  <span class="arrow">&#xBB;</span>
@@ -48,16 +47,22 @@
       </xsl:if>
     </p>
   </div>
-  <xsl:for-each select="ce:data/*">
-    <xsl:apply-templates mode="htmlify" select="."/>
+  <xsl:for-each select="ce:data">
+    <xsl:apply-templates mode="htmlify"/>
   </xsl:for-each>
 </xsl:template>
 
-<xsl:template match="*">
+<xsl:template mode="htmlify" match="*">
   <xsl:element name="{local-name(.)}">
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates mode="htmlify"/>
   </xsl:element>
 </xsl:template>
+
+<xsl:template mode="htmlify" match="text()">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="text()"/>
 
 </xsl:transform>
