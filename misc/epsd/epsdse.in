@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::SE::Display;
+use CGI qw/:cgi/;
+use Encode;
+
+my $q = new CGI;
+my $p = $q->Vars;
+my $n = $p->{'n'};
+my $index = $p->{'x'};
+my $query = decode utf8=>$p->{'k1'};
+my $reqpage = $p->{'p'};
+my $project = $p->{'project'};
+my $pagesize = 25;
+
+my $thispage = $reqpage || 1;
+
+my $se = 'epsd-se';
+my @res = `@@ORACC@@/bin/se \#epsd2 \!cbd/sux $query`;
+
+if ($#res == 0) {
+    print $q->redirect("/epsd2/cbd/sux/$res[0]");
+    exit 0;
+} else {
+    if ($#res) {
+	my $hits = $#res + 1;
+	if ($hits == 1) {
+	    $hits = "1 hit";
+	} else {
+	    $hits = "$hits hits";
+	}
+	my $prev_page = 0;
+	my $next_page = 0;
+	my $prev_param = '';
+	my $next_param = '';
+	if ($p > 1) {
+	    $prev_page = $p - 1;
+	    $prev_param = "-stringparam prev-page $prev_page";
+	}
+	if ($p < ($hits / $pagesize)) {
+	    $next_page = $p + 1;
+	    $next_param = "-stringparam next-page $next_page";
+	}
+	
+	@res = @res[($thispage-1)*25 .. $thispage*25];
+	print "Content-type: text/html; charset=utf-8\n\n";
+	open(CE, "|@@ORACC@@/bin/ce2 -p epsd2 -i cbd/sux -x|xsltproc -stringparam hits $hits -stringparam query '$query' $prev_param $next_param @@ORACC@@/lib/scripts/epsdse.xsl -");
+	print CE join("\n", @res);
+	close(CE);
+    } else {
+	
+    }
+}
+
+1;

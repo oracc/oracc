@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '/usr/local/oracc/lib';
+use ORACC::SE::Display;
+use CGI qw/:cgi/;
+use Encode;
+
+my $q = new CGI;
+my $p = $q->Vars;
+my $n = $p->{'n'};
+my $index = $p->{'x'};
+my $query = decode utf8=>$p->{'k1'};
+my $reqpage = $p->{'p'};
+my $project = $p->{'project'};
+my $pagesize = 25;
+
+my $thispage = $reqpage || 1;
+
+my $se = 'epsd-se';
+my @res = `/usr/local/oracc/bin/se \#epsd2 \!cbd/sux $query`;
+
+if ($#res == 0) {
+    print $q->redirect("/epsd2/cbd/sux/$res[0]");
+    exit 0;
+} else {
+    my $hits = $#res + 1;
+    @res = @res[($thispage-1)*25 .. $thispage*25];
+    open(CE, "|/usr/local/oracc/bin/ce2 -p epsd2 -i cbd/sux -x");
+    print CE join("\n", @res);
+    close(CE);
+}
+
+1;
