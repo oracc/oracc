@@ -150,8 +150,17 @@ function showarticle(url) {
     cbdPopup('/epsd2/cbd/sux/'+url,'tocbrowser',300,500,0,0,1);
 }
 
-function showsign(id) {
+function xshowsign(id) {
     window.location = '/'+'epsd'+'/psl/html/brief/'+id+'.html';
+}
+
+function showsign(project,id) {
+    if (project === "epsd2") {
+	window.location = '/epsd2/ogsl/brief/'+id+'.html';
+    } else {
+	url = '/ogsl/signs/'+id+'.html';
+	document.getElementById('signframe').src = url;
+    }
 }
 
 function pcslletter(url) {

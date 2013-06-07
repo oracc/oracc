@@ -25,7 +25,13 @@ AM_CFLAGS=-pedantic -ansi -Wall -g
 
 AM_LDFLAGS=-L/opt/local/lib
 
-bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2
+bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
+
+sl_SOURCES=sl.c
+sl_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+sl_index_SOURCES=sl-index.c
+sl_index_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 ce2_SOURCES=ce2.c ce_xmd2.c selib.c p2.c
 ce2_LDADD=@top_srcdir@/c/lib/liboracc.la

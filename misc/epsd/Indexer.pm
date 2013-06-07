@@ -23,7 +23,7 @@ my @unit_bases = ();
 
 sub
 index {
-    my($name,$title,$xid,$uses_graphemes,$fields,$atf,$mgroup,$mrec) = @_;
+    my($name,$title,$xid,$uses_graphemes,$fields,$atf,$mgroup,$mrec,$use_grep,$all) = @_;
     my %index = ();
     $index{'#name'} = $name;
     $index{'#title'} = $title;
@@ -40,6 +40,8 @@ index {
 	    push @unit_bases, $i * 32;
 	}
     }
+    $index{'#use_grep'} = ($use_grep || 0);
+    $index{'#all_keys'} = ($all || 0);
     $index{'#atf_fields'} = join(':','',@$atf,'');
     $index{'#max_group'} = $mgroup;
     $index{'#max_record'} = $mrec;

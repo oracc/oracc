@@ -57,9 +57,11 @@
 	<script src="/js/p2-shortcuts.js" type="text/javascript">
 	  <xsl:text> </xsl:text>
 	</script>
+<!--
 	<script src="/js/p2-keys.js" type="text/javascript">
 	  <xsl:text> </xsl:text>
 	</script>
+ -->
       </xsl:if>
       <xsl:if test="not(document('/usr/local/oracc/lib/data/usermode.xml')/*/text() = 'single')">
 <script type="text/javascript">
@@ -78,6 +80,7 @@
       </xsl:if>
     </head>
     <body>
+<!--
       <xsl:if test="$p2 = 'yes'">
 	<xsl:choose>
 	  <xsl:when test="string-length($onload)>0">
@@ -90,6 +93,7 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:if>
+ -->
       <xsl:if test="$standalone">
 	<xsl:attribute name="class"><xsl:text>standalone</xsl:text></xsl:attribute>
       </xsl:if>

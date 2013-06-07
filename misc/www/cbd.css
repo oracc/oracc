@@ -1,3 +1,6 @@
+body { margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0;
+       padding: 0;
+}
 /*
 body { width: 99%; margin-left: auto; margin-right: auto; 
 	margin-top: 0pt; margin-bottom: 0pt;
@@ -493,21 +496,21 @@ p.periods { padding-top: 0px; margin-top: .5em;
 }
 
 p.forms { padding-top: 0px; margin-top: .5em; 
-           padding-bottom: 0px; margin-bottom: 0px;
-	   margin-left: 3em; text-indent: -3em;
+          padding-bottom: 0px; margin-bottom: 0px;
+	  margin-left: 3em; text-indent: -3em;
 }
 
 p.norms { padding-top: 0px; margin-top: .5em; 
-	   margin-left: 4em; text-indent: -3em;
+	  margin-left: 4em; text-indent: -3em;
 }
 
 body { font-family: "Ungkam Basic", serif; }
 
-p.morph { padding-top: 0px; padding-bottom: 0px; 
+p.morph { padding-top: 0px; padding-bottom: 0px;
 	  margin-top: 0px; margin-right: 0px;
 	  text-indent: -3em;
 	  margin-left: 6em;
-	  line-height: 1.2em; 
+	  line-height: 1.2em;
 	}
 .punct-c { padding-right: .25em; }
 .punct-sc { padding-right: .5em; }
@@ -520,3 +523,11 @@ div.icbd { width: 90%; margin: auto; margin-top: 1em; }
 div.header { margin-bottom: 1em; }
 
 .cof-form-norm { font-size: 90%; }
+
+.ogsl-punct { padding-right: .666rem; }
+#ogsltop    { background-color: #efefef; width: 100%; }
+#ogslform   { font-size: 9pt; font-family: arial, sans-serif; background-color: #9cf; }
+#signframe  { border: none; margin: 0; padding: 0; 
+	      width: 100%; height: 400px; }
+.ogslres    { margin-top: 0; }
+

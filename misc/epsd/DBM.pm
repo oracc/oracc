@@ -13,21 +13,27 @@ sub
 create {
     my $name = shift;
     my $xmldb = ORACC::SE::XML::fromXML($name);
+    my $she = 'še';
+    my $she_v = $$xmldb{$she};
+    warn "$she = $she_v\n";
     my %db = ();
-    my $dbref;
     unlink "$dbdir/$name.db";
     print STDERR "creating $dbdir/$name.db\n";
-    my $cdbref 
-	= tie(%db,'NDBM_File',"$dbdir/$name",
-	      O_CREAT|O_TRUNC|O_RDWR,0644) || die;
-
+    my $dbref = tie(%db,'NDBM_File',"$dbdir/$name",
+	O_CREAT|O_TRUNC|O_RDWR,0644) || die;
+#    my $old_filter1 = $dbref->filter_fetch_key  ( sub { Encode::_utf8_off($_) } );
+#    my $old_filter2 = $dbref->filter_store_key  ( sub { Encode::_utf8_off($_) } );
     foreach my $k (keys %$xmldb) {
+#	Encode::_utf8_on($k);
+	my $kshe = ($k eq 'še');
+	warn "k=$k; k=še => $kshe\n" if $kshe;
 	Encode::_utf8_off($k);
 	my $data_type = ref($$xmldb{$k});
 	if (!$data_type || !defined $$xmldb{$k}) {
 	    Encode::_utf8_off($$xmldb{$k});
 	    $db{$k} = $$xmldb{$k};
 	} elsif ($data_type eq 'SCALAR') {
+	    Encode::_utf8_off($$xmldb{$k});
 	    $db{$k} = $$xmldb{$k};
 	} elsif ($data_type eq 'ARRAY') {
 	    $db{$k} = join(' ', @{$$xmldb{$k}});
@@ -35,7 +41,10 @@ create {
 	    die "DBM.pm: key '$k' has $data_type data: don't grok\n";
 	}
     }
-    undef $cdbref;
+#    Encode::_utf8_off($she);
+#    $she_v = $db{$she};
+#    warn "$she from db = $she_v\n";
+    undef $dbref;
     untie %db;
 }
 
@@ -56,6 +65,22 @@ Dumper_out {
     }
     close(O);
     close(P);
+}
+
+sub
+flatten {
+    my $ix = shift;
+    foreach my $k (keys %$ix) {
+	next if $k =~ /^\#.*?grep/;
+	if (ref($$ix{$k}) eq 'ARRAY') {
+	    $$ix{$k,'f'} = scalar @{$$ix{$k}};
+	    $$ix{$k} = join(' ', @{$$ix{$k}});
+	} elsif (ref($$ix{$k}) eq 'HASH') {
+	    $$ix{$k,'f'} = scalar keys %{$$ix{$k}};
+	    $$ix{$k} = join(' ', sort keys %{$$ix{$k}});
+	}
+    }
+    $ix;
 }
 
 sub

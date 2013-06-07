@@ -4,18 +4,22 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
+my $project = 'ogsl';
+
 my $asl = shift @ARGV;
 if ($asl) {
     unless (-e $asl) {
 	$asl = "00lib/$asl.asl";
     }
 } else {
-    $asl = "00lib/sl.asl" unless $asl;
+    $asl = "00lib/ogsl-she.asl" unless $asl;
 }
+
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
 $xl =~ s#00lib#02xml#;
 $xl =~ s/\.a?sl$/-sl.xml/;
+
 open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
 select XL;
 
@@ -33,7 +37,6 @@ my $in_value = 0;
 my $post_form = 0;
 my $utf8 = undef;
 my $xid = 'x0000';
-
 
 my $pi_file = '00lib/ogsl.asl';
 
@@ -181,8 +184,12 @@ while (<SL>) {
     }
 }
 print '</signlist>';
-
 close(SL);
+
+if ($project eq 'ogsl') {
+    system 'rm', '-f', '02xml/ogsl.xml';
+    system 'ln', '-sf', '02xml/ogsl-sl.xml', '02xml/ogsl.xml';
+}
 
 ##########################################################################################
 

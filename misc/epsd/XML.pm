@@ -3,6 +3,7 @@ use warnings; use strict;
 use open ':utf8'; 
 use utf8;
 use Encode;
+use ORACC::SE::DBM;
 
 binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
@@ -13,7 +14,7 @@ sub
 fromXML {
     my $name = shift;
     my %db = ();
-    open(XML,"02xml/$name.xml");
+    open(XML,"02xml/$name-db.xml");
     $_ = <XML>; # discard the <?xml ...?> line
     $_ = <XML>; # scan the comment line
     die "XML.pm: not a ORACC::SE::XML file\n" 
@@ -62,7 +63,11 @@ fromXML {
 	    if ($n eq '#fields') {
 		$db{$n} = [ split(/\s+/,$k) ];
 	    } else {
-		$db{$n} = $k;
+		if ($n =~ /^(.*?);(.*?)$/) {
+		    $db{$1,$2} = $k;
+		} else {
+		    $db{$n} = $k;
+		}
 	    }
 	} else {
 	    die "XML.pm: unhandled tag '$tag'\n";
@@ -78,7 +83,7 @@ toXML {
     my $ix = shift;
     my $name = $$ix{'#name'};
     use Data::Dumper; open(D,">01tmp/$name.dbg"); binmode(D,':raw'); print D Dumper($ix); close(D);
-    open(XML,">:raw", "02xml/$name.xml"); select XML;
+    open(XML,">:raw", "02xml/$name-db.xml"); select XML;
     print '<?xml version="1.0" encoding="utf-8"?>',"\n";
     print $ORACC_SE_COMMENT, "\n";
     print "<hash>\n";
@@ -97,56 +102,56 @@ toXML {
 	}
     }
 
-    $ix = flatten($ix);
-    foreach my $k (grep /r$/, sort keys %$ix) {
-	my $cdata = $k;
-	$cdata =~ s/r$//;
-	print "<r><key><![CDATA[$cdata]]></key>";
-	my $pk = xmlify($$ix{$k});
-	print "<ids>$pk</ids></r>\n";
+    $ix = ORACC::SE::DBM::flatten($ix);
+
+    if ($$ix{'#use_grep'}) {
+	foreach my $k (grep /r$/, sort keys %$ix) {
+	    my $cdata = $k;
+	    $cdata =~ s/r$//;
+	    print "<r><key><![CDATA[$cdata]]></key>";
+	    my $pk = xmlify($$ix{$k});
+	    print "<ids>$pk</ids></r>\n";
+	}
     }
 
-    foreach my $k (grep !//, sort keys %$ix) {
-	next if $k =~ /^\#.*?(item|record)_grep$/;
-	if (defined $$ix{$k}) {
-	    my $f = '';
-	    if (defined $$ix{$k,'f'}) {
-		$f = " f=\"$$ix{$k,'f'}\"";
+    if ($$ix{'#all_keys'}) {
+	foreach my $k (keys %$ix) {
+	    next if $k =~ /^\#.*?(item|record)_grep$/;
+	    if (defined $$ix{$k}) {
+		my $f = '';
+		if (defined $$ix{$k,'f'}) {
+		    my $f = xmlify($$ix{$k,'f'});
+		    $f = " f=\"$f\"";
+		}
+		my $pk = xmlify($k);
+		$pk =~ tr//;/;
+		Encode::_utf8_off($pk);
+		print "<k n=\"$pk\"$f>";
+		my $pv = xmlify($$ix{$k});
+		Encode::_utf8_off($pv);
+		print $pv;
+		print "</k>\n";
 	    }
-	    
-#	    my $kk = $k;
-#	    $kk =~ tr/A-Za-z0-9:;,#_//d;
-#	    if (length($kk) && !Encode::is_utf8($k)) {
-#		decode('utf8',$k);
-#		Encode::_utf8_on($k);
-#		print STDERR "$k--no utf8\n";
-#	    }
-	    my $pk = xmlify($k);
-	    Encode::_utf8_off($pk);
-	    print "<k n=\"$pk\"$f>";
-	    Encode::_utf8_off($$ix{$k});
-	    print $$ix{$k};
-	    print "</k>\n";
+	}
+    } else {
+	foreach my $k (grep !//, sort keys %$ix) {
+	    next if $k =~ /^\#.*?(item|record)_grep$/;
+	    if (defined $$ix{$k}) {
+		my $f = '';
+		if (defined $$ix{$k,'f'}) {
+		    $f = " f=\"$$ix{$k,'f'}\"";
+		}
+		my $pk = xmlify($k);
+		Encode::_utf8_off($pk);
+		print "<k n=\"$pk\"$f>";
+		Encode::_utf8_off($$ix{$k});
+		print $$ix{$k};
+		print "</k>\n";
+	    }
 	}
     }
     print "</hash>";
     close(XML);
-}
-
-sub
-flatten {
-    my $ix = shift;
-    foreach my $k (keys %$ix) {
-	next if $k =~ /^\#.*?grep/;
-	if (ref($$ix{$k}) eq 'ARRAY') {
-	    $$ix{$k,'f'} = scalar @{$$ix{$k}};
-	    $$ix{$k} = join(' ', @{$$ix{$k}});
-	} elsif (ref($$ix{$k}) eq 'HASH') {
-	    $$ix{$k,'f'} = scalar keys %{$$ix{$k}};
-	    $$ix{$k} = join(' ', sort keys %{$$ix{$k}});
-	}
-    }
-    $ix;
 }
 
 sub
@@ -172,6 +177,7 @@ sub
 xmlify {
     my $tmp = shift;
     $tmp =~ s/\&/\&amp;/g;
+    $tmp =~ s/\"/\&quot;/g;
     $tmp;
 }
 1;

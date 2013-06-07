@@ -7,6 +7,10 @@ use ORACC::NS;
 use Encode;
 use Fcntl;
 use NDBM_File;
+use ORACC::SE::Indexer;
+use ORACC::SE::XML;
+use ORACC::SE::DBM;
+use ORACC::SE::TSV;
 
 use constant { TOP=>0, SUB=>1 };
 
@@ -131,7 +135,14 @@ add_comp_children {
 sub
 gtext {
     my ($g,$n,$id) = @_;
-    my $gt = $g->getAttribute('n') || $g->getAttribute('form') || $g->textContent();
+    my $gt = undef;
+    if ($g->nodeName() eq 'g:g') {
+	$gt = join('', map { gval($_) } $g->childNodes());
+    } else {
+	$gt = $g->getAttribute('n') || $g->getAttribute('form') || $g->textContent();
+    }
+    warn "empty gtext in ", $g->toString(0), "\n"
+	unless $gt;
     if ($gt) {
 	$gt =~ tr/a-zšŋ/A-ZŠŊ/;
 	if ($n && $n->localName() eq 'mod') {
@@ -154,10 +165,37 @@ gtext {
 }
 
 sub
+gval {
+    my $g = shift;
+    return('') unless $g->isa('XML::LibXML::Element');
+    my $n = $g->nodeName();
+    if ($n eq 'g:s') {
+	return $g->textContent();
+    } elsif ($n eq 'g:o') {
+	my $o = $g->getAttributeNS($GDL,'type');
+	if ($o eq 'beside') {
+	    return '.';
+	} elsif ($o eq 'containing') {
+	    return '×';
+	} elsif ($o eq 'above') {
+	    return '&';
+	} elsif ($o eq 'crossing') {
+	    return '%';
+	} else {
+	    warn "gval: unhandled o attr $o\n";
+	    return '';
+	}
+    } else {
+	warn "gval: unhandled tag $n\n";
+	return '';
+    }
+}
+
+sub
 add_aliases {
     if (open(IN,'00lib/aliases.asa')) {
 	while (<IN>) {
-	    next if /^\#/ || /^\s*$/;
+	    next if /^\#/ || /^\s+/ || /=>/;
 	    my @v = split(/\s+/,$_);
 	    my $aka = shift @v;
 	    foreach my $v (@v) {
@@ -173,6 +211,59 @@ add_aliases {
 
 sub
 dump_db {
+    unlink "$dbdir/$dbname";
+#    tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
+#	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
+    my $ix = ORACC::SE::Indexer::index('ogsl','OGSL Index','x1',0,
+				       [ qw/h aka c cinit clast contains contained forms multi mod link/ ],
+				       [], 0, 10000, 0, 1);
+    my %db = %$ix;
+    foreach my $k (keys %values) {
+	my $dbk = $k;
+	Encode::_utf8_off($dbk);
+	# sort the values here if the key otherwise contains a \^
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode)$/) {
+	    my $v = $values{$k};
+	    Encode::_utf8_off($v);
+	    $db{$dbk} = $v;
+	} elsif ($dbk =~ /h$/) {
+	    my $str = hsort(@{$values{$k}});	    
+	    $db{$dbk} = $str;
+	    if ($k =~ /₊/) {
+		$k =~ s/h$//;
+#		print STDERR "mk-pslu.plx: h-str for $k = $str\n";
+	    }
+	} elsif ($dbk =~ /forms$/) {
+	    my $str = fsort(@{$values{$k}});
+	    $db{$dbk} = $str;
+	    if ($k =~ /₊/) {
+		$k =~ s/h$//;
+#		print STDERR "mk-pslu.plx: h-str for $k = $str\n";
+	    }
+	} elsif ($dbk =~ //) {
+	    my $v = join(' ', sort uniq(grep(defined,@{$values{$k}}))); # FIXME: shouldn't be necessary to grep out defined
+	    Encode::_utf8_off($v);
+	    $db{$dbk} = $v;
+	} else {
+	    my $v = $values{$k};
+	    Encode::_utf8_off($v);
+	    $db{$dbk} = $v;
+	}
+    }
+
+    ORACC::SE::DBM::setdir('./02pub');
+#    ORACC::SE::XML::toXML(\%db);
+    ORACC::SE::TSV::toTSV(\%db);
+#    ORACC::SE::DBM::create($db{'#name'});
+
+#    ORACC::SE::XML::toXML(\%db);
+#    use Data::Dumper; open(D,'>./02pub/pslu.dump'); binmode(D, ':raw'); print D Dumper(\%db); close(D);
+    untie %db;
+}
+
+
+sub
+xdump_db {
     unlink "$dbdir/$dbname";
     tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
 	|| die "sl-db.plx: can't write $dbdir/$dbname\n";
@@ -213,6 +304,16 @@ dump_db {
 #    ORACC::SE::XML::toXML(\%db);
     use Data::Dumper; open(D,">./02pub/$dbname.dump"); binmode(D, ':raw'); print D Dumper(\%db); close(D);
     untie %db;
+}
+
+sub
+fsort {
+    my @srt = @_;
+    my @ret = ();
+    foreach my $s (sort { $$a[1] cmp $$b[1] } @srt) {
+	push @ret, "$$s[0]/$$s[1]";
+    }
+    join(' ', @ret);
 }
 
 sub
@@ -277,7 +378,7 @@ subsign {
     if ($parent_id) {
 	my $var = $node->getAttribute('var');
 	warn "FORM $sn in SIGN $values{$parent_id,'name'} has no VAR attribute\n" unless $var;
-	push @{$values{$parent_id,'forms'}}, "$id/$var";
+	push @{$values{$parent_id,'forms'}}, [$id,$var];
     }
 
     foreach my $c ($node->childNodes()) {
@@ -298,6 +399,7 @@ subsign {
 	    my $v = $c->getAttribute('n');
 	    $v =~ tr/?//d;
 	    $v =~ s/\{.*?\}//g;
+	    next unless $v;
 	    if ($values{$v}) {
 		### FIXME: THIS IS A TODO LIST ITEM IN OGSL
 #		warn "duplicate value in ogsl-sl.xml: $v occurs in $values{$values{$v},'name'} and $sn\n"

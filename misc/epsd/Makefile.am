@@ -24,3 +24,5 @@ EXTRA_DIST=\
 	DBM.pm
 	Display.pm
 	Evaluator.pm
+	TSV.pm
+

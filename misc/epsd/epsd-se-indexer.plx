@@ -82,8 +82,6 @@ foreach my $r (sort { &ecmp } keys %rec) {
 ORACC::SE::XML::toXML($ix);
 ORACC::SE::DBM::create($ixname);
 
-#ORACC::SE::DBM::Dumper_out($ix,$ixname);
-
 sub
 ecmp {
     my $e1 = $a;

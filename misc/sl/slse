@@ -1,15 +1,13 @@
 #!/usr/bin/perl
 use warnings; use strict;
 use Encode; use utf8;
-use NDBM_File; use Fcntl;
 use open 'utf8'; binmode STDIN, 'utf8'; binmode STDOUT, 'utf8'; binmode STDERR, 'utf8'; 
 use CGI qw/:standard/;
 use lib '/usr/local/oracc/lib';
 use ORACC::ATF::Unicode;
 
-my $db_file = "/usr/local/oracc/pub/ogsl/ogsl";
-my $dbm = 'NDBM_File';
-my %psl;
+my $db_file = "/usr/local/oracc/pub/ogsl";
+my $db_name = 'ogsl';
 
 my %ext_pre = (
     'c'=>'',
@@ -42,17 +40,9 @@ my %id_ext; @id_ext{@id_ext} = ();
 my @uc_ext = qw/c cinit clast contains contained forms m multi/;
 my %uc_ext; @uc_ext{@uc_ext} = ();
 
-tie(%psl,'NDBM_File',$db_file,O_RDONLY,0640)
-    || die "epsdsl: can't open `$db_file': $!\n";
-
-my $u = decode utf8=>param('k1');
-my $v = decode_utf8($u);
-#$v = 'še₃';
-#my $u_u_on = Encode::is_utf8($u);
-#my $v_u_on = Encode::is_utf8($u);
-#warn "u=$u; v=$v; u-on=$u_u_on; v-on=$v_u_on\n";
-Encode::_utf8_on($v);
+my $v = decode utf8=>param('k1');
 my $ext = param('ext') || '';
+
 my $project = param('project') || 'ogsl';
 
 if ($v =~ s/([a-z])0$/$1/) {
@@ -64,10 +54,9 @@ my $signlist_hack = 0;
 $v = ORACC::ATF::Unicode::gconv($v);
 if ($ext) {
     if (exists($id_ext{$ext})) {
-	Encode::_utf8_off($v);
-	if ($psl{$v}) {
-	    my $v_orig = $v;
-	    $v = $psl{$v};
+	my $v_orig = $v;
+	$v = slse($v);
+	if ($v) {
 	    warn "remapping $v_orig to $v\n";
 	}
     } elsif (exists($uc_ext{$ext})) {
@@ -88,15 +77,12 @@ if ($ext) {
 
 # Map a bad sign name to its proper known one if possible
 if ($v =~ /[AEIU]/) {
-    my $v2 = $v;
-    Encode::_utf8_off($v2);
-    unless (defined $psl{$v2}) {
+    unless (slse($v)) {
 	my $nv = $v;
 	$nv =~ tr/A-ZŠŊ/a-zšŋ/;
-	Encode::_utf8_off($nv);
-	if (defined $psl{$nv}) {
-	    $v = $psl{$psl{$nv},'name'};
-	    Encode::_utf8_on($v);
+	my $vtmp = slse($nv);
+	if ($vtmp) {
+	    $v = slse("$vtmp\;name");
 	}
     }
 }
@@ -104,12 +90,10 @@ if ($v =~ /[AEIU]/) {
 my $pr;
 
 if ($ext) {
-    Encode::_utf8_off($v);
-    $pr = $psl{$v,$ext} || '';
+    $pr = slse("$v\;$ext") || '';
     warn "$v => $pr\n";
 } else {
-    Encode::_utf8_off($v);
-    $pr = $psl{$v} || '';
+    $pr = slse($v) || '';
     warn "$v => $pr\n";
 }
 
@@ -126,7 +110,6 @@ if ($pr) {
 	    if ($s =~ m,/,) {
 		my ($id,$n) = ($s =~ m,^(.*?)/(.*?)$,);
 		$first_id = $id unless $first_id;
-		Encode::_utf8_on($v);
 		if ($n =~ /^~[a-z]+/) {
 		    # do nothing
 		} else {
@@ -136,8 +119,7 @@ if ($pr) {
 			$n = '';
 		    }
 		}
-		my $sn = $psl{$id,'name'};
-		Encode::_utf8_on($sn);
+		my $sn = slse("$id\;name");
 		my $vh = $v;
 		if (is_signlist($vh)) {
 		    printhtml($id,$sn,"$vh$n",$punct);
@@ -145,8 +127,7 @@ if ($pr) {
 		    printhtml($id,$sn,"$vh<sub>$n</sub>",$punct);
 		}
 	    } else {
-		my $sn = $psl{$s,'name'};
-		Encode::_utf8_on($sn);
+		my $sn = slse("$s;name");
 		printhtml($s,$sn);
 	    }
 	}
@@ -166,7 +147,6 @@ if ($pr) {
     html_trailer();
 }
 
-untie(%psl);
 
 ##############################################################################
 
@@ -195,7 +175,7 @@ html_header {
     Encode::_utf8_on($vcat);
     if ($ext) {
 	if ($ext eq 'forms') {
-	    $vcat = $psl{$vcat,'name'};
+	    $vcat = slse("$vcat\;name");
 	} elsif ($signlist_hack) {
 	    $ext = 'signlist';
 	}
@@ -235,7 +215,7 @@ printhtml {
     my $pspan = '';
     if ($p) {
 	if ($project eq 'epsd2') {
-	    $p = '';
+	    $pspan = '<br/>';
 	} else {
 	    $pspan = '<span class="ogsl-punct">;</span>';
 	}
@@ -255,6 +235,11 @@ subify {
 sub
 is_signlist {
     $_[0] =~ /^[A-Z]SL/;
+}
+
+sub
+slse {
+    `/usr/local/oracc/bin/sl $db_name $db_file '$_[0]'`
 }
 
 1;
