@@ -1,0 +1,155 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/p2.css" />
+    <link rel="stylesheet" type="text/css" href="/css/p3.css" />
+    <script src="js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
+    <script src="js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
+    <title>P3</title>
+  </head>
+  <body onload="setFrameHeights(); onresize=setFrameHeights">
+    <div class="p3-left">LEFT
+    </div>
+    <div class="p3-right">RIGHT
+    </div>
+
+    <div class="p3-form banner bborder-top">
+      <form name="p3.form" id="p3.form" action="/oracc"
+	    target="_top" method="post" accept-charset="utf-8">
+	<!-- elements with p3-nomin in class do not display in minimal mode -->
+	<div id="topButtons" class="p3-nomin">
+	  <input type="hidden" name="project" value="@@PROJECT@@"/>
+	  <input type="hidden" name="p3do" value="default"/>
+	  <p>
+	    <span class="button spacer">
+	      <button type="submit" name="oracc-home" value="ORACC"/>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" name="help" value="HELP" onclick="p3help"/>
+	    </span>
+	    <span class="pll spacer"/> <!-- N.B. MUST IMPLEMENT Back to ... here -->
+	    <span class="button spacer">
+	      <button type="submit" name="corpus" value="RESET" onclick="p3do('corpus')"/>
+	    </span>
+	    <span class="glossaries spacer"/>
+	    <span class="button spacer">
+	      <button type="button" name="advsrch" value="ADVANCED SEARCH" onclick="p3asearch"/>
+	    </span>
+	  </p>
+	</div>
+
+	<div id="banner" class="p3-nomin">
+	  <h1>@@config:xpd:abbrev@@: @@config:xpd:name@@</h1>
+	</div>
+
+	<div id="controls" class="xforms p3-nomin">
+	  <p class="center">
+	    <label for="unicode">
+	    <input type="checkbox" id="unicode" name="unicode" value="@@cgivar:unicode/0@@"/>Unicode</label>
+	    
+	    <span class="quick-search">
+	      <button type="submit" name="qsearch" id="qsearch" onclick="p3do('qsearch')"/>
+	    </span>
+	    
+	    <select name="default-index" onchange="p3do('qsearch');submit()">
+	      <option value="txt">Transliterations</option>
+	      <option value="lem">Lemmatization</option>
+	      <option value="tra">Translations</option>
+	      <option value="cat">Catalogue</option>
+	    </select>
+	    
+	    <input type="text" name="srch" size="30"/>
+	  </p>
+	</div>
+
+	<div id="navLeft" class="banner bborder-bot">
+	  <p class="center p3-items">
+	    <!-- IMPLEMENT THIS ON CLIENT SIDE USING JS AND DON'T DISPLAY IT IF JS IS NOT ENABLED
+		 <xforms:label>Hide Outline Pane</xforms:label>
+		 <xforms:action ev:event="DOMActivate">
+		 <xforms:setvalue ref="instance('pager')/outline-state" value="'hide'"/>
+		 <xforms:send submission="right100"/>
+		 </xforms:action>
+		 <xforms:label>Show Outline Pane</xforms:label>
+		 <xforms:action ev:event="DOMActivate">
+		 <xforms:setvalue ref="instance('pager')/outline-state" value="'show'"/>
+		 <xforms:send submission="right80"/>
+		 </xforms:action>
+	    -->
+	  </p>
+	  <p class="center smash p3-pages">
+	    <span class="outline-sorter"/>
+	  </p>
+	</div>
+	
+	<div id="navRight" class="banner bborder-bot">
+
+	  <div class="p3-items p3-noglo">
+	    <p class="toccenter bg-dk">
+	      <span class="arrow">
+		<select name="item-state" onchange="submit()">
+		  <option value="off">Exit item mode</option>
+		  <option value="cat">Catalogue items</option>
+		  <option value="txt">Text items</option>
+		</select>
+	      </span>
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('itemback')"/>
+	      </span>
+	      
+	      <label for="itemset"
+		     ><input id="itemset" name="itemset" type="text" onchange="p3do('itemset')" 
+		     size="3" value="@@cgivar:itemset@@"/>Item </label>
+	      of @@runtime:itemcount@@
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value=">>" onclick="p3do('itemfwd')"/>
+	      </span>
+	      
+	      <span class="translations"/>
+	      
+	      <label for="transonly">
+	      <input type="checkbox" name="transonly" id="transonly" value="@@cgivar:transonly@@"/> only</label>
+	    </p>
+	  </div>
+	
+	  <div class="p3-pages">
+	    
+	    <p class="toccenter bg-dk">
+	      <span class="arrow">
+		<button type="submit" name="unzoom" value="Exit zoom mode" onclick="p3do('unzoom')"/>
+	      </span>
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pageback')"/>
+	      </span>
+	      
+	      <label for="pageset"
+		     ><input id="pageset" name="pageset" type="text" onchange="p3do('pageset')" 
+		     size="3" value="@@cgivar:pageset@@"/>Page </label>
+	      of @@runtime:itemcount@@
+
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pagefwd')"/>
+	      </span>
+	      items.
+	      
+	      <label for="pageset"
+		     ><input id="pageset" name="pageset" type="text" onchange="p3do('pagesize')" size="3"/>Page-size: </label>
+
+	      <span class="cetype">
+		<select name="cetype">
+		  <option value="line">Line</option>
+		  <option value="unit">Sentence</option>
+		  <option value="kwic">KWIC</option>
+		</select>
+	      </span>
+	    </p>
+	  </div>
+	</div>
+      </form>
+    </div>    
+  </body>
+</html>

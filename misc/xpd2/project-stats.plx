@@ -36,7 +36,7 @@ wordinfo {
 
     my @PQXdirs = (<01bld/[PQX]*>);
     if ($#PQXdirs >= 0 && -r '01bld/lists/have-xtf.lst') {
-	$wordcount = `cut -d: -f2 01bld/lists/have-xtf.lst | $ENV{'ORACC'}/bin/expand $project xtf | xargs cat | xmlnl | grep -c '^><[gn]:w'`;
+	$wordcount = `cat 01bld/lists/have-xtf.lst | $ENV{'ORACC'}/bin/pqxpand xtf | xargs cat | xmlnl | grep -c '^><[gn]:w'`;
 	chomp $wordcount;
     }
     

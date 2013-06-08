@@ -7,9 +7,19 @@ body { width: 99%; margin-left: auto; margin-right: auto;
 }
 */
 
-div.tocmatrix-border { height: 100%; border-left: 0px; border-style: solid; 
-	border-right: 1px; border-top: 0px; border-bottom: 0px; }
+div.tocbanner { border: 1px; border-style: solid; 
+	padding-left: 3px; padding-right: 3px;
+	padding-top: 0px; padding-bottom: 0px; 
+	line-height: 1.5em; 
+	background-color: #9c9; }
+p.toctitle { font-size: medium; font-weight: bold; padding-left: 5px; 
+	margin: 0px; }
+p.tocletter { font-size: medium; font-weight: bold; text-align: right; 
+	margin: 0px; margin-top: -1.5em; }
+p.toccenter { font-size: medium; font-weight: normal; text-align: center; 
+	margin: 0px; margin-top: -1.5em; }
 
+/* 
 div.tocbanner { border: 1px solid #000;
 	background-color: #9c9; }
 p.toctitle { font-size: medium; font-weight: bold; padding-left: 5px; 
@@ -18,6 +28,11 @@ p.tocletter { font-size: medium; font-weight: bold; text-align: right;
 	margin: 0px; margin-top: -1.5em; padding-right: 2px; }
 p.toccenter { font-size: medium; font-weight: normal; text-align: center; 
 	margin: 0px; margin-top: -1.5em; }
+*/
+
+div.tocmatrix-border { height: 100%; border-left: 0px; border-style: solid; 
+	border-right: 1px; border-top: 0px; border-bottom: 0px; }
+
 p.chunktitle { font-size: large; font-weight: bold; text-align: center; }
 h1 { font-size: medium; }
 /* h1.pslres { font-size: large; color: red; font-family: serif } */
@@ -30,8 +45,12 @@ span.selected { background-color: silver }
 div.summary { width: 90%; margin: auto;
 	    border-bottom: 6px solid #cfc; }
 
-.summary p { margin-left: 1em; text-indent: -1em; }
-p.summary { margin-left: 1em; text-indent: -1em; }
+.summary p { margin-left: 1em; text-indent: -1em; 
+	     margin-top: 3px; margin-bottom: 3px;
+	   }
+p.summary { margin-left: 1em; text-indent: -1em; 
+	    margin-top: 3px; margin-bottom: 3px;
+	  }
 
 p.norms    { width: 90%; margin: auto; }
 

@@ -32,7 +32,7 @@
 <xsl:template name="call-back">
   <div class="tocbanner">
     <p class="toctitle">ePSD2</p>
-    <p class="tocletter">$hits for $query</p>
+    <p class="tocletter"><xsl:value-of select="$hits"/> for <xsl:value-of select="$query"/></p>
     <p class="toccenter">
       <xsl:if test="string-length($prev-page) > 0">
 	<a href="/cgi-bin/epsdse?p={$prev-page}&amp;k1={$query}">

@@ -118,6 +118,7 @@ AC_OUTPUT([Makefile
 	   c/l2/word/Makefile
 	   c/l2/xcl2/Makefile
 	   c/l2/xli/Makefile
+	   c/p3/Makefile
 	   misc/Makefile
 	   misc/admin/Makefile
 	   misc/agg/Makefile
