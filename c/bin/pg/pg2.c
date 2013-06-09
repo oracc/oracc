@@ -15,6 +15,7 @@
 int l2 = 1, o2 = 0;
 
 int csi_debug = 0;
+int fragment = 0;
 FILE *fdbg = NULL;
 FILE *fpag = NULL;
 
@@ -96,7 +97,7 @@ main(int argc, char **argv)
   struct page *pages = NULL;
   int nitems = 0, nlevels = 0, npages = 0;
 
-  options(argc,argv,"02dg:h:l:mn:o:p:P:qs:S:xz:");
+  options(argc,argv,"02dg:fh:l:mn:o:p:P:qs:S:xz:");
 
   if (!project)
     project = "cdli";
@@ -201,7 +202,7 @@ main(int argc, char **argv)
 	    pg_outline_dump(ofile,op,nlevels);
 	  else
 	    {
-	      fprintf(stderr,"pg: xml outline file `%s' not writable\n", ofname);
+	      fprintf(stderr,"pg2: xml outline file `%s' not writable\n", ofname);
 	      exit(1);
 	    }
 	}
@@ -216,12 +217,12 @@ main(int argc, char **argv)
       char *ofname = malloc(strlen(listfile)+13), *slash;
       strcpy(ofname,listfile);
       if ((slash = strrchr(ofname, '/')))
-	strcpy(slash+1, "pg.xml");
+	strcpy(slash+1, "pg.info");
       else
-	strcpy(ofname, "pg.xml");
+	strcpy(ofname, "pg.info");
       if (!(fpag = fopen(ofname, "w")))
 	{
-	  fprintf(stderr,"pg: xml page file `%s' not writable\n", ofname);
+	  fprintf(stderr,"pg2: info page file `%s' not writable\n", ofname);
 	  exit(1);
 	}
     }
@@ -234,7 +235,7 @@ main(int argc, char **argv)
     pg_page_dump_one(fpag,&pages[page_n-1]);
   else if (nitems)
     {
-      fprintf(stderr,"pg: page %d too big (max %d)\n", page_n, npages);
+      fprintf(stderr,"pg2: page %d too big (max %d)\n", page_n, npages);
       exit(1);
     }
 
@@ -266,6 +267,9 @@ opts(int argc, char *arg)
       csi_debug = 1;
       fdbg = stderr;
       break;
+    case 'f':
+      fragment = 1;
+      break;
 #if 0
       /* This option is bogus because heading_keys must always
 	 be a subset of sort_keys in order to make sense, so it's
@@ -292,7 +296,7 @@ opts(int argc, char *arg)
 	  }
 	else
 	  {
-	    fprintf(stderr,"pg: outline index must be between 1 and 6 inclusive\n");
+	    fprintf(stderr,"pg2: outline index must be between 1 and 6 inclusive\n");
 	    exit(1);
 	  }
       }

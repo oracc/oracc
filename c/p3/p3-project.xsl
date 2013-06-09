@@ -47,6 +47,15 @@
   </xsl:copy>
 </xsl:template>
 
+<xsl:template match="xh:input[@name='project']">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:attribute name="value">
+      <xsl:value-of select="$config-xml/*/@n"/>
+    </xsl:attribute>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="xh:p[@class='glossaries']|xh:span[contains(@class,'glossaries')]">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
@@ -64,6 +73,14 @@
     <xsl:copy-of select="@*"/>
     <xsl:copy-of select="document($project-data)//outline-sorters/*"/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template match="xh:span[@id='xpd-abbrev']">
+  <xsl:value-of select="$config-xml/*/xpd:abbrev"/>
+</xsl:template>
+
+<xsl:template match="xh:span[@id='xpd-name']">
+  <xsl:value-of select="$config-xml/*/xpd:name"/>
 </xsl:template>
 
 <xsl:template match="xh:span[@class='translations']">

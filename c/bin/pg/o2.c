@@ -7,7 +7,7 @@
    JS.  This needs ul/li/ul nesting and class="outline" on the top
    ul only */
 
-extern int zoomid;
+extern int zoomid, fragment;
 extern const char *outline_keys[];
 int uzpage = -1;
 int zprev = -1;

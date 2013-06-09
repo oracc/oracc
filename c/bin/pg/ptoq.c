@@ -17,6 +17,8 @@ extern char*strdup(const char *);
 #define cc(x) ((const char *)x)
 #define ucc(x) ((const unsigned char *)x)
 
+int fragment;
+
 static GDBM_FILE linkmap;
 int use_linkmap = 0;
 

@@ -61,6 +61,7 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
   u4 *lastlevs = malloc(nlevels * sizeof(u4*));
   int olevs = 0;
   int nheadings = nlevels - 1;
+  extern int fragment;
 
   for (i = 0; i < nlevels; ++i)
     lastlevs[i] = u4max;
@@ -71,13 +72,16 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
       if (l2)
 	{
 	  extern const char *project;
-	  fprintf(fp, "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>%s", xo_head);
-	  fprintf(fp, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/p2.css\"/>\n");
-	  fprintf(fp, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s/p2.css\"/>\n", project);
-	  fprintf(fp, "<script src=\"/js/p2.js\" type=\"text/javascript\">\n</script>\n");
-	  fprintf(fp, "<script src=\"/js/p2-shortcuts.js\" type=\"text/javascript\">\n</script>\n");
-	  fprintf(fp, "<script src=\"/js/p2-keys.js\" type=\"text/javascript\">\n</script>\n");
-	  fprintf(fp, "</head><body onload=\"p2Keys()\">");
+	  if (!fragment)
+	    {
+	      fprintf(fp, "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>%s", xo_head);
+	      fprintf(fp, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/p2.css\"/>\n");
+	      fprintf(fp, "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s/p2.css\"/>\n", project);
+	      fprintf(fp, "<script src=\"/js/p2.js\" type=\"text/javascript\">\n</script>\n");
+	      fprintf(fp, "<script src=\"/js/p2-shortcuts.js\" type=\"text/javascript\">\n</script>\n");
+	      fprintf(fp, "<script src=\"/js/p2-keys.js\" type=\"text/javascript\">\n</script>\n");
+	      fprintf(fp, "</head><body onload=\"p2Keys()\">");
+	    }
 	}
       else
 	{
@@ -163,6 +167,6 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
   while (olevs-- > 0)
     fputs("</div>",fp);
   fputs("</div>\n",fp);
-  if (xml_outline)
+  if (xml_outline && !fragment)
     fputs("</body></html>",fp);
 }

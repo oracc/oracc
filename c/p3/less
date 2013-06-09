@@ -1,0 +1,513 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/css/p2.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/p3.css"/>
+    <script src="js/p3.js" type="text/javascript"> </script>
+    <script src="js/p2.js" type="text/javascript"> </script>
+    <title>P3</title>
+  <style xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xpd="http://oracc.org/ns/xpd/1.0" type="text/css">.pll .value select option { border-bottom: 1px solid red; }
+</style>
+</head>
+  <body onload="setFrameHeights(); onresize=setFrameHeights">
+
+<div id="left" name="left"><div class="pgotl level0"><h2>ED IIIa</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,1)">Fara [4]</a></p></div></div><h2>Early Dynastic IIIa</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,91)">unknown [12]</a></p></div></div><h2>Early Dynastic IIIb</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,93)">Ebla [1]</a></p><p><a href="javascript://" onclick="pz(1,92)">unknown [3]</a></p></div></div><h2>Ebla</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,24)">Ebla [1]</a></p></div></div><h2>Lagash II</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,16)">Nippur [1]</a></p></div></div><h2>Ur III</h2><div class="pgotl level1"><h3>Administrative</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,2)">unclear [6]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,20)">unclear [1]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,46)">unclear [1]</a></p></div></div><h2>Early Old Babylonian</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,9)">Nippur [7]</a></p><p><a href="javascript://" onclick="pz(1,11)">unclear [3]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,21)">Umma [1]</a></p></div></div><h2>Old Babylonian</h2><div class="pgotl level1"><h3>Administrative</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,6)">Der [3]</a></p><p><a href="javascript://" onclick="pz(1,33)">unclear [2]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,58)">Adab [2]</a></p><p><a href="javascript://" onclick="pz(1,57)">Babylon [2]</a></p><p><a href="javascript://" onclick="pz(1,19)">Fara [1]</a></p><p><a href="javascript://" onclick="pz(1,22)">Ishchali [2]</a></p><p><a href="javascript://" onclick="pz(1,27)">Isin [6]</a></p><p><a href="javascript://" onclick="pz(1,56)">Kish [8]</a></p><p><a href="javascript://" onclick="pz(1,25)">Kisurra [1]</a></p><p><a href="javascript://" onclick="pz(1,41)">Larsa [2]</a></p><p><a href="javascript://" onclick="pz(1,14)">Niippur [1]</a></p><p><a href="javascript://" onclick="pz(1,7)">Nippur [47]</a></p><p><a href="javascript://" onclick="pz(1,30)">Sippar [8]</a></p><p><a href="javascript://" onclick="pz(1,55)">Sippar Amnanum [2]</a></p><p><a href="javascript://" onclick="pz(1,26)">Susa [3]</a></p><p><a href="javascript://" onclick="pz(1,60)">Tell Hammam et-Turkman [1]</a></p><p><a href="javascript://" onclick="pz(1,89)">Tell Taban [1]</a></p><p><a href="javascript://" onclick="pz(1,29)">Ur [17]</a></p><p><a href="javascript://" onclick="pz(1,52)">Uruk [4]</a></p><p><a href="javascript://" onclick="pz(1,59)">uncertain [2]</a></p><p><a href="javascript://" onclick="pz(1,5)">unclear [56]</a></p><p><a href="javascript://" onclick="pz(1,94)">unknown [7]</a></p></div><h3>Literary</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,17)">unclear [1]</a></p><p><a href="javascript://" onclick="pz(1,97)">unknown [394]</a></p></div><h3>Mathematical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,75)">Nippur [1]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,84)">Adab [1]</a></p><p><a href="javascript://" onclick="pz(1,76)">Ishchali [5]</a></p><p><a href="javascript://" onclick="pz(1,3)">Kish [2]</a></p><p><a href="javascript://" onclick="pz(1,77)">Susa [1]</a></p><p><a href="javascript://" onclick="pz(1,72)">Umma [1]</a></p><p><a href="javascript://" onclick="pz(1,63)">Ur [13]</a></p><p><a href="javascript://" onclick="pz(1,88)">uncertain [1]</a></p><p><a href="javascript://" onclick="pz(1,4)">unclear [38]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,83)">unclear [4]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,36)">unclear [3]</a></p></div></div><h2>Middle Assyrian</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,48)">Assur [2]</a></p><p><a href="javascript://" onclick="pz(1,50)">Tell Billa [1]</a></p><p><a href="javascript://" onclick="pz(1,39)">unclear [3]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,82)">unclear [1]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,49)">Assur [1]</a></p></div></div><h2>Middle Babylonian</h2><div class="pgotl level1"><h3>Administrative</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,43)">Nippur [2]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,38)">Alalakh [2]</a></p><p><a href="javascript://" onclick="pz(1,65)">Babylon [2]</a></p><p><a href="javascript://" onclick="pz(1,66)">Ekalte [1]</a></p><p><a href="javascript://" onclick="pz(1,37)">Emar [12]</a></p><p><a href="javascript://" onclick="pz(1,53)">Ibn Hani [1]</a></p><p><a href="javascript://" onclick="pz(1,10)">Nippur [9]</a></p><p><a href="javascript://" onclick="pz(1,71)">Ortaköy [1]</a></p><p><a href="javascript://" onclick="pz(1,54)">Ugarit [10]</a></p><p><a href="javascript://" onclick="pz(1,32)">unclear [4]</a></p><p><a href="javascript://" onclick="pz(1,95)">unknown [3]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,85)">Nuzi [2]</a></p><p><a href="javascript://" onclick="pz(1,80)">unclear [1]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,70)">Haft Tepe [2]</a></p></div><h3>Mathematical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,74)">Haft Tepe [1]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,44)">Amarna [1]</a></p><p><a href="javascript://" onclick="pz(1,45)">Emar [42]</a></p><p><a href="javascript://" onclick="pz(1,40)">Nippur [1]</a></p></div></div><h2>Neo-Assyrian</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,81)">Assur [3]</a></p><p><a href="javascript://" onclick="pz(1,73)">Nimrud [1]</a></p><p><a href="javascript://" onclick="pz(1,23)">Nineveh [2]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,61)">Sultantepe [4]</a></p><p><a href="javascript://" onclick="pz(1,18)">unclear [1]</a></p></div></div><h2>Neo-Babylonian</h2><div class="pgotl level1"><h3>Administrative</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,42)">unclear [1]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,64)">Babylon [3]</a></p><p><a href="javascript://" onclick="pz(1,13)">Nippur [7]</a></p><p><a href="javascript://" onclick="pz(1,28)">unclear [6]</a></p></div><h3>Literary</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,62)">Ur [1]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,67)">unclear [4]</a></p></div><h3>Uncertain</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,87)">unclear [1]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,35)">unclear [2]</a></p></div></div><h2>Uncertain</h2><div class="pgotl level1"><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,34)">unclear [1]</a></p></div></div><h2>Hellenistic</h2><div class="pgotl level1"><h3>Legal</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,69)">Uruk [1]</a></p></div><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,47)">Uruk [5]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,68)">Uruk [5]</a></p></div></div><h2>First Millennium</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,96)">unknown [3]</a></p></div></div><h2>Unknown</h2><div class="pgotl level1"><h3>Lexical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,78)">Assur [1]</a></p><p><a href="javascript://" onclick="pz(1,31)">Harmal [1]</a></p><p><a href="javascript://" onclick="pz(1,12)">Nippur [16]</a></p><p><a href="javascript://" onclick="pz(1,79)">Uruk [1]</a></p><p><a href="javascript://" onclick="pz(1,8)">unclear [26]</a></p></div><h3>School</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,86)">Babylon [1]</a></p></div><h3>Lexical &amp; Mathematical</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,15)">Nippur [1]</a></p></div><h3>Unknown</h3><div class="pgotl level2"><p><a href="javascript://" onclick="pz(1,51)">unclear [12]</a></p><p><a href="javascript://" onclick="pz(1,90)">unknown [15]</a></p></div></div></div>
+</div><div id="right" name="right"><table xmlns="http://www.w3.org/1999/xhtml" class="xmd">
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">ED IIIa/Lexical/Fara</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(1)">
+        <img src="/img/cdli-icon.png" alt="P010632 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(1)">SF 047</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">ED IIIa</td>
+    <td style="width: 17%;">Fara</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(2)">
+        <img src="/img/cdli-icon.png" alt="P010633 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(2)">SF 048</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">ED IIIa</td>
+    <td style="width: 17%;">Fara</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(3)">
+        <img src="/img/cdli-icon.png" alt="P010663 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(3)">SF 070</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">ED IIIa</td>
+    <td style="width: 17%;">Fara</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(4)">
+        <img src="/img/cdli-icon.png" alt="P010717 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(4)">TSŠ 0046</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">wild animals</td>
+    <td style="width: 17%;">ED IIIa</td>
+    <td style="width: 17%;">Fara</td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Early Dynastic IIIa/Lexical/unknown</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(5)">
+        <img src="/img/Qcat-icon.png" alt="Q000012 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(5)">ED Animals A</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(6)">
+        <img src="/img/Qcat-icon.png" alt="Q000018 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(6)">ED Birds</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(7)">
+        <img src="/img/Qcat-icon.png" alt="Q000035 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(7)">ED Cities</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(8)">
+        <img src="/img/Qcat-icon.png" alt="Q000014 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(8)">ED Fish</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(9)">
+        <img src="/img/Qcat-icon.png" alt="Q000029 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(9)">ED Food</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(10)">
+        <img src="/img/Qcat-icon.png" alt="Q000003 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(10)">ED Lu A</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(11)">
+        <img src="/img/Qcat-icon.png" alt="Q000027 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(11)">ED Metals</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(12)">
+        <img src="/img/Qcat-icon.png" alt="Q000008 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(12)">ED Officials</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(13)">
+        <img src="/img/Qcat-icon.png" alt="Q000020 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(13)">ED Plants</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(14)">
+        <img src="/img/Qcat-icon.png" alt="Q000024 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(14)">ED Vessels and Garments</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(15)">
+        <img src="/img/Qcat-icon.png" alt="Q000031 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(15)">ED Word List C</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(16)">
+        <img src="/img/Qcat-icon.png" alt="Q000268 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(16)">ED Word List F</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIa</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Early Dynastic IIIb/Lexical/Ebla</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(17)">
+        <img src="/img/Qcat-icon.png" alt="Q000038 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(17)">Ebla Sign List</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Sign Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIb</td>
+    <td style="width: 17%;">Ebla</td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Early Dynastic IIIb/Lexical/unknown</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(18)">
+        <img src="/img/Qcat-icon.png" alt="Q000299 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(18)">ED Animals B</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIb</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(19)">
+        <img src="/img/Qcat-icon.png" alt="Q000006 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(19)">ED Lu E</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIb</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(20)">
+        <img src="/img/Qcat-icon.png" alt="Q000010 in Q catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(20)">ED Personal Names and Professions</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Thematic Word Lists</td>
+    <td style="width: 17%;">Early Dynastic IIIb</td>
+    <td style="width: 17%;"> </td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Ebla/Lexical/Ebla</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(21)">
+        <img src="/img/cdli-icon.png" alt="P242176 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(21)">MEE 03, 043 + unpublished fragment</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Names and professions list</td>
+    <td style="width: 17%;">Ebla</td>
+    <td style="width: 17%;">Ebla</td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Lagash II/Lexical/Nippur</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(22)">
+        <img src="/img/cdli-icon.png" alt="P231774 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(22)">PBS 05, 141</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Lagash II</td>
+    <td style="width: 17%;">Nippur</td>
+  </tr>
+  <tr class="ce-heading">
+    <td class="h2 border-top heading" colspan="6">Ur III/Administrative/unclear</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(23)">
+        <img src="/img/cdli-icon.png" alt="P249794 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(23)">AUAM 73.2258</a>
+    </td>
+    <td style="width: 17%;">unpublished unassigned</td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Ur III</td>
+    <td style="width: 17%;">unclear</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(24)">
+        <img src="/img/cdli-icon.png" alt="P117394 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(24)">MVN 13, 621</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Ur III</td>
+    <td style="width: 17%;">unclear</td>
+  </tr>
+  <tr xmlns:ce="http://oracc.org/ns/ce/1.0" xmlns:xh="http://www.w3.org/1999/xhtml">
+    <td class="ce-xmd-icon">
+      <a href="javascript:catItemView(25)">
+        <img src="/img/cdli-icon.png" alt="P117395 in CDLI catalog"/>
+      </a>
+    </td>
+    <td style="width: auto">
+      <a href="javascript:itemView(25)">MVN 13, 622</a>
+    </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;"> </td>
+    <td style="width: 17%;">Ur III</td>
+    <td style="width: 17%;">unclear</td>
+  </tr>
+</table>
+</div>
+    <div class="p3-form banner bborder-top">
+      <form name="p3.form" id="p3.form" action="/oracc" target="_top" method="post" accept-charset="utf-8">
+	
+	<div id="topButtons" class="p3-nomin">
+	  <input type="hidden" name="project" value="epsd2"/>
+	  <input type="hidden" name="p3do" value="default"/>
+	  <input type="hidden" name="pagesize" value="25"/>
+	  <input type="hidden" name="page" value="1"/>
+	  <input type="hidden" name="item" value="0"/>
+	  <p>
+	    <span class="button spacer">
+	      <button type="submit" name="oracc-home" value="ORACC"/>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" name="help" value="HELP" onclick="p3help"/>
+	    </span>
+	    <span class="pll spacer"><select name="seturl" id="seturl" onchange="p3do('seturl');submit()"><option value="oracc">Oracc Home</option><option value="project">Project Home</option></select></span> 
+	    <span class="button spacer">
+	      <button type="submit" name="corpus" value="RESET" onclick="p3do('corpus')"/>
+	    </span>
+	    <span class="glossaries spacer"><select name="setglo" id="setglo" onchange="p3do('setglo');submit()"><option value="#none">Glossaries</option><option value="qpn">Proper Nouns</option><option value="qpn-x-celest">Celestial Names</option><option value="qpn-x-divine">Divine Names</option><option value="qpn-x-ethnic">Ethnic Names</option><option value="qpn-x-months">Month Names</option><option value="qpn-x-object">Object Names</option><option value="qpn-x-people">People</option><option value="qpn-x-places">Places</option><option value="qpn-x-temple">Temples</option><option value="qpn-x-waters">Watercourses</option><option value="sux">Sumerian</option></select></span>
+	    <span class="button spacer">
+	      <button type="button" name="advsrch" value="ADVANCED SEARCH" onclick="p3asearch"/>
+	    </span>
+	  </p>
+	</div>
+
+	<div id="banner" class="p3-nomin">
+	  <h1>ePSD2: electronic PSD 2nd Edition</h1>
+	</div>
+
+	<div id="controls" class="xforms p3-nomin">
+	  <p class="center">
+	    <label for="unicode">
+	    <input type="checkbox" id="unicode" name="unicode" value=""/>Unicode</label>
+	    
+	    <span class="quick-search">
+	      <button type="submit" name="qsearch" id="qsearch" onclick="p3do('qsearch')"/>
+	    </span>
+	    
+	    <select name="default-index" onchange="p3do('qsearch');submit()">
+	      <option value="txt">Transliterations</option>
+	      <option value="lem">Lemmatization</option>
+	      <option value="tra">Translations</option>
+	      <option value="cat">Catalogue</option>
+	    </select>
+	    
+	    <input type="text" name="srch" size="30" value=""/>
+	  </p>
+	</div>
+
+	<div id="navLeft" class="banner bborder-bot">
+	  <p class="center p3-items">
+	    
+	  </p>
+	  <p class="center smash p3-pages">
+	    <span class="outline-sorter"><select xmlns:ev="http://www.w3.org/2001/xml-events" xmlns="" name="default"><option value="genre,period,provenience">Genre/Time/Place</option><option value="genre,provenience,period">Genre/Place/Time</option><option value="period,genre,provenience">Time/Genre/Place</option><option value="period,provenience,genre">Time/Place/Genre</option><option value="provenience,genre,period">Place/Genre/Time</option><option value="provenience,period,genre">Place/Time/Genre</option></select><select xmlns:ev="http://www.w3.org/2001/xml-events" xmlns="" name="special"><option value="genre,period,provenience">Genre/Time/Place</option><option value="genre,provenience,period">Genre/Place/Time</option><option value="period,genre,provenience">Time/Genre/Place</option><option value="period,provenience,genre">Time/Place/Genre</option><option value="provenience,genre,period">Place/Genre/Time</option><option value="provenience,period,genre">Place/Time/Genre</option></select></span>
+	  </p>
+	</div>
+	
+	<div id="navRight" class="banner bborder-bot">
+
+	  <div class="p3-items p3-noglo">
+	    <p class="toccenter bg-dk">
+	      <span class="arrow">
+		<select name="item-state" onchange="submit()">
+		  <option value="off">Exit item mode</option>
+		  <option value="cat">Catalogue items</option>
+		  <option value="txt">Text items</option>
+		</select>
+	      </span>
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('itemback')"/>
+	      </span>
+	      
+	      <label for="itemset"><input id="itemset" name="itemset" type="text" onchange="p3do('itemset')" size="3" value=""/>Item </label>
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&gt;&gt;" onclick="p3do('itemfwd')"/>
+	      </span>
+	      
+	      <span class="translations"><select name="setlang" id="setlang" onchange="p3do('setlang');submit()"/></span>
+	      
+	      <label for="transonly">
+	      <input type="checkbox" name="transonly" id="transonly" value=""/> only</label>
+	    </p>
+	  </div>
+	
+	  <div class="p3-pages">
+	    
+	    <p class="toccenter bg-dk">
+	      <span class="arrow">
+		<button type="submit" name="unzoom" value="Exit zoom mode" onclick="p3do('unzoom')"/>
+	      </span>
+	      
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pageback')"/>
+	      </span>
+	      
+	      <label for="pageset"><input id="pageset" name="pageset" type="text" onchange="p3do('pageset')" size="3" value=""/>Page </label>
+
+	      <span class="arrow">
+		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pagefwd')"/>
+	      </span>
+	      items.
+	      
+	      <label for="pageset"><input id="pageset" name="pageset" type="text" onchange="p3do('pagesize')" size="3"/>Page-size: </label>
+
+	      <span class="cetype">
+		<select name="cetype">
+		  <option value="line">Line</option>
+		  <option value="unit">Sentence</option>
+		  <option value="kwic">KWIC</option>
+		</select>
+	      </span>
+	    </p>
+	  </div>
+	</div>
+      </form>
+    </div>    
+  </body>
+</html>
+</body></html>
