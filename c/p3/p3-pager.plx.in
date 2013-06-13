@@ -48,11 +48,11 @@ if ($p{'p3do'} eq 'itemstate') {
     $rt{'itemtype'} = $p{'itemtype'};
 }
 
-if ($p{'p3do'} eq 'defaultsortstate') {
-    $rt{'defaultsorttype'} = $p{"p3OSdefault"};
+if ($p{'p3do'} eq 'defaultSortstate') {
+    $rt{'sorttype'} = $p{"p3OSdefault"};
     reinitialize();
-} elsif ($p{'p3do'} eq 'specialsortstate') {
-    $rt{'specialsorttype'} = $p{"p3OSspecial"};
+} elsif ($p{'p3do'} eq 'specialSortstate') {
+    $rt{'sorttype'} = $p{"p3OSspecial"};
     reinitialize();
 }
 
@@ -366,10 +366,10 @@ run_page_maker {
 	my $link_fields = `@@ORACC@@/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 $lfopt -S$p{'state'} @offset_arg -i$list_type -p $p{'project'} >$tmpdir/content.xml");
+	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$list_type -p $p{'project'} >$tmpdir/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$tmpdir/content.xml");
     } elsif ($list_type eq 'cbd') {
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 -S$p{'state'} -icbd/$p{'glossary'} -p $p{'project'} >$tmpdir/content.xml");
+	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 -S$rt{'outl'} -icbd/$p{'glossary'} -p $p{'project'} >$tmpdir/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$tmpdir/content.xml");    
     }
 }
@@ -458,7 +458,7 @@ setup_pg_args {
 
     push @pg_args, '-q', if $list_type eq 'cbd';
     if ($rt{'sorttype'}) {
-	my $tmp = $sort;
+	my $tmp = $rt{'sorttype'};
 	$tmp =~ tr/_/^/; # escape field names like ch_no
 	push(@pg_args, "-s$tmp") if $tmp;
     }

@@ -19,7 +19,7 @@
 	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
 	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
 	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
-	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl@@"/>
+	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
 	<input type="hidden" name="p3do" id="p3do" value="default"/>
 	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
 	<input type="hidden" name="page" p3:value="@@cgivar:page/1@@"/>

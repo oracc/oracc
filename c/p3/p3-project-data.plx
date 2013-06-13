@@ -240,9 +240,9 @@ compute_select1 {
 	my $labels = ORACC::XPD::Util::option("outline-$mode-sort-labels")
 	    || 'Time,Genre,Place';
 	my @select1 = ();
-	push @select1, "<select xmlns=\"http://www.w3.org/1999/xhtml\" id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('sortstate')\">";
+	push @select1, "<select xmlns=\"http://www.w3.org/1999/xhtml\" id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('${mode}Sortstate')\">\n";
 	push @select1, make_select1($fields,$labels);
-	push @select1, '</select>';
+	push @select1, '</select>', "\n";
 	@select1;
     } else {
 	();
@@ -286,7 +286,7 @@ make_select1 {
 	my $vdes = $value;
 	my $label = join('/',@vhmap{@values});
 	push @select1, 
-	"<option value=\"$value\">$label</option>";
+	"  <option value=\"$value\">$label</option>\n";
     } while (nextPermute(@values));
     @select1;
 }

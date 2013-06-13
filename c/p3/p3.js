@@ -70,20 +70,21 @@ function selectItemByValue(elmnt, value) {
 }
 
 function p3PageControls() {
+    var outlineState = document.getElementById('p3outl').value;
+    var newSorttype = document.getElementById('sorttype').value;
     document.getElementById('p3itemnav').style.display= 'none';
     document.getElementById('p3pagenav').style.display= 'block';
-    var outlineState = document.getElementById('p3outl');
     if (outlineState === 'default') {
 	document.getElementById('p3OSspecial').style.display = 'none';
 	var d = document.getElementById('p3OSdefault');
-	d.style.display = 'block';
-	selectItemByValue(d, document.getElementByID('p3currentOS');
+	d.style.display = 'inline';
+	selectItemByValue(d, newSorttype);
     } else {
 	if (outlineState === 'special') {
 	    document.getElementById('p3OSdefault').style.display = 'none';
 	    var d = document.getElementById('p3OSdefault');
-	    d.style.display = 'block';
-	    selectItemByValue(d, document.getElementByID('p3currentOS');
+	    d.style.display = 'inline';
+	    selectItemByValue(d, newSorttype);
 	} else {
 	    document.getElementById('p3OSspecial').style.display = 'none';
 	    document.getElementById('p3OSdefault').style.display = 'none';

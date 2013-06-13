@@ -20,7 +20,7 @@ use integer;
 #
 # p3form: the UI state--full or mini
 #
-# p3outl: the outline state--default or special
+# p3outl: the outline state--default, special or none
 #
 # Each of these variables is computed on entry to p3-pager.plx,
 # inserted into the %rt array and echoed into the hidden fields
@@ -46,6 +46,14 @@ if ($p{'p3do'} eq 'itemstate') {
     }
 } elsif ($p{'item'}) {
     $rt{'itemtype'} = $p{'itemtype'};
+}
+
+if ($p{'p3do'} eq 'defaultSortstate') {
+    $rt{'sorttype'} = $p{"p3OSdefault"};
+    reinitialize();
+} elsif ($p{'p3do'} eq 'specialSortstate') {
+    $rt{'sorttype'} = $p{"p3OSspecial"};
+    reinitialize();
 }
 
 if ($p{'p3do'} eq 'pagefwd') {
@@ -205,6 +213,12 @@ find_xmdoutline_sub {
 }
 
 sub
+reinitialize {
+    $p{'page'} = 1;
+    $p{'item'} = 0;
+}
+
+sub
 run_form_maker {
     my $t = "/usr/local/oracc/pub/$p{'project'}/p3.html";
     print '<!DOCTYPE html>', "\n";
@@ -352,10 +366,10 @@ run_page_maker {
 	my $link_fields = `/usr/local/oracc/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 $lfopt -S$p{'state'} @offset_arg -i$list_type -p $p{'project'} >$tmpdir/content.xml");
+	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$list_type -p $p{'project'} >$tmpdir/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$tmpdir/content.xml");
     } elsif ($list_type eq 'cbd') {
-	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 -S$p{'state'} -icbd/$p{'glossary'} -p $p{'project'} >$tmpdir/content.xml");
+	xsystem("cat $tmpdir/pgwrap.out | /usr/local/oracc/bin/ce2 -3 -S$rt{'outl'} -icbd/$p{'glossary'} -p $p{'project'} >$tmpdir/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$tmpdir/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$tmpdir/content.xml");    
     }
 }
@@ -407,8 +421,16 @@ set_p3_state {
     # content constructor based on the $rt{'itemtype'} parameter (set by p3itemtype).
     if ($p{'item'}) {
 	$rt{'what'} = 'item';
+	$rt{'outl'} = 'none';
     } else {
 	$rt{'what'} = 'page';
+	if ($rt{'prod'} eq 'list') {
+	    # some lists need default and some special--this needs more working out
+	    $rt{'outl'} eq 'default';
+	    $rt{'sorttype'} = $p{'p3OSdefault'};
+	} else {
+	    # handle special list where necessary
+	}
     }
 }
 
@@ -435,8 +457,8 @@ setup_pg_args {
 		"-n$p{'page'}", "-S$tmpstate");
 
     push @pg_args, '-q', if $list_type eq 'cbd';
-    if ($tmpstate && $p{"$tmpstate-sort"}) {
-	my $tmp = $p{"$tmpstate-sort"};
+    if ($rt{'sorttype'}) {
+	my $tmp = $rt{'sorttype'};
 	$tmp =~ tr/_/^/; # escape field names like ch_no
 	push(@pg_args, "-s$tmp") if $tmp;
     }
