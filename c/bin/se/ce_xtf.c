@@ -34,6 +34,7 @@ int kwic_pivot_pending = 0;
 int l2 = 1;
 int line_context = 0;
 int line_count = 0;
+int p3 = 0;
 int xml_output = 1;
 int xtf_context = 1;
 int xtf_selecting = 0;
@@ -694,7 +695,7 @@ main(int argc, char * const*argv)
 
   init_wm_names();
 
-  options(argc, argv, "2c:f:i:lkm:p:tuvx");
+  options(argc, argv, "23c:f:i:lkm:p:tuvx");
 
   if (!project || (!ce_index && !xtf_context))
     {
@@ -752,6 +753,9 @@ opts(int argc, char *arg)
     {
     case '2':
       l2 = 1;
+      break;
+    case '3':
+      p3 = 1;
       break;
     case 'c':
       id = arg;

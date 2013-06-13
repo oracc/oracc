@@ -71,6 +71,7 @@ my @top_l = sort keys %top_l;
 ### Compute languages used in translations
 my @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
 chomp @translangs;
+@translangs = ('en') unless $#translangs >= 0;
 
 ##
 ## Also:
@@ -239,7 +240,7 @@ compute_select1 {
 	my $labels = ORACC::XPD::Util::option("outline-$mode-sort-labels")
 	    || 'Time,Genre,Place';
 	my @select1 = ();
-	push @select1, "<select name=\"$mode\">";
+	push @select1, "<select xmlns=\"http://www.w3.org/1999/xhtml\" id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('sortstate')\">";
 	push @select1, make_select1($fields,$labels);
 	push @select1, '</select>';
 	@select1;

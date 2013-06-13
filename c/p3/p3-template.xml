@@ -1,145 +1,140 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:p3="http://oracc.org/ns/p3/1.0">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
     <link rel="stylesheet" type="text/css" href="/css/p2.css" />
-    <link rel="stylesheet" type="text/css" href="/css/p3.css" />
-    <script src="js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
-    <script src="js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
+    <link rel="stylesheet" type="text/css" href="/p3link.css" />
+    <script src="/js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
+    <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
     <title>P3</title>
   </head>
-  <body onload="setFrameHeights(); onresize=setFrameHeights">
+  <body onload="p3controls(); p3setHeight(); onresize=p3setHeight">
+    <form id="p3form" action="/cgi-bin/p3"
+	  target="_top" method="post" accept-charset="utf-8">
+      <div id="p3controls" class="banner bborder-top">
+	<input type="hidden" name="project"/><!-- value supplied by p3-project.xsl-->
+	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
+	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
+	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
+	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
+	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl@@"/>
+	<input type="hidden" name="p3do" id="p3do" value="default"/>
+	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
+	<input type="hidden" name="page" p3:value="@@cgivar:page/1@@"/>
+	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
+	<input type="hidden" name="itemlist" p3:value="@@runtime:itemlist@@"/>
+	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
+	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype/genre,time,place@@"/>
+	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
+	<input type="hidden" name="transonly" id="transonly" p3:value="@@cgivar:transonly/0@@"/>
+	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
+	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
+	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
+	<input type="hidden" name="uzpage" p3:value="@@runtime:uzpage@@"/>
 
-@
-
-    <div class="p3-form banner bborder-top">
-      <form name="p3.form" id="p3.form" action="/oracc"
-	    target="_top" method="post" accept-charset="utf-8">
-	<!-- elements with p3-nomin in class do not display in minimal mode -->
-	<div id="topButtons" class="p3-nomin">
-	  <input type="hidden" name="project"/><!-- value supplied by p3-project.xsl-->
-	  <input type="hidden" name="p3do" value="default"/>
-	  <input type="hidden" name="pagesize" value="25"/>
-	  <input type="hidden" name="page" value="1"/>
-	  <input type="hidden" name="item" value="0"/>
+	<div id="topButtons">
 	  <p>
 	    <span class="button spacer">
-	      <button type="submit" name="oracc-home" value="ORACC"/>
+	      <button type="button" onclick="p3help()">HELP</button>
 	    </span>
 	    <span class="button spacer">
-	      <button type="button" name="help" value="HELP" onclick="p3help"/>
+	      <button type="button" name="oracc-home" onclick="window.location='/'">ORACC</button>
 	    </span>
 	    <span class="pll spacer"/> <!-- N.B. MUST IMPLEMENT Back to ... here -->
 	    <span class="button spacer">
-	      <button type="submit" name="corpus" value="RESET" onclick="p3do('corpus')"/>
+	      <button type="button" onclick="window.location='/@@cgivar:project@@/corpus'">RESET</button>
 	    </span>
 	    <span class="glossaries spacer"/>
 	    <span class="button spacer">
-	      <button type="button" name="advsrch" value="ADVANCED SEARCH" onclick="p3asearch"/>
+	      <button type="button" name="advsrch" onclick="p3asearch">ADVANCED SEARCH</button>
 	    </span>
 	  </p>
 	</div>
 
-	<div id="banner" class="p3-nomin">
+	<div id="p3banner">
 	  <h1><span id="xpd-abbrev"/>: <span id="xpd-name"/></h1>
 	</div>
 
-	<div id="controls" class="xforms p3-nomin">
+	<div id="p3search">
 	  <p class="center">
 	    <label for="unicode">
-	    <input type="checkbox" id="unicode" name="unicode" value="@@cgivar:unicode@@"/>Unicode</label>
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>Unicode</label>
 	    
 	    <span class="quick-search">
-	      <button type="submit" name="qsearch" id="qsearch" onclick="p3do('qsearch')"/>
+	      <button type="submit" name="qsearch" id="qsearch" onclick="p3action('qsearch')">SEARCH</button>
 	    </span>
 	    
-	    <select name="default-index" onchange="p3do('qsearch');submit()">
+	    <select name="default-index" onchange="p3action('qsearch');submit()">
 	      <option value="txt">Transliterations</option>
 	      <option value="lem">Lemmatization</option>
 	      <option value="tra">Translations</option>
 	      <option value="cat">Catalogue</option>
 	    </select>
 	    
-	    <input type="text" name="srch" size="30" value="@@cgivar:srch@@"/>
+	    <input type="text" name="srch" size="30" p3:value="@@cgivar:srch@@"/>
 	  </p>
 	</div>
 
-	<div id="navLeft" class="banner bborder-bot">
+	<div id="p3navLeft" class="banner bborder-bot">
 	  <p class="center p3-items">
-	    <!-- IMPLEMENT THIS ON CLIENT SIDE USING JS AND DON'T DISPLAY IT IF JS IS NOT ENABLED
-		 <xforms:label>Hide Outline Pane</xforms:label>
-		 <xforms:action ev:event="DOMActivate">
-		 <xforms:setvalue ref="instance('pager')/outline-state" value="'hide'"/>
-		 <xforms:send submission="right100"/>
-		 </xforms:action>
-		 <xforms:label>Show Outline Pane</xforms:label>
-		 <xforms:action ev:event="DOMActivate">
-		 <xforms:setvalue ref="instance('pager')/outline-state" value="'show'"/>
-		 <xforms:send submission="right80"/>
-		 </xforms:action>
-	    -->
+	    <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
 	  </p>
 	  <p class="center smash p3-pages">
 	    <span class="outline-sorter"/>
 	  </p>
 	</div>
 	
-	<div id="navRight" class="banner bborder-bot">
-
-	  <div class="p3-items p3-noglo">
+	<div id="p3navRight" class="banner bborder-bot">
+	  <div id="p3itemnav" class="p3-items p3-noglo">
 	    <p class="toccenter bg-dk">
-	      <span class="arrow">
-		<select name="item-state" onchange="submit()">
+	      <span class="p3arrow">
+		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
 		  <option value="off">Exit item mode</option>
 		  <option value="cat">Catalogue items</option>
-		  <option value="txt">Text items</option>
+		  <option value="xtf">Text items</option>
 		</select>
 	      </span>
 	      
-	      <span class="arrow">
-		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('itemback')"/>
+	      <span class="p3arrow">
+		<button type="button" name="larrow" onclick="p3action('itemback')">&lt;&lt;</button>
 	      </span>
 	      
-	      <label for="itemset"
-		     ><input id="itemset" name="itemset" type="text" onchange="p3do('itemset')" 
-		     size="3" value="@@cgivar:itemset@@"/>Item </label>
-	      of @@runtime:items@@
+	      Item <input id="item" name="item" type="text" onchange="p3action('itemset')" 
+	      size="3" p3:value="@@cgivar:item@@"/>
+	      of <span p3:value="@@runtime:items@@"/>
 	      
-	      <span class="arrow">
-		<button type="submit" name="larrow" value=">>" onclick="p3do('itemfwd')"/>
+	      <span class="p3arrow">
+		<button type="button" name="rarrow" onclick="p3action('itemfwd')">>></button>
 	      </span>
 	      
 	      <span class="translations"/>
-	      
-	      <label for="transonly">
-	      <input type="checkbox" name="transonly" id="transonly" value="@@cgivar:transonly@@"/> only</label>
+	      <input type="checkbox" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/> only
 	    </p>
 	  </div>
-	
-	  <div class="p3-pages">
-	    
+	  
+	  <div id="p3pagenav" class="p3-pages">
 	    <p class="toccenter bg-dk">
-	      <span class="arrow">
-		<button type="submit" name="unzoom" value="Exit zoom mode" onclick="p3do('unzoom')"/>
+	      <span class="p3arrow" id="p3zoom">
+		<button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
 	      </span>
 	      
-	      <span class="arrow">
-		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pageback')"/>
+	      <span class="p3arrow">
+		<button type="button" name="larrow" onclick="p3action('pageback')">&lt;&lt;</button>
 	      </span>
 	      
-	      <label for="pageset"
-		     ><input id="pageset" name="pageset" type="text" onchange="p3do('pageset')" 
-		     size="3" value="@@cgivar:pageset@@"/>Page </label>
-	      of @@runtime:pages@@
+	      Page <input id="pageset" name="pageset" type="text" onchange="p3action('pageset')" 
+	      size="3" p3:value="@@cgivar:page@@"/>
+	      of <span p3:value="@@runtime:pages@@"/>
 
-	      <span class="arrow">
-		<button type="submit" name="larrow" value="&lt;&lt;" onclick="p3do('pagefwd')"/>
+	      <span class="p3arrow">
+		<button type="button" name="rarrow" onclick="p3action('pagefwd')">>></button>
 	      </span>
 	      
-	      <label for="pageset"
-		     ><input id="pageset" name="pageset" type="text" onchange="p3do('pagesize')" size="3"/>Page-size: </label>
+	      Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>
 
-	      <span class="cetype">
+	      <span class="cetype" id="p3cetype">
 		<select name="cetype">
 		  <option value="line">Line</option>
 		  <option value="unit">Sentence</option>
@@ -149,7 +144,11 @@
 	    </p>
 	  </div>
 	</div>
-      </form>
-    </div>    
+      </div>
+      <div id="p3content">
+	<!-- p3-pager.plx inserts the outline and content divs when it sees the following line -->
+	<p>@</p>
+      </div>
+    </form>
   </body>
 </html>

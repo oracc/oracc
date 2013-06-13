@@ -22,6 +22,8 @@
 
 static int nfields = 0, nwidths = 0;
 
+extern int p3;
+
 extern int item_offset, tabbed;
 extern const char *arg_fields;
 extern const char *mode, *project;
@@ -191,11 +193,14 @@ xmdprinter2(const char *pq)
       xmd_init();
 
       if (!url_base)
-	url_base = malloc(strlen(project) + strlen("javascript:catItemView()")+8);
+	url_base = malloc(strlen(project) + strlen("javascript:catItemView('cat',)")+8);
 #if 0
       sprintf(url_base,"http://oracc.museum.upenn.edu/%s/cat",project);
 #else
-      sprintf(url_base, "javascript:catItemView(%d)", item_offset+nth);
+      if (p3)
+	sprintf(url_base, "javascript:p3item('cat',%d)", item_offset+nth);
+      else
+	sprintf(url_base, "javascript:catItemView(%d)", item_offset+nth);
 #endif
 
       /* pq is a qualified ID, so use the project from that */
@@ -267,10 +272,20 @@ xmdprinter2(const char *pq)
 	      pctbuf[3] = '\0';
 	      pct = pctbuf;
 	    }
-	  if (this_is_designation || i < link_fields)
-	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+	  if (p3)
+	    {
+	      if (this_is_designation || i < link_fields)
+		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:p3item('xtf',%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+	      else
+		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+	    }
 	  else
-	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+	    {
+	      if (this_is_designation || i < link_fields)
+		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+	      else
+		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+	    }
 	}
       fputs("</tr></ce:data>",stdout);
     }

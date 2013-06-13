@@ -5,7 +5,7 @@
 #include "sortinfo.h"
 #include "pg.h"
 
-extern int zoomid, xml_outline;
+extern int zoomid, xml_outline, p3;
 extern const char *outline_keys[];
 int uzpage = -1;
 int zprev = -1;
@@ -123,11 +123,18 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
 		}
 	      else
 		{
-		  fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"pz(1,%d)\">%s [%ld]</a></p>", 
-			  zoomstr,
-			  o[i].sic->id + 1,
-			  (char*)xmlify(&sip->pool[o[i].poffsets[j]]),
-			  (long)o[i].count);
+		  if (p3)
+		    fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"p3zoom(%d)\">%s [%ld]</a></p>", 
+			    zoomstr,
+			    o[i].sic->id + 1,
+			    (char*)xmlify(&sip->pool[o[i].poffsets[j]]),
+			    (long)o[i].count);
+		  else
+		    fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"pz(1,%d)\">%s [%ld]</a></p>", 
+			    zoomstr,
+			    o[i].sic->id + 1,
+			    (char*)xmlify(&sip->pool[o[i].poffsets[j]]),
+			    (long)o[i].count);
 		}
 	      ++j;
 	      while (j < nlevels)
@@ -153,11 +160,18 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
 		    }
 		  else
 		    {
-		      fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"pz(1,%d)\">%s [%ld]</a></p>", 
-			      zoomstr,
-			      o[i].sic->id + 1, 
-			      (char*)xmlify(&sip->pool[o[i].poffsets[j]]), 
-			      (long)o[i].count);
+		      if (p3)
+			fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"p3zoom(%d)\">%s [%ld]</a></p>", 
+				zoomstr,
+				o[i].sic->id + 1,
+				(char*)xmlify(&sip->pool[o[i].poffsets[j]]),
+				(long)o[i].count);
+		      else
+			fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"pz(1,%d)\">%s [%ld]</a></p>", 
+				zoomstr,
+				o[i].sic->id + 1, 
+				(char*)xmlify(&sip->pool[o[i].poffsets[j]]), 
+				(long)o[i].count);
 		    }
 		  ++j;
 		}

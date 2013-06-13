@@ -23,6 +23,8 @@ extern char *strdup(const char *);
 
 extern const char *xmd_fields, *xmd_widths;
 
+int p3 = 0;
+
 const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
 const char *idattr = "xml:id";
 int echoing = 0;
@@ -514,7 +516,7 @@ int
 main(int argc, char * const*argv)
 {
   exit_on_error = TRUE;
-  options(argc, argv, "2a:c:f:i:l:m:o:p:S:tvx");
+  options(argc, argv, "23a:c:f:i:l:m:o:p:S:tvx");
 
   if (!project || !ce_index)
     {
@@ -578,6 +580,9 @@ opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case '3':
+      p3 = 1;
+      break;
     case 'a':
       link_fields = atoi(arg);
       break;

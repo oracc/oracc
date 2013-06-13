@@ -16,13 +16,15 @@ AM_CFLAGS=-pedantic -g -Wall
 
 AM_LDFLAGS=-L/opt/local/lib
 
-bin_PROGRAMS=pgcsi pg pgu showcsi ptoqtest pd pg2 xisperiods
+bin_PROGRAMS=pgcsi pgu showcsi ptoqtest pd pg2 xisperiods
+
+#pg 
 
 pd.c: pd.c.in
 	$(ORACCIFY) pd.c.in
 
-pg.c: pg.c.in
-	$(ORACCIFY) pg.c.in
+#pg.c: pg.c.in
+#	$(ORACCIFY) pg.c.in
 
 pg2.c: pg2.c.in
 	$(ORACCIFY) pg2.c.in
@@ -33,9 +35,9 @@ ptoq.c: ptoq.c.in
 pgcsi_SOURCES=pgcsi.c sortinfo.c
 pgcsi_LDADD = @top_srcdir@/c/lib/liboracc.la
 
-pg_SOURCES=pg.c sortinfo.c sort.c redblack.c sicache.c \
-	debug.c page.c outline.c ptoq.c
-pg_LDADD = -L/opt/local/lib @top_srcdir@/c/lib/liboracc.la -lgdbm
+#pg_SOURCES=pg.c sortinfo.c sort.c redblack.c sicache.c \
+#	debug.c page.c outline.c ptoq.c
+#pg_LDADD = -L/opt/local/lib @top_srcdir@/c/lib/liboracc.la -lgdbm
 
 pg2_SOURCES=pg2.c sortinfo.c sort.c redblack.c sicache.c \
 	debug.c page.c outline.c ptoq.c p2.c

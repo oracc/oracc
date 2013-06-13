@@ -59,7 +59,7 @@
 <xsl:template match="xh:p[@class='glossaries']|xh:span[contains(@class,'glossaries')]">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
-    <select name="setglo" id="setglo" onchange="p3do('setglo');submit()">
+    <select id="setglo" onchange="selectGlossary('{$project}',this);">
       <option value="#none">Glossaries</option>
       <xsl:for-each select="document($project-data)//glossary">
 	<option value="{@abbrev}"><xsl:value-of select="."/></option>
@@ -121,6 +121,7 @@
 </xsl:template>
 
 <xsl:template name="pll-css">
+  <link rel="stylesheet" type="text/css" href="/{$project}/p2.css" />
   <style type="text/css">
     <xsl:text>.pll .value select option { border-bottom: 1px solid red; }&#xa;</xsl:text>
 <!--

@@ -12,7 +12,7 @@
 #include "npool.h"
 #include "p2.h"
 
-int l2 = 1, o2 = 0;
+int l2 = 1, o2 = 0, p3 = 0;
 
 int csi_debug = 0;
 int fragment = 0;
@@ -97,7 +97,7 @@ main(int argc, char **argv)
   struct page *pages = NULL;
   int nitems = 0, nlevels = 0, npages = 0;
 
-  options(argc,argv,"02dg:fh:l:mn:o:p:P:qs:S:xz:");
+  options(argc,argv,"023dg:fh:l:mn:o:p:P:qs:S:xz:");
 
   if (!project)
     project = "cdli";
@@ -257,6 +257,9 @@ opts(int argc, char *arg)
       break;
     case '2':
       l2 = 1;
+      break;
+    case '3':
+      p3 = 1;
       break;
 #if 0
     case 'c':
