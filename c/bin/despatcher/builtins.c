@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.4 */
+/* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N builtins -tT builtins.g  */
 /* Computed positions: -k'1,5' */
 
@@ -31,6 +31,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 
 #line 1 "builtins.g"
 
+#include <string.h>
 #include "resolver.h"
 
 #define TOTAL_KEYWORDS 14
@@ -81,7 +82,7 @@ hash (str, len)
       24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
       24, 24, 24, 24, 24, 24
     };
-  register int hval = len;
+  register int hval = (int)len;
 
   switch (hval)
     {
@@ -100,7 +101,7 @@ hash (str, len)
 
 #ifdef __GNUC__
 __inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+#ifdef __GNUC_STDC_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif
@@ -112,37 +113,37 @@ builtins (str, len)
   static struct builtinstab wordlist[] =
     {
       {""}, {""}, {""},
-#line 17 "builtins.g"
+#line 18 "builtins.g"
       {"sig", 	   B_SIG},
-#line 10 "builtins.g"
+#line 11 "builtins.g"
       {"find",	   B_FIND},
       {""},
-#line 6 "builtins.g"
-      {"as", 	   B_AS},
 #line 7 "builtins.g"
+      {"as", 	   B_AS},
+#line 8 "builtins.g"
       {"atf", 	   B_ATF},
-#line 19 "builtins.g"
+#line 20 "builtins.g"
       {"xis", 	   B_XIS},
       {""}, {""}, {""},
-#line 16 "builtins.g"
+#line 17 "builtins.g"
       {"rpc",       B_RPC},
-#line 12 "builtins.g"
+#line 13 "builtins.g"
       {"itemside",  B_ITEMSIDE},
-#line 14 "builtins.g"
+#line 15 "builtins.g"
       {"pager",     B_XFORMS},
       {""},
-#line 18 "builtins.g"
+#line 19 "builtins.g"
       {"xforms",    B_XFORMS},
-#line 9 "builtins.g"
+#line 10 "builtins.g"
       {"doc", 	   B_DOC},
-#line 11 "builtins.g"
+#line 12 "builtins.g"
       {"itemmain",  B_ITEMMAIN},
       {""}, {""},
-#line 15 "builtins.g"
+#line 16 "builtins.g"
       {"results",   B_RESULTS},
-#line 13 "builtins.g"
+#line 14 "builtins.g"
       {"outline",   B_OUTLINE},
-#line 8 "builtins.g"
+#line 9 "builtins.g"
       {"datestamp", B_DATESTAMP}
     };
 

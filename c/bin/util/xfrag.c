@@ -7,8 +7,8 @@
 extern int options(int, char**,const char*);
 extern int optind;
 
-static int html_mode = 0, sig_fixer = 0;
-static int need_gdf_closer = 0;
+static int html_mode = 0, sig_fixer = 0, unwrap_html = 0;
+static int cued_printStart = 0, need_gdf_closer = 0;
 
 static const char *project = NULL;
 
@@ -58,6 +58,21 @@ printStart(struct frag *frag, const char *name, const char **atts)
 void
 printEnd(struct frag *frag, const char *name)
 {
+  if (unwrap_html)
+    {
+      if (!strcmp(name, "body"))
+	{
+	  fclose(frag->fp);
+	  exit(0);
+	}
+      else
+	{
+	  printText((const char *)charData_retrieve(), frag->fp);
+	  fprintf(frag->fp, "</%s>", name);
+	  return;
+	}
+    }
+
   printText((const char *)charData_retrieve(), frag->fp);
   fprintf(frag->fp, "</%s>", name);
   if (!--frag->nesting)
@@ -87,7 +102,24 @@ gdf_sH(void *userData, const char *name, const char **atts)
 {
   const char *xid = get_xml_id(atts);
 
-  if (xid && !strcmp(((struct frag*)userData)->xid, xid))
+  if (unwrap_html)
+    {
+      if (cued_printStart)
+	{
+	  cued_printStart = 0;
+	  printStart(userData, name, atts);
+	}
+      else if (!strcmp(name, "body"))
+	{
+	  charData_discard();
+	  cued_printStart = 1;
+	}
+      else if (((struct frag*)userData)->nesting)
+	printStart(userData, name, atts);
+      else
+	charData_discard();
+    }
+  else if (xid && !strcmp(((struct frag*)userData)->xid, xid))
     {
       charData_discard();
       printStart(userData, name, atts);
@@ -135,10 +167,12 @@ gdf_frag_from_file(const char *fname, const char *xml_id, FILE *outfp)
 int
 main(int argc, char **argv)
 {
-  options(argc, argv, "hp:s");
+  options(argc, argv, "hp:su");
   
   if (argv[optind] && argv[optind+1])
     gdf_frag_from_file(argv[optind], argv[optind+1], stdout);
+  else if (unwrap_html && argv[optind])
+    gdf_frag_from_file(argv[optind], NULL, stdout);
   return 0;
 }
 
@@ -153,8 +187,9 @@ opts(int argc, char *arg)
   switch (argc)
     {
     case 'h': html_mode = 1; break;
-    case 's': sig_fixer = 1; break;
     case 'p': project = arg; break;
+    case 's': sig_fixer = 1; break;
+    case 'u': unwrap_html = 1; break;
     default: return 1;
     }
   return 0;

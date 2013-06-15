@@ -107,19 +107,12 @@ lng_handler(struct component *components)
     show_components(components);
   else if (project)
     {
-#if 1
-      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p2-pager.plx", 
-	    "-p", cgi_arg("project", project), 
-	    "-p", cgi_arg("glossary", elements[0]),
+      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+	    cgi_arg("project", project), 
+	    cgi_arg("glos", elements[0]),
 	    NULL);
       perror("execl failed");
       exit(1);
-#else
-      char *tmp = malloc(strlen(project) + strlen(elements[0]) 
-			 + strlen("@@ORACC@@/www//cbd//overview.html") + 1);
-      sprintf(tmp, "@@ORACC@@/www/%s/cbd/%s/overview.html", project, elements[0]);
-      cat_html_file(tmp);
-#endif
     }
   else
     find(NULL, make_find_phrase("gls", elements[0], 1));
@@ -386,11 +379,11 @@ static int
 component_type(struct component *cp)
 {
   int ret = C_NONE;
-  (ret = pat_is_resource(cp))
-    || (ret = pat_is_selection(cp))
-    || (ret = pat_is_view(cp))
-    || (ret = pat_is_format(cp))
-    || (ret = pat_is_ui(cp));
+  (void)((ret = pat_is_resource(cp))
+	 || (ret = pat_is_selection(cp))
+	 || (ret = pat_is_view(cp))
+	 || (ret = pat_is_format(cp))
+	 || (ret = pat_is_ui(cp)));
 
   if (!ret && have_component[C_VIEW])
     {

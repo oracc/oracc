@@ -37,6 +37,14 @@ AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
+AC_SEARCH_LIBS(iconv,iconv)
+if test "$ac_cv_search" == "no"
+then
+   LIBICONV=
+else
+   LIBICONV=-liconv
+fi
+
 # Checking the version of QDBM with pkg-config
 if type pkg-config > /dev/null 2>&1
 then
@@ -118,7 +126,6 @@ AC_OUTPUT([Makefile
 	   c/l2/word/Makefile
 	   c/l2/xcl2/Makefile
 	   c/l2/xli/Makefile
-	   c/p3/Makefile
 	   misc/Makefile
 	   misc/admin/Makefile
 	   misc/agg/Makefile
@@ -152,6 +159,7 @@ AC_OUTPUT([Makefile
 	misc/oss2/Makefile
 	misc/otf/Makefile
 	misc/p2/Makefile
+	misc/p3/Makefile
 	misc/print/Makefile
 	misc/ptb/Makefile
 	misc/saxon/Makefile

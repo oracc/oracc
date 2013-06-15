@@ -7,6 +7,9 @@ main(int argc, char **argv, char **env) {
     const char *name;
     CGI_value  *value;
     int i;
+    extern int ccgi_verbose;
+
+    ccgi_verbose = 1;
 
     fputs("Content-type: text/plain\r\n\r\n", stdout);
     fputs("Environment:\r\n", stdout);

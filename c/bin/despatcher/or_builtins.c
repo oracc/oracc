@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype128.h>
 #include "resolver.h"
 
 static void as_handler(const char *session);
@@ -10,13 +11,10 @@ static void atf(void);
 static void datestamp(void);
 static void itemmain(const char *session, const char *list);
 static void itemside(const char *session, const char *list);
-static void legacy_urls(void);
 static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
-static void sig(const char *sig);
 static void xforms_handler(void);
-static void xis(const char *xlang, const char *xid);
 static char *xml_read_sans_content_length(size_t *lenp);
 static int xml_content(const char *ct);
 static char *xml_docelem(const char *xml);
@@ -27,7 +25,7 @@ typedef void(builtin)(const char *,const char *);
 builtin *builtins_handlers[] =
 {
   NULL, NULL, NULL, NULL, NULL, NULL, 
-  itemmain, itemside, outline, results, NULL, NULL, NULL, xis
+  itemmain, itemside, outline, results, NULL, NULL, NULL, NULL
 };
 
 void
@@ -67,12 +65,16 @@ or_builtins(void)
 	    case B_SIG:
 	      sig(elements[2]);
 	      break;
+	    case B_XIS:
+	      xis(elements[2], elements[3]);
+	      break;
 	    case B_ITEMMAIN:
 	    case B_ITEMSIDE:
 	    case B_OUTLINE:
 	    case B_RESULTS:
-	    case B_XIS:
 	      builtins_handlers[builtinsp->type](elements[2], elements[3]);
+	      break;
+	    case B_NONE:
 	      break;
 	    }
 	}
@@ -125,7 +127,7 @@ datestamp()
   char tmbuf[TM_MAX];
   time_t t = time(NULL);
   struct tm *gmt = gmtime(&t);
-  strftime(tmbuf, TM_MAX, "<date>%Y-%m-%dT%H:%M:%S%z</date>", gmt);
+  strftime(tmbuf, TM_MAX, "<date>%Y-%m-%dT%H:%M</date>", gmt);
   print_hdr_xml();
   fputs(tmbuf, stdout);
   exit(0);
@@ -209,28 +211,6 @@ rpc(void)
   do404();
 }
 
-static void
-sig(const char *sig)
-{
-  fprintf(stderr, "oracc-despatcher: project=`%s'; literal sig=`%s'\n", project, query_string);
-  execl("/usr/local/oracc/bin/sigmap", "sigmap", project, query_string, NULL);
-  perror("execl failed");
-}
-
-static void
-xis(const char *xlang, const char *xid)
-{
-  mode = "minimal";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
-	"-p", cgi_arg("project", project), 
-	"-p", cgi_arg("xis-lang", xlang),
-	"-p", cgi_arg("xis-id", xid),
-	"-p", cgi_arg("mode", mode),
-	NULL);
-  perror("execl failed");
-  exit(1);
-}
-
 /* All XForms handling from here on */
 static void
 xforms_handler(void)
@@ -294,11 +274,11 @@ xml_handler(char *xml, size_t len)
 	  char *out = malloc(1 + strlen("/var/tmp/oracc/pager//.xml") +
 			     strlen(session)+strlen(xml_type));
 	  char *prg = malloc(1 + strlen("/usr/local/oracc/bin/p2-.plx"));
+	  FILE *x = NULL;
 	  sprintf(out, "/var/tmp/oracc/pager/%s/%s.xml", session, xml_type);
 	  sprintf(prg, "/usr/local/oracc/bin/p2-%s.plx", xml_type);
 	  fprintf(stderr, "writing to %s", out);
-	  FILE *x = fopen(out, "w");
-	  if (x)
+	  if ((x = fopen(out, "w")))
 	    {
 	      xml[len] = 0;
 	      fwrite(xml, 1, len, x);

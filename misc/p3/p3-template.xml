@@ -5,16 +5,17 @@
     <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen"/>
     <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
     <link rel="stylesheet" type="text/css" href="/css/p2.css" />
-    <link rel="stylesheet" type="text/css" href="/p3link.css" />
+    <link rel="stylesheet" type="text/css" href="/css/p3.css" />
+    <link rel="stylesheet" type="text/css" href="/css/p3cbd.css" />
     <script src="/js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
     <title>P3</title>
   </head>
   <body onload="p3controls(); p3setHeight(); onresize=p3setHeight">
-    <form id="p3form" action="/cgi-bin/p3"
+    <form id="p3form" action="/pager"
 	  target="_top" method="post" accept-charset="utf-8">
       <div id="p3controls" class="banner bborder-top">
-	<input type="hidden" name="project"/><!-- value supplied by p3-project.xsl-->
+	<input type="hidden" name="project" value="@@PROJECT@@"/>
 	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
 	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
 	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
@@ -22,17 +23,18 @@
 	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
 	<input type="hidden" name="p3do" id="p3do" value="default"/>
 	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
-	<input type="hidden" name="page" p3:value="@@cgivar:page/1@@"/>
+	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
+	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
 	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
-	<input type="hidden" name="itemlist" p3:value="@@runtime:itemlist@@"/>
 	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
 	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype/genre,time,place@@"/>
+	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
 	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
 	<input type="hidden" name="transonly" id="transonly" p3:value="@@cgivar:transonly/0@@"/>
 	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
 	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
 	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
-	<input type="hidden" name="uzpage" p3:value="@@runtime:uzpage@@"/>
+	<input type="hidden" name="uzpage" id="uzpage" p3:value="@@cgivar:uzpage@@"/>
 
 	<div id="topButtons">
 	  <p>
@@ -42,9 +44,12 @@
 	    <span class="button spacer">
 	      <button type="button" name="oracc-home" onclick="window.location='/'">ORACC</button>
 	    </span>
-	    <span class="pll spacer"/> <!-- N.B. MUST IMPLEMENT Back to ... here -->
+	    <span class="back-to button spacer"/>
 	    <span class="button spacer">
-	      <button type="button" onclick="window.location='/@@cgivar:project@@/corpus'">RESET</button>
+	      <button type="button" name="project-home" onclick="window.location='/@@PROJECT@@'">PROJECT</button>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" onclick="window.location='/@@PROJECT@@/pager'">PAGER</button>
 	    </span>
 	    <span class="glossaries spacer"/>
 	    <span class="button spacer">
@@ -57,23 +62,25 @@
 	  <h1><span id="xpd-abbrev"/>: <span id="xpd-name"/></h1>
 	</div>
 
-	<div id="p3search">
+	<div id="p3srch">
 	  <p class="center">
 	    <label for="unicode">
-	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>Unicode</label>
-	    
-	    <span class="quick-search">
-	      <button type="submit" name="qsearch" id="qsearch" onclick="p3action('qsearch')">SEARCH</button>
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>Unicode</label> <!-- FIXME ?? -->
+
+	    <span class="qsrch">
+	      <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">SEARCH</button>
 	    </span>
-	    
-	    <select name="default-index" onchange="p3action('qsearch');submit()">
+
+	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
+
+	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('srchstate')">
 	      <option value="txt">Transliterations</option>
 	      <option value="lem">Lemmatization</option>
 	      <option value="tra">Translations</option>
 	      <option value="cat">Catalogue</option>
 	    </select>
-	    
-	    <input type="text" name="srch" size="30" p3:value="@@cgivar:srch@@"/>
+
+	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
 	  </p>
 	</div>
 
@@ -89,6 +96,7 @@
 	<div id="p3navRight" class="banner bborder-bot">
 	  <div id="p3itemnav" class="p3-items p3-noglo">
 	    <p class="toccenter bg-dk">
+
 	      <span class="p3arrow">
 		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
 		  <option value="off">Exit item mode</option>
@@ -134,8 +142,8 @@
 	      
 	      Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>
 
-	      <span class="cetype" id="p3cetype">
-		<select name="cetype">
+	      <span class="cetype">
+		<select id="p3cetype" name="p3cetype"  onchange="p3action('cestate')">
 		  <option value="line">Line</option>
 		  <option value="unit">Sentence</option>
 		  <option value="kwic">KWIC</option>

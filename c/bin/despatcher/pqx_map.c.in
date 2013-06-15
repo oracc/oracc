@@ -47,7 +47,6 @@ map_remaps(struct pqx_info **r, int rlen)
 #define CAT_LINE_MAX 128
   char *pqids_lst = malloc(strlen("@@ORACC@@/pub//cat/pqids.lst")
 				 + strlen(project) + 1);
-  char *proxy = NULL;
   char buf[CAT_LINE_MAX];
   (void)sprintf(pqids_lst, "@@ORACC@@/pub/%s/cat/pqids.lst", project);
   if (!access(pqids_lst, R_OK))
@@ -135,6 +134,7 @@ map_PQX(const char *text, int count)
 	  /* we didn't find all the replacements */
 	  fprintf(stderr, "%s not found\n", text);
 	  do404();
+	  return NULL;
 	}
       else
 	{

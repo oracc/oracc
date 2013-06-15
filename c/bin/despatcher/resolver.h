@@ -48,6 +48,7 @@ struct builtinstab
   enum e_builtins type;
 };
 extern struct builtinstab *builtins(register const char *str, register unsigned int len);
+extern struct builtinstab *legacy (register const char *str, register unsigned int len);
 
 struct h_pqxtab
 {
@@ -55,6 +56,11 @@ struct h_pqxtab
   void (*func)(const char *,struct component*);
 };
 extern struct h_pqxtab *pqx_h_tab(register const char *str, register unsigned int len);
+
+extern void or_builtins(void);
+extern void or_gdf(void);
+extern void uri_patterns(void);
+
 
 extern const char **elements, *project, *query_string, *mode, *docroot, *xmlroot;
 extern int nelements;
@@ -72,16 +78,21 @@ extern void print_xforms_pi(void);
 extern void adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id);
 extern void cat_file(const char *file);
 extern void cat_html_file(const char *file);
+extern void cat_index_html(const char *dir);
 extern void corpus(void);
 extern void catentry(const char *item);
+extern void p3(const char *project);
 extern void progexec(const char *prog);
-extern void html(const char *xlang, const char *xid);
 extern const char *map_PQX(const char *text, int ncomma);
 extern void proof(const char *item);
 extern void score_block(const char *item);
+extern void sig(const char *sig);
+extern void sigfixer_html(const char *file);
 extern void tei(const char *item);
 extern void list(const char *list);
 extern void sed_project(const char *xml, const char *session);
+extern void statistics(void);
+extern void xis(const char *xlang, const char *xid);
 
 extern void pqx_handler(struct component *);
 

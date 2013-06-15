@@ -144,7 +144,7 @@
   <xsl:variable name="item">
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
-  <a href="javascript:itemView({$item})">
+  <a href="javascript:p3item('xtf',{$item})">
     <xsl:apply-templates mode="summ"/>
   </a>
 </xsl:template>
@@ -183,7 +183,7 @@
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
   <xsl:variable name="ce-data" select="ancestor::ce:data"/>
-  <a href="javascript:itemView({$item})">
+  <a href="javascript:p3item('xtf',{$item})"> <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
     <xsl:text>(</xsl:text>
     <xsl:choose>
       <xsl:when test="string-length($label)=0">

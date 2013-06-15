@@ -4,27 +4,10 @@
 #include <unistd.h>
 #include "resolver.h"
 
-#if 0
-static int
-gdf_id(const char *id)
-{
-  if (id && strlen(id) > 2 && *id++ == 'i' && *id++ == 'd')
-    while (*id && isdigit(*id))
-      ++id;
-  else
-    return 0;
-  return !*id;
-}
-#endif
-
 void
 or_gdf(void)
 {
-#if 1
   if (_is_ncname(elements[0]))
-#else
-  if (gdf_id(elements[0]))
-#endif
     {
       char *dataset = NULL, *tmp = NULL, *exe, *exedot;
       if ((dataset = strrchr(project, '/')))

@@ -31,6 +31,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 
 #line 1 "legacy.g"
 
+#include <string.h>
 #include "resolver.h"
 
 #define TOTAL_KEYWORDS 14
@@ -81,7 +82,7 @@ hash (str, len)
       24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
       24, 24, 24, 24, 24, 24
     };
-  register int hval = len;
+  register int hval = (int)len;
 
   switch (hval)
     {
@@ -112,37 +113,37 @@ legacy (str, len)
   static struct builtinstab wordlist[] =
     {
       {""}, {""}, {""},
-#line 17 "legacy.g"
+#line 18 "legacy.g"
       {"sig", 	   B_SIG},
-#line 10 "legacy.g"
+#line 11 "legacy.g"
       {"find", 	   B_FIND},
       {""},
-#line 6 "legacy.g"
-      {"as", 	   B_AS},
 #line 7 "legacy.g"
+      {"as", 	   B_AS},
+#line 8 "legacy.g"
       {"atf",	   B_ATF},
-#line 19 "legacy.g"
+#line 20 "legacy.g"
       {"xis", 	   B_XIS},
       {""}, {""}, {""},
-#line 16 "legacy.g"
+#line 17 "legacy.g"
       {"rpc",	   B_RPC},
-#line 12 "legacy.g"
+#line 13 "legacy.g"
       {"itemside",  B_ITEMSIDE},
-#line 14 "legacy.g"
+#line 15 "legacy.g"
       {"pager",	   B_XFORMS},
       {""},
-#line 18 "legacy.g"
+#line 19 "legacy.g"
       {"xforms",    B_XFORMS},
-#line 8 "legacy.g"
+#line 9 "legacy.g"
       {"doc",	   B_DOC},
-#line 11 "legacy.g"
+#line 12 "legacy.g"
       {"itemmain",  B_ITEMMAIN},
       {""}, {""},
-#line 15 "legacy.g"
+#line 16 "legacy.g"
       {"results",   B_RESULTS},
-#line 13 "legacy.g"
+#line 14 "legacy.g"
       {"outline",   B_OUTLINE},
-#line 9 "legacy.g"
+#line 10 "legacy.g"
       {"datestamp", B_DATESTAMP}
     };
 

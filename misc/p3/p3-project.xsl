@@ -29,11 +29,6 @@
 <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
 
 <xsl:template match="xh:html">
-<!--  <xsl:processing-instruction name="xml-stylesheet"
-			      >href="/xsltforms/xsltforms/xsltforms.xsl" type="text/xsl"</xsl:processing-instruction> -->
-<!--  <xsl:processing-instruction name="xsltforms-options"
-			      >debug="yes"</xsl:processing-instruction>
-  <xsl:text>&#xa;</xsl:text> -->
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates/>
@@ -44,15 +39,6 @@
   <xsl:copy>
     <xsl:apply-templates/>
     <xsl:call-template name="pll-css"/>
-  </xsl:copy>
-</xsl:template>
-
-<xsl:template match="xh:input[@name='project']">
-  <xsl:copy>
-    <xsl:copy-of select="@*"/>
-    <xsl:attribute name="value">
-      <xsl:value-of select="$config-xml/*/@n"/>
-    </xsl:attribute>
   </xsl:copy>
 </xsl:template>
 
@@ -81,6 +67,25 @@
 
 <xsl:template match="xh:span[@id='xpd-name']">
   <xsl:value-of select="$config-xml/*/xpd:name"/>
+</xsl:template>
+
+<xsl:template match="xh:span[contains(@class,'back-to')]">
+  <xsl:variable name="back-url" select="$config-xml/*/xpd:pager-back-url"/>
+  <xsl:if test="string-length($back-url) > 0">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <button name="back-to" onclick="window.location='{$back-url}'">
+	<xsl:choose>
+	  <xsl:when test="string-length($config-xml/*/xpd:pager-back-url)">
+	    <xsl:value-of select="$config-xml/*/xpd:pager-back-url"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>BACK</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </button>
+    </xsl:copy>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="xh:span[@class='translations']">
@@ -124,12 +129,8 @@
   <link rel="stylesheet" type="text/css" href="/{$project}/p2.css" />
   <style type="text/css">
     <xsl:text>.pll .value select option { border-bottom: 1px solid red; }&#xa;</xsl:text>
-<!--
-    <xsl:text>.pll .value select option:nth-child(3) { border-top: 1px solid red; }&#xa;</xsl:text>
-    <xsl:call-template name="pll-lists-nth"/>
-    <xsl:call-template name="pll-links-nth"/>
- -->
-</style><xsl:text>&#xa;</xsl:text>
+  </style>
+  <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
 <xsl:template name="pll-lists-nth">
@@ -148,10 +149,4 @@
   </xsl:if>
 </xsl:template>
 
-<!--
-.pll .value select option:nth-child(1),
-.pll .value select option:nth-child(2),
-.pll .value select option:nth-child(3)
- { border-bottom: 1px solid red; }
- -->
 </xsl:stylesheet>

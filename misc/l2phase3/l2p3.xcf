@@ -17,11 +17,13 @@
     <key k="action" to="mkdir -p $webcbd/$cbdlang"/>
   </set>
 
+<!--
   <set var="process">
     <key k="action"   to="$scripts/p2-summaries.xsl"/>
     <key k="input" to="01bld/$cbdlang/articles.xml"/>
     <key k="cbdresult" to="0"/>
   </set>
+ -->
 
   <set var="process">
     <key k="action"    to="$scripts/g2-HTML-summaries.xsl"/>

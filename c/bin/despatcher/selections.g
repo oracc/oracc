@@ -1,4 +1,5 @@
 %{
+#include <string.h>
 #include "resolver.h"
 %}
 struct seltab;

@@ -39,7 +39,14 @@ main(int argc, char *argv[])
 	  script_url += 2;
 	  debug = 1;
 	}
+
       decompose_script_url(script_url);
+      
+      if (elements[0] && nelements == 1 && !strcmp(elements[0], "pager"))
+	{
+	  p3(project);
+	}
+      
       if (elements[0] && legacy(elements[0], strlen(elements[0])))
 	{
 	  char *tmp = malloc(strlen("/or")+strlen(script_url)+2);
@@ -94,6 +101,7 @@ main(int argc, char *argv[])
     uri_patterns();
   
   do404();
+  return 0;
 }
 
 /* Return NULL if script_url does not start with a project;

@@ -9,14 +9,14 @@ static wchar_t utf1char(const unsigned char *src,size_t *len);
 static int
 _is_ncname_char(const char *start, size_t *len)
 {
-  wchar_t w = utf1char(start, len);
+  wchar_t w = utf1char((unsigned char *)start, len);
   return iswalnum(w);
 }
 
 static int
 _is_ncname_letter(const char *start, size_t *len)
 {
-  wchar_t w = utf1char(start, len);
+  wchar_t w = utf1char((unsigned char *)start, len);
   return iswalpha(w);
 }
 

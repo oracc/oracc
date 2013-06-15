@@ -37,7 +37,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <ccgi.h>
+#include "ccgi.h"
+
+int ccgi_verbose = 0;
 
 /* CGI_val is an entry in a list of variable values */
 
@@ -900,20 +902,38 @@ CGI_get_post(CGI_varlist *v, const char *template) {
     int len;
 
     if ((env = getenv("CONTENT_TYPE")) != 0 &&
-        strcasecmp(env, "application/x-www-form-urlencoded") == 0 &&
-        (env = getenv("CONTENT_LENGTH")) != 0 &&
-        (len = atoi(env)) > 0)
-    {
-        buf = (char *) mymalloc(len + 1);
-        if (fread(buf, 1, len, stdin) == len) {
-            buf[len] = 0;
-            v = CGI_decode_query(v, buf);
-        }
-        free(buf);
-    }
-    else {
-        v = read_multipart(v, template);
-    }
+        strcasecmp(env, "application/x-www-form-urlencoded") == 0)
+      {
+	if ((env = getenv("CONTENT_LENGTH")) != 0 &&
+	    (len = atoi(env)) > 0)
+	  {
+	    buf = (char *) mymalloc(len + 1);
+	    if (fread(buf, 1, len, stdin) == len) {
+	      buf[len] = 0;
+	      if (ccgi_verbose)
+		fprintf(stderr, "%s\n", buf);
+	      v = CGI_decode_query(v, buf);
+	    }
+	    free(buf);
+	  }
+	else
+	  {
+	    int ch = fgetc(stdin);
+	    if (ch == -1)
+	      {
+		return v;
+	      }
+	    else
+	      {
+		fprintf(stderr, "p3: browser sent content via stdin without setting CONTENT_LENGTH\n");
+		exit(1);
+	      }
+	  }
+      }
+    else 
+      {
+	v = read_multipart(v, template);
+      }
     return v;
 }
 

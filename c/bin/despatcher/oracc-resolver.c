@@ -1,7 +1,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdarg.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -40,7 +39,14 @@ main(int argc, char *argv[])
 	  script_url += 2;
 	  debug = 1;
 	}
+
       decompose_script_url(script_url);
+      
+      if (elements[0] && nelements == 1 && !strcmp(elements[0], "pager"))
+	{
+	  p3(project);
+	}
+      
       if (elements[0] && legacy(elements[0], strlen(elements[0])))
 	{
 	  char *tmp = malloc(strlen("/or")+strlen(script_url)+2);
@@ -95,6 +101,7 @@ main(int argc, char *argv[])
     uri_patterns();
   
   do404();
+  return 0;
 }
 
 /* Return NULL if script_url does not start with a project;
@@ -112,11 +119,11 @@ find_project(char *script_url)
     {
       int ok = 0;
       sprintf(buf,"%s%s",xmlroot,script_url);
-      ok = (!stat(buf,&st_buf) && (S_ISDIR(st_buf.st_mode)));
+      ok = (!stat(buf,&st_buf) && (st_buf.st_mode & S_IFDIR));
       if (!ok)
 	{
 	  sprintf(buf,"%s%s",oodroot,script_url);
-	  ok = (!stat(buf,&st_buf) && (S_ISDIR(st_buf.st_mode)));
+	  ok = (!stat(buf,&st_buf) && (st_buf.st_mode & S_IFDIR));
 	}
       if (ok)
 	{

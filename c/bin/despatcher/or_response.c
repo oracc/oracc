@@ -60,7 +60,7 @@ cat_index_html(const char *dir)
     slash = "/";
 
   buf = malloc(strlen(docroot) + strlen(dir) + strlen("index.html") + 3);
-  sprintf(buf, "%s/%s/index.html", docroot, dir, "index.html");
+  sprintf(buf, "%s/%s/index.html", docroot, dir);
   cat_html_file(buf);
 }
 
@@ -69,23 +69,15 @@ corpus(void)
 {
   if (project)
     {
-      char *projp2 = malloc(1+strlen(project)+strlen("/usr/local/oracc/xml//p2.xml"));
-      sprintf(projp2, "/usr/local/oracc/xml/%s/p2.xml", project);
-      if (!access(projp2,R_OK))
+      char *p3init = malloc(1+strlen(project)+strlen("/usr/local/oracc/www/%s/p3init.html"));
+      sprintf(p3init, "/usr/local/oracc/www/%s/p3init.html", project);
+      if (!access(p3init,R_OK))
 	{
-	  const char *sess = create_session();
-	  fprintf(stderr,"oracc-despatcher: project=%s; session=%s\n", project, sess);
-	  print_hdr_xml();
-	  print_xforms_pi();
-	  if (execl("/usr/local/oracc/bin/sessionify", "sessionify", sess, projp2, NULL))
-	    {
-	      fprintf(stderr, "oracc-despatcher: /usr/local/oracc/bin/sessionify: execl failed\n");
-	      exit(1);
-	    }
+	  cat_html_file(p3init);
 	}
       else
 	{
-	  free(projp2);
+	  free(p3init);
 	  do404();
 	}
     }
@@ -97,21 +89,6 @@ void
 progexec(const char *prog)
 {
   execl("/usr/bin/perl", "perl", prog, NULL);
-}
-
-void
-html(const char *xlang, const char *xid)
-{
-  /* print_hdr_xml(); */
-  mode = "minimal";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
-	"-p", cgi_arg("project", project), 
-	"-p", cgi_arg("xis-lang", xlang),
-	"-p", cgi_arg("xis-id", xid),
-	"-p", cgi_arg("mode", mode),
-	NULL);
-  perror("execl failed");
-  exit(1);
 }
 
 void

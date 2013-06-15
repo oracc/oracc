@@ -196,7 +196,7 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
 {
   static int one = 1;
   char *dot = NULL;
-  char *start_id = NULL, *colon;
+  char *start_id = NULL, *colon, *file;
   buf = npool_copy(buf, xtf_pool);
 
   if ((colon = strchr(buf, ':')))
@@ -207,39 +207,40 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
   else
     start_id = buf;
 
+  file = npool_copy(buf, xtf_pool);
+
   switch (state)
     {
     case RD_START:
       /* WATCH ME: DOES NOT WORK WITH COLON-IDS */
-      if ((dot = strchr((char*)buf, '.')))
+      if ((dot = strchr((char*)file, '.')))
 	*dot = '\0';
-      if (!hash_find(xtf_files, buf))
+      if (!hash_find(xtf_files, file))
 	{
-	  hash_add(xtf_files, npool_copy(buf, xtf_pool), &one);
-	  ce_file(buf);
+	  hash_add(xtf_files, npool_copy(file, xtf_pool), &one);
+	  ce_file(file);
 	}
       if (dot)
 	{
-	  *dot = '.';
 	  if ((dot = strchr(dot+1, '.')))
 	    {
 	      *dot = '\0';
-	      hash_add(xtf_lines, npool_copy(buf, xtf_pool), &one);
+	      hash_add(xtf_lines, npool_copy(start_id, xtf_pool), &one);
 	      *dot = '.';
 	    }
 	}
       hash_add(xtf_start, start_id, &one);
       if (pending_heading)
 	{
-	  hash_add(xtf_headings, buf, pending_heading);
+	  hash_add(xtf_headings, start_id, pending_heading);
 	  pending_heading = NULL;
 	}
       break;
     case RD_END:
-      hash_add(xtf_end, buf, &one);
+      hash_add(xtf_end, start_id, &one);
       break;
     case RD_SELECT:
-      hash_add(xtf_select, buf, &one);
+      hash_add(xtf_select, start_id, &one);
       break;
     }
 }
@@ -496,7 +497,7 @@ ce_data(const char *xid)
       if (linenum > 4)
 	{
 	  linenum -= 4;
-	  sprintf(cid,xid);
+	  strcpy(cid,xid);
 	  dot = strchr(cid,'.');
 	  sprintf(dot+1,"%d",linenum);
 	}
@@ -560,7 +561,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
       /* If this is an xtf:l node which contains a g:w that
 	 starts a range, we need to start echoing structure
        */
-      if (!strcmp(name, xtf_l_name) && hash_find(xtf_lines, (unsigned char *)xid))
+      if (!strcmp(name, xtf_l_name) && xid && hash_find(xtf_lines, (unsigned char *)xid))
 	{
 	  ce_data(xid);
 	  printStart(name, atts);

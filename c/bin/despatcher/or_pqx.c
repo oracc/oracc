@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype128.h>
 #include "resolver.h"
 
 extern int patterns_debug;

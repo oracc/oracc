@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.4 */
+/* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N selections -tT selections.g  */
 /* Computed positions: -k'4,9' */
 
@@ -31,6 +31,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 
 #line 1 "selections.g"
 
+#include <string.h>
 #include "resolver.h"
 
 #define TOTAL_KEYWORDS 13
@@ -81,7 +82,7 @@ hash (str, len)
       25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
       25, 25, 25, 25, 25, 25
     };
-  register int hval = len;
+  register int hval = (int)len;
 
   switch (hval)
     {
@@ -103,7 +104,7 @@ hash (str, len)
 
 #ifdef __GNUC__
 __inline
-#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+#ifdef __GNUC_STDC_INLINE__
 __attribute__ ((__gnu_inline__))
 #endif
 #endif
@@ -115,35 +116,35 @@ selections (str, len)
   static struct seltab wordlist[] =
     {
       {""}, {""}, {""},
-#line 7 "selections.g"
+#line 8 "selections.g"
       {"cat", S_CAT},
-#line 13 "selections.g"
+#line 14 "selections.g"
       {"sign", S_SIGN},
-#line 12 "selections.g"
+#line 13 "selections.g"
       {"score", S_SCORE},
       {""}, {""},
-#line 8 "selections.g"
-      {"translit", S_TLIT},
-#line 17 "selections.g"
-      {"container", S_CONTAINER},
-#line 11 "selections.g"
-      {"thumb", S_THUMB},
 #line 9 "selections.g"
+      {"translit", S_TLIT},
+#line 18 "selections.g"
+      {"container", S_CONTAINER},
+#line 12 "selections.g"
+      {"thumb", S_THUMB},
+#line 10 "selections.g"
       {"translation", S_XLAT},
       {""},
-#line 6 "selections.g"
+#line 7 "selections.g"
       {"full", S_FULL},
-#line 14 "selections.g"
+#line 15 "selections.g"
       {"vals", S_VALS},
-#line 10 "selections.g"
+#line 11 "selections.g"
       {"image", S_IMAGE},
       {""}, {""}, {""},
-#line 16 "selections.g"
+#line 17 "selections.g"
       {"compounds", S_COMPOUNDS},
-#line 15 "selections.g"
+#line 16 "selections.g"
       {"homophones", S_HOMOPHONES},
       {""}, {""}, {""},
-#line 18 "selections.g"
+#line 19 "selections.g"
       {"contained", S_CONTAINED}
     };
 
