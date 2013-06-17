@@ -144,13 +144,13 @@
   <xsl:variable name="item">
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
-  <a href="javascript:p3item('xtf',{$item})">
+  <a href="javascript:p3item('cbd',{$item})">
     <xsl:apply-templates mode="summ"/>
   </a>
 </xsl:template>
 
 <xsl:template mode="summ" match="*">
-  <xsl:message><xsl:value-of select="local-name(.)"/></xsl:message>
+<!--  <xsl:message><xsl:value-of select="local-name(.)"/></xsl:message> -->
   <xsl:element name="{local-name(.)}">
     <xsl:copy-of select="@class"/>
     <xsl:apply-templates mode="summ"/>

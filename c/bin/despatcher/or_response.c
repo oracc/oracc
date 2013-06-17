@@ -176,13 +176,10 @@ tei(const char *item)
 void
 xis(const char *xlang, const char *xid)
 {
-  /* print_hdr_xml(); */
-  mode = "minimal";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
-	"-p", cgi_arg("project", project), 
-	"-p", cgi_arg("xis-lang", xlang),
-	"-p", cgi_arg("xis-id", xid),
-	"-p", cgi_arg("mode", mode),
+  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p3-pager.plx", 
+	cgi_arg("project", project), 
+	cgi_arg("glos", xlang),
+	cgi_arg("gxis", xid),
 	NULL);
   perror("execl failed");
   exit(1);

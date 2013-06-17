@@ -107,6 +107,29 @@ lng_handler(struct component *components)
     show_components(components);
   else if (project)
     {
+      char *xis = NULL;
+      if (query_string)
+	{
+	  if ((xis = strstr(query_string,"xis=")))
+	    {
+	      char *end;
+	      xis += 4;
+	      end = xis;
+	      while (*end && '&' != *end)
+		++end;
+	      *end = '\0';
+	      if (strlen(xis))
+		{
+		  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+			cgi_arg("project", project), 
+			cgi_arg("glos", elements[0]),
+			cgi_arg("gxis", xis),
+			NULL);
+		  perror("execl failed");
+		  exit(1);
+		}
+	    }
+	}
       execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
 	    cgi_arg("project", project), 
 	    cgi_arg("glos", elements[0]),

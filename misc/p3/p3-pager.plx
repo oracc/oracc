@@ -10,7 +10,7 @@ use integer;
 # P3 is controlled by the following top-level variables:
 # ===================================-==================
 #
-# p3prod: the producer for the list being paged--list, srch, glos
+# p3prod: the producer for the list being paged--list, srch
 #
 # p3mode: the slicing policy for the list--full or zoom
 #
@@ -36,42 +36,66 @@ my @pg_args = ();
 
 my %p = decode_args(@ARGV);
 my %rt = ();
+
 set_p3_state();
 
-if ($rt{'prod'} eq 'glos') {
-    run_glos_maker();
-    goto EXIT;
-} else {
-    setup_navigation();
+setup_navigation();
+
+if ($rt{'prod'} eq 'list') {
+
+    if ($p{'glos'}) {
+	if ($p{'gxis'}) {
+	    $rt{'#list_type'} = 'xtf';
+	    xsystem("/usr/local/oracc/bin/xis", '-f', "/usr/local/oracc/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
+	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
+	    $p{'#listitems'} = `wc -l $p{'#list'}`;
+	    chomp $p{'#listitems'};
+	    $p{'#listitems'} =~ s/^.*?(\d+).*$/$1/;
+	    $p{'uimode'} = 'mini';
+	} else {
+	    $rt{'#list_type'} = 'cbd';
+	    $p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
+	    $p{'#listitems'} = `wc -l $p{'#list'}`;
+	    chomp $p{'#listitems'};
+	    $p{'#listitems'} =~ s/^.*?(\d+).*$/$1/;
+	}
+    } elsif ($p{'adhoc'}) {
+	
+    } elsif ($p{'list'} eq '_all') {
+	$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cat/pqids.lst";
+	$rt{'#list_type'} = 'cat';
+    } else {
+	$p{'#list'} = "/usr/local/oracc/www/$p{'project'}/lists/$p{'list'}";
+	$rt{'#list_type'} = 'cat';
+    }
+
+} else { # srch
+    
+    if ($p{'glos'}) {
+	$rt{'#list_type'} = 'cbd';
+    }
 }
 
 # set the command to send the list to stdout
 if ($p{'adhoc'}) {
 
     p3adhoc();
-    $p{'#list'} = "$p{'tmpdir'}/adhoc";
-    $rt{'#list_type'} = 'cat';
 
 } elsif ($p{'#qsrch'}) {
 
     $rt{'cetype'} = $p{'p3cetype'};
-
     p3srch();
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
     if ($rt{'#index'} eq 'txt') {
 	$rt{'#list_type'} = 'xtf';
+    } elsif ($rt{'prod'} = 'glos') {
+	
     } else {
 	$rt{'#list_type'} = $rt{'#index'};
     }
 
 } elsif ($p{'list'}) {
-
-    if ($p{'list'} eq '_all') {
-	$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cat/pqids.lst";
-    } else {
-	$p{'#list'} = "/usr/local/oracc/www/$p{'project'}/lists/$p{'list'}";
-    }
-    $rt{'#list_type'} = 'cat';
+    
 } else {
     # can't happen because we default $p{'list'}
 }
@@ -79,14 +103,18 @@ if ($p{'adhoc'}) {
 my $kwic = $p{'cetype'} eq 'kwic';
 
 # set up the Slicer inputs
-setup_pg_args();
-my($pg_order,$input) = ORACC::P3::Slicer::setup($p{'tmpdir'}, $p{'#list'}, $kwic);
+if (!$p{'glos'} || $p{'gxis'}) {
+    setup_pg_args();
+    my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $kwic);
 
-# set up the input for the content maker
-ORACC::P3::Slicer::pageinfo($p{'tmpdir'}, $pg_order, $input, $kwic, $p{'project'}, $p{'state'}, @pg_args);
+    # set up the input for the content maker
+    ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $kwic, $p{'project'}, $p{'state'}, @pg_args);
 
-# generate the outline
-ORACC::P3::Slicer::outline($pg_order, @pg_args);
+    # generate the outline
+    ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
+} else {
+    ORACC::P3::Slicer::glos_info(%p);
+}
 
 set_runtime_vars();
 
@@ -94,10 +122,14 @@ set_runtime_vars();
 ## in page mode emit the pth page
 ## in item-mode emit the ith item of the pth page
 
-if ($p{'item'} == 0) {
-    
+if ($p{'glos'} && $p{'glet'}) {
+    if ($p{'glet'} =~ /html$/) {
+	$rt{'#content_url'} = "/usr/local/oracc/www$p{'glet'}";
+    } else {
+	$rt{'#content_url'} = "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
+    }
+} elsif ($p{'item'} == 0) {
     run_page_maker();
-
 } else {
     run_item_maker();
 }
@@ -105,6 +137,7 @@ if ($p{'item'} == 0) {
 # echo the template including outline/content as we go
 print "Content-type: text/html; Encoding=utf-8\n\n"
     unless $p{'noheader'};
+
 run_form_maker();
 
 # close and exit
@@ -154,7 +187,8 @@ decode_args {
     $tmp{'cetype'} = 'line' unless $tmp{'cetype'};
     $tmp{'item'} = 0 unless defined $tmp{'item'};
     $tmp{'itemset'} = 0 unless defined $tmp{'itemset'};
-    $tmp{'list'} = '_all' unless $tmp{'list'} || $tmp{'adhoc'} || $tmp{'srch'};
+    $tmp{'list'} = '_all' unless $tmp{'list'} || $tmp{'adhoc'} || $tmp{'srch'} || $tmp{'glos'};
+    $tmp{'page'} = 1 unless $tmp{'page'};
     $tmp{'pageset'} = 1 unless $tmp{'pageset'};
     $tmp{'pagesize'} = 25 unless $tmp{'pagesize'};
     $tmp{'p3do'} = 'default' unless $tmp{'p3do'};
@@ -163,6 +197,7 @@ decode_args {
     $tmp{'translation'} = 'en' unless $tmp{'translation'};
     $tmp{'transonly'} = 0 unless $tmp{'transonly'};
     $tmp{'defindex'} = 'txt' unless $tmp{'defindex'};
+    $tmp{'uimode'} = 'full';
     warn "defindex $tmp{'defindex'}\n";
     warn "+defaults: ", Dumper \%tmp;
     %tmp;
@@ -191,11 +226,16 @@ find_xmdoutline_sub {
 
 sub
 p3adhoc {
-    my $adhoc_list = "$p{'tmpdir'}/adhoc";
+    my $adhoc_list = "$p{'tmpdir'}/results.lst";
+    my @adhoc = split(/,/, $p{'adhoc'});
     open(A, ">$adhoc_list") || die "p3-pager: can't write $p{'tmpdir'}/adhoc";
-    print A join("\n", split(/,/, $p{'adhoc'})), "\n";
+    print A join("\n", @adhoc), "\n";
     close(A);
     $p{'#list'} = $adhoc_list;
+    $p{'#listitems'} = $#adhoc + 1;
+    $rt{'#list_type'} = ($adhoc[0] =~ /\./ ? 'xtf' : 'cat');
+    $p{'item'} = 1;
+    $rt{'itemtype'} = $p{'p3itemtype'} = 'xtf';
 }
 
 sub
@@ -224,17 +264,18 @@ run_form_maker {
     open(T,$t);
     while (<T>) {
 	if (m#<p>\@</p>#) {
-	    if ($rt{'prod'} eq 'glos') {
-		$p{'letter'} = 'A' unless $p{'letter'};
+	    if ($p{'glos'}) {
 		print '<div id="p3left" class="border-right">';
-#####		system 'cat', "$p{'tmpdir'}/outline.html";
 		system "$oraccbin/xfrag", '-u', "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
 		print '</div><div id="p3right" class="p3right80">';
-#####		system 'cat', "$p{'tmpdir'}/results.html";
-		system "$oraccbin/xfrag", '-u', "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$p{'letter'}.html";
+		if ($rt{'#content_url'}) {
+		    system "$oraccbin/xfrag", '-u', $rt{'#content_url'};
+		} else {
+		    system 'cat', "$p{'tmpdir'}/results.html";
+		}
 		print '</div>';
 	    } else {
-		print '<div id="p3left">';
+		print '<div id="p3left" class="border-right">';
 		system 'cat', "$p{'tmpdir'}/outline.html";
 		print '</div><div id="p3right" class="p3right80">';
 		system 'cat', "$p{'tmpdir'}/results.html";
@@ -289,15 +330,21 @@ run_item_maker {
     my($newPage,$sedItem) = ();
 
     $newPage = ($p{'item'} / $p{'pagesize'});
-    ++$newPage unless !($p{'item'} % $p{'pagesize'});
-    $sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
-
-    warn "newPage = $newPage; sedItem = $sedItem; thisType=$rt{'itemtype'}\n";
+    ++$newPage if $p{'item'} % $p{'pagesize'};
     $p{'page'} = $newPage;
 
-    my $id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
-
+    my $id = undef;
+    if ($rt{'itemtype'} eq 'cbd') {
+	$sedItem = $p{'item'};
+	$id = `grep -v '^#' $p{'#list'} | sed -n '${sedItem}p'`;
+    } else {
+	$sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
+	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
+    }
     chomp($id);
+
+    warn "newPage = $newPage; sedItem = $sedItem; thisType=$rt{'itemtype'}; id=$id\n";
+
     my($eproject,$eid) = ($p{'project'},'');
     if ($id =~ /^(.*?):(.*?)$/) {
 	($eproject,$eid) = ($1,$2);
@@ -346,7 +393,7 @@ run_item_maker {
 		find_xmdoutline(),
 		$xmd);
     } elsif ($rt{'itemtype'} eq 'cbd') {
-	
+	$rt{'#content_url'} = "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
     } else {
 	warn "p3-pager.plx: no handler for type = $rt{'itemtype'}\n";
     }
@@ -354,7 +401,8 @@ run_item_maker {
 
 sub
 run_glos_maker {
-    set_runtime_vars();
+    
+    set_runtime_vars();    
     print "Content-type: text/html; Encoding=utf-8\n\n";
     run_form_maker();
 }
@@ -375,16 +423,19 @@ run_page_maker {
     my @offset_param = ('-stringparam', 'item-offset', $item_offset);
     if ($rt{'#list_type'} eq 'xtf') { ## sigfixer may need adding to end of pipe here some day
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce_xtf -3 $ce_arg -p $p{'project'} | $oraccbin/s2-ce_trim.plx >$p{'tmpdir'}/content.xml");
-	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cat' || $rt{'#list_type'} eq 'tra') {
 	my $link_fields = `/usr/local/oracc/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$rt{'#list_type'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
-	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cbd') {
-	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 -S$rt{'outl'} -icbd/$p{'glossary'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
-	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, '-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
+	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 -icbd/$p{'glos'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
+	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
     } else {
 	warn "run_page_maker: no list_type set\n";
     }
@@ -396,9 +447,13 @@ set_p3_state {
     if ($p{'#qsrch'}) {
 	$rt{'prod'} = 'srch';
 	$rt{'outl'} = 'special';
-	$rt{'#index'} = $p{'srchindex'} || $p{'defindex'};
-    } elsif ($p{'glos'}) {
-	$rt{'prod'} = 'glos';
+	if ($p{'glos'}) {
+	    $rt{'#index'} = "cbd/$p{'glos'}";
+	} else {
+	    $rt{'#index'} = $p{'srchindex'} || $p{'defindex'};
+	}
+#    } elsif ($p{'glos'}) {
+#	$rt{'prod'} = 'glos';
     } else {
 	$rt{'prod'} = 'list';
 	$rt{'outl'} = 'default';
@@ -419,13 +474,15 @@ set_p3_state {
     if ($p{'type'}) {
 	$rt{'type'} = $p{'type'};
     } elsif ($rt{'prod'} eq 'list') {
-	if ($p{'glo'}) {
+	if ($p{'glos'}) {
 	    $rt{'type'} = 'cbd';
 	} else {
 	    $rt{'type'} = 'cat';
 	}
     } else {
-	if ($p{'thisIndex'}) {
+	if ($p{'glos'}) {
+	    $rt{'type'} = 'cbd';
+	} if ($p{'thisIndex'}) {
 	    $rt{'type'} = $rt{'#index'};
 	} else {
 	    $rt{'type'} = 'cat';

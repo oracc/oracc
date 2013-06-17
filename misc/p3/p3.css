@@ -107,3 +107,4 @@ p.summary { margin-left: 1em; text-indent: -1em; }
 .p2h2     { font-size: 90%; padding-top: 0px; margin-top: 0px; }
 h1.p2h2   { font-size: 90%; padding-top: 0px; margin-top: 0px; }
 
+h1.toc { fontsize: 10pt; text-align: center; }

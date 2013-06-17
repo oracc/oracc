@@ -33,7 +33,7 @@
   <xsl:call-template name="make-html">
     <xsl:with-param name="project" select="$project"/>
     <xsl:with-param name="with-hr" select="false()"/>
-    <xsl:with-param name="with-trailer" select="false()"/>
+    <xsl:with-param name="with-trailer" select="false()"/>    
     <xsl:with-param name="title" select="TOC"/>
     <xsl:with-param name="webtype" select="'p2-p1'"/>
   </xsl:call-template>
@@ -44,48 +44,16 @@
   <xsl:variable name="summaries-file">
     <xsl:value-of select="concat('/cbd/',/*/@xml:lang,'/summaries-',$c,'.html')"/>
   </xsl:variable>
-  <p class="toc-entry">
-    <a href="{concat($jsResultsBegin,'/',/*/@project,$summaries-file,$jsEnd)}">
+  <div class="summary-letter">
+    <h1>
       <xsl:value-of select="@dc:title"/>
-    </a>
-  </p>
-  <ex:document href="{concat('./',$webdir,$summaries-file)}"
-	       method="xml" encoding="utf-8"
-	       doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-	       doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-	       indent="yes">
-    <xsl:call-template name="make-html">
-      <xsl:with-param name="project" select="/*/@project"/>
-      <xsl:with-param name="with-hr" select="false()"/>
-      <xsl:with-param name="with-trailer" select="false()"/>
-      <xsl:with-param name="title" select="Summary"/>
-      <xsl:with-param name="webtype" select="'p2-p1'"/>
-    </xsl:call-template>
-  </ex:document>
+    </h1>
+    <xsl:apply-templates/>
+  </div>
 </xsl:template>
 
 <xsl:template name="call-back">
-
-  <xsl:if test="not(self::cbd:letter)">
-    <h1 class="toc"><xsl:value-of 
-    select="/*/@project"/>/<xsl:value-of 
-    select="/*/@xml:lang"/></h1>
-    
-    <p class="toc-entry">
-      <a href="{concat($jsResultsBegin,'/',/*/@project,'/cbd/',/*/@xml:lang,'/overview.html',$jsEnd)}"
-	 >Overview</a>
-    </p>
-  </xsl:if>
-  
-  <xsl:apply-templates/>
-
-  <xsl:if test="not(self::cbd:letter)">
-    <p class="toc-entry">
-      <a href="{concat($jsResultsBegin,'/',/*/@project,'/cbd/',/*/@xml:lang,'/onebigfile.html',$jsEnd)}"
-	 >One Big File</a>
-    </p>
-  </xsl:if>
-  
+  <xsl:apply-templates/>  
 </xsl:template>
 
 </xsl:stylesheet>

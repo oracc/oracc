@@ -17,38 +17,18 @@
     <key k="action" to="mkdir -p $webcbd/$cbdlang"/>
   </set>
 
-<!--
-  <set var="process">
-    <key k="action"   to="$scripts/p2-summaries.xsl"/>
-    <key k="input" to="01bld/$cbdlang/articles.xml"/>
-    <key k="cbdresult" to="0"/>
-  </set>
- -->
-
-  <set var="process">
-    <key k="action"    to="$scripts/g2-HTML-summaries.xsl"/>
-    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
-    <key k="cbdresult" to="0"/>
-    <key k="output"    to="$webcbd/$cbdlang/summaries.html"/>
-  </set>
-
   <set var="process">
     <key k="action"    to="$scripts/p2-summaries-HTML.xsl"/>
     <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
     <key k="cbdresult" to="0"/>
-    <key k="output"    to="$webcbd/$cbdlang/p2-summaries.html"/>
+    <key k="output"    to="$webcbd/$cbdlang/toc.html"/>
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/g2-overview.xsl"/>
-    <key k="input"    to="$webcbd/$cbdlang/summaries.html"/>
-    <key k="output"   to="$webcbd/$cbdlang/overview.html"/>
-  </set>
-
-  <set var="process">
-    <key k="action"   to="$scripts/l2-cbd-letters.xsl"/>
-    <key k="input"    to="$webcbd/$cbdlang/overview.html"/>
-    <key k="output"   to="$webcbd/$cbdlang/overview.html"/>
+    <key k="action"    to="$scripts/p2-overview-HTML.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/summaries.html"/>
   </set>
 
   <set var="process">

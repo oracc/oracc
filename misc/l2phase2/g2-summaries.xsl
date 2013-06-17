@@ -20,7 +20,10 @@
 </xsl:template>
 
 <xsl:template match="cbd:letter">
-  <xsl:apply-templates/>
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="cbd:entry">

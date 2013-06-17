@@ -8,8 +8,15 @@
 <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 <xsl:param name="project" select="''"/>
 
-<xsl:variable name="jsBegin">javascript:cbdResultsFromOutline('</xsl:variable>
+<xsl:variable name="jsBegin">javascript:p3Letter('</xsl:variable>
+<xsl:variable name="jsMid">','</xsl:variable>
 <xsl:variable name="jsEnd">')</xsl:variable>
+
+<xsl:variable name="lang">
+  <xsl:value-of select="substring-before(
+			substring-after(/*/xh:p[1]/xh:a/@href,'cbd/'),'/')"/>
+</xsl:variable>
+<xsl:variable name="base" select="concat('/',$project,'/cbd/',$lang,'/')"/>
 
 <xsl:template match="xh:div">
   <xsl:call-template name="make-html">
@@ -20,17 +27,15 @@
 </xsl:template>
 
 <xsl:template name="call-back">
-  <xsl:variable name="lang">
-    <xsl:value-of select="substring-before(
-			  substring-after(xh:p/xh:a/@href,'cbd/'),'/')"/>
-  </xsl:variable>
-<!--  <xsl:message>p2-cbd-toc: lang=<xsl:value-of select="$lang"/></xsl:message> -->
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <p class="toc-entry">
       <a>
 	<xsl:attribute name="href">
-	  <xsl:value-of select="concat($jsBegin,'/',$project,'/cbd/',$lang,'/p2-summaries.html', $jsEnd)"/>
+<!--	  <xsl:value-of select="concat($jsBegin, $base, 'p2-toc.html', $jsMid, $base, 'summaries', $jsEnd)"/> -->
+          <xsl:call-template name="p3Letter">
+	    <xsl:with-param name="arg" select="'summaries'"/>
+	  </xsl:call-template>
 	</xsl:attribute>
 	Summaries
       </a>
@@ -41,7 +46,10 @@
     <p class="toc-entry">
       <a>
 	<xsl:attribute name="href">
-	  <xsl:value-of select="concat($jsBegin,'/',$project,'/cbd/',$lang,'/onebigfile.html', $jsEnd)"/>
+<!--	  <xsl:value-of select="concat($jsBegin, $base, 'p2-toc.html', $jsMid, $base, 'onebigfile', $jsEnd)"/> -->
+          <xsl:call-template name="p3Letter">
+	    <xsl:with-param name="arg" select="'onebigfile'"/>
+	  </xsl:call-template>
 	</xsl:attribute>
 	One Big File
       </a>
@@ -60,10 +68,18 @@
   <xsl:copy>
     <xsl:copy-of select="@class"/>
     <xsl:attribute name="href">
-      <xsl:value-of select="concat($jsBegin, @href, $jsEnd)"/>
+<!--      <xsl:value-of select="concat($jsBegin, $base, 'p2-toc.html', $jsMid, $base, text(), '.html', $jsEnd)"/> -->
+      <xsl:call-template name="p3Letter">
+	<xsl:with-param name="arg" select="text()"/>
+      </xsl:call-template>
     </xsl:attribute>
     <xsl:apply-templates/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template name="p3Letter">
+  <xsl:param name="arg"/>
+  <xsl:value-of select="concat($jsBegin,$arg,$jsEnd)"/>
 </xsl:template>
 
 </xsl:stylesheet>

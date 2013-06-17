@@ -1,3 +1,5 @@
+var p3ControlsHeight = 110;
+
 function getWinHeight() {
   var myHeight = 0;
   if (typeof(window.innerHeight) == 'number') {
@@ -14,6 +16,29 @@ function getWinHeight() {
     myHeight = document.body.clientHeight;
   }
   return myHeight;
+}
+
+function cbdPopup(url,windowName,height,width,screenX,screenY,focus) {
+  var cbdPopupWindow = window.open(url,windowName,
+ "dependent,height="+height+","
+ +"width="+width+","
+ +"screenX="+screenX+","
+ +"screenY="+screenY+","
+ +"resizable,scrollbars");
+  if (focus) {
+      cbdPopupWindow.focus();
+  }
+  cbdPopupWindow;
+}
+
+function distprof2(project,glos,gxis) {
+    cbdPopup('/'+project+'/'+glos+'?xis='+gxis,'dpframe',600,700,0,0,1);
+}
+
+function
+popxff(project,eid) {
+    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
+	'xffwin',600,400,700,0,1);
 }
 
 function selectGlossary(proj,obj) {
@@ -64,9 +89,18 @@ function p3zoom(z) {
     }
 }
 
+function p3Letter(l) {
+    document.getElementById('glet').value = l;
+    document.getElementById('p3form').submit();    
+}
+
+function p3Article(l) {
+    p3Letter(l);
+}
+
 function p3setHeight() {
     var wh = getWinHeight();
-    var h = wh - 110;
+    var h = wh - p3ControlsHeight;
     document.getElementById('p3left').style.height = h+'px';
     document.getElementById('p3right').style.height = h+'px';
 }
@@ -99,8 +133,11 @@ function p3GlosControls() {
     document.getElementById('p3OSdefault').style.display = 'none';
     document.getElementById('p3cetype').style.display = 'none';
     document.getElementById('p3srchtype').style.display = 'none';
-    document.getElementById('p3itemnav').style.display= 'none';
-    document.getElementById('p3pagenav').style.display= 'none';
+    document.getElementById('p3CbdLang').style.display= 'inline';
+    if (document.getElementById('glet').value.length > 0) {
+	document.getElementById('p3itemnav').style.display= 'none';
+	document.getElementById('p3pagenav').style.display= 'none';
+    }
 }
 
 function p3ItemControls() {
@@ -141,13 +178,25 @@ function p3PageControls() {
 
 function p3SrchControls() {
     var newSrchtype = document.getElementById('srchtype').value;
-    selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+    if (newSrchtype === 'cbd') {
+	p3GlosControls();
+    } else {
+	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+	var newCetype = document.getElementById('cetype').value;
+	selectItemByValue(document.getElementById('p3cetype'), newCetype);	
+	document.getElementById('p3cetype').style.display = 'inline';
+	document.getElementById('p3srchtype').style.display = 'inline';
+    }
+}
 
-    var newCetype = document.getElementById('cetype').value;
-    selectItemByValue(document.getElementById('p3cetype'), newCetype);
-
-    document.getElementById('p3cetype').style.display = 'inline';
-    document.getElementById('p3srchtype').style.display = 'inline';
+function p3NoOutline() {
+    var rt = document.getElementById('p3right');
+    rt.style.width = '100%';
+    rt.style.left = '0px';
+    rt = document.getElementById('p3navRight');
+    rt.style.width = '100%';
+    rt.style.left = '0px';
+    document.getElementById('p3left').style.display = 'none';
 }
 
 function p3controls() {
@@ -168,10 +217,22 @@ function p3controls() {
     var prod = document.getElementById('p3prod').value;
     if (prod === 'srch') {
 	p3SrchControls();
-    } else if (prod === 'glos') {
-	p3GlosControls();
     } else {
+	// alert('glos.length='+document.getElementById('glos').value.length);
+	if (document.getElementById('glos').value.length > 0) {
+	    p3GlosControls();
+	}
 	document.getElementById('p3cetype').style.display = 'none';
+    }
+
+    var uimode = document.getElementById('uimode').value;
+    if (uimode === 'mini') {
+	document.getElementById('topButtons').style.display = 'none';
+	document.getElementById('p3banner').style.display = 'none';
+	document.getElementById('p3srch').style.display = 'none';
+	p3ControlsHeight = 25;
+	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
+	p3NoOutline();
     }
 
     return 1;

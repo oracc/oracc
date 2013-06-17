@@ -38,7 +38,10 @@ eH(void *userData, const char *name)
 	      fputc('\n',o);
 	    }
 	  else
-	    fprintf(stderr,"xis: open failed on %s\n",outfile);
+	    {
+	      fprintf(stderr,"xis: open failed on %s\n",outfile);
+	      exit(1);
+	    }
 	}
       else
 	{
@@ -97,5 +100,5 @@ opts(int argc, char *arg)
 
 const char *prog = "xis";
 int major_version = 1, minor_version = 0, verbose = 0;
-const char *usage_string = "-f [file] -i [id]";
+const char *usage_string = "-f [file] -i [id] [-o [outfile]]";
 void help () { }

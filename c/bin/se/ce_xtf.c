@@ -199,15 +199,15 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
   char *start_id = NULL, *colon, *file;
   buf = npool_copy(buf, xtf_pool);
 
-  if ((colon = strchr(buf, ':')))
+  if ((colon = strchr((char*)buf, ':')))
     {
       ++colon;
-      start_id = npool_copy(colon, xtf_pool);
+      start_id = (char*)npool_copy((unsigned char*)colon, xtf_pool);
     }
   else
-    start_id = buf;
+    start_id = (char*)buf;
 
-  file = npool_copy(buf, xtf_pool);
+  file = (char*)npool_copy((unsigned char*)buf, xtf_pool);
 
   switch (state)
     {
@@ -215,32 +215,32 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
       /* WATCH ME: DOES NOT WORK WITH COLON-IDS */
       if ((dot = strchr((char*)file, '.')))
 	*dot = '\0';
-      if (!hash_find(xtf_files, file))
+      if (!hash_find(xtf_files, (unsigned char *)file))
 	{
-	  hash_add(xtf_files, npool_copy(file, xtf_pool), &one);
-	  ce_file(file);
+	  hash_add(xtf_files, npool_copy((unsigned char*)file, xtf_pool), &one);
+	  ce_file((unsigned char *)file);
 	}
       if (dot)
 	{
 	  if ((dot = strchr(dot+1, '.')))
 	    {
 	      *dot = '\0';
-	      hash_add(xtf_lines, npool_copy(start_id, xtf_pool), &one);
+	      hash_add(xtf_lines, npool_copy((unsigned char *)start_id, xtf_pool), &one);
 	      *dot = '.';
 	    }
 	}
-      hash_add(xtf_start, start_id, &one);
+      hash_add(xtf_start, (unsigned char *)start_id, &one);
       if (pending_heading)
 	{
-	  hash_add(xtf_headings, start_id, pending_heading);
+	  hash_add(xtf_headings, (unsigned char *)start_id, pending_heading);
 	  pending_heading = NULL;
 	}
       break;
     case RD_END:
-      hash_add(xtf_end, start_id, &one);
+      hash_add(xtf_end, (unsigned char *)start_id, &one);
       break;
     case RD_SELECT:
-      hash_add(xtf_select, start_id, &one);
+      hash_add(xtf_select, (unsigned char *)start_id, &one);
       break;
     }
 }
