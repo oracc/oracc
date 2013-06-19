@@ -22,6 +22,7 @@ sub
 fix_text {
     fix_uscore();
     fix_uchars();
+    s/- \(\$/-\(\$/g;
     print join("\n", @text), "\n";
 }
 

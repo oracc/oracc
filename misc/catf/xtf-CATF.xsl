@@ -279,6 +279,15 @@
 
 <!-- TODO: split-word support -->
 <xsl:template match="g:w">
+  <xsl:call-template name="w-sub"/>
+</xsl:template>
+
+<xsl:template match="g:swc">
+  <xsl:text>-</xsl:text>
+  <xsl:call-template name="w-sub"/>
+</xsl:template>
+
+<xsl:template name="w-sub">
   <xsl:choose>
     <xsl:when test="count(preceding-sibling::*) = 0">
       <xsl:call-template name="lang-open"/>
@@ -301,7 +310,14 @@
       <!-- do nothing -->
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:call-template name="g-delim"/>
+  <xsl:choose>
+    <xsl:when test="@contrefs">
+      <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="g-delim"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:nonw">
@@ -442,7 +458,28 @@
 <!-- NORM -->
 <!--TODO: check how words, segs and flags interact -->
 <xsl:template match="n:w">
+  <xsl:choose>
+    <xsl:when test="count(preceding-sibling::*) = 0">
+      <xsl:call-template name="lang-open"/>
+    </xsl:when>
+    <xsl:when test="preceding-sibling::*">
+      <xsl:if test="not(@xml:lang = preceding-sibling::*[@xml:lang][1]/@xml:lang)">
+	<xsl:call-template name="lang-open"/>
+      </xsl:if>
+    </xsl:when>
+  </xsl:choose>
   <xsl:apply-templates/>
+  <xsl:choose>
+    <xsl:when test="count(following-sibling::*) = 0">
+      <xsl:call-template name="lang-close"/>
+    </xsl:when>
+    <xsl:when test="not(@xml:lang = following-sibling::*[@xml:lang][1]/@xml:lang)">
+      <xsl:call-template name="lang-close"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- do nothing -->
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:call-template name="g-delim"/>
 </xsl:template>
 
@@ -535,13 +572,18 @@
 <xsl:template match="x:column">
   <xsl:if test="not(@implicit='1')">
     <xsl:value-of select="concat('@column ', @n)"/>
-    <xsl:call-template name="g-status-flags"/>
+    <xsl:value-of select="translate(@label, 'xvi', '')"/>
+    <!--<xsl:call-template name="g-status-flags"/>-->
     <xsl:text>&#xa;</xsl:text>
   </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="x:cmt|x:note"/>
+
+<xsl:template match="x:h">
+  <xsl:value-of select="concat('&#xa;', '@h1 ',text(),'&#xa;&#xa;')"/>
+</xsl:template>
 
 <xsl:template match="x:lg">
   <xsl:apply-templates/>
@@ -571,7 +613,7 @@
 
 <xsl:template match="x:m">
   <xsl:choose>
-    <xsl:when test="@g:type='discourse'">
+    <xsl:when test="@type='discourse'">
       <xsl:text>@</xsl:text>
       <xsl:if test="@endflag='1'">
 	<xsl:text>end </xsl:text>
@@ -581,11 +623,11 @@
     <xsl:when test="@subtype='fragment'">
       <xsl:value-of select="concat('@fragment ', text(), '&#xa;')"/>
     </xsl:when>
-    <xsl:when test="@g:type='division'">
+    <xsl:when test="@type='division'">
       <xsl:value-of select="concat('@div ',@subtype,' ',@n,' ',text(),'&#xa;')"/>
     </xsl:when>
-    <xsl:when test="@g:type='locator'">
-      <xsl:value-of select="concat('@m=locator ',@subtype,' ',@n,' ',text(),'&#xa;')"/>      
+    <xsl:when test="@type='locator'">
+      <xsl:value-of select="concat('@m=locator ',@subtype,' ',@n,'&#xa;')"/>      
     </xsl:when>
   </xsl:choose>
 </xsl:template>
@@ -626,6 +668,7 @@
 </xsl:template>
 
 <xsl:template name="lang-open">
+<!--  <xsl:message>lang-open <xsl:value-of select="@xml:lang"/></xsl:message> -->
   <xsl:if test="not(starts-with(@xml:lang,ancestor::x:transliteration/@xml:lang))">
     <xsl:text>_</xsl:text>
     <xsl:if test="not(starts-with(@xml:lang,'akk'))">

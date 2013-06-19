@@ -78,7 +78,7 @@
 
 	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
 
-	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('srchstate')">
+	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
 	      <option value="txt">Transliterations</option>
 	      <option value="lem">Lemmatization</option>
 	      <option value="tra">Translations</option>

@@ -3,6 +3,7 @@ SUBDIRS = \
 	agg \
 	atf \
 	bib \
+	catf \
 	ce \
 	cs \
 	emacs \

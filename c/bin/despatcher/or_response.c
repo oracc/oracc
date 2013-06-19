@@ -17,12 +17,12 @@ adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id)
     line_id = "none";
   if (!frag_id)
     frag_id = "none";
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
-	"-p", cgi_arg("project", project),
-	"-p", cgi_arg("adhoc", adhoc_texts),
-	"-p", cgi_arg("line-id", line_id),
-	"-p", cgi_arg("frag-id", frag_id),
-	"-p", cgi_arg("mode", mode),
+  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p3-pager.plx", 
+	cgi_arg("project", project),
+	cgi_arg("adhoc", adhoc_texts),
+	cgi_arg("line-id", line_id),
+	cgi_arg("frag-id", frag_id),
+	cgi_arg("mode", mode),
 	NULL);
   perror("execl failed");
   exit(1);
@@ -188,11 +188,10 @@ xis(const char *xlang, const char *xid)
 void
 list(const char *list)
 {
-  /* print_hdr_xml(); */
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p2-pager.plx", 
-	"-p", cgi_arg("project", project),
-	"-p", cgi_arg("browse-list", list),
-	"-p", cgi_arg("mode", mode),
+  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p3-pager.plx", 
+	cgi_arg("project", project),
+	cgi_arg("list", list),
+	cgi_arg("mode", mode),
 	NULL);
   perror("execl failed");
   exit(1);

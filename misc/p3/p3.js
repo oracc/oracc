@@ -183,7 +183,9 @@ function p3SrchControls() {
     } else {
 	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	var newCetype = document.getElementById('cetype').value;
-	selectItemByValue(document.getElementById('p3cetype'), newCetype);	
+	selectItemByValue(document.getElementById('p3cetype'), newCetype);
+	var newSrchtype = document.getElementById('srchtype').value;
+	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	document.getElementById('p3cetype').style.display = 'inline';
 	document.getElementById('p3srchtype').style.display = 'inline';
     }

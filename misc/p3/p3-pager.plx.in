@@ -440,13 +440,12 @@ set_p3_state {
     if ($p{'#qsrch'}) {
 	$rt{'prod'} = 'srch';
 	$rt{'outl'} = 'special';
+	$rt{'srchtype'} = $p{'srchtype'};
 	if ($p{'glos'}) {
 	    $rt{'#index'} = "cbd/$p{'glos'}";
 	} else {
 	    $rt{'#index'} = $p{'srchindex'} || $p{'defindex'};
 	}
-#    } elsif ($p{'glos'}) {
-#	$rt{'prod'} = 'glos';
     } else {
 	$rt{'prod'} = 'list';
 	$rt{'outl'} = 'default';
