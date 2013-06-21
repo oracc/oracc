@@ -39,8 +39,8 @@ or_response.c: or_response.c.in
 or_stable_uris.c: or_stable_uris.c.in
 	$(ORACCIFY) or_stable_uris.c.in
 
-or_xforms.c: or_xforms.c.in
-	$(ORACCIFY) or_xforms.c.in
+p3.c: p3.c.in
+	$(ORACCIFY) p3.c.in
 
 pqx_map.c: pqx_map.c.in
 	$(ORACCIFY) pqx_map.c.in

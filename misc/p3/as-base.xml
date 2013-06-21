@@ -1,0 +1,465 @@
+<?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xforms="http://www.w3.org/2002/xforms"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:ev="http://www.w3.org/2001/xml-events">
+
+  <head>
+    <title>@@PROJECT@@ Advanced Search</title>
+    <link rel="stylesheet" type="text/css" href="/css/oas.css"/>
+    <script type="text/javascript" src="/js/oas.js"/>
+    <xforms:model>
+
+      <xforms:instance id="search">
+	<search xmlns="">
+	  <use-unicode>true</use-unicode>
+	  <post-type>search</post-type>
+	  <advanced>yes</advanced>
+	  <project>@@PROJECT@@</project>
+	  <tmpdir>@TMPDIR@</tmpdir>
+	  <search type="and">
+	    <index>txt</index>
+	    <binop>
+	      <key/>
+	      <txt-filters>
+		<position>any</position>
+		<role>any</role>
+	      </txt-filters>
+	      <lem-filters>
+		<field>any</field>
+		<final>false</final>
+	      </lem-filters>
+	    </binop>
+	  </search>
+	  <result count="0" list="(none)">
+	    <notify/>
+	    <toks/>
+	  </result>
+	</search>
+      </xforms:instance>
+
+      <xforms:instance id="new-search">
+	<search type="and" xmlns="">
+	  <index>txt</index>
+	  <binop>
+	    <key/>
+	    <txt-filters>
+	      <position>any</position>
+	      <role>any</role>
+	    </txt-filters>
+	    <lem-filters>
+	      <field>any</field>
+	      <final>false</final>
+	    </lem-filters>
+	  </binop>
+	</search>
+      </xforms:instance>
+
+      <xforms:instance id="new-binop">
+	<binop invert="no" type="and" xmlns="">
+	  <near where="+" scope="0" level="w"/>
+	  <key/>
+	  <txt-filters>
+	    <position>any</position>
+	    <role>any</role>
+	  </txt-filters>
+	  <lem-filters>
+	    <field>any</field>
+	    <final>false</final>
+	  </lem-filters>
+	</binop>
+      </xforms:instance>
+
+      <xforms:bind nodeset="near/@scope" type="xs:integer"/>
+      <xforms:bind nodeset="instance('search')/use-unicode" type="xs:boolean"/>
+      <xforms:bind nodeset="instance('search')/search/binop/lem-filters/final" type="xs:boolean"/>
+
+      <xforms:submission action="/asearch" method="post" id="post-search"
+			 mediatype="application/xml" replace="instance">
+	<xforms:action ev:event="xforms-submit-done">
+	  <xforms:load>
+	    <xforms:resource
+		value="instance('search')/result/notify"/>
+	  </xforms:load>
+	</xforms:action>
+      </xforms:submission>
+
+<!--
+      <xforms:submission id="save" method="put" replace="none" action="file://">
+	<xforms:message level="modeless" ev:event="xforms-submit-error">Submit
+	error.</xforms:message>
+      </xforms:submission>
+
+      <xforms:submission id="load" method="get" serialization="none"
+		     replace="instance" action="file://">
+	<xforms:message level="modeless" ev:event="xforms-submit-error">Submit
+	error.</xforms:message>
+      </xforms:submission>
+ -->
+
+    </xforms:model>
+  </head>
+  <body>
+    <h1>Oracc Advanced Search</h1>
+    <p>
+      <xforms:output value="project"/> Search:
+      <xforms:output value="result/@count"/> results from search:<br/>
+    </p>
+    
+    <div class="searchtoks">
+      <p class="searchtoks"><xforms:output value="result/toks"/></p>
+    </div>
+
+    <div class="main-repeat">
+    <xforms:repeat nodeset="search" id="search-repeat">
+      <fieldset>
+	<legend>
+	  <xforms:group ref=".[count(preceding-sibling::search)=0]">
+	    Search index
+	  <xforms:select1 ref="index">
+	    <xforms:label/>
+	    <xforms:item>
+	      <xforms:label>transliteration</xforms:label>
+	      <xforms:value>txt</xforms:value>
+	    </xforms:item>
+<!--
+	    <xforms:item>
+	      <xforms:label>lemmatization</xforms:label>
+	      <xforms:value>lem</xforms:value>
+	    </xforms:item>
+ -->sy
+	    <xforms:item>
+	      <xforms:label>translation</xforms:label>
+	      <xforms:value>tra</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>catalogue</xforms:label>
+	      <xforms:value>cat</xforms:value>
+	    </xforms:item>
+	  </xforms:select1>
+	  </xforms:group>
+	  <xforms:group ref=".[count(preceding-sibling::search)>0]">
+	    <xforms:select1 ref="@type">
+	      <xforms:label/>
+	      <xforms:item>
+		<xforms:label>only include</xforms:label>
+		<xforms:value>and</xforms:value>
+	      </xforms:item>
+	      <xforms:item>
+		<xforms:label>also include</xforms:label>
+		<xforms:value>or</xforms:value>
+	      </xforms:item>
+	      <xforms:item>
+		<xforms:label>exclude</xforms:label>
+		<xforms:value>not</xforms:value>
+	      </xforms:item>
+	    </xforms:select1>
+	    results of searching
+	    <xforms:select1 ref="index">
+	      <xforms:label></xforms:label>
+	      <xforms:item>
+		<xforms:label>transliterations</xforms:label>
+		<xforms:value>txt</xforms:value>
+	      </xforms:item>
+<!--
+	    <xforms:item>
+	      <xforms:label>lemmatization</xforms:label>
+	      <xforms:value>lem</xforms:value>
+	    </xforms:item>
+ -->
+	    <xforms:item>
+	      <xforms:label>translation</xforms:label>
+	      <xforms:value>tra</xforms:value>
+	    </xforms:item>
+	    <xforms:item>
+	      <xforms:label>catalogue</xforms:label>
+	      <xforms:value>cat</xforms:value>
+	    </xforms:item>
+	    </xforms:select1>
+
+	    <xforms:trigger class="remove-search">
+	      <xforms:label>Remove this search panel</xforms:label>
+	      <xforms:delete nodeset="instance('search')/search"
+			     at="index('search-repeat')"
+			     ev:event="DOMActivate"/>
+	    </xforms:trigger>
+
+	  </xforms:group>
+	</legend>
+
+	<table>
+	  <tbody>
+	    <xforms:repeat nodeset="binop" id="binop-repeat">
+	      <tr>
+		<td style="text-align:right">
+		  <xforms:output value="if(.[not(preceding-sibling::binop)]/key,'For ','')"/>
+
+		  <xforms:select1 ref=".[preceding-sibling::binop]/@type">
+		    <xforms:item>
+		      <xforms:label>and</xforms:label>
+		      <xforms:value>and</xforms:value>
+		    </xforms:item>
+		    <xforms:item>
+		      <xforms:label>or</xforms:label>
+		      <xforms:value>or</xforms:value>
+		    </xforms:item>
+		    <xforms:item>
+		      <xforms:label>without</xforms:label>
+		      <xforms:value>not</xforms:value>
+		    </xforms:item>
+		  </xforms:select1>
+
+		  <xforms:input ref="./key"/>
+		</td>
+		  
+		<xforms:group ref="./txt-filters[../../index='txt']">
+
+		  <td style="text-align:left">
+		    <xforms:select1 ref="position">
+		      <xforms:item>
+			<xforms:label>Any position</xforms:label>
+			<xforms:value>any</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Start of word</xforms:label>
+			<xforms:value>wb</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>End of word</xforms:label>
+			<xforms:value>we</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Start of line</xforms:label>
+			<xforms:value>lb</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>End of line</xforms:label>
+			<xforms:value>le</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+
+		    <xforms:select1 ref="role">
+		      <xforms:label/>
+		      <xforms:item>
+			<xforms:label>Any role</xforms:label>
+			<xforms:value>any</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Sign name</xforms:label>
+			<xforms:value>s</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Logogram</xforms:label>
+			<xforms:value>l</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+
+		    <br/>
+
+		    <xforms:select1 ref="../near/@where">
+		      <xforms:label/>
+		      <xforms:item>
+			<xforms:label>following</xforms:label>
+			<xforms:value>+</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>occurring</xforms:label>
+			<xforms:value>~</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>preceding</xforms:label>
+			<xforms:value>-</xforms:value>
+		      </xforms:item>	      
+		    </xforms:select1>
+		    <xforms:input class="scope" ref="../near/@scope">
+		      <xforms:label>&#xa0;within&#xa0;</xforms:label>
+		    </xforms:input>
+		    <xforms:select1 class="level" ref="../near/@level" >
+		      <xforms:item>
+			<xforms:label>line</xforms:label>
+			<xforms:value>l</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>word</xforms:label>
+			<xforms:value>w</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>sign</xforms:label>
+			<xforms:value>g</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>text</xforms:label>
+			<xforms:value>t</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+		  </td>
+		</xforms:group>
+
+		<xforms:group ref="./lem-filters[../../index='lem']">
+		    
+		  <td style="text-align:left">
+		    <xforms:select1 ref="field">
+		      <xforms:label/>
+		      <xforms:item>
+			<xforms:label>Any</xforms:label>
+			<xforms:value>any</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>CitationForm/Normalization</xforms:label>
+			<xforms:value>n</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>GuideWord/Senses</xforms:label>
+			<xforms:value>g</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Morphology 1</xforms:label>
+			<xforms:value>m1</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Morphology 2</xforms:label>
+			<xforms:value>m2</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+
+		    <xforms:input ref="final">
+		      <xforms:label>End</xforms:label>
+		    </xforms:input>
+
+		    <br/>
+
+		    <xforms:select1 ref="../near/@where">
+		      <xforms:item>
+			<xforms:label>following</xforms:label>
+			<xforms:value>+</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>occurring</xforms:label>
+			<xforms:value>~</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>preceding</xforms:label>
+			<xforms:value>-</xforms:value>
+		      </xforms:item>	      
+		    </xforms:select1>
+		    <xforms:input class="scope" ref="../near/@scope">
+		      <xforms:label>&#xa0;within&#xa0;</xforms:label>
+		    </xforms:input>
+		    <xforms:select1 class="level" ref="../near/@level" >
+		      <xforms:item>
+			<xforms:label>word</xforms:label>
+			<xforms:value>w</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>sentence</xforms:label>
+			<xforms:value>s</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>text</xforms:label>
+			<xforms:value>t</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+		  </td>
+		</xforms:group>
+		
+		<xforms:group ref="./lem-filters[../../index='cat']">
+		    
+		  <td style="text-align:left">
+		    <xforms:select1 ref="field">
+		      <xforms:label/>
+		      <xforms:item>
+			<xforms:label>Any field</xforms:label>
+			<xforms:value>any</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Designation</xforms:label>
+			<xforms:value>designation</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Period</xforms:label>
+			<xforms:value>period</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Provenience</xforms:label>
+			<xforms:value>Provenience</xforms:value>
+		      </xforms:item>
+		      <xforms:item>
+			<xforms:label>Genre</xforms:label>
+			<xforms:value>genre</xforms:value>
+		      </xforms:item>
+		    </xforms:select1>
+		  </td>
+		</xforms:group>
+
+		<xforms:group ref="./lem-filters[../../index='tra']">
+		</xforms:group>
+		
+		<td>
+
+		  <xforms:trigger class="insert" ref="self::node()[count(../binop) &gt;= 1 
+						   and count(preceding-sibling::binop) = 0]">
+		    <xforms:label>+</xforms:label>
+		    <xforms:hint>Adds another boolean constraint to this search panel</xforms:hint>
+		    <xforms:insert ev:event="DOMActivate"
+				   context="."
+				   nodeset="../binop[last()]"
+				   position="after"
+				   origin="instance('new-binop')"/>
+		  </xforms:trigger>
+
+		  <xforms:trigger class="remove"
+				  ref="self::node()[count(../binop) &gt; 1 
+				       and count(preceding-sibling::binop)]">
+		    <xforms:label>-</xforms:label>
+		    <xforms:hint>Removes this boolean constraint</xforms:hint>
+		    <xforms:delete nodeset="instance('search')/search[index('search-repeat')]/binop"
+				   at="index('binop-repeat')"
+				   ev:event="DOMActivate"/>
+		  </xforms:trigger>
+
+		</td>
+	      </tr>
+	    </xforms:repeat>
+	  </tbody>
+	</table>
+
+      </fieldset>
+      
+    </xforms:repeat>
+
+    <xforms:trigger>
+      <xforms:label>Combine with another search</xforms:label>
+      <xforms:insert ev:event="DOMActivate"
+		     context="." nodeset="search"
+		     origin="instance('new-search')"/>
+    </xforms:trigger>
+    </div>
+
+    <hr/>
+
+    <div class="submits">
+      <xforms:submit submission="post-search" ref="post-type">
+	<xforms:label>Search</xforms:label>
+	<xforms:hint>Runs search and updates results display in window that opened form</xforms:hint>
+      </xforms:submit>
+      
+      <xforms:input ref="use-unicode">
+	<xforms:label>using Unicode</xforms:label>
+      </xforms:input>
+    </div>
+<!--    <p class="trailer">
+      (Session/list=<xforms:output ref="instance('search')/session"
+		     />/<xforms:output ref="result/@list"
+		     />)</p> -->
+    <form id="p3form" action="/pager" target="_blank"
+	  method="post" accept-charset="utf-8">
+      <p>
+      	<input type="hidden" name="project" value="@@PROJECT@@"/>
+	<input type="hidden" name="list" id="list"/>
+	<input type="hidden" name="uimode" value="mini"/>
+	<input type="hidden" name="tmpdir" id="tmpdir"/>
+      </p>
+    </form>
+
+  </body>
+</html>

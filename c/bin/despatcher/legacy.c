@@ -1,6 +1,6 @@
 /* C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -N legacy -tT legacy.g  */
-/* Computed positions: -k'1,5' */
+/* Computed positions: -k'1' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "resolver.h"
 
-#define TOTAL_KEYWORDS 14
-#define MIN_WORD_LENGTH 2
+#define TOTAL_KEYWORDS 7
+#define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 9
 #define MIN_HASH_VALUE 3
-#define MAX_HASH_VALUE 23
-/* maximum key range = 21, duplicates = 0 */
+#define MAX_HASH_VALUE 12
+/* maximum key range = 10, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,48 +55,34 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24,  4, 24, 24,
-      14, 24,  0, 24, 24,  5, 24, 24,  5,  5,
-      24, 10,  0, 24,  9,  0, 24, 24, 24, 24,
-       5, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-      24, 24, 24, 24, 24, 24
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13,  5, 13, 13,
+       0, 13,  0, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13,  7,  2, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+      13, 13, 13, 13, 13, 13
     };
-  register int hval = (int)len;
-
-  switch (hval)
-    {
-      default:
-        hval += asso_values[(unsigned char)str[4]];
-      /*FALLTHROUGH*/
-      case 4:
-      case 3:
-      case 2:
-      case 1:
-        hval += asso_values[(unsigned char)str[0]];
-        break;
-    }
-  return hval;
+  return len + asso_values[(unsigned char)str[0]];
 }
 
 #ifdef __GNUC__
@@ -113,38 +99,22 @@ legacy (str, len)
   static struct builtinstab wordlist[] =
     {
       {""}, {""}, {""},
-#line 18 "legacy.g"
-      {"sig", 	   B_SIG},
+#line 10 "legacy.g"
+      {"doc",	   B_DOC},
 #line 11 "legacy.g"
       {"find", 	   B_FIND},
-      {""},
-#line 7 "legacy.g"
-      {"as", 	   B_AS},
+#line 13 "legacy.g"
+      {"sig", 	   B_SIG},
+      {""}, {""},
 #line 8 "legacy.g"
       {"atf",	   B_ATF},
-#line 20 "legacy.g"
-      {"xis", 	   B_XIS},
-      {""}, {""}, {""},
-#line 17 "legacy.g"
-      {"rpc",	   B_RPC},
-#line 13 "legacy.g"
-      {"itemside",  B_ITEMSIDE},
-#line 15 "legacy.g"
-      {"pager",	   B_XFORMS},
-      {""},
-#line 19 "legacy.g"
-      {"xforms",    B_XFORMS},
 #line 9 "legacy.g"
-      {"doc",	   B_DOC},
+      {"datestamp", B_DATESTAMP},
 #line 12 "legacy.g"
-      {"itemmain",  B_ITEMMAIN},
-      {""}, {""},
-#line 16 "legacy.g"
-      {"results",   B_RESULTS},
-#line 14 "legacy.g"
-      {"outline",   B_OUTLINE},
-#line 10 "legacy.g"
-      {"datestamp", B_DATESTAMP}
+      {"rpc",	   B_RPC},
+      {""},
+#line 7 "legacy.g"
+      {"asearch",   B_XFORMS}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)

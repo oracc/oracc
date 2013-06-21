@@ -82,6 +82,7 @@ extern void cat_index_html(const char *dir);
 extern void corpus(void);
 extern void catentry(const char *item);
 extern void p3(const char *project);
+extern char *p3tempdir(void);
 extern void progexec(const char *prog);
 extern const char *map_PQX(const char *text, int ncomma);
 extern void proof(const char *item);

@@ -17,14 +17,6 @@ glos_info {
     my $zprev = 0;
     my $znext = 0;
 
-    if ($p{'#qsrch'}) {
-	open(X, "$p{'tmpdir'}/results.xml");
-	my $xinfo = <X>;
-	$xinfo =~ m#<count>(.*?)<#;
-	$p{'#listitems'} = $1;
-	$p{'#list'} = "$p{'tmpdir'}/results.lst";
-    }
-
     $nitems = $p{'#listitems'};
     $npages = ($nitems / $p{'pagesize'}) + (($p{'#listitems'} % $p{'pagesize'}) != 0);
     unless ($p{'item'}) {

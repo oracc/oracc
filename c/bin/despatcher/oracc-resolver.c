@@ -41,10 +41,16 @@ main(int argc, char *argv[])
 	}
 
       decompose_script_url(script_url);
-      
+      query_string = getenv("QUERY_STRING");
+      unsetenv("SCRIPT_URL");
+
       if (elements[0] && nelements == 1 && !strcmp(elements[0], "pager"))
 	{
-	  p3(project);
+	  fprintf(stderr, "qs=%s\n", query_string);
+	  if (query_string && strlen(query_string))
+	    p3_asearch_results(project,query_string);
+	  else
+	    p3(project);
 	}
       
       if (elements[0] && legacy(elements[0], strlen(elements[0])))

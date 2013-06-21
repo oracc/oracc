@@ -34,11 +34,12 @@ my $verbose = 1;
 
 my @pg_args = ();
 
-my %p = decode_args(@ARGV);
+my %p = ();
 my %rt = ();
 
-set_p3_state();
+%p = decode_args(@ARGV);
 
+set_p3_state();
 setup_navigation();
 
 if ($rt{'prod'} eq 'list') {
@@ -60,58 +61,49 @@ if ($rt{'prod'} eq 'list') {
 	    $p{'#listitems'} =~ s/^.*?(\d+).*$/$1/;
 	}
     } elsif ($p{'adhoc'}) {
-	
+	p3adhoc();
     } elsif ($p{'list'} eq '_all') {
 	$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cat/pqids.lst";
 	$rt{'#list_type'} = 'cat';
+	unless (-r $p{'#list'}) {
+	    p3srch($p{'list'});
+	    $p{'list'} = '';
+	} else {
+	    $p{'#listitems'} = `wc -l $p{'#list'}`;
+	    $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+	}
     } else {
 	$p{'#list'} = "/usr/local/oracc/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
+	$p{'#listitems'} = `wc -l $p{'#list'}`;
+	$p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
     }
 
 } else { # srch
     
-    if ($p{'glos'}) {
-	$rt{'#list_type'} = 'cbd';
-    }
-}
-
-# set the command to send the list to stdout
-if ($p{'adhoc'}) {
-
-    p3adhoc();
-
-} elsif ($p{'#qsrch'}) {
-
     $rt{'cetype'} = $p{'p3cetype'};
     p3srch();
-    $p{'#list'} = "$p{'tmpdir'}/results.lst";
     if ($rt{'#index'} eq 'txt') {
 	$rt{'#list_type'} = 'xtf';
-    } elsif ($rt{'prod'} = 'glos') {
-	
+    } elsif ($p{'glos'}) {
+	$rt{'#list_type'} = 'cbd';
     } else {
 	$rt{'#list_type'} = $rt{'#index'};
     }
-
-} elsif ($p{'list'}) {
-    
-} else {
-    # can't happen because we default $p{'list'}
 }
-
-my $kwic = $p{'cetype'} eq 'kwic';
 
 # set up the Slicer inputs
 if (!$p{'glos'} || $p{'gxis'}) {
-    setup_pg_args();
-    my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $kwic);
-
-    # set up the input for the content maker
-    ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $kwic, $p{'project'}, $p{'state'}, @pg_args);
-
-    # generate the outline
-    ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
+    if ($p{'#listitems'}) {
+	setup_pg_args();
+	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
+	
+	# set up the input for the content maker
+	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, $p{'state'}, @pg_args);
+	
+	# generate the outline
+	ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
+    }
 } else {
     ORACC::P3::Slicer::glos_info(%p);
 }
@@ -129,7 +121,7 @@ if ($p{'glos'} && $p{'glet'}) {
 	$rt{'#content_url'} = "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
     }
 } elsif ($p{'item'} == 0) {
-    run_page_maker();
+    run_page_maker() unless !$rt{'pages'};
 } else {
     run_item_maker();
 }
@@ -144,6 +136,7 @@ run_form_maker();
 EXIT:
 {
     close(STDOUT);
+    ## if -d $tmpdir rm -fr $tmpdir
     exit 0;
 }
 
@@ -178,6 +171,19 @@ decode_args {
        	my($k,$v) = ($a =~ /^(.*?)=(.*)$/);
 	$tmp{$k} = $v;
     }
+
+    if ($tmp{'project'} eq '#auto') {
+	if ($tmp{'tmpdir'} && -r "$tmp{'tmpdir'}/search.txt") {
+	    my $s = `cat $tmp{'tmpdir'}/search.txt`;
+	    $s =~ /\#(\S+)/;
+	    $tmp{'project'} = $1;
+	} else {
+	    warn "p3-pager.plx: unable to auto-set project\n";
+	}
+    }
+
+    return %tmp if $tmp{'asrch'} && $tmp{'asrch'} eq 'yes';
+    $tmp{'asrch'} = 'no';
  
     $tmp{'tmpdir'} = tempdir(CLEANUP => 0) unless $tmp{'tmpdir'};
     $tmp{'#qsrch'} = -s "$tmp{'tmpdir'}/search.txt";
@@ -195,9 +201,18 @@ decode_args {
     $tmp{'state'} = 'default' unless $tmp{'state'};
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
     $tmp{'translation'} = 'en' unless $tmp{'translation'};
-    $tmp{'transonly'} = 0 unless $tmp{'transonly'};
+    if (exists $tmp{'transonly'}) {
+	$tmp{'transonly'} = 1;
+    } else {
+	$tmp{'transonly'} = 0;
+    }
+    if (exists $tmp{'unicode'}) {
+	$tmp{'unicode'} = 1;
+    } else {
+	$tmp{'unicode'} = 0;
+    }
     $tmp{'defindex'} = 'txt' unless $tmp{'defindex'};
-    $tmp{'uimode'} = 'full';
+    $tmp{'uimode'} = 'full' unless $tmp{'uimode'};
     warn "defindex $tmp{'defindex'}\n";
     warn "+defaults: ", Dumper \%tmp;
     %tmp;
@@ -240,15 +255,26 @@ p3adhoc {
 
 sub
 p3srch {
-    open(S, "$p{'tmpdir'}/search.txt");
-    $rt{'srchtext'} = <S>;
-    chomp($rt{'srchtext'});
+    my $srchtext = shift;
+    if ($srchtext) {
+	$rt{'srchtxt'} = $srchtext;
+	$rt{'#index'} = 'cat';
+    } else {
+	open(S, "$p{'tmpdir'}/search.txt");
+	$rt{'srchtext'} = <S>;
+	chomp($rt{'srchtext'});
+    }
     close(S);
     open(S, ">$p{'tmpdir'}/search.txt");
     print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
     close(S);
     warn `cat $p{'tmpdir'}/search.txt`, "\n";
     xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-o', "$p{'tmpdir'}/results.lst");
+    open(X, "$p{'tmpdir'}/results.xml");
+    my $xinfo = <X>;
+    $xinfo =~ m#<count>(.*?)<#;
+    $p{'#listitems'} = $1;
+    $p{'#list'} = "$p{'tmpdir'}/results.lst";
 }
 
 sub
@@ -276,9 +302,17 @@ run_form_maker {
 		print '</div>';
 	    } else {
 		print '<div id="p3left" class="border-right">';
-		system 'cat', "$p{'tmpdir'}/outline.html";
+		if ($rt{'#outline_url'}) {
+		    system 'cat', $rt{'#outline_url'};
+		} else {
+		    system 'cat', "$p{'tmpdir'}/outline.html";
+		}
 		print '</div><div id="p3right" class="p3right80">';
-		system 'cat', "$p{'tmpdir'}/results.html";
+		if ($rt{'#content_url'}) {
+		    system 'cat', $rt{'#content_url'};
+		} else {
+		    system 'cat', "$p{'tmpdir'}/results.html";
+		}
 		print '</div>';
 	    }
 	} elsif (m#p3:value=\"\@\@(.*?)\@\@\"#) {
@@ -309,6 +343,12 @@ run_form_maker {
 	    }
 	    if (m#<(span.*?p3:value.*?)#) {
 		s#>(.+)</span>#>$1$rep</span># || s#/>#>$rep</span>#;
+	    } elsif (m/type="checkbox"/) {
+		if ($rep && $rep ne '0') {
+		    s/p3/checked="checked" p3/;
+		} else {
+		    s/ checked="checked"//;
+		}
 	    } else {
 		s/\svalue=\".*?\"//;
 		s#p3:v# value=\"$rep\" p3:v#;
@@ -401,8 +441,7 @@ run_item_maker {
 
 sub
 run_glos_maker {
-    
-    set_runtime_vars();    
+    set_runtime_vars();
     print "Content-type: text/html; Encoding=utf-8\n\n";
     run_form_maker();
 }
@@ -450,10 +489,8 @@ set_p3_state {
 	if ($p{'glos'}) {
 	    $rt{'#index'} = "cbd/$p{'glos'}";
 	} else {
-	    $rt{'#index'} = $p{'srchindex'} || $p{'defindex'};
+	    $rt{'#index'} = $rt{'srchtype'} = $p{'p3srchtype'} || $p{'defindex'};
 	}
-#    } elsif ($p{'glos'}) {
-#	$rt{'prod'} = 'glos';
     } else {
 	$rt{'prod'} = 'list';
 	$rt{'outl'} = 'default';
@@ -508,14 +545,20 @@ set_p3_state {
 
 sub
 set_runtime_vars {
-    open(P, "$p{'tmpdir'}/pg.info");
-    while (<P>) {
-	next if /^\#/;
-	chomp;
-	my($k,$v) = (/^(\S+)\s+(\S+)$/);
-	$rt{$k} = $v;
+    if (open(P, "$p{'tmpdir'}/pg.info")) {
+	while (<P>) {
+	    next if /^\#/;
+	    chomp;
+	    my($k,$v) = (/^(\S+)\s+(\S+)$/);
+	    $rt{$k} = $v;
+	}
+	close(P);
+    } else {
+	# this is a search with 0 results
+	@rt{qw/pages items uzpage zprev znext/} = (0,0,0,0,0);
+	$rt{'#outline_url'} = "/usr/local/oracc/www/empty.div";
+	$rt{'#content_url'} = "/usr/local/oracc/www/noresults.div";
     }
-    close(P);
 }
 
 # perform any nav actions

@@ -37,7 +37,7 @@ if [ -d 01bld/lists ]; then
     fi
 fi
 #l2p3.sh $webdir
-p2-project.sh
+#p2-project.sh
 ## [ -e 00web/index.html ] || web-default-index.plx $webdir
 mkdir -p $webdir/images
 cp -fpR 00web/* 02www

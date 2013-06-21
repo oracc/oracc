@@ -263,11 +263,28 @@ xml_handler(char *xml, size_t len)
     }
 
   xml_type = xml_docelem(xml);
-  fprintf(stderr, "oracc-despatcher: xml_type=%s\n", xml_type);
-  if (!strcmp(xml_type, "browse")
+  /*fprintf(stderr, "oracc-despatcher: xml_type=%s\n", xml_type);*/
+  if (/*!strcmp(xml_type, "browse")
       || !strcmp(xml_type, "pager")
-      || !strcmp(xml_type, "search"))
+      ||*/ !strcmp(xml_type, "search"))
     {
+#if 1
+      char *tmpdir = p3tempdir();
+      char *sfn = malloc(strlen(tmpdir) + 10);
+      FILE *fp = NULL;
+
+      sprintf(sfn, "%s/search.xml", tmpdir);
+      if ((fp = fopen(sfn, "w")))
+	{
+	  xml[len] = 0;
+	  fwrite(xml, 1, len, fp);
+	  fclose(fp);
+	  execl("/bin/sh", "/bin/sh", "/usr/local/oracc/bin/p3-asrch.sh", tmpdir, NULL);
+	  perror("execl failed");
+	}
+      do404();
+      exit(1);
+#else
       char *session = xml_value(xml, "session");
       if (session)
 	{
@@ -297,6 +314,7 @@ xml_handler(char *xml, size_t len)
 	}
       else
 	do404();
+#endif
     }
   else
     do404();

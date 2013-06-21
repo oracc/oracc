@@ -191,7 +191,7 @@ p3_asearch_results(const char *project, const char *tmpdir)
     {
       char *res = malloc(strlen(tmpdir) + strlen("/results.lst") + 1);
       sprintf(res, "%s/results.lst", tmpdir);
-      execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/p3-pager.plx", 
+      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
 	    cgi_arg("project", "#auto"),
 	    cgi_arg("tmpdir", tmpdir),
 	    cgi_arg("list", res),
