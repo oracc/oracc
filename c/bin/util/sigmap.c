@@ -30,43 +30,13 @@ try_map(char *sig,char *map_file,const char*projlang)
     {
       char*tab = strchr(s,'\t') /*, *doll */;
       *tab = '\0';
-#if 0
-      if (*s != '{' && (doll = strchr(s, ']')))
-	{
-	  if ((doll = strchr(doll, '$')))
-	    *doll = '\0';
-	}
-#endif
       if (!strcmp(s,sig))
 	{
-#if 1
 	  char html[1024];
 	  ++tab;
 	  tab[strlen(tab)-1] = '\0';
 	  sprintf(html,"/usr/local/oracc/www/%s/cbd/%s/%s.html",map_proj,lang,tab);
-#else
-	  char html[1024],*at,*percent,projlang_tmp[128];
-	  ++tab;
-	  tab[strlen(tab)-1] = '\0';
-	  at = strchr(s,'@');
-	  ++at;
-	  percent = strchr(at,'%');
-	  if (lang)
-	    {
-	      *percent++ = '\0';
-	      sprintf(projlang_tmp,"%s/cbd/%s",at,lang);
-	    }
-	  else
-	    {
-	      sprintf(projlang_tmp,"%s",projlang);
-	    }
-	  sprintf(html,"/usr/local/oracc/www/%s/%s.html",projlang_tmp,tab);
-#endif
 
-#if SIGMAP_DEBUG
-	  printf("<html><body><p>%s => %s</p></body></html>",sig,html);
-	  return 0;
-#else
 	  if (!access(html,R_OK))
 	    execlp("/bin/cat","cat",html,(char*)NULL);
 	  else
@@ -74,7 +44,6 @@ try_map(char *sig,char *map_file,const char*projlang)
 	      printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body><p>Signature %s points to non-existent HTML file %s</p><p>map file=%s; projlang=%s</p></body></html>",sig,html,map_file,lang);
 	      exit(1);
 	    }
-#endif
 	}
     }
   fprintf(stderr,"sigmap: %s: no sig %s\n", map_file, sig);
