@@ -38,7 +38,8 @@ AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
 AC_SEARCH_LIBS(iconv,iconv)
-if test "$ac_cv_search" == "no"
+echo ac_cv_search = +$ac_cv_search+
+if test "$ac_cv_search" == ""
 then
    LIBICONV=
 else
@@ -67,6 +68,7 @@ AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(mkdir strerror)
 
+AC_SUBST(LIBICONV)
 AC_SUBST(QDBMINCLUDE)
 AC_SUBST(QDBMLIBDIR)
 
