@@ -263,6 +263,7 @@ misc/admin/projlist.sh
 misc/admin/projsave-all.sh
 misc/admin/projsave-full.sh
 misc/admin/projsave-incr.sh
+misc/admin/usermode.xml
 misc/atf/atf2ascii.plx
 misc/atf/atfdroppq.plx
 misc/atf/atfid.plx
