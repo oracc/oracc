@@ -128,6 +128,7 @@ function p3GlosControls() {
 
 function p3ItemControls() {
     var newItemtype = document.getElementById('itemtype').value;
+    document.getElementById('p3CbdLang').style.display= 'none';
     document.getElementById('p3itemnav').style.display= 'block';
     document.getElementById('p3pagenav').style.display= 'none';
     document.getElementById('p3srchtype').style.display = 'inline';

@@ -11,5 +11,9 @@ function oasResults(tmpdir) {
  +"screenX="+'0'+","
  +"screenY="+'0'+","
  +"resizable,scrollbars,toolbar");
-    oasPopupWindow.focus();
+    if (oasPopupWindow) {
+	oasPopupWindow.focus();
+    } else {
+	alert('Oracc Advanced Search requires popups to be enabled for the Oracc server you are using');
+    }
 }

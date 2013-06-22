@@ -182,7 +182,10 @@ decode_args {
 	}
     }
 
-    return %tmp if $tmp{'asrch'} && $tmp{'asrch'} eq 'yes';
+    if ($tmp{'asrch'} && $tmp{'asrch'} eq 'yes') {
+	return %tmp;
+    }
+
     $tmp{'asrch'} = 'no';
  
     $tmp{'tmpdir'} = tempdir(CLEANUP => 0) unless $tmp{'tmpdir'};
@@ -335,7 +338,11 @@ run_form_maker {
 		warn "cgivar $var = $rep\n";
 	    } elsif ($class eq 'runtime') {
 		if (defined $rt{$var}) {
-		    $rep = $rt{$var};
+		    if ($var eq 'tmpdir') {
+			$rep = $rt{$var} if $p{'asrch'} eq 'yes';
+		    } else {
+			$rep = $rt{$var};
+		    }
 		} else {
 		    $rep = $default;
 		}
@@ -499,6 +506,10 @@ set_p3_state {
     } else {
 	$rt{'prod'} = 'list';
 	$rt{'outl'} = 'default';
+    }
+
+    if ($p{'p3do'} eq 'qsrch') {
+	$p{'item'} = 0;
     }
 
     if ($p{'zoom'} > 0) {
