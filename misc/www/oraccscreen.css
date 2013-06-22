@@ -51,7 +51,7 @@ div.seqcombo { background-color: #9cf; color: black;
 
 .pqotl h1 { padding: 0px; margin: 0px; font-size: 80%; }
 .pqotl h2 { padding: 0px; margin: 0px; font-size: 80%; }
-.pqotl h3  { padding: 0px; margin: 0px; font-size: 80%; }
+.pqotl h3 { padding: 0px; margin: 0px; font-size: 80%; }
 .pqotl h4 { padding: 0px; margin: 0px; font-size: 80%; }
 
 .pgotl h1 { padding: 0px; margin: 0px; font-size: 80%; }
@@ -171,7 +171,7 @@ p.buttons { margin-top: 0px; padding-top: 0px;
 	    line-height: 1.75em; 
 	    text-align: center; text-indent: 0em; }
 
-h3 { font-size: 9pt; }
+h3 { font-size: 100%; }
 
 .unit table { width: 95%; margin: auto; vertical-align: top; }
 tr   { vertical-align: top; padding-top: 0px; padding-bottom: 0px; }

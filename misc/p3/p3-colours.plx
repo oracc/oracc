@@ -2,10 +2,11 @@
 use warnings; use strict;
 my $webdir = shift @ARGV;
 
-die "web-p2colours.plx: must give webdir on command line\n"
+die "web-p3colours.plx: must give webdir on command line\n"
     unless $webdir;
 
 my $oracc_colours = "$ENV{'ORACC'}/lib/data/p2colours.txt";
+
 
 my %colours = ();
 my %classes = ();
@@ -18,10 +19,10 @@ my %map_c = (
     'lemm-visited'=>'a.cbd:visited',
     );
 
-my $p2colours_file = find_p2colours();
+my $p3colours_file = find_p3colours();
 
-if (!$p2colours_file || !open(C,$p2colours_file)) {
-    die "p2-colours.plx: can't find `p2colours.txt'\n";
+if (!$p3colours_file || !open(C,$p3colours_file)) {
+    die "p2-colours.plx: can't find `p3colours.txt'\n";
 }
 
 while (<C>) {
@@ -86,12 +87,12 @@ while (<CSS>) {
 print CSX "</css>\n";
 close(CSX);
 
-system 'chmod', 'o+r', "$webdir/p2.css", "$webdir/p2.csx";
+system 'chmod', 'o+r', "$webdir/css/p3colours.css";
 
 ############################################################
 
 sub
-find_p2colours {
+find_p3colours {
     my $p = `oraccopt`;
     my $up = '';
     while (1) {

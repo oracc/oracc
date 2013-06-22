@@ -59,6 +59,7 @@
 <xsl:template name="views">
   <h3 class="h3">Views</h3>
   <ul>
+    <li>Catalogue entry</li>
     <xsl:for-each select="/*/md:cat/md:images">
       <xsl:choose>
 	<xsl:when test="@public">

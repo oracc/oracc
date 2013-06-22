@@ -38,7 +38,7 @@
 <xsl:template match="xh:head">
   <xsl:copy>
     <xsl:apply-templates/>
-    <xsl:call-template name="pll-css"/>
+<!--    <xsl:call-template name="pll-css"/> -->
   </xsl:copy>
 </xsl:template>
 

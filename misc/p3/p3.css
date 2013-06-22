@@ -74,7 +74,7 @@ div.level3  { margin-left: 15px; padding: 0px; }
 .level1 p   { margin-left: 15px; text-indent: -10px; }
 
 a         { text-decoration: none; }
-a:link    { color: blue; }
+a:link[@href]    { color: blue; }
 a:visited { color: #939; }
 a img     { border: 0px; }
 a[href]:hover   { color: white; background-color: red; text-decoration: underline; }
@@ -104,7 +104,7 @@ p.summary { margin-left: 1em; text-indent: -1em; }
 .pos { font-size: 90%; }
 .phon { font-size: 90%; font-family: serif; padding-left: 2em }
 
-.p2h2     { font-size: 90%; padding-top: 0px; margin-top: 0px; }
-h1.p2h2   { font-size: 90%; padding-top: 0px; margin-top: 0px; }
+.p2h2     { font-size: 100%; padding-top: 0px; margin-top: 0px; }
+h1.p2h2   { font-size: 100%; padding-top: 0px; margin-top: 0px; }
 
 h1.toc { fontsize: 10pt; text-align: center; }

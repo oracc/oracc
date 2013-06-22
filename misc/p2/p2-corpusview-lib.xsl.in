@@ -12,11 +12,6 @@
 <!--  xmlns="http://www.w3.org/1999/xhtml" -->
 
 <xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
-<!--
-   doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-   indent="yes"/>
--->
 
 <xsl:include href="xpd.xsl"/>
 <xsl:include href="xtr-label.xsl"/>
@@ -686,48 +681,72 @@
 	  <xsl:with-param name="txh" select="$txh"/>
 	  <xsl:with-param name="tlit-cols" select="$tlit-cols"/>
 	</xsl:apply-templates>
-	<xsl:for-each select="xh:p[@class='note']">
-	  <xsl:variable name="nid" 
-			select="1+count(preceding-sibling::*[@class='note'])"/>
-	  <xh:div>
-	    <xsl:attribute name="class">note</xsl:attribute>
-	    <xsl:attribute name="id">
-	      <xsl:choose>
-		<xsl:when test="ancestor::xh:p[@class='tr']">
-		  <xsl:value-of select="concat('note',$nid)"/>
-		</xsl:when>
-		<xsl:otherwise>
-		  <xsl:value-of select="concat('tnote',$nid)"/>
-		</xsl:otherwise>
-	      </xsl:choose>
-	    </xsl:attribute>
-	    <xsl:attribute 
-		name="onclick">hideNote(event,'tnote<xsl:value-of select="$nid"/>')</xsl:attribute>
-	    <xh:p class="notex"><xsl:text>[X]</xsl:text></xh:p>
-	    <xh:p class="noteb">
-	      <span class="marker"><xsl:value-of select="$nid"/></span>
-	      <xsl:apply-templates mode="notediv"/>
-	    </xh:p>
-	  </xh:div>
-	</xsl:for-each>
 	<xsl:if test="$xtr and $xtr/*">
 	  <xsl:for-each select="$xtr/*/xh:div[@class='note']">
 	    <xsl:variable name="nid" select="xh:p[1]/xh:span[@class='marker']"/>
-	    <xh:div>
+	    <p class="note">
+	      <xsl:attribute name="id">
+		<xsl:value-of select="concat('note',$nid)"/>
+	      </xsl:attribute>
+	      <xsl:attribute 
+		  name="onmouseout">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
+	      <xsl:attribute 
+		  name="onclick">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
+	      <xsl:apply-templates mode="notediv"/>
+	    </p>
+<!--
+	    <div>
 	      <xsl:attribute name="class">note</xsl:attribute>
 	      <xsl:attribute name="id">
 		<xsl:value-of select="concat('note',$nid)"/>
 	      </xsl:attribute>
 	      <xsl:attribute 
+		  name="onmouseout">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
+	      <xsl:attribute 
 		  name="onclick">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
-	      <xh:p class="notex"><xsl:text>[X]</xsl:text></xh:p>
-	      <xh:p class="noteb">
+	      <p class="notex"><xsl:text>[X]</xsl:text></p>
+	      <p class="noteb">
 		<xsl:apply-templates mode="notediv"/>
-	      </xh:p>
-	    </xh:div>
+	      </p>
+	    </div>
+ -->
 	  </xsl:for-each>
 	</xsl:if>
       </xsl:element>
+      <xsl:for-each select="xh:p[@class='note']">
+	<xsl:variable name="nid" 
+		      select="concat('tnote',1+count(preceding-sibling::*[@class='note']))"/>
+	<p class="note" onmouseout="hideNote(event,'{$nid}')" onclick="hideNote(event,'{$nid}')">
+	  <xsl:attribute name="id">
+	    <xsl:value-of select="$nid"/>
+	  </xsl:attribute>
+	  <xsl:apply-templates mode="notediv"/>
+	</p>
+<!--
+	<div>
+	  <xsl:attribute name="class">note</xsl:attribute>
+	  <xsl:attribute name="id">
+	    <xsl:choose>
+	      <xsl:when test="ancestor::xh:p[@class='tr']">
+		<xsl:value-of select="concat('note',$nid)"/>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="concat('tnote',$nid)"/>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:attribute>
+	  <xsl:attribute 
+	      name="onmouseout">hideNote(event,'tnote<xsl:value-of select="$nid"/>')</xsl:attribute>
+	  <xsl:attribute 
+	      name="onclick">hideNote(event,'tnote<xsl:value-of select="$nid"/>')</xsl:attribute>
+	  <p class="notex"><xsl:text>[X]</xsl:text></p>
+	  <p class="noteb">
+	    <span class="marker"><xsl:value-of select="$nid"/></span>
+	    <xsl:apply-templates mode="notediv"/>
+	  </p>
+	</div>
+-->
+      </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
       <!--This can't happen if the .txh file has been produced using the proper XSL script-->
@@ -756,7 +775,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <a href="javascript://" onmouseover="showNote(event,'{$prefix}note{text()}')">
+  <a href="javascript://" onmouseover="showNote(event,'{$prefix}note{text()}')" onmouseout="hideNote(event,'{$prefix}note{text()}')">
     <span>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>

@@ -1,0 +1,11 @@
+function toggle(boxId) {
+    var box = document.getElementById(boxId);
+    if (box.checked) {
+	box.checked = false;
+	alert(boxId+' off');
+    } else {
+	box.checked = true;
+	alert(boxId+' on');
+    }
+}
+

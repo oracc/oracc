@@ -14,6 +14,7 @@ if [ "$g2c" != "" ]; then
 	l=`basename $ldir`
 	echo producing web version of $l
 	l2-glomanager.plx -webdir=$webdir -conf l2p3.xcf -cbdlang $l $*
+	xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
 	xfftab=`oraccopt . cbd-forms-table`
 	if [ "$xfftab" = 'yes' ]; then
 	    rm -fr $webdir/cbd/$l/xff

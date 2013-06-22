@@ -10,6 +10,7 @@
 
 static char *CGI_decode_url(const char *p);
 const char *lang = NULL, *project = NULL, *map_proj = NULL;
+int verbose = 1;
 
 static void
 print_hdr(void)
@@ -23,9 +24,11 @@ try_map(char *sig,char *map_file,const char*projlang)
 {
   char *s, buf[1024];
   FILE *map = fopen(map_file,"r");
+  if (verbose)
+    fprintf(stderr, "sigmap: looking for %s in %s\n", sig, map_file);
   while ((s = fgets(buf,1024,map)))
     {
-      char*tab = strchr(s,'\t'), *doll;
+      char*tab = strchr(s,'\t') /*, *doll */;
       *tab = '\0';
 #if 0
       if (*s != '{' && (doll = strchr(s, ']')))
@@ -222,8 +225,8 @@ make_map(const char *sig, const char *argproj)
     lang = "qpn";
 
   map_proj = proj;
-  mapbuf = malloc(12+(2*strlen(lang))+strlen(proj)+strlen(oracc_home()));
-  sprintf(mapbuf, "%s/bld/%s/%s/%s.map", oracc_home(), proj, lang, lang);
+  mapbuf = malloc(20+(2*strlen(lang))+strlen(proj)+strlen(oracc_home()));
+  sprintf(mapbuf, "%s/www/%s/cbd/%s/%s.map", oracc_home(), proj, lang, lang);
   return mapbuf;
 }
 
@@ -231,7 +234,7 @@ int
 main(int argc, char **argv)
 {
   char *map = NULL;
-  char *sig = argv[2], *usig, *msig;
+  char *sig = argv[2], *usig, *msig, *trysig, *postproj;
   wchar_t *wsig = NULL;
   size_t nwchar = 0, i;
   char *locale = NULL;
@@ -278,31 +281,19 @@ main(int argc, char **argv)
 	}
     }
   msig = malloc(2*strlen(usig)+1);
-
   wcstombs(msig, wsig, 2*strlen(usig));
+  
+  trysig = malloc(strlen(project) + strlen(msig) + 1);
+  postproj = msig;
+  while (*postproj && '%' != *postproj)
+    ++postproj;
+  sprintf(trysig, "@%s%s", project, postproj);
 
-#if 0
-  fprintf(stderr,"msig: %s\n", msig);
-  exit(1);
-#endif
-
-  /* my $map1 = "/usr/local/oracc/bld/$project/$lang/$lang.map"; # try the local project/lang first */
-
-  lang = find_lang(msig);
-  map = make_map(msig, project);
-  try_map(msig, map, lang);
+  lang = find_lang(trysig);
+  map = make_map(trysig, project);
+  try_map(trysig, map, lang);
   map = make_map(msig, NULL);
   try_map(msig, map, lang);
-
-#if 0
-
-  /* else map = make_map(NULL, msig) and use project from sig */
-  if (strcmp(argv[3], "-"))
-    {
-      if (strcmp(argv[2],argv[3]))
-	try_map(argv[1],argv[3],NULL,argv[5]);
-    }
-#endif
 
   printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body><p>No HTML file found for signature %s in project %s</p></body></html>",
 	 msig, project);

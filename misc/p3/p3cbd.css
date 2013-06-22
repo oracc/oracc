@@ -136,8 +136,6 @@ hr.article { width: 100%; margin-left: 0px; margin-right: 0px }
 hr.instances { width: 200px; margin-left: 0px }
 span.what { font-size: 100%; font-weight: bold; padding-right: 10pt; }
 
-a { text-decoration: none; color: blue; border: 0px; }
-a:hover { background-color: red; }
 a.epsdissl  { color: blue; text-decoration: none; }
 a.epsdprime { color: fuchsia; text-decoration: none; }
 

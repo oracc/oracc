@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS=p3-project-data.plx p3-project.sh p3-pager.plx p3-asrch.sh
+bin_SCRIPTS=p3-project-data.plx p3-project.sh p3-pager.plx p3-asrch.sh p3-colours.plx
 css_DATA=p3.css p3cbd.css oas.css
 data_DATA=p3-template.xml as-base.xml
 js_DATA=p3.js oas.js

@@ -7,7 +7,7 @@ cp 02xml/config.xml $webdir/config.xml
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
-web-p2colours.plx $webdir
+web-p3colours.plx $webdir
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then

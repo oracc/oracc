@@ -291,6 +291,7 @@ run_form_maker {
     while (<T>) {
 	if (m#<p>\@</p>#) {
 	    if ($p{'glos'}) {
+		warn "run_form_maker: glos\n";
 		print '<div id="p3left" class="border-right">';
 		system "$oraccbin/xfrag", '-u', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
 		print '</div><div id="p3right" class="p3right80">';
@@ -301,6 +302,7 @@ run_form_maker {
 		}
 		print '</div>';
 	    } else {
+		warn "run_form_maker: non-glos\n";
 		print '<div id="p3left" class="border-right">';
 		if ($rt{'#outline_url'}) {
 		    system 'cat', $rt{'#outline_url'};
@@ -353,6 +355,9 @@ run_form_maker {
 		s/\svalue=\".*?\"//;
 		s#p3:v# value=\"$rep\" p3:v#;
 	    }
+	    print;
+	} elsif (/\@\@/) {
+	    s/\@\@project\@\@/$p{'project'}/g;
 	    print;
 	} else {
 	    print;
@@ -636,6 +641,7 @@ sig_fixer {
     open(T, "$p{'tmpdir'}/results.html");
     my $text = <T>;
     close(T);
+    $text =~ s/^<\!DOCTYPE.*?>\n//;
     my $l = '';
     my $reps = ($text =~ s/(pop1sig\()/pop1sig('$p','$l',/go);
     open(T,">$p{'tmpdir'}/results.html");
