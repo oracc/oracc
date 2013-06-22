@@ -92,7 +92,8 @@ sub { font-style: normal; }
 	      font-family: arial, sans-serif; margin-bottom: 2px;
 	    }
 .ce-label  { text-align: right; padding-top: 0px; margin-top: 0px; }
-.ce-result { text-align: left;  padding-bottom: 0px; margin-bottom: 0px; }
+.ce-result { text-align: left;  padding-bottom: 0px; margin-bottom: 0px;
+	   padding-left: 2px; padding-right: 2px; }
 
 table.kwic { width: 100%; }
 
