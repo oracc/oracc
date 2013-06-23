@@ -23,6 +23,6 @@ install-data-local:
 	$(HTMLINDEX) user $(DESTDIR)$(htmldir)/doc/user $(top_srcdir)
 
 clean-local:
-	rm index*.xml
+	@rm -f index*.xml
 
 EXTRA_DIST = order.txt

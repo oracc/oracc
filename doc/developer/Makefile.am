@@ -24,4 +24,4 @@ install-data-local:
 	$(HTMLINDEX) developer $(DESTDIR)$(htmldir)/doc/developer $(top_srcdir)
 
 clean-local:
-	rm index*.xml
+	@rm -f index*.xml

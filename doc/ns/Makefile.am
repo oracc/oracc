@@ -31,4 +31,4 @@ install-data-local:
 	ln -sf $(DESTDIR)$(htmldir)/doc/ns $(DESTDIR)$(htmldir)/ns
 
 clean-local:
-	rm index*.xml
+	@rm -f index*.xml
