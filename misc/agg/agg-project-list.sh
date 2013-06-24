@@ -1,13 +1,5 @@
 #!/bin/sh
-
-if [ "$ORACC_MODE" = "multi" ]; then
-    oraccid=`id -u oracc`
-    if [ "$EUID" != "$oraccid" ]; then
-	echo aggregation can only be done by the 'oracc' user
-	exit 1
-    fi
-fi
-
+agg-test.sh || exit 1
 mkdir -p ${ORACC}/agg/projects
 cd ${ORACC}/agg/projects
 xsl=${ORACC}/lib/scripts

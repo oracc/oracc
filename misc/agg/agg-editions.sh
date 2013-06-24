@@ -1,12 +1,5 @@
 #!/bin/sh
-if [ "$ORACC_MODE" != "single" ]; then
-    oraccid=`id -u oracc`
-    if [ "$EUID" != "$oraccid" ]; then
-	echo aggregation can only be done by the 'oracc' user
-	exit 1
-    fi
-fi
-
+agg-test.sh || exit 1
 outxtf=$ORACC/agg/master-xtf.lst
 rm -f $outxtf
 for a in `agg-list-public-projects.sh` ; do
