@@ -1,6 +1,10 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = linkmap.plx non-dynamic-cat-ids.plx center-image.sh clean_nl.plx config-inherit.sh config-uninherit.sh config.plx cph.plx createproj.plx glo-lang.sh lst2xml.plx ncr ncr-sudo.sh nor oracc project-data-sudo.sh project-stats.plx xpq.sh oracc-install.sh oxc oracc-install-server.sh oracc-install-single.sh
+bin_SCRIPTS = linkmap.plx non-dynamic-cat-ids.plx center-image.sh clean_nl.plx \
+	config-inherit.sh config-uninherit.sh config.plx cph.plx createproj.plx \
+	glo-lang.sh lst2xml.plx ncr ncr-sudo.sh nor oracc project-data-sudo.sh \
+	project-stats.plx xpq.sh oxc \
+	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh
 
 css_DATA = stats.css
 scriptdata_DATA = subconfig.xsl config-inherit.xsl copy-options.xsl identity.xsl stats-HTML.xsl xpd.xsl

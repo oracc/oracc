@@ -1,5 +1,5 @@
 #!/bin/sh
-. $ORACC/bin/oracc-funcs.sh
+. $ORACC/bin/oracc-install-funcs.sh
 project=$1
 projdir=$ORACC_HOME/$project
 if [ ! -d $projdir ]; then

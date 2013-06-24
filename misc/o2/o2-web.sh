@@ -7,7 +7,7 @@ cp 02xml/config.xml $webdir/config.xml
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
-web-p3colours.plx $webdir
+p3-colours.plx $webdir
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then
@@ -38,7 +38,7 @@ if [ -r 01bld/lists/outlined.lst ]; then
 fi
 l2p3.sh $webdir
 web-PQX-html.plx -list 01bld/lists/have-xtf.lst -webdir $webdir 2>01tmp/web-PQX.log
-p2-project.sh
+p3-project.sh
 if [ -d 00web/esp ]; then
     # esp live includes o2-weblive
     oracc esp ; oracc esp live force
