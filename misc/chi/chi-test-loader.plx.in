@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::CHI::Loader;
+use ORACC::CHI::Serializer;
+
+my $file = shift @ARGV;
+my $expand = shift @ARGV;
+my $chis = ORACC::CHI::Loader::load($file, $expand);
+
+ORACC::CHI::Serializer::output($chis);
+
+1;

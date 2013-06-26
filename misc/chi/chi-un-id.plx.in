@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
+use lib '@@ORACC@@/lib';
+use ORACC::CHI::Indexer;
+use ORACC::CHI::Reader;
+
+my $chi_file = '';
+my $unid_file = '';
+
+use Getopt::Long;
+Getopt::Long::GetOptions(
+    'chi:s'=>\$chi_file,
+    'unid:s'=>\$unid_file,
+    );
+
+die "chi-un-id.plx: no chi-file\n" unless $chi_file;
+die "chi-un-id.plx: no unid file\n" unless $unid_file;
+
+unid($chi_file,$unid_file);
+
+sub
+unid {
+    my($chi, $unid) = @_;
+    
+    my $chihash = ORACC::CHI::Reader::read($chi);
+    my $chiIndex = ORACC::CHI::Indexer::index($chihash);
+
+    open(U, $unid)  || die ("ORACC::CHI::Remap: can't open unid file list `$unid'\n");
+    while (<U>) {
+	if (/(\S+)\t(\S+)\t(.*?)$/) {
+	    my($id,$rel,$data) = ($1,$2,$3);
+	    if ($$chiIndex{$id}) {
+		my $chi = $$chiIndex{$id};
+		if (scalar keys %$chi > 1) {
+		    warn "ID $id resolves to multiple CHIs\n";
+		} else {
+		    foreach my $k (keys %$chi) {
+			my $chihash = $$chi{$k};
+			$chi = $$chihash{'head'};
+#			foreach my $kk (keys %{$chihash}) {
+#			    warn "$kk\t$$chihash{$kk}\n";
+#			}
+		    }
+		}
+		print "$chi\t$rel\t$data\n";
+	    } else {
+		warn "$id: not found\n";
+	    }
+	} else {
+	    warn "$unid:$.: bad form in remaps file (say: ID<TAB>TYPE<TAB>DATA)\n";
+	}
+    }
+    close(U);
+}
+
+1;

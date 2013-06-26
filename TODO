@@ -1,0 +1,3 @@
+misc/agg/data/* needs to be initialized on a new system but not
+reinstalled from source repeatedly--files need to be moved to
+oracc/agg and then relinked back to misc/agg/data

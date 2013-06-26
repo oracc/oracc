@@ -1,0 +1,101 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::CHI::Importer;
+use ORACC::CHI::Indexer;
+use ORACC::CHI::Reader;
+use ORACC::CHI::Writer;
+
+my $basename = '';
+my $check = 0;
+my $chi1name = '';
+my $chi2name = '';
+my $compare = 0;
+my $create = 0;
+my $exists = 0;
+my $expand = 0;
+my $input = '';
+my $merge_tab_file = '';
+my $need_remaps = 0;
+my $output = '';
+
+use Getopt::Long;
+Getopt::Long::GetOptions(
+    'check'=>\$check,
+    'chi1:s'=>\$chi1name,
+    'chi2:s'=>\$chi2name,
+    'compare:i'=>\$compare,
+    'convert'=>\$create,
+    'create'=>\$create,
+    'exists'=>\$exists,
+    'expand'=>\$expand,
+    'input:s'=>\$input,
+    'merge:s'=>\$merge_tab_file,
+    'need-remaps'=>\$need_remaps,
+    'output:s'=>\$output,
+    );
+
+my %chis = ();
+my %chi_warnings = ();
+my $debug = 0;
+
+die "chimanager.plx: missing a file name (use '-' for stdin/stdout)\n"
+    unless $compare || ($input && $output);
+
+die "chimanager.plx: must give -chi1 NAME -chi2 NAME with compare\n"
+    if $compare && (!$chi1name || !$chi2name);
+
+#if ($check)
+if ($merge_tab_file) {
+    open(M, $merge_tab_file) || die ("chimanager.plx: can't open tabbed file $merge_tab_file\n");
+    my $chis = ORACC::CHI::Reader::read($input, 1);
+    my $ix = ORACC::CHI::Indexer::index($chis);
+    while (<M>) {
+	my($id) = (/^(\S+)/);
+	if ($$ix{$id}) {
+	    my $ixarray = $$ix{$id};
+	    if ($#$ixarray == 0) {
+		my $ixhash = $$ixarray[0];
+		print "$$ixhash{'head'}\t$_";
+	    } else {
+		warn "$merge_tab_file\:$id has multiple matches\n";
+	    }
+	} else {
+	    warn "$merge_tab_file\:$id not found in index $input\n";
+	}
+    }
+} elsif ($compare) {
+    my $chi1 = ORACC::CHI::Reader::read($chi1name, 1);
+    my $chi1index = ORACC::CHI::Indexer::index($chi1);
+    my $chi2 = ORACC::CHI::Reader::read($chi2name, 1);
+    my @bad = ORACC::CHI::Compare::chi2s_not_in_chi1($chi1index, $chi2);
+    foreach my $b (@bad) {
+	warn "$b\n";
+    }
+} elsif ($create) {
+    if ($input =~ /\.chi/) {
+	ORACC::CHI::Importer::import_chi($input, $output);	
+    } else {
+	ORACC::CHI::Importer::import_tab($input, $output);
+    }
+} elsif ($exists) {
+    my $chi1 = ORACC::CHI::Reader::read($chi1name, 1);
+    my $chi1index = ORACC::CHI::Indexer::index($chi1);
+    open(L, $input) || die "chimanager.plx: can't open list $input\n";
+    while (<L>) {
+	chomp;
+	if ($$chi1index{$_}) {
+	    print "$_\tyes\n";
+	} else {
+	    print "$_\tno\n";
+	}
+    }
+    close(L);
+} elsif ($expand) {
+    my $chis = ORACC::CHI::Reader::read($input, 1);
+    ORACC::CHI::Writer::write($chis, $output);
+} else {
+    warn "chimanager.plx: nothing to do!\n";
+}
+
+1;

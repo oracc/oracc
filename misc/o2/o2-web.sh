@@ -2,7 +2,7 @@
 [ -r 01bld/cancel ] && exit 1
 shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
-mkdir -p $webdir/t $webdir/cbd
+mkdir -p $webdir/t $webdir/cbd $webdir/css
 cp 02xml/config.xml $webdir/config.xml
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/

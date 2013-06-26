@@ -136,6 +136,7 @@ AC_OUTPUT([Makefile
 	misc/bib/Makefile
 	misc/catf/Makefile
 	misc/ce/Makefile
+	misc/chi/Makefile
 	misc/cs/Makefile
 	misc/emacs/Makefile
 	misc/epsd/Makefile

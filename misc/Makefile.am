@@ -5,6 +5,7 @@ SUBDIRS = \
 	bib \
 	catf \
 	ce \
+	chi \
 	cs \
 	emacs \
 	epsd \

@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::CHI::Reader;
+use ORACC::CHI::Indexer;
+use ORACC::CHI::Checker;
+
+my $file = shift @ARGV;
+my $expand = shift @ARGV;
+my $chis = ORACC::CHI::Reader::read($file, $expand);
+my $ix = ORACC::CHI::Indexer::index($chis);
+my $chi = 'CBS_19049';
+my $t = ORACC::CHI::Checker::check($chi, $ix);
+if ($t < 0) {
+    print "$chi\t$ORACC::CHI::Checker::error\n";
+} elsif ($t == 0) {
+    warn "$chi: $ORACC::CHI::Checker::error\n";
+}
+
+1;

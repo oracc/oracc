@@ -22,7 +22,7 @@ my %map_c = (
 my $p3colours_file = find_p3colours();
 
 if (!$p3colours_file || !open(C,$p3colours_file)) {
-    die "p2-colours.plx: can't find `p3colours.txt'\n";
+    die "p3-colours.plx: can't find `p3colours.txt'\n";
 }
 
 while (<C>) {
@@ -45,7 +45,7 @@ while (<C>) {
 close(C);
 
 open(CSS,">$webdir/css/p3colours.css")
-    || die "p2-colours.plx: can't write to `$webdir/css/p3colours.css'\n";
+    || die "p3-colours.plx: can't write to `$webdir/css/p3colours.css'\n";
 select CSS;
 foreach my $c (sort keys %classes) {
     foreach my $mapped_c (split(/\s+/, $map_c{$c} || $c)) {

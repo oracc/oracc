@@ -5,14 +5,11 @@ use ORACC::XML;
 use ORACC::NS;
 use Data::Dumper;
 
-my $fieldnames = '00any/cdli.ucla.edu/fieldnames.row';
+my $fieldnames = '00lib/fieldnames.row';
 my @fields = ();
 my %fields = ();
 my $file;
 my $period_index = -1;
-
-#my @db = internalize('00any/cdli.ucla.edu/test.csv');
-#print Dumper \@db;
 
 ##########################################################################
 
@@ -51,6 +48,7 @@ sub
 initialize_fields {
     my $f = shift;
     chomp $f;
+    $f =~ tr/"//d;
     @fields = split(/,/, $f);
     %fields = ();
     for (my $i = 0; $i <= $#fields; ++$i) {

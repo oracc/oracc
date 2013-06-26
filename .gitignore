@@ -427,3 +427,13 @@ oracc-hyperestraier/estconfig
 oracc-hyperestraier/estseek
 oracc-hyperestraier/nohup.out
 stamp-h1
+
+misc/chi/chi-test-checker.plx
+
+misc/chi/chi-test-indexer.plx
+
+misc/chi/chi-test-loader.plx
+
+misc/chi/chi-un-id.plx
+
+misc/chi/chimanager.plx

@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::CHI::Reader;
+use ORACC::CHI::Indexer;
+
+use Data::Dumper;
+
+my $file = shift @ARGV;
+my $expand = shift @ARGV;
+my $chis = ORACC::CHI::Reader::read($file, $expand);
+
+my $ix = ORACC::CHI::Indexer::index($chis);
+my $t = ORACC::CHI::Indexer::terminal_of('CBS_19049', $ix);
+warn "$t\n";
+
+open(C, ">chis.dump");
+print C Dumper $chis;
+close(C);
+open(C, ">index.dump");
+print C Dumper $ix;
+close(C);
+
+
+
+1;
