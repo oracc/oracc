@@ -66,9 +66,9 @@ FILE *hash_debug_fp = NULL;
 #endif
  
 Hash_table *
-hash_create (size_t count)
+hash_create (Unsigned32 count)
 {
-  size_t i;
+  Unsigned32 i;
   Hash_table *tmp;
  
   /* Adjust count to be nearest higher power of 2, minimum SEGMENT_SIZE, 
@@ -122,11 +122,15 @@ hash_freeable_data(Hash_table *h,int i)
 void *
 hash_find (Hash_table *htab, const unsigned char *key)
 {
-  Hash_element *ret = _hash_lookup (htab, key, NULL);
-  if (ret != NULL)
-    return ret->data;
-  else
+  static Hash_element *ret = NULL;
+  int ok = 0;
+  ret = _hash_lookup(htab, key, NULL);
+  ok = (ret != ((Hash_element*)0));
+  if (!ok)
     return NULL;
+  if (ok)
+    return ret->data;
+  return NULL;
 }
 
 void
@@ -138,7 +142,7 @@ hash_free (Hash_table *htab, void (*fnc)(void *))
 void
 hash_free2 (Hash_table *htab, void (*keyfnc)(void *), void (*datfnc)(void *))
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element *p, *q;
  
   if (htab != NULL)
@@ -213,7 +217,7 @@ _hash_expand (Hash_table *htab)
   long int OldSegmentDir, NewSegmentDir;
   Hash_element **OldSegment, **NewSegment;
   Hash_element *Current, **Previous, **LastOfNew;
-  size_t i;
+  Unsigned32 i;
  
   if (htab->maxp + htab->p < MUL (DIRECTORY_SIZE, SEGMENT_SIZE))
     {
@@ -325,7 +329,7 @@ _hash_lookup (Hash_table *htab, const unsigned char *key, Hash_element ***p_p)
 void
 hash_exec (Hash_table *htab, void (*fnc)(void *))
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element **s, *p;
  
   if (htab != NULL)
@@ -351,7 +355,7 @@ hash_exec (Hash_table *htab, void (*fnc)(void *))
 void
 hash_exec_user (Hash_table *htab, void (*fnc)(void *, void*), void *user)
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element **s, *p;
  
   if (htab != NULL)
@@ -377,7 +381,7 @@ hash_exec_user (Hash_table *htab, void (*fnc)(void *, void*), void *user)
 void
 hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *))
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element **s, *p;
  
   if (htab != NULL)
@@ -403,7 +407,7 @@ hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *))
 void
 hash_exec_user_key (Hash_table *htab, void (*fnc)(Uchar *, void*), void *user)
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element **s, *p;
  
   if (htab != NULL)
@@ -429,7 +433,7 @@ hash_exec_user_key (Hash_table *htab, void (*fnc)(Uchar *, void*), void *user)
 const char **
 hash_keys (Hash_table *htab)
 {
-  size_t i, j;
+  Unsigned32 i, j;
   Hash_element **s, *p;
  
   if (htab != NULL)
@@ -467,7 +471,7 @@ hash2list(Hash_table *htab, sort_cmp_func*cmp)
       static void **v;
       int vindex = 0;
       List *ret;
-      size_t i, j;
+      Unsigned32 i, j;
       Hash_element **s, *p;
       v = malloc(htab->key_count * sizeof(void*));
       for (i = 0; i < htab->segment_count; i++)

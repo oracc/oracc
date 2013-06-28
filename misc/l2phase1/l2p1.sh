@@ -1,6 +1,6 @@
 #!/bin/sh
 cbdmode=`oraccopt . cbd-mode`
-if ! [ "$cbdmode" = "super" ]; then
+if [ "$cbdmode" != "super" ]; then
     touch 01bld/nolem
     l2p1-from-glos.sh
     [ -s 01bld/lists/have-lem.lst ] && l2p1-from-xtfs.plx -t 01bld/lists/have-lem.lst

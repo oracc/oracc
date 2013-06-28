@@ -5,13 +5,18 @@ my $bin = "$ENV{'ORACC'}/bin";
 my @atf_sources = ();
 my $atfsources = '01bld/atfsources.lst';
 
-@atf_sources = `ls -1 00atf|sed 's/^/00atf\\//'`;
+@atf_sources = <00atf/*.atf>;
+push @atf_sources, <00atf/*.ods>;
+
 chomp @atf_sources;
 @atf_sources = ods_convert(@atf_sources);
 if ($#atf_sources >= 0) {
     open(A,">$atfsources"); 
     print A join("\n", grep(/\.atf$/, @atf_sources)), "\n"; 
     close(A);
+} else {
+    unlink $atfsources;
+    system 'touch', $atfsources;
 }
 
 sub

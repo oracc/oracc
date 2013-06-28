@@ -311,7 +311,7 @@ extern int errno;
 #endif /*MSDOS|WIN|OS2*/
 
 /*The maximum length of the basename part of a file, including 0*/
-#define MAX_BASENAME_		((size_t)9)
+#define MAX_BASENAME_		((Unsigned32)9)
 
 #ifndef _MAX_PATH
 #define _MAX_PATH       1024

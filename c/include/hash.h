@@ -50,7 +50,7 @@ typedef struct Hash_table
   Int p;			/* Next bucket to be split	*/
   Int maxp;			/* upper bound on p during expansion	*/
   Int key_count;		/* current # keys	*/
-  size_t segment_count;		/* current # segments	*/
+  Unsigned32 segment_count;	/* current # segments	*/
   int min_load_factor;
   int max_load_factor;
   int freeable_data;            /* do we free data during hash_add? */
@@ -70,7 +70,7 @@ extern long HashAccesses, HashCollisions;
 	  _hash_expand(htab)
 
 extern  void hash_add (Hash_table *htab, const unsigned char *key, void *data);
-extern  Hash_table *hash_create (size_t count);
+extern  Hash_table *hash_create (Unsigned32 count);
 extern  void hash_exec (Hash_table *htab, void (*fnc)(void *));
 extern  void hash_exec_user (Hash_table *htab, void (*fnc)(void *, void *), void *user);
 extern  void hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *));
