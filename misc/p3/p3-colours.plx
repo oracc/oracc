@@ -78,14 +78,18 @@ foreach my $c (sort keys %classes) {
 }
 close(CSS);
 
-open(CSX,">$webdir/p2.csx");
-print CSX "<css>\n";
-open(CSS,"$webdir/p2.css");
-while (<CSS>) {
-    print CSX;
+if (-r "$webdir/p2.css" || -r "02www/p2.css") {
+    open(CSX,">$webdir/p2.csx");
+    print CSX "<css>\n";
+    open(CSS,"$webdir/p2.css") || open(CSS, "02www/p2.css");
+    while (<CSS>) {
+	print CSX;
+    }
+    print CSX "</css>\n";
+    close(CSX);
+} else {
+    warn "p3-colours.plx: can't read $webdir/p2.css\n";
 }
-print CSX "</css>\n";
-close(CSX);
 
 system 'chmod', 'o+r', "$webdir/css/p3colours.css";
 

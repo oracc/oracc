@@ -7,7 +7,7 @@ use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::L2GLO::Util;
-use ORACC::SL::Base;
+use ORACC::SL::BaseC;
 use Getopt::Long;
 
 use constant {
@@ -107,7 +107,7 @@ my %xrefs_infos = ();
 
 my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdlme} = ();
 
-ORACC::SL::Base::init();
+ORACC::SL::BaseC::init();
 
 $ORACC::L2GLO::Util::project = $project;
 
@@ -122,64 +122,6 @@ $rewrites =~ s/\..*$/.rew/;
 load_rewrites($rewrites) if -r $rewrites;
 
 read_input($input);
-
-sub
-read_input {
-    if ($input eq '-') {
-	while (<>) {
-	    read_input_line();
-	}
-    } else {
-	open(S,$input) || die "l2p2-g2x.plx: can't open `$input'\n";
-	while (<S>) {
-	    read_input_line();
-	}
-	close(S);
-    }
-}
-
-sub
-read_input_line {
-    return if /^\s*$/;
-    if (/^\@(project|name|lang)\s+(\S+)/) {
-	$header{$1} = $2
-	    unless $header{$1};
-	return;
-    }
-    chomp;
-    
-    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
-    
-    my ($sig,$freq,$refs) = ();
-    my @t = split(/\t/,$_);
-    if ($#t == 2) {
-	($sig,$freq,$refs) = @t;
-    } elsif ($#t == 3) {
-	($sig,$freq,$refs) = ($t[0],$t[1],$t[3]);
-    } else {
-	($sig,$freq,$refs) = ($t[0],0,'');
-    }
-    
-    return if $seen{$sig}++;
-    
-    $baselang = $header{'lang'};
-    $baselang =~ s/-.*$//;
-    $id_base = "$header{'lang'}"; # $header{'project'}.
-    $id_base =~ tr#/#_#;
-    $refs = '' unless $refs;
-    $freq = ($refs =~ tr/ / /) + ($refs ? 1 : 0);
-    
-    if ($sig =~ /\&\&/) {
-	my @cof = ();
-	my $index = 0;
-	foreach my $c (split(/\&\&/, $sig)) {
-	    push(@cof, add_sig($c, $freq, $refs, $sig, $index++));
-	}
-	$cofs{$sig} = [ @cof ];
-    } else {
-	add_sig($sig, $freq, $refs, 0);
-    }
-}
 
 if ($have_disamb) {
     push @sigfields, 'form-sans';
@@ -532,7 +474,7 @@ compute_and_print_entry_data {
 	if ($freqs{$f} || $with_zero_freqs) {
 	    print "<${f}s>";
 	    if ($f eq 'base') {
-		rewrite_bases(\%freqs, \%insts);
+		rewrite_bases($entry_lines{$entry}, \%freqs, \%insts);
 #		%freqs = { %$nfreqs };
 #		%insts = { %$ninsts };
 	    }
@@ -874,7 +816,7 @@ make_cof_norm {
 
 sub
 rewrite_bases {
-    my($origf,$originst) = @_;
+    my($lnum,$origf,$originst) = @_;
     my %new_b = ();
     my %new_i = ();
 #    use Data::Dumper;
@@ -889,7 +831,9 @@ rewrite_bases {
 
     my %sig = ();
     foreach my $b (keys %b) {
-	my $sig = ORACC::SL::Base::_signature(ORACC::SL::Base::tlitsplit($b));
+	my $tmpb = $b;
+	$tmpb =~ s/^%[-a-z0-9]+://;
+	my $sig = ORACC::SL::BaseC::_signature("$project/$input\:$tmpb", ORACC::SL::BaseC::tlitsplit($tmpb));
 	push @{$sig{$sig}}, $b;
     }
  
@@ -916,6 +860,64 @@ rewrite_bases {
 
     $$origf{'base'} = { %new_b };
     $$originst{'base'} = { %new_i };
+}
+
+sub
+read_input {
+    if ($input eq '-') {
+	while (<>) {
+	    read_input_line();
+	}
+    } else {
+	open(S,$input) || die "l2p2-g2x.plx: can't open `$input'\n";
+	while (<S>) {
+	    read_input_line();
+	}
+	close(S);
+    }
+}
+
+sub
+read_input_line {
+    return if /^\s*$/;
+    if (/^\@(project|name|lang)\s+(\S+)/) {
+	$header{$1} = $2
+	    unless $header{$1};
+	return;
+    }
+    chomp;
+    
+    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
+    
+    my ($sig,$freq,$refs) = ();
+    my @t = split(/\t/,$_);
+    if ($#t == 2) {
+	($sig,$freq,$refs) = @t;
+    } elsif ($#t == 3) {
+	($sig,$freq,$refs) = ($t[0],$t[1],$t[3]);
+    } else {
+	($sig,$freq,$refs) = ($t[0],0,'');
+    }
+    
+    return if $seen{$sig}++;
+    
+    $baselang = $header{'lang'};
+    $baselang =~ s/-.*$//;
+    $id_base = "$header{'lang'}"; # $header{'project'}.
+    $id_base =~ tr#/#_#;
+    $refs = '' unless $refs;
+    $freq = ($refs =~ tr/ / /) + ($refs ? 1 : 0);
+    
+    if ($sig =~ /\&\&/) {
+	my @cof = ();
+	my $index = 0;
+	foreach my $c (split(/\&\&/, $sig)) {
+	    push(@cof, add_sig($c, $freq, $refs, $sig, $index++));
+	}
+	$cofs{$sig} = [ @cof ];
+    } else {
+	add_sig($sig, $freq, $refs, 0);
+    }
 }
 
 1;

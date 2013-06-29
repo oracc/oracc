@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "periodmap.h"
 
-#define TOTAL_KEYWORDS 24
+#define TOTAL_KEYWORDS 28
 #define MIN_WORD_LENGTH 4
 #define MAX_WORD_LENGTH 20
 #define MIN_HASH_VALUE 4
-#define MAX_HASH_VALUE 49
-/* maximum key range = 46, duplicates = 0 */
+#define MAX_HASH_VALUE 52
+/* maximum key range = 49, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,32 +55,32 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 10, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50,  3, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 10, 10, 50,  0,  0,
-       0, 50,  0,  0, 50, 50, 15, 10,  5,  0,
-      50, 50, 50, 50, 50,  0, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50,  0, 10, 50,
-      50,  0, 50, 50, 50,  0, 50,  0,  5, 50,
-       5,  0, 50, 50,  0, 10,  0, 15, 50, 50,
-      50,  0, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 15, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53,  0, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 23, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 10,  5, 53,  5,  0,
+       0, 53,  0,  0, 53, 53, 28,  0, 10,  0,
+      53, 53, 53, 53, 53,  0,  3, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53,  0, 15,  8,
+      53,  0, 53, 53, 53,  0, 53, 30,  0, 53,
+       5,  0, 53, 53,  0,  5,  0, 20, 53, 53,
+      53,  0, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 10, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53
     };
   register int hval = (int)len;
 
@@ -131,70 +131,77 @@ periodmap (str, len)
   static struct periodmap wordlist[] =
     {
       {""}, {""}, {""}, {""},
-#line 13 "periodmap.g"
+#line 16 "periodmap.g"
       {"Ebla", Eb,},
       {""},
-#line 17 "periodmap.g"
+#line 20 "periodmap.g"
       {"Ur III", UR,},
-#line 8 "periodmap.g"
+#line 11 "periodmap.g"
       {"ED IIIa", EDa,},
-      {""},
-#line 27 "periodmap.g"
+#line 8 "periodmap.g"
+      {"Uruk III", PC,},
+#line 31 "periodmap.g"
       {"Uncertain", XX,},
-#line 7 "periodmap.g"
-      {"ED I-II", PC,},
-#line 26 "periodmap.g"
+#line 9 "periodmap.g"
+      {"Uruk IV", PC,},
+#line 30 "periodmap.g"
       {"Hellenistic", LS,},
-#line 29 "periodmap.g"
+#line 33 "periodmap.g"
       {"Unknown", XX,},
       {""},
-#line 10 "periodmap.g"
-      {"Early Dynastic", EDb,},
-      {""}, {""},
-#line 11 "periodmap.g"
-      {"ED IIIb", EDb,},
+#line 24 "periodmap.g"
+      {"Middle Hittite", LS,},
+#line 25 "periodmap.g"
+      {"Middle Assyrian", LS,},
+#line 27 "periodmap.g"
+      {"First Millennium", LS,},
+#line 26 "periodmap.g"
+      {"Middle Babylonian", LS,},
       {""},
-#line 9 "periodmap.g"
-      {"Early Dynastic IIIa", EDa,},
-#line 18 "periodmap.g"
+#line 13 "periodmap.g"
+      {"Early Dynastic", EDb,},
+#line 21 "periodmap.g"
       {"Early Old Babylonian", OB,},
       {""},
 #line 14 "periodmap.g"
-      {"Old Akkadian", OAk,},
-      {""},
-#line 28 "periodmap.g"
-      {"uncertain", XX,},
-      {""},
-#line 23 "periodmap.g"
-      {"First Millennium", LS,},
-#line 30 "periodmap.g"
-      {"unknown", XX},
+      {"ED IIIb", EDb,},
       {""},
 #line 12 "periodmap.g"
-      {"Early Dynastic IIIb", EDb,},
-      {""}, {""},
-#line 19 "periodmap.g"
-      {"Old Assyrian", OB,},
-      {""},
-#line 20 "periodmap.g"
-      {"Old Babylonian", OB,},
-      {""}, {""},
-#line 25 "periodmap.g"
-      {"Neo-Assyrian", LS,},
-      {""},
-#line 24 "periodmap.g"
-      {"Neo-Babylonian", LS,},
-#line 21 "periodmap.g"
-      {"Middle Assyrian", LS,},
+      {"Early Dynastic IIIa", EDa,},
+#line 7 "periodmap.g"
+      {"Archaic", PC,},
       {""},
 #line 22 "periodmap.g"
-      {"Middle Babylonian", LS,},
+      {"Old Assyrian", OB,},
+      {""},
+#line 32 "periodmap.g"
+      {"uncertain", XX,},
+#line 10 "periodmap.g"
+      {"ED I-II", PC,},
+      {""},
+#line 34 "periodmap.g"
+      {"unknown", XX},
+      {""},
+#line 23 "periodmap.g"
+      {"Old Babylonian", OB,},
+      {""}, {""},
+#line 29 "periodmap.g"
+      {"Neo-Assyrian", LS,},
       {""},
 #line 15 "periodmap.g"
+      {"Early Dynastic IIIb", EDb,},
+      {""}, {""},
+#line 18 "periodmap.g"
       {"Lagash II", LA,},
+      {""},
+#line 28 "periodmap.g"
+      {"Neo-Babylonian", LS,},
+      {""}, {""},
+#line 19 "periodmap.g"
+      {"Laga\305\241 II", LA,},
       {""}, {""}, {""}, {""},
-#line 16 "periodmap.g"
-      {"Laga\305\241 II", LA,}
+#line 17 "periodmap.g"
+      {"Old Akkadian", OAk,}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)

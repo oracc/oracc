@@ -171,7 +171,8 @@ lemindex_list {
 	my @pp = sort keys %proxy_projects;
 #	warn "@pp\n";
 	foreach my $p (keys %proxy_projects) {
-	    push @proxy_lem, '+?', "$ENV{'ORACC'}/bld/$p/lists/have-lem.lst";
+	    my $plem = "$ENV{'ORACC'}/bld/$p/lists/have-lem.lst";
+	    push(@proxy_lem, '+?', $plem) if -r $plem;
 	}
 	if ($#proxy_lem >= 0) {
 	    shift @proxy_lem; # shift the leading '+?' off so the first list is lead
@@ -291,6 +292,9 @@ update_lists {
     $opt = `oraccopt . build-outlined-policy`;
 
     if (!$opt || $opt eq 'approved') {
+	unless (-s $out_approved) {
+	    system 'touch', $out_approved;
+	}
 	xsystem 
 	    'atflists.plx', "-o$out_outlined", '-p', $project,
 	    $out_approved,

@@ -1,5 +1,7 @@
 bin_PROGRAMS=bigrams lemmer ngrammer xis xis2
 
+noinst_PROGRAMS=test
+
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,lib,lng} \
@@ -11,8 +13,13 @@ xLDADD= @top_srcdir@/c/l2/libl2.la \
 	@top_srcdir@/c/lib/skl/libskl.la \
 	@top_srcdir@/c/lib/liboracc.la
 
+yLDADD= @top_srcdir@/c/lib/liboracc.la
+
+test_SOURCES=test.c
+test_LDADD=$(yLDADD)
+
 bigrams_SOURCES=bigrams.c
-bigrams_LDADD=$(xLDADD)
+bigrams_LDADD=$(yLDADD)
 
 lemmer_SOURCES=lemmer.c
 lemmer_LDADD=$(xLDADD)
