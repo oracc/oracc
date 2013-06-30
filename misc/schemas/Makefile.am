@@ -5,7 +5,7 @@ java_DATA = trang.jar
 data_DATA = schemas.xml
 schema_DATA =  	od-manifest-schema-v1.2-cs01.rnc od-schema-v1.2-cs01.rnc xslt20.rnc
 
-install-local-data:
+install-data-local:
 	cp -pR xhtml $(DESTDIR)$(prefix)/lib/schemas
 
 EXTRA_DIST = \
