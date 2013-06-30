@@ -60,7 +60,7 @@ cat_index_html(const char *dir)
     slash = "/";
 
   buf = malloc(strlen(docroot) + strlen(dir) + strlen("index.html") + 3);
-  sprintf(buf, "%s/%s/index.html", docroot, dir);
+  sprintf(buf, "%s/%s%sindex.html", docroot, dir, slash);
   cat_html_file(buf);
 }
 
@@ -68,21 +68,9 @@ void
 corpus(void)
 {
   if (project)
-    {
-      char *p3init = malloc(1+strlen(project)+strlen("/usr/local/oracc/www/%s/p3init.html"));
-      sprintf(p3init, "/usr/local/oracc/www/%s/p3init.html", project);
-      if (!access(p3init,R_OK))
-	{
-	  cat_html_file(p3init);
-	}
-      else
-	{
-	  free(p3init);
-	  do404();
-	}
-    }
+    p3(project);
   else
-    cat_html_file("@@ORACC@@/www/corpus.html");
+    cat_html_file("@@ORACC@@/www/index.html"); /* one day this will be the full public oracc corpus */
 }
 
 void

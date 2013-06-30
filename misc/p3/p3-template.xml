@@ -46,7 +46,7 @@
     <title>P3 lib/data</title>
   </head>
   <body onload="p3controls(); p3setHeight(); onresize=p3setHeight">
-    <form id="p3form" action="/pager"
+    <form id="p3form" action="/@@project@@/pager"
 	  target="_top" method="post" accept-charset="utf-8">
       <div id="p3controls" class="banner bborder-top">
 	<input type="hidden" name="project" id="project" value="@@project@@"/>

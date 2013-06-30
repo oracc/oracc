@@ -35,6 +35,11 @@ function getWinHeight() {
   return myHeight;
 }
 
+function no_sorters() {
+    document.getElementById('p3OSspecial').style.display = 'none';
+    document.getElementById('p3OSdefault').style.display = 'none';
+}
+
 function p3asearch() {
 //    alert('p3asearch');
     var xformuri = '/'+document.getElementById('project').value+'/as.xml';
@@ -91,29 +96,6 @@ function p3setHeight() {
     document.getElementById('p3right').style.height = h+'px';
 }
 
-function p3PageControls() {
-    var outlineState = document.getElementById('p3outl').value;
-    var newSorttype = document.getElementById('sorttype').value;
-    document.getElementById('p3itemnav').style.display= 'none';
-    document.getElementById('p3pagenav').style.display= 'block';
-    if (outlineState === 'default') {
-	document.getElementById('p3OSspecial').style.display = 'none';
-	var d = document.getElementById('p3OSdefault');
-	d.style.display = 'inline';
-	selectItemByValue(d, newSorttype);
-    } else {
-	if (outlineState === 'special') {
-	    document.getElementById('p3OSdefault').style.display = 'none';
-	    var d = document.getElementById('p3OSdefault');
-	    d.style.display = 'inline';
-	    selectItemByValue(d, newSorttype);
-	} else {
-	    document.getElementById('p3OSspecial').style.display = 'none';
-	    document.getElementById('p3OSdefault').style.display = 'none';
-	}
-    }
-}
-
 function p3GlosControls() {
     document.getElementById('p3OSspecial').style.display = 'none';
     document.getElementById('p3OSdefault').style.display = 'none';
@@ -138,6 +120,8 @@ function p3ItemControls() {
     }
     if (newItemtype === 'off') {
 	p3PageControls();
+    } else {
+	no_sorters();
     }
 }
 
@@ -155,13 +139,13 @@ function p3PageControls() {
 	selectItemByValue(d, newSorttype);
     } else {
 	if (outlineState === 'special') {
+//	    alert('special page controls');
 	    document.getElementById('p3OSdefault').style.display = 'none';
-	    var d = document.getElementById('p3OSdefault');
+	    var d = document.getElementById('p3OSspecial');
 	    d.style.display = 'inline';
 	    selectItemByValue(d, newSorttype);
 	} else {
-	    document.getElementById('p3OSspecial').style.display = 'none';
-	    document.getElementById('p3OSdefault').style.display = 'none';
+	    no_sorters();
 	}
     }
 }
@@ -191,6 +175,23 @@ function p3NoOutline() {
     document.getElementById('p3left').style.display = 'none';
 }
 
+// use p3OSspecial if it's defined; 
+// if not then p3OSdefault if that is defined
+function p3CorpusControls() {
+    var smode = document.getElementById('p3OSspecial');
+    var dmode = document.getElementById('p3OSdefault');
+    if (smode) {
+	dmode.style.display = 'none';
+	smode.style.display = 'inline';
+    } else {
+	if (dmode) {
+	    dmode.style.display = 'inline';
+	} else {
+	    // do nothing--there won't be anything in the pager xml to display
+	}
+    }
+}
+
 function p3controls() {
     var mode = document.getElementById('p3mode').value;
     if (mode === 'zoom') {
@@ -210,11 +211,13 @@ function p3controls() {
     if (prod === 'srch') {
 	p3SrchControls();
     } else {
-	// alert('glos.length='+document.getElementById('glos').value.length);
+	document.getElementById('p3cetype').style.display = 'none';
 	if (document.getElementById('glos').value.length > 0) {
 	    p3GlosControls();
+	} else {
+	    // this is done in page controls
+	    // p3CorpusControls();
 	}
-	document.getElementById('p3cetype').style.display = 'none';
     }
 
     var uimode = document.getElementById('uimode').value;
@@ -224,12 +227,23 @@ function p3controls() {
 	document.getElementById('p3srch').style.display = 'none';
 	p3ControlsHeight = 25;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
-	p3NoOutline();
+//	p3NoOutline();
     }
 
     return 1;
 }
 
+function
+hideNote(e,nid) {
+    if (!e)
+	e = event;
+    note=document.getElementById(nid);
+    // makes note element invisible
+    note.style.visibility='hidden';
+    note.style.zIndex = 0;
+//    alert('note='+note+'; vis='+note.style.visibility);
+    return 1;
+}
 
 function
 popxff(project,eid) {
@@ -293,15 +307,4 @@ showNote(e,nid) {
 	note.style.zIndex = 3;
   }
   return 1;
-}
-function
-hideNote(e,nid) {
-    if (!e)
-	e = event;
-    note=document.getElementById(nid);
-    // makes note element invisible
-    note.style.visibility='hidden';
-    note.style.zIndex = 0;
-//    alert('note='+note+'; vis='+note.style.visibility);
-    return 1;
 }

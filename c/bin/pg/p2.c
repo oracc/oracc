@@ -51,6 +51,12 @@ p2_load(const char *project, const char *state, struct npool *pool)
 
   if (!state || strcmp(state, "special"))
     state = "default";
+  else
+    {
+      char *special_ok = xpd_option(xpd, "outline-special-select");
+      if (!special_ok || strcmp(special_ok, "true"))
+	state = "default";
+    }
 
   sprintf(opt, "outline-%s-sort-fields", state);
   ret->sort_fields = p2_maybe_append_designation(xpd_option(xpd, opt), pool);
