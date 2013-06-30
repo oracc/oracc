@@ -7,7 +7,7 @@ cp 02xml/config.xml $webdir/config.xml
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
-web-p2colours.plx $webdir
+p3-colours.plx $webdir
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then
@@ -36,10 +36,6 @@ if [ -d 01bld/lists ]; then
 	cp -f 01bld/lists/outlined.lst $webdir/lists
     fi
 fi
-#l2p3.sh $webdir
-#p2-project.sh
-## [ -e 00web/index.html ] || web-default-index.plx $webdir
 mkdir -p $webdir/images
 cp -fpR 00web/* 02www
 o2-prm.sh
-
