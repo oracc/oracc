@@ -5,6 +5,16 @@
 # Adapted for Oracc by Steve Tinney, 2010
 #
 
+function copy_content {
+    cp -R 00web/* $HTTPROOT
+    # Next line required or * misses hidden files like .htaccess that are direct children of static
+    cp 00web/.[a-z0-9]* $HTTPROOT
+}
+
+function copy_defaults {
+    cp -R 00web/* $HTTPROOT
+}
+
 if [ "$1" = "" ]; then
     echo esp.sh: must give project name as argument
     exit 1
@@ -20,15 +30,10 @@ rm -rf $HTTPROOT
 mkdir $HTTPROOT
 
 #echo Copying ESP default site content
-cd $ORACC/lib/esp
-cp -R 00web/* $HTTPROOT
-cp 00web/.* $HTTPROOT
+cd $ORACC/lib/esp && copy_defaults
 
 #echo Copying project site content
-cd $XMLSAP/site-content
-cp -R 00web/* $HTTPROOT
-# Next line required or * misses hidden files like .htaccess that are direct children of static
-cp 00web/.* $HTTPROOT
+cd $XMLSAP/site-content && copy_content
 
 #echo Getting image info
 rm $XMLSAP/temporary-files/images-info.txt
