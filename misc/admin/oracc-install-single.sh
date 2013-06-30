@@ -2,17 +2,25 @@
 . $ORACC/bin/oracc-install-funcs.sh
 project=$1
 projdir=$ORACC_HOME/$project
+projfile=`echo $project | tr / -`
+
+echo dir=$projdir
+
 if [ ! -d $projdir ]; then
-    if [ -r $project-runtime.tar.gz ]; then
-	tar -C $ORACC -zxf $project-runtime.tar.gz
+    if [ -r $projfile-runtime.tar.gz ]; then
+	tar -C $ORACC -zxf $projfile-runtime.tar.gz
 	echo oracc install: installed runtime version of $project
 	exit 0
     else
-	if [ -r $project-00data.tar.gz ]; then
-	    tar zxf $project-00data.tar.gz
+	if [ -r $projfile-00data.tar.gz ]; then
+	    tar zxf $projfile-00data.tar.gz
 	else
-	    echo oracc-install.sh: no directory $projdir and no file $project-00data.tar.gz or $project-runtime.tar.gz
-	    exit 1
+	    if [ -r 00data/$projfile-00data.tar.gz ]; then
+		tar zxf 00data/$projfile-00data.tar.gz
+	    else
+		echo oracc-install.sh: no directory $projdir and no file $projfile-00data.tar.gz or $projfile-runtime.tar.gz
+		exit 1
+	    fi
 	fi
     fi
 fi
