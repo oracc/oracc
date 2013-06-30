@@ -20,5 +20,7 @@ tar --exclude $proj/00any \
     --exclude $proj/00web/esp/temporary-files \
     --exclude .DS_Store \
     --exclude '*~' \
+    --exclude '*.bak' \
+    --exclude '*.tar.gz' \
     -zcf $tarball $proj/00*
 chown oracc:oracc $tarball
