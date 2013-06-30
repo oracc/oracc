@@ -173,6 +173,7 @@
       <a target="_blank" href="{$url}">
 	<!--  width="88px" height="66px" : not necessary now we thumbnail these -->
 	<img class="project-float"
+	     width="88px" height="66px"
 	     src="{$img}"
 	     alt="{xpd:image-alt}"/>
       </a>

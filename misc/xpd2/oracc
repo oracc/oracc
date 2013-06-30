@@ -52,7 +52,7 @@ my %oracc_root_commands = ();
 @oracc_root_commands{@oracc_root_commands} = ();
 @commands{@oracc_root_commands} = ();
 
-my @oracc_user_commands = qw/projectlist/;
+my @oracc_user_commands = qw/homepage projectlist/;
 my %oracc_user_commands = ();
 @oracc_user_commands{@oracc_user_commands} = ();
 @commands{@oracc_user_commands} = ();
@@ -196,6 +196,8 @@ if (exists $oracc_user_commands{$command}) {
     }
     if ($command eq 'projectlist') {
 	exec "$bin/mk-projlist.sh";
+    } elsif ($command eq 'homepage') {
+	exec "$bin/agg-project-list.sh";
     } else {
 	die "oracc: unhandled `oracc' user command `$command'\n";
     }
