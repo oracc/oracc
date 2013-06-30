@@ -15,8 +15,12 @@ tar --exclude $proj/00any \
     --exclude $proj/00bak \
     --exclude $proj/00web/esp/backups \
     --exclude $proj/00web/esp/httproot_changed \
+    --exclude $proj/00web/esp/httproot_changed_new \
     --exclude $proj/00web/esp/httproot_dev \
+    --exclude $proj/00web/esp/httproot_gone \
+    --exclude $proj/00web/esp/httproot_gone_new \
     --exclude $proj/00web/esp/httproot_live \
+    --exclude $proj/00web/esp/httproot_live_new \
     --exclude $proj/00web/esp/temporary-files \
     --exclude .DS_Store \
     --exclude '*~' \
