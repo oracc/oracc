@@ -41,12 +41,12 @@ fi
 tei-translations.sh $project $teilist
 echo Creating TEI for texts listed in $teilist
 cat $teilist | while read line; do
-    pqx=`echo -n $line | cut -d'@' -f1 | sed 's/^.*://'`
-    prj=`echo -n $line | sed 's/:.*$//'`
-    cat=`echo -n $line';'$prj | perl -pe 's/^.*?\@(.*?)\;.*$/$1/||s/^.*?;//'`
+    pqx=`/bin/echo -n $line | cut -d'@' -f1 | sed 's/^.*://'`
+    prj=`/bin/echo -n $line | sed 's/:.*$//'`
+    cat=`/bin/echo -n $line';'$prj | perl -pe 's/^.*?\@(.*?)\;.*$/$1/||s/^.*?;//'`
     xmdbase=${ORACC}/bld/$cat/${pqx:0:4}/$pqx/$pqx 
     xtfbase=${ORACC}/bld/$prj/${pqx:0:4}/$pqx/$pqx
-    file=`if [ -e $xtfbase.xtf ]; then echo -n "$xtfbase.xtf"; else echo -n "$xmdbase.xmd"; fi`
+    file=`if [ -e $xtfbase.xtf ]; then /bin/echo -n "$xtfbase.xtf"; else /bin/echo -n "$xmdbase.xmd"; fi`
 #    echo Generating $teidir/${pqx}.xml from $prj:$pqx
     xsltproc --stringparam this-project $project \
 	--stringparam project $prj \

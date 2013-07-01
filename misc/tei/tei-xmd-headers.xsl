@@ -9,13 +9,6 @@
 <xsl:param name="one-big-file" select="'no'"/>
 <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
-<xsl:template name="langtags">
-  <tag l="Akkadian">akk</tag>
-  <tag l="Hittite">hit</tag>
-  <tag l="Sumerian">sux</tag>
-  <tag l="Ugaritic">uga</tag>
-</xsl:template>
-
 <xsl:template match="xmd-set">
   <xsl:choose>
     <xsl:when test="$one-big-file = 'yes'">

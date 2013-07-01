@@ -6,7 +6,7 @@ bin_SCRIPTS = tei-project.sh teitexts.sh tei-bigfile.sh tei-dist.sh tei-merge.sh
 css_DATA = xtf2tei.css
 scriptdata_DATA = xtf2tei.xsl cbd2listNym.xsl cbd2listPerson.xsl prev-cbd2listNym.xsl \
 	tei-xmd-headers.xsl teicorpus-header.xsl teicorpus.xsl teirefs.xsl \
-	trim-listNym.xsl trim-tei-project.xsl xmd2tei.xsl r2tei.xsl
+	trim-listNym.xsl trim-tei-project.xsl xmd2tei.xsl r2tei.xsl xtr2tei.xslt
 
 html_DATA = teicolours.html
 
