@@ -12,7 +12,7 @@ sexify {
 
     my $v = ($n =~ s/\@v//);
 
-    my $alef = ($utf ? '₎' : "'");
+    my $alef = ($utf ? 'ʾ' : "'");
     my $asz_or_disz = ($asz ? ($utf ? 'aš' : 'asz') 
 		       : ($utf ? 'diš' : 'disz'));
     my $shin = ($utf ? 'š' : 'sz');
@@ -48,8 +48,8 @@ sexify {
     $ret .= "$szargal(${shin}ar$two){gal} " if $szargal;
     $ret .= "$szaru(${shin}aru) " if $szaru;
     $ret .= "$szar2(${shin}ar$two) " if $szar2;
-    $ret .= "$geszu(ge${shin}u) " if $geszu;
-    $ret .= "$geszd(ge$shin$alef$two) " if $geszd;
+    $ret .= "$geszu(ge$shin${alef}u) " if $geszu;
+    $ret .= "$geszd(ge${shin}$two) " if $geszd;
     $ret .= "$u(u) " if $u;
     $ret .= "$disz($asz_or_disz)" if $disz;
 
