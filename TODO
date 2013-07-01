@@ -7,3 +7,5 @@
 * re-evaluate use and build of project/01bld/www/p2.css
 
 * rationalize pg/se code--there is a separate copy of p2.c in each and pg should probs be merged into se
+
+* trim entries with zero occurrences when with-all is no
