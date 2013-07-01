@@ -341,6 +341,7 @@ _signature {
     my $ctxt = $context ? "$context: " : "";
     my @newg = ();
     foreach my $g (@g) {
+	$g =~ s/^\$//;
 	if ($g =~ m#^[/0-9]+(?:\@v)?$#) {
 	    push @newg, ORACC::Legacy::Sexify::sexify($g,0,1,0);
 	} else {
