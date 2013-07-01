@@ -36,8 +36,7 @@ cd $ORACC/lib/esp && copy_defaults
 cd $XMLSAP/site-content && copy_content
 
 #echo Getting image info
-rm $XMLSAP/temporary-files/images-info.txt
-cd $XMLSAP
+cd $XMLSAP && esp-image-info.sh >temporary-files/images-info.xml
 
 #LIST="$(find site-content/static/images | grep '\(.*\.jpg$\|.*\.gif$\|.*\.png$\)')"
 #if [ "$LIST" != "" ]; then
@@ -48,13 +47,10 @@ cd $XMLSAP
 #    done
 #fi
 
-find site-content '(' -name '*.jpg' -or -name '*.png' -or -name '*.gif' ')' -print0 \
-    | xargs -0 java -classpath $ORACC/lib/java ImageInfo \
-    >> $XMLSAP/temporary-files/images-info.txt
-
 #echo Getting page last-modified times
 cd $XMLSAP/site-content/pages
 find . -iname "*.xml" | esp-lmt.plx > $XMLSAP/temporary-files/last-modified-times.xml
+
 ##echo '<?xml version="1.0" encoding="utf-8"?>' > $XMLSAP/temporary-files/last-modified-times.xml
 ##echo '<wm:last-modified-times xmlns:wm="http://oracc.org/ns/esp/1.0">' >> $XMLSAP/temporary-files/last-modified-times.xml
 ##for FILE in `find . -iname "*.xml"`
@@ -63,7 +59,7 @@ find . -iname "*.xml" | esp-lmt.plx > $XMLSAP/temporary-files/last-modified-time
 ##done
 ##echo '</wm:last-modified-times>' >> $XMLSAP/temporary-files/last-modified-times.xml
 
-java -jar $SAXONJAR $XSL/esp-images-info.xslt $XSL/esp-images-info.xslt output-file=file:$XMLSAP/temporary-files/images-info.xml project=$project
+#java -jar $SAXONJAR $XSL/esp-images-info.xslt $XSL/esp-images-info.xslt output-file=file:$XMLSAP/temporary-files/images-info.xml project=$project oracchome=$ORACC_HOME
 
 java -jar $SAXONJAR $XSL/esp-stylesheets.xslt  $XSL/esp-stylesheets.xslt output-directory=file:$HTTPROOT project=$project
 

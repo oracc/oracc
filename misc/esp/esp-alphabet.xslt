@@ -13,7 +13,7 @@
   <xsl:variable name="alphabet" as="xs:string *" 
               select="('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
 	               'N', 'O', 'P', 'Q', 'R', 'S', 'Ṣ', 'Š', 'T', 'Ṭ', 'U', 'V', 'W', 
-		       'X', 'Y', 'Z', '[')"/>
+		       'X', 'Y', 'Z', '_')"/>
   <div id="Alphabet">
     <xsl:for-each select="$usedletters">
       <esp:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</esp:link>

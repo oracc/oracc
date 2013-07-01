@@ -437,7 +437,7 @@
   <!-- process glossary page -->
   <xsl:template match="esp:glossary-list">
     <xsl:variable name="usedletters" as="xs:string *">
-      <xsl:for-each-group select="esp:definition" group-by="upper-case ( substring ( @term , 1, 1 ) )">
+      <xsl:for-each-group select="esp:definition" group-by="translate(upper-case ( substring ( @term , 1, 1 ) ), '[','_')">
         <xsl:value-of select="current-grouping-key ()"/>
       </xsl:for-each-group>
     </xsl:variable>
@@ -445,13 +445,20 @@
       <xsl:with-param name="usedletters" select="$usedletters"/>
     </xsl:call-template>
     <div id="Glossary">
-      <xsl:for-each-group select="esp:definition" group-by="upper-case ( substring ( @term , 1, 1 ) )">
+      <xsl:for-each-group select="esp:definition" group-by="translate(upper-case ( substring ( @term , 1, 1 ) ), '[','_')">
         <xsl:sort select="current-grouping-key ()" 
                   collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
 />
         <esp:bookmark id="letter_{current-grouping-key ()}" hide-highlight="yes"/>
         <h2>
-          <xsl:value-of select="current-grouping-key ()"/>
+	  <xsl:choose>
+	    <xsl:when test="current-grouping-key() = '_'">
+	      <xsl:text>[X]</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+              <xsl:value-of select="current-grouping-key ()"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
         </h2>
         <xsl:for-each select="current-group ()">
           <xsl:sort select="@term" 
@@ -488,7 +495,7 @@
   <!-- process techterms page -->
   <xsl:template match="esp:techterms-list">
     <xsl:variable name="usedletters" as="xs:string *">
-      <xsl:for-each-group select="esp:termsdefinition" group-by="upper-case ( substring ( @term , 1, 1 ) )">
+      <xsl:for-each-group select="esp:termsdefinition" group-by="translate(upper-case ( substring ( @term , 1, 1 ) ), '[','_')">
         <xsl:value-of select="current-grouping-key ()"/>
       </xsl:for-each-group>
     </xsl:variable>
@@ -496,7 +503,7 @@
       <xsl:with-param name="usedletters" select="$usedletters"/>
     </xsl:call-template>
     <div id="Techterms">
-      <xsl:for-each-group select="esp:termsdefinition" group-by="upper-case ( substring ( @term , 1, 1 ) )">
+      <xsl:for-each-group select="esp:termsdefinition" group-by="translate(upper-case ( substring ( @term , 1, 1 ) ), '[','_')">
         <xsl:sort select="current-grouping-key ()" 
                   collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
 />

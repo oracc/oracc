@@ -1,6 +1,7 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = esp-init.sh esp-live.sh esp-lmt.plx esp-no-nmtok-err.plx esp-remove-webfiles.sh esp.sh
+bin_SCRIPTS = esp-init.sh esp-live.sh esp-lmt.plx esp-no-nmtok-err.plx esp-remove-webfiles.sh esp.sh \
+	esp-image-info.sh
 css_DATA = textsizeminus1.css textsizeminus2.css textsizeminus3.css textsizeplus1.css textsizeplus2.css \
 	textsizeplus3.css textsizeplus4.css textsizeplus5.css
 js_DATA = library.js
