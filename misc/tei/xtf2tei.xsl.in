@@ -636,6 +636,10 @@
       <!-- FIXME: should probably do some kind of TEI grouping here -->
       <xsl:apply-templates/>
     </xsl:when>
+    <xsl:when test="@gdl:type=implicit-ligature'">
+      <!-- this is : used as zero rather than punctuation -->
+      <xsl:apply-templates/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:message>gdl:gg type <xsl:value-of select="@gdl:type"/> not handled</xsl:message>
     </xsl:otherwise>
