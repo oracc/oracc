@@ -39,7 +39,6 @@ fi
 l2p3.sh $webdir
 web-PQX-html.plx -list 01bld/lists/have-xtf.lst -webdir $webdir 2>01tmp/web-PQX.log
 p3-project.sh
-o2-thumb.sh
 if [ -d 00web/esp ]; then
     # esp live includes o2-weblive
     oracc esp ; oracc esp live force
@@ -49,3 +48,4 @@ else
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
     o2-weblive.sh
 fi
+o2-thumb.sh
