@@ -1,8 +1,15 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = bibdbdump.plx biblcgi.plx biblcites.plx biblindex.plx biblquery.plx biblsort.sh fixnamemap.plx ref2tei.sh tei-merge.sh bibltext.plx bibltoxml.plx fixnames.plx ref2xml.plx
+bin_SCRIPTS = bibdbdump.plx biblcgi.plx biblcites.plx biblindex.plx \
+	biblquery.plx biblsort.sh fixnamemap.plx ref2tei.sh tei-merge.sh \
+	bibltext.plx bibltoxml.plx fixnames.plx ref2xml.plx unfxr-bib.sh
 css_DATA = bib-reflist.css
-scriptdata_DATA = addsigs.xsl biblist.xsl cite-note-TEXT.xsl ckey-abbrevs.xsl ckey-namedate.xsl ckey-numbers.xsl CMS_A-HTML-driver.xsl CMS_A-HTML-each.xsl CMS_A-HTML-embedded.xsl CMS_A-HTML.xsl harvest-names.xsl map-jrnser.xsl map-name-fuzzy.xsl map-name.xsl merge-names.xsl name-key.xsl ref2tei.xsl sort-bib.xsl sort-list.xsl sort-names.xsl sort-refs.xsl tei-merge.xsl tei-xmlid.xsl
+scriptdata_DATA = addsigs.xsl biblist.xsl cite-note-TEXT.xsl ckey-abbrevs.xsl \
+	ckey-namedate.xsl ckey-numbers.xsl CMS_A-HTML-driver.xsl CMS_A-HTML-each.xsl \
+	CMS_A-HTML-embedded.xsl CMS_A-HTML.xsl harvest-names.xsl map-jrnser.xsl \
+	map-name-fuzzy.xsl map-name.xsl merge-names.xsl name-key.xsl ref2tei.xsl \
+	sort-bib.xsl sort-list.xsl sort-names.xsl sort-refs.xsl tei-merge.xsl tei-xmlid.xsl
+
 data_DATA = common.xml jrnser.xml names-pre-fixmap.xml names.xml onames.xml
 
 biblsort.sh: biblsort.sh.in
