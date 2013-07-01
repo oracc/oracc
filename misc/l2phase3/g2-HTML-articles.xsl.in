@@ -80,7 +80,7 @@
    indent="no"/>
 
 <xsl:template match="cbd:articles">
-  <xsl:message>config-file=<xsl:value-of select="$config-file"/>; cbd-forms-table=<xsl:value-of select="$cbd-forms-table"/></xsl:message>
+<!--  <xsl:message>config-file=<xsl:value-of select="$config-file"/>; cbd-forms-table=<xsl:value-of select="$cbd-forms-table"/></xsl:message> -->
   <xsl:call-template name="make-html">
     <xsl:with-param name="webtype" select="'cbd'"/>
     <xsl:with-param name="with-hr" select="false()"/>
