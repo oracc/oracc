@@ -3,7 +3,7 @@ use warnings; use strict; use open 'utf8';
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
-my $all = 0;
+my $all = 1;
 my %header = ();
 my $quiet = 0;
 my %sig = ();
@@ -12,8 +12,9 @@ GetOptions(
     'quiet'=>\$quiet,
     );
 
-my $withall = `oraccopt . cbd-with-all`;
-$all = 1 if $withall && $withall eq 'yes';
+## No, we have to move this downstream to prevent failed resolution of parts of PSUs
+#my $withall = `oraccopt . cbd-with-all`;
+#$all = 1 if $withall && $withall eq 'yes';
 
 foreach my $s (@ARGV) {
     unless (open(S,$s)) {

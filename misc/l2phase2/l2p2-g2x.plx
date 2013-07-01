@@ -123,6 +123,8 @@ load_rewrites($rewrites) if -r $rewrites;
 
 read_input($input);
 
+# open(D,">$header{'lang'}-entry.log"); print D Dumper(\%entry_ids); close(D);
+
 if ($have_disamb) {
     push @sigfields, 'form-sans';
 }
