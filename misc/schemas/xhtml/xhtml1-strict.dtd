@@ -512,6 +512,8 @@
   rev         %LinkTypes;    #IMPLIED
   shape       %Shape;        "rect"
   coords      %Coords;       #IMPLIED
+  dnt-data    %ContentType   #IMPLIED
+  dnt-widget  %ContentType   #IMPLIED
   >
 
 <!--===================== Inline Elements ================================-->

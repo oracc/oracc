@@ -42,13 +42,13 @@ Inline.class |= esp-inline
 
 esp-block = 
   esp-accesskeys-listing | esp-site-map | esp-index-list | esp-author
-  | esp-content-last-modified | esp-h | esp-sh | esp-image | esp-glossary-list
+  | esp-content-last-modified | esp-email | esp-h | esp-sh | esp-image | esp-glossary-list
   | esp-techterms-list | esp-reading | esp-ref
 
 esp-inline = 
   esp-content-last-modified | esp-link | esp-twitter | esp-bookmark
   | esp-glossary | esp-index | esp-techterms | esp-email | esp-page-name
-  | esp-page-title
+  | esp-page-title | esp-ref
 
 esp-accesskeys-listing = 
   element accesskeys-listing { empty }?
