@@ -14,7 +14,7 @@
 <xsl:template match="tei:TEI">
   <xsl:choose>
     <xsl:when test="tei:text[@type='transliteration']">
-      <xsl:if test="*/tei:body/tei:div/tei:p/tei:s/tei:w/@lemma">
+      <xsl:if test="*/tei:body/tei:div1/tei:p/tei:s/tei:w/@lemma">
 	<xsl:copy-of select="."/>
       </xsl:if>
     </xsl:when>
