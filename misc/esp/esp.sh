@@ -25,6 +25,8 @@ XMLSAP=$ORACC/$project/00web/esp
 HTTPROOT=$XMLSAP/httproot_dev
 XSL=$ORACC/lib/scripts
 
+mkdir -p $XMLSAP/temporary-files
+
 #echo Removing existing development folder
 rm -rf $HTTPROOT
 mkdir $HTTPROOT
