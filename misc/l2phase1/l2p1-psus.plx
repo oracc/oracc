@@ -260,8 +260,15 @@ parts_match {
 	@parts_data = @$parts_ref;
     }
 
+
     if ($#forms > $#parts_data) {
 	push @parts_errors, "`@forms' has too many forms for $psu_parts";
+	return ();
+    }
+
+    if ($#norms != $#parts_data) {
+	my $nnorms = $#parts_data + 1;
+	push @parts_errors, "`@norms' should have $nnorms members; missing '\$' in \@form line?";
 	return ();
     }
 
