@@ -183,14 +183,20 @@ foreach my $lang (sort keys %data) {
 		my $p = $parts[$p_i];
 		my $eid = $entry_ids{$p};
 		unless ($eid) {
+		    # This block is where we set up refs for cross-glossary PSUs
 		    load_parts() unless $parts_loaded;
 		    if ($parts{$p}) {
+			my @p = keys %{$parts{$p}};
+			my $p0 = $p[0];
+			$p0 =~ s/-.*$//;
 			my $xp = xmlify($p);
-			$eid = "\#$parts{$p}\:$xp";
+			$eid = "\#$p0\:$xp";
 			$eid =~ s/\s+:/:/;
+#			warn "eid=$eid\n";
 		    } else {
 			$eid = '';
-			warn "no eid for $p, needed for $entry\n";
+			$p =~ s/\[/ [/; $p =~ s/\]/] /;
+			warn "00lib/$lang.glo: PSU $entry needs \@entry $p\n";
 		    }
 		}
 		print '<cpd ';
@@ -621,12 +627,42 @@ ipct {
 sub
 load_parts {
     ++$parts_loaded;
-    open(P,'01bld/parts.map') || warn "l2p2-g2.plx: no 01bld/parts.map\n" and return;
-    while (<P>) {
-	my($e,$lang) = split(/\t/,$_);
-	$parts{$e} = $lang;
+    if (open(P,'01tmp/l2p1-simple.sig')) {
+	while (<P>) {
+	    chomp;
+	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\$/);
+	    if ($lang) {
+		$entry =~ s,//.*?\],],;
+		$entry =~ s/'.*$//;
+		$lang =~ s/-.*$//; ## is this too early to reduce to top-level lang?
+		++${$parts{$entry}}{$lang};
+	    }
+	}
+	close(P);
+	warn "dumping parts\n";
+	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
+    } else {
+	warn "l2p2-g2.plx: no 01bld/parts.map\n";
+	return;
     }
-    close(P);
+}
+
+sub
+xload_parts {
+    ++$parts_loaded;
+    if (open(P,'01bld/parts.map')) {
+	while (<P>) {
+	    chomp;
+	    my($e,$lang) = split(/\t/,$_);
+	    $parts{$e} = $lang;
+	}
+	close(P);
+	warn "dumping parts\n";
+	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
+    } else {
+	warn "l2p2-g2.plx: no 01bld/parts.map\n";
+	return;
+    }
 }
 
 #not quite right: we will have one rewrites map for the project rather than

@@ -37,7 +37,7 @@ while (<S>) {
     my $keysig = $1;
     s/\!0x.*$//;
     if (defined $keysig) {
-	push(@{$simple{$keysig}}, $_) ;
+	push(@{$simple{$keysig}}, $_);
     }
 #	if $keysig && $simple{$keysig};
 }
@@ -418,8 +418,16 @@ validate_parts {
 #	    warn "csig = $csig\n";
 	    my @simple_matches = ();
 	    foreach my $ptm (@pt_matches) {
-		push(@simple_matches, @{$simple{$ptm}});
-#		    if $simple{$ptm};
+		if ($ptm && $simple{$ptm}) {
+		    push(@simple_matches, @{$simple{$ptm}});
+		} else {
+		    if ($ptm) {
+			warn "l2p1-psus.plx: no match for $ptm in 01tmp/l2p1-simple.sig\n";
+		    } else {
+			chomp;
+			warn "01tmp/l2p1-simple.sig:$.: l2p1-psus.plx: undefined part in $_\n";
+		    }
+		}
 	    }
 	    push @ret, [ $pt , $csig , @simple_matches ];
 	} else {
