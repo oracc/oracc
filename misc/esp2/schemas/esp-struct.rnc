@@ -1,0 +1,30 @@
+default namespace = "http://oracc.org/ns/esp-struct/1.0"
+namespace esp = "http://oracc.org/ns/esp-struct/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &= struct-page
+
+struct-page =
+  element page {
+    attribute id { text },
+    attribute file { text }?,
+    attribute accesskey { text }?,
+    attribute hide-menu-link { "yes" | "no" }?,
+    attribute hide-site-map-link { "yes" | "no" }?,
+    attribute show-small-print-link { "yes" | "no" }?,
+    attribute show-access-link {"yes" | "no" }?,	
+    attribute show-reference-link { "yes" | "no" }?, 
+    attribute type  { "link" | "page" } ,
+    (struct-link | struct-page)*
+  }
+
+struct-link =
+  element link {
+    attribute id { text },
+    attribute url { xsd:anyURI },
+    attribute title { text }
+  }

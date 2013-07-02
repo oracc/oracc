@@ -1,0 +1,80 @@
+Setup Folders:
+==============
+
+Create a folder ~/oracc-sites
+
+Install ESP2:
+=============
+
+Either (a) Install Github and clone oracc/esp2 (better because it's easy to track updates):
+
+        install git from http://www.github.com
+
+	if you can use an app then clone oracc/esp2 into ~/oracc-sites/esp2
+
+	else open terminal, cd ~/oracc-sites and:
+
+		git clone https://github.com/oracc/esp2.git
+
+or (b) Install esp2:
+
+	go to: https://github.com/oracc/esp2
+	download Zip file
+	create the folder ~/oracc-sites/epsd2
+	unzip the file
+	copy all of the files frome esp2-master into ~/oracc-sites/epsd2
+
+Now do ESP2 setup:
+
+    	open a terminal
+       	cd ~/oracc-sites/esp2
+	./esp2-sa-setup.sh
+
+Install Saxon (the XSLT processor):
+==================================
+
+Create the folder ~/oracc-sites/etc and then ~/oracc-sites/etc/saxon
+
+Get Saxon from http://sourceforge.net/projects/saxon/files/Saxon-HE/
+
+    Look for something like: 
+
+    	 Looking for the latest version? Download SaxonHE9-5-0-1J.zip (3.0 MB)
+
+    create oracc-sites/etc/saxon
+    cd oracc-sites/etc/saxon
+    unzip ~/Downloads/SaxonHE9-5-01J.zip
+
+Install MSV (the XHTML validator):
+==================================
+
+Create the folder ~/oracc-sites/etc/msv
+
+Get MSV from https://java.net/downloads/msv/releases/
+
+    Look for something like:
+
+    	 msv.20090415.zip
+
+    Unzip it and copy all .jar files (e.g., msv-20090415/msv.jar) in ~/oracc-sites/etc/msv
+
+Install content:
+================
+
+for now, clone oracc/nimrud into ~/oracc-sites/nimrud using the app or the command line.
+
+Command line is:
+
+	open terminal
+	cd ~/oracc-sites
+	git clone https://github.com/oracc/nimrud.git
+
+(Your git userid needs permission to do this, and your git installation has to be configured as belonging to your userid)
+
+Play with ESP2:
+===============
+
+	open terminal
+	cd ~/oracc-sites
+	esp2/esp2.sh nimrud
+	open nimrud/02www/dev/index.html

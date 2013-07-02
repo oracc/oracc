@@ -10,6 +10,7 @@ SUBDIRS = \
 	emacs \
 	epsd \
 	esp \
+	esp2 \
 	est \
 	fonts \
 	fxr \

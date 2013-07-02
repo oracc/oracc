@@ -1,0 +1,26 @@
+default namespace = "http://oracc.org/ns/esp-param/1.0"
+namespace esp = "http://oracc.org/ns/esp-param/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &= parameters
+
+parameters =
+  element parameters {
+	element title { text },
+	element subtitle { text }?,
+	element publisher { text },
+	element host { text },
+	element root { text },
+        element cuneify {
+           attribute switcher { "yes" | "no" }, 
+           attribute default  { "yes" | "no" }
+        }?, 
+	element common-headers { head.content }?,
+	element dc-id-prefix { text }?,
+	element main-menu-caption { text }?,
+	element footer { Flow.model }
+}

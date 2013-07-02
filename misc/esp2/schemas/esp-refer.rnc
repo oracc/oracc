@@ -1,0 +1,20 @@
+default namespace = "http://oracc.org/ns/esp-refer/1.0"
+namespace esp = "http://oracc.org/ns/esp-refer/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+
+include "esp.rnc" {
+   start = empty
+}
+
+start &= referents
+
+referents = 
+  element referents {
+    referent+
+  }
+
+referent =
+  element referent {
+    attribute id { text },
+    Inline.model
+  }

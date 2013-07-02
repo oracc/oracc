@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<META xmlns="http://www.w3.org/2002/01/P3Pv1" xml:lang="en">
+   <POLICY-REFERENCES>
+      <EXPIRY max-age="86400"/>
+      <POLICY-REF about="#logs-only">
+         <INCLUDE>/*</INCLUDE>
+      </POLICY-REF>
+   </POLICY-REFERENCES>
+   <POLICIES>
+      <POLICY name="logs-only" discuri="/privacy/">
+         <ENTITY>
+            <DATA-GROUP>
+               <DATA ref="#business.name">The Open, Richly Annotated Cuneiform Corpus</DATA>
+               <DATA ref="#business.contact-info.online.email">osc@oracc.org</DATA>
+            </DATA-GROUP>
+         </ENTITY>
+         <ACCESS>
+            <nonident/>
+         </ACCESS>
+         <STATEMENT>
+            <PURPOSE>
+               <current/>
+               <admin/>
+               <develop/>
+            </PURPOSE>
+            <RECIPIENT>
+               <ours/>
+            </RECIPIENT>
+            <RETENTION>
+               <indefinitely/>
+            </RETENTION>
+            <DATA-GROUP>
+               <DATA ref="#dynamic.clickstream"/>
+               <DATA ref="#dynamic.http"/>
+            </DATA-GROUP>
+         </STATEMENT>
+      </POLICY>
+   </POLICIES>
+</META>
