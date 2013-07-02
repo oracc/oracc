@@ -3530,7 +3530,22 @@ void est_break_text_chrcat(const char *text, CBLIST *list, int norm){
   free(utext);
 }
 
+char *
+est_iconv(const char *ptr, int size,
+	  const char *icode, const char *ocode, int *sp, int *mp)
+{
+  char *obuf;
+  if (ptr)
+    {
+      CB_MALLOC(obuf, strlen(ptr) + 1);
+      strcpy(obuf, ptr);
+      return obuf;
+    }
+  else
+    abort();
+}
 
+#if 0
 /* Convert the character encoding of a string. */
 char *est_iconv(const char *ptr, int size,
                 const char *icode, const char *ocode, int *sp, int *mp){
@@ -3598,9 +3613,12 @@ char *est_iconv(const char *ptr, int size,
   }
   return obuf;
 }
-
+#endif
 
 /* Detect the encoding of a string automatically. */
+#if 1
+const char *est_enc_name(const char *ptr, int size, int plang) { return "UTF-8"; }
+#else
 const char *est_enc_name(const char *ptr, int size, int plang){
   const char *hypo;
   int i, lim, miss, ascii, cr;
@@ -3666,6 +3684,7 @@ const char *est_enc_name(const char *ptr, int size, int plang){
   }
   return "ISO-8859-1";
 }
+#endif
 
 
 /* Convert a UTF-8 string into UTF-16BE. */
@@ -5914,6 +5933,12 @@ static char *est_hex_decode(const char *str){
    `icode' specifies the name of encoding of the input string.
    `ocode' specifies the name of encoding of the output string.
    The return value is the number of missing characters. */
+#if 1
+static int est_enc_miss(const char *ptr, int size, const char *icode, const char *ocode)
+{
+  return 0;
+}
+#else
 static int est_enc_miss(const char *ptr, int size, const char *icode, const char *ocode){
   iconv_t ic;
   char obuf[ESTICCHECKSIZ], *wp, *rp;
@@ -5941,7 +5966,7 @@ static int est_enc_miss(const char *ptr, int size, const char *icode, const char
   if(iconv_close(ic) == -1) return ESTICMISSMAX;
   return miss;
 }
-
+#endif
 
 /* Normalize a text.
    `utext' specifies a text whose encoding is UTF-16BE.

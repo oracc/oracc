@@ -11,13 +11,15 @@ cgibin_PROGRAMS=estseek
 html_DATA = $(MYHTML)
 bin_PROGRAMS=estcmd 
 # estmttest estmaster estbutler estcall estwaver estload
-bin_SCRIPTS=dbi2est.plx estconfig estwolefind
+bin_SCRIPTS=dbi2est.plx estwolefind
+
+# estconfig
 
 noinst_LTLIBRARIES=libestraier.la
 
 libestraier_la_SOURCES = estraier.c estmtdb.c estnode.c md5.c
 
-x_LDADD = -lestraier -lqdbm -lm -lz @LIBICONV@
+x_LDADD = -lestraier -lqdbm -lm -lz
 
 AM_CPPFLAGS = -I/usr/local/include -I/usr/include/qdbm @QDBMINCLUDE@
 
