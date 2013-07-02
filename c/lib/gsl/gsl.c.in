@@ -15,7 +15,11 @@
 
 static int psl_initialized = 0;
 
+#if 1
+static const char *sl_fn = "@@ORACC@@/xml/ogsl/ogsl-sl.xml";
+#else
 static const char *sl_fn = "@@ORACC@@/lib/data/ogsl.xml";
+#endif
 
 static Hash_table *psl, *psl_id, *psl_v, *cuneify_tab;
 static unsigned char *sign_sn,*curr_sn = NULL,*curr_unitary_sn = NULL, *curr_form = NULL, *curr_utf8;
