@@ -636,7 +636,7 @@
       <!-- FIXME: should probably do some kind of TEI grouping here -->
       <xsl:apply-templates/>
     </xsl:when>
-    <xsl:when test="@gdl:type=implicit-ligature'">
+    <xsl:when test="@gdl:type=implicit-ligature">
       <!-- this is : used as zero rather than punctuation -->
       <xsl:apply-templates/>
     </xsl:when>
