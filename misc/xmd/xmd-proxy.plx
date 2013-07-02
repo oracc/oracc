@@ -15,8 +15,8 @@ my @xmdfiles;
 die "xmd-proxy.plx: must be run from a project directory\n"
     unless $project;
 
-if (-r '01bld/lists/proxy.lst' && !-z '01bld/lists/proxy.lst') {
-    open(P, '01bld/lists/proxy.lst');
+if (-r '01bld/lists/proxy-cat.lst' && !-z '01bld/lists/proxy-cat.lst') {
+    open(P, '01bld/lists/proxy-cat.lst');
     @xmdfiles = (<P>); chomp @xmdfiles;
     close(P);
 }
@@ -58,7 +58,12 @@ xmd_from_list {
 	next unless $f;
 	my $xmd = '';
 	my ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
-	next if $xmd_project eq $project;
+	
+	#
+	# in cat proxy, we only care about the @project part of the line
+	# 
+	next unless $xmd_project && $xmd_project ne $project;
+
 	$xmd = expand_in_project(undef,"$proxyid.xmd",$xmd_project);
 	warn "xmd_proxy.plx: no catalogue information for $proxyid found in $xmd_project\n" 
 	    and next unless -r $xmd;

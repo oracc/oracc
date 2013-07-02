@@ -118,69 +118,37 @@ create_have_atf {
 }
 
 sub
-drop_proxy_dups {
-    my @p = ();
-    my %known = ();
-    my $status = 0;
-    open(P, '01bld/lists/proxy.lst') || return;
-    open(A, '01bld/lists/approved.lst') || return;
-    while (<A>) {
-	chomp;
-	my $k = $_;
-	$k =~ s/^.*?://;
-	$known{$k} = $_;
-    }
-    close(A);
-    use Data::Dumper;
-#    warn Dumper \%known;
-    while (<P>) {
-	chomp;
-	my $id = $_;
-	$id =~ s/^.*?:(.*?)\@.*$/$1/;
-	if ($known{$id}) {
-	    warn "o2-lst.plx: dropping proxied $_: already have $known{$id}\n";
-	    ++$status;
-	} else {
-	    push @p, $_;
+lemindex_load_proxy {
+    my $proj = shift;
+    my %p = ();
+    if (open(P, "$ENV{'ORACC'}/bld/$proj/lists/have-lem.lst")) {
+	while (<P>) {
+	    chomp;
+	    /:(.*?)\@/;
+	    ++$p{$1};
 	}
-    }
-    close(P);
-    if ($status) {
-	if ($#p >= 0) {
-	    open(P, '>01bld/lists/proxy.lst');
-	    print P join("\n", @p), "\n";
-	    close(P);
-	} else {
-	    unlink '01bld/lists/proxy.lst';
-	}
-    }
+    } # not an error to fail
+    { %p }; ### THIS MAY NOT BE QUITE RIGHT
 }
 
 sub
 lemindex_list {
     my %proxy_projects = ();
-    if (open(P,'01bld/lists/proxy.lst')) {
+    my %proxy_lem_atfs = ();
+
+    if (open(P,'01bld/lists/proxy-atf.lst')) {
+	open(PL, '>01bld/lists/proxy-lem.lst');
 	while (<P>) {
 	    chomp;
-	    s/:.*$//;
-	    ++$proxy_projects{$_};
+	    my($proj,$id) = (/^(.*?):(.*?)$/);
+	    $proxy_lem_atfs{$proj} = lemindex_load_proxy($proj)
+		unless $proxy_lem_atfs{$proj};
+	    if (${$proxy_lem_atfs{$proj}}{$id}) {
+		print PL "$_\n";
+	    }
 	}
+	close(PL);
 	close(P);
-	my @proxy_lem = ();
-	xsystem 'rm', '-f', '01bld/lists/proxy-lem.lst';
-	my @pp = sort keys %proxy_projects;
-#	warn "@pp\n";
-	foreach my $p (keys %proxy_projects) {
-	    my $plem = "$ENV{'ORACC'}/bld/$p/lists/have-lem.lst";
-	    push(@proxy_lem, '+?', $plem) if -r $plem;
-	}
-	if ($#proxy_lem >= 0) {
-	    shift @proxy_lem; # shift the leading '+?' off so the first list is lead
-	    xsystem 
-		'atflists.plx', '-o', "$listdir/proxy-lem.lst",
-		@proxy_lem,
-		'&','01bld/lists/proxy.lst';
-	}
     }
     if (-r $have_lem) {
 	xsystem 
@@ -196,37 +164,80 @@ lemindex_list {
 
 sub
 proxy_lists {
+    my %host_atf = ();
+    my %host_cat = ();
+    my $proxy_lst = undef;
+
+    open(ATF, '01bld/lists/have-atf.lst') || return;
+    while (<ATF>) {
+	chomp;
+	my $k = $_;
+	$k =~ s/^.*?://;
+	$host_atf{$k} = $_;
+    }
+    close(ATF);
+    open(CAT, '01bld/lists/cat-ids.lst') || return;
+    while (<CAT>) {
+	chomp;
+	my $k = $_;
+	$k =~ s/^.*?://;
+	$host_cat{$k} = $_;
+    }
+    close(CAT);
+    
     if (-r '00lib/proxy.ol') {
-	# this will write 01bld/proxy.lst
+	# this will write 01bld/proxy-ol.lst
 	warn "o2-lst.plx: proxy.ol not yet implemented\n";
+	$proxy_lst = "01bld/proxy-ol.lst";
     } elsif (-r '00lib/proxy.lst') {
-	open(P,'00lib/proxy.lst');
+	$proxy_lst = "00lib/proxy.lst";
+    }
+    if ($proxy_lst) {
+	open(P,$proxy_lst);
 	my @p = (<P>); chomp(@p);
 	close(P);
-	open(P, '>01bld/lists/proxy.lst');
-	foreach my $p (sort @p) {
-	    unless ($p =~ /:/) {
-		warn "o2-lst.plx: `$p': bad proxy in 00lib/proxy.lst\n";
-	    } else {
-		$p =~ tr/\r\n//d;
-		unless ($p =~ /\@/) {
-		    my $xmd = '';
-		    if ($p =~ /:P/) {
-			$xmd = 'cdli';
-		    } elsif ($p =~ /:Q/) {
-			$xmd = 'qcat';
-		    } else {
-			$xmd = $p;
-			$xmd =~ s/:.*$//;
-		    }
-		    $p .= "\@$xmd";
+	my %pa_seen = ();
+	my %px_seen = ();
+	open(PX, '>01bld/lists/proxy-cat.lst');
+	open(PA, '>01bld/lists/proxy-atf.lst');
+	my $lnum = 0;
+	foreach my $p (@p) {
+	    ++$lnum;
+	    $p =~ tr/\r\n//d;
+	    # if the proxy has a ':' we want it for its atf:
+	    # if it has no catalogue, default it to the host project
+	    if ($p =~ /:/) {
+		$p .= "\@$project" unless $p =~ /\@/;
+		my($id) = ($p =~ /:(.*?)\@/);
+		if ($host_atf{$id}) {
+		    warn "$proxy_lst:$lnum: ignoring proxy of $id because $project already has that ATF\n";
+		} elsif ($pa_seen{$id}++) {
+		    warn "$proxy_lst:$lnum: ignoring duplicate ATF proxy for $id\n";
+		} else {
+		    print PA "$p\n";
 		}
-		print P "$p\n";
 	    }
+	    # if the proxy has a '@' we want it for its cat unless the project eq host
+	    if ($p =~ /\@(.*)$/) {
+		my $xc = $1;
+		if ($xc ne $project) {
+		    # if there is no ':' default it to host project
+		    $p = "$project:$p" unless $p =~ /:/;
+		    my($id) = ($p =~ /:(.*?)\@/);
+		    if ($host_cat{$id}) {
+			warn "$proxy_lst:$lnum: ignoring proxy of $id because $project CAT already has it\n";
+		    } elsif ($px_seen{$id}++) {
+			warn "$proxy_lst:$lnum: ignoring duplicate CAT proxy for $id\n";
+		    } else {
+			print PX "$p\n";
+		    }
+		}
+	    }
+	    # just ignore bare proxies (i.e., those with no : or @) for now.
 	}
-	close(P);
+	close(PA);
+	close(PX);
     }
-    drop_proxy_dups();
 }
 
 sub
@@ -262,8 +273,8 @@ update_lists {
 	chomp @pubsub;
 	@pubsub = map { s#^$project/## ; 
 			"$_/01bld/lists/approved.lst" } @pubsub;
-	open(A, '>01bld/lists/proxy.lst')
-	    || die "o2-lst.plx: can't write 01bld/lists/approved.lst\n";
+	open(A, '>01bld/lists/proxy-atf.lst')
+	    || die "o2-lst.plx: can't write 01bld/lists/proxy.lst\n";
 	foreach my $p (@pubsub) {
 	    open(P, $p);
 	    my @l = (<P>);
@@ -275,6 +286,7 @@ update_lists {
 	    close(P);
 	}
 	close(A);
+	link '01bld/lists/proxy-atf.lst', '01bld/lists/proxy-cat.lst';
     } elsif ($opt eq 'static') {
 	xsystem 'cp', '-a', '00lib/approved.lst', $listdir;
     } elsif ($opt =~ /\.ol$/) {
@@ -287,7 +299,8 @@ update_lists {
 	warn "o2-lst.plx: unknown build-approved-policy value `$opt'\n";
     }
 
-    proxy_lists();
+# WATCHME: this was called before update_lists() and also here in the middle of it--which is right?
+#    proxy_lists();
 
     $opt = `oraccopt . build-outlined-policy`;
 
