@@ -22,7 +22,11 @@ AC_PATH_PROG(PERL,perl)
 
 dnl Checks for libraries.
 dnl Replace `main' with a function in -lfl:
-AC_CHECK_LIB(pcre, pcre_exec)
+
+AC_SEARCH_LIBS(pcre,pcre_exec)
+
+dnl AC_SEARCH_LIBS(iconv,iconv,,
+dnl     AC_SEARCH_LIBS(libiconv,iconv,,AC_MSG_ERROR(['libiconv' is required but it doesn't seem to be installed on this system.]),))
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -37,14 +41,15 @@ AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
-AC_SEARCH_LIBS(iconv,iconv)
-echo ac_cv_search = +$ac_cv_search+
-if test "$ac_cv_search" == ""
-then
-   LIBICONV=
-else
-   LIBICONV=-liconv
-fi
+dnl AC_SEARCH_LIBS(iconv,iconv)
+dnl echo ac_cv_search = +$ac_cv_search+
+dnl if test "$ac_cv_search" == ""
+dnl then
+dnl   LIBICONV=
+dnl else
+dnl   LIBICONV=-liconv
+dnl fi
+dnl echo LIBICONV=$LIBICONV
 
 # Checking the version of QDBM with pkg-config
 if type pkg-config > /dev/null 2>&1
@@ -72,9 +77,10 @@ AC_SUBST(LIBICONV)
 AC_SUBST(QDBMINCLUDE)
 AC_SUBST(QDBMLIBDIR)
 
+dnl 	   oracc-hyperestraier/estconfig
+
 AC_OUTPUT([Makefile 
 	   oracc-hyperestraier/Makefile
-	   oracc-hyperestraier/estconfig
 	   c/Makefile
 	   c/bin/Makefile
 	   c/bin/despatcher/Makefile
