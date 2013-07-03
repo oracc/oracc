@@ -21,55 +21,8 @@ create_have_atf();
 proxy_lists();
 update_lists();
 lemindex_list();
-all_triple();
 
 ##############################################################
-
-sub
-all_triple {
-    my %triples = ();
-    if (-r '01bld/lists/proxy.lst') {
-	open(P, '01bld/lists/proxy.lst');
-	while (<P>) {
-	    chomp;
-	    my $cat = undef;
-	    if (s/\@(.*?)$//) {
-		$cat = $1;
-	    }
-	    my ($prx,$pqx) = (/^(.*?):(.*?)$/);
-	    $triples{$pqx} = [ $prx , $cat ];
-	}
-	close(P);
-    }
-    if (-r '01bld/lists/cat-ids.lst') {
-	open(C, '01bld/lists/cat-ids.lst');
-	while (<C>) {
-	    chomp;
-	    my $cat = undef;
-	    if (s/\@(.*?)$//) {
-		$cat = $1;
-	    }
-	    my ($prj,$pqx) = (/^(.*?):(.*?)$/);
-	    if ($triples{$pqx}) {
-		my($prx,$prxcat) = @{$triples{$pqx}};
-		$triples{$pqx} = [ $prx , $prxcat || $cat || $prj ];
-	    } else {
-		$triples{$pqx} = [ $prj , $cat || $prj ];
-	    }
-	}
-	close(C);
-    }
-    if (scalar keys %triples == 0) {
-	warn "o2-lst.plx: master.lst is empty, no proxy.lst or cat-ids.lst\n";
-    } else {
-	open(T, '>01bld/lists/master.lst');
-	foreach my $pqx (sort keys %triples) {
-	    my($prj,$cat) = @{$triples{$pqx}};
-	    print T "$prj\:$pqx\@$cat\n";
-	}
-	close(T);
-    }
-}
 
 sub
 atf_sources {
@@ -124,27 +77,28 @@ lemindex_load_proxy {
     if (open(P, "$ENV{'ORACC'}/bld/$proj/lists/have-lem.lst")) {
 	while (<P>) {
 	    chomp;
-	    /:(.*?)\@/;
+	    /:(.*?)(?:\@|$)/;
 	    ++$p{$1};
 	}
     } # not an error to fail
-    { %p }; ### THIS MAY NOT BE QUITE RIGHT
+    use Data::Dumper; print Dumper \%p;
+    %p;
 }
 
 sub
 lemindex_list {
-    my %proxy_projects = ();
     my %proxy_lem_atfs = ();
 
     if (open(P,'01bld/lists/proxy-atf.lst')) {
 	open(PL, '>01bld/lists/proxy-lem.lst');
 	while (<P>) {
 	    chomp;
-	    my($proj,$id) = (/^(.*?):(.*?)$/);
-	    $proxy_lem_atfs{$proj} = lemindex_load_proxy($proj)
-		unless $proxy_lem_atfs{$proj};
+	    my $line = $_;
+	    my($proj,$id) = (/^(.*?):(.*?)(?:\@|$)/);
+	    %{$proxy_lem_atfs{$proj}} = lemindex_load_proxy($proj)
+		unless exists $proxy_lem_atfs{$proj}; # the project's hash can be empty
 	    if (${$proxy_lem_atfs{$proj}}{$id}) {
-		print PL "$_\n";
+		print PL "$line\n";
 	    }
 	}
 	close(PL);

@@ -20,7 +20,8 @@ fi
 if [ "$tei_list" == "atf" ]; then
     tei_list_file=01bld/lists/have-atf.lst
 elif [ "$tei_list" == "master" ]; then
-    tei_list_file=01bld/lists/master.lst
+#    tei_list_file=01bld/lists/master.lst
+    tei_list_file=02pub/cat/pqids.lst
 elif [ "$tei_list" == "lem" ]; then
     tei_list_file=01bld/lists/lemindex.lst
 elif [ "$tei_list" == "all" ]; then
