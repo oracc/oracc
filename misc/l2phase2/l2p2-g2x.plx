@@ -640,7 +640,7 @@ load_parts {
 	}
 	close(P);
 	warn "dumping parts\n";
-	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
+#	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
     } else {
 	warn "l2p2-g2.plx: no 01bld/parts.map\n";
 	return;
@@ -658,7 +658,7 @@ xload_parts {
 	}
 	close(P);
 	warn "dumping parts\n";
-	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
+#	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
     } else {
 	warn "l2p2-g2.plx: no 01bld/parts.map\n";
 	return;
