@@ -81,7 +81,7 @@ lemindex_load_proxy {
 	    ++$p{$1};
 	}
     } # not an error to fail
-    use Data::Dumper; print Dumper \%p;
+#    use Data::Dumper; print Dumper \%p;
     %p;
 }
 
