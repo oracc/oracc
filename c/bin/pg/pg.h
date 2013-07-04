@@ -38,6 +38,7 @@ extern struct sortinfo *sip;
 extern struct si_cache **sicache;
 
 extern int page_selector_index;
+extern int page_selector_page_n;
 
 extern void dbg_dump_sicache(struct si_cache**cp, int sic_size);
 extern void dbg_dump_pcache(struct si_cache**cpp, int nitems);

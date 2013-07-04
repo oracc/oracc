@@ -201,6 +201,7 @@
 	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>
 	<input type="hidden" name="uimode" id="uimode" p3:value="@@cgivar:uimode@@"/>
 	<input type="hidden" name="unicheck" id="unicheck" p3:value="@@cgivar:unicode/0@@"/>	
+	<input type="hidden" name="xipage" id="xipage" p3:value="@@cgivar:xipage@@"/>
 	<input type="hidden" name="uzpage" id="uzpage" p3:value="@@cgivar:uzpage@@"/>
 	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
 	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>

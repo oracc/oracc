@@ -401,29 +401,40 @@ run_form_maker {
 sub
 run_item_maker {
     my $id = undef;
+    my $hilite_words = undef;
+    my($newPage,$sedItem) = ();
     if ($p{'pqx_id'}) {
+	# remember page we will return to; we won't recalculate this so if someone items through
+	# a bunch of pages they'll just end up where they started
+	$p{'xipage'} = ($p{'item'} / $p{'pagesize'}) + (($p{'item'} % $p{'pagesize'}) ? 1 : 0);
+
 	# we've done a search and collapse to get prev/next, and we already know the id
 	$id = $p{'pqx_id'};
+	# grab the entry from pgwrap.out so we know its item number and hilite words
+	$sedItem = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | grep -n $id`;
+	chomp $sedItem;
+	$sedItem =~ s/:(.*)$//;
+	$newPage = $rt{'page_selector_page_n'};
+	$hilite_words = $1;
+	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
+	warn "pqx_id=$p{'pqx_id'}; newPage=$newPage; sedItem=$sedItem; hilite_words=$hilite_words; p{item}=$p{'item'}\n";
     } else {
 	# first recalibrate item and page: values{item} is an integer
 	# from 1 to values{items}; we need to split it into page and
-	# offset	
-	my($newPage,$sedItem) = ();
-
+	# offset
 	$newPage = ($p{'item'} / $p{'pagesize'});
 	++$newPage if $p{'item'} % $p{'pagesize'};
-	$p{'page'} = $newPage;
-
 	if ($rt{'itemtype'} eq 'cbd') {
 	    $sedItem = $p{'item'};
 	} else {
 	    $sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
 	}
-	$id = `grep -v '^#' $p{'#list'} | sed -n '${sedItem}p'`;
+	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
 	chomp($id);
 	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $newPage; thisType=$rt{'itemtype'}\n";
     }
 
+    $p{'page'} = $newPage;
 
     my($eproject,$eid) = ($p{'project'},'');
     if ($id =~ /^(.*?):(.*?)$/) {
@@ -449,7 +460,7 @@ run_item_maker {
 	my $line = $eid;
 	$eid =~ s/\..*$//;
 	if ($rt{'type'} =~ /^tra|xtf$/ && $rt{'what'} eq 'item') {
-	    @idinfo = ce_data_info($p{'item'});
+	    @idinfo = ce_data_info($sedItem);
 	} else {
 	    push(@idinfo, '-stringparam', 'line-id', $p{'itemline'})
 		if $p{'itemline'} && $p{'itemline'} ne 'none';
@@ -648,6 +659,7 @@ setup_navigation {
 	$rt{'itemtype'} = $p{'p3itemtype'};
 	if ($p{'p3itemtype'} eq 'off') {
 	    $p{'item'} = 0;
+	    $p{'page'} = $p{'xipage'};
 	}
     } elsif ($p{'item'}) {
 	$rt{'itemtype'} = $p{'itemtype'};
@@ -689,6 +701,8 @@ setup_navigation {
 	if ($p{'item'} <= 0 || $p{'item'} > $p{'items'}) {
 	    $p{'item'} = 1;
 	}
+    } elsif ($p{'p3do'} eq 'p3srch') {
+	reinitialize();
     }
 }
 

@@ -28,7 +28,7 @@ struct npool *pg2_pool = NULL;
 int nheadfields = 0;
 int *headfields = NULL;
 
-int page_n = 1, page_selector_index = 0;
+int page_n = 1, page_selector_index = 0, page_selector_page_n = 0;
 
 int xml_outline = 0;
 
@@ -253,7 +253,10 @@ main(int argc, char **argv)
   else
     fprintf(fpag,"uzpage 0\nzprev 0\nznext 0\n");
   if (page_selector_id)
-    fprintf(fpag, "page_selector_index %d\n", page_selector_index);
+    {
+      fprintf(fpag, "page_selector_index %d\n", page_selector_index);
+      fprintf(fpag, "page_selector_page_n %d\n", page_selector_page_n);
+    }
 
   fclose(fpag);
   exit(0);

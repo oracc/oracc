@@ -117,9 +117,11 @@ pg_find_page_with_id(struct page *pages, int npages, const char *id)
       for (j = 0, p = &pages[i]; j < p->used; ++j)
 	{
 #if 1
-	  if (!strcmp(p->p[j], id))
+	  if (!strncmp(p->p[j], id, strlen(id)))
 	    {
+	      page_selector_page_n = i+1;
 	      page_selector_index = j+1;
+	      fprintf(stderr, "page_selector_page_n=%d; page_selector_index=%d\n", page_selector_page_n, page_selector_index);
 	      return i;
 	    }
 #else
@@ -192,6 +194,7 @@ pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int
 	  break;
       zpage = (z / pagesize) + ((z % pagesize) ? 1 : 0);
       page_selector_index = (z % pagesize)+1;
+      page_selector_page_n = zpage;
     }
 
   /* print the required page */
