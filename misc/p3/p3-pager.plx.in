@@ -38,12 +38,10 @@ my %p = ();
 my %rt = ();
 
 %p = decode_args(@ARGV);
-
-set_p3_state();
 setup_navigation();
+set_p3_state();
 
 if ($rt{'prod'} eq 'list') {
-
     if ($p{'glos'}) {
 	if ($p{'gxis'}) {
 	    $rt{'#list_type'} = 'xtf';
@@ -99,7 +97,7 @@ if (!$p{'glos'} || $p{'gxis'}) {
 	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
 	
 	# set up the input for the content maker
-	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, $p{'state'}, @pg_args);
+	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, $p{'p3outl'}, @pg_args);
 	
 	# generate the outline
 	ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
@@ -172,6 +170,14 @@ decode_args {
 	$tmp{$k} = $v;
     }
 
+    if ($tmp{'from-uri'} && $tmp{'from-uri'} eq 'yes') {
+	if ($tmp{'list'}) {
+	    $tmp{'p3setlinks'} = $tmp{'list'};
+	} else {
+	    $tmp{'p3setgloss'} = $tmp{'list'};
+	}
+    }
+
     if ($tmp{'project'} eq '#auto') {
 	if ($tmp{'tmpdir'} && -r "$tmp{'tmpdir'}/search.txt") {
 	    my $s = `cat $tmp{'tmpdir'}/search.txt`;
@@ -200,12 +206,17 @@ decode_args {
 	my $use_special = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-select`;
 	if ($use_special && $use_special eq 'true') {
 	    $tmp{'list'} = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-list-name`;
-	    $tmp{'state'} = 'special' unless $tmp{'state'};
+	    $tmp{'p3outl'} = $tmp{'state'} = 'special' unless $tmp{'p3outl'};
 	} else {
 	    $tmp{'list'} = '_all';
-	    $tmp{'state'} = 'default' unless $tmp{'state'};
+	    $tmp{'p3outl'} = $tmp{'state'} = 'default' unless $tmp{'p3outl'};
 	}
+    } elsif ($tmp{'p3outl'}) {
+	$tmp{'state'} = $tmp{'p3outl'};
+    } else {
+	$tmp{'state'} = $tmp{'p3outl'} = 'default';
     }
+
     $tmp{'page'} = 1 unless $tmp{'page'};
     $tmp{'pageset'} = 1 unless $tmp{'pageset'};
     $tmp{'pagesize'} = 25 unless $tmp{'pagesize'};
@@ -292,7 +303,7 @@ p3srch {
 sub
 reinitialize {
     $p{'page'} = 1;
-    $p{'item'} = 0;
+    $p{'zoom'} = $p{'item'} = 0;
 }
 
 sub
@@ -555,15 +566,15 @@ set_p3_state {
     # content constructor based on the $rt{'itemtype'} parameter (set by p3itemtype).
     if ($p{'item'}) {
 	$rt{'what'} = 'item';
-	$rt{'outl'} = 'none';
+	$rt{'outl'} = $p{'p3outl'} || 'default';
     } else {
 	$rt{'what'} = 'page';
 	if ($rt{'prod'} eq 'list') {
 	    # some lists need default and some special--this needs more working out
 	    if ($rt{'outl'} eq 'special') {
-		$rt{'sorttype'} = $p{'p3OSspecial'};
+		$rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSspecial'};
 	    } else {
-		$rt{'sorttype'} = $p{'p3OSdefault'};
+		$rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSdefault'};
 	    }
 	    unless ($rt{'sorttype'}) {
 		$rt{'sorttype'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-$rt{'outl'}-sort-fields`;
@@ -593,6 +604,19 @@ set_runtime_vars {
     }
 }
 
+sub
+set_sorttype {
+    if ($p{'sorttype'}) {
+	$rt{'sorttype'} = $p{'sorttype'};
+    } elsif ($p{'p3outl'} eq 'special') {
+	$rt{'sorttype'} = $p{"p3OSspecial"};
+    } elsif ($p{'p3outl'} eq 'default') {
+	$rt{'sorttype'} = $p{"p3OSdefault"};
+    } else { # this can't happen ...
+	$rt{'sorttype'} = $p{"p3OSdefault"};
+    }
+}
+
 # perform any nav actions
 sub
 setup_navigation {
@@ -606,11 +630,13 @@ setup_navigation {
     }
 
     if ($p{'p3do'} eq 'defaultSortstate') {
-	$rt{'sorttype'} = $p{"p3OSdefault"};
+	$rt{'sorttype'} = $p{'sorttype'} = $p{"p3OSdefault"};
 	reinitialize();
     } elsif ($p{'p3do'} eq 'specialSortstate') {
-	$rt{'sorttype'} = $p{"p3OSspecial"};
+	$rt{'sorttype'} = $p{'sorttype'} = $p{"p3OSspecial"};
 	reinitialize();
+    } else {
+	set_sorttype();
     }
 
     if ($p{'p3do'} eq 'pagefwd') {
@@ -645,7 +671,8 @@ setup_navigation {
 sub
 setup_pg_args {
     $p{'page'} = 1 unless $p{'page'};
-    my $tmpstate = ($p{'state'} =~ /^default|special$/ ? $p{'state'} : $p{'pushed-state'});
+    my $tmpstate = ($p{'p3outl'} =~ /^default|special$/ ? $p{'p3outl'} 
+		    : ($p{'pushed-state'} ? $p{'pushded-state'} : 'default'));
     $tmpstate = 'default' unless $tmpstate;
     @pg_args = ('-fm', "-p$p{'project'}", "-P$p{'pagesize'}", 
 		"-n$p{'page'}", "-S$tmpstate");
