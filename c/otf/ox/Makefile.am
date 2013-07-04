@@ -69,7 +69,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/lib/rnv
 
-data_DATA=ogsl.xml catpnums.vec
+# data_DATA=ogsl.xml catpnums.vec
 
 EXTRA_DIST=*.h $(inst_DATA)
 
