@@ -133,6 +133,7 @@ lng_handler(struct component *components)
       execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
 	    cgi_arg("project", project), 
 	    cgi_arg("glos", elements[0]),
+	    cgi_arg("from-uri", "yes"),
 	    NULL);
       perror("execl failed");
       exit(1);

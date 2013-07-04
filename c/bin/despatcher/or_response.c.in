@@ -173,12 +173,20 @@ xis(const char *xlang, const char *xid)
   exit(1);
 }
 
+static void
+redirect(char *r)
+{
+  fprintf(stdout, "Status: 301 Moved Permanently\nLocation: %s\n\n", r);
+  exit(0);
+}
+
 void
 list(const char *list)
 {
   execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
 	cgi_arg("project", project),
 	cgi_arg("list", list),
+	cgi_arg("from-uri", "yes"),
 	cgi_arg("mode", mode),
 	NULL);
   perror("execl failed");

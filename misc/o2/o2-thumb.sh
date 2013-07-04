@@ -2,7 +2,7 @@
 img=`oraccopt . image`
 ext=`echo ${img##*.}`
 if [ "$ext" = "png" ]; then
-    path=`find 00web -name $img`
+    path=`find 00web/images 00web/esp/site-content/00web/images -name $img | head -1`
     proj=`oraccopt`
     projbase=`basename $proj`
     mkdir -p 02www/images
