@@ -37,6 +37,8 @@ extern int *sortfields, *headfields;
 extern struct sortinfo *sip;
 extern struct si_cache **sicache;
 
+extern int page_selector_index;
+
 extern void dbg_dump_sicache(struct si_cache**cp, int sic_size);
 extern void dbg_dump_pcache(struct si_cache**cpp, int nitems);
 extern void dbg_dump_items(struct item*items, int nitems);
@@ -50,7 +52,8 @@ extern struct page *pg_page(struct item **pitems, int nitems, int *npages,
 			    struct outline *outlinep);
 extern void pg_page_dump_all(FILE *fp, struct page *pages, int npages);
 extern void pg_page_dump_one(FILE *fp, struct page *p);
-extern void pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int zoomid, int zpage);
+extern void pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int zoomid, int zpage, const char *pg_sel_id);
+extern int pg_find_page_with_id(struct page *pages, int npages, const char *id);
 
 extern struct item **pg_sort(struct item*items, int*nitems, 
 			     const char *sortkeys);

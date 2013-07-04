@@ -69,6 +69,13 @@ function p3item(type,nth) {
     document.getElementById('p3form').submit();    
 }
 
+function p3item3(type,nth,id) {
+    document.getElementById('item').value = nth;
+    document.getElementById('itemtype').value = type;
+    document.getElementById('pqx_id').value = id;
+    document.getElementById('p3form').submit();    
+}
+
 function p3zoom(z) {
     if (z === '0') {
 	document.getElementById('zoom').value = z;

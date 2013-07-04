@@ -183,7 +183,8 @@
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
   <xsl:variable name="ce-data" select="ancestor::ce:data"/>
-  <a href="javascript:p3item('xtf',{$item})"> <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
+  <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
+  <a href="javascript:p3item3('xtf',{$item},'{$ce-data/@project}:{$ce-data/@text-id}')">
     <xsl:text>(</xsl:text>
     <xsl:choose>
       <xsl:when test="string-length($label)=0">

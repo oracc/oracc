@@ -156,6 +156,8 @@
 	      <span class="p3arrow">
 		<button type="button" name="rarrow" onclick="p3action('pagefwd')">>></button>
 	      </span>
+
+	      <span p3:value="@@runtime:items@@"/> items.
 	      
 	      Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>
 
@@ -203,6 +205,7 @@
 	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
 	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
 	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
+	<input type="hidden" name="pqx_id" id="pqx_id"/>
       </div>
     </form>
 

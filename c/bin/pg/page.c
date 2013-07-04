@@ -106,6 +106,46 @@ pg_page(struct item **pitems, int nitems, int *npages, struct outline *outlinep)
   return pages;
 }
 
+int
+pg_find_page_with_id(struct page *pages, int npages, const char *id)
+{
+  int i;
+  for (i = 0; i < npages; ++i)
+    {
+      struct page *p;
+      int j;
+      for (j = 0, p = &pages[i]; j < p->used; ++j)
+	{
+#if 1
+	  if (!strcmp(p->p[j], id))
+	    {
+	      page_selector_index = j+1;
+	      return i;
+	    }
+#else
+	  char *colon = strchr(p->p[j], ':');
+	  if (colon)
+	    {
+	      if (!strcmp(colon+1, id))
+		{
+		  page_selector_index = j+1;
+		  return i;
+		}
+	    }
+	  else
+	    {
+	      if (!strcmp(p->p[j], id))
+		{
+		  page_selector_index = j+1;
+		  return i;
+		}
+	    }
+#endif
+	}
+    }
+  return 0;
+}
+
 void
 pg_page_dump_all(FILE *fp, struct page *pages, int npages)
 {
@@ -124,7 +164,7 @@ pg_page_dump_one(FILE *fp, struct page *p)
 }
 
 void
-pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int zoomid, int zpage)
+pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int zoomid, int zpage, const char *pg_sel_id)
 {
   int i, j, zitems, zused;
   /* find the start of the range with this zoomid */
@@ -143,8 +183,21 @@ pg_page_dump_zoomed(FILE *fp, struct item **items, int *nitems, int *npages, int
   /* print the header */
   fprintf(fp,"%s ", fmthdr(zoomid));
 
+  /* if we are finding page by the id, set zpage now */
+  if (pg_sel_id)
+    {
+      int z;
+      for (z = i; z< j; ++z)
+	if (!strcmp((char*)items[i]->pq,pg_sel_id))
+	  break;
+      zpage = (z / pagesize) + ((z % pagesize) ? 1 : 0);
+      page_selector_index = (z % pagesize)+1;
+    }
+
   /* print the required page */
   for (i += ((zpage-1)*pagesize), zused = 0; i < j && zused++ < pagesize; ++i)
     fprintf(fp,"%s ", items[i]->s);
   fputc('\n',fp);
 }
+
+/*225958*/

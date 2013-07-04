@@ -28,7 +28,7 @@ struct npool *pg2_pool = NULL;
 int nheadfields = 0;
 int *headfields = NULL;
 
-int page_n = 1;
+int page_n = 1, page_selector_index = 0;
 
 int xml_outline = 0;
 
@@ -42,6 +42,7 @@ int zoomid = -1;
 /*const char *csiname = "@@ORACC@@/www/cdli/sortinfo.csi";*/
 const char *heading_keys = NULL, *sort_keys = NULL;
 const char *listfile = NULL;
+const char *page_selector_id = NULL;
 const char *project = NULL;
 const char *state = NULL;
 
@@ -97,7 +98,7 @@ main(int argc, char **argv)
   struct page *pages = NULL;
   int nitems = 0, nlevels = 0, npages = 0;
 
-  options(argc,argv,"023dg:fh:l:mn:o:p:P:qs:S:xz:");
+  options(argc,argv,"023dg:fh:i:l:mn:o:p:P:qs:S:xz:");
 
   if (!project)
     project = "cdli";
@@ -228,15 +229,22 @@ main(int argc, char **argv)
     }
 
   if (zoomid >= 0)
-    pg_page_dump_zoomed(fpag,pitems,&nitems,&npages,zoomid,page_n);
-  else if (!page_n)
-    pg_page_dump_all(fpag,pages,npages);
-  else if (page_n <= npages)
-    pg_page_dump_one(fpag,&pages[page_n-1]);
-  else if (nitems)
     {
-      fprintf(stderr,"pg2: page %d too big (max %d)\n", page_n, npages);
-      exit(1);
+      pg_page_dump_zoomed(fpag,pitems,&nitems,&npages,zoomid,page_n,page_selector_id);
+    }
+  else 
+    {
+      if (page_selector_id)
+	page_n = pg_find_page_with_id(pages,npages,page_selector_id);
+      if (!page_n)
+	pg_page_dump_all(fpag,pages,npages);
+      else if (page_n <= npages)
+	pg_page_dump_one(fpag,&pages[page_n-1]);
+      else if (nitems)
+	{
+	  fprintf(stderr,"pg2: page %d too big (max %d)\n", page_n, npages);
+	  exit(1);
+	}
     }
 
   fprintf(fpag,"pages %d\nitems %d\n", npages, nitems);
@@ -244,6 +252,10 @@ main(int argc, char **argv)
     fprintf(fpag,"uzpage %d\nzprev %d\nznext %d\n", uzpage, zprev+1, znext+1);
   else
     fprintf(fpag,"uzpage 0\nzprev 0\nznext 0\n");
+  if (page_selector_id)
+    fprintf(fpag, "page_selector_index %d\n", page_selector_index);
+
+  fclose(fpag);
   exit(0);
 }
 
@@ -281,6 +293,11 @@ opts(int argc, char *arg)
       heading_keys = arg;
       break;
 #endif
+
+    case 'i':
+      page_selector_id = arg;
+      break;
+
     case 'l':
       listfile = arg;
       break;

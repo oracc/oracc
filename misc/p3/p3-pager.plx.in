@@ -47,16 +47,12 @@ if ($rt{'prod'} eq 'list') {
 	    $rt{'#list_type'} = 'xtf';
 	    xsystem("@@ORACC@@/bin/xis", '-f', "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
 	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
-	    $p{'#listitems'} = `wc -l $p{'#list'}`;
-	    chomp $p{'#listitems'};
-	    $p{'#listitems'} =~ s/^.*?(\d+).*$/$1/;
+	    set_list_items();
 	    $p{'uimode'} = 'mini';
 	} else {
 	    $rt{'#list_type'} = 'cbd';
 	    $p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
-	    $p{'#listitems'} = `wc -l $p{'#list'}`;
-	    chomp $p{'#listitems'};
-	    $p{'#listitems'} =~ s/^.*?(\d+).*$/$1/;
+	    set_list_items();
 	}
     } elsif ($p{'adhoc'}) {
 	p3adhoc();
@@ -67,14 +63,12 @@ if ($rt{'prod'} eq 'list') {
 	    p3srch($p{'list'});
 	    $p{'list'} = '';
 	} else {
-	    $p{'#listitems'} = `wc -l $p{'#list'}`;
-	    $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+	    set_list_items();
 	}
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
-	$p{'#listitems'} = `wc -l $p{'#list'}`;
-	$p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+	set_list_items();
     }
 
 } else { # srch
@@ -92,12 +86,22 @@ if ($rt{'prod'} eq 'list') {
 
 # set up the Slicer inputs
 if (!$p{'glos'} || $p{'gxis'}) {
+    if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
+	my $ce_arg = set_ce_arg();
+	xsystem('/usr/local/oracc/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
+	$p{'#list'} = "$p{'tmpdir'}/wm.out";
+    }
+    if ($p{'item'} && $rt{'#list_type'} =~ /^tra|xtf$/) {
+	xsystem('/usr/local/oracc/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
+	$p{'#list'} = "$p{'tmpdir'}/collapsed.out";
+	set_list_items();
+    }
     if ($p{'#listitems'}) {
 	setup_pg_args();
 	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
 	
 	# set up the input for the content maker
-	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, $p{'p3outl'}, @pg_args);
+	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, @pg_args);
 	
 	# generate the outline
 	ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
@@ -282,6 +286,7 @@ p3srch {
     if ($srchtext) {
 	$rt{'srchtxt'} = $srchtext;
 	$rt{'#index'} = 'cat';
+	
     } else {
 	open(S, "$p{'tmpdir'}/search.txt");
 	$rt{'srchtext'} = <S>;
@@ -395,27 +400,30 @@ run_form_maker {
 
 sub
 run_item_maker {
-    # first recalibrate item and page: values{item} is an integer
-    # from 1 to values{items}; we need to split it into page and
-    # offset
-    
-    my($newPage,$sedItem) = ();
-
-    $newPage = ($p{'item'} / $p{'pagesize'});
-    ++$newPage if $p{'item'} % $p{'pagesize'};
-    $p{'page'} = $newPage;
-
     my $id = undef;
-    if ($rt{'itemtype'} eq 'cbd') {
-	$sedItem = $p{'item'};
-	$id = `grep -v '^#' $p{'#list'} | sed -n '${sedItem}p'`;
+    if ($p{'pqx_id'}) {
+	# we've done a search and collapse to get prev/next, and we already know the id
+	$id = $p{'pqx_id'};
     } else {
-	$sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
-	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
-    }
-    chomp($id);
+	# first recalibrate item and page: values{item} is an integer
+	# from 1 to values{items}; we need to split it into page and
+	# offset	
+	my($newPage,$sedItem) = ();
 
-    warn "newPage = $newPage; sedItem = $sedItem; thisType=$rt{'itemtype'}; id=$id\n";
+	$newPage = ($p{'item'} / $p{'pagesize'});
+	++$newPage if $p{'item'} % $p{'pagesize'};
+	$p{'page'} = $newPage;
+
+	if ($rt{'itemtype'} eq 'cbd') {
+	    $sedItem = $p{'item'};
+	} else {
+	    $sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
+	}
+	$id = `grep -v '^#' $p{'#list'} | sed -n '${sedItem}p'`;
+	chomp($id);
+	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $newPage; thisType=$rt{'itemtype'}\n";
+    }
+
 
     my($eproject,$eid) = ($p{'project'},'');
     if ($id =~ /^(.*?):(.*?)$/) {
@@ -482,13 +490,7 @@ sub
 run_page_maker {
     my $vminus = $p{'page'} || 0;
     $vminus -= 1 if $vminus;
-    my $ce_arg = '';
-    if ($rt{'cetype'}) {
-	$ce_arg = $rt{'cetype'};
-	$ce_arg =~ s/^(.).*$/-$1/;
-    } elsif ($rt{'#list_type'} eq 'xtf') {
-	$ce_arg = '-l';
-    }
+    my $ce_arg = set_ce_arg();
     my $item_offset = ($vminus) * $p{'pagesize'};
     my @offset_arg = ('-o', $item_offset);
     my @offset_param = ('-stringparam', 'item-offset', $item_offset);
@@ -513,11 +515,33 @@ run_page_maker {
 }
 
 sub
+set_ce_arg {
+    my $ce_arg;
+    if ($rt{'cetype'}) {
+	$ce_arg = $rt{'cetype'};
+	$ce_arg =~ s/^(.).*$/-$1/;
+    } elsif ($rt{'#list_type'} eq 'xtf') {
+	$ce_arg = '-l';
+    } else {
+	$ce_arg = '';
+    }
+    $ce_arg;
+}
+
+sub
+set_list_items {
+    $p{'#listitems'} = `wc -l $p{'#list'}`;
+    chomp($p{'#listitems'});
+    $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+}
+
+sub
 set_p3_state {
 
     if ($p{'#qsrch'}) {
 	$rt{'prod'} = 'srch';
 	$rt{'outl'} = 'default';
+	$rt{'sorttype'} = $p{'p3OSdefault'};
 	if ($p{'glos'}) {
 	    $rt{'#index'} = "cbd/$p{'glos'}";
 	} else {
@@ -671,11 +695,23 @@ setup_navigation {
 sub
 setup_pg_args {
     $p{'page'} = 1 unless $p{'page'};
-    my $tmpstate = ($p{'p3outl'} =~ /^default|special$/ ? $p{'p3outl'} 
-		    : ($p{'pushed-state'} ? $p{'pushded-state'} : 'default'));
-    $tmpstate = 'default' unless $tmpstate;
+    my $tmpstate = undef;
+
+    if ($p{'#qsrch'}) {
+	$tmpstate = 'default';
+    } else {
+	$tmpstate = ($p{'p3outl'} =~ /^default|special$/ ? $p{'p3outl'} 
+		     : ($p{'pushed-state'} ? $p{'pushded-state'} : 'default'));
+    }
+
     @pg_args = ('-fm', "-p$p{'project'}", "-P$p{'pagesize'}", 
-		"-n$p{'page'}", "-S$tmpstate");
+		"-S$tmpstate");
+
+    if ($p{'pqx_id'}) {
+	push @pg_args, "-i$p{'pqx_id'}";
+    } else {
+	push @pg_args, "-n$p{'page'}";
+    }
 
     push @pg_args, '-q', if $rt{'#list_type'} eq 'cbd';
     if ($rt{'sorttype'}) {
