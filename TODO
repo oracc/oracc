@@ -12,4 +12,10 @@
 
 * remove tut-generation from gdl/xdf schema doco
 
-* port esp image processing and glossary id fixes to esp2
+* refine and document project/00lib/pll.xml (e.g., dcclt) system for making LINKS dropdown items
+
+* check on google analytics for other installations--need new id-somethings?
+
+* conflate misc/www and misc/web
+
+* does the .notex/.note css have to be in p3/p3-template.xml?
