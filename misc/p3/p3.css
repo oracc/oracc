@@ -1,17 +1,24 @@
 body { margin: 0; padding: 0; }
 
-#p3controls { height: 110px; margin: 0px; padding: 0px; 
+#p3controls { height: 90px; margin: 0px; padding: 0px; 
 	    }
 
-#p3navLeft    	{ height: 26px;
-		  padding: 0px; margin: 0px;
 
+#p3topButtons { height: 22px; }
+#p3topButtons p { text-align: center; }
+#p3topButtons .spacer { padding-right: .5rem; }
+
+#p3srch { height: 45px; }
+#p3srch p { padding-top: 12px; padding-bottom: 12px; }
+
+#p3navLeft    	{ height: 23px;
+		  padding: 0px; margin: 0px;
 		  width: 20%;  padding: 0px;
 		  position: absolute; left: 0px;
 		  z-index: 2;
 		}
 
-#p3navRight   	{ height: 26px;
+#p3navRight   	{ height: 23px;
 		  width: 80%;  padding: 0px; 
 		  position: absolute; left: 20%; /* top: 40px; */
 		  z-index: 2;
@@ -37,8 +44,11 @@ body { margin: 0; padding: 0; }
 
 #p3banner h1 { font-size: 25pt; }
 
-p.toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
-		  padding-top: 5px; margin: 0px;
+#p3botbanner { width: 100%; line-height: 24px; height: 24px; position: absolute; left: 0px; }
+#p3botbanner h1 { font-size: 14pt; text-align: center; }
+
+p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
+		  margin: 0px;
 		}
 
 .p3right80	{ clear: both;
@@ -109,3 +119,5 @@ p.summary { margin-left: 1em; text-indent: -1em; }
 h1.p2h2   { font-size: 100%; padding-top: 0px; margin-top: 0px; }
 
 h1.toc { fontsize: 10pt; text-align: center; }
+
+#unicode { margin: 0x; padding: 0px; }

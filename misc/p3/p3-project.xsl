@@ -46,7 +46,7 @@
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <select id="setglo" onchange="selectGlossary('{$project}',this);">
-      <option value="#none">Glossaries</option>
+      <option value="#none">GLOSSARIES</option>
       <xsl:for-each select="document($project-data)//glossary">
 	<option value="{@abbrev}"><xsl:value-of select="."/></option>
       </xsl:for-each>
@@ -99,20 +99,20 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="xh:span[@class='pll']|xh:span[contains(@class,'pll')]">
+<!-- could implement BACK to project here or conflate it with the PROJECT link -->
+<xsl:template match="xh:span[@class='links']|xh:span[contains(@class,'links')]">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
-    <select name="seturl" id="seturl" onchange="p3do('seturl');submit()">
-      <option value="oracc">Oracc Home</option>
-      <option value="project">Project Home</option>
+    <select name="seturl" id="seturl" onchange="selectURI(this)">
+      <option value="#none">LINKS</option>
       <xsl:for-each select="document($project-data)/*/projects/project">
-	<option value="/{@proj}"><xsl:value-of select="@menu"/></option>
+	<option value="/{@proj}" class="projlink"><xsl:value-of select="@menu"/></option>
       </xsl:for-each>
       <xsl:for-each select="document($project-data)/*/lists/list">
-	<option value="/{@proj}/{@file}"><xsl:value-of select="@menu"/></option>
+	<option value="/{$project}/{@file}" class="listlink"><xsl:value-of select="@menu"/></option>
       </xsl:for-each>
       <xsl:for-each select="document($project-data)/*/links/link">
-	<option value="/{@url}"><xsl:value-of select="@menu"/></option>
+	<option value="{@url}" class="outlink"><xsl:value-of select="@menu"/></option>
       </xsl:for-each>
     </select>
   </xsl:copy>

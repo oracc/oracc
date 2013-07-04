@@ -32,11 +32,8 @@ span.selected { background-color: silver }
 div.summary { width: 90%; margin: auto;
 	    border-bottom: 6px solid #cfc; }
 
-.summary p { margin-left: 1em; text-indent: -1em; 
-	     margin-top: 3px; margin-bottom: 3px;
-	   }
-p.summary { margin-left: 1em; text-indent: -1em; 
-	    margin-top: 3px; margin-bottom: 3px;
+p.summary { margin-left: 1.1em; text-indent: -1em; 
+	    margin-top: 3px; margin-bottom: 5px;
 	  }
 
 p.norms    { width: 90%; margin: auto; }

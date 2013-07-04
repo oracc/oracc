@@ -1,4 +1,6 @@
-var p3ControlsHeight = 110;
+var p3ControlsHeight = 90;
+var p3BotbannerHeight = 28;
+var p3TopAdjust = 4;
 
 function cbdPopup(url,windowName,height,width,screenX,screenY,focus) {
   var cbdPopupWindow = window.open(url,windowName,
@@ -91,9 +93,10 @@ function p3Article(l) {
 
 function p3setHeight() {
     var wh = getWinHeight();
-    var h = wh - p3ControlsHeight;
+    var h = wh - p3ControlsHeight - p3BotbannerHeight;
     document.getElementById('p3left').style.height = h+'px';
     document.getElementById('p3right').style.height = h+'px';
+    document.getElementById('p3botbanner').style.top = (h+p3ControlsHeight+p3TopAdjust)+'px';
 }
 
 function p3GlosControls() {
@@ -147,6 +150,12 @@ function p3PageControls() {
 	} else {
 	    no_sorters();
 	}
+    }
+    
+    var listlink = document.getElementById('list').value;
+    if (listlink) {
+	selectItemByValue(document.getElementById('seturl'), 
+			  '/'+document.getElementById('project').value+'/'+listlink);
     }
 }
 
@@ -214,6 +223,7 @@ function p3controls() {
 	document.getElementById('p3cetype').style.display = 'none';
 	if (document.getElementById('glos').value.length > 0) {
 	    p3GlosControls();
+	    selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
 	} else {
 	    // this is done in page controls
 	    // p3CorpusControls();
@@ -258,10 +268,11 @@ function selectGlossary(proj,obj) {
 }
 
 function selectItemByValue(elmnt, value) {
-    for (var i=0; i < elmnt.options.length; i++) {
-	if (elmnt.options[i].value == value) {
-//	    alert('selecting p3itemtype='+elmnt.options[i].value);
-            elmnt.selectedIndex = i;
+    if (value) {
+	for (var i=0; i < elmnt.options.length; i++) {
+	    if (elmnt.options[i].value == value) {
+		elmnt.selectedIndex = i;
+	    }
 	}
     }
 }

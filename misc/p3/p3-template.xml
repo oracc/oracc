@@ -43,40 +43,14 @@
   })();
 </script>
 
-    <title>P3 lib/data</title>
+    <title>@@project@@</title>
   </head>
   <body onload="p3controls(); p3setHeight(); onresize=p3setHeight">
     <form id="p3form" action="/@@project@@/pager"
 	  target="_top" method="post" accept-charset="utf-8">
-      <div id="p3controls" class="banner bborder-top">
-	<input type="hidden" name="project" id="project" value="@@project@@"/>
-	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
-	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
-	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
-	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
-	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
-	<input type="hidden" name="p3do" id="p3do" value="default"/>
-	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
-	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
-	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
-	<input type="hidden" name="glet" id="glet" p3:value="@@cgivar:glet/@@"/>
-	<input type="hidden" name="glos" id="glos" p3:value="@@cgivar:glos/@@"/>
-	<input type="hidden" name="gxis" id="gxis" p3:value="@@cgivar:gxis/@@"/>
-	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
-	<input type="hidden" name="list" id="list" p3:value="@@cgivar:list@@"/>
-	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
-	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype/genre,time,place@@"/>
-	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
-	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
-	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>
-	<input type="hidden" name="uimode" id="uimode" p3:value="@@cgivar:uimode@@"/>
-	<input type="hidden" name="unicheck" id="unicheck" p3:value="@@cgivar:unicode/0@@"/>	
-	<input type="hidden" name="uzpage" id="uzpage" p3:value="@@cgivar:uzpage@@"/>
-	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
-	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
-	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
+      <div id="p3controls" class="banner bborder-top bborder-bot">
 
-	<div id="topButtons">
+	<div id="p3topButtons">
 	  <p>
 	    <span class="button spacer">
 	      <button type="button" onclick="p3help()">HELP</button>
@@ -95,21 +69,25 @@
 	    <span class="button spacer">
 	      <button type="button" name="advsrch" onclick="p3asearch()">ADVANCED SEARCH</button>
 	    </span>
+	    <span class="links"/>
 	  </p>
 	</div>
 
+<!--
 	<div id="p3banner">
-	  <h1><span id="xpd-abbrev"/>: <span id="xpd-name"/></h1>
+	  <h1><span id="xpd-abbrev"/></h1>
 	</div>
-
+ -->
 	<div id="p3srch">
 	  <p class="center">
-	    Unicode&#xa0;<input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>
-
 	    <span class="qsrch">
-	      <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">SEARCH</button>
+	      <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
 	    </span>
 
+	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	    
+	    in
+	    
 	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
 
 	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
@@ -118,11 +96,12 @@
 	      <option value="cat">Catalogue</option>
 	    </select>
 
-	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>&#xa0;Unicode&#xa0;input
+
 	  </p>
 	</div>
 
-	<div id="p3navLeft" class="banner bborder-bot">
+	<div id="p3navLeft" class="banner">
 	  <p class="center p3-items">
 	    <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
 	  </p>
@@ -131,9 +110,9 @@
 	  </p>
 	</div>
 	
-	<div id="p3navRight" class="banner bborder-bot">
+	<div id="p3navRight" class="banner">
 	  <div id="p3itemnav" class="p3-items p3-noglo">
-	    <p class="toccenter bg-dk">
+	    <p class="p3toccenter bg-dk">
 
 	      <span class="p3arrow">
 		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
@@ -161,7 +140,7 @@
 	  </div>
 	  
 	  <div id="p3pagenav" class="p3-pages">
-	    <p class="toccenter bg-dk">
+	    <p class="p3toccenter bg-dk">
 	      <span class="p3arrow" id="p3zoom">
 		<button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
 	      </span>
@@ -191,10 +170,45 @@
 	  </div>
 	</div>
       </div>
+
       <div id="p3content">
 	<!-- p3-pager.plx inserts the outline and content divs when it sees the following line -->
 	<p>@</p>
       </div>
+
+      <div class="p3hidden">
+	<input type="hidden" name="project" id="project" value="@@project@@"/>
+	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
+	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
+	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
+	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
+	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
+	<input type="hidden" name="p3do" id="p3do" value="default"/>
+	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
+	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
+	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
+	<input type="hidden" name="glet" id="glet" p3:value="@@cgivar:glet/@@"/>
+	<input type="hidden" name="glos" id="glos" p3:value="@@cgivar:glos/@@"/>
+	<input type="hidden" name="gxis" id="gxis" p3:value="@@cgivar:gxis/@@"/>
+	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
+	<input type="hidden" name="list" id="list" p3:value="@@cgivar:list@@"/>
+	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
+	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype/genre,time,place@@"/>
+	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
+	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
+	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>
+	<input type="hidden" name="uimode" id="uimode" p3:value="@@cgivar:uimode@@"/>
+	<input type="hidden" name="unicheck" id="unicheck" p3:value="@@cgivar:unicode/0@@"/>	
+	<input type="hidden" name="uzpage" id="uzpage" p3:value="@@cgivar:uzpage@@"/>
+	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
+	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
+	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
+      </div>
     </form>
+
+    <div id="p3botbanner" class="banner border-top">
+      <h1><span id="xpd-abbrev"/>: <span id="xpd-name"/></h1>
+    </div>
+
   </body>
 </html>
