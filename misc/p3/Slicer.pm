@@ -2,7 +2,9 @@ package ORACC::P3::Slicer;
 use warnings; use strict;
 use integer;
 
-#use Getopt::Long qw(:config no_ignore_case);
+#
+# This is the P3 replacement for P2's se-pg2wrapper.plx
+#
 
 use lib '@@ORACC@@/lib';
 
@@ -120,7 +122,9 @@ page_info {
     if ($has_headings) {
 	use ORACC::XPD::Util;
 	ORACC::XPD::Util::set_project($project);
-	$heading_template = ORACC::XPD::Util::option("outline-$state-heading-template");
+	# look up the proper state in the pgargs
+	my $hstate = grep(defined&&length, map { /^-S(.*)$/ && $1 } @pgargs);
+	$heading_template = ORACC::XPD::Util::option("outline-$hstate-heading-template");
     }
 
     foreach my $o (@outline) {
