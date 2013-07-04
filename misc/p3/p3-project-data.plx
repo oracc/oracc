@@ -119,6 +119,7 @@ foreach my $tl (@translangs) {
 }
 print '</translangs>';
 
+@top_l = sort @top_l;
 print '<glossaries>';
 for (my $i = 0; $i <= $#top_l; ++$i) {
     my $top_l = $top_l[$i];
@@ -133,7 +134,7 @@ for (my $i = 0; $i <= $#top_l; ++$i) {
 		print "<glossary abbrev=\"$top_l\">$top_l</glossary>";
 	    }
 	}
-	foreach my $sub (@sub_l) {
+	foreach my $sub (sort @sub_l) {
 	    if ($longlang{$sub}) {
 		print "<glossary abbrev=\"$sub\">$longlang{$sub}</glossary>";
 	    } else {
