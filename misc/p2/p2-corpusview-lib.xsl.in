@@ -241,8 +241,8 @@
   </xsl:choose>
   <xsl:choose>
     <xsl:when test="$transonly='true'">
+      <xsl:message>transonly=true</xsl:message>
       <xsl:call-template name="do-tlat">
-	<xsl:with-param name="basename" select="$basename"/>
 	<xsl:with-param name="xmd" select="$xmd"/>
 	<xsl:with-param name="xtr" select="$xtr"/>
 	<xsl:with-param name="config-xml-file" select="$config-xml-file"/>
@@ -304,7 +304,7 @@
     <xsl:with-param name="xmd" select="$xmd"/>
     <xsl:with-param name="txh" select="$txh"/>
     <xsl:with-param name="xtr" select="$xtr"/>
-    <xsl:with-param name="config-xml-file"/>
+    <xsl:with-param name="config-xml-file" select="$config-xml-file"/>
   </xsl:apply-templates>
 </xsl:template>
 
@@ -855,6 +855,7 @@
 <xsl:template match="xh:*">
   <xsl:param name="xtr"/>
   <xsl:param name="hilite" select="''"/>
+  <xsl:param name="config-xml-file"/>
   <xsl:variable name="c" select="concat(@class,' ',$hilite)"/>
   <xsl:element name="{local-name()}">
     <xsl:attribute name="class"><xsl:value-of select="$c"/></xsl:attribute>

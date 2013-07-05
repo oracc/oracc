@@ -135,7 +135,7 @@
 	      </span>
 	      
 	      <span class="translations"/>
-	      <input type="checkbox" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="submit()" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
 	    </p>
 	  </div>
 	  
