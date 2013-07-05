@@ -414,7 +414,11 @@ run_item_maker {
 	$sedItem = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | grep -n $id`;
 	chomp $sedItem;
 	$sedItem =~ s/:(.*)$//;
+	
+	# we already called set_item_page but ignore the results because we're getting the page
+	# via the ID
 	$newPage = $rt{'page_selector_page_n'};
+	$p{'page'} = $newPage;
 	$hilite_words = $1;
 	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
 	warn "pqx_id=$p{'pqx_id'}; newPage=$newPage; sedItem=$sedItem; hilite_words=$hilite_words; p{item}=$p{'item'}\n";
@@ -422,8 +426,6 @@ run_item_maker {
 	# first recalibrate item and page: values{item} is an integer
 	# from 1 to values{items}; we need to split it into page and
 	# offset
-	$newPage = ($p{'item'} / $p{'pagesize'});
-	++$newPage if $p{'item'} % $p{'pagesize'};
 	if ($rt{'itemtype'} eq 'cbd') {
 	    $sedItem = $p{'item'};
 	} else {
@@ -433,8 +435,6 @@ run_item_maker {
 	chomp($id);
 	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $newPage; thisType=$rt{'itemtype'}\n";
     }
-
-    $p{'page'} = $newPage;
 
     my($eproject,$eid) = ($p{'project'},'');
     if ($id =~ /^(.*?):(.*?)$/) {
@@ -472,7 +472,7 @@ run_item_maker {
 		'-stringparam', 'host', $p{'project'},
 		'-stringparam', 'project', $eproject,
 		'-stringparam', 'trans', $p{'translation'},
-		'-stringparam', 'transonly', $p{'transonly'},
+		'-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
 		@idinfo,
 		'-o', "$p{'tmpdir'}/results.html",
 		'/usr/local/oracc/lib/scripts/p3-htmlview.xsl',
@@ -537,6 +537,13 @@ set_ce_arg {
 	$ce_arg = '';
     }
     $ce_arg;
+}
+
+sub
+set_item_page {
+    my $newPage = ($p{'item'} / $p{'pagesize'});
+    ++$newPage if $p{'item'} % $p{'pagesize'};
+    $p{'page'} = $newPage;
 }
 
 sub
@@ -655,6 +662,7 @@ set_sorttype {
 # perform any nav actions
 sub
 setup_navigation {
+
     if ($p{'p3do'} eq 'itemstate') {
 	$rt{'itemtype'} = $p{'p3itemtype'};
 	if ($p{'p3itemtype'} eq 'off') {
@@ -692,16 +700,19 @@ setup_navigation {
     } elsif ($p{'p3do'} eq 'itemfwd') {
 	if ($p{'item'} < $p{'items'}) {
 	    ++$p{'item'};
+	    set_item_page();
 	}
     } elsif ($p{'p3do'} eq 'itemback') {
 	if ($p{'item'} > 1) {
 	    --$p{'item'};
+	    set_item_page();
 	}
     } elsif ($p{'p3do'} eq 'itemset') {
 	if ($p{'item'} <= 0 || $p{'item'} > $p{'items'}) {
 	    $p{'item'} = 1;
 	}
-    } elsif ($p{'p3do'} eq 'p3srch') {
+	set_item_page();
+    } elsif ($p{'p3do'} eq 'qsrch') {
 	reinitialize();
     }
 }
