@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+
+my($html,$ids) = @ARGV;
+
+exit 0 unless $html && $ids;
+
+my $xh = load_xml($html);
+my %w = ();
+my @w = tags($xh, 'http://www.w3.org/1999/xhtml', 'span');
+foreach my $w (@w) {
+    if ($w->hasAttribute('class') && $w->getAttribute('class') eq 'w') {
+	my $id = $w->getAttribute('id');
+	if ($id) {
+#	    warn "p3-selector.plx: registering word $id\n";
+	    $w{$id} = $w;
+	}
+    }
+}
+
+foreach my $id (split(/,/,$ids)) {
+    my $node = $w{$id};
+    if ($node) {
+	my $class = $node->getAttribute('class');
+	if ($class) {
+	    $class .= ' selected';
+	} else {
+	    $class = 'selected';
+	}
+	$node->setAttribute('class',$class);
+    } else {
+	warn "p3-selector.plx: ID $id not found\n";
+    }
+}
+
+open(H, ">$html");
+print H $xh->toString();
+close(H);
+
+1;

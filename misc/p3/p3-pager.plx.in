@@ -413,15 +413,17 @@ run_item_maker {
 	# grab the entry from pgwrap.out so we know its item number and hilite words
 	$sedItem = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | grep -n $id`;
 	chomp $sedItem;
-	$sedItem =~ s/:(.*)$//;
+	$hilite_words = $sedItem;
+	$sedItem =~ s/:.*$//;
 	
 	# we already called set_item_page but ignore the results because we're getting the page
 	# via the ID
 	$newPage = $rt{'page_selector_page_n'};
 	$p{'page'} = $newPage;
-	$hilite_words = $1;
 	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
 	warn "pqx_id=$p{'pqx_id'}; newPage=$newPage; sedItem=$sedItem; hilite_words=$hilite_words; p{item}=$p{'item'}\n";
+	$hilite_words =~ s/^.*?://;
+	$hilite_words =~ s,([/a-z0-9]+):,,g;
     } else {
 	# first recalibrate item and page: values{item} is an integer
 	# from 1 to values{items}; we need to split it into page and
@@ -433,8 +435,13 @@ run_item_maker {
 	}
 	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
 	chomp($id);
-	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $newPage; thisType=$rt{'itemtype'}\n";
+	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $p{'page'}; thisType=$rt{'itemtype'}\n";
+	$hilite_words = $id;
+	$hilite_words =~ s/^\S+\s\S+\s//;
+	$hilite_words =~ s/(\S+)://g;
     }
+
+    warn "### hilite_words = $hilite_words\n";
 
     my($eproject,$eid) = ($p{'project'},'');
     if ($id =~ /^(.*?):(.*?)$/) {
@@ -478,6 +485,9 @@ run_item_maker {
 		'/usr/local/oracc/lib/scripts/p3-htmlview.xsl',
 		$xmd);
 	sig_fixer($p{'project'});
+	if ($hilite_words) {
+	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
+	}
 	xsystem('xsltproc', 
 		'-stringparam', 'project', $eproject,
 		'-o', "$p{'tmpdir'}/outline.html",

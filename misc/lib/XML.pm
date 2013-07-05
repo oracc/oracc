@@ -1,7 +1,7 @@
 package ORACC::XML;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/childText firstChildElement load_xml load_xml_chunk 
+@EXPORT = qw/childText firstChildElement load_html load_xml load_xml_chunk 
              load_xml_string load_xsl 
 	     parse_xsl rnv tags xmldecl xmlify xid/;
 
@@ -33,6 +33,21 @@ firstChildElement {
 	    }
 	}
 	$c;
+    }
+}
+
+sub
+load_html {
+    my($xml_file,$enotfound) = @_;
+    if (-r $xml_file) {
+	my $ret = undef;
+	eval { $ret = $xp->parse_html_file($xml_file) };
+	warn "ORACC::XML: $@\n" if $@;
+	$ret;
+    } else {
+	warn("ORACC::XML: XML file $xml_file not readable\n")
+	    if $enotfound;
+	undef;
     }
 }
 

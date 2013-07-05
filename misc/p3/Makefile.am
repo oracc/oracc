@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS=p3-project-data.plx p3-project.sh p3-pager.plx p3-asrch.sh p3-colours.plx p3-collapse.plx
+bin_SCRIPTS=p3-project-data.plx p3-project.sh p3-pager.plx p3-asrch.sh p3-colours.plx p3-collapse.plx p3-selector.plx
 css_DATA=p3.css p3cbd.css oas.css
 data_DATA=p3-template.xml as-base.xml
 js_DATA=p3.js oas.js
@@ -12,6 +12,9 @@ p3-asrch.sh: p3-asrch.sh.in
 
 p3-pager.plx: p3-pager.plx.in
 	$(ORACCIFY) p3-pager.plx.in
+
+p3-selector.plx: p3-selector.plx.in
+	$(ORACCIFY) p3-selector.plx.in
 
 p3-xmd-div.xsl: p3-xmd-div.xsl.in
 	$(ORACCIFY) p3-xmd-div.xsl.in
