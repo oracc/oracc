@@ -19,3 +19,5 @@
 * conflate misc/www and misc/web
 
 * does the .notex/.note css have to be in p3/p3-template.xml?
+
+* ATF processor should catch duplicate note markers
