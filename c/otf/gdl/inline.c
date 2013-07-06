@@ -18,8 +18,7 @@
 
 #define CHECKFORMS 0
 
-int block_note_id = 0, inline_note_id = 0;
-char *note_id_string(int);
+extern char *new_note_id(int);
 
 int ods_cols = 0;
 int ods_mode = 0;
@@ -259,6 +258,7 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   if (verbose > 1)
     fprintf(stderr, "%d\n", lnum);
 
+#if 0
   if (inline_note_id != block_note_id)
     {
       if (inline_note_id > block_note_id)
@@ -276,6 +276,7 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
     {
       inline_note_id = block_note_id;
     }
+#endif
 
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
@@ -1678,12 +1679,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case notemark:
 	      if (wp)
 		{
+		  /* new note stuff here */
 		  set_or_append_attr(lastChild(wp),a_notemark, 
 				     "notemark", pool_copy(tokens[start]->data));
 		  set_or_append_attr(lastChild(wp),a_noteref,
-				     "noteref", (unsigned char *)note_id_string(inline_note_id));
-		  ++inline_note_id;
-		  /*appendAttr(lastChild(wp),attr(a_notemark,tokens[start]->data));*/
+				     "noteref", (unsigned char *)new_note_id(0));
 		}
 	      else
 		{

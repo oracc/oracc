@@ -113,6 +113,22 @@ static unsigned char *ntoken(unsigned char *s,unsigned char *eol,int multi,enum 
 static struct node *scan_incref(unsigned char *s, enum e_type type);
 static unsigned char **line_trans(unsigned char **lines, enum e_tu_types transtype);
 
+char *
+new_note_id(int start_over)
+{
+  static int note_id = 0;
+  static char buf[12];
+
+  if (start_over == -1)
+    return buf;
+
+  if (start_over)
+    note_id = 0;
+
+  (void)sprintf(buf, "n.%d", ++note_id);
+
+  return buf;
+}
 
 static int
 is_exemplar(const unsigned char *l)
@@ -1498,6 +1514,7 @@ note(unsigned char **lines)
   struct node *n;
   char markbuf[8], *m = markbuf;
   unsigned char *notelabel = NULL, *notetext = NULL;
+  char *note_id;
 
   n = elem(e_note,NULL,lnum,current_level);
   *markbuf = '\0';
@@ -1529,8 +1546,8 @@ note(unsigned char **lines)
 	++lines[0];
     }
 
-  setAttr(n, a_xml_id, (unsigned char *)note_id_string(block_note_id));
-  ++block_note_id;
+  note_id = new_note_id(0);
+  setAttr(n, a_xml_id, (unsigned char *)note_id);
 
   if (*markbuf)
     {
