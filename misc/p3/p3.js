@@ -311,17 +311,20 @@ showNote(e,nid) {
 //    alert('pageX,pageY='+posx+','+posy);
   }
 
-//  alert('posx='+posx+'; posy='+posy);
+// alert('posx='+posx+'; posy='+posy);
 
   // posx and posy contain the mouse position relative to the document
   // Do something with this information
 
     note=document.getElementById(nid);
+
+//    alert('nid='+nid+'; note='+note+'visibility='+note.style.visibility);
     if (note.style.visibility != "visible") {
 	note.style.left = posx+'px';
 	note.style.top = posy+'px';
 	note.style.visibility='visible';
 	note.style.zIndex = 3;
+//	alert('note should now be visible');
   }
   return 1;
 }
