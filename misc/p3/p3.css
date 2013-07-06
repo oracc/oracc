@@ -1,3 +1,5 @@
+@import url(p3cbd.css);
+
 body { margin: 0; padding: 0; }
 
 #p3controls { height: 90px; margin: 0px; padding: 0px; 
@@ -98,7 +100,7 @@ sub { font-style: normal; }
 .zoomed { background-color: silver; }
 .selected { background-color: silver; }
 
-.ce-heading { padding: 0px; margin: 0px; font-size: 80%; line-height: 90%; 
+.ce-heading { padding: 0px; margin: 0px; margin-left: 2px; font-size: 80%; line-height: 90%; 
 	      font-family: arial, sans-serif; margin-bottom: 2px;
 	    }
 .ce-label  { text-align: right; padding-top: 0px; margin-top: 0px; }

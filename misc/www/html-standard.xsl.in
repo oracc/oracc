@@ -42,27 +42,13 @@
 	</xsl:choose>
       </title>
       <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
-      <link rel="stylesheet" type="text/css" href="/css/{$webtype}.css"/>
-<!--      <link rel="stylesheet" type="text/css" href="/{$project}/pager.css"/> -->
-      <link rel="stylesheet" type="text/css" href="/{$project}/p2.css"/>
-      <xsl:if test="string-length($webtype) > 0 and not($webtype='oraccscreen')">
-	<script src="/js/{$webtype}.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
+      <xsl:if test="string-length($project)">
+	<link rel="stylesheet" type="text/css" href="/{$project}/p3.css" media="screen"/>
       </xsl:if>
-      <xsl:if test="$p2='yes'">
-	<script src="/js/p2.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
-	<script src="/js/p2-shortcuts.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
-<!--
-	<script src="/js/p2-keys.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
- -->
-      </xsl:if>
+      <link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
+      <script src="/js/p3.js" type="text/javascript">
+	<xsl:text> </xsl:text>
+      </script>
       <xsl:if test="not(document('@@ORACC@@/lib/data/usermode.xml')/*/text() = 'single')">
 <script type="text/javascript">
 
@@ -80,20 +66,6 @@
       </xsl:if>
     </head>
     <body>
-<!--
-      <xsl:if test="$p2 = 'yes'">
-	<xsl:choose>
-	  <xsl:when test="string-length($onload)>0">
-	    <xsl:attribute name="onload">
-	      <xsl:value-of select="concat($onload,'; ', 'p2Keys()')"/>
-	    </xsl:attribute>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:attribute name="onload">p2Keys()</xsl:attribute>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:if>
- -->
       <xsl:if test="$standalone">
 	<xsl:attribute name="class"><xsl:text>standalone</xsl:text></xsl:attribute>
       </xsl:if>

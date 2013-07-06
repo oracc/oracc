@@ -45,21 +45,12 @@
       <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen"/>
       <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
       <xsl:if test="string-length($project)">
-	<link rel="stylesheet" type="text/css" href="/css/p2-p1.css" media="screen"/>
-	<link rel="stylesheet" type="text/css" href="/{$project}/p2.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="/{$project}/p3.css" media="screen"/>
       </xsl:if>
-      <script src="/js/p2.js" type="text/javascript">
+      <link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
+      <script src="/js/p3.js" type="text/javascript">
 	<xsl:text> </xsl:text>
       </script>
-	<script src="/js/p2-shortcuts.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
-	<script src="/js/p2-keys.js" type="text/javascript">
-	  <xsl:text> </xsl:text>
-	</script>
-<!--
-      <script src="/js/oraccpager.js" type="text/javascript"><![CDATA[ ]]></script>
- -->
 <style type="text/css">
 .notex {
     text-align: right;
