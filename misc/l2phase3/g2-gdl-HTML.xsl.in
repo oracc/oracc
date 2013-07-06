@@ -113,7 +113,7 @@
 	  </xsl:attribute>
 	</xsl:if>
 	<xsl:call-template name="render-g"/>
-	<span x="2" class="sux"><xsl:call-template name="render-flags"/></span>
+	<xsl:call-template name="render-flags"/>
 	<xsl:value-of select="@g:delim"/>
       </sup>
     </xsl:when>
@@ -535,7 +535,7 @@
   <xsl:if test="@g:collated
 		or @g:queried
 		or @g:remarked">
-    <sup>
+    <sup class="sux">
       <xsl:if test="@g:collated"><xsl:text>*</xsl:text></xsl:if>
       <xsl:if test="@g:remarked"><xsl:text>!</xsl:text></xsl:if>
       <xsl:if test="@g:queried"><xsl:text>?</xsl:text></xsl:if>
