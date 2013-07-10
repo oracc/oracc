@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns:syn="http://oracc.org/ns/syntax/1.0" xmlns:n="http://oracc.org/ns/norm/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns:syn="http://oracc.org/ns/syntax/1.0" xmlns:n="http://oracc.org/ns/norm/1.0" xmlns:note="http://oracc.org/ns/note/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <define name="word.content">
     <choice>
       <text/>
@@ -158,6 +158,22 @@
       <zeroOrMore>
         <ref name="word.content"/>
       </zeroOrMore>
+    </element>
+  </define>
+  <define name="notemark">
+    <element name="g:nonw">
+      <attribute name="note:ref">
+        <data type="ID"/>
+      </attribute>
+      <optional>
+        <attribute name="xml:lang">
+          <data type="language"/>
+        </attribute>
+      </optional>
+      <attribute name="type">
+        <value>notemark</value>
+      </attribute>
+      <text/>
     </element>
   </define>
   <define name="group">

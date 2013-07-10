@@ -125,12 +125,6 @@
       <data type="IDREF"/>
     </attribute>
   </define>
-  <define name="notemark">
-    <attribute name="notemark"/>
-    <attribute name="noteref">
-      <data type="IDREF"/>
-    </attribute>
-  </define>
   <define name="break">
     <attribute name="g:break">
       <choice>

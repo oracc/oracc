@@ -1,5 +1,6 @@
 namespace g = "http://oracc.org/ns/gdl/1.0"
 namespace n = "http://oracc.org/ns/norm/1.0"
+namespace note = "http://oracc.org/ns/note/1.0"
 namespace syn = "http://oracc.org/ns/syntax/1.0"
 
 word.content = text | group | grapheme | nongrapheme
@@ -55,6 +56,14 @@ nonword =
     syntax.attributes* ,
     break? , status.flags? , status.spans? , opener? , closer? , delim? ,
     word.content*
+  }
+
+notemark = 
+  element g:nonw {
+    attribute note:ref { xsd:ID } ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "notemark" } ,
+    text
   }
 
 group = 

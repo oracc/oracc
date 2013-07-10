@@ -21,9 +21,6 @@ surroEnd = attribute g:surroEnd { xsd:IDREF }
 statusStart = attribute g:statusStart { "1" }
 statusEnd = attribute g:statusEnd { xsd:IDREF }
 
-notemark  = (attribute notemark  { text } , 
-             attribute noteref { xsd:IDREF })
-
 break = attribute g:break  { "damaged" | "missing" }
 opener = attribute g:o     { text }
 closer = attribute g:c     { text }

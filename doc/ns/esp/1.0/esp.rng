@@ -24,6 +24,7 @@
       <ref name="esp-index-list"/>
       <ref name="esp-author"/>
       <ref name="esp-content-last-modified"/>
+      <ref name="esp-email"/>
       <ref name="esp-h"/>
       <ref name="esp-sh"/>
       <ref name="esp-image"/>
@@ -45,6 +46,7 @@
       <ref name="esp-email"/>
       <ref name="esp-page-name"/>
       <ref name="esp-page-title"/>
+      <ref name="esp-ref"/>
     </choice>
   </define>
   <define name="esp-accesskeys-listing">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://oracc.org/ns/xtf/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar ns="http://oracc.org/ns/xtf/1.0" xmlns:note="http://oracc.org/ns/note/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="gdl.rng"/>
   <include href="xtr.rng"/>
   <start>
@@ -186,7 +186,7 @@
   <define name="comments">
     <choice>
       <ref name="cmt"/>
-      <ref name="note"/>
+      <ref name="notetext"/>
     </choice>
   </define>
   <define name="cmt">
@@ -194,16 +194,30 @@
       <text/>
     </element>
   </define>
-  <define name="note">
-    <element name="note">
+  <define name="notelabel">
+    <attribute name="note:label"/>
+  </define>
+  <define name="notemark">
+    <element name="note:mark">
+      <ref name="noteref"/>
+      <text/>
+    </element>
+  </define>
+  <define name="noteref">
+    <attribute name="note:ref">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="notetext">
+    <element name="note:text">
       <attribute name="xml:id">
         <data type="ID"/>
       </attribute>
       <optional>
-        <attribute name="notemark"/>
+        <ref name="notemark"/>
       </optional>
       <optional>
-        <attribute name="notelabel"/>
+        <ref name="notelabel"/>
       </optional>
       <ref name="htext"/>
     </element>
