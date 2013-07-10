@@ -6,7 +6,7 @@
 #  $Id: Makefile.am,v 1.1 1998/11/05 03:00:29 s Exp s $
 
 ACLOCAL_AMFLAGS=-I m4
-SUBDIRS = oracc-hyperestraier c misc doc
+SUBDIRS = oracc-hyperestraier misc c doc
 ORACCIFY = $(abs_top_builddir)/oracc-subst.sh $(DESTDIR)$(prefix)
 
 fix-oracc-path.sh: fix-oracc-path.sh.in
