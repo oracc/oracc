@@ -1225,14 +1225,15 @@
   <xsl:choose>
     <xsl:when test="@type='sv'">
       <xsl:if test="*">
-	<xsl:apply-templates select=".//gdl:nonw"/>
 	<span class="{@type}">
-	  <xsl:text>&#xa0;[[</xsl:text>
+	  <xsl:text>[[</xsl:text>
 	  <xsl:apply-templates select="*[not(self::gdl:nonw)]">
 	    <xsl:with-param name="allow-space" select="false()"/>
 	  </xsl:apply-templates>
 	  <xsl:text>]]</xsl:text>
+	  <xsl:text>&#xa0;</xsl:text>
 	</span>
+	<xsl:apply-templates select=".//gdl:nonw"/>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
