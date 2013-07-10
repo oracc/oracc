@@ -22,6 +22,7 @@ gdl_init()
   graphemes_init();
   forms_init();
   inline_init();
+  note_initialize();
   lid_base = rand();
 }
 

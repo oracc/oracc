@@ -331,7 +331,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	      vwarning2(file,start_lnum,"translation alignment out of order");
 	    }
 	}
-      else if (last_xid && dollar_fifo)
+      else if (*last_xid && dollar_fifo)
 	{
 	  /* last item was a trans_dollar -- trap backtracking */
 	  int interval = xid_diff((const char*)xid,(const char *)last_xid);
@@ -539,12 +539,35 @@ parenify(char *buf)
       ++lines;				      \
     }
 
-static int
+static const char *
 find_marker(unsigned char *s)
 {
+  static unsigned char mbuf[8];
+
   while (*s && isspace(*s))
     ++s;
-  return '^' == *s;
+  if ('^' == *s)
+    {
+      const unsigned char *start = ++s;
+      while (*s && '^' != *s && s - start < 7)
+	{
+	  mbuf[s-start] = *s++;
+	}
+      if (s - start == 7)
+	{
+	  warning("note marker too long or missing closing '^'");
+	  return NULL;
+	}
+      else
+	{
+	  mbuf[s-start] = '\0';
+	  return mbuf;
+	}
+    }
+  else
+    {
+      return NULL;
+    }
 }
 
 unsigned char **
@@ -1512,13 +1535,14 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		  if (!strcmp(cc(getAttr(cnode, "class")), "note"))
 		    {
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
+		      setClass(span,"notemark");
 		    }
 		  else
 		    {
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
 		      note_register_mark(start, span);
+		      setClass(span,"notelink");
 		    }
-		  setClass(span,"marker");
 		  appendChild(span,textNode(start));
 		  start = ++s;
 		}

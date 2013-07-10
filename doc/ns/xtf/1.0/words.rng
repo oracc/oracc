@@ -107,57 +107,68 @@
   </define>
   <define name="nonword">
     <element name="g:nonw">
-      <optional>
-        <attribute name="xml:id">
-          <data type="ID"/>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="xml:lang">
-          <data type="language"/>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="type">
-          <choice>
-            <value>comment</value>
-            <value>dollar</value>
-            <value>excised</value>
-            <value>punct</value>
-            <value>vari</value>
-          </choice>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="form"/>
-      </optional>
-      <optional>
-        <attribute name="lemma"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="syntax.attributes"/>
-      </zeroOrMore>
-      <optional>
-        <ref name="break"/>
-      </optional>
-      <optional>
-        <ref name="status.flags"/>
-      </optional>
-      <optional>
-        <ref name="status.spans"/>
-      </optional>
-      <optional>
-        <ref name="opener"/>
-      </optional>
-      <optional>
-        <ref name="closer"/>
-      </optional>
-      <optional>
-        <ref name="delim"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="word.content"/>
-      </zeroOrMore>
+      <choice>
+        <group>
+          <optional>
+            <attribute name="xml:id">
+              <data type="ID"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="xml:lang">
+              <data type="language"/>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="type">
+              <choice>
+                <value>comment</value>
+                <value>dollar</value>
+                <value>excised</value>
+                <value>punct</value>
+                <value>vari</value>
+              </choice>
+            </attribute>
+          </optional>
+          <optional>
+            <attribute name="form"/>
+          </optional>
+          <optional>
+            <attribute name="lemma"/>
+          </optional>
+          <zeroOrMore>
+            <ref name="syntax.attributes"/>
+          </zeroOrMore>
+          <optional>
+            <ref name="break"/>
+          </optional>
+          <optional>
+            <ref name="status.flags"/>
+          </optional>
+          <optional>
+            <ref name="status.spans"/>
+          </optional>
+          <optional>
+            <ref name="opener"/>
+          </optional>
+          <optional>
+            <ref name="closer"/>
+          </optional>
+          <optional>
+            <ref name="delim"/>
+          </optional>
+          <zeroOrMore>
+            <ref name="word.content"/>
+          </zeroOrMore>
+        </group>
+        <group>
+          <attribute name="type">
+            <value>notelink</value>
+          </attribute>
+          <ref name="noteref"/>
+          <text/>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="group">

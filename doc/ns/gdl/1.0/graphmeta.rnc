@@ -3,7 +3,7 @@ g.meta =
   break? , status.flags? , status.spans? , 
   paleography.attr? , linguistic.attr? , proximity.attr? ,
   opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
-  varnum? , sign_attr? , utf8? , delim? , notemark? ,
+  varnum? , sign_attr? , utf8? , delim? ,
   attribute xml:id { xsd:ID }? ,
   breakStart? , breakEnd? ,
   damageStart? , damageEnd? ,
@@ -43,8 +43,10 @@ status.flags =
 
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
-det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
-                    (dingir | mister | word.content*)}
+#det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
+#                    (dingir | mister | word.content*)}
+det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
+                    (word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
 
@@ -70,7 +72,7 @@ nongrapheme =
   element g:x {
     ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
     | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
-        , status.spans , opener? , closer? , break? , notemark?)),
+        , status.spans , opener? , closer? , break? )),
     delim? , text? , varnum? ,
     attribute xml:id { xsd:ID }? ,
     breakStart? , breakEnd? ,

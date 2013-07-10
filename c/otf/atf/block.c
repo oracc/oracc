@@ -754,6 +754,9 @@ $ start of reverse missing
 	    current = attach_point(COLUMN);
 
 	  /*	  else if (lines[1] && *lines[1] == '=') */
+
+	  note_initialize_line();
+
 	  if (needs_lg(lines+1))
 	    {
 	      struct node *ocurrent = current;

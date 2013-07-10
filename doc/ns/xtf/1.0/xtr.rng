@@ -103,12 +103,10 @@
       <attribute name="class">
         <value>note</value>
       </attribute>
-      <optional>
-        <ref name="id"/>
-      </optional>
+      <ref name="id"/>
       <element name="xh:p">
         <ref name="ctr"/>
-        <ref name="marker-ref"/>
+        <ref name="xtr-notemark"/>
         <ref name="htext"/>
       </element>
       <zeroOrMore>
@@ -215,7 +213,7 @@
         <ref name="trcell"/>
         <ref name="foreign"/>
         <ref name="literal"/>
-        <ref name="marker"/>
+        <ref name="xtr-notelink"/>
         <ref name="supplied"/>
         <ref name="uncertain"/>
         <ref name="rspan"/>
@@ -229,6 +227,8 @@
         <ref name="sup"/>
         <ref name="lab"/>
         <ref name="cun"/>
+        <ref name="xtr-notelink"/>
+        <ref name="xtr-notemark"/>
       </choice>
     </zeroOrMore>
   </define>
@@ -403,27 +403,21 @@
       <ref name="htext"/>
     </element>
   </define>
-  <define name="marker">
-    <element name="xh:a">
-      <attribute name="class">
-        <value>marker</value>
-      </attribute>
-      <optional>
-        <ref name="nrefs"/>
-      </optional>
-      <data type="string">
-        <param name="pattern">\d+[a-z]*</param>
-      </data>
-    </element>
-  </define>
-  <define name="marker-ref">
+  <define name="xtr-notelink">
     <element name="xh:span">
       <attribute name="class">
-        <value>marker</value>
+        <value>notelink</value>
       </attribute>
-      <data type="string">
-        <param name="pattern">\d+[a-z]*</param>
-      </data>
+      <ref name="noteref"/>
+      <text/>
+    </element>
+  </define>
+  <define name="xtr-notemark">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>notemark</value>
+      </attribute>
+      <text/>
     </element>
   </define>
   <define name="ref">

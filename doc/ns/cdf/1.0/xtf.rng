@@ -198,10 +198,7 @@
     <attribute name="note:label"/>
   </define>
   <define name="notemark">
-    <element name="note:mark">
-      <ref name="noteref"/>
-      <text/>
-    </element>
+    <attribute name="note:mark"/>
   </define>
   <define name="noteref">
     <attribute name="note:ref">
@@ -213,9 +210,7 @@
       <attribute name="xml:id">
         <data type="ID"/>
       </attribute>
-      <optional>
-        <ref name="notemark"/>
-      </optional>
+      <ref name="notemark"/>
       <optional>
         <ref name="notelabel"/>
       </optional>

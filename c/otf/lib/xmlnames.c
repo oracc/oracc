@@ -86,6 +86,7 @@ struct xname anames[] =
   { "n:num", "http://oracc.org/ns/norm/1.0:num" },
   { "norm", "norm" },
   { "note:label", "http://oracc.org/ns/note/1.0:label" },
+  { "note:mark", "http://oracc.org/ns/note/1.0:mark" },
   { "note:ref", "http://oracc.org/ns/note/1.0:ref" },
   { "o", "o" },
   { "p", "p" },
@@ -289,6 +290,7 @@ struct attr abases[] =
   { { anames[132].qname,NULL } , { anames[132].pname,NULL } },
   { { anames[133].qname,NULL } , { anames[133].pname,NULL } },
   { { anames[134].qname,NULL } , { anames[134].pname,NULL } },
+  { { anames[135].qname,NULL } , { anames[135].pname,NULL } },
 };
 struct xname enames[] =
 {
@@ -350,7 +352,6 @@ struct xname enames[] =
   { "nong", "http://oracc.org/ns/xtf/1.0:nong" },
   { "nonl", "http://oracc.org/ns/xtf/1.0:nonl" },
   { "nonx", "http://oracc.org/ns/xtf/1.0:nonx" },
-  { "note:mark", "http://oracc.org/ns/note/1.0:mark" },
   { "note:text", "http://oracc.org/ns/note/1.0:text" },
   { "object", "http://oracc.org/ns/xtf/1.0:object" },
   { "protocol", "http://oracc.org/ns/xtf/1.0:protocol" },
@@ -366,7 +367,6 @@ struct xname enames[] =
   { "v", "http://oracc.org/ns/xtf/1.0:v" },
   { "variant", "http://oracc.org/ns/xtf/1.0:variant" },
   { "variants", "http://oracc.org/ns/xtf/1.0:variants" },
-  { "xh:a", "http://www.w3.org/1999/xhtml:a" },
   { "xh:div", "http://www.w3.org/1999/xhtml:div" },
   { "xh:h1", "http://www.w3.org/1999/xhtml:h1" },
   { "xh:h2", "http://www.w3.org/1999/xhtml:h2" },

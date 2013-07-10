@@ -32,19 +32,25 @@ struct note
 static const char *note_create_id(void);
 static struct note *note_find(const unsigned char *n);
 
+static int
+note_cmp(struct note *np, const char *mark)
+{
+  return strcmp(np->mark, mark);
+}
+
 static const char *
 note_create_id(void)
 {
   static int note_id = 0;
   char *nid = malloc(16);
-  (void)sprintf(nid,"n%3d",++note_id);
+  (void)sprintf(nid,"n%03d",++note_id);
   return nid;
 }
 
 static struct note *
 note_find(const unsigned char *n)
 {
-  return list_find(notes_in_line, n, (list_find_func*)strcmp);
+  return list_find(notes_in_line, n, (list_find_func*)note_cmp);
 }
 
 void
@@ -94,7 +100,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 	}
       *m = '\0';
       ++lines[0];
-      mark = (const unsigned char *)m;
+      mark = (const unsigned char *)markbuf;
     }
   else
     {
@@ -143,12 +149,11 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
     }
 
   n = elem(e_note_text,NULL,lnum,current_level);
+  appendAttr(n, attr(a_note_mark, mark));
   note_register_note(mark, n);
 
   if (notelabel)
-    {
-      set_or_append_attr(n,a_note_label,"notelabel",notelabel);
-    }
+    set_or_append_attr(n,a_note_label,"notelabel",notelabel);
 
   /* This is a bit weird, but the last character before the content is
      either a space after #note:, or a space or the closer character
@@ -197,9 +202,14 @@ note_register_mark(const unsigned char *mark, struct node *parent)
   else
     {
       struct note *np = mb_new(mb);
+#if 1
+      unsigned char *note_mark_text = npool_copy(mark, note_pool);
+      struct node *note_mark_node = parent;
+#else
       struct node *note_mark_node = elem(e_note_mark, NULL, lnum, WORD);
       unsigned char *note_mark_text = npool_copy(mark, note_pool);
       appendChild(parent, note_mark_node);
+#endif
       np->mark = note_mark_text;
       np->node = note_mark_node;
       np->status = NOTE_REGISTERED;

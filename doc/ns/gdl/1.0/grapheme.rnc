@@ -15,8 +15,8 @@ gsurro   =
 #v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
 v.model = text
 v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
-dingir   = element g:v { g.meta , lang? , ("d") }
-mister   = element g:v { g.meta , lang? , ("m") }
+#dingir   = element g:v { g.meta , lang? , ("d") }
+#mister   = element g:v { g.meta , lang? , ("m") }
 
 # Names
 #s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num

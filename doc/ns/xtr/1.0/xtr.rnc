@@ -70,7 +70,8 @@ h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
 innerp = element xh:innerp { htext | (comment, text) }
 htext = (text | trword | trcell | foreign | literal | xtr-notelink 
          | supplied | uncertain | rspan | bspan | ispan | sign
-	 | bispan | smaller | sc | gdlspan | sup | lab | cun)*
+	 | bispan | smaller | sc | gdlspan | sup | lab | cun 
+	 | xtr-notelink | xtr-notemark)*
 
 trword    = element xh:span { attribute class      { "w" },  
 			      attribute xtr:lem    { text }?,
@@ -100,15 +101,16 @@ sup       = element xh:span { attribute class { "sup" | "up" },      htext }
 cun       = element xh:span { attribute class { "cun" },      htext }
 
 xtr-notelink = 
-  element xh:a {
-    attribute class { "note-link" },
+  element xh:span {
+    attribute class { "notelink" },
     noteref,
-    xsd:string { pattern = "\d+[a-z]*" }
+    text
   }
+
 xtr-notemark = 
   element xh:span {
-    attribute class { "note-mark" },
-    xsd:string { pattern = "\d+[a-z]*" }
+    attribute class { "notemark" },
+    text
   }
 
 ref       = attribute xtr:ref     { xsd:IDREF }

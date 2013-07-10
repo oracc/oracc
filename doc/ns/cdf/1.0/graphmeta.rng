@@ -47,9 +47,6 @@
       <ref name="delim"/>
     </optional>
     <optional>
-      <ref name="notemark"/>
-    </optional>
-    <optional>
       <attribute name="xml:id">
         <data type="ID"/>
       </attribute>
@@ -206,6 +203,10 @@
       </choice>
     </attribute>
   </define>
+  <!--
+    det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
+                       (dingir | mister | word.content*)}
+  -->
   <define name="det">
     <element name="g:d">
       <ref name="pos"/>
@@ -217,19 +218,12 @@
         <ref name="emhyph"/>
       </optional>
       <optional>
-        <ref name="notemark"/>
-      </optional>
-      <optional>
         <ref name="surroStart"/>
       </optional>
       <ref name="g.meta"/>
-      <choice>
-        <ref name="dingir"/>
-        <ref name="mister"/>
-        <zeroOrMore>
-          <ref name="word.content"/>
-        </zeroOrMore>
-      </choice>
+      <zeroOrMore>
+        <ref name="word.content"/>
+      </zeroOrMore>
     </element>
   </define>
   <define name="dtyp">
@@ -334,9 +328,6 @@
           </optional>
           <optional>
             <ref name="break"/>
-          </optional>
-          <optional>
-            <ref name="notemark"/>
           </optional>
         </group>
       </choice>

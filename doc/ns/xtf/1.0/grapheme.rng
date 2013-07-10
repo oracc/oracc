@@ -78,24 +78,10 @@
       </choice>
     </element>
   </define>
-  <define name="dingir">
-    <element name="g:v">
-      <ref name="g.meta"/>
-      <optional>
-        <ref name="lang"/>
-      </optional>
-      <value>d</value>
-    </element>
-  </define>
-  <define name="mister">
-    <element name="g:v">
-      <ref name="g.meta"/>
-      <optional>
-        <ref name="lang"/>
-      </optional>
-      <value>m</value>
-    </element>
-  </define>
+  <!--
+    dingir   = element g:v { g.meta , lang? , ("d") }
+    mister   = element g:v { g.meta , lang? , ("m") }
+  -->
   <!--
     Names
     s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num

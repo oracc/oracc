@@ -227,6 +227,8 @@
         <ref name="sup"/>
         <ref name="lab"/>
         <ref name="cun"/>
+        <ref name="xtr-notelink"/>
+        <ref name="xtr-notemark"/>
       </choice>
     </zeroOrMore>
   </define>
@@ -402,24 +404,20 @@
     </element>
   </define>
   <define name="xtr-notelink">
-    <element name="xh:a">
+    <element name="xh:span">
       <attribute name="class">
-        <value>note-link</value>
+        <value>notelink</value>
       </attribute>
       <ref name="noteref"/>
-      <data type="string">
-        <param name="pattern">\d+[a-z]*</param>
-      </data>
+      <text/>
     </element>
   </define>
   <define name="xtr-notemark">
     <element name="xh:span">
       <attribute name="class">
-        <value>note-mark</value>
+        <value>notemark</value>
       </attribute>
-      <data type="string">
-        <param name="pattern">\d+[a-z]*</param>
-      </data>
+      <text/>
     </element>
   </define>
   <define name="ref">

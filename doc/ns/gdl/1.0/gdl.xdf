@@ -374,8 +374,8 @@ values, and <code>g:s</code> for sign names.</p>
 #v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
 v.model = text
 v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
-dingir   = element g:v { g.meta , lang? , ("d") }
-mister   = element g:v { g.meta , lang? , ("m") }
+#dingir   = element g:v { g.meta , lang? , ("d") }
+#mister   = element g:v { g.meta , lang? , ("m") }
 </d:rnc>
 
 <div class="atf tutorial">
@@ -1027,7 +1027,7 @@ g.meta =
   break? , status.flags? , status.spans? , 
   paleography.attr? , linguistic.attr? , proximity.attr? ,
   opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
-  varnum? , sign_attr? , utf8? , delim? , notemark? ,
+  varnum? , sign_attr? , utf8? , delim? ,
   attribute xml:id { xsd:ID }? ,
   breakStart? , breakEnd? ,
   damageStart? , damageEnd? ,
@@ -1169,8 +1169,10 @@ when the gloss has no space or boundary preceding it; and
 <d:rnc>
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
-det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
-                    (dingir | mister | word.content*)}
+#det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
+#                    (dingir | mister | word.content*)}
+det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
+                    (word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
 </d:rnc>
@@ -1507,7 +1509,7 @@ nongrapheme =
   element g:x {
     ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
     | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
-        , status.spans , opener? , closer? , break? , notemark?)),
+        , status.spans , opener? , closer? , break? )),
     delim? , text? , varnum? ,
     attribute xml:id { xsd:ID }? ,
     breakStart? , breakEnd? ,
@@ -1620,6 +1622,7 @@ word.attributes =
 
 nonword = 
   element g:nonw {
+    (
     attribute xml:id { xsd:ID }? ,
     attribute xml:lang { xsd:language }? ,
     attribute type { "comment" | "dollar" | "excised" | "punct" | "vari" }? ,
@@ -1628,14 +1631,13 @@ nonword =
     syntax.attributes* ,
     break? , status.flags? , status.spans? , opener? , closer? , delim? ,
     word.content*
-  }
-
-notemark = 
-  element g:nonw {
-    attribute note:ref { xsd:ID } ,
-    attribute xml:lang { xsd:language }? ,
-    attribute type { "notemark" } ,
+    )
+    |
+    (
+    attribute type { "notelink" },
+    noteref,
     text
+    )
   }
 
 group = 

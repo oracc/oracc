@@ -482,14 +482,12 @@ class="cookbook">#note: @notelabel{i 1} A note to column 1 line
 comments = cmt | notetext
 cmt = element cmt { text }
 notelabel = attribute note:label { text }
-notemark  = element note:mark {
-	noteref,  
-	text }
+notemark  = attribute note:mark { text }
 noteref   = attribute note:ref { xsd:IDREF }
 notetext  = element note:text {
 	attribute xml:id    { xsd:ID } ,
-	notemark? ,
-	notelabel? , 
+	notemark ,
+	notelabel? ,
 	htext }
 </d:rnc>
 

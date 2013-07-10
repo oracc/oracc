@@ -48,6 +48,7 @@ word.attributes =
 
 nonword = 
   element g:nonw {
+    (
     attribute xml:id { xsd:ID }? ,
     attribute xml:lang { xsd:language }? ,
     attribute type { "comment" | "dollar" | "excised" | "punct" | "vari" }? ,
@@ -56,14 +57,13 @@ nonword =
     syntax.attributes* ,
     break? , status.flags? , status.spans? , opener? , closer? , delim? ,
     word.content*
-  }
-
-notemark = 
-  element g:nonw {
-    attribute note:ref { xsd:ID } ,
-    attribute xml:lang { xsd:language }? ,
-    attribute type { "notemark" } ,
+    )
+    |
+    (
+    attribute type { "notelink" },
+    noteref,
     text
+    )
   }
 
 group = 

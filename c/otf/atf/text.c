@@ -33,12 +33,13 @@
 
 const char *const xtf_xmlns[] =
   {
-    "xmlns",    "http://oracc.org/ns/xtf/1.0",
-    "xmlns:x",  "http://oracc.org/ns/xtf/1.0",
-    "xmlns:g",  "http://oracc.org/ns/gdl/1.0",
-    "xmlns:n",  "http://oracc.org/ns/norm/1.0",
-    "xmlns:syn","http://oracc.org/ns/syntax/1.0",
-    "xmlns:xh", "http://www.w3.org/1999/xhtml",
+    "xmlns",      "http://oracc.org/ns/xtf/1.0",
+    "xmlns:x",    "http://oracc.org/ns/xtf/1.0",
+    "xmlns:g",    "http://oracc.org/ns/gdl/1.0",
+    "xmlns:n",    "http://oracc.org/ns/norm/1.0",
+    "xmlns:note", "http://oracc.org/ns/note/1.0",
+    "xmlns:syn",  "http://oracc.org/ns/syntax/1.0",
+    "xmlns:xh",   "http://www.w3.org/1999/xhtml",
     "", ""
   };
 
@@ -189,6 +190,7 @@ process_text(struct run_context *run, unsigned char **lines)
   texttag_init();
   text_init();
   lemline_init();
+  note_initialize_text();
 
   phase = NULL;
 

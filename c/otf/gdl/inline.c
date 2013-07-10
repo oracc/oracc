@@ -1683,9 +1683,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  /* new note stuff here */
 #if 1
 		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
-		  appendAttr(np,attr(a_type, ucc("marker")));
+		  appendAttr(np,attr(a_type, ucc("notelink")));
 		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
-		  note_register_mark(np, tokens[start]->data);
+		  note_register_mark(tokens[start]->data, np);
+		  appendChild(wp->parent, np);
 #else
 		  set_or_append_attr(lastChild(wp),a_notemark, 
 				     "notemark", pool_copy(tokens[start]->data));
