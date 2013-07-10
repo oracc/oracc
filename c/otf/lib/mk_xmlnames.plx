@@ -7,6 +7,7 @@ my %ns = (
     c  =>'http://oracc.org/ns/cdf/1.0',
     g  =>'http://oracc.org/ns/gdl/1.0',
     n  =>'http://oracc.org/ns/norm/1.0',
+    note=>'http://oracc.org/ns/note/1.0',
     syn=>'http://oracc.org/ns/syntax/1.0',
     x  =>'http://oracc.org/ns/xtf/1.0',
     xtr=>'http://oracc.org/ns/xtr/1.0',
