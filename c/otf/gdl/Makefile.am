@@ -12,8 +12,7 @@ noinst_LTLIBRARIES=libgdl.la
 
 libgdl_la_SOURCES = \
 	cuneify.c gdl.c graphemes.c inline.c \
-	gdlopts.c \
-	splitwords.c tokcheck.c tokenizer.c note.c
+	gdlopts.c splitwords.c tokcheck.c tokenizer.c note.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,lib,lng,run,ox} \

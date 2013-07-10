@@ -13,5 +13,6 @@ extern unsigned char line_label_buf[];
 extern const char * const roman[];
 extern unsigned char **parse_block(struct run_context *run, struct node *text,unsigned char **lines);
 extern struct node* scan_comment(unsigned char **lines,int *nlines,int badcolon);
+extern unsigned char *scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon);
 extern unsigned char **skip_rest(unsigned char **lines);
 #endif /*_BLOCK_H*/

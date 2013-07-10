@@ -539,6 +539,14 @@ parenify(char *buf)
       ++lines;				      \
     }
 
+static int
+find_marker(unsigned char *s)
+{
+  while (*s && isspace(*s))
+    ++s;
+  return '^' == *s;
+}
+
 unsigned char **
 trans_block(unsigned char **lines,unsigned char *token,struct block_token*blocktokp, char save)
 {
@@ -723,11 +731,25 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
       break;
 #endif
     case etu_note:
-      curr_block = appendChild(text,
-			       elem(blocktokp->etype,NULL,lnum,DIVISION));
-      setAttr(curr_block,a_class,ucc("note"));
+      /* Do lookahead for note mark so we can set up the internal note linkage
+	 correctly */
+      {
+	const char *marker = find_marker(s);
+	if (!marker)
+	  {
+	    warning("notes without markers are not supported in translations");
+	  }
+	else
+	  {
+	    curr_block = appendChild(text,
+				     elem(blocktokp->etype,NULL,lnum,DIVISION));
+	    note_register_note(marker, curr_block);
+	  }
+      }
       /* FIXME: validate @note against the ^N^ markers; also, accept unicode 
 	 superscript note markers and generate the same as ^N^ markers */
+      setAttr(curr_block,a_class,ucc("note"));
+
       nlines = lines;
       in_note = nocellspan = 1;
       scan_multi_paras(1);
@@ -1485,15 +1507,18 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		{
 		  struct node *cnode = NULL;
 		  struct node *span = NULL;
-		  cnode = (parent->parent ? parent->parent : parent);
-		  span = appendChild(parent,
-				     elem(!strcmp(cc(getAttr(cnode,
-							     "class")),
-						  "note") 
-					  ? e_xh_span : e_xh_a,
-					  NULL,lnum,FIELD));
-		  setClass(span,"marker");
 		  *s = '\0';
+		  cnode = (parent->parent ? parent->parent : parent);
+		  if (!strcmp(cc(getAttr(cnode, "class")), "note"))
+		    {
+		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
+		    }
+		  else
+		    {
+		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
+		      note_register_mark(start, span);
+		    }
+		  setClass(span,"marker");
 		  appendChild(span,textNode(start));
 		  start = ++s;
 		}

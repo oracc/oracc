@@ -22,6 +22,7 @@
 #include "label.h"
 #include "inline.h"
 #include "lemline.h"
+#include "note.h"
 
 extern int lem_autolem, mylines;
 
@@ -56,11 +57,6 @@ int div_level = 0;
    they add 2001 .. n+2000, etc. */
 int exemplar_offset = 0;
 int bil_offset = 0;
-
-extern int block_note_id;
-extern int inline_note_id;
-
-extern char *note_id_string(int n);
 
 /* This variable gets reset when @translation is encountered
    so take care when using it */
@@ -112,23 +108,6 @@ static unsigned const char *lnstr(int number,int primes);
 static unsigned char *ntoken(unsigned char *s,unsigned char *eol,int multi,enum a_type a);
 static struct node *scan_incref(unsigned char *s, enum e_type type);
 static unsigned char **line_trans(unsigned char **lines, enum e_tu_types transtype);
-
-char *
-new_note_id(int start_over)
-{
-  static int note_id = 0;
-  static char buf[12];
-
-  if (start_over == -1)
-    return buf;
-
-  if (start_over)
-    note_id = 0;
-
-  (void)sprintf(buf, "n.%d", ++note_id);
-
-  return buf;
-}
 
 static int
 is_exemplar(const unsigned char *l)
@@ -325,7 +304,7 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	      {
 		if (!xstrncmp(*lines,"#note:",6))
 		  {
-		    int lines_used = note(lines) - 1;
+		    int lines_used = note_parse_tlit(current, current_level, lines) - 1;
 		    lines += lines_used;
 		    lnum += lines_used;
 		  }
@@ -1426,7 +1405,7 @@ maybe_protocol(const unsigned char *l)
   return l[-1] == ':';
 }
 
-static unsigned char *
+unsigned char *
 scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
 {
   int nlines = 0, i;
@@ -1507,70 +1486,6 @@ comment(unsigned char **lines)
   return nlines;
 }
 
-static int
-note(unsigned char **lines)
-{
-  int nlines;
-  struct node *n;
-  char markbuf[8], *m = markbuf;
-  unsigned char *notelabel = NULL, *notetext = NULL;
-  char *note_id;
-
-  n = elem(e_note,NULL,lnum,current_level);
-  *markbuf = '\0';
-  lines[0] += 6;
-  while (isspace(lines[0][0]))
-    ++lines[0];
-  if ('^' == lines[0][0])
-    {
-      ++lines[0];
-      while (lines[0][0] && '^' != lines[0][0])
-	{
-	  *m++ = lines[0][0];
-	  ++lines[0];
-	}
-      *m = '\0';
-      ++lines[0];
-    }
-  while (isspace(lines[0][0]))
-    ++lines[0];
-  if (!strncmp((char*)lines[0],"@notelabel{", 11))
-    {
-      lines[0] += 11;
-      notelabel = lines[0];
-      while (lines[0][0] != '}')
-	++lines[0];
-      lines[0][0] = '\0';
-      ++lines[0];
-      while (isspace(lines[0][0]))
-	++lines[0];
-    }
-
-  note_id = new_note_id(0);
-  setAttr(n, a_xml_id, (unsigned char *)note_id);
-
-  if (*markbuf)
-    {
-      set_or_append_attr(n,a_notemark,"notemark",uc(markbuf));
-      /*appendAttr(n,attr(a_notemark,pool_copy((unsigned char*)markbuf)));*/
-    }
-  if (notelabel)
-    {
-      set_or_append_attr(n,a_notelabel,"notelabel",notelabel);
-      /*appendAttr(n,attr(a_notelabel,pool_copy((unsigned char*)notelabel)));*/
-    }
-
-  /* This is a bit weird, but the last character before the content is
-     either a space after #note:, or a space or the closer character
-     after a note mark or label, so we are safe to play this trick
-     with the scan_comment routine */
-  --lines[0];
-  lines[0][0] = '#';
-  notetext = pool_copy(scan_comment_sub(lines,&nlines,0));
-  (void)trans_inline(n,notetext,NULL,0);
-  appendChild(current,n);
-  return nlines;
-}
 
 static void
 document(unsigned char *line,struct block_token *bp)

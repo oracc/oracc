@@ -156,6 +156,7 @@ and/or composite texts.</p>
 the ATF processor's internal validation of texts.</p>
 <d:rnc>
 default namespace = "http://oracc.org/ns/xtf/1.0"
+namespace note = "http://oracc.org/ns/note/1.0"
 include "../../gdl/1.0/gdl.rnc"
 include "../../xtr/1.0/xtr.rnc"
 start = xtf | doctype
@@ -470,14 +471,26 @@ class="cookbook">#note: @notelabel{i 1} A note to column 1 line
 
 </div>
 
+<h3>Notes</h3>
+
+<p>Notes are implemented in this schema although they can actually occur both in transliteration--in which case they are attached to grapheme nodes of some kind--or in translations.  In the latter case they are attached to word nodes.</p>
+
 <d:rnc>
-comments = cmt | note
+</d:rnc>
+
+<d:rnc>
+comments = cmt | notetext
 cmt = element cmt { text }
-note = element note {
-         attribute xml:id    { xsd:ID } ,
-         attribute notemark  { text }? , 
-         attribute notelabel { text }? , 
-	 htext }
+notelabel = attribute note:label { text }
+notemark  = element note:mark {
+	noteref,  
+	text }
+noteref   = attribute note:ref { xsd:IDREF }
+notetext  = element note:text {
+	attribute xml:id    { xsd:ID } ,
+	notemark? ,
+	notelabel? , 
+	htext }
 </d:rnc>
 
 <div class="primary tutorial">

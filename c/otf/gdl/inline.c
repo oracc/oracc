@@ -15,6 +15,7 @@
 #include "lang.h"
 #include "splitwords.h"
 #include "block.h"
+#include "note.h"
 
 #define CHECKFORMS 0
 
@@ -1680,10 +1681,17 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (wp)
 		{
 		  /* new note stuff here */
+#if 1
+		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
+		  appendAttr(np,attr(a_type, ucc("marker")));
+		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
+		  note_register_mark(np, tokens[start]->data);
+#else
 		  set_or_append_attr(lastChild(wp),a_notemark, 
 				     "notemark", pool_copy(tokens[start]->data));
 		  set_or_append_attr(lastChild(wp),a_noteref,
 				     "noteref", (unsigned char *)new_note_id(0));
+#endif
 		}
 	      else
 		{

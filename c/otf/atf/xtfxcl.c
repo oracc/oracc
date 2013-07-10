@@ -125,7 +125,8 @@ process(struct xcl_context *xc, struct node*n)
   
       for (i = 0; i < n->children.lastused; ++i)
 	{
-	  if (((struct node *)n->children.nodes[i])->etype != e_note)
+	  if (((struct node *)n->children.nodes[i])->etype != e_note_mark
+	      && ((struct node *)n->children.nodes[i])->etype != e_note_text)
 	    process(xc,n->children.nodes[i]);
 	}
       

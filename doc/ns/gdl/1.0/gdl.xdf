@@ -1045,8 +1045,6 @@ surroEnd = attribute g:surroEnd { xsd:IDREF }
 statusStart = attribute g:statusStart { "1" }
 statusEnd = attribute g:statusEnd { xsd:IDREF }
 
-notemark  = (attribute notemark  { text } , 
-             attribute noteref { xsd:IDREF })
 </d:rnc>
 
 <div class="atf tutorial">
@@ -1574,6 +1572,7 @@ by the ATF processor.</p></div>
 <d:rnc>
 namespace g = "http://oracc.org/ns/gdl/1.0"
 namespace n = "http://oracc.org/ns/norm/1.0"
+namespace note = "http://oracc.org/ns/note/1.0"
 namespace syn = "http://oracc.org/ns/syntax/1.0"
 
 word.content = text | group | grapheme | nongrapheme
@@ -1631,6 +1630,14 @@ nonword =
     word.content*
   }
 
+notemark = 
+  element g:nonw {
+    attribute note:ref { xsd:ID } ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "notemark" } ,
+    text
+  }
+
 group = 
   element g:gg {
     attribute g:type { 
@@ -1653,6 +1660,8 @@ syntax.attributes =
    attribute syn:ub-before  { text } |
    attribute syn:ub-after   { text } )
 </d:rnc>
+
+<h3>Normalization</h3>
 
 <p>In normalization, sequences like <code>mû/pû</code> generate an
 outer <code>n:w</code> containing a <code>n:word-group</code> which in
@@ -1711,16 +1720,6 @@ include "charset.rnc"
 include "grapheme.rnc"
 include "graphmeta.rnc"
 include "words.rnc"
-</d:rnc>
-</d:schema>
-<d:schema name="example" uri="http://oracc.org/ns/gdl-example/1.0">
-<p>The test harness uses the following schema to embed GDL in a
-document element.</p>
-<d:rnc>
-namespace gx = "http://oracc.org/ns/gdl-example/1.0"
-start = gx
-include "gdl.rnc"
-gx = element gx:gdl { grapheme+ }
 </d:rnc>
 </d:schema>
 
