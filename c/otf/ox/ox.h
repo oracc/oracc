@@ -8,9 +8,7 @@
 #include "run.h"
 
 extern const char*atffile;
-extern FILE*f_atf;
 extern const char *badfile;
-extern FILE*f_bad;
 extern const char*cdtfile;
 extern const char *formsfile;
 extern FILE*f_forms;
@@ -28,7 +26,6 @@ extern FILE*f_rnc;
 extern const char *xmlfile;
 extern FILE*f_xml;
 extern const char *unlemmfile;
-extern FILE *f_unlemm;
 
 extern const char *automatic_styles, *styles_styles;
 
@@ -108,12 +105,10 @@ extern const char *errmsg_fn;
 extern const char *inputs_from_file;
 extern char *input_file;
 extern const char *master_styles;
-extern const char *output_dir;
 extern const char *project;
 extern char project_base[];
 extern const char *project_dir;
 extern const char *arg_project;
-extern const char *xcl_project;
 extern const char *styles_styles;
 extern const char *system_project;
 

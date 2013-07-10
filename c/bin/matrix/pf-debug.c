@@ -2,7 +2,10 @@
 #include "pf_lib.h"
 #include "variants.h"
 
-int indent = 0;
+int debug_indent = 0;
+
+#define indent debug_indent
+
 #define t_or_f(c) ((c)==TRUE?"t":"f")
 
 static void

@@ -4,7 +4,7 @@
 #include "cdf_rnc.h"
 #include "rnl.h"
 #include "ox.h"
-
+#include "globals.h"
 extern int v_flag;
 
 void

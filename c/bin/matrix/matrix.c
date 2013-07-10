@@ -22,6 +22,8 @@
 
 int ods_cols, ods_mode; /* for bad architecture of libgdl */
 
+const char *project = NULL;
+
 List *outer; /* list of struct OUTER's */
 List *curr_stuff, *curr_matrix, *curr_sources, *curr_notes;
 List *multi_column_entries;

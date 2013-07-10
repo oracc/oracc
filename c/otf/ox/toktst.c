@@ -5,7 +5,7 @@
 #include "initterm.h"
 
 extern const char *file;
-
+const char *project;
 #if 0
 static void
 printer(char *string, void *data)

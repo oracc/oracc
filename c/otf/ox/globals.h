@@ -49,4 +49,27 @@ extern int perform_lem;
 extern int process_detchars;
 extern int word_matrix;
 
+extern int check_links;
+extern int lem_autolem;
+extern const char *xcl_project;
+extern const char *output_dir;
+extern int check_only;
+extern int validate;
+extern int do_cdl;
+extern int no_xcl_map;
+extern int lem_forms_raw;
+extern int named_ents;
+extern int perform_dsa;
+extern int perform_nsa;
+extern int harvest_notices;
+extern int warn_unlemmatized;
+extern int perform_lem;
+extern int force;
+extern int check_pnames;
+extern int bootstrap_mode;
+
+extern FILE*f_atf;
+extern FILE*f_bad;
+extern FILE *f_unlemm;
+
 #endif/*GLOBALS_H_*/

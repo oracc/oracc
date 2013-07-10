@@ -30,3 +30,25 @@ char *odsods_fn = NULL, *odslem_fn = NULL, *odsatf_fn = NULL;
 
 const char *textid;
 const char *fallback_project = NULL;
+
+FILE *f_bad;
+FILE *f_good;
+FILE *f_unlemm;
+const char *xcl_project;
+const char *output_dir;
+int check_links;
+int lem_autolem;
+int check_only;
+int validate;
+int do_cdl;
+int no_xcl_map;
+int lem_forms_raw;
+int named_ents;
+int perform_dsa;
+int perform_nsa;
+int harvest_notices;
+int warn_unlemmatized;
+int perform_lem;
+int force;
+int check_pnames;
+int bootstrap_mode;

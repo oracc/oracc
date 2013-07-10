@@ -80,7 +80,6 @@ extern FILE *f_good;
 extern int check_only;
 extern int force;
 extern int no_xcl_map;
-extern char *output_dir;
 extern const char *project;
 extern int check_pnames;
 extern int sparse_lem;
