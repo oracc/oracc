@@ -3,22 +3,34 @@ P3:
 
 * Check things that may have broken now that all p2 css/js has been removed
 
+* Change the item drop down to two toggles: item/page and text/catalogue
+
+* tertiary/designation sort should be configurable to use another field instead of designation, e.g., Nineveh sort on tablet number rather than designation: outline-default-final-sort-field
+
 
 Loose ends:
 ===========
 
+* configuration fixing
+
 * OTF final checks
+
+* doc2/esp2 page-to-page linkage bug
+
+* links open in new page doesn't work; target=blank
 
 * Score final fixes
 
-* esp2 image sizing issue
-
 * esp-live needs re-implementing for esp2
+
+* esp2 image sizing issue
 
 * esp1->esp2 migration script
 
 * check trim entries with zero occurrences when with-all is no (recently
   radically changed this to fix PSU bugs)
+
+* o2-prepare and oracc build prepare???
 
 
 Install:
@@ -38,6 +50,8 @@ Documentation:
 
 * check on google analytics for other installations--need new id-somethings?
 
+* document keydata.xml
+
 
 Refactoring:
 ============
@@ -54,3 +68,16 @@ Refactoring:
 
 * does the .notex/.note css have to be in p3/p3-template.xml?
 
+
+Opendata:
+=========
+
+* Oracc Authority Files (OAFs)
+
+* templating for esp2 portals to create pages for each value in catalogue
+
+* require OAF on all PGP pages
+
+* OAFs are for labels; alignments provide commonality of referents
+
+* Needs subscripting Enki₁ = oaf://123313413; Enki₂ = oaf://134234234
