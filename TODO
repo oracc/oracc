@@ -1,14 +1,36 @@
+P3:
+===
+
+* Check things that may have broken now that all p2 css/js has been removed
+
+
+Loose ends:
+===========
+
+* OTF final checks
+
+* Score final fixes
+
+* esp2 image sizing issue
+
+* esp-live needs re-implementing for esp2
+
+* esp1->esp2 migration script
+
+* check trim entries with zero occurrences when with-all is no (recently
+  radically changed this to fix PSU bugs)
+
+
+Install:
+========
+
 * misc/agg/data/* needs to be initialized on a new system but not
   reinstalled from source repeatedly--files need to be moved to
   oracc/agg and then relinked back to misc/agg/data
 
-* harmonize qcat/00lib/keydata.xml and xmd/keydata.xml
 
-* re-evaluate use and build of project/01bld/www/p2.css
-
-* rationalize pg/se code--there is a separate copy of p2.c in each and pg should probs be merged into se
-
-* trim entries with zero occurrences when with-all is no
+Documentation:
+==============
 
 * remove tut-generation from gdl/xdf schema doco
 
@@ -16,8 +38,19 @@
 
 * check on google analytics for other installations--need new id-somethings?
 
+
+Refactoring:
+============
+
 * conflate misc/www and misc/web
+
+* eliminate p2 directory; move or trash its contents as appropriate
+
+* harmonize qcat/00lib/keydata.xml and xmd/keydata.xml
+
+* re-evaluate use and build of project/01bld/www/p2.css
+
+* rationalize pg/se code--there is a separate copy of p2.c in each and pg should probs be merged into se
 
 * does the .notex/.note css have to be in p3/p3-template.xml?
 
-* ATF processor should catch duplicate note markers
