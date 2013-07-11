@@ -112,7 +112,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 	    {
 	      /* This is our candidate attach point */
 	      struct node *xmark = elem(e_g_nonw,NULL,lnum,WORD);
-	      appendAttr(xmark, attr(a_type, (unsigned char *)"notemark"));
+	      appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
 	      appendChild(lastC, xmark);
 	      mark = note_register_mark(NULL, xmark);
 	      if (lastCofC->etype != e_g_w
@@ -126,11 +126,13 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 	  else
 	    {
 	      warning("unable to attach note mark to previous line; please enter explicit note mark");
+	      mark = NULL;
 	    }
 	}
       else
 	{
 	  warning("no previous line to attach note mark to; please provide context and mark");
+	  mark = NULL;
 	}
     }
 
@@ -149,8 +151,11 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
     }
 
   n = elem(e_note_text,NULL,lnum,current_level);
-  appendAttr(n, attr(a_note_mark, mark));
-  note_register_note(mark, n);
+  if (mark)
+    {
+      appendAttr(n, attr(a_note_mark, mark));
+      note_register_note(mark, n);
+    }
 
   if (notelabel)
     set_or_append_attr(n,a_note_label,"notelabel",notelabel);

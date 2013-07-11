@@ -71,21 +71,6 @@ create_have_atf {
 }
 
 sub
-lemindex_load_proxy {
-    my $proj = shift;
-    my %p = ();
-    if (open(P, "$ENV{'ORACC'}/bld/$proj/lists/have-lem.lst")) {
-	while (<P>) {
-	    chomp;
-	    /:(.*?)(?:\@|$)/;
-	    ++$p{$1};
-	}
-    } # not an error to fail
-#    use Data::Dumper; print Dumper \%p;
-    %p;
-}
-
-sub
 lemindex_list {
     my %proxy_lem_atfs = ();
 
@@ -95,10 +80,28 @@ lemindex_list {
 	    chomp;
 	    my $line = $_;
 	    my($proj,$id) = (/^(.*?):(.*?)(?:\@|$)/);
-	    %{$proxy_lem_atfs{$proj}} = lemindex_load_proxy($proj)
-		unless exists $proxy_lem_atfs{$proj}; # the project's hash can be empty
-	    if (${$proxy_lem_atfs{$proj}}{$id}) {
-		print PL "$line\n";
+	    unless ($proxy_lem_atfs{$proj}) {
+		my $projlem = "$ENV{'ORACC'}/bld/$proj/lists/have-lem.lst";
+		if (-r $projlem) {
+		    open(P, $projlem) || die;
+		    while (<P>) {
+			chomp;
+			/:(.*?)(?:\@|$)/;
+			${$proxy_lem_atfs{$proj}}{$1} = 1;
+		    }
+		    close(P) || warn "close P failed\n";
+		} else {
+		    $proxy_lem_atfs{$proj} = '#none#'
+		}
+	    }
+	    use Data::Dumper; print Dumper(\%proxy_lem_atfs);
+	    warn "proj = $proj\n";
+	    if (ref($proxy_lem_atfs{$proj}) eq 'HASH') {
+		if (scalar %{$proxy_lem_atfs{$proj}}) {
+		    if (${$proxy_lem_atfs{$proj}}{$id}) {
+			print PL "$line\n";
+		    }
+		}
 	    }
 	}
 	close(PL);
@@ -147,9 +150,11 @@ proxy_lists {
 	$proxy_lst = "00lib/proxy.lst";
     }
     if ($proxy_lst) {
+
 	open(P,$proxy_lst);
 	my @p = (<P>); chomp(@p);
 	close(P);
+
 	my %pa_seen = ();
 	my %px_seen = ();
 	open(PX, '>01bld/lists/proxy-cat.lst');
