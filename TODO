@@ -19,13 +19,17 @@ Loose ends:
 
 * links open in new page doesn't work; target=blank
 
-* Score final fixes
-
 * esp-live needs re-implementing for esp2
 
 * esp2 image sizing issue
 
 * esp1->esp2 migration script
+
+* Score final fixes--generate individual witnesses from CMAwRo files
+
+
+Bugs
+====
 
 * check trim entries with zero occurrences when with-all is no (recently
   radically changed this to fix PSU bugs)
@@ -81,3 +85,11 @@ Opendata:
 * OAFs are for labels; alignments provide commonality of referents
 
 * Needs subscripting Enki₁ = oaf://123313413; Enki₂ = oaf://134234234
+
+* oracc github project with translits named as P123213-TCL_V-cams-gkab.atf
+
+Actions on SJT:
+===============
+
+*email bridget about perseus lemmatization helper etc.
+
