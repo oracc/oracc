@@ -500,6 +500,9 @@
     <xsl:when test="starts-with(g:x/@g:type,'word-')">
       <xsl:apply-templates/>
     </xsl:when>
+    <xsl:when test="@type='notelink'">
+      <xsl:call-template name="process-notes"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:text> (</xsl:text>
       <xsl:apply-templates/>
@@ -722,9 +725,11 @@
 <xsl:template name="render-word">
   <xsl:for-each select="*">
     <xsl:apply-templates select="."/>
+<!--
     <xsl:if test="@notemark">
       <xsl:call-template name="process-notes"/>
     </xsl:if>
+ -->
     <xsl:choose>
       <xsl:when test="self::g:d and following-sibling::*[1][self::g:d]">
 	<xsl:value-of select="render-inter-det-char"/>
@@ -783,9 +788,13 @@
 </xsl:template>
 
 <xsl:template name="process-notes">
-  <span class="marker">
-    <xsl:value-of select="@notemark"/>
-  </span>
+  <a href="javascript://" 
+     onmouseover="showNote(event,'{@note:ref}')" 
+     onmouseout="hideNote(event,'{@note:ref}')">
+    <span class="marker">
+      <xsl:apply-templates/>
+    </span>
+  </a>
 </xsl:template>
 
 <xsl:template match="g:*">

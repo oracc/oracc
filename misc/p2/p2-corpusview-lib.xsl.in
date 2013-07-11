@@ -727,7 +727,19 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="xh:span[@class='marker']|xh:a[@class='marker']">
+<xsl:template match="xh:span[@class='notelink']">
+  <a href="javascript://" 
+     onmouseover="showNote(event,'{@note:ref}')" 
+     onmouseout="hideNote(event,'{@note:ref}')">
+    <xsl:copy>
+      <xsl:copy-of select="@class"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </a>
+</xsl:template>
+
+<!--This template is no longer used; delete once new notes impl is tested-->
+<xsl:template match="xh:span[@class='xmarker']|xh:a[@class='xmarker']">
   <xsl:variable name="prefix">
     <xsl:choose>
       <xsl:when test="local-name()='a'">
