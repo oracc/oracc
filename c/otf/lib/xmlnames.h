@@ -212,6 +212,7 @@ enum e_type
   e_nong,
   e_nonl,
   e_nonx,
+  e_note_link,
   e_note_text,
   e_object,
   e_protocol,

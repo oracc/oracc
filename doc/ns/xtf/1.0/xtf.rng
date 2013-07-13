@@ -205,6 +205,21 @@
       <data type="IDREF"/>
     </attribute>
   </define>
+  <define name="noteblock">
+    <choice>
+      <ref name="notelink"/>
+      <ref name="notetext"/>
+    </choice>
+  </define>
+  <define name="notelink">
+    <element name="note:link">
+      <optional>
+        <ref name="notelabel"/>
+      </optional>
+      <ref name="noteref"/>
+      <text/>
+    </element>
+  </define>
   <define name="notetext">
     <element name="note:text">
       <attribute name="xml:id">
@@ -357,6 +372,7 @@
           <ref name="sealing"/>
           <ref name="comments"/>
           <ref name="nonx"/>
+          <ref name="noteblock"/>
         </choice>
       </zeroOrMore>
     </element>
@@ -427,6 +443,9 @@
         <ref name="primes"/>
       </optional>
       <ref name="status.flags"/>
+      <zeroOrMore>
+        <ref name="noteblock"/>
+      </zeroOrMore>
     </element>
   </define>
   <define name="known.surface">
@@ -479,6 +498,7 @@
           <ref name="nonx"/>
           <ref name="milestone"/>
           <ref name="comments"/>
+          <ref name="noteblock"/>
         </choice>
       </zeroOrMore>
     </element>

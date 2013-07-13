@@ -2,6 +2,7 @@
 #include <string.h>
 #include <wctype.h>
 #include "list.h"
+#include "cdf.h"
 #include "memblock.h"
 #include "npool.h"
 #include "translate.h"
@@ -35,7 +36,62 @@ static struct note *note_find(const unsigned char *n);
 static int
 note_cmp(struct note *np, const char *mark)
 {
-  return strcmp(np->mark, mark);
+  return strcmp((char*)np->mark, mark);
+}
+
+/* cur here is the current node from block.c, which is the parent of
+   the block in which the current #note: line which is being processed.
+
+   We need to look back along the list for the first l node, which may
+   be inside an lg.  If it is, we should look for an 'mts' line in the
+   lg group, otherwise just use the first l child of lg for the attach
+   point.
+   
+   If all that fails, we can return NULL for now and figure out the
+   boundary cases later.
+ */
+static struct node *
+note_attach_lg(struct node *lg)
+{
+  int i;
+  struct nodelist *nlp = &lg->children;
+  for (i = 0; i < nlp->lastused; ++i)
+    {
+      if (((struct node *)nlp->nodes[i])->etype == e_l)
+	{
+	  const unsigned char *type = getAttr(nlp->nodes[i], "type");
+	  if ('\0' == *type)
+	    return nlp->nodes[i];
+	}      
+    }
+  return nlp->nodes[0];
+}
+
+static struct node *
+note_attach_point(struct node *curr)
+{
+  int i;
+  struct nodelist *nlp;
+
+  if (curr)
+    {
+      nlp = &curr->children;
+      for (i = nlp->lastused-1; i >= 0; --i)
+	{
+	  if (((struct node *)nlp->nodes[i])->etype == e_l)
+	    return nlp->nodes[i];
+	  else if (((struct node *)nlp->nodes[i])->etype == e_lg)
+	    return note_attach_lg(nlp->nodes[i]);
+	}
+      /* there were no children: attach at curr--if it's not a legit
+	 block point to attach at caller will complain */
+      return curr;
+    }
+  else
+    {
+      warning("internal error: note_attach_point passed NULL curr");
+      return NULL;
+    }
 }
 
 static const char *
@@ -50,7 +106,10 @@ note_create_id(void)
 static struct note *
 note_find(const unsigned char *n)
 {
-  return list_find(notes_in_line, n, (list_find_func*)note_cmp);
+  return notes_in_line 
+    ? list_find(notes_in_line, n, (list_find_func*)note_cmp)
+    : list_find(notes_in_text, n, (list_find_func*)note_cmp)
+    ;
 }
 
 void
@@ -64,7 +123,10 @@ void
 note_initialize_line(void)
 {
   if (notes_in_line)
-    list_free(notes_in_line, NULL);
+    {
+      list_free(notes_in_line, NULL);
+      notes_in_line = NULL;
+    }
   notes_in_line = list_create(LIST_SINGLE);
 }
 
@@ -104,34 +166,58 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
     }
   else
     {
-      struct node *lastC = lastChild(parent);
+      struct node *lastC = note_attach_point(parent);
       if (lastC)
 	{
-	  struct node *lastCofC = lastChild(lastC);
-	  if (lastCofC)
+	  struct node *xmark = NULL;
+	  enum e_type e;
+	  enum block_levels l;
+	  switch (lastC->etype)
 	    {
-	      /* This is our candidate attach point */
-	      struct node *xmark = elem(e_g_nonw,NULL,lnum,WORD);
-	      appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
-	      appendChild(lastC, xmark);
-	      mark = note_register_mark(NULL, xmark);
-	      if (lastCofC->etype != e_g_w
-		  && lastCofC->etype != e_g_nonw
-		  && lastCofC->etype != e_nonx)
-		{
-		  /* just make it easier to debug schema errors */
-		  vwarning("last item in note mark's line is %s", lastCofC->names->pname);
-		}
+	    case e_l:
+	      {
+		struct node *lastCchild = lastChild(lastC);
+		if (lastCchild->etype == e_c)
+		  {
+		    /* the attach point is either the cell or its
+		       chield field if there is one */
+		    struct node *cField = lastChild(lastCchild);
+		    if (cField->etype == e_f)
+		      lastC = cField;
+		    else
+		      lastC = lastCchild;
+		    l = WORD;
+		  }
+		else
+		  l = LINE;
+		e = e_g_nonw;
+	      }
+	      break;
+	    case e_object:
+	      l = OBJECT;
+	      e = e_note_link;
+	      break;
+	    case e_surface:
+	      l = SURFACE;
+	      e = e_note_link;
+	      break;
+	    case e_column:
+	      l = COLUMN;
+	      e = e_note_link;
+	      break;
+	    default:
+	      vwarning("unhandled note parent %s", lastC->names[0]);
+	      break;
 	    }
-	  else
-	    {
-	      warning("unable to attach note mark to previous line; please enter explicit note mark");
-	      mark = NULL;
-	    }
+	  xmark = elem(e,NULL,lnum,l);
+	  if (e == e_g_nonw)
+	    appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
+	  appendChild(lastC, xmark);
+	  mark = note_register_mark(NULL, xmark);
 	}
       else
 	{
-	  warning("no previous line to attach note mark to; please provide context and mark");
+	  warning("nowhere to attach note mark to; please provide context and mark");
 	  mark = NULL;
 	}
     }
@@ -177,20 +263,25 @@ note_register_mark(const unsigned char *mark, struct node *parent)
 {
   if (!mark)
     {
-      struct note *last_np = list_last(notes_in_line);
-      if (last_np)
+      if (notes_in_line)
 	{
-	  int m = atoi((char*)last_np->mark);
-	  if (m > 0)
+	  struct note *last_np = list_last(notes_in_line);
+	  if (last_np)
 	    {
-	      static char buf[10];
-	      sprintf(buf, "%d", m+1);
-	      return note_register_mark((const unsigned char *)buf, parent);
+	      int m = atoi((char*)last_np->mark);
+	      if (m > 0)
+		{
+		  static char buf[10];
+		  sprintf(buf, "%d", m+1);
+		  return note_register_mark((const unsigned char *)buf, parent);
+		}
+	      else
+		/* this is a stop-gap; it means that alpha notes can be done
+		   explicitly, but they'll get mixed with numeric marks if
+		   no mark is used in a #note: */
+		return note_register_mark((const unsigned char *)"1", parent); 
 	    }
 	  else
-	  /* this is a stop-gap; it means that alpha notes can be done
-	     explicitly, but they'll get mixed with numeric marks if
-	     no mark is used in a #note: */
 	    return note_register_mark((const unsigned char *)"1", parent); 
 	}
       else
@@ -215,10 +306,12 @@ note_register_mark(const unsigned char *mark, struct node *parent)
       unsigned char *note_mark_text = npool_copy(mark, note_pool);
       appendChild(parent, note_mark_node);
 #endif
+      appendChild(note_mark_node, textNode(note_mark_text));
       np->mark = note_mark_text;
       np->node = note_mark_node;
       np->status = NOTE_REGISTERED;
-      list_add(notes_in_line, np);
+      if (notes_in_line)
+	list_add(notes_in_line, np);
       list_add(notes_in_text, np);
       return mark;
     }

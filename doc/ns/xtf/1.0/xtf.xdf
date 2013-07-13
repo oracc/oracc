@@ -484,11 +484,18 @@ cmt = element cmt { text }
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
 noteref   = attribute note:ref { xsd:IDREF }
+noteblock = (notelink | notetext)
+notelink  = element note:link {
+		notelabel?,
+		noteref,
+		text
+	    }
 notetext  = element note:text {
-	attribute xml:id    { xsd:ID } ,
-	notemark ,
-	notelabel? ,
-	htext }
+		attribute xml:id  { xsd:ID } ,
+		notemark ,
+		notelabel? ,
+		htext 
+	    }
 </d:rnc>
 
 <div class="primary tutorial">
@@ -636,7 +643,7 @@ object =
      |(attribute type { user.object } , n.attr) 
     ) ,
     status.flags,
-    (m.fragment | surface | sealing | comments | nonx)*
+    (m.fragment | surface | sealing | comments | nonx | noteblock)*
   }
 known.object =    xsd:string { pattern="tablet|envelope|prism|bulla" }
 user.object =     xsd:string { pattern="object" }
@@ -709,7 +716,8 @@ surface =
      |(attribute type { user.surface | docket.surface | seal.surface } , n.attr)
      ),
     primes?,
-    status.flags
+    status.flags,
+    noteblock*
   }
 
 known.surface =
@@ -733,7 +741,7 @@ sealing =
     attribute label    { text },
     attribute n { xsd:NMTOKEN },
     attribute scid { xsd:NMTOKEN }?,
-    (column | nonx | milestone | comments)*
+    (column | nonx | milestone | comments | noteblock)*
   }
 </d:rnc>
 

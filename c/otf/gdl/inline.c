@@ -259,26 +259,6 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   if (verbose > 1)
     fprintf(stderr, "%d\n", lnum);
 
-#if 0
-  if (inline_note_id != block_note_id)
-    {
-      if (inline_note_id > block_note_id)
-	{
-	  /* warning("detected notemark/notes mismatch in previous line: too many notemarks"); */
-	  block_note_id = inline_note_id;
-	}
-      else
-	{
-	  /* warning("detected notemark/notes mismatch in previous line: more notes than marks"); */
-	  inline_note_id = block_note_id;
-	}
-    }
-  else
-    {
-      inline_note_id = block_note_id;
-    }
-#endif
-
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
   if (text_lang)
@@ -419,11 +399,12 @@ process_fields(struct node *parent, int start, int end)
 	++start;
       if (tokens[start] && tokens[start]->type == ftype)
 	{
+	  extern int xcl_is_sparse_field(const char *f);
 	  if (sparse_lem && xcl_is_sparse_field(tokens[start]->data))
 	    w_sparse_lem = 1;
 	  else
 	    w_sparse_lem = 0;
-	  cp->data = strdup(tokens[start]->data);
+	  cp->data = (unsigned char*)strdup(tokens[start]->data);
 	  appendAttr(cp,attr(a_type,ucc(tokens[start++]->data)));
 	}
       else
@@ -1104,7 +1085,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  if (tp->data)
 		    setAttr(lastChild(group_node),a_g_delim,tp->data);
 		  else
-		    setAttr(lastChild(group_node),a_g_delim,"");
+		    setAttr(lastChild(group_node),a_g_delim,(unsigned char *)"");
 		}
 	      if (wp)
 		{
@@ -1304,9 +1285,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      struct node *cp = (struct node*)(wp->children.nodes[i]);
 		      const char *pname = cp->names->pname;
-		      if (np->type == 'e' && !strcmp(pname, "g:d"))
+		      if (*np->type == 'e' && !strcmp(pname, "g:d"))
 			break;
-		      else if (np->type == 'e' && (!strcmp(pname, "g:x")))
+		      else if (*np->type == 'e' && (!strcmp(pname, "g:x")))
 			{
 			  pos = "post";
 			  break;
@@ -1680,19 +1661,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case notemark:
 	      if (wp)
 		{
-		  /* new note stuff here */
-#if 1
 		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
 		  appendAttr(np,attr(a_type, ucc("notelink")));
 		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
 		  note_register_mark(tokens[start]->data, np);
 		  appendChild(wp->parent, np);
-#else
-		  set_or_append_attr(lastChild(wp),a_notemark, 
-				     "notemark", pool_copy(tokens[start]->data));
-		  set_or_append_attr(lastChild(wp),a_noteref,
-				     "noteref", (unsigned char *)new_note_id(0));
-#endif
 		}
 	      else
 		{
@@ -1767,7 +1740,7 @@ next_node_with_status(struct node *wp, int i)
 {
   if (i < wp->children.lastused)
     {
-      unsigned char *s = getAttr(wp->children.nodes[i], "g:status");
+      const unsigned char *s = getAttr(wp->children.nodes[i], "g:status");
       if (*s)
 	return wp->children.nodes[i];
       else
@@ -1846,7 +1819,7 @@ finish_word(struct node *wp)
 	    *forms_insertp++ = '-'; /* the renderer needs rewriting to emit g:delim after graph not before next graph, but this is what works for now */
 	  else
 	    {
-	      const char *gdelim = getAttr(wp->children.nodes[i-1], "g:delim");
+	      const unsigned char *gdelim = getAttr(wp->children.nodes[i-1], "g:delim");
 	      if (*gdelim)
 		*forms_insertp++ = *gdelim;
 	    }

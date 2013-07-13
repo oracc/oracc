@@ -352,6 +352,7 @@ struct xname enames[] =
   { "nong", "http://oracc.org/ns/xtf/1.0:nong" },
   { "nonl", "http://oracc.org/ns/xtf/1.0:nonl" },
   { "nonx", "http://oracc.org/ns/xtf/1.0:nonx" },
+  { "note:link", "http://oracc.org/ns/note/1.0:link" },
   { "note:text", "http://oracc.org/ns/note/1.0:text" },
   { "object", "http://oracc.org/ns/xtf/1.0:object" },
   { "protocol", "http://oracc.org/ns/xtf/1.0:protocol" },
