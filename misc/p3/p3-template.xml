@@ -114,6 +114,7 @@
 	  <div id="p3itemnav" class="p3-items p3-noglo">
 	    <p class="p3toccenter bg-dk">
 
+<!--
 	      <span class="p3arrow">
 		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
 		  <option value="off">Exit item mode</option>
@@ -121,7 +122,23 @@
 		  <option value="xtf">Text items</option>
 		</select>
 	      </span>
-	      
+ -->
+
+	      <span class="p3arrow">
+		<button type="button" name="p3itemsview" id="p3itemsview" value="item"
+			onclick="p3action('viewstatePages')"
+			>Items</button>
+	      </span>
+
+	      <span class="p3arrow">
+		<button type="button" name="p3textitems" id="p3textitems"
+			onclick="p3action('itemstateText')"
+			>Text</button>
+		<button type="button" name="p3catitems" id="p3catitems"
+			onclick="p3action('itemstateCat')"
+			>Cat.</button>
+	      </span>
+ 
 	      <span class="p3arrow">
 		<button type="button" name="larrow" onclick="p3action('itemback')">&lt;&lt;</button>
 	      </span>
@@ -141,10 +158,17 @@
 	  
 	  <div id="p3pagenav" class="p3-pages">
 	    <p class="p3toccenter bg-dk">
+
 	      <span class="p3arrow" id="p3zoom">
 		<button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
 	      </span>
 	      
+	      <span class="p3arrow">
+		<button type="button" name="p3pagesview" id="p3pagesview" value="page"
+			onclick="p3action('viewstateItems')"
+			>Pages</button>
+	      </span>
+
 	      <span class="p3arrow">
 		<button type="button" name="larrow" onclick="p3action('pageback')">&lt;&lt;</button>
 	      </span>

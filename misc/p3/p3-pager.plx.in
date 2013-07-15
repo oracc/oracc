@@ -673,12 +673,25 @@ set_sorttype {
 sub
 setup_navigation {
 
-    if ($p{'p3do'} eq 'itemstate') {
-	$rt{'itemtype'} = $p{'p3itemtype'};
-	if ($p{'p3itemtype'} eq 'off') {
-	    $p{'item'} = 0;
-	    $p{'page'} = $p{'xipage'};
-	}
+    # Note that the button which is visible gives the current state
+    # so we have to reverse them to toggle.
+    if ($p{'p3do'} eq 'itemstateText') {
+	$rt{'itemtype'} = $p{'itemtype'} = 'cat';
+    } elsif ($p{'p3do'} eq 'itemstateCat') {
+	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+    } elsif ($p{'item'}) {
+	$rt{'itemtype'} = $p{'itemtype'};
+    }
+
+    if ($p{'p3do'} eq 'viewstateItems') {
+	$rt{'viewtype'} = $p{'viewtype'} = 'item';
+	$p{'item'} = 1;
+	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+	$p{'xipage'} = $p{'page'};
+    } elsif ($p{'p3do'} eq 'viewstatePages') {
+	$rt{'viewtype'} = $p{'viewtype'} = 'page';
+	$p{'item'} = 0;
+	$p{'page'} = $p{'xipage'};
     } elsif ($p{'item'}) {
 	$rt{'itemtype'} = $p{'itemtype'};
     }
