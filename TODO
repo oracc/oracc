@@ -1,11 +1,19 @@
 P3:
 ===
 
-* Check things that may have broken now that all p2 css/js has been removed
-
-* Change the item drop down to two toggles: item/page and text/catalogue
-
 * tertiary/designation sort should be configurable to use another field instead of designation, e.g., Nineveh sort on tablet number rather than designation: outline-default-final-sort-field
+
+* doc2/esp2 page-to-page linkage bug
+
+* esp links open in new page doesn't work; target=blank
+
+* esp-live needs re-implementing for esp2
+
+* esp2 image sizing issue
+
+* esp1->esp2 migration script
+
+* Check things that may have broken now that all p2 css/js has been removed
 
 
 Loose ends:
@@ -14,16 +22,6 @@ Loose ends:
 * configuration fixing
 
 * OTF final checks
-
-* doc2/esp2 page-to-page linkage bug
-
-* links open in new page doesn't work; target=blank
-
-* esp-live needs re-implementing for esp2
-
-* esp2 image sizing issue
-
-* esp1->esp2 migration script
 
 * Score final fixes--generate individual witnesses from CMAwRo files
 
