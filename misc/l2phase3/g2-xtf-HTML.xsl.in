@@ -410,6 +410,7 @@
             <xsl:text>?</xsl:text>
 	  </xsl:if>
 	</span>
+	<xsl:call-template name="note-links"/>
       </td>
     </tr>
   </xsl:if>
@@ -486,6 +487,7 @@
             <xsl:text>?</xsl:text>
 	  </xsl:if>
 	</span>
+	<xsl:call-template name="note-links"/>
       </td>
     </tr>
   </xsl:if>
@@ -523,6 +525,7 @@
 	  <xsl:if test="@remark='y'"><xsl:text>!</xsl:text></xsl:if>
 	  <xsl:if test="@certain='n'"><xsl:text>?</xsl:text></xsl:if>
 	</span>
+	<xsl:call-template name="note-links"/>
       </td>
     </tr>
   </xsl:if>
@@ -1478,7 +1481,7 @@
   <xsl:value-of select="substring($str,2)"/>
 </xsl:template>
 
-<xsl:template match="note:text">
+<xsl:template mode="after-line" match="note:text">
   <xsl:choose>
     <xsl:when test="ancestor::xtf:l"/>
     <xsl:otherwise>
@@ -1512,10 +1515,6 @@
       </span>
     </td>
   </tr>
-</xsl:template>
-
-<xsl:template name="format-note">
-  <span class="note"><xsl:apply-templates/></span>
 </xsl:template>
 
 <xsl:template match="xtf:h">
@@ -1566,6 +1565,18 @@
     </xsl:if>
   </xsl:for-each>
   <xsl:text>} </xsl:text>
+</xsl:template>
+
+<xsl:template name="note-links">
+  <xsl:for-each select="note:link">
+    <a href="javascript://" 
+       onmouseover="showNote(event,'{@note:ref}')" 
+       onmouseout="hideNote(event,'{@note:ref}')">
+      <span class="marker">
+	<xsl:apply-templates/>
+      </span>
+    </a>
+  </xsl:for-each>
 </xsl:template>
 
 <!--
