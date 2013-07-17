@@ -241,7 +241,7 @@
 	  <xsl:when test="@nesting=6">../../../../../..</xsl:when>
 	  <xsl:when test="@nesting=7">../../../../../../..</xsl:when>
 	  <xsl:when test="@nesting=8">../../../../../../../..</xsl:when>
-	  <xsl:when test="@nesting=9">../../....//../../../../..</xsl:when>
+	  <xsl:when test="@nesting=9">../../../../../../../../..</xsl:when>
 	  <xsl:otherwise>
 	    <xsl:message>esp2-phase-04.xslt: menu items nested greater than 9 deep (nesting=<xsl:value-of select="@nesting"/>)!</xsl:message>
 	  </xsl:otherwise>
