@@ -94,8 +94,8 @@ lemindex_list {
 		    $proxy_lem_atfs{$proj} = '#none#'
 		}
 	    }
-	    use Data::Dumper; print Dumper(\%proxy_lem_atfs);
-	    warn "proj = $proj\n";
+#	    use Data::Dumper; print Dumper(\%proxy_lem_atfs);
+#	    warn "proj = $proj\n";
 	    if (ref($proxy_lem_atfs{$proj}) eq 'HASH') {
 		if (scalar %{$proxy_lem_atfs{$proj}}) {
 		    if (${$proxy_lem_atfs{$proj}}{$id}) {
