@@ -631,7 +631,7 @@ set_p3_state {
 	    unless ($rt{'sorttype'}) {
 		$rt{'sorttype'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-$rt{'outl'}-sort-fields`;
 	    }
-	    warn "###sorttype = $rt{'sorttype'}\n";
+#	    warn "###sorttype = $rt{'sorttype'}\n";
 	} else {
 	    # handle special list where necessary
 	}
@@ -749,7 +749,7 @@ setup_pg_args {
 	$tmpstate = 'default';
     } else {
 	$tmpstate = ($p{'p3outl'} =~ /^default|special$/ ? $p{'p3outl'} 
-		     : ($p{'pushed-state'} ? $p{'pushded-state'} : 'default'));
+		     : ($p{'pushed-state'} ? $p{'pushed-state'} : 'default'));
     }
 
     @pg_args = ('-fm', "-p$p{'project'}", "-P$p{'pagesize'}", 

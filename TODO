@@ -1,7 +1,10 @@
 P3:
 ===
 
-* tertiary/designation sort should be configurable to use another field instead of designation, e.g., Nineveh sort on tablet number rather than designation: outline-default-final-sort-field
+* tertiary/designation sort should be configurable to use another
+  field instead of designation, e.g., Nineveh sort on tablet number
+  rather than designation: outline-default-final-sort-field;
+  RESTRICTION: can't use designation in the sort fields right now
 
 * doc2/esp2 page-to-page linkage bug
 

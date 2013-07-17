@@ -27,6 +27,7 @@ struct npool *pg2_pool = NULL;
 
 int nheadfields = 0;
 int *headfields = NULL;
+const char *terminal_sort_field = "designation";
 
 int page_n = 1, page_selector_index = 0, page_selector_page_n = 0;
 
@@ -118,14 +119,14 @@ main(int argc, char **argv)
       if (!sort_keys)
 	sort_keys = (p2opts->sort_fields 
 		     ? p2opts->sort_fields 
-		     : "period,genre,provenience,designation");
+		     : "period,genre,provenience"); /* p2_load does maybe_append */
       else
-	sort_keys = p2_maybe_append_designation(sort_keys, pg2_pool);
+	sort_keys = p2_maybe_append_designation(sort_keys, pg2_pool, p2opts);
 
       if (!heading_keys)
 	{
 	  heading_keys = (char *)npool_copy((unsigned char *)sort_keys, pg2_pool);
-	  tmp = (char*)heading_keys + strlen(heading_keys) - strlen("designation");
+	  tmp = (char*)heading_keys + strlen(heading_keys) - strlen(p2opts->sort_final);
 	  *tmp = '\0';
 	}
       

@@ -219,7 +219,7 @@
 	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
 	<input type="hidden" name="list" id="list" p3:value="@@cgivar:list@@"/>
 	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
-	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype/genre,time,place@@"/>
+	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype@@"/>
 	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
 	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
 	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>

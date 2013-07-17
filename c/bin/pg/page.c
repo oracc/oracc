@@ -54,8 +54,12 @@ pg_page(struct item **pitems, int nitems, int *npages, struct outline *outlinep)
   currpage = pages;
   if (nheadfields)
     {
-      currpage->p[0] = fmthdr(pitems[0]->grp);
-      currpage->used = 1;
+      int x = 0;
+      while (pitems[x]->grp < 0)
+	++x;
+
+      currpage->p[0] = fmthdr(pitems[x]->grp);
+      currpage->used = x;
     }
   else
     currpage->used = 0;
@@ -65,7 +69,10 @@ pg_page(struct item **pitems, int nitems, int *npages, struct outline *outlinep)
   
   for (i = 0; i < nitems; ++i)
     {
-      if (!quick && i && pitems[i]->grp != pitems[i-1]->grp)
+      if (pitems[i]->grp < 0)
+	continue;
+
+      if (!quick && i && pitems[i]->grp != pitems[i-1]->grp && pitems[i-1]->grp != -1)
 	{
 	  if (outlinep)
 	    outlinep->count = i - last_i;
