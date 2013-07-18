@@ -230,8 +230,10 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="steps-down" select="count(ancestor::struct:page)"/>
-      <xsl:message>Page <xsl:value-of select="ancestor-or-self::struct:page[1]/@id"/>
-      is <xsl:value-of select="$steps-down"/> steps down in struct</xsl:message>
+      <!-- 
+	   <xsl:message>Page <xsl:value-of select="ancestor-or-self::struct:page[1]/@id"/>
+	   is <xsl:value-of select="$steps-down"/> steps down in struct</xsl:message> 
+      -->
       <xsl:variable name="relpath">
 	<xsl:choose>
 	  <xsl:when test="@nesting">
@@ -263,6 +265,9 @@
 	      <xsl:when test="$steps-down=7">../../../../../..</xsl:when>
 	      <xsl:when test="$steps-down=8">../../../../../../..</xsl:when>
 	      <xsl:when test="$steps-down=9">../../../../../../../..</xsl:when>
+	      <xsl:otherwise>
+		<xsl:message>esp2-phase-04.xslt: page nested greater than 9 deep (nesting=<xsl:value-of select="$steps-down"/>)!</xsl:message>
+	      </xsl:otherwise>
 	    </xsl:choose>
 	  </xsl:otherwise>
 	</xsl:choose>
