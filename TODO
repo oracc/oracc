@@ -10,11 +10,12 @@ P3:
 
 -* esp links open in new page doesn't work; target=blank
 
-* esp-live needs re-implementing for esp2
-
-* esp2 image sizing issue
+-* esp-live needs re-implementing for esp2
 
 * esp1->esp2 migration script
+  &  write whats=changed in ESP2 page
+
+* esp2 image sizing issue
 
 * Check things that may have broken now that all p2 css/js has been removed
 
@@ -27,6 +28,10 @@ Loose ends:
 * OTF final checks
 
 * Score final fixes--generate individual witnesses from CMAwRo files
+
+* o2-weblive and esp2-live need to coexist smoothly
+
+* check that oracc esp and oracc esp live do the right thing once the switch to esp2 is complete
 
 
 Bugs
@@ -57,6 +62,7 @@ Documentation:
 
 * document keydata.xml
 
+* document variants, finally!
 
 Refactoring:
 ============
@@ -85,9 +91,9 @@ Opendata:
 
 * OAFs are for labels; alignments provide commonality of referents
 
-* Needs subscripting Enki₁ = oaf://123313413; Enki₂ = oaf://134234234
+* Needs subscripting Enki₁ = oaf://o123313413; Enki₂ = oaf://o134234234
 
-* oracc github project with translits named as P123213-TCL_V-cams-gkab.atf
+* oracc github project with translits named as P123213_TCL-5-15_cams-gkab.atf
 
 Actions on SJT:
 ===============
