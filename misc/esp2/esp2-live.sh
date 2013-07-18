@@ -18,8 +18,10 @@ fi
 #    webdir=01bld/www
 #fi
 
-if [ ! -d 01tmp/dev ]; then
-    echo esp-live.sh: nothing to copy--expected to find website in 01tmp/dev
+espdev=01bld/espdev
+
+if [ ! -d $espdev ]; then
+    echo esp-live.sh: nothing to copy--expected to find website in $espdev
     exit 1
 fi
 
@@ -49,10 +51,11 @@ if [ "$force" != "yes" ]; then
     fi
 fi
 
-esp=01tmp/dev/
 log=02www/last_esp2_cp.log
 rm -f 02www/_test
-cp -Rv $esp 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
+
+# note: addition of / to $espdev here is deliberate
+cp -Rv $espdev/ 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
 chmod -R o+r $webdir/
 chmod o-r $log
 echo esp now live at oracc/$project.

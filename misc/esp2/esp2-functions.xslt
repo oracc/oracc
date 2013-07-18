@@ -22,6 +22,7 @@
 </xsl:function>
 	
 <xsl:template name="set-relpath">
+<!--  <xsl:message>set-relpath current node=<xsl:value-of select="ancestor-or-self::*[@id]/@id"/></xsl:message> -->
   <xsl:variable name="nest-level" select="count(ancestor::struct:page)"/>
   <xsl:choose>
     <xsl:when test="$nest-level=1">.</xsl:when>
@@ -34,7 +35,7 @@
     <xsl:when test="$nest-level=8">../../../../../../..</xsl:when>
     <xsl:when test="$nest-level=9">../../../../../../../..</xsl:when>
     <xsl:otherwise>
-      <xsl:message>set-relpath: pages nested greater than 9 deep!</xsl:message>
+      <xsl:message>set-relpath: pages nested greater than 9 deep! (nest-level=<xsl:value-of select="$nest-level"/>)</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>

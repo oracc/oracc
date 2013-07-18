@@ -1,0 +1,10 @@
+OLD LOCATION			NEW LOCATION
+
+00web				00web/00static
+00web/esp/site-content/00web	00web/00static
+00web/esp/site-content/*.xml	00web/00config
+00web/esp/site-content/pages	00web
+00web/esp/httproot_dev		01bld/espdev with link from 02www/_test to 01bld/espdev
+00web/esp/httproot_*		01tmp/ or not used
+00web/esp/backups		not used
+00web/esp/temporary-files	01tmp

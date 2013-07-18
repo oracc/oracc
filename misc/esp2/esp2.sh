@@ -47,6 +47,9 @@ if [ ! -r $SAXONJAR ]; then echo esp2.sh: no file saxon.jar. Stop.; exit 1; fi
 
 SAXONPARAMS="oracc=$ORACC projesp=$XMLSAP scripts=$ESP2 project=$project"
 
+if [ ! -r $XMLSAP/01bld ]; then
+    mkdir -p $XMLSAP/01bld
+fi
 if [ ! -r $XMLSAP/01tmp ]; then
     mkdir -p $XMLSAP/01tmp
 fi
@@ -54,7 +57,7 @@ if [ ! -r $XMLSAP/02www ]; then
     mkdir -p $XMLSAP/02www
 fi
 
-HTTPROOT=$XMLSAP/01tmp/dev
+HTTPROOT=$XMLSAP/01bld/espdev
 HTTPLINK=$XMLSAP/02www/_test
 
 #echo Removing existing development folder

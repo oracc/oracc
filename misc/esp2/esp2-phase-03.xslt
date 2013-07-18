@@ -294,8 +294,11 @@
         <xsl:copy-of select="$parameters/param:footer/node ()"/>
       </div>
       <!-- site tabs-->
+      <xsl:variable name="context-page" select="."/>
       <xsl:for-each select="$appearance/app:tabs/*">
-	<xsl:call-template name="tab"/>
+	<xsl:call-template name="tab">
+	  <xsl:with-param name="context" select="$context-page"/>
+	</xsl:call-template>
       </xsl:for-each>
       <!-- address <div> -->
       <div id="URL">
@@ -573,8 +576,13 @@
   </xsl:template>
 
 <xsl:template name="tab">
+  <xsl:param name="context"/>
 <!--  <xsl:message>processing tab <xsl:value-of select="app:alt"/></xsl:message> -->
-  <xsl:variable name="relpath"><xsl:call-template name="set-relpath"/></xsl:variable>
+  <xsl:variable name="relpath">
+    <xsl:for-each select="$context">
+      <xsl:call-template name="set-relpath"/>
+    </xsl:for-each>
+  </xsl:variable>
   <div id="tab_{position()}">
     <esp:link url="{app:url}" title="{app:text}">
       <img src="{$relpath}/images/{app:img}" alt="{app:alt}"/>
