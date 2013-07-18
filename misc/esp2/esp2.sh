@@ -54,11 +54,14 @@ if [ ! -r $XMLSAP/02www ]; then
     mkdir -p $XMLSAP/02www
 fi
 
-HTTPROOT=$XMLSAP/02www/dev
+HTTPROOT=$XMLSAP/01tmp/dev
+HTTPLINK=$XMLSAP/02www/_test
 
 #echo Removing existing development folder
 if [ -d $HTTPROOT ]; then rm -rf $HTTPROOT; fi
 mkdir $HTTPROOT
+rm -f $HTTPLINK
+ln -sf $HTTPROOT $HTTPLINK
 
 #echo Copying project static site content
 (cd $XMLSAP/00web/00static && cp_00web_static)
@@ -115,5 +118,7 @@ for FILE in $LIST
 do
 	chmod g+x $FILE
 done
+
+chmod -R o+r $HTTPROOT
 
 exit 0
