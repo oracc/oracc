@@ -216,8 +216,7 @@
 </xsl:template>
 
 <xsl:template name="maybe-local-url">
-<!--  <xsl:param name="root" select="$parameters/param:root"/> -->
-  <xsl:param name="root" select="'.'"/>
+  <xsl:param name="root" select="$parameters/param:root"/>
   <xsl:param name="url" select="@url"/>
   <xsl:choose>
     <xsl:when test="starts-with($url,'http://') or @type='link'">
@@ -230,24 +229,44 @@
       <xsl:value-of select="$root"/><xsl:value-of select="concat('/',$url)"/>
     </xsl:when>
     <xsl:otherwise>
+      <xsl:variable name="steps-down" select="count(ancestor::struct:page)"/>
+      <xsl:message>Page <xsl:value-of select="ancestor-or-self::struct:page[1]/@id"/>
+      is <xsl:value-of select="$steps-down"/> steps down in struct</xsl:message>
       <xsl:variable name="relpath">
 	<xsl:choose>
-	  <xsl:when test="not(@nesting) or @nesting=0">.</xsl:when>
-	  <xsl:when test="@nesting=1">..</xsl:when>
-	  <xsl:when test="@nesting=2">../..</xsl:when>
-	  <xsl:when test="@nesting=3">../../..</xsl:when>
-	  <xsl:when test="@nesting=4">../../../..</xsl:when>
-	  <xsl:when test="@nesting=5">../../../../..</xsl:when>
-	  <xsl:when test="@nesting=6">../../../../../..</xsl:when>
-	  <xsl:when test="@nesting=7">../../../../../../..</xsl:when>
-	  <xsl:when test="@nesting=8">../../../../../../../..</xsl:when>
-	  <xsl:when test="@nesting=9">../../../../../../../../..</xsl:when>
+	  <xsl:when test="@nesting">
+	    <xsl:choose>
+	      <xsl:when test="not(@nesting) or @nesting=0">.</xsl:when>
+	      <!-- FIXME? do all these need an additional ../ prepended to them? -->
+	      <xsl:when test="@nesting=1">..</xsl:when>
+	      <xsl:when test="@nesting=2">../..</xsl:when>
+	      <xsl:when test="@nesting=3">../../..</xsl:when>
+	      <xsl:when test="@nesting=4">../../../..</xsl:when>
+	      <xsl:when test="@nesting=5">../../../../..</xsl:when>
+	      <xsl:when test="@nesting=6">../../../../../..</xsl:when>
+	      <xsl:when test="@nesting=7">../../../../../../..</xsl:when>
+	      <xsl:when test="@nesting=8">../../../../../../../..</xsl:when>
+	      <xsl:when test="@nesting=9">../../../../../../../../..</xsl:when>
+	      <xsl:otherwise>
+		<xsl:message>esp2-phase-04.xslt: menu items nested greater than 9 deep (nesting=<xsl:value-of select="@nesting"/>)!</xsl:message>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:when>
 	  <xsl:otherwise>
-	    <xsl:message>esp2-phase-04.xslt: menu items nested greater than 9 deep (nesting=<xsl:value-of select="@nesting"/>)!</xsl:message>
+	    <xsl:choose>
+	      <xsl:when test="$steps-down=1">.</xsl:when>
+	      <xsl:when test="$steps-down=2">..</xsl:when>
+	      <xsl:when test="$steps-down=3">../..</xsl:when>
+	      <xsl:when test="$steps-down=4">../../..</xsl:when>
+	      <xsl:when test="$steps-down=5">../../../..</xsl:when>
+	      <xsl:when test="$steps-down=6">../../../../..</xsl:when>
+	      <xsl:when test="$steps-down=7">../../../../../..</xsl:when>
+	      <xsl:when test="$steps-down=8">../../../../../../..</xsl:when>
+	      <xsl:when test="$steps-down=9">../../../../../../../..</xsl:when>
+	    </xsl:choose>
 	  </xsl:otherwise>
-	</xsl:choose>  
+	</xsl:choose>
       </xsl:variable>
-<!--      <xsl:message>maybe-local-url: url=<xsl:value-of select="$url"/>; relpath=<xsl:value-of select="$relpath"/></xsl:message> -->
       <xsl:value-of select="$relpath"/><xsl:value-of select="concat($url,'index.html')"/>
     </xsl:otherwise>
   </xsl:choose>
@@ -259,14 +278,13 @@
   <xsl:variable name="tag-has-content" select="count ( node () )"/>
   <xsl:variable name="bookmark" select="@bookmark"/>
   <xsl:variable name="id" select="if ( @page and not ( @page = $current-page/@id ) ) then @page else ''"/>
-  <xsl:variable name="linked-page" select="//struct:page[@id = $id]"/>
+  <xsl:variable name="linked-page" select="//struct:page[@id = $id]"/> <!--FIXME: use xsl:key-->
   <xsl:variable name="linked-page-URL">
     <xsl:if test="$id">
 	<xsl:if test="not ( $linked-page )">
 	  <xsl:message>	WARNING! Broken internal link: no page is defined with id '<xsl:value-of select="$id"/>'</xsl:message>
 	</xsl:if>
 
-<!--	<xsl:value-of select="$parameters/param:root"/><xsl:value-of select="$linked-page/@url"/> -->
       <xsl:call-template name="maybe-local-url">
 	<xsl:with-param name="url" select="$linked-page/@url"/>
       </xsl:call-template>
@@ -377,7 +395,6 @@
 </xsl:template>
 
 <xsl:template name="twitter">
-<!--  <xsl:message>Processing twitter-timeline ...</xsl:message> -->
   <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
   <xsl:variable name="processed-url" 
 		select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( '.', substring ( @url, 2 ) ) else @url"/>
@@ -437,6 +454,9 @@
 	      </xsl:when>
 	    </xsl:choose>
 	  </xsl:variable>
+	  <xsl:if test="starts-with($link-title, 'Link ')">
+	    <xsl:attribute name="target" select="'_blank'"/>
+	  </xsl:if>
 	  <xsl:attribute name="title" select="$link-title"/>
 	  <xsl:choose>
 	    <xsl:when test="$tag-has-content">
