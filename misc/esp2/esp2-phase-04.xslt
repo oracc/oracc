@@ -403,7 +403,7 @@
   <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
   <xsl:variable name="processed-url" 
 		select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( '.', substring ( @url, 2 ) ) else @url"/>
-  <a href="{$processed-url}" class="external">
+  <a href="{$processed-url}" class="external" target="_blank">
     <xsl:copy-of select="@class|@data-dnt|@data-widget-id"/>
     <xsl:if test="string ( @accesskey )">
       <xsl:attribute name="accesskey" select="@accesskey"/>
@@ -439,7 +439,7 @@
       <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
       <xsl:variable name="processed-url" select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( '.', substring ( @url, 2 ) ) else @url"/>
       <xsl:if test="self::esp:link">
-	<a href="{$processed-url}" class="external">
+	<a href="{$processed-url}" class="external" target="_blank">
 	  <xsl:if test="string ( @accesskey )">
 	    <xsl:attribute name="accesskey" select="@accesskey"/>
 	  </xsl:if>
