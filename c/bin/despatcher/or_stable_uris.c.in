@@ -152,6 +152,7 @@ key_handler(struct component *components)
   else if (!strcmp(components[0].text, "statistics"))
     statistics();
 }
+
 static void 
 lst_handler(struct component *components)
 {
@@ -160,8 +161,20 @@ lst_handler(struct component *components)
 }
 
 static int
+exists_cbd(const char *lng)
+{
+  char *cbd = malloc(strlen("@@ORACC@@") + strlen(project) + strlen(lng) + 25);
+  int ret;
+  sprintf(cbd, "%s/pub/%s/cbd/%s/entry_ids.lst", "@@ORACC@@", project, lng);
+  ret = !access(cbd, R_OK);
+  free(cbd);
+  return ret;
+}
+
+static int
 res_is_lang(const char *e)
 {
+  const char *init = e;
   if (e)
     {
       const char *x = NULL;
@@ -169,7 +182,8 @@ res_is_lang(const char *e)
 	{
 	  while (*e && *e >= 'a' && *e <= 'z')
 	    ++e;
-	  return *e == '\0';
+	  if (*e == '\0')
+	    return exists_cbd(init);
 	}
       else if (strlen(e) == 12 && (x = strstr(e, "-x-")))
 	{
@@ -177,8 +191,9 @@ res_is_lang(const char *e)
 	    ++e;
 	  e = x + 3;
 	  while (*e && *e >= 'a' && *e <= 'z')
-	    ++e;	  
-	  return *e == '\0';
+	    ++e;
+	  if (*e == '\0')
+	    return exists_cbd(init);
 	}
     }
   return 0;
@@ -202,11 +217,21 @@ res_is_entity(const char *e)
 static int
 res_is_list(const char *e)
 {
+  const char *init = e;
   if (e)
     {
       while (*e && (isalnum(*e) || '-' == *e || '_' == *e))
 	++e;
-      return *e == 0;
+      if (*e == 0)
+	{
+	  char *lst = malloc(strlen("@@ORACC@@") + strlen("/www/lists/") + strlen(project)
+				   + strlen(init) + 2);
+	  int ret;
+	  sprintf(lst, "%s/www/%s/lists/%s", "@@ORACC@@", project, init);
+	  ret = !access(lst, R_OK);
+	  free(lst);
+	  return ret;
+	}
     }
   return 0;
 }
@@ -439,10 +464,19 @@ uri_patterns(void)
      URI, so just silently return */
   if (i < nelements)
     return;
-  else if (components[0].type)
+  else if (components[0].type && components[0].type != C_RES)
     resource_handlers[components[0].value](components);
-  else
-    do404();
+  else /* assume it's keys for a cat search */
+    {
+      char *qsrch = malloc(strlen(elements[0] + strlen("!cat x")));
+      sprintf(qsrch, "!cat %s", elements[0]);
+      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+	    cgi_arg("project", project), 
+	    cgi_arg("qsrch", qsrch),
+	    NULL);
+      perror("execl failed");
+      exit(1);
+    } 
 
   /* We can only get here if the resource_handler exec failed */
   exit(1);
