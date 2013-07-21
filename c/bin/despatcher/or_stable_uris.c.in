@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "ccgi/ccgi.h"
 #include "resolver.h"
 
 int patterns_debug = 0;
@@ -108,7 +109,7 @@ lng_handler(struct component *components)
   else if (project)
     {
       char *xis = NULL;
-      if (query_string)
+      if (query_string && strlen(query_string))
 	{
 	  if ((xis = strstr(query_string,"xis=")))
 	    {
@@ -128,6 +129,12 @@ lng_handler(struct component *components)
 		  perror("execl failed");
 		  exit(1);
 		}
+	    }
+	  else
+	    {
+	      char *idx = malloc(strlen(elements[0]) + 5);
+	      sprintf(idx, "cbd/%s", elements[0]);
+	      p3_fake_srch(project, idx, query_string);
 	    }
 	}
       execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
@@ -204,13 +211,7 @@ res_is_lang(const char *e)
 static int
 res_is_entity(const char *e)
 {
-  if (e)
-    {
-      if (*(int*)e > 127 || isupper(*(int*)e))
-	++e;
-      return *e;
-    }
-  return 0;
+  return e && ((*(unsigned char *)e) > 127 || isupper(*e));
 }
 
 /* Note that res_is_lang must be called before res_is_list */
@@ -464,19 +465,10 @@ uri_patterns(void)
      URI, so just silently return */
   if (i < nelements)
     return;
-  else if (components[0].type && components[0].type != C_RES)
+  else if (components[0].type && resource_handlers[components[0].value])
     resource_handlers[components[0].value](components);
   else /* assume it's keys for a cat search */
-    {
-      char *qsrch = malloc(strlen(elements[0] + strlen("!cat x")));
-      sprintf(qsrch, "!cat %s", elements[0]);
-      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
-	    cgi_arg("project", project), 
-	    cgi_arg("qsrch", qsrch),
-	    NULL);
-      perror("execl failed");
-      exit(1);
-    } 
+    p3_fake_srch(project, "cat", elements[0]);
 
   /* We can only get here if the resource_handler exec failed */
   exit(1);

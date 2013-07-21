@@ -7,6 +7,8 @@
 #define LOCALE "en_GB.utf-8"
 #endif
 
+#include "ccgi/ccgi.h"
+
 enum e_builtins  { B_NONE, B_ATF, B_AS, B_DATESTAMP, B_DOC, B_FIND, 
 		   B_ITEMMAIN, B_ITEMSIDE, B_OUTLINE, B_RESULTS, B_RPC, 
 		   B_SIG, B_XFORMS, B_XIS 
@@ -83,6 +85,8 @@ extern void corpus(void);
 extern void catentry(const char *item);
 extern void p3(const char *project);
 extern void p3_asearch_results(const char *project, const char *tmpdir);
+extern void p3_exec(CGI_varlist *vl);
+extern void p3_fake_srch(const char *project, const char *idx, const char *srch);
 extern char *p3tempdir(void);
 extern void progexec(const char *prog);
 extern const char *map_PQX(const char *text, int ncomma);

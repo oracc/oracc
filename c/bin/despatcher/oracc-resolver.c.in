@@ -106,6 +106,10 @@ main(int argc, char *argv[])
   else
     uri_patterns();
   
+  /* assume it's keys for a cat search if it's one step only */
+  if (nelements == 1 && !elements_used)
+    p3_fake_srch(project, "cat", elements[0]);
+
   do404();
   return 0;
 }

@@ -33,9 +33,9 @@ p3srch(CGI_varlist *vl)
 	    {
 	      int slen = (s - tmp);
 	      srchindex = malloc(slen + 1);
-	      strncpy(srchindex, s, slen);
+	      strncpy(srchindex, tmp, slen);
 	      srchindex[slen] = '\0';
-	      (void)CGI_add_var(vl, "srchindex", srchindex);
+	      vl = CGI_add_var(vl, "srchindex", srchindex);
 	      while (isspace(*s))
 		++s;
 	    }
@@ -47,6 +47,22 @@ p3srch(CGI_varlist *vl)
     {
       fprintf(stderr, "p3: failed to open %s to write srch command\n", sfn);
     }
+}
+
+void
+p3_fake_srch(const char *project, const char *idx, const char *srch)
+{
+  CGI_varlist *vl = NULL;
+  char *qsrch = malloc(strlen(elements[0] + strlen(idx) + 2));
+  char *glosp = NULL;
+  sprintf(qsrch, "!%s %s", idx, srch);
+  vl = CGI_add_var(vl, "project", project);
+  vl = CGI_add_var(vl, "srch", qsrch);
+  vl = CGI_add_var(vl, "tmpdir", p3tempdir());
+  if ((glosp = strstr("cbd/", idx)))
+    vl = CGI_add_var(vl, "glos", glosp+4);
+  p3srch(vl);
+  p3_exec(vl);
 }
 
 char *
@@ -124,10 +140,25 @@ dump_vl(CGI_varlist *vl)
 }
 
 void
+p3_exec(CGI_varlist *vl)
+{
+  char const**vec = mkvec(vl);
+
+  dump_vl(vl);
+
+  if (p3trace)
+    fprintf(stderr, "p3: 4\n");
+
+  execv("/usr/bin/perl", (char *const *)vec);
+
+  fprintf(stderr, "p3: failed to exec p3-pager.plx\n");
+}
+
+void
 p3(const char *project)
 {
   CGI_varlist *vl = NULL;
-  char const**vec = NULL, *srch;
+  const char *srch;
   extern int ccgi_verbose;
 
   if (p3trace)
@@ -143,7 +174,7 @@ p3(const char *project)
   if (p3trace)
     dump_vl(vl);
 
-  (void)CGI_add_var(vl, "tmpdir", p3tempdir());
+  vl = CGI_add_var(vl, "tmpdir", p3tempdir());
 
   if (p3trace)
     fprintf(stderr, "p3: 2\n");
@@ -162,14 +193,7 @@ p3(const char *project)
   if (p3trace)
     fprintf(stderr, "p3: 3\n");
 
-  vec = mkvec(vl);
-
-  if (p3trace)
-    fprintf(stderr, "p3: 4\n");
-
-  execv("/usr/bin/perl", (char *const *)vec);
-
-  fprintf(stderr, "p3: failed to exec p3-pager.plx\n");
+  p3_exec(vl);
 }
 
 void
