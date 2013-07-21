@@ -19,6 +19,8 @@ P3:
 
 * scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
 
+* notes that come in GDL need fixing
+
 * Items->[click]->Pages doesn't work in adhoc mode
 
 * glossary searches should enter item mode if nitems=1
