@@ -165,7 +165,7 @@
       <xsl:call-template name="base-attr"/>
       <xsl:apply-templates/>
     </table>
-    <xsl:message>#includes==<xsl:value-of select="count(xtf:include)"/>; self=<xsl:value-of select="local-name(.)"/></xsl:message>
+<!--    <xsl:message>#includes==<xsl:value-of select="count(xtf:include)"/>; self=<xsl:value-of select="local-name(.)"/></xsl:message> -->
     <xsl:apply-templates mode="print-include" select="xtf:include"/>
   </div>
 </xsl:template>
@@ -512,7 +512,7 @@
           </xsl:call-template>
 	  <xsl:text> </xsl:text>
 	  <xsl:variable name="n" 
-			select="document('@@ORACC@@/lib/config/label-info.xml')/*/*[@n=current()/@n]/@a"/>
+			select="document('@@ORACC@@/lib/data/label-info.xml')/*/*[@n=current()/@n]/@a"/>
 	  <xsl:choose>
 	    <xsl:when test="string-length($n) > 0">
 	      <xsl:value-of select="$n"/>

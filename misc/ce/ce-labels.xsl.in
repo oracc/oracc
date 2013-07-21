@@ -32,14 +32,14 @@
       </xsl:when>
       <xsl:otherwise>
 	<xsl:if test="string-length($surface) > 0">
-	  <xsl:value-of select="document('@@ORACC@@/lib/config/label-info.xml')/*/l[@n=$surface]/@a"/>
+	  <xsl:value-of select="document('@@ORACC@@/lib/data/label-info.xml')/*/l[@n=$surface]/@a"/>
 	  <xsl:text> </xsl:text>
 	</xsl:if>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="string-length($column) > 0">
       <xsl:if test="$column > 0">
-        <xsl:value-of select="document('@@ORACC@@/lib/config/label-info.xml')/*/l[@n=$column]/@a"/>
+        <xsl:value-of select="document('@@ORACC@@/lib/data/label-info.xml')/*/l[@n=$column]/@a"/>
         <xsl:text> </xsl:text>
       </xsl:if>
     </xsl:if>
