@@ -21,18 +21,18 @@ glos_info {
 
     $nitems = $p{'#listitems'};
     $npages = ($nitems / $p{'pagesize'}) + (($p{'#listitems'} % $p{'pagesize'}) != 0);
-    unless ($p{'item'}) {
-	if ($p{'page'} == 1) {
-	    system "head -$p{'pagesize'} $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
-	} else {
-	    my $from = (($p{'page'}-1) * $p{'pagesize'}) + 1;
-	    my $to = ($p{'page'} * $p{'pagesize'});
-	    if ($to > $nitems) {
-		$to = $nitems;
-	    }
-	    system "sed -n '${from},${to}p' $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
+
+    if ($p{'page'} == 1) {
+	system "head -$p{'pagesize'} $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
+    } else {
+	my $from = (($p{'page'}-1) * $p{'pagesize'}) + 1;
+	my $to = ($p{'page'} * $p{'pagesize'});
+	if ($to > $nitems) {
+	    $to = $nitems;
 	}
+	system "sed -n '${from},${to}p' $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
     }
+
     $uzpage = ($p{'uzpage'} || 0);
     if ($p{'item'}) {
 	if ($p{'item'} > 1) {

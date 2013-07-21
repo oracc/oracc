@@ -200,6 +200,9 @@ decode_args {
  
     $tmp{'tmpdir'} = tempdir(CLEANUP => 0) unless $tmp{'tmpdir'};
     $tmp{'#qsrch'} = -s "$tmp{'tmpdir'}/search.txt";
+    if ($tmp{'#qsrch'} && $tmp{'srchindex'}) {
+	$tmp{'defindex'} = $tmp{'srchindex'};
+    }
 
     warn "args: ", Dumper \%tmp;
     # set up some defaults if not all values are given
@@ -276,8 +279,11 @@ p3adhoc {
     $p{'#list'} = $adhoc_list;
     $p{'#listitems'} = $#adhoc + 1;
     $rt{'#list_type'} = ($adhoc[0] =~ /\./ ? 'xtf' : 'cat');
-    $p{'item'} = 1;
+    $p{'item'} = 1 unless $p{'item'};
     $rt{'itemtype'} = $p{'p3itemtype'} = 'xtf';
+    $rt{'viewtype'} = $p{'viewtype'} = 'item';
+    $rt{'what'} = 'item';
+    $rt{'outl'} = $p{'p3outl'} || 'default';
 }
 
 sub
@@ -572,6 +578,7 @@ set_p3_state {
 	$rt{'sorttype'} = $p{'p3OSdefault'};
 	if ($p{'glos'}) {
 	    $rt{'#index'} = "cbd/$p{'glos'}";
+	    $rt{'srchtype'} = 'cbd';
 	} else {
 	    $rt{'#index'} = $rt{'srchtype'} = $p{'p3srchtype'} || $p{'defindex'};
 	}

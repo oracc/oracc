@@ -120,15 +120,23 @@ function p3GlosControls() {
 }
 
 function p3ItemControls() {
-    document.getElementById('p3CbdLang').style.display= 'none';
+//    document.getElementById('p3CbdLang').style.display= 'none';
     document.getElementById('p3itemnav').style.display= 'block';
 
-    if (document.getElementById('itemtype').value === 'xtf') {
+    var itemtype = document.getElementById('itemtype').value;
+    
+    if (itemtype === 'xtf') {
 	document.getElementById('p3catitems').style.display = 'none';
 	document.getElementById('p3textitems').style.display = 'inline';
     } else {
-	document.getElementById('p3catitems').style.display = 'inline';
-	document.getElementById('p3textitems').style.display = 'none';
+	if (itemtype === 'cat') {
+	    document.getElementById('p3catitems').style.display = 'inline';
+	    document.getElementById('p3textitems').style.display = 'none';
+	} else {
+	    document.getElementById('p3catitems').style.display 
+		= document.getElementById('p3textitems').style.display 
+		= 'none';
+	}
     }
     document.getElementById('p3pagenav').style.display= 'none';
     document.getElementById('p3srchtype').style.display = 'inline';
@@ -180,6 +188,7 @@ function p3SrchControls() {
     var newSrchtype = document.getElementById('srchtype').value;
     if (newSrchtype === 'cbd') {
 	p3GlosControls();
+	selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
     } else {
 	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	var newCetype = document.getElementById('cetype').value;
