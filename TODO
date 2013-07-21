@@ -12,12 +12,33 @@ P3:
 
 -* esp-live needs re-implementing for esp2
 
-* esp1->esp2 migration script
-  &  write whats=changed in ESP2 page
+-* esp1->esp2 migration script
+   (&  write whats=changed in ESP2 page?)
 
 * esp2 image sizing issue
 
+* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
+
+* Items->[click]->Pages doesn't work in adhoc mode
+
+* glossary searches should enter item mode if nitems=1
+
+* switching glossary when there is a search term should not delete the search
+  term but shouldn't run the search either
+
+-* glossary searches don't preserve the glossary context over a search 
+
+-* cbd-items need special-casing
+
+-* [Text::Cat.] button shouldn't display in gloss mode
+
+-* qpn?anu-ab-us,ur doesn't do search; needs to do that and also enter item mode if nitems=1
+
+* test all sub-logs in build process and report failures to nohup.out
+
 * Check things that may have broken now that all p2 css/js has been removed
+
+* implement qsn for Niek's sign-names; or implement this as a new proper noun type?
 
 
 Loose ends:
