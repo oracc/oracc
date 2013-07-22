@@ -59,7 +59,7 @@ p3_fake_srch(const char *project, const char *idx, const char *srch)
   vl = CGI_add_var(vl, "project", project);
   vl = CGI_add_var(vl, "srch", qsrch);
   vl = CGI_add_var(vl, "tmpdir", p3tempdir());
-  if ((glosp = strstr("cbd/", idx)))
+  if ((glosp = strstr(idx, "cbd/")))
     vl = CGI_add_var(vl, "glos", glosp+4);
   p3srch(vl);
   p3_exec(vl);

@@ -30,12 +30,13 @@ my $oraccbin = "@@ORACC@@/bin";
 my $oracclib = "@@ORACC@@/lib";
 my $oraccwww = "@@ORACC@@/www";
 
+my $force_page = 0;
+my %p = ();
+my @pg_args = ();
+my %rt = ();
 my $verbose = 1;
 
-my @pg_args = ();
 
-my %p = ();
-my %rt = ();
 
 %p = decode_args(@ARGV);
 setup_navigation();
@@ -279,11 +280,18 @@ p3adhoc {
     $p{'#list'} = $adhoc_list;
     $p{'#listitems'} = $#adhoc + 1;
     $rt{'#list_type'} = ($adhoc[0] =~ /\./ ? 'xtf' : 'cat');
-    $p{'item'} = 1 unless $p{'item'};
-    $rt{'itemtype'} = $p{'p3itemtype'} = 'xtf';
-    $rt{'viewtype'} = $p{'viewtype'} = 'item';
-    $rt{'what'} = 'item';
-    $rt{'outl'} = $p{'p3outl'} || 'default';
+    unless ($force_page) {
+	$p{'item'} = 1 unless $p{'item'};
+	$rt{'itemtype'} = $p{'p3itemtype'} = 'xtf';
+	$rt{'viewtype'} = $p{'viewtype'} = 'item';
+	$rt{'what'} = 'item';
+	$rt{'outl'} = $p{'p3outl'} || 'default';
+    } else {
+	$p{'item'} = 0;
+	$rt{'viewtype'} = $p{'viewtype'} = 'page';
+	$rt{'what'} = 'page';
+	$rt{'outl'} = $p{'p3outl'} || 'default';
+    }
 }
 
 sub
@@ -309,6 +317,13 @@ p3srch {
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
+    if ($p{'glos'} && $p{'#listitems'} == 1) {
+	$p{'item'} = 1;
+	$rt{'itemtype'} = $p{'itemtype'} = 'cbd';
+	$p{'viewtype'} = 'item';
+	$p{'xipage'} = 1;
+	$rt{'what'} = 'item';
+    }
 }
 
 sub
@@ -434,11 +449,7 @@ run_item_maker {
 	# first recalibrate item and page: values{item} is an integer
 	# from 1 to values{items}; we need to split it into page and
 	# offset
-	if ($rt{'itemtype'} eq 'cbd') {
-	    $sedItem = $p{'item'};
-	} else {
-	    $sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
-	}
+	$sedItem = ($p{'item'} % $p{'pagesize'}) || $p{'pagesize'};
 	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
 	chomp($id);
 	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $p{'page'}; thisType=$rt{'itemtype'}\n";
@@ -579,6 +590,7 @@ set_p3_state {
 	if ($p{'glos'}) {
 	    $rt{'#index'} = "cbd/$p{'glos'}";
 	    $rt{'srchtype'} = 'cbd';
+	    $p{'glet'} = '';
 	} else {
 	    $rt{'#index'} = $rt{'srchtype'} = $p{'p3srchtype'} || $p{'defindex'};
 	}
@@ -690,15 +702,18 @@ setup_navigation {
 	$rt{'itemtype'} = $p{'itemtype'};
     }
 
-    if ($p{'p3do'} eq 'viewstateItems') {
+    if ($p{'p3do'} eq 'viewstateItems') { # can be called from form or clicking on item
 	$rt{'viewtype'} = $p{'viewtype'} = 'item';
-	$p{'item'} = 1;
-	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+	$p{'item'} = 1 unless $p{'item'};
+	unless ($p{'itemtype'}) {
+	    $rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+	}
 	$p{'xipage'} = $p{'page'};
     } elsif ($p{'p3do'} eq 'viewstatePages') {
 	$rt{'viewtype'} = $p{'viewtype'} = 'page';
 	$p{'item'} = 0;
-	$p{'page'} = $p{'xipage'};
+	$p{'page'} = $p{'xipage'} || 1;
+	$force_page = 1;
     } elsif ($p{'item'}) {
 	$rt{'itemtype'} = $p{'itemtype'};
     }

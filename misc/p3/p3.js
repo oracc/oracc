@@ -65,6 +65,9 @@ function p3help() {
 }
 
 function p3item(type,nth) {
+    if (document.getElementById('item').value == 0) {
+	document.getElementById('p3do').value = 'viewstateItems';
+    }
     document.getElementById('item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('p3form').submit();    
@@ -288,7 +291,12 @@ popxff(project,eid) {
 function selectGlossary(proj,obj) {
     var selectedGlossary = obj.options[obj.selectedIndex];
     var urlString = '/'+proj+'/'+selectedGlossary.value;
-    window.location = urlString;
+    var qString = document.getElementById('srch').value;
+    if (qString.length > 0) {
+	window.location = urlString+'?'+qString;
+    } else {
+	window.location = urlString;
+    }
 }
 
 function selectItemByValue(elmnt, value) {

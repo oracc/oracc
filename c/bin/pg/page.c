@@ -59,7 +59,7 @@ pg_page(struct item **pitems, int nitems, int *npages, struct outline *outlinep)
 	++x;
 
       currpage->p[0] = fmthdr(pitems[x]->grp);
-      currpage->used = x;
+      currpage->used = 1;
     }
   else
     currpage->used = 0;

@@ -9,7 +9,7 @@ use integer;
 use lib '@@ORACC@@/lib';
 
 my $verbose = 1;
-
+sub xsystem;
 sub
 glos_info {
     my %p = @_;
@@ -23,14 +23,14 @@ glos_info {
     $npages = ($nitems / $p{'pagesize'}) + (($p{'#listitems'} % $p{'pagesize'}) != 0);
 
     if ($p{'page'} == 1) {
-	system "head -$p{'pagesize'} $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
+	xsystem "head -$p{'pagesize'} $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
     } else {
 	my $from = (($p{'page'}-1) * $p{'pagesize'}) + 1;
 	my $to = ($p{'page'} * $p{'pagesize'});
 	if ($to > $nitems) {
 	    $to = $nitems;
 	}
-	system "sed -n '${from},${to}p' $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
+	xsystem "sed -n '${from},${to}p' $p{'#list'} >$p{'tmpdir'}/pgwrap.out";
     }
 
     $uzpage = ($p{'uzpage'} || 0);
@@ -72,7 +72,7 @@ page_setup {
 sub
 page_outline {
     my($fname,@args) = @_;
-    system '@@ORACC@@/bin/pg2', '-x', @args, '-l', $fname;
+    xsystem '@@ORACC@@/bin/pg2', '-x', @args, '-l', $fname;
 }
 
 sub
@@ -183,6 +183,13 @@ read_input {
 	}
     }
     ({%input}, \@order);
+}
+
+sub
+xsystem {
+    warn "system @_\n"
+	if $verbose;
+    system @_;
 }
 
 1;
