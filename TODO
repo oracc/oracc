@@ -1,6 +1,35 @@
 P3:
 ===
 
+* lemindex vs. txtindex ???
+
+* esp2 image sizing issue
+
+* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
+
+* notes that come in GDL need fixing
+
+* what are all the (-1x) items in gkab glos?
+
+* test all sub-logs in build process and report failures to nohup.out
+
+* Check things that may have broken now that all p2 css/js has been removed
+
+* implement qsn for Niek's sign-names; or implement this as a new proper noun type?
+
+-* http://oracc/cams/gkab/qpn?abaralah doesn't work
+
+-* switching glossary when there is a search term should not delete the search
+  term but shouldn't run the search either
+
+-* glossary searches should enter item mode if nitems=1
+
+-* Items->[click]->Pages doesn't work in adhoc mode or in glossary mode
+
+-* what is happening with Huzirina [2] in search results of cams/gkab/find/tlit?lugal ?
+
+-* cbd page 1 item 33 should be page 2 item 7
+
 -* tertiary/designation sort should be configurable to use another
   field instead of designation, e.g., Nineveh sort on tablet number
   rather than designation: outline-default-final-sort-field;
@@ -15,19 +44,6 @@ P3:
 -* esp1->esp2 migration script
    (&  write whats=changed in ESP2 page?)
 
-* esp2 image sizing issue
-
-* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
-
-* notes that come in GDL need fixing
-
-* Items->[click]->Pages doesn't work in adhoc mode
-
-* glossary searches should enter item mode if nitems=1
-
-* switching glossary when there is a search term should not delete the search
-  term but shouldn't run the search either
-
 -* glossary searches don't preserve the glossary context over a search 
 
 -* cbd-items need special-casing
@@ -35,12 +51,6 @@ P3:
 -* [Text::Cat.] button shouldn't display in gloss mode
 
 -* qpn?anu-ab-us,ur doesn't do search; needs to do that and also enter item mode if nitems=1
-
-* test all sub-logs in build process and report failures to nohup.out
-
-* Check things that may have broken now that all p2 css/js has been removed
-
-* implement qsn for Niek's sign-names; or implement this as a new proper noun type?
 
 
 Loose ends:
