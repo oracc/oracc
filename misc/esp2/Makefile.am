@@ -11,6 +11,9 @@ java_DATA = ImageInfo.class
 
 libesp2=$(DESTDIR)$(prefix)/lib/esp2
 
+ImageInfo.class: ImageInfo.java
+	javac ImageInfo.java
+
 install-data-local:
 	rm -fr $(libesp2)
 	mkdir -p $(libesp2)

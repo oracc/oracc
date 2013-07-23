@@ -166,7 +166,9 @@ td.cookbook  { background-color: #daf3e0; color: black; vertical-align: middle; 
 	}
 	div.imageinline img, div.imagefloat img {
 		display: block;
-		width:100%;
+		/* This width:100% is the offender which makes all images 100% instead of
+		   respecting the grid class */
+		/*width:100%;*/
 		margin: 0; padding: 0;
 		max-width:100%;
 	}
@@ -556,9 +558,27 @@ padding-left: 0;
 /* START @media block for larger viewport sizes (625px and above)*/
 
 @media screen and (min-width: 625px) {
-.pc30 {
-    width: 30%;
-}
+.pc05 { width: 05%; }
+.pc10 { width: 10%; }
+.pc15 { width: 15%; }
+.pc20 { width: 20%; }
+.pc25 { width: 25%; }
+.pc30 { width: 30%; }
+.pc35 { width: 35%; }
+.pc40 { width: 40%; }
+.pc45 { width: 45%; }
+.pc50 { width: 50%; }
+.pc55 { width: 65%; }
+.pc60 { width: 70%; }
+.pc65 { width: 65%; }
+.pc70 { width: 70%; }
+.pc75 { width: 75%; }
+.pc80 { width: 80%; }
+.pc85 { width: 85%; }
+.pc90 { width: 90%; }
+.pc95 { width: 95%; }
+.pc100 { width: 100%; }
+
 ul.biblio { list-style: none; margin-left: 5%; padding-left: 0; }
 ul.biblio li { margin-bottom: 1em; }
 #Content {

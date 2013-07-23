@@ -23,6 +23,9 @@
   <xsl:param name="projesp"/>
   <xsl:param name="scripts"/>
   <xsl:param name="output-file"/>
+
+  <xsl:variable name="esp2-global-design-width" select="600"/>
+
   <xsl:variable name="parameters" select="document ( concat($projesp, '/00web/00config/parameters.xml') )/param:parameters"/>
   <xsl:variable name="index-page" select="//esp:index-list[1]/ancestor::struct:page[1]"/>
   <xsl:variable name="glossary-page" select="//esp:glossary-list[1]/ancestor::struct:page[1]"/>
@@ -324,14 +327,38 @@
     </xsl:if>
     <xsl:variable name="src" select="if ( @file ) then concat ( $relpath, '/images/', @file ) else @url"/>
 <!--    <xsl:variable name="width" select="if ( @file ) then $images-info/esp:image-info/@width[../@file = current ()/@file] else @width"/> -->
-    <xsl:variable name="width" select="if ( @file ) then @grid else @width"/> 
-    <xsl:variable name="height" select="if ( @file ) then $images-info/esp:image-info/@height[../@file = current ()/@file] else @height"/>
+
+<!-- SJT: compute grid from images-info and esp2-global-design-width -->
+<!--    <xsl:variable name="width" select="if ( @file ) then @grid else @width"/>  -->
+
+<xsl:variable name="img-width" select="$images-info/esp:image-info/@width[../@file = current()/@file]"/>
+   <xsl:variable name="width">
+     <xsl:choose>
+       <xsl:when test="@file">
+	 <xsl:choose>
+	   <xsl:when test="$img-width >= $esp2-global-design-width">
+	     <xsl:value-of select="100"/>
+	   </xsl:when>
+	   <xsl:otherwise>
+	     <xsl:variable name="pc" select="5 + floor(100 * ($img-width div $esp2-global-design-width))"/>
+	     <xsl:value-of select="floor($pc div 5) * 5"/>
+	   </xsl:otherwise>
+	 </xsl:choose>
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:value-of select="@width"/>
+       </xsl:otherwise>
+     </xsl:choose>
+   </xsl:variable>
+   <xsl:message>grid fit for <xsl:value-of select="@file"/> set from <xsl:value-of select="$img-width"/> to <xsl:value-of select="$width"/></xsl:message>
+
+<!--    <xsl:variable name="height" select="if ( @file ) then $images-info/esp:image-info/@height[../@file = current ()/@file] else @height"/> -->
     <div>
 <!--      <xsl:attribute name="class" select="if ( @position = 'float' ) then 'imagefloat pc40' else 'imageinline'"/> -->
       <xsl:attribute name="class">
 	<xsl:choose>
 	  <xsl:when test="@position='float'">
-	    <xsl:value-of select="concat('imagefloat ', @grid)"/>
+	    <xsl:value-of select="concat('imagefloat ', concat('pc',$width))"/>
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:text>imageinline</xsl:text>
