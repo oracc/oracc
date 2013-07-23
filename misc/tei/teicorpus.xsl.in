@@ -13,7 +13,7 @@
 
 <xsl:template match="/">
   <xsl:param name="datestamp" 
-	     select="document('http://localhost/datestamp')/*"/>
+	     select="document('http://@@ORACC_HOST@@/datestamp')/*"/>
   <teiCorpus>
     <teiHeader>
       <fileDesc>

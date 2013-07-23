@@ -10,6 +10,21 @@ scriptdata_DATA = xtf2tei.xsl cbd2listNym.xsl cbd2listPerson.xsl prev-cbd2listNy
 
 html_DATA = teicolours.html
 
+cbd2listNym.xsl: cbd2listNym.xsl.in
+	$(ORACCIFY) cbd2listNym.xsl.in
+
+cbd2listPerson.xsl: cbd2listPerson.xsl.in
+	$(ORACCIFY) cbd2listPerson.xsl.in
+
+r2tei.xsl: r2tei.xsl.in
+	$(ORACCIFY) r2tei.xsl.in
+
+teicorpus.xsl: teicorpus.xsl.in
+	$(ORACCIFY) teicorpus.xsl.in
+
+teicorpus-header.xsl: teicorpus-header.xsl.in
+	$(ORACCIFY) teicorpus-header.xsl.in
+
 teitexts.sh: teitexts.sh.in
 	$(ORACCIFY) teitexts.sh.in
 

@@ -89,7 +89,7 @@
 <xsl:template name="tei-handler">
   <xsl:param name="corpus" select="@project"/>
   <xsl:param name="datestamp" 
-	     select="document('http://oracc.museum.upenn.edu/datestamp')/*"/>
+	     select="document('http://@@ORACC_HOST@@/datestamp')/*"/>
   <xsl:param name="source" select="concat(@project,'/',@xml:id,'.xtf')"/>
   <xsl:param name="root-node"/>
   <xsl:processing-instruction name="xml-stylesheet"

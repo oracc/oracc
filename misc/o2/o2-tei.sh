@@ -39,8 +39,9 @@ else
     xmlfile=`tei-no-trim.sh $project`
 fi
 
-rnv $ORACC/lib/schemas/xtf-tei.rnc $xmlfile 2>01tmp/tei-valid.log
-wc -l 01tmp/tei-valid.log
+# schema not good right now? check on unix box
+#rnv $ORACC/lib/schemas/xtf-tei.rnc 01tmp/$xmlfile 2>01tmp/tei-valid.log
+#wc -l 01tmp/tei-valid.log
 
 if [ "$tei_dist" == "yes" ]; then
     tei-dist.sh $xmlfile

@@ -171,7 +171,7 @@
           <availability>
             <p>Electronic manuscript</p>
           </availability>
-          <date><xsl:value-of select="document('http://localhost/datestamp')/*"/></date>
+          <date><xsl:value-of select="document('http://@@ORACC_HOST@@/datestamp')/*"/></date>
         </publicationStmt>
         <sourceDesc>
           <p>This is a TEI-formatted version of the project's bibliography (which is exported as FMP XML from a FileMaker database).</p>

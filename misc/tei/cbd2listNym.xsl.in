@@ -14,7 +14,7 @@
 <xsl:key name="nyms" match="c:cf" use="text()"/>
 <xsl:template match="/">
   <xsl:param name="datestamp" 
-	     select="document('http://localhost/datestamp')/*"/>
+	     select="document('http://@@ORACC_HOST@@/datestamp')/*"/>
   <TEI>
     <teiHeader>
       <fileDesc>
