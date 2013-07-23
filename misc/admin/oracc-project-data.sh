@@ -9,7 +9,7 @@ if [ ! -d $proj ]; then
     echo oracc-project-data.sh: no such project $proj. Stop.
     exit 1
 fi
-fproj=`echo -n $proj | tr / -`
+fproj=`/bin/echo -n $proj | tr / -`
 tarball=$ORACC/00any/$fproj-00data.tar.gz
 tar --exclude $proj/00any \
     --exclude $proj/00bak \

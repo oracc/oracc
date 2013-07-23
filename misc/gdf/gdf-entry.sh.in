@@ -10,9 +10,9 @@ ids=$dir/`basename $xml xml`ids
 testx()
 {
     if [ "$1" == "$2" ]; then
-        echo -n "-"
+        /bin/echo -n "-"
     else
-        echo -n "$2"
+        /bin/echo -n "$2"
     fi
 }
 findnext()

@@ -35,7 +35,7 @@ for a in *.xml ; \
 done
 mkdir -p pictures ; odtpictures.plx >>META-INF/manifest.xml
 echo '</manifest:manifest>' >>META-INF/manifest.xml
-echo -n 'application/vnd.oasis.opendocument.text' >mimetype
+/bin/echo -n 'application/vnd.oasis.opendocument.text' >mimetype
 pwd
 zip -q -X ../`basename $odtdir`.odt mimetype
 zip -q -X -g -r ../`basename $odtdir`.odt *.xml META-INF

@@ -6,7 +6,7 @@ if [ "$cmd" == "" ]; then
 fi
 if [ $(whoami) = "root" ]; then
     for a in `projlist-depth-first.plx` ; do
-	user=`echo -n $a | sed 's,/.*$,,'`
+	user=`/bin/echo -n $a | sed 's,/.*$,,'`
 	sudo -u $user -s $ORACC/bin/sudo-map-exec.sh  $ORACC $a $1
     done
 else

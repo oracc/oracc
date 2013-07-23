@@ -29,5 +29,5 @@ cat $teilist | while read line; do
     for a in ${xtfbase}*.xtr ; do
 	java -jar $SAXONJAR $a $XSL/xtr2tei.xslt project=$project | sed 's/\&amp;amp;/&amp;/g' >>$outdir/$pqx-xtr.xml
     done
-    echo -n '</translations>' >>$outdir/$pqx-xtr.xml
+    /bin/echo -n '</translations>' >>$outdir/$pqx-xtr.xml
 done
