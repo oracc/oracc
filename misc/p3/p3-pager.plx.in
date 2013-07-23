@@ -76,7 +76,7 @@ if ($rt{'prod'} eq 'list') {
     
     $rt{'cetype'} = $p{'p3cetype'};
     p3srch();
-    if ($rt{'#index'} eq 'txt') {
+    if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
 	$rt{'#list_type'} = 'xtf';
     } elsif ($p{'glos'}) {
 	$rt{'#list_type'} = 'cbd';
