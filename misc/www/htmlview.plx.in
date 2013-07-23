@@ -10,8 +10,7 @@ my $invocation = "ORACC/mk-wrapper.plx -name htmlview.plx -type xslt -script /us
 
 ORACC::Wrapper2::xslt(from=>'xmd',
 		    to=>'html',
-		    script=>'@@ORACC@@/lib/scripts/p2-htmlview.xsl',
-		    ,
+		    script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl',
     );
 
 1;
@@ -20,7 +19,7 @@ __END__
 
 =head1 NAME
 
-htmlview.plx -- wrapper for /usr/local//lib/scripts/htmlview.xsl
+htmlview.plx -- wrapper for /usr/local/oracc/lib/scripts/htmlview.xsl
 
 =head1 SYNOPSIS
 
@@ -28,7 +27,7 @@ htmlview.plx [-verbose | -quiet | -help | -man] [-list filelists | FILES]
 
 =head1 DESCRIPTION
 
-A wrapper program which applies /usr/local//lib/scripts/htmlview.xsl 
+A wrapper program which applies /usr/local/oracc/lib/scripts/htmlview.xsl 
 to files.  Input files have extension 'xmd'; output files have 
 extension 'html'.
 

@@ -3,6 +3,7 @@
 <xsl:stylesheet version="1.0" 
   xmlns:xh="http://www.w3.org/1999/xhtml"
   xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:note="http://oracc.org/ns/note/1.0"
   xmlns:xmd="http://oracc.org/ns/xmd/1.0"
   xmlns:xtf="http://oracc.org/ns/xtf/1.0"
   xmlns:xtr="http://oracc.org/ns/xtr/1.0"

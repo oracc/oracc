@@ -3,6 +3,7 @@
 <xsl:stylesheet version="1.0" 
   xmlns:xh="http://www.w3.org/1999/xhtml"
   xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:note="http://oracc.org/ns/note/1.0"
   xmlns:xmd="http://oracc.org/ns/xmd/1.0"
   xmlns:xtr="http://oracc.org/ns/xtr/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -44,7 +45,7 @@
       select="concat('@@ORACC@@/bld/',$project,'/',substring($pqid,1,4),'/',$pqid,'/')"/>
   <xsl:variable name="basename" select="concat($basedir,$pqid)"/>
 
-  <xsl:message><xsl:value-of select="$basename"/></xsl:message>
+<!--  <xsl:message><xsl:value-of select="$basename"/></xsl:message> -->
 
   <xsl:variable name="xmd" select="document(concat($basename,'.xmd'))/xmd:xmd"/>
   <xsl:variable name="txh" select="document(concat($basename,'.txh'),/)"/>
@@ -611,8 +612,6 @@
   <xsl:param name="xtr"/>
   <xsl:param name="txh"/>
   <xsl:param name="xmd"/>
-
-  <xsl:message>table <xsl:value-of select="@class"/></xsl:message>
 
   <xsl:choose>
     <xsl:when test="not(xh:table)">

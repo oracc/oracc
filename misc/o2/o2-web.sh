@@ -37,7 +37,8 @@ if [ -r 01bld/lists/outlined.lst ]; then
     cp -f 01bld/lists/outlined.lst $webdir/lists
 fi
 l2p3.sh $webdir
-web-PQX-html.plx -list 01bld/lists/have-xtf.lst -webdir $webdir 2>01tmp/web-PQX.log
+web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
+clean-web-PQX-log.sh
 p3-project.sh
 if [ -d 00web/esp ]; then
     # esp live includes o2-weblive
