@@ -1,4 +1,9 @@
 #!/bin/sh
+if [ -r 01tmp/building ]; then
+    echo There seems to be a build in progress.  If this is incorrect, please remove
+    echo the file 01tmp/building and run ncr again.
+    exit 1
+fi
 [ -r 02xml/config.xml ] || oracc config
 project=`oraccopt`
 if [ "$project" == "" ]; then 
