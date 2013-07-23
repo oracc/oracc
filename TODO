@@ -1,21 +1,25 @@
 P3:
 ===
 
-* lemindex vs. txtindex ???
+* notes that come in GDL need fixing
 
-* esp2 image sizing issue
+* http://oracc/cams/gkab/literacies/index.html image link is off by one seg (lacks /cams/)
+
+* Niek's !txt lugal !cat nippur in AS
 
 * scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
 
-* notes that come in GDL need fixing
-
 * what are all the (-1x) items in gkab glos?
-
-* test all sub-logs in build process and report failures to nohup.out
 
 * Check things that may have broken now that all p2 css/js has been removed
 
-* implement qsn for Niek's sign-names; or implement this as a new proper noun type?
+-* esp2 grid attr script
+
+-* esp2 image sizing issue
+
+-* test all sub-logs in build process and report failures to nohup.out
+
+-* lemindex vs. txtindex ???
 
 -* http://oracc/cams/gkab/qpn?abaralah doesn't work
 
@@ -42,7 +46,7 @@ P3:
 -* esp-live needs re-implementing for esp2
 
 -* esp1->esp2 migration script
-   (&  write whats=changed in ESP2 page?)
+   (&  write whats-changed in ESP2 page?)
 
 -* glossary searches don't preserve the glossary context over a search 
 
@@ -66,6 +70,9 @@ Loose ends:
 
 * check that oracc esp and oracc esp live do the right thing once the switch to esp2 is complete
 
+* implement qsn for Niek's sign-names; or implement this as a new proper noun type?
+
+* o2-build scripts should never exit directly but should exec o2-exit.sh for clean-up
 
 Bugs
 ====
