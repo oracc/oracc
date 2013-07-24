@@ -8,6 +8,7 @@ if [ "$uni" == "" ]; then
 else
    unicode=-8
 fi
+echo asrch tmpdir=$tmpdir >&2
 @@ORACC@@/bin/se -s2 $unicode -x $tmpdir
 echo 'Content-type: text/xml; charset=utf-8'
 echo 

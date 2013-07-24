@@ -66,6 +66,16 @@ if ($rt{'prod'} eq 'list') {
 	} else {
 	    set_list_items();
 	}
+    } elsif ($p{'asrch'} eq 'yes') {
+	$p{'#list'} = $p{'list'};
+	$p{'tmpdir'} = $p{'list'};
+	$p{'tmpdir'} =~ s,/results.lst,,;
+	if ($p{'srchtype'} eq 'txt' || $p{'srchtype'} eq 'lem') {
+	    $rt{'#list_type'} = 'xtf';
+	} else {
+	    $rt{'#list_type'} = $p{'srchtype'};
+	}
+	set_list_items();
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
@@ -73,9 +83,13 @@ if ($rt{'prod'} eq 'list') {
     }
 
 } else { # srch
-    
-    $rt{'cetype'} = $p{'p3cetype'};
-    p3srch();
+
+    if ($p{'asrch'} eq 'yes') {
+	$rt{'#index'} = $p{'srchtype'};
+    } else {
+	$rt{'cetype'} = $p{'srchtype'};
+	p3srch();
+    }
     if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
 	$rt{'#list_type'} = 'xtf';
     } elsif ($p{'glos'}) {
@@ -188,19 +202,21 @@ decode_args {
 	    my $s = `cat $tmp{'tmpdir'}/search.txt`;
 	    $s =~ /\#(\S+)/;
 	    $tmp{'project'} = $1;
+	    $s =~ /\!(\S+)/;
+	    $rt{'srchtype'} = $tmp{'srchtype'} = $1;
 	} else {
 	    warn "p3-pager.plx: unable to auto-set project\n";
 	}
     }
 
-    if ($tmp{'asrch'} && $tmp{'asrch'} eq 'yes') {
-	return %tmp;
-    }
-
-    $tmp{'asrch'} = 'no';
+#    if ($tmp{'asrch'} && $tmp{'asrch'} eq 'yes') {
+#	return %tmp;
+#    }
+#    $tmp{'asrch'} = 'no';
  
     $tmp{'tmpdir'} = tempdir(CLEANUP => 0) unless $tmp{'tmpdir'};
-    $tmp{'#qsrch'} = -s "$tmp{'tmpdir'}/search.txt";
+    $tmp{'#qsrch'} = -s "$tmp{'tmpdir'}/search.txt"
+	unless $tmp{'asrch'} eq 'yes';
     if ($tmp{'#qsrch'} && $tmp{'srchindex'}) {
 	$tmp{'defindex'} = $tmp{'srchindex'};
     }
@@ -300,7 +316,6 @@ p3srch {
     if ($srchtext) {
 	$rt{'srchtxt'} = $srchtext;
 	$rt{'#index'} = 'cat';
-	
     } else {
 	open(S, "$p{'tmpdir'}/search.txt");
 	$rt{'srchtext'} = <S>;
@@ -312,18 +327,7 @@ p3srch {
     close(S);
     warn `cat $p{'tmpdir'}/search.txt`, "\n";
     xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-o', "$p{'tmpdir'}/results.lst");
-    open(X, "$p{'tmpdir'}/results.xml");
-    my $xinfo = <X>;
-    $xinfo =~ m#<count>(.*?)<#;
-    $p{'#listitems'} = $1;
-    $p{'#list'} = "$p{'tmpdir'}/results.lst";
-    if ($p{'glos'} && $p{'#listitems'} == 1) {
-	$p{'item'} = 1;
-	$rt{'itemtype'} = $p{'itemtype'} = 'cbd';
-	$p{'viewtype'} = 'item';
-	$p{'xipage'} = 1;
-	$rt{'what'} = 'item';
-    }
+    set_results_xml_info();
 }
 
 sub
@@ -553,6 +557,11 @@ run_page_maker {
 }
 
 sub
+set_asrch_info {
+    
+}
+
+sub
 set_ce_arg {
     my $ce_arg;
     if ($rt{'cetype'}) {
@@ -601,6 +610,8 @@ set_p3_state {
 
     if ($p{'p3do'} eq 'qsrch') {
 	$p{'item'} = 0;
+	# we're going to ring-fence asrch ui so this is not going to be necessary in the end
+	$p{'asrch'} = 'no';
     }
 
     if ($p{'zoom'} > 0) {
@@ -654,6 +665,22 @@ set_p3_state {
 	} else {
 	    # handle special list where necessary
 	}
+    }
+}
+
+sub
+set_results_xml_info {
+    open(X, "$p{'tmpdir'}/results.xml");
+    my $xinfo = <X>;
+    $xinfo =~ m#<count>(.*?)<#;
+    $p{'#listitems'} = $1;
+    $p{'#list'} = "$p{'tmpdir'}/results.lst";
+    if ($p{'glos'} && $p{'#listitems'} == 1) {
+	$p{'item'} = 1;
+	$rt{'itemtype'} = $p{'itemtype'} = 'cbd';
+	$p{'viewtype'} = 'item';
+	$p{'xipage'} = 1;
+	$rt{'what'} = 'item';
     }
 }
 

@@ -214,6 +214,7 @@
 	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
 	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
 	<input type="hidden" name="adhoc" p3:value="@@cgivar:adhoc@@"/>
+	<input type="hidden" name="asrch"  p3:value="@@cgivar:asrch@@"/>
 	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
 	<input type="hidden" name="glet" id="glet" p3:value="@@cgivar:glet/@@"/>
 	<input type="hidden" name="glos" id="glos" p3:value="@@cgivar:glos/@@"/>

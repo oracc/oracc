@@ -5,7 +5,7 @@ function oasResults(tmpdir) {
 //    document.getElementById('list').value = tmpdir+'/results.lst';
 //    document.getElementById('uimode').value = 'mini';
 //    document.getElementById('p3form').submit();
-    oasPopupWindow = window.open('/pager?'+tmpdir,'oasresults',
+    oasPopupWindow = window.open('/pager?as='+tmpdir,'oasresults',
  "dependent,height="+600+","
  +"width="+800+","
  +"screenX="+'300'+","

@@ -47,8 +47,8 @@ main(int argc, char *argv[])
       if (elements[0] && nelements == 1 && !strcmp(elements[0], "pager"))
 	{
 	  fprintf(stderr, "qs=%s\n", query_string);
-	  if (query_string && strlen(query_string))
-	    p3_asearch_results(project,query_string);
+	  if (query_string && !strncmp(query_string, "as=", 3))
+	    p3_asearch_results(project,query_string+3);
 	  else
 	    p3(project);
 	}

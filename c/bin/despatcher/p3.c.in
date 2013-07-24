@@ -174,7 +174,11 @@ p3(const char *project)
   if (p3trace)
     dump_vl(vl);
 
-  vl = CGI_add_var(vl, "tmpdir", p3tempdir());
+  /* don't create a tempdir if we are in an advanced search;
+     p3-pager will find it from the list name
+   */
+  if (!(srch = CGI_lookup(vl, "asrch")) || strcmp(srch, "yes"))
+    vl = CGI_add_var(vl, "tmpdir", p3tempdir());
 
   if (p3trace)
     fprintf(stderr, "p3: 2\n");
@@ -205,7 +209,9 @@ p3_asearch_results(const char *project, const char *tmpdir)
     {
       char *res = malloc(strlen(tmpdir) + strlen("/results.lst") + 1);
       sprintf(res, "%s/results.lst", tmpdir);
+      fprintf(stderr, "popping up AS results %s\n", res);
       execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+	    cgi_arg("asrch", "yes"),
 	    cgi_arg("project", "#auto"),
 	    cgi_arg("tmpdir", tmpdir),
 	    cgi_arg("list", res),

@@ -28,7 +28,7 @@
       <xsl:value-of select="toks"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:if test="count(preceding-sibling::search) > 1"> <!-- 1 since the change of document element to <search> -->
+      <xsl:if test="count(preceding-sibling::search) > 0"> 
 	<xsl:value-of select="concat(@type, ' ')"/>
       </xsl:if>
       <xsl:apply-templates/>
