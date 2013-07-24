@@ -74,6 +74,8 @@ Loose ends:
 
 * o2-build scripts should never exit directly but should exec o2-exit.sh for clean-up
 
+* p3-htmlview should be used for prebuild with filtering for proxies
+
 Bugs
 ====
 
