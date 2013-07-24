@@ -142,7 +142,16 @@
       </h2>
       <table>
 	<tr>
-	  <td class="tlt"><xsl:copy-of select="."/></td>
+	  <td class="tlt">
+	    <xsl:choose>
+	      <xsl:when test="string-length(.) > 0">
+		<xsl:copy-of select="."/>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text> </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </td>
 	  <td class="syn">
 	    <xsl:call-template name="gen-xst">
 	      <xsl:with-param name="u" select="$u"/>
@@ -345,7 +354,14 @@
 	<tr class="xtr-h">
 	  <td colspan="{1+$tlit-cols}"> </td>
 	  <td colspan="{$xtr/*/@xtr:cols}" class="{concat('xtr-',local-name(.))}">
-	  <xsl:apply-templates/>
+	    <xsl:choose>
+	      <xsl:when test="string-length(.) > 0">
+		<xsl:apply-templates/>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text> </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </td>
 	</tr>
       </xsl:if>
@@ -472,7 +488,7 @@
     <xsl:for-each select="$xtr">
       <xsl:for-each select="key('tr-id',$id)[position()>1]">
 	<tr>
-	  <td colspan="2"/> <!--FIXME: should sum any colspans in TXH's tr also-->
+	  <td colspan="2"> </td> <!--FIXME: should sum any colspans in TXH's tr also-->
 	  <xsl:call-template name="render-xtr">
 	    <xsl:with-param name="labeled" select="$labeled"/>
 	  </xsl:call-template>
@@ -585,7 +601,7 @@
 	      <xsl:with-param name="config-xml" select="$config-xml-file"/>
 	    </xsl:call-template>
 	  </span>
-	  <a name="a.{@xml:id}"/>
+	  <a name="a.{@xml:id}"><xsl:text> </xsl:text></a>
 	  <xsl:choose>
 	    <xsl:when test="@class='dollar'">
 	      <xsl:choose>
@@ -658,10 +674,10 @@
 	<xsl:copy-of select="@class"/>
 	<!-- this is a template line -->
 	<tr class="{concat('l',$p)}">
-	  <td class="lnum"> </td>
-	  <td> </td>
+	  <td class="lnum"><xsl:text> </xsl:text></td>
+	  <td><xsl:text> </xsl:text></td>
 	  <xsl:for-each select="document('')/*/*[position()&lt;$ncols]">
-	    <td> </td>
+	    <td><xsl:text> </xsl:text></td>
 	  </xsl:for-each>
 	</tr>
 	<xsl:if test="$xmd/*/xmd:cat/xmd:ch_name"> <!--hack to do SAA headers-->
@@ -726,6 +742,7 @@
   </xsl:if>
 </xsl:template>
 
+<!--
 <xsl:template match="xh:span[@class='notelink']">
   <a href="javascript://" 
      onmouseover="showNote(event,'{@note:ref}')" 
@@ -735,32 +752,6 @@
       <xsl:apply-templates/>
     </xsl:copy>
   </a>
-</xsl:template>
-
-<!--This template is no longer used; delete once new notes impl is tested-->
-<xsl:template match="xh:span[@class='xmarker']|xh:a[@class='xmarker']">
-  <xsl:variable name="prefix">
-    <xsl:choose>
-      <xsl:when test="local-name()='a'">
-	<xsl:text/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>t</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-<!--  <a href="javascript://" onmouseover="showNote(event,'{$prefix}note{text()}')" onmouseout="hideNote(event,'{$prefix}note{text()}')"> -->
-  <a href="javascript://" onmouseover="showNote(event,'{generate-id(.)}')" onmouseout="hideNote(event,'{generate-id(.)}')">
-    <span>
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
-    </span>
-  </a>
-</xsl:template>
-
-<!--
-<xsl:template match="xh:a[@class='marker']">
-  <span class="marker"><xsl:apply-templates/></span>
 </xsl:template>
 -->
 

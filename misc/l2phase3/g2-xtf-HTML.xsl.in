@@ -167,6 +167,11 @@
     </table>
 <!--    <xsl:message>#includes==<xsl:value-of select="count(xtf:include)"/>; self=<xsl:value-of select="local-name(.)"/></xsl:message> -->
     <xsl:apply-templates mode="print-include" select="xtf:include"/>
+    <div class="p3notes">
+      <xsl:for-each select=".//note:text">
+	<xsl:apply-templates mode="gathered" select="."/>
+      </xsl:for-each>
+    </div>
   </div>
 </xsl:template>
 
@@ -836,7 +841,6 @@
    	<xsl:with-param name="name" select="$name"/>
 	<xsl:with-param name="maxcols" select="$maxcols"/>
       </xsl:call-template>
-      <xsl:apply-templates mode="after-line" select="note:text"/>
 <!--
     </xsl:otherwise>
   </xsl:choose>
@@ -1481,40 +1485,24 @@
   <xsl:value-of select="substring($str,2)"/>
 </xsl:template>
 
-<xsl:template mode="after-line" match="note:text">
-  <xsl:choose>
-    <xsl:when test="ancestor::xtf:l"/>
-    <xsl:otherwise>
-      <p class="note">
-	<xsl:if test="@note:mark|@notelabel">
-	  <xsl:attribute name="mark">
-	    <xsl:choose>
-	      <xsl:when test="@note:label">
-		<xsl:value-of select="@note:label"/>
-	      </xsl:when>
-	      <xsl:otherwise>
-		<xsl:value-of select="@note:mark"/>
-	      </xsl:otherwise>
-	    </xsl:choose>
-	  </xsl:attribute>
-	</xsl:if>
-	<xsl:apply-templates/>
-      </p>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
+<xsl:template match="note:text"/>
 
-<xsl:template mode="after-line" match="note:text">
-  <tr>
-    <td/>
-    <td colspan="{ancestor::*[@cols][1]/@cols}">
-      <span class="note"><xsl:text>???</xsl:text>
-        <xsl:text>(</xsl:text>
-          <xsl:apply-templates/>
-        <xsl:text>)</xsl:text>
-      </span>
-    </td>
-  </tr>
+<xsl:template mode="gathered" match="note:text">
+  <p class="note">
+    <xsl:if test="@note:mark|@note:label">
+      <xsl:attribute name="mark">
+	<xsl:choose>
+	  <xsl:when test="@note:label">
+	    <xsl:value-of select="@note:label"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="@note:mark"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates/>
+  </p>
 </xsl:template>
 
 <xsl:template match="xtf:h">
