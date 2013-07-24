@@ -123,7 +123,9 @@ function p3GlosControls() {
 }
 
 function p3ItemControls() {
-//    document.getElementById('p3CbdLang').style.display= 'none';
+    if (!document.getElementById('glos').value) {
+	document.getElementById('p3CbdLang').style.display= 'none';
+    }
     document.getElementById('p3itemnav').style.display= 'block';
 
     var itemtype = document.getElementById('itemtype').value;
