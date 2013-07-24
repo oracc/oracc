@@ -3,8 +3,6 @@ P3:
 
 * notes that come in GDL need fixing
 
-* http://oracc/cams/gkab/literacies/index.html image link is off by one seg (lacks /cams/)
-
 * Niek's !txt lugal !cat nippur in AS
 
 * scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
@@ -12,6 +10,9 @@ P3:
 * what are all the (-1x) items in gkab glos?
 
 * Check things that may have broken now that all p2 css/js has been removed
+
+-* http://oracc/cams/gkab/literacies/index.html image link is off by one seg (lacks /cams/)
+   [just an error in the esp:link url="/gkab/literacies ...]
 
 -* esp2 grid attr script
 
@@ -140,5 +141,4 @@ Opendata:
 Actions on SJT:
 ===============
 
-*email bridget about perseus lemmatization helper etc.
-
+* email bridget about perseus lemmatization helper etc.
