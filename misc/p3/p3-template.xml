@@ -60,7 +60,7 @@
 	    </span>
 	    <span class="back-to button spacer"/>
 	    <span class="button spacer">
-	      <button type="button" name="project-home" onclick="window.location='/@@project@@'">PROJECT</button>
+	      <button type="button" name="project-home" onclick="window.location='/@@project@@/'">PROJECT</button>
 	    </span>
 	    <span class="button spacer">
 	      <button type="button" onclick="window.location='/@@project@@/pager'">PAGER</button>
