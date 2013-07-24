@@ -7,8 +7,10 @@ if [ ! -d $webdir ]; then
     exit 1
 else
 #    esp-remove-web-files.sh
-    (cd $webdir ; mv -f *.* $prjdir/02www ; \
-	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    if [ ! -d 00web/00static ]; then
+	(cd $webdir ; mv -f *.* $prjdir/02www ; \
+	    for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    fi
     est-project.sh
     o2-prm.sh
 fi
