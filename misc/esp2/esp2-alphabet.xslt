@@ -10,28 +10,34 @@
 >
 <xsl:template name="alphabet">
   <xsl:param name="usedletters" as="xs:string *"/>
+
+  <xsl:message>esp2-alphabet called with usedletters=<xsl:value-of select="$usedletters"/></xsl:message>
+
   <xsl:variable name="alphabet" as="xs:string *" 
-              select="('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+              select="('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ŋ', 'H', 'I', 'J', 'K', 'L', 'M', 
 	               'N', 'O', 'P', 'Q', 'R', 'S', 'Ṣ', 'Š', 'T', 'Ṭ', 'U', 'V', 'W', 
-		       'X', 'Y', 'Z', '_')"/>
+		       'X', 'Y', 'Z', '~')"/>
   <div id="Alphabet">
+<!--
     <xsl:for-each select="$usedletters">
       <esp:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</esp:link>
       <xsl:text> </xsl:text>
     </xsl:for-each>  
-<!--
+ -->
     <xsl:for-each select="$alphabet">
       <xsl:choose>
         <xsl:when test="empty ( index-of ( $usedletters, . ) )">
           <xsl:text>&#160;</xsl:text><xsl:value-of select="."/><xsl:text>&#160;</xsl:text>
         </xsl:when>
+	<xsl:when test=".='~'">
+          <esp:link bookmark="letter__" title="">&#160;[X]&#160;</esp:link>
+	</xsl:when>
         <xsl:otherwise>
           <esp:link bookmark="letter_{.}" title="">&#160;<xsl:value-of select="."/>&#160;</esp:link>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> </xsl:text>
     </xsl:for-each>  
- -->
   </div>      
 </xsl:template>
 </xsl:stylesheet>

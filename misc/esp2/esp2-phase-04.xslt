@@ -163,8 +163,6 @@
   </xsl:copy>
 </xsl:template>
 
-
-
 <!-- process bookmarks -->
 <xsl:template match="esp:bookmark">
   <a id="{@id}" name="{@id}">

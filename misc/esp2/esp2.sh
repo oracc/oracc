@@ -96,9 +96,11 @@ echo phase 3
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-20.xml $XSL/esp2-phase-03.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-30.xml $SAXONPARAMS
 
+xsltproc $XSL/esp2-fix-sort.xsl $XMLSAP/01tmp/source-tree-30.xml >$XMLSAP/01tmp/source-tree-31.xml
+
 echo phase 4
 
-java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-30.xml $XSL/esp2-phase-04.xslt \
+java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-31.xml $XSL/esp2-phase-04.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-40.xml output-directory=file:$HTTPROOT $SAXONPARAMS
 
 echo phase 5

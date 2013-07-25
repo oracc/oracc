@@ -10,8 +10,7 @@
   xmlns="http://www.w3.org/1999/xhtml" 
   xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd" 
   version="2.0"
-  xpath-default-namespace="http://www.w3.org/1999/xhtml"
->
+  xpath-default-namespace="http://www.w3.org/1999/xhtml">
   <xsl:include href="esp2-functions.xslt"/>
   <xsl:include href="esp2-menu.xslt"/>
   <xsl:include href="esp2-references.xslt"/>
@@ -472,7 +471,7 @@
   <!-- process glossary page -->
   <xsl:template match="esp:glossary-list">
     <xsl:variable name="usedletters" as="xs:string *">
-      <xsl:for-each-group select="esp:definition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '_')">
+      <xsl:for-each-group select="esp:definition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '~')">
         <xsl:value-of select="current-grouping-key ()"/>
       </xsl:for-each-group>
     </xsl:variable>
@@ -480,28 +479,36 @@
       <xsl:with-param name="usedletters" select="$usedletters"/>
     </xsl:call-template>
     <div id="Glossary">
-      <xsl:for-each-group select="esp:definition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '_')">
+      <xsl:for-each-group select="esp:definition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '~')">
         <xsl:sort select="current-grouping-key ()" 
-                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
-/>
-        <esp:bookmark id="letter_{current-grouping-key ()}" hide-highlight="yes"/>
-        <h2>
-          <xsl:value-of select="current-grouping-key ()"/>
-        </h2>
-        <xsl:for-each select="current-group ()">
-          <xsl:sort select="@term" 
-                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
-/>
-          <dl id="highlight_{esp:make-alphanumeric ( @term )}">
-            <dt>
-              <esp:bookmark id="{esp:make-alphanumeric ( @term )}" hide-highlight="yes"/>
-              <xsl:value-of select="@term"/>
-            </dt>
-            <dd>
-              <xsl:apply-templates/>
-            </dd>
-          </dl>
-        </xsl:for-each>
+                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"/>
+	<div class="letter">
+          <esp:bookmark id="letter_{translate(current-grouping-key (), '~', '_')}" hide-highlight="yes"/>
+          <h2>
+	    <xsl:choose>
+	      <xsl:when test="current-grouping-key() = '~'">
+		<xsl:text>[X]</xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="current-grouping-key ()"/>
+	      </xsl:otherwise>
+	    </xsl:choose>
+          </h2>
+          <xsl:for-each select="current-group ()">
+            <xsl:sort select="@term" 
+                      collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
+		      />
+            <dl id="highlight_{esp:make-alphanumeric ( @term )}">
+              <dt>
+		<esp:bookmark id="{esp:make-alphanumeric ( @term )}" hide-highlight="yes"/>
+		<xsl:value-of select="@term"/>
+              </dt>
+              <dd>
+		<xsl:apply-templates/>
+              </dd>
+            </dl>
+          </xsl:for-each>
+	</div>
       </xsl:for-each-group>
     </div>
   </xsl:template>
@@ -523,7 +530,7 @@
   <!-- process techterms page -->
   <xsl:template match="esp:techterms-list">
     <xsl:variable name="usedletters" as="xs:string *">
-      <xsl:for-each-group select="esp:termsdefinition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '_')">
+      <xsl:for-each-group select="esp:termsdefinition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '~')">
         <xsl:value-of select="current-grouping-key ()"/>
       </xsl:for-each-group>
     </xsl:variable>
@@ -531,35 +538,35 @@
       <xsl:with-param name="usedletters" select="$usedletters"/>
     </xsl:call-template>
     <div id="Techterms">
-      <xsl:for-each-group select="esp:termsdefinition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '_')">
+      <xsl:for-each-group select="esp:termsdefinition" group-by="translate( upper-case ( substring ( @term , 1, 1 ) ), '[', '~')">
         <xsl:sort select="current-grouping-key ()" 
-                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
-/>
-        <esp:bookmark id="letter_{current-grouping-key ()}" hide-highlight="yes"/>
-        <h2>
-	  <xsl:choose>
-	    <xsl:when test="current-grouping-key() = '_'">
-	      <xsl:text>[X]</xsl:text>
-	    </xsl:when>
-	    <xsl:otherwise>
-              <xsl:value-of select="current-grouping-key ()"/>
-	    </xsl:otherwise>
-	  </xsl:choose>
-        </h2>
-        <xsl:for-each select="current-group ()">
-          <xsl:sort select="@term" 
-                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"
-/>
-          <dl id="highlight_{esp:make-alphanumeric ( @term )}">
-            <dt>
-              <esp:bookmark id="{esp:make-alphanumeric ( @term )}" hide-highlight="yes"/>
-              <xsl:value-of select="@term"/>
-            </dt>
-            <dd>
-              <xsl:apply-templates/>
-            </dd>
-          </dl>
-        </xsl:for-each>
+                  collation="http://saxon.sf.net/collation?ignore-modifiers=yes"/>
+	<div class="letter">
+          <esp:bookmark id="letter_{current-grouping-key ()}" hide-highlight="yes"/>
+          <h2>
+	    <xsl:choose>
+	      <xsl:when test="current-grouping-key() = '~'">
+		<xsl:text>[X]</xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="current-grouping-key ()"/>
+	      </xsl:otherwise>
+	    </xsl:choose>
+          </h2>
+          <xsl:for-each select="current-group ()">
+            <xsl:sort select="@term" 
+                      collation="http://saxon.sf.net/collation?ignore-modifiers=yes"/>
+            <dl id="highlight_{esp:make-alphanumeric ( @term )}">
+              <dt>
+		<esp:bookmark id="{esp:make-alphanumeric ( @term )}" hide-highlight="yes"/>
+		<xsl:value-of select="@term"/>
+              </dt>
+              <dd>
+		<xsl:apply-templates/>
+              </dd>
+            </dl>
+          </xsl:for-each>
+	</div>
       </xsl:for-each-group>
     </div>
   </xsl:template>
