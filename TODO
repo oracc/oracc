@@ -77,6 +77,9 @@ Loose ends:
 
 * p3-htmlview should be used for prebuild with filtering for proxies
 
+* xtf-OATF
+
+
 Bugs
 ====
 
@@ -107,6 +110,7 @@ Documentation:
 
 * document variants, finally!
 
+
 Refactoring:
 ============
 
@@ -121,6 +125,8 @@ Refactoring:
 * rationalize pg/se code--there is a separate copy of p2.c in each and pg should probs be merged into se
 
 * does the .notex/.note css have to be in p3/p3-template.xml?
+
+* lots of old xxx-HTML (vel sim.) scripts to go
 
 
 Opendata:
@@ -137,6 +143,7 @@ Opendata:
 * Needs subscripting Enki₁ = oaf://o123313413; Enki₂ = oaf://o134234234
 
 * oracc github project with translits named as P123213_TCL-5-15_cams-gkab.atf
+
 
 Actions on SJT:
 ===============
