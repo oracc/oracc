@@ -391,7 +391,7 @@
       <xsl:value-of select="concat(.,'x')"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>gdl-HTML: operator <xsl:value-of select="@g:type"/> not handled</xsl:message>
+      <xsl:message>g2-gdl-HTML: operator <xsl:value-of select="@g:type"/> not handled</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -437,6 +437,9 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:when>
+    <xsl:when test="@g:type='implicit-ligature'">
+      <xsl:apply-templates/>
+    </xsl:when>
     <xsl:when test="@g:type='group' or @g:type='logo'">
       <xsl:variable name="boundary">
 	<xsl:choose>
@@ -470,7 +473,7 @@
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:message>gdl-HTML: group type <xsl:value-of select="@g:type"/> not handled</xsl:message>
+      <xsl:message>g2-gdl-HTML: group type <xsl:value-of select="@g:type"/> not handled</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
