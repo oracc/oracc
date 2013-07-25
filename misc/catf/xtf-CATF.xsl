@@ -399,7 +399,7 @@
 </xsl:template>
 
 <!-- TODO:
-  g-surro suport
+  g-gloss, g-surro suport
  -->
 <xsl:template name="g-begin">
   <xsl:value-of select="@g:o"/>
