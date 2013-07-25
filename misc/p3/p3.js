@@ -163,10 +163,15 @@ function p3PageControls() {
     document.getElementById('p3pagenav').style.display= 'block';
     document.getElementById('p3srchtype').style.display = 'inline';
     if (outlineState === 'default') {
-	document.getElementById('p3OSspecial').style.display = 'none';
+	var special = document.getElementById('p3OSspecial');
+	if (special) {
+	    special.style.display = 'none';
+	}
 	var d = document.getElementById('p3OSdefault');
-	d.style.display = 'inline';
-	selectItemByValue(d, newSorttype);
+	if (d) {
+	    d.style.display = 'inline';
+	    selectItemByValue(d, newSorttype);
+	}
     } else {
 	if (outlineState === 'special') {
 //	    alert('special page controls');
