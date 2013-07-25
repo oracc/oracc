@@ -45,6 +45,10 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="g:p">
+  
+</xsl:template>
+
 <xsl:template match="g:q">
   <xsl:apply-templates select="*[1]"/>
   <xsl:text>(</xsl:text>
