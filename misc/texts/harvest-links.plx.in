@@ -62,13 +62,13 @@ foreach my $p (keys %texts) {
 print LINKBASE '</linkbase>';
 close LINKBASE;
 
-open PARDUMP, '>01tmp/pardump.log';
-print PARDUMP Dumper \%parallels_ok;
-close PARDUMP;
+#open PARDUMP, '>01tmp/pardump.log';
+#print PARDUMP Dumper \%parallels_ok;
+#close PARDUMP;
 
-open SRCDUMP, '>01tmp/srcdump.log';
-print SRCDUMP Dumper \%sources_ok;
-close SRCDUMP;
+#open SRCDUMP, '>01tmp/srcdump.log';
+#print SRCDUMP Dumper \%sources_ok;
+#close SRCDUMP;
 
 1;
 
