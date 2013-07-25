@@ -1,5 +1,7 @@
 ESP2 Issues List:
 =================
 
-* What to do about external links with Oracc-Client on the horizon?
+* fix navigation menu on page (only needs CSS, a la P3)
 
+* divide glossary into header and entries so bookmarks are static at top of 
+  page while browsing (same CSS-div techniques as P3)

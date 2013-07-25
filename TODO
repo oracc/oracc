@@ -1,15 +1,17 @@
 P3:
 ===
 
-* notes that come in GDL need fixing
+* note numbers need to be ignored--can use ^^ or ^1^ etc. just to make it 
+  easier to know which notemark correlates with which note; need to number
+  sequentially across text
 
 * Niek's !txt lugal !cat nippur in AS
-
-* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
 
 * what are all the (-1x) items in gkab glos?
 
 * Check things that may have broken now that all p2 css/js has been removed
+
+-* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
 
 -* http://oracc/cams/gkab/literacies/index.html image link is off by one seg (lacks /cams/)
    [just an error in the esp:link url="/gkab/literacies ...]
