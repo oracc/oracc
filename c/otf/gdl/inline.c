@@ -1664,12 +1664,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
 		  appendAttr(np,attr(a_type, ucc("notelink")));
 		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
-		  note_register_mark(tokens[start]->data, np);
+		  note_register_tag(tokens[start]->data, np);
 		  appendChild(wp->parent, np);
 		}
 	      else
 		{
-		  warning("misplaced note mark");
+		  warning("misplaced note tag");
 		}
 	      break;
 	    case noop:
