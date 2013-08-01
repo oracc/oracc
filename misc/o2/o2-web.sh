@@ -44,9 +44,14 @@ if [ -d 00web/esp ]; then
     # esp live includes o2-weblive
     oracc esp ; oracc esp live force
 else
-    [ -e 00web/index.html ] || web-default-index.plx $webdir
-    mkdir -p $webdir/images
-    cp -fpR 00web/* $webdir ; rm -f $webdir/*~
-    o2-weblive.sh
+    if [ -d 00web/00static ]; then
+	esp2.sh `oraccopt`
+	esp2-live.sh `oraccopt` force
+    else
+	[ -e 00web/index.html ] || web-default-index.plx $webdir
+	mkdir -p $webdir/images
+	cp -fpR 00web/* $webdir ; rm -f $webdir/*~
+	o2-weblive.sh
+    fi
 fi
 o2-thumb.sh
