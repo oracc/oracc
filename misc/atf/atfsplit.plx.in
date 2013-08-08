@@ -13,6 +13,8 @@ my $list = '';
 my $stdin = 0;
 my $cat = 0;
 my $except = 0;
+my $fancy = 0;
+my $fancy_part = '';
 my %print = ();
 my $mydir = '';
 my $shallow = 0;
@@ -25,6 +27,7 @@ GetOptions('base:s'=>\$base,
 	   'dir:s'=>\$mydir,
 	   'dryrun+'=>\$dryrun,
 	   'except'=>\$except,
+	   'fancy'=>\$fancy,
 	   'install'=>\$install,
 	   'list:s'=>\$list,
 	   'shallow'=>\$shallow,
@@ -107,19 +110,35 @@ while (<>) {
 		next;
 	    }
 #	    exit if $counter++ > 3;
+	    if ($fancy) {
+		my $x = $_;
+		if ($x =~ s/^\&[PQX]\d+\s*=\s*//) {
+		    $x =~ s/ +/ /g;
+		    $x =~ tr/ /_/;
+		    $x =~ tr/a-zA-Z0-9_//cd;
+		    $x =~ s/_+/_/g;
+		    $x =~ s/_$//;
+		    $fancy_part = "-$x";
+		} else {
+		    $x =~ /([PQX]\d+)/;
+		    warn "atfsplit.plx: no name for $1: name will consist only of ID\n";
+		    $fancy_part = '';
+		}
+	    } else {
+		$fancy_part = '';
+	    }
 	    if ($install) {
 		my $dname = $P;
 		my $PQ = $P;
 		$PQ =~ s/^([PQX]).*$/$1/;
 #		$dname =~ s/...$/xxx/;
 		$dname =~ s/...$//;
-#		if ($shallow) {
-#		    $dname = "$base/$P";
-#		} else {
-#		    $dname = "$base/$PQ/$dname/$P";
-#		}
-		$dname = "$base/$dname/$P";
-		$fname = "$dname/$P.atf";
+		if ($shallow) {
+		    $dname = "$base/$dname";
+		} else {
+		    $dname = "$base/$dname/$P";
+		}
+		$fname = "$dname/$P$fancy_part.atf";
 		if ($dryrun) {
 		    print "$fname\n";
 		}
