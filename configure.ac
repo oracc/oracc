@@ -51,22 +51,22 @@ dnl   LIBICONV=-liconv
 dnl fi
 dnl echo LIBICONV=$LIBICONV
 
-# Checking the version of QDBM with pkg-config
-if type pkg-config > /dev/null 2>&1
-then
-  printf 'checking the version of QDBM ... '
-  if pkg-config --atleast-version=1.8.75 qdbm
-  then
-    printf 'ok (%s)\n' `pkg-config --modversion qdbm`
-    QDBMINCLUDE="-I`pkg-config --variable=includedir qdbm`"
-    QDBMLIBDIR="-L`pkg-config --variable=libdir qdbm`"
-  else
-    printf 'no (maybe not installed or too old)\n'
-  fi
-else
-    QDBMINCLUDE=
-    QDBMLIBDIR=
-fi
+dnl # Checking the version of QDBM with pkg-config
+dnl if type pkg-config > /dev/null 2>&1
+dnl then
+dnl  printf 'checking the version of QDBM ... '
+dnl  if pkg-config --atleast-version=1.8.75 qdbm
+dnl  then
+dnl    printf 'ok (%s)\n' `pkg-config --modversion qdbm`
+dnl    QDBMINCLUDE="-I`pkg-config --variable=includedir qdbm`"
+dnl    QDBMLIBDIR="-L`pkg-config --variable=libdir qdbm`"
+dnl  else
+dnl    printf 'no (maybe not installed or too old)\n'
+dnl  fi
+dnl else
+dnl    QDBMINCLUDE=
+dnl    QDBMLIBDIR=
+dnl fi
 
 dnl Checks for library functions.
 AC_FUNC_SETVBUF_REVERSED
@@ -74,13 +74,14 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(mkdir strerror)
 
 AC_SUBST(LIBICONV)
-AC_SUBST(QDBMINCLUDE)
-AC_SUBST(QDBMLIBDIR)
+dnl AC_SUBST(QDBMINCLUDE)
+dnl AC_SUBST(QDBMLIBDIR)
 
 dnl 	   oracc-hyperestraier/estconfig
 
 AC_OUTPUT([Makefile 
 	   oracc-hyperestraier/Makefile
+	   oracc-hyperestraier/qdbm/Makefile
 	   c/Makefile
 	   c/bin/Makefile
 	   c/bin/despatcher/Makefile

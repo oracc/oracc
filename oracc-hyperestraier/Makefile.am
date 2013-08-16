@@ -1,5 +1,7 @@
 include ../oracc-am-rules.txt
 
+SUBDIRS = qdbm
+
 MYCONFS = estseek.conf estseek.tmpl estseek.top estseek.help \
   estfraud.conf estproxy.conf estscout.conf estsupt.conf \
   estresult.dtd estraier.idl
@@ -21,9 +23,9 @@ libestraier_la_SOURCES = estraier.c estmtdb.c estnode.c md5.c
 
 x_LDADD = -lestraier -lqdbm -lm -lz
 
-AM_CPPFLAGS = -I/usr/local/include -I/usr/include/qdbm @QDBMINCLUDE@
+AM_CPPFLAGS = -I/usr/local/include -I ./qdbm
 
-AM_CFLAGS = -fPIC @QDBMLIBDIR@
+AM_CFLAGS = -fPIC -L./qdbm
 
 MYHEADS = estraier.h estmtdb.h estnode.h
 
