@@ -1541,7 +1541,7 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		  else
 		    {
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
-		      note_register_mark(start, span);
+		      note_register_tag(start, span);
 		      setClass(span,"notelink");
 		    }
 		  appendChild(span,textNode(start));

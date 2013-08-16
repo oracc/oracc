@@ -464,6 +464,7 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	    case TR_LABEL:
 	    case TR_SPAN:
 	    case TR_UNIT:
+	      note_initialize_line();
 	    case TR_NOTE:
 	      if (transtype)
 		{

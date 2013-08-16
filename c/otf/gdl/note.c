@@ -107,9 +107,9 @@ note_attach_point(struct node *curr)
 }
 
 static int
-note_cmp(struct note *np, const char *mark)
+note_cmp(struct note *np, const char *tag)
 {
-  return strcmp((char*)np->mark, mark);
+  return strcmp((char*)np->tag, tag);
 }
 
 static const char *
@@ -171,7 +171,6 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
   char tagbuf[8], *m = tagbuf;
   unsigned char *notelabel = NULL, *notetext = NULL;
   const unsigned char *tag = NULL, *mark = NULL;
-  struct node *lastC = note_attach_point(parent);
 
   *tagbuf = '\0';
   lines[0] += 6;
@@ -193,62 +192,74 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
     }
   else
     {
-      if (lastC)
+      if (list_len(notes_in_line))
 	{
-	  struct node *xmark = NULL;
-	  enum e_type e;
-	  enum block_levels l;
-	  switch (lastC->etype)
-	    {
-	    case e_l:
-	      {
-		struct node *lastCchild = lastChild(lastC);
-		if (lastCchild->etype == e_c)
-		  {
-		    /* the attach point is either the cell or its
-		       chield field if there is one */
-		    struct node *cField = lastChild(lastCchild);
-		    if (cField->etype == e_f)
-		      lastC = cField;
-		    else
-		      lastC = lastCchild;
-		    l = WORD;
-		  }
-		else
-		  l = LINE;
-		e = e_g_nonw;
-	      }
-	      break;
-	    case e_object:
-	      l = OBJECT;
-	      e = e_note_link;
-	      break;
-	    case e_surface:
-	      l = SURFACE;
-	      e = e_note_link;
-	      break;
-	    case e_column:
-	      l = COLUMN;
-	      e = e_note_link;
-	      break;
-	    default:
-	      vwarning("unhandled note parent %s", lastC->names[0]);
-	      break;
-	    }
-	  xmark = elem(e,NULL,lnum,l);
-	  if (e == e_g_nonw)
-	    appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
-	  appendChild(lastC, xmark);
-	  mark = note_register_tag(NULL, xmark);
+	  warning("tagged notes cannot be mixed with untagged ones");
+	  return 1;
 	}
       else
 	{
-	  warning("nowhere to attach note mark to; please provide context and mark");
-	  mark = NULL;
+	  struct node *lastC = note_attach_point(parent);
+	  
+	  /* If there is no note tag we have to do two things: fix the attach point and set the tag to "1" */
+	  if (lastC)
+	    {
+	      struct node *xmark = NULL;
+	      enum e_type e;
+	      enum block_levels l;
+	      switch (lastC->etype)
+		{
+		case e_l:
+		  {
+		    struct node *lastCchild = lastChild(lastC);
+		    if (lastCchild->etype == e_c)
+		      {
+			/* the attach point is either the cell or its
+			   chield field if there is one */
+			struct node *cField = lastChild(lastCchild);
+			if (cField->etype == e_f)
+			  lastC = cField;
+			else
+			  lastC = lastCchild;
+			l = WORD;
+		      }
+		    else
+		      l = LINE;
+		    e = e_g_nonw;
+		  }
+		  break;
+		case e_object:
+		  l = OBJECT;
+		  e = e_note_link;
+		  break;
+		case e_surface:
+		  l = SURFACE;
+		  e = e_note_link;
+		  break;
+		case e_column:
+		  l = COLUMN;
+		  e = e_note_link;
+		  break;
+		default:
+		  vwarning("unhandled note parent %s", lastC->names[0]);
+		  break;
+		}
+	      xmark = elem(e,NULL,lnum,l);
+	      if (e == e_g_nonw)
+		appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
+	      appendChild(lastC, xmark);
+	      tag = "1";
+	      mark = note_register_tag(tag, xmark);
+	    }
+	  else
+	    {
+	      warning("nowhere to attach note mark to; please provide context and mark");
+	      tag = NULL;
+	    }
 	}
     }
 
-  if (mark)
+  if (tag)
     {
       while (isspace(lines[0][0]))
 	++lines[0];
@@ -309,7 +320,7 @@ note_register_tag(const unsigned char *tag, struct node *parent)
 		return note_register_tag((const unsigned char *)"1", parent);
 	    }
 	  else
-	    return note_register_tag((const unsigned char *)"1", parent); 
+	    return note_register_tag((const unsigned char *)"1", parent);
 	}
       else
 	{
@@ -332,14 +343,20 @@ note_register_tag(const unsigned char *tag, struct node *parent)
 	{
 	  unsigned char markbuf[8];
 	  sprintf((char*)markbuf,"%d",note_index++);
-	  npool_copy(markbuf, note_pool);
+	  note_mark_text = npool_copy(markbuf, note_pool);
 	}
 #else
       struct node *note_mark_node = elem(e_note_mark, NULL, lnum, WORD);
       unsigned char *note_mark_text = npool_copy(mark, note_pool);
       appendChild(parent, note_mark_node);
 #endif
-      appendChild(note_mark_node, textNode(note_mark_text));
+      /* If there was a ^1^ tag in the line we need to replace the text
+	 content of the parent element here; otherwise, we have a fresh
+	 parent element and just need to append the text node */
+      if (note_mark_node->children.lastused)
+	((struct node*)(note_mark_node->children.nodes[0]))->data = note_mark_text;
+      else
+	appendChild(note_mark_node, textNode(note_mark_text));
       np->tag = tag;
       np->mark = note_mark_text;
       np->node = note_mark_node;
@@ -381,7 +398,7 @@ note_register_note(const unsigned char *tag, struct node *node)
     }
   else
     {
-      warning("note_register_text passed NULL tag");
+      warning("note_register_note passed NULL tag");
     }
 }
 
