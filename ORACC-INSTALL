@@ -1,0 +1,22 @@
+* OS Setup
+
+  Follow instructions in OS install notes/scripts
+
+
+* Get Oracc
+
+  git ... SRCDIR
+
+  Not recommended for SRCDIR to be in /usr/local/oracc--should be in a
+  user account somewhere
+
+
+* Set up Oracc
+
+  Run oracc-setup with relevant args
+
+
+* Configure and Install Oracc
+
+  Run the relevant xxx-config.sh script
+

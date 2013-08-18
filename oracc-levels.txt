@@ -1,0 +1,75 @@
+Oracc Installation Levels
+=========================
+
+Oracc installations support different levels of activity as follows:
+
+* Work
+
+  Create and check text editions; perform lemmatization
+
+* Build
+
+  Create and manage projects+
+
+* Web
+
+  Run a full Oracc webserver from pre-built projects
+
+* Full
+
+  All of the above
+
+
+
+Oracc Environment Variables
+===========================
+
+Oracc has several environment variables which must be set at install time:
+
+* ORACC
+
+  The location of installed Oracc software, default = /usr/local/oracc
+
+* ORACC_MODE
+
+  The user-mode of the installation, either 'single', i.e., one user, or
+  'multi', i.e., multiple users.
+
+  In 'single' mode, there is no user 'oracc' (unless that is the single
+  user).  In 'multi' mode there must be a system user 'oracc.
+
+* ORACC_HOME
+
+  The location of Oracc projects.  In a 'multi' installation this is 
+  /home on Unix or /Users on Mac.  In a 'single' installation this may
+  be either /usr/local/oracc or any other directory that the Oracc
+  installation has access to.  If the 'single' installation is on a
+  personal computer, ~/oracc-projects is the default location
+
+
+Typical Environments for each Level
+===================================
+
+* Work
+
+ORACC=/usr/local/oracc
+ORACC_MODE=single
+ORACC_HOME=~/oracc-projects
+
+* Build
+
+ORACC=/home/oracc
+ORACC_MODE=single
+ORACC_HOME=/home/oracc
+
+* Web
+
+ORACC=/home/oracc
+ORACC_MODE=single
+ORACC_HOME=/home/oracc
+
+* Full
+
+ORACC=/home/oracc
+ORACC_MODE=multi
+ORACC_HOME=/home
