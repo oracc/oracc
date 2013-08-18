@@ -1,20 +1,15 @@
 P3:
 ===
 
-* note numbers need to be ignored--can use ^^ or ^1^ etc. just to make it 
-  easier to know which notemark correlates with which note; need to number
-  sequentially across text
-
-* what are all the (-1x) items in gkab glos?
-
 * Check things that may have broken now that all p2 css/js has been removed
-
-* lem index in AS
 
 * oversize heading in cbd sig popup
 
-* automatically/transparently upgrade txt index search to lem search
-  on need rather than make the user have to choose
+* what are all the (-1x) items in gkab glos?
+
+-* note numbers need to be ignored--can use ^^ or ^1^ etc. just to make it 
+  easier to know which notemark correlates with which note; need to number
+  sequentially across text
 
 -* Niek's !txt lugal !cat nippur in AS
 
@@ -137,6 +132,11 @@ Refactoring:
 
 * lots of old xxx-HTML (vel sim.) scripts to go
 
+Features:
+=========
+
+* automatically/transparently upgrade txt index search to lem search
+  on need rather than make the user have to choose
 
 Opendata:
 =========
