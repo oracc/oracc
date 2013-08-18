@@ -91,6 +91,11 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
   last_label = 0;
   trans_wid = 0;
 
+  /* trans_inter does not call the translation() routine, which is good
+     because we don't want to reinitialize the line notes in interlinear
+     translations */
+  note_initialize_line();
+
   if (saa_mode)
     need_alignment = 0;
   else
@@ -1536,6 +1541,7 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		  if (!strcmp(cc(getAttr(cnode, "class")), "note"))
 		    {
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
+		      appendChild(span,textNode(start));
 		      setClass(span,"notemark");
 		    }
 		  else
@@ -1544,7 +1550,6 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		      note_register_tag(start, span);
 		      setClass(span,"notelink");
 		    }
-		  appendChild(span,textNode(start));
 		  start = ++s;
 		}
 	      else

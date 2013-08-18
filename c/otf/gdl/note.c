@@ -140,6 +140,7 @@ note_initialize_line(void)
   if (notes_in_line)
     list_free(notes_in_line, NULL);
   notes_in_line = list_create(LIST_SINGLE);
+  note_index = 1;
 }
 
 void
@@ -179,6 +180,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
   
   if ('^' == lines[0][0])
     {
+      struct note *np;
       /* the note should already be registered at the tag-point in the line */
       ++lines[0];
       while (lines[0][0] && '^' != lines[0][0])
@@ -189,6 +191,16 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
       *m = '\0';
       ++lines[0];
       tag = (const unsigned char *)tagbuf;
+      np = note_find_in_line(tag);
+      if (np)
+	{
+	  mark = np->mark;
+	}
+      else
+	{
+	  warning("tag in note does not have corresponding tag in preceding line");
+	  return 1;
+	}
     }
   else
     {
@@ -336,7 +348,6 @@ note_register_tag(const unsigned char *tag, struct node *parent)
   else
     {
       struct note *np = mb_new(mb);
-#if 1
       unsigned char *note_mark_text = NULL;
       struct node *note_mark_node = parent;
       if (note_index < 1000000)
@@ -345,11 +356,6 @@ note_register_tag(const unsigned char *tag, struct node *parent)
 	  sprintf((char*)markbuf,"%d",note_index++);
 	  note_mark_text = npool_copy(markbuf, note_pool);
 	}
-#else
-      struct node *note_mark_node = elem(e_note_mark, NULL, lnum, WORD);
-      unsigned char *note_mark_text = npool_copy(mark, note_pool);
-      appendChild(parent, note_mark_node);
-#endif
       /* If there was a ^1^ tag in the line we need to replace the text
 	 content of the parent element here; otherwise, we have a fresh
 	 parent element and just need to append the text node */
