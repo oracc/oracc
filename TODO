@@ -13,6 +13,9 @@ P3:
 
 * oversize heading in cbd sig popup
 
+* automatically/transparently upgrade txt index search to lem search
+  on need rather than make the user have to choose
+
 -* Niek's !txt lugal !cat nippur in AS
 
 -* scribesscholarsancestors: sort sequence bad for letters only; entries sort OK
