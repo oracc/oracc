@@ -122,12 +122,10 @@
 	      <xforms:label>transliteration</xforms:label>
 	      <xforms:value>txt</xforms:value>
 	    </xforms:item>
-<!--
 	    <xforms:item>
 	      <xforms:label>lemmatization</xforms:label>
 	      <xforms:value>lem</xforms:value>
 	    </xforms:item>
- -->sy
 	    <xforms:item>
 	      <xforms:label>translation</xforms:label>
 	      <xforms:value>tra</xforms:value>
@@ -161,12 +159,10 @@
 		<xforms:label>transliterations</xforms:label>
 		<xforms:value>txt</xforms:value>
 	      </xforms:item>
-<!--
 	    <xforms:item>
 	      <xforms:label>lemmatization</xforms:label>
 	      <xforms:value>lem</xforms:value>
 	    </xforms:item>
- -->
 	    <xforms:item>
 	      <xforms:label>translation</xforms:label>
 	      <xforms:value>tra</xforms:value>
