@@ -1,4 +1,6 @@
 #!/bin/sh
+. ./oraccenv.sh
+./preconfig.sh || exit 1
 glibtoolize
 aclocal
 autoheader

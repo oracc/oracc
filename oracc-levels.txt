@@ -1,26 +1,3 @@
-Oracc Installation Levels
-=========================
-
-Oracc installations support different levels of activity as follows:
-
-* Work
-
-  Create and check text editions; perform lemmatization
-
-* Build
-
-  Create and manage projects+
-
-* Web
-
-  Run a full Oracc webserver from pre-built projects
-
-* Full
-
-  All of the above
-
-
-
 Oracc Environment Variables
 ===========================
 
@@ -45,6 +22,55 @@ Oracc has several environment variables which must be set at install time:
   be either /usr/local/oracc or any other directory that the Oracc
   installation has access to.  If the 'single' installation is on a
   personal computer, ~/oracc-projects is the default location
+
+* ORACC_USER
+
+  This is 'yes' if there is a system user named oracc, no otherwise. An
+  oracc user is required for multi mode but is optional otherwise.
+
+* ORACC_HOST
+
+  This should be the full domain name of the Oracc server on which the
+  instance is running.
+
+
+Setting the Environment Variables
+=================================
+
+The Oracc github repo contains a file named oraccenv.example which 
+should be edited and saved as oraccenv.sh.
+
+The file oraccenv.sh is not present in the github repo so will not be
+overwritten by subsequent syncs.
+
+
+
+================================================================================
+=== PROBABLY DON'T NEED THE STUFF AFTER THESE LINES ===
+================================================================================
+================================================================================
+
+
+Oracc Installation Levels
+=========================
+
+Oracc installations support different levels of activity as follows:
+
+* Work
+
+  Create and check text editions; perform lemmatization
+
+* Build
+
+  Create and manage projects+
+
+* Web
+
+  Run a full Oracc webserver from pre-built projects
+
+* Full
+
+  All of the above
 
 
 Typical Environments for each Level
@@ -73,3 +99,5 @@ ORACC_HOME=/home/oracc
 ORACC=/home/oracc
 ORACC_MODE=multi
 ORACC_HOME=/home
+
+

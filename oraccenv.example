@@ -1,0 +1,7 @@
+#!/bin/sh
+ORACC=/home/oracc
+ORACC_HOME=$ORACC
+ORACC_MODE=single
+ORACC_USER=no
+ORACC_HOST=`hostname -f`
+export ORACC ORACC_HOME ORACC_MODE ORACC_HOST
