@@ -20,5 +20,5 @@ fi
 if [ ! -d /var/tmp/oracc/pager ]; then
     mkdir -p /var/tmp/oracc/pager
 fi
-chown -R $httpduser /var/tmp/oracc
+chown -R $httpduser:$httpduser /var/tmp/oracc
 chmod og-rwx /var/tmp/oracc/*
