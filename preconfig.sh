@@ -5,7 +5,7 @@ if [ ! $(whoami) = "root" ]; then
 fi
 httpduser=`./httpduser.sh`
 if [ "$httpduser" = "" ]; then
-    echo Oracc preconfiguration: unable to set httpduser. Stop.
+    echo 'Oracc preconfiguration: unable to set httpduser (do you need to install Apache?). Stop.'
     exit 1
 fi
 if [ ! -d $ORACC ]; then
