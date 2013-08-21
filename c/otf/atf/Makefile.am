@@ -11,7 +11,7 @@ libatf_la_SOURCES = \
 	block.c blocktok.c label.c labtab.c \
 	lemline.c nonx.c nonxtok.c \
 	protocols.c text.c translate.c transtok.c \
-	xtfxcl.c wordmatrix.c
+	xtfxcl.c wordmatrix.c note.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,prj,run,ox} \

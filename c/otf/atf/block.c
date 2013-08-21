@@ -23,6 +23,7 @@
 #include "inline.h"
 #include "lemline.h"
 #include "note.h"
+#include "wordmatrix.h"
 
 extern int lem_autolem, mylines;
 
@@ -93,7 +94,6 @@ static void block(unsigned char *line,unsigned char *eol,struct block_token *bp)
 static struct node *c_attach_point(void);
 static void concat_continuations(unsigned char **lines);
 static int comment(unsigned char **lines);
-static int note(unsigned char **lines);
 static void document(unsigned char *line,struct block_token *bp);
 static void line_bil(unsigned char *lp);
 static void line_gus(unsigned char *lp);
@@ -800,7 +800,7 @@ $ start of reverse missing
 		      if (!xstrncmp(*lines, "#lem:",5))
 			concat_continuations(lines);
 		      else
-			lem_save_line(lines);
+			lem_save_line(lines[0]);
 		      if (xstrncmp(*lines,"#eid:",5))
 			protocol(run, protocol_state, LINE, current, *lines);
 		    }
@@ -832,7 +832,7 @@ $ start of reverse missing
 		  ++lnum;
 		  ++lines;
 		  concat_continuations(lines);
-		  lem_save_line(lines);
+		  lem_save_line(lines[0]);
 		  line_bil(*lines);
 		  skip_blank();
 		  /* FIXME: weak support for #lem: */
@@ -963,7 +963,7 @@ block(unsigned char *line,unsigned char *eol,struct block_token *bp)
 {
   enum e_type tag;
   register unsigned char *tok = NULL;
-  unsigned char save, *htext, *block_tok_name = NULL;
+  unsigned char save, *htext = NULL;
 
   switch (bp->type)
     {
@@ -2061,7 +2061,7 @@ ntoken(unsigned char *s,unsigned char *eol,int multi,enum a_type a)
       vwarning("bad character in block line at: %s",s);
       return NULL;
     }
-  etok = tok + strlen(tok);
+  etok = tok + strlen((char*)tok);
   while (isspace(etok[-1]))
     *--etok = '\0';
   appendAttr(current,attr(a,tok));
