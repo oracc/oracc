@@ -1,5 +1,5 @@
 #!/bin/sh
-agg-test.sh || exit 1
+${ORACC}/bin/agg-test.sh || exit 1
 mkdir -p ${ORACC}/agg/projects
 cd ${ORACC}/agg/projects
 xsl=${ORACC}/lib/scripts
@@ -19,7 +19,7 @@ echo '</projects>' >>all-projects.xml
 xsltproc --xinclude $xsl/agg-public-projects.xsl \
     all-projects.xml >public-projects.xml
 
-agg-thumbs.sh
+${ORACC}/bin/agg-thumbs.sh
 
 mkdir -p ${ORACC}/www/agg
 #cp -a ${ORACC}/agg/projects/images/* ${ORACC}/www/agg/
