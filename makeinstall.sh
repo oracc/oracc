@@ -4,7 +4,7 @@ make install
 cd $ORACC
 mkdir -p $ORACC/00any
 cd $ORACC/00any
-curl -L -o coredata.zip https://github.com/oracc/coredata/master.zip
+curl -L -o coredata.zip https://github.com/oracc/coredata/archive/master.zip
 unzip coredata
 mkdir -p $ORACC/lib/data
 cp -a coredata-master/cats/catpnums.vec $ORACC/lib/data
