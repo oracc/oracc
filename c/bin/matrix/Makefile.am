@@ -25,10 +25,10 @@ matrix_SOURCES= \
 
 matrix_LDADD=@top_srcdir@/c/lib/collate/libcoll.la \
 	@top_srcdir@/c/otf/prj/libprj.la \
-	@top_srcdir@/c/otf/atf/libatf.la \
 	@top_srcdir@/c/otf/gdl/libgdl.la \
-	@top_srcdir@/c/otf/chr/libchr.la \
+	@top_srcdir@/c/otf/atf/libatf.la \
 	@top_srcdir@/c/otf/lib/libcdf.la \
+	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/l2/libl2.la \
 	@top_srcdir@/c/lib/liboracc.la
