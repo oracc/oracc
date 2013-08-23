@@ -8,6 +8,8 @@ yum install \
     libtool \
     gperf \
     pcre-devel \
+    gdbm-devel \
+    expat-devel \
     libxml2-devel \
     libxslt-devel \
     msort \
