@@ -29,8 +29,8 @@ post_option_setup.c: post_option_setup.c.in
 	$(ORACCIFY) post_option_setup.c.in
 
 xLDADD = \
-	../atf/libatf.la \
 	../gdl/libgdl.la \
+	../atf/libatf.la \
 	../chr/libchr.la \
 	../lib/libcdf.la \
 	../lng/liblng.la \
