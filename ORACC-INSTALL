@@ -25,7 +25,11 @@ Set up Oracc Environment
 Configure and Install Oracc
 ===========================
 
-  Run the OS install script: sudo ./lnx-config.sh; sudo ./mac-config.sh.
+  sudo ./preconfig.sh
+  ./lnx-config.sh or ./mac-config.sh
+  sudo make install
+
+(if you want to build with debuggin info, run ./lnx-config.sh CFLAGS=-g)
 
 
 Oracc Environment Variables
