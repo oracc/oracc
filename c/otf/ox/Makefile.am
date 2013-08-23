@@ -31,8 +31,8 @@ post_option_setup.c: post_option_setup.c.in
 xLDADD = \
 	../gdl/libgdl.la \
 	../atf/libatf.la \
-	../chr/libchr.la \
 	../lib/libcdf.la \
+	../chr/libchr.la \
 	../lng/liblng.la \
 	../otf/libotf.la \
 	../prj/libprj.la \
