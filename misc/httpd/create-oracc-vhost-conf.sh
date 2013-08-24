@@ -29,7 +29,7 @@ cat >oracc-vhost.conf <<EOF
     ScriptAliasMatch ^/cgi-bin/(.*$) "$ORACC/www/cgi-bin/$1"
     ErrorLog "$LOGDIR/oracc-error_log"
     CustomLog "$LOGDIR/oracc-access_log" common
-    <Directory "/usr/local/oracc/www">
+    <Directory "$ORACC/www">
                Options Indexes FollowSymLinks MultiViews
                AllowOverride None
                Order allow,deny

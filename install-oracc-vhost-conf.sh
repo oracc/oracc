@@ -5,8 +5,8 @@ function quit {
     exit 1
 }
 
-if [ -r /etc/httpd/httpd.conf ]; then
-    HTTPD_CONF=/etc/httpd/httpd.conf
+if [ -r /etc/httpd/conf/httpd.conf ]; then
+    HTTPD_CONF=/etc/httpd/conf/httpd.conf
 else
     if [ -r /private/etc/apache2/httpd.conf ]; then
 	HTTPD_CONF=/private/etc/apache2/httpd.conf
@@ -28,8 +28,15 @@ else
 fi
 INSTDIR=`pwd`
 cd $HTTPD_CONFDIR || quit "unable to change directory to $HTTPD_CONFDIR"
-cp -a $HTTPD_CONF oracc-saved-$HTTPD_CONF || quit "unable to save backup copy of $HTTPD_CONF"
+SAVED_CONF=oracc-saved-`basename $HTTPD_CONF`
+cp -a $HTTPD_CONF $SAVED_CONF  || quit "unable to save backup copy of $SAVED_CONF"
 cp -a $INSTDIR/oracc-vhost.conf . || quit "unable to install oracc-vhost.conf"
+chown root:root oracc-vhost.conf
+chmod go-rw oracc-vhost.conf
+SEL=`which chcon`
+if [ ! "$SEL" = "" ]; then
+    chcon -t httpd_config_t oracc-vhost.conf
+fi
 cat >>$HTTPD_CONF <<EOF
 NameVirtualHost *:80
 include $HTTPD_VDIR/oracc-vhost.conf
