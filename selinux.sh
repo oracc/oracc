@@ -16,24 +16,6 @@ needfile $FC2
 grep oracc $FC1 && quit Oracc already installed in $FC1
 grep oracc $FC2 && quit Oracc already installed in $FC2
 mkdir -p $ORACC/{bld,xml,pub}
-cat >>$FC1 <<EOF
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/bin(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/bld(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/lib(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/pub(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/xml(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/www(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_script_exec_t "$ORACC/www/cgi-bin(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_script_exec_t "$ORACC/bin(/.*)?"
-EOF
-cat >>$FC2 <<EOF
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/bin(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/bld(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/lib(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/pub(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/xml(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_content_t "$ORACC/www(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_script_exec_t "$ORACC/www/cgi-bin(/.*)?"
-/usr/sbin/semanage fcontext -a -t httpd_sys_script_exec_t "$ORACC/bin(/.*)?"
-EOF
+cat oracc.fc >>$FC1
+cat oracc.fc >>$FC2
 /sbin/restorecon -R -v $ORACC

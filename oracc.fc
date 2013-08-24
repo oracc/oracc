@@ -1,0 +1,8 @@
+/home/oracc/bld(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/lib(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/pub(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/xml(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/bin(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/www(/.*)?    system_u:object_r:httpd_sys_content_t:s0
+/home/oracc/bin(/.*)?    system_u:object_r:httpd_sys_script_exec_t:s0
+/home/oracc/www/cgi-bin(/.*)?    system_u:object_r:httpd_sys_script_exec_t:s0
