@@ -46,6 +46,24 @@ it meets your server's requirements type:
 
    sudo ./install-oracc-vhost-conf.sh
 
+Linux:
+
+	Check that your iptables accept tcp port 80 using iptables -L -n.  If you don't see
+	something like:
+
+	ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
+
+	then add it with:
+
+	     /sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+
+Mac OS X:
+
+	This was easy up until Mountain Lion.  See this page for notes and a link to a page
+	that makes it easy again:
+
+	http://osxdaily.com/2012/09/02/start-apache-web-server-mac-os-x/
+
 
 Oracc Environment Variables
 ===========================

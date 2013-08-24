@@ -1,5 +1,6 @@
 #!/bin/sh
 yum install \
+    policycoreutils-python \
     nano \
     emacs \
     gcc \
