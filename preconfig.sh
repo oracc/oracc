@@ -1,6 +1,15 @@
 #!/bin/sh
+if [ ! -r oraccenv.sh ]; then
+    echo Oracc preconfiguration: please create oraccenv.sh before proceeding. Stop.
+    exit 1
+fi
+. oraccenv.sh
+if [ "$ORACC" = "" ]; then
+    echo Oracc preconfiguration: please set ORACC variable in oraccenv.sh. Stop.
+    exit 1
+fi
 if [ ! $(whoami) = "root" ]; then
-    echo Oracc preconfiguration: must run as root. Stop
+    echo Oracc preconfiguration: must run as root. Stop.
     exit 1
 fi
 httpduser=`./httpduser.sh`
