@@ -1047,15 +1047,20 @@ public class ImageInfo {
 	}
 
 	private static void printOracc(String sourceName, ImageInfo imageInfo) {
+	    
 	    /*
 	    int slash = sourceName.lastIndexOf('/');
-	    String base = sourceName.substring(slash+1); 
-	    */
-	    String base = sourceName.substring(22);
+	    String base2 = sourceName.substring(slash+1);
+  	     */
+	    
+	    String base = sourceName.substring(13);
 		System.out.println(
-				   "<esp:image-info file=\""+
-				   base
-				   +"\""+" width=\"" + imageInfo.getWidth()+"\" height=\""+imageInfo.getHeight()+"\"/>"
+				   "<esp:image-info"
+				   + " sourceName=\"" + sourceName + "\""
+				   + " file=\"" + base + "\"" 
+				   + " width=\"" + imageInfo.getWidth()+ "\""
+				   + " height=\""+imageInfo.getHeight()+"\""
+				   + "/>"
 		);
 	}
 

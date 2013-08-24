@@ -325,12 +325,13 @@
       <xsl:message>  WARNING! Image tag lacking description (name: <xsl:value-of select="@name"/>) -- page will fail WAI compliance test!</xsl:message>
     </xsl:if>
     <xsl:variable name="src" select="if ( @file ) then concat ( $relpath, '/images/', @file ) else @url"/>
-<!--    <xsl:variable name="width" select="if ( @file ) then $images-info/esp:image-info/@width[../@file = current ()/@file] else @width"/> -->
 
 <!-- SJT: compute grid from images-info and esp2-global-design-width -->
 <!--    <xsl:variable name="width" select="if ( @file ) then @grid else @width"/>  -->
 
-<xsl:variable name="img-width" select="$images-info/esp:image-info/@width[../@file = current()/@file]"/>
+   <xsl:variable name="this-file" select="@file"/>
+   <xsl:variable name="img-width" select="$images-info/esp:image-info[@file = $this-file]/@width"/>
+<!--   <xsl:message>found width <xsl:value-of select="$img-width"/> for file <xsl:value-of select="$this-file"/></xsl:message> -->
    <xsl:variable name="width">
      <xsl:choose>
        <xsl:when test="@file">
