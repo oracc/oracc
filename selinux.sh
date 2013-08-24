@@ -9,17 +9,18 @@ function needfile {
 . ./oraccenv.sh
 FC1=/etc/selinux/targeted/modules/active/file_contexts
 FC2=/etc/selinux/targeted/contexts/files/file_contexts
+FC1local=/etc/selinux/targeted/modules/active/file_contexts.local
+FC2local=/etc/selinux/targeted/contexts/files/file_contexts.local
 # .local can be empty so first check for file_context
 needfile $FC1
 needfile $FC2
-# now switcheroo to .local versions
-FC1=/etc/selinux/targeted/modules/active/file_contexts.local
-FC2=/etc/selinux/targeted/contexts/files/file_contexts.local
-[ -w $FC1 ] || quit $FC1 is not writable
-[ -w $FC2 ] || quit $FC2 is not writable
 grep oracc $FC1 && quit Oracc already installed in $FC1
-grep oracc $FC2 && quit Oracc already installed in $FC2
+# now switcheroo to .local versions
+[ -w $FC1local ] || quit $FC1 is not writable
+[ -w $FC2local ] || quit $FC2 is not writable
 mkdir -p $ORACC/{bld,xml,pub}
 cat oracc.fc >>$FC1
+cat oracc.fc >>$FC1local
 cat oracc.fc >>$FC2
+cat oracc.fc >>$FC2local
 /sbin/restorecon -R -v $ORACC
