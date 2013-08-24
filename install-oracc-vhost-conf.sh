@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function quit {
-    echo install-oracc-vhost-conf.sh: $1. Stop.
+    echo install-oracc-vhost-conf.sh: $*. Stop.
     exit 1
 }
 

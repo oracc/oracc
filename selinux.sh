@@ -1,6 +1,6 @@
 #!/bin/sh
 function quit {
-    echo selinux.sh: $1. Stop.
+    echo selinux.sh: $*. Stop.
     exit 1;
 }
 function needfile {
