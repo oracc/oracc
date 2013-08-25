@@ -123,3 +123,5 @@ h1.p2h2   { font-size: 100%; padding-top: 0px; margin-top: 0px; }
 h1.toc { fontsize: 10pt; text-align: center; }
 
 #unicode { margin: 0x; padding: 0px; }
+
+.notelink { font-size: 70%; vertical-align: super; padding-left: .1em; padding-right: .1em; background-color: black; color: white; }

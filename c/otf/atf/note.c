@@ -140,7 +140,7 @@ note_initialize_line(void)
   if (notes_in_line)
     list_free(notes_in_line, NULL);
   notes_in_line = list_create(LIST_SINGLE);
-  note_index = 1;
+  /*note_index = 1;*/
 }
 
 void

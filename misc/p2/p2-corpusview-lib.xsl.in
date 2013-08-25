@@ -698,28 +698,22 @@
 	</xsl:apply-templates>
       </xsl:element>
 
+      <!-- n.b.: note IDs are xml:id in the .xtf files, but are mapped to HTML id attr in the .txh files that
+	   this xsl script operates on -->
       <div class="p3notes">
-	<xsl:for-each select="xh:p[@class='note']">
-	  <xsl:variable name="nid" 
-			select="concat('tnote',1+count(preceding-sibling::*[@class='note']))"/>
-	  <p class="note" onmouseout="hideNote(event,'{$nid}')" onclick="hideNote(event,'{$nid}')">
-	    <xsl:attribute name="id">
-	      <xsl:value-of select="$nid"/>
-	    </xsl:attribute>
+	<xsl:for-each select="following-sibling::xh:div[@class='p3notes']/xh:p[@class='note']">
+	  <p class="note" onmouseout="hideNote(event,'{@id}')" onclick="hideNote(event,'{@id}')" id="{@id}">
 	    <xsl:apply-templates mode="notediv"/>
 	  </p>
 	</xsl:for-each>
+	<!-- but they are xml:id in the .xtr files :( [sort this out, Steve] -->
 	<xsl:if test="$xtr and $xtr/*">
 	  <xsl:for-each select="$xtr/*/xh:div[@class='note']">
-	    <xsl:variable name="nid" select="xh:p[1]/xh:span[@class='marker']"/>
-	    <p class="note">
-	      <xsl:attribute name="id">
-		<xsl:value-of select="concat('note',$nid)"/>
-	      </xsl:attribute>
+	    <p class="note" id="{@xml:id}">
 	      <xsl:attribute 
-		  name="onmouseout">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
+		  name="onmouseout">hideNote(event,'<xsl:value-of select="@xml:id"/>')</xsl:attribute>
 	      <xsl:attribute 
-		  name="onclick">hideNote(event,'note<xsl:value-of select="$nid"/>')</xsl:attribute>
+		  name="onclick">hideNote(event,'<xsl:value-of select="@xml:id"/>')</xsl:attribute>
 	      <xsl:apply-templates mode="notediv"/>
 	    </p>
 	  </xsl:for-each>
@@ -733,6 +727,8 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="xh:div[@class='p3notes']"/>
+
 <xsl:template match="xh:innerp[@class='tr-comment']"/>
 
 <xsl:template match="xh:innerp">
@@ -742,7 +738,6 @@
   </xsl:if>
 </xsl:template>
 
-<!--
 <xsl:template match="xh:span[@class='notelink']">
   <a href="javascript://" 
      onmouseover="showNote(event,'{@note:ref}')" 
@@ -753,7 +748,6 @@
     </xsl:copy>
   </a>
 </xsl:template>
--->
 
 <xsl:template match="xh:span[@class='w']">
   <xsl:element name="{local-name()}">

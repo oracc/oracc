@@ -1488,7 +1488,7 @@
 <xsl:template match="note:text"/>
 
 <xsl:template mode="gathered" match="note:text">
-  <p class="note">
+  <p class="note" id="{@xml:id}">
     <xsl:if test="@note:mark|@note:label">
       <xsl:attribute name="mark">
 	<xsl:choose>
