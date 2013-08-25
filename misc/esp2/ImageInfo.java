@@ -1053,15 +1053,15 @@ public class ImageInfo {
 	    String base2 = sourceName.substring(slash+1);
   	     */
 	    
-	    String base = sourceName.substring(13);
-		System.out.println(
-				   "<esp:image-info"
-				   + " sourceName=\"" + sourceName + "\""
-				   + " file=\"" + base + "\"" 
-				   + " width=\"" + imageInfo.getWidth()+ "\""
-				   + " height=\""+imageInfo.getHeight()+"\""
-				   + "/>"
-		);
+	    String base = sourceName.substring("00web/00static/images/".length());
+	    System.out.println(
+			       "<esp:image-info"
+			       + " sourceName=\"" + sourceName + "\""
+			       + " file=\"" + base + "\"" 
+			       + " width=\"" + imageInfo.getWidth()+ "\""
+			       + " height=\""+imageInfo.getHeight()+"\""
+			       + "/>"
+			       );
 	}
 
 	private static void printCompact(String sourceName, ImageInfo imageInfo) {

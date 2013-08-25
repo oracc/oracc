@@ -10,14 +10,6 @@ if [ "$1" = "" ]; then
     exit 1
 fi
 
-#if [ "$2" = "" ]; then
-#    echo esp-live.sh: must give webdir name as second argument
-#    exit 1
-#else
-#    echo esp-live.sh: forcing webdir to 01bld/www
-#    webdir=01bld/www
-#fi
-
 espdev=01bld/espdev
 
 if [ ! -d $espdev ]; then
@@ -38,7 +30,7 @@ project=$1
 webdir=02www
 mkdir -p $webdir
 if [ ! -d $webdir ]; then
-    echo esp-live.sh: $webdir does not exist and cannot be created
+    echo esp2-live.sh: $webdir does not exist and cannot be created
     exit 1
 fi
 

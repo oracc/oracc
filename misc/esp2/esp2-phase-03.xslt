@@ -352,69 +352,57 @@
    </xsl:variable>
    <xsl:message>grid fit for <xsl:value-of select="@file"/> set from <xsl:value-of select="$img-width"/> to <xsl:value-of select="$width"/></xsl:message>
 
-<!--    <xsl:variable name="height" select="if ( @file ) then $images-info/esp:image-info/@height[../@file = current ()/@file] else @height"/> -->
-    <div>
-<!--      <xsl:attribute name="class" select="if ( @position = 'float' ) then 'imagefloat pc40' else 'imageinline'"/> -->
-      <xsl:attribute name="class">
-	<xsl:choose>
-	  <xsl:when test="@position='float'">
-	    <xsl:value-of select="concat('imagefloat ', concat('pc',$width))"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:text>imageinline</xsl:text>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:attribute>
+   <xsl:variable name="div-or-span">
+     <xsl:choose>
+       <!-- add xsl:when clauses here to identify additional contexts
+            where an image should be text-inlined -->
+       <xsl:when test="ancestor::p"><xsl:text>span</xsl:text></xsl:when>
+       <xsl:when test="ancestor::dt"><xsl:text>span</xsl:text></xsl:when>
+       <xsl:otherwise><xsl:text>div</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
+   </xsl:variable>
 
-<!--
-      <xsl:if test="$width">
-        <xsl:attribute name="style">width: <xsl:value-of select="$width"/>px</xsl:attribute>
-      </xsl:if>
- -->
-      <xsl:for-each select="esp:link | esp:flash-movie">
-        <xsl:copy>
-          <xsl:copy-of select="@*"/>
-          <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]/@grid}"> -->
-<!--
-            <xsl:if test="$width">
-              <xsl:attribute name="width" select="$width"/>
-            </xsl:if>
-            <xsl:if test="$height">
-              <xsl:attribute name="height" select="$height"/>
-            </xsl:if>
- -->
-          </img>
-        </xsl:copy>
-      </xsl:for-each>
-      <xsl:if test="not(esp:link | esp:flash-movie)">
-        <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
-<!--
-          <xsl:if test="$width">
-            <xsl:attribute name="width" select="$width"/>
-          </xsl:if>
-          <xsl:if test="$height">
-            <xsl:attribute name="height" select="$height"/>
-          </xsl:if>
- -->
-          <xsl:if test="esp:image-map">
-            <xsl:attribute name="usemap" select="concat('#map_', generate-id(esp:image-map))"/>
-          </xsl:if>
-        </img>
-      </xsl:if>
-      <xsl:for-each select="esp:caption">
-        <div class="imagecaption">
-          <p>
-	    <xsl:apply-templates/> <!-- check if this starts with p tag -->
-	  </p>
-        </div>
-      </xsl:for-each>
-      <xsl:for-each select="esp:image-map">
-        <map id="map_{generate-id()}" name="map_{generate-id()}">
-          <xsl:apply-templates/>
-        </map>
-      </xsl:for-each>
-    </div>
+   <xsl:element name="{$div-or-span}">
+     <xsl:attribute name="class">
+       <xsl:choose>
+	 <xsl:when test="@position='float'">
+	   <xsl:value-of select="concat('imagefloat ', concat('pc',$width))"/>
+	 </xsl:when>
+	 <xsl:otherwise>
+	   <xsl:text>imageinline</xsl:text>
+	 </xsl:otherwise>
+       </xsl:choose>
+     </xsl:attribute>
+     
+     <xsl:for-each select="esp:link | esp:flash-movie">
+       <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <img src="{$src}" alt="{@description}"/>
+       </xsl:copy>
+     </xsl:for-each>
+     <xsl:if test="not(esp:link | esp:flash-movie)">
+       <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
+         <xsl:if test="esp:image-map">
+           <xsl:attribute name="usemap" select="concat('#map_', generate-id(esp:image-map))"/>
+         </xsl:if>
+       </img>
+     </xsl:if>
+     <xsl:for-each select="esp:caption">
+       <div class="imagecaption">
+         <p>
+	   <xsl:apply-templates/> <!-- check if this starts with p tag -->
+	 </p>
+       </div>
+     </xsl:for-each>
+     <xsl:for-each select="esp:image-map">
+       <map id="map_{generate-id()}" name="map_{generate-id()}">
+         <xsl:apply-templates/>
+       </map>
+     </xsl:for-each>
+   </xsl:element>
   </xsl:template>
+
   <!-- process headings -->
   <xsl:template match="esp:h | esp:sh">
     <xsl:variable name="heading-text">

@@ -1,9 +1,11 @@
 #!/bin/sh
 type=`oraccopt . type`
 if [ "$type" == "portal" ]; then
-    esp2=`oraccopt . esp2`
-    if [ "$esp2" == "yes" ]; then
+    if [ -d 00web/00config ]; then
+	echo calling esp2.sh `oraccopt` ...
 	esp2.sh `oraccopt`
+	echo calling esp2-live.sh `oraccopt` force ...
+	esp2-live.sh `oraccopt` force
     else
 	oracc esp
 	echo You now need to call: oracc esp live to make the rebuilt portal live online

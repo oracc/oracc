@@ -305,7 +305,11 @@ if ($command eq 'catf') {
     if ($#ARGV >= 0 && $ARGV[0] eq 'init') {
 	xsystem 'esp-init.sh';
     } else {
-        xsystem 'o2-esp.sh', @ARGV;
+	if (-d '00web/00config') {
+	    xsystem 'esp2.sh', $project, @ARGV;
+	} else {
+	    xsystem 'o2-esp.sh', @ARGV;
+	}
     }
 } elsif ($command eq 'exist' || $command eq 'eXist') {
     xsystem 'oracc', 'xml';
