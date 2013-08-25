@@ -447,3 +447,23 @@ c/bin/lemmer/test
 misc/p3/p3-selector.plx
 
 oraccenv.sh
+
+misc/tei/cbd2listNym.xsl
+
+misc/tei/cbd2listNym.xsl
+
+misc/tei/cbd2listPerson.xsl
+
+misc/tei/cbd2listPerson.xsl
+
+misc/tei/r2tei.xsl
+
+misc/tei/r2tei.xsl
+
+misc/tei/teicorpus-header.xsl
+
+misc/tei/teicorpus-header.xsl
+
+misc/tei/teicorpus.xsl
+
+misc/tei/teicorpus.xsl
