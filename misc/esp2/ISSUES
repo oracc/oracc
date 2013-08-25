@@ -16,3 +16,9 @@ ESP2 Issues List:
 
 * ncr builds a portal and makes it live; for testing, use oracc esp then ncr to do the proper 
   full rebuild which also handles the full text indexing
+
+* ongoing management of doc2/esp2
+
+* doc2 into public oracc repo
+
+
