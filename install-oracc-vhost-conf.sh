@@ -1,5 +1,9 @@
 #!/bin/sh
 
+function apachectl_restart {
+    echo apachectl start >>/etc/rc.d/rc.local
+}
+
 function quit {
     echo install-oracc-vhost-conf.sh: $*. Stop.
     exit 1
@@ -19,9 +23,9 @@ if [ -d /etc/httpd/conf ]; then
     HTTPD_CONFDIR=/etc/httpd/conf
     HTTPD_VDIR=/etc/httpd/conf
 else
-    if [ -d /private/etc/apache2/other ]; then
+    if [ -d /private/etc/apache2/extra ]; then
 	HTTPD_CONFDIR=/private/etc/apache2
-	HTTPD_VDIR=/private/etc/apache2/other
+	HTTPD_VDIR=/private/etc/apache2/extra
     else
 	quit "unable to locate httpd configuration directory"
     fi
@@ -41,5 +45,8 @@ cat >>$HTTPD_CONF <<EOF
 NameVirtualHost *:80
 include $HTTPD_VDIR/oracc-vhost.conf
 EOF
+if [ -r /etc/rc.d/rc.local ]; then
+    grep -q apachectl /etc/rc.d/rc.local || apachectl_start
+fi
 apachectl -t || quit "Please correct the problems with httpd.conf then type: apachectl restart"
 echo You may now restart the webserver by typing: apachectl restart

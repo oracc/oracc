@@ -24,3 +24,4 @@ cat oracc.fc >>$FC1local
 cat oracc.fc >>$FC2
 cat oracc.fc >>$FC2local
 /sbin/restorecon -R -v $ORACC
+semanage boolean -m --on httpd_enable_homedirs
