@@ -11,7 +11,7 @@
     <head>
       <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-      <link rel="stylesheet" type="text/css" href="/feoracchome.css"/>
+      <link rel="stylesheet" type="text/css" href="/css/oracchome.css"/>
       <title>Oracc Project List</title>
     </head>
     <body class="projlist">

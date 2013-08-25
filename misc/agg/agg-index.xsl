@@ -15,10 +15,10 @@
       <!--  <meta http-equiv="Refresh" content="850" /> -->
       <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-      <link rel="stylesheet" type="text/css" href="./css/oracchome.css" />
+      <link rel="stylesheet" type="text/css" href="/css/oracchome.css" />
       <link rel="alternate" type="application/atom+xml" title="Oracc News - Atom" href="http://oracc.blogspot.com/feeds/posts/default" />
       <link rel="alternate" type="application/rss+xml" title="Oracc News - RSS" href="http://oracc.blogspot.com/feeds/posts/default?alt=rss" />
-      <script src="./js/oracchome.js" type="text/javascript">var x;
+      <script src="/js/oracchome.js" type="text/javascript">var x;
 </script>
 <script type="text/javascript">
 

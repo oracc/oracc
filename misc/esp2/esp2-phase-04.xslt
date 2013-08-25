@@ -66,33 +66,33 @@
     <!-- styles -->
 <!--    <link rel="stylesheet" type="text/css" href="/css/oraccbase.css"/> -->
     <link rel="stylesheet" type="text/css" media="print" href="{$relpath}/css/print.css"/>
-<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/my-print.css"/> -->
+<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-print.css"/> -->
     <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/handheld.css"/>
-<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/my-handheld.css"/> -->
+<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-handheld.css"/> -->
     <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/screen.css"/>
-    <!-- why were all the my-xxx.css files commented out? -->
-    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/my-screen.css"/>
+    <!-- why were all the my-xxx.css files commented out? (because they don't seem to be used much [sjt]) -->
+    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/my-screen.css"/>
     <link rel="stylesheet" type="text/css" media="browsers_that_ignore_the_media_type_attribute" href="{$relpath}/css/browsersthatsuck.css"/>
 
     <xsl:choose>
       <xsl:when test="string($parameters/param:cuneify/@default) = 'na'">
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-ob.css" title="oldbabylonian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-na.css" title="neoassyrian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
       </xsl:when>
       <xsl:when test="string($parameters/param:cuneify/@default) = 'ob'">
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-na.css" title="neoassyrian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-ob.css" title="oldbabylonian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
       </xsl:when>
       <xsl:otherwise>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-ob.css" title="oldbabylonian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="{$relpath}/css/cuneify-na.css" title="neoassyrian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
       </xsl:otherwise>
     </xsl:choose>
     <!-- javascript -->
     <script type="text/javascript"><esp:comment>
 	var sRoot = '<xsl:value-of select="$parameters/param:root"/>';
     // </esp:comment></script>
-    <script type="text/javascript" src="{$relpath}/js/library.js"/> <!--{$relpath} -->
+    <script type="text/javascript" src="/js/library.js"/>
     <!-- ICRA tag (assert 'none of the above' in all categories) -->
     <meta http-equiv="pics-label" content='(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "{$parameters/param:host}{$relpath}" r (nz 1 vz 1 lz 1 oz 1 cz 1))'/>
     <!-- shortcut icon document relation -->
