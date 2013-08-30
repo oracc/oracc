@@ -1,0 +1,55 @@
+      <script type="text/javascript">
+function
+showNote(e,nid) {
+  if (!e) var e = event;
+  var posx = 0;
+  var posy = 0;
+  var safari = 0;
+  var ua = navigator.userAgent.toLowerCase(); 
+  if (ua.indexOf('safari')!=-1){
+    safari = 1;
+  }
+
+//  alert("safari="+safari);
+
+  if (!e) e = event;
+  if (e.clientX || e.clientY) {
+    posx = e.clientX - window.pageXOffset;
+    if (e.clientY > 0) {
+      posy = e.clientY;
+//      posy = (e.clientY - (safari ? window.pageYOffset : 0));
+//    } else {
+//      posy = (e.clientY + (safari ? window.pageYOffset : 0));
+    }
+//    alert('posx,posy='+posx+','+posy+';clientY='+e.clientY+'; pageYOffset='+window.pageYOffset);
+  } else if (e.pageX || e.pageY) {
+    posx = e.pageX;
+    posy = e.pageY;
+    alert('pageX,pageY='+posx+','+posy);
+  }
+
+  // posx and posy contain the mouse position relative to the document
+  // Do something with this information
+
+    note=document.getElementById(nid);
+    if (note.style.visibility != "visible") {
+      note.style.left = posx+'px';
+      note.style.top = posy+'px';
+//      note.style.left=(e.clientX)+'px';
+//      note.style.top=(e.screenY-100)+'px';
+      //  alert(nid+' is at '+e.clientX+' x '+e.clientY);
+      // makes note element visible
+	  note.style.visibility='visible';
+  }
+  return 1;
+}
+function
+hideNote(e,nid) {
+  if (!e)
+    e = event;
+  note=document.getElementById(nid);
+  // makes note element invisible
+  note.style.visibility='hidden';
+  return 1;
+}
+      </script>

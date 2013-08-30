@@ -279,13 +279,10 @@ function p3controls() {
 
 function
 hideNote(e,nid) {
-    if (!e)
-	e = event;
+    if (!e) e = event;
     note=document.getElementById(nid);
-    // makes note element invisible
     note.style.visibility='hidden';
     note.style.zIndex = 0;
-//    alert('note='+note+'; vis='+note.style.visibility);
     return 1;
 }
 
@@ -322,42 +319,40 @@ function selectURI(obj) {
 }
 
 function
-showNote(e,nid) {
-  if (!e) var e = event;
-  var posx = 0;
-  var posy = 0;
-  var safari = 0;
-  var ua = navigator.userAgent.toLowerCase(); 
-  if (ua.indexOf('safari')!=-1){
-    safari = 1;
-  }
-
-  if (!e) e = event;
-  if (e.clientX || e.clientY) {
-    posx = e.clientX - window.pageXOffset;
-    if (e.clientY > 0) {
-      posy = e.clientY;
-      }
-  } else if (e.pageX || e.pageY) {
-    posx = e.pageX;
-    posy = e.pageY;
-//    alert('pageX,pageY='+posx+','+posy);
-  }
-
-// alert('posx='+posx+'; posy='+posy);
-
-  // posx and posy contain the mouse position relative to the document
-  // Do something with this information
-
+showNote(e,nid,trans) {
+    if (!e) var e = event;
+    var posx = 0;
+    var posy = 0;
+    var safari = 0;
+    var ua = navigator.userAgent.toLowerCase(); 
+    if (ua.indexOf('safari')!=-1){
+	safari = 1;
+    }
+    
+    if (!e) e = event;
+    if (e.clientX || e.clientY) {
+	posx = e.clientX - window.pageXOffset;
+	if (e.clientY > 0) {
+	    posy = e.clientY;
+	}
+    } else if (e.pageX || e.pageY) {
+	posx = e.pageX;
+	posy = e.pageY;
+    }
+    
+    // posx and posy contain the mouse position relative to the document
+    // Do something with this information
     note=document.getElementById(nid);
-
-//    alert('nid='+nid+'; note='+note+'visibility='+note.style.visibility);
+    
     if (note.style.visibility != "visible") {
-	note.style.left = posx+'px';
+	if (trans) {
+	    note.style.left = (posx-200)+'px';
+	} else {
+	    note.style.left = posx+'px';
+	}
 	note.style.top = posy+'px';
 	note.style.visibility='visible';
 	note.style.zIndex = 3;
-//	alert('note should now be visible');
-  }
-  return 1;
+    }
+    return 1;
 }

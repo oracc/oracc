@@ -6,10 +6,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   exclude-result-prefixes="xst">
 
-<xsl:output method="xml" encoding="utf-8"
-   doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-   indent="yes"/>
+<xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
 
 <xsl:param name="machine" select="'enlil'"/>
 

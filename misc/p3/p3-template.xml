@@ -10,27 +10,6 @@
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
     <script src="/js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
-<style type="text/css">
-.notex {
-    text-align: right;
-    font-size: 90%;
-    padding: 0px; margin: 0px;
-}
-.note {
-  position: fixed;
-  width: 200px;
-  top: 0;
-  left: 0;
-  background: #ffc;
-  padding: 10px;
-  border: 1px solid #000;
-  visibility: hidden;
-  font-size: 10pt;
-  font-weight: normal; 
-  font-family: "Ungkam Basic",Arial,Helvetica,sans-serif;
-  color: #000;
-}
-</style>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-32878242-1']);

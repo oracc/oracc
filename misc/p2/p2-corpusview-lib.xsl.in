@@ -740,7 +740,7 @@
 
 <xsl:template match="xh:span[@class='notelink']">
   <a href="javascript://" 
-     onmouseover="showNote(event,'{@note:ref}')" 
+     onmouseover="showNote(event,'{@note:ref}', 1)" 
      onmouseout="hideNote(event,'{@note:ref}')">
     <xsl:copy>
       <xsl:copy-of select="@class"/>
@@ -783,7 +783,7 @@
 	      <xsl:when test="string-length(.) > 0">
 		<xsl:apply-templates/>
 		<xsl:if test="string-length($marker) > 0">
-		  <a href="javascript://" onmouseover="showNote(event,'{concat($prefix,'note',$marker)}')">
+		  <a href="javascript://" onmouseover="showNote(event,'{concat($prefix,'note',$marker)}', 0)">
 		    <span class="marker"><xsl:value-of select="$marker"/></span>
 		  </a>
 		</xsl:if>
@@ -798,7 +798,7 @@
       <xsl:otherwise>
 	<xsl:apply-templates/>
 	<xsl:if test="string-length($marker) > 0">
-	  <a href="javascript://" onmouseover="showNote(event,'{concat('tnote',$marker)}')">
+	  <a href="javascript://" onmouseover="showNote(event,'{concat('tnote',$marker)}', 0)">
 	    <span class="marker"><xsl:value-of select="$marker"/></span>
 	  </a>
 	</xsl:if>

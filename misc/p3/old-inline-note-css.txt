@@ -1,0 +1,22 @@
+<style type="text/css">
+.notex {
+    text-align: right;
+    font-size: 90%;
+    padding: 0px; margin: 0px;
+}
+.note {
+  position: fixed;
+  width: 200px;
+  top: 0;
+  left: 0;
+  background: #ffc;
+  padding: 10px;
+  border: 1px solid #000;
+  z-index: 1;
+  visibility: hidden;
+  font-size: 10pt;
+  font-weight: normal; 
+  font-family: "Ungkam Basic",Arial,Helvetica,sans-serif;
+  color: #000;
+}
+</style>

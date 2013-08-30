@@ -495,16 +495,24 @@ run_item_maker {
 	    push(@idinfo, '-stringparam', 'frag-id', $p{'itemctxt'})
 		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
 	}
-	xsystem('xsltproc', 
-		'-stringparam', 'p2', 'yes',
-		'-stringparam', 'host', $p{'project'},
-		'-stringparam', 'project', $eproject,
-		'-stringparam', 'trans', $p{'translation'},
-		'-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
-		@idinfo,
-		'-o', "$p{'tmpdir'}/results.html",
-		'/usr/local/oracc/lib/scripts/p3-htmlview.xsl',
-		$xmd);
+
+	my $html = $xmd;
+	$html =~ s/xmd$/html/;
+	if (-r $html) {
+	    warn "cp $html $p{'tmpdir'}/results.html\n";
+	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
+	} else {
+	    xsystem('xsltproc', 
+		    '-stringparam', 'p2', 'yes',
+		    '-stringparam', 'host', $p{'project'},
+		    '-stringparam', 'project', $eproject,
+		    '-stringparam', 'trans', $p{'translation'},
+		    '-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
+		    @idinfo,
+		    '-o', "$p{'tmpdir'}/results.html",
+		    '/usr/local/oracc/lib/scripts/p3-htmlview.xsl',
+		    $xmd);
+	}
 	sig_fixer($p{'project'});
 	if ($hilite_words) {
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);

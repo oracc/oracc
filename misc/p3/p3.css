@@ -125,3 +125,23 @@ h1.toc { fontsize: 10pt; text-align: center; }
 #unicode { margin: 0x; padding: 0px; }
 
 .notelink { font-size: 70%; vertical-align: super; padding-left: .1em; padding-right: .1em; background-color: black; color: white; }
+
+.notex {
+    text-align: right;
+    font-size: 90%;
+    padding: 0px; margin: 0px;
+}
+.note {
+  position: fixed;
+  width: 200px;
+  top: 0;
+  left: 0;
+  background: #ffc;
+  padding: 10px;
+  border: 1px solid #000;
+  visibility: hidden;
+  font-size: 10pt;
+  font-weight: normal; 
+  font-family: "Ungkam Basic",Arial,Helvetica,sans-serif;
+  color: #000;
+}
