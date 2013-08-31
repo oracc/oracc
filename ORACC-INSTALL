@@ -65,9 +65,11 @@ an issue if the DNS for the box was not set up at install-time.  Use
 
 	sudo hostname HOSTNAME_FOR_THE_SERVER
 
-if necessary.
+if necessary.  You may also need to add an IP to hostname mapping to your /etc/hosts, e.g.
 
-Set up the environment using oraccenv.sh:
+	192.168.1.13	oracc.home
+
+Then set up the environment using oraccenv.sh:
 
 	. oraccenv.sh
 
@@ -107,8 +109,11 @@ Linux:
 Firewall
 ........
 
-Check that your iptables accept tcp port 80 using iptables -L -n.  If you *don't* see
-something like:
+Check that your iptables accept tcp port 80 using 
+
+	sudo iptables -L -n
+
+If you *don't* see something like:
 
 	ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
 
@@ -154,24 +159,33 @@ you need to do it remotely or if the server is headless.
 ON THE NEW SERVER
 .................
 
-* Log in to oracc user account
-* Install dropbox for Linux from dropbox.com
-* run dropbox -i (or whatev that was) to install dropbox itself
-* run dropboxd to get the cli link to register the machine
+* If you have set the hostname during install reboot the machine and
+  make sure it boots to the correct hostname (if it doesn't, try adding
+  a line to /etc/hosts as described above and reboot again)
+* Log in to the oracc user account
+* Install dropbox for Linux from dropbox.com--use plat=lnx.x86 for 32-bit
+  and plat=lnx.x86_64 for 64-bit:
+
+	cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86" | tar xzf -
+
+* Now run
+	~/.dropbox-dist/dropboxd
+* to get the cli link to register the machine
 * copy the link it gives you to the clipboard
 * !!! LEAVE dropboxd RUNNING while you do the next steps !!!
 
 ON YOUR INSTALL CLIENT
 ......................
 
-* open terminal and ssh -D 9999 oracc@NEW_SERVER_IP; leave this connection open
-* close and reopen Firefox (may not be necessary)
+* open terminal and 
+	ssh -D 9999 oracc@NEW_SERVER_IP
+  leave this connection open
 * switch SOCKS (v4 only?) proxy on in Firefox:
   - Preferences->Advanced->Network->Connection Settings->Socks
   - host=localhost port=9999
   - check v4 radiobutton
 * paste the link from the server instance of dropboxd into the Firefox URL bar
-* login as requested
+* login as requested--you should be logging in to the *oracc* account *NOT* your own
 * wait ... you should see a message about successful linkage
 
 
