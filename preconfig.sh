@@ -3,7 +3,7 @@ if [ ! -r oraccenv.sh ]; then
     echo Oracc preconfiguration: please create oraccenv.sh before proceeding. Stop.
     exit 1
 fi
-. oraccenv.sh
+. ./oraccenv.sh
 if [ "$ORACC" = "" ]; then
     echo Oracc preconfiguration: please set ORACC variable in oraccenv.sh. Stop.
     exit 1
