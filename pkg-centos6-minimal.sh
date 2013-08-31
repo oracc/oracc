@@ -13,4 +13,4 @@ yum install \
     msort \
     httpd \
     git \
-    dropbox
+    policycoreutils-python
