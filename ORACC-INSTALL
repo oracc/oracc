@@ -1,26 +1,29 @@
 Operating System Setup
 ======================
 
-  Follow instructions in OS install notes/scripts
+For Mac OS X:
+-------------
 
-  ... yum/pkg scripts ...
+First install XCode, then install Macports for your version from macports.org.
+
+Now run the pkg installer (note: this is untested with OS X 10.7):
+
+   ./pkg-mac-osx.sh
+
+For CentOS 6:
+-------------
+
+On CentOS 6 if the machine is only for Oracc you can just do a minimal
+install then:
+
+   ./pkg-centos6-minimal.sh
 
 
-Obtaining Oracc
-===============
+Oracc user creation and initial setup
+=====================================
 
-  Clone the Oracc repo into your user account:
+Run ./oracc-user.sh
 
-  git clone  https://github.com/oracc/oracc.git
-
-
-Set up Oracc Environment
-========================
-
-Copy the sample oraccenv to oraccenv.sh:
-
-  cp oraccenv.example oraccenv.sh
-  
 Edit oraccenv.sh following the documentation of the Environment at the end of this file.
 
 Set up the environment using oraccenv.sh:
@@ -48,37 +51,29 @@ it meets your server's requirements type:
 
 Linux:
 
-	Firewall
-	--------
+        Check that your iptables accept tcp port 80 using iptables -L -n.  If you don't see
+        something like:
 
-	Check that your iptables accept tcp port 80 using iptables -L -n.  If you don't see
-	something like:
+        ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
 
-	ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
+        then add it with:
 
-	then you need to enable access to port 80.  With CentOS/RedHat this is done using
-	the system configuration--e.g., from the command-line:
-
-	sudo system-config-firewall
-
-	To add the rule manually you could do this, but it is not recommended if there is the
-	OS provides a front-end for editing the firewall configuration:
-
-	     /sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
-
-	Autostart
-	---------
-
-	The Oracc installation process should automatically add `apachectl start' to 
-	/etc/rc.d/rc.local -- if you are not on a RedHat/CentOS system you may need to do
-	something other than this.
+             /sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
 
 Mac OS X:
 
-	This was easy up until Mountain Lion.  See this page for notes and a link to a page
-	that makes it easy again:
+        This was easy up until Mountain Lion.  See this page for notes and a link to a page
+        that makes it easy again:
 
-	http://osxdaily.com/2012/09/02/start-apache-web-server-mac-os-x/
+        http://osxdaily.com/2012/09/02/start-apache-web-server-mac-os-x/
+
+
+Configure Dropbox
+=================
+
+  Either open a browser and login to the Oracc account or follow the
+  instructions in dropbox-linux.txt for Linux command-line
+  configuration.
 
 
 Oracc Environment Variables
@@ -88,7 +83,7 @@ Oracc has several environment variables which must be set at install time:
 
 * ORACC
 
-  The location of installed Oracc software, default = /usr/local/oracc
+  The location of installed Oracc software, default = /home/oracc
 
 * ORACC_MODE
 
@@ -96,7 +91,7 @@ Oracc has several environment variables which must be set at install time:
   'multi', i.e., multiple users.
 
   In 'single' mode, there is no user 'oracc' (unless that is the single
-  user).  In 'multi' mode there must be a system user 'oracc.
+  user).  In 'multi' mode there must be a system user 'oracc'.
 
 * ORACC_HOME
 
@@ -115,4 +110,3 @@ Oracc has several environment variables which must be set at install time:
 
   This should be the full domain name of the Oracc server on which the
   instance is running.
-
