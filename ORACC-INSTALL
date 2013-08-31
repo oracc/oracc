@@ -1,6 +1,15 @@
 Operating System Setup
 ======================
 
+For CentOS 6:
+-------------
+
+On CentOS 6 if the machine is only for Oracc you can just do a minimal
+install then:
+
+   ./pkg-centos6-minimal.sh
+
+
 For Mac OS X:
 -------------
 
@@ -9,14 +18,6 @@ First install XCode, then install Macports for your version from macports.org.
 Now run the pkg installer (note: this is untested with OS X 10.7):
 
    ./pkg-mac-osx.sh
-
-For CentOS 6:
--------------
-
-On CentOS 6 if the machine is only for Oracc you can just do a minimal
-install then:
-
-   ./pkg-centos6-minimal.sh
 
 
 Oracc user creation and initial setup
