@@ -2,7 +2,7 @@
 
 force=$1
 
-function apachectl_restart {
+function apachectl_start {
     echo apachectl start >>/etc/rc.d/rc.local
 }
 
@@ -41,15 +41,16 @@ else
     fi
 fi
 INSTDIR=`pwd`
-cd $HTTPD_CONFDIR || quit "unable to change directory to $HTTPD_CONFDIR"
+pushd $HTTPD_CONFDIR || quit "unable to change directory to $HTTPD_CONFDIR"
 SAVED_CONF=oracc-saved-`basename $HTTPD_CONF`
 cp -a $HTTPD_CONF $SAVED_CONF  || quit "unable to save backup copy of $SAVED_CONF"
 cp -a $INSTDIR/oracc-vhost.conf . || quit "unable to install oracc-vhost.conf"
 chown root:root oracc-vhost.conf
 chmod go-rw oracc-vhost.conf
+popd
 SEL=`which chcon`
 if [ ! "$SEL" = "" ]; then
-    chcon -t httpd_config_t oracc-vhost.conf
+    ./selinux.sh
 fi
 # This can happen when we have a forced install
 grep -q oracc-vhost $HTTPD_CONF || edit_httpd_conf
