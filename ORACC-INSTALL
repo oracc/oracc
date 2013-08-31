@@ -7,7 +7,9 @@ For CentOS 6:
 On CentOS 6 if the machine is only for Oracc you can just do a minimal
 install then:
 
-   ./pkg-centos6-minimal.sh
+	./pkg-centos6-minimal.sh
+
+Ensure that the user who is installing has sudo permission.
 
 
 For Mac OS X:
@@ -17,13 +19,35 @@ First install XCode, then install Macports for your version from macports.org.
 
 Now run the pkg installer (note: this is untested with OS X 10.7):
 
-   ./pkg-mac-osx.sh
+	./pkg-mac-osx.sh
+
+Ensure that the user who is installing has maintainer privileges.
+
+Obtaining Oracc
+===============
+
+Change directory to the location where you want the Oracc repository and do:
+
+	git clone https://github.com/oracc/oracc.git
+
+This creates a repo 'oracc'.  Change directory to the repo with `cd oracc'.
 
 
 Oracc user creation and initial setup
 =====================================
 
-Run ./oracc-user.sh
+Linux
+-----
+
+Run ./oracc-user.sh and follow the prompts.
+
+
+Mac OS X
+--------
+
+Create a user 'oracc' from System->Preferences->Users.  Do not give this user Maintainer
+privileges.
+
 
 Edit oraccenv.sh following the documentation of the Environment at the end of this file.
 
@@ -51,17 +75,36 @@ it meets your server's requirements type:
    sudo ./install-oracc-vhost-conf.sh
 
 Linux:
+------
 
-        Check that your iptables accept tcp port 80 using iptables -L -n.  If you don't see
-        something like:
+Firewall
+........
 
-        ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
+Check that your iptables accept tcp port 80 using iptables -L -n.  If you *don't* see
+something like:
 
-        then add it with:
+	ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80 
 
-             /sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+then you need to add access to port 80.  On CentOS/RedHat this is best done with
+
+	sudo system-config-firewall
+
+It can also be done manually with:
+
+	/sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+
+but this is not recommended as it can be tricky to get the rules in the correct order.
+	
+Autostart
+.........
+
+The Oracc installation process should automatically add `apachectl start' to 
+/etc/rc.d/rc.local -- if you are not on a RedHat/CentOS system you may need to do
+something other than this.
+
 
 Mac OS X:
+---------
 
         This was easy up until Mountain Lion.  See this page for notes and a link to a page
         that makes it easy again:
@@ -72,9 +115,37 @@ Mac OS X:
 Configure Dropbox
 =================
 
-  Either open a browser and login to the Oracc account or follow the
-  instructions in dropbox-linux.txt for Linux command-line
-  configuration.
+Either open a browser and login to the Oracc account on dropbox.com or
+follow the instructions below for CLI install.
+
+Dropbox CLI install for CentOS
+------------------------------
+
+This is how to register a new server with the Oracc dropbox account if
+you need to do it remotely or if the server is headless.
+
+ON THE NEW SERVER
+.................
+
+* Log in to oracc user account
+* Install dropbox for Linux from dropbox.com
+* run dropbox -i (or whatev that was) to install dropbox itself
+* run dropboxd to get the cli link to register the machine
+* copy the link it gives you to the clipboard
+* !!! LEAVE dropboxd RUNNING while you do the next steps !!!
+
+ON YOUR INSTALL CLIENT
+......................
+
+* open terminal and ssh -D 9999 oracc@NEW_SERVER_IP; leave this connection open
+* close and reopen Firefox (may not be necessary)
+* switch SOCKS (v4 only?) proxy on in Firefox:
+  - Preferences->Advanced->Network->Connection Settings->Socks
+  - host=localhost port=9999
+  - check v4 radiobutton
+* paste the link from the server instance of dropboxd into the Firefox URL bar
+* login as requested
+* wait ... you should see a message about successful linkage
 
 
 Oracc Environment Variables
