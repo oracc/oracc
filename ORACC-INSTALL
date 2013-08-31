@@ -98,16 +98,16 @@ but this is not recommended as it can be tricky to get the rules in the correct 
 Autostart
 .........
 
-The Oracc installation process should automatically add `apachectl start' to 
-/etc/rc.d/rc.local -- if you are not on a RedHat/CentOS system you may need to do
-something other than this.
+The Oracc installation process should automatically add `apachectl
+start' to /etc/rc.d/rc.local -- if you are not on a RedHat/CentOS
+system you may need to do something other than this.
 
 
 Mac OS X:
 ---------
 
-        This was easy up until Mountain Lion.  See this page for notes and a link to a page
-        that makes it easy again:
+This was easy up until Mountain Lion.  See this page for notes and a
+link to a page that makes it easy again:
 
         http://osxdaily.com/2012/09/02/start-apache-web-server-mac-os-x/
 
