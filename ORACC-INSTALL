@@ -23,6 +23,7 @@ Now run the pkg installer (note: this is untested with OS X 10.7):
 
 Ensure that the user who is installing has maintainer privileges.
 
+
 Obtaining Oracc
 ===============
 
@@ -39,7 +40,11 @@ Oracc user creation and initial setup
 Linux
 -----
 
-Run ./oracc-user.sh and follow the prompts.
+Run
+
+	./oracc-user.sh 
+
+and follow the prompts.
 
 
 Mac OS X
@@ -51,9 +56,26 @@ privileges.
 
 Edit oraccenv.sh following the documentation of the Environment at the end of this file.
 
+
+Set the environment
+===================
+
+First check that the hostname is set properly for the machine--this is particularly
+an issue if the DNS for the box was not set up at install-time.  Use
+
+	sudo hostname HOSTNAME_FOR_THE_SERVER
+
+if necessary.
+
 Set up the environment using oraccenv.sh:
 
-  . oraccenv.sh
+	. oraccenv.sh
+
+Review the environment settings with:
+
+	printenv | grep ORACC
+
+and correct as necessary in oraccenv.sh then re-run it and check again.
 
 
 Configure and Install Oracc

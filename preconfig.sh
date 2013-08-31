@@ -20,9 +20,6 @@ fi
 if [ ! -d $ORACC ]; then
     mkdir -p $ORACC
 fi
-if [ ! -d $ORACC/00/sys ]; then
-    mkdir -p $ORACC/00/sys
-fi
 if [ ! -d /var/tmp/oracc/atfserver ]; then
     mkdir -p /var/tmp/oracc/{atfserver,pager}
 fi
