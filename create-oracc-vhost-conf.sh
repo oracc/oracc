@@ -21,10 +21,12 @@ else
     fi
 fi
 
+servername=`echo -n $ORACC_HOST | cut -d. -f1`
+
 cat >oracc-vhost.conf <<EOF
 <VirtualHost *:80>
     ServerAdmin root@$ORACC_HOST
-    ServerName oracc
+    ServerName $servername
     DocumentRoot "$ORACC/www"
     ScriptAliasMatch ^/cgi-bin/(.*$) "$ORACC/www/cgi-bin/\$1"
     ErrorLog "$LOGDIR/oracc-error_log"
