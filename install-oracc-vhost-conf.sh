@@ -1,14 +1,24 @@
 #!/bin/sh
 
+force=$1
+
 function apachectl_restart {
     echo apachectl start >>/etc/rc.d/rc.local
 }
 
-function quit {
-    echo install-oracc-vhost-conf.sh: $*. Stop.
-    exit 1
+function edit_httpd_conf {
+cat >>$HTTPD_CONF <<EOF
+NameVirtualHost *:80
+include $HTTPD_VDIR/oracc-vhost.conf
+EOF
 }
 
+function quit {
+    if [ "$force" = "" ]; then
+	echo install-oracc-vhost-conf.sh: $*. Stop.
+	exit 1
+    fi
+}
 if [ -r /etc/httpd/conf/httpd.conf ]; then
     HTTPD_CONF=/etc/httpd/conf/httpd.conf
 else
@@ -41,10 +51,8 @@ SEL=`which chcon`
 if [ ! "$SEL" = "" ]; then
     chcon -t httpd_config_t oracc-vhost.conf
 fi
-cat >>$HTTPD_CONF <<EOF
-NameVirtualHost *:80
-include $HTTPD_VDIR/oracc-vhost.conf
-EOF
+# This can happen when we have a forced install
+grep -q oracc-vhost $HTTPD_CONF || edit_httpd_conf
 if [ -r /etc/rc.d/rc.local ]; then
     grep -q apachectl /etc/rc.d/rc.local || apachectl_start
 fi

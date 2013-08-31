@@ -81,9 +81,9 @@ and correct as necessary in oraccenv.sh then re-run it and check again.
 Configure and Install Oracc
 ===========================
 
-  sudo ./preconfig.sh
-  ./lnx-config.sh or ./mac-config.sh
-  sudo ./makeinstall.sh
+	sudo ./preconfig.sh
+	./lnx-config.sh or ./mac-config.sh
+	sudo ./makeinstall.sh
 
 (if you want to build with debugging info, run ./lnx-config.sh CFLAGS=-g)
 
@@ -94,7 +94,12 @@ Configure Apache for Oracc
 Review the file oracc-vhost.conf which was created during the configuration process.  When
 it meets your server's requirements type:
 
-   sudo ./install-oracc-vhost-conf.sh
+	sudo ./install-oracc-vhost-conf.sh
+
+If you are reinstalling and get the message 'oracc-vhost is already in httpd.conf' you can
+either clean up the old installation by rolling back the config files or say:
+
+	sudo ./install-oracc-vhost-conf.sh force
 
 Linux:
 ------
