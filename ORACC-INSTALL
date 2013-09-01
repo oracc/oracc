@@ -1,3 +1,4 @@
+
 Operating System Setup
 ======================
 
@@ -9,7 +10,21 @@ install then:
 
 	./pkg-centos6-minimal.sh
 
-Ensure that the user who is installing has sudo permission.
+Ensure that the user who is installing has sudo permission:
+
+	sudo -v
+
+If you are told "Sorry, user oracc may not run sudo on oracc" or the like,
+either ask your system administrator to give the oracc user sudo 
+permissions or set them for yourself if you are allowed to:
+
+	visudo
+	/^root
+	i
+	[go to end of line and press return]
+	oracc	ALL(ALL)	ALL
+	:w
+	:q
 
 
 For Mac OS X:
@@ -168,6 +183,12 @@ ON THE NEW SERVER
 
 	cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86" | tar xzf -
 
+* Also get the dropbox CLI script and put it somewhere in the path (e.g., 
+  /usr/local/bin).  This should do it:
+
+  	curl -L -O https://www.dropbox.com/download?dl=packages/dropbox.py
+	sudo mv dropbox.py /usr/local/bin
+	
 * Now run
 	~/.dropbox-dist/dropboxd
 * to get the cli link to register the machine
@@ -187,6 +208,21 @@ ON YOUR INSTALL CLIENT
 * paste the link from the server instance of dropboxd into the Firefox URL bar
 * login as requested--you should be logging in to the *oracc* account *NOT* your own
 * wait ... you should see a message about successful linkage
+
+INITIAL PERMISSIONS
+-------------------
+
+Oracc's Dropbox permissions need to be as follows:
+
+	builds:		drwx------
+	messages: 	drwx-wx---
+	sources: 	drwx-wx---
+
+To set these run the script:
+
+	./oracc-dropbox-perms.sh
+
+After the dropbox daemon has initialized the Dropbox directory.
 
 
 Oracc Environment Variables

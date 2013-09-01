@@ -1,16 +1,16 @@
 #!/bin/sh
 proj=$1
 if [ "$proj" == "" ]; then
-    echo oracc-project-data.sh: must give project on command line
+    echo oracc-project-sources.sh: must give project on command line
     exit 1
 fi
 cd $ORACC_HOME
 if [ ! -d $proj ]; then
-    echo oracc-project-data.sh: no such project $proj. Stop.
+    echo oracc-project-sources.sh: no such project $proj. Stop.
     exit 1
 fi
 fproj=`/bin/echo -n $proj | tr / -`
-tarball=$ORACC/00any/$fproj-sources.tar.gz
+tarball=$ORACC/01tmp/$fproj.tar.gz
 tar --exclude $proj/00any \
     --exclude $proj/00bak \
     --exclude $proj/00web/esp/backups \
