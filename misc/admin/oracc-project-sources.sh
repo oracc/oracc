@@ -10,7 +10,7 @@ if [ "$proj" == "" ]; then
 fi
 cd $ORACC/$proj || fail "no such project $proj"
 fproj=`/bin/echo -n $proj | tr / -`
-tarball=01tmp/$fproj.tar.gz
+tarball=01tmp/$fproj-$2.tar.gz
 echo oracc-project-sources.sh: creating $tarball
 tar --exclude 00any \
     --exclude 00bak \
