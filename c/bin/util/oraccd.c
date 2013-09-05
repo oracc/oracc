@@ -188,7 +188,7 @@ check_oraccd(enum e_oraccd_mode m)
 	}
       else
 	{
-	  printf("oraccd: pid %lu checked %s and found pid %lu\n", (unsigned long)getpid(), lockfile, (unsigned long)lock.l_pid);
+	  printf("oraccd: pid %ld checked %s and found pid %ld\n", (long)getpid(), lockfile, (long)lock.l_pid);
 	  if (-1 != lock.l_pid)
 	    {
 	      lock_params.l_pid = lock.l_pid;
@@ -214,8 +214,16 @@ check_oraccd(enum e_oraccd_mode m)
 static void
 clean(void)
 {
-  unlink("/tmp/oraccd-build.lock");
-  unlink("/tmp/oraccd-serve.lock");
+  if (ORACCD_STALE_LOCK == status_build(0))
+    {
+      printf("oraccd: removing lockfile\n");
+      unlink("/tmp/oraccd-build.lock");
+    }
+  if (ORACCD_STALE_LOCK == status_serve(0))
+    {
+      printf("oraccd: removing lockfile\n");
+      unlink("/tmp/oraccd-serve.lock");
+    }
 }
 
 static const char *
@@ -282,7 +290,7 @@ setlock(pid_t pid)
 	  exit(1);
 	}
       else
-	printf("oraccd: process %lu acquired on lockfile %s\n", (unsigned long)getpid(), lockfile);
+	printf("oraccd: process %ld acquired on lockfile %s\n", (long)getpid(), lockfile);
     }
   else
     {
@@ -338,6 +346,7 @@ status_generic(int verbose, enum e_oraccd_status estate, const char *sstate)
       fprintf(stderr, "oraccd: unknown result from check_oraccd()\n");
       break;
     }
+  free((char *)slower);
   return s;
 }
 
@@ -346,7 +355,9 @@ usage(void)
 {
   fprintf(stderr, 
 	  "oraccd usage:\n"
-	  "  oraccd status : query oraccd status\n"
-	  "  oraccd build  : run oraccd in build mode\n"
-	  "  oraccd serve  : run oraccd in serve mode\n");
+	  "  oraccd build  : run oraccd as daemon in build mode\n"
+	  "  oraccd clean  : clean up stale lock files and exit\n"
+	  "  oraccd serve  : run oraccd as daemon in serve mode\n"
+	  "  oraccd status : query oraccd status and exit\n"
+	  );
 }
