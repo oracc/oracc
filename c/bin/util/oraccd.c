@@ -6,89 +6,63 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
-
-
-#define   LOCK_EX   2    /* exclusive lock */
-#define   LOCK_NB   4    /* don't block when locking */
+#include <ctype.h>
 
 enum e_oraccd_mode { ORACCD_NONE, ORACCD_BUILD, ORACCD_CLEAN, ORACCD_SERVE, ORACCD_STATUS };
-enum e_oraccd_state { ORACCD_NOT , ORACCD_RUNNING, ORACCD_STALE_LOCK, ORACCD_NOPERMS, ORACCD_ERR };
+enum e_oraccd_status { ORACCD_NOT , ORACCD_RUNNING, ORACCD_STALE_LOCK, ORACCD_NOPERMS, ORACCD_ERR };
 
 static enum e_oraccd_mode oraccd_mode = ORACCD_NONE;
+static enum e_oraccd_status check_oraccd(enum e_oraccd_mode m);
 
+static struct flock lock_params;
+
+static void build(void);
+static void clean(void);
+static const char *lowercase(const char *s);
 static void q(void);
+static void read_q(void);
+static void serve(void);
 static void setlock(pid_t pid);
 static void status(void);
+static enum e_oraccd_status status_build(int verbose);
+static enum e_oraccd_status status_generic(int verbose, enum e_oraccd_status estate, const char *sstate);
+static enum e_oraccd_status status_serve(int verbose);
 static void usage(void);
 
 int
 main(int argc, char* argv[])
 {
   FILE *fp= NULL;
-  lock_t process_id = 0, lock;
-  lock_t sid = 0;
+  pid_t process_id = 0;
+  pid_t sid = 0;
   unsigned long iteration = 0;
-  struct sigaction sa;
+
+  lock_params.l_type = F_WRLCK; /* exclusive lock */
+  lock_params.l_whence = SEEK_SET;
+  lock_params.l_start = 0; /* on entire file */
+  lock_params.l_len = 0;
 
   if (argv[1])
     {
       if (!strcmp(argv[1], "build"))
 	{
-	  switch (check_oraccd(ORACCD_BUILD))
-	    {
-	    case ORACDD_NOT:
-	      oraccd_mode = ORACCD_BUILD;
-	      build();
-	      break;
-	    case ORACCD_RUNNING:
-	      fprintf(stderr, "oraccd is already running in BUILD mode\n");
-	      exit(1);
-	    case ORACCD_STALE_LOCK:
-	      fprintf(stderr, "oraccd has a stale lock on BUILD mode--run oraccd clean\n");
-	      exit(1);
-	    case ORACCD_NOPERMS:
-	      fprintf(stderr, "oraccd: you don't have permission to access oraccd lock files\n");
-	      exit(1);
-	    case ORACCD_ERR:
-	      fprintf(stderr, "oraccd: error reading /tmp/oraccd-build.lock\n");
-	      exit(1);
-	    default:
-	      fprintf(stderr, "oraccd: unknown result from check_oraccd()\n");
-	      exit(1);
-	      break;
-	    }
+	  if (ORACCD_NOT == status_build(0))
+	    build();
+	  else
+	    exit(1);
 	}
       else if (!strcmp(argv[1], "clean"))
 	{
 	  oraccd_mode = ORACCD_CLEAN;
 	  clean();
-	  exit();
+	  exit(0);
 	}
       else if (!strcmp(argv[1], "serve"))
 	{
-	  switch (check_oraccd(ORACCD_SERVE))
-	    {
-	    case ORACDD_NOT:
-	      oraccd_mode = ORACCD_SERVE;
-	      serve();
-	      break;
-	    case ORACCD_RUNNING:
-	      fprintf(stderr, "oraccd is already running in BUILD mode\n");
-	      exit(1);
-	    case ORACCD_STALE_LOCK:
-	      fprintf(stderr, "oraccd has a stale lock on SERVE mode--run oraccd clean\n");
-	      exit(1);
-	    case ORACCD_NOPERMS:
-	      fprintf(stderr, "oraccd: you don't have permission to access oraccd lock files\n");
-	      exit(1);
-	    case ORACCD_ERR:
-	      fprintf(stderr, "oraccd: error reading /tmp/oraccd-serve.lock\n");
-	      exit(1);
-	    default:
-	      fprintf(stderr, "oraccd: unknown result from check_oraccd()\n");
-	      exit(1);
-	      break;
-	    }
+	  if (ORACCD_NOT == status_serve(0))
+	    serve();
+	  else
+	    exit(1);
 	}
       else if (!strcmp(argv[1], "status"))
 	{
@@ -122,11 +96,12 @@ main(int argc, char* argv[])
   /* PARENT PROCESS. Need to kill it. */
   if (process_id > 0)
     {
-      setlock(process_id);
       printf("process_id of child process %d \n", process_id);
       /* return success in exit status */
       exit(0);
     }
+
+  setlock(process_id);
 
   /* unmask the file mode */
   umask(0);
@@ -154,7 +129,7 @@ main(int argc, char* argv[])
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
   /* Open a log file in write mode. */
-  fp = fopen ("oraccd.log", "w+");
+  fp = fopen("oraccd.log", "w+");
   while (1)
     {
       /* Don't block context switches, let the process sleep for some time. */
@@ -168,10 +143,21 @@ main(int argc, char* argv[])
   return (0);
 }
 
+static void
+build(void)
+{
+  oraccd_mode = ORACCD_BUILD;
+}
+
+static void
+check_builds(void)
+{
+}
+
 static enum e_oraccd_status
 check_oraccd(enum e_oraccd_mode m)
 {
-  FILE *lockfp = NULL;
+  int lockfd = -1;
   const char *lockfile = NULL;
   struct stat sb;
   if (m == ORACCD_BUILD)
@@ -187,14 +173,33 @@ check_oraccd(enum e_oraccd_mode m)
       fprintf(stderr, "oraccd: unknown mode in check request\n");
       exit(1);
     }
-  if ((lockfp = fopen(lockfile, "r")))
+  printf("oraccd: attempting to acquire lock on lockfile %s\n", lockfile);
+  lockfd = open(lockfile, O_RDWR);
+  if (-1 != lockfd)
     {
       enum e_oraccd_status s;
-      if (flock(fileno(lockfp)))
-	s = ORACCD_RUNNING;
+      struct flock lock = lock_params;
+      lock.l_pid = -1;
+      
+      if (-1 == fcntl(lockfd, F_GETLK, &lock))
+	{
+	  perror("oraccd error checking lockfile");
+	  s = ORACCD_ERR;
+	}
       else
-	s = ORACCD_STALE_LOCK;
-      fclose(lockfp);
+	{
+	  printf("oraccd: pid %lu checked %s and found pid %lu\n", (unsigned long)getpid(), lockfile, (unsigned long)lock.l_pid);
+	  if (-1 != lock.l_pid)
+	    {
+	      lock_params.l_pid = lock.l_pid;
+	      s = ORACCD_RUNNING;
+	    }
+	  else
+	    {
+	      printf("oraccd: check_oraccd successfully locked lockfile %s\n", lockfile);
+	      s = ORACCD_STALE_LOCK;
+	    }
+	}
       return s;
     }
   else
@@ -204,6 +209,29 @@ check_oraccd(enum e_oraccd_mode m)
       else
 	return ORACCD_NOT;
     }
+}
+
+static void
+clean(void)
+{
+  unlink("/tmp/oraccd-build.lock");
+  unlink("/tmp/oraccd-serve.lock");
+}
+
+static const char *
+lowercase(const char *s)
+{
+  char *l = malloc(strlen(s)+1), *e;
+  e = l;
+  while (*s)
+    *e++ = *s++;
+  *e = '\0';
+  return l;
+}
+
+static void
+process_q(void)
+{
 }
 
 static void
@@ -226,24 +254,35 @@ read_q(void)
 }
 
 static void
+serve(void)
+{
+  oraccd_mode = ORACCD_SERVE;
+}
+
+static void
 setlock(pid_t pid)
 {
-  FILE *lockfp = NULL;
+  int lockfd = -1;
   const char *lockfile = NULL;
+ 
   if (oraccd_mode == ORACCD_BUILD)
     lockfile = "/tmp/oraccd-build.lock";
   else
     lockfile = "/tmp/oraccd-serve.lock";
-  lockfp = fopen(lockfile, "w");
-  if (lockfp)
+  /* the lock file can only be accessed by the user who created it, normally the oracc user */
+  lockfd = open(lockfile, O_RDWR|O_CREAT, 400);
+  
+  if (-1 != lockfd)
     {
-      fprintf(lockfp, "%lu", pid);
-      fflush(lockfp);
-      if (flock(fileno(lockfp), LOCK_EX|LOCK_NB))
+      struct flock lock = lock_params;
+      lock.l_pid = pid;
+      if (-1 == fcntl(lockfd, F_SETLK, &lock))
 	{
 	  perror("oraccd");
 	  exit(1);
 	}
+      else
+	printf("oraccd: process %lu acquired on lockfile %s\n", (unsigned long)getpid(), lockfile);
     }
   else
     {
@@ -255,38 +294,51 @@ setlock(pid_t pid)
 static void
 status(void)
 {
-  switch(check_oraccd(ORACCD_BUILD))
+  status_build(1);
+  status_serve(1);
+}
+
+static enum e_oraccd_status
+status_build(int verbose)
+{
+  return status_generic(verbose, ORACCD_BUILD, "BUILD");
+}
+
+static enum e_oraccd_status
+status_serve(int verbose)
+{
+  return status_generic(verbose, ORACCD_SERVE, "SERVE");
+}
+
+static enum e_oraccd_status
+status_generic(int verbose, enum e_oraccd_status estate, const char *sstate)
+{
+  enum e_oraccd_status s = check_oraccd(estate);
+  const char *slower = lowercase(sstate);
+  printf("oraccd: check_oraccd() == %d\n", s);
+  switch (s)
     {
-    case ORACDD_NOT:
-      fprintf(stderr, "oraccd is NOT running in BUILD mode\n");
+    case ORACCD_NOT:
+      if (verbose)
+	fprintf(stderr, "oraccd is not running in %s mode\n", sstate);
       break;
     case ORACCD_RUNNING:
-      fprintf(stderr, "oraccd is running in BUILD mode\n");
+      fprintf(stderr, "oraccd is already running in %s mode\n", sstate);
       break;
     case ORACCD_STALE_LOCK:
-      fprintf(stderr, "oraccd has a stale lock on BUILD mode--run oraccd clean\n");
+      fprintf(stderr, "oraccd has a stale lock on %s mode--run oraccd clean\n", sstate);
+      break;
+    case ORACCD_NOPERMS:
+      fprintf(stderr, "oraccd: you don't have permission to access oraccd lock files\n");
+      break;
+    case ORACCD_ERR:
+      fprintf(stderr, "oraccd: error reading /tmp/oraccd-%s.lock\n", slower);
       break;
     default:
       fprintf(stderr, "oraccd: unknown result from check_oraccd()\n");
-      exit(1);
-      break;
-   }
-  switch(check_oraccd(ORACCD_SERVE))
-    {
-    case ORACDD_NOT:
-      fprintf(stderr, "oraccd is NOT running in SERVE mode\n");
-      break;
-    case ORACCD_RUNNING:
-      fprintf(stderr, "oraccd is running in SERVE mode\n");
-      break;
-    case ORACCD_STALE_LOCK:
-      fprintf(stderr, "oraccd has a stale lock on SERVE mode--run oraccd clean\n");
-      break;
-    default:
-      fprintf(stderr, "oraccd: unknown result from check_oraccd()\n");
-      exit(1);
       break;
     }
+  return s;
 }
 
 static void
