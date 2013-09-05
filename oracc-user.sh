@@ -5,7 +5,7 @@ function fail {
 }
 uname=`uname`
 if [ "$uname" = "Linux" ]; then
-    sudo useradd oracc
+    sudo useradd -s /sbin/nologin oracc
     sudo passwd oracc
     chmod -R go+rx /home/oracc
     chmod -R go-w /home/oracc

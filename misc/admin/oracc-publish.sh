@@ -6,6 +6,6 @@ if [ "$project" = "" ]; then
 fi
 version=`cat .version`
 usproject=`/bin/echo -n $project | tr / _`
--r ${ORACC}/Dropbox/uploads/$usproject-$version \
-    || oracc-project-sources $project $version
-touch ${ORACC}/Dropbox/messages/publish-$usproject-$version
+upload=${ORACC}/Dropbox/uploads/$usproject-$version
+-r $upload || oracc-project-sources.sh $project $version
+-r $upload && touch ${ORACC}/Dropbox/messages/publish-$usproject-$version

@@ -467,3 +467,9 @@ misc/tei/teicorpus-header.xsl
 misc/tei/teicorpus.xsl
 
 misc/tei/teicorpus.xsl
+
+c/bin/util/oraccd
+
+c/bin/util/filesize
+
+misc/admin/buildq.plx

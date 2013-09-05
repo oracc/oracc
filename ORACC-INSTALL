@@ -1,4 +1,3 @@
-
 Operating System Setup
 ======================
 
@@ -14,18 +13,24 @@ Ensure that the user who is installing has sudo permission:
 
 	sudo -v
 
-If you are told "Sorry, user oracc may not run sudo on oracc" or the like,
-either ask your system administrator to give the oracc user sudo 
+If you are told "Sorry, user stinney may not run sudo on oracc" or the
+like, either ask your system administrator to give the oracc user sudo
 permissions or set them for yourself if you are allowed to:
 
 	visudo
 	/^root
 	i
 	[go to end of line and press return]
-	oracc	ALL(ALL)	ALL
+	stinney	ALL(ALL)	ALL
 	:w
 	:q
 
+Note: installing as the oracc user is not recommended.  You should
+also set the oracc user's login shell to /sbin/nologin (the script to
+create the oracc user does this for you).  To perform any needed
+admin as oracc you can still do:
+
+	su - oracc -s /bin/bash
 
 For Mac OS X:
 -------------
