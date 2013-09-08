@@ -8,3 +8,4 @@ sudo port install libtool
 sudo port install gdbm
 sudo port install pcre
 sudo port install msort
+sudo port install xmlrpc-c
