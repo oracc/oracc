@@ -88,6 +88,7 @@ AC_OUTPUT([Makefile
 	   c/bin/despatcher/ccgi/Makefile
 	   c/bin/lemmer/Makefile
 	   c/bin/matrix/Makefile
+	   c/bin/oraccd/Makefile
 	   c/bin/pg/Makefile
 	   c/bin/rnv/Makefile
 	   c/bin/se/Makefile

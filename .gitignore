@@ -473,3 +473,27 @@ c/bin/util/oraccd
 c/bin/util/filesize
 
 misc/admin/buildq.plx
+
+c/bin/oraccd/oraccd
+
+c/bin/oraccd/mif.c
+
+c/bin/oraccd/messaging.c
+
+c/bin/oraccd/old-daemon.c
+
+c/bin/oraccd/paper.pdf
+
+c/bin/oraccd/x.b64
+
+c/bin/oraccd/apue.h
+
+c/bin/oraccd/arch
+
+c/bin/oraccd/bits.c
+
+c/bin/oraccd/cli.c
+
+c/bin/oraccd/lib.c
+
+c/bin/oraccd/lockfile.c

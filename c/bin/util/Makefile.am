@@ -18,7 +18,7 @@ AM_CFLAGS=-pedantic -Wall
 bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
-	xmlns xmlsplit utf8v xalias xfrag oraccd filesize
+	xmlns xmlsplit utf8v xalias xfrag filesize
 
 #pqoutline pqsort  
 
