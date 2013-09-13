@@ -497,3 +497,11 @@ c/bin/oraccd/cli.c
 c/bin/oraccd/lib.c
 
 c/bin/oraccd/lockfile.c
+
+c/bin/oraccd/#oracc-client.c#
+
+c/bin/oraccd/oracc-client
+
+c/bin/oraccd/oracc-client.c.BAK
+
+c/bin/oraccd/oracc-xmlrpc-cgi
