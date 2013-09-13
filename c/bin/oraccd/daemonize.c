@@ -1,13 +1,14 @@
 /* Adapted from APUE 3rd ed. 427-428 */
 #include <stdlib.h>
-#include <syslog.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <sys/resource.h>
 #include <signal.h>
 #include <string.h>
+
 #include "oraccd.h"
 
-static void setlock(pid_t pid, struct oraccd_config *cfg);
+static int lockfile(int);
 
 void
 daemonize(const char *cmd, struct oraccd_config *cfg)
@@ -52,11 +53,6 @@ daemonize(const char *cmd, struct oraccd_config *cfg)
     exit(0);
 
   /*
-   * Set the lock file
-   */
-  setlock(pid, cfg);
-
-  /*
    * Change the current working directory to oracc home.
    */
   if (chdir(cfg->oracc_home) < 0)
@@ -80,42 +76,56 @@ daemonize(const char *cmd, struct oraccd_config *cfg)
   /*
    * Initialize the log file.
    */
+#if 1
+  /* Open a log file in write mode. */
+  cfg->logfp = fopen("oraccd.log", "w+");
+#else
   openlog(cmd, LOG_CONS, LOG_DAEMON);
+#endif
+
   if (fd0 != 0 || fd1 != 1 || fd2 != 2) {
-    syslog(LOG_ERR, "unexpected file descriptors %d %d %d",
+    fprintf(cfg->logfp, "unexpected file descriptors %d %d %d",
 	   fd0, fd1, fd2);
     exit(1);
   }
 }
 
-static void
-setlock(pid_t pid, struct oraccd_config *cfg)
+#define LOCKFILE ((cfg->oraccd_mode == ORACCD_BUILD)?"/tmp/oraccd-build.pid":"/tmp/oraccd-serve.pid")
+#define LOCKMODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+
+int
+already_running(struct oraccd_config *cfg)
 {
-  int lockfd = -1;
-  const char *lockfile = NULL;
- 
-  if (cfg->oraccd_mode == ORACCD_BUILD)
-    lockfile = "/tmp/oraccd-build.lock";
-  else
-    lockfile = "/tmp/oraccd-serve.lock";
-  /* the lock file can only be accessed by the user who created it, normally the oracc user */
-  lockfd = open(lockfile, O_RDWR|O_CREAT, 400);
-  
-  if (-1 != lockfd)
-    {
-      struct flock lock = cfg->lock_params;
-      lock.l_pid = pid;
-      if (-1 == fcntl(lockfd, F_SETLK, &lock))
-	{
-	  perror("oraccd");
-	  exit(1);
-	}
-      else
-	printf("oraccd: process %ld acquired on lockfile %s\n", (long)getpid(), lockfile);
+  int   fd;
+  char	buf[16];
+
+  fd = open(LOCKFILE, O_RDWR|O_CREAT, LOCKMODE);
+  if (fd < 0) {
+    fprintf(cfg->logfp, "can't open %s: %s", LOCKFILE, strerror(errno));
+    exit(1);
+  }
+  if (lockfile(fd) < 0) {
+    if (errno == EACCES || errno == EAGAIN) {
+      close(fd);
+      return(1);
     }
-  else
-    {
-      printf("can't save lock to %s\n", lockfile);
-      exit(1);
-    }
+    fprintf(cfg->logfp, "can't lock %s: %s", LOCKFILE, strerror(errno));
+    exit(1);
+  }
+  ftruncate(fd, 0);
+  sprintf(buf, "%ld", (long)getpid());
+  write(fd, buf, strlen(buf)+1);
+  return(0);
+}
+
+static int
+lockfile(int fd)
+{
+  struct flock fl;
+
+  fl.l_type = F_WRLCK;
+  fl.l_start = 0;
+  fl.l_whence = SEEK_SET;
+  fl.l_len = 0;
+  return(fcntl(fd, F_SETLK, &fl));
 }

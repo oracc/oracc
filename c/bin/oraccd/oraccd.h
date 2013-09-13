@@ -26,6 +26,8 @@ struct oraccd_config
   FILE *logfp;
 };
 
+extern struct oraccd_config config_info;
+
 struct q
 {
   char *message;
@@ -49,6 +51,7 @@ struct strlist
 
 extern char hostname[];
 
+int	already_running(struct oraccd_config *cfg);
 void	clean(struct oraccd_config *cfg);
 void	configure(struct oraccd_config *cfg);
 void    daemonize(const char *, struct oraccd_config *);
@@ -59,8 +62,5 @@ void    err_exit(int, const char *, ...);
 void    err_ret(const char *, ...);
 void    err_sys(const char *, ...);
 void 	read_q(struct oraccd_config*);
-enum e_oraccd_status status(struct oraccd_config *cfg);
-enum e_oraccd_status status_build(int verbose, struct oraccd_config *cfg);
-enum e_oraccd_status status_serve(int verbose, struct oraccd_config *cfg);
 
 #endif/*ORACCD_H*/

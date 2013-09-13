@@ -74,12 +74,12 @@ status_check_lock(enum e_oraccd_mode m, struct oraccd_config *cfg)
 	  printf("oraccd: pid %ld checked %s and found pid %ld\n", (long)getpid(), lockfile, (long)lock.l_pid);
 	  if (-1 != lock.l_pid)
 	    {
-	      cfg->lock_params.l_pid = lock.l_pid;
+	      /*cfg->lock_params.l_pid = lock.l_pid;*/
 	      s = ORACCD_RUNNING;
 	    }
 	  else
 	    {
-	      printf("oraccd: check_oraccd successfully locked lockfile %s\n", lockfile);
+	      printf("oraccd: status_check_lock() successfully locked lockfile %s\n", lockfile);
 	      s = ORACCD_STALE_LOCK;
 	    }
 	}
@@ -105,7 +105,7 @@ status_generic(int verbose, enum e_oraccd_status estate, const char *sstate, str
 {
   enum e_oraccd_status s = status_check_lock(estate, cfg);
   const char *slower = lowercase(sstate);
-  printf("oraccd: check_oraccd() == %d\n", s);
+  printf("oraccd: status_check_lock() == %d\n", s);
   switch (s)
     {
     case ORACCD_NOT:
@@ -116,7 +116,8 @@ status_generic(int verbose, enum e_oraccd_status estate, const char *sstate, str
       fprintf(stderr, "oraccd is already running in %s mode\n", sstate);
       break;
     case ORACCD_STALE_LOCK:
-      fprintf(stderr, "oraccd has a stale lock on %s mode--run oraccd clean\n", sstate);
+      if (cfg->oraccd_mode != ORACCD_CLEAN)
+	fprintf(stderr, "oraccd has a stale lock on %s mode--run oraccd clean\n", sstate);
       break;
     case ORACCD_NOPERMS:
       fprintf(stderr, "oraccd: you don't have permission to access oraccd lock files\n");
@@ -131,4 +132,3 @@ status_generic(int verbose, enum e_oraccd_status estate, const char *sstate, str
   free((char *)slower);
   return s;
 }
-
