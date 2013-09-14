@@ -1,1 +1,1 @@
-SUBDIRS = client httpdo xmlrpc
+SUBDIRS = client server xmlrpc
