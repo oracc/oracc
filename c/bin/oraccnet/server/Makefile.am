@@ -5,6 +5,7 @@ subdirs=ccgi
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
+AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic -ansi
 
 cgibin_PROGRAMS=oracc-server

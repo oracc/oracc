@@ -1,1 +1,1 @@
-SUBDIRS = client server xmlrpc
+SUBDIRS = lib client server xmlrpc

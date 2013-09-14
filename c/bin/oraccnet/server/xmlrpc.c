@@ -8,9 +8,9 @@
 void
 xmlrpc(void)
 {
-  const char *prog = "/usr/local/oracc/www/cgi-bin/oracc-xmlrpc-cgi";
-  fprintf(stderr, "oracc-resolver: invoking oracc-xmlrpc-cgi\n");
-  if (execl(prog, "oracc-xmlrpc-cgi", (char *)0))
+  const char *prog = "/usr/local/oracc/www/cgi-bin/oracc-xmlrpc";
+  fprintf(stderr, "oracc-resolver: invoking oracc-xmlrpc\n");
+  if (execl(prog, "oracc-xmlrpc", (char *)0))
     {
       fprintf(stderr, "oracc-resolver: xmlrpc function failed to exec %s\n", prog);
       perror("xmlrpc");

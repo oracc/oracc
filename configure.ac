@@ -93,6 +93,7 @@ AC_OUTPUT([Makefile
 	   c/bin/matrix/Makefile
 	   c/bin/oraccnet/Makefile
 	   c/bin/oraccnet/client/Makefile
+	   c/bin/oraccnet/lib/Makefile
 	   c/bin/oraccnet/server/Makefile
 	   c/bin/oraccnet/server/ccgi/Makefile
 	   c/bin/oraccnet/xmlrpc/Makefile

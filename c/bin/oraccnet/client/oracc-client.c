@@ -9,71 +9,71 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/client.h>
-
+#include "oraccnet.h"
 #include "config.h"  /* information about this build environment */
 
 #define NAME "Xmlrpc-c Test Client"
 #define VERSION "1.0"
 
-static void 
-dieIfFaultOccurred (xmlrpc_env * const envP) {
-    if (envP->fault_occurred) {
-        fprintf(stderr, "ERROR: %s (%d)\n",
-                envP->fault_string, envP->fault_code);
-        exit(1);
-    }
-}
-
-
-
 int 
-main(int           const argc, 
-     const char ** const argv) {
-
-    xmlrpc_env env;
-    xmlrpc_value * resultP;
-    xmlrpc_int32 sum;
-    const char * const serverUrl = "http://oracc.bfos:80/xmlrpc";
-    const char * const methodName = "sample.add";
-
-    if (argc-1 > 0) {
-        fprintf(stderr, "This program has no arguments\n");
-        exit(1);
+main(int argc, char *argv[0])
+{
+  xmlrpc_env env;
+  const char * const serverURL = "http://oracc.bfos:80/xmlrpc";
+  xmlrpc_value *resultP = NULL;
+  struct client_method_info *cmi = NULL;
+  struct meths_tab *meth = NULL;
+  
+  if (argc-1 != 1)
+    {
+      fprintf(stderr, "oracc-client: this program takes only one argument, a method name\n");
+      exit(1);
     }
+  else
+    {
+      if (!(meth = meths(argv[1], strlen(argv[1]))))
+	{
+	  fprintf(stderr, "oracc-client: unknown method name `%s'\n", argv[1]);
+	  exit(1);
+	}
+      else
+	cmi = meth->info;
+    }
+  
+  /* Initialize our error-handling environment. */
+  xmlrpc_env_init(&env);
+  
+  /* Start up our XML-RPC client library. */
+  xmlrpc_client_init2(&env, XMLRPC_CLIENT_NO_FLAGS, NAME, VERSION, NULL, 0);
+  dieIfFaultOccurred(&env);
+  
+  resultP = cmi->call(&env, serverURL);
+  dieIfFaultOccurred(&env);
 
-    /* Initialize our error-handling environment. */
-    xmlrpc_env_init(&env);
+#if 0
+  if (cmi->wait_seconds)
+    {
+      while (status(&env, cmi))
+	{
+	  sleep(cmi->wait_seconds);
+	}
+      resultP = cmi->term(&env, cmi);
+    }
+#endif
 
-    /* Start up our XML-RPC client library. */
-    xmlrpc_client_init2(&env, XMLRPC_CLIENT_NO_FLAGS, NAME, VERSION, NULL, 0);
-    dieIfFaultOccurred(&env);
+  cmi->action(&env, resultP);
 
-    printf("Making XMLRPC call to server url '%s' method '%s' "
-           "to request the sum "
-           "of 5 and 7...\n", serverUrl, methodName);
-
-    /* Make the remote procedure call */
-    resultP = xmlrpc_client_call(&env, serverUrl, methodName,
-                                 "(ii)", (xmlrpc_int32) 5, (xmlrpc_int32) 7);
-    dieIfFaultOccurred(&env);
-    
-    /* Get our sum and print it out. */
-    xmlrpc_read_int(&env, resultP, &sum);
-    dieIfFaultOccurred(&env);
-    printf("The sum is %d\n", sum);
-    
-    /* Dispose of our result value. */
-    xmlrpc_DECREF(resultP);
-
-    /* Clean up our error-handling environment. */
-    xmlrpc_env_clean(&env);
-    
-    /* Shutdown our XML-RPC client library. */
-    xmlrpc_client_cleanup();
-
-    return 0;
+  /* Dispose of our result value. */
+  xmlrpc_DECREF(resultP);
+  
+  /* Clean up our error-handling environment. */
+  xmlrpc_env_clean(&env);
+  
+  /* Shutdown our XML-RPC client library. */
+  xmlrpc_client_cleanup();
+  
+  return 0;
 }
-
