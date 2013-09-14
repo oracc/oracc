@@ -1,4 +1,8 @@
-bin_PROGRAMS=oracc-client oracc-xmlrpc-cgi
+include ../../../oracc-am-rules.txt
+
+bin_PROGRAMS=oracc-client
+
+cgibin_PROGRAMS=oracc-xmlrpc-cgi
 
 #oraccd-build 
 

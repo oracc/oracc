@@ -89,11 +89,13 @@ AC_OUTPUT([Makefile
 	   oracc-hyperestraier/qdbm/Makefile
 	   c/Makefile
 	   c/bin/Makefile
-	   c/bin/despatcher/Makefile
-	   c/bin/despatcher/ccgi/Makefile
 	   c/bin/lemmer/Makefile
 	   c/bin/matrix/Makefile
-	   c/bin/oraccd/Makefile
+	   c/bin/oraccnet/Makefile
+	   c/bin/oraccnet/client/Makefile
+	   c/bin/oraccnet/httpdo/Makefile
+	   c/bin/oraccnet/httpdo/ccgi/Makefile
+	   c/bin/oraccnet/xmlrpc/Makefile
 	   c/bin/pg/Makefile
 	   c/bin/rnv/Makefile
 	   c/bin/se/Makefile

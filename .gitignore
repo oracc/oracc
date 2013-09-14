@@ -505,3 +505,11 @@ c/bin/oraccd/oracc-client
 c/bin/oraccd/oracc-client.c.BAK
 
 c/bin/oraccd/oracc-xmlrpc-cgi
+
+c/bin/oraccd/#oracc-client-async.c#
+
+c/bin/oraccnet/xmlrpc/oracc-xmlrpc
+
+c/bin/oraccnet/httpdo/oracc-httpdo
+
+c/bin/oraccnet/client/oracc-client

@@ -7,12 +7,12 @@
 #include <locale.h>
 #include "resolver.h"
 
-const char *docroot = "@@ORACC@@/www";
+const char *docroot = "/usr/local/oracc/www";
 const char *project = NULL;
 const char *query_string = NULL;
 const char *script_url = NULL;
-const char *oodroot = "@@ORACC@@/ood";
-const char *xmlroot = "@@ORACC@@/xml";
+const char *oodroot = "/usr/local/oracc/ood";
+const char *xmlroot = "/usr/local/oracc/xml";
 
 const char **elements;
 int elements_used = 0;
@@ -33,7 +33,7 @@ main(int argc, char *argv[])
     {
       const char *env_docroot = NULL;
       setlocale(LC_ALL, LOCALE);
-      setenv("ORACC", "@@ORACC@@", 1);
+      setenv("ORACC", "/usr/local/oracc", 1);
       if (!strncmp(script_url,"/d/",3))
 	{
 	  script_url += 2;
