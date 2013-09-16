@@ -6,7 +6,7 @@
 int environment_wait = 0;
 
 void
-environment_action(xmlrpc_env *const envP, xmlrpc_value *resultP)
+environment_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_value *resultP)
 {
   int i, max;
   for (i = 0, max = xmlrpc_array_size(envP, (xmlrpc_value * const)resultP); i < max; ++i)
@@ -21,9 +21,9 @@ environment_action(xmlrpc_env *const envP, xmlrpc_value *resultP)
 }
 
 xmlrpc_value *
-environment_call(xmlrpc_env *const envP, const char *serverURL)
+environment_call(xmlrpc_env *const envP, struct client_method_info *cmi)
 {
-  return xmlrpc_client_call(envP, serverURL, "environment", "()", NULL);
+  return xmlrpc_client_call(envP, cmi->instance->serverURL, "environment", "()", NULL);
 }
 
 struct client_method_info environment_client_info =

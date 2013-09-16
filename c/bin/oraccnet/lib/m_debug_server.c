@@ -12,8 +12,12 @@ debug_method(xmlrpc_env *const envP,
 	     )
 {
   const char *addr = getenv("REMOTE_ADDR");
+  xmlrpc_value *s;
+
   fprintf(stderr, "oracc-xmlrpc: debug: REMOTE_ADDR=%s\n", addr);
-  return xmlrpc_build_value(envP, "s", addr);
+  xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, addr));
+  return s;
 }
 
 struct xmlrpc_method_info3 debug_server_info =
@@ -23,5 +27,5 @@ struct xmlrpc_method_info3 debug_server_info =
   NULL,
   0,
   "s:",
-  "return the value of the REMOTE_ADDR environment variable",
+  "return the value of call_info structure with clientIP added to it from the environment",
 };

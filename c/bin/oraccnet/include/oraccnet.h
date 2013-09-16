@@ -1,24 +1,28 @@
 #ifndef ORACCNET_H_
 #define ORACCNET_H_
 
+#include <xmlrpc-c/base.h>
+
 struct call_info
 {
   char *clientIP;
   char *serverURL;
-  char *project;
-  char *version;
+  char *session;
+  char *method;
+  char **methodargs;
   char *user;
   char *password;
-  char *session;
-  void *method_data;
+  char *project;
+  char *version;
+  void *request_data;
+  void *response_data;
 };
 
-/* This template is for the static parts of a method request; the
-   method-specific parts of the template get scanned separately */
-#define CALL_TEMPLATE	sssssss
+#define METHOD_ARGS_MAX	16
 
-typedef xmlrpc_value* (*client_call)(xmlrpc_env *const envP, const char *serverURL);
-typedef void (*client_action)(xmlrpc_env *const envP, xmlrpc_value *resultP);
+struct client_method_info;
+typedef xmlrpc_value* (*client_call)(xmlrpc_env *const envP, struct client_method_info *cmi);
+typedef void (*client_action)(xmlrpc_env *const envP, struct client_method_info *cip, xmlrpc_value *resultP);
 
 struct client_method_info
 {
@@ -35,9 +39,9 @@ struct meths_tab
   struct client_method_info *info;
 };
 
-extern int debug_wait;
-extern xmlrpc_value *debug_call(xmlrpc_env *const envP, const char *serverURL);
-extern void debug_action(xmlrpc_env *const envP, xmlrpc_value *resultP);
+extern struct call_info *callinfo_new(void);
+extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
+extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);

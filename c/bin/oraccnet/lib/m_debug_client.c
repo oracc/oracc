@@ -6,18 +6,39 @@
 int debug_wait = 0;
 
 void
-debug_action(xmlrpc_env *const envP, xmlrpc_value *resultP)
+debug_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_value *resultP)
 {
-  const char *addr;
-  xmlrpc_read_string(envP, (xmlrpc_value * const)resultP, (const char ** const)&addr);
+  struct call_info *cip = callinfo_unpack(envP, resultP);
   dieIfFaultOccurred(envP);
-  printf("oracc-client: debug: REMOTE_ADDRESS=%s.\n", addr);
+  fprintf(stdout,
+	  "clientIP=%s\n"
+	  "serverURL=%s\n"
+	  "session=%s\n"
+	  "user=%s\n"
+	  "password=%s\n"
+	  "method=%s\n"
+	  "project=%s\n"
+	  "version=%s\n",
+	  cip->clientIP, cip->serverURL, cip->session,
+	  cip->user, cip->password, 
+	  cip->method, cip->project, cip->version
+	  );
+  if (cip->methodargs[0])
+    {
+      int i;
+      fprintf(stdout, "Methodargs:\n");
+      for (i = 0; cip->methodargs[i]; ++i)
+	fprintf(stdout, "  %s\n", cip->methodargs[i]);
+    }
 }
 
 xmlrpc_value *
-debug_call(xmlrpc_env *const envP, const char *serverURL)
+debug_call(xmlrpc_env *const envP, struct client_method_info *cmi)
 {
-  return xmlrpc_client_call(envP, serverURL, "debug", "()", NULL);
+  xmlrpc_value *s = callinfo_pack(envP, cmi->instance);
+  xmlrpc_value *a = xmlrpc_array_new(envP);
+  xmlrpc_array_append_item(envP, a, s);
+  return xmlrpc_client_call_params(envP, cmi->instance->serverURL, "debug", a);
 }
 
 struct client_method_info debug_client_info =
