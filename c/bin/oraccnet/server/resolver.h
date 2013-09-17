@@ -135,4 +135,6 @@ extern int _is_ncname(const char *name);
 
 extern void cuneify(void);
 
+extern void xmlrpc(void);
+
 #endif/*RESOLVER_H_*/

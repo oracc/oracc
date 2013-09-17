@@ -3,6 +3,7 @@
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_cgi.h>
+#include "oraccnet.h"
 
 #include "registry.c"
 
@@ -21,7 +22,9 @@ main (int const argc, const char **const argv)
 {
   xmlrpc_registry *registryP;
   xmlrpc_env env;
-  fprintf(stderr, "oracc-xmlrpc invoked ...\n");
+
+  set_session_template("/Users/stinney/varoracc/XXXXXX");
+  fprintf(stderr, "oracc-xmlrpc invoked ... writing temp files to %s\n", session_template);
   if (argc - 1 > 0 && argv == argv)
     {
       fprintf (stderr, "There are no arguments to a CGI script\n");

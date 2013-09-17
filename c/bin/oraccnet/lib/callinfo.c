@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include "oraccnet.h"
 
@@ -30,7 +31,14 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
   xmlrpc_struct_set_value(envP, s, "version", xmlrpc_string_new(envP, nonull(cip->version)));
 
   for (i = 0; cip->methodargs[i]; ++i)
-    xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
+    {
+      xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
+      if (!strncmp(cip->methodargs[i], "file=", 5))
+	{
+	  xmlrpc_value *content = file_pack(envP, &cip->methodargs[i][5]);
+	  xmlrpc_struct_set_value(envP, s, "#content", content);
+	}
+    }
   xmlrpc_struct_set_value(envP, s, "methodargs", methargs);
 
   return s;
@@ -60,6 +68,10 @@ callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
       xmlrpc_read_string(envP, v, (const char **const)(&cip->methodargs[i]));
     }
   cip->methodargs[i] = NULL;
+
+  if (!cip->session || !*cip->session)
+    cip->session = create_session(envP, s);
+
   return cip;
 }
 

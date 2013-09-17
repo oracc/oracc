@@ -12,4 +12,5 @@ liboraccnet_la_SOURCES = \
 	m_debug_client.c m_debug_server.c \
 	m_environment_client.c m_environment_server.c \
 	callinfo.c \
+	file.c \
 	util.c

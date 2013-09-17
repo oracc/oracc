@@ -19,7 +19,8 @@ static char *xml_read_sans_content_length(size_t *lenp);
 static int xml_content(const char *ct);
 static char *xml_docelem(const char *xml);
 static void xml_handler(char *xml, size_t len);
-static char *xml_value(const char *xml, const char *tag);
+
+/* static char *xml_value(const char *xml, const char *tag); */
 
 typedef void(builtin)(const char *,const char *);
 builtin *builtins_handlers[] =
@@ -344,6 +345,7 @@ xml_docelem(const char *xml)
     return NULL;
 }
 
+#if 0
 static char * 
 xml_value(const char *xml, const char *tag)
 {
@@ -387,6 +389,7 @@ xml_value(const char *xml, const char *tag)
       }    
     return NULL;
 }
+#endif
 
 static int
 xml_content(const char *ct)

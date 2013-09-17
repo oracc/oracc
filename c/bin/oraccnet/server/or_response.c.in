@@ -173,12 +173,14 @@ xis(const char *xlang, const char *xid)
   exit(1);
 }
 
+#if 0
 static void
 redirect(char *r)
 {
   fprintf(stdout, "Status: 301 Moved Permanently\nLocation: %s\n\n", r);
   exit(0);
 }
+#endif
 
 void
 list(const char *list)

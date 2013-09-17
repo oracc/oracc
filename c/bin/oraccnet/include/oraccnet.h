@@ -39,11 +39,18 @@ struct meths_tab
   struct client_method_info *info;
 };
 
+extern char session_template[];
+
 extern struct call_info *callinfo_new(void);
 extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
 extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
+extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *filename);
+extern void file_unpack(xmlrpc_env * const envP, xmlrpc_value * const filename, xmlrpc_value * const content);
+
+extern char *create_session(xmlrpc_env * const envP, xmlrpc_value * const s);
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);
+extern void set_session_template(const char *template);
 
 #endif/*ORACCNET_H_*/

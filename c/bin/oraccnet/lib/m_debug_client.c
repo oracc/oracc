@@ -28,7 +28,9 @@ debug_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_valu
       int i;
       fprintf(stdout, "Methodargs:\n");
       for (i = 0; cip->methodargs[i]; ++i)
-	fprintf(stdout, "  %s\n", cip->methodargs[i]);
+	{
+	  fprintf(stdout, "  %s\n", cip->methodargs[i]);
+	}
     }
 }
 
