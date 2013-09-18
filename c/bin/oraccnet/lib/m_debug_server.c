@@ -15,8 +15,9 @@ debug_method(xmlrpc_env *const envP,
   xmlrpc_value *s;
 
   fprintf(stderr, "oracc-xmlrpc: debug: REMOTE_ADDR=%s\n", addr);
-  xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  s = sesh_init(envP, paramArrayP);
   xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, addr));
+  
   return s;
 }
 

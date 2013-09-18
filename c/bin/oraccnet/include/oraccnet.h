@@ -16,6 +16,8 @@ struct call_info
   char *version;
   void *request_data;
   void *response_data;
+  struct file_data *files;
+  struct file_data *files_last;
 };
 
 #define METHOD_ARGS_MAX	16
@@ -33,6 +35,15 @@ struct client_method_info
   struct call_info *instance;
 };
 
+struct file_data
+{
+  const unsigned char *data;
+  const unsigned char *name;
+  int 		       size;
+  const unsigned char *what;
+  struct file_data *   next;
+};
+
 struct meths_tab
 {
   const char *name;
@@ -46,11 +57,11 @@ extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
 extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
 extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *filename);
-extern void file_unpack(xmlrpc_env * const envP, xmlrpc_value * const filename, xmlrpc_value * const content);
+extern struct file_data *file_unpack(xmlrpc_env * const envP, xmlrpc_value * const fstruct);
 
-extern char *create_session(xmlrpc_env * const envP, xmlrpc_value * const s);
+extern xmlrpc_value * const sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s);
+extern void sesh_set_template(const char *template);
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);
-extern void set_session_template(const char *template);
 
 #endif/*ORACCNET_H_*/

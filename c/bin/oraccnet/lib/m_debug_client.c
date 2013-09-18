@@ -30,6 +30,13 @@ debug_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_valu
       for (i = 0; cip->methodargs[i]; ++i)
 	{
 	  fprintf(stdout, "  %s\n", cip->methodargs[i]);
+	  if (!strncmp(cip->methodargs[i], "file:", 5))
+	    {
+	      char *filename = malloc(strlen(cip->strlen(cip->methodargs[i]));
+	      int res;
+	      sprintf(filename, "%s.new", &cip->methodargs[i][5]);
+	      
+	    }
 	}
     }
 }
