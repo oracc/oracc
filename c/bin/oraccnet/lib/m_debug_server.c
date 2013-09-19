@@ -13,11 +13,20 @@ debug_method(xmlrpc_env *const envP,
 {
   const char *addr = getenv("REMOTE_ADDR");
   xmlrpc_value *s;
+  struct call_info *cip;
 
   fprintf(stderr, "oracc-xmlrpc: debug: REMOTE_ADDR=%s\n", addr);
-  s = sesh_init(envP, paramArrayP);
+  xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  sesh_init(envP, s, 1);
+
+#if 1
+  cip = callinfo_unpack(envP, s);
+  file_save(cip, "/Users/stinney/varoracc");
+#else
+  /* Simple methods can manipulate the RPC struct directly and just ship it back */
   xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, addr));
-  
+#endif
+
   return s;
 }
 

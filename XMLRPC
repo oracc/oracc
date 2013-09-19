@@ -1,0 +1,11 @@
+need to create /var/tmp/varoracc and permit the dir to _www on mac or apache on Linux
+
+need to place session authentication info in the session dir to match against data coming from client during status requests
+
+need to define/explain context: 
+
+ - for client this is the parent of 00atf, etc.--could be an actual
+   project or could just be a temp dir layout just to work with a few
+   texts in an ad hoc way
+
+ - for server this is probably /var/tmp/varoracc/SESSION

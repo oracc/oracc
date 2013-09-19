@@ -56,10 +56,11 @@ extern struct call_info *callinfo_new(void);
 extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
 extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
-extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *filename);
+extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name);
+extern void file_save(struct call_info *cip, const char *dir);
 extern struct file_data *file_unpack(xmlrpc_env * const envP, xmlrpc_value * const fstruct);
 
-extern xmlrpc_value * const sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s);
+extern void sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
 extern void sesh_set_template(const char *template);
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);

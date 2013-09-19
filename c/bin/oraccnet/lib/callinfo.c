@@ -22,6 +22,7 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
 {
   xmlrpc_value *s = xmlrpc_struct_new(envP);
   xmlrpc_value *methargs = xmlrpc_array_new(envP);
+  xmlrpc_value *files = xmlrpc_array_new(envP);
   int i;
 
   xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, nonull(cip->clientIP)));
@@ -35,22 +36,18 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
 
   for (i = 0; cip->methodargs[i]; ++i)
     {
-      xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
       if (!strncmp(cip->methodargs[i], "file:", 5))
 	{
-	  const char *what, *name, *copy, *struct_name, *equals, *struct_name;
-	  xmlrpc_value *file_struct, *file_what, *file_name;
-	  
-	  copy = strdup(cip->methodargs[i]);
-	  equals = strchr(copy, '=');
-	  if (equals)
+	  char *file_what, *file_name;
+	    
+	  file_what = strdup(&cip->methodargs[i][5]);
+	  file_name = strchr(file_what, '=');
+	  if (file_name)
 	    {
-	      /* REWRITE TO PACK ALL FILES INTO A SINGLE ARRAY WHICH IS THE VALUE OF THE STRUCT
-		 MEMBER #content */
-	      *equals = '\0';
-	      struct_name = strdup(copy);
-	      xmlrpc_value *content = file_pack(envP, file_what, file_name);
-	      xmlrpc_struct_set_value(envP, s, struct_name, content);
+	      xmlrpc_value * fstruct;
+	      *file_name++ = '\0';
+	      fstruct = file_pack(envP, file_what, file_name);
+	      xmlrpc_array_append_item(envP, files, fstruct);
 	    }
 	  else
 	    {
@@ -58,19 +55,22 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
 	      exit(1);
 	    }
 	}
+      else
+	xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
     }
-  xmlrpc_struct_set_value(envP, s, "methodargs", methargs);
+  xmlrpc_struct_set_value(envP, s, "method-args", methargs);
+  xmlrpc_struct_set_value(envP, s, "method-data", files);
 
   return s;
 }
 
-/* Unpack the information returned by the server for use by the client
-   after the method has been called */
+/* Unpack caller's information on the server, 
+   or server's information returned to the client */
 struct call_info *
 callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
 {
   struct call_info *cip = callinfo_new();
-  xmlrpc_value *methargs;
+  xmlrpc_value *methargs, *files;
   int i;
 
   unpack(envP, s, "clientIP", &cip->clientIP);
@@ -82,42 +82,33 @@ callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
   unpack(envP, s, "project", &cip->project);
   unpack(envP, s, "version", &cip->version);
   cip->methodargs = malloc(METHOD_ARGS_MAX * sizeof(char *));
-  xmlrpc_struct_find_value(envP, s, "methodargs", &methargs);
+  xmlrpc_struct_find_value(envP, s, "method-args", &methargs);
   for (i = 0; i < xmlrpc_array_size(envP, methargs); ++i)
     {
       xmlrpc_value *v;
-      xmlrpc_value *files;
-      struct file *tmp = NULL;
       xmlrpc_array_read_item(envP, methargs, i, &v);
       xmlrpc_read_string(envP, v, (const char **const)(&cip->methodargs[i]));
-      if (!strncmp(cip->methodargs[i], "file:", 5))
-	{
-	  const char *what, *name;
-	  what = &cip->methodargs[i][5];
-	  name = strchr(what, '=');
-	  if (name)
-	    ++name;
-	  else
-	    {
-	      fprintf(stderr, "oracc-client: bad -Mfile arg, expected -Mfile:WHAT=NAME\n");
-	      exit(1);
-	    }
-	  if (cip->files == NULL)
-	    {
-	      cip->files = file_unpack(envP, fstruct);
-	      cip->files_last = cip->files;
-	    }
-	  else
-	    {
-	      cip->files_last->next = file_unpack(envP, fstruct);
-	      cip->files_last = cip->files_last->next;
-	    }
-	}
     }
   cip->methodargs[i] = NULL;
-
-  if (!cip->session || !*cip->session)
-    cip->session = create_session(envP, s);
+  
+  xmlrpc_struct_find_value(envP, s, "method-data", &files);
+  for (i = 0; i < xmlrpc_array_size(envP, files); ++i)
+    {
+      struct file_data *this_file;
+      xmlrpc_value * fstruct;
+      xmlrpc_array_read_item(envP, files, i, &fstruct);
+      this_file = file_unpack(envP, fstruct);
+      if (cip->files == NULL)
+	{
+	  cip->files = this_file;
+	  cip->files_last = cip->files->next;
+	}
+      else
+	{
+	  cip->files_last->next = this_file;
+	  cip->files_last = cip->files->next;
+	}
+    }
 
   return cip;
 }

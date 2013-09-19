@@ -13,4 +13,5 @@ liboraccnet_la_SOURCES = \
 	m_environment_client.c m_environment_server.c \
 	callinfo.c \
 	file.c \
+	sesh.c \
 	util.c

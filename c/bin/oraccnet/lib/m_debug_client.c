@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
@@ -6,7 +7,7 @@
 int debug_wait = 0;
 
 void
-debug_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_value *resultP)
+debug_return_handler(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_value *resultP)
 {
   struct call_info *cip = callinfo_unpack(envP, resultP);
   dieIfFaultOccurred(envP);
@@ -32,10 +33,8 @@ debug_action(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_valu
 	  fprintf(stdout, "  %s\n", cip->methodargs[i]);
 	  if (!strncmp(cip->methodargs[i], "file:", 5))
 	    {
-	      char *filename = malloc(strlen(cip->strlen(cip->methodargs[i]));
-	      int res;
-	      sprintf(filename, "%s.new", &cip->methodargs[i][5]);
-	      
+	      char *filename = malloc(strlen(cip->methodargs[i]) + 5);
+	      sprintf(filename, "%s.new", &cip->methodargs[i][5]);	      
 	    }
 	}
     }
@@ -54,7 +53,7 @@ struct client_method_info debug_client_info =
 {
   "debug",
   &debug_call,
-  debug_action,
+  debug_return_handler,
   &debug_wait,
   NULL
 };
