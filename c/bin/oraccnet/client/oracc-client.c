@@ -10,6 +10,8 @@
 #define NAME "oracc-client"
 #define VERSION "1.0"
 
+static int wait_arg = 0;
+
 static int options(int argc, char *argv[], struct call_info *cip);
 static void usage(void);
 
@@ -42,7 +44,11 @@ main(int argc, char *argv[0])
     }
 
   cmi = meth->info;
+
   meth->info->instance = cip;
+
+  if (wait_arg > 0)
+    meth->info->wait = wait_arg;
 
   /* Initialize our error-handling environment. */
   xmlrpc_env_init(&env);
@@ -106,7 +112,7 @@ static int
 options(int argc, char *argv[0], struct call_info *ci)
 {
   int ch;
-  while ((ch = getopt(argc, argv, "m:M:p:s:u:v:w:")) != -1) 
+  while ((ch = getopt(argc, argv, "m:M:p:P:s:u:v:w:")) != -1) 
     {
       switch (ch) 
 	{
@@ -128,6 +134,12 @@ options(int argc, char *argv[0], struct call_info *ci)
 	  else
 	    return badopt('p');
 	  break;
+	case 'P':
+	  if (optarg)
+	    ci->password = optarg;
+	  else
+	    return badopt('w');
+	  break;
 	case 's':
 	  if (optarg)
 	    ci->serverURL = optarg;
@@ -147,10 +159,7 @@ options(int argc, char *argv[0], struct call_info *ci)
 	    return badopt('v');
 	  break;
 	case 'w':
-	  if (optarg)
-	    ci->password = optarg;
-	  else
-	    return badopt('w');
+	  wait_arg = atoi(optarg);
 	  break;
 	case '?':
 	default:
@@ -181,7 +190,10 @@ usage(void)
 	  "  [-p PROJECT ]\n"
 	  "  [-s SERVER (include /xmlrpc) ]\n"
 	  "  [-u USER ]\n"
+	  "  [-P PASSWORD ]\n"
 	  "  [-v VERSION (of project) ]\n"
-	  "  [-w PASSWORD ]\n"
+	  "  [-w SECONDS (set client wait to SECONDS) ]\n"
+	  "  [-MARG[=VAL] (set ARG for method VAL optional) ]\n"
+	  "  [-Mfile:WHAT=NAME (set file arg with name NAME and purpose WHAT) ]\n"
 	  );
 }
