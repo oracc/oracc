@@ -9,18 +9,36 @@ int ox_wait = 0;
 void
 ox_response_handler(xmlrpc_env *const envP, 
 		    struct client_method_info *cmi, 
-		    xmlrpc_value *resultP)
+		    xmlrpc_value *s)
 {
-  struct call_info *cip = callinfo_unpack(envP, resultP);
-  dieIfFaultOccurred(envP);
-  
+  struct call_info *cip = NULL;
+  xmlrpc_value *status = NULL;
+  xmlrpc_value *log = NULL;
+
+  if (s)
+    {
+      xmlrpc_struct_find_value(envP, s, "status", &status);
+      if (status)
+	{
+	  fprintf(stderr, "found status\n");
+	}
+      xmlrpc_struct_find_value(envP, s, "log", &log);
+      if (log)
+	{
+	  file_dump(envP, log, "-");
+	}
+    }
+
+  /*  callinfo_unpack(envP, resultP); */
   /* This should exit if the server returned an error */
-  proc_error_check(envP, cmi, resultP);
+  
   
   /* check for opts which modify the input and save the file, 
      backing up original first */
   
   /* if there were ox-errors, send the error log to stdout */
+ 
+  return;
 }
 
 struct client_method_info ox_client_info =

@@ -16,7 +16,7 @@ static int options(int argc, char *argv[], struct call_info *cip);
 static void usage(void);
 
 int 
-main(int argc, char *argv[0])
+main(int argc, char *argv[])
 {
   xmlrpc_env env;
   char * const serverURL = "http://oracc.bfos/xmlrpc";
@@ -26,7 +26,7 @@ main(int argc, char *argv[0])
   struct call_info *cip = NULL;
   
   cip = callinfo_new();
-  cip->methodargs = malloc(METHOD_ARGS_MAX * sizeof(char*));
+  cip->methodargs = malloc(argc * sizeof(char*));
   cip->methodargs[0] = NULL;
   if (options(argc, argv, cip))
     {
@@ -48,7 +48,9 @@ main(int argc, char *argv[0])
   meth->info->instance = cip;
 
   if (wait_arg > 0)
-    meth->info->wait = wait_arg;
+    cip->wait_seconds = wait_arg;
+  else
+    cip->wait_seconds = *cmi->wait_seconds;
 
   /* Initialize our error-handling environment. */
   xmlrpc_env_init(&env);
@@ -89,16 +91,7 @@ static void
 add_method_arg(struct call_info *cmi, char *arg)
 {
   static int Margs = 0;
-  
-  if (Margs < METHOD_ARGS_MAX)
-    {
-      cmi->methodargs[Margs++] = arg;
-    }
-  else
-    {
-      fprintf(stderr, "oracc-client: too many -M args (max = %d)\n", METHOD_ARGS_MAX);
-      exit(1);
-    }
+  cmi->methodargs[Margs++] = arg;
 }
 
 static int
@@ -109,7 +102,7 @@ badopt(char opt)
 }
 
 static int
-options(int argc, char *argv[0], struct call_info *ci)
+options(int argc, char *argv[], struct call_info *ci)
 {
   int ch;
   while ((ch = getopt(argc, argv, "m:M:p:P:s:u:v:w:")) != -1) 

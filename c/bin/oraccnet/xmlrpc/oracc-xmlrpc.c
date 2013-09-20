@@ -23,6 +23,8 @@ main (int const argc, const char **const argv)
   xmlrpc_registry *registryP;
   xmlrpc_env env;
 
+  trace = 1;
+
   sesh_set_template("/Users/stinney/varoracc/XXXXXX");
   if (argc - 1 > 0 && argv == argv)
     {

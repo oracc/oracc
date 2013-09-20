@@ -5,11 +5,12 @@
 
 struct call_info
 {
-  char *clientIP;
+  const char *clientIP;
   char *serverURL;
   char *session;
   char *method;
   char **methodargs;
+  int nargs;
   char *user;
   char *password;
   char *project;
@@ -18,9 +19,10 @@ struct call_info
   void *response_data;
   struct file_data *files;
   struct file_data *files_last;
+  int status;
+  char *statusstr;
+  int wait_seconds;
 };
-
-#define METHOD_ARGS_MAX	16
 
 struct client_method_info;
 typedef xmlrpc_value* (*client_call)(xmlrpc_env *const envP, struct client_method_info *cmi);
@@ -56,13 +58,26 @@ extern struct call_info *callinfo_new(void);
 extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
 extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
+extern xmlrpc_value *file_b64(xmlrpc_env * const envP, char *name, char *what, unsigned int size, const unsigned char *content);
 extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name);
 extern void file_save(struct call_info *cip, const char *dir);
 extern struct file_data *file_unpack(xmlrpc_env * const envP, xmlrpc_value * const fstruct);
 
+extern xmlrpc_value *generic_request(xmlrpc_env *const envP, struct client_method_info *cmi);
+
+extern xmlrpc_value *request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_list ap);
+extern xmlrpc_value *request_error(xmlrpc_env *const envP, const char *fmt, ...);
+extern xmlrpc_value *request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct call_info *cip, const char *logfile);
+extern xmlrpc_value *request_status(xmlrpc_env *const envP, const char *fmt, ...);
+
 extern void sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
 extern void sesh_set_template(const char *template);
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
+extern void dieIfFaultOccurred3 (xmlrpc_env * const, const char *, int);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);
+
+extern int trace;
+#define trace() if(trace){fprintf(stderr, "%s:%d\n", __FILE__, __LINE__);}
+#define dieIfFaultOccurred(e) dieIfFaultOccurred3(e, __FILE__, __LINE__)
 
 #endif/*ORACCNET_H_*/

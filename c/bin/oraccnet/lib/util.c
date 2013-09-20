@@ -3,7 +3,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <xmlrpc-c/base.h>
+#include <xmlrpc-c/client.h>
 #include "oraccnet.h"
+
+int trace;
+#undef dieIfFaultOccurred
 
 void 
 dieIfFaultOccurred (xmlrpc_env * const envP)
@@ -12,16 +16,17 @@ dieIfFaultOccurred (xmlrpc_env * const envP)
     {
       fprintf(stderr, "ERROR: %s (%d)\n",
 	      envP->fault_string, envP->fault_code);
-    exit(1);
+      exit(1);
   }
 }
 
-xmlrpc_value *
-generic_request(xmlrpc_env *const envP, struct client_method_info *cmi)
+void 
+dieIfFaultOccurred3 (xmlrpc_env * const envP, const char *f, int i)
 {
-  xmlrpc_value *s = callinfo_pack(envP, cmi->instance);
-  xmlrpc_value *a = xmlrpc_array_new(envP);
-  xmlrpc_array_append_item(envP, a, s);
-  return xmlrpc_client_call_params(envP, cmi->instance->serverURL, 
-				   cmi->instance->method, a);
+  if (envP->fault_occurred)
+    {
+      fprintf(stderr, "ERROR at %s:%d: %s (%d)\n",
+	      f, i, envP->fault_string, envP->fault_code);
+    exit(1);
+  }
 }

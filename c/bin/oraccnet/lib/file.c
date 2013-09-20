@@ -10,6 +10,61 @@
 static void file_save_sub(struct file_data *fdatap, const char *dir, const char *session);
 
 xmlrpc_value *
+file_b64(xmlrpc_env * const envP, char *name, char *what, unsigned int size, const unsigned char *content)
+{
+  xmlrpc_value *b64_data, *b64_name, *b64_size, *b64_what, *b64;
+
+  trace();
+  fprintf(stderr, "file_b64: passed content with stated size %d; actual size %u\n", size, (unsigned int)strlen(content));
+  b64_data = xmlrpc_base64_new(envP, (unsigned int)size, content);
+  if (envP->fault_occurred) return NULL;
+  trace();
+  
+  b64_name = xmlrpc_string_new(envP, name);
+  if (envP->fault_occurred) return NULL;
+  trace();
+  
+  b64_size = xmlrpc_int_new(envP, (int)size);
+  if (envP->fault_occurred) return NULL;
+  trace();
+  
+  b64_what = xmlrpc_string_new(envP, what);
+  if (envP->fault_occurred) return NULL;
+
+  trace();
+  
+  b64 = xmlrpc_struct_new(envP);
+
+  if (envP->fault_occurred) return NULL;
+  xmlrpc_struct_set_value(envP, b64, "data", b64_data);
+  if (envP->fault_occurred) return NULL;
+  xmlrpc_struct_set_value(envP, b64, "name", b64_name);
+  if (envP->fault_occurred) return NULL;
+  xmlrpc_struct_set_value(envP, b64, "size", b64_size);
+  if (envP->fault_occurred) return NULL;
+  xmlrpc_struct_set_value(envP, b64, "what", b64_what);
+  if (envP->fault_occurred) return NULL;
+
+  return b64;
+}
+
+void
+file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
+{
+  int fd;
+  unsigned char *chardata;
+  struct file_data *fdata = file_unpack(envP, log);
+
+  if (fname)
+    {
+      if ('-' == *fname)
+	fd = fileno(stdout);
+    }
+  
+  write(fd, fdata->data, fdata->size);
+}
+
+xmlrpc_value *
 file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name)
 {
   xmlrpc_value *b64 = NULL;
@@ -20,6 +75,8 @@ file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name)
   int fd, statres;
   struct stat statbuf;
   unsigned char *content;
+
+  trace();
 
   if ((statres = stat(file_name, &statbuf)))
     {
@@ -54,6 +111,8 @@ file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name)
   xmlrpc_struct_set_value(envP, b64, "size", b64_size);
   xmlrpc_struct_set_value(envP, b64, "what", b64_what);
 
+  trace();
+
   return b64;
 }
 
@@ -61,8 +120,13 @@ void
 file_save(struct call_info *cip, const char *dir)
 {
   struct file_data *fdatap;
+
+  trace();
+
   for (fdatap = cip->files; fdatap; fdatap = fdatap->next)
     file_save_sub(fdatap, dir, cip->session);
+
+  trace();
 }
 
 static void
@@ -70,6 +134,9 @@ file_save_sub(struct file_data *fdatap, const char *dir, const char *session)
 {
   char *path = malloc(strlen(dir) + strlen((char *)fdatap->name) + 2);
   int fd, res;
+
+  trace();
+
   sprintf(path, "%s/%s/%s", dir, session, fdatap->name);
   fprintf(stderr, "oraccnet:file_save_sub: saving %s\n", path);
   /* try to open; on fail check for existence of file's dir--if it's not there
@@ -88,6 +155,9 @@ file_save_sub(struct file_data *fdatap, const char *dir, const char *session)
       exit(1);
     }
   close(fd);
+
+  trace();
+
 }
 
 struct file_data *
@@ -97,6 +167,8 @@ file_unpack(xmlrpc_env * const envP, xmlrpc_value * const fstruct)
   xmlrpc_value *b64_data, *b64_name, *b64_size, *b64_what;
   size_t len;
   
+  trace();
+
   fdata = malloc(sizeof(struct file_data));
   xmlrpc_struct_find_value(envP, fstruct, "data", &b64_data);
   xmlrpc_struct_find_value(envP, fstruct, "name", &b64_name);
@@ -118,6 +190,8 @@ file_unpack(xmlrpc_env * const envP, xmlrpc_value * const fstruct)
     xmlrpc_read_string(envP, b64_what, (const char **const)(&fdata->what));
 
   fdata->next = NULL;
+
+  trace();
 
   return fdata;
 }

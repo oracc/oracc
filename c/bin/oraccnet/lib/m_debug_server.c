@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_cgi.h>
@@ -12,7 +13,7 @@ debug_method(xmlrpc_env *const envP,
 	     )
 {
   const char *addr = getenv("REMOTE_ADDR");
-  xmlrpc_value *s;
+  xmlrpc_value *s, *s_ret;
   struct call_info *cip;
 
   fprintf(stderr, "oracc-xmlrpc: debug: REMOTE_ADDR=%s\n", addr);
@@ -27,7 +28,12 @@ debug_method(xmlrpc_env *const envP,
   xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, addr));
 #endif
 
-  return s;
+  cip->files = NULL;
+  cip->methodargs = NULL;
+  cip->clientIP = strdup(addr);
+  s_ret = callinfo_pack(envP, cip);
+  
+  return s_ret;
 }
 
 struct xmlrpc_method_info3 debug_server_info =

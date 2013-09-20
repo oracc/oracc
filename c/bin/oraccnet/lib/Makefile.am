@@ -11,7 +11,10 @@ noinst_LTLIBRARIES=liboraccnet.la
 liboraccnet_la_SOURCES = \
 	m_debug_client.c m_debug_server.c \
 	m_environment_client.c m_environment_server.c \
+	m_ox_client.c m_ox_server.c \
 	callinfo.c \
 	file.c \
+	generic_request.c \
+	request.c \
 	sesh.c \
 	util.c

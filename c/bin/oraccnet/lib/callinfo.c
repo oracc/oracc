@@ -34,32 +34,42 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
   xmlrpc_struct_set_value(envP, s, "project", xmlrpc_string_new(envP, nonull(cip->project)));
   xmlrpc_struct_set_value(envP, s, "version", xmlrpc_string_new(envP, nonull(cip->version)));
 
-  for (i = 0; cip->methodargs[i]; ++i)
+  trace();
+
+  if (cip->methodargs)
     {
-      if (!strncmp(cip->methodargs[i], "file:", 5))
+      for (i = 0; cip->methodargs[i]; ++i)
 	{
-	  char *file_what, *file_name;
-	    
-	  file_what = strdup(&cip->methodargs[i][5]);
-	  file_name = strchr(file_what, '=');
-	  if (file_name)
+	  if (!strncmp(cip->methodargs[i], "file:", 5))
 	    {
-	      xmlrpc_value * fstruct;
-	      *file_name++ = '\0';
-	      fstruct = file_pack(envP, file_what, file_name);
-	      xmlrpc_array_append_item(envP, files, fstruct);
+	      char *file_what, *file_name;
+	      
+	      file_what = strdup(&cip->methodargs[i][5]);
+	      file_name = strchr(file_what, '=');
+	      if (file_name)
+		{
+		  xmlrpc_value * fstruct;
+		  *file_name++ = '\0';
+		  fstruct = file_pack(envP, file_what, file_name);
+		  xmlrpc_array_append_item(envP, files, fstruct);
+		}
+	      else
+		{
+		  fprintf(stderr, "oracc-client: bad -Mfile arg, expected -Mfile:WHAT=NAME\n");
+		  exit(1);
+		}
 	    }
 	  else
-	    {
-	      fprintf(stderr, "oracc-client: bad -Mfile arg, expected -Mfile:WHAT=NAME\n");
-	      exit(1);
-	    }
+	    xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
 	}
-      else
-	xmlrpc_array_append_item(envP, methargs, xmlrpc_string_new(envP, cip->methodargs[i]));
     }
+
+  trace();
+
   xmlrpc_struct_set_value(envP, s, "method-args", methargs);
   xmlrpc_struct_set_value(envP, s, "method-data", files);
+
+  trace();
 
   return s;
 }
@@ -73,7 +83,7 @@ callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
   xmlrpc_value *methargs, *files;
   int i;
 
-  unpack(envP, s, "clientIP", &cip->clientIP);
+  unpack(envP, s, "clientIP", (char **)&cip->clientIP);
   unpack(envP, s, "serverURL", &cip->serverURL);
   unpack(envP, s, "session", &cip->session);
   unpack(envP, s, "method", &cip->method);
@@ -81,32 +91,39 @@ callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
   unpack(envP, s, "password", &cip->password);
   unpack(envP, s, "project", &cip->project);
   unpack(envP, s, "version", &cip->version);
-  cip->methodargs = malloc(METHOD_ARGS_MAX * sizeof(char *));
   xmlrpc_struct_find_value(envP, s, "method-args", &methargs);
-  for (i = 0; i < xmlrpc_array_size(envP, methargs); ++i)
+  if (methargs)
     {
-      xmlrpc_value *v;
-      xmlrpc_array_read_item(envP, methargs, i, &v);
-      xmlrpc_read_string(envP, v, (const char **const)(&cip->methodargs[i]));
+      cip->nargs = xmlrpc_array_size(envP, methargs);
+      cip->methodargs = malloc((cip->nargs +1) * sizeof(char *));
+      for (i = 0; i < cip->nargs; ++i)
+	{
+	  xmlrpc_value *v;
+	  xmlrpc_array_read_item(envP, methargs, i, &v);
+	  xmlrpc_read_string(envP, v, (const char **const)(&cip->methodargs[i]));
+	}
+      cip->methodargs[cip->nargs] = NULL;
     }
-  cip->methodargs[i] = NULL;
   
   xmlrpc_struct_find_value(envP, s, "method-data", &files);
-  for (i = 0; i < xmlrpc_array_size(envP, files); ++i)
+  if (files)
     {
-      struct file_data *this_file;
-      xmlrpc_value * fstruct;
-      xmlrpc_array_read_item(envP, files, i, &fstruct);
-      this_file = file_unpack(envP, fstruct);
-      if (cip->files == NULL)
+      for (i = 0; i < xmlrpc_array_size(envP, files); ++i)
 	{
-	  cip->files = this_file;
-	  cip->files_last = cip->files->next;
-	}
-      else
-	{
-	  cip->files_last->next = this_file;
-	  cip->files_last = cip->files->next;
+	  struct file_data *this_file;
+	  xmlrpc_value * fstruct;
+	  xmlrpc_array_read_item(envP, files, i, &fstruct);
+	  this_file = file_unpack(envP, fstruct);
+	  if (cip->files == NULL)
+	    {
+	      cip->files = this_file;
+	      cip->files_last = cip->files->next;
+	    }
+	  else
+	    {
+	      cip->files_last->next = this_file;
+	      cip->files_last = cip->files->next;
+	    }
 	}
     }
 

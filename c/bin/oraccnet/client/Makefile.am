@@ -1,5 +1,6 @@
 include ../../../../oracc-am-rules.txt
 
+AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
 .g.c:
