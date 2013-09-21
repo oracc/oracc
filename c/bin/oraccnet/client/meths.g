@@ -1,4 +1,5 @@
 %{
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include "oraccnet.h"
 extern struct client_method_info debug_client_info;

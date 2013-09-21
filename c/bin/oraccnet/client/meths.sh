@@ -1,6 +1,7 @@
 #!/bin/sh
 cat <<EOF >meths.g
 %{
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include "oraccnet.h"
 EOF

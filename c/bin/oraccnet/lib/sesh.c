@@ -7,6 +7,16 @@
 
 static char sesh_template[L_tmpnam];
 
+static const char *sesh_path = NULL;
+
+char *
+sesh_file(const char *basename)
+{
+  char *tmp = malloc(strlen(sesh_path) + strlen(basename) + 2);
+  (void)sprintf(tmp, "%s/%s", sesh_path, basename);
+  return tmp;
+}
+
 /* calling this routine is optional for methods--a method which
    returns immediately and does not require tmp files can do without */
 void
@@ -19,6 +29,7 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
       if (tmpdir)
 	{
 	  char *basename = strrchr(tmpdir, '/');
+	  sesh_path = tmpdir;
 	  if (basename)
 	    {
 	      ++basename;

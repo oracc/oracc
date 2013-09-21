@@ -3,45 +3,65 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <xmlrpc-c/base.h>
 #include "oraccnet.h"
 
 static void file_save_sub(struct file_data *fdatap, const char *dir, const char *session);
 
+/* this routine has a lot of overlap with file_pack: refactor the common parts out into a subr */
 xmlrpc_value *
-file_b64(xmlrpc_env * const envP, char *name, char *what, unsigned int size, const unsigned char *content)
+file_b64(xmlrpc_env * const envP, const char *path, const char *name, const char *what)
 {
+  int pfd;
+  struct stat pstat;
+  unsigned char *pbuf = NULL;
+  unsigned int plen;
   xmlrpc_value *b64_data, *b64_name, *b64_size, *b64_what, *b64;
 
-  trace();
-  fprintf(stderr, "file_b64: passed content with stated size %d; actual size %u\n", size, (unsigned int)strlen(content));
-  b64_data = xmlrpc_base64_new(envP, (unsigned int)size, content);
+  fprintf(stderr, "file_b64: processing request for path=%s\n", path);
+
+  if ((stat(path, &pstat)) < 0)
+    return request_error(envP, "oracc-xmlrpc: %s: parent failed to stat %s\n%s", path, strerror(errno));
+  
+  plen = (unsigned int)pstat.st_size;
+
+  if ((pfd = open(path, O_RDONLY)) < 0)
+    return request_error(envP, "oracc-xmlrpc: %s: parent failed to open file %s\n%s", path, strerror(errno));
+  
+  pbuf = malloc(plen + 1);
+  if (read(pfd, pbuf, plen) < 0)
+    return request_error(envP, "oracc-xmlrpc: %s: parent failed to read %u bytes from %s\n%s", 
+			 plen, path,
+			 strerror(errno));
+  close(pfd);
+  pbuf[plen] = '\0';
+  
+  b64_data = xmlrpc_base64_new(envP, plen, pbuf);
   if (envP->fault_occurred) return NULL;
-  trace();
   
   b64_name = xmlrpc_string_new(envP, name);
   if (envP->fault_occurred) return NULL;
-  trace();
   
-  b64_size = xmlrpc_int_new(envP, (int)size);
+  b64_size = xmlrpc_int_new(envP, plen);
   if (envP->fault_occurred) return NULL;
-  trace();
   
   b64_what = xmlrpc_string_new(envP, what);
   if (envP->fault_occurred) return NULL;
-
-  trace();
   
   b64 = xmlrpc_struct_new(envP);
-
   if (envP->fault_occurred) return NULL;
+
   xmlrpc_struct_set_value(envP, b64, "data", b64_data);
   if (envP->fault_occurred) return NULL;
+
   xmlrpc_struct_set_value(envP, b64, "name", b64_name);
   if (envP->fault_occurred) return NULL;
+
   xmlrpc_struct_set_value(envP, b64, "size", b64_size);
   if (envP->fault_occurred) return NULL;
+
   xmlrpc_struct_set_value(envP, b64, "what", b64_what);
   if (envP->fault_occurred) return NULL;
 
@@ -52,7 +72,6 @@ void
 file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
 {
   int fd;
-  unsigned char *chardata;
   struct file_data *fdata = file_unpack(envP, log);
 
   if (fname)
@@ -62,6 +81,16 @@ file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
     }
   
   write(fd, fdata->data, fdata->size);
+}
+
+struct file_data *
+file_find(struct call_info *cip, const char *what)
+{
+  struct file_data *fdp;
+  for (fdp = cip->files; fdp; fdp = fdp->next)
+    if (!strcmp((char*)fdp->what, what))
+      return fdp;
+  return NULL;
 }
 
 xmlrpc_value *
@@ -77,6 +106,8 @@ file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name)
   unsigned char *content;
 
   trace();
+
+  fprintf(stderr, "file_pack: what=%s; name=%s\n", file_what, file_name);
 
   if ((statres = stat(file_name, &statbuf)))
     {
@@ -132,25 +163,25 @@ file_save(struct call_info *cip, const char *dir)
 static void
 file_save_sub(struct file_data *fdatap, const char *dir, const char *session)
 {
-  char *path = malloc(strlen(dir) + strlen((char *)fdatap->name) + 2);
   int fd, res;
 
   trace();
 
-  sprintf(path, "%s/%s/%s", dir, session, fdatap->name);
-  fprintf(stderr, "oraccnet:file_save_sub: saving %s\n", path);
+  fdatap->path = malloc(strlen(dir) + strlen(session) + strlen((char *)fdatap->name) + 3);
+  sprintf((char*)fdatap->path, "%s/%s/%s", dir, session, fdatap->name);
+  fprintf(stderr, "oraccnet:file_save_sub: saving %s\n", fdatap->path);
   /* try to open; on fail check for existence of file's dir--if it's not there
      use system mkdir -p to make it */
-  if ((fd = open(path, O_WRONLY|O_CREAT)) < 0)
+  if ((fd = open((char*)fdatap->path, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR)) < 0)
     {
       /* in xmlrpc server mode we need to send this error back to client */
-      fprintf(stderr, "oraccnet:file_save_sub: failed to open %s\n", path);
+      fprintf(stderr, "oraccnet:file_save_sub: failed to open %s\n", fdatap->path);
       perror("oraccnet:file_save_sub");
       exit(1);
     }
   if ((res = write(fd, fdatap->data, fdatap->size)) < 0)
     {
-      fprintf(stderr, "oraccnet:file_save_sub: write failed trying to save %d bytes to %s\n", fdatap->size, path);
+      fprintf(stderr, "oraccnet:file_save_sub: write failed trying to save %d bytes to %s\n", fdatap->size, fdatap->path);
       perror("oraccnet:file_save_sub");
       exit(1);
     }

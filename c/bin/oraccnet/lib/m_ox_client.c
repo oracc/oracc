@@ -13,7 +13,9 @@ ox_response_handler(xmlrpc_env *const envP,
 {
   struct call_info *cip = NULL;
   xmlrpc_value *status = NULL;
+  xmlrpc_value *callinfo = NULL;
   xmlrpc_value *log = NULL;
+  xmlrpc_value *oxlog = NULL;
 
   if (s)
     {
@@ -22,17 +24,24 @@ ox_response_handler(xmlrpc_env *const envP,
 	{
 	  fprintf(stderr, "found status\n");
 	}
-      xmlrpc_struct_find_value(envP, s, "log", &log);
+      xmlrpc_struct_find_value(envP, s, "request_log", &log);
       if (log)
 	{
 	  file_dump(envP, log, "-");
 	}
+      xmlrpc_struct_find_value(envP, s, "ox_log", &oxlog);
+      if (oxlog)
+	{
+	  file_dump(envP, oxlog, "-");
+	}
     }
 
-  /*  callinfo_unpack(envP, resultP); */
+  xmlrpc_struct_find_value(envP, s, "callinfo", &callinfo);
+  cip = callinfo_unpack(envP, callinfo);
+  cip->nargs += 0; /* shut the compiler up */
+  
   /* This should exit if the server returned an error */
-  
-  
+    
   /* check for opts which modify the input and save the file, 
      backing up original first */
   

@@ -4,6 +4,7 @@
 
 #line 1 "meths.g"
 
+#include <string.h>
 #include <xmlrpc-c/base.h>
 #include "oraccnet.h"
 extern struct client_method_info debug_client_info;
@@ -47,13 +48,13 @@ meths (str, len)
   static struct meths_tab wordlist[] =
     {
       {""}, {""},
-#line 12 "meths.g"
+#line 13 "meths.g"
       {"ox", &ox_client_info},
       {""}, {""},
-#line 10 "meths.g"
+#line 11 "meths.g"
       {"debug", &debug_client_info},
       {""}, {""}, {""}, {""}, {""},
-#line 11 "meths.g"
+#line 12 "meths.g"
       {"environment", &environment_client_info}
     };
 

@@ -6,10 +6,10 @@ AM_CPPFLAGS=-I../include
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-meths.g: ../lib/m_*_client.c
+meths.g: ../lib/m_*_client.c meths.sh
 	./meths.sh
 
-meths.c: meths.g
+meths.c: meths.g meths.sh
 	gperf -N `basename $*` -tT $< >$@
 
 ../lib/liboraccnet.la: ../lib/*.c ../include/*.h

@@ -6,6 +6,41 @@
 
 static void unpack(xmlrpc_env *envP, xmlrpc_value *s, const char *mem, char **valp);
 
+void
+callinfo_append_arg(struct call_info *cip, const char *arg, const char *sep, const char *val)
+{
+  char *fullarg = NULL;
+  const char *hyph;
+
+  if (arg == NULL)
+    {
+      arg = "";
+      hyph = "";
+    }
+  else
+    {
+      if ('-' == *arg)
+	++arg;
+      hyph = "-";
+    }
+  if (sep == NULL)
+    sep = "";
+  fullarg = malloc(strlen(arg)+strlen(val)+2);
+  (void)sprintf(fullarg, "%s%s%s%s", hyph, arg, sep, val);
+  cip->methodargs = realloc(cip->methodargs, (cip->nargs+2) * sizeof(char *));
+  cip->methodargs[cip->nargs++] = fullarg;
+  cip->methodargs[cip->nargs] = NULL;
+}
+
+/* perform a shallow clone--just a new struct with the members copied into it */
+struct call_info *
+callinfo_clone(struct call_info *cip)
+{
+  struct call_info *newcip = callinfo_new();
+  *newcip = *cip;
+  return newcip;
+}
+
 struct call_info *
 callinfo_new(void)
 {
@@ -95,14 +130,22 @@ callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s)
   if (methargs)
     {
       cip->nargs = xmlrpc_array_size(envP, methargs);
-      cip->methodargs = malloc((cip->nargs +1) * sizeof(char *));
+      cip->methodargs = malloc((cip->nargs + 1) * sizeof(char *));
       for (i = 0; i < cip->nargs; ++i)
 	{
 	  xmlrpc_value *v;
+	  char *arg;
 	  xmlrpc_array_read_item(envP, methargs, i, &v);
-	  xmlrpc_read_string(envP, v, (const char **const)(&cip->methodargs[i]));
+	  xmlrpc_read_string(envP, v, (const char **const)&arg);
+	  cip->methodargs[i] = arg;
+	  fprintf(stderr, "unpacked methodargs[%d] as %s\n", i, arg);
 	}
       cip->methodargs[cip->nargs] = NULL;
+    }
+  else
+    {
+      cip->nargs = 0;
+      cip->methodargs = NULL;
     }
   
   xmlrpc_struct_find_value(envP, s, "method-data", &files);

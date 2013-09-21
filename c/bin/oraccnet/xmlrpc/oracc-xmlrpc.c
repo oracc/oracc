@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_cgi.h>
@@ -24,6 +25,7 @@ main (int const argc, const char **const argv)
   xmlrpc_env env;
 
   trace = 1;
+  umask(0);
 
   sesh_set_template("/Users/stinney/varoracc/XXXXXX");
   if (argc - 1 > 0 && argv == argv)

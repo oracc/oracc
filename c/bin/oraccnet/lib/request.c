@@ -11,14 +11,20 @@
 #include <xmlrpc-c/server.h>
 #include "oraccnet.h"
 
+static void request_debug(const char *path, const char **argv, const char **envp);
+
 #define ERR_MAX 512
 
 const char **
 request_argv(const char *name, struct call_info *cip)
 {
   const char **ret = malloc(sizeof(char *) * (cip->nargs + 2));
+  int i;
+  request_debug("request_argv", (const char **)cip->methodargs, NULL);
   ret[0] = name;
-  memcpy(&ret[1], cip->methodargs, (cip->nargs + 1) * sizeof(char*));
+  for (i = 0; i < cip->nargs; ++i)
+    ret[i+1] = cip->methodargs[i];
+  ret[++i] = NULL;
   return ret;
 }
 
@@ -44,6 +50,28 @@ request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_lis
   return s;
 }
 
+static void
+request_debug(const char *path, const char **argv, const char **envp)
+{
+  int i;
+  fprintf(stderr, 
+	  "oracc-xmlrpc: request\n\t"
+	  "path=%s", path);
+  if (argv)
+    {
+      fprintf(stderr, "\n\targv=");
+      for (i = 0; argv[i]; ++i)
+	fprintf(stderr, "%s ", argv[i]);
+    }
+  if (envp)
+    {
+      fprintf(stderr, "\n\tenvp=");
+      for (i = 0; envp[i]; ++i)
+	fprintf(stderr, "%s ", envp[i]);
+    }
+  fprintf(stderr, "\n");
+}
+
 const char **
 request_envp(struct call_info *cip)
 {
@@ -51,11 +79,12 @@ request_envp(struct call_info *cip)
 }
 
 xmlrpc_value *
-request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct call_info *cip, const char *logfile)
+request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct call_info *cip)
 {
   pid_t pid;
   const char **argv = NULL;
   const char **envp = NULL;
+  char *request_log = sesh_file("request.log");
   
   trace();
 
@@ -68,6 +97,8 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
   if ((pid = fork()) < 0)
     {
       /* set error status to return to client */
+      trace();
+
       return request_error(envP,
 			   "oracc-xmlrpc: %s: fork failed: %s", 
 			   cip->method,
@@ -80,60 +111,27 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
 	 status to send back to client, which will then ping the server until it
 	 gets back a 'completed' status
        */
+      trace();
+
       if (0 == cip->wait_seconds)
 	{
-	  int sloc, logfd;
-	  struct stat logstat;
-	  unsigned char *logbuf = NULL;
-	  xmlrpc_value *b64, *s;
-	  unsigned int loglen;
+	  xmlrpc_value *s;
+	  int sloc;
 
 	  waitpid(pid, &sloc, 0);
 	  if (WIFSIGNALED(sloc))
-	    return request_error(envP, "oracc-xmlrpc: %s: unexpected failure or crash\n", NULL);
+	    {
+	      trace();
+	      return request_error(envP, "oracc-xmlrpc: %s: unexpected failure or crash\n", cip->method, NULL);
+	    }
 	  else
-	    s = request_status(envP, "OK", NULL);
+	    {
+	      trace();
+	      s = request_status(envP, "OK", NULL);
+	    }
 
-	  trace();
-
-	  if ((stat(logfile, &logstat)) < 0)
-	    return request_error(envP, "oracc-xmlrpc: %s: parent failed to stat ox.log\n%s", strerror(errno));
-
-	  loglen = (unsigned int)logstat.st_size;
-
-	  fprintf(stderr, "logfile %s is %d bytes in length\n", logfile, (int)loglen);
-
-	  trace();
-
-	  if ((logfd = open(logfile, O_RDONLY)) < 0)
-	    return request_error(envP, "oracc-xmlrpc: %s: parent failed to open ox.log\n%s", strerror(errno));
-
-	  fprintf(stderr, "logfile = %s; logfd = %d; loglen = %u\n", logfile, logfd, loglen);
-
-	  trace();
-
-	  logbuf = malloc(loglen + 1);
-
-	  trace();
-
-	  if (read(logfd, logbuf, loglen) < 0)
-	    return request_error(envP, "oracc-xmlrpc: %s: parent failed to read %u bytes from ox.log\n%s", 
-				 loglen, 
-				 strerror(errno));
-	  close(logfd);
-
-	  trace();
-
-	  logbuf[loglen] = '\0';
-
-	  trace();
-
-	  if (NULL == (b64 = file_b64(envP, "ox.log", "log", loglen, logbuf)))
-	    dieIfFaultOccurred(envP);
-
-	  trace();
-
-	  xmlrpc_struct_set_value(envP, s, "log", b64);
+	  xmlrpc_struct_set_value(envP, s, "request_log",
+				  file_b64(envP, request_log, "request_log", "request_log"));
 	  dieIfFaultOccurred(envP);
 	  return s;
 	}
@@ -143,18 +141,38 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
   else /* child */
     {
       int fd;
-      if ((fd = open(logfile, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR)) < 0)
-	return request_error(envP, "oracc-xmlrpc: %s: child failed to open ox.log\n%s", strerror(errno));
+
+      trace();
+
+      fprintf(stderr, "oracc-xmlrpc: switching child output to %s\n", request_log);
+
+      if ((fd = open(request_log, O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR)) < 0)
+	{
+	  perror("request-open");
+	  return request_error(envP, "oracc-xmlrpc: %s: child failed to open %s\n%s", cip->method, request_log, strerror(errno), NULL);
+	}
       if (dup2(fd, fileno(stderr)) < 0)
-	return request_error(envP, "oracc-xmlrpc: %s: child failed to attach stdout to ox.log\n%s", strerror(errno));
+	{
+	  perror("request-dup2-stderr");
+	  return request_error(envP, "oracc-xmlrpc: %s: child failed to attach stdout to %s\n%s", cip->method, request_log, strerror(errno), NULL);
+	}
       if (dup2(fd, fileno(stdout)) < 0)
-	return request_error(envP, "oracc-xmlrpc: %s: child failed to attach stderr to ox.log\n%s", strerror(errno));
+	{
+	  perror("request-dup2-stdout");
+	  return request_error(envP, "oracc-xmlrpc: %s: child failed to attach stderr to %s\n%s", cip->method, request_log, strerror(errno), NULL);
+	}
+      else
+	setbuf(stdout, NULL);
+      request_debug(path, argv, envp);
       if (execve(path, (char *const *)argv, (char *const *)envp))
-	return request_error(envP,
-			     "oracc-xmlrpc: %s: exec failed\n%s",
-			     cip->method,
-			     strerror(errno),
-			     NULL);
+	{
+	  perror("request-execve");
+	  return request_error(envP,
+			       "oracc-xmlrpc: %s: exec failed\n%s",
+			       cip->method,
+			       strerror(errno),
+			       NULL);
+	}
       else
 	return NULL; /* NEVER HAPPENS */
     }
