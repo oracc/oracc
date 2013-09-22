@@ -1,2 +1,2 @@
 #!/bin/sh
-./configure  --prefix=/usr/local/oracc ; make CFLAGS=-g ; make install
+./configure  --prefix=$ORACC ; make CFLAGS=-g ; make install
