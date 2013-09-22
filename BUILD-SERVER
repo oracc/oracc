@@ -1,0 +1,23 @@
+userid oracc is required
+
+group oracc is required (needs to be created separately on Mac OS X)
+
+default perms for files are 660 (rwxrwx---)
+
+dirs must be exec as well, which is 770
+
+prefix this with 2 for setgid (set-group-id) so full oracc dir perms are 2770
+
+   find . -type d -exec chmod 2770 '{}' ';'
+
+maintainer logins are optional
+
+apache/_www must be in oracc group
+
+To add a user to oracc group:
+
+   usermod -aG oracc apache/_www
+
+To set the oracc home dir to propagate group ownership and deny read/write/x to users not in the group:
+
+   chmod -R 2660 /home/oracc

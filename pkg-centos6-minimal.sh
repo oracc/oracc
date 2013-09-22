@@ -13,4 +13,5 @@ yum install \
     msort \
     httpd \
     git \
-    policycoreutils-python
+    policycoreutils-python \
+    xmlrpc-c-devel
