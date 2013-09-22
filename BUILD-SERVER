@@ -21,3 +21,5 @@ To add a user to oracc group:
 To set the oracc home dir to propagate group ownership and deny read/write/x to users not in the group:
 
    chmod -R 2660 /home/oracc
+
+maintainers need to add Oracc environment info to  ~/.bash_profile
