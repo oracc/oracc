@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
-#incldue <stdio.h>
+#include <stdio.h>
 #include <errno.h>
 #include <sys/resource.h>
 #include <sys/types.h>
