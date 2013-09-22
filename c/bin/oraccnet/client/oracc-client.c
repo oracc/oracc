@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
