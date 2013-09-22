@@ -2,6 +2,15 @@ userid oracc is required
 
 group oracc is required (needs to be created separately on Mac OS X)
 
+oracc home dir is /home/oracc or /Users/oracc
+
+ownership on files should be primary maintainer id; this can be the oracc user
+or it can be another user account in which case for a user 'stinney' do:
+
+ sudo su -
+ cd /home/oracc
+ chmod -R stinney:oracc .
+
 default perms for files are 660 (rwxrwx---)
 
 dirs must be exec as well, which is 770
