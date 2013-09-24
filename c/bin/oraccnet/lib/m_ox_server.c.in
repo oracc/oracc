@@ -6,8 +6,6 @@
 #include <xmlrpc-c/server_cgi.h>
 #include "oraccnet.h"
 
-const char *varoracc = "/Users/stinney/varoracc";
-
 static xmlrpc_value *ox_method(xmlrpc_env *const envP,
 			       xmlrpc_value *const paramArrayP, 
 			       void *serverInfo,
