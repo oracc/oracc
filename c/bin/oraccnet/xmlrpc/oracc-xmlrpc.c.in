@@ -9,7 +9,7 @@
 
 #include "registry.c"
 
-#define EXES "XXXXXXXX"
+#define EXES "XXXXXX"
 
 static xmlrpc_registry *
 register_methods(xmlrpc_env *env)
