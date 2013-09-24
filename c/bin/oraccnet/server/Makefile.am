@@ -46,4 +46,7 @@ p3.c: p3.c.in
 pqx_map.c: pqx_map.c.in
 	$(ORACCIFY) pqx_map.c.in
 
+xmlrpc.c: xmlrpc.c.in
+	$(ORACCIFY) xmlrpc.c.in
+
 EXTRA_DIST=*.h

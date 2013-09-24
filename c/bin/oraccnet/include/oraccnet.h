@@ -54,6 +54,7 @@ struct meths_tab
 };
 
 extern char session_template[];
+extern const char *varoracc;
 
 extern void callinfo_append_arg(struct call_info *cip, const char *arg, const char *sep, const char *val);
 extern struct call_info *callinfo_clone(struct call_info *cip);

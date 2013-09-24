@@ -23,7 +23,7 @@ debug_method(xmlrpc_env *const envP,
 
 #if 1
   cip = callinfo_unpack(envP, s);
-  file_save(cip, "/Users/stinney/varoracc");
+  file_save(cip, "@@ORACC@@/varoracc");
 #else
   /* Simple methods can manipulate the RPC struct directly and just ship it back */
   xmlrpc_struct_set_value(envP, s, "clientIP", xmlrpc_string_new(envP, addr));

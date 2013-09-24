@@ -3,6 +3,9 @@ include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
+oracc-xmlrpc.c: oracc-xmlrpc.c.in
+	$(ORACCIFY) oracc-xmlrpc.c.in
+
 registry.c: ../lib/m_*_server.c
 	./registry.sh
 
