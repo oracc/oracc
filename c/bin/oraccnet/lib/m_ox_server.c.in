@@ -47,11 +47,19 @@ ox_method(xmlrpc_env *const envP,
   trace();
 
   cip_clone = callinfo_clone(cip);
+  trace();
+
   cip_clone->files = NULL;
+  trace();
+
   cip_clone->methodargs = NULL;
+  trace();
+
   cip_clone = callinfo_clone(cip);
+  trace();
 
   s_ret = callinfo_pack(envP, cip_clone);
+  trace();
   
   infile = file_find(cip, "in");
   if (infile)
