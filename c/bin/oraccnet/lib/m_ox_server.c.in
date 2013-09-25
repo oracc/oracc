@@ -57,7 +57,7 @@ ox_method(xmlrpc_env *const envP,
   cip->clientIP = addr;
   trace();
 
-  file_save(cip, "/Users/stinney/varoracc");
+  file_save(cip, varoracc);
 
   trace();
 

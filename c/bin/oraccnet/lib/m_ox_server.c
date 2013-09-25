@@ -30,7 +30,7 @@ ox_method(xmlrpc_env *const envP,
 	  )
 {
   const char *addr = getenv("REMOTE_ADDR");
-  xmlrpc_value *s, *s_ret, *exec_ret;
+  xmlrpc_value *s = NULL, *s_ret = NULL, *exec_ret = NULL;
   struct call_info *cip, *cip_clone;
   struct file_data *infile = NULL;
 
@@ -43,7 +43,12 @@ ox_method(xmlrpc_env *const envP,
   dieIfFaultOccurred(envP);
   trace();
 
+  fprintf(stderr, "before sesh_init\n");
+
   sesh_init(envP, s, 1);
+
+  fprintf(stderr, "after sesh_init\n");
+
   trace();
 
   cip = callinfo_unpack(envP, s);
