@@ -27,7 +27,7 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
     {
       char *tmpdir;
       trace();
-      tmpdir = mkdtemp(sesh_template);
+      tmpdir = (char*)mkdtemp(sesh_template);
       if (tmpdir)
 	{
 	  char *basename = NULL;
