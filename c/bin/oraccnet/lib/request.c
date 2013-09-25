@@ -34,7 +34,7 @@ request_argv(const char *name, struct call_info *cip)
 xmlrpc_value *
 request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_list ap)
 {
-  char buf[ERR_MAX];
+  static char buf[ERR_MAX];
   xmlrpc_value *s, *str;
 
   trace();
