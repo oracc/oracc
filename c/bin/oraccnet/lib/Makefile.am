@@ -3,7 +3,7 @@ include ../../../../oracc-am-rules.txt
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
+AM_CFLAGS=-D_BSD_SOURCE -ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
 noinst_LTLIBRARIES=liboraccnet.la
