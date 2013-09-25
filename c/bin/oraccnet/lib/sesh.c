@@ -22,6 +22,7 @@ sesh_file(const char *basename)
 void
 sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
 {
+  fprintf(stderr, "in sesh_init\n");
   trace();
   if (with_tmpdir)
     {
