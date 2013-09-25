@@ -33,7 +33,7 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
 	{
 	  char *basename = NULL;
 	  fprintf(stderr, "sesh: tmpdir=%s\n", tmpdir);
-	  basename = strrchr(tmpdir, '/');
+	  basename = (char*)strrchr(tmpdir, '/');
 	  sesh_path = tmpdir;
 	  if (basename)
 	    {
