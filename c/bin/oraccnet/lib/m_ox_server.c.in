@@ -86,7 +86,7 @@ ox_method(xmlrpc_env *const envP,
       callinfo_append_arg(cip, "l", NULL, logfile);
       callinfo_append_arg(cip, NULL, NULL, (const char *)infile->path);
       fprintf(stderr, "(2) argv[0] = %s\n", cip->methodargs[0]);
-      exec_ret = request_exec(envP, "@ORACC@/bin/ox", "ox", cip);
+      exec_ret = request_exec(envP, "@@ORACC@@/bin/ox", "ox", cip);
       b64 = file_b64(envP, logfile, "ox_log", "out");
       if (b64)
 	{

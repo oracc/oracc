@@ -23,16 +23,16 @@ file_b64(xmlrpc_env * const envP, const char *path, const char *name, const char
   fprintf(stderr, "file_b64: processing request for path=%s\n", path);
 
   if ((stat(path, &pstat)) < 0)
-    return request_error(envP, "oracc-xmlrpc: %s: parent failed to stat %s\n%s", path, strerror(errno));
+    return request_error(envP, "oracc-xmlrpc: parent failed to stat %s\n%s", path, strerror(errno));
   
   plen = (unsigned int)pstat.st_size;
 
   if ((pfd = open(path, O_RDONLY)) < 0)
-    return request_error(envP, "oracc-xmlrpc: %s: parent failed to open file %s\n%s", path, strerror(errno));
+    return request_error(envP, "oracc-xmlrpc: parent failed to open file %s\n%s", path, strerror(errno));
   
   pbuf = malloc(plen + 1);
   if (read(pfd, pbuf, plen) < 0)
-    return request_error(envP, "oracc-xmlrpc: %s: parent failed to read %u bytes from %s\n%s", 
+    return request_error(envP, "oracc-xmlrpc: parent failed to read %u bytes from %s\n%s", 
 			 plen, path,
 			 strerror(errno));
   close(pfd);
