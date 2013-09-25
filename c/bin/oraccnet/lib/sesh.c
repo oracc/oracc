@@ -28,10 +28,13 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
       tmpdir = mkdtemp(sesh_template);
       if (tmpdir)
 	{
-	  char *basename = strrchr(tmpdir, '/');
+	  char *basename = NULL;
+	  fprintf(stderr, "sesh: tmpdir=%s\n", tmpdir);
+	  basename = strrchr(tmpdir, '/');
 	  sesh_path = tmpdir;
 	  if (basename)
 	    {
+	      fprintf(stderr, "sesh: basename=%s\n", tmpdir);
 	      ++basename;
 	      xmlrpc_struct_set_value(envP, s, "session", xmlrpc_string_new(envP, basename));
 	      xmlrpc_struct_set_value(envP, s, "#tmpdir", xmlrpc_string_new(envP, tmpdir));
