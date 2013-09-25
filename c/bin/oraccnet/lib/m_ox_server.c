@@ -37,21 +37,39 @@ ox_method(xmlrpc_env *const envP,
   trace();
 
   fprintf(stderr, "oracc-xmlrpc: ox: REMOTE_ADDR=%s\n", addr);
+  trace();
+
   xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  dieIfFaultOccurred(envP);
+  trace();
+
   sesh_init(envP, s, 1);
+  trace();
 
   cip = callinfo_unpack(envP, s);
+  trace();
+
   cip->clientIP = addr;
-  file_save(cip, varoracc);
+  trace();
+
+  file_save(cip, "/Users/stinney/varoracc");
 
   trace();
 
   cip_clone = callinfo_clone(cip);
+  trace();
+
   cip_clone->files = NULL;
+  trace();
+
   cip_clone->methodargs = NULL;
+  trace();
+
   cip_clone = callinfo_clone(cip);
+  trace();
 
   s_ret = callinfo_pack(envP, cip_clone);
+  trace();
   
   infile = file_find(cip, "in");
   if (infile)
@@ -63,7 +81,7 @@ ox_method(xmlrpc_env *const envP,
       callinfo_append_arg(cip, "l", NULL, logfile);
       callinfo_append_arg(cip, NULL, NULL, (const char *)infile->path);
       fprintf(stderr, "(2) argv[0] = %s\n", cip->methodargs[0]);
-      exec_ret = request_exec(envP, "/usr/local/oracc/bin/ox", "ox", cip);
+      exec_ret = request_exec(envP, "@ORACC@/bin/ox", "ox", cip);
       b64 = file_b64(envP, logfile, "ox_log", "out");
       if (b64)
 	{
