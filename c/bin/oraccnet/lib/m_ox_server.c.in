@@ -37,11 +37,20 @@ ox_method(xmlrpc_env *const envP,
   trace();
 
   fprintf(stderr, "oracc-xmlrpc: ox: REMOTE_ADDR=%s\n", addr);
+  trace();
+
   xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  trace();
+
   sesh_init(envP, s, 1);
+  trace();
 
   cip = callinfo_unpack(envP, s);
+  trace();
+
   cip->clientIP = addr;
+  trace();
+
   file_save(cip, "/Users/stinney/varoracc");
 
   trace();
