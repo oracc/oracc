@@ -224,9 +224,13 @@ process_text(struct run_context *run, unsigned char **lines)
 	    }
 	  else
 	    {
-	      vwarning("ox: can't process remainder of text; no project/configuration");
+#if 1
+	      vnotice("ox: no known #project: set so far--proceeding with default project 'oracc'");
+	      proj_default(run);
+#else
 	      lines = skip_rest_of_text(lines);
 	      return lines;
+#endif
 	    }
 	}
 

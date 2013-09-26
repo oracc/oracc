@@ -11,9 +11,6 @@ AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=liboracc.la
 
-xpd.c: xpd.c.in
-	$(ORACCIFY) xpd.c.in
-
 xpd2.c: xpd2.c.in
 	$(ORACCIFY) xpd2.c.in
 

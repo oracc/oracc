@@ -45,30 +45,32 @@ struct xpd *
 xpd_init(const char *project, struct npool *pool)
 {
   static char buf[64];
+  struct xpd *xp = calloc(1,sizeof(struct xpd));
   if (*project == '.') 
     /* can't use 00lib because of config inheriting */
     sprintf(buf,"%s/02xml/config.xml",project);
   else
     sprintf(buf,"%s/xml/%s/config.xml",oracc_home(),project);
-  if (!xaccess(buf,R_OK,0))
+  xp->project = (const char *)npool_copy((unsigned char *)project,pool);
+  xp->file = (const char *)npool_copy((unsigned char *)buf,pool);
+  xp->pool = pool;
+  xp->opts = hash_create(20);
+  xp->lang = hash_create(20);
+  if (!access(buf, R_OK))
     {
-      struct xpd *xp = calloc(1,sizeof(struct xpd));
-      xp->project = (const char *)npool_copy((unsigned char *)project,pool);
-      xp->file = (const char *)npool_copy((unsigned char *)buf,pool);
-      xp->pool = pool;
-      xp->opts = hash_create(20);
-      xp->lang = hash_create(20);
       xpds_load(xp,buf);
       if (verbose)
-	fprintf(stderr,"xpd_init: loaded %s\n",buf);
-      return xp;
+	vnotice("xpd_init: loaded %s",buf);
     }
+  else if (strcmp(project, "oracc"))
+    vwarning("xpd_init: no lib/config.xml file for project %s", project);
   else
     {
       if (verbose)
-	fprintf(stderr,"xpd_init: failed to load %s\n",buf);
-      return NULL;
+	vnotice("xpd_init: working with default project 'oracc'");
     }
+  
+  return xp;
 }
 
 /* N.B.: Do not free xpd->pool here as it is passed into 
