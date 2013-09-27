@@ -16,6 +16,6 @@ cgibin_PROGRAMS=oracc-xmlrpc
 
 oracc_xmlrpc_LDADD=@XMLRPC_CGISERVER_LIBS@ -L../lib -loraccnet
 
-oracc_xmlrpc_SOURCES=oracc-xmlrpc.c
+oracc_xmlrpc_SOURCES=oracc-xmlrpc.c status.c
 
 EXTRA_oracc_xmlrpc_DEPENDENCIES=../lib/liboraccnet.la

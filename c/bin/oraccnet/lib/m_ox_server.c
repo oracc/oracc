@@ -6,6 +6,9 @@
 #include <xmlrpc-c/server_cgi.h>
 #include "oraccnet.h"
 
+#undef trace
+#define trace()
+
 static xmlrpc_value *ox_method(xmlrpc_env *const envP,
 			       xmlrpc_value *const paramArrayP, 
 			       void *serverInfo,
@@ -79,19 +82,29 @@ ox_method(xmlrpc_env *const envP,
   infile = file_find(cip, "in");
   if (infile)
     {
-      xmlrpc_value *b64;
+      xmlrpc_value *b64, *status;
       char *logfile = sesh_file("ox.log");
       trace();
       fprintf(stderr, "(1) argv[0] = %s\n", cip->methodargs[0]);
       callinfo_append_arg(cip, "l", NULL, logfile);
       callinfo_append_arg(cip, NULL, NULL, (const char *)infile->path);
       fprintf(stderr, "(2) argv[0] = %s\n", cip->methodargs[0]);
-      exec_ret = request_exec(envP, "@ORACC@/bin/ox", "ox", cip);
+      if ((status = status_set(envP, cip, "started")) != NULL)
+	{
+	  exec_ret = status;
+	  goto RET;
+	}
+      exec_ret = request_exec(envP, "/usr/local/oracc/bin/ox", "ox", cip);
       b64 = file_b64(envP, logfile, "ox_log", "out");
       if (b64)
 	{
 	  fprintf(stderr, "adding %s to exec_ret\n", logfile);
 	  xmlrpc_struct_set_value(envP, exec_ret, "ox_log", b64);
+	}
+      if ((status = status_set(envP, cip, "completed")) != NULL)
+	{
+	  exec_ret = status;
+	  goto RET;
 	}
     }
   else
@@ -99,6 +112,7 @@ ox_method(xmlrpc_env *const envP,
       trace();
       exec_ret = request_error(envP, "oracc-xmlrpc: ox: can't find input file (what=in). Stop", NULL);
     }
+ RET:
   
   xmlrpc_struct_set_value(envP, exec_ret, "callinfo", s_ret);
   trace();

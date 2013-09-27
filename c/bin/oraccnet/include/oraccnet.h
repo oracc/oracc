@@ -80,6 +80,9 @@ extern char *sesh_file(const char *basename);
 extern void sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
 extern void sesh_set_template(const char *template);
 
+extern xmlrpc_value *status_get(xmlrpc_env * envP, struct call_info *cip);
+extern xmlrpc_value *status_set(xmlrpc_env * envP, struct call_info *cip, const char *s);
+
 extern void dieIfFaultOccurred (xmlrpc_env * const envP);
 extern void dieIfFaultOccurred3 (xmlrpc_env * const, const char *, int);
 extern struct meths_tab *meths(register const char *str, register unsigned int len);

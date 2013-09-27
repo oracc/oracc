@@ -10,8 +10,9 @@
 extern struct client_method_info debug_client_info;
 extern struct client_method_info environment_client_info;
 extern struct client_method_info ox_client_info;
+extern struct client_method_info status_client_info;
 
-#define TOTAL_KEYWORDS 3
+#define TOTAL_KEYWORDS 4
 #define MIN_WORD_LENGTH 2
 #define MAX_WORD_LENGTH 11
 #define MIN_HASH_VALUE 2
@@ -48,13 +49,15 @@ meths (str, len)
   static struct meths_tab wordlist[] =
     {
       {""}, {""},
-#line 13 "meths.g"
+#line 14 "meths.g"
       {"ox", &ox_client_info},
       {""}, {""},
-#line 11 "meths.g"
-      {"debug", &debug_client_info},
-      {""}, {""}, {""}, {""}, {""},
 #line 12 "meths.g"
+      {"debug", &debug_client_info},
+#line 15 "meths.g"
+      {"status", &status_client_info},
+      {""}, {""}, {""}, {""},
+#line 13 "meths.g"
       {"environment", &environment_client_info}
     };
 
