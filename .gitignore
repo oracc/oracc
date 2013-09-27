@@ -515,3 +515,5 @@ c/bin/oraccnet/httpdo/oracc-httpdo
 c/bin/oraccnet/client/oracc-client
 
 c/bin/oraccnet/server/oracc-server
+
+c/bin/oraccnet/lib/m_ox_server.c

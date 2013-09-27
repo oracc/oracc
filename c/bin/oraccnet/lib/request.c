@@ -38,7 +38,7 @@ request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_lis
   xmlrpc_value *s, *str;
 
   trace();
-  fprintf(stderr, "request_common: fmt=%s\n", fmt);
+  /*  fprintf(stderr, "request_common: fmt=%s\n", fmt); */
   vsnprintf(buf, ERR_MAX, fmt, ap);
   trace();
 
