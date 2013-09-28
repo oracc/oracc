@@ -16,7 +16,8 @@ status_return_handler(xmlrpc_env *const envP, struct client_method_info *cmi, xm
       xmlrpc_struct_find_value(envP, s, "status", &status);
       if (status)
 	{
-	  xmlrpc_read_string(envP, status, (const char **)str);
+	  trace();
+	  xmlrpc_read_string(envP, status, (const char **)&str);
 	  fprintf(stderr, "%s\n", str);
 	}
       else

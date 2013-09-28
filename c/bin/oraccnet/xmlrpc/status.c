@@ -24,19 +24,27 @@ status_get(xmlrpc_env * envP, struct call_info *cip)
   int res = -1;
   struct stat st;
 
+  trace();
   if (!cip)
     return request_error(envP, "oracc-xmlrpc: status_get: NULL call_info", NULL);
+  trace();
   if (!cip->session)
     return request_error(envP, "oracc-xmlrpc: status_get: no session set in call_info", NULL);
+  trace();
   fname = status_file(cip);
   if ((res = stat(fname, &st)) < 0)
     return request_error(envP, "oracc-xmlrpc: unable to stat status for session %s\n%s", cip->session, strerror(errno), NULL);
-  buf = malloc((size_t)st.st_size);
+  trace();
+  buf = malloc((size_t)st.st_size + 1);
   if ((res = open(fname, O_RDONLY)) < 0)
     return request_error(envP, "oracc-xmlrpc: unable to read status for session %s\n%s", cip->session, strerror(errno), NULL);
-  if ((res = read(res, &buf, st.st_size)) < 0)
+  trace();
+  if ((res = read(res, buf, st.st_size)) < 0)
     return request_error(envP, "oracc-xmlrpc: read of %d bytes failed for session %s\n%s", (int)st.st_size, cip->session, strerror(errno), NULL);
-  return request_status(envP, buf);
+  buf[st.st_size] = '\0';
+  fprintf(stderr, "status_get: read status `%s'\n", buf);
+  trace();
+  return request_status(envP, "%s", buf, NULL);
 }
 
 /* return NULL on success, xmlrpc error struct on failure */
