@@ -34,7 +34,7 @@ status_method(xmlrpc_env *const envP,
   struct call_info *cip, *cip_clone;
 
   trace();
-  fprintf(stderr, "oracc-xmlrpc: ox: REMOTE_ADDR=%s\n", addr);
+  fprintf(stderr, "oracc-xmlrpc: status: REMOTE_ADDR=%s\n", addr);
   xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
   dieIfFaultOccurred(envP);
 

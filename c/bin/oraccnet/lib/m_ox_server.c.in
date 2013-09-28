@@ -37,48 +37,20 @@ ox_method(xmlrpc_env *const envP,
   struct call_info *cip, *cip_clone;
   struct file_data *infile = NULL;
 
-  trace();
-
   fprintf(stderr, "oracc-xmlrpc: ox: REMOTE_ADDR=%s\n", addr);
-  trace();
-
   xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
   dieIfFaultOccurred(envP);
-  trace();
-
-  fprintf(stderr, "before sesh_init\n");
-
   sesh_init(envP, s, 1);
 
-  fprintf(stderr, "after sesh_init\n");
-
-  trace();
-
   cip = callinfo_unpack(envP, s);
-  trace();
-
   cip->clientIP = addr;
-  trace();
-
   file_save(cip, varoracc);
-
-  trace();
-
   cip_clone = callinfo_clone(cip);
-  trace();
-
   cip_clone->files = NULL;
-  trace();
-
   cip_clone->methodargs = NULL;
-  trace();
-
   cip_clone = callinfo_clone(cip);
-  trace();
-
   s_ret = callinfo_pack(envP, cip_clone);
-  trace();
-  
+
   infile = file_find(cip, "in");
   if (infile)
     {

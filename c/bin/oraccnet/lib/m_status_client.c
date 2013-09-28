@@ -33,7 +33,7 @@ status_call(xmlrpc_env *const envP, struct client_method_info *cmi)
 struct client_method_info status_client_info =
 {
   "status",
-  &status_call,
+  &generic_request,
   status_return_handler,
   &status_wait,
   NULL

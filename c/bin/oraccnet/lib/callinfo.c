@@ -69,8 +69,6 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
   xmlrpc_struct_set_value(envP, s, "project", xmlrpc_string_new(envP, nonull(cip->project)));
   xmlrpc_struct_set_value(envP, s, "version", xmlrpc_string_new(envP, nonull(cip->version)));
 
-  trace();
-
   if (cip->methodargs)
     {
       for (i = 0; cip->methodargs[i]; ++i)
@@ -99,12 +97,8 @@ callinfo_pack(xmlrpc_env *envP, struct call_info *cip)
 	}
     }
 
-  trace();
-
   xmlrpc_struct_set_value(envP, s, "method-args", methargs);
   xmlrpc_struct_set_value(envP, s, "method-data", files);
-
-  trace();
 
   return s;
 }

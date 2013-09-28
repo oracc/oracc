@@ -106,7 +106,7 @@ static int
 options(int argc, char *argv[], struct call_info *ci)
 {
   int ch;
-  while ((ch = getopt(argc, argv, "m:M:p:P:s:u:v:w:")) != -1) 
+  while ((ch = getopt(argc, argv, "m:M:p:P:s:S:u:v:w:")) != -1) 
     {
       switch (ch) 
 	{
@@ -137,6 +137,12 @@ options(int argc, char *argv[], struct call_info *ci)
 	case 's':
 	  if (optarg)
 	    ci->serverURL = optarg;
+	  else
+	    return badopt('s');
+	  break;
+	case 'S':
+	  if (optarg)
+	    ci->session = optarg;
 	  else
 	    return badopt('s');
 	  break;
@@ -183,6 +189,7 @@ usage(void)
 	  "   -m method\n"
 	  "  [-p PROJECT ]\n"
 	  "  [-s SERVER (include /xmlrpc) ]\n"
+	  "  [-S SESSION ]\n"
 	  "  [-u USER ]\n"
 	  "  [-P PASSWORD ]\n"
 	  "  [-v VERSION (of project) ]\n"
