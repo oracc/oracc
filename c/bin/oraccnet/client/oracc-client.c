@@ -63,16 +63,14 @@ main(int argc, char *argv[])
   resultP = cmi->call(&env, cmi);
   dieIfFaultOccurred(&env);
 
-#if 0
   if (cmi->wait_seconds)
     {
-      while (status(&env, cmi))
+      while ((resultP = server_status(&env, cmi)) == NULL)
 	{
+	  fprintf(stderr, "oracc-client: %s: sleeping %d seconds ...\n", cip->method, cmi->wait_seconds);
 	  sleep(cmi->wait_seconds);
 	}
-      resultP = cmi->term(&env, cmi);
     }
-#endif
 
   cmi->action(&env, cmi, resultP);
 
