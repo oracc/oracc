@@ -18,6 +18,23 @@ static void request_debug(const char *path, const char **argv, const char **envp
 
 #define ERR_MAX 512
 
+xmlrpc_value *
+method_status(xmlrpc_env *const envP, const char *fmt, ...)
+{
+  va_list ap;
+  xmlrpc_value *s;
+
+  trace();
+
+  va_start(ap, fmt);
+  s = request_common(envP, "method-status", fmt, ap);
+  va_end(ap);
+
+  trace();
+
+  return s;
+}
+
 const char **
 request_argv(const char *name, struct call_info *cip)
 {
@@ -217,3 +234,4 @@ request_status(xmlrpc_env *const envP, const char *fmt, ...)
 
   return s;
 }
+

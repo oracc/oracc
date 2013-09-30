@@ -63,13 +63,22 @@ main(int argc, char *argv[])
   resultP = cmi->call(&env, cmi);
   dieIfFaultOccurred(&env);
 
-  if (cmi->wait_seconds)
+  if (cip->wait_seconds)
     {
-      while ((resultP = server_status(&env, cmi)) == NULL)
+      xmlrpc_value *callinfo;
+      struct call_info *server_cip;
+
+      xmlrpc_struct_find_value(&env, resultP, "callinfo", &callinfo);
+      dieIfFaultOccurred(&env);
+      server_cip = callinfo_unpack(&env, callinfo);
+      cip->session = server_cip->session;
+      do
 	{
-	  fprintf(stderr, "oracc-client: %s: sleeping %d seconds ...\n", cip->method, cmi->wait_seconds);
-	  sleep(cmi->wait_seconds);
+	  fprintf(stderr, "oracc-client: %s: sleeping %d seconds in session %s ...\n", 
+		  cip->method, cip->wait_seconds, cip->session);
+	  sleep(cip->wait_seconds);
 	}
+      while ((resultP = server_status(&env, cip)) == NULL);
     }
 
   cmi->action(&env, cmi, resultP);
@@ -187,7 +196,7 @@ usage(void)
 	  "   -m method\n"
 	  "  [-p PROJECT ]\n"
 	  "  [-s SERVER (include /xmlrpc) ]\n"
-	  "  [-S SESSION ]\n"
+	  "  [-S SESSION (only with -m status)]\n"
 	  "  [-u USER ]\n"
 	  "  [-P PASSWORD ]\n"
 	  "  [-v VERSION (of project) ]\n"

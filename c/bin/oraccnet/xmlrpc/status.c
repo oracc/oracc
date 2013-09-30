@@ -44,7 +44,7 @@ status_get(xmlrpc_env * envP, struct call_info *cip)
   buf[st.st_size] = '\0';
   fprintf(stderr, "status_get: read status `%s'\n", buf);
   trace();
-  return request_status(envP, "%s", buf, NULL);
+  return method_status(envP, "%s", buf, NULL);
 }
 
 /* return NULL on success, xmlrpc error struct on failure */

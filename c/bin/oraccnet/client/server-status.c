@@ -11,9 +11,18 @@ xmlrpc_value *
 server_status(xmlrpc_env * envP, struct call_info *cip)
 {
   xmlrpc_value *resultP = NULL;
-  struct client_method_info *cmi = &status_client_info;
+  struct client_method_info *cmi = NULL;
+  struct meths_tab *meth = NULL;
+  struct call_info *cip_status = callinfo_clone(cip);
+  cip_status->method = "status";
+  if (!(meth = meths(cip_status->method, strlen(cip_status->method))))
+    {
+      fprintf(stderr, "oracc-client: unknown method name `%s'\n", cip_status->method);
+      exit(1);
+    }
 
-  cmi->instance = cip;
+  cmi = meth->info;
+  meth->info->instance = cip_status;
   resultP = cmi->call(envP, cmi);
   dieIfFaultOccurred(envP);
 
@@ -21,17 +30,18 @@ server_status(xmlrpc_env * envP, struct call_info *cip)
     {
       char *str = NULL;
       xmlrpc_value *status = NULL;
-      xmlrpc_struct_find_value(envP, resultP, "status", &status);
+      xmlrpc_struct_find_value(envP, resultP, "method-status", &status);
       if (status)
 	{
 	  trace();
 	  xmlrpc_read_string(envP, status, (const char **)&str);
-	  fprintf(stderr, "%s\n", str);
+	  fprintf(stderr, "server-status: status=%s\n", str);
 	  if (!strcmp(str, "completed"))
 	    return resultP;
 	}
       else
 	{
+	  fprintf(stderr, "server-status: no method-status\n");
 	  /* should return an error condition to caller here
 	     so that when server bombs/loses session client can 
 	     terminate gracefully */

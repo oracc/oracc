@@ -19,7 +19,7 @@ sesh_file(const char *basename)
 
 /* calling this routine is optional for methods--a method which
    returns immediately and does not require tmp files can do without */
-void
+char *
 sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
 {
   fprintf(stderr, "in sesh_init\n");
@@ -47,7 +47,10 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
 	      fprintf(stderr, "sesh: template=%s; tmpdir=%s; basename=%s\n", sesh_template, tmpdir, basename);
 	      /* ++basename; */
 	      xmlrpc_struct_set_value(envP, s, "session", xmlrpc_string_new(envP, basename));
+	      dieIfFaultOccurred(envP);
 	      xmlrpc_struct_set_value(envP, s, "#tmpdir", xmlrpc_string_new(envP, tmpdir));
+	      dieIfFaultOccurred(envP);
+	      return basename;
 	    }
 	  else
 	    {
@@ -64,6 +67,7 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
 	  exit(1);
 	}
     }
+  return NULL;
 }
 
 void

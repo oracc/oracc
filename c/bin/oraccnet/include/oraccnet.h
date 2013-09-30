@@ -71,14 +71,17 @@ extern struct file_data *file_unpack(xmlrpc_env * const envP, xmlrpc_value * con
 
 extern xmlrpc_value *generic_request(xmlrpc_env *const envP, struct client_method_info *cmi);
 
+extern xmlrpc_value *method_status(xmlrpc_env *const envP, const char *fmt, ...);
 extern xmlrpc_value *request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_list ap);
 extern xmlrpc_value *request_error(xmlrpc_env *const envP, const char *fmt, ...);
 extern xmlrpc_value *request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct call_info *cip);
 extern xmlrpc_value *request_status(xmlrpc_env *const envP, const char *fmt, ...);
 
 extern char *sesh_file(const char *basename);
-extern void sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
+extern char *sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
 extern void sesh_set_template(const char *template);
+
+extern xmlrpc_value *server_status(xmlrpc_env * envP, struct call_info *cip);
 
 extern xmlrpc_value *status_get(xmlrpc_env * envP, struct call_info *cip);
 extern xmlrpc_value *status_set(xmlrpc_env * envP, struct call_info *cip, const char *s);
