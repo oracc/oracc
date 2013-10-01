@@ -23,6 +23,7 @@ status_get(xmlrpc_env * envP, struct call_info *cip)
   char *fname = NULL, *buf = NULL;
   int res = -1;
   struct stat st;
+  xmlrpc_value *s;
 
   trace();
   if (!cip)
@@ -44,7 +45,13 @@ status_get(xmlrpc_env * envP, struct call_info *cip)
   buf[st.st_size] = '\0';
   fprintf(stderr, "status_get: read status `%s'\n", buf);
   trace();
-  return method_status(envP, "%s", buf, NULL);
+  s = request_status(envP, "OK", NULL);
+
+  if (!strcmp(buf, "completed"))
+    method_files(envP, s);
+
+  method_status(envP, s, "%s", buf, NULL);
+  return s;
 }
 
 /* return NULL on success, xmlrpc error struct on failure */

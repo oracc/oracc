@@ -19,6 +19,6 @@ bin_PROGRAMS=oracc-client
 
 oracc_client_LDADD=@XMLRPC_CLIENT_LIBS@ -L../lib -loraccnet
 
-oracc_client_SOURCES=oracc-client.c meths.c server-status.c
+oracc_client_SOURCES=oracc-client.c meths.c result.c server-status.c
 
 EXTRA_oracc_client_DEPENDENCIES=../lib/liboraccnet.la

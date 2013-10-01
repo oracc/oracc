@@ -63,7 +63,7 @@ extern xmlrpc_value *callinfo_pack(xmlrpc_env *envP, struct call_info *cip);
 extern struct call_info *callinfo_unpack(xmlrpc_env *envP, xmlrpc_value *s);
 
 extern xmlrpc_value *file_b64(xmlrpc_env * const envP, const char *path, const char *name, const char *what);
-extern void file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname);
+extern int file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname);
 extern struct file_data *file_find(struct call_info *cip, const char *what);
 extern xmlrpc_value *file_pack(xmlrpc_env * const envP, const char *file_what, const char *file_name);
 extern void file_save(struct call_info *cip, const char *dir);
@@ -71,14 +71,22 @@ extern struct file_data *file_unpack(xmlrpc_env * const envP, xmlrpc_value * con
 
 extern xmlrpc_value *generic_request(xmlrpc_env *const envP, struct client_method_info *cmi);
 
-extern xmlrpc_value *method_status(xmlrpc_env *const envP, const char *fmt, ...);
+extern void method_files(xmlrpc_env *envP, xmlrpc_value *s);
+
+extern void method_status(xmlrpc_env *const envP, xmlrpc_value *s, const char *fmt, ...);
 extern xmlrpc_value *request_common(xmlrpc_env *const envP, const char *type, const char *fmt, va_list ap);
 extern xmlrpc_value *request_error(xmlrpc_env *const envP, const char *fmt, ...);
 extern xmlrpc_value *request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct call_info *cip);
 extern xmlrpc_value *request_status(xmlrpc_env *const envP, const char *fmt, ...);
 
+extern int result_method_file(xmlrpc_env *envP, xmlrpc_value *s, const char *member, const char *fname);
+extern int result_method_log(xmlrpc_env *envP, xmlrpc_value *s);
+extern char *result_method_status(xmlrpc_env *envP, xmlrpc_value *s);
+extern char *result_request_status(xmlrpc_env *envP, xmlrpc_value *s);
+
 extern char *sesh_file(const char *basename);
 extern char *sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir);
+extern char *sesh_set_path(struct call_info *cip);
 extern void sesh_set_template(const char *template);
 
 extern xmlrpc_value *server_status(xmlrpc_env * envP, struct call_info *cip);

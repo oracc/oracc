@@ -29,7 +29,6 @@ status_method(xmlrpc_env *const envP,
 	  void *callInfo
 	  )
 {
-  const char *addr = getenv("REMOTE_ADDR");
   xmlrpc_value *s = NULL, *s_ret = NULL, *exec_ret = NULL;
   struct call_info *cip, *cip_clone;
 
@@ -38,10 +37,9 @@ status_method(xmlrpc_env *const envP,
   dieIfFaultOccurred(envP);
   trace();
 
-  /* No session initialization for status method */
-
   cip = callinfo_unpack(envP, s);
   fprintf(stderr, "oracc-xmlrpc: status: %s\n", cip->session);
+  sesh_set_path(cip);
   cip_clone = callinfo_clone(cip);
   cip_clone->files = NULL;
   cip_clone->methodargs = NULL;

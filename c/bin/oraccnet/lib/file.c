@@ -68,7 +68,7 @@ file_b64(xmlrpc_env * const envP, const char *path, const char *name, const char
   return b64;
 }
 
-void
+int
 file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
 {
   int fd;
@@ -77,10 +77,32 @@ file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
   if (fname)
     {
       if ('-' == *fname)
-	fd = fileno(stdout);
+	{
+	  if ((fd = fileno(stdout)) < 0)
+	    {
+	      fprintf(stderr, "oracc-client: unable to write to stdout\n");
+	      return -1;
+	    }
+	}
     }
-  
-  write(fd, fdata->data, fdata->size);
+  else
+    {
+      if ((fd = open(fname, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR)) < 0)
+	{
+	  fprintf(stderr, "oracc-client: failed to open %s for file dump\n", fname);
+	  perror("oracc-client:file_dump");
+	  return -1;
+	}
+    }
+
+  if (fdata->size != write(fd, fdata->data, fdata->size))
+    {
+      fprintf(stderr, "oracc-client: failed to write %ld bytes to %s\n", (unsigned long)fdata->size, fname);
+      perror("oracc-client:file_dump");
+      return -1;      
+    }
+
+  return 0;
 }
 
 struct file_data *

@@ -35,6 +35,7 @@ server_status(xmlrpc_env * envP, struct call_info *cip)
 	{
 	  trace();
 	  xmlrpc_read_string(envP, status, (const char **)&str);
+	  /* This diagnostic needs to be suppressable */
 	  fprintf(stderr, "server-status: status=%s\n", str);
 	  if (!strcmp(str, "completed"))
 	    return resultP;
@@ -47,7 +48,7 @@ server_status(xmlrpc_env * envP, struct call_info *cip)
 	     terminate gracefully */
 	}
     }
-  
+
   /* Dispose of our result value. */
   xmlrpc_DECREF(resultP);
   

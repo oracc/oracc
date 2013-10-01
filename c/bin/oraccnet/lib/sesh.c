@@ -70,6 +70,19 @@ sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with_tmpdir)
   return NULL;
 }
 
+char *
+sesh_set_path(struct call_info *cip)
+{
+  if (cip->session)
+    {
+      char *sp = malloc(strlen(varoracc) + strlen(cip->session) + 2);
+      (void)sprintf(sp, "%s/%s", varoracc, cip->session);
+      sesh_path = sp;
+      return sp;
+    }
+  return NULL;
+}
+
 void
 sesh_set_template(const char *template)
 {

@@ -18,21 +18,21 @@ static void request_debug(const char *path, const char **argv, const char **envp
 
 #define ERR_MAX 512
 
-xmlrpc_value *
-method_status(xmlrpc_env *const envP, const char *fmt, ...)
+void
+method_status(xmlrpc_env *const envP, xmlrpc_value *s, const char *fmt, ...)
 {
+  static char buf[ERR_MAX];
   va_list ap;
-  xmlrpc_value *s;
-
-  trace();
+  xmlrpc_value *str;
 
   va_start(ap, fmt);
-  s = request_common(envP, "method-status", fmt, ap);
+  vsnprintf(buf, ERR_MAX, fmt, ap);
   va_end(ap);
+  str = xmlrpc_string_new(envP, buf);
+  dieIfFaultOccurred(envP);
 
-  trace();
-
-  return s;
+  xmlrpc_struct_set_value(envP, s, "method-status", str);
+  dieIfFaultOccurred(envP);
 }
 
 const char **
@@ -157,7 +157,11 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
 	  return s;
 	}
       else
-	return request_status(envP, "started", NULL);
+	{
+	  xmlrpc_value *s = request_status(envP, "OK", NULL);
+	  method_status(envP, s, "%s", "started", NULL);
+	  return s;
+	}
     }
   else /* child */
     {

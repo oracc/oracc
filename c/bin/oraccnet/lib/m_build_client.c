@@ -12,16 +12,16 @@ build_return_handler(xmlrpc_env *const envP, struct client_method_info *cmi, xml
   if (s)
     {
       char *str = NULL;
-      xmlrpc_value *status = NULL;
-      xmlrpc_struct_find_value(envP, s, "status", &status);
-      if (status)
-	{
-	  trace();
-	  xmlrpc_read_string(envP, status, (const char **)&str);
-	  fprintf(stderr, "oracc-client: build initial status: %s\n", str);
-	}
+      if ((str = result_request_status(envP, s)))
+	fprintf(stderr, "oracc-client: build: request status: %s\n", str);
       else
-	fprintf(stderr, "oracc-client: build: no status set on RPC return\n");
+	fprintf(stderr, "oracc-client: build: no request status set by RPC\n");
+      if ((str = result_method_status(envP, s)))
+	fprintf(stderr, "oracc-client: build: method status: %s\n", str);
+      else
+	fprintf(stderr, "oracc-client: build: no method status set by RPC\n");
+      (void)result_method_file(envP, s, "method-log", "build.log");
+      (void)result_method_file(envP, s, "method-zip", "build.zip");
     }
 }
 

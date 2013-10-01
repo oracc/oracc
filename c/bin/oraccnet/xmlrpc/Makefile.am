@@ -11,7 +11,7 @@ oracc-xmlrpc.c: oracc-xmlrpc.c.in
 registry.c: ../lib/m_*_server.c
 	./registry.sh
 
-xmlrpc-build.sh: xmlrpc-build.sh.in
+xmlrpc-build.sh$(EXEEXT): xmlrpc-build.sh.in
 	$(ORACCIFY) xmlrpc-build.sh.in
 
 ../lib/liboraccnet.la: ../lib/*.c ../include/*.h
@@ -19,6 +19,6 @@ xmlrpc-build.sh: xmlrpc-build.sh.in
 
 oracc_xmlrpc_LDADD=@XMLRPC_CGISERVER_LIBS@ -L../lib -loraccnet
 
-oracc_xmlrpc_SOURCES=oracc-xmlrpc.c status.c
+oracc_xmlrpc_SOURCES=oracc-xmlrpc.c status.c method_files.c
 
 EXTRA_oracc_xmlrpc_DEPENDENCIES=../lib/liboraccnet.la

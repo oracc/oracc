@@ -27,14 +27,10 @@ ox_response_handler(xmlrpc_env *const envP,
 	}
       xmlrpc_struct_find_value(envP, s, "request_log", &log);
       if (log)
-	{
-	  file_dump(envP, log, "-");
-	}
+	(void)file_dump(envP, log, "-");
       xmlrpc_struct_find_value(envP, s, "ox_log", &oxlog);
       if (oxlog)
-	{
-	  file_dump(envP, oxlog, "-");
-	}
+	(void)file_dump(envP, oxlog, "-");
     }
 
   xmlrpc_struct_find_value(envP, s, "callinfo", &callinfo);
