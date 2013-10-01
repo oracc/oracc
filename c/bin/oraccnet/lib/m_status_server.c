@@ -39,7 +39,7 @@ status_method(xmlrpc_env *const envP,
 
   cip = callinfo_unpack(envP, s);
   fprintf(stderr, "oracc-xmlrpc: status: %s\n", cip->session);
-  sesh_set_path(cip);
+  fprintf(stderr, "status method session set to %s\n", sesh_set_path(cip));
   cip_clone = callinfo_clone(cip);
   cip_clone->files = NULL;
   cip_clone->methodargs = NULL;
