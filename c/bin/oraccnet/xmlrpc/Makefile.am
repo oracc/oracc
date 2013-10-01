@@ -3,7 +3,7 @@ include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
-cgibin_PROGRAMS=oracc-xmlrpc xmlrpc-build.sh
+cgibin_PROGRAMS=oracc-xmlrpc oracc-build-server.sh
 
 oracc-xmlrpc.c: oracc-xmlrpc.c.in
 	$(ORACCIFY) oracc-xmlrpc.c.in
@@ -11,8 +11,8 @@ oracc-xmlrpc.c: oracc-xmlrpc.c.in
 registry.c: ../lib/m_*_server.c
 	./registry.sh
 
-xmlrpc-build.sh$(EXEEXT): xmlrpc-build.sh.in
-	$(ORACCIFY) xmlrpc-build.sh.in
+oracc-build-server.sh$(EXEEXT): helpers/oracc-build-server.sh.in
+	$(ORACCIFY) helpers/oracc-build-server.sh.in
 
 ../lib/liboraccnet.la: ../lib/*.c ../include/*.h
 	(cd ../lib ; $(MAKE) $(MAKE_FLAGS))
