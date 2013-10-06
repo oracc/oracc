@@ -1,3 +1,3 @@
 #!/bin/sh
 /bin/echo -n completed > @@ORACC@@/tmp/rpc/$1/status
-/bin/echo 'Hello world!' > @@ORACC@@/tmp/rpc/$1/method.log
+unzip -v @@ORACC@@/tmp/rpc/$1/request.zip >@@ORACC@@/tmp/rpc/$1/method.log

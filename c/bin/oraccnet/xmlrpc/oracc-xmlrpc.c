@@ -42,6 +42,7 @@ main (int const argc, const char **const argv)
   xmlrpc_env_init(&env);
   registryP = register_methods(&env);
   fprintf(stderr, "Calling xmlrpc_server_cgi_process_call\n");
+  xmlrpc_limit_set(XMLRPC_XML_SIZE_LIMIT_ID, 4 * XMLRPC_XML_SIZE_LIMIT_DEFAULT);
   xmlrpc_server_cgi_process_call(registryP);
   xmlrpc_registry_free(registryP);
   return 0;

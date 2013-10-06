@@ -48,8 +48,9 @@ build_method(xmlrpc_env *const envP,
   cip_clone->methodargs = NULL;
   s_ret = callinfo_pack(envP, cip_clone);
   zipfile = file_find(cip, "zip");
-  if (1 /*zipfile*/)
+  if (zipfile)
     {
+      file_save(cip, varoracc);
       callinfo_append_arg(cip, NULL, NULL, cip->session);
       fprintf(stderr, "build_method: session=%s; cip->session=%s\n", session, cip->session);
       if ((status = status_set(envP, cip, "started")) != NULL)
@@ -57,7 +58,7 @@ build_method(xmlrpc_env *const envP,
 	  exec_ret = status;
 	  goto RET;
 	}
-      exec_ret = request_exec(envP, "@@ORACC@@/www/cgi-bin/xmlrpc-build.sh", "xmlrpc-build.sh", cip);
+      exec_ret = request_exec(envP, "@@ORACC@@/www/cgi-bin/oracc-build-server.sh", "oracc-build-server.sh", cip);
     }
   else
     {

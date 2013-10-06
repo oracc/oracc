@@ -14,6 +14,8 @@ server_status(xmlrpc_env * envP, struct call_info *cip)
   struct client_method_info *cmi = NULL;
   struct meths_tab *meth = NULL;
   struct call_info *cip_status = callinfo_clone(cip);
+  cip_status->files = NULL;
+  cip_status->methodargs = NULL;
   cip_status->method = "status";
   if (!(meth = meths(cip_status->method, strlen(cip_status->method))))
     {

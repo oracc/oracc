@@ -14,6 +14,8 @@ result_method_file(xmlrpc_env *envP, xmlrpc_value *s, const char *member, const 
       xmlrpc_struct_find_value(envP, s, member, &file);
       if (file)
 	return file_dump(envP, file, fname);
+      else
+	fprintf(stderr, "oracc-client: result_method_file: %s not found\n", member);
     }
   return 0;
 }

@@ -60,6 +60,7 @@ main(int argc, char *argv[])
   xmlrpc_client_init2(&env, XMLRPC_CLIENT_NO_FLAGS, NAME, VERSION, NULL, 0);
   dieIfFaultOccurred(&env);
   
+  fprintf(stderr, "cmi: name=%s; call=%p\n", cmi->name, cmi->call);
   resultP = cmi->call(&env, cmi);
   dieIfFaultOccurred(&env);
 

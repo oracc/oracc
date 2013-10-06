@@ -3,6 +3,8 @@ include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
+bin_PROGRAMS=oracc-client oracc-build-client.sh
+
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
@@ -15,7 +17,8 @@ meths.c: meths.g meths.sh
 ../lib/liboraccnet.la: ../lib/*.c ../include/*.h
 	(cd ../lib ; $(MAKE) $(MAKE_FLAGS))
 
-bin_PROGRAMS=oracc-client
+oracc-build-client.sh$(EXEEXT): helpers/oracc-build-client.sh.in
+	$(ORACCIFY) helpers/oracc-build-client.sh.in
 
 oracc_client_LDADD=@XMLRPC_CLIENT_LIBS@ -L../lib -loraccnet
 
