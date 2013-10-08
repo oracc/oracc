@@ -1,6 +1,10 @@
-group oracc needs to exist (manual on OS X)
+group oracc needs to exist (manual on OS X); on mac os use
 
-_www/apache users need to be in group oracc
+	dseditgroup -o create oracc
+
+_www/apache users need to be in group oracc -- for mac os use 
+
+	dseditgroup -o edit -a _www -t user oracc
 
 need to create $ORACC/tmp/rpc and permit the dir to rwxrwx--- with owner whatever:oracc
 
