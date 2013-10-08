@@ -1,0 +1,13 @@
+#!/bin/sh
+session=$1
+project=$2
+tempdir=@@ORACC@@/tmp/rpc/$session
+projdir=@@ORACC_BUILDS@@/$project
+ORACC_HOME=$ORACC_BUILDS ; export ORACC_HOME
+#unzip -v $tmpdir/request.zip >$tempdir/method.log
+echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
+
+mkdir -p $projdir
+cd $projdir
+unzip $tempdir/request.zip
+/bin/echo -n completed >$tempdir/status

@@ -517,3 +517,15 @@ c/bin/oraccnet/client/oracc-client
 c/bin/oraccnet/server/oracc-server
 
 c/bin/oraccnet/lib/m_ox_server.c
+
+c/bin/oraccnet/lib/m_build_server.c
+
+c/bin/oraccnet/lib/m_build_server.c
+
+c/bin/oraccnet/xmlrpc/oracc-build-server.sh
+
+c/bin/oraccnet/xmlrpc/oracc-build-server.sh
+
+c/bin/oraccnet/client/oracc-build-client.sh
+
+c/bin/oraccnet/client/oracc-build-client.sh

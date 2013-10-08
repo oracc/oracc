@@ -4,6 +4,10 @@ group oracc is required (needs to be created separately on Mac OS X)
 
 oracc home dir is /home/oracc or /Users/oracc
 
+ORACC_BUILDS is /home/oracc or /home/USERS/builds vel sim
+
+ORACC_BUILDS must have perms for write by apache
+
 ownership on files should be primary maintainer id; this can be the oracc user
 or it can be another user account in which case for a user 'stinney' do:
 

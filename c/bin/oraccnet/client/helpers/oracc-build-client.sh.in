@@ -20,15 +20,23 @@ if [ $? != 0 -o $# != 0 ] ; then
 fi
 
 ## Check we are in proper project location
+if [ ! -r "00lib/config.xml" ]; then
+    echo oracc-build-client.sh: not in an Oracc project directory. Stop.
+    exit 1
+fi
 
+## Check current project is arg project
+cproject=`tr '\n' ' ' <00lib/config.xml | tr '>' '\n' | grep '<project ' | sed 's/^.*n=//' | tr -d '" '`
+if [ "$cproject" != "$project" ]; then
+    echo oracc-build-client.sh: current project is $cproject but build request is for $project. Stop.
+    exit 1
+fi
 
 ## User/Pass
 . ~/.oracc-user
 
 ## Package
 version=`cat .version`
-#zip=$project
-#zip=`/bin/echo -n $project | tr / -`.zip
 zip=request.zip
 zip -q $zip 00atf/*.atf 00lib/config.xml 00lib/*.glo
 

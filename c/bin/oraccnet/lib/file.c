@@ -86,7 +86,7 @@ file_dump(xmlrpc_env * const envP, xmlrpc_value *const log, const char *fname)
 	}
       else
 	{
-	  if ((fd = open(fname, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR)) < 0)
+	  if ((fd = open(fname, O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR)) < 0)
 	    {
 	      fprintf(stderr, "oracc-client: failed to open %s for file dump\n", fname);
 	      perror("oracc-client:file_dump");

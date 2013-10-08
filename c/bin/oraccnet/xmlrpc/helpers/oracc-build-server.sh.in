@@ -1,3 +1,31 @@
 #!/bin/sh
-/bin/echo -n completed > @@ORACC@@/tmp/rpc/$1/status
-unzip -v @@ORACC@@/tmp/rpc/$1/request.zip >@@ORACC@@/tmp/rpc/$1/method.log
+
+function create_project {
+    echo create_project $*
+    mkdir -p $1
+    cd $1
+    mkdir -p 01bld 01tmp
+    mkdir -p @@ORACC@@/www/$2  @@ORACC@@/pub/$2  @@ORACC@@/xml/$2
+    rm -fr 01bld 02pub 02www 02xml
+    echo ln -sf @@ORACC@@/pub/$2 02pub
+    ln -sf @@ORACC@@/pub/$2 02pub
+    ln -sf @@ORACC@@/www/$2 02www
+    ln -sf @@ORACC@@/xml/$2 02xml
+    top=`/bin/echo -n $2 | cut -d/ -f1`
+    if [ ! -L @@ORACC@@/$top ]; then
+	ln -sf @@ORACC_BUILDS@@/$top @@ORACC@@/$top
+    fi
+}
+
+session=$1
+project=$2
+tempdir=@@ORACC@@/tmp/rpc/$session
+projdir=@@ORACC_BUILDS@@/$project
+ORACC=@@ORACC@@ ; export ORACC
+ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
+#unzip -v $tmpdir/request.zip >$tempdir/method.log
+echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
+create_project $projdir $project
+cd $projdir
+unzip -o $tempdir/request.zip
+/bin/echo -n completed >$tempdir/status
