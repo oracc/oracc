@@ -169,7 +169,13 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
 
       trace();
 
-      fprintf(stderr, "oracc-xmlrpc: switching child output to %s\n", request_log);
+      if ((pid = fork()) < 0)
+	return request_error(envP, "%s: can't fork again", cip->method, NULL);
+      else if (pid != 0) /* parent */
+	exit(0);
+      setsid();
+
+      fprintf(stderr, "oracc-xmlrpc: switching grandchild output to %s\n", request_log);
 
       if ((fd = open(request_log, O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR)) < 0)
 	{
@@ -188,6 +194,7 @@ request_exec(xmlrpc_env * const envP, const char *path, const char *name, struct
 	}
       else
 	setbuf(stdout, NULL);
+
       request_debug(path, argv, envp);
       if (execve(path, (char *const *)argv, (char *const *)envp))
 	{

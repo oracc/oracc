@@ -23,9 +23,10 @@ tempdir=@@ORACC@@/tmp/rpc/$session
 projdir=@@ORACC_BUILDS@@/$project
 ORACC=@@ORACC@@ ; export ORACC
 ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
-#unzip -v $tmpdir/request.zip >$tempdir/method.log
+PATH=$ORACC/bin:$PATH ; export PATH
 echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
 create_project $projdir $project
 cd $projdir
 unzip -o $tempdir/request.zip
+o2-clean-build.sh >$tempdir/method.log 2>&1
 /bin/echo -n completed >$tempdir/status

@@ -10,6 +10,8 @@ need to create $ORACC/tmp/rpc and permit the dir to rwxrwx--- with owner whateve
 
 $ORACC_BUILDS needs to be group oracc with sgid
 
+$ORACC/bld $ORACC/tmp $ORACC/pub $ORACC/xml $ORACC/www all need to be permitted g+w
+
 need to place session authentication info in the session dir to match against data coming from client during status requests
 
 need to define/explain context: 
@@ -19,3 +21,11 @@ need to define/explain context:
    texts in an ad hoc way
 
  - for server this is probably $ORACC/tmp/rpc/SESSION
+
+
+PERMS SUMMARY:
+
+      $ORACC/{bld,pub,tmp,xml,www} stinney:oracc drwsrwsr-x or -rw-rw-r-- or -rwx-rwx-r-x
+
+
+NEED dsa DATA FILE IN oracc/coredata

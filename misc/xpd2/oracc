@@ -12,8 +12,8 @@ my $oraccvar = $ENV{'ORACC_VAR'};
 die "oracc: the environment variable 'ORACC' is not set. Stop.\n"
     unless $oraccenv;
 
-die "oracc: the environment variable 'ORACC_VAR' is not set. Stop.\n"
-    unless $oraccvar;
+#die "oracc: the environment variable 'ORACC_VAR' is not set. Stop.\n"
+#    unless $oraccvar;
 
 my $oracc_mode = ($ENV{'ORACC_MODE'} eq 'single' ? MODE_SINGLE : MODE_MULTI);
 my $oracc_user = ($ENV{'ORACC_MODE'} eq 'yes' ? USER_YES : USER_NO);
