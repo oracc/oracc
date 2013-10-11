@@ -10,6 +10,5 @@ EXTRA_DIST = \
 	catf-aliases.xml \
 	catf-fixer.plx \
 	catf-manager.plx \
-	gdl-ATF.xsl \
 	gdl-OATF.xsl \
 	xtf-CATF.xsl

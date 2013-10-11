@@ -408,4 +408,24 @@
   select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
 </xsl:template>
 
+<xsl:template name="logo-open">
+  <!--
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo']) and not(ancestor::g:d)">
+    <xsl:text>@_</xsl:text>
+    <xsl:variable name="logolang" select="@g:logolang|*[@g:logolang][1]/@g:logolang"/>
+    <xsl:if test="string-length($logolang)>0 and not(starts-with($logolang,'sux'))">
+      <xsl:value-of select="concat('%',$logolang,' ')"/>
+    </xsl:if>
+  </xsl:if>
+  -->
+</xsl:template>
+
+<xsl:template name="logo-close">
+  <!--
+  <xsl:if test="not(ancestor::g:gg[@g:type='logo']) and not(ancestor::g:d)">
+    <xsl:text>_@</xsl:text>
+  </xsl:if>
+  -->
+</xsl:template>
+
 </xsl:stylesheet>

@@ -11,7 +11,6 @@ EXTRA_DIST = \
 	gdl-ASL.xsl \
 	gdl-ATF.xsl \
 	gdl-HTML.xsl.in \
-	gdl-OATF.xsl \
 	gdl-chunk-renderer.xsl \
 	gdl-render-g.xsl \
 	gdl.css \
