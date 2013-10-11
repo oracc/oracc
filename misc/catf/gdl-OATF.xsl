@@ -252,6 +252,9 @@
     <xsl:when test="@type='comment'">
       <!-- inline comments are dropped in CATF -->
     </xsl:when>
+    <xsl:when test="@type='notelink'">
+      <!-- notelinks are dropped in CATF -->
+    </xsl:when>
     <xsl:when test="@type='dollar'">
       <xsl:value-of select="concat('($',text(),'$)')"/>
     </xsl:when>
@@ -406,6 +409,22 @@
   <xsl:param name="msg"/>
   <xsl:message>gdl-OATF.xsl:<xsl:value-of 
   select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
+</xsl:template>
+
+<xsl:template name="lang-open">
+<!--  <xsl:message>lang-open <xsl:value-of select="@xml:lang"/></xsl:message> -->
+  <xsl:if test="not(starts-with(@xml:lang,ancestor::x:transliteration/@xml:lang))">
+    <xsl:text>_</xsl:text>
+    <xsl:if test="not(starts-with(@xml:lang,'akk'))">
+      <xsl:value-of select="concat('%',@xml:lang,' ')"/>
+    </xsl:if>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="lang-close">
+  <xsl:if test="not(starts-with(@xml:lang,ancestor::x:transliteration/@xml:lang))">
+    <xsl:text>_</xsl:text>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="logo-open">
