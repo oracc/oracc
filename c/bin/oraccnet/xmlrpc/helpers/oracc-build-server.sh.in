@@ -6,11 +6,13 @@ function create_project {
     echo create_project $*
     mkdir -p $1
     cd $1
-    mkdir -p 01bld 01tmp
+    mkdir -p @@ORACC@@/bld/$2 @@ORACC@@/tmp/$2
     mkdir -p @@ORACC@@/www/$2  @@ORACC@@/pub/$2  @@ORACC@@/xml/$2
-    rm -fr 01bld 02pub 02www 02xml
+    rm -fr 01bld 01tmp 02pub 02www 02xml
     echo ln -sf @@ORACC@@/pub/$2 02pub
+    ln -sf @@ORACC@@/bld/$2 01bld
     ln -sf @@ORACC@@/pub/$2 02pub
+    ln -sf @@ORACC@@/tmp/$2 01tmp
     ln -sf @@ORACC@@/www/$2 02www
     ln -sf @@ORACC@@/xml/$2 02xml
     top=`/bin/echo -n $2 | cut -d/ -f1`
