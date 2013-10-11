@@ -902,6 +902,7 @@ rewrite_bases {
 
 sub
 read_input {
+    warn "read_input\n";
     if ($input eq '-') {
 	while (<>) {
 	    read_input_line();
@@ -925,7 +926,7 @@ read_input_line {
     }
     chomp;
     
-    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
+#    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
     
     my ($sig,$freq,$refs) = ();
     my @t = split(/\t/,$_);

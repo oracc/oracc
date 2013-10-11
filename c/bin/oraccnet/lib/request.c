@@ -245,4 +245,3 @@ request_status(xmlrpc_env *const envP, const char *fmt, ...)
 
   return s;
 }
-

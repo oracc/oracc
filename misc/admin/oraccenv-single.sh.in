@@ -1,5 +1,5 @@
 #!/bin/sh
-umask 026
+umask 006
 ORACC=@@ORACC@@
 ORACC_VAR=$ORACC
 ORACC_HOME=~/oracc-projects

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+umask 002
+
 function create_project {
     echo create_project $*
     mkdir -p $1
@@ -23,7 +25,9 @@ tempdir=@@ORACC@@/tmp/rpc/$session
 projdir=@@ORACC_BUILDS@@/$project
 ORACC=@@ORACC@@ ; export ORACC
 ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
+ORACC_HOST=@@ORACC_HOST@@ ; export ORACC_HOST
 PATH=$ORACC/bin:$PATH ; export PATH
+DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib:/usr/local/lib ; export DYLD_LIBRARY_PATH
 echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
 create_project $projdir $project
 cd $projdir

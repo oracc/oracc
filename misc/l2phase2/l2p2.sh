@@ -9,8 +9,10 @@ function g2x {
     else
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
+#    echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
     xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
     if [ -s $ldir/$l.map ]; then
+#	echo running l2p2-g2c.plx $l
 	l2p2-g2c.plx $l
 	export ORACC_HOME
 	l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
@@ -51,8 +53,10 @@ if [ "$super" = "" ]; then
 	fi
 	echo creating $ldir/$l.g2x from $ldir/union.sig
 	l2p2-g2x.plx -h $ldir/union.sig
+#	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
 	xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
 	if [ -s $ldir/$l.map ]; then
+#	    echo running l2p2-g2c.plx $l
 	    l2p2-g2c.plx $l
 	    l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
 	else

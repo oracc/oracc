@@ -6,8 +6,9 @@ fi
 if [ $(whoami) = "root" ]
 then
   user=`echo $1 | cut -d/ -f1` 
-  chown -R $user:$user @@ORACC@@/www/$1
+  chown -R $user:oracc @@ORACC@@/www/$1
   chmod -R o+r @@ORACC@@/www/$1
+  chmod -R g+r @@ORACC@@/www/$1
 else
     echo "wwwperm.sh: You can only run this script as root (preferably via cron)"
     exit 1

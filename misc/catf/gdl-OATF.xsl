@@ -1,9 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <xsl:stylesheet version="1.0" 
-  xmlns:g="http://oracc.org/ns/gdl/1.0"
-  xmlns:x="http://oracc.org/ns/xtf/1.0"
   xmlns:c="http://oracc.org/ns/xcl/1.0"
+  xmlns:g="http://oracc.org/ns/gdl/1.0"
+  xmlns:n="http://oracc.org/ns/norm/1.0"
+  xmlns:x="http://oracc.org/ns/xtf/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>

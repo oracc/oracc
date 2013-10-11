@@ -4,7 +4,7 @@
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
 
-int build_wait = 1;
+int build_wait = 60;
 
 void
 build_return_handler(xmlrpc_env *const envP, struct client_method_info *cmi, xmlrpc_value *s)
