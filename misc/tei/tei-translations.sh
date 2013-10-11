@@ -20,6 +20,7 @@ XSL=$ORACC/lib/scripts
 outdir=01tmp/teixtr
 rm -fr $outdir ; mkdir -p $outdir
 shopt -s nullglob
+unset DYLD_LIBRARY_PATH
 echo Creating TEI translations for texts listed in $teilist
 cat $teilist | while read line; do
     pqx=`/bin/echo -n $line | cut -d'@' -f1 | sed 's/^.*://'`

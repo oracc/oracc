@@ -31,7 +31,11 @@ ORACC_HOST=@@ORACC_HOST@@ ; export ORACC_HOST
 # build.oracc.org is always single user
 ORACC_MODE=single ; export ORACC_MODE
 PATH=$ORACC/bin:$PATH ; export PATH
-DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib:/usr/local/lib ; export DYLD_LIBRARY_PATH
+u=`uname`
+if [ "$u" = "Darwin" ]; then
+    DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib:/usr/local/lib; export DYLD_LIBRARY_PATH
+    echo DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH
+fi
 echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
 create_project $projdir $project
 cd $projdir
