@@ -1,14 +1,21 @@
 #!/bin/sh
+project=`oraccopt`
+if [ "$project" == "" ]; then 
+    echo "ncr: must run in project directory"; exit 1
+fi
+if [ -r .boo ]; then
+    echo This project should no longer be rebuilt on this server.  Please use the
+    echo command:
+    echo '    boo'
+    echo instead.
+    exit 1
+fi
 if [ -r 01tmp/building ]; then
     echo There seems to be a build in progress.  If this is incorrect, please remove
     echo the file 01tmp/building and run ncr again.
     exit 1
 fi
 [ -r 02xml/config.xml ] || oracc config
-project=`oraccopt`
-if [ "$project" == "" ]; then 
-    echo "ncr: must run in project directory"; exit 1
-fi
 rm -f nohup.out
 echo ncr: Performing clean rebuild of $project ...
 #time -f "ncr elapsed time: %E" nohup o2-clean-build.sh

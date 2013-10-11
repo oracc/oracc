@@ -1,0 +1,15 @@
+#!/bin/sh
+project=`oraccopt`
+if [ "$project" == "" ]; then 
+    echo "boo: must run in project directory"; exit 1
+fi
+if [ -r 01tmp/building ]; then
+    echo There seems to be a build in progress.  If this is incorrect, please remove
+    echo the file 01tmp/building and run ncr again.
+    exit 1
+fi
+[ -r 02xml/config.xml ] || oracc config
+rm -f build.out
+echo boo: sending $project to build.oracc.org for building ...
+time oracc-build-client.sh -p $project
+echo `wc -l build.log | perl -p -e 's/^.*?(\d+).*$/$1/'` lines written to build.log
