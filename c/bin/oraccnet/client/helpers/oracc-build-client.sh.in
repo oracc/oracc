@@ -42,7 +42,7 @@ zip -q $zip 00atf/*.atf 00lib/config.xml 00lib/*.glo
 
 ## Send
 echo oracc-client -m build -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
-oracc-client -m build -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
+oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
 
 ## Report
 cat build.log

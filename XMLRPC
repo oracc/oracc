@@ -29,3 +29,5 @@ PERMS SUMMARY:
 
 
 NEED dsa DATA FILE IN oracc/coredata
+
+ORACC_BUILDS must be set on build server
