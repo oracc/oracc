@@ -21,11 +21,12 @@ function create_project {
     fi
 }
 
+if [ "$ORACC_BUILDS" = "" ]; then
+    ORACC_BUILDS=@@ORACC@@ ; export ORACC_BUILDS
+fi
+
 session=$1
 project=$2
-if [ "$ORACC_BUILDS" = "" ]; then
-    ORACC_BUILDS=$ORACC ; export ORACC_BUILDS
-fi
 tempdir=@@ORACC@@/tmp/rpc/$session
 projdir=@@ORACC_BUILDS@@/$project
 ORACC=@@ORACC@@ ; export ORACC
