@@ -34,6 +34,9 @@ ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
 ORACC_HOST=@@ORACC_HOST@@ ; export ORACC_HOST
 # build.oracc.org is always single user
 ORACC_MODE=single ; export ORACC_MODE
+
+printenv >&2
+
 PATH=$ORACC/bin:$PATH ; export PATH
 u=`uname`
 if [ "$u" = "Darwin" ]; then
