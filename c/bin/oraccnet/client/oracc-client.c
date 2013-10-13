@@ -19,7 +19,7 @@ int
 main(int argc, char *argv[])
 {
   xmlrpc_env env;
-  char * const serverURL = "http://oracc.bfos/xmlrpc";
+  char * const serverURL = "http://build.oracc.org/xmlrpc";
   xmlrpc_value *resultP = NULL;
   struct client_method_info *cmi = NULL;
   struct meths_tab *meth = NULL;
