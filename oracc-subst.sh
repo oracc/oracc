@@ -13,7 +13,6 @@ check_env_or_die ORACC_BUILDS $ORACC_BUILDS
 check_env_or_die ORACC_HOME $ORACC_HOME
 check_env_or_die ORACC_HOST $ORACC_HOST
 
-
 in=$2
 out=`basename $in .in`
 pat1="s#\@\@ORACC\@\@#${ORACC}#g"
