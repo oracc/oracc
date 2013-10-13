@@ -9,3 +9,5 @@ sudo port install gdbm
 sudo port install pcre
 sudo port install msort
 sudo port install xmlrpc-c
+
+# need perl-Text-CSV_XS also

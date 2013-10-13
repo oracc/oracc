@@ -14,4 +14,5 @@ yum install \
     httpd \
     git \
     policycoreutils-python \
-    xmlrpc-c-devel
+    xmlrpc-c-devel \
+    perl-Text-CSV_XS
