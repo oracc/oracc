@@ -6,7 +6,6 @@
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
-#include "config.h"  /* information about this build environment */
 
 #define NAME "oracc-client"
 #define VERSION "1.0"

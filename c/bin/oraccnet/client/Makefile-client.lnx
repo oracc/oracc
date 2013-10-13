@@ -1,0 +1,10 @@
+OBJS=*.o
+
+.c.o:
+	gcc -c $?
+
+oracc-client: $(OBJS)
+	gcc -I. -o oracc-client *.o -lxmlrpc_client
+
+clean:
+	rm -f *.o oracc-client
