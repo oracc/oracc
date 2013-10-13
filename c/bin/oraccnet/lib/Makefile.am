@@ -14,8 +14,8 @@ m_build_server.c: m_build_server.c.in
 m_ox_server.c: m_ox_server.c.in
 	$(ORACCIFY) m_ox_server.c.in
 
-util.c: util.c.in
-	$(ORACCIFY) util.c.in
+varoracc.c: varoracc.c.in
+	$(ORACCIFY) varoracc.c.in
 
 liboraccnet_la_SOURCES = \
 	m_build_client.c m_build_server.c \
@@ -24,8 +24,9 @@ liboraccnet_la_SOURCES = \
 	m_ox_client.c m_ox_server.c \
 	m_status_client.c m_status_server.c \
 	callinfo.c \
-	file.c \
+	file.c file_b64.c \
 	generic_request.c \
 	request.c \
 	sesh.c \
-	util.c
+	util.c \
+	varoracc.c

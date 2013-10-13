@@ -6,8 +6,6 @@
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
 
-const char *varoracc = "/usr/local/oracc/tmp/rpc";
-
 int trace;
 #undef dieIfFaultOccurred
 
