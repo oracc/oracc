@@ -1,5 +1,6 @@
 #!/bin/sh
 FLAGS=p:
+PROG=oracc-build-client.sh
 
 ## Options
 args=`getopt $FLAGS $*`
@@ -26,23 +27,35 @@ if [ ! -r "00lib/config.xml" ]; then
 fi
 
 ## Check current project is arg project
-cproject=`tr '\n' ' ' <00lib/config.xml | tr '>' '\n' | grep '<project ' | sed 's/^.*n=//' | tr -d '" '`
+cproject=`tr '\n' ' ' <00lib/config.xml | head -1 | sed 's/^.*n="//' | cut -d'"' -f1`
+if [ "$project" = "" ]; then
+    project=$cproject
+fi
 if [ "$cproject" != "$project" ]; then
     echo oracc-build-client.sh: current project is $cproject but build request is for $project. Stop.
     exit 1
 fi
 
+echo $PROG: working on project $project
+
+rm -f build.log
+
 ## User/Pass
 . ~/.oracc-user
 
 ## Package
+echo $PROG: packaging project data to send to build server ...
 version=`cat .version`
 zip=request.zip
+rm -f $zip
 zip -q $zip 00atf/*.atf 00lib/config.xml 00lib/*.glo
+zip -qr $zip 00web
 
 ## Send
-echo oracc-client -m build -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
-oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
+echo $PROG: sending $project to build.oracc.org for building ...
+## echo oracc-client -m build -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
+#time oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
+oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -Mfile:zip=$zip
 
 ## Report
-cat build.log
+echo $PROG: `wc -l build.log | perl -p -e 's/^.*?(\d+).*$/$1/'` lines written to build.log

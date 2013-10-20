@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <inttypes.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/client.h>
 #include "oraccnet.h"
@@ -59,7 +60,7 @@ main(int argc, char *argv[])
   xmlrpc_client_init2(&env, XMLRPC_CLIENT_NO_FLAGS, NAME, VERSION, NULL, 0);
   dieIfFaultOccurred(&env);
   
-  fprintf(stderr, "cmi: name=%s; call=%p\n", cmi->name, cmi->call);
+  fprintf(stderr, "cmi: name=%s; call=%p\n", cmi->name, (void*)(uintptr_t)cmi->call);
   resultP = cmi->call(&env, cmi);
   dieIfFaultOccurred(&env);
 
@@ -67,6 +68,7 @@ main(int argc, char *argv[])
     {
       xmlrpc_value *callinfo;
       struct call_info *server_cip;
+      static char *status_failed = NULL;
 
       xmlrpc_struct_find_value(&env, resultP, "callinfo", &callinfo);
       dieIfFaultOccurred(&env);
@@ -74,11 +76,16 @@ main(int argc, char *argv[])
       cip->session = server_cip->session;
       do
 	{
+	  if (status_failed)
+	    {
+	      fprintf(stderr, "oracc-client: XMLRPC server-side status failure: %s\n", status_failed);
+	      break;
+	    }
 	  fprintf(stderr, "oracc-client: %s: sleeping %d seconds in session %s ...\n", 
 		  cip->method, cip->wait_seconds, cip->session);
 	  sleep(cip->wait_seconds);
 	}
-      while ((resultP = server_status(&env, cip)) == NULL);
+      while ((resultP = server_status(&env, cip, &status_failed)) == NULL);
     }
 
   cmi->action(&env, cmi, resultP);

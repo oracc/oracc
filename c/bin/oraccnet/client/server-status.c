@@ -8,12 +8,13 @@
 extern struct client_method_info status_client_info;
 
 xmlrpc_value *
-server_status(xmlrpc_env * envP, struct call_info *cip)
+server_status(xmlrpc_env * envP, struct call_info *cip, char ** statusp)
 {
   xmlrpc_value *resultP = NULL;
   struct client_method_info *cmi = NULL;
   struct meths_tab *meth = NULL;
   struct call_info *cip_status = callinfo_clone(cip);
+
   cip_status->files = NULL;
   cip_status->methodargs = NULL;
   cip_status->method = "status";
@@ -39,17 +40,21 @@ server_status(xmlrpc_env * envP, struct call_info *cip)
 	  xmlrpc_read_string(envP, status, (const char **)&str);
 	  /* This diagnostic needs to be suppressable */
 	  fprintf(stderr, "server-status: status=%s\n", str);
+	  *statusp = NULL;
 	  if (!strcmp(str, "completed"))
 	    return resultP;
 	}
       else
 	{
-	  fprintf(stderr, "server-status: no method-status\n");
+	  fprintf(stderr, "!server-status: no method-status\n");
+	  *statusp = "no method status returned by status request";
 	  /* should return an error condition to caller here
 	     so that when server bombs/loses session client can 
 	     terminate gracefully */
 	}
     }
+  else
+    *statusp = "!no result from status request";
 
   /* Dispose of our result value. */
   xmlrpc_DECREF(resultP);

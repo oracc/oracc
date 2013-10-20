@@ -15,4 +15,5 @@ yum install \
     git \
     policycoreutils-python \
     xmlrpc-c-devel \
-    perl-Text-CSV_XS
+    perl-Text-CSV_XS \
+    java

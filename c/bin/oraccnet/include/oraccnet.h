@@ -89,7 +89,7 @@ extern char *sesh_init(xmlrpc_env * const envP, xmlrpc_value * const s, int with
 extern char *sesh_set_path(struct call_info *cip);
 extern void sesh_set_template(const char *template);
 
-extern xmlrpc_value *server_status(xmlrpc_env * envP, struct call_info *cip);
+extern xmlrpc_value *server_status(xmlrpc_env * envP, struct call_info *cip, char **statusp);
 
 extern xmlrpc_value *status_get(xmlrpc_env * envP, struct call_info *cip);
 extern xmlrpc_value *status_set(xmlrpc_env * envP, struct call_info *cip, const char *s);

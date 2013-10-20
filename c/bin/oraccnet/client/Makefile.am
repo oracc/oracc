@@ -21,7 +21,7 @@ oracc-build-client.sh$(EXEEXT): helpers/oracc-build-client.sh.in
 	$(ORACCIFY) helpers/oracc-build-client.sh.in
 
 distro:
-	make-distro.sh
+	./make-distro.sh
 
 oracc_client_LDADD=@XMLRPC_CLIENT_LIBS@ -L../lib -loraccnet
 

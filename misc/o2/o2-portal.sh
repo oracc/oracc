@@ -3,6 +3,7 @@ type=`oraccopt . type`
 if [ "$type" == "portal" ]; then
     if [ -d 00web/00config ]; then
 	echo calling esp2.sh `oraccopt` ...
+	free -m
 	esp2.sh `oraccopt`
 	echo calling esp2-live.sh `oraccopt` force ...
 	esp2-live.sh `oraccopt` force
