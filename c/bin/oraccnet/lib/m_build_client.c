@@ -20,6 +20,7 @@ build_return_handler(xmlrpc_env *const envP, struct client_method_info *cmi, xml
 	fprintf(stderr, "oracc-client: build: method status: %s\n", str);
       else
 	fprintf(stderr, "oracc-client: build: no method status set by RPC\n");
+      (void)result_method_file(envP, s, "request-log", "server.log");
       (void)result_method_file(envP, s, "method-log", "build.log");
       (void)result_method_file(envP, s, "method-zip", "build.zip");
     }

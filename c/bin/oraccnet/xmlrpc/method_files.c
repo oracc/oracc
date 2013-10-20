@@ -11,12 +11,18 @@
 void
 method_files(xmlrpc_env *envP, xmlrpc_value *s)
 {
-  char *log = sesh_file("method.log");
+  char *rlog = sesh_file("request.log");
+  char *mlog = sesh_file("method.log");
   char *zip = sesh_file("method.zip");
-  if (!access(log, R_OK))
+  if (!access(mlog, R_OK))
     {
-      xmlrpc_value *xlog = file_pack(envP, "log", log);
-      xmlrpc_struct_set_value(envP, s, "method-log", xlog);
+      xmlrpc_value *x_mlog = file_pack(envP, "mlog", mlog);
+      xmlrpc_struct_set_value(envP, s, "method-log", x_mlog);
+    }
+  if (!access(rlog, R_OK))
+    {
+      xmlrpc_value *x_rlog = file_pack(envP, "rlog", rlog);
+      xmlrpc_struct_set_value(envP, s, "request-log", x_rlog);
     }
   if (!access(zip, R_OK))
     {
