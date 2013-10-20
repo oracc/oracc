@@ -1053,7 +1053,7 @@ public class ImageInfo {
 	    String base2 = sourceName.substring(slash+1);
   	     */
 	    
-	    String base = sourceName.substring("00web/00static/images/".length());
+	    String base = sourceName.substring("00res/images/".length());
 	    System.out.println(
 			       "<esp:image-info"
 			       + " sourceName=\"" + sourceName + "\""

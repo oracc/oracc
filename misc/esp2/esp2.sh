@@ -8,12 +8,12 @@
 
 #ORACC=
 
-function cp_00web_static {
-    echo Copying 00web/00static to web directory
-    cp -R * $HTTPROOT
-    # Next line required or * misses hidden files like .htaccess that are direct children of static
-    cp .[a-zA-Z0-9]* $HTTPROOT
-}
+#function cp_00web_static {
+#    echo Copying 00web/00static to web directory
+#    cp -R * $HTTPROOT
+#    # Next line required or * misses hidden files like .htaccess that are direct children of static
+#    cp .[a-zA-Z0-9]* $HTTPROOT
+#}
 
 if [ "$1" = "" ]; then
     echo esp2.sh: must give project name as argument
@@ -66,8 +66,9 @@ mkdir $HTTPROOT
 rm -f $HTTPLINK
 ln -sf $HTTPROOT $HTTPLINK
 
-#echo Copying project static site content
-(cd $XMLSAP/00web/00static && cp_00web_static)
+echo Copying project static site content
+# (cd $XMLSAP/00web/00static && cp_00web_static)
+cp -R $XMLSAP/00res/* $HTTPROOT
 
 #echo Copying ESP default site content
 for a in css images js ; do mkdir -p $HTTPROOT/$a ; cp $ESP2/$a/* $HTTPROOT/$a/ ; done
