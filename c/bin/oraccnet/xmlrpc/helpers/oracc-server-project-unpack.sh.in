@@ -19,5 +19,5 @@ function create_project {
 }
 create_project $projdir $project
 cd $projdir
-#unzip -o $tempdir/request.zip
+u=`uname`
 tar zxof $tempdir/request.tar.gz

@@ -9,6 +9,12 @@ if [ "$version" = "" ]; then
     echo $PROG: no .version file--run oracc version
     version=000
 fi
+u=`uname`
+if [ "$uname" = "Darwin" ]; then
+    COMPRESS=-y
+else
+    COMPRESS=-J
+fi
 zip=request.tar.gz ; export zip
 rm -f $zip
 # COPYFILE_DISABLE suppresses addition of ._* files under Mac OS X at least up
@@ -22,5 +28,5 @@ find 00atf 00lib 00web -type f \
     -or -name '*.js' \
     -or -name '*.lst' \
     -or -name '*.xml' \
-    | tar cyf $zip -T -
+    | tar $COMPRESS -cf $zip -T -
 export version zip
