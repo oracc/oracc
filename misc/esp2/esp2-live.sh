@@ -47,7 +47,7 @@ log=02www/last_esp2_cp.log
 rm -f 02www/_test
 
 # note: addition of / to $espdev here is deliberate
-cp -Rv $espdev/ 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
+cp -Rv $espdev/* 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
 chmod -R o+r $webdir/
 chmod o-r $log
 echo esp now live at oracc/$project.
