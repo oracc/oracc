@@ -14,7 +14,9 @@ function create_project {
     ln -sf @@ORACC@@/xml/$2 02xml
     top=`/bin/echo -n $2 | cut -d/ -f1`
     if [ ! -L @@ORACC@@/$top ]; then
-	ln -sf @@ORACC_BUILDS@@/$top @@ORACC@@/$top
+	if [ "@@ORACC_BUILDS@@" != "@@ORACC@@" ]; then
+	    ln -sf @@ORACC_BUILDS@@/$top @@ORACC@@/$top
+	fi
     fi
 }
 create_project $projdir $project
