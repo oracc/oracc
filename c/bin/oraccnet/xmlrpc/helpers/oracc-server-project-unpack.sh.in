@@ -23,6 +23,6 @@ u=`uname`
 if [ "$uname" = "Darwin" ]; then
     COMPRESS=-y
 else
-    COMPRESS=-J
+    COMPRESS=-j
 fi
 tar $COMPRESS -xof $tempdir/request.tar.gz
