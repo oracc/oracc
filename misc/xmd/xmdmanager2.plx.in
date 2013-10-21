@@ -80,7 +80,8 @@ my %xproject_uris = (
 
 my $imgdb = "@@ORACC@@/xml/cdli/imgdb.xml";
 my $imgdoc = load_xml($imgdb);
-die "xmdmanager.plx: can't open image database $imgdb\n" unless $imgdoc;
+#die "xmdmanager.plx: can't open image database $imgdb\n" unless $imgdoc;
+warn "xmdmanager.plx: can't open image database $imgdb\n" unless $imgdoc;
 
 my $pubimg_lst = "@@ORACC@@/pub/cdli/public_image.lst";
 my %pubimg = ();
@@ -606,7 +607,7 @@ dump_bad {
 sub
 dump_images {
     my $id = shift;
-    my $img = $imgdoc->getElementsById($id);
+    my $img = ($imgdoc ? $imgdoc->getElementsById($id) : undef);
     if ($img) {
 	my $pub = ($pubimg{$id} ? 'yes' : 'no');
 #	print "<images public=\"$pub\">", map({ $_->toString() } $img->childNodes()), '</images>';

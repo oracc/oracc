@@ -476,3 +476,5 @@ c/bin/oraccnet/xmlrpc/oracc-server-environment.sh
 c/bin/oraccnet/xmlrpc/oracc-server-project-unpack.sh
 
 c/bin/oraccnet/client/oracc-client-pack-project.sh
+
+c/bin/oraccnet/server/oracc-server.c
