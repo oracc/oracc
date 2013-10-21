@@ -129,17 +129,20 @@ $loghtml = '02www/last-catalog-build.html'; # ${$r{'loghtml'}}[0];
 
 $project = `oraccopt`
     unless $project;
-die "xmdmanager.plx: must run from project directory (no '00lib')\n"
+die "xmdmanager2.plx: must run from project directory (no '00lib/config.xml')\n"
     unless $project;
 my $projectDir = "$project/";
 
 unless ($project eq 'cdli') {
-    open(P,$pubimg_lst) || die "xmdmanager.plx: can't open $pubimg_lst";
-    while (<P>) {
-	chomp;
-	++$pubimg{$_};
+    if (open(P,$pubimg_lst)) {
+	while (<P>) {
+	    chomp;
+	    ++$pubimg{$_};
+	}
+	close(P);
+    } else {
+	warn "xmdmanager2.plx: can't open $pubimg_lst";
     }
-    close(P);
 }
 
 if (-r '00lib/designation-sort-codes.lst') {
