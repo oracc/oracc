@@ -6,5 +6,9 @@ OBJS=*.o
 oracc-client: $(OBJS)
 	gcc -I. -o oracc-client *.o -lxmlrpc_client
 
+install: oracc-client
+	rm -f $(ORACC)/bin/*-client*.sh $(ORACC)/bin/oracc-client
+	cp -p oracc-client *-client*.sh $(ORACC)/bin
+
 clean:
 	rm -f *.o oracc-client

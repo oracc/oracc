@@ -20,4 +20,9 @@ function create_project {
 create_project $projdir $project
 cd $projdir
 u=`uname`
-tar zxof $tempdir/request.tar.gz
+if [ "$uname" = "Darwin" ]; then
+    COMPRESS=-y
+else
+    COMPRESS=-J
+fi
+tar $COMPRESS -xof $tempdir/request.tar.gz
