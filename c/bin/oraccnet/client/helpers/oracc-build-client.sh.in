@@ -1,5 +1,5 @@
 #!/bin/sh
-FLAGS=p:
+FLAGS=p:s:
 PROG=oracc-build-client.sh
 
 ## Options
@@ -8,6 +8,8 @@ echo args=$args
 for args; do
     case "$args" in
 	-p ) project=$2
+	     shift ; shift ;;
+	-s ) server=$2
 	     shift ; shift ;;
 	-- ) shift; break ;;
     esac
@@ -18,6 +20,10 @@ if [ $? != 0 -o $# != 0 ] ; then
   echo "Usage: oracc-build-client.sh {args}"
   echo ""
   exit 0
+fi
+
+if [ "$server" != "" ]; then
+    server="-s $server"
 fi
 
 ## Check we are in proper project location
@@ -45,17 +51,12 @@ rm -f build.log
 
 ## Package
 echo $PROG: packaging project data to send to build server ...
-version=`cat .version`
-zip=request.zip
-rm -f $zip
-zip -q $zip 00atf/*.atf 00lib/config.xml 00lib/*.glo
-zip -qr $zip 00web
+. oracc-client-pack-project.sh
 
 ## Send
 echo $PROG: sending $project to build.oracc.org for building ...
-## echo oracc-client -m build -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
-#time oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
-oracc-client -m build -s http://build.oracc.org/xmlrpc -u $user -P $pass -p $project -Mfile:zip=$zip
+echo oracc-client -m build $server -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
+oracc-client -m build $server -u $user -P $pass -p $project -v $version -Mfile:zip=$zip
 
 ## Report
 echo $PROG: `wc -l build.log | perl -p -e 's/^.*?(\d+).*$/$1/'` lines written to build.log

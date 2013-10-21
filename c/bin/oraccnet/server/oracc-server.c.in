@@ -34,6 +34,11 @@ main(int argc, char *argv[])
       const char *env_docroot = NULL;
       setlocale(LC_ALL, LOCALE);
       setenv("ORACC", "@@ORACC@@", 1);
+      setenv("ORACC_BUILDS", "@@ORACC_BUILDS@@", 1);
+      setenv("ORACC_HOME", "@@ORACC_HOME@@", 1);
+      setenv("ORACC_HOST", "@@ORACC_HOST@@", 1);
+      setenv("ORACC_MODE", "@@ORACC_MODE@@", 1);
+      setenv("ORACC_USER", "@@ORACC_USER@@", 1);
       if (!strncmp(script_url,"/d/",3))
 	{
 	  script_url += 2;

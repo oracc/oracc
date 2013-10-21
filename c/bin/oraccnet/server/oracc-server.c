@@ -34,6 +34,11 @@ main(int argc, char *argv[])
       const char *env_docroot = NULL;
       setlocale(LC_ALL, LOCALE);
       setenv("ORACC", "/usr/local/oracc", 1);
+      setenv("ORACC_BUILDS", "/Users/stinney/oracc-builds", 1);
+      setenv("ORACC_HOME", "/Users/stinney/oracc-projects", 1);
+      setenv("ORACC_HOST", "oracc.bfos", 1);
+      setenv("ORACC_MODE", "single", 1);
+      setenv("ORACC_USER", "no", 1);
       if (!strncmp(script_url,"/d/",3))
 	{
 	  script_url += 2;

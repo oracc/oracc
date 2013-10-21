@@ -15,6 +15,8 @@
 #    cp .[a-zA-Z0-9]* $HTTPROOT
 #}
 
+unset DYLD_LIBRARY_PATH
+
 if [ "$1" = "" ]; then
     echo esp2.sh: must give project name as argument
     exit 1

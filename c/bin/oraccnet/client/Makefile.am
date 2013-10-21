@@ -3,7 +3,7 @@ include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
-bin_PROGRAMS=oracc-client oracc-build-client.sh
+bin_PROGRAMS=oracc-client oracc-build-client.sh oracc-client-pack-project.sh
 
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
@@ -19,6 +19,9 @@ meths.c: meths.g meths.sh
 
 oracc-build-client.sh$(EXEEXT): helpers/oracc-build-client.sh.in
 	$(ORACCIFY) helpers/oracc-build-client.sh.in
+
+oracc-client-pack-project.sh$(EXEEXT): helpers/oracc-client-pack-project.sh
+	cp -p helpers/oracc-client-pack-project.sh .
 
 distro:
 	./make-distro.sh

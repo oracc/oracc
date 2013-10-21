@@ -1,51 +1,8 @@
 #!/bin/sh
-
 umask 002
-
-function create_project {
-    echo create_project $*
-    mkdir -p $1
-    cd $1
-    mkdir -p @@ORACC@@/bld/$2 @@ORACC@@/tmp/$2
-    mkdir -p @@ORACC@@/www/$2  @@ORACC@@/pub/$2  @@ORACC@@/xml/$2
-    rm -fr 01bld 01tmp 02pub 02www 02xml
-    echo ln -sf @@ORACC@@/pub/$2 02pub
-    ln -sf @@ORACC@@/bld/$2 01bld
-    ln -sf @@ORACC@@/pub/$2 02pub
-    ln -sf @@ORACC@@/tmp/$2 01tmp
-    ln -sf @@ORACC@@/www/$2 02www
-    ln -sf @@ORACC@@/xml/$2 02xml
-    top=`/bin/echo -n $2 | cut -d/ -f1`
-    if [ ! -L @@ORACC@@/$top ]; then
-	ln -sf @@ORACC_BUILDS@@/$top @@ORACC@@/$top
-    fi
-}
-
-if [ "$ORACC_BUILDS" = "" ]; then
-    ORACC_BUILDS=@@ORACC@@ ; export ORACC_BUILDS
-fi
-
-session=$1
-project=$2
-tempdir=@@ORACC@@/tmp/rpc/$session
-projdir=@@ORACC_BUILDS@@/$project
-ORACC=@@ORACC@@ ; export ORACC
-ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
-ORACC_HOST=@@ORACC_HOST@@ ; export ORACC_HOST
-# build.oracc.org is always single user
-ORACC_MODE=single ; export ORACC_MODE
-
+. @@ORACC@@/www/cgi-bin/oracc-server-environment.sh $*
 printenv >&2
-
-PATH=$ORACC/bin:$PATH ; export PATH
-u=`uname`
-if [ "$u" = "Darwin" ]; then
-    DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib:/usr/local/lib; export DYLD_LIBRARY_PATH
-    echo DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH
-fi
-echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
-create_project $projdir $project
-cd $projdir
-unzip -o $tempdir/request.zip
+. @@ORACC@@/www/cgi-bin/oracc-server-project-unpack.sh $*
+/bin/echo -n building >$tempdir/status
 o2-clean-build.sh >$tempdir/method.log 2>&1
 /bin/echo -n completed >$tempdir/status

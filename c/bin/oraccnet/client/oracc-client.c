@@ -69,6 +69,7 @@ main(int argc, char *argv[])
       xmlrpc_value *callinfo;
       struct call_info *server_cip;
       static char *status_failed = NULL;
+      int nwaits = 0;
 
       xmlrpc_struct_find_value(&env, resultP, "callinfo", &callinfo);
       dieIfFaultOccurred(&env);
@@ -81,8 +82,8 @@ main(int argc, char *argv[])
 	      fprintf(stderr, "oracc-client: XMLRPC server-side status failure: %s\n", status_failed);
 	      break;
 	    }
-	  fprintf(stderr, "oracc-client: %s: sleeping %d seconds in session %s ...\n", 
-		  cip->method, cip->wait_seconds, cip->session);
+	  fprintf(stderr, "oracc-client: %s: (%d) sleeping %d seconds in session %s ...\n", 
+		  cip->method, ++nwaits, cip->wait_seconds, cip->session);
 	  sleep(cip->wait_seconds);
 	}
       while ((resultP = server_status(&env, cip, &status_failed)) == NULL);

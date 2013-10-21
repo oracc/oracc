@@ -1,0 +1,20 @@
+#!/bin/sh
+ORACC=@@ORACC@@ ; export ORACC
+ORACC_BUILDS=@@ORACC_BUILDS@@ ; export ORACC_BUILDS
+ORACC_HOME=@@ORACC_BUILDS@@ ; export ORACC_HOME
+ORACC_HOST=@@ORACC_HOST@@ ; export ORACC_HOST
+ORACC_MODE=@@ORACC_MODE@@ ; export ORACC_MODE
+ORACC_USER=@@ORACC_USER@@ ; export ORACC_USER
+PATH=$ORACC/bin:$PATH ; export PATH
+u=`uname`
+if [ "$u" = "Darwin" ]; then
+    DYLD_LIBRARY_PATH=/opt/local/lib:/usr/lib:/usr/local/lib; export DYLD_LIBRARY_PATH
+    echo DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH
+fi
+
+session=$1
+project=$2
+tempdir=$ORACC/tmp/rpc/$session
+projdir=$ORACC_BUILDS/$project
+export projdir project session tempdir
+echo "tempdir=$tempdir; projdir=$projdir" >$tempdir/method.log
