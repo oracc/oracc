@@ -1,7 +1,7 @@
 OLD LOCATION			NEW LOCATION
 
 00web				00web/00static
-00web/esp/site-content/00web	00web/00static
+00web/esp/site-content/00web	00res
 00web/esp/site-content/*.xml	00web/00config
 00web/esp/site-content/pages	00web
 00web/esp/httproot_dev		01bld/espdev with link from 02www/_test to 01bld/espdev
