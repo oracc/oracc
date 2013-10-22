@@ -6,7 +6,7 @@
   <set var="use_gw" to="yes"/>
   <set var="proj_type" to="corpus"/>
 
-  <xi:include href="/usr/local//lib/config/cbd-var.xcf"/>
+  <xi:include href="@@ORACC@@/lib/config/cbd-var.xcf"/>
   <set var="chresto" to="chrestmp"/>
   <set var="chreslang" to="$argpid-$cbdlang"/>
 

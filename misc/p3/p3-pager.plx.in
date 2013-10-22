@@ -103,11 +103,11 @@ if ($rt{'prod'} eq 'list') {
 if (!$p{'glos'} || $p{'gxis'}) {
     if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
 	my $ce_arg = set_ce_arg();
-	xsystem('/usr/local/oracc/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
+	xsystem('@@ORACC@@/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
 	$p{'#list'} = "$p{'tmpdir'}/wm.out";
     }
     if ($p{'item'} && $rt{'#list_type'} =~ /^tra|xtf$/) {
-	xsystem('/usr/local/oracc/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
+	xsystem('@@ORACC@@/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
 	$p{'#list'} = "$p{'tmpdir'}/collapsed.out";
 	set_list_items();
     }
@@ -476,12 +476,12 @@ run_item_maker {
     $eid =~ s/\..*$//;
     my $base = $eid;
     $base =~ s/^(....).*$/$1/;
-    my $xmd = "/usr/local/oracc/bld/$eproject/$base/$eid/$eid.xmd";
+    my $xmd = "@@ORACC@@/bld/$eproject/$base/$eid/$eid.xmd";
 
     if ($rt{'itemtype'} eq 'cat') {
 	xsystem('xsltproc',
 		'-o', "$p{'tmpdir'}/results.html",
-		'/usr/local/oracc/lib/scripts/g2-xmd-HTML.xsl',
+		'@@ORACC@@/lib/scripts/g2-xmd-HTML.xsl',
 		$xmd
 	    );
     } elsif ($rt{'itemtype'} eq 'xtf' || $rt{'itemtype'} eq 'tra') {
@@ -510,7 +510,7 @@ run_item_maker {
 		    '-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
 		    @idinfo,
 		    '-o', "$p{'tmpdir'}/results.html",
-		    '/usr/local/oracc/lib/scripts/p3-htmlview.xsl',
+		    '@@ORACC@@/lib/scripts/p3-htmlview.xsl',
 		    $xmd);
 	}
 	sig_fixer($p{'project'});
@@ -547,18 +547,18 @@ run_page_maker {
     if ($rt{'#list_type'} eq 'xtf') { ## sigfixer may need adding to end of pipe here some day
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce_xtf -3 $ce_arg -p $p{'project'} | $oraccbin/s2-ce_trim.plx >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cat' || $rt{'#list_type'} eq 'tra') {
 	my $link_fields = `@@ORACC@@/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$rt{'#list_type'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cbd') {
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 -icbd/$p{'glos'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
+		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
     } else {
 	warn "run_page_maker: no list_type set\n";
     }

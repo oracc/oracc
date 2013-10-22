@@ -961,31 +961,3 @@ RewriteRule ^/(\S+?(?:/\S+?)?)/([PQ]\d+)\.html$ /cgi-bin/oracc?project=$1&prod=h
 RewriteRule ^/(\S+?(?:/\S+?)?)/([PQ]\d+(?:,[PQ]\d+)*)$ /cgi-bin/oracc?project=$1&prod=adhoc&input=$2 [T=application/x-httpd-cgi,L]
 RewriteRule (/.*)$ /cgi-bin/oracc-despatcher$1 [T=application/x-httpd-cgi,L]
 </VirtualHost>
-
-#
-# VirtualHost example:
-# Almost any Apache directive may go into a VirtualHost container.
-# The first VirtualHost section is used for requests without a known
-# server name.
-#
-<VirtualHost *:80>
-    ServerAdmin stinney@sas.upenn.edu
-    ServerName cdl.museum.upenn.edu
-    ErrorLog logs/cdl-error_log
-    CustomLog logs/cdl-access_log common
-
-DocumentRoot "/usr/local/share/cdl/www"
-<Directory "/usr/local/share/cdl/www">
-    Options Indexes 
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-</Directory>
-
-RewriteEngine on
-RewriteLog "/var/log/httpd/cdl-rewrite.log"
-RewriteLogLevel 2
-##RewriteCond %{REQUEST_FILENAME} ^/cdl-has-moved.html$ [NC]
-##RewriteRule ^.* - [L,R]
-RewriteRule ^.* http://oracc.museum.upenn.edu/cdl-has-moved.html [L,R]
-</VirtualHost>

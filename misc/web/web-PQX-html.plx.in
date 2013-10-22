@@ -4,7 +4,7 @@ use lib '@@ORACC@@/lib/';
 use ORACC::Wrapper2;
 
 # CREATED WITH:
-my $invocation = "ORACC/mk-wrapper.plx -name htmlview.plx -type xslt -script /usr/local/oracc/lib/scripts/htmlview.xsl -from xmd -to html";
+my $invocation = "ORACC/mk-wrapper.plx -name htmlview.plx -type xslt -script @@ORACC@@/lib/scripts/htmlview.xsl -from xmd -to html";
 
 ORACC::Wrapper2::xslt(from=>'xmd',
 		    to=>'html',
@@ -17,7 +17,7 @@ __END__
 
 =head1 NAME
 
-htmlview.plx -- wrapper for /usr/local/oracc/lib/scripts/htmlview.xsl
+htmlview.plx -- wrapper for @@ORACC@@/lib/scripts/htmlview.xsl
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ htmlview.plx [-verbose | -quiet | -help | -man] [-list filelists | FILES]
 
 =head1 DESCRIPTION
 
-A wrapper program which applies /usr/local/oracc/lib/scripts/p3-htmlview.xsl 
+A wrapper program which applies @@ORACC@@/lib/scripts/p3-htmlview.xsl 
 to files.  Input files have extension 'xmd'; output files have 
 extension 'html'.
 

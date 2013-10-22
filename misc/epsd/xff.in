@@ -122,7 +122,7 @@ if ($sortopt) {
 		   'freq' =>"-n",
 		   );
     
-    my @sortcmd = ('|/usr/local/oracc/bin/psdsort');
+    my @sortcmd = ('|@@ORACC@@/bin/psdsort');
     # hack around a bug in psdsort until I fix it...
     if ($sortopt{$sortopt} eq '-n') {
 	$sortcmd[0] = '|/usr/bin/sort';
@@ -164,7 +164,7 @@ if ($sortopt) {
 
 ### Output Phase
 if ($edit_form || $html) {
-    my $xsl = '/usr/local/oracc/lib/scripts/xff-HTML.xsl';
+    my $xsl = '@@ORACC@@/lib/scripts/xff-HTML.xsl';
     my $xsldoc = load_xml($xsl);
     $styler = parse_xsl($xsldoc);
     print $cgi->header(-charset=>'utf8') if $cgi_mode;

@@ -83,7 +83,7 @@ my $xmlfile = $procfile;
 $xmlfile =~ s,\.[^\\]+,,;
 $xmlfile .= '.xml';
 
-my $previewer = '/usr/local//www/lib/preview.xsl';
+my $previewer = '@@ORACC@@/www/lib/preview.xsl';
 
 open (OUTFILE,">$procfile");
 my $fh = $q->upload('filename');

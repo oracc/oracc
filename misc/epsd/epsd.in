@@ -53,8 +53,6 @@ if (defined $reqpage) {
 	eval("use ORACC::ATF::Unicode;");
 	$uquery = ORACC::ATF::Unicode::gconv($cf).$gw;
 	$uquery =~ tr/_/ /;
-#	print STDERR "epsd: uquery = $uquery\n";
-#	push @INC, '/usr/local/share/epsd/lib';
 	eval("use ePSD; ePSD::load()");
 	my $r = ePSD::id_from_cfgw($uquery)
 	    ||  ePSD::id_from_cfgw($uquery.'V')
