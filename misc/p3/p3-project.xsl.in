@@ -13,7 +13,7 @@
 <xsl:param name="project"/>
 
 <xsl:variable name="oracc-home" select="'@@ORACC@@'"/>
-<xsl:variable name="oracc-server" select="@@ORACC_HOST@@'"/>
+<xsl:variable name="oracc-server" select="'@@ORACC_HOST@@'"/>
 <xsl:variable name="project-data" 
 	      select="concat('@@ORACC@@/xml/',$project,'/project-data.xml')"/>
 <xsl:variable name="config-xml" 
