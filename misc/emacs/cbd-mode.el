@@ -53,14 +53,6 @@
 
 (defun cbd-rebuild ()
   (interactive)
-;  (let
-;      ((proj (cbd-project-from-buffer))
-;       (lang (cbd-lang-from-glo-buffer)))
-;    (if (and proj lang)
-;	(ssh (concat proj "@oracc.museum.upenn.edu PATH=$PATH:/usr/local//bin oraccproject -lang " lang " rebuild gloss"))
-;      (if proj
-;	  (message "buffer file does not have .glo extension")
-;	(message "buffer file is not part of a project")))))
   (message "sorry, rebuilding an individual glossary is not yet supported"))
 
 (defface cbd-entry-face

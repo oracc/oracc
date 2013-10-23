@@ -9,6 +9,6 @@ xff: xff.in
 cgibin_SCRIPTS=xff epsdse
 scriptdata_DATA=xff-HTML.xsl epsdse.xsl
 
-EXTRA_DIST=\
-	DBM.pm
-	TSV.pm
+# EXTRA_DIST=\
+# 	DBM.pm
+#	TSV.pm

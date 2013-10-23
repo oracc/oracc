@@ -13,6 +13,9 @@ p3-asrch.sh: p3-asrch.sh.in
 p3-pager.plx: p3-pager.plx.in
 	$(ORACCIFY) p3-pager.plx.in
 
+p3-project.plx: p3-project.plx.in
+	$(ORACCIFY) p3-project.plx.in
+
 p3-selector.plx: p3-selector.plx.in
 	$(ORACCIFY) p3-selector.plx.in
 
