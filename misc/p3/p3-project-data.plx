@@ -69,8 +69,9 @@ my %top_l = ();
 my @top_l = sort keys %top_l;
 
 ### Compute languages used in translations
+my @translangs = ();
 if (-d '00atf') {
-    my @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
+    @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
     chomp @translangs;
 }
 @translangs = ('en') unless $#translangs >= 0;
