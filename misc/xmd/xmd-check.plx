@@ -13,13 +13,16 @@ while (<C>) {
 }
 close(C);
 
-open(A,'01bld/lists/approved.lst');
-while (<A>) {
-    chomp;
-    s/^.*?://;
-    s/\@.*$//;
-    warn "01bld/lists/approved.lst:$.: $_ is not in the catalogue\n"
-	unless $in_cat{$_};
+if (-r '01bld/lists/approved.lst') {
+    open(A,'01bld/lists/approved.lst');
+    while (<A>) {
+	chomp;
+	s/^.*?://;
+	s/\@.*$//;
+	warn "01bld/lists/approved.lst:$.: $_ is not in the catalogue\n"
+	    unless $in_cat{$_};
+    }
+    close(A);
 }
-close(A);
+
 1;
