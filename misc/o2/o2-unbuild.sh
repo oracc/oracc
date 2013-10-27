@@ -1,5 +1,5 @@
 #!/bin/sh
-echo o2-unbuild.sh: currdir=`pwd`
+#echo o2-unbuild.sh: currdir=`pwd`
 if cd 01bld; then 
     find . -maxdepth 1 -type f -exec rm '{}' ';'
     rm -fr [PQX][0-9][0-9][0-9]
