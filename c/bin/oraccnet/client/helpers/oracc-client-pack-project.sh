@@ -16,7 +16,9 @@ else
     COMPRESS=-j
 fi
 zip=request.tar.gz ; export zip
+ziplist=01tmp/request-files.lst
 rm -f $zip
+rm -f $ziplist
 # COPYFILE_DISABLE suppresses addition of ._* files under Mac OS X at least up
 # to 10.8
 COPYFILE_DISABLE=1 ; export COPYFILE_DISABLE
@@ -28,5 +30,7 @@ find 00atf 00bib 00cat 00lib 00web -type f \
     -or -name '*.js' \
     -or -name '*.lst' \
     -or -name '*.xml' \
-    | tar $COMPRESS -cf $zip -T -
+    >$ziplist
+echo 00lib/thumb.png >>$ziplist
+tar $COMPRESS -cf $zip -T $ziplist
 export version zip
