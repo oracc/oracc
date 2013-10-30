@@ -196,7 +196,7 @@ if ($cat_policy eq 'auto') {
 } elsif ($cat_policy eq 'derived') {
     setup_derived_cat();
 } else {
-    @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>;
+    @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>;
 }
 
 if (-r '01bld/lists/proxy.lst') {
@@ -225,6 +225,8 @@ if ($#catalogs >= 0) {
 	    $$c{'icat'} = [ ORACC::XMD::Util::internalize($$c{'file'}) ];
 	} elsif ($$c{'type'} eq 'csv') {
 	    $$c{'icat'} = [ ORACC::XMD::CSV::internalize($$c{'file'}) ];
+	} elsif ($$c{'type'} eq 'tsv') {
+	    $$c{'icat'} = [ ORACC::XMD::TSV::internalize($$c{'file'}) ];
 	} else {
 	    die "xmdmanager.plx: unknown catalog type $$c{'type'}\n";
 	}
