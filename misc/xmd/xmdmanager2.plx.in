@@ -1293,6 +1293,8 @@ type_from_ns {
     my $fn = shift;
     if ($fn =~ /\.csv$/) {
 	'csv';
+    } elsif ($fn =~ /\.tsv$/) {
+	'tsv';
     } else {
 	my $ns = `@@ORACC@@/bin/xmlns $fn`;
 	if ($ns_types{$ns}) {
