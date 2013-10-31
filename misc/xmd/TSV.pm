@@ -47,7 +47,7 @@ internalize {
 
 sub
 initialize_fields {
-    @fields = @{$_[0]};
+    @fields = split(/\t/, $_[0]);
     %fields = ();
     for (my $i = 0; $i <= $#fields; ++$i) {
 	$period_index = $i if $fields[$i] eq 'period';
