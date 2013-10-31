@@ -6,6 +6,7 @@ int
 main(int argc, char **argv)
 {
   struct npool *pool = NULL;
+  extern const char *file, *textid;
   if ((pool = npool_init()))
     {
       struct xpd *x = NULL;
@@ -33,6 +34,11 @@ main(int argc, char **argv)
 	  help();
 	  exit(1);
 	}
+
+      if (!file)
+	file = "<none>";
+      if (!textid)
+	textid = "<none>";
 
       if ((x = xpd_init(project,pool)))
 	{
