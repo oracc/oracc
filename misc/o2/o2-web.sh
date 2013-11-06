@@ -43,19 +43,4 @@ if [ -f 01bld/lists/have-xtf.lst ]; then
     clean-web-PQX-log.sh
 fi
 p3-project.sh
-if [ -d 00web/esp ]; then
-    # esp live includes o2-weblive
-    oracc esp ; oracc esp live force
-else
-    if [ -d 00web/00config ]; then
-	echo calling esp2.sh `oraccopt` ...
-	esp2.sh `oraccopt`
-	echo calling esp2-live.sh `oraccopt` force ...
-	esp2-live.sh `oraccopt` force
-    else
-	[ -e 00web/index.html ] || web-default-index.plx $webdir
-	mkdir -p $webdir/images
-	cp -fpR 00web/* $webdir ; rm -f $webdir/*~
-	o2-weblive.sh
-    fi
-fi
+o2-portal.sh
