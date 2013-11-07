@@ -246,16 +246,16 @@ if ($config) {
 
 mkdir ${$cfg{'webglodir'}}[0] if $cfg{'webglodir'};
 
-use Time::HiRes qw/gettimeofday tv_interval/;
-my $t0 = $ORACC::L2GLO::Builtins::t0 = [gettimeofday];
+#use Time::HiRes qw/gettimeofday tv_interval/;
+#my $t0 = $ORACC::L2GLO::Builtins::t0 = [gettimeofday];
 foreach my $p (@{$cfg{'process'}}) {
     my %p = %$p;
     my $args = $p{'args'} ? " $p{'args'}" : '';
-    if ($verbose) {
-	my $elapsed = tv_interval($t0);
-	my $elstr = sprintf("%.02fs",$elapsed);
-	warn "$elstr: process $p{'action'} $args...\n";
-    }
+#    if ($verbose) {
+#	my $elapsed = tv_interval($t0);
+#	my $elstr = sprintf("%.02fs",$elapsed);
+#	warn "$elstr: process $p{'action'} $args...\n";
+#    }
     if ($p{'action'} =~ /\.xsl/) {
 	my $styler = load_xsl($p{'action'});
 	die "l2-glomanager.plx: no such XSL $p{'action'}\n" unless $styler;
@@ -343,11 +343,11 @@ foreach my $p (@{$cfg{'process'}}) {
 
 maybe_cbd_post_process();
 
-if ($verbose) {
-    my $elapsed = tv_interval($t0);
-    my $elstr = sprintf("%.02fs",$elapsed);
-    warn "$elstr: completed.\n";
-}
+#if ($verbose) {
+#    my $elapsed = tv_interval($t0);
+#    my $elstr = sprintf("%.02fs",$elapsed);
+#    warn "$elstr: completed.\n";
+#}
 
 #########################################################################
 
