@@ -342,7 +342,7 @@ note_register_tag(const unsigned char *tag, struct node *parent)
 
   if (note_find_in_line(tag))
     {
-      vwarning("note tag %s is used more than once in this line");
+      vwarning("note tag %s is used more than once in this line", tag);
       return NULL;
     }
   else
