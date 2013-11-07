@@ -3,7 +3,6 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use ORACC::NS;
-use Time::HiRes qw/gettimeofday tv_interval/;
 use Data::Dumper;
 
 binmode STDIN, ':utf8';
@@ -560,9 +559,6 @@ acdentry {
 	    if ($#bffs >= 0 && $#bffs_listed >= 0) {
 		bad('entry', "entry with BFFs is also owner of BFFs");
 	    }
-#	    $elapsed = tv_interval($ORACC::L2GLO::Builtins::t0);
-#	    $elstr = sprintf("%.02fs",$elapsed);
-#	    warn "$elstr: start acdentry $e\n";
  	    if ($seen{$e}++) {
 		bad('entry',"duplicate cf [gw]: $e");
 	    } else {
@@ -1091,9 +1087,6 @@ acdentry {
     }
     push @ret, '</entry>';
     ++$eid;
-#    $elapsed = tv_interval($ORACC::L2GLO::Builtins::t0);
-#    $elstr = sprintf("%.02fs",$elapsed);
-#    warn "$elstr: start acdentry $e\n";
     @ret;
 }
 
