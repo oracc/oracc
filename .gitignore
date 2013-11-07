@@ -488,3 +488,7 @@ c/bin/oraccnet/server/or_stable_uris.c
 c/bin/oraccnet/server/or_response.c
 
 c/bin/oraccnet/server/or_pqx.c
+
+c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c
+
+c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c

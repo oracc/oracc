@@ -29,6 +29,7 @@ find 00atf 00bib 00cat 00lib 00web -type f \
     -or -name '*.html' \
     -or -name '*.js' \
     -or -name '*.lst' \
+    -or -name '*.ods' \
     -or -name '*.xml' \
     >$ziplist
 echo 00lib/thumb.png >>$ziplist
