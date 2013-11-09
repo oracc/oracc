@@ -492,3 +492,7 @@ c/bin/oraccnet/server/or_pqx.c
 c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c
 
 c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c
+
+c/bin/se/sl-index.c
+
+c/bin/se/sl-index.c

@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use utf8;
+use Getopt::Long;
 use lib "$ENV{'ORACC'}/lib";
 use open 'utf8'; binmode STDERR, 'utf8';
 use ORACC::XML;
@@ -13,6 +14,12 @@ use ORACC::SE::DBM;
 use ORACC::SE::TSV;
 
 use constant { TOP=>0, SUB=>1 };
+
+my $boot = 0;
+
+GetOptions(
+    'boot'=>\$boot
+    ) || usage_and_exit();
 
 # This database uses the value as the primary key, with extensions
 # to index homophones, containers, etc.  The value may be lower or
@@ -50,16 +57,36 @@ my $sl_uri = 'http://oracc.org/ns/sl/1.0';
 my $xml_uri = 'http://www.w3.org/XML/1998/namespace';
 my $gdl_uri = 'http://oracc.org/ns/gdl/1.0';
 
-my $dbdir = '02pub/'; system 'mkdir','-p',$dbdir;
-my $dbbase = shift @ARGV;
-my $dbname = "$dbbase-db";
-my %db;
+my $dbdir = undef;
+my $dbbase = undef;
+my $dbname = undef;
+my $sl_xml = undef;
 
+if ($boot) {
+    $sl_xml = "$ENV{'ORACC'}/xml/ogsl/ogsl-sl.xml";
+    unless (-r $sl_xml) {
+	warn "sl-db.plx: must install ogsl-sl.xml in $ENV{'ORACC'}/ogsl first. Stop.\n";
+	exit 1;
+    }
+    $dbdir = "$ENV{'ORACC'}/pub/ogsl"; system 'mkdir', '-p', $dbdir;
+    $dbname = "ogsl-db";
+} else {
+    $dbdir = '02pub/'; system 'mkdir','-p',$dbdir;
+    $dbbase = shift @ARGV;
+    unless ($dbbase) {
+	warn "sl-db.plx: must either give db-name or '-boot' on command line. Stop.\n";
+	exit 1;
+    }
+    $dbname = "$dbbase-db";
+    $sl_xml = "02xml/$dbbase-sl.xml";
+}
+
+my %db;
 my %values = ();
 
 my $xp = XML::LibXML->new();
-my $sl = $xp->parse_file("02xml/$dbbase-sl.xml");
-my $do_aliases = 1;
+my $sl = $xp->parse_file($sl_xml);
+my $do_aliases = !$boot;
 my $global_id = '';
 
 # first load up %values with the sign names and values
@@ -251,58 +278,13 @@ dump_db {
 	}
     }
 
-    ORACC::SE::DBM::setdir('./02pub');
+    ORACC::SE::DBM::setdir($dbdir);
 #    ORACC::SE::XML::toXML(\%db);
     ORACC::SE::TSV::toTSV(\%db);
 #    ORACC::SE::DBM::create($db{'#name'});
 
 #    ORACC::SE::XML::toXML(\%db);
 #    use Data::Dumper; open(D,'>./02pub/pslu.dump'); binmode(D, ':raw'); print D Dumper(\%db); close(D);
-    untie %db;
-}
-
-
-sub
-xdump_db {
-    unlink "$dbdir/$dbname";
-    tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
-	|| die "sl-db.plx: can't write $dbdir/$dbname\n";
-    foreach my $k (keys %values) {
-	my $dbk = $k;
-	Encode::_utf8_off($dbk);
-	# This first group is keys which have singleton values
-	if ($dbk =~ /(?:link|name|aka|uchar|ucode)$/) {
-	    my $v = $values{$k};
-	    Encode::_utf8_off($v);
-	    $db{$dbk} = $v;
-	} elsif ($dbk =~ /h$/) {
-	    # sort homophones
-	    my $str = hsort(@{$values{$k}});	    
-	    $db{$dbk} = $str;
-### WHAT WAS THIS SUPPOSED TO DO?
-#	    if ($k =~ /ₓ/) {
-#		$k =~ s/h$//;
-#	    }
-	} elsif ($dbk =~ //) {
-	    if (defined $values{$k}) {
-#		use Data::Dumper; warn "dbk=$dbk\n"; warn Dumper $values{$k};
-		my $v = join(' ', sort uniq(grep(defined, @{$values{$k}})));
-		Encode::_utf8_off($v);
-		$db{$dbk} = $v;
-	    } else {
-		warn "sl-db.plx: unhandled key type $dbk\n";
-	    }
-	} else {
-	    my $v = $values{$k};
-	    Encode::_utf8_off($v);
-	    $db{$dbk} = $v;
-	}
-    }
-#    ORACC::SE::DBM::setdir('./02www/db');
-    $db{'#name'} = $dbname;
-    $db{'#fields'} = join(' ', qw/h aka c cinit clast contains contained multi mod link values/);
-#    ORACC::SE::XML::toXML(\%db);
-    use Data::Dumper; open(D,">./02pub/$dbname.dump"); binmode(D, ':raw'); print D Dumper(\%db); close(D);
     untie %db;
 }
 
@@ -428,4 +410,10 @@ subsign {
     $values{$id,'uchar'} = $uchar if $uchar;
     $values{$id,'name'} = $sn;
     $id;
+}
+
+sub
+usage_and_exit {
+    warn "sl-db.plx: bad command line arguments. Stop.\n";
+    exit 1;
 }

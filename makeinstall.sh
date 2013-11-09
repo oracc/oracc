@@ -10,6 +10,8 @@ mkdir -p $ORACC/lib/data
 cp -a coredata-master/cats/catpnums.vec $ORACC/lib/data
 mkdir -p $ORACC/xml/ogsl
 cp -a coredata-master/sign/ogsl-sl.xml $ORACC/xml/ogsl
+cp -a coredata-master/sign/ogsl-db.tsv $ORACC/pub/ogsl
+sl-index -boot
 #(cd coredata-master ; cp -a doc2 $ORACC/www)
 #curl -L -o ${ORACC}/bin/dropbox.py https://www.dropbox.com/download?dl=packages/dropbox.py
 #chmod +x ${ORACC}/bin/dropbox.py

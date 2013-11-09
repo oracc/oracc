@@ -1,0 +1,23 @@
+pcat -- cdli P catalog
+     - install from runtime
+
+qcat -- oracc Q catalog
+     - install from runtime
+
+xcat -- oracc X catalog
+     - install from runtime
+
+ogsl -- global signlist
+     - need to compile ogsl-db with sl-db.plx
+
+lemm -- meta-project containing lemm-* files as global lemm support
+     - need to modify lemmer to use these by default for all langs
+     - could have dummy one for qpc and qcu
+
+erds -- entity recognizer data sets
+     - basically a bunch of xml config files
+
+doc2 -- oracc documentation
+     - where should the canonical home of this be?
+
+

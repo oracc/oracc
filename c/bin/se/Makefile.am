@@ -25,6 +25,9 @@ AM_CFLAGS=-pedantic -ansi -Wall -g
 
 AM_LDFLAGS=-L/opt/local/lib
 
+sl-index.c: sl-index.c.in
+	$(ORACCIFY) sl-index.c.in
+
 bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
 
 sl_SOURCES=sl.c
