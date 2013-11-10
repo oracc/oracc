@@ -7,11 +7,15 @@ if [ -d 00web/00config ]; then
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
 elif [ -d 00web/esp ]; then
-    oracc esp
-    echo You now need to call: oracc esp live to make the rebuilt portal live online
+    echo o2-portal.sh: esp version 1.0 is no longer supported.  Please contact your liaison to upgrade.
+    exit 1
+#    oracc esp
+#    echo You now need to call: oracc esp live to make the rebuilt portal live online
 elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
     mkdir -p $webdir/images
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
+    cp -fp 00lib/thumb.png $webdir
+    p3colours.plx $webdir
     o2-weblive.sh
 else
     echo o2-portal.sh: no portal to rebuild and no index.html or way of building same. Stop.

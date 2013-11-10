@@ -5,7 +5,7 @@ my $webdir = shift @ARGV;
 die "web-p3colours.plx: must give webdir on command line\n"
     unless $webdir;
 
-my $oracc_colours = "$ENV{'ORACC'}/lib/data/p2colours.txt";
+my $oracc_colours = "$ENV{'ORACC'}/lib/data/p3colours.txt";
 
 
 my %colours = ();
@@ -79,7 +79,7 @@ foreach my $c (sort keys %classes) {
 close(CSS);
 
 if (-r "$webdir/p3.css" || -r "02www/p3.css") {
-    open(CSX,">$webdir/p2.csx");
+    open(CSX,">$webdir/p3.csx");
     print CSX "<css>\n";
     open(CSS,"$webdir/p3.css") || open(CSS, "02www/p3.css");
     while (<CSS>) {
@@ -101,7 +101,7 @@ find_p3colours {
     my $p = `oraccopt`;
     my $up = '';
     while (1) {
-	my $try = "${up}00lib/p2colours.txt";
+	my $try = "${up}00lib/p3colours.txt";
 	if (-r $try) {
 	    return $try;
 	}

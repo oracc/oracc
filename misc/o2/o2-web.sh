@@ -4,11 +4,9 @@ shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
 mkdir -p $webdir/t $webdir/cbd $webdir/css
 cp 02xml/config.xml $webdir/config.xml
-cp 00lib/thumb.png $webdir/thumb.png
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
-p3-colours.plx $webdir
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then

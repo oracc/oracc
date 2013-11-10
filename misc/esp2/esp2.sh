@@ -127,6 +127,10 @@ do
 	chmod g+x $FILE
 done
 
+cp -fp 00lib/thumb.png $webdir
+p3colours.plx $webdir
+
+
 chmod -R o+r $HTTPROOT
 
 exit 0

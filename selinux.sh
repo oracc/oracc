@@ -25,11 +25,7 @@ cat oracc.fc >>$FC2
 cat oracc.fc >>$FC2local
 /sbin/restorecon -R -v $ORACC
 
-## FIXME: can we do this whole thing without installing semanage?
-## just use setsebool?
-
-# This allows httpd to access /home/oracc.
-semanage boolean -m --on httpd_enable_homedirs
-
-# This is needed to allow httpd to exec java interpreter.
-setsebool -P httpd_execmem=1
+# httpd_enable_homedirs=1 allows httpd to access /home/oracc.
+# httpd_execmem=1 allows httpd to run java
+# httpd_can_network_connect=1 allows xslt scripts to use document('http://build.oracc.org/datestamp')
+setsebool -P httpd_enable_homedirs=1 httpd_execmem=1 httpd_can_network_connect=1
