@@ -48,6 +48,10 @@ rm -f 02www/_test
 
 # note: addition of / to $espdev here is deliberate
 cp -Rv $espdev/* 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
+
+cp -fp 00lib/thumb.png $webdir
+p3colours.plx $webdir
+
 chmod -R o+r $webdir/
 chmod o-r $log
 echo esp2 portal is now live at http://$ORACC_HOST/$project

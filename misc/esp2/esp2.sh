@@ -17,6 +17,8 @@
 
 unset DYLD_LIBRARY_PATH
 
+echo esp2.sh called in `pwd` with args $*
+
 if [ "$1" = "" ]; then
     echo esp2.sh: must give project name as argument
     exit 1
@@ -126,10 +128,6 @@ for FILE in $LIST
 do
 	chmod g+x $FILE
 done
-
-cp -fp 00lib/thumb.png $webdir
-p3colours.plx $webdir
-
 
 chmod -R o+r $HTTPROOT
 
