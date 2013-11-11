@@ -35,6 +35,8 @@ find 00atf 00bib 00cat 00lib 00web -type f \
 if [ -r 00lib/p3colours.txt ]; then
     echo 00lib/p3colours.txt >>$ziplist
 fi
-echo 00lib/thumb.png >>$ziplist
+if [ -r 00lib/thumb.png ]; then
+    echo 00lib/thumb.png >>$ziplist
+fi
 tar $COMPRESS -cf $zip -T $ziplist
 export version zip

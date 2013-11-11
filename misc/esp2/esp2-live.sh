@@ -50,7 +50,7 @@ rm -f 02www/_test
 cp -Rv $espdev/* 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
 
 cp -fp 00lib/thumb.png $webdir
-p3colours.plx $webdir
+p3-colours.plx $webdir
 
 chmod -R o+r $webdir/
 chmod o-r $log
