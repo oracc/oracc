@@ -6,11 +6,9 @@ if [ ! -d $webdir ]; then
     echo o2-weblive.sh: no directory 01bld/www to make live
     exit 1
 else
-#    esp-remove-web-files.sh
-    if [ ! -d 00web/00static ]; then
-	(cd $webdir ; mv -f *.* $prjdir/02www ; \
-	    for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
-    fi
+    (cd $webdir ; mv -f *.* $prjdir/02www ; \
+	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    p3-project.sh
     est-project.sh
     o2-prm.sh
 fi

@@ -4,9 +4,11 @@ shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
 mkdir -p $webdir/t $webdir/cbd $webdir/css
 cp 02xml/config.xml $webdir/config.xml
+cp 00lib/thumb.png $webdir/thumb.png
 if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
+p3-colours.plx $webdir
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then
@@ -40,5 +42,5 @@ if [ -f 01bld/lists/have-xtf.lst ]; then
     web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
     clean-web-PQX-log.sh
 fi
-p3-project.sh
 o2-portal.sh
+o2-weblive.sh
