@@ -85,6 +85,7 @@ struct xname anames[] =
   { "n", "n" },
   { "n:num", "http://oracc.org/ns/norm/1.0:num" },
   { "norm", "norm" },
+  { "note:auto", "http://oracc.org/ns/note/1.0:auto" },
   { "note:label", "http://oracc.org/ns/note/1.0:label" },
   { "note:mark", "http://oracc.org/ns/note/1.0:mark" },
   { "note:ref", "http://oracc.org/ns/note/1.0:ref" },
@@ -291,6 +292,7 @@ struct attr abases[] =
   { { anames[133].qname,NULL } , { anames[133].pname,NULL } },
   { { anames[134].qname,NULL } , { anames[134].pname,NULL } },
   { { anames[135].qname,NULL } , { anames[135].pname,NULL } },
+  { { anames[136].qname,NULL } , { anames[136].pname,NULL } },
 };
 struct xname enames[] =
 {

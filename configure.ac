@@ -180,7 +180,6 @@ AC_OUTPUT([Makefile
 	misc/ol/Makefile
 	misc/oss2/Makefile
 	misc/otf/Makefile
-	misc/p2/Makefile
 	misc/p3/Makefile
 	misc/print/Makefile
 	misc/ptb/Makefile

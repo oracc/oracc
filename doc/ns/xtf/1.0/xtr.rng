@@ -104,6 +104,9 @@
         <value>note</value>
       </attribute>
       <ref name="id"/>
+      <optional>
+        <ref name="noteauto"/>
+      </optional>
       <element name="xh:p">
         <ref name="ctr"/>
         <ref name="xtr-notemark"/>
@@ -409,6 +412,9 @@
         <value>notelink</value>
       </attribute>
       <ref name="noteref"/>
+      <optional>
+        <ref name="noteauto"/>
+      </optional>
       <text/>
     </element>
   </define>

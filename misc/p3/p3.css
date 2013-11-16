@@ -6,13 +6,15 @@ body { margin: 0; padding: 0; }
 #p3controls { height: 90px; margin: 0px; padding: 0px; 
 	    }
 
-
 #p3topButtons { height: 22px; }
-#p3topButtons p { text-align: center; }
+#p3topButtons p { text-align: center; margin: 0px; padding: 0px; }
+#p3topButtons .button { display: inline; }
 #p3topButtons .spacer { padding-right: .5rem; }
 
 #p3srch { height: 45px; }
-#p3srch p { padding-top: 12px; padding-bottom: 12px; }
+#p3srch p { padding-top: 12px; padding-bottom: 12px; 
+	    margin: 0px;
+	  }
 
 #p3navLeft    	{ height: 23px;
 		  padding: 0px; margin: 0px;
@@ -48,7 +50,7 @@ body { margin: 0; padding: 0; }
 #p3banner h1 { font-size: 25pt; }
 
 #p3botbanner { width: 100%; line-height: 24px; height: 24px; position: absolute; left: 0px; }
-#p3botbanner h1 { font-size: 14pt; text-align: center; }
+#p3botbanner h1 { font-size: 14pt; text-align: center; margin: 0px; padding: 0px; }
 
 p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
 		  margin: 0px;
@@ -66,7 +68,7 @@ p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
 		}
 
 div.pgotl { font-family: arial,sans-serif; padding: 0px; 
-	  padding-left: 5px; padding-top: 5px; padding-bottom: 5px; }
+	    padding-left: 5px; padding-top: 5px; padding-bottom: 5px; }
 
 .pgotl p   { padding: 0px; margin: 0px; margin-left: 10px; 
 	     margin-bottom: 1px; margin-top: 1px; font-size: 80%; 
@@ -93,6 +95,8 @@ a img     { border: 0px; }
 a[href]:hover   { color: white; background-color: red; text-decoration: underline; }
 a[onclick]:hover   { color: white; background-color: red; }
 
+.center 	{ text-align: center; }
+
 sub { font-style: normal; }
 .sux { font-style: normal; }
 .akk { font-style: italic; }
@@ -118,14 +122,14 @@ p.summary { margin-left: 1em; text-indent: -1em; }
 .pos { font-size: 90%; }
 .phon { font-size: 90%; font-family: serif; padding-left: 2em }
 
-.p2h2     { font-size: 100%; padding-top: 0px; margin-top: 0px; }
-h1.p2h2   { font-size: 100%; padding-top: 0px; margin-top: 0px; }
+.p3h2     { font-size: 100%; padding-top: 0px; margin-top: 0px; margin-left: 1px; }
 
 h1.toc { fontsize: 10pt; text-align: center; }
 
 #unicode { margin: 0x; padding: 0px; }
 
-.notelink { font-size: 70%; vertical-align: super; padding-left: .1em; padding-right: .1em; background-color: black; color: white; }
+.notelink,.marker { font-size: 9pt; vertical-align: super; padding-left: .1em; padding-right: .1em; background-color: black; color: white; }
+.notemark { font-size: 9pt; vertical-align: super; padding-left: .1em; padding-right: .1em; color: black; }
 
 .notex {
     text-align: right;
@@ -137,12 +141,13 @@ h1.toc { fontsize: 10pt; text-align: center; }
   width: 200px;
   top: 0;
   left: 0;
-  background: #ffc;
+  background: #efefef;
   padding: 10px;
   border: 1px solid #000;
+  border-radius: 12px;
   visibility: hidden;
   font-size: 10pt;
   font-weight: normal; 
-  font-family: "Ungkam Basic",Arial,Helvetica,sans-serif;
+  font-family: "Ungkam Basic",Serif;
   color: #000;
 }

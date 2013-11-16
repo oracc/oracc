@@ -1489,18 +1489,21 @@
 
 <xsl:template mode="gathered" match="note:text">
   <p class="note" id="{@xml:id}">
-    <xsl:if test="@note:mark|@note:label">
-      <xsl:attribute name="mark">
-	<xsl:choose>
-	  <xsl:when test="@note:label">
-	    <xsl:value-of select="@note:label"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:value-of select="@note:mark"/>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </xsl:attribute>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@note:mark">
+	<xsl:attribute name="mark">
+	  <xsl:value-of select="@note:mark"/>
+	</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="@note:label">
+	<xsl:attribute name="mark">
+	  <xsl:value-of select="@note:label"/>
+	</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>mno</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates/>
   </p>
 </xsl:template>
@@ -1555,17 +1558,19 @@
   <xsl:text>} </xsl:text>
 </xsl:template>
 
+<!--
 <xsl:template name="note-links">
   <xsl:for-each select="note:link">
     <a href="javascript://" 
        onmouseover="showNote(event,'{@note:ref}')" 
        onmouseout="hideNote(event,'{@note:ref}')">
       <span class="marker">
-	<xsl:apply-templates/>
+	<xsl:text>xyz</xsl:text><xsl:apply-templates/>
       </span>
     </a>
   </xsl:for-each>
 </xsl:template>
+-->
 
 <!--
 <xsl:template match="gdl:a">

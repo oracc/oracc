@@ -30,7 +30,7 @@
       </title>
       <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
       <link rel="stylesheet" type="text/css" href="/css/{$webtype}.css"/>
-      <link rel="stylesheet" type="text/css" href="/{$project}/p2.css"/>
+      <link rel="stylesheet" type="text/css" href="/{$project}/p3.css"/>
       <script src="/js/{$webtype}.js" type="text/javascript">
         <xsl:text> </xsl:text>
       </script>

@@ -704,6 +704,7 @@
       <div class="p3notes">
 	<xsl:for-each select="following-sibling::xh:div[@class='p3notes']/xh:p[@class='note']">
 	  <p class="note" onmouseout="hideNote(event,'{@id}')" onclick="hideNote(event,'{@id}')" id="{@id}">
+	    <span class="notemark"><xsl:value-of select="@mark"/></span>
 	    <xsl:apply-templates mode="notediv"/>
 	  </p>
 	</xsl:for-each>
@@ -739,6 +740,7 @@
   </xsl:if>
 </xsl:template>
 
+<!-- This is the note mark in the translation para of XTR data -->
 <xsl:template match="xh:span[@class='notelink']">
   <a href="javascript://" 
      onmouseover="showNote(event,'{@note:ref}', 1)" 

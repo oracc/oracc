@@ -147,6 +147,7 @@ trans-note =
   element xh:div {
     attribute class { "note" },
     id,
+    noteauto?,
     element xh:p { ctr , xtr-notemark , htext } ,
     (element xh:p { ctr , htext } 
      | trans-comment)*
@@ -209,6 +210,7 @@ xtr-notelink =
   element xh:span {
     attribute class { "notelink" },
     noteref,
+    noteauto?,
     text
   }
 

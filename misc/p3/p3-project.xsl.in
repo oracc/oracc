@@ -125,7 +125,8 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template name="pll-css">
+<xsl:template name="pll-css"/>
+<xsl:template name="xpll-css">
   <link rel="stylesheet" type="text/css" href="/{$project}/p2.css" />
   <style type="text/css">
     <xsl:text>.pll .value select option { border-bottom: 1px solid red; }&#xa;</xsl:text>

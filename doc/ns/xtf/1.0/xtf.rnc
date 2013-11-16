@@ -43,6 +43,7 @@ comments = cmt | notetext
 cmt = element cmt { text }
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
+noteauto  = attribute note:auto { text }
 noteref   = attribute note:ref { xsd:IDREF }
 noteblock = (notelink | notetext)
 notelink  = element note:link {
@@ -53,6 +54,7 @@ notelink  = element note:link {
 notetext  = element note:text {
 		attribute xml:id  { xsd:ID } ,
 		notemark ,
+		noteauto? ,
 		notelabel? ,
 		htext 
 	    }

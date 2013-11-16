@@ -33,7 +33,6 @@ SUBDIRS = \
 	ol \
 	oss2 \
 	otf \
-	p2 \
 	p3 \
 	print \
 	ptb \

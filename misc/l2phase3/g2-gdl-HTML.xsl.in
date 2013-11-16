@@ -791,6 +791,7 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- This is the note mark in the transliteration line of XTF data -->
 <xsl:template name="process-notes">
   <a href="javascript://" 
      onmouseover="showNote(event,'{@note:ref}')" 

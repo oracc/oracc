@@ -5,7 +5,7 @@ include ../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libcdf.la
-#noinst_PROGRAMS=cdftest
+noinst_SCRIPTS=mk_rnc.sh
 
 libcdf_la_SOURCES = \
 	catvec.c cdf_rnc.c linkcheck.c loadlabels.c \
@@ -16,9 +16,6 @@ catvec.c: catvec.c.in
 
 cdf_rnc.c: mk_rnc.sh
 	/bin/sh	mk_rnc.sh
-
-#mk_rnc.sh: mk_rnc.sh.in
-#	$(ORACCIFY) mk_rnc.sh.in
 
 pnames.c: pnames.c.in
 	$(ORACCIFY) pnames.c.in

@@ -4,11 +4,9 @@
     <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen"/>
     <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
-    <link rel="stylesheet" type="text/css" href="/css/p2.css" />
     <link rel="stylesheet" type="text/css" href="/css/p3.css" />
     <link rel="stylesheet" type="text/css" href="/css/p3cbd.css" />
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
-    <script src="/js/p2.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];

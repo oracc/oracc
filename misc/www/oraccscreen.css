@@ -212,8 +212,11 @@ pre { width: 95%; margin: auto; }
 
 div.trans { margin-top: 5px; padding-top: 10px; border-top: solid 2px silver; }
 
+/*
 span.marker { font-size: 80%; vertical-align: super; 
-	    background-color: black; color: white; }
+	      background-color: black; color: white; }
+ */
+
 hr.notesep { width: 50px; margin-left: 0px; margin-right: auto; }
 
 span.lnum { display: none }

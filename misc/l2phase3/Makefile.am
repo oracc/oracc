@@ -5,7 +5,8 @@ scriptdata_DATA = g2-gdl-HTML.xsl g2-gdl-TeX.xsl g2-xtf-HTML.xsl cbd-HTML-OBF.xs
 	g2-base-s.xsl g2-chunk-html.xsl g2-gdl-render-g.xsl g2-HTML-articles.xsl \
 	g2-HTML-summaries.xsl p2-overview-HTML.xsl g2-primary-base.xsl g2-sig.xsl \
 	g2-split-html.xsl g2-summaries.xsl g2-TeX-articles.xsl g2c-sig-map.xsl \
-	p2-summaries-HTML.xsl p2-summaries.xsl g2-xsf-HTML.xsl p2-summary-HTML-lib.xsl
+	p2-summaries-HTML.xsl p2-summaries.xsl g2-xsf-HTML.xsl p2-summary-HTML-lib.xsl \
+	p2-cbd-toc.xsl
 
 config_DATA = l2p3.xcf
 

@@ -166,6 +166,9 @@
             <value>notelink</value>
           </attribute>
           <ref name="noteref"/>
+          <optional>
+            <ref name="noteauto"/>
+          </optional>
           <text/>
         </group>
       </choice>

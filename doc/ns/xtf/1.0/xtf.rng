@@ -200,6 +200,9 @@
   <define name="notemark">
     <attribute name="note:mark"/>
   </define>
+  <define name="noteauto">
+    <attribute name="note:auto"/>
+  </define>
   <define name="noteref">
     <attribute name="note:ref">
       <data type="IDREF"/>
@@ -226,6 +229,9 @@
         <data type="ID"/>
       </attribute>
       <ref name="notemark"/>
+      <optional>
+        <ref name="noteauto"/>
+      </optional>
       <optional>
         <ref name="notelabel"/>
       </optional>

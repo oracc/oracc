@@ -390,6 +390,7 @@ note_register_note(const unsigned char *tag, struct node *node)
 	      const char *nid = note_create_id();
 	      setAttr(node, a_xml_id, (const unsigned char *)nid);
 	      setAttr(np->node, a_note_ref, (const unsigned char *)nid);
+	      setAttr(node, a_note_auto, (const unsigned char *)np->mark);
 	      np->status = NOTE_REFERENCED;
 	    }
 	  else

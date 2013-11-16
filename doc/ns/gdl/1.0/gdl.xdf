@@ -1636,6 +1636,7 @@ nonword =
     (
     attribute type { "notelink" },
     noteref,
+    noteauto?,
     text
     )
   }

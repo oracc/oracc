@@ -595,6 +595,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 
   if (lines[0][1] == '(')
     {
+      note_initialize_line();
       toktype = etu_label;
     }
   else
@@ -606,12 +607,15 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	{
 	case TR_LABEL:
 	  toktype = etu_label;
+	  note_initialize_line();
 	  break;
 	case TR_SPAN:
 	  toktype = etu_span;
+	  note_initialize_line();
 	  break;
 	case TR_UNIT:
 	  toktype = etu_unit;
+	  note_initialize_line();
 	  break;
 	case TR_NOTE:
 	  toktype = etu_note;
@@ -1343,7 +1347,8 @@ discretionary(unsigned char *s)
     }
 #endif
 }
-
+/* FIXME: what about notes in inline translations?
+ */
 unsigned char *
 trans_inline(struct node*parent,unsigned char *text,const char *until, int with_trwords)
 {
@@ -1540,8 +1545,12 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		  cnode = (parent->parent ? parent->parent : parent);
 		  if (!strcmp(cc(getAttr(cnode, "class")), "note"))
 		    {
+		      unsigned char *nauto = getAttr(cnode,"note:auto");
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
-		      appendChild(span,textNode(start));
+		      if (nauto && *nauto)
+			appendChild(span,textNode(nauto));
+		      else
+			appendChild(span,textNode(start));
 		      setClass(span,"notemark");
 		    }
 		  else

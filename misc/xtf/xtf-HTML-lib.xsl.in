@@ -1437,7 +1437,7 @@
 </xsl:template>
 
 <xsl:template match="xh:a">
-  <span class="marker">
+  <span class="notelink">
     <xsl:apply-templates/>
   </span>
 </xsl:template>

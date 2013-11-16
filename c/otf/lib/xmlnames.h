@@ -78,6 +78,7 @@ enum a_type
   a_n,
   a_n_num,
   a_norm,
+  a_note_auto,
   a_note_label,
   a_note_mark,
   a_note_ref,
