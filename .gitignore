@@ -496,3 +496,5 @@ c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c
 c/bin/se/sl-index.c
 
 c/bin/se/sl-index.c
+
+misc/p3/p3-corpusview-lib.xsl

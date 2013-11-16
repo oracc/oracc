@@ -8,7 +8,7 @@
 extern int patterns_debug;
 
 const char *catentry_html = "@@ORACC@@/lib/scripts/g2-xmd-HTML.xsl";
-const char *pqx_html = "@@ORACC@@/lib/scripts/p2-htmlview.xsl";
+const char *pqx_html = "@@ORACC@@/lib/scripts/p3-html-wrapper.xsl";
 const char *proofing_html = "@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl";
 const char *sxh_html = "@@ORACC@@/lib/scripts/sxh-view.xsl";
 
@@ -108,10 +108,10 @@ static void
 h_pqx_html_handler(const char *project, struct component *components,
 		   int tlit, const char *xlat)
 {
-  char *xmd = or_find_pqx_file(project, 
+  char *div = or_find_pqx_file(project, 
 			       components[0].replace 
 			       ? components[0].replace 
-			       : components[0].text, "xmd");
+			       : components[0].text, "html");
   const char *line = NULL, *frag = NULL;
   
   if (query_string && *query_string)
@@ -143,7 +143,7 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "line-id", line,
 	  "--stringparam", "frag-id", frag,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
   else if (line)
     execl("@@ORACC@@/bin/sigfixer", "sigfixer",
 	  project,
@@ -154,7 +154,7 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "trans", xlat,
 	  "--stringparam", "line-id", line,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
   else
     execl("@@ORACC@@/bin/sigfixer", "sigfixer",
 	  project,
@@ -164,7 +164,7 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "transonly", tlit ? "false" : "true",
 	  "--stringparam", "trans", xlat,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
   do404();
 }
 

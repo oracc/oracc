@@ -1,18 +1,22 @@
 Install:
 ========
 
-Need to make sure all envs used by oracc-subst are set
+* install xsltforms runtime
+
+* add argument handling to p3-html-wrapper.xsl
+
+-* Check things that may have broken now that all p2 css/js has been removed
 
 P3:
 ===
-
-* esp2 not installed by ncr
 
 * Check things that may have broken now that all p2 css/js has been removed
 
 * oversize heading in cbd sig popup
 
 * what are all the (-1x) items in gkab glos?
+
+-* esp2 not installed by ncr
 
 -* note numbers need to be ignored--can use ^^ or ^1^ etc. just to make it 
   easier to know which notemark correlates with which note; need to number
