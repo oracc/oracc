@@ -87,7 +87,7 @@ if ($rt{'prod'} eq 'list') {
     if ($p{'asrch'} eq 'yes') {
 	$rt{'#index'} = $p{'srchtype'};
     } else {
-	$rt{'cetype'} = $p{'srchtype'};
+	$rt{'cetype'} = $p{'cetype'};
 	p3srch();
     }
     if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
@@ -502,19 +502,21 @@ run_item_maker {
 	    warn "cp $html $p{'tmpdir'}/results.html\n";
 	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	} else {
-	    xsystem('xsltproc', 
-		    '-stringparam', 'p2', 'yes',
-		    '-stringparam', 'host', $p{'project'},
-		    '-stringparam', 'project', $eproject,
-		    '-stringparam', 'trans', $p{'translation'},
-		    '-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
-		    @idinfo,
-		    '-o', "$p{'tmpdir'}/results.html",
-		    '@@ORACC@@/lib/scripts/p3-htmlview.xsl',
-		    $xmd);
+	    # xsystem('xsltproc', 
+	    # 	    '-stringparam', 'p2', 'yes',
+	    # 	    '-stringparam', 'host', $p{'project'},
+	    # 	    '-stringparam', 'project', $eproject,
+	    # 	    '-stringparam', 'trans', $p{'translation'},
+	    # 	    '-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
+	    # 	    @idinfo,
+	    # 	    '-o', "$p{'tmpdir'}/results.html",
+	    # 	    '@@ORACC@@/lib/scripts/p3-htmlview.xsl',
+	    # 	    $xmd);
 	}
 	sig_fixer($p{'project'});
-	if ($hilite_words) {
+	if ($p{'transonly'}) {
+	    xsystem("$oraccbin/p3-transonly.plx", "$p{'tmpdir'}/results.html");
+	} elsif ($hilite_words) {
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
 	xsystem('xsltproc', 

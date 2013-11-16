@@ -56,6 +56,9 @@ function p3asearch() {
 }
 
 function p3action(act) {
+    if (act === "qsrch" && document.getElementById('srch').value.length == 0) {
+	return;
+    }
     document.getElementById('p3do').value = act;
     document.getElementById('p3form').submit();
 }
@@ -147,6 +150,7 @@ function p3ItemControls() {
     document.getElementById('p3srchtype').style.display = 'inline';
     if (document.getElementById('transcheck').value === '1') {
 	document.getElementById('transonly').checked = 'checked';
+	
     }
     no_sorters();
 //    document.getElementById('p3itemtype').innerHtml = 

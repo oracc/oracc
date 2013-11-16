@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+use warnings; use strict;
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+
+my($html,$ids) = @ARGV;
+
+exit 0 unless $html;
+
+my $xh = load_xml($html);
+my @table = tags($xh, 'http://www.w3.org/1999/xhtml', 'table');
+my $tr1 = $table[0]->firstChild();
+my $tr1_class = $tr1->getAttribute('class');
+$tr1_class =~ / p(\d+)/;
+my $ncols = $1 / 2; $ncols = 1 unless $ncols > 0;
+$tr1_class =~ s/p\d+/p$ncols/;
+$tr1->setAttribute('class', $tr1_class);
+
+my @td = tags($xh, 'http://www.w3.org/1999/xhtml', 'td');
+foreach my $td (@td) {
+    if ($td->hasAttribute('class')) {
+	if ($td->getAttribute('class') eq 'tlit'
+	    || $td->getAttribute('class') =~ /^c\s*$/) {
+	    $td->parentNode()->removeChild($td);
+	} elsif ($td->getAttribute('class') eq 't1') {
+	    $td->setAttribute('class', 't2');
+	}
+    }
+    $td->removeAttribute('rowspan');
+}
+
+my @span = tags($xh, 'http://www.w3.org/1999/xhtml', 'span');
+foreach my $span (@span) {
+    if ($span->hasAttribute('class')) {
+	if ($span->getAttribute('class') eq 'xtr-label') {
+	    $span->parentNode()->removeChild($span);
+	}
+    }
+}
+
+open(H, ">$html");
+print H $xh->toString();
+close(H);
+
+1;
