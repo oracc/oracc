@@ -9,6 +9,5 @@ else
     (cd $webdir ; mv -f *.* $prjdir/02www ; \
 	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
     p3-project.sh
-    est-project.sh
     o2-prm.sh
 fi

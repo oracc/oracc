@@ -7,7 +7,6 @@ use Cwd;
 use File::Spec::Functions qw/catfile splitdir/;
 
 my $project = `oraccopt`;
-my $server = 'oracc.museum.upenn.edu';
 my $verbose = 0;
 
 if ($project) {

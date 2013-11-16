@@ -42,5 +42,4 @@ if [ -f 01bld/lists/have-xtf.lst ]; then
     web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
     clean-web-PQX-log.sh
 fi
-o2-weblive.sh
 o2-portal.sh

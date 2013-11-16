@@ -44,6 +44,7 @@ while (<C>) {
 }
 close(C);
 
+system 'mkdir', '-p', "$webdir/css";
 open(CSS,">$webdir/css/p3colours.css")
     || die "p3-colours.plx: can't write to `$webdir/css/p3colours.css'\n";
 select CSS;

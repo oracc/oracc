@@ -902,7 +902,7 @@ rewrite_bases {
 
 sub
 read_input {
-    warn "read_input\n";
+#    warn "read_input\n";
     if ($input eq '-') {
 	while (<>) {
 	    read_input_line();

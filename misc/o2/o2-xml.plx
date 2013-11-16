@@ -23,8 +23,8 @@ my $bld = "$base/bld/$project";
 my $bldtexts = "$base/bld/$project/[PQX]*";
 my $pub = "$base/pub/$project";
 my $xml = "$base/xml/$project";
-my $xdb = "$base/$project/02xdb";
-my $omltexts = "$base/$project/02xdb/oml/texts";
+my $xdb = "$base/$project/02xml";
+my $omltexts = "$base/$project/02xml/oml/texts";
 my $lib = "$xdb/lib";
 my $oml = "$xdb/oml";
 my $tei = "$xdb/tei";
@@ -43,7 +43,7 @@ my @cbds = (<00lib/*.glo>);
 
 # my @sign = 'results/signlist.xml';
 
-xsystem 'rm', '-fr', $xdb;
+xsystem 'rm', '-fr', $oml, $lib, $usr;
 xsystem 'mkdir', '-p', $oml, $lib, $usr;
 
 $phase = 'texts';
@@ -85,7 +85,7 @@ create_xml {
     print X '<?xml version="1.0" encoding="utf-8"?>', "\n";
     print X "<project xmlns:xi=\"http://www.w3.org/2001/XInclude\" xml:base=\"$xml/\">";
     foreach my $f (@flist) {
-	$f =~ s#^02xdb/##;
+	$f =~ s#^02xml/##;
 	print X "<xi:include href=\"$f\"/>";
     }
     print X '</project>';

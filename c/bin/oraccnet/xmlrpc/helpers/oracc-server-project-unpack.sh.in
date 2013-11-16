@@ -4,7 +4,7 @@ function create_project {
     mkdir -p $1
     cd $1
     mkdir -p @@ORACC@@/bld/$2 @@ORACC@@/tmp/$2
-    mkdir -p @@ORACC@@/www/$2  @@ORACC@@/pub/$2  @@ORACC@@/xml/$2
+    mkdir -p @@ORACC@@/www/$2 @@ORACC@@/pub/$2 @@ORACC@@/xml/$2
     rm -fr 01bld 01tmp 02pub 02www 02xml
     echo ln -sf @@ORACC@@/pub/$2 02pub
     ln -sf @@ORACC@@/bld/$2 01bld

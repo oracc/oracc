@@ -5,6 +5,8 @@ Install:
 
 * add argument handling to p3-html-wrapper.xsl
 
+* need a diagnostic when @note in trans is not followed by blank line
+
 -* Check things that may have broken now that all p2 css/js has been removed
 
 P3:
