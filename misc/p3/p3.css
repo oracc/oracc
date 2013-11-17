@@ -1,7 +1,7 @@
 @import url(oraccscreen.css);
 @import url(p3cbd.css);
 
-body { margin: 0; padding: 0; }
+body, p { margin: 0px; padding: 0px; }
 
 #p3controls { height: 90px; margin: 0px; padding: 0px; 
 	    }
@@ -96,6 +96,10 @@ a[href]:hover   { color: white; background-color: red; text-decoration: underlin
 a[onclick]:hover   { color: white; background-color: red; }
 
 .center 	{ text-align: center; }
+.smash		{ line-height: 0px; height: 20px;
+		  margin-top: 0px; margin-bottom: 0px; 
+		  padding-top: 0px; padding-bottom: 0px; 
+		}
 
 sub { font-style: normal; }
 .sux { font-style: normal; }
