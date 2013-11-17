@@ -839,7 +839,8 @@
 
 <xsl:template mode="notediv" match="xh:span[@class='w']">
   <xsl:apply-templates mode="notediv"/>
-  <xsl:if test="not(position()=last())">
+<!--  <xsl:if test="not(position()=last())"> -->
+  <xsl:if test="following-sibling::*[self::xh:span[@class='w']]">
     <xsl:text> </xsl:text>
   </xsl:if>
 </xsl:template>

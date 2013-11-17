@@ -138,16 +138,24 @@ h1.toc { fontsize: 10pt; text-align: center; }
 }
 .note {
   position: fixed;
-  width: 200px;
+  width: 180px;
   top: 0;
   left: 0;
-  background: #efefef;
-  padding: 10px;
-  border: 1px solid #000;
-  border-radius: 12px;
+  background: #f8f8f8;
+  color: #000;
+  border: 2px inset #8e8e8e;
+  border-radius: 10px;
   visibility: hidden;
   font-size: 10pt;
   font-weight: normal; 
   font-family: "Ungkam Basic",Serif;
-  color: #000;
+  text-align: left;
+  padding: 3px; margin: 0px;
+  box-shadow: 4px 4px 2px #8f8f8f;
+  line-height: 1.1rem;
 }
+
+/*    
+  overflow: scroll;
+
+*/
