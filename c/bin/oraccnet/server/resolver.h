@@ -11,7 +11,7 @@
 
 enum e_builtins  { B_NONE, B_ATF, B_AS, B_DATESTAMP, B_DOC, B_FIND, 
 		   B_ITEMMAIN, B_ITEMSIDE, B_OUTLINE, B_RESULTS, B_RPC, 
-		   B_SIG, B_XFORMS, B_XIS 
+		   B_SIG, B_XFORMS, B_XIS, B_RUNTIME
 };
 enum e_component { C_NONE, C_RES, C_SEL, C_VIEW, C_FORMAT, C_UI };
 enum e_resource  { R_NONE, R_PQX, R_WORD, R_ENTITY, R_LANG, R_KEY, R_LIST };
@@ -73,7 +73,9 @@ extern const char *create_session(void);
 extern void do400(const char *message);
 extern void do404(void);
 extern void find(const char *project, const char *phrase);
+extern void listdir(const char *arg);
 extern void print_hdr(void);
+extern void print_hdr_text(void);
 extern void print_hdr_xml(void);
 extern void print_xforms_pi(void);
 

@@ -14,6 +14,7 @@ static void itemside(const char *session, const char *list);
 static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
+static void runtime(void);
 static void xforms_handler(void);
 static char *xml_read_sans_content_length(size_t *lenp);
 static int xml_content(const char *ct);
@@ -59,6 +60,9 @@ or_builtins(void)
 	      break;
 	    case B_RPC:
 	      rpc();
+	      break;
+	    case B_RUNTIME:
+	      runtime();
 	      break;
 	    case B_DATESTAMP:
 	      datestamp();
@@ -210,6 +214,14 @@ rpc(void)
 {
   execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/rpc.plx", NULL);
   do404();
+}
+
+static void
+runtime(void)
+{
+  print_hdr_text();
+  listdir("@@ORACC@@/www/runtimes");
+  exit(0);
 }
 
 /* All XForms handling from here on */

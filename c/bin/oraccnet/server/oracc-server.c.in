@@ -67,7 +67,7 @@ main(int argc, char *argv[])
       
       fprintf(stderr, "oracc-resolver: passed pager and xmlrpc\n");
 
-      if (elements[0] && legacy(elements[0], strlen(elements[0])))
+      if (elements[0] && builtins(elements[0], strlen(elements[0])))
 	{
 	  char *tmp = malloc(strlen("/or")+strlen(script_url)+2);
 	  if (project)

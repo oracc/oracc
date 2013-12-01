@@ -508,3 +508,11 @@ c/bin/oraccnet/xmlrpc/oracc-deploy-server.sh
 c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh
 
 c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh
+
+c/bin/oraccnet/server/or_common.c
+
+c/bin/oraccnet/server/or_common.c
+
+c/bin/oraccnet/server/or_builtins.c
+
+c/bin/oraccnet/server/or_builtins.c

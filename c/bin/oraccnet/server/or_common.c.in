@@ -144,6 +144,13 @@ print_hdr(void)
 }
 
 void
+print_hdr_text(void)
+{
+  fputs("Content-type: text/plain; charset=utf-8\n\n", stdout);
+  fflush(stdout);
+}
+
+void
 print_hdr_xml(void)
 {
   fputs("Content-type: text/xml; charset=utf-8\n\n", stdout);

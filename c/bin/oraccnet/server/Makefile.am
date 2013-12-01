@@ -12,7 +12,7 @@ cgibin_PROGRAMS=oracc-server
 
 oracc_server_SOURCES=oracc-server.c or_builtins.c or_stable_uris.c \
 	selections.c builtins.c or_response.c or_common.c xmlrpc.c \
-	legacy.c or_gdf.c or_pqx.c pqx_map.c pqx_h_tab.c ncname.c p3.c
+	or_gdf.c or_pqx.c pqx_map.c pqx_h_tab.c ncname.c p3.c listdir.c
 
 oracc_server_LDADD=ccgi/libccgi.la
 
