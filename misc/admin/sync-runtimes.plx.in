@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+my @remote = `curl http://oracc.bfos/runtimes`; chomp @remote;
+my @locals = `listdir @@ORACC@@/www/runtimes`;  chomp @locals;
+my @needed = ();
+my %remote = ();
+foreach my $r (@remote) {
+    my($f,$t) = split(/\s/,$r);
+    $remote{$f} = $t;
+}
+
+foreach my $l (@locals) {
+    my($f,$t) = split(/\s/,$l);
+    if (!exists($remote{$f})
+	|| $remote{$f} > $t) {
+	push @needed, $f;
+    }
+}
+
+foreach my $n (@needed) {
+    system '@@ORACC@@/bin/sync-update.sh', $n;
+}
+
+1;

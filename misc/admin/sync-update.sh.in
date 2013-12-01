@@ -1,0 +1,4 @@
+#!/bin/sh
+cd @@ORACC@@/www/runtimes
+curl -O http://build.oracc.org/runtimes/$1
+tar -C @@ORACC@@ -zxf $1

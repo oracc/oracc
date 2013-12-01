@@ -5,7 +5,8 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave
 	proj-backup-list.plx projbackup.sh projlist-depth-first.plx projpublic.sh projsave-sub.sh \
 	projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh \
 	userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh oracc-project-data.sh oracc-project-runtime.sh \
-	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh
+	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh \
+	sync-runtimes.plx sync-update.sh
 
 #data_DATA = usermode.xml
 #
@@ -41,6 +42,12 @@ projlist.sh: projlist.sh.in
 
 projsave-all.sh: projsave-all.sh.in
 	$(ORACCIFY) projsave-all.sh.in
+
+sync-runtimes.plx: sync-runtimes.plx.in
+	$(ORACCIFY) sync-runtimes.plx.in
+
+sync-update.sh: sync-update.sh.in
+	$(ORACCIFY) sync-update.sh.in
 
 wwwify.sh: wwwify.sh.in
 	$(ORACCIFY) wwwify.sh.in
