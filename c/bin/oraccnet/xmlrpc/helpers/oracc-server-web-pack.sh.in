@@ -1,6 +1,12 @@
 #!/bin/sh
 PROG=oracc-server-web-pack.sh
-project=$1
+if [ "$project" == "" ]; then
+    $project=$1
+    if [ "$project" == "" ]; then
+	echo $PROG: project not set. Set in environment or on commandline. Stop.
+	exit 1
+    fi
+fi
 if [ ! -f $ORACC/www/$project/config.xml ]; then
     echo $PROG: 'must be run in an Oracc directory (no $ORACC/www/$project/config.xml). Stop.'
     exit 1

@@ -36,16 +36,17 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include "oraccnet.h"
 extern struct client_method_info build_client_info;
 extern struct client_method_info debug_client_info;
+extern struct client_method_info deploy_client_info;
 extern struct client_method_info environment_client_info;
 extern struct client_method_info ox_client_info;
 extern struct client_method_info status_client_info;
 
-#define TOTAL_KEYWORDS 5
+#define TOTAL_KEYWORDS 6
 #define MIN_WORD_LENGTH 2
 #define MAX_WORD_LENGTH 11
 #define MIN_HASH_VALUE 2
-#define MAX_HASH_VALUE 11
-/* maximum key range = 10, duplicates = 0 */
+#define MAX_HASH_VALUE 16
+/* maximum key range = 15, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -61,32 +62,32 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12,  5, 12,
-       0,  0, 12, 12, 12, 12, 12, 12, 12, 12,
-      12,  0, 12, 12, 12,  0, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-      12, 12, 12, 12, 12, 12
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17,  0, 17,
+       5,  5, 17, 17, 17, 17, 17, 17, 17, 17,
+      17,  0, 17, 17, 17,  0, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+      17, 17, 17, 17, 17, 17
     };
   return len + asso_values[(unsigned char)str[0]];
 }
@@ -105,17 +106,20 @@ meths (str, len)
   static struct meths_tab wordlist[] =
     {
       {""}, {""},
-#line 16 "meths.g"
+#line 18 "meths.g"
       {"ox", &ox_client_info},
       {""}, {""},
 #line 14 "meths.g"
-      {"debug", &debug_client_info},
-#line 17 "meths.g"
+      {"build", &build_client_info},
+#line 19 "meths.g"
       {"status", &status_client_info},
       {""}, {""}, {""},
-#line 13 "meths.g"
-      {"build", &build_client_info},
 #line 15 "meths.g"
+      {"debug", &debug_client_info},
+#line 16 "meths.g"
+      {"deploy", &deploy_client_info},
+      {""}, {""}, {""}, {""},
+#line 17 "meths.g"
       {"environment", &environment_client_info}
     };
 

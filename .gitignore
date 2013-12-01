@@ -500,3 +500,11 @@ c/bin/se/sl-index.c
 misc/p3/p3-corpusview-lib.xsl
 
 misc/p3/p3-transonly.plx
+
+c/bin/oraccnet/lib/m_deploy_server.c
+
+c/bin/oraccnet/xmlrpc/oracc-deploy-server.sh
+
+c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh
+
+c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh

@@ -1,0 +1,7 @@
+#!/bin/sh
+umask 002
+. @@ORACC@@/www/cgi-bin/oracc-server-environment.sh $*
+printenv >&2
+/bin/echo -n deploying >$tempdir/status
+. @@ORACC@@/www/cgi-bin/oracc-server-web-pack.sh $*
+/bin/echo -n completed >$tempdir/status

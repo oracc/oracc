@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 
   if (!(meth = meths(cip->method, strlen(cip->method))))
     {
-      fprintf(stderr, "oracc-client: unknown method name `%s'\n", argv[1]);
+      fprintf(stderr, "oracc-client: unknown method name `%s'\n", cip->method);
       exit(1);
     }
 

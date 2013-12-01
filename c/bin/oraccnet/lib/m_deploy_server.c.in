@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <xmlrpc-c/base.h>
+#include <xmlrpc-c/server.h>
+#include <xmlrpc-c/server_cgi.h>
+#include "oraccnet.h"
+
+static xmlrpc_value *deploy_method(xmlrpc_env *const envP,
+			       xmlrpc_value *const paramArrayP, 
+			       void *serverInfo,
+			       void *callInfo
+			       );
+
+struct xmlrpc_method_info3 deploy_server_info =
+{
+  "deploy",
+  deploy_method,
+  NULL,
+  0,
+  "s:",
+  "create a web runtime of the project in <server>/runtimes",
+};
+
+static xmlrpc_value *
+deploy_method(xmlrpc_env *const envP,
+	     xmlrpc_value *const paramArrayP, 
+	     void *serverInfo,
+	     void *callInfo
+	     )
+{
+  const char *addr = getenv("REMOTE_ADDR");
+  char *session = NULL;
+  xmlrpc_value *s, *s_ret, *exec_ret;
+  struct call_info *cip, *cip_clone;
+
+  fprintf(stderr, "oracc-xmlrpc: deploy: REMOTE_ADDR=%s\n", addr);
+  xmlrpc_array_read_item(envP, paramArrayP, 0, &s);
+  dieIfFaultOccurred(envP);
+  sesh_init(envP, s, 1);
+  cip = callinfo_unpack(envP, s);
+  cip = callinfo_unpack(envP, s);
+  cip->clientIP = addr;
+  fprintf(stderr, "deploy_method: session=%s; cip->session=%s\n", session, cip->session);
+  cip_clone = callinfo_clone(cip);
+  fprintf(stderr, "deploy_method: session=%s; cip->session=%s\n", session, cip->session);
+  cip_clone->files = NULL;
+  cip_clone->methodargs = NULL;
+  s_ret = callinfo_pack(envP, cip_clone);
+  callinfo_append_arg(cip, NULL, NULL, cip->session);
+  callinfo_append_arg(cip, NULL, NULL, cip->project);
+  fprintf(stderr, "deploy_method: session=%s; cip->session=%s\n", session, cip->session);
+  exec_ret = request_exec(envP, "@@ORACC@@/www/cgi-bin/oracc-deploy-server.sh", "oracc-deploy-server.sh", cip);
+  xmlrpc_struct_set_value(envP, exec_ret, "callinfo", s_ret);
+  trace();
+  return exec_ret;
+}

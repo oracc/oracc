@@ -3,7 +3,9 @@ include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 AM_CPPFLAGS=-I../include
 
-cgibin_PROGRAMS=oracc-xmlrpc oracc-build-server.sh \
+cgibin_PROGRAMS=oracc-xmlrpc \
+	oracc-build-server.sh \
+	oracc-deploy-server.sh \
 	oracc-server-environment.sh oracc-server-project-unpack.sh \
 	oracc-server-web-pack.sh
 
@@ -15,6 +17,9 @@ registry.c: ../lib/m_*_server.c
 
 oracc-build-server.sh$(EXEEXT): helpers/oracc-build-server.sh.in
 	$(ORACCIFY) helpers/oracc-build-server.sh.in
+
+oracc-deploy-server.sh$(EXEEXT): helpers/oracc-deploy-server.sh.in
+	$(ORACCIFY) helpers/oracc-deploy-server.sh.in
 
 oracc-server-environment.sh$(EXEEXT): helpers/oracc-server-environment.sh.in
 	$(ORACCIFY) helpers/oracc-server-environment.sh.in
