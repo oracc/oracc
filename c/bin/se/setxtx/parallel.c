@@ -39,6 +39,8 @@ begin_parallels ()
 void
 end_parallels ()
 {
+  if (!curr_parallel)
+    return;
   if (curr_parallel->empty_branch_flag)
     start_column = curr_parallel->start_column;
   else

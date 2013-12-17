@@ -56,6 +56,16 @@ toTSV {
 		print "$pk\t$pv\n"
 	    }
 	}
+    } elsif ($$ix{'#name' eq 'issl-se'}) {
+	foreach my $k (keys %$ix) {
+	    next if $k =~ /^\#.*?(item|record)_grep$/;
+	    if (defined $$ix{$k}) {
+		my $pv = $$ix{$k};
+		my $pk = $k;
+		$pk =~ tr//;/;
+		print "$pk\t$pv\n"
+	    }
+	}
     } else {
 	die "TSV for ePSD data not yet implemented\n";
 	foreach my $k (grep !//, sort keys %$ix) {
