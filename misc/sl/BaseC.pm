@@ -119,28 +119,26 @@ xatf_of {
     $db{$x,'atf'}
 }
 
+# this requires a sign value and does only dumb aliasing
 sub
-xalias {
+alias {
     my $x = shift;
-    Encode::_utf8_off($x);
-    my $a = $db{$x,'aka'} || $x;
-    Encode::_utf8_on($a);
-    $a;
+#    Encode::_utf8_off($x);
+#    my $a = $db{$x,'aka'} || $x;
+#    Encode::_utf8_on($a);
+#    $a;
+    my $a = slse($x.';aka');
+    $a || $x
 }
 
 sub
-xalias_words {
+alias_words {
     return '' unless defined($_[0]) && length($_[0]);
     my $x = shift;
-    Encode::_utf8_off($x);
-    if (defined $db{$x,'aka'}) {
-	alias($x);
-    } else {
-	my @tmp = split(/([-{}\s])/, $x);
-	@tmp = map({ alias($_) } @tmp);
-	my $res = join('', @tmp);
-	$res;
-    }
+    my @tmp = split(/([-{}\s])/, $x);
+    @tmp = map({ alias($_) } @tmp);
+    my $res = join('', @tmp);
+    $res;
 }
 
 sub

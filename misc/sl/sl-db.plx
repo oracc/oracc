@@ -98,7 +98,9 @@ foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     }
 }
 
-add_aliases() if $do_aliases;
+#add_aliases() if $do_aliases;
+
+add_dumb_aliases();
 
 dump_db();
 
@@ -221,6 +223,24 @@ gval {
 sub
 add_aliases {
     if (open(IN,'00lib/aliases.asa')) {
+	while (<IN>) {
+	    next if /^\#/ || /^\s+/ || /=>/;
+	    my @v = split(/\s+/,$_);
+	    my $aka = shift @v;
+	    foreach my $v (@v) {
+		$values{$v,'aka'} = $aka;
+	    }
+	}
+	close(IN);
+    } else {
+	warn "sl-db.plx: no aliases file 00lib/aliases.asa\n";
+	return;
+    }
+}
+
+sub
+add_dumb_aliases {
+    if (open(IN,'00lib/aliases.dumb')) {
 	while (<IN>) {
 	    next if /^\#/ || /^\s+/ || /=>/;
 	    my @v = split(/\s+/,$_);
