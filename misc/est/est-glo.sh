@@ -25,8 +25,10 @@ for l in `ls -1 02www/cbd|grep -v ^qpn-x`; do
     est_gloss $l
     est_entry $l
 done
+
 shopt -s nullglob
-PQX="02pub/*-urn-hack.txt"
+
+PQX=`/bin/echo -n 02pub/*-urn-hack.txt`
 if [ "$PQX" != "" ]; then
     sort -u 02pub/*-urn-hack.txt >02pub/urn-hack.txt
     chmod o+r 02pub/urn-hack.txt
