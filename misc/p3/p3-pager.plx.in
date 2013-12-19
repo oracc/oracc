@@ -33,10 +33,9 @@ my $oraccwww = "@@ORACC@@/www";
 my $force_page = 0;
 my %p = ();
 my @pg_args = ();
+my $projtype = '';
 my %rt = ();
 my $verbose = 1;
-
-
 
 %p = decode_args(@ARGV);
 setup_navigation();
@@ -212,7 +211,7 @@ decode_args {
     # From here on we can guarantee that project is set
 
     # If project is a glossary force the pager to display a glossary
-    my $projtype = `@@ORACC@@/bin/oraccopt $tmp{'project'} type`;
+    $projtype = `@@ORACC@@/bin/oraccopt $tmp{'project'} type`;
     if ($projtype eq 'glossary') {
 	unless ($tmp{'glos'}) {
 	    $tmp{'glos'} = `@@ORACC@@/bin/oraccopt $tmp{'project'} pager-default-glo`;
@@ -385,15 +384,26 @@ run_form_maker {
 	    my($class,$var) = ($atat =~ /^(.*?):(.*?)$/);
 	    my $rep = '';
 	    my $default = '0';
+	    my $fullrep = 0;
 	    if ($var =~ s#/(.*)$##) {
 		$default = $1;
 		$default = '' unless $default; ## @@cgivar:srch/@@ means set 'srch' to empty string
 	    }
 	    if ($class eq 'cgivar') {
 		if (defined $p{$var}) {
-		    $rep = $p{$var};
+		    if ($var eq 'glosDisplay' && $projtype eq 'glossary') {
+			$rep = $p{'project'};
+			$fullrep = 1;
+		    } else {
+			$rep = $p{$var};
+		    }
 		} else {
-		    $rep = $default;
+		    if ($var eq 'glosDisplay' && $projtype eq 'glossary') {
+			$rep = $p{'project'};
+			$fullrep = 1;
+		    } else {
+			$rep = $default;
+		    }
 		}
 		warn "cgivar $var = $rep\n";
 	    } elsif ($class eq 'runtime') {
@@ -411,7 +421,11 @@ run_form_maker {
 		warn "bad \@\@ class '$class'\n";
 	    }
 	    if (m#<(span.*?p3:value.*?)#) {
-		s#>(.+)</span>#>$1$rep</span># || s#/>#>$rep</span>#;
+		if ($fullrep) {
+		    s#>(.+)</span>#>$rep</span># || s#/>#>$rep</span>#;
+		} else {
+		    s#>(.+)</span>#>$1$rep</span># || s#/>#>$rep</span>#;
+		}
 	    } elsif (m/type="checkbox"/) {
 		if ($rep && $rep ne '0') {
 		    s/p3/checked="checked" p3/;
