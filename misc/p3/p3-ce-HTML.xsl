@@ -140,7 +140,8 @@
 
 <!-- A feature of summary output is that the HTML tags are not in a default
      xhtml namespace ... -->
-<xsl:template mode="summ" match="a">
+
+<xsl:template mode="summ" match="a[not(@class='epsdissl')]">
   <xsl:variable name="item">
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
@@ -150,9 +151,11 @@
 </xsl:template>
 
 <xsl:template mode="summ" match="*">
-<!--  <xsl:message><xsl:value-of select="local-name(.)"/></xsl:message> -->
   <xsl:element name="{local-name(.)}">
     <xsl:copy-of select="@class"/>
+    <xsl:if test="@href">
+      <xsl:copy-of select="@href"/>
+    </xsl:if>
     <xsl:apply-templates mode="summ"/>
   </xsl:element>
 </xsl:template>
