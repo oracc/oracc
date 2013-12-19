@@ -1,3 +1,33 @@
+ESP2+ TODO:
+===========
+
+HEADERS AND FOOTERS
+- Do away with header
+- Create new About This Site page instead (in main menu), which contains (links to):
+  * brief copyrights & licensing
+  * cookies and privacy
+  * access keys
+  * sitemap
+  * standards
+- Auto-generate footer, containing <license> <proj-name> <date> (where
+  they are all set in parameters.xml) and brief cookies statement
+  pointing to GA global optout
+  (http://tools.google.com/dlpage/gaoptout/)
+
+  * on cookies, see also the Invormation Commissioner's Office's
+    cookes guide
+    http://www.ico.org.uk/for_organisations/privacy_and_electronic_communications/the_guide/~/media/documents/library/Privacy_and_electronic/Practical_application/cookies_guidance_v3.ashx
+
+IMAGES
+- change grid granularity from 5%ile to 1%ile
+- do away with image maps and tabs
+- external links can go in main menu now
+- implement <esp:image position="right|left|inline"> and script out position="float"
+  * update schema to match
+- error message on rebuild if images too large
+- error message on rebuild if page begins with <esp:image>
+
+
 ESP2 Issues List:
 =================
 
@@ -7,6 +37,11 @@ ESP2 Issues List:
   page while browsing (same CSS-div techniques as P3)
 
 * images must be sized physically to desired X-Y; img height=/width= doesn't work with gridding
+
+* doc2 into public oracc repo
+
+RESOLVED OR DROPPED:
+====================
 
 * images go in 00static
 
@@ -18,7 +53,4 @@ ESP2 Issues List:
   full rebuild which also handles the full text indexing
 
 * ongoing management of doc2/esp2
-
-* doc2 into public oracc repo
-
 
