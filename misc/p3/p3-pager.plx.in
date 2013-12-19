@@ -209,6 +209,16 @@ decode_args {
 	}
     }
 
+    # From here on we can guarantee that project is set
+
+    # If project is a glossary force the pager to display a glossary
+    my $projtype = `@@ORACC@@/bin/oraccopt $tmp{'project'} type`;
+    if ($projtype eq 'glossary') {
+	unless ($tmp{'glos'}) {
+	    $tmp{'glos'} = `@@ORACC@@/bin/oraccopt $tmp{'project'} pager-default-glo`;
+	}
+    }
+
 #    if ($tmp{'asrch'} && $tmp{'asrch'} eq 'yes') {
 #	return %tmp;
 #    }
