@@ -65,6 +65,7 @@
 	    
 	    in
 	    
+	    <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
 	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
 
 	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
