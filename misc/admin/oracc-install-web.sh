@@ -4,6 +4,7 @@ project=$1
 tarball=$srcdir/web-$project.tar.gz
 if [ -r $tarball ]; then
     tar -C $ORACC -zxf $tarball
+    oracc-index-runtime.sh
     echo oracc install: installed runtime version of $project
     exit 0
 else
