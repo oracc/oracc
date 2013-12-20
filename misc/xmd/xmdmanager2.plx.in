@@ -461,7 +461,7 @@ if ($onebigfile) {
 	}
 	#FIXME: does this work with subprojects?
 	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
-	system 'gzip', '-f9', $xmdfile;
+#	system 'gzip', '-f9', $xmdfile;
     }
 }
 

@@ -17,7 +17,7 @@ const char *resource_names[]  = { "none", "PQX", "word", "entity", "language", "
 const char *selection_names[] = { "none", "full", "cat", "translit", "translation", "facing", 
 				  "image", "thumb", "photo", "line", "detail",
 				  "score", "block", 
-				  "sign", "vals", "homophones", "compounds", "container", "contained"
+				  "sign", "list", "homophones", "compounds", "container", "contained"
 };
 const char *view_names[]      = { "none", "cuneified", "proofing", "project" };
 const char *format_names[]    = { "none", "catf", "csv", "html", "oatf", "rdf", "tei", "txt", "xml" };
@@ -152,7 +152,9 @@ lng_handler(struct component *components)
 static void 
 key_handler(struct component *components)
 {
-  if (!strcmp(components[0].text, "find"))
+  if (!strcmp(components[0].text, "sl"))
+    sl(components);
+  else if (!strcmp(components[0].text, "find"))
     find(project, NULL);
   else if (!strcmp(components[0].text, "corpus"))
     corpus();
@@ -316,7 +318,7 @@ pat_is_resource(struct component *cp)
 	{
 	  cp->value = R_PQX;
 	  cp->replace = map_PQX(cp->text, cp->count);
-	}      
+	}
       else if (res_is_word(cp->text))
 	cp->value = R_WORD;
       else if (res_is_key(cp->text))

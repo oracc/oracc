@@ -11,7 +11,7 @@
 
 enum e_builtins  { B_NONE, B_ATF, B_AS, B_DATESTAMP, B_DOC, B_FIND, 
 		   B_ITEMMAIN, B_ITEMSIDE, B_OUTLINE, B_RESULTS, B_RPC, 
-		   B_SIG, B_XFORMS, B_XIS, B_RUNTIME
+		   B_SIG, B_XFORMS, B_XIS, B_RUNTIME, B_SL
 };
 enum e_component { C_NONE, C_RES, C_SEL, C_VIEW, C_FORMAT, C_UI };
 enum e_resource  { R_NONE, R_PQX, R_WORD, R_ENTITY, R_LANG, R_KEY, R_LIST };
@@ -30,7 +30,7 @@ struct component
   int value; 		/* essentially a union of e_resource, 
 			   e_selection, e_view, e_format, e_ui */
   const char *text; 	/* the URI component text */
-  const char *replace;  /* a replaceent for the URI component text, to be used when
+  const char *replace;  /* a replacement for the URI component text, to be used when
 			   calling programs, e.g., when a PQX is virtualized text
 			   will be P123456 but replace will be saao/saa10:P123456 */
   int index; 		/* the index of the component in the URI */
@@ -132,6 +132,8 @@ extern const char *oracc_var(void);
 extern char *or_find_www_file(const char *project, const char *dir, const char *basename, const char *ext);
 extern char *or_find_pqx_file(const char *project, const char *pqid, const char *ext);
 extern char *or_find_pqx_xtr(const char *project, const char *pqid, const char *code, const char *lang);
+
+extern void sl(struct component *);
 
 extern int _is_ncname(const char *name);
 

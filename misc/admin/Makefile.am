@@ -6,7 +6,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave
 	projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh \
 	userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh oracc-project-data.sh oracc-project-runtime.sh \
 	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh \
-	sync-runtimes.plx sync-update.sh
+	sync-runtimes.plx sync-update.sh oracc-index-runtime.sh
 
 #data_DATA = usermode.xml
 #

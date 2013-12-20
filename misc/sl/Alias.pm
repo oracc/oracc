@@ -20,7 +20,7 @@ alias_words {
 
 sub
 init {
-    open(A, "$ENV{'ORACC'}/pub/ogsl/aliases.dumb") || die "Alias.pm: no aliases.dumb\n";
+    open(A, "$ENV{'ORACC'}/pub/ogsl/alias-dumb.txt") || die "Alias.pm: no aliases.dumb\n";
     while (<A>) {
 	chomp;
 	my @a = split(/\s+/, $_);
