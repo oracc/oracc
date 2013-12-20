@@ -141,7 +141,7 @@
 <!-- A feature of summary output is that the HTML tags are not in a default
      xhtml namespace ... -->
 
-<xsl:template mode="summ" match="a[not(@class='epsdissl')]">
+<xsl:template mode="summ" match="a[not(starts-with(@class,'epsd'))]">
   <xsl:variable name="item">
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
