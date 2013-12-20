@@ -24,3 +24,8 @@ if [ -s $ORACC/bld/$project/lists/lemindex.lst ]; then
 fi
 pgcsi $ORACC/bld/$project/sortinfo.tab
 mv $ORACC/bld/$project/sortinfo.csi $dir
+for a in `glo-lang.sh` ; do
+    mkdir -p $ORACC/pub/$project/cbd/$a
+    secbdx -p $project -l $a $ORACC/bld/$project/$a/articles.xml
+done
+chmod -R o+r $ORACC/pub/$project/*
