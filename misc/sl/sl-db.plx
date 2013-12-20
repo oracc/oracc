@@ -222,7 +222,7 @@ gval {
 
 sub
 add_aliases {
-    if (open(IN,'00lib/aliases.asa')) {
+    if (open(IN,'00lib/alias-smart.txt')) {
 	while (<IN>) {
 	    next if /^\#/ || /^\s+/ || /=>/;
 	    my @v = split(/\s+/,$_);
@@ -233,14 +233,14 @@ add_aliases {
 	}
 	close(IN);
     } else {
-	warn "sl-db.plx: no aliases file 00lib/aliases.asa\n";
+	warn "sl-db.plx: no aliases file 00lib/alias-smart.txt\n";
 	return;
     }
 }
 
 sub
 add_dumb_aliases {
-    if (open(IN,'00lib/aliases.dumb')) {
+    if (open(IN,'00lib/alias-dumb.txt')) {
 	while (<IN>) {
 	    next if /^\#/ || /^\s+/ || /=>/;
 	    my @v = split(/\s+/,$_);
@@ -251,7 +251,7 @@ add_dumb_aliases {
 	}
 	close(IN);
     } else {
-	warn "sl-db.plx: no aliases file 00lib/aliases.asa\n";
+	warn "sl-db.plx: no aliases file 00lib/alias-dumb.txt\n";
 	return;
     }
 }

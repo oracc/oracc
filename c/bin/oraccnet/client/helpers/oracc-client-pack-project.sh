@@ -24,6 +24,7 @@ rm -f $ziplist
 COPYFILE_DISABLE=1 ; export COPYFILE_DISABLE
 find 00atf 00bib 00cat 00lib 00src 00web -type f \
     -name '*.atf' \
+    -or -name '*.asl' \
     -or -name '*.css' \
     -or -name '*.glo' \
     -or -name '*.html' \
