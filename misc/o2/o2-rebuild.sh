@@ -17,6 +17,6 @@ if [ -x $exe ]; then
     $exe $*
 # allow $exe to set exit code
 else
-    o2-rebuild.sh: cannot run $exe
+    echo o2-rebuild.sh: cannot run $exe
     exit 1
 fi

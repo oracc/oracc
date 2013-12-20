@@ -1309,6 +1309,10 @@ type_from_ns {
 sub
 xmd_begin {
     my ($id,$langs,$row) = @_;
+    # This is a hack to handle 2013-vintage CDLI mysql db output
+    if ($id =~ /^\d/) {
+ 	$id = "P$id";
+    }
     if ($id !~ /^[PQX]\d\d\d\d\d\d$/) {
 	if ($id =~ /^P(\d+)$/) {
 	    my $nid = $1;
