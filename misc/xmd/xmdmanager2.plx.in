@@ -457,8 +457,10 @@ if ($onebigfile) {
 	my $l2 = ($l2 ? '-2' : '');
 	system 'mkdir', '-p', "@@ORACC@@/pub/$project/cat";
 	if ($l2) {
-	    dump_vid("@@ORACC@@/pub/$project/cat/vid.dat");
+	    dump_vid("@@ORACC@@/bld/$project/cat/vid.dat");
 	}
+	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/vid.dat", "@@ORACC@@/pub/$project/cat"
+	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/proxy-xmd.map", "@@ORACC@@/pub/$project/cat"
 	#FIXME: does this work with subprojects?
 	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
 #	system 'gzip', '-f9', $xmdfile;
@@ -1123,7 +1125,7 @@ vid_pad {
 
 sub
 dump_vid {
-    open(XMDMAP, ">02pub/cat/proxy-xmd.map");
+    open(XMDMAP, ">01bld/cat/proxy-xmd.map");
     open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
     my @qvid = map { qualify_vid($_) } @vid;
     my $max = max_vid_len(@qvid);

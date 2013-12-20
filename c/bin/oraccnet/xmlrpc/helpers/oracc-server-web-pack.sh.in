@@ -62,6 +62,10 @@ done
     -name cdlicat.xmd \
     -or -name sortinfo.tab \
     >>$ziplist.lst)
+(cd $ORACC ; find bld/$project/cat -maxdepth 1 \
+    -name proxy-xmd.map \
+    -or -name vid.dat \
+    >>$ziplist.lst)
 (cd $ORACC ; find bld/$project -maxdepth 2 \
     -name articles.xml \
     >>$ziplist.lst)

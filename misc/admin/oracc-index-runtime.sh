@@ -11,6 +11,7 @@ dir=$ORACC/pub/$project
 if [ -s $ORACC/bld/$project/cdlicat.xmd ]; then
     mkdir -p $dir/cat
     secatx -s -p $project < $ORACC/bld/$project/cdlicat.xmd
+    cp -p $ORACC/bld/$project/cat/* $dir/cat
 fi
 if [ -s $ORACC/bld/$project/lists/xtfindex.lst ]; then
     mkdir -p $dir/tra
