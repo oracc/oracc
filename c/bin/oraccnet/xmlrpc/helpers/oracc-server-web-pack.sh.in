@@ -53,6 +53,8 @@ for a in pub xml www ; do
     sed s,^.,$a/$project, <$ziplist.$a >>$ziplist.lst
 done
 
+## TODO: FIX vid.dat HANDLING
+
 # Add contents of texts generated in bld because the pack needs them as well
 (cd $ORACC ; find bld/$project/[PQX][0-9][0-9][0-9] >>$ziplist.lst)
 (cd $ORACC ; find bld/$project/lists >>$ziplist.lst)
@@ -68,12 +70,12 @@ done
 fproj=`/bin/echo -n $project | tr / -`
 (cd $ORACC ; tar \
     --exclude www/$project/estindex \
-    --exclude pub/cat \
-    --exclude pub/cbd \
-    --exclude pub/lem \
-    --exclude pub/txt \
-    --exclude pub/tra \
-    --exclude pub/sortinfo.csi \
+    --exclude pub/$project/cat \
+    --exclude pub/$project/cbd \
+    --exclude pub/$project/lem \
+    --exclude pub/$project/txt \
+    --exclude pub/$project/tra \
+    --exclude pub/$project/sortinfo.csi \
     -zcf $destdir/web-$fproj.tar.gz -T $ziplist.lst)
 
 export version zip
