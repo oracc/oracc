@@ -1558,7 +1558,7 @@
   <xsl:text>} </xsl:text>
 </xsl:template>
 
-<!--
+<!-- had commented this out: why? -->
 <xsl:template name="note-links">
   <xsl:for-each select="note:link">
     <a href="javascript://" 
@@ -1570,7 +1570,6 @@
     </a>
   </xsl:for-each>
 </xsl:template>
--->
 
 <!--
 <xsl:template match="gdl:a">

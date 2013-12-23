@@ -488,7 +488,7 @@ update_labels(struct node *current,enum e_tu_types transtype)
       if (!*idbuf)
 	{
 	  static int xid = 0;
-	  char buf[5];
+	  char buf[10];
 	  sprintf(buf,"x%d",xid++);
 	  strcpy((char*)idbuf,buf);
 	}

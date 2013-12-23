@@ -224,7 +224,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 		case e_l:
 		  {
 		    struct node *lastCchild = lastChild(lastC);
-		    if (lastCchild->etype == e_c)
+		    if (lastCchild && lastCchild->etype == e_c)
 		      {
 			/* the attach point is either the cell or its
 			   chield field if there is one */
@@ -240,6 +240,12 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 		    e = e_g_nonw;
 		  }
 		  break;
+		case e_composite:
+		case e_score:
+		case e_transliteration:
+		  l = TEXT;
+		  e = e_note_link;
+		  break;
 		case e_object:
 		  l = OBJECT;
 		  e = e_note_link;
@@ -252,8 +258,13 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 		  l = COLUMN;
 		  e = e_note_link;
 		  break;
+		  /* FIXME: THIS CAN'T BE RIGHT */
+		case e_variant:
+		  l = LINE;
+		  e = e_note_link;
+		  break;
 		default:
-		  vwarning("unhandled note parent %s", lastC->names[0]);
+		  vwarning("unhandled note parent %s", lastC->names[0].pname);
 		  break;
 		}
 	      xmark = elem(e,NULL,lnum,l);

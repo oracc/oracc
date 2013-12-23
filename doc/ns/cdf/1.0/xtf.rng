@@ -268,6 +268,7 @@
         </optional>
         <zeroOrMore>
           <choice>
+            <ref name="noteblock"/>
             <ref name="object"/>
             <ref name="nonobject"/>
             <ref name="comments"/>
@@ -1033,6 +1034,9 @@
   <define name="composite-content">
     <zeroOrMore>
       <choice>
+        <optional>
+          <ref name="noteblock"/>
+        </optional>
         <ref name="milestone"/>
         <ref name="include"/>
         <ref name="div"/>
@@ -1107,6 +1111,7 @@
       <zeroOrMore>
         <choice>
           <ref name="div"/>
+          <ref name="noteblock"/>
           <ref name="variants"/>
           <ref name="lg"/>
           <ref name="l"/>
@@ -1125,7 +1130,12 @@
         <ref name="proto.start"/>
       </optional>
       <zeroOrMore>
-        <ref name="sigdef"/>
+        <choice>
+          <ref name="sigdef"/>
+          <optional>
+            <ref name="noteblock"/>
+          </optional>
+        </choice>
       </zeroOrMore>
       <zeroOrMore>
         <choice>

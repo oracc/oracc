@@ -103,7 +103,7 @@ sig_context_register(struct sig_context *scp,
       if (opt && !strcmp(opt, "yes"))
 	{
 	  char buf[1024];
-	  sprintf(buf,"%s/pub/epsd2/aliases.asa",oracc_home());
+	  sprintf(buf,"%s/pub/epsd2/alias-smart.txt",oracc_home());
 	  scp->aliases_file = (char*)npool_copy((unsigned char *)buf,scp->pool);
 	  if (!xaccess(buf,R_OK,0))
 	    {

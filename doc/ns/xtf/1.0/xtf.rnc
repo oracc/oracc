@@ -69,7 +69,7 @@ transliteration =
     implicit?,
     haslinks?,
     maxcells?,
-    (proto.start? , (object | nonobject | comments | sealing)*)
+    (proto.start? , (noteblock | object | nonobject | comments | sealing)*)
   }
 n.attr = attribute n { text }
 n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
@@ -301,7 +301,7 @@ words |= surro?
 word |= surro?
 
 composite-content = 
-  (milestone | \include | \div | variants | hdr | lg | l | comments | nonl | nonx | proto.inter)*
+  (noteblock? | milestone | \include | \div | variants | hdr | lg | l | comments | nonl | nonx | proto.inter)*
 
 \include = element include { increfAttr }
 
@@ -330,13 +330,13 @@ variants = element variants { variant* }
 
 variant = 
   element variant {
-    (\div | variants | lg | l | comments | nonl | proto.inter | nonx)*
+    (\div | noteblock | variants | lg | l | comments | nonl | proto.inter | nonx)*
   }
 
 score =
   element score {
     score-attlist, 
-    proto.start? , sigdef*, 
+    proto.start? , (sigdef | noteblock?)* ,
     (object | surface | column | milestone | \div | lg | comments | nonl)*
   }
 score-attlist &=
