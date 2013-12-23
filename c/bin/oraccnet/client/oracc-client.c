@@ -26,6 +26,8 @@ main(int argc, char *argv[])
   struct meths_tab *meth = NULL;
   struct call_info *cip = NULL;
   
+  xmlrpc_limit_set(XMLRPC_XML_SIZE_LIMIT_ID, 5 * (1024 * 1024));
+
   cip = callinfo_new();
   cip->methodargs = malloc(argc * sizeof(char*));
   cip->methodargs[0] = NULL;
