@@ -126,6 +126,7 @@
                 <value>dollar</value>
                 <value>excised</value>
                 <value>punct</value>
+                <value>surro</value>
                 <value>vari</value>
               </choice>
             </attribute>

@@ -269,7 +269,7 @@ const char * const cdf_rnc[] = {
   "    (\n",
   "    attribute xml:id { xsd:ID }? ,\n",
   "    attribute xml:lang { xsd:language }? ,\n",
-  "    attribute type { \"comment\" | \"dollar\" | \"excised\" | \"punct\" | \"vari\" }? ,\n",
+  "    attribute type { \"comment\" | \"dollar\" | \"excised\" | \"punct\" | \"surro\" | \"vari\" }? ,\n",
   "    attribute form { text }? ,\n",
   "    attribute lemma { text }? ,\n",
   "    syntax.attributes* ,\n",

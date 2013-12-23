@@ -1353,6 +1353,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  wrapup_word(wp, tp->type);
 		  setName(wp,e_g_nonw);
+		  appendAttr(wp,attr(a_type, ucc("surro")));
 		  if (need_lemm)
 		    (*lemm_unform_p)();
 		  removeAttr(wp,"form");

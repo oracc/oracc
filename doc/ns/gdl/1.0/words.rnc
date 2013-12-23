@@ -51,7 +51,7 @@ nonword =
     (
     attribute xml:id { xsd:ID }? ,
     attribute xml:lang { xsd:language }? ,
-    attribute type { "comment" | "dollar" | "excised" | "punct" | "vari" }? ,
+    attribute type { "comment" | "dollar" | "excised" | "punct" | "surro" | "vari" }? ,
     attribute form { text }? ,
     attribute lemma { text }? ,
     syntax.attributes* ,

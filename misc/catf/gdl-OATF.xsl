@@ -271,6 +271,12 @@
 	<xsl:call-template name="g-end"/>
       </xsl:for-each>
     </xsl:when>
+    <xsl:when test="@type='surro'">
+      <xsl:apply-templates/> <!-- this is the head of a surrogate, it has its own <s> wrapper -->
+    </xsl:when>
+    <xsl:when test="@type='vari'">
+      <xsl:text>VARI-FIX-NEEDED</xsl:text><xsl:apply-templates/> <!-- FIX ME -->
+    </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
 	<xsl:with-param name="msg" select="concat('g:nonw with type=', @type, ' not handled')"/>
