@@ -518,3 +518,5 @@ c/bin/oraccnet/server/or_builtins.c
 c/bin/oraccnet/server/or_builtins.c
 
 misc/admin/sync-runtimes.plx
+
+c/bin/oraccnet/server/content
