@@ -448,6 +448,9 @@
 
   <!-- this is where we copy the <tr> element and use the first of the TR paras -->
   <xsl:copy>
+    <xsl:attribute name="id">
+      <xsl:value-of select="@xml:id"/>
+    </xsl:attribute>
     <xsl:attribute name="class">
       <xsl:value-of select="$class"/>
     </xsl:attribute>
