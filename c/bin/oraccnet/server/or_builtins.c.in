@@ -71,7 +71,7 @@ or_builtins(void)
 	      sig(elements[2]);
 	      break;
 	    case B_SL:
-	      sl(elements[2], elements[3]);
+	      sl(elements[2]); /*, elements[3]); */
 	      break;
 	    case B_XIS:
 	      xis(elements[2], elements[3]);

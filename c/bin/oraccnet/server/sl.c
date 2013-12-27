@@ -1,3 +1,5 @@
+#include <string.h>
+#include "ctype128.h"
 #include "resolver.h"
 #include "ccgi/ccgi.h"
 
@@ -31,15 +33,15 @@ sl_valid_grapheme(const char *g)
 }
 
 /* TODO: the URI versions of this need to support XML/TXT formats as well as the UI return */
-static void
+void
 sl(struct component *c)
 {
   CGI_varlist *vl = NULL;
   const char *extension, *grapheme;
   
   /* try to set extension and grapheme from component/query_string ; validate grapheme if so */
-  if (c[2])
-    extension = c2.text;
+  if (c[2].text)
+    extension = c[2].text;
   if (query_string)
     grapheme = query_string;
 
