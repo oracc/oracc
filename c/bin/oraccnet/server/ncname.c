@@ -28,21 +28,37 @@ _is_ncname(const char *name)
 
   if (np)
     {
-      if ('_' == *np || isalpha(*np))
-	++np;
-      else if (*(unsigned char*)np > 127 && _is_ncname_letter(np, &used))
-	np += used;
-      else
-	return 0;
-
-      while (*np)
+      if (*(unsigned char *)np < 128)
 	{
-	  if (isalnum(*np) || '_' == *np || '-' == *np || '.' == *np)
+	  if ('_' == *np || isalpha(*np))
 	    ++np;
-	  else if (*(unsigned char*)np > 127 && _is_ncname_char(np, &used))
+	  else
+	    return 0;
+	}
+      else
+	{
+	  if (_is_ncname_letter(np, &used))
 	    np += used;
 	  else
 	    return 0;
+	}
+
+      while (*np)
+	{
+	  if (*(unsigned char*)np < 128)
+	    {
+	      if (isalnum(*np) || '_' == *np || '-' == *np || '.' == *np)
+		++np;
+	      else
+		return 0;
+	    }
+	  else
+	    {
+	      if (_is_ncname_char(np, &used))
+		np += used;
+	      else
+		return 0;
+	    }
 	}
     }
   return 1;
