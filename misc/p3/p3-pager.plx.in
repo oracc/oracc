@@ -402,7 +402,7 @@ run_form_maker {
 			$rep = $p{'project'};
 			$fullrep = 1;
 		    } else {
-			$rep = $default;
+			$rep = $p{'glos'};
 		    }
 		}
 		warn "cgivar $var = $rep\n";

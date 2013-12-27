@@ -161,7 +161,6 @@ function p3ItemControls() {
 function p3PageControls() {
     var outlineState = document.getElementById('p3outl').value;
     var newSorttype = document.getElementById('sorttype').value;
-    document.getElementById('p3CbdLang').style.display= 'none';
     document.getElementById('p3CbdLangDisplay').style.display= 'none';
     document.getElementById('p3itemnav').style.display= 'none';
     document.getElementById('p3catitems').style.display = 'none';

@@ -52,6 +52,8 @@ body, p { margin: 0px; padding: 0px; }
 #p3botbanner { width: 100%; line-height: 24px; height: 24px; position: absolute; left: 0px; }
 #p3botbanner h1 { font-size: 14pt; text-align: center; margin: 0px; padding: 0px; }
 
+#p3CbdLang { display: none; }
+
 p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
 		  margin: 0px;
 		}
