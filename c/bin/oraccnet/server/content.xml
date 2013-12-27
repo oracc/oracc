@@ -1,0 +1,4 @@
+<html>
+<head><title>Content Test Data</title></head>
+<body><p><span xml:id="A">A</span><span xml:id="B" class="x">B</span><a href="pop1sig('x:y')"/></p></body>
+</html>

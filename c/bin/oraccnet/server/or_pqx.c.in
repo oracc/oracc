@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <ctype128.h>
 #include "resolver.h"
+#include "content.h"
 
 extern int patterns_debug;
 
@@ -33,7 +34,7 @@ make_key_url(struct component *components)
   return k;
 }
 
-void 
+void
 pqx_handler(struct component *components)
 {
   if (patterns_debug)
@@ -113,6 +114,7 @@ h_pqx_html_handler(const char *project, struct component *components,
 			       ? components[0].replace 
 			       : components[0].text, "html");
   const char *line = NULL, *frag = NULL;
+  struct content_opts *cop = NULL;
   
   if (query_string && *query_string)
     {
@@ -132,6 +134,14 @@ h_pqx_html_handler(const char *project, struct component *components,
 	}
     }
   print_hdr();
+#if 1
+  cop = content_new_options();
+  cop->echo = 1;
+  cop->hilite_id = line;
+  cop->frag_id = frag;
+  cop->sigs = 1;
+  content(cop, div);
+#else
   if (line && frag)
     execl("@@ORACC@@/bin/sigfixer", "sigfixer",
 	  project,
@@ -165,6 +175,7 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "trans", xlat,
 	  pqx_html,
 	  div, NULL);
+#endif
   do404();
 }
 

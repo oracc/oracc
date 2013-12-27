@@ -5,17 +5,23 @@ subdirs=ccgi
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
+AM_CFLAGS=-ansi -pedantic -Wall -g \
+	-I@top_srcdir@/c/lib/expat/xmlparse
+
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic -ansi
 
 cgibin_PROGRAMS=oracc-server
 
+# noinst_PROGRAMS=content_test
+# content_test_SOURCES=content_test.c content.c runexpat.c
+# content_test_LDADD=ccgi/libccgi.la -lexpat
+
 oracc_server_SOURCES=oracc-server.c or_builtins.c or_stable_uris.c \
 	selections.c builtins.c or_response.c or_common.c xmlrpc.c \
 	or_gdf.c or_pqx.c pqx_map.c pqx_h_tab.c ncname.c p3.c listdir.c \
-	sl.c
+	sl.c content.c runexpat.c
 
-oracc_server_LDADD=ccgi/libccgi.la
+oracc_server_LDADD=ccgi/libccgi.la -lexpat
 
 ccgi/libccgi.la:
 	(cd ccgi ; make)
