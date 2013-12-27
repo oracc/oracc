@@ -298,6 +298,19 @@ popxff(project,eid) {
 	'xffwin',600,400,700,0,1);
 }
 
+function popup(url,windowName,height,width,screenX,screenY) {
+  popupWindow = window.open(url,windowName,
+ "dependent=yes,"
+ +"directories=no,"
+ +"height="+height+","
+ +"width="+width+","
+ +"screenX="+screenX+","
+ +"screenY="+screenY+","
+ +"location=yes,menubar=no,resizable=yes,scrollbars=yes,titlebar=no,toolbar=no");
+  popupWindow.focus();
+  return popupWindow;
+}
+
 function selectGlossary(proj,obj) {
     var selectedGlossary = obj.options[obj.selectedIndex];
     var urlString = '/'+proj+'/'+selectedGlossary.value;
@@ -322,6 +335,10 @@ function selectItemByValue(elmnt, value) {
 function selectURI(obj) {
     var selectedURI = obj.options[obj.selectedIndex];
     window.location = selectedURI.value;
+}
+
+function showblock(project,item,blockid) {
+    popup('/'+project+'/'+item+'/score?'+blockid,400,600,700,50);
 }
 
 function
