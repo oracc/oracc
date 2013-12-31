@@ -1414,7 +1414,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  square_bracket = damago;
 		  cue_opener("[");
-		  breakStart = (unsigned char *)"\x1";
+		  breakStart = (const unsigned char *)"\x1";
 		}
 	      break;
 	    case damagc:

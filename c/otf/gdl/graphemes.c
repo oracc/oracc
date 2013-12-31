@@ -337,18 +337,18 @@ gmods(register unsigned char *g, struct mods *modsbuf)
   return mp-modsbuf;
 }
 
+/* FIXME: no memory management done for this yet */
 static unsigned char *
 gclean(unsigned char *g)
 {
-  static unsigned char buf[32];
-    
-  unsigned char *b = buf;
+  unsigned char *b = malloc(strlen((char *)g) + 1);
+  
   while (*g)
     if (!is_bad_cg[*g])
       *b++ = *g++;
     else
       ++g;
-  return buf;
+  return b;
 }
 
 static int
@@ -466,7 +466,6 @@ gparse(register unsigned char *g, enum t_type type)
     {
     case g_v:
       {
-	size_t len;
 	const unsigned char *gcheck = g;
 	
 	if (cbd_rules && strchr(cc(g),'*'))
@@ -488,7 +487,6 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	if (!use_unicode)
 	  gcheck = g2utf(gcheck);
-	len = strlen((const char*)gcheck);
 	if (is_xvalue(gcheck))
 	  {
 	    if (!inner_qual)
@@ -656,7 +654,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  else
 	    {
 	      gcheck = g_utf;
-	      g_end = g_utf+strlen(g_utf);
+	      g_end = g_utf+strlen((char*)g_utf);
 	    }
 	  while (is_flag[((unsigned char *)g_end)[-1]])
 	    --g_end;
@@ -1105,8 +1103,7 @@ static int
 is_sub_x(unsigned char *p)
 {
   wchar_t wbuf[2];
-  int n;
-  n = mbtowc(wbuf,(const char *)p,6);
+  (void)mbtowc(wbuf,(const char *)p,6);
   return *wbuf == 0xd7;
 }
 
@@ -1740,21 +1737,21 @@ numerical(register unsigned char *g)
 	      if (nmods > 1 || modsbuf[0].data[0] != 'v' || modsbuf[0].data[1])
 		warning("mods on unqualified number are not allowed, say, e.g., 1(disz@c) not 1@c");
 	    }
-	  if (strchr(gp->g.n.r, '/'))
+	  if (strchr((char*)gp->g.n.r, '/'))
 	    {
-	      qnum = qtmp = malloc(strlen(gp->g.n.r) + 7);
-	      sprintf(qnum, "%s(disz)", gp->g.n.r);
+	      qnum = qtmp = malloc(strlen((char*)gp->g.n.r) + 7);
+	      sprintf((char*)qnum, "%s(disz)", gp->g.n.r);
 	    }
 	  else
 	    {
-	      unsigned char *sx = sexify(atoi(gp->g.n.r), "disz");
+	      unsigned char *sx = sexify(atoi((char*)gp->g.n.r), "disz");
 	      if (!sx)
-		sx = "00(disz)";
-	      qnum = malloc(strlen(sx) + 3);
+		sx = (unsigned char *)"00(disz)";
+	      qnum = malloc(strlen((char*)sx) + 3);
 	      if (nmods == 1 && modsbuf[0].data[0] == 'v')
-		sprintf(qnum, "%s@v", sx);
+		sprintf((char*)qnum, "%s@v", (char*)sx);
 	      else
-		strcpy(qnum, sx);
+		strcpy((char*)qnum, (char*)sx);
 	    }
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
