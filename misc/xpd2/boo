@@ -1,14 +1,16 @@
 #!/bin/sh
-project=`oraccopt`
+. proj-from-conf-func.sh
+project=`proj_from_conf`
 if [ "$project" == "" ]; then 
     echo "boo: must run in project directory"; exit 1
 fi
+mkdir -p 01tmp
 if [ -r 01tmp/building ]; then
     echo There seems to be a build in progress.  If this is incorrect, please remove
     echo the file 01tmp/building and run ncr again.
     exit 1
 fi
-[ -r 02xml/config.xml ] || oracc config
+# [ -r 02xml/config.xml ] || oracc config
 rm -f build.out
 echo boo: sending $project to build.oracc.org for building ...
 time oracc-build-client.sh -p $project
