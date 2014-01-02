@@ -164,9 +164,10 @@ proxy_lists {
 	    ++$lnum;
 	    $p =~ tr/\r\n//d;
 	    # if the proxy has a ':' we want it for its atf:
-	    # if it has no catalogue, default it to the host project
-	    if ($p =~ /:/) {
-		$p .= "\@$project" unless $p =~ /\@/;
+	    # if it has no catalogue, default it to the source project
+	    if ($p =~ /^(.*?):/) {
+		my $proxproj = $1;
+		$p .= "\@$proxproj" unless $p =~ /\@/;
 		my($id) = ($p =~ /:(.*?)\@/);
 		if ($host_atf{$id}) {
 		    warn "$proxy_lst:$lnum: ignoring proxy of $id because $project already has that ATF\n";
