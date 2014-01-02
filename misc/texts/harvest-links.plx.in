@@ -50,8 +50,9 @@ print LINKBASE '<linkbase>';
 while (<>) {
     chomp;
     my $tproj = '';
-    m#/([a-z][^/]+)/[PQX]\d+/#;
+    m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d+/#o;
     $tproj = $1;
+    warning "tproj=$tproj\n";
     ++${$texts{$tproj}}{$_};
 }
 
