@@ -111,12 +111,13 @@
     <xsl:when test="@g:type='above'"><xsl:text>&amp;</xsl:text></xsl:when>
     <xsl:when test="@g:type='crossing'"><xsl:text>%</xsl:text></xsl:when>
     <xsl:when test="@g:type='opposing'"><xsl:text>@</xsl:text></xsl:when>
+    <xsl:when test="@g:type='reordered'"><xsl:text>:</xsl:text></xsl:when>
     <xsl:when test="@g:type='repeated'">
       <xsl:value-of select="concat(.,'x')"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-	<xsl:with-param name="msg" select="concat(@g:type, ' not handled')"/>
+	<xsl:with-param name="msg" select="concat('g:o with @g:type=', @g:type, ' not handled')"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
@@ -239,7 +240,7 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
-	<xsl:with-param name="msg" select="concat('g:gg with type=', @g:type, ' not handled')"/>
+	<xsl:with-param name="msg" select="concat('g:gg with @g:type=', @g:type, ' not handled')"/>
       </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
