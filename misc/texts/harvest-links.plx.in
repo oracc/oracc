@@ -91,6 +91,8 @@ process_project {
     %warned = ();
     %symwarned = ();
 
+    warn "harvest-links.plx: processing project '$project'\n";
+
     print LINKBASE "<project n=\"$project\">";
     foreach my $t (@texts) {
 	index_text($t);
