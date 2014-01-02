@@ -200,10 +200,10 @@ if ($cat_policy eq 'auto') {
     @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>;
 }
 
-if (-r '01bld/lists/proxy.lst') {
+if (-r '01bld/lists/proxy-cat.lst') {
     system 'xmd-proxy.plx';
     push @catalogs, map { { 'file'=>$_ } } <01bld/cat/proxy-*.xml>;
-    open(P,'01bld/lists/proxy.lst');
+    open(P,'01bld/lists/proxy-cat.lst');
     while (<P>) {
 	chomp;
 	my($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
@@ -1013,7 +1013,7 @@ sub
 make_vcat {
     my $d = shift;
     my $cat_list = `oraccopt . catalog-build-list`;
-    my $list = $cat_list || '01bld/lists/proxy.lst';
+    my $list = $cat_list || '01bld/lists/proxy-cat.lst';
     my $pcat = "01bld/cat/dynamic-p.xml";
     my $qcat = "01bld/cat/dynamic-q.xml";
     my $xcat = "01bld/cat/dynamic-x.xml";

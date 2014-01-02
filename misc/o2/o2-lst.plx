@@ -233,7 +233,7 @@ update_lists {
 	@pubsub = map { s#^$project/## ; 
 			"$_/01bld/lists/approved.lst" } @pubsub;
 	open(A, '>01bld/lists/proxy-atf.lst')
-	    || die "o2-lst.plx: can't write 01bld/lists/proxy.lst\n";
+	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
 	foreach my $p (@pubsub) {
 	    open(P, $p);
 	    my @l = (<P>);
