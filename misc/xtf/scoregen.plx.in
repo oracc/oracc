@@ -155,9 +155,8 @@ findProjNode {
 
 sub
 create_rel_lists {
-    my $xlinkbase = load_xml($linkbase);
-    my $projNode = findProjNode($xlinkbase->getDocumentElement());
-    
+    my $xlinkbase = load_xml($linkbase); return unless $linkbase;
+    my $projNode = findProjNode($xlinkbase->getDocumentElement()); return unless $projNode;
     foreach my $l ($projNode->childNodes()) {
 	next unless $l->isa('XML::LibXML::Element');
 	if ($l->localName() eq 'link') {
