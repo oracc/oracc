@@ -52,7 +52,7 @@ while (<>) {
     my $tproj = '';
     m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d+/#o;
     $tproj = $1;
-    warn "tproj=$tproj\n";
+#    warn "tproj=$tproj\n";
     ++${$texts{$tproj}}{$_};
 }
 
