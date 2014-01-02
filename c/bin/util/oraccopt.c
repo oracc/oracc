@@ -2,11 +2,14 @@
 #include <xpd2.h>
 #include <npool.h>
 
+extern FILE *f_log;
+
 int
 main(int argc, char **argv)
 {
   struct npool *pool = NULL;
   extern const char *file, *textid;
+  f_log = stderr;
   if ((pool = npool_init()))
     {
       struct xpd *x = NULL;
