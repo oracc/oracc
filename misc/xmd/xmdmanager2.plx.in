@@ -1102,7 +1102,11 @@ make_vid {
 	my $nid = $1;
 	$nid = 'P'.('0'x(6-length($nid))).$nid;
 	print STDERR "xmdmanager: repairing P-ID from $pqx to $nid\n";
-	$pqx = $nid;
+	if ($pqx =~ /:/) {
+	    $pqx =~ s/:.*$/:$nid/;
+	} else {
+	    $pqx = $nid;
+	}
     }
     push @vid, $pqx;
     $vid{$pqx} = $#vid;
