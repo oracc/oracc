@@ -83,13 +83,13 @@ lemindex_list {
 	    unless ($proxy_lem_atfs{$proj}) {
 		my $projlem = "$ENV{'ORACC'}/bld/$proj/lists/have-lem.lst";
 		if (-r $projlem) {
-		    open(P, $projlem) || die;
-		    while (<P>) {
+		    open(HAVELEM, $projlem) || die;
+		    while (<HAVELEM>) {
 			chomp;
 			/:(.*?)(?:\@|$)/;
 			${$proxy_lem_atfs{$proj}}{$1} = 1;
 		    }
-		    close(P) || warn "close P failed\n";
+		    close(HAVELEM);
 		} else {
 		    $proxy_lem_atfs{$proj} = '#none#'
 		}
