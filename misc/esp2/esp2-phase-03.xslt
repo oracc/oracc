@@ -603,11 +603,15 @@
   <span class="obfuscatedEmailAddress"><xsl:value-of select="$reversed-address"/></span>
   <span class="obfuscatedEmailExplanation"> (because JavaScript is not available in your browser, you are seeing this email address in a form altered to prevent spamming: you will need to read it backwards and make appropriate substitutions)</span>-->
   </xsl:template>
+
   <!-- copy the rest unchanged -->
   <xsl:template match="*">
+    <xsl:param name="cnode" select="."/>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+	<xsl:with-param name="cnode" select="$cnode"/>
+      </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
 
