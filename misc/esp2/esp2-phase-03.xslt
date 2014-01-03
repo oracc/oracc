@@ -297,7 +297,7 @@
 	<xsl:variable name="cnode" select="."/>
 	<xsl:for-each select="$parameters/param:footer">
 	  <xsl:apply-templates>
-	    <xsl:with-param name="context-node" select="$cnode"/>
+	    <xsl:with-param name="cnode" select="$cnode"/>
 	  </xsl:apply-templates>
 	</xsl:for-each>
       </div>
