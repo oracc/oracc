@@ -203,7 +203,8 @@ if ($cat_policy eq 'auto') {
 if (-r '01bld/lists/proxy-cat.lst') {
     system 'xmd-proxy.plx';
     push @catalogs, map { { 'file'=>$_ } } <01bld/cat/proxy-*.xml>;
-    open(P,'01bld/lists/proxy-cat.lst');
+#    open(P,'01bld/lists/proxy-cat.lst');
+    open(P,'01bld/lists/proxy-atf.lst');
     while (<P>) {
 	chomp;
 	my($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
@@ -1119,7 +1120,7 @@ qualify_vid {
     my $xtf = $id_projects{$id,'xtf'} || $project;
     my $xmd = $id_projects{$id,'xmd'} || $project;
     print XMDMAP "$xtf:$id\t$xmd\n";
-    "$xtf:$id";
+    "$xtf\@$xmd:$id";
 }
 
 sub
@@ -1132,8 +1133,7 @@ sub
 dump_vid {
     open(XMDMAP, ">01bld/cat/proxy-xmd.map");
     open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
-#    my @qvid = map { qualify_vid($_) } @vid;
-    my @qvid = @vid;
+    my @qvid = map { qualify_vid($_) } @vid;
     my $max = max_vid_len(@qvid);
     printf V "%d\000%d\000", $#vid+1, $max;
     foreach my $qvid (@qvid) {
