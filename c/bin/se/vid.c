@@ -105,6 +105,8 @@ vid_map_id(struct vid_data *vp, const char *xid)
       const char *colon = strchr(xid,':');
       if (!colon)
 	colon = xid;
+      else
+	++colon;
       if (underline)
 	{
 	  int len = underline-colon;
