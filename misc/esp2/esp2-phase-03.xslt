@@ -48,9 +48,10 @@
     <xsl:copy>
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
 
-      <div id="Header">
+      <div>
 	<xsl:choose>
 	  <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
+	    <xsl:attribute name="id"><xsl:text>Banner</xsl:text></xsl:attribute>
 	    <xsl:variable name="cnode" select="."/>
 	    <xsl:for-each select="$parameters/param:banner">
 	      <xsl:apply-templates>
@@ -59,6 +60,7 @@
 	    </xsl:for-each>
 	  </xsl:when>
 	  <xsl:otherwise>
+	    <xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
             <span id="HeadTitle">
 	      <xsl:choose>
 		<xsl:when test="$current-page/ancestor::struct:page[1]">
