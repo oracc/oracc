@@ -1120,7 +1120,11 @@ qualify_vid {
     my $xtf = $id_projects{$id,'xtf'} || $project;
     my $xmd = $id_projects{$id,'xmd'} || $project;
     print XMDMAP "$xtf:$id\t$xmd\n";
-    "$xtf\@$xmd:$id";
+    if ($xtf ne $xmd) {
+	"$xtf\@$xmd:$id";
+    } else {
+	"$xtf:$id";
+    }
 }
 
 sub
@@ -1129,6 +1133,12 @@ vid_pad {
     $s.("\000"x($n - length($s)));
 }
 
+# Format of vid.dat is:
+#
+# [NUMBER_OF_ENTRIES]
+# [LENGTH_OF_ENTRY]
+# [PROJECT_FOR_XTF_AND_XMD]:[PQXID] | [PROJECT_FOR_XTF]@[PROJECT_FOR_XMD]:[PQXID]
+#
 sub
 dump_vid {
     open(XMDMAP, ">01bld/cat/proxy-xmd.map");

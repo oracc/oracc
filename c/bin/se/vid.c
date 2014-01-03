@@ -214,6 +214,7 @@ vid_load_data(const char *fname)
       vp->padded_ids = maxp + strlen(maxp) + 1;
       vp->ids = NULL;
       vp->file = vpfile;
+      vp->pool = npool_init();
     }
   if (l2)
     vid_hash_data(vp);
@@ -224,6 +225,9 @@ static void
 vid_hash_data(struct vid_data *vp)
 {
   int i = 0;
+  char *keybuf = malloc(vp->max_len) + 1;
+  const char *atptr = NULL;
+  unsigned char *keyptr;
   vp->vpool = malloc(vp->ids_used * 8);
   vp->ids = malloc(vp->ids_used * sizeof(char*));
   vp->vidh = hash_create(vp->ids_used);
@@ -231,11 +235,34 @@ vid_hash_data(struct vid_data *vp)
     {
       vp->ids[i] = &vp->vpool[i*8];
       sprintf(vp->ids[i], "v%06d", i);
-      
-      hash_add(vp->vidh, 
-	       (unsigned char *)&vp->padded_ids[i*vp->max_len], 
-	       vp->ids[i]);
+      keyptr = (unsigned char *)&vp->padded_ids[i*vp->max_len];
+      if ((atptr = strchr(keyptr, '@')))
+	{
+	  /* This is a double-qualified entry: the first project, before the '@',
+	     is the one for XTF files; the second, after the '@', is for XMD files.
+	     We make entries for both in the hash so that any indexer finds the 
+	     common VID.  This means that when the VID is dereferenced the search
+	     engine needs to select the correct project when handed a double-qualified
+	     QID */
+	  const char *colon = NULL;
+	  strcpy(buf, keyptr);
+	  colon = strchr(buf, ':');
+	  strcpy(atptr, colon);
+	  hash_add(vp->vidh, 
+		   npool_copy(keybuf,vp->pool),
+		   vp->ids[i]);
+	  hash_add(vp->vidh, 
+		   atptr+1,
+		   vp->ids[i]);
+	}
+      else
+	{
+	  hash_add(vp->vidh, 
+		   keyptr,
+		   vp->ids[i]);
+	}
     }
+  free(keybuf);
 }
 
 void

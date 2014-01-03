@@ -10,6 +10,7 @@ struct vid_data
   int ids_alloced;
   int ids_used;
   int max_len;
+  struct npool *pool;
 };
 
 struct vid_data *vid_init(void);
