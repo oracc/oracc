@@ -294,8 +294,11 @@
       </div>
       <div id="FooterLeft">
         <!--<xsl:copy-of select="$parameters/param:footer/node ()"/>-->
+	<xsl:variable name="cnode" select="."/>
 	<xsl:for-each select="$parameters/param:footer">
-	  <xsl:apply-templates/>
+	  <xsl:apply-templates>
+	    <xsl:with-param name="context-node" select="$cnode"/>
+	  </xsl:apply-templates>
 	</xsl:for-each>
       </div>
       <!-- site tabs-->
@@ -323,7 +326,12 @@
 
   <!-- process images -->
   <xsl:template match="esp:image">
-    <xsl:variable name="relpath"><xsl:call-template name="set-relpath"/></xsl:variable>
+    <xsl:param name="cnode" select="."/>
+    <xsl:variable name="relpath">
+      <xsl:call-template name="set-relpath">
+	<xsl:with-param name="context-node" select="$cnode"/>
+      </xsl:call-template>
+    </xsl:variable>
     <xsl:if test="not ( @description )">
       <xsl:message>  WARNING! Image tag lacking description (name: <xsl:value-of select="@name"/>) -- page will fail WAI compliance test!</xsl:message>
     </xsl:if>
@@ -602,17 +610,7 @@
   </xsl:template>
 
 <xsl:template name="tab">
-  <xsl:param name="context"/>
-<!--  <xsl:message>processing tab <xsl:value-of select="app:alt"/></xsl:message> -->
-  <xsl:variable name="relpath">
-    <xsl:for-each select="$context">
-      <xsl:call-template name="set-relpath"/>
-    </xsl:for-each>
-  </xsl:variable>
-  <div id="tab_{position()}">
-    <esp:link url="{app:url}" title="{app:text}">
-      <img src="{$relpath}/images/{app:img}" alt="{app:alt}"/>
-    </esp:link>
-  </div>
+  <xsl:message>The 'tab' feature is no longer part of ESP; please revise your portal pages appropriately.</xsl:message>
 </xsl:template>
+
 </xsl:stylesheet>

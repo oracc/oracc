@@ -148,7 +148,6 @@
     <!-- add Google Analytics block -->
 <script type="text/javascript">
 
-
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-32878242-1']);
   _gaq.push(['_trackPageview']);
@@ -539,56 +538,7 @@
 
 <!-- process flash resources -->
 <xsl:template match="esp:flash-movie">
-  <xsl:variable name="relpath">
-    <xsl:call-template name="set-relpath"/>
-  </xsl:variable>
-
-  <xsl:variable name="flash-page" select="concat ( $relpath, '/flashpages/', @id, '/' )"/>
-  <script type="text/javascript"><esp:comment>
-    function openPopup<xsl:value-of select="generate-id ()"/> () {
-    window.open ( '<xsl:value-of select="$flash-page"/>', '_blank', 'height=<xsl:value-of select="@height"/>,width=<xsl:value-of select="@width"/>,status=no,toolbar=no,menubar=no,location=no,scrollbars=no,directories=no,fullscreen=0,resizable=yes' );
-    return false;
-    }
-  // </esp:comment></script>
-  <a href="{$flash-page}" onclick="return openPopup{generate-id ()} ();" title="Launch Flash movie in a new window">
-    <xsl:apply-templates/>
-  </a>
-  <xsl:if test="count ( ancestor::esp:flash-movie[@id = current()/@id] | preceding::esp:flash-movie[@id = current()/@id] ) = 0">
-    <xsl:variable name="flash-page-file" select="concat ( $output-directory, '/flashpages/', @id, '/index.html' )"/>
-    <xsl:message>ESP processing <xsl:value-of select="$flash-page-file"/></xsl:message>
-    <xsl:result-document href="{$flash-page-file}" format="html">
-	<html lang="en" xsl:exclude-result-prefixes="esp xsi xsl">
-	  <head>
-	    <!--<base href="http://oracc.museum.upenn.edu/"/>-->
-	    <title><xsl:value-of select="$parameters/param:title"/> - <xsl:value-of select="@title"/></title>
-	    <style type="text/css">
-	      body, div {
-	      margin: 0;
-	      padding: 0;
-	      border: 0;
-	      background: #000000;
-	      color: #ffffff;
-	      }
-	      object, embed {
-	      display: block;
-	      }
-	    </style>
-	  </head>
-	  <body><div>
-	    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="{@width}" height="{@height}">
-	      <param name="allowScriptAccess" value="sameDomain" />
-	      <param name="movie" value="{$relpath}/flashmovies/{@file}" />
-	      <param name="loop" value="false" />
-	      <param name="quality" value="high" />
-	      <param name="bgcolor" value="#000000" />
-	      <param name="base" value="." />
-	      <param name="menu" value="false" />
-	      <embed swliveconnect="false" src="{$relpath}/flashmovies/{@file}" loop="false" quality="high" bgcolor="#000000" width="{@width}" height="{@height}" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" base="." menu="false" />
-	    </object>
-	  </div></body>
-	</html>
-    </xsl:result-document>
-  </xsl:if>
+  <xsl:message>The 'flash-movie' feature is no longer part of ESP.  Please revise your portal pages appropriately.</xsl:message>
 </xsl:template>
 
 <!-- copy the rest unchanged -->
