@@ -144,7 +144,14 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	}
       else
 	{
-	  return hash_find(vp->vidh,(unsigned char *)colon);
+	  vidp = hash_find(vp->vidh,(unsigned char *)colon);
+	  if (vidp)
+	    return vidp;
+	  else
+	    {
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
+	      retbuf = "v000000";
+	    }
 	}
     }
   else
