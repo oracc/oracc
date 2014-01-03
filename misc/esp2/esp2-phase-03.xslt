@@ -50,11 +50,11 @@
 
       <div id="Header">
 	<xsl:choose>
-	  <xsl:when test="$parameters/param:banner">
+	  <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
 	    <xsl:variable name="cnode" select="."/>
 	    <xsl:for-each select="$parameters/param:banner">
 	      <xsl:apply-templates>
-		<xsl:with-param name="cnode" select="."/>
+		<xsl:with-param name="cnode" select="$cnode"/>
 	      </xsl:apply-templates>
 	    </xsl:for-each>
 	  </xsl:when>
