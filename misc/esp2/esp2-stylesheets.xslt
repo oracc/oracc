@@ -306,6 +306,12 @@ a:visited {
 		background: <xsl:value-of select="$appearance/app:colours/app:dark"/>;
 	}
 </xsl:if>
+
+#Banner {
+	width: 100%;
+	text-align: center;
+}
+
 /* START @media block for small viewports (max 624px) */
 @media screen and (max-width: 624px) {
 .pc30 {
