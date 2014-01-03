@@ -102,10 +102,13 @@ vid_map_id(struct vid_data *vp, const char *xid)
     {
       static char buf[128];
       const char *underline = strchr(xid,'_');
+      const char *colon = strchr(xid,':');
+      if (!colon)
+	colon = xid;
       if (underline)
 	{
-	  int len = underline-xid;
-	  strncpy(buf,xid,len);
+	  int len = underline-colon;
+	  strncpy(buf,colon,len);
 	  buf[len] = '\0';
 	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	    {
@@ -117,14 +120,14 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	    }
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
 	      retbuf = "v000000";
 	    }
 	}
       else if (pd)
 	{
-	  int len = pd-xid;
-	  strncpy(buf,xid,len);
+	  int len = pd-colon;
+	  strncpy(buf,colon,len);
 	  buf[len] = '\0';
 	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	    {
@@ -133,13 +136,13 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	    }
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
 	      retbuf = "v000000";
 	    }
 	}
       else
 	{
-	  return hash_find(vp->vidh,(unsigned char *)xid);
+	  return hash_find(vp->vidh,(unsigned char *)colon);
 	}
     }
   else

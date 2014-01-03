@@ -1108,6 +1108,7 @@ make_vid {
 	    $pqx = $nid;
 	}
     }
+    $pqx =~ s/^.*?://;
     push @vid, $pqx;
     $vid{$pqx} = $#vid;
 }
