@@ -62,7 +62,13 @@
   <xsl:copy>
     <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
     <!-- title -->
-    <title><xsl:value-of select="$parameters/param:title"/> - <xsl:value-of select="$current-page/esp:title"/></title>
+    <title> 
+      <xsl:value-of select="$parameters/param:title"/> 
+      <xsl:if test="string-length($current-page/esp:title) > 0">
+	- <xsl:value-of select="$current-page/esp:title"/>
+      </xsl:if>
+    </title>
+
     <!-- styles -->
 <!--    <link rel="stylesheet" type="text/css" href="/css/oraccbase.css"/> -->
     <link rel="stylesheet" type="text/css" media="print" href="{$relpath}/css/print.css"/>
