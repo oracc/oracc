@@ -24,7 +24,11 @@
 <xsl:template name="set-relpath">
   <xsl:param name="context-node" select="."/>
 <!--  <xsl:message>set-relpath current node=<xsl:value-of select="ancestor-or-self::*[@id]/@id"/></xsl:message> -->
-  <xsl:variable name="nest-level" select="count(ancestor::struct:page)"/>
+  <xsl:variable name="nest-level">
+    <xsl:for-each select="$context-node">
+      <xsl:value-of select="count(ancestor::struct:page)"/>
+    </xsl:for-each>
+  </xsl:variable>
   <xsl:choose>
     <xsl:when test="$nest-level=1">.</xsl:when>
     <xsl:when test="$nest-level=2">..</xsl:when>
