@@ -1132,7 +1132,8 @@ sub
 dump_vid {
     open(XMDMAP, ">01bld/cat/proxy-xmd.map");
     open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
-    my @qvid = map { qualify_vid($_) } @vid;
+#    my @qvid = map { qualify_vid($_) } @vid;
+    my @qvid = @vid;
     my $max = max_vid_len(@qvid);
     printf V "%d\000%d\000", $#vid+1, $max;
     foreach my $qvid (@qvid) {
