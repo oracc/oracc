@@ -47,27 +47,37 @@
   <xsl:template match="body">
     <xsl:copy>
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
-      <div id="Header">
-        <span id="HeadTitle">
-	  <xsl:choose>
-	    <xsl:when test="$current-page/ancestor::struct:page[1]">
-	      <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
-		<xsl:copy-of select="$parameters/param:title/node()"/>
-	      </esp:link>
-	    </xsl:when>
-	    <xsl:otherwise>
-	      <xsl:copy-of select="$parameters/param:title/node()"/>
-	    </xsl:otherwise>
-	  </xsl:choose>
-        </span>
-	<xsl:if test="$parameters/param:subtitle">
-	  <br/>
-	  <span id="HeadSubtitle">
-	    <xsl:copy-of select="$parameters/param:subtitle/node()"/>
-	  </span>
-	</xsl:if>
 
+      <div id="Header">
+	<xsl:choose>
+	  <xsl:when test="$parameters/param:banner">
+	    <xsl:apply-templates select="esp:image">
+	      <xsl:with-param name="cnode" select="."/>
+	    </xsl:apply-templates>
+	  </xsl:when>
+	  <xsl:otherwise>
+            <span id="HeadTitle">
+	      <xsl:choose>
+		<xsl:when test="$current-page/ancestor::struct:page[1]">
+		  <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
+		    <xsl:copy-of select="$parameters/param:title/node()"/>
+		  </esp:link>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:copy-of select="$parameters/param:title/node()"/>
+		</xsl:otherwise>
+	      </xsl:choose>
+            </span>
+	    <xsl:if test="$parameters/param:subtitle">
+	      <br/>
+	      <span id="HeadSubtitle">
+		<xsl:copy-of select="$parameters/param:subtitle/node()"/>
+	      </span>
+	    </xsl:if>
+	  </xsl:otherwise>
+	</xsl:choose>
       </div>
+
       <!-- main menu (screen only) -->
       <div id="Menu">
         <xsl:if test="$parameters/param:main-menu-caption">
@@ -90,6 +100,7 @@
           <xsl:with-param name="first-link-page" select="/struct:page"/>
         </xsl:call-template>
       </div>
+
       <!-- content <div> -->
       <div id="Content">
         <!-- stylesheet warning -->
