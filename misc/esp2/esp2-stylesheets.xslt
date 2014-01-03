@@ -326,6 +326,7 @@ padding-left: 0;
 	</xsl:if>	
 }
 #Banner {
+	text-align: center;
 }
 #Header {
 	<xsl:if test="contains ( 'screen, handheld', $medium )">
