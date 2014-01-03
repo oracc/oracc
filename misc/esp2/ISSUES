@@ -20,7 +20,6 @@ HEADERS AND FOOTERS
 
 IMAGES
 - change grid granularity from 5%ile to 1%ile
-- do away with image maps and tabs
 - external links can go in main menu now
 - implement <esp:image position="right|left|inline"> and script out position="float"
   * update schema to match
@@ -54,3 +53,4 @@ RESOLVED OR DROPPED:
 
 * ongoing management of doc2/esp2
 
+* tags dropped
