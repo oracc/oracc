@@ -303,11 +303,13 @@
       </div>
       <!-- site tabs-->
       <xsl:variable name="context-page" select="."/>
+      <!--
       <xsl:for-each select="$appearance/app:tabs/*">
 	<xsl:call-template name="tab">
 	  <xsl:with-param name="context" select="$context-page"/>
 	</xsl:call-template>
       </xsl:for-each>
+      -->
       <!-- address <div> -->
       <div id="URL">
         <xsl:value-of select="$parameters/param:host"/>
@@ -386,13 +388,13 @@
        </xsl:choose>
      </xsl:attribute>
      
-     <xsl:for-each select="esp:link | esp:flash-movie">
+     <xsl:for-each select="esp:link">
        <xsl:copy>
          <xsl:copy-of select="@*"/>
          <img src="{$src}" alt="{@description}"/>
        </xsl:copy>
      </xsl:for-each>
-     <xsl:if test="not(esp:link | esp:flash-movie)">
+     <xsl:if test="not(esp:link)">
        <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
          <xsl:if test="esp:image-map">
            <xsl:attribute name="usemap" select="concat('#map_', generate-id(esp:image-map))"/>
