@@ -51,9 +51,12 @@
       <div id="Header">
 	<xsl:choose>
 	  <xsl:when test="$parameters/param:banner">
-	    <xsl:apply-templates select="esp:image">
-	      <xsl:with-param name="cnode" select="."/>
-	    </xsl:apply-templates>
+	    <xsl:variable name="cnode" select="."/>
+	    <xsl:for-each select="$parameters/param:banner">
+	      <xsl:apply-templates>
+		<xsl:with-param name="cnode" select="."/>
+	      </xsl:apply-templates>
+	    </xsl:for-each>
 	  </xsl:when>
 	  <xsl:otherwise>
             <span id="HeadTitle">
