@@ -294,7 +294,9 @@
       </div>
       <div id="FooterLeft">
         <!--<xsl:copy-of select="$parameters/param:footer/node ()"/>-->
-	<xsl:apply-templates/>
+	<xsl:for-each select="$parameters/param:footer">
+	  <xsl:apply-templates/>
+	</xsl:for-each>
       </div>
       <!-- site tabs-->
       <xsl:variable name="context-page" select="."/>
