@@ -102,15 +102,10 @@ vid_map_id(struct vid_data *vp, const char *xid)
     {
       static char buf[128];
       const char *underline = strchr(xid,'_');
-      const char *colon = strchr(xid,':');
-      if (!colon)
-	colon = xid;
-      else
-	++colon;
       if (underline)
 	{
-	  int len = underline-colon;
-	  strncpy(buf,colon,len);
+	  int len = underline-xid;
+	  strncpy(buf,xid,len);
 	  buf[len] = '\0';
 	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	    {
@@ -122,14 +117,14 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	    }
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
 	      retbuf = "v000000";
 	    }
 	}
       else if (pd)
 	{
-	  int len = pd-colon;
-	  strncpy(buf,colon,len);
+	  int len = pd-xid;
+	  strncpy(buf,xid,len);
 	  buf[len] = '\0';
 	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	    {
@@ -138,18 +133,18 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	    }
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
 	      retbuf = "v000000";
 	    }
 	}
       else
 	{
-	  vidp = hash_find(vp->vidh,(unsigned char *)colon);
+	  vidp = hash_find(vp->vidh,(unsigned char *)xid);
 	  if (vidp)
 	    return vidp;
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",colon,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
 	      retbuf = "v000000";
 	    }
 	}
@@ -225,7 +220,7 @@ static void
 vid_hash_data(struct vid_data *vp)
 {
   int i = 0;
-  char *keybuf = malloc(vp->max_len) + 1;
+  char *keybuf = malloc(vp->max_len+1);
   const char *atptr = NULL;
   unsigned char *keyptr;
   vp->vpool = malloc(vp->ids_used * 8);
@@ -245,8 +240,8 @@ vid_hash_data(struct vid_data *vp)
 	     engine needs to select the correct project when handed a double-qualified
 	     QID */
 	  const char *colon = NULL;
-	  strcpy(buf, keyptr);
-	  colon = strchr(buf, ':');
+	  strcpy(keybuf, keyptr);
+	  colon = strchr(keybuf, ':');
 	  strcpy(atptr, colon);
 	  hash_add(vp->vidh, 
 		   npool_copy(keybuf,vp->pool),
