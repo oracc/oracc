@@ -28,7 +28,7 @@ const char *outfile = NULL;
 const char *return_index = NULL;
 FILE*out_f = NULL, *f_log;
 enum result_granularity res_gran = g_not_set;
-
+enum vid_proj vid_display_proj;
 char *pretrim_file = NULL;
 unsigned char **pretrim_lines, *pretrim_content;
 List *pretrim_args = NULL;
@@ -275,7 +275,7 @@ vid_show_results(struct Datum *dp)
 	{
 	  struct location8 *l8p = dp->l.l8p[i];
 	  fprintf(out_f, "%s\n", 
-		  vid_get_id(vp,idVal(l8p->text_id)));
+		  vid_get_id(vp,idVal(l8p->text_id), vid_display_proj));
 	}
       break;
     case g_field:
@@ -283,7 +283,7 @@ vid_show_results(struct Datum *dp)
 	{
 	  struct location8 *l8p = dp->l.l8p[i];
 	  fprintf(out_f, "%s.%d\n",
-		  vid_get_id(vp,idVal(l8p->text_id)),
+		  vid_get_id(vp,idVal(l8p->text_id), vid_display_proj),
 		  l8p->unit_id);
 	}
       break;
@@ -300,7 +300,8 @@ vid_show_results(struct Datum *dp)
 		tra = set_tra_suffix(dp->l.l16p[i]->branch_id);
 	      
 	      fprintf(out_f, "%s%s.%d.%d", 
-		      vid_get_id(vp,idVal(l8p->text_id)), tra,
+		      vid_get_id(vp,idVal(l8p->text_id), vid_display_proj), 
+		      tra,
 		      l8p->unit_id,
 		      l8p->word_id);
 	      while (more_in_unit24(l8p, dp->l.l8p[i+1]))
@@ -334,7 +335,8 @@ vid_show_results(struct Datum *dp)
 		tra = set_tra_suffix(dp->l.l16p[i]->branch_id);
 	      
 	      fprintf(out_f, "%s%s.%d.%d", 
-		      vid_get_id(vp,idVal(l8p->text_id)), tra,
+		      vid_get_id(vp,idVal(l8p->text_id), vid_display_proj), 
+		      tra,
 		      l8p->unit_id,
 		      l8p->word_id);
 	      while (more_in_unit(l8p, dp->l.l8p[i+1]))
@@ -409,7 +411,13 @@ main(int argc, char * const*argv)
 	  if (xmldir)
 	    xmldir_results(xmldir,result.count);
 	  if ('v' == id_prefix(result.l.l8p[0]->text_id))
-	    vid_show_results(&result);
+	    {
+	      if (!strcmp(return_index, "cat"))
+		vid_display_proj = vid_proj_xmd;
+	      else
+		vid_display_proj = vid_proj_xtf;
+	      vid_show_results(&result);
+	    }
 	  else
 	    show_results(&result);
 	}

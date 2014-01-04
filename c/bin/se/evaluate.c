@@ -444,7 +444,7 @@ pretrim_data(struct Datum *dp)
       else
 	dpp = (struct location8*)&((struct location24*)dp->ldata)[i];
 
-      strcpy(buf, vid_get_id(vp,idVal(dpp->text_id)));
+      strcpy(buf, vid_get_id(vp,idVal(dpp->text_id),vid_proj_xmd)); /* IS THIS RIGHT? */
 
       if (!hash_find(pretrim, (unsigned char *)buf))
 	{
