@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "pool.h"
+#include "npool.h"
 #include "loadfile.h"
 #include "hash.h"
 #include "selib.h"
@@ -25,6 +26,7 @@ vid_init(void)
   pool_init();
   vp = calloc(1,sizeof(struct vid_data));
   vp->vidh = hash_create(1000);
+  vp->pool = npool_init();
   return vp;
 }
 
@@ -32,6 +34,7 @@ void
 vid_term(struct vid_data *vp)
 {
   hash_free(vp->vidh,NULL);
+  npool_term(vp->pool);
   free(vp->ids);
   free(vp);
 }
@@ -144,7 +147,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	    return vidp;
 	  else
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
+	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,xid);
 	      retbuf = "v000000";
 	    }
 	}
@@ -241,6 +244,7 @@ vid_hash_data(struct vid_data *vp)
   vp->vpool = malloc(vp->ids_used * 8);
   vp->ids = malloc(vp->ids_used * sizeof(char*));
   vp->vidh = hash_create(vp->ids_used);
+  vp->pool = npool_init();
   for (i = 0; i < vp->ids_used; ++i)
     {
       vp->ids[i] = &vp->vpool[i*8];
@@ -257,7 +261,7 @@ vid_hash_data(struct vid_data *vp)
 	  const char *colon = NULL;
 	  strcpy(keybuf, keyptr);
 	  colon = strchr(keybuf, ':');
-	  strcpy(atptr, colon);
+	  strcpy(keybuf + (atptr-(const char*)keyptr), colon);
 	  hash_add(vp->vidh, 
 		   npool_copy(keybuf,vp->pool),
 		   vp->ids[i]);
