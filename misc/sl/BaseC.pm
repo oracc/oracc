@@ -260,7 +260,10 @@ tlitsplit {
 	$tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
     }
 
-    $tlit =~ tr/-.{}:+·°/     /;
+    $tlit =~ s/\%sux://g;
+    $tlit =~ tr/-.{}:+/     /;
+    $tlit =~ tr/·°//d;
+
 
     # protect numbers like 3(geszu)
     $tlit =~ s/(^|[- \.])([\d\/]+)\((.*?)\)/$1$2\000$3\001/g;
@@ -340,6 +343,8 @@ _signature {
     my @newg = ();
     foreach my $g (@g) {
 	$g =~ s/^\$//;
+	$g =~ s/\%sux://g;
+	$g =~ tr/·°//d;
 	if ($g =~ m#^[/0-9]+(?:\@v)?$#) {
 	    push @newg, ORACC::Legacy::Sexify::sexify($g,0,1,0);
 	} else {
@@ -376,12 +381,12 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
-		print STDERR "${ctxt}sign name '$sn' not in sign list\n"
+		print STDERR "${ctxt}(BaseC): sign name '$sn' not in sign list\n"
 		    unless $silent || $reported{$g}++;
 		push @sig, 'q00';
 	    }
 	} else {
-	    print STDERR "${ctxt}grapheme '$g' not in sign list\n"
+	    print STDERR "${ctxt}(BaseC): grapheme '$g' not in sign list\n"
 		unless $silent || $reported{$g}++;
 	    push @sig, 'q01';
 	}
