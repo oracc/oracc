@@ -291,6 +291,12 @@ create_xtls {
 	} else {
 	    $xtl = expand_in_project(undef,"$pq.xtl",$project);
 	}
+	# make the directory in case we reference a Q that has no edition or xmd
+	if (!-w $xtl) {
+	    my $xtldir = $xtl;
+	    $xtldir =~ s#/$pq.xtl##;
+	    system 'mkdir', '-p', $xtldir;
+	}
 	unless (open(XTL,">$xtl")) {
 	    warn "scoregen.plx: unable to write to $xtl\n";
 	    next;
