@@ -137,10 +137,15 @@ link_check_protocol(const char *line)
   else if (!strncmp(line,"parallel", 8) || !strncmp(line,"source",6))
     {
       int is_source = *line == 's';
+      const char *colon = NULL;
       line += (is_source ? 6 : 8);
       while (isspace(*line))
 	++line;
-      if (*line == 'P' || *line == 'Q' || *line == 'X')
+      if ((colon = strchr(line, ':')))
+	++colon;
+      else
+	colon = line;
+      if (*colon == 'P' || *colon == 'Q' || *colon == 'X')
 	(void)scan_pair(line);
       else
 	vwarning("bad link: %s: expected P-id or Q-id (or X-id)", 

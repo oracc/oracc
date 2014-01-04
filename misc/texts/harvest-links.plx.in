@@ -96,7 +96,9 @@ process_project {
 
     print LINKBASE "<project n=\"$project\">";
     foreach my $t (@texts) {
-	index_text($t);
+	$t =~ m#/([PQX].*?)\.#;
+	my $pqx = $1;
+	index_text($t, $project, $pqx);
     }
     foreach my $t (@texts) {
 	%defs = ();
@@ -208,32 +210,30 @@ walk {
 
 sub
 index_text {
-    my $t = shift;
-    $t =~ m#/([PQX]\d{6,})\.#;
-    $pq = $1;
-    if (!$warned{$project.$pq}) {
+    my ($t,$prj,$pqx) = @_;
+    if (!$warned{$prj.$pqx}) {
 	my $xt = load_xml($t);
 	if ($xt) {
 	    print STDERR "indexing $t\n" if $verbose;
 	    foreach my $l (tags($xt,$XTF,'l')) {
 		my $label = $l->getAttribute('label');
 		if ($label) {
-		    $linkindex{"$project/$pq\:$label"} = xid($l);
-		    print STDERR "indexing $pq\:$label => ", xid($l), "\n" if $debug;
+		    $linkindex{"$prj/$pqx\:$label"} = xid($l);
+		    print STDERR "indexing $prj/pqx\:$label => ", xid($l), "\n" if $debug;
 		} else {
 		    my $t = $l->getAttribute('type');
 		    if ($t ne 'lgs' && $t ne 'bil') {
 			my $xid = xid($l);
 			print STDERR 
-			    "harvest-links.plx: $pq: absent or empty line label: $xid\n" unless $xid;
+			    "harvest-links.plx: $pqx: absent or empty line label: $xid\n" unless $xid;
 		    }
 		}
 	    }
-	    ++$indexed{$project.$pq};
+	    ++$indexed{$prj.$pqx};
 	    undef $xt;
 	} else {
-	    ++$ignore{$pq};
-	    ++$warned{$pq};
+	    ++$ignore{$prj.$pqx};
+	    ++$warned{$prj.$pqx};
 	}
     }
 }
@@ -270,12 +270,18 @@ process_protocol {
     my $link = $p->textContent();
     if ($link =~ /^def/) {
 	my ($sym,$text,$name) 
-	    = ($link =~ /^def\s+(\S+)\s+=\s+([PQX]\d+)(?:\s+=\s+(.*))?$/);
-	if ($text && $text =~ /^[PQX]\d+/) {
+	    = ($link =~ /^def\s+(\S+)\s+=\s+((?:.*:)?[PQX]\d+)(?:\s+=\s+(.*))?$/);
+	if ($text && $text =~ /^(?:.*:)?[PQX]\d+/) {
 	    print STDERR "$file:$line: $tid -- recommend def = P/Q = name\n"
 		unless $name;
 	    my $saved_pq = $pq;
-	    index_text(expand_in_project(undef,"$text.xtf", $project)) unless $indexed{$project.$text};
+	    warn "harvest-links.plx: processing link def $text\n" if $verbose;
+	    if ($text =~ /^(.*?):(.*?)$/) {
+		my($prj,$pqx) = ($1,$2);
+		index_text(expand_in_project(undef,"$pqx.xtf", $prj),$prj,$pqx) unless $indexed{$prj.$pqx};
+	    } else {
+		index_text(expand_in_project(undef,"$text.xtf", $project),$project,$text) unless $indexed{$project.$text};
+	    }
 	    $pq = $saved_pq;
 	    $defs{$sym} = $text;
 	    if ($text eq $pq) {
@@ -321,14 +327,23 @@ process_protocol {
 		# one day implement this
 	    }
 	    if ($defs{$sym}) {
+		my $symproj = undef;
 		my $flags = '';
 		$label =~ s/\s*(\?)\s*$// && ($flags = $1);
 		$label =~ s/\s*$//;
-		my $xlink = "$project/$defs{$sym}\:$label";
+		my $xlink = undef;
 		my $symdef = $defs{$sym};
+		if ($symdef =~ /^(.*?):/) {
+		    $symproj = $1;
+		    $xlink = $defs{$sym};
+		    $xlink =~ tr,:,/,;
+		    $xlink .= ":$label";
+		} else {
+		    $xlink = "$project/$defs{$sym}\:$label";
+		}
 		die unless $lid;
-		my $fref = $lid; $fref =~ s/\..*$//; $fref =~ s,^.*?/,,;
-		my $tref = $xlink; $tref =~ s/:.*$//; $tref =~ s,^.*?/,,;
+		my $fref = $lid; $fref =~ s/\..*$//;  $fref =~ tr,/,:,; # $fref =~ s,^.*?/,,;
+		my $tref = $xlink; $tref =~ s/:.*$//; $tref =~ tr,/,:,; # $tref =~ s,^.*?/,,;
 		if ($linkindex{$xlink}) {
 		    my %typeof = ('<<'=>'comesfrom','>>'=>'goesto','||'=>'parallels');
 		    my $flagstr = ($flags ? " flags=\"$flags\"" : '');
@@ -341,9 +356,6 @@ process_protocol {
 			$tref = $tmp;
 			$localpq = $symdef;
 			$symdef = $pq;
-#			$tmp = $xlink;
-#			$xlink = $lid;
-#			$lid = $tmp;
 			$xlx = $linkindex{$xlink};
 			$tmp = $lid;
 			$lid = $xlx;
