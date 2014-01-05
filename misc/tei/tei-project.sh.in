@@ -22,8 +22,6 @@ rm -fr $teidir ; mkdir -p $teidir
 clean_nl.plx $teilist
 echo teilist=$teilist
 libscripts=@@ORACC@@/lib/scripts
-rm -fr $teidir
-mkdir -p $teidir
 # create listNym (will be trimmed later if necessary)
 xsltproc --stringparam project $1 $libscripts/cbd2listNym.xsl 01bld/qpn/qpn.g2c >$teidir/01listNym.xml
 # create listPerson (will be trimmed later if necessary)
@@ -55,9 +53,10 @@ cat $teilist | while read line; do
 	$file \
 	> $teidir/$pqx.xml
 done
-rm -fr 02www/tei
 xmltei=${ORACC}/$project/00xml/tei
-ls -A $xmltei/* >/dev/null 2>&1 && ln -sf $xmltei/* ${ORACC}/xml/$project/00tei
+#ls -A $xmltei/* >/dev/null 2>&1 && ln -sf $xmltei/* ${ORACC}/xml/$project/00tei
+cp -f $xmltei/* ${ORACC}/xml/$project/00tei
+rm -fr 02www/tei
 ln -sf ${ORACC}/xml/$project/00tei 02www/tei
 chmod -R o+r 02www/tei 02xml/00tei
 # create corpus header
