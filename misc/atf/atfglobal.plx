@@ -72,12 +72,20 @@ while (<>) {
 		    next unless $whens{$w};
 		    foreach my $e (@{$whens{$w}}) {
 			my $ehash = $edits{$e};
-			foreach my $l (split(/\|/,$lem[$i])) {
-			    next unless $l;
-			    if ($l eq $$ehash{'from'}) {
+			if ($$ehash{'from'} =~ /\|/) {
+			    if ($lem[$i] eq $$ehash{'from'}) {
 				$lem[$i] = $$ehash{'to'};
 				++$$ehash{'done'};
 				last;
+			    }
+			} else {
+			    foreach my $l (split(/\|/,$lem[$i])) {
+				next unless $l;
+				if ($l eq $$ehash{'from'}) {
+				    $lem[$i] = $$ehash{'to'};
+				    ++$$ehash{'done'};
+				    last;
+				}
 			    }
 			}
 		    }
@@ -129,8 +137,6 @@ load_table {
 	++$e;
     }
     close(T);
-#    use Data::Dumper; print Dumper(\%edits);
-#    exit;
 }
 
 1;
