@@ -2,6 +2,8 @@
 use warnings; use strict; use open 'utf8';
 use Getopt::Long;
 
+# Replace P or X numbers in legacy atf files, optionally using a table
+
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 my $all = 0;
