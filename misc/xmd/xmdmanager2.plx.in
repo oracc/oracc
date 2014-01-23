@@ -1598,7 +1598,7 @@ xproject {
 		print MUSTAB "$pq\t",strip0($$r[$m]),"\n"
 		    if $$r[$m];
 	    }
-	    if ($pubimg_index >= 0 && $$r[$pubimg_index] eq 'yes') {
+	    if ($pubimg_index >= 0 && $$r[$pubimg_index] && $$r[$pubimg_index] eq 'yes') {
 		print PUBIMG "$pq\n";
 		++$pubimg{$pq};
 	    } else {
