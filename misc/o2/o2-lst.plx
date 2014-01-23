@@ -262,6 +262,8 @@ update_lists {
 # WATCHME: this was called before update_lists() and also here in the middle of it--which is right?
 #    proxy_lists();
 
+    qualify_approved();
+
     $opt = `oraccopt . build-outlined-policy`;
 
     if (!$opt || $opt eq 'approved') {
@@ -301,6 +303,20 @@ update_lists {
 	    xsystem 'touch', "$listdir/withlem", "$listdir/sanslem";
 	}
     }
+}
+
+sub
+qualify_approved {
+    my @a = ();
+    open(A, $out_approved) || die;
+    @a = (<A>); chomp @a;
+    close(A);
+    open(A, ">$out_approved") || die;
+    foreach my $a (@a) {
+	$a = "$project:$a" unless $a =~ /:/;
+	print A $a, "\n";
+    }
+    close(A);
 }
 
 sub
