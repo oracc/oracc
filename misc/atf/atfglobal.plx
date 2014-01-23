@@ -58,7 +58,7 @@ while (<>) {
 	    $lem =~ s/\s$//;
 	    $line =~ s/<<.*?>>//g;
 	    $line =~ s/--/-/;
-	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%//cd;
+	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
 	    my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
 	    my @lem = grep(defined&&length, split(/;\s+/, $lem));
