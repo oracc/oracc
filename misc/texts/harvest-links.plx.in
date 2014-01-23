@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use ORACC::NS;
@@ -7,6 +7,7 @@ use ORACC::Expand2;
 use Getopt::Long;
 use Data::Dumper;
 
+my %badatf = ();
 my $debug = 0;
 my $verbose = 0;
 my %ignore = ();
@@ -33,7 +34,6 @@ GetOptions(
 my $file = '';
 my $line = 0;
 my $last_l = undef;
-my $pq = '';
 my $project = `oraccopt`;
 
 my $linkbase_output = '';
@@ -50,7 +50,7 @@ print LINKBASE '<linkbase>';
 while (<>) {
     chomp;
     my $tproj = '';
-    m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d+/#o;
+    m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d\d\d/[PQX]\d+/#o;
     $tproj = $1;
 #    warn "tproj=$tproj\n";
     ++${$texts{$tproj}}{$_};
@@ -62,6 +62,18 @@ foreach my $p (keys %texts) {
 
 print LINKBASE '</linkbase>';
 close LINKBASE;
+
+open(L, '>01tmp/badatf.dump');
+print L Dumper(\%badatf);
+close(L);
+
+open(L, '>01tmp/indexed.dump');
+print L Dumper(\%indexed);
+close(L);
+
+open(L, '>01tmp/ignore.dump');
+print L Dumper(\%ignore);
+close(L);
 
 #open PARDUMP, '>01tmp/pardump.log';
 #print PARDUMP Dumper \%parallels_ok;
@@ -96,37 +108,49 @@ process_project {
 
     print LINKBASE "<project n=\"$project\">";
     foreach my $t (@texts) {
-	$t =~ m#/([PQX].*?)\.#;
-	my $pqx = $1;
-	index_text($t, $project, $pqx);
+#	$t = m#/([PQX].*?)\.#;
+	$t =~ m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d\d\d/([PQX]\d+)/#o;
+	my ($prj,$pqx) = ($1,$2);
+	index_text($t, $prj, $pqx);
     }
+    open(L, '>01tmp/linkindex.dump');
+    print L Dumper(\%linkindex);
+    close(L);
     foreach my $t (@texts) {
 	%defs = ();
 	%symwarned = ();
 	print STDERR "reading $t\n" if $verbose;
-	$t =~ m#/([PQX]\d+)\.#;
-	$pq = $1;
-	if (!$warned{$pq}) {
+#	$t =~ m#/([PQX]\d+)\.#;
+#	$pq = $1;
+	$t =~ m#^$ENV{'ORACC'}/bld/(.*?)/[PQX]\d\d\d/([PQX]\d+)/#o;
+	my ($prj,$pqx) = ($1,$2);
+	if (!$warned{"$prj:$pqx"}) {
 	    my $xtf = load_xml($t);
 	    if ($xtf) {
-		foreach my $c ($xtf->getDocumentElement()->childNodes()) {
-		    if ($c->isa('XML::LibXML::Element')) {
-			if ($c->localName() eq 'protocols') {
-			    foreach my $p (tags($c,$XTF,'protocol')) {
-				if ($p->getAttribute('type') eq 'link') {
-				    if ($p->textContent() =~ /^def/) {
-					process_protocol($p);
+		my $doc = $xtf->getDocumentElement();
+		if ($doc->localName() eq 'atf') {
+		    ++$badatf{"$prj:$pqx"};
+		    ++$warned{"$prj:$pqx"};
+		} else {
+		    foreach my $c ($doc->childNodes()) {
+			if ($c->isa('XML::LibXML::Element')) {
+			    if ($c->localName() eq 'protocols') {
+				foreach my $p (tags($c,$XTF,'protocol')) {
+				    if ($p->getAttribute('type') eq 'link') {
+					if ($p->textContent() =~ /^def/) {
+					    process_protocol($prj,$pqx,$p);
+					}
 				    }
 				}
 			    }
-			}
-		    }			
+			}			
+		    }
+		    walk($prj,$pqx,$xtf);
 		}
-		walk($xtf);
 		undef $xtf;
 	    } else {
 		warn("$t non-existent or invalid\n");
-		++$warned{$pq};
+		++$warned{"$prj:$pqx"};
 	    }
 	}
     }
@@ -169,15 +193,15 @@ process_project {
 
 sub
 walk {
-    my $n = shift;
+    my($prj,$pqx,$n) = @_;
     return unless $n;
     foreach my $c ($n->childNodes()) {
 	if ($c->isa('XML::LibXML::Element')) {
 	    my $name = $c->localName();
 	    if ($name eq 'protocol') {
-		process_protocol($c);
+		process_protocol($prj,$pqx,$c);
 	    } elsif ($name eq 'include' || $name eq 'referto') {
-		process_incref($c);
+		process_incref($prj,$pqx,$c);
 	    } elsif ($name eq 'l') {
 		$last_l = $c;
 		# don't step further down into the tree
@@ -194,7 +218,7 @@ walk {
 		    }
 		}
 	    } else {
-		walk($c);
+		walk($prj,$pqx,$c);
 	    }
 	} elsif ($c->isa('XML::LibXML::PI')) {
 	    my $n = $c->getName();
@@ -211,59 +235,68 @@ walk {
 sub
 index_text {
     my ($t,$prj,$pqx) = @_;
-    if (!$warned{$prj.$pqx}) {
+    if (!$warned{"$prj:$pqx"}) {
+	print STDERR "index_text: $t\n" if $verbose;
 	my $xt = load_xml($t);
 	if ($xt) {
-	    print STDERR "indexing $t\n" if $verbose;
-	    foreach my $l (tags($xt,$XTF,'l')) {
-		my $label = $l->getAttribute('label');
-		if ($label) {
-		    $linkindex{"$prj/$pqx\:$label"} = xid($l);
-		    print STDERR "indexing $prj/pqx\:$label => ", xid($l), "\n" if $debug;
-		} else {
-		    my $t = $l->getAttribute('type');
-		    if ($t ne 'lgs' && $t ne 'bil') {
-			my $xid = xid($l);
-			print STDERR 
-			    "harvest-links.plx: $pqx: absent or empty line label: $xid\n" unless $xid;
+	    if ($xt->getDocumentElement()->localName() eq 'atf') {
+		++$badatf{"$prj:$pqx"};
+		++$warned{"$prj:$pqx"};
+		print STDERR 
+		    "harvest-links.plx: $prj:$pqx: indexing prevented by ATF errors\n";
+	    } else {
+		foreach my $l (tags($xt,$XTF,'l')) {
+		    my $label = $l->getAttribute('label');
+		    if ($label) {
+			$linkindex{"$prj:$pqx~$label"} = xid($l);
+			print STDERR "indexing $prj:$pqx~$label => ", xid($l), "\n" if $debug;
+		    } else {
+			my $t = $l->getAttribute('type');
+			if ($t ne 'lgs' && $t ne 'bil') {
+			    my $xid = xid($l);
+			    print STDERR 
+				"harvest-links.plx: $pqx: absent or empty line label: $xid\n" unless $xid;
+			}
 		    }
 		}
+		++$indexed{"$prj:$pqx"};
 	    }
-	    ++$indexed{$prj.$pqx};
 	    undef $xt;
 	} else {
-	    ++$ignore{$prj.$pqx};
-	    ++$warned{$prj.$pqx};
+	    warn "harvest-links.plx: $prj:$pqx: no text edition available for indexing\n";
+	    ++$ignore{"$prj:$pqx"};
+	    ++$warned{"$prj:$pqx"};
 	}
     }
 }
 
 sub
 process_incref {
-    my $node = shift;
+    my ($prj,$pqx,$node) = @_;
+    return unless $node;
     my $id = $node->getAttribute('ref');
     my $n = $node->getAttribute('n');
     my $fref = $id;
-    $fref =~ s#^.*?/([^/]+)$#$1#;
+#    $fref =~ s#^.*?/([^/]+)$#$1#;
     if ($node->localName() eq 'include') { # i.e., comesfrom
-	my $pending = "$pq=$fref";
+	my $pending = "$prj:$pqx=$fref";
 	++$seen{$pending};
-	++${$srefs{$pq}}{$fref};
-	warn "adding sources_ok $fref -> $pq for \@include\n";
-	++$sources_ok{"$fref\->$pq"};
+	++${$srefs{"$prj:$pqx"}}{$fref};
+	warn "adding sources_ok $fref -> $prj:$pqx for \@include\n" if $verbose;
+	++$sources_ok{"$fref\->$prj:$pqx"};
     } else { # i.e., parallels
-	my $pending = "$pq=$id"; ++$seen{$pending};
-	$pending = "$fref=$pq"; ++$seen{$pending};
-	++${$prefs{$fref}}{$pq};
-	++${$prefs{$pq}}{$fref};
-	warn "adding sources_ok $fref -> $pq for \@parallel\n";
-	++$parallels_ok{"$fref\->$pq"};
+	my $pending = "$prj:$pqx=$id"; ++$seen{$pending};
+	$pending = "$fref=$prj:$pqx"; ++$seen{$pending};
+	++${$prefs{$fref}}{"$prj:$pqx"};
+	++${$prefs{"$prj:$pqx"}}{$fref};
+	warn "adding sources_ok $fref -> $prj:$pqx for \@parallel\n" if $verbose;
+	++$parallels_ok{"$fref\->$prj:$pqx"};
     }
 }
 
 sub
 process_protocol {
-    my $p = shift;
+    my($proto_prj,$proto_pqx,$p) = @_;
     my $t = $p->getAttribute('type');
     return unless $t eq 'link';
     my $tid = xid($p->ownerDocument);
@@ -274,20 +307,18 @@ process_protocol {
 	if ($text && $text =~ /^(?:.*:)?[PQX]\d+/) {
 	    print STDERR "$file:$line: $tid -- recommend def = P/Q = name\n"
 		unless $name;
-	    my $saved_pq = $pq;
 	    warn "harvest-links.plx: processing link def $text\n" if $verbose;
 	    if ($text =~ /^(.*?):(.*?)$/) {
 		my($prj,$pqx) = ($1,$2);
-		index_text(expand_in_project(undef,"$pqx.xtf", $prj),$prj,$pqx) unless $indexed{$prj.$pqx};
+		index_text(expand_in_project(undef,"$pqx.xtf", $prj),$prj,$pqx) unless $indexed{"$prj:$pqx"};
 	    } else {
 		index_text(expand_in_project(undef,"$text.xtf", $project),$project,$text) unless $indexed{$project.$text};
 	    }
-	    $pq = $saved_pq;
 	    $defs{$sym} = $text;
-	    if ($text eq $pq) {
-		warn "$file:$line: text refers to itself in #link def ($text=$pq)\n";
+	    if ($text eq "$proto_prj:$proto_pqx") {
+		warn "$file:$line: text refers to itself in #link def ($text=$proto_prj:$proto_pqx)\n";
 	    } else {
-		$pending{"$text=$pq"} = 1;
+		$pending{"$text=$proto_prj:$proto_pqx"} = 1;
 	    }
 	} else {
 	    print STDERR "$file:$line: $tid -- bad def: $link\n";
@@ -295,67 +326,66 @@ process_protocol {
     } elsif ($link =~ /^source/) {
 	my ($text,$name) 
 	    = ($link =~ /^source\s+([PQX]\d+)(?:\s+=\s+(.*))?$/);
-	if ($text && $text =~ /^[PQX]\d+/) {
-	    print STDERR "$file:$line: $tid -- recommend source Pxxxxxx = name\n"
+	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
+	    print STDERR "$file:$line: $tid -- recommend source PROJECT:Pxxxxxx = name\n"
 		unless $name;
-	    my $pending = "$pq=$text";
+	    my($prj,$pqx) = ($1,$2);
+	    my $pending = "$prj:$pqx=$text";
 	    ++$seen{$pending};
-	    ++${$srefs{$pq}}{$text};
-	    ++$sources_ok{"$text\->$pq"};
+	    ++${$srefs{"$prj:$pqx"}}{$text};
+	    ++$sources_ok{"$text\->$prj:$pqx"};
 	} else {
 	    print STDERR "$file:$line: $tid -- bad source: $link\n";
 	}
     } elsif ($link =~ /^parallel/) {
 	my ($text,$name) 
 	    = ($link =~ /^parallel\s+([PQX]\d+)(?:\s+=\s+(.*))?$/);
-	if ($text && $text =~ /^[PQX]\d+/) {
+	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
 	    print STDERR "$file:$line: $tid -- recommend parallel Pxxxxxx = name\n"
 		unless $name;
-	    my $pending = "$pq=$text"; ++$seen{$pending};
-	    $pending = "$text=$pq"; ++$seen{$pending};
-	    ++${$prefs{$text}}{$pq};
-	    ++${$prefs{$pq}}{$text};
-	    ++$parallels_ok{"$text\->$pq"};
+	    my($prj,$pqx) = ($1,$2);
+	    my $pending = "$prj:$pqx=$text"; ++$seen{$pending};
+	    $pending = "$text=$prj:$pqx"; ++$seen{$pending};
+	    ++${$prefs{$text}}{"$prj:$pqx"};
+	    ++${$prefs{"$prj:$pqx"}}{$text};
+	    ++$parallels_ok{"$text\->$prj:$pqx"};
 	} else {
 	    print STDERR "$file:$line: $tid -- bad source: $link\n";
 	}
     } elsif ($link =~ /^(?:<<|>>|\|\|)/) {
 	my $lid = xid($last_l);
-	my($type,$sym,$label) = ($link =~ /^(<<|>>|\|\|)\s*([A-Z][A-Z0-9]*)\s+(.*?)\s*$/);
+	my($type,$sym,$label) = ($link =~ /^(<<|>>|\|\|)\s*([A-Za-z][A-Za-z0-9₀-₉]*)\s+(.*?)\s*$/);
 	if ($type && $sym && $label) {
 	    if ($label =~ s/\s*(["~|])//) {
 		# one day implement this
 	    }
 	    if ($defs{$sym}) {
-		my $symproj = undef;
 		my $flags = '';
 		$label =~ s/\s*(\?)\s*$// && ($flags = $1);
 		$label =~ s/\s*$//;
 		my $xlink = undef;
 		my $symdef = $defs{$sym};
-		if ($symdef =~ /^(.*?):/) {
-		    $symproj = $1;
-		    $xlink = $defs{$sym};
-		    $xlink =~ tr,:,/,;
-		    $xlink .= ":$label";
-		} else {
-		    $xlink = "$project/$defs{$sym}\:$label";
-		}
+		$symdef =~ /^(.*?):(.*?)$/;
+		my($prj,$pqx) = ($1,$2);
+		$xlink = "$prj:$pqx~$label";
 		die unless $lid;
-		my $fref = $lid; $fref =~ s/\..*$//;  $fref =~ tr,/,:,; # $fref =~ s,^.*?/,,;
-		my $tref = $xlink; $tref =~ s/:.*$//; $tref =~ tr,/,:,; # $tref =~ s,^.*?/,,;
+		#my $fref = $lid; $fref =~ s/\..*$//;  $fref =~ tr,/,:,; # $fref =~ s,^.*?/,,;
+		my $fref = "$proto_prj:$proto_pqx";
+		my $tref = $xlink; $tref =~ s/\..*$//; $tref =~ tr,/,:,; $tref =~ s/~.*$//;
 		if ($linkindex{$xlink}) {
 		    my %typeof = ('<<'=>'comesfrom','>>'=>'goesto','||'=>'parallels');
 		    my $flagstr = ($flags ? " flags=\"$flags\"" : '');
 		    my $xlx;
-		    my $localpq = $pq;
+		    my $localprj = $prj;
+		    my $localpqx = $pqx;
 		    if ($type eq '<<') {
 			$type = '>>';
 			my $tmp = $fref;
 			$fref = $tref;
 			$tref = $tmp;
-			$localpq = $symdef;
-			$symdef = $pq;
+			$localprj = $prj;
+			$localpqx = $pqx;
+			$symdef = "$prj:$pqx";
 			$xlx = $linkindex{$xlink};
 			$tmp = $lid;
 			$lid = $xlx;
@@ -370,19 +400,19 @@ process_protocol {
 		    print LINKBASE "<to ref=\"$tref\" line=\"$xlx\"/>";
 		    print LINKBASE "</link>";
 		    if ($type eq '>>') {
-			warn "harvest-links.plx: $pq: undefined symdef\n"
+			warn "harvest-links.plx: $prj:$pqx: undefined symdef\n"
 			    unless $symdef;
-			warn "harvest-links.plx: $pq: undefined localpq\n"
-			    unless $localpq;
-			my $pending = "$symdef=$localpq";
+			warn "harvest-links.plx: $prj:$pqx: undefined localpq\n"
+			    unless $localpqx;
+			my $pending = "$symdef=$localprj:$localpqx";
 			++$seen{$pending};
 			++${$srefs{$tref}}{$fref};
 			++$sources_ok{"$fref\->$tref"};
 		    } elsif ($type eq '||') {
-			my $pending = "$pq=$symdef"; ++$seen{$pending};
-			$pending = "$symdef=$pq"; ++$seen{$pending};
-			++${$prefs{$symdef}}{$pq};
-			++${$prefs{$pq}}{$symdef};
+			my $pending = "$prj:$pqx=$symdef"; ++$seen{$pending};
+			$pending = "$symdef=$prj:$pqx"; ++$seen{$pending};
+			++${$prefs{$symdef}}{"$prj:$pqx"};
+			++${$prefs{"$prj:$pqx"}}{$symdef};
 			++$parallels_ok{"$fref\->$tref"};
 		    } elsif ($type eq '++') {
 			# TODO
@@ -394,31 +424,32 @@ process_protocol {
 		    }
 		} else {
 		    if ($type eq '>>') {
-			my $pending = "$defs{$sym}=$pq";
+			my $pending = "$defs{$sym}=$prj:$pqx";
 			++$seen{$pending};
-			++${$srefs{$defs{$sym}}}{$pq};
+			++${$srefs{$defs{$sym}}}{"$prj:$pqx"};
 			++$sources_ok{"$fref\->$tref"};
 		    } elsif ($type eq '||') {
-			my $pending = "$pq=$defs{$sym}";
+			my $pending = "$prj:$pqx=$defs{$sym}";
 			++$seen{$pending};
-			++${$prefs{$defs{$sym}}}{$pq};
-			++${$prefs{$pq}}{$defs{$sym}};
+			++${$prefs{$defs{$sym}}}{"$prj:$pqx"};
+			++${$prefs{"$prj:$pqx"}}{$defs{$sym}};
 			++$parallels_ok{"$fref\->$tref"};
 		    } else {
-			my $pending = "$pq=$defs{$sym}";
+			my $pending = "$prj:$pqx=$defs{$sym}";
 			++$seen{$pending};
-			++${$srefs{$pq}}{$defs{$sym}};
+			++${$srefs{"$prj:$pqx"}}{$defs{$sym}};
 			++$sources_ok{"$tref\->$fref"};
 		    }
-		    print STDERR "$file:$line: $lid -- bad label: '$link' => '$xlink'\n"
-			unless $ignore{$defs{$sym}} || $link =~ /[A-Z][A-Z0-9]*\s+\?$/;
+		    unless ($ignore{$defs{$sym}} || $badatf{$defs{$sym}} || $link =~ /[A-Za-z][A-Za-z0-9₀-₉]*\s+\?$/) {
+			print STDERR "$file:$line: $lid -- bad label: '$link' => '$xlink'\n";
+		    }
 		}
 	    } else {
 		print STDERR "$file:$line: $lid -- bad symbol: $sym\n"
 		    unless $symwarned{$sym}++;
 	    }
 	} else {
-	    print STDERR "$file:$line: $lid -- bad xref: $link\n";
+	    print STDERR "$file:$line: $lid -- bad syntax in link specification: $link\n";
 	}
     } else {
 	print STDERR "$file:$line: bad link: $link\n";

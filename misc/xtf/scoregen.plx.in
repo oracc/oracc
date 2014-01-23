@@ -113,6 +113,7 @@ exemplar_links {
 	    }
 	    my $id = $$el[1];
 	    my $Q = $id;
+	    $Q =~ s/^.*?://;
 	    $Q =~ s/\..*$//;
 	    if ($a && $a->isa('XML::LibXML::Element') && $a->nodeName() eq 'a') {
 		$a->setAttribute('href',"javascript:showblock('$project','$Q','sb.$id')");
@@ -132,7 +133,7 @@ sub
 load_codes {
     my $PQ = shift;
     my $local_project = shift || $project;
-    my $xmd = expand_in_project(undef,"$PQ.xmd",$local_project);
+    my $xmd = expand_in_project(undef,"$PQ.xmd");
     my %c = ORACC::XMD::SortCodes::get($xmd);
 
     if (scalar keys %c) {
@@ -206,7 +207,7 @@ create_scores {
     print xmldecl();
     print '<scores>';
     foreach my $Q (sort keys %Q) {
-	next unless $Q =~ /^Q/;
+	next unless $Q =~ /(^|:)Q/;
 	print STDERR "generating score for $Q\n" unless $quiet;
 	my $fname = '';
 	if ($Q =~ /:/) {
@@ -242,7 +243,6 @@ create_scores {
 	    warn "scoregen: tr\@$id\n" if $verbose;
 	    print "<div xmlns=\"http://www.w3.org/1999/xhtml\" n=\"$n\" class=\"score_map\">";
 	    print "<table class=\"score_block\" xml:id=\"sb.$id\" n=\"$n\">";
-#	    $tr =~ s/<a /<a href="javascript:showblock('$Q','sb.$id')" /;
 	    print $tr;
 	    # find the <a>
 	    my $a = $t->firstChild();
@@ -255,7 +255,9 @@ create_scores {
 		$a = $a->nextSibling();
 	    }
 	    if ($a->isa('XML::LibXML::Element')) {
-		$a->setAttribute('href',"javascript:showblock('$project','$Q','sb.$id')");
+		my $xQ = $Q;
+		$Q =~ s/^.*?://;
+		$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
 	    } elsif ($t->getAttribute('class') ne 'nonl') {
 		my $txh_id = xid($t);
 		print STDERR "$Q: $txh_id: expected <a> not found\n";
@@ -367,8 +369,8 @@ dump_tr {
 	$label =~ s/^\((.*?)\s*\)$/$1/;
 	my $pqid = $lid;
 	$pqid =~ s/\..*$//;
-	my $type = ($pqid =~ /^Q/ ? 'composite' : 'exemplar');
-	$label = "<a href=\"javascript:show$type('$project','$pqid','$lid','$ce_cid')\">$label</a>";
+#	my $type = ($pqid =~ /^Q/ ? 'composite' : 'exemplar');
+	$label = "<a href=\"javascript:showexemplar('$project','$pqid','$lid','$ce_cid')\">$label</a>";
 	print "<td class=\"enum\">$label</td>";
 	print "</tr>";
     }
@@ -379,7 +381,7 @@ ecmp {
     my($a_pq,$b_pq) = @_;
     $a_pq =~ s/\..*$//;
     $b_pq =~ s/\..*$//;
-    ${$codes{$a_pq}}{'designation'} <=> ${$codes{$b_pq}}{'designation'};
+    (${$codes{$a_pq}}{'designation'} || 0) <=> (${$codes{$b_pq}}{'designation'} || 0);
 }
 
 sub
@@ -387,9 +389,9 @@ pcmp {
     my($a_pq,$b_pq) = @_;
     $a_pq =~ s/\..*$//;
     $b_pq =~ s/\..*$//;
-    ${$codes{$a_pq}}{'period'} <=> ${$codes{$b_pq}}{'period'}
+    (${$codes{$a_pq}}{'period'} || 0) <=> (${$codes{$b_pq}}{'period'} || 0)
     ||
-    ${$codes{$a_pq}}{'designation'} <=> ${$codes{$b_pq}}{'designation'};
+    (${$codes{$a_pq}}{'designation'} || 0) <=> (${$codes{$b_pq}}{'designation'} || 0);
 }
 
 sub
@@ -434,7 +436,7 @@ sprefs {
 	}
     }
 
-    print XTL map { $$_[1] } sort { $$a[0] <=> $$b[0] } @items;
+    print XTL map { $$_[1] } sort { ($$a[0] || 0) <=> ($$b[0] || 0) } @items;
 }
 
 sub
@@ -449,14 +451,11 @@ print_html_header {
 <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print" />
-<link rel="stylesheet" type="text/css" href="/css/p2-p1.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/p3cbd.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/score.css" />
-<link rel="stylesheet" type="text/css" href="/$project/p2.css"/>
-<script src="/js/p2.js" type="text/javascript">
-</script>
-<script src="/js/p2-shortcuts.js" type="text/javascript">
-</script>
-<script src="/js/p2-keys.js" type="text/javascript">
+<link rel="stylesheet" type="text/css" href="/$project/css/p3colours.css"/>
+<script src="/js/p3.js" type="text/javascript">
 </script>
 <script type="text/javascript">
 

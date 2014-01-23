@@ -2248,8 +2248,15 @@ scan_incref(unsigned char *s, enum e_type type)
       if (type == e_include && project)
 	{
 	  char buf[128];
-	  sprintf(buf,"%s:%s",project,cc(ref));
-	  appendAttr(increfp,attr(a_ref,ucc(buf)));
+	  if (!strchr(ref, ':'))
+	    {
+	      sprintf(buf,"%s:%s",project,cc(ref));
+	      appendAttr(increfp,attr(a_ref,ucc(buf)));
+	    }
+	  else
+	    {
+	      appendAttr(increfp,attr(a_ref,ref));
+	    }
 	}
       else
 	appendAttr(increfp,attr(a_ref,ref));
