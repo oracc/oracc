@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
-my $project = `oraccopt`;
+my $project = shift @ARGV;
+$project = `oraccopt` unless $project;
 die "default-link-defs.plx must be run from a project directory. Stop.\n" unless $project;
 my @atf = <00atf/*.atf>;
 foreach my $a (@atf) {

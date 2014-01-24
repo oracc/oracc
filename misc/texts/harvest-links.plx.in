@@ -325,7 +325,7 @@ process_protocol {
 	}
     } elsif ($link =~ /^source/) {
 	my ($text,$name) 
-	    = ($link =~ /^source\s+([PQX]\d+)(?:\s+=\s+(.*))?$/);
+	    = ($link =~ /^source\s+((.*?):[PQX]\d+)(?:\s+=\s+(.*))?$/);
 	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
 	    print STDERR "$file:$line: $tid -- recommend source PROJECT:Pxxxxxx = name\n"
 		unless $name;
@@ -339,7 +339,7 @@ process_protocol {
 	}
     } elsif ($link =~ /^parallel/) {
 	my ($text,$name) 
-	    = ($link =~ /^parallel\s+([PQX]\d+)(?:\s+=\s+(.*))?$/);
+	    = ($link =~ /^parallel\s+((.*?):[PQX]\d+)(?:\s+=\s+(.*))?$/);
 	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
 	    print STDERR "$file:$line: $tid -- recommend parallel Pxxxxxx = name\n"
 		unless $name;
@@ -350,7 +350,7 @@ process_protocol {
 	    ++${$prefs{"$prj:$pqx"}}{$text};
 	    ++$parallels_ok{"$text\->$prj:$pqx"};
 	} else {
-	    print STDERR "$file:$line: $tid -- bad source: $link\n";
+	    print STDERR "$file:$line: $tid -- bad parallel: $link\n";
 	}
     } elsif ($link =~ /^(?:<<|>>|\|\|)/) {
 	my $lid = xid($last_l);
@@ -371,7 +371,7 @@ process_protocol {
 		die unless $lid;
 		#my $fref = $lid; $fref =~ s/\..*$//;  $fref =~ tr,/,:,; # $fref =~ s,^.*?/,,;
 		my $fref = "$proto_prj:$proto_pqx";
-		my $tref = $xlink; $tref =~ s/\..*$//; $tref =~ tr,/,:,; $tref =~ s/~.*$//;
+		my $tref = $xlink; $tref =~ s/\..*$//; $tref =~ s/~.*$//; # $tref =~ tr,/,:,;
 		if ($linkindex{$xlink}) {
 		    my %typeof = ('<<'=>'comesfrom','>>'=>'goesto','||'=>'parallels');
 		    my $flagstr = ($flags ? " flags=\"$flags\"" : '');

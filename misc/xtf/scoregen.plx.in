@@ -43,6 +43,7 @@ my %Q = ();
 my %PQ = ();
 
 my %codes = ();
+my %nocodes = ();
 my %exemplar_lists = ();
 my %exemplar_links = ();
 my %parallel_lists = ();
@@ -139,9 +140,11 @@ load_codes {
     if (scalar keys %c) {
 	$c{'designation'} = $c{'name'} unless $c{'designation'};
 	$codes{$PQ} = { %c };
+	warn("scoregen.plx: $PQ: loaded codes from $xmd\n") if $verbose;
     } else {
-	warn("no codes for $PQ\n");
+	warn("scoregen.plx: $PQ: $xmd absent or corrupt\n");
 	$codes{$PQ} = { @nocodes };
+	++$nocodes{$PQ};
     }
 }
 
@@ -227,7 +230,7 @@ create_scores {
 		$txh_table_node = $x;
 		last;
 	    }
-	}	
+	}
 	my $n = xmlify($txh_table_node->getAttribute('n'));
 	print "<?destfile $sxh?>";
 	print_html_header($n, $project);
@@ -288,7 +291,7 @@ create_xtls {
 #	my $n = ORACC::XMD::SortLabels::get('N',${$codes{$pq}}{'designation'});
 	print XLST "$pq\n";
 	my $xtl = '';
-	if ($xtl =~ /:/) {
+	if ($pq =~ /:/) {
 	    $xtl = expand_in_project(undef,"$pq.xtl");
 	} else {
 	    $xtl = expand_in_project(undef,"$pq.xtl",$project);
@@ -296,7 +299,7 @@ create_xtls {
 	# make the directory in case we reference a Q that has no edition or xmd
 	if (!-w $xtl) {
 	    my $xtldir = $xtl;
-	    $xtldir =~ s#/$pq.xtl##;
+	    $xtldir =~ s#/[PQX]\d+.xtl##;
 	    system 'mkdir', '-p', $xtldir;
 	}
 	unless (open(XTL,">$xtl")) {
@@ -412,10 +415,12 @@ sprefs {
 	    $sp_project = 'cdli';
 	    $path = expand_in_project(undef,$r,'cdli');
 	}
+#	warn "sprefs: load_codes r=$r, sp_project=$sp_project\n";
 	load_codes($r,$sp_project) unless $codes{$r};
 #	my $n = ORACC::XMD::SortLabels::get('N',${$codes{$r}}{'designation'});
 #	print XTL "<item path=\"$path\" text=\"$r\" n=\"$n\"/>";
-	my $xmd = ORACC::XMD::Fields::get_in_project($sp_project,$r);
+	my $r_pq = $r; $r_pq =~ s/^.*?://;
+	my $xmd = ORACC::XMD::Fields::get_in_project($sp_project,$r_pq);
 	my $xmdproj = 1;
 	if ($$xmd{'designation'}) {
 #	    print STDERR "$$xmd{'designation'} = ${$codes{$r}}{'designation'}\n";
@@ -427,9 +432,8 @@ sprefs {
 #	    print XTL "<item path=\"$path\" text=\"$r\" n=\"$$xmd{'name'}\"/>";
 	    push @items, [ ${$codes{$r}}{'name'} , 
 			   "<item proj=\"$sp_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'name'}\"/>" ];
-
 	} else {
-	    print STDERR "no designation for $r\n";
+	    print STDERR "no designation for $r\n" unless $nocodes{$r};
 	}
 	if ($xmdproj) {
 	    ORACC::XMD::Fields::drop_in_project($sp_project,$r);
