@@ -12,11 +12,44 @@ Install:
 P3:
 ===
 
+* images in the esp pages do not come out (by design?)
+
+* in the glossaries, when I click on a letter in the left pane, the
+search box needs to be empty or else nothing happens.
+
+* very brief test of advanced search seemed to be fine (combining
+transliteration with transliteration and transliteration with
+catalog). Combination of searching for transliteration gu-za with
+translation chair does not yield results.
+
 * Check things that may have broken now that all p2 css/js has been removed
 
 * oversize heading in cbd sig popup
 
 * what are all the (-1x) items in gkab glos?
+
+-* in the pager, going from an edition to a glossary item works
+    fine. Then from the glossary item to a list of attestations does
+    not work.  example: Q000035 line 21 links to entry ub[corner](N)
+    which has 11 attestations. Clicking on anything there opens an
+    empty window with the alphabet in the left pane (same thing
+    happens when starting from a P) 
+
+-* when opening the Sumerian glossary I get a summary list of A
+    words. If I click on any of those words I get an empty page. When
+    I click on A (in left pane) I get the full A word entries and when
+    clicking on those words a glossary page opens (correctly). In
+    those glossary pages the links work (opening a list of
+    attestations), but the links to those attestations open an empty
+    page.
+
+-* in the pager searching for dug3 I get 269 items in 11 pages. For
+   some reason page 4 is empty (haven't found any rhyme or reason
+   there). Something similar happens when searching for lemmatization
+   aszte
+
+- * when I search in the glossaries for anything it downloads a file
+called "pager"
 
 -* esp2 not installed by ncr
 
