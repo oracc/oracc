@@ -97,6 +97,7 @@ function p3zoom(z) {
 }
 
 function p3Letter(l) {
+    document.getElementById('srch').value = '';
     document.getElementById('gxis').value = '';
     document.getElementById('glet').value = l;
     document.getElementById('p3form').submit();
@@ -121,6 +122,7 @@ function p3GlosControls() {
     document.getElementById('p3srchtype').style.display = 'none';
     document.getElementById('p3CbdLangDisplay').style.display= 'inline';
     if (document.getElementById('glet').value.length > 0) {
+	alert('glet='+document.getElementById('glet').value);
 	document.getElementById('p3itemnav').style.display= 'none';
 	document.getElementById('p3pagenav').style.display= 'none';
     }

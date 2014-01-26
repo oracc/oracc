@@ -398,11 +398,15 @@ run_form_maker {
 			$rep = $p{$var};
 		    }
 		} else {
-		    if ($var eq 'glosDisplay' && $projtype eq 'glossary') {
-			$rep = $p{'project'};
-			$fullrep = 1;
+		    if ($var eq 'glosDisplay') {
+			if ($projtype eq 'glossary') {
+			    $rep = $p{'project'};
+			    $fullrep = 1;
+			} else {
+			    $rep = $p{'glos'};
+			}
 		    } else {
-			$rep = $p{'glos'};
+			$rep = $p{$var};
 		    }
 		}
 		warn "cgivar $var = $rep\n";
