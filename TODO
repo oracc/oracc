@@ -14,9 +14,6 @@ P3:
 
 * images in the esp pages do not come out (by design?)
 
-* in the glossaries, when I click on a letter in the left pane, the
-search box needs to be empty or else nothing happens.
-
 * very brief test of advanced search seemed to be fine (combining
 transliteration with transliteration and transliteration with
 catalog). Combination of searching for transliteration gu-za with
@@ -27,6 +24,9 @@ translation chair does not yield results.
 * oversize heading in cbd sig popup
 
 * what are all the (-1x) items in gkab glos?
+
+-* in the glossaries, when I click on a letter in the left pane, the
+search box needs to be empty or else nothing happens.
 
 -* in the pager, going from an edition to a glossary item works
     fine. Then from the glossary item to a list of attestations does
