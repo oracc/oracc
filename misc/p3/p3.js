@@ -125,6 +125,10 @@ function p3GlosControls() {
 	alert('glet='+document.getElementById('glet').value);
 	document.getElementById('p3itemnav').style.display= 'none';
 	document.getElementById('p3pagenav').style.display= 'none';
+    } else {
+	if (document.getElementById('gxis').value.length > 0) {
+	    p3NoOutline();
+	}
     }
 }
 
