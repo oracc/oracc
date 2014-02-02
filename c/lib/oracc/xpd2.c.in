@@ -63,7 +63,7 @@ xpd_init(const char *project, struct npool *pool)
 	vnotice("xpd_init: loaded %s",buf);
     }
   else if (strcmp(project, "oracc"))
-    vwarning("xpd_init: no lib/config.xml file for project %s", project);
+    vwarning("xpd_init: %s not found or not readable", buf);
   else
     {
       if (verbose)
