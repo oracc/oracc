@@ -334,7 +334,12 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	    BIT_SET(iflags, F2_FLAGS_LEM_NEW);
 
 	  if (BIT_ISSET(iflags,F2_FLAGS_LEM_NEW))
-	    *--lem = '+';
+	    {
+	      char *tmp = malloc(strlen(lem) + 2);
+	      sprintf(tmp, "+%s", lem);
+	      lem = npool_copy(tmp, xc->pool);
+	      free(tmp);
+	    }
 
 	  if (alt_count++)
 	    {
