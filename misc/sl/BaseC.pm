@@ -415,7 +415,7 @@ values {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl $db_name $db_file '$_[0]'`
+    `@@ORACC@@/bin/sl -p $db_name -d $db_file -k '$_[0]'`
 }
 
 1;
