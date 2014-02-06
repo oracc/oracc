@@ -56,6 +56,7 @@ if ($list) {
     open(IN,$list) || die "can't open list file $list\n";
     while (<IN>) {
 	foreach my $n (split(/\s+/)) {
+	    $n =~ s/^.*?://;
 	    ++$print{$n};
 	    push @order, $n;
 	}
@@ -196,7 +197,7 @@ while (<>) {
 	}
     } elsif (/^&/) {
 	chomp;
-	warn "atfsplit.plx: bad &-line '$_'";
+	warn "atfsplit.plx: bad &-line '$_'" unless /^&\s/;
 	$printing = 0;
     } else {
 	print if $printing;
