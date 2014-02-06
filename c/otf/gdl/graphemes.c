@@ -225,10 +225,11 @@ static int
 gmods(register unsigned char *g, struct mods *modsbuf)
 {
   struct mods *mp = modsbuf;
-  char *datap;
+  char *datap = NULL;
+
   while (*g)
     {
-      if (mp - modsbuf > MODS_MAX)
+      if (mp - modsbuf >= MODS_MAX)
 	{
 	  fprintf(stderr,"too many modifiers\n");
 	  exit(2);
@@ -323,13 +324,13 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	    unsigned char buf[5];
 	    unsigned char *b = buf;
 	    unsigned char *g2 = g;
-	    while (*g2)
+	    while (*g2 && b - buf < 3)
 	      *b++ = *g2++;
 	    *b = '\0';
 	    if (is_flag[*buf])
 	      vwarning("misplaced flag at %s", buf);
 	    else
-	      vwarning("bad character in grapheme at %s",buf);
+	      vwarning("bad character in grapheme at %s", buf);
 	    return -1;
 	  }
 	}
@@ -1784,6 +1785,7 @@ singleton(register unsigned char *g, enum t_type type)
   struct grapheme*gp = calloc(1,sizeof(struct grapheme));
   int nmods = 0;
   static struct mods modsbuf[MODS_MAX];
+  
   assert(gp!=NULL);
   assert(g!=NULL);
   gp->type = type;
@@ -1804,7 +1806,7 @@ singleton(register unsigned char *g, enum t_type type)
 	}
       else if (curr_lang->cset)
 	{
-	  size_t wlen;
+	  size_t wlen = 0;
 	  wchar_t *wbase = utf2wcs(gp->g.s.base, &wlen);
 	  curr_lang->cset->val(wbase,wlen);
 	}
