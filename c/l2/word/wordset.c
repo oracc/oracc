@@ -6,6 +6,7 @@
 #include "npool.h"
 #include "memblock.h"
 #include "words.h"
+#include "misc.h"
 
 int wordset_debug = 0;
 
@@ -24,6 +25,7 @@ static struct npool *w2_pool = NULL;
 static void getkey_init(void);
 static const Uchar *getkey(const Uchar *str);
 
+#if 0
 static int
 pct(int amount, int total)
 {
@@ -32,6 +34,7 @@ pct(int amount, int total)
   i *= 100;
   return (int)(i+.5);
 }
+#endif
 
 void
 w2_init(void)
