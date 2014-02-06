@@ -379,7 +379,7 @@ hash_exec_user (Hash_table *htab, void (*fnc)(void *, void*), void *user)
 }
 
 void
-hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *))
+hash_exec2 (Hash_table *htab, void (*fnc)(const unsigned char *,void *))
 {
   Unsigned32 i, j;
   Hash_element **s, *p;
@@ -405,7 +405,7 @@ hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *))
 }
 
 void
-hash_exec_user_key (Hash_table *htab, void (*fnc)(Uchar *, void*), void *user)
+hash_exec_user_key (Hash_table *htab, void (*fnc)(const unsigned char *, void*), void *user)
 {
   Unsigned32 i, j;
   Hash_element **s, *p;
@@ -422,6 +422,32 @@ hash_exec_user_key (Hash_table *htab, void (*fnc)(Uchar *, void*), void *user)
 		  while (p != NULL)
 		    {
 		      fnc (p->key, user);
+		      p = p->next;
+		    }
+		}
+	    }
+	}
+    }
+}
+
+void
+hash_exec_user_key_data (Hash_table *htab, void (*fnc)(const unsigned char *, void*, void *), void *user)
+{
+  Unsigned32 i, j;
+  Hash_element **s, *p;
+ 
+  if (htab != NULL)
+    {
+      for (i = 0; i < htab->segment_count; i++)
+	{
+	  if ((s = htab->directory[i]) != NULL)
+	    {
+	      for (j = 0; j < SEGMENT_SIZE; j++)
+		{
+		  p = s[j];
+		  while (p != NULL)
+		    {
+		      fnc (p->key, p->data, user);
 		      p = p->next;
 		    }
 		}
