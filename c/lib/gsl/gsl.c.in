@@ -113,8 +113,8 @@ sH(void *userData, const char *name, const char **atts)
   else if (!strcmp(name,"utf8"))
     {
       const char *h = findAttr(atts, "hex");
-      fprintf(stderr, "%s => %s\n", h, sign_sn);
-      hash_add(hex_tab, npool_copy((const unsigned char *)h, psl_pool), sign_sn);
+      /* fprintf(stderr, "%s => %s\n", h, sign_sn); */
+      hash_add(hex_tab, npool_copy((const unsigned char *)h, psl_pool), curr_unitary_sn);
       charData_discard();
     }
 }
