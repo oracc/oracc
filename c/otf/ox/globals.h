@@ -31,6 +31,7 @@ extern int need_lemm;
 extern int no_destfile;
 extern int no_pi;
 extern int odt_serial;
+extern int report_all_label_errors;
 extern int show_toks;
 extern int sparse_lem;
 extern int verbose;

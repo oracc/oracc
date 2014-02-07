@@ -662,6 +662,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	  else
 	    {
 	      warning("unclosed ')' in label");
+	      start_lnum = -1;
 	      return lines+1;
 	    }
 	  ++s;
@@ -710,7 +711,10 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	  trans_wid = 0;
 
 	  if (NULL == lines[0])
-	    return lines;
+	    {
+	      start_lnum = -1;
+	      return lines;
+	    }
 	  
 	  nlines = lines;
 	  scan_multi_paras(2);
@@ -731,38 +735,6 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
       xstrcpy(unit_buf_nump,trans_rest_of_line(s));
       skip_blank_lines();
       break;
-#if 0
-    case etu_span:
-      xstrcpy(span_buf,trans_rest_of_line(s));
-      ++lines;
-      ++lnum;
-      s = *lines;
-      curr_block = appendChild(text,
-			       elem(e_xh_p,NULL,lnum,DIVISION));
-      ctr(curr_block);
-      setAttr(curr_block,n_xh,(unsigned char *)nstab[n_xh].ns);
-      setAttr(curr_block,n_xtr,(unsigned char *)nstab[n_xtr].ns);
-      
-      sprintf(trans_p_idbuf,"%s.%d",trans_id_base,next_trans_p_id++);
-      appendAttr(curr_block,attr(a_xml_id,ucc(trans_p_idbuf)));
-      trans_wid = 0;
-      
-      if (NULL == lines[0])
-	return lines;
-      
-      nlines = lines;
-      scan_multi_paras(2);
-      
-      labeled_labels(curr_block,span_buf);
-      se_label(curr_block,cc(text_n),cc(span_buf));
-      if (trans_parenned_labels)
-	parenify((char*)span_buf);
-      appendAttr(curr_block, attr(a_xtr_label,span_buf));
-      xstrcpy(last_label_buf,span_buf);
-
-      skip_blank_lines();
-      break;
-#endif
     case etu_note:
       /* Do lookahead for note mark so we can set up the internal note linkage
 	 correctly */
@@ -817,6 +789,8 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
     ++lines;
   else
     --lnum;
+
+  start_lnum = -1;
   return lines;
 }
 
@@ -890,6 +864,9 @@ trans_dollar(unsigned char **lines)
   while (isspace(*s))
     ++s;
   (void)trans_inline(curr_block,s,NULL,0);
+
+  start_lnum = -1;
+
   return lines;
 }
 
@@ -1162,6 +1139,9 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
       ++lnum;
       ++lines;
     }
+
+  start_lnum = -1;
+
   return lines;
 }
 

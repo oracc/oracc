@@ -232,7 +232,9 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
   int nflags;
   enum block_levels nonx_attach;
   unsigned char *eol = NULL;
+  extern int start_lnum;
 
+  start_lnum = -1;
   transtype = 0;
   curr_lang = global_lang;
   protocol_state = s_inter;
