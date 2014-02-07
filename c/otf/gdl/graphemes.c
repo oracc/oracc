@@ -918,6 +918,7 @@ gparse(register unsigned char *g, enum t_type type)
     {
       /* make it impossible for gparse to return NULL */
       gp = singleton(g,g_v);
+      gp->gflags = GFLAGS_BAD;
     }
 #endif
 
