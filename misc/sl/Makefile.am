@@ -1,10 +1,11 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = sametlit.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh \
-	sl-se.plx sl-xml.plx slmanager.plx slsig.plx
+	sl-se.plx sl-xml.plx slmanager.plx slsig.plx sl-sortcodes.plx \
+	rep-filter.plx rep-sort.plx rep-xml.plx
 cgibin_SCRIPTS=slse
 texdata_DATA = gslmac.tex
-scriptdata_DATA = gsl-TeX.xsl sl-HTML.xsl
+scriptdata_DATA = gsl-TeX.xsl sl-HTML.xsl rep-sl.xsl
 
 slse: slse.in
 	$(ORACCIFY) slse.in

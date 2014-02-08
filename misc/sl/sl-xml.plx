@@ -2,9 +2,21 @@
 use warnings; use strict; use open ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use Data::Dumper;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
 my $project = 'ogsl';
+
+my @sortcodes = `sl-sortcodes.plx`; chomp @sortcodes;
+my %sortcodes = ();
+foreach my $s (@sortcodes) {
+    my($sign,@codes) = split(/\t/, $s);
+    $sortcodes{$sign} = [ @codes ];
+}
+
+#open(C, '>codes.dump');
+#print C Dumper \%sortcodes;
+#close(C);
 
 my $asl = shift @ARGV;
 if ($asl) {
@@ -12,7 +24,7 @@ if ($asl) {
 	$asl = "00lib/$asl.asl";
     }
 } else {
-    $asl = "00lib/ogsl-she.asl" unless $asl;
+    $asl = "00lib/ogsl.asl";
 }
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
@@ -47,7 +59,8 @@ while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
 	my $deprecated = '';
-	my $n = xmlify($1);
+	my $signname = $1;
+	my $n = xmlify($signname);
 	$post_form = 0;
 	if (/^\@nosign/) {
 	    $deprecated = ' deprecated="1"';
@@ -66,6 +79,15 @@ while (<SL>) {
 	}
 	pi_line();
 	print "<sign$deprecated n=\"$n\" xml:id=\"$xid\"><name g:me=\"1\">$n</name>";
+	if ($sortcodes{$signname}) {
+	    print "<sort";
+	    foreach my $c (@{$sortcodes{$signname}}) {
+		$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
+		$c =~ s/\"\"/\"/g;
+		print $c;
+	    }
+	    print "/>";
+	}
 	++$xid;
     } else {
 	unless ($in_sign) {
