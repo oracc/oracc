@@ -243,7 +243,7 @@ split_compound(const unsigned char *c)
     {
       if ('|' == *cbufp)
 	*cbufp = ' ';
-      else if ('(' == *cbufp)
+      else if ('(' == *cbufp && cbufp > cbuf && !isdigit(cbufp[-1]) && cbufp[-1] != 'n')
 	{
 	  *cbufp = ' ';
 	  while (*cbufp && ')' != *cbufp)
