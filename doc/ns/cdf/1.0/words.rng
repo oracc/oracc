@@ -158,6 +158,7 @@
           <optional>
             <ref name="delim"/>
           </optional>
+          <ref name="g.meta"/>
           <zeroOrMore>
             <ref name="word.content"/>
           </zeroOrMore>

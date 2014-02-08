@@ -1422,7 +1422,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  square_bracket = notoken;
 		  appendCloser(last_g,"]");
-		  if (last_g)
+		  /* FIXME: I hacked this to make 1. [x ($ blank space$)] type stuff parse
+		     but it probably doesn't behave right with [($blank space$)] so that 
+		     needs checking */
+		  if (last_g && breakStart && *breakStart && breakStart[0] != 0x01)
 		    setAttr(last_g,a_g_breakEnd,breakStart);
 		  breakStart = NULL;
 		}
