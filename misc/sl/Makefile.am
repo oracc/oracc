@@ -5,7 +5,7 @@ bin_SCRIPTS = sametlit.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh \
 	rep-filter.plx rep-sort.plx rep-xml.plx
 cgibin_SCRIPTS=slse
 texdata_DATA = gslmac.tex
-scriptdata_DATA = gsl-TeX.xsl sl-HTML.xsl rep-sl.xsl
+scriptdata_DATA = gsl-TeX.xsl rep-sl.xsl sl-HTML.xsl sl-sort.xsl
 
 slse: slse.in
 	$(ORACCIFY) slse.in
