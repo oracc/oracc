@@ -1175,11 +1175,14 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else
 		appendAttr(np,attr(a_g_role,ucc("semantic")));
-	      if (*cued_opener)
+#if 0
+	      /* Leave the cued_opener for the grapheme-child of determinatives.*/
+	      if (*cued_opener && tokens[start]->type != deto)
 		{
 		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
 		  *cued_opener = '\0';
 		}
+#endif
 	      /* ->user is utilized for label storage as well as b_or_g 
 		 tracking; need to make sure that this doesn't conflict 
 		 (which it won't as long as np is not a block element) */
@@ -1580,7 +1583,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		np->fattr = NULL;
 #endif
-	      appendChild(wp,np);
+	      appendChild(group_node ? group_node : wp,np);
 	      break;
 #if 0
 	    case dialect:
