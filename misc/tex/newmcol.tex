@@ -1,4 +1,16 @@
+\newbox\stack \newbox\popped \newif\ifdidMaybeEject
+\def\push#1{\global\setbox\stack=\vbox{#1\unvbox\stack}}
+\def\pop{\global\setbox\stack=\vbox{\unvbox\stack
+         \global\setbox\popped=\lastbox}}
+\def\peek{\global\setbox\stack=\vbox{\unvbox\stack
+          \global\setbox\popped=\lastbox\copy\popped}}
+\def\voidpop{\global\setbox\popped=\box\voidb@x}
+
 \newbox\hijackedinsert
+\def\flushpageinserts{%
+%  \message{flushpageinserts}%
+  \ifdim\ht\hijackedinsert>0pt
+     \shipout\vbox{\makeheadline\vbox to\vsize{\unvbox\hijackedinsert\vfil}\makefootline}\fi}
 
 \newdimen\mc@assumeheadingspace
 
