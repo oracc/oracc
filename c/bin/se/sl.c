@@ -1,54 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <psdtypes.h>
+#include <psd_base.h>
+#include <fname.h>
+#include <options.h>
 #include <dbi.h>
 
-static const char *arg_db, *arg_project;
-static char *arg_key;
+static char *db = NULL, *project = NULL;
+static char *key;
 static int human_readable = 0;
+static const char *oracc = NULL;
 
 void
-sl(const char *project, const char *index, char *key)
+sl(Dbi_index *dbi, char *key)
 {
-  Dbi_index *dbi = NULL;
   char *v = NULL;
 
-  if ((dbi = dbi_open(project,index)))
+  dbi_find(dbi,(unsigned char *)key);
+  if (dbi->data)
     {
-      dbi_find(dbi,(unsigned char *)key);
-      if (dbi->data)
+      v = dbi->data;
+      if (human_readable)
 	{
-	  v = dbi->data;
-	  if (human_readable)
-	    {
-	      char tmp[128];
-	      sprintf(tmp, "%s;name", v);
-	      dbi_find(dbi, tmp);
-	      fputs(dbi->data,stdout);
-	    }
-	  else
-	    fputs(v,stdout);
+	  unsigned char tmp[128];
+	  sprintf((char*)tmp, "%s;name", v);
+	  dbi_find(dbi, tmp);
+	  fprintf(stdout, "%s\n", (char*)dbi->data);
 	}
-      dbi_close(dbi);
+      else
+	fprintf(stdout, "%s\n", v);
     }
   else
-    {
-      fprintf(stderr, "sl: failed to open %s/%s\n", (char *)project, (char*)index);
-      exit(1);
-    }
+    fputc('\n',stdout);
+  fflush(stdout);
 }
 
 int
 main(int argc, char **argv)
 {
-  options(argc, argv, "d:hk:p:");
-  if (arg_project && arg_db && arg_key)
-    sl(arg_project, arg_db, arg_key);
+  Dbi_index *dbi = NULL;
+
+  options(argc, argv, "hk:p:");
+
+  /* Figure out the db and open it */
+  if (!project)
+    project = "ogsl";
+
+  oracc = oracc_home();
+  db = malloc(strlen(oracc)+strlen("/pub/") + strlen(project) + 1);
+  sprintf(db, "%s/pub/%s", oracc, project);
+  if ((dbi = dbi_open(project, db)))
+    {
+      /* do the look up or sit or enter stdin_mode */
+      if (key)
+	sl(dbi, key);
+      else
+	{
+	  char keybuf[256];
+	  while ((key = fgets(keybuf, 256, stdin)))
+	    {
+	      key[strlen(key)-1] = '\0';
+	      if (*key == 0x04) {
+		goto quit;
+	      } else {
+		sl(dbi, key);
+	      }
+	    }
+	}
+    }
   else
     {
-      fprintf(stderr, "sl: must give PROJECT SLDB KEY on command line\n");
+      fprintf(stderr, "sl: failed to open %s/%s\n", (char *)project, (char*)db);
       exit(1);
     }
+ quit:
+  dbi_close(dbi);
   return 0;
 }
 
@@ -59,17 +84,14 @@ int opts(int argc, char *arg)
 {
   switch (argc)
     {
-    case 'd':
-      arg_db = arg;
-      break;
     case 'h':
       human_readable = 1;
       break;
     case 'k':
-      arg_key = arg;
+      key = arg;
       break;
     case 'p':
-      arg_project = arg;
+      project = arg;
       break;
     default:
       usage();

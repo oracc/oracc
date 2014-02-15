@@ -2,6 +2,7 @@ package ORACC::SL::BaseC;
 use warnings; use strict; use utf8; use open 'utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::Legacy::Sexify;
+use IPC::Open2;
 
 #### Implementation of ORACC::SL::Base using the C version of the sl db
 
@@ -19,6 +20,7 @@ my $db_name = 'ogsl';
 my %db = ();
 my $loaded = 0;
 my $pedantic = 0;
+my $sl_pid = 0;
 my %reported = ();
 my $silent = 0;
 
@@ -43,7 +45,7 @@ sub
 init {
     return if $loaded;
 
-    # Now we only need to check if the sldb exists
+    # check if the sldb exists
     my $db_file = "@@ORACC@@/pub/ogsl";
     my $db_name = 'ogsl';
     if (-r "$db_file/$db_name.dbh") {
@@ -51,6 +53,13 @@ init {
     } else {
 	die "ORACC::SL::BaseC: no signlist database $db_file/$db_name\n";
     }
+
+    # open the signlist engine for write and read
+    $sl_pid = open2(\*SL_OUT, \*SL_IN, '@@ORACC@@/bin/sl');
+    binmode SL_OUT, ':utf8';
+    binmode SL_IN, ':utf8';
+
+    $loaded = 1;
 
 #    my $ogsl_db = "$dbdir/ogsl-db";
 #    $silent = 1 if defined $_[0];
@@ -64,17 +73,18 @@ init {
 sub
 term {
     return unless $loaded;
+    print SL_IN "\cD\n";
     $loaded = 0;
 #    untie %db;
 }
+
 sub
 xid {
 #    my $x = shift;
 #    Encode::_utf8_off($x);
 #    $db{$x};
-    slse($_[0]);
+    slse($_[0]) || slse("$_[0];form");
 }
-
 
 # N.B.: this must be passed an xid, not a sign name or value
 sub
@@ -415,7 +425,10 @@ values {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl -p $db_name -d $db_file -k '$_[0]'`
+    print SL_IN "$_[0]\n";
+    my $res = <SL_OUT>;
+    chomp($res);
+    $res;
 }
 
 1;

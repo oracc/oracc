@@ -173,8 +173,19 @@ while (<SL>) {
 	    }
 	} elsif (/^\@ucode/) {
 	    ++$longform if $in_form;
-	    if (/^\S+\s+(\S+)\s+(\S+)/) {
-		print "<utf8 hex=\"$1\">$2</utf8>" if $xml;
+#	    if (/^\S+\s+(\S+)\s+(\S+)/) {
+#		print "<utf8 hex=\"$1\">$2</utf8>" if $xml;
+#	    }
+	    /^\@ucode\s+(\S+)\s*$/ || warn "$asl:$.: bad format in \@ucode\n";
+	    if ($xml) {
+		my $hex = $1;
+		if ($hex) {
+		    my $u = '';
+		    foreach my $h (split(/\./, $hex)) {
+			$utf .= chr(hex("0$h"));
+		    }
+		    print "<utf8 hex=\"$hex\">$u</utf8>";
+		}
 	    }
 	} elsif (/^\@(?:note|inote|pname|uname|unote|uphase|lit)/) {
 	    ++$longform if $in_form;

@@ -4,9 +4,7 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 my %signs = ();
 while (<>) {
     chomp;
-    my($signinfo,@values) = split(/\t/, $_);
-    my($sign,$count) = (m#^(\S+)\s+(\d+)#);
-    my $freq = shift @values;
+    my($sign,$count,$freq,@values) = split(/\t/, $_);
     $signs{$sign} = [ $sign, $count, $freq , join("\t", @values) ];
 }
 

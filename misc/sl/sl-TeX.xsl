@@ -1,11 +1,11 @@
 <xsl:stylesheet version="1.0" 
-		xmlns:sl="http://emegir.info/signlist/1"
+		xmlns:sl="http://oracc.org/ns/sl/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:output method="text"/>
 
 <xsl:template match="sl:signlist">
-  <xsl:text>\macrofile{../tools/gslmac}\signlist{GSL}%
+  <xsl:text>\macrofile{slmac}\signlist{SL}%
 </xsl:text>
   <xsl:apply-templates/>
   <xsl:text>\endsignlist
@@ -51,14 +51,14 @@
 
 <xsl:template name="notes">
   <xsl:if test="sl:note">
-    <xsl:text>\gslnotes
+    <xsl:text>\slnotes
 </xsl:text>
 <xsl:for-each select="sl:note">
-    <xsl:text>\gslnote{</xsl:text>
+    <xsl:text>\slnote{</xsl:text>
     <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
   </xsl:for-each>
-  <xsl:text>\endgslnotes
+  <xsl:text>\endslnotes
 </xsl:text>
   </xsl:if>
 </xsl:template>
@@ -79,7 +79,7 @@
 </xsl:template>
 
 <xsl:template name="unicode-info">
-  <xsl:value-of select="concat('\unicode{',sl:utf8/@hex,'}{',sl:utf8/text(),'}&#xa;')"/>
+  <xsl:value-of select="concat('\unicode{',sl:utf8/@hex,'}{',sl:utf8/@utf8,'}&#xa;')"/>
 </xsl:template>
 
 <xsl:template name="values">
@@ -87,7 +87,7 @@
 </xsl:text>
   <xsl:text>\vals{</xsl:text>
   <xsl:for-each select="sl:v">
-    <xsl:value-of select="@n"/>
+    <xsl:value-of select="text()"/>
     <xsl:if test="not(position() = last())">
       <xsl:text>, </xsl:text>
     </xsl:if>

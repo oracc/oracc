@@ -3,9 +3,9 @@ use warnings; use strict; use open 'utf8';
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
-my $drop_thresh = 50;
+my $drop_thresh = 0;
 my $drop_numerical = 1;
-my $sign_thresh = 500;
+my $sign_thresh = 0;
 
 GetOptions (
     "drop:i"=>\$drop_thresh,

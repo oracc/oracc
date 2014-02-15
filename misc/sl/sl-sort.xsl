@@ -4,7 +4,7 @@
     xmlns:sl="http://oracc.org/ns/sl/1.0"
     version="1.0">
 
-<xsl:param name="sort" select="'borger'"/>
+<xsl:param name="sort" select="'ogsl'"/>
 <xsl:output method="xml" encoding="utf-8"/>
 
 <xsl:template match="/*">
@@ -14,6 +14,13 @@
       <xsl:when test="$sort = 'mzl' or $sort = 'borger'">
 	<xsl:for-each select="*">
 	  <xsl:sort select="sl:sort/@mzl" data-type="number"/>
+	  <xsl:sort select="sl:sort/@ogsl" data-type="number"/>
+	  <xsl:copy-of select="."/>
+	</xsl:for-each>
+      </xsl:when>
+      <xsl:when test="$sort = 'kwu'">
+	<xsl:for-each select="*">
+	  <xsl:sort select="sl:sort/@kwu" data-type="number"/>
 	  <xsl:sort select="sl:sort/@ogsl" data-type="number"/>
 	  <xsl:copy-of select="."/>
 	</xsl:for-each>
@@ -32,6 +39,12 @@
 	  <xsl:copy-of select="."/>
 	</xsl:for-each>
       </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="*">
+	  <xsl:sort select="sl:sort/@ogsl" data-type="number"/>
+	  <xsl:copy-of select="."/>
+	</xsl:for-each>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:copy>
 </xsl:template>

@@ -125,7 +125,7 @@ printsigns(const unsigned char *key,void *data)
 #else
   ipct = pct(sign_count,total_sign_instances);
 #endif
-  printf("%s %d\t%d\t",key,sign_count,ipct);
+  printf("%s\t%d\t%d\t",key,sign_count,ipct);
   hash_exec_user_key_data(data, printvals, &sign_count);
   printf("\n");
 }

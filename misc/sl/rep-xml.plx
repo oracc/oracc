@@ -9,7 +9,7 @@ my @signs = ();
 
 while (<>) {
     chomp;
-    my($sign,$count,$freq,@values) = split(/\t/, $_);
+    my($sign, $count, $freq, ,@values) = split(/\t/, $_);
     push @signs, $sign;
     $signs{$sign} = [ $sign, $count, $freq , join("\t", @values) ];
 }
@@ -46,5 +46,7 @@ foreach my $s (@signs) {
     print '</sign>';
 }
 print '</repertoire>';
+
+ORACC::SL::BaseC::term();
 
 1;
