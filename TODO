@@ -9,6 +9,11 @@ Install:
 
 -* Check things that may have broken now that all p2 css/js has been removed
 
+Boo:
+====
+
+-* need to remove old files in 00atf and friends before unpacking new ones
+
 P3:
 ===
 
@@ -22,11 +27,11 @@ transliteration with transliteration and transliteration with
 catalog). Combination of searching for transliteration gu-za with
 translation chair does not yield results.
 
-* Check things that may have broken now that all p2 css/js has been removed
-
 * oversize heading in cbd sig popup
 
 * what are all the (-1x) items in gkab glos?
+
+-* Check things that may have broken now that all p2 css/js has been removed
 
 -* in the glossaries, when I click on a letter in the left pane, the
 search box needs to be empty or else nothing happens.
@@ -119,10 +124,6 @@ Loose ends:
 * OTF final checks
 
 * Score final fixes--generate individual witnesses from CMAwRo files
-
-* o2-weblive and esp2-live need to coexist smoothly
-
-* check that oracc esp and oracc esp live do the right thing once the switch to esp2 is complete
 
 * implement qsn for Niek's sign-names; or implement this as a new proper noun type?
 
