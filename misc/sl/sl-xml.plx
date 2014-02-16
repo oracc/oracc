@@ -134,6 +134,15 @@ while (<SL>) {
 		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr><name g:me=\"1\">$n</name>";
 		++$xid;
 		$in_form = 1;
+		if ($sortcodes{$n}) {
+		    print "<sort";
+		    foreach my $c (@{$sortcodes{$n}}) {
+			$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
+			$c =~ s/\"\"/\"/g;
+			print $c;
+		    }
+		    print '/>';
+		}
 	    }
 	} elsif (s/^\@v(\??)(-?)[\t\s]+//) {
 	    form_check();
@@ -167,8 +176,20 @@ while (<SL>) {
 	    }
 	} elsif (/^\@ucode/) {
 	    form_check();
-	    if (/^\S+\s+(\S+)\s+(\S+)/) {
-		print "<utf8 hex=\"$1\">$2</utf8>";
+	    my($hex) = (/^\@ucode\s+(\S+)\s*$/);
+	    if ($hex) {
+		my $utf = '';
+		foreach my $h (split(/\./, $hex)) {
+		    if ($h =~ /^x[0-9A-F]+/) {
+			$utf .= chr(hex("0$h"));
+		    } else {
+			$utf .= 'X';
+		    }
+		}
+		$utf =~ s/X/.X./g; $utf =~ s/^\.?(.*?)\.?$/$1/;
+		print "<utf8 hex=\"$hex\">$utf</utf8>" if $hex;
+	    } else {
+		warn "$asl:$.: bad format in \@ucode\n";
 	    }
 	} elsif (/^\@(?:note|inote|pname|uname|unote|uphase|lit)/) {
 	    form_check();
