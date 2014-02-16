@@ -6,8 +6,9 @@ my $currform = '';
 my $currsign = '';
 my %lists = ();
 my @signkeys = ();
+my %signforms = ();
 my $signlist = '00lib/ogsl.asl';
-my @signlist = `egrep '^\@\(sign\|list\)' $signlist`; # removed 'form'
+my @signlist = `egrep '^\@\(sign\|list\|form\)' $signlist`;
 my %signlists = ();
 my %formlists = ();
 my %sortkeys = ();
@@ -15,25 +16,32 @@ my %sortkeys = ();
 foreach my $s (@signlist) {
     if ($s =~ /^\@sign\s+(\S+)/) {
 	$currsign = $1;
+	$currform = undef;
 	if ($signlists{$currsign}) {
 	    warn "sl-sortcodes.plx: duplicate SIGN $currsign\n";
 	    next;
 	} else {
 	    push @{$signlists{$currsign}}, '#ogsl:';
 	}
-#    } elsif ($s =~ /^\@form\s+~\S+\s+(\S+)/) {
-#	$currform = $1;
-#	if ($formlists{$currform}) {
-#	    warn "sl-sortcodes.plx: duplicate FORM $currsign\n"
-#		unless $s =~ /form/;
-#	    next;
-#	} else {
-#	    push @{$formlists{$currform}}, '#ogsl:';
-#	}
+    } elsif ($s =~ /^\@form\s+~\S+\s+(\S+)/) {
+	$currform = $1;
+	if ($formlists{$currform}) {
+	    warn "sl-sortcodes.plx: duplicate FORM $currsign\n"
+		unless $s =~ /form/;
+	    next;
+	} else {
+	    push @{$formlists{$currform}}, '#ogsl:'
+		unless $signlists{$currform};
+	}
     } else {
 	my($list) = ($s =~ /\s(\S+)/);
 	my($prefix,$suffix) = ($list =~ /^([^\d]+)(\S+)\s*$/);
-	push @{$signlists{$currsign}}, $list;
+	if ($currform) {
+	    push @{$formlists{$currform}}, $list;
+	    push @{$signforms{$currsign}}, $currform;
+	} else {
+	    push @{$signlists{$currsign}}, $list;
+	}
 	push @{$lists{$prefix}}, $suffix;
     }
 }
@@ -45,7 +53,7 @@ foreach my $l (keys %lists) {
     }
 }
 
-my @sorted_sk = sort { &kcmp } keys %signlists;
+my @sorted_sk = sort { &kcmp } keys %signlists, keys %formlists;
 for (my $i = 0; $i <= $#sorted_sk; ++$i) {
     $sortkeys{"#ogsl:$sorted_sk[$i]"} = [ 'ogsl', $i ];
 }
@@ -55,7 +63,13 @@ my @listnames =  map { "\L$_" } sort keys %lists;
 foreach my $sk (sort @sorted_sk) {
     my %seen = ();
     print "$sk";
-    my @skeys = @{$signlists{$sk}};
+    my @skeys = ();
+    if ($signlists{$sk}) {
+	@skeys = @{$signlists{$sk}};
+    } else {
+	@skeys = @{$formlists{$sk}};
+    }
+    
     foreach my $s (@skeys) {
 	my $k;
 	if ($s eq '#ogsl:') {
