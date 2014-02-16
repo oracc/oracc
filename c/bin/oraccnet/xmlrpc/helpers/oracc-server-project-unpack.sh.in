@@ -1,4 +1,11 @@
 #!/bin/sh
+
+function clean_project {
+    cd $1
+    ## N.B. Can't wipe out 00res like this!
+    rm -fr 00atf/* 00bib/* 00cat/* 00lib/* 00src/* 00web/*
+}
+
 function create_project {
     echo create_project $*
     mkdir -p $1
@@ -19,7 +26,9 @@ function create_project {
 	fi
     fi
 }
+
 create_project $projdir $project
+clean_project $projdir $project
 cd $projdir
 u=`uname`
 if [ "$uname" = "Darwin" ]; then
