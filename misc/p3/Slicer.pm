@@ -90,7 +90,10 @@ page_info {
     open(O, ">$tmpdir/pgwrap.out");
     # CBD results have no headings, so we have to take
     # care not to prepend '#' to the first result ID.
-    my $has_headings = ($pg[1] =~ /\#/);
+    my $has_headings = 0;
+    if ($pg[1]) {
+	$has_headings = ($pg[1] =~ /\#/);
+    }
 
     foreach my $b (split(/\#/, $pg[1])) {
 	chomp $b;
