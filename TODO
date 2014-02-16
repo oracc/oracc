@@ -12,6 +12,9 @@ Install:
 P3:
 ===
 
+* better defaulting of outline is needed--if there's nothing in the config.xml
+  it should naturally work consistently out of the box
+
 * images in the esp pages do not come out (by design?)
 
 * very brief test of advanced search seemed to be fine (combining
