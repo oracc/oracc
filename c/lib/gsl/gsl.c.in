@@ -83,7 +83,7 @@ sH(void *userData, const char *name, const char **atts)
       if (curr_form)
 	{
 	  /* If this value is not known yet allow it as the default */
-	  if (!(sn = hash_find(psl,curr_val)))
+	  if (!(sn = hash_find(psl_v,curr_val)))
 	    {
 	      if (!*utf8 && curr_utf8)
 		utf8 = (char*)curr_utf8;
@@ -100,9 +100,13 @@ sH(void *userData, const char *name, const char **atts)
 	  hash_add(psl_v, curr_val,
 		   npool_copy(psl_bounded_sname(curr_sn),psl_pool));
 	  if (*utf8)
-	    hash_add(cuneify_tab,
-		     npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
-		     npool_copy((unsigned char *)utf8,psl_pool));
+	    {
+	      if (!(hash_find(cuneify_tab, curr_val)))
+		{
+		  hash_add(cuneify_tab, curr_val,
+			   npool_copy((unsigned char *)utf8,psl_pool));
+		}
+	    }
 	}
       else
 	{
