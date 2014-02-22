@@ -5,12 +5,14 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my $drop_thresh = 0;
 my $drop_numerical = 1;
+my $keep_non_unicode = 0;
 my $sign_thresh = 0;
 
 GetOptions (
+    "all:i"=>\$keep_non_unicode,
     "drop:i"=>\$drop_thresh,
-    nonum=>\$drop_numerical,
     "freq:i"=>\$sign_thresh,
+    "num:i"=>\$drop_numerical,
     );
 
 $drop_numerical && warn "rep-filter.plx: dropping numerical values/signs\n";
@@ -18,7 +20,7 @@ warn "rep-filter.plx: keeping signs with total values >= $sign_thresh times\n";
 warn "rep-filter.plx: dropping values in result signs which occur < $drop_thresh times\n";
 
 while (<>) {
-    next unless /^x12/;
+    next unless /^x(?:e|12)/ || $keep_non_unicode;
     chomp;
     my($sign, $count, $freq, @vals) = split(/\t/, $_);
     my @newvals = ();
