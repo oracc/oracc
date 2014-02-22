@@ -24,6 +24,7 @@ extern int atf_cbd_err;
 extern int cbd_err_line;
 extern int cbd_lem_sigs;
 extern int check_lem;
+extern int cuneify_notices;
 extern int fuzzy_aliasing;
 extern int gdl_bootstrap;
 extern int lnum;
