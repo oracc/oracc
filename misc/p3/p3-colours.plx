@@ -7,7 +7,6 @@ die "web-p3colours.plx: must give webdir on command line\n"
 
 my $oracc_colours = "$ENV{'ORACC'}/lib/data/p3colours.txt";
 
-
 my %colours = ();
 my %classes = ();
 my %map_c = (
