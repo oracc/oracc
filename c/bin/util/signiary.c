@@ -47,15 +47,22 @@ sH(void *userData, const char *name, const char **atts)
 	  char sbuf[512], xbuf[1024], *hex;
 	  unsigned char *sn = NULL;
 	  const char *form = NULL;
-	  
-	  n = mbstowcs(wbuf,utf8,128);
-	  hex = malloc(n * 8);
-	  *hex = '\0';
-	  for (i = 0; i < n; ++i)
+
+	  if (*(const unsigned char *)utf8 > 127)
 	    {
-	      if (i)
-		strcat(hex, ".");
-	      sprintf(hex+strlen(hex),"x%05X",wbuf[i]);
+	      n = mbstowcs(wbuf,utf8,128);
+	      hex = malloc(n * 8);
+	      *hex = '\0';
+	      for (i = 0; i < n; ++i)
+		{
+		  if (i)
+		    strcat(hex, ".");
+		  sprintf(hex+strlen(hex),"x%05X",wbuf[i]);
+		}
+	    }
+	  else
+	    {
+	      hex = strdup(utf8);
 	    }
 	  if (!(sn = psl_hex_to_sign(hex)))
 	    sn = (unsigned char *)hex;
