@@ -14,6 +14,15 @@ void
 sl(Dbi_index *dbi, char *key)
 {
   char *v = NULL;
+  char *k2 = NULL;
+
+  if ('|' == *key)
+    {
+      k2 = malloc(strlen(key));
+      strcpy(k2, key+1);
+      k2[strlen(k2)-1] = '\0';
+      key = k2;
+    }
 
   dbi_find(dbi,(unsigned char *)key);
   if (dbi->data)
@@ -32,6 +41,8 @@ sl(Dbi_index *dbi, char *key)
   else
     fputc('\n',stdout);
   fflush(stdout);
+  if (k2)
+    free(k2);
 }
 
 int
