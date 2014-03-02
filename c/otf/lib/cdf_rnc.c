@@ -273,7 +273,7 @@ const char * const cdf_rnc[] = {
   "    attribute form { text }? ,\n",
   "    attribute lemma { text }? ,\n",
   "    syntax.attributes* ,\n",
-  "    break? , status.flags? , status.spans? , opener? , closer? , delim? ,\n",
+  "    break? , status.flags? , status.spans? , opener? , closer? , delim? , g.meta , \n",
   "    word.content*\n",
   "    )\n",
   "    |\n",

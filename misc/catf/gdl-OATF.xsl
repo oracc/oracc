@@ -347,7 +347,7 @@
 
 <xsl:template match="g:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled GDL tag `', name(), $q)"/>
+    <xsl:with-param name="msg" select="concat('unhandled GDL tag `', name())"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -375,7 +375,7 @@
 
 <xsl:template match="x:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name(), $q)"/>
+    <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name())"/>
   </xsl:call-template>
 </xsl:template>
 

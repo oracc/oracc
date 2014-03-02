@@ -9,14 +9,55 @@ Install:
 
 -* Check things that may have broken now that all p2 css/js has been removed
 
+Boo:
+====
+
+-* need to remove old files in 00atf and friends before unpacking new ones
+
 P3:
 ===
 
-* Check things that may have broken now that all p2 css/js has been removed
+* better defaulting of outline is needed--if there's nothing in the config.xml
+  it should naturally work consistently out of the box
+
+* images in the esp pages do not come out (by design?)
+
+* very brief test of advanced search seemed to be fine (combining
+transliteration with transliteration and transliteration with
+catalog). Combination of searching for transliteration gu-za with
+translation chair does not yield results.
 
 * oversize heading in cbd sig popup
 
 * what are all the (-1x) items in gkab glos?
+
+-* Check things that may have broken now that all p2 css/js has been removed
+
+-* in the glossaries, when I click on a letter in the left pane, the
+search box needs to be empty or else nothing happens.
+
+-* in the pager, going from an edition to a glossary item works
+    fine. Then from the glossary item to a list of attestations does
+    not work.  example: Q000035 line 21 links to entry ub[corner](N)
+    which has 11 attestations. Clicking on anything there opens an
+    empty window with the alphabet in the left pane (same thing
+    happens when starting from a P) 
+
+-* when opening the Sumerian glossary I get a summary list of A
+    words. If I click on any of those words I get an empty page. When
+    I click on A (in left pane) I get the full A word entries and when
+    clicking on those words a glossary page opens (correctly). In
+    those glossary pages the links work (opening a list of
+    attestations), but the links to those attestations open an empty
+    page.
+
+-* in the pager searching for dug3 I get 269 items in 11 pages. For
+   some reason page 4 is empty (haven't found any rhyme or reason
+   there). Something similar happens when searching for lemmatization
+   aszte
+
+- * when I search in the glossaries for anything it downloads a file
+called "pager"
 
 -* esp2 not installed by ncr
 
@@ -83,10 +124,6 @@ Loose ends:
 * OTF final checks
 
 * Score final fixes--generate individual witnesses from CMAwRo files
-
-* o2-weblive and esp2-live need to coexist smoothly
-
-* check that oracc esp and oracc esp live do the right thing once the switch to esp2 is complete
 
 * implement qsn for Niek's sign-names; or implement this as a new proper noun type?
 

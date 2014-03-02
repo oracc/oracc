@@ -81,6 +81,8 @@ div.pgotl { font-family: arial,sans-serif; padding: 0px;
 .pgotl h3 { padding: 0px; margin: 0px; font-size: 80%; }
 .pgotl h4 { padding: 0px; margin: 0px; font-size: 80%; }
 
+.h2	{ padding-top: 2px; padding-bottom: 2px; }
+
 div.level0  { margin-left: 0px;
 	      padding-left: 5px; padding-top: 5px; 
 	      padding-bottom: 5px; }

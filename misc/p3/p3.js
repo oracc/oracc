@@ -97,6 +97,7 @@ function p3zoom(z) {
 }
 
 function p3Letter(l) {
+    document.getElementById('srch').value = '';
     document.getElementById('gxis').value = '';
     document.getElementById('glet').value = l;
     document.getElementById('p3form').submit();
@@ -121,8 +122,13 @@ function p3GlosControls() {
     document.getElementById('p3srchtype').style.display = 'none';
     document.getElementById('p3CbdLangDisplay').style.display= 'inline';
     if (document.getElementById('glet').value.length > 0) {
+	alert('glet='+document.getElementById('glet').value);
 	document.getElementById('p3itemnav').style.display= 'none';
 	document.getElementById('p3pagenav').style.display= 'none';
+    } else {
+	if (document.getElementById('gxis').value.length > 0) {
+	    p3NoOutline();
+	}
     }
 }
 
@@ -379,8 +385,32 @@ showNote(e,nid,trans) {
     return 1;
 }
 
+function showexemplar(project,PQ,lineid,fragid) {
+    showexemplar2(project,'',PQ,lineid,fragid);
+}
+
+function showexemplar2(project,lang,PQ,lineid,fragid) {
+    var url = '/'+project+'/'+PQ+'/html';
+    if (lineid.length > 0) {
+	url = url+'?'+lineid;
+	if (fragid.length > 0) {
+	    url = url+','+fragid;
+	}
+    }
+    var win = window;
+    popup(url,'exemplarWindow',500,700,100,350);
+    /* win.focus(); */
+}
+
 // CBD functions
 
 function showarticle(url) {
     cbdPopup('/epsd2/cbd/sux/'+url,'tocbrowser',300,500,0,0,1);
+}
+
+function pop1sig(proj,lang,sig) {
+    var bio = '\u2623'; // force encoding always to be utf8
+    var esig = encodeURIComponent(bio+sig);
+    var url = '/'+proj+'/sig?'+esig;
+    popup(url,'cbdarticle',400,600,0,0);
 }

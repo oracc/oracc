@@ -225,10 +225,11 @@ static int
 gmods(register unsigned char *g, struct mods *modsbuf)
 {
   struct mods *mp = modsbuf;
-  char *datap;
+  char *datap = NULL;
+
   while (*g)
     {
-      if (mp - modsbuf > MODS_MAX)
+      if (mp - modsbuf >= MODS_MAX)
 	{
 	  fprintf(stderr,"too many modifiers\n");
 	  exit(2);
@@ -323,13 +324,13 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	    unsigned char buf[5];
 	    unsigned char *b = buf;
 	    unsigned char *g2 = g;
-	    while (*g2)
+	    while (*g2 && b - buf < 3)
 	      *b++ = *g2++;
 	    *b = '\0';
 	    if (is_flag[*buf])
 	      vwarning("misplaced flag at %s", buf);
 	    else
-	      vwarning("bad character in grapheme at %s",buf);
+	      vwarning("bad character in grapheme at %s", buf);
 	    return -1;
 	  }
 	}
@@ -457,6 +458,7 @@ struct grapheme*
 gparse(register unsigned char *g, enum t_type type)
 {
   struct grapheme *gp = NULL;
+  int bad_grapheme = 0;
   unsigned char *orig = pool_copy(g);
   
   if (type == type_top)
@@ -688,6 +690,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  vwarning("%s: unknown sign-name grapheme",g);
 		  exit_status = 1;
 		  --status;
+		  bad_grapheme = 1;
 		}
 	    }
 	  if (noheth)
@@ -699,6 +702,8 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      gp = singleton(g,g_s);
 	    }
+	  if (bad_grapheme)
+	    gp->gflags = GFLAGS_BAD;
 	}
       break;
     case g_c:
@@ -917,6 +922,7 @@ gparse(register unsigned char *g, enum t_type type)
     {
       /* make it impossible for gparse to return NULL */
       gp = singleton(g,g_v);
+      gp->gflags = GFLAGS_BAD;
     }
 #endif
 
@@ -1539,6 +1545,7 @@ qualified(register unsigned char *g)
 		  else
 		    {
 		      gp = calloc(1,sizeof(struct grapheme));
+		      gp->gflags = q_g->gflags;
 		      gp->type = g_q;
 		      gp->g.q.g = q_g;
 		      gp->g.q.q = q_q;
@@ -1659,6 +1666,7 @@ numerical(register unsigned char *g)
 	  *gsavec = ')';
 	  if (gp->g.n.n)
 	    {
+	      gp->gflags = gp->g.n.n->gflags;
 	      if (gp->g.n.n->type == g_n)
 		{
 		  warning("number graphemes not nestable");
@@ -1784,6 +1792,8 @@ singleton(register unsigned char *g, enum t_type type)
   struct grapheme*gp = calloc(1,sizeof(struct grapheme));
   int nmods = 0;
   static struct mods modsbuf[MODS_MAX];
+  const unsigned char *utf8g = NULL;
+  
   assert(gp!=NULL);
   assert(g!=NULL);
   gp->type = type;
@@ -1792,30 +1802,29 @@ singleton(register unsigned char *g, enum t_type type)
     ++g;
   if (*g)
     nmods = gmods(g,modsbuf);
-  if (nmods >= 0)
+  if (nmods < 0)
     {
-      const unsigned char *utf8g = gp->g.s.base;
-      if (!use_unicode && !is_signlist(g))
-	{
-	  if ((utf8g = g2utf(gp->g.s.base)))
-	    utf8g = gp->g.s.base = pool_copy(utf8g);
-	  else
-	    utf8g = gp->g.s.base = pool_copy(gp->g.s.base);
-	}
-      else if (curr_lang->cset)
-	{
-	  size_t wlen;
-	  wchar_t *wbase = utf2wcs(gp->g.s.base, &wlen);
-	  curr_lang->cset->val(wbase,wlen);
-	}
-	
-      gp->xml = build_singleton(utf8g,gp->type, nmods, modsbuf);
+      vwarning("error parsing modifiers");
+      nmods = 0;
+      gp->gflags = GFLAGS_BAD;
     }
-  else
+  utf8g = gp->g.s.base;
+
+  if (!use_unicode && !is_signlist(g))
     {
-      free(gp);
-      gp = NULL;
+      if ((utf8g = g2utf(gp->g.s.base)))
+	utf8g = gp->g.s.base = pool_copy(utf8g);
+      else
+	utf8g = gp->g.s.base = pool_copy(gp->g.s.base);
     }
+  else if (curr_lang->cset)
+    {
+      size_t wlen = 0;
+      wchar_t *wbase = utf2wcs(gp->g.s.base, &wlen);
+      curr_lang->cset->val(wbase,wlen);
+    }
+  
+  gp->xml = build_singleton(utf8g,gp->type, nmods, modsbuf);
   return gp;
 }
 

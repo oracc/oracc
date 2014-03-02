@@ -170,7 +170,7 @@ cuneify(const unsigned char *utf)
 
   if (!utf)
     return NULL;
-  if ((ret = cuneify_one(utf)))
+  if ((ret = cuneify_one(utf)) && strcmp(ret, "X"))
     return ret;
   if ('|' == *utf && (ret = cuneify_sequence(split_compound(utf))))
     return ret;
@@ -178,7 +178,7 @@ cuneify(const unsigned char *utf)
     {
       if (cuneify_notices)
 	vnotice("cuneify failed on %s", utf);
-      return NULL;
+      return (const unsigned char *)utf;
     }
 }
 
@@ -243,7 +243,7 @@ split_compound(const unsigned char *c)
     {
       if ('|' == *cbufp)
 	*cbufp = ' ';
-      else if ('(' == *cbufp)
+      else if ('(' == *cbufp && cbufp > cbuf && !isdigit(cbufp[-1]) && cbufp[-1] != 'n')
 	{
 	  *cbufp = ' ';
 	  while (*cbufp && ')' != *cbufp)

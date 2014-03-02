@@ -5,6 +5,7 @@
 #include "cdf.h"
 #include "block.h"
 #include "blocktok.h"
+#include "globals.h"
 #include "hash.h"
 #include "pool.h"
 #include "label.h"
@@ -365,7 +366,7 @@ check_label(unsigned const char *lab,enum e_tu_types transtype,
     {
       if (ok)
 	{
-	  if (!complained_already)
+	  if (!complained_already || report_all_label_errors)
 	    {
 	      vwarning2(file,start_lnum == -1 ? lnum : start_lnum,
 			"%s: duplicate label (double obv/rev/col/line? One per text reported)",

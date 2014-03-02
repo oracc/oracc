@@ -21,7 +21,7 @@ static const char *sl_fn = "@@ORACC@@/xml/ogsl/ogsl-sl.xml";
 static const char *sl_fn = "@@ORACC@@/lib/data/ogsl.xml";
 #endif
 
-static Hash_table *psl, *psl_id, *psl_v, *cuneify_tab;
+static Hash_table *psl, *psl_id, *psl_v, *cuneify_tab, *hex_tab;
 static unsigned char *sign_sn,*curr_sn = NULL,*curr_unitary_sn = NULL, *curr_form = NULL, *curr_utf8;
 static struct npool *psl_pool;
 
@@ -31,6 +31,7 @@ static int sname_buf_alloced;
 
 static unsigned char *sname_append(const unsigned char *sn,const unsigned char *app);
 
+#if 0
 static unsigned char *
 local_v(unsigned char *v)
 {
@@ -42,6 +43,7 @@ local_v(unsigned char *v)
   }
   return buf;
 }
+#endif
 
 static void
 sH(void *userData, const char *name, const char **atts)
@@ -74,7 +76,6 @@ sH(void *userData, const char *name, const char **atts)
     }
   else if (!strcmp(name,"v"))
     {
-      unsigned char *local = NULL;
       unsigned char *sn = NULL;
       const char *utf8 = findAttr(atts,"utf8");
       unsigned char *curr_val = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
@@ -82,7 +83,7 @@ sH(void *userData, const char *name, const char **atts)
       if (curr_form)
 	{
 	  /* If this value is not known yet allow it as the default */
-	  if (!(sn = hash_find(psl,curr_val)))
+	  if (!(sn = hash_find(psl_v,curr_val)))
 	    {
 	      if (!*utf8 && curr_utf8)
 		utf8 = (char*)curr_utf8;
@@ -93,16 +94,19 @@ sH(void *userData, const char *name, const char **atts)
 			 npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
 			 npool_copy((unsigned char *)utf8,psl_pool));
 	    }
-	  local = local_v(curr_val);
 	}
       if (!(sn = hash_find(psl,curr_val)))
 	{
 	  hash_add(psl_v, curr_val,
 		   npool_copy(psl_bounded_sname(curr_sn),psl_pool));
 	  if (*utf8)
-	    hash_add(cuneify_tab,
-		     npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
-		     npool_copy((unsigned char *)utf8,psl_pool));
+	    {
+	      if (!(hash_find(cuneify_tab, curr_val)))
+		{
+		  hash_add(cuneify_tab, curr_val,
+			   npool_copy((unsigned char *)utf8,psl_pool));
+		}
+	    }
 	}
       else
 	{
@@ -112,6 +116,9 @@ sH(void *userData, const char *name, const char **atts)
     }
   else if (!strcmp(name,"utf8"))
     {
+      const char *h = findAttr(atts, "hex");
+      /* fprintf(stderr, "%s => %s\n", h, sign_sn); */
+      hash_add(hex_tab, npool_copy((const unsigned char *)h, psl_pool), curr_unitary_sn);
       charData_discard();
     }
 }
@@ -184,6 +191,7 @@ psl_init()
       psl_v = hash_create(8000);
       psl_id = hash_create(12000);
       psl_pool = npool_init();
+      hex_tab = hash_create(2000);
       if (!access(fname[0],R_OK))
 	runexpat(i_list, fname, sH, eH);
       else
@@ -199,6 +207,7 @@ psl_term()
   hash_free(psl,NULL);
   hash_free(psl_v,NULL);
   npool_term(psl_pool);
+  hash_free(hex_tab,NULL);
   psl_initialized = 0;
   psl_bounded_sname(NULL);
   psl_get_sname(NULL);
@@ -307,6 +316,13 @@ psl_same_sign(const unsigned char *v1, const unsigned char *v2)
     return !strcmp(s1, s2);
   else
     return !strcmp((const char *)v1, (const char *)v2);
+}
+
+unsigned char *
+psl_hex_to_sign(const char *hex)
+{
+  unsigned char *res = hash_find(hex_tab, (const unsigned char *)hex);
+  return res;
 }
 
 static unsigned char *

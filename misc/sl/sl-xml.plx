@@ -2,9 +2,21 @@
 use warnings; use strict; use open ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use Data::Dumper;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
 my $project = 'ogsl';
+
+my @sortcodes = `sl-sortcodes.plx`; chomp @sortcodes;
+my %sortcodes = ();
+foreach my $s (@sortcodes) {
+    my($sign,@codes) = split(/\t/, $s);
+    $sortcodes{$sign} = [ @codes ];
+}
+
+#open(C, '>codes.dump');
+#print C Dumper \%sortcodes;
+#close(C);
 
 my $asl = shift @ARGV;
 if ($asl) {
@@ -12,7 +24,7 @@ if ($asl) {
 	$asl = "00lib/$asl.asl";
     }
 } else {
-    $asl = "00lib/ogsl-she.asl" unless $asl;
+    $asl = "00lib/ogsl.asl";
 }
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
@@ -47,7 +59,8 @@ while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
 	my $deprecated = '';
-	my $n = xmlify($1);
+	my $signname = $1;
+	my $n = xmlify($signname);
 	$post_form = 0;
 	if (/^\@nosign/) {
 	    $deprecated = ' deprecated="1"';
@@ -66,6 +79,15 @@ while (<SL>) {
 	}
 	pi_line();
 	print "<sign$deprecated n=\"$n\" xml:id=\"$xid\"><name g:me=\"1\">$n</name>";
+	if ($sortcodes{$signname}) {
+	    print "<sort";
+	    foreach my $c (@{$sortcodes{$signname}}) {
+		$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
+		$c =~ s/\"\"/\"/g;
+		print $c;
+	    }
+	    print "/>";
+	}
 	++$xid;
     } else {
 	unless ($in_sign) {
@@ -112,6 +134,15 @@ while (<SL>) {
 		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr><name g:me=\"1\">$n</name>";
 		++$xid;
 		$in_form = 1;
+		if ($sortcodes{$n}) {
+		    print "<sort";
+		    foreach my $c (@{$sortcodes{$n}}) {
+			$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
+			$c =~ s/\"\"/\"/g;
+			print $c;
+		    }
+		    print '/>';
+		}
 	    }
 	} elsif (s/^\@v(\??)(-?)[\t\s]+//) {
 	    form_check();
@@ -145,8 +176,20 @@ while (<SL>) {
 	    }
 	} elsif (/^\@ucode/) {
 	    form_check();
-	    if (/^\S+\s+(\S+)\s+(\S+)/) {
-		print "<utf8 hex=\"$1\">$2</utf8>";
+	    my($hex) = (/^\@ucode\s+(\S+)\s*$/);
+	    if ($hex) {
+		my $utf = '';
+		foreach my $h (split(/\./, $hex)) {
+		    if ($h =~ /^x[0-9A-F]+/) {
+			$utf .= chr(hex("0$h"));
+		    } else {
+			$utf .= 'X';
+		    }
+		}
+		$utf =~ s/X/.X./g; $utf =~ s/^\.?(.*?)\.?$/$1/;
+		print "<utf8 hex=\"$hex\">$utf</utf8>" if $hex;
+	    } else {
+		warn "$asl:$.: bad format in \@ucode\n";
 	    }
 	} elsif (/^\@(?:note|inote|pname|uname|unote|uphase|lit)/) {
 	    form_check();

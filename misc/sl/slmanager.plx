@@ -32,6 +32,9 @@ open(SL,$asl) || die "slmanager.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
 
 if ($xml) {
+
+    die "slmanager.plx: XML OUTPUT NO LONGER SUPPORTED: use sl-xml.plx instead\n";
+    
     $xl =~ s#00lib#02xml#;
     $xl =~ s/\.a?sl$/.xml/;
     open(XL,">$xl") || die "slmanager.plx: can't write to $xl";
@@ -123,7 +126,7 @@ while (<SL>) {
 		$name = " name=\"$name\"";
 	    } else {
 		$name = '';
-	    }	    
+	    }
 	    print "<list n=\"$n\"$name/>" if $xml;
 	} elsif (/^\@form\s+(\S+)\s+(\S+)(?:\s+\S+\s+(\S+))?$/) {
 	    if ($in_form) {
@@ -172,10 +175,8 @@ while (<SL>) {
 		warn "$asl:$.: syntax error in \@v\n";
 	    }
 	} elsif (/^\@ucode/) {
+	    warn "ucode\n";
 	    ++$longform if $in_form;
-	    if (/^\S+\s+(\S+)\s+(\S+)/) {
-		print "<utf8 hex=\"$1\">$2</utf8>" if $xml;
-	    }
 	} elsif (/^\@(?:note|inote|pname|uname|unote|uphase|lit)/) {
 	    ++$longform if $in_form;
 	    $curr_field = 'note' if $curr_field eq 'lit';

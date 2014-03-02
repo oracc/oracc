@@ -1,7 +1,7 @@
 package ORACC::SMA::Base;
 use warnings; use strict; use utf8; use open 'utf8';
 use lib '@@ORACC@@/lib';
-use ORACC::SL::Base;
+use ORACC::SL::BaseC;
 our $VERSION = '2.0';
 
 use ORACC::SMA::NSF;
@@ -42,7 +42,7 @@ load {
     $sma_debug = $ORACC::SMA::verbose;
     load_glo($proj,$glo);
 #    load_glo($proj,$qpn);
-    ORACC::SL::Base::init(1);
+    ORACC::SL::BaseC::init(1);
 }
 
 sub
@@ -109,7 +109,7 @@ load_glo {
 
 sub
 unload {
-    ORACC::SL::Base::term();
+    ORACC::SL::BaseC::term();
 }
 
 sub
@@ -372,7 +372,7 @@ try_one_base {
     my @bits = split(/-/,$test_base);
     while ($#bits >= 0) {
 	my $base = join('-',@bits);
-	my $res = ORACC::SL::Base::same_tlit("SMA",$test,$base);
+	my $res = ORACC::SL::BaseC::same_tlit("SMA",$test,$base);
 	if ($res) {
 	    return @bits;
 	} else {

@@ -1,5 +1,6 @@
 #!/bin/sh
 TEXINPUTS=$TEXINPUTS:${ORACC}/lib/tex/:. \
     TEXFORMATS=${ORACC}/lib/tex/:. \
+    TEXFONTS=${ORACC}/lib/tex/:. \
     PATH=$PATH:/usr/local/texlive/2009/bin/x86_64-linux \
     xetex -papersize=letter -fmt oracctex $*

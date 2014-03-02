@@ -34,6 +34,7 @@ GetOptions(
 #  <lower>,forms    	sign forms (KA×GU, URU×GU etc.)
 #
 #  <upper>		sign name
+#  <upper>,form		form name; may return more than one result
 #  <upper>,uchar       	sign in Unicode/utf8
 #  <upper>,ucode       	sign's Unicode hex code
 #  <upper>,c		sign names used in compounds
@@ -387,6 +388,7 @@ subsign {
 	my $lname = $c->localName();
 
 	last if $lname eq 'form' && $mode == TOP;
+
 	if ($lname eq 'utf8') {
 	    $ucode = $c->getAttribute("hex");
 	    $uchar = $c->textContent();
@@ -425,10 +427,17 @@ subsign {
     
     my $xsn = $sn;
     $xsn =~ tr/|//d;
-    $values{$xsn} = $id;
+
+    if ($mode == TOP) {
+	$values{$xsn} = $id;
+    } else {
+	push @{$values{$xsn,'form'}}, $id;
+    }
+
     $values{$id,'ucode'} = $ucode if $ucode;
     $values{$id,'uchar'} = $uchar if $uchar;
     $values{$id,'name'} = $sn;
+
     $id;
 }
 

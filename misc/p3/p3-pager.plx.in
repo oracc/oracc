@@ -65,7 +65,7 @@ if ($rt{'prod'} eq 'list') {
 	} else {
 	    set_list_items();
 	}
-    } elsif ($p{'asrch'} eq 'yes') {
+    } elsif ($p{'asrch'} && $p{'asrch'} eq 'yes') {
 	$p{'#list'} = $p{'list'};
 	$p{'tmpdir'} = $p{'list'};
 	$p{'tmpdir'} =~ s,/results.lst,,;
@@ -398,13 +398,18 @@ run_form_maker {
 			$rep = $p{$var};
 		    }
 		} else {
-		    if ($var eq 'glosDisplay' && $projtype eq 'glossary') {
-			$rep = $p{'project'};
-			$fullrep = 1;
+		    if ($var eq 'glosDisplay') {
+			if ($projtype eq 'glossary') {
+			    $rep = $p{'project'};
+			    $fullrep = 1;
+			} else {
+			    $rep = $p{'glos'};
+			}
 		    } else {
-			$rep = $p{'glos'};
+			$rep = $p{$var};
 		    }
 		}
+		$rep = '' unless $rep; 
 		warn "cgivar $var = $rep\n";
 	    } elsif ($class eq 'runtime') {
 		if (defined $rt{$var}) {
@@ -433,6 +438,7 @@ run_form_maker {
 		    s/ checked="checked"//;
 		}
 	    } else {
+		$rep = '' unless $rep;
 		s/\svalue=\".*?\"//;
 		s#p3:v# value=\"$rep\" p3:v#;
 	    }

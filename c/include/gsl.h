@@ -7,6 +7,7 @@ extern const unsigned char *psl_get_sname(const unsigned char *value);
 extern void psl_init(void);
 extern void psl_term(void);
 extern const unsigned char *psl_cuneify(const unsigned char *g);
+extern unsigned char *psl_hex_to_sign(const char *hex);
 extern int psl_is_sname(const unsigned char *sname);
 extern int psl_is_value(const unsigned char *value);
 extern int psl_looks_like_sname(const unsigned char *str);

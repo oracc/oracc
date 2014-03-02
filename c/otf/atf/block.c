@@ -232,7 +232,9 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
   int nflags;
   enum block_levels nonx_attach;
   unsigned char *eol = NULL;
+  extern int start_lnum;
 
+  start_lnum = -1;
   transtype = 0;
   curr_lang = global_lang;
   protocol_state = s_inter;
@@ -2248,8 +2250,15 @@ scan_incref(unsigned char *s, enum e_type type)
       if (type == e_include && project)
 	{
 	  char buf[128];
-	  sprintf(buf,"%s:%s",project,cc(ref));
-	  appendAttr(increfp,attr(a_ref,ucc(buf)));
+	  if (!strchr(ref, ':'))
+	    {
+	      sprintf(buf,"%s:%s",project,cc(ref));
+	      appendAttr(increfp,attr(a_ref,ucc(buf)));
+	    }
+	  else
+	    {
+	      appendAttr(increfp,attr(a_ref,ref));
+	    }
 	}
       else
 	appendAttr(increfp,attr(a_ref,ref));

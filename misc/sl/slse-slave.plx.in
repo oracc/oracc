@@ -254,7 +254,7 @@ is_signlist {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl $db_name $db_file '$_[0]'`
+    `@@ORACC@@/bin/sl -k '$_[0]'`
 }
 
 1;

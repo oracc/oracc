@@ -60,7 +60,7 @@ const char *xtf_ns_uri = "http://oracc.org/ns/xtf/1.0";
 
 const char *gdl_w_name = "http://oracc.org/ns/gdl/1.0|w";
 const char *xtf_l_name = "http://oracc.org/ns/xtf/1.0|l";
-const char *xtf_l_note = "http://oracc.org/ns/xtf/1.0|note";
+const char *xtf_note_name = "http://oracc.org/ns/xtf/1.0|note";
 
 const char *project_en = NULL;
 
@@ -551,7 +551,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	  */
 	  printStart(name, atts);
 	}
-      else if (!strcmp(name, xtf_l_note))
+      else if (!strcmp(name, xtf_note_name))
 	echoing_suspended = 1;
       else
 	charData_discard();
@@ -642,7 +642,7 @@ ce_xtf_eH(void *userData, const char *name)
   else
     charData_discard();
 
-  if (!strcmp(name, xtf_l_note) && echoing)
+  if (!strcmp(name, xtf_note_name) && echoing)
     {
       echoing_suspended = 0;
       charData_discard();
@@ -715,7 +715,7 @@ main(int argc, char * const*argv)
   ce_out_fp = stdout;
   buf = malloc(buf_len = 32);
   if (xtf_context)
-    fprintf(ce_out_fp, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:gdl=\"http://oracc.org/ns/gdl/1.0\" xmlns:xtf=\"http://oracc.org/ns/xtf/1.0\" xmlns:norm=\"http://oracc.org/ns/norm/1.0\" xmlns:syntax=\"http://oracc.org/ns/syntax/1.0\" cetype=\"%s\">", wm_names[cetype]);
+    fprintf(ce_out_fp, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:gdl=\"http://oracc.org/ns/gdl/1.0\" xmlns:xtf=\"http://oracc.org/ns/xtf/1.0\" xmlns:norm=\"http://oracc.org/ns/norm/1.0\" xmlns:note=\"http://oracc.org/ns/note/1.0\" xmlns:syntax=\"http://oracc.org/ns/syntax/1.0\" cetype=\"%s\">", wm_names[cetype]);
   else if (xml_output)
     fputs("<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\">",
 	  ce_out_fp);

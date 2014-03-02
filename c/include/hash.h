@@ -73,7 +73,9 @@ extern  void hash_add (Hash_table *htab, const unsigned char *key, void *data);
 extern  Hash_table *hash_create (Unsigned32 count);
 extern  void hash_exec (Hash_table *htab, void (*fnc)(void *));
 extern  void hash_exec_user (Hash_table *htab, void (*fnc)(void *, void *), void *user);
-extern  void hash_exec2 (Hash_table *htab, void (*fnc)(Uchar *,void *));
+extern  void hash_exec_user_key (Hash_table *htab, void (*fnc)(const unsigned char *, void*), void *user);
+extern  void hash_exec_user_key_data (Hash_table *htab, void (*fnc)(const unsigned char *, void*, void *), void *user);
+extern  void hash_exec2 (Hash_table *htab, void (*fnc)(const unsigned char *,void *));
 extern  void *hash_find (Hash_table *htab, const unsigned char *key);
 extern  void hash_free (Hash_table *htab, void (*fnc)(void *));
 extern  void hash_free2 (Hash_table *htab, void (*keyfnc)(void *), void (*datfnc)(void *));
@@ -85,6 +87,5 @@ extern  void hash_xfree (void *vp);
 extern  void hash_freeable_data(Hash_table *h,int i);
 extern  List *hash2list(Hash_table *h, sort_cmp_func *cmp);
 extern  Hash_table *hash_from_var_char_star(const char *required, ...);
-extern void hash_exec_user_key (Hash_table *htab, void (*fnc)(Uchar *, void*), void *user);
 
 #endif /*HASH_H_*/

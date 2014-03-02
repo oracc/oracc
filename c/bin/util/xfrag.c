@@ -42,7 +42,23 @@ printStart(struct frag *frag, const char *name, const char **atts)
   const char **ap = atts;
   printText((const char*)charData_retrieve(), frag->fp);
   fprintf(frag->fp, "<%s", name);
-  if (atts)
+  if (sig_fixer && !strcmp(name, "a"))
+    {
+      for (ap = atts; ap[0]; )
+	{
+	  fprintf(frag->fp, " %s=\"",*ap++);
+	  if (!strcmp(ap[-1], "href") && !strncmp(ap[0], "javascript:pop1sig", 18))
+	    {
+	      fprintf(frag->fp, "javascript:pop1sig('%s','',", project);
+	      printText(&ap[0][19], frag->fp);
+	      ++ap;
+	    }
+	  else
+	    printText(*ap++, frag->fp);
+	  fputc('"', frag->fp);
+	}      
+    }
+  else if (atts)
     {
       for (ap = atts; ap[0]; )
 	{

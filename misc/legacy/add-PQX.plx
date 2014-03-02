@@ -2,13 +2,17 @@
 use warnings; use strict; use open 'utf8';
 use Getopt::Long;
 
+# Replace P or X numbers in legacy atf files, optionally using a table
+
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 my $all = 0;
 my $dumped = 0;
-my $input = undef;
+my $input = '';
 my $output = 'PQX.out';
 my $P = '';
+my $project = 'cdli';
+my $raw = '';
 my $tab = '';
 my %tab = ();
 my $thisX = '';
@@ -19,13 +23,17 @@ GetOptions(
     'all'=>\$all,
     'input:s'=>\$input,
     'output:s'=>\$output,
+    'project:s'=>\$project,
+    'raw:s'=>\$raw,
     'tab:s'=>\$tab,
     'X:i'=>\$X,
     'v'=>\$verbose,
     );
 
 if (!-e $input || !-r _) {
-    die "add-PQX.plx: $input non-existent or unreadable\n";
+    if (!-e $raw || !-r _) {
+	die "add-PQX.plx: $input non-existent or unreadable\n";
+    }
 }
 
 # P-number in col1, label in col2
@@ -37,6 +45,21 @@ if ($tab) {
 	$tab{$l} = $P;
     }
     close(T);
+}
+
+if ($raw) {
+    open(R, $raw) || die "add-PQX.plx: failed to open raw input file $input\n";
+    open(O, ">$raw.P") || die "add-PQX.plx: failed to open raw output $raw.P\n";
+    while (<R>) {
+	my $query = $_;
+	chomp($query);
+	my @res = `se \#$project \!cat $query`;
+	chomp @res;
+	print O "@res\n";
+    }
+    close(O);
+    close(R);
+    exit(0);
 }
 
 open(I, $input)  || die "add-PQX.plx: failed to open input file $input\n"; 

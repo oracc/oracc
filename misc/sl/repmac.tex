@@ -1,0 +1,57 @@
+\input newmcol
+\setmarginsbytypefield{9in}{7.6in}
+\lefthdrinfo{Very preliminary draft! Steve Tinney 2014-02-21}
+\UBB\ten\rm
+\font\c="CuneiformOB" at 15pt
+\tolerance2000 \looseness5000 \rightskip0pt plus1fil \overfullrule0pt
+\long\def\signlist#1{\heading #1\par
+  \begin{2column}\gutterrulestrue}
+\def\endsignlist{\end{2column}}
+
+\newdimen\kwu \setbox0=\hbox{\eight\rm KWU000} \kwu=\wd0
+
+\def\signstrut{\vrule height0pt depth1em width0pt}
+
+\hfuzz5pt
+
+\def\repsign#1#2#3#4#5{%
+  \leavevmode\hangindent.6\hsize
+  \setbox0\hbox to.4\hsize{\c#1\hfil}\ht0=0pt \dp0=-8pt \lower8pt\box0\relax
+  \setbox0\vtop{\hbox{#5\hfil}\kern-3pt\hbox to\kwu{\eight\rm#3\hss}}\dp0=0pt\box0\relax
+  \kern1em\relax\baselineskip12pt\relax#4\signstrut\endgraf
+  \vskip5pt plus1fil minus2pt
+  \goodbreak
+}
+
+\def\sign#1{\vskip5pt plus1fil minus2pt \begingroup
+  \hbox to\hsize{\eight\bf#1\hfil}}
+\def\endsign{\endgroup}
+
+\def\unicode#1#2{\kern-\baselineskip
+  \hbox to\hsize{\hfil \c #2}\endgraf
+  \bigskip
+}
+
+\def\slnotes{\begingroup}
+\def\slnote#1{\noindent #1\endgraf}
+\def\endslnotes{\endgroup}
+
+\def\lists#1{\noindent Lists: #1\endgraf}
+
+\def\form#1#2{\begingroup
+  \noindent\leftskip2em
+  \hboxtomin{3em}{#1}#2\endgraf}
+\def\endform{\endgroup}
+
+\def\values{}
+\def\endvalues{}
+
+\def\vals#1{\noindent\rightskip0pt plus1fil #1\endgraf}
+
+\def\beginvalindex{\begin{6column}\gutterrulestrue \nine\rm\baselineskip.9\baselineskip}
+\def\ix#1#2{\leavevmode #1\kern1em\relax#2\endgraf\goodbreak\vskip2pt plus1fil minus1pt}
+\def\endvalindex{\end{6column}}
+
+\catcode`&=11 \catcode`|=11 \catcode`\%=11
+
+\endinput

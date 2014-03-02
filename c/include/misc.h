@@ -20,5 +20,5 @@ extern Boolean fcheckf_list (char *fn1, char **fn2s);
 extern off_t fsize (const char *fn, FILE *fp);
 
 extern void filecopy (const char *from, const char *to);
-
+extern int pct(int amount, int total);
 #endif /*MISC_H_*/
