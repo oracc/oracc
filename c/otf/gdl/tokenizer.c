@@ -865,7 +865,11 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  unsigned char save = *following;
 		  struct medial_info *mip = NULL;
 		  *following = '\0';
-		  if ('|' != *g && strpbrk((const char *)g,"[]"))
+		  /* WATCHME: when you come back to this to implement
+		     restrictions on flags inside compounds for CDLI,
+		     make sure you don't break qualifiers in legacy
+		     mode */
+		  if (/*'|' != *g*/ !strchr((const char *)g, '|') && strpbrk((const char *)g,"[]"))
 		    {
 		      mip = new_medial_info();
 		      g = medial_square(g, mip);

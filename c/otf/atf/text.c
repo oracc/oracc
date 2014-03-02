@@ -55,7 +55,7 @@ extern int lem_autolem, lem_do_wrapup, lem_extended,
 extern int lem_system;
 extern int named_ents, no_destfile;
 extern int ods_mode, perform_lem, perform_dsa, perform_nsa;
-extern int use_unicode;
+extern int use_unicode, use_legacy;
 extern int verbose, warn_unlemmatized;
 extern FILE*f_log;
 extern FILE*f_xml;
@@ -182,7 +182,7 @@ process_text(struct run_context *run, unsigned char **lines)
   current_level = TEXT;
   curr_lang = text_lang = global_lang;
   protocol_state = s_text;
-  has_links = header_id = line_id = sym_warning = use_unicode = 0;
+  has_links = header_id = line_id = sym_warning = use_unicode = use_legacy = 0;
   curr_dialect = NULL;
   reset_lninfo();
   reset_forms_insertp();
