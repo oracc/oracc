@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.0" 
-		xmlns:sl="http://emegir.info/signlist/1"
+		xmlns:sl="http://oracc.org/ns/sl/1"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:output method="text"/>
