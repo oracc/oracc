@@ -368,6 +368,9 @@ process_protocol {
 		my $symdef = $defs{$sym};
 		$symdef =~ /^(.*?):(.*?)$/;
 		my($prj,$pqx) = ($1,$2);
+		unless ($prj && $pqx) {
+		    $prj = $pqx = '';
+		}
 		$xlink = "$prj:$pqx~$label";
 		die unless $lid;
 		#my $fref = $lid; $fref =~ s/\..*$//;  $fref =~ tr,/,:,; # $fref =~ s,^.*?/,,;
