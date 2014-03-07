@@ -390,7 +390,14 @@
 	      </td>
 	      <!--  colspan="{$xtr/*/@xtr:cols}" -->
 	      <td class="{concat('xtr-',local-name(.))}">
-		<xsl:apply-templates/>
+		<xsl:choose>
+		  <xsl:when test="string-length(.) > 0">
+		    <xsl:apply-templates/>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:text> </xsl:text>
+		  </xsl:otherwise>
+		</xsl:choose>
 	      </td>
 	    </tr>
 	  </xsl:if>
@@ -418,7 +425,14 @@
       <tr class="xtr-h">
 	<td colspan="{1+$tlit-cols}"> </td>
 	<td colspan="{$xtr/*/@xtr:cols}" class="{concat('xtr-',local-name(.))}">
-	  <xsl:apply-templates/>
+	  <xsl:choose>
+	    <xsl:when test="string-length(.) > 0">
+	      <xsl:apply-templates/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:text> </xsl:text>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</td>
       </tr>
     </xsl:for-each>
@@ -723,6 +737,7 @@
 	    </p>
 	  </xsl:for-each>
 	</xsl:if>
+	<p/>
       </div>
     </xsl:when>
     <xsl:otherwise>
@@ -761,7 +776,14 @@
     <xsl:choose>
       <xsl:when test="substring(@xml:id,string-length(@xml:id)-1) = '.0'">
 	<a name="{concat('a.',substring-before(@xml:id,'.0'))}">
-	  <xsl:apply-templates/>
+	  <xsl:choose>
+	    <xsl:when test="string-length(.) > 0">
+	      <xsl:apply-templates/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:text> </xsl:text>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</a>
       </xsl:when>
       <xsl:otherwise>
