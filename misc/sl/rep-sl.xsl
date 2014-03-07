@@ -14,21 +14,21 @@
 
 <xsl:template match="sl:sign">
   <xsl:copy>
-    <xsl:copy-of select="@n|@icount"/>
+    <xsl:copy-of select="@n|@icount|@numu|@numc"/>
     <xsl:attribute name="xml:id">
-      <xsl:choose>
-	<xsl:when test="string-length(@ref) > 0">
-	  <xsl:value-of select="@ref"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="generate-id(.)"/>
-	</xsl:otherwise>
-      </xsl:choose>
+      <xsl:value-of select="generate-id()"/>
+    </xsl:attribute>
+    <xsl:attribute name="ogsl-ref">
+      <xsl:value-of select="@ref"/>
     </xsl:attribute>
     <xsl:variable name="ref" select="@ref"/>
     <xsl:for-each select="$ogsl">
       <xsl:variable name="ogsl-sign" select="id($ref)"/>
-      <xsl:copy-of select="$ogsl-sign/sl:name"/>
+      <xsl:for-each select="$ogsl-sign/sl:name">
+	<xsl:copy>
+	  <xsl:apply-templates/>
+	</xsl:copy>
+      </xsl:for-each>
       <xsl:copy-of select="$ogsl-sign/sl:sort"/>
       <xsl:copy-of select="$ogsl-sign/sl:list"/>
     </xsl:for-each>
@@ -43,6 +43,16 @@
 
 <xsl:template match="sl:v">
   <v icount="{@icount}" ipct="{@ipct}"><xsl:apply-templates/></v>
+</xsl:template>
+
+<xsl:template match="g:*">
+  <xsl:copy>
+    <xsl:for-each select="@*">
+      <xsl:if test="not(local-name(.)='id')">
+	<xsl:copy-of select="."/>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:copy>
 </xsl:template>
 
 </xsl:transform>

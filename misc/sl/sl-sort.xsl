@@ -39,6 +39,13 @@
 	  <xsl:copy-of select="."/>
 	</xsl:for-each>
       </xsl:when>
+      <xsl:when test="$sort = 'numeric'">
+	<xsl:for-each select="*">
+	  <xsl:sort select="@numu"/>
+	  <xsl:sort select="@numc" data-type="number"/>
+	  <xsl:copy-of select="."/>
+	</xsl:for-each>
+      </xsl:when>
       <xsl:otherwise>
 	<xsl:for-each select="*">
 	  <xsl:sort select="sl:sort/@ogsl" data-type="number"/>

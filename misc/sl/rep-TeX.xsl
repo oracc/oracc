@@ -2,14 +2,26 @@
 		xmlns:sl="http://oracc.org/ns/sl/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+<xsl:param name="wrap" select="'yes'"/>
+
 <xsl:output method="text"/>
 
 <xsl:template match="sl:signlist">
-  <xsl:text>\macrofile{/Users/stinney/oracc/misc/sl/repmac}\signlist{Ur III Signlist}</xsl:text>
-  <xsl:apply-templates/>
-  <xsl:text>\endsignlist\newpage</xsl:text>
-  <xsl:text>\include{valindex}&#xa;</xsl:text>
-  <xsl:text>\bye</xsl:text>
+  <xsl:choose>
+    <xsl:when test="$wrap = 'no'">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>\macrofile{/Users/stinney/oracc/misc/sl/repmac}\signlist{Ur III Signlist}</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>\endsignlist\newpage</xsl:text>
+      <xsl:text>\signlist{Ur III Numbers}</xsl:text>
+      <xsl:text>\include{ur3-num}</xsl:text>
+      <xsl:text>\endsignlist\newpage</xsl:text>
+      <xsl:text>\include{valindex}&#xa;</xsl:text>
+      <xsl:text>\bye</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="sl:sign">
