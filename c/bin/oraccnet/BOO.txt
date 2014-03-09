@@ -1,0 +1,95 @@
+BOO
+===
+
+boo is the client program for interaction with build.oracc.org.
+
+boo commands are two-tiered: the main method and an optional submethod.
+
+Some submethods may take a value, given in the form SUBMETHOD=VALUE.
+
+The default main method is build.
+
+MAIN METHODS
+============
+
+build
+check
+deploy
+lemmatize
+manifest
+resources
+update
+
+BUILD
+=====
+
+Rebuild the project or part thereof as specified in the submethod.
+
+Submethods: all content portal
+
+Default: all (i.e., 'boo' is equivalent to 'boo build all')
+
+CHECK
+=====
+
+Check the project or aspects thereof as specified in the submethod.
+
+Submethods: all atf esp glo links
+
+Default: atf
+
+The submethod atf may take a value giving ATF processor arguments, e.g., atf=-c. See
+the documentation for the ATF processor options for more details.
+
+The submethods atf and glo may take an additional argument giving a filename in the form:
+
+ file=some.atf
+
+or
+
+ file=some.glo
+
+No directory/folder information should be given in these cases.
+
+The command 'boo check some.atf' is equivalent to 'boo check atf file=some.atf'.
+
+DEPLOY
+======
+
+Package the project or parts thereof and place them in the public downloads whence they can be picked up by the servers for installation.  Note: resources are automatically updated when a 'portal' or 'all' deployment is carried out.
+
+Submethods: all content portal
+
+LEMMATIZE
+=========
+
+Lemmatize the file argument.
+
+Submethod: file
+
+MANIFEST
+========
+
+Retrieve a manifest of the project's files on boo.
+
+Submethods: echo xml
+
+echo: print the manifest on stdout after retrieval (default is to put it in '01tmp/manifest.txt').
+
+xml: generate the manifest in XML format rather than tabbed.
+
+RESOURCES
+=========
+
+Update the resources (the 00res folder) on boo.  This is a smart update, so no additional arguments are required: the client retrieves a manifest and compares the results to the current 00res folder, sending any updated files and requesting the deletion of any files that are no longer required on boo.
+
+Two non-user-visible submethods are used to achieve this which are equivalent to:
+
+    boo resources delete [FILENAME]
+    boo resources update [FILENAME]
+
+UPDATE
+======
+
+Update the configuration and lemmatization files on boo, but don't do any building or checking beyond what that requires.
+
