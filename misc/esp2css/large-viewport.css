@@ -1,0 +1,189 @@
+/* @media block for larger viewport sizes (625px and above)*/
+@media screen and (min-width: 625px) {
+.pc05 {
+    width: 05%;
+}
+.pc10 {
+    width: 10%;
+}
+.pc15 {
+    width: 15%;
+}
+.pc20 {
+    width: 20%;
+}
+.pc25 {
+    width: 25%;
+}
+.pc30 {
+    width: 30%;
+}
+.pc35 {
+    width: 35%;
+}
+.pc40 {
+    width: 40%;
+}
+.pc45 {
+    width: 45%;
+}
+.pc50 {
+    width: 50%;
+}
+.pc55 {
+    width: 65%;
+}
+.pc60 {
+    width: 70%;
+}
+.pc65 {
+    width: 65%;
+}
+.pc70 {
+    width: 70%;
+}
+.pc75 {
+    width: 75%;
+}
+.pc80 {
+    width: 80%;
+}
+.pc85 {
+    width: 85%;
+}
+.pc90 {
+    width: 90%;
+}
+.pc95 {
+    width: 95%;
+}
+.pc100 {
+    width: 100%;
+}
+ul.biblio {
+    list-style: none;
+    margin-left: 5%;
+    padding-left: 0;
+}
+ul.biblio li {
+    margin-bottom: 1em;
+}
+#Content {
+    margin: 1em 3% 0 22%;
+    width: 74%;
+}
+#Header {
+    padding: 0.5em 4%;
+    background: #003399;
+    margin: 0.3em 0 0;
+    height: 2.75em;
+    border-bottom: 0.5em solid #ffcc00;
+}
+#HeadTitle {
+    font-size: 1.6em;
+    color: #ffffff;
+}
+#HeadTitle a:link, #HeadTitle a:visited {
+    color: #ffffff;
+    background: #003399;
+    text-decoration: none;
+}
+#HeadSubtitle {
+    font-style: italic;
+    font-weight: normal;
+    font-size: 1.2em;
+    color: #ffffff;
+}
+#Menu {
+    float: left;
+    width: 20%;
+    margin: 0.1px 0 0.1px 0;
+    padding: 0;
+    background: #ffffff;
+}
+#MenuCaption {
+    margin-left: 3em;
+    margin-bottom: 0.5em;
+    padding-left: 0;
+    font-size: 0.9em;
+    font-weight: bold;
+    width: 70%;
+    border-bottom: 2px solid #ffcc00;
+}
+#Menu a {
+    text-decoration: none;
+}
+#Menu ul {
+    padding: 0;
+    margin: 0;
+}
+#Menu ul ul {
+    padding: 0.25em 0 0 4em;
+    margin-bottom: 0.25em;
+    border: 1px solid #ffcc00;
+    border-top: 0;
+}
+#Menu ul ul ul {
+    border-right: 0;
+    padding: 0.25em 0 0 1em;
+}
+#Menu li {
+    padding: 0;
+    margin: 0;
+    list-style-image: url(/img/blank.gif);
+/* IE Win does weird stuff with list-style-type: none */
+}
+#Menu li.only {
+    font-weight: normal;
+}
+#Menu ul a, ul #SelfInMenu {
+    display: block;
+    padding: 0.35em 1em 0.35em 3em;
+    line-height: normal;
+}
+#Menu ul ul a, ul ul #SelfInMenu {
+    padding: 0.35em 1em 0.35em 1em;
+}
+#Menu a.open:hover, #Menu a.closed:hover {
+    color: $medium;
+    background-color: $highlight;
+}
+#Menu a.open {
+    background-color: $light;
+}
+#SelfInMenu {
+    font-weight: bold;
+}
+#SelfInMenu.open {
+    background-color: $light;
+}
+#AccessLinks {
+    padding: 0 1em 0 4%;
+    float: left;
+}
+#ReferenceLinks {
+    padding: 0 4%;
+    text-align: right;
+}
+#BackToTop {
+    text-align: right;
+    margin: 0 4%;
+}
+#EndContentSpace {
+    clear: both;
+    height: 1em;
+}
+#FooterWhole {
+    border-bottom: solid 1px #003399;
+    margin: 0 0 0.2em;
+    clear: both;
+    height: 1em;
+}
+#FooterLeft {
+    padding: 0 4%;
+}
+#FooterRight {
+    float: right;
+    padding: 0 4%;
+}
+}

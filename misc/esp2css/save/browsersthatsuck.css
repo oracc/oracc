@@ -1,0 +1,240 @@
+html {
+font-size: 0.9em;
+}
+body {
+width: 100%;
+}
+code {
+font-family: "Courier New",Courier,mono;
+font-size: 1.2em }
+ol {
+list-style-type: decimal;
+}
+ol ol {
+list-style-type: lower-alpha;
+}
+ol ol ol {
+list-style-type: lower-roman;
+}
+ol ol ol ol {
+list-style-type: upper-alpha;
+}
+pre.listing {
+margin-left: 1em;
+margin-right: 1em;
+padding-top: 5px;
+padding-bottom: 5px;
+padding-left: 2px;
+background-color: #f5f5dc;
+color: black;
+}
+pre.example {
+margin-left: 1em;
+margin-right: 1em;
+padding-top: 5px;
+padding-bottom: 5px;
+padding-left: 2px;
+background-color: #eee;
+color: black;
+}
+pre.cookbook {
+margin-left: 1em;
+margin-right: 1em;
+padding-top: 5px;
+padding-bottom: 5px;
+padding-left: 2px;
+background-color: #daf3e0;
+color: black;
+}
+td.cookbook {
+background-color: #daf3e0;
+color: black;
+vertical-align: middle;
+}
+.cookbook {
+background-color: #daf3e0;
+color: black;
+}
+.example {
+background-color: #eee;
+color: black;
+}
+/* This stylesheet is targeted at old browsers that support the <link rel="stylesheet" ...> tag, but do not understand the media="xyz" attribute (I'm looking at you, IE 4.01 Mac), with the result that they process ALL stylesheets in all circumstances, and thus hide the menu etc. on the screen, making the site unusable. It unhides anything hidden by the print or handheld stylesheets that we'd rather have visible on the screen. */
+/* Styling for prettier tables. RH 9.7.2009 */
+table.pretty {
+margin: 2em 2em 2em 3em;
+background: #f5f5f5;
+border-collapse: collapse;
+}
+table.pretty th, table.pretty td {
+border: 1px #c0c0c0 solid;
+padding: 0.2em;
+}
+table.pretty th {
+background: #dcdcdc;
+text-align: left;
+}
+table.pretty caption {
+margin-left: inherit;
+margin-right: inherit;
+}
+span.glossarylink, span.techtermslink, span.indexlink, span.switcherlink {
+display: inline;
+}
+#Banner {
+width: 100%;
+text-align: center;
+}
+/* START @media block for small viewports (max 624px) */
+@media screen and (max-width: 624px) {
+.pc30 {
+width: 100%;
+}
+/* remove LH indent for lists */
+ul, ol {
+margin-left: 5%;
+padding-left: 0;
+}
+#Breadcrumb {
+display: none;
+}
+#Banner {
+text-align: center;
+}
+#HeadTitle a:link, #HeadTitle a:visited {
+text-decoration: none;
+}
+#Menu {
+display: block;
+}
+#AccessLinks {
+display: none;
+}
+#ReferenceLinks {
+display: none;
+}
+#BackToTop {
+display: block;
+}
+#FooterRight {
+display: block;
+}
+}
+/* END @media block for small viewport sizes */
+/* START @media block for larger viewport sizes (625px and above)*/
+@media screen and (min-width: 625px) {
+.pc05 {
+width: 05%;
+}
+.pc10 {
+width: 10%;
+}
+.pc15 {
+width: 15%;
+}
+.pc20 {
+width: 20%;
+}
+.pc25 {
+width: 25%;
+}
+.pc30 {
+width: 30%;
+}
+.pc35 {
+width: 35%;
+}
+.pc40 {
+width: 40%;
+}
+.pc45 {
+width: 45%;
+}
+.pc50 {
+width: 50%;
+}
+.pc55 {
+width: 65%;
+}
+.pc60 {
+width: 70%;
+}
+.pc65 {
+width: 65%;
+}
+.pc70 {
+width: 70%;
+}
+.pc75 {
+width: 75%;
+}
+.pc80 {
+width: 80%;
+}
+.pc85 {
+width: 85%;
+}
+.pc90 {
+width: 90%;
+}
+.pc95 {
+width: 95%;
+}
+.pc100 {
+width: 100%;
+}
+ul.biblio {
+list-style: none;
+margin-left: 5%;
+padding-left: 0;
+}
+ul.biblio li {
+margin-bottom: 1em;
+}
+#Content {
+width: 74%;
+}
+#HeadTitle a:link, #HeadTitle a:visited {
+text-decoration: none;
+}
+#Menu {
+display: block;
+}
+#AccessLinks {
+display: block;
+}
+#ReferenceLinks {
+display: block;
+}
+#BackToTop {
+display: block;
+}
+#FooterRight {
+display: block;
+}
+}
+/* END @media block for larger viewport sizes */
+#Breadcrumb {
+display: block;
+}
+#TextSize {
+display: inline;
+}
+#CuneiformSwitcher {
+display: inline;
+}
+#Search {
+display: block;
+}
+#StyleSheetWarning {
+display: none;
+}
+#Alphabet {
+display: block;
+}
+#PageLinks {
+display: inline;
+}
+#tab_1, #tab_2, #tab_3 {
+display: block;
+}

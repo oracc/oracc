@@ -1,0 +1,28 @@
+page: body background
+
+outline: borders
+
+highlight: .highlighted; hover background for menu items
+
+link: a:link
+
+link-hover/visited-hover: a:link:hover
+
+visited: a:visited
+
+===
+
+dark: text colour for link/visited; background for link-hover/visited-hover
+
+medium: text colour for hovering, used with highlight
+
+light: open menu items/selfinmenu
+
+Rename these to:
+
+dark => link-text, visited-text, *-hover
+medium => link-hover-text, visited-hover-text
+
+light => openmenu
+
+===

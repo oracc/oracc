@@ -83,8 +83,10 @@ cd $XMLSAP && esp2-image-info.sh >01tmp/images-info.xml project=$project
 cd $XMLSAP/00web
 find . -iname "*.xml" | $ESP2BIN/esp2-lmt.plx > $XMLSAP/01tmp/last-modified-times.xml
 
-java -jar $SAXONJAR $XSL/esp2-stylesheets.xslt $XSL/esp2-stylesheets.xslt \
-    output-directory=file:$HTTPROOT $SAXONPARAMS
+#java -jar $SAXONJAR $XSL/esp2-stylesheets.xslt $XSL/esp2-stylesheets.xslt \
+#    output-directory=file:$HTTPROOT $SAXONPARAMS
+
+esp2-stylesheets.plx -outdir $HTTPROOT
 
 echo phase 1
 
