@@ -21,7 +21,7 @@ if ($standalone) {
     $project = `oraccopt` unless $project;
     die "esp2-stylesheets.plx: must run in a project directory\n" unless $project;
     $indir = "$ENV{'ORACC_HOME'}/nimrud/00web/00config"; # '00web/00config'
-    $outdir ="$ENV{'ORACC_HOME'}/$project/01bld/espdev";
+    $outdir ="$ENV{'ORACC_HOME'}/$project/01bld/espdev/css";
 }
 
 system 'mkdir', '-p', $outdir;
