@@ -3,10 +3,12 @@ use warnings; use strict;
 
 use Getopt::Long;
 
+my $basedir = '';
 my $project = '';
 my $standalone = 0;
 
 GetOptions(
+    'basedir:s'=>\$basedir,
     'project:s'=>\$project,
     'standalone'=>\$standalone,
 );
@@ -21,7 +23,7 @@ if ($standalone) {
     $project = `oraccopt` unless $project;
     die "esp2-stylesheets.plx: must run in a project directory\n" unless $project;
     $indir = "$ENV{'ORACC_HOME'}/nimrud/00web/00config"; # '00web/00config'
-    $outdir ="$ENV{'ORACC_HOME'}/$project/01bld/espdev/css";
+    $outdir ="$basedir/css";
 }
 
 system 'mkdir', '-p', $outdir;

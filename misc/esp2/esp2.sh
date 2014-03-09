@@ -86,7 +86,7 @@ find . -iname "*.xml" | $ESP2BIN/esp2-lmt.plx > $XMLSAP/01tmp/last-modified-time
 #java -jar $SAXONJAR $XSL/esp2-stylesheets.xslt $XSL/esp2-stylesheets.xslt \
 #    output-directory=file:$HTTPROOT $SAXONPARAMS
 
-esp2-stylesheets.plx -outdir $HTTPROOT
+esp2-stylesheets.plx -basedir $HTTPROOT -project $project
 
 echo phase 1
 
