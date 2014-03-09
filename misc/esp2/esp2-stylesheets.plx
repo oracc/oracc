@@ -105,7 +105,7 @@ subfile {
     open($fh, "$f");
     die "esp2-stylesheets.plx: unable to open '$f' for read\n" unless $fh;
     while (<$fh>) {
-	if (/^\@file\s+(.*?)/) {
+	if (/^\@file\s+(.*?)\s*$/) {
 	    subfile("$indir/$1");
 	} else {
 	    s/\$([a-z]+)/$app{$1}/g;
