@@ -1,5 +1,5 @@
 #!/bin/sh
-FLAGS=p:s:
+FLAGS=a:m:p:s:
 PROG=oracc-build-client.sh
 
 ## Options
@@ -7,6 +7,10 @@ args=`getopt $FLAGS $*`
 echo args=$args
 for args; do
     case "$args" in
+	-a ) methodarg=$2
+	     shift ; shift ;;
+	-m ) method=$2
+	     shift ; shift ;;
 	-p ) project=$2
 	     shift ; shift ;;
 	-s ) server=$2
