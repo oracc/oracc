@@ -3,6 +3,9 @@ yum install \
     nano \
     emacs \
     gcc \
+    gcc-c++ \
+    bison \
+    flex \
     autoconf \
     automake \
     libtool \
