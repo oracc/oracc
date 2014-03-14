@@ -1,65 +1,8 @@
 /* @media block for larger viewport sizes (625px and above)*/
 @media screen and (min-width: 625px) {
-.pc05 {
-    width: 05%;
-}
-.pc10 {
-    width: 10%;
-}
-.pc15 {
-    width: 15%;
-}
-.pc20 {
-    width: 20%;
-}
-.pc25 {
-    width: 25%;
-}
-.pc30 {
-    width: 30%;
-}
-.pc35 {
-    width: 35%;
-}
-.pc40 {
-    width: 40%;
-}
-.pc45 {
-    width: 45%;
-}
-.pc50 {
-    width: 50%;
-}
-.pc55 {
-    width: 65%;
-}
-.pc60 {
-    width: 70%;
-}
-.pc65 {
-    width: 65%;
-}
-.pc70 {
-    width: 70%;
-}
-.pc75 {
-    width: 75%;
-}
-.pc80 {
-    width: 80%;
-}
-.pc85 {
-    width: 85%;
-}
-.pc90 {
-    width: 90%;
-}
-.pc95 {
-    width: 95%;
-}
-.pc100 {
-    width: 100%;
-}
+
+@file pc5.css
+
 ul.biblio {
     list-style: none;
     margin-left: 5%;
@@ -186,4 +129,5 @@ ul.biblio li {
     float: right;
     padding: 0 4%;
 }
+
 }

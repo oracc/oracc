@@ -362,6 +362,7 @@ ul, ol {
 }
 /* @media block for larger viewport sizes (625px and above)*/
 @media screen and (min-width: 625px) {
+
 .pc05 {
     width: 05%;
 }
@@ -422,6 +423,7 @@ ul, ol {
 .pc100 {
     width: 100%;
 }
+
 ul.biblio {
     list-style: none;
     margin-left: 5%;
@@ -548,6 +550,7 @@ ul.biblio li {
     float: right;
     padding: 0 4%;
 }
+
 }
 
 #Search {

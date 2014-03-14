@@ -23,7 +23,7 @@
   <xsl:param name="scripts"/>
   <xsl:param name="output-file"/>
 
-  <xsl:variable name="esp2-global-design-width" select="600"/>
+  <xsl:variable name="esp2-global-design-width" select="800"/>
 
   <xsl:variable name="parameters" select="document ( concat($projesp, '/00web/00config/parameters.xml') )/param:parameters"/>
   <xsl:variable name="index-page" select="//esp:index-list[1]/ancestor::struct:page[1]"/>
@@ -319,7 +319,7 @@
        </xsl:copy>
      </xsl:for-each>
      <xsl:if test="not(esp:link)">
-       <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
+       <img width="{$width}" src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
          <xsl:if test="esp:image-map">
            <xsl:attribute name="usemap" select="concat('#map_', generate-id(esp:image-map))"/>
          </xsl:if>
