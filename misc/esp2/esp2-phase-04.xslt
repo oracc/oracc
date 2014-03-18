@@ -73,12 +73,13 @@
 <!--    <link rel="stylesheet" type="text/css" href="/css/oraccbase.css"/> -->
     <link rel="stylesheet" type="text/css" media="print" href="{$relpath}/css/print.css"/>
 <!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-print.css"/> -->
-    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/handheld.css"/>
+<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/handheld.css"/> -->
 <!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-handheld.css"/> -->
     <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/screen.css"/>
     <!-- why were all the my-xxx.css files commented out? (because they don't seem to be used much [sjt]) -->
-    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/my-screen.css"/>
-    <link rel="stylesheet" type="text/css" media="browsers_that_ignore_the_media_type_attribute" href="{$relpath}/css/browsersthatsuck.css"/>
+<!--    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/my-screen.css"/> -->
+
+<!--    <link rel="stylesheet" type="text/css" media="browsers_that_ignore_the_media_type_attribute" href="{$relpath}/css/browsersthatsuck.css"/> -->
 
     <xsl:choose>
       <xsl:when test="string($parameters/param:cuneify/@default) = 'na'">
