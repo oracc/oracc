@@ -2,7 +2,8 @@ include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = gdf-entry.sh gdf-sort.sh gdf-update.sh
 css_DATA = gdf.css
-scriptdata_DATA = gdf-entry-html.xsl gdf-est.xsl gdf-ids.xsl gdf-index-html.xsl gdf-sort.xsl
+scriptdata_DATA = gdf-entry-html.xsl gdf-est.xsl gdf-ids.xsl gdf-index-html.xsl gdf-sort.xsl \
+	xml2gdf.xsl
 data_DATA = gdf-template.xml
 
 gdf-entry.sh: gdf-entry.sh.in
