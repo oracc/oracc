@@ -102,6 +102,7 @@ AC_OUTPUT([Makefile
 	   c/bin/se/Makefile
 	   c/bin/se/secatx/Makefile
 	   c/bin/se/secbdx/Makefile
+	   c/bin/se/segdfx/Makefile
 	   c/bin/se/selemx/Makefile
 	   c/bin/se/setxtx/Makefile
 	   c/bin/se/setrax/Makefile

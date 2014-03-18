@@ -8,7 +8,7 @@
 include ../../../oracc-am-rules.txt
 
 # sel24x
-SUBDIRS = secatx setxtx secbdx setrax selemx 
+SUBDIRS = secatx segdfx setxtx secbdx setrax selemx
 @SET_MAKE@
 
 .g.c:
