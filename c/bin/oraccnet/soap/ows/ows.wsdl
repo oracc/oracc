@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="Service"
+ targetNamespace="http://oracc.org/ws/ows/Service.wsdl"
+ xmlns:tns="http://oracc.org/ws/ows/Service.wsdl"
+ xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope"
+ xmlns:SOAP-ENC="http://www.w3.org/2003/05/soap-encoding"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xop="http://www.w3.org/2004/08/xop/include"
+ xmlns:xmime5="http://www.w3.org/2005/05/xmlmime"
+ xmlns:ows="http://oracc.org/ws/ows"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap12/"
+ xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+ xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="http://oracc.org/ws/ows"
+  xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:SOAP-ENC="http://www.w3.org/2003/05/soap-encoding"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xop="http://www.w3.org/2004/08/xop/include"
+  xmlns:xmime5="http://www.w3.org/2005/05/xmlmime"
+  xmlns:ows="http://oracc.org/ws/ows"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://www.w3.org/2003/05/soap-envelope"/>
+  <import namespace="http://www.w3.org/2003/05/soap-encoding"/>
+  <import namespace="http://www.w3.org/2004/08/xop/include" schemaLocation="http://www.w3.org/2004/08/xop/include"/>
+  <import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
+
+  <!-- operation request element -->
+  <element name="call">
+   <complexType>
+    <sequence>
+     <element name="method" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::method -->
+     <element name="args" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::args -->
+     <element name="in" type="ows:Data" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::in -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="Data">
+   <complexType>
+    <sequence>
+     <element ref="xop:Include" minOccurs="1" maxOccurs="1"/><!-- ows__Data::xop__Include -->
+    </sequence>
+     <attribute ref="xmime5:contentType" use="optional"/>
+   </complexType>
+  </element>
+ </schema>
+
+</types>
+
+<message name="call">
+ <part name="Body" element="ows:call"/><!-- ows__call::ows__call -->
+</message>
+
+<message name="Data">
+ <part name="Body" element="ows:Data"/><!-- ows__call::out -->
+</message>
+
+<portType name="ServicePortType">
+ <operation name="call">
+  <documentation>Service definition of function ows__call</documentation>
+  <input message="tns:call"/>
+  <output message="tns:Data"/>
+ </operation>
+</portType>
+
+<binding name="Service" type="tns:ServicePortType">
+ <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="call">
+  <SOAP:operation/>
+  <input>
+     <SOAP:body parts="Body" use="literal"/>
+  </input>
+  <output>
+     <SOAP:body parts="Body" use="literal"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="Service">
+ <documentation>gSOAP 2.8.17r generated service definition</documentation>
+ <port name="Service" binding="tns:Service">
+  <SOAP:address location="http://localhost:80"/>
+ </port>
+</service>
+
+</definitions>

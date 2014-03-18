@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions name="Service"
- targetNamespace="http://tempuri.org/ocalc.xsd/Service.wsdl"
- xmlns:tns="http://tempuri.org/ocalc.xsd/Service.wsdl"
+<definitions name="ocalc"
+ targetNamespace="http://oracc.org/wsdl/ocalc.wsdl"
+ xmlns:tns="http://oracc.org/wsdl/ocalc.wsdl"
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
- xmlns:ocalc="http://tempuri.org/ocalc.xsd"
+ xmlns:ocalc="urn:ocalc"
  xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
  xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
  xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
@@ -16,12 +16,12 @@
 
 <types>
 
- <schema targetNamespace="http://tempuri.org/ocalc.xsd"
+ <schema targetNamespace="urn:ocalc"
   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:ocalc="http://tempuri.org/ocalc.xsd"
+  xmlns:ocalc="urn:ocalc"
   xmlns="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="unqualified"
   attributeFormDefault="unqualified">
@@ -104,7 +104,7 @@
  <part name="Body" element="ocalc:sqrtResponse"/>
 </message>
 
-<portType name="ServicePortType">
+<portType name="ocalcPortType">
  <operation name="add">
   <documentation>Service definition of function ocalc__add</documentation>
   <input message="tns:addRequest"/>
@@ -122,7 +122,7 @@
  </operation>
 </portType>
 
-<binding name="Service" type="tns:ServicePortType">
+<binding name="ocalc" type="tns:ocalcPortType">
  <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
  <operation name="add">
   <SOAP:operation soapAction=""/>
@@ -153,10 +153,10 @@
  </operation>
 </binding>
 
-<service name="Service">
+<service name="ocalc">
  <documentation>gSOAP 2.8.17r generated service definition</documentation>
- <port name="Service" binding="tns:Service">
-  <SOAP:address location="http://localhost:80"/>
+ <port name="ocalc" binding="tns:ocalc">
+  <SOAP:address location="http://build.oracc.org/ws/oracc-calc.cgi"/>
  </port>
 </service>
 

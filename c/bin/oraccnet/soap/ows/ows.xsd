@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <schema targetNamespace="http://oracc.org/ws/ows"
+  xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:SOAP-ENC="http://www.w3.org/2003/05/soap-encoding"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xop="http://www.w3.org/2004/08/xop/include"
+  xmlns:xmime5="http://www.w3.org/2005/05/xmlmime"
+  xmlns:ows="http://oracc.org/ws/ows"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://www.w3.org/2003/05/soap-envelope"/>
+  <import namespace="http://www.w3.org/2003/05/soap-encoding"/>
+  <import namespace="http://www.w3.org/2004/08/xop/include" schemaLocation="http://www.w3.org/2004/08/xop/include"/>
+  <import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
+
+  <!-- operation request element -->
+  <element name="call">
+   <complexType>
+    <sequence>
+     <element name="method" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::method -->
+     <element name="args" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::args -->
+     <element name="in" type="ows:Data" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ows__call::in -->
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="Data">
+   <complexType>
+    <sequence>
+     <element ref="xop:Include" minOccurs="1" maxOccurs="1"/><!-- ows__Data::xop__Include -->
+    </sequence>
+     <attribute ref="xmime5:contentType" use="optional"/>
+   </complexType>
+  </element>
+ </schema>
+

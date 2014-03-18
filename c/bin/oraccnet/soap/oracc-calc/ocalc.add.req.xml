@@ -4,7 +4,7 @@
   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:ocalc="http://tempuri.org/ocalc.xsd">
+  xmlns:ocalc="urn:ocalc">
  <SOAP-ENV:Body>
   <ocalc:add>
    <a>0.0</a>

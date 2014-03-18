@@ -17,12 +17,14 @@ compiling, linking, and/or using OpenSSL is allowed.
 extern "C" {
 #endif
 
-SOAP_SOURCE_STAMP("@(#) soapClient.c ver 2.8.17r 2014-03-14 20:23:24 GMT")
+SOAP_SOURCE_STAMP("@(#) soapClient.c ver 2.8.17r 2014-03-15 02:59:32 GMT")
 
 
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_ocalc__add(struct soap *soap, const char *soap_endpoint, const char *soap_action, double a, double b, double *result)
 {	struct ocalc__add soap_tmp_ocalc__add;
 	struct ocalc__addResponse *soap_tmp_ocalc__addResponse;
+	if (soap_endpoint == NULL)
+		soap_endpoint = "http://build.oracc.org/ws/oracc-calc.cgi";
 	soap_begin(soap);
 	soap->encodingStyle = NULL;
 	soap_tmp_ocalc__add.a = a;
@@ -74,6 +76,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_ocalc__add(struct soap *soap, const char *so
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_ocalc__sub(struct soap *soap, const char *soap_endpoint, const char *soap_action, double a, double b, double *result)
 {	struct ocalc__sub soap_tmp_ocalc__sub;
 	struct ocalc__subResponse *soap_tmp_ocalc__subResponse;
+	if (soap_endpoint == NULL)
+		soap_endpoint = "http://build.oracc.org/ws/oracc-calc.cgi";
 	soap_begin(soap);
 	soap->encodingStyle = NULL;
 	soap_tmp_ocalc__sub.a = a;
@@ -125,6 +129,8 @@ SOAP_FMAC5 int SOAP_FMAC6 soap_call_ocalc__sub(struct soap *soap, const char *so
 SOAP_FMAC5 int SOAP_FMAC6 soap_call_ocalc__sqrt(struct soap *soap, const char *soap_endpoint, const char *soap_action, double a, double *result)
 {	struct ocalc__sqrt soap_tmp_ocalc__sqrt;
 	struct ocalc__sqrtResponse *soap_tmp_ocalc__sqrtResponse;
+	if (soap_endpoint == NULL)
+		soap_endpoint = "http://build.oracc.org/ws/oracc-calc.cgi";
 	soap_begin(soap);
 	soap->encodingStyle = NULL;
 	soap_tmp_ocalc__sqrt.a = a;

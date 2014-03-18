@@ -30,7 +30,12 @@ This is just a place for notes--James/Martin/anyone else, feel free to dump comm
 	gcc -I/usr/local/include -c soapServerLib.c
 	gcc -I/usr/local/include -c soapServer.c
 	gcc -I/usr/local/include -c ocalc-server.c
-	gcc -I/usr/local/include -L/usr/local/lib -lgsoap -o oracc-calc.cgi soapServer.o soapC.o ocalc-server.o
+
+Mac OS X:
+	gcc -L/usr/local/lib -lgsoap -o oracc-calc.cgi soapServer.o soapC.o ocalc-server.o
+
+Linux:
+	gcc -L/usr/local/lib -o oracc-calc.cgi soapServer.o soapC.o ocalc-server.o -lgsoap -lm
 
 ** compiled the client:
 
