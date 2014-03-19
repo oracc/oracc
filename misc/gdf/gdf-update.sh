@@ -21,4 +21,6 @@ if [ -r $dataset.xml ]; then
     xsltproc -stringparam project $project $ORACC/lib/scripts/gdf-est.xsl $dataset.xml \
 	| est-index-uris.plx estindex
 fi
+mkdir -p $ORACC/pub/$project/gdf/$dataset/cat
+segdfx -p $project -g $dataset < $dataset.xml
 chmod -R o+r *

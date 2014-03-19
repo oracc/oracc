@@ -47,10 +47,12 @@ static void uniq (struct Datum *dp);
 
 struct vid_data *vp;
 
+extern int gdf_flag;
+
 void
 se_vids_init(const char *index)
 {
-  const char *vids = se_file (se_curr_project, l2 ? "cat" : index, "vid.dat");
+  const char *vids = se_file (se_curr_project, (l2&&!gdf_flag) ? "cat" : index, "vid.dat");
   if (!xaccess(vids, R_OK, 0))
     vp = vid_load_data(vids);
   else
@@ -366,7 +368,7 @@ main(int argc, char * const*argv)
   f_log = stderr;
   exit_on_error = TRUE;
   setlocale(LC_ALL,LOCALE);
-  options(argc, argv, "28cdo:p:P:stuvx:");
+  options(argc, argv, "28cdg:o:p:P:stuvx:");
   if (!out_f)
     out_f = stdout;
 

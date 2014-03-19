@@ -25,7 +25,7 @@ extern const char *xmd_fields, *xmd_widths;
 
 int p3 = 0;
 
-const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
+const char *id, *ce_index, *gdf_xml = NULL, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
 const char *idattr = "xml:id";
 int echoing = 0;
 int item_offset;
@@ -222,91 +222,101 @@ process_ce_ids(char *buf)
   static unsigned char id_with_w[CE_BUFSIZ];
   int *ip = NULL;
   buf[strlen(buf)-1] = '\0';
-  dot = strchr(buf,'.');
-  if (dot && (dot = strchr(++dot,'.')))
+  if (!gdf_xml)
     {
-      strcpy((char*)id_with_w,buf);
-      *dot = '\0';
-
-      while (1)
+      dot = strchr(buf,'.');
+      if (dot && (dot = strchr(++dot,'.')))
 	{
-	  char *plus = strchr((const char *)id_with_w,'+');
-	  static unsigned char pluses_left[CE_BUFSIZ];
-	  if (plus)
-	    {
-	      strcpy((char*)pluses_left,plus+1);
-	      *plus = '\0';
-	    }
-	  else
-	    *pluses_left = '\0';
-
+	  strcpy((char*)id_with_w,buf);
+	  *dot = '\0';
+	  
 	  while (1)
 	    {
-	      char *comma = strchr((const char *)id_with_w,',');
-	      char *wdot = strrchr((const char *)id_with_w,'.')+1;
-		      
-	      colon = strrchr((char*)id_with_w,':');
-		      
-	      if (comma)
-		*comma = '\0';
-	      if (colon)
-		++colon;
-		      
-	      if (!(ip = hash_find(wh,(unsigned char *)(colon ? colon : (char*)id_with_w))))
+	      char *plus = strchr((const char *)id_with_w,'+');
+	      static unsigned char pluses_left[CE_BUFSIZ];
+	      if (plus)
 		{
-		  hash_add(wh,
-			   (const unsigned char*)strdup((const char *)
-							(colon 
-							 ? colon 
-							 : (char*)id_with_w)),
-			   &hashvals[curr_hashval]);
-		  hashvals[curr_hashval++] = 1;
+		  strcpy((char*)pluses_left,plus+1);
+		  *plus = '\0';
 		}
 	      else
-		*ip += 1;
-		      
-	      if (comma)
+		*pluses_left = '\0';
+	      
+	      while (1)
 		{
-		  ++comma;
-		  memmove(wdot,comma,strlen(comma));
-		  wdot[strlen(comma)] = '\0';
-		  comma = NULL;
+		  char *comma = strchr((const char *)id_with_w,',');
+		  char *wdot = strrchr((const char *)id_with_w,'.')+1;
+		  
+		  colon = strrchr((char*)id_with_w,':');
+		  
+		  if (comma)
+		    *comma = '\0';
+		  if (colon)
+		    ++colon;
+		  
+		  if (!(ip = hash_find(wh,(unsigned char *)(colon ? colon : (char*)id_with_w))))
+		    {
+		      hash_add(wh,
+			       (const unsigned char*)strdup((const char *)
+							    (colon 
+							     ? colon 
+							     : (char*)id_with_w)),
+			       &hashvals[curr_hashval]);
+		      hashvals[curr_hashval++] = 1;
+		    }
+		  else
+		    *ip += 1;
+		  
+		  if (comma)
+		    {
+		      ++comma;
+		      memmove(wdot,comma,strlen(comma));
+		      wdot[strlen(comma)] = '\0';
+		      comma = NULL;
+		    }
+		  else
+		    break;		      
 		}
+	      
+	      if (*pluses_left)
+		strcpy((char*)id_with_w,(char*)pluses_left);
 	      else
-		break;		      
+		break;
 	    }
-
-	  if (*pluses_left)
-	    strcpy((char*)id_with_w,(char*)pluses_left);
-	  else
-	    break;
+	  
+	  if (!selecting_w)
+	    selecting_w = 1;
 	}
-
-      if (!selecting_w)
-	selecting_w = 1;
+      else
+	*id_with_w = '\0';
+      colon = strchr(buf,':');
+      if (colon)
+	++colon;
+      if (!(ip = hash_find(ht,(unsigned char *)(colon ? colon : buf))))
+	{
+	  idps[curr_idp] = strdup(colon ? colon : buf);
+	  hash_add(ht,(const unsigned char *)idps[curr_idp++],
+		   &hashvals[curr_hashval]);
+	  hashvals[curr_hashval++] = 1;
+	  if (cfg.f != ce_summary)
+	    ce_file(buf);
+	  if (pending_heading)
+	    {
+	      hash_add(xtf_headings, npool_copy((unsigned char *)colon, ce_pool), pending_heading);
+	      pending_heading = NULL;
+	    }
+	}
+      else
+	{
+	  *ip += 1;
+	}
     }
   else
-    *id_with_w = '\0';
-  colon = strchr(buf,':');
-  if (colon)
-    ++colon;
-  if (!(ip = hash_find(ht,(unsigned char *)(colon ? colon : buf))))
     {
       idps[curr_idp] = strdup(colon ? colon : buf);
       hash_add(ht,(const unsigned char *)idps[curr_idp++],
 	       &hashvals[curr_hashval]);
       hashvals[curr_hashval++] = 1;
-      if (cfg.f != ce_summary)
-	ce_file(buf);
-      if (pending_heading)
-	{
-	  hash_add(xtf_headings, npool_copy((unsigned char *)colon, ce_pool), pending_heading);
-	  pending_heading = NULL;
-	}
-    }
-  else
-    {
-      *ip += 1;
     }
 }
 
@@ -320,6 +330,7 @@ ce_ids()
       if (strlen(id) < CE_BUFSIZ)
 	{
 	  strcpy(buf, id);
+	  strcat(buf, "\n");
 	  process_ce_ids(buf);
 	}
       else
@@ -439,10 +450,6 @@ sH(void *userData, const char *name, const char **atts)
   if (!strcmp(name,cfg.tag))
     {
       const char *id = attr_by_name(atts,idattr);
-#if 0
-      if (id && project_en)
-	strcpy(strchr(id,'_'),strchr(id,'.'));
-#endif
       if (id && (idcountp = hash_find(ht,(const unsigned char*)id)))
 	{
 	  unsigned char *h = hash_find(xtf_headings, (unsigned char *)id);
@@ -516,18 +523,21 @@ int
 main(int argc, char * const*argv)
 {
   exit_on_error = TRUE;
-  options(argc, argv, "23a:c:f:i:l:m:o:p:S:tvx");
+  options(argc, argv, "23a:c:f:g:i:l:m:o:p:S:tvx");
 
-  if (!project || !ce_index)
+  if (!project || (!ce_index && !gdf_xml))
     {
-      fprintf(stderr,"ce: must give -p and -i on command line\n");
+      fprintf(stderr,"ce: must give -p and -i|-g on command line\n");
       usage();
     }
 
-  if (lang)
-    sprintf(langindex,"%s/%s",ce_index,lang);
-  else
-    strcpy(langindex,ce_index);
+  if (ce_index)
+    {
+      if (lang)
+	sprintf(langindex,"%s/%s",ce_index,lang);
+      else
+	strcpy(langindex,ce_index);
+    }
 
   ce_pool = npool_init();
   files = list_create(LIST_SINGLE);
@@ -536,8 +546,23 @@ main(int argc, char * const*argv)
   wh = hash_create(1024);
   xtf_headings = hash_create(1024);
   seen_files = hash_create(1024);
-  ce_config();
+
+  if (!gdf_xml)
+    {
+      ce_config();
+    }
+  else
+    {
+      cfg.f = ce_xmd;
+      ce_index = "gdf";
+      cfg.tag = "gdf:entry";
+    }
+
   ce_ids();
+
+  if (gdf_xml)
+    list_add(files, gdf_xml);
+
   if (cfg.f == ce_summary)
     {
       static char fn[_MAX_PATH];
@@ -552,13 +577,29 @@ main(int argc, char * const*argv)
       idattr = "id";
     }
   else if (cfg.f == ce_xmd)
-    if (xmdinit2(project))
-      exit(1);
+    {
+      if (gdf_xml)
+	{
+	  if (gdf_init(project, gdfname))
+	    exit(1);
+	}
+      else
+	{
+	  if (xmdinit2(project))
+	    exit(1);
+	}
+    }
 
   if (cfg.f == ce_xmd)
     {
       fprintf(stdout, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" cetype=\"xmd\" ncols=\"%d\">",xmd_field_count()+1);
-      list_exec(pqs, (void(*)(void*))xmdprinter2);
+      if (gdf_xml)
+	{
+	  runexpat(i_list, list2charstarstar(files), gdf_sH, gdf_eH);
+	  gdfprinter();
+	}
+      else
+	list_exec(pqs, (void(*)(void*))xmdprinter2);
       xmd_term();
     }
   else if (cfg.f == ce_byid)
@@ -591,6 +632,9 @@ opts(int argc, char *arg)
       break;
     case 'f':
       xmd_fields = arg;
+      break;
+    case 'g':
+      gdf_xml = arg;
       break;
     case 'i':
       ce_index = arg;

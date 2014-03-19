@@ -95,20 +95,7 @@ const char *
 se_dir(const char *project, const char *xname)
 {
   static char _dirbuf[_MAX_PATH];
-#if 0
-  const char *slash = NULL;
-  if ((slash = strchr(project,'/')))
-    {
-      int n;
-      sprintf(_dirbuf,"%s/",cdl_var());
-      n = strlen(_dirbuf);
-      strcat(_dirbuf,project);
-      if (xname)
-	sprintf(_dirbuf+strlen(_dirbuf),"/%s",xname);
-    }
-  else
-#endif
-    sprintf(_dirbuf,"%s/pub/%s/%s",oracc_var(),project,xname);
+  sprintf(_dirbuf,"%s/pub/%s/%s",oracc_var(),project,xname);
   return _dirbuf;
 }
 

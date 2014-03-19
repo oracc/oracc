@@ -32,12 +32,8 @@ int l2 = 1;
 const char *textid;
 FILE *f_log;
 
-static char fnbuf[_MAX_PATH];
-static char **fnlist = NULL;
-static size_t findex;
+const char *curr_gdf = NULL;
 const char *curr_project = NULL;
-static void fn_expand(void*);
-static int one_big_stdin = 0;
 static Dbi_index*dp;
 static FILE *pqidsf;
 static void process_cdata(Uchar*cdata);
@@ -46,9 +42,9 @@ static int indexing = 0;
 static FILE *fldsf;
 static int cache_size = 16;
 
-static struct vid_data *vidp;
-
 const char *curr_index = "cat";
+
+static struct vid_data *vidp;
 
 /*
  * Dynamic field name support
@@ -84,23 +80,13 @@ dn_add_name(const char *fname)
 static void
 startElement(void *userData, const char *name, const char **atts)
 {
-  const char *curr_text_pq, *curr_text_proj;
-  if (!strcmp(name,"dataset"))
+  const char *curr_id = NULL;
+  if (!strcmp(name,"gdf:entry"))
     {
-      curr_text_pq = findAttr(atts, "xml:id");
-      if (l2)
-	{
-	  static char qualified_id[128];
-	  curr_text_proj = findAttr(atts, "project");
-	  sprintf(qualified_id, "%s:%s", curr_text_proj, curr_text_pq);	  
-	  fprintf(pqidsf,"%s\n",qualified_id);
-	  loc8(vid_map_id(vidp,qualified_id), 0, lang_mask(atts), &l8);
-	}
-      else
-	{
-	  fprintf(pqidsf,"%s\n",curr_text_pq);
-	  loc8(curr_text_pq, 0, lang_mask(atts), &l8);
-	}
+      curr_id = findAttr(atts, "xml:id");
+      vid_new_id(vidp, curr_id);
+      fprintf(pqidsf,"%s\n",curr_id);
+      loc8(vid_map_id(vidp,curr_id), 0, lang_mask(atts), &l8);
       indexing = 1;
     }
 }
@@ -108,7 +94,7 @@ startElement(void *userData, const char *name, const char **atts)
 static void
 endElement(void *userData, const char *tag)
 {
-  if (!strcmp(tag,"dataset"))
+  if (!strcmp(tag,"gdf:entry"))
     indexing = 0;
   else if (indexing)
     {
@@ -175,37 +161,42 @@ process_cdata(Uchar*cdata) {
 int
 main(int argc, char * const*argv)
 {
-  List *files = list_create(LIST_SINGLE);
-  char *fn;
   unsigned char *key;
   FILE*keysf;
-  const char *keysname, *fldsname;
-  int i,top;
+  const char *keysname, *fldsname, *vids;
+  char *gdfpath = NULL;
+  extern int vid_obey_dots;
 
   f_log = stderr;
 
-  options(argc,argv,"c:p:");
+  options(argc,argv,"c:g:p:");
 
   if (!curr_project)
     usage();
 
+  if (!curr_gdf)
+    usage();
+
   setlocale(LC_ALL,LOCALE);
 
-  if (l2)
-    vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
+  vid_obey_dots = 0;
+  vidp = vid_init();
 
-  estp = est_init(curr_project, "cat");
+  gdfpath = malloc(strlen(curr_project)+strlen("/data/")+strlen(curr_gdf)+1);
+  sprintf(gdfpath, "%s/gdf/%s", curr_project, curr_gdf);
+
+  estp = est_init(gdfpath, "cat");
 
   dp = dbi_create("cat",
-		  se_dir(curr_project,"cat"),
+		  se_dir(gdfpath,"cat"),
 		  500000,
 		  sizeof(struct location8),DBI_ACCRETE);
   dbi_set_cache(dp,cache_size);
   dbi_set_user(dp,d_cat);
 
   progress("segdfx: creating index %s\n",dp->dir);
-  pqidsf = xfopen(se_file(curr_project,"cat","pqids.lst"),"w");
-  fldsname = strdup(se_file(curr_project,"cat","fieldnames.tab"));
+  pqidsf = xfopen(se_file(gdfpath,"cat","pqids.lst"),"w");
+  fldsname = strdup(se_file(gdfpath,"cat","fieldnames.tab"));
   fldsf = xfopen(fldsname,"w");
   
   runexpat(i_stdin, NULL, startElement, endElement);
@@ -216,24 +207,20 @@ main(int argc, char * const*argv)
   est_dump(estp);
   est_term(estp);
 
-  if (l2)
-    {
-      vid_free(vidp);
-      vidp = NULL;
-    }
+  vids = se_file (gdfpath, curr_index, "vid.dat");
+  vid_dump_data(vidp,vids);
+  vid_term(vidp);
+  vidp = NULL;
 
   progress("segdfx: completed db creation\n");
-  dp = dbi_open("cat",se_dir(curr_project,"cat"));
+
+  dp = dbi_open("cat",se_dir(gdfpath,"cat"));
   if (dp && dp->h.entry_count > 0)
     {
-      keysname = strdup(se_file(curr_project,"cat","key.lst"));
+      keysname = strdup(se_file(gdfpath,"cat","key.lst"));
       keysf = xfopen(keysname,"w");
       while (NULL != (key = dbi_each (dp)))
-#if 1
 	fprintf(keysf,"%s\n",key);
-#else
-      fprintf(keysf,"%lu\t%s\n",(unsigned long)dp->nfound,key);
-#endif
       xfclose(keysname,keysf);
     }
   else
@@ -243,15 +230,9 @@ main(int argc, char * const*argv)
   dbi_close(dp);
   xfclose(fldsname,fldsf);
 
-  ce_cfg(curr_project, "cat", "catalog", "xmd", ce_xmd, NULL);
+  ce_cfg(gdfpath, "cat", "catalog", "xmd", ce_xmd, NULL);
 
   return 0;
-}
-
-static void
-fn_expand(void *p)
-{
-  fnlist[findex++] = strdup(expand(curr_project, p, "key"));
 }
 
 int
@@ -259,17 +240,11 @@ opts(int argc, char *arg)
 {
   switch (argc)
     {
-    case '2':
-      l2 = 1;
-      break;
-    case 'c':
-      cache_size = atoi(arg);
+    case 'g':
+      curr_gdf = arg;
       break;
     case 'p':
       curr_project = arg;
-      break;
-    case 's':
-      one_big_stdin = 1;
       break;
     default:
       return 1;
@@ -283,5 +258,6 @@ const char *usage_string = "-p [project] [-s]";
 void
 help ()
 {
+  printf("  -g [gdfname] Gives the name of the gdf dataset; required\n");
   printf("  -p [project] Gives the name of the project; required\n");
 }

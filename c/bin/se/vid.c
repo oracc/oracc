@@ -13,6 +13,8 @@ extern const char *curr_index, *curr_project;
 static char *basebuf = NULL;
 static int basebuf_alloced = 0;
 
+int vid_obey_dots = 1;
+
 extern const char *curr_project, *curr_index;
 
 static void vid_hash_data(struct vid_data *vp);
@@ -50,11 +52,11 @@ vid_finish(struct vid_data *vp)
 void
 vid_new_id(struct vid_data *vp, const char *xid)
 {
-  const char *pd = strchr(xid,'.');
+  const char *pd = NULL;
   char *vidp;
   int len;
 
-  if (pd)
+  if (vid_obey_dots && ((pd = strchr(xid,'.'))))
     len = pd-xid;
   else
     len = strlen(xid);
@@ -98,7 +100,7 @@ vid_new_id(struct vid_data *vp, const char *xid)
 const char *
 vid_map_id(struct vid_data *vp, const char *xid)
 {
-  const char *pd = strchr(xid,'.');
+  const char *pd = NULL;
   char *retbuf, *vidp;
 
   if (l2)
@@ -124,7 +126,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	      retbuf = "v000000";
 	    }
 	}
-      else if (pd)
+      else if (vid_obey_dots && ((pd = strchr(xid,'.'))))
 	{
 	  int len = pd-xid;
 	  strncpy(buf,xid,len);

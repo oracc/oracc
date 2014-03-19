@@ -31,6 +31,8 @@ const char *curr_filter = NULL;
 
 const char *cbd_lang;
 
+int gdf_flag = 0;
+
 struct ix { char *name; Dbi_index*dip; };
 static List *indexes = NULL;
 Dbi_index *curr_dip = NULL;
@@ -637,8 +639,18 @@ open_index(const char *proj,const char *index)
   static char iname_buf[1024];
   if ((index_name = strchr(index,'/')))
     {
-      index_dir = strdup(index);
-      index_name = strndup(index,index_name-index);
+      if (strncmp(index, "gdf", 3))
+	{
+	  /* it's a language */
+	  index_dir = strdup(index);
+	  index_name = strndup(index,index_name-index);
+	}
+      else
+	{
+	  gdf_flag = 1;
+	  index_dir = index;
+	  index_name = "cat";
+	}
     }
   else
     index_dir = index_name = index;
