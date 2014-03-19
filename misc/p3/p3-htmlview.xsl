@@ -26,7 +26,7 @@
 
 <xsl:template match="/">
   <xsl:call-template name="corpusview-project-pqid">
-    <xsl:with-param name="project" select="$project"/>
+    <xsl:with-param name="project" select="/*/@project"/> <!-- $project -->
     <xsl:with-param name="host" select="$host"/>
     <xsl:with-param name="pqid" select="/*/@xml:id"/>
   </xsl:call-template>  
