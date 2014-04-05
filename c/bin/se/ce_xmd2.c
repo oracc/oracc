@@ -48,7 +48,7 @@ xmd_field_count(void)
   return nfields;
 }
 
-static int
+int
 count_entries(const char *tmp, const char *option)
 {
   int i;
@@ -71,7 +71,7 @@ count_entries(const char *tmp, const char *option)
   return i;
 }
 
-static void
+void
 set_entries(const char **entries, const char *option)
 {
   int i;

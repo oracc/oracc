@@ -12,6 +12,7 @@
 #include <npool.h>
 #include <xmd.h>
 #include "selib.h"
+#include "gdf.h"
 #include "ce.h"
 
 /*FIXME: the i/o and id processing here needs to use dynamic memory */
@@ -561,7 +562,7 @@ main(int argc, char * const*argv)
   ce_ids();
 
   if (gdf_xml)
-    list_add(files, gdf_xml);
+    list_add(files, (void*)gdf_xml);
 
   if (cfg.f == ce_summary)
     {
@@ -580,7 +581,7 @@ main(int argc, char * const*argv)
     {
       if (gdf_xml)
 	{
-	  if (gdf_init(project, gdfname))
+	  if (gdfinit(project, gdf_xml))
 	    exit(1);
 	}
       else
@@ -682,6 +683,7 @@ void
 help ()
 {
   printf("  -c = read an ID from arg (default is stdin)\n");
+  printf("  -g = specify gdf basename\n");
   printf("  -i = specify index\n");
   printf("  -p = specify project\n");
   printf("  -v = verbose mode\n");

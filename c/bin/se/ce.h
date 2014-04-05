@@ -19,6 +19,9 @@ extern void xmdprinter(const char *f);
 extern void xmdprinter2(const char *f);
 extern int xmd_field_count(void);
 
+extern int count_entries(const char *tmp, const char *option);
+extern void set_entries(const char **entries, const char *option);
+
 extern const char *project, *state;
 
 #endif /*_CE_H*/

@@ -10,9 +10,11 @@
 #include <hash.h>
 #include <messages.h>
 #include <npool.h>
+#include <runexpat.h>
 #include <gdf.h>
 #include <xmlutil.h>
 #include <xpd2.h>
+#include "selib.h"
 #include "ce.h"
 #include "p2.h"
 
@@ -20,19 +22,26 @@
 #define _MAX_PATH 1024
 #endif
 
+struct gdfinfo 
+{
+  struct npool *pool;
+  const unsigned char *fields;
+  const unsigned char *widths;
+};
+
+
 static int nfields = 0, nwidths = 0;
 
 extern int p3;
 
 extern int item_offset, tabbed;
-extern const char *arg_fields;
+
+extern const char *arg_fields, *gdf_xml, *idattr;
 extern const char *gdfset, *mode, *project;
 const char *gdf_fields = NULL, *gdf_widths = NULL;
 
 static const char **field_specs;
 static const char **width_specs;
-
-static struct npool *ce_gdf_pool;
 
 static List **field_lists;
 
@@ -40,66 +49,19 @@ static List *record_hashes;
 static struct npool *record_pool;
 static Hash_table *curr_record_hash = NULL;
 
-char *url_base = NULL;
+static struct gdfinfo *gdf_xml_load(const char *fname, struct gdfinfo *gdfinfo);
+static void gdfprinter2(Hash_table *fields);
+
+static char *url_base = NULL;
+
+extern int *idcountp;
+extern Hash_table *ht;
+extern int echoing;
 
 int
 gdf_field_count(void)
 {
   return nfields;
-}
-
-static int
-count_entries(const char *tmp, const char *option)
-{
-  int i;
-  for (i = 1; *tmp; ++tmp)
-    {
-      if (',' == *tmp)
-	{
-	  ++i;
-	  while (isspace(tmp[1]))
-	    ++tmp;
-	  if (',' == tmp[1])
-	    {
-	      fprintf(stderr, "ce_gdf: %s/gdf.xml: empty field in `%s'\n",
-		      gdfset, option);
-	      while (isspace(tmp[1]) || ',' == tmp[1])
-		++tmp;
-	    }
-	}
-    }
-  return i;
-}
-
-static void
-set_entries(const char **entries, const char *option)
-{
-  int i;
-  char *tmp;
-
-  tmp = malloc(strlen(option)+1);
-  (void)strcpy(tmp, option);
-  for (i = 0, entries[0] = tmp; *tmp; )
-    {
-      if (',' == *tmp)
-	{
-	  *tmp++ = '\0';
-	  while (isspace(tmp[1]))
-	    ++tmp;
-	  if (',' == tmp[1])
-	    {
-	      fprintf(stderr, "ce_gdf: %s/gdf.xml: empty field in `%s'\n",
-		      gdfset, option);
-	      while (isspace(tmp[1]) || ',' == tmp[1])
-		++tmp;
-	    }
-	  if (*tmp)
-	    entries[++i] = tmp;
-	}
-      else
-	++tmp;
-    }
-  entries[++i] = NULL;
 }
 
 static void
@@ -119,15 +81,17 @@ set_field_lists(const char **fieldspecs)
 }
 
 int
-gdfinit2(const char *project)
+gdfinit(const char *project, unsigned char *gdffile)
 {
-  struct p2_options *p2opt = NULL;
+  struct gdfinfo *gdfinfo = NULL;
 
-  ce_gdf_pool = npool_init();
-  gdfinfo = gdf_xml_load(gdfxml, ce_gdf_pool);
+  gdfinfo = calloc(1, sizeof(gdfinfo));
+  gdfinfo->pool = npool_init();
+  
+  gdfinfo = gdf_xml_load(gdf_xml, gdfinfo);
 
-  nfields = count_entries(gdfinfo->fields, "catalog-fields");
-  nwidths = count_entries(gdfinfo->widths, "catalog-widths");
+  nfields = count_entries((char*)gdfinfo->fields, "catalog-fields");
+  nwidths = count_entries((char*)gdfinfo->widths, "catalog-widths");
 
   if (nfields != nwidths)
     {
@@ -168,7 +132,7 @@ gdf_sH(void *userData, const char *name, const char **atts)
       if (id && (idcountp = hash_find(ht,(const unsigned char*)id)))
 	{
 	  curr_record_hash = hash_create(1);
-	  hash_add(curr_record_hash, "xmlid", npool_add(id, record_pool));
+	  hash_add(curr_record_hash, (unsigned char *)"xmlid", npool_copy((unsigned char *)id, record_pool));
 	}
       echoing = 1;
     }
@@ -184,7 +148,7 @@ gdf_sH(void *userData, const char *name, const char **atts)
 void
 gdf_eH(void *userData, const char *name)
 {
-  if (!strcmp(name,cfg.tag))
+  if (!strcmp(name,"gdf:entry"))
     {
       echoing = 0;
       list_add(record_hashes, curr_record_hash);
@@ -196,8 +160,8 @@ gdf_eH(void *userData, const char *name)
       if (--echoing == 1)
 	{
 	  hash_add(curr_record_hash, 
-		   npool_add(name, record_pool), 
-		   npool_add(name, charData_retrieve()));
+		   npool_copy((unsigned char *)name, record_pool), 
+		   npool_copy((unsigned char *)charData_retrieve(), record_pool));
 	}
     }
   else
@@ -222,7 +186,7 @@ gdfprinter(void)
   else if (!strcmp(print_ptrs[0], print_ptrs[1]))
     print_ptrs[1] = " ";
  */
-void
+static void
 gdfprinter2(Hash_table *fields)
 {
   static int nth = 0;
@@ -299,17 +263,50 @@ gdfprinter2(Hash_table *fields)
       if (p3)
 	{
 	  if (this_is_designation || i < link_fields)
-	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:p3item('xtf',%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:p3item('xtf',%d)\">%s</a></td>", pct, item_offset+nth, xmlify((unsigned char *)value));
 	  else
-	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify((unsigned char *)value));
 	}
       else
 	{
 	  if (this_is_designation || i < link_fields)
-	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+	    fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify((unsigned char *)value));
 	  else
-	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+	    fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify((unsigned char *)value));
 	}
     }
   fputs("</tr></ce:data>",stdout);
+}
+
+
+
+static void
+gdf_xml_sH(struct gdfinfo *xp, const char *name, const char **atts)
+{
+  charData_discard();
+}
+
+static void
+gdf_xml_eH(struct gdfinfo *xp, const char *name)
+{
+  char *colon = strrchr(name, ':');
+  if (colon)
+    {
+      ++colon;
+      if (!strcmp(colon, "fields"))
+	xp->fields = npool_copy((unsigned char *)charData_retrieve(), xp->pool);
+      else if (!strcmp(colon, "widths"))
+	xp->widths = npool_copy((unsigned char *)charData_retrieve(), xp->pool);
+    }
+  charData_discard();
+}
+
+static struct gdfinfo *
+gdf_xml_load(const char *fname, struct gdfinfo *gdfinfo)
+{
+  const char *fns[2];
+  fns[0] = fname;
+  fns[1] = NULL;
+  runexpatNSuD(i_list, fns, (void(*)(void*,const char*,const char **))gdf_xml_sH, (void(*)(void*,const char*))gdf_xml_eH, ":", gdfinfo);
+  return gdfinfo;
 }

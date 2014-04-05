@@ -36,7 +36,7 @@ sl_LDADD=@top_srcdir@/c/lib/liboracc.la
 sl_index_SOURCES=sl-index.c
 sl_index_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-ce2_SOURCES=ce2.c ce_xmd2.c selib.c p2.c
+ce2_SOURCES=ce2.c ce_xmd2.c selib.c p2.c ce_gdf.c
 ce2_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 ce_xtf_SOURCES=ce_xtf.c ce_xmd.c selib.c
