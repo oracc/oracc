@@ -282,11 +282,14 @@
 	   </xsl:otherwise>
 	 </xsl:choose>
        </xsl:when>
+<!-- No: but perhaps we need a way to specify a percentage width for non-local files ?
        <xsl:otherwise>
 	 <xsl:value-of select="@width"/>
        </xsl:otherwise>
+ -->
      </xsl:choose>
    </xsl:variable>
+   
    <xsl:message>grid fit for <xsl:value-of select="@file"/> set from <xsl:value-of select="$img-width"/> to <xsl:value-of select="$width"/></xsl:message>
 
    <xsl:variable name="div-or-span">
@@ -319,7 +322,10 @@
        </xsl:copy>
      </xsl:for-each>
      <xsl:if test="not(esp:link)">
-       <img width="{$width}" src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
+       <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
+	 <xsl:if test="@width">
+	   <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+	 </xsl:if>
          <xsl:if test="esp:image-map">
            <xsl:attribute name="usemap" select="concat('#map_', generate-id(esp:image-map))"/>
          </xsl:if>
