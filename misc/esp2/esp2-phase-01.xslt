@@ -65,7 +65,7 @@
 		       | table | th | tr | td | thead | tbody | caption | tfoot
 		       | dl | dd | dt | strong | style | sup | sub | address 
 		       | object | param | embed | div | script | small 
-		       | span | form | input | select | hr">
+		       | span | form | input | select | hr | audio | source">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>
