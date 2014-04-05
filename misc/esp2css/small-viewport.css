@@ -8,6 +8,9 @@ ul, ol {
     margin-left: 5%;
     padding-left: 0;
 }
+table.pretty {
+    margin: 2em 0;
+}
 #Breadcrumb {
     display: none;
 }
@@ -20,31 +23,31 @@ ul, ol {
 }
 #Header {
     padding: 0.5em 4%;
-    background: #003399;
+    background: $dark;
     margin: 0.3em 0 0;
     height: 3.5em;
-    border-bottom: 0.5em solid #ffcc00;
+    border-bottom: 0.5em solid $light;
 }
 #HeadTitle {
     font-size: 1.2em;
-    color: #ffffff;
+    color: #ffffff; /* $page */
 }
 #HeadTitle a:link, #HeadTitle a:visited {
     color: #ffffff;
-    background: #003399;
+    background: $dark;
     text-decoration: none;
 }
 #HeadSubtitle {
     font-style: italic;
     font-weight: normal;
     font-size: 1.2em;
-    color: #ffffff;
+    color: #ffffff; /* $page */
 }
 #Menu {
     width: 95%;
     margin: 0.1px 0 0.1px 0;
     padding: 0;
-    background: #ffffff;
+    background: #ffffff; /* $page */
 }
 #MenuCaption {
     margin-left: 5%;
@@ -53,7 +56,7 @@ ul, ol {
     font-size: 0.9em;
     font-weight: bold;
     width: 95%;
-    border-bottom: 2px solid #ffcc00;
+    border-bottom: 2px solid $light;
 }
 #Menu a {
     text-decoration: none;
@@ -65,7 +68,7 @@ ul, ol {
 #Menu ul ul {
     padding: 0.25em 0 0 4em;
     margin-bottom: 0.25em;
-    border: 1px solid #ffcc00;
+    border: 1px solid $light;
     border-top: 0;
 }
 #Menu ul ul ul {
@@ -91,7 +94,7 @@ ul, ol {
 }
 #Menu a.open:hover, #Menu a.closed:hover {
     color: $medium;
-    background-color: $highlight;
+    background-color: $light;
 }
 #Menu a.open {
     background: $light;
@@ -117,7 +120,7 @@ ul, ol {
     height: 1em;
 }
 #FooterWhole {
-    border-bottom: solid 1px #003399;
+    border-bottom: solid 1px $dark;
     margin: 0 5% 0.2em 5%;
     clear: both;
     height: 1em;

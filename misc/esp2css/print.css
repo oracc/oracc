@@ -1,12 +1,13 @@
+/* revised test print stylesheet, based on KnP version */
 html {
 font-size: 0.9em;
 }
 body {
-width: 100%;
+/* width: 100%; */
 margin: 0;
 padding: 0.2em 0 1em 0;
 font-size: 1em;
-font-family: "Palatino Linotype", Palatino, Georgia, "Times New Roman", Times, serif;
+font-family: "Palatino Linotype", Palatino, "Times New Roman", Times, serif;
 color: #000000;
 background: #ffffff;
 }
@@ -61,6 +62,10 @@ vertical-align: middle;
 background-color: #daf3e0;
 color: black;
 }
+.transcript {
+    border: 1px #000000 solid;
+    padding: 1em;
+}
 .example {
 background-color: #eee;
 color: black;
@@ -90,12 +95,24 @@ page-break-inside: avoid;
 }
 div.imageinline img, div.imagefloat img {
 display: block;
-/* This width:100% is the offender which makes all images 100% instead of respecting the grid class */
-/*width:100%;*/
+/* commenting out all of the responsive code from screen.css */
+/* keeping the code that KnP uses for print.css */
+/*width:100%;
 margin: 0;
 padding: 0;
-max-width:100%;
+max-width:100%; */
 }
+img {
+border-width: 0;
+}
+div.imagecaption {
+margin: 0.5em 0 1.25em;
+font-size: 0.9em;
+line-height: normal;
+}
+ /* .imagecaption p {
+width: 95%;
+} */
 /* Styling for prettier tables. RH 9.7.2009 */
 table.pretty {
 margin: 2em 2em 2em 3em;
@@ -114,19 +131,8 @@ table.pretty caption {
 margin-left: inherit;
 margin-right: inherit;
 }
-img {
-border-width: 0;
-}
 form {
 margin: 0;
-}
-div.imagecaption {
-margin: 0.5em 0 1.25em;
-font-size: 0.9em;
-line-height: normal;
-}
-.imagecaption p {
-width: 95%;
 }
 h1 {
 font-family: Georgia, Times, "Times New Roman", serif;
@@ -135,15 +141,15 @@ font-size: 1.4em;
 line-height: 1.3em;
 }
 h2 {
-font-family: Georgia, Times, "Times New Roman", serif;
-margin: 1.5em 0 1.3em;
+margin: 1.7em 0 0.7em;
 font-size: 1.2em;
 line-height: 1.2em;
 }
 h3 {
-margin: 1.5em 0 1.3em;
+margin: 1.7em 0 0.7em;
 font-size: 1.1em;
 line-height: 1.2em;
+font-style: italic;
 }
 li h2, li h3 {
 margin-top: 0;
@@ -157,178 +163,13 @@ color: #000000;
 a:visited {
 color: #000000;
 }
+#AccessLinks {
+display: none;
+}
 #Banner {
 width: 100%;
 text-align: center;
 }
-/* START @media block for small viewports (max 624px) */
-@media screen and (max-width: 624px) {
-.pc30 {
-width: 100%;
-}
-/* remove LH indent for lists */
-ul, ol {
-margin-left: 5%;
-padding-left: 0;
-}
-#Breadcrumb {
-display: none;
-}
-#Banner {
-text-align: center;
-}
-#Header {
-border-bottom: 1px solid #000000;
-margin: 0 1em 0 1em;
-}
-#HeadTitle a:link, #HeadTitle a:visited {
-text-decoration: none;
-}
-#HeadSubtitle {
-font-weight: normal;
-}
-#Menu {
-display: none;
-}
-#AccessLinks {
-display: none;
-}
-#ReferenceLinks {
-display: none;
-}
-#BackToTop {
-display: none;
-}
-#EndContentSpace {
-clear: both;
-height: 1em;
-}
-#FooterWhole {
-border-bottom: solid 1px #000000;
-clear: both;
-height: 1em;
-}
-#FooterLeft {
-padding: 0 1em;
-}
-#FooterRight {
-display: none;
-}
-}
-/* END @media block for small viewport sizes */
-/* START @media block for larger viewport sizes (625px and above)*/
-@media screen and (min-width: 625px) {
-.pc05 {
-width: 05%;
-}
-.pc10 {
-width: 10%;
-}
-.pc15 {
-width: 15%;
-}
-.pc20 {
-width: 20%;
-}
-.pc25 {
-width: 25%;
-}
-.pc30 {
-width: 30%;
-}
-.pc35 {
-width: 35%;
-}
-.pc40 {
-width: 40%;
-}
-.pc45 {
-width: 45%;
-}
-.pc50 {
-width: 50%;
-}
-.pc55 {
-width: 65%;
-}
-.pc60 {
-width: 70%;
-}
-.pc65 {
-width: 65%;
-}
-.pc70 {
-width: 70%;
-}
-.pc75 {
-width: 75%;
-}
-.pc80 {
-width: 80%;
-}
-.pc85 {
-width: 85%;
-}
-.pc90 {
-width: 90%;
-}
-.pc95 {
-width: 95%;
-}
-.pc100 {
-width: 100%;
-}
-ul.biblio {
-list-style: none;
-margin-left: 5%;
-padding-left: 0;
-}
-ul.biblio li {
-margin-bottom: 1em;
-}
-#Content {
-margin: 2em;
-width: 74%;
-}
-#Header {
-border-bottom: 1px solid #000000;
-margin: 0 1em 0 1em;
-}
-#HeadTitle a:link, #HeadTitle a:visited {
-text-decoration: none;
-}
-#HeadSubtitle {
-font-weight: normal;
-}
-#Menu {
-display: none;
-}
-#AccessLinks {
-display: none;
-}
-#ReferenceLinks {
-display: none;
-}
-#BackToTop {
-display: none;
-}
-#EndContentSpace {
-clear: both;
-height: 1em;
-}
-#FooterWhole {
-border-bottom: solid 1px #000000;
-clear: both;
-height: 1em;
-}
-#FooterLeft {
-padding: 0 1em;
-}
-#FooterRight {
-display: none;
-}
-}
-/* END @media block for larger viewport sizes */
 #Breadcrumb {
 display: none;
 }
@@ -338,11 +179,30 @@ display: none;
 #CuneiformSwitcher {
 display: none;
 }
+#Header {
+border-bottom: 1px solid #000000;
+margin: 0 1em;
+}
+#HeadTitle a:link, #HeadTitle a:visited {
+text-decoration: none;
+}
+#HeadSubtitle {
+font-weight: normal;
+}
 #Search {
+display: none;
+}
+#Menu {
+display: none;
+}
+#ReferenceLinks {
 display: none;
 }
 #StyleSheetWarning {
 display: none;
+}
+#Content {
+    margin: 2em;
 }
 #SiteMap a {
 text-decoration: none;
@@ -377,7 +237,7 @@ text-align: left;
 border-bottom: solid 2px #000000;
 }
 #AccessKeys tr.odd {
-background: #eeeeee;
+background: #dcdcdc;
 }
 #Index h2, #Glossary h2, #Techterms h2 {
 float: left;
@@ -387,7 +247,7 @@ color: #ccc;
 #Vocablist h2 {
 margin: 0;
 line-height: 1.3em;
-color: #333333;
+color: #000000;
 }
 #Vocablist h2.empty {
 margin: 0 0 2.5em;
@@ -422,10 +282,25 @@ font-size: 0.9em;
 #Alphabet {
 display: none;
 }
-#PageLinks {
+#BackToTop {
 display: none;
 }
-#tab_1, #tab_2, #tab_3 {
+#EndContentSpace {
+clear: both;
+height: 1em;
+}
+#FooterWhole {
+border-bottom: solid 1px #000000;
+clear: both;
+height: 1em;
+}
+#FooterLeft {
+padding: 0 1em;
+}
+#FooterRight {
+display: none;
+}
+#PageLinks {
 display: none;
 }
 #URL {
