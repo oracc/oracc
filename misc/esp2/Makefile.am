@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = esp2-image-info.sh esp2-init.sh esp2-live.sh esp2-lmt.plx \
+bin_SCRIPTS = esp2-image-info.sh esp2-live.sh esp2-lmt.plx \
 	esp2-no-nmtok-err.plx esp2-remove-webfiles.sh esp2.sh esp2-uninstall.sh \
 	esp-to-esp2.sh esp2-unoracc.sh esp2-create.sh esp2-stylesheets.plx
 
