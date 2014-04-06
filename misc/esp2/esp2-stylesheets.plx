@@ -127,10 +127,10 @@ find_p3colours {
 	my $try = "${up}00lib/p3colours.txt";
 	if (-r $try) {
 	    return $try;
+	} else {
 	}
 	$up = "$up../";
-	last unless -r "${up}00lib";
+	last if -d $project;
     }
     undef;
 }
-
