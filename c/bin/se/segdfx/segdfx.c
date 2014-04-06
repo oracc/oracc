@@ -32,7 +32,6 @@ int l2 = 1;
 const char *textid;
 FILE *f_log;
 
-const char *curr_gdf = NULL;
 const char *curr_project = NULL;
 static Dbi_index*dp;
 static FILE *pqidsf;
@@ -81,7 +80,7 @@ static void
 startElement(void *userData, const char *name, const char **atts)
 {
   const char *curr_id = NULL;
-  if (!strcmp(name,"gdf:entry"))
+  if (!strcmp(name,"o:record"))
     {
       curr_id = findAttr(atts, "xml:id");
       vid_new_id(vidp, curr_id);
@@ -94,7 +93,7 @@ startElement(void *userData, const char *name, const char **atts)
 static void
 endElement(void *userData, const char *tag)
 {
-  if (!strcmp(tag,"gdf:entry"))
+  if (!strcmp(tag,"o:record"))
     indexing = 0;
   else if (indexing)
     {
@@ -169,12 +168,9 @@ main(int argc, char * const*argv)
 
   f_log = stderr;
 
-  options(argc,argv,"c:g:p:");
+  options(argc,argv,"p:");
 
   if (!curr_project)
-    usage();
-
-  if (!curr_gdf)
     usage();
 
   setlocale(LC_ALL,LOCALE);
@@ -182,8 +178,8 @@ main(int argc, char * const*argv)
   vid_obey_dots = 0;
   vidp = vid_init();
 
-  gdfpath = malloc(strlen(curr_project)+strlen("/data/")+strlen(curr_gdf)+1);
-  sprintf(gdfpath, "%s/gdf/%s", curr_project, curr_gdf);
+  gdfpath = malloc(strlen(curr_project)+1);
+  sprintf(gdfpath, "%s", curr_project);
 
   estp = est_init(gdfpath, "cat");
 
@@ -240,9 +236,6 @@ opts(int argc, char *arg)
 {
   switch (argc)
     {
-    case 'g':
-      curr_gdf = arg;
-      break;
     case 'p':
       curr_project = arg;
       break;
@@ -258,6 +251,5 @@ const char *usage_string = "-p [project] [-s]";
 void
 help ()
 {
-  printf("  -g [gdfname] Gives the name of the gdf dataset; required\n");
   printf("  -p [project] Gives the name of the project; required\n");
 }

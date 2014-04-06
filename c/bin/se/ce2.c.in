@@ -26,7 +26,8 @@ extern const char *xmd_fields, *xmd_widths;
 
 int p3 = 0;
 
-const char *id, *ce_index, *gdf_xml = NULL, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
+const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
+char *gdf_xml;
 const char *idattr = "xml:id";
 int echoing = 0;
 int item_offset;
@@ -526,18 +527,23 @@ main(int argc, char * const*argv)
   exit_on_error = TRUE;
   options(argc, argv, "23a:c:f:g:i:l:m:o:p:S:tvx");
 
-  if (!project || (!ce_index && !gdf_xml))
+  if (!project || !ce_index)
     {
-      fprintf(stderr,"ce: must give -p and -i|-g on command line\n");
+      fprintf(stderr,"ce: must give -p and -i on command line\n");
       usage();
     }
 
-  if (ce_index)
+  if (lang)
+    sprintf(langindex,"%s/%s",ce_index,lang);
+  else
+    strcpy(langindex,ce_index);
+
+  if (strstr(project, "/ood/"))
     {
-      if (lang)
-	sprintf(langindex,"%s/%s",ce_index,lang);
-      else
-	strcpy(langindex,ce_index);
+      const char *ohome = oracc_home();
+      gdf_xml = malloc(strlen(ohome) + strlen("/pub/") + strlen(project) + strlen("/data.xml") + 1);
+      sprintf(gdf_xml, "%s/pub/%s/data.xml", ohome, project);
+      /* TODO: check access for gdf_xml */
     }
 
   ce_pool = npool_init();
@@ -556,7 +562,7 @@ main(int argc, char * const*argv)
     {
       cfg.f = ce_xmd;
       ce_index = "gdf";
-      cfg.tag = "gdf:entry";
+      cfg.tag = "o:record";
     }
 
   ce_ids();
@@ -579,6 +585,12 @@ main(int argc, char * const*argv)
     }
   else if (cfg.f == ce_xmd)
     {
+#if 1
+      if (xmdinit2(project))
+	exit(1);
+      if (gdf_xml)
+	gdfinit();
+#else
       if (gdf_xml)
 	{
 	  if (gdfinit(project, gdf_xml))
@@ -589,6 +601,7 @@ main(int argc, char * const*argv)
 	  if (xmdinit2(project))
 	    exit(1);
 	}
+#endif
     }
 
   if (cfg.f == ce_xmd)

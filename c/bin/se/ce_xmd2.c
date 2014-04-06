@@ -33,12 +33,11 @@ static const char *default_fields
   = "designation,primary_publication,subgenre|genre,period,place|provenience";
 static const char *default_widths = "auto,17,17,17,17";
 
-static const char **field_specs;
-static const char **width_specs;
-
 static struct npool *ce_xmd_pool;
 
-static List **field_lists;
+const char **field_specs;
+const char **width_specs;
+List **field_lists;
 
 char *url_base = NULL;
 

@@ -13,6 +13,7 @@ struct ce_config
 
 extern int link_fields;
 extern int xml_output;
+extern void gdfinit(void);
 extern void xmdinit(const char *project);
 extern int xmdinit2(const char *project);
 extern void xmdprinter(const char *f);
