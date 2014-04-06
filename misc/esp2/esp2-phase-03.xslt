@@ -4,7 +4,6 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   xmlns:esp="http://oracc.org/ns/esp/1.0" 
-  xmlns:app="http://oracc.org/ns/esp-appearance/1.0" 
   xmlns:struct="http://oracc.org/ns/esp-struct/1.0" 
   xmlns:param="http://oracc.org/ns/esp-param/1.0" 
   xmlns="http://www.w3.org/1999/xhtml" 
@@ -33,8 +32,6 @@
   <xsl:variable name="privacy-page" select="//esp:privacy-policy[1]/ancestor::struct:page[1]"/>
   <xsl:variable name="last-modified-times" select="document ( concat($projesp, '/01tmp/last-modified-times.xml') )/esp:last-modified-times"/>
   <xsl:variable name="images-info" select="document ( concat($projesp, '/01tmp/images-info.xml') )/esp:images-info"/>
-  <xsl:variable name="appearance" 
-		select="document(concat($projesp,'/00web/00config/appearance.xml'))/app:appearance"/>
 
   <xsl:key name="indices" match="esp:index" use="@term"/>
   <xsl:template match="/">
@@ -227,13 +224,6 @@
       </div>
       <!-- site tabs-->
       <xsl:variable name="context-page" select="."/>
-      <!--
-      <xsl:for-each select="$appearance/app:tabs/*">
-	<xsl:call-template name="tab">
-	  <xsl:with-param name="context" select="$context-page"/>
-	</xsl:call-template>
-      </xsl:for-each>
-      -->
       <!-- address <div> -->
       <div id="URL">
         <xsl:value-of select="$parameters/param:host"/>
