@@ -8,4 +8,5 @@ fi
 mkdir -p $ORACC/pub/$project/cat
 cp 00lib/data.xml 02pub
 segdfx -p $project < 02pub/data.xml
-chmod -R o+r *
+o2-web.sh
+
