@@ -164,7 +164,6 @@ AC_OUTPUT([Makefile
 	misc/fonts/Makefile
 	misc/fxr/Makefile
 	misc/g2plus/Makefile
-	misc/gdf/Makefile
 	misc/gdl/Makefile
 	misc/issl/Makefile
 	misc/l2common/Makefile
@@ -181,6 +180,7 @@ AC_OUTPUT([Makefile
 	misc/ods/Makefile
 	misc/ogsl/Makefile
 	misc/ol/Makefile
+	misc/ood/Makefile
 	misc/oss2/Makefile
 	misc/otf/Makefile
 	misc/p3/Makefile

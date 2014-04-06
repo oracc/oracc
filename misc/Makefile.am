@@ -15,7 +15,6 @@ SUBDIRS = \
 	fonts \
 	fxr \
 	g2plus \
-	gdf \
 	gdl \
 	issl \
 	l2common \
@@ -31,6 +30,7 @@ SUBDIRS = \
 	o2 \
 	ods \
 	ol \
+	ood \
 	oss2 \
 	otf \
 	p3 \
