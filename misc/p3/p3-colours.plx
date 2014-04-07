@@ -106,7 +106,7 @@ find_p3colours {
 	    return $try;
 	}
 	$up = "$up../";
-	last unless -r "${up}00lib";
+	last if -d $p;
     }
     (-r $oracc_colours) ? $oracc_colours : '';
 }

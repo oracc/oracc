@@ -31,6 +31,7 @@ my $oracclib = "@@ORACC@@/lib";
 my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
+my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
 my $projtype = '';
@@ -40,6 +41,13 @@ my $verbose = 1;
 %p = decode_args(@ARGV);
 setup_navigation();
 set_p3_state();
+
+$ood_mode = $p{'project'} =~ m#/ood/#;
+if ($ood_mode) {
+    $rt{'otlmode'} = 'none';
+} else {
+    $rt{'otlmode'} = 'some';
+}
 
 if ($rt{'prod'} eq 'list') {
     if ($p{'glos'}) {
@@ -99,7 +107,7 @@ if ($rt{'prod'} eq 'list') {
 }
 
 # set up the Slicer inputs
-if (!$p{'glos'} || $p{'gxis'}) {
+if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
     if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
 	my $ce_arg = set_ce_arg();
 	xsystem('@@ORACC@@/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
@@ -225,7 +233,7 @@ decode_args {
  
     $tmp{'tmpdir'} = tempdir(CLEANUP => 0) unless $tmp{'tmpdir'};
     $tmp{'#qsrch'} = -s "$tmp{'tmpdir'}/search.txt"
-	unless $tmp{'asrch'} eq 'yes';
+	unless $tmp{'asrch'} && $tmp{'asrch'} eq 'yes';
     if ($tmp{'#qsrch'} && $tmp{'srchindex'}) {
 	$tmp{'defindex'} = $tmp{'srchindex'};
     }

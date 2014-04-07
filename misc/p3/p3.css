@@ -163,6 +163,11 @@ h1.toc { fontsize: 10pt; text-align: center; }
   line-height: 1.1rem;
 }
 
+table.xmd { border-spacing: 0px; padding: 2px; }
+table.xmd td { padding-top: 3px; padding-bottom: 3px; padding-left: 2px; padding-right: 2px; }
+table.xmd tr:nth-child(even) { background-color: #ddd; }
+td.ce-ood-id { width: 10%; }
+
 /*    
   overflow: scroll;
 

@@ -52,7 +52,7 @@ pg_load(int *nitems)
 	      s = (unsigned char *)++colon;
 	    }
 	}
-      if (*s == 'P' || *s == 'Q' || *s == 'X' || is_lang_id((char *)s))
+      if (*s == 'P' || *s == 'Q' || *s == 'X' || is_lang_id((char *)s) || *s == 'o')
 	{
 	  items[items_used].s = orig_s;
 	  while (*s && '\n' != *s)

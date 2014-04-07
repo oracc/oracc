@@ -16,6 +16,7 @@ int l2 = 1, o2 = 0, p3 = 0;
 
 int csi_debug = 0;
 int fragment = 0;
+int ood_mode = 0;
 FILE *fdbg = NULL;
 FILE *fpag = NULL;
 
@@ -104,12 +105,15 @@ main(int argc, char **argv)
   if (!project)
     project = "cdli";
 
+  if (strstr(project, "/ood/"))
+    ood_mode = 1;
+
   if (NULL == fdbg)
     fdbg = stderr;
   if (!fpag)
     fpag = stdout;
 
-  if (!quick)
+  if (!ood_mode && !quick)
     {
       struct p2_options *p2opts = NULL;
       char *tmp;
@@ -130,8 +134,9 @@ main(int argc, char **argv)
 	  *tmp = '\0';
 	}
       
-      if (NULL == (sip = si_load_csi()))
-	exit(1);
+      if (!ood_mode)
+	if (NULL == (sip = si_load_csi()))
+	  exit(1);
 
       if (heading_keys)
 	headfields = set_keys(heading_keys, &nheadfields);
@@ -163,7 +168,7 @@ main(int argc, char **argv)
 	}
     }
 
-  if (!quick)
+  if (!ood_mode && !quick)
     {
       pitems = pg_sort(items, &nitems, sort_keys);
       if (csi_debug)
@@ -186,7 +191,7 @@ main(int argc, char **argv)
   if (nitems)
     pages = pg_page(pitems, nitems, &npages, op);
 
-  if (!quick)
+  if (!ood_mode && !quick)
     {
       if (csi_debug) /* after pg_page to see page/count info */
 	dbg_dump_outline(op,nlevels);

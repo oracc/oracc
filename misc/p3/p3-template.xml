@@ -182,15 +182,6 @@
       </div>
 
       <div class="p3hidden">
-	<input type="hidden" name="project" id="project" value="@@project@@"/>
-	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
-	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
-	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
-	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
-	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
-	<input type="hidden" name="p3do" id="p3do" value="default"/>
-	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
-	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
 	<input type="hidden" name="adhoc" p3:value="@@cgivar:adhoc@@"/>
 	<input type="hidden" name="asrch"  p3:value="@@cgivar:asrch@@"/>
 	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
@@ -198,20 +189,30 @@
 	<input type="hidden" name="glos" id="glos" p3:value="@@cgivar:glos/@@"/>
 	<input type="hidden" name="gxis" id="gxis" p3:value="@@cgivar:gxis/@@"/>
 	<input type="hidden" name="items" p3:value="@@runtime:items@@"/>
-	<input type="hidden" name="list" id="list" p3:value="@@cgivar:list@@"/>
 	<input type="hidden" name="itemtype" id="itemtype" p3:value="@@runtime:itemtype/off@@"/>
+	<input type="hidden" name="list" id="list" p3:value="@@cgivar:list@@"/>
+	<input type="hidden" name="otlmode" id="otlmode" p3:value="@@runtime:otlmode@@"/>
+	<input type="hidden" name="p3do" id="p3do" value="default"/>
+	<input type="hidden" name="p3mode" id="p3mode" p3:value="@@runtime:mode@@"/>
+	<input type="hidden" name="p3outl" id="p3outl" p3:value="@@runtime:outl/default@@"/>
+	<input type="hidden" name="p3prod" id="p3prod" p3:value="@@runtime:prod@@"/>
+	<input type="hidden" name="p3type" id="p3type" p3:value="@@runtime:type@@"/>
+	<input type="hidden" name="p3what" id="p3what" p3:value="@@runtime:what@@"/>
+	<input type="hidden" name="page" id="page" p3:value="@@cgivar:page/1@@"/>
+	<input type="hidden" name="pages" p3:value="@@runtime:pages@@"/>
+	<input type="hidden" name="pqx_id" id="pqx_id"/>
+	<input type="hidden" name="project" id="project" value="@@project@@"/>
 	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype@@"/>
 	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
-	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
 	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>
+	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
 	<input type="hidden" name="uimode" id="uimode" p3:value="@@cgivar:uimode@@"/>
 	<input type="hidden" name="unicheck" id="unicheck" p3:value="@@cgivar:unicode/0@@"/>	
-	<input type="hidden" name="xipage" id="xipage" p3:value="@@cgivar:xipage@@"/>
 	<input type="hidden" name="uzpage" id="uzpage" p3:value="@@cgivar:uzpage@@"/>
+	<input type="hidden" name="xipage" id="xipage" p3:value="@@cgivar:xipage@@"/>
+	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
 	<input type="hidden" name="zoom" id="zoom" p3:value="@@cgivar:zoom@@"/>
 	<input type="hidden" name="zprev" p3:value="@@runtime:zprev@@"/>
-	<input type="hidden" name="znext" p3:value="@@runtime:znext@@"/>
-	<input type="hidden" name="pqx_id" id="pqx_id"/>
       </div>
     </form>
 
