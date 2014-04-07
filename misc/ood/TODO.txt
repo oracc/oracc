@@ -1,0 +1,28 @@
+Oracc 3:
+=======
+
+* fix search-result listing/item/page switching
+
+* default to 'cat' search in ood paging
+
+* implement cbfwnd record.css/record.xsl
+
+* use record.xsl for any kind of xmd display when available
+
+* implement ood uri's mapping numbers to o+NUMBER and returning either raw xml or formatted with record.xsl
+
+* implement more test cases
+
+
+
+Oracc 3.1:
+==========
+
+* add field names to top of xmd page
+
+* implement sortability by different columns in ood mode
+
+* expose cat/glo via ood implementation
+
+* support/encourage definition of ood fields in rdf and/or cidoc-crm
+
