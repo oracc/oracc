@@ -4,13 +4,17 @@
 #include "warning.h"
 #include "runexpat.h"
 
+/* FIXME: parameterize/compute location of xsltproc at 
+   install time or run time */
+const char *xsltproc = "/usr/bin/xsltproc";
+
 extern int options(int, char**,const char*);
 extern int optind;
 
 static int html_mode = 0, sig_fixer = 0, unwrap_html = 0;
 static int cued_printStart = 0, need_gdf_closer = 0;
 
-static const char *project = NULL;
+static const char *project = NULL, *xsl = NULL;
 
 struct frag
 {
@@ -18,6 +22,15 @@ struct frag
   const char *xid;
   FILE *fp;
 };
+
+
+static char *
+argv_cmd(void)
+{
+  char *cmd = malloc(strlen(xsl) + strlen("xsltproc - ") + 1);
+  sprintf(cmd, "%s %s -", xsltproc, xsl);
+  return cmd;
+}
 
 void
 printText(const char *s, FILE *frag_fp)
@@ -58,16 +71,25 @@ printStart(struct frag *frag, const char *name, const char **atts)
 	  fputc('"', frag->fp);
 	}      
     }
-  else if (atts)
+  else 
     {
-      for (ap = atts; ap[0]; )
+#if 0
+      if (!strcmp(name, "o:records"))
+	fputs(" xmlns:o=\"http://oracc.org/ns/ood/1.0\"", frag->fp);
+#endif
+      
+      if (atts)
 	{
-	  fprintf(frag->fp, " %s=\"",*ap++);
-	  printText(*ap++, frag->fp);
-	  fputc('"', frag->fp);
+	  for (ap = atts; ap[0]; )
+	    {
+	      fprintf(frag->fp, " %s=\"",*ap++);
+	      printText(*ap++, frag->fp);
+	      fputc('"', frag->fp);
+	    }
 	}
+
+      fputc('>', frag->fp);
     }
-  fputc('>', frag->fp);
   ++frag->nesting;
 }
 
@@ -103,7 +125,7 @@ printEnd(struct frag *frag, const char *name)
       else
 	{
 	  if (need_gdf_closer)
-	    fputs("</gdf:dataset>", frag->fp);
+	    fputs("</o:records>", frag->fp);
 	  else
 	    {
 	      fclose(frag->fp);
@@ -142,9 +164,9 @@ gdf_sH(void *userData, const char *name, const char **atts)
     }
   else if (((struct frag*)userData)->nesting)
     printStart(userData, name, atts);
-  else if (!strcmp(name, "gdf:dataset"))
+  else if (!strcmp(name, "o:records"))
     {
-      printStart(userData, "gdf:dataset", atts);
+      printStart(userData, "o:records", atts);
       need_gdf_closer = 1;
       ((struct frag*)userData)->nesting = 0;
     }
@@ -183,12 +205,25 @@ gdf_frag_from_file(const char *fname, const char *xml_id, FILE *outfp)
 int
 main(int argc, char **argv)
 {
-  options(argc, argv, "hp:su");
+  FILE *outfp = stdout;
+
+  options(argc, argv, "hp:sux:");
+  
+  if (xsl)
+    {
+      char *xsltcommand = argv_cmd();
+      fprintf(stderr, "xfrag xsltcommand = %s\n", xsltcommand);
+      outfp = popen(xsltcommand, "w");
+    }
   
   if (argv[optind] && argv[optind+1])
-    gdf_frag_from_file(argv[optind], argv[optind+1], stdout);
+    gdf_frag_from_file(argv[optind], argv[optind+1], outfp);
   else if (unwrap_html && argv[optind])
     gdf_frag_from_file(argv[optind], NULL, stdout);
+
+  if (xsl)
+    (void)pclose(outfp);
+
   return 0;
 }
 
@@ -206,6 +241,7 @@ opts(int argc, char *arg)
     case 'p': project = arg; break;
     case 's': sig_fixer = 1; break;
     case 'u': unwrap_html = 1; break;
+    case 'x': xsl = arg; break;
     default: return 1;
     }
   return 0;

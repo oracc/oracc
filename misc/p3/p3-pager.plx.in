@@ -564,6 +564,8 @@ run_item_maker {
 		$xmd);
     } elsif ($rt{'itemtype'} eq 'cbd') {
 	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+    } elsif ($rt{'itemtype'} eq 'ood') {
+	xsystem("$oraccbin/xfrag @@ORACC@@/pub/$p{'project'}/data.xml $id | xsltproc -stringparam html yes @@ORACC@@/lib/scripts/ood-record.xsl - >$p{'tmpdir'}/results.html");
     } else {
 	warn "p3-pager.plx: no handler for type = $rt{'itemtype'}\n";
     }

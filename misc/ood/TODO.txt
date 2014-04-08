@@ -26,3 +26,4 @@ Oracc 3.1:
 
 * support/encourage definition of ood fields in rdf and/or cidoc-crm
 
+* implement csv-based ood for large datasets
