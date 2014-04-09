@@ -7,6 +7,6 @@ fi
 #xsltproc $ORACC/lib/scripts/gdf-index-html.xsl gdf.xml >index.html
 mkdir -p $ORACC/pub/$project/cat
 cp 00lib/data.xml 02pub
-segdfx -p $project < 02pub/data.xml
+$ORACC/bin/segdfx -p $project < 02pub/data.xml
 o2-web.sh
 
