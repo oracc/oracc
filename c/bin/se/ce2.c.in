@@ -169,7 +169,7 @@ ce_file(const char *idp)
 {
   static char proj[128];
   static char pqid[8];
-  char *colon;
+  char *colon = NULL;
   const char *idp_on_entry = idp;
 
   if ((colon = strchr(idp, ':')))
@@ -219,7 +219,7 @@ ce_file(const char *idp)
 static void
 process_ce_ids(char *buf)
 {
-  char *dot, *colon;
+  char *dot = NULL, *colon = NULL;
 
   static unsigned char id_with_w[CE_BUFSIZ];
   int *ip = NULL;
