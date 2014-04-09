@@ -20,7 +20,8 @@
 	      select="document(concat('@@ORACC@@/www/',$project,'/config.xml'))"/>
 <xsl:variable name="project-abbrev"
 	      select="$config-xml/*/xpd:abbrev"/>
-
+<xsl:variable name="content-type"
+	      select="$config-xml/*/xpd:type"/>
 <xsl:variable name="nth-child" 
 	      select="'.pll .value select option:nth-child('"/>
 <xsl:variable name="border-top"
@@ -115,6 +116,17 @@
 	<option value="{@url}" class="outlink"><xsl:value-of select="@menu"/></option>
       </xsl:for-each>
     </select>
+  </xsl:copy>
+</xsl:template>
+
+<!--set default index to catalogue in ood mode -->
+<xsl:template match="xh:option[@value='cat']">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:if test="$content-type = 'ood'">
+      <xsl:attribute name="selected">yes</xsl:attribute>
+    </xsl:if>
+    <xsl:copy-of select="text()"/>
   </xsl:copy>
 </xsl:template>
 
