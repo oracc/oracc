@@ -21,7 +21,7 @@
 
     <p><xsl:for-each select="//xpd:blurb"><xsl:apply-templates/></xsl:for-each></p>
 
-    <p>You can view the project's content <esp:link url="/{/@n}/pager">here</esp:link>.</p>
+    <p>You can view the project's content <esp:link url="/{/*/@n}/pager">here</esp:link>.</p>
 
     </body></html>
   </esp:page>
