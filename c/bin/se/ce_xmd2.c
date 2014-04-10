@@ -192,12 +192,12 @@ xmdprinter2(const char *pq)
       xmd_init();
 
       if (!url_base)
-	url_base = malloc(strlen(project) + strlen("javascript:catItemView('cat',)")+8);
+	url_base = malloc(strlen(project) + strlen("javascript:catItemView('xtf',)")+8);
 #if 0
       sprintf(url_base,"http://oracc.museum.upenn.edu/%s/cat",project);
 #else
       if (p3)
-	sprintf(url_base, "javascript:p3item('cat',%d)", item_offset+nth);
+	sprintf(url_base, "javascript:p3item('xtf',%d)", item_offset+nth);
       else
 	sprintf(url_base, "javascript:catItemView(%d)", item_offset+nth);
 #endif
@@ -236,7 +236,8 @@ xmdprinter2(const char *pq)
 #if 0
       fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s/%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, id, icon, id, icon_alt);
 #else
-      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, icon, id, icon_alt);
+      /* fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, icon, id, icon_alt); */
+      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\">[VIEW]</a></td>", url_base, icon, id, icon_alt);
 #endif
       for (i = 0; width_specs[i]; ++i)
 	{
