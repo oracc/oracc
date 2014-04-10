@@ -125,23 +125,26 @@ proxy_lists {
     my %host_cat = ();
     my $proxy_lst = undef;
 
-    open(ATF, '01bld/lists/have-atf.lst') || return;
-    while (<ATF>) {
-	chomp;
-	my $k = $_;
-	$k =~ s/^.*?://;
-	$host_atf{$k} = $_;
+    if (open(ATF, '01bld/lists/have-atf.lst')) {
+	while (<ATF>) {
+	    chomp;
+	    my $k = $_;
+	    $k =~ s/^.*?://;
+	    $host_atf{$k} = $_;
+	}
+	close(ATF);
     }
-    close(ATF);
-    open(CAT, '01bld/lists/cat-ids.lst') || return;
-    while (<CAT>) {
-	chomp;
-	my $k = $_;
-	$k =~ s/^.*?://;
-	$host_cat{$k} = $_;
+
+    if (open(CAT, '01bld/lists/cat-ids.lst')) {
+	while (<CAT>) {
+	    chomp;
+	    my $k = $_;
+	    $k =~ s/^.*?://;
+	    $host_cat{$k} = $_;
+	}
+	close(CAT);
     }
-    close(CAT);
-    
+
     if (-r '00lib/proxy.ol') {
 	# this will write 01bld/proxy-ol.lst
 	warn "o2-lst.plx: proxy.ol not yet implemented\n";
@@ -149,6 +152,7 @@ proxy_lists {
     } elsif (-r '00lib/proxy.lst') {
 	$proxy_lst = "00lib/proxy.lst";
     }
+
     if ($proxy_lst) {
 
 	open(P,$proxy_lst);
@@ -248,7 +252,11 @@ update_lists {
 	close(A);
 	link '01bld/lists/proxy-atf.lst', '01bld/lists/proxy-cat.lst';
     } elsif ($opt eq 'static') {
-	xsystem 'cp', '-a', '00lib/approved.lst', $listdir;
+	if (-r '00lib/approved.lst') {
+	    xsystem 'cp', '-a', '00lib/approved.lst', $listdir;
+	} else {
+	    xsystem 'touch', "$listdir/approved.lst";
+	}
     } elsif ($opt =~ /\.ol$/) {
 	## ol('outlined.lst', $opt);
 	warn "o2-lst.plx: .ol lists not yet implemented\n";
