@@ -39,8 +39,12 @@ function getWinHeight() {
 }
 
 function no_sorters() {
-    document.getElementById('p3OSspecial').style.display = 'none';
-    document.getElementById('p3OSdefault').style.display = 'none';
+    if (document.getElementById('p3OSspecial')) {
+	document.getElementById('p3OSspecial').style.display = 'none';
+    }
+    if (document.getElementById('p3OSspecial')) {
+	document.getElementById('p3OSdefault').style.display = 'none';
+    }
 }
 
 function p3asearch() {
@@ -112,7 +116,9 @@ function p3setHeight() {
     var h = wh - p3ControlsHeight - p3BotbannerHeight;
     document.getElementById('p3left').style.height = h+'px';
     document.getElementById('p3right').style.height = h+'px';
-    document.getElementById('p3botbanner').style.top = (h+p3ControlsHeight+p3TopAdjust)+'px';
+    var t = (h+p3ControlsHeight+p3TopAdjust)+'px';
+    // alert('p3botbanner.top = '+t);
+    document.getElementById('p3botbanner').style.top = t;
 }
 
 function p3GlosControls() {
