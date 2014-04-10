@@ -231,12 +231,24 @@ update_lists {
 	    '-?','00lib/not-approved.lst',
 	    '+?','00lib/add-approved.lst';
     } elsif ($opt eq 'umbrella') {
-	## automatically include all approved texts from
-	## all public subprojects
-	my @pubsub = grep(m#/#, `projpublic.sh $project`);
-	chomp @pubsub;
-	@pubsub = map { s#^$project/## ; 
-			"$_/01bld/lists/approved.lst" } @pubsub;
+	my @pubsub = ();
+	if (-r '00lib/umbrella.lst') {
+	    ## either use the list provided by the project
+	    open(U,'00lib/umbrella.lst') || die "o2-lst.plx: strange: can't open readable file '00lib/umbrella.lst'\n";
+	    while (<U>) {
+		chomp;
+		push @pubsub, split(/\s+/,$_);
+	    }
+	    close(U);
+	    @pubsub = map { "$_/01bld/lists/approved.lst" } @pubsub;
+	} else {
+	    ## or automatically include all approved texts from
+	    ## all public subprojects
+	    grep(m#/#, `projpublic.sh $project`);	    
+	    chomp @pubsub;
+	    @pubsub = map { s#^$project/## ; 
+			    "$_/01bld/lists/approved.lst" } @pubsub;
+	}
 	open(A, '>01bld/lists/proxy-atf.lst')
 	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
 	foreach my $p (@pubsub) {
@@ -316,7 +328,7 @@ update_lists {
 sub
 qualify_approved {
     my @a = ();
-    open(A, $out_approved) || die;
+    open(A, $out_approved) || return; # just ignore missing lists/approved.lst
     @a = (<A>); chomp @a;
     close(A);
     open(A, ">$out_approved") || die;
