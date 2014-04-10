@@ -93,7 +93,7 @@ div.level3  { margin-left: 15px; padding: 0px; }
 .level1 p   { margin-left: 15px; text-indent: -10px; }
 
 a         { text-decoration: none; }
-a:link[@href]    { color: blue; }
+a:link[href]    { color: blue; }
 a:visited { color: #939; }
 a img     { border: 0px; }
 a[href]:hover   { color: white; background-color: red; text-decoration: underline; }
@@ -132,9 +132,9 @@ p.summary { margin-left: 1em; text-indent: -1em; }
 
 .p3h2     { font-size: 100%; padding-top: 0px; margin-top: 0px; margin-left: 1px; }
 
-h1.toc { fontsize: 10pt; text-align: center; }
+h1.toc { font-size: 10pt; text-align: center; }
 
-#unicode { margin: 0x; padding: 0px; }
+#unicode { margin: 0px; padding: 0px; }
 
 .notelink,.marker { font-size: 9pt; vertical-align: super; padding-left: .1em; padding-right: .1em; background-color: black; color: white; }
 .notemark { font-size: 9pt; vertical-align: super; padding-left: .1em; padding-right: .1em; color: black; }
@@ -167,6 +167,7 @@ table.xmd { border-spacing: 0px; padding: 2px; }
 table.xmd td { padding-top: 3px; padding-bottom: 3px; padding-left: 2px; padding-right: 2px; }
 table.xmd tr:nth-child(even) { background-color: #ddd; }
 td.ce-ood-id { width: 10%; }
+td.ce-xmd-icon { width: 5%; font-size: 8pt; font-weight: bold; font-family: sansserif; vertical-align: middle; }
 
 /*    
   overflow: scroll;
