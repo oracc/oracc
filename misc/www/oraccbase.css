@@ -1,6 +1,6 @@
 /* Basic Oracc find-button CSS */
 span.find-button { 
-    outset 1px brown; 
+    border-style: outset 1px brown;
     color: #444;
     background-color: brown;
     width: 75px; border: 
