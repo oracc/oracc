@@ -616,7 +616,7 @@ andline(struct node *lnode, unsigned char *lp)
 	tok = idbase;
       if (check_pnames && 'P' == *textid)
 	(void)check_pname(textid,ucc(tok));
-      if (xxstrlen(tok)+1 > text_n_alloced)
+      while (xxstrlen(tok)+1 > text_n_alloced)
 	{
 	  text_n_alloced = text_n_alloced ? text_n_alloced * 2 : 128;
 	  text_n = realloc(text_n,text_n_alloced);
