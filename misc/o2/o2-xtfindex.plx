@@ -3,7 +3,7 @@ use warnings; use strict;
 
 my $listdir = '01bld/lists';
 my $have_xtf = "$listdir/have-xtf.lst";
-my $verbose = 0;
+my $verbose = 1;
 
 sub xsystem;
 
@@ -14,7 +14,7 @@ xtfindex_list();
 sub
 xtfindex_list {
     my %proxy_projects = ();
-    if (open(P,'01bld/lists/proxy.lst')) {
+    if (open(P,'01bld/lists/proxy-atf.lst')) {
 	while (<P>) {
 	    chomp;
 	    s/:.*$//;
@@ -31,7 +31,7 @@ xtfindex_list {
 	    xsystem 
 		'atflists.plx', '-o', "$listdir/proxy-xtf.lst",
 		@proxy_xtf,
-		'&','01bld/lists/proxy.lst';
+		'&','01bld/lists/proxy-atf.lst';
 	}
     }
     if (-s $have_xtf) {
@@ -43,6 +43,7 @@ xtfindex_list {
 	xsystem 'cp', "$listdir/proxy-xtf.lst", "$listdir/xtfindex.lst";
     }
 }
+
 sub
 xsystem {
     warn "xsystem @_\n" if $verbose;
