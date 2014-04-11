@@ -5,6 +5,12 @@
 		exclude-result-prefixes="xmd"
 		>
 
+<xsl:template match="/">
+  <records>
+    <xsl:apply-templates select="/*/xmd:xmd/xmd:cat/xmd:genre"/>
+  </records>
+</xsl:template>
+
 <xsl:template match="xmd:genre[.='Royal Inscription']">
   <xsl:variable name="des" select="normalize-space(../xmd:designation)"/>
   <xsl:variable name="first-name" select="substring-before($des,' ')"/>
@@ -34,20 +40,14 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <ruler>
-    <xsl:value-of select="$ruler"/>
-  </ruler>
-  <xsl:copy>
-    <xsl:copy-of select="@*"/>
-    <xsl:apply-templates/>
-  </xsl:copy>  
+  <record>
+    <xsl:copy-of select="ancestor::xmd:xmd/@xml:id"/>
+    <ruler>
+      <xsl:value-of select="$ruler"/>
+    </ruler>
+  </record>
 </xsl:template>
 
-<xsl:template match="*">
-  <xsl:copy>
-    <xsl:copy-of select="@*"/>
-    <xsl:apply-templates/>
-  </xsl:copy>
-</xsl:template>
+<xsl:template match="text()"/>
 
 </xsl:stylesheet>
