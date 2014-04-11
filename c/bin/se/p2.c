@@ -72,7 +72,10 @@ p2_load(const char *project, const char *state, struct npool *pool)
 
   sprintf(opt, "outline-%s-catalog-widths", state);
   ret->catalog_widths = xpd_option(xpd, opt);
-  
+
+  sprintf(opt, "outline-%s-catalog-labels", state);
+  ret->catalog_labels = xpd_option(xpd, opt);
+
   xpd_term(xpd);
   return ret;
 }

@@ -42,7 +42,10 @@
     </xsl:when>
     <xsl:when test="@cetype='xmd'">
       <table class="xmd">
-	<xsl:apply-templates mode="xmd"/>
+	<xsl:apply-templates mode="xmd" select="ce:labels"/>
+	<tbody>
+	  <xsl:apply-templates mode="xmd" select="ce:data"/>
+	</tbody>
       </table>
     </xsl:when>
     <xsl:when test="@cetype='tra'">
@@ -103,6 +106,10 @@
 
 <xsl:template mode="tra" match="text()">
   <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template mode="xmd" match="ce:labels">
+  <xsl:copy-of select="*"/>
 </xsl:template>
 
 <xsl:template mode="xmd" match="ce:data">

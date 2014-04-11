@@ -22,9 +22,11 @@
 extern char *strdup(const char *);
 #endif
 
-extern const char *xmd_fields, *xmd_widths;
+extern const char *xmd_fields, *xmd_widths, *xmd_labels;
 
-int p3 = 0;
+int ood_mode = 0;
+
+int p3 = 1;
 
 const char *id, *ce_index, *lang = NULL, *mode = NULL, *project, *fn_project, *xtr_n = NULL, *state;
 char *gdf_xml;
@@ -543,6 +545,7 @@ main(int argc, char * const*argv)
       const char *ohome = oracc_home();
       gdf_xml = malloc(strlen(ohome) + strlen("/pub/") + strlen(project) + strlen("/data.xml") + 1);
       sprintf(gdf_xml, "%s/pub/%s/data.xml", ohome, project);
+      ood_mode = 1;
       /* TODO: check access for gdf_xml */
     }
 
@@ -607,6 +610,7 @@ main(int argc, char * const*argv)
   if (cfg.f == ce_xmd)
     {
       fprintf(stdout, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" cetype=\"xmd\" ncols=\"%d\">",xmd_field_count()+1);
+      xmd_print_labels();
       if (gdf_xml)
 	{
 	  runexpat(i_list, list2charstarstar(files), gdf_sH, gdf_eH);

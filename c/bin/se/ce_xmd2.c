@@ -20,23 +20,25 @@
 #define _MAX_PATH 1024
 #endif
 
-static int nfields = 0, nwidths = 0;
+static int nfields = 0, nwidths = 0, nlabels = 0;
 
 extern int p3;
 
 extern int item_offset, tabbed;
 extern const char *arg_fields;
 extern const char *mode, *project;
-const char *xmd_fields = NULL, *xmd_widths = NULL;
+const char *xmd_fields = NULL, *xmd_widths = NULL, *xmd_labels;
 
 static const char *default_fields 
   = "designation,primary_publication,subgenre|genre,period,place|provenience";
 static const char *default_widths = "auto,17,17,17,17";
+static const char *default_labels = "Designation,Publication,Content,Period,Provenience";
 
 static struct npool *ce_xmd_pool;
 
 const char **field_specs;
 const char **width_specs;
+const char **label_specs;
 List **field_lists;
 
 char *url_base = NULL;
@@ -129,9 +131,12 @@ xmdinit2(const char *project)
     xmd_fields = (p2opt->catalog_fields ? p2opt->catalog_fields : default_fields);
   if (!xmd_widths)
     xmd_widths = (p2opt->catalog_widths ? p2opt->catalog_widths : default_widths);
+  if (!xmd_labels)
+    xmd_labels = (p2opt->catalog_labels ? p2opt->catalog_labels : default_labels);
 
   nfields = count_entries(xmd_fields, "catalog-fields");
   nwidths = count_entries(xmd_widths, "catalog-widths");
+  nlabels = count_entries(xmd_widths, "catalog-widths");
 
   if (nfields != nwidths)
     {
@@ -140,12 +145,22 @@ xmdinit2(const char *project)
 	      project, state, state);
       return 1;
     }
+  if (nfields != nlabels)
+    {
+      fprintf(stderr, 
+	      "ce_xmd2: %s/00lib/config.xml: `%s-catalog-fields' and `%s-catalog-labels' should have same number of entries\n",
+	      project, state, state);
+      return 1;
+    }
+  
 
   field_specs = malloc((nfields+1)*sizeof(const char *));
   width_specs = malloc((nwidths+1)*sizeof(const char *));
+  label_specs = malloc((nwidths+1)*sizeof(const char *));
 
   set_entries(field_specs, xmd_fields);
   set_entries(width_specs, xmd_widths);
+  set_entries(label_specs, xmd_labels);
 
   set_field_lists(field_specs);
 
@@ -288,5 +303,22 @@ xmdprinter2(const char *pq)
 	    }
 	}
       fputs("</tr></ce:data>",stdout);
+    }
+}
+
+void
+xmd_print_labels(void)
+{
+  if (nlabels)
+    {
+      int i;
+      fputs("<ce:labels><thead><tr>",stdout);
+      if (ood_mode)
+	fputs("<th>ID</th>",stdout);
+      else
+	fputs("<th> </th>",stdout);
+      for (i = 0; label_specs[i]; ++i)
+	fprintf(stdout, "<th>%s</th>", label_specs[i]);
+      fputs("</tr></thead></ce:labels>",stdout);
     }
 }

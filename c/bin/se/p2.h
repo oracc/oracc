@@ -7,6 +7,7 @@ struct p2_options
   const char *heading_punct;
   const char *catalog_fields;
   const char *catalog_widths;
+  const char *catalog_labels;
 };
 
 #include "npool.h"
