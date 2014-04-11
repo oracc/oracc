@@ -130,7 +130,7 @@ find_p3colours {
 	} else {
 	}
 	$up = "$up../";
-	last if -d $project;
+	last unless -d $up;
     }
     undef;
 }
