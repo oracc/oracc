@@ -610,7 +610,8 @@ main(int argc, char * const*argv)
   if (cfg.f == ce_xmd)
     {
       fprintf(stdout, "<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" cetype=\"xmd\" ncols=\"%d\">",xmd_field_count()+1);
-      xmd_print_labels();
+      if (ood_mode)
+	xmd_print_labels();
       if (gdf_xml)
 	{
 	  runexpat(i_list, list2charstarstar(files), gdf_sH, gdf_eH);
