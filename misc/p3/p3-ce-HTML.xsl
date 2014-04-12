@@ -41,7 +41,15 @@
       </table>
     </xsl:when>
     <xsl:when test="@cetype='xmd'">
-      <table class="xmd">
+      <table>
+	<xsl:choose>
+	  <xsl:when test="count(ce:data)>2">
+	    <xsl:attribute name="class"><xsl:text>xmd oddeven</xsl:text></xsl:attribute>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:attribute name="class"><xsl:text>xmd</xsl:text></xsl:attribute>
+	  </xsl:otherwise>
+	</xsl:choose>
 	<xsl:apply-templates mode="xmd" select="ce:labels"/>
 	<tbody>
 	  <xsl:apply-templates mode="xmd" select="ce:data"/>

@@ -263,7 +263,7 @@ xmdprinter2(const char *pq)
       fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s/%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, id, icon, id, icon_alt);
 #else
       /* fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, icon, id, icon_alt); */
-      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\">[VIEW]</a></td>", url_base, icon, id, icon_alt);
+      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/viewtext.png\" alt=\"View text\"/></a></td>", url_base, icon, id, icon_alt);
 #endif
       for (i = 0; width_specs[i]; ++i)
 	{
