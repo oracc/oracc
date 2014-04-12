@@ -32,7 +32,7 @@ const char *xmd_fields = NULL, *xmd_widths = NULL, *xmd_labels;
 static const char *default_fields 
   = "designation,primary_publication,subgenre|genre,period,place|provenience";
 static const char *default_widths = "auto,17,17,17,17";
-static const char *default_labels = "Designation,Publication,Content,Period,Provenience";
+static const char *default_labels = NULL; /*"Designation,Publication,Content,Period,Provenience";*/
 
 static struct npool *ce_xmd_pool;
 
@@ -77,6 +77,9 @@ set_entries(const char **entries, const char *option)
 {
   int i;
   char *tmp;
+
+  if (!state)
+    state = "default";
 
   tmp = malloc(strlen(option)+1);
   (void)strcpy(tmp, option);
@@ -145,7 +148,7 @@ xmdinit2(const char *project)
 	      project, state, state);
       return 1;
     }
-  if (nfields != nlabels)
+  if (xmd_labels && nfields != nlabels)
     {
       fprintf(stderr, 
 	      "ce_xmd2: %s/00lib/config.xml: `%s-catalog-fields' and `%s-catalog-labels' should have same number of entries\n",
