@@ -53,6 +53,10 @@ int
 count_entries(const char *tmp, const char *option)
 {
   int i;
+
+  if (!tmp)
+    return 0;
+
   for (i = 1; *tmp; ++tmp)
     {
       if (',' == *tmp)
@@ -77,6 +81,9 @@ set_entries(const char **entries, const char *option)
 {
   int i;
   char *tmp;
+
+  if (!option)
+    return;
 
   if (!state)
     state = "default";
@@ -163,7 +170,8 @@ xmdinit2(const char *project)
 
   set_entries(field_specs, xmd_fields);
   set_entries(width_specs, xmd_widths);
-  set_entries(label_specs, xmd_labels);
+  if (xmd_labels)
+    set_entries(label_specs, xmd_labels);
 
   set_field_lists(field_specs);
 
