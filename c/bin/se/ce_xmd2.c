@@ -136,7 +136,7 @@ xmdinit2(const char *project)
 
   nfields = count_entries(xmd_fields, "catalog-fields");
   nwidths = count_entries(xmd_widths, "catalog-widths");
-  nlabels = count_entries(xmd_widths, "catalog-widths");
+  nlabels = count_entries(xmd_labels, "catalog-widths");
 
   if (nfields != nwidths)
     {
