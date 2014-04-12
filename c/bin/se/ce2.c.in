@@ -24,6 +24,7 @@ extern char *strdup(const char *);
 
 extern const char *xmd_fields, *xmd_widths, *xmd_labels;
 
+int in_group = 0;
 int ood_mode = 0;
 
 int p3 = 1;
@@ -619,6 +620,7 @@ main(int argc, char * const*argv)
 	}
       else
 	list_exec(pqs, (void(*)(void*))xmdprinter2);
+      fputs("</ce:group>", stdout);
       xmd_term();
     }
   else if (cfg.f == ce_byid)

@@ -202,8 +202,15 @@ void
 xmdprinter2(const char *pq)
 {
   static int nth = 0;
+  extern int in_group;
+
   if ('#' == *pq)
     {
+      if (in_group)
+	fputs("</ce:group>", stdout);
+      else
+	in_group = 1;
+      fputs("<ce:group>", stdout);
       fprintf(stdout, "<ce:heading>%s</ce:heading>", ++pq);
     }
   else
@@ -233,6 +240,13 @@ xmdprinter2(const char *pq)
 	fields = l2_xmd_load(NULL, pq);
       else
 	fields = l2_xmd_load(project, pq);
+
+      if (!in_group)
+	{
+	  in_group = 1;
+	  fputs("<ce:group>", stdout);
+	}
+
       fputs("<ce:data><tr xmlns=\"http://www.w3.org/1999/xhtml\">",stdout);
 
       if ((id = hash_find(fields, (unsigned char *)"id_text")))

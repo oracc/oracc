@@ -165,7 +165,7 @@ h1.toc { font-size: 10pt; text-align: center; }
 
 table.xmd { border-spacing: 0px; padding: 2px; }
 table.xmd td { padding-top: 3px; padding-bottom: 3px; padding-left: 2px; padding-right: 2px; }
-table.oddeven tr:nth-child(even) { background-color: #ddd; }
+.oddeven tr:nth-child(odd) { background-color: #ddd; }
 td.ce-ood-id { width: 10%; }
 td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 
