@@ -290,9 +290,11 @@ function p3controls() {
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
     }
 
-    var otlmode = document.getElementById('otlmode').value;
-    if (otlmode === 'none') {
-	p3NoOutline();
+    var otlmodeNode = document.getElementById('otlmode');
+    if (otlmodeNode) {
+	if (document.getElementById('otlmode').value === 'none') {
+	    p3NoOutline();
+	}
     }
 
     return 1;
