@@ -29,7 +29,6 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-
 <xsl:template match="g:a">
   <xsl:text>~</xsl:text>
   <xsl:apply-templates/>
@@ -58,6 +57,11 @@
   <xsl:text>{</xsl:text>
   <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="g:f">
+  <xsl:text>\</xsl:text>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="g:g">
