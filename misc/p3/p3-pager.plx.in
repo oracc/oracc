@@ -863,7 +863,11 @@ setup_pg_args {
     push @pg_args, '-q', if $rt{'#list_type'} eq 'cbd';
     if ($rt{'sorttype'}) {
 	my $tmp = $rt{'sorttype'};
-	$tmp =~ tr/_/^/; # escape field names like ch_no
+#
+# Shouldn't be necessary now that Slicer is built in
+#
+#	$tmp =~ tr/_/^/; # escape field names like ch_no 
+#
 	push(@pg_args, "-s$tmp") if $tmp;
     }
     push @pg_args, "-z$p{'zoom'}" if $p{'zoom'};
