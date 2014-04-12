@@ -122,8 +122,7 @@ function p3setHeight() {
 }
 
 function p3GlosControls() {
-    document.getElementById('p3OSspecial').style.display = 'none';
-    document.getElementById('p3OSdefault').style.display = 'none';
+    no_sorters();
     document.getElementById('p3cetype').style.display = 'none';
     document.getElementById('p3srchtype').style.display = 'none';
     document.getElementById('p3CbdLangDisplay').style.display= 'inline';
