@@ -156,7 +156,7 @@ xmdinit2(const char *project)
 
   field_specs = malloc((nfields+1)*sizeof(const char *));
   width_specs = malloc((nwidths+1)*sizeof(const char *));
-  label_specs = malloc((nwidths+1)*sizeof(const char *));
+  label_specs = malloc((nlabels+1)*sizeof(const char *));
 
   set_entries(field_specs, xmd_fields);
   set_entries(width_specs, xmd_widths);
