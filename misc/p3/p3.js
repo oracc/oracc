@@ -88,6 +88,8 @@ function p3item3(type,nth,id) {
 }
 
 function p3zoom(z) {
+    document.getElementById('item').value = 0;
+    document.getElementById('p3do').value = 'viewstatePages';
     if (z === '0') {
 	document.getElementById('zoom').value = z;
 	document.getElementById('page').value = document.getElementById('uzpage').value;

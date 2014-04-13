@@ -783,6 +783,7 @@ setup_navigation {
 	$p{'item'} = 0;
 	$p{'page'} = $p{'xipage'} || 1;
 	$force_page = 1;
+	$rt{'itemtype'} = $p{'itemtype'} = 'cat';
     } elsif ($p{'item'}) {
 	$rt{'itemtype'} = $p{'itemtype'};
     }
