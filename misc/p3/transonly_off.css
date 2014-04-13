@@ -1,0 +1,4 @@
+.lnum { display: table-cell; }
+.tlit { display: table-cell; }
+.nonlnum { display: table-cell; }
+.nonlbody { display: table-cell; }

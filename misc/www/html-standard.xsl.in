@@ -47,6 +47,7 @@
 	<link rel="stylesheet" type="text/css" href="/{$project}/css/p3colours.css" media="screen"/>
       </xsl:if>
       <link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
+      <link rel="stylesheet" type="text/css" href="/css/p3colours.css" media="screen"/>
       <script src="/js/p3.js" type="text/javascript">
 	<xsl:text> </xsl:text>
       </script>

@@ -6,8 +6,12 @@
     <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
     <link rel="stylesheet" type="text/css" href="/css/p3.css" />
     <link rel="stylesheet" type="text/css" href="/css/p3cbd.css" />
+    <link rel="stylesheet" type="text/css" href="/css/transonly_off.css" media="screen" title="to_off"/>
+    <link rel="stylesheet" type="text/css" href="/css/transonly_on.css" media="screen" title="to_on"/>
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
+    <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css" title="projcss"/>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
+    <script src="/js/p3-transonly.js" type="text/javascript"><![CDATA[ ]]></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-32878242-1']);
@@ -131,7 +135,8 @@
 	      </span>
 	      
 	      <span class="translations"/>
-	      <input type="checkbox" onchange="submit()" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
 	    </p>
 	  </div>
 	  
@@ -185,6 +190,7 @@
 	<input type="hidden" name="adhoc" p3:value="@@cgivar:adhoc@@"/>
 	<input type="hidden" name="asrch"  p3:value="@@cgivar:asrch@@"/>
 	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
+	<input type="hidden" name="fscheck" id="fscheck" p3:value="@@cgivar:fullscreen/0@@"/>
 	<input type="hidden" name="glet" id="glet" p3:value="@@cgivar:glet/@@"/>
 	<input type="hidden" name="glos" id="glos" p3:value="@@cgivar:glos/@@"/>
 	<input type="hidden" name="gxis" id="gxis" p3:value="@@cgivar:gxis/@@"/>

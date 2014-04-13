@@ -236,6 +236,16 @@ function p3NoOutline() {
     document.getElementById('p3left').style.display = 'none';
 }
 
+function p3YesOutline() {
+    var rt = document.getElementById('p3right');
+    rt.style.width = '80%';
+    rt.style.left = '20%';
+    rt = document.getElementById('p3navRight');
+    rt.style.width = '80%';
+    rt.style.left = '20%';
+    document.getElementById('p3left').style.display = 'block';
+}
+
 // use p3OSspecial if it's defined; 
 // if not then p3OSdefault if that is defined
 function p3CorpusControls() {
@@ -292,9 +302,19 @@ function p3controls() {
 
     var otlmodeNode = document.getElementById('otlmode');
     if (otlmodeNode) {
-	if (document.getElementById('otlmode').value === 'none') {
+	if (otlmodeNode.value === 'none') {
 	    p3NoOutline();
 	}
+    }
+
+    var fsbox = document.getElementById('fullscreen');
+    if (fsbox && fsbox.checked) {
+	p3NoOutline();
+    }
+
+    var tonly = document.getElementById('transonly');
+    if (tonly && tonly.checked) {
+	to_toggle();
     }
 
     return 1;

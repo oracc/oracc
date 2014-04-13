@@ -264,11 +264,11 @@ decode_args {
     $tmp{'p3do'} = 'default' unless $tmp{'p3do'};
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
     $tmp{'translation'} = 'en' unless $tmp{'translation'};
-    if (exists $tmp{'transonly'}) {
-	$tmp{'transonly'} = 1;
-    } else {
-	$tmp{'transonly'} = 0;
-    }
+#    if (exists $tmp{'transonly'}) {
+#	$tmp{'transonly'} = 1;
+#    } else {
+#	$tmp{'transonly'} = 0;
+#    }
     if (exists $tmp{'unicode'}) {
 	$tmp{'unicode'} = 1;
     } else {
@@ -540,21 +540,13 @@ run_item_maker {
 	    warn "cp $html $p{'tmpdir'}/results.html\n";
 	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	} else {
-	    # xsystem('xsltproc', 
-	    # 	    '-stringparam', 'p2', 'yes',
-	    # 	    '-stringparam', 'host', $p{'project'},
-	    # 	    '-stringparam', 'project', $eproject,
-	    # 	    '-stringparam', 'trans', $p{'translation'},
-	    # 	    '-stringparam', 'transonly', ($p{'transonly'} ? 'true' : 'false'),
-	    # 	    @idinfo,
-	    # 	    '-o', "$p{'tmpdir'}/results.html",
-	    # 	    '@@ORACC@@/lib/scripts/p3-htmlview.xsl',
-	    # 	    $xmd);
+	    # FIXME: should return error page
 	}
 	sig_fixer($p{'project'});
-	if ($p{'transonly'}) {
-	    xsystem("$oraccbin/p3-transonly.plx", "$p{'tmpdir'}/results.html");
-	} elsif ($hilite_words) {
+#	if ($p{'transonly'}) {
+#	    xsystem("$oraccbin/p3-transonly.plx", "$p{'tmpdir'}/results.html");
+#	} els
+	if ($hilite_words) {
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
 	xsystem('xsltproc', 
