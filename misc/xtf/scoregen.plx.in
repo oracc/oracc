@@ -170,21 +170,28 @@ create_rel_lists {
 	    my $to_ref   = $t->getAttribute('ref');
 	    my $from_line = $f->getAttribute('line');
 	    my $to_line   = $t->getAttribute('line');
+	    
+	    my $from_compounded = "$from_ref;$from_line";
+	    my $to_compounded = "$to_ref$to_line";
+
+	    $from_compounded =~ s/:(.*?);(.*?.)/:$1./;
+	    $to_compounded =~ s/:(.*?);(.*?.)/:$1./;
+	    
 	    ++$PQ{$from_ref};
 	    ++$PQ{$to_ref};
 	    ++$P{$from_ref};
 	    ++$Q{$to_ref};
 	    if ($rel eq 'goesto') {
-		push @{$exemplar_lists{$to_line}}, $from_line;
-		push @{$exemplar_links{$from_ref}}, [ $from_line, $to_line ];
+		push @{$exemplar_lists{$to_compounded}}, $from_compounded;
+		push @{$exemplar_links{$from_ref}}, [ $from_compounded, $to_compounded ];
 #		${$sources{$to_ref}}{$from_ref} = 1;
 	    } elsif ($rel eq 'parallels') {
-		push @{$parallel_lists{$f->getAttribute('line')}}, $t->getAttribute('line');
-		push @{$parallel_lists{$t->getAttribute('line')}}, $f->getAttribute('line');
+		push @{$parallel_lists{$from_compounded}, $to_compounded;
+		push @{$parallel_lists{$to_compounded}, $from_compounded;
 #		${$parallels{$to_ref}}{$from_ref} = 1;
 #		${$parallels{$from_ref}}{$to_ref} = 1;
 	    } elsif ($rel eq 'comesfrom') {
-		push @{$source_lists{$f->getAttribute('line')}}, $t->getAttribute('line');
+		push @{$source_lists{$from_compounded}, $to_compounded;
 #		${$sources{$from_ref}}{$to_ref} = 1;
 	    } else {
 		die; #can't happen unless the system is goofed up
