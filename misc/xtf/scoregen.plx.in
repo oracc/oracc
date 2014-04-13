@@ -259,7 +259,8 @@ create_scores {
 	    }
 	    if ($a->isa('XML::LibXML::Element')) {
 		my $xQ = $Q;
-		$Q =~ s/^.*?://;
+		$xQ =~ s/^.*?://;
+		$xQ =~ s/\..*$//;
 		$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
 	    } elsif ($t->getAttribute('class') ne 'nonl') {
 		my $txh_id = xid($t);
@@ -404,7 +405,7 @@ sprefs {
     foreach my $c (@_) {
 	my $r = $c->getAttribute('ref');
 	my $r_noproj = $r;
-	$r_noproj =~ s,^[^/]+/,,;
+	$r_noproj =~ s,^.*?:,,;
 	my $path = '';
 	if ($r =~ /:/) {
 	    $path = expand_in_project(undef,$r,);

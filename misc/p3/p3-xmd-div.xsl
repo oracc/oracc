@@ -5,9 +5,11 @@
   xmlns:md="http://oracc.org/ns/xmd/1.0"
   xmlns:xpd="http://oracc.org/ns/xpd/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  exclude-result-prefixes="md xpd">
+  xmlns:xtl="http://oracc.org/ns/list/1.0"
+  exclude-result-prefixes="md xpd xtl">
 
 <xsl:include href="xpd.xsl"/>
+<xsl:include href="p3-xtl-div.xsl"/>
 
 <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
@@ -23,12 +25,19 @@
 </xsl:template>
 
 <xsl:template mode="xmd" match="/md:xmd">
-  <div class="xmdoutline border-top border-bottom">
-    <xsl:call-template name="names"/>
-    <xsl:call-template name="numbers"/>
-    <xsl:call-template name="views"/>
-    <xsl:call-template name="details"/>
-    <xsl:call-template name="biblio"/>
+  <div>
+    <div class="xmdoutline border-top border-bottom">
+      <xsl:call-template name="names"/>
+      <xsl:call-template name="numbers"/>
+      <xsl:call-template name="views"/>
+      <xsl:call-template name="details"/>
+      <xsl:call-template name="biblio"/>
+    </div>
+    <xsl:message>hello1</xsl:message>
+    <xsl:if test="/*/md:cat/md:id_composite">
+      <xsl:message>hello2</xsl:message>
+      <xsl:apply-templates select="document(concat(/*/md:cat/md:id_composite,'.xtl'),/)/xtl:list"/>
+    </xsl:if>
   </div>
 </xsl:template>
 
@@ -57,7 +66,7 @@
 </xsl:template>
 
 <xsl:template name="views">
-  <h3 class="h3">Views</h3>
+  <h3 class="h3">View</h3>
   <ul>
     <li>Catalogue entry</li>
     <xsl:for-each select="/*/md:cat/md:images">
