@@ -69,15 +69,10 @@ printStart(struct frag *frag, const char *name, const char **atts)
 	  else
 	    printText(*ap++, frag->fp);
 	  fputc('"', frag->fp);
-	}      
+	}
     }
   else 
     {
-#if 0
-      if (!strcmp(name, "o:records"))
-	fputs(" xmlns:o=\"http://oracc.org/ns/ood/1.0\"", frag->fp);
-#endif
-      
       if (atts)
 	{
 	  for (ap = atts; ap[0]; )
@@ -87,9 +82,8 @@ printStart(struct frag *frag, const char *name, const char **atts)
 	      fputc('"', frag->fp);
 	    }
 	}
-
-      fputc('>', frag->fp);
     }
+  fputc('>', frag->fp);
   ++frag->nesting;
 }
 
