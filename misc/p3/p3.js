@@ -88,8 +88,8 @@ function p3item3(type,nth,id) {
 }
 
 function p3zoom(z) {
-    document.getElementById('item').value = 0;
-    document.getElementById('p3do').value = 'viewstatePages';
+    p3PageControls();
+
     if (z === '0') {
 	document.getElementById('zoom').value = z;
 	document.getElementById('page').value = document.getElementById('uzpage').value;
@@ -180,6 +180,10 @@ function p3PageControls() {
     document.getElementById('p3textitems').style.display = 'none';
     document.getElementById('p3pagenav').style.display= 'block';
     document.getElementById('p3srchtype').style.display = 'inline';
+
+    document.getElementById('item').value = 0;
+    document.getElementById('p3do').value = 'viewstatePages';
+
     if (outlineState === 'default') {
 	var special = document.getElementById('p3OSspecial');
 	if (special) {
@@ -202,9 +206,6 @@ function p3PageControls() {
 	}
     }
 
-//    document.getElementById('p3viewtype').innerHtml = 
-//	document.getElementById('p3viewtype').value;
-    
     var listlink = document.getElementById('list').value;
     if (listlink) {
 	selectItemByValue(document.getElementById('seturl'), 
@@ -267,20 +268,25 @@ function p3CorpusControls() {
 
 function p3controls() {
     var mode = document.getElementById('p3mode').value;
+    var what = document.getElementById('p3what').value;
+    var prod = document.getElementById('p3prod').value;
+    var uimode = document.getElementById('uimode').value;
+
+    p3PageState(mode, what, prod);
+
     if (mode === 'zoom') {
 	document.getElementById('p3zoom').style.display = 'inline';
     } else {
 	document.getElementById('p3zoom').style.display= 'none';
     }
 
-    var what = document.getElementById('p3what').value;
     if (what === 'page') {
 	p3PageControls();
+	
     } else {
 	p3ItemControls();
     }
 
-    var prod = document.getElementById('p3prod').value;
     if (prod === 'srch') {
 	p3SrchControls();
     } else {
@@ -294,7 +300,6 @@ function p3controls() {
 	}
     }
 
-    var uimode = document.getElementById('uimode').value;
     if (uimode === 'mini') {
 	document.getElementById('p3topButtons').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'none';
@@ -447,4 +452,10 @@ function pop1sig(proj,lang,sig) {
     var esig = encodeURIComponent(bio+sig);
     var url = '/'+proj+'/sig?'+esig;
     popup(url,'cbdarticle',400,600,0,0);
+}
+
+// page state management--not clear how much will be necessary
+
+function p3PageState(mode,what,prod) {
+//    alert('mode='+mode+'; what='+what+'; prod='+prod);
 }
