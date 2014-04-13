@@ -1373,7 +1373,7 @@ xmd_begin {
 	push @{$xmd_outputs{$curr_xmd}}, '<?destfile #none?>';
     } else {
 #	print "<?destfile @@ORACC@@/$project/01bld/$pref/$id/$id.xmd?>";
-	push @{$xmd_outputs{$curr_xmd}}, "<?destfile @@ORACC@@/$project/01bld/$pref/$id/$id.xmd?>";
+	push @{$xmd_outputs{$curr_xmd}}, "<?destfile @@ORACC_BUILDS@@/$project/01bld/$pref/$id/$id.xmd?>";
     }
 
     my $xlink = '';

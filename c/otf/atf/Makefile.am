@@ -1,3 +1,5 @@
+include ../../../oracc-am-rules.txt
+
 SUFFIXES=.g .c .o
 
 .g.c:
@@ -6,6 +8,9 @@ SUFFIXES=.g .c .o
 AM_CFLAGS=-ansi -pedantic -Wall -g -std=c99
 SUBDIRS=
 noinst_LTLIBRARIES=libatf.la
+
+text.c: text.c.in
+	$(ORACCIFY) text.c.in
 
 libatf_la_SOURCES = \
 	block.c blocktok.c label.c labtab.c \

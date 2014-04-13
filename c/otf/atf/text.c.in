@@ -98,6 +98,9 @@ static unsigned char *savetext(unsigned char **l, int *lenp);
 
 extern struct xcl_context *text_xc;
 struct nsa_context *global_nsa_context;
+
+static const char *oracc = "@@ORACC_BUILDS@@";
+
 static void
 destfile_pi()
 {
@@ -106,7 +109,6 @@ destfile_pi()
     fprintf(f_xml,"<?destfile %s/%s.xtf?>",output_dir,textid);
   else
     {
-      const char *oracc = cdl_home();
       fprintf(f_xml,"<?destfile %s/%s/01bld/%s/%s/%s.xtf?>",
 	      oracc,project,pref,textid,textid);
     }
@@ -116,10 +118,9 @@ destfile_pi_tr(const char *code,const char *lang)
 {
   strncpy(pref,textid,4);
   if (output_dir)
-    fprintf(f_xml,"<?desfile %s/%s_%s-%s.xtr?>",output_dir,textid,code,lang);
+    fprintf(f_xml,"<?destfile %s/%s_%s-%s.xtr?>",output_dir,textid,code,lang);
   else
     {
-      const char *oracc = cdl_home();
       fprintf(f_xml,"<?destfile %s/%s/01bld/%s/%s/%s_%s-%s.xtr?>",
 	      oracc,project,pref,textid,textid,code,lang);
     }
