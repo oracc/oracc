@@ -72,15 +72,16 @@ function p3help() {
 }
 
 function p3item(type,nth) {
-    if (document.getElementById('item').value == 0) {
-	document.getElementById('p3do').value = 'viewstateItems';
-    }
+    document.getElementById('p3do').value = 'viewstateItems';
+    document.getElementById('p3what').value = 'item';
     document.getElementById('item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('p3form').submit();    
 }
 
 function p3item3(type,nth,id) {
+    document.getElementById('p3do').value = 'viewstateItems';
+    document.getElementById('p3what').value = 'item';
     document.getElementById('item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('pqx_id').value = id;
