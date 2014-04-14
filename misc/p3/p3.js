@@ -63,6 +63,9 @@ function p3action(act) {
     if (act === "qsrch" && document.getElementById('srch').value.length == 0) {
 	return;
     }
+    if (act === 'viewstatePages') {
+	document.getElementById('item').value = 0;
+    }
     document.getElementById('p3do').value = act;
     document.getElementById('p3form').submit();
 }
@@ -72,16 +75,16 @@ function p3help() {
 }
 
 function p3item(type,nth) {
-    document.getElementById('p3do').value = 'viewstateItems';
-    document.getElementById('p3what').value = 'item';
+    //    document.getElementById('p3do').value = 'viewstateItems';
+    //    document.getElementById('p3what').value = 'item';
     document.getElementById('item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('p3form').submit();    
 }
 
 function p3item3(type,nth,id) {
-    document.getElementById('p3do').value = 'viewstateItems';
-    document.getElementById('p3what').value = 'item';
+    //    document.getElementById('p3do').value = 'viewstateItems';
+    //    document.getElementById('p3what').value = 'item';
     document.getElementById('item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('pqx_id').value = id;
@@ -184,6 +187,7 @@ function p3PageControls() {
 
     document.getElementById('item').value = 0;
     document.getElementById('p3do').value = 'viewstatePages';
+    document.getElementById('p3what').value = 'page';
 
     if (outlineState === 'default') {
 	var special = document.getElementById('p3OSspecial');
@@ -458,5 +462,5 @@ function pop1sig(proj,lang,sig) {
 // page state management--not clear how much will be necessary
 
 function p3PageState(mode,what,prod) {
-//    alert('mode='+mode+'; what='+what+'; prod='+prod);
+    //    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value);
 }
