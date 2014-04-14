@@ -121,6 +121,13 @@ gdfprinter2(Hash_table *fields)
   const char *designation = NULL;
   const char *icon = NULL, *icon_alt = NULL;
   const char *id = NULL;
+  extern int in_group;
+
+  if (!in_group)
+    {
+      in_group = 1;
+      fputs("<ce:group>", stdout);
+    }
 
   ++nth;
   if (!url_base)
