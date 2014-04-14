@@ -99,6 +99,7 @@ exemplar_links {
 	}
 	foreach my $el (@{$exemplar_links{$e}}) {
 	    next unless $el && $$el[0];
+#	    my ($xproject,$xel) = ($$el[0] =~ /^(.*?):(.*?)$/);
 	    my $lnode = $xe->getElementsById($$el[0]);
 	    if (!$lnode) {
 		print STDERR "id $$el[0] not found in $efn\n";
@@ -112,14 +113,16 @@ exemplar_links {
 	    while ($a && !$a->isa('XML::LibXML::Element')) {
 		$a = $a->nextSibling();
 	    }
-	    my $id = $$el[1];
-	    my $Q = $id;
-	    $Q =~ s/^.*?://;
-	    $Q =~ s/\..*$//;
 	    if ($a && $a->isa('XML::LibXML::Element') && $a->nodeName() eq 'a') {
-		$a->setAttribute('href',"javascript:showblock('$project','$Q','sb.$id')");
+		my $id = $$el[1];
+		my $Q = $id;
+		$Q =~ s/^.*?://;
+		$Q =~ s/\..*$//;
+		my $xproject = $$el[0]; # FIXME: doesn't this mean the id is in the target project not the exemplar one?
+		$xproject =~ s/:.*$//;
+		$a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$$el[1]')");
 	    } else {
-		print STDERR "expected a not found in exemplar_links\n";
+		print STDERR "expected a node not found in exemplar_links for $$el[0]\n";
 	    }
 	}
 	open(XE,">$efn");
@@ -171,27 +174,32 @@ create_rel_lists {
 	    my $from_line = $f->getAttribute('line');
 	    my $to_line   = $t->getAttribute('line');
 	    
-	    my $from_compounded = "$from_ref;$from_line";
-	    my $to_compounded = "$to_ref$to_line";
+#	    my $from_compounded = "$from_ref;$from_line";
+#	    my $to_compounded = "$to_ref$to_line";
 
-	    $from_compounded =~ s/:(.*?);(.*?.)/:$1./;
-	    $to_compounded =~ s/:(.*?);(.*?.)/:$1./;
+#	    $from_compounded =~ s/:(.*?);(.*?)\./:$1./;
+#	    $to_compounded =~ s/:(.*?);(.*?)\./:$1./;
 	    
 	    ++$PQ{$from_ref};
 	    ++$PQ{$to_ref};
 	    ++$P{$from_ref};
 	    ++$Q{$to_ref};
 	    if ($rel eq 'goesto') {
-		push @{$exemplar_lists{$to_compounded}}, $from_compounded;
-		push @{$exemplar_links{$from_ref}}, [ $from_compounded, $to_compounded ];
+		push @{$exemplar_lists{$to_line}}, $from_line;
+		push @{$exemplar_links{$from_ref}}, [ $from_line, $to_line ];
+#		push @{$exemplar_lists{$to_compounded}}, $from_compounded;
+#		push @{$exemplar_links{$from_ref}}, [ $from_compounded, $to_compounded ];
 #		${$sources{$to_ref}}{$from_ref} = 1;
 	    } elsif ($rel eq 'parallels') {
-		push @{$parallel_lists{$from_compounded}}, $to_compounded;
-		push @{$parallel_lists{$to_compounded}}, $from_compounded;
+		push @{$parallel_lists{$from_line}}, $to_line;
+		push @{$parallel_lists{$to_line}}, $from_line;
+#		push @{$parallel_lists{$from_compounded}}, $to_compounded;
+#		push @{$parallel_lists{$to_compounded}}, $from_compounded;
 #		${$parallels{$to_ref}}{$from_ref} = 1;
 #		${$parallels{$from_ref}}{$to_ref} = 1;
 	    } elsif ($rel eq 'comesfrom') {
-		push @{$source_lists{$from_compounded}}, $to_compounded;
+		push @{$source_lists{$from_line}}, $to_line;
+#		push @{$source_lists{$from_compounded}}, $to_compounded;
 #		${$sources{$from_ref}}{$to_ref} = 1;
 	    } else {
 		die; #can't happen unless the system is goofed up
@@ -209,6 +217,10 @@ create_rel_lists {
 	    die; #can't happen unless linkbase is bad
 	}
     }
+    open(D,'>01tmp/exemplar_lists.dump');
+    print Dumper \%exemplar_lists;
+    print Dumper \%exemplar_links;
+    close(D);
 }
 
 sub
