@@ -1137,8 +1137,9 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    *endptr = g;
 	  return 0;
 	}
-      else if ((isdigit(*g) && 'x' == g[1])
-	       || (g[2] && g[1] == 0xc3 && g[2] == 0x97)) /* UTF-8 TIMES SYMBOL */
+      else if (isdigit(*g) 
+	       && (('x' == g[1])
+		   || (g[2] && g[1] == 0xc3 && g[2] == 0x97))) /* UTF-8 TIMES SYMBOL */
 	{
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
