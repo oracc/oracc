@@ -446,9 +446,9 @@ process_protocol {
 			++${$srefs{"$prj:$pqx"}}{$defs{$sym}};
 			++$sources_ok{"$tref\->$fref"};
 		    }
-		    unless ($ignore{$defs{$sym}} || $badatf{$defs{$sym}} || $link =~ /[A-Za-z][A-Za-z0-9₀-₉]*\s+\?$/) {
-			print STDERR "$file:$line: $lid -- bad label: '$link' => '$xlink'\n";
-		    }
+#		    unless ($ignore{$defs{$sym}} || $badatf{$defs{$sym}} || $link =~ /[A-Za-z][A-Za-z0-9₀-₉]*\s+\?$/) {
+#			print STDERR "$file:$line: $lid -- bad label: '$link' => '$xlink'\n";
+#		    }
 		}
 	    } else {
 		print STDERR "$file:$line: $lid -- bad symbol: $sym\n"
