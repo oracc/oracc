@@ -420,14 +420,17 @@ pcmp {
 sub
 sprefs {
     my $sp_project = $project;
+    my $ref_project = $project;
     my @items = ();
     foreach my $c (@_) {
 	my $r = $c->getAttribute('ref');
 	my $r_noproj = $r;
 	$r_noproj =~ s,^.*?:,,;
 	my $path = '';
-	if ($r =~ /:/) {
-	    $path = expand_in_project(undef,$r,);
+	if ($r =~ /^(.*?):/) {
+	    $ref_project = $1;
+	    $path = expand_in_project(undef,$r_noproj,$ref_project);
+#	    warn "sprefs: r-with-proj: path=$path\n";
 	} else {
 	    $path = expand_in_project(undef,$r,$project);
 	}
@@ -435,23 +438,19 @@ sprefs {
 	    $sp_project = 'cdli';
 	    $path = expand_in_project(undef,$r,'cdli');
 	}
-#	warn "sprefs: load_codes r=$r, sp_project=$sp_project\n";
-	load_codes($r,$sp_project) unless $codes{$r};
-#	my $n = ORACC::XMD::SortLabels::get('N',${$codes{$r}}{'designation'});
-#	print XTL "<item path=\"$path\" text=\"$r\" n=\"$n\"/>";
+
+#	warn "sprefs: r=$r; sp_project=$sp_project; ref_project=$ref_project\n";
+
+	load_codes($r,$ref_project) unless $codes{$r};
 	my $r_pq = $r; $r_pq =~ s/^.*?://;
-	my $xmd = ORACC::XMD::Fields::get_in_project($sp_project,$r_pq);
+	my $xmd = ORACC::XMD::Fields::get_in_project($ref_project,$r_pq);
 	my $xmdproj = 1;
 	if ($$xmd{'designation'}) {
-#	    print STDERR "$$xmd{'designation'} = ${$codes{$r}}{'designation'}\n";
-#	    print XTL "<item path=\"$path\" text=\"$r\" n=\"$$xmd{'designation'}\"/>";
 	    push @items, [ ${$codes{$r}}{'designation'} , 
-			   "<item proj=\"$sp_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'designation'}\"/>" ];
+			   "<item proj=\"$ref_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'designation'}\"/>" ];
 	} elsif ($$xmd{'name'}) {
-#	    print STDERR "$$xmd{'name'} = ${$codes{$r}}{'name'}\n";
-#	    print XTL "<item path=\"$path\" text=\"$r\" n=\"$$xmd{'name'}\"/>";
 	    push @items, [ ${$codes{$r}}{'name'} , 
-			   "<item proj=\"$sp_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'name'}\"/>" ];
+			   "<item proj=\"$ref_project\" path=\"$path\" text=\"$r_noproj\" n=\"$$xmd{'name'}\"/>" ];
 	} else {
 	    print STDERR "no designation for $r\n" unless $nocodes{$r};
 	}
