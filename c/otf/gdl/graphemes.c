@@ -1137,7 +1137,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    *endptr = g;
 	  return 0;
 	}
-      else if (isdigit(*g) && 'x' == g[1])
+      else if ((isdigit(*g) && 'x' == g[1])
+	       || (g[2] && g[1] == 0xc3 && g[2] == 0x97)) /* UTF-8 TIMES SYMBOL */
 	{
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
@@ -1156,6 +1157,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 #endif
 	  appendAttr(np,gattr(a_g_type,ucc("repeated")));
 	  g += 2;
+	  if (*g == 0x97)
+	    ++g;
 	}
       else if (is_compound_base[*g])
 	{
