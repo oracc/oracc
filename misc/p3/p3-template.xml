@@ -123,7 +123,7 @@
 	      </span>
  
 	      <span class="p3arrow">
-		<button type="button" name="larrow" onclick="p3action('itemback')">&lt;&lt;</button>
+		<button type="button" name="ilarrow" onclick="p3action('itemback')">&lt;&lt;</button>
 	      </span>
 	      
 	      Item <input id="item" name="item" type="text" onchange="p3action('itemset')" 
@@ -131,7 +131,7 @@
 	      of <span p3:value="@@runtime:items@@"/>
 	      
 	      <span class="p3arrow">
-		<button type="button" name="rarrow" onclick="p3action('itemfwd')">>></button>
+		<button type="button" name="irarrow" onclick="p3action('itemfwd')">>></button>
 	      </span>
 	      
 	      <span class="translations"/>
@@ -154,7 +154,7 @@
 	      </span>
 
 	      <span class="p3arrow">
-		<button type="button" name="larrow" onclick="p3action('pageback')">&lt;&lt;</button>
+		<button type="button" name="plarrow" onclick="p3action('pageback')">&lt;&lt;</button>
 	      </span>
 	      
 	      Page <input id="pageset" name="pageset" type="text" onchange="p3action('pageset')" 
@@ -162,7 +162,7 @@
 	      of <span p3:value="@@runtime:pages@@"/>
 
 	      <span class="p3arrow">
-		<button type="button" name="rarrow" onclick="p3action('pagefwd')">>></button>
+		<button type="button" name="prarrow" onclick="p3action('pagefwd')">>></button>
 	      </span>
 
 	      <span p3:value="@@runtime:items@@"/> items.
@@ -187,6 +187,7 @@
       </div>
 
       <div class="p3hidden">
+	<input type="hidden" name="arg_item" id="arg_item" p3:value="@@cgivar:arg_item@@"/>
 	<input type="hidden" name="adhoc" p3:value="@@cgivar:adhoc@@"/>
 	<input type="hidden" name="asrch"  p3:value="@@cgivar:asrch@@"/>
 	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>

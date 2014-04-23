@@ -39,6 +39,7 @@ my %rt = ();
 my $verbose = 1;
 
 %p = decode_args(@ARGV);
+arg_state();
 setup_navigation();
 set_p3_state();
 
@@ -629,6 +630,16 @@ set_list_items {
     $p{'#listitems'} = `wc -l $p{'#list'}`;
     chomp($p{'#listitems'});
     $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+}
+
+
+sub
+arg_state {
+    if ($p{'arg_item'}) {
+	$p{'item'} = $p{'arg_item'};
+	$p{'p3do'} = 'viewstateItems';
+	$p{'arg_item'} = 0;
+    }
 }
 
 sub

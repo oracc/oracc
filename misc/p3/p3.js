@@ -77,7 +77,7 @@ function p3help() {
 function p3item(type,nth) {
     //    document.getElementById('p3do').value = 'viewstateItems';
     //    document.getElementById('p3what').value = 'item';
-    document.getElementById('item').value = nth;
+    document.getElementById('arg_item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('p3form').submit();    
 }
@@ -277,6 +277,8 @@ function p3controls() {
     var prod = document.getElementById('p3prod').value;
     var uimode = document.getElementById('uimode').value;
 
+    document.getElementById('arg_item').value = 0;
+    
     p3PageState(mode, what, prod);
 
     if (mode === 'zoom') {
@@ -462,5 +464,5 @@ function pop1sig(proj,lang,sig) {
 // page state management--not clear how much will be necessary
 
 function p3PageState(mode,what,prod) {
-    //    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value);
+    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value+'; arg_item='+document.getElementById('arg_item').value);
 }
