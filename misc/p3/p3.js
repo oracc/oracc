@@ -464,5 +464,5 @@ function pop1sig(proj,lang,sig) {
 // page state management--not clear how much will be necessary
 
 function p3PageState(mode,what,prod) {
-    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value+'; arg_item='+document.getElementById('arg_item').value);
+//    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value+'; arg_item='+document.getElementById('arg_item').value);
 }
