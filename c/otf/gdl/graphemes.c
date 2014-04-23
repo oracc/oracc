@@ -1147,6 +1147,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  buf[0] = *g;
 	  buf[1] = '\0';
 	  last_g = np = gtextElem(e_g_o,NULL,lnum,GRAPHEME,buf);
+	  np->user = (void*)(uintptr_t)'x';
 	  /* it has to be wrong to put these attributes on a g:o node */	  
 #if 0
 	  if (in_square)
@@ -2133,7 +2134,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	break;
       case 'o':
 	if ((uintptr_t)np->user == 'x')
-	  insertp += xxstrlen(xstrcpy(insertp, utf8_times()));
+	  {
+	    if (!strcmp("repeated", (char*)getAttr(np, "g:type")))
+	      insertp = render_g_text(np->children.nodes[0], insertp, startp);
+	    insertp += xxstrlen(xstrcpy(insertp, utf8_times()));
+	  }
 	else
 	  *insertp++ = (char)(uintptr_t)np->user;
 	break;
