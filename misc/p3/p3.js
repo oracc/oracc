@@ -3,6 +3,22 @@ var p3ControlsHeight = 90;
 var p3BotbannerHeight = 28;
 var p3TopAdjust = 4;
 
+function p3_onload() {
+    p3_loadonlyfirst();
+}
+
+function p3_onpageshow() {
+    if (event.persisted) {
+	// possibly do something here on every pageshow after first
+	// see https://developer.mozilla.org/en-US/docs/Using_Firefox_1.5_caching
+	p3controls();
+    }
+}
+
+function p3_loadonlyfirst() {
+    p3controls();
+}
+
 function cbdPopup(url,windowName,height,width,screenX,screenY,focus) {
   var cbdPopupWindow = window.open(url,windowName,
  "dependent,height="+height+","
@@ -374,7 +390,7 @@ function selectGlossary(proj,obj) {
 }
 
 function selectItemByValue(elmnt, value) {
-    if (value) {
+    if (value && elmnt.options) {
 	for (var i=0; i < elmnt.options.length; i++) {
 	    if (elmnt.options[i].value == value) {
 		elmnt.selectedIndex = i;
