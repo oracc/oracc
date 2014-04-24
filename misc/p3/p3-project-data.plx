@@ -239,19 +239,19 @@ compute_project_hierarchy {
 sub
 compute_select1 {
     my $mode = shift;
-    my $use_mode = ORACC::XPD::Util::option("outline-$mode-select");
+    my $use_mode = `oraccopt . outline-$mode-select`; # ORACC::XPD::Util::option("outline-$mode-select");
+    my $fields = `oraccopt . outline-$mode-sort-fields` # ORACC::XPD::Util::option("outline-$mode-sort-fields")
+	|| 'period,genre,provenience';
     unless ($use_mode && $use_mode eq 'false') {
-	my $fields = ORACC::XPD::Util::option("outline-$mode-sort-fields")
-	    || 'period,genre,provenience';
-	my $labels = ORACC::XPD::Util::option("outline-$mode-sort-labels")
+	my $labels = `oraccopt . outline-$mode-sort-labels` # ORACC::XPD::Util::option("outline-$mode-sort-labels")
 	    || 'Time,Genre,Place';
 	my @select1 = ();
-	push @select1, "<select xmlns=\"http://www.w3.org/1999/xhtml\" id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('${mode}Sortstate')\">\n";
+	push @select1, "<select id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('${mode}Sortstate')\">\n";
 	push @select1, make_select1($fields,$labels);
 	push @select1, '</select>', "\n";
 	@select1;
     } else {
-	();
+	("<input type=\"hidden\" xmlns=\"http://www.w3.org/1999/xhtml\" id=\"p3OS$mode\" name=\"p3OS$mode\" value=\"$fields\"/>\n");
     }
 }
 
