@@ -13,9 +13,17 @@ function to_toggle() {
     for (i=0; (a = document.getElementsByTagName("link")[i]); i++) {
 	var title = a.getAttribute("title");
 	if (title === "to_off") {
-	    a.disabled = transonly.checked;
+	    if (transonly.checked) {
+		a.disabled = true;
+	    } else {
+		a.disabled = false;
+	    }
 	} else if (title === "to_on") {
-	    a.disabled = !transonly.checked;
+	    if (transonly.checked) {
+		a.disabled = false;
+	    } else {
+		a.disabled = true;
+	    }
 	}
     }
 }
