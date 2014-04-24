@@ -114,6 +114,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 	  buf[len] = '\0';
 	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	    {
+	      pd = strchr(xid,'.');
 	      if (pd)
 		sprintf(buf,"%s%s",vidp,pd);
 	      else
