@@ -250,24 +250,12 @@
       </h1>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:choose>
-    <xsl:when test="$transonly='true'">
-      <xsl:message>transonly=true</xsl:message>
-      <xsl:call-template name="do-tlat">
-	<xsl:with-param name="xmd" select="$xmd"/>
-	<xsl:with-param name="xtr" select="$xtr"/>
-	<xsl:with-param name="config-xml-file" select="$config-xml-file"/>
-      </xsl:call-template>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="do-tlit">
-	<xsl:with-param name="xmd" select="$xmd"/>
-	<xsl:with-param name="txh" select="$txh"/>
-	<xsl:with-param name="xtr" select="$xtr"/>
-	<xsl:with-param name="config-xml-file" select="$config-xml-file"/>
-      </xsl:call-template>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:call-template name="do-tlit">
+    <xsl:with-param name="xmd" select="$xmd"/>
+    <xsl:with-param name="txh" select="$txh"/>
+    <xsl:with-param name="xtr" select="$xtr"/>
+    <xsl:with-param name="config-xml-file" select="$config-xml-file"/>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="preview-view">
@@ -352,7 +340,7 @@
   <xsl:for-each select="$xtr">
     <xsl:for-each select="key('xtr-h',$id)">
       <xsl:if test="not(position()=last())">
-	<tr class="xtr-h">
+	<tr class="xtr-h xtr">
 	  <td colspan="{1+$tlit-cols}"> </td>
 	  <td colspan="{$xtr/*/@xtr:cols}" class="{concat('xtr-',local-name(.))}">
 	    <xsl:choose>
@@ -544,7 +532,7 @@
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:variable>
-	<td class="{$class}">
+	<td class="{$class} xtr">
 	  <xsl:if test="@xtr:span">
 	    <xsl:variable name="cspan">
 	      <xsl:choose>
@@ -564,7 +552,7 @@
 	</td>
       </xsl:for-each>
       <xsl:for-each select="xh:span[position()>1]">
-	<td class="t2">
+	<td class="t2 xtr">
 	  <xsl:if test="@xtr:span">
 	    <xsl:attribute name="colspan">
 	      <xsl:value-of select="@xtr:span"/>
@@ -575,7 +563,7 @@
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
-      <td class="t1">
+      <td class="t1 xtr">
 	<xsl:if test="@xtr:rows">
 	  <xsl:variable name="rows" select="@xtr:rows"/>
 	  <xsl:if test="not($rows = 'NaN') and $rows > 0">

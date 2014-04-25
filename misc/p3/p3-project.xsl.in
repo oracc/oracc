@@ -98,7 +98,7 @@
 <xsl:template match="xh:span[@class='translations']">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
-    <select name="setlang" id="setlang" onchange="p3do('setlang');submit()">
+    <select name="setlang" id="setlang" onchange="p3action('viewstateItems');">
       <xsl:for-each select="document($project-data)//lang">
 	<option value="{@abbrev}"><xsl:value-of select="."/></option>
       </xsl:for-each>

@@ -166,10 +166,23 @@ function p3ItemControls() {
     document.getElementById('p3itemnav').style.display= 'block';
 
     var itemtype = document.getElementById('itemtype').value;
-    
+
     if (itemtype === 'xtf') {
 	document.getElementById('p3catitems').style.display = 'none';
 	document.getElementById('p3textitems').style.display = 'inline';
+
+	var trans = document.getElementById('translation').value;
+	var setl = document.getElementById('setlang');
+	selectItemByValue(setl,trans);
+	if (trans === 'none') {
+	    transnone(false);
+	} else {
+	    transnone(true);
+	}
+
+	if (document.getElementById('transcheck').value === '1') {
+	    document.getElementById('transonly').checked = 'checked';
+	}
     } else {
 	if (itemtype === 'cat') {
 	    document.getElementById('p3catitems').style.display = 'inline';
@@ -182,10 +195,6 @@ function p3ItemControls() {
     }
     document.getElementById('p3pagenav').style.display= 'none';
     document.getElementById('p3srchtype').style.display = 'inline';
-    if (document.getElementById('transcheck').value === '1') {
-	document.getElementById('transonly').checked = 'checked';
-	
-    }
     no_sorters();
 //    document.getElementById('p3itemtype').innerHtml = 
 //	document.getElementById('p3itemtype').value;

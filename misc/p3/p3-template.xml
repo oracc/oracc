@@ -6,8 +6,9 @@
     <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
     <link rel="stylesheet" type="text/css" href="/css/p3.css" />
     <link rel="stylesheet" type="text/css" href="/css/p3cbd.css" />
-    <link rel="stylesheet" type="text/css" href="/css/transonly_off.css" media="screen" title="to_off"/>
-    <link rel="stylesheet" type="text/css" href="/css/transonly_on.css" media="screen" title="to_on"/>
+    <link rel="stylesheet" type="text/css" href="/css/transonly_off.css" title="to_off"/>
+    <link rel="stylesheet" type="text/css" href="/css/transonly_on.css" title="to_on"/>
+    <link rel="stylesheet" type="text/css" href="/css/transnone.css" title="transnone"/>
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css" title="projcss"/>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>

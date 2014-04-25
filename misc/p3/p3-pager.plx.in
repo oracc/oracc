@@ -265,7 +265,8 @@ decode_args {
     $tmp{'pagesize'} = 25 unless $tmp{'pagesize'};
     $tmp{'p3do'} = 'default' unless $tmp{'p3do'};
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
-    $tmp{'translation'} = 'en' unless $tmp{'translation'};
+    $tmp{'setlang'} = 'en' unless $tmp{'setlang'};
+    $tmp{'translation'} = $tmp{'setlang'};
     if (exists $tmp{'unicode'}) {
 	$tmp{'unicode'} = 1;
     } else {
@@ -533,9 +534,9 @@ run_item_maker {
 
 	my $html = $xmd;
 	$html =~ s/xmd$/html/;
-	if ($tmp{'translation'} ne 'en') {
-	    if (-r "$html.$tmp{'translation'}") {
-		$html .= ".$tmp{'translation'}";
+	if ($p{'translation'} ne 'en') {
+	    if (-r "$html.$p{'translation'}") {
+		$html .= ".$p{'translation'}";
 	    }
 	} else {
 	    $html = '' unless -r $html;

@@ -27,3 +27,11 @@ function to_toggle() {
 	}
     }
 }
+function transnone(bool) {
+    var i, a;
+    for (i=0; (a = document.getElementsByTagName("link")[i]); i++) {
+	if (a.getAttribute("title") === "transnone") {
+	    a.disabled = bool;
+	}
+    }
+}
