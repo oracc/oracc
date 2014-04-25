@@ -1,9 +1,10 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = catvec.plx packsortinfo.plx Qtab.plx xmd-ids.plx xmdfields.plx xmdmanager2.plx \
-	install.sh royal-sort.plx xcat.plx xmd-proxy.plx xmd-check.plx P-lookup.plx
-scriptdata_DATA = g2-xmd-HTML.xsl qcat-HTML.xsl royal-sort.xsl ruler-field.xsl vals2labels.xsl xmd-format.xsl \
-	xmd-HTML.xsl ruler-records.xsl
+	install.sh royal-sort.plx xcat.plx xmd-proxy.plx xmd-check.plx P-lookup.plx \
+	merge-sorts.plx
+scriptdata_DATA = g2-xmd-HTML.xsl qcat-HTML.xsl royal-sort.xsl ruler-field.xsl \
+	vals2labels.xsl xmd-format.xsl designation-sort.xsl xmd-HTML.xsl ruler-records.xsl
 data_DATA = keydata.xml
 schema_DATA = fmpwww2.rnc imgdb.rnc
 

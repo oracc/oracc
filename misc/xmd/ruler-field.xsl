@@ -37,6 +37,11 @@
   <ruler>
     <xsl:value-of select="$ruler"/>
   </ruler>
+  <xsl:if test="starts-with(xmd:external_id, 'rim')">
+    <rimcode>
+      <xsl:value-of select="xmd:external_id"/>
+    </rimcode>
+  </xsl:if>
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates/>

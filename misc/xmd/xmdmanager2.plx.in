@@ -759,6 +759,10 @@ dump_xmd {
 		    my $xf = xmlify($f);
 		    if ($tag eq 'period') {
 			$xf =~ s/\s+\(.*$//;
+			if ($curr_xmd =~ /^Q/) {
+			    # should really map P-periods to Q-periods more generically
+			    $xf =~ s/Early Dynastic IIIb/Early Dynastic/;
+			}
 		    }
 #		    print ">$xf</$tag>";
 		    push @{$xmd_outputs{$curr_xmd}}, ">$xf</$tag>";
@@ -1728,3 +1732,7 @@ Copyright(c) Steve Tinney 2006.
 
 Released under the Gnu General Public License
 (http://www.gnu.org/copyleft/gpl.html).
+
+# 2020020000100 Sargon
+# 2040020000100 Erridupizir
+#    2147483647
