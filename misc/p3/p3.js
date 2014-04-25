@@ -447,6 +447,11 @@ showNote(e,nid,trans) {
     return 1;
 }
 
+function showcdli(PQ) {
+    var url = 'http://cdli.ucla.edu/'+PQ;
+    popup(url,'exemplarWindow',700,800,100,350);
+}
+
 function showexemplar(project,PQ,lineid,fragid) {
     showexemplar2(project,'',PQ,lineid,fragid);
 }
