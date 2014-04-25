@@ -6,6 +6,9 @@ use Pod::Usage;
 use ORACC::XML;
 use ORACC::FXR::Util;
 
+binmode STDIN, ':utf8';
+binmode STDOUT, ':utf8';
+
 my $fix_000 = 0;
 my $rs_tag = 'xmd';
 my $rs_ns_prefix = 'xmd';
