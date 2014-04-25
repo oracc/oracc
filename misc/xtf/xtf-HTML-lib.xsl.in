@@ -889,7 +889,7 @@
 		<xsl:call-template name="td-lnum">
 		  <xsl:with-param name="label" select="$label"/>
 		</xsl:call-template>
-		<td>
+		<td class="tlit">
 		  <xsl:apply-templates/>
 		</td>
 	      </xsl:otherwise>
@@ -951,7 +951,7 @@
 	    </xsl:apply-templates>
 	  </xsl:when>
 	  <xsl:otherwise>
- 	    <td><xsl:apply-templates/></td>
+ 	    <td class="tlit"><xsl:apply-templates/></td>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:otherwise>

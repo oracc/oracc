@@ -3,13 +3,16 @@ use warnings; use strict;
 use lib '@@ORACC@@/lib/';
 use ORACC::Wrapper2;
 
-# CREATED WITH:
-my $invocation = "ORACC/mk-wrapper.plx -name htmlview.plx -type xslt -script @@ORACC@@/lib/scripts/htmlview.xsl -from xmd -to html";
+my $translangs = `cat 01tmp/translangs`;
+my @translangs = split(/\s+/, $translangs);
 
-ORACC::Wrapper2::xslt(from=>'xmd',
-		    to=>'html',
-		    script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl',
-    );
+foreach my $t (@translangs) {
+    ORACC::Wrapper2::xslt(from=>'xmd',
+			  to=>'html',
+			  script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl',
+			  trans=>$t
+	);
+}
 
 1;
 

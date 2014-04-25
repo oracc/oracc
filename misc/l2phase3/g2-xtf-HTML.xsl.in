@@ -999,7 +999,7 @@
 		<xsl:call-template name="td-lnum">
 		  <xsl:with-param name="label" select="$label"/>
 		</xsl:call-template>
-		<td>
+		<td class="tlit">
 		  <xsl:apply-templates/>
 		</td>
 	      </xsl:otherwise>
@@ -1046,7 +1046,7 @@
 	    </xsl:apply-templates>
 	  </xsl:when>
 	  <xsl:otherwise>
- 	    <td><xsl:apply-templates/></td>
+ 	    <td class="tlit"><xsl:apply-templates/></td>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:when>
@@ -1061,7 +1061,7 @@
 	    </xsl:apply-templates>
 	  </xsl:when>
 	  <xsl:otherwise>
- 	    <td><xsl:apply-templates/></td>
+ 	    <td class="tlit"><xsl:apply-templates/></td>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:otherwise>
@@ -1163,11 +1163,11 @@
 	    </xsl:apply-templates>
           </xsl:when>
           <xsl:otherwise>
-            <td><xsl:apply-templates/></td>
+            <td class="tlit"><xsl:apply-templates/></td>
           </xsl:otherwise>
         </xsl:choose>
 	<xsl:if test="/xtf:score[@score-type='legacy']">
-	  <td>
+	  <td class="tlit">
 	    <span class="enum">
 	      <xsl:choose>
 		<xsl:when test="@varnum">
@@ -1186,7 +1186,7 @@
 	</xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <td><span class="enum"><xsl:value-of select="concat(@n,' ',@l)"
+        <td class="tlit"><span class="enum"><xsl:value-of select="concat(@n,' ',@l)"
 	  	/><xsl:text>. </xsl:text></span></td>	
         <xsl:choose>
     	  <xsl:when test="xtf:c">
@@ -1195,7 +1195,7 @@
 	    </xsl:apply-templates>
  	  </xsl:when>
 	  <xsl:otherwise>
-            <td><xsl:apply-templates/></td>
+            <td class="tlit"><xsl:apply-templates/></td>
 	  </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>

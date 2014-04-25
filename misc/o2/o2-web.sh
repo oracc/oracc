@@ -9,6 +9,7 @@ if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
 p3-colours.plx $webdir
+p3-translangs.sh >01tmp/translangs
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then

@@ -693,7 +693,7 @@
 	<!-- this is a template line -->
 	<tr class="{concat('l',$p)}">
 	  <td class="lnum"><xsl:text> </xsl:text></td>
-	  <td><xsl:text> </xsl:text></td>
+	  <td class="tlit"><xsl:text> </xsl:text></td>
 	  <xsl:for-each select="document('')/*/*[position()&lt;$ncols]">
 	    <td><xsl:text> </xsl:text></td>
 	  </xsl:for-each>

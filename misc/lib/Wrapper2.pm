@@ -13,6 +13,7 @@ my $man = 0;
 my $quiet = 0;
 my $project = '';
 my $stdout = 0;
+my $trans = 'en';
 my $verbose = 0;
 my $webdir = '';
 
@@ -63,6 +64,7 @@ sub
 xslt {
     %args = @_;
     $args{'prog'} = $0;
+    $trans = $args{'trans'} if $args{'trans'};
     options();
     $args{'outdir'} = "$webdir/t"
 	if $webdir;
@@ -98,7 +100,7 @@ xslt {
 	my $xf = load_xml($f);
 	my $vprefix = ($args{'to'} eq '-') ? '' : '*.';
 	print STDERR "$f => $vprefix$args{'to'} ... " if $verbose;
-	my $res = eval { $transformer->transform($xf, project=>"'$project'") };
+	my $res = eval { $transformer->transform($xf, project=>"'$project'", trans=>"'$trans'") };
 	unless ($res) {
 	    undef $xf;
 	    print STDERR $f unless $verbose;
@@ -125,6 +127,9 @@ xslt {
 		    || (warn("$0: $f: input and output files are the same; skipping\n") and next);
 		if ($args{'outdir'}) {
 		    $outf =~ s#^.*?/([^/]+)$#$args{'outdir'}/$1#;
+		}
+		if ($trans ne 'en') {
+		    $outf .= ".$trans";
 		}
 	    }
 	    # N.B: this stream should not be opened in ':utf8'!  
