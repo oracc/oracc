@@ -54,6 +54,7 @@ my %longlang = (
     'qpn-x-temple'=>'Temples',
     'qpn-x-waters'=>'Watercourses',
     'qpn-x-ynames'=>'Year Names',
+    none=>'none',
     );
 
 my $stats_xml_frag = `project-stats.plx`;
@@ -73,7 +74,10 @@ if (-d '00atf') {
     @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
     chomp @translangs;
 }
-@translangs = ('en') unless $#translangs >= 0;
+
+#@translangs = ('en') unless $#translangs >= 0;
+
+push @translangs, 'none';
 
 ##
 ## Also:

@@ -265,11 +265,6 @@ decode_args {
     $tmp{'p3do'} = 'default' unless $tmp{'p3do'};
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
     $tmp{'translation'} = 'en' unless $tmp{'translation'};
-#    if (exists $tmp{'transonly'}) {
-#	$tmp{'transonly'} = 1;
-#    } else {
-#	$tmp{'transonly'} = 0;
-#    }
     if (exists $tmp{'unicode'}) {
 	$tmp{'unicode'} = 1;
     } else {
@@ -544,9 +539,6 @@ run_item_maker {
 	    # FIXME: should return error page
 	}
 	sig_fixer($p{'project'});
-#	if ($p{'transonly'}) {
-#	    xsystem("$oraccbin/p3-transonly.plx", "$p{'tmpdir'}/results.html");
-#	} els
 	if ($hilite_words) {
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
