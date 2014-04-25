@@ -5,7 +5,7 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl cunei-used2.xsl 
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css ncdl.css ncdlprint.css oraccbase.css oraccpod.css oraccprint.css oraccscreen.css orig-SHU-white.css outline.css ppcs-print.css ppcs.css pqpager.css preformat.css psdview.css score-block.css SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css xmd.css xo.css xtl.css
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png strut.png twitter-bird-dark-bgs.png twitter-bird-light-bgs.png xnum-icon.png up.gif down.gif viewtext.png
-html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico
+html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.html
 noinst_DATA = httpd.conf robots.txt
 
 httpd.conf: httpd.conf.in

@@ -31,6 +31,7 @@ my $oracclib = "@@ORACC@@/lib";
 my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
+my $no_html = "@@ORACC@@/lib/data/no_html.xml";
 my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
@@ -532,11 +533,18 @@ run_item_maker {
 
 	my $html = $xmd;
 	$html =~ s/xmd$/html/;
-	if (-r $html) {
+	if ($tmp{'translation'} ne 'en') {
+	    if (-r "$html.$tmp{'translation'}") {
+		$html .= ".$tmp{'translation'}";
+	    }
+	} else {
+	    $html = '' unless -r $html;
+	}
+	if ($html) {
 	    warn "cp $html $p{'tmpdir'}/results.html\n";
 	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	} else {
-	    # FIXME: should return error page
+	    xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
 	}
 	sig_fixer($p{'project'});
 	if ($hilite_words) {
