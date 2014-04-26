@@ -757,6 +757,7 @@ dump_xmd {
 		    push @{$xmd_outputs{$curr_xmd}}, "</$tag>";
 		} else {
 		    my $xf = xmlify($f);
+		    $xf =~ s/\&amp;(apos|lt|gt|quot)/\&$1/g; # suppress double-xmlify effects
 		    if ($tag eq 'period') {
 			$xf =~ s/\s+\(.*$//;
 			if ($curr_xmd =~ /^Q/) {
