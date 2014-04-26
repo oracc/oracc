@@ -87,7 +87,7 @@ function p3action(act) {
 }
 
 function p3help() {
-    popup('http://oracc.museum.upenn.edu/doc/user/p2/index.html','oraccHelp',900,800,0,0);
+    popup('http://build.oracc.org/doc2/help/index.html','oraccHelp',900,900,0,0);
 }
 
 function p3item(type,nth) {
@@ -495,4 +495,9 @@ function pop1sig(proj,lang,sig) {
 
 function p3PageState(mode,what,prod) {
 //    alert('mode='+mode+'; what='+what+'; prod='+prod+'; item='+document.getElementById('item').value+'; arg_item='+document.getElementById('arg_item').value);
+}
+
+function viewsProofing(project,PQ) {
+    var url = '/'+project+'/'+PQ+'/proofing';
+    popup(url,'exemplarWindow',800,900,10,10);
 }
