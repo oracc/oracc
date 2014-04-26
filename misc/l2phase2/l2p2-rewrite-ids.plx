@@ -21,6 +21,11 @@ load_ids();
 map_ids_in_xml("01bld/$lang/$lang.xml");
 map_ids_in_map("01bld/$lang/$lang.map");
 
+my @LID = eval("<01bld/$lang/L*.lst>");
+foreach my $lid (@LID) {
+    map_ids_in_lst($lid);
+}
+
 ################################################################
 
 sub
@@ -66,6 +71,23 @@ map_ids {
     foreach my $c ($n->childNodes()) {
 	map_ids($c) if $c->isa('XML::LibXML::Element');
     }
+}
+
+sub
+map_ids_in_lst {
+    open(L,"$_[0]") || die;
+    my @lid = (<L>);
+    close(L);
+    my @nid = ();
+    foreach (@lid) {
+	chomp;
+	push @nid, $new_ids{$_};
+    }
+    open(L,">$_[0]");
+    foreach my $n (sort @nid) {
+	print L "$n\n";
+    }
+    close(L);
 }
 
 sub

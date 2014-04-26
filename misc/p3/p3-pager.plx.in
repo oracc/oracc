@@ -1,11 +1,12 @@
 #!/usr/bin/perl
-use warnings; use strict; use open ':utf8';
+use warnings; use strict; use open ':utf8'; use utf8;
 binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib '@@ORACC@@/lib';
 use ORACC::P3::Slicer;
 use File::Temp qw/tempdir/;
 use Data::Dumper;
 use integer;
+use Encode;
 
 # P3 is controlled by the following top-level variables:
 # ===================================-==================
@@ -61,7 +62,18 @@ if ($rt{'prod'} eq 'list') {
 	    $p{'uimode'} = 'mini';
 	} else {
 	    $rt{'#list_type'} = 'cbd';
-	    $p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
+	    $rt{'itemtype'} = $p{'itemtype'} = 'cbd';
+	    $rt{'viewtype'} = $p{'viewtype'} = 'page';
+	    if ($p{'glet'}) {
+		open(T,"@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/letter_ids.tab") || die;
+		my $x = <T>;
+		close(T);
+		Encode::_utf8_on($p{'glet'});
+		my ($lid) = ($x =~ /(?:^|\t)$p{'glet'}\t(\S+)/);
+		$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/$lid.lst";
+	    } else {
+		$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
+	    }
 	    set_list_items();
 	}
     } elsif ($p{'adhoc'}) {
@@ -140,13 +152,15 @@ set_runtime_vars();
 ## in page mode emit the pth page
 ## in item-mode emit the ith item of the pth page
 
-if ($p{'glos'} && $p{'glet'}) {
-    if ($p{'glet'} =~ /html$/) {
-	$rt{'#content_url'} = "@@ORACC@@/www$p{'glet'}";
-    } else {
-	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
-    }
-} elsif ($p{'item'} == 0) {
+#if ($p{'glos'} && $p{'glet'}) {
+#    if ($p{'glet'} =~ /html$/) {
+#	$rt{'#content_url'} = "@@ORACC@@/www$p{'glet'}";
+#    } else {
+#	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
+#	
+#    }
+#} elsif ($p{'item'} == 0) {
+if ($p{'item'} == 0) {
     run_page_maker() unless !$rt{'pages'};
 } else {
     run_item_maker();
@@ -633,7 +647,6 @@ set_list_items {
     $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
 }
 
-
 sub
 arg_state {
     if ($p{'arg_item'}) {
@@ -729,7 +742,7 @@ set_results_xml_info {
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
-    if ($p{'glos'} && $p{'#listitems'} == 1) {
+    if ($p{'glos'} && ($p{'#listitems'} == 1 || $p{'glet'})) {
 	$p{'item'} = 1;
 	$rt{'itemtype'} = $p{'itemtype'} = 'cbd';
 	$p{'viewtype'} = 'item';

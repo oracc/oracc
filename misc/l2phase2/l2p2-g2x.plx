@@ -328,7 +328,6 @@ foreach my $l (sort keys %letter_ids) {
     push @l, [ $l, $lid++ ];
 }
 open(L,">${dirname}letter_ids.tab");
-print L "\t";
 foreach my $l (@l) {
     print L "$$l[0]\t$$l[1]\t";
 }
