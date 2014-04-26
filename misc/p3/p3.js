@@ -179,10 +179,10 @@ function p3ItemControls() {
 	} else {
 	    transnone(true);
 	}
-
 	if (document.getElementById('transcheck').value === '1') {
-	    document.getElementById('transonly').checked = 'checked';
+	    document.getElementById('transonly').checked = 'transonly';
 	}
+	to_toggle();
     } else {
 	if (itemtype === 'cat') {
 	    document.getElementById('p3catitems').style.display = 'inline';
@@ -314,7 +314,6 @@ function p3controls() {
 
     if (what === 'page') {
 	p3PageControls();
-	
     } else {
 	p3ItemControls();
     }

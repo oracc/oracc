@@ -136,8 +136,8 @@
 	      </span>
 	      
 	      <span class="translations"/>
-	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
-	      <input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
+	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" value="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
 	    </p>
 	  </div>
 	  
