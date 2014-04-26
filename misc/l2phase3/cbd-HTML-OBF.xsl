@@ -45,7 +45,7 @@
 </xsl:template>
 
 <xsl:template match="xh:h1[@class='entry']">
-  <h1 class="obf-entry">
+  <h1 class="obf-entry heading">
     <xsl:apply-templates/>
   </h1>
 </xsl:template>

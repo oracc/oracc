@@ -359,13 +359,11 @@ span.outwhere { padding-right: 1em; font-weight: bold; font-size: 90%; }
 
 p.label { padding-right: 1em; text-align: right }
 
-h1.entry { 
+h1.entry {
  	border: 1px; border-style: solid; 
 	padding-left: 3px; padding-right: 3px;
 	padding-top: 0px; padding-bottom: 0px; 
-	line-height: 1.5em; margin: 0px; 
-	background-color: #9c9; }
-
+	line-height: 1.5em; margin: 0px; }
 
 h1.obf-entry { 
 	line-height: 1.5em; margin: 0px; }
