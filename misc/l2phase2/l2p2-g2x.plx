@@ -32,6 +32,7 @@ my $have_disamb = 0;
 my $id_base = '';
 my $id_counter = -1; # next_xid pre-increments
 my $lang = '';
+my %letter_ids = ();
 my $name = '';
 my $outfile = '';
 my %pre_ids = ();
@@ -159,6 +160,8 @@ foreach my $lang (sort keys %data) {
 	}
 	my $entry_xid;
 	my $xid = $entry_xid = $entry_ids{$entry};
+	my ($letter) = ($entry =~ /^(.)/);
+	push @{$letter_ids{$letter}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
 	$entry_xis{$entry_xid} = { %xis_info };
@@ -313,6 +316,23 @@ foreach my $m (keys %sigmap) {
     }
 }
 close(M);
+
+my $lid = 'L000';
+my @l = ();
+foreach my $l (sort keys %letter_ids) {
+    open(L,">$dirname$lid.lst");
+    foreach my $id (@{$letter_ids{$l}}) {
+	print L "$id\n";
+    }
+    close(L);
+    push @l, [ $l, $lid++ ];
+}
+open(L,">${dirname}letter_ids.tab");
+print L "\t";
+foreach my $l (@l) {
+    print L "$$l[0]\t$$l[1]\t";
+}
+close(L);
 
 ###################################################################
 

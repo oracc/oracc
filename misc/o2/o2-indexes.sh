@@ -7,5 +7,6 @@ selemx -p $project <01bld/lists/lemindex.lst
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
     secbdx -p $project -l $lang 01bld/$lang/articles.xml
+    cp 01bld/$lang/letter_ids.tab $a
 done
 dbi2est.plx
