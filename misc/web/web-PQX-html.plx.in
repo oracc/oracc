@@ -5,6 +5,7 @@ use ORACC::Wrapper2;
 
 my $translangs = `cat 01tmp/translangs`;
 my @translangs = split(/\s+/, $translangs);
+push (@translangs, 'en') unless $#translangs >= 0;
 
 foreach my $t (@translangs) {
     ORACC::Wrapper2::xslt(from=>'xmd',
