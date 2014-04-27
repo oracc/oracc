@@ -21,7 +21,7 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
 	strut.png twitter-bird-dark-bgs.png twitter-bird-light-bgs.png		\
 	xnum-icon.png up.gif down.gif viewtext.png oracc.jpg cc88x31.png
-html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.html
+html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.xml
 noinst_DATA = httpd.conf robots.txt
 
 httpd.conf: httpd.conf.in

@@ -32,7 +32,7 @@ my $oracclib = "@@ORACC@@/lib";
 my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
-my $no_html = "@@ORACC@@/lib/data/no_html.xml";
+my $no_html = "@@ORACC@@/www/no_html.xml";
 my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
@@ -555,7 +555,7 @@ run_item_maker {
 	} else {
 	    $html = '' unless -r $html;
 	}
-	if ($html) {
+	if (-r $html) {
 	    warn "cp $html $p{'tmpdir'}/results.html\n";
 	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	} else {
