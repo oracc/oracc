@@ -1,0 +1,211 @@
+div.redirect  { border: 4px solid red; padding: 5px; }
+
+body { width: 800px; margin: auto; 
+       /* background-color: #fefefe; */
+       /* background-color: #fcf9d8; */
+       background-color: #ffe;
+     }
+
+div.banner { font-size: 16pt; line-height: 1.4em; height: 175px;
+	   background-image: url(../img/cbs16-oracc-banner.png); 
+	   background-position: left;
+	   background-color: #fcf9d8;
+	   background-repeat: no-repeat;
+	   color: #222;
+	   padding: 0px; margin: 0px;
+	   border-bottom: 4px solid #666; font-weight: bold; }
+
+.banner p { text-align: right; padding-top: 5px; margin-top: 0px;
+	    font-family: Cochin, Constantia, "Times New Roman", serif; 
+	  }
+
+.voracc { padding-top: 15pt; margin-bottom: -170px; }
+.oracc { font-size: 34pt; color: brown;
+	 font-family: Times New Roman, Serif;
+	 line-height: 22pt;
+	 margin-top: 0pt; padding-top: 0pt;
+	 margin-bottom: 0pt; padding-bottom: 0pt;
+	 text-indent: 36pt; text-align: left }
+
+.o2 { text-indent: 42pt; }
+.o3 { text-indent: 40pt; }
+.o4 { text-indent: 40pt; }
+.o5 { text-indent: 40pt; }
+
+.small { font-size: 12pt; line-height: 1.25em; }
+.blet { padding: 3px; }
+.clet { padding: 2.8px; }
+.bsp  { padding: 3px; }
+
+.lite { color: #d9d9d9; }
+.cap  { color: red; }
+
+div.banner-container { width: 700px;
+		       padding: 0px; margin: 0px;
+		       margin-top: 22pt;
+		       line-height: 1.4em; 
+		       color: black; background-color: #fefefe;
+		     }
+
+div.vertical1 { float: left; width: 20px; 
+		height: 280px;
+		padding: 0px; padding-left: 0px;
+		margin-bottom: 0px; 
+		padding-top: 5px;
+		background-color: purple; 
+		color: white;
+	      }
+
+div.vertical2 { float: left; width: 20px; padding: 0px; margin: 0px; 
+		padding-top: 5px;
+		height: 280px;
+		background-color: purple; 
+	        color: white; }
+
+.vertical1 p { padding: 0px; margin: 0px; 
+	       line-height: 1.45em;
+	       font-family: Futura, Verdana, Serif;
+	       text-align: center; }
+.vertical2 p { padding: 0px; margin: 0px; 
+	       line-height: 1.45em;
+	       font-family: Futura, Verdana, Serif;
+	       text-align: center; }
+
+h1     { color: white; 
+         background-color: #ffe;
+         font-family: sans-serif; 
+	 font-size: 14pt; font-weight: bold;
+	 padding: 2px; }
+
+h2 { font-family: "Ungkam Basic", serif; font-size: 10pt; font-weight: bold; 
+     color: #666; padding: 0px; margin: 0px; 
+/*     border-top: solid 1px #666; */
+   }
+
+h3 { font-size: 11pt; color: brown; padding-top: 0px; margin-top: 5px; }
+
+h4 { font-size: 9pt; color: brown; padding-top: 0px; margin-top: 5px; }
+
+.about p  { width: 420px; font-size: 13pt; 
+	    padding-top: 20px; margin-top: 0px; 
+	    padding-bottom: 0px; margin-bottom: 0px; 
+	    margin-left: 7px; margin-right: 0px;
+	    color: #333;
+	    font-family: ;
+	  }
+
+a { text-decoration: none; }
+
+dt { padding-left: 5px; color: brown; }
+
+ul { padding-left: 0px; padding-right: 0px; 
+     margin-left: 0px; margin-right: 0px; }
+
+li { padding-left: 0px; padding-right: 0px; 
+     margin-left: 20px; margin-right: 0px; }
+
+.feature-float { clear: both;
+	  float: left;
+	  margin: 4px;
+	  border: solid lavender 2px;
+	}
+
+hr.project-sep { width: 79px; 
+		 margin-left: 5px; }
+
+hr.tight { padding-top: 0pt; margin-top: 0pt; 
+	   padding-bottom: 0pt; margin-bottom: 0pt; }
+
+form { margin: 0px; padding: 0px; }
+
+body.subpage { font-family: Baskerville, serif; 
+	       line-height: 1.3em;
+	       text-align: justify;
+	       background-color: #fefefe;
+	     }
+
+.projlist { font-family: Ungkam, serif; 
+	       line-height: 1.2em;
+	       text-align: justify;
+	       /* background-color: #fefefe; */
+	       width: 700px;
+	       background-color: #ffe;
+	     }
+
+#hideme { display: block; 
+	  border-bottom: solid 4px #666;
+	}
+
+div.project-entry { clear: both; margin-bottom: 10px; margin-right: 5px; 
+		    border-top: solid 1px #666;
+		  }
+
+div.subproject-entry { clear: both; margin-bottom: 10px; margin-left: 88px; 
+		       border-top: solid 1px #555;
+		       margin-right: 10px; 
+		       color: #777;
+		     }
+
+.project-entry p { margin: 5px; padding: 0px; font-size: 11pt; line-height: 1.2em; color: #555;
+		   }
+.subproject-entry p { margin: 5px; padding: 0px; font-size: 11pt; line-height: 1.2em; color: #555;
+		   }
+
+.project-float { clear: both;
+	  float: left;
+	  margin-left: 0px;
+	  margin: 4px;
+	  padding-right: .5em; 
+	  padding-bottom: 1em;
+	}
+
+a img { border: none; }
+
+.default-index h1 { text-align: center; 
+		    border-top: solid red 3px;
+		    background-color: #fefefe;
+		    color: black;
+		    font-family: Cochin, Serif;
+		    font-weight: normal;
+		    font-size: 30px;
+		    padding: 10px; 
+		    line-height: 1.5em;
+		    margin: 5px; }
+span.default-index-abbrev { font-size: 40px; }
+
+p.default-index-img { text-align: center; }
+p.default-index-blurb { text-align: justify; }
+p.default-index-link { }
+
+p.just { text-align: justify; font-size: 11pt; 
+	 width: 660px; line-height: 1.3em; 
+	 margin-left: 20px; margin-right: 20px;
+	 color: #666; background-color: #ffe;
+       }
+
+#projlistFrame { border: none; border-bottom: solid 4px #666; }
+
+h3.frame { margin: 0px; padding: 0px; padding-bottom: 4px;
+	   text-align: right;
+	   font-size: 10pt; font-weight: bold; color: brown;
+	   border-bottom: 0;
+	 }
+
+img { margin-bottom: -7px; margin-top: 2px; }
+
+.proj-head   { margin-bottom: 8px; 
+	       text-indent: -88px;
+	       margin-left: 88px;
+	     }
+
+p.proj-blurb { margin: 0; padding: 0; }
+
+p.proj-img   { margin: 0; padding: 0; }
+
+#BackToTop { display: none; }
+
+#FooterLeft { padding: 0; text-align: center; }
+
+div.imageinline { margin: 0 !important; }
+
+#Menu  { color: #666; background-color: #ffe; }
