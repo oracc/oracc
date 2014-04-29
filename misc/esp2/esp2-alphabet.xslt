@@ -11,7 +11,7 @@
 <xsl:template name="alphabet">
   <xsl:param name="usedletters" as="xs:string *"/>
 
-  <xsl:message>esp2-alphabet called with usedletters=<xsl:value-of select="$usedletters"/></xsl:message>
+<!--  <xsl:message>esp2-alphabet called with usedletters=<xsl:value-of select="$usedletters"/></xsl:message> -->
 
   <xsl:variable name="alphabet" as="xs:string *" 
               select="('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ŋ', 'H', 'I', 'J', 'K', 'L', 'M', 

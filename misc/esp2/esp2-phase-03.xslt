@@ -280,7 +280,7 @@
      </xsl:choose>
    </xsl:variable>
    
-   <xsl:message>grid fit for <xsl:value-of select="@file"/> set from <xsl:value-of select="$img-width"/> to <xsl:value-of select="$width"/></xsl:message>
+<!--   <xsl:message>grid fit for <xsl:value-of select="@file"/> set from <xsl:value-of select="$img-width"/> to <xsl:value-of select="$width"/></xsl:message> -->
 
    <xsl:variable name="div-or-span">
      <xsl:choose>
