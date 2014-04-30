@@ -497,8 +497,10 @@ run_item_maker {
 	$p{'page'} = $newPage;
 	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
 	warn "pqx_id=$p{'pqx_id'}; newPage=$newPage; sedItem=$sedItem; hilite_words=$hilite_words; p{item}=$p{'item'}\n";
-	$hilite_words =~ s/^.*?://;
-	$hilite_words =~ s,([/a-z0-9]+):,,g;
+	$hilite_words =~ s/^\S+\s\S+\s//;
+	my @h = split(/,/,$hilite_words);
+	@h = map { s/^.*?://; $_; } @h;
+	$hilite_words = join(',',@h);
     } else {
 	# first recalibrate item and page: values{item} is an integer
 	# from 1 to values{items}; we need to split it into page and
