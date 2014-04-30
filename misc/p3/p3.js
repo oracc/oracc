@@ -101,7 +101,7 @@ function p3item(type,nth) {
 function p3item3(type,nth,id) {
     //    document.getElementById('p3do').value = 'viewstateItems';
     //    document.getElementById('p3what').value = 'item';
-    document.getElementById('item').value = nth;
+    document.getElementById('arg_item').value = nth;
     document.getElementById('itemtype').value = type;
     document.getElementById('pqx_id').value = id;
     document.getElementById('p3form').submit();    
