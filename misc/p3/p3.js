@@ -78,7 +78,7 @@ function p3asearch() {
 function p3defaultSortstate() {
     var newval = document.getElementById('p3OSdefault').value;
     var st = document.getElementById('sorttype');
-    alert('p3defaultSortstate; value='+newval);
+    // alert('p3defaultSortstate; value='+newval);
     if (st) {
 	st.value = newval;
     }
@@ -88,7 +88,7 @@ function p3defaultSortstate() {
 function p3specialSortstate() {
     var newval = document.getElementById('p3OSspecial').value;
     var st = document.getElementById('sorttype');
-    alert('p3specialSortstate; value='+newval);
+    // alert('p3specialSortstate; value='+newval);
     if (st) {
 	st.value = newval;
     }
@@ -317,7 +317,7 @@ function p3controls() {
 
     var outlineState = document.getElementById('p3outl').value;
     var newSorttype = document.getElementById('sorttype').value;
-    alert('outlineState='+outlineState+'; newSorttype='+newSorttype);
+    // alert('outlineState='+outlineState+'; newSorttype='+newSorttype);
 
     document.getElementById('arg_item').value = 0;
     
