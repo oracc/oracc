@@ -75,11 +75,30 @@ function p3asearch() {
     oasPopupWindow.focus();
 }
 
+function p3defaultSortstate() {
+    var newval = document.getElementById('p3OSdefault').value;
+    var st = document.getElementById('sorttype');
+    alert('p3defaultSortstate; value='+newval);
+    if (st) {
+	st.value = newval;
+    }
+    p3action('defaultSortstate');
+}
+
+function p3specialSortstate() {
+    var newval = document.getElementById('p3OSspecial').value;
+    var st = document.getElementById('sorttype');
+    alert('p3specialSortstate; value='+newval);
+    if (st) {
+	st.value = newval;
+    }
+    p3action('specialSortstate');
+}
+
 function p3action(act) {
     if (act === "qsrch" && document.getElementById('srch').value.length == 0) {
 	return;
-    }
-    if (act === 'viewstatePages') {
+    } else if (act === 'viewstatePages') {
 	document.getElementById('item').value = 0;
     }
     document.getElementById('p3do').value = act;
@@ -295,6 +314,10 @@ function p3controls() {
     var what = document.getElementById('p3what').value;
     var prod = document.getElementById('p3prod').value;
     var uimode = document.getElementById('uimode').value;
+
+    var outlineState = document.getElementById('p3outl').value;
+    var newSorttype = document.getElementById('sorttype').value;
+    alert('outlineState='+outlineState+'; newSorttype='+newSorttype);
 
     document.getElementById('arg_item').value = 0;
     

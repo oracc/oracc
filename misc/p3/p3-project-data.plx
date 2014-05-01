@@ -250,7 +250,7 @@ compute_select1 {
 	my $labels = `oraccopt . outline-$mode-sort-labels` # ORACC::XPD::Util::option("outline-$mode-sort-labels")
 	    || 'Time,Genre,Place';
 	my @select1 = ();
-	push @select1, "<select id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3action('${mode}Sortstate')\" value=\"$fields\">\n";
+	push @select1, "<select id=\"p3OS$mode\" name=\"p3OS$mode\" onchange=\"p3${mode}Sortstate()\" value=\"$fields\">\n";
 	push @select1, make_select1($fields,$labels);
 	push @select1, '</select>', "\n";
 	@select1;
