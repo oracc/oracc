@@ -5,6 +5,9 @@
 #include "sortinfo.h"
 #include "pg.h"
 
+#undef xmlify
+#define xmlify(x) (x)
+
 extern int zoomid, xml_outline, p3;
 extern const char *outline_keys[];
 int uzpage = -1;
