@@ -30,6 +30,7 @@ const char *content_tagc = "content";
 FILE *ce_out_fp = NULL;
 struct npool *xtf_pool;
 unsigned char *pending_heading = NULL;
+int kwic_select_pending = 0;
 int kwic_pivot_pending = 0;
 int l2 = 1;
 int line_context = 0;
@@ -372,9 +373,17 @@ printStart(const char *name, const char **atts)
     {
       if (hash_find(xtf_select, (unsigned char *)xid))
 	{
-	  xtf_selecting = 1;
 	  if (cetype == KU_KWIC)
-	    kwic_pivot_pending = 1;
+	    {
+	      if (kwic_select_pending)
+		{
+		  kwic_pivot_pending = 1;
+		  kwic_select_pending = 0;
+		  xtf_selecting = 1;
+		}
+	    }
+	  else
+	    xtf_selecting = 1;
 	}
     }
 
@@ -510,6 +519,9 @@ ce_data(const char *xid)
   fprintf(ce_out_fp, "<ce:data project=\"%s\" text-id=\"%s\" line-id=\"%s\" context-id=\"%s\"%s><ce:%s>", 
 	  text_project, text_id, xid, cid,
 	  kwic_attr, content_tago);
+
+  if (cetype == KU_KWIC)
+    kwic_select_pending = 1;
 }
 
 void
