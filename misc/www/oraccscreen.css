@@ -158,7 +158,7 @@ a[href]:hover span.bgnavtext {
 /* corpusview styling */
 h2.h2 {   font-family: arial, sans-serif; 
 	  padding: 0px; margin: 0px; font-size: 80%; line-height: 90%; 
-	  padding-top: 2px; padding-bottom: 2px; margin-left: 1px; padding-left: 3px;
+	  padding-top: 3px; padding-bottom: 3px; margin-left: 1px; padding-left: 3px;
 	 }	  
 h2.endview { font-size: 11pt; background-color: #9c9; }
 
