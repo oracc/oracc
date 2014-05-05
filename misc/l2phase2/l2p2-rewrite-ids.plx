@@ -84,7 +84,7 @@ map_ids_in_lst {
 	push @nid, $new_ids{$_};
     }
     open(L,">$_[0]");
-    foreach my $n (sort @nid) {
+    foreach my $n (sort grep(defined, @nid)) {
 	print L "$n\n";
     }
     close(L);

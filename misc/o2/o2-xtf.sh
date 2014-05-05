@@ -40,15 +40,18 @@ rm -f 01tmp/scoregen.log
 dir=$ORACC/pub/$project
 
 if [ -s 01bld/lists/lemindex.lst ]; then
+    echo o2-xtf.sh: selemx ...
     sort -t: -k2 -o 01bld/lists/lemindex.lst 01bld/lists/lemindex.lst
     mkdir -p $dir/lem
     cat 01bld/lists/lemindex.lst | selemx -p $project
 fi
 
 mkdir -p $dir/tra
+echo o2-xtf.sh: setrax ...
 cat 01bld/lists/xtfindex.lst | setrax -p $project
 
 mkdir -p $dir/txt
+echo o2-xtf.sh: setxtx ...
 cat 01bld/lists/xtfindex.lst | setxtx -p $project
 
 # Other formats
@@ -57,3 +60,4 @@ tei=`oraccopt . build-tei`
 if [ "$tei"=="yes" ]; then
     o2-tei.sh
 fi
+#Q004184.70.1 

@@ -8,7 +8,7 @@ bin_SCRIPTS = o2-atf.plx o2-atf.sh o2-atfsources.plx \
 	o2-pdf.sh o2-portal.sh o2-prepare.sh o2-prm.sh o2-ptb.sh o2-public.sh \
 	o2-rebuild.sh o2-tei.sh o2-thumb.sh o2-unbuild.sh o2-web.sh o2-weblive.sh \
 	o2-xml.plx o2-xml.sh o2-xtf-lst.sh o2-xtf.sh o2-xtfindex.plx oracc.sh \
-	o2-logfiles.sh o2-exit.sh
+	o2-logfiles.sh o2-exit.sh o2-unscore.sh
 
 scriptdata_DATA = o2-public.xsl
 

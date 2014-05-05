@@ -1,12 +1,16 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = g2-xtf2txh.plx scoregen.plx xtf2rtf.plx xtf2tei.plx finishcnc.plx xtfmanager.plx
+bin_SCRIPTS = g2-xtf2txh.plx scoregen.plx xtf2rtf.plx xtf2tei.plx finishcnc.plx xtfmanager.plx g2-xsf2sxh.plx
 css_DATA = score.css xtf-common.css xtf-line.css xtf-para.css
-scriptdata_DATA = xtf-HTML-lib.xsl escape-quotes.xsl scoreblock.xsl scoreblock2.xsl xtf-XCL.xsl xtf1-HTML.xsl
+scriptdata_DATA = xtf-HTML-lib.xsl escape-quotes.xsl scoreblock.xsl scoreblock2.xsl xtf-XCL.xsl xtf1-HTML.xsl \
+	xtf-unscore.xsl sxh-view.xsl
 data_DATA = label-info.xml
 
 xtf2tei.plx: xtf2tei.plx.in
 	$(ORACCIFY) xtf2tei.plx.in
+
+g2-xsf2sxh.plx: g2-xsf2sxh.plx.in
+	$(ORACCIFY) g2-xsf2sxh.plx.in
 
 g2-xtf2txh.plx: g2-xtf2txh.plx.in
 	$(ORACCIFY) g2-xtf2txh.plx.in
