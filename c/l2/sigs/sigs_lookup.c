@@ -560,10 +560,12 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
     {
       ifp->fcount = sigs_found[0]->ifp->fcount;
       if (!ifp->f2.norm
+	  || !ifp->f2.cf
 	  || (!strcmp((char *)ifp->f2.cf, (char *)ifp->f2.norm) 
 	      && strcmp((char *)ifp->f2.cf, (char *)sigs_found[0]->ifp->f2.cf)))
 	{
-	  ifp->f2.norm = ifp->f2.cf;
+	  if (ifp->f2.cf)
+	    ifp->f2.norm = ifp->f2.cf;
 	  ifp->f2.cf = sigs_found[0]->ifp->f2.cf;
 	}
       if (!ifp->f2.sense

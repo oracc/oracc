@@ -25,7 +25,7 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 {
   /* Don't check COF_TAILS */
   if (l->f 
-      && l->f->f2.cf
+      && (l->f->f2.cf || l->f->f2.norm)
       && !BIT_ISSET(l->f->f2.flags, F2_FLAGS_INVALID)
       && (!BIT_ISSET(l->f->f2.flags,F2_FLAGS_COF_TAIL) 
 	  && l->inst && l->inst[strlen(l->inst)-1] != '='))
