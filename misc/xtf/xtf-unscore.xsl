@@ -2,13 +2,14 @@
    version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xcl="http://oracc.org/ns/xcl/1.0"
    xmlns:xtf="http://oracc.org/ns/xtf/1.0"
+   xmlns="http://oracc.org/ns/xtf/1.0"
    >
 
 <xsl:template match="xtf:score">
-  <xtf:transliteration cols="1">
+  <transliteration cols="1">
     <xsl:copy-of select="@xml:id|@n|@xml:lang|@project"/>
     <xsl:apply-templates/>
-  </xtf:transliteration>
+  </transliteration>
 </xsl:template>
 
 <xsl:template match="xtf:lg">
