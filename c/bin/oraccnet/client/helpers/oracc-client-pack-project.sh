@@ -34,6 +34,7 @@ find 00atf 00bib 00cat 00lib 00src 00web -type f \
     -or -name '*.ods' \
     -or -name '*.txt' \
     -or -name '*.xml' \
+    -or -name '*.xsl' \
     >$ziplist
 find 00lib/lists | grep -v '\.lst$' >>$ziplist
 if [ -r 00lib/p3colours.txt ]; then
