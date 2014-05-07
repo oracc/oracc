@@ -517,3 +517,9 @@ function viewsProofing(project,PQ) {
     var url = '/'+project+'/'+PQ+'/proofing';
     popup(url,'exemplarWindow',800,900,10,10);
 }
+
+function
+popupXSF(project,text) {
+    var url = '/'+project+'/'+text+'/score';
+    popup(url,'XSF',500,600,100,100);
+}
