@@ -72,9 +72,9 @@ p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
 div.pgotl { font-family: arial,sans-serif; padding: 0px; 
 	    padding-left: 5px; padding-top: 5px; padding-bottom: 5px; }
 
-.pgotl p   { padding: 0px; margin: 0px; margin-left: 10px; 
+.pgotl p   { padding: 0px; margin-right: .25em; margin-left: 1.5em;
 	     margin-bottom: 1px; margin-top: 1px; font-size: 80%; 
-	   }
+	     text-indent: -1.25em; }
 
 .pgotl h1 { padding: 0px; margin: 0px; font-size: 80%; }
 .pgotl h2 { padding: 0px; margin: 0px; font-size: 80%; }

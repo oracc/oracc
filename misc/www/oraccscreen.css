@@ -67,11 +67,6 @@ p.pgcombo select {
 
 div.text { padding: 0px; padding-bottom: 10px; margin: 0px; }
 
-.pqotl p   { padding: 0px; margin: 0px; margin-left: 10px; 
-	   margin-bottom: 1px; margin-top: 1px; font-size: 80%; }
-.pgotl p   { padding: 0px; margin: 0px; margin-left: 0px; 
-	   margin-bottom: 1px; margin-top: 1px; font-size: 80%; }
-
 p.pqsel { padding: 0px; margin: 0px; margin-left: 10px; background-color: silver; }
 
 div.pqotl { font-family: arial,sans-serif; padding: 0px; 
