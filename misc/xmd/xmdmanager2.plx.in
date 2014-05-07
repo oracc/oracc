@@ -36,6 +36,7 @@ my %vid = ();
 my @vid = ();
 
 my $config = '';
+my %catd = ();
 my %extra_catd = ();
 my $no_xmd = 0;
 my $onebigfile = 1;
@@ -150,7 +151,10 @@ if (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
 }
 
-extra_init();
+extra_init_hash();
+open(D,">01tmp/extra_init_hash.dump");
+print D Dumper \%catd;
+close(D);
 
 my $pub_cat = `oraccopt . catalog-publish`;
 foreach my $c (split(/,/,$pub_cat)) {
@@ -232,6 +236,7 @@ if ($#catalogs >= 0) {
 	} else {
 	    die "xmdmanager.plx: unknown catalog type $$c{'type'}\n";
 	}
+	import_catd($$c{'icat'});
     }
 }
 
@@ -1677,9 +1682,85 @@ extra_init {
 }
 
 sub
+extra_init_hash {
+    my @cat = (<00lib/cat.d/*.xml>);
+    foreach my $cat (@cat) {
+	my $xcat = load_xml($cat) || warn "xmdmanager.plx: failure loading $cat: $!\n";
+	if ($xcat) {
+	    foreach my $r ($xcat->getDocumentElement()->childNodes()) {
+		next unless $r->isa('XML::LibXML::Element');
+		my $xid = xid($r);
+		my %tmp = ();
+		foreach my $c ($r->childNodes()) {
+		    next unless $c->isa('XML::LibXML::Element');
+		    my $t = $c->firstChild();
+		    if ($t->isa('XML::LibXML::Text')) {
+			my($k,$v) = ($c->localName(),$t->data);
+			$tmp{$k} = $v;
+		    } else {
+			warn "$cat: $xid: bad data format--must be text only\n";
+		    }
+		}
+		if ($catd{$xid}) {
+		    my %c = %${$catd{$xid}};
+		    foreach my $k (keys %c) {
+			$tmp{$k} = $c{$k} unless $tmp{$k};
+		    }
+		}
+		${$catd{$xid}} = { %tmp };
+	    }
+	}
+    }
+}
+
+sub
 extra_meta {
     if (defined $extra_catd{$_[0]}) {
 	push @{$xmd_outputs{$curr_xmd}}, @{$extra_catd{$_[0]}};
+    }
+}
+
+sub
+import_catd {
+    my $cat = shift;
+    my $fields = $$cat[0];
+    my $id_index = -1;
+    my %field_indexes = ();
+    my $first_record = 1;
+
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$id_index = $i and last 
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+    }
+
+    # traverse the data rows creating the looking for records which are mentioned in catd
+    my $rows = $$cat[2];
+    foreach my $r (@$rows) {
+	my $r_id = $$r[$id_index];
+	if ($catd{$r_id}) {
+	    my %c = %${$catd{$r_id}};
+	    if ($first_record) {
+		foreach my $f (keys %c) {
+		    # register the key indexes, creating new ones at the end of the row if necessary as in import routine
+		    my $fn_index = -1;
+		    for (my $i = 0; $i <= $#$fields; ++$i) {
+			$fn_index = $i and last 
+			    if $$fields[$i] eq $f;
+		    }
+		    if (-1 == $fn_index) {
+			push @$fields, $f;
+			$fn_index = $#$fields;
+		    }
+		    $field_indexes{$f} = $fn_index;
+		}
+		$first_record = 0;
+	    }
+	    # now import the data from the catd hash, overwriting existing field values
+	    foreach my $f (keys %c) {
+		my $ix = $field_indexes{$f};
+		$$r[$ix] = $c{$f};
+	    }
+	}
     }
 }
 
