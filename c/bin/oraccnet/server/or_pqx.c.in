@@ -112,7 +112,8 @@ h_pqx_html_handler(const char *project, struct component *components,
   char *div = or_find_pqx_file(project, 
 			       components[0].replace 
 			       ? components[0].replace 
-			       : components[0].text, "html");
+			       : components[0].text, 
+			       (!strcmp(xlat, "score") ? ".sxh" : "html"));
   const char *line = NULL, *frag = NULL;
   struct content_opts *cop = NULL;
   
