@@ -63,13 +63,25 @@ implicit_norm_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
     return 1;
 }
 
-/* this must return 0 if the ref_fp->norm == fp->cf */
+#if 0
+/* this must return 0 if the core languages are the same for fp and ref_fp */
 static int 
 context_lang_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
   if (ref_fp->f2.core && fp->f2.core 
       && ref_fp->f2.core->name && fp->f2.core->name)
     return strcmp((char*)ref_fp->f2.core->name,(char*)fp->f2.core->name);
+  else
+    return 1;
+}
+#endif
+
+/* this must return 0 if the fp's form is '*' indicating is normalized; ref_fp is ignored */
+static int 
+wild_form_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
+{
+  if (fp->f2.form && !strcmp((char*)fp->f2.form, "*"))
+    return 0;
   else
     return 1;
 }
@@ -507,24 +519,38 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	{
 	  int i;
 	  const char *disambig = NULL;
-	  /* uniq by form, keeping only the form which matches the look-up lem;
-	   * need to check entire sig for identity because one day Akk will have
-	   * M1 and M2 to consider, and that will require disambiguating the 
-	   * normalized lemming just as we do the form-based lemming
-	   */
-	  disambig = strrchr((char *)ifp->f2.form, '/');
-	  for (i = 0; i < nfinds; ++i)
+
+	  int tmp_nfinds = 0;
+	  struct ilem_form **fpp;
+	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
+			    (select_func*)wild_form_test, NULL, &tmp_nfinds);
+	  if (tmp_nfinds < nfinds && tmp_nfinds > 0)
 	    {
-	      const char *find_disambig = strrchr((char*)ifp->finds[i]->f2.form,'/');
-	      if (((find_disambig && disambig && !strcmp(disambig, find_disambig))
-		   || (!find_disambig && !disambig))
-		  && f2_test(&ifp->f2, &ifp->finds[i]->f2))
+	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
+	      ifp->fcount = nfinds = tmp_nfinds;
+	    }
+
+	  if (nfinds > 1)
+	    {
+	      /* uniq by form, keeping only the form which matches the look-up lem;
+	       * need to check entire sig for identity because one day Akk will have
+	       * M1 and M2 to consider, and that will require disambiguating the 
+	       * normalized lemming just as we do the form-based lemming
+	       */
+	      disambig = strrchr((char *)ifp->f2.form, '/');
+	      for (i = 0; i < nfinds; ++i)
 		{
-		  if (i)
-		    ifp->finds[0] = ifp->finds[i];
-		  ifp->finds[1] = NULL;
-		  nfinds = 1;
-		  break;
+		  const char *find_disambig = strrchr((char*)ifp->finds[i]->f2.form,'/');
+		  if (((find_disambig && disambig && !strcmp(disambig, find_disambig))
+		       || (!find_disambig && !disambig))
+		      && f2_test(&ifp->f2, &ifp->finds[i]->f2))
+		    {
+		      if (i)
+			ifp->finds[0] = ifp->finds[i];
+		      ifp->finds[1] = NULL;
+		      nfinds = 1;
+		      break;
+		    }
 		}
 	    }
 	}

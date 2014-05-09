@@ -168,10 +168,18 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 	  || strcmp(xcp->project, (char*)fp->finds[0]->f2.project))
 	BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_PROJ);
 
-      if (strcmp(fp->f2.lang, (char*)fp->finds[0]->f2.lang))
-	BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_LANG);
-
       ilem_inherit(fp, fp->finds[0]); /* not lp->f because of ambig */
+
+      /* check this after inherit to get fields set correctly */
+      if (strcmp((char*)fp->f2.lang, (char*)fp->finds[0]->f2.lang))
+	{
+	  char *errsig = err_sig(fp);
+	  vwarning2(fp->file,fp->lnum,
+		    "%s is new for lang %s",
+		    errsig, fp->f2.lang);
+	  BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_LANG);
+	}
+
       fp->dict = fp->finds[0]->dict;
       fp->freq = fp->finds[0]->freq;
       fp->pct = fp->finds[0]->pct;

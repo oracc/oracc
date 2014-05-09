@@ -16,7 +16,9 @@ static unsigned char *
 sig_one(struct f2 *fp, int tail)
 {
   unsigned char buf[1024];
-  char *oform = NULL, *lang_no_script = NULL;
+  char *oform = NULL /*, *lang_no_script = NULL*/;
+  int wild_form = 0;
+
 #if 0
   if (fp->oform)
     {
@@ -25,13 +27,14 @@ sig_one(struct f2 *fp, int tail)
     }
 #endif
 
-  if (!strstr((const char *)fp->lang, "-949"))
-    lang_no_script = tag_no_script((const char*)fp->lang);
+  if (strstr((const char *)fp->lang, "-949"))
+    wild_form = 1;
+    /*lang_no_script = tag_no_script((const char*)fp->lang);*/
 
   sprintf((char*)buf,"@%s%%%s:%s%s=%s[%s//%s]%s'%s",
 	  fp->project,
-	  lang_no_script ? lang_no_script : (char*)fp->lang,
-	  tail ? (Uchar*)"" : fp->form,
+    /*lang_no_script ? lang_no_script : (char*)fp->lang*/ (char*)fp->lang,
+	  tail ? (Uchar*)"" : (wild_form ? "*" : fp->form),
 	  oform ? oform : "",
 	  fp->cf ? fp->cf : (Uchar*)"X",
 	  fp->gw ? fp->gw : (Uchar*)"X",
@@ -39,8 +42,10 @@ sig_one(struct f2 *fp, int tail)
 	  fp->pos ? fp->pos : (Uchar*)"X",
 	  fp->epos ? fp->epos : (Uchar*)"X");
 
+#if 0
   if (lang_no_script)
     free(lang_no_script);
+#endif
 
   if (fp->norm)
       sprintf((char*)(buf+strlen((char*)buf)),"$%s",fp->norm);

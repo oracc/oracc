@@ -9,6 +9,27 @@
 #include "ilem_form.h"
 #include "xcl.h"
 
+char *
+err_sig(struct ilem_form *fp)
+{
+  char *tsig = NULL;
+
+  if (!fp->f2.cf && !fp->f2.gw && !fp->f2.pos)
+    return NULL;
+
+  tsig = malloc((fp->f2.cf ? strlen((char*)fp->f2.cf) : 0)
+		+ (fp->f2.gw ? strlen((char*)fp->f2.gw) : 0)
+		+ (fp->f2.pos ? strlen((char*)fp->f2.pos) : 0)
+		+ (fp->f2.norm ? strlen((char*)fp->f2.norm) : 0)
+		+ 7);
+  sprintf(tsig,"%s[%s]%s$%s",
+	  fp->f2.cf ? fp->f2.cf : (unsigned char *)"X",
+	  fp->f2.gw ? fp->f2.gw : (unsigned char *)"X",
+	  fp->f2.pos ? fp->f2.pos : (unsigned char *)"",
+	  fp->f2.norm ? fp->f2.norm : (unsigned char *)"");
+  return tsig;
+}
+
 static const char *
 tryinst(struct xcl_l *lp, struct ilem_form *fp)
 {

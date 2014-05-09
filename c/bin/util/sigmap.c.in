@@ -23,7 +23,16 @@ static void
 try_map(char *sig,char *map_file,const char*projlang)
 {
   char *s, buf[1024];
-  FILE *map = fopen(map_file,"r");
+  FILE *map = NULL;
+
+  map = fopen(map_file,"r");
+  if (!map)
+    {
+      fprintf(stderr, "sigmap: map file %s not found\n", map_file);
+      printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body><p>No such map file %s</p></body></html>",map_file);
+      exit(1);
+
+    }
   if (verbose)
     fprintf(stderr, "sigmap: looking for %s in %s\n", sig, map_file);
   while ((s = fgets(buf,1024,map)))
@@ -38,9 +47,15 @@ try_map(char *sig,char *map_file,const char*projlang)
 	  sprintf(html,"@@ORACC@@/www/%s/cbd/%s/%s.html",map_proj,lang,tab);
 
 	  if (!access(html,R_OK))
-	    execlp("/bin/cat","cat",html,(char*)NULL);
+	    {
+	      if (verbose)
+		fprintf(stderr,"sigmap: %s: %s: found--/bin/cat %s\n", map_file, sig, html);
+	      execlp("/bin/cat","cat",html,(char*)NULL);
+	    }
 	  else
 	    {
+	      if (verbose)
+		fprintf(stderr,"sigmap: %s: %s: not found, returning error page\n", map_file, sig);
 	      printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/></head><body><p>Signature %s points to non-existent HTML file %s</p><p>map file=%s; projlang=%s</p></body></html>",sig,html,map_file,lang);
 	      exit(1);
 	    }
@@ -203,7 +218,7 @@ int
 main(int argc, char **argv)
 {
   char *map = NULL;
-  char *sig = argv[2], *usig, *msig, *trysig, *postproj;
+  char *sig = argv[2], *usig, *msig, *trysig, *postproj, *script = NULL;
   wchar_t *wsig = NULL;
   size_t nwchar = 0, i;
   char *locale = NULL;
@@ -259,6 +274,12 @@ main(int argc, char **argv)
   sprintf(trysig, "@%s%s", project, postproj);
 
   lang = find_lang(trysig);
+
+  if ((script = strrchr(lang, '-')))
+    if (isdigit(script[1]))
+      *script = '\0';
+
+
   map = make_map(trysig, project);
   try_map(trysig, map, lang);
   map = make_map(msig, NULL);

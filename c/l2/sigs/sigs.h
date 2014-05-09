@@ -135,4 +135,6 @@ extern void sigs_load_one_sig(struct sig_context*scp, struct sigset *sp,
 extern struct sig const * const *sigs_inst_in_sigset(struct xcl_context *xcp, 
 						     struct ilem_form *ifp, 
 						     struct sigset *sp, int *nfinds);
+extern char *err_sig(struct ilem_form *fp);
+
 #endif/*SIGS_H_*/

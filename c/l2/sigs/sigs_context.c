@@ -429,7 +429,6 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
 	    }
 	  else
 	    return;
-	      
 	}
       else
 	{
