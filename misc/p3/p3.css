@@ -169,6 +169,8 @@ table.xmd td { padding-top: 3px; padding-bottom: 3px; padding-left: 2px; padding
 td.ce-ood-id { width: 10%; }
 td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 
+.asterisk { vertical-align: .5ex; }
+
 /*    
   overflow: scroll;
 

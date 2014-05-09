@@ -9,12 +9,13 @@
   xmlns:g="http://oracc.org/ns/gdl/1.0"
   xmlns:i="http://oracc.org/ns/instances/1.0"
   xmlns:xcl="http://oracc.org/ns/xcl/1.0"
+  xmlns:note="http://oracc.org/ns/note/1.0"
   xmlns:norm="http://oracc.org/ns/norm/1.0"
   xmlns:usg="http://oracc.org/ns/usg/1.0"
   xmlns:xl="http://www.w3.org/1999/xlink"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   extension-element-prefixes="ex"
-  exclude-result-prefixes="cbd dc ex g i xl norm xcl usg">
+  exclude-result-prefixes="cbd dc ex g i xl norm xcl usg note">
 
 <xsl:import href="html-standard.xsl"/>
 <xsl:import href="g2-gdl-HTML.xsl"/>
@@ -264,6 +265,11 @@
 
 <xsl:template match="cbd:form|cbd:form-sans">
   <xsl:choose>
+    <xsl:when test="@n='*'">
+      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{../@xis}')"><!--@xml:id-->
+	<span class="asterisk"><xsl:text>&#x2217;</xsl:text></span> <!-- ASTERISK OPERATOR for ASTERISK -->
+      </a>
+    </xsl:when>
     <xsl:when test="cbd:text">
       <xsl:for-each select="cbd:text">
 	<a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{../@xis}')"><!--@xml:id-->
@@ -586,6 +592,8 @@
   <xsl:if test="cbd:forms">
     <xsl:text> (</xsl:text>
     <xsl:for-each select="cbd:forms/cbd:f">
+      <xsl:apply-templates select="id(@ref)"/>
+<!--
       <xsl:choose>
 	<xsl:when test="@icount > 0">
 	  <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
@@ -596,6 +604,7 @@
 	  <xsl:apply-templates select="id(@ref)"/>
 	</xsl:otherwise>
       </xsl:choose>
+ -->
       <xsl:if test="not(position()=last())">
 	<span class="punct-c"><xsl:text>, </xsl:text></span>
       </xsl:if>
