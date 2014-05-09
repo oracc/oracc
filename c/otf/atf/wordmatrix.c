@@ -211,6 +211,10 @@ wm_rewrite_cells(int ncells, enum wm_cell_type *master, struct wm_row *row)
 {
   struct nodelist *nl = calloc(1, sizeof(struct nodelist));
   int i;
+  int empty_cell_count = 0;
+  struct node *last_non_empty_cell = NULL;
+  /*int last_non_empty_cell_index = 0;*/
+
   for (i = 0; i < ncells; ++i)
     {
       struct node *wrapper = NULL;
@@ -221,7 +225,9 @@ wm_rewrite_cells(int ncells, enum wm_cell_type *master, struct wm_row *row)
       if (row->cells[i].word)
 	{
 	  struct wm_cell *tmp;
-	  wrapper = elem(e_c, row->cells[i].word->parent, 
+	  /*last_non_empty_cell_index = i;*/
+	  empty_cell_count = 0;
+	  last_non_empty_cell = wrapper = elem(e_c, row->cells[i].word->parent, 
 			 row->cells[i].word->lnum, CELL);
 	  appendChild(wrapper, row->cells[i].word);
 	  for (tmp = row->cells[i].next; tmp; tmp = tmp->next)
@@ -230,9 +236,29 @@ wm_rewrite_cells(int ncells, enum wm_cell_type *master, struct wm_row *row)
       else if (row->line)
 	{
 	  wrapper = elem(e_c, row->line, row->line->lnum, CELL);
+	  ++empty_cell_count;
 	}
       if (wrapper)
 	addToNodeList(nl, wrapper);
+    }
+  if (empty_cell_count)
+    {
+      char buf[5];
+      int i;
+      ++empty_cell_count;
+      if (empty_cell_count < 9999)
+	sprintf(buf, "%d", empty_cell_count);
+      else
+	strcpy(buf, "9999");
+      setAttr(last_non_empty_cell, a_span, (unsigned char *)buf);
+      /* now add span=0 to trailing empty cells */
+      for (i = nl->lastused-1; i; --i)
+	{
+	  if (0 == ((struct node *)nl->nodes[i])->children.lastused)
+	    setAttr(nl->nodes[i], a_span, (unsigned char *)"0");
+	  else
+	    break;
+	}
     }
   if (row->line)
     row->line->children = *nl;

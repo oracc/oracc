@@ -1219,18 +1219,27 @@
 
 <xsl:template match="xtf:c">
   <xsl:param name="maxcols"/>
-  <td class="c">
-    <xsl:if test="position() = last()">
-      <xsl:variable name="colspan" 
- 	 	  select="$maxcols - (1+count(preceding-sibling::xtf:c))"/>
-      <xsl:if test="$colspan > 0">
-	<xsl:attribute name="colspan">
-	  <xsl:value-of select="1+$colspan"/>
-	</xsl:attribute>
-      </xsl:if>
-    </xsl:if>    
-  <p><xsl:apply-templates/></p>
-  </td>
+  <xsl:if test="not(@span='0')">
+    <td class="c">
+      <xsl:choose>
+	<xsl:when test="@span">
+	  <xsl:attribute name="colspan"><xsl:value-of select="@span"/></xsl:attribute>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:if test="position() = last()">
+	    <xsl:variable name="colspan" 
+ 	 		  select="$maxcols - (1+count(preceding-sibling::xtf:c))"/>
+	    <xsl:if test="$colspan > 0">
+	      <xsl:attribute name="colspan">
+		<xsl:value-of select="1+$colspan"/>
+	      </xsl:attribute>
+	    </xsl:if>
+	  </xsl:if>
+	</xsl:otherwise>
+      </xsl:choose>
+      <p><xsl:apply-templates/></p>
+    </td>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="xtf:f">
