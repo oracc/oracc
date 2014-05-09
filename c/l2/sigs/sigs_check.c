@@ -363,6 +363,10 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		   c->f2p = mb_new(xcp->sigs->mb_f2s),
 		   NULL, sp->owner);
 	}
+
+      if (strcmp(f->lang,c->f2p->lang))
+	continue;
+
       f2 = c->f2p;
       if (psu_bit_ok(f,f2) && cfnorm_ok(f,f2))
 	{
