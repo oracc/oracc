@@ -266,7 +266,7 @@
 <xsl:template match="cbd:form|cbd:form-sans">
   <xsl:choose>
     <xsl:when test="@n='*'">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{../@xis}')"><!--@xml:id-->
+      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
 	<span class="asterisk"><xsl:text>&#x2217;</xsl:text></span> <!-- ASTERISK OPERATOR for ASTERISK -->
       </a>
     </xsl:when>
