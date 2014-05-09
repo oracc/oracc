@@ -53,6 +53,13 @@
   <xsl:if test="@headform"><xsl:text>-</xsl:text></xsl:if>
 </xsl:template>
 
+<xsl:template match="norm:w">
+  <xsl:call-template name="gdl-w">
+    <xsl:with-param name="allow-space" select="true()"/>
+    <xsl:with-param name="proofing-mode" select="false()"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template match="g:swc">
   <xsl:text>-</xsl:text>
   <xsl:choose>
@@ -145,6 +152,15 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
+<!--
+  <xsl:if test="self::norm:s">
+    <span x="10">
+      <xsl:if test="@g:delim">
+	<xsl:value-of select="@g:delim"/>
+      </xsl:if>
+    </span>
+  </xsl:if>
+ -->
 </xsl:template>
 
 <xsl:template match="g:s">
@@ -695,6 +711,8 @@
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:call-template name="render-word"/>
+	    <xsl:call-template name="render-flags"/>
+	    <xsl:call-template name="render-c"/>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:when>
@@ -724,6 +742,13 @@
      </xsl:otherwise>
     </xsl:choose>
   </span>
+  <xsl:if test="self::norm:w">
+    <span x="11">
+      <xsl:if test="@g:delim">
+	<xsl:value-of select="@g:delim"/>
+      </xsl:if>
+    </span>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="render-word">
