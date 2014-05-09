@@ -37,7 +37,7 @@
 </xsl:param>
 
 <xsl:variable name="word-absent-char" select="'&#x2014;'"/>
-<xsl:variable name="word-broken-char" select="'&#x2014;'"/>
+<xsl:variable name="word-broken-char" select="'&#x2003;'"/> <!-- U+2003 = EM SPACE -->
 <xsl:variable name="word-linecont-char" select="'&#x2192;'"/>
 
 <xsl:key name="lnodes" match="xcl:l" use="@ref"/>
