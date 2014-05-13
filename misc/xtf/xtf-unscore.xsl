@@ -7,7 +7,7 @@
 
 <xsl:template match="xtf:score">
   <transliteration cols="1">
-    <xsl:copy-of select="@xml:id|@n|@xml:lang|@project"/>
+    <xsl:copy-of select="@xml:id|@n|@xml:lang|@project|@haslinks"/>
     <xsl:apply-templates/>
   </transliteration>
 </xsl:template>
