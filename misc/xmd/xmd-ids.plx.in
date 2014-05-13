@@ -18,7 +18,7 @@ my $project = `oraccopt`;
 die "xmd-ids.plx: must run from project directory\n"
     unless $project;
 
-foreach my $c (<00cat/*.xml>, <00cat/*.csv>) {
+foreach my $c (<00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>) {
     my $type = type_from_ns($c);
     my @icat = ();
     if ($type eq 'fxr') {
