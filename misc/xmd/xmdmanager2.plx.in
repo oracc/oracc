@@ -180,6 +180,7 @@ foreach my $c (split(/,/,$pub_cat)) {
 }
 
 my $cat_policy = `oraccopt . catalog-build-policy`;
+$cat_policy = 'mixed' unless $cat_policy;
 warn "catalog-build-policy=$cat_policy\n" if $verbose;
 exit(0) if $cat_policy eq 'none';
 
@@ -200,8 +201,10 @@ if ($cat_policy eq 'auto') {
     $split = 0;
 } elsif ($cat_policy eq 'derived') {
     setup_derived_cat();
-} else {
+} elsif ($cat_policy eq 'mixed' || $cat_policy eq 'custom') {
     @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>;
+} else {
+    die "xmdmanager2.plx: unhandled catalogue type $cat_policy\n";
 }
 
 if (-r '01bld/lists/proxy-cat.lst') {
@@ -216,6 +219,15 @@ if (-r '01bld/lists/proxy-cat.lst') {
 	$id_projects{$id,'xmd'} = $xmd;
     }
     close(P);
+}
+
+# check that all the approved texts are in a catalogue somewhere, and make a dynacat of any we need
+if ($cat_policy eq 'mixed') {
+    system '@@ORACC@@/bin/atflists.plx', '-o01bld/lists/cat-needed.lst', '01bld/lists/approved.lst', '-', '01bld/lists/cat-ids.lst';
+    my @todo = `cat 01bld/lists/cat-needed.lst`; chomp @todo;
+    if ($#todo >= 0) {
+	make_dynacat(@todo);
+    }
 }
 
 $keydata = find_keydata() unless $keydata;
@@ -238,6 +250,7 @@ if ($#catalogs >= 0) {
 	}
 	import_catd($$c{'icat'});
     }
+    
 }
 
 # internalize the keydata for rapid access and to enable
@@ -725,7 +738,9 @@ dump_xmd {
 				warn "Sortcode for $id == $c\n"
 				    if $verbose;
 			    } else {
-				warn "xmdmanager: no project sortcode for $id\n";
+				my($type) = ($id =~ /^([A-Z])/);
+				warn "xmdmanager: no project sortcode for $id\n"
+				    if $proj_des_sort{$type};
 			    }
 			}
 			if ($c) {
@@ -933,7 +948,7 @@ inherits {
 
 sub
 make_dynacat {
-    my $d = shift;
+    my @todo = @_;
     my $cat_list = `oraccopt . catalog-build-list`;
     my $list = $cat_list || '01bld/lists/approved.lst';
     my $pcat = "01bld/cat/dynamic-p.xml";
@@ -948,12 +963,17 @@ make_dynacat {
     print Q xmldecl();
     print P '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
     print Q '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
-    open(L,$list) || die;
-    my @lst = (<L>); chomp(@lst);
-    close(L);
+    my @lst = ();
+    if ($#todo >= 0) {
+	@lst = @todo;
+    } else {
+	open(L,$list) || die;
+	@lst = (<L>); chomp(@lst);
+	close(L);
+    }
     local($/) = undef;
     my @trylist = ();
-    push @trylist, 'cdli', 'qcat';
+    push @trylist, 'cdli', 'qcat', 'xcat';
     foreach my $f (@lst) {
 	my $xf = '';
 	$f =~ tr/\n\r//d;
@@ -1654,6 +1674,10 @@ load_designation_sort_codes {
 	chomp;
 	my($q,$c) = split(/\t/,$_);
 	$proj_des_sort{$q} = $c;
+	$q =~ /^([A-Z])/;
+	# track which ID types have project designation codes so we can warn only if an ID of the same type is lacking a code.
+	# this allows projects to provide sort codes for Qs but not have to for Ps.
+	++$proj_des_sort{$1};
     }
     close(IN);
     $project_designation_codes = 1;
