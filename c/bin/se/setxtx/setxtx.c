@@ -259,7 +259,15 @@ startElement(void *userData, const char *name, const char **atts)
 	  }
     case 'n':
       if (!strcmp("n:w",name))
-	charData_discard();
+	{
+	  int i;
+	  static char qualified_id[128];
+	  pos_props(pos(atts));
+	  sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
+	  wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
+	  est_add((const char*)attr_by_name(atts,"form"), estp);
+	  charData_discard();
+	}
     }
 }
 
