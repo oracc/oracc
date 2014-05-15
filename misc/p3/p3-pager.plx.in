@@ -260,9 +260,9 @@ decode_args {
     $tmp{'item'} = 0 unless defined $tmp{'item'};
     $tmp{'itemset'} = 0 unless defined $tmp{'itemset'};
     unless ($tmp{'list'} || $tmp{'adhoc'} || $tmp{'srch'} || $tmp{'glos'}) {
-	my $use_special = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-select`;
-	if ($use_special && $use_special eq 'true') {
-	    $tmp{'list'} = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-list-name`;
+	my $special_list = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-list-name`;
+	if ($special_list) {
+	    $tmp{'list'} = $special_list;
 	    $tmp{'p3outl'} = $tmp{'state'} = 'special' unless $tmp{'p3outl'};
 	} else {
 	    $tmp{'list'} = '_all';
@@ -654,6 +654,7 @@ set_list_items {
     $p{'#listitems'} = `wc -l $p{'#list'}`;
     chomp($p{'#listitems'});
     $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
+    warn "set_list_items: list=$p{'#list'}; count=$p{'#listitems'}\n" if $verbose;
 }
 
 sub
