@@ -161,7 +161,7 @@ foreach my $lang (sort keys %data) {
 	my $entry_xid;
 	my $xid = $entry_xid = $entry_ids{$entry};
 	my ($letter) = ($entry =~ /^(.)/);
-	push @{$letter_ids{$letter}}, $entry_xid;
+	push @{$letter_ids{"\U$letter"}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
 	$entry_xis{$entry_xid} = { %xis_info };
