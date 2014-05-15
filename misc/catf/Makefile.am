@@ -1,7 +1,7 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = atf2catf.sh catf-fixer.plx catf-manager.plx
-scriptdata_DATA = gdl-OATF.xsl xtf-CATF.xsl
+scriptdata_DATA = gdl-OATF.xsl xtf-CATF.xsl xsf-Q-to-P.xsl
 data_DATA = catf-aliases.xml
 
 EXTRA_DIST = \

@@ -7,6 +7,14 @@
   xmlns:x="http://oracc.org/ns/xtf/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+<xsl:param name="lemm-mode" select="false()"/>
+<xsl:key name="lemm" match="c:l" use="@ref"/>
+
+<xsl:variable name="lemmo" select="'&#x2E20;'"/> <!-- LEFT VERTICAL BAR WITH QUILL -->
+<xsl:variable name="lemmc" select="'&#x2E21;'"/> <!-- RIGHT VERTICAL BAR WITH QUILL -->
+
+<xsl:variable name="quote">'</xsl:variable>
+
 <xsl:output method="text" indent="no" encoding="utf-8"/>
 
 <xsl:template match="x:c">
@@ -159,6 +167,21 @@
 
 <xsl:template match="g:w">
   <xsl:call-template name="w-sub"/>
+  <xsl:if test="$lemm-mode">
+    <xsl:for-each select="key('lemm',@xml:id)">
+      <xsl:value-of select="$lemmo"/>
+      <xsl:value-of select="@inst"/>
+      <xsl:value-of select="$lemmc"/>
+    </xsl:for-each>
+  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="@contrefs">
+      <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="g-delim"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:x">
@@ -169,6 +192,18 @@
     </xsl:when>
     <xsl:when test="@g:type='newline'">
       <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='linebreak'">
+      <xsl:text> // </xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='word-absent'">
+      <xsl:text>—</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='word-broken'">
+      <xsl:text>±</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='word-linecont'">
+      <xsl:text>→</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
@@ -282,6 +317,15 @@
     <xsl:when test="@type='vari'">
       <xsl:text>VARI-FIX-NEEDED</xsl:text><xsl:apply-templates/> <!-- FIX ME -->
     </xsl:when>
+    <xsl:when test="g:x[@g:type='word-absent']">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:when test="g:x[@g:type='word-broken']">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:when test="g:x[@g:type='word-linecont']">
+      <xsl:apply-templates/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
 	<xsl:with-param name="msg" select="concat('g:nonw with type=', @type, ' not handled')"/>
@@ -314,6 +358,14 @@
 <xsl:template match="g:swc">
   <xsl:text>-</xsl:text>
   <xsl:call-template name="w-sub"/>
+  <xsl:choose>
+    <xsl:when test="@contrefs">
+      <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="g-delim"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="w-sub">
@@ -339,19 +391,11 @@
       <!-- do nothing -->
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:choose>
-    <xsl:when test="@contrefs">
-      <xsl:text>;</xsl:text>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="g-delim"/>
-    </xsl:otherwise>
-  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled GDL tag `', name())"/>
+    <xsl:with-param name="msg" select="concat('unhandled GDL tag `', name(), $quote)"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -379,7 +423,7 @@
 
 <xsl:template match="x:*">
   <xsl:call-template name="error">
-    <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name())"/>
+    <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name(), $quote)"/>
   </xsl:call-template>
 </xsl:template>
 
