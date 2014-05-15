@@ -29,6 +29,7 @@
 <xsl:template name="call-back">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
+<!--
     <p class="toc-entry">
       <a>
 	<xsl:attribute name="href">
@@ -40,7 +41,9 @@
       </a>
     </p>
     <hr/>
+ -->
     <xsl:apply-templates/>
+<!--
     <hr/>
     <p class="toc-entry">
       <a>
@@ -52,6 +55,7 @@
 	One Big File
       </a>
     </p>
+ -->
   </xsl:copy>
 </xsl:template>
 
