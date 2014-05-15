@@ -44,15 +44,20 @@ while (<>) {
     @fields{qw/Q rim period place designation/} = split(/\t/, $_);
     $fields{'designation'} =~ s/\s+\[.*$//;
     if ($fields{'rim'} && $fields{'rim'} =~ /^ri/) {
+	$fields{'rim'} =~ s#E\.1#E1# if $fields{'rim'} =~ m#^rim:E.1.9.5.31add#;
+	$fields{'rim'} =~ s#rim:3#rim:E3#;
 	$fields{'rim'} =~ s#E3/2/1#E3/2.1# if $fields{'rim'} =~ m#^rim:E3/2/1#;
 	$fields{'rim'} =~ s#32#33# if $fields{'Q'} eq 'Q001830';
 	$fields{'rim'} .= 'a' if $fields{'Q'} eq 'Q001404';
 	$fields{'rim'} =~ s/E4.12.(11|5)/E4.2.14.$1/;
 	$fields{'rim'} =~ s/\.0\.(\d+)$/.99.$1/;
+	$fields{'rim'} =~ s/\.add(\d+)$/.$1add/;
+	$fields{'rim'} =~ s/\.add(\d+)\./.$1./;
     } else {
+	$fields{'designation'} .= ' 01' if $fields{'designation'} =~ /^Anadarum|Dabrum/;
 	$fields{'rim'} = rim_from_designation($fields{'designation'});
     }
-
+ 
     @r{qw/period place ruler text/} = split(/\./, $fields{'rim'});
     $r{'place'} = 0 unless $r{'place'};
     if ($r{'place'} =~ s/a$//) {
@@ -170,12 +175,14 @@ rim_from_designation {
 	'Lugal-ayaŋu' =>     [ 'rim:E3/2.7.2' , 'Ur III' ],
 	'Unattributed Ur III' => [ 'rim:E3/2.99.0' , 'Ur III' ],
 	'Anonymous'=>        [ 'rim:E1.99.0' ,  'Early Dynastic' ],
+	'Anonymous unclear' => [ 'rim:E1.99.0', 'Early Dynastic' ],
 	'Unattributed'=>     [ 'rim:E1.99.0' ,  'Early Dynastic' ],
 	'Anonymous Adab'=>   [ 'rim:E1.1.99' ,  'Early Dynastic' ],
 	'Anonymous Agrab'=>  [ 'rim:E1.1a.99' ,  'Early Dynastic' ],
 	'Anonymous Fara'=>   [ 'rim:E1.6.99' ,  'Early Dynastic' ],
 	'Anonymous Khafaje'=>[ 'rim:E1.7.99' ,  'Early Dynastic' ],
 	'Anonymous Kiš'=>    [ 'rim:E1.8.99' ,  'Early Dynastic' ],
+	'Anonymous Kiš?'=>    [ 'rim:E1.8.99' ,  'Early Dynastic' ],
 	'Anonymous Lagaš'=>  [ 'rim:E1.9.99' ,  'Early Dynastic' ],
 	'Anonymous Nippur'=> [ 'rim:E1.11.99' ,  'Early Dynastic' ],
 	'Anonymous Sippar'=> [ 'rim:E1.11a.99' ,  'Early Dynastic' ],
@@ -214,6 +221,18 @@ rim_from_designation {
 	'Ur-ešlila' =>  [ 'rim:E1.99.5', 'Early Dynastic' ],
 	'Lugal-ayamu' => [ 'rim:E2.9.4', 'Old Akkadian' ],
 	'En-metena' => [ 'rim:E1.9.5', 'Early Dynastic' ],
+	'Anadarum' => [ 'rim:E1.10.01', 'Early Dynastic' ],
+	'Dabrum' => [ 'rim:E1.10.03', 'Early Dynastic' ],
+	'Ebih-il' => [ 'rim:E1.10.04', 'Early Dynastic' ],
+	'Iddin-narim' => [ 'rim:E1.10.05', 'Early Dynastic' ],
+	'Ipum-šar' => [ 'rim:E1.10.06', 'Early Dynastic' ],
+	'Kinuri' => [ 'rim:E1.10.07', 'Early Dynastic' ],
+	'Maširum' => [ 'rim:E1.10.08', 'Early Dynastic' ],
+	'Nani' => [ 'rim:E1.10.09', 'Early Dynastic' ],
+	'Šalim' => [ 'rim:E1.10.10', 'Early Dynastic' ],
+	'Arši-aha' => [ 'rim:E1.10.11', 'Early Dynastic' ],
+	'Udumes' => [ 'rim:E1.99.00', 'Early Dynastic' ],
+	'Anonymous Mari' => [ 'rim:E1.10.99', 'Early Dynastic' ],
 	);
     $des =~ s/,.*$//;
     ($ruler,$text) = ($des =~ /^(.*?)\s(\S+)$/);
