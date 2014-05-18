@@ -64,7 +64,7 @@ if ($rt{'prod'} eq 'list') {
 	    $rt{'#list_type'} = 'cbd';
 	    $rt{'itemtype'} = $p{'itemtype'} = 'cbd';
 	    $rt{'viewtype'} = $p{'viewtype'} = 'page';
-	    if ($p{'glet'}) {
+	    if ($p{'glet'} && $p{'glet'} ne '#all') {
 		open(T,"@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/letter_ids.tab") || die;
 		my $x = <T>;
 		close(T);

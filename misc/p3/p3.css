@@ -124,6 +124,7 @@ table.kwic { width: 100%; }
 
 /* Glossary styling */
 p.toc-entry { margin: 0px; padding: 0px; padding-bottom: 4px; text-align: center; }
+.all-letters { text-decoration: underline; line-height: 120%; }
 p.summary { margin-left: 1em; text-indent: -1em; }
 .cf { font-size: 100%; }
 .gw { font-size: 80%; }

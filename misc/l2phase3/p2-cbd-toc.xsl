@@ -42,6 +42,17 @@
     </p>
     <hr/>
  -->
+    <p class="toc-entry all-letters">
+      <a>
+	<xsl:attribute name="href">
+          <xsl:call-template name="p3Letter">
+	    <xsl:with-param name="arg" select="'#all'"/>
+	  </xsl:call-template>
+	</xsl:attribute>
+	ALL
+      </a>
+    </p>
+
     <xsl:apply-templates/>
 <!--
     <hr/>
