@@ -60,6 +60,7 @@ const char *gdl_ns_uri = "http://oracc.org/ns/gdl/1.0";
 const char *xtf_ns_uri = "http://oracc.org/ns/xtf/1.0";
 
 const char *gdl_w_name = "http://oracc.org/ns/gdl/1.0|w";
+const char *norm_w_name = "http://oracc.org/ns/norm/1.0|w";
 const char *xtf_l_name = "http://oracc.org/ns/xtf/1.0|l";
 const char *xtf_note_name = "http://oracc.org/ns/xtf/1.0|note";
 
@@ -389,7 +390,9 @@ printStart(const char *name, const char **atts)
 
   printText((const char*)charData_retrieve());
 
-  if (xtf_selecting && cetype == KU_KWIC && !strcmp(name, gdl_w_name))
+  if (xtf_selecting && cetype == KU_KWIC 
+      && (!strcmp(name, gdl_w_name)
+	  || !strcmp(name, norm_w_name)))
     fputs("</ce:kwic1><ce:kwic2>", ce_out_fp);
 
   fprintf(ce_out_fp, "<%s", xtf_l ? "ce:l" : prefix(name));
@@ -461,7 +464,9 @@ printEnd(const char *name)
   printText((const char *)charData_retrieve());
   fprintf(ce_out_fp, "</%s>", prefix(name));
 
-  if (kwic_pivot_pending && !strcmp(name, gdl_w_name))
+  if (kwic_pivot_pending 
+      && (!strcmp(name, gdl_w_name)
+	  || !strcmp(name, norm_w_name)))
     {
       fputs("</ce:kwic2><ce:kwic3>", ce_out_fp);
       kwic_pivot_pending = 0;

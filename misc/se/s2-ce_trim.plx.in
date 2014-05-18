@@ -35,7 +35,7 @@ move_h {
     my $node = shift;
     my $h = $node->getAttribute('h');
     return unless $h;
-    while ($node->parentNode()->nodeName() ne 'ce:data') {
+    while ($node->parentNode() && $node->parentNode()->nodeName() ne 'ce:data') {
 	$node = $node->parentNode();
     }
     $node = $node->parentNode(); # $node is now ce:data
@@ -68,7 +68,7 @@ remove_preceding {
 sub
 word_ancestors {
     my $node = shift;
-    while ($node->parentNode()->nodeName() !~ /^ce:/) {
+    while ($node->parentNode() && $node->parentNode()->nodeName() !~ /^ce:/) {
 	$node = $node->parentNode();
     }
     $node;

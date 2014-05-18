@@ -30,6 +30,13 @@
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="xcl:l">
+  <xsl:variable name="wref" select="substring-after(substring-after(@ref,'.'),'.')"/>
+  <xsl:if test="number($wref) &lt; 1000">
+    <xsl:copy-of select="."/>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="xtf:v"/>
 
 <xsl:template match="*">
