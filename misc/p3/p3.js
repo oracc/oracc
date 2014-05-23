@@ -145,6 +145,7 @@ function p3Letter(l) {
     document.getElementById('srch').value = '';
     document.getElementById('gxis').value = '';
     document.getElementById('glet').value = l;
+    document.getElementById('arg_item').value = -1;
     document.getElementById('p3form').submit();
 }
 

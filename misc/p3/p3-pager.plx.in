@@ -660,8 +660,12 @@ set_list_items {
 sub
 arg_state {
     if ($p{'arg_item'}) {
-	$p{'item'} = $p{'arg_item'};
-	$p{'p3do'} = 'viewstateItems';
+	if ($p{'arg_item'} > 0) {
+	    $p{'item'} = $p{'arg_item'};
+	    $p{'p3do'} = 'viewstateItems';
+	} else {
+	    $p{'item'} = 0;
+	}
 	$p{'arg_item'} = 0;
     }
 }
