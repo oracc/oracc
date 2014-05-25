@@ -51,16 +51,21 @@ if [ "$super" = "" ]; then
 	else
 	    (cd $ldir; ln -sf $l.sig union.sig)
 	fi
-	echo creating $ldir/$l.g2x from $ldir/union.sig
-	l2p2-g2x.plx -h $ldir/union.sig
-#	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-	xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
-	if [ -s $ldir/$l.map ]; then
-#	    echo running l2p2-g2c.plx $l
-	    l2p2-g2c.plx $l
-	    l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
+	if [ -s $ldir/union.sig ]; then
+	    echo creating $ldir/$l.g2x from $ldir/union.sig
+	    l2p2-g2x.plx -h $ldir/union.sig
+	    #	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
+	    xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
+	    if [ -s $ldir/$l.map ]; then
+		#	    echo running l2p2-g2c.plx $l
+		l2p2-g2c.plx $l
+		l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
+	    else
+		echo Glossary $l is empty.  Exterminate.
+	    fi
 	else
-	    echo Glossary $l is empty.  Exterminate.
+	    (cd $ldir; ln -sf $l.cbd $l.g2c; ln -sf $ORACC/lib/data/dummy.xis periods.xis)
+	    l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
 	fi
     done
 else

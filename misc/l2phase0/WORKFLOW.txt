@@ -1,0 +1,18 @@
+SUPERGLOSSARY ALIGNMENT WORKFLOW
+================================
+
+* Alignment of a new glossary with a base glossary consists of three steps:
+
+  - induction
+  - comparison
+  - mapping
+  - merging
+
+* Induction creates a simplified import of the glossary within the superproject's 00src directory
+
+* Comparison checking the new glossary against the base glossary and reporting on differences
+
+* Mapping is the means of resolving differences by treating entries in the new glossary as equivalent to existing entries in the base glossary
+
+* Merging is the means of resolving differences by importing entries from the new glossary into the base glossary
+

@@ -33,6 +33,7 @@ my %sys_builtins = ();
 my $abbrev = '';
 my $argpid = 0;
 my $auto = 0;
+my $bare = 0;
 my $cbd = undef;
 my $cbdlang = '';
 my $check = 0;
@@ -69,6 +70,7 @@ GetOptions(
     'abbrev:s'=>\$abbrev,
     'argpid:s'=>\$argpid,
     'auto'=>\$auto,
+    'bare'=>\$bare,
     'check:s'=>\$check,
     'config:s'=>\$config,
     'cbdlang:s'=>\$clang,
@@ -94,7 +96,9 @@ GetOptions(
 
 #    'xff+'=>\$xff,
 
+$ORACC::L2GLO::Builtins::bare = $bare;
 $ORACC::L2GLO::debug = $debug;
+$ORACC::L2GLO::Builtins::noletters = $noletters;
 $ORACC::L2GLO::verbose = $verbose;
 
 if (!$project && !$sort && !$xml) {
@@ -106,7 +110,6 @@ if (!$project && !$sort && !$xml) {
 }
 
 my $cbd_post_process = undef;
-$project = `oraccopt` unless $project;
 $cbd_post_process = `oraccopt $project cbd-post-process`
     if $project;
 if ($cbd_post_process && !$clang) {

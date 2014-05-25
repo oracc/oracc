@@ -167,6 +167,7 @@ AC_OUTPUT([Makefile
 	misc/gdl/Makefile
 	misc/issl/Makefile
 	misc/l2common/Makefile
+	misc/l2phase0/Makefile
 	misc/l2phase1/Makefile
 	misc/l2phase2/Makefile
 	misc/l2phase3/Makefile

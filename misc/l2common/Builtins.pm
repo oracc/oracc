@@ -10,7 +10,9 @@ binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
 $ORACC::L2GLO::Builtins::accents = 0;
+$ORACC::L2GLO::Builtins::bare = 0;
 $ORACC::L2GLO::Builtins::debug = 0;
+$ORACC::L2GLO::Builtins::noletters = 0;
 $ORACC::L2GLO::Builtins::t0 = 0;
 
 my $early_debug = 1;
@@ -1526,6 +1528,7 @@ input_acd {
     $line_of{'#init'} = 1;
     open(IN,$input) || die "cbdmanager.plx: input_acd: can't open `$input'\n";
     my %e = ();
+    $lang = '' unless $lang;
     $use_norms = $langnorms{$lang};
     while (<IN>) {
 	++$curr_line;
@@ -1554,7 +1557,7 @@ input_acd {
 		    ${$acd{'ehash'}{parse_entry($e{'entry'})}} = $eref;
 		    if ($is_compound) {
 			bad('entry',"compound entries must have a '\@parts' field")
-			    unless ${$e{'fields'}}{'parts'};
+			    unless ${$e{'fields'}}{'parts'} || $ORACC::L2GLO::Builtins::bare;
 			--$status if $status;
 			# $is_compound = 0;
 		    }
@@ -1572,6 +1575,7 @@ input_acd {
 		++${$e{'fields'}}{$currtag};
 		if ($currtag eq 'entry') {
 		    $e{'usage_flag'} = $usage_flag;
+		    $e{'#line'} = $curr_line;
 #		    warn "setting usage_flag on $_\n" if $e{'usage_flag'};
 		}
 	    }
@@ -1610,10 +1614,9 @@ first_letter {
 sub
 acd_dump_entry {
     my %e = %{$_[0]};
-    my $noletters = 1 if $_[1];
     my $cfgw = ${$e{'entry'}}[0];
     my $init_char = first_letter($cfgw);
-    unless ($noletters) {
+    unless ($ORACC::L2GLO::Builtins::noletters) {
 	if (!$last_char || $last_char ne $init_char) {
 	    $last_char = $init_char;
 	    print "\@letter $last_char\n\n";
