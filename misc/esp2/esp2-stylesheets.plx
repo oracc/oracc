@@ -76,9 +76,11 @@ foreach my $c (@colours) {
 	    $app{$c} = $class{$usedfor{$m}};
 	} else {
 	    warn "esp2-stylesheet.plx: colours value for '$c': no map for $m in $p3colours\n";
+	    $app{$c} = '#000';
 	}
     } else {
 	warn "esp2-stylesheet.plx: no definition for colour '$c'\n";
+	$app{$c} = '#000';
     }
 }
 
