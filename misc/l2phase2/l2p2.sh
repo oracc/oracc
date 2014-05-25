@@ -66,6 +66,7 @@ if [ "$super" = "" ]; then
 	else
 	    (cd $ldir; ln -sf $l.cbd $l.g2c; ln -sf $ORACC/lib/data/dummy.xis periods.xis)
 	    l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
+	    l2p2-letters.plx $l
 	fi
     done
 else
