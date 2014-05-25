@@ -1,2 +1,10 @@
 #!/bin/sh
-./configure  --prefix=$ORACC ; make CFLAGS=-g ; make install
+. ./oraccenv.sh
+libtoolize
+aclocal
+autoheader
+automake
+autoconf
+./configure --prefix=$ORACC
+make CFLAGS=-g
+make install
