@@ -18,6 +18,7 @@ SUBDIRS = \
 	gdl \
 	issl \
 	l2common \
+	l2phase0 \
 	l2phase1 \
 	l2phase2 \
 	l2phase3 \
