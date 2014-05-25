@@ -15,6 +15,7 @@ $ORACC::L2GLO::Builtins::debug = 0;
 $ORACC::L2GLO::Builtins::noletters = 0;
 $ORACC::L2GLO::Builtins::t0 = 0;
 
+my $cgctmp = '';
 my $early_debug = 1;
 
 my %rws_map = (
@@ -1492,6 +1493,7 @@ set_cgc {
     } else {
 	die "set_cgc: can't write /tmp/$$.cgc or tmp/$$.cgc\n";
     }
+    $cgctmp = $tmpname;
     my %t = (); @t{@_} = (); # uniq the sort keys
     foreach my $t (@_) {
 	my $tx = ${$t}[0];
@@ -1654,6 +1656,7 @@ acd_sort {
 	    my $eref = { %{$$ehash} };
 	    push @{$$acd{'entries'}}, $eref;
 	}
+	unlink $cgctmp;
     }
 }
 
