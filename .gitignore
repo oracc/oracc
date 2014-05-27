@@ -546,3 +546,15 @@ c/bin/pg/periodmap.c
 c/bin/pg/periodmap.c
 
 c/bin/pg/periodmap.c
+
+misc/httpd/mac-apache2-httpd.conf
+
+misc/httpd/mac-apache2-httpd.conf
+
+misc/httpd/oracc-httpd.conf
+
+misc/httpd/oracc-vhosts.conf
+
+misc/httpd/mac-apache2-httpd.conf
+
+misc/httpd/oracc-vhosts-server-only.conf
