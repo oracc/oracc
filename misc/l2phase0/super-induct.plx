@@ -23,7 +23,7 @@ open(O, ">$out") || die "super induct; unable to write output file $out. Stop.\n
 select O;
 print "\@project $header{'project'}\n\@lang $header{'lang'}\n\@name $header{'name'}\n\n";
 do {
-    print if /^\@(?:entry|sense|end)/;
+    print if /^\@(?:entry|parts|sense|end)/;
     print "\n" if /^\@end/
 } while (<G>);
 close(G);
