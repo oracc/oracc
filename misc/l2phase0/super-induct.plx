@@ -28,4 +28,6 @@ do {
 } while (<G>);
 close(G);
 
+warn "super induct: inducted glossary $glo as $out\n";
+
 1;
