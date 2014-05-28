@@ -72,7 +72,9 @@ parse_map {
 	if ($srchash{$_}) {
 	    my %e = %${$srchash{$_}};
 	    s/\[/ [/; s/\]/] /;
-	    return ($_, @{$e{'parts'}}, @{$e{'sense'}})
+	    my @parts = ();
+	    @parts = @{$e{'parts'}} if defined $e{'parts'};
+	    return ($_, @parts, @{$e{'sense'}})
 	} else {
 	    warn "super prepare: entry $_ not found in source glossary $srcfile\n";
 	    return ();
