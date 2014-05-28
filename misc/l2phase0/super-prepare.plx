@@ -13,7 +13,7 @@ my $srcfile = $mapfile;
 
 $glofile =~ s/map$/new/; $glofile =~ s/00map/01tmp/;
 
-$newmap =~ s/00src/01tmp/;
+$newmap =~ s/00map/01tmp/;
 
 $srcfile =~ s/map$/glo/; $srcfile =~ s/00map/00src/;
 
