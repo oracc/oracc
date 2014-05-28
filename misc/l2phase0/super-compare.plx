@@ -129,11 +129,12 @@ load_map {
 	if ($sig =~ /^(.*?)\s*=>\s*(.*?)$/) {
 	    ($sig,$map) = ($1,$2);
 	}
+
 	if ($act eq 'map' || $act eq 'fix') {
-	    warn "$m:$.: $map not in base glossary\n" unless $basehash{$map};
-	} else {
-	    $map{$sig} = [ $act, $type, $sig, $map ];
+	    warn "$m:$.: $map not in base glossary\n" and next
+		unless $basehash{$map};
 	}
+	$map{$sig} = [ $act, $type, $sig, $map ];
     }
     close(M);
 }
