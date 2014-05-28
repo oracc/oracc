@@ -103,8 +103,8 @@ dump_map {
 	my $isodate = strftime("%Y%m%d", gmtime());
 	$mbak =~ s/\.map$/-$isodate.map/; $mbak =~ s/00map/00bak/;
 	chatty("saving current $m as $mbak\n");
+	system('mv', $m, $mbak);
     }
-    system('mv', $m, $mbak);
     chatty("writing new map file $m");
     open(M, ">$m") || die "super compare: can't write to map file $m\n";
     select M;
