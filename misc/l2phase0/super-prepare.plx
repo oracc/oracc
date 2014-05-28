@@ -30,8 +30,15 @@ my %glo = ();
 
 while (<M>) {
     if (/^add/) {
-	my ($cfgwpos,@senses) = parse_map($_);
+	my ($cfgwpos, $partsref, $senseref) = parse_map($_);
 	if ($cfgwpos) {
+	    if ($partsref) {
+		my @parts = @$partsref;
+		if ($#parts >= 0) {
+		    push @{$glo{$cfgwpos}}, "\@parts $parts[0]";
+		}
+	    }
+	    my @senses = @$senseref;
 	    if ($#senses >= 0) {
 		foreach my $s (@senses) {
 		    push @{$glo{$cfgwpos}}, [ scalar keys %glo, $s ];
@@ -53,7 +60,11 @@ close(N);
 
 foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo) {
     print G "\@entry $e\n";
-    foreach my $s (sort { $$a[1] cmp $$b[1] } @{$glo{$e}}) {
+    my @econtent = @{$glo{$e}};
+    if ($econtent[0] =~ /^\@parts/) {
+	print G shift $econtent[0];
+    }
+    foreach my $s (sort { $$a[1] cmp $$b[1] @econtent} ) {
 	print G "\@sense $$s[1]\n";
     }
     print G "\@end entry\n\n";
@@ -73,9 +84,7 @@ parse_map {
 	if ($srchash{$_}) {
 	    my %e = %${$srchash{$_}};
 	    s/\[/ [/; s/\]/] /;
-	    my @parts = ();
-	    @parts = @{$e{'parts'}} if defined $e{'parts'};
-	    return ($_, @parts, @{$e{'sense'}})
+	    return ($_, $e{'parts'}, $e{'sense'})
 	} else {
 	    warn "super prepare: entry $_ not found in source glossary $srcfile\n";
 	    return ();
@@ -83,7 +92,7 @@ parse_map {
     } else {
 	s/^add\s+sense\s+//;
 	my($cf,$gw,$sense,$pos,$epos) = (m#^(.*?)\[(.*?)//(.*?)\](.*?)\'(.*?)$#);
-	return ("$cf [$gw] $pos", "$epos $sense");
+	return ("$cf [$gw] $pos", [ ], [ "$epos $sense" ]);
     }
 }
 
