@@ -35,13 +35,13 @@ while (<M>) {
 	    if ($partsref) {
 		my @parts = @$partsref;
 		if ($#parts >= 0) {
-		    push @{$glo{$cfgwpos}}, "\@parts $parts[0]\n";
+		    push @{$glo{$cfgwpos}}, [ 0 , "\@parts $parts[0]\n" ];
 		}
 	    }
 	    my @senses = @$senseref;
 	    if ($#senses >= 0) {
 		foreach my $s (@senses) {
-		    push @{$glo{$cfgwpos}}, [ scalar keys %glo, $s ];
+		    push @{$glo{$cfgwpos}}, [ 1 + scalar keys %glo, $s ];
 		}
 	    } else {
 		unless ($glo{$cfgwpos}) { # silently ignore add entry that comes after add sense for same word
@@ -61,8 +61,9 @@ close(N);
 foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo) {
     print G "\@entry $e\n";
     my @econtent = @{$glo{$e}};
-    if ($econtent[0] =~ /^\@parts/) {
-	print G shift @econtent;
+    if (${$econtent[0]}[1] =~ /^\@parts/) {
+	my $p = shift @econtent;
+	print G $p[1];
     }
     foreach my $s (sort { $$a[1] cmp $$b[1] } @econtent) {
 	print G "\@sense $$s[1]\n";
