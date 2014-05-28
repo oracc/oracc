@@ -97,6 +97,14 @@ dump_map {
     foreach my $v (@v) {
 	warn "no sort code for $$v[2]\n" unless $sort{$$v[2]};
     }
+    if (-r $m) {
+	my $mbak = $m;
+	use POSIX qw(strftime);
+	my $isodate = strftime("%Y%m%d", gmtime());
+	$mbak =~ s/\.map$/-$isodate.map/; $mbak =~ s/00map/00bak/;
+	chatty("saving current $m as $mbak\n");
+    }
+    system('mv', $m, $mbak);
     chatty("writing new map file $m");
     open(M, ">$m") || die "super compare: can't write to map file $m\n";
     select M;
