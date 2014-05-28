@@ -22,8 +22,8 @@ my $globak = $base; $globak =~ s/00lib/00bak/; $globak =~ s/\./-$isodate./;
 
 my $new = shift @ARGV;
 my $mapfile = $new; $mapfile =~ s/new$/map/;
-my $srcmap = $mapfile; $srcmap =~ s/01tmp/00src/;
-my $mapbak = $srcmap; $mapbak =~ s/00src/00bak/; $mapbak =~ s/\./-$isodate./;
+my $srcmap = $mapfile; $srcmap =~ s/01tmp/00map/;
+my $mapbak = $srcmap; $mapbak =~ s/00map/00bak/; $mapbak =~ s/\./-$isodate./;
 
 # before merging, make sure the new glossary file is later in date than the current map
 # file, otherwise changes to the map file may be lost

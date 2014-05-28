@@ -36,7 +36,7 @@ my %srchash = %{$$srcdata{'ehash'}};
 
 add_basehash_senses();
 
-my $map = $src; $map =~ s/glo$/map/;
+my $map = $src; $map =~ s/glo$/map/; $map =~ s/00src/00map/;
 load_map($map) if -r $map;
 
 foreach my $e (keys %srchash) {
@@ -121,7 +121,7 @@ load_map {
 	if ($sig =~ /^(.*?)\s*=>\s*(.*?)$/) {
 	    ($sig,$map) = ($1,$2);
 	}
-	if ($act eq 'map') {
+	if ($act eq 'map' || $act eq 'fix') {
 	    warn "$m:$.: $map not in base glossary\n" unless $basehash{$map};
 	}
 	$map{$sig} = [ $act, $type, $sig, $map ];
