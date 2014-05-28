@@ -63,7 +63,7 @@ foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo)
     my @econtent = @{$glo{$e}};
     if (${$econtent[0]}[1] =~ /^\@parts/) {
 	my $p = shift @econtent;
-	print G $p[1];
+	print G $$p[1];
     }
     foreach my $s (sort { $$a[1] cmp $$b[1] } @econtent) {
 	print G "\@sense $$s[1]\n";
