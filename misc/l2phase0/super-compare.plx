@@ -102,7 +102,7 @@ dump_map {
 	use POSIX qw(strftime);
 	my $isodate = strftime("%Y%m%d", gmtime());
 	$mbak =~ s/\.map$/-$isodate.map/; $mbak =~ s/00map/00bak/;
-	chatty("saving current $m as $mbak\n");
+	chatty("saving current $m as $mbak");
 	system('mv', $m, $mbak);
     }
     chatty("writing new map file $m");

@@ -10,10 +10,12 @@ my $mapfile = shift @ARGV;
 my $glofile = $mapfile;
 my $newmap = $mapfile;
 my $srcfile = $mapfile;
-$glofile =~ s/map$/new/; $glofile =~ s/00src/01tmp/;
-$newmap =~ s/00src/01tmp/;
-$srcfile =~ s/map$/glo/;
 
+$glofile =~ s/map$/new/; $glofile =~ s/00map/01tmp/;
+
+$newmap =~ s/00src/01tmp/;
+
+$srcfile =~ s/map$/glo/; $srcfile =~ s/00map/00src/;
 
 my $srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
 my %srchash = %{$$srcdata{'ehash'}};
