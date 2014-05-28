@@ -80,7 +80,7 @@ parse_map {
 	    return ();
 	}
     } else {
-	my($cf,$gw,$sense,$pos,$epos) = ();
+	my($cf,$gw,$sense,$pos,$epos) = (m#^(.*?)\[(.*?)//(.*?)\](.*?)\'(.*?)$#);
 	return ("$cf [$gw] $pos", "$epos $sense");
     }
 }
