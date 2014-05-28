@@ -123,8 +123,9 @@ load_map {
 	}
 	if ($act eq 'map' || $act eq 'fix') {
 	    warn "$m:$.: $map not in base glossary\n" unless $basehash{$map};
+	} else {
+	    $map{$sig} = [ $act, $type, $sig, $map ];
 	}
-	$map{$sig} = [ $act, $type, $sig, $map ];
     }
     close(M);
 }
