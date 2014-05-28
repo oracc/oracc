@@ -18,6 +18,7 @@ $newmap =~ s/00map/01tmp/;
 $srcfile =~ s/map$/glo/; $srcfile =~ s/00map/00src/;
 
 my $srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
+use Data::Dumper; print Dumper $srcdata;
 my %srchash = %{$$srcdata{'ehash'}};
 
 open(M,$mapfile) || die "super prepare: unable to read map file $mapfile. Stop\n";
