@@ -6,6 +6,7 @@ use ORACC::L2GLO::Builtins;
 
 $ORACC::L2GLO::Builtins::bare = 1;
 
+my $chatty = 1;
 my $mapfile = shift @ARGV;
 my $glofile = $mapfile;
 my $newmap = $mapfile;
@@ -73,9 +74,17 @@ foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo)
 
 close(G);
 
-
+chatty("super prepare: additions for base are in $glofile");
+chatty("super prepare: new version of map file is in $newmap");
 
 ##############################################################################
+
+sub
+chatty {
+    if ($chatty) {
+	warn @_, "\n";
+    }
+}
 
 sub
 parse_map {
