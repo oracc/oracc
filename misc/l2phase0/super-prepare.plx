@@ -35,7 +35,7 @@ while (<M>) {
 	    if ($partsref) {
 		my @parts = @$partsref;
 		if ($#parts >= 0) {
-		    push @{$glo{$cfgwpos}}, "\@parts $parts[0]";
+		    push @{$glo{$cfgwpos}}, "\@parts $parts[0]\n";
 		}
 	    }
 	    my @senses = @$senseref;
@@ -62,7 +62,7 @@ foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo)
     print G "\@entry $e\n";
     my @econtent = @{$glo{$e}};
     if ($econtent[0] =~ /^\@parts/) {
-	print G shift $econtent[0];
+	print G shift @econtent;
     }
     foreach my $s (sort { $$a[1] cmp $$b[1] } @econtent) {
 	print G "\@sense $$s[1]\n";
