@@ -12,7 +12,7 @@ $ORACC::L2GLO::Builtins::bare = 1;
 
 my @glo = <00lib/*.glo>;
 
-die "super compare: a super-glossary is must have a .glo file\n" if $#glo < 0;
+die "super compare: a super-glossary must have a .glo file\n" if $#glo < 0;
 die "super compare: a super-glossary is only allowed one .glo file\n" if $#glo > 0;
 
 my $base = shift @glo;
@@ -44,14 +44,14 @@ EOD
 
 ORACC::L2GLO::Builtins::merge_exec($baselang, $base, [$new], $out);
 
-warn "super merge backing up $base to $globak\n";
+warn "super merge: backing up $base to $globak\n";
 system "mv $base $globak";
-warn "super installing $out as new version of $base\n";
+warn "super merge: installing $out as new version of $base\n";
 system "mv $out $base";
 
-warn "super merge backing up $srcmap to $mapbak\n";
+warn "super merge: backing up $srcmap to $mapbak\n";
 system "mv $srcmap $mapbak";
-warn "super installing $mapfile as new version of $srcmap\n";
+warn "super merge: installing $mapfile as new version of $srcmap\n";
 system "mv $mapfile $srcmap";
 
 1;
