@@ -23,38 +23,16 @@ my $srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
 my %srchash = %{$$srcdata{'ehash'}};
 
 open(M,$mapfile) || die "super prepare: unable to read map file $mapfile. Stop\n";
-open(N, ">$newmap") || die "super prepare: unable to write new map file $newmap. Stop\n";
 open(G,">$glofile") || die "super prepare: unable to write glo file $glofile. Stop\n";
+open(N, ">$newmap") || die "super prepare: unable to write new map file $newmap. Stop\n";
 
 my @map = ();
 my %glo = ();
 
-while (<M>) {
-    if (/^add/) {
-	my ($cfgwpos, $partsref, $senseref) = parse_map($_);
-	if ($cfgwpos) {
-	    if ($partsref) {
-		my @parts = @$partsref;
-		if ($#parts >= 0) {
-		    push @{$glo{$cfgwpos}}, [ 0 , "\@parts $parts[0]\n" ];
-		}
-	    }
-	    my @senses = @$senseref;
-	    if ($#senses >= 0) {
-		foreach my $s (@senses) {
-		    push @{$glo{$cfgwpos}}, [ 1 + scalar keys %glo, $s ];
-		}
-	    } else {
-		unless ($glo{$cfgwpos}) { # silently ignore add entry that comes after add sense for same word
-		    @{$glo{$cfgwpos}} = ();
-		}
-	    }
-	}
-    } else {
-	push @map, $_;
-    }
-}
-close(M);
+my($mapref,$gloref) = ORACC::L2P0::L2Super::parse_mapfile($mapfile);
+my @map = @$mapref;
+my %glo = %$gloref;
+
 
 print N @map;
 close(N);

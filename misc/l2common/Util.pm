@@ -134,6 +134,7 @@ $ORACC::L2GLO::Util::project = '';
     TN=>'qpn-x-temple',
     WN=>'qpn-x-waters',
     YN=>'qpn-x-ynames',
+    ZN=>'qpn-x-signs',
     );
 
 %ORACC::L2GLO::Util::long_lang = (
@@ -289,6 +290,16 @@ parse_sig {
 	s/\t.*$//;
 	warn "sig-g2x.plx: $.: bad parse in $_\n"
     }
+}
+
+sub
+serialize_sig {
+    my %s = @_;
+    my $sig = "\@$s{'proj'}\%$s{'lang'}:$s{'form'}=$s{'cf'}\[$s{'gw'}//$s{'sense'}\]$s{'pos'}'$s{'epos'}";
+    foreach my $f (@inst_fields) {
+	$sig .= "$field_chars{$f}$s{$f}" if $s{$f};
+    }
+    $sig;
 }
 
 sub

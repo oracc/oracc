@@ -13,6 +13,7 @@ $ORACC::L2GLO::Builtins::accents = 0;
 $ORACC::L2GLO::Builtins::bare = 0;
 $ORACC::L2GLO::Builtins::debug = 0;
 $ORACC::L2GLO::Builtins::noletters = 0;
+$ORACC::L2GLO::Builtins::O2_cancel = 1;
 $ORACC::L2GLO::Builtins::t0 = 0;
 
 my $cgctmp = '';
@@ -414,8 +415,12 @@ acd2xml {
     }
 
     if ($status) {
-	system 'touch', "01bld/cancel";
-	die "$status errors; stop\n" if $status;
+	if ($ORACC::L2GLO::Builtins::O2_cancel) {
+	    system 'touch', "01bld/cancel";
+	    die "$status errors; stop\n" if $status;
+	} else {
+	    return undef;
+	}
     }
     push(@xml,'</entries>');
 
