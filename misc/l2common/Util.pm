@@ -1,4 +1,8 @@
 package ORACC::L2GLO::Util;
+require Exporter;
+@ISA=qw/Exporter/;
+@EXPORT = qw/parse_sig/;
+
 use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 
@@ -295,9 +299,9 @@ parse_sig {
 sub
 serialize_sig {
     my %s = @_;
-    my $sig = "\@$s{'proj'}\%$s{'lang'}:$s{'form'}=$s{'cf'}\[$s{'gw'}//$s{'sense'}\]$s{'pos'}'$s{'epos'}";
-    foreach my $f (@inst_fields) {
-	$sig .= "$field_chars{$f}$s{$f}" if $s{$f};
+    my $sig = '@'.$s{'proj'}.'%'.$s{'lang'}.':'."$s{'form'}=$s{'cf'}\[$s{'gw'}//$s{'sense'}\]$s{'pos'}'$s{'epos'}";
+    foreach my $f (@ORACC::L2GLO::Util::instfields) {
+	$sig .= "$ORACC::L2GLO::Util::fieldchars{$f}$s{$f}" if $s{$f};
     }
     $sig;
 }

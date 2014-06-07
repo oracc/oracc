@@ -1,14 +1,18 @@
 package ORACC::L2P0::L2Super;
+require Exporter;
+@ISA=qw/Exporter/;
+@EXPORT = qw/chatty super_warn super_die/;
 use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Builtins;
+use ORACC::L2GLO::Util;
 use POSIX qw(strftime);
 
-use Exporter 'import';
-my @EXPORT_OK = qw/super_warn super_die/;
 
 # use Data::Dumper;
+
+$ORACC::L2P0::L2Super::chatty = 1;
 
 use constant {
     CL_WORD    => 1,
@@ -21,9 +25,12 @@ use constant {
 
 use Getopt::Long;
 
+my $baseproj = `proj-from-conf.sh`;
+
 my $base = '';
 my $level = '';
 my $lang = '';
+my $force = 0;
 my $project = '';
 
 my %function_info = (
@@ -43,16 +50,22 @@ my %return_data = ();
 sub
 init {
     GetOptions(
-	base=>\$base,
-	lang=>\$lang,
-	level=>\$level,
-	project=>\$project,
+	'base=s'=>\$base,
+	force=>\$force,
+	'lang=s'=>\$lang,
+	'level=i'=>\$level,
+	'project=s'=>\$project,
 	);
 
-    $function = $0; $function =~ s/^(.*?)super-//; $function =~ s/^\.plx//;
+    $return_data{'force'} = $force;
+
+    $function = $0; $function =~ s/^(.*?)super-//; $function =~ s/\.plx$//;
     super_die("unsupported function $function")
 	unless $function_info{$function};
-    my($flags, $dir, $type) = $function_info{$function};
+    my($flags, $dir, $type) = @{$function_info{$function}};
+
+    super_die("failed to get function info") 
+	unless defined($flags) && $dir && $type;
 
     my $argfile = shift @ARGV;
     if ($argfile) {
@@ -69,13 +82,13 @@ init {
 	    unless $dir eq $argfile_dir;
 	super_die("expected file to have extension .$type but it has .$argfile_type")
 	    unless $type eq $argfile_type;
-	super_die("can't use -project/-lang when giving argument file\n")
+	super_die("can't use -project/-lang when giving argument file")
 	    if $project || $lang;
 
 	$project = $argfile_project;
 	$lang = $argfile_lang;
     } else {
-	super_die("must use both of -project and -lang or give an argument file")
+	super_die("must use both of -project and -lang or give .$type file on command line")
 	    unless $project && $lang;
 	$argfile = "$dir/$project~$lang.$type";
 	super_die("expected to use file $argfile but it doesn't exist")
@@ -85,31 +98,37 @@ init {
     }
 
     $return_data{'project'} = $project;
+    $return_data{'project'} =~ tr#-#/#;
     $return_data{'lang'} = $lang;
 
-    if ($flags & FI_BASE_YES) {
-	if ($base) {
-	    super_die("base glossary $base does not exist\n")
-		unless -e $base;
-	    super_die("base glossary $base can't be read\n")
-		unless -r $base;
-	} else {
-	    my @glo = <00lib/*.glo>;
-	    super_die("a super-glossary must have a .glo file\n")
-		unless $#glo >= 0;
-	    super_die("a super-glossary is only allowed one .glo file\n")
-		unless $#glo == 0;
-	    $base = shift @glo;
-	    super_die("base glossary $base does not exist\n")
-		unless -e $base;
-	    super_die("base glossary $base can't be read\n")
-		unless -r $base;
-	}
+    if ($base) {
+	super_die("base glossary $base does not exist\n")
+	    unless -e $base;
+	super_die("base glossary $base can't be read\n")
+	    unless -r $base;
+    } else {
+	my @glo = <00lib/*.glo>;
+	super_die("a super-glossary must have a .glo file\n")
+	    unless $#glo >= 0;
+	super_die("a super-glossary is only allowed one .glo file\n")
+	    unless $#glo == 0;
+	$base = shift @glo;
+	super_die("base glossary $base does not exist\n")
+	    unless -e $base;
+	super_die("base glossary $base can't be read\n")
+	    unless -r $base;
     }
 
     my $baselang = $base; $baselang =~ s#^.*?/(.*?)\.glo$#$1#;
     $return_data{'base'} = $base;
     $return_data{'baselang'} = $baselang;
+    $return_data{'baseproj'} = $baseproj;
+
+    if ($flags & FI_BASE_YES) {
+	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($base);
+	super_die("errors in $base") unless $arg_xml;
+	undef $arg_xml;
+    }
 
     if ($type eq 'glo' || $type eq 'new') {
 	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($argfile);
@@ -218,11 +237,12 @@ parse_mapfile {
 	}
     }
     close(M);
+    (\@map, \%glo);
 }
 
 sub
 setup_argfile {
-    my $file = @_;
+    my $file = shift @_;
     my $fh = undef;
     unless (open($fh,$file)) {
 	super_die("cannot open $file for reading");
@@ -236,6 +256,8 @@ setup_file {
     my $file = "$dir/$proj~$lang.$type";
     my $fh = undef;
     $last_outputdate = (stat($file))[9];
+    system 'mkdir', '-p', $dir
+	unless -d $dir;
     unless (open($fh,$io,$file)) {
 	my $rw = ($io eq '<' ? 'read' : 'write');
 	super_die("cannot open $file for $rw");
@@ -244,10 +266,19 @@ setup_file {
 }
 
 sub
+chatty {
+    if ($ORACC::L2P0::L2Super::chatty) {
+	warn "super $function: ", @_, "\n";
+    }
+}
+
+sub
 super_die {
-    die "super $function: @_. Stop\n";
+    die "super $function: @_. Stop.\n";
 }
 sub
 super_warn {
-    warn "super $function: @_. Stop\n";
+    warn "super $function: @_.\n";
 }
+
+1;

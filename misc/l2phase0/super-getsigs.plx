@@ -3,9 +3,10 @@ use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2P0::L2Super;
+use ORACC::L2GLO::Util;
 
 my %data = ORACC::L2P0::L2Super::init();
-close($data{'input_fh'};
+close($data{'input_fh'});
 
 my %mapglo = %{$data{'mapgloref'}};
 my %mapsigs = ();
@@ -14,8 +15,9 @@ my $mapproj = $data{'project'};
 my $maplang = $data{'lang'};
 my $outfh = $data{'output_fh'};
 
-my $projsigs = "$ENV{'ORACC'}/bld/$maplang/corpus.sig"; ## I know this is wrong ...
+my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/$maplang/$maplang.sig";
 my $projdate = (stat($projsigs))[9];
+
 super_die("can't read $projsigs")
     unless open(S, $projsigs);
 
@@ -26,13 +28,22 @@ my $mapdate = (stat($data{'input'}))[9];
 # or
 #   b) the sigfile is older than the project sigfile we must rebuild
 
-super_warn "$data{'outputfile'} is up to date" and exit 0
-    unless ($mapdate > $data{'outputdate'} || $data{'outputdate'} < $projdate);
+if (!$data{'force'} && defined $data{'outputdate'}) {
+    if ($mapdate < $data{'outputdate'} && $projdate < $data{'outputdate'}) {
+	super_warn("$data{'output'} is up to date");
+	exit 0;
+    }
+}
+
+chatty("importing sigs from $data{'project'}/$data{'lang'}");
 
 while (<S>) {
+    next if /^\@(project|name|lang)\s/ || /^\s*$/;
     chomp;
-    my($sig,$inst) = (/^(.*?)\t(.*?)/);
+
+    my($sig,$count,$inst) = split(/\t/,$_);
     next unless $inst;
+
     # For now, just deal with entry/sense level mapping
     my %sig = parse_sig($sig);
     my $entry = "$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}";
@@ -49,11 +60,12 @@ while (<S>) {
 	    unless $mapsigs{$entry};
 	my %mapsig = %{$mapsigs{$entry}};
 	@sig{qw/cf gw pos/} = @mapsig{qw/cf gw pos/};
+	$sig{'proj'} = $data{'baseproj'};
 	$sig{'lang'} = $data{'baselang'};
-	print $outfh serialize_sig($sig);
+	print $outfh serialize_sig($sig), "\n";
     } else {
-	$sig =~ s/\%(.*?):/$data{'baselang'}/;
-	print $outfh "$sig\t$inst";
+	$sig =~ s/^.*?:/\@$data{'baseproj'}\%$data{'baselang'}\:/;
+	print $outfh "$sig\t$inst\n";
     }
 }
 
