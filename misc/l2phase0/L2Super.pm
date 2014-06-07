@@ -5,8 +5,8 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Builtins;
 use POSIX qw(strftime);
 
-use Exporter;
-export qw/super_warn super_die/;
+use Exporter 'import';
+my @EXPORT_OK = qw/super_warn super_die/;
 
 # use Data::Dumper;
 
@@ -49,9 +49,9 @@ init {
 	project=>\$project,
 	);
 
-    $function = ??$ARG0; $function =~ s/^(.*?)super-//; $function =~ s/^\.plx//;
+    $function = $0; $function =~ s/^(.*?)super-//; $function =~ s/^\.plx//;
     super_die("unsupported function $function")
-	unless $default_files{$function};
+	unless $function_info{$function};
     my($flags, $dir, $type) = $function_info{$function};
 
     my $argfile = shift @ARGV;
@@ -112,12 +112,12 @@ init {
     $return_data{'baselang'} = $baselang;
 
     if ($type eq 'glo' || $type eq 'new') {
-	$arg_xml = ORACC::L2GLO::Builtins::acd2xml($argfile);
+	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($argfile);
 	super_die("errors in $argfile") unless $arg_xml;
 	undef $arg_xml;
     } elsif ($type eq 'map') {
-	my($mapref,$mapgloref) = parse_mapfile($mapfile);
-	super_die("errors in $mapfile")
+	my($mapref,$mapgloref) = parse_mapfile($argfile);
+	super_die("errors in $argfile")
 	    unless $mapref;
 	$return_data{'mapref'} = $mapref;
 	$return_data{'mapgloref'} = $mapgloref;
@@ -127,9 +127,11 @@ init {
     # caller can just close $return_data{'input_fn'} if it's unwanted.
     ($return_data{'input'},$return_data{'input_fh'})  = setup_argfile($argfile);
     if ($function eq 'induct') {
-	($return_data{'output'},$return_data{'output_fh'} = setup_file('>', '00src', $project, $lang, 'glo');
+	($return_data{'output'},$return_data{'output_fh'}) 
+	    = setup_file('>', '00src', $project, $lang, 'glo');
     } elsif ($function eq 'compare') {
-	($return_data{'output'},$return_data{'output_fh'} = setup_file('>', '00map', $project, $lang, 'map');
+	($return_data{'output'},$return_data{'output_fh'}) 
+	    = setup_file('>', '00map', $project, $lang, 'map');
     } elsif ($function eq 'prepare') {
 	$return_data{'outmap'} = setup_file('>', '01tmp', $project, $lang, 'map');
 	$return_data{'outglo'} = setup_file('>', '01tmp', $project, $lang, 'new');
@@ -139,24 +141,27 @@ init {
 	backup_file($argfile, '00bak', $project, $lang, 'glo');
 	backup_file($argmap, '00bak', $project, $lang, 'map');
 	($return_data{'map'},$return_data{'map_fh'})   = setup_file('<', '01tmp', $project, $lang, 'map');
-	($return_data{'outmap'},$return_data{'outmap_fh'}) = setup_file('>', '00map', $project, $lang, 'map');
-	($return_data{'outglo'},$return_data{'outglo_fh'}) = setup_file('>', '00lib', '', $baselang, 'glo');
+	($return_data{'outmap'},$return_data{'outmap_fh'}) 
+	    = setup_file('>', '00map', $project, $lang, 'map');
+	($return_data{'outglo'},$return_data{'outglo_fh'}) 
+	    = setup_file('>', '00lib', '', $baselang, 'glo');
     } elsif ($function eq 'getsigs') {
-	($return_data{'output'},$return_data{'output_fh'}) = setup_file('>', '00sig', $project, $lang, 'sig');
+	($return_data{'output'},$return_data{'output_fh'}) 
+	    = setup_file('>', '00sig', $project, $lang, 'sig');
 	$return_data{'outputdate'} = $last_outputdate;
     }
 
     return %return_data;
 }
 
-#####################################################################################################################
+##########################################################################################################
 
 sub
 backup_file {
     my($from) = shift @ARGV;
-    my $to = $file;
-    super_die("no such file $file to back up")
-	unless -r $file;
+    my $to = $from;
+    super_die("no such file $from to back up")
+	unless -r $from;
     $to =~ s/^(00lib|01tmp)/00bak/;
     super_die("can't write backup $to when trying to back up $from")
 	unless -w $to;
@@ -166,20 +171,25 @@ backup_file {
     my $to_wild = $to;
     $to_wild =~ s/\./-*./;
     my @bak;
-    eval { "@bak = <$to_wild>" };
-    my version = '000';
+    eval "@bak = <$to_wild>";
+    my $version = '000';
     if ($#bak >= 0) {
-	$version = pop sort @bak;
+	my @sbak = sort @bak;
+	$version = pop @sbak;
 	($version) = ($version =~ /(\d\d\d)\./);
 	++$version;
     }
     $to =~ s/\./-$version./;
-    super_warn "backing up $from to $to";
+    super_warn("backing up $from to $to");
     system "mv $from $to";
 }
 
 sub
 parse_mapfile {
+    my %glo = ();
+    my @map = ();
+    my $map_status = 0;
+    open(M, $_[0]) || super_die("weird error: unable to open map file $_[0]");
     while (<M>) {
 	if (/^add/) {
 	    my ($cfgwpos, $partsref, $senseref) = parse_map($_);
@@ -225,7 +235,7 @@ setup_file {
     my($io,$dir,$proj,$lang,$type) = @_;
     my $file = "$dir/$proj~$lang.$type";
     my $fh = undef;
-    $last_outputdate = (stat($file))[9]);
+    $last_outputdate = (stat($file))[9];
     unless (open($fh,$io,$file)) {
 	my $rw = ($io eq '<' ? 'read' : 'write');
 	super_die("cannot open $file for $rw");
@@ -236,4 +246,8 @@ setup_file {
 sub
 super_die {
     die "super $function: @_. Stop\n";
+}
+sub
+super_warn {
+    warn "super $function: @_. Stop\n";
 }
