@@ -178,9 +178,17 @@ foreach my $c (split(/,/,$pub_cat)) {
     }
     system 'chmod', 'o+r', @res;
 }
-
+my $projtype = `oraccopt . type`;
 my $cat_policy = `oraccopt . catalog-build-policy`;
-$cat_policy = 'mixed' unless $cat_policy;
+
+unless ($cat_policy) {
+    if ($projtype eq 'superglo') {
+	$cat_policy = 'virtual';
+    } else {
+	$cat_policy = 'mixed';
+    }
+}
+
 warn "catalog-build-policy=$cat_policy\n" if $verbose;
 exit(0) if $cat_policy eq 'none';
 
