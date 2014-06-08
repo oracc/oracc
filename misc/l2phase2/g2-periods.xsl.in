@@ -1,0 +1,58 @@
+<?xml version='1.0'?>
+
+<xsl:stylesheet version="1.0" 
+  xmlns="http://oracc.org/ns/cbd/1.0"
+  xmlns:cbd="http://oracc.org/ns/cbd/1.0"
+  xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
+  xmlns:ex="http://exslt.org/common"
+  xmlns:g="http://oracc.org/ns/gdl/1.0"
+  xmlns:i="http://oracc.org/ns/instances/1.0"
+  xmlns:xcl="http://oracc.org/ns/xcl/1.0"
+  xmlns:note="http://oracc.org/ns/note/1.0"
+  xmlns:norm="http://oracc.org/ns/norm/1.0"
+  xmlns:usg="http://oracc.org/ns/usg/1.0"
+  xmlns:xl="http://www.w3.org/1999/xlink"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  extension-element-prefixes="ex"
+  exclude-result-prefixes="cbd dc ex g i xl norm xcl usg note">
+
+<xsl:import href="html-standard.xsl"/>
+<xsl:import href="g2-gdl-HTML.xsl"/>
+
+<xsl:include href="xpd.xsl"/>
+
+<xsl:param name="basename"/>
+<xsl:param name="project"/>
+<xsl:param name="projectDir"/>
+<xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
+
+<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
+
+<xsl:template match="cbd:entry">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:copy-of select="*"/>
+    <xsl:variable name="p-id" select="concat(@xis,'.p')"/>
+    <xsl:for-each select="document($periods-xis)">
+      <xsl:for-each select="id($p-id)">
+	<periods>
+	  <xsl:for-each select="*">
+	    <p>
+	      <xsl:copy-of select="@*"/>
+	      <xsl:apply-templates/>
+	    </p>
+	  </xsl:for-each>
+	</periods>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="*">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </xsl:copy>
+</xsl:template>
+
+</xsl:stylesheet>
