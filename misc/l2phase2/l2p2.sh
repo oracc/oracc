@@ -1,6 +1,15 @@
 #!/bin/sh
 project=`oraccopt`
 
+function xis {
+    echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
+    xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
+    (cd 01bld/$l ; \
+	mv $l.xis $l.xis.top ; \
+	xsltproc -stringparam sub $l.xis.sub $ORACC/lib/scripts/l2p2-xis-merge.xsl $l.xis.top >$l.xis
+    )
+}
+
 function g2x {
     echo creating $ldir/$l.g2x from $ldir/union.sig
     withall=`oraccopt . cbd-with-all`
@@ -9,8 +18,7 @@ function g2x {
     else
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
-#    echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-    xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
+    xis $ldir $l
     if [ -s $ldir/$l.map ]; then
 #	echo running l2p2-g2c.plx $l
 	l2p2-g2c.plx $l
@@ -55,7 +63,8 @@ if [ "$super" = "" ]; then
 	    echo creating $ldir/$l.g2x from $ldir/union.sig
 	    l2p2-g2x.plx -h $ldir/union.sig
 	    #	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-	    xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
+#	    xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
+	    xis $ldir $l
 	    if [ -s $ldir/$l.map ]; then
 		#	    echo running l2p2-g2c.plx $l
 		l2p2-g2c.plx $l

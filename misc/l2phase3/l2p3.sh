@@ -6,6 +6,16 @@ if [ "$webdir" == "" ]; then
     echo l2p3.sh: must give webdir on command line
     exit 1
 fi
+
+glostyle=`oraccopt . type`
+if [ "$glostyle" == "superglo" ]; then
+    xcf=l2p3-newstyle.xcf
+else
+    xcf=l2p3.xcf 
+fi
+
+echo l2p3.sh: using configuration file $xcf
+
 rm -fr $webdir/cbd ; mkdir -p $webdir/cbd
 g2c=`find 01bld/* -name '*.g2c'`
 if [ "$g2c" != "" ]; then
@@ -13,7 +23,7 @@ if [ "$g2c" != "" ]; then
 	ldir=`dirname $g2c`
 	l=`basename $ldir`
 	echo producing web version of $l
-	l2-glomanager.plx -webdir=$webdir -conf l2p3.xcf -cbdlang $l $*
+	l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
 	xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
 	xfftab=`oraccopt . cbd-forms-table`
 	if [ "$xfftab" = 'yes' ]; then

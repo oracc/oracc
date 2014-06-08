@@ -121,8 +121,8 @@ sub_xis(int count, int start, struct item **items, const char *xis_id)
   int i;
   const char *ret_id = next_xis_id(xis_id);
   fprintf(subxisfp, "<xis xml:id=\"%s\" efreq=\"%d\">", ret_id, count);
-  for (i = start; i < count; ++i)
-    fprintf(subxisfp, "<r>%s</r>", items[i]->s);
+  for (i = 0; i < count; ++i)
+    fprintf(subxisfp, "<r>%s</r>", items[start+i]->s);
   fputs("</xis>", subxisfp);
   return ret_id;
 }
