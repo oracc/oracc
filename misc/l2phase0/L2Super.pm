@@ -166,7 +166,7 @@ init {
 	    = setup_file('>', '00lib', '', $baselang, 'glo');
     } elsif ($function eq 'getsigs') {
 	($return_data{'output'},$return_data{'output_fh'}) 
-	    = setup_file('>', '00sig', $project, $lang, 'sig');
+	    = setup_file(undef, '00sig', $project, $lang, 'sig');
 	$return_data{'outputdate'} = $last_outputdate;
     }
 
@@ -258,9 +258,11 @@ setup_file {
     $last_outputdate = (stat($file))[9];
     system 'mkdir', '-p', $dir
 	unless -d $dir;
-    unless (open($fh,$io,$file)) {
-	my $rw = ($io eq '<' ? 'read' : 'write');
-	super_die("cannot open $file for $rw");
+    if ($io) {
+	unless (open($fh,$io,$file)) {
+	    my $rw = ($io eq '<' ? 'read' : 'write');
+	    super_die("cannot open $file for $rw");
+	}
     }
     return ($file,$fh);
 }
