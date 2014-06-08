@@ -83,7 +83,7 @@
 <xsl:template match="cbd:articles">
 <!--  <xsl:message>config-file=<xsl:value-of select="$config-file"/>; cbd-forms-table=<xsl:value-of select="$cbd-forms-table"/></xsl:message> -->
   <xsl:call-template name="make-html">
-    <xsl:with-param name="webtype" select="'cbd'"/>
+<!--    <xsl:with-param name="webtype" select="'cbd'"/> -->
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>
     <xsl:with-param name="project" select="$project"/>
@@ -1011,37 +1011,43 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:otherwise>
-      <h3 class="sense">
-	<span class="sensenum">
-	  <xsl:value-of select="@num"/>
-	</span>
-	<xsl:text> </xsl:text>
-        <xsl:value-of select="cbd:mng"/>
+      <h2 class="sense">
+	<xsl:choose>
+	  <xsl:when test="@icount>0">
+	    <a class="icountu" 
+	       href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	      <xsl:call-template name="format-sense"/>
+	      <xsl:if test="@icount>0">
+		<xsl:text> (</xsl:text>
+		<xsl:value-of select="concat(@icount,'x/',@ipct,'%')"/>
+		<xsl:text>)</xsl:text>
+	      </xsl:if>
+	    </a>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:call-template name="format-sense"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </h2>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
-	<xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)">
-	  <xsl:value-of select="concat(' (',cbd:pos,') ')"/>
-	</xsl:if>
-
-	<xsl:if test="@icount>0">
-	  <xsl:call-template name="instref"/>
-<!--
-	  <xsl:call-template name="print-icount"/>
- -->
-	</xsl:if>
-<!--
-        <xsl:if test="i:instances">
-  	  <xsl:message>CHILD0=<xsl:value-of select="i:instances/i:g[1]"/></xsl:message>
-        </xsl:if>
- -->
+<xsl:template name="format-sense">
+  <span class="sensenum">
+    <xsl:value-of select="@num"/>
+  </span>
+  <xsl:text> </xsl:text>
+  <xsl:value-of select="cbd:mng"/>
+  <xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)">
+    <xsl:value-of select="concat(' [',cbd:pos,'] ')"/>
+  </xsl:if>
 <!-- 
        <xsl:call-template name="count-instances">
 	  <xsl:with-param name="g" select="i:instances/i:g[1]"/>
 	</xsl:call-template>
  -->
-      </h3>
 <!--      <xsl:apply-templates select="cbd:usages"/> -->
-    </xsl:otherwise>
-  </xsl:choose>
 </xsl:template>
 
 <!--
