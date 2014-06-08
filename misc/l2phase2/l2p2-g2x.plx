@@ -774,11 +774,7 @@ xis {
     my %xis_info = ();
     @xis_info{'xid','icount','ipct'} = ($xid,$icount,$ipct);
     $xis_info{'p_icount'} = (defined($icount) ? $icount : -1);
-    
-#    $xrefid = $xrefs{"@xrefs")};
-#    if (!defined($xrefid)) {
-#	$xrefs{"@xrefs"} = $xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
-#    }
+
     my $xis_pair = undef;
     if (($xis_pair = $xrefs{"@xrefs"})) {
 	$xrefid = $$xis_pair[0];
@@ -788,34 +784,6 @@ xis {
     }
 
     $xis_info{'xrefid'} = $xrefid;
-
-#    my @s = ORACC::L2GLO::Util::xis_stats($lang,@xrefs);
-#    $xis_info{'periods'} = shift @s;
-#    my $skey = join(':',@s);
-#    if ($xis_periods{$skey}) {
-#	$xis_info{'periods-id'} = $xis_periods{$skey};
-#    } else {
-#	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
-#	$xis_periods{$skey} = $curr_periods_id;
-#	$xis_info{'periods-id'} = $curr_periods_id;
-#   }
-
-#    my @pct = ();
-#    for (my $i = 0; $i <= $#s; ++$i) {
-#	if ($s[$i]) {
-#	    $pct[$i] = ipct($s[$i],$icount);
-#	} else {
-#	    $pct[$i] = 0;
-#	}
-#    }
-#    my $pkey = join(':',@pct);
-#    if ($xis_periods{$pkey}) {
-#	$xis_info{'periods-pct-id'} = $xis_periods{$pkey};
-#    } else {
-#	my $curr_periods_id = sprintf("p%05x",$curr_periods_int++);
-#	$xis_periods{$pkey} = $curr_periods_id;
-#	$xis_info{'periods-pct-id'} = $curr_periods_id;
-#   }    
 
     ( %xis_info );
 }
