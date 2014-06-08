@@ -168,6 +168,7 @@ h2.instances { font-size: medium; font-family: serif; font-weight: normal;
 		font-style: italic; margin-bottom: 0pt; margin-top: 5pt }
 
 div.ns-glo-top { }
+.ns-glo-sec div { margin-left: 0em; }
 .ns-glo-sec h1 { font-size: medium; margin-left: 1em; }
 .ns-glo-sec h2 { font-size: medium; margin-left: 2em; }
 

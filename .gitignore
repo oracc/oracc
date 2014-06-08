@@ -560,3 +560,7 @@ misc/httpd/mac-apache2-httpd.conf
 misc/httpd/oracc-vhosts-server-only.conf
 
 misc/l2phase2/g2-periods.xsl
+
+misc/l2phase3/ns-g2-HTML-articles.xsl
+
+misc/l2phase3/ns-g2-HTML-articles.xsl
