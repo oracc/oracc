@@ -44,8 +44,10 @@ fi
 l2p3.sh $webdir
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
-    cp 01bld/$lang/letter_ids.tab $a
-    cp 01bld/$lang/L*.lst $a
+    if [ -r 01bld/$lang/letter_ids.tab ]; then
+	cp 01bld/$lang/letter_ids.tab $a
+	cp 01bld/$lang/L*.lst $a
+    fi
 done
 if [ -f 01bld/lists/have-xtf.lst ]; then
     web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
