@@ -14,7 +14,7 @@
 
 const char *xis_uri = "http://oracc.org/ns/xis/1.0";
 const char *xisfile = NULL;
-FILE *xisfp = NULL;
+FILE *xisfp = NULL, *subxisfp = NULL;
 
 extern void pd_sort_cache(void);
 
@@ -97,6 +97,36 @@ is_lang_id(const char *s)
   return 'x' == *s;
 }
 
+
+const char *
+next_xis_id(const char *xis_id)
+{
+  static int subid = 0;
+  if (xis_id)
+    {
+      static char subid_buf[64];
+      sprintf(subid_buf, "%s.p.s%03d",xis_id,subid++);
+      return subid_buf;
+    }
+  else
+    {
+      subid = 0;
+      return NULL;
+    }
+}
+
+const char *
+sub_xis(int count, int start, struct item **items, const char *xis_id)
+{
+  int i;
+  const char *ret_id = next_xis_id(xis_id);
+  fprintf(subxisfp, "<xis xml:id=\"%s\" efreq=\"%d\">", ret_id, count);
+  for (i = start; i < count; ++i)
+    fprintf(subxisfp, "<r>%s</r>", items[i]->s);
+  fputs("</xis>", subxisfp);
+  return ret_id;
+}
+
 void
 xis_dump(void)
 {
@@ -172,6 +202,8 @@ xis_dump(void)
   pd_sort_cache();
 
   memset(pmap_counts, '\0', PCODE_MAX*sizeof(int));
+  
+  (void)next_xis_id(NULL);
 
   fprintf(xisfp, "<periods xml:id=\"%s.p\">", curr_ref);
   for (i = j = 0; i < sic_size; ++i)
@@ -181,6 +213,7 @@ xis_dump(void)
       u4 poff = pindex[headfields[0]];
       int curr_group, init_j;
       int count = 0;
+      const char *sub_xis_id = NULL;
 
       for (init_j = j, curr_group = pitems[j]->grp; 
 	   j < nitems && pitems[j]->grp == curr_group;
@@ -188,11 +221,14 @@ xis_dump(void)
 	;
       count = j - init_j;
 
+      if (count)
+	sub_xis_id = sub_xis(count, init_j, pitems, curr_ref);
+
       pmap_counts[pmaptab[sindex[headfields[0]]]] += count;
 
       fprintf(xisfp, 
-	      "<p icount=\"%d\" ipct=\"%d\">%s</p>", 
-	      count, ipct(count,percent), (char*)&sip->pool[poff]);
+	      "<p icount=\"%d\" ipct=\"%d\" xis=\"%s\">%s</p>", 
+	      count, ipct(count,percent), sub_xis_id, (char*)&sip->pool[poff]);
 #if 0
       if (i < (sic_size-1))
 	fputs("; ",stdout);
@@ -305,12 +341,19 @@ int
 main(int argc, char **argv)
 {
   const char *fname[2];
+  char *subxisfn = NULL;
 
   xisfp = stdout;
 
   full_count_mode = 1;
 
   options(argc,argv,"cdl:p:Px:");
+
+  subxisfn = malloc(strlen(xisfile) + 5);
+  (void)sprintf(subxisfn, "%s.sub", xisfile);
+  subxisfp = fopen(subxisfn,"w");
+  fputs("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n", subxisfp);
+  fputs("<xisses xmlns=\"http://oracc.org/ns/xis/1.0\" xmlns:xis=\"http://oracc.org/ns/xis/1.0\">", subxisfp);
 
   fname[0] = xisfile;
   fname[1] = NULL;
@@ -340,6 +383,8 @@ main(int argc, char **argv)
   runexpatNS(i_list,fname,sH,eH,":");
 
   fprintf(xisfp, "</xis-periods>");
+  fputs("</xisses>",subxisfp);
+  fclose(subxisfp);
   
   return 0;
 }
