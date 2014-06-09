@@ -36,6 +36,10 @@ function distprof2(project,glos,gxis) {
     cbdPopup('/'+project+'/'+glos+'?xis='+gxis,'dpframe',600,700,0,0,1);
 }
 
+function nsGloSubPage(project,glos,subid) {
+    cbdPopup('/'+project+'/cbd/'+glos+'/'+subid+'.html','spframe',600,700,100,100,1);
+}
+
 function getWinHeight() {
   var myHeight = 0;
   if (typeof(window.innerHeight) == 'number') {

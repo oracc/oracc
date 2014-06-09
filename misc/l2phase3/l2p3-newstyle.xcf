@@ -43,6 +43,11 @@
   </set>
 
   <set var="process">
+    <key k="action"   to="$scripts/g2-forms-HTML.xsl"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-form.xml"/>
+  </set>
+
+  <set var="process">
     <key k="action"   to="$scripts/cbd-HTML-OBF.xsl"/>
     <key k="output"   to="$webcbd/$cbdlang/onebigfile.html"/>
   </set>
@@ -57,6 +62,11 @@
     <key k="action"    to="$scripts/p2-cbd-toc.xsl"/>
     <key k="input"     to="$webcbd/$cbdlang/toc.html"/>
     <key k="output"    to="$webcbd/$cbdlang/p2-toc.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/subpage-form.xml"/>
   </set>
 
   <!-- move next three to l2p2? -->

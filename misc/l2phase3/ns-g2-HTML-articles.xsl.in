@@ -197,6 +197,7 @@
 	  <xsl:with-param name="nodes"  select="cbd:forms/*"/>
 	  <xsl:with-param name="text" select="'spelling'"/>
 	  <xsl:with-param name="plural" select="'different spellings'"/>
+	  <xsl:with-param name="suffix" select="'.f'"/>
 	</xsl:call-template>
 	<xsl:call-template name="ns-glo-top-link">
 	  <xsl:with-param name="nodes"  select="cbd:norms/*"/>
@@ -252,7 +253,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:if test="$node-count > 0">
     <h2>
       <a class="icountu" 
-	 href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	 href="javascript:nsGloSubPage('{$basename}','{/*/@xml:lang}','{ancestor::cbd:entry/@xml:id}{$suffix}')">
 	<xsl:value-of select="$node-count"/>
 	<xsl:text> </xsl:text>
 	<xsl:choose>
