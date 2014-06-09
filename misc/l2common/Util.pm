@@ -138,7 +138,7 @@ $ORACC::L2GLO::Util::project = '';
     TN=>'qpn-x-temple',
     WN=>'qpn-x-waters',
     YN=>'qpn-x-ynames',
-    ZN=>'qpn-x-signs',
+    ZN=>'qpn-x-snames',
     );
 
 %ORACC::L2GLO::Util::long_lang = (
@@ -181,6 +181,7 @@ $ORACC::L2GLO::Util::project = '';
     'qpn-x-temple'=>'p:TN',
     'qpn-x-waters'=>'p:WN',
     'qpn-x-ynames'=>'p:YN',
+    'qpn-x-snames'=>'p:ZN',
     );
 
 sub
