@@ -151,10 +151,10 @@ if (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
 }
 
-extra_init_hash();
-open(D,">01tmp/extra_init_hash.dump");
-print D Dumper \%catd;
-close(D);
+#extra_init_hash();
+#open(D,">01tmp/extra_init_hash.dump");
+#print D Dumper \%catd;
+#close(D);
 
 my $pub_cat = `oraccopt . catalog-publish`;
 foreach my $c (split(/,/,$pub_cat)) {
@@ -507,6 +507,10 @@ foreach my $k (sort {$stringpool{$a} <=> $stringpool{$b} } keys %stringpool) {
     print VALTAB "$k\000";
 }
 close(VALTAB);
+
+#open(V,'>01tmp/valtab.dump');
+#print V Dumper \%valtab;
+#close(V);
 
 if (scalar keys %valtab) {
     system "@@ORACC@@/bin/pgcsi $results/sortinfo.tab";
