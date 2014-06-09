@@ -194,16 +194,16 @@
       <div class="ns-glo-sec">
 	<h1>Forms:</h1>
 	<xsl:call-template name="ns-glo-top-link">
-	  <xsl:with-param name="nodes"  select="cbd:forms"/>
+	  <xsl:with-param name="nodes"  select="cbd:forms/*"/>
 	  <xsl:with-param name="text" select="'spelling'"/>
 	  <xsl:with-param name="plural" select="'different spellings'"/>
 	</xsl:call-template>
 	<xsl:call-template name="ns-glo-top-link">
-	  <xsl:with-param name="nodes"  select="cbd:norms"/>
+	  <xsl:with-param name="nodes"  select="cbd:norms/*"/>
 	  <xsl:with-param name="text" select="'normalized transcription'"/>
 	</xsl:call-template>
 	<xsl:call-template name="ns-glo-top-link">
-	  <xsl:with-param name="nodes"  select="cbd:morphs"/>
+	  <xsl:with-param name="nodes"  select="cbd:morphs/*"/>
 	  <xsl:with-param name="text" select="'morphological analysis'"/>
 	  <xsl:with-param name="plural" select="'morphological analyses'"/>
 	</xsl:call-template>
