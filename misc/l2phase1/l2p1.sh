@@ -14,3 +14,7 @@ if [ "$cbdmode" != "super" ]; then
     fi
     rm -f 01bld/nolem
 fi
+
+l2p1-sig-invert.plx
+
+
