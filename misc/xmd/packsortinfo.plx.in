@@ -19,7 +19,7 @@ my @T = ();
 my @P = ();
 my @G = ();
 
-my $codes = load_xml("$cat/results/sortvals.xml");
+my $codes = load_xml("01bld/sortvals.xml");
 foreach my $type ($codes->getDocumentElement()->childNodes()) {
     if ($type->localName() eq 'places') {
 	foreach my $c ($type->childNodes()) {
@@ -39,7 +39,7 @@ foreach my $type ($codes->getDocumentElement()->childNodes()) {
     }
 }
 
-open(IN,"$cat/results/sortinfo.tab");
+open(IN,"01bld/sortinfo.tab");
 while (<IN>) {
     my($pq,$id,$keys) = (/^(.)(.*?)\t(.*)$/);
     my %keys = split(/[\t=]/,$keys);
@@ -63,7 +63,7 @@ while (<IN>) {
 }
 close(IN);
 
-open(P,">$txt/sortinfo.p");
+open(P,">01bld/sortinfo.p");
 for (my $i = 0; $i <= $#p; ++$i) {
     if ($p[$i]) {
 	syswrite(P,$p[$i]);
@@ -72,7 +72,7 @@ for (my $i = 0; $i <= $#p; ++$i) {
     }
 }
 close(P);
-open(P,">$txt/sortinfo.q");
+open(P,">01bld/sortinfo.q");
 for (my $i = 0; $i <= $#q; ++$i) {
     if ($q[$i]) {
 	syswrite(P,$q[$i]);
