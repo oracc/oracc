@@ -25,6 +25,10 @@
 
 <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
+<xsl:template match="/">
+  <xsl:apply-templates/>
+</xsl:template>
+
 <xsl:template match="xh:head"/>
 
 <xsl:template match="xh:body">
@@ -32,7 +36,9 @@
 </xsl:template>
 
 <xsl:template match="xh:div[@class='body']">
-  <ex:document href="{concat('./',$webdir,'/cbd/',$subdir-str,@xml:id,'.html')}"
+  <xsl:variable name="outfile" select="concat('./',$webdir,'/cbd/',$subdir-str,@xml:id,'.html')"/>
+<!--  <xsl:message>gsplit div[class=body] outfile=<xsl:value-of select="$outfile"/></xsl:message> -->
+  <ex:document href="{$outfile}"
     method="xml" encoding="utf-8"
     doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
     doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"

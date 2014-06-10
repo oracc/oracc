@@ -202,11 +202,13 @@
 	<xsl:call-template name="ns-glo-top-link">
 	  <xsl:with-param name="nodes"  select="cbd:norms/*"/>
 	  <xsl:with-param name="text" select="'normalized transcription'"/>
+	  <xsl:with-param name="suffix" select="'.n'"/>
 	</xsl:call-template>
 	<xsl:call-template name="ns-glo-top-link">
 	  <xsl:with-param name="nodes"  select="cbd:morphs/*"/>
 	  <xsl:with-param name="text" select="'morphological analysis'"/>
 	  <xsl:with-param name="plural" select="'morphological analyses'"/>
+	  <xsl:with-param name="suffix" select="'.m'"/>
 	</xsl:call-template>
       </div>
     </xsl:if>
@@ -249,11 +251,12 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:param name="text"/>
   <xsl:param name="plural" select="''"/>
   <xsl:param name="nodes"/>
+  <xsl:param name="suffix" select="''"/>
   <xsl:variable name="node-count" select="count($nodes)"/>
   <xsl:if test="$node-count > 0">
     <h2>
       <a class="icountu" 
-	 href="javascript:nsGloSubPage('{$basename}','{/*/@xml:lang}','{ancestor::cbd:entry/@xml:id}{$suffix}')">
+	 href="javascript:nsGloSubPage('{$basename}','{/*/@xml:lang}','{ancestor-or-self::cbd:entry/@xml:id}{$suffix}')">
 	<xsl:value-of select="$node-count"/>
 	<xsl:text> </xsl:text>
 	<xsl:choose>

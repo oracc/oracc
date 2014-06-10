@@ -43,11 +43,6 @@
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/g2-forms-HTML.xsl"/>
-    <key k="output"   to="01bld/$cbdlang/subpage-form.xml"/>
-  </set>
-
-  <set var="process">
     <key k="action"   to="$scripts/cbd-HTML-OBF.xsl"/>
     <key k="output"   to="$webcbd/$cbdlang/onebigfile.html"/>
   </set>
@@ -65,8 +60,25 @@
   </set>
 
   <set var="process">
+    <key k="action"   to="$scripts/ns-g2-forms-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-form.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"   to="01bld/$cbdlang/subpage-form.xml"/>
     <key k="action"   to="$scripts/g2-split-html.xsl"/>
-    <key k="input"    to="01bld/$cbdlang/subpage-form.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-norms-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-norm.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"   to="01bld/$cbdlang/subpage-norm.xml"/>
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
   </set>
 
   <!-- move next three to l2p2? -->

@@ -171,6 +171,7 @@ div.ns-glo-top { }
 .ns-glo-sec div { margin-left: 0em; }
 .ns-glo-sec h1 { font-size: medium; margin-left: 1em; }
 .ns-glo-sec h2 { font-size: medium; margin-left: 2em; }
+p.ns-glo-sub  { margin-left: -9em; text-indent: 10em; margin-bottom: .3333em; }
 
 h3.sense { font-size: medium; }
 
