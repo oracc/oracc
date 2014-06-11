@@ -173,6 +173,9 @@ acd2xml {
     my($input,$n,$arglang,$title) = @_;
     my $project = undef;
     my $last_tag = '';
+
+    %seen = ();
+
     $lang = $arglang;
 
     if (($input =~ /sux/ || $input =~ /qpn/) && -r "$input.norm") {
@@ -1526,6 +1529,7 @@ sub
 input_acd {
     my($input,$lang,$n,$title,$save_header) = @_;
     my %acd = ();
+    %seen = ();
     $status = 0;
     $bad_action = 'input_acd';
     $bad_input = $input; $bad_input =~ s/\.norm$//; $bad_input =~ s/01bld/00lib/;
