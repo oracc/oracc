@@ -8,7 +8,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
 use POSIX qw(strftime);
-
+use File::Copy "cp";
 
 # use Data::Dumper;
 
@@ -47,6 +47,10 @@ my $function = undef;
 my $last_outputdate;
 my %return_data = ();
 
+my $srcdata = undef;
+my $srcfile = undef;
+my %srchash = ();
+
 sub
 init {
     GetOptions(
@@ -69,6 +73,8 @@ init {
 
     my $argfile = shift @ARGV;
     if ($argfile) {
+	super_die("can't use -project/-lang when giving argument file")
+	    if $project || $lang;
 	super_die("file '$argfile' does not exist")
 	    unless -e $argfile;
 	super_die("file '$argfile' exists but cannot be read")
@@ -76,14 +82,18 @@ init {
 	my ($argfile_dir, $argfile_project, $argfile_lang, $argfile_type) 
 	    = ($argfile =~ m#(.*?)/(.*?)~(.*?)\.(.*?)$#);
 
-	super_die("expected filename to have format DIR/PROJECT~LANG.EXT, not $argfile")
-	    unless $argfile_dir;
-	super_die("expected file to be in $dir, but it is in $argfile_dir")
-	    unless $dir eq $argfile_dir;
-	super_die("expected file to have extension .$type but it has .$argfile_type")
-	    unless $type eq $argfile_type;
-	super_die("can't use -project/-lang when giving argument file")
-	    if $project || $lang;
+	if ($argfile_dir) {
+	    super_die("expected file to be in $dir, but it is in $argfile_dir")
+		unless $dir eq $argfile_dir;
+	    super_die("expected file to have extension .$type but it has .$argfile_type")
+		unless $type eq $argfile_type;
+	} else {
+	    if ($function eq 'induct') {
+		($argfile_project,$argfile_lang) = projlang_from_glo_header($argfile);
+	    } else {
+		super_die("expected filename to have format DIR/PROJECT~LANG.EXT, not $argfile")
+	    }
+	}
 
 	$project = $argfile_project;
 	$lang = $argfile_lang;
@@ -134,6 +144,11 @@ init {
 	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($argfile);
 	super_die("errors in $argfile") unless $arg_xml;
 	undef $arg_xml;
+	# load this so we can parse the mapfile
+	$srcfile = $argfile;
+	$srcdata = ORACC::L2GLO::Builtins::input_acd($argfile);
+	%srchash = %{$$srcdata{'ehash'}};
+	$return_data{'srchash_ref'} = \%srchash;
     } elsif ($type eq 'map') {
 	my($mapref,$mapgloref) = parse_mapfile($argfile);
 	super_die("errors in $argfile")
@@ -149,6 +164,13 @@ init {
 	($return_data{'output'},$return_data{'output_fh'}) 
 	    = setup_file('>', '00src', $project, $lang, 'glo');
     } elsif ($function eq 'compare') {
+	my $argmap = $argfile; $argmap =~ s/00src/00map/; $argmap =~ s/glo$/map/;
+	backup_file($argmap);
+	my($mapref,$mapgloref) = parse_mapfile($argmap);
+	super_die("errors in $argfile")
+	    unless $mapref;
+	$return_data{'mapref'} = $mapref;
+	$return_data{'mapgloref'} = $mapgloref;
 	($return_data{'output'},$return_data{'output_fh'}) 
 	    = setup_file('>', '00map', $project, $lang, 'map');
     } elsif ($function eq 'prepare') {
@@ -157,8 +179,8 @@ init {
     } elsif ($function eq 'merge') {
 	my $argmap = $argfile;
 	$argmap =~ s/new$/map/;
-	backup_file($argfile, '00bak', $project, $lang, 'glo');
-	backup_file($argmap, '00bak', $project, $lang, 'map');
+	backup_file($argfile);
+	backup_file($argmap);
 	($return_data{'map'},$return_data{'map_fh'})   = setup_file('<', '01tmp', $project, $lang, 'map');
 	($return_data{'outmap'},$return_data{'outmap_fh'}) 
 	    = setup_file('>', '00map', $project, $lang, 'map');
@@ -177,13 +199,15 @@ init {
 
 sub
 backup_file {
-    my($from) = shift @ARGV;
+    my($from) = shift;
     my $to = $from;
-    super_die("no such file $from to back up")
-	unless -r $from;
-    $to =~ s/^(00lib|01tmp)/00bak/;
-    super_die("can't write backup $to when trying to back up $from")
-	unless -w $to;
+
+    # this is not an error--it just means the file being backed up doesn't exist yet
+#    super_die("no such file $from to back up")
+#	unless -r $from;
+    return unless -r $from;
+
+    $to =~ s/^(0[01]...)/00bak/;
 
     my $isodate = strftime("%Y%m%d", gmtime());
     $to =~ s/\./-$isodate./;
@@ -200,15 +224,25 @@ backup_file {
     }
     $to =~ s/\./-$version./;
     super_warn("backing up $from to $to");
-    system "mv $from $to";
+    cp($from,$to) or super_die("backup of $to failed");
+}
+
+sub
+chatty {
+    if ($ORACC::L2P0::L2Super::chatty) {
+	warn "super $function: ", @_, "\n";
+    }
 }
 
 sub
 parse_mapfile {
+    my $m = shift;
     my %glo = ();
     my @map = ();
     my $map_status = 0;
-    open(M, $_[0]) || super_die("weird error: unable to open map file $_[0]");
+
+    open(M, $m) || super_die("weird error: unable to open map file $m");
+    chatty("loading map file $m");
     while (<M>) {
 	if (/^add/) {
 	    my ($cfgwpos, $partsref, $senseref) = parse_map($_);
@@ -241,6 +275,27 @@ parse_mapfile {
 }
 
 sub
+projlang_from_glo_header {
+    my $glo = shift;
+    my $project = '';
+    my $lang = '';
+    open(G,$glo) || super_die("can't read glossary $glo");
+    while (<G>) {
+	next if /^\s*$/;
+	if (/^\@project\s+(.*?)\s*$/) {
+	    $project = $1;
+	} elsif (/^\@lang\s+(.*?)\s*$/) {
+	    $lang = $1;
+	}
+	last if /^\@entry/;
+    }
+    close(G);
+    super_die("failed to obtain project and lang from glossary $glo")
+	unless $project && $lang;
+    ($project,$lang);
+}
+
+sub
 setup_argfile {
     my $file = shift @_;
     my $fh = undef;
@@ -253,6 +308,7 @@ setup_argfile {
 sub
 setup_file {
     my($io,$dir,$proj,$lang,$type) = @_;
+    $proj =~ tr#/#-#;
     my $file = "$dir/$proj~$lang.$type";
     my $fh = undef;
     $last_outputdate = (stat($file))[9];
@@ -268,16 +324,10 @@ setup_file {
 }
 
 sub
-chatty {
-    if ($ORACC::L2P0::L2Super::chatty) {
-	warn "super $function: ", @_, "\n";
-    }
-}
-
-sub
 super_die {
     die "super $function: @_. Stop.\n";
 }
+
 sub
 super_warn {
     warn "super $function: @_.\n";

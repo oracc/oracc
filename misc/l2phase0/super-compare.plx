@@ -1,43 +1,36 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8';
-use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
-use ORACC::L2GLO::Builtins;
+use ORACC::L2P0::L2Super;
+use ORACC::L2GLO::Util;
 
 $ORACC::L2GLO::Builtins::bare = 1;
 my $EMULT = 1000;
 
-my $chatty = 1;
 my %map = ();
 my %sort = ();
 my @warnings = ();
 
-my @glo = <00lib/*.glo>;
-
-die "super compare: a super-glossary is must have a .glo file\n" if $#glo < 0;
-die "super compare: a super-glossary is only allowed one .glo file\n" if $#glo > 0;
-
-my $base = shift @glo;
-my $src = shift @ARGV;
-
-die "super compare: unable to open base glossary $base. Stop.\n" unless -r $base;
-die "super compare: unable to open source glossary $src. Stop.\n" unless -r $src;
+my %data = ORACC::L2P0::L2Super::init();
+close($data{'input_fh'}); # we're going to use this via input_acd
+my $base = $data{'base'};
+my $src = $data{'input'};
 
 chatty("super glossary comparison routine:");
 chatty("using base glossary = $base");
 chatty("using comparison glossary = $src");
 
 my $basedata = ORACC::L2GLO::Builtins::input_acd($base);
-my $srcdata = ORACC::L2GLO::Builtins::input_acd($src);
-
 my %basehash = %{$$basedata{'ehash'}};
-my %srchash = %{$$srcdata{'ehash'}};
-
 add_basehash_senses();
 
-my $map = $src; $map =~ s/glo$/map/; $map =~ s/00src/00map/;
-load_map($map) if -r $map;
+my %srchash = %{$data{'srchash_ref'}};
+
+# This can be undefined if the map file doesn't exist yet
+if ($data{'mapref'}) {
+    %map = %{$data{'mapgloref'}};
+}
 
 foreach my $e (keys %srchash) {
     my $mapped = 0;
@@ -63,7 +56,7 @@ foreach my $e (keys %srchash) {
     }
 }
 
-dump_map($map);
+dump_map();
 
 chatty("done.");
 
@@ -84,59 +77,21 @@ add_basehash_senses {
 }
 
 sub
-chatty {
-    if ($chatty) {
-	warn @_, "\n";
-    }
-}
-
-sub
 dump_map {
-    my $m = shift;
     my @v = values %map;
     foreach my $v (@v) {
+	warn "@$v\n";
 	warn "no sort code for $$v[2]\n" unless $sort{$$v[2]};
     }
-    if (-r $m) {
-	my $mbak = $m;
-	use POSIX qw(strftime);
-	my $isodate = strftime("%Y%m%d", gmtime());
-	$mbak =~ s/\.map$/-$isodate.map/; $mbak =~ s/00map/00bak/;
-	chatty("saving current $m as $mbak");
-	system('mv', $m, $mbak);
-    }
-    chatty("writing new map file $m");
-    open(M, ">$m") || die "super compare: can't write to map file $m\n";
-    select M;
+    chatty("writing new map file $data{'output'}");
+    my $mapfh = $data{'output_fh'};
+    select $mapfh;
     foreach my $w (sort { $sort{$$a[2]} <=> $sort{$$b[2]} } values %map) {
 	print "$$w[0] $$w[1] $$w[2]";
 	print " => $$w[3]" if $$w[3];
 	print "\n";
     }
-    close(M);
-}
-
-sub
-load_map {
-    my $m = shift;
-    chatty("loading map file $m");
-    open(M, $m) || die "super compare: can't read map file $m\n";
-    while (<M>) {
-	my($act,$type,$sig) = (/(\S+)\s+(\S+)\s+(.*?)$/);
-	my $map = '';
-	warn "$m:$.: bad map entry\n" and next unless $sig;
-	next if $act eq 'new';
-	if ($sig =~ /^(.*?)\s*=>\s*(.*?)$/) {
-	    ($sig,$map) = ($1,$2);
-	}
-
-	if ($act eq 'map' || $act eq 'fix') {
-	    warn "$m:$.: $map not in base glossary\n" and next
-		unless $basehash{$map};
-	}
-	$map{$sig} = [ $act, $type, $sig, $map ];
-    }
-    close(M);
+    close($mapfh);
 }
 
 1;
