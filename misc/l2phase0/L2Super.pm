@@ -11,7 +11,7 @@ use ORACC::L2GLO::Util;
 use POSIX qw(strftime);
 use File::Copy "cp";
 
-# use Data::Dumper;
+use Data::Dumper;
 
 $ORACC::L2P0::L2Super::chatty = 1;
 $ORACC::L2GLO::Builtins::bare = 1;
@@ -218,12 +218,6 @@ init {
 		if map_check();
 	    print STDERR "ok\n";
 	}
-	$return_data{'mapfile'} = $mapfile;
-	$return_data{'map'} = \%map;
-	$return_data{'map_comments'} = \%map_comments;
-	$return_data{'map_glo'} = \%map_glo;
-	$return_data{'map_line'} = \%map_line;
-	$return_data{'map_sort'} = \%map_sort;
     }
 
     if ($function eq 'induct') {
@@ -247,6 +241,20 @@ init {
 	($return_data{'output'}) = setup_file(undef, '00sig', $project, $lang, 'sig');
 	$return_data{'outputdate'} = $last_outputdate;
     }
+
+    if ($function eq 'prepare') {
+	map_add2glo();
+	%map = map_drop_act('add');
+	map_sort_by_lines();
+	map_dump($return_data{'outmap'});
+    }
+ 
+    $return_data{'mapfile'} = $mapfile;
+    $return_data{'map'} = \%map;
+    $return_data{'map_comments'} = \%map_comments;
+    $return_data{'map_glo'} = \%map_glo;
+    $return_data{'map_line'} = \%map_line;
+    $return_data{'map_sort'} = \%map_sort;
 
     return %return_data;
 }
@@ -405,11 +413,11 @@ glo_compare {
 ##########################################################################################
 
 sub
-map_add_to_glo {
+map_add2glo {
     my $map_status = 0;
     foreach my $v (values %map) {
-	if (/^add/) {
-	    my ($cfgwpos, $partsref, $senseref) = parse_add($_);
+	if ($$v[0] eq 'add') {
+	    my ($cfgwpos, $partsref, $senseref) = map_parse_add($v);
 	    if ($cfgwpos) {
 		if ($partsref) {
 		    my @parts = @$partsref;
@@ -545,9 +553,9 @@ map_load {
 
 sub
 map_parse_add {
-    chomp;
-    if (s/^add\s+entry\s+//) {
-	s/\s*$//;
+    my $v = shift;
+    $_ = $$v[2];
+    if ($$v[1] eq 'entry') {
 	if ($srchash{$_}) {
 	    my %e = %${$srchash{$_}};
 	    s/\[/ [/; s/\]/] /;
@@ -557,9 +565,21 @@ map_parse_add {
 	    return ();
 	}
     } else {
-	s/^add\s+sense\s+//;
 	my($cf,$gw,$sense,$pos,$epos) = (m#^(.*?)\[(.*?)//(.*?)\](.*?)\'(.*?)$#);
-	return ("$cf [$gw] $pos", [ ], [ "$epos $sense" ]);
+	if ($cf) {
+	    return ("$cf [$gw] $pos", [ ], [ "$epos $sense" ]);
+	} else {
+	    super_warn("$_ bad sense specification in add");
+	    return ();
+	}
+    }
+}
+
+sub
+map_sort_by_lines {
+    foreach my $v (values %map) {
+	my $l = map_line(@$v);
+	$map_sort{$$v[2]} = $map_line{$l};
     }
 }
 
