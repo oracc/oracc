@@ -7,6 +7,10 @@ use Data::Dumper;
 
 my %data = ORACC::L2P0::L2Super::init();
 
-print Dumper \%data;
+my %map_no_new = map_drop_act('new');
+
+print Dumper \%map_no_new;
+
+
 
 1;

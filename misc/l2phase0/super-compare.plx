@@ -24,9 +24,9 @@ my %data = ORACC::L2P0::L2Super::init();
 
 chatty("using base glossary = $data{'basefile'}");
 chatty("using comparison glossary = $data{'srcfile'}");
+
 glo_compare();
-chatty("writing map file $data{'mapfile'}")
-    if ($data{'mapfile'};
+
 map_dump();
 map_unload();
 

@@ -1,7 +1,8 @@
 package ORACC::L2P0::L2Super;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/chatty super_warn super_die/;
+@EXPORT = qw/chatty super_warn super_die glo_compare 
+	     map_drop_act map_dump map_unload/;
 use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
@@ -178,8 +179,10 @@ init {
 		unless -e $basefile;
 	    super_die("base glossary $basefile can't be read")
 		unless -r $basefile;
+	    chatty_nonl("checking $basefile ... ");
 	    my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
 	    super_die("errors in $basefile") unless $arg_xml;
+	    print STDERR "ok\n";
 	    undef $arg_xml;
 	    $basedata = ORACC::L2GLO::Builtins::input_acd($basefile);
 	    %basehash = %{$$basedata{'ehash'}};
@@ -195,8 +198,10 @@ init {
     }
 
     if ($srcfile) {
+	chatty_nonl("checking $srcfile ... ");
 	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
 	super_die("errors in $argfile") unless $arg_xml;
+	print STDERR "ok\n";
 	undef $arg_xml;
 	$srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
 	%srchash = %{$$srcdata{'ehash'}};
@@ -206,8 +211,13 @@ init {
     }
 
     if ($mapfile) {
-	map_load($mapfile);
-	map_check();
+	if (-r $mapfile) {
+	    map_load($mapfile);
+	    chatty_nonl("checking $mapfile ... ");
+	    super_die("errors checking map file $mapfile")
+		if map_check();
+	    print STDERR "ok\n";
+	}
 	$return_data{'mapfile'} = $mapfile;
 	$return_data{'map'} = \%map;
 	$return_data{'map_comments'} = \%map_comments;
@@ -258,9 +268,9 @@ backup_file {
     my $isodate = strftime("%Y%m%d", gmtime());
     $to =~ s/\./-$isodate./;
     my $to_wild = $to;
-    $to_wild =~ s/\./-*./;
-    my @bak;
-    eval "@bak = <$to_wild>";
+    $to_wild =~ s/\./-\*./;
+    my @bak = eval("<$to_wild>");
+#    warn "to_wild = $to_wild => @bak\n";
     my $version = '000';
     if ($#bak >= 0) {
 	my @sbak = sort @bak;
@@ -274,10 +284,15 @@ backup_file {
 }
 
 sub
-chatty {
+chatty_nonl {
     if ($ORACC::L2P0::L2Super::chatty) {
-	warn "super $function: ", @_, "\n";
+	print STDERR "super $function: ", @_;
     }
+}
+
+sub
+chatty {
+    chatty_nonl(@_,"\n");
 }
 
 sub
@@ -345,6 +360,7 @@ sub
 glo_add_senses {
     my $hashref = shift;
     foreach my $e (keys %$hashref) {
+	next if $e =~ m#//#;
 	my %b = %${$$hashref{$e}};
 	foreach my $s (@{$b{'sense'}}) {
 	    my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
@@ -358,11 +374,14 @@ glo_add_senses {
 
 sub
 glo_compare {
+    %map = map_drop_act('new');
     foreach my $e (keys %srchash) {
+	next if $e =~ m,//,;
 	my $mapped = 0;
 	my %e = %${$srchash{$e}};
 	my $eline = $e{'#line'} * $EMULT;
 	$map_sort{$e} = $eline;
+
 	unless (defined $basehash{$e}) {
 	    $map{$e} = [ 'new', 'entry', $e , '' ] unless $map{$e};
 	} else {
@@ -433,7 +452,28 @@ map_check {
 	    }
 	}
     }
-    return $status == 0;
+    return $status;
+}
+
+sub
+map_drop_act {
+    my $act = shift;
+    my %map_no_new = %map;
+    my @deletiae = ();
+    foreach my $m (keys %map) {
+	my $mm = $map{$m};
+	push(@deletiae,$m) 
+	    if $$mm[0] eq $act;
+    }
+    foreach my $d (@deletiae) {
+	delete $map_no_new{$d};
+    }
+    %map_no_new;
+}
+
+sub
+map_drop_new {
+    return map_drop_act('new');
 }
 
 sub
@@ -442,7 +482,6 @@ map_dump {
     $mapout = $mapfile unless $mapout;
     my @v = values %map;
     foreach my $v (@v) {
-	warn "@$v\n";
 	warn "no sort code for $$v[2]\n" unless $map_sort{$$v[2]};
     }
     chatty("writing new map file $mapout");
