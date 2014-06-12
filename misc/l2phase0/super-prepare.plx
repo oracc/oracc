@@ -13,9 +13,7 @@ my $newmap = $mapfile;
 my $srcfile = $mapfile;
 
 $glofile =~ s/map$/new/; $glofile =~ s/00map/01tmp/;
-
 $newmap =~ s/00map/01tmp/;
-
 $srcfile =~ s/map$/glo/; $srcfile =~ s/00map/00src/;
 
 my $srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
@@ -32,7 +30,6 @@ my %glo = ();
 my($mapref,$gloref) = ORACC::L2P0::L2Super::parse_mapfile($mapfile);
 my @map = @$mapref;
 my %glo = %$gloref;
-
 
 print N @map;
 close(N);
@@ -54,34 +51,5 @@ close(G);
 
 chatty("super prepare: additions for base are in $glofile");
 chatty("super prepare: new version of map file is in $newmap");
-
-##############################################################################
-
-sub
-chatty {
-    if ($chatty) {
-	warn @_, "\n";
-    }
-}
-
-sub
-parse_map {
-    chomp;
-    if (s/^add\s+entry\s+//) {
-	s/\s*$//;
-	if ($srchash{$_}) {
-	    my %e = %${$srchash{$_}};
-	    s/\[/ [/; s/\]/] /;
-	    return ($_, $e{'parts'}, $e{'sense'})
-	} else {
-	    warn "super prepare: entry $_ not found in source glossary $srcfile\n";
-	    return ();
-	}
-    } else {
-	s/^add\s+sense\s+//;
-	my($cf,$gw,$sense,$pos,$epos) = (m#^(.*?)\[(.*?)//(.*?)\](.*?)\'(.*?)$#);
-	return ("$cf [$gw] $pos", [ ], [ "$epos $sense" ]);
-    }
-}
 
 1;
