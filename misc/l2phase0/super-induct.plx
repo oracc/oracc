@@ -3,7 +3,6 @@ use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2P0::L2Super;
-use ORACC::L2GLO::Util;
 
 #
 # Take an external glossary and import it into the minimal form 

@@ -42,6 +42,7 @@ my %function_info = (
     induct =>[ FI_BASE_NO,  '00raw', 'glo'],
     compare=>[ FI_BASE_YES, '00src', 'glo'],
     prepare=>[ FI_BASE_YES, '00map', 'map'],
+    map    =>[ FI_BASE_YES, '00map', 'map'],
     merge  =>[ FI_BASE_YES, '01tmp', 'new'],
     getsigs=>[ FI_BASE_NO,  '00map', 'map'],
     );
@@ -58,8 +59,9 @@ my %basehash = ();
 my $baselang = undef;
 
 my %map = ();
-my %map_glo = ();
 my %map_comments = ();
+my %map_glo = ();
+my %map_line = ();
 my %map_sort = ();
 my $mapfile = '';
 
@@ -141,9 +143,9 @@ init {
 
     unless ($basefile) {
 	my @glo = <00lib/*.glo>;
-	super_die("a super-glossary must have a .glo file\n")
+	super_die("a super-glossary must have a .glo file")
 	    unless $#glo >= 0;
-	super_die("a super-glossary is only allowed one .glo file\n")
+	super_die("a super-glossary is only allowed one .glo file")
 	    unless $#glo == 0;
 	$basefile = shift @glo;
     }
@@ -151,11 +153,15 @@ init {
     unless ($srcfile) {
 	if ($function eq 'compare' || $function eq 'merge') {
 	    $srcfile = $argfile;
+	} elsif ($function eq 'prepare' || $function eq 'map') {
+	    $srcfile = $argfile;
+	    $srcfile =~ s/^00map/00src/;
+	    $srcfile =~ s/map$/glo/;
 	}
     }
 
     unless ($mapfile) {
-	if ($function eq 'prepare') {
+	if ($function eq 'prepare' || $function eq 'map') {
 	    $mapfile = $argfile;
 	} elsif ($function eq 'compare' || $function eq 'merge') {
 	    $mapfile = $srcfile;
@@ -168,16 +174,16 @@ init {
 
     if ($basefile) {
 	if ($flags & FI_BASE_YES) {
-	    super_die("base glossary $basefile does not exist\n")
+	    super_die("base glossary $basefile does not exist")
 		unless -e $basefile;
-	    super_die("base glossary $basefile can't be read\n")
+	    super_die("base glossary $basefile can't be read")
 		unless -r $basefile;
 	    my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
 	    super_die("errors in $basefile") unless $arg_xml;
 	    undef $arg_xml;
 	    $basedata = ORACC::L2GLO::Builtins::input_acd($basefile);
 	    %basehash = %{$$basedata{'ehash'}};
-	    glo_add_basehash_senses();
+	    glo_add_senses(\%basehash);
 	}
 
     	$baselang = $basefile; 
@@ -189,11 +195,12 @@ init {
     }
 
     if ($srcfile) {
-	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($argfile);
+	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
 	super_die("errors in $argfile") unless $arg_xml;
 	undef $arg_xml;
 	$srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
 	%srchash = %{$$srcdata{'ehash'}};
+	glo_add_senses(\%srchash);
 	$return_data{'srcfile'} = $srcfile;
 	$return_data{'srchash'} = \%srchash;
     }
@@ -202,6 +209,11 @@ init {
 	map_load($mapfile);
 	map_check();
 	$return_data{'mapfile'} = $mapfile;
+	$return_data{'map'} = \%map;
+	$return_data{'map_comments'} = \%map_comments;
+	$return_data{'map_glo'} = \%map_glo;
+	$return_data{'map_line'} = \%map_line;
+	$return_data{'map_sort'} = \%map_sort;
     }
 
     if ($function eq 'induct') {
@@ -330,15 +342,16 @@ super_warn {
 #########################################################################################################
 
 sub
-glo_add_basehash_senses {
-    foreach my $e (keys %basehash) {
-	my %b = %${$basehash{$e}};
+glo_add_senses {
+    my $hashref = shift;
+    foreach my $e (keys %$hashref) {
+	my %b = %${$$hashref{$e}};
 	foreach my $s (@{$b{'sense'}}) {
 	    my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
 	    my $newsense = $e;
 	    $newsense =~ s#\]#//$sense]#;
 	    $newsense .= "'$epos";
-	    $basehash{$newsense} = $basehash{$e};
+	    $$hashref{$newsense} = $$hashref{$e};
 	}
     }
 }
@@ -408,12 +421,14 @@ map_check {
     foreach my $m (values %map) {
 	my($act,$type,$sig,$map) = @$m;
 	unless ($srchash{$sig}) {
-	    super_warn "$m:$.: $sig not in source glossary\n";
+	    my $mapentry = map_line(@$m);
+	    super_warn "$mapfile:$map_line{$mapentry}: $sig not in source glossary";
 	    ++$status;
 	}
 	if ($act eq 'map' || $act eq 'fix') {
 	    unless ($basehash{$map}) {
-		super_warn "$m:$.: => $map not in base glossary\n";
+		my $mapentry = map_line(@$m);
+		super_warn "$mapfile:$map_line{$mapentry}: => $map not in base glossary";
 		++$status;
 	    }
 	}
@@ -443,12 +458,20 @@ map_dump {
 }
 
 sub
+map_line {
+    my($act,$type,$sig,$map) = @_;
+    my $ret = "$act $type $sig";
+    $ret .=  " => $map" if $map;
+    $ret;
+}
+
+sub
 map_load {
     my $m = shift;
     chatty("loading map file $m");
     open(M, $m) || die "super compare: can't read map file $m\n";
     my $map_curr = '';
-    my @map_order = ();
+    my $status = 0;
     while (<M>) {
 	chomp;
 	if (/^\#/) {
@@ -457,9 +480,15 @@ map_load {
 	} else {
 	    $map_curr = $_;
 	}
+	s/\s+/ /g;
+	$map_line{$_} = $.;
         my($act,$type,$sig) = (/(\S+)\s+(\S+)\s+(.*?)$/);
         my $map = '';
-        super_warn "$m:$.: bad map entry" and next unless $sig;
+	unless ($sig) {
+	    super_warn "$m:$.: bad map entry";
+	    ++$status;
+	    next;
+	}
         # next if $act eq 'new';
         if ($sig =~ /^(.*?)\s*=>\s*(.*?)$/) {
             ($sig,$map) = ($1,$2);
@@ -471,6 +500,8 @@ map_load {
 	}
     }
     close(M);
+    super_die("errors loading mapfile $m") 
+	if $status;
 }
 
 sub
