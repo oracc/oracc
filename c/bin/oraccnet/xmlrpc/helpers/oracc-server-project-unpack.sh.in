@@ -3,7 +3,7 @@
 function clean_project {
     cd $1
     ## N.B. Can't wipe out 00res like this!
-    rm -fr 00atf/* 00bib/* 00cat/* 00lib/* 00src/* 00web/*
+    rm -fr 00atf/* 00bib/* 00cat/* 00lib/* 00map/* 00src/* 00web/*
 }
 
 function create_project {
