@@ -17,7 +17,7 @@
 
 unset DYLD_LIBRARY_PATH
 
-echo esp2.sh called in `pwd` with args $*
+# echo esp2.sh called in `pwd` with args $*
 
 if [ "$1" = "" ]; then
     echo esp2.sh: must give project name as argument
@@ -70,7 +70,7 @@ mkdir $HTTPROOT
 rm -f $HTTPLINK
 ln -sf $HTTPROOT $HTTPLINK
 
-echo Copying project static site content
+# echo Copying project static site content
 # (cd $XMLSAP/00web/00static && cp_00web_static)
 cp -R $XMLSAP/00res/* $HTTPROOT
 
@@ -88,38 +88,38 @@ find . -iname "*.xml" | $ESP2BIN/esp2-lmt.plx > $XMLSAP/01tmp/last-modified-time
 
 esp2-stylesheets.plx -basedir $HTTPROOT -project $project
 
-echo phase 1
+# echo phase 1
 
 java -jar $SAXONJAR $XMLSAP/00web/00config/structure.xml $XSL/esp2-phase-01.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-10.xml $SAXONPARAMS
 
-echo phase 2
+# echo phase 2
 
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-10.xml \
     $XSL/esp2-phase-02.xslt output-file=file:$XMLSAP/01tmp/source-tree-20.xml $SAXONPARAMS
 
-echo phase 3
+# echo phase 3
 
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-20.xml $XSL/esp2-phase-03.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-30.xml $SAXONPARAMS
 
 xsltproc $XSL/esp2-fix-sort.xsl $XMLSAP/01tmp/source-tree-30.xml >$XMLSAP/01tmp/source-tree-31.xml
 
-echo phase 4
+# echo phase 4
 
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-31.xml $XSL/esp2-phase-04.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-40.xml output-directory=file:$HTTPROOT $SAXONPARAMS
 
-echo phase 5
+# echo phase 5
 
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-40.xml $XSL/esp2-phase-05.xslt \
     output-directory=file:$HTTPROOT $SAXONPARAMS
 
-echo Validation
+# echo Validation
 
-echo
+# echo
 echo "Validating pages as XHTML (only non-validating pages reported)"
-echo
+# echo
 cd $XMLSAP
 LIST="$(find $HTTPROOT -iname "*.html" | grep -v '/flashpages/')"
 java -jar $MSVJAR -standalone $XHTMLDTD $LIST | grep -A 1 'Error' | $ESP2BIN/esp2-no-nmtok-err.plx
@@ -128,7 +128,7 @@ java -jar $MSVJAR -standalone $XHTMLDTD $LIST | grep -A 1 'Error' | $ESP2BIN/esp
 #echo
 for FILE in $LIST                        
 do
-	chmod g+x $FILE
+    chmod g+x $FILE
 done
 
 chmod -R o+r $HTTPROOT
