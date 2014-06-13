@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 use Data::Dumper;
@@ -34,6 +34,7 @@ my $id_counter = -1; # next_xid pre-increments
 my $lang = '';
 my %letter_ids = ();
 my $name = '';
+my %norms = ();
 my $outfile = '';
 my %pre_ids = ();
 my $proj = '';
@@ -123,6 +124,8 @@ $rewrites =~ s/\..*$/.rew/;
 load_rewrites($rewrites) if -r $rewrites;
 
 read_input($input);
+
+sort_norms();
 
 # open(D,">$header{'lang'}-entry.log"); print D Dumper(\%entry_ids); close(D);
 
@@ -373,6 +376,8 @@ add_sig {
 
     ++$seen_morph2 if $sig{'morph2'};
 
+    ++$norms{$sig{'norm'}} if $sig{'norm'};
+
     my $datalang = '';
     if ($baselang =~ /^qpn/) {
 	$datalang = 'qpn';
@@ -505,7 +510,13 @@ compute_and_print_entry_data {
 #		%freqs = { %$nfreqs };
 #		%insts = { %$ninsts };
 	    }
-	    foreach my $k (sort keys %{$freqs{$f}}) {
+	    my @k = ();
+	    if ($f eq 'norm') {
+		@k = sort { $norms{$a} <=> $norms{$b} } keys %{$freqs{$f}};
+	    } else {
+		@k = sort keys %{$freqs{$f}};
+	    }
+	    foreach my $k (@k) {
 		my @sigs = sort keys %{${$insts{$f}}{$k}};
 		my $icount = ${$freqs{$f}}{$k};
 		my $ipct = ipct($icount, $entry_freqs{$entry});
@@ -943,6 +954,39 @@ read_input_line {
 	$cofs{$sig} = [ @cof ];
     } else {
 	add_sig($sig, $freq, $refs, 0);
+    }
+}
+
+sub
+sort_norms {
+    my %cgc = ();
+    my $tmpname = '';
+    if (open(TMP,">01tmp/$$-norms.cgc")) {
+	$tmpname = "01tmp/$$-norms.cgc";
+    } elsif (open(TMP,">/tmp/$$-norms.cgc")) {
+	$tmpname = "/tmp/$$-norms.cgc";
+    } else {
+	die "set_cgc: can't write /tmp/$$-norms.cgc or tmp/$$-norms.cgc\n";
+    }
+    foreach my $t (keys %norms) {
+	$t =~ tr/_/—/; ### HACK !!!
+	$t =~ tr/ /_/;
+	print TMP "${t}_\n";
+    }
+    close TMP;
+    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-s', 
+    "$ENV{'ORACC'}/lib/config/msort.order", '-x', "$ENV{'ORACC'}/lib/config/msort.exclude", $tmpname;
+    open(TMP,$tmpname);
+    my @cgc = (<TMP>);
+    close(TMP);
+#    unlink $tmpname;
+    chomp @cgc;
+    @cgc = map { s/_$//; tr/_—/ _/; $_ } @cgc;
+    @cgc{@cgc} = (0..$#cgc);
+    foreach my $n (keys %norms) {
+	warn "sort norms failure: norm $n has no sort code\n"
+	    unless defined $cgc{$n};
+	$norms{$n} = $cgc{$n};
     }
 }
 
