@@ -15,7 +15,7 @@ internalize {
     my @cat = ();
     @cat = tags($xmd,$xmd->getDocumentElement()->namespaceURI(),'record');
     initialize_fields($cat[0]);
-    my $rows = xmd_records(@cat);
+    my $rows = xmd_records($file, @cat);
     ([@fields],{%fields},$rows);
 }
 
@@ -27,13 +27,13 @@ internalize_list {
     @cat = tags($xmd,$xmd->getDocumentElement()->namespaceURI(),'record');
     initialize_fields($cat[0]);
     my @rows = ();
-    my $rows = xmd_records(@cat);
+    my $rows = xmd_records($list[0], @cat);
     push @rows, @$rows; # $rows is a scalar ref to a list containing a single scalar ref here
     for (my $i = 1; $i <= $#list; ++$i) {
 	undef $xmd;
 	$xmd = load_xml($list[$i]);
 	@cat = tags($xmd,$xmd->getDocumentElement()->namespaceURI(),'record');
-	$rows = xmd_records(@cat);
+	$rows = xmd_records($list[$i], @cat);
 	push @rows, @$rows;
     }
     ([@fields],{%fields},[@rows]);
@@ -56,9 +56,10 @@ initialize_fields {
 
 sub
 xmd_records {
+    my $file = shift;
     my @rows = ();
     my $pacifier = 0;
-    print STDERR "ORACC::XMD::Util: reading records " unless $ORACC::XMD::Util::quiet;
+    print STDERR "ORACC::XMD::Util: reading records from $file " unless $ORACC::XMD::Util::quiet;
     my $nfields = $#fields;
     foreach my $r (@_) {
 	my @row = ();
