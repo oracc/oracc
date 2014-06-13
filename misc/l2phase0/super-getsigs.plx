@@ -11,9 +11,7 @@ use ORACC::L2GLO::Util;
 # things from proxies which would create duplication with superglossaries.
 #
 
-
 my %data = ORACC::L2P0::L2Super::init();
-close($data{'input_fh'});
 
 my %mapglo = %{$data{'mapgloref'}};
 my %mapsigs = ();
