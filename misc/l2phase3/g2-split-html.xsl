@@ -48,6 +48,7 @@
       <xsl:with-param name="webtype" select="'cbd'"/>
       <xsl:with-param name="with-hr" select="false()"/>
       <xsl:with-param name="with-trailer" select="false()"/>
+      <xsl:with-param name="body-class" select="ancestor::xh:body/@class"/>
     </xsl:call-template>
   </ex:document>
 </xsl:template>

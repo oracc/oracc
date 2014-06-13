@@ -24,6 +24,7 @@
   <xsl:param name="with-hr" select="false()"/>
   <xsl:param name="with-trailer" select="false()"/>
   <xsl:param name="standalone" select="false()"/>
+  <xsl:param name="body-class" select="''"/>
 
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -68,9 +69,14 @@
       </xsl:if>
     </head>
     <body>
-      <xsl:if test="$standalone">
-	<xsl:attribute name="class"><xsl:text>standalone</xsl:text></xsl:attribute>
-      </xsl:if>
+      <xsl:choose>
+	<xsl:when test="string-length($body-class) > 0">
+	  <xsl:attribute name="class"><xsl:value-of select="$body-class"/></xsl:attribute>
+	</xsl:when>
+	<xsl:when test="$standalone">
+	  <xsl:attribute name="class"><xsl:text>standalone</xsl:text></xsl:attribute>
+	</xsl:when>
+      </xsl:choose>
       <xsl:call-template name="call-back"/>
       <xsl:if test="$with-hr">
   	<hr class="trailer"/>
