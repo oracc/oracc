@@ -17,6 +17,8 @@ my %data = ORACC::L2P0::L2Super::init();
 
 my %glo = %{$data{'map_glo'}};
 my $outfh = $data{'outglo_fh'}; select $outfh;
+
+print "\@project $data{'baseproj'}\n\@lang $data{'baselang'}\n\@name $data{'baseproj'} $data{'baselang'}\n\n";
 foreach my $e (sort { ${${$glo{$a}}[0]}[0] <=> ${${$glo{$b}}[0]}[0] } keys %glo) {
     print "\@entry $e\n";
     my @econtent = @{$glo{$e}};

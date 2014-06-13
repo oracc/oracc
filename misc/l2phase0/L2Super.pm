@@ -34,9 +34,10 @@ my $argmap = '';
 my $argbase = '';
 my $argsrc = '';
 
-my $level = '';
-my $lang = '';
+my $dryrun = 0;
 my $force = 0;
+my $lang = '';
+my $level = '';
 my $project = '';
 
 my %function_info = (
@@ -66,15 +67,19 @@ my %map_line = ();
 my %map_sort = ();
 my $mapfile = '';
 
+my $newfile = '';
+
 my $srcdata = undef;
 my $srcfile = undef;
 my %srchash = ();
+
 
 sub
 init {
     GetOptions(
 	'base=s'=>\$argbase,
 	'compare=s'=>\$argsrc,
+	'dryrun'=>\$dryrun,
 	force=>\$force,
 	'lang=s'=>\$lang,
 	'level=i'=>\$level,
@@ -82,6 +87,7 @@ init {
 	'project=s'=>\$project,
 	);
 
+    $return_data{'dryrun'} = $dryrun;
     $return_data{'force'} = $force;
 
     $function = $0; $function =~ s/^(.*?)super-//; $function =~ s/\.plx$//;
@@ -152,8 +158,11 @@ init {
     }
 
     unless ($srcfile) {
-	if ($function eq 'compare' || $function eq 'merge') {
+	if ($function eq 'compare') {
 	    $srcfile = $argfile;
+	} elsif ($function eq 'merge') {
+	    $srcfile = $newfile = $argfile;
+	    $srcfile =~ s/^...../00src/; $srcfile =~ s/\....$/.glo/;
 	} elsif ($function eq 'prepare' || $function eq 'map') {
 	    $srcfile = $argfile;
 	    $srcfile =~ s/^00map/00src/;
@@ -179,10 +188,10 @@ init {
 		unless -e $basefile;
 	    super_die("base glossary $basefile can't be read")
 		unless -r $basefile;
-	    chatty_nonl("checking $basefile ... ");
+	    chatty("checking $basefile ... ");
 	    my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
 	    super_die("errors in $basefile") unless $arg_xml;
-	    print STDERR "ok\n";
+#	    chatty_ok();
 	    undef $arg_xml;
 	    $basedata = ORACC::L2GLO::Builtins::input_acd($basefile);
 	    %basehash = %{$$basedata{'ehash'}};
@@ -198,10 +207,10 @@ init {
     }
 
     if ($srcfile) {
-	chatty_nonl("checking $srcfile ... ");
+	chatty("checking $srcfile ... ");
 	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
-	super_die("errors in $argfile") unless $arg_xml;
-	print STDERR "ok\n";
+	super_die("errors in $srcfile") unless $arg_xml;
+#	chatty_ok();
 	undef $arg_xml;
 	$srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
 	%srchash = %{$$srcdata{'ehash'}};
@@ -213,11 +222,18 @@ init {
     if ($mapfile) {
 	if (-r $mapfile) {
 	    map_load($mapfile);
-	    chatty_nonl("checking $mapfile ... ");
+	    chatty("checking $mapfile ... ");
 	    super_die("errors checking map file $mapfile")
 		if map_check();
-	    print STDERR "ok\n";
 	}
+    }
+
+    if ($newfile) {
+	chatty("checking $newfile ... ");
+	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
+	super_die("errors in $newfile") unless $arg_xml;
+	undef $arg_xml;
+	$return_data{'newfile'} = $newfile;
     }
 
     if ($function eq 'induct') {
@@ -234,9 +250,8 @@ init {
     } elsif ($function eq 'merge') {
 	backup_file($basefile);
 	backup_file($mapfile);
-	($return_data{'outmap'}) = setup_file(undef, '00map', $project, $lang, 'map');
-	($return_data{'outglo'},$return_data{'outglo_fh'}) 
-	    = setup_file('>', '00lib', '', $baselang, 'glo');
+	($return_data{'outmap'}) = setup_file(undef, '01tmp', $project, $lang, 'map');
+	($return_data{'outglo'}) = setup_file(undef, '01tmp', '', $baselang, 'glo');
     } elsif ($function eq 'getsigs') {
 	($return_data{'output'}) = setup_file(undef, '00sig', $project, $lang, 'sig');
 	$return_data{'outputdate'} = $last_outputdate;
@@ -292,15 +307,10 @@ backup_file {
 }
 
 sub
-chatty_nonl {
-    if ($ORACC::L2P0::L2Super::chatty) {
-	print STDERR "super $function: ", @_;
-    }
-}
-
-sub
 chatty {
-    chatty_nonl(@_,"\n");
+    if ($ORACC::L2P0::L2Super::chatty) {
+	print STDERR "super $function: ", @_, "\n";
+    }
 }
 
 sub
@@ -338,7 +348,7 @@ sub
 setup_file {
     my($io,$dir,$proj,$lang,$type) = @_;
     $proj =~ tr#/#-#;
-    my $file = "$dir/$proj~$lang.$type";
+    my $file = ($proj ? "$dir/$proj~$lang.$type" : "$dir/$lang.$type");
     my $fh = undef;
     $last_outputdate = (stat($file))[9];
     system 'mkdir', '-p', $dir
@@ -445,7 +455,10 @@ map_add2glo {
 sub
 map_check {
     my $status = 0;
-    foreach my $m (values %map) {
+    if (!scalar keys %map_sort) {
+	map_sort_by_lines();
+    }
+    foreach my $m (sort { $map_sort{$$a[2]} <=> $map_sort{$$b[2]} } values %map) {
 	my($act,$type,$sig,$map) = @$m;
 	unless ($srchash{$sig}) {
 	    my $mapentry = map_line(@$m);
