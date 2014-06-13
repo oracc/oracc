@@ -3,16 +3,22 @@ use warnings; use strict;
 use lib '@@ORACC@@/lib';
 use ORACC::L2GLO::Util;
 
+my $superglo = `oraccopt . type`;
+my @proj_sig_langs = ();
+my %proj_sig_langs = ();
+
 # ensure that all langs plus qpn are in proj_sig_langs if they are 
 # represented in project.sig
 
-my @proj_sig_langs = split(/\s+/, `sig-langs.sh 01bld/project.sig`);
-my %proj_sig_langs = (); @proj_sig_langs{@proj_sig_langs} = ();
-
-@proj_sig_langs = qpn_langs();
-if ($#proj_sig_langs >= 0) {
-    @proj_sig_langs{@proj_sig_langs} = ();
-    ++$proj_sig_langs{'qpn'} unless exists $proj_sig_langs{'qpns'};
+unless ($superglo eq 'superglo') {
+    @proj_sig_langs = split(/\s+/, `sig-langs.sh 01bld/project.sig`);
+    %proj_sig_langs = (); @proj_sig_langs{@proj_sig_langs} = ();
+    
+    @proj_sig_langs = qpn_langs();
+    if ($#proj_sig_langs >= 0) {
+	@proj_sig_langs{@proj_sig_langs} = ();
+	++$proj_sig_langs{'qpn'} unless exists $proj_sig_langs{'qpns'};
+    }
 }
 
 foreach (<00lib/*.glo>) {
