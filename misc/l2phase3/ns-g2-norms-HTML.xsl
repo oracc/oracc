@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" 
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:cbd="http://oracc.org/ns/cbd/1.0"
+  xmlns:xpd="http://oracc.org/ns/xpd/1.0"
   xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
   xmlns:g="http://oracc.org/ns/gdl/1.0"
   xmlns:i="http://oracc.org/ns/instances/1.0"
@@ -34,13 +35,35 @@
 <xsl:template match="cbd:entry">
   <div class="body">
     <xsl:attribute name="xml:id"><xsl:value-of select="concat(@xml:id,'.n')"/></xsl:attribute>
-    <div class="ns-glo-sec" id="{@xml:id}.n">
+    <div class="banner bborder-top bborder-bot">
+      <p class="center">
+	<xsl:value-of select="document($config-file)/*/xpd:abbrev"/>
+	<xsl:text>: </xsl:text>
+	<xsl:value-of select="document($config-file)/*/xpd:name"/>
+      </p>
+    </div>
+    <div class="ns-glo-sec" id="@xml:id.f">
       <div class="header">
         <h1 class="entry heading border-top">Normalizations attested for
-	<span class="cf akk">abāku</span><span class="gw"> [LEAD AWAY]</span> <span class="pos">(V)</span>
+	<xsl:text> </xsl:text>
+	<span class="cf akk"><xsl:value-of select="cbd:cf"/></span>
+	<xsl:text> </xsl:text>
+	<span class="gw"><xsl:value-of select="cbd:gw"/></span>
+	<xsl:text> </xsl:text>
+	<span class="pos"><xsl:value-of select="cbd:pos"/></span>
 	</h1>
         <p class="icount">
-          <a class="icount" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">11 instances</a>
+          <a class="icount" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	    <xsl:text> </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="@icount=1">
+		1 instance
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="@icount"/> instances
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </a>
         </p>
       </div>
 
