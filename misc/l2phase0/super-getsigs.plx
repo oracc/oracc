@@ -13,20 +13,21 @@ use ORACC::L2GLO::Util;
 
 my %data = ORACC::L2P0::L2Super::init();
 
-my %mapglo = %{$data{'mapgloref'}};
+my %mapglo = %{$data{'map_glo'}};
 my %mapsigs = ();
 
 my $mapproj = $data{'project'};
 my $maplang = $data{'lang'};
 my $outfh = $data{'output_fh'};
 
+$mapproj =~ tr,-,/,;
 my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/from-xtf-glo.sig";
 my $projdate = (stat($projsigs))[9];
 
 super_die("can't read $projsigs")
     unless open(S, $projsigs);
 
-my $mapdate = (stat($data{'input'}))[9];
+my $mapdate = (stat($data{'mapfile'}))[9];
 
 # if 
 #   a) the map file is newer than the sigfile we must rebuild

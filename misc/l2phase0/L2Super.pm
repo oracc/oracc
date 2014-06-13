@@ -163,7 +163,7 @@ init {
 	} elsif ($function eq 'merge') {
 	    $srcfile = $newfile = $argfile;
 	    $srcfile =~ s/^...../00src/; $srcfile =~ s/\....$/.glo/;
-	} elsif ($function eq 'prepare' || $function eq 'map') {
+	} elsif ($function eq 'prepare' || $function eq 'map' || $function eq 'getsigs') {
 	    $srcfile = $argfile;
 	    $srcfile =~ s/^00map/00src/;
 	    $srcfile =~ s/map$/glo/;
@@ -171,7 +171,7 @@ init {
     }
 
     unless ($mapfile) {
-	if ($function eq 'prepare' || $function eq 'map') {
+	if ($function eq 'prepare' || $function eq 'map' || $function eq 'getsigs') {
 	    $mapfile = $argfile;
 	} elsif ($function eq 'compare' || $function eq 'merge') {
 	    $mapfile = $srcfile;
