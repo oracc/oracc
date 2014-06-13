@@ -6,28 +6,30 @@ body, p { margin: 0px; padding: 0px; }
 #p3controls { height: 90px; margin: 0px; padding: 0px; 
 	    }
 
-#p3topButtons { height: 22px; }
-#p3topButtons p { text-align: center; margin: 0px; padding: 0px; }
-#p3topButtons .button { display: inline; }
-#p3topButtons .spacer { padding-right: .5rem; }
-
-#p3srch { height: 45px; }
-#p3srch p { padding-top: 12px; padding-bottom: 12px; 
-	    margin: 0px;
-	  }
-
-#p3navLeft    	{ height: 23px;
+#p3navLeft    	{ height: 100%;
 		  padding: 0px; margin: 0px;
 		  width: 20%;  padding: 0px;
 		  position: absolute; left: 0px;
 		  z-index: 2;
 		}
 
-#p3navRight   	{ height: 23px;
+#p3navRight   	{ height: 100%;
 		  width: 80%;  padding: 0px; 
 		  position: absolute; left: 20%; /* top: 40px; */
 		  z-index: 2;
 		}
+
+#p3topButtons { height: 22px; }
+#p3topButtons p { text-align: center; margin: 0px; padding: 0px; }
+#p3topButtons .button { display: inline; }
+#p3topButtons .spacer { padding-right: .5rem; }
+
+#p3srch { height: 70%; }
+#p3srch p { padding-top: 12px; padding-bottom: 12px; 
+	    margin: 0px;
+	  }
+
+#p3botLeft { height: 30%; }
 
 #p3OSdefault { display: inline; }
 #p3OSspecial { display: none; }
