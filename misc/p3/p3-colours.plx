@@ -53,7 +53,7 @@ foreach my $c (sort keys %classes) {
 	if (${$classes{$c}}{'only'}) {
 	    if ($c eq 'border') {
 		print ".border-top    { border-top: 1px solid $colours{${$classes{$c}}{'only'}}; }\n";
-		print ".border-bottom { border-bottom: 1px solid $colours{${$classes{$c}}{'only'}}; }\n";
+		print ".border-bot    { border-bottom: 1px solid $colours{${$classes{$c}}{'only'}}; }\n";
 		print ".border-left   { border-left: 1px solid $colours{${$classes{$c}}{'only'}}; }\n";
 		print ".border-right  { border-right: 1px solid $colours{${$classes{$c}}{'only'}}; }\n";
 	    } elsif ($c eq 'bborder') {
