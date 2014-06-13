@@ -37,6 +37,7 @@ my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
 my $projtype = '';
+my $proxy_host = '';
 my %rt = ();
 my $verbose = 1;
 
@@ -380,7 +381,11 @@ run_form_maker {
 		if ($rt{'#content_url'}) {
 		    system "$oraccbin/xfrag", '-u', $rt{'#content_url'};
 		} else {
-		    system 'cat', "$p{'tmpdir'}/results.html";
+		    if ($proxy_host) {
+			system "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
+		    } else {
+			system 'cat', "$p{'tmpdir'}/results.html";
+		    }
 		}
 		print '</div>';
 	    } else {
@@ -565,6 +570,9 @@ run_item_maker {
 	    $html = '' unless -r $html;
 	}
 	if (-r $html) {
+	    if ($eproject ne $p{'project'}) {
+		$proxy_host = $eproject;
+	    }
 	    warn "cp $html $p{'tmpdir'}/results.html\n";
 	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	} else {
