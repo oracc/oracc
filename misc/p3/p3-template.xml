@@ -33,9 +33,12 @@
 
 	<div id="p3navLeft" class="banner">
 
-	  <div id="p3srch">
-	    <p class="center">
-	      <input type="text" id="srch" name="srch" size="" style="width:100%" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	  <div id="p3srch" class="border-bot">
+	    <p>
+	      <input type="text" id="srch" name="srch" size="" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	      <img src="/img/search.png" alt="Submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
+	    </p>
+	      <!--<button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">GO</button> -->
 
 <!--
               in
@@ -52,10 +55,9 @@
 
 	      <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>&#xa0;Unicode&#xa0;input
  -->
-              <br/>
-	      <span class="qsrch">
-		<button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
-	      </span>
+
+	    <p id="p3srchHelp">
+	      sz=š s,=ṣ t,=ṭ j=ŋ 0-9=₀-₉
 	    </p>
 
 	  </div>
@@ -71,7 +73,7 @@
 	  
 	</div>
 	
-	<div id="p3navRight" class="banner">
+	<div id="p3navRight" class="banner border-left">
 	  <div id="p3topButtons">
 	    <p>
 	      <span class="button spacer">
