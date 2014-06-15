@@ -31,145 +31,152 @@
 	  target="_top" method="post" accept-charset="utf-8">
       <div id="p3controls" class="banner bborder-top bborder-bot">
 
-	<div id="p3navLeft" class="banner">
-
-	  <div id="p3srch">
-	    <p class="center">
-	      <input type="text" id="srch" name="srch" size="" style="width:100%" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	<div id="p3topButtons">
+	  <p>
+	    <span class="button spacer">
+	      <button type="button" onclick="p3help()">HELP</button>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" name="oracc-home" onclick="window.location='/'">ORACC</button>
+	    </span>
+	    <span class="back-to button spacer"/>
+	    <span class="button spacer">
+	      <button type="button" name="project-home" onclick="window.location='/@@project@@/'">PROJECT</button>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" onclick="window.location='/@@project@@/pager'">PAGER</button>
+	    </span>
+	    <span class="glossaries spacer"/>
+	    <span class="button spacer">
+	      <button type="button" name="advsrch" onclick="p3asearch()">ADVANCED SEARCH</button>
+	    </span>
+	    <span class="links"/>
+	  </p>
+	</div>
 
 <!--
-              in
-	      
-	      <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
-	      <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
-
-	      <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
-		<option value="txt">Transliterations</option>
-		<option value="lem">Lemmatization</option>
-		<option value="tra">Translations</option>
-		<option value="cat">Catalogue</option>
-	      </select>
-
-	      <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>&#xa0;Unicode&#xa0;input
+	<div id="p3banner">
+	  <h1><span id="xpd-abbrev"/></h1>
+	</div>
  -->
-              <br/>
-	      <span class="qsrch">
-		<button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
-	      </span>
-	    </p>
+	<div id="p3srch">
+	  <p class="center">
+	    <span class="qsrch">
+	      <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
+	    </span>
 
-	  </div>
+	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	    
+	    in
+	    
+	    <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
+	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
 
-	  <div id="p3botLeft">
-	    <p class="center p3-items">
-	      <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
-	    </p>
-	    <p class="center smash p3-pages">
-	      <span class="outline-sorter"/>
-	    </p>
-	  </div>
-	  
+	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
+	      <option value="txt">Transliterations</option>
+	      <option value="lem">Lemmatization</option>
+	      <option value="tra">Translations</option>
+	      <option value="cat">Catalogue</option>
+	    </select>
+
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>&#xa0;Unicode&#xa0;input
+
+	  </p>
+	</div>
+
+	<div id="p3navLeft" class="banner">
+	  <p class="center p3-items">
+	    <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
+	  </p>
+	  <p class="center smash p3-pages">
+	    <span class="outline-sorter"/>
+	  </p>
 	</div>
 	
 	<div id="p3navRight" class="banner">
-	  <div id="p3topButtons">
-	    <p>
-	      <span class="button spacer">
-		<button type="button" onclick="p3help()">HELP</button>
+	  <div id="p3itemnav" class="p3-items p3-noglo">
+	    <p class="p3toccenter bg-dk">
+
+<!--
+	      <span class="p3arrow">
+		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
+		  <option value="off">Exit item mode</option>
+		  <option value="cat">Catalogue items</option>
+		  <option value="xtf">Text items</option>
+		</select>
 	      </span>
-	      <span class="button spacer">
-		<button type="button" name="oracc-home" onclick="window.location='/'">ORACC</button>
+ -->
+
+	      <span class="p3arrow">
+		<button type="button" name="p3itemsview" id="p3itemsview" value="item"
+			onclick="p3action('viewstatePages')"
+			>Items</button>
 	      </span>
-	      <span class="back-to button spacer"/>
-	      <span class="button spacer">
-		<button type="button" name="project-home" onclick="window.location='/@@project@@/'">PROJECT</button>
+
+	      <span class="p3arrow">
+		<button type="button" name="p3textitems" id="p3textitems"
+			onclick="p3action('itemstateText')"
+			>Text</button>
+		<button type="button" name="p3catitems" id="p3catitems"
+			onclick="p3action('itemstateCat')"
+			>Cat.</button>
 	      </span>
-	      <span class="button spacer">
-		<button type="button" onclick="window.location='/@@project@@/pager'">PAGER</button>
+ 
+	      <span class="p3arrow">
+		<button type="button" name="ilarrow" onclick="p3action('itemback')">&lt;&lt;</button>
 	      </span>
-	      <span class="glossaries spacer"/>
-	      <span class="button spacer">
-		<button type="button" name="advsrch" onclick="p3asearch()">ADVANCED SEARCH</button>
+	      
+	      Item <input id="item" name="item" type="text" onchange="p3action('itemset')" 
+	      size="3" p3:value="@@cgivar:item@@"/>
+	      of <span p3:value="@@runtime:items@@"/>
+	      
+	      <span class="p3arrow">
+		<button type="button" name="irarrow" onclick="p3action('itemfwd')">>></button>
 	      </span>
-	      <span class="links"/>
+	      
+	      <span class="translations"/>
+	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" value="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
 	    </p>
 	  </div>
+	  
+	  <div id="p3pagenav" class="p3-pages">
+	    <p class="p3toccenter bg-dk">
 
-	  <div id="p3botRight">
-	    <div id="p3itemnav" class="p3-items p3-noglo">
-	      <p class="p3toccenter bg-dk">
+	      <span class="p3arrow" id="p3zoom">
+		<button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
+	      </span>
+	      
+	      <span class="p3arrow">
+		<button type="button" name="p3pagesview" id="p3pagesview" value="page"
+			onclick="p3action('viewstateItems')"
+			>Pages</button>
+	      </span>
 
-		<span class="p3arrow">
-		  <button type="button" name="p3itemsview" id="p3itemsview" value="item"
-			  onclick="p3action('viewstatePages')"
-			  >Items</button>
-		</span>
+	      <span class="p3arrow">
+		<button type="button" name="plarrow" onclick="p3action('pageback')">&lt;&lt;</button>
+	      </span>
+	      
+	      Page <input id="pageset" name="pageset" type="text" onchange="p3action('pageset')" 
+	      size="3" p3:value="@@cgivar:page@@"/>
+	      of <span p3:value="@@runtime:pages@@"/>
 
-		<span class="p3arrow">
-		  <button type="button" name="p3textitems" id="p3textitems"
-			  onclick="p3action('itemstateText')"
-			  >Text</button>
-		  <button type="button" name="p3catitems" id="p3catitems"
-			  onclick="p3action('itemstateCat')"
-			  >Cat.</button>
-		</span>
-		
-		<span class="p3arrow">
-		  <button type="button" name="ilarrow" onclick="p3action('itemback')">&lt;&lt;</button>
-		</span>
-		
-		Item <input id="item" name="item" type="text" onchange="p3action('itemset')" 
-		size="3" p3:value="@@cgivar:item@@"/>
-		of <span p3:value="@@runtime:items@@"/>
-		
-		<span class="p3arrow">
-		  <button type="button" name="irarrow" onclick="p3action('itemfwd')">>></button>
-		</span>
-		
-		<span class="translations"/>
-		<input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
-		<input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" value="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
-	      </p>
-	    </div>
-	    
-	    <div id="p3pagenav" class="p3-pages">
-	      <p class="p3toccenter bg-dk">
+	      <span class="p3arrow">
+		<button type="button" name="prarrow" onclick="p3action('pagefwd')">>></button>
+	      </span>
 
-		<span class="p3arrow" id="p3zoom">
-		  <button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
-		</span>
-		
-		<span class="p3arrow">
-		  <button type="button" name="p3pagesview" id="p3pagesview" value="page"
-			  onclick="p3action('viewstateItems')"
-			  >Pages</button>
-		</span>
+	      <span p3:value="@@runtime:items@@"/> items.
+	      
+	      Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>
 
-		<span class="p3arrow">
-		  <button type="button" name="plarrow" onclick="p3action('pageback')">&lt;&lt;</button>
-		</span>
-		
-		Page <input id="pageset" name="pageset" type="text" onchange="p3action('pageset')" 
-		size="3" p3:value="@@cgivar:page@@"/>
-		of <span p3:value="@@runtime:pages@@"/>
-
-		<span class="p3arrow">
-		  <button type="button" name="prarrow" onclick="p3action('pagefwd')">>></button>
-		</span>
-
-		<span p3:value="@@runtime:items@@"/> items.
-		
-		Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>
-
-		<span class="cetype">
-		  <select id="p3cetype" name="p3cetype"  onchange="p3action('cestate')">
-		    <option value="line">Line</option>
-		    <option value="unit">Sentence</option>
-		    <option value="kwic">KWIC</option>
-		  </select>
-		</span>
-	      </p>
-	    </div>
+	      <span class="cetype">
+		<select id="p3cetype" name="p3cetype"  onchange="p3action('cestate')">
+		  <option value="line">Line</option>
+		  <option value="unit">Sentence</option>
+		  <option value="kwic">KWIC</option>
+		</select>
+	      </span>
+	    </p>
 	  </div>
 	</div>
       </div>
