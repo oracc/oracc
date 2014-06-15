@@ -16,6 +16,7 @@
 #include "lang.h"
 #include "vid.h"
 
+int any_index = 0;
 int do_uniq = 1;
 int l2 = 1;
 int s2 = 1;
@@ -25,9 +26,11 @@ int textresult = 0;
 int verbose = 0;
 const char *xmldir = NULL;
 const char *outfile = NULL;
+const char *project = NULL;
 const char *return_index = NULL;
 FILE*out_f = NULL, *f_log;
 enum result_granularity res_gran = g_not_set;
+static struct Datum result;
 enum vid_proj vid_display_proj;
 char *pretrim_file = NULL;
 unsigned char **pretrim_lines, *pretrim_content;
@@ -41,6 +44,10 @@ const char *curr_project, *textid;
 extern struct expr_rules *ret_type_rules;
 extern struct Datum evaluate(struct token *toks, int fcode, int lmask,
 			     struct token **lastused);
+
+static const char **anytoks(const char *project, const char *index, const char **toks);
+static void put_results(struct Datum *res);
+static void run_search(struct token*toks);
 static void uniq (struct Datum *dp);
 
 #include "xfuncs.c"
@@ -363,12 +370,11 @@ main(int argc, char * const*argv)
 {
   struct token *toks = NULL;
   int ntoks = 0;
-  static struct Datum result;
 
   f_log = stderr;
   exit_on_error = TRUE;
   setlocale(LC_ALL,LOCALE);
-  options(argc, argv, "28cdg:o:p:P:stuvx:");
+  options(argc, argv, "28acdg:j:o:p:P:stuvx:");
   if (!out_f)
     out_f = stdout;
 
@@ -383,54 +389,69 @@ main(int argc, char * const*argv)
   if (pretrim_file || pretrim_args)
     pretrim_setup();
 
-  if (xmldir)
-    toks = tokenize(xmldir_toks(xmldir),&ntoks);
-  else
-    toks = tokenize((const char **)(argv+optind),&ntoks);
   if (show_tokens)
     {
+      if (xmldir)
+	toks = tokenize(xmldir_toks(xmldir),&ntoks);
+      else
+	toks = tokenize((const char **)(argv+optind),&ntoks);
       showtoks(toks,ntoks);
     }
   else
     {
-      binop_init();
-      binop24_init();
-      result = evaluate(toks, -1, lm_any, NULL);
-      progress("se: result.count == %lu\n", (unsigned long)result.count);
-
-      if (do_uniq && (res_gran == g_word || res_gran == g_grapheme))
-	do_uniq = 0;
-
-      if (do_uniq && result.count > 1)
+      if (any_index)
 	{
-	  uniq(&result);
-	  progress("se: post-uniq result.count == %lu\n", (unsigned long)result.count);
-	}
-      if (show_count)
-	printf("%lu\n",(unsigned long)result.count);
-      else if (result.count)
-	{
-	  if (xmldir)
-	    xmldir_results(xmldir,result.count);
-	  if ('v' == id_prefix(result.l.l8p[0]->text_id))
+	  const char *index[] = { "!cat" , "!lem" , "!tra" , NULL, "!esp" , NULL };
+	  const char **toklist = NULL;
+	  struct Datum results[4];
+	  int i, best_findset = -1;
+	  char *hashproj = NULL;
+	  FILE *anyout = stdout;
+
+	  if (!project)
 	    {
-	      if (!strcmp(return_index, "cat"))
-		vid_display_proj = vid_proj_xmd;
-	      else
-		vid_display_proj = vid_proj_xtf;
-	      vid_show_results(&result);
+	      fprintf(stderr, "se: must give -j PROJECT option when using -a\n");
+	      exit(1);
 	    }
-	  else
-	    show_results(&result);
+
+	  if (xmldir)
+	    {
+	      char *anyfile = malloc(strlen(xmldir)+5);
+	      sprintf(anyfile,"%s/any",xmldir);
+	      anyout = xfopen(anyfile,"w");
+	    }
+
+	  hashproj = malloc(strlen(project) + 2);
+	  sprintf(hashproj, "#%s",project);
+
+	  for (i = 0; index[i]; ++i)
+	    {
+	      toklist = anytoks(hashproj, index[i],
+				xmldir ? xmldir_toks(xmldir) : (const char **)(argv+optind));
+	      toks = tokenize(toklist,&ntoks);
+	      /*showtoks(toks,ntoks);*/
+	      run_search(toks);
+	      if (result.count)
+		fprintf(anyout, "%s %lu\n", index[i], (unsigned long)result.count);
+	      results[i] = result;
+	      if (result.count
+		  && (best_findset < 0 
+		      || (best_findset >= 0 && results[best_findset].count < result.count)))
+		best_findset = i;
+	    }
+	  if (best_findset >= 0)
+	    {
+	      return_index = &index[best_findset][1];
+	      put_results(&results[best_findset]);
+	    }
 	}
-      else if (xmldir)
-	xmldir_results(xmldir,result.count);
+      else
+	{
+	  run_search(toks);
+	  put_results(&result);
+	}
     }
-  if (pretrim_args)
-    {
-      list_free(pretrim_args, NULL);
-      pretrim_args = NULL;
-    }
+
   if (pretrim)
     {
       hash_free(pretrim, NULL);
@@ -439,9 +460,73 @@ main(int argc, char * const*argv)
       free(pretrim_content);
       pretrim_content = NULL;
       pretrim_lines = NULL;
+      if (pretrim_args)
+	{
+	  list_free(pretrim_args, NULL);
+	  pretrim_args = NULL;
+	}
     }
   langtag_term();
+
   return 0;
+}
+
+static const char **
+anytoks(const char *project, const char *index, const char **toks)
+{
+  char const **ret_toks = NULL;
+  int ntoks = 0;
+  while (toks[ntoks])
+    ++ntoks;
+  ret_toks = malloc(ntoks+3 * sizeof(char *));
+  ret_toks[0] = project;
+  ret_toks[1] = index;
+  for (ntoks = 0; toks[ntoks]; ++ntoks)
+    ret_toks[ntoks+2] = toks[ntoks];
+  ret_toks[ntoks+2] = NULL;
+  return ret_toks;
+}
+
+static void
+run_search(struct token*toks)
+{
+  binop_init();
+  binop24_init();
+  result = evaluate(toks, -1, lm_any, NULL);
+  progress("se: result.count == %lu\n", (unsigned long)result.count);
+
+  if (do_uniq && (res_gran == g_word || res_gran == g_grapheme))
+    do_uniq = 0;
+
+  if (do_uniq && result.count > 1)
+    {
+      uniq(&result);
+      progress("se: post-uniq result.count == %lu\n", (unsigned long)result.count);
+    }
+}
+
+static void
+put_results(struct Datum *res)
+{
+  if (show_count)
+    printf("%lu\n",(unsigned long)res->count);
+  else if (res->count)
+    {
+      if (xmldir)
+	xmldir_results(xmldir,res->count);
+      if ('v' == id_prefix(res->l.l8p[0]->text_id))
+	{
+	  if (!strcmp(return_index, "cat"))
+	    vid_display_proj = vid_proj_xmd;
+	  else
+	    vid_display_proj = vid_proj_xtf;
+	  vid_show_results(res);
+	}
+      else
+	show_results(res);
+    }
+  else if (xmldir)
+    xmldir_results(xmldir,res->count);
 }
 
 static void
@@ -519,11 +604,17 @@ opts(int argc, char *arg)
     case '8':
       use_unicode = 1;
       break;
+    case 'a':
+      any_index = 1;
+      break;
     case 'c':
       show_count = 1;
       break;
     case 'd':
       doing_debug = 1;
+      break;
+    case 'j':
+      project = arg;
       break;
     case 'o':
       outfile = arg;

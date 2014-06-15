@@ -87,6 +87,13 @@ struct token *
 add_token(enum se_toks t)
 {
   static int toks_used = 0;
+
+  if (t == se_notused)
+    {
+      toks_used = 0;
+      return NULL;
+    }
+
   if (toks_used == ntoks)
     {
       toks = realloc(toks, (ntoks += NTOK_ALLOC) * sizeof(struct token));
@@ -186,7 +193,7 @@ setup_index(struct token*curr_tok)
       if (firstindex)
 	{
 	  firstindex = 0;
-	  textresult = rules->granularity == g_record;
+	  textresult = rules->granularity == n_record;
 	  res_gran = rules->granularity;
 	  progress("se: result granularity = %s\n",
 		   textresult ? "text" : "field");
@@ -199,7 +206,13 @@ setup_index(struct token*curr_tok)
 struct token *
 tokenize(const char **tokptrs, int *ntoks)
 {
-  struct token*p1toks = phase1(tokptrs);
+  struct token*p1toks = NULL;
+  if (any_index)
+    {
+      firstindex = 1;
+      (void)add_token(se_notused);
+    }
+  p1toks = phase1(tokptrs);
   return phase2(p1toks,ntoks);
 }
 

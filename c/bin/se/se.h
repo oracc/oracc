@@ -81,6 +81,7 @@ struct near
   Signed32 redup;
 };
 
+extern int any_index;
 extern int verbose;
 
 extern void showtoks(struct token*toks,int ntoks);

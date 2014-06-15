@@ -704,6 +704,7 @@ static void
 close_indexes()
 {
   list_free(indexes,ifree);
+  indexes = NULL;
 }
 
 #define get_count(vp) ((struct Datum*)vp)->count
