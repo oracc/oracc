@@ -212,7 +212,7 @@ function p3ItemControls() {
 	}
     }
     document.getElementById('p3pagenav').style.display= 'none';
-    document.getElementById('p3srchtype').style.display = 'inline';
+//    document.getElementById('p3srchtype').style.display = 'inline';
     no_sorters();
 //    document.getElementById('p3itemtype').innerHtml = 
 //	document.getElementById('p3itemtype').value;
@@ -226,7 +226,7 @@ function p3PageControls() {
     document.getElementById('p3catitems').style.display = 'none';
     document.getElementById('p3textitems').style.display = 'none';
     document.getElementById('p3pagenav').style.display= 'block';
-    document.getElementById('p3srchtype').style.display = 'inline';
+//    document.getElementById('p3srchtype').style.display = 'inline';
 
     document.getElementById('item').value = 0;
     document.getElementById('p3do').value = 'viewstatePages';
@@ -273,7 +273,7 @@ function p3SrchControls() {
 	var newSrchtype = document.getElementById('srchtype').value;
 	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	document.getElementById('p3cetype').style.display = 'inline';
-	document.getElementById('p3srchtype').style.display = 'inline';
+//	document.getElementById('p3srchtype').style.display = 'inline';
     }
 }
 

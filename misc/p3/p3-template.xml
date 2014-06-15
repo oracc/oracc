@@ -66,8 +66,8 @@
 	    </span>
 
 	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
-	    
-	    in
+
+	    <span id="p3searchIn"> in </span>
 	    
 	    <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
 	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
@@ -79,7 +79,7 @@
 	      <option value="cat">Catalogue</option>
 	    </select>
 
-	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/>&#xa0;Unicode&#xa0;input
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/><span id="p3UnicodeInput">&#xa0;Unicode&#xa0;input</span>
 
 	  </p>
 	</div>

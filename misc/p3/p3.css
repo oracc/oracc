@@ -6,7 +6,8 @@ body, p { margin: 0px; padding: 0px; }
 #p3controls { height: 90px; margin: 0px; padding: 0px; 
 	    }
 
-#p3topButtons { height: 22px; }
+#p3topButtons { /* height: 22px; */
+		display: none; }
 #p3topButtons p { text-align: center; margin: 0px; padding: 0px; }
 #p3topButtons .button { display: inline; }
 #p3topButtons .spacer { padding-right: .5rem; }
@@ -15,6 +16,8 @@ body, p { margin: 0px; padding: 0px; }
 #p3srch p { padding-top: 12px; padding-bottom: 12px; 
 	    margin: 0px;
 	  }
+
+#p3searchIn , #p3CbdLangDisplay , #p3CbdLang , #p3srchtype , #unicode , #p3UnicodeInput { display: none }
 
 #p3navLeft    	{ height: 23px;
 		  padding: 0px; margin: 0px;

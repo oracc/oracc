@@ -29,7 +29,7 @@ const char *outfile = NULL;
 const char *project = NULL;
 const char *return_index = NULL;
 FILE*out_f = NULL, *f_log;
-enum result_granularity res_gran = g_not_set;
+enum result_granularity res_gran = g_not_set, best_res_gran = g_not_set;
 static struct Datum result;
 enum vid_proj vid_display_proj;
 char *pretrim_file = NULL;
@@ -431,22 +431,35 @@ main(int argc, char * const*argv)
 	      toks = tokenize(toklist,&ntoks);
 	      /*showtoks(toks,ntoks);*/
 	      run_search(toks);
-	      if (result.count)
-		fprintf(anyout, "%s %lu\n", index[i], (unsigned long)result.count);
 	      results[i] = result;
 	      if (result.count
 		  && (best_findset < 0 
 		      || (best_findset >= 0 && results[best_findset].count < result.count)))
-		best_findset = i;
+		{
+		  best_findset = i;
+		  best_res_gran = res_gran;
+		}
 	    }
 	  if (best_findset >= 0)
 	    {
+	      fprintf(anyout, "%s %lu\n", index[best_findset], 
+		      (unsigned long)results[best_findset].count);
+	      for (i = 0; index[i]; ++i)
+		{
+		  if (i == best_findset)
+		    continue;
+		  if (results[i].count)
+		    fprintf(anyout, "%s %lu\n", index[i], (unsigned long)results[i].count);
+		}
+	      res_gran = best_res_gran;
 	      return_index = &index[best_findset][1];
 	      put_results(&results[best_findset]);
 	    }
+	  fclose(anyout);
 	}
       else
 	{
+	  toks = tokenize((const char **)(argv+optind),&ntoks);
 	  run_search(toks);
 	  put_results(&result);
 	}

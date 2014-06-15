@@ -112,12 +112,14 @@ if ($rt{'prod'} eq 'list') {
 	$rt{'cetype'} = $p{'p3cetype'};
 	p3srch();
     }
-    if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
-	$rt{'#list_type'} = 'xtf';
-    } elsif ($p{'glos'}) {
-	$rt{'#list_type'} = 'cbd';
-    } else {
-	$rt{'#list_type'} = $rt{'#index'};
+    unless ($rt{'#list_type'}) {
+	if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
+	    $rt{'#list_type'} = 'xtf';
+	} elsif ($p{'glos'}) {
+	    $rt{'#list_type'} = 'cbd';
+	} else {
+	    $rt{'#list_type'} = $rt{'#index'};
+	}
     }
 }
 
@@ -344,10 +346,10 @@ p3adhoc {
 
 sub
 p3srch {
-    my $srchtext = shift;
-
-    if ($rt{'#index'} eq 'any' && !$srchtext) {
-	warn `cat $p{'tmpdir'}/search.txt`, "\n";
+    my $srchtext = shift || '';
+    warn "p3srch: rt{'#index'} = $rt{'#index'}; srchtext = $srchtext\n";
+    if ($rt{'#index'} eq '#any' && !$srchtext) {
+	warn "search.txt in any mode=", `cat $p{'tmpdir'}/search.txt`, "\n";
 	xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
     } else {
 	if ($srchtext) {
@@ -363,7 +365,7 @@ p3srch {
 	print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
 	close(S);
 
-	warn `cat $p{'tmpdir'}/search.txt`, "\n";
+	warn "search.txt in $rt{'#index'} mode=", `cat $p{'tmpdir'}/search.txt`, "\n";
 	xsystem("$oraccbin/se", '-x', $p{'tmpdir'});
     }
     set_results_xml_info();
@@ -636,7 +638,7 @@ run_page_maker {
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
 		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
     } else {
-	warn "run_page_maker: no list_type set\n";
+	warn "run_page_maker: no list_type set (rt{'#list_type'} == $rt{'#list_type'}\n";
     }
 }
 
@@ -705,7 +707,7 @@ set_p3_state {
 	    $rt{'srchtype'} = 'cbd';
 	    $p{'glet'} = '';
 	} else {
-	    $rt{'#index'} = $rt{'srchtype'} = $p{'p3srchtype'} || $p{'defindex'};
+	    $rt{'#index'} = $rt{'srchtype'} = $p{'defindex'}; # $p{'p3srchtype'} ||
 	}
     } else {
 	$rt{'prod'} = 'list';
@@ -791,6 +793,21 @@ set_results_xml_info {
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
+    open(X, "$p{'tmpdir'}/any");
+    my @any = (<X>);
+    close(X);
+    chomp @any;
+    my($any_res_index) = ($any[0] =~ /^.(\S+)/);
+    if ($any_res_index eq 'txt' || $any_res_index eq 'lem') {
+	$rt{'#list_type'} = 'xtf';
+    } elsif ($p{'glos'}) {
+	$rt{'#list_type'} = 'cbd';
+    } else {
+	$rt{'#list_type'} = $any_res_index;
+    }
+    $rt{'srchtype'} = $p{'srchtype'} = $any_res_index; # 'srchindex' ??
+    warn "rt{'#list_type'} set to $rt{'#list_type'}\n";
+    $xinfo =~ m#<count>(.*?)<#;
     if ($p{'glos'} && ($p{'#listitems'} == 1 || $p{'glet'})) {
 	$p{'item'} = 1;
 	$rt{'itemtype'} = $p{'itemtype'} = 'cbd';
