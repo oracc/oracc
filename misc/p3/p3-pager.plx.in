@@ -253,6 +253,8 @@ decode_args {
 	unless $tmp{'asrch'} && $tmp{'asrch'} eq 'yes';
     if ($tmp{'#qsrch'} && $tmp{'srchindex'}) {
 	$tmp{'defindex'} = $tmp{'srchindex'};
+    } else {
+	$tmp{'defindex'} = '#any';
     }
 
     warn "args: ", Dumper \%tmp;
@@ -287,7 +289,7 @@ decode_args {
     } else {
 	$tmp{'unicode'} = 0;
     }
-    $tmp{'defindex'} = 'txt' unless $tmp{'defindex'};
+
     $tmp{'uimode'} = 'full' unless $tmp{'uimode'};
     warn "defindex $tmp{'defindex'}\n";
     warn "+defaults: ", Dumper \%tmp;
@@ -343,20 +345,27 @@ p3adhoc {
 sub
 p3srch {
     my $srchtext = shift;
-    if ($srchtext) {
-	$rt{'srchtxt'} = $srchtext;
-	$rt{'#index'} = 'cat';
+
+    if ($rt{'#index'} eq 'any' && !$srchtext) {
+	warn `cat $p{'tmpdir'}/search.txt`, "\n";
+	xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
     } else {
-	open(S, "$p{'tmpdir'}/search.txt");
-	$rt{'srchtext'} = <S>;
-	chomp($rt{'srchtext'});
+	if ($srchtext) {
+	    $rt{'srchtxt'} = $srchtext;
+	    $rt{'#index'} = 'cat';
+	} else {
+	    open(S, "$p{'tmpdir'}/search.txt");
+	    $rt{'srchtext'} = <S>;
+	    chomp($rt{'srchtext'});
+	    close(S);
+	}
+	open(S, ">$p{'tmpdir'}/search.txt");
+	print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
+	close(S);
+
+	warn `cat $p{'tmpdir'}/search.txt`, "\n";
+	xsystem("$oraccbin/se", '-x', $p{'tmpdir'});
     }
-    close(S);
-    open(S, ">$p{'tmpdir'}/search.txt");
-    print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
-    close(S);
-    warn `cat $p{'tmpdir'}/search.txt`, "\n";
-    xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-o', "$p{'tmpdir'}/results.lst");
     set_results_xml_info();
 }
 
