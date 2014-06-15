@@ -1,6 +1,6 @@
 var p3MiniControlsHeight = 24;
 var p3ControlsHeight = 90;
-var p3BotbannerHeight = 29;
+var p3BotbannerHeight = 28;
 var p3TopAdjust = 4;
 
 function p3_onload() {
@@ -8,11 +8,11 @@ function p3_onload() {
 }
 
 function p3_onpageshow() {
-//    if (event.persisted) {
+    if (event.persisted) {
 	// possibly do something here on every pageshow after first
 	// see https://developer.mozilla.org/en-US/docs/Using_Firefox_1.5_caching
-//	p3controls();
-//    }
+	p3controls();
+    }
 }
 
 function p3_loadonlyfirst() {
@@ -170,17 +170,17 @@ function p3setHeight() {
 function p3GlosControls() {
     no_sorters();
     document.getElementById('p3cetype').style.display = 'none';
-//    document.getElementById('p3srchtype').style.display = 'none';
-//    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
+    document.getElementById('p3srchtype').style.display = 'none';
+    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
     if (document.getElementById('gxis').value.length > 0) {
 	p3NoOutline();
     }
 }
 
 function p3ItemControls() {
-//    if (!document.getElementById('glos').value) {
-//	document.getElementById('p3CbdLangDisplay').style.display= 'none';
-//    }
+    if (!document.getElementById('glos').value) {
+	document.getElementById('p3CbdLangDisplay').style.display= 'none';
+    }
     document.getElementById('p3itemnav').style.display= 'block';
 
     var itemtype = document.getElementById('itemtype').value;
@@ -212,7 +212,7 @@ function p3ItemControls() {
 	}
     }
     document.getElementById('p3pagenav').style.display= 'none';
-//    document.getElementById('p3srchtype').style.display = 'inline';
+    document.getElementById('p3srchtype').style.display = 'inline';
     no_sorters();
 //    document.getElementById('p3itemtype').innerHtml = 
 //	document.getElementById('p3itemtype').value;
@@ -221,12 +221,12 @@ function p3ItemControls() {
 function p3PageControls() {
     var outlineState = document.getElementById('p3outl').value;
     var newSorttype = document.getElementById('sorttype').value;
-//    document.getElementById('p3CbdLangDisplay').style.display= 'none';
+    document.getElementById('p3CbdLangDisplay').style.display= 'none';
     document.getElementById('p3itemnav').style.display= 'none';
     document.getElementById('p3catitems').style.display = 'none';
     document.getElementById('p3textitems').style.display = 'none';
     document.getElementById('p3pagenav').style.display= 'block';
-//    document.getElementById('p3srchtype').style.display = 'inline';
+    document.getElementById('p3srchtype').style.display = 'inline';
 
     document.getElementById('item').value = 0;
     document.getElementById('p3do').value = 'viewstatePages';
@@ -267,13 +267,13 @@ function p3SrchControls() {
 	p3GlosControls();
 	selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
     } else {
-//	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	var newCetype = document.getElementById('cetype').value;
 	selectItemByValue(document.getElementById('p3cetype'), newCetype);
 	var newSrchtype = document.getElementById('srchtype').value;
-//	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	document.getElementById('p3cetype').style.display = 'inline';
-//	document.getElementById('p3srchtype').style.display = 'inline';
+	document.getElementById('p3srchtype').style.display = 'inline';
     }
 }
 
