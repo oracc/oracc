@@ -32,58 +32,77 @@
 	  target="_top" method="post" accept-charset="utf-8">
       <div id="p3controls" class="banner bborder-top bborder-bot">
 
-	<div id="p3navLeft" class="banner">
-
-	  <p id="p3topnav" class="center">
-	    <img class="p3icon" src="/img/p3-help.png" alt="Help" title="Help" id="helpIcon" name="helpIcon" onclick="p3help()"/>
-	    <img class="p3icon spread" src="/img/p3-reset.png" alt="Reset pager" title="Reset pager" id="resetPager" name="resetPager" onclick="window.location='/@@project@@/pager'"/>
-	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="helpIcon" name="helpIcon" onclick="p3help()"/>
+	<div id="p3topButtons">
+	  <p>
+	    <span class="button spacer">
+	      <button type="button" onclick="p3help()">HELP</button>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" name="oracc-home" onclick="window.location='/'">ORACC</button>
+	    </span>
+	    <span class="back-to button spacer"/>
+	    <span class="button spacer">
+	      <button type="button" name="project-home" onclick="window.location='/@@project@@/'">PROJECT</button>
+	    </span>
+	    <span class="button spacer">
+	      <button type="button" onclick="window.location='/@@project@@/pager'">PAGER</button>
+	    </span>
+	    <span class="glossaries spacer"/>
+	    <span class="button spacer">
+	      <button type="button" name="advsrch" onclick="p3asearch()">ADVANCED SEARCH</button>
+	    </span>
+	    <span class="links"/>
 	  </p>
+	</div>
 
+<!--
+	<div id="p3banner">
+	  <h1><span id="xpd-abbrev"/></h1>
+	</div>
+ -->
+	<div id="p3srch">
+	  <p class="center">
+
+	    <img class="p3icon" src="/img/p3-help.png" alt="Help" title="Help" id="helpIcon" name="helpIcon" onclick="p3help()"/>
+	    <img class="p3icon" src="/img/p3-reset.png" alt="Reset pager" title="Reset pager" id="resetPager" name="resetPager" onclick="window.location='/@@project@@/pager'"/>
+	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="helpIcon" name="helpIcon" onclick="p3help()"/>
+
+<!--
+	    <span class="qsrch">
+	      <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
+	    </span>
+-->
+	    <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+
+	    <img class="p3icon" src="/img/p3-search.png" alt="Search" title="Search" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
+
+	    <span id="p3searchIn"> in </span>
+	    
+	    <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
+	    <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
+
+	    <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
+	      <option value="txt">Transliterations</option>
+	      <option value="lem">Lemmatization</option>
+	      <option value="tra">Translations</option>
+	      <option value="cat">Catalogue</option>
+	    </select>
+
+	    <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/><span id="p3UnicodeInput">&#xa0;Unicode&#xa0;input</span>
+
+	  </p>
+	</div>
+
+	<div id="p3navLeft" class="banner">
 	  <p class="center p3-items">
 	    <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
 	  </p>
-	  
 	  <p class="center smash p3-pages">
 	    <span class="outline-sorter"/>
 	  </p>
-
-	  <p class="p3fullscreen">
-	    <img class="p3icon" src="/img/p3-full.png" alt="Toggle full/split screen" onclick="fs_toggle()" name="fullscreen" id="fullscreen"/>
-	  </p>
-
 	</div>
 	
 	<div id="p3navRight" class="banner">
-
-	  <div id="p3srch">
-	    <p class="center">
-	      <!--
-		  <span class="qsrch">
-		  <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
-		  </span>
-	      -->
-	      <input type="text" id="srch" name="srch" size="30" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
-
-	      <img class="p3icon" src="/img/p3-search.png" alt="Search" title="Search" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
-
-	      <span id="p3searchIn"> in </span>
-	      
-	      <span id="p3CbdLangDisplay" p3:value="@@cgivar:glosDisplay@@">!cbd/</span>
-	      <span id="p3CbdLang" p3:value="@@cgivar:glos@@">!cbd/</span>
-
-	      <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
-		<option value="txt">Transliterations</option>
-		<option value="lem">Lemmatization</option>
-		<option value="tra">Translations</option>
-		<option value="cat">Catalogue</option>
-	      </select>
-
-	      <input type="checkbox" id="unicode" name="unicode" p3:value="@@cgivar:unicode@@"/><span id="p3UnicodeInput">&#xa0;Unicode&#xa0;input</span>
-
-	    </p>
-	  </div>
-
 	  <div id="p3itemnav" class="p3-items p3-noglo">
 	    <p class="p3toccenter bg-dk">
 
@@ -135,6 +154,7 @@
 
 	      <span class="translations"/>
 	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+	      <input type="checkbox" onchange="fs_toggle()" name="fullscreen" id="fullscreen" value="fullscreen" p3:value="@@cgivar:fullscreen@@"/>&#xa0;wide
 	    </p>
 	  </div>
 	  

@@ -19,8 +19,12 @@ body, p { margin: 0px; padding: 0px; }
 	  border-radius: 9px;
 	}
 
-#p3srch { height: 60px; vertical-align: middle; text-align: center; }
-#p3srch p { padding: 0px; padding-top: 20px; margin: 0px;
+.spread { margin-left: 5px; margin-right: 5px; }
+
+#p3topnav { margin-top: 10px; margin-bottom: 25px; }
+
+#p3srch { height: 55px; vertical-align: middle; text-align: center; }
+#p3srch p { padding: 0px; padding-top: 10px; margin: 0px;
 	  }
 
 #p3searchIn , #p3CbdLangDisplay , #p3CbdLang , #p3srchtype , #unicode , #p3UnicodeInput , #p3textitems , #p3catitems 
@@ -33,11 +37,15 @@ body, p { margin: 0px; padding: 0px; }
 		  z-index: 2;
 		}
 
-#p3navRight   	{ height: 30px;
+#p3navRight   	{ height: 35px;
 		  width: 80%;  padding: 0px; 
 		  position: absolute; left: 20%; /* top: 40px; */
 		  z-index: 2;
 		}
+
+.p3fullscreen { margin-top: -22px; margin-left: 3px; }
+
+#p3pagenav , #p3itemnav { margin-bottom: 10px; }
 
 #p3OSdefault { display: inline; }
 #p3OSspecial { display: none; }
@@ -81,6 +89,8 @@ p.p3toccenter 	{ font-size: medium; font-weight: normal; text-align: center;
     		  width: 100%;  padding: 0px; 
 		  position: absolute; left: 0; /* top: 40px; */
 		}
+
+.p3arrow { margin-left: 5px; margin-right: 5px; }
 
 div.pgotl { font-family: arial,sans-serif; padding: 0px; 
 	    padding-left: 5px; padding-top: 5px; padding-bottom: 5px; }

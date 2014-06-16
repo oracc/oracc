@@ -170,7 +170,7 @@ function p3setHeight() {
 function p3GlosControls() {
     no_sorters();
     document.getElementById('p3cetype').style.display = 'none';
-    document.getElementById('p3srchtype').style.display = 'none';
+//    document.getElementById('p3srchtype').style.display = 'none';
 //    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
     if (document.getElementById('gxis').value.length > 0) {
 	p3NoOutline();
@@ -267,11 +267,11 @@ function p3SrchControls() {
 	p3GlosControls();
 	selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
     } else {
-	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+//	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	var newCetype = document.getElementById('cetype').value;
 	selectItemByValue(document.getElementById('p3cetype'), newCetype);
 	var newSrchtype = document.getElementById('srchtype').value;
-	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
+//	selectItemByValue(document.getElementById('p3srchtype'), newSrchtype);
 	document.getElementById('p3cetype').style.display = 'inline';
 //	document.getElementById('p3srchtype').style.display = 'inline';
     }
@@ -354,7 +354,7 @@ function p3controls() {
     }
 
     if (uimode === 'mini') {
-	document.getElementById('p3topButtons').style.display = 'none';
+//	document.getElementById('p3topButtons').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'none';
 	p3ControlsHeight = p3MiniControlsHeight;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
@@ -420,7 +420,7 @@ function selectGlossary(proj,obj) {
 }
 
 function selectItemByValue(elmnt, value) {
-    if (value && elmnt.options) {
+    if (value && elmnt && elmnt.options) {
 	for (var i=0; i < elmnt.options.length; i++) {
 	    if (elmnt.options[i].value == value) {
 		elmnt.selectedIndex = i;
