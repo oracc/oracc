@@ -349,7 +349,11 @@ p3srch {
     my $srchtext = shift || '';
     warn "p3srch: rt{'#index'} = $rt{'#index'}; srchtext = $srchtext\n";
     if ($rt{'#index'} eq '#any' && !$srchtext) {
-	warn "search.txt in any mode=", `cat $p{'tmpdir'}/search.txt`, "\n";
+	open(S, "$p{'tmpdir'}/search.txt");
+	$rt{'srchtext'} = <S>;
+	chomp($rt{'srchtext'});
+	close(S);
+	warn "search.txt in any mode=$rt{'srchtext'}\n";
 	xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
     } else {
 	if ($srchtext) {

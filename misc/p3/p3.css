@@ -12,21 +12,28 @@ body, p { margin: 0px; padding: 0px; }
 #p3topButtons .button { display: inline; }
 #p3topButtons .spacer { padding-right: .5rem; }
 
-#p3srch { height: 45px; }
-#p3srch p { padding-top: 12px; padding-bottom: 12px; 
-	    margin: 0px;
+.p3icon { background-color: white; 
+	  height: 18px; width: 18px;
+	  border: 2px solid silver; 
+	  padding: 2px;
+	  border-radius: 9px;
+	}
+
+#p3srch { height: 60px; vertical-align: middle; text-align: center; }
+#p3srch p { padding: 0px; padding-top: 20px; margin: 0px;
 	  }
 
-#p3searchIn , #p3CbdLangDisplay , #p3CbdLang , #p3srchtype , #unicode , #p3UnicodeInput { display: none }
+#p3searchIn , #p3CbdLangDisplay , #p3CbdLang , #p3srchtype , #unicode , #p3UnicodeInput , #p3textitems , #p3catitems 
+	{ display: none }
 
-#p3navLeft    	{ height: 23px;
+#p3navLeft    	{ height: 30px;
 		  padding: 0px; margin: 0px;
 		  width: 20%;  padding: 0px;
 		  position: absolute; left: 0px;
 		  z-index: 2;
 		}
 
-#p3navRight   	{ height: 23px;
+#p3navRight   	{ height: 30px;
 		  width: 80%;  padding: 0px; 
 		  position: absolute; left: 20%; /* top: 40px; */
 		  z-index: 2;
@@ -37,6 +44,9 @@ body, p { margin: 0px; padding: 0px; }
 
 #p3items { display: none; }
 #p3pages { display: block; margin-top: -2px; }
+
+#item    { text-align: center; }
+#pageset { text-align: center; }
 
 #p3zoom   { display: none; }
 #p3cetype { display: none; }

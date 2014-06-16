@@ -171,7 +171,7 @@ function p3GlosControls() {
     no_sorters();
     document.getElementById('p3cetype').style.display = 'none';
     document.getElementById('p3srchtype').style.display = 'none';
-    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
+//    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
     if (document.getElementById('gxis').value.length > 0) {
 	p3NoOutline();
     }
@@ -186,8 +186,8 @@ function p3ItemControls() {
     var itemtype = document.getElementById('itemtype').value;
 
     if (itemtype === 'xtf') {
-	document.getElementById('p3catitems').style.display = 'none';
-	document.getElementById('p3textitems').style.display = 'inline';
+//	document.getElementById('p3catitems').style.display = 'none';
+//	document.getElementById('p3textitems').style.display = 'inline';
 
 	var trans = document.getElementById('translation').value;
 	var setl = document.getElementById('setlang');
@@ -203,8 +203,8 @@ function p3ItemControls() {
 	to_toggle();
     } else {
 	if (itemtype === 'cat') {
-	    document.getElementById('p3catitems').style.display = 'inline';
-	    document.getElementById('p3textitems').style.display = 'none';
+//	    document.getElementById('p3catitems').style.display = 'inline';
+//	    document.getElementById('p3textitems').style.display = 'none';
 	} else {
 	    document.getElementById('p3catitems').style.display 
 		= document.getElementById('p3textitems').style.display 
