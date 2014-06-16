@@ -110,8 +110,9 @@ my $pgfile = "02xml/project-data.xml";
 
 open(O,">$pgfile"); select O;
 
-print '<project-data xmlns:ev="http://www.w3.org/2001/xml-events"
->';
+#print "<project-data xmlns:ev=\"http://www.w3.org/2001/xml-events\">";
+
+print "<project-data project=\"$project\">";
 
 print $stats_xml_frag;
 

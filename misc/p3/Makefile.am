@@ -6,7 +6,7 @@ css_DATA=p3.css p3cbd.css oas.css transonly_off.css transonly_on.css transnone.c
 data_DATA=p3-template.xml as-base.xml p2colours.txt
 js_DATA=p3.js oas.js p3-transonly.js
 scriptdata_DATA=p3-project.xsl p3-ce-HTML.xsl p3-htmlview.xsl p3-xmd-div.xsl oas-SEARCH.xsl oas-RETURN.xsl \
-	p3-html-wrapper.xsl p3-corpusview-lib.xsl p3-xtl-div.xsl
+	p3-html-wrapper.xsl p3-corpusview-lib.xsl p3-xtl-div.xsl p3-hub.xsl
 html_DATA=noresults.div empty.div
 
 p3-asrch.sh: p3-asrch.sh.in

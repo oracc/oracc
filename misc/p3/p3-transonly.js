@@ -1,10 +1,9 @@
 function fs_toggle() {
-    var i, a, fullscreen;
-    fullscreen = document.getElementById("fullscreen");
-    if (fullscreen.checked) {
-	p3NoOutline();
-    } else {
+    var rt = document.getElementById('p3right');
+    if (rt.style.width === '100%') {
 	p3YesOutline();
+    } else {
+	p3NoOutline();
     }
 }
 function to_toggle() {

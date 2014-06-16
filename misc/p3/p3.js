@@ -284,6 +284,7 @@ function p3NoOutline() {
     rt = document.getElementById('p3navRight');
     rt.style.width = '100%';
     rt.style.left = '0px';
+    document.getElementById('p3navLeft').style.display = 'none';
     document.getElementById('p3left').style.display = 'none';
 }
 
@@ -294,6 +295,7 @@ function p3YesOutline() {
     rt = document.getElementById('p3navRight');
     rt.style.width = '80%';
     rt.style.left = '20%';
+    document.getElementById('p3navLeft').style.display = 'block';
     document.getElementById('p3left').style.display = 'block';
 }
 

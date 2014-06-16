@@ -37,7 +37,7 @@
 	  <p id="p3topnav" class="center">
 	    <img class="p3icon" src="/img/p3-help.png" alt="Help" title="Help" id="helpIcon" name="helpIcon" onclick="p3help()"/>
 	    <img class="p3icon spread" src="/img/p3-reset.png" alt="Reset pager" title="Reset pager" id="resetPager" name="resetPager" onclick="window.location='/@@project@@/pager'"/>
-	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="helpIcon" name="helpIcon" onclick="p3help()"/>
+	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="moreIcon" name="moreIcon" onclick="window.location='/@@project@@/hub.html'"/>
 	  </p>
 
 	  <p class="center p3-items">
@@ -46,10 +46,6 @@
 	  
 	  <p class="center smash p3-pages">
 	    <span class="outline-sorter"/>
-	  </p>
-
-	  <p class="p3fullscreen">
-	    <img class="p3icon" src="/img/p3-full.png" alt="Toggle full/split screen" onclick="fs_toggle()" name="fullscreen" id="fullscreen"/>
 	  </p>
 
 	</div>
@@ -190,6 +186,10 @@
 	      </span>
 	    </p>
 	  </div>
+
+	  <p class="p3fullscreen">
+	    <img class="p3icon" src="/img/p3-full.png" alt="Toggle full/split screen" onclick="fs_toggle()" name="fullscreen" id="fullscreen"/>
+	  </p>  
 	</div>
       </div>
 
