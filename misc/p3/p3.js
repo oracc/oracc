@@ -1,4 +1,4 @@
-var p3MiniControlsHeight = 24;
+var p3MiniControlsHeight = 32;
 var p3ControlsHeight = 90;
 var p3BotbannerHeight = 28;
 var p3TopAdjust = 4;
@@ -118,7 +118,7 @@ function p3item(type,nth) {
     //    document.getElementById('p3what').value = 'item';
     document.getElementById('arg_item').value = nth;
     document.getElementById('itemtype').value = type;
-    document.getElementById('p3form').submit();    
+    document.getElementById('p3form').submit();
 }
 
 function p3item3(type,nth,id) {
@@ -358,6 +358,7 @@ function p3controls() {
     if (uimode === 'mini') {
 //	document.getElementById('p3topButtons').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'none';
+	document.getElementById('p3topnav').style.display = 'none';
 	p3ControlsHeight = p3MiniControlsHeight;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
     }

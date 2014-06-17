@@ -1,6 +1,6 @@
 /* global window */
 
-function oasResults(tmpdir) {
+function XoasResults(tmpdir) {
     document.getElementById('tmpdir').value = tmpdir;
 //    document.getElementById('list').value = tmpdir+'/results.lst';
 //    document.getElementById('uimode').value = 'mini';
@@ -16,4 +16,9 @@ function oasResults(tmpdir) {
     } else {
 	alert('Oracc Advanced Search requires popups to be enabled for the Oracc server you are using');
     }
+}
+
+function oasResults(tmpdir) {
+    document.getElementById('tmpdir').value = tmpdir;
+    window.location = '/pager?as='+tmpdir;
 }

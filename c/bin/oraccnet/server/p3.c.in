@@ -217,7 +217,7 @@ p3_asearch_results(const char *project, const char *tmpdir)
 	    cgi_arg("project", "#auto"),
 	    cgi_arg("tmpdir", tmpdir),
 	    cgi_arg("list", res),
-	    cgi_arg("uimode", "mini"),
+	    /* cgi_arg("uimode", "mini"), */
 	    NULL);
       perror("execl failed");
       exit(1);

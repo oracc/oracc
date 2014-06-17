@@ -42,15 +42,22 @@ my %rt = ();
 my $verbose = 1;
 
 %p = decode_args(@ARGV);
+
+$p{'p3OSspecial'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-sort-fields`
+    unless $p{'p3OSspecial'};
+$p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`
+    unless $p{'p3OSdefault'};
+
 arg_state();
 setup_navigation();
 set_p3_state();
 
-my $orig_referer = $p{'referer'};
+my $orig_referer = $p{'referer'} || '';
 if ($p{'glos'}) {
     $p{'referer'} = "/$p{'project'}/$p{'glos'}";
 }
-warn "p3-pager: referer set from $orig_referer => $p{'referer'}\n";
+warn "p3-pager: referer set from $orig_referer => $p{'referer'}\n"
+    if $p{'referer'};
 
 $ood_mode = $p{'project'} =~ m#/ood/#;
 if ($ood_mode) {
@@ -491,7 +498,7 @@ run_form_maker {
 	    print;
 	} elsif (/\@\@/) {
 	    if (/action=\"(.*?)\"/) {
-		s/action=\"(.*?)\"/action="$p{'referer'}"/;
+		s/action=\"(.*?)\"/action="$p{'referer'}"/ if $p{'referer'};
 	    } else {
 		s/\@\@project\@\@/$p{'project'}/g;
 	    }
@@ -855,14 +862,14 @@ set_sorttype {
 	$rt{'sorttype'} = $p{'sorttype'};
 	warn "(1) sorttype set to $rt{'sorttype'}\n";
     } elsif ($p{'p3outl'} eq 'special') {
-	$rt{'sorttype'} = $p{"p3OSspecial"};
+	$rt{'sorttype'} = $p{'p3OSspecial'};
 	warn "(2) sorttype set to $rt{'sorttype'}\n";
     } elsif ($p{'p3outl'} eq 'default') {
-	$rt{'sorttype'} = $p{"p3OSdefault"};
+	$rt{'sorttype'} = $p{'p3OSdefault'};
 	warn "(3) sorttype set to $rt{'sorttype'}\n";
     } else { # this can't happen ...
 	warn "(4) sorttype set to $rt{'sorttype'}\n";
-	$rt{'sorttype'} = $p{"p3OSdefault"};
+	$rt{'sorttype'} = $p{'p3OSdefault'};
     }
 }
 
@@ -872,20 +879,21 @@ setup_navigation {
 
     # Note that the button which is visible gives the current state
     # so we have to reverse them to toggle.
-    if ($p{'p3do'} eq 'itemstateText') {
-	$rt{'itemtype'} = $p{'itemtype'} = 'cat';
-    } elsif ($p{'p3do'} eq 'itemstateCat') {
-	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
-    } elsif ($p{'item'}) {
-	$rt{'itemtype'} = $p{'itemtype'};
-    }
+#    if ($p{'p3do'} eq 'itemstateText') {
+#	$rt{'itemtype'} = $p{'itemtype'} = 'cat';
+#    } elsif ($p{'p3do'} eq 'itemstateCat') {
+#	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+#    } elsif ($p{'item'}) {
+#	$rt{'itemtype'} = $p{'itemtype'};
+#    }
 
     if ($p{'p3do'} eq 'viewstateItems') { # can be called from form or clicking on item
 	$rt{'viewtype'} = $p{'viewtype'} = 'item';
 	$p{'item'} = 1 unless $p{'item'};
-	unless ($p{'itemtype'}) {
-	    $rt{'itemtype'} = $p{'itemtype'} = 'xtf';
-	}
+#	unless ($p{'itemtype'}) {
+#	    $rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+#	}
+	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
 	$p{'xipage'} = $p{'page'};
     } elsif ($p{'p3do'} eq 'viewstatePages') {
 	$rt{'viewtype'} = $p{'viewtype'} = 'page';

@@ -402,11 +402,11 @@ main(int argc, char * const*argv)
       if (any_index)
 	{
 	  const char *index[] = { "!cat" , "!lem" , "!tra" , NULL, "!esp" , NULL };
-	  const char **toklist = NULL;
 	  struct Datum results[4];
 	  int i, best_findset = -1;
 	  char *hashproj = NULL;
 	  FILE *anyout = stdout;
+	  const char **toklist = NULL;
 
 	  if (!project)
 	    {
@@ -459,7 +459,7 @@ main(int argc, char * const*argv)
 	}
       else
 	{
-	  toks = tokenize((const char **)(argv+optind),&ntoks);
+	  toks = tokenize(xmldir ? xmldir_toks(xmldir) : (const char **)(argv+optind),&ntoks);
 	  run_search(toks);
 	  put_results(&result);
 	}
