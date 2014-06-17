@@ -225,3 +225,20 @@ p3_asearch_results(const char *project, const char *tmpdir)
   else
     do404();
 }
+
+void
+p3glossary(const char *glos, const char *xis)
+{
+  CGI_varlist *vl = NULL;
+  extern int ccgi_verbose;
+
+  vl = CGI_get_post(0, NULL);
+  if (!CGI_lookup(vl, "project"))
+    vl = CGI_add_var(vl, "project", project);
+  vl = CGI_add_var(vl, "referer", script_url);
+  vl = CGI_add_var(vl, "tmpdir", p3tempdir());
+  vl = CGI_add_var(vl, "glos", glos);
+  if (xis)
+    vl = CGI_add_var(vl, "gxis", xis);
+  p3_exec(vl);
+}
