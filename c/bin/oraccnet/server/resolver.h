@@ -64,6 +64,8 @@ extern void or_gdf(void);
 extern void uri_patterns(void);
 
 
+extern const char *script_url;
+
 extern const char **elements, *project, *query_string, *mode, *docroot, *xmlroot;
 extern int nelements;
 

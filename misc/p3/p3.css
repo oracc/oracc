@@ -27,6 +27,8 @@ body, p { margin: 0px; padding: 0px; }
 #p3srch p { padding: 0px; padding-top: 10px; margin: 0px;
 	  }
 
+#srch { font-size: 11pt; width: 35%; }
+
 #p3searchIn , #p3CbdLangDisplay , #p3CbdLang , #p3srchtype , #unicode , #p3UnicodeInput , #p3textitems , #p3catitems 
 	{ display: none }
 
@@ -194,6 +196,10 @@ td.ce-ood-id { width: 10%; }
 td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 
 .asterisk { vertical-align: .5ex; }
+
+.p3hub h1 { font-size: 25pt; margin-left: 3px; }
+.p3hub h2 { font-size: 14pt; margin-left: 1em; }
+.p3hub p  { margin-left: 2em; textindent: -2em; }
 
 /*    
   overflow: scroll;

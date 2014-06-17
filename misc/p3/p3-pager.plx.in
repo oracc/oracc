@@ -46,6 +46,12 @@ arg_state();
 setup_navigation();
 set_p3_state();
 
+my $orig_referer = $p{'referer'};
+if ($p{'glos'}) {
+    $p{'referer'} = "/$p{'project'}/$p{'glos'}";
+}
+warn "p3-pager: referer set from $orig_referer => $p{'referer'}\n";
+
 $ood_mode = $p{'project'} =~ m#/ood/#;
 if ($ood_mode) {
     $rt{'otlmode'} = 'none';
@@ -484,7 +490,11 @@ run_form_maker {
 	    }
 	    print;
 	} elsif (/\@\@/) {
-	    s/\@\@project\@\@/$p{'project'}/g;
+	    if (/action=\"(.*?)\"/) {
+		s/action=\"(.*?)\"/action="$p{'referer'}"/;
+	    } else {
+		s/\@\@project\@\@/$p{'project'}/g;
+	    }
 	    print;
 	} else {
 	    print;

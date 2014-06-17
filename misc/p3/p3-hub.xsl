@@ -23,9 +23,10 @@
 </xsl:template>
 
 <xsl:template name="call-back">
-  <div class="p3hub">
+  <div class="p3hub banner bborder-top bborder-bot">
     <h1>Hub page for <xsl:value-of select="/*/@project"/></h1>
-
+  </div>
+  <div class="p3hub">
     <h2>Core Resources</h2>
 
     <p><a href="/{/*/@project}/index.html">Home Page</a></p>
@@ -65,7 +66,6 @@
 	<p><a href="{@url}"><xsl:value-of select="@menu"/></a></p>
       </xsl:for-each>
     </xsl:if>
-
   </div>
 </xsl:template>
 
