@@ -78,6 +78,17 @@ foreach my $c (sort keys %classes) {
 }
 close(CSS);
 
+open(XCSS,">$webdir/css/p3colours.css.xml")
+    || die "p3-colours.plx: can't write to `$webdir/css/p3colours.css.xml'\n";
+print XCSS "<css>\n";
+open(CSS,"$webdir/css/p3colours.css");
+while (<CSS>) {
+    print XCSS;
+}
+close(CSS);
+print XCSS "</css>\n";
+close(XCSS);
+
 if (-r "$webdir/p3.css" || -r "02www/p3.css") {
     open(CSX,">$webdir/p3.csx");
     print CSX "<css>\n";
@@ -93,6 +104,7 @@ if (-r "$webdir/p3.css" || -r "02www/p3.css") {
 }
 
 system 'chmod', 'o+r', "$webdir/css/p3colours.css";
+system 'chmod', 'o+r', "$webdir/css/p3colours.css.xml";
 
 ############################################################
 

@@ -39,14 +39,12 @@
 
 	  <div id="p3srch">
 	    <p class="center">
-	      <!--
-		  <span class="qsrch">
-		  <button type="submit" id="qsrch" name="qsrch" onclick="p3action('qsrch')">FIND</button>
-		  </span>
-	      -->
+	      Oracc Search:
 	      <input type="text" id="srch" name="srch" size="" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
 
 	      <img class="p3icon" src="/img/p3-search.png" alt="Search" title="Search" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
+
+	      (j=ŋ&#xa0;sz=š&#xa0;s,=ṣ&#xa0;t,=ṭ&#xa0;0-9=₀-₉)
 
 	      <span id="p3searchIn"> in </span>
 	      
@@ -65,26 +63,20 @@
 	    </p>
 	  </div>
 
+	  <div id="p3asearch">
+	    <p class="center">
+	      Oracc Advanced Search Results: 
+	      <button type="submit" class="asrch" name="asSubmit" value="edit">revise search</button> 
+	      <button type="submit" class="asrch" name="asSubmit" value="new">new search</button>
+	    </p>
+	  </div>
+
 	  <div id="p3itemnav" class="p3-items p3-noglo">
 	    <p class="p3toccenter bg-dk">
 
-<!--
 	      <span class="p3arrow">
-		<select id="p3itemtype" name="p3itemtype" onchange="p3action('itemstate')">
-		  <option value="off">Exit item mode</option>
-		  <option value="cat">Catalogue items</option>
-		  <option value="xtf">Text items</option>
-		</select>
-	      </span>
- -->
-
-	      <span class="p3arrow">
-<!--		<button type="button" name="p3itemsview" id="p3itemsview" value="item"
-			onclick="p3action('viewstatePages')"
-			>Items</button> -->
 		<img class="p3icon" src="/img/p3-pageitem.png" alt="Toggle Page/Item view" title="Toggle Page/Item view" name="p3itemsview" id="p3itemsview"
 			onclick="p3action('viewstatePages')"/>
-
 	      </span>
 
 	      <span class="p3arrow">
@@ -123,7 +115,7 @@
 	    <p class="p3toccenter bg-dk">
 
 	      <span class="p3arrow" id="p3zoom">
-		<button type="submit" name="unzoom" onclick="p3zoom('0')">Exit zoom mode</button>
+		<button type="submit" name="unzoom" onclick="p3zoom('0')">All Results</button>
 	      </span>
 
 	      <!--
@@ -186,7 +178,7 @@
       <div class="p3hidden">
 	<input type="hidden" name="arg_item" id="arg_item" p3:value="@@cgivar:arg_item@@"/>
 	<input type="hidden" name="adhoc" p3:value="@@cgivar:adhoc@@"/>
-	<input type="hidden" name="asrch"  p3:value="@@cgivar:asrch@@"/>
+	<input type="hidden" name="asrch" id="asrch"  p3:value="@@cgivar:asrch@@"/>
 	<input type="hidden" name="cetype" id="cetype" p3:value="@@runtime:cetype/line@@"/>
 	<input type="hidden" name="fscheck" id="fscheck" p3:value="@@cgivar:fullscreen/0@@"/>
 	<input type="hidden" name="glet" id="glet" p3:value="@@cgivar:glet/@@"/>

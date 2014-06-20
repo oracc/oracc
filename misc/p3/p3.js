@@ -67,18 +67,6 @@ function no_sorters() {
     }
 }
 
-function p3asearch() {
-//    alert('p3asearch');
-    var xformuri = '/'+document.getElementById('project').value+'/as.xml';
-    var oasPopupWindow = oasPopupWindow = window.open(xformuri,'oasrch',
- "dependent,height="+400+","
- +"width="+600+","
- +"screenX="+'0'+","
- +"screenY="+'0'+","
- +"resizable,scrollbars,toolbar");
-    oasPopupWindow.focus();
-}
-
 function p3defaultSortstate() {
     var newval = document.getElementById('p3OSdefault').value;
     var st = document.getElementById('sorttype');
@@ -321,6 +309,15 @@ function p3controls() {
     var what = document.getElementById('p3what').value;
     var prod = document.getElementById('p3prod').value;
     var uimode = document.getElementById('uimode').value;
+    var asrch = document.getElementById('asrch').value;
+
+    if (asrch === 'yes') {
+	document.getElementById('p3asearch').style.display = 'inline';
+	document.getElementById('p3srch').style.display = 'none';
+    } else {
+	document.getElementById('p3asearch').style.display = 'none';
+	document.getElementById('p3srch').style.display = 'inline';
+    }
 
     var outlineState = document.getElementById('p3outl').value;
     var newSorttype = document.getElementById('sorttype').value;

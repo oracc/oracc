@@ -465,7 +465,7 @@ run_form_maker {
 			$fullrep = 1;
 		    } elsif ($var eq 'list') {
 			my $l = $p{$var};
-			$l =~ s,^.*?/p3\.,#, && $l =~ s,/results.lst,,;
+			$l =~ s,^.*?/p3\.,., && $l =~ s,/results.lst,,;
 			$rep = $l;
 		    } else {
 			$rep = $p{$var};
@@ -1045,28 +1045,55 @@ xsystem {
 
 sub
 p3_oas_triage {
-
-    if ($p{'asrch'} eq 'yes') {
-	# run the search that has come in via xforms
-	print STDERR "p3_oas_triage: running p3-asrch.sh\n";
-	system "@@ORACC@@/bin/p3-asrch.sh", $p{'tmpdir'};
-    } else {
-	# if there is no search result in the tmpdir just send out a new xform
-	unless (-r "$p{'tmpdir'}/results.lst") {
+    warn "asSubmit = $p{'asSubmit'}\n";
+    if ($p{'asSubmit'}) {
+	$p{'tmpdir'} = "/tmp/p3$p{'list'}";
+	# User has clicked on one of the buttons on the search results pager
+	if ($p{'asSubmit'} eq 'edit') {
+	    $oas_instance = `cat $p{'tmpdir'}/search.xml`;
+	    $oas_instance =~ s/search>/search xmlns="">/;
+	    print "Content-type: text/xml; charset=utf-8\n\n";
+	    run_form_maker($oas_template);
+	    goto EXIT;
+	} else {
 	    $oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
 	    print "Content-type: text/xml; charset=utf-8\n\n";
 	    run_form_maker($oas_template);
 	    goto EXIT;
 	}
-	# otherwise
-	#   if the edit flag is 'yes', send out the xform with the instance from the existing tmpdir
-	if ($p{'edit'} && $p{'edit'} eq 'yes') {
-	    $oas_instance = `cat $p{'tmpdir'}/search.xml`;
-	    print "Content-type: text/xml; charset=utf-8\n\n";
-	    run_form_maker($oas_template);
-	    goto EXIT;
+    } else {
+	if ($p{'asrchxf'} && $p{'asrchxf'} eq 'yes') {
+	    # run the search that has come in via xforms
+	    print STDERR "p3_oas_triage: running p3-asrch.sh\n";
+	    system "@@ORACC@@/bin/p3-asrch.sh", $p{'tmpdir'}, $p{'project'};
+	    $p{'asrch'} = 'yes';
+	    # This sets things up so p3-pager will initialize from the results
+	    $p{'list'} = "$p{'tmpdir'}/results.lst";
+	    if (-s $p{'list'}) {
+		my $l1 = `head -1 $p{'list'}`;
+		if ($l1 =~ /_/) {
+		    $p{'srchtype'} = $rt{'#list_type'} = 'tra';
+		} elsif (2 == $l1 =~ tr/././) {
+		    $p{'srchtype'} = 'txt';
+		    $rt{'#list_type'} = 'xtf';
+		} else {
+		    $p{'srchtype'} = $rt{'#list_type'} = 'cat';
+		}
+	    }
 	} else {
-	    #   else just let the pager do its work with the info in the tmpdir
+	    # if there is no search result in the tmpdir just send out a new xform
+	    $p{'tmpdir'} = "/tmp/p3$p{'list'}";
+	    $p{'list'} = "/tmp/p3$p{'list'}/results.lst";
+	    unless (-r "$p{'tmpdir'}/results.lst") {
+		warn "p3_oas_triage: no $p{'tmpdir'}/results.lst\n";
+		$oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
+		print "Content-type: text/xml; charset=utf-8\n\n";
+		run_form_maker($oas_template);
+		goto EXIT;
+	    } else {
+		# Fall through to let p3-pager do it's stuff with page/item nav
+		warn "p3_oas_triage: falling through using $p{'tmpdir'}/results.lst\n";
+	    }
 	}
     }
 }

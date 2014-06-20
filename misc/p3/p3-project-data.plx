@@ -164,7 +164,7 @@ print '</project-data>';
 close(O);
 
 open(O,">$otlfile") || die "p3-project-data.plx: unable to open $otlfile for output\n";
-print '<span class="outline-sorter">', @system_select1, @custom_select1, '</span">';
+print '<span class="outline-sorter">', @system_select1, @custom_select1, '</span>';
 close(O);
 
 

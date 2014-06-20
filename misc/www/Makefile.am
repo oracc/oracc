@@ -15,7 +15,8 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	oraccscreen.css orig-SHU-white.css outline.css ppcs-print.css		\
 	ppcs.css pqpager.css preformat.css psdview.css score-block.css		\
 	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
-	xmd.css xo.css xtl.css oracchome.css
+	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
+	cuneiformcss.xml
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
@@ -64,6 +65,21 @@ cfgwview.plx: cfgwview.plx.in
 
 html-standard.xsl: html-standard.xsl.in
 	$(ORACCIFY) html-standard.xsl.in
+
+oraccscreencss.xml: oraccscreen.css
+	echo '<css>' >oraccscreencss.xml
+	sed 's/\.css/css.xml/g' <oraccscreen.css >>oraccscreencss.xml
+	echo '</css>' >>oraccscreencss.xml
+
+cuneiformcss.xml: cuneiform.css
+	echo '<css>' >cuneiformcss.xml
+	cat cuneiform.css >>cuneiformcss.xml
+	echo '</css>' >>cuneiformcss.xml
+
+oraccbasecss.xml: oraccbase.css
+	echo '<css>' >oraccbasecss.xml
+	cat oraccbase.css >>oraccbasecss.xml
+	echo '</css>' >>oraccbasecss.xml
 
 EXTRA_DIST = \
 	Qcat-icon.png \

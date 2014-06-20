@@ -1,0 +1,23 @@
+<css>
+/* Basic Oracc find-button CSS */
+span.find-button { 
+    border-style: outset 1px brown;
+    color: #444;
+    background-color: brown;
+    width: 75px; border: 
+    vertical-align: center;
+    border-radius: 9px; 
+    -moz-border-radius: 15px;
+    padding: 3px;
+    margin-left: 2px; margin-right: 2px; margin-top: 0px; margin-bottom: 0px;
+    vertical-align: center; text-align: center;
+    font-family: Arial; font-size: 7pt; font-weight: bold;  line-height: 7pt;
+    background: -moz-linear-gradient(top,  #ffe 70%,  #e80);
+    background-image: -webkit-linear-gradient(top, rgb(255,255,238) 70%, rgb(238,136,0) 100%);
+}
+
+span.find-button:hover {
+    background: -moz-linear-gradient(top,  #c60,  #ffe 80%);
+    background-image: -webkit-linear-gradient(top, rgb(204,102,0) 10%, rgb(255,255,238));
+}
+</css>

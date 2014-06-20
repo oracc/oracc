@@ -8,6 +8,9 @@
   <head>
     <title>@@project@@ Advanced Search</title>
     <link rel="stylesheet" type="text/css" href="/css/oas.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/p3css.xml"/>
+    <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css.xml"/>
+
     <xforms:model>
 
       <xforms:instance id="search">
@@ -78,8 +81,16 @@
     </xforms:model>
   </head>
   <body>
-    <h1>Oracc Advanced Search</h1>
-    
+
+    <div id="p3controls" class="banner bborder-top bborder-bot">
+      
+      <div id="p3navLeft" class="banner">
+      </div>
+      <div id="p3navRight" class="banner">
+	<h1>@@project@@ Advanced Search</h1>
+      </div>
+    </div>
+
     <div class="main-repeat">
     <xforms:repeat nodeset="search" id="search-repeat">
       <fieldset>

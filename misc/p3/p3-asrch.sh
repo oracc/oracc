@@ -1,14 +1,16 @@
 #!/bin/sh
 tmpdir=$1
+project=$2
 xsl=/usr/local/oracc/lib/scripts
-xsltproc $xsl/oas-SEARCH.xsl $tmpdir/search.xml >$tmpdir/search.txt
+xsltproc -stringparam project $project $xsl/oas-SEARCH.xsl $tmpdir/search.xml >$tmpdir/search.txt
 uni=`grep use-unicode $tmpdir/search.xml | grep true`
 if [ "$uni" == "" ]; then
    unicode=
 else
    unicode=-8
 fi
-echo asrch tmpdir=$tmpdir >&2
+echo asrch tmpdir=$tmpdir project=$project >&2
+cat $tmpdir/search.txt >&2
 /usr/local/oracc/bin/se -s2 $unicode -x $tmpdir
 #echo 'Content-type: text/xml; charset=utf-8'
 #echo 

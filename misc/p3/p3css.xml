@@ -1,5 +1,6 @@
-@import url(oraccscreen.css);
-@import url(p3cbd.css);
+<css>
+@import url(oraccscreencss.xml);
+@import url(p3cbdcss.xml);
 
 body, p { margin: 0px; padding: 0px; }
 
@@ -205,3 +206,4 @@ td.ce-xmd-icon { width: 26px; vertical-align: middle; }
   overflow: scroll;
 
 */
+</css>

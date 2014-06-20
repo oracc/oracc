@@ -1,15 +1,13 @@
 <css>
-body	    { background-color: #ffffee; color: black; 
-	      font-family: "Times New Roman", serif; padding: 1em;
-	      margin: auto;}
+@import url(oraccscreen.css);
+@import url(p3.css);
+@import url(p3cbd.css);
 
 @namespace xf url("http://www.w3.org/2002/xforms");
 
-h1	    { color: maroon; background-color: beige;
-	      border-top: 3px solid red;
-              font-family: arial, sans-serif; 
-	      font-size: 12pt; font-weight: bold;
-	      padding: 2pt; }
+.main-repeat, .submits { width: 80%; margin: auto; padding-top: 1em; }
+
+hr { width: 80%; margin: auto; margin-top: 1em; }
 
 .searchtoks { width: 80%; margin: auto; background-color: silver; font-family: courier; margin-bottom: 10px; font-size: 90%; }
 
@@ -20,7 +18,5 @@ h1	    { color: maroon; background-color: beige;
 
 tr { vertical-align: top; }
 td { border-bottom: 1px; }
-
-.trailer { font-size: 90%; color: #777; }
 
 </css>

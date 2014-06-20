@@ -2,12 +2,16 @@
 
 <xsl:output method="text" encoding="utf-8"/>
 
+<xsl:param name="project"/>
+
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="search">
+  <xsl:if test="count(ancestor::search)=0">
+    <xsl:value-of select="concat('#',$project,' ')"/>
+  </xsl:if>
   <xsl:choose>
     <xsl:when test="@type='simple'">
-      <xsl:value-of select="concat('#',../project,' ')"/>
       <xsl:choose>
 	<xsl:when test="string-length(../glossary)>0 and not(../glossary='#none')">
 	  <xsl:value-of select="concat('!cbd/',../glossary,' ')"/>	  
@@ -37,9 +41,11 @@
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
+<!--
 <xsl:template match="project[not(../search[@type='simple'])]">
   <xsl:value-of select="concat('#',.,' ')"/>
 </xsl:template>
+-->
 
 <xsl:template match="index">
   <xsl:value-of select="concat('!',.,' ')"/>

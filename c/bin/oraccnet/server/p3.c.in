@@ -247,22 +247,31 @@ void
 p3_oas(const char *xml)
 {
   CGI_varlist *vl = CGI_get_post(0, NULL);
-  const char *d = CGI_lookup(vl, "tmpdir");
+  const char *d = NULL;
   char *sfn = NULL;
   FILE *fp = NULL;
   char *referer = NULL;
+  char *asSubmit = NULL;
+  char *list = NULL;
+  
+  list = CGI_lookup(vl, "list");
+  if (list && *list == '.') {
+    d = malloc(strlen(list) + strlen("/tmp/p3") + 1);
+    sprintf(d,"/tmp/p3%s",list);
+  }
 
-  if (!d || (query_string && !strcmp(query_string, "reset")))
+  asSubmit = CGI_lookup(vl, "asSubmit");
+  if (!d || (asSubmit && !strcmp(asSubmit, "new")))
     vl = CGI_add_var(vl, "tmpdir", d = p3tempdir());
 
   if (xml)
     {
       sfn = malloc(strlen(d) + strlen("/search.xml") + 1);
       sprintf(sfn, "%s/search.xml", d);
-      vl = CGI_add_var(vl, "asrch", "yes");
+      vl = CGI_add_var(vl, "asrchxf", "yes");
     }
 
-  fprintf(stderr, "p3_oas: project=%s; tmpdir=%s; xml=%s\n", project, d, xml);
+  fprintf(stderr, "p3_oas: project=%s; tmpdir=%s; xml=%s; asSubmit=%s\n", project, d, xml, asSubmit);
 
   referer = malloc(strlen(project) + strlen("//as") + 1);
   sprintf(referer, "/%s/as", project);
