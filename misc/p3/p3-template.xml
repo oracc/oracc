@@ -25,7 +25,7 @@
 
 	  <p id="p3topnav" class="center">
 	    <img class="p3icon" src="/img/p3-help.png" alt="Help" title="Help" id="helpIcon" name="helpIcon" onclick="p3help()"/>
-	    <img class="p3icon spread" src="/img/p3-reset.png" alt="Reset pager" title="Reset pager" id="resetPager" name="resetPager" onclick="window.location='/@@project@@/pager'"/>
+	    <img class="p3icon spread" src="/img/p3-reset.png" alt="Reset pager" title="Reset pager" id="resetPager" name="resetPager" onclick="window.location='@@referer@@'"/>
 	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="moreIcon" name="moreIcon" onclick="window.location='/@@project@@/hub.html'"/>
 	  </p>
 

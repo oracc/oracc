@@ -141,16 +141,16 @@ sub { font-style: normal; }
 .ce-heading { padding: 0px; margin: 0px; margin-left: 2px; font-size: 80%; line-height: 90%; 
 	      font-family: arial, sans-serif; margin-bottom: 2px;
 	    }
-.ce-label  { text-align: right; padding-top: 0px; margin-top: 0px; }
+.ce-label  { text-align: right; padding-top: 0px; margin-top: 0px; padding-right: 2px; }
 .ce-result { text-align: left;  padding-bottom: 0px; margin-bottom: 0px;
-	   padding-left: 2px; padding-right: 2px; }
+	   padding-left: 3px; padding-right: 3px; }
 
 table.kwic { width: 100%; }
 
 /* Glossary styling */
 p.toc-entry { margin: 0px; padding: 0px; padding-bottom: 4px; text-align: center; }
 .all-letters { text-decoration: underline; line-height: 120%; }
-p.summary { margin-left: 1em; text-indent: -1em; }
+p.summary { margin-left: 1em; text-indent: -.9em; }
 .cf { font-size: 100%; }
 .gw { font-size: 80%; }
 .pos { font-size: 90%; }

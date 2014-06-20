@@ -386,9 +386,24 @@ p3srch {
 	open(S, ">$p{'tmpdir'}/search.txt");
 	print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
 	close(S);
-
+	
 	warn "search.txt in $rt{'#index'} mode=", `cat $p{'tmpdir'}/search.txt`, "\n";
+
 	xsystem("$oraccbin/se", '-x', $p{'tmpdir'});
+
+	if ($rt{'#index'} =~ /^cbd/) {
+	    xsystem('sort', '-o', "$p{'tmpdir'}/results.lst", '-u', "$p{'tmpdir'}/results.lst");
+	    my $ncount = `wc -l $p{'tmpdir'}/results.lst`;
+	    chomp($ncount);
+	    $ncount =~ s/^.*?(\d+).*$/$1/;
+	    my $res = `cat $p{'tmpdir'}/results.xml`;
+	    $res =~ s,<count>\d+,<count>$ncount,;
+	    open(R,">$p{'tmpdir'}/results.xml");
+	    print R $res;
+	    close(R);
+	} else {
+	    warn "did not uniq resulst\n";
+	}
     }
     set_results_xml_info();
 }
@@ -523,6 +538,8 @@ run_form_maker {
 		} else {
 		    s/\@\@project\@\@/$p{'project'}/g;
 		}
+	    } elsif (/\@\@referer\@\@/) {
+		s/\@\@referer\@\@/$p{'referer'}/g;
 	    } elsif (/\@\@oas-instance\@\@/) {
 		print $oas_instance;
 		next;
@@ -842,19 +859,22 @@ set_results_xml_info {
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
-    open(X, "$p{'tmpdir'}/any");
-    my @any = (<X>);
-    close(X);
-    chomp @any;
-    my($any_res_index) = ($any[0] =~ /^.(\S+)/);
-    if ($any_res_index eq 'txt' || $any_res_index eq 'lem') {
-	$rt{'#list_type'} = 'xtf';
+    if (-r "$p{'tmpdir'}/any") {
+	open(X, "$p{'tmpdir'}/any");
+	my @any = (<X>);
+	close(X);
+	chomp @any;
+	my($any_res_index) = ($any[0] =~ /^.(\S+)/);
+	if ($any_res_index eq 'txt' || $any_res_index eq 'lem') {
+	    $rt{'#list_type'} = 'xtf';
+	} else {
+	    $rt{'#list_type'} = $any_res_index;
+	}
+	$rt{'srchtype'} = $p{'srchtype'} = $any_res_index; # 'srchindex' ??
     } elsif ($p{'glos'}) {
 	$rt{'#list_type'} = 'cbd';
-    } else {
-	$rt{'#list_type'} = $any_res_index;
+	$rt{'srchtype'} = $p{'srchtype'} = 'cbd';
     }
-    $rt{'srchtype'} = $p{'srchtype'} = $any_res_index; # 'srchindex' ??
     warn "rt{'#list_type'} set to $rt{'#list_type'}\n";
     $xinfo =~ m#<count>(.*?)<#;
     if ($p{'glos'} && ($p{'#listitems'} == 1 || $p{'glet'})) {
@@ -921,14 +941,14 @@ setup_navigation {
 #	unless ($p{'itemtype'}) {
 #	    $rt{'itemtype'} = $p{'itemtype'} = 'xtf';
 #	}
-	$rt{'itemtype'} = $p{'itemtype'} = 'xtf';
+	$rt{'itemtype'} = $p{'itemtype'} = ($p{'glos'} ? 'cbd' : 'xtf');
 	$p{'xipage'} = $p{'page'};
     } elsif ($p{'p3do'} eq 'viewstatePages') {
 	$rt{'viewtype'} = $p{'viewtype'} = 'page';
 	$p{'item'} = 0;
 	$p{'page'} = $p{'xipage'} || 1;
 	$force_page = 1;
-	$rt{'itemtype'} = $p{'itemtype'} = 'cat';
+	$rt{'itemtype'} = $p{'itemtype'} = ($p{'glos'} ? 'cbd' : 'cat');
     } elsif ($p{'item'}) {
 	$rt{'itemtype'} = $p{'itemtype'};
     }

@@ -230,16 +230,26 @@ void
 p3glossary(const char *glos, const char *xis)
 {
   CGI_varlist *vl = NULL;
+  const char *srch = NULL;
   extern int ccgi_verbose;
 
   vl = CGI_get_post(0, NULL);
+  vl = CGI_add_var(vl, "glos", glos);
+  if (xis)
+    vl = CGI_add_var(vl, "gxis", xis);
+
   if (!CGI_lookup(vl, "project"))
     vl = CGI_add_var(vl, "project", project);
   vl = CGI_add_var(vl, "referer", script_url);
   vl = CGI_add_var(vl, "tmpdir", p3tempdir());
-  vl = CGI_add_var(vl, "glos", glos);
-  if (xis)
-    vl = CGI_add_var(vl, "gxis", xis);
+
+  if ((srch = CGI_lookup(vl, "srch")) && *srch && *srch != '0')
+    {
+      p3srch(vl);
+      vl = CGI_add_var(vl, "itemtype", "cbd");
+      vl = CGI_add_var(vl, "srchtype", "cbd");
+    }
+
   p3_exec(vl);
 }
 
@@ -247,13 +257,13 @@ void
 p3_oas(const char *xml)
 {
   CGI_varlist *vl = CGI_get_post(0, NULL);
-  const char *d = NULL;
+  char *d = NULL;
   char *sfn = NULL;
   FILE *fp = NULL;
   char *referer = NULL;
-  char *asSubmit = NULL;
-  char *list = NULL;
-  
+  const char *asSubmit = NULL;
+  const char *list = NULL;
+
   list = CGI_lookup(vl, "list");
   if (list && *list == '.') {
     d = malloc(strlen(list) + strlen("/tmp/p3") + 1);
