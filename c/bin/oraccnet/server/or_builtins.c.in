@@ -52,8 +52,11 @@ or_builtins(void)
 	    case B_XFORMS:
 	      xforms_handler();
 	      break;
+	    case B_OAS:
+	      p3_oas(NULL);
+	      break;
 	    case B_AS:
-	      as_handler(elements[2]);
+	      do404(); /* as_handler(elements[2]); */
 	      break;
 	    case B_ATF:
 	      atf();
@@ -285,6 +288,10 @@ xml_handler(char *xml, size_t len)
       ||*/ !strcmp(xml_type, "search"))
     {
 #if 1
+      xml[len] = 0;
+      p3_oas(xml);
+#if 1
+#else
       char *tmpdir = p3tempdir();
       char *sfn = malloc(strlen(tmpdir) + 10);
       FILE *fp = NULL;
@@ -300,6 +307,7 @@ xml_handler(char *xml, size_t len)
 	}
       do404();
       exit(1);
+#endif
 #else
       char *session = xml_value(xml, "session");
       if (session)

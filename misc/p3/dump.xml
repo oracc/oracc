@@ -5,37 +5,41 @@
       xmlns:ev="http://www.w3.org/2001/xml-events">
 
   <head>
-    <title>@@PROJECT@@ Advanced Search</title>
+    <title>cams/barutu Advanced Search</title>
     <link rel="stylesheet" type="text/css" href="/css/oas.css"/>
-    <script type="text/javascript" src="/js/oas.js"/>
+    <script type="text/javascript" src="/js/oas.js">
+
+</script>
     <xforms:model>
 
       <xforms:instance id="search">
-	<search xmlns="">
-	  <use-unicode>true</use-unicode>
-	  <post-type>search</post-type>
-	  <advanced>yes</advanced>
-	  <project>@@PROJECT@@</project>
-	  <tmpdir>@TMPDIR@</tmpdir>
-	  <search type="and">
-	    <index>txt</index>
-	    <binop>
-	      <key/>
-	      <txt-filters>
-		<position>any</position>
-		<role>any</role>
-	      </txt-filters>
-	      <lem-filters>
-		<field>any</field>
-		<final>false</final>
-	      </lem-filters>
-	    </binop>
-	  </search>
-	  <result count="0" list="(none)">
-	    <notify/>
-	    <toks/>
-	  </result>
-	</search>
+<search xmlns="">
+  <use-unicode>true</use-unicode>
+  <post-type>search</post-type>
+  <advanced>yes</advanced>
+<!--
+  <project>@@PROJECT@@</project>
+  <tmpdir>@TMPDIR@</tmpdir>
+ -->
+  <search type="and">
+    <index>txt</index>
+    <binop>
+      <key/>
+      <txt-filters>
+	<position>any</position>
+	<role>any</role>
+      </txt-filters>
+      <lem-filters>
+	<field>any</field>
+	<final>false</final>
+      </lem-filters>
+    </binop>
+  </search>
+  <result count="0" list="(none)">
+    <notify/>
+    <toks/>
+  </result>
+</search>
       </xforms:instance>
 
       <xforms:instance id="new-search">
@@ -452,8 +456,8 @@
     <form id="p3form" action="/pager" target="_blank"
 	  method="post" accept-charset="utf-8">
       <p>
-      	<input type="hidden" name="project" value="@@PROJECT@@"/>
-	<input type="hidden" name="referer" value="@@PROJECT@@/oas"/>
+      	<input type="hidden" name="project" value="cams/barutu"/>
+	<input type="hidden" name="referer" value="cams/barutu/as"/>
 	<input type="hidden" name="list" id="list"/>
 	<!--<input type="hidden" name="uimode" value="mini"/>-->
 	<input type="hidden" name="tmpdir" id="tmpdir"/>

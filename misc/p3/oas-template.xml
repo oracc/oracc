@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xforms="http://www.w3.org/2002/xforms"
@@ -5,37 +6,12 @@
       xmlns:ev="http://www.w3.org/2001/xml-events">
 
   <head>
-    <title>@@PROJECT@@ Advanced Search</title>
+    <title>@@project@@ Advanced Search</title>
     <link rel="stylesheet" type="text/css" href="/css/oas.css"/>
-    <script type="text/javascript" src="/js/oas.js"/>
     <xforms:model>
 
       <xforms:instance id="search">
-	<search xmlns="">
-	  <use-unicode>true</use-unicode>
-	  <post-type>search</post-type>
-	  <advanced>yes</advanced>
-	  <project>@@PROJECT@@</project>
-	  <tmpdir>@TMPDIR@</tmpdir>
-	  <search type="and">
-	    <index>txt</index>
-	    <binop>
-	      <key/>
-	      <txt-filters>
-		<position>any</position>
-		<role>any</role>
-	      </txt-filters>
-	      <lem-filters>
-		<field>any</field>
-		<final>false</final>
-	      </lem-filters>
-	    </binop>
-	  </search>
-	  <result count="0" list="(none)">
-	    <notify/>
-	    <toks/>
-	  </result>
-	</search>
+@@oas-instance@@
       </xforms:instance>
 
       <xforms:instance id="new-search">
@@ -74,7 +50,7 @@
       <xforms:bind nodeset="instance('search')/use-unicode" type="xs:boolean"/>
       <xforms:bind nodeset="instance('search')/search/binop/lem-filters/final" type="xs:boolean"/>
 
-      <xforms:submission action="/asearch" method="post" id="post-search"
+      <xforms:submission action="/@@project@@/asearch" method="post" id="post-search"
 			 mediatype="application/xml" replace="all">
 <!--
 	<xforms:action ev:event="xforms-submit-done">
@@ -103,15 +79,7 @@
   </head>
   <body>
     <h1>Oracc Advanced Search</h1>
-    <p>
-      <xforms:output value="project"/> Search:
-      <xforms:output value="result/@count"/> results from search:<br/>
-    </p>
     
-    <div class="searchtoks">
-      <p class="searchtoks"><xforms:output value="result/toks"/></p>
-    </div>
-
     <div class="main-repeat">
     <xforms:repeat nodeset="search" id="search-repeat">
       <fieldset>
@@ -445,20 +413,5 @@
 	<xforms:label>using Unicode</xforms:label>
       </xforms:input>
     </div>
-<!--    <p class="trailer">
-      (Session/list=<xforms:output ref="instance('search')/session"
-		     />/<xforms:output ref="result/@list"
-		     />)</p> -->
-    <form id="p3form" action="/pager" target="_blank"
-	  method="post" accept-charset="utf-8">
-      <p>
-      	<input type="hidden" name="project" value="@@PROJECT@@"/>
-	<input type="hidden" name="referer" value="@@PROJECT@@/oas"/>
-	<input type="hidden" name="list" id="list"/>
-	<!--<input type="hidden" name="uimode" value="mini"/>-->
-	<input type="hidden" name="tmpdir" id="tmpdir"/>
-      </p>
-    </form>
-
   </body>
 </html>

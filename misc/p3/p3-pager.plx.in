@@ -33,6 +33,8 @@ my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
 my $no_html = "@@ORACC@@/www/no_html.xml";
+my $oas_instance = '';
+my $oas_template = "@@ORACC@@/lib/data/oas-template.xml";
 my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
@@ -42,6 +44,9 @@ my %rt = ();
 my $verbose = 1;
 
 %p = decode_args(@ARGV);
+
+p3_oas_triage()
+    if $p{'referer'} && $p{'referer'} =~ m,/as,;
 
 $p{'p3OSspecial'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-sort-fields`
     unless $p{'p3OSspecial'};
@@ -186,7 +191,7 @@ if ($p{'item'} == 0) {
 print "Content-type: text/html; Encoding=utf-8\n\n"
     unless $p{'noheader'};
 
-run_form_maker();
+run_form_maker("@@ORACC@@/lib/data/p3-template.xml");
 
 # close and exit
 EXIT:
@@ -396,11 +401,22 @@ reinitialize {
 
 sub
 run_form_maker {
-    my $t = "@@ORACC@@/pub/$p{'project'}/p3.html";
-    print '<!DOCTYPE html>', "\n";
+    my $t = shift;
+    my $projectname = '';
+    my $projabb = `@@ORACC@@/bin/oraccopt $p{'project'} abbrev`;
+    my $projname = `@@ORACC@@/bin/oraccopt $p{'project'} name`;
+    if ($projname =~ /^$projabb/) {
+	$projectname = $projname;
+    } else {
+	$projectname = "$projabb : $projname";
+    }
+    print '<!DOCTYPE html>', "\n" unless $t =~ /\.xml$/;
     open(T,$t);
     while (<T>) {
-	if (m#<p>\@</p>#) {
+	if (m#^\@\@ga\@\@#) {
+	} elsif (/\@\@outlines\@\@/) {
+	    print `cat @@ORACC@@/xml/$p{'project'}/outline-sorter.xml`;
+	} elsif (m#<p>\@</p>#) {
 	    if ($p{'glos'}) {
 		warn "run_form_maker: glos\n";
 		print '<div id="p3left" class="border-right">';
@@ -447,6 +463,10 @@ run_form_maker {
 		    if ($var eq 'glosDisplay' && $projtype eq 'glossary') {
 			$rep = $p{'project'};
 			$fullrep = 1;
+		    } elsif ($var eq 'list') {
+			my $l = $p{$var};
+			$l =~ s,^.*?/p3\.,#, && $l =~ s,/results.lst,,;
+			$rep = $l;
 		    } else {
 			$rep = $p{$var};
 		    }
@@ -497,10 +517,18 @@ run_form_maker {
 	    }
 	    print;
 	} elsif (/\@\@/) {
-	    if (/action=\"(.*?)\"/) {
-		s/action=\"(.*?)\"/action="$p{'referer'}"/ if $p{'referer'};
+	    if (/action=\"(.*?)\"/ && !/xforms/) {
+		if ($p{'referer'}) {
+		    s/action=\"(.*?)\"/action="$p{'referer'}"/;
+		} else {
+		    s/\@\@project\@\@/$p{'project'}/g;
+		}
+	    } elsif (/\@\@oas-instance\@\@/) {
+		print $oas_instance;
+		next;
 	    } else {
-		s/\@\@project\@\@/$p{'project'}/g;
+		s/\@\@project\@\@/$p{'project'}/g
+		    || s/\@\@projectname\@\@/$projectname/g
 	    }
 	    print;
 	} else {
@@ -1011,6 +1039,36 @@ xsystem {
     warn "system @_\n"
 	if $verbose;
     system @_;
+}
+
+#################################################################################################
+
+sub
+p3_oas_triage {
+
+    if ($p{'asrch'} eq 'yes') {
+	# run the search that has come in via xforms
+	print STDERR "p3_oas_triage: running p3-asrch.sh\n";
+	system "@@ORACC@@/bin/p3-asrch.sh", $p{'tmpdir'};
+    } else {
+	# if there is no search result in the tmpdir just send out a new xform
+	unless (-r "$p{'tmpdir'}/results.lst") {
+	    $oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
+	    print "Content-type: text/xml; charset=utf-8\n\n";
+	    run_form_maker($oas_template);
+	    goto EXIT;
+	}
+	# otherwise
+	#   if the edit flag is 'yes', send out the xform with the instance from the existing tmpdir
+	if ($p{'edit'} && $p{'edit'} eq 'yes') {
+	    $oas_instance = `cat $p{'tmpdir'}/search.xml`;
+	    print "Content-type: text/xml; charset=utf-8\n\n";
+	    run_form_maker($oas_template);
+	    goto EXIT;
+	} else {
+	    #   else just let the pager do its work with the info in the tmpdir
+	}
+    }
 }
 
 1;

@@ -107,6 +107,7 @@ if (($xpll = load_xml("00lib/pll.xml"))) {
 }
 
 my $pgfile = "02xml/project-data.xml";
+my $otlfile = "02xml/outline-sorter.xml";
 
 open(O,">$pgfile"); select O;
 
@@ -154,8 +155,6 @@ for (my $i = 0; $i <= $#top_l; ++$i) {
 }
 print '</glossaries>';
 
-print '<outline-sorters>', @system_select1, @custom_select1, '</outline-sorters>';
-
 print '<projects>', map ({ pll_project($_) }  @pll_projects), '</projects>';
 print '<links>',    map ({ pll_link_ids($_) } @pll_links),    '</links>';
 print '<lists>',    map ({ $_->toString(0) }  @pll_lists),    '</lists>';
@@ -163,6 +162,11 @@ print '<lists>',    map ({ $_->toString(0) }  @pll_lists),    '</lists>';
 print '</project-data>';
 
 close(O);
+
+open(O,">$otlfile") || die "p3-project-data.plx: unable to open $otlfile for output\n";
+print '<span class="outline-sorter">', @system_select1, @custom_select1, '</span">';
+close(O);
+
 
 system 'chmod', 'o+r', $pgfile;
 

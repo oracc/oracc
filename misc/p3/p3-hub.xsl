@@ -33,10 +33,7 @@
     <p><a href="/{/*/@project}/pager">Text Catalogue</a></p>
     <p><a href="/{/*/@project}/withatf">Transliterated Texts</a></p>
     <p><a href="/{/*/@project}/withlem">Lemmatized Texts</a></p>
-
-    <h2>Searching</h2>
-
-    
+    <p><a href="/{/*/@project}/oas">Advanced Search</a></p>
 
     <xsl:if test="/*/glossaries/glogroup">
       <h2>Glossaries</h2>

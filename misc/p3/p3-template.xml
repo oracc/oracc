@@ -13,18 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css" title="projcss"/>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3-transonly.js" type="text/javascript"><![CDATA[ ]]></script>
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-32878242-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-
+@@ga@@
     <title>@@project@@</title>
   </head>
   <body onload="p3_onload(); p3setHeight(); window.onresize=p3setHeight; window.onpageshow=p3_onpageshow">
@@ -40,12 +29,8 @@
 	    <img class="p3icon" src="/img/p3-plus.png" alt="More resources" title="More resources" id="moreIcon" name="moreIcon" onclick="window.location='/@@project@@/hub.html'"/>
 	  </p>
 
-	  <p class="center p3-items">
-	    <!-- IMPLEMENT HIDE OUTLINE ON CLIENT SIDE USING JS -->
-	  </p>
-	  
 	  <p class="center smash p3-pages">
-	    <span class="outline-sorter"/>
+	    @@outlines@@
 	  </p>
 
 	</div>
@@ -236,7 +221,7 @@
     </form>
 
     <div id="p3botbanner" class="banner border-top">
-      <h1><span id="xpd-abbrev"/>: <span id="xpd-name"/></h1>
+      <h1>@@projectname@@</h1>
     </div>
 
   </body>

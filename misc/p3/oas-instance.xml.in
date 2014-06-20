@@ -1,0 +1,27 @@
+<search xmlns="">
+  <use-unicode>true</use-unicode>
+  <post-type>search</post-type>
+  <advanced>yes</advanced>
+<!--
+  <project>@@project@@</project>
+  <tmpdir>@@tmpdir@@</tmpdir>
+ -->
+  <search type="and">
+    <index>txt</index>
+    <binop>
+      <key/>
+      <txt-filters>
+	<position>any</position>
+	<role>any</role>
+      </txt-filters>
+      <lem-filters>
+	<field>any</field>
+	<final>false</final>
+      </lem-filters>
+    </binop>
+  </search>
+  <result count="0" list="(none)">
+    <notify/>
+    <toks/>
+  </result>
+</search>

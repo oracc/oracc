@@ -242,3 +242,43 @@ p3glossary(const char *glos, const char *xis)
     vl = CGI_add_var(vl, "gxis", xis);
   p3_exec(vl);
 }
+
+void
+p3_oas(const char *xml)
+{
+  CGI_varlist *vl = CGI_get_post(0, NULL);
+  const char *d = CGI_lookup(vl, "tmpdir");
+  char *sfn = NULL;
+  FILE *fp = NULL;
+  char *referer = NULL;
+
+  if (!d || (query_string && !strcmp(query_string, "reset")))
+    vl = CGI_add_var(vl, "tmpdir", d = p3tempdir());
+
+  if (xml)
+    {
+      sfn = malloc(strlen(d) + strlen("/search.xml") + 1);
+      sprintf(sfn, "%s/search.xml", d);
+      vl = CGI_add_var(vl, "asrch", "yes");
+    }
+
+  fprintf(stderr, "p3_oas: project=%s; tmpdir=%s; xml=%s\n", project, d, xml);
+
+  referer = malloc(strlen(project) + strlen("//as") + 1);
+  sprintf(referer, "/%s/as", project);
+  vl = CGI_add_var(vl, "referer", referer);
+
+  if (!CGI_lookup(vl, "project"))
+    vl = CGI_add_var(vl, "project", project);
+
+  if (xml)
+    {
+      if ((fp = fopen(sfn, "w")))
+	{
+	  fputs(xml,fp);
+	  fclose(fp);
+	}
+    }
+
+  p3_exec(vl);
+}
