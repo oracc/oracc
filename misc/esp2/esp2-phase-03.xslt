@@ -312,7 +312,8 @@
        </xsl:copy>
      </xsl:for-each>
      <xsl:if test="not(esp:link)">
-       <img src="{$src}" alt="{@description}"> <!-- class="{ancestor-or-self::*[@grid]}/@grid"> -->
+       <img src="{$src}" alt="{@description}">
+	 <xsl:copy-of select="@class"/>
 	 <xsl:if test="@width">
 	   <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
 	 </xsl:if>
