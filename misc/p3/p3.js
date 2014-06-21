@@ -98,7 +98,8 @@ function p3action(act) {
 }
 
 function p3help() {
-    popup('http://build.oracc.org/doc2/help/index.html','oraccHelp',900,900,0,0);
+//    popup('/doc2/help/index.html','oraccHelp',900,900,0,0);
+    popup('/doc2/help/visitingoracc/gettingstarted/index.html','oraccHelp',900,900,0,0);
 }
 
 function p3item(type,nth) {
