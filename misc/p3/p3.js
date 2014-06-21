@@ -234,10 +234,15 @@ function p3PageControls() {
     } else {
 	if (outlineState === 'special') {
 //	    alert('special page controls');
-	    document.getElementById('p3OSdefault').style.display = 'none';
-	    var d = document.getElementById('p3OSspecial');
-	    d.style.display = 'inline';
-	    selectItemByValue(d, newSorttype);
+	    var d = document.getElementById('p3OSdefault');
+	    if (d) {
+		d.style.display = 'none';
+	    }
+	    d = document.getElementById('p3OSspecial');
+	    if (d) {
+		d.style.display = 'inline';
+		selectItemByValue(d, newSorttype);
+	    }
 	} else {
 	    no_sorters();
 	}
