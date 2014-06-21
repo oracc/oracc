@@ -209,3 +209,10 @@ p.proj-img   { margin: 0; padding: 0; }
 div.imageinline { margin: 0 !important; }
 
 #Menu  { color: #666; background-color: #ffe; }
+
+.p3icon { background-color: white; 
+	  height: 18px; width: 18px;
+	  border: 2px solid silver; 
+	  padding: 2px;
+	  border-radius: 9px;
+	}
