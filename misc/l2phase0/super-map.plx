@@ -11,6 +11,4 @@ my %map_no_new = map_drop_act('new');
 
 print Dumper \%map_no_new;
 
-
-
 1;

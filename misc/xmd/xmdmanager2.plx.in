@@ -209,7 +209,7 @@ if ($cat_policy eq 'auto') {
     $split = 0;
 } elsif ($cat_policy eq 'derived') {
     setup_derived_cat();
-} elsif ($cat_policy eq 'mixed' || $cat_policy eq 'custom') {
+} elsif ($cat_policy eq 'mixed' || $cat_policy eq 'custom' || $cat_policy eq 'local') {
     @catalogs = map { { 'file'=>$_ } }  <00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>;
 } else {
     die "xmdmanager2.plx: unhandled catalogue type $cat_policy\n";
