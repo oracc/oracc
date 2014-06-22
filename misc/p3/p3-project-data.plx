@@ -108,6 +108,7 @@ if (($xpll = load_xml("00lib/pll.xml"))) {
 
 my $pgfile = "02xml/project-data.xml";
 my $otlfile = "02xml/outline-sorter.xml";
+my $trafile = "02xml/trans-select.xml";
 
 open(O,">$pgfile"); select O;
 
@@ -116,16 +117,6 @@ open(O,">$pgfile"); select O;
 print "<project-data project=\"$project\">";
 
 print $stats_xml_frag;
-
-print '<translangs>';
-foreach my $tl (@translangs) {
-    if ($longlang{$tl}) {
-	print "<lang abbrev=\"$tl\">$longlang{$tl}</lang>";
-    } else {
-	warn "p3-project-data.plx: no longlang for $tl\n";
-    }
-}
-print '</translangs>';
 
 @top_l = sort @top_l;
 print '<glossaries>';
@@ -167,8 +158,22 @@ open(O,">$otlfile") || die "p3-project-data.plx: unable to open $otlfile for out
 print '<span class="outline-sorter">', @system_select1, @custom_select1, '</span>';
 close(O);
 
+open(T, ">$trafile") || die "p3-project-data.plx: unable to open $otlfile for output\n";
+print T "<span class=\"translations\">";
+print T "<select name=\"setlang\" id=\"setlang\" onchange=\"p3action('viewstateItems');\">";
+foreach my $tl (@translangs) {
+    if ($longlang{$tl}) {
+	print T "<option value=\"$tl\">$longlang{$tl}</option>";
+    } else {
+	warn "p3-project-data.plx: no longlang for $tl\n";
+	print T "<option value=\"$tl\">$tl</option>";
+    }
+}
+print T '</select>';
+print T '</span>';
+close(T);
 
-system 'chmod', 'o+r', $pgfile;
+system 'chmod', 'o+r', $pgfile, $otlfile, $trafile;
 
 ######################################################################################
 

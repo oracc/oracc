@@ -106,7 +106,7 @@
 	      
 	      <span p3:value="@@runtime:items@@"/> Items
 
-	      <span class="translations"/>
+@@translations@@
 	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
 	    </p>
 	  </div>

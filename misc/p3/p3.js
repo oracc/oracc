@@ -358,6 +358,12 @@ function p3controls() {
 	}
     }
 
+    if (document.getElementById('gxis').value != '') {
+	var newCetype = document.getElementById('cetype').value;
+	selectItemByValue(document.getElementById('p3cetype'), newCetype);
+	document.getElementById('p3cetype').style.display = 'inline';
+    }
+
     if (uimode === 'mini') {
 //	document.getElementById('p3topButtons').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'none';

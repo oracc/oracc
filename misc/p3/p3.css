@@ -39,7 +39,7 @@ body, p { margin: 0px; padding: 0px; }
 		  z-index: 2;
 		}
 
-#p3navRight   	{ height: 35px;
+#p3navRight   	{ height: 30px;
 		  width: 80%;  padding: 0px; 
 		  position: absolute; left: 20%; /* top: 40px; */
 		  z-index: 2;
@@ -47,7 +47,7 @@ body, p { margin: 0px; padding: 0px; }
 
 .p3fullscreen { margin-top: -34px; margin-left: 3px; }
 
-#p3pagenav , #p3itemnav { margin-bottom: 10px; }
+#p3pagenav , #p3itemnav { margin-bottom: 7px; margin-top: 3px; }
 
 #p3OSdefault { display: inline; }
 #p3OSspecial { display: none; }
