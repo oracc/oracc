@@ -23,7 +23,7 @@ EOD
 
 ORACC::L2GLO::Builtins::merge_exec($data{'baselang'}, 
 				   $data{'basefile'}, 
-				   [ $data{'srcfile'} ], 
+				   [ $data{'newfile'} ], 
 				   $data{'outglo'});
 
 chatty("installing $data{'outglo'} as new version of $data{'basefile'}");
