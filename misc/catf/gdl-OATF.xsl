@@ -3,19 +3,35 @@
 <xsl:stylesheet version="1.0" 
   xmlns:c="http://oracc.org/ns/xcl/1.0"
   xmlns:g="http://oracc.org/ns/gdl/1.0"
-  xmlns:n="http://oracc.org/ns/norm/1.0"
-  xmlns:x="http://oracc.org/ns/xtf/1.0"
+  xmlns:n="http://oracc.org/ns/norm/1.0/notused"
+  xmlns:x="http://oracc.org/ns/xtf/1.0/notused"
+  xmlns:r="http://oracc.org/ns/xtr/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:param name="lemm-mode" select="false()"/>
+<xsl:param name="repo-mode" select="true()"/>
 <xsl:key name="lemm" match="c:l" use="@ref"/>
 
 <xsl:variable name="lemmo" select="'&#x2E20;'"/> <!-- LEFT VERTICAL BAR WITH QUILL -->
 <xsl:variable name="lemmc" select="'&#x2E21;'"/> <!-- RIGHT VERTICAL BAR WITH QUILL -->
 
+<!--
+<xsl:variable name="lower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
+<xsl:variable name="upper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
+-->
+
 <xsl:variable name="quote">'</xsl:variable>
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
+
+<xsl:template match="x:xtf|x:transliteration|x:composite|x:score">
+  <xsl:if test="string-length(@n>0)">
+    <xsl:value-of select="concat(@xml:id,'&#x9;&amp;&#x9;',@n,'&#xa;')"/>
+  </xsl:if>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:protocols|r:translation"/>
 
 <xsl:template match="x:c">
   <xsl:if test="preceding-sibling::x:c"><xsl:text> &amp; </xsl:text></xsl:if>
@@ -28,7 +44,8 @@
 </xsl:template>
 
 <xsl:template match="x:l">
-  <xsl:value-of select="concat(@label, '. ')"/>
+  <xsl:value-of select="concat(@xml:id, '&#x9;')"/>
+  <xsl:value-of select="concat(@label,  '&#x9;')"/>
   <xsl:apply-templates/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>
@@ -160,19 +177,36 @@
 
 <xsl:template match="g:r|g:s|g:v">
   <xsl:call-template name="g-begin"/>
-  <xsl:apply-templates/>
+  <xsl:choose>
+    <xsl:when test="self::g:s">
+      <xsl:choose>
+	<xsl:when test="ancestor::g:d[@g:role='semantic']">
+	  <xsl:value-of select="translate(.,$upper,$lower)"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:call-template name="g-end"/>
   <xsl:call-template name="g-delim"/>
 </xsl:template>
 
-<xsl:template match="g:w">
+<xsl:template match="n:w|g:w">
+  <xsl:if test="$repo-mode">
+    <xsl:call-template name="wid"/>
+  </xsl:if>
   <xsl:call-template name="w-sub"/>
   <xsl:if test="$lemm-mode">
-    <xsl:for-each select="key('lemm',@xml:id)">
-      <xsl:value-of select="$lemmo"/>
-      <xsl:value-of select="@inst"/>
-      <xsl:value-of select="$lemmc"/>
-    </xsl:for-each>
+      <xsl:for-each select="key('lemm',@xml:id)">
+	<xsl:value-of select="$lemmo"/>
+	<xsl:value-of select="@inst"/>
+	<xsl:value-of select="$lemmc"/>
+      </xsl:for-each>
   </xsl:if>
   <xsl:choose>
     <xsl:when test="@contrefs">
@@ -182,6 +216,7 @@
       <xsl:call-template name="g-delim"/>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:text>&#x9;</xsl:text>
 </xsl:template>
 
 <xsl:template match="g:x">
@@ -408,6 +443,7 @@
 </xsl:template>
 
 <xsl:template match="x:nonx">
+  <xsl:value-of select="concat(@xml:id,'&#x9;$&#x9;')"/>
   <xsl:choose>
     <xsl:when test="starts-with(., '(')">
       <xsl:apply-templates/>
@@ -500,6 +536,24 @@
     <xsl:text>_@</xsl:text>
   </xsl:if>
   -->
+</xsl:template>
+
+<xsl:template name="wid">
+  <xsl:if test="string-length(@xml:id)>0">
+    <xsl:value-of select="concat($lemmo,@xml:id,$lemmc)"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="g-status-flags">
+  <xsl:if test="@g:collated = '1'">
+    <xsl:text>*</xsl:text>
+  </xsl:if>
+  <xsl:if test="@g:queried = '1'">
+    <xsl:text>?</xsl:text>
+  </xsl:if>
+  <xsl:if test="@g:remarked = '1'">
+    <xsl:text>!</xsl:text>
+  </xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>

@@ -16,7 +16,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 AM_CFLAGS=-pedantic -Wall
 
 bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
-	jpegsize linkfiles gdf \
+	jpegsize linkfiles gdf labeltable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir
 
@@ -39,6 +39,8 @@ gdf_LDADD=@top_srcdir@/c/lib/liboracc.la
 haslinks_SOURCES=haslinks.c
 
 isogmt_SOURCES=isogmt.c
+
+labeltable_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 linkfiles_SOURCES=linkfiles.c
 
