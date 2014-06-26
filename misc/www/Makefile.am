@@ -7,7 +7,8 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	xmdoutline.xsl
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
-	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx
+	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx \
+	oracc-exec.plx
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
 	cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css	\
@@ -41,6 +42,9 @@ cuneify.plx: cuneify.plx.in
 
 oracchtml.plx: oracchtml.plx.in
 	$(ORACCIFY) oracchtml.plx.in
+
+oracc-exec.plx: oracc-exec.plx.in
+	$(ORACCIFY) oracc-exec.plx.in
 
 cdlhtml.plx: cdlhtml.plx.in
 	$(ORACCIFY) cdlhtml.plx.in
