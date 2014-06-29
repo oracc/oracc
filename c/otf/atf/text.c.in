@@ -384,7 +384,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	      xfclose(odslem_fn,odslem_fp);
 	    }
 	  else
-	    lem_serialize(stdout);
+	    lem_serialize(f_autolem);
 	}
 
       if (has_trans())

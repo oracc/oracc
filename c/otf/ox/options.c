@@ -112,11 +112,11 @@ ox_options(int argc, char **argv)
 	  perform_lem = 0;
 	  no_xcl_map = 1;
 	  break;
-	case 'O':
-	  do_cdl = need_lemm = perform_nsa = 1;
-	  break;
 	case 'o':
 	  cdtfile = input_file = optarg;
+	  break;
+	case 'O':
+	  do_cdl = need_lemm = perform_nsa = 1;
 	  break;
 	case 'p':
 	  check_pnames = 1;
@@ -151,6 +151,8 @@ ox_options(int argc, char **argv)
 	  lem_percent_threshold = atoi(optarg);
 	  break;
 	case 'x':
+	  /* Note that this may be xmlfile or autolem_fn because if -A is specified no XML is output so 
+	     we overload the option */
 	  xmlfile = optarg;
 	  break;
 	case 'X':

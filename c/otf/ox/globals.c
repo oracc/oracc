@@ -8,9 +8,10 @@ unsigned const char *curr_line_label;
 
 struct xcl_context *text_xc = NULL;
 
-FILE *f_xml = NULL;
+FILE *f_autolem = NULL;
 FILE *f_forms = NULL;
 FILE *f_graphemes = NULL;
+FILE *f_xml = NULL;
 
 int cbd_lem_sigs = 0;
 int check_lem = 0;
@@ -28,6 +29,7 @@ int word_matrix = 0;
 unsigned char idbuf[MAX_IDBUF_LEN];
 
 char *odsods_fn = NULL, *odslem_fn = NULL, *odsatf_fn = NULL;
+char *autolemfile = NULL;
 
 const char *textid;
 const char *fallback_project = NULL;

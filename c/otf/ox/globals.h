@@ -38,6 +38,7 @@ extern int sparse_lem;
 extern int verbose;
 extern int with_textid;
 
+extern char *autolem_fn;
 extern char *odsods_fn;
 extern char *odslem_fn;
 extern char *odsatf_fn;
@@ -71,6 +72,7 @@ extern int check_pnames;
 extern int bootstrap_mode;
 
 extern FILE*f_atf;
+extern FILE*f_autolem;
 extern FILE*f_bad;
 extern FILE *f_unlemm;
 

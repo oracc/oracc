@@ -3,20 +3,31 @@ use warnings; use strict; use open 'utf8';
 binmode STDERR, ':utf8'; binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 sub xsystem;
-
-my $bin = '/usr/local/oracc/bin';
-my $oracc_log = "/usr/local/oracc/tmp/sop/$ARGV[0]/oracc.log";
-my $request_log = "/usr/local/oracc/tmp/sop/$ARGV[0]/request.log";
-my $status_file = "/usr/local/oracc/tmp/sop/$ARGV[0]/status";
 my $verbose = 1;
-my $zip_response = "/usr/local/oracc/tmp/sop/$ARGV[0]/response.zip";
-my @zippers = ($request_log, $oracc_log);
 
 warn "oracc-exec: @ARGV\n";
+my($session,$request_zip,$command,@args) = @ARGV;
+
+my $tmpdir = "/usr/local/oracc/tmp/sop/$session";
+chdir($tmpdir);
+warn "oracc_exec: pwd=",`pwd`;
+
+my $oraccbin = '/usr/local/oracc/bin';
+my $oracc_log = "$tmpdir/oracc.log";
+my $request_log = "$tmpdir/request.log";
+my $status_file = "$tmpdir/status";
+my $zip_response = "$tmpdir/response.zip";
+
+my @zippers = ($request_log, $oracc_log);
 
 set_status('run');
 
-sleep(10);
+if ($command eq 'atf') {
+    xsystem 'unzip', $request_zip;
+    xsystem "$oraccbin/ox", '-l', $oracc_log, '-c', $args[0];
+} else {
+    sleep(60);
+}
 
 zip_response();
 
@@ -40,7 +51,8 @@ xsystem {
 sub
 zip_response {
     unlink($zip_response);
-    xsystem 'zip', $zip_response, @zippers;
+    -s $oracc_log || system 'touch', $oracc_log;
+    xsystem 'zip', '-j', $zip_response, @zippers;
 }
 
 1;

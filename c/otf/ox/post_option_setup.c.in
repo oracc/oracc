@@ -12,6 +12,12 @@ post_option_setup(struct run_context *run)
 {
   extern int status;
 
+  if (lem_autolem && xmlfile && !do_cdl)
+    {
+      autolemfile = xmlfile;
+      xmlfile = NULL;
+    }
+
   if (!check_only)
     check_lem = 1; /* this also does lem/sense annotation */
 
@@ -26,6 +32,15 @@ post_option_setup(struct run_context *run)
   if (!status)
     {
       f_log = stderr; /* in case this is used before the log file is set */
+      if (autolemfile)
+	{
+	  f_autolem = fopen(autolemfile,"w");
+	  if (!f_autolem)
+	    {
+	      fprintf(stderr,"ox: unable to write to autolem texts file %s\n", autolemfile);
+	      exit(2);
+	    }
+	}
       if (badfile)
 	{
 	  f_bad = fopen(badfile,"w");
