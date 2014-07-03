@@ -17,6 +17,6 @@ yum install \
     httpd \
     git \
     policycoreutils-python \
-    xmlrpc-c-devel \
     perl-Text-CSV_XS \
-    java
+    java \
+    

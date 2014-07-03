@@ -22,6 +22,9 @@ p3cbdcss.xml: p3cbd.css
 	cat p3cbd.css >>p3cbdcss.xml
 	echo '</css>' >>p3cbdcss.xml
 
+p3-colours.plx: p3-colours.plx.in
+	$(ORACCIFY) p3-colours.plx.in
+
 p3-corpusview-lib.xsl: p3-corpusview-lib.xsl.in
 	$(ORACCIFY) p3-corpusview-lib.xsl.in
 

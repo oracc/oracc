@@ -1,4 +1,4 @@
-oracc
-=====
+oracc server client services
+============================
 
-All the sources and documentation for Oracc
+A gsoap-based client-server layer for Oracc projects to execute commands on the build server.

@@ -38,7 +38,7 @@ extern int sparse_lem;
 extern int verbose;
 extern int with_textid;
 
-extern char *autolem_fn;
+extern char *autolemfile;
 extern char *odsods_fn;
 extern char *odslem_fn;
 extern char *odsatf_fn;

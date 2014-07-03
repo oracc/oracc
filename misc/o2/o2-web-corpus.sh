@@ -1,5 +1,6 @@
 #!/bin/sh
 [ -r 01bld/cancel ] && exit 1
+webdir=01bld/www
 p3-translangs.sh >01tmp/translangs
 otl=`oraccopt . outline-special-list-name`
 if [ "$otl" != "" ]; then

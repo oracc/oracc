@@ -2,7 +2,7 @@
 libtoolize
 aclocal
 autoheader
-automake
+automake --add-missing
 autoconf
 ./configure --prefix=$ORACC
 make $1

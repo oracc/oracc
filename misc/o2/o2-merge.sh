@@ -26,6 +26,8 @@ fi
 
 # Now we know that 00lib/$lang.glo is non-zero
 date=`isogmt`
+date=`/bin/echo -n $date | tr -d -`
+mkdir -p 00bak
 echo oracc merge: saving 00lib/$lang.glo as 00bak/$lang-$date.glo
 cp -a 00lib/$lang.glo 00bak/$lang-$date.glo
 

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+scope=$1
+
 [ -r 01bld/cancel ] && exit 1
 
 # make .txh files world-readable
@@ -55,9 +57,11 @@ echo o2-xtf.sh: setxtx ...
 cat 01bld/lists/xtfindex.lst | setxtx -p $project
 
 # Other formats
-o2-xml.sh
-tei=`oraccopt . build-tei`
-if [ "$tei"=="yes" ]; then
-    o2-tei.sh
+if [ "$scope" = "full" ]; then
+    o2-xml.sh
+    tei=`oraccopt . build-tei`
+    if [ "$tei" = "yes" ]; then
+	o2-tei.sh
+    fi
 fi
 #Q004184.70.1 

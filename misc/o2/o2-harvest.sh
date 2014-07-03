@@ -28,10 +28,12 @@ sortlang()
 {
     (cd 01bld/new ; l2-glomanager.plx -sort $l.new >$l.srt)
 }
+
 o2-atf.sh
 o2-lst.sh
 mkdir -p 01bld/new
 l2p1-from-xtfs.plx -new
+
 echo
 echo ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo

@@ -5,8 +5,8 @@ my $webdir = shift @ARGV;
 die "p3-colours.plx: must give webdir on command line\n"
     unless $webdir;
 
-my $oraccbin = "/usr/local/oracc/bin";
-my $oracc_colours = "/usr/local/oracc/lib/data/p3colours.txt";
+my $oraccbin = "@@ORACC@@/bin";
+my $oracc_colours = "@@ORACC@@/lib/data/p3colours.txt";
 
 my %colours = ();
 my %classes = ();
