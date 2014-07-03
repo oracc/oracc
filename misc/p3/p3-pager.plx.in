@@ -27,8 +27,12 @@ use Encode;
 # inserted into the %rt array and echoed into the hidden fields
 # on return.
 
+sub xsystem;
+
 my $oraccbin = "@@ORACC@@/bin";
+my $oraccbld = "@@ORACC@@/bld";
 my $oracclib = "@@ORACC@@/lib";
+my $oraccpub = "@@ORACC@@/pub";
 my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
@@ -340,6 +344,22 @@ find_xmdoutline_sub {
 }
 
 sub
+html_by_proxy {
+    my($host_project, $id) = @_;
+    my $proxy_project = '';
+    my $html = undef;
+    my $pqid_lst = "$oraccpub/$host_project/cat/pqids.lst";
+    my $pqid_entry = `grep -m 1 $id $pqid_lst`;
+    chomp $pqid_entry;
+    if ($pqid_entry =~ /^(.*?):/) {
+	$proxy_project = $1;
+	my($id4) = ($id =~ /^(....)/);
+	$html = "$oraccbld/$proxy_project/$id4/$id/$id.html";
+    }
+    ($proxy_project, $html);
+}
+
+sub
 p3adhoc {
     my $adhoc_list = "$p{'tmpdir'}/results.lst";
     my @adhoc = split(/,/, $p{'adhoc'});
@@ -444,9 +464,9 @@ run_form_maker {
 		    system "$oraccbin/xfrag", '-u', $rt{'#content_url'};
 		} else {
 		    if ($proxy_host) {
-			system "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
+			xsystem "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
 		    } else {
-			system 'cat', "$p{'tmpdir'}/results.html";
+			xsystem 'cat', "$p{'tmpdir'}/results.html";
 		    }
 		}
 		print '</div>';
@@ -462,7 +482,11 @@ run_form_maker {
 		if ($rt{'#content_url'}) {
 		    system 'cat', $rt{'#content_url'};
 		} else {
-		    system 'cat', "$p{'tmpdir'}/results.html";
+		    if ($proxy_host) {
+			xsystem "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
+		    } else {
+			xsystem 'cat', "$p{'tmpdir'}/results.html";
+		    }
 		}
 		print '</div>';
 	    }
@@ -606,6 +630,12 @@ run_item_maker {
 	}
     }
 
+    if ($hilite_words) {
+	$hilite_words = '' unless $hilite_words =~ /\./;
+    } else {
+	$hilite_words = '';
+    }
+
     warn "### hilite_words = $hilite_words\n";
 
     my($eproject,$eid) = ($p{'project'},'');
@@ -649,19 +679,24 @@ run_item_maker {
 	} else {
 	    $html = '' unless -r $html;
 	}
-	if (-r $html) {
-	    if ($eproject ne $p{'project'}) {
-		$proxy_host = $eproject;
+	unless (-r $html) {
+	    ($eproject,$html) = html_by_proxy($p{'project'}, $eid);
+	    unless (-r $html) {
+		xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
+		goto OUTLINE;
 	    }
-	    warn "cp $html $p{'tmpdir'}/results.html\n";
-	    xsystem('cp',$html,"$p{'tmpdir'}/results.html");
-	} else {
-	    xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
 	}
+	if ($eproject ne $p{'project'}) {
+	    $proxy_host = $eproject;
+	    warn "proxy_host = $proxy_host; project=$p{'project'}\n";
+	}
+	warn "cp $html $p{'tmpdir'}/results.html\n";
+	xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	sig_fixer($p{'project'});
 	if ($hilite_words) {
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
+      OUTLINE:
 	xsystem('xsltproc', 
 		'-stringparam', 'project', $eproject,
 		'-o', "$p{'tmpdir'}/outline.html",

@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
+binmode STDOUT, ':utf8';
 my($project,$html) = @ARGV;
 $project = "\U$project";
 open(P,$html);
