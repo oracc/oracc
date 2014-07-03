@@ -305,6 +305,7 @@ pat_is_resource(struct component *cp)
 	{
 	  cp->value = R_PQX;
 	  cp->replace = map_PQX(cp->text, cp->count);
+	  fprintf(stderr, "map_PQX from %s => %s\n", cp->text, cp->replace);
 	}
       else if (res_is_word(cp->text))
 	cp->value = R_WORD;

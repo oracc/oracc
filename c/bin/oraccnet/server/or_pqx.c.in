@@ -204,6 +204,16 @@ h_pqx_html_pager(const char *project, struct component *components)
     mode = have_component[C_UI]->text;
   else
     mode = "full";
+#if 1
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx",
+	cgi_arg("project", project),
+	cgi_arg("adhoc", 
+		components[0].replace ? components[0].replace : components[0].text),
+	cgi_arg("line-id", line_id),
+	cgi_arg("frag-id", frag_id),
+	cgi_arg("mode", mode),
+	NULL);
+#else
   execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx",
 	"-p", cgi_arg("project", project),
 	"-p", cgi_arg("adhoc", 
@@ -212,6 +222,7 @@ h_pqx_html_pager(const char *project, struct component *components)
 	"-p", cgi_arg("frag-id", frag_id),
 	"-p", cgi_arg("mode", mode),
 	NULL);
+#endif
 }
 
 void
