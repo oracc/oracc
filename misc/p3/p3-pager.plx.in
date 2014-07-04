@@ -77,11 +77,11 @@ if ($ood_mode) {
 
 if ($rt{'prod'} eq 'list') {
     if ($p{'glos'}) {
+	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
 	    $rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
 	    xsystem("@@ORACC@@/bin/xis", '-f', "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
 	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
-	    $rt{'cetype'} = $p{'p3cetype'};
 	    set_list_items();
 	    $p{'uimode'} = 'mini';
 	} else {
