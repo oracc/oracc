@@ -51,13 +51,22 @@ print "\n";
 
 foreach my $s (sort keys %sig) {
     print "$s\t";
-    my @r = sort keys %{$sig{$s}};
+    my @r = uniq(keys %{$sig{$s}});
     if ($#r >= 0) {
 	printf "%d\t@r", $#r+1;
     } else {
 	print "\t0";
     }
     print "\n";
+}
+
+sub
+uniq {
+    my %x = ();
+    foreach (grep($_, @_)) {
+	@x{grep($_, split(/\s+/,$_))} = ();
+    }
+    sort keys %x;
 }
 
 1;
