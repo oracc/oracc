@@ -15,10 +15,8 @@
 <xsl:variable name="lemmo" select="'&#x2E20;'"/> <!-- LEFT VERTICAL BAR WITH QUILL -->
 <xsl:variable name="lemmc" select="'&#x2E21;'"/> <!-- RIGHT VERTICAL BAR WITH QUILL -->
 
-<!--
-<xsl:variable name="lower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
-<xsl:variable name="upper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
--->
+<xsl:variable name="xlower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
+<xsl:variable name="xupper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
 
 <xsl:variable name="quote">'</xsl:variable>
 
@@ -181,7 +179,7 @@
     <xsl:when test="self::g:s">
       <xsl:choose>
 	<xsl:when test="ancestor::g:d[@g:role='semantic']">
-	  <xsl:value-of select="translate(.,$upper,$lower)"/>
+	  <xsl:value-of select="translate(.,$xupper,$xlower)"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:apply-templates/>
