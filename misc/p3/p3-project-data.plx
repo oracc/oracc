@@ -71,7 +71,8 @@ my @top_l = sort keys %top_l;
 ### Compute languages used in translations
 my @translangs = ();
 if (-d '00atf') {
-    @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
+#    @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
+    @translangs = `find 01bld/[PQX]* | grep xtr | xargs grep  xml:lang | perl -n -e '/xml:lang="(.*?)"/g && print "\$1\n"' | sort -u`;
     chomp @translangs;
 }
 
