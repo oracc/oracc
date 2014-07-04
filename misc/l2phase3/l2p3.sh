@@ -20,15 +20,19 @@ rm -fr $webdir/cbd ; mkdir -p $webdir/cbd
 g2c=`find 01bld/* -name '*.g2c'`
 if [ "$g2c" != "" ]; then
     for g2c in `ls 01bld/*/*.g2c` ; do
-	ldir=`dirname $g2c`
-	l=`basename $ldir`
-	echo producing web version of $l
-	l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
-	xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
-	xfftab=`oraccopt . cbd-forms-table`
-	if [ "$xfftab" = 'yes' ]; then
-	    rm -fr $webdir/cbd/$l/xff
-	    art2xff.plx -l sux
+	# -r fails if the glossary is empty because it points to *.cbd,
+	# which doesn't exist
+	if [ -r $g2c ]; then
+	    ldir=`dirname $g2c`
+	    l=`basename $ldir`
+	    echo producing web version of $l
+	    l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
+	    xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
+	    xfftab=`oraccopt . cbd-forms-table`
+	    if [ "$xfftab" = 'yes' ]; then
+		rm -fr $webdir/cbd/$l/xff
+		art2xff.plx -l sux
+	    fi
 	fi
     done
 fi
