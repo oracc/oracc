@@ -118,9 +118,15 @@ exemplar_links {
 		my $Q = $id;
 		$Q =~ s/^.*?://;
 		$Q =~ s/\..*$//;
-		my $xproject = $$el[0]; # FIXME: doesn't this mean the id is in the target project not the exemplar one?
-		$xproject =~ s/:.*$//;
-		$a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$$el[1]')");
+		my $xproject = $$el[1];
+		my $Qnoproj = $$el[1];
+		if ($xproject =~ /:/) {
+		    $xproject =~ s/:.*$//;
+		    $Qnoproj =~ s/^.*?://;
+		} else {
+		    $xproject = $project;
+		}
+		$a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$Qnoproj')");
 	    } else {
 		print STDERR "expected a node not found in exemplar_links for $$el[0]\n";
 	    }
