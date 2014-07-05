@@ -56,9 +56,11 @@ mkdir -p $dir/txt
 echo o2-xtf.sh: setxtx ...
 cat 01bld/lists/xtfindex.lst | setxtx -p $project
 
+# must do this for EST project search
+o2-xml.sh
+
 # Other formats
 if [ "$scope" = "full" ]; then
-    o2-xml.sh
     tei=`oraccopt . build-tei`
     if [ "$tei" = "yes" ]; then
 	o2-tei.sh
