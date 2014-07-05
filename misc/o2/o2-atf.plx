@@ -5,7 +5,7 @@ my $bin = "$oracc/bin";
 my $O2ARGS = '';
 my $ox = "$bin/ox";
 my $project = `oraccopt`;
-my $verbose = 0;
+my $verbose = 1;
 
 sub xsystem;
 
