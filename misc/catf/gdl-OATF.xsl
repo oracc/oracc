@@ -9,7 +9,8 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:param name="lemm-mode" select="false()"/>
-<xsl:param name="repo-mode" select="true()"/>
+<xsl:param name="repo-mode" select="false()"/>
+<xsl:param name="tatf-mode"/>
 <xsl:key name="lemm" match="c:l" use="@ref"/>
 
 <xsl:variable name="lemmo" select="'&#x2E20;'"/> <!-- LEFT VERTICAL BAR WITH QUILL -->
@@ -21,36 +22,6 @@
 <xsl:variable name="quote">'</xsl:variable>
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
-
-<xsl:template match="x:xtf|x:transliteration|x:composite|x:score">
-  <xsl:if test="string-length(@n>0)">
-    <xsl:value-of select="concat(@xml:id,'&#x9;&amp;&#x9;',@n,'&#xa;')"/>
-  </xsl:if>
-  <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="x:protocols|r:translation"/>
-
-<xsl:template match="x:c">
-  <xsl:if test="preceding-sibling::x:c"><xsl:text> &amp; </xsl:text></xsl:if>
-  <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="x:f">
-  <xsl:if test="preceding-sibling::x:f"><xsl:text> , </xsl:text></xsl:if>
-  <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="x:l">
-  <xsl:value-of select="concat(@xml:id, '&#x9;')"/>
-  <xsl:value-of select="concat(@label,  '&#x9;')"/>
-  <xsl:apply-templates/>
-  <xsl:text>&#xa;</xsl:text>
-</xsl:template>
-
-<xsl:template match="x:lg">
-  <xsl:apply-templates/>
-</xsl:template>
 
 <xsl:template match="g:a">
   <xsl:text>~</xsl:text>
@@ -195,8 +166,8 @@
 </xsl:template>
 
 <xsl:template match="n:w|g:w">
-  <xsl:if test="$repo-mode">
-    <xsl:call-template name="wid"/>
+  <xsl:if test="$tatf-mode">
+    <xsl:call-template name="tatf-wid"/>
   </xsl:if>
   <xsl:call-template name="w-sub"/>
   <xsl:if test="$lemm-mode">
@@ -539,6 +510,12 @@
 <xsl:template name="wid">
   <xsl:if test="string-length(@xml:id)>0">
     <xsl:value-of select="concat($lemmo,@xml:id,$lemmc)"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="tatf-wid">
+  <xsl:if test="string-length(@xml:id)>0">
+    <xsl:value-of select="concat('@=',@xml:id,'=@')"/>
   </xsl:if>
 </xsl:template>
 

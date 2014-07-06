@@ -16,16 +16,16 @@ my $oatfmaker = load_xsl($oatf_transform);
 
 if ($stdin) {
     undef $/; $_ = (<>);
-    catf_xtfdoc(load_xml_string($_));
+    oatf_xtfdoc(load_xml_string($_));
 } else {
     while (<>) {
 	chomp;
-	catf_xtfdoc(load_xml($_));
+	oatf_xtfdoc(load_xml($_));
     }
 }
 
 sub
-catf_xtfdoc {
+oatf_xtfdoc {
     my $xoatf = $oatfmaker->transform($_[0]);
     my $oatf = $oatfmaker->output_as_bytes($xoatf);
     Encode::_utf8_on($oatf);

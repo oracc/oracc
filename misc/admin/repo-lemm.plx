@@ -1,10 +1,12 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDERR, ':utf8'; binmode STDOUT, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Util;
 
 use Data::Dumper;
+
+my $BOM = "\xff\xfe";
 
 my @fields = qw/form lang cf gw sense pos epos norm base cont morph1 morph1/;
 my @insts = ();
@@ -15,7 +17,7 @@ my $state = 0; # 0 = pre-stringpool; 1 = stringpool
 my %tab = ();
 my @texts = ();
 
-my $docorder = '000000000001';
+my $docorder = '00000001';
 
 open(T, '01bld/sortinfo.tab');
 while (<T>) {
@@ -48,7 +50,8 @@ while (<P>) {
     my($sig,$count,$insts) = split(/\t/);
     $sig =~ s/\&\&.*$//; ### FIXME: must handle COFs and PSUs properly
     my %sig = parse_sig($sig);
-    $sig{'form'} =~ s/^\%.*?://;
+    $sig{'form'} =~ s/\%.*?://g;
+    $sig{'form'} = downcase_semdet($sig{'form'});
     my @inst = expand_insts($insts);
     foreach my $f (@fields) {
 	if ($sig{$f}) {
@@ -80,7 +83,16 @@ while (<L>) {
 }
 close(L);
 
-#use Data::Dumper; open(K,'>insts.dump'); print K Dumper \%labeltable; close(K);
+my %unitinfo = ();
+open(L,"cat 01bld/lists/have-xtf.lst | unittable |");
+while (<L>) {
+    chomp;
+    my($id,$unitinfo) = (/^(.*?)\t(.*?)$/);
+    $unitinfo{$id} = $unitinfo;
+}
+close(L);
+
+use Data::Dumper; open(K,'>unitinfo.dump'); print K Dumper \%unitinfo; close(K);
 #exit 1;
 
 @insts = sort { &instcmp } @insts;
@@ -88,6 +100,8 @@ close(L);
 #use Data::Dumper; open(K,'>insts.dump'); print K Dumper \@insts; close(K);
 
 open(I,'>01bld/repo-lemm.tab'); select I;
+#print $BOM;
+print "project\tword_id\ttext\tline_label\tFORM\tLANG\tCF\tGW\tSENSE\tPOS\tEPOS\tNORM\tBASE\tCONT\tMORPH1\tMORPH2\tdiscourse_id\tdiscourse_type\tsentence_id\tsentence_label\tgenre\tplace\tperiod\n";
 foreach my $inst (@insts) {
     my($i,$sigref) = @$inst;
     my %sig = %$sigref;
@@ -101,7 +115,8 @@ foreach my $inst (@insts) {
     my $meta = $tab{$pqid};
     my ($PQid,$des,$rest) = ($meta =~ /^(.*?)\t(.*?)\t(.*?)$/);
 
-    print "$docorder\t$xp\t$xi\t$des\t$labeltable{$line}\t"; ++$docorder;
+#    print "$docorder\t$xp\t$xi\t$des\t$labeltable{$line}\t"; ++$docorder;
+    print "$xp\t$xi\t$des\t$labeltable{$line}\t";
     
     print "$sig{'form'}";
     foreach my $f (@fields[1..$#fields]) { # skip form
@@ -117,12 +132,20 @@ foreach my $inst (@insts) {
 	    print "\t";
 	}
     }
+    print "\t$unitinfo{$xi}";
     print "\t$rest";
     print "\n";
 }
 close(I);
 
 #############################################################################################
+
+sub
+downcase_semdet {
+    my $tmp = shift;
+    1 while $tmp =~ s/\{(IM|MUŠEN|KI|URU|GIŠ|ID₂|GU₄|KUR|ANŠE|LU₂|MUNUS|SIG₂|NA₄|TUG₂|UDU)\}/\L{$1}/g;
+    $tmp;
+}
 
 sub
 expand_insts {

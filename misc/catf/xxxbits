@@ -1,0 +1,30 @@
+<xsl:template match="x:xtf|x:transliteration|x:composite|x:score">
+  <xsl:if test="string-length(@n>0)">
+    <xsl:value-of select="concat(@xml:id,'&#x9;&amp;&#x9;',@n,'&#xa;')"/>
+  </xsl:if>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:protocols|r:translation"/>
+
+<xsl:template match="x:c">
+  <xsl:if test="preceding-sibling::x:c"><xsl:text> &amp; </xsl:text></xsl:if>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:f">
+  <xsl:if test="preceding-sibling::x:f"><xsl:text> , </xsl:text></xsl:if>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:l">
+  <xsl:value-of select="concat(@xml:id, '&#x9;')"/>
+  <xsl:value-of select="concat(@label,  '&#x9;')"/>
+  <xsl:apply-templates/>
+  <xsl:text>&#xa;</xsl:text>
+</xsl:template>
+
+<xsl:template match="x:lg">
+  <xsl:apply-templates/>
+</xsl:template>
+

@@ -16,7 +16,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 AM_CFLAGS=-pedantic -Wall
 
 bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
-	jpegsize linkfiles gdf labeltable \
+	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir
 
@@ -71,6 +71,8 @@ sigfixer_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 sigmap_SOURCES=sigmap.c
 sigmap_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+unittable_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 xalias_SOURCES=xalias.c
 xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
