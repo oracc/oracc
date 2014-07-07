@@ -135,12 +135,14 @@ extern char *or_find_www_file(const char *project, const char *dir, const char *
 extern char *or_find_pqx_file(const char *project, const char *pqid, const char *ext);
 extern char *or_find_pqx_xtr(const char *project, const char *pqid, const char *code, const char *lang);
 
-extern void sl(struct component *);
+extern void sl(char *);
 
 extern int _is_ncname(const char *name);
 
 extern void cuneify(void);
 
 extern void xmlrpc(void);
+
+extern void p3glossary(const char *glos, const char *xis);
 
 #endif/*RESOLVER_H_*/

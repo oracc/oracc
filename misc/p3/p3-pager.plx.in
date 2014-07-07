@@ -605,6 +605,9 @@ run_item_maker {
 	$newPage = $rt{'page_selector_page_n'};
 	$p{'page'} = $newPage;
 	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
+	if (!$hilite_words && $p{'line-id'}) {
+	    $hilite_words = $p{'line-id'};
+	}
 	warn "pqx_id=$p{'pqx_id'}; newPage=$newPage; sedItem=$sedItem; hilite_words=$hilite_words; p{item}=$p{'item'}\n";
 	$hilite_words =~ s/^\S+\s\S+\s//;
 	my @h = split(/,/,$hilite_words);
@@ -618,15 +621,19 @@ run_item_maker {
 	$id = `grep -v '^#' $p{'tmpdir'}/pgwrap.out | sed -n '${sedItem}p'`;
 	chomp($id);
 	warn "got id=$id from list $p{'#list'} as sedItem $sedItem. newPage = $p{'page'}; thisType=$rt{'itemtype'}\n";
-	$hilite_words = $id;
-	unless ($p{'#list'} =~ /collapsed.out/) {
-	    $hilite_words =~ s/^\S+\s\S+\s//;
-	    $hilite_words =~ s/(\S+)://g;
+	if ($p{'line-id'}) {
+	    $hilite_words = $p{'line-id'};
 	} else {
-	    $hilite_words =~ s/^\S+\s\S+\s//; # this is not really right because we should be setting pqx_id but it works for now
-	    my @h = split(/,/,$hilite_words);
-	    @h = map { s/^.*?://; $_; } @h;
-	    $hilite_words = join(',',@h);
+	    $hilite_words = $id;
+	    unless ($p{'#list'} =~ /collapsed.out/) {
+		$hilite_words =~ s/^\S+\s\S+\s//;
+		$hilite_words =~ s/(\S+)://g;
+	    } else {
+		$hilite_words =~ s/^\S+\s\S+\s//; # this is not really right because we should be setting pqx_id but it works for now
+		my @h = split(/,/,$hilite_words);
+		@h = map { s/^.*?://; $_; } @h;
+		$hilite_words = join(',',@h);
+	    }
 	}
     }
 

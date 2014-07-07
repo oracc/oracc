@@ -196,8 +196,14 @@ h_pqx_html_pager(const char *project, struct component *components)
 {
   /* line_id/frag_id are not used yet */
   const char *line_id = NULL, *frag_id = NULL, *mode = NULL;
-  if (!line_id)
-    line_id = "none";
+
+  if (query_string)
+    line_id = query_string;
+  else
+    {
+      if (!line_id)
+	line_id = "none";
+    }
   if (!frag_id)
     frag_id = "none";
   if (have_component[C_UI])

@@ -34,14 +34,19 @@ sl_valid_grapheme(const char *g)
 
 /* TODO: the URI versions of this need to support XML/TXT formats as well as the UI return */
 void
-sl(struct component *c)
+sl(char *ctext)
 {
   CGI_varlist *vl = NULL;
   const char *extension, *grapheme;
   
   /* try to set extension and grapheme from component/query_string ; validate grapheme if so */
+#if 1
+  if (ctext)
+    extension = ctext;
+#else
   if (c[2].text)
     extension = c[2].text;
+#endif
   if (query_string)
     grapheme = query_string;
 

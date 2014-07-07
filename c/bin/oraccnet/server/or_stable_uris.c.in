@@ -23,6 +23,8 @@ const char *view_names[]      = { "none", "cuneified", "proofing", "project" };
 const char *format_names[]    = { "none", "catf", "csv", "html", "oatf", "rdf", "tei", "txt", "xml" };
 const char *ui_names[]        = { "none", "mini" };
 
+char *pqx_with_id = NULL;
+
 typedef void(handler)(struct component *);
 
 static void wrd_handler(struct component *);
@@ -110,7 +112,7 @@ lng_handler(struct component *components)
     {
       if (query_string && strlen(query_string))
 	{
-	  const char *xis;
+	  char *xis;
 	  if ((xis = strstr(query_string,"xis=")))
 	    {
 	      char *end;
@@ -140,7 +142,7 @@ static void
 key_handler(struct component *components)
 {
   if (!strcmp(components[0].text, "sl"))
-    sl(components);
+    sl(components[1].text);
   else if (!strcmp(components[0].text, "find"))
     find(project, NULL);
   else if (!strcmp(components[0].text, "corpus"))
@@ -267,9 +269,10 @@ res_six_digits(const char *d)
 }
 
 static int 
-res_is_pqx(const char *e, int *count)
+res_is_pqx(char *e, int *count)
 {
   int c = 1;
+  char *entry = e;
   while (*e)
     {
       if (('P' == *e || 'Q' == *e || 'X' == *e)
@@ -280,6 +283,13 @@ res_is_pqx(const char *e, int *count)
 	    {
 	      ++c;
 	      ++e;
+	    }
+	  else if ('.' == *e)
+	    {
+	      query_string = malloc(strlen(entry) + 1);
+	      strcpy(query_string, entry);
+	      *e = '\0';
+	      break;
 	    }
 	  else
 	    break;
@@ -301,7 +311,7 @@ pat_is_resource(struct component *cp)
   if (!have_component[C_RES])
     {
       cp->value = R_NONE;
-      if (res_is_pqx(cp->text, &cp->count))
+      if (res_is_pqx((char*)cp->text, &cp->count))
 	{
 	  cp->value = R_PQX;
 	  cp->replace = map_PQX(cp->text, cp->count);

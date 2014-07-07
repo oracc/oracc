@@ -7,20 +7,34 @@ my($html,$ids) = @ARGV;
 
 exit 0 unless $html && $ids;
 
+my @ids = split(/,/,$ids);
+
 my $xh = load_xml($html);
 my %w = ();
-my @w = tags($xh, 'http://www.w3.org/1999/xhtml', 'span');
-foreach my $w (@w) {
-    if ($w->hasAttribute('class') && $w->getAttribute('class') eq 'w') {
-	my $id = $w->getAttribute('id');
-	if ($id) {
-#	    warn "p3-selector.plx: registering word $id\n";
-	    $w{$id} = $w;
+
+if ($ids[0] =~ tr/././ == 1) {
+    my @w = tags($xh, 'http://www.w3.org/1999/xhtml', 'tr');
+    foreach my $w (@w) {
+	if ($w->hasAttribute('class') && $w->getAttribute('class') eq 'l') {
+	    my $id = $w->getAttribute('id');
+	    if ($id) {
+		$w{$id} = $w;
+	    }
+	}
+    }
+} else {
+    my @w = tags($xh, 'http://www.w3.org/1999/xhtml', 'span');
+    foreach my $w (@w) {
+	if ($w->hasAttribute('class') && $w->getAttribute('class') eq 'w') {
+	    my $id = $w->getAttribute('id');
+	    if ($id) {
+		$w{$id} = $w;
+	    }
 	}
     }
 }
 
-foreach my $id (split(/,/,$ids)) {
+foreach my $id (@ids) {
     my $node = $w{$id};
     if ($node) {
 	my $class = $node->getAttribute('class');

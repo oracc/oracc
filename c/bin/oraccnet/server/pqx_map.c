@@ -4,6 +4,9 @@
 #include <string.h>
 #include "resolver.h"
 
+/* This module remaps XMD files; ATF files are remapped in p3-pager since the time when metadata and atf
+   started being proxied separately */
+
 struct pqx_info
 {
   char *orig;
