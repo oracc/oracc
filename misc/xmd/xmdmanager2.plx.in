@@ -37,6 +37,7 @@ my @vid = ();
 
 my $config = '';
 my %catd = ();
+my %catd_fields = ();
 my %extra_catd = ();
 my $no_xmd = 0;
 my $onebigfile = 1;
@@ -151,7 +152,7 @@ if (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
 }
 
-#extra_init_hash();
+extra_init_hash();
 #open(D,">01tmp/extra_init_hash.dump");
 #print D Dumper \%catd;
 #close(D);
@@ -1749,6 +1750,7 @@ extra_init_hash {
 		if ($catd{$xid}) {
 		    my %c = %${$catd{$xid}};
 		    foreach my $k (keys %c) {
+			++$catd_fields{$k};
 			$tmp{$k} = $c{$k} unless $tmp{$k};
 		    }
 		}
@@ -1778,32 +1780,35 @@ import_catd {
 	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
     }
 
-    # traverse the data rows creating the looking for records which are mentioned in catd
+    if ($first_record) {
+	foreach my $f (keys %catd_fields) {
+	    # register the key indexes, creating new ones at the end of the row if necessary as in import routine
+	    my $fn_index = -1;
+	    for (my $i = 0; $i <= $#$fields; ++$i) {
+		$fn_index = $i and last 
+		    if $$fields[$i] eq $f;
+	    }
+	    if (-1 == $fn_index) {
+		push @$fields, $f;
+		$fn_index = $#$fields;
+	    }
+	    $field_indexes{$f} = $fn_index;
+	}
+	$first_record = 0;
+    }
+
+
+    # traverse the data rows looking for records which are mentioned in catd
     my $rows = $$cat[2];
     foreach my $r (@$rows) {
 	my $r_id = $$r[$id_index];
 	if ($catd{$r_id}) {
 	    my %c = %${$catd{$r_id}};
-	    if ($first_record) {
-		foreach my $f (keys %c) {
-		    # register the key indexes, creating new ones at the end of the row if necessary as in import routine
-		    my $fn_index = -1;
-		    for (my $i = 0; $i <= $#$fields; ++$i) {
-			$fn_index = $i and last 
-			    if $$fields[$i] eq $f;
-		    }
-		    if (-1 == $fn_index) {
-			push @$fields, $f;
-			$fn_index = $#$fields;
-		    }
-		    $field_indexes{$f} = $fn_index;
-		}
-		$first_record = 0;
-	    }
-	    # now import the data from the catd hash, overwriting existing field values
 	    foreach my $f (keys %c) {
 		my $ix = $field_indexes{$f};
-		$$r[$ix] = $c{$f};
+		if ($ix) {
+		    $$r[$ix] = $c{$f};
+		}
 	    }
 	}
     }
