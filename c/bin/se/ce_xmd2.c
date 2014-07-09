@@ -289,7 +289,7 @@ xmdprinter2(const char *pq)
 
 	  for (field = list_first(tmp); field; field = list_next(tmp))
 	    {
-	      if ((value = hash_find(fields, (unsigned char *)field)))
+	      if ((value = hash_find(fields, (unsigned char *)field)) && strlen(value))
 		{
 		  field_used = field;
 		  break;
