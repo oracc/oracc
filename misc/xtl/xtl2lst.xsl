@@ -11,7 +11,7 @@
 
 <xsl:template match="xtl:group[@type='Sources']">
   <xsl:for-each select="xtl:item">
-    <xsl:value-of select="@text"/>
+    <xsl:value-of select="concat(@proj,':',@text)"/>
     <xsl:text>&#xa;</xsl:text>
   </xsl:for-each>
 </xsl:template>
