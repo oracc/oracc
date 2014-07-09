@@ -34,7 +34,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "resolver.h"
 
-#define TOTAL_KEYWORDS 13
+#define TOTAL_KEYWORDS 14
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 11
 #define MIN_HASH_VALUE 3
@@ -118,14 +118,16 @@ selections (str, len)
       {""}, {""}, {""},
 #line 8 "selections.g"
       {"cat", S_CAT},
-#line 14 "selections.g"
+#line 15 "selections.g"
       {"sign", S_SIGN},
 #line 13 "selections.g"
       {"score", S_SCORE},
-      {""}, {""},
+      {""},
+#line 14 "selections.g"
+      {"sources", S_SOURCES},
 #line 9 "selections.g"
       {"translit", S_TLIT},
-#line 18 "selections.g"
+#line 19 "selections.g"
       {"container", S_CONTAINER},
 #line 12 "selections.g"
       {"thumb", S_THUMB},
@@ -134,17 +136,17 @@ selections (str, len)
       {""},
 #line 7 "selections.g"
       {"full", S_FULL},
-#line 15 "selections.g"
+#line 16 "selections.g"
       {"vals", S_VALS},
 #line 11 "selections.g"
       {"image", S_IMAGE},
       {""}, {""}, {""},
-#line 17 "selections.g"
+#line 18 "selections.g"
       {"compounds", S_COMPOUNDS},
-#line 16 "selections.g"
+#line 17 "selections.g"
       {"homophones", S_HOMOPHONES},
       {""}, {""}, {""},
-#line 19 "selections.g"
+#line 20 "selections.g"
       {"contained", S_CONTAINED}
     };
 

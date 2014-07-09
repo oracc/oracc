@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open ':utf8'; use utf8;
 binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
-use lib '@@ORACC@@/lib';
+use lib '/usr/local/oracc/lib';
 use ORACC::P3::Slicer;
 use File::Temp qw/tempdir/;
 use Data::Dumper;
@@ -29,16 +29,16 @@ use Encode;
 
 sub xsystem;
 
-my $oraccbin = "@@ORACC@@/bin";
-my $oraccbld = "@@ORACC@@/bld";
-my $oracclib = "@@ORACC@@/lib";
-my $oraccpub = "@@ORACC@@/pub";
-my $oraccwww = "@@ORACC@@/www";
+my $oraccbin = "/usr/local/oracc/bin";
+my $oraccbld = "/usr/local/oracc/bld";
+my $oracclib = "/usr/local/oracc/lib";
+my $oraccpub = "/usr/local/oracc/pub";
+my $oraccwww = "/usr/local/oracc/www";
 
 my $force_page = 0;
-my $no_html = "@@ORACC@@/www/no_html.xml";
+my $no_html = "/usr/local/oracc/www/no_html.xml";
 my $oas_instance = '';
-my $oas_template = "@@ORACC@@/lib/data/oas-template.xml";
+my $oas_template = "/usr/local/oracc/lib/data/oas-template.xml";
 my $ood_mode = 0;
 my %p = ();
 my @pg_args = ();
@@ -52,9 +52,9 @@ my $verbose = 1;
 p3_oas_triage()
     if $p{'referer'} && $p{'referer'} =~ m,/as,;
 
-$p{'p3OSspecial'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-sort-fields`
+$p{'p3OSspecial'} = `/usr/local/oracc/bin/oraccopt $p{'project'} outline-special-sort-fields`
     unless $p{'p3OSspecial'};
-$p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`
+$p{'p3OSdefault'} = `/usr/local/oracc/bin/oraccopt $p{'project'} outline-default-sort-fields`
     unless $p{'p3OSdefault'};
 
 arg_state();
@@ -80,7 +80,7 @@ if ($rt{'prod'} eq 'list') {
 	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
 	    $rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
-	    xsystem("@@ORACC@@/bin/xis", '-f', "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
+	    xsystem("/usr/local/oracc/bin/xis", '-f', "/usr/local/oracc/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
 	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
 	    set_list_items();
 	    $p{'uimode'} = 'mini';
@@ -89,21 +89,21 @@ if ($rt{'prod'} eq 'list') {
 	    $rt{'itemtype'} = $p{'itemtype'} = 'cbd';
 	    $rt{'viewtype'} = $p{'viewtype'} = 'page';
 	    if ($p{'glet'} && $p{'glet'} ne '#all') {
-		open(T,"@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/letter_ids.tab") || die;
+		open(T,"/usr/local/oracc/pub/$p{'project'}/cbd/$p{'glos'}/letter_ids.tab") || die;
 		my $x = <T>;
 		close(T);
 		Encode::_utf8_on($p{'glet'});
 		my ($lid) = ($x =~ /(?:^|\t)$p{'glet'}\t(\S+)/);
-		$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/$lid.lst";
+		$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cbd/$p{'glos'}/$lid.lst";
 	    } else {
-		$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
+		$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
 	    }
 	    set_list_items();
 	}
     } elsif ($p{'adhoc'}) {
 	p3adhoc();
     } elsif ($p{'list'} eq '_all') {
-	$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cat/pqids.lst";
+	$p{'#list'} = "/usr/local/oracc/pub/$p{'project'}/cat/pqids.lst";
 	$rt{'#list_type'} = 'cat';
 	unless (-r $p{'#list'}) {
 	    p3srch($p{'list'});
@@ -122,13 +122,8 @@ if ($rt{'prod'} eq 'list') {
 	}
 	set_list_items();
     } elsif ($p{'list'} =~ /\.xtl$/) {
-	$p{'#list'} = "$p{'tmpdir'}/xtl";
-	xsystem 'xsltproc', '-o', $p{'#list'}, '@@ORACC@@/lib/scripts/xtl2lst.xsl', $p{'list'};
-	xsystem 'sort', '-o', $p{'#list'}, $p{'#list'};
-	$rt{'#list_type'} = 'cat';	
-	set_list_items();
     } else {
-	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
+	$p{'#list'} = "/usr/local/oracc/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
 	set_list_items();
     }
@@ -156,11 +151,11 @@ if ($rt{'prod'} eq 'list') {
 if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
     if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
 	my $ce_arg = set_ce_arg();
-	xsystem('@@ORACC@@/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
+	xsystem('/usr/local/oracc/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
 	$p{'#list'} = "$p{'tmpdir'}/wm.out";
     }
     if ($p{'item'} && $rt{'#list_type'} =~ /^tra|xtf$/) {
-	xsystem('@@ORACC@@/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
+	xsystem('/usr/local/oracc/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
 	$p{'#list'} = "$p{'tmpdir'}/collapsed.out";
 	set_list_items();
     }
@@ -186,9 +181,9 @@ set_runtime_vars();
 
 #if ($p{'glos'} && $p{'glet'}) {
 #    if ($p{'glet'} =~ /html$/) {
-#	$rt{'#content_url'} = "@@ORACC@@/www$p{'glet'}";
+#	$rt{'#content_url'} = "/usr/local/oracc/www$p{'glet'}";
 #    } else {
-#	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
+#	$rt{'#content_url'} = "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$p{'glet'}.html";
 #	
 #    }
 #} elsif ($p{'item'} == 0) {
@@ -202,7 +197,7 @@ if ($p{'item'} == 0) {
 print "Content-type: text/html; Encoding=utf-8\n\n"
     unless $p{'noheader'};
 
-run_form_maker("@@ORACC@@/lib/data/p3-template.xml");
+run_form_maker("/usr/local/oracc/lib/data/p3-template.xml");
 
 # close and exit
 EXIT:
@@ -267,10 +262,10 @@ decode_args {
     # From here on we can guarantee that project is set
 
     # If project is a glossary force the pager to display a glossary
-    $projtype = `@@ORACC@@/bin/oraccopt $tmp{'project'} type`;
+    $projtype = `/usr/local/oracc/bin/oraccopt $tmp{'project'} type`;
     if ($projtype eq 'glossary') {
 	unless ($tmp{'glos'}) {
-	    $tmp{'glos'} = `@@ORACC@@/bin/oraccopt $tmp{'project'} pager-default-glo`;
+	    $tmp{'glos'} = `/usr/local/oracc/bin/oraccopt $tmp{'project'} pager-default-glo`;
 	}
     }
 
@@ -294,7 +289,7 @@ decode_args {
     $tmp{'item'} = 0 unless defined $tmp{'item'};
     $tmp{'itemset'} = 0 unless defined $tmp{'itemset'};
     unless ($tmp{'list'} || $tmp{'adhoc'} || $tmp{'srch'} || $tmp{'glos'}) {
-	my $special_list = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-list-name`;
+	my $special_list = `/usr/local/oracc/bin/oraccopt $tmp{'project'} outline-special-list-name`;
 	if ($special_list) {
 	    $tmp{'list'} = $special_list;
 	    $tmp{'p3outl'} = $tmp{'state'} = 'special' unless $tmp{'p3outl'};
@@ -327,7 +322,7 @@ decode_args {
     %tmp;
 }
 
-sub
+su
 find_xmdoutline {
     my $eproject = $p{'project'};
     my $parent_project = $eproject;
@@ -445,8 +440,8 @@ sub
 run_form_maker {
     my $t = shift;
     my $projectname = '';
-    my $projabb = `@@ORACC@@/bin/oraccopt $p{'project'} abbrev`;
-    my $projname = `@@ORACC@@/bin/oraccopt $p{'project'} name`;
+    my $projabb = `/usr/local/oracc/bin/oraccopt $p{'project'} abbrev`;
+    my $projname = `/usr/local/oracc/bin/oraccopt $p{'project'} name`;
     if ($projname =~ /^$projabb/) {
 	$projectname = $projname;
     } else {
@@ -457,14 +452,14 @@ run_form_maker {
     while (<T>) {
 	if (m#^\@\@ga\@\@#) {
 	} elsif (/\@\@outlines\@\@/) {
-	    print `cat @@ORACC@@/xml/$p{'project'}/outline-sorter.xml`;
+	    print `cat /usr/local/oracc/xml/$p{'project'}/outline-sorter.xml`;
 	} elsif (/\@\@translations\@\@/) {
-	    print `cat @@ORACC@@/xml/$p{'project'}/trans-select.xml`;
+	    print `cat /usr/local/oracc/xml/$p{'project'}/trans-select.xml`;
 	} elsif (m#<p>\@</p>#) {
 	    if ($p{'glos'}) {
 		warn "run_form_maker: glos\n";
 		print '<div id="p3left" class="border-right">';
-		system "$oraccbin/xfrag", '-u', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
+		system "$oraccbin/xfrag", '-u', "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
 		print '</div><div id="p3right" class="p3right80">';
 		if ($rt{'#content_url'}) {
 		    system "$oraccbin/xfrag", '-u', $rt{'#content_url'};
@@ -663,12 +658,12 @@ run_item_maker {
     $eid =~ s/\..*$//;
     my $base = $eid;
     $base =~ s/^(....).*$/$1/;
-    my $xmd = "@@ORACC@@/bld/$eproject/$base/$eid/$eid.xmd";
+    my $xmd = "/usr/local/oracc/bld/$eproject/$base/$eid/$eid.xmd";
 
     if ($rt{'itemtype'} eq 'cat') {
 	xsystem('xsltproc',
 		'-o', "$p{'tmpdir'}/results.html",
-		'@@ORACC@@/lib/scripts/g2-xmd-HTML.xsl',
+		'/usr/local/oracc/lib/scripts/g2-xmd-HTML.xsl',
 		$xmd
 	    );
     } elsif ($rt{'itemtype'} eq 'xtf' || $rt{'itemtype'} eq 'tra') {
@@ -714,7 +709,7 @@ run_item_maker {
 	if ($eid =~ /^Q/) {
 	    my $eid4 = $eid;
 	    $eid4 =~ s/^(....).*$/$1/;
-	    my $xtl = "@@ORACC@@/bld/$p{'project'}/$eid4/$eid/$eid.xtl";
+	    my $xtl = "/usr/local/oracc/bld/$p{'project'}/$eid4/$eid/$eid.xtl";
 	    if (-r $xtl) {
 		push @args, '-param', 'xtl', 'true()';
 	    }
@@ -725,9 +720,9 @@ run_item_maker {
 		find_xmdoutline(),
 		$xmd);
     } elsif ($rt{'itemtype'} eq 'cbd') {
-	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+	$rt{'#content_url'} = "/usr/local/oracc/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
     } elsif ($rt{'itemtype'} eq 'ood') {
-	xsystem("$oraccbin/xfrag @@ORACC@@/pub/$p{'project'}/data.xml $id | xsltproc -stringparam html yes @@ORACC@@/lib/scripts/ood-record.xsl - >$p{'tmpdir'}/results.html");
+	xsystem("$oraccbin/xfrag /usr/local/oracc/pub/$p{'project'}/data.xml $id | xsltproc -stringparam html yes /usr/local/oracc/lib/scripts/ood-record.xsl - >$p{'tmpdir'}/results.html");
     } else {
 	warn "p3-pager.plx: no handler for type = $rt{'itemtype'}\n";
     }
@@ -751,18 +746,18 @@ run_page_maker {
     if ($rt{'#list_type'} eq 'xtf') { ## sigfixer may need adding to end of pipe here some day
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce_xtf -3 $ce_arg -p $p{'project'} | $oraccbin/s2-ce_trim.plx >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cat' || $rt{'#list_type'} eq 'tra') {
-	my $link_fields = `@@ORACC@@/bin/oraccopt $p{'project'} catalog-link-fields`;
+	my $link_fields = `/usr/local/oracc/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$rt{'#list_type'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cbd') {
 	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 -icbd/$p{'glos'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
-		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
+		'-o', "$p{'tmpdir'}/results.html", '/usr/local/oracc/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");    
     } else {
 	warn "run_page_maker: no list_type set (rt{'#list_type'} == $rt{'#list_type'}\n";
     }
@@ -904,7 +899,7 @@ set_p3_state {
 		}
 	    }
 	    unless ($rt{'sorttype'}) {
-		$rt{'sorttype'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-$rt{'outl'}-sort-fields`;
+		$rt{'sorttype'} = `/usr/local/oracc/bin/oraccopt $p{'project'} outline-$rt{'outl'}-sort-fields`;
 	    }
 #	    warn "###sorttype = $rt{'sorttype'}\n";
 	} else {
@@ -960,8 +955,8 @@ set_runtime_vars {
     } else {
 	# this is a search with 0 results
 	@rt{qw/pages items uzpage zprev znext/} = (0,0,0,0,0);
-	$rt{'#outline_url'} = "@@ORACC@@/www/empty.div";
-	$rt{'#content_url'} = "@@ORACC@@/www/noresults.div";
+	$rt{'#outline_url'} = "/usr/local/oracc/www/empty.div";
+	$rt{'#content_url'} = "/usr/local/oracc/www/noresults.div";
     }
 }
 
@@ -1137,7 +1132,7 @@ p3_oas_triage {
 	    run_form_maker($oas_template);
 	    goto EXIT;
 	} else {
-	    $oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
+	    $oas_instance = `cat /usr/local/oracc/lib/data/oas-instance.xml`;
 	    print "Content-type: text/xml; charset=utf-8\n\n";
 	    run_form_maker($oas_template);
 	    goto EXIT;
@@ -1146,7 +1141,7 @@ p3_oas_triage {
 	if ($p{'asrchxf'} && $p{'asrchxf'} eq 'yes') {
 	    # run the search that has come in via xforms
 	    print STDERR "p3_oas_triage: running p3-asrch.sh\n";
-	    system "@@ORACC@@/bin/p3-asrch.sh", $p{'tmpdir'}, $p{'project'};
+	    system "/usr/local/oracc/bin/p3-asrch.sh", $p{'tmpdir'}, $p{'project'};
 	    $p{'asrch'} = 'yes';
 	    # This sets things up so p3-pager will initialize from the results
 	    $p{'list'} = "$p{'tmpdir'}/results.lst";
@@ -1167,7 +1162,7 @@ p3_oas_triage {
 	    $p{'list'} = "/tmp/p3$p{'list'}/results.lst";
 	    unless (-r "$p{'tmpdir'}/results.lst") {
 		warn "p3_oas_triage: no $p{'tmpdir'}/results.lst\n";
-		$oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
+		$oas_instance = `cat /usr/local/oracc/lib/data/oas-instance.xml`;
 		print "Content-type: text/xml; charset=utf-8\n\n";
 		run_form_maker($oas_template);
 		goto EXIT;

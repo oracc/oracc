@@ -10,6 +10,7 @@ tei,              h_pqx_tlit_tei
 translit,     	  h_pqx_tlit_html
 translation, 	  h_pqx_trans_html
 score, 	    	  h_pqx_score_html
+sources, 	  	  h_pqx_sources
 cat/html, 	  h_pqx_cat_html
 translit/html,    h_pqx_tlit_html
 translation/html, h_pqx_trans_html

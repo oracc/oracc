@@ -11,6 +11,7 @@ translation, S_XLAT
 image, S_IMAGE
 thumb, S_THUMB
 score, S_SCORE
+sources, S_SOURCES
 sign, S_SIGN
 vals, S_VALS
 homophones, S_HOMOPHONES

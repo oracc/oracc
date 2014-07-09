@@ -34,7 +34,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "resolver.h"
 
-#define TOTAL_KEYWORDS 24
+#define TOTAL_KEYWORDS 25
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 16
 #define MIN_HASH_VALUE 3
@@ -120,9 +120,9 @@ pqx_h_tab (str, len)
       {""}, {""}, {""},
 #line 9 "pqx_h_tab.g"
       {"tei",              h_pqx_tlit_tei},
-#line 30 "pqx_h_tab.g"
+#line 31 "pqx_h_tab.g"
       {"view", 	  h_pqx_view},
-#line 19 "pqx_h_tab.g"
+#line 20 "pqx_h_tab.g"
       {"thumb", 	    	  h_pqx_thumb},
       {""}, {""},
 #line 10 "pqx_h_tab.g"
@@ -130,49 +130,51 @@ pqx_h_tab (str, len)
       {""}, {""},
 #line 11 "pqx_h_tab.g"
       {"translation", 	  h_pqx_trans_html},
-#line 29 "pqx_h_tab.g"
+#line 30 "pqx_h_tab.g"
       {"translit/tei",     h_pqx_tlit_tei},
 #line 8 "pqx_h_tab.g"
       {"cat", 	    	  h_pqx_cat_html},
 #line 7 "pqx_h_tab.g"
       {"html",	    	  h_pqx_html},
-#line 27 "pqx_h_tab.g"
+#line 28 "pqx_h_tab.g"
       {"translation/xml",  h_pqx_trans_xml},
-#line 15 "pqx_h_tab.g"
+#line 16 "pqx_h_tab.g"
       {"translation/html", h_pqx_trans_html},
-#line 25 "pqx_h_tab.g"
+#line 26 "pqx_h_tab.g"
       {"cat/xml", 	  h_pqx_cat_xml},
-#line 13 "pqx_h_tab.g"
+#line 14 "pqx_h_tab.g"
       {"cat/html", 	  h_pqx_cat_html},
-#line 20 "pqx_h_tab.g"
+#line 21 "pqx_h_tab.g"
       {"cuneified",	  h_pqx_cuneified_html},
 #line 12 "pqx_h_tab.g"
       {"score", 	    	  h_pqx_score_html},
-      {""}, {""},
-#line 14 "pqx_h_tab.g"
+      {""},
+#line 13 "pqx_h_tab.g"
+      {"sources", 	  	  h_pqx_sources},
+#line 15 "pqx_h_tab.g"
       {"translit/html",    h_pqx_tlit_html},
-#line 28 "pqx_h_tab.g"
+#line 29 "pqx_h_tab.g"
       {"score/xml", 	  h_pqx_score_html},
-#line 18 "pqx_h_tab.g"
+#line 19 "pqx_h_tab.g"
       {"image", 	    	  h_pqx_image},
-#line 17 "pqx_h_tab.g"
+#line 18 "pqx_h_tab.g"
       {"images",     	  h_pqx_images},
       {""},
-#line 24 "pqx_h_tab.g"
+#line 25 "pqx_h_tab.g"
       {"xml",		  h_pqx_xml},
-#line 22 "pqx_h_tab.g"
+#line 23 "pqx_h_tab.g"
       {"cuneified/html",	  h_pqx_cuneified_html},
-#line 16 "pqx_h_tab.g"
+#line 17 "pqx_h_tab.g"
       {"score/html", 	  h_pqx_score_html},
       {""}, {""},
-#line 21 "pqx_h_tab.g"
+#line 22 "pqx_h_tab.g"
       {"proofing",	  h_pqx_proofing_html},
       {""}, {""}, {""},
-#line 26 "pqx_h_tab.g"
+#line 27 "pqx_h_tab.g"
       {"translit/xml",     h_pqx_tlit_xml},
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""},
-#line 23 "pqx_h_tab.g"
+#line 24 "pqx_h_tab.g"
       {"proofing/html",	  h_pqx_proofing_html}
     };
 

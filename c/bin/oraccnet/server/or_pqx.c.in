@@ -352,6 +352,25 @@ h_pqx_score_html(const char *project, struct component *components)
 }
 
 void
+h_pqx_sources(const char *project, struct component *components)
+{
+  const char *text = components[0].text;
+  char *tmp = or_find_pqx_file(project, 
+			       components[0].replace 
+			       ? components[0].replace 
+			       : components[0].text, "xtl");
+  if (!access(tmp, R_OK))
+    {
+      list(tmp);
+    }
+  else
+    {
+      free(tmp);
+      do404();
+    }
+}
+
+void
 h_pqx_thumb(const char *project, struct component *components)
 {
   or_image(project, components[0].text, "thumb");

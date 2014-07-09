@@ -16,7 +16,7 @@ const char *component_names[] = { "none", "resource", "selection", "view", "form
 const char *resource_names[]  = { "none", "PQX", "word", "entity", "language", "keyword", "list" };
 const char *selection_names[] = { "none", "full", "cat", "translit", "translation", "facing", 
 				  "image", "thumb", "photo", "line", "detail",
-				  "score", "block", 
+				  "score", "block", "sources", 
 				  "sign", "list", "homophones", "compounds", "container", "contained"
 };
 const char *view_names[]      = { "none", "cuneified", "proofing", "project" };

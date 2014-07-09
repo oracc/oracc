@@ -18,10 +18,10 @@ enum e_resource  { R_NONE, R_PQX, R_WORD, R_ENTITY, R_LANG, R_KEY, R_LIST };
 enum e_selection { S_NONE, S_FULL, S_CAT, S_TLIT, S_XLAT, S_TLIT_XLAT, 
 		   S_IMAGE, S_THUMB, S_PHOTO, S_LINE, S_DETAIL,
 		   S_SCORE, S_BLOCK, S_SIGN, S_VALS, S_HOMOPHONES, 
-		   S_COMPOUNDS, S_CONTAINER, S_CONTAINED
+		   S_COMPOUNDS, S_CONTAINER, S_CONTAINED , S_SOURCES
 };
 enum e_view { V_NONE, V_CUNEIFIED, V_PROOFING, V_PROJECT, V_PROJECT_TYPE };
-enum e_format { F_NONE, F_CATF, F_CSV, F_HTML, F_RDF, F_TEI, F_TXT, F_XML };
+enum e_format { F_NONE, F_CATF, F_CSV, F_HTML, F_RDF, F_TEI, F_TXT, F_XML, F_SOURCES };
 enum e_ui { U_NONE, U_MINI };
 
 struct component
@@ -117,6 +117,7 @@ extern void h_pqx_cat_html(const char *project, struct component *components);
 extern void h_pqx_cat_xml(const char *project, struct component *components);
 extern void h_pqx_photo(const char *project, struct component *components);
 extern void h_pqx_proofing_html(const char *project, struct component *components);
+extern void h_pqx_sources(const char *project, struct component *components);
 extern void h_pqx_score_html(const char *project, struct component *components);
 extern void h_pqx_thumb(const char *project, struct component *components);
 extern void h_pqx_tlit_html(const char *project, struct component *components);

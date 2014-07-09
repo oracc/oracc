@@ -171,6 +171,9 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </li>
+      <xsl:if test="$xtl">
+	<li><a href="/{$project}/{md:id_composite}/sources">Sources table</a></li>
+      </xsl:if>
       <xsl:if test="string-length(md:museum_no)>0">
 	<li><xsl:value-of select="md:museum_no"/></li>
       </xsl:if>
