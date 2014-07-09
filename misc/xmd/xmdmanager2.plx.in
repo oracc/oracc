@@ -1740,6 +1740,7 @@ extra_init_hash {
 		foreach my $c ($r->childNodes()) {
 		    next unless $c->isa('XML::LibXML::Element');
 		    my $t = $c->firstChild();
+		    next unless $t;
 		    if ($t->isa('XML::LibXML::Text')) {
 			my($k,$v) = ($c->localName(),$t->data);
 			$tmp{$k} = $v;
