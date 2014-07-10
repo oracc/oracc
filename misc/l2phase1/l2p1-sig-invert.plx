@@ -39,6 +39,10 @@ foreach my $t (@texts) {
     $tab{$pqid} = $tab;
 }
 
+unless (-r '01bld/project.sig') {
+    system 'l2p1-project-from-union.sh';
+}
+
 open(P, '01bld/project.sig');
 while (<P>) {
     chomp;
