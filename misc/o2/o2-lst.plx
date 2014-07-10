@@ -113,8 +113,9 @@ lemindex_list {
 	    $have_lem,
 	    '+?',"$listdir/proxy-lem.lst";
     } elsif (-r "$listdir/proxy-lem.lst") {
-	xsystem 'cp', "$listdir/proxy-lem.lst", "$listdir/lemindex.lst";
+	xsystem "cut -d\@ -f1 $listdir/proxy-lem.lst >$listdir/lemindex.lst";
     } else {
+	unlink "$listdir/lemindex.lst";
 	xsystem 'touch', "$listdir/lemindex.lst";
     }
 }
