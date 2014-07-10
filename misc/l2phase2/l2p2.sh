@@ -13,7 +13,7 @@ function xis {
 function g2x {
     echo creating $ldir/$l.g2x from $ldir/union.sig
     withall=`oraccopt . cbd-with-all`
-    if [ "$withall" = "yes"]; then
+    if [ "$withall" = "yes" ]; then
 	l2p2-g2x.plx -all -h $ldir/union.sig
     else
 	l2p2-g2x.plx -h $ldir/union.sig
@@ -79,7 +79,7 @@ if [ "$super" = "" ]; then
 	fi
     done
 else
-    $ORACC/src/misc/l2phase2/l2p2-union.plx
+    l2p2-union.plx
     for a in `ls 01bld/*/union.sig` ; do
 	ldir=`dirname $a`
 	l=`basename $ldir`
