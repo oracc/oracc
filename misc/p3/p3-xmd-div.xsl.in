@@ -14,6 +14,7 @@
 <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
 
 <xsl:param name="project" select="''"/>
+<xsl:param name="xtl" select="false()"/>
 
 <xsl:variable name="config-xml-file" 
 	      select="concat('@@ORACC@@/xml/',$project,'/','config.xml')"/>
