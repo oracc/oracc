@@ -1,8 +1,9 @@
 #!/bin/sh
 shopt -s nullglob
 project=`oraccopt . project`
-PQX="01bld/[PQX]*"
-if [ -s "$PQX" ]; then
+PQX="01bld/[PQX][0-9][0-9][0-9]"
+PQX1=`echo $PQX | sed 's/ .*$//'`
+if [[ -d $PQX1 ]]; then
     echo searching $PQX for .xtf files ...
     ls -1R 01bld/[PQX]* | ls1R2lst.plx \
 	| perl -ne "s%^.*?/([PQX][0-9]{6}).*?$%$project:\$1%&&print" \
