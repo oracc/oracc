@@ -32,7 +32,7 @@ oracc_project_home ()
     {
       cached_home = getenv ("ORACC_HOME");
       if (NULL == cached_home)
-	cached_home = "/usr/local/oracc";
+	cached_home = "@@ORACC_HOME@@";
     }
   return cached_home;
 }
@@ -45,7 +45,7 @@ oracc_var ()
     {
       cached_var = getenv ("ORACC");
       if (NULL == cached_var)
-	cached_var = "/usr/local/oracc";
+	cached_var = "@@ORACC@@";
     }
   return cached_var;
 }
