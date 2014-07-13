@@ -10,7 +10,7 @@ if [ -d "${ORACC}/etc/projects" ]; then
 	    >>all-projects.xml
     done
 fi
-for a in `find ${ORACC}/www -follow -name 'config.xml'`; do
+for a in `find ${ORACC}/www -follow -name 'config.xml'|grep -v ood`; do
     echo "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\" href=\"$a\"/>" \
 	>>all-projects.xml
 done

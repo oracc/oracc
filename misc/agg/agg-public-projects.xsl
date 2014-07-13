@@ -8,8 +8,14 @@
 <xsl:template match="/projects">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
-    <xsl:copy-of select="*[xpd:public='yes']"/>
+    <xsl:apply-templates select="*[xpd:public='yes']"/>
   </xsl:copy>
+</xsl:template>
+
+<xsl:template match="xpd:project">
+  <xsl:if test="not(xpd:option[@name='project-list']/@value='no')">
+    <xsl:copy-of select="."/>
+  </xsl:if>
 </xsl:template>
 
 </xsl:transform>
