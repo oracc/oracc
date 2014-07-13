@@ -570,3 +570,11 @@ misc/l2phase0/old-L2Super.pm
 misc/p3/#oas-instance.xml.in#
 
 misc/p3/p3-colours.plx
+
+oracc-hyperestraier/estseek.c
+
+oracc-hyperestraier/estseek.conf
+
+misc/est/est-oracc.sh
+
+misc/est/est-oracc.sh

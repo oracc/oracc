@@ -58,7 +58,7 @@ const char *g_conffile = NULL;           /* path of the configuration file */
 const char *g_indexname = NULL;          /* name of the index */
 const char *g_oracc_project = NULL;	 /* cache of ORACC_PROJECT envp */
 const char *g_script_dir = NULL;	 /* path to estseek.cgi */
-const char *g_script_uri = "http://oracc.museum.upenn.edu/find";
+const char *g_script_uri = "http://@@ORACC_HOST@@/find";
 const char *g_tmplfile = NULL;           /* path of the template file */
 const char *g_topfile = NULL;            /* path of the top page file */
 const char *g_helpfile = NULL;           /* path of the help page file */
@@ -347,9 +347,9 @@ static int realmain(int argc, char **argv){
 		   + strlen(g_oracc_project) + 1);
       sprintf(tmp, "@@ORACC@@/www/%s/estindex", g_oracc_project);
       g_indexname = tmp;
-      tmp = malloc(strlen("http://oracc.museum.upenn.edu//find")
+      tmp = malloc(strlen("http://@@ORACC_HOST@@//find")
 		   + strlen(g_oracc_project) + 1);
-      sprintf(tmp, "http://oracc.museum.upenn.edu/%s/find", g_oracc_project);
+      sprintf(tmp, "http://@@ORACC_HOST@@/%s/find", g_oracc_project);
       g_script_uri = tmp;
     }
   if(!g_indexname) showerror("indexname is undefined.");
@@ -1028,9 +1028,9 @@ static void shownaviform(void){
 	 g_oracc_project ? g_oracc_project : "Oracc");
   xmlprintf("<div class=\"form_navi\">\n");
   if (g_oracc_project)
-    printf("<a href=\"http://oracc.museum.upenn.edu/%s\" class=\"navilink\">%s Home</a>\n",
+    printf("<a href=\"http://@@ORACC_HOST@@/%s\" class=\"navilink\">%s Home</a>\n",
 	   g_oracc_project, g_oracc_project);
-  printf("<a href=\"http://oracc.museum.upenn.edu\" class=\"navilink\">Oracc Home</a>\n");
+  printf("<a href=\"http://@@ORACC_HOST@@\" class=\"navilink\">Oracc Home</a>\n");
   if(p_navi == NM_ADVANCED){
     xmlprintf("<span class=\"navivoid\">advanced</span>\n");
   } else {

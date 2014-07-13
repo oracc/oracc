@@ -17,6 +17,12 @@ bin_SCRIPTS=dbi2est.plx estwolefind
 
 # estconfig
 
+estseek.c: estseek.c.in
+	$(ORACCIFY) estseek.c.in
+
+estseek.conf: estseek.conf.in
+	$(ORACCIFY) estseek.conf.in
+
 noinst_LTLIBRARIES=libestraier.la
 
 libestraier_la_SOURCES = estraier.c estmtdb.c estnode.c md5.c

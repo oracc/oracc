@@ -150,7 +150,7 @@ find(const char *project, const char *phrase)
   if (project)
     setenv("ORACC_PROJECT", project, 1);
   setenv("QUERY_STRING", make_find_phrase(NULL,phrase,0), 1);
-  execl("@@ORACC@@/www/cgi-bin/estseek.cgi", "@@ORACC@@/www/cgi-bin/estseek.cgi", NULL);
+  execl("@@ORACC@@/www/cgi-bin/estseek", "@@ORACC@@/www/cgi-bin/estseek", NULL);
   do404();
 }
 

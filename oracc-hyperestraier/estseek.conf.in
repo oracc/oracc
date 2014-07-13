@@ -10,8 +10,9 @@ lockindex: true
 
 pseudoindex:
 
-replace: ^file:///home/varoracc/local/oracc/www/doc/{{!}}http://oracc.museum.upenn.edu/doc/
-replace: ^file:///home/varoracc/local/oracc/www/ns/{{!}}http://oracc.museum.upenn.edu/ns/
+replace: ^file://@@ORACC@@/www/doc2/{{!}}http://@@ORACC_HOST@@/doc2/
+replace: ^file://@@ORACC@@/www/doc/{{!}}http://@@ORACC_HOST@@/doc/
+replace: ^file://@@ORACC@@/www/ns/{{!}}http://@@ORACC_HOST@@/ns/
 replace: /index\.html?${{!}}/
 
 showlreal: false
