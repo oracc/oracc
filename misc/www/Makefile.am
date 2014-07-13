@@ -7,7 +7,7 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	xmdoutline.xsl
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
-	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx
+	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx doc2-rebuild.sh
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
 	cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css	\
@@ -16,7 +16,7 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	ppcs.css pqpager.css preformat.css psdview.css score-block.css		\
 	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
 	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
-	cuneiformcss.xml
+	cuneiformcss.xml oracc3home.css
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
@@ -24,7 +24,8 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	xnum-icon.png up.gif down.gif viewtext.png oracc.jpg cc88x31.png	\
 	p3-reset.png p3-help.png p3-search.png p3-plus.png \
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png
-html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.xml
+html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.xml \
+	doc2-redirect.html index.html
 noinst_DATA = httpd.conf robots.txt
 
 httpd.conf: httpd.conf.in

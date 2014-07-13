@@ -43,6 +43,8 @@
   <!-- add structure to <body> -->
   <xsl:template match="body">
     <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <!--<xsl:message>class=<xsl:value-of select="@class"/></xsl:message>-->
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
 
       <div>

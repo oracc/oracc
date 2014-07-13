@@ -24,10 +24,10 @@ ${ORACC}/bin/agg-thumbs.sh
 mkdir -p ${ORACC}/www/agg
 #cp -a ${ORACC}/agg/projects/images/* ${ORACC}/www/agg/
 
+chmod +w ${ORACC}/www/projectlist.html
 xsltproc -xinclude $xsl/agg-html-projects.xsl public-projects.xml \
-    >${ORACC}/www/agg/project-list.html
-chmod +w ${ORACC}/www/index.html
-xsltproc -xinclude $xsl/agg-index.xsl public-projects.xml \
-    >${ORACC}/www/index.html
-chmod -w ${ORACC}/www/index.html
-chmod -R o+r ${ORACC}/www/agg/ ${ORACC}/www/index.html
+    >${ORACC}/www/projectlist.html
+#xsltproc -xinclude $xsl/agg-index.xsl public-projects.xml \
+#    >${ORACC}/www/projectlist.html
+chmod -w ${ORACC}/www/projectlist.html
+chmod -R o+r ${ORACC}/www/agg/ ${ORACC}/www/projectlist.html
