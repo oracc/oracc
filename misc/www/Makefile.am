@@ -28,6 +28,15 @@ html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.i
 	doc2-redirect.html index.html
 noinst_DATA = httpd.conf robots.txt
 
+doc2-redirect.html: doc2-redirect.html.in
+	cp doc2-redirect.html.in doc2-redirect.html
+
+index.html: index.html.in
+	cp index.html.in index.html
+
+no_html.html: no_html.html.in
+	cp no_html.html.in no_html.html
+
 httpd.conf: httpd.conf.in
 	$(ORACCIFY) httpd.conf.in
 

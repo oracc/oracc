@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- This page is automatically generated from XML data files. Please do not edit by hand. Instead, modify the source XML and regenerate. -->
+<head>
+<meta name="generator" content=
+"HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.10), see www.w3.org" />
+<title>Oracc: The Open Richly Annotated Cuneiform Corpus</title>
+<link rel="stylesheet" type="text/css" media="print" href=
+"doc2/css/print.css" />
+<link rel="stylesheet" type="text/css" media="screen,projection"
+href="doc2/css/screen.css" />
+<link rel="stylesheet" type="text/css" media="screen,print" href=
+"/css/cuneify-ob.css" title="oldbabylonian" />
+<link rel="stylesheet" type="text/css" media="screen,print" href=
+"/css/cuneify-na.css" title="neoassyrian" />
+<script type="text/javascript">
+//<![CDATA[
+<!--
+        var sRoot = '/doc';
+    // -->
+//]]>
+</script>
+<script type="text/javascript" src="/js/library.js">
+</script>
+<meta http-equiv="pics-label" content=
+'(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "http://oracc.museum.upenn.edu." r (nz 1 vz 1 lz 1 oz 1 cz 1))' />
+<link rel="shortcut icon" href="doc2/favicon.ico" type=
+"image/x-icon" />
+<link rel="P3Pv1" href="doc2/w3c/p3p.xml" />
+<meta name="generator" content="Oracc ESP" />
+<meta http-equiv="content-type" content=
+"text/html; charset=us-ascii" />
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+<link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+<meta name="DC.title" content="" />
+<meta name="DC.title.alternative" content="Oracc" />
+<meta name="DC.identifier" scheme="DCTERMS.URI" content=
+"http://oracc.museum.upenn.edu./" />
+<meta name="DC.identifier" content="oracc-org/page/home" />
+<meta name="DC.publisher" content="Ocracc" />
+<meta name="DC.language" scheme="ISO 639-2/T" content="eng" />
+<meta name="DC.rights.copyright" content=
+"Creative Commons SA 3.0 2013" />
+<meta name="DC.type" scheme="DCTERMS.DCMIType" content="Text" />
+<meta name="DC.format" content="text/html" />
+<link rel="stylesheet" type="text/css" href="/css/oracchome.css" />
+<link rel="stylesheet" type="text/css" href="/css/oracc3home.css" />
+<script type="text/javascript">
+//<![CDATA[
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+//]]>
+</script>
+</head>
+<body class="hp">
+<div id="Banner">
+<div class="imageinline"><img src="/img/oracc.jpg" alt=
+"Oracc banner" /></div>
+</div>
+<div id="Menu">
+<div class="menu"><a href="/projectlist.html" title=
+"List of Oracc projects" accesskey="2" class=
+"only">Projects</a></div>
+<div class="item"><a href="doc2/search/index.html" title=
+"Search Oracc" accesskey="3" class="closed">Search</a></div>
+<div class="menu"><a href="doc2/help/index.html" title=
+"Help page overview" accesskey="4" class="closed">Help</a></div>
+<div class="menu"><a href="doc2/about/index.html" title=
+"About Oracc: Essentials for Oracc users" accesskey="6" class=
+"closed">About</a></div>
+<div class="closed"><a href="doc2/tools/index.html" title=
+"Oracc webtools" class="closed">Tools</a></div>
+</div>
+<div id="Content">
+<div id="hp_search">
+<form method="get" action="/find" id="hp_search" name="hp_search">
+<p><span class="button">Search Oracc</span> <input class="textbox"
+name="phrase" id="phrase" type="text" size="20" accesskey="s"
+value="" /></p>
+</form>
+</div>
+<div id="hp_blurb">
+<p>Oracc is a collaborative effort to develop a complete corpus of
+cuneiform whose rich annotation and open licensing support the next
+generation of scholarly research. Created by Steve Tinney, Oracc is
+steered by Eleanor Robson, Tinney, and Niek Veldhuis.</p>
+</div>
+<div id="EndContentSpace">&nbsp;</div>
+</div>
+
+<div id="FooterWhole">&nbsp;</div>
+<div id="FooterRight"></div>
+<div id="FooterLeft">
+<p><span class="imageinline"><a href=
+"http://creativecommons.org/licenses/by-sa/3.0/" class="external"
+target="_blank" title=
+"Link opens in new window: Creative Commons Attribution Share-Alike license">
+<img src="/img/cc88x31.png" alt="" /></a></span> Released under a
+<a href="doc2/about/licensing/index.html" title=
+"Licensing statement" accesskey="8">Creative Commons Attribution
+Share-Alike license 3.0</a>, 2014. <span class=
+"imageinline"><a href="http://www.facebook.com/opencuneiform"
+class="external" target="_blank" title=
+"Link opens in new window"><img src="/img/f_logo.png" alt="" /></a>
+<span class=
+"externallinktext">[http://www.facebook.com/opencuneiform]</span></span>
+<span class="imageinline"><a href="http://oracc.blogspot.com"
+class="external" target="_blank" title=
+"Link opens in new window"><img src="/img/blogspot-icon.png" alt=
+"" /></a> <span class=
+"externallinktext">[http://oracc.blogspot.com]</span></span>
+<span class="imageinline"><a href=
+"http://www.twitter.com/oracctivity" class="external" target=
+"_blank" title="Link opens in new window"><img src=
+"/img/twitter-bird-light-bgs.png" alt="" /></a> <span class=
+"externallinktext">[http://www.twitter.com/oracctivity]</span></span><br />
+
+<small>Oracc uses cookies only to collect Google Analytics data.
+Read more <a href="doc2/about/cookies/index.html" title="Cookies"
+accesskey="7">here</a>; see the stats <a href=
+"http://www.seethestats.com/site/oracc.museum.upenn.edu" class=
+"external" target="_blank" title=
+"Link opens in new window">here</a> <span class=
+"externallinktext">[http://www.seethestats.com/site/oracc.museum.upenn.edu]</span>;
+opt out <a href="http://tools.google.com/dlpage/gaoptout" class=
+"external" target="_blank" title=
+"Link opens in new window">here</a>.</small></p>
+</div>
+<div id="URL">http://oracc.museum.upenn.edu/doc/</div>
+</body>
+</html>
