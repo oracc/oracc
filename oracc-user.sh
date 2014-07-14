@@ -7,8 +7,9 @@ uname=`uname`
 if [ "$uname" = "Linux" ]; then
     sudo useradd -s /sbin/nologin oracc
     sudo passwd oracc
-    chmod -R go+rx /home/oracc
+    chmod -R g+rx /home/oracc
     chmod -R go-w /home/oracc
+    chmod -R o-r /home/oracc
 else
     if [ ! -d /Users/oracc ]; then
 	fail 'oracc-user.sh: please create the oracc user on this machine before proceeding'
