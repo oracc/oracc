@@ -18,5 +18,5 @@ yum install \
     git \
     policycoreutils-python \
     perl-Text-CSV_XS \
-    java \
-    
+    java
+   
