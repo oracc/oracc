@@ -7,9 +7,9 @@
 "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.10), see www.w3.org" />
 <title>Oracc: The Open Richly Annotated Cuneiform Corpus</title>
 <link rel="stylesheet" type="text/css" media="print" href=
-"doc2/css/print.css" />
+"/css/print.css" />
 <link rel="stylesheet" type="text/css" media="screen,projection"
-href="doc2/css/screen.css" />
+href="/css/screen.css" />
 <link rel="stylesheet" type="text/css" media="screen,print" href=
 "/css/cuneify-ob.css" title="oldbabylonian" />
 <link rel="stylesheet" type="text/css" media="screen,print" href=
@@ -23,14 +23,7 @@ href="doc2/css/screen.css" />
 </script>
 <script type="text/javascript" src="/js/library.js">
 </script>
-<meta http-equiv="pics-label" content=
-'(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "http://oracc.museum.upenn.edu." r (nz 1 vz 1 lz 1 oz 1 cz 1))' />
-<link rel="shortcut icon" href="doc2/favicon.ico" type=
-"image/x-icon" />
-<link rel="P3Pv1" href="doc2/w3c/p3p.xml" />
-<meta name="generator" content="Oracc ESP" />
-<meta http-equiv="content-type" content=
-"text/html; charset=us-ascii" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
 <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
 <meta name="DC.title" content="" />
