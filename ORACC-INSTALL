@@ -2,6 +2,8 @@ need to do oscs install including
 
      /usr/local/tmp/sop chown apache:apache /usr/local/tmp/sop
 
+need to install usermode.xml
+
 
 Operating System Setup
 ======================

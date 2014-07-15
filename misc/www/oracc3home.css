@@ -8,7 +8,10 @@ div.item { }
 
 #hp_blurb { color: #666; }
 
-.o3banner { background-color: #336; color: yellow; padding-top: 5pt; padding-bottom: 5pt; border-bottom: 4px solid #fc0; 
+.o3banner { background-color: #336; color: yellow; 
+	    padding-top: 5pt; padding-bottom: 5pt; 
+	    border-top: 4px solid #fc0; 
+	    border-bottom: 4px solid #fc0; 
 	    margin-bottom: 10px; 
 	  }
 
