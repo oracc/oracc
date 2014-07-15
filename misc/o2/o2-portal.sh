@@ -16,7 +16,6 @@ elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
     mkdir -p $webdir/images
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
     cp -fp 00lib/thumb.png $webdir
-    p3-colours.plx $webdir
     o2-weblive.sh
 else
     echo o2-portal.sh: no portal to rebuild and no index.html or way of building same. Stop.
