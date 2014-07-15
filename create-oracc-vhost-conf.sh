@@ -53,6 +53,6 @@ cat >oracc-vhost.conf <<EOF
     RewriteCond $ORACC/www/%{REQUEST_FILENAME}/index.html -f
     RewriteRule ^(.+)/?$ \$1/index.html [L]
     RewriteRule \.(?:css|js|html|xml)$ - [L]
-    RewriteRule ^(.*)$ /cgi-bin/oracc-resolver\$1 [T=application/x-httpd-cgi,L]
+    RewriteRule ^(.*)$ /cgi-bin/oracc-server\$1 [T=application/x-httpd-cgi,L]
 </VirtualHost>
 EOF
