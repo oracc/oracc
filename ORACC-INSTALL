@@ -146,6 +146,9 @@ It can also be done manually with:
 	/sbin/iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
 
 but this is not recommended as it can be tricky to get the rules in the correct order.
+
+Also now: enable 8085 for tcp to support oscs. And add /usr/local/bin/oscs -s to etc/rc.d/rc.local
+********
 	
 Autostart
 .........
