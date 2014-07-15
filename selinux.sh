@@ -16,8 +16,8 @@ needfile $FC1
 needfile $FC2
 grep oracc $FC1 && quit Oracc already installed in $FC1
 # now switcheroo to .local versions
-[ -w $FC1local ] || quit $FC1 is not writable
-[ -w $FC2local ] || quit $FC2 is not writable
+[ -w $FC1 ] || quit $FC1 is not writable
+[ -w $FC2 ] || quit $FC2 is not writable
 mkdir -p $ORACC/{bld,xml,pub}
 cat oracc.fc >>$FC1
 cat oracc.fc >>$FC1local
