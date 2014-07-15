@@ -6,14 +6,10 @@
 <meta name="generator" content=
 "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.10), see www.w3.org" />
 <title>Oracc: The Open Richly Annotated Cuneiform Corpus</title>
-<link rel="stylesheet" type="text/css" media="print" href=
-"/css/print.css" />
-<link rel="stylesheet" type="text/css" media="screen,projection"
-href="/css/screen.css" />
-<link rel="stylesheet" type="text/css" media="screen,print" href=
-"/css/cuneify-ob.css" title="oldbabylonian" />
-<link rel="stylesheet" type="text/css" media="screen,print" href=
-"/css/cuneify-na.css" title="neoassyrian" />
+<link rel="stylesheet" type="text/css" media="print" href="/doc2/css/print.css" />
+<link rel="stylesheet" type="text/css" media="screen,projection" href="/doc2/css/screen.css" />
+<link rel="stylesheet" type="text/css" media="screen,print" href="/doc2/css/cuneify-ob.css" title="oldbabylonian" />
+<link rel="stylesheet" type="text/css" media="screen,print" href="/doc2/css/cuneify-na.css" title="neoassyrian" />
 <script type="text/javascript">
 //<![CDATA[
 <!--
