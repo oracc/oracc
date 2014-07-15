@@ -23,6 +23,8 @@ my $p3colours_file = find_p3colours();
 
 if (!$p3colours_file || !open(C,$p3colours_file)) {
     die "p3-colours.plx: can't find `p3colours.txt'\n";
+} else {
+    warn "p3-colours.plx: using colours file $p3colours_file\n";
 }
 
 while (<C>) {
