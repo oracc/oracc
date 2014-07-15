@@ -2,7 +2,7 @@ include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = linkmap.plx non-dynamic-cat-ids.plx center-image.sh clean_nl.plx \
 	config-inherit.sh config-uninherit.sh config.plx cph.plx createproj.plx \
-	glo-lang.sh lst2xml.plx ncr ncr-sudo.sh nor oracc project-data-sudo.sh \
+	glo-lang.sh lst2xml.plx ncr ncr-sudo.sh nor oracc2 project-data-sudo.sh \
 	project-stats.plx xpq.sh oxc boo sips-thumb.sh
 
 css_DATA = stats.css
