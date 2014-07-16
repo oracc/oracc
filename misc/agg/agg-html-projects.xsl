@@ -55,7 +55,7 @@
     <h2 class="proj-head">
       <a target="_blank" href="{$url}">
 	<xsl:choose>
-	  <xsl:when test="xpd:projlist-title">
+	  <xsl:when test="xpd:title">
 	    <xsl:value-of select="xpd:title"/>
 	  </xsl:when>
 	  <xsl:when test="xpd:abbrev = xpd:name">
