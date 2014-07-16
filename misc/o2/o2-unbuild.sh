@@ -7,4 +7,4 @@ if cd 01bld; then
     rm -fr *-x-* lists/*
     cd ..
 fi
-(cd 01tmp && rm -fr *.*)
+[ -d 01tmp ] && (cd 01tmp && rm -fr *.*)
