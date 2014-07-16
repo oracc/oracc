@@ -15,6 +15,9 @@ use ORACC::XMD::Fields;
 use ORACC::XVL::AVL;
 
 use Data::Dumper;
+my $catd_debug = 0;
+open(CATDUMP,'>cat.dump')
+    if $catd_debug;
 
 binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
@@ -38,7 +41,7 @@ my @vid = ();
 my $config = '';
 my %catd = ();
 my %catd_fields = ();
-my %extra_catd = ();
+#my %extra_catd = ();
 my $no_xmd = 0;
 my $onebigfile = 1;
 my $output_all = 1;
@@ -259,7 +262,6 @@ if ($#catalogs >= 0) {
 	}
 	import_catd($$c{'icat'});
     }
-    
 }
 
 # internalize the keydata for rapid access and to enable
@@ -1456,7 +1458,7 @@ xmd_end {
     dump_images($id);
 
     ### This is where to insert extra fields
-    extra_meta($id);
+#    extra_meta($id);
 
 #    print '</cat>';
 #    print "</xmd>";
@@ -1705,27 +1707,27 @@ load_designation_sort_codes {
     $project_designation_codes = 1;
 }
 
-sub
-extra_init {
-    my @cat = (<00lib/cat.d/*.xml>);
-    foreach my $cat (@cat) {
-	my $xcat = load_xml($cat) || warn "xmdmanager.plx: failure loading $cat: $!\n";
-	if ($xcat) {
-	    foreach my $r ($xcat->getDocumentElement()->childNodes()) {
-		next unless $r->isa('XML::LibXML::Element');
-		my $xid = xid($r);
-		my @tmp = ();
-		foreach my $c ($r->childNodes()) {
-		    next unless $c->isa('XML::LibXML::Element');
-		    my $t = $c->toString(0);
-		    $t =~ s/\sxmlns:xmd=\".*?\"//;
-		    push @tmp, $t;
-		}
-		push @{$extra_catd{$xid}}, @tmp;
-	    }
-	}
-    }
-}
+#sub
+#extra_init {
+#    my @cat = (<00lib/cat.d/*.xml>);
+#    foreach my $cat (@cat) {
+#	my $xcat = load_xml($cat) || warn "xmdmanager.plx: failure loading $cat: $!\n";
+#	if ($xcat) {
+#	    foreach my $r ($xcat->getDocumentElement()->childNodes()) {
+#		next unless $r->isa('XML::LibXML::Element');
+#		my $xid = xid($r);
+#		my @tmp = ();
+#		foreach my $c ($r->childNodes()) {
+#		    next unless $c->isa('XML::LibXML::Element');
+#		    my $t = $c->toString(0);
+#		    $t =~ s/\sxmlns:xmd=\".*?\"//;
+#		    push @tmp, $t;
+#		}
+#		push @{$extra_catd{$xid}}, @tmp;
+#	    }
+#	}
+#   }
+#}
 
 sub
 extra_init_hash {
@@ -1733,6 +1735,7 @@ extra_init_hash {
     foreach my $cat (@cat) {
 	my $xcat = load_xml($cat) || warn "xmdmanager.plx: failure loading $cat: $!\n";
 	if ($xcat) {
+	    warn "xmdmanager.plx: loading additional catalogue data from $cat\n";
 	    foreach my $r ($xcat->getDocumentElement()->childNodes()) {
 		next unless $r->isa('XML::LibXML::Element');
 		my $xid = xid($r);
@@ -1744,6 +1747,7 @@ extra_init_hash {
 		    if ($t->isa('XML::LibXML::Text')) {
 			my($k,$v) = ($c->localName(),$t->data);
 			$tmp{$k} = $v;
+			++$catd_fields{$k};
 		    } else {
 			warn "$cat: $xid: bad data format--must be text only\n";
 		    }
@@ -1751,7 +1755,6 @@ extra_init_hash {
 		if ($catd{$xid}) {
 		    my %c = %${$catd{$xid}};
 		    foreach my $k (keys %c) {
-			++$catd_fields{$k};
 			$tmp{$k} = $c{$k} unless $tmp{$k};
 		    }
 		}
@@ -1759,14 +1762,24 @@ extra_init_hash {
 	    }
 	}
     }
-}
-
-sub
-extra_meta {
-    if (defined $extra_catd{$_[0]}) {
-	push @{$xmd_outputs{$curr_xmd}}, @{$extra_catd{$_[0]}};
+    if ($catd_debug) {
+	print CATDUMP "++++++catd_fields\n";
+	print CATDUMP Dumper \%catd_fields;
+	print CATDUMP "++++++catd\n";
+	print CATDUMP Dumper \%catd;
+	print CATDUMP "+++++++++\n";
     }
 }
+
+#sub
+#extra_meta {
+#    if (defined $catd{$_[0]}) {
+#	my %rec = %{$catd{$_[0]};
+#	foreach my $f (keys %rec) {
+#	    push @{$xmd_outputs{$curr_xmd}}, "<$f>$rec{$f}</$f>"; #  @{$catd{$_[0]}};
+#	}
+#    }
+#}
 
 sub
 import_catd {
@@ -1775,6 +1788,11 @@ import_catd {
     my $id_index = -1;
     my %field_indexes = ();
     my $first_record = 1;
+
+    if ($catd_debug) {
+	print CATDUMP Dumper \$cat;
+	print CATDUMP "++++++++\n";
+    }
 
     for (my $i = 0; $i <= $#$fields; ++$i) {
 	$id_index = $i and last 
@@ -1798,7 +1816,6 @@ import_catd {
 	$first_record = 0;
     }
 
-
     # traverse the data rows looking for records which are mentioned in catd
     my $rows = $$cat[2];
     foreach my $r (@$rows) {
@@ -1812,6 +1829,11 @@ import_catd {
 		}
 	    }
 	}
+    }
+
+    if ($catd_debug) {
+	print CATDUMP Dumper \$cat;
+	print CATDUMP "++++++++\n";
     }
 }
 
