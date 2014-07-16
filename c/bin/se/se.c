@@ -401,7 +401,7 @@ main(int argc, char * const*argv)
     {
       if (any_index)
 	{
-	  const char *index[] = { "!cat" , "!lem" , "!tra" , NULL, "!esp" , NULL };
+	  const char *index[] = { "!cat" , "!txt" , "!tra" , NULL, "!esp" , NULL };
 	  struct Datum results[4];
 	  int i, best_findset = -1;
 	  char *hashproj = NULL;
