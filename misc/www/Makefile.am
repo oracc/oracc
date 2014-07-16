@@ -16,7 +16,7 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	ppcs.css pqpager.css preformat.css psdview.css score-block.css		\
 	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
 	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
-	cuneiformcss.xml oracc3home.css
+	cuneiformcss.xml oracc3home.css wwwhome.css
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
