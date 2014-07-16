@@ -6,6 +6,9 @@ if [ ! -d $webdir ]; then
     echo o2-weblive.sh: no directory 01bld/www to make live
     exit 1
 else
+    if [ -r 00lib/xmdoutline.xsl ]; then
+	sed "s#@@ORACC@@#$ORACC#g" <00lib/xmdoutline.xsl >$webdir/xmdoutline.xsl
+    fi
     p3-colours.plx $webdir
     (cd $webdir ; mv -f *.* $prjdir/02www ; \
 	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)

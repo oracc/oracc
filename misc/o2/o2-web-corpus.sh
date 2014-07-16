@@ -30,9 +30,6 @@ fi
 if [ -r 01bld/lists/outlined.lst ]; then
     cp -f 01bld/lists/outlined.lst $webdir/lists
 fi
-if [ -r 00lib/xmdoutline.xsl ]; then
-    sed "s#@@ORACC@@#$ORACC#g" <00lib/xmdoutline.xsl >$webdir/xmdoutline.xsl
-fi
 l2p3.sh $webdir
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
