@@ -41,6 +41,8 @@ post_option_setup(struct run_context *run)
 	      exit(2);
 	    }
 	}
+      else
+	f_autolem = stdout;
       if (badfile)
 	{
 	  f_bad = fopen(badfile,"w");
