@@ -7,7 +7,7 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	xmdoutline.xsl
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
-	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx doc2-rebuild.sh \
+	atfpaste.sh datestamp.plx htmlbase.plx \
 	atftemplate.plx voltemplate.plx
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
