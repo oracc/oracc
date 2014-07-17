@@ -38,7 +38,7 @@ atfproc.html: atfproc.html.in
 atftemplate.html: atftemplate.html.in
 	cp atftemplate.html.in atftemplate.html
 
-voltemplate.html: voltempalte.html.in
+voltemplate.html: voltemplate.html.in
 	cp voltemplate.html.in voltemplate.html
 
 index.html: index.html.in
