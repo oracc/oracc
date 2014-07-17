@@ -10,6 +10,7 @@ div.item { }
 
 .o3banner { background-color: #336; color: yellow; 
 	    padding-top: 5pt; padding-bottom: 5pt; 
+	    padding-left: 3px;
 	    border-top: 4px solid #fc0; 
 	    border-bottom: 4px solid #fc0; 
 	    margin-bottom: 10px; 

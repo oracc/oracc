@@ -79,14 +79,32 @@
     <p class="proj-blurb">
       <xsl:choose>
 	<xsl:when test="xpd:blurb/xpd:p">
-	  <xsl:value-of select="xpd:blurb/xpd:p[1]"/>
+	  <!--<xsl:value-of select="xpd:blurb/xpd:p[1]"/>-->
+	  <xsl:apply-templates mode="blurb" select="xpd:blurb/xpd:p"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="xpd:blurb"/>
+	  <xsl:apply-templates mode="blurb" select="xpd:blurb"/>
 	</xsl:otherwise>
       </xsl:choose>
     </p>
   </div>
+</xsl:template>
+
+<xsl:template mode="blurb" match="xpd:a">
+  <a>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </a>
+</xsl:template>
+
+<xsl:template mode="blurb" match="xpd:br">
+  <br>
+    <xsl:copy-of select="@*"/>
+  </br>
+</xsl:template>
+
+<xsl:template mode="blurb" match="text()">
+  <xsl:value-of select="."/>
 </xsl:template>
 
 </xsl:stylesheet>
