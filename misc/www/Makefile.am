@@ -35,7 +35,7 @@ doc2-redirect.html: doc2-redirect.html.in
 atfproc.html: atfproc.html.in
 	cp atfproc.html.in atfproc.html
 
-atftemplate.html: atftempalte.html.in
+atftemplate.html: atftemplate.html.in
 	cp atftemplate.html.in atftemplate.html
 
 voltemplate.html: voltempalte.html.in
