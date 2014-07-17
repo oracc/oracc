@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<html>
+<head><title>Oracc Volume Template Generator</title><base href="http://oracc.museum.upenn.edu/doc/wwwhome/util/"/></head>
+<body>
+  <h2>Oracc Volume Template Generator</h2>
+  <p>This form creates lists of place-holders for catalog entries.</p>
+  <p>Give the name of the volume in the 'Volume' field.</p>
+  <p>Give the start and end page/plate numbers in the From/To fields;
+  these must be in arabic digits.  You may give leading zeroes if you want
+  them in the output.</p>
+  <p>To get roman numerals click the relevant radio-button.</p>
+  <p>The output is sent to the current browser window--simply
+  select-all then cut and paste it to a file.</p>
+  <p>A &lt;TAB&gt; character is included at the end of each line to make it easy 
+  to add a field at the end.</p>
+  <hr/>
+  <form method="POST" action="/voltemplate">
+    <input type="hidden" name="cgimode" value="1"/>
+    <table>
+      <tr><td>Volume:</td><td><input type="text" name="prefix" size="20"/></td></tr>
+      <tr><td>From:</td><td><input type="text" name="from" size="4"/></td></tr>
+      <tr><td>To:</td><td><input type="text" name="to" size="4"/></td></tr>
+      <tr><td>Owner:</td><td><input type="text" name="owner" size="20"/></td></tr>
+      <tr><td>Genre:</td><td><input type="text" name="genre" size="20"/></td></tr>
+      <tr><td>Period:</td><td><input type="text" name="period" size="20"/></td></tr>
+      <tr>
+	<td>Numbers:</td>
+	<td>
+	  <input type="radio" name="nums" value="arabic" checked="checked"/> Arabic; 
+	  <input type="radio" name="nums" value="roman"/> roman (lowercase);
+	  <input type="radio" name="nums" value="Roman"/> Roman (uppercase).
+	</td>
+      </tr>
+    </table>
+    <p><input type="submit" value="Create template"/></p>
+  </form>
+  <hr/>
+</body>
+</html>
