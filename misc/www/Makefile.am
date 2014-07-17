@@ -7,7 +7,8 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	xmdoutline.xsl
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
-	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx doc2-rebuild.sh
+	atfpaste.sh datestamp.plx htmlbase.plx voltemplate.plx doc2-rebuild.sh \
+	atftemplate.plx voltemplate.plx
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
 	cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css	\
@@ -25,11 +26,20 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	p3-reset.png p3-help.png p3-search.png p3-plus.png \
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png
 html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.xml \
-	doc2-redirect.html index.html
+	doc2-redirect.html index.html atftemplate.html voltemplate.html atfproc.html
 noinst_DATA = httpd.conf robots.txt
 
 doc2-redirect.html: doc2-redirect.html.in
 	cp doc2-redirect.html.in doc2-redirect.html
+
+atfproc.html: atfproc.html.in
+	cp atfproc.html.in atfproc.html
+
+atftemplate.html: atftempalte.html.in
+	cp atftemplate.html.in atftemplate.html
+
+voltemplate.html: voltempalte.html.in
+	cp voltemplate.html.in voltemplate.html
 
 index.html: index.html.in
 	cp index.html.in index.html

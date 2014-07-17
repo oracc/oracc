@@ -225,7 +225,6 @@ AC_OUTPUT([Makefile
 	doc/sysadmin/Makefile
 	doc/urn/Makefile
 	doc/user/Makefile
-	doc/wwwhome/Makefile
 	doc/ood/resources/Makefile
 	doc/ood/urns/Makefile
 	doc/ood/uris/Makefile

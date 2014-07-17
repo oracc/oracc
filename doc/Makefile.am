@@ -1,6 +1,6 @@
 include ../oracc-doc-rules.txt
 
-SUBDIRS = 00tools ns builder developer install manager user ood wwwhome urn sysadmin
+SUBDIRS = 00tools ns builder developer install manager user ood urn sysadmin
 EXTRA_DIST = index.html
 
 xinstall-data-local:

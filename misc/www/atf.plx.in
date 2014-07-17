@@ -18,7 +18,9 @@ use ORACC::XTF::RTF;
 # cleaned up periodically by a cron job, vel sim.
 ##
 
-my $TARGET_PATH = "/var/tmp/oracc/atfserver";
+#my $TARGET_PATH = "/var/tmp/oracc/atfserver";
+
+my $TARGET_PATH = "/tmp";  # avoid selinux security issues with non-/tmp
 
 $ENV{'ORACC'} = '@@ORACC@@';
 
