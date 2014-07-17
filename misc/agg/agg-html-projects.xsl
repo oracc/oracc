@@ -18,7 +18,7 @@
     </head>
     <body class="projlist">
       <div class="o3banner">
-	<h1>The Oracc Project List</h1>
+	<h1><a href="/">The Oracc Project List</a></h1>
       </div>
       <div class="projects">
 	<xsl:apply-templates/>
