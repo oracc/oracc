@@ -25,7 +25,7 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	xnum-icon.png up.gif down.gif viewtext.png oracc.jpg cc88x31.png	\
 	p3-reset.png p3-help.png p3-search.png p3-plus.png \
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png
-html_DATA = blogspot16x16.ico facebook16x16.ico test-outline.html twitter16x16.ico no_html.xml \
+html_DATA = blogspot16x16.ico facebook16x16.ico twitter16x16.ico no_html.xml \
 	doc2-redirect.html index.html atftemplate.html voltemplate.html atfproc.html
 noinst_DATA = httpd.conf robots.txt
 
@@ -180,7 +180,6 @@ EXTRA_DIST = \
 	signlist.css \
 	strut.png \
 	stve.css \
-	test-outline.html \
 	textdisplay.xsl \
 	twitter-bird-dark-bgs.png \
 	twitter-bird-light-bgs.png \
