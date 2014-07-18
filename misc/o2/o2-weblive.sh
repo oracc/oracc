@@ -10,8 +10,9 @@ else
 	sed "s#@@ORACC@@#$ORACC#g" <00lib/xmdoutline.xsl >$webdir/xmdoutline.xsl
     fi
     p3-colours.plx $webdir
-    (cd $webdir ; mv -f *.* $prjdir/02www ; \
-	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+#    (cd $webdir ; mv -f *.* $prjdir/02www ; \
+#	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    o2-weblive.plx | /bin/sh -s
     p3-project.sh
     o2-prm.sh
 fi
