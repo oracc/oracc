@@ -578,3 +578,11 @@ oracc-hyperestraier/estseek.conf
 misc/est/est-oracc.sh
 
 misc/est/est-oracc.sh
+
+c/bin/util/labeltable
+
+c/bin/util/unittable
+
+c/bin/util/unittable
+
+c/lib/oracc/fname.c
