@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Oracc ATF Text Template Generator</title><base href="http://oracc.museum.upenn.edu/doc/wwwhome/util/"/></head>
 <body>
   <h2>Oracc ATF Text Template Generator</h2>
@@ -20,8 +20,8 @@
   need to split it into several chunks to process it all
   successfully.)</p>
   <hr/>
-  <form method="POST" action="/atftemplate">
-    <input type="hidden" name="cgimode" value="1"/>
+  <form method="post" action="/atftemplate">
+    <div><input type="hidden" name="cgimode" value="1"/></div>
     <table width="90%">
       <tr valign="top">
 	<td colspan="10" align="center">
@@ -30,16 +30,16 @@
       <td>
 	<table>
 	  <tr>
-	  <tr>
 	    <td>
 	      Project for texts:
 	      <input type="text" name="project"/>
 	    </td>
 	  </tr>
+	  <tr>
 	    <td>
 	      Default language for texts:
 	      <select name="lang">
-		<option value="sux" selected="yes">Sumerian</option>
+		<option value="sux" selected="selected">Sumerian</option>
 		<option value="akk">Akkadian</option>
 		<option value="qpc">Proto-Cuneiform</option>
 		<option value="qpe">Proto-Elamite</option>
@@ -63,7 +63,7 @@
     <p><input type="submit" value="Create template"/></p>
   </form>
   <hr/>
-<h2 name="doco" id="doco">Documentation</h2>
+<h2 id="doco">Documentation</h2>
   <p>The input is a series of lines: lines that start with '&amp;' are
   ATF &amp;-lines; if the line has an ID starting with P or Q, the
   designation is looked up and added; if it has an ID starting with X,
