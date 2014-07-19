@@ -16,7 +16,7 @@ tmp=$ORACC_HOME/$project/01tmp
 cd $ORACC_HOME/$project/02www
 rm -fr estindex
 ls -1 $bld/est/project.est >$tmp/estindex.lst
-grep -l -m1 -r 'generator. content=.Oracc ESP' $bld/www >>$tmp/estindex.lst
+grep -l -m1 -r 'generator. content=.Oracc ESP' $bld/espdev >>$tmp/estindex.lst
 #find cbd -name '*.*.html' | grep -v qpn-x- >>$tmp/estindex.lst
 find $bld/est -type f >>$tmp/estindex.lst
 cat $tmp/estindex.lst | estcmd gather -tr -ic UTF-8 estindex - >$tmp/estindex.log
