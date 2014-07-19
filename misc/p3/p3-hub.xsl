@@ -29,22 +29,30 @@
   <div class="p3hub">
     <h2>Core Resources</h2>
 
-    <p><a href="/{/*/@project}/index.html">Home Page</a></p>
-    <p><a href="/{/*/@project}/pager">Text Catalogue</a></p>
+    <p><a href="/">Oracc Home Page</a></p>
+    <p><a href="/doc2/help/">Oracc Documentation</a></p>
+    <p><a href="/{/*/@project}/index.html"><xsl:value-of select="/*/@project"/> Home Page</a></p>
+    <p><a href="/{/*/@project}/as"><xsl:value-of select="/*/@project"/> Advanced Search</a></p>
+
+    <p><a href="/{/*/@project}/pager"><xsl:value-of select="/*/@project"/> Pager</a></p>
+
     <p><a href="/{/*/@project}/withatf">Transliterated Texts</a></p>
     <p><a href="/{/*/@project}/withlem">Lemmatized Texts</a></p>
-    <p><a href="/{/*/@project}/as">Advanced Search</a></p>
 
     <xsl:if test="/*/glossaries/glogroup">
       <h2>Glossaries</h2>
-      <xsl:for-each select="/*/glossaries/glogroup">
-	<p>
+      <table class="hubglo">
+	<xsl:for-each select="/*/glossaries/glogroup">
 	  <xsl:for-each select="*">
-	    <a href="/{/*/@project}/{@abbrev}"><xsl:value-of select="text()"/></a>
-	    <xsl:if test="not(position()=last())"> | </xsl:if>
+	    <tr>
+	      <td><a href="/{/*/@project}/{@abbrev}"><xsl:value-of select="text()"/></a></td>
+	      <td><a href="/{/*/@project}/cbd/{@abbrev}/summaries.html">Summaries</a></td>
+	      <td><a href="/{/*/@project}/cbd/{@abbrev}/toc.html">Letter by Letter</a></td>
+	      <td><a href="/{/*/@project}/cbd/{@abbrev}/onebigfile.html">One Big File</a></td>
+	    </tr>
 	  </xsl:for-each>
-	</p>
-      </xsl:for-each>
+	</xsl:for-each>
+      </table>
     </xsl:if>
 
     <xsl:if test="/*/projects/project[@type='sub']">
@@ -56,7 +64,7 @@
 
     <xsl:if test="/*/lists/list">
       <h2>Special Lists</h2>
-      <xsl:for-each select="/*/projects/lists/*">
+      <xsl:for-each select="/*/lists/*">
 	<p><a href="/{/*/@project}/{@file}"><xsl:value-of select="@menu"/></a></p>
       </xsl:for-each>
     </xsl:if>

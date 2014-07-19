@@ -201,6 +201,9 @@ td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 .p3hub h2 { font-size: 14pt; margin-left: 1em; }
 .p3hub p  { margin-left: 2em; textindent: -2em; }
 
+table.hubglo { margin-left: 2em; width: auto; }
+.hubglo td { padding-left: 1em; }
+
 /*    
   overflow: scroll;
 
