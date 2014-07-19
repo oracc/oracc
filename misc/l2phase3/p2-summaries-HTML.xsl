@@ -66,6 +66,7 @@
 
 <xsl:template name="call-back">
 
+<!--
   <xsl:if test="not(self::cbd:letter)">
     <h1 class="toc"><xsl:value-of 
     select="/*/@project"/>/<xsl:value-of 
@@ -76,9 +77,13 @@
 	 >Overview</a>
     </p>
   </xsl:if>
+-->
   
-  <xsl:apply-templates/>
+  <div>
+    <xsl:apply-templates/>
+  </div>
 
+<!--
   <xsl:if test="not(self::cbd:letter)">
     <p class="toc-entry">
       <a href="{concat($jsResultsBegin,'/',/*/@project,'/cbd/',/*/@xml:lang,'/onebigfile.html',$jsEnd)}"
@@ -86,6 +91,7 @@
     </p>
   </xsl:if>
   
+ -->
 </xsl:template>
 
 </xsl:stylesheet>

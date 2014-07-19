@@ -66,6 +66,12 @@
   </set>
 
   <set var="process">
+    <key k="action"   to="$scripts/g2-toc-banner.xsl"/>
+    <key k="output"   to="01bld/$cbdlang/toc-banner.xml"/>
+    <key k="cbdresult" to="0"/>
+  </set>
+
+  <set var="process">
     <key k="action"   to="$scripts/g2-articles.xsl"/>
     <key k="cbdresult" to="1"/>
   </set>

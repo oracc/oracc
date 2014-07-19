@@ -50,7 +50,7 @@
   <set var="process">
     <key k="action"   to="$scripts/g2-chunk-html.xsl"/>
     <key k="input"    to="$webcbd/$cbdlang/onebigfile.html"/>
-    <key k="output"   to="$webcbd/$cbdlang/toc.html"/>
+    <key k="output"   to="$webcbd/$cbdlang/g2-chunk-toc.html"/>
   </set>
 
   <set var="process">

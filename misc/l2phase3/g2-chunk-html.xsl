@@ -63,7 +63,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="href" select="concat($c, '.html')"/>
-    <xsl:variable name="toc-href" select="concat('/',$projectDir,'/cbd/',$subdir,'/', $href)"/>
+    <xsl:variable name="toc-href" select="concat('/',$project,'/cbd/',$subdir,'/', $href)"/>
     <xsl:choose>
       <xsl:when test="@id = 'Ĝ'">
 	<p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="'Ŋ'"/></a></p>
@@ -94,7 +94,25 @@
   
 <xsl:template name="call-back">
   <xsl:attribute name="class">obf</xsl:attribute>
-  <div class="obf-header">
+  <xsl:variable name="banner-xml" select="concat($projectDir,'/01bld/',$subdir-str,'toc-banner.xml')"/>
+  <xsl:for-each select="document($banner-xml,/)/*">
+    <xsl:variable name="this" select="@id"/>
+    <xsl:for-each select="*">
+      <xsl:choose>
+	<xsl:when test="@title=$this">
+	  <xsl:copy>
+	    <xsl:copy-of select="@*"/>
+	    <xsl:attribute name="class"><xsl:text>lselect</xsl:text></xsl:attribute>
+	    <xsl:copy-of select="*"/>
+	  </xsl:copy>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:copy-of select="."/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:for-each>
+  <div class="obf-header" title="{@id}">
     <h1 class="obf-letter">
       <span class="obf-letter">
 	<xsl:value-of select="$abbrev"/><xsl:text> Browsable HTML: </xsl:text>

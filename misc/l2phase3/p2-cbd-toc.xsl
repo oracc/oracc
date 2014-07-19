@@ -22,7 +22,6 @@
   <xsl:call-template name="make-html">
     <xsl:with-param name="project" select="$project"/>
     <xsl:with-param name="title" select="'TOC'"/>
-    <xsl:with-param name="webtype" select="'p2-p1'"/>
   </xsl:call-template>
 </xsl:template>
 
