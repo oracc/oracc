@@ -1,5 +1,6 @@
 #!/bin/sh
 webdir=01bld/www
+est-project.sh
 if [ -d 00web/00config ]; then
     o2-xml.sh
     o2-weblive.sh
@@ -20,4 +21,3 @@ elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
 else
     echo o2-portal.sh: no portal to rebuild and no index.html or way of building same. Stop.
 fi
-est-project.sh
