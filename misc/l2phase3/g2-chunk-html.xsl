@@ -95,22 +95,26 @@
 <xsl:template name="call-back">
   <xsl:attribute name="class">obf</xsl:attribute>
   <xsl:variable name="banner-xml" select="concat($projectDir,'/01bld/',$subdir-str,'toc-banner.xml')"/>
+  <xsl:variable name="this" select="@id"/>
   <xsl:for-each select="document($banner-xml,/)/*">
-    <xsl:variable name="this" select="@id"/>
-    <xsl:for-each select="*">
-      <xsl:choose>
-	<xsl:when test="@title=$this">
-	  <xsl:copy>
-	    <xsl:copy-of select="@*"/>
-	    <xsl:attribute name="class"><xsl:text>lselect</xsl:text></xsl:attribute>
-	    <xsl:copy-of select="*"/>
-	  </xsl:copy>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:copy-of select="."/>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
+    <div class="toc-banner">
+      <p>
+	<xsl:for-each select=".//xh:span">
+	  <xsl:choose>
+	    <xsl:when test="@title=$this">
+	      <xsl:copy>
+		<xsl:copy-of select="@*"/>
+		<xsl:attribute name="class"><xsl:text>lselect</xsl:text></xsl:attribute>
+		<xsl:copy-of select="*"/>
+	      </xsl:copy>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:copy-of select="."/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:for-each>
+      </p>
+    </div>
   </xsl:for-each>
   <div class="obf-header" title="{@id}">
     <h1 class="obf-letter">
