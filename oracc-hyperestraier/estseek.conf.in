@@ -10,6 +10,8 @@ lockindex: true
 
 pseudoindex:
 
+
+replace: ^file://@@ORACC@@/bld/doc2/espdev/{{!}}http://@@ORACC_HOST@@/doc2/
 replace: ^file://@@ORACC@@/www/doc2/{{!}}http://@@ORACC_HOST@@/doc2/
 replace: ^file://@@ORACC@@/www/doc/{{!}}http://@@ORACC_HOST@@/doc/
 replace: ^file://@@ORACC@@/www/ns/{{!}}http://@@ORACC_HOST@@/ns/
