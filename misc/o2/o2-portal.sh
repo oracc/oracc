@@ -1,11 +1,11 @@
 #!/bin/sh
 webdir=01bld/www
-est-project.sh
 if [ -d 00web/00config ]; then
     o2-xml.sh
     o2-weblive.sh
     echo calling esp2.sh `oraccopt` ...
     esp2.sh `oraccopt`
+    est-project.sh
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
 elif [ -d 00web/esp ]; then
@@ -17,6 +17,7 @@ elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
     mkdir -p $webdir/images
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
     cp -fp 00lib/thumb.png $webdir
+    est-project.sh
     o2-weblive.sh
 else
     echo o2-portal.sh: no portal to rebuild and no index.html or way of building same. Stop.
