@@ -32,8 +32,8 @@ sub
 fixup_P_id {
     my $pqx = shift;
     if ($pqx =~ /^\d/) {
-	my $nid = $1;
-	$nid = 'P'.('0'x(6-length($nid))).$nid;
+	my $nid = '';
+	$nid = 'P'.('0'x(6-length($pqx))).$pqx;
 #	print STDERR "TSV.pm: repairing P-ID from $pqx to $nid\n";
 	$pqx = $nid;
     }
