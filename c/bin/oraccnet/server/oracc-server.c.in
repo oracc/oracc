@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "resolver.h"
 
 const char *docroot = "@@ORACC@@/www";
@@ -20,6 +23,42 @@ int nelements;
 int debug = 0;
 
 static void decompose_script_url(const char *su);
+
+const char *
+osc_status(const char *session_id)
+{
+  char *status_file = NULL;
+  static char *buf = NULL;
+  int res = -1;
+  struct stat st;
+  const char *varoracc = "@@ORACC@@/tmp/sop";
+
+  status_file = malloc(strlen(varoracc) + 6 + strlen("//status") + 1);
+  sprintf(status_file, "%s/%s/status",varoracc, session_id);
+
+  if ((res = stat(status_file, &st)) < 0)
+    return "err_stat";
+
+  buf = malloc((size_t)st.st_size + 1);
+
+  if ((res = open(status_file, O_RDONLY)) < 0)
+    return "err_open";
+
+  if ((res = read(res, buf, st.st_size)) < 0)
+    return "err_read";
+
+  buf[st.st_size] = '\0';
+  return buf;
+}
+
+static void
+osc_ping(void)
+{
+  const char *status = osc_status(script_url);
+  print_hdr_text();
+  puts(status);
+  exit(0);
+}
 
 int
 main(int argc, char *argv[]) 
@@ -39,11 +78,23 @@ main(int argc, char *argv[])
       setenv("ORACC_HOST", "@@ORACC_HOST@@", 1);
       setenv("ORACC_MODE", "@@ORACC_MODE@@", 1);
       setenv("ORACC_USER", "@@ORACC_USER@@", 1);
+
+#if 1
+      if (!strncmp(script_url,"/p/",3))
+	{
+	  script_url += 3;
+	  if (strlen(script_url) == 6)
+	    osc_ping();
+	  else
+	    do404();
+	}
+#else
       if (!strncmp(script_url,"/d/",3))
 	{
 	  script_url += 2;
 	  debug = 1;
 	}
+#endif
 
       decompose_script_url(script_url);
       query_string = getenv("QUERY_STRING");
