@@ -3,11 +3,13 @@
 <xsl:stylesheet version="1.0" 
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:xl="http://www.w3.org/1999/xlink"
+  xmlns:cbd="http://oracc.org/ns/cbd/1.0"
+  xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
   xmlns:xh="http://www.w3.org/1999/xhtml"
   xmlns:ex="http://exslt.org/common"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   extension-element-prefixes="ex"
-  exclude-result-prefixes="xh xl">
+  exclude-result-prefixes="xh xl dc cbd">
 
 <xsl:import href="html-standard.xsl"/>
 
@@ -64,20 +66,7 @@
     </xsl:variable>
     <xsl:variable name="href" select="concat($c, '.html')"/>
     <xsl:variable name="toc-href" select="concat('/',$project,'/cbd/',$subdir,'/', $href)"/>
-    <xsl:choose>
-      <xsl:when test="@id = 'Ĝ'">
-	<p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="'Ŋ'"/></a></p>
-      </xsl:when>
-      <xsl:when test="@id = 'Ş'">
-	<p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="'Ṣ'"/></a></p>
-      </xsl:when>
-      <xsl:when test="@id = 'Ţ'">
-	<p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="'Ṭ'"/></a></p>
-      </xsl:when>
-      <xsl:otherwise>
-	<p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="@id"/></a></p>
-      </xsl:otherwise>
-    </xsl:choose>
+    <p class="toc-entry"><a href="{$toc-href}"><xsl:value-of select="@id"/></a></p>
     <ex:document href="{concat('./',$webdir,'/cbd/',$subdir-str,$href)}"
 		 method="xml" encoding="utf-8"
 		 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -99,9 +88,11 @@
   <xsl:for-each select="document($banner-xml,/)/*">
     <div class="toc-banner">
       <p>
-	<xsl:for-each select=".//xh:span">
+	<img class="p3icon" src="/img/p3-plus.png"
+	     alt="Hub" title="Hub" id="hubIcon" name="hubIcon" onclick="window.location='/{$project}/hub.html'"/>
+	<xsl:for-each select="*/*">
 	  <xsl:choose>
-	    <xsl:when test="@title=$this">
+	    <xsl:when test="xh:span/@title=$this">
 	      <xsl:copy>
 		<xsl:copy-of select="@*"/>
 		<xsl:attribute name="class"><xsl:text>lselect</xsl:text></xsl:attribute>

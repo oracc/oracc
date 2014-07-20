@@ -44,10 +44,11 @@
       <table class="hubglo">
 	<xsl:for-each select="/*/glossaries/glogroup">
 	  <xsl:for-each select="*">
+	    <xsl:variable name="first" select="document(concat('../01bld/',@abbrev,'/toc-banner.xml'),/)/*/*/*/*[1]/@title"/>
 	    <tr>
 	      <td><a href="/{/*/@project}/{@abbrev}"><xsl:value-of select="text()"/></a></td>
 	      <td><a href="/{/*/@project}/cbd/{@abbrev}/summaries.html">Summaries</a></td>
-	      <td><a href="/{/*/@project}/cbd/{@abbrev}/toc.html">Letter by Letter</a></td>
+	      <td><a href="/{/*/@project}/cbd/{@abbrev}/{$first}.html">Letter by Letter</a></td>
 	      <td><a href="/{/*/@project}/cbd/{@abbrev}/onebigfile.html">One Big File</a></td>
 	    </tr>
 	  </xsl:for-each>

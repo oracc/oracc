@@ -9,15 +9,32 @@
   xmlns:cbd="http://oracc.org/ns/cbd/1.0"
   xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
   extension-element-prefixes="ex"
-  exclude-result-prefixes="xh xl">
+  exclude-result-prefixes="xh xl dc cbd">
 
 <xsl:template match="cbd:entries">
   <div class="toc-banner">
     <p>
       <xsl:for-each select="cbd:letter">
-	<span class="toc-banner-entry" title="{@dc:title}">
-	  <a href="/{/*/@project}/cbd/{/*/@xml:lang}/{@dc:title}.html"><xsl:value-of select="@dc:title"/></a>
-	</span>
+	<xsl:variable name="c">
+	  <xsl:choose>
+	    <xsl:when test="@dc:title='Ĝ'"><xsl:value-of select="'GN'"/></xsl:when>
+	    <xsl:when test="@dc:title='Š'"><xsl:value-of select="'SH'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ś'"><xsl:value-of select="'SS'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ş'"><xsl:value-of select="'ST'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ţ'"><xsl:value-of select="'TT'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ŋ'"><xsl:value-of select="'GN'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ṣ'"><xsl:value-of select="'ST'"/></xsl:when>
+	    <xsl:when test="@dc:title='Ṭ'"><xsl:value-of select="'TT'"/></xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="@dc:title"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<a href="/{/*/@project}/cbd/{/*/@xml:lang}/{$c}.html">
+	  <span class="toc-banner-entry" title="{@dc:title}">
+	    <xsl:value-of select="@dc:title"/>
+	  </span>
+	</a>
 	<xsl:if test="not(position()=last())">
 	  <span class="toc-banner-sep">|</span>
 	</xsl:if>	

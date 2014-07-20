@@ -34,8 +34,8 @@
     <xsl:with-param name="project" select="$project"/>
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>    
-    <xsl:with-param name="title" select="TOC"/>
-    <xsl:with-param name="webtype" select="'p2-p1'"/>
+    <xsl:with-param name="title" select="'TOC'"/>
+    <xsl:with-param name="body-class" select="'summaries'"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -53,6 +53,11 @@
 </xsl:template>
 
 <xsl:template name="call-back">
+  <div class="toc">
+    <xsl:variable name="title" select="concat(/*/@project, ' ', /*/@xml:lang, ' Summaries')"/>
+    <xsl:attribute name="title"><xsl:value-of select="$title"/></xsl:attribute>
+    <h1><xsl:value-of select="$title"/></h1>
+  </div>
   <xsl:apply-templates/>  
 </xsl:template>
 

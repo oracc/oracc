@@ -202,8 +202,38 @@ td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 .p3hub h2 { font-size: 14pt; margin-left: 1em; }
 .p3hub p  { margin-left: 2em; textindent: -2em; }
 
-table.hubglo { margin-left: 2em; width: auto; }
+table.hubglo { margin-left: 1em; width: auto; }
 .hubglo td { padding-left: 1em; }
+
+.toc-banner { text-align: center; font-size: 14pt; line-height: 1.5em; padding-bottom: 5px; background-color: gray; color: white; }
+.toc-banner a { color: white; }
+.toc-banner a:link { color: white; }
+.toc-banner a:visited { color: white; }
+
+div.letter { width: 700px; margin: auto; }
+.lselect { background-color: red; }
+.obf h1.obf-letter { border: none; }
+.obf h1.entry { border: none; }
+span.obf-letter { border: none; }
+.obf span.toc-banner-entry { padding: 0px; margin: 0px; padding-left: 5px; }
+.obf span.toc-banner-sep { margin: 0px; padding: 0px; }
+
+.obf .heading { background-color: #fff; }
+
+.obf .p3icon { background-color: white; 
+	  height: 18px; width: 18px;
+	  border: 2px solid silver; 
+	  padding: 2px;
+	  border-radius: 9px;
+	  margin-left: -1em;
+	  margin-right: 2em;
+	}
+
+.summaries div { width: 700px; margin: auto; }
+.summaries .toc { text-align: center; }
+.summaries h1 { text-align: left; }
+
+/* .obf p.icount { margin: 0px; text-align: left;} */
 
 /*    
   overflow: scroll;
