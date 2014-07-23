@@ -18,9 +18,9 @@ parent=`oraccopt`
 fullproj=$parent/$proj
 cd $proj
 umask 0026
-for a in any atf bak bib bin cat lib map tei web xml ; do \
+for a in any atf bak bib bin cat lib map res tei web xml ; do \
     mkdir -p 00$a ; \
 done
-mkdir -p 00lib/lists 00web/images
-echo `pwd`
-subprojdirs.sh $fullproj
+mkdir -p 00lib/lists 00res/downloads 00res/images 01tmp
+#echo `pwd`
+# subprojdirs.sh $fullproj

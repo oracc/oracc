@@ -79,11 +79,8 @@ EOI
     close(INDEX);
 
     if ($init) {
-	system "cp $ENV{'ORACC'}/lib/data/p2colours.txt 00web"
-	    unless -e "00web/colours.txt";
-    } else {
-	system "cp ../00web/p2colours.txt 00web"
-	    if -r "00web/p2colours.txt";
+	system "cp $ENV{'ORACC'}/lib/data/p3colours.txt 00lib"
+	    unless -e "00lib/p3colours.txt";
     }
 
     my $ctype = 'local';
@@ -105,8 +102,9 @@ if ($init) {
   <option name="build-outlined-policy" value="atf"/>
   <option name="catalog-build-policy" value="auto"/>
   <option name="cbd-mode" value="mixed"/>
-  <option name="pager-glossaries" value="akk sux qpn"/>
-  <option name="pager-outline" value="yes"/>
+  <option name="outline-default-select" value="true"/>
+  <option name="outline-default-sort-fields" value="period,genre,provenience"/>
+  <option name="outline-default-sort-labels" value="Time,Genre,Place"/>
 EOO
 } else {
     copy_options("../00lib/config.xml");

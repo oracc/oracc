@@ -4,6 +4,8 @@ need to do oscs install including
 
 need to install usermode.xml
 
+need to creat $ORACC/sbin
+
 
 Operating System Setup
 ======================
@@ -154,7 +156,8 @@ It can also be done manually with:
 
 but this is not recommended as it can be tricky to get the rules in the correct order.
 
-Also now: enable 8085 for tcp to support oscs. And add /usr/local/bin/oscs -s to etc/rc.d/rc.local
+Also now: enable 8085 for tcp to support oscs. And add ${ORACC}/sbin/oscs -s to etc/rc.d/rc.local
+
 ********
 	
 Autostart
