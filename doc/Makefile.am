@@ -1,2 +1,2 @@
 include ../oracc-doc-rules.txt
-SUBDIRS = ns
+SUBDIRS = 00tools ns

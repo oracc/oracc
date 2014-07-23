@@ -215,6 +215,7 @@ AC_OUTPUT([Makefile
 	misc/xtr/Makefile
 	misc/xvl/Makefile
 	doc/Makefile
+	doc/00tools/Makefile
 	doc/ns/Makefile
 	doc/ns/xcl/1.0/Makefile
 	doc/ns/xmd/1.0/Makefile
