@@ -27,11 +27,11 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png \
 	oracc32x32b.png oracc32x32w.png
 html_DATA = blogspot16x16.ico facebook16x16.ico twitter16x16.ico no_html.xml \
-	doc2-redirect.html index.html atftemplate.html voltemplate.html atfproc.html
+	doc-redirect.html index.html atftemplate.html voltemplate.html atfproc.html
 noinst_DATA = httpd.conf robots.txt
 
-doc2-redirect.html: doc2-redirect.html.in
-	cp doc2-redirect.html.in doc2-redirect.html
+doc-redirect.html: doc-redirect.html.in
+	cp doc-redirect.html.in doc-redirect.html
 
 atfproc.html: atfproc.html.in
 	cp atfproc.html.in atfproc.html
