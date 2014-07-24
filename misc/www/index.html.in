@@ -6,10 +6,10 @@
 <meta name="generator" content=
 "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.10), see www.w3.org" />
 <title>Oracc: The Open Richly Annotated Cuneiform Corpus</title>
-<link rel="stylesheet" type="text/css" media="print" href="/doc2/css/print.css" />
-<link rel="stylesheet" type="text/css" media="screen,projection" href="/doc2/css/screen.css" />
-<link rel="stylesheet" type="text/css" media="screen,print" href="/doc2/css/cuneify-ob.css" title="oldbabylonian" />
-<link rel="stylesheet" type="text/css" media="screen,print" href="/doc2/css/cuneify-na.css" title="neoassyrian" />
+<link rel="stylesheet" type="text/css" media="print" href="/doc/css/print.css" />
+<link rel="stylesheet" type="text/css" media="screen,projection" href="/doc/css/screen.css" />
+<link rel="stylesheet" type="text/css" media="screen,print" href="/doc/css/cuneify-ob.css" title="oldbabylonian" />
+<link rel="stylesheet" type="text/css" media="screen,print" href="/doc/css/cuneify-na.css" title="neoassyrian" />
 <script type="text/javascript">
 //<![CDATA[
 <!--
@@ -60,14 +60,14 @@
 <div class="menu"><a href="/projectlist.html" title=
 "List of Oracc projects" accesskey="2" class=
 "only">Projects</a></div>
-<div class="item"><a href="doc2/search/index.html" title=
+<div class="item"><a href="doc/search/index.html" title=
 "Search Oracc" accesskey="3" class="closed">Search</a></div>
-<div class="menu"><a href="doc2/help/index.html" title=
+<div class="menu"><a href="doc/help/index.html" title=
 "Help page overview" accesskey="4" class="closed">Help</a></div>
-<div class="menu"><a href="doc2/about/index.html" title=
+<div class="menu"><a href="doc/about/index.html" title=
 "About Oracc: Essentials for Oracc users" accesskey="6" class=
 "closed">About</a></div>
-<div class="closed"><a href="doc2/tools/index.html" title=
+<div class="closed"><a href="doc/tools/index.html" title=
 "Oracc webtools" class="closed">Tools</a></div>
 </div>
 <div id="Content">
@@ -95,7 +95,7 @@ steered by Eleanor Robson, Tinney, and Niek Veldhuis.</p>
 target="_blank" title=
 "Link opens in new window: Creative Commons Attribution Share-Alike license">
 <img src="/img/cc88x31.png" alt="" /></a></span> Released under a
-<a href="doc2/about/licensing/index.html" title=
+<a href="doc/about/licensing/index.html" title=
 "Licensing statement" accesskey="8">Creative Commons Attribution
 Share-Alike license 3.0</a>, 2014. <span class=
 "imageinline"><a href="http://www.facebook.com/opencuneiform"
@@ -115,7 +115,7 @@ class="external" target="_blank" title=
 "externallinktext">[http://www.twitter.com/oracctivity]</span></span><br />
 
 <small>Oracc uses cookies only to collect Google Analytics data.
-Read more <a href="doc2/about/cookies/index.html" title="Cookies"
+Read more <a href="doc/about/cookies/index.html" title="Cookies"
 accesskey="7">here</a>; see the stats <a href=
 "http://www.seethestats.com/site/oracc.museum.upenn.edu" class=
 "external" target="_blank" title=
