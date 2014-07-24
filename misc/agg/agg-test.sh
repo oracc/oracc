@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# restrictions removed in Oracc 3 implementation
+
+exit 0
+
 if [ "$ORACC_MODE" = "single" ]; then
     exit 0
 fi
