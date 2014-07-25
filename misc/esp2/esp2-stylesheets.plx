@@ -45,7 +45,7 @@ my %usedfor = ();
 
 my $p3colours = find_p3colours() || die "esp2-stylesheet.plx: can't find p3colours.txt\n";
 open(P, $p3colours) || die "esp2-stylesheet.plx: can't open $p3colours\n";
-warn "esp2-stylesheets.plx: using colours file $p3colours_file\n";
+warn "esp2-stylesheets.plx: using colours file $p3colours\n";
 while (<P>) {
     if (/^colou?r-def-(.*?)\s+(\S+)$/) {
 	$class{$1} = $2;
