@@ -8,14 +8,16 @@ use ORACC::ATF::Unicode;
 # This is a version of the SL search engine that only works in slave
 # mode serving URIs decoded by the Oracc resolver.
 
+warn "slse-slave.plx: ARGS=@ARGV\n";
+
 use Getopt::Long;
-my $project = '';
+my $project = 'ogsl';
 my $grapheme = '';
 my $extension = '';
 
 GetOptions(
-    'extension:s'=>\$project,
-    'grapheme:s'=>\$project,
+    'extension:s'=>\$extension,
+    'grapheme:s'=>\$grapheme,
     'project:s'=>\$project
     ) || die;
 
@@ -57,9 +59,9 @@ my %uc_ext; @uc_ext{@uc_ext} = ();
 #my $ext = param('ext') || '';
 
 my $v = $grapheme;
-my $ext = $extension
+my $ext = $extension;
 
-my $project = $project || 'ogsl';
+Encode::_utf8_on($v);
 
 if ($v =~ s/([a-z])0$/$1/) {
     $ext = 'h';
@@ -107,10 +109,10 @@ my $pr;
 
 if ($ext) {
     $pr = slse("$v\;$ext") || '';
-    warn "$v => $pr\n";
+    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
 } else {
     $pr = slse($v) || '';
-    warn "$v => $pr\n";
+    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
 }
 
 if ($pr) {
@@ -151,11 +153,14 @@ if ($pr) {
 	html_trailer();
     } else {
 	$pr =~ s/\s+.*$//;
-	if ($project ne 'ogsl') {
-	    print redirect("/$project/sl/brief/$pr.html");
-	} else {
-	    print redirect("/ogsl/signs/$pr.html");
-	}
+	html_header();
+	sign_frame($pr);
+	html_trailer();
+#	if ($project ne 'ogsl') {
+#	    print redirect("/$project/sl/brief/$pr.html");
+#	} else {
+#	    print redirect("/ogsl/signs/$pr.html");
+#	}
     }
 } else {
     html_header();
@@ -187,7 +192,6 @@ close_frame_divs {
 sub
 html_header {
     my $vcat = $v;
-    Encode::_utf8_on($vcat);
     if ($ext) {
 	if ($ext eq 'forms') {
 	    $vcat = slse("$vcat\;name");
@@ -196,8 +200,10 @@ html_header {
 	}
 	$vcat = "$ext_pre{$ext}$vcat$ext_post{$ext}";
     }
-    print header(-charset=>'utf-8');
+#    print header(-charset=>'utf-8');
     print <<EOH;
+Content-type: text/html; charset=utf-8
+
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="sux" xml:lang="sux">

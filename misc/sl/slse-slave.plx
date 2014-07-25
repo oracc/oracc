@@ -2,11 +2,26 @@
 use warnings; use strict;
 use Encode; use utf8;
 use open 'utf8'; binmode STDIN, 'utf8'; binmode STDOUT, 'utf8'; binmode STDERR, 'utf8'; 
-use CGI qw/:standard/;
-use lib '@@ORACC@@/lib';
+use lib '/usr/local/oracc/lib';
 use ORACC::ATF::Unicode;
 
-my $db_file = "@@ORACC@@/pub/ogsl";
+# This is a version of the SL search engine that only works in slave
+# mode serving URIs decoded by the Oracc resolver.
+
+warn "slse-slave.plx: ARGS=@ARGV\n";
+
+use Getopt::Long;
+my $project = 'ogsl';
+my $grapheme = '';
+my $extension = '';
+
+GetOptions(
+    'extension:s'=>\$extension,
+    'grapheme:s'=>\$grapheme,
+    'project:s'=>\$project
+    ) || die;
+
+my $db_file = "/usr/local/oracc/pub/ogsl";
 my $db_name = 'ogsl';
 
 my %ext_pre = (
@@ -40,10 +55,13 @@ my %id_ext; @id_ext{@id_ext} = ();
 my @uc_ext = qw/c cinit clast contains contained forms m multi/;
 my %uc_ext; @uc_ext{@uc_ext} = ();
 
-my $v = decode utf8=>param('k1');
-my $ext = param('ext') || '';
+#my $v = decode utf8=>param('k1');
+#my $ext = param('ext') || '';
 
-my $project = param('project') || 'ogsl';
+my $v = $grapheme;
+my $ext = $extension;
+
+Encode::_utf8_on($v);
 
 if ($v =~ s/([a-z])0$/$1/) {
     $ext = 'h';
@@ -91,10 +109,10 @@ my $pr;
 
 if ($ext) {
     $pr = slse("$v\;$ext") || '';
-    warn "$v => $pr\n";
+    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
 } else {
     $pr = slse($v) || '';
-    warn "$v => $pr\n";
+    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
 }
 
 if ($pr) {
@@ -133,13 +151,16 @@ if ($pr) {
 	}
 	sign_frame($first_id) unless $project eq 'epsd2';
 	html_trailer();
-    }else {
+    } else {
 	$pr =~ s/\s+.*$//;
-	if ($project ne 'ogsl') {
-	    print redirect("/$project/sl/brief/$pr.html");
-	} else {
-	    print redirect("/ogsl/signs/$pr.html");
-	}
+	html_header();
+	sign_frame($pr);
+	html_trailer();
+#	if ($project ne 'ogsl') {
+#	    print redirect("/$project/sl/brief/$pr.html");
+#	} else {
+#	    print redirect("/ogsl/signs/$pr.html");
+#	}
     }
 } else {
     html_header();
@@ -171,7 +192,6 @@ close_frame_divs {
 sub
 html_header {
     my $vcat = $v;
-    Encode::_utf8_on($vcat);
     if ($ext) {
 	if ($ext eq 'forms') {
 	    $vcat = slse("$vcat\;name");
@@ -180,8 +200,10 @@ html_header {
 	}
 	$vcat = "$ext_pre{$ext}$vcat$ext_post{$ext}";
     }
-    print header(-charset=>'utf-8');
+#    print header(-charset=>'utf-8');
     print <<EOH;
+Content-type: text/html; charset=utf-8
+
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="sux" xml:lang="sux">
@@ -238,7 +260,7 @@ is_signlist {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl $db_name $db_file '$_[0]'`
+    `/usr/local/oracc/bin/sl -k '$_[0]'`
 }
 
 1;

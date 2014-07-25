@@ -87,5 +87,5 @@ sl(char *ctext)
     do404();
 
   /* run signlist UI */
-  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/slse-slave.plx", "-extension", extension, "-grapheme", grapheme, NULL);
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/slse-slave.plx", "-extension", extension, "-grapheme", grapheme, NULL);
 }
