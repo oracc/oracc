@@ -586,3 +586,5 @@ c/bin/util/unittable
 c/bin/util/unittable
 
 c/lib/oracc/fname.c
+
+c/bin/oraccnet/server/builtins.c

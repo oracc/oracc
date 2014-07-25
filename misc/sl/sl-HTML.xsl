@@ -129,7 +129,7 @@
 
 <xsl:template name="form-div">
   <div class="ogsl-form" id="ogsldiv">
-    <form name="ogslform" id="ogslform" action="/cgi-bin/slse" method="post" target="_top">
+    <form name="ogslform" id="ogslform" action="/ogsl/sl" method="post" target="_top">
       <input type="hidden" name="project" value="ogsl"/>
       <p class="unisearch">
 	<input type="submit" value="FIND:" name="x"/>
