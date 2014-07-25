@@ -1,0 +1,75 @@
+<?xml version='1.0'?>
+
+<xsl:stylesheet version="1.0" 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
+  xmlns:xl="http://www.w3.org/1999/xlink"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  exclude-result-prefixes="dc xl">
+
+<xsl:include href="html-util.xsl"/>
+
+<!--    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+ -->
+<xsl:output method="xml" encoding="utf-8"
+   indent="yes"/>
+
+<xsl:template name="make-esp">
+  <xsl:param name="project"/>
+  <xsl:param name="name"/>
+  <xsl:param name="title"/>
+
+  <esp:page
+      xmlns:esp="http://oracc.org/ns/esp/1.0"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <esp:name><xsl:value-of select="$name"/></esp:name>
+    <esp:title><xsl:value-of select="$title"/></esp:title>
+
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>
+	  <xsl:choose>
+	    <xsl:when test="string-length($title) > 0">
+	      <xsl:value-of select="$title"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$name"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</title>
+	<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+	<xsl:if test="string-length($project)">
+	  <!-- <link rel="stylesheet" type="text/css" href="/{$project}/p3.css" media="screen"/> -->
+	  <link rel="stylesheet" type="text/css" href="/{$project}/css/p3colours.css" media="screen"/>
+	</xsl:if>
+	<link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="/css/p3colours.css" media="screen"/>
+	<script src="/js/p3.js" type="text/javascript">
+	  <xsl:text> </xsl:text>
+	</script>
+	<xsl:if test="not(document('@@ORACC@@/lib/data/usermode.xml')/*/text() = 'single')">
+	  <script type="text/javascript">
+	    
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32878242-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+      </xsl:if>
+    </head>
+    <body>
+      <xsl:call-template name="call-back"/>
+    </body>
+    </html>
+  </esp:page>
+</xsl:template>
+
+</xsl:stylesheet>

@@ -61,6 +61,8 @@ my %uc_ext; @uc_ext{@uc_ext} = ();
 my $v = $grapheme;
 my $ext = $extension;
 
+$ext = undef if $ext eq '#none';
+
 Encode::_utf8_on($v);
 
 if ($v =~ s/([a-z])0$/$1/) {
@@ -107,12 +109,16 @@ if ($v =~ /[AEIU]/) {
 
 my $pr;
 
-if ($ext) {
-    $pr = slse("$v\;$ext") || '';
-    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
+if ($grapheme eq '#none') {
+    warn "slse-slave.plx.in: initializing via grapheme=#none\n";
 } else {
-    $pr = slse($v) || '';
-    warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
+    if ($ext) {
+	$pr = slse("$v\;$ext") || '';
+	warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
+    } else {
+	$pr = slse($v) || '';
+	warn "slse-slave.plx.in: v=>pr = $v => $pr\n";
+    }
 }
 
 if ($pr) {
@@ -162,6 +168,10 @@ if ($pr) {
 #	    print redirect("/ogsl/signs/$pr.html");
 #	}
     }
+} elsif ($grapheme eq '#none') {
+    html_header();
+    sign_frame('');
+    html_trailer();
 } else {
     html_header();
     print '<p class="nomatch">No matches</p>';
