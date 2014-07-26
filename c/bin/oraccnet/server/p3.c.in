@@ -123,11 +123,13 @@ mkvec(CGI_varlist *vl)
   return vec;
 }
 
-static void
+void
 dump_vl(CGI_varlist *vl)
 {
   const char *name;
   CGI_value  *value;
+
+  fprintf(stderr, "====dumping CGI value list====\n");
 
   for (name = CGI_first_name(vl); name != 0;
        name = CGI_next_name(vl))
@@ -137,6 +139,8 @@ dump_vl(CGI_varlist *vl)
       for (i = 0; value[i] != 0; i++) 
 	fprintf(stderr, "%s [%d] >>%s<<\n", name, i, value[i]);
     }
+
+  fprintf(stderr, "====done=====\n");
 }
 
 void
