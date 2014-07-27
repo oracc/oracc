@@ -52,7 +52,7 @@ void
 sl(char *ctext)
 {
   CGI_varlist *vl = NULL;
-  const char *extension = NULL, *grapheme = NULL, *caller = 'uri';
+  const char *extension = NULL, *grapheme = NULL, *caller = "uri";
   
   /* try to set extension and grapheme from component/query_string; validate grapheme if so */
 #if 1
