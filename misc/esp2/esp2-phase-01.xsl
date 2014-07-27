@@ -57,7 +57,7 @@
 		       | h:table | h:th | h:tr | h:td | h:thead | h:tbody | h:caption | h:tfoot
 		       | h:dl | h:dd | h:dt | h:strong | h:style | h:sup | h:sub | h:address 
 		       | h:object | h:param | h:embed | h:div | h:script | h:small 
-		       | h:span | h:form | h:input | h:select | h:hr | h:audio | h:source">
+		       | h:span | h:form | h:input | h:select | h:option | h:hr | h:audio | h:source">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates/>

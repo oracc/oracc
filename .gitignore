@@ -588,3 +588,7 @@ c/bin/util/unittable
 c/lib/oracc/fname.c
 
 c/bin/oraccnet/server/builtins.c
+
+misc/sl/slse-slave.plx
+
+c/bin/oraccnet/server/sl.c

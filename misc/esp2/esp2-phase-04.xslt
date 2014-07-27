@@ -548,6 +548,16 @@
   <xsl:message>The 'flash-movie' feature is no longer part of ESP.  Please revise your portal pages appropriately.</xsl:message>
 </xsl:template>
 
+<xsl:template match="xh:div[@id='Content']">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:if test="count($parameters/param:top-content/*)>0">
+      <xsl:copy-of select="$parameters/param:top-content/*"/>
+    </xsl:if>
+    <xsl:apply-templates/>
+  </xsl:copy>
+</xsl:template>
+
 <!-- copy the rest unchanged -->
 <xsl:template match="*">
   <xsl:copy>

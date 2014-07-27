@@ -11,6 +11,8 @@
     extension-element-prefixes="ex"
     version="1.0">
 
+<xsl:include href="formdiv.xsl"/>
+
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
 <xsl:template match="sl:letter">
@@ -24,6 +26,11 @@
       <html>
 	<head/>
 	<body>
+<!--
+	  <xsl:call-template name="form-div">
+	    <xsl:with-param name="caller" select="'esp'"/>
+	  </xsl:call-template>
+ -->
 	  <xsl:for-each select=".//sl:sign">
 	    <p>
 	      <esp:link page="{@xml:id}">

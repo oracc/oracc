@@ -11,6 +11,8 @@
     extension-element-prefixes="ex"
     version="1.0">
 
+<xsl:include href="formdiv.xsl"/>
+
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
 <xsl:template match="sl:sign">
@@ -25,6 +27,11 @@
       <html>
 	<head/>
 	<body>
+<!--
+	  <xsl:call-template name="form-div">
+	    <xsl:with-param name="caller" select="'esp'"/>
+	  </xsl:call-template>
+ -->
 	  <xsl:call-template name="sign-or-form"/>
 	</body>
       </html>
@@ -39,6 +46,7 @@
 <xsl:template name="sign-or-form">
   <div class="ogsl-{local-name(.)}">
     <div class="ogsl-info">
+<!--
       <esp:sh>
 	<xsl:value-of select="translate(@n,'|','')"/>
 	<xsl:if test="@var">
@@ -49,8 +57,10 @@
 	  <xsl:value-of select="sl:uname"/>
 	</xsl:if>
       </esp:sh>
+ -->
       <xsl:if test="sl:list">
 	<p>
+	  List numbers: 
 	  <xsl:for-each select="sl:list">
 	    <xsl:value-of select="@n"/>
 	    <xsl:if test="not(position()=last())">
@@ -60,24 +70,31 @@
 	</p>
       </xsl:if>
     </div>
-    <div class="ogsl-values">
-      <p>
-	<span class="values-heading">Values:</span>
-	<xsl:for-each select="sl:v">
-	  <xsl:choose>
-	    <xsl:when test="@deprecated='yes'">
-	      <span class="v-drop"><xsl:value-of select="@n"/></span>
-	    </xsl:when>
-	    <xsl:when test="@uncertain='yes'">
-	      <span class="v-query"><xsl:value-of select="@n"/></span>
-	    </xsl:when>
-	    <xsl:otherwise>
-	      <span class="v-ok"><xsl:value-of select="@n"/></span>
-	    </xsl:otherwise>
-	  </xsl:choose>
-	</xsl:for-each>
-      </p>
-    </div>
+    <xsl:if test="count(sl:v)>0">
+      <div class="ogsl-values">
+	<p>
+	  <span class="values-heading">Values:</span>
+	  <xsl:for-each select="sl:v">
+	    <xsl:choose>
+	      <xsl:when test="@deprecated='yes'">
+		<span class="v-drop"><xsl:value-of select="@n"/></span>
+	      </xsl:when>
+	      <xsl:when test="@uncertain='yes'">
+		<span class="v-query"><xsl:value-of select="@n"/></span>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<span class="v-ok"><xsl:value-of select="@n"/></span>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	    <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+	  </xsl:for-each>
+	  <xsl:text>.</xsl:text>
+	</p>
+      </div>
+    </xsl:if>
+    <xsl:apply-templates select="sl:note"/>
+    <xsl:call-template name="unicode-info"/>
+    <xsl:apply-templates mode="rest"/>
     <xsl:if test="sl:form">
       <div class="ogsl-signforms">
 	<xsl:apply-templates select="sl:form"/>
@@ -86,6 +103,22 @@
   </div>
 </xsl:template>
 
-<xsl:template match="text()"/>
+<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>
+
+<xsl:template match="sl:note">
+  <p class="ogsl-note"><xsl:apply-templates/></p>
+</xsl:template>
+
+<xsl:template mode="rest" match="*">
+  <xsl:message>tag <xsl:value-of select="local-name(.)"/> not handled</xsl:message>
+</xsl:template>
+
+<xsl:template name="unicode-info">
+  <xsl:if test="starts-with(sl:utf8/@ucode,'x12')">
+    <p>Unicode <xsl:value-of select="sl:utf8/@ucode"/> = <xsl:value-of select="@uname"/></p>
+  </xsl:if>
+</xsl:template>
+
+<!--<xsl:template match="text()"/>-->
 
 </xsl:transform>

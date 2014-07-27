@@ -233,6 +233,9 @@ span.obf-letter { border: none; }
 .summaries .toc { text-align: center; }
 .summaries h1 { text-align: left; }
 
+.ogslres h1 { margin-left: 3em;  }
+.ogslres p { margin-left: 4em;  }
+
 /* .obf p.icount { margin: 0px; text-align: left;} */
 
 /*    
