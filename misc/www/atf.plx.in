@@ -292,7 +292,8 @@ EOZ
 	my $dl_logfile = $logfile;
 #	my $upto50 = `head -50 $logfile`;
 #	Encode::_utf8_on($upto50);
-	$dl_logfile =~ s#/var/tmp/oracc##;
+#	$dl_logfile =~ s#/var/tmp/oracc##;
+	$dl_logfile =~ s#^.*?tmp#/atfserver#;
 	my $xwarn = $xtf ? '<span style="color:red">YOUR XML MAY BE BAD!</span>'
 	    : '';
 	print <<EOE;

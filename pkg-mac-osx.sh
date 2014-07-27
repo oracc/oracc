@@ -11,3 +11,4 @@ sudo port install msort
 sudo port install xmlrpc-c
 
 # need perl-Text-CSV_XS also
+# need perl-RTF-Writer also

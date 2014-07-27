@@ -202,6 +202,7 @@ AC_OUTPUT([Makefile
 	misc/version/Makefile
 	misc/web/Makefile
 	misc/www/Makefile
+	misc/www/util/Makefile
 	misc/xcf/Makefile
 	misc/xcl/Makefile
 	misc/xdf/Makefile

@@ -1,5 +1,7 @@
 include ../../oracc-am-rules.txt
 
+SUBDIRS=util
+
 js_DATA = cbd.js notes.js oraccdoc.js outline.js winlib.js xdf.js
 scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	cunei-used2.xsl cuneify-HTML.xsl cuneify-string.xsl cuneify-text.xsl	\
@@ -27,20 +29,11 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png \
 	oracc32x32b.png oracc32x32w.png
 html_DATA = blogspot16x16.ico facebook16x16.ico twitter16x16.ico no_html.xml \
-	doc-redirect.html index.html atftemplate.html voltemplate.html atfproc.html
+	doc-redirect.html index.html 
 noinst_DATA = httpd.conf robots.txt
 
 doc-redirect.html: doc-redirect.html.in
 	cp doc-redirect.html.in doc-redirect.html
-
-atfproc.html: atfproc.html.in
-	cp atfproc.html.in atfproc.html
-
-atftemplate.html: atftemplate.html.in
-	cp atftemplate.html.in atftemplate.html
-
-voltemplate.html: voltemplate.html.in
-	cp voltemplate.html.in voltemplate.html
 
 index.html: index.html.in
 	cp index.html.in index.html

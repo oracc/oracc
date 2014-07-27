@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <html>
 <head>
-<base href="http://oracc.museum.upenn.edu/doc/wwwhome/util/"/></head>
+<title>ATF Processing Interface</title>
+</head>
 <body>
 <form action="/atf" enctype="multipart/form-data" method="post">
 <h1>ATF Processing Interface</h1>
