@@ -8,6 +8,8 @@
 
 static void as_handler(const char *session);
 static void atf(void);
+static void atftemplate(void);
+static void voltemplate(void);
 static void datestamp(void);
 static void itemmain(const char *session, const char *list);
 static void itemside(const char *session, const char *list);
@@ -60,6 +62,12 @@ or_builtins(void)
 	      break;
 	    case B_ATF:
 	      atf();
+	      break;
+	    case B_ATFTMP:
+	      atftemplate();
+	      break;
+	    case B_VOLTMP:
+	      voltemplate();
 	      break;
 	    case B_RPC:
 	      rpc();
@@ -120,6 +128,20 @@ static void
 atf(void)
 {
   execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/atf.plx", "atf.plx", NULL);
+  do404();
+}
+
+static void
+atftemplate(void)
+{
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/atftemplate.plx", "atftemplate.plx", NULL);
+  do404();
+}
+
+static void
+voltemplate(void)
+{
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/voltemplate.plx", "voltemplate.plx", NULL);
   do404();
 }
 

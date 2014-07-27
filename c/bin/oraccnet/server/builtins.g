@@ -6,6 +6,8 @@ struct builtinstab;
 %%
 asearch,   B_XFORMS
 atf, 	   B_ATF
+atftemplate, 	   B_ATFTMP
+voltemplate, 	   B_VOLTMP
 datestamp, B_DATESTAMP
 doc, 	   B_DOC
 find,	   B_FIND

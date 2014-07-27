@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict;
-use lib '/usr/local/oracc/lib';
+use lib '/home/oracc/lib';
 use ORACC::XMD::Fields;
 use CGI;
 

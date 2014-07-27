@@ -50,6 +50,9 @@ htmlview.plx: htmlview.plx.in
 oase.plx: oase.plx.in
 	$(ORACCIFY) oase.plx.in
 
+atftemplate.plx: atftemplate.plx.in
+	$(ORACCIFY) atftemplate.plx.in
+
 cuneify.plx: cuneify.plx.in
 	$(ORACCIFY) cuneify.plx.in
 
