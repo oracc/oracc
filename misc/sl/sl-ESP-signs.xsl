@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:sl="http://oracc.org/ns/sl/1.0"
+    xmlns:ex="http://exslt.org/common"
+    xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
+    xmlns:xh="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:esp="http://oracc.org/ns/esp/1.0"
+    exclude-result-prefixes="sl dc xh"
+    extension-element-prefixes="ex"
+    version="1.0">
+
+<xsl:output method="xml" indent="yes" encoding="utf-8"/>
+
+<xsl:template match="sl:sign">
+  <ex:document href="{concat('signlist/00web/',@xml:id,'.xml')}"
+    method="xml" encoding="utf-8"
+    indent="yes">
+    <xsl:variable name="nn" select="translate(@n,'|','')"/>
+    <esp:page>
+      <esp:name><xsl:value-of select="$nn"/></esp:name>
+      <esp:title><xsl:value-of select="$nn"/></esp:title>
+      <esp:url><xsl:value-of select="@xml:id"/></esp:url>
+      <html>
+	<head/>
+	<body>
+	  <xsl:call-template name="sign-or-form"/>
+	</body>
+      </html>
+    </esp:page>
+  </ex:document>
+</xsl:template>
+
+<xsl:template match="sl:form">
+  <xsl:call-template name="sign-or-form"/>
+</xsl:template>
+
+<xsl:template name="sign-or-form">
+  <div class="ogsl-{local-name(.)}">
+    <div class="ogsl-info">
+      <esp:sh>
+	<xsl:value-of select="translate(@n,'|','')"/>
+	<xsl:if test="@var">
+	  <xsl:value-of select="concat(' (=',ancestor::sl:sign/@n,@var,')')"/>
+	</xsl:if>
+	<xsl:if test="string-length(sl:uname/text()) > 0">
+	  <xsl:text>: </xsl:text>
+	  <xsl:value-of select="sl:uname"/>
+	</xsl:if>
+      </esp:sh>
+      <xsl:if test="sl:list">
+	<p>
+	  <xsl:for-each select="sl:list">
+	    <xsl:value-of select="@n"/>
+	    <xsl:if test="not(position()=last())">
+	      <xsl:text>; </xsl:text>
+	    </xsl:if>
+	  </xsl:for-each>
+	</p>
+      </xsl:if>
+    </div>
+    <div class="ogsl-values">
+      <p>
+	<span class="values-heading">Values:</span>
+	<xsl:for-each select="sl:v">
+	  <xsl:choose>
+	    <xsl:when test="@deprecated='yes'">
+	      <span class="v-drop"><xsl:value-of select="@n"/></span>
+	    </xsl:when>
+	    <xsl:when test="@uncertain='yes'">
+	      <span class="v-query"><xsl:value-of select="@n"/></span>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <span class="v-ok"><xsl:value-of select="@n"/></span>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:for-each>
+      </p>
+    </div>
+    <xsl:if test="sl:form">
+      <div class="ogsl-signforms">
+	<xsl:apply-templates select="sl:form"/>
+      </div>
+    </xsl:if>
+  </div>
+</xsl:template>
+
+<xsl:template match="text()"/>
+
+</xsl:transform>

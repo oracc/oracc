@@ -31,15 +31,25 @@
 		<xsl:attribute name="url">
 			<xsl:text>/</xsl:text>
 			<xsl:for-each select="ancestor-or-self::struct:page[ancestor::struct:page]">
-				<xsl:variable name="processed-name" select="esp:make-alphanumeric ( esp:name )"/>
-				<xsl:value-of select="$processed-name"/>
-				<xsl:variable name="num-same-names" 
+			  <xsl:variable name="url-or-name">
+			    <xsl:choose>
+			      <xsl:when test="esp:url">
+				<xsl:value-of select="esp:url"/>
+			      </xsl:when>
+			      <xsl:otherwise>
+				<xsl:value-of select="esp:name"/>
+			      </xsl:otherwise>
+			    </xsl:choose>
+			  </xsl:variable>
+			  <xsl:variable name="processed-name" select="esp:make-alphanumeric ( $url-or-name )"/>
+			  <xsl:value-of select="$processed-name"/>
+			  <xsl:variable name="num-same-names" 
 					select="count ( preceding-sibling::struct:page
-										[esp:make-alphanumeric ( esp:name ) = $processed-name] )"/>
-				<xsl:if test="$num-same-names">
-					<xsl:value-of select="$num-same-names + 1"/>
-				</xsl:if>
-				<xsl:text>/</xsl:text>
+						[esp:make-alphanumeric ( esp:name ) = $processed-name] )"/>
+			  <xsl:if test="$num-same-names">
+			    <xsl:value-of select="$num-same-names + 1"/>
+			  </xsl:if>
+			  <xsl:text>/</xsl:text>
 			</xsl:for-each>
 		</xsl:attribute>
 	    </xsl:if>

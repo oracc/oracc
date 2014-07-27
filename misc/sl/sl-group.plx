@@ -6,7 +6,10 @@ use ORACC::XML;
 
 my $SLNS='http://oracc.org/ns/sl/1.0';
 
-my $xsl = load_xml("02xml/ogsl-sl.xml") || die;
+my $slxml = shift @ARGV;
+$slxml = "02xml/ogsl-sl.xml" unless $slxml;
+
+my $xsl = load_xml($slxml) || die;
 
 my %groups = ();
 foreach my $c ($xsl->getDocumentElement()->childNodes()) {
@@ -22,8 +25,9 @@ foreach my $c ($xsl->getDocumentElement()->childNodes()) {
 open(EM,'>02xml/sl-grouped.xml'); select EM;
 
 print '<signlist xmlns="http://oracc.org/ns/sl/1.0" xmlns:sl="http://oracc.org/ns/sl/1.0" xmlns:g="http://oracc.org/ns/gdl/1.0">';
-foreach my $g (sort keys %groups) {
-    print "<letters name=\"$g\" title=\"$g\">";
+foreach my $g (sort { &kcmp; } keys %groups) {
+    my $lxid = 'L'.sprintf("%04d", ord($g));
+    print "<letter name=\"$g\" title=\"$g\" xml:id=\"$lxid\">";
     my %sgroups = ();
     foreach my $s (@{$groups{$g}}) {
 	my @snodes = tags($s,'http://oracc.org/ns/gdl/1.0','s');
@@ -39,7 +43,7 @@ foreach my $g (sort keys %groups) {
 	print map { $_->toString(0) } sort { &slsort } @{$sgroups{$sc}};
 	print '</signs>';
     }
-    print '</letters>';
+    print '</letter>';
 }
 print '</signlist>';
 
@@ -56,6 +60,29 @@ slsort {
     } else {
 	$#bsort <=> $#asort;
     }
+}
+
+sub
+kcmp {
+    my($akey,$bkey) = ($a,$b);
+    $akey =~ tr/ABCDEFGHIJKLMNOPQRSTUVWXYZŊŠṢṬ.ₓ@%0-9₀-₉//cd;
+    $bkey =~ tr/ABCDEFGHIJKLMNOPQRSTUVWXYZŊŠṢṬ.ₓ@%0-9₀-₉//cd;
+
+    $akey =~ tr/ABCDEFGŊHIJKLMNOPQRSŠṢTṬUVWXYZ0123456789/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn/;
+    $bkey =~ tr/ABCDEFGŊHIJKLMNOPQRSŠṢTṬUVWXYZ0123456789/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn/;
+    
+    my ($anum,$alet) = ($akey =~ /^(\d*)\(?(\S+)/);
+    my ($bnum,$blet) = ($bkey =~ /^(\d*)\(?(\S+)/);
+    my $res = 0;
+    if ($anum && $bnum) {
+	$res = $anum <=> $bnum;
+	return $res unless $res == 0;
+    } elsif ($anum) {
+	return 1;
+    } elsif ($bnum) {
+	return -1;
+    }
+    return $alet cmp $blet;
 }
 
 1;

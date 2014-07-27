@@ -1,8 +1,15 @@
 #!/bin/sh
 webdir=01bld/www
+
+if [ ! -r 02xml/config.xml ]; then
+    o2-cnf.sh
+fi
+
 if [ -d 00web/00config ]; then
     o2-xml.sh
-    o2-weblive.sh
+    if [ -d 01bld/www ]; then
+	o2-weblive.sh
+    fi
     echo calling esp2.sh `oraccopt` ...
     esp2.sh `oraccopt`
     est-project.sh

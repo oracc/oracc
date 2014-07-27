@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my $currform = '';
@@ -53,6 +53,8 @@ foreach my $l (keys %lists) {
     }
 }
 
+
+
 my @sorted_sk = sort { &kcmp } keys %signlists, keys %formlists;
 for (my $i = 0; $i <= $#sorted_sk; ++$i) {
     $sortkeys{"#ogsl:$sorted_sk[$i]"} = [ 'ogsl', $i ];
@@ -60,7 +62,7 @@ for (my $i = 0; $i <= $#sorted_sk; ++$i) {
 
 my @listnames =  map { "\L$_" } sort keys %lists;
 
-foreach my $sk (sort @sorted_sk) {
+foreach my $sk (@sorted_sk) {
     my %seen = ();
     print "$sk";
     my @skeys = ();
@@ -90,8 +92,12 @@ foreach my $sk (sort @sorted_sk) {
 sub
 kcmp {
     my($akey,$bkey) = ($a,$b);
-    $akey =~ tr/\|//d;
-    $bkey =~ tr/\|//d;
+    $akey =~ tr/ABCDEFGHIJKLMNOPQRSTUVWXYZŊŠṢṬ.ₓ@%0-9₀-₉//cd;
+    $bkey =~ tr/ABCDEFGHIJKLMNOPQRSTUVWXYZŊŠṢṬ.ₓ@%0-9₀-₉//cd;
+
+    $akey =~ tr/ABCDEFGŊHIJKLMNOPQRSŠṢTṬUVWXYZ/ABCDEFGHIJKLMNOPQRSTUVWXYZabcd/;
+    $bkey =~ tr/ABCDEFGŊHIJKLMNOPQRSŠṢTṬUVWXYZ/ABCDEFGHIJKLMNOPQRSTUVWXYZabcd/;
+    
     my ($anum,$alet) = ($akey =~ /^(\d*)\(?(\S+)/);
     my ($bnum,$blet) = ($bkey =~ /^(\d*)\(?(\S+)/);
     my $res = 0;

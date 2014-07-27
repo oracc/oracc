@@ -50,6 +50,7 @@ if [ ! -r $XMLSAP/00web/00config/structure.xml ]; then echo esp2.sh: no such ESP
 if [ ! -r $SAXONJAR ]; then echo esp2.sh: no file saxon.jar. Stop.; exit 1; fi
 
 SAXONPARAMS="oracc=$ORACC projesp=$XMLSAP scripts=$ESP2 project=$project"
+XPROCPARAMS="-stringparam oracc $ORACC -stringparam projesp=$XMLSAP -stringparam scripts $ESP2 -stringparam project $project"
 
 if [ ! -r $XMLSAP/01bld ]; then
     mkdir -p $XMLSAP/01bld
@@ -90,8 +91,12 @@ esp2-stylesheets.plx -basedir $HTTPROOT -project $project
 
 # echo phase 1
 
-java -jar $SAXONJAR $XMLSAP/00web/00config/structure.xml $XSL/esp2-phase-01.xslt \
-    output-file=file:$XMLSAP/01tmp/source-tree-10.xml $SAXONPARAMS
+#java -jar $SAXONJAR $XMLSAP/00web/00config/structure.xml $XSL/esp2-phase-01.xslt \
+#    output-file=file:$XMLSAP/01tmp/source-tree-10.xml $SAXONPARAMS
+
+xsltproc -stringparam projesp $XMLSAP -stringparam project $project \
+    -o $XMLSAP/01tmp/source-tree-10.xml \
+    $XSL/esp2-phase-01.xsl $XMLSAP/00web/00config/structure.xml
 
 # echo phase 2
 
