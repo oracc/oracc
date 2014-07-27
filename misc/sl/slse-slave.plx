@@ -2,7 +2,7 @@
 use warnings; use strict;
 use Encode; use utf8;
 use open 'utf8'; binmode STDIN, 'utf8'; binmode STDOUT, 'utf8'; binmode STDERR, 'utf8'; 
-use lib '/usr/local/oracc/lib';
+use lib '/home/oracc/lib';
 use ORACC::ATF::Unicode;
 
 # This is a version of the SL search engine that only works in slave
@@ -23,12 +23,12 @@ GetOptions(
     'project:s'=>\$project
     ) || die;
 
-my $db_file = "/usr/local/oracc/pub/ogsl";
+my $db_file = "/home/oracc/pub/ogsl";
 my $db_name = 'ogsl';
 
-my $letterfile = "/usr/local/oracc/pub/ogsl/letters.tab";
+my $letterfile = "/home/oracc/pub/ogsl/letters.tab";
 
-my $www = "/usr/local/oracc/www";
+my $www = "/home/oracc/www";
 
 my %ext_pre = (
     'c'=>'',
@@ -133,7 +133,7 @@ if ($pr) {
 	my $pr1 = $pr;
 	$pr1 =~ s/\s.*$//;
 	my $letter = letter_of($pr1);
-	my $html = "http://oracc.bfos/$project/signlist/$letter/$pr1/index.html";
+	my $html = "http://oracc.MUSEUM.upenn.edu/$project/signlist/$letter/$pr1/index.html";
 	warn "slse-slave: caller=esp so returning $html\n";
 #	use CGI;
 #	my $q = new CGI;
@@ -294,7 +294,7 @@ is_signlist {
 
 sub
 slse {
-    `/usr/local/oracc/bin/sl -k '$_[0]'`
+    `/home/oracc/bin/sl -k '$_[0]'`
 }
 
 sub
@@ -381,7 +381,7 @@ esp_printhtml {
 	$p = '';
     }
     my $letter = letter_of($id);
-    my $html = "http://oracc.bfos/$project/signlist/$letter/$id/index.html";
+    my $html = "http://oracc.MUSEUM.upenn.edu/$project/signlist/$letter/$id/index.html";
     print "<p><a href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
 }
 
