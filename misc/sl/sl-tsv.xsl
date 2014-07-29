@@ -82,10 +82,20 @@
       <xsl:text>&#x9;</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:for-each select="sl:list">
-    <xsl:value-of select="@n"/>
-    <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-  </xsl:for-each>
+  <xsl:choose>
+    <xsl:when test="sl:list">
+      <xsl:for-each select="sl:list">
+	<xsl:value-of select="@n"/>
+	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:for-each select="ancestor-or-self::sl:sign/sl:list">
+	<xsl:value-of select="@n"/>
+	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:text>&#x9;</xsl:text>
   <xsl:if test="self::sl:v">
     <xsl:value-of select="@n"/>
