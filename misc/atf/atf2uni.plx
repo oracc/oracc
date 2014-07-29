@@ -11,7 +11,11 @@ use ORACC::ATF::Unicode;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 while (<>) {
     if (/^[0-9a-zA-Z]/) {
-	print ORACC::ATF::Unicode::gconv($_);
+	chomp;
+	my $u = ORACC::ATF::Unicode::gconv($_);
+	s/([₀-₉]+\()/updig($1)/eg;
+	s,([₁₂₃₄₅]/[0-9]),updig($1),eg;
+	print $u, "\n";
     } elsif (s/^(\#lem:\s+)//) {
 	print $1;
 	chomp;
@@ -30,6 +34,14 @@ while (<>) {
 	print;
     }
 }
+
+sub
+updig {
+    my $x = shift;
+    $x =~ tr/₀-₉/0-9/;
+    $x;
+}
+
 1;
 
 __END__
