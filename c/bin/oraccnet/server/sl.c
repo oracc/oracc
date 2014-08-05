@@ -52,7 +52,7 @@ void
 sl(char *ctext)
 {
   CGI_varlist *vl = NULL;
-  const char *extension = NULL, *grapheme = NULL, *caller = 'uri';
+  const char *extension = NULL, *grapheme = NULL, *caller = "uri";
   
   /* try to set extension and grapheme from component/query_string; validate grapheme if so */
 #if 1
@@ -90,5 +90,5 @@ sl(char *ctext)
     do404();
 
   /* run signlist UI */
-  execl("/usr/bin/perl", "perl", "/home/oracc/bin/slse-slave.plx", "-caller", caller, "-extension", extension, "-grapheme", grapheme, NULL);
+  execl("/usr/bin/perl", "perl", "/usr/local/oracc/bin/slse-slave.plx", "-caller", caller, "-extension", extension, "-grapheme", grapheme, NULL);
 }
