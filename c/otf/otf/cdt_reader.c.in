@@ -57,7 +57,12 @@ void
 cdt_reader_init(void)
 {
   if (!output_dir)
-    output_dir = "01tmp";
+    {
+      if (!access("01tmp",R_OK))
+	output_dir = "01tmp";
+      else
+	output_dir = ".";
+    }
   pictures_fname = malloc(strlen(output_dir)+strlen("odtpictures.lst") + 2);
   sprintf(pictures_fname, "%s/%s", output_dir, "odtpictures.lst");
   if (!curr_section_stack)
