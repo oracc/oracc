@@ -66,14 +66,20 @@ const char *vec_sep_str = "\t\n ";
 char **
 vec_from_str (char * str, char *(*tok)(char *), size_t *vecsize_p)
 {
+  extern char *strdup(const char *);
   char **tmp = NULL;
   size_t count = 0;
   do
     {
+      char *t;
       tmp = realloc (tmp, (count + 1) * sizeof (char *));
       /* when str is exhausted this will add the required NULL to tmp 
 	 automatically */
-      tmp[count] = (NULL == tok) ? strtok (str, vec_sep_str) : tok (str);
+      t  = (NULL == tok) ? strtok (str, vec_sep_str) : tok (str);
+      if (t)
+	tmp[count] = strdup(t);
+      else
+	tmp[count] = NULL;
       if (count == 0)
         str = NULL;
     }

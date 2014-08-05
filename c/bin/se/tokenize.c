@@ -226,14 +226,13 @@ filter_prefix(char *fname)
 static struct token *
 phase1(const char **tokptrs)
 {
-  const char **tokptrs_orig = tokptrs;
   struct token *curr_tok = NULL;
-  int groups = 0;
+  int groups = 0, i;
 
-  while (tokptrs && *tokptrs)
+  for (i = 0; tokptrs[i]; ++i)
     {
       char *s;
-      s = (char*)*tokptrs++;
+      s = (char*)tokptrs[i];
       while (*s)
 	{
 	  if (*s == ',' && (!s[1] || isspace(s[1])))
@@ -244,14 +243,13 @@ phase1(const char **tokptrs)
 	    ++s;
 	}
     }
-  tokptrs = tokptrs_orig;
 
-  while (tokptrs && *tokptrs)
+  for (i = 0; tokptrs[i]; ++i)
     {
-      static const unsigned char *s;
+      static const unsigned char *s = NULL;
       const unsigned char *start;
 
-      s = start = (unsigned char*) *tokptrs++;
+      s = start = (unsigned char*) tokptrs[i];
       while (s && *s)
 	{
 	  switch (*s)

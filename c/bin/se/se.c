@@ -487,17 +487,17 @@ main(int argc, char * const*argv)
 static const char **
 anytoks(const char *project, const char *index, const char **toks)
 {
-  char const **ret_toks = NULL;
+  const char **ret_toks = NULL;
   int ntoks = 0;
   while (toks[ntoks])
     ++ntoks;
-  ret_toks = malloc(ntoks+3 * sizeof(char *));
+  ret_toks = malloc((ntoks+3) * sizeof(const char *));
   ret_toks[0] = project;
   ret_toks[1] = index;
   for (ntoks = 0; toks[ntoks]; ++ntoks)
     ret_toks[ntoks+2] = toks[ntoks];
   ret_toks[ntoks+2] = NULL;
-  return ret_toks;
+  return (const char **)ret_toks;
 }
 
 static void

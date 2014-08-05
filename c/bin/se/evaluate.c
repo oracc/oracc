@@ -82,7 +82,7 @@ set_project(struct token *t)
     }
   else
 #endif
-    se_curr_project = t->data;
+    se_curr_project = (const char *)t->data;
 }
 void
 set_index(struct token *t)
