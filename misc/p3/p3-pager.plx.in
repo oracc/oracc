@@ -50,7 +50,7 @@ my $verbose = 1;
 %p = decode_args(@ARGV);
 
 p3_oas_triage()
-    if $p{'referer'} && $p{'referer'} =~ m,/as,;
+    if $p{'referer'} && $p{'referer'} =~ m,/as$,;
 
 $p{'p3OSspecial'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-sort-fields`
     unless $p{'p3OSspecial'};
