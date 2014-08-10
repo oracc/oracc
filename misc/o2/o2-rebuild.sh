@@ -1,5 +1,4 @@
 #!/bin/sh
-o2-cnf.sh || exit 1
 project=`oraccopt`
 if [ -e $ORACC/bin/$project-rebuild.sh ]; then
     exec $ORACC/bin/$project-rebuild.sh
