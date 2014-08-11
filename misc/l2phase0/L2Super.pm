@@ -286,6 +286,8 @@ backup_file {
 #	unless -r $from;
     return unless -r $from;
 
+    system 'mkdir', '-p', '00bak';
+
     $to =~ s/^(0[01]...)/00bak/;
 
     my $isodate = strftime("%Y%m%d", gmtime());
