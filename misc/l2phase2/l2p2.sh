@@ -52,6 +52,7 @@ if [ "$super" = "" ]; then
 	mkdir -p 01bld/$l
 	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
 	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
+	rm -f $ldir/union.sig
 	if [ -r $ldir/glossary.sig ] && [ -r $ldir/$l.sig ]; then
 	    l2-sig-union.plx $ldir/$l.sig $ldir/glossary.sig >$ldir/union.sig
 	elif [ -r $ldir/glossary.sig ]; then
@@ -62,8 +63,6 @@ if [ "$super" = "" ]; then
 	if [ -s $ldir/union.sig ]; then
 	    echo creating $ldir/$l.g2x from $ldir/union.sig
 	    l2p2-g2x.plx -h $ldir/union.sig
-	    #	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-#	    xisperiods -x 01bld/$l/$l.xis -p `oraccopt` >01bld/$l/periods.xis
 	    xis $ldir $l
 	    if [ -s $ldir/$l.map ]; then
 		#	    echo running l2p2-g2c.plx $l
