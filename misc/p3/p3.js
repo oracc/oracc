@@ -143,7 +143,12 @@ function p3Letter(l) {
 }
 
 function p3Article(l) {
-    p3Letter(l);
+    var f = document.getElementById('p3form');
+    if (f) {
+	p3Letter(l);
+    } else {
+	window.location=l;
+    }
 }
 
 function p3setHeight() {
