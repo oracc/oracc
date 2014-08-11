@@ -5,6 +5,17 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2P0::L2Super;
 use File::Copy "mv";
 
+my $super_merge = `oraccopt . super-merge`;
+if ($super_merge eq 'no') {
+    if ($force) {
+	chatty("forcing merge despite super-merge=no in configuration");
+    } else {
+	super_warn("not allowed to do merge because of super-merge=no in configuration");
+	super_warn("use -force option to override this setting");
+	exit 1;
+    }
+}
+
 my %data = ORACC::L2P0::L2Super::init();
 
 my $mapdate = (stat($data{'mapfile'}))[9];
