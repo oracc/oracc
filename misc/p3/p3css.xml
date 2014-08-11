@@ -25,7 +25,7 @@ body, p { margin: 0px; padding: 0px; }
 #p3topnav { margin-top: 10px; margin-bottom: 25px; }
 
 #p3srch , #p3asearch { height: 55px; vertical-align: middle; text-align: center; }
-#p3srch p , #p3asearch p { padding: margin: 0px; margin-bottom: 22px; margin-top: 8px; font-size: 110%;
+#p3srch p , #p3asearch p { padding: 0px; margin: 0px; margin-bottom: 22px; margin-top: 8px; font-size: 110%;
 	  }
 
 #srch { font-size: 11pt; width: 35%; }
@@ -200,7 +200,7 @@ td.ce-xmd-icon { width: 26px; vertical-align: middle; }
 
 .p3hub h1 { font-size: 25pt; margin-left: 3px; }
 .p3hub h2 { font-size: 14pt; margin-left: 1em; }
-.p3hub p  { margin-left: 2em; textindent: -2em; }
+.p3hub p  { margin-left: 2em; text-indent: -2em; }
 
 table.hubglo { margin-left: 1em; width: auto; }
 .hubglo td { padding-left: 1em; }

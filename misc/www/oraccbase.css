@@ -1,12 +1,11 @@
 /* Basic Oracc find-button CSS */
 span.find-button { 
-    border-style: outset 1px brown;
+    border: outset 1px brown;
     color: #444;
     background-color: brown;
-    width: 75px; border: 
-    vertical-align: center;
+    width: 75px; 
+    vertical-align: middle;
     border-radius: 9px; 
-    -moz-border-radius: 15px;
     padding: 3px;
     margin-left: 2px; margin-right: 2px; margin-top: 0px; margin-bottom: 0px;
     vertical-align: center; text-align: center;
