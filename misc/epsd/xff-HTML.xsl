@@ -34,7 +34,7 @@
   <html>
     <head>
       <title>ePSD Forms: <xsl:value-of select="$formset"/></title>
-      <link rel="stylesheet" type="text/css" href="/epsd2/css/cbd.css"/>
+      <link rel="stylesheet" type="text/css" href="/css/p3cbd.css"/>
       <script src="/js/cbd.js" type="text/javascript">
         <xsl:text> </xsl:text>
       </script>

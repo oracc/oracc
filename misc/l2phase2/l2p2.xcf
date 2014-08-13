@@ -73,13 +73,14 @@
 
   <set var="process">
     <key k="action"   to="$scripts/g2-articles.xsl"/>
+    <key k="output"   to="01bld/$cbdlang/articles.xml"/>
     <key k="cbdresult" to="1"/>
   </set>
 
   <set var="process">
     <key k="action"   to="$scripts/g2-periods.xsl"/>
+    <key k="output"   to="01bld/$cbdlang/articles-with-periods.xml"/>
     <key k="cbdresult" to="1"/>
-    <key k="output"   to="01bld/$cbdlang/articles.xml"/>
   </set>
 
   <set var="process">

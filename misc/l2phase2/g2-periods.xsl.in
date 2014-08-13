@@ -16,17 +16,12 @@
   extension-element-prefixes="ex"
   exclude-result-prefixes="cbd dc ex g i xl norm xcl usg note">
 
-<xsl:import href="html-standard.xsl"/>
-<xsl:import href="g2-gdl-HTML.xsl"/>
-
-<xsl:include href="xpd.xsl"/>
-
 <xsl:param name="basename"/>
 <xsl:param name="project"/>
-<xsl:param name="projectDir"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
 
-<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
+<!-- not sure why I introduced $basename here but I've thrown it out in favour of $project ... -->
+<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$project,'/',/*/@xml:lang,'/periods.xis')"/>
 
 <xsl:template match="cbd:entry">
   <xsl:copy>

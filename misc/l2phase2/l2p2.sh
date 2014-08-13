@@ -30,8 +30,20 @@ function g2x {
 }
 
 rm -f 01bld/cancel
+projtype=`oraccopt . type`
 super=`oraccopt . cbd-super`
-if [ "$super" = "" ]; then
+rm -f $ldir/union.sig
+if [ "$projtype" == "superglo" ]; then
+    for a in `ls 01bld/*/*.cbd` ; do
+	echo l2p2.sh: processing sigs for superglo $a
+	ldir=`dirname $a`
+	l=`basename $ldir`
+	rm -f $ldir/union.sig
+	cat 01bld/from-prx-*.sig >$ldir/$l.sig
+	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
+	g2x $ldir $l
+    done
+elif [ "$super" == "" ]; then
     for l in `l2p2-langs.plx` ; do
 	ldir=01bld/$l
 	mkdir -p $ldir
@@ -50,9 +62,9 @@ if [ "$super" = "" ]; then
     for l in `l2p2-langs.plx` ; do
 	ldir=01bld/$l
 	mkdir -p 01bld/$l
+	rm -f $ldir/union.sig
 	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
 	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
-	rm -f $ldir/union.sig
 	if [ -r $ldir/glossary.sig ] && [ -r $ldir/$l.sig ]; then
 	    l2-sig-union.plx $ldir/$l.sig $ldir/glossary.sig >$ldir/union.sig
 	elif [ -r $ldir/glossary.sig ]; then
@@ -85,11 +97,12 @@ else
 	g2x $ldir $l
     done
 fi
-usages=`oraccopt . cbd-usages`
-if [ "$usages" = "yes" ]; then
-    if [ "$project" = "epsd2" ]; then
-	00bin/usages.sh
-    else
-	echo l2p2.sh: "cbd-usages only works with epsd2 at the moment--tell Steve to fix this!"
-    fi
-fi
+#usages=`oraccopt . cbd-usages`
+#if [ "$usages" = "yes" ]; then
+#    if [ "$project" = "epsd2" ]; then
+#need to port this over to new build organization
+#	epsd2-usages.sh
+#    else
+#	echo l2p2.sh: "cbd-usages only works with epsd2 at the moment--tell Steve to fix this!"
+#    fi
+#fi

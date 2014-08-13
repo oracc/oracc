@@ -4,7 +4,7 @@ if [ "$cbdmode" != "super" ]; then
     touch 01bld/nolem
     l2p1-from-glos.sh
     [ -s 01bld/lists/have-lem.lst ] && l2p1-from-xtfs.plx -t 01bld/lists/have-lem.lst
-    [ -s 01bld/lists/proxy.lst ] && l2p1-from-xtfs.plx -t 01bld/lists/proxy.lst -p
+    [ -s 01bld/lists/proxy-xtf.lst ] && l2p1-from-xtfs.plx -t 01bld/lists/proxy-xtf.lst -p
     l2p1-project-sig.plx
     quick=`oraccopt . l2-quick-freqs`
     if [ "$quick" == "yes" ]; then

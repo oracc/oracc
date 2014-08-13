@@ -367,7 +367,7 @@ add_project_options {
 sub
 maybe_cbd_post_process {
     if ($cbd_post_process) {
-	system "00bin/$cbd_post_process", $clang;
+	system "$ENV{'ORACC'}/bin/$cbd_post_process", $clang;
     }
 }
 

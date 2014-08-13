@@ -4,12 +4,19 @@ use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 my $all = 1;
+my $first = 1;
 my %header = ();
+my $lang = '';
 my $quiet = 0;
+my $project = '';
 my %sig = ();
+my $superglo = 0;
 
 GetOptions(
+    'lang:s'=>\$lang,
+    'project:s'=>\$project,
     'quiet'=>\$quiet,
+    'super'=>\$superglo,
     );
 
 ## No, we have to move this downstream to prevent failed resolution of parts of PSUs
@@ -31,7 +38,16 @@ foreach my $s (@ARGV) {
 	}
 	my @t = split(/\t/, $_);
 	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
-	unless ($sig{$_}) {
+	if ($superglo) {
+	    # in a superglo we read the glossary sigs first, then only allow in
+	    # the ones that have been vetted into the main superglo file
+	    if ($first || $sig{$t[0]}) {
+		my @r = split(/\s/, $r);
+		if ($all || $#r >= 0) {
+		    @{$sig{$t[0]}}{@r} = ();
+		}
+	    }
+	} else {
 	    my @r = split(/\s/, $r);
 	    if ($all || $#r >= 0) {
 		@{$sig{$t[0]}}{@r} = ();
@@ -39,7 +55,13 @@ foreach my $s (@ARGV) {
 	}
     }
     close(S);
+    $first = 0;
 }
+
+$header{'project'} = $project unless $header{'project'};
+$header{'lang'} = $lang unless $header{'lang'};
+$header{'name'} = "$project $lang" unless $header{'name'};
+
 foreach my $k (qw/project name lang/) {
     print "\@$k $header{$k}\n";
 }
