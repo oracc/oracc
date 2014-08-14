@@ -34,6 +34,9 @@ foreach my $s (@ARGV) {
 	next if /^\s*$/;
 	if (/^\@(project|name|lang)\s+(.*?)$/) {
 	    $header{$1} = $2;
+	    if ($1 eq 'lang') {
+		$lang = $2;
+	    }
 	    next;
 	}
 	my @t = split(/\t/, $_);
@@ -45,6 +48,14 @@ foreach my $s (@ARGV) {
 		my @r = split(/\s/, $r);
 		if ($all || $#r >= 0) {
 		    @{$sig{$t[0]}}{@r} = ();
+		}
+	    } else {
+		if ($lang =~ /^qpn/) {
+		    warn "l2-sig-union: $t[0] not found in superglo\n"
+			if $t[0] =~ /\][A-Z]N/;
+		} else {
+		    warn "l2-sig-union: $t[0] not found in superglo\n"
+			unless $t[0] =~ /\][A-Z]N/;
 		}
 	    }
 	} else {

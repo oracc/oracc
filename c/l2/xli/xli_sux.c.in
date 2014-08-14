@@ -6,6 +6,8 @@
 #include "xli.h"
 #include "xcl.h"
 
+extern int bootstrap_mode;
+
 static void sux_norm0(struct f2 *f, struct npool *pool);
 
 const char *xli_sux_argp[] = 
@@ -91,8 +93,10 @@ xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
 		  f->f2.pos = (unsigned char*)pos;
 		  if (!f->f2.sense)
 		    f->f2.sense = f->finds[0]->f2.sense;
-		  if (!f->f2.epos)
+		  if (!f->f2.epos && f->finds && f->finds[0]->f2.epos)
 		    f->f2.epos = f->finds[0]->f2.epos;
+		  else
+		    f->f2.epos = f->f2.pos;
 		  sux_norm0(&f->f2,lemp->xc->pool);
 		  BIT_CLR(f->f2.flags,F2_FLAGS_NO_FORM);
 		  BIT_CLR(f->f2.flags,F2_FLAGS_INVALID);
@@ -104,8 +108,17 @@ xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
 		    }
 		  
 		  /* if (xli_debug) */
+		  if (bootstrap_mode)
+		    {
+		      phase = "sig";
+		      vnotice2((char*)f->file,f->lnum,"\t@%s%%%s:%s=%s[%s//%s]%s'%s/%s+%s#%s", 
+			       f->f2.project,f->f2.lang,
+			       f->f2.form,f->f2.cf, f->f2.gw, f->f2.sense, f->f2.pos, f->f2.epos, base, cont, morph);
+		      phase = "sma";
+		    }
+		  else
 		    vnotice2((char*)f->file,f->lnum,"%s=%s[%s]%s parsed as ^@form %s /%s +%s #%s", oform,
-			      f->f2.cf, f->f2.gw, f->f2.pos, f->f2.form, base, cont, morph);
+			     f->f2.cf, f->f2.gw, f->f2.pos, f->f2.form, base, cont, morph);
 
 		  /*f->result |= (NEW_BASE|NEW_CONT|NEW_MORPH);*/
 		}

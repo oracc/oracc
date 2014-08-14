@@ -32,7 +32,7 @@ GetOptions(
 
 my @cand = ('01bld/from-glos.sig');
 
-unless ($lemm_only) { 
+unless ($lemm_only) {
     push @cand, '01bld/from-xtf-glo.sig', '01bld/from-prx-glo.sig';
     push @cand, '01bld/from-xtf-new.sig' if $dynamic;
 }

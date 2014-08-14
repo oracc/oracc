@@ -33,7 +33,7 @@
 
   <set var="process">
     <key k="action"   to="$scripts/ns-g2-HTML-articles.xsl"/>
-    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="input"    to="01bld/$cbdlang/articles-with-periods.xml"/>
     <key k="output"   to="$webcbd/$cbdlang/articles.html"/>
     <key k="cbdresult" to="1"/>
   </set>

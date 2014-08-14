@@ -803,8 +803,9 @@ sub
 xis_attr {
     my %xi = @_;
     $xi{'ipct'} = 0 unless $xi{'ipct'};
+    my $xpicount = (($xi{'p_icount'} >= 0) ? $xi{'p_icount'} : 0);
 #    print " icount=\"$xi{'p_icount'}\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\" xis-periods=\"$xi{'periods-id'}\" xis-percents=\"$xi{'periods-pct-id'}\"";
-    print " icount=\"$xi{'p_icount'}\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\"";
+    print " icount=\"$xpicount\" ipct=\"$xi{'ipct'}\" xis=\"$xi{'xrefid'}\"";
 }
 
 sub

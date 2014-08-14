@@ -14,7 +14,7 @@ fi
 if [ ! -d $proj ]; then
     mkdir -p $proj
 fi
-parent=`oraccopt`
+parent=`proj-from-conf.sh`
 fullproj=$parent/$proj
 cd $proj
 umask 0026

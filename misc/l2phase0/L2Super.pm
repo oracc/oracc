@@ -407,15 +407,18 @@ glo_compare {
 	} else {
 	    my %s = ();
 	    my %b = %${$basehash{$e}};
-	    @s{@{$b{'sense'}}} = ();
+	    my @base_senses = @{$b{'sense'}};
+	    @s{@base_senses} = ();
 	    foreach my $s (sort @{$e{'sense'}}) {
 		unless (exists $s{$s}) {
-		    my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
-		    my $newsense = $e;
-		    $newsense =~ s#\]#//$sense]#;
-		    $newsense .= "'$epos";
-		    $map_sort{$newsense} = $eline;
-		    $map{$newsense} = [ 'new', 'sense', $newsense, '' ] unless $map{$newsense};
+		    unless (slow_compare_ok($s,@base_senses)) {
+			my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
+			my $newsense = $e;
+			$newsense =~ s#\]#//$sense]#;
+			$newsense .= "'$epos";
+			$map_sort{$newsense} = $eline;
+			$map{$newsense} = [ 'new', 'sense', $newsense, '' ] unless $map{$newsense};
+		    }
 		}
 	    }
 	}
@@ -423,6 +426,21 @@ glo_compare {
 }
 
 ##########################################################################################
+
+sub
+slow_compare_ok {
+    my($new_s, @src_s) = @_;
+    my($epos,$sense) = ($new_s =~ /^(\S+)\s+(.*)$/);
+    foreach my $ss (@src_s) {
+	if ($ss =~ /^$epos\s/) {
+	    my($ssense) = ($ss =~ /\s(.*)$/);
+	    if ($ssense =~ /$sense/) {
+		return 1;
+	    }
+	}
+    }
+    0;
+}
 
 sub
 map_add2glo {

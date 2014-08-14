@@ -9,6 +9,7 @@
 #include "xpd2.h"
 
 extern int verbose;
+
 static void xpds_load(struct xpd *, const char *);
 
 const char *
