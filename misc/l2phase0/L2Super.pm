@@ -18,12 +18,13 @@ $ORACC::L2GLO::Builtins::bare = 1;
 my $EMULT = 1000;
 
 use constant {
-    CL_WORD    => 1,
+    CL_ENTRY   => 1,
     CL_SENSE   => 2,
-    CL_FULL    => 4,
-    CL_NONE    => 8,
-    FI_BASE_NO => 16,
-    FI_BASE_YES=> 32,
+    CL_FORM    => 4,
+    CL_FULL    => 8,
+    CL_NONE    => 16,
+    FI_BASE_NO => 16384,
+    FI_BASE_YES=> 32768,
 };
 
 use Getopt::Long;
@@ -48,6 +49,14 @@ my %function_info = (
     merge  =>[ FI_BASE_YES, '01tmp', 'new'],
     getsigs=>[ FI_BASE_NO,  '00map', 'map'],
     );
+
+my %cl_info = (
+    entry=>CL_ENTRY,
+    sense=>CL_SENSE,
+    form =>CL_FORM,
+    full =>CL_FULL,
+    );
+my $cl_level = 0;
 
 $ORACC::L2GLO::Builtins::O2_cancel = 0;
 
@@ -82,10 +91,16 @@ init {
 	'dryrun'=>\$dryrun,
 	force=>\$force,
 	'lang=s'=>\$lang,
-	'level=i'=>\$level,
+	'level=s'=>\$level,
 	'map'=>\$argmap,
 	'project=s'=>\$project,
 	);
+
+    if ($level) {
+	$cl_level = $cl_info{$level};
+	super_die("'$level' is not a known value for the -level option. Allowed: entry sense form full\n")
+	    unless $cl_level;
+    }
 
     $return_data{'dryrun'} = $dryrun;
     $return_data{'force'} = $force;
@@ -405,19 +420,21 @@ glo_compare {
 	unless (defined $basehash{$e}) {
 	    $map{$e} = [ 'new', 'entry', $e , '' ] unless $map{$e};
 	} else {
-	    my %s = ();
-	    my %b = %${$basehash{$e}};
-	    my @base_senses = @{$b{'sense'}};
-	    @s{@base_senses} = ();
-	    foreach my $s (sort @{$e{'sense'}}) {
-		unless (exists $s{$s}) {
-		    unless (slow_compare_ok($s,@base_senses)) {
-			my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
-			my $newsense = $e;
-			$newsense =~ s#\]#//$sense]#;
-			$newsense .= "'$epos";
-			$map_sort{$newsense} = $eline;
-			$map{$newsense} = [ 'new', 'sense', $newsense, '' ] unless $map{$newsense};
+	    if ($cl_level >= CL_SENSE) {
+		my %s = ();
+		my %b = %${$basehash{$e}};
+		my @base_senses = @{$b{'sense'}};
+		@s{@base_senses} = ();
+		foreach my $s (sort @{$e{'sense'}}) {
+		    unless (exists $s{$s}) {
+			unless (slow_compare_ok($s,@base_senses)) {
+			    my($epos,$sense) = ($s =~ /^(\S+)\s+(.*)$/);
+			    my $newsense = $e;
+			    $newsense =~ s#\]#//$sense]#;
+			    $newsense .= "'$epos";
+			    $map_sort{$newsense} = $eline;
+			    $map{$newsense} = [ 'new', 'sense', $newsense, '' ] unless $map{$newsense};
+			}
 		    }
 		}
 	    }
