@@ -97,8 +97,8 @@ extern void f2_attr(FILE *f_f2, const char *name, const char *value);
 extern void f2_attr_i(FILE *f_f2, const char *name, int value);
 extern void f2_serialize_form(FILE *f_f2, struct f2 *f);
 extern void f2_serialize_form_2(FILE *f_f2, struct ilem_form *f);
-extern unsigned char *f2_sig(struct f2*f, struct npool *pool);
-extern unsigned char *f2_psu_sig(struct f2 *fp, struct npool *pool);
+extern unsigned char *f2_sig(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp);
+extern unsigned char *f2_psu_sig(struct xcl_context *xcp, struct f2 *fp);
 extern int f2_alias(struct sig_context *scp, struct f2 *fp, struct f2 *ref_fp);
 
 extern void f2_init(void);

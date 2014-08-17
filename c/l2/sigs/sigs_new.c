@@ -7,7 +7,7 @@
 #include "list.h"
 #include "memblock.h"
 
-extern int lem_extended;
+extern int bootstrap_mode, lem_extended;
 
 static void sigs_d_new(struct xcl_context *xcp, struct xcl_d *d);
 static void sigs_l_new(struct xcl_context *xcp, struct xcl_l *l);
@@ -204,7 +204,7 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
       *cofsig = '\0';
       while (1)
 	{
-	  unsigned char *sig = f2_sig(&tmpfp->f2, xcp->pool);
+	  unsigned char *sig = f2_sig(xcp, tmpfp, &tmpfp->f2);
 	  if (strlen(cofsig) + strlen(sig) + 3 > cofsig_len)
 	    cofsig = realloc(cofsig, cofsig_len += cofsig_len);
 	  if (*cofsig)
@@ -221,7 +221,13 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
     }
   else
     {
-      fp->f2.sig = f2_sig(&fp->f2, xcp->pool);
+      fp->f2.sig = f2_sig(xcp,fp,&fp->f2);
+    }
+
+  if (bootstrap_mode)
+    {
+      if (!fp->f2.epos)
+	fp->f2.epos = fp->f2.pos;
     }
 
   return status;

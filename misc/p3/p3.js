@@ -33,7 +33,7 @@ function cbdPopup(url,windowName,height,width,screenX,screenY,focus) {
 }
 
 function distprof2(project,glos,gxis) {
-    cbdPopup('/'+project+'/'+glos+'?xis='+gxis,'dpframe',600,700,0,0,1);
+    cbdPopup('/'+project+'/'+glos+'?xis='+gxis,'dpframe',700,800,0,0,1);
 }
 
 function nsGloSubPage(project,glos,subid) {
@@ -166,9 +166,11 @@ function p3GlosControls() {
     document.getElementById('p3cetype').style.display = 'none';
 //    document.getElementById('p3srchtype').style.display = 'none';
 //    document.getElementById('p3CbdLangDisplay').style.display= 'inline';
-    if (document.getElementById('gxis').value.length > 0) {
-	p3NoOutline();
-    }
+
+//    if (document.getElementById('gxis').value.length > 0) {
+//	p3NoOutline();
+//    }
+
 }
 
 function p3ItemControls() {

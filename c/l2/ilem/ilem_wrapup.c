@@ -195,7 +195,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
        *  - COF tails don't get a sig either
        */
       if (!fp->f2.sig && !BIT_ISSET(fp->f2.flags, F2_FLAGS_COF_TAIL))
-	fp->f2.sig = (unsigned char *)f2_sig(&fp->f2, xcp->pool);
+	fp->f2.sig = (unsigned char *)f2_sig(xcp,fp,&fp->f2);
 
       if (fp->multi && lp->f->mcount > 0)
 	{

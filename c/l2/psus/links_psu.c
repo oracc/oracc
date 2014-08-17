@@ -65,8 +65,7 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       lsp->form->file = (unsigned char*)xc->file;
       lsp->form->lnum = mlp->matches[0].lp->lnum;
 
-      lsp->form->sig = f2_psu_sig(mlp->matches[0].psu_form,
-				  xc->pool);
+      lsp->form->sig = f2_psu_sig(xc, mlp->matches[0].psu_form);
       lp->inst = psu_inst((char*)lsp->form->sig);
       lp->f = calloc(1,sizeof(struct ilem_form));
       lp->f->file = (char*)mlp->matches[0].psu_form->file;

@@ -15,6 +15,7 @@ FILE *f_xml = NULL;
 
 int cbd_lem_sigs = 0;
 int check_lem = 0;
+int dump_sigs = 0;
 int fuzzy_aliasing = 0;
 int gdl_bootstrap = 0;
 int need_lemm = 0;

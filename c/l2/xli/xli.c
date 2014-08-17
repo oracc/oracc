@@ -121,37 +121,43 @@ xli_send(struct xli*xlip, unsigned char *s)
 }
 
 void
-xli_mapper(struct xcl_context *xcp, struct xcl_l *lp)
+xli_ilem(struct xcl_context *xcp, struct ilem_form *f, struct f2 *fp)
 {
   enum langcode c = c_none;
 
-  if (!xcp || !lp || !lp->f)
+  if (!BIT_ISSET(fp->flags /*f->instance_flags*/, F2_FLAGS_LEM_NEW))
     return;
 
-  if (!BIT_ISSET(lp->f->f2.flags /*lp->f->instance_flags*/, F2_FLAGS_LEM_NEW))
+  /* FIXME: this code doesn't handle f2->parts separately because it just looks at the first entry in finds[] */
+  if (!BIT_ISSET(fp->flags, F2_FLAGS_NO_FORM)
+      && f->fcount > 0 
+      && f->finds[0]->f2.base && f->finds[0]->f2.morph)
     return;
 
-  if (!BIT_ISSET(lp->f->f2.flags, F2_FLAGS_NO_FORM)
-      && lp->f->fcount > 0 
-      && lp->f->finds[0]->f2.base && lp->f->finds[0]->f2.morph)
-    return;
-
-  c = lp->f->f2.core->code;
+  c = fp->core->code;
   
-  if (c != c_none && xlem[c] && !lp->f->f2.morph)
+  if (c != c_none && xlem[c] && !fp->morph)
     {
       struct xli *xlip = xlem[c];
-      xlip->handler(xlip, lp, lp->f);
-      if (lp->f->acount > 0)
+      xlip->handler(xcp, xlip, f, fp);
+      if (f->acount > 0)
 	{
 	  struct ilem_form *rover;
-	  for (rover = lp->f->ambig; rover; rover = rover->ambig)
-	    xlip->handler(xlip, lp, rover);
+	  for (rover = f->ambig; rover; rover = rover->ambig)
+	    xlip->handler(xcp, xlip, f, &rover->f2);
 	}
     }
   
-  if (!lp->f->f2.norm)
-    lp->f->f2.norm = lp->f->f2.cf;
+  if (!fp->norm)
+    fp->norm = fp->cf;
+}
+
+void
+xli_mapper(struct xcl_context *xcp, struct xcl_l *lp)
+{
+  if (!xcp || !lp || !lp->f)
+    return;
+  xli_ilem(xcp, lp->f, &lp->f->f2);
 }
 
 #ifdef MAIN

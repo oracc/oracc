@@ -299,8 +299,10 @@ process_text(struct run_context *run, unsigned char **lines)
 	      if (lem_autolem && !lem_forms_raw)
 		bigrams(text_xc);
 
+#if 0
 	      if (lem_extended)
 		xcl_map(text_xc,NULL,NULL,NULL,xli_mapper);
+#endif
 
 	      xcl_map(text_xc,xcl_sentence_labels,NULL,NULL,NULL);
 
@@ -424,6 +426,9 @@ process_text(struct run_context *run, unsigned char **lines)
 	  nsa_del_result(text_xc->user);
 	  text_xc->user = NULL;
 	}
+
+      if (dump_sigs)
+	xcl_map(text_xc,NULL,NULL,NULL,sigs_dump_sigs);	
 
       xcl_destroy(&text_xc);
       lem_text_term();

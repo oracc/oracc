@@ -7,48 +7,56 @@
 #include "ilem_form.h"
 #include "f2.h"
 #include "npool.h"
+#include "xli.h"
+#include "xcl.h"
+
+extern int bootstrap_mode, lem_extended;
 
 #ifndef strdup
 extern char *strdup(const char *);
 #endif
 
 static unsigned char *
-sig_one(struct f2 *fp, int tail)
+sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
 {
   unsigned char buf[1024];
-  char *oform = NULL /*, *lang_no_script = NULL*/;
   int wild_form = 0;
 
-#if 0
-  if (fp->oform)
-    {
-      oform = malloc(strlen(fp->oform) + 3);
-      sprintf(oform,"~~%s",fp->oform);
-    }
-#endif
+  if (ifp && lem_extended)
+    xli_ilem(xcp, ifp, fp);
 
   if (strstr((const char *)fp->lang, "-949"))
     wild_form = 1;
-    /*lang_no_script = tag_no_script((const char*)fp->lang);*/
 
-  sprintf((char*)buf,"@%s%%%s:%s%s=%s[%s//%s]%s'%s",
-	  fp->project,
-    /*lang_no_script ? lang_no_script : (char*)fp->lang*/ (char*)fp->lang,
-	  tail ? (Uchar*)"" : (wild_form ? "*" : fp->form),
-	  oform ? oform : "",
-	  fp->cf ? fp->cf : (Uchar*)"X",
-	  fp->gw ? fp->gw : (Uchar*)"X",
-	  fp->sense ? fp->sense : (Uchar*)"X",
-	  fp->pos ? fp->pos : (Uchar*)"X",
-	  fp->epos ? fp->epos : (Uchar*)"X");
+  sprintf((char*)buf,"@%s%%%s:%s=%s[%s//%s]%s'%s",
+	  (char*)(fp->project),
+	  (char*)(fp->lang),
+	  (char*)(tail ? (Uchar*)"" : (Uchar*)(wild_form ? "*" : (char*)fp->form)),
+	  (char*)(fp->cf ? fp->cf : (Uchar*)"X"),
+	  (char*)(fp->gw ? fp->gw : (Uchar*)"X"),
+	  (char*)(fp->sense ? fp->sense : (Uchar*)"X"),
+	  (char*)(fp->pos ? fp->pos : (Uchar*)"X"),
+	  (char*)(fp->epos ? fp->epos : (Uchar*)"X"));
 
-#if 0
-  if (lang_no_script)
-    free(lang_no_script);
-#endif
+  if (BIT_ISSET(fp->core->features,LF_BASE)
+      && !fp->base)
+    {
+      if (ifp->fcount)
+	{
+	  fp->base = ifp->finds[0]->f2.base;
+	  fp->cont = ifp->finds[0]->f2.cont;
+	  fp->morph = ifp->finds[0]->f2.morph;
+	}
+      else
+	fp->base = fp->cont = fp->morph = (Uchar*)"X";
+    }
 
-  if (fp->norm)
+  if (BIT_ISSET(fp->core->features,LF_NORM))
+    {
+      if (!fp->norm)
+	fp->norm = (Uchar*)"X";
       sprintf((char*)(buf+strlen((char*)buf)),"$%s",fp->norm);
+    }
 
   if (fp->base)
     sprintf((char*)(buf+strlen((char*)buf)),"/%s",fp->base);
@@ -62,16 +70,14 @@ sig_one(struct f2 *fp, int tail)
   if (fp->morph2)
     sprintf((char*)(buf+strlen((char*)buf)),"##%s",fp->morph2);
 
-  if (oform)
-    free(oform);
-
   return (unsigned char *)strdup((char*)buf);
 }
 
 unsigned char *
-f2_sig(struct f2 *fp, struct npool*pool)
+f2_sig(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp)
 {
   unsigned char *ret = NULL;
+  struct npool *pool = xcp->pool;
 
   if (!fp)
     return NULL;
@@ -79,7 +85,7 @@ f2_sig(struct f2 *fp, struct npool*pool)
   if (fp->parts)
     {
       unsigned char *tmp = NULL;
-      tmp = sig_one(fp, 0);
+      tmp = sig_one(xcp, ifp, fp, 0);
       if (tmp) 
 	{
 	  List *parts = list_create(LIST_SINGLE);
@@ -87,7 +93,7 @@ f2_sig(struct f2 *fp, struct npool*pool)
 	  list_add(parts, tmp);
 	  for (i = 0; fp->parts[i]; ++i)
 	    {
-	      fp->parts[i]->tail_sig = tmp = sig_one(fp->parts[i], 1);
+	      fp->parts[i]->tail_sig = tmp = sig_one(xcp, ifp, fp->parts[i], 1);
 	      if (tmp)
 		list_add(parts, tmp);
 	      else
@@ -103,7 +109,7 @@ f2_sig(struct f2 *fp, struct npool*pool)
   else
     {
       unsigned char *tmp = NULL;
-      tmp = sig_one(fp, 0);
+      tmp = sig_one(xcp, ifp, fp, 0);
       ret = npool_copy(tmp,pool);
       free(tmp);
     }
@@ -139,7 +145,7 @@ tabless(const unsigned char *s)
 }
 
 unsigned char *
-f2_psu_sig(struct f2 *fp, struct npool *pool)
+f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 {
   unsigned char buf[1024];
 
@@ -170,7 +176,9 @@ f2_psu_sig(struct f2 *fp, struct npool *pool)
 	  else
 	    {
 	      if (!fp->parts[i]->sig)
-		fp->parts[i]->sig = f2_sig(fp->parts[i], pool);
+		/* passing NULL as arg2 means do not run the extended lemmatization--this is ok
+		   because all the parts will have been subjected to that anyway by now */
+		fp->parts[i]->sig = f2_sig(xcp, NULL, fp->parts[i]);
 
 	      if ((amp = strstr((char*)fp->parts[i]->sig, "&&")))
 		{
@@ -189,5 +197,5 @@ f2_psu_sig(struct f2 *fp, struct npool *pool)
 	    }
 	}
     }
-  return npool_copy(buf,pool);
+  return npool_copy(buf,xcp->pool);
 }

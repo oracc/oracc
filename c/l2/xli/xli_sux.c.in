@@ -14,21 +14,22 @@ const char *xli_sux_argp[] =
 { 
   "perl","@@ORACC@@/bin/sma.plx","-slave","-xli",(const char*)0 
 };
+
 void
-xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
+xli_sux_handler(struct xcl_context *xcp, struct xli *xlip, struct ilem_form *f, struct f2 *f2p)
 {
   const char *ophase = phase;
   phase = "sma";
-  if (f && (f->f2.pos || f->fcount >0) && f->f2.cf)
+  if (f && (f2p->pos || f->fcount >0) && f2p->cf)
     {
-      const char *pos = (char*)(f->f2.pos ? f->f2.pos : f->finds[0]->f2.pos);
+      const char *pos = (char*)(f2p->pos ? f2p->pos : f->finds[0]->f2.pos);
       if (pos && isupper(*pos))
 	{
-	  if (!f->f2.morph)
+	  if (!f2p->morph)
 	    {
 	      char *buf = NULL;
 	      unsigned char *res;
-	      unsigned char *oform = (unsigned char *)f->f2.form, *gw = NULL; 
+	      unsigned char *oform = (unsigned char *)f2p->form, *gw = NULL; 
 
 	      if (f->fcount > 0)
 		{
@@ -37,34 +38,85 @@ xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
 		}
 	      else
 		{
-		  pos = (char*)f->f2.pos;
-		  gw = (unsigned char *)f->f2.gw;
+		  pos = (char*)f2p->pos;
+		  gw = (unsigned char *)f2p->gw;
 		}
 	      /* We do pre-emptive aliasing so that if we get a successful
 		 parse we can use the proper form in the sig */
-	      f2_alias(lemp->xc->sigs, &f->f2, 
+	      f2_alias(xcp->sigs, &f->f2, 
 		       (f->finds && f->finds[0]) ? (&f->finds[0]->f2) : NULL);
-	      buf = malloc(2*(strlen((char*)f->f2.form) 
-			      + strlen((char*)f->f2.cf) 
+	      buf = malloc(2*(strlen((char*)f2p->form) 
+			      + strlen((char*)f2p->cf) 
 			      + strlen(pos) + strlen(pos)
-			      + ((char*)f->f2.base ? strlen((char*)f->f2.base) : 0)
+			      + ((char*)f2p->base ? strlen((char*)f2p->base) : 0)
 			      + 7));
-	      sprintf(buf,"%s\t%s[%s]%s",f->f2.form,f->f2.cf,gw,pos);
-	      if (f->f2.base)
-		sprintf(buf+strlen(buf),"\t%s",f->f2.base);
+	      sprintf(buf,"%s\t%s[%s]%s",f2p->form,f2p->cf,gw,pos);
+	      if (f2p->base)
+		sprintf(buf+strlen(buf),"\t%s",f2p->base);
 	      strcat(buf,"\n");
 	      xli_send(xlip,(unsigned char *)buf);
 	      res = xli_recv(xlip);
 
 	      if (*res == '\0')
 		{
+		  const char *no_parse_base = NULL;
+		  ++res;
 		  if (strstr((char*)res, "no parses found"))
-		    vwarning2((char*)f->file,f->lnum,"no parse for FORM %s>%s=%s[%s]%s", oform,
-			      f->f2.form, f->f2.cf, gw, pos);
+		    {
+		      vwarning2((char*)f->file,f->lnum,"no parse for FORM %s>%s=%s[%s]%s", oform,
+				f2p->form, f2p->cf, gw, pos);
+		      BIT_SET(f2p->flags,F2_FLAGS_INVALID);
+		    }
+		  else if ((no_parse_base = strstr((char*)res, "no parse found for ")))
+		    {
+		      f2p->base = npool_copy((unsigned char *)(no_parse_base + strlen("no parse found for ")),xcp->pool);
+		      f2p->cont = f2p->morph = (unsigned char *)"X";
+		      /* in bootstrap_mode we play this fast and
+			 loose, and let the base pass for now and then
+			 be careful in the human review phase
+			 ... really careful */
+		      if (bootstrap_mode)
+			{
+			  phase = "sig";
+			  vnotice2((char*)f->file,f->lnum,"\t@%s%%%s:%s=%s[%s//%s]%s'%s/%s+%s#%s", 
+				   f2p->project,f2p->lang,
+				   f2p->form,f2p->cf, f2p->gw, f2p->sense, f2p->pos, f2p->epos, f2p->base, f2p->cont, f2p->morph);
+			  phase = "sma";
+			}
+		      else
+			{
+			  vwarning2((char*)f->file,f->lnum,"%s",res);
+			  BIT_SET(f2p->flags,F2_FLAGS_INVALID);
+			}
+		    }
+		  else if ((no_parse_base = strstr((char*)res, "no bases found in form")))
+		    {
+		      f2p->base = f2p->form;
+		      f2p->cont = f2p->morph = (unsigned char *)"X";
+		      /* in bootstrap_mode we play this fast and
+			 loose, and let the base pass for now and then
+			 be careful in the human review phase
+			 ... really careful */
+		      if (bootstrap_mode)
+			{
+			  phase = "sig";
+			  vnotice2((char*)f->file,f->lnum,"\t@%s%%%s:%s=%s[%s//%s]%s'%s/%s+%s#%s", 
+				   f2p->project,f2p->lang,
+				   f2p->form,f2p->cf, f2p->gw, f2p->sense, f2p->pos, f2p->epos, f2p->base, f2p->cont, f2p->morph);
+			  phase = "sma";
+			}
+		      else
+			{
+			  vwarning2((char*)f->file,f->lnum,"%s",res);
+			  BIT_SET(f2p->flags,F2_FLAGS_INVALID);
+			}
+		    }
 		  else
-		    vwarning2((char*)f->file,f->lnum,"%s",res+1);
-		  f->f2.base = f->f2.cont = f->f2.morph = (unsigned char*)"X";
-		  BIT_SET(f->f2.flags,F2_FLAGS_INVALID);
+		    {
+		      vwarning2((char*)f->file,f->lnum,"%s",res);
+		      f2p->base = f2p->cont = f2p->morph = (unsigned char*)"X";
+		      BIT_SET(f2p->flags,F2_FLAGS_INVALID);
+		    }
 		}
 	      else
 		{
@@ -76,31 +128,31 @@ xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
 		  morph[-1] = '\0';
 		  stem = (unsigned char *)strchr((char*)morph,'\t')+1;
 		  stem[-1] = '\0';
-		  if (!f->f2.base || !*f->f2.base)
-		    f->f2.base = npool_copy(base,lemp->xc->pool);
-		  if (!f->f2.cont)
-		    f->f2.cont = npool_copy(cont,lemp->xc->pool);
-		  if (!f->f2.morph)
-		    f->f2.morph = npool_copy(morph,lemp->xc->pool);
-		  if (!f->f2.stem)
+		  if (!f2p->base || !*f2p->base)
+		    f2p->base = npool_copy(base,xcp->pool);
+		  if (!f2p->cont)
+		    f2p->cont = npool_copy(cont,xcp->pool);
+		  if (!f2p->morph)
+		    f2p->morph = npool_copy(morph,xcp->pool);
+		  if (!f2p->stem)
 		    {
 		      if (stem && *stem)
-			f->f2.stem = npool_copy(stem,lemp->xc->pool);
+			f2p->stem = npool_copy(stem,xcp->pool);
 		      else
-			f->f2.stem = f->f2.cf;
+			f2p->stem = f2p->cf;
 		    }
-		  f->f2.gw = (unsigned char*)gw;
-		  f->f2.pos = (unsigned char*)pos;
-		  if (!f->f2.sense)
-		    f->f2.sense = f->finds[0]->f2.sense;
-		  if (!f->f2.epos && f->finds && f->finds[0]->f2.epos)
-		    f->f2.epos = f->finds[0]->f2.epos;
+		  f2p->gw = (unsigned char*)gw;
+		  f2p->pos = (unsigned char*)pos;
+		  if (!f2p->sense)
+		    f2p->sense = f->finds[0]->f2.sense;
+		  if (!f2p->epos && f->finds && f->finds[0]->f2.epos)
+		    f2p->epos = f->finds[0]->f2.epos;
 		  else
-		    f->f2.epos = f->f2.pos;
-		  sux_norm0(&f->f2,lemp->xc->pool);
-		  BIT_CLR(f->f2.flags,F2_FLAGS_NO_FORM);
-		  BIT_CLR(f->f2.flags,F2_FLAGS_INVALID);
-		  BIT_SET(f->f2.flags,F2_FLAGS_EXTENDED_OK);
+		    f2p->epos = f2p->pos;
+		  sux_norm0(f2p,xcp->pool);
+		  BIT_CLR(f2p->flags,F2_FLAGS_NO_FORM);
+		  BIT_CLR(f2p->flags,F2_FLAGS_INVALID);
+		  BIT_SET(f2p->flags,F2_FLAGS_EXTENDED_OK);
 		  if (f->fcount > 1)
 		    {
 		      f->finds[1] = NULL;
@@ -112,13 +164,13 @@ xli_sux_handler(struct xli *xlip, struct xcl_l *lemp, struct ilem_form *f)
 		    {
 		      phase = "sig";
 		      vnotice2((char*)f->file,f->lnum,"\t@%s%%%s:%s=%s[%s//%s]%s'%s/%s+%s#%s", 
-			       f->f2.project,f->f2.lang,
-			       f->f2.form,f->f2.cf, f->f2.gw, f->f2.sense, f->f2.pos, f->f2.epos, base, cont, morph);
+			       f2p->project,f2p->lang,
+			       f2p->form,f2p->cf, f2p->gw, f2p->sense, f2p->pos, f2p->epos, base, cont, morph);
 		      phase = "sma";
 		    }
 		  else
 		    vnotice2((char*)f->file,f->lnum,"%s=%s[%s]%s parsed as ^@form %s /%s +%s #%s", oform,
-			     f->f2.cf, f->f2.gw, f->f2.pos, f->f2.form, base, cont, morph);
+			     f2p->cf, f2p->gw, f2p->pos, f2p->form, base, cont, morph);
 
 		  /*f->result |= (NEW_BASE|NEW_CONT|NEW_MORPH);*/
 		}

@@ -196,4 +196,6 @@ extern void xcl_fix_context(struct xcl_context *xc, const unsigned char *discour
 extern void xcl_add_discourse(struct xcl_context *xc, const char *discourse);
 extern void xcl_add_child(struct xcl_c*p, void *c, enum xcl_node_types type);
 
+extern void sigs_dump_sigs(struct xcl_context *xcp, struct xcl_l *lp);
+
 #endif /*_XCL_H*/

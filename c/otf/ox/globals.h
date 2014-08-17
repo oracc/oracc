@@ -59,6 +59,7 @@ extern const char *output_dir;
 extern int check_only;
 extern int validate;
 extern int do_cdl;
+extern int dump_sigs;
 extern int no_xcl_map;
 extern int lem_forms_raw;
 extern int named_ents;
