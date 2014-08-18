@@ -27,6 +27,7 @@ int l2 = 1;
 int lem_autolem = 0;
 int fuzzy_aliasing = 0;
 int cbd_lem_sigs = 0;
+int bootstrap_mode = 0;
 
 static struct est *estp;
 
