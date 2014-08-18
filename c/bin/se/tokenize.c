@@ -90,6 +90,7 @@ add_token(enum se_toks t)
 
   if (t == se_notused)
     {
+      memset(toks,'\0', toks_used *sizeof(struct token));
       toks_used = 0;
       return NULL;
     }
