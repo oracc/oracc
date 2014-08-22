@@ -7,13 +7,13 @@ for proj in `agg-list-public-projects.sh` ; do
     if [ -r $thumb ]; then
 	d=`dirname $proj`
 	mkdir -p ${ORACC}/www/agg/$d
-	cp -fv $thumb ${ORACC}/www/agg/$proj.png
+	cp -f $thumb ${ORACC}/www/agg/$proj.png
     else
 	thumb2=${ORACC}/etc/projects/$proj/thumb.png
 	if [ -r $thumb2 ]; then
 	    d=`dirname $proj`
 	    mkdir -p ${ORACC}/www/agg/$d
-	    cp -fv $thumb2 ${ORACC}/www/agg/$proj.png
+	    cp -f $thumb2 ${ORACC}/www/agg/$proj.png
 	else
 	    echo agg-thumbs.sh: $proj has no thumbnail image $thumb
 	fi
