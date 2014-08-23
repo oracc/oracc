@@ -1,9 +1,0 @@
-ALL scripts: -base/-project/-lang args
-
-induct: work with -proj and -lang to find a file to induct into raw:
-
-	- warn and refuse if it is not public (but allow a -force)
-	- warn and refuse if it has errors (but allow a -force)
-	- warn and refuse if the 00src file is bad (no force for this)
-
-	* if the 00raw exists, compare it with origin and warn if it is later

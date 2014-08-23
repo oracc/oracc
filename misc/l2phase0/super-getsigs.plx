@@ -13,6 +13,7 @@ use ORACC::L2GLO::Util;
 
 my %data = ORACC::L2P0::L2Super::init();
 
+my %mapcut = %{$data{'map_cut'}};
 my %mapglo = %{$data{'map_glo'}};
 my %mapsigs = ();
 
@@ -60,6 +61,9 @@ while (<S>) {
     my %sig = parse_sig($sig);
     my $entry = "$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}";
     my $sense = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
+
+    next if $mapcut{$entry} || $mapcut{$sense};
+
     if ($mapglo{$sense}) {
 	$mapsigs{$sense} = parse_sig($sense)
 	    unless $mapsigs{$sense};

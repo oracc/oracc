@@ -35,6 +35,7 @@ my $argmap = '';
 my $argbase = '';
 my $argsrc = '';
 
+my $do_slow_compare = 0;
 my $dryrun = 0;
 my $force = 0;
 my $lang = '';
@@ -69,14 +70,20 @@ my $basefile = undef;
 my %basehash = ();
 my $baselang = undef;
 
+my %known_actions = (); my @known_actions = qw/add cut fix map new/;
+@known_actions{@known_actions} = ();
+
 my %map = ();
 my %map_comments = ();
+my %map_cut = ();
 my %map_glo = ();
 my %map_line = ();
 my %map_sort = ();
 my $mapfile = '';
 
 my $newfile = '';
+
+my @parts_to_validate = ();
 
 my $srcdata = undef;
 my $srcfile = undef;
@@ -170,6 +177,9 @@ init {
 	super_die("a super-glossary is only allowed one .glo file")
 	    unless $#glo == 0;
 	$basefile = shift @glo;
+	if ($basefile =~ /sux/) {
+	    $do_slow_compare = 1;
+	}
     }
 
     unless ($srcfile) {
@@ -274,6 +284,8 @@ init {
 
     if ($function eq 'prepare') {
 	map_add2glo();
+	super_die("errors validating parts") 
+	    unless parts_ok();
 	%map = map_drop_act('add');
 	map_sort_by_lines();
 	map_dump($return_data{'outmap'});
@@ -282,6 +294,7 @@ init {
     $return_data{'mapfile'} = $mapfile;
     $return_data{'map'} = \%map;
     $return_data{'map_comments'} = \%map_comments;
+    $return_data{'map_cut'} = \%map_cut;
     $return_data{'map_glo'} = \%map_glo;
     $return_data{'map_line'} = \%map_line;
     $return_data{'map_sort'} = \%map_sort;
@@ -445,21 +458,6 @@ glo_compare {
 ##########################################################################################
 
 sub
-slow_compare_ok {
-    my($new_s, @src_s) = @_;
-    my($epos,$sense) = ($new_s =~ /^(\S+)\s+(.*)$/);
-    foreach my $ss (@src_s) {
-	if ($ss =~ /^$epos\s/) {
-	    my($ssense) = ($ss =~ /\s(.*)$/);
-	    if ($ssense =~ /$sense/) {
-		return 1;
-	    }
-	}
-    }
-    0;
-}
-
-sub
 map_add2glo {
     my $map_status = 0;
     foreach my $v (values %map) {
@@ -468,6 +466,7 @@ map_add2glo {
 	    if ($cfgwpos) {
 		if ($partsref) {
 		    my @parts = @$partsref;
+		    push @parts_to_validate, [ $cfgwpos , $parts[0] ];
 		    if ($#parts >= 0) {
 			push @{$map_glo{$cfgwpos}}, [ 0 , "\@parts $parts[0]\n" ];
 		    }
@@ -485,6 +484,8 @@ map_add2glo {
 	    } else {
 		++$map_status;
 	    }
+	} elsif ($$v[0] eq 'cut') {
+	    $map_cut{$$v[2]} = 1;
 	}
     }
 }
@@ -496,13 +497,13 @@ map_check {
 	map_sort_by_lines();
     }
     foreach my $m (sort { $map_sort{$$a[2]} <=> $map_sort{$$b[2]} } values %map) {
-	my($act,$type,$sig,$map) = @$m;
+	my($act,$type,$sig,$map,$parts) = @$m;
 	unless ($srchash{$sig}) {
 	    my $mapentry = map_line(@$m);
 	    super_warn "$mapfile:$map_line{$mapentry}: $sig not in source glossary";
 	    ++$status;
 	}
-	if ($act eq 'map' || $act eq 'fix') {
+	if ($act eq 'map' || $act eq 'fix' || $act eq 'cut') {
 	    unless ($basehash{$map}) {
 		my $mapentry = map_line(@$m);
 		super_warn "$mapfile:$map_line{$mapentry}: => $map not in base glossary";
@@ -556,8 +557,9 @@ map_dump {
 
 sub
 map_line {
-    my($act,$type,$sig,$map) = @_;
+    my($act,$type,$sig,$map, $parts) = @_;
     my $ret = "$act $type $sig";
+    $ret .=  " \@parts $parts" if $parts;
     $ret .=  " => $map" if $map;
     $ret;
 }
@@ -580,7 +582,11 @@ map_load {
 	s/\s+/ /g;
 	$map_line{$_} = $.;
         my($act,$type,$sig) = (/(\S+)\s+(\S+)\s+(.*?)$/);
+
+	super_warn "$m:$.: bad action $act" unless exists $known_actions{$act};
+
         my $map = '';
+	my $parts = '';
 	unless ($sig) {
 	    super_warn "$m:$.: bad map entry";
 	    ++$status;
@@ -590,10 +596,15 @@ map_load {
         if ($sig =~ /^(.*?)\s*=>\s*(.*?)$/) {
             ($sig,$map) = ($1,$2);
         }
+
+	if ($sig =~ s/\s*\@parts\s+(.*?)\s*$//) {
+	    $parts = $1;
+	}
+
 	if ($map{$sig}) {
 	    super_warn "$m:$.: $sig has more than one action" and next unless $sig;
 	} else {
-	    $map{$sig} = [ $act, $type, $sig, $map ];
+	    $map{$sig} = [ $act, $type, $sig, $map, $parts ];
 	}
     }
     close(M);
@@ -604,20 +615,33 @@ map_load {
 sub
 map_parse_add {
     my $v = shift;
+    my $line_parts = $$v[4];
     $_ = $$v[2];
+    # if the map file says
+    #   add a ru[dedicate]V/t @parts a[water]N ri[impose]V/t
+    # then use the parts spec from the map; we'll validate it later to make sure
+    # all the components are known.
     if ($$v[1] eq 'entry') {
 	if ($srchash{$_}) {
 	    my %e = %${$srchash{$_}};
 	    s/\[/ [/; s/\]/] /;
-	    return ($_, $e{'parts'}, $e{'sense'})
+	    return ($_, $line_parts ? [ $line_parts ] : $e{'parts'}, $e{'sense'})
 	} else {
-	    warn "super prepare: entry $_ not found in source glossary $srcfile\n";
+	    super_warn("entry $_ not found in source glossary $srcfile\n");
 	    return ();
 	}
     } else {
 	my($cf,$gw,$sense,$pos,$epos) = (m#^(.*?)\[(.*?)//(.*?)\](.*?)\'(.*?)$#);
 	if ($cf) {
-	    return ("$cf [$gw] $pos", [ ], [ "$epos $sense" ]);
+	    my $cfgwpos = "$cf\[$gw\]$pos";
+	    if ($srchash{$cfgwpos}) {
+		my %e = %${$srchash{$cfgwpos}};
+		s/\[/ [/; s/\]/] /;
+		return ($cfgwpos, $line_parts ? [ $line_parts ] : $e{'parts'}, [ "$epos $sense" ]);
+	    } else {
+		super_warn("entry $_ not found in source glossary $srcfile\n");
+		return ();
+	    }
 	} else {
 	    super_warn("$_ bad sense specification in add");
 	    return ();
@@ -637,6 +661,44 @@ sub
 map_unload {
     %map = ();
     %map_comments = ();
+}
+
+sub
+parts_ok {
+    my $status = 0;
+    foreach my $pv (@parts_to_validate) {
+	my($cfgwpos,$parts) = @$pv;
+	$parts =~ s/(\]\S+)\s+/$1\cA/g;
+	my @parts = split(/\cA/,$parts);
+	foreach my $p (@parts) {
+	    unless ($basehash{$p} || $map_glo{$p}) {
+		super_warn("PSU $cfgwpos has unknown part $p");
+#		use Data::Dumper;
+#		open(B,">basehash.dump");
+#		print B Dumper \%basehash;
+#		close(B);
+#		exit(1);
+		++$status;
+	    }
+	}
+    }
+    return !$status;
+}
+
+sub
+slow_compare_ok {
+    return 0 unless $do_slow_compare;
+    my($new_s, @src_s) = @_;
+    my($epos,$sense) = ($new_s =~ /^(\S+)\s+(.*)$/);
+    foreach my $ss (@src_s) {
+	if ($ss =~ /^$epos\s/) {
+	    my($ssense) = ($ss =~ /\s(.*)$/);
+	    if ($ssense =~ /$sense/) {
+		return 1;
+	    }
+	}
+    }
+    0;
 }
 
 1;
