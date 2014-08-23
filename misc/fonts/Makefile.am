@@ -1,5 +1,6 @@
 include ../../oracc-am-rules.txt
 
+downloads_DATA=*.zip
 
 EXTRA_DIST = \
 	UngBasB.ttf \

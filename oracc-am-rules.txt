@@ -17,7 +17,7 @@ texdatadir    = $(prefix)/lib/tex
 schemadir     = $(prefix)/www/lib/schemas
 webscriptdatadir = $(prefix)/www/lib/scripts
 webdatadir   = $(prefix)/www/lib/data
-downloadsdatadir   = $(prefix)/www/downloads
+downloadsdir   = $(prefix)/www/downloads
 
 clean-local:
 	$(top_srcdir)/oracc-clean-in.sh
