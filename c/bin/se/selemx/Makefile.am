@@ -1,6 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 ##
 
+include ../../../../oracc-am-rules.txt
+
+signmap.c: signmap.c.in
+	$(ORACCIFY) signmap.c.in
+
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
 

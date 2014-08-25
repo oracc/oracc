@@ -592,3 +592,7 @@ c/bin/oraccnet/server/builtins.c
 misc/sl/slse-slave.plx
 
 c/bin/oraccnet/server/sl.c
+
+c/bin/se/setxtx/signmap.c
+
+c/bin/se/selemx/signmap.c
