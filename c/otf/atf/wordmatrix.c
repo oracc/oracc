@@ -57,6 +57,7 @@ struct wm_row
   enum wm_row_type type;
   struct node *line;
   struct wm_cell *cells;
+  int dollar_flag; /* 1 if the exemplar is a dollar line, e.g. A: ($ruling$) */
 };
 
 struct wm_block
@@ -127,6 +128,15 @@ wm_count_cells(struct wm_row *row, int *n_intra_p, int *n_inter_p)
 	  break;
 	}
     }
+
+  if (n_intra == 0 && n_inter == 1)
+    {
+      /* correct for lines which are entirely A: ($ruling$) */
+      n_intra = 1;
+      n_inter = 0;
+      row->dollar_flag = 1;
+    }
+
   if (n_intra_p)
     *n_intra_p = n_intra;
   if (n_inter_p)
@@ -170,7 +180,8 @@ wm_set_cells(enum wm_cell_type *master, struct wm_row *row)
 	  break;
 	case e_g_nonw:
 	  nonw_type = find_nonw_type(wm_child(i));
-	  if (!strcmp(nonw_type, "word-absent")
+	  if (row->dollar_flag 
+	      || !strcmp(nonw_type, "word-absent")
 	      || !strcmp(nonw_type, "word-broken"))
 	    {
 	      ++intra_nth;
