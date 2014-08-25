@@ -1091,7 +1091,7 @@
 	      <xsl:variable name="q"><xsl:text>'</xsl:text></xsl:variable>
 	      <xsl:attribute name="href">
 		<xsl:value-of 
-		   select="concat('javascript:scorejump(',$q,$project,$q,',',$q,/*/@xml:id,$q,',',$q,@score-block-ref,$q,')')"/>
+		   select="concat('javascript:showblock(',$q,$project,$q,',',$q,/*/@xml:id,$q,',',$q,@score-block-ref,$q,')')"/>
 	      </xsl:attribute>
 	    </xsl:if>
 	    <span class="xlabel">
