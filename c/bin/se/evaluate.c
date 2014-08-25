@@ -310,19 +310,19 @@ evaluate(struct token *toks, int fcode, int lmask, struct token **lastused)
 	  return ret;
 	  break;
 	case se_near:
+	case se_tilde:
+	case se_xspace:
+	case se_space:
+	case se_hyphen:
 	  pending_range = (struct near*)toks->data;
-	  pending_boolean = toks->type;
+	  pending_boolean = se_near;
 	  ++toks;
 	  break;
 	case se_sans:
-	case se_space:
-	case se_hyphen:
-	case se_tilde:
 	  fprintf(stderr,"se: impossible state in evaluator\n");
 	  exit(-1);
 	  break;
 	case se_notused:
-	case se_xspace:
 	case se_top:
 	  break;
 	default:
@@ -500,7 +500,8 @@ expr(struct token *e, int sign_name)
 	  if (signmap->nfound)
 	    {
 	      grapheme = dbi_detach_data(signmap,NULL);
-	      progress("se eval: grapheme mapped to name %s\n", grapheme);
+	      if (verbose)
+		fprintf(stderr,"se eval: grapheme mapped to name %s\n", grapheme);
 	    }
 	}
     }
