@@ -16,6 +16,7 @@ my %ignore = ();
 my %linkindex = ();
 my %defs = ();
 my %indexed = ();
+my $linkbase_output = '';
 my $ok_debug = 0;
 my %parallels_ok = ();
 my %pending = ();
@@ -30,6 +31,7 @@ my %texts = ();
 
 GetOptions(
     'debug'=>\$debug,
+    'linkbase:s'=>\$linkbase_output,
     'verbose'=>\$verbose,
     );
 
@@ -38,11 +40,12 @@ my $line = 0;
 my $last_l = undef;
 my $project = `oraccopt`;
 
-my $linkbase_output = '';
-if ($project) {
-    $linkbase_output = "01bld/linkbase.xml";
-} else {
-    die "harvest-links.plx: must be run in a project directory\n";
+unless ($linkbase_output) {
+    if ($project) {
+	$linkbase_output = "01bld/linkbase.xml";
+    } else {
+	die "harvest-links.plx: must be run in a project directory\n";
+    }
 }
 
 open(LINKBASE,">$linkbase_output");
@@ -167,7 +170,7 @@ process_project {
 	next if $seen{$p};
 	my($to,$from) = ($p =~ /^(.*?)=(.*?)$/);
 	${$srefs{$to}}{$from} = 1;
-#    print STDERR "adding pending $to=$from\n";
+	print STDERR "adding pending $to<=$from\n";
     }
     foreach my $k (sort keys %srefs) {
 	print LINKBASE "<refs type=\"sources\" ref=\"$k\">";
@@ -175,6 +178,7 @@ process_project {
 	    if ($sources_ok{"$k\->$r"} || $sources_ok{"$r\->$k"}) {
 		print LINKBASE "<r ref=\"$r\"/>";
 	    } else {
+		print LINKBASE "<r ref=\"$r\" links=\"no\"/>";
 		if ($ok_debug) {
 		    warn "dropping source $k\->$r\n";
 		}
@@ -327,7 +331,7 @@ process_protocol {
 	    if ($text eq "$prj:$pqx") {
 		warn "$file:$line: text refers to itself in #link def ($text=$prj:$pqx)\n";
 	    } else {
-		$pending{"$text=$prj:$pqx"} = 1;
+		$pending{"$prj:$pqx=$text"} = 1;
 	    }
 	} else {
 	    print STDERR "$file:$line: $tid -- bad def: $link\n";

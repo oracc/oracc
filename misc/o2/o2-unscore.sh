@@ -6,8 +6,8 @@ function unscore {
     xsf=$base.xsf
     (cd $dir ; \
 	mv $xtf $xsf ; \
-#	echo converting $xsf to $xtf ... ; \
-#	echo `basename $xsf .xsf` >>../../lists/xsf-scores.lst ; \
+	echo converting $xsf to $xtf ... ; \
+	echo `basename $xsf .xsf` >>../../lists/xsf-scores.lst ; \
 	xsltproc $ORACC/lib/scripts/xtf-unscore.xsl $xsf >$xtf )
 }
 rm -f 01bld/lists/xsf-scores.lst
