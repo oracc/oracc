@@ -1,5 +1,5 @@
 #!/bin/sh
-project=`oraccopt`
+project=`proj-from-conf.sh`
 if [ -e $ORACC/bin/$project-rebuild.sh ]; then
     exec $ORACC/bin/$project-rebuild.sh
     exit 1
