@@ -4,7 +4,7 @@ span.find-button {
     border: outset 1px brown;
     color: #444;
     background-color: brown;
-    width: 75px; border: 
+    width: 75px; 
     vertical-align: middle;
     border-radius: 9px; 
     padding: 3px;

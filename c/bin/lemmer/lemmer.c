@@ -17,6 +17,7 @@ const char *xcl_file;
 FILE*f_log;
 FILE*outfp = NULL;
 
+int bootstrap_mode = 0;
 int cbd_lem_sigs = 0;
 int fuzzy_aliasing = 0;
 int inplace = 0;

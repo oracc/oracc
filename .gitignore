@@ -596,3 +596,7 @@ c/bin/oraccnet/server/sl.c
 c/bin/se/setxtx/signmap.c
 
 c/bin/se/selemx/signmap.c
+
+doc/ns/xdf/1.0/xdf.rng
+
+misc/p3/p3-asrch.sh
