@@ -64,7 +64,7 @@ foreach my $s (@sigs) {
 	/:(.*?)=/;
 	my $base = $1;
 #	$base =~ s#//.*?]#]#;
-	s/^\@.*?%/\@$project%/;
+	s,^\@.*?%,\@$project%,;
 	if (/^(.*?)\t(.*?)$/) {
 	    my($sig,$inst) = ($1,$2);
 	    if (defined($sigs{$sig}) || $dynamic) {
@@ -85,6 +85,9 @@ foreach my $s (@sigs) {
 	}
     }
     close(S);
+#    if ($s =~ /from-glos/) {
+#	warn Dumper \%sigs;
+#    }
 }
 
 unless ($dynamic) {
@@ -92,7 +95,7 @@ unless ($dynamic) {
     close(PLOG);
 }
 
-#warn Dumper \%sigs;
+# warn Dumper \%sigs;
 
 foreach my $l (keys %langs) {
     my $fh = undef;

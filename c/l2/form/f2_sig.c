@@ -51,12 +51,11 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
 	fp->base = fp->cont = fp->morph = (Uchar*)"X";
     }
 
-  if (BIT_ISSET(fp->core->features,LF_NORM))
-    {
-      if (!fp->norm)
-	fp->norm = (Uchar*)"X";
+  if (!fp->norm)
+    fp->norm = (Uchar*)"X";
+
+  if (fp->norm)
       sprintf((char*)(buf+strlen((char*)buf)),"$%s",fp->norm);
-    }
 
   if (fp->base)
     sprintf((char*)(buf+strlen((char*)buf)),"/%s",fp->base);
