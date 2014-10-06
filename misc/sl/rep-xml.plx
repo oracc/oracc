@@ -48,8 +48,13 @@ foreach my $s (@signs) {
     warn "$kn not found in ogsl\n" unless $id;
     my $xn = xmlify($nn);
     my $utf8 = $hex;
-    $utf8 =~ s/\./;&#/g;
-    $utf8 = "\&#$utf8;";
+    warn "$kn = utf8 = $utf8\n";
+    if ($utf8 =~ /^(?:x[a-f0-9]{5}\.?)+$/i) {
+	$utf8 =~ s/\./;&#/g;
+	$utf8 = "\&#$utf8;";
+    } else {
+	$utf8 = '';
+    }
     my $countunit = '';
     if ($numeric) {
 	my($count,$unit) = ($xn =~ /^(.*?)\((.*?)\)$/);

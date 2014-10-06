@@ -12,12 +12,14 @@
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:text>\macrofile{/Users/stinney/oracc/misc/sl/repmac}\signlist{Ur III Signlist}</xsl:text>
+      <xsl:text>\macrofile{/Users/stinney/oracc/misc/sl/repmac}\signlist{Gudea Signlist}</xsl:text>
       <xsl:apply-templates/>
       <xsl:text>\endsignlist\newpage</xsl:text>
+<!--
       <xsl:text>\signlist{Ur III Numbers}</xsl:text>
       <xsl:text>\include{ur3-num}</xsl:text>
       <xsl:text>\endsignlist\newpage</xsl:text>
+ -->
       <xsl:text>\include{valindex}&#xa;</xsl:text>
       <xsl:text>\bye</xsl:text>
     </xsl:otherwise>
