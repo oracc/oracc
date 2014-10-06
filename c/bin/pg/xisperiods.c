@@ -333,7 +333,12 @@ create_pmap(void)
 	fprintf(stderr, "xisperiods: no entry for '%s' in periodmap\n", &sip->pool[sip->pindex[mindex]]);
 
       if (!pmaptab[sip->scodes[mindex]])
-	pmaptab[sip->scodes[mindex]] = pm->p;
+	{
+	  if (pm)
+	    pmaptab[sip->scodes[mindex]] = pm->p;
+	  else
+	    pmaptab[sip->scodes[mindex]] = XX;
+	}
     }
 }
 
