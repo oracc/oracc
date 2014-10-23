@@ -235,7 +235,8 @@ create_scores {
     print xmldecl();
     print '<scores>';
     foreach my $Q (sort keys %Q) {
-	next unless $Q =~ /(^|:)Q/;
+	print STDERR "create_score key = $Q\n";
+	next unless $Q =~ /(^|:)[QX]/; # is this hairy? or does the ID letter really not matter?
 	print STDERR "generating score for $Q\n" unless $quiet;
 	my $fname = '';
 	if ($Q =~ /:/) {
