@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open ':utf8';
 use lib '@@ORACC@@/lib';
-use ORACC::SL::Base;
+use ORACC::SL::BaseC;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper;
@@ -197,7 +197,7 @@ perform_merging {
 	my $tlit = $1;
 	my @tlit_bits = ();
 	foreach my $k (keys %current_mergers) {
-	    if (ORACC::SL::Base::same_tlit("$cbd:$.",$k,$tlit)) {
+	    if (ORACC::SL::BaseC::same_tlit("$cbd:$.",$k,$tlit)) {
 		if ($k eq $tlit) {
 		    warn "skipping reading $k = $tlit\n" if $verbose;
 		} else {
