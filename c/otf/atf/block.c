@@ -763,7 +763,12 @@ $ start of reverse missing
 	  if (needs_lg(lines+1))
 	    {
 	      struct node *ocurrent = current;
+	      struct attr *xid;
 	      current = elem(e_lg,NULL,lnum,LINE);
+	      (void)sprintf(line_id_insertp,"%d", line_id+1); /* line_id is pre-incremented for line nums */
+	      (void)strcat(line_id_buf,(const char *)"g");
+	      xid = attr(a_xml_id,ucc(line_id_buf));
+	      appendAttr(current,xid);
 	      line_mts(*lines);
 	      exemplar_offset = 0;
 	      skip_blank();
@@ -2250,7 +2255,7 @@ scan_incref(unsigned char *s, enum e_type type)
       if (type == e_include && project)
 	{
 	  char buf[128];
-	  if (!strchr(ref, ':'))
+	  if (!strchr((const char*)ref, ':'))
 	    {
 	      sprintf(buf,"%s:%s",project,cc(ref));
 	      appendAttr(increfp,attr(a_ref,ucc(buf)));
