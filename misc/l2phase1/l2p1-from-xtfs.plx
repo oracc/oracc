@@ -62,9 +62,19 @@ while (<T>) {
 	$p = sprintf("01bld/%s/$_/$_.xtf",four($_));
     }
     if (-r $p) {
-	loadsigs($p);
-	warn("l2p1-from-xtfs.plx: reading $p\n")
-	    if $verbose;
+	# if there is a .xsf read sigs from that because then we also harvest
+	# instances from lemmatized exemplars
+	my $xsf = $p;
+	$xsf =~ s/xtf$/xsf/;
+	if (-r $xsf) {
+	    loadsigs($xsf);
+	    warn("l2p1-from-xtfs.plx: reading $p\n")
+		if $verbose;
+	} else {
+	    loadsigs($p);
+	    warn("l2p1-from-xtfs.plx: reading $p\n")
+		if $verbose;
+	}
     } else {
 	warn("l2p1-from-xtfs.plx: can't read $p\n")
 	    unless $proxy_mode;
@@ -138,7 +148,11 @@ loadsigs {
     my $x = load_xml($_[0]);
     $lang = $x->getDocumentElement()->getAttribute('xml:lang');
     $xtf_project = $x->getDocumentElement()->getAttribute('project');
-    foreach my $l (tags($x,$XCL,'l')) {
+    my @nodes = tags($x,$XCL,'l');
+    if ($_[0] =~ /xsf$/) {
+	push @nodes, tags($x,$XCL,'v');
+    }
+    foreach my $l (@nodes) {
 	my $bad = $l->getAttribute('bad');
 	if (!$bad || $bad ne 'yes') {
 	    my $xid = xid($l);
