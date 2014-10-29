@@ -1,6 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
 		xmlns:ce="http://oracc.org/ns/ce/1.0"
 		xmlns:xtr="http://oracc.org/ns/xtr/1.0"
+		xmlns:xtf="http://oracc.org/ns/xtf/1.0"
 		xmlns:syn="http://oracc.org/ns/syntax/1.0"
 		xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:xh="http://www.w3.org/1999/xhtml"
@@ -63,6 +64,12 @@
 </xsl:template>
 
 <xsl:template match="ce:l"/>
+
+<xsl:template match="xtf:v">
+  <br/>
+  <span class="vlabel">[<xsl:value-of select="@varnum"/>] </span>
+  <xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template mode="xmd" match="ce:group">
   <tbody>
