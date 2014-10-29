@@ -776,6 +776,7 @@ set_asrch_info {
 sub
 set_ce_arg {
     my $ce_arg;
+    $rt{'cetype'} = '' unless $rt{'cetype'};
     warn "set_ce_arg: rt{'cetype'} == $rt{'cetype'}; rt{'#list_type'} == $rt{'#list_type'}\n";
     if ($rt{'cetype'}) {
 	$ce_arg = $rt{'cetype'};
