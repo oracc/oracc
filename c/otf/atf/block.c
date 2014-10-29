@@ -53,6 +53,8 @@ struct node*current = NULL;
 
 int div_level = 0;
 
+static int lg_mode = 0;
+
 /* offset used in calculation of word-ids.  In main text word-ids
    add 1..n; in exemplar 1 they add 1001 .. n+1000; in exemplar 2
    they add 2001 .. n+2000, etc. */
@@ -764,9 +766,9 @@ $ start of reverse missing
 	    {
 	      struct node *ocurrent = current;
 	      struct attr *xid;
+	      lg_mode = 1;
 	      current = elem(e_lg,NULL,lnum,LINE);
 	      (void)sprintf(line_id_insertp,"%d", line_id+1); /* line_id is pre-incremented for line nums */
-	      (void)strcat(line_id_buf,(const char *)"g");
 	      xid = attr(a_xml_id,ucc(line_id_buf));
 	      appendAttr(current,xid);
 	      line_mts(*lines);
@@ -854,13 +856,6 @@ $ start of reverse missing
 		    }		  
 		}
 	      skip_blank();
-#if 0
-	      if (lines[1] && !xstrncmp(lines[1],"#lem:",5))
-		{
-		  ++lnum;
-		  line_las(*++lines);
-		}
-#endif
 	      if (lines[1] && lines[1][0] == '=')
 		{
 		  vwarning("misplaced %c%c line (order is: unmarked,={,==,=:,=&)",
@@ -901,7 +896,10 @@ $ start of reverse missing
 	      current = ocurrent;	      
 	    }
 	  else
-	    line_mts(*lines);
+	    {
+	      lg_mode = 0;
+	      line_mts(*lines);	      
+	    }
 	  break;
 	}
       ++lines;
@@ -1581,7 +1579,14 @@ line_mts(unsigned char *lp)
     }
   s[-1] = '\0';
   sprintf(line_id_insertp,"%d", ++line_id);
+  /* In lg_mode the line group carries the ID that is used for word ID bases--the code here
+     adds an 'l' suffix to the <l> ID then removes it so the right ID base is used for words
+  */
+  if (lg_mode)
+    (void)strcat(line_id_buf,(const char *)"l");
   xid = attr(a_xml_id,ucc(line_id_buf));
+  if (lg_mode)
+    line_id_buf[strlen(line_id_buf)-1] = '\0';
   if (last_tlit_h_decay)
     {
       last_tlit_h_decay = 0;
