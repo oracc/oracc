@@ -24,6 +24,7 @@ int buf_len = 0;
 char label[128], last_label[128], 
   text_name[128], text_id[16], text_project[128];
 
+const char *ce_l_tag = NULL;
 const char *content_tago = "content";
 const char *content_tagc = "content";
 
@@ -62,6 +63,7 @@ const char *xtf_ns_uri = "http://oracc.org/ns/xtf/1.0";
 const char *gdl_w_name = "http://oracc.org/ns/gdl/1.0|w";
 const char *norm_w_name = "http://oracc.org/ns/norm/1.0|w";
 const char *xtf_l_name = "http://oracc.org/ns/xtf/1.0|l";
+const char *xtf_lg_name = "http://oracc.org/ns/xtf/1.0|lg";
 const char *xtf_note_name = "http://oracc.org/ns/xtf/1.0|note";
 
 const char *project_en = NULL;
@@ -81,30 +83,13 @@ int hashvals[1000];
 int curr_hashval = 0;
 int *idcountp = 0;
 
-static const char *
-findfile(const char *pqid, const char *base)
+static int
+llg_match(const char *name)
 {
-  const char **projects = cfg.proxies;
-  while (*projects)
-    {
-      const char *found;
-      if (base)
-	found = expand_xtr(*projects,pqid,strchr(base,'_')+1,NULL);
-      else
-	found = expand(*projects,pqid,cfg.ext);
-      if (verbose)
-	fprintf(stderr,"trying %s...",found);
-      if (!access(found,R_OK))
-	{
-	  if (verbose)
-	    fprintf(stderr,"found\n");
-	  return found;
-	}
-      if (verbose)
-	fprintf(stderr,"not found\n");
-      ++projects;
-    }
-  return NULL;
+  if (ce_l_tag && ((ce_l_tag[1] && !strcmp(&name[strlen(name)-3], "|lg"))
+		   || (!ce_l_tag[1] && !strcmp(&name[strlen(name)-2], "|l"))))
+    return 1;
+  return 0;
 }
 
 static const char *
@@ -112,21 +97,49 @@ l2_findfile(const char *proj, const char *pqid, const char *base)
 {
   const char *found;
   if (base)
-    found = expand_xtr((proj && *proj) ? proj : project,
-		       pqid,strchr(base,'_')+1,NULL);
-  else
-    found = expand((proj && *proj) ? proj : project,
-		   pqid, xtf_context ? "xtf" : cfg.ext);
-  if (verbose)
-    fprintf(stderr,"trying %s...",found);
-  if (!access(found,R_OK))
     {
-      if (verbose)
-	fprintf(stderr,"found\n");
-      return found;
+      found = expand_xtr((proj && *proj) ? proj : project,
+			 pqid,strchr(base,'_')+1,NULL);
+      if (!access(found,R_OK))
+	{
+	  if (verbose)
+	    fprintf(stderr,"ce_xtf: using %s\n",found);
+      	  return found;
+	}
     }
+  else
+    {
+      if (xtf_context)
+	{
+	  found = expand((proj && *proj) ? proj : project, pqid, "xsf");
+	  if (!access(found,R_OK))
+	    {
+	      if (verbose)
+		fprintf(stderr,"ce_xtf: using %s\n",found);
+	      return found;
+	    }
+	  found = expand((proj && *proj) ? proj : project, pqid, "xtf");
+	  if (!access(found,R_OK))
+	    {
+	      if (verbose)
+		fprintf(stderr,"ce_xtf: using %s\n",found);
+	      return found;
+	    }
+	}
+      else
+	{
+	  found = expand((proj && *proj) ? proj : project, pqid, cfg.ext);
+	  if (!access(found,R_OK))
+	    {
+	      if (verbose)
+		fprintf(stderr,"ce_xtf: using %s\n",found);
+	      return found;
+	    }
+	}
+    }
+
   if (verbose)
-    fprintf(stderr,"not found\n");
+    fprintf(stderr,"ce_xtf: %s not found\n", found);
   return NULL;
 }
 
@@ -160,16 +173,9 @@ ce_file(const unsigned char *idp)
       pd = (unsigned char *)strchr((char*)idp,'.');
       strncpy((char*)base,(char*)idp,pd-idp);
       base[pd-idp] = '\0';
-#if 0
-      if (l2)
-	strcat(base,project_en);
-#endif
-
       if (!hash_find(seen_files,base))
 	{
-	  const char *fn = (l2 
-			    ? l2_findfile(proj,pqid,(char*)base) 
-			    : findfile(pqid,(char*)base));
+	  const char *fn = l2_findfile(proj,pqid,(char*)base);
 	  if (fn)
 	    list_add(files,npool_copy((unsigned char *)fn, xtf_pool));
 	  /* In KWIC mode we re-read the file for each entry */
@@ -181,9 +187,7 @@ ce_file(const unsigned char *idp)
     {
       if (!hash_find(seen_files,(unsigned char *)pqid))
 	{
-	  const char *fn = (l2
-			    ? l2_findfile(proj,pqid,NULL)
-			    : findfile(pqid,NULL));
+	  const char *fn = l2_findfile(proj,pqid,NULL);
 	  if (fn)
 	    list_add(files,npool_copy((unsigned char *)fn,xtf_pool));
 	  /* add this to the hash regardless of found status;
@@ -231,6 +235,8 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
 	      *dot = '.';
 	    }
 	}
+      if (verbose)
+	fprintf(stderr,"ce_xtf: adding ID %s to xtf_start\n", start_id);
       hash_add(xtf_start, (unsigned char *)start_id, &one);
       if (pending_heading)
 	{
@@ -239,6 +245,8 @@ ce_xtf_save_id(unsigned char *buf, enum rd_state state)
 	}
       break;
     case RD_END:
+      if (verbose)
+	fprintf(stderr,"ce_xtf: adding ID %s to xtf_end\n", start_id);
       hash_add(xtf_end, (unsigned char *)start_id, &one);
       break;
     case RD_SELECT:
@@ -365,10 +373,22 @@ printStart(const char *name, const char **atts)
   const char **ap = atts;
   int xtf_did_selected = 0;
   const char *xid = xml_id(atts);
+  int xtf_lg =  !strcmp(name, xtf_lg_name);
   int xtf_l = !strcmp(name, xtf_l_name);
 
   if (echoing_suspended)
     return;
+
+  if (!ce_l_tag)
+    {
+      if (xtf_lg)
+	{
+	  ce_l_tag = "lg";
+	  /* xtf_l = 1; */
+	}
+      else if (xtf_l)
+	ce_l_tag = "l";
+    }
 
   if (xid && xtf_context)
     {
@@ -395,7 +415,10 @@ printStart(const char *name, const char **atts)
 	  || !strcmp(name, norm_w_name)))
     fputs("</ce:kwic1><ce:kwic2>", ce_out_fp);
 
-  fprintf(ce_out_fp, "<%s", xtf_l ? "ce:l" : prefix(name));
+  if (xtf_l && llg_match(name))
+    fprintf(ce_out_fp, "<ce:%s", ce_l_tag);
+  else
+    fprintf(ce_out_fp, "<%s", prefix(name));
 
   if (atts)
     {
@@ -441,7 +464,8 @@ printStart(const char *name, const char **atts)
       if (xtf_selecting && !xtf_did_selected)
 	fprintf(ce_out_fp, " class=\"selected\"");
     }
-  if (!strcmp(name, xtf_l_name))
+
+  if (xtf_l)
     {
       if (*label)
 	strcpy(last_label, findAttr(atts, "label"));
@@ -449,8 +473,11 @@ printStart(const char *name, const char **atts)
 	strcpy(label, findAttr(atts, "label"));
       fputs("/>", ce_out_fp);
     }
+  else if (xtf_lg)
+    fputs("/>", ce_out_fp);
   else
     fputc('>', ce_out_fp);
+
   xtf_selecting = 0;
 }
 
@@ -458,7 +485,7 @@ void
 printEnd(const char *name)
 {
   if (echoing_suspended
-      || !strcmp(name, xtf_l_name))
+      || llg_match(name))
     return;
 
   printText((const char *)charData_retrieve());
@@ -534,13 +561,16 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 {
   const char *xid = xml_id(atts);
 
+  if (xid && verbose)
+    fprintf(stderr,"ce_xtf: ce_xtf_sH found ID %s\n", xid);
+
   if (xid && hash_find(xtf_start, (unsigned char *)xid))
     {
       unsigned char *h = hash_find(xtf_headings, (unsigned char *)xid);
-      /* This can be gdl:w or xtf:l */
+      /* This can be gdl:w or xtf:l(g) */
       charData_discard();
       
-      /* if it is xtf:l we may not have dumped ce:data yet;
+      /* if it is xtf:l(g) we may not have dumped ce:data yet;
 	 this can only happen here if we are doing a line 
 	 range
        */
@@ -561,9 +591,13 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
     } 
   else if (echoing)
     {
-      if (!is_xtf(name) || !strcmp(&name[strlen(name)-2], "|l"))
+      if (!is_xtf(name) 
+	  || !strcmp(&name[strlen(name)-2], "|l") 
+	  || !strcmp(&name[strlen(name)-3], "|lg")
+	  || !strcmp(&name[strlen(name)-2], "|v")
+	  )
 	{
-	  /* this can be gdl:* or xtf:l (we've ruled out all other 
+	  /* this can be gdl:* or xtf:l(g) (we've ruled out all other 
 	     xtf nodes in the condition above)
 	  */
 	  printStart(name, atts);
@@ -575,7 +609,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
     }
   else
     {
-      /* If this is an xtf:l node which contains a g:w that
+      /* If this is an xtf:l(g) node which contains a g:w that
 	 starts a range, we need to start echoing structure
        */
       if (!strcmp(name, xtf_l_name) && xid && hash_find(xtf_lines, (unsigned char *)xid))
@@ -588,7 +622,8 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	{
 	  const char *localName = name + strlen(xtf_ns_uri) + 1;
 	  if (!strcmp(localName, "transliteration")
-	      || !strcmp(localName, "composite"))
+	      || !strcmp(localName, "composite")
+	      || !strcmp(localName, "score"))
 	    {
 	      strcpy(text_name, findAttr(atts, "n"));
 	      strcpy(text_id, findAttr(atts, "xml:id"));
@@ -609,10 +644,9 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 void
 ce_xtf_eH(void *userData, const char *name)
 {
-  if (echoing
-      && (!is_xtf(name) || !strcmp(&name[strlen(name)-2], "|l")))
+  if (echoing && (!is_xtf(name) || llg_match(name) || !strcmp(&name[strlen(name)-2], "|v")))
     {
-      if (this_node_terminates)
+      if (this_node_terminates && (!ce_l_tag || (llg_match(name))))
 	{
 	  /* always print the tag */
 	  printEnd(name);
@@ -627,7 +661,7 @@ ce_xtf_eH(void *userData, const char *name)
 		fputs("<ce:end/>", ce_out_fp);
 	      echoing = 1;
 	    }
-	  else if (!strcmp(&name[strlen(name)-2], "|l"))
+	  else if (llg_match(name))
 	    {
 	      if (echoing == 2)
 		fputs("<ce:end/>", ce_out_fp);
@@ -643,6 +677,7 @@ ce_xtf_eH(void *userData, const char *name)
 	      *label = '\0';
 	      echoing = 0;
 	      this_node_terminates = 0;
+	      ce_l_tag = NULL;
 	    }
 	  else
 	    {
@@ -665,6 +700,8 @@ ce_xtf_eH(void *userData, const char *name)
       charData_discard();
     }
 }
+
+/* r -3 -l -p cmawro </tmp/p3.c1xvvW/pgwrap.out */
 
 const char **
 list2charstarstar(List *l)
