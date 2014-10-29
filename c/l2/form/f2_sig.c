@@ -28,6 +28,9 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (strstr((const char *)fp->lang, "-949"))
     wild_form = 1;
 
+  if (BIT_ISSET(fp->flags, F2_FLAGS_NORM_IS_CF)) 
+    fp->cf = fp->norm;
+
   sprintf((char*)buf,"@%s%%%s:%s=%s[%s//%s]%s'%s",
 	  (char*)(fp->project),
 	  (char*)(fp->lang),
