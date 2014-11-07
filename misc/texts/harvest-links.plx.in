@@ -118,9 +118,6 @@ process_project {
 	my ($prj,$pqx) = ($1,$2);
 	index_text($t, $prj, $pqx);
     }
-    open(L, '>01tmp/linkindex.dump');
-    print L Dumper(\%linkindex);
-    close(L);
     foreach my $t (@texts) {
 	%defs = ();
 	%symwarned = ();
@@ -186,7 +183,7 @@ process_project {
 	}
 	print LINKBASE '</refs>';
     }
-    
+
 #print STDERR "##########PENDING##########\n";
 #print STDERR join("\n", keys %pending),"\n";
 #print STDERR "##########SEEN##########\n";
@@ -201,6 +198,10 @@ process_project {
     }
     print LINKBASE '</project>';
 }
+
+open(L, '>01tmp/linkindex.dump');
+print L Dumper(\%linkindex);
+close(L);
 
 ##########################################################################
 
@@ -323,7 +324,7 @@ process_protocol {
 	    warn "harvest-links.plx: processing link def $text\n" if $verbose;
 	    if ($text =~ /^(.*?):(.*?)$/) {
 		my($proto_prj,$proto_pqx) = ($1,$2);
-		index_text(expand_in_project(undef,"$proto_pqx.xtf", $proto_prj),$prj,$pqx) unless $indexed{"$prj:$pqx"};
+		index_text(expand_in_project(undef,"$proto_pqx.xtf", $proto_prj),$proto_prj,$proto_pqx) unless $indexed{"$proto_prj:$proto_pqx"};
 	    } else {
 		index_text(expand_in_project(undef,"$text.xtf", $project),$prj,$pqx) unless $indexed{$project.$text};
 	    }
@@ -339,6 +340,7 @@ process_protocol {
     } elsif ($link =~ /^source/) {
 	my ($text,$name) 
 	    = ($link =~ /^source\s+((.*?):[PQX]\d+)(?:\s+=\s+(.*))?$/);
+	warn "harvest-links.plx: processing link source $text\n" if $verbose;
 	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
 	    print STDERR "$file:$line: $tid -- recommend source PROJECT:Pxxxxxx = name\n"
 		unless $name;
@@ -352,6 +354,7 @@ process_protocol {
     } elsif ($link =~ /^parallel/) {
 	my ($text,$name) 
 	    = ($link =~ /^parallel\s+((.*?):[PQX]\d+)(?:\s+=\s+(.*))?$/);
+	warn "harvest-links.plx: processing link parallel $text\n" if $verbose;
 	if ($text && $text =~ /^(.*?):([PQX]\d+)/) {
 	    print STDERR "$file:$line: $tid -- recommend parallel Pxxxxxx = name\n"
 		unless $name;
@@ -366,6 +369,7 @@ process_protocol {
     } elsif ($link =~ /^(?:<<|>>|\|\|)/) {
 	my $lid = xid($last_l);
 	my($type,$sym,$label) = ($link =~ /^(<<|>>|\|\|)\s*([A-Za-z][A-Za-z0-9₀-₉]*)\s+(.*?)\s*$/);
+	warn "harvest-links.plx: processing link $type $sym $label\n" if $verbose;
 	if ($type && $sym && $label) {
 	    if ($label =~ s/\s*(["~|])//) {
 		# one day implement this

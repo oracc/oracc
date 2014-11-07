@@ -23,6 +23,8 @@ my $verbose = 0;
 die "scoregen.plx: must be run from a project directory\n"
     unless $project;
 
+warn "scoregen: beginning score generation\n";
+
 GetOptions(
     'dryrun'=>\$dryrun,
     'force'=>\$force,
@@ -169,6 +171,7 @@ findProjNode {
 sub
 create_rel_lists {
     my $xlinkbase = load_xml($linkbase); return unless $linkbase;
+    warn "scoregen: using linkbase $linkbase\n";
     my $projNode = findProjNode($xlinkbase->getDocumentElement()); return unless $projNode;
     foreach my $l ($projNode->childNodes()) {
 	next unless $l->isa('XML::LibXML::Element');
@@ -226,6 +229,7 @@ create_rel_lists {
     open(D,'>01tmp/exemplar_lists.dump');
     print Dumper \%exemplar_lists;
     print Dumper \%exemplar_links;
+    print Dumper \%Q;
     close(D);
 }
 
