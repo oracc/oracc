@@ -147,7 +147,7 @@ set_state {
 	return PRX;
     } else {
 	system 'touch', '01bld/cancel';
-	die "l2p1-project-sig.plx: unknown sigs file `$_[0]'; stop\n";
+	die "l2p1-project-sig.plx: unknown sigs file `$_[0]'; REBUILD CANCELLED\n";
     }
 }
 

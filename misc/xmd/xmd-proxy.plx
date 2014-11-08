@@ -26,7 +26,7 @@ xmd_from_list(@xmdfiles)
 
 if ($status) {
     system 'touch', '01bld/cancel';
-    exit(1);
+    die "xmd-proxy.plx: error in proxy processing. REBUILD CANCELLED.\n";
 } else {
     exit(0);
 }
