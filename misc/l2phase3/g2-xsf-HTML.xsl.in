@@ -161,11 +161,14 @@
     <xsl:when test="self::xtf:score">
       <xsl:variable name="pid" select="substring-after(/*/@xml:id,'s.')"/>
       <xsl:for-each select=".//xtf:lg">
-	<table class="score-block">
-	  <xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',/*/@xml:id,'.',position())"/></xsl:attribute>
-	  <xsl:call-template name="base-attr"/>
-	  <xsl:apply-templates/>
-	</table>
+	<div class="score_map">
+	  <table class="score-block">
+	    <xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',@xml:id)"/></xsl:attribute>
+	    <!--<xsl:call-template name="base-attr"/>-->
+	    <xsl:apply-templates/>
+	  </table>
+	</div>
+	<hr class="score-block-sep"/>
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
@@ -196,17 +199,19 @@
   <xsl:apply-templates select="*"/>
 </xsl:template>
 
+<!--
 <xsl:template match="xtf:score[not(@score-word='yes')]">
   <xsl:variable name="pid" select="substring-after(/*/@xml:id,'s.')"/>
   <score n="{@n}">
-    <xsl:for-each select="xtf:lg">
-      <table block-id="{@n}" class="score-block">
-	<xsl:call-template name="base-attr"/>
+    <xsl:for-each select=".//xtf:lg">
+      <table class="score-block">
+	<xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',@xml:id)"/></xsl:attribute>
 	<xsl:apply-templates/>
       </table>
     </xsl:for-each>
   </score>
 </xsl:template>
+-->
 
 <xsl:template match="xtf:m">
   <tr class="h1">
