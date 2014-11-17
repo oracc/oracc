@@ -1141,7 +1141,8 @@
     <xsl:choose>
       <xsl:when test="string-length($href) > 0">
 	<xsl:choose>
-	  <xsl:when test="not(/xtf:score[@score-type='legacy'])">
+<!--	  <xsl:when test="not(/xtf:score[@score-type='legacy'])"> -->
+          <xsl:when test="false()">
 	    <td>
 	      <span class="lnuml enum-newscore">
 		<xsl:choose>
@@ -1173,7 +1174,8 @@
             <td><xsl:apply-templates/></td>
           </xsl:otherwise>
         </xsl:choose>
-	<xsl:if test="/xtf:score[@score-type='legacy']">
+<!--	<xsl:if test="/xtf:score[@score-type='legacy']"> -->
+	<xsl:if test="true()">
 	  <td>
 	    <span class="enum">
 	      <xsl:choose>
