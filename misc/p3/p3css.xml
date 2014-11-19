@@ -236,6 +236,10 @@ span.obf-letter { border: none; }
 .ogslres h1 { margin-left: 3em;  }
 .ogslres p { margin-left: 4em;  }
 
+table.score-block { width: 100%; }
+td.sbnum { width: 5%; }
+td.enum  { width: 15%; }
+
 /* .obf p.icount { margin: 0px; text-align: left;} */
 
 /*    

@@ -141,7 +141,7 @@
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
-	<xsl:with-param name="title" select="'proofing'"/>
+	<xsl:with-param name="title" select="concat(@project, ' score of ', @n)"/>
 	<xsl:with-param name="webtype" select="'oraccscreen'"/>
 	<xsl:with-param name="with-trailer" select="false()"/>
 	<xsl:with-param name="standalone" select="true()"/>
@@ -646,7 +646,7 @@
   <xsl:variable name="class-val">
     <xsl:choose>
       <xsl:when test="/xtf:score[not(@score-type='legacy')]">
-	<xsl:text>lnuml</xsl:text>
+	<xsl:text>sbnum</xsl:text>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>lnum</xsl:text>
@@ -1146,15 +1146,13 @@
 	    <td>
 	      <span class="lnuml enum-newscore">
 		<xsl:choose>
-		  <xsl:when test="@varnum">
-<!--		    <a href="javascript:showexemplar('{@p}','{@hlid}')"> -->
-		      <xsl:value-of select="translate(@varnum,'_','&#xa0;')"/>
-<!--		    </a>		-->
+		  <xsl:when test="contains(@p, ':')">
+		    <a href="javascript:showexemplar('{substring-before(@p,'')}','{substring-after(@p,'')}','{@hlid}','')">
+		      <xsl:value-of select="concat(@n,' ',@label)"/>
+		    </a>
 		  </xsl:when>
 		  <xsl:otherwise>
-		    <a href="javascript:showexemplar('{@p}','{@hlid}')">
-		      <xsl:value-of select="concat(@n,' ',@l)"/>
-		    </a>
+		    <xsl:value-of select="concat(@n,' ',@label)"/>
 		  </xsl:otherwise>
 		</xsl:choose>
 	      </span>	    
@@ -1176,13 +1174,22 @@
         </xsl:choose>
 <!--	<xsl:if test="/xtf:score[@score-type='legacy']"> -->
 	<xsl:if test="true()">
-	  <td>
+	  <td class="witnum">
 	    <span class="enum">
 	      <xsl:choose>
 		<xsl:when test="@varnum">
-		  <a href="javascript:showexemplar('{@p}','{@hlid}')">
-		    <xsl:value-of select="@varnum"/>
-		  </a>		
+		  <xsl:choose>
+		    <xsl:when test="contains(@p, ':')">
+		      <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','')">
+			<xsl:variable name="ex" select="substring-before(substring-after(@label,' ['),']')"/>
+			<xsl:variable name="ln" select="substring-before(@label,' [')"/>
+			<xsl:value-of select="concat($ex,'=',@n,', ',$ln)"/>
+		      </a>
+		    </xsl:when>
+		    <xsl:otherwise>
+		      <xsl:value-of select="concat(@n,' ',@label)"/>
+		    </xsl:otherwise>
+		  </xsl:choose>
 		</xsl:when>
 		<xsl:otherwise>
 		  <a href="javascript:showexemplar('{@p}','{@hlid}')">
