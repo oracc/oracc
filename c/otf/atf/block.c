@@ -24,6 +24,7 @@
 #include "lemline.h"
 #include "note.h"
 #include "wordmatrix.h"
+#include "symbolattr.h"
 
 extern int lem_autolem, mylines;
 
@@ -1768,6 +1769,7 @@ line_var(unsigned char *lp)
   unsigned char *end = lp+xxstrlen(lp);
   unsigned char *n, *n_vbar;
   unsigned char lab[128];
+  struct symbolattr *sa = NULL;
 
   /* FIXME: stabilize this so that the same siglum maps
      to the same exemplar_offset within each text and 
@@ -1785,6 +1787,15 @@ line_var(unsigned char *lp)
   if ((n_vbar = (unsigned char*)strchr((char*)n,'|')))
     *n_vbar++ = '\0';
   appendAttr(lnode,attr(a_varnum,n));
+
+  sa = symbolattr_get(textid, n);
+  if (sa)
+    {
+      appendAttr(lnode,attr(a_hlid,line_id_buf));
+      appendAttr(lnode,attr(a_n,sa->pname));
+      appendAttr(lnode,attr(a_p,sa->qualified_id));
+    }
+
   sprintf((char*)lab, "%s [%s]", curr_line_label, n);
   appendAttr(lnode,attr(a_label,lab));
   if (n_vbar)

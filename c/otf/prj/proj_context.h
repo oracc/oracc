@@ -21,5 +21,6 @@ extern Hash_table *known_projects;
 
 extern void proj_init(struct run_context *runp, const char *project);
 extern void proj_term(struct proj_context *);
+extern void proj_default(struct run_context *r);
 
 #endif/*PROJ_CONTEXT_*/

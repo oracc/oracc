@@ -9,7 +9,7 @@ noinst_SCRIPTS=mk_rnc.sh
 
 libcdf_la_SOURCES = \
 	catvec.c cdf_rnc.c linkcheck.c loadlabels.c \
-	pnames.c rnvif.c tree.c xmlnames.c
+	pnames.c rnvif.c symbolattr.c tree.c xmlnames.c
 
 catvec.c: catvec.c.in
 	$(ORACCIFY) catvec.c.in

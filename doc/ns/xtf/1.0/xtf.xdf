@@ -1305,6 +1305,7 @@ var = element v {
   attribute varnum { text | "*" } ,
   attribute label  { text } ,
   attribute ex_label { text }? ,
+  e-attlist , 
   (l.inner | cell+)
 }
 </d:rnc>

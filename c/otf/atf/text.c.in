@@ -48,6 +48,8 @@ extern size_t max_cat_id;
 
 char text_idbuf[16];
 
+extern void note_initialize_text(void);
+
 extern int do_cdl;
 extern int harvest_notices;
 extern int lem_autolem, lem_do_wrapup, lem_extended, 
@@ -221,7 +223,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	  if (fallback_project)
 	    {
 	      proj_init(run, fallback_project);
-	      project = (const char*)npool_copy(fallback_project, run->pool);
+	      project = (const char*)npool_copy((unsigned char *)fallback_project, run->pool);
 	    }
 	  else
 	    {

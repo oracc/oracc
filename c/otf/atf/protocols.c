@@ -26,6 +26,7 @@
 #include "inline.h"
 #include "proj_context.h"
 #include "xcl.h"
+#include "symbolattr.h"
 
 #define OLDLEM 0
 
@@ -102,7 +103,10 @@ protocols(struct run_context *run,
 	      if (doctype == e_composite || doctype == e_score)
 		mylines = 1;
 	      if (doctype == e_score)
-		parse_score_doctype(np, s+1);
+		{
+		  parse_score_doctype(np, s+1);
+		  symbolattr_init();
+		}
 	    }
 	  *s = save;
 	}
@@ -204,6 +208,7 @@ parse_score_doctype(struct node *np, unsigned char *line)
     }
 }
 
+#if 0
 static const char *
 project_of(const char *p)
 {
@@ -216,6 +221,7 @@ project_of(const char *p)
     --p;
   return buf;
 }
+#endif
 
 int
 protocol(struct run_context *run,
@@ -261,7 +267,8 @@ protocol(struct run_context *run,
 	{
 	  if (!run->proj || !run->proj->xpd)
 	    {
-	      project_handler(run, parent, scope, level, (unsigned const char *)"cdli");
+	      static char cdlibuf[5] = { 'c', 'd', 'l', 'i', '\0' };
+	      project_handler(run, parent, scope, level, (unsigned char *)cdlibuf);
 #if 0
 	      vwarning("must give '#project' protocol before '#atf:' protocols");
 	      return;
@@ -537,7 +544,7 @@ lemmatizer_handler(struct node *parent, enum t_scope scope,
 	  l += 3;
 	  while (isspace(*l))
 	    ++l;
-	  xcl_set_sparse_fields(l);
+	  xcl_set_sparse_fields((char *)l);
 	}
       else
 	vwarning("bad sparse protocol: %s", l);

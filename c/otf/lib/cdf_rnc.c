@@ -778,6 +778,7 @@ const char * const cdf_rnc[] = {
   "  attribute varnum { text | \"*\" } ,\n",
   "  attribute label  { text } ,\n",
   "  attribute ex_label { text }? ,\n",
+  "  e-attlist , \n",
   "  (l.inner | cell+)\n",
   "}\n",
   "\n",

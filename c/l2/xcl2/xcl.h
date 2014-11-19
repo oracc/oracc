@@ -140,7 +140,7 @@ typedef void xcl_l_fnc(struct xcl_context *,struct xcl_l*);
 
 extern int sparse_lem, sparse_skipping;
 extern int xcl_is_sparse_field(const char *f);
-extern void xcl_set_sparse_skipping(const char *f);
+extern void xcl_set_sparse_fields(const char *f);
 extern void xcl_set_sparse_skipping(const char *f);
 
 extern struct xcl_context *text_xc;

@@ -1,0 +1,900 @@
+#Concatenated cdf.rnc schema built by mk_cdfrnc_c.plx
+#See http://enlil.museum.upenn.edu/cdl/doc/CDF/ for more info
+default namespace = "http://oracc.org/ns/xtf/1.0"
+namespace n = "http://oracc.org/ns/norm/1.0"
+namespace xtr = "http://oracc.org/ns/xtr/1.0"
+namespace note = "http://oracc.org/ns/note/1.0"
+namespace ci = "http://oracc.org/cdf-inline/1.0"
+namespace c = "http://oracc.org/cdf/1.0"
+namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace syn = "http://oracc.org/ns/syntax/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+lV = xsd:string {
+   pattern = "[aeiu]([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+lVCv = xsd:string {
+  pattern = "([aeiu][\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz])+[aeiu]?([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+lCVc = xsd:string {
+  pattern = "([\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz][aeiu])+[\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]?([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+lVCCvc = xsd:string {
+  pattern = "([aeiu][\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]{1,2})+([aeiu][\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]?)([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+lCVCCvc = xsd:string {
+  pattern = "(suen|kuara|[\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]([aeiu][\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]{1,2})+([aeiu][\x{2BE}bdegh\x{1E2B}i\x{14B}klmnpqrs\x{161}\x{1E63}\x{15B}t\x{1E6D}uwyz]?))([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+uV = xsd:string {
+   pattern = "[AEIU]([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+uVCv = xsd:string {
+  pattern = "([AEIU][\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ])+[AEIU]?([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+uCVc = xsd:string {
+  pattern = "([\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ][AEIU])+[\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]?([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+uVCCvc = xsd:string {
+  pattern = "([AEIU][\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]{1,2})+([AEIU][\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]?)([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+uCVCCvc = xsd:string {
+  pattern = "[\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]([AEIU][\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]{1,2})+([AEIU][\x{2BE}BDEGH\x{1E2A}I\x{14A}KLMNPQRS\x{160}\x{1E62}\x{15A}T\x{1E6C}UWYZ]?)([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
+}
+
+grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+form     = attribute form { text }
+sb       = element g:b { s.model }
+vb       = element g:b { v.model }
+punct    = element g:p { p.model }
+lang     = attribute xml:lang { xsd:language }
+gsurro   = 
+  element g:surro {
+    delim? , (s|c|n|punct) , groupgroup
+  }
+
+# Values
+#v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
+v.model = text
+v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
+#dingir   = element g:v { g.meta , lang? , ("d") }
+#mister   = element g:v { g.meta , lang? , ("m") }
+
+# Names
+#s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num
+s.model  = text
+
+lst    = xsd:string {
+  pattern="(..?SL|ABZ|BAU|HZL|KWU|LAK|M|MEA|MZL|REC|RSP|ZATU)\d+[a-z]*"
+}
+
+#[ABCD] is a stop-gap until lateuruk numbers are fixed
+num      = xsd:string { pattern = "N|N\d+[ABCD]?" }
+
+s        = element g:s { form? , g.meta , (s.model | (sb , mods+)) }
+
+# Qualified graphemes
+q        = element g:q { form? , g.meta , (v|s|c) , (s|c|n) }
+
+# Numbers
+n.model  = r , (v|s|c|q)?
+
+r        = element g:r {
+             xsd:string {
+	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
+
+n        = element g:n { form? , g.meta , sexified?, n.model , mods* }
+sexified = attribute sexified { text }
+
+# Modifiers
+mods     = modifier | allograph | formvar
+
+modifier = element g:m { xsd:string { pattern = "[a-z]|[0-9]{1,3}" } }
+
+allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }
+
+formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
+
+# Compounds
+c.model  = (compound , (o.join , compound)+) | unary | binary | ternary | (g , mods+)
+
+c        = element g:c { form? , g.meta , c.model , mods* }
+
+g        = element g:g { g.meta , c.model , mods* }
+
+compound = single | unary | binary
+
+single   = n | s | c | (g,mods*) | q
+
+unary    = o.unary , single
+
+binary   = single , o.binary , single
+
+ternary   = single , o.binary , single , o.binary , single
+
+o.join   = element g:o { attribute g:type { "beside" | "joining" | "reordered" } }
+
+o.unary  = element g:o { attribute g:type { "repeated" } , xsd:integer }
+
+o.binary =
+  element g:o {
+    attribute g:type {
+      "containing" | "above" | "crossing" | "opposing"
+    }
+  }
+
+# Punctuation
+p.model =
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
+    g.meta , 
+    (v|q|s|n|c)?
+g.meta = 
+  break? , status.flags? , status.spans? , 
+  paleography.attr? , linguistic.attr? , proximity.attr? ,
+  opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
+  varnum? , sign_attr? , utf8? , delim? ,
+  attribute xml:id { xsd:ID }? ,
+  breakStart? , breakEnd? ,
+  damageStart? , damageEnd? ,
+  surroStart? , surroEnd? ,
+  statusStart? , statusEnd? ,
+  accented?
+
+accented = attribute g:accented { text }
+breakStart = attribute g:breakStart { "1" }
+breakEnd = attribute g:breakEnd { xsd:IDREF }
+damageStart = attribute g:damageStart { "1" }
+damageEnd = attribute g:damageEnd { xsd:IDREF }
+surroStart = attribute g:surroStart { "1" }
+surroEnd = attribute g:surroEnd { xsd:IDREF }
+statusStart = attribute g:statusStart { "1" }
+statusEnd = attribute g:statusEnd { xsd:IDREF }
+
+break = attribute g:break  { "damaged" | "missing" }
+opener = attribute g:o     { text }
+closer = attribute g:c     { text }
+hsqb_o = attribute g:ho    { "1" }
+hsqb_c = attribute g:hc    { "1" }
+emhyph = attribute g:em    { "1" }
+sign_attr = attribute g:sign  { text }
+utf8   = attribute g:utf8  { text }
+delim  = attribute g:delim { text }
+varnum = (
+  attribute g:varo { text }? , 
+  attribute g:vari { text }? ,  
+  attribute g:varc { text }?
+)
+
+status.flags =
+  attribute g:collated { xsd:boolean } ? ,
+  attribute g:queried  { xsd:boolean } ? ,
+  attribute g:remarked { xsd:boolean } ?
+
+gloss = det | glo
+pos = attribute g:pos { "pre" | "post" | "free" }
+#det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
+#                    (dingir | mister | word.content*)}
+det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
+                    (word.content*)}
+dtyp= attribute g:role { "phonetic" | "semantic" }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
+
+status.spans =
+  attribute g:status {
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied" | "some"
+  }
+
+paleography.attr =
+  attribute g:script      { xsd:NCName }
+
+linguistic.attr =
+  attribute xml:lang      { xsd:language } ? ,
+#  attribute g:rws         { "emegir" | "emesal" | "udgalnun" }? ,
+  (attribute g:role       { "sign" | "ideo" | "num" | "syll" }
+  | (attribute g:role     { "logo" } ,
+     attribute g:logolang { xsd:language }))
+
+proximity.attr = 
+  attribute g:prox { xsd:integer }
+
+nongrapheme = 
+  element g:x {
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
+        , status.spans , opener? , closer? , break? )),
+    delim? , text? , varnum? ,
+    attribute xml:id { xsd:ID }? ,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? , emhyph? ,
+    surroStart? , surroEnd? ,
+    statusStart? , statusEnd? ,
+    status.flags?
+    }
+
+word.content = text | group | grapheme | nongrapheme
+
+words = (word | sword.head | sword.cont | nonword | nongrapheme)*
+
+word = 
+  element g:w {
+    word.attributes,
+    word.content*
+  }
+
+sword.head = 
+  element g:w {
+    attribute headform { text },
+    attribute contrefs { xsd:IDREFS },
+    word.attributes,
+    word.content*
+  }
+
+sword.cont = 
+  element g:swc {
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute headref { xsd:IDREF },
+    attribute swc-final { "1" | "0" },
+    delim? ,
+    word.content*
+  }
+
+word.attributes = 
+    attribute xml:id { xsd:ID } ,
+    attribute xml:lang { xsd:language } ,
+    attribute form  { text }? ,
+    attribute lemma { text }? ,
+    attribute guide { text }? ,
+    attribute sense { text }? ,
+    attribute pos   { text }? ,
+    attribute morph { text }? ,
+    attribute base  { text }? ,
+    attribute norm  { text }? ,
+    delim? ,
+    syntax.attributes*
+
+nonword = 
+  element g:nonw {
+    (
+    attribute xml:id { xsd:ID }? ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "comment" | "dollar" | "excised" | "punct" | "surro" | "vari" }? ,
+    attribute form { text }? ,
+    attribute lemma { text }? ,
+    syntax.attributes* ,
+    break? , status.flags? , status.spans? , opener? , closer? , delim? , g.meta , 
+    word.content*
+    )
+    |
+    (
+    attribute type { "notelink" },
+    noteref,
+    noteauto?,
+    text
+    )
+  }
+
+group = 
+  element g:gg {
+    attribute g:type { 
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+    } ,
+    g.meta ,
+    (group | grapheme | normseg)+
+  }
+
+groupgroup = 
+  element g:gg {
+    attribute g:type { "group" } ,
+    g.meta ,
+    (group | grapheme | normword)+
+  }
+
+syntax.attributes = 
+  (attribute syn:brk-before { text } |
+   attribute syn:brk-after  { text } |
+   attribute syn:ub-before  { text } |
+   attribute syn:ub-after   { text } )
+
+normword = 
+  element n:w { 
+    word.attributes , 
+    break? , status.flags? , status.spans? , opener? , closer? , 
+    hsqb_o? , hsqb_c? ,
+    (normwordword | normwordgroup | gloss | nongrapheme | group)* ,
+    syntax.attributes*,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? ,
+    statusStart? , statusEnd?
+  }
+
+normwordgroup = 
+  element n:word-group {
+     attribute g:type { "alternation" } ,
+     attribute g:delim { "-" }? ,
+     element n:grouped-word { normwordword }+
+  }
+
+normwordword = ( text | (normseg | normgroup)+)
+
+normseg =
+  element n:s {
+    n.meta ,
+    g.meta ,
+    text
+  }
+
+n.meta = normnum?
+
+normnum = attribute n:num { "yes" }
+
+normgroup = 
+  element n:g {
+    attribute g:type {
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "numword"
+    } ,
+    g.meta ,
+    (normgroup | normseg)+
+  }
+
+translation =
+  element xtr:translation {
+    id,
+    attribute ref      { xsd:NMTOKEN },
+    attribute n        { text },
+    attribute project  { text },
+    attribute xml:lang { xsd:NMTOKEN },
+    attribute xtr:code { xsd:NMTOKEN },
+    attribute xtr:type { 
+      "interlinear" | "parallel" | "labeled" | "unitary" 
+    },
+    attribute xtr:cols { xsd:nonNegativeInteger }?,
+    (trans-unit | trans-note | trans-dollar | trans-comment | h)*,
+    map?
+  }
+
+id  = attribute xml:id { xsd:ID }
+cid = attribute xtr:cid { xsd:IDREF }
+ctr = attribute class { "tr" }
+
+trans-comment =
+  element xh:p {
+    attribute class { "tr-comment" },
+    htext*
+  }
+
+trans-dollar =
+  element xh:p {
+    attribute class { "dollar" },
+    silent?,
+    (standalone
+     | (ref | refs | (unit,refs?))),
+    new-labels? ,
+    htext* ,
+    innerp*
+  }
+
+trans-note = 
+  element xh:div {
+    attribute class { "note" },
+    id,
+    noteauto?,
+    element xh:p { ctr , xtr-notemark , htext } ,
+    (element xh:p { ctr , htext } 
+     | trans-comment)*
+  }
+
+trans-unit = 
+  element xh:p {
+    id,
+    cid?,
+    ctr,
+    xtr-label, se-label,
+    (ref | refs | (unit,refs?)),
+    new-labels? ,
+    overlap? ,
+    spanall? ,
+    (innerp+ | htext)
+  }
+
+h = h1 | h2 | h3
+h1 = element xh:h1 { h-model }
+h2 = element xh:h2 { h-model }
+h3 = element xh:h3 { h-model }
+
+h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
+
+innerp = element xh:innerp { htext | (comment, text) }
+htext = (text | trword | trcell | foreign | literal | xtr-notelink 
+         | supplied | uncertain | rspan | bspan | ispan | sign
+	 | bispan | smaller | sc | gdlspan | sup | lab | cun 
+	 | xtr-notelink | xtr-notemark)*
+
+trword    = element xh:span { attribute class      { "w" },  
+			      attribute xtr:lem    { text }?,
+			      attribute xtr:disamb { text }?,
+			      attribute xtr:form   { text }?,
+			      id,
+			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
+
+trcell	  = element xh:span { attribute class { "cell" },  
+			      attribute xtr:span { xsd:nonNegativeInteger }?,
+			      htext }
+comment   = attribute class { "tr-comment" }
+foreign   = element xh:span { attribute class { "foreign" },  htext }
+literal   = element xh:span { attribute class { "literal" },  htext }
+supplied  = element xh:span { attribute class { "supplied" }, htext }
+uncertain = element xh:span { attribute class { "uncertain" },htext }
+rspan     = element xh:span { attribute class { "r" },        htext }
+bspan     = element xh:span { attribute class { "b" },        htext }
+ispan     = element xh:span { attribute class { "i" },        htext }
+bispan    = element xh:span { attribute class { "bi" },       htext }
+gdlspan   = element xh:span { attribute class { "gdl" },      l.inner }
+lab       = element xh:span { attribute class { "lab" },      htext }
+sc        = element xh:span { attribute class { "sc" },       htext }
+sign      = element xh:span { attribute class { "sign" },     htext }
+smaller   = element xh:span { attribute class { "smaller" },  htext }
+sup       = element xh:span { attribute class { "sup" | "up" },      htext }
+cun       = element xh:span { attribute class { "cun" },      htext }
+
+xtr-notelink = 
+  element xh:span {
+    attribute class { "notelink" },
+    noteref,
+    noteauto?,
+    text
+  }
+
+xtr-notemark = 
+  element xh:span {
+    attribute class { "notemark" },
+    text
+  }
+
+ref       = attribute xtr:ref     { xsd:IDREF }
+hdr-ref   = attribute xtr:hdr-ref { xsd:IDREF }
+refs      = start-ref , end-ref , all-refs? , new-labels? , rows
+start-ref = attribute xtr:sref    { xsd:IDREF  }
+end-ref   = attribute xtr:eref    { xsd:IDREF  }
+all-refs  = attribute xtr:refs    { xsd:IDREFS }
+uref      = attribute xtr:uref    { xsd:IDREF  }
+nrefs     = attribute xtr:nrefs   { xsd:IDREFS }
+rows 	  = attribute xtr:rows    { xsd:integer }
+overlap   = attribute xtr:overlap { xsd:boolean }
+silent    = attribute xtr:silent  { "1" }
+spanall   = attribute xtr:spanall { "1" }
+standalone= attribute xtr:standalone { "1" }
+xtr-label = (attribute xtr:label { text },
+             attribute xtr:rend-label { text }?)
+se-label = attribute xtr:se_label { text }
+unit  = attribute xtr:unit  { text }
+
+new-labels = 
+	(attribute xtr:lab-start-lnum  { text },
+	 attribute xtr:lab-end-lnum    { text } ?,
+	 attribute xtr:lab-start-label { text },
+	 attribute xtr:lab-end-label   { text } ?
+	)
+
+map =
+  element xtr:map {
+    element xtr:l2t {
+      attribute lid { xsd:IDREF },
+      attribute tid { xsd:IDREF }
+    }*
+  }
+start = xtf | doctype
+xtf = element xtf { proto.outer? , doctype }
+doctype = score | translation | transliteration | composite | atf
+atf = element atf { attribute xml:id   { xsd:ID } , text }
+
+proto.outer = element protocols {
+  attribute scope { text },
+  proto.basket
+}
+
+proto.start = element protocols {
+  attribute scope { text },
+  (  proto.atf | proto.bib | proto.etcsl | proto.key | proto.lemmatizer 
+     | proto.link | proto.project | proto.syntax | proto.version )*
+}
+
+proto.after = proto.note
+
+proto.inter = proto.bib | proto.etcsl | proto.lem | proto.link 
+            | proto.note | proto.psu | proto.var
+
+proto.atf    = element protocol { attribute type { "atf" }    , text }
+proto.basket = element protocol { attribute type { "basket" } , text }
+proto.bib    = element protocol { attribute type { "bib" }    , text }
+proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
+proto.key    = element protocol { attribute type { "key" }    , text }
+proto.lem    = element protocol { attribute type { "lem" }    , text }
+proto.psu    = element protocol { attribute type { "psu" }    , text }
+proto.lemmatizer
+             = element protocol { attribute type { "lemmatizer" }, text }
+proto.link   = element protocol { attribute type { "link" }   , text }
+proto.note   = element protocol { attribute type { "note" }   , text }
+proto.project= element protocol { attribute type { "project" }, text }
+proto.syntax = element protocol { attribute type { "syntax" } , text }
+proto.var    = element protocol { attribute type { "var" }    , text }
+proto.version= element protocol { attribute type { "version" }, text }
+
+comments = cmt | notetext
+cmt = element cmt { text }
+notelabel = attribute note:label { text }
+notemark  = attribute note:mark { text }
+noteauto  = attribute note:auto { text }
+noteref   = attribute note:ref { xsd:IDREF }
+noteblock = (notelink | notetext)
+notelink  = element note:link {
+		notelabel?,
+		noteref,
+		text
+	    }
+notetext  = element note:text {
+		attribute xml:id  { xsd:ID } ,
+		notemark ,
+		noteauto? ,
+		notelabel? ,
+		htext 
+	    }
+
+transliteration =
+  element transliteration {
+    attribute xml:id   { xsd:ID },
+    attribute n        { text },
+    attribute hand     { text }?,
+    attribute xml:lang { xsd:NMTOKEN },
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    (proto.start? , (noteblock | object | nonobject | comments | sealing)*)
+  }
+n.attr = attribute n { text }
+n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
+haslinks = attribute haslinks { xsd:boolean }
+maxcells = attribute cols { xsd:nonNegativeInteger }
+project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } }
+
+composite =
+  element composite {
+    composite-attlist,
+    sigdef*,
+    attribute hand     { text }?,
+    project?,
+    implicit?,
+    haslinks?,
+    maxcells?,
+    proto.start?,
+    composite-content,
+    (referto, comments?)*
+  }
+
+composite-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+
+object = 
+  element object {
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    ( attribute type { known.object }
+     |(attribute type { user.object } , n.attr) 
+    ) ,
+    status.flags,
+    (m.fragment | surface | sealing | comments | nonx | noteblock)*
+  }
+known.object =    xsd:string { pattern="tablet|envelope|prism|bulla" }
+user.object =     xsd:string { pattern="object" }
+nonobject = nonx
+
+surface =
+  element surface { 
+    (implicit 
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (proto.inter | column | nonx | m | comments)* ,
+    (  attribute type { known.surface }
+     |(attribute type { face.surface } , n.attr.lc)
+     |(attribute type { edge.surface } , n.attr.lc?)
+     |(attribute type { user.surface | docket.surface | seal.surface } , n.attr)
+     ),
+    primes?,
+    status.flags,
+    noteblock*
+  }
+
+known.surface =
+  xsd:string {
+    pattern="surface|obverse|reverse|left|right|top|bottom"
+  }
+face.surface = xsd:string { pattern="face" }
+edge.surface = xsd:string { pattern="edge" }
+user.surface = xsd:string { pattern="surface" }
+docket.surface = xsd:string { pattern="docket" }
+seal.surface = xsd:string { pattern="seal" }
+
+sealing =
+  element sealing {
+    attribute xml:id { xsd:ID },
+    attribute label    { text },
+    attribute n { xsd:NMTOKEN },
+    attribute scid { xsd:NMTOKEN }?,
+    (column | nonx | milestone | comments | noteblock)*
+  }
+
+column = 
+  element column { 
+    (implicit
+     | (attribute xml:id   { xsd:ID },
+        attribute label    { text })),
+    (milestone | hdr | lg | l | nonl | nonx | comments | proto.inter)*,
+    attribute n { text },
+    attribute o { text }?,
+    primes?,
+    status.flags
+  }
+
+primes = 
+  attribute primes { xsd:string { pattern="\x{2032}+" } }
+
+hdr = element h {
+  attribute level { xsd:nonNegativeInteger },
+  attribute xml:id   { xsd:ID },
+  htext
+}
+
+milestone = m | m.discourse
+
+m = element m { 
+  attribute type { "division" | "locator" },
+  attribute subtype { text }?,
+  attribute n { text }?,
+  text
+}
+
+m.discourse = element m {
+  attribute type { "discourse" },
+  attribute subtype { "body" | "catchline" | "colophon" | "date" | "linecount" 
+                      | "witnesses" | "signature" | "summary" 
+		      | "sealings" | "sealing" },
+  attribute endflag { "1" }?,
+  text
+}
+
+m.fragment = element m { 
+  attribute type { "locator" },
+  attribute subtype { "fragment" }?,
+  text
+}
+
+implicit = attribute implicit { "1" }
+
+nonx = element nonx { nonx-attlist, text }
+nonl = element nonl { nonl-attlist, text }
+nong = element nong { nong-attlist, text }
+
+nonx-attlist =
+  attribute xml:id { xsd:ID },
+  (attribute label { text },
+   attribute silent { "1" })?,
+  (
+   (attribute strict { "1" },
+    ((attribute ref     { text },
+      attribute scope   { text })
+     |(attribute extent { text },
+       attribute scope  { text },
+       attribute state  { text },
+       attribute flags  { xsd:string {
+                              pattern="[!?*]+"
+			  }}?)))
+  |
+   (attribute strict { "0" },
+    attribute extent { text }?,
+    attribute ref    { text }?,
+    attribute scope  { text }?,
+    attribute state  { text }?)
+  |
+   (attribute strict { "0" },
+    attribute ref    { "none" },
+    attribute type   { "empty" })
+  |
+   (attribute type   { "image" },
+    attribute strict { "0" },
+    attribute ref    { xsd:string {
+                          pattern="[PQX][0-9]+@[0-9]+[a-z]*" 
+		       }},
+    attribute alt    { text })
+  )
+
+non-x-attr-set =
+  attribute type {
+    "newline" | "broken" | "maybe-broken" | "traces"
+    | "maybe-traces" | "blank" | "ruling" | "image"
+    | "seal" | "docket" | "comment" | "bullet" | "other"
+  },
+  attribute unit { "self" | "quantity" | "ref" }?,
+  attribute extent { text }?,
+  attribute ref { text }?,
+  attribute xml:id { xsd:ID }?
+noncolumn-attlist &= non-x-attr-set
+nonl-attlist &= non-x-attr-set
+nong-attlist &= non-x-attr-set
+
+l =
+  element l {
+    attribute xml:id { xsd:ID },
+    attribute n { text },
+    attribute o { text }?,
+    attribute label { text }?,
+    attribute spanall { "1" }?,
+    (cell+ | f+ | (ag | l.inner)*) 
+  }
+
+l.inner = (surro | normword | words | glo)*
+
+cell = element c { span? , (f+ | l.inner) }
+span = attribute span { xsd:nonNegativeInteger }
+
+f = element f { f-attlist, (ag | l.inner)* }
+f-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute xml:lang { xsd:NMTOKEN }?
+
+lg = element lg { 
+  attribute xml:id { xsd:ID }?,
+  maxcells?,
+  attribute n { text }?,
+  (   (l,gus?,nts)
+    | (l,gus?,nts?,(proto.link?,bil+)+)
+    | (l,gus?,lgs) 
+    | (l,gus?,nts,lgs) 
+    | (l,gus?, (e | comments)*)),
+  proto.inter*,
+  var*
+}
+bil = element l { attribute type { "bil" } , l.inner* }
+nts = element l { attribute type { "nts" } , (ag | l.inner)* }
+lgs = element l { attribute type { "lgs" } , grapheme* }
+gus = element l { attribute type { "gus" } , l.inner* }
+var = element v { 
+  attribute varnum { text | "*" } ,
+  attribute label  { text } ,
+  attribute ex_label { text }? ,
+  (l.inner | cell+)
+}
+
+# alignment groups
+ag = element ag { 
+  attribute ref { xsd:string { pattern="[a-z]+" } },
+  attribute form { text }?,
+  l.inner*
+}
+
+surro = element surro { l.inner }
+words |= surro?
+word |= surro?
+
+composite-content = 
+  (noteblock? | milestone | \include | \div | variants | hdr | lg | l | comments | nonl | nonx | proto.inter)*
+
+\include = element include { increfAttr }
+
+referto = element referto { increfAttr }
+
+increfAttr = 
+  (attribute ref { text } , 
+   attribute n { text } ,
+   (attribute from { text },
+    attribute to { text }?)?)
+
+\div =
+  element div {
+    div-attlist, 
+    composite-content
+  }
+div-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute type { xsd:NMTOKEN },
+  attribute lang { text }?,
+  attribute place { text }?,
+  attribute subtype { text }?
+
+variants = element variants { variant* }
+
+variant = 
+  element variant {
+    (\div | noteblock | variants | lg | l | comments | nonl | proto.inter | nonx)*
+  }
+
+score =
+  element score {
+    score-attlist, 
+    proto.start? , (sigdef | noteblock?)* ,
+    (object | surface | column | milestone | \div | lg | comments | nonl)*
+  }
+score-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  score_mode,
+  score_type,
+  score_word?,
+  attribute xml:lang { xsd:NMTOKEN }?,
+  attribute hand     { text }?,
+  project?,
+  implicit?,
+  haslinks?,
+  maxcells?
+
+score_mode = attribute score-mode { "parsed" | "unparsed" }
+score_type = attribute score-type { "matrix" | "synopsis" }
+score_word = attribute score-word { "yes" }
+
+synopticon =
+  element synopticon { synopticon-attlist, sigdef*, (eg | comments | nonl)* }
+synopticon-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute n { text },
+  attribute xml:lang { xsd:NMTOKEN }?
+sigdef = element sigdef { sigdef-attlist, empty }
+sigdef-attlist &=
+  attribute xml:id { xsd:ID },
+  attribute targ-id { xsd:NMTOKEN },
+  attribute targ-n { text }
+eg = element eg { eg-attlist, e* }
+eg-attlist &= attribute xml:id { xsd:ID }?
+e =
+  element e {
+    e-attlist,
+    (l.inner
+     | cell+
+     | f+)
+  }
+e-attlist &=
+  attribute xml:id { xsd:ID }?,
+  attribute sigref { xsd:IDREF }?,
+  attribute n { text }?,
+  attribute l { text }?,
+  attribute p { text }?,
+  attribute hlid { text }?,
+  attribute plid { text }?
+# include "xtf.rnc"
+cdf-inline = (text | rspan | ispan | sign | bispan | gdl )*
+cdf = element c:cdf { (document | transliteration | composite | translation)* }
+
+document = element c:document { section | toplev }
+
+toplev = ( bibliography | catalog | p | section | xtf )*
+
+bibliography = element c:bibliography { attribute type { "by-year" }? , bib+ }
+
+bib     = element c:bib     { (year , data) | (cdf-inline) }
+year    = element c:biby    { text }
+data    = element c:bibd    { text }
+
+catalog = element c:catalog { record* }
+record  = element c:record  { field*  }
+field   = element c:field   { key , val }
+key     = element c:key     { xsd:NMTOKEN }
+val     = element c:val     { cdf-inline }
+
+p       = element c:p       { cdf-inline }
+
+section = element c:section { attribute type { xsd:NMTOKEN } , toplev }
+
+gdl     = element c:gdl { words }

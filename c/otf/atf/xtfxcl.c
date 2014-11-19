@@ -117,7 +117,7 @@ process(struct xcl_context *xc, struct node*n)
 	  xcl_discontinuity(xc, NULL, xcl_d_cell_start, NULL);
 	  break;
 	case e_f:
-	  xcl_discontinuity(xc, NULL, xcl_d_field_start, n->data);
+	  xcl_discontinuity(xc, NULL, xcl_d_field_start, (const char *)n->data);
 	  break;
 	default:
 	  break;
@@ -135,7 +135,7 @@ process(struct xcl_context *xc, struct node*n)
 	  xcl_discontinuity(xc, NULL, xcl_d_cell_end, NULL);
 	  break;
 	case e_f:
-	  xcl_discontinuity(xc, NULL, xcl_d_field_end, n->data);
+	  xcl_discontinuity(xc, NULL, xcl_d_field_end, (const char*)n->data);
 	  break;
 	default:
 	  break;

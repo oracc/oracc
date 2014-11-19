@@ -4,6 +4,7 @@
 #include "hash.h"
 #include "pool.h"
 #include "warning.h"
+#include "symbolattr.h"
 
 #define hash_lookup(keyp,tablep) hash_find(tablep,keyp)
 
@@ -21,7 +22,8 @@ static char *last_pname = NULL;
 static const char *
 scan_pair(const char *line)
 {
-  char *tokend = NULL, *colon = NULL, *pqid = NULL, *idstart;
+  const char *tokend = NULL, *colon = NULL;
+  char *pqid = NULL, *idstart;
 
   tokend = line;
   while (*tokend && !isspace(*tokend) && '=' != *tokend)
@@ -75,7 +77,7 @@ scan_pair(const char *line)
     {
       if (pnames && 'P' == *idstart)
 	(void)check_pname(idstart,(const unsigned char *)line);
-      last_pname = idstart;
+      last_pname = line;
       return pqid;
     }
   else
@@ -126,6 +128,7 @@ link_check_protocol(const char *line)
 		    {
 		      idp = (char*)pool_copy((unsigned char*)idp);
 		      define_labels_symbol(symbuf,idp);
+		      symbolattr_put(textid,symbuf,idp,last_pname);
 		      if (check_links)
 			load_labels(idp);
 		    }

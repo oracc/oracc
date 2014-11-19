@@ -992,6 +992,7 @@
       <optional>
         <attribute name="ex_label"/>
       </optional>
+      <ref name="e-attlist"/>
       <choice>
         <ref name="l.inner"/>
         <oneOrMore>
