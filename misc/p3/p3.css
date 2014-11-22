@@ -240,9 +240,9 @@ table.matrix-block { width: auto; border-spacing: 0px; }
 
 td.witnum  { width: 10em; 
 	     margin-left: 1.5em; text-indent: -.4em; 
-	     padding-left: 5px; font-size: 90%; 
+	     padding-left: 5px; font-size: 80%; 
 	     }
-td.sbnum { width: 3em; }
+td.sbnum { width: 3em; font-size: 100%; font-weight: bold; }
 
 .score-block,.matrix-block tr.l td { padding-bottom: .5em; background-color: white; }
 .score-block,.matrix-block  tr.l td.c { padding-bottom: 1em; background-color: white; padding-left: .5em; padding-right: .5em; }

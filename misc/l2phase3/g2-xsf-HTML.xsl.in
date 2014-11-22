@@ -1098,7 +1098,7 @@
 	<xsl:if test="not(@silent) or not(@silent='1')">
 	  <a name="a.{@xml:id}">
 	    <span class="xlabel">
-	      <xsl:value-of select="$label"/>
+	      <xsl:value-of select="$label"/><xsl:text>.</xsl:text>
 	    </span>
 	    <xsl:call-template name="span-lnum"/>
 	  </a>
