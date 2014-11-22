@@ -11,7 +11,15 @@ project=`oraccopt`
 rm -f 01tmp/xtfmanager.log
 rm -f 01bld/lists/have-xtf.lst
 
+function has_score {
+    for a in `cat 01bld/lists/sxh-scores.lst`; do
+	f=`pqxpand xmd $a`
+	xsltproc -o $f $ORACC/lib/scripts/has-score.xsl $f
+    done
+}
+
 function xsf_scores {
+    cat 01bld/lists/xsf-scores.lst >>01bld/lists/sxh-scores.lst
     for a in `cat 01bld/lists/xsf-scores.lst`; do
 	g2-xsf2sxh.plx -proj $project $a
     done
@@ -33,10 +41,11 @@ fi
 proj-linkbase.sh
 
 # scores
-rm -f 01tmp/scoregen.log
+rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
 [ -s 01bld/lists/linktexts.lst ] && scoregen.plx 2>01tmp/scoregen.log | xmlsplit
 [ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
 [ -s 01bld/lists/xsf-scores.lst ] && xsf_scores
+[ -s 01bld/lists/sxh-scores.lst ] && has_score
 
 # indexes
 dir=$ORACC/pub/$project

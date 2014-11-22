@@ -94,7 +94,9 @@
 
 <xsl:template name="arg-views-nowrap">
   <xsl:variable name="text" select="/*/@xml:id"/>
-
+  <xsl:if test="/*/md:cat/md:has-score[.='1']">
+    <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
+  </xsl:if>
   <xsl:if test="$views-cuneified='yes'">
     <li><a target="_blank" href="javascript:cuneifyPopup('{$project}','{/*/@xml:id}')">Cuneified</a></li>
   </xsl:if>

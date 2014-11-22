@@ -235,6 +235,7 @@ create_rel_lists {
 
 sub
 create_scores {
+    open(SXH,'>01bld/lists/sxh-scores.lst');
     binmode STDOUT, ':utf8';
     print xmldecl();
     print '<scores>';
@@ -245,8 +246,10 @@ create_scores {
 	my $fname = '';
 	if ($Q =~ /:/) {
 	    $fname = expand_in_project(undef,"$Q.txh");
+	    print SXH "$Q\n";
 	} else {
 	    $fname = expand_in_project(undef,"$Q.txh",$project);
+	    print SXH "$project\:$Q\n";
 	}
 	next unless -r $fname;
 	my $txh = load_xml($fname);
@@ -312,6 +315,7 @@ create_scores {
     }
     print "<?destfile?>";
     print '</scores>';
+    close(SXH);
 }
 
 sub

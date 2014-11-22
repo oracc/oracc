@@ -43,7 +43,7 @@ symbolattr_put(const char *txtid, const char *sym, const char *idp, const char *
 {
   struct symbolattr *sa = mb_new(symbolattr_mem);
   char buf[32];
-  sa->symbol = sym;
+  sa->symbol = npool_copy((unsigned char *)sym, symbolattr_pool);
   sa->qualified_id = idp;
   sa->pname = pname;
   sprintf(buf,"a_%s#%s",txtid,sym);

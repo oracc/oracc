@@ -125,7 +125,11 @@ if ($rt{'prod'} eq 'list') {
 	$p{'#list'} = "$p{'tmpdir'}/xtl";
 	xsystem 'xsltproc', '-o', $p{'#list'}, '@@ORACC@@/lib/scripts/xtl2lst.xsl', $p{'list'};
 	xsystem 'sort', '-o', $p{'#list'}, $p{'#list'};
-	$rt{'#list_type'} = 'cat';	
+	$rt{'#list_type'} = 'cat';
+#	my $otlspec = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-catalog-fields`;
+	$p{'p3outl'} = $rt{'outl'} = 'default';
+	$p{'sorttype'} = $rt{'sorttype'} = $p{'p3OSdefault'};
+	warn "xtl: rt{'outl'} = $rt{'outl'}\n";
 	set_list_items();
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
@@ -826,7 +830,7 @@ set_p3_state {
 	    $rt{'sorttype'} = $p{'p3OSdefault'};
 	    warn "(7) sorttype set to $rt{'sorttype'}\n";
 	} else {
-	    $rt{'sorttype'} = $p{'sorttype'};
+	    $rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSspecial'};
 	    warn "(8) sorttype set to $rt{'sorttype'}\n";
 	}
 	$rt{'outl'} = 'default';
@@ -887,21 +891,23 @@ set_p3_state {
 	$rt{'what'} = 'page';
 	if ($rt{'prod'} eq 'list') {
 	    # some lists need default and some special--this needs more working out
-	    if ($rt{'outl'} eq 'special') {
-		if ($p{'p3outl'} ne 'special') {
-		    $rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSspecial'};
-		    warn "(9) sorttype set to $rt{'sorttype'}\n";
+	    if (!$rt{'sorttype'}) {
+		if ($rt{'outl'} eq 'special') {
+		    if ($p{'p3outl'} ne 'special') {
+			$rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSspecial'};
+			warn "(9) sorttype set to $rt{'sorttype'}\n";
+		    } else {
+			$rt{'sorttype'} = $p{'sorttype'};
+			warn "(10) sorttype set to $rt{'sorttype'}\n";
+		    }
 		} else {
-		    $rt{'sorttype'} = $p{'sorttype'};
-		    warn "(10) sorttype set to $rt{'sorttype'}\n";
-		}
-	    } else {
-		if ($p{'p3outl'} ne 'default') {
-		    $rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSdefault'};
-		    warn "(11) sorttype set to $rt{'sorttype'}\n";
-		} else {
-		    $rt{'sorttype'} = $p{'sorttype'}|| $p{'p3OSspecial'};
-		    warn "(12) sorttype set to $rt{'sorttype'}\n";
+		    if ($p{'p3outl'} ne 'default') {
+			$rt{'sorttype'} = $p{'sorttype'} || $p{'p3OSdefault'};
+			warn "(11) sorttype set to $rt{'sorttype'}\n";
+		    } else {
+			$rt{'sorttype'} = $p{'sorttype'}|| $p{'p3OSspecial'};
+			warn "(12) sorttype set to $rt{'sorttype'}\n";
+		    }
 		}
 	    }
 	    unless ($rt{'sorttype'}) {
@@ -1089,11 +1095,6 @@ setup_pg_args {
     push @pg_args, '-q', if $rt{'#list_type'} eq 'cbd';
     if ($rt{'sorttype'}) {
 	my $tmp = $rt{'sorttype'};
-#
-# Shouldn't be necessary now that Slicer is built in
-#
-#	$tmp =~ tr/_/^/; # escape field names like ch_no 
-#
 	push(@pg_args, "-s$tmp") if $tmp;
     }
     push @pg_args, "-z$p{'zoom'}" if $p{'zoom'};

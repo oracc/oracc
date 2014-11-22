@@ -236,9 +236,27 @@ span.obf-letter { border: none; }
 .ogslres h1 { margin-left: 3em;  }
 .ogslres p { margin-left: 4em;  }
 
-table.score-block { width: 100%; }
-td.sbnum { width: 5%; }
-td.enum  { width: 15%; }
+table.score-block { width: 100%; border-spacing: 0px; }
+table.matrix-block { width: auto; border-spacing: 0px; }
+
+td.witnum  { width: 10em; 
+	     margin-left: 1.5em; text-indent: -.4em; 
+	     padding-left: 5px; font-size: 90%; 
+	     }
+td.sbnum { width: 3em; }
+
+.score-block,.matrix-block tr.l td { padding-bottom: .5em; background-color: white; }
+.score-block,.matrix-block  tr.l td.c { padding-bottom: 1em; background-color: white; padding-left: .5em; padding-right: .5em; }
+
+.score-block,.matrix-block  tr.e:nth-child(odd) td.c { padding-bottom: .2em; padding-top: .2em; padding-left: .5em; padding-right: .5em; }
+.score-block,.matrix-block  tr.e:nth-child(even) td.c { padding: 0px; padding-left: .5em; padding-right: .5em; }
+
+/*
+.score-block,.matrix-block  tr.e:nth-child(even) td.witnum { padding-right: 2em; }
+.score-block,.matrix-block  tr.e:nth-child(odd) td.witnum { padding-right: 2em; }
+*/
+
+.evenodd tr:nth-child(even) { background-color: #eee; }
 
 /* .obf p.icount { margin: 0px; text-align: left;} */
 

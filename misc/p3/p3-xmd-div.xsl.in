@@ -93,6 +93,7 @@
 <xsl:template name="arg-views-nowrap">
   <xsl:variable name="text" select="/*/@xml:id"/>
 
+
   <xsl:variable name="views-buy-book">
     <xsl:call-template name="xpd-option">
       <xsl:with-param name="config-xml" select="$config-xml-file"/>
@@ -120,6 +121,10 @@
       <xsl:with-param name="option" select="'views-TEI'"/>
     </xsl:call-template>
   </xsl:variable>
+
+  <xsl:if test="/*/md:cat/md:has-score[.='1']">
+    <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
+  </xsl:if>
 
   <xsl:if test="$views-cuneify='true'">
     <li><a href="javascript:cuneifyPopup('{$project}','{$text}')">Cuneified</a></li>
