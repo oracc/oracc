@@ -1788,12 +1788,18 @@ line_var(unsigned char *lp)
     *n_vbar++ = '\0';
   appendAttr(lnode,attr(a_varnum,n));
 
-  sa = symbolattr_get(textid, n);
+  sa = symbolattr_get(textid, (const char*)n);
   if (sa)
     {
-      appendAttr(lnode,attr(a_hlid,line_id_buf));
-      appendAttr(lnode,attr(a_n,sa->pname));
-      appendAttr(lnode,attr(a_p,sa->qualified_id));
+      const char *hlid = NULL;
+      if (n_vbar)
+	{
+	  hlid = label_to_id(sa->qualified_id, n_vbar);
+	  if (hlid) 
+	    appendAttr(lnode,attr(a_hlid,(const unsigned char *)hlid));
+	}
+      appendAttr(lnode,attr(a_n,(const unsigned char *)sa->pname));
+      appendAttr(lnode,attr(a_p,(const unsigned char *)sa->qualified_id));
     }
 
   sprintf((char*)lab, "%s [%s]", curr_line_label, n);

@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,6 +29,15 @@ content(struct content_opts *cop, const char *input)
 {
   char const *fnlist[2];
   static struct frag fragdata;
+
+  if (access(input, R_OK))
+    {
+      extern const char *no_html;
+      execl("/bin/cat", "cat", no_html, NULL);
+      perror("execl failed");
+      exit(0);
+    }
+
   fragdata.cop = cop;
   fragdata.xid = cop->chunk_id;
   fragdata.nesting = 0;

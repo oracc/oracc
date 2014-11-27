@@ -12,7 +12,7 @@ const char *catentry_html = "@@ORACC@@/lib/scripts/g2-xmd-HTML.xsl";
 const char *pqx_html = "@@ORACC@@/lib/scripts/p3-html-wrapper.xsl";
 const char *proofing_html = "@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl";
 const char *sxh_html = "@@ORACC@@/lib/scripts/sxh-view.xsl";
-
+const char *no_html = "@@ORACC@@/www/no_html.html";
 extern struct component *have_component[];
 static void or_image(const char *project, const char *pqx, const char *type);
 

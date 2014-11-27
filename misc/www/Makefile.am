@@ -29,7 +29,7 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png \
 	oracc32x32b.png oracc32x32w.png
 html_DATA = blogspot16x16.ico facebook16x16.ico twitter16x16.ico no_html.xml \
-	doc-redirect.html index.html 
+	doc-redirect.html index.html no_html.html
 noinst_DATA = httpd.conf robots.txt
 
 doc-redirect.html: doc-redirect.html.in

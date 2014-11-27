@@ -26,6 +26,7 @@
 #include "inline.h"
 #include "proj_context.h"
 #include "xcl.h"
+#include "key.h"
 #include "symbolattr.h"
 
 #define OLDLEM 0
@@ -106,6 +107,7 @@ protocols(struct run_context *run,
 		{
 		  parse_score_doctype(np, s+1);
 		  symbolattr_init();
+		  key_init();
 		}
 	    }
 	  *s = save;
@@ -298,10 +300,31 @@ protocol(struct run_context *run,
 	      *s = ':';
 	      return 0;
 	    }
-	  else if (!xstrcmp(type,"var") || !xstrcmp(type,"basket") || !xstrcmp(type,"key"))
+	  else if (!xstrcmp(type,"key"))
 	    {
-	      /* FIXME: KEY needs STRUCTURE; echo KEY data into XMD? HOW WOULD THIS 
-		 APPLY TO MILESTONES? */;
+	      struct keypair *kp = key_parse(line);
+	      if (doctype == e_score)
+		{
+		  if (!strcmp(kp->key, "siglum-map"))
+		    {
+		      char *arrow = strstr(kp->val, "=>");
+		      if (arrow)
+			{
+			  char *from = malloc(strlen(kp->val)+1);
+			  strcpy(from,kp->val);
+			  from[arrow-kp->val] = '\0';
+			  symbolattr_map(textid, from, arrow+2);
+			  free(from);
+			}
+		      else
+			{
+			  warning("bad syntax in siglum-map, say, e.g., A1=>A");
+			}
+		    }
+		}
+	    }
+	  else if (!xstrcmp(type,"var") || !xstrcmp(type,"basket"))
+	    {
 	    }
 	  else if (!xstrcmp(type,"link"))
 	    {

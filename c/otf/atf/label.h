@@ -21,5 +21,6 @@ void reset_labels(void);
 void label_term(void);
 void label_frag(struct node *current,unsigned const char *l);
 const unsigned char *label_from_line_id(const unsigned char *line_id);
+extern const char *label_to_id(const char *qualified_id, const char *label);
 
 #endif /*_LABEL_H*/

@@ -221,7 +221,7 @@ link_check(const char *line)
 			  char labelbuf[128];
 			  /* const char *lidp; */
 			  strcpy(labelbuf,idp);
-			  strcat(labelbuf,":");
+			  strcat(labelbuf,"#"); /* was : */
 			  strncat(labelbuf,line,endp-line);
 			  if (!hash_lookup((unsigned char*)labelbuf,label_table))
 			    vwarning("link not found (%s => %s)",buf,labelbuf);
