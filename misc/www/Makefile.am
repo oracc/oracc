@@ -19,7 +19,7 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	ppcs.css pqpager.css preformat.css psdview.css score-block.css		\
 	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
 	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
-	cuneiformcss.xml oracc3home.css wwwhome.css
+	cuneiformcss.xml oracc3home.css wwwhome.css oraccdoc.css
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
@@ -29,7 +29,7 @@ img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	p3-pageitem.png p3-forward.png p3-backward.png p3-full.png \
 	oracc32x32b.png oracc32x32w.png
 html_DATA = blogspot16x16.ico facebook16x16.ico twitter16x16.ico no_html.xml \
-	doc-redirect.html index.html no_html.html
+	doc-redirect.html index.html 
 noinst_DATA = httpd.conf robots.txt
 
 doc-redirect.html: doc-redirect.html.in
