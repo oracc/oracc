@@ -1772,7 +1772,7 @@ compute_fragid(const char *qualid, const char *hlid)
 	  extern Hash_table *label_table;
 	  char *fragid = malloc(strlen(qualid)+10);
 	  (void)sprintf(fragid, "%s.%d", qualid, n);
-	  if (hash_find(label_table, fragid))
+	  if (hash_find(label_table, (const unsigned char *)fragid))
 	    return fragid;
 	}
     }
