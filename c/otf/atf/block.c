@@ -1802,7 +1802,7 @@ line_var(unsigned char *lp)
   n = s-1; /* now n points at final ':' */
   *n = '\0';
   n = entry;
-  if ((n_vbar = (unsigned char*)strchr((char*)n,';'))) /* used to be | but now ; */
+  if ((n_vbar = (unsigned char*)strchr((char*)n,','))) /* used to be | but now , */
     *n_vbar++ = '\0';
   appendAttr(lnode,attr(a_varnum,n));
 
