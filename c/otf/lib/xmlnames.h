@@ -28,6 +28,7 @@ enum a_type
   a_extent,
   a_flags,
   a_form,
+  a_fragid,
   a_from,
   a_g_accented,
   a_g_break,

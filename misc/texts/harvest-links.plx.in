@@ -167,7 +167,7 @@ process_project {
 	next if $seen{$p};
 	my($to,$from) = ($p =~ /^(.*?)=(.*?)$/);
 	${$srefs{$to}}{$from} = 1;
-	print STDERR "adding pending $to<=$from\n";
+	# print STDERR "adding pending $to<=$from\n";
     }
     foreach my $k (sort keys %srefs) {
 	print LINKBASE "<refs type=\"sources\" ref=\"$k\">";

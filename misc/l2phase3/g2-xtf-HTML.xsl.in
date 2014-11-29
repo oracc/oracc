@@ -1171,12 +1171,12 @@
 	    <span class="enum">
 	      <xsl:choose>
 		<xsl:when test="@varnum">
-		  <a href="javascript:showexemplar('{@p}','{@hlid}')">
+		  <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
 		    <xsl:value-of select="@varnum"/>
 		  </a>		
 		</xsl:when>
 		<xsl:otherwise>
-		  <a href="javascript:showexemplar('{@p}','{@hlid}')">
+		  <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
 		    <xsl:value-of select="concat(@n,' ',@l)"/>
 		  </a>
 		</xsl:otherwise>

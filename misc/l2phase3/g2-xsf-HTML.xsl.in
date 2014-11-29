@@ -137,7 +137,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:transliteration|xtf:composite|xtf:score">
-  <xsl:message>processing <xsl:value-of select="local-name()"/></xsl:message>
+  <!--<xsl:message>processing <xsl:value-of select="local-name()"/></xsl:message>-->
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
@@ -1145,7 +1145,7 @@
 		<xsl:when test="@varnum">
 		  <xsl:choose>
 		    <xsl:when test="contains(@p, ':')">
-		      <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','')">
+		      <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
 			<xsl:variable name="ex" select="substring-before(substring-after(@label,' ['),']')"/>
 			<xsl:variable name="ln">
 			  <xsl:choose>
@@ -1174,26 +1174,9 @@
 	    </span>	    
 	  </td>
 	</xsl:when>
-
-          <xsl:when test="false()">
-	    <td>
-	      <span class="lnuml enum-newscore">
-		<xsl:choose>
-		  <xsl:when test="contains(@p, ':')">
-		    <a href="javascript:showexemplar('{substring-before(@p,'')}','{substring-after(@p,'')}','{@hlid}','')">
-		      <xsl:value-of select="concat(@n,' ',@label)"/>
-		    </a>
-		  </xsl:when>
-		  <xsl:otherwise>
-		    <xsl:value-of select="concat(@n,' ',@label)"/>
-		  </xsl:otherwise>
-		</xsl:choose>
-	      </span>	    
-	    </td>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <td> </td>
-	  </xsl:otherwise>
+	<xsl:otherwise>
+	  <td> </td>
+	</xsl:otherwise>
 	</xsl:choose>
         <xsl:choose>
           <xsl:when test="xtf:c">

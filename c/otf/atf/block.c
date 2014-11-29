@@ -1761,6 +1761,24 @@ line_lgs(unsigned char *lp)
   appendChild(current,lnode);
 }
 
+static char *
+compute_fragid(const char *qualid, const char *hlid)
+{
+  int n = atoi(strrchr(hlid,'.')+1);
+  if (n > 5)
+    {
+      for (n -= 5; n > 0; --n)
+	{
+	  extern Hash_table *label_table;
+	  char *fragid = malloc(strlen(qualid)+10);
+	  (void)sprintf(fragid, "%s.%d", qualid, n);
+	  if (hash_find(label_table, fragid))
+	    return fragid;
+	}
+    }
+  return NULL;
+}
+
 static void
 line_var(unsigned char *lp)
 {
@@ -1784,7 +1802,7 @@ line_var(unsigned char *lp)
   n = s-1; /* now n points at final ':' */
   *n = '\0';
   n = entry;
-  if ((n_vbar = (unsigned char*)strchr((char*)n,'|')))
+  if ((n_vbar = (unsigned char*)strchr((char*)n,';'))) /* used to be | but now ; */
     *n_vbar++ = '\0';
   appendAttr(lnode,attr(a_varnum,n));
 
@@ -1794,9 +1812,14 @@ line_var(unsigned char *lp)
       const char *hlid = NULL;
       if (n_vbar)
 	{
-	  hlid = label_to_id(sa->qualified_id, n_vbar);
-	  if (hlid) 
-	    appendAttr(lnode,attr(a_hlid,(const unsigned char *)hlid));
+	  hlid = label_to_id(sa->qualified_id, (const char *)n_vbar);
+	  if (hlid)
+	    {
+	      char *tmp = compute_fragid(sa->qualified_id, hlid);
+	      appendAttr(lnode,attr(a_hlid,(const unsigned char *)hlid));
+	      if (tmp)
+		appendAttr(lnode,attr(a_fragid,(const unsigned char *)tmp));
+	    }
 	}
       appendAttr(lnode,attr(a_n,(const unsigned char *)sa->pname));
       appendAttr(lnode,attr(a_p,(const unsigned char *)sa->qualified_id));

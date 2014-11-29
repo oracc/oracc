@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo entering o2-xtf.sh
+
 scope=$1
 
 [ -r 01bld/cancel ] && exit 1
@@ -43,7 +45,7 @@ proj-linkbase.sh
 # scores
 rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
 [ -s 01bld/lists/linktexts.lst ] && scoregen.plx 2>01tmp/scoregen.log | xmlsplit
-[ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
+# [ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
 [ -s 01bld/lists/xsf-scores.lst ] && xsf_scores
 [ -s 01bld/lists/sxh-scores.lst ] && has_score
 
@@ -76,3 +78,5 @@ if [ "$scope" = "full" ]; then
     fi
 fi
 #Q004184.70.1 
+
+echo exiting o2-xtf.sh

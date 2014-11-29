@@ -28,6 +28,8 @@
 #include "xcl.h"
 #include "key.h"
 #include "symbolattr.h"
+#include "globals.h"
+
 
 #define OLDLEM 0
 
@@ -105,9 +107,12 @@ protocols(struct run_context *run,
 		mylines = 1;
 	      if (doctype == e_score)
 		{
+		  extern void load_labels_init(void);
 		  parse_score_doctype(np, s+1);
 		  symbolattr_init();
 		  key_init();
+		  load_labels_init();
+		  check_links = 1;
 		}
 	    }
 	  *s = save;

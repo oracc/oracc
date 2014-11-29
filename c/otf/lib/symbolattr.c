@@ -10,6 +10,8 @@
 #include "symbolattr.h"
 
 static Hash_table *symbolattr_hash;
+static Hash_table *symbolattr_warned;
+
 static struct mb *symbolattr_mem;
 static struct npool *symbolattr_pool;
 
@@ -19,6 +21,7 @@ symbolattr_init(void)
   if (!symbolattr_hash)
     {
       symbolattr_hash = hash_create(1);
+      symbolattr_warned = hash_create(1);
       symbolattr_mem = mb_init(sizeof(struct symbolattr), 16);
       symbolattr_pool = npool_init();
     }
@@ -34,7 +37,21 @@ symbolattr_get(const char *txtid, const char *sym)
   if (sa)
     ; /*fprintf(stderr,"found symbolattr %s => { symbol=%s; qualified_id=%s; pname=%s; }\n", buf, sa->symbol, sa->qualified_id, sa->pname);*/
   else
-    fprintf(stderr,"symbolattr %s not found\n", buf);
+    {
+      char *tid, *eid, *done;
+      static char *warned = "warned";
+
+      done = hash_find(symbolattr_warned, (const unsigned char *)buf);
+      if (1) /*!done)*/
+	{
+	  hash_add(symbolattr_warned, npool_copy((const unsigned char *)buf, symbolattr_pool), warned);
+	  /*fprintf(stderr,"symbolattr %s not found\n", buf);*/
+	  tid = buf + 2;
+	  eid = strchr(tid, '#');
+	  *eid++ = '\0';
+	  vnotice("score %s has no exemplar named '%s'", tid, eid);
+	}
+    }
   return sa;
 }
 

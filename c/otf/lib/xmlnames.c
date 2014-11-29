@@ -35,6 +35,7 @@ struct xname anames[] =
   { "extent", "extent" },
   { "flags", "flags" },
   { "form", "form" },
+  { "fragid", "fragid" },
   { "from", "from" },
   { "g:accented", "http://oracc.org/ns/gdl/1.0:accented" },
   { "g:break", "http://oracc.org/ns/gdl/1.0:break" },
@@ -293,6 +294,7 @@ struct attr abases[] =
   { { anames[134].qname,NULL } , { anames[134].pname,NULL } },
   { { anames[135].qname,NULL } , { anames[135].pname,NULL } },
   { { anames[136].qname,NULL } , { anames[136].pname,NULL } },
+  { { anames[137].qname,NULL } , { anames[137].pname,NULL } },
 };
 struct xname enames[] =
 {

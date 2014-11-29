@@ -22,6 +22,7 @@ Hash_table *label_table;
 extern const char *project;
 static const char *current_PQ, *current_proj;
 extern FILE *f_log;
+extern int check_links;
 
 static int loading_links = 1;
 
@@ -43,7 +44,7 @@ sH(void *userData, const char *name, const char **atts)
 	  if (xmlid && label)
 	    break;
 	}
-#if 1
+#if 0
       fprintf(stderr,"loading label %s#%s = %s\n", current_PQ, label, xmlid);
 #endif
       if (xmlid && label) /* lgs doesn't have id/label */
@@ -60,8 +61,8 @@ sH(void *userData, const char *name, const char **atts)
 	    xmlid[strlen(xmlid)-1] = '\0';
 #endif
 	  sprintf(buf,"%s#%s",current_PQ,label);
-	  
 	  hash_insert((unsigned char *)buf,hashid,label_table);
+	  hash_insert(hashid,(unsigned char *)buf,label_table);
 	}
     }
   else if (name[0] == 'x' && name[1] == 'c' && name[2] == 'l' && name[3] == '\0')
@@ -124,18 +125,8 @@ load_labels(const char *PQ)
       else
 	{
 	  hash_insert((unsigned char*)PQ,undefinedp,label_table);
-#if 0
-	  {
-	    const char *ename = strstr(fname[0], project);
-	    if (!ename)
-	      {
-		ename = fname[0];
-		vwarning("%s: not readable/no label checking", ename);
-		--status; /* don't count this as a real error */
-	      }
-	  }
-#endif
-
+	  if (check_links)
+	    vnotice("disabling label-checking because %s was not found", PQ);
 	}
     }
 }
@@ -151,9 +142,20 @@ label_to_id(const char *qualified_id, const char *label)
       *tmp = ' ';
   id = hash_find(label_table, (const unsigned char *)lbuf);
   if (id)
-    fprintf(stderr, "label_to_id: %s maps to id %s\n", lbuf, id);
+    /*fprintf(stderr, "label_to_id: %s maps to id %s\n", lbuf, id)*/;
   else
-    fprintf(stderr, "label_to_id: %s not found\n", lbuf);
+    {
+      char *tmp = hash_find(label_table, (const unsigned char *)qualified_id);
+      if (!tmp || *tmp == '1') /* files not found are have a "0" as their value in label_table */
+	fprintf(stderr, "label_to_id: %s not found\n", lbuf);
+    }
   free(lbuf);
+  if (id)
+    {
+      char *tmp;
+      tmp = strchr(id, ':');
+      if (tmp)
+	id = tmp + 1;
+    }
   return id;
 }

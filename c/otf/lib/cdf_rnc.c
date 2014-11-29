@@ -876,6 +876,7 @@ const char * const cdf_rnc[] = {
   "  attribute l { text }?,\n",
   "  attribute p { text }?,\n",
   "  attribute hlid { text }?,\n",
+  "  attribute fragid { text }?,\n",
   "  attribute plid { text }?\n",
   "# include \"xtf.rnc\"\n",
   "cdf-inline = (text | rspan | ispan | sign | bispan | gdl )*\n",

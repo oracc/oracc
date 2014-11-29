@@ -1556,6 +1556,7 @@ e-attlist &amp;=
   attribute l { text }?,
   attribute p { text }?,
   attribute hlid { text }?,
+  attribute fragid { text }?,
   attribute plid { text }?
 </d:rnc>
 <div class="secondary linkage">

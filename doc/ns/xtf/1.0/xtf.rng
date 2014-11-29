@@ -1298,6 +1298,9 @@
       <attribute name="hlid"/>
     </optional>
     <optional>
+      <attribute name="fragid"/>
+    </optional>
+    <optional>
       <attribute name="plid"/>
     </optional>
   </define>
