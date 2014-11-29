@@ -5,6 +5,9 @@
 #include "pool.h"
 #include "warning.h"
 #include "symbolattr.h"
+#include "xmlnames.h"
+
+extern enum e_type doctype;
 
 #define hash_lookup(keyp,tablep) hash_find(tablep,keyp)
 
@@ -128,7 +131,8 @@ link_check_protocol(const char *line)
 		    {
 		      idp = (char*)pool_copy((unsigned char*)idp);
 		      define_labels_symbol(symbuf,idp);
-		      symbolattr_put(textid,symbuf,idp,last_pname);
+		      if (doctype == e_score)
+			symbolattr_put(textid,symbuf,idp,last_pname);
 		      if (check_links)
 			load_labels(idp);
 		    }
