@@ -401,7 +401,7 @@ main(int argc, char * const*argv)
     {
       if (any_index)
 	{
-	  const char *index[] = { "!cat" , "!txt" , "!tra" , NULL, "!esp" , NULL };
+	  const char *index[] = { "!cat" , "!txt" , "!tra" , "!lem", NULL, "!esp" , NULL };
 	  struct Datum results[4];
 	  int i, best_findset = -1;
 	  char *hashproj = NULL;
@@ -426,6 +426,12 @@ main(int argc, char * const*argv)
 
 	  for (i = 0; index[i]; ++i)
 	    {
+	      if (!strcmp(index[i], "!lem"))
+		{
+		  if (best_findset > 0)
+		    continue;
+		}
+
 	      toklist = anytoks(hashproj, index[i],
 				xmldir ? xmldir_toks(xmldir) : (const char **)(argv+optind));
 	      toks = tokenize(toklist,&ntoks);
@@ -455,6 +461,8 @@ main(int argc, char * const*argv)
 	      return_index = &index[best_findset][1];
 	      put_results(&results[best_findset]);
 	    }
+	  else
+	    
 	  fclose(anyout);
 	}
       else
