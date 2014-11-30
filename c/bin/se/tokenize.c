@@ -700,12 +700,12 @@ expr_toks(char *e)
 			  datum_type_names[rules->type], *e);
 		  exit(1);
 		}
-	      add_token(se_groupc);
+	      /*add_token(se_groupc);*/
 	      curr_tok = add_token(etok);
 	      curr_tok->data = malloc(sizeof(struct near));
-	      *((struct near*)curr_tok->data) = parse_near("+2g", NULL);
+	      *((struct near*)curr_tok->data) = parse_near("+1g", NULL);
 	      ++e;
-	      add_token(se_groupo);
+	      /*add_token(se_groupo);*/
 	    }
 	  else
 	    *p++ = *e++;
