@@ -1806,7 +1806,9 @@ line_var(unsigned char *lp)
     *n_vbar++ = '\0';
   appendAttr(lnode,attr(a_varnum,n));
 
-  sa = symbolattr_get(textid, (const char*)n);
+  if (doctype == e_score)
+    sa = symbolattr_get(textid, (const char*)n);
+
   if (sa)
     {
       const char *hlid = NULL;
