@@ -60,11 +60,11 @@ create_have_atf {
     if (scalar keys %have_atf) {
 	print L join("\n",map { "$project:$_" } sort keys %have_atf), "\n";
 	close(L);
-	if (scalar keys %have_lem) {
+#	if (scalar keys %have_lem) {
 	    open(L,">$listdir/have-lem.lst");
 	    print L join("\n",map { "$project:$_" } sort keys %have_lem), "\n";
 	    close(L);
-	}
+#	}
     } else {
 	close(L);
     }
