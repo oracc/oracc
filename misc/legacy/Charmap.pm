@@ -25,7 +25,7 @@ charof {
     if ($c =~ s/^\"(.*?)\"$/$1/) {
 	return $c;
     } elsif ($c =~ /^0x/) {
-	return chr($c);
+	return chr(hex($c));
     } else {
 	return $c;
     }
@@ -37,7 +37,10 @@ load_char {
     my $font = shift;
     my $charname = $font;
     $charname =~ tr/ /_/;
-    $charname = "$ENV{'ORACC'}/lib/charmap/\L$charname.chr";
+    $charname = "\L$charname.chr";
+    unless (-r $charname) {
+	$charname = "$ENV{'ORACC'}/lib/charmap/\L$charname.chr"
+    }
     if (open(F,$charname)) {
 	my %cset = ();
 	$cset{'charfile'} = $charname;
@@ -143,7 +146,7 @@ unicodify {
     for (my $i = 0; $i <= $#chars; ++$i) {
 	if ($$c{'copy'} && $chars[$i] =~ /^$$c{'copy'}$/) {
 	    warn "Charmap: copied `$chars[$i]'\n" if $trace;
-	} elsif ($$c{'remove'} && $chars[$i] =~ /^$$c{'remove'}/) {
+	} elsif ($$c{'remove'} && $chars[$i] =~ /^$$c{'remove'}$/) {
 	    $chars[$i] = undef;
 	    warn "Charmap: removed `$chars[$i]'\n" if $trace;
 	} elsif ($$c{'replacing'} && $chars[$i] =~ /^$$c{'replacing'}$/) {
