@@ -267,10 +267,21 @@ printStart(struct frag *frag, const char *name, const char **atts, const char *x
 	{
 	  if (frag->cop->sigs && *ap[0] == 'h' && !strcmp(ap[0], "href"))
 	    {
-	      if (*ap[1] == 'p' && !strncmp(ap[1], "pop1sig(", 8))
+	      const char *pop1sig = NULL;
+	      fprintf(stderr, "content:printStart: found href\n");
+	      if ((pop1sig = strstr(ap[1], "pop1sig(")))
 		{
-		  fprintf(frag->fp, " href=\"pop1sig('%s','',", project);
-		  printText(&ap[1][8], frag->fp);
+		  const char *p;
+
+		  fprintf(frag->fp, " href=\"");
+		  for (p = ap[1]; p < pop1sig; ++p)
+		    fputc(*p, frag->fp);
+		  for (p = pop1sig; '(' != *p; ++p)
+		    fputc(*p, frag->fp);
+		  fputc('(', frag->fp);
+		  ++p;
+		  fprintf(frag->fp, "'%s','',", project);
+		  printText(p, frag->fp);
 		  fputc('"', frag->fp);
 		  ap += 2;
 		  continue;
