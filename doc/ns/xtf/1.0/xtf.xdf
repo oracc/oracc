@@ -1306,7 +1306,7 @@ var = element v {
   attribute label  { text } ,
   attribute ex_label { text }? ,
   e-attlist , 
-  (l.inner | cell+)
+  (cell+ | f+ | (ag | l.inner)*)
 }
 </d:rnc>
 
@@ -1545,9 +1545,7 @@ eg-attlist &amp;= attribute xml:id { xsd:ID }?
 e =
   element e {
     e-attlist,
-    (l.inner
-     | cell+
-     | f+)
+    (cell+ | f+ | (ag | l.inner)*)
   }
 e-attlist &amp;=
   attribute xml:id { xsd:ID }?,

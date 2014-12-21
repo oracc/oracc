@@ -994,10 +994,18 @@
       </optional>
       <ref name="e-attlist"/>
       <choice>
-        <ref name="l.inner"/>
         <oneOrMore>
           <ref name="cell"/>
         </oneOrMore>
+        <oneOrMore>
+          <ref name="f"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <choice>
+            <ref name="ag"/>
+            <ref name="l.inner"/>
+          </choice>
+        </zeroOrMore>
       </choice>
     </element>
   </define>
@@ -1264,13 +1272,18 @@
     <element name="e">
       <ref name="e-attlist"/>
       <choice>
-        <ref name="l.inner"/>
         <oneOrMore>
           <ref name="cell"/>
         </oneOrMore>
         <oneOrMore>
           <ref name="f"/>
         </oneOrMore>
+        <zeroOrMore>
+          <choice>
+            <ref name="ag"/>
+            <ref name="l.inner"/>
+          </choice>
+        </zeroOrMore>
       </choice>
     </element>
   </define>

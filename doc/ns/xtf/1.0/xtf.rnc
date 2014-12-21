@@ -287,7 +287,7 @@ var = element v {
   attribute label  { text } ,
   attribute ex_label { text }? ,
   e-attlist , 
-  (l.inner | cell+)
+  (cell+ | f+ | (ag | l.inner)*)
 }
 
 # alignment groups
@@ -373,9 +373,7 @@ eg-attlist &= attribute xml:id { xsd:ID }?
 e =
   element e {
     e-attlist,
-    (l.inner
-     | cell+
-     | f+)
+    (cell+ | f+ | (ag | l.inner)*)
   }
 e-attlist &=
   attribute xml:id { xsd:ID }?,
