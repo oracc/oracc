@@ -535,8 +535,8 @@ gparse(register unsigned char *g, enum t_type type)
 		  {
 		    if (!ok)
 		      {
-			const char *report = "http://oracc.museum.upenn.edu/ogsl/newval.html";
-			vwarning("%s: unknown grapheme. To request adding it: %s",g,report);
+			const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
+			vwarning("%s: unknown grapheme. To request adding it please visit:\n\t%s",g,report);
 #ifdef NEW_ERROR_RECOVERY
 			exit_status = 1;
 			--status;
