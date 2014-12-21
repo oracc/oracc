@@ -33,6 +33,9 @@ o2-atf.sh
 o2-lst.sh
 mkdir -p 01bld/new
 l2p1-from-xtfs.plx -new
+if [ -s 01bld/lists/proxy-lem.lst ]; then
+    l2p1-from-xtfs.plx -proxy -new -textlist 01bld/lists/proxy-lem.lst
+fi
 
 echo
 echo ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
