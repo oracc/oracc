@@ -187,7 +187,7 @@ function p3ItemControls() {
 
 	var trans = document.getElementById('translation').value;
 	var setl = document.getElementById('setlang');
-	selectItemByValue(setl,trans);
+	selectItemByValueWithFallback(setl,trans,'English');
 	if (trans === 'none') {
 	    transnone(false);
 	} else {
@@ -445,6 +445,21 @@ function selectItemByValue(elmnt, value) {
 		elmnt.selectedIndex = i;
 	    }
 	}
+    }
+}
+
+function selectItemByValueWithFallback(elmnt, value, fallback) {
+    var foundIt = 0;
+    if (value && elmnt && elmnt.options) {
+	for (var i=0; i < elmnt.options.length; i++) {
+	    if (elmnt.options[i].value == value) {
+		elmnt.selectedIndex = i;
+		foundIt = 1;
+	    }
+	}
+    }
+    if (foundIt != 1) {
+	selectItemByValue(elmnt,fallback);
     }
 }
 
