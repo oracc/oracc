@@ -284,6 +284,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	   */
 	  sp_parent = sp;
 	  sp = sp->cache;
+	  BIT_SET(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
 	  if (sigs_found && lem_autolem && !ifp->f2.cf)
 	    {
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);

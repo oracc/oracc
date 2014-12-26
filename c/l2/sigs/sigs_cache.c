@@ -15,6 +15,9 @@ struct siglook look_cache = { "sigs_cache", sigs_cache_lookup, sig_look_cache };
 void
 sigs_cache_init(struct sigset *sp)
 {
+#if 0
+  /* This is old cache handling; these days we autoload missing languages and we have per-lang
+     cache rather than using sp->file == "cache" */
   if (!sp->file)
     return;
   if (!strcmp((const char *)sp->file, "cache"))
@@ -22,6 +25,7 @@ sigs_cache_init(struct sigset *sp)
       fprintf(stderr, "sigs_cache: can't cache a cache\n");
       return;
     }
+#endif
   if (!sigs_cache_pool)
     {
       sigs_cache_pool = npool_init();

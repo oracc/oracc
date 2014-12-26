@@ -41,7 +41,7 @@ sig_autoload_sets(struct sig_context *scp,
 		  const char *project,
 		  const char *lang)
 {
-  return sig_context_register(scp,project,lang,0);
+  return sig_context_register(scp,project,lang,1);
 }
 
 List *
@@ -587,7 +587,7 @@ sig_context_langs(struct sig_context *scp, const char *langs)
 	      projlist = list_from_str(projtmp,NULL,LIST_SINGLE);
 	      projp = (char**)list2array(projlist);
 	      for (j = 0; projp[j]; ++j)
-		sig_context_register(scp, projp[j], langp[i], 0);
+		sig_context_register(scp, projp[j], langp[i], 1);
 	      free(projp);
 	      free(projtmp);
 	      list_free(projlist,list_xfree);
@@ -596,7 +596,7 @@ sig_context_langs(struct sig_context *scp, const char *langs)
 	    {
 	      if (verbose)
 		fprintf(stderr,"sigs_context: lang=%s not in config; using only %s\n", langp[i],scp->xpd->project);
-	      sig_context_register(scp, scp->xpd->project, langp[i], 0);
+	      sig_context_register(scp, scp->xpd->project, langp[i], 1);
 	    }
 
 	  /* Initialize extended lemmatization if we are going to need

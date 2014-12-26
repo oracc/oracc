@@ -37,7 +37,11 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 
       if (BIT_ISSET(l->f->f2.flags, F2_FLAGS_LEM_NEW))
 	{
-	  if (l->f->sp && l->f->sp->file && strcmp((const char *)l->f->sp->file, "cache"))
+	  /* 1) now we silently ignore missing .sig files we need to ignore that sp->file can be
+	        NULL also 
+	     2) sp->file == "cache" is no longer used, so that's out as well
+ 	   */
+	  if (l->f->sp /* && l->f->sp->file && strcmp((const char *)l->f->sp->file, "cache") */)
 	    {
 	      struct sig const * const *early_sigs = sigs_early_sig(xcp, l->f);
 	      if (early_sigs)
@@ -318,7 +322,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	  else
 	    {
 	      /* short-circuit lookup by norm in cache unless we
-		 are lemmatizings by normalization */
+		 are lemmatizing by normalization */
 	      if (sp_is_cache)
 		{
 		  if (nfinds)

@@ -206,7 +206,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 	      fp->multi->f2.tail_sig = fp->f2.parts[i]->tail_sig;
 	}
     }
-  else
+  else if (!BIT_ISSET(fp->f2.flags, F2_FLAGS_FROM_CACHE))
     BIT_SET(fp->f2.flags, F2_FLAGS_INVALID);
 
 #if 0 /* can't do this any more because the cache references the ilem node */
