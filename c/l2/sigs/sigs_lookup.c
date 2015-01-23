@@ -284,7 +284,10 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	   */
 	  sp_parent = sp;
 	  sp = sp->cache;
+	  /* F2_FLAGS_NO_FORM is left set on +-ed forms, but if we've retrieved it
+	     from the cache by definition there must be a form */
 	  BIT_SET(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
+	  BIT_CLEAR(l->f->f2.flags, F2_FLAGS_NO_FORM);
 	  if (sigs_found && lem_autolem && !ifp->f2.cf)
 	    {
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
@@ -573,7 +576,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  sp = sp_parent;
 	  sigs_found = NULL;
 	  nfinds = 0;
-	  
+	  BIT_CLR(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
 	  goto retry_after_cache;
 	}
 

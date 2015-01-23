@@ -73,7 +73,7 @@ sigs_cache_term(struct sigset *sp)
 void
 sigs_cache_add(struct ilem_form *ifp, struct sig const *const *sigs)
 {
-  if (!ifp || !ifp->sp)
+  if (!ifp || !ifp->sp || BIT_ISSET(ifp->f2.flags, F2_FLAGS_FROM_CACHE))
     return;
 
   if (!ifp->sp->cache)
