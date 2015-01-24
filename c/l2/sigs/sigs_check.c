@@ -41,7 +41,8 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 	        NULL also 
 	     2) sp->file == "cache" is no longer used, so that's out as well
  	   */
-	  if (l->f->sp /* && l->f->sp->file && strcmp((const char *)l->f->sp->file, "cache") */)
+	  if (l->f->sp /* && l->f->sp->file && strcmp((const char *)l->f->sp->file, "cache") */
+	      && !BIT_ISSET(l->f->f2.flags, F2_FLAGS_FROM_CACHE))
 	    {
 	      struct sig const * const *early_sigs = sigs_early_sig(xcp, l->f);
 	      if (early_sigs)
