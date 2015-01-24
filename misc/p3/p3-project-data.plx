@@ -18,6 +18,14 @@ if ($project) {
     exit 1;
 }
 
+my $umbrella = (`oraccopt . build-approved-policy` eq 'umbrella');
+my @umbrella = ();
+if ($umbrella) {
+    my $x = `cat 00lib/umbrella.lst`;
+    chomp $x;
+    @umbrella = split(/\s+/,$x);
+}
+
 my %longlang = (
     akk=>'Akkadian',
     'akk-x-conakk'=>'Conventional Akkadian',
@@ -74,7 +82,16 @@ my @top_l = sort keys %top_l;
 
 ### Compute languages used in translations
 my @translangs = ();
-if (-d '00atf') {
+
+if ($umbrella) {
+    foreach my $u (@umbrella) {
+	push @translangs, `find $u/01bld/[PQX]* | grep xtr | xargs grep  xml:lang | perl -n -e '/xml:lang="(.*?)"/g && print "\$1\n"' | sort -u`;
+    }
+    chomp @translangs;
+    my %translangs = ();
+    @translangs{@translangs} = ();
+    @translangs = sort keys %translangs;
+} elsif (-d '00atf') {
 #    @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
     @translangs = `find 01bld/[PQX]* | grep xtr | xargs grep  xml:lang | perl -n -e '/xml:lang="(.*?)"/g && print "\$1\n"' | sort -u`;
     chomp @translangs;
