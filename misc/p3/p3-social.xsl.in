@@ -1,0 +1,94 @@
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	       xmlns:xh="http://www.w3.org/1999/xhtml"
+	       xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+	       version="1.0">
+
+<xsl:output method="xml" indent="yes"/>
+
+<xsl:include href="url.xsl"/>
+
+<xsl:template match="/">
+  <html>
+    <head>
+      <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+      <link rel="stylesheet" type="text/css" href="/css/oracchome.css"/>
+      <link rel="stylesheet" type="text/css" href="/css/oracc3home.css"/>
+      <meta charset="utf-8"/>
+      <title>Oracc Featured Project</title>
+    </head>
+    <body class="projlist">
+      <xsl:apply-templates select="xpd:project"/>
+    </body>
+  </html>
+</xsl:template>
+
+<xsl:template match="xpd:project">
+  <xsl:variable name="img">
+    <xsl:value-of select="concat('/agg/', @n, '.png')"/>
+  </xsl:variable>
+  <xsl:variable name="url">
+    <xsl:call-template name="url-name"/>
+  </xsl:variable>
+  <div class="project-entry">
+    <h2 class="proj-head">
+      <a href="{$url}">
+	<xsl:choose>
+	  <xsl:when test="xpd:title">
+	    <xsl:value-of select="xpd:title"/>
+	  </xsl:when>
+	  <xsl:when test="xpd:abbrev = xpd:name">
+	    <xsl:value-of select="xpd:abbrev"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="xpd:abbrev"/>
+	    <xsl:text>: </xsl:text>
+	    <xsl:value-of select="xpd:name"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </a>
+    </h2>
+    <p class="proj-img">
+      <a href="{$url}">
+	<img class="project-float" width="88px" height="66px"
+	     src="{$img}"
+	     alt="{xpd:image-alt}"/>
+      </a>
+    </p>
+    <p class="proj-blurb">
+      <xsl:choose>
+	<xsl:when test="xpd:blurb/xpd:p">
+	  <xsl:apply-templates mode="blurb" select="xpd:blurb/xpd:p"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates mode="blurb" select="xpd:blurb"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </p>
+  </div>
+  <div class="project-news">
+    <xsl:variable name="news" select="document(concat('@@ORACC@@/',/*/@n,'/news.html'),/)"/>
+    <xsl:if test="count($news/*) > 0">
+      <xsl:copy-of select="$news/xh:body"/>
+    </xsl:if>
+  </div>
+</xsl:template>
+
+<xsl:template mode="blurb" match="xpd:a">
+  <a>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </a>
+</xsl:template>
+
+<xsl:template mode="blurb" match="xpd:br">
+  <br>
+    <xsl:copy-of select="@*"/>
+  </br>
+</xsl:template>
+
+<xsl:template mode="blurb" match="text()">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+</xsl:transform>
