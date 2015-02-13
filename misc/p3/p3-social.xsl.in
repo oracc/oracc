@@ -5,8 +5,6 @@
 
 <xsl:output method="xml" indent="yes"/>
 
-<xsl:include href="url.xsl"/>
-
 <xsl:template match="/">
   <html>
     <head>
@@ -17,7 +15,7 @@
       <meta charset="utf-8"/>
       <title>Oracc Featured Project</title>
     </head>
-    <body class="projlist">
+    <body>
       <xsl:apply-templates select="xpd:project"/>
     </body>
   </html>
@@ -30,24 +28,13 @@
   <xsl:variable name="url">
     <xsl:call-template name="url-name"/>
   </xsl:variable>
-  <div class="project-entry">
-    <h2 class="proj-head">
+  <div>
+    <h1>
       <a href="{$url}">
-	<xsl:choose>
-	  <xsl:when test="xpd:title">
-	    <xsl:value-of select="xpd:title"/>
-	  </xsl:when>
-	  <xsl:when test="xpd:abbrev = xpd:name">
-	    <xsl:value-of select="xpd:abbrev"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:value-of select="xpd:abbrev"/>
-	    <xsl:text>: </xsl:text>
-	    <xsl:value-of select="xpd:name"/>
-	  </xsl:otherwise>
-	</xsl:choose>
+	<xsl:text>Oracc: </xsl:text>
+	<xsl:value-of select="xpd:name"/>
       </a>
-    </h2>
+    </h1>
     <p class="proj-img">
       <a href="{$url}">
 	<img class="project-float" width="88px" height="66px"
@@ -89,6 +76,17 @@
 
 <xsl:template mode="blurb" match="text()">
   <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template name="url-name">
+  <xsl:choose>
+    <xsl:when test="string-length(xpd:url)>0">
+      <xsl:value-of select="xpd:url"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="concat('/',@n)"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:transform>
