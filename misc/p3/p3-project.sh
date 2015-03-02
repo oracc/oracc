@@ -13,4 +13,5 @@ xsltproc --stringparam projcss $projcss \
     sed -e "s%@@PROJECT@@%$project%" >02pub/p3.html
 sed -e "s%@@PROJECT@@%$project%" < $ORACC/lib/data/as-base.xml >02www/as.xml
 chmod o+r 02pub/p3.html 02www/as.xml
+cp 00lib/thumb.png 02www/thumb.png ; chmod o+r 02www/thumb.png
 xsltproc $ORACC/lib/scripts/p3-social.xsl 02xml/config.xml >02www/s.html

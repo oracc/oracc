@@ -23,7 +23,7 @@
 
 <xsl:template match="xpd:project">
   <xsl:variable name="img">
-    <xsl:value-of select="concat('/agg/', @n, '.png')"/>
+    <xsl:value-of select="concat('/', @n, '/thumb.png')"/>
   </xsl:variable>
   <xsl:variable name="url">
     <xsl:call-template name="url-name"/>
