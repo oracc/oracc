@@ -10,12 +10,11 @@
     <head>
       <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-      <link rel="stylesheet" type="text/css" href="/css/oracchome.css"/>
-      <link rel="stylesheet" type="text/css" href="/css/oracc3home.css"/>
+      <link rel="stylesheet" type="text/css" href="/css/p3social.css"/>
       <meta charset="utf-8"/>
       <title>Oracc Featured Project</title>
     </head>
-    <body>
+    <body class="social">
       <xsl:apply-templates select="xpd:project"/>
     </body>
   </html>
