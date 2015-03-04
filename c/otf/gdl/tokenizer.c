@@ -844,7 +844,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      if (tokens[tokindex-1]->type == g_p
 		  && tokens[tokindex-1]->data
 		  /*		  && !strcmp((char*)tokens[tokindex-1]->data, ":") */
-		  && !strcmp(((struct grapheme*)(tokens[tokindex-1]->data))->atf, ":")
+		  && !strcmp((char*)((struct grapheme*)(tokens[tokindex-1]->data))->atf, ":")
 		  && isdigit(first_alnum(l)))
 		{
 		  /* Insert implicit ligature */
@@ -935,9 +935,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    }
 		  else if (('*' == *g || ':' == *g) && '\0' == g[1])
 		    {
-		      static struct token *puncttok = NULL;
-		      if (!puncttok)
-			puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
+		      struct token *puncttok = NULL;
+		      puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
 		      tokens[tokindex++] = puncttok;
 		    }
 		  else
