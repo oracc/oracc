@@ -12,7 +12,7 @@
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
       <link rel="stylesheet" type="text/css" href="/css/p3social.css"/>
       <meta charset="utf-8"/>
-      <title>Oracc Featured Project</title>
+      <title>Oracc Project <xsl:value-of select="/*/@n"/></title>
     </head>
     <body class="social">
       <xsl:apply-templates select="xpd:project"/>
@@ -22,11 +22,12 @@
 
 <xsl:template match="xpd:project">
   <xsl:variable name="img">
-    <xsl:value-of select="concat('/', @n, '/thumb.png')"/>
+    <xsl:value-of select="concat('/', @n, '/image.png')"/>
   </xsl:variable>
   <xsl:variable name="url">
     <xsl:call-template name="url-name"/>
   </xsl:variable>
+  <div class="outer">
   <div>
     <h1>
       <a href="{$url}">
@@ -36,7 +37,7 @@
     </h1>
     <p class="proj-img">
       <a href="{$url}">
-	<img class="project-float" width="88px" height="66px"
+	<img class="project-float" width="320px" height="240px"
 	     src="{$img}"
 	     alt="{xpd:image-alt}"/>
       </a>
@@ -52,13 +53,27 @@
       </xsl:choose>
     </p>
   </div>
+  <div class="mid"></div>
   <div class="project-news">
-    <xsl:variable name="news" select="document(concat('@@ORACC@@/',/*/@n,'/news.html'),/)"/>
+<!--    <xsl:variable name="news"
+     select="document(concat('@@ORACC@@/www/',/*/@n,'/news/index.html'),/)"/>
+-->
+    <xsl:variable name="news" select="document(concat('@@ORACC@@/www/','rinap','/news/index.html'),/)"/>
     <xsl:if test="count($news/*) > 0">
-      <xsl:copy-of select="$news/xh:body"/>
+      <h1>NEWS</h1>
+      <xsl:apply-templates mode="news" select="$news/xh:html/xh:body/xh:div[@id='Content']/*"/>
     </xsl:if>
   </div>
+  </div>
 </xsl:template>
+
+<xsl:template mode="news" match="xh:p|xh:h1|xh:h2|xh:h3|xh:ul|xh:ol">
+  <xsl:if test="string-length(.) > 0">
+    <xsl:copy-of select="."/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template mode="news" match="*|text()"/>
 
 <xsl:template mode="blurb" match="xpd:a">
   <a>
