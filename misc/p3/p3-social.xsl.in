@@ -55,10 +55,7 @@
   </div>
   <div class="mid"></div>
   <div class="project-news">
-<!--    <xsl:variable name="news"
-     select="document(concat('@@ORACC@@/www/',/*/@n,'/news/index.html'),/)"/>
--->
-    <xsl:variable name="news" select="document(concat('@@ORACC@@/www/','rinap','/news/index.html'),/)"/>
+    <xsl:variable name="news" select="document(concat('@@ORACC@@/www/',/*/@n,'/news/index.html'),/)"/>
     <xsl:if test="count($news/*) > 0">
       <h1>NEWS</h1>
       <xsl:apply-templates mode="news" select="$news/xh:html/xh:body/xh:div[@id='Content']/*"/>
