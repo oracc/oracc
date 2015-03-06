@@ -15,6 +15,7 @@ if [ -d 00web/00config ]; then
     est-project.sh
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
+    p3-wrapup.sh
 elif [ -d 00web/esp ]; then
     echo o2-portal.sh: esp version 1.0 is no longer supported.  Please contact your liaison to upgrade.
     exit 1
