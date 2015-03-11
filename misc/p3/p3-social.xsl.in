@@ -31,7 +31,9 @@
   <div>
     <h1>
       <a href="{$url}">
-	<xsl:text>Oracc: </xsl:text>
+	<xsl:if test="not(contains(translate(xpd:name,'ORACC','oracc'), 'oracc'))">
+	  <xsl:text>Oracc: </xsl:text>
+	</xsl:if>
 	<xsl:value-of select="xpd:name"/>
       </a>
     </h1>
