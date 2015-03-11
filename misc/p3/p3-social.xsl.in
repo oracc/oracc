@@ -61,7 +61,7 @@
   <div class="project-news">
     <xsl:variable name="news" select="document(concat('@@ORACC@@/www/',/*/@n,'/news/index.html'),/)"/>
     <xsl:if test="count($news/*) > 0">
-      <h1>NEWS</h1>
+      <h1 class="news">NEWS</h1>
       <xsl:apply-templates mode="news" select="$news/xh:html/xh:body/xh:div[@id='Content']/*"/>
     </xsl:if>
   </div>
