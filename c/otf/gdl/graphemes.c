@@ -1993,19 +1993,23 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		      {
 			if (i)
 			  {
-			    if (last_was_logo)
+			    /* never add a hyphen after a pre-det */
+			    if (xstrcmp(getAttr(np->children.nodes[i-1],"g:pos"),"pre"))
 			      {
-				if (!suppress_next_hyphen || suppress_hyphen_delay)
-				  *insertp++ = '.';
-				else if (!suppress_hyphen_delay)
-				  suppress_next_hyphen = 0;
-			      }
-			    else
-			      {
-				if (!suppress_next_hyphen || suppress_hyphen_delay)
-				  *insertp++ = '-';
-				else if (!suppress_hyphen_delay)
-				  suppress_next_hyphen = 0;
+				if (last_was_logo)
+				  {
+				    if (!suppress_next_hyphen || suppress_hyphen_delay)
+				      *insertp++ = '.';
+				    else if (!suppress_hyphen_delay)
+				      suppress_next_hyphen = 0;
+				  }
+				else
+				  {
+				    if (!suppress_next_hyphen || suppress_hyphen_delay)
+				      *insertp++ = '-';
+				    else if (!suppress_hyphen_delay)
+				      suppress_next_hyphen = 0;
+				  }
 			      }
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
