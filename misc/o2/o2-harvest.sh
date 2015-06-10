@@ -40,7 +40,7 @@ fi
 echo
 echo ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo
-for lang in `sig-langs.sh 01bld/from-xtf-new.sig` qpn ; do 
+for lang in `sig-langs.sh 01bld/from-*-new.sig` qpn ; do 
     slicelang $lang
     sortlang $lang && movelang
 done
