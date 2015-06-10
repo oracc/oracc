@@ -35,9 +35,9 @@
       <xsl:call-template name="biblio"/>
     </div>
     <xsl:message>hello1</xsl:message>
-    <xsl:if test="/*/md:cat/md:id_composite">
+    <xsl:if test="/*/md:cat/md:has-score[.='1']">
       <xsl:message>hello2</xsl:message>
-      <xsl:apply-templates select="document(concat(/*/md:cat/md:id_composite,'.xtl'),/)/xtl:list"/>
+      <xsl:apply-templates select="document(concat(/*/@xml:id,'.xtl'),/)/xtl:list"/>
     </xsl:if>
   </div>
 </xsl:template>
@@ -124,7 +124,7 @@
 
   <xsl:if test="/*/md:cat/md:has-score[.='1']">
     <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
-    <li><a href="/{$project}/{/*/md:cat/md:id_composite}/sources">Sources table</a></li>
+    <li><a href="/{$project}/{/*/@xml:id}/sources">Sources table</a></li>
   </xsl:if>
 
   <xsl:if test="$views-cuneify='true'">

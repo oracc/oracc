@@ -80,25 +80,8 @@ my %top_l = ();
 @top_l{map { /^(...)/ && $1 } @langs} = ();
 my @top_l = sort keys %top_l;
 
-### Compute languages used in translations
-my @translangs = ();
-
-if ($umbrella) {
-    foreach my $u (@umbrella) {
-	push @translangs, `find $u/01bld/[PQX]* | grep xtr | xargs grep  xml:lang | perl -n -e '/xml:lang="(.*?)"/g && print "\$1\n"' | sort -u`;
-    }
-    chomp @translangs;
-    my %translangs = ();
-    @translangs{@translangs} = ();
-    @translangs = sort keys %translangs;
-} elsif (-d '00atf') {
-#    @translangs = `find 00atf -type f -print0 | xargs -0 grep -h '\@translation' | cut -d' ' -f3 |sort -u`;
-    @translangs = `find 01bld/[PQX]* | grep xtr | xargs grep  xml:lang | perl -n -e '/xml:lang="(.*?)"/g && print "\$1\n"' | sort -u`;
-    chomp @translangs;
-}
-
-#@translangs = ('en') unless $#translangs >= 0;
-
+### Fetch languages used in translations
+my @translangs = `xtr-langs.plx`;
 push @translangs, 'none';
 
 ##
