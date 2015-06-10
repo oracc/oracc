@@ -81,7 +81,7 @@ my %top_l = ();
 my @top_l = sort keys %top_l;
 
 ### Fetch languages used in translations
-my @translangs = `xtr-langs.plx`;
+my @translangs = `xtr-langs.plx`; chomp @translangs;
 push @translangs, 'none';
 
 ##
