@@ -27,7 +27,12 @@ main(int argc, char**argv)
 	    {
 	      line[strlen(line)-1] = '\0';
 	      if (strchr(line, ':'))
-		puts(l2_expand(NULL,line,argv[1]));
+		{
+		  char *at = strchr(line, '@');
+		  if (at)
+		    *at = '\0';
+		  puts(l2_expand(NULL,line,argv[1]));
+		}
 	      else
 		fprintf(stderr,"pqxpand only works on qualified IDs, ignoring %s\n", line);
 	    }
