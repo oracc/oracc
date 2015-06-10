@@ -20,7 +20,7 @@ movelang()
 slicelang()
 {
     l=$1
-    l2p2-sig-slicer.plx -lang $l -stdout -sigs 01bld/from-xtf-new.sig -exact | \
+    l2p2-sig-slicer.plx -lang $l -stdout -sigs 01bld/from-all-new.sig -exact | \
 	l2p2-sig-g2a.plx -filter -lang $l -proj `oraccopt` >01bld/new/$l.new
 }
 
@@ -37,6 +37,8 @@ if [ -s 01bld/lists/proxy-lem.lst ]; then
     l2p1-from-xtfs.plx -proxy -new -textlist 01bld/lists/proxy-lem.lst
 fi
 
+cat 01bld/from-*-new.sig >01bld/from-all-new.sig
+
 echo
 echo ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo
@@ -47,7 +49,7 @@ done
 echo
 echo ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo
-echo oracc harvest: please review *.new carefully. 
+echo oracc harvest: please review 01bld/new/*.new carefully. 
 echo
 echo After you are satisfied that all of the new entries are correct,
 echo you can merge each language in turn using, e.g.:
