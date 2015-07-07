@@ -143,19 +143,22 @@ push(@op, '-M') if $lem_file;
 
 my @sys = ("@@ORACC@@/bin/ox", @op, '-l', $logfile, '-z', 'cdli', $procfile);
 warn("atf.plx: @sys\n");
-my $sysfail = system @sys;
-warn("atf.plx: sysfail =$sysfail\n");
 
 binmode STDOUT, ':utf8';
 print $q->header(-charset=>'utf-8');
+
+my $sysfail = system @sys;
+warn("atf.plx: sysfail =$sysfail\n");
+
 print <<EOH;
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>ATF Processing Results</title>
-</head>
-<body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ATF Processing Results</title>
+  </head>
+  <body>
 EOH
+}
 
 if ($? & 127) {
     print <<EOS;
