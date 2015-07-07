@@ -158,7 +158,6 @@ print <<EOH;
   </head>
   <body>
 EOH
-}
 
 if ($? & 127) {
     print <<EOS;
