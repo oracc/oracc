@@ -155,7 +155,7 @@ process_file(struct run_context *run, const char *fname)
       if (perform_lem && !exit_status)
 	{
 	  setenv("ODS2ATF",odsods_fn,1);
-	  system("/usr/local/share/cdl/bin/ods-lem.sh");
+	  system("@@ORACC@@/bin/ods-lem.sh");
 	}
       free(odsods_fn);
       free(odslem_fn);
