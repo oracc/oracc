@@ -98,6 +98,10 @@ xmlfmresultset_records {
     my $nfields = $#fields;
     while (<FXR>) {
 	last unless /<data/;
+	tr/\t\k\n\r/    /;
+	if (tr/\001-\037//d) {
+	    warn "FMP XML bad character in row ", $#rows+1,"\n";
+	}
 	my @row = (m,<data[/>](.*?)(?:>|</data>),g);
 	print STDERR and warn("$#row != $nfields\n") unless $#row == $nfields;
 	push @rows, [ @row ];
