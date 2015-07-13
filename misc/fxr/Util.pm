@@ -98,7 +98,7 @@ xmlfmresultset_records {
     my $nfields = $#fields;
     while (<FXR>) {
 	last unless /<data/;
-	tr/\t\k\n\r/    /;
+	tr/\t\cK\n\r/    /;
 	if (tr/\001-\037//d) {
 	    warn "FMP XML bad character in row ", $#rows+1,"\n";
 	}
