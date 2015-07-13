@@ -247,7 +247,7 @@ $keydata = find_keydata() unless $keydata;
 if ($#catalogs >= 0) {
     foreach my $c (@catalogs) {
 	$$c{'type'} = type_from_ns($$c{'file'});
-	print STDERR $$c{'file'},"\n" if $verbose;
+	warn "xmdmanager: reading catalogue data from $$c{'file'}\n";
 	$$c{'locator'} = ORACC::Log::Util::create_locator(file=>$$c{'file'});
 	if ($$c{'type'} eq 'fxr') {
 	    $$c{'icat'} = [ ORACC::FXR::Util::internalize($$c{'file'}) ];
