@@ -89,7 +89,7 @@
 	      <xsl:when test="count($lem-node)>0">
 		<xsl:for-each select="$lem-node">
 		  <xsl:value-of select="."/>
-		  <xsl:if test="position() != last() 
+		  <xsl:if test="position() != last()
 				or $more != 0">
 		    <xsl:text>; </xsl:text>
 		  </xsl:if>

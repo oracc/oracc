@@ -12,7 +12,7 @@ post_option_setup(struct run_context *run)
 {
   extern int status;
 
-  if (lem_autolem && xmlfile && !do_cdl)
+  if (lem_autolem && xmlfile /* && !do_cdl */)
     {
       autolemfile = xmlfile;
       xmlfile = NULL;

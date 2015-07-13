@@ -22,7 +22,7 @@ ox_options(int argc, char **argv)
 	  atffile = input_file = optarg;
 	  break;
 	case 'A':
-	  lem_autolem = 1;
+	  lem_autolem = perform_lem = need_lemm = 1;
 	  break;
 	case 'b':
 	  badfile = optarg;

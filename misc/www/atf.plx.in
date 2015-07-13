@@ -83,8 +83,12 @@ my $procfile = "$outdir/$filename";
 my $logfile = "$outdir/atf2xtf.log";
 my $xmlfile = $procfile;
 $xmlfile =~ s,\.[^\\]+,,;
-$xmlfile .= '.xml';
 
+if ($lem_file) {
+    $xmlfile .= '.lem';
+} else {
+    $xmlfile .= '.xml';
+}
 my $previewer = '@@ORACC@@/www/lib/preview.xsl';
 
 open (OUTFILE,">$procfile");
@@ -139,7 +143,7 @@ push(@op, '-o') if $check_nums;
 push(@op, '-G', "$outdir/graphemes.lst") if $glist;
 push(@op, '-F', "$outdir/forms.lst") if $wlist;
 push(@op, '-f', '-x', $xmlfile) if $xtf;
-push(@op, '-M') if $lem_file;
+push(@op, '-M', '-x', $xmlfile) if $lem_file;
 
 my @sys = ("@@ORACC@@/bin/ox", @op, '-l', $logfile, '-z', 'cdli', $procfile);
 warn("atf.plx: @sys\n");
