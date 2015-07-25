@@ -12,10 +12,11 @@ inherit_f2(struct f2 *inheritor_f2, struct f2 *from_f2)
       return;
     }
 
-  if (strcmp((const char *)inheritor_f2->form, "*"))
-    inherit(form);
-  else
+#if 0
+  if (!strcmp((const char *)inheritor_f2->form, "*"))
     inherit(cf);
+#endif
+
   inherit(base);
   inherit(cont);
   inherit(norm);
