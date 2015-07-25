@@ -320,6 +320,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	     checking some of the previously lemmed finds. So we
 	     need to detect if this form is an autolemmed instance
 	     by looking at cf
+	     
+	     !!! FIXME !!! THIS DOES NOT WORK BECAUSE AKK-949 ALSO HAS CF=NULL 
 	   */
 	  if (sigs_found && lem_autolem && !ifp->f2.cf)
 	    {

@@ -61,8 +61,13 @@ ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
 {
 #define inheritx(memb) if(!(inheritor->memb)&&from->memb)inheritor->memb=from->memb
 
-  if (!strcmp((const char *)inheritor->f2.form, "*") && from->f2.norm)
-    inheritor->f2.form = from->f2.norm;
+  if (!strcmp((const char *)inheritor->f2.form, "*"))
+    {
+      if (from->f2.norm)
+	inheritor->f2.form = from->f2.norm; /* REALLY?? */
+      inheritx(cf);
+      /* need to do any more here? */
+    }
 
   inheritx(type);
   inheritx(aform);
