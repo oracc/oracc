@@ -65,7 +65,8 @@ ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
     {
       if (from->f2.norm)
 	inheritor->f2.form = from->f2.norm; /* REALLY?? */
-      inheritx(cf);
+      if (!inheritor->f2.cf)
+	inheritor->f2.cf = from->f2.cf; /* REALLY?? */
       /* need to do any more here? */
     }
 
