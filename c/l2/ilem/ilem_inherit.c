@@ -63,10 +63,12 @@ ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
 
   if (!strcmp((const char *)inheritor->f2.form, "*"))
     {
+#if 0
       if (from->f2.norm)
 	inheritor->f2.form = from->f2.norm; /* REALLY?? */
+#endif
       if (!inheritor->f2.cf)
-	inheritor->f2.cf = from->f2.cf; /* REALLY?? */
+	inheritor->f2.cf = from->f2.cf;
       /* need to do any more here? */
     }
 
