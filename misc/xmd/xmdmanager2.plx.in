@@ -561,7 +561,7 @@ badvalue {
     
 #    print STDERR "$fieldname: unknown value $value [$count time$s]\n";
     my ($loc,$field) = ($fieldname =~ /^(.*?):(.*)$/);
-    my $count = ${$value_counts{$field}}{$value};
+    my $count = ${$value_counts{$field}}{$value} || 0;
     my $s = $count == 1 ? '' : 's';
     my $xf = xmlify($field);
     my $xv = xmlify($value);
