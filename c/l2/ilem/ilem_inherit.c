@@ -26,7 +26,10 @@ inherit_f2(struct f2 *inheritor_f2, struct f2 *from_f2)
      GW/SENSE, so this coercion is safe */
   if (!inheritor_f2->cf || (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS)
 			    && strcmp((char*)inheritor_f2->cf,(char*)from_f2->cf)))
-    inheritor_f2->cf = from_f2->cf;
+    {
+      inheritor_f2->cf = from_f2->cf;
+      BIT_CLEAR(inheritor_f2->flags, F2_FLAGS_NORM_IS_CF);
+    }
   if (!inheritor_f2->gw || (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS)
 			    && strcmp((char*)inheritor_f2->gw,(char*)from_f2->gw)))
     inheritor_f2->gw = from_f2->gw;
