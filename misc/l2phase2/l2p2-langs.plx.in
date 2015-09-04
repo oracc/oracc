@@ -31,16 +31,23 @@ unless ($superglo eq 'superglo') {
 
 foreach (<00lib/*.glo>) {
     s#^00lib/(.*?)\.glo$#$1#;
-    if ($unify) {
-	my ($base,$full) = ($1,$1);
-	$base =~ s/-.*$//;
-	if (exists $unify{$base}) {
-	    ++$proj_sig_langs{$base} unless exists $proj_sig_langs{$base};
-	} else {
-	    ++$proj_sig_langs{$full} unless exists $proj_sig_langs{$full};
+    ++$proj_sig_langs{$1} unless exists $proj_sig_langs{$1};
+}
+
+if ($unify) {
+    my @d = ();
+    foreach my $l (keys %proj_sig_langs) {
+	foreach my $u (keys %unify) {
+	    if ($l =~ /^$u-/) {
+		push @d, $l;
+	    }
 	}
-    } else {
-	++$proj_sig_langs{$1} unless exists $proj_sig_langs{$1};
+    }
+    foreach my $d (@d) {
+	delete $proj_sig_langs{$d};
+    }
+    foreach my $u (keys %unify) {
+	++$proj_sig_langs{$u} unless exists $proj_sig_langs{$u};
     }
 }
 
