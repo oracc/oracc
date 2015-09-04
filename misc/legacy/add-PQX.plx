@@ -55,6 +55,7 @@ if ($raw) {
 	chomp($query);
 	my @res = `se \#$project \!cat $query`;
 	chomp @res;
+	@res = uniq(@res);
 	print O "@res\n";
     }
     close(O);
@@ -101,6 +102,7 @@ while (<I>) {
 	    my @res = `se \#cdli \!cat $query`;
 	    if ($#res >= 0) {
 		chomp @res;
+		@res = uniq(@res);
 		s/^\&(\S*)\s*=\s*//;
 		my $oldX = $1;
 		print "\&@res = $_ [$oldX]\n";
@@ -118,5 +120,12 @@ close(I);
 close(O);
 
 print STDERR "add-PQX.plx: output written to $output\n";
+
+sub
+uniq {
+    my %t = ();
+    @t{@_} = ();
+    keys %t;
+}
 
 1;
