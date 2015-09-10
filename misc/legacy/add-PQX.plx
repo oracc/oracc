@@ -93,13 +93,19 @@ while (<I>) {
 	    use Data::Dumper; warn Dumper \%tab unless $dumped++;
 	}
     } else {
-	$query =~ tr/-,.:;()//d;
 	$query =~ s/\t.*//;
 	$query =~ s/\s*[=\+].*$//;
-	$query =~ s/\s+/_/g;
+	if ($query =~ /\d-\d+-\d+,\s*\d+/) {
+	    $query =~ s/,\s+/_/;
+	} else {
+	    $query =~ tr/-,.:;()//d;
+	    $query =~ s/\s+/_/g;
+	}
 	if ($query =~ /[a-z0-9]/i) {
 	    warn "$query\n" if $verbose;
-	    my @res = `se \#cdli \!cat $query`;
+	    my $x = "se \\#cdli \\!cat '$query'";
+#	    warn "$x\n";
+	    my @res = `$x`;
 	    if ($#res >= 0) {
 		chomp @res;
 		@res = uniq(@res);
@@ -110,6 +116,7 @@ while (<I>) {
 	    }
 	}
 	if ($X >= 0) {
+	    s/^\&\s+//;
 	    printf "\&X%06d\t$_\n",$X++;
 	} else {
 	    print "$_\n";
