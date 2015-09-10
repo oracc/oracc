@@ -17,7 +17,7 @@ enum langcode
   c_xhu , c_qpc , c_qpe , c_xur , 
   c_sux , c_uga , c_qpn , c_grc ,
   c_xlc , c_xld , c_xlu , c_hlu ,
-  c_imy , c_plq , c_qse ,
+  c_imy , c_plq , c_qse , c_qca ,
   c_count , c_none
 };
 

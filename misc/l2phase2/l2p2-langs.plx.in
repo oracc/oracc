@@ -5,6 +5,8 @@ use ORACC::L2GLO::Util;
 
 my $superglo = `oraccopt . type`;
 my $unify = `oraccopt . cbd-unify`; chomp $unify;
+my $dropsub = `oraccopt . cbd-drop-dialects`; chomp $dropsub;
+$dropsub = 'no' unless $dropsub;
 
 my @proj_sig_langs = ();
 my %proj_sig_langs = ();
@@ -43,8 +45,10 @@ if ($unify) {
 	    }
 	}
     }
-    foreach my $d (@d) {
-	delete $proj_sig_langs{$d};
+    if ($dropsub eq 'yes') {
+	foreach my $d (@d) {
+	    delete $proj_sig_langs{$d};
+	}
     }
     foreach my $u (keys %unify) {
 	++$proj_sig_langs{$u} unless exists $proj_sig_langs{$u};

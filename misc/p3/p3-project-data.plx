@@ -50,6 +50,7 @@ my %longlang = (
     hun=>'Hungarian',
     it=>'Italian',
     peo=>'Old Persian',
+    qca=>'Canaanite',
     qpn=>'Proper Nouns',
     sux=>'Sumerian',
     'sux-x-emesal'=>'Emesal Sumerian',
