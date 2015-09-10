@@ -123,25 +123,27 @@ my $projectPath = "$ENV{'ORACC_HOME'}/$project";
 $output =~ s/glo\.normcbd/cbd/ if $output;
 
 if ($sort) {
-    my @header = ();
-    open(S, $sort);
-    while (<S>) {
-	if (/^\@(?:project|lang|name)/) {
-	    push @header, $_;
+    if (-r $sort) {
+	my @header = ();
+	open(S, $sort);
+	while (<S>) {
+	    if (/^\@(?:project|lang|name)/) {
+		push @header, $_;
+	    }
 	}
+	close(S);
+	my $s = ORACC::L2GLO::Builtins::input_acd($sort,$clang,undef,undef);
+	ORACC::L2GLO::Builtins::acd_sort($s);
+	if ($inplace) {
+	    open(O,">$sort") || die "l2-glomanager.plx: can't open $sort for sort output\n";
+	    select O;
+	}
+	print @header, "\n";
+	foreach my $e (@{$$s{'entries'}}) {
+	    ORACC::L2GLO::Builtins::acd_dump_entry($e);
+	}
+	close(O) if $inplace;
     }
-    close(S);
-    my $s = ORACC::L2GLO::Builtins::input_acd($sort,$clang,undef,undef);
-    ORACC::L2GLO::Builtins::acd_sort($s);
-    if ($inplace) {
-	open(O,">$sort") || die "l2-glomanager.plx: can't open $sort for sort output\n";
-	select O;
-    }
-    print @header, "\n";
-    foreach my $e (@{$$s{'entries'}}) {
-	ORACC::L2GLO::Builtins::acd_dump_entry($e);
-    }
-    close(O) if $inplace;
     exit 0;
 } elsif ($merge) {
     my $d = `date +%Y-%m-%d`;
