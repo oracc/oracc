@@ -155,7 +155,7 @@ while (<SIGS>) {
 close SIGS;
 
 merge_matches();
-if ($#printsigs > 0) {
+if ($#printsigs >= 0) {
     print_sigs();
 }
 
