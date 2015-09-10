@@ -244,7 +244,9 @@ make_cof_norm {
     my @norm = ($f =~ m/\$(\p{L}+)/g);
     for (my $j = 0; $j <= $#norm; ++$j) {
 	if ($i != $j) {
-#	    $norm[$j] =~ s/^(.*?)$/($1)/;
+	    # this had been commented out, but that breaks output of COFs to *.new;
+	    # watch this
+	    $norm[$j] =~ s/^(.*?)$/($1)/;
 	}
     }
     join(' ', @norm);
