@@ -108,7 +108,11 @@ add_sig {
 	} else {
 	    $sig{'form'} = $curr_cof_sig;
 	}
-	$sig{'norm'} = make_cof_norm($full_cof_sig,$index);
+	if ($header{'lang'} =~ /sux/) {
+	    $sig{'norm'} = make_cof_sux_form($full_cof_sig,$index);
+	} else {
+	    $sig{'norm'} = make_cof_norm($full_cof_sig,$index);
+	}
     }
 #    warn Dumper \%sig;
     my $entry = make_entry(%sig);
@@ -195,7 +199,14 @@ if ($make_sigtab) {
 		} else {
 		    push @fbits, "\%$formlang" if $header{'lang'} =~ /^qpn/;
 		}
-		push @fbits, "\$$$info{'norm'}" if $$info{'norm'} && $$info{'lang'} !~ /^sux/;
+# Always emit norm if this is a COF; for Sumerian this is actually uses the form but adding
+# parens in the right places
+		warn "norm = $$info{'norm'}\n";
+		if ($$info{'norm'} && ($$info{'norm'} =~ / /
+				       || $$info{'lang'} !~ /^sux/)) {
+		    push @fbits, "\$$$info{'norm'}";
+		}
+		  
 		my $b = $$info{'base'};
 		if ($b && $$info{'lang'} =~ /^sux/) {
 		    $b =~ s/\%.*?://;
@@ -250,6 +261,28 @@ make_cof_norm {
 	}
     }
     join(' ', @norm);
+}
+
+
+sub
+make_cof_sux_form {
+    my ($f,$i) = @_;
+    my($form) = ($f =~ m/:(.*?)=/);
+    my @norm = ($f =~ m/\$(\p{L}+)/g);
+    my @n = ();
+    foreach (@norm) {
+	push @n, $form;
+    }
+    for (my $j = 0; $j <= $#n; ++$j) {
+	if ($i != $j) {
+	    # this had been commented out, but that breaks output of COFs to *.new;
+	    # watch this
+	    $n[$j] =~ s/^(.*?)$/($1)/;
+	}
+    }
+    my $ret = join(' ', @n);
+    $ret =~ s/\s([^(])/ \$$1/g;
+    $ret;
 }
 
 1;
