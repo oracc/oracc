@@ -12,6 +12,7 @@
 		xmlns:xcl="http://oracc.org/ns/xcl/1.0"
 		xmlns:xff="http://oracc.org/ns/xff/1.0"
 		xmlns:norm="http://oracc.org/ns/norm/1.0"
+		xmlns:note="http://oracc.org/ns/note/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:xl="http://www.w3.org/1999/xlink"
 		exclude-result-prefixes="g norm xcl xff xtf xl">

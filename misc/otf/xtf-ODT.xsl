@@ -28,6 +28,7 @@
     xmlns:oracc="http://oracc.org/ns/oracc/1.0"
     xmlns:gdl="http://oracc.org/ns/gdl/1.0"
     xmlns:cbd="http://oracc.org/ns/cbd/1.0"
+    xmlns:note="http://oracc.org/ns/note/1.0"
     xmlns:xtf="http://oracc.org/ns/xtf/1.0"
     xmlns:xpd="http://oracc.org/ns/xpd/1.0"
     xmlns:xtr="http://oracc.org/ns/xtr/1.0"
