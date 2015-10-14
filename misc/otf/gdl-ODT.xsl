@@ -129,7 +129,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 </xsl:template>
@@ -155,7 +155,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 
@@ -170,7 +170,7 @@
   </xsl:for-each>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 </xsl:template>
@@ -195,7 +195,7 @@
       <text:span text:style-name="r"> <!-- text:classes="r" -->
 	<xsl:value-of select="@g:o"/>
 	<xsl:value-of select="text()"/>
-	<xsl:if test="@notemark">
+	<xsl:if test="@note:mark">
 	  <xsl:call-template name="process-notes"/>
 	</xsl:if>
 	<xsl:value-of select="@g:c"/>
@@ -227,7 +227,7 @@
   </xsl:if>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
   <xsl:text> </xsl:text>
@@ -291,7 +291,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 </xsl:template>
@@ -325,7 +325,7 @@
     <xsl:call-template name="render-flags"/>
   </text:span>
   <xsl:call-template name="render-c"/>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 </xsl:template>
@@ -433,7 +433,7 @@
       <xsl:message>gdl-ODT: group type <xsl:value-of select="@g:type"/> not handled</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="@notemark">
+  <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 </xsl:template>
@@ -471,6 +471,9 @@
 	</xsl:if>
       </xsl:for-each>
       <xsl:text> </xsl:text>
+    </xsl:when>
+    <xsl:when test="@type='notelink'">
+      <xsl:call-template name="process-notes"/>
     </xsl:when>
     <xsl:when test="@type='comment'"/>
     <xsl:otherwise>
@@ -671,7 +674,7 @@
 
 <!--FIXME: noteref can have more than one IDREF in it-->
 <xsl:template name="process-notes">
-  <xsl:for-each select="id(@noteref)">
+  <xsl:for-each select="id(@note:ref)">
     <xsl:message>processing note <xsl:value-of select="@xml:id"/></xsl:message>
     <xsl:apply-templates mode="print" select="."/>
   </xsl:for-each>

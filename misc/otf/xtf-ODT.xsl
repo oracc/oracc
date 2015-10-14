@@ -691,25 +691,25 @@
 
 <xsl:template match="xtf:note|xtf:m"/>
 
-<xsl:template mode="print" match="xtf:note">
+<xsl:template mode="print" match="note:text">
   <text:note text:id="{@xml:id}"
 	     text:note-class="footnote">
     <xsl:choose>
-      <xsl:when test="@notelabel">
+      <xsl:when test="@note:label">
 	<text:note-citation text:label="&#x200D;"> <!-- text:label="{@notelabel}">-->
 	  <xsl:text>&#x200D;</xsl:text> <!--<xsl:value-of select="@notelabel"/>-->
 	</text:note-citation>
       </xsl:when>
       <xsl:otherwise>
 	<text:note-citation>
-	  <xsl:value-of select="@notemark"/>
+	  <xsl:value-of select="@note:mark"/>
 	</text:note-citation>
       </xsl:otherwise>
     </xsl:choose>
     <text:note-body>
       <text:p text:style-name="Footnote">
 	<text:span text:style-name="notelabel">
-	  <xsl:value-of select="@notelabel"/>
+	  <xsl:value-of select="@note:label"/>
 	</text:span>
 	<xsl:text> </xsl:text>
 	<xsl:apply-templates/>
