@@ -14,7 +14,7 @@ extern int verbose;
 
 const char *image_paths[] = 
   {
-    "." , "00lib/images" , "00web/images" , NULL
+    "." , "00res/images" , "00lib/images" , NULL
   };
 
 const char *text_paths[] = 
