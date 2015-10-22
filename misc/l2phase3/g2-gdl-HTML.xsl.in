@@ -772,6 +772,17 @@
 </xsl:template>
 
 <xsl:template name="maybe-hyphen">
+  <xsl:choose>
+      <xsl:when test="@g:em">
+	<xsl:text>—</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="@g:delim"/>
+      </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="x-maybe-hyphen">
   <xsl:variable name="hyph">
     <xsl:choose>
       <xsl:when test="@g:em">
