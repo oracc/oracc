@@ -39,7 +39,7 @@ my $in_bases = 0;
 my %mergers = ();
 
 open LOG, ">cbdbases.log";
-ORACC::SL::Base::init();
+ORACC::SL::BaseC::init();
 if ($check) {
     do_check_bases($check);
     exit $bstatus;
