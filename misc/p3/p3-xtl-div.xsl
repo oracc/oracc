@@ -21,7 +21,14 @@
   <div id="{@type}">
     <h3 class="xtl h3"><xsl:value-of select="@type"/></h3>
     <div class="xol2">
-      <xsl:apply-templates/>
+      <xsl:choose>
+	<xsl:when test="count(xtl:item)>0">
+	  <xsl:apply-templates/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <p><xsl:text> </xsl:text></p>
+	</xsl:otherwise>
+      </xsl:choose>
     </div>
   </div>
 </xsl:template>
