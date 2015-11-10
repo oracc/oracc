@@ -307,7 +307,9 @@ protocol(struct run_context *run,
 	    }
 	  else if (!xstrcmp(type,"key"))
 	    {
-	      struct keypair *kp = key_parse(line);
+	      struct keypair *kp = NULL;
+	      key_init();
+	      kp = key_parse(line);
 	      if (doctype == e_score)
 		{
 		  if (!strcmp(kp->key, "siglum-map"))
