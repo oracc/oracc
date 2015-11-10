@@ -38,7 +38,7 @@ atf_options {
 	    $O2ARGS .= 'D';
 	} elsif ($atf_lem_extended eq 'normal') {
 	} else {
-	    die "o2-atf.plx: value $atf_lem_extended' not known for 'atf-lem-extended'\n";
+	    die "o2-atf.plx: value '$atf_lem_extended' not known for 'atf-lem-extended'\n";
 	}
     } elsif ($atf_flags) {
 	$O2ARGS .= $atf_flags;
