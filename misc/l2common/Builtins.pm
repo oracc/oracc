@@ -21,6 +21,7 @@ my $early_debug = 1;
 
 my %rws_map = (
     EG => '',
+    CF => 'akk',
     OA => 'akk-x-oldass',
     OB => 'akk-x-oldbab',
     MA => 'akk-x-midass',
