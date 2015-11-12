@@ -43,7 +43,11 @@ scan_pair(const char *line)
   if (colon)
     idstart = pqid + (colon - line) + 1;
   else
-    idstart = pqid;
+    {
+      /*idstart = pqid;*/
+      warning("malformed link: protocol: no PROJECT (format is now PROJECT:PQX-ID)");
+      return NULL;
+    }
 
   if (*idstart == 'P')
     {
