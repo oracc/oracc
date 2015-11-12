@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if 0
+#include <unitypes.h>
+#include <unistr.h>
+#include <uniconv.h>
+#include <unictype.h>
+#endif
+
 #include <list.h>
 #include "globals.h"
 #include "cdf.h"
@@ -117,8 +124,30 @@ is_exemplar(const unsigned char *l)
 {
   const unsigned char *entry = l;
 
-  if (!isalnum(*l) && ':' != *l)
-    return 0;
+  if (*l != ':')
+    {
+#if 0
+      if (*l > 127)
+	{
+	  usc4_t uc;
+	  int res;
+	  res = u8_mbtouc_unsafe(&uc,l,strlen(l));
+	  if (res == 0xfffd)
+	    {
+	      vwarning("bad UTF-8: %s", l);
+	      return 0;
+	    }
+	  else
+	    {
+	      if (!uc_is_property_alphabetic(ucs4_t uc))
+		return 0;
+	    }
+	}
+      else 
+#endif      
+	if (*l < 127 && !isalnum(*l)) /* just allow any initial UTF-8 for now */
+	  return 0;
+    }
   while (*l && !isspace(*l))
     ++l;
   return l > entry && l[-1] == ':';
