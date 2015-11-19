@@ -85,7 +85,7 @@ check_bases {
     $tmp =~ s/\s*\cA\s*/\cA/g;
     my %b_seen = ();
     foreach my $b (grep(length,split(/\cA/,$tmp))) {
-	my $b_sig = ORACC::SL::Base::check("$check:$.:$b",$b);
+	my $b_sig = ORACC::SL::BaseC::check("$check:$.:$b",$b);
 	++$bstatus and next if $b_sig =~ /q0[01]/;
 	push @{$b_seen{$b_sig}}, $b;
     }
