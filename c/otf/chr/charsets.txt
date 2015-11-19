@@ -315,6 +315,20 @@ T, Ṭ
 '  ʾ
 @end chars
 
+#This is just a clone of sux/g for now
+@chars %xur/g
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'ʾ
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
 @chars %uga/a
 @allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
 @nokey ʾʿǵǴġĠḫḪḥḤṬṬṯ₀₁₂₃₄₅₆₇₈₉ₓ

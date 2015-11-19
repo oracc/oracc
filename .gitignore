@@ -612,3 +612,5 @@ misc/p3/p3-social.xsl
 c/otf/lng/lang_core.c
 
 c/otf/lng/lang_core.c
+
+c/otf/chr/charsets.c
