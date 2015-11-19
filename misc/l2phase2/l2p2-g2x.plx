@@ -6,6 +6,7 @@ use Data::Dumper;
 
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
 use ORACC::SL::BaseC;
 use Getopt::Long;
@@ -164,7 +165,7 @@ foreach my $lang (sort keys %data) {
 	my $entry_xid;
 	my $xid = $entry_xid = $entry_ids{$entry};
 	my ($letter) = ($entry =~ /^(.)/);
-	push @{$letter_ids{"\U$letter"}}, $entry_xid;
+	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
 	$entry_xis{$entry_xid} = { %xis_info };
