@@ -295,6 +295,10 @@ protocol(struct run_context *run,
 	    {
 	      ;
 	    }
+	  else if (!xstrcmp(type,"etcri"))
+	    {
+	      lem_extended = 0;
+	    }
 	  else if (!xstrcmp(type,"etcsl"))
 	    {
 	      ;

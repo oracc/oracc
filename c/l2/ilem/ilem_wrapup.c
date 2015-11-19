@@ -9,7 +9,7 @@
 
 int lem_do_wrapup = 1;
 int lem_percent_threshold = 20;
-int lem_extended = 0;
+int lem_extended = 1;
 extern int verbose;
 
 static int md_match(const char *value, const char *key, Hash_table *mdsets, const char *mdrefs);
