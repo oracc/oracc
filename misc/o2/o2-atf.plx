@@ -33,14 +33,16 @@ atf_options {
 	} else {
 	    die "o2-atf.plx: value $atf_lem_psa' not known for 'atf-lem-psa'\n";
 	}
-    } elsif ($atf_lem_extended) {
+    } 
+    if ($atf_lem_extended) {
 	if ($atf_lem_extended eq 'yes') {
 	    $O2ARGS .= 'D';
 	} elsif ($atf_lem_extended eq 'no') {
 	} else {
 	    die "o2-atf.plx: value '$atf_lem_extended' not known for 'atf-lem-extended'\n";
 	}
-    } elsif ($atf_flags) {
+    }
+    if ($atf_flags) {
 	$O2ARGS .= $atf_flags;
     }
     if ($views_cuneify && $views_cuneify =~ /tru|yes/) {
