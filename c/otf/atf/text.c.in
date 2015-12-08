@@ -43,6 +43,8 @@ const char *const xtf_xmlns[] =
     "", ""
   };
 
+int trans_dollar_fifo = 0;
+
 extern const unsigned char *catvec, *curr_dialect;
 extern size_t max_cat_id;
 
@@ -168,6 +170,30 @@ skip_rest_of_text(unsigned char **l)
   return l;
 }
 
+static int
+has_trans_labeled(unsigned char **lines)
+{
+  while (lines[0][0])
+    {
+      if ('&' == lines[0][0])
+	return 0;
+      elsif ('@' == lines[0][0] 
+	     && !strncmp((const char *)lines[0], "@translation", 
+			 strlen("@translation")))
+	{
+	  const char *p = &lines[0][strlen("@translation")+1];
+	  
+	  if (!strncmp(p, "labeled", strlen("labeled"))
+	      || !strncmp(p, "unitary", strlen("unitary")))
+	    {
+	      fprintf(stderr, "has_trans_labeled: found labeled or unitary\n");
+	      return 1;
+	    }
+      
+    }
+  return 0;
+}
+
 unsigned char **
 process_text(struct run_context *run, unsigned char **lines)
 {
@@ -194,6 +220,8 @@ process_text(struct run_context *run, unsigned char **lines)
   text_init();
   lemline_init();
   note_initialize_text();
+
+  trans_dollar_fifo = has_trans_labeled(lines);
 
   phase = NULL;
 
