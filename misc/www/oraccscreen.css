@@ -406,7 +406,8 @@ p.refline { margin-left: 1em; text-indent: -1em; }
 
 .boxlabel { font-weight: bold; font-size: 7pt; font-family: sans-serif; }
 
-span.xtr-label { font-weight: normal; font-size: 8pt; color: gray; vertical-align: super; }
+/*  font-size: 8pt; */
+span.xtr-label { font-weight: normal; color: gray; vertical-align: super; }
 
 .up { font-size: 70%; vertical-align: super; }
 .sup { font-size: 70%; vertical-align: super; }
