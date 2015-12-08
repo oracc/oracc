@@ -651,7 +651,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
       trans_parenned_labels = 0;
       /*curr_dialect = "NA";*/
     }
-  else if (trans_dollar_fifo || !xstrncmp(l,"rinap",5) || !xstrncmp(l,"ribo",4) || !xstrncmp(l,"rilak",5) || !xstrncmp(l,"cmawro",6))
+  else if (trans_dollar_fifo || !xstrncmp(l,"rinap",5) || /*!xstrncmp(l,"ribo",4) ||*/ !xstrncmp(l,"rilak",5) || !xstrncmp(l,"cmawro",6))
     {
       /*system_project = "saa";*/
       /*shadow_lem = 1;*/

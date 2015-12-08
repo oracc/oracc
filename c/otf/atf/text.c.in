@@ -173,7 +173,7 @@ skip_rest_of_text(unsigned char **l)
 static int
 has_trans_labeled(unsigned char **lines)
 {
-  while (lines[0][0])
+  for (++lines; lines[0]; ++lines)
     {
       if ('&' == lines[0][0])
 	return 0;
