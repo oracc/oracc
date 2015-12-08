@@ -38,7 +38,7 @@ foreach my $c (<00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>) {
 	$item_index = $i and last 
 	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
     }
-    die "xmd-ids.plx: no item field found in catalogue $c\n"
+    die "xmd-ids.plx: no item field found in catalogue $c\nEvery catalogue must have a field named id_text or id_composite\n"
 	unless $item_index >= 0;
     foreach my $r (@$rows) {
 	++$items{"$project:".$$r[$item_index]};
