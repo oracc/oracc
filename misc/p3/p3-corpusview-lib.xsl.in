@@ -602,7 +602,17 @@
 	      <xsl:attribute name="class">tr</xsl:attribute>
 	    </xsl:otherwise>
 	  </xsl:choose>
-	  <span class="xtr-label">
+	  <span>
+	    <xsl:attribute name="class">
+	      <xsl:choose>
+		<xsl:when test="@class='dollar'">
+		  <xsl:text>xtr-dollar</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:text>xtr-label</xsl:text>
+		</xsl:otherwise>
+	      </xsl:choose>
+	    </xsl:attribute>
 	    <xsl:call-template name="xtr-label">
 	      <xsl:with-param name="config-xml" select="$config-xml-file"/>
 	    </xsl:call-template>
