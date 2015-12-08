@@ -181,7 +181,7 @@ has_trans_labeled(unsigned char **lines)
 	     && !strncmp((const char *)lines[0], "@translation", 
 			 strlen("@translation")))
 	{
-	  const char *p = &lines[0][strlen("@translation")+1];
+	  const char *p = (const char *)(&lines[0][strlen("@translation")+1]);
 	  
 	  if (!strncmp(p, "labeled", strlen("labeled"))
 	      || !strncmp(p, "unitary", strlen("unitary")))
@@ -189,7 +189,7 @@ has_trans_labeled(unsigned char **lines)
 	      fprintf(stderr, "has_trans_labeled: found labeled or unitary\n");
 	      return 1;
 	    }
-      
+	}
     }
   return 0;
 }
