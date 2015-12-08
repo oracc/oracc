@@ -177,7 +177,7 @@ has_trans_labeled(unsigned char **lines)
     {
       if ('&' == lines[0][0])
 	return 0;
-      elsif ('@' == lines[0][0] 
+      else if ('@' == lines[0][0] 
 	     && !strncmp((const char *)lines[0], "@translation", 
 			 strlen("@translation")))
 	{
