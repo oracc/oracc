@@ -1996,6 +1996,17 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			    /* never add a hyphen after a pre-det */
 			    if (xstrcmp(getAttr(np->children.nodes[i-1],"g:pos"),"pre"))
 			      {
+				if (!suppress_next_hyphen || suppress_hyphen_delay)
+				  {
+				    const unsigned char *gdelim = getAttr(np->children.nodes[i], "g:delim");
+				    if (*gdelim)
+				      *insertp++ = *gdelim;
+				    else
+				      *insertp++ = '.';
+				  }
+				if (!suppress_hyphen_delay)
+				  suppress_next_hyphen = 0;
+#if 0
 				if (last_was_logo)
 				  {
 				    if (!suppress_next_hyphen || suppress_hyphen_delay)
@@ -2010,6 +2021,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 				    if (!suppress_hyphen_delay)
 				      suppress_next_hyphen = 0;
 				  }
+#endif
 			      }
 			    else
 			      {
