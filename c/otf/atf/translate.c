@@ -310,7 +310,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	      int interval = xid_diff((const char *)xid,doll_id);
 	      if (interval > 0)
 		{
-		  vwarning2(file,start_lnum,"missing SPACER");
+		  vwarning2(file,p->lnum,"missing SPACER");
 		  /* flush the translit dollar line that has no
 		     counterpart in the translat */
 		  (void)dollar_get();
@@ -334,7 +334,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	    }
 	  else if (interval < 1)
 	    {
-	      vwarning2(file,start_lnum,"translation alignment out of order");
+	      vwarning2(file,p->lnum,"translation alignment out of order");
 	    }
 	}
       else if (*last_xid && dollar_fifo)
@@ -342,7 +342,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	  /* last item was a trans_dollar -- trap backtracking */
 	  int interval = xid_diff((const char*)xid,(const char *)last_xid);
 	  if (interval < 0)
-	    vwarning2(file,start_lnum,"preceding $-line incorrectly aligned");
+	    vwarning2(file,p->lnum,"preceding $-line incorrectly aligned");
 	}
 
       setAttr(p,n_xh,(unsigned char *)nstab[n_xh].ns);
@@ -380,7 +380,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	  int interval = xid_diff((const char*)xid,(const char *)sref_xid);
 	  if (interval < 1)
 	    {
-	      vwarning2(file,start_lnum,"end of range comes before start of range");
+	      vwarning2(file,p->lnum,"end of range comes before start of range");
 	      /* keep processing even though it will produce unsightly output */
 	    }
 	  else
