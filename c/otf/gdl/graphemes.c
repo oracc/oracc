@@ -2000,14 +2000,14 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 				  {
 				    if (!suppress_next_hyphen || suppress_hyphen_delay)
 				      *insertp++ = '.';
-				    else if (!suppress_hyphen_delay)
+				    if (!suppress_hyphen_delay)
 				      suppress_next_hyphen = 0;
 				  }
 				else
 				  {
 				    if (!suppress_next_hyphen || suppress_hyphen_delay)
 				      *insertp++ = '-';
-				    else if (!suppress_hyphen_delay)
+				    if (!suppress_hyphen_delay)
 				      suppress_next_hyphen = 0;
 				  }
 			      }
