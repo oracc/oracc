@@ -1998,7 +1998,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			      {
 				if (!suppress_next_hyphen || suppress_hyphen_delay)
 				  {
-				    const unsigned char *gdelim = getAttr(np->children.nodes[i], "g:delim");
+				    const unsigned char *gdelim = getAttr(np->children.nodes[i-1], "g:delim");
 				    if (*gdelim)
 				      *insertp++ = *gdelim;
 				    else
