@@ -358,7 +358,7 @@ check_label(unsigned const char *lab,enum e_tu_types transtype,
 		    }
 		}
 	    }
-	  vwarning2(file,lnum,"%s: translation uses undefined label",lab);
+	  vwarning2(file,start_lnum,"%s: translation uses undefined label",lab);
 	  return NULL;
 	}
     }

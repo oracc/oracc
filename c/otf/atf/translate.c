@@ -286,7 +286,6 @@ labeled_labels(struct node *p, unsigned char *lab)
 	--s;
       *s = '\0';
     }
-
   xid = check_label(lab,etu_labeled,NULL);
 
   if (xid)
@@ -721,7 +720,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	  
 	  nlines = lines;
 	  scan_multi_paras(2);
-	  
+
 	  labeled_labels(curr_block,label_buf);
 	  se_label(curr_block,cc(text_n),cc(label_buf));
 	  if (trans_parenned_labels)
@@ -794,7 +793,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
   else
     --lnum;
 
-  start_lnum = -1;
+  /* start_lnum = -1; */
   return lines;
 }
 
@@ -869,7 +868,7 @@ trans_dollar(unsigned char **lines)
     ++s;
   (void)trans_inline(curr_block,s,NULL,0);
 
-  start_lnum = -1;
+  /* start_lnum = -1; */
 
   return lines;
 }
@@ -1144,8 +1143,8 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
       ++lines;
     }
 
-  start_lnum = -1;
-
+  /*start_lnum = -1;*/
+  
   return lines;
 }
 
