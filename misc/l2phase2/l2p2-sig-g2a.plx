@@ -199,9 +199,9 @@ if ($make_sigtab) {
 		} else {
 		    push @fbits, "\%$formlang" if $header{'lang'} =~ /^qpn/;
 		}
-# Always emit norm if this is a COF; for Sumerian this is actually uses the form but adding
+# Always emit norm if this is a COF; for Sumerian this actually uses the form but adding
 # parens in the right places
-		warn "norm = $$info{'norm'}\n";
+##		warn "norm = $$info{'norm'}\n";
 		if ($$info{'norm'} && ($$info{'norm'} =~ / /
 				       || $$info{'lang'} !~ /^sux/)) {
 		    push @fbits, "\$$$info{'norm'}";
