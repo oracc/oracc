@@ -244,6 +244,7 @@ labeled_labels(struct node *p, unsigned char *lab)
   const unsigned char *xid = NULL;
   int sref = 0, overlap = 0;
   unsigned const char *sref_xid = NULL;
+  int saved_start_lnum = start_lnum;
   
   while (*disp)
     {
@@ -286,7 +287,10 @@ labeled_labels(struct node *p, unsigned char *lab)
 	--s;
       *s = '\0';
     }
+
+  start_lnum = p->lnum;
   xid = check_label(lab,etu_labeled,NULL);
+  start_lnum = saved_start_lnum;
 
   if (xid)
     {
