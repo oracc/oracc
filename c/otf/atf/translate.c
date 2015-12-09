@@ -14,6 +14,8 @@
 #include "label.h"
 #include "pool.h"
 
+extern void note_initialize_line(void);
+
 extern int need_lemm;
 const char *const xtr_xmlns[] =
   {
@@ -695,6 +697,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	{
 	  curr_block = appendChild(text,
 				   elem(e_xh_p,NULL,lnum,DIVISION));
+	  curr_block->lnum = start_lnum;
 	  ctr(curr_block);
 	  setAttr(curr_block,n_xh,(unsigned char *)nstab[n_xh].ns);
 	  setAttr(curr_block,n_xtr,(unsigned char *)nstab[n_xtr].ns);
