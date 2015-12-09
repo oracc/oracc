@@ -2011,6 +2011,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 				      suppress_next_hyphen = 0;
 				  }
 			      }
+			    else
+			      {
+				if (!suppress_hyphen_delay)
+				  suppress_next_hyphen = 0;
+			      }
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
 			  insertp = render_g_text(np->children.nodes[i], insertp, startp);
