@@ -569,7 +569,7 @@ find_marker(unsigned char *s)
       else
 	{
 	  mbuf[s-start] = '\0';
-	  return mbuf;
+	  return (const char *)mbuf;
 	}
     }
   else
@@ -680,7 +680,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	      multi_trans_line = 1;
 	    }
 	  lp = trans_rest_of_line(s);
-	  if (!lp || strlen((char*)lp) > 127 || strchr(lp,'@'))
+	  if (!lp || strlen((char*)lp) > 127 || strchr((char*)lp,'@'))
 	    {
 	      warning("suspicious @label line; add a blank line after it");
 	      xstrncpy(label_buf, lp, 127);
@@ -749,6 +749,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	  }
 	else
 	  {
+	    extern void note_register_note(const unsigned char *mark, struct node *node);
 	    curr_block = appendChild(text,
 				     elem(blocktokp->etype,NULL,lnum,DIVISION));
 	    note_register_note(marker, curr_block);
@@ -1316,20 +1317,20 @@ all_upper(const char *s)
   return 1;
 }
 
+#if 0
 static void
 discretionary(unsigned char *s)
 {
-#if 0
   while (*s)
     {
-      
       /* @- is discretionary hyphen which is two bytes in UTF8
 	 so we just overwrite the @- and back up to reprocess
       */
       --s;
     }
-#endif
 }
+#endif
+
 /* FIXME: what about notes in inline translations?
  */
 unsigned char *
