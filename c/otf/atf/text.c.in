@@ -186,7 +186,7 @@ has_trans_labeled(unsigned char **lines)
 	  if (!strncmp(p, "labeled", strlen("labeled"))
 	      || !strncmp(p, "unitary", strlen("unitary")))
 	    {
-	      fprintf(stderr, "has_trans_labeled: found labeled or unitary\n");
+	      /*fprintf(stderr, "has_trans_labeled: found labeled or unitary\n");*/
 	      return 1;
 	    }
 	}
