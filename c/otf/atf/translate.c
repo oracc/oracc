@@ -315,7 +315,7 @@ labeled_labels(struct node *p, unsigned char *lab)
 	      int interval = xid_diff((const char *)xid,doll_id);
 	      if (interval > 0)
 		{
-		  vwarning2(file,p->lnum,"expected dollar line to match transliteration dollar lines.\nTo have no corresponding dollar line include a spacer in the translation:\n\t$ (SPACER)\n");
+		  vwarning2(file,p->lnum,"expected $-line to match transliteration.\n\tTo have no corresponding $-line include a spacer in the translation:\n\t$ (SPACER)\n");
 		  /* flush the translit dollar line that has no
 		     counterpart in the translat */
 		  (void)dollar_get();
