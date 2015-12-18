@@ -174,7 +174,7 @@ T' Θ
 %  Š
 @end chars
 
-@chars %qca
+@chars %qca/g
 @allow abdefgŋhḫiklmnopqrsṣśštṭuwxyzABDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
 @nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
 @trans
