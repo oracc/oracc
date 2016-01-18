@@ -21,7 +21,7 @@ update_content {
     binmode X, ':raw';
     print X $xml->toString();
     close(X);
-    system 'zip', $odf, "content.xml";
+    system 'zip', '-f', $odf, "content.xml";
 #    unlink 'content.xml';
 }
 

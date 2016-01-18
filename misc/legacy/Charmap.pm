@@ -39,7 +39,7 @@ load_char {
     $charname =~ tr/ /_/;
     $charname = "\L$charname.chr";
     unless (-r $charname) {
-	$charname = "$ENV{'ORACC'}/lib/charmap/\L$charname.chr"
+	$charname = "$ENV{'ORACC'}/lib/charmap/\L$charname"
     }
     if (open(F,$charname)) {
 	my %cset = ();
@@ -66,7 +66,7 @@ load_char {
 		} else {
 		    warn("$charname:$.: can't reach this!\n");
 		}
-	    } elsif (/^(subdigits|copy|remove|replace|combining|combinations)/) {
+	    } elsif (/^(subdigits|copy|remove|replace|combining|combinations|combine)/) {
 		if (/^subdigits\s*=\s*(\d+)\s*$/) {
 		    $cset{'sub'} = $1;
 		    $state = CHR_NONE;
