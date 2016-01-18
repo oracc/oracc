@@ -165,7 +165,7 @@ loadsigs {
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) {
 		push(@{$exos{$exo}},"$xtf_project\:$ref");
-	    } elsif ($new) {
+	    } elsif ($new && !$prx) {
 		push(@{$news{$new}},"$xtf_project\:$ref");
 	    }
 	}
