@@ -612,7 +612,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
 
   cuneify_init(run->proj->xpd);
 
-  o = xpd_option(run->proj->xpd,"trans_dollar_align");
+  o = xpd_option(run->proj->xpd,"trans-dollar-align");
   if (o && !strcmp(o, "yes"))
     dollar_fifo = 1;
   else
