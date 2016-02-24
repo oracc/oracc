@@ -30,6 +30,7 @@ struct node
   void *user;
   enum block_levels level;
   int clone;
+  void *grapheme;
 };
 
 #define firstChild(n) (n)->children.nodes[0]

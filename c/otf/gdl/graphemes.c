@@ -553,6 +553,10 @@ gparse(register unsigned char *g, enum t_type type)
 			gp = singleton((unsigned char *)strdup((char*)(noheth ? noheth : nodots)),
 				       g_v);
 			gp->raw = (unsigned char *)strdup((char*)g);
+			if (noheth)
+			  gp->gflags |= GFLAGS_HETH;
+			else
+			  gp->gflags |= GFLAGS_DOTS;
 		      }
 		    else
 		      {
@@ -697,6 +701,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      gp = singleton((unsigned char *)noheth,g_s);
 	      gp->raw = (unsigned char *)strdup((char*)g);
+	      gp->gflags |= GFLAGS_HETH;
 	    }
 	  else
 	    {

@@ -40,6 +40,8 @@ struct grapheme
 #define GFLAGS_BAD         0x001
 #define GFLAGS_HAVE_SQUARE 0x002
 #define GFLAGS_REDUNDANT   0x004
+#define GFLAGS_HETH	   0x008
+#define GFLAGS_DOTS	   0x010
 
 extern struct node *pending_disamb;
 
