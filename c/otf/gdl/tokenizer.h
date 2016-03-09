@@ -73,6 +73,7 @@ struct token
   const unsigned char *text;
   const void  *data;
   struct lang_context *lang;
+  const void *grapheme;
 };
 
 #define MEDIAL_OPEN  0x01 /* lug[al */
