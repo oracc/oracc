@@ -848,8 +848,21 @@ xis_refs {
 sub
 make_cof_norm {
     my $f = shift;
-    my @norm = ($f =~ m/\$(\p{L}+)/g);
-    join(' ', @norm);
+    my @n = ();
+    foreach my $fbit (split(/\&\&/, $f)) {
+	my %s = parse_sig ($fbit);
+	if ($baselang eq 'sux') {
+	    my $m = $s{'morph'};
+	    $m =~ s/~/$s{'base'}/;
+	    $m =~ s/\%.*?://g;
+	    push @n, $m;
+	} else {
+	    push @n, $s{'norm'};
+	}
+    }
+    my $n = join(' ', @n);
+#    warn "make_cof_norm: $f => $n\n";
+    $n;
 }
 
 sub

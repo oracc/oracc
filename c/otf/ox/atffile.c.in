@@ -237,18 +237,21 @@ process_string(struct run_context *run, unsigned char *ftext, ssize_t fsize)
       ++lnum;
       ++rest;
     }
-  while (1)
+  if (*rest)
     {
-      rest = process_text(run, rest);
-      if (!rest || !*rest)
-	break;
-      if (rest - lines != (lnum-1))
-	fprintf(stderr,"%s: %s: lnum corrupted: actual %d expected %d\n",
-		file, textid,
-		lnum, (int)(1+(rest - lines)));
-      if (verbose > 1)
-	fprintf(f_log,"%d\n",lnum);
-      clear_blocks();
+      while (1)
+	{
+	  rest = process_text(run, rest);
+	  if (!rest || !*rest)
+	    break;
+	  if (rest - lines != (lnum-1))
+	    fprintf(stderr,"%s: %s: lnum corrupted: actual %d expected %d\n",
+		    file, textid,
+		    lnum, (int)(1+(rest - lines)));
+	  if (verbose > 1)
+	    fprintf(f_log,"%d\n",lnum);
+	  clear_blocks();
+	}
     }
   free(lines);
   /*xcl_clear_cache();*/

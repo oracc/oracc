@@ -9,7 +9,7 @@ foreach my $d (@dirs) {
     system 'mkdir', '-p', $d;
 }
 
-my @files = `find fix/ -type f`;
+my @files = `find fix -type f`;
 chomp @files;
 foreach my $f (@files) {
     my $outfile = $f;

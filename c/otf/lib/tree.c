@@ -10,6 +10,7 @@
 #include "rnvif.h"
 #include "xcl.h"
 #include "list.h"
+#include "graphemes.h"
 
 List *tree_mem_list = NULL;
 static struct npool *tree_pool;
@@ -747,7 +748,9 @@ serialize_kids(struct node*n)
     }
   if (*n->type == 't')
     {
-      if (n->data)
+      if (n->parent && n->parent->grapheme)
+	fputs((const char*)n->parent->grapheme->raw,f_xml);
+      else if (n->data)
 	fputs((const char*)n->data,f_xml);
       return;
     }

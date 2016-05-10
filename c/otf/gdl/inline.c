@@ -818,14 +818,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      break;
 #endif
 	    default:
-	      if (datap && !((struct grapheme*)datap)->xml)
+	      if (datap)
 		{
-		  ++start;
-		  if (tokens[start]->type == flag
-		      || tokens[start]->type == prox)
+		  if (((struct grapheme*)datap)->xml)
+		    {
+		      tokens[start]->grapheme = ((struct grapheme*)datap)->xml;
+		    }
+		  else
 		    {
 		      ++start;
-		      continue;
+		      if (tokens[start]->type == flag
+			  || tokens[start]->type == prox)
+			{
+			  ++start;
+			  continue;
+			}
 		    }
 		}
 	      punct_word = tp->type == g_p;

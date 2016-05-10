@@ -15,6 +15,8 @@ struct nodelist
   ssize_t lastused;
 };
 
+struct grapheme;
+
 struct node
 {
   const char *type;
@@ -30,6 +32,7 @@ struct node
   void *user;
   enum block_levels level;
   int clone;
+  struct grapheme *grapheme;
 };
 
 #define firstChild(n) (n)->children.nodes[0]

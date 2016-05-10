@@ -13,6 +13,7 @@
 #include "labtab.h"
 #include "label.h"
 #include "pool.h"
+#include "note.h"
 
 extern void note_initialize_line(void);
 
@@ -755,7 +756,7 @@ trans_block(unsigned char **lines,unsigned char *token,struct block_token*blockt
 	    extern void note_register_note(const unsigned char *mark, struct node *node);
 	    curr_block = appendChild(text,
 				     elem(blocktokp->etype,NULL,lnum,DIVISION));
-	    note_register_note(marker, curr_block);
+	    note_register_note((unsigned char *)marker, curr_block);
 	  }
       }
       /* FIXME: validate @note against the ^N^ markers; also, accept unicode 
@@ -811,12 +812,10 @@ trans_dollar(unsigned char **lines)
   start_lnum = lnum;
   if (s[1] == '@' && s[2] == '(')
     {
-      unsigned char *lstart;
       unsigned char label_buf[128], *lp;
       *label_buf = '\0';
       lp = label_buf;
       s += 3;
-      lstart = s;
       while (*s && *s != ')')
 	*lp++ = *s++;
       *lp = '\0';
@@ -1532,7 +1531,7 @@ trans_inline(struct node*parent,unsigned char *text,const char *until, int with_
 		  cnode = (parent->parent ? parent->parent : parent);
 		  if (!strcmp(cc(getAttr(cnode, "class")), "note"))
 		    {
-		      unsigned char *nauto = getAttr(cnode,"note:auto");
+		      const unsigned char *nauto = getAttr(cnode,"note:auto");
 		      span = appendChild(parent,elem(e_xh_span,NULL,lnum,FIELD));
 		      if (nauto && *nauto)
 			appendChild(span,textNode(nauto));

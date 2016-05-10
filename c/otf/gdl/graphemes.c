@@ -553,6 +553,10 @@ gparse(register unsigned char *g, enum t_type type)
 			gp = singleton((unsigned char *)strdup((char*)(noheth ? noheth : nodots)),
 				       g_v);
 			gp->raw = (unsigned char *)strdup((char*)g);
+			if (noheth)
+			  gp->gflags |= GFLAGS_HETH;
+			else
+			  gp->gflags |= GFLAGS_DOTS;
 		      }
 		    else
 		      {
@@ -697,6 +701,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      gp = singleton((unsigned char *)noheth,g_s);
 	      gp->raw = (unsigned char *)strdup((char*)g);
+	      gp->gflags |= GFLAGS_HETH;
 	    }
 	  else
 	    {
@@ -762,6 +767,8 @@ gparse(register unsigned char *g, enum t_type type)
 #endif
 	}
       gp->atf = orig;
+      if (gp->xml && (gp->gflags & GFLAGS_DOTS))
+	    gp->xml->grapheme = gp; /* give rendering process access to parent grapheme not just struct node */
       if (gp->xml && gp->xml->children.lastused > 0
 	  && !strcmp(((struct node*)(gp->xml->children.nodes[0]))->type,"e")) 
 	{
@@ -782,7 +789,6 @@ gparse(register unsigned char *g, enum t_type type)
 			     cleang,curr_lang->signlist);
 		}
 	    }
-
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)
@@ -1910,7 +1916,12 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		if (!strcmp((char*)getAttr(np,"g:role"),"sign"))
 		  *insertp++ = '$';
 		if (*cp1->type == 't')
-		  insertp = render_g_text(cp1, insertp, startp);
+		  {
+		    if (np->grapheme)
+		      insertp += xxstrlen(xstrcpy(insertp, np->grapheme->raw));
+		    else
+		      insertp = render_g_text(cp1, insertp, startp);
+		  }
 		else
 		  for (i = 0; i < np->children.lastused; ++i)
 		    insertp = render_g(np->children.nodes[i], insertp, startp);

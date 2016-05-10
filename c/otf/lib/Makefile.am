@@ -25,7 +25,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/l2 \
 	-I@top_srcdir@/c/lib/sas \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
-	-I@top_srcdir@/c/otf/lng
+	-I@top_srcdir@/c/otf/{lng,gdl}
 
 EXTRA_DIST=*.h
 
