@@ -229,17 +229,30 @@ update_lists {
 	    '+', $cat_ids,
 	    '-?','00lib/not-approved.lst',
 	    '+?','00lib/add-approved.lst';
-    } elsif ($opt eq 'umbrella') {
+    } elsif ($opt eq 'umbrella' || $opt eq 'search') {
 	my @pubsub = ();
-	if (-r '00lib/umbrella.lst') {
+	my $projlist = undef;
+	my @projatfs = ();
+	if ($opt eq 'umbrella') {
+	    $projlist = '00lib/umbrella.lst';
+	    @projatfs = ('approved');
+	} else {
+	    $projlist = '00lib/search.lst';
+	    @projatfs = ('xtfindex');
+	}
+	if (-r $projlist) {
 	    ## either use the list provided by the project
-	    open(U,'00lib/umbrella.lst') || die "o2-lst.plx: strange: can't open readable file '00lib/umbrella.lst'\n";
+	    open(U,$projlist) || die "o2-lst.plx: strange: can't open readable file '$projlist'\n";
 	    while (<U>) {
 		chomp;
 		push @pubsub, split(/\s+/,$_);
 	    }
 	    close(U);
-	    @pubsub = map { "$_/01bld/lists/approved.lst" } @pubsub;
+	    my @pubexpanded = ();
+	    foreach my $a (@projatfs) {
+		push(@pubexpanded, map { "$_/01bld/lists/$a.lst" } @pubsub);
+	    }
+	    @pubsub = @pubexpanded;
 	} else {
 	    ## or automatically include all approved texts from
 	    ## all public subprojects

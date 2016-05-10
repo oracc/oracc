@@ -1,8 +1,16 @@
 #!/bin/sh
 [ -r 01bld/cancel ] && exit 1
 webdir=01bld/www
-p3-translangs.sh >01tmp/translangs
+buildpolicy=`oraccopt . build-approved-policy`;
+
+if [ "$buildpolicy" != "search" ]; then
+    p3-translangs.sh >01tmp/translangs
+else
+    echo en >01tmp/translangs
+fi
+
 otl=`oraccopt . outline-special-list-name`
+
 if [ "$otl" != "" ]; then
     if [ -r 00lib/$otl ]; then
 	echo processing 00lib/$otl
@@ -12,6 +20,7 @@ if [ "$otl" != "" ]; then
 	echo no such file 00lib/$otl
     fi
 fi
+
 mkdir -p $webdir/lists
 if [ -d 00lib/lists ]; then
     liblists=`(cd 00lib/lists ; ls)`
@@ -19,6 +28,7 @@ if [ -d 00lib/lists ]; then
 	cp -f 00lib/lists/* $webdir/lists
     fi
 fi
+
 if [ -d 01bld/lists ]; then
     bldlists=`(cd 01bld/lists ; ls)`
     if [ "$bldlists" != "" ]; then
@@ -27,17 +37,22 @@ if [ -d 01bld/lists ]; then
 	done
     fi
 fi
+
 if [ -r 01bld/lists/outlined.lst ]; then
     cp -f 01bld/lists/outlined.lst $webdir/lists
 fi
-l2p3.sh $webdir
-for a in 02pub/cbd/* ; do 
-    lang=`basename $a`
-    if [ -r 01bld/$lang/letter_ids.tab ]; then
-	cp 01bld/$lang/letter_ids.tab $a
-	cp 01bld/$lang/L*.lst $a
-    fi
-done
+
+if [ "$buildpolicy" != "search" ]; then
+    l2p3.sh $webdir
+    for a in 02pub/cbd/* ; do 
+	lang=`basename $a`
+	if [ -r 01bld/$lang/letter_ids.tab ]; then
+	    cp 01bld/$lang/letter_ids.tab $a
+	    cp 01bld/$lang/L*.lst $a
+	fi
+    done
+fi
+
 if [ -f 01bld/lists/have-xtf.lst ]; then
     web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
     clean-web-PQX-log.sh

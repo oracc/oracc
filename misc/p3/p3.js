@@ -324,78 +324,93 @@ function p3controls() {
     var uimode = document.getElementById('uimode').value;
     var asrch = document.getElementById('asrch').value;
 
-    if (asrch === 'yes') {
-	document.getElementById('p3asearch').style.display = 'inline';
-	document.getElementById('p3srch').style.display = 'none';
-    } else {
+    if (uimode === 'search') {
+
+	no_sorters();
+	document.getElementById('p3cetype').style.display = 'none';
 	document.getElementById('p3asearch').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'inline';
-    }
-
-    var outlineState = document.getElementById('p3outl').value;
-    var newSorttype = document.getElementById('sorttype').value;
-    // alert('outlineState='+outlineState+'; newSorttype='+newSorttype);
-
-    document.getElementById('arg_item').value = 0;
-    
-    p3PageState(mode, what, prod);
-
-    if (mode === 'zoom') {
-	document.getElementById('p3zoom').style.display = 'inline';
-    } else {
-	document.getElementById('p3zoom').style.display= 'none';
-    }
-
-    if (what === 'page') {
-	p3PageControls();
-    } else {
-	p3ItemControls();
-    }
-
-    if (prod === 'srch') {
-	p3SrchControls();
-    } else {
-	document.getElementById('p3cetype').style.display = 'none';
-	if (document.getElementById('glos').value.length > 0) {
-	    p3GlosControls();
-	    selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
-	} else {
-	    // this is done in page controls
-	    // p3CorpusControls();
-	}
-    }
-
-    if (document.getElementById('gxis').value != '') {
-	var newCetype = document.getElementById('cetype').value;
-	selectItemByValue(document.getElementById('p3cetype'), newCetype);
-	document.getElementById('p3cetype').style.display = 'inline';
-    }
-
-    if (uimode === 'mini') {
-//	document.getElementById('p3topButtons').style.display = 'none';
-	document.getElementById('p3srch').style.display = 'none';
-	document.getElementById('p3topnav').style.display = 'none';
-	p3ControlsHeight = p3MiniControlsHeight;
+	document.getElementById('p3leftnav').style.display = 'none';
+	document.getElementById('p3content').style.display = 'none';
+	p3ControlsHeight = p3SearchControlsHeight;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
-    }
 
-    var otlmodeNode = document.getElementById('otlmode');
-    if (otlmodeNode) {
-	if (otlmodeNode.value === 'none') {
+    } else {
+
+	if (asrch === 'yes') {
+	    document.getElementById('p3asearch').style.display = 'inline';
+	    document.getElementById('p3srch').style.display = 'none';
+	} else {
+	    document.getElementById('p3asearch').style.display = 'none';
+	    document.getElementById('p3srch').style.display = 'inline';
+	}
+	
+	var outlineState = document.getElementById('p3outl').value;
+	var newSorttype = document.getElementById('sorttype').value;
+	// alert('outlineState='+outlineState+'; newSorttype='+newSorttype);
+	
+	document.getElementById('arg_item').value = 0;
+	
+	p3PageState(mode, what, prod);
+	
+	if (mode === 'zoom') {
+	    document.getElementById('p3zoom').style.display = 'inline';
+	} else {
+	    document.getElementById('p3zoom').style.display= 'none';
+	}
+	
+	if (what === 'page') {
+	    p3PageControls();
+	} else {
+	    p3ItemControls();
+	}
+	
+	if (prod === 'srch') {
+	    p3SrchControls();
+	} else {
+	    document.getElementById('p3cetype').style.display = 'none';
+	    if (document.getElementById('glos').value.length > 0) {
+		p3GlosControls();
+		selectItemByValue(document.getElementById('setglo'), document.getElementById('glos').value);
+	    } else {
+		// this is done in page controls
+		// p3CorpusControls();
+	    }
+	}
+
+	if (document.getElementById('gxis').value != '') {
+	    var newCetype = document.getElementById('cetype').value;
+	    selectItemByValue(document.getElementById('p3cetype'), newCetype);
+	    document.getElementById('p3cetype').style.display = 'inline';
+	}
+	
+	if (uimode === 'mini') {
+	    //	document.getElementById('p3topButtons').style.display = 'none';
+	    document.getElementById('p3srch').style.display = 'none';
+	    document.getElementById('p3topnav').style.display = 'none';
+	    p3ControlsHeight = p3MiniControlsHeight;
+	    document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
+	}
+	
+	var otlmodeNode = document.getElementById('otlmode');
+	if (otlmodeNode) {
+	    if (otlmodeNode.value === 'none') {
+		p3NoOutline();
+	    }
+	}
+	
+	var fsbox = document.getElementById('fullscreen');
+	if (fsbox && fsbox.checked) {
 	    p3NoOutline();
 	}
+	
+	var tonly = document.getElementById('transonly');
+	if (tonly && tonly.checked) {
+	    to_toggle();
+	}
+	
     }
-
-    var fsbox = document.getElementById('fullscreen');
-    if (fsbox && fsbox.checked) {
-	p3NoOutline();
-    }
-
-    var tonly = document.getElementById('transonly');
-    if (tonly && tonly.checked) {
-	to_toggle();
-    }
-
+    
     return 1;
 }
 
