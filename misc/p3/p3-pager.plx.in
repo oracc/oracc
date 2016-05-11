@@ -145,6 +145,7 @@ if ($rt{'prod'} eq 'list') {
 	$rt{'cetype'} = $p{'p3cetype'};
 	p3srch();
     }
+    $p{'uimode'} = 'full';
     unless ($rt{'#list_type'}) {
 	if ($rt{'#index'} eq 'txt' || $rt{'#index'} eq 'lem') {
 	    $rt{'#list_type'} = 'xtf';
@@ -574,6 +575,10 @@ run_form_maker {
 		    s/action=\"(.*?)\"/action="$p{'referer'}"/;
 		} else {
 		    s/\@\@project\@\@/$p{'project'}/g;
+		}
+		warn "p-uimode = $p{'uimode'}\n";
+		if ($p{'uimode'} eq 'search' && /\<form/) {
+		    s/action/target="_blank" action/;
 		}
 	    } elsif (/\@\@referer\@\@/) {
 		s/\@\@referer\@\@/$p{'referer'}/g;

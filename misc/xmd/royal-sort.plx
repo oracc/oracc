@@ -209,6 +209,7 @@ rim_from_designation {
 	'Tiglath-pileser III' => [ 'rim:AP.1.1' , 'Neo-Assyrian' ],
 	'Shalmaneser V' => [ 'rim:AP.1.2' , 'Neo-Assyrian' ],
 	'Sargon' => [ 'rim:AP.1.3' , 'Neo-Assyrian' ],
+	'Sargon II' => [ 'rim:AP.1.3' , 'Neo-Assyrian' ],
 	'Sennacherib' => [ 'rim:AP.1.4' , 'Neo-Assyrian' ],
 	'Esarhaddon' => [ 'rim:AP.1.5' , 'Neo-Assyrian' ],
 	'Ashurbanipal' => [ 'rim:AP.1.6' , 'Neo-Assyrian' ],

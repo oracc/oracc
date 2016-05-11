@@ -34,7 +34,6 @@
 
 \def\@makeother#1{\catcode`#1=12\relax}
 
-
 \def\@ifnextchar#1#2#3{%
   \let\reserved@d=#1%
   \def\reserved@a{#2}\def\reserved@b{#3}%
@@ -55,7 +54,10 @@
 \def\:{\@xifnch} \expandafter\gdef\: {\futurelet\@let@token\@ifnch}
 \endgroup
 
+%\def\AtEndOfPackage{%                                                                                                                                              
+%  \expandafter\g@addto@macro\csname\@currname.\@currext-h@@k\endcsname}
 
+%\let\@currname\@empty
 
 \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
 \long\def\@dblarg#1{\@ifnextchar[{#1}{\@xdblarg{#1}}}

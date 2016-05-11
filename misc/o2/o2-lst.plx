@@ -233,12 +233,14 @@ update_lists {
 	my @pubsub = ();
 	my $projlist = undef;
 	my @projatfs = ();
+	my $projbase = '';
 	if ($opt eq 'umbrella') {
 	    $projlist = '00lib/umbrella.lst';
 	    @projatfs = ('approved');
 	} else {
 	    $projlist = '00lib/search.lst';
 	    @projatfs = ('xtfindex');
+	    $projbase = $ENV{'ORACC'};
 	}
 	if (-r $projlist) {
 	    ## either use the list provided by the project
@@ -250,7 +252,7 @@ update_lists {
 	    close(U);
 	    my @pubexpanded = ();
 	    foreach my $a (@projatfs) {
-		push(@pubexpanded, map { "$_/01bld/lists/$a.lst" } @pubsub);
+		push(@pubexpanded, map { "$projbase/$_/01bld/lists/$a.lst" } @pubsub);
 	    }
 	    @pubsub = @pubexpanded;
 	} else {
@@ -261,15 +263,21 @@ update_lists {
 	    @pubsub = map { s#^$project/## ; 
 			    "$_/01bld/lists/approved.lst" } @pubsub;
 	}
+	my %seen = ();
 	open(A, '>01bld/lists/proxy-atf.lst')
 	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
 	foreach my $p (@pubsub) {
-	    open(P, $p);
+	    open(P, $p) || die "o2-lst.plx: can't read search text list $p\n";
 	    my @l = (<P>);
 	    chomp @l;
 	    foreach my $p (@l) {
 		$p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
-		print A "$p\n";
+		if ($seen{$2}) {
+		    warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
+		} else {
+		    $seen{$2} = $1;
+		    print A "$p\n";
+		}
 	    }
 	    close(P);
 	}

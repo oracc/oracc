@@ -29,12 +29,12 @@ or_gdf(void)
 	      if (elements[1] && !strcmp(elements[1], "xml"))
 		{
 		  print_hdr_xml();
-		  execl("/bin/sh", "sh", "/usr/local/oracc/bin/gdf-entry.sh", tmp, elements[0], "xml", NULL);
+		  execl("/bin/sh", "sh", "/home/oracc/bin/gdf-entry.sh", tmp, elements[0], "xml", NULL);
 		}
 	      else if (!elements[1] || !strcmp(elements[1], "html"))
 		{
 		  print_hdr();
-		  execl("/bin/sh", "sh", "/usr/local/oracc/bin/gdf-entry.sh", tmp, elements[0], NULL);
+		  execl("/bin/sh", "sh", "/home/oracc/bin/gdf-entry.sh", tmp, elements[0], NULL);
 		}
 	    }
 	}

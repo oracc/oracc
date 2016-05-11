@@ -8,7 +8,7 @@
 void
 xmlrpc(void)
 {
-  const char *prog = "/usr/local/oracc/www/cgi-bin/oracc-xmlrpc";
+  const char *prog = "/home/oracc/www/cgi-bin/oracc-xmlrpc";
   fprintf(stderr, "oracc-resolver: invoking oracc-xmlrpc\n");
   if (execl(prog, "oracc-xmlrpc", (char *)0))
     {

@@ -53,11 +53,19 @@ xmd_from_list {
     print X '<catalog xmlns="http://oracc.org/ns/xmd/1.0">';
     local($/) = undef;
     my $proj = '';
+    my %seen = ();
     foreach my $f (@lst) {
 	$f =~ tr/\cM//d;
 	next unless $f;
 	my $xmd = '';
 	my ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
+
+	if ($seen{$proxyid}) {
+	    warn "xmd-proxy.plx: using $seen{$proxyid} instead of $xmd_project version\n";
+	    next;
+	} else {
+	    $seen{$proxyid} = $xmd_project;
+	}
 	
 	#
 	# in cat proxy, we only care about the @project part of the line
@@ -82,9 +90,11 @@ xmd_from_list {
 	    print P $_;
 	    ++$n_p;
 	} elsif ($proxyid =~ /^Q/) {
+	    s/id_text/id_composite/g; # force all Q-texts to use id_composite
 	    print Q $_;
 	    ++$n_q;
 	} else {
+	    s/id_composite/id_text/g; # force all X-texts to use id_text
 	    print X $_;
 	    ++$n_x;
 	}

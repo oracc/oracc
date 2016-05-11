@@ -1,4 +1,5 @@
 var p3MiniControlsHeight = 32;
+var p3SearchControlsHeight = 40;
 var p3ControlsHeight = 90;
 var p3BotbannerHeight = 28;
 var p3TopAdjust = 4;
@@ -8,7 +9,7 @@ function p3_onload() {
 }
 
 function p3_onpageshow() {
-    if (event.persisted) {
+    if (typeof event != "undefined" && event.persisted) {
 	// possibly do something here on every pageshow after first
 	// see https://developer.mozilla.org/en-US/docs/Using_Firefox_1.5_caching
 	p3controls();
@@ -330,8 +331,12 @@ function p3controls() {
 	document.getElementById('p3cetype').style.display = 'none';
 	document.getElementById('p3asearch').style.display = 'none';
 	document.getElementById('p3srch').style.display = 'inline';
-	document.getElementById('p3leftnav').style.display = 'none';
+	document.getElementById('p3navLeft').style.display = 'none';
+	document.getElementById('p3itemnav').style.display= 'none';
+	document.getElementById('p3pagenav').style.display= 'none';
+	document.getElementById('fullscreen').style.display= 'none';
 	document.getElementById('p3content').style.display = 'none';
+	document.getElementById('p3botbanner').style.display = 'none';
 	p3ControlsHeight = p3SearchControlsHeight;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
 

@@ -112,6 +112,17 @@ results(const char *session, const char *list)
 }
 
 void
+searchbar(void)
+{
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+	cgi_arg("project", project),
+	cgi_arg("uimode", "search"),
+	NULL);
+  perror("execl failed");
+  exit(1);
+}
+
+void
 sigfixer(const char *file)
 {
   execl("@@ORACC@@/bin/sigfixer", "sigfixer", project, file, NULL);

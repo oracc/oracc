@@ -48,10 +48,10 @@ static void
 map_remaps(struct pqx_info **r, int rlen)
 {
 #define CAT_LINE_MAX 128
-  char *pqids_lst = malloc(strlen("/usr/local/oracc/pub//cat/pqids.lst")
+  char *pqids_lst = malloc(strlen("/home/oracc/pub//cat/pqids.lst")
 				 + strlen(project) + 1);
   char buf[CAT_LINE_MAX];
-  (void)sprintf(pqids_lst, "/usr/local/oracc/pub/%s/cat/pqids.lst", project);
+  (void)sprintf(pqids_lst, "/home/oracc/pub/%s/cat/pqids.lst", project);
   if (!access(pqids_lst, R_OK))
     {
       FILE *pqids = NULL;
@@ -91,9 +91,9 @@ map_remaps(struct pqx_info **r, int rlen)
 static char *
 map_needs_remap(const char *pqx)
 {
-  char *tmp = malloc(strlen("/usr/local/oracc/bld//XXXX/XXXXXXX/XXXXXXX.xmd")
+  char *tmp = malloc(strlen("/home/oracc/bld//XXXX/XXXXXXX/XXXXXXX.xmd")
 		     + strlen(project) + 1);
-  sprintf(tmp, "/usr/local/oracc/bld/%s/%s", project, pqx);
+  sprintf(tmp, "/home/oracc/bld/%s/%s", project, pqx);
   tmp[strlen(tmp)-3] = '\0';
   sprintf(tmp+strlen(tmp), "/%s/%s.xmd", pqx, pqx);
   if (access(tmp, R_OK))

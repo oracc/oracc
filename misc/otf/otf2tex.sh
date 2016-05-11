@@ -40,7 +40,7 @@ mkdir -p $pdfdir
 mv $driverbase.pdf $pdfdir
 mv $driverbase.log $pdfdir
 cd $cwd
-if [ "$keep" == "" ]; then
-    rm -fr $odtdir
-fi
+#if [ "$keep" == "" ]; then
+#    rm -fr $odtdir
+#fi
 echo PDF output is in 00any/pdf/$driverbase.pdf
