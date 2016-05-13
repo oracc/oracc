@@ -250,6 +250,7 @@ update_lists {
 		push @pubsub, split(/\s+/,$_);
 	    }
 	    close(U);
+	    warn "$projlist => @pubsub\n";
 	    my @pubexpanded = ();
 	    foreach my $a (@projatfs) {
 		push(@pubexpanded, map { "$projbase/$_/01bld/lists/$a.lst" } @pubsub);
@@ -267,19 +268,22 @@ update_lists {
 	open(A, '>01bld/lists/proxy-atf.lst')
 	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
 	foreach my $p (@pubsub) {
-	    open(P, $p) || die "o2-lst.plx: can't read search text list $p\n";
-	    my @l = (<P>);
-	    chomp @l;
-	    foreach my $p (@l) {
-		$p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
-		if ($seen{$2}) {
-		    warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
-		} else {
-		    $seen{$2} = $1;
-		    print A "$p\n";
+	    if (open(P, $p)) {
+		my @l = (<P>);
+		chomp @l;
+		foreach my $p (@l) {
+		    $p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
+		    if ($seen{$2}) {
+			warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
+		    } else {
+			$seen{$2} = $1;
+			print A "$p\n";
+		    }
 		}
+		close(P);
+	    } else {
+		warn "o2-lst.plx: can't read search text list $p\n";
 	    }
-	    close(P);
 	}
 	close(A);
 	link '01bld/lists/proxy-atf.lst', '01bld/lists/proxy-cat.lst';
