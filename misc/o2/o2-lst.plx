@@ -4,12 +4,16 @@ use warnings; use strict; use open 'utf8';
 my $globalA = '';
 
 BEGIN {
+#    warn "o2-lst.plx: setting custom SIG __WARN__ handler\n";
     $SIG{'__WARN__'} = sub {
-	if (/<A> line (\d+)/) {
-	    $_[0] =~ s/at .*?,/,/;
-	    $_[0] =~ s/^(.*?),\s+.*?(\d+)/$globalA:$2: $1\n"/;
+	if ($_[0] =~ /<A> line (\d+)/) {
+	    my $tmp = $_[0];
+	    $tmp =~ s/at .*?,/,/;
+	    $tmp =~ s/^(.*?),\s+.*?(\d+).*$/$globalA:$2: $1/;
+	    warn $tmp;
+	} else {
+	    warn $_[0];
 	}
-	warn $_[0];
     } 
 }
 
