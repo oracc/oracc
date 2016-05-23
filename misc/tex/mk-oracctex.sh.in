@@ -3,7 +3,7 @@ mkdir -p @@ORACC@@/lib/tex
 TEXINPUTS=.:./graphics:$TEXINPUTS
 cd @@ORACC@@/lib/tex ; \
     xetex -etex -ini oracctex.ini ; \
-    mv oracctex.fmt @@ORACC@@/lib/tex/
-cd @@ORACC@@/src/misc/tex/cdf ; \
+#    mv oracctex.fmt @@ORACC@@/lib/tex/
+cd @@ORACC@@/lib/tex ; \
     xetex -etex -ini oraccplain.ini ; \
-    mv oraccplain.fmt @@ORACC@@/lib/tex/
+#    mv oraccplain.fmt @@ORACC@@/lib/tex/

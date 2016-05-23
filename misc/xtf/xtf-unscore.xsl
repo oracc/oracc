@@ -20,7 +20,7 @@
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:attribute name="score-block-ref">
-      <xsl:value-of select="concat('sb.',/*/@xml:id,'.',1+count(../preceding-sibling::xtf:lg))"/>
+      <xsl:value-of select="concat('sb.',ancestor::xtf:lg[1]/@xml:id)"/>
     </xsl:attribute>
     <xsl:apply-templates/>
   </xsl:copy>

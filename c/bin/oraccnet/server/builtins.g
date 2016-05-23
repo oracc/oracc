@@ -16,3 +16,4 @@ rpc,       B_RPC
 runtime,   B_RUNTIME
 sig, 	   B_SIG
 sl, 	   B_SL
+searchbar, B_SEARCHBAR

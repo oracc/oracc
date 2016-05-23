@@ -1551,9 +1551,11 @@ line_trans(unsigned char **lines, enum e_tu_types transtype)
   unsigned char *tok = *lines;
   /*  unsigned char *end = tok+xxstrlen(tok); */
   unsigned char *s = *lines;
+  extern int start_lnum;
 
   curr_lang = text_lang;
   protocol_state = s_intra;
+  start_lnum = lnum;
 
   if (transtype == etu_parallel)
     {

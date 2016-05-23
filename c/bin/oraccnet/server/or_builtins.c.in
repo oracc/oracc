@@ -93,6 +93,9 @@ or_builtins(void)
 	    case B_RESULTS:
 	      builtins_handlers[builtinsp->type](elements[2], elements[3]);
 	      break;
+	    case B_SEARCHBAR:
+	      searchbar();
+	      break;
 	    case B_NONE:
 	      break;
 	    }

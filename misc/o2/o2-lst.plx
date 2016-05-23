@@ -242,17 +242,33 @@ update_lists {
 	    '+', $cat_ids,
 	    '-?','00lib/not-approved.lst',
 	    '+?','00lib/add-approved.lst';
-    } elsif ($opt eq 'umbrella') {
+    } elsif ($opt eq 'umbrella' || $opt eq 'search') {
 	my @pubsub = ();
-	if (-r '00lib/umbrella.lst') {
+	my $projlist = undef;
+	my @projatfs = ();
+	my $projbase = '';
+	if ($opt eq 'umbrella') {
+	    $projlist = '00lib/umbrella.lst';
+	    @projatfs = ('approved');
+	} else {
+	    $projlist = '00lib/search.lst';
+	    @projatfs = ('xtfindex');
+	    $projbase = $ENV{'ORACC'};
+	}
+	if (-r $projlist) {
 	    ## either use the list provided by the project
-	    open(U,'00lib/umbrella.lst') || die "o2-lst.plx: strange: can't open readable file '00lib/umbrella.lst'\n";
+	    open(U,$projlist) || die "o2-lst.plx: strange: can't open readable file '$projlist'\n";
 	    while (<U>) {
 		chomp;
 		push @pubsub, split(/\s+/,$_);
 	    }
 	    close(U);
-	    @pubsub = map { "$_/01bld/lists/approved.lst" } @pubsub;
+	    warn "$projlist => @pubsub\n";
+	    my @pubexpanded = ();
+	    foreach my $a (@projatfs) {
+		push(@pubexpanded, map { "$projbase/$_/01bld/lists/$a.lst" } @pubsub);
+	    }
+	    @pubsub = @pubexpanded;
 	} else {
 	    ## or automatically include all approved texts from
 	    ## all public subprojects
@@ -261,17 +277,26 @@ update_lists {
 	    @pubsub = map { s#^$project/## ; 
 			    "$_/01bld/lists/approved.lst" } @pubsub;
 	}
+	my %seen = ();
 	open(A, '>01bld/lists/proxy-atf.lst')
 	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
 	foreach my $p (@pubsub) {
-	    open(P, $p);
-	    my @l = (<P>);
-	    chomp @l;
-	    foreach my $p (@l) {
-		$p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
-		print A "$p\n";
+	    if (open(P, $p)) {
+		my @l = (<P>);
+		chomp @l;
+		foreach my $p (@l) {
+		    $p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
+		    if ($seen{$2}) {
+			warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
+		    } else {
+			$seen{$2} = $1;
+			print A "$p\n";
+		    }
+		}
+		close(P);
+	    } else {
+		warn "o2-lst.plx: can't read search text list $p\n";
 	    }
-	    close(P);
 	}
 	close(A);
 	link '01bld/lists/proxy-atf.lst', '01bld/lists/proxy-cat.lst';

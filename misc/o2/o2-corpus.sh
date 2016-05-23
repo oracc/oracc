@@ -1,6 +1,9 @@
 #!/bin/sh
 o2-prepare.sh
-o2-glo.sh
+buildpolicy=`oraccopt . build-approved-policy`;
+if [ "$buildpolicy" != "search" ]; then
+    o2-glo.sh
+fi
 o2-xtf.sh $*
 #o2-web.sh
 o2-web-corpus.sh
