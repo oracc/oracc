@@ -1,6 +1,18 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
 
+my $globalA = '';
+
+BEGIN {
+    $SIG{'__WARN__'} = sub {
+	if (/<A> line (\d+)/) {
+	    $_[0] =~ s/at .*?,/,/;
+	    $_[0] =~ s/^(.*?),\s+.*?(\d+)/$globalA:$2: $1\n"/;
+	}
+	warn $_[0];
+    } 
+}
+
 my $listdir = '01bld/lists';
 
 my $atfsources = '01bld/atfsources.lst';
@@ -41,6 +53,7 @@ create_have_atf {
     chomp @atf_sources;
 
     foreach my $atf (@atf_sources) {
+	$globalA = $atf;
         if ($atf =~ /\.ods$/) {
             open(A,"$ENV{'ORACC'}/bin/ods2atf.sh -s $atf|");
         } else {
