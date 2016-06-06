@@ -43,6 +43,7 @@ my %longlang = (
     'akk-x-ltebab'=>'Late Babylonian',
     arc=>'Aramaic',
     de=>'German',
+    egy=>'Egyptian',
     elx=>'Elamite',
     en=>'English',
     es=>'Spanish',

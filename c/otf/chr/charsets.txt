@@ -88,6 +88,18 @@ $      š	0xFB2A
 t      t	0x05E9
 @end chars
 
+@chars %egy/a
+@allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
+@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+s, ṣ
+S, Ṣ
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+@end chars
+
 @chars %elx/g
 @allow aAbBdDeEgGhHḫḪiIkKlLmMnNpPrRsSšŠtTuUxXzZ₀₁₂₃₄₅₆₇₈₉ₓ
 @nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
