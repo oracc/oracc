@@ -100,6 +100,14 @@ t, ṭ
 T, Ṭ
 @end chars
 
+@chars %egy/g
+@allow aAbBdDeEgGhHḫḪiIkKlLmMnNpPrRsSšŠtTuUxXzZ₀₁₂₃₄₅₆₇₈₉ₓ
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
+@trans
+sz š
+SZ Š
+@end chars
+
 @chars %elx/g
 @allow aAbBdDeEgGhHḫḪiIkKlLmMnNpPrRsSšŠtTuUxXzZ₀₁₂₃₄₅₆₇₈₉ₓ
 @nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓ
