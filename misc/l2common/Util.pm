@@ -153,7 +153,7 @@ $ORACC::L2GLO::Util::project = '';
     'sux-es'=>'Emesal',
     uga=>'Ugaritic',
     xhu=>'Hurrian',
-    xrt=>'Urartian',
+    xur=>'Urartian',
     en=>'English',
     hu=>'Hungarian'
     );
@@ -170,7 +170,7 @@ $ORACC::L2GLO::Util::project = '';
     'sux-es'=>'ES',
     uga=>'Uga',
     xhu=>'Hur',
-    xrt=>'Ura',
+    xur=>'Ura',
     );
 
 %ORACC::L2GLO::Util::qpnchoices = (

@@ -337,6 +337,7 @@ function p3controls() {
 	document.getElementById('fullscreen').style.display= 'none';
 	document.getElementById('p3content').style.display = 'none';
 	document.getElementById('p3botbanner').style.display = 'none';
+	document.getElementById('p3charset').style.display = 'none';
 	p3ControlsHeight = p3SearchControlsHeight;
 	document.getElementById('p3controls').style.height = p3ControlsHeight+'px';
 

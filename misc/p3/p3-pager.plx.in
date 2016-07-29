@@ -320,7 +320,7 @@ decode_args {
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
     $tmp{'setlang'} = 'en' unless $tmp{'setlang'};
     $tmp{'translation'} = $tmp{'setlang'};
-    if (exists $tmp{'unicode'}) {
+    if (exists $tmp{'unicode'} || $tmp{'uimode'} eq 'search') {
 	$tmp{'unicode'} = 1;
     } else {
 	$tmp{'unicode'} = 0;
@@ -404,7 +404,11 @@ p3srch {
 	chomp($rt{'srchtext'});
 	close(S);
 	warn "search.txt in any mode=$rt{'srchtext'}\n";
-	xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
+	if ($p{'unicode'} || $p{'uimode'} eq 'search') {
+	    xsystem("$oraccbin/se", '-8', '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
+	} else {
+	    xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
+	}
     } else {
 	if ($srchtext) {
 	    $rt{'srchtxt'} = $srchtext;
