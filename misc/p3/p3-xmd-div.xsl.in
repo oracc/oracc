@@ -18,8 +18,8 @@
 
 <xsl:variable name="config-xml-file" 
 	      select="concat('@@ORACC@@/xml/',$project,'/','config.xml')"/>
-<xsl:variable name="views-xml-file" 
-	      select="concat('@@ORACC@@/xml/',$project,'/','views.xml')"/>
+<!--<xsl:variable name="views-xml-file" 
+	      select="concat('@@ORACC@@/xml/',$project,'/','views.xml')"/>-->
 
 <xsl:template match="/">
   <xsl:apply-templates mode="xmd"/>
@@ -93,7 +93,6 @@
 <xsl:template name="arg-views-nowrap">
   <xsl:variable name="text" select="/*/@xml:id"/>
 
-
   <xsl:variable name="views-buy-book">
     <xsl:call-template name="xpd-option">
       <xsl:with-param name="config-xml" select="$config-xml-file"/>
@@ -121,6 +120,8 @@
       <xsl:with-param name="option" select="'views-TEI'"/>
     </xsl:call-template>
   </xsl:variable>
+
+  <li><a href="http://oracc.org/{$project}/{$text}/html">Print text</a></li>
 
   <xsl:if test="/*/md:cat/md:has-score[.='1']">
     <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
@@ -160,11 +161,39 @@
 </xsl:template>
 
 <xsl:template name="numbers">
+
+  <xsl:variable name="project-numbers">
+    <xsl:call-template name="xpd-option">
+      <xsl:with-param name="config-xml" select="$config-xml-file"/>
+      <xsl:with-param name="option" select="'external-url-host'"/>
+    </xsl:call-template>
+  </xsl:variable>
+
   <h3 class="h3">Numbers</h3>
   <ul>
     <xsl:for-each select="/*/md:cat">
       <li>
-	<xsl:choose>
+	<xsl:if test="string-length($project-numbers)>0">
+	  <xsl:variable name="abbrev">
+	    <xsl:call-template name="xpd-option">
+	      <xsl:with-param name="config-xml" select="$config-xml-file"/>
+	      <xsl:with-param name="option" select="'external-proj-abbrev'"/>
+	    </xsl:call-template>
+	  </xsl:variable>	  
+	  <xsl:choose>
+	    <xsl:when test="md:id_text">
+	      <a href="http://{$project-numbers}/{md:id_text}"
+		 target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <a href="http://{$project-numbers}/{md:id_composite}"
+		 target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:if>
+      </li>
+      <li>
+	<xsl:choose>	  
 	  <xsl:when test="starts-with(md:id_text,'P')">
 	    <a href="http://cdli.ucla.edu/{md:id_text/text()}" target="_blank">
 	      <xsl:value-of select="concat('CDLI ', md:id_text)"/>

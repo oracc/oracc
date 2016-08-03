@@ -14,6 +14,9 @@
     <xsl:when test="$opt-node/*[@name=$option]">
       <xsl:value-of select="$opt-node/*[@name=$option]/@value"/>
     </xsl:when>
+    <xsl:when test="$option = 'abbrev'">
+      <xsl:value-of select="$opt-node/xpd:abbrev"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="$default"/>
     </xsl:otherwise>
