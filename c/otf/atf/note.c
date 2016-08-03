@@ -235,6 +235,12 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 			  lastC = lastCchild;
 			l = WORD;
 		      }
+		    else if (lastCchild && lastCchild->etype == e_f)
+		      {
+			/* the attach point is the field */
+			lastC = lastCchild;
+			l = WORD;
+		      }
 		    else
 		      l = LINE;
 		    e = e_g_nonw;

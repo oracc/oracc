@@ -14,6 +14,9 @@ html_DATA=noresults.div empty.div
 p3-asrch.sh: p3-asrch.sh.in
 	$(ORACCIFY) p3-asrch.sh.in
 
+p3-ce-HTML.xsl: p3-ce-HTML.xsl.in
+	$(ORACCIFY) p3-ce-HTML.xsl.in
+
 p3css.xml: p3.css
 	echo '<css>' >p3css.xml
 	sed 's/\.css/css.xml/g' <p3.css >>p3css.xml

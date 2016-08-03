@@ -8,12 +8,22 @@
 		exclude-result-prefixes="ce syn xh xtr"
 		>
 
+<xsl:import href="xpd.xsl"/>
 <xsl:include href="html-standard.xsl"/>
 <xsl:include href="g2-gdl-HTML.xsl"/>
 
 <xsl:param name="fragment" select="'yes'"/>
 <xsl:param name="item-offset"/>
 <xsl:param name="project"/>
+
+<xsl:variable name="ce-config-file" select="concat('/home/oracc/xml/',$project,'/config.xml')"/>
+
+<xsl:param name="url-host">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$ce-config-file"/>
+    <xsl:with-param name="option" select="'instance-url-host'"/>
+  </xsl:call-template>
+</xsl:param>
 
 <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes"/>
 
@@ -206,25 +216,40 @@
   </p>
 </xsl:template>
 
+<xsl:template name="make-label-text">
+  <xsl:text>(</xsl:text>
+  <xsl:choose>
+    <xsl:when test="string-length($label)=0">
+      <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$label"/>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>)</xsl:text>
+</xsl:template>
+
 <xsl:template name="make-label-href">
   <xsl:param name="label" select="''"/>
   <xsl:variable name="item">
     <xsl:call-template name="calc-item"/>
   </xsl:variable>
   <xsl:variable name="ce-data" select="ancestor::ce:data"/>
-  <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
-  <a href="javascript:p3item3('xtf',{$item},'{$ce-data/@project}:{$ce-data/@text-id}')">
-    <xsl:text>(</xsl:text>
-    <xsl:choose>
-      <xsl:when test="string-length($label)=0">
-	<xsl:apply-templates/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="$label"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>)</xsl:text>
-  </a>
+
+  <!-- Here replace href with BASE_URL/TEXT_ID?LINE=@line-id&amp;FRAG=@context-id -->
+  <xsl:choose>
+    <xsl:when test="string-length($url-host)>0">
+      <a href="http://{$url-host}/{$ce-data/@text}?line={$ce-data/@text-id}&amp;frag={$ce-data/@context-id}">
+	<xsl:call-template name="make-label-text"/>
+      </a>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
+      <a href="javascript:p3item3('xtf',{$item},'{$ce-data/@project}:{$ce-data/@text-id}')">
+	<xsl:call-template name="make-label-text"/>
+      </a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="calc-item">

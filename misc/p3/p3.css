@@ -257,6 +257,11 @@ td.sbnum { width: 3em; font-size: 100%; font-weight: bold; }
 
 .evenodd tr:nth-child(even) { background-color: #eee; }
 
+span.bs { text-decoration: underline; }
+span.cm { }
+span.qt { border-bottom: 1px dotted #000; }
+span.zz { }
+
 /* .obf p.icount { margin: 0px; text-align: left;} */
 
 /*    

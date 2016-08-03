@@ -33,14 +33,21 @@
 
 <xsl:variable name="outer-id" select="/*/@xml:id"/>
 
+<xsl:variable name="config-xml-file" 
+	      select="concat('@@ORACC@@/xml/',$project,'/','config.xml')"/>
+
+<xsl:param name="external-url-host">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-xml-file"/>
+    <xsl:with-param name="option" select="'external-url-host'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <xsl:template name="corpusview-project-pqid">
   <xsl:param name="project"/>
   <xsl:param name="host"/>
   <xsl:param name="pqid"/>
   
-  <xsl:variable name="config-xml-file" 
-		select="concat('@@ORACC@@/xml/',$project,'/','config.xml')"/>
-
   <xsl:variable 
       name="basedir" 
       select="concat('@@ORACC@@/bld/',$project,'/',substring($pqid,1,4),'/',$pqid,'/')"/>
@@ -208,10 +215,20 @@
   <xsl:param name="xtr"/>
   <xsl:param name="xst"/>
   <xsl:param name="name"/>
+  <xsl:variable name="host">
+    <xsl:choose>
+      <xsl:when test="string-length($external-url-host)>0">
+	<xsl:value-of select="$external-url-host"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>cdli.ucla.edu</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:choose>
     <xsl:when test="starts-with($pqid,'P')">
       <h1 class="p3h2 border-top heading">
-	<a href="http://cdli.ucla.edu/{$pqid}" target="_blank">
+	<a href="http://{$host}/{$pqid}" target="_blank">
 	  <xsl:value-of select="$name"/>
 	  <xsl:if test="not($name=$xmd/xmd:cat/xmd:primary_publication)
 			and string-length($xmd/xmd:cat/xmd:primary_publication)>0"
