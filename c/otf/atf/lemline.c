@@ -389,7 +389,7 @@ lem_serialize(FILE *fp)
       for (lp = &lem_lines[i]; lp; lp = lp->cont)
 	fprintf(fp,"%s\n",lp->line);
       
-      if (lem_lines[i].forms)
+      if (lem_lines[i].forms && *lem_lines[i].line != '#') /* suppress #lem: output for #note: @akk{pu} */
 	{
 	  int j;
 	  fprintf(fp,"#lem: ");
