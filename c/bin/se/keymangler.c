@@ -63,7 +63,7 @@ keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct 
 	++wtmp;
       while (*wtmp)
 	{
-	  if ((iswalnum(*wtmp) && *wtmp != 702) /* drop aleph */
+	  if ((iswalnum(*wtmp) /* && *wtmp != 702 */) /* drop aleph !! NEW: KEEP ALEPH */
 	      || (*wtmp >= 0x2080 && *wtmp <= 0x2089)
 	      || (*wtmp == '-' && (manglerules&KM_HYPHOK)))
 	    *wdst++ = *wtmp++;

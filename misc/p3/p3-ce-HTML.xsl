@@ -217,6 +217,7 @@
 </xsl:template>
 
 <xsl:template name="make-label-text">
+  <xsl:param name="label" select="''"/>
   <xsl:text>(</xsl:text>
   <xsl:choose>
     <xsl:when test="string-length($label)=0">
@@ -239,14 +240,18 @@
   <!-- Here replace href with BASE_URL/TEXT_ID?LINE=@line-id&amp;FRAG=@context-id -->
   <xsl:choose>
     <xsl:when test="string-length($url-host)>0">
-      <a href="http://{$url-host}/{$ce-data/@text}?line={$ce-data/@text-id}&amp;frag={$ce-data/@context-id}">
-	<xsl:call-template name="make-label-text"/>
+      <a href="http://{$url-host}/{$ce-data/@text-id}?line={$ce-data/@text-id}&amp;frag={$ce-data/@context-id}">
+	<xsl:call-template name="make-label-text">
+	  <xsl:with-param name="label" select="$label"/>
+	</xsl:call-template>
       </a>
     </xsl:when>
     <xsl:otherwise>
       <!-- think about how to switch transonly on automatically for ITEM mode inside TRA search -->
       <a href="javascript:p3item3('xtf',{$item},'{$ce-data/@project}:{$ce-data/@text-id}')">
-	<xsl:call-template name="make-label-text"/>
+	<xsl:call-template name="make-label-text">
+	  <xsl:with-param name="label" select="$label"/>
+	</xsl:call-template>
       </a>
     </xsl:otherwise>
   </xsl:choose>

@@ -41,7 +41,7 @@ gatf2utf(const unsigned char *lem, const char *f, ssize_t ln)
 	++lem;
 
       /* implement modifier/allograph skipping here */
-      while (*lem > 0x80 || (*lem && !isalpha(*lem)))
+      while (*lem > 0x80 || (*lem && !isalpha(*lem) && ('\'' != *lem)))
 	*dst++ = *lem++;
 
       if (!*lem)
