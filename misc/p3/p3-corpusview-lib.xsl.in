@@ -215,7 +215,7 @@
   <xsl:param name="xtr"/>
   <xsl:param name="xst"/>
   <xsl:param name="name"/>
-  <xsl:variable name="host">
+  <xsl:variable name="ext-host">
     <xsl:choose>
       <xsl:when test="string-length($external-url-host)>0">
 	<xsl:value-of select="$external-url-host"/>
@@ -228,7 +228,7 @@
   <xsl:choose>
     <xsl:when test="starts-with($pqid,'P')">
       <h1 class="p3h2 border-top heading">
-	<a href="http://{$host}/{$pqid}" target="_blank">
+	<a href="http://{$ext-host}/{$pqid}" target="_blank">
 	  <xsl:value-of select="$name"/>
 	  <xsl:if test="not($name=$xmd/xmd:cat/xmd:primary_publication)
 			and string-length($xmd/xmd:cat/xmd:primary_publication)>0"

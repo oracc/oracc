@@ -513,8 +513,20 @@
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:when test="@type='punct' or @type='excised'">
-      <xsl:apply-templates/>
-      <xsl:text> </xsl:text>
+      <xsl:for-each select="*">
+	<xsl:apply-templates select="."/>
+	<xsl:if test="@g:delim">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:if>
+      </xsl:for-each>
+      <xsl:choose>
+	<xsl:when test="@g:delim">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:text> </xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:when test="@type='comment'"/>
     <xsl:when test="starts-with(g:x/@g:type,'word-')">
@@ -761,7 +773,14 @@
  -->
     <xsl:choose>
       <xsl:when test="self::g:d and following-sibling::*[1][self::g:d]">
-	<xsl:value-of select="render-inter-det-char"/>
+	<xsl:choose>
+	  <xsl:when test="not(self::g:d/@g:role = following-sibling::*[1]/@g:role)">
+	    <xsl:text> </xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="$render-inter-det-char"/>
+	  </xsl:otherwise>
+	</xsl:choose>
 	<!--<xsl:text>&#xa0;</xsl:text>-->
       </xsl:when>
       <xsl:otherwise>
