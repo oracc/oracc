@@ -240,7 +240,8 @@
   <!-- Here replace href with BASE_URL/TEXT_ID?LINE=@line-id&amp;FRAG=@context-id -->
   <xsl:choose>
     <xsl:when test="string-length($url-host)>0">
-      <a href="http://{$url-host}/{$ce-data/@text-id}?line={$ce-data/@text-id}&amp;frag={$ce-data/@context-id}">
+      <a href="http://{$url-host}/{$ce-data/@text-id}?line={$ce-data/@line-id}&amp;frag={$ce-data/@context-id}"
+	 target="_blank">
 	<xsl:call-template name="make-label-text">
 	  <xsl:with-param name="label" select="$label"/>
 	</xsl:call-template>
