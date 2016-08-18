@@ -1019,25 +1019,41 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      l = tokenize_normalized(l, &g, &following, &t);
 	      if (g)
 		{
-		  unsigned char save = *following;
-		  unsigned char *res = NULL;
-		  *following = '\0';
-		  if (!use_unicode)
-		    res = (unsigned char*)natf2utf((char *)g,(char*)g+strlen((const char*)g),0,
-						   file, lnum);
-		  else
-		    res = g;
-		  /*FIXME: cache normalized toks in their own hash
-		   */
-		  if (res)
+		  if (l - g > 0)
 		    {
-		      tokens[tokindex++] = create_token(text, norm, pool_copy(res));
-		      
-		      if (hash_flag)
-			tokens[tokindex++] = flag_info[f_h].t;
+		      unsigned char save = *following;
+		      unsigned char *res = NULL;
+		      *following = '\0';
+		      if (!use_unicode)
+			res = (unsigned char*)natf2utf((char *)g,(char*)g+strlen((const char*)g),0,
+						       file, lnum);
+		      else
+			res = g;
+		      /*FIXME: cache normalized toks in their own hash
+		       */
+		      if (res)
+			{
+			  tokens[tokindex++] = create_token(text, norm, pool_copy(res));
+			  
+			  if (hash_flag)
+			    tokens[tokindex++] = flag_info[f_h].t;
+			}
+		      last_text_or_bound = text;
+		      *following = save;
 		    }
-		  last_text_or_bound = text;
-		  *following = save;
+		  else if (('*' == *g || ':' == *g) && '\0' == g[1])
+		    {
+		      struct token *puncttok = NULL;
+		      t = g_p;
+		      puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
+		      tokens[tokindex++] = puncttok;
+		    }
+		  else
+		    {
+		      warning("unknown error in normalized text");
+		      status = 1;
+		      goto ret;
+		    }
 		}
 	      else
 		{
@@ -1049,27 +1065,47 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      l = tokenize_alphabetic(l, &g, &following, &t);
 	      if (g)
 		{
-		  unsigned char save = *following;
-		  unsigned char *res = NULL;
-		  *following = '\0';
-		  if (!use_unicode)
-		    res = (unsigned char *)natf2utf((char*)g,(char*)g+strlen((const char*)g),0,
-						    file, lnum);
-		  else
-		    res = g;
-
-		  /*FIXME: cache normalized toks in their own hash
-		   */
-		  if (res)
+		  if (l - g > 0)
 		    {
-		      tokens[tokindex++] = create_token(text,norm,
-							pool_copy(res));
-		      if (hash_flag)
-			tokens[tokindex++] = flag_info[f_h].t;
+		      unsigned char save = *following;
+		      unsigned char *res = NULL;
+		      *following = '\0';
+		      if (!use_unicode)
+			res = (unsigned char *)natf2utf((char*)g,(char*)g+strlen((const char*)g),0,
+							file, lnum);
+		      else
+			res = g;
+		      
+		      /*FIXME: cache normalized toks in their own hash
+		       */
+		      if (res)
+			{
+			  tokens[tokindex++] = create_token(text,norm,
+							    pool_copy(res));
+			  if (hash_flag)
+			    tokens[tokindex++] = flag_info[f_h].t;
+			}
+		      
+		      last_text_or_bound = text;
+		      *following = save;
 		    }
-
-		  last_text_or_bound = text;
-		  *following = save;
+		  else if (('*' == *g || ':' == *g) && (!*g || isspace(g[1])))
+		    {
+		      struct token *puncttok = NULL;
+		      char gbuf[2];
+		      t = g_p;
+		      *gbuf = *g; gbuf[1] = '\0';
+		      puncttok = s_create_token(text,t,gparse(pool_copy(gbuf),t));
+		      tokens[tokindex++] = puncttok;
+		      last_text_or_bound = text;
+		      ++l;
+		    }
+		  else
+		    {
+		      warning("unknown error in alphabetic text");
+		      status = 1;
+		      goto ret;
+		    }
 		}
 	      else
 		{
