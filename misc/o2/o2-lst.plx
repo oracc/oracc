@@ -254,6 +254,7 @@ update_lists {
 	if ($opt eq 'umbrella') {
 	    $projlist = '00lib/umbrella.lst';
 	    @projatfs = ('approved');
+	    $projbase = "$ENV{'ORACC'}/$project";
 	} else {
 	    $projlist = '00lib/search.lst';
 	    @projatfs = ('xtfindex');
