@@ -578,6 +578,16 @@ function viewsProofing(project,PQ) {
     popup(url,'exemplarWindow',800,900,10,10);
 }
 
+function viewsBuyBook(buyUrl) {
+    popup(buyUrl,'buyBook',800,900,20,20);
+}
+
+function
+    cuneifyPopup(project,text) {
+    var url = '/'+project+'/'+text+'/cuneified';
+    popup(url,'cuneified',500,600,100,100);
+}
+
 function
 popupXSF(project,text) {
     var url = '/'+project+'/'+text+'/score';

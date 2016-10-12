@@ -30,6 +30,8 @@ my $oml = "$xdb/oml";
 my $tei = "$xdb/tei";
 my $usr = "$xdb/usr";
 my $xml00 = "$ENV{'ORACC'}/$project/00xml";
+my $corpusxml = "$xdb/corpus.xml";
+my $corpuslst = "$xdb/corpus.txt";
 
 $phase = 'initialization';
 my @texts = ();
@@ -81,15 +83,29 @@ create_xml {
     my @flist = getfiles();
     chomp @flist;
     xsystem 'rm', '-f', "$pub/project.xml";
+    xsystem 'rm', '-f', $corpusxml;
     open(X,">$pub/project.xml");
+    open(CX,">$corpusxml");
+    open(CL,">$corpuslst");
+    print CL "corpus.txt\ncorpus.xml\n";
     print X '<?xml version="1.0" encoding="utf-8"?>', "\n";
+    print CX '<?xml version="1.0" encoding="utf-8"?>', "\n";
     print X "<project xmlns:xi=\"http://www.w3.org/2001/XInclude\" xml:base=\"$xml/\">";
+    print CX "<corpus xmlns:xi=\"http://www.w3.org/2001/XInclude\">";
     foreach my $f (@flist) {
-	$f =~ s#^02xml/##;
+	my $cf = $f;
+	$f =~ s#02xml/##;
 	print X "<xi:include href=\"$f\"/>";
+	next unless $cf =~/xtf$/;
+	$cf =~ s#^.*?02xml/##;
+	print CX "<xi:include href=\"$cf\"/>";
+	print CL $cf, "\n";
     }
     print X '</project>';
+    print CX '</corpus>';
     close(X);
+    close(CX);
+    close(CL);
 }
 
 sub
