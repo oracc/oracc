@@ -44,7 +44,7 @@
 
 	      <img class="p3icon" src="/img/p3-search.png" alt="Search" title="Search" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
 
-	      <span id="p3charset">(j=ŋ&#xa0;sz=š&#xa0;s,=ṣ&#xa0;t,=ṭ&#xa0;0-9=₀-₉)</span>
+	      <span id="p3charset">(j=ŋ&#xa0;sz=š&#xa0;s,=ṣ&#xa0;t,=ṭ&#xa0;0-9=₀-₉; &apos;=alef)</span>
 
 	      <span id="p3searchIn"> in </span>
 	      
