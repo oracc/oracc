@@ -96,7 +96,7 @@ create_xml {
 	my $cf = $f;
 	$f =~ s#02xml/##;
 	print X "<xi:include href=\"$f\"/>";
-	next unless $cf =~/xtf$/;
+	next unless $cf =~/\.(xmd|xt[rf])$/;
 	$cf =~ s#^.*?02xml/##;
 	print CX "<xi:include href=\"$cf\"/>";
 	print CL $cf, "\n";
