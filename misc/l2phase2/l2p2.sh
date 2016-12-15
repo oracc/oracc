@@ -97,6 +97,11 @@ else
 	g2x $ldir $l
     done
 fi
+
+if [ -r 01bld/pleiades.tab ]; then
+    cp 01bld/pleiades.tab 02pub
+fi
+
 #usages=`oraccopt . cbd-usages`
 #if [ "$usages" = "yes" ]; then
 #    if [ "$project" = "epsd2" ]; then
