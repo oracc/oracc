@@ -158,6 +158,10 @@
     
   </div>
 
+  <xsl:if test="cbd:pl_id">
+    <xsl:call-template name="geo"/>
+  </xsl:if>
+
   <xsl:apply-templates mode="doit" select="cbd:bffs|cbd:bffs-listed"/>
 
   <xsl:if test="$cbd-article-summaries = 'yes'">
@@ -1211,6 +1215,24 @@
       </xsl:otherwise>
     </xsl:choose>
   </a>
+</xsl:template>
+
+<xsl:template name="geo">
+  <xsl:if test="string-length(cbd:alias)>0">
+    <p>
+      <xsl:text>Alternate names: </xsl:text>
+      <xsl:for-each select="cbd:alias">
+	<xsl:value-of select="."/>
+	<xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
+      </xsl:for-each>
+    </p>
+  </xsl:if>
+  <p>Pleaides ID: <xsl:value-of select="cbd:pl_id"/> 
+    see <a href="http://pleiades.stoa.org/places/{cbd:pl_id}">http://pleiades.stoa/places/<xsl:value-of select="cbd:pl_id"/></a>
+  </p>
+  <p>Pleiades Unique ID: <xsl:value-of select="cbd:pl_uid"/></p>
+  <p>Pleiades coordinates: <xsl:value-of select="cbd:pl_coord"/></p>
+								      
 </xsl:template>
 
 </xsl:stylesheet>

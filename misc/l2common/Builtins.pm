@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use ORACC::NS;
+use ORACC::XMD::Pleiades;
 use Data::Dumper;
 
 binmode STDIN, ':utf8';
@@ -15,6 +16,11 @@ $ORACC::L2GLO::Builtins::debug = 0;
 $ORACC::L2GLO::Builtins::noletters = 0;
 $ORACC::L2GLO::Builtins::O2_cancel = 1;
 $ORACC::L2GLO::Builtins::t0 = 0;
+
+my $cbd_project = '';
+my $pleiades_initialized = 0;
+my @pleiades_data = ();
+my %pleiades = ();
 
 my $cgctmp = '';
 my $early_debug = 1;
@@ -91,17 +97,17 @@ my $usage_flag = 0;
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
 
-my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP PRT SBJ NP M MOD REL XP NU
-	AN BN CN DN EN FN GN HN IN JN KN LN MN NN ON PN QN PNF RN SN TN U UN VN WN XN YN ZN/;
+my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP SBJ NP M MOD REL XP NU
+	AN BN CN DN EN FN GN HN IN JN KN LN MN NN ON PN QN PNF RN SN TN U UN VN WN X XN YN ZN/;
 push @poss, ('V/t', 'V/i');
 my %poss = (); @poss{@poss} = ();
 
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
 
-my @tags = qw/entry parts bases bff conts morphs morph2s moved phon prefs root 
+my @tags = qw/entry alias parts bases bff conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
-	      defn note/;
+	      defn note pl_coord pl_id pl_uid/;
 my %tags = (); @tags{@tags} = ();
 
 my %fseq = ();
@@ -246,6 +252,7 @@ acd2xml {
 	}
     }
     ($project, $n, $title, $lang) = (@header{qw/project name name lang/});
+    $cbd_project = $project;
     $n =~ tr#/#_#;
     $n =~ s/_[^_]+$//;
     my @xml = (xmldecl(),"<entries xmlns=\"http://oracc.org/ns/cbd/1.0\" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\" xml:lang=\"$lang\" g:file=\"$lang.glo\" project=\"$project\" n=\"$n\" name=\"$title\">");
@@ -269,7 +276,7 @@ acd2xml {
 	next if /^\#/ || /^\@letter/;
 	chomp;
 	s/\s+/ /g;
-	if (/^\@([a-z]+[-\*]?)\s+(.*?)\s*$/) {
+	if (/^\@([a-z_]+[-\*]?)\s+(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $linetag = $currtag;
 	    my $defn_minus = 0;
@@ -428,7 +435,16 @@ acd2xml {
     }
     push(@xml,'</entries>');
 
-#    open(X,">/tmp/$$.xml");
+    if (scalar keys %pleiades > 0) {
+	open(P,'>01bld/pleiades.tab');
+	foreach my $o (sort keys %pleiades) {
+	    my %p = %{$pleiades{$o}};
+	    print P "$o\t$p{'alias'}\t$p{'id'}\t$p{'coord'}\t$p{'uid'}\n";
+	}
+	close(P);
+    }
+
+#    open(X,">/tmp/geonames-$$.xml");
 #    print X @xml;
 #    close(X);
 #    system("@@ORACC@@/bin/gdlme /tmp/$$.xml -o /tmp/$$.out");
@@ -605,7 +621,11 @@ acdentry {
 			}
 			$e_sig = "$cf\[$gd\]$pos";
 			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
-
+			if ($e{'alias'}) {
+			    foreach my $alias (@{$e{'alias'}}) {
+				push @ret, "<alias>$alias</alias>";
+			    }
+			}
 			foreach my $dialect (keys %{$e{'rws_cfs'}}) {
 			    if ($rws_map{$dialect}) {
 				push @ret, "<dcf xml:lang=\"$rws_map{$dialect}\" n=\"$dialect\">${$e{'rws_cfs'}}{$dialect}</dcf>";
@@ -1096,6 +1116,49 @@ acdentry {
 	    push @ret, "<ref year=\"$date\">$i</ref>";
 	}
 	push @ret, '</bib>';
+    }
+    if ($e{'pl_id'}) {
+	my %pl = ();
+        foreach my $p (@{$e{'pl_id'}}) {
+	    $pl{'id'} = $p;
+            push @ret, "<pl_id>$p</pl_id>";
+        }
+	if ($e{'pl_coord'}) {
+	    foreach my $p (@{$e{'pl_coord'}}) {
+#		warn "Builtins: using hard-coded pl_coord $p for $pl_id\n";
+		push @ret, "<pl_coord>$p</pl_coord>";
+		$pl{'coord'} = $p;
+	    }
+	} else {
+	    pleiades_init($cbd_project)
+		unless $pleiades_initialized;
+	    my $pl_coord = ORACC::XMD::Pleiades::coords($pl{'id'}, 
+							@pleiades_data);
+	    if ($pl_coord) {
+		$pl{'coord'} = $pl_coord;
+		push @ret, "<pl_coord>$pl_coord</pl_coord>";
+	    } else {
+		$pl{'coord'} = '';
+	    }
+	}
+	if ($e{'pl_uid'}) {
+	    foreach my $p (@{$e{'pl_uid'}}) {
+		$pl{'uid'} = $p;
+		push @ret, "<pl_uid>$p</pl_uid>";
+	    }
+	} else {
+	    $pl{'uid'} = '';
+	}
+	if ($e{'alias'}) {
+	    $pl{'alias'} = join(',',@{$e{'alias'}});
+	} else {
+	    $pl{'alias'} = '';
+	}
+	my $cfgw = ${$e{'entry'}}[0];
+	$cfgw =~ s/\s*\[.*//;
+	$pleiades{$cfgw} = { %pl };
+    } else {
+	# nothing happens I think
     }
     push @ret, '</entry>';
     ++$eid;
@@ -1875,6 +1938,19 @@ check_base {
 	0;
     }
     1;
+}
+
+sub
+pleiades_init {
+    my $proj = shift;
+    $pleiades_initialized = 1;
+    warn("Builtins: pleiades_init triggered\n");
+    my $p = ORACC::XMD::Pleiades::load('00lib/pleiades.tab');
+    push(@pleiades_data, $p) if $p;
+    unless ($proj eq 'geonames') {
+	my $p = ORACC::XMD::Pleiades::load("$ENV{'ORACC'}/pub/geonames/pleiades.tab");
+	push(@pleiades_data, $p) if $p;
+    }
 }
 
 1;

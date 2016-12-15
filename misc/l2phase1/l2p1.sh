@@ -14,4 +14,6 @@ if [ "$cbdmode" != "super" ]; then
     fi
     rm -f 01bld/nolem
 fi
-l2p1-sig-invert.plx
+if [ -s 01bld/sortinfo.tab ]; then
+    l2p1-sig-invert.plx
+fi
