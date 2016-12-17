@@ -42,6 +42,7 @@ my $config = '';
 my %catd = ();
 my %catd_fields = ();
 #my %extra_catd = ();
+my $geojson_first = 1;
 my $no_xmd = 0;
 my $onebigfile = 1;
 my $output_all = 1;
@@ -819,8 +820,11 @@ dump_xmd {
 		my $pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
 		    $f, @pleiades_data);
 		if ($pleiades_id) {
+		    my $coord = ORACC::XMD::Pleiades::coords($pleiades_id, @pleiades_data);
 		    push @{$xmd_outputs{$curr_xmd}}, 
-		    "<pleiades_id>$pleiades_id</pleiades_id>";
+		    "<pleiades_id>$pleiades_id</pleiades_id>",
+		    "<pleiades_coord>$coord</pleiades_coord>";
+		    xmd_geojson($fields, $r, $pleiades_id, $coord);
 		}
 	    }
 	}
@@ -829,6 +833,9 @@ dump_xmd {
 	}
 #	print Dumper(\@currvt);
 	xmd_end($$r[$item_index]);
+    }
+    if ($geojson_first < 0) {
+	print GJ "]\n}\n";
     }
 }
 
@@ -1867,6 +1874,37 @@ pleiades_init {
 	    print P Dumper($p); 
 	    close(P);
 	}
+    }
+}
+
+sub
+xmd_geojson {
+    my($f, $r, $p_id,$p_co) = @_;
+    my $last = $#$f;
+    if ($geojson_first > 0) {
+	$geojson_first = -1;
+	open(GJ, '>01bld/cat.geojson') || die;
+	print GJ "{\n\t\"type\": \"FeatureCollection\",\n\t\"features\": [";
+    } else {
+	print GJ ", ";
+    }    
+    print GJ "{\n\t\t\"type\": \"Feature\",\n\t\t\"properties\": {\n";
+    my $field_first = 1;
+    for (my $i = 0; $i <= $last; ++$i) {
+	my $val = $$r[$i];
+	if ($val) {
+	    my $key = $$f[$i];
+	    if ($field_first) {
+		$field_first = 0;
+	    } else {
+		print GJ ",\n";
+	    }
+	    print GJ "\t\t\t\"$key\": \"$val\"";
+	}
+    }
+    print GJ "\n\t\t},";
+    if ($p_id && $p_co) {
+	print GJ "\n\t\t\"geometry\": {\n\t\t\t\"type\": \"Point\",\n\t\t\t\"coordinates\": $p_co\n\t\t}\n\t}";
     }
 }
 

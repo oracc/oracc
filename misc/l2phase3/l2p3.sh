@@ -36,3 +36,8 @@ if [ "$g2c" != "" ]; then
 	fi
     done
 fi
+
+if [ -r 01bld/cat.geojson ]; then
+    mkdir -p $webdir/downloads
+    cp 01bld/cat.geojson $webdir/downloads
+fi
