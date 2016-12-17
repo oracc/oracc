@@ -47,6 +47,8 @@ my $onebigfile = 1;
 my $output_all = 1;
 my %output_records = ();
 my $pacifier = 0;
+my @pleiades_data = ();
+my %pleiades = ();
 my $project_designation_codes = 0;
 my %proj_des_sort = ();
 my $proxying = 0;
@@ -159,6 +161,13 @@ extra_init_hash();
 #open(D,">01tmp/extra_init_hash.dump");
 #print D Dumper \%catd;
 #close(D);
+
+my $cat_pleiades = `oraccopt . catalog-pleiades`;
+
+if ($cat_pleiades) {
+    use ORACC::XMD::Pleiades;
+    pleiades_init($project);
+}
 
 my $pub_cat = `oraccopt . catalog-publish`;
 foreach my $c (split(/,/,$pub_cat)) {
@@ -729,7 +738,6 @@ dump_xmd {
 	for (my $i = 0; $i <= $last; ++$i) {
 	    my $f = $$r[$i];
 	    my $tag = $$fields[$i];
-#	    print "<$tag";
 	    push @{$xmd_outputs{$curr_xmd}}, "<$tag";
 	    if ($i == $#$fields && $f) {
 		# this is the xproject field
@@ -743,7 +751,6 @@ dump_xmd {
 		}
 		if ($xuri) {
 		    $xuri = xmlify($xuri);
-#		    print " uri=\"$xuri\"";
 		    push @{$xmd_outputs{$curr_xmd}}, " uri=\"$xuri\"";
 		}
 	    }
@@ -769,7 +776,6 @@ dump_xmd {
 			}
 			if ($c) {
 			    $currvt[$type_indexes{$tag}] = "$c=$sp";
-#			    print " c=\"$c\"";
 			    push @{$xmd_outputs{$curr_xmd}}, " c=\"$c\"";
 			} else {
 			    print STDERR "c undefined for tag $tag with value $f\n";
@@ -780,24 +786,18 @@ dump_xmd {
 		    }
 		} else {
 		    $currvt[$type_indexes{$tag}] = "1000000=0";
-#		    print " c=\"1000000\"";
 		    push @{$xmd_outputs{$curr_xmd}}, " c=\"1000000\"";
 		}
 #		$s = shift @slice;
 	    }
 	    if ($f) {
 		if ($f =~ / \000 /) {
-#		    print '>';
 		    push @{$xmd_outputs{$curr_xmd}}, '>';
 		    foreach my $fbit (split(/ \000 /,$f)) {
 			my $xf = xmlify($fbit);
-#			print '<subfield>';
-#			print $xf;
-#			print '</subfield>';
 			push @{$xmd_outputs{$curr_xmd}}, "<subfield>$xf</subfield>";
 #			findex($tag,$fbit) unless exists $nifs{$tag};
 		    }
-#		    print "</$tag>";
 		    push @{$xmd_outputs{$curr_xmd}}, "</$tag>";
 		} else {
 		    my $xf = xmlify($f);
@@ -809,13 +809,19 @@ dump_xmd {
 			    $xf =~ s/Early Dynastic IIIb/Early Dynastic/;
 			}
 		    }
-#		    print ">$xf</$tag>";
 		    push @{$xmd_outputs{$curr_xmd}}, ">$xf</$tag>";
 #		    findex($tag,$f,$xf) unless exists $nifs{$tag};
 		}
 	    } else {
-#		print "/>";
 		push @{$xmd_outputs{$curr_xmd}}, '/>';
+	    }
+	    if ($i == $prov_index && $cat_pleiades) {
+		my $pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
+		    $f, @pleiades_data);
+		if ($pleiades_id) {
+		    push @{$xmd_outputs{$curr_xmd}}, 
+		    "<pleiades_id>$pleiades_id</pleiades_id>";
+		}
 	    }
 	}
 	for (my $ti = 0; $ti < $typindex; ++$ti) {
@@ -1843,6 +1849,24 @@ import_catd {
     if ($catd_debug) {
 	print CATDUMP Dumper \$cat;
 	print CATDUMP "++++++++\n";
+    }
+}
+
+sub
+pleiades_init {
+    my $proj = shift;
+    my $p = ORACC::XMD::Pleiades::load('00lib/pleiades.tab');
+    push(@pleiades_data, $p) if $p;
+    unless ($proj eq 'geonames') {
+        my $p = ORACC::XMD::Pleiades::load("$ENV{'ORACC'}/pub/geonames/pleiades.tab");
+	if ($p) {
+	    push(@pleiades_data, $p);
+	    warn "geonames/pleiades loaded as $p\n";
+	    use Data::Dumper; 
+	    open(P,'>/tmp/pleiades.dump');
+	    print P Dumper($p); 
+	    close(P);
+	}
     }
 }
 
