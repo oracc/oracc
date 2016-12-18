@@ -40,7 +40,7 @@ static void (*lemm_save_form_p)(const char *ref, const char *lang,
 				const char *formstr,struct lang_context *) = NULL;
 static void (*lemm_unform_p)(void) = NULL;
 
-static void logo_word_lang(struct node *wp, struct token *tp);
+static int logo_word_lang(struct node *wp, struct token *tp);
 
 const unsigned char *breakStart = NULL;
 const unsigned char *surroStart = NULL;
@@ -1003,11 +1003,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 						 ucc(tp->lang->altlang)
 						 ? ucc(tp->lang->altlang)
 						 : ucc(tp->lang->core->altlang)));
-			  if ((tokens[start]->lang->core->features & LF_LOGO)
+			  if (tokens[start] && tokens[start]->lang 
+			      && (tokens[start]->lang->core->features & LF_LOGO)
 			      && !hacked_word_lang)
 			    {
-			      logo_word_lang(wp,tp);
-			      ++hacked_word_lang;
+			      if (logo_word_lang(wp,tp))
+				++hacked_word_lang;
 			    }
 #else
 			  /* THIS WAS CLEARLY A THINKO: WHAT WAS I TRYING TO ACHIEVE? */
@@ -2145,7 +2146,7 @@ note_id_string(int n)
   return (char*)pool_copy((unsigned char *)notebuf);
 }
 
-static void
+static int
 logo_word_lang(struct node *wp, struct token *tp)
 {
   const char *logo_script = NULL;
@@ -2153,8 +2154,16 @@ logo_word_lang(struct node *wp, struct token *tp)
   char *wlang = NULL;
   const char *curr_logolang = tp->lang->altlang;
 
+  /* don't execute when g_s is a determinative or other non-lexical item */
+  if (!wp->names)
+    return 1;
+
+  if (!xstrcmp(wp->names->pname,"g:d"))
+    return 1;
+
   if (!curr_logolang)
     curr_logolang = tp->lang->core->altlang;
+
 
   switch (*curr_logolang)
     {
@@ -2176,8 +2185,12 @@ logo_word_lang(struct node *wp, struct token *tp)
   strcpy(wlang, wp_lang);
   if (isdigit(wlang[strlen(wp_lang)-1]))
     {
-      char *insert = strrchr(wlang,'-');
-      sprintf(insert,"%s",logo_script);
+      char *insert = strrchr(wp_lang,'-');
+      if (insert)
+	sprintf(insert,"%s",logo_script);
+      else
+	fprintf(stderr, "ox tokenizer internal error: script code without hyphen in lang %s\n",
+		wp_lang);
     }
   else
     {
@@ -2185,4 +2198,6 @@ logo_word_lang(struct node *wp, struct token *tp)
       strcat(wlang,logo_script);
     }
   setAttr(wp,a_xml_lang,strdup(wlang));
+
+  return 0;
 }

@@ -116,7 +116,8 @@ while (<SIGS>) {
 	$sig =~ s/\&\&.*$//;
     }
     my $matched = 1;
-    $sig =~ s/-[0-9][0-9][0-9]:/:/; # remove script codes
+    $sig =~ s/-[0-9][0-9][0-9]:/:/
+	unless $slice_lang && $slice_lang =~ /-\d\d\d$/; # remove script codes unless we've asked for a script
     foreach my $c (@constraints) {
 	if ($sig =~ /$$c[1]/) {
 	    $matched = ($$c[0] eq 'yes');

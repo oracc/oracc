@@ -7,6 +7,7 @@ my $superglo = `oraccopt . type`;
 my $unify = `oraccopt . cbd-unify`; chomp $unify;
 my $dropsub = `oraccopt . cbd-drop-dialects`; chomp $dropsub;
 $dropsub = 'no' unless $dropsub;
+my $scriptglo = `oraccopt . cbd-script-glo`; chomp $scriptglo;
 
 my @proj_sig_langs = ();
 my %proj_sig_langs = ();
@@ -52,6 +53,12 @@ if ($unify) {
     }
     foreach my $u (keys %unify) {
 	++$proj_sig_langs{$u} unless exists $proj_sig_langs{$u};
+    }
+}
+
+if ($scriptglo) {
+    foreach my $s (split(/\s+/, $scriptglo)) {
+	++$proj_sig_langs{$scriptglo};
     }
 }
 
