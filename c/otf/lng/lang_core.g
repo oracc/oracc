@@ -19,7 +19,7 @@ qam, "020", "qam", m_sign, m_lang, c_qam, LF_NORM|LF_SAC
 qcu, "020", "qcu", m_sign, m_lang, c_qcu, LF_NORM|LF_SAC
 qeb, "020", "qeb", m_sign, m_lang, c_qeb, LF_NORM|LF_SAC
 xhu, "020", "xhu", m_sign, m_lang, c_xhu, LF_NORM|LF_SAC
-xur, "020", "sux", m_logo, m_lang, c_xur, LF_NORM|LF_SAC
+xur, "020", "sux", m_logo, m_logo, c_xur, LF_NORM|LF_SAC|LF_LOGO
 uga, "020", "uga", m_logo, m_lang, c_uga, LF_NORM|LF_SAC
 qpn, "999", "qpn", m_sign, m_lang, c_qpn, LF_NORM|LF_SAC
 %%

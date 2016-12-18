@@ -19,6 +19,10 @@
 
 #define CHECKFORMS 0
 
+#ifndef strdup
+char *strdup(const char*);
+#endif
+
 extern char *new_note_id(int);
 
 int ods_cols = 0;
@@ -35,6 +39,8 @@ static void (*lemm_reset_form_p)(const char *ref, const char *form) = NULL;
 static void (*lemm_save_form_p)(const char *ref, const char *lang, 
 				const char *formstr,struct lang_context *) = NULL;
 static void (*lemm_unform_p)(void) = NULL;
+
+static void logo_word_lang(struct node *wp, struct token *tp);
 
 const unsigned char *breakStart = NULL;
 const unsigned char *surroStart = NULL;
@@ -93,6 +99,7 @@ static void process_words(struct node *parent, int start, int end, int with_word
 static void wrapup_word(struct node *wp, enum t_type trigger);
 
 static int logoline;
+static int hacked_word_lang = 0;
 static int word_id;
 static char word_id_buf[32];
 static char *word_id_insertp;
@@ -235,6 +242,35 @@ inline_functions(void (*lemm_save_form_arg)(const char *,const char*,
 static void
 langhand(struct node *wp, struct token *tp)
 {
+#if 0
+  if (tp->lang->core->features & LF_LOGO)
+    {
+      /*      struct node *firstc = (struct node *)wp->children->nodes[0]; */
+      
+      /* add 944 for Akkadogram; 945 for Latinogram; 946 for Sumerogram */
+      const char *logo_script = NULL;
+      char *wlang = NULL;
+      switch (*curr_logolang)
+	{
+	case 'a':
+	  logo_script = "944";
+	  break;
+	case 'l':
+	  logo_script = "945";
+	  break;
+	case 's':
+	  logo_script = "946";
+	  break;
+	default:
+	  fprintf(stderr, "ox tokenizer internal error: no logo script for lang %s\n",
+		  logo_lang->core->name);
+	  break;
+	}
+      wlang = malloc(strlen(word_lang->core->name)+5);
+      sprintf((char*)wlang, "%s-%s",word_lang->core->name,logo_script);
+      setAttr(wp,a_xml_lang,ucc(wlang));
+    }
+#endif  
   appendAttr(wp,attr(a_xml_lang,ucc(tp->lang->fulltag)));
 }
 
@@ -605,7 +641,7 @@ init_word_func(struct node *parent, struct token *tp,
     }
 
   word_lang = tp->lang;
-
+  hacked_word_lang = 0;
   if (logo_word)
     *logo_word = 0;
   wp = elem(tp->lang->mode==m_graphemic ? e_g_w : e_n_w,NULL,lnum,WORD);
@@ -675,6 +711,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			    {ama:gan}
 		       */
   enum t_type group_flag = notoken;
+
   group_node = NULL;
   in_hash = logoline = 0;
   prev_g = last_word = NULL;
@@ -962,7 +999,16 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  struct node *lastc = lastChild(wp);
 			  appendAttr(target,attr(fixed_attr_n[lforce],fixed_attr_v[lforce]));
 #if 1
-			  appendAttr(target,attr(a_g_logolang,ucc(tp->lang->core->altlang)));
+			  appendAttr(target,attr(a_g_logolang,
+						 ucc(tp->lang->altlang)
+						 ? ucc(tp->lang->altlang)
+						 : ucc(tp->lang->core->altlang)));
+			  if ((tokens[start]->lang->core->features & LF_LOGO)
+			      && !hacked_word_lang)
+			    {
+			      logo_word_lang(wp,tp);
+			      ++hacked_word_lang;
+			    }
 #else
 			  /* THIS WAS CLEARLY A THINKO: WHAT WAS I TRYING TO ACHIEVE? */
 			  if (tp->lang)
@@ -1804,7 +1850,6 @@ finish_word(struct node *wp)
 	      forms_insertp += xxstrlen(curr_logolang);
 	      *forms_insertp++ = ':';
 	    }
-	  /*WATCHME: is it possible to have multiple distinct logolangs in a word?*/
 	}
       else if (curr_logolang)
 	{
@@ -2098,4 +2143,46 @@ note_id_string(int n)
   char notebuf[32];
   sprintf(notebuf,"note.%d",n);
   return (char*)pool_copy((unsigned char *)notebuf);
+}
+
+static void
+logo_word_lang(struct node *wp, struct token *tp)
+{
+  const char *logo_script = NULL;
+  const unsigned char *wp_lang = getAttr(wp, "xml:lang");
+  char *wlang = NULL;
+  const char *curr_logolang = tp->lang->altlang;
+
+  if (!curr_logolang)
+    curr_logolang = tp->lang->core->altlang;
+
+  switch (*curr_logolang)
+    {
+    case 'a':
+      logo_script = "944";
+      break;
+    case 'l':
+      logo_script = "945";
+      break;
+    case 's':
+      logo_script = "946";
+      break;
+    default:
+      fprintf(stderr, "ox tokenizer internal error: no logo script for lang %s\n",
+	      logo_lang->core->name);
+      break;
+    }
+  wlang = malloc(strlen(wp_lang)+5);
+  strcpy(wlang, wp_lang);
+  if (isdigit(wlang[strlen(wp_lang)-1]))
+    {
+      char *insert = strrchr(wlang,'-');
+      sprintf(insert,"%s",logo_script);
+    }
+  else
+    {
+      strcat(wlang,"-");
+      strcat(wlang,logo_script);
+    }
+  setAttr(wp,a_xml_lang,strdup(wlang));
 }

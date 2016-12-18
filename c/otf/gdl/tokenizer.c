@@ -736,7 +736,7 @@ tokenize(register unsigned char *l,unsigned char *e)
   enum t_class last_text_or_bound = meta;
   static wchar_t wmbuf[2];
   int wm_used = 0;
-  struct lang_context *lang_on_entry = curr_lang;
+  struct lang_context *lang_on_entry = curr_lang, *effective_lang = curr_lang;
 
   /*   unsigned char *init_l = l; */
 
@@ -856,7 +856,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  goto ret;
 		}
 	    }
-	  switch (curr_lang->mode)
+	  switch (effective_lang->mode)
 	    {
 	    case m_graphemic:
 	      l = tokenize_grapheme(l,&g,&following,&t);
@@ -1096,7 +1096,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      char gbuf[2];
 		      t = g_p;
 		      *gbuf = *g; gbuf[1] = '\0';
-		      puncttok = s_create_token(text,t,gparse(pool_copy(gbuf),t));
+		      puncttok = s_create_token(text,t,
+						gparse(pool_copy((const unsigned char *)gbuf),t));
 		      tokens[tokindex++] = puncttok;
 		      last_text_or_bound = text;
 		      ++l;
@@ -1652,25 +1653,48 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      ++l;
 	      break;
 	    case '_':
-	      if (in_uscore)
+	      if (curr_lang->core->uppercase == m_logo)
 		{
-		  if (!(curr_lang = lang_pop()))
-		    curr_lang = text_lang;
+		  if (in_uscore)
+		    {
+		      logo_lang = NULL;
+		      effective_lang = curr_lang;
+		    }
+		  else
+		    ; /* don't do anything here, just assign language switches to altlang */
 		}
 	      else
 		{
-		  (void)lang_push(curr_lang);
-		  if (!(curr_lang = lang_switch(NULL, 
-						curr_lang->altlang ? curr_lang->altlang : curr_lang->core->altlang,
-						NULL, file, lnum)))
-		    curr_lang = text_lang;
+		  if (in_uscore)
+		    {
+		      if (!(curr_lang = lang_pop()))
+			curr_lang = text_lang;
+		    }
+		  else
+		    {
+		      (void)lang_push(curr_lang);
+		      if (!(curr_lang = lang_switch(NULL, 
+						    curr_lang->altlang 
+						    ? curr_lang->altlang 
+						    : curr_lang->core->altlang,
+						    NULL, file, lnum)))
+			curr_lang = text_lang;
+		    }
 		}
 	      in_uscore = !in_uscore;
 	      ++l;
 	      break;
 	    case '%':
-	      if (!(curr_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum)))
-		curr_lang = text_lang;
+	      if (in_uscore && curr_lang->core->uppercase == m_logo)
+		{
+		  effective_lang = logo_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum);
+		  curr_lang->altlang = logo_lang->tag->tag;
+		}
+	      else
+		{
+		  if (!(curr_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum)))
+		    curr_lang = text_lang;
+		}
 	      l += taglen;
 	      while (isspace(*l))
 		++l;
