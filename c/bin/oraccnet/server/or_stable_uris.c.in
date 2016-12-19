@@ -193,6 +193,18 @@ res_is_lang(const char *e)
 	  if (*e == '\0')
 	    return exists_cbd(init);
 	}
+      else
+	{
+	  const char *last = e+strlen(e);
+	  if (last[-1] >= '0' && last[-1] <= '9' && last[-4] == '-')
+	    {
+	      if (last[-2] >= '0' && last[-2] <= '9')
+		{
+		  if (last[-3] >= '0' && last[-3] <= '9')
+		    return exists_cbd(init);
+		}
+	    }
+	}
     }
   return 0;
 }
