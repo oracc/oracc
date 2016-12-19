@@ -1,6 +1,9 @@
 package ORACC::XMD::Pleiades;
 use warnings; use strict; use open 'utf8';
 
+my @ignored_places = qw/unclear/;
+my %ignored_places = (); @ignored_places{@ignored_places} = ();
+
 sub
 pleiades_id {
     my($xmd_id,$prov,@pdata) = @_;
@@ -18,7 +21,8 @@ pleiades_id {
 	    if ($id) {
 		push @ids, $id;
 	    } else {
-		warn("pleiades_id:$xmd_id: no ID for place $p in @pdata\n");
+		warn("pleiades_id:$xmd_id: no ID for place $p in @pdata\n")
+		    unless exists($ignored_places{$p});
 		push @ids, 0;
 	    }
 	}

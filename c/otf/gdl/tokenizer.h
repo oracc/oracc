@@ -73,6 +73,7 @@ struct token
   const unsigned char *text;
   const void  *data;
   struct lang_context *lang;
+  const char *altlang;
   const void *grapheme;
 };
 

@@ -245,6 +245,8 @@ create_token_sub(struct token *tp, enum t_class c, enum t_type t, const void *d)
   if (curr_lang)
     {
       tp->lang = curr_lang;
+      if (curr_lang->altlang)
+	tp->altlang = strdup(curr_lang->altlang);
       texttag_register(curr_lang->fulltag);
     }
   else
@@ -1658,6 +1660,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  if (in_uscore)
 		    {
 		      logo_lang = NULL;
+		      curr_lang->altlang = NULL;
 		      effective_lang = curr_lang;
 		    }
 		  else

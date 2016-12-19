@@ -242,35 +242,6 @@ inline_functions(void (*lemm_save_form_arg)(const char *,const char*,
 static void
 langhand(struct node *wp, struct token *tp)
 {
-#if 0
-  if (tp->lang->core->features & LF_LOGO)
-    {
-      /*      struct node *firstc = (struct node *)wp->children->nodes[0]; */
-      
-      /* add 944 for Akkadogram; 945 for Latinogram; 946 for Sumerogram */
-      const char *logo_script = NULL;
-      char *wlang = NULL;
-      switch (*curr_logolang)
-	{
-	case 'a':
-	  logo_script = "944";
-	  break;
-	case 'l':
-	  logo_script = "945";
-	  break;
-	case 's':
-	  logo_script = "946";
-	  break;
-	default:
-	  fprintf(stderr, "ox tokenizer internal error: no logo script for lang %s\n",
-		  logo_lang->core->name);
-	  break;
-	}
-      wlang = malloc(strlen(word_lang->core->name)+5);
-      sprintf((char*)wlang, "%s-%s",word_lang->core->name,logo_script);
-      setAttr(wp,a_xml_lang,ucc(wlang));
-    }
-#endif  
   appendAttr(wp,attr(a_xml_lang,ucc(tp->lang->fulltag)));
 }
 
@@ -1000,11 +971,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  appendAttr(target,attr(fixed_attr_n[lforce],fixed_attr_v[lforce]));
 #if 1
 			  appendAttr(target,attr(a_g_logolang,
-						 ucc(tp->lang->altlang)
-						 ? ucc(tp->lang->altlang)
+						 ucc(tp->altlang)
+						 ? ucc(tp->altlang)
 						 : ucc(tp->lang->core->altlang)));
-			  if (tokens[start] && tokens[start]->lang 
-			      && (tokens[start]->lang->core->features & LF_LOGO)
+			  if (word_tokp && word_tokp->lang 
+			      && (word_tokp->lang->core->features & LF_LOGO)
 			      && !hacked_word_lang)
 			    {
 			      if (logo_word_lang(wp,tp))
@@ -2152,7 +2123,7 @@ logo_word_lang(struct node *wp, struct token *tp)
   const char *logo_script = NULL;
   const unsigned char *wp_lang = getAttr(wp, "xml:lang");
   char *wlang = NULL;
-  const char *curr_logolang = tp->lang->altlang;
+  const char *curr_logolang = tp->altlang;
 
   /* don't execute when g_s is a determinative or other non-lexical item */
   if (!wp->names)
@@ -2163,7 +2134,6 @@ logo_word_lang(struct node *wp, struct token *tp)
 
   if (!curr_logolang)
     curr_logolang = tp->lang->core->altlang;
-
 
   switch (*curr_logolang)
     {
