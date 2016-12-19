@@ -20,8 +20,8 @@ movelang()
 slicelang()
 {
     l=$1
-    l2p2-sig-slicer.plx -lang $l -stdout -sigs 01bld/from-all-new.sig -exact | \
-	l2p2-sig-g2a.plx -filter -lang $l -proj `oraccopt` >01bld/new/$l.new
+    l2p2-sig-slicer.plx -lang $l -stdout -sigs 01bld/from-all-new.sig -exact >01bld/new/$l.sig
+    cat 01bld/new/$l.sig | l2p2-sig-g2a.plx -filter -lang $l -proj `oraccopt` >01bld/new/$l.new
     [ -s 01bld/new/$l.new ] || rm -f 01bld/new/$l.new
 }
 

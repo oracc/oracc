@@ -116,6 +116,7 @@ while (<SIGS>) {
 	$sig =~ s/\&\&.*$//;
     }
     my $matched = 1;
+
     $sig =~ s/-[0-9][0-9][0-9]:/:/
 	unless $slice_lang && $slice_lang =~ /-\d\d\d$/; # remove script codes unless we've asked for a script
     foreach my $c (@constraints) {
@@ -138,8 +139,11 @@ while (<SIGS>) {
 
     if ($matched) {	
 	chomp;
-	my $s949 = (/-949:/ ? "-949" : "");
-	s/\%(.*?):/\%$slice_lang$s949:/ unless $slice_lang =~ /^qpn/;
+
+#	No, we must preserve script codes in signatures to FORMs can keep them
+
+#	my $s949 = (/-949:/ ? "-949" : "");
+#	s/\%(.*?):/\%$slice_lang$s949:/ unless $slice_lang =~ /^qpn/;
 	my($msig,$refs) = (/^(.*?)\t(.*?)$/);
 	unless ($msig) {
 	    $msig = $_;

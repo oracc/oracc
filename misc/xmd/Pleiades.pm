@@ -30,14 +30,14 @@ sub
 coords {
     my($pl_id, @pdata) = @_;
     my $c = undef;
-    print STDERR "Pleiades::coords requested for $pl_id ... ";
+#    print STDERR "Pleiades::coords requested for $pl_id ... ";
     foreach my $pdata (@pdata) {
         last if $c = $$pdata{$pl_id,'coords'};
     }
     if ($c) {
-	print STDERR "$c\n";
+#	print STDERR "$c\n";
     } else {
-	print STDERR "not found\n";
+#	print STDERR "not found\n";
     }
     $c;
 }

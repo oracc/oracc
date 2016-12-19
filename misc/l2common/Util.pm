@@ -232,6 +232,8 @@ parse_sig {
 
     return parse_psu($sig) if $sig =~ /^\{/;
 
+#    warn "$sig\n";
+
     local($_) = $sig;
     my %x = ();
     if (/^\@/) {
@@ -262,7 +264,14 @@ parse_sig {
     my $s949 = ($x{'lang'} =~ /-949/ ? "-949" : '');
     my $baselang = $x{'lang'};
     $baselang =~ s/-.*$/$s949/;
-    $x{'form'} = "\%$baselang\:$x{'form'}" if $x{'form'};
+#    $x{'form'} = "\%$baselang\:$x{'form'}" if $x{'form'};
+
+    # must keep script tags in parsed signature
+
+    $x{'form'} = "\%$x{'lang'}\:$x{'form'}" if $x{'form'};
+
+#    warn "x{'form'} set to $x{'form'}\n";
+
 #    warn "x{form} = $x{'form'}\n";
     if ($x{'proj'}) {
 	s/^.*?\]//; # delete everything up to end of GW//SENSE

@@ -187,6 +187,7 @@ if ($make_sigtab) {
 		my $pform = $$info{'form'};
 		my $formlang = ($$info{'lang'} || $pform);
 		$formlang =~ s/:.*$//;
+		warn "g2a: formlang = $formlang; info{lang} = $$info{'lang'}; pform=$pform\n";
 		$pform =~ s/^\%.*?://;
 		$$info{'base'} =~ s/^\%.*?:// if $$info{'base'};
 		push @sigtab, [ $sid , $$info{'sig'} ]; # , $$info{'freq'} , $$info{'instances'}
@@ -197,7 +198,8 @@ if ($make_sigtab) {
 		    $nlang =~ s#-949#/n#;
 		    push @fbits, "\%$nlang";
 		} else {
-		    push @fbits, "\%$formlang" if $header{'lang'} =~ /^qpn/;
+		    push @fbits, "\%$formlang" 
+			if ($header{'lang'} =~ /^qpn/ || $formlang =~ /-\d\d\d$/);
 		}
 # Always emit norm if this is a COF; for Sumerian this actually uses the form but adding
 # parens in the right places
