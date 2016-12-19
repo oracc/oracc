@@ -137,6 +137,12 @@ for (my $i = 0; $i <= $#top_l; ++$i) {
 	if ($#top_l == 0) {
 	    if ($longlang{$top_l}) {
 		print "<glossary abbrev=\"$top_l\">$longlang{$top_l}</glossary>";
+	    } elsif ($top_l =~ /-94[456]$/) {
+		warn "p3-project-data: top_l = $top_l\n";
+		my $loglang = ($top_l =~ /6$/ ? "Sumerograms" 
+			       : ($top_l =~ /4$/ ? "Akkadograms" 
+				  : "Latinograms"));
+		print "<glossary abbrev=\"$top_l\">$loglang</glossary>";		
 	    } else {
 		print "<glossary abbrev=\"$top_l\">$top_l</glossary>";
 	    }
@@ -144,6 +150,12 @@ for (my $i = 0; $i <= $#top_l; ++$i) {
 	foreach my $sub (sort @sub_l) {
 	    if ($longlang{$sub}) {
 		print "<glossary abbrev=\"$sub\">$longlang{$sub}</glossary>";
+	    } elsif ($sub =~ /-94[456]$/) {
+		warn "p3-project-data: sub = $sub\n";
+		my $loglang = ($sub =~ /6$/ ? "Sumerograms" 
+			       : ($sub =~ /4$/ ? "Akkadograms" 
+				  : "Latinograms"));
+		print "<glossary abbrev=\"$sub\">$loglang</glossary>";		
 	    } else {
 		warn "p3-project-data.plx: no longlang for $sub\n";
 		print "<glossary abbrev=\"$sub\">$sub</glossary>";

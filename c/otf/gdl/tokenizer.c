@@ -1693,7 +1693,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      else
 		{
 		  if (!(curr_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum)))
-		    curr_lang = text_lang;
+		    effective_lang = curr_lang = text_lang;
+		  else
+		    effective_lang = curr_lang;
 		}
 	      l += taglen;
 	      while (isspace(*l))
