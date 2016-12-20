@@ -169,13 +169,15 @@
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">
       <sup>
-	<span class="sign"><xsl:apply-templates/></span>
+	<span class="sign {@g:logolang}">
+	  <xsl:apply-templates/>
+	</span>
 	<xsl:call-template name="render-flags"/>
 	<xsl:value-of select="@g:delim"/>
       </sup>
     </xsl:when>
     <xsl:otherwise>
-      <span class="sign">
+      <span class="sign {@g:logolang}">
 	<xsl:call-template name="render-g"/>
       </span>
       <xsl:call-template name="render-flags"/>

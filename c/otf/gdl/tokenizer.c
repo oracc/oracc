@@ -926,6 +926,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 			}
 		      /* else */
 		      tokens[tokindex++] = clone_token(tp);
+
+		      if (curr_lang->altlang)
+			tokens[tokindex-1]->altlang = strdup(curr_lang->altlang);
+		      else
+			tokens[tokindex-1]->altlang = NULL;
+
 		      if (f_graphemes)
 			{
 			  static unsigned char buf[1024];
