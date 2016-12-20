@@ -1049,7 +1049,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      last_text_or_bound = text;
 		      *following = save;
 		    }
-		  else if (('*' == *g || ':' == *g) && ('\0' == g[1] || isspace(g[1])))
+		  else if (('*' == *g || ':' == *g) 
+			   && ('\0' == g[1] 
+			       || !isalnum(g[1])
+			       || (g[1] == 0xe2 && g[2]
+				   && g[2] == 0xb8 && g[3]
+				   && g[3] >= 0xa2 && g[3] <= 0xa5)))
 		    {
 		      struct token *puncttok = NULL;
 		      t = g_p;
@@ -1085,7 +1090,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      else
 			res = g;
 		      
-		      /*FIXME: cache normalized toks in their own hash
+		      /*FIXME: cache alphabetic toks in their own hash
 		       */
 		      if (res)
 			{
@@ -1098,7 +1103,10 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      last_text_or_bound = text;
 		      *following = save;
 		    }
-		  else if (('*' == *g || ':' == *g) && ('\0' == g[1] || isspace(g[1])))
+		  else if (('*' == *g || ':' == *g) && ('\0' == g[1] 
+							|| isspace(g[1])
+							|| (g[1] > 128 
+							    || !isalnum(g[1]))))
 		    {
 		      struct token *puncttok = NULL;
 		      char gbuf[2];

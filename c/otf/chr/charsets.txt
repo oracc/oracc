@@ -90,7 +90,7 @@ t      t	0x05E9
 
 @chars %egy/a
 @allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
-@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯ₀₁₂₃₄₅₆₇₈₉ₓ
+@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯṮ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 s, ṣ
 S, Ṣ
@@ -162,7 +162,8 @@ T, Ṭ
 @end chars
 
 @chars %peo/g
-@allow aiukgxčjtdθpbfnmyvrlszšçhAM₂XŠDHBGU
+@allow aiukgxcčjtdθpbfnmyvrlszšçhāēīūṛAIUKGXCČJTDΘPBFNMYVRLSZŠÇHĀĒĪŪṚ₂
+@nokey ṛČΘŠÇĀĒĪŪṚ₂
 @trans
 c' č
 c, ç
