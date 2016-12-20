@@ -770,59 +770,66 @@ tokenize(register unsigned char *l,unsigned char *e)
 	  fprintf(stderr,"%s:%d: too many tokens in line\n", file, lnum);
 	  exit(2);
 	}
+      if (l[0] == 0xe2 && l[1]
+	  && l[1] == 0xb8 && l[2]
+	  && l[2] >= 0xa2 && l[2] <= 0xa5)
+	{
+	  /* it's a unicode half bracket */
+	  if (use_unicode)
+	    {
+	      switch (l[2])
+		{
+		case 0xa2:
+		  if (hash_flag)
+		    warning("multiple left half-square brackets in a row");
+		  hash_flag = 1;
+		  break;
+		case 0xa3:
+		  if (!hash_flag)
+		    warning("right half-square bracket with no opener");
+		  hash_flag = 0;
+		  break;
+		case 0xa4:
+		case 0xa5:
+		  if (use_legacy)
+		    {
+		      tokens[tokindex++] = clone_token(l[2] == 0xa2 
+						       ? static_tokens[hdamago] 
+						       : static_tokens[hdamagc]);
+		    }
+		  else
+		    warning("lower square brackets are not supported");
+		  break;
+		}
+	      last_text_or_bound = meta;
+	    }
+	  else
+	    {
+	      warning("unicode half brackets only allowed with #atf: use unicode");
+	    }
+	  l += 3;
+	}
       /* WATCHME: the new is_grapheme1[l[1]] may break some texts;
 	 although ':' as punct should require following space */
-      if ((is_grapheme1[*l] 
-	   || (('*' == *l || (':' == *l && !is_varc(l+1) && (!is_grapheme1[l[1]] || is_wordnum(l+1) || ('r' == l[1] && ':' == l[2]) ))
-		|| ('/' == *l && (isspace(l[1]) || !l[1] || '(' == l[1])))
-	       && last_text_or_bound != text))
-	  || (curr_lang->mode != m_graphemic 
-	      && modechars[curr_lang->mode][*l]))
+      else if ((is_grapheme1[*l]
+	   || (('*' == *l 
+		|| (':' == *l 
+		    && !is_varc(l+1) 
+		    && (l[1] < 256
+			&& ((!is_grapheme1[l[1]] 
+			    || is_wordnum(l+1) 
+			    || ('r' == l[1] && ':' == l[2]))
+			    || (l[1] == 0xe2 
+				&& l[2] && l[2] == 0xb8 
+				&& l[3] && l[3] >= 0xa2 && l[3] <= 0xa5))))
+		|| ('/' == *l && (isspace(l[1]) || !l[1] || '(' == l[1])))))
+	  && ((last_text_or_bound != text)
+	      || (curr_lang->mode != m_graphemic 
+		  && modechars[curr_lang->mode][*l])))
 	{
 	  unsigned char *g,*following;
 	  enum t_type t;
-
-	  if (l[0] == 0xe2 && l[1]
-	      && l[1] == 0xb8 && l[2]
-	      && l[2] >= 0xa2 && l[2] <= 0xa5)
-	    {
-	      /* it's a unicode half bracket */
-	      if (use_unicode)
-		{
-		  switch (l[2])
-		    {
-		    case 0xa2:
-		      if (hash_flag)
-			warning("multiple left half-square brackets in a row");
-		      hash_flag = 1;
-		      break;
-		    case 0xa3:
-		      if (!hash_flag)
-			warning("right half-square bracket with no opener");
-		      hash_flag = 0;
-		      break;
-		    case 0xa4:
-		    case 0xa5:
-		      if (use_legacy)
-			{
-			  tokens[tokindex++] = clone_token(l[2] == 0xa2 
-							   ? static_tokens[hdamago] 
-							   : static_tokens[hdamagc]);
-			}
-		      else
-			warning("lower square brackets are not supported");
-		      break;
-		    }
-		  last_text_or_bound = meta;
-		}
-	      else
-		{
-		  warning("unicode half brackets only allowed with #atf: use unicode");
-		}
-	      l += 3;
-	      continue;
-	    }
-	  else if (word_matrix && (wm_used = word_matrix_char(l, wmbuf)))
+	  if (word_matrix && (wm_used = word_matrix_char(l, wmbuf)))
 	    {
 	      switch (*wmbuf)
 		{
@@ -941,7 +948,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 			  fprintf(f_graphemes,"%s ",buf);
 			}
 		    }
-		  else if (('*' == *g || ':' == *g) && '\0' == g[1])
+		  else if (('*' == *g || ':' == *g) 
+			   && ('\0' == g[1]
+			       || !isalnum(g[1])
+			       || (g[1] == 0xe2 && g[2]
+                                   && g[2] == 0xb8 && g[3]
+				   && g[3] >= 0xa2 && g[3] <= 0xa5)))
 		    {
 		      struct token *puncttok = NULL;
 		      puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
