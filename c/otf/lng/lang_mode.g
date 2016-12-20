@@ -21,6 +21,9 @@ struct langmode;
 936, m_graphemic
 937, m_graphemic
 938, m_graphemic
+944, m_graphemic
+945, m_graphemic
+946, m_graphemic
 947, m_graphemic
 948, m_graphemic
 949, m_normalized
