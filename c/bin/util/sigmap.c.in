@@ -154,7 +154,7 @@ find_pos(const char *sig)
 }
 
 static char *
-find_lang(const char *sig)
+find_lang(const char *sig, char **endp)
 {
   static char buf[128];
   const char *p = strchr(sig, '%');
@@ -163,6 +163,7 @@ find_lang(const char *sig)
       const char *c = strchr(++p, ':');
       if (c - p < 128)
 	{
+	  *endp = (char*)c;
 	  strncpy(buf, p, c-p);
 	  buf[c-p] = '\0';
 	}
@@ -188,7 +189,7 @@ find_proj(const char *sig)
 	  buf[p-at] = '\0';
 	}
       else
-	fprintf(stderr, "sigmap: lang too long (%s)\n", p);
+	fprintf(stderr, "sigmap: project too long (%s)\n", p);
     }
   else
     *buf = '\0';
@@ -222,6 +223,7 @@ main(int argc, char **argv)
   wchar_t *wsig = NULL;
   size_t nwchar = 0, i;
   char *locale = NULL;
+  char *langend = NULL;
 
   project = argv[1];
   
@@ -273,12 +275,18 @@ main(int argc, char **argv)
     ++postproj;
   sprintf(trysig, "@%s%s", project, postproj);
 
-  lang = find_lang(trysig);
+  lang = find_lang(trysig, &langend);
 
   if ((script = strrchr(lang, '-')))
     if (isdigit(script[1]))
-      *script = '\0';
-
+      {
+	char *langp = NULL;
+	*script = '\0';
+	langp = langend - 4; /* langp now points at - of script extension */
+	while (*langend)
+	  *langp++ = *langend++;
+	*langp = '\0';
+      }  
 
   map = make_map(trysig, project);
   try_map(trysig, map, lang);
