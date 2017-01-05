@@ -43,6 +43,7 @@ my %catd = ();
 my %catd_fields = ();
 #my %extra_catd = ();
 my $geojson_first = 1;
+my $json_first = 1;
 my $no_xmd = 0;
 my $onebigfile = 1;
 my $output_all = 1;
@@ -59,6 +60,10 @@ my $split = 1;
 my $update = 0;
 my $validate = 1;
 my $verbose = 0;
+
+my %json_ignore = ();
+my @json_ignore = qw/ark_number date_entered date_remarks date_updated db_source public public_atf public_images id/;
+@json_ignore{@json_ignore} = ();
 
 my %langmasks = (
     'misc'           =>0x01000000,
@@ -725,6 +730,9 @@ dump_xmd {
 #    } else {
 #	@sortrows = sort { $$a[$item_index] cmp $$b[$item_index] } @$rows;
 #    }
+
+    xmd_json_begin();
+
     # Note that we don't care about sort order any more because we build the
     # resultset in a hash and sort it on output
     foreach my $r (@$rows) {
@@ -824,8 +832,12 @@ dump_xmd {
 		    push @{$xmd_outputs{$curr_xmd}}, 
 		    "<pleiades_id>$pleiades_id</pleiades_id>",
 		    "<pleiades_coord>$coord</pleiades_coord>";
-		    xmd_geojson($fields, $r, $pleiades_id, $coord);
+#		    xmd_geojson($fields, $r, $pleiades_id, $coord);
+		    xmd_json_item($fields, $r, $item_index, 
+				  $prov_id, $pleiades_id, $coord);
 		}
+	    } else {
+		xmd_json_item($fields, $r, $item_index);
 	    }
 	}
 	for (my $ti = 0; $ti < $typindex; ++$ti) {
@@ -837,6 +849,7 @@ dump_xmd {
     if ($geojson_first < 0) {
 	print GJ "]\n}\n";
     }
+    xmd_json_end();
 }
 
 sub
@@ -1906,6 +1919,51 @@ xmd_geojson {
     if ($p_id && $p_co) {
 	print GJ "\n\t\t\"geometry\": {\n\t\t\t\"type\": \"Point\",\n\t\t\t\"coordinates\": $p_co\n\t\t}\n\t}";
     }
+}
+
+sub
+xmd_json_begin {
+    open(J, '>01bld/cat.json') || die;
+    print J "{\n\t\"type\": \"metadata\",\n\t\"project\": \"$project\",\n\t\"catalogue\": {\n";
+}
+
+sub
+xmd_json_end {
+    print J "\n\t}"; # deliberately leave the top-level object open for further appends
+}
+
+sub
+xmd_json_item {
+    my($f, $r, $p_id, $prov_index, $pl_id, $pl_co) = @_;
+    my $last = $#$f;
+    my $field_first = 1;
+    if ($json_first == 1) {
+	$json_first = 0;
+    } else {
+	print J " , \n";
+    }
+    print J "\t\"$$r[$p_id]\": {\n";
+    my %seen = ();
+    for (my $i = 0; $i <= $last; ++$i) {
+	next if $i == $p_id;
+	my $key = $$f[$i];
+	next if $seen{$key}++;
+	next if exists $json_ignore{$key};
+	my $val = $$r[$i];
+	if ($val) {
+	    if ($field_first) {
+		$field_first = 0;
+	    } else {
+		print J ",\n";
+	    }
+	    print J "\t\t\"$key\": \"$val\"";
+	    if ($pl_id && $i == $pl_id) {
+		print J ",\n\t\t\"pleiades\": \"$pl_id\",\n";
+		print J "\t\t\"coords\": \"$pl_co\"";
+	    }
+	}
+    }
+    print J "\n\t}";
 }
 
 1;
