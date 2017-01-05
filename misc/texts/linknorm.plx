@@ -20,13 +20,13 @@ while (<S>) {
     } elsif ($rel =~ /^>>\s*(\S+)/) {
 	if ($symtab{$1}) {
 	    ++$rels{"$symtab{$1}\thas-witness\t$currpqx\n"};
-	    ++$rels{"$currpqx\tis-witness-of\t$symtab{$1}\n"};
+#	    ++$rels{"$currpqx\tis-witness-of\t$symtab{$1}\n"};
 	} else {
 	    warn "$currpqx: no definition for $1\n";
 	}
     } elsif ($rel =~ /^<<\s*(\S+)/) {
 	if ($symtab{$1}) {
-	    ++$rels{"$symtab{$1}\tis-witness-of\t$currpqx\n"};
+#	    ++$rels{"$symtab{$1}\tis-witness-of\t$currpqx\n"};
 	    ++$rels{"$currpqx\thas-witness\t$symtab{$1}\n"};
 	} else {
 	    warn "$currpqx: no definition for $1\n";
@@ -34,7 +34,7 @@ while (<S>) {
     } elsif ($rel =~ /^\|\|\s*(\S+)/) {
 	if ($symtab{$1}) {
 	    ++$rels{"$symtab{$1}\tparallels\t$currpqx\n"};
-	    ++$rels{"$currpqx\tparallels\t$symtab{$1}\n"};
+#	    ++$rels{"$currpqx\tparallels\t$symtab{$1}\n"};
 	} else {
 	    warn "$currpqx: no definition for $1\n";
 	}

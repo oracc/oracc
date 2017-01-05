@@ -473,10 +473,12 @@ if ($onebigfile) {
 my $total_rows = 0;
 map { $total_rows += (1 + $#{ ${$$_{'icat'}}[2] }) } @catalogs;
 
+xmd_json_begin();
 foreach my $c (@catalogs) {
     $proxying = ($$c{'file'} =~ /proxy/);
     dump_xmd($$c{'icat'},$$c{'file'});
 }
+xmd_json_end();
 
 if ($onebigfile) {
     if (!$split) {
@@ -693,6 +695,7 @@ dump_xmd {
     my $xurl_index = -1;
     my $prov_index = -1;
     my $lang_index = -1;
+    
     # determine the index of the field that has the P/Q number
     # for P this is id_text, for Q this is id_composite
     for (my $i = 0; $i <= $#$fields; ++$i) {
@@ -731,14 +734,16 @@ dump_xmd {
 #	@sortrows = sort { $$a[$item_index] cmp $$b[$item_index] } @$rows;
 #    }
 
-    xmd_json_begin();
-
     # Note that we don't care about sort order any more because we build the
     # resultset in a hash and sort it on output
     foreach my $r (@$rows) {
 	next unless $output_all || exists($output_records{$$r[$item_index]});
 	next if $seen{$$r[$item_index]}++;
 	next unless xmd_begin($$r[$item_index], $$r[$lang_index], $r);
+
+	my $pleiades_id = undef; 
+	my $coord = undef;
+
 #	my @slice = @catslice;
 #	for (my($i,$s) = (0,shift @slice); $i <= $last; ++$i) {
 #	    while ($s == -1 && $#slice >= 0) {
@@ -825,21 +830,22 @@ dump_xmd {
 		push @{$xmd_outputs{$curr_xmd}}, '/>';
 	    }
 	    if ($i == $prov_index && $cat_pleiades) {
-		my $pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
+		$pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
 		    $f, @pleiades_data);
 		if ($pleiades_id) {
-		    my $coord = ORACC::XMD::Pleiades::coords($pleiades_id, @pleiades_data);
+		    $coord = ORACC::XMD::Pleiades::coords($pleiades_id, @pleiades_data);
 		    push @{$xmd_outputs{$curr_xmd}}, 
-		    "<pleiades_id>$pleiades_id</pleiades_id>",
-		    "<pleiades_coord>$coord</pleiades_coord>";
+		    "<pleiades_id>$pleiades_id</pleiades_id>";
+		    if ($coord) {
+			push @{$xmd_outputs{$curr_xmd}}, 
+			"<pleiades_coord>$coord</pleiades_coord>";
+		    }
 #		    xmd_geojson($fields, $r, $pleiades_id, $coord);
-		    xmd_json_item($fields, $r, $item_index, 
-				  $prov_id, $pleiades_id, $coord);
 		}
-	    } else {
-		xmd_json_item($fields, $r, $item_index);
 	    }
 	}
+	xmd_json_item($fields, $r, $item_index, 
+		      $prov_index, $pleiades_id, $coord);
 	for (my $ti = 0; $ti < $typindex; ++$ti) {
 	    $currvt[$ti] = "1000000=0" unless $currvt[$ti];
 	}
@@ -849,7 +855,6 @@ dump_xmd {
     if ($geojson_first < 0) {
 	print GJ "]\n}\n";
     }
-    xmd_json_end();
 }
 
 sub
@@ -1923,26 +1928,39 @@ xmd_geojson {
 
 sub
 xmd_json_begin {
-    open(J, '>01bld/cat.json') || die;
+#    warn "xmd_json_begin\n" if $project eq 'rinap/rinap3';
+    open(J, '>01bld/metadata.json') || die;
     print J "{\n\t\"type\": \"metadata\",\n\t\"project\": \"$project\",\n\t\"catalogue\": {\n";
 }
 
 sub
 xmd_json_end {
-    print J "\n\t}"; # deliberately leave the top-level object open for further appends
+#    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
+    print J "\n\t},\n";
+    if (-s "01bld/witnesses.json") {
+	open(W,"01bld/witnesses.json");
+	while (<W>) {
+	    print J;
+	}
+	close(W);
+    }
+    print J "}\n";
+    close J;
+#    warn "xmd_json_end: exit\n" if $project eq 'rinap/rinap3';
 }
 
 sub
 xmd_json_item {
     my($f, $r, $p_id, $prov_index, $pl_id, $pl_co) = @_;
+#    warn "xmd_json_item: @_\n" if $project eq 'rinap/rinap3';
     my $last = $#$f;
     my $field_first = 1;
     if ($json_first == 1) {
 	$json_first = 0;
     } else {
-	print J " , \n";
+	print J ",\n";
     }
-    print J "\t\"$$r[$p_id]\": {\n";
+    print J "\t\t\"$$r[$p_id]\": {\n";
     my %seen = ();
     for (my $i = 0; $i <= $last; ++$i) {
 	next if $i == $p_id;
@@ -1956,14 +1974,32 @@ xmd_json_item {
 	    } else {
 		print J ",\n";
 	    }
-	    print J "\t\t\"$key\": \"$val\"";
-	    if ($pl_id && $i == $pl_id) {
-		print J ",\n\t\t\"pleiades\": \"$pl_id\",\n";
-		print J "\t\t\"coords\": \"$pl_co\"";
+	    $val = jsonify($val) if $val =~ /["\\\x80-\xa0]/;
+	    print J "\t\t\t\"$key\": \"$val\"";
+	    if ($i == $prov_index) {
+		if ($pl_id) {
+		    print J ",\n";
+		    print J "\t\t\t\"pleiades\": \"$pl_id\"";
+		}
+		if ($pl_co) {
+		    print J ",\n";
+		    print J "\t\t\t\"coords\": $pl_co";
+		}
 	    }
 	}
     }
-    print J "\n\t}";
+    print J "\n\t\t}";
+}
+
+sub
+jsonify {
+    my $tmp = shift;
+    $tmp =~ s/"/\000"/g;
+    $tmp =~ s/\\/\000\\/g;
+    $tmp =~ tr/\000/\\/;
+    $tmp =~ tr/\x80-\x9f//d;
+    $tmp =~ tr/\t\xa0/  /;
+    $tmp;
 }
 
 1;
