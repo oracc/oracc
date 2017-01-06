@@ -14,12 +14,14 @@ extern int options(int, char**,const char*);
 
 const char *xmldecl = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 FILE *changefile = NULL;
+FILE *filelist_fp = NULL;
 FILE *outfile = NULL;
 struct stat st;
 int changed = 0;
 int count = 0;
 int decl = 0;
 int xmlsplit_debug = 0;
+int xmlsplit_filelist = 0;
 #define PI_BUF_LEN 1023
 char pi_buf[PI_BUF_LEN+1];
 char atf_file_buf[1024];
@@ -246,6 +248,10 @@ void
 destfile()
 {
   register char *filename = pi_buf+8;
+
+  if (*dest_file_buf)
+    fprintf(filelist_fp,"%s\n",dest_file_buf);
+
   if (xtf_used)
     cmp_n_dump(dest_file_buf);
   while (isspace(*filename))
@@ -282,13 +288,22 @@ int
 main(int argc, char **argv)
 {
   register int c;
-  options(argc,argv,"c:duv");
+  options(argc,argv,"c:dfuv");
   if (changed_list)
     {
       changefile = fopen(changed_list,"w");
       if (NULL == changefile)
 	{
 	  fprintf(stderr,"xmlsplit: unable to open change list %s\n",changed_list);
+	  exit(1);
+	}
+    }
+  if (xmlsplit_filelist)
+    {
+      filelist_fp = fopen("01bld/destfiles.lst","w");
+      if (NULL == filelist_fp)
+	{
+	  fprintf(stderr,"xmlsplit: unable to open change list 01bld/destfile.lst\n");
 	  exit(1);
 	}
     }
@@ -351,6 +366,8 @@ main(int argc, char **argv)
     fprintf(stderr,"xmlsplit: %d files processed; %d updated\n",count,changed);
   if (changefile)
     fclose(changefile);
+  if (filelist_fp)
+    fclose(filelist_fp);
   return 0;
 }
 
@@ -364,6 +381,9 @@ opts(int argc, char *arg)
       break;
     case 'd':
       xmlsplit_debug = 1;
+      break;
+    case 'f':
+      xmlsplit_filelist = 1;
       break;
     case 'u':
       update = 1;

@@ -1944,7 +1944,7 @@ xmd_json_end {
 	}
 	close(W);
     }
-    print J "}\n";
+#    print J "}\n"; # leave this open for formats object
     close J;
 #    warn "xmd_json_end: exit\n" if $project eq 'rinap/rinap3';
 }

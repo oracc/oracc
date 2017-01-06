@@ -400,6 +400,7 @@ process_text(struct run_context *run, unsigned char **lines)
 		    trans_mapdump(trans->tree);
 		  if (!no_destfile)
 		    destfile_pi_tr(trans->code,trans->lang);
+		  
 		  serialize(trans->tree,0);
 		}
 	    }
