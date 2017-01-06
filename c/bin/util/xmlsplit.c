@@ -101,6 +101,9 @@ cmp_n_dump(char *filename)
   if (!filename || !*filename)
     return;
 
+  if (xmlsplit_filelist)
+    fprintf(filelist_fp, "%s\n", filename);
+
   statret = stat(filename,&stat_old);
     
   if (!update || statret < 0)
@@ -249,11 +252,9 @@ destfile()
 {
   register char *filename = pi_buf+8;
 
-  if (*dest_file_buf)
-    fprintf(filelist_fp,"%s\n",dest_file_buf);
-
   if (xtf_used)
     cmp_n_dump(dest_file_buf);
+
   while (isspace(*filename))
     ++filename;
   if (*filename)
@@ -289,6 +290,7 @@ main(int argc, char **argv)
 {
   register int c;
   options(argc,argv,"c:dfuv");
+  *dest_file_buf = '\0';
   if (changed_list)
     {
       changefile = fopen(changed_list,"w");
@@ -366,7 +368,7 @@ main(int argc, char **argv)
     fprintf(stderr,"xmlsplit: %d files processed; %d updated\n",count,changed);
   if (changefile)
     fclose(changefile);
-  if (filelist_fp)
+  if (xmlsplit_filelist && filelist_fp)
     fclose(filelist_fp);
   return 0;
 }

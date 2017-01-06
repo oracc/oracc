@@ -1930,7 +1930,9 @@ sub
 xmd_json_begin {
 #    warn "xmd_json_begin\n" if $project eq 'rinap/rinap3';
     open(J, '>01bld/metadata.json') || die;
-    print J "{\n\t\"type\": \"metadata\",\n\t\"project\": \"$project\",\n\t\"catalogue\": {\n";
+    print J "{\n\t\"type\": \"metadata\",\n\t\"project\": \"$project\",\n";
+    print J `xsltproc @@ORACC@@/lib/scripts/config-json.xsl 02xml/config.xml`;
+    print J ",\n\t\"catalogue\": {\n";
 }
 
 sub

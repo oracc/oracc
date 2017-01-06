@@ -8,26 +8,26 @@
 <xsl:output method="text" encoding="utf-8"/>
 
 <xsl:template match="/">
-  <xsl:text>{&#xa;&#x9;"type": "config",&#xa;</xsl:text>
+  <xsl:text>&#x9;"config": {&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="xpd:project">
-  <xsl:value-of select="concat('&#x9;&quot;pathname&quot;: &quot;',@n,'&quot;,')"/>
-  <xsl:value-of select="concat('&#xa;&#x9;&quot;name&quot;: &quot;',xpd:name,'&quot;,')"/>
-  <xsl:value-of select="concat('&#xa;&#x9;&quot;abbrev&quot;: &quot;',xpd:abbrev,'&quot;,')"/>
-  <xsl:value-of select="concat('&#xa;&#x9;&quot;project-type&quot;: &quot;',xpd:type,'&quot;,')"/>
-  <xsl:text>&#xa;&#x9;&quot;blurb&quot;: &quot;,</xsl:text>
+  <xsl:value-of select="concat('&#x9;&#x9;&quot;pathname&quot;: &quot;',@n,'&quot;,')"/>
+  <xsl:value-of select="concat('&#xa;&#x9;&#x9;&quot;name&quot;: &quot;',xpd:name,'&quot;,')"/>
+  <xsl:value-of select="concat('&#xa;&#x9;&#x9;&quot;abbrev&quot;: &quot;',xpd:abbrev,'&quot;,')"/>
+  <xsl:value-of select="concat('&#xa;&#x9;&#x9;&quot;project-type&quot;: &quot;',xpd:type,'&quot;,')"/>
+  <xsl:text>&#xa;&#x9;&#x9;&quot;blurb&quot;: &quot;</xsl:text>
   <xsl:apply-templates select="xpd:blurb"/>
-  <xsl:text>&quot;</xsl:text>
-  <xsl:value-of select="concat('&#xa;&#x9;&quot;public&quot;: &quot;',xpd:public,'&quot;,')"/>
-  <xsl:text>&#xa;&#x9;&quot;options&quot;: {&#xa;</xsl:text>
+  <xsl:text>&quot;,</xsl:text>
+  <xsl:value-of select="concat('&#xa;&#x9;&#x9;&quot;public&quot;: &quot;',xpd:public,'&quot;,')"/>
+  <xsl:text>&#xa;&#x9;&#x9;&quot;options&quot;: {&#xa;</xsl:text>
   <xsl:for-each select="xpd:option">
     <xsl:apply-templates select="."/>
   </xsl:for-each>
-  <xsl:text>&#xa;&#x9;}&#x9;</xsl:text>
+  <xsl:text>&#xa;&#x9;&#x9;}</xsl:text>
   <xsl:apply-templates select="xpd:labels"/>
-  <xsl:text>&#xa;}</xsl:text>
+  <xsl:text>&#xa;&#x9;}</xsl:text>
 </xsl:template>
 
 <xsl:template match="xpd:blurb">
@@ -118,9 +118,11 @@
     <xsl:when test="count(*)>0">
       <xsl:value-of 
 	 select="concat('&#x9;&#x9;&quot;',@name,'&quot;: {&#xa;')"/>
-      <xsl:value-of select="concat('&#x9;&#x9;&#x9;&quot;parentvalue&quot;: &quot;',
-			    @value,
-			    '&quot;&#xa;',)"/>
+      <xsl:if test="string-length(@value)>0">
+	<xsl:value-of select="concat('&#x9;&#x9;&#x9;&quot;parentvalue&quot;: &quot;',
+			      @value,
+			      '&quot;,&#xa;')"/>
+      </xsl:if>
       <xsl:for-each select="*">
 	<xsl:choose>
 	  <xsl:when test="local-name() = 'option'">
@@ -131,7 +133,7 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:for-each>
-      <xsl:text>&#xa;&#x9;&#x9;}</xsl:text>
+      <xsl:text>&#xa;&#x9;&#x9;&#x9;}</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of 
@@ -148,18 +150,21 @@
 </xsl:template>
 
 <xsl:template match="xpd:*" mode="sub-option">
-  <xsl:message>config.xml: element `<xsl:value-of select="local-name()"/>' not handled in JSON</xsl:message>
+<!--  <xsl:message>config.xml: element `<xsl:value-of select="local-name()"/>' not handled in JSON</xsl:message> -->
+  <xsl:value-of 
+	 select="concat('&#x9;&#x9;&#x9;&quot;',local-name(),'&quot;: &quot;',.,'&quot;')"/>
+  <xsl:if test="count(following-sibling::xpd:*)>0"><xsl:text>,&#xa;</xsl:text></xsl:if>
 </xsl:template>
 
 <xsl:template match="xpd:labels">
   <xsl:value-of 
-     select="concat(',&#xa;&#x9;&quot;','labels','&quot;: {&#xa;')"/>
+     select="concat(',&#xa;&#x9;&#x9;&quot;','labels','&quot;: {&#xa;')"/>
   <xsl:for-each select="*">
     <xsl:value-of 
-       select="concat('&#x9;&#x9;&quot;',@name,'&quot;: &quot;',@value,'&quot;')"/>
+       select="concat('&#x9;&#x9;&#x9;&quot;',@name,'&quot;: &quot;',@value,'&quot;')"/>
     <xsl:if test="count(following-sibling::xpd:label)>0"><xsl:text>,&#xa;</xsl:text></xsl:if>
   </xsl:for-each>
-  <xsl:text>&#xa;&#x9;}</xsl:text>
+  <xsl:text>&#xa;&#x9;&#x9;}</xsl:text>
 </xsl:template>
 
 </xsl:stylesheet>
