@@ -1940,7 +1940,6 @@ xmd_json_end {
 #    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
     print J "\n\t}";
     if (-s "01bld/witnesses.json") {
-	print J ",\n";
 	open(W,"01bld/witnesses.json");
 	while (<W>) {
 	    print J;
