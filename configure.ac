@@ -2,7 +2,7 @@ dnl $Id: configure.in,v 1.1 1998/11/05 03:26:43 s Exp s $
 AC_INIT(Oracc,1.0)
 AC_LANG(C)
 AC_CONFIG_SRCDIR(c/include/psd_base.h)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 LT_INIT
 AC_CONFIG_HEADERS(config.h)
 AM_CONDITIONAL(AMDEP,true)
@@ -179,7 +179,6 @@ AC_OUTPUT([Makefile
 	misc/nsa/Makefile
 	misc/o2/Makefile
 	misc/ods/Makefile
-	misc/ogsl/Makefile
 	misc/ol/Makefile
 	misc/ood/Makefile
 	misc/oss2/Makefile
