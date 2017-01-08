@@ -1938,13 +1938,17 @@ xmd_json_begin {
 sub
 xmd_json_end {
 #    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
-    print J "\n\t},\n";
+    print J "\n\t}";
     if (-s "01bld/witnesses.json") {
+	print J ",\n";
 	open(W,"01bld/witnesses.json");
 	while (<W>) {
 	    print J;
 	}
 	close(W);
+    } else {
+	# do nothing; leave metadata.json unfinished to add other data
+	# if necessary
     }
 #    print J "}\n"; # leave this open for formats object
     close J;

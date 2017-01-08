@@ -20,11 +20,11 @@ while (<TR>) {
 close(TR);
 
 my $first_row = 0;
-print "\t\"formats\": {\n";
+print ",\n\t\"formats\": {\n";
 foreach my $h (sort keys %have) {
     print ",\n" if $first_row++;
     print "\t\t\"$h\": [ ", join(',', map { s/^.*?://; "\"$_\"" } @{$have{$h}} ), " ]";
 }
-print "\n\t}\n";
+print "\n\t}";
 
 1;
