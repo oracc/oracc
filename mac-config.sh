@@ -1,11 +1,11 @@
 #!/bin/sh
 . ./oraccenv.sh
-./preconfig.sh || exit 1
+sudo ./preconfig.sh || exit 1
 glibtoolize
 aclocal
 autoheader
 automake
 autoconf
-./configure --prefix=/usr/local/oracc
+./configure --prefix=~/orc
 make
 make install
