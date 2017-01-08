@@ -14,6 +14,8 @@
 #include "se.h"
 #include "selib.h"
 
+#include <sys/unistd.h>
+
 #ifndef strdup
 extern char *strdup(const char *);
 #endif

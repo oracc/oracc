@@ -16,6 +16,8 @@
 #include "selib.h"
 #include "vid.h"
 
+#include <sys/unistd.h>
+
 int l2 = 1;
 
 static struct vid_data *vidp;

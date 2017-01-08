@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys/unistd.h>
 #include <psdtypes.h>
 #include <fname.h>
 #include <npool.h>

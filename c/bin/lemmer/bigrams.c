@@ -1,5 +1,6 @@
 #include <ctype128.h>
 #include <psd_base.h>
+#include <sys/unistd.h>
 #include <options.h>
 #include <xmem.h>
 #include <memblock.h>

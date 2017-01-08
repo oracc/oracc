@@ -1,84 +1,87 @@
- #ifndef _SE_H
- #define _SE_H
- #include "types.h"
- struct lookup
- {
-   const unsigned char *term;
-   const char *index;
- };
+#ifndef _SE_H
+#define _SE_H
+#include "types.h"
 
- enum op_type 
-   {
-     o_Lookup , o_Relation , o_Search
-   };
+#include <sys/unistd.h>
 
- enum relation
-   {
-     e_AND , e_OR, e_NOT, e_TOP
-   };
+struct lookup
+{
+  const unsigned char *term;
+  const char *index;
+};
 
- union op
- { 
-   enum op_type type;
-   struct lookup *l;
-   enum relation *r;
-   struct search *s;
- };
+enum op_type 
+  {
+    o_Lookup , o_Relation , o_Search
+  };
 
- struct search
- {
-   union op *ops;
-   struct Datum *res;
-   enum result_granularity res_gran;
-   enum result_id_domain   res_id;
- };
+enum relation
+  {
+    e_AND , e_OR, e_NOT, e_TOP
+  };
 
- /* The search engine handles results from the text search
-    in Location format; from the record/field search (used by
-    the catalog and one day the bibliography) and the instance
-    mapper */
+union op
+{ 
+  enum op_type type;
+  struct lookup *l;
+  enum relation *r;
+  struct search *s;
+};
 
- struct Datum
- {
-   enum datum_type type;
-   union lNp l;	/* left end of range */
-   union lNp r;	/* right end of range */
-   void *ldata;
-   void *rdata;
-   Unsigned32 count; /* number of elements in arrays */
-   Unsigned32 stripped; /* TRUE if strip_txt_flags has been run on
+struct search
+{
+  union op *ops;
+  struct Datum *res;
+  enum result_granularity res_gran;
+  enum result_id_domain   res_id;
+};
+
+/* The search engine handles results from the text search
+   in Location format; from the record/field search (used by
+   the catalog and one day the bibliography) and the instance
+   mapper */
+
+struct Datum
+{
+  enum datum_type type;
+  union lNp l;	/* left end of range */
+  union lNp r;	/* right end of range */
+  void *ldata;
+  void *rdata;
+  Unsigned32 count; /* number of elements in arrays */
+  Unsigned32 stripped; /* TRUE if strip_txt_flags has been run on
 		    these locations */
-   Unsigned32 data_size;/* size of one data element */
-   const Uchar *key;
-  int expr_id;
+  Unsigned32 data_size;/* size of one data element */
+  const Uchar *key;
+ int expr_id;
 };
 
 struct token
 {
-  enum se_toks type;
-  int flag;
-  int expr_id;
-  const void *data;
-  const unsigned char *mangled;
-  struct expr_rules *rules; /* rules to use when mangling this token */
+ enum se_toks type;
+ int flag;
+ int expr_id;
+ const void *data;
+ const unsigned char *mangled;
+ struct expr_rules *rules; /* rules to use when mangling this token */
 };
 
 struct se_tok_tab
 {
-  const char *name;
-  enum se_toks tok;
+ const char *name;
+ enum se_toks tok;
 };
 
 enum near_dirs { n_before , n_after , n_either , n_bad_dir };
 
 struct near
 {
-  enum near_dirs dir;
-  enum near_levs lev;
-  Signed32 plus;
-  Signed32 minus;
-  Signed32 range;
-  Signed32 redup;
+ enum near_dirs dir;
+ enum near_levs lev;
+ Signed32 plus;
+ Signed32 minus;
+ Signed32 range;
+ Signed32 redup;
 };
 
 extern int any_index;

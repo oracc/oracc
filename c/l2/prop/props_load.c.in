@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/unistd.h>
 #include <ctype128.h>
 #include "npool.h"
 #include "hash.h"

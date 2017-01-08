@@ -51,7 +51,6 @@ gdfinit(void)
 {
   record_hashes = list_create(LIST_SINGLE);
   record_pool = npool_init();
-  return 0;
 }
 
 static int

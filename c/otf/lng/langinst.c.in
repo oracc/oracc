@@ -1,3 +1,4 @@
+#include <sys/unistd.h>
 #include <ctype128.h>
 #include "sas.h"
 #include "fname.h"

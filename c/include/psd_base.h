@@ -145,9 +145,16 @@ extern int errno;
 #define getcwd(dir,len) getwd(dir)
 #endif /* !HAVE_GETCWD */
 
+/*
+  commented out because of problem with Xcode/Sierra:
+  include <unistd.h> in sources where necessary instead
+  of here
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+ */
+
+#include <sys/unistd.h>
 
 /**************************************************************/
 

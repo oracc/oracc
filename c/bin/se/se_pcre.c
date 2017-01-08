@@ -7,6 +7,8 @@
 #include <pcre.h>
 #include "selib.h"
 
+#include <sys/unistd.h>
+
 #define OVECCOUNT 3
 
 List *apply_pcre(const char *pat,const char*sub,size_t len);
