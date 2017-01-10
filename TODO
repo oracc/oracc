@@ -1,3 +1,10 @@
+NEW INSTALL:
+============
+
+boot projects: cdli qcat xcat ogsl epsd2
+
+missing files: dsa.xml usermode.xml
+
 Install:
 ========
 

@@ -1,3 +1,4 @@
+.dirstamp
 *.Plo
 *.Po
 *.a
@@ -21,6 +22,7 @@ Makefile.in
 a.out.dSYM
 aclocal.m4
 autom4te.cache/
+compile
 c.log
 c/bin/despatcher/#Makefile.am#
 c/bin/despatcher/.#Makefile.am
