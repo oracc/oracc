@@ -405,9 +405,13 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
       if (endp)
 	{
 	  List *components = list_create(LIST_SINGLE);
-	  Uchar *psu = lp;
+	  Uchar *psu = lp, *psutmp;
 	  struct f2 *psu_form = NULL;
 	  *endp = '\0';
+
+	  if (psutmp = (Uchar*)strstr((const char*)psu, " = "))
+	    psu = psutmp+3;
+	  
 	  lp = endp + 3;
 	  while (1)
 	    {

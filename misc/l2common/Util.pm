@@ -194,8 +194,18 @@ parse_psu {
     my $psu_orig = $psu;
     my $first = 1;
     my %psu_sig = ();
-    $psu =~ s/\{(.*?)\s+\+=\s+/{/;
-    $psu_sig{'ngram'} = $1;
+    
+    if ($psu =~ s/\{(.*?)\s+\+=\s+/{/) {
+	my $psutmp = $1;
+	if ($psutmp =~ /^(.*?) = (.*?)$/) {
+	    $psu_sig{'form'} = $1;
+	    $psu_sig{'ngram'} = $2;
+	}
+    } else {
+	s/\{(.*?)\s+\+=\s+/{/;
+	$psu_sig{'ngram'} = $1;
+    }
+    
     $psu =~ s#^\{(.*?)\[(.*?)//(.*?)\](.*?)'(.*?)\}::##;
     @psu_sig{qw/cf gw sense pos epos/} = ($1,$2,$3,$4,$5);
     my %parts = ();
@@ -208,11 +218,13 @@ parse_psu {
 	my %sig = (parse_sig($sig));
 	push @{$psu_sig{'parts'}}, "$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}";
 	push @{$psu_sig{'sense-parts'}}, "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
-	foreach my $part (qw/form norm base cont morph morph2/) {
+
+	foreach my $part (qw/norm base cont morph morph2/) {
 	    if ($sig{$part}) {
 		push @{$parts{$part}}, $sig{$part};
 	    }
 	}
+
 	if ($first) {
 	    $psu_sig{'proj'} = $sig{'proj'};
 	    $psu_sig{'lang'} = $sig{'lang'};

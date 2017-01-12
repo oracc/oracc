@@ -149,55 +149,56 @@ tabless(const unsigned char *s)
 unsigned char *
 f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 {
-  unsigned char buf[1024];
+  unsigned char psu_buf[2048];
 
-#if 1
-  sprintf((char*)buf,"{%s}::",fp->psu_ngram);
-#else
-  sprintf((char*)buf,"{%s[%s//%s]%s'%s",
-	  fp->cf ? fp->cf : (Uchar*)"X",
-	  fp->gw ? fp->gw : (Uchar*)"X",
-	  fp->sense ? fp->sense : (Uchar*)"X",
-	  fp->pos ? fp->pos : (Uchar*)"X",
-	  fp->epos ? fp->epos : (Uchar*)"X");
-  strcat((char*)buf, "}::");
-#endif
-  
   if (fp->parts)
     { 
       int i;
       char *amp = NULL;
+      unsigned char psu_form[1024], buf[2048];
+
+      *psu_form = *buf = '\0';
+
       for (i = 0; fp->parts[i]; ++i)
-	{
-	  if (i)
-	    strcat((char*)buf, "++");
-
-#if 1
-	  if (fp->parts[i]->tail_sig)
-	    strcat((char*)buf, (char*)fp->parts[i]->tail_sig);
-	  else
+        {
+	  /* New PSU form generation */
+	  if (fp->parts[i]->cof_id)
 	    {
-	      if (!fp->parts[i]->sig)
-		/* passing NULL as arg2 means do not run the extended lemmatization--this is ok
-		   because all the parts will have been subjected to that anyway by now */
-		fp->parts[i]->sig = f2_sig(xcp, NULL, fp->parts[i]);
-
-	      if ((amp = strstr((char*)fp->parts[i]->sig, "&&")))
-		{
-		  int len = strlen((char*)buf) + (amp - (char*)fp->parts[i]->sig);
-		  strncat((char*)buf, (char*)fp->parts[i]->sig, amp - (char*)fp->parts[i]->sig);
-		  buf[len] = '\0';
-		}
-	      else
-		strcat((char*)buf,tabless(fp->parts[i]->sig));
-#else
-	      if (BIT_ISSET(fp->parts[i]->flags, F2_FLAGS_SAME_REF))
-		append_sig_sans_form(buf,(unsigned char*)tabless(fp->parts[i]->sig));
-	      else
-		strcat((char*)buf,tabless(fp->parts[i]->sig));
-#endif
+	      if (!fp->parts[i]->tail_sig)
+		strcat((char*)psu_form, (char*)fp->parts[i]->form);
 	    }
-	}
+	  else
+	    strcat((char*)psu_form, (char*)fp->parts[i]->form);
+
+          if (i)
+	    {
+	      strcat((char*)buf, "++");
+	      strcat((char*)psu_form, " ");
+	    }
+
+          if (fp->parts[i]->tail_sig)
+            strcat((char*)buf, (char*)fp->parts[i]->tail_sig);
+          else
+            {
+              if (!fp->parts[i]->sig)
+                /* passing NULL as arg2 means do not run the extended lemmatization--this is ok
+                   because all the parts will have been subjected to that anyway by now */
+                fp->parts[i]->sig = f2_sig(xcp, NULL, fp->parts[i]);
+
+              if ((amp = strstr((char*)fp->parts[i]->sig, "&&")))
+                {
+                  int len = strlen((char*)buf) + (amp - (char*)fp->parts[i]->sig);
+                  strncat((char*)buf, (char*)fp->parts[i]->sig, amp - (char*)fp->parts[i]->sig);
+                  buf[len] = '\0';
+                }
+              else
+                strcat((char*)buf,tabless(fp->parts[i]->sig));
+            }
+        }
+      sprintf((char*)psu_buf,"{%s= %s}::%s",psu_form,fp->psu_ngram,buf);
     }
-  return npool_copy(buf,xcp->pool);
+  else
+    sprintf((char*)psu_buf,"{%s}::",fp->psu_ngram);
+
+  return npool_copy(psu_buf,xcp->pool);
 }

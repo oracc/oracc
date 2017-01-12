@@ -128,6 +128,9 @@ read_input($input);
 
 sort_norms();
 
+use Data::Dumper;
+warn Dumper(\%s_field_freqs), "\n";
+
 # open(D,">$header{'lang'}-entry.log"); print D Dumper(\%entry_ids); close(D);
 
 if ($have_disamb) {
@@ -343,9 +346,16 @@ sub
 add_sig {
     my ($sig, $freq, $refs, $full_cof_sig, $cof_index) = @_;
 
+    my $psu_form = '';
     my $psu_ngram = '';
     if ($sig =~ s/^{(.*?)\s+\+=\s+/{/) {
-	$psu_ngram = $1;
+	my $psutmp = $1;
+	if ($psutmp =~ /^(.*?) = (.*?)$/) {
+	    $psu_form = $1;
+	    $psu_ngram = $2;
+	} else {
+	    $psu_ngram = $psutmp;
+	}
 #	warn "psu_ngram = $psu_ngram\n";
     }
 
@@ -372,7 +382,11 @@ add_sig {
 	    $cof_norm = make_cof_norm($full_cof_sig);
 	}
     }
-    $sig{'psu_ngram'} = $psu_ngram;
+    if ($psu_ngram) {
+	$sig{'psu_ngram'} = $psu_ngram;
+	$sig{'form'} = $psu_form;  ## put this back because it gets removed before calling parse_psu
+    }
+    
     $sig{'sid'} = sprintf("sig%06x",$sid++);
 
     ++$seen_morph2 if $sig{'morph2'};
@@ -501,7 +515,7 @@ compute_and_print_entry_data {
 	}	
     }
 
-#    use Data::Dumper; warn Dumper(\%freqs), "\n";
+#   use Data::Dumper; warn Dumper(\%freqs), "\n";
 
     foreach my $f (@sigfields) {
 	if ($freqs{$f} || $with_zero_freqs) {

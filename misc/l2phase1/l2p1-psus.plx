@@ -129,6 +129,9 @@ do_psu {
     unless ($forms) {
 	bad "syntax error, no forms in \@forms line";
     }
+
+    my $psu_form = $forms; $psu_form =~ s/_0/ /g; $psu_form =~ tr/_/ /;
+    
     my @forms = ($forms ? split(/_/,$forms) : ());
     my @rest = grep defined&&length, (split(/\s+/, $rest));
     my @norms = map { s/^\$//; $_ } grep (/^\$/, @rest);  # split(/(?:^|\s+)\$/,$norms);
@@ -147,6 +150,9 @@ do_psu {
 	}
     }
 
+    ## This is necessary to match the parts but should not be used as the output form of a PSU;
+    ## use the version computed in f2_sig.c instead
+    
     # rewrite '0' entries in @forms
     my $last_non_zero_i = 0;
     for (my $i = 0; $i <= $#forms; ++$i) {
@@ -155,14 +161,14 @@ do_psu {
 	} else {
 	    $last_non_zero_i = $forms[$i];
 	}
-    }
+   }
 
     my $matched_parts = 0;
 #    foreach my $p (@{$e{'parts'}}) {
     foreach my $p (@entries_parts_lines) {
 	my ($res_p,@matches) = parts_match(\@forms, \@norms, $psulang, $p);
 	if ($#matches > 0) {
-	    print_psu_sig(\%e, $res_p, @matches);
+	    print_psu_sig(\%e, $psu_form, $res_p, @matches);
 	    ++$matched_parts;
 	    last;
 	}
@@ -328,13 +334,13 @@ parts_match {
 
 sub
 print_psu_sig {
-    my ($eref, $res_ref, @sigs) = @_;
+    my ($eref, $psuform, $res_ref, @sigs) = @_;
     my @p = ();
     foreach my $r (@$res_ref) {
 	push @p, $$r[0];
     }
     my $psusig = join('++', @sigs);
-    print("{@p += $$eref{'cf'}\[$$eref{'gw'}//$$eref{'sense'}\]$$eref{'pos'}'$$eref{'epos'}}::", 
+    print("{$psuform = @p += $$eref{'cf'}\[$$eref{'gw'}//$$eref{'sense'}\]$$eref{'pos'}'$$eref{'epos'}}::", 
 	  $psusig, "\n");
     print PARTSMAP "@p\t", $psusig, "\n";
 }

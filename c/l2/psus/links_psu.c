@@ -7,6 +7,7 @@
 #include "memblock.h"
 #include "ilem_form.h"
 #include "sigs.h"
+#include <xmlutil.h>
 
 int psus_sig_check = 1;
 
@@ -66,6 +67,7 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       lsp->form->lnum = mlp->matches[0].lp->lnum;
 
       lsp->form->sig = f2_psu_sig(xc, mlp->matches[0].psu_form);
+
       lp->inst = psu_inst((char*)lsp->form->sig);
       lp->f = calloc(1,sizeof(struct ilem_form));
       lp->f->file = (char*)mlp->matches[0].psu_form->file;
@@ -74,11 +76,13 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       if (psus_sig_check)
 	sigs_l_check(xc, lp);
       mlp->matches[0].psu_nfinds = lp->f->fcount;
+
       /* WATCHME: should I be using psu_finds and reporting ambig here? 
        * For now, just use the first sig.
        */
       if (lp->f->fcount > 0)
-	lsp->form->sig = lp->f->finds[0]->f2.sig;
+        lsp->form->sig = lp->f->finds[0]->f2.sig;
+
       /* can't free this now because it may be referenced via the cache */
       /* free(lp->f); */
       free(lp);
