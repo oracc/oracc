@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -N xcltok -tT xcltok.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -N xcltok -tT xcltok.g  */
 /* Computed positions: -k'1-2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -35,12 +35,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <stddef.h>
 #include "xcl.h"
 
-#define TOTAL_KEYWORDS 20
+#define TOTAL_KEYWORDS 21
 #define MIN_WORD_LENGTH 4
 #define MAX_WORD_LENGTH 11
 #define MIN_HASH_VALUE 4
-#define MAX_HASH_VALUE 31
-/* maximum key range = 28, duplicates = 0 */
+#define MAX_HASH_VALUE 36
+/* maximum key range = 33, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -56,42 +56,36 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 10,  5,
-       0,  0, 15, 10, 10,  0, 32, 32,  0, 32,
-       5, 20,  0, 32, 10, 10,  0,  0, 32,  0,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-      32, 32, 32, 32, 32, 32
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 10,  5,
+       0,  0, 15, 10, 10,  0, 37, 37,  0, 37,
+       5, 20,  0, 37, 10, 10,  0,  0, 37,  0,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+      37, 37, 37, 37, 37, 37
     };
   return len + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]];
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct xcl_tok_tab *
 xcltok (str, len)
      register const char *str;
@@ -121,7 +115,7 @@ xcltok (str, len)
       {"cell-start",xcl_node_d, xcl_d_cell_start},
 #line 18 "xcltok.g"
       {"phrase",	   xcl_node_c, xcl_c_phrase},
-#line 28 "xcltok.g"
+#line 29 "xcltok.g"
       {"surface",   xcl_node_d, xcl_d_surface},
 #line 16 "xcltok.g"
       {"sentence",  xcl_node_c, xcl_c_sentence},
@@ -132,27 +126,30 @@ xcltok (str, len)
 #line 24 "xcltok.g"
       {"gloss-start",xcl_node_d, xcl_d_gloss_start},
       {""}, {""},
-#line 32 "xcltok.g"
+#line 33 "xcltok.g"
       {"field-end",  xcl_node_d, xcl_d_field_end},
 #line 26 "xcltok.g"
       {"break",	   xcl_node_d, xcl_d_break},
-#line 31 "xcltok.g"
+#line 32 "xcltok.g"
       {"field-start",xcl_node_d, xcl_d_field_start},
       {""},
 #line 20 "xcltok.g"
       {"word-var",  xcl_node_c, xcl_c_text},
-#line 29 "xcltok.g"
+#line 30 "xcltok.g"
       {"nonx", 	   xcl_node_d, xcl_d_nonx},
       {""},
-#line 30 "xcltok.g"
-      {"column",    xcl_node_d, xcl_d_column}
+#line 31 "xcltok.g"
+      {"column",    xcl_node_d, xcl_d_column},
+      {""}, {""}, {""}, {""},
+#line 28 "xcltok.g"
+      {"object",    xcl_node_d, xcl_d_object}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

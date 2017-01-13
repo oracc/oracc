@@ -16,7 +16,8 @@ enum xcl_d_types { xcl_d_line_start , xcl_d_break ,
 		   xcl_d_cell_start , xcl_d_cell_end ,
 		   xcl_d_field_start , xcl_d_field_end ,
 		   xcl_d_gloss_start , xcl_d_gloss_end ,
-		   xcl_d_punct , xcl_d_surface , xcl_d_column ,
+		   xcl_d_punct ,
+		   xcl_d_object , xcl_d_surface , xcl_d_column ,
 		   xcl_d_nonw , xcl_d_nonx ,
 		   xcl_d_top };
 

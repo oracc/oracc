@@ -87,22 +87,51 @@
   <xsl:value-of select="$indent"/>
   <xsl:text>"node": "d",&#xa;</xsl:text>
   <xsl:variable name="id-node" select="id(@ref)"/>
-  <xsl:if test="local-name($id-node) = 'nonw'">
-    <xsl:variable name="text">
-      <xsl:apply-templates select="id(@ref)"/>
-    </xsl:variable>
-    <xsl:if test="string-length($text>0)">
-      <xsl:variable name="text_j">
-	<xsl:call-template name="jsonify">
-	  <xsl:with-param name="text" select="$text"/>
-	</xsl:call-template>
-      </xsl:variable>
-      <xsl:value-of select="$indent"/>
-      <xsl:text>"text": "</xsl:text><xsl:value-of select="$text_j"/><xsl:text>",&#xa;</xsl:text>
-    </xsl:if>
-  </xsl:if>
   <xsl:value-of select="$indent"/>
   <xsl:text>"type": "</xsl:text><xsl:value-of select="@type"/><xsl:text>",&#xa;</xsl:text>
+
+  <!-- maybe emit a text prop; not appropriate to all d node types-->
+  <xsl:variable name="d-text">
+    <xsl:choose>
+      <xsl:when test="@type = 'nonw'">
+	<xsl:apply-templates select="$id-node/@ref"/>
+      </xsl:when>
+      <xsl:when test="@type = 'line-start'">
+	<xsl:value-of select="$id-node/@n"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:if test="string-length($d-text)>0">
+    <xsl:variable name="text_j">
+      <xsl:call-template name="jsonify">
+	<xsl:with-param name="text" select="$d-text"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>"text": "</xsl:text><xsl:value-of select="$text_j"/><xsl:text>",&#xa;</xsl:text>
+  </xsl:if>
+
+  <!-- maybe emit a label prop; not appropriate to all d node types-->
+  <xsl:variable name="d-label">
+    <xsl:choose>
+      <xsl:when test="@type = 'surface'">
+	<xsl:value-of select="$id-node/@label"/>
+      </xsl:when>
+      <xsl:when test="@type = 'line-start'">
+	<xsl:value-of select="$id-node/@label"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:if test="string-length($d-label)>0">
+    <xsl:variable name="text_j">
+      <xsl:call-template name="jsonify">
+	<xsl:with-param name="text" select="$d-label"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$indent"/>
+    <xsl:text>"label": "</xsl:text><xsl:value-of select="$text_j"/><xsl:text>",&#xa;</xsl:text>
+  </xsl:if>
+
   <xsl:if test="string-length(@ref)>0">
     <xsl:value-of select="$indent"/>
     <xsl:text>"ref": "</xsl:text><xsl:value-of select="@ref"/><xsl:text>"&#xa;</xsl:text>

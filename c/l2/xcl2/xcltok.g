@@ -25,6 +25,7 @@ gloss-start,xcl_node_d, xcl_d_gloss_start
 gloss-end, xcl_node_d, xcl_d_gloss_end
 break,	   xcl_node_d, xcl_d_break
 punct,	   xcl_node_d, xcl_d_punct
+object,    xcl_node_d, xcl_d_object
 surface,   xcl_node_d, xcl_d_surface
 nonx, 	   xcl_node_d, xcl_d_nonx
 column,    xcl_node_d, xcl_d_column
