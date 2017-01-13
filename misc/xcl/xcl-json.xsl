@@ -54,6 +54,10 @@
     <xsl:value-of select="$indent"/>
     <xsl:text>"subtype": "</xsl:text><xsl:value-of select="@subtype"/><xsl:text>",&#xa;</xsl:text>
   </xsl:if>
+  <xsl:if test="string-length(id(@ref)/@xl:role)>0">
+    <xsl:value-of select="$indent"/>
+    <xsl:text>"role": "</xsl:text><xsl:value-of select="id(@ref)/@xl:role"/><xsl:text>",&#xa;</xsl:text>    
+  </xsl:if>
   <!--
   <xsl:if test="string-length(@tag)>0">
     <xsl:value-of select="$indent"/>
@@ -90,11 +94,29 @@
   <xsl:value-of select="$indent"/>
   <xsl:text>"type": "</xsl:text><xsl:value-of select="@type"/><xsl:text>",&#xa;</xsl:text>
 
+  <xsl:choose>
+    <xsl:when test="@type='object'">
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"subtype": "</xsl:text><xsl:value-of select="id(@ref)/@type"/><xsl:text>",&#xa;</xsl:text>
+    </xsl:when>
+    <xsl:when test="@type='surface'">
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"subtype": "</xsl:text><xsl:value-of select="id(@ref)/@type"/><xsl:text>",&#xa;</xsl:text>
+    </xsl:when>
+    <xsl:when test="string-length(@subtype)>0">
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"subtype": "</xsl:text><xsl:value-of select="@subtype"/><xsl:text>",&#xa;</xsl:text>
+    </xsl:when>
+  </xsl:choose>
+
   <!-- maybe emit a text prop; not appropriate to all d node types-->
   <xsl:variable name="d-text">
     <xsl:choose>
       <xsl:when test="@type = 'nonw'">
-	<xsl:apply-templates select="$id-node/@ref"/>
+	<xsl:apply-templates select="$id-node"/>
+      </xsl:when>
+      <xsl:when test="@type = 'nonx'">
+	<xsl:apply-templates select="$id-node"/>
       </xsl:when>
       <xsl:when test="@type = 'line-start'">
 	<xsl:value-of select="$id-node/@n"/>
@@ -148,17 +170,29 @@
   <xsl:text>{&#xa;</xsl:text>
   <xsl:value-of select="$indent"/>
   <xsl:text>"node": "l",&#xa;</xsl:text>
-  <xsl:variable name="text">
-    <xsl:apply-templates select="id(@ref)"/>
-  </xsl:variable>
-  <xsl:if test="string-length($text>0)">
-    <xsl:variable name="text_j">
-      <xsl:call-template name="jsonify">
-	<xsl:with-param name="text" select="normalize-space($text)"/>
-      </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="string-length(@cof-head)>0">
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"cof": "tail",&#xa;</xsl:text>
+    </xsl:when>
+    <xsl:when test="string-length(@cof-tails)>0">
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"cof": "head",&#xa;</xsl:text>
+    </xsl:when>
+  </xsl:choose>
+  <xsl:if test="string-length(@cof-head)=0">
+    <xsl:variable name="text">
+      <xsl:apply-templates select="id(@ref)"/>
     </xsl:variable>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>"text": "</xsl:text><xsl:value-of select="$text_j"/><xsl:text>",&#xa;</xsl:text>
+    <xsl:if test="string-length($text)>0">
+      <xsl:variable name="text_j">
+	<xsl:call-template name="jsonify">
+	  <xsl:with-param name="text" select="normalize-space($text)"/>
+	</xsl:call-template>
+      </xsl:variable>
+      <xsl:value-of select="$indent"/>
+      <xsl:text>"text": "</xsl:text><xsl:value-of select="$text_j"/><xsl:text>",&#xa;</xsl:text>
+    </xsl:if>
   </xsl:if>
   <xsl:if test="@inst">
     <xsl:value-of select="$indent"/>

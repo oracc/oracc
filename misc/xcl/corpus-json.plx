@@ -20,9 +20,11 @@ print "{\n\t\"type\": \"corpus\",\n\t\"project\": \"$project\",\n\t\"members\": 
 
 for (my $i = 0; $i <= $#files; ++$i) {
     my $file = $files[$i];
-    my ($fileproj,$four) = ($file =~ m/^(.*?):(....)/);
-    $file =~ s/^.*?://;
-    $file = "$ENV{'ORACC'}/$fileproj/01bld/$four/$file/$file.xtf";
+    if ($file =~ /:/) {
+	my ($fileproj,$four) = ($file =~ m/^(.*?):(....)/);
+	$file =~ s/^.*?://;
+	$file = "$ENV{'ORACC'}/$fileproj/01bld/$four/$file/$file.xtf";
+    }
     if (-r $file) {
 	my @f = `xsltproc $ENV{'ORACC'}/lib/scripts/xcl-json.xsl $file`;
 	foreach (@f) {
