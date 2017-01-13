@@ -2,7 +2,7 @@
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
-use Data::Dumper;
+#use Data::Dumper;
 
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
@@ -128,8 +128,8 @@ read_input($input);
 
 sort_norms();
 
-use Data::Dumper;
-warn Dumper(\%s_field_freqs), "\n";
+#use Data::Dumper;
+#warn Dumper(\%s_field_freqs), "\n";
 
 # open(D,">$header{'lang'}-entry.log"); print D Dumper(\%entry_ids); close(D);
 
@@ -631,7 +631,7 @@ compute_and_print_entry_data {
 				    print "<f xml:id=\"$xid\"/>";
 				} elsif (!$form_ids{$f}) {
 				    warn "$input:$entry_lines{$entry}: no form_id when printing form $f\n";
-				    use Data::Dumper; warn Dumper(\%form_ids);
+#				    use Data::Dumper; warn Dumper(\%form_ids);
 				    print "<f xml:id=\"$xid\" bad-form=\"$f\"/>";
 				} else {
 				    warn "$input:$entry_lines{$entry}: undef when printing form $f\n";
