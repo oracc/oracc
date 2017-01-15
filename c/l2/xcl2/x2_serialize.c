@@ -26,9 +26,10 @@ const char *xcl_c_type_str[] =
 const char *xcl_d_type_str[] =
   {
     "line-start","break","cell-start","cell-end",
-    "field-start", "field-end",
+    "field-start","field-end",
     "gloss-start","gloss-end",
-    "punct","surface","column",
+    "punct",
+    "object","surface","column",
     "nonw" , "nonx"
   };
 
