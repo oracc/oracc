@@ -11,3 +11,4 @@ echo '}' >>01bld/metadata.json
 o2-web-corpus.sh
 #o2-prm.sh
 o2-weblive.sh
+o2-finish.sh

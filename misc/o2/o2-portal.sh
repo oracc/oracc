@@ -16,6 +16,7 @@ if [ -d 00web/00config ]; then
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
     p3-wrapup.sh
+    o2-finish.sh
 elif [ -d 00web/esp ]; then
     echo o2-portal.sh: esp version 1.0 is no longer supported.  Please contact your liaison to upgrade.
     exit 1
@@ -27,6 +28,7 @@ elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
     cp -fp 00lib/thumb.png $webdir
     est-project.sh
     o2-weblive.sh
+    o2-finish.sh
 else
     echo o2-portal.sh: no portal to rebuild and no index.html or way of building same. Stop.
 fi
