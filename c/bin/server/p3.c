@@ -109,7 +109,7 @@ mkvec(CGI_varlist *vl)
   vec = malloc((i+3) * sizeof(const char*));
   
   ((char **)vec)[0] = "/usr/bin/perl";
-  ((char **)vec)[1] = "/usr/local/oracc/bin/p3-pager.plx";
+  ((char **)vec)[1] = "/Users/stinney/orc/bin/p3-pager.plx";
   for (i = 2, name = CGI_first_name(vl); name != 0; name = CGI_next_name(vl), ++i)
     {
       if (strcmp(name, "srch"))
@@ -123,11 +123,13 @@ mkvec(CGI_varlist *vl)
   return vec;
 }
 
-static void
+void
 dump_vl(CGI_varlist *vl)
 {
   const char *name;
   CGI_value  *value;
+
+  fprintf(stderr, "====dumping CGI value list====\n");
 
   for (name = CGI_first_name(vl); name != 0;
        name = CGI_next_name(vl))
@@ -137,6 +139,8 @@ dump_vl(CGI_varlist *vl)
       for (i = 0; value[i] != 0; i++) 
 	fprintf(stderr, "%s [%d] >>%s<<\n", name, i, value[i]);
     }
+
+  fprintf(stderr, "====done=====\n");
 }
 
 void
@@ -167,6 +171,8 @@ p3(const char *project)
   vl = CGI_get_post(0, NULL);
   if (!CGI_lookup(vl, "project"))
     vl = CGI_add_var(vl, "project", project);
+
+  vl = CGI_add_var(vl, "referer", script_url);
 
   if (p3trace)
     fprintf(stderr, "p3: 1\n");
@@ -210,16 +216,92 @@ p3_asearch_results(const char *project, const char *tmpdir)
       char *res = malloc(strlen(tmpdir) + strlen("/results.lst") + 1);
       sprintf(res, "%s/results.lst", tmpdir);
       fprintf(stderr, "popping up AS results %s\n", res);
-      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+      execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx", 
 	    cgi_arg("asrch", "yes"),
 	    cgi_arg("project", "#auto"),
 	    cgi_arg("tmpdir", tmpdir),
 	    cgi_arg("list", res),
-	    cgi_arg("uimode", "mini"),
+	    /* cgi_arg("uimode", "mini"), */
 	    NULL);
       perror("execl failed");
       exit(1);
     }
   else
     do404();
+}
+
+void
+p3glossary(const char *glos, const char *xis)
+{
+  CGI_varlist *vl = NULL;
+  const char *srch = NULL;
+  extern int ccgi_verbose;
+
+  vl = CGI_get_post(0, NULL);
+  vl = CGI_add_var(vl, "glos", glos);
+  if (xis)
+    vl = CGI_add_var(vl, "gxis", xis);
+
+  if (!CGI_lookup(vl, "project"))
+    vl = CGI_add_var(vl, "project", project);
+  vl = CGI_add_var(vl, "referer", script_url);
+  vl = CGI_add_var(vl, "tmpdir", p3tempdir());
+
+  if ((srch = CGI_lookup(vl, "srch")) && *srch && *srch != '0')
+    {
+      p3srch(vl);
+      vl = CGI_add_var(vl, "itemtype", "cbd");
+      vl = CGI_add_var(vl, "srchtype", "cbd");
+    }
+
+  p3_exec(vl);
+}
+
+void
+p3_oas(const char *xml)
+{
+  CGI_varlist *vl = CGI_get_post(0, NULL);
+  char *d = NULL;
+  char *sfn = NULL;
+  FILE *fp = NULL;
+  char *referer = NULL;
+  const char *asSubmit = NULL;
+  const char *list = NULL;
+
+  list = CGI_lookup(vl, "list");
+  if (list && *list == '.') {
+    d = malloc(strlen(list) + strlen("/tmp/p3") + 1);
+    sprintf(d,"/tmp/p3%s",list);
+  }
+
+  asSubmit = CGI_lookup(vl, "asSubmit");
+  if (!d || (asSubmit && !strcmp(asSubmit, "new")))
+    vl = CGI_add_var(vl, "tmpdir", d = p3tempdir());
+
+  if (xml)
+    {
+      sfn = malloc(strlen(d) + strlen("/search.xml") + 1);
+      sprintf(sfn, "%s/search.xml", d);
+      vl = CGI_add_var(vl, "asrchxf", "yes");
+    }
+
+  fprintf(stderr, "p3_oas: project=%s; tmpdir=%s; xml=%s; asSubmit=%s\n", project, d, xml, asSubmit);
+
+  referer = malloc(strlen(project) + strlen("//as") + 1);
+  sprintf(referer, "/%s/as", project);
+  vl = CGI_add_var(vl, "referer", referer);
+
+  if (!CGI_lookup(vl, "project"))
+    vl = CGI_add_var(vl, "project", project);
+
+  if (xml)
+    {
+      if ((fp = fopen(sfn, "w")))
+	{
+	  fputs(xml,fp);
+	  fclose(fp);
+	}
+    }
+
+  p3_exec(vl);
 }

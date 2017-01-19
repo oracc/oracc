@@ -24,7 +24,7 @@ void
 do404(void)
 {
   print_hdr();
-  execl("/bin/cat", "cat", "@@ORACC@@/www/404.html", NULL);
+  execl("/bin/cat", "cat", "/Users/stinney/orc/www/404.html", NULL);
 }
 
 const char *
@@ -35,7 +35,7 @@ oracc_home ()
     {
       cached_home = getenv ("ORACC");
       if (NULL == cached_home)
-	cached_home = "@@ORACC@@";
+	cached_home = "/Users/stinney/orc";
     }
   return cached_home;
 }
@@ -48,7 +48,7 @@ oracc_var ()
     {
       cached_var = getenv ("ORACC_VAR");
       if (NULL == cached_var)
-	cached_var = "@@ORACC@@";
+	cached_var = "/Users/stinney/orc";
     }
   return cached_var;
 }
@@ -140,6 +140,13 @@ void
 print_hdr(void)
 {
   fputs("Content-type: text/html; charset=utf-8\n\n", stdout);
+  fflush(stdout);
+}
+
+void
+print_hdr_text(void)
+{
+  fputs("Content-type: text/plain; charset=utf-8\n\n", stdout);
   fflush(stdout);
 }
 

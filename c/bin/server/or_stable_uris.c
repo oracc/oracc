@@ -16,12 +16,14 @@ const char *component_names[] = { "none", "resource", "selection", "view", "form
 const char *resource_names[]  = { "none", "PQX", "word", "entity", "language", "keyword", "list" };
 const char *selection_names[] = { "none", "full", "cat", "translit", "translation", "facing", 
 				  "image", "thumb", "photo", "line", "detail",
-				  "score", "block", 
-				  "sign", "vals", "homophones", "compounds", "container", "contained"
+				  "score", "block", "sources", 
+				  "sign", "list", "homophones", "compounds", "container", "contained"
 };
 const char *view_names[]      = { "none", "cuneified", "proofing", "project" };
 const char *format_names[]    = { "none", "catf", "csv", "html", "oatf", "rdf", "tei", "txt", "xml" };
 const char *ui_names[]        = { "none", "mini" };
+
+char *pqx_with_id = NULL;
 
 typedef void(handler)(struct component *);
 
@@ -79,7 +81,7 @@ wrd_handler(struct component *components)
   else if (project)
     {
       print_hdr();
-      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/cfgwview.plx", project, components[0].text, NULL);
+      execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/cfgwview.plx", project, components[0].text, NULL);
       do404();      
     }
   else
@@ -97,7 +99,7 @@ ent_handler(struct component *components)
       char *tmp = malloc(strlen(components[0].text)+strlen("phrase=&clip=6")+1);
       sprintf(tmp,"phrase=%s&clip=6", components[0].text);
       setenv("QUERY_STRING", tmp, 1);
-      execl("@@ORACC@@/www/cgi-bin/estseek.cgi", "@@ORACC@@/www/cgi-bin/estseek.cgi", NULL);
+      execl("/Users/stinney/orc/www/cgi-bin/estseek.cgi", "/Users/stinney/orc/www/cgi-bin/estseek.cgi", NULL);
       do404();
     }
 }
@@ -108,9 +110,9 @@ lng_handler(struct component *components)
     show_components(components);
   else if (project)
     {
-      char *xis = NULL;
       if (query_string && strlen(query_string))
 	{
+	  char *xis;
 	  if ((xis = strstr(query_string,"xis=")))
 	    {
 	      char *end;
@@ -120,15 +122,7 @@ lng_handler(struct component *components)
 		++end;
 	      *end = '\0';
 	      if (strlen(xis))
-		{
-		  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
-			cgi_arg("project", project), 
-			cgi_arg("glos", elements[0]),
-			cgi_arg("gxis", xis),
-			NULL);
-		  perror("execl failed");
-		  exit(1);
-		}
+		p3glossary(elements[0], xis);
 	    }
 	  else
 	    {
@@ -137,13 +131,8 @@ lng_handler(struct component *components)
 	      p3_fake_srch(project, idx, query_string);
 	    }
 	}
-      execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
-	    cgi_arg("project", project), 
-	    cgi_arg("glos", elements[0]),
-	    cgi_arg("from-uri", "yes"),
-	    NULL);
-      perror("execl failed");
-      exit(1);
+      else
+	p3glossary(elements[0], NULL);
     }
   else
     find(NULL, make_find_phrase("gls", elements[0], 1));
@@ -152,7 +141,9 @@ lng_handler(struct component *components)
 static void 
 key_handler(struct component *components)
 {
-  if (!strcmp(components[0].text, "find"))
+  if (!strcmp(components[0].text, "sl"))
+    sl(components[1].text);
+  else if (!strcmp(components[0].text, "find"))
     find(project, NULL);
   else if (!strcmp(components[0].text, "corpus"))
     corpus();
@@ -170,9 +161,9 @@ lst_handler(struct component *components)
 static int
 exists_cbd(const char *lng)
 {
-  char *cbd = malloc(strlen("@@ORACC@@") + strlen(project) + strlen(lng) + 25);
+  char *cbd = malloc(strlen("/Users/stinney/orc") + strlen(project) + strlen(lng) + 25);
   int ret;
-  sprintf(cbd, "%s/pub/%s/cbd/%s/entry_ids.lst", "@@ORACC@@", project, lng);
+  sprintf(cbd, "%s/pub/%s/cbd/%s/entry_ids.lst", "/Users/stinney/orc", project, lng);
   ret = !access(cbd, R_OK);
   free(cbd);
   return ret;
@@ -202,6 +193,18 @@ res_is_lang(const char *e)
 	  if (*e == '\0')
 	    return exists_cbd(init);
 	}
+      else
+	{
+	  const char *last = e+strlen(e);
+	  if (last[-1] >= '0' && last[-1] <= '9' && last[-4] == '-')
+	    {
+	      if (last[-2] >= '0' && last[-2] <= '9')
+		{
+		  if (last[-3] >= '0' && last[-3] <= '9')
+		    return exists_cbd(init);
+		}
+	    }
+	}
     }
   return 0;
 }
@@ -225,10 +228,10 @@ res_is_list(const char *e)
 	++e;
       if (*e == 0)
 	{
-	  char *lst = malloc(strlen("@@ORACC@@") + strlen("/www/lists/") + strlen(project)
+	  char *lst = malloc(strlen("/Users/stinney/orc") + strlen("/www/lists/") + strlen(project)
 				   + strlen(init) + 2);
 	  int ret;
-	  sprintf(lst, "%s/www/%s/lists/%s", "@@ORACC@@", project, init);
+	  sprintf(lst, "%s/www/%s/lists/%s", "/Users/stinney/orc", project, init);
 	  ret = !access(lst, R_OK);
 	  free(lst);
 	  return ret;
@@ -278,9 +281,10 @@ res_six_digits(const char *d)
 }
 
 static int 
-res_is_pqx(const char *e, int *count)
+res_is_pqx(char *e, int *count)
 {
   int c = 1;
+  char *entry = e;
   while (*e)
     {
       if (('P' == *e || 'Q' == *e || 'X' == *e)
@@ -291,6 +295,13 @@ res_is_pqx(const char *e, int *count)
 	    {
 	      ++c;
 	      ++e;
+	    }
+	  else if ('.' == *e)
+	    {
+	      query_string = malloc(strlen(entry) + 1);
+	      strcpy(query_string, entry);
+	      *e = '\0';
+	      break;
 	    }
 	  else
 	    break;
@@ -312,11 +323,12 @@ pat_is_resource(struct component *cp)
   if (!have_component[C_RES])
     {
       cp->value = R_NONE;
-      if (res_is_pqx(cp->text, &cp->count))
+      if (res_is_pqx((char*)cp->text, &cp->count))
 	{
 	  cp->value = R_PQX;
 	  cp->replace = map_PQX(cp->text, cp->count);
-	}      
+	  fprintf(stderr, "map_PQX from %s => %s\n", cp->text, cp->replace);
+	}
       else if (res_is_word(cp->text))
 	cp->value = R_WORD;
       else if (res_is_key(cp->text))

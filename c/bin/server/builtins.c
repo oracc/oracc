@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -N builtins -tT builtins.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -N builtins -tT builtins.g  */
 /* Computed positions: -k'1' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "resolver.h"
 
-#define TOTAL_KEYWORDS 7
-#define MIN_WORD_LENGTH 3
-#define MAX_WORD_LENGTH 9
-#define MIN_HASH_VALUE 3
-#define MAX_HASH_VALUE 12
-/* maximum key range = 10, duplicates = 0 */
+#define TOTAL_KEYWORDS 13
+#define MIN_WORD_LENGTH 2
+#define MAX_WORD_LENGTH 11
+#define MIN_HASH_VALUE 2
+#define MAX_HASH_VALUE 24
+/* maximum key range = 23, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,42 +55,36 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13,  5, 13, 13,
-       0, 13,  0, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13,  7,  2, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-      13, 13, 13, 13, 13, 13
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25,  5, 25, 25,
+      15, 25,  0, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 10,  0, 25, 25,  0, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+      25, 25, 25, 25, 25, 25
     };
   return len + asso_values[(unsigned char)str[0]];
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct builtinstab *
 builtins (str, len)
      register const char *str;
@@ -98,30 +92,44 @@ builtins (str, len)
 {
   static struct builtinstab wordlist[] =
     {
-      {""}, {""}, {""},
-#line 10 "builtins.g"
-      {"doc", 	   B_DOC},
-#line 11 "builtins.g"
-      {"find",	   B_FIND},
-#line 13 "builtins.g"
-      {"sig", 	   B_SIG},
       {""}, {""},
+#line 18 "builtins.g"
+      {"sl", 	   B_SL},
+#line 17 "builtins.g"
+      {"sig", 	   B_SIG},
+#line 13 "builtins.g"
+      {"find",	   B_FIND},
+      {""}, {""},
+#line 14 "builtins.g"
+      {"as",        B_OAS},
 #line 8 "builtins.g"
       {"atf", 	   B_ATF},
-#line 9 "builtins.g"
-      {"datestamp", B_DATESTAMP},
-#line 12 "builtins.g"
-      {"rpc",       B_RPC},
+#line 19 "builtins.g"
+      {"searchbar", B_SEARCHBAR},
       {""},
+#line 10 "builtins.g"
+      {"voltemplate", 	   B_VOLTMP},
 #line 7 "builtins.g"
-      {"asearch",   B_XFORMS}
+      {"asearch",   B_XFORMS},
+#line 15 "builtins.g"
+      {"rpc",       B_RPC},
+      {""}, {""},
+#line 9 "builtins.g"
+      {"atftemplate", 	   B_ATFTMP},
+#line 16 "builtins.g"
+      {"runtime",   B_RUNTIME},
+#line 12 "builtins.g"
+      {"doc", 	   B_DOC},
+      {""}, {""}, {""}, {""}, {""},
+#line 11 "builtins.g"
+      {"datestamp", B_DATESTAMP}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

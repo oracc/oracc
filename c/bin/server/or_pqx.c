@@ -4,14 +4,15 @@
 #include <unistd.h>
 #include <ctype128.h>
 #include "resolver.h"
+#include "content.h"
 
 extern int patterns_debug;
 
-const char *catentry_html = "@@ORACC@@/lib/scripts/g2-xmd-HTML.xsl";
-const char *pqx_html = "@@ORACC@@/lib/scripts/p2-htmlview.xsl";
-const char *proofing_html = "@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl";
-const char *sxh_html = "@@ORACC@@/lib/scripts/sxh-view.xsl";
-
+const char *catentry_html = "/Users/stinney/orc/lib/scripts/g2-xmd-HTML.xsl";
+const char *pqx_html = "/Users/stinney/orc/lib/scripts/p3-html-wrapper.xsl";
+const char *proofing_html = "/Users/stinney/orc/lib/scripts/g2-xtf-HTML.xsl";
+const char *sxh_html = "/Users/stinney/orc/lib/scripts/sxh-view.xsl";
+const char *no_html = "/Users/stinney/orc/www/no_html.html";
 extern struct component *have_component[];
 static void or_image(const char *project, const char *pqx, const char *type);
 
@@ -33,7 +34,7 @@ make_key_url(struct component *components)
   return k;
 }
 
-void 
+void
 pqx_handler(struct component *components)
 {
   if (patterns_debug)
@@ -108,11 +109,13 @@ static void
 h_pqx_html_handler(const char *project, struct component *components,
 		   int tlit, const char *xlat)
 {
-  char *xmd = or_find_pqx_file(project, 
+  char *div = or_find_pqx_file(project, 
 			       components[0].replace 
 			       ? components[0].replace 
-			       : components[0].text, "xmd");
+			       : components[0].text, 
+			       (!strcmp(xlat, "score") ? ".sxh" : "html"));
   const char *line = NULL, *frag = NULL;
+  struct content_opts *cop = NULL;
   
   if (query_string && *query_string)
     {
@@ -132,8 +135,16 @@ h_pqx_html_handler(const char *project, struct component *components,
 	}
     }
   print_hdr();
+#if 1
+  cop = content_new_options();
+  cop->echo = 1;
+  cop->hilite_id = line;
+  cop->frag_id = frag;
+  cop->sigs = 1;
+  content(cop, div);
+#else
   if (line && frag)
-    execl("@@ORACC@@/bin/sigfixer", "sigfixer",
+    execl("/Users/stinney/orc/bin/sigfixer", "sigfixer",
 	  project,
 	  "xsltproc", 
 	  "--stringparam", "standalone", "true",
@@ -143,9 +154,9 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "line-id", line,
 	  "--stringparam", "frag-id", frag,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
   else if (line)
-    execl("@@ORACC@@/bin/sigfixer", "sigfixer",
+    execl("/Users/stinney/orc/bin/sigfixer", "sigfixer",
 	  project,
 	  "xsltproc", 
 	  "--stringparam", "standalone", "true",
@@ -154,9 +165,9 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "trans", xlat,
 	  "--stringparam", "line-id", line,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
   else
-    execl("@@ORACC@@/bin/sigfixer", "sigfixer",
+    execl("/Users/stinney/orc/bin/sigfixer", "sigfixer",
 	  project,
 	  "xsltproc", 
 	  "--stringparam", "standalone", "true",
@@ -164,7 +175,8 @@ h_pqx_html_handler(const char *project, struct component *components,
 	  "--stringparam", "transonly", tlit ? "false" : "true",
 	  "--stringparam", "trans", xlat,
 	  pqx_html,
-	  xmd, NULL);
+	  div, NULL);
+#endif
   do404();
 }
 
@@ -184,15 +196,31 @@ h_pqx_html_pager(const char *project, struct component *components)
 {
   /* line_id/frag_id are not used yet */
   const char *line_id = NULL, *frag_id = NULL, *mode = NULL;
-  if (!line_id)
-    line_id = "none";
+
+  if (query_string)
+    line_id = query_string;
+  else
+    {
+      if (!line_id)
+	line_id = "none";
+    }
   if (!frag_id)
     frag_id = "none";
   if (have_component[C_UI])
     mode = have_component[C_UI]->text;
   else
     mode = "full";
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx",
+#if 1
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx",
+	cgi_arg("project", project),
+	cgi_arg("adhoc", 
+		components[0].replace ? components[0].replace : components[0].text),
+	cgi_arg("line-id", line_id),
+	cgi_arg("frag-id", frag_id),
+	cgi_arg("mode", mode),
+	NULL);
+#else
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx",
 	"-p", cgi_arg("project", project),
 	"-p", cgi_arg("adhoc", 
 		      components[0].replace ? components[0].replace : components[0].text),
@@ -200,6 +228,7 @@ h_pqx_html_pager(const char *project, struct component *components)
 	"-p", cgi_arg("frag-id", frag_id),
 	"-p", cgi_arg("mode", mode),
 	NULL);
+#endif
 }
 
 void
@@ -291,7 +320,7 @@ h_pqx_score_html(const char *project, struct component *components)
 			  /* OK, we have a valid score block ID */
 			  /* do we want frag or hilited block? */
 			  print_hdr();
-			  execl("@@ORACC@@/bin/xfrag", "xfrag", 
+			  execl("/Users/stinney/orc/bin/xfrag", "xfrag", 
 				"-hs", "-p", project,
 				tmp, query_string, NULL);
 			}
@@ -317,6 +346,25 @@ h_pqx_score_html(const char *project, struct component *components)
 	{
 	  h_pqx_html_handler(project, components, 1, "score");	  
 	}
+      free(tmp);
+      do404();
+    }
+}
+
+void
+h_pqx_sources(const char *project, struct component *components)
+{
+  const char *text = components[0].text;
+  char *tmp = or_find_pqx_file(project, 
+			       components[0].replace 
+			       ? components[0].replace 
+			       : components[0].text, "xtl");
+  if (!access(tmp, R_OK))
+    {
+      list(tmp);
+    }
+  else
+    {
       free(tmp);
       do404();
     }
@@ -414,7 +462,7 @@ h_pqx_view(const char *project, struct component *components)
 	      "--stringparam", "project", project,
 	      "--stringparam", "pqx", components[0].text,
 	      script_xsl,
-	      "@@ORACC@@/lib/data/empty.xml", NULL);
+	      "/Users/stinney/orc/lib/data/empty.xml", NULL);
     }
   else
     fprintf(stderr, "%s : no such script\n", script_xsl);
@@ -433,7 +481,7 @@ or_image(const char *project, const char *pqx, const char *type)
 {
   const char *subtype = (query_string ? query_string : "-");
   execl("/usr/bin/perl", "perl", 
-	"@@ORACC@@/bin/htmlimage.plx",
+	"/Users/stinney/orc/bin/htmlimage.plx",
 	"-xmd", or_find_pqx_file("cdli",pqx, "xmd"), 
 	"-type", type,
 	"-subtype", subtype,

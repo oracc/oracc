@@ -24,22 +24,6 @@ aclocal.m4
 autom4te.cache/
 compile
 c.log
-c/bin/despatcher/#Makefile.am#
-c/bin/despatcher/.#Makefile.am
-c/bin/despatcher/ccgi/examples/dump.cgi
-c/bin/despatcher/ccgi/t/test
-c/bin/despatcher/or_builtins.c
-c/bin/despatcher/or_common.c
-c/bin/despatcher/or_gdf.c
-c/bin/despatcher/or_pqx.c
-c/bin/despatcher/or_response.c
-c/bin/despatcher/or_stable_uris.c
-c/bin/despatcher/oracc-resolver
-c/bin/despatcher/oracc-resolver.c
-c/bin/despatcher/oraccpager-debug.log
-c/bin/despatcher/p3.c
-c/bin/despatcher/pqx_map.c
-c/bin/despatcher/tests/PQX-pager.log
 c/bin/lemmer/.gdbinit
 c/bin/lemmer/bigrams
 c/bin/lemmer/lemmer
@@ -48,32 +32,7 @@ c/bin/lemmer/test
 c/bin/lemmer/xis
 c/bin/lemmer/xis2
 c/bin/matrix/matrix
-c/bin/oraccd/#oracc-client-async.c#
-c/bin/oraccd/#oracc-client.c#
-c/bin/oraccd/apue.h
-c/bin/oraccd/arch
-c/bin/oraccd/bits.c
-c/bin/oraccd/cli.c
-c/bin/oraccd/lib.c
-c/bin/oraccd/lockfile.c
-c/bin/oraccd/messaging.c
-c/bin/oraccd/mif.c
-c/bin/oraccd/old-daemon.c
-c/bin/oraccd/oracc-client
-c/bin/oraccd/oracc-client.c.BAK
-c/bin/oraccd/oracc-xmlrpc-cgi
-c/bin/oraccd/oraccd
-c/bin/oraccd/paper.pdf
-c/bin/oraccd/x.b64
-c/bin/oraccnet/client/oracc-build-client.sh
-c/bin/oraccnet/client/oracc-client
-c/bin/oraccnet/httpdo/oracc-httpdo
-c/bin/oraccnet/lib/m_build_server.c
-c/bin/oraccnet/lib/m_ox_server.c
-c/bin/oraccnet/lib/varoracc.c
-c/bin/oraccnet/server/oracc-server
-c/bin/oraccnet/xmlrpc/oracc-build-server.sh
-c/bin/oraccnet/xmlrpc/oracc-xmlrpc
+c/bin/server/oracc-server
 c/bin/pg/pd
 c/bin/pg/pd.c
 c/bin/pg/pg
@@ -474,23 +433,19 @@ oracc-hyperestraier/nohup.out
 oraccenv.sh
 stamp-h1
 
-c/bin/oraccnet/xmlrpc/oracc-server-environment.sh
-
-c/bin/oraccnet/xmlrpc/oracc-server-project-unpack.sh
-
 c/bin/oraccnet/client/oracc-client-pack-project.sh
 
-c/bin/oraccnet/server/oracc-server.c
+c/bin/server/oracc-server.c
 
 misc/p3/p3-project.xsl
 
-c/bin/oraccnet/server/p3.c
+c/bin/server/p3.c
 
-c/bin/oraccnet/server/or_stable_uris.c
+c/bin/server/or_stable_uris.c
 
-c/bin/oraccnet/server/or_response.c
+c/bin/server/or_response.c
 
-c/bin/oraccnet/server/or_pqx.c
+c/bin/server/or_pqx.c
 
 c/bin/oraccnet/xmlrpc/oracc-xmlrpc.c
 
@@ -512,17 +467,17 @@ c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh
 
 c/bin/oraccnet/xmlrpc/oracc-server-web-pack.sh
 
-c/bin/oraccnet/server/or_common.c
+c/bin/server/or_common.c
 
-c/bin/oraccnet/server/or_common.c
+c/bin/server/or_common.c
 
-c/bin/oraccnet/server/or_builtins.c
+c/bin/server/or_builtins.c
 
-c/bin/oraccnet/server/or_builtins.c
+c/bin/server/or_builtins.c
 
 misc/admin/sync-runtimes.plx
 
-c/bin/oraccnet/server/content
+c/bin/server/content
 
 misc/sl/slse
 
@@ -590,11 +545,11 @@ c/bin/util/unittable
 
 c/lib/oracc/fname.c
 
-c/bin/oraccnet/server/builtins.c
+c/bin/server/builtins.c
 
 misc/sl/slse-slave.plx
 
-c/bin/oraccnet/server/sl.c
+c/bin/server/sl.c
 
 c/bin/se/setxtx/signmap.c
 

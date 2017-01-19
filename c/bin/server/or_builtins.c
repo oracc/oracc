@@ -8,18 +8,22 @@
 
 static void as_handler(const char *session);
 static void atf(void);
+static void atftemplate(void);
+static void voltemplate(void);
 static void datestamp(void);
 static void itemmain(const char *session, const char *list);
 static void itemside(const char *session, const char *list);
 static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
+static void runtime(void);
 static void xforms_handler(void);
 static char *xml_read_sans_content_length(size_t *lenp);
 static int xml_content(const char *ct);
 static char *xml_docelem(const char *xml);
 static void xml_handler(char *xml, size_t len);
-static char *xml_value(const char *xml, const char *tag);
+
+/* static char *xml_value(const char *xml, const char *tag); */
 
 typedef void(builtin)(const char *,const char *);
 builtin *builtins_handlers[] =
@@ -50,20 +54,35 @@ or_builtins(void)
 	    case B_XFORMS:
 	      xforms_handler();
 	      break;
+	    case B_OAS:
+	      p3_oas(NULL);
+	      break;
 	    case B_AS:
-	      as_handler(elements[2]);
+	      do404(); /* as_handler(elements[2]); */
 	      break;
 	    case B_ATF:
 	      atf();
 	      break;
+	    case B_ATFTMP:
+	      atftemplate();
+	      break;
+	    case B_VOLTMP:
+	      voltemplate();
+	      break;
 	    case B_RPC:
 	      rpc();
+	      break;
+	    case B_RUNTIME:
+	      runtime();
 	      break;
 	    case B_DATESTAMP:
 	      datestamp();
 	      break;
 	    case B_SIG:
 	      sig(elements[2]);
+	      break;
+	    case B_SL:
+	      sl(elements[2]); /*, elements[3]); */
 	      break;
 	    case B_XIS:
 	      xis(elements[2], elements[3]);
@@ -73,6 +92,9 @@ or_builtins(void)
 	    case B_OUTLINE:
 	    case B_RESULTS:
 	      builtins_handlers[builtinsp->type](elements[2], elements[3]);
+	      break;
+	    case B_SEARCHBAR:
+	      searchbar();
 	      break;
 	    case B_NONE:
 	      break;
@@ -102,13 +124,27 @@ or_builtins(void)
 static void
 as_handler(const char *session)
 {
-  sed_project("@@ORACC@@/www/p2/as-base.xml", session);
+  sed_project("/Users/stinney/orc/www/p2/as-base.xml", session);
 }
 
 static void
 atf(void)
 {
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/atf.plx", "atf.plx", NULL);
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/atf.plx", "atf.plx", NULL);
+  do404();
+}
+
+static void
+atftemplate(void)
+{
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/atftemplate.plx", "atftemplate.plx", NULL);
+  do404();
+}
+
+static void
+voltemplate(void)
+{
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/voltemplate.plx", "voltemplate.plx", NULL);
   do404();
 }
 
@@ -116,7 +152,7 @@ atf(void)
 void
 cuneify(void)
 {
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/cuneify.plx", NULL);
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/cuneify.plx", NULL);
   do404();
 }
 
@@ -139,7 +175,7 @@ find(const char *project, const char *phrase)
   if (project)
     setenv("ORACC_PROJECT", project, 1);
   setenv("QUERY_STRING", make_find_phrase(NULL,phrase,0), 1);
-  execl("@@ORACC@@/www/cgi-bin/estseek.cgi", "@@ORACC@@/www/cgi-bin/estseek.cgi", NULL);
+  execl("/Users/stinney/orc/www/cgi-bin/estseek", "/Users/stinney/orc/www/cgi-bin/estseek", NULL);
   do404();
 }
 
@@ -207,8 +243,16 @@ results(const char *session, const char *list)
 static void
 rpc(void)
 {
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/rpc.plx", NULL);
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/rpc.plx", NULL);
   do404();
+}
+
+static void
+runtime(void)
+{
+  print_hdr_text();
+  listdir("/Users/stinney/orc/www/runtimes");
+  exit(0);
 }
 
 /* All XForms handling from here on */
@@ -269,6 +313,10 @@ xml_handler(char *xml, size_t len)
       ||*/ !strcmp(xml_type, "search"))
     {
 #if 1
+      xml[len] = 0;
+      p3_oas(xml);
+#if 1
+#else
       char *tmpdir = p3tempdir();
       char *sfn = malloc(strlen(tmpdir) + 10);
       FILE *fp = NULL;
@@ -279,21 +327,22 @@ xml_handler(char *xml, size_t len)
 	  xml[len] = 0;
 	  fwrite(xml, 1, len, fp);
 	  fclose(fp);
-	  execl("/bin/sh", "/bin/sh", "@@ORACC@@/bin/p3-asrch.sh", tmpdir, NULL);
+	  execl("/bin/sh", "/bin/sh", "/Users/stinney/orc/bin/p3-asrch.sh", tmpdir, NULL);
 	  perror("execl failed");
 	}
       do404();
       exit(1);
+#endif
 #else
       char *session = xml_value(xml, "session");
       if (session)
 	{
 	  char *out = malloc(1 + strlen("/var/tmp/oracc/pager//.xml") +
 			     strlen(session)+strlen(xml_type));
-	  char *prg = malloc(1 + strlen("@@ORACC@@/bin/p2-.plx"));
+	  char *prg = malloc(1 + strlen("/Users/stinney/orc/bin/p2-.plx"));
 	  FILE *x = NULL;
 	  sprintf(out, "/var/tmp/oracc/pager/%s/%s.xml", session, xml_type);
-	  sprintf(prg, "@@ORACC@@/bin/p2-%s.plx", xml_type);
+	  sprintf(prg, "/Users/stinney/orc/bin/p2-%s.plx", xml_type);
 	  fprintf(stderr, "writing to %s", out);
 	  if ((x = fopen(out, "w")))
 	    {
@@ -344,6 +393,7 @@ xml_docelem(const char *xml)
     return NULL;
 }
 
+#if 0
 static char * 
 xml_value(const char *xml, const char *tag)
 {
@@ -387,6 +437,7 @@ xml_value(const char *xml, const char *tag)
       }    
     return NULL;
 }
+#endif
 
 static int
 xml_content(const char *ct)

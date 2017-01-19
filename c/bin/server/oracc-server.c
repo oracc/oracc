@@ -5,14 +5,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "resolver.h"
 
-const char *docroot = "@@ORACC@@/www";
+const char *docroot = "/Users/stinney/orc/www";
 const char *project = NULL;
 const char *query_string = NULL;
 const char *script_url = NULL;
-const char *oodroot = "@@ORACC@@/ood";
-const char *xmlroot = "@@ORACC@@/xml";
+const char *oodroot = "/Users/stinney/orc/ood";
+const char *xmlroot = "/Users/stinney/orc/xml";
 
 const char **elements;
 int elements_used = 0;
@@ -20,6 +23,42 @@ int nelements;
 int debug = 0;
 
 static void decompose_script_url(const char *su);
+
+const char *
+osc_status(const char *session_id)
+{
+  char *status_file = NULL;
+  static char *buf = NULL;
+  int res = -1;
+  struct stat st;
+  const char *varoracc = "/Users/stinney/orc/tmp/sop";
+
+  status_file = malloc(strlen(varoracc) + 6 + strlen("//status") + 1);
+  sprintf(status_file, "%s/%s/status",varoracc, session_id);
+
+  if ((res = stat(status_file, &st)) < 0)
+    return "err_stat";
+
+  buf = malloc((size_t)st.st_size + 1);
+
+  if ((res = open(status_file, O_RDONLY)) < 0)
+    return "err_open";
+
+  if ((res = read(res, buf, st.st_size)) < 0)
+    return "err_read";
+
+  buf[st.st_size] = '\0';
+  return buf;
+}
+
+static void
+osc_ping(void)
+{
+  const char *status = osc_status(script_url);
+  print_hdr_text();
+  puts(status);
+  exit(0);
+}
 
 int
 main(int argc, char *argv[]) 
@@ -33,12 +72,29 @@ main(int argc, char *argv[])
     {
       const char *env_docroot = NULL;
       setlocale(LC_ALL, LOCALE);
-      setenv("ORACC", "@@ORACC@@", 1);
+      setenv("ORACC", "/Users/stinney/orc", 1);
+      setenv("ORACC_BUILDS", "/Users/stinney/orc", 1);
+      setenv("ORACC_HOME", "/Users/stinney/orc", 1);
+      setenv("ORACC_HOST", "localhost", 1);
+      setenv("ORACC_MODE", "single", 1);
+      setenv("ORACC_USER", "no", 1);
+
+#if 1
+      if (!strncmp(script_url,"/p/",3))
+	{
+	  script_url += 3;
+	  if (strlen(script_url) == 6)
+	    osc_ping();
+	  else
+	    do404();
+	}
+#else
       if (!strncmp(script_url,"/d/",3))
 	{
 	  script_url += 2;
 	  debug = 1;
 	}
+#endif
 
       decompose_script_url(script_url);
       query_string = getenv("QUERY_STRING");
@@ -62,7 +118,7 @@ main(int argc, char *argv[])
       
       fprintf(stderr, "oracc-resolver: passed pager and xmlrpc\n");
 
-      if (elements[0] && legacy(elements[0], strlen(elements[0])))
+      if (elements[0] && builtins(elements[0], strlen(elements[0])))
 	{
 	  char *tmp = malloc(strlen("/or")+strlen(script_url)+2);
 	  if (project)

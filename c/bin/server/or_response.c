@@ -6,8 +6,8 @@
 
 const char *mode = "full";
 const char *perlprog = NULL;
-const char *xtf2html = "@@ORACC@@/lib/scripts/g2-xtf-HTML.xsl";
-const char *stats_html = "@@ORACC@@/lib/scripts/stats-HTML.xsl";
+const char *xtf2html = "/Users/stinney/orc/lib/scripts/g2-xtf-HTML.xsl";
+const char *stats_html = "/Users/stinney/orc/lib/scripts/stats-HTML.xsl";
 
 void
 adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id)
@@ -17,7 +17,7 @@ adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id)
     line_id = "none";
   if (!frag_id)
     frag_id = "none";
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx", 
 	cgi_arg("project", project),
 	cgi_arg("adhoc", adhoc_texts),
 	cgi_arg("line-id", line_id),
@@ -70,7 +70,7 @@ corpus(void)
   if (project)
     p3(project);
   else
-    cat_html_file("@@ORACC@@/www/index.html"); /* one day this will be the full public oracc corpus */
+    cat_html_file("/Users/stinney/orc/www/index.html"); /* one day this will be the full public oracc corpus */
 }
 
 void
@@ -112,9 +112,20 @@ results(const char *session, const char *list)
 }
 
 void
+searchbar(void)
+{
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx", 
+	cgi_arg("project", project),
+	cgi_arg("uimode", "search"),
+	NULL);
+  perror("execl failed");
+  exit(1);
+}
+
+void
 sigfixer(const char *file)
 {
-  execl("@@ORACC@@/bin/sigfixer", "sigfixer", project, file, NULL);
+  execl("/Users/stinney/orc/bin/sigfixer", "sigfixer", project, file, NULL);
   perror("execl failed");
 }
 
@@ -122,7 +133,7 @@ void
 sigfixer_html(const char *file)
 {
   print_hdr();
-  execl("@@ORACC@@/bin/sigfixer", "sigfixer", project, file, NULL);
+  execl("/Users/stinney/orc/bin/sigfixer", "sigfixer", project, file, NULL);
   perror("execl failed");
 }
 
@@ -132,8 +143,8 @@ statistics(void)
   if (project)
     {
       char *data;
-      data = malloc(strlen(project) + strlen("@@ORACC@@/xml//project-data.xml") + 1);
-      sprintf(data, "@@ORACC@@/xml/%s/project-data.xml", project);
+      data = malloc(strlen(project) + strlen("/Users/stinney/orc/xml//project-data.xml") + 1);
+      sprintf(data, "/Users/stinney/orc/xml/%s/project-data.xml", project);
       print_hdr();
       execl("/usr/bin/xsltproc", "xsltproc", stats_html, data, NULL);
       do404();
@@ -146,7 +157,7 @@ void
 sig(const char *sig)
 {
   fprintf(stderr, "oracc-despatcher: project=`%s'; literal sig=`%s'\n", project, query_string);
-  execl("@@ORACC@@/bin/sigmap", "sigmap", project, query_string, NULL);
+  execl("/Users/stinney/orc/bin/sigmap", "sigmap", project, query_string, NULL);
   perror("execl failed");
 }
 
@@ -154,7 +165,7 @@ void
 tei(const char *item)
 {
   char buf[1024];
-  sprintf(buf,"@@ORACC@@/www/%s/tei/%s.xml",project,item);
+  sprintf(buf,"/Users/stinney/orc/www/%s/tei/%s.xml",project,item);
   print_hdr_xml();
   fflush(stdout);
   execl("/bin/cat", "cat", buf, NULL);
@@ -164,7 +175,7 @@ tei(const char *item)
 void
 xis(const char *xlang, const char *xid)
 {
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx", 
 	cgi_arg("project", project), 
 	cgi_arg("glos", xlang),
 	cgi_arg("gxis", xid),
@@ -173,17 +184,19 @@ xis(const char *xlang, const char *xid)
   exit(1);
 }
 
+#if 0
 static void
 redirect(char *r)
 {
   fprintf(stdout, "Status: 301 Moved Permanently\nLocation: %s\n\n", r);
   exit(0);
 }
+#endif
 
 void
 list(const char *list)
 {
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/p3-pager.plx", 
+  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/p3-pager.plx", 
 	cgi_arg("project", project),
 	cgi_arg("list", list),
 	cgi_arg("from-uri", "yes"),
