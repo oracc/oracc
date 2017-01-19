@@ -1,0 +1,155 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-build" class="optgroup">
+  <h2>build —
+	<span class="groupdoc">affects the project rebuilding process.</span></h2>
+  <fieldset class="lists">
+    <dl>
+      <dt class="option">build-approved-policy: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">list is derived from project's ATF sources</span></p>
+          <p class="choicedoc"><span class="valval">catalog</span>: <span class="valdoc">list is derived from project catalogs</span></p>
+          <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">list combined ATF sources and existing approved.lst</span></p>
+          <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+          <p class="choicedoc"><span class="valval">umbrella</span>: <span class="valdoc">list is generated from subprojects</span></p>
+        </p>
+        <pre class="help">The automatically generated file 00lib/approved.lst gives 
+all the texts which are considered part of the project. 
+You can choose how that list is made: 
+
+(a) "atf" harvests p-numbers and q-numbers from the ATF 
+files in 00atf/ ; 
+
+(b) "catalog" takes all the p- and q-numbers from the 
+project's catalogue (if it has one); 
+
+(c) "mixed" finds all the p- and q-numbers that are in 
+the ATF files and/or the catalogue (but you will have to make
+deletions manually);
+
+(d) "static" makes no changes to 00lib/approved.lst 
+(which you will have to edit by hand if you want to change it);
+
+(e) "umbrella" generates 00lib/approved.lst from all the
+approved.lst's in the project's subprojects.</pre>
+      </dd>
+      <dt class="option">build-outlined-policy: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">outline gives the texts in approved.lst</span></p>
+          <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">outline gives all texts for which project has ATF source</span></p>
+          <p class="choicedoc"><span class="valval">P</span>: <span class="valdoc">outline gives all P-id and X-id texts in approved.lst</span></p>
+          <p class="choicedoc"><span class="valval">Q</span>: <span class="valdoc">outline gives all Q-id texts in approved.lst</span></p>
+          <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">list is never changed by a program</span></p>
+        </p>
+        <pre class="help">The file 00lib/outlined.lst defines the texts in 00lib/approved.lst
+which are displayed by the pager. The options are: 
+(a) "approved" displays all the texts in approved.lst; 
+(b) "atf" displays only the texts in approved.lst which already have 
+ATF files; 
+(c) "P" displays only the texts in approved.list that have p-numbers 
+and x-numbers  (i.e., the mss or tablets); 
+(d) "Q" only the texts in approved.list that have q-numbers (i.e., 
+the composite texts); and 
+(e) "static" means that you will need to manually edit 
+00lib/outlined.lst in order to change it. 
+
+You can control whether or not the pager actually uses 
+00lib/outlined.lst with the option pager-outlined-lst on the Pager
+tab.</pre>
+      </dd>
+      <dt class="option">catalog-build-policy: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">auto</span>: <span class="valdoc">data comes from CDLI main catalogue</span></p>
+          <p class="choicedoc"><span class="valval">local</span>: <span class="valdoc">project maintains its own catalogue in CDLI format</span></p>
+          <p class="choicedoc"><span class="valval">virtual</span>: <span class="valdoc">project does not maintain its own catalogue</span></p>
+          <p class="choicedoc"><span class="valval">custom</span>: <span class="valdoc">project maintains its own catalogue in its own format</span></p>
+        </p>
+        <pre class="help"> Catalog options control the source of your project's metadata.
+
+ The default is "auto", which takes data from the CDLI main 
+catalogue as installed on Oracc. This is the recommended approach, 
+since it encourages corrections to be propagated directly back to 
+the CDLI catalogue.
+
+If you use your own version of the CDLI catalogue with the same 
+fields, then set the value to "local". 
+
+If your corpus is composed entirely of texts from (an)other project(s),
+e.g., by proxying or as an umbrella, set the value to "virtual". The
+catalogue data will then be drawn from those other projects.
+
+If, unusually, your project has a customised catalogue, set the 
+value to "custom".
+
+If you use a custom xml catalogue the catalogue configuration is 
+more complicated and is not documented here. (Briefly, it is handled
+by a file called 00lib/keydata.xml.) If you do need a custom 
+catalogue, please consult your project liaison about configuration 
+options.</pre>
+      </dd>
+      <dt class="option">build-ignore-bad-proxy: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">ignore error messages about proxy.lst</span>
+        </p>
+        <pre class="help">The default is "no".
+
+This option suppresses warnings about items in 00lib/proxy.lst
+when you rebuild the project.
+Set this option to "yes" if you can account for those warnings, 
+for instance if your proxy.lst contains texts that have not yet
+been edited.</pre>
+      </dd>
+      <dt class="option">build-tei: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">build TEI version of project</span>
+        </p>
+        <pre class="help">The default is "no".
+
+If you set it to "yes:, a TEI version of the project 
+is created. See the TEI page for more information.</pre>
+      </dd>
+      <dt class="option">build-tei-list: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">atf</span>: <span class="valdoc">all ATF files</span></p>
+          <p class="choicedoc"><span class="valval">lem</span>: <span class="valdoc">only lemmatized files</span></p>
+          <p class="choicedoc"><span class="valval">approved</span>: <span class="valdoc">all files list in approved.lst</span></p>
+        </p>
+        <pre class="help">This options sets which texts in a project are included 
+in the TEI version. There are three options:
+
+(a) "atf" includes all the project's ATF files in the TEI 
+version.
+
+(b) "lem" includes only the project's lemmatised ATF files.
+
+(c) approved.lst includes all the texts listed in the file
+00lib/approved.lst (which are set using the approved.lst
+option above).</pre>
+      </dd>
+      <dt class="option">build-tei-dist: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">build TEI distribution</span>
+        </p>
+        <pre class="help">When you select this option, every time you rebuild the 
+project a zipped version of the TEI corpus is also created,
+which can be downloaded from your project's url/downloads/teiCorpus.zip.</pre>
+      </dd>
+      <dt class="option">build-tei-trim: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">trim TEI distribution</span>
+        </p>
+        <pre class="help">By selecting this option you ensure that only the 
+glossary data relating to your TEI corpus are included in 
+the TEI distribution. This is particularly useful if you 
+have set your TEI corpus to be a subset of your project's
+corpus.</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

@@ -1,0 +1,61 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-atf" class="optgroup">
+  <h2>ATF processor —
+	<span class="groupdoc">controls ATF processor behaviour.</span></h2>
+  <fieldset class="atf">
+    <dl>
+      <dt class="option">atf-lem-extended: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">switches extended lemmatising mode on or off</span>
+        </p>
+        <pre class="help">If this option is set to "yes" then the lemmatizer operates in 
+extended mode.  This is presently only applicable to Sumerian, 
+where it involves calling the morphological analyzer.    </pre>
+      </dd>
+      <dt class="option">atf-lem-dsa: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">switches the Date System Analyser on or off</span>
+        </p>
+        <pre class="help">This option controls whether the Date System Analyser is
+run when texts are lemmatized and analysed.  The DSA is 
+functional but developmental.  The default is "no".</pre>
+      </dd>
+      <dt class="option">atf-lem-nsa: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">switches the Number System Analyser on or off</span>
+        </p>
+        <pre class="help">This option controls whether the Number System Analyser is
+run when texts are lemmatized and analysed.  The NSA is 
+functional but developmental.  The default is "no".</pre>
+      </dd>
+      <dt class="option">atf-lem-dsa: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">none</span>: <span class="valdoc"/></p>
+          <p class="choicedoc"><span class="valval">properties</span>: <span class="valdoc">adds PSA properties to lemmata</span></p>
+          <p class="choicedoc"><span class="valval">entities</span>: <span class="valdoc">adds PSA properties to lemmat and groups name elements</span></p>
+        </p>
+        <pre class="help">This option controls whether the Person System Analyser is
+run when texts are lemmatized and analysed.  The PSA is 
+functional but developmental.  The default is "no".
+
+The option "properties" includes only the first stage of PSA 
+processing, which involves adding properties to the lemmata.  
+The option "entities" also includes the second stage of processing 
+which involves grouping name elements into sequences which identify 
+an individual.</pre>
+      </dd>
+      <dt class="option">atf-cuneify-notices: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">issue warning notices about cuneify failures</span>
+        </p>
+        <pre class="help">If you tick this box, when you rebuild the project you 
+will receive warning notices about signs in your project 
+which Cuneify does not recognise.</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

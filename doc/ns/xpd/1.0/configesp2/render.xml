@@ -1,0 +1,90 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-render" class="optgroup">
+  <h2>render —
+	<span class="groupdoc">controls rendering (HTML, print).</span></h2>
+  <fieldset class="">
+    <dl>
+      <dt class="option">render-accents: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">display graphemes with index 2 and 3 as accented</span>
+        </p>
+        <pre class="help">Tick this box if you want your online corpus to display
+acute and grave accents (e.g, ú, ù) rather than subscript 
+numerals (e.g., u₂, u₃).</pre>
+      </dd>
+      <dt class="option">render-allographs: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">display allographs</span>
+        </p>
+        <pre class="help">Tick this box if you want your online corpus to display any allographs you have marked in your ATF files.</pre>
+      </dd>
+      <dt class="option">render-heth: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">display ḫ not h</span>
+        </p>
+        <pre class="help">Tick this box if you want your online corpus to display
+ḫ instead of h in transliterations.</pre>
+      </dd>
+      <dt class="option">render-inter-det-char: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">character between adjacent determinatives</span>
+        </p>
+        <pre class="help">Use this option to add one or more characters or spaces between adjacent determinatives.</pre>
+      </dd>
+      <dt class="option">render-lnum-opener: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">character before line numbers in transliterations</span>
+        </p>
+        <pre class="help">Use this option to add one or more characters before line numbers in the online 
+transliterations. The default is blank.</pre>
+      </dd>
+      <dt class="option">render-tlat-opener: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">character(s) after line numbers in transliterations</span>
+        </p>
+        <pre class="help">Use this option to add one or more characters after line numbers in the online 
+transliterations. The default is blank.</pre>
+      </dd>
+      <dt class="option">render-rulings: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">set the characters for horizontal rulings</span>
+        </p>
+        <pre class="help">Leave this box blank to display horizontal rulings as simple straight lines. Enter "char" if you want them displayed as text characters (----).</pre>
+      </dd>
+    </dl>
+  </fieldset>
+  <fieldset class="">
+    <dl>
+      <dt class="option">render-tlat-opener: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">the character before line numbers in translations</span>
+        </p>
+        <pre class="help">Use this option to add one or more characters before line numbers in the online 
+translations. The default is blank.</pre>
+      </dd>
+      <dt class="option">render-tlat-closer: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">the character after line numbers in translations</span>
+        </p>
+        <pre class="help">Use this option to add one or more characters after line numbers in the online 
+translations. The default is blank.</pre>
+      </dd>
+      <dt class="option">render-tlat-separator: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">the character between line numbers in translations</span>
+        </p>
+        <pre class="help">Use this option to change the character between ranges of line numbers
+in the online translations. The default is – (en-dash)</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>
