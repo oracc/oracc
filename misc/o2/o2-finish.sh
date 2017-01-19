@@ -1,2 +1,2 @@
 #!/bin/sh
-touch 02www/buildstamp
+touch 01bld/buildstamp

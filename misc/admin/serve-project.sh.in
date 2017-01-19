@@ -1,0 +1,51 @@
+#!/bin/sh
+. @@ORACC@@/bin/oraccenv.sh $*
+printenv | grep -i oracc
+project=$1
+if [ "$project" == "" ]; then
+    echo "serve-project.sh: must give project as argument"
+    exit 1
+fi
+if [ ! -d ${ORACC_BUILDS}/$project ]; then
+    echo "serve-project.sh: $project is not a project in Oracc dir '${ORACC_BUILDS}'"
+    exit 1
+fi
+if [ ! -f ${ORACC_BUILDS}/$project/01bld/buildstamp ]; then
+    echo "serve-project.sh: $project has no buildstamp--please run 'oracc build'"
+    exit 1
+fi
+
+projfile=`/bin/echo -n $project | tr / -`
+srvdir=${ORACC_BUILDS}/www/srv
+tarball=$srvdir/${projfile}.tar.gz
+mkdir -p $srvdir
+
+jsondir=${ORACC_BUILDS}/www/json
+
+echo "serve-project.sh: generating $tarball"
+
+cd ${ORACC_BUILDS}
+rm -f $tarball
+
+cd $project
+subs=""
+shopt -s nullglob
+for a in [a-z][a-z0-9][a-z0-9][a-z0-9]*; do
+    subs="$subs --exclude $a"
+done
+cd $ORACC_BUILDS
+
+tar --exclude 00any --exclude 00res --exclude estindex --exclude espdev \
+    $subs \
+    -zcf $tarball $project/00* {bld,pub,xml,www}/$project
+
+echo "serve-project.sh: generating JSON for $project" >&2
+mkdir -p $jsondir/$project
+cd $jsondir/$project
+cp ${ORACC_BUILDS}/$project/01bld/metadata.json .
+if [ -s ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst ]; then
+    echo "serve-project.sh: generating corpus JSON from $project/01bld/lists/xtfindex.lst" >&2
+    corpus-json.plx $project ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst >corpus.json
+fi
+
+touch ${ORACC_BUILDS}/$project/servestamp

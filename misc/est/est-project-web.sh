@@ -1,6 +1,6 @@
 #!/bin/sh
 bld=$ORACC_HOME/$project/01bld
-if [ -d $bld/est]; then
+if [ -d $bld/est ]; then
     cd $ORACC_HOME/$project/02www
     rm -fr estindex
     ls -1 $bld/est/project.est >$bld/estindex.lst
