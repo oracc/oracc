@@ -36,6 +36,7 @@ done
 cd $ORACC_BUILDS
 
 tar --exclude 00any --exclude 00res --exclude estindex --exclude espdev \
+    --exclude '*.dbi' --exclude '*.dbh' --exclude pqids.lst \
     $subs \
     -zcf $tarball $project/00* {bld,pub,xml,www}/$project
 
@@ -47,5 +48,7 @@ if [ -s ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst ]; then
     echo "serve-project.sh: generating corpus JSON from $project/01bld/lists/xtfindex.lst" >&2
     corpus-json.plx $project ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst >corpus.json
 fi
+
+chmod 0644 $tarball $jsondir/*
 
 touch ${ORACC_BUILDS}/$project/servestamp
