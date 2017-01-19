@@ -547,6 +547,10 @@ c/lib/oracc/fname.c
 
 c/bin/server/builtins.c
 
+c/bin/server/pqx_h_tab.c
+
+c/bin/server/selections.c
+
 misc/sl/slse-slave.plx
 
 c/bin/server/sl.c
