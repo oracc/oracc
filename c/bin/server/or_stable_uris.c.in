@@ -142,7 +142,7 @@ static void
 key_handler(struct component *components)
 {
   if (!strcmp(components[0].text, "sl"))
-    sl(components[1].text);
+    sl((char*)components[1].text);
   else if (!strcmp(components[0].text, "find"))
     find(project, NULL);
   else if (!strcmp(components[0].text, "corpus"))
@@ -298,8 +298,10 @@ res_is_pqx(char *e, int *count)
 	    }
 	  else if ('.' == *e)
 	    {
-	      query_string = malloc(strlen(entry) + 1);
-	      strcpy(query_string, entry);
+	      static char *tmp_query_string = NULL;
+	      tmp_query_string = malloc(strlen(entry) + 1);
+	      strcpy(tmp_query_string, (const char *)entry);
+	      query_string = (const char *)tmp_query_string;
 	      *e = '\0';
 	      break;
 	    }

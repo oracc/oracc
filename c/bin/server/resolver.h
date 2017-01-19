@@ -12,7 +12,7 @@
 enum e_builtins  { B_NONE, B_ATF, B_AS, B_DATESTAMP, B_DOC, B_FIND, 
 		   B_ITEMMAIN, B_ITEMSIDE, B_OUTLINE, B_RESULTS, B_RPC, 
 		   B_SIG, B_XFORMS, B_XIS, B_RUNTIME, B_SL, B_OAS, 
-		   B_ATFTMP, B_VOLTMP, B_SEARCHBAR
+		   B_ATFTMP, B_VOLTMP, B_SEARCHBAR , B_SRV
 };
 enum e_component { C_NONE, C_RES, C_SEL, C_VIEW, C_FORMAT, C_UI };
 enum e_resource  { R_NONE, R_PQX, R_WORD, R_ENTITY, R_LANG, R_KEY, R_LIST };
@@ -89,6 +89,7 @@ extern void cat_index_html(const char *dir);
 extern void corpus(void);
 extern void catentry(const char *item);
 extern void p3(const char *project);
+extern void p3_oas(const char *xml);
 extern void p3_asearch_results(const char *project, const char *tmpdir);
 extern void p3_exec(CGI_varlist *vl);
 extern void p3_fake_srch(const char *project, const char *idx, const char *srch);

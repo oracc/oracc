@@ -3,9 +3,9 @@ include ../../../../oracc-am-rules.txt
 subdirs=ccgi
 
 .g.c:
-	gperf -N `basename $*` -tT $< >$@
+	gperf -L ANCI-C -N `basename $*` -tT $< >$@
 
-AM_CFLAGS=-ansi -pedantic -Wall -g \
+AM_CFLAGS=-pedantic -Wall -g \
 	-I@top_srcdir@/c/lib/expat/xmlparse
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic -ansi

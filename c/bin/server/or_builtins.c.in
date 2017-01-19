@@ -6,7 +6,7 @@
 #include <ctype128.h>
 #include "resolver.h"
 
-static void as_handler(const char *session);
+/*static void as_handler(const char *session);*/
 static void atf(void);
 static void atftemplate(void);
 static void voltemplate(void);
@@ -17,6 +17,7 @@ static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
 static void runtime(void);
+static void serve_status(void);
 static void xforms_handler(void);
 static char *xml_read_sans_content_length(size_t *lenp);
 static int xml_content(const char *ct);
@@ -82,7 +83,7 @@ or_builtins(void)
 	      sig(elements[2]);
 	      break;
 	    case B_SL:
-	      sl(elements[2]); /*, elements[3]); */
+	      sl((char*)elements[2]); /*, elements[3]); */
 	      break;
 	    case B_XIS:
 	      xis(elements[2], elements[3]);
@@ -95,6 +96,9 @@ or_builtins(void)
 	      break;
 	    case B_SEARCHBAR:
 	      searchbar();
+	      break;
+	    case B_SRV:
+	      serve_status();
 	      break;
 	    case B_NONE:
 	      break;
@@ -121,11 +125,13 @@ or_builtins(void)
   return;
 }
 
+#if 0
 static void
 as_handler(const char *session)
 {
   sed_project("@@ORACC@@/www/p2/as-base.xml", session);
 }
+#endif
 
 static void
 atf(void)
@@ -287,6 +293,16 @@ xforms_handler(void)
     }
   else
     do404();
+  exit(1);
+}
+
+static void
+serve_status(void)
+{
+  print_hdr_text();
+  execl("/bin/sh", "/bin/sh", "@@ORACC@@/bin/serve-status.sh", NULL);
+  perror("execl failed");
+  do404();
   exit(1);
 }
 
