@@ -1,4 +1,4 @@
-include ../../../../../oracc-am-rules.txt
+include ../../../../oracc-am-rules.txt
 AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libccgi.la

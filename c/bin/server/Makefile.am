@@ -1,4 +1,4 @@
-include ../../../../oracc-am-rules.txt
+include ../../../oracc-am-rules.txt
 
 subdirs=ccgi
 
