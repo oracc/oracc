@@ -79,6 +79,7 @@ c/bin/util/haslinks1
 c/bin/util/isogmt
 c/bin/util/jpegsize
 c/bin/util/linkfiles
+c/bin/util/listdir
 c/bin/util/newext
 c/bin/util/oraccd
 c/bin/util/oraccopt
@@ -324,6 +325,7 @@ misc/chi/chi-un-id.plx
 misc/chi/chimanager.plx
 misc/epsd/db-undump.plx
 misc/epsd/db-undump.plx.in
+misc/epsd/xff
 misc/esp/esp-images-info.xslt
 misc/esp/esp-live.sh
 misc/esp/esp-phase-01.xslt

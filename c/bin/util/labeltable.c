@@ -7,7 +7,7 @@
 #include <pool.h>
 #include "./warning.h"
 
-
+#undef strdup
 extern char *strdup(const char *);
 extern FILE *f_log;
 
