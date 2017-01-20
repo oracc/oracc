@@ -1,9 +1,9 @@
 #!/bin/sh
 
 ## Paths for testing serve-install.sh
-ORACC=/Users/stinney/test-serve-install
-ORACC_BUILDS=/Users/stinney/test-serve-install
-ORACC_HOST=dummy
+#ORACC=/Users/stinney/test-serve-install
+#ORACC_BUILDS=/Users/stinney/test-serve-install
+#ORACC_HOST=dummy
 
 project=$1
 buildserver=$2

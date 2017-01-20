@@ -19,7 +19,7 @@ foreach my $buildhost (@BUILD_HOSTS) {
 sub
 xsystem {
     warn "@_\n";
-    # system @_;
+    system @_;
 }
 
 1;
