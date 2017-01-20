@@ -1,0 +1,39 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-core" class="optgroup">
+  <h2>core —
+	<span class="groupdoc">required for all projects.</span></h2>
+  <fieldset class="core">
+    <dl>
+      <dt class="option">name: </dt>
+      <dd class="doco">
+        <span class="docsolo">The long human-readable name of the project, 
+e.g., electronic Pennsylvania Sumerian Dictionary</span>
+      </dd>
+      <dt class="option">abbrev: </dt>
+      <dd class="doco">
+        <span class="docsolo">The short human-readable name of the project, e.g., ePSD.</span>
+      </dd>
+      <dt class="option">logo: </dt>
+      <dd class="doco">
+        <span class="docsolo">The logo to display in the top left corner of the page</span>
+      </dd>
+      <dt class="option">blurb: </dt>
+      <dd colspan="2" class="double">
+        <p>
+          <span class="docsolo">Short description for the Featured Project panel</span>
+        </p>
+      </dd>
+      <dt class="option">image: </dt>
+      <dd class="doco">
+        <span class="docsolo">A 4:3 ratio image for the Featured Project panel</span>
+      </dd>
+      <dt class="option">alt: </dt>
+      <dd class="doco">
+        <span class="docsolo">Brief description of image for the 'alt' attribute</span>
+      </dd>
+      <dt class="option">url: </dt>
+      <dd class="doco">
+        <span class="docsolo">URL of externally hosted portal page (if any)</span>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

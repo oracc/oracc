@@ -1,0 +1,42 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-pager" class="optgroup">
+  <h2>pager —
+	<span class="groupdoc">controls pager behaviour.</span></h2>
+  <fieldset class="">
+    <dl>
+      <dt class="option">pager-back-button: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">text to display on 'Back to ...' button</span>
+        </p>
+        <pre class="help">If your project maintains its portal pages on another server or 
+another Oracc project, this option enables the  button in the top 
+of the outline pane which says, e.g., "Back to Knowledge and Power". 
+
+Simply give the text you want to appear in the value attribute of 
+this option, and also set the back-url option to the relevant URL.</pre>
+      </dd>
+      <dt class="option">pager-back-url: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">URL to visit when user clicks 'Back to ...' button</span>
+        </p>
+        <pre class="help">This is the URL to be used in the `Back to ...' link whose text is 
+set with the back-button option. It does not have to be an Oracc URL.</pre>
+      </dd>
+      <dt class="option">pager-translations: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">translation languages available in the pager</span>
+        </p>
+        <pre class="help">Use this option to list the ISO 639 language codes of 
+the translations in your project. When you rebuild the 
+project, this will generate a pull-down menu in the pager 
+of your online coprus which allows users to choose 
+between available translation languages. 
+
+Separate them with spaces (e.g., "en hu" for English and
+Hungarian).</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

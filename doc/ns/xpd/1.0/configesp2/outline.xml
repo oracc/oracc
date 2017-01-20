@@ -1,0 +1,160 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-outline" class="optgroup">
+  <h2>outline —
+	<span class="groupdoc">controls how catalogue contents and search results are sorted and outlined </span></h2>
+  <fieldset class="">
+    <dl>
+      <dt class="option">outline-default-select: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">Switches the default outline mode on and off.</span>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">outline-default-sort-fields: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</pre>
+      </dd>
+      <dt class="option">outline-default-sort-labels: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</pre>
+      </dd>
+      <dt class="option">outline-default-heading-template: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">template for formatting headings</span>
+        </p>
+        <pre class="help">The headings are the fields specified in def.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</pre>
+      </dd>
+      <dt class="option">outline-default-catalog-fields: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the fields for displaying catalogue records</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </pre>
+      </dd>
+      <dt class="option">outline-default-catalog-widths: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the field widths for displayed catalogue records</span>
+        </p>
+        <pre class="help">Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</pre>
+      </dd>
+    </dl>
+  </fieldset>
+  <fieldset class="">
+    <dl>
+      <dt class="option">outline-special-select: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">Switches the special outline mode on and off</span>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">outline-special-list-name: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">all</span>: <span class="valdoc">(not sure)</span></p>
+          <p class="choicedoc"><span class="valval">outline</span>: <span class="valdoc">(not sure)</span></p>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">outline-special-sort-fields: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the catalogue fields which the outliner uses to sort the corpus</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).  
+
+Do not include the field 'designation' here, as it is appended
+automatically as the final sort field within each block.</pre>
+      </dd>
+      <dt class="option">outline-special-sort-labels: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the catalogue labels which the outliner uses to sort the corpus</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue human-readable names to use for 
+the fields in the sorter.
+
+You may *not* use '|' here; note that these names are only used 
+for building the outline-sorter drop-down selector.  It is 
+important to choose brief, mnemonic labels for the fields to keep 
+the drop-down menu manageable and transparent.</pre>
+      </dd>
+      <dt class="option">outline-special-heading-template: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">template for formatting headings</span>
+        </p>
+        <pre class="help">The headings are the fields specified in spe.sort.fields option, in the same 
+order.
+
+Each field is referenced by a decimal number starting from 1, 
+i.e., 1 = the first field; 2 = the second field, 3 = the third 
+field.  Around and  between the numbers is spacing and 
+punctuation which is used in the header. 
+
+By way of example, the default format is equivalent to `1/2/3'.  
+An alternative format might be given as `1, 2: 3'.  There may be 
+no more han nine (9) fields in the header.</pre>
+      </dd>
+      <dt class="option">outline-special-catalog-fields: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the fields for displaying catalogue records</span>
+        </p>
+        <pre class="help">Comma-separated list of catalogue field names, which may contain 
+multiple fields separated with '|' to mark alternatives (e.g, 
+ museum_no | accession_no , provenience ).           </pre>
+      </dd>
+      <dt class="option">outline-special-catalog-widths: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">sets the field widths for displayed catalogue records</span>
+        </p>
+        <pre class="help">Comma-separated list of numbers, which are percentage widths for 
+each display catalogue field.  The sum of all the numbers should 
+be 97, as the remaining 3% is used for the catalog icon which is 
+placed at the start of each row of catalogue data.   
+
+Do not include percentage signs (e.g., "20, 30, 15, 32").</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

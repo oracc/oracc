@@ -1,0 +1,41 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-views" class="optgroup">
+  <h2>views —
+	<span class="groupdoc">adds extra views of texts in the corpus</span></h2>
+  <fieldset class="views">
+    <dl>
+      <dt class="option">views-cuneify: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">creates 'Cuneify' link to display
+text in cuneiform in a popup window.</span>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">views-proofing: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">creates 'Proofing' link to display the
+annotation of a text aligned by word
+in a popup window.</span>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">views-TEI: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">creates 'TEI' link to display TEI version
+of a text in a popup window.</span>
+        </p>
+        <pre class="help"/>
+      </dd>
+      <dt class="option">views-buy-book: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">creates a 'Buy the Book' link to the URL provided in the option.  </span>
+        </p>
+        <pre class="help">If you need  to link to more than one bookseller or publisher, 
+simply create a web page of your own in the project and link to that.</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>

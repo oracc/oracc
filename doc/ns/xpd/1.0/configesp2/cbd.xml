@@ -1,0 +1,41 @@
+<div xmlns="http://www.w3.org/1999/xhtml" id="div-cbd" class="optgroup">
+  <h2>glossary —
+	<span class="groupdoc">controls glossary building behaviour.</span></h2>
+  <fieldset class="cbd">
+    <dl>
+      <dt class="option">cbd-mode: </dt>
+      <dd class="doco">
+        <p>
+          <p class="choicedoc"><span class="valval">mixed</span>: <span class="valdoc">glossary files can be combined with harvested data</span></p>
+          <p class="choicedoc"><span class="valval">dynamic</span>: <span class="valdoc">glossaries are always generated from lemmatized sources</span></p>
+          <p class="choicedoc"><span class="valval">static</span>: <span class="valdoc">glossaries are never changed by a program</span></p>
+          <p class="choicedoc"><span class="valval">none</span>: <span class="valdoc">project does not use glossaries (portals, for example)</span></p>
+        </p>
+        <pre class="help">This option allows you to set how your project's 
+glossaries are built. There are four possibilities:
+
+(a) "mixed": existing glossary files (e.g., 00lib/akk.glo) 
+are merged with new glossary data (e.g., from 00lib/akk.new)
+when you run the harvest-merge sequence prior to rebuilding 
+a project.
+
+(b) "dynamic": your project's glossaries are created anew 
+from your lemmatised ATF files every time you rebuild your 
+project.
+
+(c) "static": the only way to change your project's 
+glossaries is to edit them by hand.
+
+(d) "none": your project has no glossaries.</pre>
+      </dd>
+      <dt class="option">cbd-periods: </dt>
+      <dd class="doco">
+        <p>
+          <span class="docsolo">display periods in glossary</span>
+        </p>
+        <pre class="help">Tick this box if you want time periods to be displayed in your  
+glossaries. Leave it unticked if you have a single-period project.</pre>
+      </dd>
+    </dl>
+  </fieldset>
+</div>
