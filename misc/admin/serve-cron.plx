@@ -11,7 +11,7 @@ foreach my $buildhost (@BUILD_HOSTS) {
 	my($project,$datestamp) = split(/\s+/,$s);
 	my $installstamp = ((stat("$ENV{'ORACC_BUILDS'}/$project/installstamp"))[9] || 0);
 	if ($datestamp > $installstamp) {
-	    xsystem "/bin/sh", "$ENV{'ORACC'}/bin/serve-project", $project, $buildhost;
+	    xsystem "/bin/sh", "$ENV{'ORACC'}/bin/serve-install.sh", $project, $buildhost;
 	}
     }
 }
