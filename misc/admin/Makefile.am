@@ -8,7 +8,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave
 	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh \
 	sync-runtimes.plx sync-update.sh oracc-index-runtime.sh proj-from-conf-func.sh proj-from-conf.sh \
 	repo-lemm.plx all-hubs.sh portal-words.sh bootstrap.sh serve-status.sh \
-	serve-install.sh serve-project.sh
+	serve-install.sh serve-project.sh serve-cron.plx
 
 #data_DATA = usermode.xml
 #
