@@ -1,0 +1,38 @@
+#!/bin/sh
+
+## Paths for testing serve-install.sh
+#ORACC=/Users/stinney/test-serve-install
+#ORACC_BUILDS=/Users/stinney/test-serve-install
+#ORACC_HOST=dummy
+
+oracc=@@ORACC@@
+oracc_builds=@@ORACC_BUILDS@@
+oracc_host=@@ORACC_HOST@@
+
+export ORACC=$oracc
+export ORACC_BUILDS=$oracc_builds
+export ORACC_HOST=$oracc_host
+export PATH=$ORACC/bin:$PATH
+
+project=$1
+buildserver=$2
+if [ "$project" == "" ]; then
+    echo "serve-install.sh: must give project name on command line"
+    exit 1
+fi
+if [ "$buildserver" == "" ]; then
+    echo "serve-install.sh: must give buildserver on command line"
+    exit 1
+fi
+
+echo "Indexing $project"
+cd $oracc_builds/$project
+$oracc/bin/o2-indexes-boot.sh
+$oracc/bin/est-project-web.sh
+cd 02www
+for a in `grep -r -l http://$buildserver *` ; do
+    perl -pi -e "s/$buildserver/$oracc_host/g" $a
+done
+touch $oracc_builds/$project/installstamp
+exit 0
+

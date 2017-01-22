@@ -3,6 +3,7 @@ use warnings; use strict;
 
 my $oracc = '@@ORACC@@';
 my $oracc_builds = '@@ORACC_BUILDS@@';
+my $oracc_host = '@@ORACC_HOST@@';
 
 sub xsystem;
 
@@ -10,15 +11,22 @@ my $dry = shift @ARGV;
 
 my @BUILD_HOSTS = qw/oracc.museum.upenn.edu/;
 
+my @need_indexing = ();
+
 foreach my $buildhost (@BUILD_HOSTS) {
-    my @servelist = `curl -s http://$buildhost/srv`; chomp @servelist;
+    my @servelist = `curl -s http://$buildhost/srv/`; chomp @servelist;
     foreach my $s (@servelist) {
 	my($project,$datestamp) = split(/\s+/,$s);
 	my $installstamp = ((stat("$oracc_builds/$project/installstamp"))[9] || 0);
 	if ($datestamp > $installstamp) {
 	    xsystem "/bin/sh", "$oracc/bin/serve-install.sh", $project, $buildhost;
+	    push @need_indexing, [ $project , $buildhost ];
 	}
     }
+}
+
+foreach my $n (@need_indexing) {
+    xsystem "/bin/sh", "$oracc/bin/serve-index.sh", $$n[0], $$n[1];
 }
 
 sub
