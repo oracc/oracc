@@ -45,6 +45,9 @@ projlist.sh: projlist.sh.in
 projsave-all.sh: projsave-all.sh.in
 	$(ORACCIFY) projsave-all.sh.in
 
+serve-cron.plx: serve-cron.plx.in
+	$(ORACCIFY) serve-cron.plx.in
+
 serve-project.sh: serve-project.sh.in
 	$(ORACCIFY) serve-project.sh.in
 

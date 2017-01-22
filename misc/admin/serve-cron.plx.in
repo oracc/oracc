@@ -1,7 +1,12 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
+my $oracc = '@@ORACC@@';
+my $oracc_builds = '@@ORACC_BUILDS@@';
+
 sub xsystem;
+
+my $dry = shift @ARGV;
 
 my @BUILD_HOSTS = qw/oracc.museum.upenn.edu/;
 
@@ -9,9 +14,9 @@ foreach my $buildhost (@BUILD_HOSTS) {
     my @servelist = `curl -s http://$buildhost/srv`; chomp @servelist;
     foreach my $s (@servelist) {
 	my($project,$datestamp) = split(/\s+/,$s);
-	my $installstamp = ((stat("$ENV{'ORACC_BUILDS'}/$project/installstamp"))[9] || 0);
+	my $installstamp = ((stat("$oracc_builds/$project/installstamp"))[9] || 0);
 	if ($datestamp > $installstamp) {
-	    xsystem "/bin/sh", "$ENV{'ORACC'}/bin/serve-install.sh", $project, $buildhost;
+	    xsystem "/bin/sh", "$oracc/bin/serve-install.sh", $project, $buildhost;
 	}
     }
 }
@@ -19,7 +24,7 @@ foreach my $buildhost (@BUILD_HOSTS) {
 sub
 xsystem {
     warn "@_\n";
-    system @_;
+    system(@_) unless $dry;
 }
 
 1;
