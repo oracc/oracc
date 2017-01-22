@@ -5,6 +5,8 @@
 #ORACC_BUILDS=/Users/stinney/test-serve-install
 #ORACC_HOST=dummy
 
+. ${ORACC}/bin/oraccenv.sh
+
 project=$1
 buildserver=$2
 if [ "$project" == "" ]; then
