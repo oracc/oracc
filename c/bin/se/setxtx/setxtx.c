@@ -71,6 +71,8 @@ int quiet = 1;
 
 const char **proxies = NULL;
 
+FILE *f_mangletab = NULL;
+
 static FILE *keysf;
 /* static void process_cdata(Uchar*); */
 static void fn_expand(void *p);
@@ -365,6 +367,8 @@ main (int argc, char **argv)
 
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
+
+  f_mangletab = create_mangle_tab(curr_project,"txt");
 
   signmap_init();
 

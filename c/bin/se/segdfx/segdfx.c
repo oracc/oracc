@@ -30,7 +30,8 @@ extern char *strdup(const char *);
 int l2 = 1;
 
 const char *textid;
-FILE *f_log;
+extern FILE *f_log;
+FILE *f_mangletab = NULL;
 
 const char *curr_project = NULL;
 static Dbi_index*dp;

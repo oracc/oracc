@@ -9,6 +9,7 @@
 
 int use_unicode = 0;
 struct sb_stemmer *stemmer = NULL;
+extern FILE *f_mangletab;
 
 FILE *
 create_mangle_tab(const char *project, const char *index)
@@ -112,6 +113,15 @@ keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct 
 
   if (manglerules&KM_STEM)
     tmp = sb_stemmer_stem(stemmer,(const sb_symbol*)tmp,strlen((const char *)tmp));
+
+#if 0
+  if (strcmp((const char*)key,(const char*)tmp))
+    fprintf(stderr, "%s => %s\n", key, tmp);
+  fprintf(stderr, "f_mangletab = %p\n", f_mangletab);
+#endif
+
+  if (f_mangletab && strcmp((const char*)key,(const char*)tmp))
+    fprintf(f_mangletab, "%s\t%s\n", key, tmp);
   
   return tmp;
 }

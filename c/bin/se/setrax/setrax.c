@@ -8,7 +8,7 @@
 #include <runexpat.h>
 #include <list.h>
 #include <fname.h>
-
+#include <unistd.h>
 #include "atflocale.h"
 
 #include "fields.h"
@@ -19,8 +19,9 @@
 
 static struct est *estp;
 
-const char *textid;
-FILE *f_log;
+extern FILE *f_log;
+FILE *f_mangletab = NULL;
+
 
 #ifndef strdup
 extern char *strdup(const char *);
@@ -40,8 +41,6 @@ extern char *strdup(const char *);
 Dbi_index *dip;
 
 int l2 = 1;
-
-FILE *mangletab;
 
 static struct vid_data *vidp;
 
@@ -147,7 +146,7 @@ trax_startElement(void *userData, const char *name, const char **atts)
 	      if (lem)
 		{
 		  grapheme((char*)lem);
-		  est_add(lem, estp);
+		  est_add((unsigned const char *)lem, estp);
 		}
 	      if (form)
 		{
@@ -155,7 +154,7 @@ trax_startElement(void *userData, const char *name, const char **atts)
 							rulestab[d_tra].ix_manglerules, 
 							NULL, 0,
 							estp);
-		  est_add(form, estp);
+		  est_add((unsigned const char *)form, estp);
 		  grapheme((char*)kmg);
 		}
 	      else
@@ -209,6 +208,8 @@ main (int argc, char **argv)
   else
     vidp = vid_init();
 
+  f_mangletab = create_mangle_tab(curr_project,"tra");
+ 
   km_use_stemmer();
   index_dir = se_dir (curr_project, curr_index);
   progress ("indexing %s ...\n", index_dir);
@@ -279,6 +280,8 @@ main (int argc, char **argv)
   est_term(estp);
 
   km_end_stemmer();
+
+  fclose(f_mangletab);
 
   ce_cfg(curr_project,curr_index,"xh:p","xtr",ce_byid,proxies);
   progress ("index files written to `%s'\n", se_dir(curr_project,curr_index));

@@ -36,6 +36,7 @@ char *pretrim_file = NULL;
 unsigned char **pretrim_lines, *pretrim_content;
 List *pretrim_args = NULL;
 Hash_table *pretrim = NULL;
+FILE *f_mangletab = NULL;
 
 extern const char *se_curr_project, *curr_index, *cbd_lang;
 

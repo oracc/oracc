@@ -29,8 +29,8 @@ extern char *strdup(const char *);
 
 int l2 = 1;
 
-const char *textid;
-FILE *f_log;
+extern FILE *f_log;
+FILE *f_mangletab = NULL;
 
 static char fnbuf[_MAX_PATH];
 static char **fnlist = NULL;
@@ -196,6 +196,8 @@ main(int argc, char * const*argv)
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
 
+  f_mangletab = create_mangle_tab(curr_project,"cat");
+  
   estp = est_init(curr_project, "cat");
 
   dp = dbi_create("cat",

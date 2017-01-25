@@ -81,6 +81,7 @@ Four_bytes curr_line;
 int debug_flag = 0, index_flag = 1;
 const char *debug_label;
 FILE *debug_f;
+FILE *f_mangletab = NULL;
 
 static int cache_elements = 16;
 
@@ -555,6 +556,8 @@ main (int argc, char **argv)
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
 
+  f_mangletab = create_mangle_tab(curr_project,"lem");
+  
   signmap_init();
   charsets_init();
 

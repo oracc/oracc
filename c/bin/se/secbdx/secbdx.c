@@ -21,7 +21,8 @@ extern char *strdup(const char *);
 #endif
 
 FILE *f_idlist;
-FILE *f_log;
+extern FILE *f_log;
+FILE *f_mangletab = NULL;
 static struct est *estp;
 
 #undef xmalloc
@@ -265,6 +266,8 @@ main(int argc, char **argv)
       sprintf(idxlang, "cbd/%s", lang);
     }
   index_dir = strdup(index_dir);
+  
+  f_mangletab = create_mangle_tab(curr_project,idxlang);
 
   progress("indexing %s ...\n", index_dir);
   indexed_mm = init_mm(sizeof (struct indexed), 256);
