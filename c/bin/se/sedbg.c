@@ -30,6 +30,8 @@ const char *return_index = NULL;
 extern struct expr_rules rulestab[];
 struct expr_rules *ret_type_rules = rulestab;
 
+static int gdf_flag = 0;
+
 enum What_to_do
 {
   WTD_FIRSTREC, 
@@ -41,7 +43,7 @@ enum What_to_do
   WTD_DUMP_DISPLAY
 };
 
-int l2 = 0;
+int l2 = 1;
 
 enum What_to_do what_to_do = WTD_INDEX;
 Boolean brief = FALSE, freq = FALSE;
@@ -61,12 +63,14 @@ static void setup_args (char *const*argv);
 
 #include "xfuncs.c"
 
+#if 0
 void
 se_vids_init(const char *index)
 {
   const char *vids = se_file (project, l2 ? "cat" : index, "vid.dat");
   vp = vid_load_data(vids);
 }
+#endif
 
 int
 main (int argc, char *const *argv)
@@ -75,6 +79,7 @@ main (int argc, char *const *argv)
   setup_args (argv);
   if (!project || !indexname)
     usage();
+  se_vids_init(indexname);
   switch (what_to_do)
     {
     case WTD_INDEX:
@@ -171,8 +176,10 @@ p8(struct location8 *l8p)
 {
   Four_bytes t = l8p->text_id;
 
+#if 0
   if ('v' == id_prefix(t))
     {
+#endif
       fprintf(stdout,
 	      "         t=%s%%%s;u=%d;w=%d",
 	      vid_get_id(vp,XidVal(t),vid_proj_xmd), /* IS THIS RIGHT? */
@@ -180,6 +187,7 @@ p8(struct location8 *l8p)
 	      l8p->unit_id, 
 	      l8p->word_id
 	      );
+#if 0
     }
   else
     {
@@ -192,6 +200,7 @@ p8(struct location8 *l8p)
 	      l8p->word_id
 	      );
     }
+#endif
 }
 
 
@@ -357,4 +366,14 @@ opts (int c, char *arg)
       break;
     }
   return 0;
+}
+
+void
+se_vids_init(const char *index)
+{
+  const char *vids = se_file (curr_project, (l2&&!gdf_flag) ? "cat" : index, "vid.dat");
+  if (!xaccess(vids, R_OK, 0))
+    vp = vid_load_data(vids);
+  else
+    vp = NULL;
 }
