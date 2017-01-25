@@ -1067,7 +1067,10 @@ make_dynacat {
 #	s,<images>.*?</images>,,;
 	s,</cat></xmd>,</record>,;
 	if ($f =~ /(?:^|:)P/) {
-	    tr/\n\r/  /; ### TEMPORARY UNTIL FXR/XMD IMPORT STRIPS THESE
+### replace \n\r with space is TEMPORARY UNTIL FXR/XMD IMPORT STRIPS THESE; 
+### deleting \000 may be permanent to trap stray UTF-16 which passes jsonlint
+### but chokes python json decoding
+	    tr/\n\r\000/  /;
 	    print P $_;
 	    ++$n_p;
 	} else {

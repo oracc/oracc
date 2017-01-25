@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+use warnings; use strict;
+
+my $oracc = '@@ORACC@@';
+my $oracc_builds = '@@ORACC_BUILDS@@';
+my $oracc_host = '@@ORACC_HOST@@';
+
+sub xsystem;
+
+my $dashline = "--------------------------------------------------------------";
+my $dry = shift @ARGV;
+
+my @BUILD_HOSTS = qw/oracc.museum.upenn.edu/;
+
+my @need_indexing = ();
+
+sc_log($dashline);
+sc_log("Cron job serve-cron started at ", scalar localtime());
+
+foreach my $buildhost (@BUILD_HOSTS) {
+    my @servelist = `curl -s http://$buildhost/srv/`; chomp @servelist;
+
+    my $msg = sprintf("%d entries retrieved from build server $buildhost", $#servelist+1);
+    sc_log($msg);
+
+    foreach my $s (@servelist) {
+	my($project,$datestamp) = split(/\s+/,$s);
+	my $installstamp = ((stat("$oracc_builds/$project/installstamp"))[9] || 0);
+	if ($datestamp > $installstamp) {
+	    sc_log("$project needs updating (built $datestamp, installed $installstamp)");
+	    xsystem "/bin/sh", "$oracc/bin/serve-install.sh", $project, $buildhost;
+	    push @need_indexing, [ $project , $buildhost ];
+	} else {
+#	    sc_log("$project is up-to-date (built $datestamp, installed $installstamp)");
+	}
+    }
+}
+
+foreach my $n (@need_indexing) {
+    xsystem "/bin/sh", "$oracc/bin/serve-index.sh", $$n[0], $$n[1];
+}
+
+sc_log("Updates completed ", scalar localtime());
+sc_log($dashline);
+
+#################################################################################
+
+sub
+sc_log {
+    warn @_, "\n";
+}
+
+sub
+xsystem {
+    system(@_) unless $dry;
+}
+
+1;

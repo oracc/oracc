@@ -43,6 +43,7 @@ my @sigs = sort keys %sigs;
 for (my $i = 0; $i <= $#sigs; ++$i) {
     print "\t\t\"$sigs[$i]\": {\n";
     my %p = parse_sig($sigs[$i]);
+    $p{'form'} = '' unless $p{'form'};
     $p{'form'} =~ s/^.*?://; #### PROBABLY HAVE TO REVISIT THIS
     if ($p{'parts'}) {
 	sig_json("\t\t\t",%p);

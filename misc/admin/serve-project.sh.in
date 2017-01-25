@@ -1,7 +1,9 @@
 #!/bin/sh
-. @@ORACC@@/bin/oraccenv.sh $*
-printenv | grep -i oracc
+. @@ORACC@@/bin/oraccenv.sh
+#printenv | grep -i oracc
+
 project=$1
+
 if [ "$project" == "" ]; then
     echo "serve-project.sh: must give project as argument"
     exit 1
@@ -20,7 +22,14 @@ srvdir=${ORACC_BUILDS}/www/srv
 tarball=$srvdir/${projfile}.tar.gz
 mkdir -p $srvdir
 
-jsondir=${ORACC_BUILDS}/www/json
+echo "serve-project.sh: generating JSON for $project" >&2
+cd ${ORACC_BUILDS}/$project/02www
+cp ${ORACC_BUILDS}/$project/01bld/metadata.json .
+if [ -s ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst ]; then
+    echo "serve-project.sh: generating corpus JSON from $project/01bld/lists/xtfindex.lst" >&2
+    corpus-json.plx $project ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst >corpus.json
+    chmod 644 corpus.json
+fi
 
 echo "serve-project.sh: generating $tarball"
 
@@ -33,22 +42,13 @@ shopt -s nullglob
 for a in [a-z][a-z0-9][a-z0-9][a-z0-9]*; do
     subs="$subs --exclude $a"
 done
-cd $ORACC_BUILDS
 
+cd ${ORACC_BUILDS}
 tar --exclude 00any --exclude 00res --exclude estindex --exclude espdev \
     --exclude '*.dbi' --exclude '*.dbh' --exclude pqids.lst \
     $subs \
     -zcf $tarball $project/00* {bld,pub,xml,www}/$project
 
-echo "serve-project.sh: generating JSON for $project" >&2
-mkdir -p $jsondir/$project
-cd $jsondir/$project
-cp ${ORACC_BUILDS}/$project/01bld/metadata.json .
-if [ -s ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst ]; then
-    echo "serve-project.sh: generating corpus JSON from $project/01bld/lists/xtfindex.lst" >&2
-    corpus-json.plx $project ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst >corpus.json
-fi
-
-chmod 0644 $tarball $jsondir/*
+chmod 0644 $tarball
 
 touch ${ORACC_BUILDS}/$project/servestamp
