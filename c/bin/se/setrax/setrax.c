@@ -153,7 +153,7 @@ trax_startElement(void *userData, const char *name, const char **atts)
 		  const unsigned char *kmg = keymangler((unsigned char *)form, 
 							rulestab[d_tra].ix_manglerules, 
 							NULL, 0,
-							estp);
+							estp, "tra1");
 		  est_add((unsigned const char *)form, estp);
 		  grapheme((char*)kmg);
 		}
@@ -185,7 +185,7 @@ trax_endElement(void *userData, const char *name)
   else if (trax_inword)
     {
       Char *g = (Char*)charData_retrieve();
-      const unsigned char *kmg = keymangler(g, rulestab[d_tra].ix_manglerules, NULL, 0, estp);
+      const unsigned char *kmg = keymangler(g, rulestab[d_tra].ix_manglerules, NULL, 0, estp, "tra2");
       grapheme((char*)kmg);
       est_add(g, estp);
       trax_inword = 0;

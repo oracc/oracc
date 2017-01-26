@@ -4,7 +4,7 @@
 # build for setrax is basically the same code base as setxtx
 
 .g.c:
-	gperf -N$* -tT $< >$@
+	gperf -L ANSI -N$* -tT $< >$@
 
 AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 	 -I@top_srcdir@/c/bin/se/setxtx \
@@ -16,7 +16,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 
 #VPATH=.:..:../setxtx
 
-AM_CFLAGS=-pedantic -ansi -Wall -g
+AM_CFLAGS=-pedantic -Wall -g
 
 bin_PROGRAMS=setrax
 

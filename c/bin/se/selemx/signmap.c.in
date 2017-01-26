@@ -70,5 +70,5 @@ void
 signmap_term(Dbi_index *dparg)
 {
   dp = dparg;
-  hash_exec2(signmap,savemap);
+  hash_exec2(signmap,(void (*)(const unsigned char *, void *))savemap);
 }

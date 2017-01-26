@@ -501,15 +501,14 @@ if ($onebigfile) {
     close(XOUT);
     if (scalar keys %valtab) {
 	my $xproject = ($project ? $project : 'cdli');
-	my $l2 = ($l2 ? '-2' : '');
 	system 'mkdir', '-p', "@@ORACC@@/pub/$project/cat";
-	if ($l2) {
-	    dump_vid("@@ORACC@@/bld/$project/cat/vid.dat");
-	}
+	dump_vid("@@ORACC@@/bld/$project/cat/vid.dat");
 	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/vid.dat", "@@ORACC@@/pub/$project/cat";
 	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/proxy-xmd.map", "@@ORACC@@/pub/$project/cat";
 	#FIXME: does this work with subprojects?
 	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
+	my $mangletab = "@@ORACC@@/pub/$project/cat/mangle.tab";
+	system "sort -u -o $mangletab $mangletab";
 #	system 'gzip', '-f9', $xmdfile;
     }
 }

@@ -22,15 +22,6 @@ srvdir=${ORACC_BUILDS}/www/srv
 tarball=$srvdir/${projfile}.tar.gz
 mkdir -p $srvdir
 
-echo "serve-project.sh: generating JSON for $project" >&2
-cd ${ORACC_BUILDS}/$project/02www
-cp ${ORACC_BUILDS}/$project/01bld/metadata.json .
-if [ -s ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst ]; then
-    echo "serve-project.sh: generating corpus JSON from $project/01bld/lists/xtfindex.lst" >&2
-    corpus-json.plx $project ${ORACC_BUILDS}/$project/01bld/lists/xtfindex.lst >corpus.json
-    chmod 644 corpus.json
-fi
-
 echo "serve-project.sh: generating $tarball"
 
 cd ${ORACC_BUILDS}

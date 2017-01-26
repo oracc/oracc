@@ -207,7 +207,7 @@ process_cdata(Uchar*cdata) {
 	  est_add(graph,estp);
 	  kmg = keymangler((unsigned char *)graph, 
 			   rulestab[d_cbd].ix_manglerules, NULL, 0,
-			   estp);
+			   estp, "cbd");
 #if 0
 	  if (strcmp(kmg,graph))
 	    fprintf(stderr,"mangled %s to %s\n",graph,kmg);
@@ -349,7 +349,7 @@ main(int argc, char **argv)
   keysf = xfopen(keys,"w");
 
   if (aliases)
-    hash_exec2(aliases,dumpalias);
+    hash_exec2(aliases,(void (*)(const unsigned char *, void *))dumpalias);
   alias_fast_term();
 
   while (NULL != (key = (dbi_each(dip))))

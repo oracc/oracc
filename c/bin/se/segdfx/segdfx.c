@@ -135,7 +135,7 @@ process_cdata(Uchar*cdata) {
 	  *s = '\0';
 	  kmg = keymangler(word, 
 			   rulestab[d_cat].ix_manglerules, NULL, 0,
-			   estp);
+			   estp, "gdf");
 	  if (strlen((char*)kmg) > 63)
 	    {
 	      char buf[64];

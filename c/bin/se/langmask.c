@@ -85,12 +85,6 @@ hash (str, len)
   return len + asso_values[(unsigned char)str[2]];
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct lm_tab *
 langmask (str, len)
      register const char *str;

@@ -18,7 +18,7 @@ create_mangle_tab(const char *project, const char *index)
 }
 
 const unsigned char *
-keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct est *estp)
+keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct est *estp, const char *prefix)
 {
   const unsigned char *tmp;
   wchar_t*wtmp = NULL;
@@ -120,8 +120,12 @@ keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct 
   fprintf(stderr, "f_mangletab = %p\n", f_mangletab);
 #endif
 
-  if (f_mangletab && strcmp((const char*)key,(const char*)tmp))
+  if (prefix && f_mangletab && strcmp((const char*)key,(const char*)tmp))
+#if 1
     fprintf(f_mangletab, "%s\t%s\n", key, tmp);
+#else
+    fprintf(f_mangletab, "%s:%s\t%s\n", prefix, key, tmp);
+#endif
   
   return tmp;
 }

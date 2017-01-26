@@ -57,15 +57,18 @@ if [ -s 01bld/lists/lemindex.lst ]; then
     sort -t: -k2 -o 01bld/lists/lemindex.lst 01bld/lists/lemindex.lst
     mkdir -p $dir/lem
     cat 01bld/lists/lemindex.lst | selemx -p $project
+    sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
 fi
 
 mkdir -p $dir/tra
 echo o2-xtf.sh: setrax ...
 cat 01bld/lists/xtfindex.lst | setrax -p $project
+sort -u -o 02pub/tra/mangle.tab 02pub/tra/mangle.tab
 
 mkdir -p $dir/txt
 echo o2-xtf.sh: setxtx ...
 cat 01bld/lists/xtfindex.lst | setxtx -p $project
+sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
 
 # must do this for EST project search
 o2-xml.sh

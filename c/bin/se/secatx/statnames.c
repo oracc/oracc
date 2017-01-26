@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -N statnames -tT statnames.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -L ANSI -N statnames -tT statnames.g  */
 /* Computed positions: -k'3,$' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -85,12 +85,6 @@ hash (str, len)
   return len + asso_values[(unsigned char)str[2]] + asso_values[(unsigned char)str[len - 1]];
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct sn_tab *
 statnames (str, len)
      register const char *str;
@@ -263,9 +257,9 @@ statnames (str, len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

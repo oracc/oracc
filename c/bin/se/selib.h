@@ -31,7 +31,7 @@ extern void ce_cfg(const char *project, const char *index,const char *ce_tag,
 		   const char **proxies);
 extern FILE *create_mangle_tab(const char *project, const char *index);
 extern const unsigned char *keymangler(const unsigned char *key, int manglerules, char *f, size_t l, 
-				       struct est *estp);
+				       struct est *estp, const char *prefix);
 extern void km_use_stemmer(void);
 extern void km_end_stemmer(void);
 int lang_mask(const char **atts);

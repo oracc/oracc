@@ -118,8 +118,10 @@ gdfprinter2(Hash_table *fields)
   static int nth = 0;
   int i;
   const char *designation = NULL;
+#if 0
   const char *icon = NULL, *icon_alt = NULL;
   const char *id = NULL;
+#endif
   extern int in_group;
 
   if (!in_group)
@@ -135,7 +137,7 @@ gdfprinter2(Hash_table *fields)
 
   fputs("<ce:data><tr xmlns=\"http://www.w3.org/1999/xhtml\">",stdout);
   /*fprintf(stdout, "<td class=\"ce-gdf-icon\"><a href=\"%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, icon, id, icon_alt);*/
-  fprintf(stdout, "<td class=\"ce-ood-id\"><a href=\"javascript:p3item('ood',%d)\">%s</a></td>", item_offset+nth, (char*)hash_find(fields, "o:id"));
+  fprintf(stdout, "<td class=\"ce-ood-id\"><a href=\"javascript:p3item('ood',%d)\">%s</a></td>", item_offset+nth, (char*)hash_find(fields, (const unsigned char *)"o:id"));
   for (i = 0; width_specs[i]; ++i)
     {
       List *tmp = field_lists[i];

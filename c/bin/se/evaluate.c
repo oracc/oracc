@@ -482,7 +482,7 @@ expr(struct token *e, int sign_name)
       free((char*)e->mangled);
       grapheme = strdup((const char *)keymangler(e->data, 
 						 KM_ATF2UTF|KM_GRAPHEME,
-						 NULL, 0, NULL));
+						 NULL, 0, NULL, "eval"));
       e->mangled = (unsigned char *)grapheme;
     }
   else

@@ -109,7 +109,8 @@ struct location24
 
 enum result_granularity 
   {
-    g_text , g_record , g_field , g_word , g_grapheme , g_not_set
+    g_text , g_record , g_field , g_word , g_grapheme , 
+    g_not_set
   };
 
 enum result_id_domain
@@ -129,7 +130,8 @@ enum se_toks
     se_top
   };
 
-enum near_levs { n_record = se_top+1, n_field , n_word , n_grapheme , n_bad_lev };
+enum near_levs { n_record = se_top+1, n_field , n_word , 
+		 n_grapheme , n_bad_lev };
 
 /* These must be ordered so that earlier items have larger granularity */
 enum datum_type { d_cat , d_cbd , d_tra , d_lem , d_l24 , d_txt , d_uni , d_NONE };

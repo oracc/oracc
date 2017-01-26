@@ -20,7 +20,7 @@ static void est_dump_one(const unsigned char *, struct est *);
 void
 est_add(const unsigned char *key, struct est *estp)
 {
-  const unsigned char *mangled_key = keymangler(key, estmangle, NULL, 0, NULL);
+  const unsigned char *mangled_key = keymangler(key, estmangle, NULL, 0, NULL,NULL);
   hash_add(estp->h, npool_copy(mangled_key, estp->p), npool_copy(key, estp->p));
 }
 
@@ -28,7 +28,7 @@ void
 est_dump(struct est *estp)
 {
   estp->fp = xfopen(estp->filename, "w");
-  hash_exec_user_key(estp->h, (hash_exec2_func*)est_dump_one, estp);
+  hash_exec_user_key(estp->h, (void (*)(const unsigned char *, void *))est_dump_one, estp);
   xfclose(estp->filename, estp->fp);
 }
 

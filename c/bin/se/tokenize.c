@@ -194,7 +194,7 @@ setup_index(struct token*curr_tok)
       if (firstindex)
 	{
 	  firstindex = 0;
-	  textresult = rules->granularity == n_record;
+	  textresult = rules->granularity == g_record;
 	  res_gran = rules->granularity;
 	  progress("se: result granularity = %s\n",
 		   textresult ? "text" : "field");
@@ -390,6 +390,21 @@ phase1(const char **tokptrs)
   return toks;
 }
 
+static enum near_levs
+gran2lev(enum result_granularity g)
+{
+  switch (g)
+    {
+    case g_text: return n_record;
+    case g_record: return n_record;
+    case g_field: return n_field;
+    case g_word: return n_word;
+    case g_grapheme: return n_grapheme;
+    case g_not_set: return n_record;
+    }
+}
+
+
 static struct near
 parse_near(const char *p, const unsigned char **s)
 {
@@ -444,7 +459,7 @@ parse_near(const char *p, const unsigned char **s)
       found_lev = 1;
     }
   if (!found_lev)
-    n.lev = rules ? rules->granularity : g_record;
+    n.lev = gran2lev(rules ? rules->granularity : g_record);
   if (s)
     *s = (const unsigned char *)p;
   return n;
@@ -468,11 +483,11 @@ mangle_wrapper(unsigned char *s, int r, char sep)
   unsigned char *mangled;
   if ('=' == sep)
     {
-      mangled = (unsigned char*)strdup((const char *)keymangler(s,KM_FOLD,"search",1, NULL));
+      mangled = (unsigned char*)strdup((const char *)keymangler(s,KM_FOLD,"search",1, NULL,"tok1"));
     }
   else
     {
-      mangled = (unsigned char*)strdup((const char *)keymangler(s,r,"search",1, NULL));
+      mangled = (unsigned char*)strdup((const char *)keymangler(s,r,"search",1, NULL,"tok2"));
     }
   return mangled;
 }
@@ -614,7 +629,7 @@ phase2(struct token*p1toks, int *ntoks)
 static struct token
 cat_toks(struct token *begin, struct token*end)
 {
-  int i, top, n;
+  int i, top, n = 0;
   char *res;
   static struct token t;
   for (i = 0, top = end - begin; i < top; ++i)

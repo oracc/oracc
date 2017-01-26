@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <unistd.h>
 #include <psd_base.h>
 #include <ctype128.h>
 #include <dbi.h>
@@ -233,7 +234,7 @@ lem_index(struct location8 *l8, const char *field, const char *toks, ...)
 		  if (debug_flag)
 		    fprintf(debug_f, "%s %s\n", debug_label, t);
 
-		  grapheme((char*)keymangler((unsigned char*)t,KM_FOLD,manglebuf,128, estp));
+		  grapheme((char*)keymangler((unsigned char*)t,KM_FOLD,manglebuf,128, estp,"lem"));
 
 		  if (punct)
 		    {
@@ -641,7 +642,7 @@ main (int argc, char **argv)
   keysf = fopen(keys,"w");
 
   if (aliases)
-    hash_exec2(aliases,dumpalias);
+    hash_exec2(aliases,(void (*)(const unsigned char *, void *))dumpalias);
   alias_fast_term ();
 
   while (NULL != (key = (dbi_each(dip))))
