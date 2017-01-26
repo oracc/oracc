@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/unistd.h>
+#include <unistd.h>
 #include <ctype128.h>
 #include <psd_base.h>
 #include <messages.h>
@@ -17,7 +18,7 @@
 
 enum wm_format cetype;
 
-const char *wm_names[4];
+const char *wm_names[5];
 
 unsigned char *buf = NULL;
 int buf_len = 0;

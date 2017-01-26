@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
 #include <psd_base.h>
 #include <options.h>
 #include <runexpat.h>

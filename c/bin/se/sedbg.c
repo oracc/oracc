@@ -176,6 +176,14 @@ p8(struct location8 *l8p)
 {
   Four_bytes t = l8p->text_id;
 
+  if ('x' == id_prefix(t))
+    {
+      char *slash = strrchr(indexname,'/');
+      fprintf(stdout, "%s.x%06d",
+	      slash+1,XidVal(l8p->text_id));
+    }
+  else
+    {
 #if 0
   if ('v' == id_prefix(t))
     {
@@ -201,6 +209,7 @@ p8(struct location8 *l8p)
 	      );
     }
 #endif
+    }
 }
 
 
@@ -259,6 +268,8 @@ do_index (List *arglist)
   iname = se_dir(project,indexname);
   dip = dbi_open (idxbuf,iname);
 
+  ret_type_rules = &rulestab[dip->h.ht_user];
+
   if (l2)
     se_vids_init(indexname);
 
@@ -273,11 +284,12 @@ do_index (List *arglist)
 	  fprintf (stdout, "%s\t%lu\n", key, (unsigned long)dip->nfound);
       else
 	{
-	  fprintf (stdout, "key %s has %lu locations\n", key, (unsigned long)dip->nfound);
+	  fprintf(stdout, "key %s has %lu locations\n", key, (unsigned long)dip->nfound);
 	  if (!brief)
 	    {
-	      if (dip->h.data_size == sizeof(struct location8))
-		{	
+	      if (dip->h.data_size == sizeof(struct location8)
+		  || 'x' == ret_type_rules->pos_id_prefix)
+		{
 		  struct location8 *buf = dip->data;
 		  size_t i;
 		  for (i = 0; i < dip->nfound; ++i)

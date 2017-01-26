@@ -25,7 +25,7 @@ id_prefix(long int id)
 	  if (idVal(id) > X_FACTOR)
 	    return 'X';
 	  else
-	return ret_type_rules->pos_id_prefix;
+	    return ret_type_rules->pos_id_prefix;
 	}
     }
 }

@@ -36,6 +36,7 @@ typedef signed char    One_byte_s;
 #define logo_mask(x)	((x)&~(G_LOGO))
 #define is_logo(x)      ((x)&G_LOGO)
 
+#define LM_NONE		0x00000000
 #define LM_MISC		0x01000000
 #define LM_SUX 		0x02000000
 #define LM_SUX_ES 	0x04000000
@@ -47,6 +48,7 @@ typedef signed char    One_byte_s;
 
 enum langmask
   {
+    lm_none    = LM_NONE,
     lm_misc    = LM_MISC,
     lm_sux     = LM_SUX,
     lm_sux_es  = LM_SUX_ES,
@@ -147,7 +149,7 @@ struct expr_rules
   int unfd;
   int atf2utf8;
 #endif
-  enum near_levs granularity;
+  enum result_granularity granularity;
   const char pos_id_prefix;
   const char neg_id_prefix;
 };

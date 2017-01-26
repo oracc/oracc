@@ -3,12 +3,12 @@ include ../../../oracc-am-rules.txt
 subdirs=ccgi
 
 .g.c:
-	gperf -L ANCI-C -N `basename $*` -tT $< >$@
+	gperf -L ANSI-C -N `basename $*` -tT $< >$@
 
 AM_CFLAGS=-pedantic -Wall -g \
 	-I@top_srcdir@/c/lib/expat/xmlparse
 
-AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic -ansi
+AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic
 
 cgibin_PROGRAMS=oracc-server
 

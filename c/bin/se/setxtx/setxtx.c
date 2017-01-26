@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <locale.h>
 #include <atflocale.h>
 #include <psd_base.h>
@@ -193,12 +194,11 @@ startElement(void *userData, const char *name, const char **atts)
 	  case 'w':
 	    {
 #if 1
-	      int i;
 	      static char qualified_id[128];
 	      pos_props(pos(atts));
 	      sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
 	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
-	      est_add((const char*)attr_by_name(atts,"form"), estp);
+	      est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
 #else
 	      if (l2)
 		{
@@ -254,7 +254,7 @@ startElement(void *userData, const char *name, const char **atts)
 	    charData_discard();
 	    data = (const char*)attr_by_name(atts,"form");
 	    grapheme(data);
-	    est_add(data, estp);
+	    est_add((const unsigned char *)data, estp);
 	    break;
 	  case 'q':
 	    do_boundary();
@@ -264,12 +264,11 @@ startElement(void *userData, const char *name, const char **atts)
     case 'n':
       if (!strcmp("n:w",name))
 	{
-	  int i;
 	  static char qualified_id[128];
 	  pos_props(pos(atts));
 	  sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
 	  wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
-	  est_add((const char*)attr_by_name(atts,"form"), estp);
+	  est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
 	  charData_discard();
 	}
     }
@@ -339,7 +338,7 @@ endElement(void *userData, const char *name)
     {
       const char *n = (const char *)charData_retrieve();
       grapheme(n);
-      est_add(n, estp);
+      est_add((const unsigned char *)n, estp);
       pending_boundary = pb_space;
     }
 }
@@ -433,7 +432,7 @@ main (int argc, char **argv)
   keysf = fopen(keys,"w");
 
   if (aliases)
-    hash_exec2(aliases,dumpalias);
+    hash_exec2(aliases,(void (*)(const unsigned char *, void *))dumpalias);
   alias_fast_term ();
 
   while (NULL != (key = (dbi_each(dip))))
@@ -481,7 +480,7 @@ add_graphemes ()
 static void
 fn_expand(void *p)
 {
-  const char *x = l2_expand(NULL, p, "xmd");
+  char *x = (char*)l2_expand(NULL, p, "xmd");
   if (!access(x, R_OK))
     {
       char *e = x + strlen(x);

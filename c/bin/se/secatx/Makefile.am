@@ -2,7 +2,7 @@
 ##
 
 .g.c:
-	gperf -N `basename $*` -tT $< >$@
+	gperf -L ANSI -N `basename $*` -tT $< >$@
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
@@ -10,7 +10,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,lng}
 
-AM_CFLAGS=-pedantic -ansi -Wall -g
+AM_CFLAGS=-pedantic -Wall -g
 
 bin_PROGRAMS=secatx
 

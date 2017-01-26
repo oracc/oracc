@@ -31,7 +31,7 @@ struct wm_range
 
 enum wm_format { KU_KWIC , KU_LINE , KU_UNIT, KU_NONE };
 
-extern const char *wm_names[4];
+extern const char *wm_names[5];
 
 #define init_wm_names()				\
   wm_names[KU_KWIC]="kwic";			\
