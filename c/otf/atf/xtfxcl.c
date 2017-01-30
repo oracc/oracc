@@ -65,7 +65,7 @@ process(struct xcl_context *xc, struct node*n)
 {
   int saved_status = status;
   int saved_exit_status = exit_status;
-  fprintf(stderr, "xtfxcl: process invoked\n");
+  /* fprintf(stderr, "xtfxcl: process invoked\n"); */
   if (*n->type == 'e')
     {
       register int i;
@@ -81,7 +81,7 @@ process(struct xcl_context *xc, struct node*n)
 					      xc);
 	  break;
 	case e_object:
-	  fprintf(stderr, "xtfxcl: object found\n");
+	  /* fprintf(stderr, "xtfxcl: object found\n"); */
 	  /* fix_context(xc,NULL); */
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_object, NULL);
 	  break;
