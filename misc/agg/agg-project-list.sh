@@ -19,6 +19,7 @@ echo '</projects>' >>all-projects.xml
 xsltproc --xinclude $xsl/agg-public-projects.xsl \
     all-projects.xml >public-projects.xml
 
+agg-projects-json.plx
 xsltproc $xsl/xpd-JSON.xsl public-projects.xml >${ORACC}/www/projectlist.json
 
 ${ORACC}/bin/agg-thumbs.sh

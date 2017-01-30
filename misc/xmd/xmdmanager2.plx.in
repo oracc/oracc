@@ -839,7 +839,7 @@ dump_xmd {
 			push @{$xmd_outputs{$curr_xmd}}, 
 			"<pleiades_coord>$coord</pleiades_coord>";
 		    }
-#		    xmd_geojson($fields, $r, $pleiades_id, $coord);
+		    xmd_geojson($fields, $r, $pleiades_id, $coord);
 		}
 	    }
 	}
@@ -1922,9 +1922,11 @@ xmd_geojson {
 	    print GJ "\t\t\t\"$key\": \"$val\"";
 	}
     }
-    print GJ "\n\t\t},";
+    print GJ "\n\t\t}";
     if ($p_id && $p_co) {
-	print GJ "\n\t\t\"geometry\": {\n\t\t\t\"type\": \"Point\",\n\t\t\t\"coordinates\": $p_co\n\t\t}\n\t}";
+	print GJ ",\n\t\t\"geometry\": {\n\t\t\t\"type\": \"Point\",\n\t\t\t\"coordinates\": $p_co\n\t\t}\n\t}";
+    } else {
+	print GJ "\n\t}";
     }
 }
 
