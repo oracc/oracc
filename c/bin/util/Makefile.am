@@ -18,7 +18,8 @@ AM_CFLAGS=-pedantic -Wall
 bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
-	xmlns xmlsplit utf8v xalias xfrag filesize listdir
+	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
+	xml2json
 
 #pqoutline pqsort  
 
@@ -80,6 +81,9 @@ xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
 	@top_srcdir@/c/lib/liboracc.la
 
 xfrag_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+xml2json_SOURCES=xml2json.c
+xml2json_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 xmlns_SOURCES=xmlns.c
 xmlns_LDADD = @top_srcdir@/c/lib/liboracc.la
