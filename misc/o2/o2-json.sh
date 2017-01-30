@@ -1,7 +1,28 @@
 #!/bin/sh
+
+project=`oraccopt`
+
 echo "o2-json.sh: generating JSON for $project"
 
-cp 01bld/metadata.json 02www
+rm -f 01bld/metadata.json
+
+xsltproc ${ORACC}/lib/scripts/config-json.xsl 02xml/config.xml >01bld/config.json
+
+(cd 01bld ;
+ echo '{' >metadata.json
+ echo '	"type": "metadata",' >>metadata.json
+ cat config.json >>metadata.json
+ for j in formats.json witnesses.json; do
+     if [ -r $j ]; then
+	 echo ',' >>metadata.json
+	 cat $j >>metadata.json
+     fi
+ done
+ echo >>metadata.json
+ echo '}' >>metadata.json
+ )
+
+cp -f 01bld/metadata.json 01bld/catalogue.json 02www
 
 if [ -s 01bld/lists/xtfindex.lst ]; then
     corpus-json.plx $project 01bld/lists/xtfindex.lst >02www/corpus.json

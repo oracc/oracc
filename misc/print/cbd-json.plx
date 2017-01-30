@@ -11,7 +11,7 @@ my $mangletab = "$ENV{'ORACC_BUILDS'}/pub/$project/$index/mangle.tab";
 
 print "{\n";
 
-print "\t\"type\": \"glossary\",\n\t\"project\":\"$project\",\n\t\"index\": \"$index\",\n";
+print "\t\"type\": \"index\",\n\t\"project\":\"$project\",\n\t\"name\": \"$index\",\n";
 
 print "\t\"keys\": [";
 
@@ -30,9 +30,13 @@ while (<>) {
     } else {
 	print "," if $ninst;
 	my($id) = (m/^\s+t=(.*?)\%/);
-	if ($index =~ /^txt|lem$/) {
+	if ($index =~ /^txt|lem|tra$/) {
 	    my($u,$w) = (m/u=(\d+);w=(\d+);/);
-	    print "\"$id.$u.$w\"";
+	    if ($index eq 'tra') {
+		print "\"${id}_project-en.$u.$w\"";
+	    } else {
+		print "\"$id.$u.$w\"";
+	    }
 	} else {
 	    print "\"$1\"";
 	}

@@ -1933,29 +1933,15 @@ xmd_geojson {
 sub
 xmd_json_begin {
 #    warn "xmd_json_begin\n" if $project eq 'rinap/rinap3';
-    open(J, '>01bld/metadata.json') || die;
-    print J "{\n\t\"type\": \"metadata\",\n\t\"project\": \"$project\",\n";
-    print J `xsltproc @@ORACC@@/lib/scripts/config-json.xsl 02xml/config.xml`;
-    print J ",\n\t\"catalogue\": {\n";
+    open(J, '>01bld/catalogue.json') || die;
+    print J "{\n\t\"type\": \"catalogue\",\n\t\"project\": \"$project\",\n\t\"members\": {\n";
 }
 
 sub
 xmd_json_end {
 #    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
-    print J "\n\t}";
-    if (-s "01bld/witnesses.json") {
-	open(W,"01bld/witnesses.json");
-	while (<W>) {
-	    print J;
-	}
-	close(W);
-    } else {
-	# do nothing; leave metadata.json unfinished to add other data
-	# if necessary
-    }
-#    print J "}\n"; # leave this open for formats object
+    print J "\n\t}\n}\n";
     close J;
-#    warn "xmd_json_end: exit\n" if $project eq 'rinap/rinap3';
 }
 
 sub
