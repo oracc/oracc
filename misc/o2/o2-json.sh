@@ -1,4 +1,5 @@
 #!/bin/sh
+shopt -s nullglob
 
 project=`oraccopt`
 
@@ -28,10 +29,18 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     corpus-json.plx $project 01bld/lists/xtfindex.lst >02www/corpus.json
 fi
 
-sedbg -p $project -i cat | index-json.plx $project cat >02www/index-cat.json
-sedbg -p $project -i txt | index-json.plx $project txt >02www/index-txt.json
-sedbg -p $project -i tra | index-json.plx $project tra >02www/index-tra.json
-sedbg -p $project -i lem | index-json.plx $project lem >02www/index-lem.json
+if [ -r 02pub/cat/cat.dbi ]; then
+    sedbg -p $project -i cat | index-json.plx $project cat >02www/index-cat.json
+fi
+if [ -r 02pub/txt/txt.dbi ]; then
+    sedbg -p $project -i txt | index-json.plx $project txt >02www/index-txt.json
+fi
+if [ -r 02pub/tra/tra.dbi ]; then
+    sedbg -p $project -i tra | index-json.plx $project tra >02www/index-tra.json
+fi
+if [ -r 02pub/lem/lem.dbi ]; then
+    sedbg -p $project -i lem | index-json.plx $project lem >02www/index-lem.json
+fi
 
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`

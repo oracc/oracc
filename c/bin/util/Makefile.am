@@ -19,9 +19,9 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
-	xml2json
+	xns
 
-#pqoutline pqsort  
+#pqoutline pqsort xml2json
 
 haslinks.c: haslinks.c.in
 	$(ORACCIFY) haslinks.c.in
@@ -82,8 +82,8 @@ xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
 
 xfrag_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-xml2json_SOURCES=xml2json.c
-xml2json_LDADD=@top_srcdir@/c/lib/liboracc.la
+xns_SOURCES=xns.c
+xns_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 xmlns_SOURCES=xmlns.c
 xmlns_LDADD = @top_srcdir@/c/lib/liboracc.la

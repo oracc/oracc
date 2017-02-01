@@ -839,7 +839,8 @@ dump_xmd {
 			push @{$xmd_outputs{$curr_xmd}}, 
 			"<pleiades_coord>$coord</pleiades_coord>";
 		    }
-		    xmd_geojson($fields, $r, $pleiades_id, $coord);
+		    xmd_geojson($fields, $r, $pleiades_id, $coord) 
+			if $pleiades_id && $coord;
 		}
 	    }
 	}
@@ -1907,7 +1908,7 @@ xmd_geojson {
 	print GJ "{\n\t\"type\": \"FeatureCollection\",\n\t\"features\": [";
     } else {
 	print GJ ", ";
-    }    
+    }
     print GJ "{\n\t\t\"type\": \"Feature\",\n\t\t\"properties\": {\n";
     my $field_first = 1;
     for (my $i = 0; $i <= $last; ++$i) {
