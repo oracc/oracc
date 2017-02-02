@@ -3,7 +3,7 @@ reads an XML document from standard input and writes a line with the
 name of each element to standard output indenting child elements by
 one tab stop more than their parent element. */
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "xmlparse.h"
@@ -28,7 +28,7 @@ nsname(const char *name)
 
 	  while ('/' != *t)
 	    *t2++ = *t++;
-	  *t2++ = ':';
+	  *t2++ = '_';
 	  strcpy(t2,nssep+1);
 	}
       else if (strstr(name, "http://www.w3.org/XML/1998/namespace"))
