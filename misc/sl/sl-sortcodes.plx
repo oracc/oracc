@@ -8,12 +8,16 @@ my %lists = ();
 my @signkeys = ();
 my %signforms = ();
 my $signlist = '00lib/ogsl.asl';
-my @signlist = `egrep '^\@\(sign\|list\|form\)' $signlist`;
+my @signlist = `egrep '^\@\(sign\|list\|form\)' $signlist`; chomp @signlist;
 my %signlists = ();
 my %formlists = ();
 my %sortkeys = ();
 
 foreach my $s (@signlist) {
+    if ($s =~ m/^\@form\s+~[a-z]+(?!\s)/) {
+	warn "sl-sortcodes.plx: malformed \@form '$s'; autofixing ...\n";
+	$s =~ s/^(\@form\s+~[a-z]+)(?![ \t])/$1 /;
+    }
     if ($s =~ /^\@sign\s+(\S+)/) {
 	$currsign = $1;
 	$currform = undef;
@@ -36,6 +40,7 @@ foreach my $s (@signlist) {
     } else {
 	my($list) = ($s =~ /\s(\S+)/);
 	my($prefix,$suffix) = ($list =~ /^([^\d]+)(\S+)\s*$/);
+	$prefix = prefix_sanity_check($prefix);
 	if ($currform) {
 	    push @{$formlists{$currform}}, $list;
 	    push @{$signforms{$currsign}}, $currform;
@@ -87,6 +92,18 @@ foreach my $sk (@sorted_sk) {
 	    unless $seen{$l};
     }
     print "\n";
+}
+
+sub
+prefix_sanity_check {
+    my $prefix = $_[0];
+    $prefix =~ tr/a-zA-Z//d;
+    if ($prefix) {
+	warn "sl-sortcodes.plx:$.: weird prefix '$_[0]'\n";
+	return "BADLIST";
+    } else {
+	$_[0];
+    }
 }
 
 sub
