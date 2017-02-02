@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = chresto-index.sh mk-cbd-index.sh cbd-json.plx
+bin_SCRIPTS = chresto-index.sh mk-cbd-index.sh cbd-json.plx index-json.plx
 css_DATA = chresto-index.css gloss.css
 scriptdata_DATA = chresto-index-TeX.xsl cbd-sort.xsl cbd-sortcodes.xsl cbd-sortkeys.xsl cbd-strip-cpd-refs.xsl chresto-index-HTML.xsl chresto-selector.xsl chresto-sort.xsl chresto-sortcodes.xsl chresto-sortkeys.xsl chresto-strip-cpd-refs.xsl index-HTML.xsl cbd-json.plx
 data_DATA = names.xml printjob.xml

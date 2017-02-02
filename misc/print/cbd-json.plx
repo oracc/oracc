@@ -1,78 +1,54 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+use warnings; use strict;
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::XML;
 
-my $ninst = 0;
-my $nkeys = 0;
-
-my ($project,$index) = @ARGV; @ARGV=();
-
-my $mangletab = "$ENV{'ORACC_BUILDS'}/pub/$project/$index/mangle.tab";
+my $cbd = shift @ARGV;
+my $iterate = 0;
+my $xcbd = load_xml($cbd);
 
 print "{\n";
-
-print "\t\"type\": \"index\",\n\t\"project\":\"$project\",\n\t\"name\": \"$index\",\n";
-
-print "\t\"keys\": [";
-
-while (<>) {
-    if (/^key\s+(\S+)\s+has\s+(\d+)/) {
-	my $k = $1;
-	my $jkey = jsonify($k);
-	if ($nkeys) {
-	    print "\n\t\t]},{\n";
-	} else {
-	    print "{\n";
-	    $nkeys = 1;
-	}
-	print "\t\t\"key\": \"$jkey\",\n\t\t\"count\": \"$2\",\n\t\t\"instances\": [\n\t\t\t";
-	$ninst = 0;
-    } else {
-	print "," if $ninst;
-	my($id) = (m/^\s+t=(.*?)\%/);
-	if ($index =~ /^txt|lem|tra$/) {
-	    my($u,$w) = (m/u=(\d+);w=(\d+);/);
-	    if ($index eq 'tra') {
-		print "\"${id}_project-en.$u.$w\"";
-	    } else {
-		print "\"$id.$u.$w\"";
-	    }
-	} else {
-	    print "\"$1\"";
-	}
-	++$ninst;
-    }
-}
-print "\n\t\t]}\n\t]" if $nkeys++;
-my $mapentries = 0;
-if (open(M, $mangletab)) {
-    print ",\n\t\"map\": {\n";
-    while (<M>) {
-	print ",\n" if $mapentries++;
-	chomp;
-	my($from,$to) = split(/\t/,$_);
-	my $jfrom = jsonify($from);
-	my $jto = jsonify($to);
-	print "\t\t\"$jfrom\": \"$jto\"";
-    }
-    print "\n\t}\n";
-} else {
-    print "\n";
-}
-
+iterate($xcbd->getDocumentElement());
 print "}\n";
 
-######################################################################
+###########################################################
 
 sub
-jsonify {
-    my $tmp = shift;
-    $tmp =~ s/"/\000"/g;
-    $tmp =~ s/\\/\000\\/g;
-    $tmp =~ tr/\000/\\/;
-    $tmp =~ tr/\x80-\x9f//d;
-    $tmp =~ tr/\t\xa0/  /;
-    $tmp;
+iterate {
+    my $n = shift;
+    my $hasChildNodes = node_start($n);
+    if ($iterate) {
+        foreach my $c ($n->childNodes()) {
+            my $isa = ref($c);
+            if ($isa eq 'XML::LibXML::Element') {
+                iterate($c);
+            } elsif ($isa eq 'XML::LibXML::Text') {
+                escape($c->data());
+            } else {
+                # skip PIs
+            }
+        }
+    } else {
+        $iterate = 1;
+    }
+    node_end($n);
+}
+
+sub
+node_start {
+    my $n = shift;
+    print '"', $n->nodeName(), "\": ";
+    my $f = $n->firstChild();
+    if (ref($f) eq 'XML::LibXML::Element') {
+	return 1;
+    } else {
+	return 0;
+    }
+}
+
+sub
+node_end {
+    my $n = shift;
 }
 
 1;
