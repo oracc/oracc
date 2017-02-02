@@ -6,6 +6,7 @@ use Data::Dumper;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
 my $project = 'ogsl';
+my $proof = '';
 
 my @sortcodes = `sl-sortcodes.plx`; chomp @sortcodes;
 my %sortcodes = ();
@@ -108,6 +109,10 @@ while (<SL>) {
 	    }
 	}
 
+	if (s/\s+(\[\s*[A-Za-z0-9].*?\])\s*$//) {
+	    $proof = xmlify($1);
+	}
+
 	if (/^\@list\s+(\S+)(?:\s+(\S+)?)?\s*$/) {
 	    form_check();
 	    my ($n,$name) = ($1,$2);
@@ -143,12 +148,13 @@ while (<SL>) {
 		    }
 		    print '/>';
 		}
+		print "<proof>$proof</proof>" if $proof;
+		$proof = '';
 	    }
 	} elsif (s/^\@v(\??)(-?)[\t\s]+//) {
 	    form_check();
 	    my $query = $1;
 	    my $dropped = $2;
-	    my $proof = '';
 	    pi_line();
 	    print "<v\n";
 	    print " uncertain=\"yes\"" if $query;
@@ -162,14 +168,17 @@ while (<SL>) {
 	    if (s/^\%(\S+)\s+//) {
 		print " xml:lang=\"$1\"";
 	    }
-	    if (s/\s+\[(.*?)\]\s*$//) {
-		$proof = xmlify($1);
-	    }
+
+#	    if (s/\s+\[(.*?)\]\s*$//) {
+#		$proof = xmlify($1);
+#	    }
+
 	    if (/^(\S+)$/) {
 		my $n = $1;
 		$n =~ tr/_/ /;
 		print " n=\"$n\">";
 		print "<proof>$proof</proof>" if $proof;
+		$proof = '';
 		$in_value = 1;
 	    } else {
 		warn "$asl:$.: syntax error in \@v\n";
