@@ -344,8 +344,8 @@
 
 <xsl:template name="format-cpd">
   <xsl:value-of select="concat(cbd:cf,'[',cbd:gw)"/>
-  <xsl:if test="cbd:sense">
-    <xsl:value-of select="concat('//',cbd:sense)"/>
+  <xsl:if test="cbd:mng">
+    <xsl:value-of select="concat('//',cbd:mng)"/>
   </xsl:if>
   <xsl:value-of select="concat(']',cbd:pos)"/>
   <xsl:if test="cbd:epos">

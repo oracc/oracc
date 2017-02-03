@@ -44,6 +44,7 @@ fi
 
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
+    cbd-json.plx ${project}:$lang >02www/gloss-$lang.json
     sort -u -o $a/mangle.tab $a/mangle.tab
     sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang >02www/index-$lang.json
 done

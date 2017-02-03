@@ -216,7 +216,7 @@ foreach my $lang (sort keys %data) {
 		$pcf = xmlify($pcf);
 		$pgw = xmlify($pgw);
 		$psense = xmlify($psense);
-		print "<cf>$pcf</cf><gw>$pgw</gw><sense>$psense</sense><pos>$ppos</pos><epos>$pepos</epos></cpd>";
+		print "<cf>$pcf</cf><gw>$pgw</gw><mng>$psense</mng><pos>$ppos</pos><epos>$pepos</epos></cpd>";
 	    }
 	    print '</compound>';
 	}

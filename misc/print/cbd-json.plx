@@ -139,6 +139,14 @@ node_start {
 	    } elsif ($val_how =~ /^[\[\{]$/) {
 		print $val_how;
 		$val_closer = closer_of($val_how);
+		if ($$howto{'text'}) {
+		    print "\n";
+		    tabs();
+		    jprint($$howto{'text'});
+		    print ": ";
+		    jprint($n->textContent());
+		    $need_comma = 1;
+		}
 	    } elsif ($val_how =~ /text()/) {
 		jprint($n->textContent());
 #		print ",\n";
@@ -347,7 +355,7 @@ glossary_howtos {
     $howto{'cbd_sig'} = { type=>"{",nam=>'type',val=>'sig',att=>'' };
     $howto{'cbd_cof-data'} = { nam=>'cof-data',val=>'{',att=>'' };
     $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
-    $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'', };
+    $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
 
     $howto{'xis_xisses'} = {
 	nam=>'instances',
