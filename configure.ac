@@ -162,6 +162,7 @@ AC_OUTPUT([Makefile
 	misc/g2plus/Makefile
 	misc/gdl/Makefile
 	misc/issl/Makefile
+	misc/json/Makefile
 	misc/l2common/Makefile
 	misc/l2phase0/Makefile
 	misc/l2phase1/Makefile

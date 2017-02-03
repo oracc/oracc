@@ -8,14 +8,6 @@
   xmlns:r="http://oracc.org/ns/xtr/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:param name="lemm-mode" select="false()"/>
-<xsl:param name="repo-mode" select="false()"/>
-<xsl:param name="tatf-mode"/>
-<xsl:key name="lemm" match="c:l" use="@ref"/>
-
-<xsl:variable name="lemmo" select="'&#x2E20;'"/> <!-- LEFT VERTICAL BAR WITH QUILL -->
-<xsl:variable name="lemmc" select="'&#x2E21;'"/> <!-- RIGHT VERTICAL BAR WITH QUILL -->
-
 <xsl:variable name="xlower" select="'abcdefgŋhḫijklmnopqrsšṣtṭuvwxyz'"/>
 <xsl:variable name="xupper" select="'ABCDEFGŊHḪIJKLMNOPQRSŠṢTṬUVWXYZ'"/>
 
@@ -167,17 +159,8 @@
 </xsl:template>
 
 <xsl:template match="n:w|g:w">
-  <xsl:if test="$tatf-mode">
-    <xsl:call-template name="tatf-wid"/>
-  </xsl:if>
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:call-template name="w-sub"/>
-  <xsl:if test="$lemm-mode">
-      <xsl:for-each select="key('lemm',@xml:id)">
-	<xsl:value-of select="$lemmo"/>
-	<xsl:value-of select="@inst"/>
-	<xsl:value-of select="$lemmc"/>
-      </xsl:for-each>
-  </xsl:if>
   <xsl:choose>
     <xsl:when test="@contrefs">
       <xsl:text>;</xsl:text>
@@ -292,6 +275,7 @@
 </xsl:template>
 
 <xsl:template match="g:nonw">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:call-template name="g-begin"/>
   <xsl:choose>
     <xsl:when test="@type='comment'">

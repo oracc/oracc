@@ -38,6 +38,7 @@ if [ -s 01bld/lists/proxy-lem.lst ]; then
     l2p1-from-xtfs.plx -proxy -new -textlist 01bld/lists/proxy-lem.lst
 fi
 
+rm -f 01bld/from-all-new.sig
 cat 01bld/from-*-new.sig >01bld/from-all-new.sig
 
 echo

@@ -17,6 +17,7 @@ SUBDIRS = \
 	g2plus \
 	gdl \
 	issl \
+	json \
 	l2common \
 	l2phase0 \
 	l2phase1 \

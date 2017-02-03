@@ -187,7 +187,7 @@ if ($make_sigtab) {
 		my $pform = $$info{'form'};
 		my $formlang = ($$info{'lang'} || $pform);
 		$formlang =~ s/:.*$//;
-		warn "g2a: formlang = $formlang; info{lang} = $$info{'lang'}; pform=$pform\n";
+#		warn "g2a: formlang = $formlang; info{lang} = $$info{'lang'}; pform=$pform\n";
 		$pform =~ s/^\%.*?://;
 		$$info{'base'} =~ s/^\%.*?:// if $$info{'base'};
 		push @sigtab, [ $sid , $$info{'sig'} ]; # , $$info{'freq'} , $$info{'instances'}

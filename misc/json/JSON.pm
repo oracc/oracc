@@ -1,47 +1,110 @@
-#!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
-use lib "$ENV{'ORACC'}/lib";
+package ORACC::JSON;
+use warnings; use strict; use utf8;
 use ORACC::XML;
 
-my @stack = ();
-my $depth = 0;
-my $iterate = 0;
-my $need_comma = 0;
+##############################################
+#
+# JSON.pm is an infrastructure for turning XML into JSON
+# intelligently.  It takes a configuration structure mapping
+# XML element names to action definitions to create names/values
+# and to structure the JSON as arrays or hashes.
+#
+# The config structure may have these members:
+#
+# nam
+#   #ignore -- no name is generated
+#   a string literal -- name is the literal
+#   an attribute, with '@' prefix -- name is value of @attr
+#   text() -- name is text content of node
+#
+# val
+#   #ignore -- no value is generated
+#   a string literal -- value is the literal
+#   an attribute, with '@' prefix -- value is value of @attr
+#   text() -- value is text content of node
+#   [ or { -- value is an array or hash
+#
+# chld
+#   [ or { -- children are wrapped in an array or hash
+#
+# att
+#   empty string -- all attributes are emitted as properties
+#   string -- space separated list of attributes
+#             -- if first char is '-', named atts are dropped
+#             -- else named atts are emitted
+#   0 -- (digit zero) -- no attributes are emitted
+#
+# text
+#   string -- the text content of the node is treated as the
+#             value of a named property named 'string'; useful
+#             if an element has attributes wrapped in an object
+#             and you want to treat the text content as if it
+#             just another attribute
+#
+#
+# Example (from cbd-JSON.plx):
+# 
+#sub
+#glossary_howtos {
+#    $howto{'cbd_entries'} = {
+#	nam=>"entries", val=>'[',
+#    };
+#    $howto{'cbd_entry'} = {
+#	type=>"{",
+#	nam=>'headword',val=>'@n',
+#	att=>'-n'
+#    };
+#    $howto{'cbd_cf'} = { nam=>'cf',val=>'text()' };
+#    $howto{'cbd_gw'} = { nam=>'gw',val=>'text()' };
+#    $howto{'cbd_pos'} = { nam=>'pos',val=>'text()' };
+#    $howto{'cbd_epos'} = { nam=>'epos',val=>'text()' };
+#    $howto{'cbd_mng'} = { nam=>'mng',val=>'text()' };
+#    $howto{'cbd_forms'} = { nam=>'forms',val=>'[' };
+#    $howto{'cbd_form'} = { type=>"{",nam=>'type',val=>'form',att=>'' };
+#    $howto{'cbd_t'} = { type=>'#ignore' };
+#    $howto{'cbd_cof-form-norm'} = { nam=>'cof-form-norm',val=>'text()',att=>'' };
+#    $howto{'cbd_norms'} = { nam=>'norms',val=>'[' };
+#    $howto{'cbd_norm'} = { type=>"{",nam=>'#ignore',val=>'#ignore',att=>'' };
+#    $howto{'cbd_n'} = { nam=>'n',val=>'text()',att=>'' };
+#    $howto{'cbd_f'} = { type=>"{",nam=>'type',val=>'normform',att=>'' };
+#    $howto{'cbd_bases'} = { nam=>'bases',val=>'[' };
+#    $howto{'cbd_base'} = { type=>"{",nam=>'type',val=>'base',att=>'' };
+#    $howto{'cbd_morphs'} = { nam=>'morphs',val=>'[' };
+#    $howto{'cbd_morph'} = { type=>"{",nam=>'type',val=>'morph',att=>'' };
+#    $howto{'cbd_conts'} = { nam=>'conts',val=>'[' };
+#    $howto{'cbd_cont'} = { type=>"{",nam=>'type',val=>'cont',att=>'' };
+#    $howto{'cbd_compound'} = { nam=>'compound',val=>'[' };
+#    $howto{'cbd_cpd'} = { type=>"{",nam=>'type',val=>'cpd',att=>'' };
+#    $howto{'cbd_senses'} = { nam=>'senses',val=>'[' };
+#    $howto{'cbd_sense'} = { type=>"{",nam=>'type',val=>'sense',att=>'' };
+#    $howto{'cbd_sigs'} = { nam=>'sigs',val=>'[' };
+#    $howto{'cbd_sig'} = { type=>"{",nam=>'type',val=>'sig',att=>'' };
+#    $howto{'cbd_cof-data'} = { nam=>'cof-data',val=>'{',att=>'' };
+#    $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
+#    $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
+#
+#    $howto{'xis_xisses'} = {
+#	nam=>'instances',
+#	val=>'{'
+#    };
+#    $howto{'xis_xis'} = {
+#	nam=>'@xml:id',
+#	val=>"[",
+#	att=>'0',
+#    };
+#    $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
+#    $howto{'xis_periods'} = { type=>'#ignore' };
+#
+#    ORACC::JSON::setHowTo(%howto);
+#}
+#
 
-my %howto = ();
+my %howtos = ();
 
-glossary_howtos();
-
-my $projcbd = shift @ARGV;
-my ($project,$lang) = split(/:/, $projcbd);
-
-my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.g2x";
-my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
-
-###########################################################
-
-print "{\n";
-print "\t\"type\": \"glossary\",\n";
-print "\t\"project\": \"$project\",\n";
-print "\t\"lang\": \"$lang\",\n";
-
-my @in = `cat $cbd_ns | $ENV{'ORACC'}/bin/xns`;
-my $cbd_nons = join('', @in);
-my $xcbd = load_xml_string($cbd_nons);
-iterate($xcbd->getDocumentElement());
-$xcbd = undef;
-$cbd_nons = undef;
-print "\n,\n"; $need_comma = 0;
-@in = `cat $xis_ns | $ENV{'ORACC'}/bin/xns`;
-my $xis_nons = join('',@in);
-my $xxis = load_xml_string($xis_nons);
-iterate($xxis->getDocumentElement());
-$xxis = undef;
-
-print "\n}\n";
-
-###########################################################
+sub
+setJSONInfo {
+    %howtos = { @_ };
+}
 
 sub
 iterate {
@@ -55,14 +118,9 @@ iterate {
 	# the input will be Oracc data, no whitespace, no mixed content
 	if ($isa eq 'XML::LibXML::Element') {
 	    if ($ecount++) {
-#		tabs();
-#		print ",\n";
 		$need_comma = 1;
 	    }
-    
-#	    ++$depth;
 	    iterate($c);
-#	    --$depth;
 	}
     }
     node_end($n);
@@ -97,7 +155,6 @@ node_start {
 	    $type_closer = closer_of($type_how);
 	    tabs();
 	    print $type_how, "\n";
-#	    ++$depth;
 	}
 	
 	my $nam = $nm;
@@ -149,13 +206,11 @@ node_start {
 		}
 	    } elsif ($val_how =~ /text()/) {
 		jprint($n->textContent());
-#		print ",\n";
 		$need_comma = 1;
 		$val_closer = '';
 	    } elsif (length $val_how) {
 		$val = $val_how;
 		jprint($val_how);
-#		print ",\n";
 		$need_comma = 1;
 		$val_closer = '';
 	    } else {
@@ -171,7 +226,6 @@ node_start {
 		if ($att_how eq '') {
 		    foreach my $a ($n->attributes) {
 			if ($need_comma) {
-			    #			    print "<166>,\n";
 			    print ",\n";
 			    $need_comma = 0;
 			}
@@ -229,10 +283,6 @@ node_start {
 	
     } else {
 	warn "cbd-json.plx: no handler for element '",$n->nodeName,"'\n";
-#	tabs();
-#	jprint($nm);
-#	print ": {\n";
-#	push @stack, '}';
     }
 }
 
@@ -286,87 +336,4 @@ tabs {
     print "\t"x$depth;
 }
 
-##############################################
-
-# nam
-#   #ignore -- no name is generated
-#   a string literal -- name is the literal
-#   an attribute, with '@' prefix -- name is value of @attr
-#   text() -- name is text content of node
-#
-# val
-#   #ignore -- no value is generated
-#   a string literal -- value is the literal
-#   an attribute, with '@' prefix -- value is value of @attr
-#   text() -- value is text content of node
-#   [ or { -- value is an array or hash
-#
-# chld
-#   [ or { -- children are wrapped in an array or hash
-#
-# att
-#   empty string -- all attributes are emitted as properties
-#   string -- space separated list of attributes
-#             -- if first char is '-', named atts are dropped
-#             -- else named atts are emitted
-#   0 -- (digit zero) -- no attributes are emitted
-#   ?? 1 -- attributes are wrapped in "props" hash
-#
-sub
-glossary_howtos {
-#    $howto{'cbd_entries'} = {
-#	type=>"{",
-#	nam=>'type',val=>'@n',
-#	att=>'project xml_lang',
-#	chld=>[ 'entries','[' ]
-    #   };
-    $howto{'cbd_entries'} = {
-	nam=>"entries", val=>'[',
-    };
-    $howto{'cbd_entry'} = {
-	type=>"{",
-	nam=>'headword',val=>'@n',
-	att=>'-n'
-    };
-    $howto{'cbd_cf'} = { nam=>'cf',val=>'text()' };
-    $howto{'cbd_gw'} = { nam=>'gw',val=>'text()' };
-    $howto{'cbd_pos'} = { nam=>'pos',val=>'text()' };
-    $howto{'cbd_epos'} = { nam=>'epos',val=>'text()' };
-    $howto{'cbd_mng'} = { nam=>'mng',val=>'text()' };
-    $howto{'cbd_forms'} = { nam=>'forms',val=>'[' };
-    $howto{'cbd_form'} = { type=>"{",nam=>'type',val=>'form',att=>'' };
-    $howto{'cbd_t'} = { type=>'#ignore' };
-    $howto{'cbd_cof-form-norm'} = { nam=>'cof-form-norm',val=>'text()',att=>'' };
-    $howto{'cbd_norms'} = { nam=>'norms',val=>'[' };
-    $howto{'cbd_norm'} = { type=>"{",nam=>'#ignore',val=>'#ignore',att=>'' };
-    $howto{'cbd_n'} = { nam=>'n',val=>'text()',att=>'' };
-    $howto{'cbd_f'} = { type=>"{",nam=>'type',val=>'normform',att=>'' };
-    $howto{'cbd_bases'} = { nam=>'bases',val=>'[' };
-    $howto{'cbd_base'} = { type=>"{",nam=>'type',val=>'base',att=>'' };
-    $howto{'cbd_morphs'} = { nam=>'morphs',val=>'[' };
-    $howto{'cbd_morph'} = { type=>"{",nam=>'type',val=>'morph',att=>'' };
-    $howto{'cbd_conts'} = { nam=>'conts',val=>'[' };
-    $howto{'cbd_cont'} = { type=>"{",nam=>'type',val=>'cont',att=>'' };
-    $howto{'cbd_compound'} = { nam=>'compound',val=>'[' };
-    $howto{'cbd_cpd'} = { type=>"{",nam=>'type',val=>'cpd',att=>'' };
-    $howto{'cbd_senses'} = { nam=>'senses',val=>'[' };
-    $howto{'cbd_sense'} = { type=>"{",nam=>'type',val=>'sense',att=>'' };
-    $howto{'cbd_sigs'} = { nam=>'sigs',val=>'[' };
-    $howto{'cbd_sig'} = { type=>"{",nam=>'type',val=>'sig',att=>'' };
-    $howto{'cbd_cof-data'} = { nam=>'cof-data',val=>'{',att=>'' };
-    $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
-    $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
-
-    $howto{'xis_xisses'} = {
-	nam=>'instances',
-	val=>'{'
-    };
-    $howto{'xis_xis'} = {
-	nam=>'@xml:id',
-	val=>"[",
-	att=>'0',
-    };
-    $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
-    $howto{'xis_periods'} = { type=>'#ignore' };
-}
 1;
