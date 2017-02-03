@@ -33,7 +33,7 @@ static void
 validate_base(const char *file, size_t line, const Uchar *p)
 {
   const Uchar *b = p;
-  if (p && !strlen(p))
+  if (p && !strlen((const char *)p))
     {
       vwarning2(file, line, "empty BASE in Sumerian lemmatization");
     }
@@ -205,7 +205,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 {
   Uchar *tmp = NULL, *err_lp = NULL,
     *disambig = NULL, *ampamp = NULL, 
-    *orig_lp = lp, field = '\0', *psu_tmp = NULL;
+    *orig_lp = lp, field = '\0', *psu_tmp = NULL, *psu_form = NULL;
   int ret = 0;
   const char *saved_phase = phase;
   int square, saved_with_textid = with_textid;
@@ -257,6 +257,25 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	}
     }
 
+  /* pass over the new PSU form and remember where it is; we don't do
+     anything with it here for now but that should probably change
+   */
+  if ('{' == *lp)
+    {
+      char * tmp = strstr((char *)lp, " += ");
+      if (tmp) {
+	char *tmp2;
+	*tmp = '\0';
+	tmp2 = strstr((char *)lp, " = ");
+	if (tmp2) {
+	  psu_form = &lp[1];
+	  *tmp2 = '\0';
+	  lp = (Uchar *)(tmp2 + 3);
+	  *tmp = ' ';
+	}
+      }      
+    }
+
   if ('[' == *lp)
     {
       /* FIXME: this needs to be more rigorous and check for CF-legal char in initial position */
@@ -270,12 +289,12 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
       f2p->gw = (unsigned char *)"X";
       if (*lp == 'n')
 	{
-	  f2p->pos = "n";
+	  f2p->pos = (Uchar*)"n";
 	  ++lp;
 	}
       else if (*lp == 'u')
 	{
-	  f2p->pos = "u";
+	  f2p->pos = (Uchar*)"u";
 	  ++lp;
 	}
       goto pos_parse;
