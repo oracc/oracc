@@ -4,20 +4,42 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 
-my $cbd = shift @ARGV;
 my @stack = ();
 my $depth = 0;
 my $iterate = 0;
 my $need_comma = 0;
-my $xcbd = load_xml($cbd);
 
 my %howto = ();
 
 glossary_howtos();
 
+my $projcbd = shift @ARGV;
+my ($project,$lang) = split(/:/, $projcbd);
+
+my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.g2x";
+my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
+
 ###########################################################
 
+print "{\n";
+print "\t\"type\": \"glossary\",\n";
+print "\t\"project\": \"$project\",\n";
+print "\t\"lang\": \"$lang\",\n";
+
+my @in = `cat $cbd_ns | $ENV{'ORACC'}/bin/xns`;
+my $cbd_nons = join('', @in);
+my $xcbd = load_xml_string($cbd_nons);
 iterate($xcbd->getDocumentElement());
+$xcbd = undef;
+$cbd_nons = undef;
+print "\n,\n"; $need_comma = 0;
+@in = `cat $xis_ns | $ENV{'ORACC'}/bin/xns`;
+my $xis_nons = join('',@in);
+my $xxis = load_xml_string($xis_nons);
+iterate($xxis->getDocumentElement());
+$xxis = undef;
+
+print "\n}\n";
 
 ###########################################################
 
@@ -33,9 +55,9 @@ iterate {
 	# the input will be Oracc data, no whitespace, no mixed content
 	if ($isa eq 'XML::LibXML::Element') {
 	    if ($ecount++) {
-		tabs();
-		print ",\n";
-		$need_comma = 0;
+#		tabs();
+#		print ",\n";
+		$need_comma = 1;
 	    }
     
 #	    ++$depth;
@@ -85,7 +107,7 @@ node_start {
 		my $aname = $1;
 		my $attr = undef;
 		if ($attr = $n->getAttribute($aname)) {
-		    $nam = $attr->value();
+		    $nam = $attr;
 		}
 	    } elsif ($nam_how eq 'text()') {
 		$nam = $n->textContent();
@@ -141,6 +163,7 @@ node_start {
 		if ($att_how eq '') {
 		    foreach my $a ($n->attributes) {
 			if ($need_comma) {
+			    #			    print "<166>,\n";
 			    print ",\n";
 			    $need_comma = 0;
 			}
@@ -179,23 +202,25 @@ node_start {
 			}
 		    }
 		}
-	    }		    
+	    }
 	}
-	$need_comma = $nattr;
-
+	$need_comma = 1 if $nattr;
+	
 	if ($$howto{'chld'}) {
 	    my $chld_how = $$howto{'chld'};
 	    my ($cname,$ctype) = @$chld_how;
+	    #	    print "<212>,\n" if $need_comma; $need_comma = 0;
 	    print ",\n" if $need_comma; $need_comma = 0;
 	    tabs();
 	    print "\"$cname\": $ctype\n";
 	    $chld_closer = closer_of($ctype);
 	}
 
-#		push @stack, "(v)$val_closer(c)$chld_closer(t)$type_closer";
-	push @stack, "$val_closer$chld_closer$type_closer";
+#		push @stack, "(c)$chld_closer(v)$val_closer(t)$type_closer";
+	push @stack, "$chld_closer$val_closer$type_closer";
 	
     } else {
+	warn "cbd-json.plx: no handler for element '",$n->nodeName,"'\n";
 #	tabs();
 #	jprint($nm);
 #	print ": {\n";
@@ -209,7 +234,7 @@ node_end {
     my $closer = pop @stack;
     if ($closer) {
 	tabs();
-#		print '<',$n->nodeName(),'>',$closer, "\n";
+	#		print '<',$n->nodeName(),'>',$closer, "\n";
 	print $closer, "\n";
     }
 }
@@ -281,11 +306,14 @@ tabs {
 #
 sub
 glossary_howtos {
+#    $howto{'cbd_entries'} = {
+#	type=>"{",
+#	nam=>'type',val=>'@n',
+#	att=>'project xml_lang',
+#	chld=>[ 'entries','[' ]
+    #   };
     $howto{'cbd_entries'} = {
-	type=>"{",
-	nam=>'type',val=>'@n',
-	att=>'project xml_lang',
-	chld=>[ 'entries','[' ]
+	nam=>"entries", val=>'[',
     };
     $howto{'cbd_entry'} = {
 	type=>"{",
@@ -303,15 +331,21 @@ glossary_howtos {
     $howto{'cbd_norm'} = { type=>"{",nam=>'#ignore',val=>'#ignore',att=>'' };
     $howto{'cbd_n'} = { nam=>'n',val=>'text()',att=>'' };
     $howto{'cbd_f'} = { type=>"{",nam=>'type',val=>'normform',att=>'' };
-    $howto{'cbd_senses'} = {
-	nam=>'senses',val=>'[',
-    };
-    $howto{'cbd_sense'} = {
-	type=>"{",
-	nam=>'type',val=>'sense',
-	att=>''
-    };
+    $howto{'cbd_senses'} = { nam=>'senses',val=>'[' };
+    $howto{'cbd_sense'} = { type=>"{",nam=>'type',val=>'sense',att=>'' };
     $howto{'cbd_sigs'} = { nam=>'sigs',val=>'[' };
     $howto{'cbd_sig'} = { type=>"{",nam=>'type',val=>'sig',att=>'' };
+
+    $howto{'xis_xisses'} = {
+	nam=>'instances',
+	val=>'{'
+    };
+    $howto{'xis_xis'} = {
+	nam=>'@xml:id',
+	val=>"[",
+	att=>'0',
+    };
+    $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
+    $howto{'xis_periods'} = { type=>'#ignore' };
 }
 1;
