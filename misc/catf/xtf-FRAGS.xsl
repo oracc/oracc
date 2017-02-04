@@ -83,6 +83,7 @@
 </xsl:template>
 
 <xsl:template match="x:object">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:value-of select="concat('@',@type)"/>
   <xslif test="@type='object'">
     <xsl:value-of select="concat(' ',@n)"/>
@@ -92,6 +93,7 @@
 </xsl:template>
 
 <xsl:template match="x:surface">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:value-of select="concat('@',@type)"/>
   <xsl:choose>
     <xsl:when test="@type='surface'">
@@ -107,6 +109,7 @@
 </xsl:template>
 
 <xsl:template match="x:column">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:if test="not(@implicit='1')">
     <xsl:value-of select="concat('@column ', @n)"/>
     <xsl:value-of select="translate(@label, 'xvi', '')"/>

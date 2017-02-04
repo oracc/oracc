@@ -1,5 +1,6 @@
 package ORACC::JSON;
 use warnings; use strict; use utf8;
+use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 
 ##############################################
@@ -42,7 +43,7 @@ use ORACC::XML;
 #             just another attribute
 #
 #
-# Example (from cbd-JSON.plx):
+# Example (from cbd-json.plx):
 # 
 #sub
 #glossary_howtos {
@@ -95,15 +96,17 @@ use ORACC::XML;
 #    $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
 #    $howto{'xis_periods'} = { type=>'#ignore' };
 #
-#    ORACC::JSON::setHowTo(%howto);
+#    ORACC::JSON::setHowTos(%howto);
 #}
 #
 
 my %howtos = ();
+my $need_comma = 0;
+my @stack = ();
 
 sub
-setJSONInfo {
-    %howtos = { @_ };
+setHowTos {
+    %howtos = @_ ;
 }
 
 sub
@@ -117,9 +120,9 @@ iterate {
 	my $isa = ref($c);
 	# the input will be Oracc data, no whitespace, no mixed content
 	if ($isa eq 'XML::LibXML::Element') {
-	    if ($ecount++) {
-		$need_comma = 1;
-	    }
+#	    if ($ecount++) {
+#		$need_comma = 1;
+#	    }
 	    iterate($c);
 	}
     }
@@ -130,7 +133,7 @@ sub
 node_start {
     my $n = shift;
     my $nm = $n->nodeName();
-    my $howto = $howto{$nm};
+    my $howto = $howtos{$nm};
 
     my $type_closer = '';
     my $val_closer = '';
@@ -146,14 +149,13 @@ node_start {
 	}
 	
 	if ($need_comma) {
-	    #	    print "<nc>,\n";
+#	    	    print "<nc>,\n";
 	    print ",\n";
 	    $need_comma = 0;
 	}
 
 	if ($type_how) {
 	    $type_closer = closer_of($type_how);
-	    tabs();
 	    print $type_how, "\n";
 	}
 	
@@ -173,7 +175,6 @@ node_start {
 	    } else {
 		$nam = $nm;
 	    }
-	    tabs();
 	    jprint($nam);
 	    print ": ";
 	}
@@ -198,7 +199,6 @@ node_start {
 		$val_closer = closer_of($val_how);
 		if ($$howto{'text'}) {
 		    print "\n";
-		    tabs();
 		    jprint($$howto{'text'});
 		    print ": ";
 		    jprint($n->textContent());
@@ -219,6 +219,16 @@ node_start {
 	    }
 	}
 
+	if ($$howto{'hook'}) {
+	    my $h = $$howto{'hook'};
+	    my $prop = &$h($n);
+	    if ($prop) {
+		print ",\n" if $need_comma;
+		print $prop;
+		$need_comma = 1;
+	    }
+	}
+	
 	my $nattr = 0;
 	if (exists $$howto{'att'}) {
 	    my $att_how = $$howto{'att'};
@@ -266,19 +276,20 @@ node_start {
 		}
 	    }
 	}
+
 	$need_comma = 1 if $nattr;
 	
 	if ($$howto{'chld'}) {
 	    my $chld_how = $$howto{'chld'};
 	    my ($cname,$ctype) = @$chld_how;
 	    #	    print "<212>,\n" if $need_comma; $need_comma = 0;
-	    print ",\n" if $need_comma; $need_comma = 0;
-	    tabs();
+	    print ",\n" if $need_comma; 
 	    print "\"$cname\": $ctype\n";
 	    $chld_closer = closer_of($ctype);
+	    $need_comma = 0;
 	}
 
-#		push @stack, "(c)$chld_closer(v)$val_closer(t)$type_closer";
+	# push @stack, "(c)$chld_closer(v)$val_closer(t)$type_closer";
 	push @stack, "$chld_closer$val_closer$type_closer";
 	
     } else {
@@ -291,7 +302,6 @@ node_end {
     my $n = shift @_;
     my $closer = pop @stack;
     if ($closer) {
-	tabs();
 	#		print '<',$n->nodeName(),'>',$closer, "\n";
 	print $closer, "\n";
     }
@@ -309,7 +319,6 @@ closer_of {
 sub
 jattr {
     my $a = shift;
-    tabs();
     jprint($a->name);
     print ": ";
     jprint($a->value);
@@ -332,8 +341,8 @@ jsonify {
 }
 
 sub
-tabs {
-    print "\t"x$depth;
+reset {
+    $need_comma = 0;
 }
 
 1;

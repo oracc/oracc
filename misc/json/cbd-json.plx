@@ -2,6 +2,7 @@
 use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
+use ORACC::XML;
 use ORACC::JSON;
 
 glossary_howtos();
@@ -20,14 +21,17 @@ print "\t\"lang\": \"$lang\",\n";
 my @in = `cat $cbd_ns | $ENV{'ORACC'}/bin/xns`;
 my $cbd_nons = join('', @in);
 my $xcbd = load_xml_string($cbd_nons);
-iterate($xcbd->getDocumentElement());
+ORACC::JSON::iterate($xcbd->getDocumentElement());
 $xcbd = undef;
 $cbd_nons = undef;
-print "\n,\n"; $need_comma = 0;
+print "\n,\n";
+
+ORACC::JSON::reset();
+
 @in = `cat $xis_ns | $ENV{'ORACC'}/bin/xns`;
 my $xis_nons = join('',@in);
 my $xxis = load_xml_string($xis_nons);
-iterate($xxis->getDocumentElement());
+ORACC::JSON::iterate($xxis->getDocumentElement());
 $xxis = undef;
 
 print "\n}\n";
@@ -38,14 +42,8 @@ sub
 glossary_howtos {
     my %howto = ();
 
-    $howto{'cbd_entries'} = {
-	nam=>"entries", val=>'[',
-    };
-    $howto{'cbd_entry'} = {
-	type=>"{",
-	nam=>'headword',val=>'@n',
-	att=>'-n'
-    };
+    $howto{'cbd_entries'} = { nam=>"entries", val=>'[' };
+    $howto{'cbd_entry'} = { type=>"{", nam=>'headword',val=>'@n', att=>'-n' };
     $howto{'cbd_cf'} = { nam=>'cf',val=>'text()' };
     $howto{'cbd_gw'} = { nam=>'gw',val=>'text()' };
     $howto{'cbd_pos'} = { nam=>'pos',val=>'text()' };
@@ -75,18 +73,11 @@ glossary_howtos {
     $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
     $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
 
-    $howto{'xis_xisses'} = {
-	nam=>'instances',
-	val=>'{'
-    };
-    $howto{'xis_xis'} = {
-	nam=>'@xml:id',
-	val=>"[",
-	att=>'0',
-    };
+    $howto{'xis_xisses'} = { nam=>'instances', val=>'{' };
+    $howto{'xis_xis'} = { nam=>'@xml:id', val=>"[", att=>'0' };
     $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
     $howto{'xis_periods'} = { type=>'#ignore' };
 
-    ORACC::JSON::setHowTo(%howto);
+    ORACC::JSON::setHowTos(%howto);
 }
 1;

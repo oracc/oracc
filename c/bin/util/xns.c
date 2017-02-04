@@ -31,9 +31,15 @@ nsname(const char *name)
 	  *t2++ = '_';
 	  strcpy(t2,nssep+1);
 	}
-      else if (strstr(name, "http://www.w3.org/XML/1998/namespace"))
+      else if (!strncmp(name, "http://www.w3.org/XML/1998/namespace",
+		       strlen("http://www.w3.org/XML/1998/namespace")))
 	{
-	  sprintf(tmp,"xml:%s",nssep+1);
+	  sprintf(tmp,"xml_%s",nssep+1);
+	}
+      else if (!strncmp(name, "http://www.w3.org/1999/xlink",
+		       strlen("http://www.w3.org/1999/xlink")))
+	{
+	  sprintf(tmp,"xlink_%s",nssep+1);
 	}
       else
 	{
