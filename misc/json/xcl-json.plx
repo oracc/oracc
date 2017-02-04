@@ -65,6 +65,8 @@ xcl_howtos {
     $howto{'xcl_c'} = { type=>"{",nam=>'node',val=>'c',att=>'-bracketing_level level',
 			chld=>['cdl','['] };
     $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',hook=>\&textfrag };
+    $howto{'xcl_ll'} = { type=>"{",nam=>'node',val=>'ll',att=>'',
+			 hook=>\&textfrag,chld=>['choices','['] };
     $howto{'xcl_l'} = { type=>"{",nam=>'node',val=>'l',att=>'',hook=>\&textfrag };
     $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'' };
     $howto{'xcl_linkbase'} = { type=>"{",nam=>'linkbase',val=>'[',att=>'' };

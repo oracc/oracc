@@ -225,9 +225,15 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="x:c|x:f">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:protocol|x:surro"/>
+
 <xsl:template name="errorx">
   <xsl:param name="msg"/>
-  <xsl:message>xtf-OATF.xsl:<xsl:value-of 
+  <xsl:message>xtf-FRAGS.xsl:<xsl:value-of 
   select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
 </xsl:template>
 

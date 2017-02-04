@@ -41,6 +41,11 @@ nsname(const char *name)
 	{
 	  sprintf(tmp,"xlink_%s",nssep+1);
 	}
+      else if (!strncmp(name, "http://www.w3.org/1999/xhtml",
+		       strlen("http://www.w3.org/1999/xhtml")))
+	{
+	  sprintf(tmp,"xhtml_%s",nssep+1);
+	}
       else
 	{
 	  fprintf(stderr, "xj: unknown namespace %s\n", name);
