@@ -12,9 +12,17 @@ print "{\n\"type\": \"corpus\",\n\"project\": \"$project\",\n\"members\": [\n";
 
 if (-r $list) {
     my @texts = `cat $list`; chomp @texts;
-    foreach (@texts) {
-	print "," if $texts++;
-	system "$ENV{'ORACC'}/bin/xcl-json.plx", $_;
+    foreach my $t (@texts) {
+	my ($project,$PQX) = split(/:/, $t);
+	my ($four) = ($PQX =~ /^(....)/);
+	my $xtf = "$ENV{'ORACC'}/bld/$project/$four/$PQX/$PQX.xtf";
+	if (-r $xtf) {
+	    print "," if $texts++;
+	    system "$ENV{'ORACC'}/bin/xcl-json.plx", $t;
+	} else {
+	    warn "corpus-json.plx: no such file $xtf\n"
+	}
+
     }
 }
 
