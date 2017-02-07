@@ -130,6 +130,7 @@
 </xsl:template>
 
 <xsl:template match="x:l">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;#l ',@n,' ',@label,'&#xa;')"/>
   <xsl:choose>
     <xsl:when test="bil">
       <xsl:text>==</xsl:text><xsl:value-of select="@xml:lang"/><xsl:text> </xsl:text>
@@ -173,6 +174,7 @@
 </xsl:template>
 
 <xsl:template match="x:nonx|nonl">
+  <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:call-template name="x-non-whatever"/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>

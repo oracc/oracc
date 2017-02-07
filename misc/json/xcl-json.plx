@@ -47,12 +47,21 @@ textfrag {
     my $n = shift;
     my $r = $n->getAttribute('ref');
     if ($r) {
+	my $fragret = '';
 	if ($frags{$r}) {
 	    my $f = $frags{$r};
-	    my $subtype = $f =~ s/^\@//;
-	    my $nam = ($subtype ? 'subtype' : 'frag');
-	    my $val = ORACC::JSON::jsonify($f);
-	    return "\"$nam\": \"$val\"";
+	    if ($f =~ /^#l\s+(\S+)\s+(.*)$/) {
+		my($n,$label) = ($1,$2);
+		my $jn = ORACC::JSON::jsonify($n);
+		my $jlabel = ORACC::JSON::jsonify($label);
+		$fragret = "\"n\"=\"$jn\",\n\"label\"=\"$jlabel\"";
+	    } else {
+		my $subtype = $f =~ s/^\@//;
+		my $nam = ($subtype ? 'subtype' : 'frag');
+		my $val = ORACC::JSON::jsonify($f);
+		$fragret = "\"$nam\": \"$val\"";
+	    }
+	    return $fragret;
 	}
     } else {
 	return undef;
