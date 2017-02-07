@@ -34,7 +34,7 @@ nsname(const char *name)
       else if (!strncmp(name, "http://www.w3.org/XML/1998/namespace",
 		       strlen("http://www.w3.org/XML/1998/namespace")))
 	{
-	  sprintf(tmp,"xml_%s",nssep+1);
+	  sprintf(tmp,"xml:%s",nssep+1);
 	}
       else if (!strncmp(name, "http://www.w3.org/1999/xlink",
 		       strlen("http://www.w3.org/1999/xlink")))
