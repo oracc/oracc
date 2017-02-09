@@ -2,6 +2,7 @@ package ORACC::JSON;
 use warnings; use strict; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use DateTime;
 
 ##############################################
 #
@@ -359,6 +360,9 @@ default_metadata {
     push @props, "  \"license\": \"This data is released under the CC0 license\"";
     push @props, "  \"license-url\": \"https://creativecommons.org/publicdomain/zero/1.0/\"";
     push @props, "  \"more-info\": \"http://oracc.org/doc/opendata/\"";
+    my $dt = DateTime->now;
+    my $ds = $dt->iso8601; # . $dt->time_zone();
+    push @props, "  \"UTC-timestamp\": \"$ds\"";
     return join(",\n", @props);
 }
 
