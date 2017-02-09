@@ -178,20 +178,25 @@ vid_get_id(struct vid_data *vp, int vid, enum vid_proj which_proj)
 {
   char *id = &vp->padded_ids[vid * vp->max_len];
   char *atptr = NULL;
-  if ((atptr = strchr(id, '@')))
+  if (id)
     {
-      if (which_proj == vid_proj_xtf)
+      if ((atptr = strchr(id, '@')))
 	{
-	  char *colon = strchr(atptr, ':');
-	  return memmove(atptr, colon, strlen(colon));
+	  if (which_proj == vid_proj_xtf)
+	    {
+	      char *colon = strchr(atptr, ':');
+	      return memmove(atptr, colon, strlen(colon));
+	    }
+	  else
+	    {
+	      return atptr + 1;
+	    }
 	}
       else
-	{
-	  return atptr + 1;
-	}
+	return id;
     }
   else
-    return id;
+    return id;  
 }
 
 void
