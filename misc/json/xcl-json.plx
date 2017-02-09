@@ -8,7 +8,13 @@ use ORACC::JSON;
 my %howto = ();
 xcl_howtos();
 
+my $singles_mode = 0;
+
 my $projxtf = shift @ARGV;
+if ($projxtf eq '-s') {
+    $singles_mode = 1;
+    $projxtf = shift @ARGV;
+}
 
 die "xcl-json.plx: must give project:PQXID on commandline\n"
     unless $projxtf;
@@ -19,6 +25,11 @@ my $xtf = "$ENV{'ORACC'}/bld/$project/$four/$PQX/$PQX.xtf";
 
 die "xcl-json.plx: no such file $xtf\n"
     unless -r $xtf;
+
+if ($singles_mode) {
+    my $json = "$ENV{'ORACC'}/www/$project/corpusjson/$PQX.json";
+    open(OUT,"|jq . >$json"); select OUT;
+}
 
 my %frags = ();
 my @frags = `xsltproc $ENV{'ORACC'}/lib/scripts/xtf-FRAGS.xsl $xtf`;
