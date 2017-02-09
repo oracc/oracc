@@ -50,17 +50,17 @@ textfrag {
 	my $fragret = '';
 	if ($frags{$r}) {
 	    my $f = $frags{$r};
-	    if ($f =~ /^#l\s+(\S+)\s+(.*)$/) {
-		my($n,$label) = ($1,$2);
-		my $jn = ORACC::JSON::jsonify($n);
-		my $jlabel = ORACC::JSON::jsonify($label);
-		$fragret = "\"n\"=\"$jn\",\n\"label\"=\"$jlabel\"";
-	    } else {
+#	    if ($f =~ /^#l\s+(\S+)\s+(.*)$/) {
+#		my($n,$label) = ($1,$2);
+#		my $jn = ORACC::JSON::jsonify($n);
+#		my $jlabel = ORACC::JSON::jsonify($label);
+#		$fragret = "\"n\"=\"$jn\",\n\"label\"=\"$jlabel\"";
+#	    } else {
 		my $subtype = $f =~ s/^\@//;
 		my $nam = ($subtype ? 'subtype' : 'frag');
 		my $val = ORACC::JSON::jsonify($f);
 		$fragret = "\"$nam\": \"$val\"";
-	    }
+#	    }
 	    return $fragret;
 	}
     } else {
@@ -73,10 +73,11 @@ xcl_howtos {
     $howto{'xcl_xcl'} = { type=>"{",nam=>'type',val=>'cdl',att=>'-file langs',chld=>['cdl','['] };
     $howto{'xcl_c'} = { type=>"{",nam=>'node',val=>'c',att=>'-bracketing_level level',
 			chld=>['cdl','['] };
-    $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',hook=>\&textfrag };
+    $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',xid=>[ 'ref', '-xml:id id' ],
+			hook=>\&textfrag };
     $howto{'xcl_ll'} = { type=>"{",nam=>'node',val=>'ll',att=>'',
 			 hook=>\&textfrag,chld=>['choices','['] };
-    $howto{'xcl_l'} = { type=>"{",nam=>'node',val=>'l',att=>'',hook=>\&textfrag };
+    $howto{'xcl_l'} = { type=>"{",nam=>'node',val=>'l',att=>'-lnum',hook=>\&textfrag };
     $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'' };
     $howto{'xcl_linkbase'} = { type=>"{",nam=>'linkbase',val=>'[',att=>'' };
     $howto{'xcl_linkset'} = { type=>"{",nam=>'type',val=>'linkset',att=>'',chld=>['links','['] };

@@ -228,56 +228,9 @@ node_start {
 		$need_comma = 1;
 	    }
 	}
-	
-	my $nattr = 0;
-	if (exists $$howto{'att'}) {
-	    my $att_how = $$howto{'att'};
-	    unless ($att_how eq '0') {
-		if ($att_how eq '') {
-		    foreach my $a ($n->attributes) {
-			if ($need_comma) {
-			    print ",\n";
-			    $need_comma = 0;
-			}
-			print ",\n" if $nattr++;
-			jattr($a);
-		    }
-		} else {
-		    my $drop = 0;
-		    if ($att_how =~ s/^-//) {
-			$drop = 1;
-		    }
-		    my @a = split(/\s+/, $att_how);
-		    my %a = (); @a{@a} = ();
 
-		    if ($drop) {
-			foreach my $a ($n->attributes()) {
-			    unless (exists $a{$a->name()}) {
-				if ($need_comma) {
-				    print ",\n";
-				    $need_comma = 0;
-				}
-				print ",\n" if $nattr++;
-				jattr($a);
-			    }
-			}
-		    } else {
-			foreach my $a ($n->attributes()) {
-			    if (exists $a{$a->name()}) {
-				if ($need_comma) {
-				    print ",\n";
-				    $need_comma = 0;
-				}			
-				print ",\n" if $nattr++;
-				jattr($a);
-			    }
-			}
-		    }
-		}
-	    }
-	}
-
-	$need_comma = 1 if $nattr;
+	attr($howto, $n,'att') if exists $$howto{'att'};
+	attr($howto, $n,'xid') if exists $$howto{'xid'};
 	
 	if ($$howto{'chld'}) {
 	    my $chld_how = $$howto{'chld'};
@@ -304,10 +257,82 @@ node_end {
     if ($closer) {
 	#		print '<',$n->nodeName(),'>',$closer, "\n";
 	print $closer, "\n";
+	$need_comma = 1;
     }
 }
 
 ##########################################################
+
+sub
+attr {
+    my ($howto,$n,$prop) = @_;
+    my $nattr = 0;
+    my @atts = ();
+    my $att_how = '';
+    if ($prop eq 'att') {
+	@atts = $n->attributes();
+	$att_how = $$howto{$prop};
+    } else {
+	my $p = $$howto{$prop};
+	my ($ref,$how) = @$p;
+	my $r = $n->getAttribute($ref);
+	if ($r) {
+	    my $idnode = $n->ownerDocument()->getElementById($r);
+#	    $r = '' unless $r; warn "idnode = $r\n";
+	    if ($idnode) {
+		@atts = $idnode->attributes();
+		$att_how = $how;
+	    } else {
+		return;
+	    }		
+	}
+    }
+    unless ($att_how eq '0') {
+	if ($att_how eq '') {
+	    foreach my $a (@atts) {
+		if ($need_comma) {
+		    print ",\n";
+		    $need_comma = 0;
+		}
+		print ",\n" if $nattr++;
+		jattr($a);
+	    }
+	} else {
+	    my $drop = 0;
+	    if ($att_how =~ s/^-//) {
+		$drop = 1;
+	    }
+	    my @a = split(/\s+/, $att_how);
+	    my %a = (); @a{@a} = ();
+	    
+	    if ($drop) {
+		foreach my $a (@atts) {
+		    unless (exists $a{$a->name()}) {
+			if ($need_comma) {
+			    print ",\n";
+			    $need_comma = 0;
+			}
+			print ",\n" if $nattr++;
+			jattr($a);
+		    }
+		}
+	    } else {
+		foreach my $a (@atts) {
+		    if (exists $a{$a->name()}) {
+			if ($need_comma) {
+			    print ",\n";
+			    $need_comma = 0;
+			}			
+			print ",\n" if $nattr++;
+			jattr($a);
+		    }
+		}
+	    }
+	}
+    }
+
+    $need_comma = 1 if $nattr;
+}
 
 sub
 closer_of {
