@@ -342,6 +342,27 @@ closer_of {
 }
 
 sub
+default_metadata {
+    my ($n,$pflag) = @_;
+    my $p = '';
+    if ($pflag) {
+	$p = $n;
+	chomp $p;
+	$p =~ s/^.*?\": \"(.*?)\".*$/$1/;
+    } else {
+	$p = $n->getOwnerDocument()->getDocumentElement()->getAttribute('project');
+    #    my $id = xid($n->getOwnerDocument()->getDocumentElement());
+    }
+    print ",\n" if $need_comma; $need_comma = 0;
+    my @props = ();
+    push @props, "  \"source\": \"http://oracc.org/$p\"";
+    push @props, "  \"license\": \"This data is released under the CC0 license\"";
+    push @props, "  \"license-url\": \"https://creativecommons.org/publicdomain/zero/1.0/\"";
+    push @props, "  \"more-info\": \"http://oracc.org/doc/opendata/\"";
+    return join(",\n", @props);
+}
+
+sub
 jattr {
     my $a = shift;
     jprint($a->name);

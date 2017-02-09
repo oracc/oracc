@@ -28,7 +28,7 @@ die "xcl-json.plx: no such file $xtf\n"
 
 if ($singles_mode) {
     my $json = "$ENV{'ORACC'}/www/$project/corpusjson/$PQX.json";
-    open(OUT,"|jq . >$json"); select OUT;
+#    open(OUT,"|jq . >$json"); select OUT;
 }
 
 my %frags = ();
@@ -81,7 +81,9 @@ textfrag {
 
 sub
 xcl_howtos {
-    $howto{'xcl_xcl'} = { type=>"{",nam=>'type',val=>'cdl',att=>'-file langs',chld=>['cdl','['] };
+    $howto{'xcl_xcl'} = { type=>"{",nam=>'type',val=>'cdl',att=>'-file langs',chld=>['cdl','['],
+			  hook=>\&ORACC::JSON::default_metadata
+    };
     $howto{'xcl_c'} = { type=>"{",nam=>'node',val=>'c',att=>'-bracketing_level level',
 			chld=>['cdl','['] };
     $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',xid=>[ 'ref', '-xml:id id' ],
