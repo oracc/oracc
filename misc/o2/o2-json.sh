@@ -50,7 +50,8 @@ for a in 02pub/cbd/* ; do
 done
 
 (cd 02www ; touch manifest.json ;
- ls -1 *.json | o2-json.plx $project >manifest.json ; rm -f json.zip ; zip -q -r json.zip *.json corpusjson
+ ls -1 *.json | o2-json.plx $project | jq . >manifest.json ; \
+     rm -f json.zip ; zip -q -r json.zip *.json corpusjson
 )
 
 chmod 0644 02www/*.json 02www/json.zip
