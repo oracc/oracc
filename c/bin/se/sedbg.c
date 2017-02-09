@@ -190,7 +190,7 @@ p8(struct location8 *l8p)
 #endif
       fprintf(stdout,
 	      "         t=%s%%%s;u=%d;w=%d",
-	      vid_get_id(vp,XidVal(t),vid_proj_xmd), /* IS THIS RIGHT? */
+	      vid_get_id(vp,idVal(t),vid_proj_xmd), /* IS THIS RIGHT? */
 	      lmVal(t) ? lmstr(lmVal(t)) : "none",
 	      l8p->unit_id, 
 	      l8p->word_id
@@ -288,7 +288,7 @@ do_index (List *arglist)
 	  if (!brief)
 	    {
 	      if (dip->h.data_size == sizeof(struct location8)
-		  || 'x' == ret_type_rules->pos_id_prefix)
+		  /* || 'x' == ret_type_rules->pos_id_prefix */)
 		{
 		  struct location8 *buf = dip->data;
 		  size_t i;
@@ -304,7 +304,10 @@ do_index (List *arglist)
 		  size_t i;
 		  for (i = 0; i < dip->nfound; ++i)
 		    {
-		      p16((struct location16*)&buf[i]);
+		      if ('x' == ret_type_rules->pos_id_prefix)
+			p8((struct location8*)&buf[i]);
+		      else
+			p16((struct location16*)&buf[i]);
 		      fputc('\n', stdout);
 		    }
 		}
