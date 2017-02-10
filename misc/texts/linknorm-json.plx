@@ -43,7 +43,7 @@ close L;
 
 my $count = 0;
 open(J, ">01bld/witnesses.json");
-print J ",\n\t\"witnesses\": {\n";
+print J "\t\"witnesses\": {\n";
 foreach my $id (sort keys %l) {
     print J "\t\t},\n" if $count++;
     print J "\t\t\"$id\": {\n";

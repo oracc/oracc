@@ -41,20 +41,37 @@ echo "o2-json.sh: language glossaries and indexes ..."
 
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
-    echo $lang
-    cbd-json.plx ${project}:$lang >02www/gloss-$lang.json
-    sort -u -o $a/mangle.tab $a/mangle.tab
-    sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang  >02www/index-$lang.json
+    if [ -r $ORACC_BUILDS/oracc/pub/$project/cbd/$lang/cbd.dbi ]; then
+	echo $lang
+	cbd-json.plx ${project}:$lang >02www/gloss-$lang.json
+	sort -u -o $a/mangle.tab $a/mangle.tab
+	sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang  >02www/index-$lang.json
+    fi
 done
 
-echo "o2-json.sh: manifest ..."
+echo "o2-json.sh: making manifest and distribution ..."
 
-(cd 02www ; touch manifest.json ;
- ls -1 *.json | o2-json.plx $project  >manifest.json ; \
-     rm -f json-pre-jq.zip ; zip -q -r json-pre-jq.zip *.json ; \
-     json-licensify.plx *.json ; \
-     rm -f json.zip ; zip -q -r json.zip *.json corpusjson ; \
-     chmod 0644 02www/*.json 02www/json.zip
-)
+cp 01bld/cat.geojson 02www
+
+pushd 02www 
+touch manifest.json
+ls -1 *.json | o2-json.plx $project  >manifest.json 
+
+rm -f json-pre-jq.zip ; zip -q -r json-pre-jq.zip *.json
+
+mkdir -p tmpjson ; rm -f tmpjson/*
+for a in *.json ; do
+    echo "o2-json.sh: validating $a"
+    json-licensify.plx <$a >tmpjson/$a
+    jq . tmpjson/$a >$a
+done
+
+cp -f tmpjson/* .
+#mv tmpjson/* . ; rmdir tmpjson
+
+rm -f json.zip ; zip -q -r json.zip *.json corpusjson
+
+chmod 0644 *.json json.zip
+popd
 
 echo "o2-json.sh: done ..."

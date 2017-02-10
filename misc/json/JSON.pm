@@ -349,7 +349,7 @@ default_metadata {
     if ($pflag) {
 	$p = $n;
 	chomp $p;
-	$p =~ s/^.*?\": \"(.*?)\".*$/$1/;
+	$p =~ s/^.*?\":\s*\"(.*?)\".*$/$1/;
     } else {
 	$p = $n->getOwnerDocument()->getDocumentElement()->getAttribute('project');
     #    my $id = xid($n->getOwnerDocument()->getDocumentElement());

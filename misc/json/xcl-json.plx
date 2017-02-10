@@ -28,7 +28,8 @@ die "xcl-json.plx: no such file $xtf\n"
 
 if ($singles_mode) {
     my $json = "$ENV{'ORACC'}/www/$project/corpusjson/$PQX.json";
-#    open(OUT,"|jq . >$json"); select OUT;
+#    open(OUT,"|jq . >$json");
+    open(OUT,">$json"); select OUT;
 }
 
 my %frags = ();
@@ -52,6 +53,10 @@ my $xcl = $xxtf->getDocumentElement()->lastChild();
 if ($xcl && $xcl->localName() eq 'xcl_xcl') {
     ORACC::JSON::iterate($xcl);
 }
+
+close(OUT);
+
+###############################################################################
 
 sub
 textfrag {

@@ -852,9 +852,6 @@ dump_xmd {
 #	print Dumper(\@currvt);
 	xmd_end($$r[$item_index]);
     }
-    if ($geojson_first < 0) {
-	print GJ "]\n}\n";
-    }
 }
 
 sub
@@ -1943,6 +1940,11 @@ xmd_json_end {
 #    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
     print J "\n\t}\n}\n";
     close J;
+
+    if ($geojson_first < 0) {
+	print GJ "]\n}\n";
+	close GJ;
+    }
 }
 
 sub

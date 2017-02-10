@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict;
-
-my $mode = 'singles';
+use open 'utf8'; binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 my $project = shift;
 die "corpus-json.plx: must give project on command line\n"
@@ -16,18 +15,8 @@ if (-d $dir) {
 }
 system 'mkdir','-p',$dir;
 
-if ($mode eq 'singles') {
-    open(OUT,"| jq . >$ENV{'ORACC_BUILDS'}/www/$project/corpus.json");
-    select(OUT);
-}
-
-print "{\n\"type\": \"corpus\",\n\"project\": \"$project\",\n\"members\": ";
-
-if ($mode eq 'singles') {
-    print "{\n";
-} else {
-    print "[\n";
-}
+open(OUT,">$ENV{'ORACC_BUILDS'}/www/$project/corpus.json");
+print OUT "{\n\"type\": \"corpus\",\n\"project\": \"$project\",\n\"members\": {\n";
 
 if (-r $list) {
     my @texts = `cat $list`; chomp @texts;
@@ -36,15 +25,10 @@ if (-r $list) {
 	my ($four) = ($PQX =~ /^(....)/);
 	my $xtf = "$ENV{'ORACC_BUILDS'}/bld/$project/$four/$PQX/$PQX.xtf";
 	if (-r $xtf) {
-	    print "," if $texts++;
-	    if ($mode eq 'singles') {
-		my $json = "$ENV{'ORACC_BUILDS'}/www/$project/corpusjson/$PQX.json";
-		system("$ENV{'ORACC'}/bin/xcl-json.plx -s $t");
-		$json =~ s/^.*?corpusjson/corpusjson/;
-		print "\"$PQX\": \"$json\"";
-	    } else {
-		system "$ENV{'ORACC'}/bin/xcl-json.plx", $t;
-	    }
+	    print OUT "," if $texts++;
+	    my $json = "corpusjson/$PQX.json";
+	    print OUT "\"$PQX\": \"$json\"";
+	    system("$ENV{'ORACC'}/bin/xcl-json.plx -s $t");
 	} else {
 	    warn "corpus-json.plx: no such file $xtf\n"
 	}
@@ -52,10 +36,7 @@ if (-r $list) {
     }
 }
 
-if ($mode eq 'singles') {
-    print "\n}\n}\n";
-} else {
-    print "\n]\n}\n";
-}
+print OUT "\n}\n}\n";
+close(OUT);
 
 1;

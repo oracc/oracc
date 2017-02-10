@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = xcl2ptb.plx xcl2uxh.plx xcl2xtr.plx xclmanager.plx corpus-json.plx
+bin_SCRIPTS = xcl2ptb.plx xcl2uxh.plx xcl2xtr.plx xclmanager.plx
 scriptdata_DATA = merge-XLF.xsl test.xsl xcl-HTML.xsl xcl-XTR.xsl xcl2ptb.xsl xcl-json.xsl
 
 xcl2xtr.plx: xcl2xtr.plx.in
