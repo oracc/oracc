@@ -1,0 +1,1 @@
+"license": "Released under CC0 (https://creativecommons.org/publicdomain/zero/1.0/); see http://oracc.org/doc/opendata.html for more information."

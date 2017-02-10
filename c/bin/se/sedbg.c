@@ -190,7 +190,7 @@ p8(struct location8 *l8p)
 #endif
       fprintf(stdout,
 	      "         t=%s%%%s;u=%d;w=%d",
-	      vid_get_id(vp,XidVal(t),vid_proj_xmd), /* IS THIS RIGHT? */
+	      vid_get_id(vp,idVal(t),vid_proj_xmd), /* IS THIS RIGHT? */
 	      lmVal(t) ? lmstr(lmVal(t)) : "none",
 	      l8p->unit_id, 
 	      l8p->word_id

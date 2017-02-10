@@ -9,6 +9,7 @@
 
 <xsl:template match="/">
   <xsl:text>{&#xa;&#x9;"type": "projectlist",&#xa;&#x9;"projects": [</xsl:text>
+  <xsl:text>"&#xa;&#x9;"projects": [</xsl:text>
   <xsl:for-each select="//xpd:project">
     <xsl:apply-templates select="."/>
     <xsl:if test="not(position()=last())"><xsl:text> , </xsl:text></xsl:if>
