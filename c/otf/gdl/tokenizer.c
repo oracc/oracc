@@ -890,32 +890,42 @@ tokenize(register unsigned char *l,unsigned char *e)
 			}
 		      else
 			{
-			  if (mip->status & MEDIAL_CLOSE)
+			  if (mip->status == FINAL_CLOSE)
 			    {
-			      if (tokindex && tokens[tokindex-1]->type == damago)
-				--tokindex;
-			      else
-				{
-				  int tokrover = tokindex, damagc_tok;
-				  while (tokrover 
-					 && tokens[tokrover-1]->type != flag
-					 && tokens[tokrover-1]->class != text
-					 && tokens[tokrover-1]->type != ellipsis
-					 )
-				    --tokrover;
-				  damagc_tok = tokrover;
-				  for (tokrover = tokindex; tokrover > damagc_tok; --tokrover)
-				    tokens[tokrover] = tokens[tokrover-1];
-				  tokens[damagc_tok] = clone_token(static_tokens[damagc]);
-				  ++tokindex;
-				}
+			      *l-- = save;
+			      *l = '\0';
+			      following = l;
+			      save = ']';
 			    }
-			  if (mip->status & MEDIAL_OPEN)
-			    left_square_pending = 1;
-			  *l-- = save;
-			  *l = '\0';
-			  save = '#';
-			  following = l;
+			  else
+			    {
+			      if (mip->status & MEDIAL_CLOSE)
+				{
+				  if (tokindex && tokens[tokindex-1]->type == damago)
+				    --tokindex;
+				  else
+				    {
+				      int tokrover = tokindex, damagc_tok;
+				      while (tokrover 
+					     && tokens[tokrover-1]->type != flag
+					     && tokens[tokrover-1]->class != text
+					     && tokens[tokrover-1]->type != ellipsis
+					     )
+					--tokrover;
+				      damagc_tok = tokrover;
+				      for (tokrover = tokindex; tokrover > damagc_tok; --tokrover)
+					tokens[tokrover] = tokens[tokrover-1];
+				      tokens[damagc_tok] = clone_token(static_tokens[damagc]);
+				      ++tokindex;
+				    }
+				}
+			      if (mip->status & MEDIAL_OPEN)
+				left_square_pending = 1;
+			      *l-- = save;
+			      *l = '\0';
+			      following = l;
+			      save = '#';
+			    }
 			}
 		    }
 		  /* suppress recognition of ':' and '/' as boundaries */
@@ -2193,7 +2203,12 @@ medial_square(unsigned char *g, struct medial_info *mip)
       else if (*src == ']')
 	{
 	  if (!last_square)
-	    mip->status |= MEDIAL_CLOSE;
+	    {
+	      if (src[1])
+		mip->status |= MEDIAL_CLOSE;
+	      else
+		mip->status |= FINAL_CLOSE;
+	    }
 	  else if (*src == last_square)
 	    vwarning("double ] in grapheme");
 	  else

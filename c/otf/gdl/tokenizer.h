@@ -80,6 +80,7 @@ struct token
 #define MEDIAL_OPEN  0x01 /* lug[al */
 #define MEDIAL_HASH  0x02 /* l[ug]al */
 #define MEDIAL_CLOSE 0x04 /* lu]gal */
+#define FINAL_CLOSE  0x08 /* lugal]{ki} */
 
 #define WORD_MATRIX_ABSENT_CHAR 	0x2014 /* EM DASH */
 #define WORD_MATRIX_BROKEN_CHAR 	0x00B1 /* PLUS-MINUS */
