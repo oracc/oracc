@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8'; use utf8;
-binmode STDOUT, ':utf8';
+binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 use Data::Dumper;
 
@@ -103,7 +103,11 @@ for (my $i = 0; $i <= $#lines; ++$i) {
 		    if ($norms{$key}) {
 			$lines[$i] .= " \$$norms{$key}";
 		    } else {
-			push @this_parts_errs, "$glo:$err_line: (normify) no NORM for $key\n";
+			if ($key eq 'n=n[]n') {
+			    $lines[$i] .= " \$n";
+			} else {
+			    push @this_parts_errs, "$glo:$err_line: (normify) no NORM for $key\n";
+			}
 		    }
 		}
 	    } else {

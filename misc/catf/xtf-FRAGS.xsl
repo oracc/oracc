@@ -203,6 +203,10 @@
   <!-- Bad ATF files are dropped in CATF -->
 </xsl:template>
 
+<xsl:template match="x:div">
+  <xsl:apply-templates/>
+</xsl:template>
+
 <xsl:template match="x:*">
   <xsl:call-template name="errorx">
     <xsl:with-param name="msg" select="concat('unhandled XTF tag `', name(), $q)"/>

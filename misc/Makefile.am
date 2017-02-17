@@ -9,6 +9,7 @@ SUBDIRS = \
 	cs \
 	emacs \
 	epsd \
+	epsd2 \
 	esp \
 	esp2 \
 	est \

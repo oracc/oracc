@@ -51,6 +51,8 @@ glossary_howtos {
     $howto{'cbd_mng'} = { nam=>'mng',val=>'text()' };
     $howto{'cbd_forms'} = { nam=>'forms',val=>'[' };
     $howto{'cbd_form'} = { type=>"{",nam=>'type',val=>'form',att=>'' };
+    $howto{'cbd_form-sanss'} = { nam=>'form-sanss',val=>'[' };
+    $howto{'cbd_form-sans'} = { type=>"{",nam=>'type',val=>'form-sans',att=>'' };
     $howto{'cbd_t'} = { type=>'#ignore' };
     $howto{'cbd_cof-form-norm'} = { nam=>'cof-form-norm',val=>'text()',att=>'' };
     $howto{'cbd_norms'} = { nam=>'norms',val=>'[' };

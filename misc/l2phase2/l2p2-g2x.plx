@@ -946,6 +946,9 @@ read_input {
 sub
 read_input_line {
     return if /^\s*$/;
+    
+    return if /\t0$/ && !$with_zero_freqs;
+    
     if (/^\@(project|name|lang)\s+(\S+)/) {
 	$header{$1} = $2
 	    unless $header{$1};
