@@ -729,6 +729,15 @@ is_wordnum(unsigned char *l)
   return *l && (isdigit(*l) || ('n' == *l && !is_grapheme1[l[1]]));
 }
 
+int
+tok_is_closer(struct token *tp)
+{
+  const char *name = type_names[tp->type];
+  if (!strcmp(name,"maybec"))
+    return 1;
+  return 0;
+}
+
 void
 tokenize(register unsigned char *l,unsigned char *e)
 {
@@ -912,6 +921,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 					     && tokens[tokrover-1]->type != ellipsis
 					     )
 					--tokrover;
+				      while (tokens[tokrover]->class == meta 
+					     && tok_is_closer(tokens[tokrover]))
+					++tokrover;
 				      damagc_tok = tokrover;
 				      for (tokrover = tokindex; tokrover > damagc_tok; --tokrover)
 					tokens[tokrover] = tokens[tokrover-1];
