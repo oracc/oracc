@@ -45,7 +45,7 @@ static const char *flag_chars = "!?*#";
 
 static const char *const flag_strings[] = 
 {
-  ""
+  "",
   "#", "?", "!", "*", 
   "#?", "#!", "#*", "!?", "?*", "!*", 
   "#?!", "#!*", "#?*", "?!*", 
