@@ -2,6 +2,12 @@
 use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
+my $has_atf = `condfind.plx 00atf atf`;
+unless ($has_atf) {
+#    warn "xcat.plx: no atf files\n";
+    exit 0;
+}
+
 open(X,"grep -r '\&X[0-9]' 00atf |");
 my @X = (<X>);
 close(X);

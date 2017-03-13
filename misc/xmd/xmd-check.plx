@@ -4,14 +4,17 @@ use warnings; use strict;
 # Check that all of the texts in approved.lst ended up in the catalogue somehow
 
 my %in_cat = ();
-open(C,'02pub/cat/pqids.lst');
-while (<C>) {
-    chomp;
-    s/^.*://;
-    s/\@.*$//;
-    ++$in_cat{$_};
+
+if (-r '02pub/cat/pqids.lst') {
+    open(C,'02pub/cat/pqids.lst');
+    while (<C>) {
+	chomp;
+	s/^.*://;
+	s/\@.*$//;
+	++$in_cat{$_};
+    }
+    close(C);
 }
-close(C);
 
 if (-r '01bld/lists/approved.lst') {
     open(A,'01bld/lists/approved.lst');
