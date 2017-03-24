@@ -1,4 +1,11 @@
 #!/bin/sh
+JSON=`oraccopt json`
+
+if [ "$JSON" == "no" ]; then
+    echo JSON=no
+    exit 0
+fi
+
 shopt -s nullglob
 
 project=`oraccopt`

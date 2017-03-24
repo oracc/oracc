@@ -180,7 +180,7 @@ nth_tlit_hdr(const unsigned char *id, int nth)
       if (tmp_tlit_h)
 	{
 	  int i;
-	  for (i = 0; i < nth; ++nth)
+	  for (i = 0; i < nth; ++i)
 	    if (NULL == tmp_tlit_h[i])
 	      break;
 	  if (tmp_tlit_h[i])
