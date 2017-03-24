@@ -19,7 +19,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,lng} \
-	-I/opt/local/include
+	-I/usr/local/include
 
 AM_CFLAGS=-pedantic -Wall -g
 

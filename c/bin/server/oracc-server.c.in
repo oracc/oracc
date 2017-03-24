@@ -37,7 +37,12 @@ osc_status(const char *session_id)
   sprintf(status_file, "%s/%s/status",varoracc, session_id);
 
   if ((res = stat(status_file, &st)) < 0)
-    return "err_stat";
+    {
+      static char *ebuf = NULL;
+      ebuf = malloc(strlen(status_file) + 20);
+      sprintf(ebuf, "%s not found (%d)", status_file, res);
+      return ebuf;
+    }
 
   buf = malloc((size_t)st.st_size + 1);
 

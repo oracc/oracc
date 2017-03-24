@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8'; binmode STDOUT, ':utf8';
+use warnings; use strict; use open 'utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 
 my $compound = 0;
@@ -298,7 +298,9 @@ parts_match {
 	{
 	    for (my $j = 0; $j <= $#candidates; ++$j) {
 		my($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
-		if ($form && $form eq $forms[$i] && ($norm eq '*' || $norm eq $norms[$i])) {
+		if ($form && $form eq $forms[$i] 
+		    && ($norm eq '*' || 
+		    $norm eq $norms[$i])) {
 		    if ($pass_1) {
 			if ($candidates[$j] =~ /\%$psulang\:/) {
 			    warn "pass_1_matched $form eq $forms[$i]/$norm eq $norms[$i] in $candidates[$j]\n"

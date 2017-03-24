@@ -6,6 +6,6 @@ aclocal
 autoheader
 automake
 autoconf
-./configure --prefix=~/orc
+./configure --prefix=/Users/stinney/orc
 make
 make install
