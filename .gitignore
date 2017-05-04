@@ -73,6 +73,9 @@ c/bin/se/sl-index
 c/bin/se/wm
 c/bin/se/wmapper
 c/bin/se/wmdebug
+c/bin/server/or_gdf.c
+c/bin/server/pqx_map.c
+c/bin/server/xmlrpc.c
 c/bin/sort/psdsort
 c/bin/tests/words/wordtest
 c/bin/util/concord

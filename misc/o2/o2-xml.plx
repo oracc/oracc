@@ -93,8 +93,9 @@ create_xml {
     print X "<project xmlns:xi=\"http://www.w3.org/2001/XInclude\" xml:base=\"$xml/\">";
     print CX "<corpus xmlns:xi=\"http://www.w3.org/2001/XInclude\">";
     foreach my $f (@flist) {
+	next if $f =~ /\.txt$/;
 	my $cf = $f;
-	$f =~ s#02xml/##;
+	$f =~ s#^.*?/02xml/##;
 	print X "<xi:include href=\"$f\"/>";
 	next unless $cf =~/\.(xmd|xt[rf])$/;
 	$cf =~ s#^.*?02xml/##;

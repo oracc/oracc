@@ -399,6 +399,7 @@ foreach my $c (@catalogs) {
 	$$c{'icat'} = imports($$c{'icat'});
 	$$c{'icat'} = inherits($$c{'icat'});
 #	use Data::Dumper; print Dumper($$c{'icat'});
+	xproject_bis($$c{'icat'},$$c{'file'});
     } else {
 	xproject($$c{'icat'},$$c{'file'});
     }
@@ -791,7 +792,12 @@ dump_xmd {
 			    $currvt[$type_indexes{$tag}] = "$c=$sp";
 			    push @{$xmd_outputs{$curr_xmd}}, " c=\"$c\"";
 			} else {
-			    print STDERR "c undefined for tag $tag with value $f\n";
+			    if ($f eq 'unclear') {
+				$currvt[$type_indexes{$tag}] = "1000000=$sp";
+				push @{$xmd_outputs{$curr_xmd}}, " c=\"1000000\"";
+			    } else {
+				print STDERR "c undefined for tag $tag with value $f\n";
+			    }
 			}
 		    } else {
 			print STDERR "type_indexes{$tag} not defined (value=$f)\n" 
@@ -1700,8 +1706,109 @@ xproject {
 	    }
 	} else {
 	    my $qname = $$r[$name_index];
+#	    warn "printing $pq\t$qname to QNMTAB\n";
 	    print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
 	    $$r[$xprojects_index] = $xproject{$pq} || '';
+	}
+    }
+}
+
+# walk the catalogs checking the values of interest and
+# adding any new ones to the lists
+#
+# This version is used by projects that have their own keydata.xml
+sub
+xproject_bis {
+    my ($cat,$file) = @_;
+    my $fields = $$cat[0];
+    my $rows = $$cat[2];
+    my $item_index = -1;
+    my $name_index = -1;
+    my $period_index = -1;
+    my $place_index = -1;
+    my $pripub_index = -1;
+    my $pubimg_index = -1;
+    my @musno_indices = ();
+    my %musno_fields = ();
+    @musno_fields{qw/excavation_no museum_no accession_no/} = ();
+
+    # find the ID field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$item_index = $i and last 
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+    }
+    $item_index = -1 if $item_index >= $#$fields;
+
+    # find the period field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$period_index = $i and last 
+	    if $$fields[$i] eq 'period';
+    }
+    # find the place field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$place_index = $i and last 
+	    if $$fields[$i] eq 'provenience';
+    }
+    # find the public_images field for this catalog
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$pubimg_index = $i and last 
+	    if $$fields[$i] eq 'public_images';
+    }
+
+    warn("xmdmanager: xproject: catalog $file has no item field\n") and return
+	unless $item_index >= 0;
+
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$name_index = $i and last 
+	    if $$fields[$i] eq 'designation';
+    }
+    $name_index = -1 if $name_index > $#$fields;
+    warn("xmdmanager: catalog $file lacks required designation field\n") and return
+	unless $name_index >= 0;
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	if ($$fields[$i] eq 'primary_publication') {
+	    $pripub_index = $i;
+	} elsif (exists $musno_fields{$$fields[$i]}) {
+	    push @musno_indices, $i;
+	}
+    }
+
+#    my $xprojects_index = $#$fields+1;
+#    push @$fields, 'xproject';
+
+    foreach my $r (@$rows) {
+	my $pq = $$r[$item_index];
+	if ($$r[$period_index]) {
+	    print PERTAB "$pq\t$$r[$period_index]\n";
+	} else {
+	    print PERTAB "$pq\tunknown\n";
+	}
+	my $pl = $$r[$place_index] || 'unknown';
+	print LOCTAB "$pq\t$pl\n";
+	if ($pq =~ /(?:^|:)P/) {
+	    my $pname = $$r[$name_index];
+	    $pname =~ s/^\s*(.*?)\s*$/$1/;
+	    $pname =~ s/&apos;/'/g;
+	    $pname =~ s/&amp;/&/g;
+#	    $$r[$xprojects_index] = $xproject{$pq} || 'CDLI';
+	    print PNMTAB "$pq\t$pname\n";
+	    print PRITAB "$pq\t", strip0($$r[$pripub_index]),"\n"
+		if $$r[$pripub_index];
+	    foreach my $m (@musno_indices) {
+		print MUSTAB "$pq\t",strip0($$r[$m]),"\n"
+		    if $$r[$m];
+	    }
+	    if ($pubimg_index >= 0 && $$r[$pubimg_index] && $$r[$pubimg_index] eq 'yes') {
+		print PUBIMG "$pq\n";
+		++$pubimg{$pq};
+	    } else {
+		print PRVIMG "$pq\n";
+	    }
+	} else {
+	    my $qname = $$r[$name_index];
+	    warn "printing $pq\t$qname to QNMTAB\n";
+	    print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
+#	    $$r[$xprojects_index] = $xproject{$pq} || '';
 	}
     }
 }

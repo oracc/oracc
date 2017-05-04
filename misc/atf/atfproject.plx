@@ -41,7 +41,7 @@ foreach my $f (@files) {
 		last unless $lines[$j] =~ /^\#/;
 	    }
 	    print F $lines[$i];
-	    if ($lines[$i+1] =~ /^\@composite/) {
+	    if ($lines[$i+1] =~ /^\@(composite|score)/) {
 		print F $lines[++$i];
 	    }
 	    if ($proj == -1) {
@@ -51,7 +51,7 @@ foreach my $f (@files) {
 		$lines[$proj] = "#project: $project\n";
 	    }
 	} else {
-	    print F $lines[$i];
+	    print F $lines[$i] unless $lines[$i] =~ m/^#project/;
 	}
     }
     close(F);
