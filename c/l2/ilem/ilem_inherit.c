@@ -22,8 +22,9 @@ inherit_f2(struct f2 *inheritor_f2, struct f2 *from_f2)
   inherit(cont);
   if (!BIT_ISSET(inheritor_f2->core->features, LF_NORM) && inheritor_f2->norm && !strcmp((const char*)inheritor_f2->norm, "X"))
     {
-      fprintf(stderr, "fixing norm=X\n");
+      /* fprintf(stderr, "fixing norm=X\n"); */
       inheritor_f2->norm = from_f2->norm;
+      inheritor_f2->sig = NULL;
     }
   else
     inherit(norm);
