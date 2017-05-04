@@ -34,7 +34,9 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   sprintf((char*)buf,"@%s%%%s:%s=%s[%s//%s]%s'%s",
 	  (char*)(fp->project),
 	  (char*)(fp->lang),
-	  (char*)(tail ? (Uchar*)"" : (Uchar*)(wild_form ? "*" : (char*)fp->form)),
+	  (char*)(tail ? (Uchar*)"" : (Uchar*)(wild_form 
+					       ? "*" 
+					       : (fp->oform ? (char*)fp->oform : (char*)fp->form))),
 	  (char*)(fp->cf ? fp->cf : (Uchar*)"X"),
 	  (char*)(fp->gw ? fp->gw : (Uchar*)"X"),
 	  (char*)(fp->sense ? fp->sense : (Uchar*)"X"),
@@ -165,10 +167,20 @@ f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 	  if (fp->parts[i]->cof_id)
 	    {
 	      if (!fp->parts[i]->tail_sig)
-		strcat((char*)psu_form, (char*)fp->parts[i]->form);
+		{
+		  if (fp->parts[i]->oform)
+		    strcat((char*)psu_form, (char*)fp->parts[i]->oform);
+		  else
+		    strcat((char*)psu_form, (char*)fp->parts[i]->form);
+		}
 	    }
 	  else
-	    strcat((char*)psu_form, (char*)fp->parts[i]->form);
+	    {
+	      if (fp->parts[i]->oform)
+		strcat((char*)psu_form, (char*)fp->parts[i]->oform);
+	      else
+		strcat((char*)psu_form, (char*)fp->parts[i]->form);
+	    }
 
           if (i)
 	    {

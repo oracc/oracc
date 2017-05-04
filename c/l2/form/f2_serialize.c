@@ -57,8 +57,15 @@ f2_serialize_form(FILE *f_f2, struct f2 *f)
 {
   fputs("<xff:f",f_f2);
   f2_attr(f_f2,"xml:lang",(char*)f->lang);
-  f2_attr(f_f2,"form",(char*)f->form);
-  f2_attr(f_f2,"oform",(char*)f->oform);
+  if (f->oform && strlen(f->oform))
+    {
+      /* always treat the corpus's version of a form as primary */
+      f2_attr(f_f2,"form",(char*)f->oform);
+      f2_attr(f_f2,"aform",(char*)f->form);
+    }
+  else
+    f2_attr(f_f2,"form",(char*)f->form);
+  /*  f2_attr(f_f2,"oform",(char*)f->oform); */
   f2_attr(f_f2,"cf",(char*)f->cf);
   if (f->cf)
     f2_attr(f_f2,"gw",(char*)f->gw);
