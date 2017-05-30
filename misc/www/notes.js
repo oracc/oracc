@@ -3,7 +3,7 @@ showNote(e,nid) {
   if (!e)
     e = event;
   note=document.getElementById(nid);
-  note.style.left=e.clientX;
+  note.style.left=e.clientX-100;
   note.style.top=e.clientY;
   //  alert(nid+' is at '+e.clientX+' x '+e.clientY);
   // makes note element visible
