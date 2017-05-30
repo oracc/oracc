@@ -131,6 +131,16 @@ if ($rt{'prod'} eq 'list') {
 	$p{'sorttype'} = $rt{'sorttype'} = $p{'p3OSdefault'};
 	warn "xtl: rt{'outl'} = $rt{'outl'}\n";
 	set_list_items();
+	# coerce the project to that of the witnesses if they are all the same; this is weak
+	# but helps rinap and cmawro; possibly need an option to specify the subproject for
+	# source tables
+	my @listitems = `cat $p{'#list'}`; chomp(@listitems);
+	my @projects = map { s/:.*//; $_ } @listitems;
+	my %projects = (); @projects{@projects} = ();
+	my $nprojects = scalar keys %projects;
+	if ($nprojects == 1) {
+	    $tmp{'project'} = $p{'project'} = $projects[0];
+	}
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
