@@ -20,6 +20,13 @@ function has_score {
     done
 }
 
+function has_sources {
+    for a in `cat 01bld/lists/has-sources.lst`; do
+	f=`pqxpand xmd $a`
+	xsltproc -o $f $ORACC/lib/scripts/has-sources.xsl $f
+    done
+}
+
 function xsf_scores {
     cat 01bld/lists/xsf-scores.lst >>01bld/lists/sxh-scores.lst
     for a in `cat 01bld/lists/xsf-scores.lst`; do
@@ -41,6 +48,7 @@ fi
 
 # linkbase
 proj-linkbase.sh
+xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
 
 # scores
 rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
@@ -48,6 +56,7 @@ rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
 # [ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
 [ -s 01bld/lists/xsf-scores.lst ] && xsf_scores
 [ -s 01bld/lists/sxh-scores.lst ] && has_score
+[ -s 01bld/lists/has-sources.lst ] && has_sources
 
 # indexes
 dir=$ORACC/pub/$project

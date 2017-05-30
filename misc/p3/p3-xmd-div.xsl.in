@@ -35,7 +35,7 @@
       <xsl:call-template name="biblio"/>
     </div>
     <xsl:message>hello1</xsl:message>
-    <xsl:if test="/*/md:cat/md:has-score[.='1']">
+    <xsl:if test="/*/md:cat/md:has-sources[.='1']">
       <xsl:message>hello2</xsl:message>
       <xsl:apply-templates select="document(concat(/*/@xml:id,'.xtl'),/)/xtl:list"/>
     </xsl:if>
@@ -125,6 +125,8 @@
 
   <xsl:if test="/*/md:cat/md:has-score[.='1']">
     <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
+  </xsl:if>
+  <xsl:if test="/*/md:cat/md:has-sources[.='1']">
     <li><a href="/{$project}/{/*/@xml:id}/sources">Sources table</a></li>
   </xsl:if>
 

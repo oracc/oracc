@@ -58,7 +58,9 @@ done
 
 echo "o2-json.sh: making manifest and distribution ..."
 
-cp 01bld/cat.geojson 02www
+if [ -r 01bld/cat.geojson ]; then
+    cp 01bld/cat.geojson 02www
+fi
 
 pushd 02www 
 touch manifest.json

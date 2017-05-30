@@ -5,7 +5,6 @@ if [ "$buildpolicy" != "search" ]; then
     o2-glo.sh
 fi
 o2-xtf.sh $*
-formats-json.plx >>01bld/formats.json
 #o2-web.sh
 o2-web-corpus.sh
 #o2-prm.sh
