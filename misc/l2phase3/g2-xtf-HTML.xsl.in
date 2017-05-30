@@ -1492,7 +1492,14 @@
     <xsl:choose>
       <xsl:when test="@note:mark">
 	<xsl:attribute name="mark">
-	  <xsl:value-of select="@note:mark"/>
+	  <xsl:choose>
+	    <xsl:when test="string-length(@note:auto)>0">
+	      <xsl:value-of select="@note:auto"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="@note:mark"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</xsl:attribute>
       </xsl:when>
       <xsl:when test="@note:label">
