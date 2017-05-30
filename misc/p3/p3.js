@@ -518,14 +518,43 @@ showNote(e,nid,trans) {
     // posx and posy contain the mouse position relative to the document
     // Do something with this information
     note=document.getElementById(nid);
+
+
+//    alert('Event is at xy '+posx+'x'+posy);
     
+    jQsel = "#"+nid;
+    nidh = $(jQsel).height();
+    nidw = $(jQsel).width();
+//    alert('Note '+jQsel+' is '+nidh+'hx'+nidw+'w');
+    
+    p3rh = $("#p3right").height() - 100;
+    p3rw = $("#p3right").width();
+//    alert('Container is '+p3rh+'hx'+p3rw+'w');
+
     if (note.style.visibility != "visible") {
 	if (trans) {
 	    note.style.left = (posx-200)+'px';
 	} else {
 	    note.style.left = posx+'px';
 	}
-	note.style.top = posy+'px';
+
+	spaceup = posy;
+	spacedn = p3rh-posy;
+
+	notehalf = nidh/2;
+
+	if (notehalf <= spaceup && notehalf <= spacedn) {
+//	    alert('middle');
+	    note.style.top = (posy/2)+'px';
+	} else if (notehalf >= spaceup) {
+//	    alert('below');
+	    note.style.top = posy;
+	} else {
+//	    alert('above');
+	    //	    note.style.top = posy+'px';
+	    note.style.top = (posy-nidh)+'px';
+	}
+	
 	note.style.visibility='visible';
 	note.style.zIndex = 3;
     }

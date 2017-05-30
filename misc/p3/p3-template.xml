@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css" title="projcss"/>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3-transonly.js" type="text/javascript"><![CDATA[ ]]></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"><![CDATA[ ]]></script>
 @@ga@@
     <title>@@project@@</title>
   </head>
