@@ -2024,6 +2024,7 @@ xmd_geojson {
 	    } else {
 		print GJ ",\n";
 	    }
+	    $val = jsonify($val) if $val =~ /["\\\x80-\xa0]/;
 	    print GJ "\t\t\t\"$key\": \"$val\"";
 	}
     }
