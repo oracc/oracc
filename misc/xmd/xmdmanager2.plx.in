@@ -2024,7 +2024,7 @@ xmd_geojson {
 	    } else {
 		print GJ ",\n";
 	    }
-	    $val = jsonify($val) if $val =~ /["\\\x80-\xa0]/;
+	    $val = jsonify($val) if $val =~ /["\\\x00-\x1f\x80-\xa0]/;
 	    print GJ "\t\t\t\"$key\": \"$val\"";
 	}
     }
@@ -2080,7 +2080,7 @@ xmd_json_item {
 	    } else {
 		print J ",\n";
 	    }
-	    $val = jsonify($val) if $val =~ /["\\\x80-\xa0]/;
+	    $val = jsonify($val) if $val =~ /["\\\x00-\x1f\x80-\xa0]/;
 	    print J "\t\t\t\"$key\": \"$val\"";
 	    if ($i == $prov_index) {
 		if ($pl_id) {
@@ -2103,7 +2103,7 @@ jsonify {
     $tmp =~ s/"/\000"/g;
     $tmp =~ s/\\/\000\\/g;
     $tmp =~ tr/\000/\\/;
-    $tmp =~ tr/\x80-\x9f//d;
+    $tmp =~ tr/\x00-\x1f\x80-\x9f//d;
     $tmp =~ tr/\t\xa0/  /;
     $tmp;
 }
