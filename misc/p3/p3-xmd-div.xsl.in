@@ -121,7 +121,16 @@
     </xsl:call-template>
   </xsl:variable>
 
-  <li><a href="http://oracc.org/{$project}/{$text}/html">Print text</a></li>
+  <li>
+    <a href="http://oracc.org/{$project}/{$text}/html">Print text</a>
+    <xsl:for-each select="/*/md:cat/md:trans/*">
+      <xsl:if test="not(text()='en')">
+	<span class="transprint">
+	  <a href="http://oracc.org/{$project}/{$text}/html/{text()}"><xsl:value-of select="text()"/></a>	  
+	</span>
+      </xsl:if>
+    </xsl:for-each>
+  </li>
 
   <xsl:if test="/*/md:cat/md:has-score[.='1']">
     <li><a href="javascript:popupXSF('{$project}','{$text}')">Score</a></li>
