@@ -176,6 +176,9 @@ res_is_lang(const char *e)
   if (e)
     {
       const char *x = NULL;
+      /* if (strlen(e) == 2)
+	return 1;
+	else */ 
       if (strlen(e) == 3)
 	{
 	  while (*e && *e >= 'a' && *e <= 'z')
@@ -473,6 +476,16 @@ uri_patterns(void)
       components[i].text = elements[i];
       if (!component_type(&components[i]))
 	break;
+    }
+
+  if (nelements - i == 1 
+      && components[i-1].type == C_FORMAT
+      && strlen(components[i].text) == 2)
+    {
+      /* Two letter codes are taken as modern languages and treated as
+	 selectors for the resource/format language */
+      components[i].type = C_SEL;
+      ++i;
     }
 
   /* If we didn't parse the whole thing it may be a different type of
