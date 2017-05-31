@@ -2118,16 +2118,30 @@ jsonify {
 
 sub
 load_translist {
-    open(T,'01bld/translist.txt') || return;
-    while (<T>) {
-	chomp;
-	my @p = split(/\s+/,$_);
-	my $pqx = shift @p;
-	foreach my $p (@p) {
-	    ++${$translist{$pqx}}{$p};
+    if (open(T,'01bld/translist.txt')) {
+	while (<T>) {
+	    chomp;
+	    my @p = split(/\s+/,$_);
+	    my $pqx = shift @p;
+	    foreach my $p (@p) {
+		++${$translist{$pqx}}{$p};
+	    }
 	}
+	close(T);
     }
-    close(T);
+    if (open(T,'01bld/proxtrans.txt')) {
+	while (<T>) {
+	    chomp;
+	    my @p = split(/\s+/,$_);
+	    my $pqx = shift @p;
+	    foreach my $p (@p) {	
+		unless ($translist{$pqx}) {
+		    ++${$translist{$pqx}}{$p};
+		}
+	    }
+	}
+	close(T);
+    }
 }
 
 sub
