@@ -8,12 +8,14 @@ use ORACC::JSON;
 my %howto = ();
 xcl_howtos();
 
+my $output = '';
 my $singles_mode = 0;
 
 my $projxtf = shift @ARGV;
 if ($projxtf eq '-s') {
     $singles_mode = 1;
     $projxtf = shift @ARGV;
+    $output = shift @ARGV;
 }
 
 die "xcl-json.plx: must give project:PQXID on commandline\n"
@@ -26,10 +28,10 @@ my $xtf = "$ENV{'ORACC'}/bld/$project/$four/$PQX/$PQX.xtf";
 die "xcl-json.plx: no such file $xtf\n"
     unless -r $xtf;
 
-if ($singles_mode) {
-    my $json = "$ENV{'ORACC'}/www/$project/corpusjson/$PQX.json";
-#    open(OUT,"|jq . >$json");
-    open(OUT,">$json"); select OUT;
+if ($singles_mode) { 
+    open(OUT,">$output") || die "xcl-json.plx: can't write output $output\n";
+    select OUT;
+    warn "creating $output\n";
 }
 
 my %frags = ();

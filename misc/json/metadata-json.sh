@@ -1,11 +1,12 @@
 #!/bin/sh
-project=$1
+project=`oraccopt`
 
+xsltproc ${ORACC}/lib/scripts/config-json.xsl 02xml/config.xml >01bld/json/config.json
 # this builds witnesses.json
 linknorm-json.plx $project
-formats-json.plx >>01bld/formats.json
+formats-json.plx >01bld/json/formats.json
 
-(cd $ORACC_BUILDS/$project/01bld ;
+(cd $ORACC_BUILDS/$project/01bld/json ;
  echo '{' >metadata.json
  echo '	"type": "metadata",' >>metadata.json
  projprop="\"project\": \"$project\","
@@ -20,3 +21,5 @@ formats-json.plx >>01bld/formats.json
  echo >>metadata.json
  echo '}' >>metadata.json
  )
+
+rm -f 01bld/json/{config,formats,witnesses}.json

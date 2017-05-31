@@ -2,7 +2,6 @@
 use warnings; use strict;
 
 my %have = ();
-#my $prefix = "/home/oracc/rimanum/";
 my $prefix='';
 
 @{$have{'atf'}} = `cat ${prefix}01bld/lists/withatf`; chomp @{$have{'atf'}};

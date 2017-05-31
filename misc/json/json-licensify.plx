@@ -17,6 +17,7 @@ while (<>) {
             while (<>) {
                 print;
             }
+	    last;
         }
     }
 }
