@@ -44,6 +44,7 @@ my %catd_fields = ();
 #my %extra_catd = ();
 my $geojson_first = 1;
 my $json_first = 1;
+
 my $no_xmd = 0;
 my $onebigfile = 1;
 my $output_all = 1;
@@ -161,6 +162,11 @@ unless ($project eq 'cdli') {
 
 if (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
+}
+
+my %translist = ();
+if (-r '01bld/translist.txt') {
+    load_translist();
 }
 
 extra_init_hash();
@@ -1504,6 +1510,8 @@ xmd_end {
     dump_images($id);
 
     ### This is where to insert extra fields
+    dump_translist($id);
+    
 #    extra_meta($id);
 
 #    print '</cat>';
@@ -2106,6 +2114,30 @@ jsonify {
     $tmp =~ tr/\x00-\x1f\x80-\x9f//d;
     $tmp =~ tr/\t\xa0/  /;
     $tmp;
+}
+
+sub
+load_translist {
+    open(T,'01bld/translist.txt') || return;
+    while (<T>) {
+	chomp;
+	my @p = split(/\s+/,$_);
+	my $pqx = shift @p;
+	foreach my $p (@p) {
+	    ++${$translist{$pqx}}{$p};
+	}
+    }
+    close(T);
+}
+
+sub
+dump_translist {
+    my $id = shift;
+    my $tl = ($translist{$id} ? $translist{$id} : undef);
+    if ($tl) {
+	push @{$xmd_outputs{$curr_xmd}},
+		"<trans>", map({ "<tr>$_</tr>" } keys %$tl), '</trans>';
+    }
 }
 
 1;
