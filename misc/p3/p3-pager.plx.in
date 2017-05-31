@@ -139,7 +139,7 @@ if ($rt{'prod'} eq 'list') {
 	my %projects = (); @projects{@projects} = ();
 	my $nprojects = scalar keys %projects;
 	if ($nprojects == 1) {
-	    $tmp{'project'} = $p{'project'} = $projects[0];
+	    $p{'project'} = $projects[0];
 	}
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
