@@ -218,22 +218,42 @@ line_print(FILE *fp, const char *project, const char*line_id, const char *id)
 }
 
 void
+line_print2(FILE *fp, const char *project, const char*line_id, const char *end_id, const char *id)
+{
+  fprintf(outfp, "%s:%s %s %s\n", project, line_id, end_id, id);
+}
+
+void
 line_controller(char *id)
 {
-  char *line_id = malloc(strlen(id)+1), *dot;
+  char *line_id = malloc(strlen(id)+1), *dot, *plus;
   strcpy(line_id, skip_project(id));
   if ((dot = strchr(line_id, '.')))
     {
       if ((dot = strchr(dot+1, '.')))
 	*dot = '\0';
     }
-  line_print(outfp, project_of(id), line_id, skip_project(id));
+  if ((plus = strrchr(id,'+')))
+    {
+      char *end_id = malloc(strlen(++plus));
+      strcpy(end_id,plus);
+      if ((dot = strchr(end_id, '.')))
+	{
+	  if ((dot = strchr(dot+1, '.')))
+	    *dot = '\0';
+	}
+      line_print2(outfp, project_of(id), line_id, end_id, skip_project(id));
+    }
+  else
+    {
+      line_print(outfp, project_of(id), line_id, skip_project(id));
+    }
 }
 
 int
 main (int argc, char **argv)
 {
-#define _MAX_ID 32
+#define _MAX_ID 2048
   char idbuf[_MAX_ID], *id;
   options(argc, argv, "i:I:klo:p:r:u");
 
@@ -269,7 +289,7 @@ main (int argc, char **argv)
       if (id_arg)
 	kwic_controller(id_arg);
       else
-	while (NULL != (id = fgets(idbuf,_MAX_PATH,infp)))
+	while (NULL != (id = fgets(idbuf,_MAX_ID,infp)))
 	  kwic_controller(no_newline(id));
       kwic_term();
     }
@@ -278,7 +298,7 @@ main (int argc, char **argv)
       if (id_arg)
 	line_controller(id_arg);
       else
-	while (NULL != (id = fgets(idbuf,_MAX_PATH,infp)))
+	while (NULL != (id = fgets(idbuf,_MAX_ID,infp)))
 	  line_controller(no_newline(id));      
     }
   else
