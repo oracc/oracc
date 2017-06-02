@@ -15,6 +15,8 @@ if (-d $dir) {
 }
 system 'mkdir','-p',$dir;
 
+warn "Creating corpus json for $project\n";
+
 open(OUT,">$bldjson/corpus.json");
 print OUT "{\n\"type\": \"corpus\",\n\"project\": \"$project\",\n\"members\": {\n";
 
@@ -38,5 +40,7 @@ if (-r $list) {
 
 print OUT "\n}\n}\n";
 close(OUT);
+
+warn "\n";
 
 1;

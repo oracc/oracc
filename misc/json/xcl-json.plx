@@ -31,7 +31,7 @@ die "xcl-json.plx: no such file $xtf\n"
 if ($singles_mode) { 
     open(OUT,">$output") || die "xcl-json.plx: can't write output $output\n";
     select OUT;
-    warn "creating $output\n";
+    warn "Creating $output\n";
 }
 
 my %frags = ();

@@ -11,6 +11,8 @@ project=`oraccopt`
 jsondir=01bld/json
 rm -fr $jsondir ; mkdir $jsondir
 
+jsonlog=01tmp/json.log
+
 echo "o2-json.sh: generating JSON for $project"
 
 mv 01bld/catalogue.json 01bld/cat.geojson $jsondir
@@ -19,15 +21,21 @@ echo "o2-json.sh: metadata ..."
 metadata-json.sh
 
 echo "o2-json.sh: corpus ..."
-corpus-json.plx
+corpus-json.plx >$jsonlog 2>&1
 
 echo "o2-json.sh: indexes ..."
-index-json.sh
-
-echo "o2-json.sh: manifest ..."
+index-json.sh >>$jsonlog 2>&1
 
 echo "o2-json.sh: validating and adding licensing ..."
-validate-json.sh
+validate-json.sh >>$jsonlog 2>&1
+
+errors-json.plx
+if [ -r 01tmp/json-error.log ];
+then
+    echo "o2-json.sh: internal errors detected in JSON processing; please tell Steve"
+else
+    echo o2-json.sh: JSON created and validated without errors
+fi
 
 echo "o2-json.sh: zipping json ..."
 zip=`zip-json.sh`
