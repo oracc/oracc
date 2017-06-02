@@ -32,7 +32,11 @@ validate-json.sh
 echo "o2-json.sh: zipping json ..."
 zip=`zip-json.sh`
 
-mv 01bld/json/$zip 02www
-rm -fr 01bld/json
+ORACCJSON=$ORACC_BUILDS/www/json
+mkdir -p $ORACCJSON
+mv 01bld/json/$zip $ORACCJSON
+chmod o+r $ORACCJSON/$zip
+
+#rm -fr 01bld/json
 
 echo "o2-json.sh: $zip created and public"

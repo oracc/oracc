@@ -65,6 +65,15 @@ cat_index_html(const char *dir)
 }
 
 void
+cat_zip(const char *zpath, const char *zname)
+{
+  print_hdr_zip(zname);
+  fprintf(stderr,"oracc-despatcher/cat_zip: %s\n", zpath);
+  execl("/bin/cat", "cat", zpath, NULL);
+  perror("execl failed");
+}
+
+void
 corpus(void)
 {
   if (project)

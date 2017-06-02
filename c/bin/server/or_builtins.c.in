@@ -13,6 +13,7 @@ static void voltemplate(void);
 static void datestamp(void);
 static void itemmain(const char *session, const char *list);
 static void itemside(const char *session, const char *list);
+static void json_zip(const char *project);
 static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
@@ -49,7 +50,7 @@ or_builtins(void)
 	      else
 		do404();
 	      break;
-	    case B_FIND:	      
+	    case B_FIND:
 	      find(project, query_string);
 	      break;
 	    case B_XFORMS:
@@ -99,6 +100,9 @@ or_builtins(void)
 	      break;
 	    case B_SRV:
 	      serve_status();
+	      break;
+	    case B_JSON:
+	      json_zip(project);
 	      break;
 	    case B_NONE:
 	      break;
@@ -228,6 +232,22 @@ itemside(const char *session, const char *list)
   static char buf[1024];
   sprintf(buf,"/var/tmp/oracc/pager/%s/%s/itemside.html",session,list);
   cat_file(buf);
+}
+
+static void
+json_zip(const char *project)
+{
+  char *p = malloc(strlen(project)+1), *p2;
+  char *buf = malloc(2*(strlen(project))+strlen("/@@ORACC@@/www/json/")+3);
+  char *buf2 = NULL;
+  strcpy(p,project);
+  for (p2 = p; *p2; ++p2)
+    if ('/' == *p2)
+      *p2 = '-';
+  buf2 = malloc(strlen(p)+5);
+  sprintf(buf,"@@ORACC@@/www/json/%s.zip",p);
+  sprintf(buf2,"%s.zip",p);
+  cat_zip(buf,buf2);
 }
 
 static void

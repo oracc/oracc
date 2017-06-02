@@ -158,6 +158,14 @@ print_hdr_xml(void)
 }
 
 void
+print_hdr_zip(const char *zname)
+{
+  fprintf(stdout,
+	  "Content-type: application/zip\nContent-disposition: attachment; filename=\"%s\"\n\n", zname);
+  fflush(stdout);
+}
+
+void
 print_xforms_pi(void)
 {
   puts("<?xml-stylesheet href=\"/xsltforms/xsltforms.xsl\" type=\"text/xsl\"?>");

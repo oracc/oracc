@@ -230,6 +230,7 @@ find_project(char *script_url)
     {
       project = script_url+1;
       setenv("ORACC_PROJECT", project, 1);
+      fprintf(stderr, "found project: %s\n", project);
       if (save)
 	++dir_end;
       return dir_end;
