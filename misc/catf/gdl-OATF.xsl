@@ -195,6 +195,9 @@
     <xsl:when test="@g:type='ellipsis'">
       <xsl:text>...</xsl:text>
     </xsl:when>
+    <xsl:when test="@g:type='empty'">
+      <!-- this is a carrier for the g:delim that will be output next -->
+    </xsl:when>
     <xsl:when test="@g:type='newline'">
       <xsl:text>;</xsl:text>
     </xsl:when>
