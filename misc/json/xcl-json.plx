@@ -52,7 +52,7 @@ my $xtf_nons = join('', @in);
 my $xxtf = load_xml_string($xtf_nons);
 my $xcl = $xxtf->getDocumentElement()->lastChild();
 
-if ($xcl && $xcl->localName() eq 'xcl_xcl') {
+if ($xcl && $xcl->localName() && $xcl->localName() eq 'xcl_xcl') {
     ORACC::JSON::iterate($xcl);
 }
 
