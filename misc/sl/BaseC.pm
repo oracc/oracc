@@ -193,33 +193,33 @@ xforms {
     @f;
 }
 
-sub
-xhomophones {
-    my ($hlist,$alias) = ($db{$_[0],'h'}, $_[1]);
-    my @h = ();
-    if ($hlist) {
-	foreach my $h (split(/\s+/, $hlist)) {
-	    $h =~ s,^(.*)/,,;
-	    my $hid = $1;
-	    my $htmp = $_[0];
-	    Encode::_utf8_on($htmp);
-	    if ($h ne '0') {
-		$h = 'x' if $h == 1000;
-		$h =~ tr/x0-9/ₓ₀-₉/;
-		$htmp .= $h;
-	    }
-	    push @h, $htmp.'('.sign_of($hid).')';
-	}
-    } else {
-	push @h, $_[0];
-    }
-
-    if ($alias) {
-	map { alias($_) } @h;
-    } else {
-	@h;
-    }
-}
+#sub
+#xhomophones {
+#    my ($hlist,$alias) = ($db{$_[0],'h'}, $_[1]);
+#    my @h = ();
+#    if ($hlist) {
+#	foreach my $h (split(/\s+/, $hlist)) {
+#	    $h =~ s,^(.*)/,,;
+#	    my $hid = $1;
+#	    my $htmp = $_[0];
+#	    Encode::_utf8_on($htmp);
+#	    if ($h ne '0') {
+#		$h = 'x' if $h == 1000;
+#		$h =~ tr/x0-9/ₓ₀-₉/;
+#		$htmp .= $h;
+#	    }
+#	    push @h, $htmp.'('.sign_of($hid).')';
+#	}
+#    } else {
+#	push @h, $_[0];
+#    }
+#
+#    if ($alias) {
+#	map { alias($_) } @h;
+#    } else {
+#	@h;
+#    }
+#}
 
 sub
 xlist {

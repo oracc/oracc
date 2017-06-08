@@ -21,6 +21,8 @@ my $skipping = 0;
 open(G,$glo);
 while (<G>) {
     chomp;
+    tr/∼/~/ 
+	&& warn "$glo:$.: autocorrectded Unicode tilde (∼)--please change to ~ in source file\n";
     if (/^\@lang\s+(\S+)/) {
 	$lang = $1;
     } if (/^\@parts/) {
