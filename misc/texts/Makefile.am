@@ -2,7 +2,7 @@ include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	ls1R2lst.plx atflinks.plx linknorm.plx linknorm-json.plx \
-	formats-json.plx translist.sh proxtrans.sh
+	formats-json.plx translist.sh proxtrans.sh fixtilde.plx
 
 proj-linkbase.sh: proj-linkbase.sh.in
 	$(ORACCIFY) proj-linkbase.sh.in
