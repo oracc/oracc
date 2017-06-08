@@ -1,9 +1,9 @@
 #!/bin/sh
 project=`oraccopt`
 zip=`/bin/echo -n $project | tr / -` ;
-zip="${zip}.zip" ;
-(cd 01bld/json ;
- rm -f $zip ; zip -q -r $zip *.json corpusjson ;
+zip="$ORACC_BUILDS/www/json/${zip}.zip" ;
+(cd $ORACC_BUILDS/jsn ;
+ rm -f $zip ; zip -q -r $zip $project
  chmod 0644 $zip ;
  )
 /bin/echo -n $zip

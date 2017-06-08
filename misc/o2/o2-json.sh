@@ -1,4 +1,5 @@
 #!/bin/sh
+
 JSON=`oraccopt . json`
 
 if [ "$JSON" == "no" ]; then
@@ -8,8 +9,39 @@ fi
 
 shopt -s nullglob
 project=`oraccopt`
-jsondir=01bld/json
-rm -fr $jsondir ; mkdir $jsondir
+
+if [ "$project" == "" ]; then
+    echo o2-json.sh: must be run from a project directory. Stop.
+    exit
+fi
+
+function has_jsonable {
+    if [ -s 01bld/cdlicat.xmd ]; 
+	then return 1
+    fi
+    if [ -s 01bld/lists/have-xtf.lst ]; 
+	then return 1
+    fi
+    if [ -s 01bld/lists/proxy-atf.lst ]; 
+	then return 1
+    fi
+    for glo in 00lib/*.glo ; do
+	if [ -s $glo ]; 
+	then return 1
+	fi
+    done
+    return 0
+}
+
+has_jsonable 
+if [ $? == 0 ]
+then
+    echo "o2-json.sh: $project has no jsonable files. Stop."
+    exit 0
+fi
+
+(cd $ORACC_BUILDS/jsn; mkdir -p $project; cd $project; rm -fr *)
+(cd 01bld; rm -fr json; ln -sf $ORACC_BUILDS/jsn/$project json)
 
 jsonlog=01tmp/json.log
 
@@ -40,11 +72,6 @@ fi
 echo "o2-json.sh: zipping json ..."
 zip=`zip-json.sh`
 
-ORACCJSON=$ORACC_BUILDS/www/json
-mkdir -p $ORACCJSON
-mv 01bld/json/$zip $ORACCJSON
-chmod o+r $ORACCJSON/$zip
-
-#rm -fr 01bld/json
+rm -fr 01bld/json/*
 
 echo "o2-json.sh: $zip created and public"
