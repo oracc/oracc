@@ -342,9 +342,18 @@ static int
 is_ignorable(union xcl_u *u)
 {
   /* for now simply ignore all discontinuities */
-  return u->c->node_type == xcl_node_d
-    || (u->c->node_type == xcl_node_l
-	&& (u->l->f && BIT_ISSET(u->l->f->instance_flags,F2_FLAGS_PSU_SKIP)));
+  if (u->c->node_type == xcl_node_d)
+    {
+      return 1;
+    }
+  if (u->c->node_type == xcl_node_l)
+    {
+      if (u->l->f && BIT_ISSET(u->l->f->instance_flags,F2_FLAGS_PSU_SKIP))
+	{
+	  return 1;
+	}
+    }
+  return 0;
 }
 
 static int

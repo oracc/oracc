@@ -296,8 +296,6 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	  master_lp = lp;
 	}
 
-      lp->f->instance_flags = iflags;
-
       /* This inner loop splits on '|'; it is where each lemma is actually
 	 handled */
       while (1)
@@ -335,9 +333,9 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 
 	  if (BIT_ISSET(iflags,F2_FLAGS_LEM_NEW))
 	    {
-	      char *tmp = malloc(strlen(lem) + 2);
+	      char *tmp = malloc(strlen((const char *)lem) + 2);
 	      sprintf(tmp, "+%s", lem);
-	      lem = npool_copy(tmp, xc->pool);
+	      lem = npool_copy((unsigned char *)tmp, xc->pool);
 	      free(tmp);
 	    }
 
@@ -351,6 +349,7 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	      f = mb_new(xc->sigs->mb_ilem_forms);
 	      /* f->newflag = newflag; */
 	      lp->f->ref = master_formp->ref;
+	      f->instance_flags = iflags;
 	      f->f2.lang = master_formp->f2.lang;
 	      f->f2.core = master_formp->f2.core;
 	      f->f2.form = master_formp->f2.form;
@@ -375,6 +374,7 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	  else
 	    {
 	      lp->f->sublem = (char*)npool_copy(lem,xc->pool);
+	      lp->f->instance_flags = iflags;
 	      curr_f = lp->f;
 	      if (BIT_ISSET(iflags, F2_FLAGS_LEM_NEW))
 		{
