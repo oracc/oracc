@@ -18,13 +18,15 @@ if [ -r 02pub/lem/lem.dbi ]; then
     sedbg -p $project -i lem | index-json.plx $project lem  >01bld/json/index-lem.json
 fi
 
-for a in 02pub/cbd/* ; do 
-    lang=`basename $a`
-    if [ -r 02pub/cbd/$lang/cbd.dbi ]; then
+for a in 01bld/*/*.g2x ; do 
+    lang=`basename $a .g2x`
+    if [ -s $a ]; then
 	echo Creating $lang index
 	cbd-json.plx ${project}:$lang >01bld/json/gloss-$lang.json
-	sort -u -o $a/mangle.tab $a/mangle.tab
-	sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang  >01bld/json/index-$lang.json
+	mangletab=02pub/cbd/$lang/mangle.tab
+	sort -u -o $mangle.tab $mangletab
+	sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang \
+	    >01bld/json/index-$lang.json
     fi
 done
 

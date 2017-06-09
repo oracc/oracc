@@ -20,23 +20,27 @@ system 'mkdir','-p',$dir;
 warn "Creating corpus json for $project\n";
 
 open(OUT,">$bldjson/corpus.json");
-print OUT "{\n\"type\": \"corpus\",\n\"project\": \"$project\",\n\"members\": {\n";
+print OUT "{\n\"type\": \"corpus\",\n\"project\": \"$project\"";
 
 if (-r $list) {
     my @texts = `cat $list`; chomp @texts;
-    $has_corpus = 1 if $#texts >= 0;
-    foreach my $t (@texts) {
-	my ($project,$PQX) = split(/:/, $t);
-	my ($four) = ($PQX =~ /^(....)/);
-	my $xtf = "$ENV{'ORACC_BUILDS'}/bld/$project/$four/$PQX/$PQX.xtf";
-	if (-r $xtf) {
-	    print OUT "," if $texts++;
-	    my $json = "corpusjson/$PQX.json";
-	    print OUT "\"$PQX\": \"$json\"";
-	    system("$ENV{'ORACC'}/bin/xcl-json.plx -s $t $dir/$PQX.json");
-	} else {
-	    warn "corpus-json.plx: no such file $xtf\n"
+    if ($#texts > 0){
+	print OUT ",\n\"members\": {\n";
+	$has_corpus = 1;
+	foreach my $t (@texts) {
+	    my ($project,$PQX) = split(/:/, $t);
+	    my ($four) = ($PQX =~ /^(....)/);
+	    my $xtf = "$ENV{'ORACC_BUILDS'}/bld/$project/$four/$PQX/$PQX.xtf";
+	    if (-r $xtf) {
+		print OUT "," if $texts++;
+		my $json = "corpusjson/$PQX.json";
+		print OUT "\"$PQX\": \"$json\"";
+		system("$ENV{'ORACC'}/bin/xcl-json.plx -s $t $dir/$PQX.json");
+	    } else {
+		warn "corpus-json.plx: no such file $xtf\n"
+	    }
 	}
+	print OUT "}\n";
     }
 }
 
@@ -45,17 +49,18 @@ if (-r $proxies) {
     if ($#texts >= 0) {
 	my $nprox = 0;
 	$has_corpus = 1;
-	print OUT "}\n\"proxies\": {\n";
+	print OUT ",\n\"proxies\": {\n";
 	foreach my $t (@texts) {
 	    my ($project,$PQX) = split(/:/, $t);
 	    $PQX =~ s/\@.*$//;
 	    print OUT "," if $nprox++;
 	    print OUT "\"$PQX\": \"$project\"";
 	}
+	print OUT "}\n";
     }
 }
 
-print OUT "\n}\n}\n";
+print OUT "\n}\n";
 close(OUT);
 
 unlink "$bldjson/corpus.json"

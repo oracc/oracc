@@ -41,23 +41,25 @@ while (<L>) {
 }
 close L;
 
-my $count = 0;
-open(J, ">01bld/json/witnesses.json");
-print J "\t\"witnesses\": {\n";
-foreach my $id (sort keys %l) {
-    print J "\t\t},\n" if $count++;
-    print J "\t\t\"$id\": {\n";
-    my %data = %{$l{$id}};
-    my $ntypes = 0;
-    foreach my $type (sort keys %data) {
-	my $str = join(',', map { "\"$_\"" } @{$data{$type}});
-	print J ",\n" if $ntypes++;
-	print J <<EOJ;
+if (scalar keys %l) {
+    my $count = 0;
+    open(J, ">01bld/json/witnesses.json");
+    print J "\t\"witnesses\": {\n";
+    foreach my $id (sort keys %l) {
+	print J "\t\t},\n" if $count++;
+	print J "\t\t\"$id\": {\n";
+	my %data = %{$l{$id}};
+	my $ntypes = 0;
+	foreach my $type (sort keys %data) {
+	    my $str = join(',', map { "\"$_\"" } @{$data{$type}});
+	    print J ",\n" if $ntypes++;
+	    print J <<EOJ;
 			"$type": [ $str ]
 EOJ
+	}
     }
+    print J "\t\t}\n\t}";
+    close(J);
 }
-print J "\t\t}\n\t}";
-close(J);
 
 1;

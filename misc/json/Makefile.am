@@ -6,6 +6,7 @@ bin_SCRIPTS = \
 	metadata-json.sh \
 	manifest-json.sh manifest-json.plx \
 	validate-json.sh json-licensify.plx \
+	formats-json.plx linknorm-json.plx \
 	zip-json.sh errors-json.plx
 scriptdata_DATA = 
 data_DATA = 

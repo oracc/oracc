@@ -16,8 +16,9 @@ print "\t\"type\": \"index\",\n\t\"project\":\"$project\",\n\t\"name\": \"$index
 print "\t\"keys\": [";
 
 while (<>) {
-    if (/^key\s+(\S+)\s+has\s+(\d+)/) {
-	my $k = $1;
+    chomp;
+    if (/^key\s+(.*?)\s+has\s+(\d+)\s+locations$/) {
+	my ($k,$count) = ($1,$2);
 	my $jkey = jsonify($k);
 	if ($nkeys) {
 	    print "\n\t\t]},{\n";
@@ -25,20 +26,24 @@ while (<>) {
 	    print "{\n";
 	    $nkeys = 1;
 	}
-	print "\t\t\"key\": \"$jkey\",\n\t\t\"count\": \"$2\",\n\t\t\"instances\": [\n\t\t\t";
+	print "\t\t\"key\": \"$jkey\",\n\t\t\"count\": \"$count\",\n\t\t\"instances\": [\n\t\t\t";
 	$ninst = 0;
     } else {
 	print "," if $ninst;
 	my($id) = (m/^\s+t=(.*?)\%/);
-	if ($index =~ /^txt|lem|tra$/) {
-	    my($u,$w) = (m/u=(\d+);w=(\d+);/);
-	    if ($index eq 'tra') {
-		print "\"${id}_project-en.$u.$w\"";
+	if ($id) {
+	    if ($index =~ /^txt|lem|tra$/) {
+		my($u,$w) = (m/u=(\d+);w=(\d+);/);
+		if ($index eq 'tra') {
+		    print "\"${id}_project-en.$u.$w\"";
+		} else {
+		    print "\"$id.$u.$w\"";
+		}
 	    } else {
-		print "\"$id.$u.$w\"";
+		print "\"$1\"";
 	    }
 	} else {
-	    print "\"$1\"";
+	    print "\"$_\"";
 	}
 	++$ninst;
     }

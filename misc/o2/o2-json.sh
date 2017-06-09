@@ -47,7 +47,13 @@ jsonlog=01tmp/json.log
 
 echo "o2-json.sh: generating JSON for $project"
 
-mv 01bld/catalogue.json 01bld/cat.geojson $jsondir
+if [ -r 01bld/cat.geojson ]; then
+    cp 01bld/cat.geojson 01bld/json/
+fi
+
+if [ -r 01bld/catalogue.json ]; then
+    cp -f 01bld/catalogue.json 01bld/json/
+fi
 
 echo "o2-json.sh: metadata ..."
 metadata-json.sh
@@ -64,14 +70,12 @@ validate-json.sh >>$jsonlog 2>&1
 errors-json.plx
 if [ -r 01tmp/json-error.log ];
 then
-    echo "o2-json.sh: internal errors detected in JSON processing; please tell Steve"
+    echo "o2-json.sh: internal errors in JSON processing; please tell Steve."
+    echo "o2-json.sh: skipping zipping JSON."
 else
-    echo o2-json.sh: JSON created and validated without errors
+    echo "o2-json.sh: zipping json ..."
+    zip=`zip-json.sh`
+    rm -fr 01bld/json/*
+    echo "o2-json.sh: JSON created and validated without errors."
+    echo "o2-json.sh: $zip is now public"
 fi
-
-echo "o2-json.sh: zipping json ..."
-zip=`zip-json.sh`
-
-rm -fr 01bld/json/*
-
-echo "o2-json.sh: $zip created and public"

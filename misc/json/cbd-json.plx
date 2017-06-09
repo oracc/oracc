@@ -63,6 +63,8 @@ glossary_howtos {
     $howto{'cbd_base'} = { type=>"{",nam=>'type',val=>'base',att=>'' };
     $howto{'cbd_morphs'} = { nam=>'morphs',val=>'[' };
     $howto{'cbd_morph'} = { type=>"{",nam=>'type',val=>'morph',att=>'' };
+    $howto{'cbd_morph2s'} = { nam=>'morph2s',val=>'[' };
+    $howto{'cbd_morph2'} = { type=>"{",nam=>'type',val=>'morph2',att=>'' };
     $howto{'cbd_conts'} = { nam=>'conts',val=>'[' };
     $howto{'cbd_cont'} = { type=>"{",nam=>'type',val=>'cont',att=>'' };
     $howto{'cbd_compound'} = { nam=>'compound',val=>'[' };

@@ -178,6 +178,9 @@
     <xsl:when test="@g:type='ellipsis'">
       <xsl:text>...</xsl:text>
     </xsl:when>
+    <xsl:when test="@g:type='empty'">
+      <!-- this is a carrier for the g:delim that will be output next -->
+    </xsl:when>
     <xsl:when test="@g:type='newline'">
       <xsl:text>;</xsl:text>
     </xsl:when>
@@ -452,7 +455,7 @@
 
 <xsl:template name="error">
   <xsl:param name="msg"/>
-  <xsl:message>gdl-OATF.xsl:<xsl:value-of 
+  <xsl:message>gdl-FRAGS.xsl:<xsl:value-of 
   select="ancestor-or-self::*[@xml:id][1]/@xml:id"/>: <xsl:value-of select="$msg"/></xsl:message>
 </xsl:template>
 
