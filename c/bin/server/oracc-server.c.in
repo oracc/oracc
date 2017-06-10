@@ -176,9 +176,36 @@ main(int argc, char *argv[])
   else
     uri_patterns();
   
-  /* assume it's keys for a cat search if it's one step only */
   if (nelements == 1 && !elements_used)
-    p3_fake_srch(project, "cat", elements[0]);
+    {
+      const char *json_ext = NULL;
+      if ((json_ext = strstr(elements[0],".json"))
+	  && !json_ext[5])
+	{
+	  char *zipbase = NULL, *z, *f;
+	  const char *e;
+	  zipbase = malloc(strlen(project)+1);
+	  for (e=project, z=zipbase; *e; ++e, ++z)
+	    {
+	      if (*e == '/')
+		*z = '-';
+	      else
+		*z = *e;
+	    }
+	  *z = '\0';
+	  z = malloc(strlen("@@ORACC_BUILDS")+strlen(zipbase)+strlen("/www/json/.zip")+1);
+	  sprintf(z,"%s/www/json/%s.zip", "@@ORACC_BUILDS@@", zipbase);
+	  f = malloc(strlen(project)+strlen(elements[0])+2);
+	  sprintf(f,"%s/%s",project,elements[0]);
+	  cat_json(z,f);
+	  return 0;
+	}
+      else
+	{
+	  /* assume it's keys for a cat search if it's one step only */
+	  p3_fake_srch(project, "cat", elements[0]);
+	}
+    }
 
   do404();
   return 0;

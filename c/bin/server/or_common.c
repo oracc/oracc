@@ -158,6 +158,14 @@ print_hdr_xml(void)
 }
 
 void
+print_hdr_json()
+{
+  fprintf(stdout,
+	  "Content-type: application/json\n\n");
+  fflush(stdout);
+}
+
+void
 print_hdr_zip(const char *zname)
 {
   fprintf(stdout,

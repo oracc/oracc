@@ -65,6 +65,15 @@ cat_index_html(const char *dir)
 }
 
 void
+cat_json(const char *zip, const char *file)
+{
+  print_hdr_json();
+  fprintf(stderr,"oracc-despatcher/cat_json: unzip -p %s %s\n", zip, file);
+  execl("/usr/bin/unzip", "unzip", "-p", zip, file, NULL);
+  perror("execl failed");
+}
+
+void
 cat_zip(const char *zpath, const char *zname)
 {
   print_hdr_zip(zname);

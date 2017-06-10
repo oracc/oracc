@@ -80,6 +80,7 @@ extern void listdir(const char *arg);
 extern void print_hdr(void);
 extern void print_hdr_text(void);
 extern void print_hdr_xml(void);
+extern void print_hdr_json(void);
 extern void print_hdr_zip(const char *zname);
 extern void print_xforms_pi(void);
 
@@ -87,6 +88,7 @@ extern void adhoc(const char *adhoc_texts, const char *line_id, const char *frag
 extern void cat_file(const char *file);
 extern void cat_html_file(const char *file);
 extern void cat_index_html(const char *dir);
+extern void cat_json(const char *zip, const char *file);
 extern void cat_zip(const char *zpath, const char *zname);
 extern void corpus(void);
 extern void catentry(const char *item);
