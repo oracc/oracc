@@ -23,6 +23,7 @@ int nelements;
 int debug = 0;
 
 static void decompose_script_url(const char *su);
+static int uri_json(void);
 
 const char *
 osc_status(const char *session_id)
@@ -175,39 +176,71 @@ main(int argc, char *argv[])
     or_gdf();
   else
     uri_patterns();
-  
-  if (nelements == 1 && !elements_used)
+
+  if (!uri_json())
     {
-      const char *json_ext = NULL;
-      if ((json_ext = strstr(elements[0],".json"))
-	  && !json_ext[5])
-	{
-	  char *zipbase = NULL, *z, *f;
-	  const char *e;
-	  zipbase = malloc(strlen(project)+1);
-	  for (e=project, z=zipbase; *e; ++e, ++z)
-	    {
-	      if (*e == '/')
-		*z = '-';
-	      else
-		*z = *e;
-	    }
-	  *z = '\0';
-	  z = malloc(strlen("@@ORACC_BUILDS")+strlen(zipbase)+strlen("/www/json/.zip")+1);
-	  sprintf(z,"%s/www/json/%s.zip", "@@ORACC_BUILDS@@", zipbase);
-	  f = malloc(strlen(project)+strlen(elements[0])+2);
-	  sprintf(f,"%s/%s",project,elements[0]);
-	  cat_json(z,f);
-	  return 0;
-	}
-      else
+      if (nelements == 1)
 	{
 	  /* assume it's keys for a cat search if it's one step only */
 	  p3_fake_srch(project, "cat", elements[0]);
 	}
+      else
+	do404();
+    }
+  return 0;
+}
+
+static int
+uri_json()
+{
+  const char *json_ext = NULL;
+  char *efile = NULL;
+
+  if (nelements == 2 
+      && !strcmp(elements[0],"corpusjson"))
+    {
+      json_ext = strstr(elements[1],".json");
+      if (json_ext[5])
+	json_ext = NULL;
+      else
+	{
+	  efile = malloc(strlen(elements[0])+strlen(elements[1])+2);
+	  sprintf(efile, "%s/%s", elements[0],elements[1]);
+	}
     }
 
-  do404();
+  if (!json_ext)
+    {
+      if (nelements == 1)
+	{
+	  json_ext = strstr(elements[0],".json");
+	  if (json_ext[5])
+	    json_ext = NULL;
+	  else
+	    efile = (char*)elements[0];
+	}
+    }
+  
+  if (efile)
+    {
+      char *zipbase = NULL, *z, *f;
+      const char *e;
+      zipbase = malloc(strlen(project)+1);
+      for (e=project, z=zipbase; *e; ++e, ++z)
+	{
+	  if (*e == '/')
+	    *z = '-';
+	  else
+	    *z = *e;
+	}
+      *z = '\0';
+      z = malloc(strlen("@@ORACC_BUILDS")+strlen(zipbase)+strlen("/www/json/.zip")+1);
+      sprintf(z,"%s/www/json/%s.zip", "@@ORACC_BUILDS@@", zipbase);
+      f = malloc(strlen(project)+strlen(elements[0])+2);
+      sprintf(f,"%s/%s",project,efile);
+      cat_json(z,f);
+      return 1;
+    }
   return 0;
 }
 
