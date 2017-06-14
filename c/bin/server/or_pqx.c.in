@@ -28,7 +28,9 @@ make_key_url(struct component *components)
   for (i = 1; components[i].text; ++i)
     {
       if ((components[i].type != C_VIEW || components[i].value != V_PROJECT_TYPE)
-	  && components[i].type != C_SEL)
+	  && (components[i].type != C_SEL || strlen(components[i].text) > 2)) /* print C_SEL unless
+										 it's a 2-letter
+										 lang code */
 	(void)sprintf(k + strlen(k), "%s/", components[i].text);
     }
   k[strlen(k)-1] = '\0';
