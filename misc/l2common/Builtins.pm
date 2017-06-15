@@ -341,19 +341,28 @@ acd2xml {
 			$curr_sense_id = sprintf("%06f",$sense_id++);
 			$currarg = "\#$curr_sense_id\t$currarg";
 		    } elsif ($currtag eq 'form') {
-			my $tmp = $currarg;
-			$tmp =~ s#\s/(\S+)##; # remove BASE because it may contain '$'s.
-			$tmp =~ s/^\S+\s+//; # remove FORM because it may contain '$'s.
-			my $ndoll = 0;
-			if (($ndoll = $tmp =~ tr/$/$/) > 1 
-			    && !defined($e{'parts'})) {
-			    my $nparen = ($tmp =~ s/\$\(//g);
-			    if ($ndoll - $nparen != 1) {
-				bad($currtag, "COFs must have exactly one NORM without parens");
+			my $barecheck = $currarg;
+			$barecheck =~ s/^\S+\s+//;
+			1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
+			if ($barecheck =~ /\S/) {
+			    bad($currtag, "bare word in FORM");
+			} else {
+			    my $tmp = $currarg;
+			    $tmp =~ s#\s/(\S+)##; # remove BASE because it may contain '$'s.
+			    $tmp =~ s/^\S+\s+//; # remove FORM because it may contain '$'s.
+			    my $ndoll = 0;
+			    if (($ndoll = ($tmp =~ tr/$/$/)) > 1 
+				&& !defined($e{'parts'})) {
+				my $nparen = ($tmp =~ s/\$\(//g);
+				if ($ndoll - $nparen != 1) {
+				    bad($currtag, "COFs must have exactly one NORM without parens");
+				} elsif ($ndoll < 2) {
+				    bad($currtag, "COFs must have exactly one NORM without parens");
+				}
 			    }
-			}
-			if ($currarg =~ s/^\s*<(.*?)>\s+//) {
-			    push @{$sigs{$curr_sense_id}}, $1;
+			    if ($currarg =~ s/^\s*<(.*?)>\s+//) {
+				push @{$sigs{$curr_sense_id}}, $1;
+			    }
 			}
 			my $atf = "$..\t";
 			/\s(\%\S+)/ && ($atf .= "$1 ");
