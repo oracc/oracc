@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0" 
   xmlns:c="http://oracc.org/ns/xcl/1.0"
   xmlns:g="http://oracc.org/ns/gdl/1.0"
-  xmlns:n="http://oracc.org/ns/norm/1.0/notused"
+  xmlns:n="http://oracc.org/ns/norm/1.0"
   xmlns:x="http://oracc.org/ns/xtf/1.0/notused"
   xmlns:r="http://oracc.org/ns/xtr/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -137,7 +137,7 @@
   <xsl:text>)</xsl:text>
 </xsl:template>
 
-<xsl:template match="g:r|g:s|g:v">
+<xsl:template match="g:r|g:s|g:v|n:s">
   <xsl:call-template name="g-begin"/>
   <xsl:choose>
     <xsl:when test="self::g:s">
@@ -159,6 +159,7 @@
 </xsl:template>
 
 <xsl:template match="n:w|g:w">
+<!--  <xsl:message><xsl:value-of select="name()"/></xsl:message> -->
   <xsl:value-of select="concat('&#xa;:-:',@xml:id,'&#x9;')"/>
   <xsl:call-template name="w-sub"/>
   <xsl:choose>

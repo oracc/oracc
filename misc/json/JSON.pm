@@ -101,9 +101,15 @@ use DateTime;
 #}
 #
 
+my %attmap = ();
 my %howtos = ();
 my $need_comma = 0;
 my @stack = ();
+
+sub
+setAttMap {
+    %attmap = @_ ;
+}
 
 sub
 setHowTos {
@@ -111,11 +117,21 @@ setHowTos {
 }
 
 sub
+hasElementChildren {
+    my $n = shift;
+    foreach my $c ($n->childNodes()) {
+	return 1 if $c->isa('XML::LibXML::Element');
+    }
+    return 0;
+}
+
+sub
 iterate {
     my $n = shift;
     my $ecount = 0;
-    
-    node_start($n);
+
+    # if ignore and no-descend we get a positive return from node_start and we abort recursion
+    return if node_start($n);
 
     foreach my $c ($n->childNodes()) {
 	my $isa = ref($c);
@@ -146,7 +162,11 @@ node_start {
 
 	if ($type_how eq '#ignore') {
 	    push @stack, '';
-	    return;
+	    if ($$howto{'recurse'} && $$howto{'recurse'} eq 'no') {
+		return 1;
+	    } else {
+		return 0;
+	    }
 	}
 	
 	if ($need_comma) {
@@ -190,7 +210,7 @@ node_start {
 		my $attr = undef;
 		if ($attr = $n->getAttribute($aname)) {
 		    jprint($attr);
-		    print ",\n";
+		    $need_comma = 1;
 		} else {
 		    warn "element $nm wants value from absent attribute $aname\n";
 		}
@@ -233,7 +253,7 @@ node_start {
 	attr($howto, $n,'att') if exists $$howto{'att'};
 	attr($howto, $n,'xid') if exists $$howto{'xid'};
 	
-	if ($$howto{'chld'}) {
+	if ($$howto{'chld'} && hasElementChildren($n)) {
 	    my $chld_how = $$howto{'chld'};
 	    my ($cname,$ctype) = @$chld_how;
 	    #	    print "<212>,\n" if $need_comma; $need_comma = 0;
@@ -249,6 +269,8 @@ node_start {
     } else {
 	warn "cbd-json.plx: no handler for element '",$n->nodeName,"'\n";
     }
+
+    return 0;
 }
 
 sub
@@ -307,26 +329,34 @@ attr {
 	    my %a = (); @a{@a} = ();
 	    
 	    if ($drop) {
+		my @natt = ();
 		foreach my $a (@atts) {
 		    unless (exists $a{$a->name()}) {
-			if ($need_comma) {
-			    print ",\n";
-			    $need_comma = 0;
-			}
-			print ",\n" if $nattr++;
-			jattr($a);
+			push @natt, $a;
 		    }
 		}
+		foreach my $a (@natt) {
+		    if ($need_comma) {
+			print ",\n";
+			$need_comma = 0;
+		    }
+		    print ",\n" if $nattr++;
+		    jattr($a);
+		}
 	    } else {
+		my @natt = ();
 		foreach my $a (@atts) {
 		    if (exists $a{$a->name()}) {
-			if ($need_comma) {
-			    print ",\n";
-			    $need_comma = 0;
-			}			
-			print ",\n" if $nattr++;
-			jattr($a);
+			push @natt, $a;
 		    }
+		}
+		foreach my $a (@natt) {
+		    if ($need_comma) {
+			print ",\n";
+			$need_comma = 0;
+		    }			
+		    print ",\n" if $nattr++;
+		    jattr($a);
 		}
 	    }
 	}
@@ -369,7 +399,7 @@ default_metadata {
 sub
 jattr {
     my $a = shift;
-    jprint($a->name);
+    jprint($attmap{$a->name} || $a->name);
     print ": ";
     jprint($a->value);
 }

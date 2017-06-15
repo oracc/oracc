@@ -871,7 +871,11 @@ make_cof_norm {
 	    $m =~ s/\%.*?://g;
 	    push @n, $m;
 	} else {
-	    push @n, $s{'norm'};
+	    if ($s{'norm'}) {
+		push @n, $s{'norm'};
+	    } else {
+		warn "$input:$.: bad NORM in COF\n";
+	    }
 	}
     }
     my $n = join(' ', @n);

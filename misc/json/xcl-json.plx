@@ -5,6 +5,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::JSON;
 
+my %attmap = ();
 my %howto = ();
 xcl_howtos();
 
@@ -87,6 +88,14 @@ textfrag {
 }
 
 sub
+formsigns {
+    my $n = shift;
+    my $w = $n->ownerDocument()->getElementById($n->parentNode()->getAttribute('ref'));
+    ORACC::JSON::iterate($w);
+    return '';
+}
+
+sub
 xcl_howtos {
     $howto{'xcl_xcl'} = { type=>"{",nam=>'type',val=>'cdl',att=>'-file langs',chld=>['cdl','['],
 			  hook=>\&ORACC::JSON::default_metadata
@@ -98,7 +107,7 @@ xcl_howtos {
     $howto{'xcl_ll'} = { type=>"{",nam=>'node',val=>'ll',att=>'',
 			 hook=>\&textfrag,chld=>['choices','['] };
     $howto{'xcl_l'} = { type=>"{",nam=>'node',val=>'l',att=>'-lnum',hook=>\&textfrag };
-    $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'' };
+    $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'',hook=>\&formsigns };
     $howto{'xcl_linkbase'} = { type=>"{",nam=>'linkbase',val=>'[',att=>'' };
     $howto{'xcl_linkset'} = { type=>"{",nam=>'type',val=>'linkset',att=>'',chld=>['links','['] };
     $howto{'xcl_link'} = { type=>"{",nam=>'type',val=>'link',att=>'' };
@@ -108,7 +117,49 @@ xcl_howtos {
     $howto{'xcl_prop'} = { type=>'{',nam=>'#ignore',val=>'#ignore',att=>'' };
     $howto{'xcl_para'} = { type=>'#ignore' };
     $howto{'xcl_p'} = { type=>'#ignore' };
+
+    my $gdlattr = '-gdl_status gdl_accented';
+# '-form gdl_accented gdl_queried gdl_break gdl_breakEnd gdl_breakStart gdl_status gdl_o gdl_c gdl_ho gdl_hc gdl_statusStart gdl_statusEnd';
+
+    $howto{'gdl_a'} = { type=>'{' , nam=>'a', val=>'text()', att=>$gdlattr };
+    $howto{'gdl_b'} = { type=>'{' , nam=>'b', val=>'text()', att=>$gdlattr };
+    $howto{'gdl_c'} = { type=>'{',  nam=>'c', val=>'@form', chld=>['seq','['], att=>$gdlattr.' form' };
+    $howto{'gdl_d'} = { type=>'{' , nam=>'det', val=>'d', att=>'', chld=>['seq','[']};
+    $howto{'gdl_f'} = { type=>'{' , nam=>'f', val=>'text()', att=>$gdlattr };
+    $howto{'gdl_m'} = { type=>'{' , nam=>'m', val=>'text()', att=>$gdlattr };
+    $howto{'gdl_n'} = { type=>'{' , nam=>'n', val=>'n', att=>$gdlattr };
+    $howto{'gdl_o'} = { type=>'{' , nam=>'o', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
+    $howto{'gdl_p'} = { type=>'{',  nam=>'p', val=>'@gdl_type', chld=>['punct','['], att=>'-gdl_type'.' '.$gdlattr };
+    $howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>'-form'.' '.$gdlattr };
+    $howto{'gdl_r'} = { type=>'#ignore' , nam=>'r', val=>'r', att=>'' };
+    $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
+    $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
+    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', chld=>['signs','['] };
+    $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>'-gdl_type'.' '.$gdlattr };
+    $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'gg', chld=>['group','['], att=>$gdlattr };
+
+    $howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'norm_s'} = { type=>'#ignore' };
+#    $howto{'norm_w'} = { type=>'#ignore' };
+
+    
+    $attmap{'gdl_delim'} = 'delim';
+    $attmap{'gdl_logolang'} = 'logolang';
+    $attmap{'gdl_pos'} = 'pos';
+    $attmap{'gdl_role'} = 'role';
+    $attmap{'gdl_queried'} = 'queried';
+    $attmap{'gdl_break'} = 'break';
+    $attmap{'gdl_breakEnd'} = 'breakEnd';
+    $attmap{'gdl_breakStart'} = 'breakStart';
+    $attmap{'gdl_o'} = 'o';
+    $attmap{'gdl_c'} = 'o';
+    $attmap{'gdl_ho'} = 'ho';
+    $attmap{'gdl_hc'} = 'hc';
+    $attmap{'gdl_statusStart'} = 'statusStart';
+    $attmap{'gdl_statusEnd'} = 'statusStart';
+
     ORACC::JSON::setHowTos(%howto);
+    ORACC::JSON::setAttMap(%attmap);
 }
 
 1;

@@ -148,6 +148,7 @@
       <xsl:value-of select="concat(@n, '. ')"/>
     </xsl:otherwise>
   </xsl:choose>
+<!--  <xsl:message>applying templates to line</xsl:message> -->
   <xsl:apply-templates/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>
