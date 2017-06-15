@@ -15,7 +15,7 @@ use Data::Dumper;
 
 binmode STDERR, ':utf8';
 binmode STDIN, ':utf8';
-binmode STDOUT, ':utf8';
+#binmode STDOUT, ':utf8';
 
 $ORACC::SMA::no_external_bases = 0;
 $ORACC::SMA::period = '';

@@ -44,7 +44,7 @@ Encode::_utf8_on($lemma) if $lemma;
 
 binmode STDERR, ':utf8';
 binmode STDIN,  ':utf8';
-binmode STDOUT, ':utf8';
+#binmode STDOUT, ':utf8';
 
 $ORACC::SMA::verbose = $verbose;
 
@@ -259,7 +259,9 @@ t {
 		$cont =~ s/=\+/=/;
 		$cont =~ s/^-?/-/;
 	    }
-	    syswrite STDOUT, "$base\t$cont\t$morph\t$stem\n";
+	    my $ret = "$base\t$cont\t$morph\t$stem\n";
+	    Encode::_utf8_off($ret);
+	    syswrite STDOUT, $ret;
 	    return 0;
 	} elsif ($glossary) {
 	    unless ($seen{$f}++) {
