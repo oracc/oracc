@@ -25,6 +25,11 @@ function has_jsonable {
     if [ -s 01bld/lists/proxy-atf.lst ]; 
 	then return 1
     fi
+    for asl in 00lib/*.asl ; do
+	if [ -s $asl ];
+	then return 1;
+	fi
+    done
     for glo in 00lib/*.glo ; do
 	if [ -s $glo ]; 
 	then return 1

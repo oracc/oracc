@@ -130,19 +130,20 @@ iterate {
     my $n = shift;
     my $ecount = 0;
 
-    # if ignore and no-descend we get a positive return from node_start and we abort recursion
-    return if node_start($n);
+    # if ignore and recurse=no we get a positive 
+    # return from node_start and we skip recursion
+    my $norecurse = node_start($n);
 
-    foreach my $c ($n->childNodes()) {
-	my $isa = ref($c);
-	# the input will be Oracc data, no whitespace, no mixed content
-	if ($isa eq 'XML::LibXML::Element') {
-#	    if ($ecount++) {
-#		$need_comma = 1;
-#	    }
-	    iterate($c);
+    unless ($norecurse) {
+	foreach my $c ($n->childNodes()) {
+	    my $isa = ref($c);
+	    # the input will be Oracc data, no whitespace, no mixed content
+	    if ($isa eq 'XML::LibXML::Element') {
+		iterate($c);
+	    }
 	}
     }
+    
     node_end($n);
 }
 

@@ -170,7 +170,7 @@ cuneify(const unsigned char *utf)
 
   if (!utf)
     return NULL;
-  if ((ret = cuneify_one(utf)) && strcmp(ret, "X"))
+  if ((ret = cuneify_one(utf)) && strcmp((const char *)ret, "X"))
     return ret;
   if ('|' == *utf && (ret = cuneify_sequence(split_compound(utf))))
     return ret;
@@ -188,7 +188,7 @@ cuneify_sequence(const unsigned char *seq)
   unsigned char rtab_buf[128],*rtab_bufp = rtab_buf;
   const unsigned char *rtabp = seq, *ret = NULL;
   unsigned char save = '\0';
-  /*static*/ unsigned char ret_buf[1024];
+  static unsigned char ret_buf[1024];
 
   memset(rtab_buf,'\0',128);
   memset(ret_buf,'\0',1024);

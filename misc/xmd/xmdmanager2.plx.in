@@ -1814,7 +1814,7 @@ xproject_bis {
 	    }
 	} else {
 	    my $qname = $$r[$name_index];
-	    warn "printing $pq\t$qname to QNMTAB\n";
+#	    warn "printing $pq\t$qname to QNMTAB\n";
 	    print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
 #	    $$r[$xprojects_index] = $xproject{$pq} || '';
 	}
