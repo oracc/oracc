@@ -147,7 +147,23 @@ label_to_id(const char *qualified_id, const char *label)
     {
       char *tmp = hash_find(label_table, (const unsigned char *)qualified_id);
       if (!tmp || *tmp == '1') /* files not found are have a "0" as their value in label_table */
-	fprintf(stderr, "label_to_id: %s not found\n", lbuf);
+	{
+	  char *hyphen = NULL;
+	  if ((hyphen = strchr(lbuf,'-')))
+	    {
+	      *hyphen = '\0';
+	      id = hash_find(label_table, (const unsigned char *)lbuf);
+	      if (!id)
+		{
+		  char *h = malloc(strlen(lbuf));
+		  strcpy(h,lbuf);
+		  *hyphen = '-';
+		  fprintf(stderr, "label_to_id: %s not found (tried %s as well)\n", lbuf, h);
+		}	     
+	    }
+	  else
+	    fprintf(stderr, "label_to_id: %s not found\n", lbuf);
+	}
     }
   free(lbuf);
   if (id)
