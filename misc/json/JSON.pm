@@ -105,6 +105,8 @@ my %attmap = ();
 my %howtos = ();
 my $need_comma = 0;
 my @stack = ();
+my %trigger_after = ();
+my %trigger_before = ();
 
 sub
 setAttMap {
@@ -114,6 +116,19 @@ setAttMap {
 sub
 setHowTos {
     %howtos = @_ ;
+    foreach my $k (keys %howtos) {
+	my $h = $howtos{$k};
+	if (ref($h) eq 'HASH' && $$h{'trigger'}) {
+	    my $hook = $$h{'hook'};
+	    my ($when,$attr) = ($$h{'trigger'} =~ /^(.*?)\@(.*?)$/);
+	    if ($when eq 'after') {
+		$trigger_after{"$k:$attr"} = $hook;
+	    } else {
+		$trigger_before{"$k:$attr"} = $hook;
+	    }
+	}
+    }
+#    use Data::Dumper; print STDERR Dumper(\%trigger_after); exit 0;
 }
 
 sub
@@ -151,6 +166,9 @@ sub
 node_start {
     my $n = shift;
     my $nm = $n->nodeName();
+
+  AUTO_RETRY:
+    
     my $howto = $howtos{$nm};
 
     my $type_closer = '';
@@ -169,9 +187,54 @@ node_start {
 		return 0;
 	    }
 	}
-	
+
+	# Compute val first so we can skip comma if we have an empty val in skipempty mode
+	my $val = undef;
+	my $val_need_comma = 0;
+	my $val_how = $$howto{'val'};
+	unless ($val_how eq '#ignore') {
+	    # Value must always push closer information 
+	    # onto @stack unless $val_how = #ignore
+	    if ($val_how =~ /^\@(\S+)/) {
+		my $aname = $1;
+		my $attr = undef;
+		if ($attr = $n->getAttribute($aname)) {
+		    $val = $attr;
+		    $val_need_comma = 1;
+		} else {
+		    warn "element $nm wants value from absent attribute $aname\n";
+		}
+		$val_closer = '';
+	    } elsif ($val_how =~ /^[\[\{]$/) {
+		$val = '#object';
+	    } elsif ($val_how =~ /text()/) {
+		foreach my $c ($n->childNodes()) {
+		    if ($c->isa('XML::LibXML::Text')) {
+			$val = $c->textContent();
+		    }
+		}
+		$val = '' unless $val;
+		$val_need_comma = 1;
+		$val_closer = '';
+		if (!$val && $$howto{'chld'} && hasElementChildren($n)) {
+		    $val = '#chld';
+		}
+	    } elsif (length $val_how) {
+		$val = $val_how;
+		$val_need_comma = 1;
+		$val_closer = '';
+	    } else {
+		$val = '{';
+		$val_closer = '}';
+	    }
+	}
+
+	if (!$val && $howtos{'#skipempty'}) {
+	    push @stack, '';
+	    return 0;
+	}
+
 	if ($need_comma) {
-#	    	    print "<nc>,\n";
 	    print ",\n";
 	    $need_comma = 0;
 	}
@@ -183,40 +246,31 @@ node_start {
 	
 	my $nam = $nm;
 	my $nam_how = $$howto{'nam'};
-	unless ($nam_how eq '#ignore') {
-	    if ($nam_how =~ /^\@(\S+)/) {
-		my $aname = $1;
-		my $attr = undef;
-		if ($attr = $n->getAttribute($aname)) {
-		    $nam = $attr;
-		}
-	    } elsif ($nam_how eq 'text()') {
-		$nam = $n->textContent();
-	    } elsif (length $nam_how) {
-		$nam = $nam_how;
-	    } else {
-		$nam = $nm;
+	if ($nam_how =~ /^\@(\S+)/) {
+	    my $aname = $1;
+	    my $attr = undef;
+	    if ($attr = $n->getAttribute($aname)) {
+		$nam = $attr;
 	    }
-	    jprint($nam);
-	    print ": ";
-	}
-	 
-	my $val = undef;
-	my $val_how = $$howto{'val'};
-	unless ($val_how eq '#ignore') {
-	    # Value must always push closer information 
-	    # onto @stack unless $val_how = #ignore
-	    if ($val_how =~ /^\@(\S+)/) {
-		my $aname = $1;
-		my $attr = undef;
-		if ($attr = $n->getAttribute($aname)) {
-		    jprint($attr);
-		    $need_comma = 1;
-		} else {
-		    warn "element $nm wants value from absent attribute $aname\n";
+	} elsif ($nam_how eq 'text()') {
+	    foreach my $c ($n->childNodes()) {
+		if ($c->isa('XML::LibXML::Text')) {
+		    $nam = $c->textContent();
 		}
-		$val_closer = '';
-	    } elsif ($val_how =~ /^[\[\{]$/) {
+	    }
+	    $nam = '' unless $nam;
+	} elsif (length $nam_how) {
+	    $nam = $nam_how;
+	} else {
+	    $nam = $nm;
+	}
+
+	if ($val && $val eq '#object') {
+	    unless ($nam_how eq '#ignore') {
+		jprint($nam);
+		print ": ";
+	    }
+	    unless ($val_how eq '#ignore') {
 		print $val_how;
 		$val_closer = closer_of($val_how);
 		if ($$howto{'text'}) {
@@ -226,22 +280,24 @@ node_start {
 		    jprint($n->textContent());
 		    $need_comma = 1;
 		}
-	    } elsif ($val_how =~ /text()/) {
-		jprint($n->textContent());
-		$need_comma = 1;
-		$val_closer = '';
-	    } elsif (length $val_how) {
-		$val = $val_how;
-		jprint($val_how);
-		$need_comma = 1;
-		$val_closer = '';
-	    } else {
-		$val = '{';
-		$val_closer = '}';
+	    }
+	} else {
+	    unless ($val && $val eq '#chld') {
+		if ($val || !$howtos{'#skipempty'}) {
+		    unless ($nam_how eq '#ignore') {
+			jprint($nam);
+			print ": ";
+		    }
+		    jprint($val) 
+			unless $val_how eq '#ignore' || $val eq '{';
+		    $need_comma = $val_need_comma;
+		} else {
+		    $need_comma = 0;
+		}
 	    }
 	}
 
-	if ($$howto{'hook'}) {
+	if ($$howto{'hook'} && !$$howto{'trigger'}) {
 	    my $h = $$howto{'hook'};
 	    my $prop = &$h($n);
 	    if ($prop) {
@@ -253,7 +309,7 @@ node_start {
 
 	attr($howto, $n,'att') if exists $$howto{'att'};
 	attr($howto, $n,'xid') if exists $$howto{'xid'};
-	
+
 	if ($$howto{'chld'} && hasElementChildren($n)) {
 	    my $chld_how = $$howto{'chld'};
 	    my ($cname,$ctype) = @$chld_how;
@@ -268,7 +324,20 @@ node_start {
 	push @stack, "$chld_closer$val_closer$type_closer";
 	
     } else {
-	warn "cbd-json.plx: no handler for element '",$n->nodeName,"'\n";
+	if ($howtos{'#auto'}) {
+	    my $nam = $n->nodeName();
+	    $nam =~ s/^.*?_//;
+	    # FIXME: when the auto-node is a child that is part of an array which wraps
+	    # a sequence of text() values, we need to auto-create the howto entry as:
+	    #     $howto{'xmd_tr'} = { nam=>'#ignore', val=>'text()' };
+	    #
+	    $howtos{$n->nodeName()} = { 
+		type=>'', nam=>$nam, val=>'text()', chld=>[$nam,'['], att=>'' 
+	    };
+	    goto AUTO_RETRY;
+	} else {
+	    warn "JSON.pm: no handler for element '",$n->nodeName,"'\n";
+	}
     }
 
     return 0;
@@ -286,13 +355,14 @@ node_end {
 }
 
 ##########################################################
+my $nattr = 0;
 
 sub
 attr {
     my ($howto,$n,$prop) = @_;
-    my $nattr = 0;
     my @atts = ();
     my $att_how = '';
+    $nattr = 0;
     if ($prop eq 'att') {
 	@atts = $n->attributes();
 	$att_how = $$howto{$prop};
@@ -302,7 +372,6 @@ attr {
 	my $r = $n->getAttribute($ref);
 	if ($r) {
 	    my $idnode = $n->ownerDocument()->getElementById($r);
-#	    $r = '' unless $r; warn "idnode = $r\n";
 	    if ($idnode) {
 		@atts = $idnode->attributes();
 		$att_how = $how;
@@ -313,14 +382,7 @@ attr {
     }
     unless ($att_how eq '0') {
 	if ($att_how eq '') {
-	    foreach my $a (@atts) {
-		if ($need_comma) {
-		    print ",\n";
-		    $need_comma = 0;
-		}
-		print ",\n" if $nattr++;
-		jattr($a);
-	    }
+	    jattrs($n,@atts);
 	} else {
 	    my $drop = 0;
 	    if ($att_how =~ s/^-//) {
@@ -336,14 +398,7 @@ attr {
 			push @natt, $a;
 		    }
 		}
-		foreach my $a (@natt) {
-		    if ($need_comma) {
-			print ",\n";
-			$need_comma = 0;
-		    }
-		    print ",\n" if $nattr++;
-		    jattr($a);
-		}
+		jattrs($n,@natt);
 	    } else {
 		my @natt = ();
 		foreach my $a (@atts) {
@@ -351,19 +406,52 @@ attr {
 			push @natt, $a;
 		    }
 		}
-		foreach my $a (@natt) {
-		    if ($need_comma) {
-			print ",\n";
-			$need_comma = 0;
-		    }			
-		    print ",\n" if $nattr++;
-		    jattr($a);
-		}
+		jattrs($n,@natt);
 	    }
 	}
     }
 
     $need_comma = 1 if $nattr;
+}
+
+sub
+jattrs {
+    my $n = shift;
+    my @att = @_;
+    foreach my $a (@att) {
+	next if $attmap{$a->name()} && $attmap{$a->name()} eq '#ignore';	    
+	if ($need_comma) {
+	    print ",\n";
+	    $need_comma = 0;
+	    ++$nattr;
+	} else {
+	    print ",\n" if $nattr++;
+	}
+	my $qname = $n->nodeName().':'.$a->name();
+#	warn "jattrs: qname=$qname\n";
+	if ($trigger_before{$qname}) {
+	    my $h = $trigger_before{$qname};
+	    my $prop = &$h($n);
+	    if ($prop) {
+		print ",\n" if $need_comma;
+		print $prop;
+		$need_comma = 1;
+	    }
+	}
+	jattr($a);
+	if ($trigger_after{$qname}) {
+	    my $h = $trigger_after{$qname};
+	    $need_comma = 1;
+	    my $prop = &$h($n);
+	    if ($prop) {
+		print $prop;
+		$need_comma = 1;
+	    } elsif ($need_comma) {
+#		print ",\n";
+		$need_comma = 1;
+	    }
+	}
+    }
 }
 
 sub
@@ -403,6 +491,7 @@ jattr {
     jprint($attmap{$a->name} || $a->name);
     print ": ";
     jprint($a->value);
+    return 1;
 }
 
 sub

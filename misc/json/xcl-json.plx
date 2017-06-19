@@ -107,7 +107,7 @@ xcl_howtos {
     $howto{'xcl_ll'} = { type=>"{",nam=>'node',val=>'ll',att=>'',
 			 hook=>\&textfrag,chld=>['choices','['] };
     $howto{'xcl_l'} = { type=>"{",nam=>'node',val=>'l',att=>'-lnum',hook=>\&textfrag };
-    $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'',hook=>\&formsigns };
+    $howto{'xff_f'} = { nam=>'f',val=>'{',att=>'',hook=>\&formsigns,trigger=>'after@form' };
     $howto{'xcl_linkbase'} = { type=>"{",nam=>'linkbase',val=>'[',att=>'' };
     $howto{'xcl_linkset'} = { type=>"{",nam=>'type',val=>'linkset',att=>'',chld=>['links','['] };
     $howto{'xcl_link'} = { type=>"{",nam=>'type',val=>'link',att=>'' };
@@ -129,8 +129,8 @@ xcl_howtos {
     $howto{'gdl_m'} = { type=>'{' , nam=>'m', val=>'text()', att=>$gdlattr };
     $howto{'gdl_n'} = { type=>'{' , nam=>'n', val=>'n', att=>$gdlattr };
     $howto{'gdl_o'} = { type=>'{' , nam=>'o', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
-    $howto{'gdl_p'} = { type=>'{',  nam=>'p', val=>'@gdl_type', chld=>['punct','['], att=>'-gdl_type'.' '.$gdlattr };
-    $howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>'-form'.' '.$gdlattr };
+    $howto{'gdl_p'} = { type=>'{',  nam=>'p', val=>'@gdl_type', chld=>['punct','['], att=>$gdlattr.' gdl_type' };
+    $howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>$gdlattr.' form' };
     $howto{'gdl_r'} = { type=>'#ignore' , nam=>'r', val=>'r', att=>'' };
     $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };

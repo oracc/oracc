@@ -480,12 +480,12 @@ if ($onebigfile) {
 my $total_rows = 0;
 map { $total_rows += (1 + $#{ ${$$_{'icat'}}[2] }) } @catalogs;
 
-xmd_json_begin();
+#xmd_json_begin();
 foreach my $c (@catalogs) {
     $proxying = ($$c{'file'} =~ /proxy/);
     dump_xmd($$c{'icat'},$$c{'file'});
 }
-xmd_json_end();
+#xmd_json_end();
 
 if ($onebigfile) {
     if (!$split) {
@@ -499,7 +499,7 @@ if ($onebigfile) {
     }
     select XOUT;
     print XOUT xmldecl();
-    print XOUT '<xmd-set>';
+    print XOUT "<xmd-set project=\"$project\">";
     foreach my $id (sort keys %xmd_outputs) {
 	make_vid($id);
 	print XOUT @{$xmd_outputs{$id}}; 
@@ -856,8 +856,8 @@ dump_xmd {
 		}
 	    }
 	}
-	xmd_json_item($fields, $r, $item_index, 
-		      $prov_index, $pleiades_id, $coord);
+#	xmd_json_item($fields, $r, $item_index, 
+#		      $prov_index, $pleiades_id, $coord);
 	for (my $ti = 0; $ti < $typindex; ++$ti) {
 	    $currvt[$ti] = "1000000=0" unless $currvt[$ti];
 	}

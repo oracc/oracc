@@ -53,11 +53,13 @@ jsonlog=01tmp/json.log
 echo "o2-json.sh: generating JSON for $project"
 
 if [ -r 01bld/cat.geojson ]; then
-    cp 01bld/cat.geojson 01bld/json/
+    echo "o2-json.sh: copying cat.geojson to 01bld/json"
+    cp -a 01bld/cat.geojson 01bld/json/
 fi
 
-if [ -r 01bld/catalogue.json ]; then
-    cp -f 01bld/catalogue.json 01bld/json/
+if [ -r 01bld/cdlicat.xmd ]; then
+    echo "o2-json.sh: catalogue (from 01bld/cdlicat.xmd)"
+    xmd-json.plx 01bld/cdlicat.xmd >01bld/json/catalogue.json
 fi
 
 echo "o2-json.sh: metadata ..."
