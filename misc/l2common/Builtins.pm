@@ -342,7 +342,11 @@ acd2xml {
 			$currarg = "\#$curr_sense_id\t$currarg";
 		    } elsif ($currtag eq 'form') {
 			my $barecheck = $currarg;
-			$barecheck =~ s/^\S+\s+//;
+			$barecheck =~ s/^(\S+)\s+//;
+			my $formform = $1;
+			if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
+			    bad($currtag, "accented grapheme in FORM");
+			}
 			1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 			if ($barecheck =~ /\S/) {
 			    bad($currtag, "bare word in FORM");
