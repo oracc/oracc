@@ -139,7 +139,10 @@ if ($rt{'prod'} eq 'list') {
 	my %projects = (); @projects{@projects} = ();
 	my $nprojects = scalar keys %projects;
 	if ($nprojects == 1) {
+	    $p{'#coerce'} = 1;
 	    $p{'project'} = $projects[0];
+	} else {
+	    $p{'#coerce'} = 0;
 	}
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
@@ -1095,7 +1098,7 @@ setup_pg_args {
     $p{'page'} = 1 unless $p{'page'};
     my $tmpstate = undef;
 
-    if ($p{'#qsrch'}) {
+    if ($p{'#qsrch'} || $p{'#coerce'}) {
 	$tmpstate = 'default';
     } else {
 	$tmpstate = ($p{'p3outl'} =~ /^default|special$/ ? $p{'p3outl'} 
@@ -1113,7 +1116,12 @@ setup_pg_args {
 
     push @pg_args, '-q', if $rt{'#list_type'} eq 'cbd';
     if ($rt{'sorttype'}) {
-	my $tmp = $rt{'sorttype'};
+	my $tmp = undef;
+	if ($p{'#coerce'}) {
+	    $tmp = `oraccopt $p{'project'} outline-default-sort-fields`;
+	} else {
+	    $tmp = $rt{'sorttype'};
+	}
 	push(@pg_args, "-s$tmp") if $tmp;
     }
     push @pg_args, "-z$p{'zoom'}" if $p{'zoom'};
