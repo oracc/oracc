@@ -174,10 +174,12 @@ if ($glossary) {
 			$warning =~ s/^/sma internal:/;
 		    }
 		    $warning =~ tr/\n\r//d;
+		    Encode::_utf8_off($warning);
 		    syswrite STDOUT, "\000$warning\n";
 		    $warning = '';
 		} elsif ($t_warning) {
-		    $warning =~ tr/\n\r//d;
+		    $t_warning =~ tr/\n\r//d;
+		    Encode::_utf8_off($t_warning);
 		    syswrite STDOUT, "\000t_warning:`$warning'\n";
 		} # else we printed a morphology result		
 	    }
@@ -282,7 +284,9 @@ t {
 		# \$$norm 
 		my $lang = '';
 		$lang = ' %sux' if /\%sux/;
-		syswrite STDOUT, "\@form\t$f$lang $stemstr/$newbase$base$cont #$morph\n";
+		my $wstr = "\@form\t$f$lang $stemstr/$newbase$base$cont #$morph\n";
+		Encode::_utf8_off($wstr);
+		syswrite STDOUT, $wstr;
 	    }
 	    return 0;
 	} else {
@@ -292,7 +296,9 @@ t {
 		$cont =~ s/=\+/=/;
 		$cont =~ s/^-?/-/;
 	    }
-	    syswrite STDOUT, "\@form $f=$l $stemstr/$newbase$base +$cont #$morph\n";
+	    my $wstr = "\@form $f=$l $stemstr/$newbase$base +$cont #$morph\n";
+	    Encode::_utf8_off($wstr);
+	    syswrite STDOUT, $wstr;
 	    return 0;
 	}
     } elsif ($#parses < 0) {
