@@ -16,7 +16,7 @@
 <xsl:param name="item-offset"/>
 <xsl:param name="project"/>
 
-<xsl:variable name="ce-config-file" select="concat('@@ORACC@@/xml/',$project,'/config.xml')"/>
+<xsl:variable name="ce-config-file" select="concat('@@ORACC_BUILDS@@/xml/',$project,'/config.xml')"/>
 
 <xsl:param name="url-host">
   <xsl:call-template name="xpd-option">
