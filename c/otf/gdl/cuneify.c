@@ -188,7 +188,7 @@ cuneify_sequence(const unsigned char *seq)
   unsigned char rtab_buf[128],*rtab_bufp = rtab_buf;
   const unsigned char *rtabp = seq, *ret = NULL;
   unsigned char save = '\0';
-  static unsigned char ret_buf[1024];
+  unsigned char ret_buf[1024];
 
   memset(rtab_buf,'\0',128);
   memset(ret_buf,'\0',1024);
@@ -214,6 +214,7 @@ cuneify_sequence(const unsigned char *seq)
       ret = cuneify_one(rtab_buf);
       if (ret)
 	{
+	  /* fprintf(stderr,"ret len = %d\n", strlen(ret)); */
 	  xstrcat(ret_buf,ret);
 	  if (save)
 	    *rtab_bufp = save;
@@ -225,7 +226,7 @@ cuneify_sequence(const unsigned char *seq)
 	  return (const unsigned char *)Qret;
 	}
     }
-  return ret_buf;
+  return strdup(ret_buf);
 }
 
 static const unsigned char *
