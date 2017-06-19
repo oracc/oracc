@@ -347,6 +347,9 @@ acd2xml {
 			if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 			    bad($currtag, "accented grapheme in FORM");
 			}
+			if ($formform =~ /[<>]/) {
+			    bad($currtag, "angle brackets are not allowed in FORM");
+			}
 			1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 			if ($barecheck =~ /\S/) {
 			    bad($currtag, "bare word in FORM");
@@ -469,8 +472,15 @@ acd2xml {
 #	print R join("\n", @xml);
 #	close(R);
 #    }
-#    check_defined(@xml);
-    load_xml_string(join('',@xml));
+    #    check_defined(@xml);
+    my $xload = undef;
+    my $str = join('',@xml);
+    eval { $xload = load_xml_string($str) };
+    if ($@) {
+	warn "load_xml_string: failed: $@\n" if $@;
+	open(BADLOAD,'>01tmp/bad-load'); print BADLOAD $str; close(BADLOAD);
+    }
+    $xload;
 }
 
 sub
