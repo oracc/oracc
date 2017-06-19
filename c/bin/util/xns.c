@@ -89,14 +89,9 @@ void charHandler(void *userData,
 
 void startElement(void *userData, const char *name, const char **atts)
 {
-  int *depthPtr = userData;
   const char **ap;
-#if 0
-  int i;
-  for (i = 0; i < *depthPtr; i++)
-    putchar('\t');
-#endif
-  printf("<%s",nsname(name));
+  char *tname = strdup(name);
+  printf("<%s",nsname(tname));
   if (atts)
     {
       for (ap = atts; ap[0]; ++ap)
@@ -108,14 +103,14 @@ void startElement(void *userData, const char *name, const char **atts)
 	}
     }
   putchar('>');
-  *depthPtr += 1;
+  free(tname);
 }
 
 void endElement(void *userData, const char *name)
 {
-  int *depthPtr = userData;
-  *depthPtr -= 1;
+  char *tname = strdup(name);
   printf("</%s\n>", nsname(name));
+  free(tname);
 }
 
 int main()

@@ -30,6 +30,7 @@ your version of this file under either the MPL or the GPL.
 
 #include "xmldef.h"
 #include "xmlparse.h"
+#include <stdio.h>
 
 #ifdef XML_UNICODE
 #define XML_ENCODE_MAX XML_UTF16_ENCODE_MAX
@@ -1661,6 +1662,7 @@ static enum XML_Error storeAtts(XML_Parser parser, const ENCODING *enc,
   i = binding->uriLen;
   do {
     if (i == binding->uriAlloc) {
+      fprintf(stderr, "xmlparse: realloc\n");
       binding->uri = realloc(binding->uri, binding->uriAlloc *= 2);
       if (!binding->uri)
 	return XML_ERROR_NO_MEMORY;
@@ -1694,12 +1696,14 @@ int addBinding(XML_Parser parser, PREFIX *prefix, const ATTRIBUTE_ID *attId, con
     b = malloc(sizeof(BINDING));
     if (!b)
       return 0;
-    b->uri = malloc(sizeof(XML_Char) * len + EXPAND_SPARE);
+    /* This 10* malarkey is a hack because there is a bug here with the localName ptr
+       being left pointing at freed memory when b->uri gets realloc'ed */       
+    b->uri = malloc(sizeof(XML_Char) * (10*len) + EXPAND_SPARE);
     if (!b->uri) {
       free(b);
       return 0;
     }
-    b->uriAlloc = len;
+    b->uriAlloc = 10*len;
   }
   b->uriLen = len;
   memcpy(b->uri, uri, len * sizeof(XML_Char));
