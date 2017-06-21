@@ -102,6 +102,7 @@ use DateTime;
 #
 
 my %attmap = ();
+my $formtop = 0;
 my %howtos = ();
 my $need_comma = 0;
 my @stack = ();
@@ -142,12 +143,12 @@ hasElementChildren {
 
 sub
 iterate {
-    my $n = shift;
+    my ($n,$top) = @_;
     my $ecount = 0;
 
     # if ignore and recurse=no we get a positive 
     # return from node_start and we skip recursion
-    my $norecurse = node_start($n);
+    my $norecurse = node_start($n,$top);
 
     unless ($norecurse) {
 	foreach my $c ($n->childNodes()) {
@@ -164,8 +165,9 @@ iterate {
 
 sub
 node_start {
-    my $n = shift;
+    my ($n,$top) = @_;
     my $nm = $n->nodeName();
+    my $context = $stack[$#stack];
 
   AUTO_RETRY:
     
@@ -176,6 +178,12 @@ node_start {
     my $chld_closer = '';
     
     if ($howto) {
+
+	if ($$howto{'formchild'} && !$top) {
+	    my $xid = xid($n);
+#	    warn "formchild activated at node $xid; context=$context\n";
+	    $howto = $$howto{'formchild'};
+	}
 
 	my $type_how = $$howto{'type'} || '';
 
@@ -234,16 +242,6 @@ node_start {
 	    return 0;
 	}
 
-	if ($need_comma) {
-	    print ",\n";
-	    $need_comma = 0;
-	}
-
-	if ($type_how) {
-	    $type_closer = closer_of($type_how);
-	    print $type_how, "\n";
-	}
-	
 	my $nam = $nm;
 	my $nam_how = $$howto{'nam'};
 	if ($nam_how =~ /^\@(\S+)/) {
@@ -265,6 +263,23 @@ node_start {
 	    $nam = $nm;
 	}
 
+	if ($need_comma) {
+	    print ",\n";
+	    $need_comma = 0;
+	}
+
+	if ($type_how) {
+	    if ($$howto{'object_force_nam'}) {
+		if ($$howto{'object_force_nam'} eq 'yes'
+		    && $context =~ /^}/) {
+		    print "\"$nam\": ";
+		}
+	    }
+	    
+	    $type_closer = closer_of($type_how);
+	    print $type_how, "\n";
+	}
+	
 	if ($val && $val eq '#object') {
 	    unless ($nam_how eq '#ignore') {
 		jprint($nam);
@@ -282,6 +297,7 @@ node_start {
 		}
 	    }
 	} else {
+	    # naming is ignored when there's a chld key in howto
 	    unless ($val && $val eq '#chld') {
 		if ($val || !$howtos{'#skipempty'}) {
 		    unless ($nam_how eq '#ignore') {
@@ -313,16 +329,13 @@ node_start {
 	if ($$howto{'chld'} && hasElementChildren($n)) {
 	    my $chld_how = $$howto{'chld'};
 	    my ($cname,$ctype) = @$chld_how;
-	    #	    print "<212>,\n" if $need_comma; $need_comma = 0;
 	    print ",\n" if $need_comma; 
 	    print "\"$cname\": $ctype\n";
 	    $chld_closer = closer_of($ctype);
 	    $need_comma = 0;
 	}
+	push @stack, "$chld_closer^$val_closer^$type_closer";
 
-	# push @stack, "(c)$chld_closer(v)$val_closer(t)$type_closer";
-	push @stack, "$chld_closer$val_closer$type_closer";
-	
     } else {
 	if ($howtos{'#auto'}) {
 	    my $nam = $n->nodeName();
@@ -348,7 +361,7 @@ node_end {
     my $n = shift @_;
     my $closer = pop @stack;
     if ($closer) {
-	#		print '<',$n->nodeName(),'>',$closer, "\n";
+	$closer =~ tr/^//d;
 	print $closer, "\n";
 	$need_comma = 1;
     }

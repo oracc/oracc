@@ -91,7 +91,7 @@ sub
 formsigns {
     my $n = shift;
     my $w = $n->ownerDocument()->getElementById($n->parentNode()->getAttribute('ref'));
-    ORACC::JSON::iterate($w);
+    ORACC::JSON::iterate($w, 1);
     return '';
 }
 
@@ -124,7 +124,7 @@ xcl_howtos {
     $howto{'gdl_a'} = { type=>'{' , nam=>'a', val=>'text()', att=>$gdlattr };
     $howto{'gdl_b'} = { type=>'{' , nam=>'b', val=>'text()', att=>$gdlattr };
     $howto{'gdl_c'} = { type=>'{',  nam=>'c', val=>'@form', chld=>['seq','['], att=>$gdlattr.' form' };
-    $howto{'gdl_d'} = { type=>'{' , nam=>'det', val=>'d', att=>'', chld=>['seq','[']};
+    $howto{'gdl_d'} = { type=>'{' , nam=>'det', val=>'@gdl_role', att=>'-gdl_role', chld=>['seq','[']};
     $howto{'gdl_f'} = { type=>'{' , nam=>'f', val=>'text()', att=>$gdlattr };
     $howto{'gdl_g'} = { type=>'{' , nam=>'g', val=>'text()', att=>$gdlattr, chld=>['seq','[']};
     $howto{'gdl_m'} = { type=>'{' , nam=>'m', val=>'text()', att=>$gdlattr };
@@ -135,11 +135,22 @@ xcl_howtos {
     $howto{'gdl_r'} = { type=>'{' , nam=>'r', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['] };
-    $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>'-gdl_type'.' '.$gdlattr };
-    $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'gg', chld=>['group','['], att=>$gdlattr };
+    $howto{'gdl_w'} = {
+	type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['],
+	formchild=>{ type=>'{' , nam=>'w', val=>'text()', chld=>['gdl','['], att=>$gdlattr,
+		     object_force_nam=>'yes'
+	}
+    };
+    $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
+    $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'@gdl_type', chld=>['group','['], att=>$gdlattr };
+    $howto{'gdl_nonw'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['] };
     $howto{'gdl_surro'} = { type=>'{', nam=>'surro',val=>'gg', chld=>['group','['], att=>$gdlattr };
-    $howto{'gdl_gloss'} = { type=>'{', nam=>'gloss',val=>'gg', chld=>['seq','['], att=>$gdlattr };
+
+    $howto{'gdl_gloss'} = { type=>'{', nam=>'gloss',val=>'@gdl_type', att=>$gdlattr.' gdl_type',
+			    chld=>['seq','[']
+    };
+
+    $howto{'xtf_surro'} = { type=>'{', nam=>'surro',val=>'gg', chld=>['group','{'], att=>$gdlattr };
 
     $howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
     $howto{'norm_s'} = { type=>'#ignore' };
