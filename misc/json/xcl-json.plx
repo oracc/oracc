@@ -135,9 +135,11 @@ xcl_howtos {
     $howto{'gdl_r'} = { type=>'{' , nam=>'r', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['signs','['] };
+    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['] };
     $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>'-gdl_type'.' '.$gdlattr };
     $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'gg', chld=>['group','['], att=>$gdlattr };
+    $howto{'gdl_surro'} = { type=>'{', nam=>'surro',val=>'gg', chld=>['group','['], att=>$gdlattr };
+    $howto{'gdl_gloss'} = { type=>'{', nam=>'gloss',val=>'gg', chld=>['seq','['], att=>$gdlattr };
 
     $howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
     $howto{'norm_s'} = { type=>'#ignore' };
