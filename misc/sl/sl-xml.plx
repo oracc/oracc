@@ -55,7 +55,7 @@ my $pi_file = '00lib/ogsl.asl';
 
 print '<?xml version="1.0" encoding="utf-8"?>',"\n";
 print "<?file $pi_file?>";
-print "<signlist xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\"\n>";
+print "<signlist project=\"$project\" xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\"\n>";
 while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
