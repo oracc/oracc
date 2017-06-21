@@ -27,14 +27,24 @@ my $xasl = load_xml_string($asl_nons);
 if ($xasl) {
     print "{\n";
     ORACC::JSON::iterate($xasl->getDocumentElement());
-#    print ",";
-#    asl_fields_used($xasl->getDocumentElement());
-#    print ",";
-#    asl_sortvals($xasl->getDocumentElement()->getAttribute('project'));
+    print ",";
+    print "\"index\": {\n";
+    asl_index($xasl->getDocumentElement()->getElementsByTagName('sl_v'));
+    print "}";
     print "\n}";
 }
 
 ###############################################################################
+
+sub
+asl_index {
+    my $nv = 0;
+    foreach my $v (@_) {
+	print "," if $nv++;
+	my $sn = $v->parentNode->getAttribute('n');
+	print "\"".ORACC::JSON::jsonify($v->getAttribute('n'))."\": \"".ORACC::JSON::jsonify($sn)."\"";
+    }
+}
 
 sub
 asl_fields_used {
