@@ -126,22 +126,21 @@ xcl_howtos {
     $howto{'gdl_c'} = { type=>'{',  nam=>'c', val=>'@form', chld=>['seq','['], att=>$gdlattr.' form' };
     $howto{'gdl_d'} = { type=>'{' , nam=>'det', val=>'d', att=>'', chld=>['seq','[']};
     $howto{'gdl_f'} = { type=>'{' , nam=>'f', val=>'text()', att=>$gdlattr };
+    $howto{'gdl_g'} = { type=>'{' , nam=>'g', val=>'text()', att=>$gdlattr, chld=>['seq','[']};
     $howto{'gdl_m'} = { type=>'{' , nam=>'m', val=>'text()', att=>$gdlattr };
-    $howto{'gdl_n'} = { type=>'{' , nam=>'n', val=>'n', att=>$gdlattr };
+    $howto{'gdl_n'} = { type=>'{' , nam=>'n', val=>'n', chld=>['seq','['], att=>$gdlattr };
     $howto{'gdl_o'} = { type=>'{' , nam=>'o', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
     $howto{'gdl_p'} = { type=>'{',  nam=>'p', val=>'@gdl_type', chld=>['punct','['], att=>$gdlattr.' gdl_type' };
     $howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>$gdlattr.' form' };
-    $howto{'gdl_r'} = { type=>'#ignore' , nam=>'r', val=>'r', att=>'' };
+    $howto{'gdl_r'} = { type=>'{' , nam=>'r', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', chld=>['signs','['] };
+    $howto{'gdl_w'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['signs','['] };
     $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>'-gdl_type'.' '.$gdlattr };
     $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'gg', chld=>['group','['], att=>$gdlattr };
 
     $howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
     $howto{'norm_s'} = { type=>'#ignore' };
-#    $howto{'norm_w'} = { type=>'#ignore' };
-
     
     $attmap{'gdl_delim'} = 'delim';
     $attmap{'gdl_logolang'} = 'logolang';

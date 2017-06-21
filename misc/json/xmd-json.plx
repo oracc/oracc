@@ -14,7 +14,7 @@ my $output = '';
 my $xmd = shift @ARGV;
 $output = shift @ARGV;
 
-die "xcl-json.plx: must give catalogue on commandline\n"
+die "xmd-json.plx: must give catalogue on commandline\n"
     unless $xmd;
 
 die "xmd-json.plx: no such file $xmd\n"

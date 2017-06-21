@@ -471,7 +471,6 @@ default_metadata {
 	$p =~ s/^.*?\":\s*\"(.*?)\".*$/$1/;
     } else {
 	$p = $n->getOwnerDocument()->getDocumentElement()->getAttribute('project');
-    #    my $id = xid($n->getOwnerDocument()->getDocumentElement());
     }
     print ",\n" if $need_comma; $need_comma = 0;
     my @props = ();
