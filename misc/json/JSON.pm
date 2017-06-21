@@ -484,9 +484,14 @@ default_metadata {
 	$p =~ s/^.*?\":\s*\"(.*?)\".*$/$1/;
     } else {
 	$p = $n->getOwnerDocument()->getDocumentElement()->getAttribute('project');
+	unless ($p) {
+	    $p = `oraccopt`;
+	    chomp $p;
+	}
     }
     print ",\n" if $need_comma; $need_comma = 0;
     my @props = ();
+    push @props, "  \"project\": \"$p\"";
     push @props, "  \"source\": \"http://oracc.org/$p\"";
     push @props, "  \"license\": \"This data is released under the CC0 license\"";
     push @props, "  \"license-url\": \"https://creativecommons.org/publicdomain/zero/1.0/\"";
