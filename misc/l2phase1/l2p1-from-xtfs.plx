@@ -163,7 +163,7 @@ loadsigs {
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
-	    } elsif ($exo && $base ne 'prx') {
+	    } elsif ($exo) { # && $base ne 'prx') {
 		push(@{$exos{$exo}},"$xtf_project\:$ref");
 	    } elsif ($new && $base ne 'prx') {
 		push(@{$news{$new}},"$xtf_project\:$ref");
