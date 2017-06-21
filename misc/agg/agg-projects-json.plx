@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-open(O,">$ENV{'ORACC_BUILDS'}/www/projects.json"); select O;
+open(O,">$ENV{'ORACC_BUILDS'}/www/json/projects.json"); select O;
 my @x=`agg-list-public-projects.sh`; chomp(@x); @x = map{"\"$_\""} @x;
 print "{\n\t\"type\": \"projects\",\n";
 print "\t\"public\": [\n\t\t";
