@@ -9,6 +9,7 @@ fi
 
 shopt -s nullglob
 project=`oraccopt`
+asl=02xml/${project}-sl.xml
 
 if [ "$project" == "" ]; then
     echo o2-json.sh: must be run from a project directory. Stop.
@@ -25,11 +26,9 @@ function has_jsonable {
     if [ -s 01bld/lists/proxy-atf.lst ]; 
 	then return 1
     fi
-    for asl in 00lib/*.asl ; do
-	if [ -s $asl ];
-	then return 1;
-	fi
-    done
+    if [ -s $asl ]; then
+	return 1;
+    fi
     for glo in 00lib/*.glo ; do
 	if [ -s $glo ]; 
 	then return 1
@@ -64,6 +63,12 @@ fi
 
 echo "o2-json.sh: metadata ..."
 metadata-json.sh
+
+if [ -s $asl ]; then
+    echo "o2-json.sh: signlist from $asl"
+    b=`basename $asl .asl`
+    asl-json.plx $asl >01bld/json/${project}-sl.json
+fi
 
 echo "o2-json.sh: corpus ..."
 corpus-json.plx >$jsonlog 2>&1

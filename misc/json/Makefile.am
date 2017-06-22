@@ -8,6 +8,7 @@ bin_SCRIPTS = \
 	validate-json.sh json-licensify.plx \
 	formats-json.plx linknorm-json.plx \
 	zip-json.sh errors-json.plx \
-	xmd-json.plx xmd-sv-json.plx
+	xmd-json.plx xmd-sv-json.plx \
+	asl-json.plx
 scriptdata_DATA = 
 data_DATA = 
