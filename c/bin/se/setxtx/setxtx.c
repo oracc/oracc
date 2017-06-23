@@ -272,10 +272,13 @@ startElement(void *userData, const char *name, const char **atts)
       if (!strcmp("n:w",name))
 	{
 	  static char qualified_id[128];
+	  const unsigned char *n = NULL;
 	  pos_props(pos(atts));
 	  sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
 	  wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
-	  est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
+	  n = (const unsigned char*)attr_by_name(atts,"form");
+	  grapheme((const char *)n);
+	  est_add(n, estp);
 	  charData_discard();
 	}
     }
@@ -348,9 +351,6 @@ endElement(void *userData, const char *name)
     }
   else if ('n' == *name && !strcmp("n:w",name))
     {
-      const char *n = (const char *)charData_retrieve();
-      grapheme(n);
-      est_add((const unsigned char *)n, estp);
       pending_boundary = pb_space;
     }
 }
