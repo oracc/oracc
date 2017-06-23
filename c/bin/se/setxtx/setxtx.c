@@ -187,6 +187,13 @@ startElement(void *userData, const char *name, const char **atts)
 	  begin_parallels();
 	}
       break;
+    case 'v':
+      if (name[1] == '\0')
+	{
+	  begin_indexed();
+	  begin_parallels();
+	}
+      break;
     case 'g':
       if (curr_node && name[1] == ':' && name[3] == '\0')
 	switch (name[2])
@@ -277,6 +284,11 @@ startElement(void *userData, const char *name, const char **atts)
 void
 endElement(void *userData, const char *name)
 {
+  if (*name == 'v' && name[1] == '\0')
+    {
+      end_parallels();
+      end_indexed();
+    }
   if (*name == 'l' && name[1] == '\0')
     {
       end_parallels();
@@ -476,7 +488,6 @@ add_graphemes ()
     }
 }
 
-#if 1
 static void
 fn_expand(void *p)
 {
@@ -485,7 +496,9 @@ fn_expand(void *p)
     {
       char *e = x + strlen(x);
       e[-1] = 'f';
-      e[-2] = 't';
+      e[-2] = 's';
+      /* try .xsf files first to index full scores if the .xtf is
+	 derived from them */
       if (!access(x, R_OK))
 	{
 	  fnlist[findex] = strdup(x);
@@ -494,36 +507,22 @@ fn_expand(void *p)
 	  ++findex;
 	}
       else
-	fprintf(stderr,"setxtx: %s not found\n", x);
+	{
+	  e[-2] = 't';
+	  if (!access(x, R_OK))
+	    {
+	      fnlist[findex] = strdup(x);
+	      if (!quiet)
+		fprintf(stderr,"setxtx: found %s\n",fnlist[findex]);
+	      ++findex;
+	    }
+	  else 
+	    fprintf(stderr,"setxtx: %s not found\n", x);
+	}
     }
   else
     fprintf(stderr,"setxtx: %s not found; skipping XTF file\n", x);
 }
-#else
-static void
-fn_expand(void *p)
-{
-  const char **projects = proxies;
-  int found = 0;
-  while (*projects)
-    {
-      fnlist[findex] = strdup(l2 
-			      ? l2_expand(*projects, p, "xtf") 
-			      : expand(*projects, p, "xtf"));
-      if (!access(fnlist[findex],R_OK))
-	{
-	  if (!quiet)
-	    fprintf(stderr,"found %s\n",fnlist[findex]);
-	  ++findex;
-	  found = 1;
-	  break;
-	}
-      ++projects;
-    }
-  if (!found && !quiet)
-    fprintf(stderr,"no input file for %s\n",(char*)p);
-}
-#endif
 
 static void
 set_proxies(const char *pxpath)
