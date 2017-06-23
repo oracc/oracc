@@ -347,7 +347,9 @@ startElement_gdl(void *userData, const char *name, const char **atts)
 	    int len;
 	    lem_info = 1;
 	    (void)sscanf(sig, "%d.%d:%n",&curr_sentence_id, &curr_lemma_id, &len);
+#if 0
 	    fprintf(stderr, "sscanf sig sent_id=%d; lem_id=%d; len=%d\n", curr_sentence_id, curr_lemma_id, len);
+#endif
 	    sig += len;
 	    f2 = hash_find(lemparses, (unsigned char *)sig);
 	    pos_props((const char*)f2->pos);
