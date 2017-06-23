@@ -435,7 +435,7 @@ main(int argc, char * const*argv)
 
 	      idx = xindex[i]+1;
 	      proj_index_path = se_dir(project,idx);
-	      index_dbi = malloc(strlen(proj_index_path + strlen(idx)*2 + 5));
+	      index_dbi = malloc(strlen(proj_index_path) + strlen(idx) + strlen("/.dbi") + 1);
 	      sprintf(index_dbi, "%s/%s.dbi",proj_index_path,idx);
 	      if (!xaccess(index_dbi, R_OK, 0))
 		{
