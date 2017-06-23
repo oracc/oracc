@@ -41,6 +41,7 @@ extern char *strdup(const char *);
 Dbi_index *dip;
 
 int l2 = 1;
+int swc_flag = 0;
 
 static struct vid_data *vidp;
 

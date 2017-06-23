@@ -43,10 +43,13 @@ end_parallels ()
 {
   if (!curr_parallel)
     return;
-  if (curr_parallel->empty_branch_flag)
-    start_column = curr_parallel->start_column;
-  else
-    start_column = curr_parallel->end_column+1;
+  if (!swc_flag)
+    {
+      if (curr_parallel->empty_branch_flag)
+	start_column = curr_parallel->start_column;
+      else
+	start_column = curr_parallel->end_column+1;
+    }
   curr_node = curr_parallel->start_node;
   pop_parallel ();
 }

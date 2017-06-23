@@ -20,6 +20,8 @@
 extern char *strdup(const char *);
 #endif
 
+int swc_flag = 0;
+
 FILE *f_idlist;
 extern FILE *f_log;
 FILE *f_mangletab = NULL;
