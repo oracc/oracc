@@ -19,6 +19,7 @@
 
 #include <sys/unistd.h>
 
+int swc_flag = 0;
 int l2 = 1;
 
 static struct vid_data *vidp;
@@ -32,6 +33,7 @@ static struct est *estp;
 extern void grapheme_decr_start_column(void);
 extern void grapheme_end_column_logo(void);
 extern void grapheme_inherit_preceding_properties(void);
+extern void grapheme_reset_start_column(void);
 
 #undef xmalloc
 #undef xrealloc
@@ -200,39 +202,25 @@ startElement(void *userData, const char *name, const char **atts)
 	  {
 	  case 'w':
 	    {
-#if 1
 	      static char qualified_id[128];
 	      pos_props(pos(atts));
 	      sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
 	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
 	      est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
-#else
-	      if (l2)
+	      if (swc_flag)
 		{
-		  static char qualified_id[128];
-		  pos_props(pos(atts));
-		  sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
-		  wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
+		  swc_flag = 0;
+		  grapheme_reset_start_column();
 		}
 	      else
-		wid2loc8(xml_id(atts),xml_lang(atts),&l8);
-
-	      for (i = 0; atts[i]; i += 2)
 		{
-		  struct sn_tab *snp = statnames(atts[i],strlen(atts[i]));
-		  if (snp)
+		  const char *hw = findAttr(atts, "headform");
+		  if (*hw)
 		    {
-		      static struct location16 l16;
-		      memcpy(&l16,&l8,sizeof(l8));
-		      /* so citeform=a and pos=N will work */
-		      l16.properties = curr_properties;
-		      l16.start_column = snp->uid;
-		      l16.end_column = l16.branch_id = 0;
-		      addgraph(dip, , &l16);
-		      est_add((unsigned char*)atts[i+1],estp);
+		      fprintf(stderr, "setting swc_flag for %s\n", xml_id(atts));
+		      swc_flag = 1;
 		    }
 		}
-#endif
 	    }
 	    break;
 	  case 'v':
@@ -268,6 +256,18 @@ startElement(void *userData, const char *name, const char **atts)
 	    in_qualified = 1;
 	    break;
 	  }
+      else
+	{
+	  if (!strcmp("g:swc",name))
+	    {
+	      static char qualified_id[128];
+	      const char *headref = findAttr(atts,"headref");
+	      pos_props(pos(atts));
+	      sprintf(qualified_id, "%s:%s", loc_project_buf, headref);
+	      fprintf(stderr,"setxtx: setting word loc from headref %s\n", headref);
+	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
+	    }
+	}
     case 'n':
       if (!strcmp("n:w",name))
 	{

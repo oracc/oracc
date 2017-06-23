@@ -50,6 +50,7 @@ extern char *strdup(const char *);
 
 extern void grapheme_decr_start_column(void);
 extern void grapheme_end_column_logo(void);
+extern void grapheme_inherit_preceding_properties(void);
 
 #undef xmalloc
 #undef xrealloc
@@ -434,6 +435,8 @@ endElement_gdl(void *userData, const char *name)
 		progress("indexing value %s as sign %s\n",g, s);
 		grapheme_decr_start_column();
 		grapheme((const char *)s);
+		grapheme_inherit_preceding_properties();
+		do_boundary();
 	      }
 	  }
 	else
@@ -552,7 +555,7 @@ main (int argc, char **argv)
     exit(0);
 
   if (debug_flag)
-    debug_f = fopen("sel24x.dbg", "w");
+    debug_f = fopen("selemx.dbg", "w");
 
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
@@ -592,7 +595,7 @@ main (int argc, char **argv)
   if (one_big_stdin)
     {
 #if 1
-      fprintf(stderr, "sel24x: one-big-file input no longer supported\n");
+      fprintf(stderr, "selemx: one-big-file input no longer supported\n");
       exit(1);
 #else
       runexpatNS(i_stdin, NULL, startElement, endElement, "|");
@@ -622,7 +625,7 @@ main (int argc, char **argv)
   else
     {
       if (!quiet)
-	fprintf(stderr,"sel24x: no keys in input\n");
+	fprintf(stderr,"selemx: no keys in input\n");
       exit(1);
     }
   dbi_free (dip);
@@ -769,7 +772,7 @@ set_proxies(const char *pxpath)
 
 /********************************************************************/
 
-const char *prog = "sel24x";
+const char *prog = "selemx";
 int major_version = 5, minor_version = 0, verbose;
 const char *usage_string = "[-{acgpqsx}] <input>";
 

@@ -54,6 +54,13 @@ grapheme (const char *text)
 }
 
 void
+grapheme_inherit_preceding_properties(void)
+{
+  if (curr_node->left)
+    curr_node->l.properties = curr_node->left->l.properties;
+}
+
+void
 grapheme_decr_start_column()
 {
   --start_column;

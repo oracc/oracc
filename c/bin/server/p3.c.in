@@ -18,7 +18,17 @@ p3srch(CGI_varlist *vl)
   char *sfn = malloc(strlen(d) + 10);
   FILE *fp = NULL;
 
-  fprintf(stderr, "p3: saving search '%s'\n", s);
+  fprintf(stderr, "p3: saving search '%s' to %s/search.bar\n", s, d);
+  sprintf(sfn, "%s/search.bar", d);
+  if ((fp = fopen(sfn, "w")))
+    {
+      fputs(s,fp);
+      fclose(fp);
+    }
+  else
+    {
+      fprintf(stderr, "p3: failed to open %s to write srch bar command\n", sfn);
+    }  
   sprintf(sfn, "%s/search.txt", d);
   if ((fp = fopen(sfn, "w")))
     {

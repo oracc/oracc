@@ -31,12 +31,7 @@ grapheme (const char *text)
       curr_node->l.branch_id = curr_node->left->l.branch_id;
     }
   curr_node->used_flag = 1;
-#if 1
-  memcpy(&curr_node->l,&l8,sizeof(struct location8));
-#else
-  curr_node->l.unit_id = curr_unit_id;
-  curr_node->l.word_id = curr_word_id;
-#endif
+  memcpy(&curr_node->l, &l8, sizeof(struct location8));
   curr_node->l.start_column = start_column++;
   curr_node->l.properties = curr_properties;
   if (grapheme_list)
@@ -83,4 +78,10 @@ grapheme_boundary (int btype)
       if (btype == ' ')
 	++curr_word_id;
     }
+}
+
+void
+grapheme_reset_start_column(void)
+{
+  start_column = 0;
 }

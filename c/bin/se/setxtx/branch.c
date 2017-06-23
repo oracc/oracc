@@ -9,7 +9,7 @@
 
 int branch_id;
 extern const char *atf_name;
-extern int atf_line;
+extern int atf_line, swc_flag;
 
 void
 begin_branch ()
@@ -61,7 +61,8 @@ begin_branch ()
 	}
       ++parallels_depth;
     }
-  start_column = curr_parallel->start_column;
+  if (!swc_flag)
+    start_column = curr_parallel->start_column;
   curr_word_id = curr_parallel->word_id;
 }
 

@@ -27,6 +27,9 @@ keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct 
   if (estp)
     est_add(key, estp);
 
+  if ('x' == key[0] && '\0' == key[1])
+    return key;
+  
   if ((manglerules&KM_ATF2UTF) && !use_unicode)
     {
       /* FIXME: NEED TO MAKE THIS LANGUAGE-SENSITIVE */

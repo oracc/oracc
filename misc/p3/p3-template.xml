@@ -41,7 +41,7 @@
 	  <div id="p3srch">
 	    <p class="center">
 	      Oracc Search:
-	      <input type="text" id="srch" name="srch" size="" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchtext/@@"/>
+	      <input type="text" id="srch" name="srch" size="" onchange="document.getElementById('p3do').value='qsrch'" p3:value="@@runtime:srchorig/@@"/>
 
 	      <img class="p3icon" src="/img/p3-search.png" alt="Search" title="Search" id="qsrch" name="qsrch" onclick="p3action('qsrch')"/>
 

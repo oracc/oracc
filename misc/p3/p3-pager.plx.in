@@ -276,7 +276,7 @@ decode_args {
 	    $s =~ /\#(\S+)/;
 	    $tmp{'project'} = $1;
 	    $s =~ /\!(\S+)/;
-	    $rt{'srchtype'} = $tmp{'srchtype'} = $1;
+	    $rt{'srchtype'} = $tmp{'srchtype'} = $1 || '';
 	} else {
 	    warn "p3-pager.plx: unable to auto-set project\n";
 	}
@@ -410,12 +410,21 @@ p3adhoc {
 sub
 p3srch {
     my $srchtext = shift || '';
-    warn "p3srch: rt{'#index'} = $rt{'#index'}; srchtext = $srchtext\n";
-    if ($rt{'#index'} eq '#any' && !$srchtext) {
+    warn "p3srch: on entry: rt{'#index'} = $rt{'#index'}; srchtext = $srchtext\n";
+    unless ($srchtext) {
 	open(S, "$p{'tmpdir'}/search.txt");
-	$rt{'srchtext'} = <S>;
-	chomp($rt{'srchtext'});
+	$srchtext = $rt{'srchtext'} = <S>;
 	close(S);
+	chomp($rt{'srchtext'});
+	warn "p3srch: from $p{'tmpdir'}/search.txt: rt{'srchtext'} = $rt{'srchtext'}\n";
+	if (-r  "$p{'tmpdir'}/search.bar") {
+	    $rt{'srchorig'} = `cat "$p{'tmpdir'}/search.bar"`;
+	    chomp $rt{'srchorig'};
+	}
+    } else {
+	$rt{'srchorig'} = $rt{'srchtext'} = $srchtext;
+    }
+    if ($rt{'#index'} eq '#any') {
 	warn "search.txt in any mode=$rt{'srchtext'}\n";
 	if ($p{'unicode'} || $p{'uimode'} eq 'search') {
 	    xsystem("$oraccbin/se", '-8', '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
@@ -423,15 +432,7 @@ p3srch {
 	    xsystem("$oraccbin/se", '-x', $p{'tmpdir'}, '-j', $p{'project'}, '-a');
 	}
     } else {
-	if ($srchtext) {
-	    $rt{'srchtxt'} = $srchtext;
-	    $rt{'#index'} = 'cat';
-	} else {
-	    open(S, "$p{'tmpdir'}/search.txt");
-	    $rt{'srchtext'} = <S>;
-	    chomp($rt{'srchtext'});
-	    close(S);
-	}
+	$rt{'#index'} = 'cat' unless $rt{'#index'};
 	open(S, ">$p{'tmpdir'}/search.txt");
 	print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
 	close(S);
@@ -451,7 +452,7 @@ p3srch {
 	    print R $res;
 	    close(R);
 	} else {
-	    warn "did not uniq resulst\n";
+	    warn "did not uniq results\n";
 	}
     }
     set_results_xml_info();

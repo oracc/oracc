@@ -7,6 +7,8 @@
 #include <psd_base.h>
 #include "index.h"
 
+extern int swc_flag;
+
 struct any_type *parallels_mm;
 int parallels_depth;
 struct parallel *curr_parallel = NULL;

@@ -11,6 +11,8 @@ struct indexed *curr_indexed;
 struct any_type *indexed_mm;
 static int indexed_id;
 
+extern int swc_flag;
+
 void
 begin_indexed ()
 {
@@ -25,10 +27,14 @@ begin_indexed ()
       curr_indexed->next = NULL;
     }
   curr_node = curr_indexed->nodes = new_node ();
-  curr_node->l.branch_id = branch_id = 1;
   curr_node->used_flag = 0;
   curr_indexed->id = indexed_id++;
-  start_column = 0;
+  /* split-word support just won't work when there are multiple
+   * exemplars, i.e., multiple branches 
+   */
+  curr_node->l.branch_id = branch_id = 1;
+  if (!swc_flag)
+    start_column = 0;
 }
 
 void
