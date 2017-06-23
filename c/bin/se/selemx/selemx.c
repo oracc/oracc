@@ -26,6 +26,7 @@
 int l2 = 1;
 /* This is unpleasant; declared only because we have to invoke sig_context_init() which pulls in the sigs library */
 int lem_autolem = 0;
+int lem_info = 0;
 int fuzzy_aliasing = 0;
 int cbd_lem_sigs = 0;
 int bootstrap_mode = 0;
@@ -344,7 +345,9 @@ startElement_gdl(void *userData, const char *name, const char **atts)
 	  {
 	    struct f2 *f2 = NULL;
 	    int len;
+	    lem_info = 1;
 	    (void)sscanf(sig, "%d.%d:%n",&curr_sentence_id, &curr_lemma_id, &len);
+	    fprintf(stderr, "sscanf sig sent_id=%d; lem_id=%d; len=%d\n", curr_sentence_id, curr_lemma_id, len);
 	    sig += len;
 	    f2 = hash_find(lemparses, (unsigned char *)sig);
 	    pos_props((const char*)f2->pos);
@@ -357,6 +360,8 @@ startElement_gdl(void *userData, const char *name, const char **atts)
 	    lem_index(&l8, "m2", (const char*)f2->morph2, NULL);
 	    /*lem_index(&l8, "p", (const char*)f2->epos);*/
 	  }
+	else
+	  lem_info = 0;
       }
       break;
     case 'v':
@@ -497,6 +502,7 @@ startLemIndex(void *userData, const char *name, const char **atts)
 	      sprintf(tmp, "%d.%d:%s", curr_sentence_id, curr_lemma_id, sig);
 	      sig = (const char*)npool_copy((unsigned char *)tmp, lempool);
 	      free(tmp);
+	      fprintf(stderr,"adding lem %s from word %s\n", sig, qualified_id);
 	      hash_add(lemindex,
 		       npool_copy((unsigned char *)qualified_id, lempool),
 		       (void*)sig);
@@ -577,11 +583,11 @@ main (int argc, char **argv)
   /*  alias_check_date ("", TRUE); */
   dip = dbi_create (curr_index, index_dir, 10000, /* hash_create will adjust */
 		    sizeof(struct location24), DBI_ACCRETE);
-  dbi_set_user(dip,d_l24);
+  dbi_set_user(dip,d_lem);
   if (NULL == dip) 
     error (NULL, "unable to create index for %s", curr_index);
   if (cache_elements > 0)
-    dbi_set_cache (dip, cache_elements);
+   dbi_set_cache (dip, cache_elements);
   trie_init ();
 
   estp = est_init(curr_project, "lem");

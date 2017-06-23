@@ -22,10 +22,6 @@ struct expr_rules rulestab[] =
       KM_REDUCE /*|KM_FOLD|KM_2VOWEL*/ , 
       KM_ATF2UTF|KM_GRAPHEME|KM_REDUCE /*|KM_FOLD|KM_2VOWEL*/ , 
       g_word,   'P', 'Q' },
-    { d_l24   , "-~_.=" , NULL    , "+-1w" , "+0f"  , 
-      KM_REDUCE|KM_FOLD /*|KM_2VOWEL*/ , 
-      KM_ATF2UTF|KM_GRAPHEME|KM_REDUCE|KM_FOLD /*|KM_2VOWEL*/ , 
-      g_word,   'P', 'Q' },
     { d_txt   , "-~_.=" , NULL    , "+-1w" , "+0f"  , 
       KM_REDUCE /*|KM_FOLD|KM_2VOWEL*/ , 
       KM_ATF2UTF|KM_GRAPHEME|KM_REDUCE /*|KM_FOLD|KM_2VOWEL*/ , 
@@ -42,5 +38,5 @@ struct expr_rules rulestab[] =
 
 const char * const datum_type_names[] = 
   {
-    "d_cat" , "d_cbd" , "d_tra" , "d_txt" , "d_uni" , "d_NONE",
+    "d_cat" , "d_cbd" , "d_tra" , "d_lem" , "d_txt", "d_uni" , "d_NONE",
   };

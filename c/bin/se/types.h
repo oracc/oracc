@@ -134,7 +134,7 @@ enum near_levs { n_record = se_top+1, n_field , n_word ,
 		 n_grapheme , n_bad_lev };
 
 /* These must be ordered so that earlier items have larger granularity */
-enum datum_type { d_cat , d_cbd , d_tra , d_lem , d_l24 , d_txt , d_uni , d_NONE };
+enum datum_type { d_cat , d_cbd , d_tra , d_lem , d_txt , d_uni , d_NONE };
 
 struct expr_rules
 {

@@ -15,7 +15,7 @@ struct any_type *grapheme_mm;
 
 extern struct location8 l8;
 extern Two_bytes curr_properties;
-extern int curr_sentence_id, curr_lemma_id;
+extern int curr_sentence_id, curr_lemma_id, lem_info;
 
 void
 grapheme (const char *text)
@@ -35,8 +35,15 @@ grapheme (const char *text)
   curr_node->l.start_column = start_column++;
   curr_node->l.properties = curr_properties;
 
-  curr_node->l.sentence_id = curr_sentence_id;
-  curr_node->l.lemma_id = curr_lemma_id;
+  if (lem_info)
+    {
+      curr_node->l.sentence_id = curr_sentence_id;
+      curr_node->l.lemma_id = curr_lemma_id;
+    }
+  else
+    {
+      curr_node->l.sentence_id = curr_node->l.lemma_id = 0;
+    }
 
   if (grapheme_list)
     {

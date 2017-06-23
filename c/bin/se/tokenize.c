@@ -189,8 +189,10 @@ setup_index(struct token*curr_tok)
       rules = &rulestab[curr_dip->h.ht_user];
       if (!ret_type_rules)
 	ret_type_rules = rules;
-      progress("se: set rules to type %s\n",
+#if 0
+      fprintf(stderr, "se: set rules to type %s\n",
 	       datum_type_names[curr_dip->h.ht_user]);
+#endif
       if (firstindex)
 	{
 	  firstindex = 0;
