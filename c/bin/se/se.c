@@ -402,13 +402,15 @@ main(int argc, char * const*argv)
     {
       if (any_index)
 	{
-	  const char *index[] = { "!cat" , "!txt" , "!tra" , "!lem", NULL, "!esp" , NULL };
+	  const char *xindex[] = { "!cat" , "!txt" , "!tra" , "!lem", NULL, "!esp" , NULL };
+	  const char *index[7] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	  struct Datum results[4];
 	  int i, best_findset = -1;
 	  char *hashproj = NULL;
 	  FILE *anyout = stdout;
 	  const char **toklist = NULL;
-
+	  int usable = 0;
+	  
 	  if (!project)
 	    {
 	      fprintf(stderr, "se: must give -j PROJECT option when using -a\n");
@@ -425,6 +427,24 @@ main(int argc, char * const*argv)
 	  hashproj = malloc(strlen(project) + 2);
 	  sprintf(hashproj, "#%s",project);
 
+	  for (i = 0; xindex[i]; ++i)
+	    {
+	      const char *proj_index_path = NULL;	      
+	      char *index_dbi = NULL;
+	      const char *idx = NULL;
+
+	      idx = xindex[i]+1;
+	      proj_index_path = se_dir(project,idx);
+	      index_dbi = malloc(strlen(proj_index_path + strlen(idx)*2 + 5));
+	      sprintf(index_dbi, "%s/%s.dbi",proj_index_path,idx);
+	      if (!xaccess(index_dbi, R_OK, 0))
+		{
+		  /* fprintf(stderr, "adding %s\n", idx);*/
+		  index[usable++] = xindex[i];
+		}
+	    }
+	  index[usable] = NULL;
+	  
 	  for (i = 0; index[i]; ++i)
 	    {
 	      if (!strcmp(index[i], "!lem"))
