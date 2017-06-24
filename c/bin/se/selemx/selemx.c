@@ -504,7 +504,7 @@ startLemIndex(void *userData, const char *name, const char **atts)
 	      sprintf(tmp, "%d.%d:%s", curr_sentence_id, curr_lemma_id, sig);
 	      sig = (const char*)npool_copy((unsigned char *)tmp, lempool);
 	      free(tmp);
-	      fprintf(stderr,"adding lem %s from word %s\n", sig, qualified_id);
+	      /* fprintf(stderr,"adding lem %s from word %s\n", sig, qualified_id);*/
 	      hash_add(lemindex,
 		       npool_copy((unsigned char *)qualified_id, lempool),
 		       (void*)sig);
