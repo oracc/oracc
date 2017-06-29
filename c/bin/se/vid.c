@@ -185,7 +185,8 @@ vid_get_id(struct vid_data *vp, int vid, enum vid_proj which_proj)
 	  if (which_proj == vid_proj_xtf)
 	    {
 	      char *colon = strchr(atptr, ':');
-	      return memmove(atptr, colon, strlen(colon));
+	      (void)memmove(atptr, colon, strlen(colon)+1);
+	      return id;
 	    }
 	  else
 	    {
