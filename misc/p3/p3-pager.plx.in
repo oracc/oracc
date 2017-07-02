@@ -47,6 +47,16 @@ my $proxy_host = '';
 my %rt = ();
 my $verbose = 1;
 
+my $itemsdbg = 0;
+sub
+dbgitems {
+    if ($itemsdbg) {
+	my $trace = shift @_;
+	warn "dbgitems[$trace]: rt{'items'} = $rt{'items'}\n";
+	++$itemsdbg;
+    }
+}
+
 %p = decode_args(@ARGV);
 
 p3_oas_triage()
@@ -185,18 +195,26 @@ if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
     if ($p{'#listitems'}) {
 	setup_pg_args();
 	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
+
+	dbgitems(1);
 	
 	# set up the input for the content maker
 	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, @pg_args);
+
+	dbgitems(2);
 	
 	# generate the outline
 	ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
+
+	dbgitems(3);
     }
 } else {
     ORACC::P3::Slicer::glos_info(%p);
 }
 
+dbgitems(4);
 set_runtime_vars();
+dbgitems(5);
 
 # generate the content
 ## in page mode emit the pth page
@@ -950,6 +968,9 @@ set_results_xml_info {
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
+
+    warn "set_results_xml_info: p{#listitems}=$p{'#listitems'}; p{#list} = $p{'#list'}\n";
+
     if (-r "$p{'tmpdir'}/any") {
 	open(X, "$p{'tmpdir'}/any");
 	my @any = (<X>);
@@ -980,6 +1001,10 @@ set_results_xml_info {
 sub
 set_runtime_vars {
     if (open(P, "$p{'tmpdir'}/pg.info")) {
+	# note that when this sets rt{'items'} the number of items can be less
+	# than the number of search results because pg2 uses LINE IDs not WORD
+	# IDs.  If two words in a line match, the line results are fewer than
+	# the se results.
 	while (<P>) {
 	    next if /^\#/;
 	    chomp;
