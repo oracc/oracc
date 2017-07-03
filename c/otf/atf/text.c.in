@@ -241,7 +241,11 @@ process_text(struct run_context *run, unsigned char **lines)
 
   if (text)
     {
+      extern int sentences_used;
       struct node *text_protocols;
+
+      sentences_used = 0;
+      
       ++lnum;
       text_protocols = protocols(run, s_text, TEXT, lines+1, &lines, text);
       --lnum;

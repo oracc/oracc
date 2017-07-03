@@ -514,7 +514,13 @@ startLemIndex(void *userData, const char *name, const char **atts)
 	{
 	  if (!strcmp(findAttr(atts,"type"), "sentence"))
 	    {
-	      ++curr_sentence_id;
+	      const char *implicit = findAttr(atts, "implicit");
+	      /* sentence_id counts from 1, but only if explict sentence
+		 markers were found in the text */
+	      if (!strcmp(implicit, "yes"))
+		curr_sentence_id = 0;
+	      else
+		++curr_sentence_id;
 	      curr_lemma_id = 0;
 	    }
 	  else if (!strcmp(findAttr(atts,"type"), "text"))

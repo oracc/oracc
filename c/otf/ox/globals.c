@@ -23,6 +23,7 @@ int no_destfile = 0;
 int no_pi = 0;
 int odt_serial = 0;
 int report_all_label_errors = 0;
+int sentences_used = 0;
 int show_toks = 0;
 int verbose = 0;
 int word_matrix = 0;

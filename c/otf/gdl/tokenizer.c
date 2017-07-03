@@ -1395,10 +1395,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    }
 		  else if ((*l == '+' || *l == '-') && l[1] == '.')
 		    {
+		      extern int sentences_used;
 		      /* handle inline sentence boundaries */
 		      tokens[tokindex++] = clone_token(static_tokens[*l == '+' ? ub_plus : ub_minus]);
 		      l += 2;
 		      last_text_or_bound = meta;
+		      ++sentences_used;
 		      continue; /* skip the whitespace skipping */
 		    }
 		  else

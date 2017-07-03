@@ -300,6 +300,8 @@ serialize_one_node(FILE*f_xcl,void *vp)
 	skipping_phrase:
 	  fprintf(f_xcl,"<c");
 	  x2_attr(f_xcl,"type",xcl_c_type_str[cp->type]);
+	  if (cp->type == xcl_c_sentence)
+	    x2_attr(f_xcl,"implicit","yes");
 	  if (cp->subtype && *cp->subtype)
 	    {
 	      if (cp->type == xcl_c_sentence

@@ -440,7 +440,7 @@ op_driver24 (struct Datum *d1, struct Datum *d2)
 	      if (idVal(rt_base[0]->text_id) < idVal(rt[0]->text_id))
 		rt_base = rt;
 	    }
-	  if (l24)
+	  if (l24 && sent_id((struct location24*)rt[0])) /* only use sentence_id if it's non-zero */
 	    switch (ranges[RECORD].use)
 	      {
 	      case USE_EXACT:
