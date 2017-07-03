@@ -105,10 +105,12 @@
 			onclick="p3action('itemfwd')"/>
 	      </span>
 	      
-	      <span p3:value="@@runtime:items@@"/> Items
+	      <span p3:value="@@runtime:items@@"/> Texts
+	      [<span class="resultcount" p3:value="@@runtime:resultcount@@"/> matches]
 
 @@translations@@
 	      <input type="checkbox" onchange="to_toggle()" name="transonly" id="transonly" value="transonly" p3:value="@@cgivar:transonly@@"/>&#xa0;only
+
 	    </p>
 	  </div>
 	  
@@ -149,9 +151,11 @@
 			onclick="p3action('pagefwd')"/>
 	      </span>
 
-	      <span p3:value="@@runtime:items@@"/> items
+	      <span p3:value="@@runtime:items@@"/> lines
 	      /
 	      <span p3:value="@@runtime:pages@@"/> Pages
+
+	      [<span class="resultcount" p3:value="@@runtime:resultcount@@"/> matches]
 	      
 	      <!--Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>-->
 

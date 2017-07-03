@@ -193,6 +193,7 @@ if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
 	set_list_items();
     }
     if ($p{'#listitems'}) {
+
 	setup_pg_args();
 	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
 
@@ -967,6 +968,7 @@ set_results_xml_info {
     my $xinfo = <X>;
     $xinfo =~ m#<count>(.*?)<#;
     $p{'#listitems'} = $1;
+    $rt{'resultcount'} = $p{'#listitems'};
     $p{'#list'} = "$p{'tmpdir'}/results.lst";
 
     warn "set_results_xml_info: p{#listitems}=$p{'#listitems'}; p{#list} = $p{'#list'}\n";
@@ -1000,6 +1002,7 @@ set_results_xml_info {
 
 sub
 set_runtime_vars {
+    $rt{'itemdisplay'} = 'items';
     if (open(P, "$p{'tmpdir'}/pg.info")) {
 	# note that when this sets rt{'items'} the number of items can be less
 	# than the number of search results because pg2 uses LINE IDs not WORD
