@@ -8,7 +8,8 @@ use ORACC::NS;
 my $ce_ns = 'http://oracc.org/ns/ce/1.0';
 binmode(STDIN, ':utf8'); binmode(STDOUT, ':utf8');
 
-my $input = (<>);
+my @input = (<>);
+my $input = join('',@input);
 my $x = load_xml_string($input);
 
 if ($x->getDocumentElement()->getAttribute("cetype")
