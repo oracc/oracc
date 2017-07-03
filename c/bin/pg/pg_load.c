@@ -28,15 +28,19 @@ pg_load(int *nitems)
 {
   unsigned char *buf = NULL, *s;
   size_t buflen;
+#if 0
   FILE*pg2_sanity = NULL;
-  
+#endif
+
   if (listfile)
     buf = loadfile((unsigned const char *)listfile,&buflen);
   else
     buf = loadstdin(&buflen);
   s = buf;
 
+#if 0
   pg2_sanity = fopen("/tmp/pg2_sanity.lst","w");
+#endif
   
   /* we know that each entry takes up at least 8 bytes */
   items = malloc(((buflen / 8) + 1) * sizeof(struct item));
@@ -64,7 +68,9 @@ pg_load(int *nitems)
 	    ++s;
 	  s = adjust_s(buf,s);
 	  *s++ = '\0';
+#if 0
 	  fprintf(pg2_sanity,"%s\n",orig_s);
+#endif
 	  items[items_used].pq = (unsigned char*)strdup(colon 
 							? colon
 							: (char*)items[items_used].s);
@@ -84,7 +90,9 @@ pg_load(int *nitems)
 	  exit(1);
 	}
     }
+#if 0
   fclose(pg2_sanity);
+#endif
   *nitems = items_used;
   return items;
 }
