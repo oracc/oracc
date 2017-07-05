@@ -25,10 +25,11 @@ int show_tokens = 0;
 int textresult = 0;
 int verbose = 0;
 const char *xmldir = NULL;
+const char *errfile = NULL;
 const char *outfile = NULL;
 const char *project = NULL;
 const char *return_index = NULL;
-FILE*out_f = NULL, *f_log;
+FILE*out_f = NULL, *f_log, *f_err;
 enum result_granularity res_gran = g_not_set, best_res_gran = g_not_set;
 static struct Datum result;
 enum vid_proj vid_display_proj;
@@ -373,6 +374,15 @@ main(int argc, char * const*argv)
   int ntoks = 0;
 
   f_log = stderr;
+
+  if (errfile)
+    if (!(f_err = freopen(errfile, "w", stderr)))
+      {
+	fprintf(stderr, "se: unable to reopen stderr to write to %s\n", errfile);
+	exit(1);
+      }
+  else
+    f_err = stderr;
   exit_on_error = TRUE;
   setlocale(LC_ALL,LOCALE);
   options(argc, argv, "28acdg:j:o:p:P:stuvx:");
@@ -396,7 +406,6 @@ main(int argc, char * const*argv)
 	toks = tokenize(xmldir_toks(xmldir),&ntoks);
       else
 	toks = tokenize((const char **)(argv+optind),&ntoks);
-      showtoks(toks,ntoks);
     }
   else
     {
@@ -654,6 +663,9 @@ opts(int argc, char *arg)
       break;
     case 'd':
       doing_debug = 1;
+      break;
+    case 'e':
+      errfile = arg;
       break;
     case 'j':
       project = arg;

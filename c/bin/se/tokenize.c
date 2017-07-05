@@ -209,14 +209,19 @@ setup_index(struct token*curr_tok)
 struct token *
 tokenize(const char **tokptrs, int *ntoks)
 {
-  struct token*p1toks = NULL;
+  struct token*p1toks = NULL, *p2toks = NULL;
   if (any_index)
     {
       firstindex = 1;
       (void)add_token(se_notused);
     }
   p1toks = phase1(tokptrs);
-  return phase2(p1toks,ntoks);
+  if (show_tokens)
+    showtoks(p1toks,(last_tok - toks)+1,1);
+  p2toks = phase2(p1toks,ntoks);
+  if (show_tokens)
+    showtoks(p2toks,*ntoks,2);
+  return p2toks;
 }
 
 static void
@@ -283,6 +288,8 @@ phase1(const char **tokptrs)
 	      break;
 	    case '!':
 	    case 0x01:
+	      if (last_tok && last_tok->type == se_groupc)
+		default_boolean();
 	      curr_tok = add_token(se_index);
 	      if (*s == 0x01)
 		s = (unsigned char *)scan_name(curr_tok,"cat");
@@ -377,7 +384,9 @@ phase1(const char **tokptrs)
 		    }
 		}
 	      else
-		fprintf(stderr,"%c: unrecognized token-start\n",*s++);
+		{
+		  fprintf(stderr,"%c: unrecognized token-start\n",*s++);
+		}
 	    }
 	}
     }
@@ -793,9 +802,10 @@ print_token(struct token *tp)
 }
 
 void
-showtoks(struct token *tokens, int ntoks)
+showtoks(struct token *tokens, int ntoks, int phase)
 {
   int i;
+  fprintf(stderr, "--Tokens phase %d--\n", phase);
   for (i = 0; i < ntoks; ++i)
     print_token(&tokens[i]);
 }

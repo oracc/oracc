@@ -85,9 +85,10 @@ struct near
 };
 
 extern int any_index;
+extern int show_tokens;
 extern int verbose;
 
-extern void showtoks(struct token*toks,int ntoks);
+extern void showtoks(struct token*toks,int ntoks, int phase);
 extern struct token *tokenize(const char **argv, int *ntoks);
 extern void tokinit(void);
 extern struct se_tok_tab *setoks(register const char *str, register unsigned int len);
