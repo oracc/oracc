@@ -36,6 +36,7 @@ my $oraccpub = "@@ORACC@@/pub";
 my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
+my $fragid = '';
 my $no_html = "@@ORACC@@/www/no_html.xml";
 my $oas_instance = '';
 my $oas_template = "@@ORACC@@/lib/data/oas-template.xml";
@@ -502,6 +503,12 @@ run_form_maker {
 	    print `cat @@ORACC@@/xml/$p{'project'}/outline-sorter.xml`;
 	} elsif (/\@\@translations\@\@/) {
 	    print `cat @@ORACC@@/xml/$p{'project'}/trans-select.xml`;
+	} elsif (/p3_onload\(\)/) {
+	    warn "run_form_maker: found p3_onload(); fragid = $fragid\n";
+	    if ($fragid) {
+		s/window/window.location.hash='$fragid'; window/;
+	    }
+	    print;
 	} elsif (m#<p>\@</p>#) {
 	    if ($p{'glos'}) {
 		warn "run_form_maker: glos\n";
@@ -703,7 +710,7 @@ run_item_maker {
     } else {
 	$eid = $id;
     }
-    my @idinfo = ();
+#    my @idinfo = ();
     $eid =~ s/_.*$//;
     $eid =~ s/^.*?://;
     $eid =~ s/\..*$//;
@@ -720,14 +727,16 @@ run_item_maker {
     } elsif ($rt{'itemtype'} eq 'xtf' || $rt{'itemtype'} eq 'tra') {
 	my $line = $eid;
 	$eid =~ s/\..*$//;
-	if ($rt{'type'} =~ /^tra|xtf$/ && $rt{'what'} eq 'item') {
-	    @idinfo = ce_data_info($sedItem);
-	} else {
-	    push(@idinfo, '-stringparam', 'line-id', $p{'itemline'})
-		if $p{'itemline'} && $p{'itemline'} ne 'none';
-	    push(@idinfo, '-stringparam', 'frag-id', $p{'itemctxt'})
-		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
-	}
+#	if ($rt{'type'} =~ /^tra|xtf$/ && $rt{'what'} eq 'item') {
+#	    @idinfo = ce_data_info($sedItem);
+#	} else {
+#	    push(@idinfo, '-stringparam', 'line-id', $p{'itemline'})
+#		if $p{'itemline'} && $p{'itemline'} ne 'none';
+#	    push(@idinfo, '-stringparam', 'frag-id', $p{'itemctxt'})
+#		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
+#	}
+
+	
 
 	my $html = $xmd;
 	$html =~ s/xmd$/html/;
@@ -753,6 +762,16 @@ run_item_maker {
 	xsystem('cp',$html,"$p{'tmpdir'}/results.html");
 	sig_fixer($p{'project'});
 	if ($hilite_words) {
+	    $fragid = $hilite_words;
+	    $fragid =~ s/[,\+].*$//;
+	    warn "hilite_words = $hilite_words; fragid = $fragid\n";
+	    my($fragline) = ($fragid =~ m/\.(\d+)/);
+	    if ($fragline && $fragline > 5) {
+		$fragline -= 5;
+		$fragid =~ s/\.(\d+).*$/.$fragline/;
+	    } else {
+		$fragid = '';
+	    }
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
       OUTLINE:
