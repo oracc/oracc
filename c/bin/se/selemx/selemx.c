@@ -212,7 +212,7 @@ lem_index(struct location8 *l8, const char *field, const char *toks, ...)
 	  int ntok = 0;
 	  if (tok)
 	    {
-	      char *tmp = malloc(strlen(tok)+1), *end;
+	      char *tmp = malloc(strlen(tok)+1), *end, *mangled;
 	      static char manglebuf[128];
 	      end = strcpy(tmp,tok);
 	      start_column = saved_start_column|snp->uid;
@@ -235,8 +235,13 @@ lem_index(struct location8 *l8, const char *field, const char *toks, ...)
 
 		  if (debug_flag)
 		    fprintf(debug_f, "%s %s\n", debug_label, t);
-
-		  grapheme((char*)keymangler((unsigned char*)t,KM_FOLD,manglebuf,128, estp,"lem"));
+		  
+		  mangled = strdup((char*)keymangler((unsigned char*)t,KM_FOLD|KM_2VOWEL,
+						     manglebuf,128, estp, "lem"));
+		  grapheme(t);
+		  if (strcmp(t,mangled))
+		    grapheme(mangled);
+		  free(mangled);
 
 		  if (punct)
 		    {
