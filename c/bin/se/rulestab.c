@@ -16,7 +16,7 @@ struct expr_rules rulestab[] =
       g_record, 'x', 'x' },
     { d_tra   ,  "-~_" , ";,"   , "+-1w" , "+-0r" , 
       KM_REDUCE|KM_FOLD|KM_2VOWEL|KM_STEM , 
-      KM_ATF2UTF|KM_REDUCE|KM_FOLD|KM_STEM , 
+      KM_REDUCE|KM_FOLD|KM_STEM , 
       g_word,   'v', 'v' },
     { d_lem   , "-~_.=" , NULL    , "+-1w" , "+0f"  , 
       KM_REDUCE|KM_2VOWEL /*|KM_FOLD*/ ,
