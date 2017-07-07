@@ -229,6 +229,9 @@
 	  <xsl:when test="@g:type='word-linecont'">
 	    <xsl:value-of select="$word-linecont-char"/>
 	  </xsl:when>
+	  <xsl:when test="@g:type='dollar' or @g:type='comment'">
+	    <xsl:value-of select="concat('(',text(),')')"/>
+	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:value-of select="text()"/>
 	  </xsl:otherwise>
