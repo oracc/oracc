@@ -367,7 +367,7 @@ eval_expr_seq(struct token *toks, int lang_mask, struct token **lastp)
 	  if (toks->type == se_expr)
 	    {
 	      current = expr(toks, role_logo ? 2 : sign_name);	      
-	      sign_name = 0;
+	      /* sign_name = 0; */
 	    }
 	  else
 	    current = rexp(toks);
@@ -480,7 +480,7 @@ expr(struct token *e, int sign_name)
   struct Datum d;
   const char *grapheme = NULL;
 
-  if (sign_name == 2)
+  if (sign_name == 2) /* logogram */
     {
       free((char*)e->mangled);
       grapheme = strdup((const char *)keymangler(e->data, 
@@ -499,7 +499,10 @@ expr(struct token *e, int sign_name)
     {
       if (signmap)
 	{
-	  dbi_find(signmap,(unsigned char *)grapheme);
+	  extern const unsigned char *utf_lcase(const unsigned char *s);
+	  const unsigned char *lgrapheme = NULL;
+	  lgrapheme = utf_lcase((unsigned char *)grapheme);
+	  dbi_find(signmap,lgrapheme);
 	  if (signmap->nfound)
 	    {
 	      grapheme = dbi_detach_data(signmap,NULL);
@@ -685,7 +688,7 @@ open_index(const char *proj,const char *index)
       progress("se eval: opened index %s\n",iname);
       list_add(indexes,ixp);
       ixp->dip->aliases = alias_init(proj,index);
-      if (!access(se_file(proj, index, "signmap.dbi"), R_OK))
+      if (!xaccess(se_file(proj, index, "signmap.dbi"), R_OK, 0))
 	signmap = ixp->dip->signmap = dbi_open("signmap",iname_buf);
       else
 	signmap  = ixp->dip->signmap = NULL;

@@ -3,9 +3,6 @@
 
 include ../../../../oracc-am-rules.txt
 
-signmap.c: signmap.c.in
-	$(ORACCIFY) signmap.c.in
-
 .g.c:
 	gperf -L ANSI -N `basename $*` -tT $< >$@
 
@@ -24,10 +21,10 @@ bin_PROGRAMS=selemx
 
 selemx_SOURCES=selemx.c \
 	indexed.c intercha.c option.c property.c branch.c \
-	grapheme.c node.c parallel.c statnames.c signmap.c
+	grapheme.c node.c parallel.c statnames.c
 
 selemx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
-	../propmask.o ../vid.o ../keymangler.o ../est.o \
+	../propmask.o ../vid.o ../keymangler.o ../est.o ../signmap.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/l2/libl2.la \

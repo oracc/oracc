@@ -1,3 +1,4 @@
+se.dbg
 xns
 serve-cron.sh
 serve-cron.plx
@@ -54,6 +55,7 @@ c/bin/pg/showcsi
 c/bin/pg/sortinfo.c
 c/bin/pg/xisperiods
 c/bin/rnv/rnv
+c/bin/se/signmap.c
 c/bin/se/ce
 c/bin/se/ce2
 c/bin/se/ce2.c

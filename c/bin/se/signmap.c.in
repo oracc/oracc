@@ -21,7 +21,10 @@ sm_startElement(void *userData, const char *name, const char **atts)
       if (!strstr(v,"\xe2\x82\x8a")) /* good enough as a test for sub-+*/
 	{
 	  if (!hash_find(signmap,(const unsigned char *)v))
-	    hash_add(signmap, (const unsigned char *)strdup(v), curr_name);
+	    {
+	      hash_add(signmap, (const unsigned char *)strdup(v), curr_name);
+	      /* fprintf(stderr, "signmap: added %s -> %s\n", v, curr_name); */
+	    }
 	}
     }
 

@@ -395,6 +395,11 @@ same_word(struct location16 *l, struct location16 *r)
   (mask_sc(l16c(r)->start_column) < mask_sc(l16c(l)->start_column)	\
    || logo_mask(l16c(r)->end_column) > logo_mask(l16c(l)->end_column))
 
+static int
+lemma_id(struct location24*p)
+{
+  return p->lemma_id;
+}
 
 static int
 sent_id(struct location24*p)
@@ -405,7 +410,7 @@ sent_id(struct location24*p)
 static int
 w_id(struct location24*p)
 {
-  return p->lemma_id;
+  return p->lemma_id || p->word_id;
 }
 
 /* Interaction between branch_id, start_column and end_column
@@ -543,7 +548,7 @@ op_driver24 (struct Datum *d1, struct Datum *d2)
 		  goto move_left;
 		break;
 	      }
-	  if (l24)
+	  if (l24 && lemma_id((struct location24*)rt[0]))
 	    switch (ranges[WORD].use)
 	      {
 	      case USE_IGNORE:

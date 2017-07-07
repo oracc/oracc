@@ -69,20 +69,36 @@ se_vids_init(const char *index)
 }
 
 void
+debug_tuw(struct location8 *p8)
+{
+  if ('v' == id_prefix(p8->text_id))
+    {
+      if (!strcmp(return_index, "cat"))
+	vid_display_proj = vid_proj_xmd;
+      else
+	vid_display_proj = vid_proj_xtf;
+      fprintf(f_log, "%s.%d.%d ",
+	      vid_get_id(vp,idVal(p8->text_id), vid_display_proj),
+	      p8->unit_id, p8->word_id);
+
+    }
+  else
+    {
+      fprintf(f_log, "%c%06d.%d.%d\n", 
+	      id_prefix(p8->text_id), XidVal(p8->text_id),
+	      p8->unit_id, p8->word_id);
+    }
+}
+
+void
 debug_location8(struct location8 *l8p, struct location8 *r8p)
 {
-  fprintf(f_log, "%c%06d.%d.%d\n", 
-	  id_prefix(l8p->text_id), XidVal(l8p->text_id),
-	  l8p->unit_id, l8p->word_id);
+  debug_tuw(l8p);
   
   fputs(" :: ", f_log);
   
   if (r8p)
-    {
-      fprintf(f_log, "%c%06d.%d.%d\n", 
-	      id_prefix(r8p->text_id), XidVal(r8p->text_id),
-	      r8p->unit_id, r8p->word_id);
-    }
+    debug_tuw(r8p);
 }
 
 static int nl_16 = 1;
@@ -90,11 +106,9 @@ static int nl_16 = 1;
 void
 debug_location16(struct location16 *l16p, struct location16 *r16p)
 {
-  fprintf(f_log, "%c%06d.%d.%d b=%d; sc=%d; ec=%d", 
-	  id_prefix(l16p->text_id), XidVal(l16p->text_id),
-	  l16p->unit_id, l16p->word_id,
-	  l16p->branch_id, mask_sc(l16p->start_column), logo_mask(l16p->end_column)
-	  );
+  debug_tuw((struct location8 *)l16p);
+  fprintf(f_log, "b=%d; sc=%d; ec=%d", 
+	  l16p->branch_id, mask_sc(l16p->start_column), logo_mask(l16p->end_column));
 
   if (prop_sc(l16p->start_column))
     selemx_print_fields(f_log, prop_sc(l16p->start_column));
@@ -103,11 +117,9 @@ debug_location16(struct location16 *l16p, struct location16 *r16p)
 	
   if (r16p)
     {
-      fprintf(f_log, "%c%06d.%d.%d b=%d; sc=%d; ec=%d", 
-	      id_prefix(r16p->text_id), XidVal(r16p->text_id),
-	      r16p->unit_id, r16p->word_id,
-	      r16p->branch_id, mask_sc(r16p->start_column), logo_mask(r16p->end_column)
-	      );
+      debug_tuw((struct location8 *)r16p);
+      fprintf(f_log, "b=%d; sc=%d; ec=%d", 
+	      r16p->branch_id, mask_sc(r16p->start_column), logo_mask(r16p->end_column));
 	    
       if (prop_sc(r16p->start_column))
 	selemx_print_fields(f_log, prop_sc(r16p->start_column));
@@ -122,16 +134,16 @@ debug_location24(struct location24 *l24p, struct location24 *r24p)
 {
   nl_16 = 0;
   debug_location16((struct location16 *)l24p, (struct location16 *)r24p);
-  if (l24p->sentence_id)
+  /*  if (l24p->sentence_id) */
     fprintf(f_log, 
-	    " s=%d;c=%d;p=%d;l=%d",
+	    " [s=%d;c=%d;p=%d;l=%d",
 	    l24p->sentence_id,
 	    l24p->clause_id,
 	    l24p->phrase_id,
 	    l24p->lemma_id);
-  if (r24p && r24p->sentence_id)
+    if (r24p/* && r24p->sentence_id*/)
     fprintf(f_log, 
-	    " :: s=%d;c=%d;p=%d;l=%d",
+	    " // s=%d;c=%d;p=%d;l=%d]",
 	    r24p->sentence_id,
 	    r24p->clause_id,
 	    r24p->phrase_id,
@@ -376,11 +388,13 @@ main(int argc, char * const*argv)
   f_log = stderr;
 
   if (errfile)
-    if (!(f_err = freopen(errfile, "w", stderr)))
-      {
-	fprintf(stderr, "se: unable to reopen stderr to write to %s\n", errfile);
-	exit(1);
-      }
+    {
+      if (!(f_err = freopen(errfile, "w", stderr)))
+	{
+	  fprintf(stderr, "se: unable to reopen stderr to write to %s\n", errfile);
+	  exit(1);
+	}
+    }
   else
     f_err = stderr;
   exit_on_error = TRUE;

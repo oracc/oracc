@@ -7,8 +7,7 @@
 
 include ../../../oracc-am-rules.txt
 
-# sel24x
-SUBDIRS = secatx segdfx setxtx secbdx setrax selemx
+SUBDIRS = . secatx segdfx setxtx secbdx setrax selemx
 @SET_MAKE@
 
 .g.c:
@@ -44,7 +43,7 @@ ce_xtf_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 se_SOURCES=se.c setoks.c tokenize.c evaluate.c selib.c se_pcre.c binops.c \
 	xkeys.c langmask.c propmask.c alias.c vid.c keymangler.c rulestab.c \
-	xml.c binops24.c est.c
+	xml.c binops24.c est.c signmap.c
 
 se_LDADD=@top_srcdir@/c/otf/chr/libchr.la \
 	 @top_srcdir@/c/otf/lng/liblng.la \
@@ -73,4 +72,7 @@ ce2.c: ce2.c.in
 
 ce_xmd.c: ce_xmd.c.in
 	$(ORACCIFY) ce_xmd.c.in
+
+signmap.c: signmap.c.in
+	$(ORACCIFY) signmap.c.in
 

@@ -309,6 +309,13 @@ startElement_xtf(void *userData, const char *name, const char **atts)
 	  loc_project(atts);
 	}
       break;
+    case 's':
+      if (!strcmp(name,"score"))
+	{
+	  reset(indexed_mm);
+	  loc_project(atts);
+	}
+      break;
     case 'l':
       if (name[1] == '\0')
 	{
@@ -316,6 +323,16 @@ startElement_xtf(void *userData, const char *name, const char **atts)
 	  begin_indexed();
 	  begin_parallels();
 	  indexing = 1;
+	  fprintf(stderr, "l\n");
+	}
+      break;
+    case 'v':
+      if (name[1] == '\0')
+	{
+	  begin_indexed();
+	  begin_parallels();
+	  indexing = 1;
+	  fprintf(stderr, "v\n");
 	}
       break;
     }
@@ -420,6 +437,7 @@ endElement_xtf(void *userData, const char *name)
 static void
 endElement_gdl(void *userData, const char *name)
 {
+  extern Hash_table *signmap;
   switch (*name)
     {
     case 'w':
@@ -437,25 +455,55 @@ endElement_gdl(void *userData, const char *name)
     case 's':
       {
 	Char *g = (Char*)charData_retrieve();
+	const unsigned char *lg = NULL;
+	
 	grapheme((const char *)g);
-	if (*name == 'v')
+	est_add(g, estp);
+	if (*name == 's')
 	  {
-	    extern Hash_table *signmap;
+	    extern const unsigned char *utf_lcase(const unsigned char *);
+	    unsigned char *s = NULL;
+	    lg = utf_lcase((const unsigned char *)g);
+	    if (lg)
+	      {
+		s = hash_find(signmap,lg);
+		if (s)
+		  {
+		    if (strcmp((const char *)s,(const char *)g))
+		      {
+			progress("indexing sign value %s as sign %s\n",g, s);
+			/* fprintf(stderr, "indexing sign value %s as sign %s\n", g, s); */
+			grapheme_decr_start_column();
+			grapheme((const char *)s);
+			est_add(g, estp);
+			grapheme_inherit_preceding_properties();
+			do_boundary();
+		      }
+#if 0
+		    else
+		      fprintf(stderr, "%s == %s not double-indexed\n", s, g);
+#endif
+		  }
+		else
+		  fprintf(stderr, "%s not found in signmap\n", lg);
+	      }
+	    else
+	      fprintf(stderr, "failed to lowercase %s\n", g);
+	    if (role_logo)
+	      grapheme_end_column_logo();
+	  }
+	else /* v */
+	  {
 	    Char *s = hash_find(signmap,g);
 	    if (s)
 	      {
 		progress("indexing value %s as sign %s\n",g, s);
 		grapheme_decr_start_column();
 		grapheme((const char *)s);
+		est_add(g, estp);
 		grapheme_inherit_preceding_properties();
 		do_boundary();
 	      }
-	  }
-	else
-	  {
-	    if (role_logo)
-	      grapheme_end_column_logo();
-	    role_logo = 0;
 	  }
 	if (!in_qualified)
 	  pending_boundary = pb_hyphen;
@@ -716,54 +764,41 @@ add_graphemes ()
     }
 }
 
-#if 1
 static void
 fn_expand(void *p)
 {
-  char *x = l2_expand(NULL, p, "xmd");
+  char *x = (char*)l2_expand(NULL, p, "xmd");
   if (!access(x, R_OK))
     {
       char *e = x + strlen(x);
       e[-1] = 'f';
-      e[-2] = 't';
+      e[-2] = 's';
+      /* try .xsf files first to index full scores if the .xtf is
+	 derived from them */
       if (!access(x, R_OK))
 	{
 	  fnlist[findex] = strdup(x);
-	  if (verbose)
+	  if (!quiet)
 	    fprintf(stderr,"selemx: found %s\n",fnlist[findex]);
 	  ++findex;
 	}
-      else if (!quiet)
-	fprintf(stderr,"selemx: %s not found\n", x);
+      else
+	{
+	  e[-2] = 't';
+	  if (!access(x, R_OK))
+	    {
+	      fnlist[findex] = strdup(x);
+	      if (!quiet)
+		fprintf(stderr,"selemx: found %s\n",fnlist[findex]);
+	      ++findex;
+	    }
+	  else 
+	    fprintf(stderr,"selemx: %s not found\n", x);
+	}
     }
-  else if (!quiet)
+  else
     fprintf(stderr,"selemx: %s not found; skipping XTF file\n", x);
 }
-#else
-static void
-fn_expand(void *p)
-{
-  const char **projects = proxies;
-  int found = 0;
-  while (*projects)
-    {
-      fnlist[findex] = strdup(l2 
-			      ? l2_expand(*projects, p, "xtf") 
-			      : expand(*projects, p, "xtf"));
-      if (!access(fnlist[findex],R_OK))
-	{
-	  if (verbose)
-	    fprintf(stderr,"found %s\n",fnlist[findex]);
-	  ++findex;
-	  found = 1;
-	  break;
-	}
-      ++projects;
-    }
-  if (!found && !quiet)
-    fprintf(stderr,"no input file for %s\n",(char*)p);
-}
-#endif
 
 static void
 set_proxies(const char *pxpath)

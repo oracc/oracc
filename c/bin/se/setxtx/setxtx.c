@@ -299,6 +299,7 @@ endElement(void *userData, const char *name)
     }
   else if (curr_node && *name == 'g' && name[1] == ':' && name[3] == '\0')
     {
+      extern Hash_table *signmap;
       switch (name[2])
 	{
 	case 'w':
@@ -316,11 +317,45 @@ endElement(void *userData, const char *name)
 	case 's':
 	  {
 	    Char *g = (Char*)charData_retrieve();
+	    const unsigned char *lg = NULL;
+	    
 	    grapheme((const char *)g);
 	    est_add(g, estp);
-	    if (name[2] == 'v')
+	    if (name[2] == 's')
 	      {
-		extern Hash_table *signmap;
+		extern const unsigned char *utf_lcase(const unsigned char *);
+		unsigned char *s = NULL;
+		lg = utf_lcase((const unsigned char *)g);
+		if (lg)
+		  {
+		    s = hash_find(signmap,lg);
+		    if (s)
+		      {
+			if (strcmp((const char *)s,(const char *)g))
+			  {
+			    progress("indexing sign value %s as sign %s\n",g, s);
+			    /* fprintf(stderr, "indexing sign value %s as sign %s\n", g, s); */
+			    grapheme_decr_start_column();
+			    grapheme((const char *)s);
+			    est_add(g, estp);
+			    grapheme_inherit_preceding_properties();
+			    do_boundary();
+			  }
+#if 0
+			else
+			  fprintf(stderr, "%s == %s not double-indexed\n", s, g);
+#endif
+		      }
+		    else
+		      fprintf(stderr, "%s not found in signmap\n", lg);
+		  }
+		else
+		  fprintf(stderr, "failed to lowercase %s\n", g);
+		if (role_logo)
+		  grapheme_end_column_logo();
+	      }
+	    else /* v */
+	      {
 		Char *s = hash_find(signmap,g);
 		if (s)
 		  {
@@ -331,12 +366,6 @@ endElement(void *userData, const char *name)
 		    grapheme_inherit_preceding_properties();
 		    do_boundary();
 		  }
-	      }
-	    else
-	      {
-		if (role_logo)
-		  grapheme_end_column_logo();
-		role_logo = 0;
 	      }
 	    if (!in_qualified)
 	      pending_boundary = pb_hyphen;
