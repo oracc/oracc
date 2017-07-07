@@ -1635,13 +1635,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case prox:
 	      warning("misplaced prox");
 	      break;
-	    case icmt:
-	      last_g = np = elem(e_g_nonw,NULL,lnum,WORD);
-	      {
-		char type = *(char*)tp->data;
-		appendAttr(np,attr(a_type,
-				   ucc((type == '#' ? "comment" : "dollar"))));
-	      }
+	    case icmt:	      
+	      if (wp)
+		{
+		  char type = *(char*)tp->data;
+		  last_g = np = elem(e_g_x,NULL,lnum,GRAPHEME);
+		  appendAttr(np,attr(a_g_type,
+				     ucc((type == '#' ? "comment" : "dollar"))));
+		}
+	      else
+		{
+		  char type = *(char*)tp->data;
+		  last_g = np = elem(e_g_nonw,NULL,lnum,WORD);
+		  appendAttr(np,attr(a_type,
+				     ucc((type == '#' ? "comment" : "dollar"))));
+		}
 	      if (*cued_opener)
 		{
 		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
@@ -1650,7 +1658,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      appendChild(np,textNode(((unsigned char*)(tp->data))+1));
 	      if (!strcmp((((char*)(tp->data))+1), "DUMMY"))
 		setAttr(parent,a_silent,(unsigned char *)"1");
-	      appendChild(parent,np);
+	      if (wp)
+		appendChild(wp,np);
+	      else
+		appendChild(parent,np);
 	      break;
 	    case varo:
 	      varo_tok = start;

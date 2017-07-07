@@ -70,7 +70,7 @@ proximity.attr =
 
 nongrapheme = 
   element g:x {
-    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" | "dollar" | "comment" }
     | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
         , status.spans , opener? , closer? , break? )),
     delim? , text? , varnum? ,

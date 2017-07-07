@@ -1879,11 +1879,12 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 
   if (!np || !np->names->pname)
     {
-      warning("attempt to render NULL grapheme");
+      vwarning("attempt to render NULL grapheme [np=%p]",np);
       return NULL;
     }
 
-  if (!xstrcmp(getAttr(np, "g:status"),"excised"))
+  if (!xstrcmp(getAttr(np, "g:status"),"excised")
+      || !xstrcmp(np->names->pname, "g:x"))
     {
       if (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
 	*--insertp = '\0';

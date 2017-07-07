@@ -308,6 +308,8 @@
             <value>linebreak</value>
             <value>newline</value>
             <value>user</value>
+            <value>dollar</value>
+            <value>comment</value>
           </choice>
         </attribute>
         <group>
