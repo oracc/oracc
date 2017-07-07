@@ -323,7 +323,7 @@ startElement_xtf(void *userData, const char *name, const char **atts)
 	  begin_indexed();
 	  begin_parallels();
 	  indexing = 1;
-	  fprintf(stderr, "l\n");
+	  /*fprintf(stderr, "l\n");*/
 	}
       break;
     case 'v':
@@ -332,7 +332,7 @@ startElement_xtf(void *userData, const char *name, const char **atts)
 	  begin_indexed();
 	  begin_parallels();
 	  indexing = 1;
-	  fprintf(stderr, "v\n");
+	  /*fprintf(stderr, "v\n");*/
 	}
       break;
     }
