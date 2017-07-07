@@ -309,11 +309,12 @@ evaluate(struct token *toks, int fcode, int lmask, struct token **lastused)
 	  *lastused = toks;
 	  return ret;
 	  break;
+	case se_hyphen:
+	case se_dot:
 	case se_near:
 	case se_tilde:
 	case se_xspace:
 	case se_space:
-	case se_hyphen:
 	  pending_range = (struct near*)toks->data;
 	  pending_boolean = se_near;
 	  ++toks;
@@ -350,10 +351,12 @@ eval_expr_seq(struct token *toks, int lang_mask, struct token **lastp)
     {
       switch (toks->type)
 	{
+	case se_hyphen:
+	  role_logo = sign_name = 0;
+	case se_dot:
 	case se_sans:
 	case se_near:
 	case se_space:
-	case se_hyphen:
 	case se_tilde:
 	  pending_range = (struct near*)toks->data;
 	  pending_boolean = toks->type;

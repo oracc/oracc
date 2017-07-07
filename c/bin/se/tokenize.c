@@ -19,7 +19,7 @@ const char *const se_toks_names[] =
     C(se_and)C(se_or)C(se_not)C(se_groupo)C(se_groupc)
     C(se_near)C(se_sans)C(se_logo)C(se_sign)
     C(se_filter)C(se_filter1)C(se_lang)C(se_index)C(se_expr)C(se_rexp)
-    C(se_hyphen)C(se_space)C(se_tilde)C(se_xspace)C(se_project)
+    C(se_dot)C(se_hyphen)C(se_space)C(se_tilde)C(se_xspace)C(se_project)
     "se_top",
     "n_record" , "n_field" , "n_word" , "n_grapheme" 
   };
@@ -718,8 +718,10 @@ expr_toks(char *e)
 		  break;
 		case '=':
 		case '-':
-		case '.':
 		  etok = se_hyphen;
+		  break;
+		case '.':
+		  etok = se_dot;
 		  break;
 		default:
 		  fprintf(stderr,"se: rules %s has unhandled septok %c\n",
@@ -776,6 +778,7 @@ print_token(struct token *tp)
     case se_near:
     case se_space:
     case se_tilde:
+    case se_dot:
     case se_hyphen:
     case se_and:
     case se_or:

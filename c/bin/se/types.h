@@ -126,7 +126,7 @@ enum se_toks
     C(se_and)C(se_or)C(se_not)C(se_groupo)C(se_groupc)
     C(se_near)C(se_sans)C(se_logo)C(se_sign)
     C(se_filter)C(se_filter1)C(se_lang)C(se_index)C(se_expr)C(se_rexp)
-    C(se_hyphen)C(se_space)C(se_tilde)C(se_xspace)C(se_project)
+    C(se_dot)C(se_hyphen)C(se_space)C(se_tilde)C(se_xspace)C(se_project)
     se_top
   };
 
