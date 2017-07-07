@@ -192,6 +192,13 @@
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:when>
+    <xsl:when test="@g:type='dollar' or @g:type='comment'">
+      <xsl:value-of select="@g:o"/>
+      <xsl:value-of select="concat('(',text(),')')"/>
+      <xsl:if test="@note:mark">
+	<xsl:call-template name="process-notes"/>
+      </xsl:if>
+    <xsl:value-of select="@g:c"/>    </xsl:when>
     <xsl:otherwise>
       <text:span text:style-name="r"> <!-- text:classes="r" -->
 	<xsl:value-of select="@g:o"/>
