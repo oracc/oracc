@@ -81,6 +81,7 @@ binop_init()
   binop_tab[se_or]     = merge;
   binop_tab[se_space]  = space;
   binop_tab[se_hyphen] = hyphen;
+  binop_tab[se_dot] = hyphen;
   binop_tab[se_tilde]  = any;
 
   /* IS THIS OK, not to set dtype_tab for most indexes? */
