@@ -1877,14 +1877,14 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
   const unsigned char *aval;
   extern int suppress_next_hyphen, suppress_hyphen_delay;
 
-  if (!np || !np->names->pname)
+  if (!np || *np->names->pname == '\0')
     {
       vwarning("attempt to render NULL grapheme [np=%p]",np);
       return NULL;
     }
 
   if (!xstrcmp(getAttr(np, "g:status"),"excised")
-      || !xstrcmp(np->names->pname, "g:x"))
+      || (!xstrcmp(np->names->pname, "g:x") && strcmp("ellipsis", (const char*)getAttr(np,"g:type"))))
     {
       if (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
 	*--insertp = '\0';
@@ -1998,7 +1998,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		if (np->children.nodes)
 		  {
 		    int i;
-		    int last_was_logo = !xstrcmp(gtype,"logo");
+		    /*int last_was_logo = !xstrcmp(gtype,"logo");*/
 		    if (!xstrcmp(gtype, "group"))
 		      ++suppress_hyphen_delay;
 		    for (i = 0; i < np->children.lastused; ++i)
