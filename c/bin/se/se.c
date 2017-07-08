@@ -628,14 +628,6 @@ n_uniq_loc8(struct Datum *dp)
       dp->l.l8p = lp;
       dp->r.l8p = rp;
       dp->count = newcount;
-#if 0
-      for (i = 0; i < newcount; ++i)
-	{
-	  dp->l[i] = lp[i];
-	  dp->r[i] = rp[i];
-	}
-      dp->count = newcount;
-#endif
     }
 }
 
