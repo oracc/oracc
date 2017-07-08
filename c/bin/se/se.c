@@ -51,6 +51,7 @@ static const char **anytoks(const char *project, const char *index, const char *
 static void put_results(struct Datum *res);
 static void run_search(struct token*toks);
 static void uniq (struct Datum *dp);
+static void n_uniq_loc8 (struct Datum *dp);
 
 #include "xfuncs.c"
 
@@ -557,15 +558,17 @@ run_search(struct token*toks)
 {
   binop_init();
   binop24_init();
-  result = evaluate(toks, -1, lm_any, NULL);
-  progress("se: result.count == %lu\n", (unsigned long)result.count);
 
-  if (do_uniq && (res_gran == g_word || res_gran == g_grapheme))
-    do_uniq = 0;
+  result = evaluate(toks, -1, lm_any, NULL);
+
+  progress("se: result.count == %lu\n", (unsigned long)result.count);
 
   if (do_uniq && result.count > 1)
     {
-      uniq(&result);
+      if (res_gran == g_word || res_gran == g_grapheme)
+	n_uniq_loc8(&result);
+      else
+	uniq(&result);
       progress("se: post-uniq result.count == %lu\n", (unsigned long)result.count);
     }
 }
@@ -592,6 +595,48 @@ put_results(struct Datum *res)
     }
   else if (xmldir)
     xmldir_results(xmldir,res->count);
+}
+
+static int
+same_loc8(struct location8 *a, struct location8 *b)
+{
+  return 
+    a->text_id == b->text_id
+    && a->unit_id == b->unit_id
+    && a->word_id == a->word_id;
+}
+
+static void
+n_uniq_loc8(struct Datum *dp)
+{
+  struct location8 **lp = malloc(dp->count * sizeof(struct location8*));
+  struct location8 **rp = malloc(dp->count * sizeof(struct location8*));
+  int i, newcount = 0;
+  /* always have to copy the first one ... */
+  lp[0] = dp->l.l8p[0];
+  rp[0] = dp->r.l8p[0];
+  ++newcount;
+  for (i = 0; i < dp->count; ++i)
+    if (i && !same_loc8(dp->l.l8p[i-1],dp->l.l8p[i]))
+      {
+	lp[newcount] = dp->l.l8p[i];
+	rp[newcount] = dp->r.l8p[i];
+	++newcount;
+      }
+  if (newcount < dp->count)
+    {
+      dp->l.l8p = lp;
+      dp->r.l8p = rp;
+      dp->count = newcount;
+#if 0
+      for (i = 0; i < newcount; ++i)
+	{
+	  dp->l[i] = lp[i];
+	  dp->r[i] = rp[i];
+	}
+      dp->count = newcount;
+#endif
+    }
 }
 
 static void
