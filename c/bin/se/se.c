@@ -614,19 +614,22 @@ n_uniq_loc8(struct Datum *dp)
   int i, newcount = 0;
   /* always have to copy the first one ... */
   lp[0] = dp->l.l8p[0];
-  rp[0] = dp->r.l8p[0];
+  if (dp->r.l8p)
+    rp[0] = dp->r.l8p[0];
   ++newcount;
   for (i = 0; i < dp->count; ++i)
     if (i && !same_loc8(dp->l.l8p[i-1],dp->l.l8p[i]))
       {
 	lp[newcount] = dp->l.l8p[i];
-	rp[newcount] = dp->r.l8p[i];
+	if (dp->r.l8p)
+	  rp[newcount] = dp->r.l8p[i];
 	++newcount;
       }
   if (newcount < dp->count)
     {
       dp->l.l8p = lp;
-      dp->r.l8p = rp;
+      if (dp->r.l8p)
+	dp->r.l8p = rp;
       dp->count = newcount;
     }
 }
