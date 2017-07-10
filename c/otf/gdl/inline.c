@@ -915,6 +915,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      cp = cloneNode(((struct grapheme*)datap)->xml);
 		      datap = tokens[start-2]->data;
 		      cp->lnum = lnum;
+		      if ((end-start>1) && tokens[start+1]->type == flag)
+			{
+			  /* This can only be a '?' flag */
+			  struct flags *fp = (struct flags *)tokens[++start]->data;
+			  set_flags(cp,fp);
+			}
 		      appendChild(gp,cp);
 		      if (tokens[start+1] && tokens[start+1]->type == hyphen)
 			{
@@ -1630,6 +1636,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case ftype:
 	      break;
 	    case flag:
+	      /* in meta belonging to corr allow ? */
 	      warning("misplaced flag");
 	      break;
 	    case prox:

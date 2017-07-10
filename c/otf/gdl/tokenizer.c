@@ -1236,24 +1236,17 @@ tokenize(register unsigned char *l,unsigned char *e)
 				/* goto ret; */
 			      }
 
-#if 1
 			  tp = clone_token(gtokp);
-#else
-			  tp = /*malloc(sizeof(struct token));*/newtoken();
-			  *tp = *gtokp;
-#endif
 			  tp->class=meta;
 			  tp->type=g_corr;
 			  tokens[tokindex++] = tp;
-
-#if 0 /*NO, wrongheaded b/c gtokp above adds g2 to the hash w/ type=text*/
-			  /* keep a list of these to free them later;
-			     normal graphemes get free'd because their class
-			     is 'text' */
-			  fprintf(stderr,"meta_graphemes\n");
-			  list_add(meta_graphemes,(void*)tp->data);
-#endif
 			  *following = save;
+			  if (*following == '?')
+			    {
+			      /* add query flags */
+			      tokens[tokindex++] = flag_info[2].t;
+			      ++following;
+			    }
 			  if (*following == ')')
 			    break;
 			  if (*following)
