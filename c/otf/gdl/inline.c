@@ -1665,7 +1665,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      appendChild(np,textNode(((unsigned char*)(tp->data))+1));
 	      if (!strcmp((((char*)(tp->data))+1), "DUMMY"))
 		setAttr(parent,a_silent,(unsigned char *)"1");
-	      if (wp)
+	      if (group_node)
+		appendChild(group_node,np);
+	      else if (wp)
 		appendChild(wp,np);
 	      else
 		appendChild(parent,np);
