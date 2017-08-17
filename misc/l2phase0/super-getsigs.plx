@@ -40,10 +40,10 @@ if (!$data{'force'} && defined $data{'outputdate'}) {
 	super_warn("$data{'output'} is up to date");
 	exit 0;
     }
-} else {
-    undef $outfh;
-    open($outfh, '>', $data{'output'}) || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $projsigs\n";
 }
+
+$outfh = undef;
+open($outfh, '>', $data{'output'}) || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $projsigs\n";
 
 chatty("importing sigs from $data{'project'}/$data{'lang'}");
 

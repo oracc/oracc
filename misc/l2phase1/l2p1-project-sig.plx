@@ -14,7 +14,9 @@ my $project = (`oraccopt`);
 my $type = (`oraccopt . type`);
 my $dynamic = (`oraccopt . cbd-mode` eq 'dynamic');
 
-$dynamic = 1 if $type eq 'superglo';
+# This can't be right: set cbd-mode=dynamic if you want
+# this behaviour
+# $dynamic = 1 if $type eq 'superglo';
 
 warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
 

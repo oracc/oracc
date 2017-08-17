@@ -5,6 +5,6 @@ aclocal
 autoheader
 automake
 autoconf
-./configure --prefix=/usr/local/oracc
+./configure --prefix=/Users/stinney/orc
 make
 make install
