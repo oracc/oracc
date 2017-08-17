@@ -26,7 +26,7 @@ open(G, "00src/$lang.glo") || die;
 open(G2, ">00lib/$lang.glo") || die;
 select G2;
 while (<G>) {
-    if (/^\@entry\S*\s+(.*?)\s*$/) {
+    if (/^\@entry\*?\S*\s+(.*?)\s*$/) {
 	$curr_cfgw = $1;
 	if ($f{$curr_cfgw}) {
 	    @forms = map { $$_[1] } @{$f{$curr_cfgw}};

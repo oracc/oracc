@@ -213,7 +213,7 @@
     <xsl:when test="@g:type='word-linecont'">
       <xsl:text>→</xsl:text>
     </xsl:when>
-    <xsl:when test="@g:type="'dollar'">
+    <xsl:when test="@g:type='dollar'">
       <xsl:text>(</xsl:text>
       <xsl:value-of select="."/>
       <xsl:text>)</xsl:text>

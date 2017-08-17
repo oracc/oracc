@@ -342,7 +342,7 @@ acd2xml {
 			$currarg = "\#$curr_sense_id\t$currarg";
 		    } elsif ($currtag eq 'form') {
 			my $barecheck = $currarg;
-			$barecheck =~ s/^(\S+)\s+//;
+			$barecheck =~ s/^(\S+)\s*//;
 			my $formform = $1;
 			if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 			    bad($currtag, "accented grapheme in FORM");
@@ -352,7 +352,7 @@ acd2xml {
 			}
 			1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 			if ($barecheck =~ /\S/) {
-			    bad($currtag, "bare word in FORM");
+			    bad($currtag, "bare word in FORM. barecheck=$barecheck; currarg=$currarg");
 			} else {
 			    my $tmp = $currarg;
 			    $tmp =~ s#\s/(\S+)##; # remove BASE because it may contain '$'s.
@@ -642,6 +642,9 @@ acdentry {
 			if ($usage_flag) {
 			    $usattr = " usage=\"1\"";
 			}
+			$cf = '' unless $pos;
+			$gd = '' unless $pos;
+			$pos = '' unless $pos;
 			$e_sig = "$cf\[$gd\]$pos";
 			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
@@ -1949,7 +1952,7 @@ parse_prefs {
 
 sub
 is_proper {
-    $_[0] =~ /^[A-Z]N$/;
+    $_[0] && $_[0] =~ /^[A-Z]N$/;
 }
 
 sub

@@ -11,6 +11,16 @@ function xis {
     )
 }
 
+function cbd {
+    if [ -r 01bld/$l.glo.norm ]; then
+	echo creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
+	l2-glomanager.plx -xml 01bld/$l.glo.norm -out $ldir/$l.cbd
+    elif [ -r 00lib/$l.glo ]; then
+	echo creating $ldir/$l.cbd from 00lib/$l.glo ...
+	l2-glomanager.plx -xml 00lib/$l.glo -out $ldir/$l.cbd
+    fi
+}
+
 function g2x {
     echo creating $ldir/$l.g2x from $ldir/union.sig
     withall=`oraccopt . cbd-with-all`
@@ -33,12 +43,14 @@ function g2x {
 rm -f 01bld/cancel
 projtype=`oraccopt . type`
 super=`oraccopt . cbd-super`
-rm -f $ldir/union.sig
+echo projtype=$projtype
 if [ "$projtype" == "superglo" ]; then
-    for a in `ls 01bld/*/*.cbd` ; do
+    for a in `oraccopt . cbd-super-list` ; do
+	ldir=01bld/$a
+	l=$a
+	mkdir -p $ldir
+	cbd $l $ldir
 	echo l2p2.sh: processing sigs for superglo $a
-	ldir=`dirname $a`
-	l=`basename $ldir`
 	rm -f $ldir/union.sig
 	cat 01bld/from-prx-*.sig >$ldir/$l.sig
 	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
@@ -48,13 +60,7 @@ elif [ "$super" == "" ]; then
     for l in `l2p2-langs.plx` ; do
 	ldir=01bld/$l
 	mkdir -p $ldir
-	if [ -r 01bld/$l.glo.norm ]; then
-	    echo creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
-	    l2-glomanager.plx -xml 01bld/$l.glo.norm -out $ldir/$l.cbd
-	elif [ -r 00lib/$l.glo ]; then
-	    echo creating $ldir/$l.cbd from 00lib/$l.glo ...
-	    l2-glomanager.plx -xml 00lib/$l.glo -out $ldir/$l.cbd
-	fi
+	cbd $l
     done
     if [ -e 01bld/cancel ]; then
 	echo REBUILD CANCELLED
@@ -62,7 +68,7 @@ elif [ "$super" == "" ]; then
     fi
     for l in `l2p2-langs.plx` ; do
 	ldir=01bld/$l
-	mkdir -p 01bld/$l
+	mkdir -p $ldir
 	rm -f $ldir/union.sig
 	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
 	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
