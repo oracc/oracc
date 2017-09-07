@@ -2,6 +2,10 @@
   <use-unicode>true</use-unicode>
   <post-type>search</post-type>
   <advanced>yes</advanced>
+<!--
+  <project>@@project@@</project>
+  <tmpdir>@@tmpdir@@</tmpdir>
+ -->
   <search type="and">
     <index>txt</index>
     <binop>
@@ -16,4 +20,8 @@
       </lem-filters>
     </binop>
   </search>
+  <result count="0" list="(none)">
+    <notify/>
+    <toks/>
+  </result>
 </search>

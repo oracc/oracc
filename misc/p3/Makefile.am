@@ -11,6 +11,9 @@ scriptdata_DATA=p3-project.xsl p3-ce-HTML.xsl p3-htmlview.xsl p3-xmd-div.xsl oas
 	p3-html-wrapper.xsl p3-corpusview-lib.xsl p3-xtl-div.xsl p3-hub.xsl p3-social.xsl
 html_DATA=noresults.div empty.div
 
+oas-instance.xml: oas-instance.xml.in
+	$(ORACCIFY) oas-instance.xml.in
+
 p3-asrch.sh: p3-asrch.sh.in
 	$(ORACCIFY) p3-asrch.sh.in
 

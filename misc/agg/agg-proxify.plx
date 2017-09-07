@@ -25,7 +25,7 @@ close(L);
 
 my %pqx = (); @pqx{@pqx} = ();
 
-my $master_xtf = '/usr/local/oracc/agg/master-xtf.lst';
+my $master_xtf = '/home/oracc/agg/master-xtf.lst';
 
 open(M, $master_xtf) || die "agg-proxify.plx: can't open $master_xtf\n";
 my @m = (<M>); chomp @m;
