@@ -57,6 +57,7 @@ my %results = ();
 my $rws = '';
 my $scripts = "$ENV{'ORACC'}/share/scripts/config";
 my $sort = 0;
+my $standalone = 0;
 my $title = '';
 my $validate = 0;
 my $verbose = 0;
@@ -86,6 +87,7 @@ GetOptions(
     'project:s'=>\$project,
     'rws:s'=>\$rws,
     'sort:s'=>\$sort,
+    'standalone'=>\$standalone,
     'title:s'=>\$title,
     'validate'=>\$validate,
     'verbose' =>\$verbose,
@@ -101,7 +103,7 @@ $ORACC::L2GLO::debug = $debug;
 $ORACC::L2GLO::Builtins::noletters = $noletters;
 $ORACC::L2GLO::verbose = $verbose;
 
-if (!$project && !$sort && !$xml) {
+if (!$project && !$sort && !$xml && !$standalone) {
     $project = `oraccopt`;
     if (!$project) {
 	die "l2-glomanager.plx: must run in project directory with valid 00lib/config.xml\n";
@@ -173,39 +175,52 @@ if ($sort) {
     exit(0);
 } elsif ($xml || $check) {
     $glofile = $xml || $check;
-    $cbdlang = $glofile;
-    $cbdlang =~ s#^00lib/(.*?)\.glo$#$1#;
-
-    if ($cbdlang =~ /^(sux|qpn)/) {
-#	system('l2-sux-norm.plx', $glofile); # this is forced in g2a-simple now
-	$glofile =~ s/00lib/01bld/;
-	$glofile .= ".norm";
-    }
-    my $xdoc = ORACC::L2GLO::Builtins::acd2xml($glofile,$clang||'sux',$title || 'Glossary',$title || 'Glossary');
-    if ($check) {
-	#  on error we died in acd2xml
-	if ($glofile =~ /sux/) {
-	    if (-r '00src/sux.glo') {
-		$glofile =~ s/01bld/00src/;
-		$glofile =~ s/\.norm$//;		
-	    } else {
-		$glofile =~ s/01bld/00lib/;
-		$glofile =~ s/\.norm$//;
-	    }
-	    system 'cbdbases.plx', '-check', $glofile;
-	}
-	warn "Glossary $check OK\n";
-	exit 0;
-    } elsif ($output) {
-	open(O,">$output") || die "l2-glomanager.plx: can't open $output for xml\n";
-	binmode O, ':raw';
-	print O $xdoc->toString();
+    
+    if ($check && $standalone) {
+	ORACC::L2GLO::Builtins::acd2xml($glofile,
+					$clang||'sux',
+					$title || 'Glossary',
+					$title || 'Glossary');
+	system 'cbdbases.plx', '-check', $glofile
+	    if $glofile =~ /sux/;
     } else {
-	binmode STDOUT,':raw';
-	print $xdoc->toString();
+    	$cbdlang = $glofile;
+	$cbdlang =~ s#^00lib/(.*?)\.glo$#$1#;
+	
+	if ($cbdlang =~ /^(sux|qpn)/) {
+	    #	system('l2-sux-norm.plx', $glofile); # this is forced in g2a-simple now
+	    $glofile =~ s/00lib/01bld/;
+	    $glofile .= ".norm";
+	}
+	my $xdoc = ORACC::L2GLO::Builtins::acd2xml($glofile,
+						   $clang||'sux',
+						   $title || 'Glossary',
+						   $title || 'Glossary');
+	if ($check) {
+	    #  on error we died in acd2xml
+	    if ($glofile =~ /sux/) {
+		if (-r '00src/sux.glo') {
+		    $glofile =~ s/01bld/00src/;
+		    $glofile =~ s/\.norm$//;		
+		} else {
+		    $glofile =~ s/01bld/00lib/;
+		    $glofile =~ s/\.norm$//;
+		}
+		system 'cbdbases.plx', '-check', $glofile;
+	    }
+	    warn "Glossary $check OK\n";
+	    exit 0;
+	} elsif ($output) {
+	    open(O,">$output") || die "l2-glomanager.plx: can't open $output for xml\n";
+	    binmode O, ':raw';
+	    print O $xdoc->toString();
+	} else {
+	    binmode STDOUT,':raw';
+	    print $xdoc->toString();
+	}
+	maybe_cbd_post_process();
+	exit 0;
     }
-    maybe_cbd_post_process();
-    exit 0;
 } elsif ($web) {
     my @verbose = ();
     push @verbose, '-verbose' if $verbose;
@@ -216,6 +231,7 @@ if ($sort) {
 	'-config',"$ENV{'ORACC'}/lib/config/cbd-phase2.xcf",
 	@verbose;
     exit 0;
+## chunk
 }
 
 if ($config && !-r $config) {

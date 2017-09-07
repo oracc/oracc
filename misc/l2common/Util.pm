@@ -201,9 +201,9 @@ parse_psu {
 	    $psu_sig{'form'} = $1;
 	    $psu_sig{'ngram'} = $2;
 	}
-    } else {
-	s/\{(.*?)\s+\+=\s+/{/;
-	$psu_sig{'ngram'} = $1;
+#    } else {
+#	s/\{(.*?)\s+\+=\s+/{/;
+#	$psu_sig{'ngram'} = $1;
     }
     
     $psu =~ s#^\{(.*?)\[(.*?)//(.*?)\](.*?)'(.*?)\}::##;

@@ -53,7 +53,8 @@ $| = 1;
 my $glossary_last = 0;
 my $ok_flag = 0;
 my %morph_disambigs = ();
-my @morph_disambigs = qw/a k eE eL eV m n/;
+my @morph_disambigs = qw/a k eE eL eV m n ak akak akam ake bi da e l ra ta/;
+
 @morph_disambigs{@morph_disambigs} = ();
 
 my %morph_disambig_morphs = (
@@ -64,6 +65,16 @@ my %morph_disambig_morphs = (
     eV=>'.eV',
     m=>'.am',
     n=>'.a',
+    ak=>'.ak',
+    akak=>'.ak.ak',
+    akam=>'.ak.am',
+    ake=>'.ak.e',
+    bi=>'.bi',
+    da=>'.da',
+    e=>'.e',
+    l=>'.eL',
+    ra=>'.ra',
+    ta=>'.ta'
     );
 
 my %seen = ();
@@ -75,6 +86,8 @@ if ($xli) {
     $SIG{'__WARN__'} = \&save_warning;
     $SIG{'__DIE__'} = \&save_warning;
 #    smalog("enabled WARN/DIE handler");
+} else {
+    binmode STDOUT, ':utf8';
 }
 
 if ($output) {
@@ -261,6 +274,7 @@ t {
 		$cont =~ s/=\+/=/;
 		$cont =~ s/^-?/-/;
 	    }
+	    $morph =~ s/~\./~,/;
 	    my $ret = "$base\t$cont\t$morph\t$stem\n";
 	    Encode::_utf8_off($ret);
 	    syswrite STDOUT, $ret;

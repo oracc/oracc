@@ -273,7 +273,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
     
       if (!sp->loaded)
 	sig_load_set(xcp->sigs,sp);
-
+      
+      /* fprintf(stderr, "trying sig_set %s:%s\n", sp->project, sp->lang); */
+      
       if ((sigs_found = look_cache.test(xcp,ifp,sp,&nfinds)))
 	{
 	  /* if we are autolemming and we have finds we are done;
@@ -300,7 +302,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    BIT_SET(l->f->f2.flags, F2_FLAGS_NOT_IN_SIGS);
 	}
 
-#if 0
+      /* fprintf(stderr, "sigs_found after cache = %p\n", (void*) sigs_found); */
+
+#if 0      
       /* NO: this was a bad fix that you shouldn't make again,
 	 Steve.  The code is designed to test the cache and
 	 then exec the following if block when the entry is
@@ -314,6 +318,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  BIT_CLEAR(ifp->f2.flags, F2_FLAGS_NO_FORM);
 	  BIT_CLEAR(ifp->f2.flags, F2_FLAGS_PARTIAL);
 	  sigs_found = look->test(xcp,ifp,sp,&nfinds);
+
+	  /* fprintf(stderr, "sigs_found after %s:%s = %p\n", sp->project, sp->lang, (void*)sigs_found); */
 
 	  /* if we are autolemming and we have finds we are done;
 	     but remember that during autolemming we may also be
@@ -565,7 +571,10 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	first_sp = sp;
 
       if (nfinds && strcmp((const char *)sp->file, "cache"))
-	sigs_state_save(sp, ifp, sigs_found, nfinds);
+	{
+	  sigs_state_save(sp, ifp, sigs_found, nfinds);
+	  /* fprintf(stderr, "saving %s\n", sigs_found[0]->sig); */
+	}
 
 #if 1
       if (nfinds == 1  
@@ -580,8 +589,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  nfinds = 0;
 	  BIT_CLR(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
 	  goto retry_after_cache;
-	}
-
+	}      
 #else
       if (nfinds == 1  || !BIT_ISSET(ifp->f2.flags, F2_FLAGS_NO_FORM))
 	break;
