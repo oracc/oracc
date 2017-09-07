@@ -24,6 +24,7 @@ apt install \
     libgdbm-dev \
     libexpat1-dev \
     libxml-libxml-perl \
-    libxml-libxslt-perl
+    libxml-libxslt-perl \
+    texlive-omega
 
 #    policycoreutils-python \
