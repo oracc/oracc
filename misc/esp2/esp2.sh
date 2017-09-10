@@ -98,6 +98,8 @@ xsltproc -stringparam projesp $XMLSAP -stringparam project $project \
     -o $XMLSAP/01tmp/source-tree-10.xml \
     $XSL/esp2-phase-01.xsl $XMLSAP/00web/00config/structure.xml
 
+esp2-hyph-dash.plx $XMLSAP/01tmp/source-tree-10.xml
+
 # echo phase 2
 
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-10.xml \

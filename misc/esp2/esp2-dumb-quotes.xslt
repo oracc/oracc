@@ -6,7 +6,7 @@
 		<xsl:output-character character="‘" string="'"/>
 		<xsl:output-character character="’" string="'"/>
 		<xsl:output-character character="…" string="..."/>
-		<xsl:output-character character="–" string="-"/>
-		<xsl:output-character character="—" string=" - "/>
+<!--		<xsl:output-character character="–" string="-"/>
+		<xsl:output-character character="—" string=" - "/> -->
    </xsl:character-map>
 </xsl:stylesheet>
