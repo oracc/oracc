@@ -30,7 +30,7 @@ if (scalar keys %X > 0) {
     print X '<catalog xmlns="http://oracc.org/ns/xmd/1.0" xmlns:xmd="http://oracc.org/ns/xmd/1.0">';
     foreach my $X (sort keys %X) {
 	print X
-	    "<record><id_text>$X</id_text><designation>$X{$X}</designation></record>";
+	    "<record><id_text>$X</id_text><designation>$X{$X}</designation><period>Unknown</period><provenience>Unknown</provenience></record>";
     }
     print X '</catalog>';
     close(X);

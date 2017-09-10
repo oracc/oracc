@@ -13,11 +13,15 @@ checkenv ORACC_HOST $ORACC_HOST
 if [ -d /var/log/httpd ]; then
     LOGDIR=/var/log/httpd
 else
-    if [ -d /private/var/log/apache2 ]; then
+    if [ -d /var/log/apache2 ]; then
 	LOGDIR=/private/var/log/apache2
     else
-	echo create-oracc-vhost-conf.sh: nowhere to write log files. Stop.
-	exit 1
+	if [ -d /private/var/log/apache2 ]; then
+	    LOGDIR=/private/var/log/apache2
+	else
+	    echo create-oracc-vhost-conf.sh: nowhere to write log files. Stop.
+	    exit 1
+	fi
     fi
 fi
 

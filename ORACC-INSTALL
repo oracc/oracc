@@ -277,3 +277,17 @@ Oracc has several environment variables which must be set at install time:
 
   This should be the full domain name of the Oracc server on which the
   instance is running.
+
+UBUNTU APACHE2
+==============
+
+cd /etc/apache2/mods-enabled
+ln -sf ../mods-available/cgi.load .
+ln -sf ../mods-available/rewrite.load .
+# install oracc-vhost.conf in /etc/apache2/sites-available
+cd /etc/apache2/sites-available
+rm -f 000-default.conf # or whatever it's called
+ln -sf ../sites-available/oracc-vhost.conf .
+
+MAKE SURE osc-install.sh USES NEW httpduser.sh TO SET osc-server PERMS
+

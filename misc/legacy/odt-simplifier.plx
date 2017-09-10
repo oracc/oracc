@@ -2,7 +2,7 @@
 use warnings; use strict;
 
 my $xsl = 'tools/odt2xml.xsl';
-$xsl = '/usr/local/oracc/lib/scripts/odt2xml.xsl'
+$xsl = '/home/oracc/lib/scripts/odt2xml.xsl'
     unless -r $xsl;
 
 die "odt-simplifier.plx: no XSL script $xsl\n" unless -r $xsl;
