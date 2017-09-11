@@ -716,7 +716,8 @@ transliterations would introduce an ambiguity at the ATF level between
 operator.</p>
 
 <d:rnc>
-allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }
+allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } 
+			| xsd:string { pattern = "[\+\-]" } }
 </d:rnc>
 
 <div class="atf tutorial">

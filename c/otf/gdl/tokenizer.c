@@ -2011,7 +2011,21 @@ tokenize_grapheme(register unsigned char*l,
 		return l;
 	      else
 		{
-		  if (l[1] == '@' || l[1] == '~' || l[1] == '\\')
+		  if (l[1] == '~')
+		    {
+		      l += 2;
+		      if ('-' == *l || '+' == *l)
+			{
+			  ++l;
+			}
+		      else
+			{
+			  while (is_grapheme2[*l])
+			    ++l;
+			}
+		      *following = l;
+		    }
+		  else if (l[1] == '@' || l[1] == '\\')
 		    {
 		      l += 2;
 		      while (is_grapheme2[*l])
@@ -2066,7 +2080,12 @@ tokenize_grapheme(register unsigned char*l,
 		{
 		  int nbytes = u_charbytes(l);
 		  if (nbytes > 0)
-		    l += nbytes;
+		    {
+		      if ('~' == *l && ('-' == l[1] || '+' == l[1]))
+			l += 2;
+		      else
+			l += nbytes;
+		    }
 		  else
 		    break;
 		}
