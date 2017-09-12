@@ -36,7 +36,7 @@ extern int show_toks, word_matrix;
 int last_token;
 
 static List *meta_graphemes = NULL;
-static const char *const flag_names[] = { F0 F1 F2 F3 F4 };
+/*static const char *const flag_names[] = { F0 F1 F2 F3 F4 };*/
 
 static char *one,*damaged;
 
@@ -824,8 +824,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 	   || (('*' == *l 
 		|| (':' == *l 
 		    && !is_varc(l+1) 
-		    && (l[1] < 256
-			&& ((!is_grapheme1[l[1]] 
+		    && (/*l[1] < 256
+			  &&*/ ((!is_grapheme1[l[1]] 
 			    || is_wordnum(l+1) 
 			    || ('r' == l[1] && ':' == l[2]))
 			    || (l[1] == 0xe2 

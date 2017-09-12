@@ -311,8 +311,8 @@ T, Ṭ
 #FIXME: implement sux/m(orph) and remove ,:; from sux/g
 #
 @chars %sux/g
-@allow aAbBCdDeEfFgGŋŊhHḫḪiIkKlLmMnNoOpPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙʾ;,:
-@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°
+@allow aAbBCdDeEfFgGŋŊhHḫḪiIkKlLmMnNoOpPqQrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙʾ;,:⁻⁺
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°⁻⁺
 @trans
 j ŋ
 J Ŋ
@@ -326,8 +326,8 @@ T, Ṭ
 @end chars
 
 @chars %sux/n
-@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNoOpPqrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'.@~&+\-
-@nokey ḫḪ
+@allow aAbBCdDeEfgGŋŊhHḫḪiIkKlLmMnNoOpPqrRsSṣṢšŠtTṭṬuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'.@~&+\-·°⁻⁺
+@nokey ḫḪ·°⁻⁺
 @trans
 j ŋ
 J Ŋ

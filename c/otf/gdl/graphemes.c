@@ -2006,7 +2006,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		  {
 		    int i;
 		    /*int last_was_logo = !xstrcmp(gtype,"logo");*/
-		    if (!xstrcmp(gtype, "group"))
+		    /* if (!xstrcmp(gtype, "group")) */
 		      ++suppress_hyphen_delay;
 		    for (i = 0; i < np->children.lastused; ++i)
 		      {
