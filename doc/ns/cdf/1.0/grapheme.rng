@@ -190,9 +190,14 @@
   </define>
   <define name="allograph">
     <element name="g:a">
-      <data type="string">
-        <param name="pattern">[a-wyz0-9]+</param>
-      </data>
+      <choice>
+        <data type="string">
+          <param name="pattern">[a-wyz0-9]+</param>
+        </data>
+        <data type="string">
+          <param name="pattern">[\+\-]</param>
+        </data>
+      </choice>
     </element>
   </define>
   <define name="formvar">

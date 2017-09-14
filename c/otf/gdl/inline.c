@@ -1149,33 +1149,36 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			default:
 			  break;
 			}
-		      appendAttr(g,attr(a_g_type,tstr));
-		      if (g->etype == e_g_gg)
+		      if (g)
 			{
-			  if (group_node)
+			  appendAttr(g,attr(a_g_type,tstr));
+			  if (g->etype == e_g_gg)
 			    {
-			      appendChild(g,removeLastChild(group_node));
-			      appendChild(group_node,g);
-			      group_node = g;
+			      if (group_node)
+				{
+				  appendChild(g,removeLastChild(group_node));
+				  appendChild(group_node,g);
+				  group_node = g;
+				}
+			      else
+				{
+				  appendChild(g,removeLastChild(wp));
+				  appendChild(wp,g);
+				  group_node = g;
+				}
 			    }
 			  else
 			    {
-			      appendChild(g,removeLastChild(wp));
+			      struct node *last = removeLastChild(wp);
+			      struct node *gw = elem(e_n_grouped_word,NULL,last->lnum,WORD);
+			      appendChild(gw,last);
+			      appendChild(g,gw);
 			      appendChild(wp,g);
 			      group_node = g;
 			    }
 			}
-		      else
-			{
-			  struct node *last = removeLastChild(wp);
-			  struct node *gw = elem(e_n_grouped_word,NULL,last->lnum,WORD);
-			  appendChild(gw,last);
-			  appendChild(g,gw);
-			  appendChild(wp,g);
-			  group_node = g;
-			}
+		      group_flag = tp->type;
 		    }
-		  group_flag = tp->type;
 		}
 	      else
 		{
@@ -1289,6 +1292,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      wp = wp->parent;
 		      grouped_det = 0;
+		    }
+		  else if (group_flag != notoken)
+		    {
+		      /*wp = wp->parent;*/
+		      group_flag = notoken;
+		      group_node = NULL;
 		    }
 #else
 		  if (group_flag != notoken)

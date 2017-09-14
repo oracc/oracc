@@ -2,7 +2,9 @@
 #include <ctype128.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "psd_base.h"
+#include "xsystem.h"
 #include "fname.h"
 #include "list.h"
 #include "loadfile.h"
@@ -147,8 +149,13 @@ process_cdt_list(struct run_context *run,
 		  if (in_document)
 		    coerce_document_section(np);
 		  else
-		    process_cdt_input(run, "@@ORACC@@/lib/config/default.sty", 
-				      nodelist, metalist, np);
+		    {
+		      const char *style = "00lib/project.sty";
+		      if (xaccess(style,R_OK,0))
+			style = "@@ORACC@@/lib/config/default.sty";
+		      fprintf(stderr, "using style file %s\n", style);
+		      process_cdt_input(run, style, nodelist, metalist, np);
+		    }
 		}
 	      if (np->code == odt_h && isdigit(*endtok))
 		np->name = h_names[*endtok++-'0'];

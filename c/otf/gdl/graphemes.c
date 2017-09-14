@@ -270,15 +270,22 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	  *g++ = '\0';
 	  mp->type = g_a;
 	  datap = mp->data;
-	  while (*g < 128 && isalnum(*g) && 'x' != *g)
+	  if ('-' == *g || '+' == *g)
 	    {
-	      /* FIXME: make this open-ended */
-	      if (datap - mp->data == MODS_MAX)
-		{
-		  vwarning("allograph too long (max %d characters)",MODS_MAX);
-		  return 1;
-		}
 	      *datap++ = *g++;
+	    }
+	  else
+	    {
+	      while (*g < 128 && isalnum(*g) && 'x' != *g)
+		{
+		  /* FIXME: make this open-ended */
+		  if (datap - mp->data == MODS_MAX)
+		    {
+		      vwarning("allograph too long (max %d characters)",MODS_MAX);
+		      return 1;
+		    }
+		  *datap++ = *g++;
+		}
 	    }
 	  if (datap == mp->data)
 	    {
@@ -1999,7 +2006,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		  {
 		    int i;
 		    /*int last_was_logo = !xstrcmp(gtype,"logo");*/
-		    if (!xstrcmp(gtype, "group"))
+		    /* if (!xstrcmp(gtype, "group")) */
 		      ++suppress_hyphen_delay;
 		    for (i = 0; i < np->children.lastused; ++i)
 		      {

@@ -36,7 +36,7 @@ extern int show_toks, word_matrix;
 int last_token;
 
 static List *meta_graphemes = NULL;
-static const char *const flag_names[] = { F0 F1 F2 F3 F4 };
+/*static const char *const flag_names[] = { F0 F1 F2 F3 F4 };*/
 
 static char *one,*damaged;
 
@@ -824,8 +824,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 	   || (('*' == *l 
 		|| (':' == *l 
 		    && !is_varc(l+1) 
-		    && (l[1] < 256
-			&& ((!is_grapheme1[l[1]] 
+		    && (/*l[1] < 256
+			  &&*/ ((!is_grapheme1[l[1]] 
 			    || is_wordnum(l+1) 
 			    || ('r' == l[1] && ':' == l[2]))
 			    || (l[1] == 0xe2 
@@ -2011,7 +2011,21 @@ tokenize_grapheme(register unsigned char*l,
 		return l;
 	      else
 		{
-		  if (l[1] == '@' || l[1] == '~' || l[1] == '\\')
+		  if (l[1] == '~')
+		    {
+		      l += 2;
+		      if ('-' == *l || '+' == *l)
+			{
+			  ++l;
+			}
+		      else
+			{
+			  while (is_grapheme2[*l])
+			    ++l;
+			}
+		      *following = l;
+		    }
+		  else if (l[1] == '@' || l[1] == '\\')
 		    {
 		      l += 2;
 		      while (is_grapheme2[*l])
@@ -2066,7 +2080,12 @@ tokenize_grapheme(register unsigned char*l,
 		{
 		  int nbytes = u_charbytes(l);
 		  if (nbytes > 0)
-		    l += nbytes;
+		    {
+		      if ('~' == *l && ('-' == l[1] || '+' == l[1]))
+			l += 2;
+		      else
+			l += nbytes;
+		    }
 		  else
 		    break;
 		}
