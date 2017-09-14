@@ -1,3 +1,4 @@
+c/bin/server/or_common.c
 oracc-vhost.conf
 se.dbg
 xns

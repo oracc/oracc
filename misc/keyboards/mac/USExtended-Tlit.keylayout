@@ -1297,6 +1297,22 @@
 			<when state="doublegrave" output=" ̏" /> <!-- added -->
 			<when state="invertedbreve" output=" ̑" /> <!-- added -->
 		</action>
+		<action id="+">
+		  <when state="none" output="+"/>
+		  <when state="tlit" output="⁺"/>
+		</action>
+		<action id="-">
+		  <when state="none" output="-"/>
+		  <when state="tlit" output="⁻"/>
+		</action>
+		<action id=".">
+		  <when state="none" output="."/>
+		  <when state="tlit" output="·"/>
+		</action>
+		<action id="+">
+		  <when state="none" output="+"/>
+		  <when state="tlit" output="⁺"/>
+		</action>
 		<action id="A">
 			<when state="tlit" output="Ā"/>
 			<when state="tlit_s" output="Á"/>
@@ -1725,6 +1741,7 @@
 		</action>
 		<action id="o">
 			<when state="none" output="o" />
+			<when state="tlit" output="°" />
 			<when state="acute" output="ó" />
 			<when state="grave" output="ò" />
 			<when state="circumflex" output="ô" />
