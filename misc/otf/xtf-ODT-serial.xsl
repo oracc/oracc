@@ -30,6 +30,7 @@
     xmlns:cbd="http://oracc.org/ns/cbd/1.0"
     xmlns:xtf="http://oracc.org/ns/xtf/1.0"
     xmlns:xpd="http://oracc.org/ns/xpd/1.0"
+    xmlns:note="http://oracc.org/ns/note/1.0"
     xmlns:xtr="http://oracc.org/ns/xtr/1.0"
     xmlns:xh="http://www.w3.org/1999/xhtml"
     exclude-result-prefixes="draw number dr3d dom xforms xsd xsi form script ooow oooc ooo math svg xh xtr xpd"
@@ -702,27 +703,59 @@
   </xsl:for-each>
 </xsl:template>
 
-<xsl:template match="xtf:note|xtf:m"/>
+<xsl:template match="xtf:f">
+  <xsl:text> </xsl:text>
+  <xsl:apply-templates/>
+</xsl:template>
 
-<xsl:template mode="print" match="xtf:note">
+<!--
+<xsl:template match="xtf:f">
+  <xsl:choose>
+    <xsl:when test="@type='sv'">
+      <xsl:if test="*">
+	<xsl:apply-templates select=".//gdl:nonw"/>
+	<span class="{@type}">
+	  <xsl:text>&#xa0;[[</xsl:text>
+	  <xsl:apply-templates select="*[not(self::gdl:nonw)]">
+	    <xsl:with-param name="allow-space" select="false()"/>
+	  </xsl:apply-templates>
+	  <xsl:text>]]</xsl:text>
+	</span>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+      <span class="{@type}">
+	<xsl:apply-templates/>
+      </span>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:if test="following-sibling::*">
+    <xsl:text> </xsl:text>
+  </xsl:if>
+</xsl:template>
+-->
+
+<xsl:template match="note:*|xtf:m"/>
+
+<xsl:template mode="print" match="note:text">
   <text:note text:id="{@xml:id}"
 	     text:note-class="footnote">
     <xsl:choose>
-      <xsl:when test="@notelabel">
+      <xsl:when test="@note:label">
 	<text:note-citation text:label="&#x200D;"> <!-- text:label="{@notelabel}">-->
 	  <xsl:text>&#x200D;</xsl:text> <!--<xsl:value-of select="@notelabel"/>-->
 	</text:note-citation>
       </xsl:when>
       <xsl:otherwise>
 	<text:note-citation>
-	  <xsl:value-of select="@notemark"/>
+	  <xsl:value-of select="@note:mark"/>
 	</text:note-citation>
       </xsl:otherwise>
     </xsl:choose>
     <text:note-body>
       <text:p text:style-name="Footnote">
 	<text:span text:style-name="notelabel">
-	  <xsl:value-of select="@notelabel"/>
+	  <xsl:value-of select="@note:label"/>
 	</text:span>
 	<xsl:text> </xsl:text>
 	<xsl:apply-templates/>

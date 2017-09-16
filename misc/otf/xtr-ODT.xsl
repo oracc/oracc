@@ -188,6 +188,10 @@
   <text:span text:style-name="i"><xsl:apply-templates/></text:span>
 </xsl:template>
 
+<xsl:template match="xh:span[@class='i']">
+  <text:span text:style-name="i"><xsl:apply-templates/></text:span>
+</xsl:template>
+
 <xsl:template match="xh:span[@class='w']">
   <xsl:apply-templates/>
 </xsl:template>
