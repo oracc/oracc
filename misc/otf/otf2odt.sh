@@ -19,8 +19,9 @@ drivername=`basename $driverpath`
 driverbase=`basename $drivername .otf`
 odtdir=01bld/`basename $drivername .otf`
 rm -fr $odtdir ; mkdir -p $odtdir
-echo ox -1 -P$project -d$odtdir $driverpath
-ox -1 -P$project -d$odtdir $driverpath | xmllint --xinclude - | xsltproc - \
+### ox -1 is tabular serial; -0 is paragraph serial
+echo ox -0 -P$project -d$odtdir $driverpath
+ox -0 -P$project -d$odtdir $driverpath | xmllint --xinclude - | xsltproc - \
     | xsltproc ${ORACC}/lib/scripts/odt-table-width.xsl - \
     | xsltproc -stringparam package "$odtdir" ${ORACC}/lib/scripts/doc-split.xsl - \
     2>$odtdir/$driverbase.log

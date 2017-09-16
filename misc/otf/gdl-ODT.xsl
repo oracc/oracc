@@ -682,10 +682,9 @@
 
 <!--FIXME: noteref can have more than one IDREF in it-->
 <xsl:template name="process-notes">
-  <xsl:for-each select="id(@note:ref)">
-    <xsl:message>processing note <xsl:value-of select="@xml:id"/></xsl:message>
-    <xsl:apply-templates mode="print" select="."/>
-  </xsl:for-each>
+  <text:span text:style-name="sup">
+    <xsl:value-of select="."/>
+  </text:span>
 </xsl:template>
 
 <xsl:template match="g:*">
