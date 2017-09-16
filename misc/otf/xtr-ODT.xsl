@@ -196,6 +196,10 @@
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="xh:span[@class='gdl']">
+  <xsl:apply-templates/>
+</xsl:template>
+
 <xsl:template match="xh:p[@class='dollar']">
   <xsl:call-template name="xtr-dollar"/>
 </xsl:template>
