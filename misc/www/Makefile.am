@@ -10,7 +10,7 @@ scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
 	atfpaste.sh datestamp.plx htmlbase.plx \
-	atftemplate.plx voltemplate.plx
+	atftemplate.plx voltemplate.plx weblists.sh
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
 	cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css	\
