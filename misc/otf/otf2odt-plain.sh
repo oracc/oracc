@@ -16,15 +16,12 @@ fi
 keep=$2
 driverdir=`dirname $driverpath`
 drivername=`basename $driverpath`
-driverbase=`basename $drivername .otf`
 odtdir=01bld/`basename $drivername .otf`
 rm -fr $odtdir ; mkdir -p $odtdir
-### ox -1 is tabular serial; -0 is paragraph serial
 echo ox -0 -P$project -d$odtdir $driverpath
-ox -0 -P$project -d$odtdir $driverpath | xmllint --xinclude - | xsltproc - \
+ox -0 -P$project -d$odtdir $driverpath | xmllint --xinclude - | xsltproc -v - \
     | xsltproc ${ORACC}/lib/scripts/odt-table-width.xsl - \
-    | xsltproc -stringparam package "$odtdir" ${ORACC}/lib/scripts/doc-split.xsl - \
-    2>$odtdir/$driverbase.log
+    | xsltproc -stringparam package "$odtdir" ${ORACC}/lib/scripts/doc-split.xsl -
 cwd=`pwd`; cd $odtdir
 mkdir -p META-INF
 echo '<?xml version="1.0" encoding="utf-8"?>' >META-INF/manifest.xml
@@ -38,12 +35,8 @@ for a in *.xml ; \
 done
 mkdir -p pictures ; odtpictures.plx >>META-INF/manifest.xml
 echo '</manifest:manifest>' >>META-INF/manifest.xml
-/bin/echo -n 'application/vnd.oasis.opendocument.text' >mimetype
+echo -n 'application/vnd.oasis.opendocument.text' >mimetype
 pwd
 zip -q -X ../`basename $odtdir`.odt mimetype
 zip -q -X -g -r ../`basename $odtdir`.odt *.xml META-INF
 cd $cwd
-odtdir=$ORACC/$project/00any/odt
-mkdir -p $odtdir
-mv 01bld/$driverbase.odt $odtdir
-mv 01bld/$driverbase.log $odtdir

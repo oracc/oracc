@@ -391,18 +391,25 @@ otfODTstylerParallel(void)
 static const char *
 otfODTstylerSerial(void)
 {
-  return "file://@@ORACC@@/lib/scripts/otf-ODT-serial.xsl";
+  return 
+    odt_serial == 1 
+    ? "file://@@ORACC@@/lib/scripts/otf-ODT-serial.xsl"
+    : "file://@@ORACC@@/lib/scripts/otf-ODT-plain.xsl";
 }
 
 void
 preamble(void)
 {
-  const char *xslpi = (odt_serial 
-		       ? "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerSerial\"?>"
-		       : "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerParallel\"?>");
-
+  const char *xslpi = NULL;
   static char xslinc1[2048];
   static char xslinc2[2048];
+  if (odt_serial == 1)
+    xslpi = "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerSerial\"?>";
+  else if (odt_serial == 2)
+    xslpi = "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerPlain\"?>";
+  else
+    xslpi ="<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerParallel\"?>";
+
   if (odt_serial)
     sprintf(xslinc1,
 	    "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "

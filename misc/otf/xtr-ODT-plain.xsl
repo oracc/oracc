@@ -62,35 +62,14 @@
   <text:p text:style-name="Heading_20_2">
     <xsl:text>Translation</xsl:text>
   </text:p>
-  <table:table table:style-name="Table.{generate-id(.)}"
-	       table:name="Table.{generate-id(.)}">
-    <xsl:call-template name="xtr-emit-table-columns">
-      <xsl:with-param name="count" select="1+@xtr:cols"/>
-    </xsl:call-template>
-    <xsl:apply-templates/>
-  </table:table>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="xh:div[@class='note']"/> <!-- FIXME -->
 
 <xsl:template match="xh:p[@class='tr']">
-  <table:table-row>
-    <xsl:choose>
-      <xsl:when test="last()-position()=1">
-	<xsl:attribute name="table:table-style">nobreak</xsl:attribute>
-      </xsl:when>
-      <xsl:when test="following-sibling::*[1]/@state='ruling'">
-	<xsl:attribute name="table:table-style">nobreak</xsl:attribute>
-      </xsl:when>
-    </xsl:choose>
-    <xsl:call-template name="translation-cells"/>
-  </table:table-row>
-</xsl:template>
-
-<xsl:template name="translation-cells">
-  <xsl:variable name="top-node" select="ancestor::xtf:translation"/>
-  <table:table-cell office:value-type="string" table:style-name="xtf_lnum_cell">
-    <text:p text:style-name="xtf_lnum_par">
+  <text:p text:style-name="xtr_par">
+    <text:span text:style-name="xtf_lnum_par">
       <xsl:choose>
 	<xsl:when test="$render-tlat-style='rinap'">
 	  <xsl:message>render-tlat-style=rinap</xsl:message>
@@ -113,48 +92,10 @@
 	  <xsl:text>.&#xa0;</xsl:text>
 	</xsl:otherwise>
       </xsl:choose>
-    </text:p>
-  </table:table-cell>
-  <xsl:choose>
-    <xsl:when test="xh:innerp/xh:span[@class='cell']">
-      <xsl:for-each select="xh:innerp/xh:span[@class='cell']">
-	<xsl:variable name="span" select="@xh:span"/>
-	<xsl:call-template name="emit-content-cell">
-	  <xsl:with-param name="span" select="$span"/>
-	</xsl:call-template>
-	<xsl:if test="$span > 1">
-	  <xsl:call-template name="emit-covered-cells">
-	    <xsl:with-param name="count" select="@span"/>
-	  </xsl:call-template>
-	</xsl:if>
-      </xsl:for-each>
-      <xsl:variable name="ecols" select="$top-node/@xtr:cols - sum(xh:innerp/xh:span/@xtr:span)"/>
-      <xsl:if test="$ecols > 0">
-	<xsl:call-template name="emit-empty-cells">
-	  <xsl:with-param name="count" select="$ecols+1"/>
-	</xsl:call-template>
-      </xsl:if>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:variable name="span"
-		    select="$top-node/@xtr:cols"/>
-      <xsl:choose>
-	<xsl:when test="$span > 1">
-	  <xsl:call-template name="emit-content-cell">
-	    <xsl:with-param name="span" select="$span"/>
-	  </xsl:call-template>
-	  <xsl:call-template name="emit-covered-cells">
-	    <xsl:with-param name="count" select="$top-node/@cols"/>
-	  </xsl:call-template>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:call-template name="emit-content-cell">
-	    <xsl:with-param name="span" select="$span"/>
-	  </xsl:call-template>	  
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:otherwise>
-  </xsl:choose>
+    </text:span>
+    <xsl:text> </xsl:text>
+    <xsl:apply-templates/>
+  </text:p>
 </xsl:template>
 
 <xsl:template match="xh:a[@class='marker']"/>
@@ -193,10 +134,6 @@
 </xsl:template>
 
 <xsl:template match="xh:span[@class='w']">
-  <xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="xh:span[@class='gdl']">
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -246,58 +183,30 @@
   </xsl:variable>
   <xsl:choose>
     <xsl:when test="$render-left-align-nonx = 'yes'">
-      <table:table-row>
-	<table:table-cell table:number-columns-spanned="2">
-	  <xsl:call-template name="do-non-c-or-l"/>
-	</table:table-cell>
-	<table:covered-table-cell/>
-	<xsl:call-template name="emit-tlit-empties">
-	  <xsl:with-param name="with-label" select="2"/>
-	</xsl:call-template>
-      </table:table-row>
+      <xsl:call-template name="do-non-c-or-l"/>
     </xsl:when>
     <xsl:otherwise>
-      <table:table-row>
 	<xsl:choose>
 	  <xsl:when test="not(preceding-sibling::*[1])">
-	    <table:table-cell> <!-- FIXME: cellspan # of rows in Tlit -->
-	      <text:p>
-		<xsl:choose>
-		  <xsl:when test="$render-labels-for-lnums='yes'">
-		    <xsl:value-of select="translate(ancestor-or-self::*[@label][1]/@label,
-					  ' ','&#xa0;')"/>
-		  </xsl:when>
-		  <xsl:otherwise>
-		    <xsl:text>&#xa0;</xsl:text>
-		  </xsl:otherwise>
-		</xsl:choose>
-	      </text:p>
-	    </table:table-cell>
+	    <text:p>
+	      <xsl:choose>
+		<xsl:when test="$render-labels-for-lnums='yes'">
+		  <xsl:value-of select="translate(ancestor-or-self::*[@label][1]/@label,
+					' ','&#xa0;')"/>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:text>&#xa0;</xsl:text>
+		</xsl:otherwise>
+	      </xsl:choose>
+	    </text:p>
 	  </xsl:when>
 	  <xsl:otherwise> <!-- class="nonlnum" -->
-	    <table:table-cell><text:p>&#xa0;</text:p></table:table-cell>
+	    <text:p>&#xa0;</text:p>
 	  </xsl:otherwise>
 	</xsl:choose>
-	<table:table-cell> <!-- colspan="1" --> <!-- class="nonlbody" -->
-	  <xsl:call-template name="do-non-c-or-l"/>
-	</table:table-cell>
-      </table:table-row>
+	<xsl:call-template name="do-non-c-or-l"/>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:template>
-
-<xsl:template name="xtr-emit-table-columns">
-  <xsl:param name="count"/>
-  <xsl:variable name="id-node" select="ancestor-or-self::xtr:translation"/>
-  <table:table-columns>
-    <xsl:for-each select="document('')/*/*[@name='array']/*[position() &lt;= $count]">
-      <xsl:variable name="col-style">
-	<xsl:number format="A"/>
-      </xsl:variable>
-      <table:table-column 
-	  table:style-name="Table.{concat(generate-id($id-node),'.',$col-style)}"/>
-    </xsl:for-each>
-  </table:table-columns>
 </xsl:template>
 
 </xsl:stylesheet>
