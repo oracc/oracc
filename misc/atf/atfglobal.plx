@@ -3,6 +3,7 @@ use warnings; use strict; use open ':utf8'; use utf8;
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
+my $dump_table = undef;
 my %edits = ();
 my %whens = ();
 my $edit_pending = 0;
@@ -13,15 +14,19 @@ my $to = '';
 my $table = '';
 
 GetOptions (
-	    'from:s'=>\$from,
-	    'table:s'=>\$table,
-	    'to:s'=>\$to,
-	    'when:s'=>\$when,
-	    );
+    'dump:s'=>\$dump_table,
+    'from:s'=>\$from,
+    'table:s'=>\$table,
+    'to:s'=>\$to,
+    'when:s'=>\$when,
+    );
 
 if ($table) {
     fail("no such table file '$table'") unless -r $table;
     load_table($table);
+} elsif ($dump_table) {
+    open(DUMPTAB,">$dump_table") || 
+	fail("can't write to dump file '$dump_table'");
 } else {
     unless ($when && $from && $to) {
 	fail("must use -table or all of -when/-from/-to");
@@ -37,13 +42,13 @@ if ($table) {
 
 while (<>) {
     if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
-	print;
+	print unless $dump_table;
 	next;
     } elsif (/^\#/) {
-	print;
+	print unless $dump_table;
 	next;
     } else {
-	print; # get rid of the line before hacking it up
+	print unless $dump_table; # get rid of the line before hacking it up
 	my $line = $_;
 	my $lem = <> || last;
 	if ($lem =~ /^\#lem/) {
@@ -65,35 +70,40 @@ while (<>) {
 	    if ($#line != $#lem) {
 		warn("$.: $#line != $#lem\n");
 		warn("$.: ", join('|',@line),"\n");
-		print "#lem: ", join('; ', @lem), "\n";
+		print("#lem: ", join('; ', @lem), "\n") unless $dump_table;
 	    } else {
 		for (my $i = 0; $i <= $#line; ++$i) {
-		    my $w = $line[$i];
-		    next unless $whens{$w};
-		    foreach my $e (@{$whens{$w}}) {
-			my $ehash = $edits{$e};
-			if ($$ehash{'from'} =~ /\|/) {
-			    if ($lem[$i] eq $$ehash{'from'}) {
-				$lem[$i] = $$ehash{'to'};
-				++$$ehash{'done'};
-				last;
-			    }
-			} else {
-			    foreach my $l (split(/\|/,$lem[$i])) {
-				next unless $l;
-				if ($l eq $$ehash{'from'}) {
+		    if ($dump_table) {
+			print DUMPTAB "$line[$i]\t$lem[$i]\n";
+		    } else {
+			my $w = $line[$i];
+			next unless $whens{$w};
+			foreach my $e (@{$whens{$w}}) {
+			    my $ehash = $edits{$e};
+			    if ($$ehash{'from'} =~ /\|/) {
+				if ($lem[$i] eq $$ehash{'from'}) {
 				    $lem[$i] = $$ehash{'to'};
 				    ++$$ehash{'done'};
 				    last;
+				}
+			    } else {
+				foreach my $l (split(/\|/,$lem[$i])) {
+				    next unless $l;
+				    if ($l eq $$ehash{'from'}) {
+					$lem[$i] = $$ehash{'to'};
+					++$$ehash{'done'};
+					last;
+				    }
 				}
 			    }
 			}
 		    }
 		}
-		print "#lem: ", join('; ', @lem), "\n";
+		print "#lem: ", join('; ', @lem), "\n"
+		    unless $dump_table;
 	    }
 	} else {
-	    print $lem;
+	    print $lem unless $dump_table;
 	}
     }
 }
