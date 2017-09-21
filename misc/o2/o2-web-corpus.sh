@@ -25,7 +25,7 @@ mkdir -p $webdir/lists
 if [ -d 00lib/lists ]; then
     liblists=`(cd 00lib/lists ; ls)`
     if [ "$liblists" != "" ]; then
-	cp -f 00lib/lists/* $webdir/lists
+	weblists.sh $webdir/lists
     fi
 fi
 
