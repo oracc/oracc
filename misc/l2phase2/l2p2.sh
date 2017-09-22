@@ -2,13 +2,17 @@
 project=`oraccopt`
 
 function xis {
-    echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-    xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
-    [ -s 01bld/$l/periods.xis ] || cp $ORACC/lib/data/dummy.xis 01bld/$l
-    (cd 01bld/$l ; \
-	mv $l.xis $l.xis.top ; \
-	xsltproc -stringparam sub $l.xis.sub $ORACC/lib/scripts/l2p2-xis-merge.xsl $l.xis.top >$l.xis
-    )
+    if [ -r $ORACC_BUILDS/pub/$project/sortinfo.csi ]; then
+	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
+	xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
+	[ -s 01bld/$l/periods.xis ] || cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
+	(cd 01bld/$l ; \
+	 mv $l.xis $l.xis.top ; \
+	 xsltproc -stringparam sub $l.xis.sub $ORACC/lib/scripts/l2p2-xis-merge.xsl $l.xis.top >$l.xis
+	)
+    else
+	cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
+    fi
 }
 
 function cbd {

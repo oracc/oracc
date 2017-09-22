@@ -13,6 +13,7 @@ FILE *f_forms = NULL;
 FILE *f_graphemes = NULL;
 FILE *f_xml = NULL;
 
+int arg_use_unicode = 0;
 int cbd_lem_sigs = 0;
 int check_lem = 0;
 int dump_sigs = 0;

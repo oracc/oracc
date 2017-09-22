@@ -5,16 +5,16 @@
 # Steve Tinney 04/03/01, for PSD and ORACCI projects.
 #
 # v1.0.  Placed in the Public Domain.
-use warnings; use strict; use open ':utf8';
+use warnings; use strict; use open ':utf8'; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::ATF::Unicode;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 while (<>) {
-    if (/^[0-9a-zA-Z]/) {
+    if (/^\S+\.\s/) {
 	chomp;
 	my $u = ORACC::ATF::Unicode::gconv($_);
-	s/([₀-₉]+\()/updig($1)/eg;
-	s,([₁₂₃₄₅]/[0-9]),updig($1),eg;
+	1 while $u =~ s/([₀-₉]+\()/updig($1)/e;
+	1 while $u =~ s,([₁₂₃₄₅]/[0-9]),updig($1),e;
 	print $u, "\n";
     } elsif (s/^(\#lem:\s+)//) {
 	print $1;

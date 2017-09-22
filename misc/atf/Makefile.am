@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx atfsplit.plx atftemplate.plx dist-files.plx install.sh mklists.plx rebuild.sh addspacer.plx atf-fix-lem.plx atf-fix-n.plx atf-lem-nolem.plx atf2uni.plx atfcat.plx atfcomment.plx atfglobal.plx atfgrabpq.plx atfhavelem.plx atfjoin.plx atflists.plx atfmap.plx atfnewnum.plx atfnum.plx atforder.plx atfproject.plx atfquicklem.plx atfrenum.plx atfslash.plx atfsort.plx atfsquare.plx atfstats.plx atftr.plx atfxhash.plx cleanpns.plx diffhack.plx dollar-fixtailmisaligns.plx fixdoll.plx lemerr.plx lemerr2.plx mksubcorpora.sh remove-bad.sh repo-status.plx repo-status.sh sort-by-size.plx unloose.plx unstrict.plx ur3uniq.plx
+bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx atfsplit.plx atftemplate.plx dist-files.plx install.sh mklists.plx rebuild.sh addspacer.plx atf-fix-lem.plx atf-fix-n.plx atf-lem-nolem.plx atf2uni.plx atfcat.plx atfcomment.plx atfglobal.plx atfgrabpq.plx atfhavelem.plx atfjoin.plx atflists.plx atfmap.plx atfnewnum.plx atfnum.plx atforder.plx atfproject.plx atfquicklem.plx atfrenum.plx atfslash.plx atfsort.plx atfsquare.plx atfstats.plx atftr.plx atfxhash.plx cleanpns.plx diffhack.plx dollar-fixtailmisaligns.plx fixdoll.plx lemerr.plx lemerr2.plx mksubcorpora.sh remove-bad.sh repo-status.plx repo-status.sh sort-by-size.plx unloose.plx unstrict.plx ur3uniq.plx invert-lem-dump.plx revert-lem-dump.plx
 
 atfsignnames.plx: atfsignnames.plx.in
 	$(ORACCIFY) atfsignnames.plx.in

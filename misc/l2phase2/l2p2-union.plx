@@ -30,11 +30,16 @@ GetOptions (
 
 $mode = `oraccopt . cbd-super` unless $mode;
 
+my $superlist = `oraccopt . cbd-super-list`;
 my @projects = union_projects();
 my @langs = union_langs(@projects);
 
 if ($arg_lang && grep /^$arg_lang$/, @langs) {
     union_one_lang($arg_lang);
+} elsif ($superlist) {
+    foreach my $l (split(/\s+/, $superlist)) {
+	union_one_lang($l);
+    }
 } else {
     foreach my $l (sort keys %sigfiles) {
 	union_one_lang($l);
@@ -71,7 +76,14 @@ union_projects {
 	    warn "l2p2-union.plx: can't open 00lib/super-glossary.lst\n";
 	}
     } elsif ($mode eq 'umbrella') {
-	@p = grep m#/#, `projpublic.sh $project`;
+	if (open(P,'00lib/umbrella.lst')) {
+	    while (<P>) {
+		chomp;
+		push @p, split(/\s+/,$_);
+	    }
+	} else {
+	    @p = grep m#/#, `projpublic.sh $project`;
+	}
     } elsif ($mode eq 'global') {
 	@p = `projpublic.sh`;
     } else {
@@ -106,7 +118,17 @@ union_one_lang {
 
 sub
 unions_from {
-    eval("<$oracc/bld/$_[0]/*/union.sig>");
+    my @u = ();
+    if (-d "$oracc/bld/$_[0]") {
+	@u = eval("<$oracc/bld/$_[0]/*/union.sig>");
+    } else {
+	if (-d "$_[0]/01bld") {
+	    @u = eval("<$_[0]/01bld/*/union.sig>");
+	} else {
+	    warn "l2p2-union.plx: no build dir found for project '$_[0]'\n";
+	}
+    }
+    @u;
 }
 
 sub

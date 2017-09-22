@@ -21,6 +21,7 @@ extern FILE *f_forms;
 extern FILE *f_graphemes;
 
 extern int atf_cbd_err;
+extern int arg_use_unicode;
 extern int cbd_err_line;
 extern int cbd_lem_sigs;
 extern int check_lem;
