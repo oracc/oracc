@@ -14,6 +14,8 @@ if ($table) {
     load_table($table);
 }
 
+open(X, ">xforms.tab") || die "can't open xforms.tab\n";
+
 while (<>) {
     if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
 	print;
@@ -35,15 +37,21 @@ while (<>) {
 	    my $w = $line[$i];
 	    if ($forms{$w}) {
 		push @lem, $forms{$w};
+		print X "X\t$w\n" if $forms{$w} eq 'X';
+#		warn "X\n" if $forms{$w} eq 'X';
 	    } elsif ($w =~ /\.\.|-x|-x/) {
 		push @lem, 'u';
 	    } else {
 		push @lem, 'X';
+		print X "X\t$w\n";
+#		warn "X\n";
 	    }
 	}
 	print "#lem: ", join('; ', @lem), "\n";
     }
 }
+
+close(X);
 
 1;
 
