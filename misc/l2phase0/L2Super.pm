@@ -171,8 +171,13 @@ init {
     # Make sure all the necessary file names are set
 
     unless ($basefile) {
+	my @tried = ('00lib/*.glo');
 	my @glo = <00lib/*.glo>;
-	super_die("a super-glossary must have a .glo file")
+	if ($#glo < 0) {
+	    @glo = <00src/*.glo>;
+	    push @tried, ', 00src/*.glo';
+	}
+	super_die("a super-glossary must have a .glo file (tried @tried)")
 	    unless $#glo >= 0;
 	super_die("a super-glossary is only allowed one .glo file")
 	    unless $#glo == 0;

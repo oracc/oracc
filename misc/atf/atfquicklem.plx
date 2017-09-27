@@ -39,7 +39,7 @@ while (<>) {
 		push @lem, $forms{$w};
 		print X "X\t$w\n" if $forms{$w} eq 'X';
 #		warn "X\n" if $forms{$w} eq 'X';
-	    } elsif ($w =~ /\.\.|-x|-x/) {
+	    } elsif ($w =~ /\.\.|-x|x-/) {
 		push @lem, 'u';
 	    } else {
 		push @lem, 'X';
