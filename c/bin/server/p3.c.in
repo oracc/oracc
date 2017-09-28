@@ -15,7 +15,7 @@ p3srch(CGI_varlist *vl)
 {
   const char *d = CGI_lookup(vl, "tmpdir");
   const char *s = CGI_lookup(vl, "srch");
-  char *sfn = malloc(strlen(d) + 10);
+  char *sfn = malloc(strlen(d) + strlen("/search.txt") + 1);
   FILE *fp = NULL;
 
   fprintf(stderr, "p3: saving search '%s' to %s/search.bar\n", s, d);

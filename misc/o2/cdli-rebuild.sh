@@ -1,5 +1,5 @@
 #!/bin/sh
-. /home/oracc/bin/oraccenv.sh
+echo Rebuilding CDLI with cdli-rebuild.sh ...
 (cd 00git ; git pull)
 (cd 00cat ; unzip ../00git/cdli_catalogue.csv.zip)
 (cd 00src ; unzip ../00git/cdliatf_unblocked.atf.zip)
