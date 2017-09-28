@@ -158,9 +158,20 @@ texttag_term(void)
 static struct lang_tag *
 langtag_parse(const char *tag, const char *file, int lnum)
 {
-  struct lang_tag *tmp = calloc(1,sizeof(struct lang_tag));
-  char *tagcopy = (char*)npool_copy((unsigned char *)tag, langtag_pool), *s;
+  struct lang_tag *tmp = NULL; 
+  char *tagcopy = NULL;
+  char *s = NULL;
 
+  if (!tag || !*tag)
+    {
+      langtag_error(file,lnum,tag,"malformed language tag");
+      return NULL;
+    }
+  else
+    {
+      tmp = calloc(1,sizeof(struct lang_tag));
+      tagcopy = (char*)npool_copy((unsigned char *)tag, langtag_pool);
+    }
   tmp->tag = (char *)npool_copy((unsigned char *)tag, langtag_pool);
   tmp->lang = s = tagcopy;
   while (*s && '-' != *s)
@@ -207,12 +218,12 @@ langtag_parse(const char *tag, const char *file, int lnum)
       tmp = NULL;
     }
 
-  if (tmp->xlang && !strcmp(tmp->xlang, "x-syllabic"))
+  if (tmp && tmp->xlang && !strcmp(tmp->xlang, "x-syllabic"))
     {
       tmp->xlang = NULL;
       tmp->script = "947";
     }
-  else if (tmp->xlang && !strcmp(tmp->xlang, "x-udgalnun"))
+  else if (tmp && tmp->xlang && !strcmp(tmp->xlang, "x-udgalnun"))
     {
       tmp->xlang = NULL;
       tmp->script = "948";

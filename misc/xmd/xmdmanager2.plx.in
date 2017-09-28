@@ -1502,6 +1502,11 @@ xmd_begin {
 sub
 xmd_end {
     my $id = shift;
+
+    if ($id =~ /^\d/) {
+	my $nid = $id;
+	$id = sprintf("P%06d", $id);
+    }
 #    print VALTAB "\n";
     
     $valtab{$id} = join("\t",$id,@currvt)."\n";

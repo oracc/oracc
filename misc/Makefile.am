@@ -29,6 +29,7 @@ SUBDIRS = \
 	log \
 	msort \
 	msv \
+	neo \
 	nsa \
 	o2 \
 	ods \

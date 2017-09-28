@@ -177,9 +177,10 @@ init {
 	    @glo = <00src/*.glo>;
 	    push @tried, ', 00src/*.glo';
 	}
+	@glo = grep(!/~/, @glo);
 	super_die("a super-glossary must have a .glo file (tried @tried)")
 	    unless $#glo >= 0;
-	super_die("a super-glossary is only allowed one .glo file")
+       	super_die("a super-glossary is only allowed one .glo file")
 	    unless $#glo == 0;
 	$basefile = shift @glo;
 	if ($basefile =~ /sux/) {

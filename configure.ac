@@ -173,6 +173,7 @@ AC_OUTPUT([Makefile
 	misc/log/Makefile
 	misc/msort/Makefile
 	misc/msv/Makefile
+	misc/neo/Makefile
 	misc/nsa/Makefile
 	misc/o2/Makefile
 	misc/ods/Makefile

@@ -205,8 +205,10 @@ tree_term()
 	    }
 	  if (blocks[i][j].attr.nodes)
 	    free(blocks[i][j].attr.nodes);
+#if 0
 	  if (blocks[i][j].user > (void*)1)
-	    free(blocks[i][j].user);	  
+	    free(blocks[i][j].user);
+#endif
 	}
       free(blocks[i]);
     }
@@ -393,8 +395,10 @@ clear_blocks()
 	    }
 	  if (blocks[i][j].attr.nodes)
 	    free(blocks[i][j].attr.nodes);
+#if 0
 	  if (blocks[i][j].user > (void*)1)
 	    free(blocks[i][j].user);
+#endif
 	}
       memset(blocks[i++],'\0',BLOCK_SIZE*sizeof(struct node));
     }
