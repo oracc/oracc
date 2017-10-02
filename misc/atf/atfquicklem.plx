@@ -14,7 +14,11 @@ if ($table) {
     load_table($table);
 }
 
-open(X, ">xforms.tab") || die "can't open xforms.tab\n";
+if (-d "00etc") {
+    open(X, ">00etc/xforms.tab") || die "can't open 00etc/xforms.tab\n";
+} else {
+    open(X, ">xforms.tab") || die "can't open xforms.tab\n";
+}
 
 while (<>) {
     if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
@@ -39,7 +43,9 @@ while (<>) {
 		push @lem, $forms{$w};
 		print X "X\t$w\n" if $forms{$w} eq 'X';
 #		warn "X\n" if $forms{$w} eq 'X';
-	    } elsif ($w =~ /\.\.|-x|x-/) {
+	    } elsif ($w eq 'n' || $w eq '(n)' || $w =~ /^[0-9]/) {
+		push @lem, 'n';
+	    } elsif ($w eq 'x' || $w eq '(x)' || $w =~ /\.\.|-x|x-/) {
 		push @lem, 'u';
 	    } else {
 		push @lem, 'X';
