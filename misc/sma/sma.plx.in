@@ -18,6 +18,7 @@ my $lemma = '';
 my $nobase = 0;
 my $output = '';
 my $project = 'epsd';
+my $sig_output = 0;
 my $slave = 0;
 my $V_hack_flag = 0;
 my $verbose = 0;
@@ -34,6 +35,7 @@ GetOptions(
     "no-external-bases"=>\$ORACC::SMA::no_external_bases,
     "output:s"=>\$output,
     "project:s"=>\$project,
+    "sig"=>\$sig_output,
     "slave"=>\$slave,
     "verbose"=>\$verbose,
     "xli"=>\$xli,
@@ -310,9 +312,19 @@ t {
 		$cont =~ s/=\+/=/;
 		$cont =~ s/^-?/-/;
 	    }
-	    my $wstr = "\@form $f=$l $stemstr/$newbase$base +$cont #$morph\n";
-	    Encode::_utf8_off($wstr);
-	    syswrite STDOUT, $wstr;
+	    
+	    my $wstr = '';
+	    if ($sig_output) {
+		my $cfgw = $l;
+		$cfgw =~ s,\[(.*?)\],[$1//$1], unless $cfgw =~ m,//,;
+		$cfgw =~ s,\](.*?)$,\]$1'$1, unless $cfgw =~ m,',;
+		$wstr = "\@$project%sux:$f=$cfgw$stemstr/$newbase$base+$cont#$morph\n";
+	    } else {
+		$wstr = "\@form $f=$l $stemstr/$newbase$base +$cont #$morph\n";
+	    }
+	    #	    Encode::_utf8_off($wstr);
+	    #	    syswrite STDOUT, $wstr;
+	    print $wstr;
 	    return 0;
 	}
     } elsif ($#parses < 0) {

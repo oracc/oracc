@@ -45,7 +45,11 @@
 
 <xsl:template match="xh:link[@title='projcss']">
   <xsl:if test="$projcss='true'">
-    <xsl:copy-of select="."/>
+    <xsl:copy>
+      <xsl:copy-of select="@rel"/>
+      <xsl:copy-of select="@type"/>
+      <xsl:copy-of select="@href"/>
+    </xsl:copy>
   </xsl:if>
 </xsl:template>
 

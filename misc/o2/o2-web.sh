@@ -5,6 +5,7 @@ webdir=01bld/www ; rm -fr $webdir
 # N.B.: can't create empty $webdir/cbd like this because it causes 
 # oracc build portal to empty 02www/cbd
 mkdir -p $webdir/t $webdir/css
+cp -f 00web/projcss.css ] $webdir/css
 cp 02xml/config.xml $webdir/config.xml
 cp 00lib/thumb.png $webdir/thumb.png
 if [ -r 00lib/project.sty ]; then

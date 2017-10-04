@@ -736,8 +736,7 @@ run_item_maker {
 #		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
 #	}
 
-	
-
+	# Find the HTML version of an XTF
 	my $html = $xmd;
 	$html =~ s/xmd$/html/;
 	if ($p{'translation'} ne 'en') {

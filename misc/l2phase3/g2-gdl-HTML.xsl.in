@@ -701,8 +701,9 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="lsig" select="$lemnode/@sig|$lemnode/@exosig"/>
-<!--  <xsl:message><xsl:value-of select="$lsig"/></xsl:message> -->
-  <span class="{$w-class}" id="{@xml:id}">
+  <xsl:variable name="pos" select="$lemnode/*[1]/@pos"/>
+  <xsl:message><xsl:value-of select="$lsig"/></xsl:message>
+  <span class="{$w-class} {$pos}" id="{@xml:id}">
     <xsl:variable name="wid" select="@xml:id"/>
     <xsl:choose>
       <xsl:when test="self::norm:w">
