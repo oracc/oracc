@@ -39,10 +39,11 @@ while (<>) {
 	my @lem = ();
 	for (my $i = 0; $i <= $#line; ++$i) {
 	    my $w = $line[$i];
-	    if ($forms{$w}) {
-		push @lem, $forms{$w};
-		print X "X\t$w\n" if $forms{$w} eq 'X';
-#		warn "X\n" if $forms{$w} eq 'X';
+	    my $wc = $w; $wc =~ tr/:/-/;
+	    if ($forms{$w} || $forms{$wc}) {
+		my $f = $forms{$w} || $forms{$wc};
+		push @lem, $f;
+		print X "X\t$w\n" if $f eq 'X';
 	    } elsif ($w eq 'n' || $w eq '(n)' || $w =~ /^[0-9]/) {
 		push @lem, 'n';
 	    } elsif ($w eq 'x' || $w eq '(x)' || $w =~ /\.\.|-x|x-/) {
@@ -50,7 +51,6 @@ while (<>) {
 	    } else {
 		push @lem, 'X';
 		print X "X\t$w\n";
-#		warn "X\n";
 	    }
 	}
 	print "#lem: ", join('; ', @lem), "\n";
