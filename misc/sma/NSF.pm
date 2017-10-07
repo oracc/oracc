@@ -231,7 +231,7 @@ parse_nsf {
 	# like dijir-re-e-ne
 	if ($#g > 0
 	    && (($g[0] eq 'e' && ($g[1] eq 'e' 
-				  || ($root =~ /u/ && $g[1] =~ /^u$dig*$/)))
+				  || ($root && $root =~ /u/ && $g[1] =~ /^u$dig*$/)))
 		|| ($g[0] eq 'a' && $g[1] eq 'a' && $#g > 1)
 		|| $g[0] eq 'u' && $g[1] =~ /^u$dig*$/)) {
 	    ++$g_index;
@@ -364,7 +364,7 @@ parse_nsf {
 		$rest = '';
 		$nx = 8;
 	    } elsif (!length($rest) && exists($post{$g[$g_index]})) {
-		if ($root =~ /a$dig*$/ && $g[$g_index] eq 'a') {
+		if ($root && $root =~ /a$dig*$/ && $g[$g_index] eq 'a') {
 		    $nsf[7] = $post_data{'a'}; # fix a-ba-a > aba,e in ngrams
 		    ++$g_index;
 		} elsif ($g[$g_index] eq 'de' 

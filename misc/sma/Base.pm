@@ -146,8 +146,10 @@ parse {
 	    # we are trying sans determinatives
 	    if (defined $nodet_bases{$lemma}) {
 		@bases = @{$nodet_bases{$lemma}};
-	    } else {
+	    } elsif ($bases{$lemma}) {
 		@bases = @{$bases{$lemma}};
+	    } else {
+		@bases = ();
 	    }
 	} elsif ($try_number == 2) {
 	    # we are trying reduplication
@@ -199,7 +201,7 @@ parse {
 	warn "matching quoted base `$qb'\n" if $ORACC::SMA::verbose;
 	if ($form =~ /(?:^|(\S+?)-)($qb)(?:-(\S+))?$/) {
 	    my($pre,$bas,$post) = ($1||'',$2||'',$3||'');
-	    next if $pre && $POS !~ /^V/;
+	    next if $pre && ($POS && $POS !~ /^V/);
 	    print STDERR "INIT: $form => '$pre' / '$bas' / '$post'\n" 
 		if $sma_debug;
 	    if ($bas) {
