@@ -749,8 +749,21 @@ run_item_maker {
 	unless (-r $html) {
 	    ($eproject,$html) = html_by_proxy($p{'project'}, $eid);
 	    unless (-r $html) {
-		xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
-		goto OUTLINE;
+		xsystem("$oraccbin/o2-lazy-xtf.sh", $eproject, $eid);
+		$html = "@@ORACC@@/htm/$eproject/$eid.html";
+		if ($p{'translation'} ne 'en') {
+		    if (-r "$html.$p{'translation'}") {
+			$html .= ".$p{'translation'}";
+		    } else {
+			$html = '' unless -r $html;
+		    }
+		} else {
+		    $html = '' unless -r $html;
+		}		    
+		unless ($html) {
+		    xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
+		    goto OUTLINE;
+		}
 	    }
 	}
 	if ($eproject ne $p{'project'}) {

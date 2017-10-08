@@ -21,6 +21,7 @@
 <xsl:param name="project" select="''"/>
 <xsl:param name="trans" select="'en'"/>
 <xsl:param name="transonly" select="'false'"/>
+<xsl:param name="txhdir" select="''"/>
 
 <xsl:variable name="q">'</xsl:variable>
 
@@ -29,6 +30,7 @@
     <xsl:with-param name="project" select="/*/@project"/> <!-- $project -->
     <xsl:with-param name="host" select="$host"/>
     <xsl:with-param name="pqid" select="/*/@xml:id"/>
+    <xsl:with-param name="txhdir" select="$txhdir"/>
   </xsl:call-template>  
 </xsl:template>
 
