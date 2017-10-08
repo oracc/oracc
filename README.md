@@ -1,7 +1,7 @@
-oracc server client services
+oracc sources
 ============================
 
-A gsoap-based client-server layer for Oracc projects to execute commands on the build server.
+Sources for Oracc.
 
 ## Setup
 
