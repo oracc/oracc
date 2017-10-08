@@ -241,7 +241,7 @@ si_dump_csi(unsigned char *csiname, struct sortinfo *sip)
   struct sortinfo writable_si;
   if (stat((const char *)csiname,&sbuf) < 0)
     {
-      outfd = open((const char *)csiname,O_CREAT|O_WRONLY);
+      outfd = open((const char *)csiname,O_CREAT|O_WRONLY, 0644);
       fchmod(outfd,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
     }
   else
