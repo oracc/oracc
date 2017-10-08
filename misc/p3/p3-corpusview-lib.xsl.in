@@ -47,16 +47,29 @@
   <xsl:param name="project"/>
   <xsl:param name="host"/>
   <xsl:param name="pqid"/>
+  <xsl:param name="txhdir"/>
   
   <xsl:variable 
       name="basedir" 
       select="concat('@@ORACC@@/bld/',$project,'/',substring($pqid,1,4),'/',$pqid,'/')"/>
+
   <xsl:variable name="basename" select="concat($basedir,$pqid)"/>
 
 <!--  <xsl:message><xsl:value-of select="$basename"/></xsl:message> -->
 
+  <xsl:variable name="txh-name">
+    <xsl:choose>
+      <xsl:when test="string-length($txhdir) > 0">
+	<xsl:value-of select="concat($txhdir,'/',$pqid,'.txh')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="concat($basename,'.txh')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
   <xsl:variable name="xmd" select="document(concat($basename,'.xmd'))/xmd:xmd"/>
-  <xsl:variable name="txh" select="document(concat($basename,'.txh'),/)"/>
+  <xsl:variable name="txh" select="document($txh-name,/)"/>
   <xsl:variable name="uxh" select="document(concat($basename,'.uxh'),/)"/>
   <xsl:variable name="xst" select="document(concat($basename,'.xst'),/)"/>
   <xsl:variable name="xtr" select="document(concat($basename,'_project-',$trans,'.xtr'))"/>

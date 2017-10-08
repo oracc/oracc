@@ -2,6 +2,7 @@ package ORACC::Wrapper2;
 use warnings; use strict;
 use lib '@@ORACC@@/lib';
 use ORACC::Expand2;
+use ORACC::Base;
 use ORACC::XML;
 use Getopt::Long;
 use Pod::Usage;
@@ -9,9 +10,12 @@ use Pod::Usage;
 my $cat = 0;
 my $from_project = '';
 my $help = 0;
+my $htm = 0;
+my $htmdir = '';
 my $man = 0;
 my $quiet = 0;
 my $project = '';
+my $PQX = '';
 my $stdout = 0;
 my $trans = 'en';
 my $verbose = 0;
@@ -47,6 +51,7 @@ sub
 options {
     GetOptions(
 	'help'=>\$help,
+	'htm'=>\$htm,
 	'list:s'=>\@list,
 	'man'=>\$man,
 	'from:s'=>\$from_project,
@@ -76,12 +81,20 @@ xslt {
 	my $file_project = undef;
 	if ($f =~ /:/) {
 	    ($file_project,$f) = ($f =~ /^(.*?):(.*?)$/);
+	    $PQX = $f;
 #	    if ($from_project) {
 #		next if $file_project ne $from_project;
 #	    } elsif ($project) {
 #		next if $file_project ne $project;
 #	    }
+	} else {
+	    $PQX = $f;
 	}
+	
+	if ($htm) {
+	    $htmdir = "${ORACC::Base::base}htm/$project";
+	    system 'mkdir', '-p', $htmdir;
+	}	
 	if ($f =~ /^[PQX]\d+(?:[a-z]*)$/) {
 	    if ($file_project) {
 		$f = expand_in_project(undef,"$f.$args{'from'}", $file_project);
@@ -95,12 +108,16 @@ xslt {
 	} else {
 	    $f =~ s/\.[^.]*$/.$args{'from'}/;
 	}
-	warn("$0: no such input file: $f\n") and next
+	warn("$args{'prog'}: no such input file: $f\n") and next
 	    unless -f $f;
 	my $xf = load_xml($f);
 	my $vprefix = ($args{'to'} eq '-') ? '' : '*.';
 	print STDERR "$f => $vprefix$args{'to'} ... " if $verbose;
-	my $res = eval { $transformer->transform($xf, project=>"'$project'", trans=>"'$trans'") };
+	my $res = eval { $transformer->transform($xf, 
+						 project=>"'$project'", 
+						 trans=>"'$trans'",
+						 txhdir=>"'$htmdir'"
+			     ) };
 	unless ($res) {
 	    undef $xf;
 	    print STDERR $f unless $verbose;
@@ -115,8 +132,13 @@ xslt {
 	    binmode STDOUT, ':raw';
 	    print $transformer->output_string($res);
 	} else {
-	    my $outf = $f;
-	    if ($from_project) {
+	    my $outf = $orig_f;
+	    if ($htm) {
+		$outf = "$htmdir/$PQX.$args{'to'}";
+		if ($trans ne 'en') {
+		    $outf .= ".$trans";
+		}	
+	    } elsif ($from_project) {
 		$outf = expand_in_project($project,"$orig_f.$args{'from'}");
 	    }
 	    if ($args{'to'} =~ /-/) {
@@ -127,6 +149,9 @@ xslt {
 		    || (warn("$0: $f: input and output files are the same; skipping\n") and next);
 		if ($args{'outdir'}) {
 		    $outf =~ s#^.*?/([^/]+)$#$args{'outdir'}/$1#;
+		}
+		if ($trans ne 'en') {
+		    $outf .= ".$trans";
 		}
 		if ($trans ne 'en') {
 		    $outf .= ".$trans";
