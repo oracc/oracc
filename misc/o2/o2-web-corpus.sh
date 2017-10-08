@@ -54,7 +54,7 @@ if [ "$buildpolicy" != "search" ]; then
 fi
 
 p=`oraccopt`
-if [[ $p == cdli* or $p == epsd2* ]]; then
+if [[ $p == cdli* || $p == epsd2* ]]; then
     echo "USING LAZY HTML FOR PROJECT $p"
 else
     if [ -f 01bld/lists/have-xtf.lst ]; then

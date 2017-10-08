@@ -83,7 +83,7 @@ const char *project = NULL; /* for now we need this for vid.c */
 Four_bytes curr_line;
 int debug_flag = 0, index_flag = 1;
 const char *debug_label;
-FILE *debug_f;
+FILE *debug_f, *signmap_err;
 FILE *f_mangletab = NULL;
 
 static int cache_elements = 16;
@@ -96,7 +96,7 @@ int curr_text_id, curr_unit_id, curr_word_id;
 int curr_sentence_id, curr_clause_id, curr_phrase_id, curr_lemma_id;
 
 int indexing = 0;
-int quiet = 0;
+int quiet = 1;
 
 const char **proxies = NULL;
 
@@ -484,8 +484,10 @@ endElement_gdl(void *userData, const char *name)
 		      fprintf(stderr, "%s == %s not double-indexed\n", s, g);
 #endif
 		  }
+#if 0
 		else
-		  fprintf(stderr, "%s not found in signmap\n", lg);
+		  fprintf(signmap_err, "%s not found in signmap\n", lg);
+#endif
 	      }
 	    else
 	      fprintf(stderr, "failed to lowercase %s\n", g);
@@ -624,6 +626,8 @@ main (int argc, char **argv)
   if (debug_flag)
     debug_f = fopen("selemx.dbg", "w");
 
+  /* signmap_err = fopen("01tmp/signmap.log", "w"); */
+
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
 
@@ -738,6 +742,9 @@ main (int argc, char **argv)
 
   progress ("index files written to `%s'\n", se_dir(curr_project,curr_index));
 
+  fclose(debug_f);
+  /* fclose(signmap_err); */
+  
   return 0;
 }
 
@@ -857,7 +864,7 @@ opts(int c, char *arg)
       curr_project = arg;
       break;
     case 'q':
-      quiet = 1;
+      quiet = 0;
       break;
     case 's':
       one_big_stdin = 1;

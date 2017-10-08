@@ -74,7 +74,7 @@ int quiet = 1;
 
 const char **proxies = NULL;
 
-FILE *f_mangletab = NULL;
+FILE *f_mangletab = NULL, *signmap_err = NULL;
 
 static FILE *keysf;
 /* static void process_cdata(Uchar*); */
@@ -347,7 +347,7 @@ endElement(void *userData, const char *name)
 #endif
 		      }
 		    else
-		      fprintf(stderr, "%s not found in signmap\n", lg);
+		      fprintf(signmap_err, "%s not found in signmap\n", lg);
 		  }
 		else
 		  fprintf(stderr, "failed to lowercase %s\n", g);
@@ -409,6 +409,8 @@ main (int argc, char **argv)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
 
   f_mangletab = create_mangle_tab(curr_project,"txt");
+
+  signmap_err = fopen("01tmp/signmap.log", "w");
 
   signmap_init();
 
@@ -484,6 +486,8 @@ main (int argc, char **argv)
   mapdb = dbi_create ("signmap", se_dir (curr_project, curr_index), 8000, /* hash_create will adjust */
 		      PADDED_GRAPHEME_LEN, DBI_BALK);
   signmap_term(mapdb);
+  fclose(signmap_err);
+  
   dbi_flush(mapdb);
   /*  dbi_close(mapdb);*/
 

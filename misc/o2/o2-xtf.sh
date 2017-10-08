@@ -35,8 +35,15 @@ function xsf_scores {
 }
 
 o2-xtf-lst.sh
-xtfmanager.plx -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
-[ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
+
+
+p=`oraccopt`
+if [[ $p == cdli* || $p == epsd2* ]]; then
+    echo "USING LAZY HTML FOR PROJECT $p"
+else
+    xtfmanager.plx -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
+    [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
+fi
 
 o2-xtfindex.plx
 
@@ -67,6 +74,7 @@ if [ -s 01bld/lists/lemindex.lst ]; then
     mkdir -p $dir/lem
     cat 01bld/lists/lemindex.lst | selemx -p $project
     sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
+    sort -u -o 01tmp/signmap.log 01tmp/signmap.log
 fi
 
 mkdir -p $dir/tra
