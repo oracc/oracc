@@ -53,7 +53,12 @@ if [ "$buildpolicy" != "search" ]; then
     done
 fi
 
-if [ -f 01bld/lists/have-xtf.lst ]; then
-    web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
-    clean-web-PQX-log.sh
+p=`oraccopt`
+if [[ $p == cdli* or $p == epsd2* ]]; then
+    echo "USING LAZY HTML FOR PROJECT $p"
+else
+    if [ -f 01bld/lists/have-xtf.lst ]; then
+	web-PQX-html.plx -list 01bld/lists/have-xtf.lst -proj `oraccopt` 2>01tmp/web-PQX.log
+	clean-web-PQX-log.sh
+    fi
 fi
