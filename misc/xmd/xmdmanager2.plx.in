@@ -1204,7 +1204,8 @@ make_vid {
     if ($pqx =~ /(?:^|:)P(\d+)$/ && length($1) != 6) {
 	my $nid = $1;
 	$nid = 'P'.('0'x(6-length($nid))).$nid;
-	print STDERR "xmdmanager: repairing P-ID from $pqx to $nid\n";
+	print STDERR "xmdmanager: repairing P-ID from $pqx to $nid\n"
+	    if $verbose;
 	if ($pqx =~ /:/) {
 	    $pqx =~ s/:.*$/:$nid/;
 	} else {
@@ -1437,7 +1438,8 @@ xmd_begin {
 	if ($id =~ /^P(\d+)$/) {
 	    my $nid = $1;
 	    $nid = 'P'.('0'x(6-length($nid))).$nid;
-	    print STDERR "xmdmanager: repairing P-ID from $id to $nid\n";
+	    print STDERR "xmdmanager: repairing P-ID from $id to $nid\n"
+		if $verbose;
 	    $id = $nid;
 	} else {
 	    my @data = grep (defined && length , @$row);

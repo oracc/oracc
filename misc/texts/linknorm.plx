@@ -5,6 +5,8 @@ my $currpqx = '';
 my %rels = ();
 my %symtab = ();
 
+my $project = `oraccopt`; exit 0 if $project eq "cdli";
+
 open(S,$ARGV[0]);
 
 while (<S>) {
