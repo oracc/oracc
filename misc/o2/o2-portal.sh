@@ -1,5 +1,6 @@
 #!/bin/sh
 webdir=01bld/www
+project=`oraccopt`
 
 if [ ! -r 02xml/config.xml ]; then
     o2-cnf.sh
@@ -11,8 +12,12 @@ if [ -d 00web/00config ]; then
 	o2-weblive.sh
     fi
     echo calling esp2.sh `oraccopt` ...
-    esp2.sh `oraccopt`
-    est-project.sh
+    esp2.sh $project
+    if [[ "$project" == "cdli" ]]; then
+	echo Skipping est processing for project CDLI
+    else
+	est-project.sh
+    fi
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
     p3-wrapup.sh
@@ -26,7 +31,11 @@ elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
     mkdir -p $webdir/images
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
     cp -fp 00lib/thumb.png $webdir
-    est-project.sh
+    if [[ "$project" == "cdli" ]]; then
+	echo Skipping est processing for project CDLI
+    else
+	est-project.sh
+    fi
     o2-weblive.sh
     o2-finish.sh
 else
