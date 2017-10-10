@@ -5,7 +5,7 @@
 # 
 #  $Id: Makefile.am,v 0.5 1997/09/08 13:02:15 sjt Exp $
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
+AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=collate expat libstemmer_c gsl oracc rnv sas skl
 noinst_LTLIBRARIES=liboracc.la
 liboracc_la_LIBADD= \

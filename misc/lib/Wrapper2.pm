@@ -132,30 +132,28 @@ xslt {
 	    binmode STDOUT, ':raw';
 	    print $transformer->output_string($res);
 	} else {
-	    my $outf = $orig_f;
+	    my $outf = '';
 	    if ($htm) {
-		$outf = "$htmdir/$PQX.$args{'to'}";
-		if ($trans ne 'en') {
-		    $outf .= ".$trans";
-		}	
-	    } elsif ($from_project) {
-		$outf = expand_in_project($project,"$orig_f.$args{'from'}");
-	    }
-	    if ($args{'to'} =~ /-/) {
-		$outf =~ s/\.[^.]+$/$args{'to'}/ 
-		    || (warn("$0: $f: input and output files are the same; skipping\n") and next);
+		$outf = "$htmdir/$PQX.html";
 	    } else {
-		$outf =~ s/\.[^.]+$/.$args{'to'}/ 
-		    || (warn("$0: $f: input and output files are the same; skipping\n") and next);
-		if ($args{'outdir'}) {
-		    $outf =~ s#^.*?/([^/]+)$#$args{'outdir'}/$1#;
+		if ($from_project) {
+		    $outf = expand_in_project($project,"$orig_f.$args{'from'}");
+		} else {
+		    $outf = $f;
 		}
-		if ($trans ne 'en') {
-		    $outf .= ".$trans";
+		if ($args{'to'} =~ /-/) {
+		    $outf =~ s/\.[^.]+$/$args{'to'}/ 
+			|| (warn("$0 [1]: $f: input and output ($args{'to'}) files are the same; skipping\n") and next);
+		} else {
+		    $outf =~ s/\.[^.]+$/.$args{'to'}/ 
+			|| (warn("$0 [2]: $f: input and output ($args{'to'}) files are the same; skipping\n") and next);
+		    if ($args{'outdir'}) {
+			$outf =~ s#^.*?/([^/]+)$#$args{'outdir'}/$1#;
+		    }
 		}
-		if ($trans ne 'en') {
-		    $outf .= ".$trans";
-		}
+	    }
+	    if ($trans ne 'en') {
+		$outf .= ".$trans";
 	    }
 	    # N.B: this stream should not be opened in ':utf8'!  
 	    # output_string() comes from outside Perl and does

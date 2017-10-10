@@ -9,7 +9,7 @@
 #define PSD_BASE_H_ 1
 
 #ifndef _POSIX_SOURCE
-#define _POSIX_SOURCE 1
+#define _POSIX_SOURCE 0
 #endif
 
 #ifdef __MWERKS__
@@ -152,9 +152,9 @@ extern int errno;
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
- */
 
 #include <sys/unistd.h>
+ */
 
 /**************************************************************/
 

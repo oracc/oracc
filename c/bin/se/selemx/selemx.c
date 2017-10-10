@@ -742,8 +742,8 @@ main (int argc, char **argv)
 
   progress ("index files written to `%s'\n", se_dir(curr_project,curr_index));
 
-  fclose(debug_f);
-  /* fclose(signmap_err); */
+  if (debug_f)
+    fclose(debug_f);
   
   return 0;
 }
