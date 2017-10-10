@@ -27,6 +27,8 @@ if ($asl) {
 } else {
     $asl = "00lib/ogsl.asl";
 }
+my $xid = 'x0000';
+my %sign_ids = (); sign_ids();
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
@@ -49,7 +51,6 @@ my $in_form = 0;
 my $in_value = 0;
 my $post_form = 0;
 my $utf8 = undef;
-my $xid = 'x0000';
 
 my $pi_file = '00lib/ogsl.asl';
 
@@ -78,8 +79,14 @@ while (<SL>) {
 	    # warn "undefined n\n";
 	    $n = '';
 	}
+	my $sid = $sign_ids{$signname};
+	
+	unless ($sid) {
+	    warn "sl-xml.plx: internal error: no ID found for $signname\n";
+	    $sid = $xid++;
+	}
 	pi_line();
-	print "<sign$deprecated n=\"$n\" xml:id=\"$xid\"><name g:me=\"1\">$n</name>";
+	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>";
 	if ($sortcodes{$signname}) {
 	    print "<sort";
 	    foreach my $c (@{$sortcodes{$signname}}) {
@@ -89,7 +96,6 @@ while (<SL>) {
 	    }
 	    print "/>";
 	}
-	++$xid;
     } else {
 	unless ($in_sign) {
 	    warn "$asl:$.: missing \@sign\n";
@@ -131,12 +137,17 @@ while (<SL>) {
 		$in_form = 0;
 	    } else {
 		my ($n,$v,$u) = ($2,$1,$3);
+		my $formname = $n;
 		$n = xmlify($n);
 		$v = xmlify($v);
 		my $uattr = "";
 		$uattr = " utf8=\"$u\"" if $u;
+		my $ref = '';
+		if ($sign_ids{$formname}) {
+		    $ref = sprintf(" ref=\"%s\"", $sign_ids{$formname});
+		}
 		pi_line();
-		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr><name g:me=\"1\">$n</name>";
+		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr$ref><name g:me=\"1\">$n</name>";
 		++$xid;
 		$in_form = 1;
 		if ($sortcodes{$n}) {
@@ -255,6 +266,28 @@ form_check {
 sub
 pi_line {
     print "<?line $.?>";
+}
+
+sub
+sign_ids {
+    my @signs = `grep \@sign $asl`; chomp @signs;
+    my @nosigns = `grep \@nosign $asl`; chomp @nosigns;
+    foreach (@signs) {
+	/\s(\S+)/;
+	if ($sign_ids{$1}) {
+	    warn "sl-xml.plx: duplicate \@sign $1\n";
+	} else {
+	    $sign_ids{$1} = $xid++;
+	}
+    }
+    foreach (@nosigns) {
+	/\s(\S+)\s*$/;
+	if ($sign_ids{$1}) {
+	    warn "sl-xml.plx: duplicate \@nosign $1\n";
+	} else {
+	    $sign_ids{$1} = $xid++;
+	}	
+    }
 }
 
 1;

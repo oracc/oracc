@@ -366,9 +366,17 @@ subsign {
     my $type = $node->getAttribute('type');
 #    next unless $type eq 'normal' || $type eq 'numeric';
 
-    my $id = $node->getAttributeNS($xml_uri,'id');
-    my $sn = $node->getAttribute('n');
+    my $rf = $node->getAttribute('ref');
+    my $id = '';
 
+    # if an @form is a known sign name, use the ID of the sign name
+    if ($rf) {
+	$id = $rf;
+    } else {
+	$id = $node->getAttributeNS($xml_uri,'id');
+    }
+    my $sn = $node->getAttribute('n');
+    
 #    if ($parent_id) {
 #	warn "FORM: parent-id=$parent_id; form id=$id; sn=$sn\n";
 #    } else {

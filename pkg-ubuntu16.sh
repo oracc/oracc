@@ -27,4 +27,6 @@ apt install \
     libxml-libxslt-perl \
     texlive-omega
 
+# libfrontier-rpc-perl
+
 #    policycoreutils-python \

@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
+my $project = shift @ARGV;
+
 my %words = ();
 my %freqs = ();
+
 my @freq_sigs = ('01bld/from-xtf-glo.sig', '01bld/from-prx-glo.sig');
 
 foreach my $f (@freq_sigs) {
@@ -12,9 +15,20 @@ foreach my $f (@freq_sigs) {
 	next;
     }
     while (<F>) {
-	my($sig,$refs) = (/^(.*?)\t(.*?)$/);
+	next if /^\@(?:project|name|lang)/ || /^\s*$/;
+	chomp;
+	my @fields = split(/\t/,$_);
+	my $sig;
+	my $refs;
+	if ($#fields == 2) {
+	    ($sig,$refs) = ($fields[0],$fields[2]);
+	} else {
+	    ($sig,$refs) = ($fields[0],$fields[1]);
+	}
 	if ($refs) {
 	    my $freq = ($refs =~ tr/ / /);
+
+	    $sig =~ s/^\@(.*?)%/\@$project%/ if $project;
 	    $freqs{$sig} += $freq;
 
 # pct calcs TODO
@@ -28,12 +42,19 @@ foreach my $f (@freq_sigs) {
     close(F);
 }
 
+#use Data::Dumper; print Dumper \%freqs;
+
 foreach my $l (<02pub/lemm-*.sig>) {
     if (open(L, $l)) {
 	open(O, ">$l.freq");
 	while (<L>) {
 	    chomp;
 	    s/\t.*$//;
+#	    if (exists $freqs{$_}) {
+#		warn "OK: $_\n";
+#	    } else {
+#		warn "NO: $_\n";
+#	    }
 	    my $f = ($freqs{$_} ? $freqs{$_} : 0);
 	    print O "$_\t$f\n"
 	}
