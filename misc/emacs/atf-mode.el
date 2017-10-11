@@ -2,6 +2,8 @@
 
 (require 'compile)
 
+(setq http-oracc-build (concat "http://" oracc-build "/"))
+
 (defvar atf-mode nil
   "Non-nil means that ATF mode is enabled.")
 
@@ -173,7 +175,9 @@ For the ATF documentation see URL `http://oracc.museum.upenn.edu/doc/ATF/'."
 	   '(atf-font-lock-keywords))
       (set (make-local-variable 'font-lock-string-face)
 	   nil)
-      (turn-on-cuneitex)
+      (if (string= oracc-prefix "slash")
+	  (turn-on-cuneitex)
+	(turn-on-cuneitex_de))
       (setq major-mode 'atf-mode)
       (setq mode-name "ATF")
       (set-frame-font atf-default-font)
@@ -245,7 +249,7 @@ category.  Otherwise insert the pair at point."
 
 (defun atf-check-rpc-async(data name args)
   (interactive)
-  (xml-rpc-method-call "http://oracc.museum.upenn.edu/cgi-bin/rpc"
+  (xml-rpc-method-call (concat http-oracc-build "cgi-bin/rpc")
 		       'oracc.atf.check
 		       `(("data" . ,data)
 			 ("atf-file-name" . ,name)
@@ -253,19 +257,16 @@ category.  Otherwise insert the pair at point."
 
 (defun atf-check-rpc(data name args)
   (interactive)
-  (let ((inhibit-read-only t))
-    (insert
-     (cdr 
-      (car 
-       (cdr 
-	(car 
-	 (cdr 
-	  (xml-rpc-method-call "http://oracc.museum.upenn.edu/cgi-bin/rpc"
-			       'oracc.atf.check
-			       `(("data" . ,data)
-				 ("atf-file-name" . ,name)
-				 ("atf-args" . ,args)
-				 ))))))))))
+  (let*
+      ((inhibit-read-only t)
+       (resp (xml-rpc-method-call (concat http-oracc-build "cgi-bin/rpc")
+				  'oracc.atf.check
+				  `(("data" . ,data)
+				    ("atf-file-name" . ,name)
+				    ("atf-args" . ,args)
+				    )))
+       )
+    (insert-string (nth 2 resp))))
 
 (defun atf-check-async () ; based on 'compile'
   (interactive)
@@ -630,14 +631,12 @@ Generates
   (interactive)
   (let ((inhibit-read-only t))
     (insert
-     (cdr 
-      (car 
-       (cdr 
-	(xml-rpc-method-call "http://oracc.museum.upenn.edu/cgi-bin/rpc.plx"
+     (nth 2
+	(xml-rpc-method-call (concat http-oracc-build "cgi-bin/rpc.plx")
 			     'oracc.atf.template
 			     `(("data" . ,(buffer-substring-no-properties 
 					   (point-min) (point-max)))
-			       ))))))))
+			       ))))))
 
 (defun atf-template-help ()
   (interactive)
@@ -649,7 +648,7 @@ Generates
   (let* ((bufstr (buffer-substring-no-properties 
 		  (point-min) (point-max)))
 	 (name (buffer-name))
-	 (resp (xml-rpc-method-call "http://oracc.museum.upenn.edu/cgi-bin/rpc.plx"
+	 (resp (xml-rpc-method-call (concat http-oracc-build "cgi-bin/rpc.plx")
 				    'oracc.atf.lemcount
 				    `(("data" . ,bufstr)
 				      ("atf-file-name" . ,name)))))
@@ -667,7 +666,7 @@ Generates
   (let* ((bufstr (buffer-substring-no-properties 
 		  (point-min) (point-max)))
 	 (name (buffer-name))
-	 (resp (xml-rpc-method-call "http://oracc.museum.upenn.edu/cgi-bin/rpc.plx"
+	 (resp (xml-rpc-method-call (concat http-oracc-build "cgi-bin/rpc.plx")
 				    'oracc.atf.lemmatize
 				    `(("data" . ,bufstr)
 				      ("atf-file-name" . ,name)))))
@@ -690,15 +689,15 @@ Generates
 	(goto-char xpoint)))))
 
 (defun atf-rpc-errorp (res)
-  (if (> (caar (cdr (car res))) 0)
-      t
-    nil))
+  (if (string= (nth 0 res) nil)
+      nil
+      t))
 
 (defun atf-rpc-errmsg (res)
-  (car (cdar (cdr (car res)))))
+  (nth 1 res))
 
 (defun atf-rpc-resval (res)
-  (cdr (car (cdr res))))
+  (nth 2 res))
 
 (defun atf-browse-doc ()
   (interactive)

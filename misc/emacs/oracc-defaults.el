@@ -2,6 +2,8 @@
 
 (defun turn-on-cuneitex ()
   (set-input-method "Cuneiform"))
+(defun turn-on-cuneitex_de ()
+  (set-input-method "Cuneiform_de"))
 
 (defcustom atf-default-font nil
   "The font used in ATF and CBD modes.")
