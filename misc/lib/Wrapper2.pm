@@ -113,10 +113,17 @@ xslt {
 	my $xf = load_xml($f);
 	my $vprefix = ($args{'to'} eq '-') ? '' : '*.';
 	print STDERR "$f => $vprefix$args{'to'} ... " if $verbose;
+	my $txhdir = '';
+	my $txh = $f;
+	$txh =~ s/\.([^.]+)$/.txh/;
+	warn "txh = $txh\n";
+	unless (-r $txh) {
+	    $txhdir = $htmdir;
+	}
 	my $res = eval { $transformer->transform($xf, 
 						 project=>"'$project'", 
 						 trans=>"'$trans'",
-						 txhdir=>"'$htmdir'"
+						 txhdir=>"'$txhdir'"
 			     ) };
 	unless ($res) {
 	    undef $xf;

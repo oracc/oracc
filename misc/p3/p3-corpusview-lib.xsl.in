@@ -55,8 +55,6 @@
 
   <xsl:variable name="basename" select="concat($basedir,$pqid)"/>
 
-<!--  <xsl:message><xsl:value-of select="$basename"/></xsl:message> -->
-
   <xsl:variable name="txh-name">
     <xsl:choose>
       <xsl:when test="string-length($txhdir) > 0">
@@ -68,6 +66,12 @@
     </xsl:choose>
   </xsl:variable>
 
+  <!--
+  <xsl:message>corpusview:basename: <xsl:value-of select="$basename"/></xsl:message>
+  <xsl:message>corpusview:txhdir: <xsl:value-of select="$txhdir"/></xsl:message>
+  <xsl:message>corpusview:txh-name: <xsl:value-of select="$txh-name"/></xsl:message>
+  -->
+  
   <xsl:variable name="xmd" select="document(concat($basename,'.xmd'))/xmd:xmd"/>
   <xsl:variable name="txh" select="document($txh-name,/)"/>
   <xsl:variable name="uxh" select="document(concat($basename,'.uxh'),/)"/>
