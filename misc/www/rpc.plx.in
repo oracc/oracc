@@ -254,15 +254,16 @@ atf_check {
     $ret{'b64'} = ($b64 ? 't' : 'nil');
     unlink($atf_fn);
     unlink($bad_fn);
-    unlink($err_fn);
+#    unlink($err_fn);
 
-    my $cerr = [ $coder->int($err), $errstr];
-    my %res = ( result=>{%ret}, err=>[$cerr] );
+#    my $cerr = [ $coder->int($err), $errstr];
+#    my %res = ( result=>{%ret}, err=>$coder->int($err), errstr=>$errstr );
 
     warn "$0: DEBUG: exiting atf_check $args at " .
 	scalar(localtime) . "\n";
 
-    return { %res };
+    #    return { %res };
+    return [ $err , $errstr, $ret{'check'} ];
 }
 
 sub
@@ -286,7 +287,8 @@ atf_lemcount {
 	scalar(localtime) . "\n";
     my $cerr = [ $coder->int(0), ''];
     my %res = ( result=>join("\n",@lemmatized), err=>[$cerr] );
-    return { %res };
+    return [ $res{'err'} , $res{'result'} ];
+#    return { %res };
 }
 
 sub
@@ -341,9 +343,11 @@ atf_lemmatize {
 	my $b64lem = MIME::Base64::encode_base64(encode("UTF-8",join('',@lemmatized)));
 	%res = ( result=>$coder->base64($b64lem), err=>[$cerr] );
     } else {
-	%res = ( err=>[$cerr] );
+	%res = ( result=>'', err=>[$cerr] );
     }
-    return { %res };
+    #    return { %res };
+    
+    return [ $err , $errstr, $res{'result'} ];
 }
 
 sub
@@ -359,7 +363,9 @@ atf_template {
 #    my %ret = ();
 #    $ret{'template'} = join('',@template);
     my %res = ( result=>join('',@template), err=>'');
-    return { %res };
+
+    return [ 0 , '', $res{'result'} ];
+#    return { %res };
 }
 
 sub try_or_die {

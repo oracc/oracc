@@ -7,6 +7,8 @@
 #include "symbolattr.h"
 #include "xmlnames.h"
 
+extern const char *project;
+
 extern enum e_type doctype;
 
 #define hash_lookup(keyp,tablep) hash_find(tablep,keyp)
@@ -248,6 +250,9 @@ link_check(const char *line)
 	    }
 	}
       else if (!sym_warning++)
-	vwarning("link symbol '%s' not defined",buf);
+	{
+	  if (strcmp(project,"cdli"))
+	    vwarning("link symbol '%s' not defined",buf);
+	}
     }
 }

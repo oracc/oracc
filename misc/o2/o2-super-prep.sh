@@ -10,6 +10,9 @@ done
 # they effectively are.
 cat 00sig/*.sig >01bld/from-prx-glo.sig
 
+# get the sigs from the super glossary
+l2p1-from-glos.sh
+
 # Create lemm-LANG.sig files then freq files
 langs=`oraccopt . cbd-super-list`
 for l in $langs ; do
@@ -18,7 +21,7 @@ for l in $langs ; do
 done
 l2p1-lemm-quick-freqs.plx epsd2
 for a in 02pub/*.freq  ; do
-    mv $a `basename $a .freq`
+    mv $a 02pub/`basename $a .freq`
 done
 
 # Now construct a virtual corpus based on the instances

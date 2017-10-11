@@ -74,7 +74,6 @@ if [ -s 01bld/lists/lemindex.lst ]; then
     mkdir -p $dir/lem
     cat 01bld/lists/lemindex.lst | selemx -p $project
     sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
-    sort -u -o 01tmp/signmap.log 01tmp/signmap.log
 fi
 
 mkdir -p $dir/tra
@@ -86,6 +85,8 @@ mkdir -p $dir/txt
 echo o2-xtf.sh: setxtx ...
 cat 01bld/lists/xtfindex.lst | setxtx -p $project
 sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
+sort -u -o 01tmp/signmap.x 01tmp/signmap.log
+rm -f 01tmp/signmap.log
 
 # must do this for EST project search
 o2-xml.sh
