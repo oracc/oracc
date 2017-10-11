@@ -333,7 +333,7 @@ atf_lemmatize {
 	if ($err == 3) {
 	    $err = 't';
 	    $errmsg = 'ATF OK except for lemmatization errors; use ATF check again';
-	} else {
+	} elsif ($err) {
 	    $err = 't';
 	    $errmsg = 'ATF errors found; fix and try again';
 	}
