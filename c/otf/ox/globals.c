@@ -47,6 +47,7 @@ int lem_autolem;
 int check_only;
 int validate;
 int do_cdl;
+int do_show_insts;
 int no_xcl_map;
 int lem_forms_raw;
 int named_ents;

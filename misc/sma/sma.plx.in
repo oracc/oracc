@@ -127,6 +127,9 @@ if ($glossary) {
 			($form) = (/\s(\S+)/);
 			if (t($form,$lemma,'')) {
 			    print;
+			} else {
+			    print;
+			    warn;
 			}
 		    } elsif (m#/(\S+)#) {
 			my $base = $1;

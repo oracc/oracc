@@ -26,7 +26,7 @@ my $cgctmp = '';
 my $early_debug = 1;
 
 my %rws_map = (
-    EG => '',
+    EG => 'sux',
     CF => 'akk',
     OA => 'akk-x-oldass',
     OB => 'akk-x-oldbab',

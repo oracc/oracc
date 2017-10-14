@@ -306,8 +306,15 @@ process_text(struct run_context *run, unsigned char **lines)
 	  rnvif_text_id = textid;
 	  status = rnv_validate(text);
 	}
+
       if (do_cdl)
 	text_xc = xcl_process(run, text);
+
+      if (do_show_insts)
+	{
+	  sig_show_insts(text_xc);
+	  return lines;
+	}
 
       if (need_lemm && !no_xcl_map)
 	{
@@ -325,7 +332,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	      scp->xpd = run->proj->xpd;
 	      scp->xcp = text_xc;
 	      sig_context_langs(scp,text_xc->langs);
-
+	      
 	      if (lem_autolem)
 		sig_new(text_xc);
 	      else

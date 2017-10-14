@@ -18,6 +18,7 @@ my $pre_junk_chars = '[\[(<\|]';
 my $post_junk_chars = '[\])>\|\/]';
 my $pre_delim_chars = '\{[\{\+]?';
 my $post_delim_chars = '[-.:;\}_+]';
+my $showinsts = 0;
 my $tok = '';
 
 my $match_count;

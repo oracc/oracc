@@ -102,6 +102,8 @@ extern List *sig_autoload_sets(struct sig_context *scp,
 			       const char *lang);
 extern void sig_check(struct xcl_context *xcp);
 extern void sig_new(struct xcl_context *xcp);
+extern void sig_show_insts(struct xcl_context *xcp);
+
 extern const unsigned char *sigs_field_begin(const Uchar *lp, const Uchar *field);
 extern const unsigned char *sigs_field_end(const Uchar *lp);
 extern void sig_context_langs(struct sig_context *scp, const char *langs);

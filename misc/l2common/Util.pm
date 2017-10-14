@@ -253,10 +253,18 @@ parse_sig {
 	if ($x{'lang'} =~ /^sux/) {
 	    s#V/([ti])#V\cA$1#g;
 	}
-	@x{'cf','gw','sense','pos','epos'} = /=(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
-#	warn "bad sig $_\n" unless $x{'cf'};
-	$x{'pos'} =~ tr,\cA,/,;
-	$x{'epos'} =~ tr,\cA,/,;
+	if (/\'/) {
+	    @x{'cf','gw','sense','pos','epos'} = /=(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
+	} elsif (m,//,) {
+	    @x{'cf','gw','sense','pos'} = /=(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\$\t\/]|$)/;
+	} elsif (m,\[,) {
+	    @x{'cf','gw','pos'} = /=(.*?)\[(.*?)\](.*?)(?:[\$\t\/]|$)/;
+	} else {
+	    $x{'pos'} = $_; # Assume it's PN/DN etc
+	}
+	#	warn "bad sig $_\n" unless $x{'cf'};
+	$x{'pos'} =~ tr,\cA,/, if $x{'pos'};
+	$x{'epos'} =~ tr,\cA,/, if $x{'epos'};
     } else {
     }
 
@@ -272,10 +280,13 @@ parse_sig {
 	}
     }
 
-#    warn "lang=$x{'lang'}\n";
-    my $s949 = ($x{'lang'} =~ /-949/ ? "-949" : '');
-    my $baselang = $x{'lang'};
-    $baselang =~ s/-.*$/$s949/;
+    #    warn "lang=$x{'lang'}\n";
+    my $baselang = '';
+    if ($x{'lang'}) {
+	my $s949 = ($x{'lang'} =~ /-949/ ? "-949" : '');
+	$baselang = $x{'lang'};
+	$baselang =~ s/-.*$/$s949/;
+    }
 #    $x{'form'} = "\%$baselang\:$x{'form'}" if $x{'form'};
 
     # must keep script tags in parsed signature
