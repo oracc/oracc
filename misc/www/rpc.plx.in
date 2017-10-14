@@ -224,7 +224,7 @@ atf_check {
     my $err = 0;
     my $errstr = 0;
     if ($? & 127) {
-	$err = 1;
+	$err = 't';
 	$errstr = "Your input crashed the lemmatizer; please e-mail stinney\@sas.upenn.edu with ref '$$'";
 	system 'cp', "/tmp/$$.tmp", "/var/tmp/atfserver/$$.tmp";
 #	$errstr = 'Your input crashed the checker; this is not your fault--the authorities have been informed.';
@@ -331,23 +331,21 @@ atf_lemmatize {
 	# reflect that
 	my $errmsg;
 	if ($err == 3) {
+	    $err = 't';
 	    $errmsg = 'ATF OK except for lemmatization errors; use ATF check again';
-	} else {
+	} elsif ($err) {
+	    $err = 't';
 	    $errmsg = 'ATF errors found; fix and try again';
 	}
 	$errstr = ($err ? $errmsg : 'Lemmatization OK');
     }
-    my $cerr = [ $coder->int($err), $errstr];
-    my %res = ();
+    my $result = '';
     if ($err == 0) {
 	my $b64lem = MIME::Base64::encode_base64(encode("UTF-8",join('',@lemmatized)));
-	%res = ( result=>$coder->base64($b64lem), err=>[$cerr] );
-    } else {
-	%res = ( result=>'', err=>[$cerr] );
+	$result = $coder->base64($b64lem);
     }
-    #    return { %res };
     
-    return [ $err , $errstr, $res{'result'} ];
+    return [ $err , $errstr, $result ];
 }
 
 sub
