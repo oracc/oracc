@@ -21,7 +21,7 @@ static struct npool *tree_pool;
 #define A_BLOCK_SIZE 16384
 #define A_gBLOCK_SIZE 2048
 
-#define NL_BASE	   8
+#define NL_BASE	   1024
 
 #undef TVDEBUG
 

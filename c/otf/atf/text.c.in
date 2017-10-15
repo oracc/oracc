@@ -301,7 +301,7 @@ process_text(struct run_context *run, unsigned char **lines)
       max_cells_attr(text);
       if (has_links)
 	setAttr(text,a_haslinks,ucc("1"));
-      if (!status && validate)
+      if (!status && validate && !do_show_insts)
 	{
 	  rnvif_text_id = textid;
 	  status = rnv_validate(text);
@@ -397,7 +397,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	    }
 	  status = pre_lem_status;
 	}
-      if (!check_only && !perform_lem && (!status || force))
+      if (!check_only && !perform_lem && !do_show_insts && (!status || force))
 	{
 	  if (!no_destfile)
 	    destfile_pi();
@@ -456,7 +456,7 @@ process_text(struct run_context *run, unsigned char **lines)
       else if (f_good)
 	fprintf(f_good,"%s\n",textid);
 
-      if (status && !check_only && !force)
+      if (status && !check_only && !do_show_insts && !force)
 	{
 	  if (!no_destfile)
 	    destfile_pi();
@@ -485,20 +485,6 @@ process_text(struct run_context *run, unsigned char **lines)
 
       labtab = NULL;
     }
-#if 0 /* I don't believe this can happen any more */
-  else
-    {
-      /* this happens if the text's document element can't be created
-	 or the ID number was a duplicate */
-      ++lnum;
-      ++lines;
-      while (*lines && '&' != **lines)
-	{
-	  ++lnum;
-	  ++lines;
-	}
-    }
-#endif
 
   lemline_term();
   return lines;
