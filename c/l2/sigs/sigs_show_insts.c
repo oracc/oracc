@@ -31,11 +31,12 @@ sigs_d_show_insts(struct xcl_context *xcp, struct xcl_d *d)
 static void
 sigs_l_show_insts(struct xcl_context *xcp, struct xcl_l *l)
 {
+  extern const char *project;
   if (sparse_skipping)
     {
       BIT_SET(l->f->instance_flags, ILEM_FLAG_SPARSE_SKIP);
       return;
     }
   if (l && l->f && l->f->sublem)
-    fprintf(stdout, "%s\n", l->f->sublem);
+    printf("@%s%s\n", project, l->f->sublem);
 }

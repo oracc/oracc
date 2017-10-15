@@ -291,7 +291,7 @@ process_text(struct run_context *run, unsigned char **lines)
       if (project)
 	setAttr(text,a_project,ucc(project));
       /* Don't do this until after text protocols have had a chance to set project */
-      if (need_lemm)
+      if (need_lemm || do_show_insts)
 	{
 	  lem_text_init(textid);
 	  proj_init(run, project);
@@ -312,7 +312,13 @@ process_text(struct run_context *run, unsigned char **lines)
 
       if (do_show_insts)
 	{
+#if 0
+	  extern FILE *f_insts;
+	  x2_serialize(text_xc, f_insts, 0);
+	  exit(0);
+#else
 	  sig_show_insts(text_xc);
+#endif
 	  return lines;
 	}
 

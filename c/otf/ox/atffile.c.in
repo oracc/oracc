@@ -29,7 +29,7 @@ void
 begin_file()
 {
   const char *const*ns = xtf_xmlns;
-  if (!check_only && !perform_lem)
+  if (!check_only && !perform_lem && !do_show_insts)
     {
       /*xml_decl();*/
       fputs("<xtf",f_xml);
@@ -62,7 +62,7 @@ check_bom(unsigned char *s)
 void
 end_file()
 {
-  if (!check_only && !perform_lem)
+  if (!check_only && !perform_lem && !do_show_insts)
     {
       if (!no_destfile)
 	fputs("<?destfile?>", f_xml);
@@ -136,7 +136,7 @@ process_file(struct run_context *run, const char *fname)
 
   file = errmsg_fn ? errmsg_fn : fname;
 
-  if (!check_only && !perform_lem)
+  if (!check_only && !perform_lem && !do_show_insts)
     {
       if (!one_big_file)
 	begin_file();
@@ -144,7 +144,7 @@ process_file(struct run_context *run, const char *fname)
     }
   ret = process_string(run, ftext, fsize);
   free(ftext);
-  if (!check_only && !perform_lem)
+  if (!check_only && !perform_lem && !do_show_insts)
     {
       if (!one_big_file)
 	end_file();
@@ -188,7 +188,7 @@ process_string(struct run_context *run, unsigned char *ftext, ssize_t fsize)
 
   curr_lang = global_lang;
   file_protocols = protocols(run, s_file, XTF, lines, &rest, NULL);
-  if (!check_only && !perform_lem)
+  if (!check_only && !perform_lem && !do_show_insts)
     {
       if (file_protocols && file_protocols->children.lastused)
 	serialize(file_protocols,0);

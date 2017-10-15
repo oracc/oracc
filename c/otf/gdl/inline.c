@@ -30,7 +30,7 @@ int ods_mode = 0;
 
 extern FILE*f_forms;
 extern int check_only;
-extern int need_lemm;
+extern int need_lemm, do_show_insts;
 extern int verbose;
 
 extern void set_or_append_attr(struct node *n, enum a_type atype, const char *aname, unsigned char *text);
@@ -1397,7 +1397,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  wrapup_word(wp, tp->type);
 		  setName(wp,e_g_nonw);
 		  appendAttr(wp,attr(a_type, ucc("surro")));
-		  if (need_lemm)
+		  if (need_lemm || do_show_insts)
 		    (*lemm_unform_p)();
 		  removeAttr(wp,"form");
 		  /* back up the word list also b/c we consider the surro
@@ -1924,7 +1924,7 @@ finish_word(struct node *wp)
 	fprintf(f_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);
       
       /* need to do this unconditionally? */
-      if (need_lemm)
+      if (need_lemm || do_show_insts)
 	(*lemm_save_form_p)((const char*)getAttr(wp,"xml:id"),
 			    (const char *)getAttr(wp,"xml:lang"),
 			    (in_split_word<=1)?(const char *)form:"-",

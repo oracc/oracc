@@ -213,6 +213,7 @@ ox_options(int argc, char **argv)
 	  arg_use_unicode = 1;
 	  break;
 	case '9':
+	  f_insts = fopen("insts.txt","w");
 	  do_cdl = do_show_insts = 1;
 	  break;
 	default:

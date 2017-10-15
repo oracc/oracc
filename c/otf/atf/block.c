@@ -295,7 +295,7 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
       /* This means that the processor will produce partial output
 	 on error; caller must take care to look at the processor status
 	 return and report it to users */
-      if (need_lemm && **lines != '&' 
+      if ((need_lemm || do_show_insts) && **lines != '&' 
 	  && (!transtype || **lines == '@' || **lines == '$' || **lines == '#'))
 	{
 	  if (*lines && xstrncmp(*lines,"#lem:",4))
@@ -746,7 +746,7 @@ $ start of reverse missing
 	  break;
 	case '\0':
 	  /* empty line */
-	  if (need_lemm && transtype)
+	  if ((need_lemm || do_show_insts) && transtype)
 	    lem_save_line(lines[0]);
 	  break;
 	case ' ':
@@ -904,7 +904,7 @@ $ start of reverse missing
 		{
 		  ++lnum;
 		  ++lines;
-		  if (need_lemm)
+		  if (need_lemm || do_show_insts)
 		    lem_save_line(*lines);
 		  line_var(*lines);
 		  skip_blank();
@@ -1415,7 +1415,7 @@ concat_continuations(unsigned char **lines)
   while (lines[1] && isspace(*lines[1]))
     {
       unsigned char *l = lines[1];
-      if (need_lemm)
+      if (need_lemm || do_show_insts)
 	lem_save_cont(l);
       while (isspace(*l))
 	++l;
@@ -1464,7 +1464,7 @@ scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
 
   while (lines[nlines] && *lines[nlines] == '#')
     {
-      if (nlines && need_lemm)
+      if (nlines && (need_lemm || do_show_insts))
 	lem_save_line(lines[nlines]);
       if (maybe_protocol(lines[nlines]))
 	{

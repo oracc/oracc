@@ -96,7 +96,7 @@ protocols(struct run_context *run,
 	  blocktokp = blocktok((const char *)token,xxstrlen(token));
 	  if (blocktokp && blocktokp->type == TEXT)
 	    {
-	      if (need_lemm)
+	      if (need_lemm || do_show_insts)
 		lem_save_line(savebuf);
 	      doctype = blocktokp->etype;
 	      setName(np,blocktokp->etype);
@@ -134,7 +134,7 @@ protocols(struct run_context *run,
 	break;
       else
 	{
-	  if (need_lemm)
+	  if (need_lemm || do_show_insts)
 	    lem_save_line(savebuf);
 	  ++lnum;
 	  ++lines;
@@ -289,7 +289,7 @@ protocol(struct run_context *run,
 	  else if (!xstrcmp(type,"lem"))
 	    {
 	      suppress_output = 1;
-	      if (need_lemm)
+	      if (need_lemm || do_show_insts)
 		lem_handler(parent, scope,level,line);
 	    }
 	  else if (!xstrcmp(type,"bib"))

@@ -183,18 +183,6 @@ lem_save_cont(unsigned char *lp)
   sp->cont->line = npool_copy(lp,lemline_xcp->pool);
 }
 
-#if 0
-void
-lem_append_line(unsigned char *lp)
-{
-  struct lem_save *sp;
-  for (sp = curr_lsp; sp->next; sp = sp->next)
-    ;
-  last_lsp = sp->next = new_lsp();
-  sp->next->line = npool_copy(lp,lemline_xcp->pool);
-}
-#endif
-
 void
 lem_reset_form(const char *ref, const char *form)
 {
