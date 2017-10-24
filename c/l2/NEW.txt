@@ -33,3 +33,43 @@ NEW FORM/SENSE HANDLING WITH DEFAULTS
 
       etc.
 
+USER SYNTAX
+
+    * SENSE_GW : already implemented as @sense N [~worker] a class of worker, and in XML as <sgw>
+
+    * Default FORM/WORD : @form! a /a #~
+
+    * EXPLICIT default SENSE : @sense! N [~worker] a class of worker
+
+IMPLEMENTATION DETAIL
+
+    * In l2common/Builtins.pm, sub acd2xml
+      	 - pull ! off $currtag and store
+	 - emit as default="yes" attribute on relevant <sense> or <form>
+    * Add @fields line to .sig format, e.g., @fields sig rank or @fields sig freq inst or @fields sig rank freq inst
+    * In l2phase1/l2p1-simple and friends, parse and store ! on @form and @sense, and emit them as a rank column
+    * Automatically supply RANK=1 on first SENSE unless that is default
+    * Sort lemm-XXX.sig.freq by frequencies (use system sort on freq column)
+    * In sigset reader
+      - require input to be sig rank freq
+      - store RANK as flag
+      - preserve ordering of sigs by freq
+    * In autolem/dynalem, apply rules stated above, selecting by RANK, then relying on frequency sort
+      to default down to the most frequent sig
+    * Automatically supply SGW from GW if there only one sense?
+    * How does lemmer find SGW??
+
+DYNALEM
+
+    * For now just look for conventionally named file, a simple FORM\tLEMM table
+    * Load table into hash
+    * In sigs_new vel sim look up FORM and set struct member sublem appropriately
+    * Then let the reset of the lemmer run, including bigram/ngram processing
+    * Add new @collo field to CBD to store info for ngrams inline in .glo; for now this can be ignored
+      in acd2xml and l2p1-simple etc.; just need to grep them out and validate them.
+
+STATLEM
+
+    * Read ATF and execute lemmer, dumping new lemmed ATF in format described above w one lemm per line
+    * How to include LINKTABLE info here, if at all?
+
