@@ -1,0 +1,35 @@
+NEW FORM/SENSE HANDLING WITH DEFAULTS
+
+    * add new concept RANK
+
+    * RANK is given as additional tabbed field after SIG, before FREQ
+
+    * NEW DEFAULTS:
+      - default FORM/WORD: flag on FORM in glossary, for ambig forms this word is chosen
+      - EXPLICIT default SENSE: flag on SENSE in glossary
+      - IMPLICIT default SENSE: always first SENSE given for word
+
+    * SENSE_GW--given after @sense, gives an unambiguous link between GW (or any shortened key) and SENSE
+
+    * IMPLEMENTATION in SIGS
+      - SENSE_GW does not relate to RANK
+      - default FORM/WORD confers highest RANK on sig, RANK=3
+      - EXPLICIT default SENSE confers RANK=2
+      - IMPLICIT default SENSE confers RANK=1
+      - all other SIGS are RANK=0
+
+    * IMPLEMENTATION IN LEMMATIZATION
+      - default FORM/WORD is only for autolem/dynalem
+      - Use SENSE_GW to select SENSE via SENSE_GW; select by idiom [//to]; warn if no matching SENSE_GW (best)
+      - Use empty GW//SENSE to request EXPLICIT or IMPLICIT SENSE, e.g., ana[]
+      - For autolem/dynalem, use EXPLICIT default SENSE first, then use FREQ, then use IMPLICIT default SENSE
+      	if FREQ=0
+
+    * Add new autolem-type option, statlem, to make the lemmatization static, putting each lemmatization
+      on its own line, with full data:
+
+      	 #lem: ana[to//to]$ana;
+	       maru[son/son]$maru
+
+      etc.
+
