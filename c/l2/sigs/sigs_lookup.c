@@ -270,7 +270,13 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       ifp->fcount = nfinds = 0; /* must reset these each time */
       ifp->finds = NULL;
       sigs_found = NULL;
-    
+
+      if (ifp->f2.oform) /* A previous sigset tried aliasing */
+	{
+	  ifp->f2.form = ifp->f2.oform;
+	  ifp->f2.oform = NULL;
+	}
+      
       if (!sp->loaded)
 	sig_load_set(xcp->sigs,sp);
       
@@ -396,7 +402,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		      alias_sigs_found = look->test(xcp,ifp,sp,&alias_nfinds);
 		      if (alias_nfinds)
 			{
-			  free((void*)sigs_found);
+			  if (sigs_found)
+			    free((void*)sigs_found);
 			  sigs_found = alias_sigs_found;
 			  nfinds = alias_nfinds;
 			  no_form = 0;

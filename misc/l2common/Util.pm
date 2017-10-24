@@ -241,6 +241,7 @@ parse_psu {
 sub
 parse_sig {
     my $sig = shift;
+    my $noproj = 0;
 
     return parse_psu($sig) if $sig =~ /^\{/;
 
@@ -249,24 +250,32 @@ parse_sig {
     local($_) = $sig;
     my %x = ();
     if (/^\@/) {
-	@x{'proj','lang','form'} = /\@(.*?)\%(.*?)\:(.*?)=/;
-	if ($x{'lang'} =~ /^sux/) {
-	    s#V/([ti])#V\cA$1#g;
-	}
-	if (/\'/) {
-	    @x{'cf','gw','sense','pos','epos'} = /=(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
-	} elsif (m,//,) {
-	    @x{'cf','gw','sense','pos'} = /=(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\$\t\/]|$)/;
-	} elsif (m,\[,) {
-	    @x{'cf','gw','pos'} = /=(.*?)\[(.*?)\](.*?)(?:[\$\t\/]|$)/;
-	} else {
-	    $x{'pos'} = $_; # Assume it's PN/DN etc
-	}
-	#	warn "bad sig $_\n" unless $x{'cf'};
-	$x{'pos'} =~ tr,\cA,/, if $x{'pos'};
-	$x{'epos'} =~ tr,\cA,/, if $x{'epos'};
+	@x{'proj','lang','form'} = (/\@(.*?)\%(.*?)\:(.*?)=/);
+	s/^.*?=//;
     } else {
+	$noproj = 1;
     }
+    
+    s#V/([ti])#V\cA$1#g;
+    
+    if (/\'/) {
+	@x{'cf','gw','sense','pos','epos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
+	s/^.*?\'.*?(?=[\$\t\/]|$)//;
+    } elsif (m,//,) {
+	@x{'cf','gw','sense','pos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\$\t\/]|$)/;
+	s/^.*?\].*?(?=[\$\t\/]|$)//;
+    } elsif (m,\[,) {
+	@x{'cf','gw','pos'} = /^(.*?)\[(.*?)\](.*?)(?:[\$\t\/\#]|$)/;
+	s/^.*?\].*?(?=[\$\t\/]|$)//;
+    } elsif (/^[A-Za-z\/]+/) {
+	$x{'pos'} = $_; # Assume it's PN/DN etc
+	$_ = '';
+    } else {
+	# leave it to fail later;
+    }
+
+    $x{'pos'} =~ tr,\cA,/, if $x{'pos'};
+    $x{'epos'} =~ tr,\cA,/, if $x{'epos'};
 
     if (s/\!(0x.[0-9a-f]+)//i) {
 	$x{'flags'} = $1;
@@ -287,50 +296,51 @@ parse_sig {
 	$baselang = $x{'lang'};
 	$baselang =~ s/-.*$/$s949/;
     }
-#    $x{'form'} = "\%$baselang\:$x{'form'}" if $x{'form'};
 
     # must keep script tags in parsed signature
-
     $x{'form'} = "\%$x{'lang'}\:$x{'form'}" if $x{'form'};
+    
+    #   if ($x{'proj'}) {
+    #	s/^.*?\]//; # delete everything up to end of GW//SENSE
+    #	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
 
-#    warn "x{'form'} set to $x{'form'}\n";
-
-#    warn "x{form} = $x{'form'}\n";
-    if ($x{'proj'}) {
-	s/^.*?\]//; # delete everything up to end of GW//SENSE
-	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
-	if (s/^\$(.+?)([\/#\t]|$)/$2/) {
-	    $x{'norm'} = $1;
-	}
-	# Map + in compounds (|...+...|) to \cA
-	1 while s#(/.*?\|[^\|]+?)\+(.*?\|)#$1\cA$2#;
-	1 while s#\{\+#\{\cA#g;
-
-	# Remove empty continuations
-	s/\+0\s*//;
-
-	if (s/^\/(.+?)([\+#\t]|$)/$2/) {
-	    my $b = $1;
-	    $b =~ tr/\cA/+/;
-	    $x{'base'} = "\%$baselang\:$b";
-	}
-	if (s/^\+(-.+?)([#\t]|$)/$2/) {
-	    $x{'cont'} = $1;
-	}
-	if (s/^\*.+?([#\t]|$)/$2/) {
-	    $x{'stem'} = $1;
-	}
-	if (s/^\#(.+?)([#\t]|$)/$2/) {
-	    $x{'morph'} = $1;
-	}
-	if (s/^\#\#(.+?)([#\t]|$)/$2/) {
-	    $x{'morph2'} = $1;
-	}
-	( %x );
-    } else {
-	s/\t.*$//;
-	warn "sig-g2x.plx: $.: bad parse in $_\n"
+    if (s/^\$(.*?)([\/#\t]|$)/$2/) {
+	$x{'norm'} = $1;
     }
+    
+    # Map + in compounds (|...+...|) to \cA
+    1 while s#(/.*?\|[^\|]+?)\+(.*?\|)#$1\cA$2#;
+    1 while s#\{\+#\{\cA#g;
+
+    # Remove empty continuations
+    s/\+0\s*//;
+
+    if (s/^\/(.+?)([\+#\t]|$)/$2/) {
+	my $b = $1;
+	$b =~ tr/\cA/+/;
+	$x{'base'} = "\%$baselang\:$b";
+    }
+    if (/^\+/) {
+	if (s/^\+(-.+?)(?=[#\t]|$)//) {
+	    $x{'cont'} = $1;
+	} else {
+	    warn "sig-g2x.plx: $.: bad cont: `$_'\n";
+	}
+	s/^\+.*?(?=[#\t])|$//;
+    }
+    if (s/^\*.+?(?:[#\t]|$)//) {
+	$x{'stem'} = $1;
+    }
+    if (s/^\#(.+?)([#\t]|$)/$2/) {
+	$x{'morph'} = $1;
+    }
+    if (s/^\#\#(.+?)([#\t]|$)/$2/) {
+	$x{'morph2'} = $1;
+    }
+    if (length $_) {
+	warn "sig-g2x.plx: $.: bad parse: leftovers=`$_'\n";
+    }
+    ( %x );
 }
 
 sub

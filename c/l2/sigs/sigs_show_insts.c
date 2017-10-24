@@ -37,6 +37,12 @@ sigs_l_show_insts(struct xcl_context *xcp, struct xcl_l *l)
       BIT_SET(l->f->instance_flags, ILEM_FLAG_SPARSE_SKIP);
       return;
     }
-  if (l && l->f && l->f->sublem)
-    printf("@%s%s\n", project, l->f->sublem);
+  /*  if (l && l->f && l->f->sublem) */
+  if (l)
+    {
+      if (l->f && l->f->sublem)
+	printf("@%s%s\n", project, l->f->sublem);
+      else if (l->inst)
+	printf("@%s%s\n", project, l->inst);
+    }
 }
