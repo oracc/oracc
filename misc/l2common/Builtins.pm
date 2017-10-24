@@ -276,10 +276,11 @@ acd2xml {
 	next if /^\#/ || /^\@letter/;
 	chomp;
 	s/\s+/ /g;
-	if (/^\@([a-z_]+[-\*]?)\s+(.*?)\s*$/) {
+	if (/^\@([a-z_]+[-\*!]?)\s+(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $linetag = $currtag;
 	    my $defn_minus = 0;
+	    my $default = $currtag =~ s/!$//;
 	    $linetag =~ s/\*$//;
 	    next if exists $header_fields{$currtag}; # ignore header for now
 
@@ -339,7 +340,9 @@ acd2xml {
 			    bad($currtag, "no content in SENSE") unless $currarg =~ /\s\S/;
 			}
 			$curr_sense_id = sprintf("%06f",$sense_id++);
-			$currarg = "\#$curr_sense_id\t$currarg";
+			$defaults{$curr_sense_id} = 1 if $default;
+			my $defbang = ($default ? '!' : '');
+			$currarg = "\#$curr_sense_id$defbang\t$currarg";
 		    } elsif ($currtag eq 'form') {
 			my $barecheck = $currarg;
 			$barecheck =~ s/^(\S+)\s*//;
@@ -369,6 +372,9 @@ acd2xml {
 			    }
 			    if ($currarg =~ s/^\s*<(.*?)>\s+//) {
 				push @{$sigs{$curr_sense_id}}, $1;
+			    }
+			    if ($default) {
+				$currarg = "!$currarg";
 			    }
 			}
 			my $atf = "$..\t";
@@ -742,7 +748,11 @@ acdentry {
 	    my ($base,$cont,$stem,$morph,$pref,$rws,$morph2) = ();
 	    my $flang = '';
 	    my $lfid = $localfid++;
-
+	    my $defbang = '';
+	    if ($f =~ s/^!//) {
+		$defbang = '!';
+	    }
+	    
 	    if ($f =~ s/(?:^|\s+)\%(\S+)//) {
 		$flang = $1;
 		$f =~ s/^\s*//;
@@ -821,8 +831,9 @@ acdentry {
 		}
 	    }
 	    if (!exists $cfgw_forms{$fo}) {
-		$cfgw_forms{$fo} = [$flang,$fo,$lfid,$base,$cont,$morph,$pref,$stem,$rws,$morph2,
-		    $line_of{'form'}+$field_index];
+		$cfgw_forms{$fo} = [$defbang,$flang,$fo,$lfid,
+				    $base,$cont,$morph,$pref,$stem,$rws,$morph2,
+				    $line_of{'form'}+$field_index];
 	    }
 	    ++$field_index;
 	}
@@ -950,12 +961,12 @@ acdentry {
     if ($e{'form'}) {
 	push @ret, '<forms>';
 	foreach my $fo (sort keys %cfgw_forms) {
-	    my($l,$f,$lfid,$base,$cont,$morph,$pref,$stem,$rws,$morph2,$fline) 
+	    my($defbang,$l,$f,$lfid,$base,$cont,$morph,$pref,$stem,$rws,$morph2,$fline) 
 		= @{$cfgw_forms{$fo}};
 	    $l = $cbdlang unless $l;
 	    $l =~ s#/n#-949#;
 	    $f = xmlify($f);
-	    my $xattr = '';
+	    my $xattr = ($defbang ? ' default="yes"' : '');
 	    if ($base || $cont || $morph || $pref || $stem || $rws) {
 #		if ($base && $bases{$base} == 1) {
 #		    warn "iffy $base\n";
@@ -1045,9 +1056,12 @@ acdentry {
     push @ret, '<senses>';
     foreach my $s (@{$e{'sense'}}) {
 	my ($sid,$sigs,$sgw,$pos,$mng) = ();
-#	warn "$s\n";
+	my $defattr = '';
 	if ($s =~ s/^\#(\S+)\s+//) {
 	    $sid = $1;
+	    if ($sid =~ s/!$//) {
+		$defattr = ' default="yes"';
+	    }
 	    $sigs = $sigs{$sid};
 	}
 	if ($s =~ s/^\[(.*?)\]\s+//) {
@@ -1079,17 +1093,6 @@ acdentry {
 	$sgwTag = "<sgw>$sgw</sgw>" if $sgw;
 	my $posTag = '';
 	$posTag = "<pos>$pos</pos>" if $pos;
-###	my $sigsTag = '';
-###	if ($sigs) {
-###	    $sigsTag = "<sigs>";
-###	    foreach my $sigid (@$sigs) {
-###		$sigsTag .= "<sig>";
-###		$sigsTag .= xmlify($signatures{$sigid});
-###		$sigsTag .= "</sig>";
-###	    }
-###	    $sigsTag .= "</sigs>";
-###	}
-#	warn "$posTag\n";
 	my $s_sig = $e_sig;
 	if ($sgw) {
 	    $s_sig =~ s#\]#//$sgw\]#;
@@ -1101,7 +1104,7 @@ acdentry {
 	} else {
 	    $s_sig =~ s/\](.*)$/]$1'$1/;
 	}
-	push @ret, xidify("<sense n=\"$s_sig\">$sgwTag$posTag<mng xml:lang=\"$mnglang\">$mng</mng></sense>",'!');
+	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag<mng xml:lang=\"$mnglang\">$mng</mng></sense>",'!');
     }
     push @ret, '</senses>';
     if ($e{'prop'}) {

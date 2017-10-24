@@ -52,7 +52,12 @@ IMPLEMENTATION DETAIL
     * Sort lemm-XXX.sig.freq by frequencies (use system sort on freq column)
     * In sigset reader
       - require input to be sig rank freq
-      - store RANK as flag
+      - store RANK as flag(s):
+      	1 = IMPLICIT default SENSE (FORM_IMP_DEF_SENSE)
+	2 = EXPLICIT default SENSE (FORM_EXP_DEF_SENSE)
+	4 = FORM/WORD default      (FORM_FORMWORD_DEF)
+	5 = IMPLICIT & FORM/WORD
+	6 = EXPLICIT & FORM/WORD
       - preserve ordering of sigs by freq
     * In autolem/dynalem, apply rules stated above, selecting by RANK, then relying on frequency sort
       to default down to the most frequent sig

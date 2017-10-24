@@ -47,6 +47,7 @@ my $simple = 0;
 my $verbose = 0;
 my $cof_verbose = 0;
 my $psu_verbose = 0;
+my $rank = 0;
 
 my $load_simple_counter = 0;
 
@@ -103,6 +104,7 @@ sub
 do_g2a {
     my $header_ok = 0;
     my $g2a = shift;
+    my $nsense = 0;
 
     warn "g2a-simple.plx: .glo file `$g2a' non-existent or not readable\n" and return unless -r $g2a;
 
@@ -123,7 +125,7 @@ do_g2a {
 	warn "input: $_\n" if $verbose;
 
 	if (s/^\@entry\*?\s+//) {
-	    
+	    $nsense = 0;
 	    if (!$header_ok) {
 		if (!$header{'project'} || !$header{'lang'}) {
 		    die "g2a-sig.plx: $g2a: must give \@project and \@lang at start of file\n";
@@ -154,7 +156,7 @@ do_g2a {
 	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
 		my $lang = ($header{'lang'} =~ /^qpn/ ? 'sux' : $header{'lang'});
 		my $instsig1 = "\@$header{'project'}\%$lang:$current_first_base=";
-		++$noprintsigs{ "$instsig1$coresig\n" };
+		++$noprintsigs{ "$instsig1$coresig\t0\n" };
 	    }
 	    
 	    $compound = $in_sense = 0;
@@ -169,8 +171,11 @@ do_g2a {
 	    @instsigs = ();
 	    $basesig = undef;
 	    $coresig = undef;
-	} elsif (/^\@sense/) {
+	} elsif (/^\@sense(!?)/) {
 	    $in_sense = 1;
+	    ++$nsense;
+	    $rank = 0;
+	    my $defbang = $1 || '';
 	    @sig{qw/epos sense/} = /\s+([A-Z]\S*)\s+(.*?)\s*$/;
 	    if (!$sig{'epos'}) {
 		warn "$err_g2a:$.: (g2a) no POS in SENSE\n";
@@ -179,16 +184,25 @@ do_g2a {
 		$sig{'epos'} = $sig{'pos'};
 	    }
 	    
-	    if (!defined $default_senses{$basesig}) {
-		$default_senses{$basesig} = [ $sig{'sense'} , $sig{'epos'} ];
-	    }
+#	    if (!defined $default_senses{$basesig}) {
+#		$default_senses{$basesig} = [ $sig{'sense'} , $sig{'epos'} ];
+#	    }
 	    
 	    $coresig = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
 	    print CORESIGS "$coresig\n";
-	    
+
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
-		    ++$printsigs{ "$$instsig[0]$coresig$$instsig[1]\n" };
+		    if ($instsig =~ s/^!//) {
+			$rank = 3;
+		    }
+		    if ($defbang) {
+			$rank += 2;
+		    } elsif ($nsense == 1) {
+			$rank += 1;
+		    }
+			
+		    ++$printsigs{ "$$instsig[0]$coresig$$instsig[1]\t$rank\n" };
 		    $found_simple_sig = 1;
 		}
 	    } else {
@@ -196,12 +210,8 @@ do_g2a {
 		    if ($current_first_base) {
 			my $lang = ($header{'lang'} =~ /^qpn/ ? 'sux' : $header{'lang'});
 			my $instsig0 = "\@$header{'project'}\%$lang:$current_first_base";
-			++$printsigs{ "$instsig0=$coresig\n" };
+			++$printsigs{ "$instsig0=$coresig\t0\n" };
 			$found_simple_sig = 1;
-		    } else {
-#			my $instsig0 = "\@$header{'project'}\%$header{'lang'}:$sig{'cf'}";
-#			$found_simple_sig = 1;
-#			++$printsigs{ "$instsig0=$coresig\n" };
 		    }
 		}
 	    }
@@ -310,33 +320,23 @@ do_g2a {
 		my $instsig1 = "\@$proj\%$lang:$sig{'form'}=";
 		my $instsig2 = '';
 		foreach my $field (@ORACC::L2GLO::Util::instfields) {
-		    $instsig2 .= "$ORACC::L2GLO::Util::fieldchars{$field}$sig{$field}" if $sig{$field};
+		    $instsig2 .= "$ORACC::L2GLO::Util::fieldchars{$field}$sig{$field}" 
+			if $sig{$field};
 		}
 		
 		if ($cof == $COF_HEAD) {
-
-#		    ++$noprintsigs{ "$instsig1$cof_core$instsig2!0x01\n" };
-#		    $found_simple_sig = 1;
-
 		    $instsig2 .= '!0x01';
-		    
 		} elsif ($cof == $COF_TAIL) {
-
-#		    ++$noprintsigs{ "$instsig1$cof_core$instsig2!0x02\n" };
 		    $instsig2 .= sprintf("\!0x%02d", $cof_nth);
-
 		}
 
-#		} else {
+		if ($in_sense) {
+		    ++$printsigs{ "$instsig1$coresig$instsig2\t$rank\n" };
+		} else {
+		    $found_simple_sig = 1;
+		    push @instsigs, [ $instsig1, $instsig2 ];
+		}
 
-		    if ($in_sense) {
-			++$printsigs{ "$instsig1$coresig$instsig2\n" };
-		    } else {
-			$found_simple_sig = 1;
-			push @instsigs, [ $instsig1, $instsig2 ];
-		    }
-
-#		}
 	    }
 	} elsif (/^\@(project|name|lang)\s*(\S+)/) {
 	    $header{$1} = $2;
@@ -344,17 +344,8 @@ do_g2a {
 	}
     }
     close(G);
-
-#    if ($header{'lang'} && $header{'lang'} =~ /^qpn/) {
-#	foreach (sort (keys %printsigs, keys %noprintsigs)) {
-#	    s/\%\S+?:/%qpn:/;
-#	    print;
-#	}
-#    } else {
-#       print sort (keys %printsigs, keys %noprintsigs);
-#    }
 }
 
-print sort (keys %printsigs, keys %noprintsigs);
+print "\@fields sig rank\n", sort (keys %printsigs, keys %noprintsigs);
 
 1;
