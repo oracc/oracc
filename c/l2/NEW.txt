@@ -13,7 +13,7 @@ NEW FORM/SENSE HANDLING WITH DEFAULTS
 
     * IMPLEMENTATION in SIGS
       - SENSE_GW does not relate to RANK
-      - default FORM/WORD confers highest RANK on sig, RANK=3
+      - default FORM/WORD confers highest RANK on sig, RANK=4
       - EXPLICIT default SENSE confers RANK=2
       - IMPLICIT default SENSE confers RANK=1
       - all other SIGS are RANK=0
@@ -38,6 +38,9 @@ USER SYNTAX
     * SENSE_GW : already implemented as @sense N [~worker] a class of worker, and in XML as <sgw>
 
     * Default FORM/WORD : @form! a /a #~
+
+    * Default WORD, all @forms : @entry! N.B.: this propagates to every @form in entry,
+      no separate flag values are needed
 
     * EXPLICIT default SENSE : @sense! N [~worker] a class of worker
 

@@ -66,6 +66,7 @@ struct sig
   struct f2 *f2p;
   struct ilem_form *ifp;
   struct w2_set *w2p;
+  Unsigned32 rank;
   Unsigned32 freq;
   Unsigned32 pct;
   struct sig *next;

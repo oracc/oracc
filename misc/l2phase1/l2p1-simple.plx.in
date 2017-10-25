@@ -48,6 +48,7 @@ my $verbose = 0;
 my $cof_verbose = 0;
 my $psu_verbose = 0;
 my $rank = 0;
+my $entrybang = '';
 
 my $load_simple_counter = 0;
 
@@ -124,8 +125,9 @@ do_g2a {
 
 	warn "input: $_\n" if $verbose;
 
-	if (s/^\@entry\*?\s+//) {
+	if (s/^\@entry\*?(!?)\s+//) {
 	    $nsense = 0;
+	    $entrybang = $1 || '';
 	    if (!$header_ok) {
 		if (!$header{'project'} || !$header{'lang'}) {
 		    die "g2a-sig.plx: $g2a: must give \@project and \@lang at start of file\n";
@@ -172,10 +174,10 @@ do_g2a {
 	    $basesig = undef;
 	    $coresig = undef;
 	} elsif (/^\@sense(!?)/) {
+	    my $sensebang = $1 || '';
 	    $in_sense = 1;
 	    ++$nsense;
 	    $rank = 0;
-	    my $defbang = $1 || '';
 	    @sig{qw/epos sense/} = /\s+([A-Z]\S*)\s+(.*?)\s*$/;
 	    if (!$sig{'epos'}) {
 		warn "$err_g2a:$.: (g2a) no POS in SENSE\n";
@@ -194,12 +196,12 @@ do_g2a {
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
 		    if ($instsig =~ s/^!//) {
-			$rank = 3;
+			$rank = 4;
 		    }
-		    if ($defbang) {
-			$rank += 2;
+		    if ($sensebang) {
+			$rank |= 2;
 		    } elsif ($nsense == 1) {
-			$rank += 1;
+			$rank |= 1;
 		    }
 			
 		    ++$printsigs{ "$$instsig[0]$coresig$$instsig[1]\t$rank\n" };
@@ -222,13 +224,16 @@ do_g2a {
 	    $current_first_base =~ s/;$//;
 	    $current_first_base =~ s/^\*//;
 	    
-	} elsif (s/^\@form\s+(\S+)//) {
+	} elsif (s/^\@form(!?)\s+(\S+)//) {
+	    my $formbang = $1 || '';
 	    my @cof_tails = ();
 	    my $cof = $COF_NONE;
 	    my $cof_part = '';
 	    my $cof_sig = '';
 	    my $cof_core = '';
 	    my $cof_template = '';
+
+	    $formbang = '!' if $entrybang;
 	    
 	    @sig{qw/norm morph morph2 base cont stem root/} = ();
 
@@ -331,10 +336,14 @@ do_g2a {
 		}
 
 		if ($in_sense) {
-		    ++$printsigs{ "$instsig1$coresig$instsig2\t$rank\n" };
+		    my $srank = $rank;
+		    if ($formbang) {
+			$srank |= 4;
+		    }
+		    ++$printsigs{ "$instsig1$coresig$instsig2\t$srank\n" };
 		} else {
 		    $found_simple_sig = 1;
-		    push @instsigs, [ $instsig1, $instsig2 ];
+		    push @instsigs, [ $formbang.$instsig1, $instsig2 ];
 		}
 
 	    }

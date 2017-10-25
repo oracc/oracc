@@ -351,22 +351,45 @@ vsigs3(struct sig *s)
 #endif
 
 static int
+sig_check_fields(Uchar *f, Uchar *l)
+{
+  if (!strncmp((const char *)l, "@fields", int *rankflag))
+    {
+      if (strstr((const char *)l, "rank"))
+	{
+	  fprintf(stderr, "%s: warning: sigs file has no RANK field\n", (const char *)f);
+	  *rankflag = 0;
+	}
+      else
+	*rankflag = 1;
+      return 1;
+    }
+  else
+    {
+      fprintf(stderr, "%s: warning: legacy sigs file needs rebuilding\n", (const char *)f);
+      return 0;
+    }
+}
+
+static int
 sig_load_sigs(struct sig_context*scp, struct sigset *sp)
 {
-  int i;
+  int i, start = 0;
+  static int rank = 0;
   if (xaccess((const char *)sp->file, R_OK, 0))
     {
       fprintf(stderr,"unable to load signatures from %s\n", sp->file);
       return 1;
     }
   sp->lines = loadfile_lines3(sp->file, NULL,&sp->fmem);
-  for (i = 0; sp->lines[i]; ++i)
-    sigs_load_one_sig(scp, sp, sp->lines[i], i, NULL);
+  start = sig_check_fields(sp->file, sp->lines[0], &rank);
+  for (i = start; sp->lines[i]; ++i)
+    sigs_load_one_sig(scp, sp, sp->lines[i], i, NULL, rank);
   return 0;
 }
 
 void
-sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char *sig, int lnum, struct ilem_form *ifp)
+sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char *sig, int lnum, struct ilem_form *ifp, int rankflag)
 {
   Uchar *form = NULL, *cf_or_norm = NULL;
   struct sig *s = NULL, *s2 = NULL, *try = NULL;
@@ -387,7 +410,20 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
   if ((tab = strchr((char*)s->sig,'\t')))
     {
       *tab++ = '\0';
-      s->freq = atoi(tab);
+      if (rankflag)
+	{
+	  s->rank = atoi(tab);
+	  if ((tab = strchr(tab,'\t')))
+	    {
+	      *tab++ = '\0';
+	      s->freq = atoi(tab);
+	    }
+	}
+      else
+	{
+	  s->rank = 0;
+	  s->freq = atoi(tab);
+	}
       if ((tab = strchr(tab, '\t')))
 	{
 	  *tab++ = '\0';

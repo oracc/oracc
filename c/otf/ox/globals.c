@@ -45,6 +45,7 @@ const char *xcl_project;
 const char *output_dir;
 int check_links;
 int lem_autolem;
+int lem_dynalem;
 int check_only;
 int validate;
 int do_cdl;

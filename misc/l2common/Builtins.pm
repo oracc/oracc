@@ -93,6 +93,7 @@ my $status = 0;
 my %xids = ();
 my $last_xid;
 my $usage_flag = 0;
+my $ebang_flag = 0;
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
@@ -193,7 +194,7 @@ acd2xml {
     open(IN,$input);
     my @bffs = ();
     while (<IN>) {
-	if (s/^\@entry\*?\s+//) {
+	if (s/^\@entry[*!]*\s+//) {
 	    chomp;
 	    s/\s*$//;
 	    $curr_id = $entries_index{$_} = $eid++;
@@ -294,10 +295,11 @@ acd2xml {
 	    $line_of{$linetag} = $.
 		unless defined $line_of{$currtag};
 	    if ($currtag =~ /^entry/) {
-		$usage_flag = ($currtag =~ s/\*$//);
+		$ebang_flag = $default || '';
+		$usage_flag = s/^\@entry\*/\@entry/;
 		$currarg =~ /^(\S+)/;
 		$curr_cf = $1;
-		$currarg =~ s/^entry\s+//; $currarg =~ s/\s*$//;
+		$currarg =~ s/^\s+//; $currarg =~ s/\s*$//;
 		$curr_id = $entries_index{$currarg};
 		unless ($curr_id) {
 		    bad($currtag, "weird; no entries_index entry for `$currarg' (this can't happen)\n");
@@ -373,7 +375,7 @@ acd2xml {
 			    if ($currarg =~ s/^\s*<(.*?)>\s+//) {
 				push @{$sigs{$curr_sense_id}}, $1;
 			    }
-			    if ($default) {
+			    if ($default || $ebang_flag) {
 				$currarg = "!$currarg";
 			    }
 			}
@@ -409,6 +411,8 @@ acd2xml {
 	} elsif (/^\s*$/) {
 	    # if %e is empty this was multiple blank lines between entries
 	    if (scalar %e) {
+		# if it's non-empty the @end entry is missing
+		bad(currtag, "missing \@end entry");
 		push(@xml, acdentry(%e));
 		%e = ();
 		$bstar = '';
@@ -631,6 +635,7 @@ acdentry {
 		    } else {
 			my $cacf = '';
 			my $usattr = '';
+			my $defattr = '';
 			$gd = '' unless $gd;
 			
 			if ($gd =~ tr/"//d) {
@@ -648,11 +653,14 @@ acdentry {
 			if ($usage_flag) {
 			    $usattr = " usage=\"1\"";
 			}
+			if ($ebang_flag) {
+			    $defattr = " default=\"yes\"";
+			}
 			$cf = '' unless $pos;
 			$gd = '' unless $pos;
 			$pos = '' unless $pos;
 			$e_sig = "$cf\[$gd\]$pos";
-			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
+			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
 				push @ret, "<alias>$alias</alias>";

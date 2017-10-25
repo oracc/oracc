@@ -29,7 +29,40 @@ cof_tail_test(struct ilem_form *fp, void *user, void *setup)
 #endif
 
 static int
+cfgwpos_test(struct ilem_form *fp, void *user, void *setup)
+{
+  struct ilem*up = user;
+  return !strcmp((const char *)fp->f2p->cf, (const char *)up->f2p->cf)
+    &&  !strcmp((const char *)fp->f2p->gw, (const char *)up->f2p->gw)
+    &&  !strcmp((const char *)fp->f2p->pos, (const char *)up->f2p->pos);
+}
+
+static int
+default_word_test(struct ilem_form *fp, void *user, void *setup)
+{
+  return fp->rank & 4;
+}
+
+static int
+default_esense_test(struct ilem_form *fp, void *user, void *setup)
+{
+  return fp->rank & 2;
+}
+
+static int
+default_isense_test(struct ilem_form *fp, void *user, void *setup)
+{
+  return fp->rank & 1;
+}
+
+static int
 frequency_test(struct ilem_form *fp, void *user, void *setup)
+{
+  return *(int*)user == fp->freq;
+}
+
+static int
+threshold_test(struct ilem_form *fp, void *user, void *setup)
 {
   return lem_percent_threshold > fp->freq;
 }
@@ -94,22 +127,104 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
     BIT_CLEAR(fp->f2.flags,F2_FLAGS_LEM_NEW);
 #endif
 
-  if (fp->fcount > 1 && !fp->explicit)
+  if (fp->count > 1)
     {
-      /* This is no longer needed with the new COF implementation */
-#if 0
-      struct ilem_form **fretp;
-      int fcount;
-      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,cof_tail_test,
-			 NULL,&fcount);
-      if (fcount && fcount < fp->fcount)
+      if (lem_autolem || lem_dynalem)
 	{
-	  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
-	  fp->fcount = fcount;
+	  /*
+	   * New handling for autolem/dynalem:
+	   *
+	   * First see if there is a default word flag in rank
+	   * Then see if there is a default sense flag in rank
+	   * Then see if any of the finds has a frequency > 0; they
+	   *     are guaranteed to be sorted in order of frequency in 
+	   *     the input .sig file so it's enough to check first find
+	   * Then find the first implicit match--this was the first sense
+	   *     in .glo order
+	   */
+	  fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_word_test,
+			      NULL,&fcount);
+	  if (fcount && fcount < fp->fcount)
+	    {
+	      memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+	      fp->fcount = fcount;
+	    }
+	  if (fp->count > 1)
+	    {
+	      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_esense_test,
+				  NULL,&fcount);
+	      if (fcount && fcount < fp->fcount)
+		{
+		  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+		  fp->fcount = fcount;
+		}
+	    }
+	  if (fp->count > 1)
+	    {
+	      if (fp->finds[0]->freq > 0)
+	      fretp = ilem_select(fp->finds,fp->fcount,fp->finds[0]->freq,NULL,frequency_test,
+				  NULL,&fcount);
+	      if (fcount && fcount < fp->fcount)
+		{
+		  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+		  fp->fcount = fcount;
+		}
+	    }
+
+	  if (fp->count > 1)
+	    {
+	      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_isense_test,
+				  NULL,&fcount);
+	      if (fcount && fcount < fp->fcount)
+		{
+		  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+		  fp->fcount = fcount;
+		}
+	    }
+
+	  if (fp->count > 1)
+	    {
+	      /* Unresolved ambiguity */
+	    }
 	}
-#endif
-      md_select(lp, fp);
+      else
+	{
+	  /* check that all the finds come from the same word (i.e., that CF/GW/POS matched) */
+	  if (fp->count > 1)
+	    {
+	      fretp = ilem_select(fp->finds,fp->fcount,fp->finds[0],NULL,cfgwpos_test,
+				  NULL,&fcount);
+	      if (fcount && fcount == fp->count)
+		{
+		  /* OK, now we can go ahead and use default explicit/implicit sense */
+		  if (fp->count > 1)
+		    {
+		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_esense_test,
+					  NULL,&fcount);
+		      if (fcount && fcount < fp->fcount)
+			{
+			  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+			  fp->fcount = fcount;
+			}
+		    }
+		  if (fp->count > 1)
+		    {
+		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_isense_test,
+					  NULL,&fcount);
+		      if (fcount && fcount < fp->fcount)
+			{
+			  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+			  fp->fcount = fcount;
+			}
+		    }
+		}
+	    }
+	  
+	}
     }
+  
+  if (fp->fcount > 1 && !fp->explicit)
+    md_select(lp, fp);
 
 #if 0
   /* NEW: 2010-09-17 */
@@ -122,7 +237,8 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 #if 1
       struct ilem_form **fretp;
       int fcount;
-      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,frequency_test,
+
+      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,threshold_test,
 			 NULL,&fcount);
       if (fcount && fcount < fp->fcount)
 	{
