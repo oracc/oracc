@@ -23,6 +23,7 @@ warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
 my %langs = ();
 my $lemm_only = 0;
 my %project_sigs = ();
+my %ranks = ();
 my @sigs = ();
 my %sigs = ();
 my $state = NON;
@@ -54,6 +55,7 @@ unless ($dynamic) {
 foreach my $s (@sigs) {
     $state = set_state($s);
     open(S,$s);
+    my $fields = <S>;
     while (<S>) {
 	chomp;
 	next if /\!0x(\d+)/;
@@ -62,12 +64,10 @@ foreach my $s (@sigs) {
 	my $lang_no_script = $lang;
 	$lang_no_script =~ s/-[0-9]*$//;
 	++$langs{$lang_no_script};
-#	/^.*?\%.*?:(.*?\].*?)'/;
 	/:(.*?)=/;
 	my $base = $1;
-#	$base =~ s#//.*?]#]#;
 	s,^\@.*?%,\@$project%,;
-	if (/^(.*?)\t(.*?)$/) {
+	if ($fields =~ /inst/ && /^(.*?)\t(.*?)$/) {
 	    my($sig,$inst) = ($1,$2);
 	    if (defined($sigs{$sig}) || $dynamic) {
 		my @refs = split(/\s/,$inst);
@@ -82,14 +82,17 @@ foreach my $s (@sigs) {
 		    die "l2p1-project-sig.plx: this can't happen; processing sigs in unknown state\n";
 		}
 	    }
+	} elsif ($fields =~ /rank/ && /^(.*?)\t(.*?)$/) {
+	    my($sig,$rank) = ($1,$2);
+	    %{$sigs{$1}} = ();
+	    $ranks{$1} = $2;
 	} else {
-	    %{$sigs{$_}} = ();
+	    warn "l2p1-project-sig.plx: $s: bad .sig file format\n";
+	    goto SIGFILE_END;
 	}
     }
+  SIGFILE_END:
     close(S);
-#    if ($s =~ /from-glos/) {
-#	warn Dumper \%sigs;
-#    }
 }
 
 unless ($dynamic) {
@@ -97,11 +100,10 @@ unless ($dynamic) {
     close(PLOG);
 }
 
-# warn Dumper \%sigs;
-
 foreach my $l (keys %langs) {
     my $fh = undef;
     open($fh, '>', "02pub/lemm-$l.sig");
+    print $fh "\@fields sig rank freq pct\n";
     $langs{$l} = $fh;
 }
 
@@ -110,14 +112,13 @@ foreach my $s (sort keys %sigs) {
     $s =~ /\%(.*?):/;
     my $this_lang = $1;
     $this_lang =~ s/-[0-9]+$//;
-#    $s =~ /^.*?\%.*?:(.*?\].*?)'/;
     $s =~ /:(.*?)=/;
     my $base = $1;
-#    $base =~ s#//.*?]#]#;
     my $ninst = scalar keys %{$sigs{$s}};
     my $total = ${$totals{$this_lang}}{$base};
     my $pct = ipct($ninst, $total);
-    print {$langs{$this_lang}} "$s\t$ninst\t$pct\n";
+    my $rank = $ranks{$s};
+    print {$langs{$this_lang}} "$s\t$rank\t$ninst\t$pct\n";
     print P "$s\t$ninst\t", join(' ', sort keys %{$sigs{$s}}), "\n";
 }
 close(P);

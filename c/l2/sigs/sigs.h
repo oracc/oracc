@@ -134,7 +134,8 @@ extern int sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp);
 extern struct sig const * const *sigs_early_sig(struct xcl_context *xcp, 
 						struct ilem_form *fp);
 extern void sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, 
-			      const unsigned char *sig, int lnum, struct ilem_form*ifp);
+			      const unsigned char *sig, int lnum, struct ilem_form*ifp,
+			      int rankflag);
 extern struct sig const * const *sigs_inst_in_sigset(struct xcl_context *xcp, 
 						     struct ilem_form *ifp, 
 						     struct sigset *sp, int *nfinds);

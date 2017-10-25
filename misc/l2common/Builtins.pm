@@ -277,11 +277,11 @@ acd2xml {
 	next if /^\#/ || /^\@letter/;
 	chomp;
 	s/\s+/ /g;
-	if (/^\@([a-z_]+[-\*!]?)\s+(.*?)\s*$/) {
+	if (/^\@([a-z_]+[-\*!]*)\s+(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
-	    my $linetag = $currtag;
 	    my $defn_minus = 0;
 	    my $default = $currtag =~ s/!$//;
+	    my $linetag = $currtag;
 	    $linetag =~ s/\*$//;
 	    next if exists $header_fields{$currtag}; # ignore header for now
 
@@ -293,7 +293,7 @@ acd2xml {
 	    }
 
 	    $line_of{$linetag} = $.
-		unless defined $line_of{$currtag};
+		unless defined $line_of{$linetag};
 	    if ($currtag =~ /^entry/) {
 		$ebang_flag = $default || '';
 		$usage_flag = s/^\@entry\*/\@entry/;
@@ -342,7 +342,6 @@ acd2xml {
 			    bad($currtag, "no content in SENSE") unless $currarg =~ /\s\S/;
 			}
 			$curr_sense_id = sprintf("%06f",$sense_id++);
-			$defaults{$curr_sense_id} = 1 if $default;
 			my $defbang = ($default ? '!' : '');
 			$currarg = "\#$curr_sense_id$defbang\t$currarg";
 		    } elsif ($currtag eq 'form') {
@@ -412,7 +411,7 @@ acd2xml {
 	    # if %e is empty this was multiple blank lines between entries
 	    if (scalar %e) {
 		# if it's non-empty the @end entry is missing
-		bad(currtag, "missing \@end entry");
+		bad($currtag, "missing \@end entry");
 		push(@xml, acdentry(%e));
 		%e = ();
 		$bstar = '';

@@ -1,13 +1,16 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8'; binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
 use Data::Dumper;
 my %cofs = ();
 open(C,'>01tmp/l2p1-cofs.sig');
 open(S,'01tmp/l2p1-simple.sig');
+my $fields = <S>;
+# print C $fields; ### NO: simple cofs psus are cat'ed together so no @fields on cofs/psus
 while (<S>) {
     if (/\!0x/) {
 	chomp;
-	my($pre,$key,$sig,$nth) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)$/);
+	my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)$/);
 	if ($pre) {
 	    my $index = $nth - 1;
 	    my $v = '';
@@ -51,7 +54,7 @@ permute {
 	permute( [@newheads] , @parts);
     } else {
 	foreach (@newheads) {
-	    print C "$_\n";
+	    print C "$_\t0\n";
 	}
     }
 }

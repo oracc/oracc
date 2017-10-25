@@ -56,7 +56,7 @@ sig_context_register(struct sig_context *scp,
   static int bad = 1;
   const char *sigslang = NULL, *lang_to_be_lemmed = NULL, 
     *proj_to_be_lemmed = (char*)scp->xpd->project;
-  const char *sigsproj;
+  const char *sigsproj = NULL;
   char *colon = NULL, *projlang = NULL;
   int no_sigfile = 0;
 
@@ -137,7 +137,7 @@ sig_context_register(struct sig_context *scp,
       hash_add(scp->langs, npool_copy((Uchar*)projlang,scp->pool), sigs_for_lang);
       /* Check that the file is accessible and warn if it is not unless auto
 	 is non-zero */
-      if (!access((char*)fname, R_OK))
+      if (!xaccess((char*)fname, R_OK, 0))
 	{
 	  if (verbose)
 	    fprintf(stderr,
@@ -351,9 +351,9 @@ vsigs3(struct sig *s)
 #endif
 
 static int
-sig_check_fields(Uchar *f, Uchar *l)
+sig_check_fields(Uchar *f, Uchar *l, int *rankflag)
 {
-  if (!strncmp((const char *)l, "@fields", int *rankflag))
+  if (!strncmp((const char *)l, "@fields", strlen("@fields")))
     {
       if (strstr((const char *)l, "rank"))
 	{
@@ -382,7 +382,7 @@ sig_load_sigs(struct sig_context*scp, struct sigset *sp)
       return 1;
     }
   sp->lines = loadfile_lines3(sp->file, NULL,&sp->fmem);
-  start = sig_check_fields(sp->file, sp->lines[0], &rank);
+  start = sig_check_fields((Uchar*)sp->file, sp->lines[0], &rank);
   for (i = start; sp->lines[i]; ++i)
     sigs_load_one_sig(scp, sp, sp->lines[i], i, NULL, rank);
   return 0;
@@ -445,7 +445,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
 	  struct f2 *psu_form = NULL;
 	  *endp = '\0';
 
-	  if (psutmp = (Uchar*)strstr((const char*)psu, " = "))
+	  if ((psutmp = (Uchar*)strstr((const char*)psu, " = ")))
 	    psu = psutmp+3;
 	  
 	  lp = endp + 3;

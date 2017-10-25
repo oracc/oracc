@@ -41,17 +41,26 @@ wordinfo {
     }
     
     my @sig = <02pub/lemm*.sig>;
+    shift @sig; # discard @fields line
     if ($#sig >= 0) {
-	$signatures = `grep -v '	0\$' 02pub/lemm*.sig | wc -l`;
-	chomp $signatures;
-	$signatures =~ s/^\s*(\S+).*$/$1/;
-	$lemmed_words = 0;
-	open(C, "cut -f2 02pub/lemm*.sig|");
-	while (<C>) {
-	    chomp;
-	    $lemmed_words += $_;
+	chomp @sig;
+	foreach (@sig) {
+	    my($sig,$rank,$freq,$pct) = split(/\t/, $_);
+	    if ($freq) {
+		++$signatures;
+		$lemmed_words += $freq;
+	    }
 	}
-	close(C);
+	#	$signatures = `grep -v '	0\$' 02pub/lemm*.sig | wc -l`;
+	#	chomp $signatures;
+	#	$signatures =~ s/^\s*(\S+).*$/$1/;
+	#	$lemmed_words = 0;
+	#	open(C, "cut -f3 02pub/lemm*.sig|");
+	#	while (<C>) {
+	#	    chomp;
+	#	    $lemmed_words += $_;
+	#	}
+	#	close(C);
     }
 
     push @stats_xml, "<wordcount>$wordcount</wordcount>";

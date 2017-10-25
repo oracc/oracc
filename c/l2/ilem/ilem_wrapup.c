@@ -31,10 +31,10 @@ cof_tail_test(struct ilem_form *fp, void *user, void *setup)
 static int
 cfgwpos_test(struct ilem_form *fp, void *user, void *setup)
 {
-  struct ilem*up = user;
-  return !strcmp((const char *)fp->f2p->cf, (const char *)up->f2p->cf)
-    &&  !strcmp((const char *)fp->f2p->gw, (const char *)up->f2p->gw)
-    &&  !strcmp((const char *)fp->f2p->pos, (const char *)up->f2p->pos);
+  struct ilem_form*up = user;
+  return !strcmp((const char *)fp->f2.cf, (const char *)up->f2.cf)
+    &&  !strcmp((const char *)fp->f2.gw, (const char *)up->f2.gw)
+    &&  !strcmp((const char *)fp->f2.pos, (const char *)up->f2.pos);
 }
 
 static int
@@ -109,7 +109,10 @@ ilem_wrapup(struct xcl_context *xcp, struct xcl_l *lp)
 void
 ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 {
-  extern int lem_autolem;
+  extern int lem_autolem, lem_dynalem;
+  struct ilem_form **fretp;
+  int fcount;
+
   if (!fp->finds)
     {
       if (!fp->f2.cf && BIT_ISSET(fp->f2.flags, F2_FLAGS_NORM_IS_CF))
@@ -127,7 +130,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
     BIT_CLEAR(fp->f2.flags,F2_FLAGS_LEM_NEW);
 #endif
 
-  if (fp->count > 1)
+  if (fp->fcount > 1)
     {
       if (lem_autolem || lem_dynalem)
 	{
@@ -149,7 +152,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 	      memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
 	      fp->fcount = fcount;
 	    }
-	  if (fp->count > 1)
+	  if (fp->fcount > 1)
 	    {
 	      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_esense_test,
 				  NULL,&fcount);
@@ -159,10 +162,10 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 		  fp->fcount = fcount;
 		}
 	    }
-	  if (fp->count > 1)
+	  if (fp->fcount > 1)
 	    {
 	      if (fp->finds[0]->freq > 0)
-	      fretp = ilem_select(fp->finds,fp->fcount,fp->finds[0]->freq,NULL,frequency_test,
+	      fretp = ilem_select(fp->finds,fp->fcount,&fp->finds[0]->freq,NULL,frequency_test,
 				  NULL,&fcount);
 	      if (fcount && fcount < fp->fcount)
 		{
@@ -171,7 +174,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 		}
 	    }
 
-	  if (fp->count > 1)
+	  if (fp->fcount > 1)
 	    {
 	      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_isense_test,
 				  NULL,&fcount);
@@ -182,7 +185,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 		}
 	    }
 
-	  if (fp->count > 1)
+	  if (fp->fcount > 1)
 	    {
 	      /* Unresolved ambiguity */
 	    }
@@ -190,14 +193,14 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
       else
 	{
 	  /* check that all the finds come from the same word (i.e., that CF/GW/POS matched) */
-	  if (fp->count > 1)
+	  if (fp->fcount > 1)
 	    {
 	      fretp = ilem_select(fp->finds,fp->fcount,fp->finds[0],NULL,cfgwpos_test,
 				  NULL,&fcount);
-	      if (fcount && fcount == fp->count)
+	      if (fcount && fcount == fp->fcount)
 		{
 		  /* OK, now we can go ahead and use default explicit/implicit sense */
-		  if (fp->count > 1)
+		  if (fp->fcount > 1)
 		    {
 		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_esense_test,
 					  NULL,&fcount);
@@ -207,7 +210,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 			  fp->fcount = fcount;
 			}
 		    }
-		  if (fp->count > 1)
+		  if (fp->fcount > 1)
 		    {
 		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_isense_test,
 					  NULL,&fcount);
@@ -235,9 +238,6 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
   if (fp->fcount > 1)
     {
 #if 1
-      struct ilem_form **fretp;
-      int fcount;
-
       fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,threshold_test,
 			 NULL,&fcount);
       if (fcount && fcount < fp->fcount)

@@ -104,12 +104,14 @@ foreach my $s (keys %exos) {
     push @exores, "$s\t@{$exos{$s}}\n";
 }
 
+my $fields = "\@fields\tsig\tinst\n";
+
 if ($new_mode) {
-    open(O,">01bld/from-$base-glo.sig"); print O sort (@glores); close(O);
-    open(O,">01bld/from-$base-new.sig"); print O sort (@newres, @exores); close(O);
+    open(O,">01bld/from-$base-glo.sig"); print O $fields, sort (@glores); close(O);
+    open(O,">01bld/from-$base-new.sig"); print O $fields, sort (@newres, @exores); close(O);
 } else {
-    open(O,">01bld/from-$base-glo.sig"); print O sort (@glores, @exores); close(O);
-    open(O,">01bld/from-$base-new.sig"); print O sort @newres; close(O);
+    open(O,">01bld/from-$base-glo.sig"); print O $fields, sort (@glores, @exores); close(O);
+    open(O,">01bld/from-$base-new.sig"); print O $fields, sort @newres; close(O);
 }
 
 ######################################################################

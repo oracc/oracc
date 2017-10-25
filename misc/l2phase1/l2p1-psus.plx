@@ -31,6 +31,7 @@ close(S);
 
 my %simple = ();
 open(S, '01tmp/l2p1-simple.sig');
+my $fields = <S>;
 while (<S>) {
     chomp;
     m#=(.*?)\$#;
@@ -47,7 +48,7 @@ close(S);
 
 open(PARTSMAP, '>01bld/parts.map');
 open(P, '>01tmp/l2p1-psus.sig'); select P;
-
+# print $fields; ### NO: simple cofs psus are cat'ed together so no @fields on cofs/psus
 foreach my $g (<00lib/*.glo>) {
     $err_glo = $g;
     $lang = $glo = $g;
@@ -343,7 +344,7 @@ print_psu_sig {
     }
     my $psusig = join('++', @sigs);
     print("{$psuform = @p += $$eref{'cf'}\[$$eref{'gw'}//$$eref{'sense'}\]$$eref{'pos'}'$$eref{'epos'}}::", 
-	  $psusig, "\n");
+	  $psusig, "\t0\n");
     print PARTSMAP "@p\t", $psusig, "\n";
 }
 

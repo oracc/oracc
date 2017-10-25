@@ -55,7 +55,7 @@ while (<G>) {
 ## of the test in the elsif above; this means that NORM must be
 ## maintained manually in sux COFs
 	
-	my($form) = (/^\@form\s+(\S+)/);
+	my($form) = (/^\@form!?\s+(\S+)/);
 	my($stem) = (/\s\*(\S+)/);
 	my($morph) = (/\s\#([^\#]\S*)/);
 	if ($morph) {
@@ -65,7 +65,7 @@ while (<G>) {
 	    if (/\s\$/) {
 		s/(\s\$)\S+/$1$norm /;
 	    } else {
-		s/^(\@form\s+\S+\s+(?:\%sux\S*\s+)?)/$1\$$norm /;
+		s/^(\@form!?\s+\S+\s+(?:\%sux\S*\s+)?)/$1\$$norm /;
 	    }
 	} else {
 	    warn "$glo:$.: (normify) no #morph in line\n";
@@ -84,7 +84,7 @@ for (my $i = 0; $i <= $#lines; ++$i) {
 	push @pparts, [ split_parts($lines[$i]) ];
     } elsif ($compound && $lines[$i] =~ /^\@form/ && ($lang =~ /sux/ || $lines[$i] =~ /\%sux/)) {
 	next if $lines[$i] =~ /\s\$/;
-	my($form) = ($lines[$i] =~ /^\@form\s+(\S+)/);
+	my($form) = ($lines[$i] =~ /^\@form!?\s+(\S+)/);
 	my @forms = split(/_/,$form);
 	my $parts_ok = 0;
 	my @parts_errs = ();

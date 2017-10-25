@@ -195,7 +195,7 @@ do_g2a {
 
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
-		    if ($instsig =~ s/^!//) {
+		    if ($$instsig[0] =~ s/^!//) {
 			$rank = 4;
 		    }
 		    if ($sensebang) {
@@ -226,6 +226,7 @@ do_g2a {
 	    
 	} elsif (s/^\@form(!?)\s+(\S+)//) {
 	    my $formbang = $1 || '';
+	    $sig{'form'} = $2;
 	    my @cof_tails = ();
 	    my $cof = $COF_NONE;
 	    my $cof_part = '';
@@ -239,7 +240,6 @@ do_g2a {
 
 	    my $cof_nth = 0;
 
-	    $sig{'form'} = $1;
 	    if (s/\s+\%(\S+)//) {
 		$sig{'lang'} = $1;
 		$sig{'lang'} =~ s#/n$#-949# if $sig{'lang'};
