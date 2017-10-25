@@ -355,7 +355,7 @@ sig_check_fields(Uchar *f, Uchar *l, int *rankflag)
 {
   if (!strncmp((const char *)l, "@fields", strlen("@fields")))
     {
-      if (strstr((const char *)l, "rank"))
+      if (NULL == strstr((const char *)l, "rank"))
 	{
 	  fprintf(stderr, "%s: warning: sigs file has no RANK field\n", (const char *)f);
 	  *rankflag = 0;

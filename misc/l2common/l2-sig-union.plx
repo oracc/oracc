@@ -11,6 +11,7 @@ my $quiet = 0;
 my $project = '';
 my %sig = ();
 my $superglo = 0;
+my $verbose = 1;
 
 GetOptions(
     'lang:s'=>\$lang,
@@ -23,28 +24,33 @@ GetOptions(
 #my $withall = `oraccopt . cbd-with-all`;
 #$all = 1 if $withall && $withall eq 'yes';
 
+my %f = ();
+
 foreach my $s (@ARGV) {
     unless (open(S,$s)) {
 	warn "l2-sig-union.plx: no sig file $s\n"
 	    unless $quiet;
 	next;
     }
-    my $fields = <S>;
-    my @f = split(/\s+/, $fields); shift @f;
-    my %f = ();
-    for (my $i = 0; $i <= $#f; ++$i) {
-	$f{$f[$i]} = $i;
-    }
+    warn "l2-sig-union.plx: processing $s\n" if $verbose;
     while (<S>) {
 	chomp;
 	next if /^\s*$/;
-	if (/^\@(project|name|lang)\s+(.*?)$/) {
-	    $header{$1} = $2;
-	    if ($1 eq 'lang') {
-		$lang = $2;
+	if (/^\@(project|name|lang|fields)\s+(.*?)$/) {
+	    if (/fields/) {
+		my @f = split(/\s+/, $_); shift @f;
+		for (my $i = 0; $i <= $#f; ++$i) {
+		    $f{$f[$i]} = $i;
+		}
+	    } else {
+		$header{$1} = $2;
+		if ($1 eq 'lang') {
+		    $lang = $2;
+		}
+		next;
 	    }
-	    next;
 	}
+	    
 	my @t = split(/\t/, $_);
 #	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
 	my $r = $t[$f{'inst'}];

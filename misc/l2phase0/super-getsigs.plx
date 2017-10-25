@@ -48,14 +48,14 @@ open($outfh, '>', $data{'output'}) || die "super-getsigs.plx: unable to open $da
 chatty("importing sigs from $data{'project'}/$data{'lang'}");
 
 ### ADD CHECK FOR REFERENCED/REDUNDANT map/fix ENTRIES
+my %f = ();
 
 while (<S>) {
     next if /^\@(project|name|lang)\s/ || /^\s*$/;
     next unless /\%$data{'baselang'}/;
     chomp;
-    if (s/^\@field/\s+//) {
+    if (s/^\@fields\s+//) {
 	my @f = split(/\s+/, $_);
-	my %f = ();
 	for (my $i = 0; $i <= $#f; ++$i) {
 	    $f{$f[$i]} = $i;
 	}

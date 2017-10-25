@@ -26,6 +26,7 @@ my $corpus = '';
 my %corpus = ();
 my $dir_output = '';
 my $exact_lang_matches = 0;
+my $fields = '';
 my $qpn_pattern = '[A-Z]N';
 my %matches = ();
 my $sigs = '';
@@ -96,6 +97,12 @@ open(SIGS,$sigs) || die "l2p2-sig-slicer.plx: can't open '$sigs'\n";
 while (<SIGS>) {
     next if /^\@(?:proj|name|lang)/;
     next if /^\s*$/;
+    chomp;
+    if (/^\@fields/) {
+	$fields = $_;
+	$fields =~ s/\s+freq//;
+	next;
+    }
     my $sig = $_;
     if (/^\{(.*?)\}::/) {
 	$sig = $1;
@@ -113,7 +120,7 @@ while (<SIGS>) {
 	# For COFs we only import the SIG once into the 
 	# lang of the head; tails which belong in NN
 	# need to be imported there by some other mechanism.
-	$sig =~ s/\&\&.*$//;
+	$sig =~ s/\&\&.*?\t/\t/;
     }
     my $matched = 1;
 
@@ -132,28 +139,29 @@ while (<SIGS>) {
 	}
     }
 
-#    if ($corpus && $matched) {
-#	$matched = trim_refs($_);
-#    }
-#    print if $matched;
-
     if ($matched) {	
 	chomp;
 
-#	No, we must preserve script codes in signatures to FORMs can keep them
-
-#	my $s949 = (/-949:/ ? "-949" : "");
-#	s/\%(.*?):/\%$slice_lang$s949:/ unless $slice_lang =~ /^qpn/;
-	my($msig,$refs) = (/^(.*?)\t(.*?)$/);
+	my($msig,$rank,$freq,$refs) = ();
+	if ($fields =~ /rank/) {
+	    ($msig,$rank) = split(/\t/,$sig);
+	} else {
+	    ($msig,$freq,$refs) = split(/\t/,$sig);
+	}
 	unless ($msig) {
 	    $msig = $_;
 	    $refs = '';
 	}
-	if ($matches{$msig}) {
-	    $refs =~ s/^\d+\s+//;
-	    $matches{$msig} .= " $refs";
+	if ($fields =~ /inst/) {
+	    if ($refs) {
+		if ($matches{$msig}) {
+		    $matches{$msig} .= " $refs";
+		} else {
+		    $matches{$msig} = $refs;
+		}
+	    }
 	} else {
-	    $matches{$msig} = $refs;
+	    $matches{$msig} = $rank || '0';
 	}
     }
 }
@@ -272,6 +280,7 @@ print_sigs {
 	open(SLICE,">$dirpart$slice_name.sig"); select SLICE;
     }
     print "\@project $slice_proj\n\@name $slice_name\n\@lang $slice_lang\n\n";
+    print $fields, "\n";
     print @printsigs;
 }
 

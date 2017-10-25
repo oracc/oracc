@@ -27,6 +27,7 @@ my $done = 0;
 my %entry_ids = ();
 my %entry_lines = ();
 my %entry_xis = ();
+my %f = ();
 my %header = ();
 my $header_vars = 0;
 my $have_disamb = 0;
@@ -424,6 +425,7 @@ add_sig {
 	@{$compound_parts{$entry}} = @{$sig{'parts'}};
 	@{$compound_parts{$entry,'senses'}} = @{$sig{'sense-parts'}};
     }
+    # ADD RANK
     push @{${${$data{$datalang}}{$entry}}{$sense}} , [ $sig{'sid'} , $sig , $freq , $sig{'psu_ngram'} ];
     if ($sig{'norm'} && $sig{'form'}) {
 	    ${$norm_form_freqs{"$entry\$$sig{'norm'}"}}{$sig{'form'}} += $freq;
@@ -673,9 +675,10 @@ sub
 load_parts {
     ++$parts_loaded;
     if (open(P,'01tmp/l2p1-simple.sig')) {
+	my $fields = <P>;
 	while (<P>) {
 	    chomp;
-	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\$/);
+	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\t\d+\$/);
 	    if ($lang) {
 		$entry =~ s,//.*?\],],;
 		$entry =~ s/'.*$//;
@@ -935,11 +938,25 @@ sub
 read_input {
 #    warn "read_input\n";
     if ($input eq '-') {
+	%f = ();
+	my $fields = <>;
+	my @f = split(/\s/, $fields);
+	shift @f; # drop '@field';
+	for (my $i = 0; $i <= $#f; ++$i) {
+	    $f{$f[$i]} = $i;
+	}
 	while (<>) {
 	    read_input_line();
 	}
     } else {
 	open(S,$input) || die "l2p2-g2x.plx: can't open `$input'\n";
+	%f = ();
+	my $fields = <>;
+	my @f = split(/\s/, $fields);
+	shift @f; # drop '@field';
+	for (my $i = 0; $i <= $#f; ++$i) {
+	    $f{$f[$i]} = $i;
+	}
 	while (<S>) {
 	    read_input_line();
 	}
@@ -962,16 +979,12 @@ read_input_line {
     
 #    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
     
-    my ($sig,$freq,$refs) = ();
+    my ($sig,$rank,$freq,$refs) = ();
     my @t = split(/\t/,$_);
-    if ($#t == 2) {
-	($sig,$freq,$refs) = @t;
-    } elsif ($#t == 3) {
-	($sig,$freq,$refs) = ($t[0],$t[1],$t[3]);
-    } else {
-	($sig,$freq,$refs) = ($t[0],0,'');
-    }
-    
+    $sig = $t[0]; # sig is always first
+    $rank = $t[$f{'rank'}] if exists $f{'rank'};
+    $freq = $t[$f{'freq'}] if exists $f{'freq'};
+    $refs = $t[$f{'inst'}] if exists $f{'inst'};
     return if $seen{$sig}++;
     
     $baselang = $header{'lang'};

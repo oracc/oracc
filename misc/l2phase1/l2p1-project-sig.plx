@@ -108,6 +108,7 @@ foreach my $l (keys %langs) {
 }
 
 open(P, '>01bld/project.sig');
+print P "\@fields sig freq inst\n";
 foreach my $s (sort keys %sigs) {
     $s =~ /\%(.*?):/;
     my $this_lang = $1;
