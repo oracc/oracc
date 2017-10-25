@@ -135,6 +135,7 @@ sub
 dump_sigs {
     my $lang = shift;
     print "\@project $project\n\@name $project $lang glossary\n\@lang $lang\n\n";
+    print "\@fields sig freq refs\n";
     foreach (sort keys %sig) {
 	my @refs = grep(defined && length, uniq(@{$sig{$_}}));
 #	my $i = mysum(map { /;(\d+)/ } @refs);
@@ -148,14 +149,23 @@ sub
 load_sigfile {
     my($lang, $file) = @_;
     if (open(S,$file)) {
+	my $fields = <S>;
+	my @f = split(/\s+/, $fields); shift @f;
+	my %f = ();
+	for (my $i = 0; $i <= $#f; ++$i) {
+	    $f{$f[$i]} = $i;
+	}
 	while (<S>) {
 	    next if /^\s*$/;
 	    if (/^\@?(proj(?:ect)?|name|lang)\s+(\S+)/) {
 		next;
 	    }
 	    chomp;
-	    
-	    my($sig,$freq,$refs,$pers) = split(/\t/,$_);
+	    my @s = split(/\t/,$_);
+	    my $sig = $s[0];
+	    my $freq = $s[$f{'freq'}];
+	    my $refs = $s[$f{'inst'}];
+#	    my($sig,$freq,$refs,$pers) = split(/\t/,$_);
 	    
 	    if ($refs && ($freq || !$drop_zero)) {
 		if ($sig =~ /^\{/) {

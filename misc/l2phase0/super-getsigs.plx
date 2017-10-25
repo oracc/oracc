@@ -53,8 +53,15 @@ while (<S>) {
     next if /^\@(project|name|lang)\s/ || /^\s*$/;
     next unless /\%$data{'baselang'}/;
     chomp;
-
-    my($sig,$inst) = split(/\t/,$_);
+    if (s/^\@field/\s+//) {
+	my @f = split(/\s+/, $_);
+	my %f = ();
+	for (my $i = 0; $i <= $#f; ++$i) {
+	    $f{$f[$i]} = $i;
+	}
+    }
+    my @s = split(/\t/,$_);
+    my($sig,$inst) = ($s[0],$s[$f{'inst'}]);
     next unless $inst;
 
     # For now, just deal with entry/sense level mapping

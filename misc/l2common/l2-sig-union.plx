@@ -29,6 +29,12 @@ foreach my $s (@ARGV) {
 	    unless $quiet;
 	next;
     }
+    my $fields = <S>;
+    my @f = split(/\s+/, $fields); shift @f;
+    my %f = ();
+    for (my $i = 0; $i <= $#f; ++$i) {
+	$f{$f[$i]} = $i;
+    }
     while (<S>) {
 	chomp;
 	next if /^\s*$/;
@@ -40,7 +46,8 @@ foreach my $s (@ARGV) {
 	    next;
 	}
 	my @t = split(/\t/, $_);
-	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
+#	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
+	my $r = $t[$f{'inst'}];
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
@@ -76,7 +83,7 @@ $header{'name'} = "$project $lang" unless $header{'name'};
 foreach my $k (qw/project name lang/) {
     print "\@$k $header{$k}\n";
 }
-print "\n";
+print "\n\@fields sig freq ints\n";
 
 #use Data::Dumper; open(X,">dump.log");
 #print X Dumper \%sig;
