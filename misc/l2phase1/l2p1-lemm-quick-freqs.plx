@@ -5,6 +5,18 @@ my $project = shift @ARGV;
 
 my %words = ();
 my %freqs = ();
+my %f = ();
+
+sub
+set_f {
+    my $fields = shift;
+    %f = ();
+    my @f = split(/\s/, $fields);
+    shift @f; # drop '@field';
+    for (my $i = 0; $i <= $#f; ++$i) {
+	$f{$f[$i]} = $i;
+    }
+}
 
 my @freq_sigs = ('01bld/from-xtf-glo.sig', '01bld/from-prx-glo.sig');
 
@@ -17,14 +29,13 @@ foreach my $f (@freq_sigs) {
     while (<F>) {
 	next if /^\@(?:project|name|lang)/ || /^\s*$/;
 	chomp;
-	my @fields = split(/\t/,$_);
-	my $sig;
-	my $refs;
-	if ($#fields == 2) {
-	    ($sig,$refs) = ($fields[0],$fields[2]);
-	} else {
-	    ($sig,$refs) = ($fields[0],$fields[1]);
+	if (/^\@fields/) {
+	    set_f($_);
+	    next;
 	}
+	my @fields = split(/\t/,$_);
+	my $sig = $fields[0];
+	my $refs = $fields[$f{'inst'}];
 	if ($refs) {
 	    my $freq = ($refs =~ tr/ / /);
 
@@ -47,14 +58,10 @@ foreach my $f (@freq_sigs) {
 foreach my $l (<02pub/lemm-*.sig>) {
     if (open(L, $l)) {
 	open(O, ">$l.freq");
+	print O "\@fields sig rank freq pct\n";
 	while (<L>) {
 	    chomp;
 	    s/\t.*$//;
-#	    if (exists $freqs{$_}) {
-#		warn "OK: $_\n";
-#	    } else {
-#		warn "NO: $_\n";
-#	    }
 	    my $f = ($freqs{$_} ? $freqs{$_} : 0);
 	    print O "$_\t$f\n"
 	}

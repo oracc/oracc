@@ -935,28 +935,25 @@ rewrite_bases {
 }
 
 sub
+set_f {
+    my $fields = shift;
+    %f = ();
+    my @f = split(/\s/, $fields);
+    shift @f; # drop '@field';
+    for (my $i = 0; $i <= $#f; ++$i) {
+	$f{$f[$i]} = $i;
+    }
+}
+
+sub
 read_input {
 #    warn "read_input\n";
     if ($input eq '-') {
-	%f = ();
-	my $fields = <>;
-	my @f = split(/\s/, $fields);
-	shift @f; # drop '@field';
-	for (my $i = 0; $i <= $#f; ++$i) {
-	    $f{$f[$i]} = $i;
-	}
 	while (<>) {
 	    read_input_line();
 	}
     } else {
 	open(S,$input) || die "l2p2-g2x.plx: can't open `$input'\n";
-	%f = ();
-	my $fields = <>;
-	my @f = split(/\s/, $fields);
-	shift @f; # drop '@field';
-	for (my $i = 0; $i <= $#f; ++$i) {
-	    $f{$f[$i]} = $i;
-	}
 	while (<S>) {
 	    read_input_line();
 	}
@@ -975,7 +972,12 @@ read_input_line {
 	    unless $header{$1};
 	return;
     }
+
     chomp;
+    if (/\@fields/) {
+	set_f($_);
+	return;
+    }
     
 #    warn "l2p2-g2x.plx: processing $input ($lang/$name/$proj)\n" if $verbose;
     

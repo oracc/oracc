@@ -46,6 +46,7 @@ unless (-r '01bld/project.sig') {
 open(P, '01bld/project.sig');
 while (<P>) {
     chomp;
+    next if /^\@fields/;
     my($sig,$count,$insts) = split(/\t/);
     $sig =~ s/\&\&.*$//; ### FIXME: must handle COFs and PSUs properly
     my %sig = parse_sig($sig);

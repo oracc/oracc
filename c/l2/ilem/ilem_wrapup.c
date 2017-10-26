@@ -32,39 +32,39 @@ static int
 cfgwpos_test(struct ilem_form *fp, void *user, void *setup)
 {
   struct ilem_form*up = user;
-  return !strcmp((const char *)fp->f2.cf, (const char *)up->f2.cf)
-    &&  !strcmp((const char *)fp->f2.gw, (const char *)up->f2.gw)
-    &&  !strcmp((const char *)fp->f2.pos, (const char *)up->f2.pos);
+  return strcmp((const char *)fp->f2.cf, (const char *)up->f2.cf)
+    ||  strcmp((const char *)fp->f2.gw, (const char *)up->f2.gw)
+    ||  strcmp((const char *)fp->f2.pos, (const char *)up->f2.pos);
 }
 
 static int
 default_word_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return fp->rank & 4;
+  return (fp->rank & 4) ? 0 : 1;
 }
 
 static int
 default_esense_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return fp->rank & 2;
+  return (fp->rank & 2) ? 0 : 1;
 }
 
 static int
 default_isense_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return fp->rank & 1;
+  return (fp->rank & 1) ? 0 : 1;
 }
 
 static int
 frequency_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return *(int*)user == fp->freq;
+  return (*(int*)user == fp->freq) ? 0 : 1;
 }
 
 static int
 threshold_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return lem_percent_threshold > fp->freq;
+  return (lem_percent_threshold > fp->freq) ? 0 : 1;
 }
 
 /* When all the lemmatization and ngram processing has been done, we

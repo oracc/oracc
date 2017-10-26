@@ -217,6 +217,7 @@ setup_ilem_finds(struct sig_context *scp, struct ilem_form *ip,
 		   &ip->finds[i]->f2,NULL,scp);
 	  ip->finds[i]->f2.sig = (Uchar*)sigs[i]->sig;
 	  ip->finds[i]->literal = (char*)sigs[i]->literal;
+	  ip->finds[i]->rank = sigs[i]->rank;
 	  ip->finds[i]->freq = sigs[i]->freq;
 	  ip->finds[i]->pct = sigs[i]->pct;
 	}
