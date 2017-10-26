@@ -22,7 +22,7 @@ for l in $langs ; do
 done
 l2p1-lemm-quick-freqs.plx $proj
 for a in 02pub/*.freq  ; do
-    sort -rk3 $a >02pub/`basename $a .freq`
+    sort -t'	' -nrk3 $a >02pub/`basename $a .freq`
 done
 
 # Now construct a virtual corpus based on the instances

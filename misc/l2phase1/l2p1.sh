@@ -12,7 +12,7 @@ if [ "$projtype" != "superglo" ]; then
 	if [ "$quick" == "yes" ]; then
 	    #	l2p1-proxy-xtf-data.plx  ## THIS MUST BE DEPRECATED
 	    l2p1-lemm-quick-freqs.plx 
-	    (cd 02pub ; sort -rk3 lemm-sux.sig.freq >lemm-sux.sig)
+	    (cd 02pub ; sort -t'	' -nrk3 lemm-sux.sig.freq >lemm-sux.sig)
 	fi
 	rm -f 01bld/nolem
     fi
