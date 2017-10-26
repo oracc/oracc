@@ -73,11 +73,11 @@ input_line {
 	$header{$1} = $2;
 	return;
     }
-    chomp;
     # probably safe to ignore this because producers for this program know to send right format
     if (/^\@fields/) {
 	return;
     }
+    chomp;
     my %sig = ();
     my $sig = $_;
     if ($sig =~ /\&\&/) {

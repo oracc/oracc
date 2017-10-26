@@ -79,9 +79,11 @@ elif [ "$super" == "" ]; then
 	if [ -r $ldir/glossary.sig ] && [ -r $ldir/$l.sig ]; then
 	    l2-sig-union.plx $ldir/$l.sig $ldir/glossary.sig >$ldir/union.sig
 	elif [ -r $ldir/glossary.sig ]; then
-	    (cd $ldir ; ln -sf glossary.sig union.sig)
+	    #	    (cd $ldir ; ln -sf glossary.sig union.sig)
+	    l2-sig-union.plx $ldir/glossary.sig >$ldir/union.sig
 	else
-	    (cd $ldir; ln -sf $l.sig union.sig)
+	    #	    (cd $ldir; ln -sf $l.sig union.sig)
+	    l2-sig-union.plx $ldir/$l.sig >$ldir/union.sig
 	fi
 	if [ -s $ldir/union.sig ]; then
 	    echo creating $ldir/$l.g2x from $ldir/union.sig

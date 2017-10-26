@@ -39,9 +39,11 @@ foreach my $s (@ARGV) {
 	if (/^\@(project|name|lang|fields)\s+(.*?)$/) {
 	    if (/fields/) {
 		my @f = split(/\s+/, $_); shift @f;
+		%f = ();
 		for (my $i = 0; $i <= $#f; ++$i) {
 		    $f{$f[$i]} = $i;
 		}
+		next;
 	    } else {
 		$header{$1} = $2;
 		if ($1 eq 'lang') {
@@ -53,7 +55,7 @@ foreach my $s (@ARGV) {
 	    
 	my @t = split(/\t/, $_);
 #	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
-	my $r = $t[$f{'inst'}];
+	my $r = ($f{'inst'} ? $t[$f{'inst'}] : '');
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
@@ -89,19 +91,20 @@ $header{'name'} = "$project $lang" unless $header{'name'};
 foreach my $k (qw/project name lang/) {
     print "\@$k $header{$k}\n";
 }
-print "\n\@fields sig freq ints\n";
+print "\n\@fields sig freq inst\n";
 
 #use Data::Dumper; open(X,">dump.log");
 #print X Dumper \%sig;
 #close(X);
 
 foreach my $s (sort keys %sig) {
+    $s =~ s/\s*$//;
     print "$s\t";
     my @r = uniq(keys %{$sig{$s}});
     if ($#r >= 0) {
 	printf "%d\t@r", $#r+1;
     } else {
-	print "\t0";
+	print "0";
     }
     print "\n";
 }

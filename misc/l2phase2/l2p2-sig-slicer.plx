@@ -139,14 +139,14 @@ while (<SIGS>) {
 	}
     }
 
-    if ($matched) {	
+    if ($matched) {
 	chomp;
 
 	my($msig,$rank,$freq,$refs) = ();
 	if ($fields =~ /rank/) {
-	    ($msig,$rank) = split(/\t/,$sig);
+	    ($msig,$rank) = split(/\t/,$_);
 	} else {
-	    ($msig,$freq,$refs) = split(/\t/,$sig);
+	    ($msig,$freq,$refs) = split(/\t/,$_);
 	}
 	unless ($msig) {
 	    $msig = $_;
