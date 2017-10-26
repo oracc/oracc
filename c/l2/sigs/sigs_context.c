@@ -424,6 +424,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
 	  s->rank = 0;
 	  s->freq = atoi(tab);
 	}
+#if 0
       if ((tab = strchr(tab, '\t')))
 	{
 	  *tab++ = '\0';
@@ -431,6 +432,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
 	  s->freq = atoi(tab); /* fake pct into freq */
 	}
       /* the end of the line contains the xis ref but that is benign */
+#endif
     }
 
   if ('{' == *s->sig)
