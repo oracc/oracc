@@ -22,6 +22,7 @@ int cbd_lem_sigs = 0;
 int fuzzy_aliasing = 0;
 int inplace = 0;
 int lem_autolem = 0;
+int lem_dynalem = 0;
 int new_lem = 0;
 int pretty = 0;
 int psu = 0;

@@ -26,6 +26,7 @@
 int l2 = 1;
 /* This is unpleasant; declared only because we have to invoke sig_context_init() which pulls in the sigs library */
 int lem_autolem = 0;
+int lem_dynalem = 0;
 int lem_info = 0;
 int fuzzy_aliasing = 0;
 int cbd_lem_sigs = 0;

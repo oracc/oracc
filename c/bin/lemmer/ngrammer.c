@@ -20,7 +20,7 @@ extern int ng_debug;
 int cbd_lem_sigs = 0;
 int fuzzy_aliasing = 0;
 int bootstrap_mode, lem_autolem, verbose, lem_standalone, shadow_lem,
-  ignore_plus, slow_lem_utf8;
+  ignore_plus, slow_lem_utf8, lem_dynalem;
 const char *textid, *project, *lang;
 int pretty = 0, psu = 0, use_unicode = 0;
 int
