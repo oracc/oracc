@@ -25,7 +25,7 @@ my $disambig = '';
 
 my @nsm = qw/
     a ka ke4 ke₄
-    kam am3 am₃ am6 am₆ nam um im
+    kam kam₂ am3 am₃ am6 am₆ nam um im
     mu gu10 gu₁₀ ju10 ŋu₁₀ zu zu5 zu₅ ni bi be6 be₆ bi3 bi₃ ne ne2 ne₂
     ja2 ŋa₂ ga2 ga₂ za na ba
     e en6 en₆ ne2 ne₂ be2 be₂
@@ -448,15 +448,16 @@ gen {
     return ($rest,$g_index,$nx) if $g_index > $#g;
     if (($rest eq 'a' || $g[$g_index] =~ /^[ae][2₂]?$/)
 	&& ($g_index < $#g 
-	    && $g[$g_index+1] =~ /^(?:ka|kam|ke4|ke₄)$/)) {
+	    && $g[$g_index+1] =~ /^(?:ka|kam|kam2|kam₂|ke4|ke₄)$/)) {
 	++$g_index;
 	$rest = $g[$g_index];
 	$rest =~ s/^k//;
 	$nx = ($rest && $rest eq 'am') ? 8 : $nx+1;
 	++$g_index;
-    } elsif ($g[$g_index] =~ /^(?:ka|kam|ke4|ke₄)$/) {
+    } elsif ($g[$g_index] =~ /^(?:ka|kam|kam2|kam₂|ke4|ke₄)$/) {
 	$rest = $g[$g_index];
 	$rest =~ s/^k//;
+	$rest =~ s/[₂2]$//;
 	$nx = ($rest && $rest eq 'am') ? 8 : $nx+1;
 	++$g_index;
     } elsif ($g[$g_index] eq 'a'

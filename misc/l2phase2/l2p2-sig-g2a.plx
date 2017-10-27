@@ -79,6 +79,7 @@ input_line {
     }
     chomp;
     my %sig = ();
+    s/\t.*$//; # we only use sig in this script
     my $sig = $_;
     if ($sig =~ /\&\&/) {
 	my @cof = ();
