@@ -94,7 +94,7 @@ xslt {
 	if ($htm) {
 	    $htmdir = "${ORACC::Base::base}htm/$project";
 	    system 'mkdir', '-p', $htmdir;
-	}	
+	}
 	if ($f =~ /^[PQX]\d+(?:[a-z]*)$/) {
 	    if ($file_project) {
 		$f = expand_in_project(undef,"$f.$args{'from'}", $file_project);
@@ -141,7 +141,11 @@ xslt {
 	} else {
 	    my $outf = '';
 	    if ($htm) {
-		$outf = "$htmdir/$PQX.html";
+		if ($args{'to'} eq 'txh') {
+		    $outf = "$htmdir/$PQX.txh";
+		} else {
+		    $outf = "$htmdir/$PQX.html";
+		}
 	    } else {
 		if ($from_project) {
 		    $outf = expand_in_project($project,"$orig_f.$args{'from'}");

@@ -344,7 +344,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	      else
 		sig_check(text_xc);
 
-	      if (lem_autolem && !lem_forms_raw)
+	      if ((lem_autolem || lem_dynalem) && !lem_forms_raw)
 		bigrams(text_xc);
 
 #if 0

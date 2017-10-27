@@ -193,7 +193,7 @@ psl_init()
       psl_id = hash_create(12000);
       psl_pool = npool_init();
       hex_tab = hash_create(2000);
-      if (!access(fname[0],R_OK))
+      if (!xaccess(fname[0],R_OK,0))
 	runexpat(i_list, fname, sH, eH);
       else
 	fprintf(stderr,"gsl: %s not found\n",sl_fn);

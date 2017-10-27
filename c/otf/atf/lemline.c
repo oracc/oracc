@@ -284,14 +284,32 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	    fputs((char*)f2->norm,fp);
 	  else
 	    fputs((char*)f2->cf,fp);
-	  if (f2->sense)
-	    fprintf(fp,"[%s]",(char*)f2->sense);
+	  if (f2->sense && strcmp(f2->gw,"cvne") && strcmp(f2->gw,"cvve"))
+	    {
+	      char *comma = NULL;
+	      Uchar *tmp = f2->sense;
+	      if ((comma = strchr(f2->sense, ',')))
+		*comma = '\0';
+	      if (!strncmp(f2->sense, "(to be) ", 8))
+		tmp += 8;
+	      else if (!strncmp(f2->sense, "to ", 3))
+		{
+		  tmp += 3;
+		  if (!strncmp(tmp, "be ", 3))
+		    tmp += 3;
+		  else if (!strncmp(tmp, "make ", 5))
+		    tmp += 5;
+		}
+	      fprintf(fp,"[%s]",(char*)tmp);
+	    }
 	  else
 	    fprintf(fp,"[%s]",f2->gw);
+#if 0
 	  if (f2->epos && strcmp((char*)f2->pos,(char*)f2->epos))
 	    fprintf(fp,"'%s",f2->epos);
 	  else
 	    fputs((char*)f2->pos,fp);
+#endif
 	}
       else
 	{

@@ -326,7 +326,7 @@ decode_args {
 	$tmp{'defindex'} = '#any';
     }
 
-    warn "args: ", Dumper \%tmp;
+#    warn "args: ", Dumper \%tmp;
     # set up some defaults if not all values are given
     $tmp{'cetype'} = 'line' unless $tmp{'cetype'};
     $tmp{'item'} = 0 unless defined $tmp{'item'};
@@ -361,7 +361,7 @@ decode_args {
 
     $tmp{'uimode'} = 'full' unless $tmp{'uimode'};
     warn "defindex $tmp{'defindex'}\n";
-    warn "+defaults: ", Dumper \%tmp;
+#    warn "+defaults: ", Dumper \%tmp;
     %tmp;
 }
 
@@ -580,7 +580,7 @@ run_form_maker {
 		    }
 		}
 		$rep = '' unless $rep; 
-		warn "cgivar $var = $rep\n";
+#		warn "cgivar $var = $rep\n";
 	    } elsif ($class eq 'runtime') {
 		if (defined $rt{$var}) {
 		    if ($var eq 'tmpdir') {
@@ -591,7 +591,7 @@ run_form_maker {
 		} else {
 		    $rep = $default;
 		}
-		warn "runtime $var = $rep\n";
+#		warn "runtime $var = $rep\n";
 	    } else {
 		warn "bad \@\@ class '$class'\n";
 	    }

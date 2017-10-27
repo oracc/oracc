@@ -361,8 +361,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 		  for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		    {
+#if 0
+		      /* This is broken atm because I reset form/oform for each sigset */
 		      if (already_tried_aliasing((const char *)ifp->f2.form, &ifp->finds[i]->f2))
 			continue;
+#endif
 		      if (f2_alias(xcp->sigs, &ifp->f2, &ifp->finds[i]->f2))
 			{
 			  struct sig const * const *alias_sigs_found = NULL;

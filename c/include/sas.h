@@ -10,6 +10,7 @@ struct sas_info
 {
   const char *name;
   Hash_table *cand;
+  Hash_table *nodumb;
   Hash_table *post;
   unsigned char *file;
   size_t flen;

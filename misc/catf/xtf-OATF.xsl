@@ -48,10 +48,14 @@
 </xsl:template>
 
 <xsl:template match="x:protocols">
+  <xsl:for-each select="*">
+    <xsl:value-of select="concat('#', @type, ': ', ., '&#xa;')"/>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="x:transliteration">
   <xsl:value-of select="concat('&amp;',@xml:id,' = ',@n,'&#xa;')"/>
+  <!--
   <xsl:value-of select="concat('#atf: lang ', $text-lang, '&#xa;')"/>
   <xsl:choose>
     <xsl:when test="string-length($credit) > 0">
@@ -65,6 +69,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:value-of select="concat(' See http://oracc.org/',@project,'/',@xml:id,'&#xa;')"/>
+  -->
   <xsl:apply-templates/>
   <xsl:text>&#xa;</xsl:text>
 </xsl:template>

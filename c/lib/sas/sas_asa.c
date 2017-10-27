@@ -80,9 +80,11 @@ sas_asa_load(const char *fname)
   struct sas_info *sip = calloc(1, sizeof(struct sas_info));
   size_t flen;
   struct sas_alias *ap = NULL;
+  static int one = 1;
 
   sip->name = strcpy(malloc(strlen(fname)+1),fname);
   sip->cand = hash_create(1024);
+  sip->nodumb = hash_create(1024);
   sip->post = hash_create(1);
   
   s = sip->file = loadfile((unsigned char *)fname,&flen);
@@ -244,6 +246,16 @@ sas_asa_load(const char *fname)
 			++s;
 		      if (' ' == *s || '\t' == *s)
 			*s++ = '\0';
+		      if ('-' == *cand)
+			{
+			  /* This relation is not used in dumb aliasing;
+			     record it as, e.g., "e>eg2" */
+			  char *tmp = malloc(strlen(cand)+strlen(head)+2);
+			  ++cand;
+			  sprintf(tmp,"%s>%s",cand,head);
+			  hash_add(sip->nodumb,strdup(tmp),&one);
+			  free(tmp);
+			}
 		      if ((candlist = hash_find(sip->cand,cand)))
 			list_add(candlist, ap);
 		      else

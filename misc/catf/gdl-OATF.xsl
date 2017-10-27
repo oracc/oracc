@@ -51,6 +51,7 @@
   <xsl:text>{</xsl:text>
   <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:f">
@@ -186,7 +187,7 @@
       <xsl:call-template name="g-delim"/>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:text>&#x9;</xsl:text>
+<!--  <xsl:text> </xsl:text> -->
 </xsl:template>
 
 <xsl:template match="g:x">
@@ -422,7 +423,7 @@
 </xsl:template>
 
 <xsl:template match="x:nonx">
-  <xsl:value-of select="concat(@xml:id,'&#x9;$&#x9;')"/>
+  <xsl:value-of select="concat(@xml:id,' ')"/>
   <xsl:choose>
     <xsl:when test="starts-with(., '(')">
       <xsl:apply-templates/>
