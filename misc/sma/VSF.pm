@@ -40,6 +40,7 @@ my @vsm = qw/
     ne
     ri
     ce še jic ŋiš
+    u8 u₈
     /;
 
 %VSF::vsm = ();
@@ -126,7 +127,7 @@ parse_vsf {
 	}
 
 	#VSF1
-	if ($g[0] eq 'e'
+	if ($g[0] eq 'e' || $g[0] eq 'u₈'
 	    || ($g[0] eq 'i' && ($root =~ /i/ || $orth =~ /i$dig*$/))
 	   ) {
 	    ++$g_index;

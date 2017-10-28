@@ -16,6 +16,7 @@ my $glossary = '';
 my $input = '';
 my $lemma = '';
 my $nobase = 0;
+my $nolemm = 0;
 my $output = '';
 my $project = 'epsd';
 my $sig_output = 0;
@@ -32,6 +33,7 @@ GetOptions(
     "input:s"=>\$input,
     "lemma:s"=>\$lemma,
     "nobase"=>\$nobase,
+    "nolemm"=>\$nolemm,
     "no-external-bases"=>\$ORACC::SMA::no_external_bases,
     "output:s"=>\$output,
     "project:s"=>\$project,
@@ -100,6 +102,14 @@ if ($output) {
 #smalog("loading $project");
 ORACC::SMA::Base::load($project);
 #smalog("load complete");
+
+if ($nolemm) {
+    while (<>) {
+	chomp;
+	nolemma($_);
+    }
+    exit 0;
+}
 
 if ($glossary) {
     my @bases;
@@ -572,6 +582,13 @@ sux_soundex {
 	$tmp .= '[aeiu]?';
     }
     $tmp;
+}
+
+sub
+nolemma {
+    my $f = shift @_;
+    my $novpr = strip_vpr(split(/-/,$f)) || '';
+    warn "$f => $novpr\n";
 }
 
 1;

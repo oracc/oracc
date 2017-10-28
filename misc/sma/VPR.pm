@@ -43,7 +43,7 @@ my @vpm = qw/
     ra re ri ri2 ri₂
     ca ša ce3 še₃ ci ši cu šu
     ta te ti
-    u3 u₃ u5 u₅ u8 u₈ ub ul um un
+    u u3 u₃ u5 u₅ u8 u₈ ub ul um un
     /;
 my %vpm = ();
 @vpm{ @vpm } = ();
@@ -56,7 +56,7 @@ my @mpg = qw/
     na nam nam2 nam₂
     ga ga2 ga₂ gi4 gi₄ gu2 gu₂
     ba
-    a u3 u₃ ub ul um un i3 i₃ i iri
+    a u u3 u₃ ub ul um un i3 i₃ i iri
     ca ša ce3 še₃ cu šu ci ši
     /;
 my %mpg;
@@ -103,6 +103,7 @@ my %mp_data = (
     'a'    => [ 'V',   '', [ 0 ] ],
     'u3'   => [ 'u',   '', [ 0,1 ] ],
     'i3'   => [ 'u',   '', [ 0,1 ] ],
+    'u'    => [ 'u',   '', [ 0 ] ],
     'u₃'   => [ 'u',   '', [ 0,1 ] ],
     'i₃'   => [ 'V',   '', [ 0,1 ] ],
     'i'    => [ 'V',   '', [ 0 ] ],
