@@ -118,7 +118,7 @@ foreach my $s (sort keys %sigs) {
     my $ninst = scalar keys %{$sigs{$s}};
     my $total = ${$totals{$this_lang}}{$base};
     my $pct = ipct($ninst, $total);
-    my $rank = $ranks{$s};
+    my $rank = $ranks{$s} || '0';
     print {$langs{$this_lang}} "$s\t$rank\t$ninst\t$pct\n";
     print P "$s\t$ninst\t", join(' ', sort keys %{$sigs{$s}}), "\n";
 }
