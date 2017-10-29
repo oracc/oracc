@@ -146,11 +146,14 @@ sprint {
 	$ret .= ':';
     }
     $ret .= ${$p{'root'}}[2]; # use the aliased form for printing
+    my $star_a = 0;
     if ($auslaut) {
+	$star_a = ($auslaut =~ s/\*$//);
 	$ret .= "+$auslaut";
     }
     if (length $chains{'vsf'}) {
 	$ret .= ';';
+	$ret .= '(a).' if $star_a;
 	$ret .= $chains{'vsf'};
     } elsif (length $chains{'isf'}) {
 	$ret .= '!';

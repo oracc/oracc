@@ -261,10 +261,7 @@ t {
     if ($#parses == 0) {
 	my($base,$cont,$morph,$stem) = ($$found_bases[0], get_info($parses[0]));
 	my $newbase = ($try_number ? '+' : '');
-#	print STDERR Dumper($parses[0]);
 	clear_V_hack($l);
-#	$base = correct_base($parses[0],$f);
-#	($f,$morph) = disambig_morph($f,$morph,$morph_disambig) if $morph_disambig;
 	if ($morph_disambig) {
 	    $f .= "\\$morph_disambig";
 	    if ($morph_disambig =~ /^\./) {
@@ -281,8 +278,6 @@ t {
 	}
 	if ($xli) {
 	    if ($try_number) {
-#		$t_warning = "sma: $f=$l has new BASE $base\n";
-#		warn $t_warning;
 		$base = "+$base";
 	    }
 	    if ($cont && $cont ne '0') {
@@ -296,10 +291,6 @@ t {
 	    return 0;
 	} elsif ($glossary) {
 	    unless ($seen{$f}++) {
-#		my $norm = $morph;
-#		my $cf = $l;
-#		$cf =~ s/\[.*$//;
-#		$norm =~ s/~/$cf/;
 		$ok_flag = 1;
 		warn "sma: $f=$l has new BASE $base\n" if $try_number;
 		my $stemstr = '';
@@ -345,6 +336,8 @@ t {
 	    if (!$xli_base) {
 		if ($glossary) {
 		    warn "$.: no parse for form `$f' with base `$b'\n";
+		} elsif ($b) {
+#		    new_sma_warn("no parse for $f $l $b");
 		} else {
 		    warn "sma: no parses found and no base given; try giving BASE\n"
 			unless $xli;
@@ -398,7 +391,11 @@ t {
 	    if ($#found_bases_ok < 0) {
 		warn "sma: $f=$l no bases found in form\n";
 	    } else {
-		warn "sma: $f=$l no parse found for @found_bases_ok\n";
+		if ($b) {
+		    new_sma_warn("no parse for $f $l $b");
+		} else {
+		    new_sma_warn("$f=$l no parse found for @found_bases_ok\n");
+		}
 	    }
         }
     } else {
@@ -475,9 +472,13 @@ get_info {
     $morph .= '~';
     if ($p{'vsf'}) {
 	my $vsf_ref = $p{'vsf'};
-	$morph .= ';';
-	$morph .= ORACC::SMA::Display::mcat($$vsf_ref{'vsf'});
 	$cont = ORACC::SMA::Display::auslaut($$vsf_ref{'vsf'}) || '0';
+	if ($cont =~ s/\*=/=/) {
+	    $morph .= ";(a).";
+	} else {
+	    $morph .= ';';
+	}
+	$morph .= ORACC::SMA::Display::mcat($$vsf_ref{'vsf'});
     }
     if ($p{'nsf'}) {
 	my $nsf_ref = $p{'nsf'};
@@ -501,6 +502,15 @@ get_info {
 #smalog {
 #    print SMALOG @_, "\n";
 #}
+
+sub
+new_sma_warn {
+    if ($input) {
+	warn "$input:$.: ", @_, "\n";
+    } else {
+	warn "sma:$.: ", @_, "\n";
+    }
+}
 
 sub
 smawarn {

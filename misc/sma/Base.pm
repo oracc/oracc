@@ -187,9 +187,12 @@ parse {
     }
 
     @bases = uniq(@bases);
-    print STDERR "$lemma bases: @bases\n" if $ORACC::SMA::verbose;
+    print STDERR "bases for lemma `$lemma': @bases\n" if $ORACC::SMA::verbose;
 
-    my($cf,$gw,$POS) = ($lemma =~ /^(.*?)\[(.*?)\](\S+)$/);
+    my ($cf,$gw,$POS) = ('','','');
+    if ($lemma) {
+	($cf,$gw,$POS) = ($lemma =~ /^(.*?)\[(.*?)\](\S+)$/);
+    }
 
     foreach my $b (sort {&basecmp} @bases) {
 	my %p = ();
@@ -224,7 +227,7 @@ parse {
 		    my($pref,$base) = ($obase =~ /^(.*?)°(.*)$/);
 		    $pre .= "-$pref" unless $pre =~ /$pref$/;
 		}
-		if ($POS && $POS =~ /^V/) {
+		if (!$lemma || ($POS && $POS =~ /^V/)) {
 		    my $have_vpr = 0;
 		    my $have_vsf = 0;
 		    my @nsf_g = ();
@@ -272,6 +275,7 @@ parse {
 				goto ok;
 			    }
 			} else {
+			    print STDERR "VSF: is_vsf failed\n" if $sma_debug;
 			    @nsf_g = @vsf_g;
 			    $nsf_cf = $cf;
 			}
@@ -323,7 +327,9 @@ parse {
     }
     my @found_bases = sort {&basecmp} keys %found_bases;
     if ($sma_debug) {
+	print STDERR "Dump of \@found_bases:\n";
 	print STDERR Dumper(\@found_bases);
+	print STDERR "Dump of \@parses:\n";
 	print STDERR Dumper(\@parses);
     }
     (\@found_bases, @parses);

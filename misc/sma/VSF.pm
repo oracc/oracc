@@ -88,6 +88,7 @@ parse_vsf {
     my @ambig = ();
     my $auslaut = '';
     my $original_g0 = undef;
+    my $possible_nonfunctional_a = 0;
 
 #    print STDERR "parse_vsf: entered with root = '$root'\n";
 
@@ -96,16 +97,19 @@ parse_vsf {
 	last PARSE if $#g < 0;
 	$original_g0 = $g[0] unless $original_g0;
 	if ($g[0] =~ /^(.)([ae])$dig*$/
-	   || ($root =~ /u/ && $g[0] =~ /^(.?)(u)$dig*$/)
+	   || (($root =~ /u/ || $orth =~ /u/) && $g[0] =~ /^(.?)(u)$dig*$/)
 	   ) {
 	    my $anlaut = $1;
 	    my $vowel = $2;
-	    if ($root =~ /([bdgŋjhklmnprsšcz])$dig*$/) {
+	    if ($root =~ /([bdgŋjhklmnprsšcz])$dig*$/
+		|| $orth =~ /([bdgŋjhklmnprsšcz])$dig*$/) {
 		$auslaut = $1;
 		if (!length($anlaut) || $auslaut eq $anlaut
 		   || ($auslaut eq 'd' && $g[0] =~ /^(?:ra[2₂]?|re[6₆]?|ru)$/)) {
 		    if ($vowel eq 'a') {
 			$g[0] = 'a';
+			$possible_nonfunctional_a = 1;
+			++$g_index;
 		    } else {
 			$g[0] = 'e';
 		    }
@@ -121,7 +125,7 @@ parse_vsf {
 			$vsf[0] .= $v;
 		    }
 		}
-	    } elsif ($root =~ /u$dig*$/ && $g[0] =~ /^u$dig*$/) {
+	    } elsif (($root =~ /u$dig*$/ || $orth =~ /u$dig*$/) && $g[0] =~ /^u$dig*$/) {
 		$g[0] = 'e';
 	    }
 	}
@@ -159,7 +163,7 @@ parse_vsf {
 	last PARSE if ($g_index > $#g && !length($rest));
 
 	#VSF3
-	if ($vx <= 3) {
+	if ($possible_nonfunctional_a || $vx <= 3) {
 	    if ($g[$g_index] =~ /^en[236₂₃₆]?$/
 		|| (($root =~ /a/ || $orth =~ /a/) && $g[$g_index] =~ /^an$/)
 		|| (($root =~ /i/ || $orth =~ /i/) && $g[$g_index] =~ /^in$/)
@@ -231,6 +235,10 @@ parse_vsf {
 	    }
 	}
 
+	if ($possible_nonfunctional_a && $g_index >= $#g) {
+	    $vsf[0] .= '*';
+	}
+	
 	last PARSE if ($g_index > $#g && !length($rest));
 
 	#VSF4 -am/-a/-ma
