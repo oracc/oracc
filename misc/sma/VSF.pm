@@ -21,11 +21,11 @@ my %alessadj;
 # VSF6 is not really VSF, but this is a convenient way to
 # handle ece and jicen
 
-#R-VSF1-VSF2-VSF3-  VSF4-     VSF5 VSF6
+#R-VSF1-VSF2-VSF3-  VSF4-     VSF5  VSF6
 #
-#  e   de    PRO    NOM/COP   ri   ece
-#            en     a              jicen
-#            en     am
+#  e   de    PRO    NOM/COP   ri    ece
+#            en     a         ŋu.ne jicen
+#            en     am        zu.ne
 #            0      ma
 #            enden
 #            enzen 
@@ -287,12 +287,20 @@ parse_vsf {
 	last PARSE if ($g_index > $#g && !length($rest));
 	
 	#VSF5 -ri
+	#NEW: VSF5 is also used to encode Pronominal Conjugation ŋu.ne and zu.ne
 	if ($g_index <= $#g && $g[$g_index] eq 'ri' 
 	    && (defined($vsf[4]) && $vsf[4] eq 'a')) {
 	    
 	    $vsf[5] = 'ri';
 	    ++$g_index;
 	    
+	} elsif ($g_index <= $#g && $g[$g_index] =~ /^ŋu₁₀|zu$/) {
+	    $vsf[5] = ($g[$g_index] =~ /ŋ/ ? 'ŋu' : 'zu');
+	    ++$g_index;
+	    if ($g_index <= $#g && $g[$g_index] =~ /^(?:de[3₃]|ne)$/) {
+		$vsf[5] .= '.ne';
+		++$g_index;
+	    }
 	}
 
 	warn("leftover rest '$rest'\n") if length $rest;
