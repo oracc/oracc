@@ -41,6 +41,7 @@ const char *fallback_project = NULL;
 FILE *f_bad;
 FILE *f_good;
 FILE *f_unlemm;
+const char *lem_dynalem_tab;
 const char *xcl_project;
 const char *output_dir;
 int check_links;

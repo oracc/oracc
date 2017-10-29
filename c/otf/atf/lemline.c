@@ -32,6 +32,9 @@ struct lem_save
   struct lem_save *cont;
 };
 
+extern int lem_autolem, lem_dynalem;
+extern const char *lem_dynalem_tab;
+
 Hash_table *word_form_index;
 extern const char *curr_dialect;
 static void set_sframe(struct serializer_frame *sfp, char *literal);
@@ -71,11 +74,42 @@ new_lsp(void)
 }
 
 static struct lem_save *curr_lsp, *last_lsp;
+static Hash_table *lem_dynalem_hash = NULL;
+static void
+lem_dynalem_load(const char *tab)
+{
+  unsigned char **files = NULL, *fmem;
+  size_t nlines = 0, i;
+  tablines = loadfile_lines3((unsigned char *)tab,&nfiles,&fmem);
+  lem_dynalem_hash = hash_create(1024);
+  for (i = 0; i < nlines; ++i)
+    {
+      char *tab = strchr(lines[i], '\t');
+      if (tab)
+	{
+	  char *f1, *f2;
+	  f1 = lines[i];
+	  f2 = tab+1;
+	  if (strchr(f2, '\t'))
+	    fprintf(stderr, "%s:%d: too many tabs in line\n", tab, i+1);
+	  else
+	    hash_add(lem_dynalem_hash, f1, f2);
+	}
+      else
+	fprintf(stderr, "%s:%d: no tab in line\n", tab, i+1);
+    }
+}
 
 void
 lemline_init(void)
 {
-  inline_functions(lem_save_form,lem_unform,lem_reset_form);
+  if (lem_dynalem)
+    {
+      lem_dynalem_load(lem_dynalem_tab);
+      inline_functions(lem_save_form_dynalem,lem_unform,lem_reset_form);      
+    }
+  else
+    inline_functions(lem_save_form,lem_unform,lem_reset_form);
   lemline_xcp = calloc(1,sizeof(struct xcl_context));
   lemline_xcp->project = xcl_project = project;
   lemline_xcp->textid = textid;
@@ -241,6 +275,60 @@ lem_save_form(const char *ref, const char *lang,
   curr_lsp->cells[curr_lsp->forms_used] = (curr_cell ? curr_cell : 2);
   curr_lsp->forms[curr_lsp->forms_used++] = form;
   hash_add(word_form_index,npool_copy((unsigned char*)ref,lemline_xcp->pool),form);
+}
+
+const unsigned char *
+lem_dynalem(const char *lang, const char *formstr)
+{
+  static char *tmpbuf = NULL;
+  static int tmpbuf_alloc = 0;
+  if (NULL == lang)
+    {
+      free tmpbuf;
+      tmpbuf_alloc = 0;
+      return NULL;
+    }
+  if (tmpbuf_alloc < (strlen(lang)+strlen(formstr)+3))
+    {
+      tmpbuf_alloc = tmpbuf_alloc ? 2*tmpbuf_alloc : 512;
+      tmpbuf = realloc(tmpbuf, tmpbuf_alloc);
+    }
+  sprintf(tmpbuf, "%%%s:%s", lang, formstr);
+  if (hash_find(dynalem_hash, tmpbuf))
+    return tmpbuf;
+  else
+    {
+      if (!strcmp(formstr, "n")
+	  || !strcmp(formstr, "(n)")
+	  || (*formstr < 128 && isdigit(*formstr)))
+	return "n";
+      else if (!strcmp(formstr, "x")
+	       || !strcmp(formstr, "(x)")
+	       || (strstr(formstr, "..")
+		   || strstr(formstr, "-x")
+		   || strstr(formstr, "x-"))
+	       ) {
+	return "u";
+      } else {
+	return "X";
+      }
+    }
+}
+
+void
+lem_save_form_dynalem(const char *ref, const char *lang, 
+		      const char *formstr, struct lang_context *langcon)
+{
+  if (ref && *ref && formstr)
+    {
+      const unsigned char *dynalem = NULL;
+      struct ilem_form *form = NULL;
+      lem_save_form(ref, lang, formstr, langcon);
+      dynalem = lem_dynalem(lang, formstr); /* always returns at least 'u' or 'X' */
+      form = hash_find(word_form_index, ref);
+      if (form) /* shouldn't be able to happen */
+	form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
+    }
 }
 
 void

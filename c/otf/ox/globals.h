@@ -57,6 +57,7 @@ extern int word_matrix;
 extern int check_links;
 extern int lem_autolem;
 extern int lem_dynalem;
+extern const char * lem_dynalem_tab;
 extern const char *xcl_project;
 extern const char *output_dir;
 extern int check_only;
