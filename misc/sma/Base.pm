@@ -231,7 +231,7 @@ parse {
 		    my($pref,$base) = ($obase =~ /^(.*?)°(.*)$/);
 		    $pre .= "-$pref" unless $pre =~ /$pref$/;
 		}
-		if (!$lemma || ($POS && $POS =~ /^V/)) {
+		if (!$lemma || ($POS && $POS =~ /^(?:V|AJ)/)) {
 		    my $have_vpr = 0;
 		    my $have_vsf = 0;
 		    my @nsf_g = ();

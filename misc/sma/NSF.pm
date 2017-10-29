@@ -21,7 +21,7 @@ my $disambig = '';
 #         zunene                     a    mec
 #         anene                      e
 #         bi                         ece
-#                                    gin
+#         bida                       gin
 
 my @nsm = qw/
     a ka ke4 ke₄
@@ -291,13 +291,18 @@ parse_nsf {
 		    ++$g_index;
 		    $nx = 3;
 		}
+	    } elsif ($g[$g_index] eq 'bi' && $g_index < $#g && $g[$g_index+1] eq 'da') {
+		# -bi-da is always taken as .bida
+		$nsf[2] = 'bida';
+		$g_index += 2;
+		$nx = 3;
 	    } else {
 		($nsf[2],$rest) = @{$poss_data{$g[$g_index]}};
 		++$g_index;
 		$nx = 3;
 	    }
 	    # trap ju/zu-u, zu-u3, zu-u8
-	   if (defined($nsf[2]) && $nsf[2] =~ /u/) {
+	    if (defined($nsf[2]) && $nsf[2] =~ /u/) {
 	       if ($g_index <= $#g && $g[$g_index] =~ /^u$dig*$/) {
 		   $g[$g_index] = 'e';
 	       }
@@ -452,6 +457,7 @@ gen {
 	++$g_index;
 	$rest = $g[$g_index];
 	$rest =~ s/^k//;
+	$rest =~ s/₂$//; # kam₂ hack
 	$nx = ($rest && $rest eq 'am') ? 8 : $nx+1;
 	++$g_index;
     } elsif ($g[$g_index] =~ /^(?:ka|kam|kam2|kam₂|ke4|ke₄)$/) {

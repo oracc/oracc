@@ -33,7 +33,7 @@ my %alessadj;
 # 	     ene
 
 my @vsm = qw/
-    a am
+    a am am₃ am3
     da dam de3 de₃
     e en en3 en₆ en6 en₆ ec eš ec2 eš₂ ša
     ma me
@@ -105,7 +105,7 @@ parse_vsf {
 		|| $orth =~ /([bdgŋjhklmnprsšcz])$dig*$/) {
 		$auslaut = $1;
 		if (!length($anlaut) || $auslaut eq $anlaut
-		   || ($auslaut eq 'd' && $g[0] =~ /^(?:ra[2₂]?|re[6₆]?|ru)$/)) {
+		    || ($auslaut eq 'd' && $g[0] =~ /^(?:ra[2₂]?|re[6₆]?|ru)$/)) {
 		    if ($vowel eq 'a') {
 			$g[0] = 'a';
 			$possible_nonfunctional_a = 1;

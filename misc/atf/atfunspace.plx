@@ -10,6 +10,7 @@ while (<R>) {
     my($from,$to) = split(/\t/,$_);
     my @p1 = map { "$b$_" } split(/\s+/,$from);
     my @p2 = map { "$b$_" } split(/[\s+-]/,$to);
+    
     push @p1, $b;
     push @p2, $b;
     print "s/@p1/@p2/g\n";
