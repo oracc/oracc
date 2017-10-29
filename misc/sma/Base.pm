@@ -204,7 +204,11 @@ parse {
 	warn "matching quoted base `$qb'\n" if $ORACC::SMA::verbose;
 	if ($form =~ /(?:^|(\S+?)-)($qb)(?:-(\S+))?$/) {
 	    my($pre,$bas,$post) = ($1||'',$2||'',$3||'');
-	    next if $pre && ($POS && $POS !~ /^V/);
+	    if ($pre && ($POS && $POS !~ /^(?:V|AJ)/)) {
+		print STDERR "INIT: rejecting base `$qb' because $POS != 'V/AJ'\n"
+		    if $sma_debug;
+		next;
+	    }
 	    print STDERR "INIT: $form => '$pre' / '$bas' / '$post'\n" 
 		if $sma_debug;
 	    if ($bas) {

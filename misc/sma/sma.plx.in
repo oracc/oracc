@@ -14,6 +14,7 @@ my $base = '';
 my $form = '';
 my $glossary = '';
 my $input = '';
+my $input_line = 0;
 my $lemma = '';
 my $nobase = 0;
 my $nolemm = 0;
@@ -166,7 +167,9 @@ if ($glossary) {
     }
 } elsif ($input) {
     open(IN,$input) || die "sma.plx: can't open $input\n";
+    $input_line = 0;
     while (<IN>) {
+	++$input_line;
 	next if /^\#/ || /^\s*$/;
 	chomp;
 	if (/\t/) {
@@ -389,7 +392,11 @@ t {
 	clear_V_hack($l);
         if (!$glossary || $glossary_last) {
 	    if ($#found_bases_ok < 0) {
-		warn "sma: $f=$l no bases found in form\n";
+		if ($b) {
+		    new_sma_warn("`$b' is not a valid base for $f=$l");
+		} else {
+		    warn "sma: $f=$l no acceptable bases found in form\n";
+		}
 	    } else {
 		if ($b) {
 		    new_sma_warn("no parse for $f $l $b");
@@ -506,7 +513,7 @@ get_info {
 sub
 new_sma_warn {
     if ($input) {
-	warn "$input:$.: ", @_, "\n";
+	warn "$input:$input_line: ", @_, "\n";
     } else {
 	warn "sma:$.: ", @_, "\n";
     }
