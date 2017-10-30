@@ -9,29 +9,54 @@ use Getopt::Long;
 # If `-legacy' is given, add the `#atf: use legacy' 
 # protocol as well.
 
+my @files = ();
 my $legacy = 0;
+my @lines = ();
 my $project = '';
 my $replace = 0;
+my $stdin = 0;
+my $unicode = 0;
 
 GetOptions (
     'legacy+'=>\$legacy,
     'project:s'=>\$project,
     'replace'=>\$replace,
+    'stdin'=>\$stdin,
+    'unicode+'=>\$unicode,
     );
 
 die "atfproject.plx: must give -project <PROJECT> on command line\n"
     unless $project;
 
-my @files = @ARGV;
-if ($#files < 0) {
-    @files = <00atf/*.atf>;
+unless ($stdin) {
+    @files = @ARGV;
+    if ($#files < 0) {
+	@files = <00atf/*.atf>;
+    }
 }
 
-foreach my $f (@files) {
-    open(F,"$f");
-    my @lines = (<F>);
-    close(F);
-    warn "atfproject.plx: can't open `$f' for output\n" and next unless open(F,">$f");
+if ($#files >= 0) {
+
+    foreach my $f (@files) {
+	open(F,"$f");
+	my @lines = (<F>);
+	close(F);
+	projectify($f, @lines);
+    }
+} elsif ($stdin) {
+    @lines = (<>);
+    projectify('', @lines);
+} else {
+    die "atfproject.plx: no files specified and -stdin not given\n";
+}
+
+sub
+projectify {
+    my ($f, @lines) = @_;
+    if ($f) {
+	warn "atfproject.plx: can't open `$f' for output\n" and next unless open(F,">$f");
+	select F;
+    }
     for (my $i = 0; $i <= $#lines; ++$i) {
 	if ($lines[$i] =~ /^\x{feff}?\&/) {
 	    my $proj = -1;
@@ -40,21 +65,22 @@ foreach my $f (@files) {
 		$proj = $j and last if $lines[$j] =~ /^\#project:/;
 		last unless $lines[$j] =~ /^\#/;
 	    }
-	    print F $lines[$i];
+	    print $lines[$i];
 	    if ($lines[$i+1] =~ /^\@(composite|score)/) {
-		print F $lines[++$i];
+		print $lines[++$i];
 	    }
 	    if ($proj == -1) {
-		print F "#project: $project\n";
-		print F "#atf: use legacy\n" if $legacy;
+		print "#project: $project\n";
+		print "#atf: use legacy\n" if $legacy;
+		print "#atf: use unicode\n" if $unicode;
 	    } elsif ($replace) {
 		$lines[$proj] = "#project: $project\n";
 	    }
 	} else {
-	    print F $lines[$i] unless $lines[$i] =~ m/^#project/;
+	    print $lines[$i] unless $lines[$i] =~ m/^#project/;
 	}
     }
-    close(F);
+    close(F) if $f;
 }
 
 1;

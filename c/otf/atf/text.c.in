@@ -397,6 +397,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	    }
 	  status = pre_lem_status;
 	}
+
       if (!check_only && !perform_lem && !do_show_insts && (!status || force))
 	{
 	  if (!no_destfile)
@@ -424,7 +425,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	    }
 	}
 
-      if (perform_lem && !exit_status)
+      if (perform_lem && (!exit_status || force || lem_dynalem))
 	{
 	  if (ods_mode)
 	    {
