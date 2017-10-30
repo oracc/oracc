@@ -93,13 +93,13 @@ label_segtab(const char *st, unsigned const char *tok)
 	    {
 	      if (*line_label_buf)
 		strcat((char*)line_label_buf," ");
-	      sprintf((char*)line_label_buf+strlen((char*)line_label_buf),div_labels[1]);
+	      sprintf((char*)line_label_buf+strlen((char*)line_label_buf), "%s", div_labels[1]);
 	    }
 	  if (div_labels[2][0])
 	    {
 	      if (*line_label_buf)
 		strcat((char*)line_label_buf," ");
-	      sprintf((char*)line_label_buf+strlen((char*)line_label_buf),div_labels[2]);
+	      sprintf((char*)line_label_buf+strlen((char*)line_label_buf), "%s", div_labels[2]);
 	    }
 	  m_label_col_index = 0;
 	}

@@ -10,6 +10,8 @@ extern void lem_save_cont(unsigned char *lp);
 extern void lem_save_line(unsigned char *lp);
 extern void lem_save_form(const char *ref, const char *lang, const char *formstr,
 			  struct lang_context *langcon);
+extern void lem_save_form_dynalem(const char *ref, const char *lang, const char *formstr,
+				  struct lang_context *langcon);
 extern void lem_save_lemma(struct node *wp, const char *lemma);
 extern void lem_text_init(const char *pq);
 extern void lem_text_term(void);

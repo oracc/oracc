@@ -2,6 +2,7 @@
 #include "hash.h"
 #include "warning.h"
 #include "tree.h"
+#include "loadfile.h"
 #include "memblock.h"
 #include "lemline.h"
 #include "ilem_form.h"
@@ -75,29 +76,48 @@ new_lsp(void)
 
 static struct lem_save *curr_lsp, *last_lsp;
 static Hash_table *lem_dynalem_hash = NULL;
+
+static void *
+lem_dynalem_ambig(const unsigned char *l1, const unsigned char *l2)
+{
+  char *n = malloc(strlen((const char*)l1)+strlen((const char*)l2)+2);
+  sprintf(n, "%s|%s", l1, l2);
+  return n;
+}
+
 static void
 lem_dynalem_load(const char *tab)
 {
-  unsigned char **files = NULL, *fmem;
+  static int loaded = 0;
+  unsigned char **tablines = NULL, *fmem;
   size_t nlines = 0, i;
-  tablines = loadfile_lines3((unsigned char *)tab,&nfiles,&fmem);
+
+  if (loaded)
+    return;
+  
+  tablines = loadfile_lines3((unsigned char *)tab,&nlines,&fmem);
   lem_dynalem_hash = hash_create(1024);
   for (i = 0; i < nlines; ++i)
     {
-      char *tab = strchr(lines[i], '\t');
+      unsigned char *tab = (unsigned char*)strchr((const char*)tablines[i], '\t');
       if (tab)
 	{
-	  char *f1, *f2;
-	  f1 = lines[i];
+	  const unsigned char *f1, *f2;
+	  const unsigned char *lem = NULL;
+	  f1 = tablines[i];
 	  f2 = tab+1;
-	  if (strchr(f2, '\t'))
-	    fprintf(stderr, "%s:%d: too many tabs in line\n", tab, i+1);
+	  *tab = '\0';
+	  if (strchr((const char *)f2, '\t'))
+	    fprintf(stderr, "%s:%d: too many tabs in line\n", tab, (int)i+1);
+	  else if ((lem = hash_find(lem_dynalem_hash,f1)))
+	    hash_add(lem_dynalem_hash, f1, lem_dynalem_ambig(lem,f2));
 	  else
-	    hash_add(lem_dynalem_hash, f1, f2);
+	    hash_add(lem_dynalem_hash, f1, (void*)f2);
 	}
       else
-	fprintf(stderr, "%s:%d: no tab in line\n", tab, i+1);
+	fprintf(stderr, "%s:%d: no tab in line\n", tab, (int)i+1);
     }
+  loaded = 1;
 }
 
 void
@@ -277,14 +297,15 @@ lem_save_form(const char *ref, const char *lang,
   hash_add(word_form_index,npool_copy((unsigned char*)ref,lemline_xcp->pool),form);
 }
 
-const unsigned char *
-lem_dynalem(const char *lang, const char *formstr)
+static const unsigned char *
+lem_dynalem_lem(const char *lang, const char *formstr)
 {
-  static char *tmpbuf = NULL;
+  static unsigned char *tmpbuf = NULL;
   static int tmpbuf_alloc = 0;
+  const unsigned char *lem = NULL;
   if (NULL == lang)
     {
-      free tmpbuf;
+      free(tmpbuf);
       tmpbuf_alloc = 0;
       return NULL;
     }
@@ -293,24 +314,24 @@ lem_dynalem(const char *lang, const char *formstr)
       tmpbuf_alloc = tmpbuf_alloc ? 2*tmpbuf_alloc : 512;
       tmpbuf = realloc(tmpbuf, tmpbuf_alloc);
     }
-  sprintf(tmpbuf, "%%%s:%s", lang, formstr);
-  if (hash_find(dynalem_hash, tmpbuf))
-    return tmpbuf;
+  sprintf((char*)tmpbuf, "%%%s:%s", lang, formstr);
+  if ((lem = hash_find(lem_dynalem_hash, tmpbuf)))
+    return lem;
   else
     {
       if (!strcmp(formstr, "n")
 	  || !strcmp(formstr, "(n)")
-	  || (*formstr < 128 && isdigit(*formstr)))
-	return "n";
+	  || (*(const unsigned char *)formstr < 128 && isdigit(*formstr)))
+	return (const unsigned char *)"n";
       else if (!strcmp(formstr, "x")
 	       || !strcmp(formstr, "(x)")
 	       || (strstr(formstr, "..")
 		   || strstr(formstr, "-x")
 		   || strstr(formstr, "x-"))
 	       ) {
-	return "u";
+	return (const unsigned char *)"u";
       } else {
-	return "X";
+	return (const unsigned char *)"X";
       }
     }
 }
@@ -324,10 +345,10 @@ lem_save_form_dynalem(const char *ref, const char *lang,
       const unsigned char *dynalem = NULL;
       struct ilem_form *form = NULL;
       lem_save_form(ref, lang, formstr, langcon);
-      dynalem = lem_dynalem(lang, formstr); /* always returns at least 'u' or 'X' */
-      form = hash_find(word_form_index, ref);
+      dynalem = lem_dynalem_lem(lang, formstr); /* always returns at least 'u' or 'X' */
+      form = hash_find(word_form_index, (const unsigned char *)ref);
       if (form) /* shouldn't be able to happen */
-	form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
+	form->literal = (char*)npool_copy(dynalem,lemline_xcp->pool);
     }
 }
 
@@ -372,21 +393,32 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	    fputs((char*)f2->norm,fp);
 	  else
 	    fputs((char*)f2->cf,fp);
-	  if (f2->sense && strcmp(f2->gw,"cvne") && strcmp(f2->gw,"cvve"))
+	  if (f2->sense
+	      && strcmp((const char *)f2->gw,"cvne")
+	      && strcmp((const char *)f2->gw,"cvve"))
 	    {
 	      char *comma = NULL;
-	      Uchar *tmp = f2->sense;
-	      if ((comma = strchr(f2->sense, ',')))
+	      Uchar *tmp = (Uchar*)f2->sense;
+	      if ((comma = strchr((const char *)f2->sense, ',')))
 		*comma = '\0';
-	      if (!strncmp(f2->sense, "(to be) ", 8))
+	      if (!strncmp((const char*)f2->sense, "(to be) ", 8))
 		tmp += 8;
-	      else if (!strncmp(f2->sense, "to ", 3))
+	      else if (!strncmp((const char*)f2->sense, "to ", 3))
 		{
 		  tmp += 3;
-		  if (!strncmp(tmp, "be ", 3))
+		  if (!strncmp((const char*)tmp, "be ", 3))
 		    tmp += 3;
-		  else if (!strncmp(tmp, "make ", 5))
+		  else if (!strncmp((const char*)tmp, "make ", 5))
 		    tmp += 5;
+		}
+	      if (tmp[strlen((const char *)tmp)-1] == ')')
+		{
+		  unsigned char *end = tmp+strlen((const char *)tmp);
+		  while (end > tmp)
+		    {
+		      if (*--end == '(')
+			*end = '\0';
+		    }
 		}
 	      fprintf(fp,"[%s]",(char*)tmp);
 	    }

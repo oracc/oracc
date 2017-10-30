@@ -2180,11 +2180,11 @@ logo_word_lang(struct node *wp, struct token *tp)
 	      logo_lang->core->name);
       break;
     }
-  wlang = malloc(strlen(wp_lang)+5);
-  strcpy(wlang, wp_lang);
-  if (isdigit(wlang[strlen(wp_lang)-1]))
+  wlang = malloc(strlen((const char *)wp_lang)+5);
+  strcpy(wlang, (const char *)wp_lang);
+  if (isdigit(wlang[strlen((const char *)wp_lang)-1]))
     {
-      char *insert = strrchr(wp_lang,'-');
+      char *insert = strrchr((const char *)wp_lang,'-');
       if (insert)
 	sprintf(insert,"%s",logo_script);
       else
@@ -2196,7 +2196,7 @@ logo_word_lang(struct node *wp, struct token *tp)
       strcat(wlang,"-");
       strcat(wlang,logo_script);
     }
-  setAttr(wp,a_xml_lang,strdup(wlang));
+  setAttr(wp,a_xml_lang,(unsigned const char *)strdup((const char *)wlang));
 
   return 0;
 }
