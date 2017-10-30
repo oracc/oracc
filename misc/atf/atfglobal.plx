@@ -51,7 +51,7 @@ while (<>) {
 	print unless $dump_table; # get rid of the line before hacking it up
 	my $line = $_;
 	my $lem = <> || last;
-	if ($lem =~ /^\#lem/) {
+	if ($lem =~ /^\#lem:/) {
 	    chomp $line; chomp $lem;
 	    $line =~ s/\(\#.*?\#\)//g;
 	    $line =~ s/\(\$.*?\$\)//g;
