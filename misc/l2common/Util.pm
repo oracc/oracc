@@ -247,7 +247,10 @@ parse_sig {
 
 #    warn "$sig\n";
 
-    local($_) = $sig;
+    my($sig2,@rest) = split(/\t/,$sig);
+    
+    local($_) = $sig2;
+    
     my %x = ();
     if (/^\@/) {
 	@x{'proj','lang','form'} = (/\@(.*?)\%(.*?)\:(.*?)=/);
@@ -256,7 +259,8 @@ parse_sig {
 	$noproj = 1;
     }
     
-    s#V/([ti])#V\cA$1#g;
+    s#V/([ti])#V\cA$1#g; # protect V/i and V/t from // parse
+    1 while s/\[([^\]]*?)'(.*?)\]/[$1\cB$2]/; # protect ' in GW/SENSE from EPOS parse
     
     if (/\'/) {
 	@x{'cf','gw','sense','pos','epos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
@@ -274,6 +278,8 @@ parse_sig {
 	# leave it to fail later;
     }
 
+    $x{'gw'} =~ tr/\cB/'/ if $x{'gw'};
+    $x{'sense'} =~ tr/\cB/'/ if $x{'sense'};
     $x{'pos'} =~ tr,\cA,/, if $x{'pos'};
     $x{'epos'} =~ tr,\cA,/, if $x{'epos'};
 
@@ -281,11 +287,10 @@ parse_sig {
 	$x{'flags'} = $1;
     }
 
-    if (s/\t^(\d+)//) {
-	$x{'freq'} = $1;
-	if (s/\t(.*)$//) {
-	    $x{'instances'} = $1
-		if $1;
+    if ($#rest >= 0) {
+	if ($rest[0] =~ /^\d+/) {
+	    $x{'freq'} = $rest[0];
+	    $x{'instances'} = $rest[1];
 	}
     }
 
