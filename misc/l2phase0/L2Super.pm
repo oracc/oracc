@@ -160,7 +160,9 @@ init {
 	} else {
 	    super_die("must use both of -project and -lang or give .$type file on command line")
 		unless $project && $lang;
-	    $argfile = "$dir/$project~$lang.$type";
+	    my $proj2file = $project;
+	    $proj2file =~ tr,/,-,;
+	    $argfile = "$dir/$proj2file~$lang.$type";
 	    super_die("expected to use file $argfile but it doesn't exist")
 		unless -e $argfile;
 	    super_die("expected to use file $argfile but it can't be read")

@@ -277,10 +277,11 @@ acd2xml {
 	next if /^\#/ || /^\@letter/;
 	chomp;
 	s/\s+/ /g;
-	if (/^\@([a-z_]+[-\*!]*)\s+(.*?)\s*$/) {
+	if (/^\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $defn_minus = 0;
-	    my $default = $currtag =~ s/!$//;
+	    my $default = $currtag =~ s/!//;
+	    my $starred = $currtag =~ s/\*//;
 	    my $linetag = $currtag;
 	    $linetag =~ s/\*$//;
 	    next if exists $header_fields{$currtag}; # ignore header for now
@@ -296,7 +297,7 @@ acd2xml {
 		unless defined $line_of{$linetag};
 	    if ($currtag =~ /^entry/) {
 		$ebang_flag = $default || '';
-		$usage_flag = s/^\@entry\*/\@entry/;
+		$usage_flag = $starred;
 		$currarg =~ /^(\S+)/;
 		$curr_cf = $1;
 		$currarg =~ s/^\s+//; $currarg =~ s/\s*$//;
