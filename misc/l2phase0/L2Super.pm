@@ -96,7 +96,7 @@ init {
 	'base=s'=>\$argbase,
 	'compare=s'=>\$argsrc,
 	'dryrun'=>\$dryrun,
-	force=>\$force,
+	'force'=>\$force,
 	'lang=s'=>\$lang,
 	'level=s'=>\$level,
 	'map'=>\$argmap,

@@ -52,7 +52,6 @@ my %f = ();
 
 while (<S>) {
     next if /^\@(project|name|lang)\s/ || /^\s*$/;
-    next unless /\%$data{'baselang'}/;
     chomp;
     if (s/^\@fields\s+//) {
 	my @f = split(/\s+/, $_);
@@ -63,6 +62,7 @@ while (<S>) {
     my @s = split(/\t/,$_);
     my($sig,$inst) = ($s[0],$s[$f{'inst'}]);
     next unless $inst;
+    next unless /\%$data{'baselang'}/;
 
     # For now, just deal with entry/sense level mapping
     my %sig = parse_sig($sig);
