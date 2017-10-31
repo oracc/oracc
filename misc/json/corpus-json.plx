@@ -23,8 +23,10 @@ open(OUT,">$bldjson/corpus.json");
 print OUT "{\n\"type\": \"corpus\",\n\"project\": \"$project\"";
 
 if (-r $list) {
-    my @texts = `cat $list`; chomp @texts;
-    if ($#texts > 0){
+    open(L,$list) || die "corpus-json.plx: can't open `$list'\n";
+    my @texts = (<L>); chomp @texts;
+    close(L);
+    if ($#texts >= 0){
 	print OUT ",\n\"members\": {\n";
 	$has_corpus = 1;
 	foreach my $t (@texts) {
