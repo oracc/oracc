@@ -32,31 +32,31 @@ my @vpm = qw/
     a ab al al6 al₆ an am3 am₃ am2 am₂ am6 am₆
     b ba be be2 be₂ bi bi2 bi₂
     da da5 da₅ de de3 de₃ di di3 di₃ du10 du₁₀
-    e eb eb2 eb₂ em en en6 en₆
+    e eb eb2 eb₂ em en en6 en₆ eŋ₃ em₃
     ga ga2 ga₂ gi4 gi₄ gu2 gu₂
     ha he he2 he₂ hu
     i i3 i₃ ib ib2 ib₂ ij3 iŋ₃ im in iri
     ji6 ŋi₆
     la li
-    m ma me mi mu
+    m ma me mi mu ma₃
     n na nam nam2 nam₂ ne ne2 ne₂ neda ni nu
     ra re ri ri2 ri₂
     ca ša ce3 še₃ ci ši cu šu
     ta te ti
-    u u3 u₃ u5 u₅ u8 u₈ ub ul um un
+    u u3 u₃ u5 u₅ u8 u₈ ub ul um un uš
     /;
 my %vpm = ();
 @vpm{ @vpm } = ();
 
 # graphemes that could be modal prefixes
 my @mpg = qw/
-    nu la li
+    nu la li li₉
     ha he he2 he₂ hu
     da de3 de₃ du5 du₅ du10 du₁₀
     na nam nam2 nam₂
     ga ga2 ga₂ gi4 gi₄ gu2 gu₂
     ba
-    a u u3 u₃ ub ul um un i3 i₃ i iri
+    a u u3 u₃ ub ul um un i3 i₃ i iri uš
     ca ša ce3 še₃ cu šu ci ši
     /;
 my %mpg;
@@ -88,6 +88,7 @@ my %mp_data = (
     'nu'   => [ 'nu',  '', [ 0 ] ],
     'la'   => [ 'nu',  '', [ 0 ] ],
     'li'   => [ 'nu',  '', [ 0 ] ],
+    'li₉'  => [ 'nu',  '', [ 0 ] ],
     'na'   => [ 'na',  '', [ 0 ] ],
     'nam'  => [ 'na',  'm', [ 0,2 ] ],
     'nam2' => [ 'na',  'm', [ 0,2 ] ],
@@ -131,7 +132,8 @@ my @cpg = qw/
     ma me mi mu
     ba be be2 be₂ bi bi2 bi₂
     e i3 i₃ i en in eb ib eb2 eb₂ ib2 ib₂ ij3 iŋ₃
-    em im
+    em im em₃ eŋ₃
+    ŋa₂
     /;
 my %cpg;
 @cpg{ @cpg } = ();
@@ -158,6 +160,7 @@ my %cp_data = (
     'am₃'  => [ 'V',  'm'],
     'am₆'  => [ 'V',  'm'],
     'e'    => [ 'V',  ''],
+    'eŋ₃'  => [ 'V',  'm'],
     'i'    => [ 'V',  '' ],
     'i3'   => [ 'V',  '' ],
     'i₃'   => [ 'V',  '' ],
@@ -714,7 +717,7 @@ mp {
 	    return 1 if exists($cpg{$_[0]}) || $_[0] =~ /^i[nb]$dig*$/;
 	} else {
 	    return 1 if (($g ne 'nu' || $_[0] !~ /^u[cš]$/) && $g ne 'ba');
-	    return 2 if ($g eq 'nu' && $_[0] !~ /^u[cš]$/)
+	    return 2 if ($g eq 'nu' && $_[0] =~ /^u[cš]$/)
 		|| ($g eq 'ba' && $_[0] eq 'ra');
 	}
     }
@@ -761,8 +764,8 @@ cp {
 			&& $g[$gx+2] =~ /^[mjŋ][aeiu]$dig*$/;
 		}
 		if ($gx < $#g) {
-		    return 2 if ($g[$gx] =~ /^[aeiu][mjŋ]\d*/ 
-				 && $g[$gx+1] =~ /^[mjŋ][aeiu]\d*$/);
+		    return 2 if ($g[$gx] =~ /^[aeiu][mjŋ][\d₀-₉]*/ 
+				 && $g[$gx+1] =~ /^[mjŋ][aeiu][\d₀-₉]*$/);
 		}
 		return 1;
 	    }
@@ -782,6 +785,7 @@ cp_pair {
 	|| ($g0 eq 'a' && $g1 =~ /^ba|ab|ra|an|na$/)
 	|| ($g0 =~ /^i[3₃]?$/ && $g1 =~ /^ni|ra|ri|ri2|ri₂|ib|ib2|ib₂|ij3|iŋ₃|im|in$/)
 	|| ($g0 eq 'um' && $g1 =~ /^(?:m|i)/)
+	|| ($g0 =~ /^(?:em₃|eŋ₃|am₂|am₃)$/ && $g1 =~ /^(?:ma₃|ŋa₂)/)
 	|| 0;
 }
 

@@ -24,6 +24,7 @@ my $sig_output = 0;
 my $slave = 0;
 my $V_hack_flag = 0;
 my $verbose = 0;
+my $with_id = 0;
 my $xli = 0;
 
 GetOptions(
@@ -31,6 +32,7 @@ GetOptions(
     "base:s"=>\$base,
     "form:s"=>\$form,
     "glossary:s"=>\$glossary,
+    "id"=>\$with_id,
     "input:s"=>\$input,
     "lemma:s"=>\$lemma,
     "nobase"=>\$nobase,
@@ -173,8 +175,13 @@ if ($glossary) {
 	next if /^\#/ || /^\s*$/;
 	chomp;
 	if (/\t/) {
-	    my($f,$l,$b) = split(/\t/,$_);
-	    t($f,$l,$b);
+	    my($id,$f,$l,$b);
+	    if ($with_id) {
+		($id,$f,$l,$b) = split(/\t/,$_);
+	    } else {
+		($f,$l,$b) = split(/\t/,$_);
+	    }
+	    t($f,$l,$b,$id);
 	} else {
 	    t($_,$lemma,$base);
 	}
@@ -233,7 +240,7 @@ ORACC::SMA::Base::unload();
 
 sub
 t {
-    my($f,$l,$b) = @_;
+    my($f,$l,$b,$id) = @_;
     my $use_f = $f;
     my $try_number = 0;
     my $arg_base = undef;
@@ -331,6 +338,7 @@ t {
 	    }
 	    #	    Encode::_utf8_off($wstr);
 	    #	    syswrite STDOUT, $wstr;
+	    print "$id\t" if $id;
 	    print $wstr;
 	    return 0;
 	}

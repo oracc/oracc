@@ -1,4 +1,11 @@
 #!/bin/sh
+
+function sortlemm {
+    grep ^@fields $1 >tmp.fields
+    grep -v ^@fields $1 | sort -t'	' -nrk3 >tmp.sort
+    cat tmp.fields tmp.sort >$1
+}
+
 projtype=`oraccopt . type`
 if [ "$projtype" != "superglo" ]; then
     cbdmode=`oraccopt . cbd-mode`
@@ -14,7 +21,7 @@ if [ "$projtype" != "superglo" ]; then
 	    l2p1-lemm-quick-freqs.plx 
 	    (cd 02pub ; for a in lemm-*.sig.freq ; do  sort -t'	' -nrk3 $a >`basename $a .freq`; done)
 	else
-	    (cd 02pub ; for a in lemm-*.sig ; do  sort -o $a -t'	' -nrk3 $a; done)
+	    (cd 02pub ; for a in lemm-*.sig ; do sortlemm $a; done)
 	fi
 	rm -f 01bld/nolem
     fi

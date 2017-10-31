@@ -41,7 +41,7 @@ my @cpg = qw/
     a ab al am am3 am₃ an
     ma mi mu
     ba bi2 bi₂
-    i3 i₃ ni i u en in eb ib eb2 eb₂ ib2 ib₂
+    i3 i₃ ni i u u₃ en in eb ib eb2 eb₂ ib2 ib₂
     em im
     /;
 my %cpg;
@@ -78,6 +78,7 @@ my %cp_data = (
     'bi₂'  => [ 'ba', 'I'],
     'Vmma' => [ 'Vmma',''],
     'Vmmi' => [ 'Vmma','I'],
+    'u₃'   => [ 'V',  '' ],
 );
 
 #    'me'   => [ 'mu', 'e'],

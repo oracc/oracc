@@ -58,12 +58,14 @@ foreach my $f (@freq_sigs) {
 foreach my $l (<02pub/lemm-*.sig>) {
     if (open(L, $l)) {
 	open(O, ">$l.freq");
-	print O "\@fields sig rank freq pct\n";
+	print O "\@fields sig rank freq\n";
 	while (<L>) {
+	    next if /^\@fields/;
 	    chomp;
-	    s/\t.*$//;
-	    my $f = ($freqs{$_} ? $freqs{$_} : 0);
-	    print O "$_\t$f\n"
+	    my @t = split(/\t/,$_);
+	    $t[1] = '0' unless (defined $t[1] && $t[1]);
+	    my $f = ($freqs{$_} ? $freqs{$_} : '0');
+	    print O "$t[0]\t$t[1]\t$f\n"
 	}
 	close(O);
     }
