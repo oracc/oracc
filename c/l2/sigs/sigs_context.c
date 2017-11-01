@@ -353,7 +353,7 @@ vsigs3(struct sig *s)
 static int
 sig_check_fields(Uchar *f, Uchar *l, int *rankflag)
 {
-  if (!strncmp((const char *)l, "@fields", strlen("@fields")))
+  if (l && !strncmp((const char *)l, "@fields", strlen("@fields")))
     {
       if (NULL == strstr((const char *)l, "rank"))
 	{
