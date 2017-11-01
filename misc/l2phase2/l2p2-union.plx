@@ -149,18 +149,22 @@ sub
 load_sigfile {
     my($lang, $file) = @_;
     if (open(S,$file)) {
-	my $fields = <S>;
-	my @f = split(/\s+/, $fields); shift @f;
 	my %f = ();
-	for (my $i = 0; $i <= $#f; ++$i) {
-	    $f{$f[$i]} = $i;
-	}
 	while (<S>) {
 	    next if /^\s*$/;
 	    if (/^\@?(proj(?:ect)?|name|lang)\s+(\S+)/) {
 		next;
 	    }
 	    chomp;
+	    if (/\@fields/) {
+		my $fields = $_;
+		my @f = split(/\s+/, $fields); shift @f;
+		for (my $i = 0; $i <= $#f; ++$i) {
+		    $f{$f[$i]} = $i;
+		}
+		next;
+	    }
+	    
 	    my @s = split(/\t/,$_);
 	    my $sig = $s[0];
 	    my $freq = $s[$f{'freq'}];
