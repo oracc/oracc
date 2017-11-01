@@ -23,10 +23,14 @@ my $outfh = $data{'output_fh'};
 
 $mapproj =~ tr,-,/,;
 my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/from-xtf-glo.sig";
-my $projdate = (stat($projsigs))[9];
 
+if (!-r $projsigs) {
+    my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/from-prx-glo.sig";
+}
 super_die("can't read $projsigs")
     unless open(S, $projsigs);
+
+my $projdate = (stat($projsigs))[9];
 
 my $mapdate = (stat($data{'mapfile'}))[9];
 
