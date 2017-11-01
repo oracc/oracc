@@ -33,8 +33,8 @@ my @nsm = qw/
     ra ar ir ur ur2 ur₂
     ta 
     ce3 še₃ ac aš aš₂ ec ec2 eš₂ ic iš uc uš
-    gin7 gin₇ de
-    me men3 men₃ jen ŋen mec meš
+    gin7 gin₇ de ŋen
+    me men3 men₃ jen mec meš
     /;
 
 %NSF::nsm = ();
@@ -79,7 +79,7 @@ my %poss_data = (
 my @post = qw/
     e
     a
-    gin7 gin₇ de
+    gin7 gin₇ de ŋen
     ce3 še₃ ac aš ec eš ec2 eš₂ ic iš uc uš
     ra ar er ir ur ur2 ur₂
     da
@@ -95,6 +95,7 @@ my %post_data = (
     'e'=>'e',
     'a'=>'a',
     'gin7'=>'gin',
+    'ŋen'=>'gin',
     'gin₇'=>'gin',
     'de-ej3'=>'gin',
     'de-eŋ₃'=>'gin',
@@ -152,6 +153,7 @@ is_nsf {
 sub
 parse_nsf {
     my $root = shift;
+    my $orth = shift;
     my @g = @_;
     my $g_index = 0;
     my @nsf = ();
@@ -174,7 +176,8 @@ parse_nsf {
 
   PARSE:
     {
-	if ($root && $root =~ /n/ 
+	if ((($root && $root =~ /n/)
+	     || $orth && $orth =~ /n/)
 	    && ($g[0] && ($g[0] eq 'na' || $g[0] eq 'ne₂'))) {
 	    $nsf[0] = $original_g = $g[0];
 	    $g[0] = ($g[0] =~ /a/ ? 'a' : 'e');
@@ -184,11 +187,13 @@ parse_nsf {
 		     && ( !exists($poss{$g[0]}) 
 			  || ($g[1] && $g[1] =~ /^n[aie]₂?$/))
 		     && ( $g[0] =~ /^(.)([ae]m?)$dig*$/
-			  || (($root && $root =~ /u/) 
+			  || ((($root && $root =~ /u/)
+			       || ($orth && $orth =~ /u/))
 			      && $g[0] =~ /^(.?)(u)$dig*$/)))) {
 	    my $anlaut = $1;
 	    my $vowel = $2;
-	    if ($root && $root =~ /([^aeiu])$/) {
+	    if ((($root && $root =~ /([^aeiu])$/))
+		|| ($orth && $orth =~ /([^aeiu])$/)) {
 		$auslaut = $1;
 
 # This used to set the auslaut slot to the final letter of
@@ -424,7 +429,7 @@ parse_nsf {
 	    }
 	    $nx = 9;
 	} elsif ($nx <= 8 && ($g_index <= $#g 
-			      && $g[$g_index] =~ /^men3|jen|men₃|ŋen|en[₃₆]?$/)) {
+			      && $g[$g_index] =~ /^en[₃₆]?$/)) { # men3|jen|men₃|ŋen we do these with space now
 	    $nsf[8] = 'men';
 	    ++$g_index;
 	    $nx = 9;

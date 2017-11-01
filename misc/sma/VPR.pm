@@ -29,7 +29,7 @@ my $dig = '[0-9₀-₉₊]';
 # recognized because of the confusion it causes with roots (this
 # can be handled, but is it worth it?)
 my @vpm = qw/
-    a ab al al6 al₆ an am3 am₃ am2 am₂ am6 am₆
+    a ab al al6 al₆ an am3 am₃ am2 am₂ am6 am₆ aŋ₂
     b ba be be2 be₂ bi bi2 bi₂
     da da5 da₅ de de3 de₃ di di3 di₃ du10 du₁₀
     e eb eb2 eb₂ em en en6 en₆ eŋ₃ em₃
@@ -45,8 +45,10 @@ my @vpm = qw/
     ta te ti
     u u3 u₃ u5 u₅ u8 u₈ ub ul um un uš
     /;
-my %vpm = ();
-@vpm{ @vpm } = ();
+
+%ORACC::SMA::VPR::vpm = ();
+
+@ORACC::SMA::VPR::vpm{ @vpm } = ();
 
 # graphemes that could be modal prefixes
 my @mpg = qw/
@@ -128,7 +130,7 @@ my %mp_data = (
 # graphemes that could be conjugational prefixes
 # aj2 ja2
 my @cpg = qw/
-    a ab al al6 al₆ am2 am₂ am3 am₃ an
+    a ab al al6 al₆ am2 am₂ am3 am₃ an aŋ₂
     ma me mi mu
     ba be be2 be₂ bi bi2 bi₂
     e i3 i₃ i en in eb ib eb2 eb₂ ib2 ib₂ ij3 iŋ₃
@@ -153,6 +155,8 @@ my %cp_data = (
     'al6'  => [ 'al', ''],
     'al₆'  => [ 'al', ''],
     'an'   => [ 'V',  'n'],
+    'aŋ₂'  => [ 'V',  'm'],
+    'am2'  => [ 'V',  'm'],
     'am2'  => [ 'V',  'm'],
     'am3'  => [ 'V',  'm'],
     'am6'  => [ 'V',  'm'],
@@ -354,9 +358,9 @@ parse_vpr {
 	    }
 	    $vx = 3;
 	} elsif ($g_index < $#g
-		 && ($g[$g_index] eq 'ga')) {
-#	    || $g[$g_index] eq 'ga2'
-#		     || $g[$g_index] eq 'ja2'|| $g[$g_index] eq 'ŋa₂')) {
+		 && ($g[$g_index] eq 'ga')
+		 || $g[$g_index] eq 'ga2'
+		 || $g[$g_index] eq 'ja2'|| $g[$g_index] eq 'ŋa₂') {
 	    $vpr[2] = 'inga';
 	    ++$g_index;
 	    $vx = 3;
@@ -374,10 +378,11 @@ parse_vpr {
 	    
 	    ($vpr[3],$rest) = @{$cp_data{$rest}};
 	    $vx = 4;
-	    
+
+	    # This condition removed from next elsif because late scribes do write nu-ba
+	    # (defined($vpr[1]) && $vpr[1] ne 'nu' || $g[$g_index] !~ /^b/) ||
 	} elsif (($n = cp($rest,$g[$g_index],$g_index,@g))
-		 && ((defined($vpr[1]) && $vpr[1] ne 'nu' || $g[$g_index] !~ /^b/)
-		     || defined($vpr[2])
+		 && (defined($vpr[2])
 		     || cp_pair($g[$g_index],$g[$g_index+1], $g[$g_index-1]||''))) {
 
 	    my $gsub;
@@ -728,7 +733,7 @@ sub
 cp {
     my ($rest, $g, $gx, @g) = @_;
 
-    return 0 if defined($gx) && $gx <= $#g && !exists($vpm{$g[$gx]});
+    return 0 if defined($gx) && $gx <= $#g && !exists($ORACC::SMA::VPR::vpm{$g[$gx]});
 
     # pick up 'um-me', 'um-in' as Vmma without getting nu-um-cum mixed up in things
     if (defined $gx) {
@@ -779,13 +784,13 @@ sub
 cp_pair {
     my($g0,$g1,$prev) = @_;
 
-    return 0 if $g0 =~ /^b/ && $prev eq 'nu';
+#    return 0 if $g0 =~ /^b/ && $prev eq 'nu'; # late scribes break this
 
-    $g0 =~ /^ab|al|am3|am₃|an|mu|me|mi|ma|ba|be|bi|bi2|bi₂|e|i|im|in|i3|i₃|ib2|ib₂|ub$/
+    $g0 =~ /^ab|aŋ₂|al|am3|am₃|an|mu|me|mi|ma|ba|be|bi|bi2|bi₂|e|i|im|in|i3|i₃|ib2|ib₂|ub$/
 	|| ($g0 eq 'a' && $g1 =~ /^ba|ab|ra|an|na$/)
 	|| ($g0 =~ /^i[3₃]?$/ && $g1 =~ /^ni|ra|ri|ri2|ri₂|ib|ib2|ib₂|ij3|iŋ₃|im|in$/)
 	|| ($g0 eq 'um' && $g1 =~ /^(?:m|i)/)
-	|| ($g0 =~ /^(?:em₃|eŋ₃|am₂|am₃)$/ && $g1 =~ /^(?:ma₃|ŋa₂)/)
+	|| ($g0 =~ /^(?:em₃|eŋ₃|am₂|am₃|aŋ₂)$/ && $g1 =~ /^(?:ma₃|ŋa₂)/)
 	|| 0;
 }
 
@@ -823,7 +828,7 @@ vpr_terminal {
     my ($vx0,$rest,$ix,@g) = @_;
     return 0 if length $rest;
 #    return 0 if $ix <= $#g && exists($eg{$g[$ix]});
-    $vx0 == 11  || $ix > ($#g-1) || !exists($vpm{$g[$ix]});
+    $vx0 == 11  || $ix > ($#g-1) || !exists($ORACC::SMA::VPR::vpm{$g[$ix]});
 }
 
 sub

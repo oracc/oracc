@@ -187,7 +187,7 @@ parse_isf {
 	    ++$g_index unless $g[0] =~ /[mnb]$/;
 	    $isf[1] = 'a';
 	    $vx = 2;
-	} elsif ($g[0] =~ /^u$/) {
+	} elsif ($g[0] =~ /^u/) {
 	    ++$g_index unless $g[0] =~ /[mnb]$/;
 	    $isf[1] = 'u';
 	    $vx = 2;

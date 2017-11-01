@@ -204,6 +204,17 @@ parse {
 	warn "matching quoted base `$qb'\n" if $ORACC::SMA::verbose;
 	if ($form =~ /(?:^|(\S+?)-)($qb)(?:-(\S+))?$/) {
 	    my($pre,$bas,$post) = ($1||'',$2||'',$3||'');
+
+	    if (exists($ORACC::SMA::VPR::vpm{$b})) {
+		# try to compensate for ga-am₃-ma-ga type forms
+		if ($post =~ /(?:^|(\S+?)-)($qb)(?:-(\S+))?$/) {
+		    my($npre,$nbas,$npost) = ($1||'',$2||'',$3||'');
+		    $pre = "$bas-$npre";
+		    $bas = $nbas;
+		    $post = $npost;
+		}	    
+	    }
+	    
 	    if ($pre && ($POS && $POS !~ /^(?:V|AJ)/)) {
 		print STDERR "INIT: rejecting base `$qb' because $POS != 'V/AJ'\n"
 		    if $sma_debug;
@@ -227,10 +238,11 @@ parse {
 			$p{'backup'} = 1;
 		    }
 		}
-		if ($prefbase) {
-		    my($pref,$base) = ($obase =~ /^(.*?)°(.*)$/);
-		    $pre .= "-$pref" unless $pre =~ /$pref$/;
-		}
+		# This is too clever: parser can't handle am3-m it needs am3-me
+#		if ($prefbase) {
+#		    my($pref,$base) = ($obase =~ /^(.*?)°(.*)$/);
+#		    $pre .= "-$pref" unless $pre =~ /$pref$/;
+#		}
 		if (!$lemma || ($POS && $POS =~ /^(?:V|AJ)/)) {
 		    my $have_vpr = 0;
 		    my $have_vsf = 0;
@@ -284,7 +296,7 @@ parse {
 			    $nsf_cf = $cf;
 			}
 
-			if ($#nsf_g >= 0 && is_nsf($nsf_cf,@nsf_g)) {
+			if ($#nsf_g >= 0 && is_nsf($nsf_cf,$bas,@nsf_g)) {
 			    my $nsf_ref = get_last_nsf();
 			    if ($$nsf_ref{'post_nsf'} > $#nsf_g) {
 				my $nsf = $$nsf_ref{'nsf'};
@@ -311,7 +323,7 @@ parse {
 		} else {
 		    if ($post) {
 			my @nsf_g = split(/-/,$post);
-			if (is_nsf($cf,@nsf_g)) {
+			if (is_nsf($cf,$bas,@nsf_g)) {
 			    my $nsf_ref = get_last_nsf();
 			    if ($$nsf_ref{'post_nsf'} > $#nsf_g) {
 				my $nsf = $$nsf_ref{'nsf'};

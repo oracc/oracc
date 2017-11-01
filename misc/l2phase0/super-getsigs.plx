@@ -45,7 +45,7 @@ if (!$data{'force'} && defined $data{'outputdate'}) {
 $outfh = undef;
 open($outfh, '>', $data{'output'}) || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $projsigs\n";
 
-chatty("importing sigs from $data{'project'}/$data{'lang'}");
+chatty("importing sigs from $projsigs");
 
 ### ADD CHECK FOR REFERENCED/REDUNDANT map/fix ENTRIES
 my %f = ();

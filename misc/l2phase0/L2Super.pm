@@ -286,7 +286,7 @@ init {
 	($return_data{'outmap'}) = setup_file(undef, '01tmp', $project, $lang, 'map');
 	($return_data{'outglo'}) = setup_file(undef, '01tmp', '', $baselang, 'glo');
     } elsif ($function eq 'getsigs') {
-	($return_data{'output'}) = setup_file(undef, '00sig', $project, $lang, 'sig');
+	($return_data{'output'}) = setup_file(undef, '01sig', $project, $lang, 'sig');
 	$return_data{'outputdate'} = $last_outputdate;
     }
 
