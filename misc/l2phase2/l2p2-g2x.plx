@@ -938,7 +938,7 @@ sub
 set_f {
     my $fields = shift;
     %f = ();
-    my @f = split(/\s/, $fields);
+    my @f = split(/\s+/, $fields);
     shift @f; # drop '@field';
     for (my $i = 0; $i <= $#f; ++$i) {
 	$f{$f[$i]} = $i;
@@ -974,7 +974,7 @@ read_input_line {
     }
 
     chomp;
-    if (/\@fields/) {
+    if (/^\@fields/) {
 	set_f($_);
 	return;
     }

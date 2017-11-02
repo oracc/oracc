@@ -135,7 +135,7 @@ sub
 dump_sigs {
     my $lang = shift;
     print "\@project $project\n\@name $project $lang glossary\n\@lang $lang\n\n";
-    print "\@fields sig freq refs\n";
+    print "\@fields sig freq inst\n";
     foreach (sort keys %sig) {
 	my @refs = grep(defined && length, uniq(@{$sig{$_}}));
 #	my $i = mysum(map { /;(\d+)/ } @refs);
