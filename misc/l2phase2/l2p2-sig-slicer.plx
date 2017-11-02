@@ -26,7 +26,7 @@ my $corpus = '';
 my %corpus = ();
 my $dir_output = '';
 my $exact_lang_matches = 0;
-my $fields = '';
+my %f = ();
 my $qpn_pattern = '[A-Z]N';
 my %matches = ();
 my $sigs = '';
@@ -99,8 +99,7 @@ while (<SIGS>) {
     next if /^\s*$/;
     chomp;
     if (/^\@fields/) {
-	$fields = $_;
-	$fields =~ s/\s+freq//;
+	set_f($_);
 	next;
     }
     my $sig = $_;
@@ -141,33 +140,24 @@ while (<SIGS>) {
 
     if ($matched) {
 	chomp;
-
-	my($msig,$rank,$freq,$refs) = ();
-	if ($fields =~ /rank/) {
-	    ($msig,$rank) = split(/\t/,$_);
-	} else {
-	    ($msig,$freq,$refs) = split(/\t/,$_);
-	}
-	unless ($msig) {
-	    $msig = $_;
-	    $refs = '';
-	}
-	if ($fields =~ /inst/) {
-	    if ($refs) {
-		if ($matches{$msig}) {
-		    $matches{$msig} .= " $refs";
-		} else {
-		    $matches{$msig} = $refs;
-		}
+	my @f = split(/\t/,$_);
+	my $msig = $f[0];
+#	my $rank = $f[$f{'rank'}];
+#	my $freq = $f[$f{'freq'}];
+	my $refs = $f[$f{'inst'}];
+	if ($refs) {
+	    if ($matches{$msig}) {
+		$matches{$msig} .= " $refs";
+	    } else {
+		$matches{$msig} = $refs;
 	    }
-	} else {
-	    $matches{$msig} = $rank || '0';
 	}
     }
 }
 close SIGS;
 
 merge_matches();
+
 if ($#printsigs >= 0) {
     print_sigs();
 }
@@ -280,7 +270,7 @@ print_sigs {
 	open(SLICE,">$dirpart$slice_name.sig"); select SLICE;
     }
     print "\@project $slice_proj\n\@name $slice_name\n\@lang $slice_lang\n\n";
-    print $fields, "\n";
+    print "\@fields sig inst\n";
     print @printsigs;
 }
 
@@ -333,6 +323,17 @@ uniq_refs {
 	} else {
 	    '';
 	}
+    }
+}
+
+sub
+set_f {
+    my $fields = shift;
+    %f = ();
+    my @f = split(/\s+/, $fields);
+    shift @f; # drop '@field';
+    for (my $i = 0; $i <= $#f; ++$i) {
+	$f{$f[$i]} = $i;
     }
 }
 
