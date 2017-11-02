@@ -1,4 +1,4 @@
 #!/bin/sh
 echo Building NEO ...
-neo-proxies.plx
-o2-corpus.sh
+echo Running o2-megaglo.sh
+o2-megaglo.sh

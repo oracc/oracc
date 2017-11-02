@@ -100,15 +100,15 @@ unless ($dynamic) {
     close(PLOG);
 }
 
-foreach my $l (keys %langs) {
-    my $fh = undef;
-    open($fh, '>', "02pub/lemm-$l.sig");
-    print $fh "\@fields sig rank freq pct\n";
-    $langs{$l} = $fh;
-}
+#foreach my $l (keys %langs) {
+#    my $fh = undef;
+#    open($fh, '>', "01tmp/rank-$l.sig");
+#    print $fh "\@fields sig rank\n";
+#    $langs{$l} = $fh;
+#}
 
 open(P, '>01bld/project.sig');
-print P "\@fields sig freq inst\n";
+print P "\@fields sig rank freq inst\n";
 foreach my $s (sort keys %sigs) {
     $s =~ /\%(.*?):/;
     my $this_lang = $1;
@@ -119,14 +119,14 @@ foreach my $s (sort keys %sigs) {
     my $total = ${$totals{$this_lang}}{$base};
     my $pct = ipct($ninst, $total);
     my $rank = $ranks{$s} || '0';
-    print {$langs{$this_lang}} "$s\t$rank\t$ninst\t$pct\n";
-    print P "$s\t$ninst\t", join(' ', sort keys %{$sigs{$s}}), "\n";
+#    print {$langs{$this_lang}} "$s\t$rank\n";
+    print P "$s\t$rank\t$ninst\t", join(' ', sort keys %{$sigs{$s}}), "\n";
 }
 close(P);
 
-foreach my $l (keys %langs) {
-    close($langs{$l});
-}
+#foreach my $l (keys %langs) {
+#    close($langs{$l});
+#}
 
 #############################################################
 

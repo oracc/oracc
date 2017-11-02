@@ -1,5 +1,10 @@
 #!/bin/sh
 #echo o2-unbuild.sh: currdir=`pwd`
+#
+# STEVE! If you ever think it is a good idea to rm
+# 02pub as part of unbuild remember that
+# `l2p1-lemm-data.plx -update' relies on 02pub/lemm-*
+#
 if [ -d 01bld ]; then 
     cd 01bld
     find . -maxdepth 1 -type f -exec rm '{}' ';'

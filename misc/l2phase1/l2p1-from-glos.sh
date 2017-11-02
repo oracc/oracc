@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rebuild_lemm()
+rebuild_sigs()
 {
     echo updating 01bld/from-glos.sig ...
     touch 01bld/nolem 
@@ -11,5 +11,5 @@ rebuild_lemm()
     exit 0
 }
 
-l2p1-needs-update.plx && rebuild_lemm
+l2p1-needs-update.plx && rebuild_sigs
 exit 1
