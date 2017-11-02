@@ -16,6 +16,7 @@ foreach my $s (@subs) {
     if (-r $fxg) {
 	open(F,$fxg);
 	while (<F>) {
+	    next if /^\@field/;
 	    chomp;
 	    my($sig,$insts) = split(/\t/,$_);
 	    foreach my $i (split(/\s+/, $insts)) {
@@ -31,6 +32,7 @@ foreach my $s (@subs) {
 my $output = 'u3adm/01bld/from-xtf-glo.sig';
 open(F,">$output") 
     || die "epsd2-u3adm-sigs.plx: can't open $output for write\n";
+print F "\@fields sig inst\n";
 foreach my $s (sort keys %x) {
     print F
 	$s, 

@@ -22,15 +22,25 @@ my $maplang = $data{'lang'};
 my $outfh = $data{'output_fh'};
 
 $mapproj =~ tr,-,/,;
+my $imports = '';
 my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/from-xtf-glo.sig";
+my $union = "$ENV{'ORACC'}/bld/$mapproj/$maplang/union.sig";
 
-if (!-r $projsigs) {
-    my $projsigs = "$ENV{'ORACC'}/bld/$mapproj/from-prx-glo.sig";
+if (-r $projsigs) {
+    super_die("super-getsigs.plx: can't read `$projsigs'. Stop.\n")
+	unless open(S, $projsigs);
+    $imports = $projsigs;
+} else {
+    if (-r $union) {
+	super_die("super-getsigs.plx: can't read `$union'. Stop.\n")
+	    unless open(S, $union);
+	$imports = $union;
+    } else {
+	super_die("super-getsigs.plx: can't proceed without `$projsigs' or `$union'. Stop.\n");
+    }
 }
-super_die("can't read $projsigs")
-    unless open(S, $projsigs);
 
-my $projdate = (stat($projsigs))[9];
+my $projdate = (stat($imports))[9];
 
 my $mapdate = (stat($data{'mapfile'}))[9];
 
@@ -47,9 +57,10 @@ if (!$data{'force'} && defined $data{'outputdate'}) {
 }
 
 $outfh = undef;
-open($outfh, '>', $data{'output'}) || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $projsigs\n";
+open($outfh, '>', $data{'output'}) 
+    || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $imports\n";
 
-chatty("importing sigs from $projsigs");
+chatty("importing sigs from $imports");
 
 ### ADD CHECK FOR REFERENCED/REDUNDANT map/fix ENTRIES
 my %f = ();
