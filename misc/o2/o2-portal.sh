@@ -15,6 +15,8 @@ if [ -d 00web/00config ]; then
     esp2.sh $project
     if [[ "$project" == "cdli" ]]; then
 	echo Skipping est processing for project CDLI
+    elif [[ "$project" == "epsd2" ]]; then
+	echo Skipping est processing for project $project
     else
 	est-project.sh
     fi

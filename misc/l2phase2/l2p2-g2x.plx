@@ -138,6 +138,7 @@ if ($have_disamb) {
     push @sigfields, 'form-sans';
 }
 
+open(XISTAB,">$dirname$header{'lang'}.tis");
 open(XIS,">$dirname$header{'lang'}.xis");
 print XIS '<?xml version="1.0" encoding="utf-8"?>', "\n";
 print XIS '<xisses xmlns="http://oracc.org/ns/xis/1.0" xmlns:xis="http://oracc.org/ns/xis/1.0">';
@@ -307,7 +308,7 @@ xis_dump_periods();
 print '</entries>';
 
 xis_rr();
-print XIS '</xisses>'; close XIS;
+print XIS '</xisses>'; close XIS; close XISTAB;
 close(G);
 
 open(M,">$dirname$header{'lang'}.map") 
@@ -848,6 +849,7 @@ xis_rr {
 	    print XIS "<r>$r</r>";
 	}
 	print XIS '</xis>';
+	print XISTAB "$xid\t$icount\t$rr\n";
     }
 }
 

@@ -5,6 +5,7 @@ if [ "$buildpolicy" != "search" ]; then
     umbrella=`oraccopt . cbd-super`;
     if [ "$umbrella" = "umbrella" ]; then
 	echo "o2-corpus.sh: getting sigs via umbrella.lst"
+	echo '@fields sig inst' >01bld/from-prx-glo.sig
 	for a in `cat 00lib/umbrella.lst` ; do
 	    grep '%' $a/01bld/from-xtf-glo.sig >>01bld/from-prx-glo.sig
 	done
