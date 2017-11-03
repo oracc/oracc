@@ -1,0 +1,45 @@
+SENSE GW Plan
+
+Syntax in @sense:
+
+	@sense [~fish] a designation of fish
+
+Syntax in sig:
+
+	@epsd2%sux:ba[~fish//:~fish::a designation of fish]
+
+Impl in Perl parse_sig:
+
+	if ($sig =~ s,//:(.*?)::,) $sig{'sensegw'} = $1
+
+Impl in f2 parse_sig:
+
+	if (sense && ':' == *sense)
+	  {
+	    Uchar *dblcol = NULL;
+
+	    dblcol = strstr(sense, "::");
+	    if (dblcol)
+	      {
+		++sense;
+		*dblcol++ = '\0';
+		f2.sensegw = npool_copy(xxx, sense);
+		sense = ++dblcol;
+	      }
+	  }
+
+Impl in Perl ACD
+
+     in $currtag eq 'entry' block:
+
+     if ($currtag =~ s/\[(.*?)\]\s*//) {
+     	#
+	# Save $1 somehow and emit it as attribute on <sense> in XML
+	#
+     }
+
+Impl in g2a
+
+     if ($sig{'sensegw') {
+       $sensestr =~ s/(\@sense\s+\S+\s+)/$1\[$sig{'sensegw'}\]/;
+     }

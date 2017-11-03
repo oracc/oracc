@@ -94,6 +94,7 @@ lang_suppress_NN();
 load_corpus($corpus) if $corpus;
 
 open(SIGS,$sigs) || die "l2p2-sig-slicer.plx: can't open '$sigs'\n";
+warn "l2p2-sig-slicer.plx: processing file $sigs\n";
 while (<SIGS>) {
     next if /^\@(?:proj|name|lang)/;
     next if /^\s*$/;
@@ -144,7 +145,10 @@ while (<SIGS>) {
 	my $msig = $f[0];
 #	my $rank = $f[$f{'rank'}];
 #	my $freq = $f[$f{'freq'}];
-	my $refs = $f[$f{'inst'}];
+	my $refs = '';
+	if (defined $f{'inst'}) {
+	    $refs = $f[$f{'inst'}];
+	}
 	if ($refs) {
 	    if ($matches{$msig}) {
 		$matches{$msig} .= " $refs";
