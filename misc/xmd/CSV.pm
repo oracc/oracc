@@ -52,7 +52,7 @@ internalize {
 	++$i;
 	if ($xmd) {
 	    my $id = $$xmd[$id_text];
-	    my $sid = sprintf("%s", $xmd[$id_text]");
+	    my $sid = sprintf("%s", $xmd[$id_text]);
 	    $xmd[$id_text] = sprintf("P%06d", $id);
 	    $$xmd[$period_index] =~ s/\s+\([^\(]+\)?\s*$//;
 	    warn "$file:$i: $sid => $xmd[$id_text]\n";

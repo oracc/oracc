@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8';
 use lib "@@ORACC@@/lib";
 use ORACC::FXR::Util;
 use ORACC::XMD::CSV;
+use ORACC::XMD::TSV;
 use ORACC::XMD::Util;
 
 $ORACC::XMD::Util::quiet = 1;
@@ -27,6 +28,8 @@ foreach my $c (<00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>) {
 	@icat = ORACC::XMD::Util::internalize($c);
     } elsif ($type eq 'csv') {
 	@icat = ORACC::XMD::CSV::internalize($c);
+    } elsif ($type eq 'tsv') {
+	@icat = ORACC::XMD::TSV::internalize($c);
     } else {
 	die "xmd-ids.plx: unknown catalog type $type\n";
     }
@@ -61,6 +64,8 @@ type_from_ns {
     my $fn = shift;
     if ($fn =~ /\.csv$/) {
 	'csv';
+    } elsif ($fn =~ /\.tsv$/) {
+	'tsv';
     } else {
 	my $ns = `@@ORACC@@/bin/xmlns $fn`;
 	if ($ns_types{$ns}) {

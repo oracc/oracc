@@ -57,7 +57,7 @@ internalize {
     initialize_fields($fields_row);
 
     if ($id_text_index >= 0) {
-	clean_id_text($xmd);
+#	clean_id_text($xmd);
     } else {
 	warn "ORACC::XMD::TSV: no id_text_index found in $file\n";
     }
