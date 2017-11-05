@@ -21,7 +21,8 @@
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
 
 <!-- not sure why I introduced $basename here but I've thrown it out in favour of $project ... -->
-<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$project,'/',/*/@xml:lang,'/periods.xis')"/>
+<xsl:variable name="periods-xis"
+	      select="concat('@@ORACC@@/bld/',$project,'/',/*/@xml:lang,'/periods.xis')"/>
 
 <xsl:template match="cbd:entry">
   <xsl:copy>

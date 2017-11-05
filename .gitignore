@@ -2,6 +2,7 @@ c/bin/server/or_common.c
 oracc-vhost.conf
 se.dbg
 xns
+xisdb
 serve-cron.sh
 serve-cron.plx
 serve-index.sh
