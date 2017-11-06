@@ -90,6 +90,7 @@ sub update {
 	$r = $ranks{$s} if $ranks{$s};
 	$f = $freqs{$s} if $freqs{$s};
 	my ($lng) = ($s =~ /\%(.*?):/);
+	$lng =~ s/-\d\d\d//; # remove script codes
 	$s = "$s\t$r\t$f\n";
 	push @{$lemmdata{$lng}}, $s;
     }
