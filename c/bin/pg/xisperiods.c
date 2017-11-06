@@ -23,12 +23,14 @@ int pmap_counts[PCODE_MAX];
 int *pmaptab;
 
 const char *curr_ref = NULL;
+const char *tis_file = NULL;
 int percent = 0;
 int csi_debug = 0;
 extern int full_count_mode;
 int with_counts = 0;
 FILE *fdbg = NULL;
 FILE *fpag = NULL;
+FILE *tis_fp = NULL;
 
 int nheadfields = 0;
 int *headfields = NULL;
@@ -124,6 +126,14 @@ sub_xis(int count, int start, struct item **items, const char *xis_id)
   for (i = 0; i < count; ++i)
     fprintf(subxisfp, "<r>%s</r>", items[start+i]->s);
   fputs("</xis>", subxisfp);
+  fprintf(tis_fp, "%s\t%d\t", ret_id, count);
+  for (i = 0; i < count; ++i)
+    {
+      if (i)
+	fputc(' ', tis_fp);
+      fputs((const char *)items[start+1]->s, tis_fp);
+    }
+  fputs("\n", tis_fp);
   return ret_id;
 }
 
@@ -352,8 +362,17 @@ main(int argc, char **argv)
 
   full_count_mode = 1;
 
-  options(argc,argv,"cdl:p:Px:");
+  options(argc,argv,"cdl:p:Pt:x:");
 
+  if (tis_file)
+    {
+      if (!(tis_fp = fopen(tis_file,"a")))
+	{
+	  fprintf(stderr, "xisperiods: unable to open .tis file %s\n", tis_file);
+	  exit(1);
+	}
+    }
+  
   subxisfn = malloc(strlen(xisfile) + 5);
   (void)sprintf(subxisfn, "%s.sub", xisfile);
   subxisfp = fopen(subxisfn,"w");
@@ -408,6 +427,9 @@ opts(int argc, char *arg)
       break;
     case 'p':
       project = arg;
+      break;
+    case 't':
+      tis_file = arg;
       break;
     case 'x':
       xisfile = arg;

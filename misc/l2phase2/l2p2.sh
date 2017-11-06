@@ -3,8 +3,8 @@ project=`oraccopt`
 
 function xis {
     if [ -r $ORACC_BUILDS/pub/$project/sortinfo.csi ]; then
-	echo running xisperiods -x 01bld/$l/$l.xis -p $project ...
-	xisperiods -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
+	echo running xisperiods -t 02pub/cbd/$l/$l.tis -x 01bld/$l/$l.xis -p $project ...
+	xisperiods -t 02pub/cbd/$l/$l.tis -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
 	[ -s 01bld/$l/periods.xis ] || cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
 	(cd 01bld/$l ; \
 	 mv $l.xis $l.xis.top ; \
