@@ -138,7 +138,8 @@ if ($have_disamb) {
     push @sigfields, 'form-sans';
 }
 
-open(XISTAB,">$dirname$header{'lang'}.tis");
+system 'mkdir', '-p', "02pub/cbd/$header{'lang'}";
+open(XISTAB,">02pub/cbd/$header{'lang'}/$header{'lang'}.tis");
 open(XIS,">$dirname$header{'lang'}.xis");
 print XIS '<?xml version="1.0" encoding="utf-8"?>', "\n";
 print XIS '<xisses xmlns="http://oracc.org/ns/xis/1.0" xmlns:xis="http://oracc.org/ns/xis/1.0">';

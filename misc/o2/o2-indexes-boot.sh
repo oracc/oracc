@@ -18,4 +18,5 @@ fi
 for a in 02pub/cbd/[a-z]* ; do 
     lang=`basename $a`
     secbdx -p $project -l $lang 01bld/$lang/articles.xml
+    xisdb 01bld/$lang/$lang.tis
 done

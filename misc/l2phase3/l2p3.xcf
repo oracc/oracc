@@ -71,6 +71,11 @@
   </set>
 
   <set var="process">
+    <key k="action"   to="$oracc/bin/xisdb"/>
+    <key k="args"     to="$oracc/pub/$project/cbd/$cbdlang/$cbdlang.tis"/>
+  </set>
+
+  <set var="process">
     <key k="action" to="chmod -R o+r $oracc/pub/$project/cbd/$cbdlang"/>
   </set>
 

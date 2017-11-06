@@ -158,7 +158,8 @@ p3_exec(CGI_varlist *vl)
 {
   char const**vec = mkvec(vl);
 
-  dump_vl(vl);
+  if (p3trace)
+    dump_vl(vl);
 
   if (p3trace)
     fprintf(stderr, "p3: 4\n");

@@ -48,6 +48,8 @@ my $proxy_host = '';
 my %rt = ();
 my $verbose = 1;
 
+warn "==== BEGIN P3 PAGER CALL =====\n";
+
 my $itemsdbg = 0;
 sub
 dbgitems {
@@ -91,7 +93,15 @@ if ($rt{'prod'} eq 'list') {
 	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
 	    $rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
-	    xsystem("@@ORACC@@/bin/xis", '-f', "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, '-o', "$p{'tmpdir'}/results.lst");
+	    my $pubcbdxdir = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}";
+	    my $tis_file = "$pubcbdxdir/$p{'glos'}.tis";
+	    if (-r $tis_file) {
+		xsystem("@@ORACC@@/bin/xisdb $tis_file $p{'gxis'} >$p{'tmpdir'}/results.lst");
+	    } else {
+		xsystem("@@ORACC@@/bin/xis", '-f', 
+			"@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, 
+			'-o', "$p{'tmpdir'}/results.lst");
+	    }
 	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
 	    set_list_items();
 	    $p{'uimode'} = 'mini';
