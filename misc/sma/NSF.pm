@@ -176,8 +176,8 @@ parse_nsf {
 
   PARSE:
     {
-	if ((($root && $root =~ /n/)
-	     || $orth && $orth =~ /n/)
+	if ((($root && $root =~ /n$/)
+	     || $orth && $orth =~ /n(?:\{.*?\})?$/)
 	    && ($g[0] && ($g[0] eq 'na' || $g[0] eq 'ne₂'))) {
 	    $nsf[0] = $original_g = $g[0];
 	    $g[0] = ($g[0] =~ /a/ ? 'a' : 'e');
@@ -186,7 +186,7 @@ parse_nsf {
 		 && (!exists($nonauslaut{$g[0]})
 		     && ( !exists($poss{$g[0]}) 
 			  || ($g[1] && $g[1] =~ /^n[aie]₂?$/))
-		     && ( $g[0] =~ /^(.)([ae]m?)$dig*$/
+		     && ( $g[0] =~ /^(.)([ae]m?)$dig*(?:\{.*?\})?$/
 			  || ((($root && $root =~ /u/)
 			       || ($orth && $orth =~ /u/))
 			      && $g[0] =~ /^(.?)(u)$dig*$/)))) {
@@ -288,7 +288,7 @@ parse_nsf {
 		# en, ec, etc.
 		if (($g_index < $#g
 		     && exists($copg{$g[$g_index+1]}))
-		    || $ORACC::SMA::period eq 'UR3') {
+		    || ($ORACC::SMA::period && $ORACC::SMA::period eq 'UR3')) {
 		    # leave it for analysis as COP
 		    $nx = 5;
 		} else {

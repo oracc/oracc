@@ -39,6 +39,8 @@ enum t_scope protocol_state = s_global;
 
 extern int has_links;
 extern int lem_extended;
+extern int lem_simplify;
+const char *lem_simplify_opt;
 extern int mixed_case_ok;
 static int need_auto_syntax_line_is_unit = 0;
 extern int use_legacy, use_unicode;
@@ -296,7 +298,7 @@ protocol(struct run_context *run,
 	    {
 	      ;
 	    }
-	  else if (!xstrcmp(type,"etcri"))
+	  else if (!xstrcmp(type,"etcsri"))
 	    {
 	      lem_extended = 0;
 	    }
@@ -612,6 +614,10 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
 
   cuneify_init(run->proj->xpd);
 
+  lem_simplify_opt = xpd_option(run->proj->xpd,"lem-simplify");
+  if (lem_simplify_opt && !strcmp(lem_simplify_opt, "yes"))
+    lem_simplify = 1;
+  
   o = xpd_option(run->proj->xpd,"trans-dollar-align");
   if (o && !strcmp(o, "yes"))
     dollar_fifo = 1;

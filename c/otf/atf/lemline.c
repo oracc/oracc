@@ -33,6 +33,7 @@ struct lem_save
   struct lem_save *cont;
 };
 
+int lem_simplify = 0;
 extern int lem_autolem, lem_dynalem;
 extern const char *lem_dynalem_tab;
 
@@ -399,37 +400,43 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	    {
 	      char *comma = NULL;
 	      Uchar *tmp = (Uchar*)f2->sense;
-	      if ((comma = strchr((const char *)f2->sense, ',')))
-		*comma = '\0';
-	      if (!strncmp((const char*)f2->sense, "(to be) ", 8))
-		tmp += 8;
-	      else if (!strncmp((const char*)f2->sense, "to ", 3))
+
+	      if (lem_simplify)
 		{
-		  tmp += 3;
-		  if (!strncmp((const char*)tmp, "be ", 3))
-		    tmp += 3;
-		  else if (!strncmp((const char*)tmp, "make ", 5))
-		    tmp += 5;
-		}
-	      if (tmp[strlen((const char *)tmp)-1] == ')')
-		{
-		  unsigned char *end = tmp+strlen((const char *)tmp);
-		  while (end > tmp)
+		  if ((comma = strchr((const char *)f2->sense, ',')))
+		    *comma = '\0';
+		  if (!strncmp((const char*)f2->sense, "(to be) ", 8))
+		    tmp += 8;
+		  else if (!strncmp((const char*)f2->sense, "to ", 3))
 		    {
-		      if (*--end == '(')
-			*end = '\0';
+		      tmp += 3;
+		      if (!strncmp((const char*)tmp, "be ", 3))
+			tmp += 3;
+		      else if (!strncmp((const char*)tmp, "make ", 5))
+			tmp += 5;
+		    }
+		  if (tmp[strlen((const char *)tmp)-1] == ')')
+		    {
+		      unsigned char *end = tmp+strlen((const char *)tmp);
+		      while (end > tmp)
+			{
+			  if (*--end == '(')
+			    *end = '\0';
+			}
 		    }
 		}
+	      
 	      fprintf(fp,"[%s]",(char*)tmp);
 	    }
 	  else
 	    fprintf(fp,"[%s]",f2->gw);
-#if 0
-	  if (f2->epos && strcmp((char*)f2->pos,(char*)f2->epos))
-	    fprintf(fp,"'%s",f2->epos);
-	  else
-	    fputs((char*)f2->pos,fp);
-#endif
+	  if (!lem_simplify)
+	    {
+	      if (f2->epos && strcmp((char*)f2->pos,(char*)f2->epos))
+		fprintf(fp,"'%s",f2->epos);
+	      else
+		fputs((char*)f2->pos,fp);
+	    }
 	}
       else
 	{
