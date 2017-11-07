@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "hash.h"
 #include "redblack.h"
 #include "sortinfo.h"
 #include "pg.h"
@@ -52,6 +53,7 @@ make_cache(struct item **items, int nitems, int*sic_size)
   struct si_cache *sicp;
   int i;
   static u4 top;
+  extern Hash_table *seen;
 
   sic_id = 0;
 
@@ -117,7 +119,16 @@ make_cache(struct item **items, int nitems, int*sic_size)
 	  }
       if (j > top)
 	{
-	  fprintf(stderr,"pg: member %lu not in sortinfo\n", (unsigned long)id);
+	  static int one = 1;
+	  char buf[10];
+	  int *onep = NULL;
+	  sprintf(buf, "%u", id);
+	  onep = hash_find(seen, (unsigned char *)buf);
+	  if (!onep)
+	    {
+	      fprintf(stderr,"pg: member %lu not in sortinfo\n", (unsigned long)id);
+	      hash_add(seen, (unsigned char*)strdup(buf), &one);
+	    }
 	  items[i]->skey = 0;
 	  items[i]->grp = -1;
 	  j = last_j;
@@ -125,7 +136,7 @@ make_cache(struct item **items, int nitems, int*sic_size)
 	  /* exit(1); */
 	}
     }
-  
+
   /* create an array that can be indexed during sorting and grouping */
   siclist = malloc(sic_id * sizeof(struct si_cache*));
   rbl = rbopenlist(rb);

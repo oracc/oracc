@@ -7,6 +7,7 @@
 #include "psdtypes.h"
 #include "messages.h"
 #include "options.h"
+#include "hash.h"
 #include "sortinfo.h"
 #include "pg.h"
 #include "npool.h"
@@ -19,6 +20,7 @@ int fragment = 0;
 int ood_mode = 0;
 FILE *fdbg = NULL;
 FILE *fpag = NULL;
+Hash_table *seen = NULL;
 
 struct item *items = NULL;
 int items_used = 0;
@@ -104,6 +106,8 @@ main(int argc, char **argv)
 
   if (!project)
     project = "cdli";
+
+  seen = hash_create(1024);
 
   if (strstr(project, "/ood/"))
     ood_mode = 1;
@@ -265,6 +269,9 @@ main(int argc, char **argv)
     }
 
   fclose(fpag);
+
+  hash_free2(seen, free, NULL);
+
   exit(0);
 }
 

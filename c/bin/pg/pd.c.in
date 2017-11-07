@@ -5,11 +5,12 @@
 #include "psdtypes.h"
 #include "messages.h"
 #include "options.h"
+#include "hash.h"
 #include "sortinfo.h"
 #include "pg.h"
 
 extern void pd_sort_cache(void);
-
+Hash_table *seen = NULL;
 int l2 = 1;
 
 int csi_debug = 0;
@@ -90,7 +91,7 @@ main(int argc, char **argv)
   full_count_mode = 1;
 
   options(argc,argv,"cdl:p:");
-
+  seen = hash_create(1024);
   if (!project)
     project = "cdli";
 
@@ -144,7 +145,7 @@ main(int argc, char **argv)
       if (i < (sic_size-1))
 	fputs("; ",stdout);
     }
-
+  hash_free2(seen, free, NULL);
   exit(0);
 }
 

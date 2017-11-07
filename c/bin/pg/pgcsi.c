@@ -18,7 +18,7 @@ int
 main(int argc, char **argv)
 {
   unsigned char*tab = NULL;
-  size_t tabsize;
+  size_t tabsize = 0;
   char *ext;
 
   options(argc,argv,"d");

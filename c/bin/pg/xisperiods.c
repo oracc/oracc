@@ -5,6 +5,7 @@
 #include "psdtypes.h"
 #include "messages.h"
 #include "list.h"
+#include "hash.h"
 #include "npool.h"
 #include "options.h"
 #include "runexpat.h"
@@ -15,6 +16,8 @@
 const char *xis_uri = "http://oracc.org/ns/xis/1.0";
 const char *xisfile = NULL;
 FILE *xisfp = NULL, *subxisfp = NULL;
+
+Hash_table *seen = NULL;
 
 extern void pd_sort_cache(void);
 
@@ -131,7 +134,7 @@ sub_xis(int count, int start, struct item **items, const char *xis_id)
     {
       if (i)
 	fputc(' ', tis_fp);
-      fputs((const char *)items[start+1]->s, tis_fp);
+      fputs((const char *)items[start+i]->s, tis_fp);
     }
   fputs("\n", tis_fp);
   return ret_id;
@@ -148,7 +151,6 @@ xis_dump(void)
 
   /* we know that each entry takes up at least 8 bytes */
   items = malloc((list_len(r_list) + 1) * sizeof(struct item));
-  
   for (s = list_first(r_list); s; s = list_next(r_list))
     {
       char *colon = NULL, *dot;
@@ -358,6 +360,8 @@ main(int argc, char **argv)
   const char *fname[2];
   char *subxisfn = NULL;
 
+  seen = hash_create(1024);  
+
   xisfp = stdout;
 
   full_count_mode = 1;
@@ -409,7 +413,9 @@ main(int argc, char **argv)
   fprintf(xisfp, "</xis-periods>");
   fputs("</xisses>",subxisfp);
   fclose(subxisfp);
-  
+
+  hash_free2(seen, free, NULL);  
+
   return 0;
 }
 
