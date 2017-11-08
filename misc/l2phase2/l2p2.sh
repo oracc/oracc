@@ -58,6 +58,7 @@ if [ "$projtype" == "superglo" ]; then
 	cbd $l $ldir
 	echo l2p2.sh: processing sigs for superglo $a
 	rm -f $ldir/union.sig
+	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
 	cat 01bld/from-prx-*.sig >$ldir/$l.sig
 	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
 	g2x $ldir $l
