@@ -15,7 +15,7 @@ exit 1 unless $lang;
 exit 0 if $lang ne 'sux';
 die "epadify.plx: I work on 01bld/sux/sux.cbd and it's not there\n"
     unless -r "01bld/sux/sux.cbd";
-open(IN,'00src/epad.glo') 
+open(IN,'00src/epad-glo.txt') 
     || die "epadify.plx: I can't work without 00src/epad.glo and it's not there\n";
 
 my %aux = ();
