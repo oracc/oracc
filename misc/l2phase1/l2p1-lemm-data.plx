@@ -37,6 +37,7 @@ sub rebuild {
 	my @fields = split(/\t/,$_);
 	my $sig = $fields[0]."\t$fields[$rank]\t$fields[$freq]\n";
 	my ($lng) = ($sig =~ /\%(.*?):/);
+	$lng =~ s/-\d\d\d//; # remove script codes
 	push @{$lemmdata{$lng}}, $sig;
     }
     close(F);    
