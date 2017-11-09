@@ -23,6 +23,39 @@ binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
+my %merge_periods = (
+    'Archaic'=>'Archaic',
+    'ED I-II'=>'Archaic',
+    'ED IIIa'=>'Early Dynastic IIIa',
+    'Early Dynastic IIIa'=>'Early Dynastic IIIa',
+    'Early Dynastic'=>'Early Dynastic IIIb',
+    'ED IIIb'=>'Early Dynastic IIIb',
+    'Early Dynastic IIIb'=>'Early Dynastic IIIb',
+    'Ebla'=>'Ebla',
+    'Old Akkadian'=>'Old Akkadian',
+    'Lagash II'=>'Lagash II',
+    'Lagaš II'=>'Lagash II',
+    'Ur III'=>'Ur III',
+    'Early Old Babylonian'=>'Old Babylonian',
+    'Old Assyrian'=>'Old Babylonian',
+    'Old Babylonian'=>'Old Babylonian',
+    'Middle Assyrian'=>'Middle Assyrian',
+    'Middle Babylonian'=>'Middle Babylonian',
+    'Kassite'=>'Kassite',
+    'First Millennium'=>'Neo-Assyrian',
+    'Neo-Babylonian'=>'Neo-Babylonian',
+    'Neo-Assyrian'=>'Neo-Assyrian',
+    'Persian'=>'Persian',
+    'Achaemenid'=>'Persian',
+    'Hellenistic'=>'Hellenistic',
+    'Seleucid'=>'Hellenistic',
+    'Parthian'=>'Parthian',
+    'Uncertain'=>'Uncertain',
+    'uncertain'=>'Uncertain',
+    'Unknown'=>'Uncertain',
+    'unknown'=>'Uncertain'
+    );
+
 umask 022;
 
 my %xmd_outputs = ();
@@ -108,6 +141,7 @@ my %valtab = ();
 # Variables to be set in config file:
 my $basename = '';
 my $catdir = '';
+my $cat_merge_periods = `oraccopt . cat-merge-periods`;
 my $dynacat = '';
 my $force = 0; # not used; just for oraccproject
 my $results = '';
@@ -828,10 +862,19 @@ dump_xmd {
 		    my $xf = xmlify($f);
 		    $xf =~ s/\&amp;(apos|lt|gt|quot)/\&$1/g; # suppress double-xmlify effects
 		    if ($tag eq 'period') {
-			$xf =~ s/\s+\(.*$//;
-			if ($curr_xmd =~ /^Q/) {
-			    # should really map P-periods to Q-periods more generically
-			    $xf =~ s/Early Dynastic IIIb/Early Dynastic/;
+			$xf =~ s/\s+\(.*$//; # remove CDLI dates-on-periods
+			if ($cat_merge_periods) {
+			    if ($merge_periods{$xf}) {
+				$xf = $merge_periods{$xf};
+			    } else {
+				warn "$xf: not in merge periods table\n";
+			    }
+			} else {
+			    # This is a legacy op; not sure it's necessary any more
+			    if ($curr_xmd =~ /^Q/) {
+				# should really map P-periods to Q-periods more generically
+				$xf =~ s/Early Dynastic IIIb/Early Dynastic/;
+			    }
 			}
 		    }
 		    push @{$xmd_outputs{$curr_xmd}}, ">$xf</$tag>";
