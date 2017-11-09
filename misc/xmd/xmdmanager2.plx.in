@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 use lib "@@ORACC@@/lib";
 use Getopt::Long;
 use Pod::Usage;
