@@ -74,9 +74,11 @@ foreach my $s (@ARGV) {
 		}
 	    }
 	} else {
-	    my @r = split(/\s/, $r);
-	    if ($all || $#r >= 0) {
-		@{$sig{$t[0]}}{@r} = ();
+	    if ($r) {
+		my @r = split(/\s/, $r);
+		if ($all || $#r >= 0) {
+		    @{$sig{$t[0]}}{@r} = ();
+		}
 	    }
 	}
     }

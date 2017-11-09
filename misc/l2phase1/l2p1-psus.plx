@@ -33,7 +33,9 @@ my %simple = ();
 open(S, '01tmp/l2p1-simple.sig');
 my $fields = <S>;
 while (<S>) {
+    next if /^\@fields/;
     chomp;
+    s/\t.*$//;
     m#=(.*?)\$#;
     my $keysig = $1;
     s/\!0x.*$//;

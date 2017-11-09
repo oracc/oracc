@@ -8,8 +8,10 @@ open(S,'01tmp/l2p1-simple.sig');
 my $fields = <S>;
 # print C $fields; ### NO: simple cofs psus are cat'ed together so no @fields on cofs/psus
 while (<S>) {
+    next if /^\@fields/;
     if (/\!0x/) {
 	chomp;
+	s/\t.*$//;
 	my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)$/);
 	if ($pre) {
 	    my $index = $nth - 1;
