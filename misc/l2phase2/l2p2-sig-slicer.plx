@@ -36,6 +36,8 @@ my $slice_lang = '';
 my $slice_name = '';
 my @slice_tests = ();
 my $stdout = 0;
+my $verbose = 0;
+
 my %type_of = (
     l=>'lang',
     p=>'pos',
@@ -53,6 +55,7 @@ GetOptions(
     'sigs:s'=>\$sigs,
     'stdout'=>\$stdout,
     'test:s'=>\@slice_tests,
+    'verbose'=>\$verbose,
     );
 
 $sigs = '01bld/project.sig' unless $sigs;
@@ -94,7 +97,8 @@ lang_suppress_NN();
 load_corpus($corpus) if $corpus;
 
 open(SIGS,$sigs) || die "l2p2-sig-slicer.plx: can't open '$sigs'\n";
-warn "l2p2-sig-slicer.plx: processing file $sigs\n";
+warn "l2p2-sig-slicer.plx: processing file $sigs\n"
+    if $verbose;
 while (<SIGS>) {
     next if /^\@(?:proj|name|lang)/;
     next if /^\s*$/;
