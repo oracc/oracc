@@ -129,7 +129,7 @@ make_cache(struct item **items, int nitems, int*sic_size)
 	      fprintf(stderr,"pg: member %lu not in sortinfo\n", (unsigned long)id);
 	      hash_add(seen, (unsigned char*)strdup(buf), &one);
 	    }
-	  items[i]->skey = 0;
+	  items[i]->skey = 1000000; /* "unknown" */
 	  items[i]->grp = -1;
 	  j = last_j;
 	  /* fprintf(stderr,"resetting j to %ld from last_j\n", j); */
@@ -137,6 +137,8 @@ make_cache(struct item **items, int nitems, int*sic_size)
 	}
     }
 
+  hash_free2(seen, free, NULL);
+  
   /* create an array that can be indexed during sorting and grouping */
   siclist = malloc(sic_id * sizeof(struct si_cache*));
   rbl = rbopenlist(rb);

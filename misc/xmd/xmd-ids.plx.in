@@ -6,6 +6,19 @@ use ORACC::XMD::CSV;
 use ORACC::XMD::TSV;
 use ORACC::XMD::Util;
 
+use Getopt::Long;
+
+my $catfile = '';
+my @catfiles = ();
+getOptions(
+    'c:s'=>\$catfile
+    );
+
+if ($catfile) {
+    @catfiles = ($catfile);
+} else {
+    @catfiles = (<00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>);
+}
 $ORACC::XMD::Util::quiet = 1;
 
 my %items = ();
@@ -13,13 +26,14 @@ my %ns_types = (
     'http://www.filemaker.com/fmpxmlresult'=>'fxr',
     'http://oracc.org/ns/xmd/1.0'=>'xmd',
     );
+
 my $outfile = shift @ARGV;
 my $project = `oraccopt`;
 
 die "xmd-ids.plx: must run from project directory\n"
     unless $project;
 
-foreach my $c (<00cat/*.xml>, <00cat/*.csv>, <00cat/*.tsv>) {
+foreach my $c (@catfiles) {
     my $type = type_from_ns($c);
     my @icat = ();
     if ($type eq 'fxr') {
