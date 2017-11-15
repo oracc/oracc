@@ -6,9 +6,10 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 
+no strict;
 use constant {
     PC=>0,
-    ED12=>1
+    ED12=>1,
     ED3a=>2,
     ED3b=>3,
     Eb=>4,
@@ -91,6 +92,8 @@ my %periods_qqq = (
     'uncertain'=>XXX,
     'Uncertain'=>XXX
     );
+
+use strict;
 
 my $tmp_debug = 0;
 my $tmp_file = '';
