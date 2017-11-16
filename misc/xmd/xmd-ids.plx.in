@@ -10,7 +10,7 @@ use Getopt::Long;
 
 my $catfile = '';
 my @catfiles = ();
-getOptions(
+GetOptions(
     'c:s'=>\$catfile
     );
 

@@ -25,6 +25,7 @@ use DateTime;
 #   an attribute, with '@' prefix -- value is value of @attr
 #   text() -- value is text content of node
 #   [ or { -- value is an array or hash
+#   hook() -- value is the value returned from the hook function
 #
 # chld
 #   [ or { -- children are wrapped in an array or hash
@@ -41,8 +42,11 @@ use DateTime;
 #             value of a named property named 'string'; useful
 #             if an element has attributes wrapped in an object
 #             and you want to treat the text content as if it
-#             just another attribute
+#             were just another attribute
 #
+# hook
+#   a function reference (e.g., \&textfrag).  Run after the name/value 
+#   are set or, if val==hook(), to provide the value
 #
 # Example (from cbd-json.plx):
 # 
@@ -227,6 +231,16 @@ node_start {
 		if (!$val && $$howto{'chld'} && hasElementChildren($n)) {
 		    $val = '#chld';
 		}
+	    } elsif ($val_how eq 'hook()') {
+		if (defined $$howto{'hook'}) {
+		    my $h = $$howto{'hook'};
+		    $val = &$h($n);
+		} else {
+		    warn "element $nm wants value from absent hook()\n";
+		}
+		$val = '' unless $val;
+		$val_need_comma = 1;
+		$val_closer = '';
 	    } elsif (length $val_how) {
 		$val = $val_how;
 		$val_need_comma = 1;
@@ -313,7 +327,7 @@ node_start {
 	    }
 	}
 
-	if ($$howto{'hook'} && !$$howto{'trigger'}) {
+	if ($$howto{'hook'} && !$$howto{'trigger'} && !$val_how eq 'hook()') {
 	    my $h = $$howto{'hook'};
 	    my $prop = &$h($n);
 	    if ($prop) {

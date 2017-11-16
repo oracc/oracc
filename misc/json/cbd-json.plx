@@ -82,6 +82,8 @@ glossary_howtos {
     $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
     $howto{'xis_periods'} = { type=>'#ignore' };
 
+    $howto{'xhtml_p'} { nam=>'@id', val=>'hook()', hook=>\&htmlstring };
+
     ORACC::JSON::setHowTos(%howto);
 }
 1;
