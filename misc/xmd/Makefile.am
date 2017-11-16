@@ -4,7 +4,8 @@ bin_SCRIPTS = catvec.plx packsortinfo.plx Qtab.plx xmd-ids.plx xmdfields.plx xmd
 	install.sh royal-sort.plx xcat.plx xmd-proxy.plx xmd-check.plx P-lookup.plx \
 	merge-sorts.plx tsvfix.plx
 scriptdata_DATA = g2-xmd-HTML.xsl qcat-HTML.xsl royal-sort.xsl ruler-field.xsl \
-	vals2labels.xsl xmd-format.xsl designation-sort.xsl xmd-HTML.xsl ruler-records.xsl
+	vals2labels.xsl xmd-format.xsl designation-sort.xsl xmd-HTML.xsl \
+	ruler-records.xsl xmd-summaries.xsl xmd-HTML-summaries.xsl
 data_DATA = keydata.xml
 schema_DATA = fmpwww2.rnc imgdb.rnc
 
