@@ -27,6 +27,17 @@ my $xxmd = load_xml_string($xmd_nons);
 if ($xxmd) {
     print "{\n";
     ORACC::JSON::iterate($xxmd->getDocumentElement());
+
+    my $xmd_sum = '01bld/cat-sum.html';
+    if (-r $xmd_sum) {
+	warn "xmd-json.plx: adding summaries from $xmd_sum\n";
+	print "\n,\n";
+	ORACC::JSON::reset();
+	@in = `cat $xmd_sum | $ENV{'ORACC'}/bin/xns`;
+	my $sum_nons = join('', @in);
+	my $xsum = load_xml_string($sum_nons);
+	ORACC::JSON::iterate($xsum->getDocumentElement());
+    }
 #    print ",";
 #    xmd_fields_used($xxmd->getDocumentElement());
 #    print ",";
@@ -35,6 +46,13 @@ if ($xxmd) {
 }
 
 ###############################################################################
+
+sub htmlstring {
+    my $n = shift;
+    my $tmp = $n->toString();
+    $tmp =~ s/xhtml_//g;
+    $tmp;
+}
 
 sub
 xmd_fields_used {
@@ -60,7 +78,6 @@ xmd_sortvals {
     my $proj = shift;
     system "$ENV{'ORACC'}/bin/xmd-sv-json.plx $ENV{'ORACC_BUILDS'}/$proj/01bld/sortvals.xml";
 }
-	
 
 sub
 xmd_howtos {
@@ -76,6 +93,11 @@ xmd_howtos {
     
     $attmap{'c'} = '#ignore';
 #    $attmap{'project'} = '#ignore';
+
+    $howto{'xhtml_html'} = { type=>'#ignore' };
+    $howto{'xhtml_head'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'xhtml_body'} = { nam=>'summaries', val=>'{' };
+    $howto{'xhtml_p'} = { nam=>'@id', val=>'hook()', hook=>\&htmlstring, recurse=>'no' };
     
     ORACC::JSON::setHowTos(%howto);
     ORACC::JSON::setAttMap(%attmap);

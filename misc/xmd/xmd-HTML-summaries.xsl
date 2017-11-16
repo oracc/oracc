@@ -28,7 +28,7 @@
 </xsl:template>
 
 <xsl:template match="xmd:summary">
-  <p>
+  <p id="{@xml:id}">
     <xsl:value-of select="concat(/*/@project,':',xmd:id_text, ' = ', xmd:designation, '. ')"/>
     <xsl:if test="string-length(xmd:period)"><xsl:value-of select="concat(xmd:period, ' ')"/></xsl:if>
     <xsl:if test="string-length(xmd:provenience)"><xsl:value-of select="concat(xmd:provenience, ' ')"/></xsl:if>
