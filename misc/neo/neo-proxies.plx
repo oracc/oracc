@@ -8,7 +8,7 @@ open(O, '00lib/order.lst')
 while (<O>) {
     chomp;
     my $prj = $_;
-    my $atf = "../$prj/01bld/lists/have-atf.lst";
+    my $atf = "../$prj/01bld/lists/have-lem.lst";
     if (-r $atf) {
 	if (open(A,$atf)) {
 	    while (<A>) {
