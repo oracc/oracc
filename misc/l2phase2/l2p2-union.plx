@@ -30,15 +30,24 @@ GetOptions (
 
 $mode = `oraccopt . cbd-super` unless $mode;
 
-my $superlist = `oraccopt . cbd-super-list`;
+my $superlist = '';
+if ($mode eq 'mega') {
+    $superlist = `cat 01bld/megalangs`;
+} else {
+    $superlist = `oraccopt . cbd-super-list`;
+}
 my @projects = union_projects();
 my @langs = union_langs(@projects);
 
 if ($arg_lang && grep /^$arg_lang$/, @langs) {
     union_one_lang($arg_lang);
 } elsif ($superlist) {
-    foreach my $l (split(/\s+/, $superlist)) {
-	union_one_lang($l);
+    if ($mode eq 'mega') {
+	union_mega();
+    } else {
+	foreach my $l (split(/\s+/, $superlist)) {
+	    union_one_lang($l);
+	}
     }
 } else {
     foreach my $l (sort keys %sigfiles) {
@@ -86,11 +95,28 @@ union_projects {
 	}
     } elsif ($mode eq 'global') {
 	@p = `projpublic.sh`;
+    } elsif ($mode eq 'mega') {
+	# we've already built mega.sig
     } else {
 	die "l2p2-union.plx: unknown cbd-super value '$mode'\n";
     }
     chomp @p;
     @p;
+}
+
+sub union_mega {
+    %sig = ();
+    warn "loading 01bld/mega.sig\n";
+    load_sigfile($lang,'01bld/mega.sig');
+
+    foreach my $lang (split(/\s+/, $superlist)) {
+	system 'mkdir', '-p', "01bld/$lang";
+	$out = "01bld/$lang/union.sig" unless $out && $arg_lang;
+	open(O,">$out") || die "l2p2-union.plx: can't open `$out' for output\n";
+	select O;
+	warn "l2p2-union.plx: creating mega glossary file $out\n";
+	dump_sigs($lang);
+    }
 }
 
 sub
