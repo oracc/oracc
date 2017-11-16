@@ -10,8 +10,9 @@ glossary_howtos();
 my $projcbd = shift @ARGV;
 my ($project,$lang) = split(/:/, $projcbd);
 
-my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.g2x";
+my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
 my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
+my $sum_ns = "$ENV{'ORACC'}/www/$project/cbd/$lang/summaries.html";
 
 print "{\n";
 print "\t\"type\": \"glossary\",\n";
@@ -33,14 +34,31 @@ my $xis_nons = join('',@in);
 my $xxis = load_xml_string($xis_nons);
 ORACC::JSON::iterate($xxis->getDocumentElement());
 $xxis = undef;
+print "\n,\n";
+
+ORACC::JSON::reset();
+
+@in = `cat $sum_ns | $ENV{'ORACC'}/bin/xns`;
+my $sum_nons = join('',@in);
+my $xsum = load_xml_string($sum_nons);
+ORACC::JSON::iterate($xsum->getDocumentElement());
+$xsum = undef;
 
 print "\n}\n";
 
 ###########################################################
 
+sub htmlstring {
+    my $n = shift;
+    my $tmp = $n->toString();
+    $tmp =~ s/xhtml_//g;
+    $tmp;
+}
+
 sub
 glossary_howtos {
     my %howto = ();
+    my %attmap = ();
 
     $howto{'cbd_entries'} = { nam=>"entries", val=>'[' };
     $howto{'cbd_entry'} = { type=>"{", nam=>'headword',val=>'@n', att=>'-n' };
@@ -53,7 +71,6 @@ glossary_howtos {
     $howto{'cbd_form'} = { type=>"{",nam=>'type',val=>'form',att=>'' };
     $howto{'cbd_form-sanss'} = { nam=>'form-sanss',val=>'[' };
     $howto{'cbd_form-sans'} = { type=>"{",nam=>'type',val=>'form-sans',att=>'' };
-    $howto{'cbd_t'} = { type=>'#ignore' };
     $howto{'cbd_cof-form-norm'} = { nam=>'cof-form-norm',val=>'text()',att=>'' };
     $howto{'cbd_norms'} = { nam=>'norms',val=>'[' };
     $howto{'cbd_norm'} = { type=>"{",nam=>'#ignore',val=>'#ignore',att=>'' };
@@ -77,13 +94,27 @@ glossary_howtos {
     $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
     $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
 
+    $howto{'cbd_letter'} = { type=>'#ignore' };
+    $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_s'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_t'} = { type=>'#ignore', recurse=>'no' };
+    
     $howto{'xis_xisses'} = { nam=>'instances', val=>'{' };
     $howto{'xis_xis'} = { nam=>'@xml:id', val=>"[", att=>'0' };
     $howto{'xis_r'} = { nam=>'#ignore', val=>'text()' };
     $howto{'xis_periods'} = { type=>'#ignore' };
 
-    $howto{'xhtml_p'} { nam=>'@id', val=>'hook()', hook=>\&htmlstring };
+    $howto{'xhtml_html'} = { type=>'#ignore' };
+    $howto{'xhtml_head'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'xhtml_div'} = { type=>'#ignore' };
+    $howto{'xhtml_h1'} = { type=>'#ignore' };
+    $howto{'xhtml_body'} = { nam=>'summaries', val=>'{' };
+    $howto{'xhtml_p'} = { nam=>'@id', val=>'hook()', hook=>\&htmlstring, recurse=>'no' };
 
+    ORACC::JSON::gdl_howtos(\%howto, \%attmap);
+    
     ORACC::JSON::setHowTos(%howto);
+    ORACC::JSON::setAttMap(%attmap);
 }
 1;

@@ -46,9 +46,14 @@ nsname(const char *name)
 	{
 	  sprintf(tmp,"xhtml_%s",nssep+1);
 	}
+      else if (!strncmp(name, "http://dublincore.org/documents/2003/06/02/dces/",
+			strlen("http://dublincore.org/documents/2003/06/02/dces/")))
+	{
+	  sprintf(tmp,"dc_%s",nssep+1);
+	}
       else
 	{
-	  fprintf(stderr, "xj: unknown namespace %s\n", name);
+	  fprintf(stderr, "xns: unknown namespace %s\n", name);
 	  strcpy(tmp,name);
 	}
       return tmp;

@@ -118,58 +118,8 @@ xcl_howtos {
     $howto{'xcl_para'} = { type=>'#ignore' };
     $howto{'xcl_p'} = { type=>'#ignore' };
 
-    my $gdlattr = '-gdl_status gdl_accented';
-# '-form gdl_accented gdl_queried gdl_break gdl_breakEnd gdl_breakStart gdl_status gdl_o gdl_c gdl_ho gdl_hc gdl_statusStart gdl_statusEnd';
-
-    $howto{'gdl_a'} = { type=>'{' , nam=>'a', val=>'text()', att=>$gdlattr };
-    $howto{'gdl_b'} = { type=>'{' , nam=>'b', val=>'text()', att=>$gdlattr };
-    $howto{'gdl_c'} = { type=>'{',  nam=>'c', val=>'@form', chld=>['seq','['], att=>$gdlattr.' form' };
-    $howto{'gdl_d'} = { type=>'{' , nam=>'det', val=>'@gdl_role', att=>'-gdl_role', chld=>['seq','[']};
-    $howto{'gdl_f'} = { type=>'{' , nam=>'f', val=>'text()', att=>$gdlattr };
-    $howto{'gdl_g'} = { type=>'{' , nam=>'g', val=>'text()', att=>$gdlattr, chld=>['seq','[']};
-    $howto{'gdl_m'} = { type=>'{' , nam=>'m', val=>'text()', att=>$gdlattr };
-    $howto{'gdl_n'} = { type=>'{' , nam=>'n', val=>'n', chld=>['seq','['], att=>$gdlattr };
-    $howto{'gdl_o'} = { type=>'{' , nam=>'o', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
-    $howto{'gdl_p'} = { type=>'{',  nam=>'p', val=>'@gdl_type', chld=>['punct','['], att=>$gdlattr.' gdl_type' };
-    $howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>$gdlattr.' form' };
-    $howto{'gdl_r'} = { type=>'{' , nam=>'r', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
-    $howto{'gdl_w'} = {
-	type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['],
-	formchild=>{ type=>'{' , nam=>'w', val=>'text()', chld=>['gdl','['], att=>$gdlattr,
-		     object_force_nam=>'yes'
-	}
-    };
-    $howto{'gdl_x'} = { type=>'{' , nam=>'x', val=>'@gdl_type', att=>$gdlattr.' gdl_type' };
-    $howto{'gdl_gg'} = { type=>'{', nam=>'gg',val=>'@gdl_type', chld=>['group','['], att=>$gdlattr };
-    $howto{'gdl_nonw'} = { type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['] };
-    $howto{'gdl_surro'} = { type=>'{', nam=>'surro',val=>'gg', chld=>['group','['], att=>$gdlattr };
-
-    $howto{'gdl_gloss'} = { type=>'{', nam=>'gloss',val=>'@gdl_type', att=>$gdlattr.' gdl_type',
-			    chld=>['seq','[']
-    };
-
-    $howto{'xtf_surro'} = { type=>'{', nam=>'surro',val=>'gg', chld=>['group','{'], att=>$gdlattr };
-
-    $howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
-    $howto{'norm_s'} = { type=>'#ignore' };
-    
-    $attmap{'gdl_delim'} = 'delim';
-    $attmap{'gdl_logolang'} = 'logolang';
-    $attmap{'gdl_pos'} = 'pos';
-    $attmap{'gdl_role'} = 'role';
-    $attmap{'gdl_queried'} = 'queried';
-    $attmap{'gdl_break'} = 'break';
-    $attmap{'gdl_breakEnd'} = 'breakEnd';
-    $attmap{'gdl_breakStart'} = 'breakStart';
-    $attmap{'gdl_o'} = 'o';
-    $attmap{'gdl_c'} = 'o';
-    $attmap{'gdl_ho'} = 'ho';
-    $attmap{'gdl_hc'} = 'hc';
-    $attmap{'gdl_statusStart'} = 'statusStart';
-    $attmap{'gdl_statusEnd'} = 'statusStart';
-
+    ORACC::JSON::gdl_howtos(\%howto, \%attmap);
+ 
     ORACC::JSON::setHowTos(%howto);
     ORACC::JSON::setAttMap(%attmap);
 }
