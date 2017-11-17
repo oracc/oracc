@@ -107,7 +107,7 @@ union_projects {
 sub union_mega {
     %sig = ();
     warn "loading 01bld/mega.sig\n";
-    load_sigfile($lang,'01bld/mega.sig');
+    load_sigfile('','01bld/mega.sig');
 
     foreach my $lang (split(/\s+/, $superlist)) {
 	system 'mkdir', '-p', "01bld/$lang";
@@ -162,7 +162,7 @@ dump_sigs {
     my $lang = shift;
     print "\@project $project\n\@name $project $lang glossary\n\@lang $lang\n\n";
     print "\@fields sig freq inst\n";
-    foreach (sort keys %sig) {
+    foreach (sort grep(/\%$lang:/, keys %sig)) {
 	my @refs = grep(defined && length, uniq(@{$sig{$_}}));
 #	my $i = mysum(map { /;(\d+)/ } @refs);
 	my $i = $#refs + 1;
@@ -190,7 +190,11 @@ load_sigfile {
 		}
 		next;
 	    }
-	    
+
+	    if ($lang) {
+		next unless /\%$lang:/;
+	    }
+
 	    my @s = split(/\t/,$_);
 	    my $sig = $s[0];
 	    my $freq = $s[$f{'freq'}];

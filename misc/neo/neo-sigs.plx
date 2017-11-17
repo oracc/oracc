@@ -26,11 +26,12 @@ while (<O>) {
 		}
 		++$langs{$lang};
 		chomp;
+		s/^\@(.*?)\%/\@neo\%/;
 		my($s,$rr) = (split(/\t/,$_));
 		foreach my $r (split(/\s+/,$rr)) {
 		    my $t = $r; $t =~ s/\..*$//;
 		    if (exists($l{$t})) {
-			push @{$sig{$s}}, $rr;
+			push @{$sig{$s}}, $r;
 		    }
 		}
 	    }
@@ -42,17 +43,18 @@ while (<O>) {
 close(O);
 
 open(S,'>01bld/mega.sig');
-print S '@fields sig inst', "\n";
+print S '@fields sig freq inst', "\n";
 foreach my $s (keys %sig) {
-    my @rr = @{$sig{$s}};
-    if ($#rr >= 0) {
-	print S "$s\t@rr\n";
-    }
+    my @r = @{$sig{$s}};
+    my $f = 1+$#r;
+    print S "$s\t$f\t";
+    print S join(' ',@r);
+    print S "\n";
 }
 close(S);
 
 open(L, '>01bld/megalangs');
-print L join(' ', sort keys %langs), "\n";
+print L join(' ', sort keys %langs, 'qpn'), "\n";
 close(L);
 
 1;

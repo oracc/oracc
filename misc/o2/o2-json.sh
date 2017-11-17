@@ -87,7 +87,8 @@ then
 else
     echo "o2-json.sh: zipping json ..."
     zip=`zip-json.sh`
-#    rm -fr 01bld/json/*
+    rm -fr 01bld/json/*
+    chmod o+r $zip
     echo "o2-json.sh: JSON created and validated without errors."
     echo "o2-json.sh: $zip is now public"
 fi
