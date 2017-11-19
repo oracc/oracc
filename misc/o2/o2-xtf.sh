@@ -1,8 +1,9 @@
 #!/bin/sh
-
-echo entering o2-xtf.sh
-
 scope=$1
+echo entering o2-xtf.sh
+# Build list before cancelling because it JSON depends
+# on have-xtf.lst
+o2-xtf-lst.sh
 
 [ -r 01bld/cancel ] && exit 1
 
@@ -11,7 +12,6 @@ umask 0022
 shopt -s nullglob
 project=`oraccopt`
 rm -f 01tmp/xtfmanager.log
-rm -f 01bld/lists/have-xtf.lst
 
 function has_score {
     for a in `cat 01bld/lists/sxh-scores.lst`; do
@@ -33,9 +33,6 @@ function xsf_scores {
 	g2-xsf2sxh.plx -proj $project $a
     done
 }
-
-o2-xtf-lst.sh
-
 
 p=`oraccopt`
 if [[ $p == cdli* || $p == epsd2* ]]; then
