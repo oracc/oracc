@@ -29,4 +29,7 @@ xmllint --format --encode utf8 01bld/cdlicat.xmd | grep '<id_' \
 ## Now trim the proxy lists to remove any text without xmd info
 prune-lists.plx
 
+## And trim the imported signatures as well to remove dead insts
+l2p1-prune-sigs.plx
+
 echo "o2-super-prep.sh: exiting at " `date`
