@@ -3,6 +3,7 @@ use warnings; use strict;
 
 my @lists = ('01bld/lists/proxy-atf.lst',
 	     '01bld/lists/proxy-cat.lst',
+	     '01bld/lists/lemindex.lst',
 	     '01bld/lists/proxy-lem.lst'
     );
 my %cat = ();
