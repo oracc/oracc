@@ -23,7 +23,7 @@ binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
-my %merge_periods = (
+my %merge_periods_all = (
     'Archaic'=>'Archaic',
     'ED I-II'=>'Archaic',
     'ED IIIa'=>'Early Dynastic IIIa',
@@ -55,6 +55,14 @@ my %merge_periods = (
     'Unknown'=>'Uncertain',
     'unknown'=>'Uncertain'
     );
+
+my %merge_periods = ();
+foreach my $mp (keys %merge_periods_all) {
+    if ($mp ne $merge_periods_all{$mp}) {
+	$merge_periods{$mp} = $merge_periods_all{$mp};
+    }
+}
+open(MP, ">mergeperiods.dump"); print MP Dumper \%merge_periods; close(MP);
 
 umask 022;
 
@@ -677,20 +685,32 @@ check_vals {
 		    }
 		}
 		my ($f,$v,$t) = ($$fields[$i],$$r[$i],$sort_types[$i]);
+
+		# This is a point at which we have each value for
+		# each field available in turn; it might be good
+		# to have generic field-hooks here ...
+		if ($f eq 'period') {
+		    # $v =~ s/\s+\(.*$//;
+		    # $v =~ s/Early Dynastic IIIb/Early Dynastic/;
+		    if ($cat_merge_periods && $cat_merge_periods eq 'yes') {
+#			warn "xmdmanager: merging periodizations\n";
+			if ($merge_periods{$v}) {
+			    warn "merging $v => $merge_periods{$v}\n";
+			    $v = $merge_periods{$v};
+			} else {
+			    warn "xmdmanager: $v: not in merge periods table\n"
+				unless $merge_periods_all{$v};
+			}
+		    }
+		    $$r[$i] = $v;
+		}
+
+		# Now handle bad values
 		unless (defined ${$valdefs{$t}}{$v}) {
 		    warn "no class for typeinfo{$t}\n" unless ${$typeinfo{$t}}{'class'};
 		    if ('closed' eq ${$typeinfo{$t}}{'class'}) {
 		        ++${$badvalues{$$locator{'file'}.':'.$f}}{$v};
 		    }
-
-		    # This is a point at which we have each value for each field available in turn;
-		    # it might be good to have generic field-hooks here ...
-		    if ($f eq 'period') {
-			$v =~ s/\s+\(.*$//;
-			$v =~ s/Early Dynastic IIIb/Early Dynastic/;
-			$$r[$i] = $v;
-		    }
-
 		    unless (${$valdefs{$t}}{$v}++) {
 			push @{$keydata{$t}}, $v;
 		    }
@@ -861,22 +881,22 @@ dump_xmd {
 		} else {
 		    my $xf = xmlify($f);
 		    $xf =~ s/\&amp;(apos|lt|gt|quot)/\&$1/g; # suppress double-xmlify effects
-		    if ($tag eq 'period') {
-			$xf =~ s/\s+\(.*$//; # remove CDLI dates-on-periods
-			if ($cat_merge_periods) {
-			    if ($merge_periods{$xf}) {
-				$xf = $merge_periods{$xf};
-			    } else {
-				warn "$xf: not in merge periods table\n";
-			    }
-			} else {
-			    # This is a legacy op; not sure it's necessary any more
-			    if ($curr_xmd =~ /^Q/) {
-				# should really map P-periods to Q-periods more generically
-				$xf =~ s/Early Dynastic IIIb/Early Dynastic/;
-			    }
-			}
-		    }
+#		    if ($tag eq 'period') {
+#			$xf =~ s/\s+\(.*$//; # remove CDLI dates-on-periods
+#			if ($cat_merge_periods) {
+#			    if ($merge_periods{$xf}) {
+#				$xf = $merge_periods{$xf};
+#			    } else {
+#				warn "$xf: not in merge periods table\n";
+#			    }
+#			} else {
+#			    # This is a legacy op; not sure it's necessary any more
+#			    if ($curr_xmd =~ /^Q/) {
+#				# should really map P-periods to Q-periods more generically
+#				$xf =~ s/Early Dynastic IIIb/Early Dynastic/;
+#			    }
+#			}
+#		    }
 		    push @{$xmd_outputs{$curr_xmd}}, ">$xf</$tag>";
 #		    findex($tag,$f,$xf) unless exists $nifs{$tag};
 		}

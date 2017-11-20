@@ -8,11 +8,17 @@ open(P,'01bld/lists/prune.lst');
 my @p = (<P>); chomp(@p);
 close(P);
 @prunes{@p} = ();
+my $pruned = 0;
 
 my @sig = <01bld/*.sig>;
 
 foreach my $s (@sig) {
+    $pruned = 0;
     prune_sigs($s);
+    if ($pruned) {
+	warn "l2p1-prune-sigs.plx: pruned $pruned bad refs from $s\n";
+	system 'mv', "$s.new", $s;
+    }
 }
 
 ######################################################################
@@ -22,8 +28,13 @@ sub prune {
     my @newp = ();
     for (my $i = 0; $i <= $#p; ++$i) {
 	my $p = $p[$i];
+	$p =~ s/^.*?://;
 	$p =~ s/\..*$//;
-	push @newp, $p[$i] unless exists $prunes{$p};
+	if (exists $prunes{$p}) {
+	    ++$pruned;
+	} else {
+	    push @newp, $p[$i];
+	}
     }
     join(' ', @newp);
 }
@@ -33,22 +44,35 @@ sub prune_sigs {
     open(S, $s) || die "l2p1-prune-sigs.plx: no permission to read $s\n";
     my @s = (<S>); chomp(@s);
     close(S);
-    open(S, ">$s") || die "l2p1-prune-sigs.plx: no permission to write $s\n";
-    do {
-	set_inst_fields() and next if /^\@fields/;
-	print "$_\n" and next if /^\@(proj|lang|name)/;
-    } while (/^\@(proj|lang|name|fields)/);
-    warn "l2p1-prune-sigs.plx: $s: no insts field\n" and return unless $inst_field;
-    foreach (@s) {
-	my @f = split(/\t/,$_);
+    my $i;
+    open(S, ">$s.new") 
+	|| die "l2p1-prune-sigs.plx: no permission to write $s\n";
+    for (my $i = 0; $i <= $#s; ++$i) {
+	if ($s[$i] =~ /^\@fields/) {
+	    print S $s[$i], "\n";
+	    $inst_field = set_inst_field($s[$i]);
+	} elsif ($s[$i] =~ /^\@(?:proj|lang|name)/ || $s[$i] =~ /^\s*$/) {
+	    print S $s[$i], "\n";
+	} else {
+	    last;
+	}
+    }
+    while ($i++ <= $#s) {
+	next unless $s[$i];
+	my @f = split(/\t/,$s[$i]);
 	$f[$inst_field] = prune($f[$inst_field]);
-	print join("\t", @f), "\n";
+	print S join("\t", @f), "\n";
     }
 }
 
 sub set_inst_field {
-    s/^\@fields\s+//;
-    my @f = split(/\s+/,$_);
-    
+    $_[0] =~ s/^\@fields\s+//;
+    my @f = split(/\s+/,$_[0]);
+    for (my $i = 0; $i <= $#f; ++$i) {
+	if ($f[$i] eq 'inst') {
+	    return $i;
+	}
+    } 
 }
+
 1;

@@ -20,14 +20,16 @@ foreach my $l (@lists) {
     open(L, ">$l");
     foreach my $id (@l) {
 	my ($pqx) = ($id =~ /([PQX]\d\d\d\d\d\d)/);
-#	warn "testing $pqx\n";
+	next unless $pqx;
 	if (exists $cat{$pqx}) {
 	    print L "$id\n";
 	} else {
 	    warn "pruning $pqx from $l\n";
+	    print P "$pqx\n";
 	}
     }
     close(L);
 }
+close(P);
 
 1;
