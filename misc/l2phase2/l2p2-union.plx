@@ -31,8 +31,8 @@ GetOptions (
 $mode = `oraccopt . cbd-super` unless $mode;
 
 my $superlist = '';
-if ($mode eq 'mega') {
-    $superlist = `cat 01bld/megalangs`;
+if (-r '01bld/superlangs') {
+    $superlist = `cat 01bld/superlangs`;
 } else {
     $superlist = `oraccopt . cbd-super-list`;
 }

@@ -53,7 +53,7 @@ foreach my $s (keys %sig) {
 }
 close(S);
 
-open(L, '>01bld/megalangs');
+open(L, '>01bld/superlangs');
 print L join(' ', sort keys %langs, 'qpn'), "\n";
 close(L);
 
