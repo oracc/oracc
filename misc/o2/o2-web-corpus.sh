@@ -3,11 +3,11 @@
 webdir=01bld/www
 buildpolicy=`oraccopt . build-approved-policy`;
 
-if [ "$buildpolicy" != "search" ]; then
+#if [ "$buildpolicy" != "search" ]; then
     p3-translangs.sh >01tmp/translangs
-else
-    echo en >01tmp/translangs
-fi
+#else
+#    echo en >01tmp/translangs
+#fi
 
 otl=`oraccopt . outline-special-list-name`
 
@@ -42,7 +42,7 @@ if [ -r 01bld/lists/outlined.lst ]; then
     cp -f 01bld/lists/outlined.lst $webdir/lists
 fi
 
-if [ "$buildpolicy" != "search" ]; then
+#if [ "$buildpolicy" != "search" ]; then
     l2p3.sh $webdir
     for a in 02pub/cbd/* ; do 
 	lang=`basename $a`
@@ -51,7 +51,7 @@ if [ "$buildpolicy" != "search" ]; then
 	    cp 01bld/$lang/L*.lst $a
 	fi
     done
-fi
+#fi
 
 p=`oraccopt`
 if [[ $p == cdli* || $p == epsd2* ]]; then
