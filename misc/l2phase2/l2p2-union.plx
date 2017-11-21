@@ -205,7 +205,7 @@ load_sigfile {
 
 	    my @s = split(/\t/,$_);
 	    my $sig = $s[0];
-	    my $freq = $s[$f{'freq'}];
+	    my $freq = ($f{'freq'} ? $s[$f{'freq'}] : 0);
 	    my $refs = $s[$f{'inst'}];
 #	    my($sig,$freq,$refs,$pers) = split(/\t/,$_);
 	    

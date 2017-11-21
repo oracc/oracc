@@ -33,6 +33,9 @@ p3cbdcss.xml: p3cbd.css
 p3-colours.plx: p3-colours.plx.in
 	$(ORACCIFY) p3-colours.plx.in
 
+p3-hub.xsl: p3-hub.xsl.in
+	$(ORACCIFY) p3-hub.xsl.in
+
 p3-corpusview-lib.xsl: p3-corpusview-lib.xsl.in
 	$(ORACCIFY) p3-corpusview-lib.xsl.in
 

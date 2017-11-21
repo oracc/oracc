@@ -14,7 +14,7 @@
 <xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
 
 <xsl:include href="xpd.xsl"/>
-<xsl:variable name="config-file" select="concat('/home/oracc/www/',/*/@project,'/config.xml')"/>
+<xsl:variable name="config-file" select="concat('@@ORACC@@/www/',/*/@project,'/config.xml')"/>
 <!--<xsl:variable name="config-xml" select="document($config-file)"/>-->
 <xsl:variable name="hub-glossaries">
   <xsl:call-template name="xpd-option">
