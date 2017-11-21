@@ -642,6 +642,7 @@ check_vals {
     my $cat = shift;
     my $fields = $$cat[0];
     my $rows = $$cat[2];
+#    my $id_text = $$cat[3]; # not ready yet
     my @slice = ();
     my @sort_types= ();
 
@@ -695,11 +696,19 @@ check_vals {
 		    if ($cat_merge_periods && $cat_merge_periods eq 'yes') {
 #			warn "xmdmanager: merging periodizations\n";
 			if ($merge_periods{$v}) {
-			    warn "merging $v => $merge_periods{$v}\n";
+#			    warn "merging $v => $merge_periods{$v}\n";
 			    $v = $merge_periods{$v};
 			} else {
-			    warn "xmdmanager: $v: not in merge periods table\n"
-				unless $merge_periods_all{$v};
+			    if ($merge_periods_all{$v}) {
+				# nothing to do here
+			    } else {
+				if ($v) {
+				    warn "xmdmanager: $v: not in merge periods table\n";
+				} else {
+				    # need to warn here
+				    $v = $merge_periods{'unknown'};
+				}
+			    }
 			}
 		    }
 		    $$r[$i] = $v;
