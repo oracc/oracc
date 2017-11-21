@@ -15,16 +15,20 @@ if [ "$buildpolicy" != "search" ]; then
 	[ -s 01bld/lists/proxy-lem.lst ] && l2p1-from-xtfs.plx -proxy -t 01bld/lists/proxy-lem.lst
     fi
 else
-    echo "o2-corpus.sh: getting sigs via umbrella.lst"
+    echo "o2-corpus.sh: getting sigs via search.lst"
     echo '@fields sig inst' >01bld/from-prx-glo.sig
     for a in `cat 00lib/search.lst` ; do
-	xsig=$a/01bld/from-xtf-glo.sig
-	psig=$a/01bld/from-prx-glo.sig
+	xsig=${ORACC_BUILDS}/$a/01bld/from-xtf-glo.sig
+	psig=${ORACC_BUILDS}/$a/01bld/from-prx-glo.sig
 	if [ -r $xsig ]; then
 	    grep '%' $xsig >>01bld/from-prx-glo.sig
+	else
+	    echo "search: no file $xsig"
 	fi
 	if [ -r $psig ]; then
 	    grep '%' $psig >>01bld/from-prx-glo.sig
+	else
+	    echo "search: no file $psig"
 	fi
     done
     sig-langs.sh 01bld/from-prx-glo.sig >01bld/superlangs

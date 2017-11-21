@@ -342,7 +342,11 @@ create_pmap(void)
 	       &sip->pool[sip->pindex[mindex]],
 	       pm ? pm->p : -1);
       else if (!pm)
-	fprintf(stderr, "xisperiods: no entry for '%s' in periodmap\n", &sip->pool[sip->pindex[mindex]]);
+	{
+	  fprintf(stderr, "xisperiods: no entry for '%s' in periodmap\n",
+		  &sip->pool[sip->pindex[mindex]]);
+	  
+	}
 
       if (!pmaptab[sip->scodes[mindex]])
 	{
@@ -414,7 +418,7 @@ main(int argc, char **argv)
   fputs("</xisses>",subxisfp);
   fclose(subxisfp);
 
-  hash_free2(seen, free, NULL);  
+  /*hash_free2(seen, free, NULL);  */
 
   return 0;
 }

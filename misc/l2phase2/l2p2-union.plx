@@ -29,7 +29,10 @@ GetOptions (
     );
 
 $mode = `oraccopt . cbd-super` unless $mode;
-
+unless ($mode) {
+    my $bap = `oraccopt . build-approved-policy`;
+    $mode = 'search' if $bap eq 'search';
+}
 my $superlist = '';
 if (-r '01bld/superlangs') {
     $superlist = `cat 01bld/superlangs`;
@@ -43,7 +46,9 @@ if ($arg_lang && grep /^$arg_lang$/, @langs) {
     union_one_lang($arg_lang);
 } elsif ($superlist) {
     if ($mode eq 'mega') {
-	union_mega();
+	union_mega('01bld/mega.sig');
+    } elsif (-r '01bld/superlangs') {
+	union_mega('01bld/from-prx-glo.sig');
     } else {
 	foreach my $l (split(/\s+/, $superlist)) {
 	    union_one_lang($l);
@@ -97,17 +102,20 @@ union_projects {
 	@p = `projpublic.sh`;
     } elsif ($mode eq 'mega') {
 	# we've already built mega.sig
+    } elsif ($mode eq 'search') {
+	# we've already already built from-prx-glo.sig
     } else {
-	die "l2p2-union.plx: unknown cbd-super value '$mode'\n";
+	die "l2p2-union.plx: unknown mode '$mode'\n";
     }
     chomp @p;
     @p;
 }
 
 sub union_mega {
+    my $megasig = shift;
     %sig = ();
-    warn "loading 01bld/mega.sig\n";
-    load_sigfile('','01bld/mega.sig');
+    warn "loading $megasig\n";
+    load_sigfile('',$megasig);
 
     foreach my $lang (split(/\s+/, $superlist)) {
 	system 'mkdir', '-p', "01bld/$lang";
