@@ -137,7 +137,7 @@ make_cache(struct item **items, int nitems, int*sic_size)
 	}
     }
 
-  hash_free2(seen, free, NULL);
+  /*hash_free2(seen, free, NULL);*/
   
   /* create an array that can be indexed during sorting and grouping */
   siclist = malloc(sic_id * sizeof(struct si_cache*));

@@ -331,6 +331,7 @@ misc/bib/fixnamemap.plx
 misc/bib/ref2tei.sh
 misc/bib/tei-merge.sh
 misc/ce/ce-labels.xsl
+misc/ce/p3-hub.xsl
 misc/chi/chi-test-checker.plx
 misc/chi/chi-test-indexer.plx
 misc/chi/chi-test-loader.plx

@@ -63,7 +63,8 @@ if [ "$projtype" == "superglo" ]; then
 	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
 	g2x $ldir $l
     done
-elif [ "$super" == "" ]; then
+    #elif [ "$super" == "" ]; then
+else
     for l in `l2p2-langs.plx` ; do
 	ldir=01bld/$l
 	mkdir -p $ldir
@@ -96,14 +97,15 @@ elif [ "$super" == "" ]; then
 	    l2p2-letters.plx $l
 	fi
     done
-else
-    l2p2-union.plx
-    for a in `ls 01bld/*/union.sig` ; do
-	ldir=`dirname $a`
-	l=`basename $ldir`
-	g2x $ldir $l
-    done
 fi
+#else
+#    l2p2-union.plx
+#    for a in `ls 01bld/*/union.sig` ; do
+#	ldir=`dirname $a`
+#	l=`basename $ldir`
+#	g2x $ldir $l
+#    done
+#fi
 
 if [ -r 01bld/pleiades.tab ]; then
     cp 01bld/pleiades.tab 02pub

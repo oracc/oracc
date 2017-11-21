@@ -184,6 +184,7 @@ load_sigfile {
     my($lang, $file) = @_;
     if (open(S,$file)) {
 	my %f = ();
+	my $use_freq = 0;
 	while (<S>) {
 	    next if /^\s*$/;
 	    if (/^\@?(proj(?:ect)?|name|lang)\s+(\S+)/) {
@@ -196,6 +197,7 @@ load_sigfile {
 		for (my $i = 0; $i <= $#f; ++$i) {
 		    $f{$f[$i]} = $i;
 		}
+		$use_freq = defined $f{'freq'};
 		next;
 	    }
 
@@ -205,10 +207,14 @@ load_sigfile {
 
 	    my @s = split(/\t/,$_);
 	    my $sig = $s[0];
-	    my $freq = $s[$f{'freq'}];
+	    my $freq = 0;
+	    # If we have freq use that, otherwise count refs in inst
 	    my $refs = $s[$f{'inst'}];
-#	    my($sig,$freq,$refs,$pers) = split(/\t/,$_);
-	    
+	    if ($use_freq) {
+		$freq = $f{'freq'};
+	    } else {
+		$freq = count_refs($refs);
+	    }
 	    if ($refs && ($freq || !$drop_zero)) {
 		if ($sig =~ /^\{/) {
 		    $sig =~ s/::.*?\%/::\@$project\%/;
@@ -221,6 +227,15 @@ load_sigfile {
 	close(S);
     } else {
 	warn "l2p2-union.plx: can't open sigs `$file' for input\n";
+    }
+}
+
+sub count_refs {
+    if ($_[0]) {
+	my @r = split(/\s+/, $_[0]);
+	return $#r + 1;
+    } else {
+	return 0;
     }
 }
 
