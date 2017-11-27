@@ -40,6 +40,7 @@ function g2x {
 #	echo running l2p2-g2c.plx $l
 	l2p2-g2c.plx $l
 	export ORACC_HOME
+#-verb
 	l2-glomanager.plx -conf l2p2.xcf -cbdlang $l
     else
 	echo Glossary $l is empty.  Exterminate.
@@ -58,9 +59,11 @@ if [ "$projtype" == "superglo" ]; then
 	cbd $l $ldir
 	echo l2p2.sh: processing sigs for superglo $a
 	rm -f $ldir/union.sig
-	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
-	cat 01bld/from-prx-*.sig >$ldir/$l.sig
-	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
+#	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
+	#	[ -r 01bld/from-prx-glo.sig ] && l2p2-sig-slicer.plx -lang $l -name $l -sigs 01bld/from-prx-glo.sig
+	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
+	#	l2-sig-union.plx -super -proj $project -lang $l $ldir/glossary.sig $ldir/$l.sig >$ldir/union.sig
+	l2-sig-union.plx -super -proj $project -lang $l $ldir/$l.sig >$ldir/union.sig
 	g2x $ldir $l
     done
     #elif [ "$super" == "" ]; then

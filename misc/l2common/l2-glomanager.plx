@@ -120,7 +120,7 @@ if ($cbd_post_process && !$clang) {
     }
 }
 
-my $projectPath = "$ENV{'ORACC_HOME'}/$project";
+my $projectPath = "$ENV{'ORACC_BUILDS'}/$project";
 
 $output =~ s/glo\.normcbd/cbd/ if $output;
 

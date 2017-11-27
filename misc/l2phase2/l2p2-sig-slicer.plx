@@ -38,12 +38,19 @@ my @slice_tests = ();
 my $stdout = 0;
 my $verbose = 0;
 
+my $withall = `oraccopt . cbd-with-all`;
+if ($withall eq 'yes') {
+    $all = 1;
+}
+
 my %type_of = (
     l=>'lang',
     p=>'pos',
     );
+
+#    'all'=>\$all,
+
 GetOptions(
-    'all'=>\$all,
     'choice:s'=>\@choice_tests,
     'corpus:s'=>\$corpus,
     'dir:s'=>\$dir_output,
@@ -159,6 +166,10 @@ while (<SIGS>) {
 	    } else {
 		$matches{$msig} = $refs;
 	    }
+	} else {
+	    if ($all) {
+		$matches{$msig} = '';
+	    }
 	}
     }
 }
@@ -264,7 +275,8 @@ merge_matches {
 		    push @printsigs, "$sigref\n";
 		}
 	    }
-	} elsif (uniq_refs($sigref)) {
+	} else {
+	    uniq_refs($sigref);
 	    push @printsigs, "$sigref\n";
 	}
     }
@@ -339,7 +351,7 @@ set_f {
     my $fields = shift;
     %f = ();
     my @f = split(/\s+/, $fields);
-    shift @f; # drop '@field';
+    shift @f; # drop '@fields';
     for (my $i = 0; $i <= $#f; ++$i) {
 	$f{$f[$i]} = $i;
     }

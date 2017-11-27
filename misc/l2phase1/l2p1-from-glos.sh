@@ -11,5 +11,11 @@ rebuild_sigs()
     exit 0
 }
 
-l2p1-needs-update.plx && rebuild_sigs
+projtype=`oraccopt . type`
+if [ "$projtype" == "superglo" ]; then
+    l2p1-needs-update.plx
+    rebuild_sigs
+else
+    l2p1-needs-update.plx && rebuild_sigs
+fi
 exit 1

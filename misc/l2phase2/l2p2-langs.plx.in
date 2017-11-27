@@ -13,11 +13,6 @@ my @proj_sig_langs = ();
 my %proj_sig_langs = ();
 my %unify = ();
 
-if ($unify) {
-    my @unify = split(/\s+/, $unify);
-    @unify{@unify} = ();
-}
-
 # ensure that all langs plus qpn are in proj_sig_langs if they are 
 # represented in project.sig
 
@@ -38,6 +33,9 @@ foreach (<00lib/*.glo>) {
 }
 
 if ($unify) {
+    my @unify = split(/\s+/, $unify);
+    @unify{@unify} = ();
+
     my @d = ();
     foreach my $l (keys %proj_sig_langs) {
 	foreach my $u (keys %unify) {
@@ -48,7 +46,8 @@ if ($unify) {
     }
     if ($dropsub eq 'yes') {
 	foreach my $d (@d) {
-	    delete $proj_sig_langs{$d};
+	    delete($proj_sig_langs{$d})
+		if $d =~ /-/;
 	}
     }
     foreach my $u (keys %unify) {

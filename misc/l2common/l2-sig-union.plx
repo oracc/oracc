@@ -60,7 +60,7 @@ foreach my $s (@ARGV) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
 	    if ($first || $sig{$t[0]}) {
-		my @r = split(/\s/, $r);
+		my @r = split(/\s/, $r||'');
 		if ($all || $#r >= 0) {
 		    @{$sig{$t[0]}}{@r} = ();
 		}
@@ -74,11 +74,9 @@ foreach my $s (@ARGV) {
 		}
 	    }
 	} else {
-	    if ($r) {
-		my @r = split(/\s/, $r);
-		if ($all || $#r >= 0) {
-		    @{$sig{$t[0]}}{@r} = ();
-		}
+	    my @r = split(/\s/, $r||'');
+	    if ($all || $#r >= 0) {
+		@{$sig{$t[0]}}{@r} = ();
 	    }
 	}
     }
