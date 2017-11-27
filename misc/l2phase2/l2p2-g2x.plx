@@ -36,6 +36,7 @@ my $id_counter = -1; # next_xid pre-increments
 my $lang = '';
 my %letter_ids = ();
 my $name = '';
+my $nox = 0; # if 1 don't make .xis, .lst, .map
 my %norms = ();
 my $outfile = '';
 my %pre_ids = ();
@@ -50,6 +51,7 @@ GetOptions(
     'header'=>\$header_vars,
     'lang:s'=>\$lang,
     'name:s'=>\$name,
+    'nox'=>\$nox,
     'out:s'=>\$outfile,
     'proj:s'=>\$proj,
     'verb'=>\$verbose,
@@ -212,13 +214,14 @@ foreach my $lang (sort keys %data) {
 			warn "00lib/$lang.glo: PSU $entry needs \@entry $p\n";
 		    }
 		}
-		print '<cpd ';
-		print ' primary="1"' if $primary-- > 0;
-		print " ref=\"$eid\">";
 		my($pcf,$pgw,$psense,$ppos,$pepos) = ($sparts[$p_i] =~ /^(.*?)\[(.*?)\/\/(.*?)\](.*?)'(.*?)$/);
 		$pcf = xmlify($pcf);
 		$pgw = xmlify($pgw);
 		$psense = xmlify($psense);
+		print '<cpd ';
+		print ' primary="1"' if $primary-- > 0;
+		print " partsig=\"$pcf\[$pgw\]$ppos\"";
+		print " ref=\"$eid\">";
 		print "<cf>$pcf</cf><gw>$pgw</gw><mng>$psense</mng><pos>$ppos</pos><epos>$pepos</epos></cpd>";
 	    }
 	    print '</compound>';
@@ -305,43 +308,47 @@ foreach my $lang (sort keys %data) {
     }
 }
 
-xis_dump_periods();
+xis_dump_periods() unless $nox;
 print '</entries>';
 
-xis_rr();
+xis_rr() unless $nox;
 print XIS '</xisses>'; close XIS; close XISTAB;
 close(G);
 
-open(M,">$dirname$header{'lang'}.map") 
-    || die "l2p2-g2x.plx: can't open map file `$dirname$header{'lang'}.map'\n";
-foreach my $m (keys %sigmap) {
-    if (defined $sigmap{$m}) {
-	if ($sigmap{$m}) {
-	    print M "$m\t$sigmap_ids{$sigmap{$m}}\n";
-	} elsif ($sigmap_ids{$m}) {
-	    print M "$m\t$sigmap_ids{$m}\n";
-	} else {
-	    warn "no sigmap for $m\n";
+unless ($nox) {
+    open(M,">$dirname$header{'lang'}.map") 
+	|| die "l2p2-g2x.plx: can't open map file `$dirname$header{'lang'}.map'\n";
+    foreach my $m (keys %sigmap) {
+	if (defined $sigmap{$m}) {
+	    if ($sigmap{$m}) {
+		print M "$m\t$sigmap_ids{$sigmap{$m}}\n";
+	    } elsif ($sigmap_ids{$m}) {
+		print M "$m\t$sigmap_ids{$m}\n";
+	    } else {
+		warn "no sigmap for $m\n";
+	    }
 	}
     }
+    close(M);
 }
-close(M);
 
-my $lid = 'L000';
-my @l = ();
-foreach my $l (sort keys %letter_ids) {
-    open(L,">$dirname$lid.lst");
-    foreach my $id (@{$letter_ids{$l}}) {
-	print L "$id\n";
+unless ($nox) {
+    my $lid = 'L000';
+    my @l = ();
+    foreach my $l (sort keys %letter_ids) {
+	open(L,">$dirname$lid.lst");
+	foreach my $id (@{$letter_ids{$l}}) {
+	    print L "$id\n";
+	}
+	close(L);
+	push @l, [ $l, $lid++ ];
+    }
+    open(L,">${dirname}letter_ids.tab");
+    foreach my $l (@l) {
+	print L "$$l[0]\t$$l[1]\t";
     }
     close(L);
-    push @l, [ $l, $lid++ ];
 }
-open(L,">${dirname}letter_ids.tab");
-foreach my $l (@l) {
-    print L "$$l[0]\t$$l[1]\t";
-}
-close(L);
 
 ###################################################################
 
