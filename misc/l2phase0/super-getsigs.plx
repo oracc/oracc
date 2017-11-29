@@ -73,6 +73,14 @@ while (<S>) {
 	for (my $i = 0; $i <= $#f; ++$i) {
 	    $f{$f[$i]} = $i;
 	}
+    } elsif (!defined($f{'inst'})) {
+	my @tmp = split(/\t/,$_);
+	if ($tmp[$#tmp] =~ /:[PQX]/) {
+	    $f{'inst'} = $#tmp;
+	} else {
+	    warn "no instances found in sigfile $imports\n";
+	    last;
+	}
     }
     my @s = split(/\t/,$_);
     my($sig,$inst) = ($s[0],$s[$f{'inst'}]);

@@ -20,9 +20,12 @@ use ORACC::XTF::RTF;
 
 #my $TARGET_PATH = "/var/tmp/oracc/atfserver";
 
-my $TARGET_PATH = "/tmp";  # avoid selinux security issues with non-/tmp
-
 $ENV{'ORACC'} = '@@ORACC@@';
+$ENV{'ORACC_BUILDS'} = '@@ORACC_BUILDS@@';
+
+#my $TARGET_PATH = "/tmp";  # avoid selinux security issues with non-/tmp
+
+my $TARGET_PATH = "$ENV{'ORACC_BUILDS'}/www/atfserver";
 
 ##
 # LINK_BASE is the base that is prepended to URLs in links to generated
@@ -299,7 +302,8 @@ EOZ
 #	my $upto50 = `head -50 $logfile`;
 #	Encode::_utf8_on($upto50);
 #	$dl_logfile =~ s#/var/tmp/oracc##;
-	$dl_logfile =~ s#^.*?tmp#/atfserver#;
+	#	$dl_logfile =~ s#^.*?tmp#/atfserver#;
+	$dl_logfile =~ s#^.*?/atfserver#/atfserver#;
 	my $xwarn = $xtf ? '<span style="color:red">YOUR XML MAY BE BAD!</span>'
 	    : '';
 	print <<EOE;
