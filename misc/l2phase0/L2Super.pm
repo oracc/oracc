@@ -14,7 +14,9 @@ use File::Copy "cp";
 use Data::Dumper;
 
 $ORACC::L2P0::L2Super::chatty = 1;
+$ORACC::L2P0::L2Super::qpn_flag = 0;
 $ORACC::L2GLO::Builtins::bare = 1;
+
 my $EMULT = 1000;
 
 use constant {
@@ -103,12 +105,16 @@ init {
 	'project=s'=>\$project,
 	);
 
+    if ($lang && ($lang eq 'qpn' || $lang =~ s#/qpn##)) {
+	$qpn_flag = 1;
+    }
+    
     if ($level) {
 	$cl_level = $cl_info{$level};
 	super_die("'$level' is not a known value for the -level option. Allowed: entry sense form full\n")
 	    unless $cl_level;
     }
-
+    
     $return_data{'dryrun'} = $dryrun;
     $return_data{'force'} = $force;
 

@@ -77,7 +77,12 @@ while (<S>) {
     my @s = split(/\t/,$_);
     my($sig,$inst) = ($s[0],$s[$f{'inst'}]);
     next unless $inst;
-    next unless /\%$data{'baselang'}/;
+
+    if ($ORACC::L2P0::L2Super::qpn_flag) {
+	next unless /\]([A-Z]N)/; # superglo only takes words with primary POS=NN
+    } else {
+	next unless /\%$data{'baselang'}/;
+    }
 
     # For now, just deal with entry/sense level mapping
     my %sig = parse_sig($sig);
