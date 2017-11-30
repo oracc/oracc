@@ -14,7 +14,7 @@ use File::Copy "cp";
 use Data::Dumper;
 
 $ORACC::L2P0::L2Super::chatty = 1;
-$ORACC::L2P0::L2Super::qpn_flag = 0;
+$ORACC::L2P0::L2Super::qpn_lang = 0;
 $ORACC::L2GLO::Builtins::bare = 1;
 
 my $EMULT = 1000;
@@ -104,17 +104,26 @@ init {
 	'map'=>\$argmap,
 	'project=s'=>\$project,
 	);
-
-    if ($lang && ($lang eq 'qpn' || $lang =~ s#/qpn##)) {
-	$qpn_flag = 1;
-    }
     
+    if ($lang && $lang =~ /^qpn/) {
+	if ($lang eq 'qpn') {
+	    $ORACC::L2P0::L2Super::qpn_flag = 1;
+	    $ORACC::L2P0::L2Super::qpn_lang = '';
+	} else {
+	    if ($lang =~ s#qpn/(.*?)$##) {
+		$ORACC::L2P0::L2Super::qpn_lang = $1;
+	    } else {
+		die "L2Super.pm: malformed superlang $lang\n";
+	    }
+	}
+    }
+ 
     if ($level) {
 	$cl_level = $cl_info{$level};
 	super_die("'$level' is not a known value for the -level option. Allowed: entry sense form full\n")
 	    unless $cl_level;
     }
-    
+	
     $return_data{'dryrun'} = $dryrun;
     $return_data{'force'} = $force;
 
@@ -155,6 +164,14 @@ init {
 
 	$return_data{'project'} = $project = $argfile_project unless $project;
 	$return_data{'lang'} = $lang = $argfile_lang unless $lang;
+
+	if ($return_data{'lang'} eq 'qpn') {
+	    my $slang = `oraccopt . cbd-super-list`;
+	    if ($slang) {
+		$slang =~ s#^.*?/##;
+		$ORACC::L2P0::L2Super::qpn_lang = $slang;
+	    }
+	}
 	
     } else {
 	if ($argbase || $argsrc) {

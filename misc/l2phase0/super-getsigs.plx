@@ -86,7 +86,8 @@ while (<S>) {
     my($sig,$inst) = ($s[0],$s[$f{'inst'}]);
     next unless $inst;
 
-    if ($ORACC::L2P0::L2Super::qpn_flag) {
+    if ($ORACC::L2P0::L2Super::qpn_lang) {
+	next unless /\%$ORACC::L2P0::L2Super::qpn_lang/;
 	next unless /\]([A-Z]N)/; # superglo only takes words with primary POS=NN
     } else {
 	next unless /\%$data{'baselang'}/;
@@ -104,7 +105,7 @@ while (<S>) {
 	    unless $mapsigs{$sense};
 	my %mapsig = %{$mapsigs{$sense}};
 	@sig{qw/cf gw sense pos epos/} = @mapsig{qw/cf gw sense pos epos/};
-	$sig{'lang'} = $data{'baselang'};
+	$sig{'lang'} = $data{'baselang'} unless $data{'baselang'} eq 'qpn';
 	$sig = serialize_sig($sig);
     } elsif ($mapglo{$entry}) {
 	$mapsigs{$entry} = parse_sig($entry)
@@ -112,10 +113,14 @@ while (<S>) {
 	my %mapsig = %{$mapsigs{$entry}};
 	@sig{qw/cf gw pos/} = @mapsig{qw/cf gw pos/};
 	$sig{'proj'} = $data{'baseproj'};
-	$sig{'lang'} = $data{'baselang'};
+	$sig{'lang'} = $data{'baselang'} unless $data{'baselang'} eq 'qpn';
 	print $outfh serialize_sig($sig), "\n";
     } else {
-	$sig =~ s/\@.*?:/\@$data{'baseproj'}\%$data{'baselang'}\:/g;
+	if ($data{'baselang'} eq 'qpn') {
+	    $sig =~ s/\@.*?\%/\@$data{'baseproj'}\%/g;
+	} else {
+	    $sig =~ s/\@.*?:/\@$data{'baseproj'}\%$data{'baselang'}\:/g;
+	}
 	print $outfh "$sig\t$inst\n";
     }
 }
