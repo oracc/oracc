@@ -59,7 +59,10 @@ xmd_from_list {
 	next unless $f;
 	my $xmd = '';
 	my ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
-
+	unless ($proxyid) {
+	    warn "xmd-proxy.plx: no proxyid found in $f\n";
+	    next;
+	}
 	if ($seen{$proxyid}) {
 	    warn "xmd-proxy.plx: using $seen{$proxyid} instead of $xmd_project version\n";
 	    next;
