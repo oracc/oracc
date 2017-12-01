@@ -5,6 +5,8 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2P0::L2Super;
 use ORACC::L2GLO::Util;
 
+$ORACC::L2P0::L2Super::chatty = 0;
+
 #
 # Retrieve sigs from from-xtf-glo.sig because that gives only the instances
 # that are in a project's edited texts: if we use project.sig we can get
@@ -60,7 +62,7 @@ $outfh = undef;
 open($outfh, '>', $data{'output'}) 
     || die "super-getsigs.plx: unable to open $data{'output'} to save sigs from $imports\n";
 
-chatty("importing sigs from $imports");
+super_warn("importing sigs from $imports");
 
 ### ADD CHECK FOR REFERENCED/REDUNDANT map/fix ENTRIES
 my %f = ();
