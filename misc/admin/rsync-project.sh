@@ -14,11 +14,11 @@ else
     port=22
 fi
 src=$there:$ORACC_BUILDS/$project
-echo "rsync-project.sh: rsyncing from $src to $here"
 if [ -d $project ]; then
     echo "rsync-project.sh: removing old version of $project"
     sudo rm -fr $project
 fi
+echo "rsync-project.sh: $src"
 rsync -lr -e "ssh -p $port" $src .
 sudo chown -R root:oracc $project
 for a in bld pub tmp www xml ; do
@@ -29,6 +29,6 @@ for a in bld pub tmp www xml ; do
 	echo "rsync-project.sh: removing old version of $d"
 	sudo rm -fr $d
     fi
-    echo rsync $there; rsync -lr -e "ssh -p $port" $s . ;
+    echo "rsync-project.sh: $s"; rsync -lr -e "ssh -p $port" $s . ;
     sudo chown -R root:oracc $d
 done
