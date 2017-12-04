@@ -527,6 +527,11 @@ foreach my $c (@catalogs) {
     $proxying = ($$c{'file'} =~ /proxy/);
     dump_xmd($$c{'icat'},$$c{'file'});
 }
+
+if ($geojson_first < 0) {
+    print GJ "]\n}\n";
+    close GJ;
+}
 #xmd_json_end();
 
 if ($onebigfile) {
@@ -2135,11 +2140,6 @@ xmd_json_end {
 #    warn "xmd_json_end: entry\n" if $project eq 'rinap/rinap3';
     print J "\n\t}\n}\n";
     close J;
-
-    if ($geojson_first < 0) {
-	print GJ "]\n}\n";
-	close GJ;
-    }
 }
 
 sub
