@@ -197,6 +197,9 @@
     <xsl:when test="@g:type='word-linecont'">
       <xsl:text>→</xsl:text>
     </xsl:when>
+    <xsl:when test="@g:type='dollar'">
+      <xsl:value-of select="concat('($',text(),'$)')"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
 	<xsl:with-param name="msg" select="concat('g:x with @g:type=',@g:type,' not handled')"/>

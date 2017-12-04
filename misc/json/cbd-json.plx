@@ -63,6 +63,7 @@ glossary_howtos {
     $howto{'cbd_entries'} = { nam=>"entries", val=>'[' };
     $howto{'cbd_entry'} = { type=>"{", nam=>'headword',val=>'@n', att=>'-n' };
     $howto{'cbd_cf'} = { nam=>'cf',val=>'text()' };
+    $howto{'cbd_dcf'} = { nam=>'dcf',val=>'text()' };
     $howto{'cbd_gw'} = { nam=>'gw',val=>'text()' };
     $howto{'cbd_pos'} = { nam=>'pos',val=>'text()' };
     $howto{'cbd_epos'} = { nam=>'epos',val=>'text()' };
