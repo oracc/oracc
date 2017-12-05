@@ -10,6 +10,7 @@ Make sure you have these installed on your system.
 2. Homebrew or MacPorts
 3. GCC
 4. Git
+5. JavaSDK
 
 If you don't have MacPorts installed, just download it from [their website](https://www.macports.org/install.php) and run its setup.
 If you don't have Brew or Git installed, refer [this](http://www.pyladies.com/blog/Get-Your-Mac-Ready-for-Python-Programming/).
@@ -47,7 +48,7 @@ macport has msort formulae, which is missing from brew repository.
 Please run that by the following command:
 
     ```commandline
-    ./pkg-macos-brew
+    ./pkg-macos-brew.sh
     ```
     In case, if it fails on line 3 giving this error:
 
