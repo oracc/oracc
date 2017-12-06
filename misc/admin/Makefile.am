@@ -16,7 +16,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	bootstrap.sh serve-status.sh serve-index.sh serve-install.sh	\
 	serve-project.sh serve-cron.plx serve-cron.sh			\
 	build-with-subs.sh rsync-project.sh osync-project.sh		\
-	osync-fixlinks.plx osync-all.sh list-subprojects.sh
+	osync-fixlinks.plx osync-all.sh orc list-subprojects.sh
 
 #data_DATA = usermode.xml
 #
@@ -46,6 +46,9 @@ oraccenv-single.sh: oraccenv-single.sh.in
 
 oraccenv.sh: oraccenv.sh.in
 	$(ORACCIFY) oraccenv.sh.in
+
+orc: orc.in
+	$(ORACCIFY) orc.in
 
 projlist.sh: projlist.sh.in
 	$(ORACCIFY) projlist.sh.in
