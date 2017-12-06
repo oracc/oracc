@@ -1,15 +1,22 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh projsave-all.sh projsave-full.sh \
-	projsave-incr.sh allprojatf.sh allprojlist.sh backup-list.plx grepatf.sh oraccenv.sh \
-	proj-backup-list.plx projbackup.sh projlist-depth-first.plx projpublic.sh projsave-sub.sh \
-	projsave.sh pubfiles.sh subprojdirs.sh subproject.sh sudo-map-exec.sh sudo-map.sh \
-	userperm.sh wwwify.sh wwwperm.sh oraccenv-single.sh oracc-project-data.sh oracc-project-runtime.sh \
-	oracc-install.sh oracc-install-funcs.sh oracc-install-server.sh oracc-install-single.sh \
-	sync-runtimes.plx sync-update.sh oracc-index-runtime.sh proj-from-conf-func.sh proj-from-conf.sh \
-	repo-lemm.plx all-hubs.sh portal-words.sh bootstrap.sh serve-status.sh \
-	serve-index.sh serve-install.sh serve-project.sh serve-cron.plx serve-cron.sh \
-	build-with-subs.sh rsync-project.sh
+bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
+	projsave-all.sh projsave-full.sh projsave-incr.sh		\
+	allprojatf.sh allprojlist.sh backup-list.plx grepatf.sh		\
+	oraccenv.sh proj-backup-list.plx projbackup.sh			\
+	projlist-depth-first.plx projpublic.sh projsave-sub.sh		\
+	projsave.sh pubfiles.sh subprojdirs.sh subproject.sh		\
+	sudo-map-exec.sh sudo-map.sh userperm.sh wwwify.sh wwwperm.sh	\
+	oraccenv-single.sh oracc-project-data.sh			\
+	oracc-project-runtime.sh oracc-install.sh			\
+	oracc-install-funcs.sh oracc-install-server.sh			\
+	oracc-install-single.sh sync-runtimes.plx sync-update.sh	\
+	oracc-index-runtime.sh proj-from-conf-func.sh			\
+	proj-from-conf.sh repo-lemm.plx all-hubs.sh portal-words.sh	\
+	bootstrap.sh serve-status.sh serve-index.sh serve-install.sh	\
+	serve-project.sh serve-cron.plx serve-cron.sh			\
+	build-with-subs.sh rsync-project.sh osync-project.sh		\
+	osync-fixlinks.plx osync-all.sh
 
 #data_DATA = usermode.xml
 #

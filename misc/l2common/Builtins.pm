@@ -432,20 +432,22 @@ acd2xml {
     print ATF uniq_by_line(@glo_atf);
     close(ATF);
     system 'ox', '-cQ', '-l', "01tmp/$cbdlang-atf.log", "01tmp/$cbdlang.atf";
-    open(OX,"01tmp/$cbdlang-atf.log");
-    while (<OX>) {
-	if (/^(\d+):/) {
-	    if (non_status_error($_)) {
-		s#^(.*?):\s+#00lib/$cbdlang.glo:$1: (atf warning) #;
-	    } else {
-		++$status;
-		s#^(.*?):\s+#00lib/$cbdlang.glo:$1: (atf error) #;
+
+    if (open(OX,"01tmp/$cbdlang-atf.log")) {
+	while (<OX>) {
+	    if (/^(\d+):/) {
+		if (non_status_error($_)) {
+		    s#^(.*?):\s+#00lib/$cbdlang.glo:$1: (atf warning) #;
+		} else {
+		    ++$status;
+		    s#^(.*?):\s+#00lib/$cbdlang.glo:$1: (atf error) #;
+		}
+		m/:(.*?):/;
+		push @{$errlist{$1}}, $_;
 	    }
-	    m/:(.*?):/;
-	    push @{$errlist{$1}}, $_;
 	}
+	close(OX);
     }
-    close(OX);
 
     foreach my $e (sort { $a <=> $b } keys %errlist) {
 	warn @{$errlist{$e}};
