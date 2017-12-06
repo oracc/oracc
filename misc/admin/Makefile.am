@@ -15,7 +15,8 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	proj-from-conf.sh repo-lemm.plx all-hubs.sh portal-words.sh	\
 	bootstrap.sh serve-status.sh serve-index.sh serve-install.sh	\
 	serve-project.sh serve-cron.plx serve-cron.sh			\
-	build-with-subs.sh rsync-project.sh orc
+	build-with-subs.sh rsync-project.sh osync-project.sh		\
+	osync-fixlinks.plx osync-all.sh orc
 
 #data_DATA = usermode.xml
 #

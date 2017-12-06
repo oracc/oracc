@@ -25,14 +25,13 @@ if [ "$buildserver" == "" ]; then
     exit 1
 fi
 
-echo "Indexing $project"
+echo "serve-install.sh: indexing $project"
 cd $oracc_builds/$project
 $oracc/bin/o2-indexes-boot.sh
-$oracc/bin/est-project-web.sh
+# $oracc/bin/est-project-web.sh
 cd 02www
 for a in `grep -r -l http://$buildserver *` ; do
     perl -pi -e "s/$buildserver/$oracc_host/g" $a
 done
 touch $oracc_builds/$project/installstamp
 exit 0
-

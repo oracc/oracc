@@ -1,0 +1,41 @@
+* CBD Scripted Edit Conventions
+
+** Facilities
+
+   - add word
+   - add base
+   - add sense
+
+   - change CF/GW/POS
+   - change BASE 
+   - change SENSE
+
+   - delete word
+   - delete base
+   - delete sense
+
+   - redirect word
+   - redirect base
+   - redirect sense
+
+   - reassign forms from one word to another
+
+** Syntax
+
+   - add word	      : +@entry
+   - add base         : +BASE (within @bases)
+   - add sense        : +@sense
+
+   - change CF/GW/POS : insert new line >@entry
+   - change base      : BASE>NEWBASE (within @bases)
+   - change sense     : insert new line >@sense
+
+   - delete word      : -@entry
+   - delete base      : -BASE (within @bases)
+   - delete sense     : -@sense
+
+   - redirect word    : =n/CF[GW]POS (after -@entry; n is integer)
+   - redirect base    : =n/BASE (after -BASE; n is integer)
+   - redirect sense   : =n/POS SENSE (after -@sense; n is integer)
+
+   - reassign forms   : >n/@form (n is integer, prepended to @form with / separator)

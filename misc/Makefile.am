@@ -4,6 +4,7 @@ SUBDIRS = \
 	atf \
 	bib \
 	catf \
+	cbd \
 	ce \
 	chi \
 	cs \
