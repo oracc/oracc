@@ -1,0 +1,3 @@
+#!/bin/sh
+. @@ORACC_BUILDS@@/bin/oraccenv.sh
+$*
