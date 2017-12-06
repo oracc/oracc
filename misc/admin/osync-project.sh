@@ -93,6 +93,7 @@ if [[ $fixlinks = "yes" ]]; then
 fi
 
 sudo chown -R root:$group $project
+sudo chmod -R o+r $project
 
 for a in bld pub tmp www xml ; do
     d=$ORACC_BUILDS/$a/$project
@@ -114,6 +115,7 @@ for a in bld pub tmp www xml ; do
     fi
 
     sudo chown -R root:$group $d
+    sudo chmod -R o+r $d
 
 done
 
