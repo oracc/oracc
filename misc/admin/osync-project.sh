@@ -120,6 +120,9 @@ for a in bld pub tmp www xml ; do
 done
 
 sudo serve-index.sh $project $there
+for a in `list-subprojects.sh` ; do
+    sudo serve-index.sh $a $there
+done
 
 ENDTIME=$(date +%s)
 
