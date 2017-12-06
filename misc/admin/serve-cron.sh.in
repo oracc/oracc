@@ -5,5 +5,6 @@ if [ -r /tmp/oracc-serve.pid ]; then
 else
     echo $$ >/tmp/oracc-serve.pid
     @@ORACC@@/bin/serve-cron.plx >>/var/log/oracc-serve-cron.log 2>&1
+    agg-project-list.sh
     rm -f /tmp/oracc-serve.pid
 fi
