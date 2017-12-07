@@ -410,7 +410,11 @@ main (int argc, char **argv)
 
   f_mangletab = create_mangle_tab(curr_project,"txt");
 
-  signmap_err = fopen("01tmp/signmap.log", "w");
+  if (!(signmap_err = fopen("01tmp/signmap.log", "w")))
+    {
+      fprintf(stderr, "setxtx: unable to write to 01tmp/signmap.log. Stop.\n");
+      exit(1);
+    }
 
   signmap_init();
 

@@ -11,7 +11,7 @@ SUBDIRS = . secatx segdfx setxtx secbdx setrax selemx
 @SET_MAKE@
 
 .g.c:
-	gperf -L ANSI -N `basename $*` -tT $< >$@
+	gperf -N `basename $*` -tT $< >$@
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \

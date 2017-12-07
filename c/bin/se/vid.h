@@ -12,6 +12,7 @@ struct vid_data
   int ids_used;
   int max_len;
   struct npool *pool;
+  Hash_table *seen;
 };
 
 struct vid_data *vid_init(void);

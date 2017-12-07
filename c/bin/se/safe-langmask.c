@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -L ANSI -N langmask -tT langmask.g  */
+/* Command-line: gperf -N langmask -tT ../langmask.g  */
 /* Computed positions: -k'3' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -29,7 +29,7 @@
 error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
 #endif
 
-#line 1 "langmask.g"
+#line 1 "../langmask.g"
 
 #include <string.h>
 #include "se.h"
@@ -93,32 +93,32 @@ langmask (str, len)
   static struct lm_tab wordlist[] =
     {
       {""}, {""}, {""},
-#line 14 "langmask.g"
+#line 14 "../langmask.g"
       {"any", lm_any},
-#line 7 "langmask.g"
+#line 7 "../langmask.g"
       {"misc", lm_misc},
       {""}, {""},
-#line 12 "langmask.g"
+#line 12 "../langmask.g"
       {"qpe", lm_qpe},
-#line 8 "langmask.g"
+#line 8 "../langmask.g"
       {"sux", lm_sux},
       {""}, {""},
-#line 9 "langmask.g"
+#line 9 "../langmask.g"
       {"sux_es", lm_sux_es},
-#line 11 "langmask.g"
+#line 11 "../langmask.g"
       {"qpc", lm_qpc},
-#line 13 "langmask.g"
+#line 13 "../langmask.g"
       {"qpn", lm_any},
       {""}, {""}, {""}, {""},
-#line 10 "langmask.g"
+#line 10 "../langmask.g"
       {"akk", lm_akk}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      unsigned int key = hash (str, len);
+      register int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE)
+      if (key <= MAX_HASH_VALUE && key >= 0)
         {
           register const char *s = wordlist[key].name;
 

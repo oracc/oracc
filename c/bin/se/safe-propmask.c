@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -L ANSI -N propmask -tT propmask.g  */
+/* Command-line: gperf -N propmask -tT ../propmask.g  */
 /* Computed positions: -k'1-2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -29,7 +29,7 @@
 error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
 #endif
 
-#line 1 "propmask.g"
+#line 1 "../propmask.g"
 
 #include <string.h>
 #include "se.h"
@@ -67,8 +67,8 @@ hash (str, len)
       18, 13, 58, 58, 58, 58, 20, 10, 15, 30,
        8, 58,  3, 58, 30, 58, 10, 58, 25, 58,
       58, 58, 58, 58, 58, 58, 58, 58, 10, 58,
-      58,  0, 58,  0, 58, 58, 58, 58,  5, 25,
-      58, 58, 58, 58, 58, 58, 58, 58, 58,  0,
+      58,  0, 58,  5, 58, 58, 58, 58,  5, 25,
+       0, 58, 58, 58, 58, 58, 58, 58, 58,  0,
       58, 58, 58, 58, 58, 58, 58, 58, 58, 58,
       58, 58, 58, 58, 58, 58, 58, 58, 58, 58,
       58, 58, 58, 58, 58, 58, 58, 58, 58, 58,
@@ -84,7 +84,7 @@ hash (str, len)
       58, 58, 58, 58, 58, 58, 58, 58, 58, 58,
       58, 58, 58, 58, 58, 58
     };
-  register unsigned int hval = len;
+  register int hval = len;
 
   switch (hval)
     {
@@ -98,6 +98,12 @@ hash (str, len)
   return hval;
 }
 
+#ifdef __GNUC__
+__inline
+#ifdef __GNUC_STDC_INLINE__
+__attribute__ ((__gnu_inline__))
+#endif
+#endif
 struct prop_tab *
 propmask (str, len)
      register const char *str;
@@ -106,70 +112,70 @@ propmask (str, len)
   static struct prop_tab wordlist[] =
     {
       {""},
-#line 25 "propmask.g"
-      {"g", IF_GUIDE, pg_start_column},
-#line 22 "propmask.g"
+#line 26 "../propmask.g"
+      {"n", IF_LEMMA, pg_start_column},
+#line 22 "../propmask.g"
       {"we", PROP_WE, pg_properties},
       {""}, {""}, {""},
-#line 26 "propmask.g"
-      {"l", IF_LEMMA, pg_start_column},
-#line 24 "propmask.g"
+#line 25 "../propmask.g"
+      {"g", IF_GUIDE, pg_start_column},
+#line 24 "../propmask.g"
       {"le", PROP_LE, pg_properties},
       {""}, {""}, {""}, {""},
-#line 21 "propmask.g"
+#line 21 "../propmask.g"
       {"wb", PROP_WB, pg_properties},
       {""}, {""}, {""}, {""},
-#line 23 "propmask.g"
+#line 23 "../propmask.g"
       {"lb", PROP_LB, pg_properties},
       {""}, {""},
-#line 11 "propmask.g"
+#line 11 "../propmask.g"
       {"RN", PROP_RN, pg_properties},
       {""},
-#line 17 "propmask.g"
+#line 17 "../propmask.g"
       {"VM", PROP_VM, pg_properties},
       {""}, {""},
-#line 9 "propmask.g"
+#line 9 "../propmask.g"
       {"PN", PROP_PN, pg_properties},
       {""},
-#line 16 "propmask.g"
+#line 16 "../propmask.g"
       {"NM", PROP_NM, pg_properties},
       {""}, {""},
-#line 14 "propmask.g"
+#line 14 "../propmask.g"
       {"GN", PROP_GN, pg_properties},
       {""},
-#line 19 "propmask.g"
+#line 19 "../propmask.g"
       {"VL", PROP_VL, pg_properties},
       {""}, {""},
-#line 12 "propmask.g"
+#line 12 "../propmask.g"
       {"FN", PROP_FN, pg_properties},
       {""},
-#line 18 "propmask.g"
+#line 18 "../propmask.g"
       {"NL", PROP_NL, pg_properties},
       {""}, {""},
-#line 10 "propmask.g"
+#line 10 "../propmask.g"
       {"DN", PROP_DN, pg_properties},
       {""},
-#line 15 "propmask.g"
+#line 15 "../propmask.g"
       {"XN", PROP_XN, pg_properties},
       {""}, {""},
-#line 27 "propmask.g"
+#line 27 "../propmask.g"
       {"m1", IF_MORPH, pg_start_column},
       {""},
-#line 13 "propmask.g"
+#line 13 "../propmask.g"
       {"TN", PROP_TN, pg_properties},
       {""}, {""}, {""}, {""},
-#line 20 "propmask.g"
+#line 20 "../propmask.g"
       {"OL", PROP_OL, pg_properties},
       {""}, {""}, {""}, {""},
-#line 28 "propmask.g"
+#line 28 "../propmask.g"
       {"m2", IF_MORPH2, pg_start_column}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      unsigned int key = hash (str, len);
+      register int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE)
+      if (key <= MAX_HASH_VALUE && key >= 0)
         {
           register const char *s = wordlist[key].name;
 

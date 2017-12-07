@@ -29,6 +29,7 @@ vid_init(void)
   vp = calloc(1,sizeof(struct vid_data));
   vp->vidh = hash_create(1000);
   vp->pool = npool_init();
+  vp->seen = hash_create(1000);
   return vp;
 }
 
@@ -36,6 +37,7 @@ void
 vid_term(struct vid_data *vp)
 {
   hash_free(vp->vidh,NULL);
+  /*hash_free(vp->seen,NULL);*/
   npool_term(vp->pool);
   free(vp->ids);
   free(vp);
@@ -102,72 +104,79 @@ vid_map_id(struct vid_data *vp, const char *xid)
 {
   const char *pd = NULL;
   char *retbuf, *vidp;
+  static char buf[256];
+  const char *underline = strchr(xid,'_');
+  static int one = 1;
 
-  if (l2)
+  if (underline)
     {
-      static char buf[128];
-      const char *underline = strchr(xid,'_');
-      if (underline)
+      int len = underline-xid;
+      strncpy(buf,xid,len);
+      buf[len] = '\0';
+      if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
 	{
-	  int len = underline-xid;
-	  strncpy(buf,xid,len);
-	  buf[len] = '\0';
-	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
-	    {
-	      pd = strchr(xid,'.');
-	      if (pd)
-		sprintf(buf,"%s%s",vidp,pd);
-	      else
-		strcpy(buf,vidp);
-	      retbuf = buf;
-	    }
+	  pd = strchr(xid,'.');
+	  if (pd)
+	    sprintf(buf,"%s%s",vidp,pd);
 	  else
-	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
-	      retbuf = "v000000";
-	    }
-	}
-      else if (vid_obey_dots && ((pd = strchr(xid,'.'))))
-	{
-	  int len = pd-xid;
-	  strncpy(buf,xid,len);
-	  buf[len] = '\0';
-	  if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
-	    {
-	      sprintf(buf,"%s%s",vidp,pd);
-	      retbuf = buf;
-	    }
-	  else
-	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
-	      retbuf = "v000000";
-	    }
+	    strcpy(buf,vidp);
+	  retbuf = buf;
 	}
       else
 	{
-	  vidp = hash_find(vp->vidh,(unsigned char *)xid);
-	  if (vidp)
-	    return vidp;
-	  else
+#if 0
+	  fprintf(stderr,"vid_map_id: [1] no map for %s when trying %s\n",xid,buf);
+#else
+	  if (!hash_find(vp->seen,buf))
 	    {
-	      fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,xid);
-	      retbuf = "v000000";
+	      fprintf(stderr,"vid_map_id: %s was never catalogued\n",buf);
+	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
 	    }
+#endif
+	  retbuf = "v000000";
+	}
+    }
+  else if (vid_obey_dots && ((pd = strchr(xid,'.'))))
+    {
+      int len = pd-xid;
+      strncpy(buf,xid,len);
+      buf[len] = '\0';
+      if ((vidp = hash_find(vp->vidh,(unsigned char *)buf)))
+	{
+	  sprintf(buf,"%s%s",vidp,pd);
+	  retbuf = buf;
+	}
+      else
+	{
+#if 0
+	  fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
+#else
+	  if (!hash_find(vp->seen,buf))
+	    {
+	      fprintf(stderr,"vid_map_id: [2] %s was never catalogued\n",buf);
+	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
+	    }
+#endif
+	  retbuf = "v000000";
 	}
     }
   else
     {
-      vidp = hash_find(vp->vidh,
-		       (unsigned char *)vp->ids[vp->ids_used-1]);
-      if (pd)
-	{
-	  retbuf = malloc(8+strlen(pd)+1);
-	  sprintf(retbuf,"%s%s",vidp,pd);
-	}
+      vidp = hash_find(vp->vidh,(unsigned char *)xid);
+      if (vidp)
+	return vidp;
       else
 	{
-	  retbuf = malloc(8);
-	  strcpy(retbuf,vidp);
+#if 0
+	  fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
+#else
+	  if (!hash_find(vp->seen,buf))
+	    {
+	      fprintf(stderr,"vid_map_id: [3] %s was never catalogued\n",buf);
+	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
+	    }
+#endif
+	  retbuf = "v000000";
 	}
     }
   return retbuf;
@@ -237,6 +246,7 @@ vid_load_data(const char *fname)
       vp->ids = NULL;
       vp->file = vpfile;
       vp->pool = npool_init();
+      vp->seen = hash_create(1000);
     }
   if (l2)
     vid_hash_data(vp);
@@ -269,7 +279,7 @@ vid_hash_data(struct vid_data *vp)
 	     QID */
 	  const char *colon = NULL;
 	  strcpy(keybuf, keyptr);
-	  colon = strchr(keybuf, ':');
+	  colon = strchr(keyptr, ':'); /* colon can't point at keybuf because overlapping copy */
 	  strcpy(keybuf + (atptr-(const char*)keyptr), colon);
 	  hash_add(vp->vidh, 
 		   npool_copy(keybuf,vp->pool),

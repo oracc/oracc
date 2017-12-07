@@ -1,6 +1,6 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -L ANSI -N langmask -tT langmask.g  */
-/* Computed positions: -k'3' */
+/* Command-line: gperf -N setoks -tT setoks.g  */
+/* Computed positions: -k'1' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -29,17 +29,17 @@
 error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
 #endif
 
-#line 1 "langmask.g"
+#line 1 "setoks.g"
 
 #include <string.h>
 #include "se.h"
 
-#define TOTAL_KEYWORDS 8
-#define MIN_WORD_LENGTH 3
-#define MAX_WORD_LENGTH 6
-#define MIN_HASH_VALUE 3
-#define MAX_HASH_VALUE 18
-/* maximum key range = 16, duplicates = 0 */
+#define TOTAL_KEYWORDS 6
+#define MIN_WORD_LENGTH 2
+#define MAX_WORD_LENGTH 3
+#define MIN_HASH_VALUE 2
+#define MAX_HASH_VALUE 10
+/* maximum key range = 9, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,70 +55,72 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19,  9,
-      19,  4, 19, 19, 19, 19, 19, 15, 19, 19,
-      10, 19, 19, 19, 19,  0, 19, 19, 19, 19,
-       5,  0, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-      19, 19, 19, 19, 19, 19
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11,  7, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11,  2,  5,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11,  5, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+       0,  0, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+      11, 11, 11, 11, 11, 11
     };
-  return len + asso_values[(unsigned char)str[2]];
+  return len + asso_values[(unsigned char)str[0]];
 }
 
-struct lm_tab *
-langmask (str, len)
+#ifdef __GNUC__
+__inline
+#ifdef __GNUC_STDC_INLINE__
+__attribute__ ((__gnu_inline__))
+#endif
+#endif
+struct se_tok_tab *
+setoks (str, len)
      register const char *str;
      register unsigned int len;
 {
-  static struct lm_tab wordlist[] =
+  static struct se_tok_tab wordlist[] =
     {
-      {""}, {""}, {""},
-#line 14 "langmask.g"
-      {"any", lm_any},
-#line 7 "langmask.g"
-      {"misc", lm_misc},
       {""}, {""},
-#line 12 "langmask.g"
-      {"qpe", lm_qpe},
-#line 8 "langmask.g"
-      {"sux", lm_sux},
-      {""}, {""},
-#line 9 "langmask.g"
-      {"sux_es", lm_sux_es},
-#line 11 "langmask.g"
-      {"qpc", lm_qpc},
-#line 13 "langmask.g"
-      {"qpn", lm_any},
-      {""}, {""}, {""}, {""},
-#line 10 "langmask.g"
-      {"akk", lm_akk}
+#line 13 "setoks.g"
+      {"or",	se_or},
+#line 15 "setoks.g"
+      {"not",	se_not},
+      {""},
+#line 16 "setoks.g"
+      {"NOT",	se_not},
+      {""},
+#line 14 "setoks.g"
+      {"OR",	se_or},
+#line 11 "setoks.g"
+      {"and",	se_and},
+      {""},
+#line 12 "setoks.g"
+      {"AND", 	se_and}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      unsigned int key = hash (str, len);
+      register int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE)
+      if (key <= MAX_HASH_VALUE && key >= 0)
         {
           register const char *s = wordlist[key].name;
 
