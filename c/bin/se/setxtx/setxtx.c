@@ -217,7 +217,9 @@ startElement(void *userData, const char *name, const char **atts)
 		  const char *hw = findAttr(atts, "headform");
 		  if (*hw)
 		    {
-		      fprintf(stderr, "setting swc_flag for %s\n", xml_id(atts));
+		      /*
+			fprintf(stderr, "setting swc_flag for %s\n", xml_id(atts));
+		      */
 		      swc_flag = 1;
 		    }
 		}
@@ -264,7 +266,7 @@ startElement(void *userData, const char *name, const char **atts)
 	      const char *headref = findAttr(atts,"headref");
 	      pos_props(pos(atts));
 	      sprintf(qualified_id, "%s:%s", loc_project_buf, headref);
-	      fprintf(stderr,"setxtx: setting word loc from headref %s\n", headref);
+	      /* fprintf(stderr,"setxtx: setting word loc from headref %s\n", headref); */
 	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
 	    }
 	}
