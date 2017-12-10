@@ -1067,7 +1067,8 @@ acdentry {
     foreach my $s (@{$e{'sense'}}) {
 	my ($sid,$sigs,$sgw,$pos,$mng) = ();
 	my $defattr = '';
-	if ($s =~ s/^\#(\S+)\s+//) {
+#	if ($s =~ s/^\#(\S+)\s+//) {
+	if ($s =~ s/^(\S+)\s+//) {
 	    $sid = $1;
 	    if ($sid =~ s/!$//) {
 		$defattr = ' default="yes"';
@@ -1821,13 +1822,8 @@ merge_exec {
 			if ($fld eq 'bases') {
 			    foreach my $b (split(/;\s+/, $tmp)) {
 				if (!defined $known{$b}) {
-#				    warn "adding base = $b\n";
 				    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-#				    use Data::Dumper;
-#				    warn Dumper \@{$$$i{'bases'}};
 				    ${$$$i{'bases'}}[0] .= "; $b";
-#				    warn Dumper \@{$$$i{'bases'}};
-#				    $$$i{'bases'} = $$$i{'bases'} . $b;
 				}
 			    }
 			} else {

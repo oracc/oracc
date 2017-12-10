@@ -1,0 +1,29 @@
+@entry a [a] N
+@end entry
+
+@entry a [a]
+@end entry
+
+@entry! a [a] N
+@end entry
+
+@entry* a u [a u] N
+@end entry
+
+@entry*! a u [a u] N
+@end entry
+
+@entry a [a] N
+>@entry e [a] N
+@end entry
+
+@entry a [a] N
+>@entry e [a] N
+>@entry e [a] N
+@end entry
+
+*@entry a [a] N
+@end entry
+
+@entry- a [a] N
+@end entry
