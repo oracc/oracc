@@ -23,7 +23,7 @@ die "xmd-json.plx: no such file $sv\n"
 my $xsv = load_xml($sv);
 
 if ($xsv) {
-    print "\"sortvals\": {";
+    print "{ \"sortvals\": {";
     my $nflds = 0;
     foreach my $field ($xsv->getDocumentElement()->childNodes()) {
 	if ($field->hasChildNodes()) {
@@ -40,7 +40,7 @@ if ($xsv) {
 	    print "}\n";
 	}
     }
-    print "}";
+    print "}}";
 }
 
 ###############################################################################

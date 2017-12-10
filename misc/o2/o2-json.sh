@@ -59,6 +59,7 @@ fi
 if [ -r 01bld/cdlicat.xmd ]; then
     echo "o2-json.sh: catalogue (from 01bld/cdlicat.xmd)"
     xmd-json.plx 01bld/cdlicat.xmd >01bld/json/catalogue.json
+    xmd-sv-json.plx 02xml/sortvals-.xml >01bld/json/sortcodes.json
 fi
 
 echo "o2-json.sh: metadata ..."
