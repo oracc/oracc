@@ -3,6 +3,11 @@
 @end entry
 
 @entry a [a] N
+@bases a
+@bases a
+@end entry
+
+@entry a [a] N
 @bases a (e)
 @end entry
 

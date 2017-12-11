@@ -98,6 +98,7 @@ my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
 my $mixed_morph = 0;
+my $seen_bases = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
 my %tag_lists = ();
@@ -282,6 +283,12 @@ sub v_bases {
     if ($trace && exists $arg_vfields{'bases'}) {
 	warn "v_bases: \@bits=@bits\n";
     }
+
+    if ($seen_bases++) {
+	ppwarn("\@bases can only be given once");
+	return;
+    }
+    
     my $alt = '';
     my $stem = '';
     my $pri = '';
@@ -582,7 +589,7 @@ sub v_end {
     my($tag,$arg) = @_;
     ppwarn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
-    $in_entry = 0;
+    $in_entry = $seen_bases = 0;
     %bases = ();
     %seen_forms = ();
 }
