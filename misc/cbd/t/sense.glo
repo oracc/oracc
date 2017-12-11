@@ -1,0 +1,11 @@
+@entry a [a] N
+@sense N meaning
+@sense Z meaning
+@sense meaning
+@sense N
+@sense [meaning] N some meaning
+@sense [meaning] some meaning
+@sense [meaning some meaning
+@sense meaning] some meaning
+@sense [meaning]
+@end entry
