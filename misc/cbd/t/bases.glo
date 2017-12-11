@@ -1,0 +1,28 @@
+@entry a [a] N
+@bases a
+@end entry
+
+@entry a [a] N
+@bases a (e)
+@end entry
+
+@entry a [a] N
+@bases a a
+@end entry
+
+@entry a [a] N
+@bases a; a-a (e, e-e)
+@end entry
+
+@entry a [a] N
+@bases a; a-a (e e-e)
+@end entry
+
+@entry a [a] N
+@bases *a
+@end entry
+
+@entry a [a] N
+@bases *aya a
+@end entry
+

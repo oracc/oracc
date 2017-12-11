@@ -1,0 +1,9 @@
+@lang qpn
+@entry a [a] N
+@form a $a
+@form a-a %akk
+@form a-a₂ %akk $aa
+@form a-a₂ %akk $aa
+@form a-a %sux /a
+@form a-a₂ %sux
+@end entry

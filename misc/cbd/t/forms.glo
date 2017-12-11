@@ -1,0 +1,16 @@
+@lang sux
+@entry a [a] N
+@bases a
+@form a $a
+@form $a
+@form a $a
+@form a₂ /a $a
+@form a-ma /a +-ma=m.a #a:~;a ##a $a *B
+@form á /a
+@form <a> /a
+@form a₃ /a a
+@form
+@form a-a₂ $a $(a) /a
+@form a-a₃ $(a) $(a) /a
+@form a-a₄ $a $a /a
+@end entry

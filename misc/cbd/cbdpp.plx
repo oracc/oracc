@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
-
+use Data::Dumper;
 use Getopt::Long;
 
 my $check = 0;
@@ -93,10 +93,13 @@ my @ngm = ();
 
 my %bases = ();
 my $bid = 0;
+my $cbdlang = '';
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
-
+my $mixed_morph = 0;
+my %seen_forms = ();
+my $seen_morph2 = 0;
 my %tag_lists = ();
 
 my %vfields = ();
@@ -104,7 +107,7 @@ my %arg_vfields = ();
 if ($vfields) {
     @arg_vfields{split(/,/,$vfields)} = ();
     %vfields = %arg_vfields;
-    @vfields{qw/entry end/} = ();
+    @vfields{qw/lang entry end/} = ();
 } else {
     %vfields = %tags;
     if ($trace) {
@@ -127,10 +130,9 @@ dump_cbd();
 
 #######################################################################
 
-
 sub cbd_validate {
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	next if $cbd[$i] =~ /^\000$/;
+	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	$curr_ln = $i+1;
 	if ($cbd[$i] =~ /^\s*$/) {
 	    ppwarn("blank lines not allowed in \@entry")
@@ -193,9 +195,23 @@ sub dump_ngm {
 #
 #################################################
 
-sub v_project { };
-sub v_lang { };
-sub v_name { };
+sub v_project { 
+    my($tag,$arg) = @_;
+};
+
+sub v_lang {
+    my($tag,$arg) = @_;
+    if ($trace && exists $arg_vfields{'lang'}) {
+	warn "v_lang: tag=$tag; arg=$arg\n";
+    }
+    if ($arg =~ /(\S+)/) {
+	$cbdlang = $1;
+    }
+};
+
+sub v_name { 
+    my($tag,$arg) = @_;
+};
 
 sub v_entry {
     my($tag,$arg) = @_;
@@ -262,55 +278,148 @@ sub v_bases {
     if ($trace && exists $arg_vfields{'bases'}) {
 	warn "v_bases: tag=$tag; arg=$arg\n";
     }
-    my @bits = split($arg =~ /;\s+/, $_[0]);
+    my @bits = split(/;\s+/, $arg);
+    if ($trace && exists $arg_vfields{'bases'}) {
+	warn "v_bases: \@bits=@bits\n";
+    }
     my $alt = '';
-    my $bstar = '';
+    my $stem = '';
     my $pri = '';
     my $bases_atf = '';
     foreach my $b (@bits) {
 	if ($b =~ s/^\*(\S+)\s+//) {
-	    $bstar = $1;
-	} else {
+	    $stem = $1;
+	} elsif ($b =~ /^\*/) {
 	    $b =~ s/^\*\s*//;
+	    ppwarn("misplaced '*' in \@bases");
 	}
 	if ($b =~ /\s+\(/) {
 	    my $tmp = $b;
 	    ppwarn("malformed alt-base in `$b'")
 		if ($tmp =~ tr/()// % 2);
 	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
-	    $bases{$pri,'*'} = $bstar;
+	    if ($pri =~ /\s/) {
+		ppwarn("space in base `$pri'")
+	    } else {
+		++$bases{$pri};
+		$bases{$pri,'*'} = $stem
+		    if $stem;
+	    }
 	    $bases_atf .= " $pri ";
 	    foreach my $t (split(/,\s+/,$alt)) {
-		ppwarn("space in alt-base `$t'")
-		    if $t =~ /\s/;
-		$bases_atf .= "$t ";
+		if ($t =~ /\s/) {
+		    ppwarn("space in alt-base `$t'");
+		} else {
+		    $bases_atf .= "$t ";
+		}
 	    }
 	} else {
-	    $bases{$b,'*'} = $bstar;
-	    $bases_atf .= "$b ";
-	    $pri = $b;
-	    $alt = '';
+	    if ($b =~ /\s/) {
+		ppwarn("space in base `$b'");
+		$pri = $alt = '';
+	    } else {
+		++$bases{$b};
+		$bases{$b,'*'} = $stem
+		    if $stem;
+		$bases_atf .= "$b ";
+		$pri = $b;
+		$alt = '';
+	    }
 	}
-	ppwarn("space in base `$pri'") if $pri =~ /\s/;
+    }
+    if ($trace && exists $arg_vfields{'bases'}) {
+	warn "v_bases: dump of \%bases:\n";
+	warn Dumper \%bases;
     }
     push @bases_atf, "$curr_ln. $bases_atf\n";
 }
 
 sub v_form {
     my($tag,$arg) = @_;
+
+    $arg = '' unless $arg;
+    
+    if ($trace) {
+	warn "v_form: tag=$tag; arg='$arg'; cbdlang=$cbdlang\n";
+    }
+    
+    unless ($arg) {
+	ppwarn("empty \@form");
+	return;
+    }
+    if ($arg =~ /^[\%\$\#\@\+\/\*]/) {
+	ppwarn("\@form must begin with writing of form");
+	return;
+    }
+    
     my $barecheck = $arg;
     $barecheck =~ s/^(\S+)\s*//;
-
     my $formform = $1;
 
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
-	ppwarn("accented grapheme in \@form");
+	ppwarn("accented vowels not allowed in \@form");
     }
 
     if ($formform =~ /[<>]/) {
-	ppwarn("angle brackets are not allowed in \@form");
+	ppwarn("angle brackets not allowed in \@form");
     }
 
+    my $f = $arg;
+    my $flang = '';
+    if ($f =~ s/(?:^|\s+)\%(\S+)//) {
+	$flang = $1;
+	$f =~ s/^\s*//;
+    } elsif ($cbdlang =~ /^qpn/) {
+	ppwarn("no %LANG in QPN glossary \@form entry");
+    }
+
+    my($fo) = ($f =~ /^(\S+)/);
+    if ($seen_forms{$fo,$flang}++) {
+	ppwarn("duplicate form: $fo");
+	return;
+    }
+
+    if ($fo =~ tr/_/ / && !$is_compound) {
+	ppwarn("underscore (_) not allowed in form except in compounds");
+    }
+    
+    if (($cbdlang =~ /^akk/ 
+	 || ($cbdlang =~ /^qpn/ && $flang =~ /akk/))) {
+	ppwarn("no normalization in form")
+	    unless $f =~ m#(?:^|\s)\$\S#;
+    }
+
+    if (($cbdlang =~ /^sux/ 
+	 || ($cbdlang =~ /^qpn/ && $flang =~ /sux/))
+	&& !$is_compound) {
+	ppwarn("no BASE entry in form")
+	    unless $f =~ m#(?:^|\s)/\S#;
+    }
+
+    if ($f =~ /\s\+(\S+)/) {
+	my $c = $1;
+	ppwarn("malformed CONT '$c'")
+	    unless $c =~ /^-(.*?)=(.*?)$/;
+    }
+
+    my $morph = '';
+    if ($f =~ /\s\#([^\#]\S*)/) {
+	$morph = $1;
+    }
+    if ($f =~ /\s\#\#(\S+)/) {
+	++$seen_morph2;
+	my $morph2 = $1;
+	ppwarn("morph2 `$morph2' has no morph1")
+	    unless $morph;
+    } elsif ($morph && $seen_morph2) {
+	if ($f =~ s/\s\#//g > 1) {
+	    ppwarn("repeated `$morph' field (missing '#' on morph2?)");
+	} else {
+	    ppwarn("morph has no morph2")
+		unless $mixed_morph;
+	}
+    }
+    
     1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 
     if ($barecheck =~ /\S/) {
@@ -323,33 +432,16 @@ sub v_form {
 	if (($ndoll = ($tmp =~ tr/$/$/)) > 1 
 	    && !$is_compound) {
 	    my $nparen = ($tmp =~ s/\$\(//g);
-	    if ($ndoll - $nparen != 1) {
-		ppwarn("COFs must have exactly one NORM without parens");
-	    } elsif ($ndoll < 2) {
-		ppwarn("COFs must have exactly one NORM without parens");
+	    if ($trace) {
+		warn "v_form COF: ndoll=$ndoll; nparen=$nparen\n";
+	    }
+	    if ($ndoll - $nparen > 1) {
+		ppwarn("COFs must have only one NORM without parens (found more than 1)");
+	    } elsif ($ndoll == $nparen) {
+		ppwarn("COFs must have one NORM without parens (found none)");
 	    }
 	}
-	if ($arg =~ s/^\s*<(.*?)>\s+//) {
-	    #	    push @{$sigs{$curr_sense_id}}, $1;
-	    warn "$cbd:$curr_ln: found <...> in sense";
-	}
-#	if ($default || $ebang_flag) {
-#	    $arg = "!$arg";
-#	}
     }
-    my %formattr = ();
-    $arg = " $arg";
-    $formattr{'norm'} = $1 if $arg =~ s#\s+\$(\S+)##;
-    $formattr{'base'} = $1 if $arg =~ s#\s+/(\S+)##;
-    $formattr{'cont'} = $1 if $arg =~ s#\s+\+(\S+)##;
-    $formattr{'stem'} = $1 if $arg =~ s#\s+\*(\S+)##;
-    $formattr{'morph2'} = $1 if $arg =~ s/\s+\#\#(\S+)//;
-    $formattr{'morph1'} = $1 if $arg =~ s/\s+\#(\S+)//;
-    if ($formattr{'morph'} =~ /^(\S+?):/) {
-	$formattr{'pref'} = $1;
-    }
-    $formattr{'rws'} = $1 if $_[0] =~ s/\s+\@(\S+)//;
-    $_[0];
 }
 
 sub v_parts {
@@ -390,7 +482,7 @@ sub v_sense {
 	$pos = '';
     }
     if (!$mng) {
-	ppwarn("meaning not given");
+	ppwarn("no content in SENSE");
 	$mng = '';
     }
     if ($arg =~ tr/[]//d) {
@@ -492,6 +584,7 @@ sub v_end {
 	unless $arg =~ /^\s*entry\s*$/;
     $in_entry = 0;
     %bases = ();
+    %seen_forms = ();
 }
 
 sub v_deprecated {
