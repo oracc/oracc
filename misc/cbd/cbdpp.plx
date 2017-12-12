@@ -38,6 +38,7 @@ my %validators = (
     name=>\&v_name,
     was=>\&v_deprecated,
     moved=>\&v_deprecated,
+    bff=>\&v_bff,
     );
 
 my %rws_map = (
@@ -514,7 +515,7 @@ sub v_bff {
     my($class,$code,$label,$link,$target) = ();
     $arg =~ s/\s*$//;
     if ($arg =~ /^["<]/) {
-	ppwarn("missing CLASS");
+	ppwarn("missing CLASS in \@bff");
 	return {
 	    curr_id=>$curr_ln-1,
 	    line=>$.,
@@ -531,11 +532,18 @@ sub v_bff {
 	if ($arg =~ /^"/) {
 	    ($arg =~ s/^"(.*?)\"\s+//) && ($label = $1);
 	}
-	if ($arg =~ /^</) {
-	    ($arg =~ s/<(.*?)>\s*$//) && ($link = $1);
+	if ($arg =~ /<[^>]*$/) {
+	    ppwarn("missing close '>' on bff link");
+	    return;
 	}
+	if ($arg =~ /^[^<]*$/) {
+	    ppwarn("missing open '<' on bff link");
+	    return;
+	}
+	($arg =~ s/\s*<(.*?)>\s*$//) && ($link = $1);
 	if ($arg) {
-	    ppwarn("bff is CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
+	    #	    ppwarn("bff is CLASS CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
+	    ppwarn("bff leftovers=$arg (out of order components?)");
 	}
 	return {
 	    bid=>$bid++,
@@ -543,7 +551,7 @@ sub v_bff {
 	    code=>$code,
 	    label=>$label,
 	    link=>$link,
-	    line=>$.,
+	    line=>$curr_ln,
 	    ref=>$curr_ln-1,
 	};
     }

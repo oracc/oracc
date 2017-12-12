@@ -1,0 +1,6 @@
+@entry a [a] N
+@bff gram 0x230 "some label" <a [water] N>
+@bff gram "some label" 0x230 <a [water] N>
+@bff gram "some label" 0x230 <a [water] N
+@bff gram "some label" 0x230 a [water] N>
+@end entry
