@@ -76,11 +76,13 @@ glossary_howtos {
     $howto{'cbd_form-sans'} = { type=>"{",nam=>'type',val=>'form-sans',att=>'' };
     $howto{'cbd_cof-form-norm'} = { nam=>'cof-form-norm',val=>'text()',att=>'' };
     $howto{'cbd_norms'} = { nam=>'norms',val=>'[' };
-    $howto{'cbd_norm'} = { type=>"{",nam=>'#ignore',val=>'#ignore',att=>'' };
+    $howto{'cbd_norm'} = { nam=>'#ignore',val=>'{',att=>'' };
     $howto{'cbd_n'} = { nam=>'n',val=>'text()',att=>'' };
     $howto{'cbd_f'} = { type=>"{",nam=>'type',val=>'normform',att=>'' };
     $howto{'cbd_bases'} = { nam=>'bases',val=>'[' };
     $howto{'cbd_base'} = { type=>"{",nam=>'type',val=>'base',att=>'' };
+    $howto{'cbd_stems'} = { nam=>'stems',val=>'[' };
+    $howto{'cbd_stem'} = { type=>"{",nam=>'type',val=>'stem',att=>'' };
     $howto{'cbd_morphs'} = { nam=>'morphs',val=>'[' };
     $howto{'cbd_morph'} = { type=>"{",nam=>'type',val=>'morph',att=>'' };
     $howto{'cbd_morph2s'} = { nam=>'morph2s',val=>'[' };
@@ -119,6 +121,8 @@ glossary_howtos {
     $howto{'xhtml_body'} = { nam=>'summaries', val=>'{' };
     $howto{'xhtml_p'} = { nam=>'@id', val=>'hook()', hook=>\&htmlstring, recurse=>'no' };
 
+    $howto{'#skipempty'} = 1;
+    
     ORACC::JSON::gdl_howtos(\%howto, \%attmap);
     
     ORACC::JSON::setHowTos(%howto);
