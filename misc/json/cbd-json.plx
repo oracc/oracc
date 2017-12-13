@@ -10,7 +10,8 @@ glossary_howtos();
 my $projcbd = shift @ARGV;
 my ($project,$lang) = split(/:/, $projcbd);
 
-my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
+#my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
+my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/articles-with-periods.xml";
 my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
 my $sum_ns = "$ENV{'ORACC'}/www/$project/cbd/$lang/summaries.html";
 
@@ -61,6 +62,7 @@ glossary_howtos {
     my %attmap = ();
 
     $howto{'cbd_entries'} = { nam=>"entries", val=>'[' };
+    $howto{'cbd_articles'} = { nam=>"entries", val=>'[' };
     $howto{'cbd_entry'} = { type=>"{", nam=>'headword',val=>'@n', att=>'-n' };
     $howto{'cbd_cf'} = { nam=>'cf',val=>'text()' };
     $howto{'cbd_dcf'} = { nam=>'dcf',val=>'text()' };
@@ -95,11 +97,15 @@ glossary_howtos {
     $howto{'cbd_cof-head'} = { nam=>'head',val=>'text()',att=>'0' };
     $howto{'cbd_cof-tail'} = { nam=>'tail',val=>'{',att=>'',text=>'sig' };
 
+    $howto{'cbd_periods'} = { nam=>'periods', val=>'[' };
+    $howto{'cbd_p'} = { type=>'{', nam=>'p', val=>"text()", att=>'' };
+
     $howto{'cbd_letter'} = { type=>'#ignore' };
     $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_s'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_t'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_text'} = { type=>'#ignore', recurse=>'no' };
     
     $howto{'xis_xisses'} = { nam=>'instances', val=>'{' };
     $howto{'xis_xis'} = { nam=>'@xml:id', val=>"[", att=>'0' };
