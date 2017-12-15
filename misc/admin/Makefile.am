@@ -16,8 +16,9 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	bootstrap.sh serve-status.sh serve-index.sh serve-install.sh	\
 	serve-project.sh serve-cron.plx serve-cron.sh			\
 	build-with-subs.sh rsync-project.sh osync-project.sh		\
-	osync-fixlinks.plx osync-all.sh orc list-subprojects.sh 	\
-	osync-tar.sh osync-snc.sh osync-snc-all.sh
+	osync-fixlinks.plx osync-all.sh orc list-subprojects.sh		\
+	osync-tar.sh osync-snc.sh osync-snc-all.sh osync-tar-dir.sh	\
+	osync-tar-get.sh
 
 #data_DATA = usermode.xml
 #
