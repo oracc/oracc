@@ -11,8 +11,11 @@ while (<S>) {
     next if /^\@fields/;
     if (/\!0x/) {
 	chomp;
-	s/\t.*$//;
-	my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)$/);
+#	s/\t.*$//; # not sure what this was doing but it makes COF with RANK fail
+# so move instead to not anchoring the following regex with $, this means it can
+# have fields beyond rank without breaking anything (don't think this can happen
+# though)
+	my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)/);
 	if ($pre) {
 	    my $index = $nth - 1;
 	    my $v = '';
