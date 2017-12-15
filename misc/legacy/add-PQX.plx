@@ -51,12 +51,19 @@ if ($raw) {
     open(R, $raw) || die "add-PQX.plx: failed to open raw input file $input\n";
     open(O, ">$raw.P") || die "add-PQX.plx: failed to open raw output $raw.P\n";
     while (<R>) {
+	chomp;
 	my $query = $_;
-	chomp($query);
+	my $rest = '';
+	if ($query =~ s/(\t.*?)$//) {
+	    $rest = $1;
+	}
+	my $orig_q = $query;
+	$query =~ tr/ ,/__/;
 	my @res = `se \#$project \!cat $query`;
 	chomp @res;
 	@res = uniq(@res);
-	print O "@res\n";
+	print "@res\t$orig_q$rest\n";
+	print O "@res\t$orig_q$rest\n";
     }
     close(O);
     close(R);
