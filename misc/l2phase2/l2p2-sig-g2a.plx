@@ -156,7 +156,11 @@ if ($make_sigtab) {
 		push @sigtab, [ $sid , $$info{'sig'} ]; # , $$info{'freq'} , $$info{'instances'}
 		print "\@form <$sid> $$info{'form'}";
 		print " \%$$info{'lang'}" if $header{'lang'} =~ /^qpn/ || $$info{'lang'} =~ /-[0-9]/; # print info{lang} if it has a writing system
-		print " \$$$info{'norm'}" if $$info{'norm'};
+		if ($$info{'norm'}) {
+		    my $n = $$info{'norm'};
+		    $n =~ s/\s+/ \$/g;
+		    print " \$$n";
+		}
 		my $b = $$info{'base'};
 		if ($b) {
 		    $b =~ s/^\+// and print " /$b";
@@ -211,7 +215,9 @@ if ($make_sigtab) {
 ##		warn "norm = $$info{'norm'}\n";
 		if ($$info{'norm'} && ($$info{'norm'} =~ / /
 				       || $$info{'lang'} !~ /^sux/)) {
-		    push @fbits, "\$$$info{'norm'}";
+		    my $n = $$info{'norm'};
+		    $n =~ s/\s+/ \$/g;
+		    push @fbits, "\$$n";
 		}
 		  
 		my $b = $$info{'base'};
