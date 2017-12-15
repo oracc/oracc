@@ -42,12 +42,12 @@ while (<O>) {
 }
 close(O);
 
-open(S,'>01bld/mega.sig');
-print S '@fields sig freq inst', "\n";
+open(S,'>01bld/project.sig');
+print S '@fields sig rank freq inst', "\n";
 foreach my $s (keys %sig) {
     my @r = @{$sig{$s}};
     my $f = 1+$#r;
-    print S "$s\t$f\t";
+    print S "$s\t0\t$f\t";
     print S join(' ',@r);
     print S "\n";
 }

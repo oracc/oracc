@@ -591,7 +591,7 @@ sub gdl_howtos {
 
     $$howto{'norm_w'} = { type=>'#ignore', recurse=>'no' };
     $$howto{'norm_s'} = { type=>'#ignore' };
-    
+
     $$attmap{'gdl_delim'} = 'delim';
     $$attmap{'gdl_logolang'} = 'logolang';
     $$attmap{'gdl_pos'} = 'pos';

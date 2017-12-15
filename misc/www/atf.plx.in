@@ -148,7 +148,15 @@ push(@op, '-F', "$outdir/forms.lst") if $wlist;
 push(@op, '-f', '-x', $xmlfile) if $xtf;
 push(@op, '-M', '-x', $xmlfile) if $lem_file;
 
-my @sys = ("@@ORACC@@/bin/ox", @op, '-l', $logfile, '-z', 'cdli', $procfile);
+if ($procfile =~ /\.atf$/) {
+    push @op, $procfile;
+} elsif ($procfile =~ /\.txt$/) {
+    push @op, '-a', $procfile;
+} else {
+    
+}
+
+my @sys = ("@@ORACC@@/bin/ox", '-l', $logfile, '-z', 'cdli', @op);
 warn("atf.plx: @sys\n");
 
 binmode STDOUT, ':utf8';
