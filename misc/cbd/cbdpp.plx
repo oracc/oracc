@@ -39,6 +39,9 @@ my %validators = (
     was=>\&v_deprecated,
     moved=>\&v_deprecated,
     bff=>\&v_bff,
+    collo=>\&v_collo,
+    geo=>\&v_geo,
+    usage=>\&v_usage,
     );
 
 my %rws_map = (
@@ -76,9 +79,19 @@ my %stems = (); @stems{@stems} = ();
 
 my @tags = qw/entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid ngm was moved project lang name/;
+              pl_id pl_uid was moved project lang name collo/;
 
 my %tags = (); @tags{@tags} = ();
+
+my @data = qw/usage collo sense/;
+
+my %data = (); @data{@data} = ();
+
+my %ppfunc = (
+    usage=>\&pp_usage,
+    collo=>\&pp_collo,
+    sense=>\&pp_geo,
+);
 
 my $lng = '';
 my $cbd = shift @ARGV;
@@ -99,9 +112,12 @@ my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
 my $mixed_morph = 0;
+my $project = '';
+my $projdir = '';
 my $seen_bases = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
+my $status = 0;
 my %tag_lists = ();
 
 my %vfields = ();
@@ -123,25 +139,37 @@ if ($vfields) {
 #
 ###############################################################
 
-cbd_load();
-cbd_validate();
+pp_load();
 
-dump_ngm() if $#ngm >= 0;
-dump_acd() if $#acd >= 0; 
-dump_cbd();
+die "cbdpp.plx: $cbd: can't continue without project and language\n"
+    unless $project && $cbdlang;
+$projdir = "$ENV{'ORACC_BUILDS'}/$project";
+pp_validate();
+
+if ($status) {
+    die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
+} else {
+    foreach my $f (keys %ppfunc) {
+	if ($#{$data{$f}} >= 0) {
+	    &{$ppfunc{$f}}();
+	}
+    }
+}
+
+pp_cbd();
 
 #######################################################################
 
-sub cbd_validate {
+sub pp_validate {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	$curr_ln = $i+1;
 	if ($cbd[$i] =~ /^\s*$/) {
-	    ppwarn("blank lines not allowed in \@entry")
+	    pp_warn("blank lines not allowed in \@entry")
 		if $in_entry;
 	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*$/) {
 	    my $rws = $1;
-	    ppwarn("\@$1 unknown register/writing-system/dialect")
+	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
 	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
@@ -158,13 +186,13 @@ sub cbd_validate {
 			}
 		    }
 		} else {
-		    ppwarn("internal error: no validator function defined for tag `$tag'");
+		    pp_warn("internal error: no validator function defined for tag `$tag'");
 		}
 	    } else {
-		ppwarn("\@$1 unknown tag");
+		pp_warn("\@$1 unknown tag");
 	    }
 	} else {
-	    ppwarn("invalid line in glossary");
+	    pp_warn("invalid line in glossary");
 	}
     }
 }
@@ -197,17 +225,23 @@ sub dump_ngm {
 #
 #################################################
 
-sub v_project { 
-    my($tag,$arg) = @_;
+sub v_project {
+    my($line,$arg) = @_;
+    return if $arg;
+    if ($line =~ /\@project\s+(\S+)\s*$/) {
+	$project = $1;
+    } else {
+	pp_warn("project empty or malformatted");
+    }
 };
 
 sub v_lang {
-    my($tag,$arg) = @_;
-    if ($trace && exists $arg_vfields{'lang'}) {
-	warn "v_lang: tag=$tag; arg=$arg\n";
-    }
-    if ($arg =~ /(\S+)/) {
+    my($line,$arg) = @_;
+    return if $arg;
+    if ($line =~ /\@lang\s+(\S+)\s*$/) {
 	$cbdlang = $1;
+    } else {
+	pp_warn("language empty or malformatted");
     }
 };
 
@@ -228,21 +262,32 @@ sub v_entry {
 	if ($in_entry) {
 	    if ($pre) {
 		if ($in_entry > 1) {
-		    ppwarn("multiple acd \@entry fields not permitted");
+		    pp_warn("multiple acd \@entry fields not permitted");
+		} else {
+		    push @{$data{'acd'}}, $curr_ln;
 		}
 	    } else {
-		ppwarn("multiple \@entry fields not permitted");
+		pp_warn("multiple \@entry fields not permitted");
 	    }
 	    ++$in_entry;
 	} elsif ($in_entry > 1 ) {
-	    ppwarn("max two \@entry fields allowed");
+	    pp_warn("max two \@entry fields allowed");
 	} else {
 	    ++$in_entry;
 	    ($cf,$gw,$pos) = ($arg =~ /^([^\[]+)\s+(\[[^\]]+\])\s+(\S+)\s*$/);
 	    if (!$cf) {
-		ppwarn("syntax error in \@entry's CF [GW] POS");
+		if ($arg =~ /\[/ && $arg !~ /\s\[/) {
+		    pp_warn("missing space before [ in CF [GW] POS");
+		} elsif ($arg =~ /\]/ && $arg !~ /\]\s/) {
+		    pp_warn("missing space after ] in CF [GW] POS");
+		} elsif ($arg =~ /\]/ && $arg !~ /\]\s*$/) {
+		    pp_warn("missing POS in CF [GW] POS");
+		} else {
+		    pp_warn("syntax error in \@entry's CF [GW] POS");
+		}
 	    } else {
 		$is_compound = $cf =~ /\s/;
+		pp_warn("unknown POS '$pos'") unless exists $poss{$pos};
 	    }
 	}
 	if ($pre) {
@@ -250,7 +295,7 @@ sub v_entry {
 	}
 	if ($pst) {
 	    if ($pst !~ /^\*|\!$/) {
-		ppwarn("bad \@entry suffix: allowed sequences are '*', '!'");
+		pp_warn("bad \@entry suffix: allowed sequences are '*', '!'");
 	    }
 	}
 	if ($trace && exists $arg_vfields{'entry'}) {
@@ -260,17 +305,17 @@ sub v_entry {
 	    warn "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst\n";
 	}
     } else {
-	ppwarn("bad format in \@entry");
+	pp_warn("bad format in \@entry");
     }
 }
 
 sub v_acd_ok {
     my $pre = shift;
     if ($pre !~ /^$acd_rx$/) {
-	ppwarn("(acd) only $acd_rx allowed");
+	pp_warn("(acd) only $acd_rx allowed");
     } else {
 	if (length($pre) > 1) {
-	    ppwarn("(acd) only one of $acd_rx allowed");
+	    pp_warn("(acd) only one of $acd_rx allowed");
 	}		 
     }
 }
@@ -286,7 +331,7 @@ sub v_bases {
     }
 
     if ($seen_bases++) {
-	ppwarn("\@bases can only be given once");
+	pp_warn("\@bases can only be given once");
 	return;
     }
     
@@ -299,15 +344,18 @@ sub v_bases {
 	    $stem = $1;
 	} elsif ($b =~ /^\*/) {
 	    $b =~ s/^\*\s*//;
-	    ppwarn("misplaced '*' in \@bases");
+	    pp_warn("misplaced '*' in \@bases");
 	}
 	if ($b =~ /\s+\(/) {
 	    my $tmp = $b;
-	    ppwarn("malformed alt-base in `$b'")
+	    pp_warn("malformed alt-base in `$b'")
 		if ($tmp =~ tr/()// % 2);
 	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
+	    if ($pri =~ s/>.*$//) {
+		push @{$data{'acd'}}, $curr_ln;
+	    }
 	    if ($pri =~ /\s/) {
-		ppwarn("space in base `$pri'")
+		pp_warn("space in base `$pri'")
 	    } else {
 		++$bases{$pri};
 		$bases{$pri,'*'} = $stem
@@ -316,14 +364,14 @@ sub v_bases {
 	    $bases_atf .= " $pri ";
 	    foreach my $t (split(/,\s+/,$alt)) {
 		if ($t =~ /\s/) {
-		    ppwarn("space in alt-base `$t'");
+		    pp_warn("space in alt-base `$t'");
 		} else {
 		    $bases_atf .= "$t ";
 		}
 	    }
 	} else {
 	    if ($b =~ /\s/) {
-		ppwarn("space in base `$b'");
+		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
 		++$bases{$b};
@@ -352,11 +400,11 @@ sub v_form {
     }
     
     unless ($arg) {
-	ppwarn("empty \@form");
+	pp_warn("empty \@form");
 	return;
     }
     if ($arg =~ /^[\%\$\#\@\+\/\*]/) {
-	ppwarn("\@form must begin with writing of form");
+	pp_warn("\@form must begin with writing of form");
 	return;
     }
     
@@ -365,11 +413,11 @@ sub v_form {
     my $formform = $1;
 
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
-	ppwarn("accented vowels not allowed in \@form");
+	pp_warn("accented vowels not allowed in \@form");
     }
 
     if ($formform =~ /[<>]/) {
-	ppwarn("angle brackets not allowed in \@form");
+	pp_warn("angle brackets not allowed in \@form");
     }
 
     my $f = $arg;
@@ -378,35 +426,35 @@ sub v_form {
 	$flang = $1;
 	$f =~ s/^\s*//;
     } elsif ($cbdlang =~ /^qpn/) {
-	ppwarn("no %LANG in QPN glossary \@form entry");
+	pp_warn("no %LANG in QPN glossary \@form entry");
     }
 
     my($fo) = ($f =~ /^(\S+)/);
     if ($seen_forms{$fo,$flang}++) {
-	ppwarn("duplicate form: $fo");
+	pp_warn("duplicate form: $fo");
 	return;
     }
 
     if ($fo =~ tr/_/ / && !$is_compound) {
-	ppwarn("underscore (_) not allowed in form except in compounds");
+	pp_warn("underscore (_) not allowed in form except in compounds");
     }
     
     if (($cbdlang =~ /^akk/ 
 	 || ($cbdlang =~ /^qpn/ && $flang =~ /akk/))) {
-	ppwarn("no normalization in form")
+	pp_warn("no normalization in form")
 	    unless $f =~ m#(?:^|\s)\$\S#;
     }
 
     if (($cbdlang =~ /^sux/ 
 	 || ($cbdlang =~ /^qpn/ && $flang =~ /sux/))
 	&& !$is_compound) {
-	ppwarn("no BASE entry in form")
+	pp_warn("no BASE entry in form")
 	    unless $f =~ m#(?:^|\s)/\S#;
     }
 
     if ($f =~ /\s\+(\S+)/) {
 	my $c = $1;
-	ppwarn("malformed CONT '$c'")
+	pp_warn("malformed CONT '$c'")
 	    unless $c =~ /^-(.*?)=(.*?)$/;
     }
 
@@ -417,13 +465,13 @@ sub v_form {
     if ($f =~ /\s\#\#(\S+)/) {
 	++$seen_morph2;
 	my $morph2 = $1;
-	ppwarn("morph2 `$morph2' has no morph1")
+	pp_warn("morph2 `$morph2' has no morph1")
 	    unless $morph;
     } elsif ($morph && $seen_morph2) {
 	if ($f =~ s/\s\#//g > 1) {
-	    ppwarn("repeated `$morph' field (missing '#' on morph2?)");
+	    pp_warn("repeated `$morph' field (missing '#' on morph2?)");
 	} else {
-	    ppwarn("morph has no morph2")
+	    pp_warn("morph has no morph2")
 		unless $mixed_morph;
 	}
     }
@@ -431,7 +479,7 @@ sub v_form {
     1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 
     if ($barecheck =~ /\S/) {
-	ppwarn("bare word in \@form. barecheck=$barecheck; arg=$arg");
+	pp_warn("bare word in \@form. barecheck=$barecheck; arg=$arg");
     } else {
 	my $tmp = $arg;
 	$tmp =~ s#\s/(\S+)##; # remove BASE because it may contain '$'s.
@@ -444,9 +492,9 @@ sub v_form {
 		warn "v_form COF: ndoll=$ndoll; nparen=$nparen\n";
 	    }
 	    if ($ndoll - $nparen > 1) {
-		ppwarn("COFs must have only one NORM without parens (found more than 1)");
+		pp_warn("COFs must have only one NORM without parens (found more than 1)");
 	    } elsif ($ndoll == $nparen) {
-		ppwarn("COFs must have one NORM without parens (found none)");
+		pp_warn("COFs must have one NORM without parens (found none)");
 	    }
 	}
     }
@@ -470,7 +518,17 @@ sub v_sense {
     if ($arg =~ s/^\[(.*?)\]\s+//) {
 #	$sgw = $1;
     }
+    
+    my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
+    if ($pre) {
+	if ($cbd[$curr_ln-1] =~ /^$acd_rx/) {
+	    pp_warn("multiple acd \@sense fields in a row not permitted");
+	} else {
+	    push @{$data{'acd'}}, $curr_ln;
+	}
+    }
+    
     my($pos,$mng) = ();
     if ($arg =~ /^[A-Z]+(?:\/[it])?\s/) {
 	($pos,$mng) = ($arg =~ /^([A-Z]+(?:\/[it])?)\s+(.*)\s*$/);
@@ -481,7 +539,7 @@ sub v_sense {
     if ($pos) {
 	if (!exists $poss{$pos} && $pos !~ /^V\/[ti]/) {
 	    if ($pos =~ /^[A-Z]+$/) {
-		ppwarn("$pos not in known POS list");
+		pp_warn("$pos not in known POS list");
 	    } else {
 		$mng = "$pos $mng";
 	    }
@@ -490,21 +548,21 @@ sub v_sense {
 	$pos = '';
     }
     if (!$mng) {
-	ppwarn("no content in SENSE");
+	pp_warn("no content in SENSE");
 	$mng = '';
     }
     if ($arg =~ tr/[]//d) {
-	ppwarn("square brackets not allowed in SENSE; use Unicode U+27E6/U+27E7 instead");
+	pp_warn("square brackets not allowed in SENSE; use Unicode U+27E6/U+27E7 instead");
     }
     if ($arg =~ tr/;//d) {
-	ppwarn("semi-colons not allowed in SENSE; use comma or split into multiple SENSEs");
+	pp_warn("semi-colons not allowed in SENSE; use comma or split into multiple SENSEs");
     }
     my($tok1) = ($arg =~ /^(\S+)/);
     if (!$tok1) {
-	ppwarn("empty SENSE");
+	pp_warn("empty SENSE");
     } else {
-	ppwarn("$tok1: unknown POS in SENSE") unless exists $poss{$tok1};
-	ppwarn("no content in SENSE") unless $arg =~ /\s\S/;
+	pp_warn("$tok1: unknown POS in SENSE") unless exists $poss{$tok1};
+	pp_warn("no content in SENSE") unless $arg =~ /\s\S/;
     }
     
     $_[0];
@@ -515,7 +573,7 @@ sub v_bff {
     my($class,$code,$label,$link,$target) = ();
     $arg =~ s/\s*$//;
     if ($arg =~ /^["<]/) {
-	ppwarn("missing CLASS in \@bff");
+	pp_warn("missing CLASS in \@bff");
 	return {
 	    curr_id=>$curr_ln-1,
 	    line=>$.,
@@ -524,7 +582,7 @@ sub v_bff {
     } else {
 	($arg =~ s/^(\S+)\s*//) && ($class = $1);
 #	unless ($bff_class{$class}) {
-#	    ppwarn( "unknown bff CLASS: $class\n");
+#	    pp_warn( "unknown bff CLASS: $class\n");
 #	}
 	if ($arg !~ /^["<]/) {
 	    ($arg =~ s/^(\S+)\s*//) && ($code = $1);
@@ -533,17 +591,17 @@ sub v_bff {
 	    ($arg =~ s/^"(.*?)\"\s+//) && ($label = $1);
 	}
 	if ($arg =~ /<[^>]*$/) {
-	    ppwarn("missing close '>' on bff link");
+	    pp_warn("missing close '>' on bff link");
 	    return;
 	}
 	if ($arg =~ /^[^<]*$/) {
-	    ppwarn("missing open '<' on bff link");
+	    pp_warn("missing open '<' on bff link");
 	    return;
 	}
 	($arg =~ s/\s*<(.*?)>\s*$//) && ($link = $1);
 	if ($arg) {
-	    #	    ppwarn("bff is CLASS CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
-	    ppwarn("bff leftovers=$arg (out of order components?)");
+	    #	    pp_warn("bff is CLASS CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
+	    pp_warn("bff leftovers=$arg (out of order components?)");
 	}
 	return {
 	    bid=>$bid++,
@@ -593,9 +651,21 @@ sub v_prefs {
     my($tag,$arg) = @_;
 }
 
+sub v_collo {
+    my($tag,$arg) = @_;
+}
+
+sub v_geos {
+    my($tag,$arg) = @_;
+}
+
+sub v_usage {
+    my($tag,$arg) = @_;
+}
+
 sub v_end {
     my($tag,$arg) = @_;
-    ppwarn("malformed \@end entry")
+    pp_warn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
     $in_entry = $seen_bases = 0;
     %bases = ();
@@ -603,7 +673,7 @@ sub v_end {
 }
 
 sub v_deprecated {
-    ppwarn("$_[0] is deprecated, please remove from glossary");
+    pp_warn("$_[0] is deprecated, please remove from glossary");
 }
 
 sub is_proper {
@@ -626,7 +696,15 @@ sub check_base {
 #
 ################################################
 
-sub cbd_load {
+sub pp_entry_of {
+    my $i = shift;
+    while ($cbd[$i] !~ /\@entry/) {
+	--$i;
+    }
+    $i;
+}
+
+sub pp_load {
     open(C,$cbd) || die "cbdpp.plx: unable to open $cbd. Stop.\n";
     @cbd = (<C>); chomp @cbd;
     close(C);
@@ -636,23 +714,94 @@ sub cbd_load {
 	if ($cbd[$i] =~ /^$acd_rx?\@([a-z]+)/) {
 	    my $tag = $1;
 	    if ($tag ne 'end') {
+		if ($tag eq 'project') {
+		    $curr_ln = $i+1;
+		    v_project($cbd[$i]);
+		} elsif ($tag eq 'lang') {
+		    $curr_ln = $i+1;
+		    v_lang($cbd[$i]);
+		}
 		$insert = $i;
+		push(@{$data{$tag}}, $i) if exists $data{$tag};
 	    } else {
 		$insert = -1;
 	    }
 	} elsif ($cbd[$i] =~ s/^\s+(\S)/ $1/) {
 	    if ($insert >= 0) {
 		$cbd[$insert] .= $cbd[$i];
-		$cbd[$i] = '\000';
+		$cbd[$i] = "\000";
 	    } else {
-		ppwarn("indented lines only allowed within \@entry");
+		pp_warn("indented lines only allowed within \@entry");
 	    }
 	}
     }
 }
 
-sub ppwarn {
+sub pp_warn {
     warn "$cbd:$curr_ln: ", @_, "\n";
+    ++$status;
 }
+
+################################################
+#
+# CBDPP Operational Functions
+#
+################################################
+
+sub pp_acd {
+    open(ACD, '>pp.acd');
+    foreach my $i (@{$data{'acd'}}) {
+	print ACD $cbd[$i], "\n";
+	$cbd[$i] = "\000";
+    }
+    close(ACD);
+}
+
+sub pp_cbd {
+    my $ldir = "$projdir/01bld/$cbdlang";
+    system 'mkdir', '-p', $ldir;
+    open(CBD, ">$ldir/$cbdlang.glo") 
+	|| die "cbdpp.plx: can't write to $ldir/$cbdlang.glo";
+    foreach (@cbd) {
+	print CBD "$_\n" unless /^\000$/;
+    }
+    close(CBD);
+}
+sub pp_collo {
+    my $ndir = "$projdir/02pub";
+    system 'mkdir', '-p', $ndir;
+    open(COLLO, ">$ndir/coll-$cbdlang.ngm");
+    foreach my $i (@{$data{'collo'}}) {
+	my $e = pp_entry_of($i);
+	my $c = $cbd[$e];
+	$c =~ s/^\S*//;
+	$c =~ s/\].*$/\]/;
+	$c =~ s/\s+\[/\[/;
+	my $cc = $cbd[$i];
+	$cc =~ s/\s+-(\s+|$)/ $c /;
+	$cc =~ s/\s+$//;
+	$cc =~ s/^\S+\s+//;
+	print COLLO $cc, "\n";
+	$cbd[$i] = "\000";
+    }
+    close(COLLO);
+}
+sub pp_geo {
+    open(GEOS, '>pp.geos') || die "cbdpp.plx: can't write to pp.glo";
+    foreach my $i (@{$data{'geos'}}) {
+	print GEOS $cbd[$i], "\n";
+	$cbd[$i] = "\000";
+    }
+    close(GEOS);
+}
+sub pp_usage {
+    open(USAGE,'>pp.usage');
+    foreach my $i (@{$data{'collo'}}) {
+	print USAGE $cbd[$i], "\n";
+	$cbd[$i] = "\000";
+    }
+    close(USAGE);
+}
+
 
 1;
