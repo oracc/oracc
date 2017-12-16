@@ -28,7 +28,7 @@ do
 	    ;;
 	*)
 	    echo "usage:\n\n\tosync-tar.sh [-v] -p PROJECT [-b | -m]\n"
-	    echo "PROJECT=Oracc project name\n"
+	    echo "-p PROJECT=Oracc project name\n"
 	    echo "-v = verbose, more messages\n"
 	    echo "-b to sync from build-oracc.museum.upenn.edu"
 	    echo "-m to sync from oracc.ub.uni-muenchen.de\n"
@@ -101,10 +101,6 @@ scp -P $port $there:/home/oracc/snc/$project.tar.gz .
 tar zxpf $project.tar.gz
 touch $project/.sync
 
-#ssh -C $there "sudo tar -C /home/oracc -zpcf - $project {bld,pub,tmp,www,xml}/$project" >$$.tar.gz
-#sudo tar --same-owner -zxpf $$.tar.gz
-#rm $$.tar.gz
-
 if [[ $fixlinks = "yes" ]]; then
     cd $ORACC_BUILDS
     fixlinks=fixlinks-$$.sh
@@ -120,11 +116,6 @@ if [[ $fixlinks = "yes" ]]; then
     chmod +x $fixlinks
     sudo ./fixlinks-$$.sh
 fi
-
-for a in `list-subprojects.sh $project` ; do
-    sudo serve-index.sh $a $there
-done
-sudo serve-index.sh $project $there
 
 ENDTIME=$(date +%s)
 
