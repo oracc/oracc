@@ -104,7 +104,7 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
       else
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);
-	  cfp->cf = cfp->f2->cf;
+	  cfp->cf = (const char *)cfp->f2->cf;
 	}
       while (isspace(*s))
 	++s;

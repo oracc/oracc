@@ -69,7 +69,6 @@ nl_dump(FILE *fp, struct NL_context*nlcp)
 {
   static const char *ns = "http://oracc.org/ns/ngram/1.0";
   struct NL *nlp;
-  size_t i;
 
   if (nlcp)
     {

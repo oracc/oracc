@@ -50,9 +50,11 @@ struct sigset
 			hash 
 		      */
   Hash_table *bigrams_hash;
+  Hash_table *collos_hash;
   Hash_table *mdsets_hash;
   struct sigset *cache;
   struct NL_context *bigrams;
+  struct NL_context *collos;
   struct NL_context *psus;
   struct sig_context *owner;
   int loaded;

@@ -2,7 +2,8 @@
 #include <ctype128.h>
 #include "nsa.h"
 
-static nsa_system_override = NULL;
+static const char *nsa_system_override = NULL;
+
 void
 nsa_system_override_set(const char *sys)
 {

@@ -1,8 +1,8 @@
 #include <string.h>
 #include "nsa.h"
 
-const char const *sex_axis_str[] = { "diš", "aš", NULL };
-const char const *sex_form_str[] = { "curviform", "cuneiform", NULL };
+const char *sex_axis_str[] = { "diš", "aš", NULL };
+const char *sex_form_str[] = { "curviform", "cuneiform", NULL };
 
 static enum nsa_sex_axis
 sex_axis(const char *n)

@@ -110,6 +110,7 @@ c/bin/util/xmlnl
 c/bin/util/xmlns
 c/bin/util/xmlsplit
 c/l2/bigrams/bigrams.c
+c/l2/bigrams/collos.c
 c/l2/nsa/nsatest
 c/l2/prop/props_auto.c
 c/l2/prop/props_load.c

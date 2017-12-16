@@ -90,6 +90,7 @@ extern int check_pnames;
 extern int sparse_lem;
 extern int validate;
 extern void bigrams(struct xcl_context *xc);
+extern void collos(struct xcl_context *xc);
 extern int check_pname(const char *id,const unsigned char *name);
 extern void cdl_create(struct node *text);
 extern void psus(struct xcl_context *xc);
@@ -343,6 +344,9 @@ process_text(struct run_context *run, unsigned char **lines)
 		sig_new(text_xc);
 	      else
 		sig_check(text_xc);
+
+	      if ((lem_autolem || lem_dynalem) && !lem_forms_raw)
+		collos(text_xc);
 
 	      if ((lem_autolem || lem_dynalem) && !lem_forms_raw)
 		bigrams(text_xc);

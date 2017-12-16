@@ -369,7 +369,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		   NULL, sp->owner);
 	}
 
-      if (strcmp(f->lang,c->f2p->lang))
+      if (strcmp((const char *)f->lang, (const char *)c->f2p->lang))
 	continue;
 
       f2 = c->f2p;

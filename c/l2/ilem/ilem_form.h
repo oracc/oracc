@@ -103,7 +103,6 @@ struct ilem_form
   int newflag;		/* 1 = form is new (input began with +) */
   int invalid;		/* 1 = entry parsed as invalid by ATF processor */
   size_t lnum;		/* line number for error messages */
-  int rank;		/* rank for auto disambiguation */
   int freq;		/* frequency of form in corpus */
   int pct;		/* percentage frequency of this form in 
 			   homographous forms */

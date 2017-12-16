@@ -6,7 +6,7 @@
 void
 sigs_dump_sigs(struct xcl_context *xcp, struct xcl_l *lp)
 {
-  if (lp && lp->f && lp->f->f2.pos && strcmp(lp->f->f2.pos,"X") 
+  if (lp && lp->f && lp->f->f2.pos && strcmp((const char*)lp->f->f2.pos,"X") 
       && !BIT_ISSET(lp->f->f2.flags,F2_FLAGS_FROM_CACHE)
       && ((lp->f->f2.base && *lp->f->f2.base)
 	  || !BIT_ISSET(lp->f->f2.core->features,LF_BASE))

@@ -67,6 +67,7 @@ tryinst(struct xcl_l *lp, struct ilem_form *fp)
   return try;
 }
 
+#if 0
 static char *
 cof_form(struct ilem_form *fp, int curr)
 {
@@ -117,6 +118,7 @@ entrysig(struct ilem_form *fp)
 	  fp->f2.pos ? fp->f2.pos : (unsigned char *)"");
   return tsig;
 }
+#endif
 
 static const char *
 trysig(struct ilem_form *fp)
@@ -197,7 +199,7 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
       && (BIT_ISSET(fp->f2.flags,F2_FLAGS_PARTIAL)
 	  || (nfinds > 1 
 	      && !BIT_ISSET(fp->f2.flags,F2_FLAGS_NO_FORM)
-	      && !look->type == sig_look_new)
+	      && !(look->type == sig_look_new))
 	  || verbose > 1
 	  || (verbose && look->type == sig_look_new)
 	  ))

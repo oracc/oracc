@@ -538,13 +538,16 @@ sig_load_set(struct sig_context*scp, struct sigset *sp)
 
   /* there is no sp->file when the sigset is being autocreated from a '+' lem
      in a context where there is no glossary for a language, e.g., when the
-     project is brand new or when the language is occurring in a  project for
+     project is brand new or when the language is occurring in project for
      the first time */
   if (sp->file)
     {
       sig_load_sigs(scp,sp);
-      if (lem_autolem)
-	bigrams_init(sp);
+      if (lem_autolem || lem_dynalem)
+	{
+	  bigrams_init(sp);
+	  collos_init(sp);
+	}
       if (verbose)
 	fprintf(stderr,"sig_context: loaded sigs from %s\n", sp->file);
     }

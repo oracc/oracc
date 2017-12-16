@@ -42,6 +42,7 @@ sigs_cache_init(struct sigset *sp)
   sp->cache->forms = hash_create(1);
   sp->cache->norms = hash_create(1);
   sp->cache->bigrams_hash = NULL;
+  sp->cache->collos_hash = NULL;
   sp->cache->mdsets_hash = NULL;
   sp->cache->cache = NULL;
   sp->cache->bigrams = NULL;

@@ -40,19 +40,19 @@ cfgwpos_test(struct ilem_form *fp, void *user, void *setup)
 static int
 default_word_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return (fp->rank & 4) ? 0 : 1;
+  return (fp->f2.rank & 4) ? 0 : 1;
 }
 
 static int
 default_esense_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return (fp->rank & 2) ? 0 : 1;
+  return (fp->f2.rank & 2) ? 0 : 1;
 }
 
 static int
 default_isense_test(struct ilem_form *fp, void *user, void *setup)
 {
-  return (fp->rank & 1) ? 0 : 1;
+  return (fp->f2.rank & 1) ? 0 : 1;
 }
 
 static int

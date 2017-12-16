@@ -13,12 +13,16 @@ void
 bigrams_init(struct sigset *sp)
 {
   static char buf[128];
-  sprintf(buf,"@@ORACC@@/pub/%s/bgrm-%s.ngm", sp->project, sp->lang);
+  sprintf(buf,"@@ORACC_BUILDS@@/pub/%s/bgrm-%s.ngm", sp->project, sp->lang);
   if (!xaccess(buf,R_OK,0))
     {
-      bigrams_nlcp = nl_load_file(sp, bigrams_nlcp, buf, nlcp_action_rewrite, sp->lang);
+      bigrams_nlcp = nl_load_file(sp, bigrams_nlcp, buf, nlcp_action_rewrite, (const char *)sp->lang);
       if (verbose)
 	fprintf(stderr,"loaded bigrams %s\n", buf);
+    }
+  else if (verbose)
+    {
+      fprintf(stderr,"no file %s\n", buf);
     }
   if (bigrams_nlcp)
     {

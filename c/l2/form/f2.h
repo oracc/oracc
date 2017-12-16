@@ -88,6 +88,9 @@ struct f2
    */
   struct f2 **parts;
   uintptr_t cof_id;
+
+  /* Store rank so it can persist across nlcp_rewrite */
+  int rank;
 };
 
 #include <stdio.h>

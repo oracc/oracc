@@ -88,19 +88,28 @@ sigs_form_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 
   if (candidates)
     {
+      if (verbose)
+	fprintf(stderr,
+		"sigs_new.c: %d result%s for %s in %s:%s\n",
+		candidates->count,
+		(candidates->count==1)?"":"s",
+		f->form, sp->project,sp->lang);
       *nfinds = candidates->count;
       res = calloc((1+candidates->count),sizeof(struct sig *));
       for (c = candidates; c; c = c->next)
 	{
 	  if (!c->f2p)
-	    f2_parse(c->set->file,c->lnum,npool_copy(c->sig,xcp->pool),
-		     c->f2p = mb_new(xcp->sigs->mb_f2s),
-		     NULL, xcp->sigs);
+	    {
+	      f2_parse(c->set->file,c->lnum,npool_copy(c->sig,xcp->pool),
+		       c->f2p = mb_new(xcp->sigs->mb_f2s),
+		       NULL, xcp->sigs);
+	      c->f2p->rank = c->rank;
+	    }
 	  res[ncand++] = c;
+	  if (verbose)
+	    fprintf(stderr,"\t%s\n",c->sig);
 	}
       res[ncand] = NULL;
-      if (verbose)
-	fprintf(stderr,"sigs_new.c: %d result%s for %s in %s:%s\n", ncand, (ncand==1)?"":"s",f->form, sp->project,sp->lang);
     }
   else if (verbose)
     fprintf(stderr,"sigs_new.c: no results for %s in %s:%s\n", f->form, sp->project,sp->lang);
@@ -205,12 +214,12 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
       while (1)
 	{
 	  unsigned char *sig = f2_sig(xcp, tmpfp, &tmpfp->f2);
-	  if (strlen(cofsig) + strlen(sig) + 3 > cofsig_len)
+	  if (strlen((const char *)cofsig) + strlen((const char *)sig) + 3 > cofsig_len)
 	    cofsig = realloc(cofsig, cofsig_len += cofsig_len);
 	  if (*cofsig)
 	    sprintf(((char*)cofsig)+strlen((char *)cofsig), "&&%s", sig);
 	  else
-	    strcpy((char*)cofsig, (char*)sig);
+	    strcpy((char*)cofsig, (const char*)sig);
 	  if (tmpfp->multi)
 	    tmpfp = tmpfp->multi;
 	  else

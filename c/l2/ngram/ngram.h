@@ -14,6 +14,7 @@ enum nlcp_actions { nlcp_action_rewrite , nlcp_action_psu ,
 
 #define NGRAMIFY_USE_PSU       	0x01
 #define NGRAMIFY_USE_BIGRAMS	0x02
+#define NGRAMIFY_USE_COLLOS	0x04
 
 struct ML;
 

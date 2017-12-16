@@ -133,6 +133,8 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		{
 		  if ((int)(uintptr_t)xcp->user == NGRAMIFY_USE_BIGRAMS)
 		    nlcp = clnodes[i].l->f->sp->bigrams;
+		  else if ((int)(uintptr_t)xcp->user == NGRAMIFY_USE_COLLOS)
+		    nlcp = clnodes[i].l->f->sp->collos;
 		  else
 		    {
 		      enum langcode c = c_none;

@@ -247,8 +247,8 @@ struct nsa_parser
   struct npool *pool;
 };
 
-extern const char const *sex_axis_str[];
-extern const char const *sex_form_str[];
+extern const char *sex_axis_str[];
+extern const char *sex_form_str[];
 
 extern int label;
 extern int printres;
