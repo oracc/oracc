@@ -6,6 +6,8 @@ use ORACC::L2GLO::Util;
 use Getopt::Long;
 use Data::Dumper;
 
+my $g2 = `oraccopt . g2`;
+
 my $COF_NONE = 0;
 my $COF_HEAD = 1;
 my $COF_TAIL = 2;
@@ -93,8 +95,14 @@ open(CORESIGS, ">01bld/coresigs.txt");
 if ($g2a_file) {
     do_g2a($g2a_file);
 } else {
-    foreach my $g2a_file (<00lib/*.glo>) {
-	do_g2a($g2a_file);
+    if ($g2) {
+	foreach my $g2a_file (<01tmp/*.glo>) {
+	    do_g2a($g2a_file);
+	}
+    } else {
+	foreach my $g2a_file (<00lib/*.glo>) {
+	    do_g2a($g2a_file);
+	}
     }
 }
 close(CORESIGS);

@@ -4,6 +4,8 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use Getopt::Long;
 
+use ORACC::CBB::SuxNorm;
+
 my $check = 0;
 my $ngm = 0;
 my $trace = 0;
@@ -135,7 +137,7 @@ if ($vfields) {
 
 ###############################################################
 #
-# Program functions
+# Program Body
 #
 ###############################################################
 
@@ -143,12 +145,17 @@ pp_load();
 
 die "cbdpp.plx: $cbd: can't continue without project and language\n"
     unless $project && $cbdlang;
+
+if ($cbdlang =~ /sux|qpn/) {
+    @cbd = ORACC::CBD::SuxNorm($cbd, @cbd);
+}
+
 $projdir = "$ENV{'ORACC_BUILDS'}/$project";
 pp_validate();
 
 if ($status) {
     die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
-} else {
+} else {    
     foreach my $f (keys %ppfunc) {
 	if ($#{$data{$f}} >= 0) {
 	    &{$ppfunc{$f}}();

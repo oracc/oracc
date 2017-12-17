@@ -48,10 +48,20 @@ close(S);
 
 #warn Dumper \%cfs;
 
+my $g2 = `oraccopt . g2`;
+
 open(PARTSMAP, '>01bld/parts.map');
 open(P, '>01tmp/l2p1-psus.sig'); select P;
 # print $fields; ### NO: simple cofs psus are cat'ed together so no @fields on cofs/psus
-foreach my $g (<00lib/*.glo>) {
+if ($g2 eq 'yes') {
+    foreach my $g (<00lib/*.glo>) {
+	$err_glo = $g;
+	$lang = $glo = $g;
+	$lang =~ s#^.*?/([^/]+)\..*$#$1#;
+	psu_glo()
+    }
+} else {
+    foreach my $g (<00lib/*.glo>) {
     $err_glo = $g;
     $lang = $glo = $g;
     $lang =~ s#^.*?/([^/]+)\..*$#$1#;
@@ -59,6 +69,10 @@ foreach my $g (<00lib/*.glo>) {
 	$glo =~ s/00lib/01bld/;
 	$glo .= '.norm';
     }
+    psu_glo();
+}
+
+sub psu_glo {
     open(G, $glo);
     while (<G>) {
 	if (m/^\@entry\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {

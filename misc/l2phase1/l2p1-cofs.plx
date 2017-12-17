@@ -2,6 +2,7 @@
 use warnings; use strict; use open 'utf8'; binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 use Data::Dumper;
+
 my %cofs = ();
 open(C,'>01tmp/l2p1-cofs.sig');
 open(S,'01tmp/l2p1-simple.sig');
