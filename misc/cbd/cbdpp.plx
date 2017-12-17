@@ -2,21 +2,25 @@
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::CBD::SuxNorm;
+
 use Getopt::Long;
 
-use ORACC::CBB::SuxNorm;
-
-my $check = 0;
-my $ngm = 0;
+my $dry = 0; # no output files
+my $filter = 0; # read from STDIN, write to CBD result to STDOUT
 my $trace = 0;
 my $vfields = '';
 
 GetOptions(
-    'check'=>\$check,
-    'ngm'=>\$ngm,
+    'dry'=>\$dry,
+    'filter'=>\$filter,
     'trace'=>\$trace,
     'validate:s'=>\$vfields,
-    );
+    ) || die "unknown arg";
+
+#GetOptions('f'=>\$filter); 
+#print "filter=$filter\n"; exit 0;
 
 my %validators = (
     entry=>\&v_entry,
@@ -96,11 +100,15 @@ my %ppfunc = (
 );
 
 my $lng = '';
-my $cbd = shift @ARGV;
-if ($cbd) {
-    $lng = $cbd; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
-} else {
-    die "cbdpp.plx: must give glossary on command line\n";
+my $cbd = '';
+
+unless ($filter) {
+    $cbd = shift @ARGV;
+    if ($cbd) {
+	$lng = $cbd; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
+    } else {
+	die "cbdpp.plx: must give glossary on command line\n";
+    }
 }
 
 my @acd = ();
@@ -147,7 +155,7 @@ die "cbdpp.plx: $cbd: can't continue without project and language\n"
     unless $project && $cbdlang;
 
 if ($cbdlang =~ /sux|qpn/) {
-    @cbd = ORACC::CBD::SuxNorm($cbd, @cbd);
+    @cbd = ORACC::CBD::SuxNorm::normify($cbd, @cbd);
 }
 
 $projdir = "$ENV{'ORACC_BUILDS'}/$project";
@@ -202,28 +210,6 @@ sub pp_validate {
 	    pp_warn("invalid line in glossary");
 	}
     }
-}
-
-sub dump_acd {
-    
-}
-
-sub dump_cbd {
-    if ($init_acd) {
-	open(C, '>01bld/$lng.glo');
-	foreach (@cbd) {
-	    print C $_, "\n";
-	}
-	close(C);
-    }
-}
-
-sub dump_ngm {
-    open(N, '>01bld/$lng.ngm');
-    foreach (@ngm) {
-	print N $_, "\n";
-    }
-    close(N);
 }
 
 #################################################
@@ -712,9 +698,13 @@ sub pp_entry_of {
 }
 
 sub pp_load {
-    open(C,$cbd) || die "cbdpp.plx: unable to open $cbd. Stop.\n";
-    @cbd = (<C>); chomp @cbd;
-    close(C);
+    if ($filter) {
+	@cbd = (<>); chomp @cbd;
+    } else {
+	open(C,$cbd) || die "cbdpp.plx: unable to open $cbd. Stop.\n";
+	@cbd = (<C>); chomp @cbd;
+	close(C);
+    }
 
     my $insert = -1;
     for (my $i = 0; $i <= $#cbd; ++$i) {
@@ -765,14 +755,20 @@ sub pp_acd {
 }
 
 sub pp_cbd {
-    my $ldir = "$projdir/01bld/$cbdlang";
-    system 'mkdir', '-p', $ldir;
-    open(CBD, ">$ldir/$cbdlang.glo") 
-	|| die "cbdpp.plx: can't write to $ldir/$cbdlang.glo";
-    foreach (@cbd) {
-	print CBD "$_\n" unless /^\000$/;
+    if ($filter) {
+	foreach (@cbd) {
+	    print "$_\n" unless /^\000$/;
+	}
+    } else {
+	my $ldir = "$projdir/01tmp";
+	system 'mkdir', '-p', $ldir;
+	open(CBD, ">$ldir/$cbdlang.glo") 
+	    || die "cbdpp.plx: can't write to $ldir/$cbdlang.glo";
+	foreach (@cbd) {
+	    print CBD "$_\n" unless /^\000$/;
+	}
+	close(CBD);
     }
-    close(CBD);
 }
 sub pp_collo {
     my $ndir = "$projdir/02pub";
@@ -809,6 +805,5 @@ sub pp_usage {
     }
     close(USAGE);
 }
-
 
 1;

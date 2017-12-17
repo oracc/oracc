@@ -1,20 +1,7 @@
 package ORACC::CBD::SuxNorm;
 use warnings; use strict; use open 'utf8'; use utf8;
-binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
-use Data::Dumper;
-
-my $glo = shift;
-my $base = '';
-my $cf = '';
-my $compound = 0;
-my @forms = ();
-my $in_entry = 0;
-my $lang = '';
-my @lines = ();
 my %norms = ();
-my @parts = ();
-my $skipping = 0;
 
 #
 # This version of the sux-norm code expects an array of lines
@@ -22,6 +9,16 @@ my $skipping = 0;
 #
 sub normify {
     my $glo = shift;
+    my $base = '';
+    my $cf = '';
+    my $compound = 0;
+    my @forms = ();
+    my $in_entry = 0;
+    my $lang = '';
+    my @lines = ();
+    my @parts = ();
+    my $skipping = 0;
+
     for (my $i = 0; $i <= $#_; ++$i) {
 	push(@lines,$_[$i]);
 	
@@ -75,6 +72,7 @@ sub normify {
 		} else {
 		    s/^(\@form!?\s+\S+\s+(?:\%sux\S*\s+)?)/$1\$$norm /;
 		}
+		$lines[$i] = $_;
 	    } else {
 		warn "$glo:$i: (normify) no #morph in line\n";
 	    }
@@ -143,10 +141,7 @@ sub normify {
     @lines;
 }
 
-#########################################################
-
-sub
-norm_from_m1 {
+sub norm_from_m1 {
     my($m1,$stem) = @_;
     if ($m1 =~ /~/) {
 	$m1 =~ s/~/$stem/;
@@ -155,8 +150,7 @@ norm_from_m1 {
     $m1;
 }
 
-sub
-register_norm {
+sub register_norm {
     my($form,$base,$norm) = @_;
     $norms{"$form=$base"} = $norm;
     my $b2 = $base;
@@ -170,10 +164,11 @@ register_norm {
     $norms{"$form=$b4"} = $norm unless $b4 eq $base;
 }
 
-sub
-split_parts {
+sub split_parts {
     my $tmp = shift;
     $tmp =~ s/^\@parts\s*//;
     $tmp =~ s/(\](\S+))\s+/$1\cA/g;
     split(/\cA/, $tmp);
 }
+
+1;
