@@ -54,7 +54,8 @@ open(PARTSMAP, '>01bld/parts.map');
 open(P, '>01tmp/l2p1-psus.sig'); select P;
 # print $fields; ### NO: simple cofs psus are cat'ed together so no @fields on cofs/psus
 if ($g2 eq 'yes') {
-    foreach my $g (<00lib/*.glo>) {
+    foreach my $g (<01tmp/*.glo>) {
+	warn "l2p1-psus.plx: g2=yes, working from $g\n";
 	$err_glo = $g;
 	$lang = $glo = $g;
 	$lang =~ s#^.*?/([^/]+)\..*$#$1#;
@@ -62,16 +63,17 @@ if ($g2 eq 'yes') {
     }
 } else {
     foreach my $g (<00lib/*.glo>) {
-    $err_glo = $g;
-    $lang = $glo = $g;
-    $lang =~ s#^.*?/([^/]+)\..*$#$1#;
-    if ($lang =~ /^(?:sux|qpn)/) {
-	$glo =~ s/00lib/01bld/;
-	$glo .= '.norm';
+	$err_glo = $g;
+	$lang = $glo = $g;
+	$lang =~ s#^.*?/([^/]+)\..*$#$1#;
+	if ($lang =~ /^(?:sux|qpn)/) {
+	    $glo =~ s/00lib/01bld/;
+	    $glo .= '.norm';
+	}
+	psu_glo();
     }
-    psu_glo();
 }
-
+    
 sub psu_glo {
     open(G, $glo);
     while (<G>) {

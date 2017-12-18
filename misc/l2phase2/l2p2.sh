@@ -16,7 +16,11 @@ function xis {
 }
 
 function cbd {
-    if [ -r 01bld/$l.glo.norm ]; then
+    g2=`oraccopt . g2`
+    if [[ $g2 == "yes" ]]; then
+	echo "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
+	l2-glomanager.plx -xml 01tmp/$l.glo -out $ldir/$l.cbd	
+    elif [ -r 01bld/$l.glo.norm ]; then
 	echo creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
 	l2-glomanager.plx -xml 01bld/$l.glo.norm -out $ldir/$l.cbd
     elif [ -r 00lib/$l.glo ]; then

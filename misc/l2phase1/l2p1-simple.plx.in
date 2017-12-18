@@ -74,12 +74,12 @@ GetOptions (
 $psu_verbose = 1 if $verbose > 1;
 
 if ($debug_arg || $debug_type) {
-    die "g2a-sig: must give debug_arg and debug_type together\n"
+    die "l2p1-simple.plx: must give debug_arg and debug_type together\n"
 	unless $debug_arg && $debug_type;
     if ($debug_type eq 'ec') {
 	debug_lookup_external_cof($debug_arg);
     } else {
-	die "g2a-sig: unknown debug_type `$debug_type'\n";
+	die "l2p1-simple.plx: unknown debug_type `$debug_type'\n";
     }
     exit 0;
 }
@@ -97,6 +97,7 @@ if ($g2a_file) {
 } else {
     if ($g2) {
 	foreach my $g2a_file (<01tmp/*.glo>) {
+	    warn "l2p1-simple.plx: g2=yes, working from $g2a_file\n";
 	    do_g2a($g2a_file);
 	}
     } else {
@@ -118,13 +119,19 @@ do_g2a {
     warn "g2a-simple.plx: .glo file `$g2a' non-existent or not readable\n" and return unless -r $g2a;
 
     my $err_g2a = $g2a;
-    $err_g2a =~ s#^.*?00lib#00lib#;
-
-    if ($g2a =~ m#/(?:sux|qpn)#) {
-	$g2a =~ s/00lib/01bld/;
-	$g2a .= ".norm";
+    if ($g2 eq 'yes') {
+#	$err_g2a =~ s#^.*?01tmp#00lib#;
+    } else {
+	$err_g2a =~ s#^.*?00lib#00lib#;
     }
-    warn "l2p1-simple.plx: processing $g2a\n";
+
+    unless ($g2 eq 'yes') {
+	if ($g2a =~ m#/(?:sux|qpn)#) {
+	    $g2a =~ s/00lib/01bld/;
+	    $g2a .= ".norm";
+	}
+	warn "l2p1-simple.plx: processing $g2a\n";
+    }
     
     open(G, $g2a) || die "g2a-sig.plx: can't open `$g2a' for input\n";
     while (<G>) {
