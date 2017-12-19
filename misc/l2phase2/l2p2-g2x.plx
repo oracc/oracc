@@ -977,13 +977,19 @@ read_input_line {
     
     return if /\t0$/ && !$with_zero_freqs;
     
-    if (/^\@(project|name|lang)\s+(\S+)/) {
-	$header{$1} = $2
-	    unless $header{$1};
+    if (/^\@(project|name|lang)/) {
+	my $h = $1;
+	if (/^\S+\s+(\S+)/) {
+	    $header{$h} = $1
+		unless $header{$h};
+	} else {
+	    warn "l2p2-g2x.plx:$input:$.: malformed '$h' in header\n";
+	}
 	return;
     }
 
     chomp;
+    
     if (/^\@fields/) {
 	set_f($_);
 	return;

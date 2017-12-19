@@ -92,9 +92,13 @@ foreach my $inst (@insts) {
 	}
     }
     my($pqid) = ($i =~ /^.*?:(.*?)\./);
-    die unless $pqid;
-    die "no $pqid in tab\n" unless $tab{$pqid};
-    print "\t$i\t$tab{$pqid}";
+    #    die unless $pqid;
+    #    die "no $pqid in tab\n" unless $tab{$pqid};
+    if ($pqid) {
+	print "\t$i\t$tab{$pqid}";
+    } else {
+	print "\t0\t";
+    }
     print "\n";
 }
 close(I);

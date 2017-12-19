@@ -177,9 +177,7 @@ close SIGS;
 
 merge_matches();
 
-if ($#printsigs >= 0) {
-    print_sigs();
-}
+print_sigs();
 
 #####################################################################
 
@@ -291,7 +289,9 @@ print_sigs {
     }
     print "\@project $slice_proj\n\@name $slice_name\n\@lang $slice_lang\n\n";
     print "\@fields sig inst\n";
-    print @printsigs;
+    if ($#printsigs >= 0) {
+	print @printsigs;
+    }
 }
 
 sub
