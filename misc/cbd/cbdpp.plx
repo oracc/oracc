@@ -557,6 +557,10 @@ sub v_sense {
 	pp_warn("no content in SENSE");
 	$mng = '';
     }
+
+    if ($arg =~ tr/"//d) {
+	pp_warn("double quotes not allowed in SENSE; use Unicode quotes instead");
+    }
     if ($arg =~ tr/[]//d) {
 	pp_warn("square brackets not allowed in SENSE; use Unicode U+27E6/U+27E7 instead");
     }
