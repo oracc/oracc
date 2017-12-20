@@ -4,7 +4,6 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 
-use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
@@ -25,38 +24,7 @@ GetOptions(
     'validate:s'=>\$vfields,
     ) || die "unknown arg";
 
-#GetOptions('f'=>\$filter); 
-#print "filter=$filter\n"; exit 0;
-
 $ORACC::CBD::PPWarn::trace = $trace;
-
-my %validators = (
-    entry=>\&v_entry,
-    parts=>\&v_parts,
-    bases=>\&v_bases,
-    conts=>\&v_conts,
-    prefs=>\&v_prefs,
-    root =>\&v_root,
-    form =>\&v_form,
-    norms=>\&v_norms,
-    sense=>\&v_sense,
-    stems=>\&v_stems,
-    bib=>\&v_bib,
-    isslp=>\&v_isslp,
-    equiv=>\&v_equiv,
-    note=>\&v_note,
-    inote=>\&v_inote,
-    end=>\&v_end,
-    project=>\&v_project,
-    lang=>\&v_lang,
-    name=>\&v_name,
-    was=>\&v_deprecated,
-    moved=>\&v_deprecated,
-    bff=>\&v_bff,
-    collo=>\&v_collo,
-    geo=>\&v_geo,
-    usage=>\&v_usage,
-    );
 
 my %rws_map = (
     EG => 'sux',
@@ -77,12 +45,6 @@ my $acd_rx = '['.$acd_chars.']';
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
-
-my @tags = qw/entry parts bff bases stems phon root form length norms
-              sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid was moved project lang name collo/;
-
-my %tags = (); @tags{@tags} = ();
 
 my @data = qw/usage collo sense/;
 
@@ -128,24 +90,13 @@ my $seen_morph2 = 0;
 my $status = 0;
 my %tag_lists = ();
 
-my %vfields = ();
-my %arg_vfields = (); 
-if ($vfields) {
-    @arg_vfields{split(/,/,$vfields)} = ();
-    %vfields = %arg_vfields;
-    @vfields{qw/lang entry end/} = ();
-} else {
-    %vfields = %tags;
-    if ($trace) {
-	%arg_vfields = %tags;
-    }
-}
-
 ###############################################################
 #
 # Program Body
 #
 ###############################################################
+
+$projdir = "$ENV{'ORACC_BUILDS'}/$project";
 
 pp_load();
 
@@ -162,8 +113,7 @@ if ($cbdlang =~ /sux|qpn/) {
     @cbd = ORACC::CBD::SuxNorm::normify($cbd, @cbd);
 }
 
-$projdir = "$ENV{'ORACC_BUILDS'}/$project";
-pp_validate();
+pp_validate($project, $cbdlang, $vfields, @cbd);
 
 if ($status) {
     die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
@@ -175,50 +125,9 @@ if ($status) {
     }
 }
 
-atf_check($project,$cbdlang);
-
 pp_cbd();
 
 pp_diagnostics();
-
-#######################################################################
-
-sub pp_validate {
-    for (my $i = 0; $i <= $#cbd; ++$i) {
-	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
-	pp_line($i+1);
-	if ($cbd[$i] =~ /^\s*$/) {
-	    pp_warn("blank lines not allowed in \@entry")
-		if $in_entry;
-	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*$/) {
-	    my $rws = $1;
-	    pp_warn("\@$1 unknown register/writing-system/dialect")
-		unless $rws_map{$rws};
-	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
-	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
-	    my($tag,$line) = ($1,$2);
-	    if (exists $tags{$tag}) {
-		push @{$tag_lists{$tag}}, $i;
-		if ($validators{$tag}) {
-		    if (exists $vfields{$tag}) {
-			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
-			    my($t,$l) = ($1,$2);
-			    &{$validators{$tag}}($t,$l);
-			} else {
-			    &{$validators{$tag}}($cbd[$i],'');
-			}
-		    }
-		} else {
-		    pp_warn("internal error: no validator function defined for tag `$tag'");
-		}
-	    } else {
-		pp_warn("\@$1 unknown tag");
-	    }
-	} else {
-	    pp_warn("invalid line in glossary");
-	}
-    }
-}
 
 ################################################
 #

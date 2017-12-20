@@ -2,9 +2,45 @@ package ORACC::CBD::Validate;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/v_project v_lang v_name v_entry v_acd_ok v_bases v_form
-    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
-    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
+#@EXPORT = qw/v_project v_lang v_name v_entry v_acd_ok v_bases v_form
+#    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
+#    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
+
+@EXPORT = qw/pp_validate/;
+
+my @tags = qw/entry parts bff bases stems phon root form length norms
+              sense equiv inote prop end isslp bib defn note pl_coord
+              pl_id pl_uid was moved project lang name collo/;
+
+my %tags = (); @tags{@tags} = ();
+
+my %validators = (
+    entry=>\&v_entry,
+    parts=>\&v_parts,
+    bases=>\&v_bases,
+    conts=>\&v_conts,
+    prefs=>\&v_prefs,
+    root =>\&v_root,
+    form =>\&v_form,
+    norms=>\&v_norms,
+    sense=>\&v_sense,
+    stems=>\&v_stems,
+    bib=>\&v_bib,
+    isslp=>\&v_isslp,
+    equiv=>\&v_equiv,
+    note=>\&v_note,
+    inote=>\&v_inote,
+    end=>\&v_end,
+    project=>\&v_project,
+    lang=>\&v_lang,
+    name=>\&v_name,
+    was=>\&v_deprecated,
+    moved=>\&v_deprecated,
+    bff=>\&v_bff,
+    collo=>\&v_collo,
+    geo=>\&v_geo,
+    usage=>\&v_usage,
+    );
 
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
@@ -25,6 +61,64 @@ my %poss = (); @poss{@poss} = ();
 
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
+
+
+my %vfields = ();
+my %arg_vfields = ();
+
+sub init {
+    my $vfields = shift;
+    if ($vfields) {
+	@arg_vfields{split(/,/,$vfields)} = ();
+	%vfields = %arg_vfields;
+	@vfields{qw/lang entry end/} = ();
+    } else {
+	%vfields = %tags;
+	if ($trace) {
+	    %arg_vfields = %tags;
+	}
+    }
+}
+
+sub pp_validate {
+    my($project,$cbdlang,$vfields,@cbd) = @_;
+    init($vfields);
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
+	pp_line($i+1);
+	if ($cbd[$i] =~ /^\s*$/) {
+	    pp_warn("blank lines not allowed in \@entry")
+		if $in_entry;
+	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*$/) {
+	    my $rws = $1;
+	    pp_warn("\@$1 unknown register/writing-system/dialect")
+		unless $rws_map{$rws};
+	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
+	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
+	    my($tag,$line) = ($1,$2);
+	    if (exists $tags{$tag}) {
+		push @{$tag_lists{$tag}}, $i;
+		if ($validators{$tag}) {
+		    if (exists $vfields{$tag}) {
+			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
+			    my($t,$l) = ($1,$2);
+			    &{$validators{$tag}}($t,$l);
+			} else {
+			    &{$validators{$tag}}($cbd[$i],'');
+			}
+		    }
+		} else {
+		    pp_warn("internal error: no validator function defined for tag `$tag'");
+		}
+	    } else {
+		pp_warn("\@$1 unknown tag");
+	    }
+	} else {
+	    pp_warn("invalid line in glossary");
+	}
+    }
+    atf_check($project,$cbdlang);
+}
 
 sub v_project {
     my($line,$arg) = @_;
