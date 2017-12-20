@@ -39,6 +39,7 @@ my $argsrc = '';
 
 my $do_slow_compare = 0;
 my $dryrun = 0;
+my $filter = 0;
 my $force = 0;
 my $lang = '';
 my $level = '';
@@ -98,6 +99,7 @@ init {
 	'base=s'=>\$argbase,
 	'compare=s'=>\$argsrc,
 	'dryrun'=>\$dryrun,
+	'filter'=>\$filter,
 	'force'=>\$force,
 	'lang=s'=>\$lang,
 	'level=s'=>\$level,
@@ -162,10 +164,10 @@ init {
 	    }
 	}
 
-	$return_data{'project'} = $project = $argfile_project unless $project;
-	$return_data{'lang'} = $lang = $argfile_lang unless $lang;
+	$project = $argfile_project unless $project;
+	$lang = $argfile_lang unless $lang;
 
-	if ($return_data{'lang'} eq 'qpn') {
+	if ($lang eq 'qpn') {
 	    my $slang = `oraccopt . cbd-super-list`;
 	    if ($slang) {
 		$slang =~ s#^.*?/##;
@@ -181,17 +183,22 @@ init {
 	    $srcfile = $argsrc;
 	    $mapfile = $argmap;
 	} else {
-	    super_die("must use both of -project and -lang or give .$type file on command line")
-		unless $project && $lang;
-	    my $proj2file = $project;
-	    $proj2file =~ tr,/,-,;
-	    $argfile = "$dir/$proj2file~$lang.$type";
-	    super_die("expected to use file $argfile but it doesn't exist")
-		unless -e $argfile;
-	    super_die("expected to use file $argfile but it can't be read")
-		unless -e $argfile;
+	    unless ($filter) {
+		super_die("must use both of -project and -lang or give .$type file on command line")
+		    unless $project && $lang;
+		my $proj2file = $project;
+		$proj2file =~ tr,/,-,;
+		$argfile = "$dir/$proj2file~$lang.$type";
+		super_die("expected to use file $argfile but it doesn't exist")
+		    unless -e $argfile;
+		super_die("expected to use file $argfile but it can't be read")
+		    unless -e $argfile;
+	    }
 	}
     }
+
+    $return_data{'project'} = $project;
+    $return_data{'lang'} = $lang;
     
     # Make sure all the necessary file names are set
 
@@ -293,10 +300,17 @@ init {
     }
 
     if ($function eq 'induct') {
-	($return_data{'input'},$return_data{'input_fh'}) 
-	    = setup_argfile($argfile);
-	($return_data{'output'},$return_data{'output_fh'}) 
-	    = setup_file('>', '00src', $project, $lang, 'glo');
+	if ($filter) {
+	    ($return_data{'input'},$return_data{'input_fh'}) 
+		= ('-', *STDIN);
+	    ($return_data{'output'},$return_data{'output_fh'}) 
+		= ('-', *STDOUT);
+	} else {
+	    ($return_data{'input'},$return_data{'input_fh'}) 
+		= setup_argfile($argfile);
+	    ($return_data{'output'},$return_data{'output_fh'}) 
+		= setup_file('>', '00src', $project, $lang, 'glo');
+	}
     } elsif ($function eq 'compare') {
  	backup_file($mapfile);
 	($return_data{'output'}) = setup_file(undef, '00map', $project, $lang, 'map');
@@ -531,13 +545,13 @@ map_check {
 	my($act,$type,$sig,$map,$parts) = @$m;
 	unless ($srchash{$sig}) {
 	    my $mapentry = map_line(@$m);
-	    super_warn "$mapfile:$map_line{$mapentry}: $sig not in source glossary";
+	    super_warn("$mapfile:$map_line{$mapentry}: $sig not in source glossary");
 	    ++$status;
 	}
 	if ($act eq 'map' || $act eq 'fix' || $act eq 'cut') {
 	    unless ($basehash{$map}) {
 		my $mapentry = map_line(@$m);
-		super_warn "$mapfile:$map_line{$mapentry}: => $map not in base glossary";
+		super_warn("$mapfile:$map_line{$mapentry}: => $map not in base glossary");
 		++$status;
 	    }
 	}
@@ -614,12 +628,12 @@ map_load {
 	$map_line{$_} = $.;
         my($act,$type,$sig) = (/(\S+)\s+(\S+)\s+(.*?)$/);
 
-	super_warn "$m:$.: bad action $act" unless exists $known_actions{$act};
+	super_warn("$m:$.: bad action $act") unless exists $known_actions{$act};
 
         my $map = '';
 	my $parts = '';
 	unless ($sig) {
-	    super_warn "$m:$.: bad map entry";
+	    super_warn("$m:$.: bad map entry");
 	    ++$status;
 	    next;
 	}
@@ -633,7 +647,7 @@ map_load {
 	}
 
 	if ($map{$sig}) {
-	    super_warn "$m:$.: $sig has more than one action" and next unless $sig;
+	    super_warn("$m:$.: $sig has more than one action") and next unless $sig;
 	} else {
 	    $map{$sig} = [ $act, $type, $sig, $map, $parts ];
 	}
