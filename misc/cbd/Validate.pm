@@ -6,7 +6,7 @@ require Exporter;
 #    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
 #    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
 
-@EXPORT = qw/pp_validate/;
+@EXPORT = qw/pp_validate v_project v_lang/;
 
 my @tags = qw/entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
@@ -123,21 +123,25 @@ sub pp_validate {
 sub v_project {
     my($line,$arg) = @_;
     return if $arg;
+    my $project = '';
     if ($line =~ /\@project\s+(\S+)\s*$/) {
 	$project = $1;
     } else {
 	pp_warn("project empty or malformatted");
     }
+    $project;
 };
 
 sub v_lang {
     my($line,$arg) = @_;
     return if $arg;
+    my $cbdlang = '';
     if ($line =~ /\@lang\s+(\S+)\s*$/) {
 	$cbdlang = $1;
     } else {
 	pp_warn("language empty or malformatted");
     }
+    $cbdlang;
 };
 
 sub v_name { 

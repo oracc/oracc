@@ -143,6 +143,14 @@ sub pp_entry_of {
     $i;
 }
 
+sub pp_sense_of {
+    my $i = shift;
+    while ($cbd[$i] !~ /\@sense/) {
+	--$i;
+    }
+    $i;
+}
+
 sub pp_load {
     if ($filter) {
 	@cbd = (<>); chomp @cbd;
@@ -159,10 +167,10 @@ sub pp_load {
 	    if ($tag ne 'end') {
 		if ($tag eq 'project') {
 		    pp_line($i+1);
-		    v_project($cbd[$i]);
+		    $project = v_project($cbd[$i]);
 		} elsif ($tag eq 'lang') {
 		    pp_line($i+1);
-		    v_lang($cbd[$i]);
+		    $cbdlang = v_lang($cbd[$i]);
 		}
 		$insert = $i;
 		push(@{$data{$tag}}, $i) if exists $data{$tag};
