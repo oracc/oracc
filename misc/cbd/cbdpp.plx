@@ -3,16 +3,19 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
+use ORACC::CBD::PPWarn;
 use ORACC::CBD::SuxNorm;
 
 use Getopt::Long;
 
+my $bare = 0; # no need for a header
 my $dry = 0; # no output files
 my $filter = 0; # read from STDIN, write to CBD result to STDOUT
 my $trace = 0;
 my $vfields = '';
 
 GetOptions(
+    'bare'=>\$bare,
     'dry'=>\$dry,
     'filter'=>\$filter,
     'trace'=>\$trace,
@@ -21,6 +24,8 @@ GetOptions(
 
 #GetOptions('f'=>\$filter); 
 #print "filter=$filter\n"; exit 0;
+
+$ORACC::CBD::PPWarn::trace = $trace;
 
 my %validators = (
     entry=>\&v_entry,
@@ -68,7 +73,6 @@ my $acd_chars = '->+=';
 my $acd_rx = '['.$acd_chars.']';
 
 my @bases_atf = ();
-my $curr_ln = -1;
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
@@ -109,7 +113,10 @@ unless ($filter) {
     } else {
 	die "cbdpp.plx: must give glossary on command line\n";
     }
+} else {
+    $cbd = '<stdin>';
 }
+pp_file($cbd);
 
 my @acd = ();
 my @cbd = ();
@@ -151,6 +158,12 @@ if ($vfields) {
 
 pp_load();
 
+# Allow files of bare glossary bits for testing
+if ($bare) {
+    $cbdlang = 'sux' unless $cbdlang;
+    $project = 'test' unless $project;
+}
+
 die "cbdpp.plx: $cbd: can't continue without project and language\n"
     unless $project && $cbdlang;
 
@@ -178,7 +191,7 @@ pp_cbd();
 sub pp_validate {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
-	$curr_ln = $i+1;
+	pp_line($i+1);
 	if ($cbd[$i] =~ /^\s*$/) {
 	    pp_warn("blank lines not allowed in \@entry")
 		if $in_entry;
@@ -245,7 +258,7 @@ sub v_name {
 sub v_entry {
     my($tag,$arg) = @_;
     if ($trace && exists $arg_vfields{'entry'}) {
-	warn("$curr_ln: v_entry: tag=$tag; arg=$arg\n");
+	pp_trace("v_entry: tag=$tag; arg=$arg\n");
     }
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\*?\!?)$/);
     my ($cf,$gw,$pos) = ();
@@ -257,7 +270,7 @@ sub v_entry {
 		if ($in_entry > 1) {
 		    pp_warn("multiple acd \@entry fields not permitted");
 		} else {
-		    push @{$data{'acd'}}, $curr_ln;
+		    push @{$data{'acd'}}, pp_line();
 		}
 	    } else {
 		pp_warn("multiple \@entry fields not permitted");
@@ -295,7 +308,7 @@ sub v_entry {
 	    $cf = '' unless $cf;
 	    $gw = '' unless $gw;
 	    $pos = '' unless $pos;
-	    warn "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst\n";
+	    pp_trace "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst\n";
 	}
     } else {
 	pp_warn("bad format in \@entry");
@@ -316,11 +329,11 @@ sub v_acd_ok {
 sub v_bases {
     my($tag,$arg) = @_;
     if ($trace && exists $arg_vfields{'bases'}) {
-	warn "v_bases: tag=$tag; arg=$arg\n";
+	pp_trace "v_bases: tag=$tag; arg=$arg\n";
     }
     my @bits = split(/;\s+/, $arg);
     if ($trace && exists $arg_vfields{'bases'}) {
-	warn "v_bases: \@bits=@bits\n";
+	pp_trace "v_bases: \@bits=@bits\n";
     }
 
     if ($seen_bases++) {
@@ -345,7 +358,7 @@ sub v_bases {
 		if ($tmp =~ tr/()// % 2);
 	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
 	    if ($pri =~ s/>.*$//) {
-		push @{$data{'acd'}}, $curr_ln;
+		push @{$data{'acd'}}, pp_line();
 	    }
 	    if ($pri =~ /\s/) {
 		pp_warn("space in base `$pri'")
@@ -377,10 +390,11 @@ sub v_bases {
 	}
     }
     if ($trace && exists $arg_vfields{'bases'}) {
-	warn "v_bases: dump of \%bases:\n";
-	warn Dumper \%bases;
+	pp_trace "v_bases: dump of \%bases:\n";
+	pp_trace Dumper \%bases;
     }
-    push @bases_atf, "$curr_ln. $bases_atf\n";
+    push @bases_atf, pp_line().". $bases_atf\n"
+	if $bases_atf;
 }
 
 sub v_form {
@@ -389,7 +403,7 @@ sub v_form {
     $arg = '' unless $arg;
     
     if ($trace) {
-	warn "v_form: tag=$tag; arg='$arg'; cbdlang=$cbdlang\n";
+	pp_trace "v_form: tag=$tag; arg='$arg'; cbdlang=$cbdlang\n";
     }
     
     unless ($arg) {
@@ -481,9 +495,7 @@ sub v_form {
 	if (($ndoll = ($tmp =~ tr/$/$/)) > 1 
 	    && !$is_compound) {
 	    my $nparen = ($tmp =~ s/\$\(//g);
-	    if ($trace) {
-		warn "v_form COF: ndoll=$ndoll; nparen=$nparen\n";
-	    }
+	    pp_trace "v_form COF: ndoll=$ndoll; nparen=$nparen\n";
 	    if ($ndoll - $nparen > 1) {
 		pp_warn("COFs must have only one NORM without parens (found more than 1)");
 	    } elsif ($ndoll == $nparen) {
@@ -515,10 +527,10 @@ sub v_sense {
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
     if ($pre) {
-	if ($cbd[$curr_ln-1] =~ /^$acd_rx/) {
+	if ($cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");
 	} else {
-	    push @{$data{'acd'}}, $curr_ln;
+	    push @{$data{'acd'}}, pp_line();
 	}
     }
     
@@ -568,7 +580,7 @@ sub v_bff {
     if ($arg =~ /^["<]/) {
 	pp_warn("missing CLASS in \@bff");
 	return {
-	    curr_id=>$curr_ln-1,
+	    curr_id=>pp_line()-1,
 	    line=>$.,
 	    link=>''
 	};
@@ -602,8 +614,8 @@ sub v_bff {
 	    code=>$code,
 	    label=>$label,
 	    link=>$link,
-	    line=>$curr_ln,
-	    ref=>$curr_ln-1,
+	    line=>pp_line(),
+	    ref=>pp_line()-1,
 	};
     }
 }
@@ -712,10 +724,10 @@ sub pp_load {
 	    my $tag = $1;
 	    if ($tag ne 'end') {
 		if ($tag eq 'project') {
-		    $curr_ln = $i+1;
+		    pp_line($i+1);
 		    v_project($cbd[$i]);
 		} elsif ($tag eq 'lang') {
-		    $curr_ln = $i+1;
+		    pp_line($i+1);
 		    v_lang($cbd[$i]);
 		}
 		$insert = $i;
@@ -734,11 +746,6 @@ sub pp_load {
     }
 }
 
-sub pp_warn {
-    warn "$cbd:$curr_ln: ", @_, "\n";
-    ++$status;
-}
-
 ################################################
 #
 # CBDPP Operational Functions
@@ -755,6 +762,7 @@ sub pp_acd {
 }
 
 sub pp_cbd {
+    return if pp_status();
     if ($filter) {
 	foreach (@cbd) {
 	    print "$_\n" unless /^\000$/;

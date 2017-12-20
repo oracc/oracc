@@ -1,6 +1,8 @@
 package ORACC::CBD::SuxNorm;
 use warnings; use strict; use open 'utf8'; use utf8;
 
+use ORACC::CBD::PPWarn;
+
 my %norms = ();
 
 #
@@ -27,7 +29,7 @@ sub normify {
 	local($_) = $lines[$i];
 
 	tr/∼/~/ 
-	    && warn "$glo:$i: autocorrected Unicode tilde (∼)--please change to ~ in source file\n";
+	    && pp_warn "$glo:$i: autocorrected Unicode tilde (∼)--please change to ~ in source file";
 	if (/^\@lang\s+(\S+)/) {
 	    $lang = $1;
 	} if (/^\@parts/) {
