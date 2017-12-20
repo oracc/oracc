@@ -1,7 +1,7 @@
 package ORACC::CBD::PPWarn;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_diagnostics pp_file pp_line pp_status pp_trace pp_warn/;
+@EXPORT = qw/pp_diagnostics pp_file pp_line pp_notice pp_status pp_trace pp_warn/;
 
 use warnings; use strict; binmode STDERR, ':utf8';
 
@@ -29,6 +29,10 @@ sub pp_line {
     $line;
 }
 
+sub pp_notice {
+    push @{$errlist{$line}}, "$file:$line: @_\n";
+}
+
 sub pp_status {
     $status;
 }
@@ -40,7 +44,7 @@ sub pp_trace {
 }
 
 sub pp_warn {
-    push @{$errlist{$line}}, "$file:$line: @_\n";
+    pp_notice(@_);
     ++$status;
 }
 

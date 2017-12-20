@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
+use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::SuxNorm;
 
@@ -71,8 +72,6 @@ my %rws_map = (
 
 my $acd_chars = '->+=';
 my $acd_rx = '['.$acd_chars.']';
-
-my @bases_atf = ();
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
@@ -183,6 +182,8 @@ if ($status) {
 	}
     }
 }
+
+atf_check($project,$cbdlang);
 
 pp_cbd();
 
@@ -346,7 +347,6 @@ sub v_bases {
     my $alt = '';
     my $stem = '';
     my $pri = '';
-    my $bases_atf = '';
     foreach my $b (@bits) {
 	if ($b =~ s/^\*(\S+)\s+//) {
 	    $stem = $1;
@@ -369,12 +369,12 @@ sub v_bases {
 		$bases{$pri,'*'} = $stem
 		    if $stem;
 	    }
-	    $bases_atf .= " $pri ";
+	    atf_add($pri);
 	    foreach my $t (split(/,\s+/,$alt)) {
 		if ($t =~ /\s/) {
 		    pp_warn("space in alt-base `$t'");
 		} else {
-		    $bases_atf .= "$t ";
+		    atf_add($t);
 		}
 	    }
 	} else {
@@ -385,7 +385,7 @@ sub v_bases {
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
-		$bases_atf .= "$b ";
+		atf_add($b);
 		$pri = $b;
 		$alt = '';
 	    }
@@ -395,8 +395,6 @@ sub v_bases {
 	pp_trace "v_bases: dump of \%bases:\n";
 	pp_trace Dumper \%bases;
     }
-    push @bases_atf, pp_line().". $bases_atf\n"
-	if $bases_atf;
 }
 
 sub v_form {
@@ -420,6 +418,7 @@ sub v_form {
     my $barecheck = $arg;
     $barecheck =~ s/^(\S+)\s*//;
     my $formform = $1;
+    atf_add($formform);
 
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 	pp_warn("accented vowels not allowed in \@form");

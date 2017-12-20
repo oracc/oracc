@@ -1,5 +1,5 @@
 @entry a [a] N
-@bases a
+@bases a; om
 @end entry
 
 @entry a [a] N
