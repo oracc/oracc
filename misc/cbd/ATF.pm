@@ -3,6 +3,9 @@ require Exporter;
 @ISA=qw/Exporter/;
 @EXPORT = qw/atf_add atf_check/;
 
+use warnings; use strict; use open 'utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
 use ORACC::CBD::PPWarn;
 
 my %atf = ();

@@ -11,6 +11,7 @@ use ORACC::CBD::Validate;
 use Getopt::Long;
 
 my $bare = 0; # no need for a header
+my $check = 0; # only do validation
 my $dry = 0; # no output files
 my $filter = 0; # read from STDIN, write to CBD result to STDOUT
 my $trace = 0;
@@ -18,6 +19,7 @@ my $vfields = '';
 
 GetOptions(
     'bare'=>\$bare,
+    'check'=>\$check,
     'dry'=>\$dry,
     'filter'=>\$filter,
     'trace'=>\$trace,
@@ -117,17 +119,19 @@ pp_validate($project, $cbdlang, $vfields, @cbd);
 
 if ($status) {
     die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
-} else {    
-    foreach my $f (keys %ppfunc) {
-	if ($#{$data{$f}} >= 0) {
-	    &{$ppfunc{$f}}();
+} else {
+    unless ($check) {
+	foreach my $f (keys %ppfunc) {
+	    if ($#{$data{$f}} >= 0) {
+		&{$ppfunc{$f}}();
+	    }
 	}
     }
 }
 
-pp_cbd();
+pp_cbd() unless $check;
 
-pp_diagnostics();
+pp_diagnostics($check);
 
 ################################################
 #
@@ -220,6 +224,7 @@ sub pp_cbd {
 	close(CBD);
     }
 }
+
 sub pp_collo {
     my $ndir = "$projdir/02pub";
     system 'mkdir', '-p', $ndir;
@@ -239,6 +244,7 @@ sub pp_collo {
     }
     close(COLLO);
 }
+
 sub pp_geo {
     open(GEOS, '>pp.geos') || die "cbdpp.plx: can't write to pp.glo";
     foreach my $i (@{$data{'geos'}}) {
@@ -247,6 +253,7 @@ sub pp_geo {
     }
     close(GEOS);
 }
+
 sub pp_usage {
     open(USAGE,'>pp.usage');
     foreach my $i (@{$data{'collo'}}) {
