@@ -4,6 +4,7 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 
+use ORACC::CBD::Edit;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
@@ -13,6 +14,7 @@ use Getopt::Long;
 my $bare = 0; # no need for a header
 my $check = 0; # only do validation
 my $dry = 0; # no output files
+my $edit = 0; # edit cbd via acd marks and write patch info
 my $filter = 0; # read from STDIN, write to CBD result to STDOUT
 my $trace = 0;
 my $vfields = '';
@@ -21,6 +23,7 @@ GetOptions(
     'bare'=>\$bare,
     'check'=>\$check,
     'dry'=>\$dry,
+    'edit'=>\$edit,
     'filter'=>\$filter,
     'trace'=>\$trace,
     'validate:s'=>\$vfields,
@@ -41,9 +44,6 @@ my %rws_map = (
     NB => 'akk-x-neobab',
     SB => 'akk-x-stdbab',
     );
-
-my $acd_chars = '->+=';
-my $acd_rx = '['.$acd_chars.']';
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
@@ -115,11 +115,22 @@ if ($cbdlang =~ /sux|qpn/) {
     @cbd = ORACC::CBD::SuxNorm::normify($cbd, @cbd);
 }
 
-pp_validate($project, $cbdlang, $vfields, @cbd);
+pp_validate($project, $cbdlang, $vfields, \%data, @cbd);
 
-if ($status) {
+#print Dumper \%data;
+
+if (pp_status()) {
+    pp_diagnostics($check);
     die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
 } else {
+
+    if ($edit) {
+	@cbd = edit($project,$cbdlang,\%data,@cbd);
+	pp_diagnostics($check);
+	die("cbdpp.plx: errors editing glossary $cbd. Stop\n")
+	    if pp_status();
+    }
+
     unless ($check) {
 	foreach my $f (keys %ppfunc) {
 	    if ($#{$data{$f}} >= 0) {
@@ -141,7 +152,7 @@ pp_diagnostics($check);
 
 sub pp_entry_of {
     my $i = shift;
-    while ($cbd[$i] !~ /\@entry/) {
+    while ($i && $cbd[$i] !~ /\@entry/) {
 	--$i;
     }
     $i;
@@ -149,7 +160,7 @@ sub pp_entry_of {
 
 sub pp_sense_of {
     my $i = shift;
-    while ($cbd[$i] !~ /\@sense/) {
+    while ($i && $cbd[$i] !~ /\@sense/) {
 	--$i;
     }
     $i;
@@ -166,7 +177,7 @@ sub pp_load {
 
     my $insert = -1;
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^$acd_rx?\@([a-z]+)/) {
+	if ($cbd[$i] =~ /^$ORACC::CBD::Edit::acd_rx?\@([a-z]+)/) {
 	    my $tag = $1;
 	    if ($tag ne 'end') {
 		if ($tag eq 'project') {
@@ -198,14 +209,14 @@ sub pp_load {
 #
 ################################################
 
-sub pp_acd {
-    open(ACD, '>pp.acd');
-    foreach my $i (@{$data{'acd'}}) {
-	print ACD $cbd[$i], "\n";
-	$cbd[$i] = "\000";
-    }
-    close(ACD);
-}
+# sub pp_acd {
+#     open(ACD, '>pp.acd');
+#     foreach my $i (@{$data{'acd'}}) {
+# 	print ACD $cbd[$i], "\n";
+# 	$cbd[$i] = "\000";
+#     }
+#     close(ACD);
+# }
 
 sub pp_cbd {
     return if pp_status();

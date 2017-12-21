@@ -52,6 +52,12 @@ use Data::Dumper;
 #
 #################################################
 
+
+my $acd_chars = '->+=';
+my $acd_rx = '['.$acd_chars.']';
+
+$ORACC::CBD::Edit::acd_rx = $acd_rx;
+
 my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
     SBJ NP M MOD REL XP NU AN BN CN DN EN FN GN HN IN JN KN LN MN NN
     ON PN QN PNF RN SN TN U UN VN WN X XN YN ZN/; 
@@ -79,9 +85,10 @@ sub init {
 	}
     }
 }
+my %data = ();
 
 sub pp_validate {
-    my($project,$cbdlang,$vfields,@cbd) = @_;
+    my($project,$cbdlang,$vfields,$data_ref,@cbd) = @_;
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -95,7 +102,7 @@ sub pp_validate {
 		unless $rws_map{$rws};
 	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
-	    my($tag,$line) = ($1,$2);
+	    my $tag = $1;
 	    if (exists $tags{$tag}) {
 		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {
@@ -118,6 +125,7 @@ sub pp_validate {
 	}
     }
     atf_check($project,$cbdlang);
+    @{$$data_ref{'edit'}} = @{$data{'edit'}};
 }
 
 sub v_project {
@@ -141,8 +149,7 @@ sub v_lang {
     } else {
 	pp_warn("language empty or malformatted");
     }
-    $cbdlang;
-};
+    $cbdlang;};
 
 sub v_name { 
     my($tag,$arg) = @_;
@@ -163,13 +170,13 @@ sub v_entry {
 		if ($in_entry > 1) {
 		    pp_warn("multiple acd \@entry fields not permitted");
 		} else {
-		    push @{$data{'acd'}}, pp_line();
+		    push @{$data{'edit'}}, pp_line();
 		}
 	    } else {
 		pp_warn("multiple \@entry fields not permitted");
 	    }
 	    ++$in_entry;
-	} elsif ($in_entry > 1 ) {
+	} elsif ($in_entry > 1) {
 	    pp_warn("max two \@entry fields allowed");
 	} else {
 	    ++$in_entry;
@@ -204,7 +211,7 @@ sub v_entry {
 	    pp_trace "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst\n";
 	}
     } else {
-	pp_warn("bad format in \@entry");
+	pp_warn("bad format in \@entry '$tag'. (acd=$acd_rx)");
     }
 }
 
@@ -250,7 +257,7 @@ sub v_bases {
 		if ($tmp =~ tr/()// % 2);
 	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
 	    if ($pri =~ s/>.*$//) {
-		push @{$data{'acd'}}, pp_line();
+		push @{$data{'edit'}}, pp_line();
 	    }
 	    if ($pri =~ /\s/) {
 		pp_warn("space in base `$pri'")
@@ -421,7 +428,7 @@ sub v_sense {
 	if ($cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");
 	} else {
-	    push @{$data{'acd'}}, pp_line();
+	    push @{$data{'edit'}}, pp_line();
 	}
     }
     
