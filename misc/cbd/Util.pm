@@ -1,7 +1,7 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_load pp_entry_of pp_sense_of/;
+@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';

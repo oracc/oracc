@@ -7,22 +7,22 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 sub c11e {
-    my @c = shift;
-    foreach ($i = 0; $i <= $#c; ++$i) {
-	if ($c =~ /^\+\@entry/) {
+    my($args,@c) = @_;
+    for (my $i = 0; $i <= $#c; ++$i) {
+	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;
 	    until ($c[$i] =~ /^\@end/ || $i > $#c) {
-		$c[$i] = '';
+		$c[$i] = "\000";
 	    }
 	    if ($i > $#c) {
 		pp_warn("never found \@end for \@entry starting at line $i");
 	    }
-	} elsif ($c =~ /^[>\+]/) {
-	    $c[$i] =~ '';
-	} elsif ($c =~ /^\@bases/) {
+	} elsif ($c[$i] =~ /^[>\+]/) {
+	    $c[$i] = "\000";
+	} elsif ($c[$i] =~ /^\@bases/) {
 	    $c[$i] =~ s/(\s)[-+]/$1/g;
 	    $c[$i] =~ s#=[0-9]##g;
-	    $c[$i] =~ s/>\S+*(;|$)/$1/g;
+	    $c[$i] =~ s/>\S+?(;|$)/$1/g;
 	} else {
 	    $c[$i] =~ s#^=(?:\d?/)?##;
 	}

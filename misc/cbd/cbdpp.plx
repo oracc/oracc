@@ -17,8 +17,8 @@ use Getopt::Long;
 # dry = 0; # no output files
 # edit = 0; # edit cbd via acd marks and write patch info
 # filter = 0; # read from STDIN, write to CBD result to STDOUT
-# trace = 0;
-# vfields = '';
+# trace = 0; # print trace messages 
+# vfields = ''; # only validate named fields, plus some essential ones supplied automatically
 
 my %args = ();
 GetOptions(
@@ -89,7 +89,7 @@ if (pp_status()) {
     }
 }
 
-pp_cbd() unless $args{'check'};
+pp_cbd(\%args,@cbd) unless $args{'check'};
 
 pp_diagnostics(\%args);
 

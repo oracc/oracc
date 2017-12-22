@@ -117,7 +117,8 @@ sub init {
 my %data = ();
 
 sub pp_validate {
-    my($args,$data_ref,@cbd) = @_;
+    my($args,@cbd) = @_;
+    %data = %ORACC::CBD::Util::data;
     my ($project,$cbdlang,$vfields) = @$args{qw/project cbdlang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
@@ -156,6 +157,7 @@ sub pp_validate {
     }
     atf_check($project,$cbdlang);
     @{$$data_ref{'edit'}} = @{$data{'edit'}};
+    %ORACC::CBD::Util::data = %data;
 }
 
 sub v_project {
