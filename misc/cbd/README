@@ -23,7 +23,7 @@
 ** Syntax
 
    - add word	      : +@entry
-   - add base         : +BASE (within @bases)
+   - add base         : +BASE (within @bases space before + REQUIRED)
    - add sense        : +@sense
 
    - change CF/GW/POS : insert new line >@entry
@@ -31,11 +31,11 @@
    - change sense     : insert new line >@sense
 
    - delete word      : -@entry
-   - delete base      : -BASE (within @bases)
+   - delete base      : -BASE (within @bases; space before - REQUIRED)
    - delete sense     : -@sense
 
    - redirect word    : =n/CF[GW]POS (after -@entry; n is integer)
-   - redirect base    : =n/BASE (after -BASE; n is integer)
+   - redirect base    : =n/BASE (after -BASE; n is integer; space =n/ REQUIRED)
    - redirect sense   : =n/POS SENSE (after -@sense; n is integer)
 
    - reassign forms   : >n/@form (n is integer, prepended to @form with / separator)

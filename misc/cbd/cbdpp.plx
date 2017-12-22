@@ -4,53 +4,29 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 
-use ORACC::CBD::Edit;
+#use ORACC::CBD::Edit;
+use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
 use Getopt::Long;
 
-my $bare = 0; # no need for a header
-my $check = 0; # only do validation
-my $dry = 0; # no output files
-my $edit = 0; # edit cbd via acd marks and write patch info
-my $filter = 0; # read from STDIN, write to CBD result to STDOUT
-my $trace = 0;
-my $vfields = '';
+# bare = 0; # no need for a header
+# check = 0; # only do validation
+# dry = 0; # no output files
+# edit = 0; # edit cbd via acd marks and write patch info
+# filter = 0; # read from STDIN, write to CBD result to STDOUT
+# trace = 0;
+# vfields = '';
 
+my %args = ();
 GetOptions(
-    'bare'=>\$bare,
-    'check'=>\$check,
-    'dry'=>\$dry,
-    'edit'=>\$edit,
-    'filter'=>\$filter,
-    'trace'=>\$trace,
-    'validate:s'=>\$vfields,
+    \%args,
+    qw/bare check dry edit filter lang:s project:s trace vfields:s/,
     ) || die "unknown arg";
 
-$ORACC::CBD::PPWarn::trace = $trace;
-
-my %rws_map = (
-    EG => 'sux',
-    ES => 'sux-x-emesal',
-    CF => 'akk',
-    CA => 'akk-x-conakk',
-    OA => 'akk-x-oldass',
-    OB => 'akk-x-oldbab',
-    MA => 'akk-x-midass',
-    MB => 'akk-x-midbab',
-    NA => 'akk-x-neoass',
-    NB => 'akk-x-neobab',
-    SB => 'akk-x-stdbab',
-    );
-
-my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
-my %funcs = (); @funcs{@funcs} = ();
-
-my @data = qw/usage collo sense/;
-
-my %data = (); @data{@data} = ();
+$ORACC::CBD::PPWarn::trace = $args{'trace'};
 
 my %ppfunc = (
     usage=>\&pp_usage,
@@ -59,188 +35,75 @@ my %ppfunc = (
 );
 
 my $lng = '';
-my $cbd = '';
 
-unless ($filter) {
-    $cbd = shift @ARGV;
-    if ($cbd) {
-	$lng = $cbd; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
+unless ($args{'filter'}) {
+    $args{'cbd'} = shift @ARGV;
+    if ($args{'cbd'}) {
+	$lng = $args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
     } else {
 	die "cbdpp.plx: must give glossary on command line\n";
     }
 } else {
-    $cbd = '<stdin>';
+    $args{'cbd'} = '<stdin>';
 }
-pp_file($cbd);
-
-my @acd = ();
-my @cbd = ();
-my @ngm = ();
-
-my %bases = ();
-my $bid = 0;
-my $cbdlang = '';
-my $in_entry = 0;
-my $init_acd = 0;
-my $is_compound = 0;
-my $mixed_morph = 0;
-my $project = '';
-my $projdir = '';
-my $seen_bases = 0;
-my %seen_forms = ();
-my $seen_morph2 = 0;
-my $status = 0;
-my %tag_lists = ();
-
-###############################################################
-#
-# Program Body
-#
-###############################################################
-
-$projdir = "$ENV{'ORACC_BUILDS'}/$project";
-
-pp_load();
 
 # Allow files of bare glossary bits for testing
-if ($bare) {
-    $cbdlang = 'sux' unless $cbdlang;
-    $project = 'test' unless $project;
+if ($args{'bare'}) {
+    $args{'cbdlang'} = 'sux' unless $args{'cbdlang'};
+    $args{'project'} = 'test' unless $args{'project'};
 }
 
-die "cbdpp.plx: $cbd: can't continue without project and language\n"
-    unless $project && $cbdlang;
+pp_file($args{'cbd'});
 
-if ($cbdlang =~ /sux|qpn/) {
-    @cbd = ORACC::CBD::SuxNorm::normify($cbd, @cbd);
+$args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
+
+my @cbd = pp_load(\%args);
+
+die "cbdpp.plx: $args{'cbd'}: can't continue without project and language\n"
+    unless $args{'project'} && $args{'cbdlang'};
+
+if ($args{'cbdlang'} =~ /sux|qpn/) {
+    @cbd = ORACC::CBD::SuxNorm::normify(@cbd);
 }
 
-pp_validate($project, $cbdlang, $vfields, \%data, @cbd);
-
-#print Dumper \%data;
+pp_validate(\%args, @cbd);
 
 if (pp_status()) {
-    pp_diagnostics($check);
-    die("cbdpp.plx: errors in glossary $cbd. Stop.\n");
+    pp_diagnostics(\%args);
+    die("cbdpp.plx: errors in glossary $args{'cbd'}. Stop.\n");
 } else {
 
-    if ($edit) {
-	@cbd = edit($project,$cbdlang,\%data,@cbd);
-	pp_diagnostics($check);
-	die("cbdpp.plx: errors editing glossary $cbd. Stop\n")
+    if ($args{'edit'}) {
+	@cbd = edit(\%args, @cbd);
+	pp_diagnostics(\%args);
+	die("cbdpp.plx: errors editing glossary $args{'cbd'}. Stop\n")
 	    if pp_status();
     }
 
-    unless ($check) {
+    unless ($args{'check'}) {
 	foreach my $f (keys %ppfunc) {
-	    if ($#{$data{$f}} >= 0) {
+	    if ($#{$ORACC::CBD::Util::data{$f}} >= 0) {
 		&{$ppfunc{$f}}();
 	    }
 	}
     }
 }
 
-pp_cbd() unless $check;
+pp_cbd() unless $args{'check'};
 
-pp_diagnostics($check);
-
-################################################
-#
-# Utility routines
-#
-################################################
-
-sub pp_entry_of {
-    my $i = shift;
-    while ($i && $cbd[$i] !~ /\@entry/) {
-	--$i;
-    }
-    $i;
-}
-
-sub pp_sense_of {
-    my $i = shift;
-    while ($i && $cbd[$i] !~ /\@sense/) {
-	--$i;
-    }
-    $i;
-}
-
-sub pp_load {
-    if ($filter) {
-	@cbd = (<>); chomp @cbd;
-    } else {
-	open(C,$cbd) || die "cbdpp.plx: unable to open $cbd. Stop.\n";
-	@cbd = (<C>); chomp @cbd;
-	close(C);
-    }
-
-    my $insert = -1;
-    for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^$ORACC::CBD::Edit::acd_rx?\@([a-z]+)/) {
-	    my $tag = $1;
-	    if ($tag ne 'end') {
-		if ($tag eq 'project') {
-		    pp_line($i+1);
-		    $project = v_project($cbd[$i]);
-		} elsif ($tag eq 'lang') {
-		    pp_line($i+1);
-		    $cbdlang = v_lang($cbd[$i]);
-		}
-		$insert = $i;
-		push(@{$data{$tag}}, $i) if exists $data{$tag};
-	    } else {
-		$insert = -1;
-	    }
-	} elsif ($cbd[$i] =~ s/^\s+(\S)/ $1/) {
-	    if ($insert >= 0) {
-		$cbd[$insert] .= $cbd[$i];
-		$cbd[$i] = "\000";
-	    } else {
-		pp_warn("indented lines only allowed within \@entry");
-	    }
-	}
-    }
-}
+pp_diagnostics(\%args);
 
 ################################################
 #
 # CBDPP Operational Functions
 #
-################################################
-
-# sub pp_acd {
-#     open(ACD, '>pp.acd');
-#     foreach my $i (@{$data{'acd'}}) {
-# 	print ACD $cbd[$i], "\n";
-# 	$cbd[$i] = "\000";
-#     }
-#     close(ACD);
-# }
-
-sub pp_cbd {
-    return if pp_status();
-    if ($filter) {
-	foreach (@cbd) {
-	    print "$_\n" unless /^\000$/;
-	}
-    } else {
-	my $ldir = "$projdir/01tmp";
-	system 'mkdir', '-p', $ldir;
-	open(CBD, ">$ldir/$cbdlang.glo") 
-	    || die "cbdpp.plx: can't write to $ldir/$cbdlang.glo";
-	foreach (@cbd) {
-	    print CBD "$_\n" unless /^\000$/;
-	}
-	close(CBD);
-    }
-}
 
 sub pp_collo {
-    my $ndir = "$projdir/02pub";
+    my $args = shift;
+    my $ndir = "$$args{'projdir'}/02pub";
     system 'mkdir', '-p', $ndir;
-    open(COLLO, ">$ndir/coll-$cbdlang.ngm");
-    foreach my $i (@{$data{'collo'}}) {
+    open(COLLO, ">$ndir/coll-$$args{'cbdlang'}.ngm");
+    foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
 	my $e = pp_entry_of($i);
 	my $c = $cbd[$e];
 	$c =~ s/^\S*//;
@@ -258,7 +121,7 @@ sub pp_collo {
 
 sub pp_geo {
     open(GEOS, '>pp.geos') || die "cbdpp.plx: can't write to pp.glo";
-    foreach my $i (@{$data{'geos'}}) {
+    foreach my $i (@{$ORACC::CBD::Util::data{'geos'}}) {
 	print GEOS $cbd[$i], "\n";
 	$cbd[$i] = "\000";
     }
@@ -267,7 +130,7 @@ sub pp_geo {
 
 sub pp_usage {
     open(USAGE,'>pp.usage');
-    foreach my $i (@{$data{'collo'}}) {
+    foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
 	print USAGE $cbd[$i], "\n";
 	$cbd[$i] = "\000";
     }

@@ -12,9 +12,9 @@ use ORACC::CBD::PPWarn;
 
 sub edit {
     my($proj,$lang,$data_ref,@cbd) = @_;
-    my @cache = cache_create(@cbd);
-    if (cache_check($lang,@cache)) {
-	my @edits = @{$$data_ref{'edit'}};
+    my @edits = @{$$data_ref{'edit'}};
+    my @clean = remove_edits(\@cbd, \@edits);
+    if (cache_check($lang,@clean)) {
 	foreach my $i (@edits) {
 	    warn "Edit.pm: $i\n";
 	}
@@ -28,7 +28,7 @@ sub edit {
 sub cache_check {
     my ($lang,@cache) = @_; 
     my $glofile = ".cbdpp/$lang.glo";
-   my $ok = 0;
+    my $ok = 0;
     my $len = -s $glofile;
     if (defined $len && $len > 0) {
 	pp_trace("Edit/ok -- $glofile len = $len");
@@ -73,6 +73,27 @@ sub cache_stash {
     open(C,">$glofile") || die "cbdpp/Edit: can't write cache $glofile\n";
     print C join("\n", @c), "\n";
     close(C);
+}
+
+sub remove_edits {
+    my($cbd,$eds) = @_;
+    my @c = @$cbd;
+    foreach my $e (@$eds) {
+	my($etok,$tag) = ($e =~ /^(.)?\@([a-z]+)/);
+	if ($c[$e] =~ /^\+\@([a-z]+)/) {
+	    my $t = $1
+	
+	} elsif ($c[$e] =~ /^-\@([a-z]+)/) {
+
+	} elsif ($c[$e] =~ /^>\@([a-z]+)/) {
+	    
+	} elsif ($c[$e] =~ /^=/) {
+	    
+	} else {
+	    
+	}
+    }
+    grep !/^\000$/, @c;
 }
 
 1;

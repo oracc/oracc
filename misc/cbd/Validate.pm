@@ -68,9 +68,38 @@ my %poss = (); @poss{@poss} = ();
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
 
+my %rws_map = (
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    CF => 'akk',
+    CA => 'akk-x-conakk',
+    OA => 'akk-x-oldass',
+    OB => 'akk-x-oldbab',
+    MA => 'akk-x-midass',
+    MB => 'akk-x-midbab',
+    NA => 'akk-x-neoass',
+    NB => 'akk-x-neobab',
+    SB => 'akk-x-stdbab',
+    );
+
+my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
+my %funcs = (); @funcs{@funcs} = ();
 
 my %vfields = ();
 my %arg_vfields = ();
+
+my %bases = ();
+my $bid = 0;
+my $cbdlang = '';
+my $in_entry = 0;
+my $init_acd = 0;
+my $is_compound = 0;
+my $mixed_morph = 0;
+my $status = 0;
+my %tag_lists = ();
+my $seen_bases = 0;
+my %seen_forms = ();
+my $seen_morph2 = 0;
 
 sub init {
     my $vfields = shift;
@@ -88,7 +117,8 @@ sub init {
 my %data = ();
 
 sub pp_validate {
-    my($project,$cbdlang,$vfields,$data_ref,@cbd) = @_;
+    my($args,$data_ref,@cbd) = @_;
+    my ($project,$cbdlang,$vfields) = @$args{qw/project cbdlang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -131,29 +161,30 @@ sub pp_validate {
 sub v_project {
     my($line,$arg) = @_;
     return if $arg;
-    my $project = '';
+    my $proj = '';
     if ($line =~ /\@project\s+(\S+)\s*$/) {
-	$project = $1;
+	$proj = $1;
     } else {
 	pp_warn("project empty or malformatted");
     }
-    $project;
-};
+    $proj;
+}
 
 sub v_lang {
     my($line,$arg) = @_;
     return if $arg;
-    my $cbdlang = '';
+    my $lang = '';
     if ($line =~ /\@lang\s+(\S+)\s*$/) {
-	$cbdlang = $1;
+	$lang = $1;
     } else {
 	pp_warn("language empty or malformatted");
     }
-    $cbdlang;};
+    $lang;
+}
 
 sub v_name { 
     my($tag,$arg) = @_;
-};
+}
 
 sub v_entry {
     my($tag,$arg) = @_;

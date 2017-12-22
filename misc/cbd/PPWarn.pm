@@ -13,14 +13,14 @@ my $file = '';
 my $status = 0;
 
 sub pp_diagnostics {
-    my $check = shift;
+    my $args = shift;
     my @e = sort { $a <=> $b } keys %errlist;
     if ($#e >= 0) {
 	foreach my $e (@e) {
 	    warn @{$errlist{$e}};
 	}
     } else {
-	warn "$file OK.\n" if $check;
+	warn "$file OK.\n" if $$args{'check'};
     }
 }
 
