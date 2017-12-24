@@ -12,18 +12,19 @@ use ORACC::CBD::Validate;
 
 use Getopt::Long;
 
-# bare = 0; # no need for a header
-# check = 0; # only do validation
-# dry = 0; # no output files
-# edit = 0; # edit cbd via acd marks and write patch info
-# filter = 0; # read from STDIN, write to CBD result to STDOUT
-# trace = 0; # print trace messages 
-# vfields = ''; # only validate named fields, plus some essential ones supplied automatically
+# bare: no need for a header
+# check: only do validation
+# dry: no output files
+# edit: edit cbd via acd marks and write patch script
+# filter: read from STDIN, write to CBD result to STDOUT
+# reset: reset cached glo and edit anyway 
+# trace: print trace messages 
+# vfields: only validate named fields, plus some essential ones supplied automatically
 
 my %args = ();
 GetOptions(
     \%args,
-    qw/bare check dry edit filter lang:s project:s trace vfields:s/,
+    qw/bare check dry edit filter lang:s project:s reset trace vfields:s/,
     ) || die "unknown arg";
 
 $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -82,13 +83,17 @@ if (pp_status()) {
     unless ($args{'check'}) {
 	foreach my $f (keys %ppfunc) {
 	    if ($#{$ORACC::CBD::Util::data{$f}} >= 0) {
-		&{$ppfunc{$f}}();
+		pp_trace("cbdpp/calling ppfunc $f");
+		&{$ppfunc{$f}}(\%args);
+		pp_trace("cbdpp/exited ppfunc $f");
 	    }
 	}
     }
 }
 
+pp_trace("cbdpp/writing cbd");
 pp_cbd(\%args,@cbd) unless $args{'check'};
+pp_trace("cbdpp/cbd write complete");
 
 pp_diagnostics(\%args);
 
@@ -103,7 +108,7 @@ sub pp_collo {
     system 'mkdir', '-p', $ndir;
     open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
     foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
-	my $e = pp_entry_of($i);
+	my $e = pp_entry_of($i,@cbd);
 	my $c = $cbd[$e];
 	$c =~ s/^\S*//;
 	$c =~ s/\].*$/\]/;

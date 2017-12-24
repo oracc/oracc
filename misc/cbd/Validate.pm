@@ -203,7 +203,7 @@ sub v_entry {
 		if ($in_entry > 1) {
 		    pp_warn("multiple acd \@entry fields not permitted");
 		} else {
-		    push @{$data{'edit'}}, pp_line();
+		    push @{$data{'edit'}}, pp_line()-1;
 		}
 	    } else {
 		pp_warn("multiple \@entry fields not permitted");
@@ -290,7 +290,7 @@ sub v_bases {
 		if ($tmp =~ tr/()// % 2);
 	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
 	    if ($pri =~ s/>.*$//) {
-		push @{$data{'edit'}}, pp_line();
+		push @{$data{'edit'}}, pp_line()-1;
 	    }
 	    if ($pri =~ /\s/) {
 		pp_warn("space in base `$pri'")
@@ -461,7 +461,7 @@ sub v_sense {
 	if ($cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");
 	} else {
-	    push @{$data{'edit'}}, pp_line();
+	    push @{$data{'edit'}}, pp_line()-1;
 	}
     }
     

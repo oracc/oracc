@@ -7,7 +7,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 sub c11e {
-    my($args,@c) = @_;
+    my($args,@cbd) = @_;
+    my @c = @cbd;
     for (my $i = 0; $i <= $#c; ++$i) {
 	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;

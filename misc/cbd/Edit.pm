@@ -6,8 +6,11 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
+use Data::Dumper;
+
 $ORACC::CBD::Edit::force = 0;
 
+use ORACC::CBD::Util;
 use ORACC::CBD::C11e;
 use ORACC::CBD::PPWarn;
 
@@ -15,9 +18,10 @@ sub edit {
     my($args,@cbd) = @_;
     my @clean = c11e($args, @cbd);
     if (cache_check($args,@clean)) {
-	my @script = edit_make_script($args,@cbd);
-	edit_save_script($args,@script);
-	@cbd = edit_apply_script($args,\@cbd,\@script);
+#	print Dumper \@cbd;
+	edit_make_script($args,@cbd); # saves in global %data
+	edit_save_script($args);
+	@cbd = edit_apply_script($args,@cbd);
 	cache_stash($args,@cbd);
     } else {
 	pp_warn("glossary fields have been edited directly. Stop.");
@@ -30,26 +34,32 @@ sub cache_check {
     my ($args,@cache) = @_; 
     my $glofile = ".cbdpp/$$args{'lang'}.glo";
     my $ok = 0;
-    my $len = -s $glofile;
-    if (defined $len && $len > 0) {
-	pp_trace("Edit/cache_check -- $glofile len = $len");
-	$$args{'cached_cbd'} = $glofile;
-	my $cache = join("\n",@cache);
-	if ($len == length($cache)) {
-	    my $g = '';
-	    undef $/; open(G,$glofile); $g = <G>; close(G);
+    if ($$args{'reset'}) {
+	pp_trace("Edit/cache_check -- reset requested");
+	unlink $glofile;
+	$ok = 1;
+    } else {
+	my $len = -s $glofile;
+	if (defined $len && $len > 0) {
+	    pp_trace("Edit/cache_check -- $glofile len = $len");
+	    $$args{'cached_cbd'} = $glofile;
+	    my $cache = join("\n",@cache);
+	    if ($len == length($cache)) {
+		my $g = '';
+		undef $/; open(G,$glofile); $g = <G>; close(G);
 		if ($g cmp $cache) {
 		    pp_trace("Edit/cache_check -- $glofile differs from $$args{'cbd'}");
 		} else {
 		    pp_trace("Edit/cache_check -- $glofile has not been edited");
 		    $ok = 1;
 		}
+	    } else {
+		pp_trace("Edit/cache_check -- $glofile different in size than $$args{'cbd'}");
+	    }
 	} else {
-	    pp_trace("Edit/cache_check -- $glofile different in size than $$args{'cbd'}");
+	    pp_trace("Edit/cache_check -- $glofile nonexistent or empty");
+	    $ok = 1;
 	}
-    } else {
-	pp_trace("Edit/cache_check -- $glofile nonexistent or empty");
-	$ok = 1;
     }
     $ok;
 }
@@ -61,7 +71,7 @@ sub cache_diff {
 
 sub cache_stash {
     my $args = shift @_;
-    my @c = c11e(@_);
+    my @c = c11e($args, @_);
     my $glofile = ".cbdpp/$$args{'lang'}.glo";
     system 'mkdir', '-p', '.cbdpp';
     open(C,">$glofile") || die "cbdpp/Edit: can't write cache $glofile\n";
@@ -70,13 +80,18 @@ sub cache_stash {
 }
 
 sub edit_apply_script {
+    my($args, @c) = @_;
+    @c;
 }
 
 sub edit_make_script {
+    return unless defined $ORACC::CBD::Util::data{'edit'};
     my($args, @c) = @_;
-    my @eds = $ORACC::CBD::Util::data{'edits'};
+    my @eds = @{$ORACC::CBD::Util::data{'edit'}};
     my @s = ();
-    for (my $i; $i <= $#eds; ++$i) {
+    warn "status on entry = ", pp_status(), "\n";
+    for (my $ed = 0; $ed <= $#eds; ++$ed) {
+	my $i = $eds[$ed];
 	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;
 	    my @e = ();
@@ -119,15 +134,24 @@ sub edit_make_script {
 	    my $e = pp_entry_of($i,@c);
 	    push @s, ":ent $c[$e]";
 	    push @s, map { ":bas $_" } @b;
-	} elsif (/^=/) {
+	} elsif ($c[$i] =~ /^=/) {
 	    push @s, ":map $c[$i]";
 	} else {
 	    pp_warn("untrapped edit line $c[$i]");
 	}
     }
+    unless (pp_status()) {
+	@{$ORACC::CBD::Util::data{'script'}} = @s;	
+    } else {
+	warn "non-zero status; no script\n";
+    }
 }
 
 sub edit_save_script {
+    if (defined $ORACC::CBD::Util::data{'script'}) {
+	binmode STDOUT, ':utf8';
+	print join("\n", @{$ORACC::CBD::Util::data{'script'}}), "\n";
+    }
 }
 
 1;
