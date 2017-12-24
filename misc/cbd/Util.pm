@@ -23,8 +23,8 @@ sub pp_cbd {
     } else {
 	my $ldir = "$$args{'projdir'}/01tmp";
 	system 'mkdir', '-p', $ldir;
-	open(CBD, ">$ldir/$$args{'cbdlang'}.glo") 
-	    || die "cbdpp.plx: can't write to $ldir/$$args{'cbdlang'}.glo";
+	open(CBD, ">$ldir/$$args{'lang'}.glo") 
+	    || die "cbdpp.plx: can't write to $ldir/$$args{'lang'}.glo";
 	foreach (@c) {
 	    print CBD "$_\n" unless /^\000$/;
 	}
@@ -54,7 +54,7 @@ sub pp_load {
 		    $$args{'project'} = v_project($c[$i]);
 		} elsif ($tag eq 'lang') {
 		    pp_line($i+1);
-		    $$args{'cbdlang'} = v_lang($c[$i]);
+		    $$args{'lang'} = v_lang($c[$i]);
 		}
 		$insert = $i;
 		push(@{$ORACC::CBD::Util::data{$tag}}, $i) if exists $ORACC::CBD::Util::data{$tag};
@@ -76,7 +76,7 @@ sub pp_load {
 
 sub pp_entry_of {
     my ($i,@c) = @_;
-    while ($i && $c[$i] !~ /\@entry/) {
+    while ($i && $c[$i] !~ /^[+-]?\@entry/) {
 	--$i;
     }
     $i;

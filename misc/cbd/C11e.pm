@@ -15,7 +15,7 @@ sub c11e {
 		$c[$i] = "\000";
 	    }
 	    if ($i > $#c) {
-		pp_warn("never found \@end for \@entry starting at line $i");
+		pp_warn("never found \@end for \@entry starting at line $entry");
 	    }
 	} elsif ($c[$i] =~ /^[>\+]/) {
 	    $c[$i] = "\000";
@@ -25,6 +25,7 @@ sub c11e {
 	    $c[$i] =~ s/>\S+?(;|$)/$1/g;
 	} else {
 	    $c[$i] =~ s#^=(?:\d?/)?##;
+	    $c[$i] =~ s#^-##;
 	}
 	$c[$i] =~ s/^(\@[a-z]+)!/$1/;
 	$c[$i] =~ s/\s+/ /;

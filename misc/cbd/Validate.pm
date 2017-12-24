@@ -90,7 +90,7 @@ my %arg_vfields = ();
 
 my %bases = ();
 my $bid = 0;
-my $cbdlang = '';
+my $lang = '';
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
@@ -119,7 +119,7 @@ my %data = ();
 sub pp_validate {
     my($args,@cbd) = @_;
     %data = %ORACC::CBD::Util::data;
-    my ($project,$cbdlang,$vfields) = @$args{qw/project cbdlang vfields/};
+    my ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -155,7 +155,7 @@ sub pp_validate {
 	    pp_warn("invalid line in glossary");
 	}
     }
-    atf_check($project,$cbdlang);
+    atf_check($project,$lang);
     @{$$data_ref{'edit'}} = @{$data{'edit'}};
     %ORACC::CBD::Util::data = %data;
 }
@@ -333,7 +333,7 @@ sub v_form {
     $arg = '' unless $arg;
     
     if ($trace) {
-	pp_trace "v_form: tag=$tag; arg='$arg'; cbdlang=$cbdlang\n";
+	pp_trace "v_form: tag=$tag; arg='$arg'; lang=$lang\n";
     }
     
     unless ($arg) {
@@ -363,7 +363,7 @@ sub v_form {
     if ($f =~ s/(?:^|\s+)\%(\S+)//) {
 	$flang = $1;
 	$f =~ s/^\s*//;
-    } elsif ($cbdlang =~ /^qpn/) {
+    } elsif ($lang =~ /^qpn/) {
 	pp_warn("no %LANG in QPN glossary \@form entry");
     }
 
@@ -377,14 +377,14 @@ sub v_form {
 	pp_warn("underscore (_) not allowed in form except in compounds");
     }
     
-    if (($cbdlang =~ /^akk/ 
-	 || ($cbdlang =~ /^qpn/ && $flang =~ /akk/))) {
+    if (($lang =~ /^akk/ 
+	 || ($lang =~ /^qpn/ && $flang =~ /akk/))) {
 	pp_warn("no normalization in form")
 	    unless $f =~ m#(?:^|\s)\$\S#;
     }
 
-    if (($cbdlang =~ /^sux/ 
-	 || ($cbdlang =~ /^qpn/ && $flang =~ /sux/))
+    if (($lang =~ /^sux/ 
+	 || ($lang =~ /^qpn/ && $flang =~ /sux/))
 	&& !$is_compound) {
 	pp_warn("no BASE entry in form")
 	    unless $f =~ m#(?:^|\s)/\S#;

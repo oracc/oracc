@@ -8,92 +8,126 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 $ORACC::CBD::Edit::force = 0;
 
+use ORACC::CBD::C11e;
 use ORACC::CBD::PPWarn;
 
 sub edit {
-    my($proj,$lang,$data_ref,@cbd) = @_;
-    my @edits = @{$$data_ref{'edit'}};
-    my @clean = remove_edits(\@cbd, \@edits);
-    if (cache_check($lang,@clean)) {
-	foreach my $i (@edits) {
-	    warn "Edit.pm: $i\n";
-	}
-	cache_stash($lang,@cbd);
+    my($args,@cbd) = @_;
+    my @clean = c11e($args, @cbd);
+    if (cache_check($args,@clean)) {
+	my @script = edit_make_script($args,@cbd);
+	edit_save_script($args,@script);
+	@cbd = edit_apply_script($args,\@cbd,\@script);
+	cache_stash($args,@cbd);
     } else {
 	pp_warn("glossary fields have been edited directly. Stop.");
+	cache_diff($args);
     }
     @cbd;
 }
 
 sub cache_check {
-    my ($lang,@cache) = @_; 
-    my $glofile = ".cbdpp/$lang.glo";
+    my ($args,@cache) = @_; 
+    my $glofile = ".cbdpp/$$args{'lang'}.glo";
     my $ok = 0;
     my $len = -s $glofile;
     if (defined $len && $len > 0) {
-	pp_trace("Edit/ok -- $glofile len = $len");
+	pp_trace("Edit/cache_check -- $glofile len = $len");
+	$$args{'cached_cbd'} = $glofile;
 	my $cache = join("\n",@cache);
 	if ($len == length($cache)) {
 	    my $g = '';
 	    undef $/; open(G,$glofile); $g = <G>; close(G);
 		if ($g cmp $cache) {
-		    pp_trace("Edit/ok -- $glofile differs from new input");
+		    pp_trace("Edit/cache_check -- $glofile differs from $$args{'cbd'}");
 		} else {
-		    pp_trace("Edit/ok -- $glofile has not been edited");
+		    pp_trace("Edit/cache_check -- $glofile has not been edited");
 		    $ok = 1;
 		}
 	} else {
-	    pp_trace("Edit/ok -- $glofile different in size than new input");
+	    pp_trace("Edit/cache_check -- $glofile different in size than $$args{'cbd'}");
 	}
     } else {
-	pp_trace("Edit/ok -- $glofile nonexistent or empty");
+	pp_trace("Edit/cache_check -- $glofile nonexistent or empty");
 	$ok = 1;
     }
     $ok;
 }
 
-sub cache_create {
-    my @cbd = @_;
-    my @c;
-    my @cache_tags = qw/entry parts sense end/;
-    my %cache_tags = (); @cache_tags{@cache_tags} = ();
-    for (my $i = 0; $i <= $#cbd; ++$i) {
-	my ($tag) = ($cbd[$i] =~ /\@([a-z]+)/);
-	next unless $tag;
-	push @c, $cbd[$i] if exists $cache_tags{$tag};
-    }
-    @c;
+sub cache_diff {
+    my $args = shift;
+    system 'diff', $$args{'cbd'}, $$args{'cached_cbd'};
 }
 
 sub cache_stash {
-    my $lang = shift @_;
-    my @c = cache_create(@_);
-    my $glofile = ".cbdpp/$lang.glo";
+    my $args = shift @_;
+    my @c = c11e(@_);
+    my $glofile = ".cbdpp/$$args{'lang'}.glo";
     system 'mkdir', '-p', '.cbdpp';
     open(C,">$glofile") || die "cbdpp/Edit: can't write cache $glofile\n";
     print C join("\n", @c), "\n";
     close(C);
 }
 
-sub remove_edits {
-    my($cbd,$eds) = @_;
-    my @c = @$cbd;
-    foreach my $e (@$eds) {
-	my($etok,$tag) = ($e =~ /^(.)?\@([a-z]+)/);
-	if ($c[$e] =~ /^\+\@([a-z]+)/) {
-	    my $t = $1
-	
-	} elsif ($c[$e] =~ /^-\@([a-z]+)/) {
+sub edit_apply_script {
+}
 
-	} elsif ($c[$e] =~ /^>\@([a-z]+)/) {
-	    
-	} elsif ($c[$e] =~ /^=/) {
-	    
+sub edit_make_script {
+    my($args, @c) = @_;
+    my @eds = $ORACC::CBD::Util::data{'edits'};
+    my @s = ();
+    for (my $i; $i <= $#eds; ++$i) {
+	if ($c[$i] =~ /^\+\@entry/) {
+	    my $entry = $i;
+	    my @e = ();
+	    until ($c[$i] =~ /^\@end/ || $i > $#c) {
+		push @e, ":add entry";
+		push @e, $c[$i];
+	    }
+	    if ($i > $#c) {
+		pp_warn("never found \@end for \@entry starting at line $entry");
+	    } else {
+		push @s, @e;
+	    }
+	} elsif ($c[$i] =~ /^\+\@sense/) {
+	    my $pos = ($c[$i-1] =~ /^\@sense/ ? 'mid' : '1st');
+	    if ($pos eq 'mid') {
+		$pos = ($c[$i+1] =~ /^\@sense/ ? 'mid' : 'end');
+	    }
+	    my $e = pp_entry_of($i,@c);
+	    push @s, ":ent $c[$e]";
+	    push @s, ":pos $pos";
+	    push @s, ":add $c[$i]";
+	} elsif ($c[$i] =~ /^>/) {
+	    my($tag) = ($c[$i] =~ /(\@[a-z]+)/);
+	    my $e = pp_entry_of($i,@c);
+	    if ($c[$i-1] =~ /^$tag/) {
+		push @s, ":ent $c[$e]";
+		push @s, ":del $c[$i-1]";
+		push @s, ":add $c[$i]";
+	    } else {
+		pp_warn("expected $tag before '>$tag'");
+	    }
+	} elsif ($c[$i] =~ /^-/) {
+	    my $e = pp_entry_of($i,@c);
+	    push @s, ":ent $c[$e]";
+	    push @s, ":del $c[$i]";
+	} elsif ($c[$i] =~ /^\@bases/) {
+	    my @b = ($c[$i] =~ m/\s([-+]\S+)/g);
+	    push @b, ($c[$i] =~ m/(\S+=[0-9])/g);
+	    push @b, ($c[$i] =~ m/(\S+>\S+)/g);
+	    my $e = pp_entry_of($i,@c);
+	    push @s, ":ent $c[$e]";
+	    push @s, map { ":bas $_" } @b;
+	} elsif (/^=/) {
+	    push @s, ":map $c[$i]";
 	} else {
-	    
+	    pp_warn("untrapped edit line $c[$i]");
 	}
     }
-    grep !/^\000$/, @c;
+}
+
+sub edit_save_script {
 }
 
 1;

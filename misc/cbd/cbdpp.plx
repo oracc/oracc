@@ -4,9 +4,9 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 
-#use ORACC::CBD::Edit;
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Edit;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
@@ -51,6 +51,9 @@ unless ($args{'filter'}) {
 if ($args{'bare'}) {
     $args{'cbdlang'} = 'sux' unless $args{'cbdlang'};
     $args{'project'} = 'test' unless $args{'project'};
+} else {
+    die "cbdpp.plx: $args{'cbd'}: can't continue without project and language\n"
+	unless $args{'project'} && $args{'lang'};    
 }
 
 pp_file($args{'cbd'});
@@ -59,11 +62,8 @@ $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 
 my @cbd = pp_load(\%args);
 
-die "cbdpp.plx: $args{'cbd'}: can't continue without project and language\n"
-    unless $args{'project'} && $args{'cbdlang'};
-
-if ($args{'cbdlang'} =~ /sux|qpn/) {
-    @cbd = ORACC::CBD::SuxNorm::normify(@cbd);
+if ($args{'lang'} =~ /sux|qpn/) {
+    @cbd = ORACC::CBD::SuxNorm::normify($args{'cbd'}, @cbd);
 }
 
 pp_validate(\%args, @cbd);
@@ -76,8 +76,7 @@ if (pp_status()) {
     if ($args{'edit'}) {
 	@cbd = edit(\%args, @cbd);
 	pp_diagnostics(\%args);
-	die("cbdpp.plx: errors editing glossary $args{'cbd'}. Stop\n")
-	    if pp_status();
+	exit 1 if pp_status();
     }
 
     unless ($args{'check'}) {
@@ -102,7 +101,7 @@ sub pp_collo {
     my $args = shift;
     my $ndir = "$$args{'projdir'}/02pub";
     system 'mkdir', '-p', $ndir;
-    open(COLLO, ">$ndir/coll-$$args{'cbdlang'}.ngm");
+    open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
     foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
 	my $e = pp_entry_of($i);
 	my $c = $cbd[$e];

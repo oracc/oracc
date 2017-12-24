@@ -3,39 +3,39 @@
 ** Facilities
 
    - add word
-   - add base
    - add sense
+   - add base
 
    - change CF/GW/POS
-   - change BASE 
    - change SENSE
+   - change BASE 
 
    - delete word
-   - delete base
    - delete sense
+   - delete base
 
    - redirect word
-   - redirect base
    - redirect sense
+   - redirect base
 
    - reassign forms from one word to another
 
 ** Syntax
 
    - add word	      : +@entry
-   - add base         : +BASE (within @bases space before + REQUIRED)
    - add sense        : +@sense
+   - add base         : +BASE (within @bases space before + REQUIRED)
 
    - change CF/GW/POS : insert new line >@entry
-   - change base      : BASE>NEWBASE (within @bases)
    - change sense     : insert new line >@sense
+   - change base      : BASE>NEWBASE (within @bases)
 
    - delete word      : -@entry
-   - delete base      : -BASE (within @bases; space before - REQUIRED)
    - delete sense     : -@sense
+   - delete base      : -BASE (within @bases; space before - REQUIRED)
 
    - redirect word    : =n/CF[GW]POS (after -@entry; n is integer)
-   - redirect base    : =n/BASE (after -BASE; n is integer; space =n/ REQUIRED)
    - redirect sense   : =n/POS SENSE (after -@sense; n is integer)
+   - redirect base    : =n/BASE (after -BASE; n is integer; space =n/ REQUIRED)
 
    - reassign forms   : >n/@form (n is integer, prepended to @form with / separator)
