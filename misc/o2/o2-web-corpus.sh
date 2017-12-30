@@ -21,13 +21,12 @@ if [ "$otl" != "" ]; then
     fi
 fi
 
-mkdir -p $webdir/lists
-if [ -d 00lib/lists ]; then
-    liblists=`(cd 00lib/lists ; ls)`
-    if [ "$liblists" != "" ]; then
+#if [ -d 00lib/lists ]; then
+#    liblists=`(cd 00lib/lists ; ls)`
+#    if [ "$liblists" != "" ]; then
 	weblists.sh $webdir/lists
-    fi
-fi
+#    fi
+#fi
 
 if [ -d 01bld/lists ]; then
     bldlists=`(cd 01bld/lists ; ls)`
