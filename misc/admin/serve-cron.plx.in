@@ -41,6 +41,8 @@ foreach my $n (@need_indexing) {
     xsystem "/bin/sh", "$oracc/bin/serve-index.sh", $$n[0], $$n[1];
 }
 
+xsystem "/bin/sh", "$oracc/bin/orc", "agg-project-list.sh";
+
 sc_log("Updates completed ", scalar localtime());
 sc_log($dashline);
 
