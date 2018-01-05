@@ -8,13 +8,14 @@ require Exporter;
 
 @EXPORT = qw/pp_validate v_project v_lang/;
 
-my @tags = qw/entry parts bff bases stems phon root form length norms
+my @tags = qw/letter entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
               pl_id pl_uid was moved project lang name collo/;
 
 my %tags = (); @tags{@tags} = ();
 
 my %validators = (
+    letter=>\&v_letter,
     entry=>\&v_entry,
     parts=>\&v_parts,
     bases=>\&v_bases,
@@ -95,11 +96,14 @@ my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
 my $mixed_morph = 0;
+my $project = '';
 my $status = 0;
 my %tag_lists = ();
+my $seen_entries = 0;
 my $seen_bases = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
+my $vfields = '';
 
 sub init {
     my $vfields = shift;
@@ -119,7 +123,7 @@ my %data = ();
 sub pp_validate {
     my($args,@cbd) = @_;
     %data = %ORACC::CBD::Util::data;
-    my ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
+    ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -175,16 +179,20 @@ sub v_project {
 sub v_lang {
     my($line,$arg) = @_;
     return if $arg;
-    my $lang = '';
+    my $vlang = '';
     if ($line =~ /\@lang\s+(\S+)\s*$/) {
-	$lang = $1;
+	$vlang = $1;
     } else {
 	pp_warn("language empty or malformatted");
     }
-    $lang;
+    $vlang;
 }
 
 sub v_name { 
+    my($tag,$arg) = @_;
+}
+
+sub v_letter {
     my($tag,$arg) = @_;
 }
 
@@ -225,8 +233,12 @@ sub v_entry {
 		    pp_warn("syntax error in \@entry's CF [GW] POS");
 		}
 	    } else {
-		$is_compound = $cf =~ /\s/;
+		$is_compound = ($cf =~ /\s/);
 		pp_warn("unknown POS '$pos'") unless exists $poss{$pos};
+		my $ee = "$cf $gw $pos";
+		if ($seen_entries{$ee}++) {
+		    pp_warn("duplicate entry `$ee'");
+		}
 	    }
 	}
 	if ($pre) {
@@ -292,30 +304,32 @@ sub v_bases {
 	    if ($pri =~ s/>.*$//) {
 		push @{$data{'edit'}}, pp_line()-1;
 	    }
-	    if ($pri =~ /\s/) {
-		pp_warn("space in base `$pri'")
+	    if ($pri =~ /\s/ && !$is_compound) {
+		pp_warn("space in base `$pri'");
+		$pri = $alt = '';
 	    } else {
 		++$bases{$pri};
 		$bases{$pri,'*'} = $stem
 		    if $stem;
 	    }
-	    atf_add($pri);
+	    atf_add($pri) if $pri;
 	    foreach my $t (split(/,\s+/,$alt)) {
-		if ($t =~ /\s/) {
+		if ($t =~ /\s/ && !$is_compound) {
 		    pp_warn("space in alt-base `$t'");
+		    $pri = $alt = '';
 		} else {
-		    atf_add($t);
+		    atf_add($t) if $t;
 		}
 	    }
 	} else {
-	    if ($b =~ /\s/) {
+	    if ($b =~ /\s/ && !$is_compound) {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
-		atf_add($b);
+		atf_add($b) if $b;
 		$pri = $b;
 		$alt = '';
 	    }
@@ -348,7 +362,8 @@ sub v_form {
     my $barecheck = $arg;
     $barecheck =~ s/^(\S+)\s*//;
     my $formform = $1;
-    atf_add($formform);
+    my $tmpform = $formform; $tmpform =~ tr/_/ /;
+    atf_add($tmpform) if $tmpform;
 
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 	pp_warn("accented vowels not allowed in \@form");
@@ -384,10 +399,16 @@ sub v_form {
     }
 
     if (($lang =~ /^sux/ 
-	 || ($lang =~ /^qpn/ && $flang =~ /sux/))
+	 || ($lang =~ /^qpn/ && $flang =~ /^sux/))
 	&& !$is_compound) {
-	pp_warn("no BASE entry in form")
-	    unless $f =~ m#(?:^|\s)/\S#;
+	$f =~ m#(?:^|\s)/(\S+)#;
+	my $b = $1;
+	if ($b) {
+	    pp_warn("unknown BASE $b")
+		unless $bases{$b};
+	} else {
+	    pp_warn("no BASE entry in form")
+	}
     }
 
     if ($f =~ /\s\+(\S+)/) {

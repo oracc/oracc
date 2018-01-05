@@ -12,8 +12,12 @@ my %atf = ();
 
 sub atf_add {
     my $a = shift;
-    $a =~ tr/·°//d;
-    push @{$atf{pp_line()}}, $a;
+    if ($a) {
+	$a =~ tr/·°//d;
+	push @{$atf{pp_line()}}, $a;
+    } else {
+	pp_warn("internal error: empty value passed to atf_add")
+    }
 }
 
 sub atf_check {

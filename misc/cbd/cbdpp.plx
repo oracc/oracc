@@ -41,6 +41,9 @@ unless ($args{'filter'}) {
     $args{'cbd'} = shift @ARGV;
     if ($args{'cbd'}) {
 	$lng = $args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
+	$args{'lang'} = $lng unless $args{'lang'};
+	$args{'project'} = project_from_header()
+	    unless $args{'project'};
     } else {
 	die "cbdpp.plx: must give glossary on command line\n";
     }
@@ -50,11 +53,11 @@ unless ($args{'filter'}) {
 
 # Allow files of bare glossary bits for testing
 if ($args{'bare'}) {
-    $args{'cbdlang'} = 'sux' unless $args{'cbdlang'};
+    $args{'lang'} = 'sux' unless $args{'lang'};
     $args{'project'} = 'test' unless $args{'project'};
 } else {
     die "cbdpp.plx: $args{'cbd'}: can't continue without project and language\n"
-	unless $args{'project'} && $args{'lang'};    
+	unless $args{'project'} && $args{'lang'};
 }
 
 pp_file($args{'cbd'});
@@ -140,5 +143,16 @@ sub pp_usage {
     }
     close(USAGE);
 }
+
+sub project_from_header {
+    my $p = `head -1 $args{'cbd'}`;
+    if ($p =~ /^\@project\s+(.*?)\s*$/) {
+	$p = $1;
+    } else {
+	$p = undef;
+    }
+    $p;
+}
+
 
 1;
