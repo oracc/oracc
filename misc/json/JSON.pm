@@ -329,7 +329,7 @@ node_start {
 	    }
 	}
 
-	if ($$howto{'hook'} && !$$howto{'trigger'} && !$val_how eq 'hook()') {
+	if (defined($$howto{'hook'}) && !$$howto{'trigger'} && $val_how ne 'hook()') {
 	    my $h = $$howto{'hook'};
 	    my $prop = &$h($n);
 	    if ($prop) {
@@ -541,7 +541,8 @@ jsonify {
     $tmp =~ s/\\/\000\\/g;
     $tmp =~ tr/\000/\\/;
     $tmp =~ tr/\x80-\x9f//d;
-    $tmp =~ tr/\t\xa0/  /;
+    $tmp =~ tr/\t\r\n\xa0/  /;
+    $tmp =~ s/^\s*//; $tmp =~ s/\s*$//;
     $tmp;
 }
 

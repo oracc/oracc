@@ -9,6 +9,6 @@ bin_SCRIPTS = \
 	formats-json.plx linknorm-json.plx \
 	zip-json.sh errors-json.plx \
 	xmd-json.plx xmd-sv-json.plx \
-	asl-json.plx
+	asl-json.plx esp-json.plx
 scriptdata_DATA = 
 data_DATA = 
