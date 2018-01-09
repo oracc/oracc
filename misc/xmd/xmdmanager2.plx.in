@@ -354,7 +354,7 @@ my $stringpool_index = 0;
 $stringpool{'unknown'} = $stringpool_index++;
 
 # Validate and load keydata
-rnv($kd_rnc,$keydata,$verbose);
+#rnv($kd_rnc,$keydata,$verbose);
 my $kd = load_xml($keydata);
 my $kdoc = $kd->getDocumentElement();
 
