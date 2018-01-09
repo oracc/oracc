@@ -17,29 +17,28 @@ if [ "$project" == "" ]; then
 fi
 
 function has_jsonable {
-    if [ -s 01bld/cdlicat.xmd ]; 
-	then return 1
+    if [ -s 01bld/cdlicat.xmd ]; then
+	return 1
     fi
-    if [ -s 01bld/lists/have-xtf.lst ]; 
-	then return 1
+    if [ -s 01bld/lists/have-xtf.lst ]; then
+	return 1
     fi
-    if [ -s 01bld/lists/proxy-atf.lst ]; 
-	then return 1
+    if [ -s 01bld/lists/proxy-atf.lst ]; then
+	return 1
     fi
     if [ -s $asl ]; then
 	return 1;
     fi
     for glo in 00lib/*.glo ; do
-	if [ -s $glo ]; 
-	then return 1
+	if [ -s $glo ]; then
+	    return 1
 	fi
     done
     return 0
 }
 
 has_jsonable 
-if [ $? == 0 ]
-then
+if [ $? == 0 ]; then
     echo "o2-json.sh: $project has no jsonable files. Stop."
     exit 0
 fi
@@ -77,12 +76,16 @@ corpus-json.plx >$jsonlog 2>&1
 echo "o2-json.sh: indexes ..."
 index-json.sh >>$jsonlog 2>&1
 
+echo "o2-json.sh: portal ..."
+if [ -r 01tmp/source-tree-40.xml ]; then
+    esp-json.plx
+fi
+
 echo "o2-json.sh: validating and adding licensing ..."
 validate-json.sh >>$jsonlog 2>&1
 
 errors-json.plx
-if [ -r 01tmp/json-error.log ];
-then
+if [ -r 01tmp/json-error.log ]; then
     echo "o2-json.sh: internal errors in JSON processing; please tell Steve."
     echo "o2-json.sh: skipping zipping JSON."
 else

@@ -39,7 +39,7 @@ else
     MSVJAR=$ORACC/lib/java/msv.jar
     SAXONJAR=$ORACC/lib/java/saxon.jar
     XSL=$ORACC/lib/scripts
-    XMLSAP=$ORACC_HOME/$project
+    XMLSAP=$ORACC_BUILDS/$project
     ESP2=$ORACC/lib/esp2
     ESP2BIN=$ORACC/bin
     ESP2CP=$ORACC/lib/java
