@@ -41,6 +41,7 @@ my $config = undef;
 my $clang = '';
 my $debug = 0;
 my $force = 0; # not used; just for oraccproject
+my $g2 = 0;
 my $glofile = '';
 my $inplace = 0;
 my $merge = 0;
@@ -77,6 +78,7 @@ GetOptions(
     'cbdlang:s'=>\$clang,
     'debug'=>\$debug,
     'force'=>\$force,
+    'g2'=>\$g2,
     'inplace'=>\$inplace,
     'merge'=>\$merge,
     'mlist:s'=>\$mlist,
@@ -118,6 +120,11 @@ if ($cbd_post_process && !$clang) {
     if ($xml =~ m#(?:^|/)([^/.]).glo$#) {
 	$clang = $xml;
     }
+}
+
+if ($project) {
+    my $g2val = `oraccopt . g2`;
+    $g2 = 1 if $g2val eq 'yes';
 }
 
 my $projectPath = "$ENV{'ORACC_BUILDS'}/$project";
@@ -187,7 +194,7 @@ if ($sort) {
     	$cbdlang = $glofile;
 	$cbdlang =~ s#^00lib/(.*?)\.glo$#$1#;
 	
-	if ($cbdlang =~ /^(sux|qpn)/) {
+	if ($g2 == 0 && $cbdlang =~ /^(sux|qpn)/) {
 	    #	system('l2-sux-norm.plx', $glofile); # this is forced in g2a-simple now
 	    $glofile =~ s/00lib/01bld/;
 	    $glofile .= ".norm";

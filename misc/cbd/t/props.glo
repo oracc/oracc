@@ -1,0 +1,9 @@
+@proplist test:props
+
+@entry a [a] N
+@prop type noun
+@prop type noun nou
+@prop type noun name
+@prop typ
+@prop type nou
+@end entry

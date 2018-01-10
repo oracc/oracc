@@ -144,6 +144,24 @@ augment {
 	    if ($#bib >= 0) {
 		foreach my $n (@bib) {
 		    $enode->appendChild($n);
+		}
+	    }
+	    my @props = tags($anode, $CBD, 'props');
+	    if ($#props >= 0) {
+		foreach my $n (@props) {
+		    if ($n->parentNode()->localName() eq 'sense') {
+			my $nn = $n->parentNode()->getAttribute('n');
+			my $senses = tags($enode,$CBD,'senses');
+			foreach my $s (tags($senses->shift(),$CBD,'sense')) {
+			    my $sn = $s->getAttribute('n');
+			    if ($nn eq $sn) {
+				warn "merging prop onto sense $sn\n";
+				$s->appendChild($n);
+			    }
+			}
+		    } else {
+			$enode->appendChild($n);
+		    }
 		}		
 	    }
 	} else {

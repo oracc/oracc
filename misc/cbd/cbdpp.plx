@@ -16,7 +16,7 @@ use Getopt::Long;
 # check: only do validation
 # dry: no output files
 # edit: edit cbd via acd marks and write patch script
-# filter: read from STDIN, write to CBD result to STDOUT
+# filter: read from STDIN, write CBD result to STDOUT
 # reset: reset cached glo and edit anyway 
 # trace: print trace messages 
 # vfields: only validate named fields, plus some essential ones supplied automatically
@@ -24,7 +24,7 @@ use Getopt::Long;
 my %args = ();
 GetOptions(
     \%args,
-    qw/bare check dry edit filter lang:s project:s reset trace vfields:s/,
+    qw/bare check dry edit filter force lang:s project:s reset trace vfields:s/,
     ) || die "unknown arg";
 
 $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -33,6 +33,7 @@ my %ppfunc = (
     usage=>\&pp_usage,
     collo=>\&pp_collo,
     sense=>\&pp_geo,
+    proplist=>\&pp_zero,
 );
 
 my $lng = '';
@@ -72,7 +73,7 @@ if ($args{'lang'} =~ /sux|qpn/) {
 
 pp_validate(\%args, @cbd);
 
-if (pp_status()) {
+if (pp_status() && !$args{'force'}) {
     pp_diagnostics(\%args);
     die("cbdpp.plx: errors in glossary $args{'cbd'}. Stop.\n");
 } else {
@@ -87,7 +88,7 @@ if (pp_status()) {
 	foreach my $f (keys %ppfunc) {
 	    if ($#{$ORACC::CBD::Util::data{$f}} >= 0) {
 		pp_trace("cbdpp/calling ppfunc $f");
-		&{$ppfunc{$f}}(\%args);
+		&{$ppfunc{$f}}(\%args, $f);
 		pp_trace("cbdpp/exited ppfunc $f");
 	    }
 	}
@@ -144,6 +145,13 @@ sub pp_usage {
     close(USAGE);
 }
 
+sub pp_zero {
+    my ($args_ref,$func) = @_;
+    foreach my $i (@{$ORACC::CBD::Util::data{$func}}) {
+	$cbd[$i] = "\000";
+    }
+}
+
 sub project_from_header {
     my $p = `head -1 $args{'cbd'}`;
     if ($p =~ /^\@project\s+(.*?)\s*$/) {
@@ -153,6 +161,5 @@ sub project_from_header {
     }
     $p;
 }
-
 
 1;

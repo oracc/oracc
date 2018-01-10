@@ -2,15 +2,13 @@ package ORACC::CBD::Validate;
 require Exporter;
 @ISA=qw/Exporter/;
 
-#@EXPORT = qw/v_project v_lang v_name v_entry v_acd_ok v_bases v_form
-#    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
-#    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
-
 @EXPORT = qw/pp_validate v_project v_lang/;
+
+use warnings; use strict; use open 'utf8'; use utf8;
 
 my @tags = qw/letter entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid was moved project lang name collo/;
+              pl_id pl_uid was moved project lang name collo proplist prop/;
 
 my %tags = (); @tags{@tags} = ();
 
@@ -41,10 +39,13 @@ my %validators = (
     collo=>\&v_collo,
     geo=>\&v_geo,
     usage=>\&v_usage,
+    proplist=>\&v_proplist,
+    prop=>\&v_prop,
     );
 
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Props;
 use Data::Dumper;
 
 #################################################
@@ -91,18 +92,20 @@ my %arg_vfields = ();
 
 my %bases = ();
 my $bid = 0;
-my $lang = '';
+my @global_cbd = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
+my $lang = '';
 my $mixed_morph = 0;
 my $project = '';
 my $status = 0;
-my %tag_lists = ();
-my $seen_entries = 0;
+#my %tag_lists = ();
+my %seen_entries = ();
 my $seen_bases = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
+my $trace = 0;
 my $vfields = '';
 
 sub init {
@@ -123,6 +126,8 @@ my %data = ();
 sub pp_validate {
     my($args,@cbd) = @_;
     %data = %ORACC::CBD::Util::data;
+    $trace = $ORACC::CBD::PPWarn::trace;
+    @global_cbd = @cbd;
     ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
@@ -139,7 +144,7 @@ sub pp_validate {
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
 	    my $tag = $1;
 	    if (exists $tags{$tag}) {
-		push @{$tag_lists{$tag}}, $i;
+#		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {
 		    if (exists $vfields{$tag}) {
 			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
@@ -160,7 +165,8 @@ sub pp_validate {
 	}
     }
     atf_check($project,$lang);
-    @{$$data_ref{'edit'}} = @{$data{'edit'}};
+#    @{$$data_ref{'edit'}} = @{$data{'edit'}};
+#    $data{'taglists'} = \%tag_lists;
     %ORACC::CBD::Util::data = %data;
 }
 
@@ -479,7 +485,7 @@ sub v_sense {
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
     if ($pre) {
-	if ($cbd[pp_line()-1] =~ /^$acd_rx/) {
+	if ($global_cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");
 	} else {
 	    push @{$data{'edit'}}, pp_line()-1;
@@ -649,6 +655,17 @@ sub check_base {
 	0;
     }
     1;
+}
+
+sub v_proplist {
+    my($tag,$arg) = @_;
+    push @{$data{'proplist'}}, pp_line()-1;
+    proplist($arg);
+}
+
+sub v_prop {
+    my($tag,$arg) = @_;
+    prop($arg);
 }
 
 1;
