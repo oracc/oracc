@@ -1,8 +1,11 @@
 #!/bin/sh
-rm -fr 01tmp/portaljson
-mkdir -p 01tmp/portaljson
-cd 01tmp/portaljson
+portals=portalpages
+tmp=01tmp/portalpages
+rm -fr $tmp
+mkdir -p $tmp
+cd $tmp
 for a in $ORACC_BUILDS/www/json/*.zip ; do
-    unzip $a '*-portal.json'
+    unzip -qq -j -o $a '*-portal.json' 2>/dev/null
 done
-zip $ORACC_BUILDS/www/json/portalpages *.json
+cd ..
+zip -ur $ORACC_BUILDS/www/json/neo.zip $portals

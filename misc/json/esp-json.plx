@@ -25,11 +25,17 @@ my $xesp = load_xml_string($esp);
 
 if ($xesp) {
     system 'mkdir', '-p', '01bld/json';
-    open(OUT,">01bld/json/$project-portal.json"); select OUT;
-    print "{\n";
-    ORACC::JSON::iterate($xesp->getDocumentElement());
-    print "\n}";
-    close(OUT);
+    my $fileproject = $project; $fileproject =~ tr,/,-,;
+    my $out = "01bld/json/$fileproject-portal.json";
+    if (open(OUT,">$out")) {
+	select OUT;
+	print "{\n";
+	ORACC::JSON::iterate($xesp->getDocumentElement());
+	print "\n}";
+	close(OUT);
+    } else {
+	warn "esp-json.plx: can't write $out\n";
+    }
 }
 
 ###############################################################################

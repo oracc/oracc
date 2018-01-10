@@ -34,6 +34,9 @@ function has_jsonable {
 	    return 1
 	fi
     done
+    if [ -r 00web/00config/structure.xml ]; then
+	return 1
+    fi
     return 0
 }
 
@@ -83,8 +86,8 @@ fi
 
 echo "o2-json.sh: validating and adding licensing ..."
 validate-json.sh >>$jsonlog 2>&1
-
 errors-json.plx
+
 if [ -r 01tmp/json-error.log ]; then
     echo "o2-json.sh: internal errors in JSON processing; please tell Steve."
     echo "o2-json.sh: skipping zipping JSON."

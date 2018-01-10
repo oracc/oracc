@@ -29,13 +29,15 @@ if ($xsv) {
 	if ($field->hasChildNodes()) {
 	    my $n = $field->nodeName();
 	    print ",\n" if $nflds++;
-	    print "\"$n\": {\n";
+	    my $jn = ORACC::JSON::jsonify($n);
+	    print "\"$jn\": {\n";
 	    my $nvs = 0;
 	    foreach my $v ($field->childNodes()) {
 		my $n=$v->getAttribute('n');
 		my $c=$v->getAttribute('c');
 		print ",\n" if $nvs++;
-		print "\"$n\": \"$c\"";
+		$jn = ORACC::JSON::jsonify($n);
+		print "\"$jn\": \"$c\"";
 	    }
 	    print "}\n";
 	}
