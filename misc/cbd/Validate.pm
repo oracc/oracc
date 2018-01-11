@@ -71,7 +71,7 @@ my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
 push @poss, ('V/t', 'V/i'); 
 my %poss = (); @poss{@poss} = ();
 
-my @geo_pos = qw/FN GN SN TN WN/;
+my @geo_pos = qw/AN EN FN GN ON SN QN TN WN/;
 my %geo_pos = (); @geo_pos{@geo_pos} = ();
 
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;

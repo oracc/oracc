@@ -339,8 +339,8 @@ node_start {
 	    }
 	}
 
-	attr($howto, $n,'att') if exists $$howto{'att'};
-	attr($howto, $n,'xid') if exists $$howto{'xid'};
+	attr($howto, $n, 'att') if exists $$howto{'att'};
+	attr($howto, $n, 'xid') if exists $$howto{'xid'};
 
 	if ($$howto{'chld'} && hasElementChildren($n)) {
 	    my $chld_how = $$howto{'chld'};
@@ -364,6 +364,8 @@ node_start {
 		type=>'', nam=>$nam, val=>'text()', chld=>[$nam,'['], att=>'' 
 	    };
 	    goto AUTO_RETRY;
+	} elsif ($howtos{'#sparse'}) {
+	    # no warnings if in sparse mode
 	} else {
 	    warn "JSON.pm: no handler for element '",$n->nodeName,"'\n";
 	}
