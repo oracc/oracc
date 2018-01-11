@@ -105,6 +105,9 @@ glossary_howtos {
     $howto{'cbd_props'} = { nam=>'props',val=>'{' };
     $howto{'cbd_prop'} = { nam=>'@key',val=>'[',att=>'-key' };
     $howto{'cbd_v'} = { nam=>'#ignore',val=>'text()',att=>'' };
+
+    $howto{'cbd_pl_id'} = { nam=>'pl_id',val=>'text()',att=>'' };
+    $howto{'cbd_pl_coord'} = { nam=>'pl_coord',val=>'text()',att=>'' };    
     
     $howto{'cbd_letter'} = { type=>'#ignore' };
     $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };

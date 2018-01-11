@@ -1,4 +1,4 @@
-package ORACC::CBD::Props;
+package ORACC::CBD::Geonames;
 
 require Exporter;
 @ISA=qw/Exporter/;
@@ -13,18 +13,17 @@ use ORACC::CBD::PPWarn;
 my @pleiades_data = ();
 
 sub geonames {
-    my $geo = `oraccopt . cbd-geonames`;
-    return unless $geo && ($geo ne 'no');
-
-    my($geos,@cbd) = @_;
+    my($cbdgeo,$geos,@cbd) = @_;
     if ($#$geos >= 0) {
 	pleiades_init();
 	foreach my $g (@$geos) {
+	    my $cfgwpos = $cbd[$g];
+	    $cfgwpos =~ s/^.*?\s+(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/$1\[$2\]$3/;
 	    my $pl_id = ORACC::XMD::Pleiades::pleiades_id('',
 							  $cfgwpos, 
 							  @pleiades_data);
 	    if ($pl_id =~ /^0$/) {
-		if ($geo eq 'yes') {
+		if ($cbdgeo eq 'yes') {
 		    pp_line($g);
 		    pp_warn("no geonames data for $cfgwpos");
 		}
@@ -33,25 +32,25 @@ sub geonames {
 	    }
 	}
     }
-    
+
     @cbd;
 }
 
-sub find {
-    $pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
-						     $f, @pleiades_data);
-    if ($pleiades_id) {
-	$coord = ORACC::XMD::Pleiades::coords($pleiades_id, @pleiades_data);
-	push @{$xmd_outputs{$curr_xmd}}, 
-	    "<pleiades_id>$pleiades_id</pleiades_id>";
-	if ($coord) {
-	    push @{$xmd_outputs{$curr_xmd}}, 
-		"<pleiades_coord>$coord</pleiades_coord>";
-	}
-	xmd_geojson($fields, $r, $pleiades_id, $coord) 
-	    if $pleiades_id && $coord;
-    }
-}
+# sub find {
+#     $pleiades_id = ORACC::XMD::Pleiades::pleiades_id($$r[$item_index],
+# 						     $f, @pleiades_data);
+#     if ($pleiades_id) {
+# 	$coord = ORACC::XMD::Pleiades::coords($pleiades_id, @pleiades_data);
+# 	push @{$xmd_outputs{$curr_xmd}}, 
+# 	    "<pleiades_id>$pleiades_id</pleiades_id>";
+# 	if ($coord) {
+# 	    push @{$xmd_outputs{$curr_xmd}}, 
+# 		"<pleiades_coord>$coord</pleiades_coord>";
+# 	}
+# 	xmd_geojson($fields, $r, $pleiades_id, $coord) 
+# 	    if $pleiades_id && $coord;
+#     }
+# }
 
 sub pleiades_init {
     my $proj = `oraccopt`;

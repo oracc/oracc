@@ -7,6 +7,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
+use ORACC::CBD::Geonames;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
@@ -129,17 +130,11 @@ sub pp_collo {
     close(COLLO);
 }
 
-sub xpp_geo {
-    open(GEOS, '>pp.geos') || die "cbdpp.plx: can't write to pp.glo";
-    foreach my $i (@{$ORACC::CBD::Util::data{'geos'}}) {
-	print GEOS $cbd[$i], "\n";
-	$cbd[$i] = "\000";
-    }
-    close(GEOS);
-}
-
 sub pp_geo {
-    @cbd = geonames($ORACC::CBD::Util::data{'geos'}, @cbd);
+    my $geo = `oraccopt $args{'project'} cbd-geonames`;
+    if ($geo && $geo ne 'no') {
+	@cbd = geonames($geo,$ORACC::CBD::Util::data{'geo'}, @cbd);
+    }
 }
 
 sub pp_usage {

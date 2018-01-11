@@ -164,6 +164,18 @@ augment {
 		    }
 		}		
 	    }
+	    my @pl_id = tags($anode, $CBD, 'pl_id');
+	    if ($#pl_id >= 0) {
+		foreach my $n (@pl_id) {
+		    $enode->appendChild($n);
+		}
+	    }
+	    my @pl_coord = tags($anode, $CBD, 'pl_coord');
+	    if ($#pl_coord >= 0) {
+		foreach my $n (@pl_coord) {
+		    $enode->appendChild($n);
+		}
+	    }
 	} else {
 	    my $xis = $enode->getAttribute('xis');
 	    maybe_warn("corpus entry $e not in glossary $add: xis=$xis")
