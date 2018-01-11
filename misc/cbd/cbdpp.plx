@@ -32,9 +32,11 @@ $ORACC::CBD::PPWarn::trace = $args{'trace'};
 my %ppfunc = (
     usage=>\&pp_usage,
     collo=>\&pp_collo,
-    sense=>\&pp_geo,
     proplist=>\&pp_zero,
+    geo=>\&pp_geo,
 );
+
+#    sense=>\&pp_geo,
 
 my $lng = '';
 
@@ -127,13 +129,17 @@ sub pp_collo {
     close(COLLO);
 }
 
-sub pp_geo {
+sub xpp_geo {
     open(GEOS, '>pp.geos') || die "cbdpp.plx: can't write to pp.glo";
     foreach my $i (@{$ORACC::CBD::Util::data{'geos'}}) {
 	print GEOS $cbd[$i], "\n";
 	$cbd[$i] = "\000";
     }
     close(GEOS);
+}
+
+sub pp_geo {
+    @cbd = geonames($ORACC::CBD::Util::data{'geos'}, @cbd);
 }
 
 sub pp_usage {

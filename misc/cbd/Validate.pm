@@ -41,6 +41,10 @@ my %validators = (
     usage=>\&v_usage,
     proplist=>\&v_proplist,
     prop=>\&v_prop,
+    alias=>\&v_alias,
+    pl_id=>\&v_pl_id,
+    pl_uid=>\&v_pl_uid,
+    pl_coord=>\&v_pl_coord
     );
 
 use ORACC::CBD::ATF;
@@ -66,6 +70,9 @@ my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
 
 push @poss, ('V/t', 'V/i'); 
 my %poss = (); @poss{@poss} = ();
+
+my @geo_pos = qw/FN GN SN TN WN/;
+my %geo_pos = (); @geo_pos{@geo_pos} = ();
 
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
@@ -240,7 +247,13 @@ sub v_entry {
 		}
 	    } else {
 		$is_compound = ($cf =~ /\s/);
-		pp_warn("unknown POS '$pos'") unless exists $poss{$pos};
+		if (exists $poss{$pos}) {
+		    if (exists $geo_pos{$pos}) {
+			push @{$data{'geo'}}, pp_line()-1;
+		    }
+		} else {
+		    pp_warn("unknown POS '$pos'");
+		}
 		my $ee = "$cf $gw $pos";
 		if ($seen_entries{$ee}++) {
 		    pp_warn("duplicate entry `$ee'");
@@ -667,5 +680,22 @@ sub v_prop {
     my($tag,$arg) = @_;
     prop($arg);
 }
+
+sub v_alias {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_id {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_uid {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_coord {
+    my($tag,$arg) = @_;
+}
+
 
 1;

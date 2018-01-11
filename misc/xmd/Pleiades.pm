@@ -21,8 +21,10 @@ pleiades_id {
 	    if ($id) {
 		push @ids, $id;
 	    } else {
-		warn("pleiades_id:$xmd_id: no ID for place $p in @pdata\n")
-		    unless exists($ignored_places{$p});
+		if ($xmd_id) {
+		    warn("pleiades_id:$xmd_id: no ID for place $p in @pdata\n")
+			unless exists($ignored_places{$p});
+		}
 		push @ids, 0;
 	    }
 	}
@@ -56,7 +58,8 @@ load {
 	    chomp;
 	    my @fields = split(/\t/,$_);
 	    @fields = map { /^\s*(.*?)\s*$/ } @fields;
-	    my $oraccname = $fields[0];
+	    my $cfgwpos = $fields[0];
+	    my $oraccname = $fields[1];
 	    my ($pl_id, $pl_uid, $alt, $coords) = ();
 	    for my $i (1 .. $#fields+1) {
 		next unless $fields[$i];
@@ -70,7 +73,8 @@ load {
 		    $alt = $fields[$i];
 		}
 	    }
-	    $p{$oraccname} = $pl_id;
+	    $p{$oraccname} = $pl_id; # this can be non-unique
+	    $p{$cfgwpos} = $pl_id; # this is guaranteed unique
 #	    warn("Pleiades::load: $oraccname = $pl_id\n");
 	    if ($alt) {
 		foreach my $a (split(/,\s*/,$alt)) {

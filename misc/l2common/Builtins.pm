@@ -474,7 +474,7 @@ acd2xml {
 	open(P,'>01bld/pleiades.tab');
 	foreach my $o (sort keys %pleiades) {
 	    my %p = %{$pleiades{$o}};
-	    print P "$o\t$p{'alias'}\t$p{'id'}\t$p{'coord'}\t$p{'uid'}\n";
+	    print P "$o\t$p{'cf'}\t$p{'alias'}\t$p{'id'}\t$p{'coord'}\t$p{'uid'}\n";
 	}
 	close(P);
     }
@@ -1224,7 +1224,11 @@ acdentry {
 	    $pl{'alias'} = '';
 	}
 	my $cfgw = ${$e{'entry'}}[0];
-	$cfgw =~ s/\s*\[.*//;
+	#	$cfgw =~ s/\s*\[.*//;
+	$cfgw =~ s/\s*\[(.*?)\]\s*/\[$1\]/;
+	$cfgw =~ m/^(.*?)\[/;
+	my $cf = $1;
+	$pl{'cf'} = $cf;
 	$pleiades{$cfgw} = { %pl };
     } else {
 	# nothing happens I think

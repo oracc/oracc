@@ -3,10 +3,6 @@ package ORACC::CBD::Props;
 require Exporter;
 @ISA=qw/Exporter/;
 
-#@EXPORT = qw/v_project v_lang v_name v_entry v_acd_ok v_bases v_form
-#    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
-#    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
-
 @EXPORT = qw/proplist prop/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
