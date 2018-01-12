@@ -22,6 +22,8 @@ my $pleiades_initialized = 0;
 my @pleiades_data = ();
 my %pleiades = ();
 
+my %sense_props = ();
+
 my $cgctmp = '';
 my $early_debug = 1;
 
@@ -186,12 +188,12 @@ acd2xml {
 
     $lang = $arglang;
 
-    if (($input =~ /sux/ || $input =~ /qpn/) && -r "$input.norm") {
+    if (($input =~ /sux/ || $input =~ /qpn/) && (-r "$input.norm")) {
 	$input = "$input.norm";
     }
 
     # index entries quickly to validate xrefs in @bff etc.
-    open(IN,$input);
+    open(IN,$input) || die "acd2xml: unable to open glossary $input\n";
     my @bffs = ();
     while (<IN>) {
 	if (s/^\@entry[*!]*\s+//) {
@@ -342,9 +344,9 @@ acd2xml {
 			    bad($currtag, "$tok1: unknown POS in SENSE") unless exists $poss{$tok1};
 			    bad($currtag, "no content in SENSE") unless $currarg =~ /\s\S/;
 			}
-			$curr_sense_id = sprintf("%06f",$sense_id++);
+			$curr_sense_id = sprintf("\#%06d",$sense_id++);
 			my $defbang = ($default ? '!' : '');
-			$currarg = "\#$curr_sense_id$defbang\t$currarg";
+			$currarg = "$curr_sense_id$defbang\t$currarg";
 		    } elsif ($currtag eq 'form') {
 			my $barecheck = $currarg;
 			$barecheck =~ s/^(\S+)\s*//;
@@ -395,8 +397,13 @@ acd2xml {
 #			    ${$entries{$curr_cf}}{'bff'} = { %bff };
 #			}
 		    }
-		    push @{$e{$currtag}}, $currarg
-			unless $currtag eq 'inote';
+		    if ($currtag eq 'prop' && $curr_sense_id) {
+#			warn "pushing props to sense $curr_sense_id\n";
+			push @{$sense_props{$curr_sense_id}}, $currarg;
+		    } else {
+			push @{$e{$currtag}}, $currarg
+			    unless $currtag eq 'inote';
+		    }
 		}
 	    }
 	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
@@ -467,7 +474,7 @@ acd2xml {
 	open(P,'>01bld/pleiades.tab');
 	foreach my $o (sort keys %pleiades) {
 	    my %p = %{$pleiades{$o}};
-	    print P "$o\t$p{'alias'}\t$p{'id'}\t$p{'coord'}\t$p{'uid'}\n";
+	    print P "$o\t$p{'cf'}\t$p{'alias'}\t$p{'id'}\t$p{'coord'}\t$p{'uid'}\n";
 	}
 	close(P);
     }
@@ -1067,7 +1074,7 @@ acdentry {
     foreach my $s (@{$e{'sense'}}) {
 	my ($sid,$sigs,$sgw,$pos,$mng) = ();
 	my $defattr = '';
-#	if ($s =~ s/^\#(\S+)\s+//) {
+
 	if ($s =~ s/^(\S+)\s+//) {
 	    $sid = $1;
 	    if ($sid =~ s/!$//) {
@@ -1115,15 +1122,37 @@ acdentry {
 	} else {
 	    $s_sig =~ s/\](.*)$/]$1'$1/;
 	}
-	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag<mng xml:lang=\"$mnglang\">$mng</mng></sense>",'!');
+	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag<mng xml:lang=\"$mnglang\">$mng</mng>");
+	if (defined $sense_props{$sid}) {
+	    push @ret, '<props>';
+	    foreach my $p (@{$sense_props{$sid}}) {
+		my($n,$v) = ($p =~ /^(\S+)\s+(.*?)\s*$/);
+		die "$p\n" unless $n;
+		push @ret, "<prop key=\"$n\">"; # ,'!'
+		foreach my $vv (split(/\s+/,$v)) {
+		    push @ret, "<v>$vv</v>";
+		}
+		push @ret, '</prop>';
+	    }
+	    push @ret, '</props>';
+	}
+	push @ret, ("</sense>"); # ,'!'
     }
     push @ret, '</senses>';
+    %sense_props = ();
+    
     if ($e{'prop'}) {
+	push @ret, '<props>';
 	foreach my $p (@{$e{'prop'}}) {
 	    my($n,$v) = ($p =~ /^(\S+)\s+(.*?)\s*$/);
 	    die "$p\n" unless $n;
-	    push @ret, xidify("<prop name=\"$n\" value=\"$v\"/>",'!');
+	    push @ret, "<prop key=\"$n\">";
+	    foreach my $vv (split(/\s+/,$v)) {
+		push @ret, "<v>$vv</v>";
+	    }
+	    push @ret, '</prop>';
 	}
+	push @ret, '</props>';
     }
     if ($e{'equiv'}) {
 	push @ret, '<equivs>';
@@ -1195,7 +1224,11 @@ acdentry {
 	    $pl{'alias'} = '';
 	}
 	my $cfgw = ${$e{'entry'}}[0];
-	$cfgw =~ s/\s*\[.*//;
+	#	$cfgw =~ s/\s*\[.*//;
+	$cfgw =~ s/\s*\[(.*?)\]\s*/\[$1\]/;
+	$cfgw =~ m/^(.*?)\[/;
+	my $cf = $1;
+	$pl{'cf'} = $cf;
 	$pleiades{$cfgw} = { %pl };
     } else {
 	# nothing happens I think

@@ -2,19 +2,18 @@ package ORACC::CBD::Validate;
 require Exporter;
 @ISA=qw/Exporter/;
 
-#@EXPORT = qw/v_project v_lang v_name v_entry v_acd_ok v_bases v_form
-#    v_parts v_sense v_bff v_bib v_isslp v_equiv v_inote v_note v_root
-#    v_norms v_conts v_prefs v_collo v_geos v_usage v_end v_deprecated/;
-
 @EXPORT = qw/pp_validate v_project v_lang/;
 
-my @tags = qw/entry parts bff bases stems phon root form length norms
+use warnings; use strict; use open 'utf8'; use utf8;
+
+my @tags = qw/letter entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid was moved project lang name collo/;
+              pl_id pl_uid was moved project lang name collo proplist prop/;
 
 my %tags = (); @tags{@tags} = ();
 
 my %validators = (
+    letter=>\&v_letter,
     entry=>\&v_entry,
     parts=>\&v_parts,
     bases=>\&v_bases,
@@ -40,10 +39,17 @@ my %validators = (
     collo=>\&v_collo,
     geo=>\&v_geo,
     usage=>\&v_usage,
+    proplist=>\&v_proplist,
+    prop=>\&v_prop,
+    alias=>\&v_alias,
+    pl_id=>\&v_pl_id,
+    pl_uid=>\&v_pl_uid,
+    pl_coord=>\&v_pl_coord
     );
 
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Props;
 use Data::Dumper;
 
 #################################################
@@ -64,6 +70,9 @@ my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
 
 push @poss, ('V/t', 'V/i'); 
 my %poss = (); @poss{@poss} = ();
+
+my @geo_pos = qw/AN EN FN GN ON SN QN TN WN/;
+my %geo_pos = (); @geo_pos{@geo_pos} = ();
 
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
@@ -90,16 +99,21 @@ my %arg_vfields = ();
 
 my %bases = ();
 my $bid = 0;
-my $lang = '';
+my @global_cbd = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
+my $lang = '';
 my $mixed_morph = 0;
+my $project = '';
 my $status = 0;
-my %tag_lists = ();
+#my %tag_lists = ();
+my %seen_entries = ();
 my $seen_bases = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
+my $trace = 0;
+my $vfields = '';
 
 sub init {
     my $vfields = shift;
@@ -119,7 +133,9 @@ my %data = ();
 sub pp_validate {
     my($args,@cbd) = @_;
     %data = %ORACC::CBD::Util::data;
-    my ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
+    $trace = $ORACC::CBD::PPWarn::trace;
+    @global_cbd = @cbd;
+    ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
     init($vfields);
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -135,7 +151,7 @@ sub pp_validate {
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
 	    my $tag = $1;
 	    if (exists $tags{$tag}) {
-		push @{$tag_lists{$tag}}, $i;
+#		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {
 		    if (exists $vfields{$tag}) {
 			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
@@ -156,7 +172,8 @@ sub pp_validate {
 	}
     }
     atf_check($project,$lang);
-    @{$$data_ref{'edit'}} = @{$data{'edit'}};
+#    @{$$data_ref{'edit'}} = @{$data{'edit'}};
+#    $data{'taglists'} = \%tag_lists;
     %ORACC::CBD::Util::data = %data;
 }
 
@@ -175,16 +192,20 @@ sub v_project {
 sub v_lang {
     my($line,$arg) = @_;
     return if $arg;
-    my $lang = '';
+    my $vlang = '';
     if ($line =~ /\@lang\s+(\S+)\s*$/) {
-	$lang = $1;
+	$vlang = $1;
     } else {
 	pp_warn("language empty or malformatted");
     }
-    $lang;
+    $vlang;
 }
 
 sub v_name { 
+    my($tag,$arg) = @_;
+}
+
+sub v_letter {
     my($tag,$arg) = @_;
 }
 
@@ -225,8 +246,18 @@ sub v_entry {
 		    pp_warn("syntax error in \@entry's CF [GW] POS");
 		}
 	    } else {
-		$is_compound = $cf =~ /\s/;
-		pp_warn("unknown POS '$pos'") unless exists $poss{$pos};
+		$is_compound = ($cf =~ /\s/);
+		if (exists $poss{$pos}) {
+		    if (exists $geo_pos{$pos}) {
+			push @{$data{'geo'}}, pp_line()-1;
+		    }
+		} else {
+		    pp_warn("unknown POS '$pos'");
+		}
+		my $ee = "$cf $gw $pos";
+		if ($seen_entries{$ee}++) {
+		    pp_warn("duplicate entry `$ee'");
+		}
 	    }
 	}
 	if ($pre) {
@@ -292,30 +323,32 @@ sub v_bases {
 	    if ($pri =~ s/>.*$//) {
 		push @{$data{'edit'}}, pp_line()-1;
 	    }
-	    if ($pri =~ /\s/) {
-		pp_warn("space in base `$pri'")
+	    if ($pri =~ /\s/ && !$is_compound) {
+		pp_warn("space in base `$pri'");
+		$pri = $alt = '';
 	    } else {
 		++$bases{$pri};
 		$bases{$pri,'*'} = $stem
 		    if $stem;
 	    }
-	    atf_add($pri);
+	    atf_add($pri) if $pri;
 	    foreach my $t (split(/,\s+/,$alt)) {
-		if ($t =~ /\s/) {
+		if ($t =~ /\s/ && !$is_compound) {
 		    pp_warn("space in alt-base `$t'");
+		    $pri = $alt = '';
 		} else {
-		    atf_add($t);
+		    atf_add($t) if $t;
 		}
 	    }
 	} else {
-	    if ($b =~ /\s/) {
+	    if ($b =~ /\s/ && !$is_compound) {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
-		atf_add($b);
+		atf_add($b) if $b;
 		$pri = $b;
 		$alt = '';
 	    }
@@ -348,7 +381,8 @@ sub v_form {
     my $barecheck = $arg;
     $barecheck =~ s/^(\S+)\s*//;
     my $formform = $1;
-    atf_add($formform);
+    my $tmpform = $formform; $tmpform =~ tr/_/ /;
+    atf_add($tmpform) if $tmpform;
 
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 	pp_warn("accented vowels not allowed in \@form");
@@ -384,10 +418,16 @@ sub v_form {
     }
 
     if (($lang =~ /^sux/ 
-	 || ($lang =~ /^qpn/ && $flang =~ /sux/))
+	 || ($lang =~ /^qpn/ && $flang =~ /^sux/))
 	&& !$is_compound) {
-	pp_warn("no BASE entry in form")
-	    unless $f =~ m#(?:^|\s)/\S#;
+	$f =~ m#(?:^|\s)/(\S+)#;
+	my $b = $1;
+	if ($b) {
+	    pp_warn("unknown BASE $b")
+		unless $bases{$b};
+	} else {
+	    pp_warn("no BASE entry in form")
+	}
     }
 
     if ($f =~ /\s\+(\S+)/) {
@@ -458,7 +498,7 @@ sub v_sense {
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
     if ($pre) {
-	if ($cbd[pp_line()-1] =~ /^$acd_rx/) {
+	if ($global_cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");
 	} else {
 	    push @{$data{'edit'}}, pp_line()-1;
@@ -629,5 +669,33 @@ sub check_base {
     }
     1;
 }
+
+sub v_proplist {
+    my($tag,$arg) = @_;
+    push @{$data{'proplist'}}, pp_line()-1;
+    proplist($arg);
+}
+
+sub v_prop {
+    my($tag,$arg) = @_;
+    prop($arg);
+}
+
+sub v_alias {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_id {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_uid {
+    my($tag,$arg) = @_;
+}
+
+sub v_pl_coord {
+    my($tag,$arg) = @_;
+}
+
 
 1;

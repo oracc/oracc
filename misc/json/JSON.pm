@@ -329,7 +329,7 @@ node_start {
 	    }
 	}
 
-	if ($$howto{'hook'} && !$$howto{'trigger'} && !$val_how eq 'hook()') {
+	if (defined($$howto{'hook'}) && !$$howto{'trigger'} && $val_how ne 'hook()') {
 	    my $h = $$howto{'hook'};
 	    my $prop = &$h($n);
 	    if ($prop) {
@@ -339,8 +339,8 @@ node_start {
 	    }
 	}
 
-	attr($howto, $n,'att') if exists $$howto{'att'};
-	attr($howto, $n,'xid') if exists $$howto{'xid'};
+	attr($howto, $n, 'att') if exists $$howto{'att'};
+	attr($howto, $n, 'xid') if exists $$howto{'xid'};
 
 	if ($$howto{'chld'} && hasElementChildren($n)) {
 	    my $chld_how = $$howto{'chld'};
@@ -364,6 +364,8 @@ node_start {
 		type=>'', nam=>$nam, val=>'text()', chld=>[$nam,'['], att=>'' 
 	    };
 	    goto AUTO_RETRY;
+	} elsif ($howtos{'#sparse'}) {
+	    # no warnings if in sparse mode
 	} else {
 	    warn "JSON.pm: no handler for element '",$n->nodeName,"'\n";
 	}
@@ -541,7 +543,8 @@ jsonify {
     $tmp =~ s/\\/\000\\/g;
     $tmp =~ tr/\000/\\/;
     $tmp =~ tr/\x80-\x9f//d;
-    $tmp =~ tr/\t\xa0/  /;
+    $tmp =~ tr/\t\r\n\xa0/  /;
+    $tmp =~ s/^\s*//; $tmp =~ s/\s*$//;
     $tmp;
 }
 

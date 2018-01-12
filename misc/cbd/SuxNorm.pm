@@ -26,23 +26,25 @@ sub normify {
 	
 	next if $_[$i] =~ /^\000$/;
 
+	pp_line($i+1);
+
 	local($_) = $lines[$i];
 
 	tr/∼/~/ 
-	    && pp_warn "$glo:$i: autocorrected Unicode tilde (∼)--please change to ~ in source file";
+	    && pp_warn "autocorrected Unicode tilde (∼)--please change to ~ in source file";
 	if (/^\@lang\s+(\S+)/) {
 	    $lang = $1;
 	} if (/^\@parts/) {
 	    $skipping = 1;
 	} elsif (/^\@entry/) {
-	    warn "glo:$i: (normify) missing \@end entry\n" if $in_entry;
+	    pp_warn "(normify) missing \@end entry" if $in_entry;
 	    @forms = ();
 	    my($xcf,$gw,$pos) = (/\s(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/);
 	    if ($xcf && $gw && $pos) {
 		$cf = $xcf;
 	    $base = "$xcf\[$gw\]$pos";
 	    } else {
-		warn "$glo:$i: (normify) bad \@entry\n";
+		pp_warn "(normify) bad \@entry";
 		$skipping = 1;
 	    }
 	    $in_entry = 1;
@@ -55,7 +57,7 @@ sub normify {
 	    $skipping = 0;
 	    $in_entry = 0;
 	} elsif (/^\@form/ && $lang =~ /qpn/ && !/\%\S+/) {
-	    warn "$glo:$i: (normify) no %lang code in qpn form\n";
+	    pp_warn "(normify) no %lang code in qpn form";
 	} elsif (/^\@form/ && !$skipping && ($lang =~ /sux/ || /\%sux/) && !/\$\(/) {
 	    
 	    ## Note that this code does not get executed in sux COFs becasue
@@ -76,7 +78,7 @@ sub normify {
 		}
 		$lines[$i] = $_;
 	    } else {
-		warn "$glo:$i: (normify) no #morph in line\n";
+		pp_warn "(normify) no #morph in line";
 	    }
 	}
     }
@@ -85,7 +87,7 @@ sub normify {
 
     my @pparts = ();
     for (my $i = 0; $i <= $#lines; ++$i) {
-	my $err_line = $i + 1;
+	pp_line($i+1);
 	if ($lines[$i] =~ /^\@parts/) {
 	    $compound = 1;
 	    push @pparts, [ split_parts($lines[$i]) ];
@@ -115,12 +117,12 @@ sub normify {
 			    if ($key eq 'n=n[]n') {
 				$lines[$i] .= " \$n";
 			    } else {
-				push @this_parts_errs, "$glo:$err_line: (normify) no NORM for $key\n";
+				push @this_parts_errs, "(normify) no NORM for $key";
 			    }
 			}
 		    }
 		} else {
-		    warn "$glo:$err_line: (normify) compound's # of forms != # of parts (`@forms' vs. `@parts'\n";
+		    pp_warn "(normify) compound's # of forms != # of parts (`@forms' vs. `@parts'";
 		}
 		if ($#this_parts_errs < 0) {
 		    $parts_ok = 1;
@@ -132,7 +134,9 @@ sub normify {
 		}
 	    }
 	    if (!$parts_ok) {
-		warn @parts_errs;
+		foreach my $p (@parts_errs) {
+		    pp_warn $p;
+		}
 		@parts_errs = ();
 	    }
 	} elsif ($lines[$i] =~ /^\@end/) {

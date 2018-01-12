@@ -102,6 +102,13 @@ glossary_howtos {
     $howto{'cbd_periods'} = { nam=>'periods', val=>'[' };
     $howto{'cbd_p'} = { type=>'{', nam=>'p', val=>"text()", att=>'' };
 
+    $howto{'cbd_props'} = { nam=>'props',val=>'{' };
+    $howto{'cbd_prop'} = { nam=>'@key',val=>'[',att=>'-key' };
+    $howto{'cbd_v'} = { nam=>'#ignore',val=>'text()',att=>'' };
+
+    $howto{'cbd_pl_id'} = { nam=>'pl_id',val=>'text()',att=>'' };
+    $howto{'cbd_pl_coord'} = { nam=>'pl_coord',val=>'text()',att=>'' };    
+    
     $howto{'cbd_letter'} = { type=>'#ignore' };
     $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };

@@ -351,6 +351,7 @@
   </xsl:variable>
   <xsl:if test="self::esp:link">
     <a href="{$linked-page-URL}{$anchor-name}">
+      <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
 	<xsl:if test="string ( $link-title )">
 	  <xsl:attribute name="title" select="$link-title"/>
 	</xsl:if>
@@ -444,6 +445,7 @@
       <xsl:variable name="processed-url" select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( '.', substring ( @url, 2 ) ) else @url"/>
       <xsl:if test="self::esp:link">
 	<a href="{$processed-url}" class="external" target="_blank">
+	  <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
 	  <xsl:if test="string ( @accesskey )">
 	    <xsl:attribute name="accesskey" select="@accesskey"/>
 	  </xsl:if>
@@ -522,10 +524,12 @@
 <xsl:template match="esp:section">
   <xsl:if test="esp:shead/node ()">
     <div class="sectionheader">
-	<xsl:apply-templates select="esp:shead/node ()"/>
+      <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+      <xsl:apply-templates select="esp:shead/node ()"/>
     </div>
   </xsl:if>
   <div class="sectionbody">
+    <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
     <xsl:apply-templates select="esp:sbody/node ()"/>
   </div>
 </xsl:template>
@@ -554,7 +558,7 @@
     <xsl:if test="count($parameters/param:top-content/*)>0">
       <xsl:copy-of select="$parameters/param:top-content/*"/>
     </xsl:if>
-    <xsl:apply-templates/>
+    <xsl:apply-templates mode="content"/>
   </xsl:copy>
 </xsl:template>
 
@@ -562,6 +566,16 @@
 <xsl:template match="*">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="*" mode="content">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:if test="string-length(@id) = 0">
+      <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates/>
   </xsl:copy>
 </xsl:template>
