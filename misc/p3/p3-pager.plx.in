@@ -409,6 +409,7 @@ html_by_proxy {
 	$proxy_project = $1;
 	my($id4) = ($id =~ /^(....)/);
 	$html = "$oraccbld/$proxy_project/$id4/$id/$id.html";
+	$html .= ".$p{'translation'}" if $p{'translation'} && $p{'translation'} ne 'en';
     }
     ($proxy_project, $html);
 }
@@ -748,18 +749,25 @@ run_item_maker {
 
 	# Find the HTML version of an XTF
 	my $html = $xmd;
+	my $html_en = '';
 	$html =~ s/xmd$/html/;
 	if ($p{'translation'} ne 'en') {
 	    if (-r "$html.$p{'translation'}") {
 		$html .= ".$p{'translation'}";
+	    } else {
+		if (-r $html_en) {
+		    $html = $html_en;
+		} else {
+		    $html = '';
+		}
 	    }
 	} else {
 	    $html = '' unless -r $html;
 	}
 	unless (-r $html) {
-	    ($eproject,$html) = html_by_proxy($p{'project'}, $eid);
+	    ($eproject,$html) = html_by_proxy($p{'project'}, $eid, $p{'translation'});
 	    unless (-r $html) {
-		xsystem("$oraccbin/o2-lazy-xtf.sh", $eproject, $eid);
+		xsystem("$oraccbin/o2-lazy-xtf.sh", $eproject, $eid, $p{'translation'} || 'en');
 		$html = "@@ORACC@@/htm/$eproject/$eid.html";
 		if ($p{'translation'} ne 'en') {
 		    if (-r "$html.$p{'translation'}") {

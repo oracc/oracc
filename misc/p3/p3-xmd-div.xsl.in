@@ -122,11 +122,11 @@
   </xsl:variable>
 
   <li>
-    <a href="http://oracc.org/{$project}/{$text}/html">Print text</a>
+    <a href="http://@@ORACC_HOST@@/{$project}/{$text}/html">Print text</a>
     <xsl:for-each select="/*/md:cat/md:trans/*">
       <xsl:if test="not(text()='en')">
 	<span class="transprint">
-	  <a href="http://oracc.org/{$project}/{$text}/html/{text()}"><xsl:value-of select="text()"/></a>	  
+	  <a href="http://@@ORACC_HOST@@/{$project}/{$text}/html/{text()}"><xsl:value-of select="text()"/></a>	  
 	</span>
       </xsl:if>
     </xsl:for-each>
