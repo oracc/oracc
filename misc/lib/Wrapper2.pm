@@ -58,6 +58,7 @@ options {
 	'project:s'=>\$project,
 	'quiet'=>\$quiet,
 	'stdout'=>\$stdout,
+	'trans:s'=>\$trans,
 	'verbose'=>\$verbose,
 	'webdir:s'=>\$webdir,
 	) || pod2usage(2);
@@ -166,6 +167,7 @@ xslt {
 	    if ($trans ne 'en') {
 		$outf .= ".$trans";
 	    }
+	    warn "Wrapper2.pm: output to $outf\n" if $verbose;
 	    # N.B: this stream should not be opened in ':utf8'!  
 	    # output_string() comes from outside Perl and does
 	    # not have the utf8 flag set, so setting the output stream 

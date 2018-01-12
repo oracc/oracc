@@ -5,21 +5,23 @@ use ORACC::Wrapper2;
 
 my $translangs = '';
 
-# N.B.: languages other than English do not work when lazy html
-# is being used
--r '01tmp/translangs' && `cat 01tmp/translangs`;
-my @translangs = split(/\s+/, $translangs);
-
-push (@translangs, 'en') unless $#translangs >= 0;
-
-foreach my $t (@translangs) {
-    ORACC::Wrapper2::xslt(from=>'xmd',
-			  to=>'html',
-			  script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl',
-			  trans=>$t
-	);
+if (-r '01tmp/translangs') {
+    my $translangs = `cat 01tmp/translangs`;
+    my @translangs = split(/\s+/, $translangs);
+    push (@translangs, 'en') unless $#translangs >= 0;
+    foreach my $t (@translangs) {
+	ORACC::Wrapper2::xslt(from=>'xmd',
+			      to=>'html',
+			      script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl',
+			      trans=>$t
+	    );
+    }
+} else {
+	ORACC::Wrapper2::xslt(from=>'xmd',
+			      to=>'html',
+			      script=>'@@ORACC@@/lib/scripts/p3-htmlview.xsl'
+	    );
 }
-
 1;
 
 __END__
