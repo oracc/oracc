@@ -996,55 +996,25 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 #endif
 			  ++logo_word;
 			  if (lastc
-			      && lastc->etype == e_g_gg
-			      )
+			      && lastc->etype == e_g_gg 
+			      && xstrcmp(getAttr(lastc,"g:type"),"logo"))
 			    {
-			      if (xstrcmp(getAttr(lastc,"g:type"),"logo"))
+			      if (!xstrcmp(getAttr(lastc,"g:type"),"reordering")
+				  || !xstrcmp(getAttr(lastc,"g:type"),"ligature")
+				  || !xstrcmp(getAttr(lastc,"g:type"),"correction")
+				  )
 				{
-				  const char *atype = (const char *)getAttr(lastc,"g:type");
-				  if (!xstrcmp(atype,"reordering")
-				      || !xstrcmp(atype,"ligature")
-				      || !xstrcmp(atype,"correction")
-				      )
-				    {
-				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
-				      setAttr(n,a_g_type,ucc("logo"));
-				      appendChild(n, removeLastChild(wp));
-				      appendChild(wp,n);
-				      /* The grapheme is a logogram inside a 
-					 ligature/reordering/correction group so must be attached
-					 to the inner group which is already on the wp children */
-				      group_node = lastc;
-				    }
-				  else
-				    {
-				      /* WATCHME: CAN THIS EVER BE THE RIGHT THING TO DO? */
-				      /* What this does is that if the last node is a group and
-					 this is anything except reordering, ligtature or correction
-					 it coerces the type of the group to logo. Need to check
-					 whether this is OK */
-				      setAttr(lastc,a_g_type,ucc("logo"));
-				    }
+				  struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
+				  setAttr(n,a_g_type,ucc("logo"));
+				  appendChild(n, removeLastChild(wp));
+				  appendChild(wp,n);
+				  group_node = lastc;
 				}
 			      else
 				{
-				  group_node = lastc;
-				  group_flag = tp->type;
+				  /* WATCHME: CAN THIS EVER BE THE RIGHT THING TO DO? */
+				  setAttr(lastc,a_g_type,ucc("logo"));
 				}
-			    }
-			  else
-			    {
-			      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
-			      setAttr(n,a_g_type,ucc("logo"));
-			      if (lastc && lastc->etype == e_g_d
-				  && !xstrcmp(getAttr(lastc,"g:delim"),""))
-				{
-				  removeLastChild(wp);
-				  appendChild(n,lastc);
-				}
-			      appendChild(wp,n);
-			      group_node = n;
-			      group_flag = period;
 			    }
 			}
 		      else if (lforce_flag)
@@ -1097,15 +1067,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      /* this location for a_g_delim is always correct when
 		 bound is a hyphen because that is about to clear
 		 group_flag even if it isn't already notoken */
-	      if (group_node)
-		{
-		  if (tp->data)
-		    {
-		      /*setAttr(group_node,a_g_delim,tp->data);*/
-		      setAttr(group_node,a_g_delim,tp->data);
-		    }
-		}
-	      else if (wp)
+	      if (wp)
 		{
 		  struct node *hyphme = lastChild(wp);
 		  if (!hyphme)
@@ -1114,7 +1076,6 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else if (last_wp)
 		{
-
 		  setAttr(last_wp,a_g_delim,tp->data);
 		  last_wp = NULL;
 		}
@@ -1127,11 +1088,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendChild(wp ? wp : parent,np);
 		  setAttr(lastChild(wp),a_g_delim,tp->data);
 		}
-	      if (group_node)
-		{
-		  group_flag = notoken;
-		  group_node = NULL;
-		}
+	      /*no_norm(type_data[tp->type]);*/
+	      group_flag = notoken;
+	      group_node = NULL;
 	      if (((char*)tp->data)[1])
 		setAttr(lastChild(wp),a_g_em,ucc("1"));
 	      break;
@@ -1240,7 +1199,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				    &logo_word, with_word_list);
 	      np = elem(e_g_d,NULL,lnum,GRAPHEME);
 	      if (start && tokens[start-1]->type == deto)
-		b_or_g = hyphen;
+		b_or_g = bound;
 	      else
 		b_or_g = prev_b_or_g(start);
 	      if (start+1 < end && tokens[start+1]->type == plus)

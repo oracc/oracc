@@ -2017,35 +2017,23 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			      {
 				if (!suppress_next_hyphen || suppress_hyphen_delay)
 				  {
-				    const unsigned char *gdelim = getAttr(np->children.nodes[i-1], "g:delim");
-				    if (*gdelim)
-				      *insertp++ = *gdelim;
-				    else
-				      *insertp++ = '.';
+				    if (insertp[-1] != '-' && insertp[-1] != '.')
+				      {
+					const unsigned char *gdelim = getAttr(np->children.nodes[i-1], "g:delim");
+					if (*gdelim)
+					  *insertp++ = *gdelim;
+					else
+					  *insertp++ = '.';
+				      }
 				  }
 				if (!suppress_hyphen_delay)
 				  suppress_next_hyphen = 0;
-#if 0
-				if (last_was_logo)
-				  {
-				    if (!suppress_next_hyphen || suppress_hyphen_delay)
-				      *insertp++ = '.';
-				    if (!suppress_hyphen_delay)
-				      suppress_next_hyphen = 0;
-				  }
-				else
-				  {
-				    if (!suppress_next_hyphen || suppress_hyphen_delay)
-				      *insertp++ = '-';
-				    if (!suppress_hyphen_delay)
-				      suppress_next_hyphen = 0;
-				  }
-#endif
 			      }
 			    else
 			      {
 				if (!suppress_hyphen_delay)
 				  suppress_next_hyphen = 0;
+				fprintf(stderr, "no hyphen\n");
 			      }
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
@@ -2074,6 +2062,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		for (i = 0; i < np->children.lastused; ++i)
 		  insertp = render_g(np->children.nodes[i], insertp, startp);
 		*insertp++ = ')';
+	      }
+	    if (*(cc(getAttr(np, "g:delim"))))
+	      {
+		if (insertp[-1] != '-' && insertp[-1] != '.')
+		  *insertp++ = *(uc(getAttr(np,"g:delim")));
 	      }
 	  }
 	else if (!xstrcmp(np->names->pname,"g:g"))
