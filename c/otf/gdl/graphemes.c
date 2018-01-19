@@ -2033,7 +2033,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			      {
 				if (!suppress_hyphen_delay)
 				  suppress_next_hyphen = 0;
-				fprintf(stderr, "no hyphen\n");
+				/* fprintf(stderr, "no hyphen\n"); */
 			      }
 			  }
 			if (*((struct node *)(np->children.nodes[i]))->type == 't') /* normalization */
@@ -2156,7 +2156,10 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    for (i = 0; i < np->children.lastused; ++i)
 	      {
 		if (i)
-		  *insertp++ = '-';
+		  {
+		    if (insertp[-1] != '-' && insertp[-1] != '.')
+		      *insertp++ = '-';
+		  }
 		if (*((struct node*)(np->children.nodes[i]))->type == 't')
 		  insertp = render_g_text(np->children.nodes[i], insertp, startp);
 		else

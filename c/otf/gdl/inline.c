@@ -1917,7 +1917,13 @@ finish_word(struct node *wp)
 		suppress_next_hyphen = 0;
 	    }
 	  else if (word_lang->mode == m_graphemic)
-	    *forms_insertp++ = '-'; /* the renderer needs rewriting to emit g:delim after graph not before next graph, but this is what works for now */
+	    {
+	      if (forms_insertp[-1] != '-' && forms_insertp[-1] != '.')
+		*forms_insertp++ = '-'; /* the renderer needs rewriting
+					   to emit g:delim after graph
+					   not before next graph, but
+					   this is what works for now */
+	    }
 	  else
 	    {
 	      const unsigned char *gdelim = getAttr(wp->children.nodes[i-1], "g:delim");
