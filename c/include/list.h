@@ -46,6 +46,7 @@ extern void list_add (List *, void *);
 extern List * list_append(List*lp1,List*lp2);
 extern void *list_detach (List *, List_node *);
 extern void *list_pop (List *);
+extern List *list_reset (List *);
 extern void list_delete (List *, List_node *, void (*)(void *));
 extern void list_free (List *, void (*)(void *));
 extern void *list_reduce (Boolean, List *, 

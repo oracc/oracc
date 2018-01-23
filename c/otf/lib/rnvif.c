@@ -47,19 +47,19 @@ extern const char *file;
 /*static char *xgpos=NULL;*/
 static int ok;
 
-static const char *text;
+static const char *mytext;
 
 static void
 print_error_text()
 {
-  if (text && *text)
+  if (mytext && *mytext)
     {
       char buf[32];
       int i;
       strcpy(buf,"near '");
-      for (i = 0; i < 10 && text[i]; ++i)
-	buf[i+6] = text[i];
-      if (text[i])
+      for (i = 0; i < 10 && mytext[i]; ++i)
+	buf[i+6] = mytext[i];
+      if (mytext[i])
 	strcpy(buf+i+6,"'...");
       else
 	strcpy(buf+i+6, "'");
@@ -144,7 +144,7 @@ static void
 windup(void)
 {
   level=0; lastline=-1;
-  text = "";
+  mytext = "";
 }
 
 #if 0
@@ -156,8 +156,8 @@ static void error_handler(int erno,...) {
 static void
 flush_text(void)
 {
-  ok = rnv_text(&current,&previous,(char *)text,strlen(text),mixed) && ok;
-  text = "";
+  ok = rnv_text(&current,&previous,(char *)mytext,strlen(mytext),mixed) && ok;
+  mytext = "";
 }
 
 void
@@ -198,7 +198,7 @@ void
 rnv_characters(void *userData,const char *s,int len)
 {
   if(current!=rn_notAllowed)
-    text = s;
+    mytext = s;
 }
 
 int

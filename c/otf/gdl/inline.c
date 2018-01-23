@@ -56,7 +56,9 @@ int w_sparse_lem = 0;
 struct lang_context *word_lang = NULL;
 
 int nline_words = 0, line_words_alloced = 0;
-struct node *group_node = NULL;
+struct node *atpt = NULL; /* attach point for grapheme nodes */
+/*List *group_stack = NULL;*/
+/*struct node *group_node = NULL;*/
 struct node *last_wp = NULL;
 struct node **line_words = NULL;
 
@@ -255,6 +257,30 @@ tlit_reinit_inline(int with_word_list)
     nline_words = 0;
   g_reinit();
   in_g_surro = w_sparse_lem = 0;
+}
+
+struct node *
+atpt_ancestor_or_self_gg(struct node *lastc)
+{
+  while (lastc)
+    {
+      if (lastc->etype == e_g_gg)
+	return lastc;
+      lastc = lastc->parent;
+    }
+  return NULL;
+}
+
+int
+atpt_no_logo(struct node *np)
+{
+  while (np)
+    {
+      if (!xstrcmp(getAttr(np, "g:type"), "logo"))
+	return 0;
+      np = np->parent;
+    }
+  return 1;
 }
 
 void
@@ -682,8 +708,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			    {ama:gan}
 		       */
   enum t_type group_flag = notoken;
-
-  group_node = NULL;
+  
+  atpt = NULL;
   in_hash = logoline = 0;
   prev_g = last_word = NULL;
   while (start < end)
@@ -974,8 +1000,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      if (long_logo || (gt == g_s || gt == g_c))
 			{
 			  struct node *lastc = lastChild(wp);
+			  if (lastc == NULL)
+			    lastc = wp;
 			  appendAttr(target,attr(fixed_attr_n[lforce],fixed_attr_v[lforce]));
-#if 1
 			  appendAttr(target,attr(a_g_logolang,
 						 ucc(tp->altlang)
 						 ? ucc(tp->altlang)
@@ -987,19 +1014,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      if (logo_word_lang(wp,tp))
 				++hacked_word_lang;
 			    }
-#else
-			  /* THIS WAS CLEARLY A THINKO: WHAT WAS I TRYING TO ACHIEVE? */
-			  if (tp->lang)
-			    appendAttr(target,attr(a_g_logolang,ucc(tp->lang->core->name)));
-			  else
-			    appendAttr(target,attr(a_g_logolang,ucc(tp->lang->core->altlang)));
-#endif
 			  ++logo_word;
-			  if (lastc
-			      && lastc->etype == e_g_gg
-			      )
+			  atpt = atpt_ancestor_or_self_gg(atpt ? atpt : lastc);
+			  if (atpt)
 			    {
-			      if (xstrcmp(getAttr(lastc,"g:type"),"logo"))
+			      group_flag = atpt->ttype;
+			      if (atpt_no_logo(atpt))
 				{
 				  const char *atype = (const char *)getAttr(lastc,"g:type");
 				  if (!xstrcmp(atype,"reordering")
@@ -1008,28 +1028,23 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      )
 				    {
 				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
+				      struct node *atpt_parent = atpt->parent;
 				      setAttr(n,a_g_type,ucc("logo"));
-				      appendChild(n, removeLastChild(wp));
+				      appendChild(n, removeLastChild(atpt->parent));
 				      appendChild(wp,n);
-				      /* The grapheme is a logogram inside a 
-					 ligature/reordering/correction group so must be attached
-					 to the inner group which is already on the wp children */
-				      group_node = lastc;
-				    }
+				      atpt = n;
+			            }
 				  else
 				    {
-				      /* WATCHME: CAN THIS EVER BE THE RIGHT THING TO DO? */
-				      /* What this does is that if the last node is a group and
-					 this is anything except reordering, ligtature or correction
-					 it coerces the type of the group to logo. Need to check
-					 whether this is OK */
-				      setAttr(lastc,a_g_type,ucc("logo"));
+				      /* this is a logo group in a context where there is already an
+					 ancestor logo group.  We don't need the group, so just add the
+					 grapheme to the atpt */
 				    }
 				}
 			      else
 				{
-				  group_node = lastc;
-				  group_flag = tp->type;
+			          atpt = lastc;
+				  group_flag = atpt->ttype = tp->type;
 				}
 			    }
 			  else
@@ -1039,12 +1054,24 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      if (lastc && lastc->etype == e_g_d
 				  && !xstrcmp(getAttr(lastc,"g:delim"),""))
 				{
+				  struct node *lastc2 = NULL;
 				  removeLastChild(wp);
-				  appendChild(n,lastc);
+				  lastc2 = lastChild(wp);
+				  /* check for {m}{d} */
+				  if (lastc2 && lastc2->etype == e_g_d
+				      && !xstrcmp(getAttr(lastc,"g:delim"),""))
+				    {
+				      removeLastChild(wp);
+				      appendChild(n,lastc2);
+				    }
+				  appendChild(n,lastc);				  
 				}
 			      appendChild(wp,n);
-			      group_node = n;
-			      group_flag = period;
+			      /*group_node = n;*/
+			      /*list_push(group_stack, n);*/
+			      /* MORE WORK HERE? */
+			      atpt = n;
+			      group_flag = atpt->ttype = period;
 			    }
 			}
 		      else if (lforce_flag)
@@ -1053,11 +1080,16 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			lforce_flag = 0;
 		    }
 		}
-	      if (group_flag == notoken 
-		  || (grouped_det && !strcmp(wp->names->pname,"g:d")))
-		appendChild(wp,np);
+	      if (grouped_det && !strcmp(wp->names->pname,"g:d"))
+		appendChild(wp, np); /* we have reset wp to e_g_d node when grouped_det */
+	      else if (group_flag == notoken)
+		appendChild(atpt ? atpt : wp, np);
 	      else
-		appendChild(group_node ? group_node : lastChild(wp), np);
+		{
+		  if (!atpt)
+		    fprintf(stderr, "ox: internal error: attach point not set in group context\n");
+		  appendChild(atpt ? atpt : lastChild(wp), np);		  
+		}
 	      prev_g = last_g = np;
 	      break;
 	    }
@@ -1089,20 +1121,20 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      last_g = wp = NULL;
 	      group_flag = notoken;
-	      group_node = NULL;
+	      /*group_node = NULL;*/
+	      atpt = NULL;
 	      if (((char*)tp->data)[1])
 		setAttr(lastChild(wp),a_g_em,ucc("1"));
 	      break;
 	    case hyphen:
-	      /* this location for a_g_delim is always correct when
-		 bound is a hyphen because that is about to clear
-		 group_flag even if it isn't already notoken */
-	      if (group_node)
+	      if (atpt)
 		{
 		  if (tp->data)
 		    {
-		      /*setAttr(group_node,a_g_delim,tp->data);*/
-		      setAttr(group_node,a_g_delim,tp->data);
+		      struct node *hyphme = lastChild(atpt);
+		      if (!hyphme)
+			hyphme = atpt;
+		      setAttr(hyphme,a_g_delim,tp->data);
 		    }
 		}
 	      else if (wp)
@@ -1127,10 +1159,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendChild(wp ? wp : parent,np);
 		  setAttr(lastChild(wp),a_g_delim,tp->data);
 		}
-	      if (group_node)
+	      if (atpt)
 		{
-		  group_flag = notoken;
-		  group_node = NULL;
+		  atpt = atpt->parent;
+		  if (atpt->etype == e_g_gg)
+		    {
+		      if (atpt)
+			group_flag = atpt->ttype;
+		      else
+			group_flag = notoken;
+		    }
+		  else
+		    {
+		      atpt = NULL;
+		      group_flag = notoken;
+		    }
 		}
 	      if (((char*)tp->data)[1])
 		setAttr(lastChild(wp),a_g_em,ucc("1"));
@@ -1155,9 +1198,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		{
 		  if (tp->data)
-		    setAttr(lastChild(group_node),a_g_delim,tp->data);
+		    setAttr(lastChild(atpt?atpt:lastChild(wp)),a_g_delim,tp->data);
 		  else
-		    setAttr(lastChild(group_node),a_g_delim,(unsigned char *)"");
+		    setAttr(lastChild(atpt?atpt:lastChild(wp)),a_g_delim,(unsigned char *)"");
 		}
 	      if (wp)
 		{
@@ -1195,17 +1238,27 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  appendAttr(g,attr(a_g_type,tstr));
 			  if (g->etype == e_g_gg)
 			    {
+#if 1
+			      if (atpt)
+				{
+				  appendChild(g,removeLastChild(atpt));
+				  appendChild(atpt,g);
+				  atpt = g;
+				}
+#else
 			      if (group_node)
 				{
 				  appendChild(g,removeLastChild(group_node));
 				  appendChild(group_node,g);
 				  group_node = g;
 				}
+#endif
 			      else
 				{
 				  appendChild(g,removeLastChild(wp));
 				  appendChild(wp,g);
-				  group_node = g;
+				  /*group_node = g;*/
+				  atpt = g;
 				}
 			    }
 			  else
@@ -1215,10 +1268,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      appendChild(gw,last);
 			      appendChild(g,gw);
 			      appendChild(wp,g);
-			      group_node = g;
+			      /*group_node = g;*/
+			      /*atpt = g;*//* need to figure out whether to set atpt in norm context */
 			    }
 			}
-		      group_flag = tp->type;
+		      group_flag = atpt->ttype = tp->type;
+		      /*group_flag = tp->type;*/
 		    }
 		}
 	      else
@@ -1338,7 +1393,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      /*wp = wp->parent;*/
 		      group_flag = notoken;
-		      group_node = NULL;
+		      /*group_node = NULL;*/
+		      atpt = atpt->parent;
 		    }
 #else
 		  if (group_flag != notoken)
@@ -1664,7 +1720,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		np->fattr = NULL;
 #endif
-	      appendChild(group_node ? group_node : wp,np);
+	      /*appendChild(group_node ? group_node : wp,np);*/
+	      appendChild(atpt ? atpt: wp,np);
 	      break;
 #if 0
 	    case dialect:
@@ -1715,8 +1772,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      appendChild(np,textNode(((unsigned char*)(tp->data))+1));
 	      if (!strcmp((((char*)(tp->data))+1), "DUMMY"))
 		setAttr(parent,a_silent,(unsigned char *)"1");
-	      if (group_node)
-		appendChild(group_node,np);
+	      if (atpt /*group_node*/)
+		appendChild(atpt /*group_node*/,np);
 	      else if (wp)
 		appendChild(wp,np);
 	      else
@@ -1918,7 +1975,7 @@ finish_word(struct node *wp)
 	    }
 	  else if (word_lang->mode == m_graphemic)
 	    {
-	      if (forms_insertp[-1] != '-' && forms_insertp[-1] != '.')
+	      if (forms_insertp[-1] != '-' && forms_insertp[-1] != '.' && forms_insertp[-1] != '{')
 		*forms_insertp++ = '-'; /* the renderer needs rewriting
 					   to emit g:delim after graph
 					   not before next graph, but

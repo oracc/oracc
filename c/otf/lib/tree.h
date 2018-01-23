@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "cdf.h"
 #include "xmlnames.h"
+#include "tokenizer.h"
 
 /* Avoid having to include xcl.h and all the lem stuff */
 struct xcl_context;
@@ -21,6 +22,7 @@ struct node
 {
   const char *type;
   enum e_type etype;
+  enum t_type ttype; /* token type */
   struct xname *names;
   struct node*parent;
   const char *const*xmlns;

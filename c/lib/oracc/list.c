@@ -54,6 +54,13 @@ list_append(List *lp1,List*lp2)
 }
 
 List *
+list_reset(List *lp)
+{
+  lp->count = 0;
+  lp->first = lp->last = NULL;
+}
+
+List *
 list_create (List_types_e type)
 {
   List *tmp = calloc (sizeof(List), 1);
