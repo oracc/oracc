@@ -1400,7 +1400,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      /*wp = wp->parent;*/
 		      group_flag = notoken;
 		      /*group_node = NULL;*/
-		      atpt = atpt->parent;
+		      /*atpt = atpt->parent;*/
+		      atpt = NULL;
 		    }
 #else
 		  if (group_flag != notoken)
