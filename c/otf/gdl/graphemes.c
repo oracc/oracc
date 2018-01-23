@@ -27,6 +27,8 @@ struct node *pending_disamb = NULL;
 
 #define pool_copy(x) npool_copy((x),graphemes_pool)
 
+#define insertp_is_delim() (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
+
 #include "xvalue.c"
 
 /* #define TEST */
@@ -2151,10 +2153,10 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			startp[1] = startp[2] = '%';
 			insertp = startp + 3;
 		      }
-		    else
+		    else if (insertp_is_delim())
 		      --insertp;
 		  }
-		else if (insertp[-1] != '+')
+		else if (insertp_is_delim())
 		  --insertp; /* unhyphenate */
 	      }
 	    else
@@ -2192,12 +2194,16 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	if (!xstrcmp(aval,"ellipsis"))
 	  *insertp++ = 'x';
 	else if (!xstrcmp(aval,"newline"))
-	  --insertp; /* unhyphenate */
+	  {
+	    if (insertp_is_delim())
+	      --insertp; /* unhyphenate */
+	  }
 	else if (!xstrcmp(aval,"empty"))
 	  *insertp++ = '-';
 	else if (!xstrcmp(aval,"disamb"))
 	  {
-	    --insertp; /* unhyphenate */
+	    if (insertp_is_delim())
+	      --insertp; /* unhyphenate */
 	    suppress_next_hyphen = 1;
 	    insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	  }
