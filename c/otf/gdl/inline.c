@@ -1000,7 +1000,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      if (long_logo || (gt == g_s || gt == g_c))
 			{
 			  struct node *lastc = lastChild(wp);
-			  if (lastc == NULL)
+			  if (lastc == NULL && wp->etype != e_g_d)
 			    lastc = wp;
 			  appendAttr(target,attr(fixed_attr_n[lforce],fixed_attr_v[lforce]));
 			  appendAttr(target,attr(a_g_logolang,
@@ -1036,15 +1036,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			            }
 				  else
 				    {
-				      /* this is a logo group in a context where there is already an
-					 ancestor logo group.  We don't need the group, so just add the
+				      /* this is a logo group in a
+					 context where there is
+					 already an ancestor logo
+					 group.  We don't need the
+					 group, so just add the
 					 grapheme to the atpt */
 				    }
 				}
 			      else
 				{
-			          atpt = lastc;
-				  group_flag = atpt->ttype = tp->type;
+				  if (lastc)
+				    {
+				      atpt = lastc;
+				      group_flag = atpt->ttype = tp->type;
+				    }
 				}
 			    }
 			  else
