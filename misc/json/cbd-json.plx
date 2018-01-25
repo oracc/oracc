@@ -12,6 +12,9 @@ my ($project,$lang) = split(/:/, $projcbd);
 
 #my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
 my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/articles-with-periods.xml";
+
+exit 1 unless -r $cbd_ns;
+
 my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
 my $sum_ns = "$ENV{'ORACC'}/www/$project/cbd/$lang/summaries.html";
 
