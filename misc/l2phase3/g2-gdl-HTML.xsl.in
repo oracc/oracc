@@ -803,7 +803,10 @@
 	<!--<xsl:text>&#xa0;</xsl:text>-->
       </xsl:when>
       <xsl:otherwise>
-<!--	<xsl:call-template name="maybe-hyphen"/> -->
+	<!--	<xsl:call-template name="maybe-hyphen"/> -->
+	<xsl:if test="not(@g:delim='--'">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
