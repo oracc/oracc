@@ -493,7 +493,14 @@
 	      <xsl:value-of select="$boundary"/>
 	      </xsl:if>
 	    -->
-	    <xsl:value-of select="@g:delim"/>
+	    <xsl:choose>
+	      <xsl:when test="@g:em">
+		<xsl:text>—</xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="@g:delim"/>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:for-each>
