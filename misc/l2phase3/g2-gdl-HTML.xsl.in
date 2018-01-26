@@ -803,12 +803,13 @@
 	<!--<xsl:text>&#xa0;</xsl:text>-->
       </xsl:when>
       <xsl:otherwise>
-	<xsl:call-template name="maybe-hyphen"/>
+<!--	<xsl:call-template name="maybe-hyphen"/> -->
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
 </xsl:template>
 
+<!--
 <xsl:template name="maybe-hyphen">
   <xsl:choose>
       <xsl:when test="@g:em">
@@ -819,7 +820,7 @@
       </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-
+-->
 <xsl:template name="x-maybe-hyphen">
   <xsl:variable name="hyph">
     <xsl:choose>
