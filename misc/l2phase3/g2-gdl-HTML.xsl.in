@@ -494,7 +494,7 @@
 	      </xsl:if>
 	    -->
 	    <xsl:choose>
-	      <xsl:when test="@g:em">
+	      <xsl:when test="@g:delim='--'">
 		<xsl:text>—</xsl:text>
 	      </xsl:when>
 	      <xsl:otherwise>
