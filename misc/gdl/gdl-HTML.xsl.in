@@ -95,7 +95,10 @@
 	  </xsl:attribute>
 	</xsl:if>
 	<xsl:call-template name="render-g"/>
-	<span class="sux"><xsl:call-template name="render-flags"/></span>
+	<xsl:variable name="flags"><xsl:call-template name="render-flags"/></xsl:variable>
+	<xsl:if test="string-length($flags)>0">
+	  <span class="sux"><xsl:value-of select="$flags"/></span>
+	</xsl:if>
 	<xsl:value-of select="@g:delim"/>
       </sup>
     </xsl:when>
@@ -364,26 +367,39 @@
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
+<!--	<xsl:if test="not(position()=last())">-->
 	  <xsl:choose>
 	    <xsl:when test="text()='x'">
 	      <xsl:choose>
 		<xsl:when test="following-sibling::*[1][self::g:d]"/>
 		<xsl:otherwise>
-		  <xsl:text> </xsl:text>
+		  <xsl:choose>
+		    <xsl:when test="@g:delim='+'">
+		      <xsl:text> </xsl:text>
+		    </xsl:when>
+		    <xsl:otherwise>
+		      <xsl:value-of select="@g:delim"/>
+		    </xsl:otherwise>
+		  </xsl:choose>
 		</xsl:otherwise>
 	      </xsl:choose>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <xsl:text>+</xsl:text>
+	      <!--<xsl:text>+</xsl:text>-->
+	      <xsl:value-of select="@g:delim"/>
 	    </xsl:otherwise>
 	  </xsl:choose>
-        </xsl:if>
+<!--        </xsl:if>-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='group' or @g:type='logo'">
+      <!--
+	  NOT ANY MORE: WE ALWAYS USE @g:delim NOW
       <xsl:variable name="boundary">
 	<xsl:choose>
+	  <xsl:when test="@g:delim">
+	    <xsl:value-of select="@g:delim"/>
+	  </xsl:when>
 	  <xsl:when test="g:s|g:c|g:n">
 	    <xsl:text>.</xsl:text>
 	  </xsl:when>
@@ -391,16 +407,21 @@
 	    <xsl:text>-</xsl:text>
 	  </xsl:otherwise>
 	</xsl:choose>
-      </xsl:variable>
+	</xsl:variable>
+-->
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
 	<xsl:choose>
 	  <xsl:when test="self::g:d[@g:pos='pre']
 			  or following-sibling::*[1][self::g:d[@g:pos='post']]"/>
 	  <xsl:otherwise>
-	    <xsl:if test="not(position()=last())">
-	      <xsl:value-of select="$boundary"/>
-	    </xsl:if>
+	    <!--<xsl:if test="not(position()=last())">-->
+	    <!--<xsl:value-of select="$boundary"/>-->
+	    <!--</xsl:if>-->
+	    <!--Changes in XML/XTF generation mean that the final grapheme of a
+		group carries any following boundary marker in its @g:delim so
+		we always have to emit that-->
+	    <xsl:value-of select="@g:delim"/>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:for-each>
