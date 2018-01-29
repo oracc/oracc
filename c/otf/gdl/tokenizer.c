@@ -541,7 +541,11 @@ tokenize_init()
 				       &table);
     }
 
+#if 1
+  em_token = s_create_token(bound, hyphen, "\xE2\x80\x94");
+#else
   em_token = s_create_token(bound, hyphen, "--");
+#endif
 
   for (i = 0; i < 10; ++i)
     prox_tokens[i] = s_create_token(meta, prox, ucc(istr[i]));
