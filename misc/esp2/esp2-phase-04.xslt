@@ -170,7 +170,8 @@
 </xsl:template>
 
 <!-- process bookmarks -->
-<xsl:template match="esp:bookmark">
+<xsl:template match="esp:bookmark" mode="content">
+  <!-- since the ID changes for JSON we need to process page content proper in mode="content" -->
   <a id="{@id}" name="{@id}">
     <xsl:choose>
 	<xsl:when test="@hide-highlight = 'yes'">
