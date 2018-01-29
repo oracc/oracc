@@ -2072,7 +2072,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    if (*(cc(getAttr(np, "g:delim"))))
 	      {
 		const unsigned char *gdelim
-		  = getAttr(np->children.nodes[i-1], "g:delim");
+		  = getAttr(np, "g:delim");
 		if (insertp[-1] != '-' && insertp[-1] != '.')
 		  {
 		    if (gdelim[1])
