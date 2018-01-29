@@ -2024,15 +2024,16 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 					const unsigned char *gdelim
 					  = getAttr(np->children.nodes[i-1], "g:delim");
 					if (*gdelim)
-					  *insertp++ = *gdelim;
-#if 0
-					else /* we always put g:delim on where needed now */
-					  *insertp++ = '.';
-#endif
+					  {
+					    if (gdelim[1])
+					      *insertp++ = '-';
+					    else
+					      *insertp++ = *gdelim++;
+					  }
 				      }
+				    if (!suppress_hyphen_delay)
+				      suppress_next_hyphen = 0;
 				  }
-				if (!suppress_hyphen_delay)
-				  suppress_next_hyphen = 0;
 			      }
 			    else
 			      {
@@ -2047,7 +2048,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			  {
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
 			  }
-		      }
+				      }
 		    if (!xstrcmp(gtype, "group"))
 		      --suppress_hyphen_delay;
 		  }
@@ -2070,14 +2071,26 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	      }
 	    if (*(cc(getAttr(np, "g:delim"))))
 	      {
+		const unsigned char *gdelim
+		  = getAttr(np->children.nodes[i-1], "g:delim");
 		if (insertp[-1] != '-' && insertp[-1] != '.')
-		  *insertp++ = *(uc(getAttr(np,"g:delim")));
+		  {
+		    if (gdelim[1])
+		      *insertp++ = '-';
+		    else
+		      *insertp++ = *gdelim++;
+		  }
 	      }
 	    else if (lastChild(np))
 	      {
-		const unsigned char *d = getAttr(lastChild(np), "g:delim");
-		if (*d && insertp[-1] != '-' && insertp[-1] != '.')
-		  *insertp++ = *d;
+		const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
+		if (*gdelim && insertp[-1] != '-' && insertp[-1] != '.')
+		  {
+		    if (gdelim[1])
+		      *insertp++ = '-'; /* only em-dash is more than one char */
+		    else
+		      *insertp++ = *gdelim++;
+		  }
 	      }
 	  }
 	else if (!xstrcmp(np->names->pname,"g:g"))

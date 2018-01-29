@@ -542,7 +542,7 @@ tokenize_init()
     }
 
 #if 1
-  em_token = s_create_token(bound, hyphen, "\xE2\x80\x94");
+  em_token = s_create_token(bound, hyphen, "—");
 #else
   em_token = s_create_token(bound, hyphen, "--");
 #endif
