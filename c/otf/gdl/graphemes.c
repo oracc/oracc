@@ -1970,7 +1970,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    if (!xstrcmp(getAttr(np,"g:pos"),"post"))
 	      {
 		if (insertp[-1] != '+')
-		  --insertp; /* unhyphenate */
+		  *--insertp = '\0'; /* unhyphenate */
 	      }
 	    else
 	      suppress_next_hyphen = 1;
@@ -2167,10 +2167,10 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 			insertp = startp + 3;
 		      }
 		    else if (insertp_is_delim())
-		      --insertp;
+		      *--insertp = '\0';
 		  }
 		else if (insertp_is_delim())
-		  --insertp; /* unhyphenate */
+		  *--insertp = '\0'; /* unhyphenate */
 	      }
 	    else
 	      suppress_next_hyphen = 1;
@@ -2209,14 +2209,14 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	else if (!xstrcmp(aval,"newline"))
 	  {
 	    if (insertp_is_delim())
-	      --insertp; /* unhyphenate */
+	      *--insertp = '\0'; /* unhyphenate */
 	  }
 	else if (!xstrcmp(aval,"empty"))
 	  *insertp++ = '-';
 	else if (!xstrcmp(aval,"disamb"))
 	  {
 	    if (insertp_is_delim())
-	      --insertp; /* unhyphenate */
+	      *--insertp = '\0'; /* unhyphenate */
 	    suppress_next_hyphen = 1;
 	    insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	  }

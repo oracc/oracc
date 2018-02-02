@@ -1021,7 +1021,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      group_flag = atpt->ttype;
 			      if (atpt_no_logo(atpt))
 				{
-				  const char *atype = (const char *)getAttr(lastc,"g:type");
+				  const char *atype = (const char *)getAttr(atpt,"g:type");
 				  if (!xstrcmp(atype,"reordering")
 				      || !xstrcmp(atype,"ligature")
 				      || !xstrcmp(atype,"correction")
