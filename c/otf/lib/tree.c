@@ -254,10 +254,22 @@ ancestor_or_self(struct node *node,char *name)
 }
 
 struct node *
-appendChild(struct node*parent, struct node*child)
+_appendChild(struct node*parent, struct node*child, const char *FILE, int LINE)
 {
   if (parent && child)
     {
+      struct node *up = parent;
+      while (up)
+	{
+	  if (up == child)
+	    {
+	      fprintf(stderr, "%s:%d: internal error: recursion detected in tree\n",
+		      FILE, LINE);
+	      return NULL;
+	    }
+	  else
+	    up = up->parent;
+	}
       addToNodeList(&parent->children,child);
       child->parent = parent;
       return child;

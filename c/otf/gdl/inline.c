@@ -1030,8 +1030,13 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
 				      struct node *atpt_parent = atpt->parent;
 				      setAttr(n,a_g_type,ucc("logo"));
+#if 1
+				      appendChild(n, removeLastChild(wp));
+				      appendChild(wp,n);
+#else
 				      appendChild(n, removeLastChild(atpt->parent));
 				      appendChild(wp,n);
+#endif
 				      atpt = n;
 			            }
 				  else

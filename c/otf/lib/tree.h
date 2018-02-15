@@ -42,7 +42,8 @@ void addToNodeList(struct nodelist*nl, void *vp);
 #define appendAttr(p,a) addToNodeList(&((p)->attr),a)
 void appendAttrCat(struct node *p, char sep, enum a_type atype, const char *aname, unsigned const char *aval);
 struct node*ancestor_or_self(struct node*node,char *name);
-struct node*appendChild(struct node*parent,struct node*child);
+#define appendChild(p,c) _appendChild((p),(c),__FILE__,__LINE__)
+struct node*_appendChild(struct node*parent,struct node*child,const char *FILE, int LINE);
 struct attr *attr(enum a_type a,const unsigned char *data);
 struct attr *gattr(enum a_type a,unsigned const char *data);
 ssize_t buffer(struct node *n,unsigned char *b,ssize_t index,ssize_t len);

@@ -17,6 +17,7 @@
 #include "gdl.h"
 #include "gsl.h"
 
+static int rg_verbose = 1;
 extern int math_mode, saa_mode;
 extern int cuneify_fuzzy_allographs;
 extern int gdl_bootstrap;
@@ -1869,6 +1870,9 @@ appendCloser(struct node *gp,const char *c)
 unsigned char *
 render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp)
 {
+  if (rg_verbose && tp)
+    fprintf(stderr,"render_g_text: tp=%p\n", (void*)tp);
+  
   if (tp->data)
     insertp += xxstrlen(xstrcpy(insertp, tp->data));
   else
@@ -1880,11 +1884,16 @@ render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp)
 }
 
 unsigned char *
-render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
+_render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const char *FILE, int LINE)
 {
-  int i;
   const unsigned char *aval;
   extern int suppress_next_hyphen, suppress_hyphen_delay;
+  static int depth = 0;
+
+  ++depth;
+  
+  if (rg_verbose && np)
+    fprintf(stderr,"render_g:%s:%d: np=%p (depth %d)\n", FILE, LINE, (void*)np, depth);
 
   if (!np || *np->names->pname == '\0')
     {
@@ -1933,8 +1942,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 		      insertp = render_g_text(cp1, insertp, startp);
 		  }
 		else
-		  for (i = 0; i < np->children.lastused; ++i)
-		    insertp = render_g(np->children.nodes[i], insertp, startp);
+		  {
+		    int i;
+		    for (i = 0; i < np->children.lastused; ++i)
+		      insertp = render_g(np->children.nodes[i], insertp, startp);
+		  }
 	      }
 	  }
 	break;
@@ -1945,6 +1957,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    if (np->children.lastused > 1)
 	      {
 		int render_me_next = 1;
+		int i;
 		char c1type = ((struct node *)np->children.nodes[1])->names->pname[2];
 		if (c1type != 'm' && c1type != 'a' && c1type != 'f')
 		  {
@@ -1960,8 +1973,11 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	break;
       case 'c':
 	*insertp++ = '|';
-	for (i = 0; i < np->children.lastused; ++i)
-	  insertp = render_g(np->children.nodes[i], insertp, startp);
+	{
+	  int i;
+	  for (i = 0; i < np->children.lastused; ++i)
+	    insertp = render_g(np->children.nodes[i], insertp, startp);
+	}
 	*insertp++ = '|';
 	break;
       case 'g':
@@ -1980,6 +1996,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    const char *gtype = cc(getAttr(np,"g:type"));
 	    if (!xstrcmp(gtype, "reordering"))
 	      {
+		int i;
 		for (i = 0; i < np->children.lastused; ++i)
 		  {
 		    if (i)
@@ -2055,15 +2072,24 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	      }
 	    else if (!xstrcmp(gtype, "ligature"))
 	      {
+		int i;
 		for (i = 0; i < np->children.lastused; ++i)
 		  {
+		    const unsigned char *gdelim
+		      = getAttr(np, "g:delim");
+#if 1
+		    if (*gdelim)
+		      *insertp++ = *gdelim;
+#else
 		    if (i)
 		      *insertp++ = '+';
+#endif
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
-		  }	      
+		  }
 	      }
 	    else
 	      {
+		int i;
 		*insertp++ = '(';
 		for (i = 0; i < np->children.lastused; ++i)
 		  insertp = render_g(np->children.nodes[i], insertp, startp);
@@ -2095,6 +2121,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	  }
 	else if (!xstrcmp(np->names->pname,"g:g"))
 	  {
+	    int i;
 	    *insertp++ = '(';
 	    for (i = 0; i < np->children.lastused; ++i)
 	      insertp = render_g(np->children.nodes[i], insertp, startp);
@@ -2177,18 +2204,21 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	    *insertp++ = '{';
 	    if (!xstrcmp(getAttr(np,"g:role"),"phonetic"))
 	      *insertp++ = '+';
-	    for (i = 0; i < np->children.lastused; ++i)
-	      {
-		if (i)
-		  {
-		    if (insertp[-1] != '-' && insertp[-1] != '.')
-		      *insertp++ = '-';
-		  }
-		if (*((struct node*)(np->children.nodes[i]))->type == 't')
-		  insertp = render_g_text(np->children.nodes[i], insertp, startp);
-		else
-		  insertp = render_g(np->children.nodes[i], insertp, startp);
-	      }
+	    {
+	      int i;
+	      for (i = 0; i < np->children.lastused; ++i)
+		{
+		  if (i)
+		    {
+		      if (insertp[-1] != '-' && insertp[-1] != '.')
+			*insertp++ = '-';
+		    }
+		  if (*((struct node*)(np->children.nodes[i]))->type == 't')
+		    insertp = render_g_text(np->children.nodes[i], insertp, startp);
+		  else
+		    insertp = render_g(np->children.nodes[i], insertp, startp);
+		}
+	    }
 	    *insertp++ = '}';
 	  }
 	break;
@@ -2242,6 +2272,7 @@ render_g(struct node *np, unsigned char *insertp, unsigned char *startp)
 	fprintf(stderr,"render_g passed non-grapheme: %s\n",np->names->pname);
 	break;
       }
+  --depth;
   return insertp;
 }
 
