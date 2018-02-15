@@ -9,8 +9,15 @@ mkdir -p tst/$b
 echo "Processing '$b' tests"
 while read l; do
     if [[ $l =~ ^[0-9] ]]; then
+	xx=""
 	read form
-	read xml
+	while read x; do
+	    if [[ $x == "" ]]; then
+		break;
+	    else
+		xx="$xx$x"
+	    fi
+	done
 #	echo testing $l against form $form and xml $xml
 	t=`/bin/echo -n $l | cut -d. -f1`
 	cat >atf/$b/$t.atf <<EOF
@@ -19,7 +26,7 @@ while read l; do
 $l
 EOF
 	cat >tst/$b/$t.grp <<EOF
-$xml
+$xx
 EOF
 	../ox/ox -f atf/$b/$t.atf >xml/$b/$t.xml 2>xml/$b/$t.log
 	f=`xsltproc testform.xsl xml/$b/$t.xml`

@@ -13,6 +13,10 @@
 
 <xsl:template match="*" mode="copy-elements">
   <xsl:copy>
+    <xsl:copy-of select="@g:delim"/>
+    <xsl:copy-of select="@g:logolang"/>
+    <xsl:copy-of select="@g:pos"/>
+    <xsl:copy-of select="@g:role"/>
     <xsl:copy-of select="@g:type"/>
     <xsl:apply-templates mode="copy-elements"/>
   </xsl:copy>
