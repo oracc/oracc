@@ -31,7 +31,7 @@ EOF
 	../ox/ox -f atf/$b/$t.atf >xml/$b/$t.xml 2>xml/$b/$t.log
 	f=`xsltproc testform.xsl xml/$b/$t.xml`
 	if [[ $f == $form ]]; then
-	    echo "$l: $f = $form ok"
+	    true # echo "$l: $f = $form ok"
 	else
 	    echo "$1 $l failed form test $f != $form"
 	fi
