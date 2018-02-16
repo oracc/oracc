@@ -30,10 +30,10 @@
      {d}+EN.KAD
      <g:gg g:type="logo">
        <g:gg g:type="ligature">
-         <g:d g:role="semantic" g:pos="pre" g:delim="+">
+         <g:d g:delim="+" g:pos="pre" g:role="semantic">
            <g:v>d</g:v>
          </g:d>
-	 <g:s g:logolang="sux" g:role="logo" g:delim=".">EN</g:s>
+	 <g:s g:delim="." g:logolang="sux" g:role="logo">EN</g:s>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:gg>
@@ -42,10 +42,10 @@
      {d}+EN-KAD
      <g:gg g:type="logo">
        <g:gg g:type="ligature">
-         <g:d g:role="semantic" g:pos="pre" g:delim="+">
+         <g:d g:delim="+" g:pos="pre" g:role="semantic">
            <g:v>d</g:v>
          </g:d>
-	 <g:s g:logolang="sux" g:role="logo" g:delim="-">EN</g:s>
+	 <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:gg>
@@ -57,10 +57,10 @@
      </g:d>
      <g:gg g:type="logo">
        <g:gg g:type="ligature">
-         <g:d g:role="semantic" g:pos="pre" g:delim="+">
+         <g:d g:delim="+" g:role="semantic" g:pos="pre">
            <g:v>d</g:v>
          </g:d>
-         <g:s g:logolang="sux" g:role="logo" g:delim=".">EN</g:s>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">EN</g:s>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:gg>
@@ -72,10 +72,10 @@
      </g:d>
      <g:gg g:type="logo">
        <g:gg g:type="ligature">
-         <g:d g:role="semantic" g:pos="pre" g:delim="+">
+         <g:d g:delim="+"" g:pos="pre" g:role="semantic">
            <g:v>d</g:v>
          </g:d>
-         <g:s g:logolang="sux" g:role="logo" g:delim="-">EN</g:s>
+         <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:gg>
@@ -104,16 +104,36 @@
      </g:d>
    </g:gg>
 
-011. %a MIN<(su-ri-in-ni)>
-   su-ri-in-ni
-   <surro>
-     <g:nonw xml:lang="akk" type="surro">
-       <g:s g:role="logo" g:logolang="sux">MIN</g:s>
+011. %a MIN<(su-ri)>
+   su-ri
+   <x:surro>
+     <g:nonw type="surro" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">MIN</g:s>
+       </g:gg>
      </g:nonw>
-     <g:w xml:lang="akk" form="su-ri-in-ni">
+     <g:w form="su-ri" xml:lang="akk">
         <g:v g:delim="-">su</g:v>
-        <g:v g:delim="-">ri</g:v>
-        <g:v g:delim="-">in</g:v>
-        <g:v>ni</g:v>
+        <g:v>ri</g:v>
      </g:w>
-   </surro>
+   </x:surro>
+
+012. %a {d}MIN<({d}nin-urta)>
+     {d}nin-urta
+     <g:w form="{d}nin-urta" xml:lang="akk">
+       <g:surro>
+         <g:gg g:type="logo">
+           <g:d g:pos="pre" g:role="semantic">
+             <g:v>d</g:v>
+           </g:d>
+           <g:s g:logolang="sux" g:role="logo">MIN</g:s>
+         </g:gg>
+         <g:gg g:type="group">
+           <g:d g:pos="pre" g:role="semantic" g:surroStart="1">
+             <g:v>d</g:v>
+           </g:d>
+           <g:v g:delim="-">nin</g:v>
+           <g:v g:surroEnd="X000001.1.1.2">urta</g:v>
+         </g:gg>
+       </g:surro>
+     </g:w>

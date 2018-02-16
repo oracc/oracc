@@ -356,11 +356,13 @@ lem_save_form_dynalem(const char *ref, const char *lang,
 void
 lem_save_lemma(struct node *wp, const char *lemma)
 {
-  struct ilem_form *form = hash_find(word_form_index, getAttr(wp,"xml:id"));
+  struct ilem_form *form = NULL;
+  unsigned const char *xmlid = getAttr(wp,"xml:id");
+  form = hash_find(word_form_index, xmlid);
   if (form)
     form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
   else
-    vwarning("internal error: word_form_index lookup failed");
+    vwarning("internal error: word_form_index lookup failed; lemma=%s; xml:id=%s", lemma, xmlid);
 }
 
 void

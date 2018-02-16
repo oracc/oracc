@@ -333,7 +333,7 @@ punct    = element g:p { p.model }
 lang     = attribute xml:lang { xsd:language }
 gsurro   = 
   element g:surro {
-    delim? , (s|c|n|punct) , groupgroup
+    delim? , (s|c|n|punct|group) , groupgroup
   }
 </d:rnc>
 

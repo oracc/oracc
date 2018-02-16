@@ -1871,7 +1871,7 @@ unsigned char *
 render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp)
 {
   if (rg_verbose && tp)
-    fprintf(stderr,"render_g_text: tp=%p\n", (void*)tp);
+    fprintf(stderr,"render_g_text: tp=%p; data=%s\n", (void*)tp, (char*)tp->data);
   
   if (tp->data)
     insertp += xxstrlen(xstrcpy(insertp, tp->data));

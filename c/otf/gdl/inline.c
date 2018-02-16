@@ -1515,6 +1515,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    --nline_words;
 		  wp = NULL;
 		}
+	      atpt = NULL;
+	      group_flag = notoken;
 	      np = elem(in_g_surro ? e_g_surro : e_surro,NULL,lnum,GRAPHEME);
 	      if (in_g_surro)
 		{
@@ -1551,6 +1553,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      wp = parent;
 		      parent = wp->parent;
+		      atpt = NULL;
 		    }
 		  else
 		    {
@@ -2036,6 +2039,7 @@ finish_word(struct node *wp)
       /* This can happen when a word finishes inside a g:surro */
       if (wp->etype != e_g_gg)
 	appendAttr(wp,attr(a_form,form));
+
       if (f_forms && !in_split_word && strcmp(wp->parent->names->pname,"ag"))
 	fprintf(f_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);
       

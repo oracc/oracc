@@ -47,6 +47,7 @@
         <ref name="c"/>
         <ref name="n"/>
         <ref name="punct"/>
+        <ref name="group"/>
       </choice>
       <ref name="groupgroup"/>
     </element>
