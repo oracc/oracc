@@ -17,7 +17,7 @@
 #include "gdl.h"
 #include "gsl.h"
 
-static int rg_verbose = 1;
+static int rg_verbose = 0;
 extern int math_mode, saa_mode;
 extern int cuneify_fuzzy_allographs;
 extern int gdl_bootstrap;
