@@ -13,7 +13,7 @@
 
 <xsl:include href="p3-corpusview-lib.xsl"/>
 
-<xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
+<xsl:output method="xml" encoding="utf-8" indent="no" omit-xml-declaration="yes"/>
 
 <xsl:param name="frag-id"/>
 <xsl:param name="host"/>

@@ -11,7 +11,7 @@
   xmlns:xl="http://www.w3.org/1999/xlink"
   exclude-result-prefixes="g norm xcl xff xtf xl">
 
-<xsl:output method="xml" indent="yes" encoding="utf-8"/>
+<xsl:output method="xml" indent="no" encoding="utf-8"/>
 
 <xsl:include href="xpd.xsl"/>
 <xsl:include href="gdl-render-g.xsl"/>
@@ -99,8 +99,13 @@
 	<xsl:if test="string-length($flags)>0">
 	  <span class="sux"><xsl:value-of select="$flags"/></span>
 	</xsl:if>
-	<xsl:value-of select="@g:delim"/>
+	<xsl:if test="count(following-sibling::*)>0">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:if>
       </sup>
+      <xsl:if test="count(following-sibling::*)=0">
+	<xsl:value-of select="@g:delim"/>
+      </xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <span>

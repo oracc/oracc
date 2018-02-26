@@ -122,8 +122,13 @@
 	</xsl:if>
 	<xsl:call-template name="render-g"/>
 	<xsl:call-template name="render-flags"/>
-	<xsl:value-of select="@g:delim"/>
+	<xsl:if test="count(following-sibling::*)>0">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:if>
       </sup>
+      <xsl:if test="count(following-sibling::*)=0">
+	<xsl:value-of select="@g:delim"/>
+      </xsl:if>
     </xsl:when>
     <xsl:when test="self::norm:s">
       <span x="6">
@@ -195,6 +200,18 @@
   </xsl:for-each>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
+  <xsl:if test="local-name(following::*[1])='d'">
+<!--    <xsl:message>Adjacent g:d with roles <xsl:value-of select="@g:role"/> and <xsl:value-of select="following::*[1]/@g:role"/></xsl:message>-->
+    <xsl:choose>
+      <xsl:when test="not(@g:role = following::*[1]/@g:role)">
+<!--	<xsl:message>emitting space</xsl:message>-->
+	<xsl:text>&#x202f;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$render-inter-det-char"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="g:r">
@@ -798,7 +815,8 @@
     </xsl:if>
  -->
     <xsl:choose>
-      <xsl:when test="self::g:d and following-sibling::*[1][self::g:d]">
+      <xsl:when test="./self::g:d and ./following-sibling::*[1][self::g:d]">
+	<xsl:message>Adjacent g:d with roles <xsl:value-of select="@g:role"/> and <xsl:value-of select="following-sibling::*[1]/@g:role"/></xsl:message>
 	<xsl:choose>
 	  <xsl:when test="not(self::g:d/@g:role = following-sibling::*[1]/@g:role)">
 	    <xsl:text> </xsl:text>

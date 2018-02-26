@@ -66,7 +66,7 @@
 <!--<xsl:include href="html-text.xsl"/>-->
 <!--<xsl:include href="escape-quotes.xsl"/>-->
 
-<xsl:output method="xml" indent="yes" encoding="utf-8" omit-xml-declaration="yes"/>
+<xsl:output method="xml" indent="no" encoding="utf-8" omit-xml-declaration="yes"/>
 <!--<xsl:strip-space elements="*"/>-->
 
 <!--
