@@ -137,3 +137,16 @@
          </g:gg>
        </g:surro>
      </g:w>
+
+013. %a GU{+qu-u}-u
+     GU{+qu-u}-u
+     <g:w form="GU{+qu-u}-u" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">GU</g:s>
+         <g:d g:pos="post" g:role="phonetic">
+           <g:v g:delim="-">qu</g:v>
+           <g:v g:delim="-">u</g:v>
+         </g:d>
+       </g:gg>
+       <g:v>u</g:v>
+     </g:w>

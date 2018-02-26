@@ -122,6 +122,28 @@ static int grapheme_id_index = 0;
 
 extern int use_unicode;
 
+static struct node *
+lastGrapheme(struct node *np)
+{
+  struct node *gp = np;
+  struct node *deepest = NULL;
+  while (1)
+    {
+      gp = lastChild(gp);
+      if (gp)
+	{
+	  const char *n = gp->names ? gp->names->pname : "";
+	  deepest = gp;
+	  if (strlen(n) == 3
+	      && strchr("npsv",n[2]))
+	    break;
+	}
+      else
+	break;
+    }
+  return deepest ? deepest : np;
+}
+
 static void
 ascii_check(const unsigned char *s)
 {
@@ -1142,7 +1164,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  if (tp->data)
 		    {
-		      struct node *hyphme = lastChild(atpt);
+		      struct node *hyphme = lastGrapheme(atpt)/*lastChild(atpt)*/;
 		      if (!hyphme)
 			hyphme = atpt;
 		      setAttr(hyphme,a_g_delim,tp->data);
@@ -1150,15 +1172,17 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else if (wp)
 		{
-		  struct node *hyphme = lastChild(wp);
+		  struct node *hyphme = lastGrapheme(wp)/*lastChild(wp)*/;
 		  if (!hyphme)
 		    hyphme = wp;
 		  setAttr(hyphme,a_g_delim,tp->data);
 		}
 	      else if (last_wp)
 		{
-
-		  setAttr(last_wp,a_g_delim,tp->data);
+		  struct node *hyphme = lastGrapheme(last_wp)/*lastChild(last_wp)*/;
+		  if (!hyphme)
+		    hyphme = last_wp;
+		  setAttr(hyphme,a_g_delim,tp->data);
 		  last_wp = NULL;
 		}
 	      else if (gdl_fragment_ok)
