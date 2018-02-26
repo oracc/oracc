@@ -819,12 +819,25 @@ setAttr(struct node *elem, enum a_type a, const unsigned char *value)
   if (!elem)
     return -1;
 
+#if 0
+  if (elem->attr.lastused
+      && !((struct attr*)(elem->attr.nodes[i]))->renpair[0])
+    {
+      fprintf(stderr,"repairing bad attr nodelist\n");
+      elem->attr.lastused = 0;
+    }
+#endif
+  
   if (elem->attr.lastused)
     {
       for (i = 0; i < elem->attr.lastused; ++i)
-	if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],
-		     anames[a].pname))
-	  break;
+	{
+	  if (NULL == ((struct attr*)(elem->attr.nodes[i]))->renpair[0])
+	    break;
+	  else if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],
+				anames[a].pname))
+	    break;
+	}
       if (i < elem->attr.lastused)
 	{
 	  elem->attr.nodes[i] = attr(a,value);
