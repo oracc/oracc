@@ -650,6 +650,22 @@ gnewnode()
 }
 
 struct node*
+removeFirstChild(struct node*elem)
+{
+  struct node *first = NULL;
+  int i;
+  if (!elem)
+    return NULL;
+  if (elem->children.lastused == 0)
+    return NULL;
+  first = elem->children.nodes[0];
+  for (i = 1; i <= elem->children.lastused; ++i)
+    elem->children.nodes[i-1] = elem->children.nodes[i];
+  elem->children.nodes[elem->children.lastused--] = NULL;  
+  return first;
+}
+
+struct node*
 removeLastChild(struct node*elem)
 {
   if (!elem)

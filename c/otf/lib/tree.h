@@ -64,6 +64,7 @@ struct attr *newattr(void);
 struct attr *gnewattr(void);
 struct node *newnode(void);
 struct node *gnewnode(void);
+struct node* removeFirstChild(struct node*elem);
 struct node*removeLastChild(struct node*elem);
 struct node *replaceChild(struct node *parent,int cindex,struct node *r);
 void serialize(struct node*n, int with_xcl);

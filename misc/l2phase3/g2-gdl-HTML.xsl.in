@@ -816,7 +816,7 @@
  -->
     <xsl:choose>
       <xsl:when test="./self::g:d and ./following-sibling::*[1][self::g:d]">
-	<xsl:message>Adjacent g:d with roles <xsl:value-of select="@g:role"/> and <xsl:value-of select="following-sibling::*[1]/@g:role"/></xsl:message>
+<!--	<xsl:message>Adjacent g:d with roles <xsl:value-of select="@g:role"/> and <xsl:value-of select="following-sibling::*[1]/@g:role"/></xsl:message>-->
 	<xsl:choose>
 	  <xsl:when test="not(self::g:d/@g:role = following-sibling::*[1]/@g:role)">
 	    <xsl:text> </xsl:text>

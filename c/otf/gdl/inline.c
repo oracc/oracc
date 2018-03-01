@@ -1546,6 +1546,13 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
 		  appendChild(np,removeLastChild(wp));
+		  if (lastChild(np)->etype == e_g_gg)
+		    {
+		      fprintf(stderr,"g_gg\n");
+		      struct node *l_f = firstChild(lastChild(np));
+		      if (l_f && l_f->etype == e_g_d)
+			appendChild(wp, removeFirstChild(lastChild(np)));
+		    }
 		  appendAttr(gg,attr(a_g_type,ucc("group")));
 		  surro_node = appendChild(wp,np);
 		  wp = appendChild(surro_node,gg);
@@ -1553,8 +1560,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		{
 		  appendChild(np,removeLastChild(parent));
+#if 0
 		  if (tokens[start-1]->type == detc)
 		    appendChild(np,removeLastChild(parent));
+#endif
 		  appendChild(parent,np);
 		  surro_node = parent = np;
 		}

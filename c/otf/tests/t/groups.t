@@ -118,20 +118,17 @@
      </g:w>
    </x:surro>
 
-012. %a {d}MIN<({d}nin-urta)>
+012. %a {d}MIN<(nin-urta)>
      {d}nin-urta
      <g:w form="{d}nin-urta" xml:lang="akk">
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>d</g:v>
+       </g:d>
        <g:surro>
          <g:gg g:type="logo">
-           <g:d g:pos="pre" g:role="semantic">
-             <g:v>d</g:v>
-           </g:d>
            <g:s g:logolang="sux" g:role="logo">MIN</g:s>
          </g:gg>
-         <g:gg g:type="group">
-           <g:d g:pos="pre" g:role="semantic" g:surroStart="1">
-             <g:v>d</g:v>
-           </g:d>
+         <g:gg g:surroStart="1" g:type="group">
            <g:v g:delim="-">nin</g:v>
            <g:v g:surroEnd="X000001.1.1.2">urta</g:v>
          </g:gg>
