@@ -36,7 +36,7 @@ EOF
 	    echo "$1 $l failed form test $f != $form"
 	fi
 	xsltproc testxml.xsl xml/$b/$t.xml|xmllint --c14n - >tst/$b/$t.xml
-	grep -qf tst/$b/$t.grp tst/$b/$t.xml || echo "$1 $l failed XML test"
+	grep -F -qf tst/$b/$t.grp tst/$b/$t.xml || echo "$1 $l failed XML test"
     fi
 done <$1
 

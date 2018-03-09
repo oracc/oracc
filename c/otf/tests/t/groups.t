@@ -140,10 +140,66 @@
      <g:w form="GU{+qu-u}-u" xml:lang="akk">
        <g:gg g:type="logo">
          <g:s g:logolang="sux" g:role="logo">GU</g:s>
-         <g:d g:pos="post" g:role="phonetic">
+         <g:d g:delim="-" g:pos="post" g:role="phonetic">
            <g:v g:delim="-">qu</g:v>
-           <g:v g:delim="-">u</g:v>
+           <g:v>u</g:v>
          </g:d>
        </g:gg>
        <g:v>u</g:v>
+     </g:w>
+
+014. %a {lu}DU{+u}-ME
+     {lu}DU{+u}-ME
+     <g:w form="{lu}DU{+u}-ME" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>lu</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">DU</g:s>
+         <g:d g:delim="-" g:pos="post" g:role="phonetic">
+           <g:v>u</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">ME</g:s>
+       </g:gg>
+     </g:w>
+
+015. %a {f}GEME{+ti}-DUMU
+     {f}GEME{+ti}-DUMU
+     <g:w form="{f}GEME{+ti}-DUMU" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>f</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">GEME</g:s>
+         <g:d g:delim="-" g:pos="post" g:role="phonetic">
+           <g:v>ti</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">DUMU</g:s>
+       </g:gg>
+     </g:w>
+
+016. %a [...]-na
+     x-na
+     <g:w form="x-na" xml:lang="akk">
+       <g:x g:break="missing" g:breakEnd="X000001.1.1.0" g:breakStart="1" g:c="]" g:delim="-" g:o="[" g:type="ellipsis">...</g:x>
+       <g:v>na</g:v>
+     </g:w>
+
+017. %a {lu}GIR.LA{+tu!(SAR)}-ME
+     {lu}GIR.LA{+tu}-ME
+     <g:w form="{lu}GIR.LA{+tu}-ME" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>lu</g:v>
+         </g:d>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">GIR</g:s>
+         <g:s g:logolang="sux" g:role="logo">LA</g:s>
+         <g:d g:delim="-" g:pos="post" g:role="phonetic">
+           <g:gg g:type="correction">
+             <g:v g:remarked="1">tu</g:v>
+             <g:s>SAR</g:s>
+           </g:gg>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">ME</g:s>
+       </g:gg>
      </g:w>

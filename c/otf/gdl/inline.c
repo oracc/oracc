@@ -28,6 +28,13 @@ extern char *new_note_id(int);
 int ods_cols = 0;
 int ods_mode = 0;
 
+static int grouped_det = 0; /* a bandaid to separate 
+			    KI.{d}NANNA 
+			  from 
+			    {ama:gan}
+		       */
+
+
 extern FILE*f_forms;
 extern int check_only;
 extern int need_lemm, do_show_insts;
@@ -135,7 +142,8 @@ lastGrapheme(struct node *np)
 	  const char *n = gp->names ? gp->names->pname : "";
 	  deepest = gp;
 	  if (strlen(n) == 3
-	      && strchr("npsv",n[2]))
+	      && (strchr("npsvx",n[2])
+		  || (!grouped_det && strchr("d",n[2]))))
 	    break;
 	}
       else
@@ -724,11 +732,6 @@ process_words(struct node *parent, int start, int end, int with_word_list)
   int long_logo = 0;
   int logo_word = 0;
   int pending_varo = 0, varo_tok = -1;
-  int grouped_det = 0; /* a bandaid to separate 
-			    KI.{d}NANNA 
-			  from 
-			    {ama:gan}
-		       */
   enum t_type group_flag = notoken;
   
   atpt = NULL;
@@ -1423,6 +1426,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      wp = wp->parent;
 		      grouped_det = 0;
+		      /* atpt = NULL; ??? */
 		    }
 		  else if (group_flag != notoken)
 		    {

@@ -36,16 +36,22 @@
 
 
 <xsl:template name="copy-attr">
-  <xsl:copy-of select="@xml:lang"/>
   <xsl:copy-of select="@form"/>
   <xsl:copy-of select="@type"/>
+  <xsl:copy-of select="@g:break"/>
+  <xsl:copy-of select="@g:breakStart"/>
+  <xsl:copy-of select="@g:breakEnd"/>
+  <xsl:copy-of select="@g:c"/>
   <xsl:copy-of select="@g:delim"/>
   <xsl:copy-of select="@g:logolang"/>
+  <xsl:copy-of select="@g:o"/>
   <xsl:copy-of select="@g:pos"/>
+  <xsl:copy-of select="@g:remarked"/>
   <xsl:copy-of select="@g:role"/>
   <xsl:copy-of select="@g:surroEnd"/>
   <xsl:copy-of select="@g:surroStart"/>
   <xsl:copy-of select="@g:type"/>
+  <xsl:copy-of select="@xml:lang"/>
 </xsl:template>
 
 </xsl:transform>
