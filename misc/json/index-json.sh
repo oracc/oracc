@@ -24,10 +24,14 @@ for a in 01bld/*/*.g2x ; do
 	echo Creating $lang index
 	cbd-json.plx ${project}:$lang >01bld/json/gloss-$lang.json
 	mangletab=02pub/cbd/$lang/mangle.tab
-	if [ -r $mangletab ]; then
-	    sort -u -o $mangle.tab $mangletab
-	    sedbg -p $project -i cbd/$lang | index-json.plx $project cbd/$lang \
-							    >01bld/json/index-$lang.json
+	dbi=02pub/cbd/$lang/cbd.dbi
+	if [ -r $dbi ]; then
+	    if [ -r $mangletab ]; then
+		sort -u -o $mangletab $mangletab
+		sedbg -p $project -i cbd/$lang \
+		    | index-json.plx $project cbd/$lang \
+				     >01bld/json/index-$lang.json
+	    fi
 	fi
     fi
 done

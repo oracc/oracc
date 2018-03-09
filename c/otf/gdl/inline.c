@@ -1091,13 +1091,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				}
 			      else
 				{
-#if 0 /* use existing atpt */
 				  if (lastc)
 				    {
 				      atpt = lastc;
 				      group_flag = atpt->ttype = tp->type;
 				    }
-#endif
 				}
 			    }
 			  else
