@@ -647,7 +647,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
       /*lemmatizer_mode = lem_global_only;*/
       /* lem_extended = 1; */
     }
-  else if (!xstrncmp(l,"hbtin",5))
+  else if (!xstrncmp(l,"hbtin",5) || !xstrncmp(l,"test",4))
     {
       saa_mode = 1;
     }

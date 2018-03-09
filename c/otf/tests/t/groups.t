@@ -50,8 +50,8 @@
            </g:d>
            <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
          </g:gg>
+         <g:s g:logolang="sux" g:role="logo">KAD</g:s>
        </g:gg>
-       <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:w>
      
 007. %a {m}{d}+EN.KAD
@@ -84,8 +84,8 @@
            </g:d>
            <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
          </g:gg>
+         <g:s g:logolang="sux" g:role="logo">KAD</g:s>
        </g:gg>
-       <g:s g:logolang="sux" g:role="logo">KAD</g:s>
      </g:w>
 
 009. %a {gis}TUKUL.{gis}TUKUL-su
@@ -213,3 +213,11 @@
          <g:s g:logolang="sux" g:role="logo">ME</g:s>
        </g:gg>
      </g:w>
+
+
+018. %a A--U
+     A-U
+     <g:gg g:type="logo">
+       <g:s g:delim="—" g:em="1" g:logolang="sux" g:role="logo">A</g:s>
+       <g:s g:logolang="sux" g:role="logo">U</g:s>
+     </g:gg>

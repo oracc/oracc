@@ -43,6 +43,7 @@
   <xsl:copy-of select="@g:breakEnd"/>
   <xsl:copy-of select="@g:c"/>
   <xsl:copy-of select="@g:delim"/>
+  <xsl:copy-of select="@g:em"/>
   <xsl:copy-of select="@g:logolang"/>
   <xsl:copy-of select="@g:o"/>
   <xsl:copy-of select="@g:pos"/>

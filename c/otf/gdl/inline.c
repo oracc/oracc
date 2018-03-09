@@ -1179,8 +1179,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      group_flag = notoken;
 	      /*group_node = NULL;*/
 	      atpt = NULL;
+#if 0
 	      if (((char*)tp->data)[1])
 		setAttr(lastChild(wp),a_g_em,ucc("1"));
+#endif
 	      break;
 	    case hyphen:
 	      if (atpt)
@@ -1191,6 +1193,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      if (!hyphme)
 			hyphme = atpt;
 		      setAttr(hyphme,a_g_delim,tp->data);
+		      if (((char*)tp->data)[1])
+			setAttr(hyphme,a_g_em,ucc("1"));
 		    }
 		}
 	      else if (wp)
@@ -1199,6 +1203,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  if (!hyphme)
 		    hyphme = wp;
 		  setAttr(hyphme,a_g_delim,tp->data);
+		  if (((char*)tp->data)[1])
+		    setAttr(hyphme,a_g_em,ucc("1"));
 		}
 	      else if (last_wp)
 		{
@@ -1206,6 +1212,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  if (!hyphme)
 		    hyphme = last_wp;
 		  setAttr(hyphme,a_g_delim,tp->data);
+		  if (((char*)tp->data)[1])
+		    setAttr(hyphme,a_g_em,ucc("1"));
 		  last_wp = NULL;
 		}
 	      else if (gdl_fragment_ok)
@@ -1216,6 +1224,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendAttr(np,attr(a_g_type,ucc("empty")));
 		  appendChild(wp ? wp : parent,np);
 		  setAttr(lastChild(wp),a_g_delim,tp->data);
+		  if (((char*)tp->data)[1])
+		    setAttr(lastChild(wp),a_g_em,ucc("1"));
 		}
 	      if (atpt)
 		{
@@ -1233,8 +1243,6 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      group_flag = notoken;
 		    }
 		}
-	      if (((char*)tp->data)[1])
-		setAttr(lastChild(wp),a_g_em,ucc("1"));
 	      break;
 	    case ilig:
 	    case colon:
