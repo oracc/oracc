@@ -28,57 +28,65 @@
 
 005. %a {d}+EN.KAD
      {d}+EN.KAD
-     <g:gg g:type="logo">
-       <g:gg g:type="ligature">
-         <g:d g:delim="+" g:pos="pre" g:role="semantic">
-           <g:v>d</g:v>
-         </g:d>
-	 <g:s g:delim="." g:logolang="sux" g:role="logo">EN</g:s>
+     <g:w form="{d}+EN.KAD" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:gg g:delim="." g:type="ligature">
+           <g:d g:delim="+" g:pos="pre" g:role="semantic">
+             <g:v>d</g:v>
+           </g:d>
+           <g:s g:logolang="sux" g:role="logo">EN</g:s>
+         </g:gg>
+         <g:s g:logolang="sux" g:role="logo">KAD</g:s>
        </g:gg>
-       <g:s g:logolang="sux" g:role="logo">KAD</g:s>
-     </g:gg>
+     </g:w>
 
 006. %a {d}+EN-KAD
      {d}+EN-KAD
-     <g:gg g:type="logo">
-       <g:gg g:type="ligature">
-         <g:d g:delim="+" g:pos="pre" g:role="semantic">
-           <g:v>d</g:v>
-         </g:d>
-	 <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
+     <g:w form="{d}+EN-KAD" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:gg g:type="ligature">
+           <g:d g:delim="+" g:pos="pre" g:role="semantic">
+             <g:v>d</g:v>
+           </g:d>
+           <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
+         </g:gg>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
-     </g:gg>
+     </g:w>
      
 007. %a {m}{d}+EN.KAD
      {m}{d}+EN.KAD
-     <g:d g:pos="pre" g:role="semantic">
-       <g:v>m</g:v>
-     </g:d>
-     <g:gg g:type="logo">
-       <g:gg g:type="ligature">
-         <g:d g:delim="+" g:role="semantic" g:pos="pre">
-           <g:v>d</g:v>
-         </g:d>
-         <g:s g:delim="." g:logolang="sux" g:role="logo">EN</g:s>
+     <g:w form="{m}{d}+EN.KAD" xml:lang="akk">
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>m</g:v>
+       </g:d>
+       <g:gg g:type="logo">
+         <g:gg g:delim="." g:type="ligature">
+           <g:d g:delim="+" g:pos="pre" g:role="semantic">
+             <g:v>d</g:v>
+           </g:d>
+           <g:s g:logolang="sux" g:role="logo">EN</g:s>
+         </g:gg>
+         <g:s g:logolang="sux" g:role="logo">KAD</g:s>
        </g:gg>
-       <g:s g:logolang="sux" g:role="logo">KAD</g:s>
-     </g:gg>
+     </g:w>
 	      
 008. %a {m}{d}+EN-KAD
      {m}{d}+EN-KAD
-     <g:d g:pos="pre" g:role="semantic">
-       <g:v>m</g:v>
-     </g:d>
-     <g:gg g:type="logo">
-       <g:gg g:type="ligature">
-         <g:d g:delim="+"" g:pos="pre" g:role="semantic">
-           <g:v>d</g:v>
-         </g:d>
-         <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
+     <g:w form="{m}{d}+EN-KAD" xml:lang="akk">
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>m</g:v>
+       </g:d>
+       <g:gg g:type="logo">
+         <g:gg g:type="ligature">
+           <g:d g:delim="+" g:pos="pre" g:role="semantic">
+             <g:v>d</g:v>
+           </g:d>
+           <g:s g:delim="-" g:logolang="sux" g:role="logo">EN</g:s>
+         </g:gg>
        </g:gg>
        <g:s g:logolang="sux" g:role="logo">KAD</g:s>
-     </g:gg>
+     </g:w>
 
 009. %a {gis}TUKUL.{gis}TUKUL-su
      {gis}TUKUL.{gis}TUKUL-su
@@ -99,8 +107,10 @@
    <g:gg g:type="ligature">
      <g:v g:delim="+">x</g:v>
      <g:v>x</g:v>
-     <g:d g:role="semantic" g:pos="post">
-       <g:s g:logolang="sux" g:role="logo">KI</g:s>
+     <g:d g:pos="post" g:role="semantic">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">KI</g:s>
+       </g:gg>
      </g:d>
    </g:gg>
 

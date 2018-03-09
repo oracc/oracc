@@ -33,6 +33,7 @@ static int grouped_det = 0; /* a bandaid to separate
 			  from 
 			    {ama:gan}
 		       */
+static int np_already_set = 0;
 
 
 extern FILE*f_forms;
@@ -306,7 +307,8 @@ atpt_no_logo(struct node *np)
 {
   while (np)
     {
-      if (!xstrcmp(getAttr(np, "g:type"), "logo"))
+      const char *a = getAttr(np, "g:type");
+      if (!xstrcmp(a, "logo"))
 	return 0;
       np = np->parent;
     }
@@ -1025,6 +1027,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      if (long_logo || (gt == g_s || gt == g_c))
 			{
 			  struct node *lastc = lastChild(wp);
+			  struct node *anc_gg = NULL;
 			  if (lastc == NULL && wp->etype != e_g_d)
 			    lastc = wp;
 			  appendAttr(target,attr(fixed_attr_n[lforce],fixed_attr_v[lforce]));
@@ -1040,29 +1043,41 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				++hacked_word_lang;
 			    }
 			  ++logo_word;
-			  atpt = atpt_ancestor_or_self_gg(atpt ? atpt : lastc);
-			  if (atpt)
+			  anc_gg = atpt_ancestor_or_self_gg(atpt ? atpt : lastc);
+			  if (anc_gg)
 			    {
-			      group_flag = atpt->ttype;
-			      if (atpt_no_logo(atpt))
+			      group_flag = anc_gg->ttype;
+			      if (atpt_no_logo(anc_gg))
 				{
-				  const char *atype = (const char *)getAttr(atpt,"g:type");
+				  const char *atype = (const char *)getAttr(anc_gg,"g:type");
 				  if (!xstrcmp(atype,"reordering")
 				      || !xstrcmp(atype,"ligature")
 				      || !xstrcmp(atype,"correction")
 				      )
 				    {
 				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
-				      struct node *atpt_parent = atpt->parent;
+				      struct node *atpt_parent = (atpt ? atpt->parent : lastc);
 				      setAttr(n,a_g_type,ucc("logo"));
 #if 1
+				      /* A logogram (np) is inside another grouper, like +:
+					 first finish the grouper, which is the current atpt;
+					 then detach the grouper from wp and  attach it to the new logo group;
+					 then attach the new logo group to wp;
+					 then set a flag that np has been attached already
+				      */
+				      if (grouped_det)
+					appendChild(wp, np);
+				      else
+					appendChild(atpt ? atpt : lastc, np);
 				      appendChild(n, removeLastChild(wp));
 				      appendChild(wp,n);
+				      np_already_set = 1;
 #else
 				      appendChild(n, removeLastChild(atpt->parent));
 				      appendChild(wp,n);
 #endif
 				      atpt = n;
+				      group_flag = period;
 			            }
 				  else
 				    {
@@ -1076,11 +1091,13 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				}
 			      else
 				{
+#if 0 /* use existing atpt */
 				  if (lastc)
 				    {
 				      atpt = lastc;
 				      group_flag = atpt->ttype = tp->type;
 				    }
+#endif
 				}
 			    }
 			  else
@@ -1116,16 +1133,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			lforce_flag = 0;
 		    }
 		}
-	      if (grouped_det && !strcmp(wp->names->pname,"g:d"))
-		appendChild(wp, np); /* we have reset wp to e_g_d node when grouped_det */
-	      else if (group_flag == notoken)
-		appendChild(atpt ? atpt : wp, np);
-	      else
+	      if (!np_already_set)
 		{
-		  if (!atpt)
-		    fprintf(stderr, "ox: internal error: attach point not set in group context\n");
-		  appendChild(atpt ? atpt : lastChild(wp), np);		  
+		  if (grouped_det && !strcmp(wp->names->pname,"g:d"))
+		    appendChild(wp, np); /* we have reset wp to e_g_d node when grouped_det */
+		  else if (group_flag == notoken)
+		    appendChild(atpt ? atpt : wp, np);
+		  else
+		    {
+		      if (!atpt)
+			fprintf(stderr, "ox: internal error: attach point not set in group context\n");
+		      appendChild(atpt ? atpt : lastChild(wp), np);		  
+		    }
 		}
+	      else
+		np_already_set = 0;
 	      prev_g = last_g = np;
 	      break;
 	    }

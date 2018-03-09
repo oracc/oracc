@@ -2076,7 +2076,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		for (i = 0; i < np->children.lastused; ++i)
 		  {
 		    const unsigned char *gdelim
-		      = getAttr(np, "g:delim");
+		      = getAttr(np->children.nodes[i], "g:delim");
+		    insertp = render_g(np->children.nodes[i], insertp, startp);
 #if 1
 		    if (*gdelim)
 		      *insertp++ = *gdelim;
@@ -2084,7 +2085,6 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    if (i)
 		      *insertp++ = '+';
 #endif
-		    insertp = render_g(np->children.nodes[i], insertp, startp);
 		  }
 	      }
 	    else
