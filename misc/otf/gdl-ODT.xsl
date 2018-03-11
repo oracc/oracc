@@ -159,9 +159,9 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-
- <xsl:if test="not(ancestor::g:q) and ancestor::g:d 
-	       and not(ancestor::g:d/@g:pos = 'post')">.</xsl:if> 
+  <xsl:value-of select="@g:delim"/>
+  <!--<xsl:if test="not(ancestor::g:q) and ancestor::g:d 
+	       and not(ancestor::g:d/@g:pos = 'post')">.</xsl:if>-->
 </xsl:template>
 
 <xsl:template match="g:d">
@@ -393,13 +393,18 @@
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
+	<xsl:value-of select="@g:delim"/>
+	<!--
 	<xsl:if test="not(position()=last())">
-	  <xsl:text>+</xsl:text>
+          <xsl:text>+</xsl:text>
         </xsl:if>
+	-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='group' or @g:type='logo'">
       <xsl:variable name="boundary">
+	<xsl:value-of select="@g:delim"/>
+<!--
 	<xsl:choose>
 	  <xsl:when test="g:s|g:c|g:n">
 	    <xsl:text>.</xsl:text>
@@ -407,7 +412,8 @@
 	  <xsl:otherwise>
 	    <xsl:text>-</xsl:text>
 	  </xsl:otherwise>
-	</xsl:choose>
+        </xsl:choose>
+ -->
       </xsl:variable>
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
@@ -646,6 +652,7 @@
 	<xsl:value-of select="@g:delim"/>
       </xsl:when>
       <xsl:when test="self::g:gg[@g:type='logo'] and following-sibling::*[1][self::g:x[@g:type='ellipsis']]">
+	<!-- this xsl:when seems arcane: just use g:delim here as well? -->
 	<xsl:text>.</xsl:text>
       </xsl:when>
       <xsl:otherwise>
