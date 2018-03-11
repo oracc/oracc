@@ -1209,7 +1209,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 	   */
 	  if (flag_info[type].b && *l == '(')
 	    {
-	      unsigned char *g = l+1;
+	      unsigned char *g = l+1, *saved_l = l;
+	      
 	      l = grapheme_parens(l,&g);
 	      if (g)
 		{
@@ -1219,7 +1220,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      unsigned char *following, *l2,*g2;
 		      enum t_type t;
 		      l2 = tokenize_grapheme(g,&g2,&following,&t);
-		      if (l2 && g2 && following)
+		      if (l2 && following && l2 == following)
+			{
+			  l[-1] = ')';
+			  l = saved_l;
+			  break;
+			}
+		      if (l2 && g2 && following && following != l2)
 			{
 			  unsigned char save = *following;
 			  struct token *gtokp;
