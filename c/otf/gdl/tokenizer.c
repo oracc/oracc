@@ -1220,13 +1220,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      unsigned char *following, *l2,*g2;
 		      enum t_type t;
 		      l2 = tokenize_grapheme(g,&g2,&following,&t);
-		      if (l2 && following && l2 == following)
+		      if (g2 && following && g2 == following)
 			{
 			  l[-1] = ')';
 			  l = saved_l;
 			  break;
 			}
-		      if (l2 && g2 && following && following != l2)
+		      if (l2 && g2 && following)
 			{
 			  unsigned char save = *following;
 			  struct token *gtokp;
