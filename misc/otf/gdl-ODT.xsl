@@ -136,7 +136,7 @@
 </xsl:template>
 
 <xsl:template match="g:s">
-  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>
+<!--  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if> -->
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">
@@ -174,6 +174,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:r">
@@ -210,6 +211,7 @@
       </text:span>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:b">
@@ -238,7 +240,8 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:text> </xsl:text>
+  <xsl:value-of select="@g:delim"/>
+<!--  <xsl:text> </xsl:text> -->
 </xsl:template>
 
 <xsl:template match="g:q">
@@ -263,6 +266,7 @@
   </xsl:choose>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:a">
@@ -289,7 +293,6 @@
 	<xsl:call-template name="render-n"/>
 	<xsl:apply-templates select="g:a|g:m"/>
 	<xsl:call-template name="render-flags"/>
-	<xsl:value-of select="@g:delim"/>
       </text:span>
     </xsl:when>
     <xsl:otherwise>
@@ -302,6 +305,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template name="render-n">
@@ -653,7 +657,7 @@
       </xsl:when>
       <xsl:when test="self::g:gg[@g:type='logo'] and following-sibling::*[1][self::g:x[@g:type='ellipsis']]">
 	<!-- this xsl:when seems arcane: just use g:delim here as well? -->
-	<xsl:text>.</xsl:text>
+	<!--<xsl:text>.</xsl:text>-->
       </xsl:when>
       <xsl:otherwise>
 	<!-- NEW DEFAULT: DO NOT OUTPUT ANYTHING WHEN @g:delim IS ABSENT -->
