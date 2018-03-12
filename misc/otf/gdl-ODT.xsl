@@ -110,7 +110,6 @@
 	  <xsl:text>-</xsl:text>
 	</xsl:if>
       </text:span>
-      <xsl:value-of select="@g:delim"/>
     </xsl:when>
     <xsl:otherwise>
       <text:span>
@@ -133,10 +132,11 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:s">
-<!--  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if> -->
+  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">
@@ -159,9 +159,15 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:value-of select="@g:delim"/>
-  <!--<xsl:if test="not(ancestor::g:q) and ancestor::g:d 
-	       and not(ancestor::g:d/@g:pos = 'post')">.</xsl:if>-->
+  <xsl:choose>
+    <xsl:when test="not(ancestor::g:q) and ancestor::g:d 
+  		   and not(ancestor::g:d/@g:pos = 'post')">
+      <xsl:text>.</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="deep-g-delim"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:d">
@@ -174,7 +180,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:value-of select="@g:delim"/>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:r">
@@ -211,7 +217,7 @@
       </text:span>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:value-of select="@g:delim"/>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:b">
@@ -240,8 +246,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:value-of select="@g:delim"/>
-<!--  <xsl:text> </xsl:text> -->
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:q">
@@ -266,7 +271,7 @@
   </xsl:choose>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
-  <xsl:value-of select="@g:delim"/>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:a">
@@ -305,7 +310,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:value-of select="@g:delim"/>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template name="render-n">
@@ -340,6 +345,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:g">
@@ -421,6 +427,7 @@
       </xsl:variable>
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
+	<!--
 	<xsl:choose>
 	  <xsl:when test="self::g:d[@g:pos='pre']
 			  or following-sibling::*[1][self::g:d[@g:pos='post']]"/>
@@ -436,7 +443,8 @@
 	      </xsl:choose>
 	    </xsl:if>
 	  </xsl:otherwise>
-	</xsl:choose>
+	  </xsl:choose>
+	  -->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='reordering'">
@@ -454,6 +462,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:surro">
@@ -647,24 +656,7 @@
 </xsl:template>
 
 <xsl:template name="maybe-hyphen">
-  <xsl:variable name="hyph">
-    <xsl:choose>
-      <xsl:when test="@g:em">
-	<xsl:text>—</xsl:text>
-      </xsl:when>
-      <xsl:when test="@g:delim">
-	<xsl:value-of select="@g:delim"/>
-      </xsl:when>
-      <xsl:when test="self::g:gg[@g:type='logo'] and following-sibling::*[1][self::g:x[@g:type='ellipsis']]">
-	<!-- this xsl:when seems arcane: just use g:delim here as well? -->
-	<!--<xsl:text>.</xsl:text>-->
-      </xsl:when>
-      <xsl:otherwise>
-	<!-- NEW DEFAULT: DO NOT OUTPUT ANYTHING WHEN @g:delim IS ABSENT -->
-<!--	<xsl:text>-</xsl:text> -->
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:variable name="hyph" select="@g:delim"/>
   <xsl:choose>
     <xsl:when test="self::g:d">
       <xsl:if test="@g:pos='post' and not(position()=last())">
@@ -693,9 +685,18 @@
 
 <!--FIXME: noteref can have more than one IDREF in it-->
 <xsl:template name="process-notes">
+  <!--
   <text:span text:style-name="sup">
     <xsl:value-of select="."/>
-  </text:span>
+    </text:span>
+  -->
+  <xsl:apply-templates mode="print" select="id(@note:ref)"/>
+</xsl:template>
+
+<xsl:template name="deep-g-delim">
+  <xsl:if test="not(parent::g:w)">
+    <xsl:value-of select="@g:delim"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="g:*">

@@ -25,17 +25,18 @@ ox -P$project -d$odtdir $driverpath | xmllint --xinclude - | xsltproc - \
     | xsltproc -stringparam package "$odtdir" ${ORACC}/lib/scripts/doc-split.xsl -
 cwd=`pwd`; cd $odtdir
 mkdir -p pictures ; odtpictures.plx >/dev/null
-if [ -r $ORACC/$project/00lib/project-odtTeX.xsl ]; then
-    odtTeX=$ORACC/$project/00lib/project-odtTeX.xsl
-elif [ -r ~/00lib/project-odtTeX.xsl ]; then
-    odtTeX=~/00lib/project-odtTeX.xsl
+projbase=`/bin/echo -n $project | sed 's#/.*$##'`
+if [ -r $ORACC_BUILDS/$project/00lib/project-odtTeX.xsl ]; then
+    odtTeX=$ORACC_BUILDS/$project/00lib/project-odtTeX.xsl
+elif [ -r $ORACC_BUILDS/$projbase/00lib/project-odtTeX.xsl ]; then
+    odtTeX=$ORACC_BUILDS/$projbase/00lib/project-odtTeX.xsl
 else
     odtTeX=$ORACC/lib/scripts/oracc-odtTeX.xsl
 fi
 echo otf2tex.sh: creating .tex output using $odtTeX
 xsltproc -xinclude $odtTeX content.xml >$driverbase.tex
 oracctex $driverbase 2>/dev/null
-pdfdir=$ORACC/$project/00any/pdf
+pdfdir=$ORACC_BUILDS/$project/00any/pdf
 mkdir -p $pdfdir
 mv $driverbase.pdf $pdfdir
 mv $driverbase.log $pdfdir

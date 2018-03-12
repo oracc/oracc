@@ -693,6 +693,7 @@
 <xsl:template match="xtf:note|xtf:m"/>
 
 <xsl:template mode="print" match="note:text">
+<!--<xsl:template match="note:text">-->
   <text:note text:id="{@xml:id}"
 	     text:note-class="footnote">
     <xsl:choose>
