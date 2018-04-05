@@ -1,7 +1,7 @@
 #ifndef _TREE_H
 #define _TREE_H
-#include <sys/unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "cdf.h"
 #include "xmlnames.h"
 #include "tokenizer.h"
@@ -12,7 +12,7 @@ struct xcl_context;
 struct nodelist
 {
   void**  nodes;
-  ssize_t lastnode;
+  size_t lastnode;
   ssize_t lastused;
 };
 

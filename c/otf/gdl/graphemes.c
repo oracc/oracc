@@ -1019,9 +1019,17 @@ graphemes_term()
   for (c = 0; c < o_top; ++c)
     {
       if (op_nodes[c].children.nodes)
-	free(op_nodes[c].children.nodes);
+	{
+	  free(op_nodes[c].children.nodes);
+	  op_nodes[c].children.nodes = NULL;
+	  op_nodes[c].children.lastused = 0;
+	}
       if (op_nodes[c].attr.nodes)
-	free(op_nodes[c].attr.nodes);
+	{
+	  free(op_nodes[c].attr.nodes);
+	  op_nodes[c].attr.nodes = NULL;
+	  op_nodes[c].attr.lastused = 0;
+	}
     }
 
   npool_term(graphemes_pool);
@@ -1164,15 +1172,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  buf[1] = '\0';
 	  last_g = np = gtextElem(e_g_o,NULL,lnum,GRAPHEME,buf);
 	  np->user = (void*)(uintptr_t)'x';
-	  /* it has to be wrong to put these attributes on a g:o node */	  
-#if 0
-	  if (in_square)
-	    appendAttr(np,brokenattr);
-	  if (in_presence)
-	    appendAttr(np,presence_attr_of(curr_presence));
-	  else
-	    appendAttr(np,okattr);
-#endif
+	  /* it has to be wrong to put these attributes on a g:o node */
 	  appendAttr(np,gattr(a_g_type,ucc("repeated")));
 	  g += 2;
 	  if (*g == 0x97)
@@ -1262,10 +1262,6 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		appendAttr(np,brokenattr);
 	      if (in_presence)
 		appendAttr(np,presence_attr_of(curr_presence));
-#if 0
-	      else
-		appendAttr(np,okattr);
-#endif
 	      *endp = save;
 	      g = endp;
 	    }
@@ -1306,12 +1302,6 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		      static struct mods modsbuf[MODS_MAX];
 		      int nmods = 0;
 		      unsigned char save;
-#if 0
-		      struct node *bp = gelem(gtags[g_b],NULL,lnum,GRAPHEME);
-		      bp->children = np->children;
-		      memset(&np->children,'\0',sizeof(struct nodelist));
-		      appendChild(np,bp);
-#endif
 		      save = *g;
 		      *g = '\0';
 		      appendChild(parent,np);

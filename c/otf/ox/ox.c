@@ -33,7 +33,7 @@ static void
 signals(int argc, char **argv)
 {
   int i, len;
-  for (i = 0; i < argc; ++i)
+  for (i = len = 0; i < argc; ++i)
     len += strlen(argv[i]);
   crashbuf = malloc(len + argc + 128);
   strcpy(crashbuf, "ox: emergency stop, program crash. Invoked as:\n\t");

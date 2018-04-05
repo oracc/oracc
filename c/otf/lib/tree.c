@@ -31,14 +31,12 @@ int pretty = 0;
 extern int no_pi;
 extern FILE *f_xml;
 
-#if 0
 static struct node empty_node = {
-  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0,
   { 0, 0, 0 },
   { 0, 0, 0 },
-  0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0
 };
-#endif
 
 static struct node *blocks[BLOCK_SIZE];
 static int block_lastused = -1;
@@ -76,6 +74,22 @@ static const char * xmlchars[256];
 
 static void serialize_kids(struct node*n);
 
+static void
+reset_attr_lastused(struct nodelist *a)
+{
+  /* This is a normal condition when tree.c/clear_blocks has
+     zeroed a_blocks; there's no easy way, then, of also zeroing
+     the lastused member of the node list.  So, we essentially
+     fault this--when we discover the first item in the nodelist
+     is NULL, we reset lastused and then continue */
+  int i;
+  for (i = 0; i < a->lastused; ++i)
+    if (NULL == ((struct attr*)(a->nodes[i]))->renpair[0])
+      {
+	a->lastused = 0;
+	break;
+      }
+}
 void
 tree_functions(void (*xcl_serialize_arg)(struct xcl_context *,FILE*,int))
 {
@@ -124,6 +138,8 @@ tree_validate(struct node *n)
   curr_line = n->lnum;
 
   n->attrp = malloc(((2*n->attr.lastused)+1)*sizeof(char*));
+  if (n->attr.lastused)
+    reset_attr_lastused(&n->attr);
   for (i = i_used = 0; i < n->attr.lastused; ++i)
     {
       if (strncmp(((struct attr*)(n->attr.nodes[i]))->renpair[0],"xmlns:",6))
@@ -161,7 +177,6 @@ tree_validate(struct node *n)
 void
 tree_init()
 {
-  /*memset(xmlchars,'\0',256*sizeof(const char *));*/
   int i;
   tree_pool = npool_init();
   xmlchars[0] = "";
@@ -312,9 +327,10 @@ attr(enum a_type a, const unsigned char *value)
 	}
     }
   *ap = abases[a];
+  assert(ap->renpair[0] != NULL);
   assert(ap->valpair[0] != NULL);
-  ap->valpair[1] = (char*)avp->iv;
   ap->renpair[1] = (char*)avp->xv;
+  ap->valpair[1] = (char*)avp->iv;
   return ap;
 }
 
@@ -390,12 +406,6 @@ clear_blocks()
   while (i <= block_lastused)
     {
       int j;
-#if 0
-      if (i < block_lastused)
-	jtop = BLOCK_SIZE;
-      else
-	jtop = topused;
-#endif
       for (j = 0; j < BLOCK_SIZE; ++j)
 	{
 	  if (!blocks[i][j].type)
@@ -403,14 +413,16 @@ clear_blocks()
 	  if (!blocks[i][j].clone)
 	    {
 	      if (blocks[i][j].children.nodes)
-		free(blocks[i][j].children.nodes);
+		{
+		  free(blocks[i][j].children.nodes);
+		  blocks[i][j].children.lastused = 0;
+		}
 	    }
 	  if (blocks[i][j].attr.nodes)
-	    free(blocks[i][j].attr.nodes);
-#if 0
-	  if (blocks[i][j].user > (void*)1)
-	    free(blocks[i][j].user);
-#endif
+	    {
+	      free(blocks[i][j].attr.nodes);
+	      blocks[i][j].attr.lastused = 0;
+	    }
 	}
       memset(blocks[i++],'\0',BLOCK_SIZE*sizeof(struct node));
     }
@@ -438,6 +450,8 @@ cloneNode(struct node*np)
       memset(&clone->attr,'\0',sizeof(struct nodelist));
       for (i = 0; i < np->attr.lastused; ++i)
 	appendAttr(clone,np->attr.nodes[i]);
+      /*nope: node lists work by length not by NULL termination */
+      /*clone->attr.nodes[clone->attr.lastused] = NULL;*/
     }
   return clone;
 }
@@ -465,6 +479,7 @@ gelem(enum e_type e, struct node *parent, int lnum, enum block_levels b)
   ep->parent = parent;
   ep->lnum = lnum;
   ep->level = b;
+  ep->attr.lastused = ep->children.lastused = 0;
   return ep;
 }
 
@@ -500,7 +515,10 @@ appendAttrCat(struct node *p, char sep, enum a_type atype, const char *aname, un
 unsigned const char *
 getAttr(struct node *elem, const char *attrName)
 {
-  int i;
+  int i = 0;
+
+  if (elem->attr.lastused)
+    reset_attr_lastused(&elem->attr);
   for (i = 0; i < elem->attr.lastused; ++i)
     {
       if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],attrName))
@@ -508,11 +526,16 @@ getAttr(struct node *elem, const char *attrName)
     }
   return (unsigned const char *)"";
 }
+
 /* return internal, non-xmlified form of attr */
 unsigned const char *
 getAttrI(struct node *elem, const char *attrName)
 {
-  int i;
+  int i = 0;
+
+  if (elem->attr.lastused)
+    reset_attr_lastused(&elem->attr);
+  
   for (i = 0; i < elem->attr.lastused; ++i)
     {
       if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],attrName))
@@ -524,7 +547,9 @@ getAttrI(struct node *elem, const char *attrName)
 void
 removeAttr(struct node *elem, const char *attrName)
 {
-  int i;
+  int i = 0;
+  if (elem->attr.lastused)
+    reset_attr_lastused(&elem->attr);
   for (i = 0; i < elem->attr.lastused; ++i)
     {
       if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],attrName))
@@ -625,7 +650,11 @@ newnode()
       lastnode = BLOCK_SIZE;
       lastused = 0;
     }
-  /*blocks[block_lastused][lastused] = empty_node;*/
+  else
+    {
+      /*memset(&gblocks[block_lastused][lastused], '\0', sizeof(struct node));*/
+    }
+  blocks[block_lastused][lastused] = empty_node;
   return &blocks[block_lastused][lastused++];
 }
 
@@ -646,6 +675,11 @@ gnewnode()
       glastnode = gBLOCK_SIZE;
       glastused = 0;
     }
+  else
+    {
+      /*memset(&gblocks[gblock_lastused][glastused], '\0', sizeof(struct node));*/
+    }
+  gblocks[gblock_lastused][glastused] = empty_node;
   return &gblocks[gblock_lastused][glastused++];
 }
 
@@ -831,36 +865,26 @@ serialize_kids(struct node*n)
 int
 setAttr(struct node *elem, enum a_type a, const unsigned char *value)
 {
-  int i;
+  int i = 0;
   if (!elem)
     return -1;
 
-#if 0
-  if (elem->attr.lastused
-      && !((struct attr*)(elem->attr.nodes[i]))->renpair[0])
-    {
-      fprintf(stderr,"repairing bad attr nodelist\n");
-      elem->attr.lastused = 0;
-    }
-#endif
-  
   if (elem->attr.lastused)
     {
+      reset_attr_lastused(&elem->attr);
       for (i = 0; i < elem->attr.lastused; ++i)
 	{
-	  if (NULL == ((struct attr*)(elem->attr.nodes[i]))->renpair[0])
-	    break;
-	  else if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],
-				anames[a].pname))
+	  if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],
+		       anames[a].pname))
 	    break;
 	}
-      if (i < elem->attr.lastused)
-	{
-	  elem->attr.nodes[i] = attr(a,value);
-	  return 1;
-	}
-      else
-	addToNodeList(&elem->attr,attr(a,value));
+    }
+  /* The attribute is already on the element; just overwrite its
+     value */
+  if (i < elem->attr.lastused)
+    {
+      elem->attr.nodes[i] = attr(a,value);
+      return 1;
     }
   else
     addToNodeList(&elem->attr,attr(a,value));
@@ -870,20 +894,20 @@ setAttr(struct node *elem, enum a_type a, const unsigned char *value)
 int
 gsetAttr(struct node *elem, enum a_type a, const unsigned char *value)
 {
-  int i;
+  int i = 0;
+
   if (elem->attr.lastused)
     {
+      reset_attr_lastused(&elem->attr);
       for (i = 0; i < elem->attr.lastused; ++i)
 	if (!xstrcmp(((struct attr*)(elem->attr.nodes[i]))->renpair[0],
 		     anames[a].pname))
 	  break;
-      if (i < elem->attr.lastused)
-	{
-	  elem->attr.nodes[i] = gattr(a,value);
-	  return 1;
-	}
-      else
-	addToNodeList(&elem->attr,gattr(a,value));
+    }
+  if (i < elem->attr.lastused)
+    {
+      elem->attr.nodes[i] = gattr(a,value);
+      return 1;
     }
   else
     addToNodeList(&elem->attr,gattr(a,value));
