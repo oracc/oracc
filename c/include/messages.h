@@ -30,7 +30,9 @@
 #define MSG_TYPE(bits)		BIT_ONLY(_msg_invoke_flag,(bits))
 
 #define progress	_msg_invoke_flag=MSG_PROGRESS,_message_kernel_nofile
+#undef message
 #define message		_msg_invoke_flag=MSG_MESSAGE,_message_kernel_nofile
+#define xmessage       	_msg_invoke_flag=MSG_MESSAGE,_message_kernel_nofile
 #define mwarning 	_msg_invoke_flag=MSG_WARNING,_message_kernel
 #define error   	_msg_invoke_flag=MSG_ERROR,_message_kernel
 #define usage_error   	_msg_invoke_flag=MSG_UERROR,_message_kernel

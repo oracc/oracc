@@ -48,7 +48,9 @@
 
 
 #ifdef STDC_HEADERS
+#undef message
 #include <stdlib.h>
+#define message xmessage
 #else
 void exit ();
 # ifdef HAVE_MALLOC_H

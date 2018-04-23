@@ -9,8 +9,8 @@
 #include <hash.h>
 #include <cdf.h>
 #include "npool.h"
-#include "warning.h"
 #include "tree.h"
+#include "warning.h"
 #include "atf.h"
 #include "sexify.h"
 #include "charsets.h"

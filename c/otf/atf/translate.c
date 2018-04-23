@@ -256,7 +256,7 @@ labeled_labels(struct node *p, unsigned char *lab)
     }
   if (*disp)
     {
-      unsigned char *end = disp, save;
+      unsigned char *end = disp, save = 0;
       while (end > lab && isspace(end[-1]))
 	--end;
       *end = '\0';
@@ -563,7 +563,8 @@ find_marker(unsigned char *s)
       const unsigned char *start = ++s;
       while (*s && '^' != *s && s - start < 7)
 	{
-	  mbuf[s-start] = *s++;
+	  int oset = s - start;
+	  mbuf[oset] = *s++;
 	}
       if (s - start == 7)
 	{
