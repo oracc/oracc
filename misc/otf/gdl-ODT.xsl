@@ -132,7 +132,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+<!--  <xsl:call-template name="deep-g-delim"/> -->
 </xsl:template>
 
 <xsl:template match="g:s">
