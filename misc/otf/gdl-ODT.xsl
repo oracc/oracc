@@ -132,7 +132,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-<!--  <xsl:call-template name="deep-g-delim"/> -->
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:s">
@@ -403,7 +403,7 @@
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:value-of select="@g:delim"/>
+<!--	<xsl:value-of select="@g:delim"/> -->
 	<!--
 	<xsl:if test="not(position()=last())">
           <xsl:text>+</xsl:text>
@@ -462,7 +462,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+<!--  <xsl:call-template name="deep-g-delim"/> -->
 </xsl:template>
 
 <xsl:template match="g:surro">
@@ -649,7 +649,10 @@
 	<xsl:value-of select="$render-inter-det-char"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:call-template name="maybe-hyphen"/>
+	<!--<xsl:call-template name="maybe-hyphen"/>-->
+	<xsl:if test="not(@g:delim='--')">
+	  <xsl:value-of select="@g:delim"/>
+	</xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
@@ -694,6 +697,10 @@
 </xsl:template>
 
 <xsl:template name="deep-g-delim">
+  <xsl:value-of select="@g:delim"/>
+</xsl:template>  
+
+<xsl:template name="real-deep-g-delim">
   <xsl:if test="not(parent::g:w)">
     <xsl:value-of select="@g:delim"/>
   </xsl:if>
