@@ -10,6 +10,19 @@
 #include <ctype128.h>
 
 const char *
+oracc_builds ()
+{
+  static char *cached_home = NULL;
+  if (NULL == cached_home)
+    {
+      cached_home = getenv ("ORACC_BUILDS");
+      if (NULL == cached_home)
+	cached_home = "@@ORACC_BUILDS@@";
+    }
+  return cached_home;
+}
+
+const char *
 oracc_home ()
 {
   static char *cached_home = NULL;
