@@ -1,4 +1,4 @@
-\newbox\stack \newbox\popped \newif\ifdidMaybeEject
+\newbox\stack \newbox\popped % \newif\ifdidMaybeEject
 \def\push#1{\global\setbox\stack=\vbox{#1\unvbox\stack}}
 \def\pop{\global\setbox\stack=\vbox{\unvbox\stack
          \global\setbox\popped=\lastbox}}
