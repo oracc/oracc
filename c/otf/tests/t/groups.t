@@ -278,3 +278,13 @@
          </g:w>
        </g:gloss>
      </g:w>
+
+023. %a E;.A
+     E.A
+     <g:w form="E.A" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">E</g:s>
+         <g:x g:delim="." g:type="newline"></g:x>
+         <g:s g:logolang="sux" g:role="logo">A</g:s>
+       </g:gg>
+     </g:w>

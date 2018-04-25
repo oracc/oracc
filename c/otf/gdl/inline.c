@@ -1761,7 +1761,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  in_hash = 0;
 			}
 		    }
-		  appendChild(wp ? wp : parent,np);
+		  if (atpt)
+		    appendChild(atpt,np);
+		  else
+		    appendChild(wp ? wp : parent,np);
 		}
 	      break;
 	    case ellipsis:
