@@ -307,7 +307,7 @@ atpt_no_logo(struct node *np)
 {
   while (np)
     {
-      const char *a = getAttr(np, "g:type");
+      const char *a = (const char *)getAttr(np, "g:type");
       if (!xstrcmp(a, "logo"))
 	return 0;
       np = np->parent;
@@ -1056,7 +1056,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      )
 				    {
 				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
-				      struct node *atpt_parent = (atpt ? atpt->parent : lastc);
+				      /* struct node *atpt_parent = (atpt ? atpt->parent : lastc); */
 				      setAttr(n,a_g_type,ucc("logo"));
 #if 1
 				      /* A logogram (np) is inside another grouper, like +:
@@ -1485,9 +1485,14 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		appendAttr(np,attr(a_g_pos,ucc("free"))); /* FIXME!!*/
 #endif
+	      if (atpt || group_flag)
+		{
+		  atpt = NULL;
+		  group_flag = notoken;
+		}
 	      if (wp)
 		{
-		  const char *pos = "pre";
+		  const char *pos = "post";
 		  int i;
 		  for (i = wp->children.lastused-1; i >= 0; --i)
 		    {
@@ -1495,11 +1500,13 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      const char *pname = cp->names->pname;
 		      if (*np->type == 'e' && !strcmp(pname, "g:d"))
 			break;
+#if 0
 		      else if (*np->type == 'e' && (!strcmp(pname, "g:x")))
 			{
 			  pos = "post";
 			  break;
 			}
+#endif
 		    }
 		  appendAttr(np,attr(a_g_pos,ucc(pos)));
 		  parent = appendChild(wp,np);

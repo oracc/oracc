@@ -252,3 +252,29 @@
        </g:d>
        <g:v>ma</g:v>
      </g:w>
+
+021. %a u{{u-a}}
+     u
+     <g:w form="u" xml:lang="akk">
+       <g:v>u</g:v>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="u-a" xml:lang="akk">
+           <g:v g:delim="-">u</g:v>
+           <g:v>a</g:v>
+         </g:w>
+       </g:gloss>
+     </g:w>
+
+022. %a U{{u-a}}
+     U
+     <g:w form="U" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">U</g:s>
+       </g:gg>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="u-a" xml:lang="akk">
+           <g:v g:delim="-">u</g:v>
+           <g:v>a</g:v>
+         </g:w>
+       </g:gloss>
+     </g:w>
