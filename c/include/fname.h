@@ -32,6 +32,7 @@ extern  char * new_path(char *fn, const char *fpath, Boolean force);
 extern  void slashes (char *fn);
 extern  char *fname_from_prog(char *fn);
 extern char * da_file (const char *base, const char *subdir, int subsub);
+extern const char *oracc_builds (void);
 extern const char *oracc_home (void);
 extern const char *oracc_project_home (void);
 extern const char *oracc_var (void);
