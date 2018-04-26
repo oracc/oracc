@@ -28,7 +28,7 @@ my $db_name = 'ogsl';
 
 my $letterfile = "@@ORACC@@/pub/ogsl/letters.tab";
 
-my $www = "@@ORACC@@/www";
+my $www = "@@ORACC_HOST@@/www";
 
 my %ext_pre = (
     'c'=>'',

@@ -28,7 +28,7 @@ my $db_name = 'ogsl';
 
 my $letterfile = "/home/oracc/pub/ogsl/letters.tab";
 
-my $www = "/home/oracc/www";
+my $www = "build-oracc.museum.upenn.edu/www";
 
 my %ext_pre = (
     'c'=>'',
@@ -133,7 +133,7 @@ if ($pr) {
 	my $pr1 = $pr;
 	$pr1 =~ s/\s.*$//;
 	my $letter = letter_of($pr1);
-	my $html = "http://oracc.MUSEUM.upenn.edu/$project/signlist/$letter/$pr1/index.html";
+	my $html = "http://build-oracc.museum.upenn.edu/$project/signlist/$letter/$pr1/index.html";
 	warn "slse-slave: caller=esp so returning $html\n";
 #	use CGI;
 #	my $q = new CGI;
@@ -381,7 +381,7 @@ esp_printhtml {
 	$p = '';
     }
     my $letter = letter_of($id);
-    my $html = "http://oracc.MUSEUM.upenn.edu/$project/signlist/$letter/$id/index.html";
+    my $html = "http://build-oracc.museum.upenn.edu/$project/signlist/$letter/$id/index.html";
     print "<p><a href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
 }
 
