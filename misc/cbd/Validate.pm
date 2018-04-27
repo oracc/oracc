@@ -319,26 +319,30 @@ sub v_bases {
 	    my $tmp = $b;
 	    pp_warn("malformed alt-base in `$b'")
 		if ($tmp =~ tr/()// % 2);
-	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
-	    if ($pri =~ s/>.*$//) {
-		push @{$data{'edit'}}, pp_line()-1;
-	    }
-	    if ($pri =~ /\s/ && !$is_compound) {
-		pp_warn("space in base `$pri'");
-		$pri = $alt = '';
-	    } else {
-		++$bases{$pri};
-		$bases{$pri,'*'} = $stem
-		    if $stem;
-	    }
-	    atf_add($pri) if $pri;
-	    foreach my $t (split(/,\s+/,$alt)) {
-		if ($t =~ /\s/ && !$is_compound) {
-		    pp_warn("space in alt-base `$t'");
+	    ($pri,$alt) = ($b =~ /^(.*?)\s+\((.*?)\)\s*$/);
+	    if ($pri) {
+		if ($pri =~ s/>.*$//) {
+		    push @{$data{'edit'}}, pp_line()-1;
+		}
+		if ($pri =~ /\s/ && !$is_compound) {
+		    pp_warn("space in base `$pri'");
 		    $pri = $alt = '';
 		} else {
-		    atf_add($t) if $t;
+		    ++$bases{$pri};
+		    $bases{$pri,'*'} = $stem
+			if $stem;
 		}
+		atf_add($pri) if $pri;
+		foreach my $t (split(/,\s+/,$alt)) {
+		    if ($t =~ /\s/ && !$is_compound) {
+			pp_warn("space in alt-base `$t'");
+			$pri = $alt = '';
+		    } else {
+			atf_add($t) if $t;
+		    }
+		}
+	    } else {
+		pp_warn("syntax error in base with (...) [missing paren?]");
 	    }
 	} else {
 	    if ($b =~ /\s/ && !$is_compound) {
@@ -593,6 +597,9 @@ sub v_bff {
 	    ref=>pp_line()-1,
 	};
     }
+}
+
+sub v_stems {
 }
 
 sub v_bib {

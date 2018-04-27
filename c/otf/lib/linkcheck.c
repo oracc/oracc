@@ -22,7 +22,7 @@ extern int check_links;
 extern int pnames;
 extern int sym_warning;
 
-static char *last_pname = NULL;
+static const char *last_pname = NULL;
 
 static const char *
 scan_pair(const char *line)
