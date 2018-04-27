@@ -28,6 +28,16 @@ cd ${ORACC_BUILDS}
 rm -f $tarball
 
 cd $project
+
+servesubs=`oraccopt . serve-subs`
+if [ "$servesubs" == "" ]; then
+    true
+else
+    for a in $servesubs ; do
+	serve-project.sh $project/$a
+    done
+fi
+
 subs=""
 shopt -s nullglob
 for a in [a-z][a-z0-9][a-z0-9][a-z0-9]*; do
