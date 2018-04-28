@@ -288,3 +288,13 @@
          <g:s g:logolang="sux" g:role="logo">A</g:s>
        </g:gg>
      </g:w>
+
+024. %a UD.x.KAM
+     UD.x.KAM
+     <g:w form="UD.x.KAM" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:delim="." g:logolang="sux" g:role="logo">UD</g:s>
+         <g:v g:delim=".">x</g:v>
+         <g:s g:logolang="sux" g:role="logo">KAM</g:s>
+       </g:gg>
+     </g:w>
