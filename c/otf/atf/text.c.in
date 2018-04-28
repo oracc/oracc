@@ -461,7 +461,7 @@ process_text(struct run_context *run, unsigned char **lines)
       else if (f_good)
 	fprintf(f_good,"%s\n",textid);
 
-      if (status && !check_only && !do_show_insts && !force)
+      if (status && !check_only && !do_show_insts && !force && !lem_dynalem)
 	{
 	  if (!no_destfile)
 	    destfile_pi();
