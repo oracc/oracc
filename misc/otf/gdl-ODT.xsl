@@ -40,6 +40,8 @@
   </xsl:call-template>
 </xsl:param>
 
+<xsl:variable name="dhyph" select="'--'"/>
+
 <xsl:key name="lnodes" match="xcl:l" use="@ref"/>
 <xsl:key name="xnodes" match="xcl:link" use="substring(@xl:href,2)"/>
 
@@ -132,7 +134,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
- <!--  <xsl:call-template name="deep-g-delim"/> -->
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template match="g:s">
@@ -310,7 +312,7 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-<!--  <xsl:call-template name="deep-g-delim"/> -->
+  <xsl:call-template name="deep-g-delim"/>
 </xsl:template>
 
 <xsl:template name="render-n">
@@ -650,10 +652,12 @@
       </xsl:when>
       <xsl:otherwise>
 	<!--<xsl:call-template name="maybe-hyphen"/>-->
-	<xsl:if test="not(@g:delim='--')">
+	<!--
+	<xsl:if test="not(@g:delim=$dyph)"> 
 	  <xsl:value-of select="@g:delim"/>
-	</xsl:if>
-      </xsl:otherwise>
+	  </xsl:if>
+	-->
+	</xsl:otherwise>	  
     </xsl:choose>
   </xsl:for-each>
 </xsl:template>

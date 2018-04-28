@@ -91,11 +91,17 @@
   \baselineskip12pt \relax}
 
 \newdimen\FLcoltwoindent \newbox\FLcalccoltwoindentbox
+\newdimen\FLlnumfuzz \FLlnumfuzz2.2pt
 \def\FLcalccoltwoindent#1{%
   \setbox\FLcalccoltwoindentbox=\hbox{#1}% \kern2pt
   \ifdim\wd\FLcalccoltwoindentbox>\FLcolwidthOne
-    \wlog{FLcalccoltwoindent #1 is too wide}%
-    \FLcoltwoindent=1.5em
+    \dimen0\wd\FLcalccoltwoindentbox \advance\dimen0-\FLcolwidthOne
+    \ifdim\dimen0 > \FLlnumfuzz
+      \message{FLcalccoltwoindent #1 is too wide (\the\wd\FLcalccoltwoindentbox > \the\FLcolwidthOne)}%
+      \FLcoltwoindent=5pt
+    \else
+      \FLcoltwoindent=0pt
+    \fi
   \else
     \FLcoltwoindent=0pt
   \fi

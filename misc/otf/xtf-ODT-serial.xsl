@@ -362,7 +362,7 @@
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:message>x/column-row-text <xsl:value-of select="@label"/> => <xsl:value-of select="$xlabel"/></xsl:message>
+    <!-- <xsl:message>x/column-row-text <xsl:value-of select="@label"/> => <xsl:value-of select="$xlabel"/></xsl:message>-->
     <xsl:value-of select="translate($xlabel,$faux-prime,$real-prime)"/>
   </text:p>
 </xsl:template>
