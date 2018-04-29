@@ -286,7 +286,7 @@ Unsigned32 _dbi_data_buf_len = 0;
 void
 dbi_find (Dbi_index *dp, const Uchar *key)
 {
-  Unsigned32 hashval, offset;
+  Unsigned32 hashval = 0, offset = 0;
 
   if (dp->h.ht_size)
     {
@@ -691,10 +691,15 @@ assign_bins (Unsigned32 dsize)
   Unsigned16 bin_id = 0;
   Int sofar = 0, len;
 
-  cutoff = 1024 * 1024;
   len = ftell (tmp_dp->_tmp_fp);
+
+  cutoff = 1024 * 1024;
+
   if (!len)
     fatal ();
+
+  while ((cutoff * 10) < len)
+    cutoff *= 2;
 
   bins_count = (Int) (len / cutoff + (len % cutoff != 0));
   
