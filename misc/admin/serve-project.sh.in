@@ -33,9 +33,16 @@ servesubs=`oraccopt . serve-subs`
 if [ "$servesubs" == "" ]; then
     true
 else
-    for a in $servesubs ; do
-	serve-project.sh $project/$a
-    done
+    if [ "$servesubs" == "#all" ]; then
+	allsubs=`list-subprojects.sh $project`
+	for a in $allsubs ; do
+	    serve-project.sh $a
+	done
+    else
+	for a in $servesubs ; do
+	    serve-project.sh $project/$a
+	done
+    fi
 fi
 
 subs=""
