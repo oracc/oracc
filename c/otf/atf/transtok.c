@@ -1,4 +1,4 @@
-/* C code produced by gperf version 3.0.1 */
+/* C code produced by gperf version 3.0.4 */
 /* Command-line: gperf -N transtok -tT transtok.g  */
 /* Computed positions: -k'1' */
 
@@ -32,6 +32,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 #line 1 "transtok.g"
 
 #include <string.h>
+#include <unistd.h>
 #include "translate.h"
 #include "xmlnames.h"
 
@@ -88,6 +89,9 @@ hash (str, len)
 
 #ifdef __GNUC__
 __inline
+#if defined __GNUC_STDC_INLINE__ || defined __GNUC_GNU_INLINE__
+__attribute__ ((__gnu_inline__))
+#endif
 #endif
 struct trans_token *
 transtok (str, len)
@@ -97,11 +101,11 @@ transtok (str, len)
   static struct trans_token wordlist[] =
     {
       {""}, {""}, {""}, {""}, {""}, {""}, {""},
-#line 15 "transtok.g"
+#line 16 "transtok.g"
       {"unitary",  etu_unitary  , e_enum_top},
-#line 13 "transtok.g"
-      {"parallel", etu_parallel , e_enum_top},
 #line 14 "transtok.g"
+      {"parallel", etu_parallel , e_enum_top},
+#line 15 "transtok.g"
       {"labeled",  etu_labeled  , e_enum_top}
     };
 

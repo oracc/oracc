@@ -1,5 +1,6 @@
 #include <ctype128.h>
 #include <string.h>
+#include <unistd.h>
 #include "tree.h"
 #include "warning.h"
 #include "atf.h"

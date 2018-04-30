@@ -2,7 +2,6 @@
 #define _TREE_H
 #include <stdio.h>
 #undef message
-#include <unistd.h>
 #define message xmessage
 #include "cdf.h"
 #include "xmlnames.h"

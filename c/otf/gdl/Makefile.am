@@ -6,7 +6,8 @@ SUFFIXES=.lst .g .c .o
 .lst.c:
 	gperf -N$* -I -7 -e: $< >$@
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
+#AM_CFLAGS=-ansi
+AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libgdl.la
 

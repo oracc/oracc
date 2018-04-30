@@ -1,5 +1,6 @@
 %{
 #include <string.h>
+#include <unistd.h>
 #include "translate.h"
 #include "xmlnames.h"
 %}
