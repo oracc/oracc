@@ -44,15 +44,14 @@ fi
 
 o2-xtfindex.plx
 
-if [ -r 01bld/lists/xtfindex.lst ]; then
+if [ -s 01bld/lists/xtfindex.lst ]; then
     sort -t: -k2 -o 01bld/lists/xtfindex.lst 01bld/lists/xtfindex.lst
     wmapper -i 01bld/lists/xtfindex.lst -p $project
     cat 01bld/lists/xtfindex.lst | bigrams -p $project
+    # linkbase
+    proj-linkbase.sh
+    xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
 fi
-
-# linkbase
-proj-linkbase.sh
-xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
 
 # scores
 rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
@@ -73,17 +72,18 @@ if [ -s 01bld/lists/lemindex.lst ]; then
     sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
 fi
 
-mkdir -p $dir/tra
-echo o2-xtf.sh: setrax ...
-cat 01bld/lists/xtfindex.lst | setrax -p $project
-sort -u -o 02pub/tra/mangle.tab 02pub/tra/mangle.tab
-
-mkdir -p $dir/txt
-echo o2-xtf.sh: setxtx ...
-cat 01bld/lists/xtfindex.lst | setxtx -p $project
-sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
-sort -u -o 01tmp/signmap.x 01tmp/signmap.log
-rm -f 01tmp/signmap.log
+if [ -s 01bld/lists/xtfindex.lst ]; then
+    mkdir -p $dir/tra
+    echo o2-xtf.sh: setrax ...
+    cat 01bld/lists/xtfindex.lst | setrax -p $project
+    sort -u -o 02pub/tra/mangle.tab 02pub/tra/mangle.tab
+    mkdir -p $dir/txt
+    echo o2-xtf.sh: setxtx ...
+    cat 01bld/lists/xtfindex.lst | setxtx -p $project
+    sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
+    sort -u -o 01tmp/signmap.x 01tmp/signmap.log
+    rm -f 01tmp/signmap.log
+fi
 
 # must do this for EST project search
 o2-xml.sh
@@ -95,6 +95,5 @@ if [ "$scope" = "full" ]; then
 	o2-tei.sh
     fi
 fi
-#Q004184.70.1 
 
 echo exiting o2-xtf.sh
