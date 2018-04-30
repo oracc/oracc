@@ -11,8 +11,10 @@ use ORACC::XMD::Pleiades;
 use ORACC::CBD::PPWarn;
 
 my @pleiades_data = ();
-
-my @geo_keys = qw/cfgwpos loctype cf alias id coord uid/;
+my %geonames = ();
+my %geonames_loaded = ();
+my @geo_keys = qw/cfgwpos cf alias id coord uid loctype/;
+my %geo_keys = (); @geo_keys{@geo_keys} = ();
 
 sub geonames {
     my($cbdgeo,$geos,@cbd) = @_;
@@ -56,15 +58,15 @@ sub get_tags {
     while ($cbd[$i] !~ /^\@end\s+entry/) {
 	if (/^\@([a-z0-9_]+)\s/) {
 	    my $t = $1;
-	    if (exists $geotags{$t}) {
+	    if (exists $geo_keys{$t}) {
 		my($v) = ($cbd[$i] =~ /\@(\S+)\s+(.*)\s*$/);
 		$t =~ s/^\@//;
-		$t{$t} = $v;
+		$tags{$t} = $v;
 		$cbd[$i] = "\000";
-	    } else if ($t eq 'prop') {
+	    } elsif ($t eq 'prop') {
 		my($k) = ($cbd[$i] =~ /\s(\S+)\s/);
 		if ($k && $k eq 'loctype') {
-		    $t{"prop/$k"} = $cbd[$i];
+		    $tags{"prop/$k"} = $cbd[$i];
 		    $cbd[$i] = "\000";
 		}
 	    }
@@ -127,7 +129,7 @@ sub geonames_augment {
 	if ($geonames{$$data{'cfgwpos'}}) {
 	    my %a = ();
 	    my @a = split(/\t/,$geonames{$$data{'cfgwpos'}});
-	    @a{@geo_keys) = @a;
+	    @a{@geo_keys} = @a;
 	    foreach my $k (@geo_keys) {
 		$$data{$k} = $a{$k} unless defined $$data{$k};
 	    }
@@ -178,6 +180,13 @@ sub pleiades_init {
 	    open(P,'>/tmp/pleiades.dump');
 	    print P Dumper($p); 
 	    close(P);
+	}
+    }
+    foreach $p (@pleiades_data) {
+	foreach my $pk (keys %$p) {
+	    my $pkn = $$p{$pk};
+	    $pkn =~ s/\t.*//;
+	    $geonames{$pkn} = $$p{$pk};
 	}
     }
 }

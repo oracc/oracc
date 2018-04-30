@@ -18,6 +18,7 @@ use Getopt::Long;
 # dry: no output files
 # edit: edit cbd via acd marks and write patch script
 # filter: read from STDIN, write CBD result to STDOUT
+# force: generate output CBD even if there are errors
 # reset: reset cached glo and edit anyway 
 # trace: print trace messages 
 # vfields: only validate named fields, plus some essential ones supplied automatically

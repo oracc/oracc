@@ -43,7 +43,7 @@
   \ifdim\footnoteSize>0pt
     \advance\calcedpagetotal\footnoteSize
     \advance\calcedpagetotal10pt
-    \wlog{adding \footnoteSize=\the\footnoteSize+10pt (\ht\footins=\the\ht\footins)}%
+%    \wlog{adding \footnoteSize=\the\footnoteSize+10pt (\ht\footins=\the\ht\footins)}%
   \fi
   \peek 
   \ifdim\ht\popped<\vsize
@@ -325,13 +325,13 @@
 \def\@foot{\footendstrut\parfillskip0pt plus1fill\par
   \penalty\interfootpenalty\vskip\interfootskip\egroup
   \global\advance\footnoteSize\ht\f@@tins
-  \message{\footnoteSize=\the\footnoteSize}
+%  \message{\footnoteSize=\the\footnoteSize}
   \insert\footins{\unvbox\f@@tins}\egroup}
 
 \newskip\figureskip \figureskip=0pt \relax
 \def\figure#1#2#3{\kern\baselineskip % compensate for XeTeX image handling
                   \parindent0pt \vskip\figureskip\relax
-                  \setbox0=\vbox{#3}\message{fig \the\figurecount: \ht=\the\ht0 \dp=\the\dp0}%
+                  \setbox0=\vbox{#3}%\message{fig \the\figurecount: \ht=\the\ht0 \dp=\the\dp0}%
                   \hbox to\fullhsize{\hss\box0\hss}%
                   \vskip10pt
                   \noindent Figure \the\figurecount. #2\endgraf
@@ -440,7 +440,7 @@
 \UBBrmten
 
 \showboxbreadth10000 \showboxdepth10000 
-\tracingoutput1
+\tracingoutput0
 
 %\makeother{#} \makeother{&}
 

@@ -75,6 +75,7 @@ struct token
   struct lang_context *lang;
   const char *altlang;
   const void *grapheme;
+  int lnum;
 };
 
 #define MEDIAL_OPEN  0x01 /* lug[al */

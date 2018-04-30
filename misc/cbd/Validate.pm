@@ -110,6 +110,7 @@ my $status = 0;
 #my %tag_lists = ();
 my %seen_entries = ();
 my $seen_bases = 0;
+my $seen_sense = 0;
 my %seen_forms = ();
 my $seen_morph2 = 0;
 my $trace = 0;
@@ -212,8 +213,9 @@ sub v_letter {
 sub v_entry {
     my($tag,$arg) = @_;
     if ($trace && exists $arg_vfields{'entry'}) {
-	pp_trace("v_entry: tag=$tag; arg=$arg\n");
+	pp_trace("v_entry: tag=$tag; arg=$arg");
     }
+    $seen_sense = 0;
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\*?\!?)$/);
     my ($cf,$gw,$pos) = ();
     if ($etag && $etag eq 'entry') {
@@ -272,7 +274,7 @@ sub v_entry {
 	    $cf = '' unless $cf;
 	    $gw = '' unless $gw;
 	    $pos = '' unless $pos;
-	    pp_trace "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst\n";
+	    pp_trace "entry: cf=$cf; gw=$gw; pos=$pos; pre=$pre, pst=$pst";
 	}
     } else {
 	pp_warn("bad format in \@entry '$tag'. (acd=$acd_rx)");
@@ -293,11 +295,11 @@ sub v_acd_ok {
 sub v_bases {
     my($tag,$arg) = @_;
     if ($trace && exists $arg_vfields{'bases'}) {
-	pp_trace "v_bases: tag=$tag; arg=$arg\n";
+	pp_trace "v_bases: tag=$tag; arg=$arg";
     }
     my @bits = split(/;\s+/, $arg);
     if ($trace && exists $arg_vfields{'bases'}) {
-	pp_trace "v_bases: \@bits=@bits\n";
+	pp_trace "v_bases: \@bits=@bits";
     }
 
     if ($seen_bases++) {
@@ -319,26 +321,30 @@ sub v_bases {
 	    my $tmp = $b;
 	    pp_warn("malformed alt-base in `$b'")
 		if ($tmp =~ tr/()// % 2);
-	    ($pri,$alt) = ($b =~ /^(\S+)\s+\((.*?)\)\s*$/);
-	    if ($pri =~ s/>.*$//) {
-		push @{$data{'edit'}}, pp_line()-1;
-	    }
-	    if ($pri =~ /\s/ && !$is_compound) {
-		pp_warn("space in base `$pri'");
-		$pri = $alt = '';
-	    } else {
-		++$bases{$pri};
-		$bases{$pri,'*'} = $stem
-		    if $stem;
-	    }
-	    atf_add($pri) if $pri;
-	    foreach my $t (split(/,\s+/,$alt)) {
-		if ($t =~ /\s/ && !$is_compound) {
-		    pp_warn("space in alt-base `$t'");
+	    ($pri,$alt) = ($b =~ /^(.*?)\s+\((.*?)\)\s*$/);
+	    if ($pri) {
+		if ($pri =~ s/>.*$//) {
+		    push @{$data{'edit'}}, pp_line()-1;
+		}
+		if ($pri =~ /\s/ && !$is_compound) {
+		    pp_warn("space in base `$pri'");
 		    $pri = $alt = '';
 		} else {
-		    atf_add($t) if $t;
+		    ++$bases{$pri};
+		    $bases{$pri,'*'} = $stem
+			if $stem;
 		}
+		atf_add($pri) if $pri;
+		foreach my $t (split(/,\s+/,$alt)) {
+		    if ($t =~ /\s/ && !$is_compound) {
+			pp_warn("space in alt-base `$t'");
+			$pri = $alt = '';
+		    } else {
+			atf_add($t) if $t;
+		    }
+		}
+	    } else {
+		pp_warn("syntax error in base with (...) [missing paren?]");
 	    }
 	} else {
 	    if ($b =~ /\s/ && !$is_compound) {
@@ -355,7 +361,7 @@ sub v_bases {
 	}
     }
     if ($trace && exists $arg_vfields{'bases'}) {
-	pp_trace "v_bases: dump of \%bases:\n";
+	pp_trace "v_bases: dump of \%bases:";
 	pp_trace Dumper \%bases;
     }
 }
@@ -366,7 +372,7 @@ sub v_form {
     $arg = '' unless $arg;
     
     if ($trace) {
-	pp_trace "v_form: tag=$tag; arg='$arg'; lang=$lang\n";
+	pp_trace "v_form: tag=$tag; arg='$arg'; lang=$lang";
     }
     
     unless ($arg) {
@@ -466,7 +472,7 @@ sub v_form {
 	if (($ndoll = ($tmp =~ tr/$/$/)) > 1 
 	    && !$is_compound) {
 	    my $nparen = ($tmp =~ s/\$\(//g);
-	    pp_trace "v_form COF: ndoll=$ndoll; nparen=$nparen\n";
+	    pp_trace "v_form COF: ndoll=$ndoll; nparen=$nparen";
 	    if ($ndoll - $nparen > 1) {
 		pp_warn("COFs must have only one NORM without parens (found more than 1)");
 	    } elsif ($ndoll == $nparen) {
@@ -491,6 +497,8 @@ sub v_sense {
 #	$sigs = $sigs{$sid};
 #    }
 
+    ++$seen_sense;
+    
     if ($arg =~ s/^\[(.*?)\]\s+//) {
 #	$sgw = $1;
     }
@@ -595,6 +603,9 @@ sub v_bff {
     }
 }
 
+sub v_stems {
+}
+
 sub v_bib {
     my($tag,$arg) = @_;
 }
@@ -647,6 +658,7 @@ sub v_end {
     my($tag,$arg) = @_;
     pp_warn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
+    pp_warn("no SENSE in \@entry") unless $seen_sense;
     $in_entry = $seen_bases = 0;
     %bases = ();
     %seen_forms = ();

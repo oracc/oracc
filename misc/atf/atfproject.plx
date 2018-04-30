@@ -69,13 +69,13 @@ projectify {
 	    if ($lines[$i+1] =~ /^\@(composite|score)/) {
 		print $lines[++$i];
 	    }
-	    if ($proj == -1) {
+	    if ($proj == -1 || $replace) {
 		print "#project: $project\n";
-		print "#atf: use legacy\n" if $legacy;
-		print "#atf: use unicode\n" if $unicode;
-	    } elsif ($replace) {
-		$lines[$proj] = "#project: $project\n";
+	    } else {
+		print $lines[$proj];
 	    }
+	    print "#atf: use legacy\n" if $legacy;
+	    print "#atf: use unicode\n" if $unicode;
 	} else {
 	    print $lines[$i] unless $lines[$i] =~ m/^#project/;
 	}

@@ -190,7 +190,8 @@
   </xsl:choose>
   <xsl:call-template name="render-c"/>
   <xsl:if test="not(ancestor::g:q) and ancestor::g:d 
-		and not(ancestor::g:d/@g:pos = 'post')">.</xsl:if> 
+		and not(ancestor::g:d/@g:pos = 'post')"
+	  ><xsl:value-of select="@g:delim"/></xsl:if> 
 </xsl:template>
 
 <xsl:template match="g:d">

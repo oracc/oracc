@@ -10,6 +10,12 @@
 #include <ctype128.h>
 
 const char *
+oracc_builds ()
+{
+  return "@@ORACC_BUILDS@@";
+}
+
+const char *
 oracc_home ()
 {
   static char *cached_home = NULL;

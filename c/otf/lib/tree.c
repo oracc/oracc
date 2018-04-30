@@ -12,18 +12,21 @@
 #include "list.h"
 #include "graphemes.h"
 
+extern int lnum;
+
 List *tree_mem_list = NULL;
 static struct npool *tree_pool;
 #define pool_copy(x) npool_copy((x),tree_pool)
 
 #define BLOCK_SIZE    2048
-#define gBLOCK_SIZE   2048
+#define gBLOCK_SIZE   4096
 #define A_BLOCK_SIZE 16384
 #define A_gBLOCK_SIZE 2048
 
 #define NL_BASE	   1024
 
 #undef TVDEBUG
+/* #define TVDEBUG 1 */
 
 static void (*xcl_serialize_p)(struct xcl_context *,FILE*,int) = NULL;
 
@@ -151,8 +154,8 @@ tree_validate(struct node *n)
 
 #ifdef TVDEBUG
   {
-    const char **tvp = n->attrp;
-    fprintf(stderr, "tv: selem: %s\n",n->names->qname);
+    const char **tvp = (const char **)n->attrp;
+    fprintf(stderr, "tv:%d: selem: %s\n",n->lnum,n->names->qname);
     while (tvp[0])
       {
 	fprintf(stderr,"\t%s=\"",*tvp++);
@@ -313,7 +316,7 @@ attr(enum a_type a, const unsigned char *value)
       static int last_avpair_used = AVPAIR_SIZE;
       if (last_avpair_used == AVPAIR_SIZE)
 	{
-	  avblock = malloc(AVPAIR_SIZE * sizeof(struct avpair));
+	  avblock = calloc(AVPAIR_SIZE,sizeof(struct avpair));
 	  list_add(tree_mem_list,avblock);
 	  last_avpair_used = 0;
 	}
@@ -447,6 +450,7 @@ cloneNode(struct node*np)
       clone = newnode();
       *clone = *np;
       clone->clone = 1;
+      clone->lnum = lnum;
       memset(&clone->attr,'\0',sizeof(struct nodelist));
       for (i = 0; i < np->attr.lastused; ++i)
 	appendAttr(clone,np->attr.nodes[i]);
@@ -655,6 +659,8 @@ newnode()
       /*memset(&gblocks[block_lastused][lastused], '\0', sizeof(struct node));*/
     }
   blocks[block_lastused][lastused] = empty_node;
+  (&blocks[block_lastused][lastused])->lnum = lnum;
+  (&blocks[block_lastused][lastused])->attr.lastused = 0;
   return &blocks[block_lastused][lastused++];
 }
 
@@ -680,6 +686,8 @@ gnewnode()
       /*memset(&gblocks[gblock_lastused][glastused], '\0', sizeof(struct node));*/
     }
   gblocks[gblock_lastused][glastused] = empty_node;
+  (&gblocks[gblock_lastused][glastused])->lnum = lnum;
+  (&gblocks[gblock_lastused][glastused])->attr.lastused = 0;
   return &gblocks[gblock_lastused][glastused++];
 }
 

@@ -946,7 +946,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    }
 		  /* suppress recognition of ':' and '/' as boundaries */
 		  if ((*g != ':' && *g != '/')
-		      && NULL != (tp = hash_lookup(g,&table)))
+		      && 0 /*NULL != (tp = hash_lookup(g,&table))*/)
 		    {
 		      if ((!tp->data && tp->type != wm_absent && !tp->data && tp->type != wm_linecont 
 			   && tp->type != wm_broken && tp->type != ilig)
@@ -1229,7 +1229,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      if (l2 && g2 && following)
 			{
 			  unsigned char save = *following;
-			  struct token *gtokp;
+			  struct token *gtokp = NULL;
 			  *following = '\0';
 			  gtokp = hash_lookup(g2,&table);
 			  if (!gtokp)
@@ -1248,6 +1248,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 			      }
 
 			  tp = clone_token(gtokp);
+			  tp->lnum = lnum;
 			  tp->class=meta;
 			  tp->type=g_corr;
 			  tokens[tokindex++] = tp;

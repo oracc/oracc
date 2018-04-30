@@ -221,3 +221,80 @@
        <g:s g:delim="—" g:em="1" g:logolang="sux" g:role="logo">A</g:s>
        <g:s g:logolang="sux" g:role="logo">U</g:s>
      </g:gg>
+
+019. %a {KUR}ELAM.MA{KI}-ma
+     {KUR}ELAM.MA{KI}-ma
+     <g:w form="{KUR}ELAM.MA{KI}-ma" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:gg g:type="logo">
+             <g:s g:logolang="sux" g:role="logo">KUR</g:s>
+           </g:gg>
+         </g:d>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">ELAM</g:s>
+         <g:s g:logolang="sux" g:role="logo">MA</g:s>
+         <g:d g:delim="-" g:pos="post" g:role="semantic">
+           <g:s g:logolang="sux" g:role="logo">KI</g:s>
+         </g:d>
+       </g:gg>
+       <g:v>ma</g:v>
+     </g:w>
+
+020. %a aš-šur{KI}-ma
+     aš-šur{KI}-ma
+     <g:w form="aš-šur{KI}-ma" xml:lang="akk">
+       <g:v g:delim="-">aš</g:v>
+       <g:v>šur</g:v>
+       <g:d g:delim="-" g:pos="post" g:role="semantic">
+         <g:gg g:type="logo">
+           <g:s g:logolang="sux" g:role="logo">KI</g:s>
+         </g:gg>
+       </g:d>
+       <g:v>ma</g:v>
+     </g:w>
+
+021. %a u{{u-a}}
+     u
+     <g:w form="u" xml:lang="akk">
+       <g:v>u</g:v>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="u-a" xml:lang="akk">
+           <g:v g:delim="-">u</g:v>
+           <g:v>a</g:v>
+         </g:w>
+       </g:gloss>
+     </g:w>
+
+022. %a U{{u-a}}
+     U
+     <g:w form="U" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">U</g:s>
+       </g:gg>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="u-a" xml:lang="akk">
+           <g:v g:delim="-">u</g:v>
+           <g:v>a</g:v>
+         </g:w>
+       </g:gloss>
+     </g:w>
+
+023. %a E;.A
+     E.A
+     <g:w form="E.A" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">E</g:s>
+         <g:x g:delim="." g:type="newline"></g:x>
+         <g:s g:logolang="sux" g:role="logo">A</g:s>
+       </g:gg>
+     </g:w>
+
+024. %a UD.x.KAM
+     UD.x.KAM
+     <g:w form="UD.x.KAM" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:delim="." g:logolang="sux" g:role="logo">UD</g:s>
+         <g:v g:delim=".">x</g:v>
+         <g:s g:logolang="sux" g:role="logo">KAM</g:s>
+       </g:gg>
+     </g:w>
