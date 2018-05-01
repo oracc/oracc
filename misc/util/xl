@@ -1,2 +1,2 @@
 #!/bin/sh
-xmllint --xinclude --noxincludenode -format $* | less
+xmllint --encode UTF-8 --xinclude --noxincludenode -format $* | less
