@@ -1553,6 +1553,8 @@ line_trans(unsigned char **lines, enum e_tu_types transtype)
   unsigned char *s = *lines;
   extern int start_lnum;
 
+  note_initialize_line();
+  
   curr_lang = text_lang;
   protocol_state = s_intra;
   start_lnum = lnum;
