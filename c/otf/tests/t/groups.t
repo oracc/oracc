@@ -298,3 +298,39 @@
          <g:s g:logolang="sux" g:role="logo">KAM</g:s>
        </g:gg>
      </g:w>
+
+025. %a {mul}AL.($ o $)LUL
+     {mul}AL.LUL
+     <g:w form="{mul}AL.LUL" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>mul</g:v>
+         </g:d>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">AL</g:s>
+         <g:x g:type="dollar"> o </g:x>
+         <g:s g:logolang="sux" g:role="logo">LUL</g:s>
+       </g:gg>
+     </g:w>
+
+026. %a {+MIN<(a)>}{{ku}}20
+     {+a}20
+     <g:w form="{+a}20" xml:lang="akk">
+       <g:d g:pos="pre" g:role="phonetic">
+         <g:surro>
+           <g:gg g:type="logo">
+             <g:s g:logolang="sux" g:role="logo">MIN</g:s>
+           </g:gg>
+           <g:gg g:surroStart="1" g:type="group">
+             <g:v g:surroEnd="X000001.1.1.1">a</g:v>
+           </g:gg>
+         </g:surro>
+       </g:d>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="ku" xml:lang="akk">
+           <g:v>ku</g:v>
+         </g:w>
+       </g:gloss>
+       <g:n form="20" sexified="2(u)">
+         <g:r>20</g:r>
+       </g:n>
+     </g:w>

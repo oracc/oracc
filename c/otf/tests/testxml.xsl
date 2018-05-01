@@ -49,9 +49,15 @@
   <xsl:copy-of select="@g:pos"/>
   <xsl:copy-of select="@g:remarked"/>
   <xsl:copy-of select="@g:role"/>
+  <xsl:if test="not(@g:status='ok')">
+    <xsl:copy-of select="@g:status"/>
+  </xsl:if>
+  <xsl:copy-of select="@g:statusEnd"/>
+  <xsl:copy-of select="@g:statusStart"/>
   <xsl:copy-of select="@g:surroEnd"/>
   <xsl:copy-of select="@g:surroStart"/>
   <xsl:copy-of select="@g:type"/>
+  <xsl:copy-of select="@sexified"/>
   <xsl:copy-of select="@xml:lang"/>
 </xsl:template>
 
