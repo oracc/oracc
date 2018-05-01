@@ -167,7 +167,7 @@ note_number_by_run(void)
 int
 note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 {
-  int nlines;
+  int nlines = 0;
   struct node *n;
   char tagbuf[8], *m = tagbuf;
   unsigned char *notelabel = NULL, *notetext = NULL;
@@ -217,8 +217,8 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 	  if (lastC)
 	    {
 	      struct node *xmark = NULL;
-	      enum e_type e;
-	      enum block_levels l;
+	      enum e_type e = 0;
+	      enum block_levels l = 0;
 	      switch (lastC->etype)
 		{
 		case e_l:
@@ -277,7 +277,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 	      if (e == e_g_nonw)
 		appendAttr(xmark, attr(a_type, (unsigned char *)"notelink"));
 	      appendChild(lastC, xmark);
-	      tag = "1";
+	      tag = (const unsigned char *)"1";
 	      mark = note_register_tag(tag, xmark);
 	    }
 	  else
