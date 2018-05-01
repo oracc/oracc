@@ -1895,8 +1895,13 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
   if (!xstrcmp(getAttr(np, "g:status"),"excised")
       || (!xstrcmp(np->names->pname, "g:x") && strcmp("ellipsis", (const char*)getAttr(np,"g:type"))))
     {
+      /* This is probably never right any more, because those '.' and '-' have 
+       * been put there by a g:delim attr which knows what it is doing 
+       */
+#if 0
       if (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
 	*--insertp = '\0';
+#endif
       return insertp;
     }
 
@@ -1974,13 +1979,17 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
       case 'g':
 	if (!xstrcmp(np->names->pname,"g:gloss"))
 	  {
+	    suppress_next_hyphen = 1;
+#if 0
 	    if (!xstrcmp(getAttr(np,"g:pos"),"post"))
 	      {
+		/* probably wrong w new g:delim based code */
 		if (insertp[-1] != '+')
 		  *--insertp = '\0'; /* unhyphenate */
 	      }
 	    else
 	      suppress_next_hyphen = 1;
+#endif
 	  }
 	else if (!xstrcmp(np->names->pname,"g:gg"))
 	  {
@@ -2056,7 +2065,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			  {
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
 			  }
-				      }
+		      }
 		    if (!xstrcmp(gtype, "group"))
 		      --suppress_hyphen_delay;
 		  }
@@ -2210,7 +2219,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
 		}
 	    }
-	    *insertp++ = '}';
+	    if (insertp[-1] == '{')
+	      *--insertp = '\0'; /* excised determinative */
+	    else
+	      *insertp++ = '}';
 	  }
 	break;
       case 'o':
