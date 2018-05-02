@@ -334,3 +334,34 @@
          <g:r>20</g:r>
        </g:n>
      </g:w>
+
+027. %a {m}aš+šur--EN
+     {m}aš+šur—EN
+     <g:w form="{m}aš+šur—EN" xml:lang="akk">
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>m</g:v>
+       </g:d>
+       <g:gg g:type="logo">
+         <g:gg g:type="ligature">
+           <g:v g:delim="+">aš</g:v>
+           <g:v g:delim="—" g:em="1">šur</g:v>
+         </g:gg>
+         <g:s g:logolang="sux" g:role="logo">EN</g:s>
+       </g:gg>
+     </g:w>
+
+028. %a {m}aš+šur--EN--GUB
+     {m}aš+šur—EN—GUB
+     <g:w form="{m}aš+šur—EN—GUB" xml:lang="akk">
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>m</g:v>
+       </g:d>
+       <g:gg g:type="logo">
+         <g:gg g:type="ligature">
+           <g:v g:delim="+">aš</g:v>
+           <g:v g:delim="—" g:em="1">šur</g:v>
+         </g:gg>
+         <g:s g:delim="—" g:em="1" g:logolang="sux" g:role="logo">EN</g:s>
+         <g:s g:logolang="sux" g:role="logo">GUB</g:s>
+       </g:gg>
+     </g:w>

@@ -1582,6 +1582,19 @@ qualified(register unsigned char *g)
   return gp;
 }
 
+static int
+last_is_em(const unsigned char *sp, const unsigned char *ip)
+{
+  int last_is_em = 0;
+  if (ip - sp > 3 && ip[-1] == 0x94)
+    {
+      if (ip[-2] == 0x80 && ip[-3] == 0xe2)
+	{
+	  last_is_em = 1;
+	  fprintf(stderr, "last_is_em = 1\n");
+	}
+    }
+}
 static struct grapheme *
 punct(register unsigned char *g)
 {
@@ -2036,18 +2049,15 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			      {
 				if (!suppress_next_hyphen || suppress_hyphen_delay)
 				  {
-				    if (insertp[-1] != '-' && insertp[-1] != '.')
-				      {
-					const unsigned char *gdelim
-					  = getAttr(np->children.nodes[i-1], "g:delim");
-					if (*gdelim)
-					  {
-					    if (gdelim[1])
-					      *insertp++ = '-';
-					    else
-					      *insertp++ = *gdelim++;
-					  }
-				      }
+				    const unsigned char *gdelim = getAttr(np->children.nodes[i-1], "g:delim");
+				    if (*gdelim)
+				      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
+					{
+					  if (gdelim[1])
+					    *insertp++ = '-';
+					  else
+					    *insertp++ = *gdelim++;					  
+					}
 				    if (!suppress_hyphen_delay)
 				      suppress_next_hyphen = 0;
 				  }
@@ -2080,7 +2090,11 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
 #if 1
 		    if (*gdelim)
-		      *insertp++ = *gdelim;
+		      {
+			const unsigned char *tmp = gdelim;
+			while (*tmp)
+			  *insertp++ = *tmp++;
+		      }
 #else
 		    if (i)
 		      *insertp++ = '+';
@@ -2097,9 +2111,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	      }
 	    if (*(cc(getAttr(np, "g:delim"))))
 	      {
-		const unsigned char *gdelim
-		  = getAttr(np, "g:delim");
-		if (insertp[-1] != '-' && insertp[-1] != '.')
+		const unsigned char *gdelim = getAttr(np, "g:delim");
+		if (*gdelim && !last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
 		  {
 		    if (gdelim[1])
 		      *insertp++ = '-';
@@ -2110,7 +2123,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    else if (lastChild(np))
 	      {
 		const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
-		if (*gdelim && insertp[-1] != '-' && insertp[-1] != '.')
+		if (*gdelim && !last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
 		  {
 		    if (gdelim[1])
 		      *insertp++ = '-'; /* only em-dash is more than one char */
@@ -2210,7 +2223,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		{
 		  if (i)
 		    {
-		      if (insertp[-1] != '-' && insertp[-1] != '.')
+		      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
 			*insertp++ = '-';
 		    }
 		  if (*((struct node*)(np->children.nodes[i]))->type == 't')
