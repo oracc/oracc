@@ -1591,7 +1591,7 @@ last_is_em(const unsigned char *sp, const unsigned char *ip)
       if (ip[-2] == 0x80 && ip[-3] == 0xe2)
 	{
 	  last_is_em = 1;
-	  fprintf(stderr, "last_is_em = 1\n");
+	  /*fprintf(stderr, "last_is_em = 1\n");*/
 	}
     }
   return last_is_em;
