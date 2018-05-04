@@ -18,7 +18,7 @@ my $dynamic = (`oraccopt . cbd-mode` eq 'dynamic');
 # this behaviour
 # $dynamic = 1 if $type eq 'superglo';
 
-warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
+#warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
 
 my %langs = ();
 my $lemm_only = 0;
@@ -34,6 +34,15 @@ GetOptions(
     );
 
 my @cand = ('01bld/from-glos.sig');
+
+# This allows a superglo to have a glossary that constrains the umbrella
+# children.  If there is no superglo glossary, from-glos.sig won't exist
+# and everything from umbrellas will come into top level glossary
+if (-r '01bld/from-glos.sig' && -s _) {
+    push @cand = ('01bld/from-glos.sig');
+} else {
+    $dynamic = 1;
+}
 
 unless ($lemm_only) {
     push @cand, '01bld/from-xtf-glo.sig', '01bld/from-prx-glo.sig';
