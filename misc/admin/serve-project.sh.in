@@ -30,6 +30,12 @@ rm -f $tarball
 cd $project
 
 o2-json.sh
+hyphproj=`/bin/echo -n $project | tr / -`
+if [ -r ${ORACC_BUILDS}/www/json/$hyphproj.zip ]; then
+    jsonzip="www/json/$hyphproj.zip
+else
+    jsonzip=""
+fi
 
 servesubs=`oraccopt . serve-subs`
 if [ "$servesubs" == "" ]; then
@@ -57,7 +63,7 @@ cd ${ORACC_BUILDS}
 tar --exclude 00any --exclude 00res --exclude estindex --exclude espdev \
     --exclude '*.dbi' --exclude '*.dbh' --exclude pqids.lst \
     $subs \
-    -zcf $tarball $project/00* {bld,pub,xml,www}/$project
+    -zcf $tarball $project/00* {bld,pub,xml,www}/$project $jsonzip
 
 chmod 0644 $tarball
 
