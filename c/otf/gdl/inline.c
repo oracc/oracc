@@ -319,18 +319,21 @@ void
 tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode, 
 		  int word_id_base, int with_word_list, unsigned char *line_id)
 {
-  struct lang_context *line_lang = NULL;
+  /*struct lang_context *line_lang = NULL;*/
 
   if (verbose > 1)
     fprintf(stderr, "%d\n", lnum);
 
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
+
+#if 0
   if (text_lang)
     line_lang = text_lang;
   else
     line_lang = global_lang;
-
+#endif
+  
   if (!use_unicode)
     ascii_check(line);
 
