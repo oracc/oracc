@@ -91,10 +91,10 @@ create_have_atf {
 	    }
 	}
 	open(A, '>01bld/lists/have-atf.lst');
-	print A join("\n",map { "$project:$_" } sort keys %have_atf;
+	print A join("\n",map { "$project:$_" } sort keys %have_atf), "\n";
 	close(A);
 	open(L, '>01bld/lists/have-lem.lst');
-	print L join("\n",map { "$project:$_" } sort keys %have_lem;
+	print L join("\n",map { "$project:$_" } sort keys %have_lem), "\n";
 	close(L);	
     } else {
 	open(L,">$have_atf");
