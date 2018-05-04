@@ -1094,7 +1094,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				}
 			      else
 				{
-				  if (lastc)
+				  if (!atpt && lastc)
 				    {
 				      atpt = lastc;
 				      group_flag = atpt->ttype = tp->type;

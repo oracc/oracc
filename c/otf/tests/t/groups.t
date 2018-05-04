@@ -365,3 +365,14 @@
          <g:s g:logolang="sux" g:role="logo">GUB</g:s>
        </g:gg>
      </g:w>
+
+029. %a I₃+GIŠ
+     I₃+GIŠ
+     <g:w form="I₃+GIŠ" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:gg g:type="ligature">
+           <g:s g:delim="+" g:logolang="sux" g:role="logo">I₃</g:s>
+	   <g:s g:logolang="sux" g:role="logo">GIŠ</g:s>
+         </g:gg>
+       </g:gg>
+     </g:w>

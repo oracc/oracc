@@ -1596,6 +1596,7 @@ last_is_em(const unsigned char *sp, const unsigned char *ip)
     }
   return last_is_em;
 }
+
 static struct grapheme *
 punct(register unsigned char *g)
 {
