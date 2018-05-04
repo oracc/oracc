@@ -39,7 +39,7 @@ my @cand = ('01bld/from-glos.sig');
 # children.  If there is no superglo glossary, from-glos.sig won't exist
 # and everything from umbrellas will come into top level glossary
 if (-r '01bld/from-glos.sig' && -s _) {
-    push @cand = ('01bld/from-glos.sig');
+    push @cand, ('01bld/from-glos.sig');
 } else {
     $dynamic = 1;
 }
