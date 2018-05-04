@@ -73,16 +73,41 @@ create_have_atf {
 	}
         close(A);
     }
-    open(L,">$have_atf");
-    if (scalar keys %have_atf) {
-	print L join("\n",map { "$project:$_" } sort keys %have_atf), "\n";
+    if (-r '00lib/umbrella.lst') {
+	my @u = `cat 00lib/umbrella.lst`;
+	chomp @u; @u = split(/\s+/, join(' ', @u));
+	%have_atf = ();
+	%have_lem = ();
+	foreach my $u (@u) {
+	    if (-r "$u/01bld/lists/have-atf.lst") {
+		my @a = `cat $u/01bld/lists/have-atf.lst`;
+		chomp(@a);
+		@have_atf{ @a } = ();
+	    }
+	    if (-r "$u/01bld/lists/have-lem.lst") {
+		my @a = `cat $u/01bld/lists/have-lem.lst`;
+		chomp(@a);
+		@have_lem{ @a } = ();
+	    }
+	}
+	open(A, '>01bld/lists/have-atf.lst');
+	print A sort keys %have_atf;
+	close(A);
+	open(L, '>01bld/lists/have-lem.lst');
+	print L sort keys %have_lem;
+	close(L);	
+    } else {
+	open(L,">$have_atf");
+	if (scalar keys %have_atf) {
+	    print L join("\n",map { "$project:$_" } sort keys %have_atf), "\n";
+	}
+	close(L);
+	open(L,">$listdir/have-lem.lst");
+	if (scalar keys %have_lem) {
+	    print L join("\n",map { "$project:$_" } sort keys %have_lem), "\n";
+	}
+	close(L);
     }
-    close(L);
-    open(L,">$listdir/have-lem.lst");
-    if (scalar keys %have_lem) {
-	print L join("\n",map { "$project:$_" } sort keys %have_lem), "\n";
-    }
-    close(L);
 }
 
 sub
