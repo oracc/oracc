@@ -29,6 +29,8 @@ rm -f $tarball
 
 cd $project
 
+o2-json.sh
+
 servesubs=`oraccopt . serve-subs`
 if [ "$servesubs" == "" ]; then
     true
