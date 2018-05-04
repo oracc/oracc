@@ -82,19 +82,19 @@ create_have_atf {
 	    if (-r "$u/01bld/lists/have-atf.lst") {
 		my @a = `cat $u/01bld/lists/have-atf.lst`;
 		chomp(@a);
-		@have_atf{ @a } = ();
+		@have_atf{ map { s/^.*?://; $_ } @a } = ();
 	    }
 	    if (-r "$u/01bld/lists/have-lem.lst") {
 		my @a = `cat $u/01bld/lists/have-lem.lst`;
 		chomp(@a);
-		@have_lem{ @a } = ();
+		@have_lem{ map { s/^.*?://; $_ } @a } = ();
 	    }
 	}
 	open(A, '>01bld/lists/have-atf.lst');
-	print A sort keys %have_atf;
+	print A join("\n",map { "$project:$_" } sort keys %have_atf;
 	close(A);
 	open(L, '>01bld/lists/have-lem.lst');
-	print L sort keys %have_lem;
+	print L join("\n",map { "$project:$_" } sort keys %have_lem;
 	close(L);	
     } else {
 	open(L,">$have_atf");
