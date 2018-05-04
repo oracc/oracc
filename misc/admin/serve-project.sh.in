@@ -32,7 +32,7 @@ cd $project
 o2-json.sh
 hyphproj=`/bin/echo -n $project | tr / -`
 if [ -r ${ORACC_BUILDS}/www/json/$hyphproj.zip ]; then
-    jsonzip="www/json/$hyphproj.zip
+    jsonzip="www/json/$hyphproj.zip"
 else
     jsonzip=""
 fi
