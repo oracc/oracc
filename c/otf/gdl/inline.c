@@ -319,7 +319,7 @@ void
 tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode, 
 		  int word_id_base, int with_word_list, unsigned char *line_id)
 {
-  struct lang_context *line_lang;
+  struct lang_context *line_lang = NULL;
 
   if (verbose > 1)
     fprintf(stderr, "%d\n", lnum);

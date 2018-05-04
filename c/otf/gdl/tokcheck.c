@@ -295,6 +295,7 @@ tokcheck_init()
 	  allow_token(t,glosso);
 	  allow_token(t,notemark);
 	  break;
+	case linebreak:
 	case newline:
 	  allow_group(t,g_boundary);
 	  allow_group(t,g_opener);

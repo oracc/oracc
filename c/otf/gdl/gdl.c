@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "tree.h"
+#include "note.h"
 #include "gdl.h"
 #include "cuneify.h"
 
