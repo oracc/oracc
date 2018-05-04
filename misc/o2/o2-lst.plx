@@ -82,19 +82,22 @@ create_have_atf {
 	    if (-r "$u/01bld/lists/have-atf.lst") {
 		my @a = `cat $u/01bld/lists/have-atf.lst`;
 		chomp(@a);
-		@have_atf{ map { s/^.*?://; $_ } @a } = ();
+		#		@have_atf{ map { s/^.*?://; $_ } @a } = ();
+		@have_atf{ @a } = ();
 	    }
 	    if (-r "$u/01bld/lists/have-lem.lst") {
 		my @a = `cat $u/01bld/lists/have-lem.lst`;
 		chomp(@a);
-		@have_lem{ map { s/^.*?://; $_ } @a } = ();
+		#		@have_lem{ map { s/^.*?://; $_ } @a } = ();
+		@have_lem{ @a } = ();
 	    }
 	}
 	open(A, '>01bld/lists/have-atf.lst');
-	print A join("\n",map { "$project:$_" } sort keys %have_atf), "\n";
+	print A join("\n", sort { &qcmp; } keys %have_atf), "\n";
 	close(A);
 	open(L, '>01bld/lists/have-lem.lst');
-	print L join("\n",map { "$project:$_" } sort keys %have_lem), "\n";
+	print L join("\n", sort { &qcmp; } sort keys %have_lem), "\n";
+#	print L join("\n",map { "$project:$_" } sort { &qcmp; } sort keys %have_lem), "\n";
 	close(L);	
     } else {
 	open(L,">$have_atf");
@@ -410,6 +413,14 @@ sub
 xsystem {
     warn "xsystem @_\n" if $verbose;
     system @_;
+}
+
+sub qcmp {
+    my $qa = $a;
+    my $qb = $b;
+    $qa =~ s/^.*?://;
+    $qb =~ s/^.*?://;
+    $qa cmp $qb;
 }
 
 1;
