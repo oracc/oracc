@@ -6,6 +6,7 @@ oracc-vhost.conf
 se.dbg
 xns
 xisdb
+user-full-back.sh
 serve-cron.sh
 serve-cron.plx
 serve-index.sh

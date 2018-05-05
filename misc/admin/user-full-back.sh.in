@@ -1,0 +1,10 @@
+#!/bin/sh
+mkdir -p /oraccbak
+user=$1
+if [ ! "$user" == "" ]; then
+    cd /home/$user
+    @@ORACC@@/bin/backup-list.plx -deep $user \
+	| tar -zcf /oraccbak/home-$user-full-`date +%Y-%m-%d`.tar.gz -T -
+else
+    echo "user-full-back.sh: must give project as argument. Stop."
+fi

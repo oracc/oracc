@@ -19,7 +19,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	osync-fixlinks.plx osync-all.sh orc list-subprojects.sh		\
 	osync-tar.sh osync-snc.sh osync-snc-all.sh osync-tar-dir.sh	\
 	osync-tar-get.sh build-all.sh build-umbrella.sh			\
-	list-all-subs.sh home-full-back.sh
+	list-all-subs.sh home-full-back.sh user-full-back.sh
 
 #data_DATA = usermode.xml
 #
@@ -79,6 +79,9 @@ sync-runtimes.plx: sync-runtimes.plx.in
 
 sync-update.sh: sync-update.sh.in
 	$(ORACCIFY) sync-update.sh.in
+
+user-full-back.sh: user-full-back.sh.in
+	$(ORACCIFY) user-full-back.sh.in
 
 wwwify.sh: wwwify.sh.in
 	$(ORACCIFY) wwwify.sh.in

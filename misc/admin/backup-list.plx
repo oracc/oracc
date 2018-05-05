@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 use File::Find;
-use File::chdir;
+#use File::chdir;
 
 my $deep = 0;
 if ($ARGV[0] eq '-deep') {
@@ -20,9 +20,9 @@ find(\&wanted, @dirs);
 if ($deep) {
     my @subs = `list-all-subs.sh`; chomp @subs;
     foreach my $s (@subs) {
-	local $CWD = $s;
-	$cdir = "$s/";
-	@dirs = grep !/00any/, <00*>;
+#	local $CWD = $s;
+#	$cdir = "$s/";
+	@dirs = grep !/00any/, eval "<$s/00*>";
 	find(\&wanted, @dirs);
     }
 }
