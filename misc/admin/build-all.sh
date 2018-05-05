@@ -12,10 +12,11 @@ else
 fi
 projbuild="00bin/${project}-build-all.sh"
 if [ -r $projbuild ]; then
+    echo "build-all.sh running $projbuild ..."
     $projbuild
 else
-    subs=`list-subprojects.sh $project`
     oracc update
+    subs=`list-all-subs.sh`
     for a in $subs ; do (cd $a ; oracc resources ; oracc build) ; done
     oracc resources
     oracc build clean
