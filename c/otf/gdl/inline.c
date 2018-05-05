@@ -1341,7 +1341,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      /*atpt = g;*//* need to figure out whether to set atpt in norm context */
 			    }
 			}
-		      group_flag = atpt->ttype = tp->type;
+		      group_flag = tp->type;
+		      if (atpt)
+			atpt->ttype = tp->type;
 		      /*group_flag = tp->type;*/
 		    }
 		}
