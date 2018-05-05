@@ -1321,6 +1321,7 @@ vid_pad {
 #
 sub
 dump_vid {
+    system 'mkdir', '-p', '01bld/cat';
     open(XMDMAP, ">01bld/cat/proxy-xmd.map");
     open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
     my @qvid = map { qualify_vid($_) } @vid;
