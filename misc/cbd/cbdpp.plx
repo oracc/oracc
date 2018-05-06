@@ -7,11 +7,14 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
+use ORACC::CBD::Forms;
 use ORACC::CBD::Geonames;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
 use Getopt::Long;
+
+%ORACC::CBD::bases = ();
 
 # bare: no need for a header
 # check: only do validation
@@ -71,11 +74,21 @@ $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 
 my @cbd = pp_load(\%args);
 
-if ($args{'lang'} =~ /sux|qpn/) {
-    @cbd = ORACC::CBD::SuxNorm::normify($args{'cbd'}, @cbd);
+pp_validate(\%args, @cbd);
+
+if ($ORACC::CBD::Forms::external) {
+    $ORACC::CBD::Forms::external = 0; # so v_form will validate
+    forms_validate();
+    if ($args{'lang'} =~ /sux|qpn/) {
+	forms_normify();
+    }
+    $ORACC::CBD::Forms::external = 1;
+} else {
+    if ($args{'lang'} =~ /sux|qpn/) {
+	@cbd = ORACC::CBD::SuxNorm::normify($args{'cbd'}, @cbd);
+    }
 }
 
-pp_validate(\%args, @cbd);
 
 if (pp_status() && !$args{'force'}) {
     pp_diagnostics(\%args);

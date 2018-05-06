@@ -14,6 +14,26 @@ function sortlemm {
 
 projtype=`oraccopt . type`
 
+g2=`oraccopt . g2`
+
+if [ "$g2" == "yes" ]; then
+    if [ -d "00src" ]; then
+	srcglo=`ls -1 00src/*.glo | grep -v '~' | grep glo`
+    else
+	srcglo=""
+    fi
+    for a in $srcglo ; do
+	cbdpp.plx $a
+    done
+    libglo=`ls -1 00src/*.glo | grep -v '~' | grep glo`
+    for a in $libglo ; do
+	globase=`basename $a`
+	if [ ! -r "00src/$globase" ]; then
+	    cbdpp.plx $a
+	fi
+    done
+fi
+
 # This may have been done already as part of the automatic
 # update that is part of o2-prepare.sh, but it checks to see if the
 # lem rebuild is necessary so there's not much extra work involved

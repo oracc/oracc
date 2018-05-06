@@ -48,7 +48,7 @@ sub normify {
 		$skipping = 1;
 	    }
 	    $in_entry = 1;
-	} if (/^\@sense\s+(\S+)\s*(.*?)$/) {
+	} elsif (/^\@sense\s+(\S+)\s*(.*?)$/) {
 	    my $sbase = "$cf\[$2\]$1";
 	    foreach my $f (@forms) {
 		register_norm($$f[0], $sbase, $$f[1]);

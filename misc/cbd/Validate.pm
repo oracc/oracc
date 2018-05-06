@@ -2,7 +2,7 @@ package ORACC::CBD::Validate;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_validate v_project v_lang/;
+@EXPORT = qw/pp_validate v_project v_lang v_form v_is_entry v_set_cfgw/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -99,6 +99,7 @@ my %arg_vfields = ();
 
 my %bases = ();
 my $bid = 0;
+my $curr_cfgw = '';
 my @global_cbd = ();
 my $in_entry = 0;
 my $init_acd = 0;
@@ -236,6 +237,7 @@ sub v_entry {
 	    pp_warn("max two \@entry fields allowed");
 	} else {
 	    ++$in_entry;
+	    $curr_cfgw = $arg;
 	    ($cf,$gw,$pos) = ($arg =~ /^([^\[]+)\s+(\[[^\]]+\])\s+(\S+)\s*$/);
 	    if (!$cf) {
 		if ($arg =~ /\[/ && $arg !~ /\s\[/) {
@@ -351,8 +353,8 @@ sub v_bases {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
-		++$bases{$b};
-		$bases{$b,'*'} = $stem
+		++$ORACC::CBD::bases{$b};
+		$bORACC::CBD::ases{$b,'*'} = $stem
 		    if $stem;
 		atf_add($b) if $b;
 		$pri = $b;
@@ -361,8 +363,8 @@ sub v_bases {
 	}
     }
     if ($trace && exists $arg_vfields{'bases'}) {
-	pp_trace "v_bases: dump of \%bases:";
-	pp_trace Dumper \%bases;
+	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
+	pp_trace Dumper \%ORACC::CBD::bases;
     }
 }
 
@@ -379,8 +381,14 @@ sub v_form {
 	pp_warn("empty \@form");
 	return;
     }
+
     if ($arg =~ /^[\%\$\#\@\+\/\*]/) {
-	pp_warn("\@form must begin with writing of form");
+	pp_warn("\@form must begin with writing of form (arg=$arg)");
+	return;
+    }
+
+    if ($ORACC::CBD::Forms::external) {
+	&ORACC::CBD::Forms::forms_register_inline(pp_file(), pp_line(), $curr_cfgw, $arg);
 	return;
     }
     
@@ -430,7 +438,7 @@ sub v_form {
 	my $b = $1;
 	if ($b) {
 	    pp_warn("unknown BASE $b")
-		unless $bases{$b};
+		unless $bases{$b} || ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
 	} else {
 	    pp_warn("no BASE entry in form")
 	}
@@ -659,6 +667,11 @@ sub v_end {
     pp_warn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
     pp_warn("no SENSE in \@entry") unless $seen_sense;
+    foreach my $b (keys %bases) {
+	++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
+	  unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+    }
+    $curr_cfgw = '';
     $in_entry = $seen_bases = 0;
     %bases = ();
     %seen_forms = ();
@@ -709,5 +722,12 @@ sub v_pl_coord {
     my($tag,$arg) = @_;
 }
 
+sub v_is_entry {
+    $seen_entries{$_[0]};
+}
+
+sub v_set_cfgw {
+    $curr_cfgw = $_[0];
+}
 
 1;

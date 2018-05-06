@@ -10,6 +10,7 @@ my @data = qw/usage collo sense/;
 
 %ORACC::CBD::Util::data = (); @ORACC::CBD::Util::data{@data} = ();
 
+use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Validate;
 
@@ -39,6 +40,7 @@ sub pp_load {
     if ($$args{'filter'}) {
 	@c = (<>); chomp @c;
     } else {
+	forms_load($args) if $$args{'cbd'} =~ m#^00src#;
 	open(C,$$args{'cbd'}) || die "cbdpp.plx: unable to open $$args{'cbd'}. Stop.\n";
 	@c = (<C>); chomp @c;
 	close(C);
