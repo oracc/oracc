@@ -6,6 +6,7 @@ my $cf;
 while (<>) {
     if (/^\@entry\s+(.*)\s*$/) {
 	$cf = $1;
+	$cf =~ s/\s*$//;
     } elsif (/^\@form/) {
 	print "$cf\t$_";
     }

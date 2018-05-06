@@ -64,11 +64,11 @@ while (<G>) {
 	}
     } elsif (/^\@sense/ && !$printed_forms) {
 	if ($#forms >= 0) {
-	    print join("\n", @forms), "\n";
+	    print join("\n", uniq(@forms)), "\n";
 	    ++$printed_forms;
 	}
     }
-    print;
+    print unless /^\@form/; # need to extract forms to 00src/forms, merge, and resplit
 }
 close(G);
 
@@ -100,6 +100,12 @@ load_forms {
 	
     }
     close(F);
+}
+
+sub uniq {
+    my %u = ();
+    @u{@_} = ();
+    sort keys %u;
 }
 
 1;
