@@ -18,11 +18,12 @@ my $forms_inline = '';
 my %seen = ();
 
 sub forms_normify {
+    
 }
 
 sub forms_register_inline {
     my($file,$line,$cfgw,$form) = @_;
-    warn "register_inline: @_\n";
+    pp_trace("register_inline: @_");
     pp_line($line);
     my($orthform) = ($form =~ m/^(\S+)/);
     if ($form =~ m#\s/(\S+)#) {
@@ -40,6 +41,7 @@ sub forms_register_inline {
 }
 
 sub forms_validate {
+    my $pp_file_on_entry = pp_file();
     foreach my $cfgw (keys %forms) {
 	if (v_is_entry($cfgw)) {
 	    my @f = @{$forms{$cfgw}};
@@ -60,6 +62,7 @@ sub forms_validate {
 	    }
 	}
     }
+    pp_file($pp_file_on_entry);
 }
 
 sub forms_load {
