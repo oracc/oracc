@@ -42,7 +42,7 @@ sub normify {
 	    my($xcf,$gw,$pos) = (/\s(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/);
 	    if ($xcf && $gw && $pos) {
 		$cf = $xcf;
-	    $base = "$xcf\[$gw\]$pos";
+		$base = "$xcf\[$gw\]$pos";
 	    } else {
 		pp_warn "(normify) bad \@entry";
 		$skipping = 1;

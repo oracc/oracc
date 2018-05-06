@@ -26,8 +26,24 @@ sub pp_cbd {
 	system 'mkdir', '-p', $ldir;
 	open(CBD, ">$ldir/$$args{'lang'}.glo") 
 	    || die "cbdpp.plx: can't write to $ldir/$$args{'lang'}.glo";
-	foreach (@c) {
-	    print CBD "$_\n" unless /^\000$/;
+	if ($ORACC::CBD::Forms::external) {
+	    my $cfgw = '';
+	    my $forms_printed = 0;
+	    foreach (@c) {
+		next if /^\000$/;
+		if (/\@entry.*?\s+(.*)$/) {
+		    $cfgw = $1;
+		    $forms_printed = 0;
+		} elsif (/\@sense/ && !$forms_printed) {
+		    forms_print($cfgw, \*CBD);
+		    ++$forms_printed;
+		}
+		print CBD "$_\n";
+	    }
+	} else {
+	    foreach (@c) {
+		print CBD "$_\n" unless /^\000$/;
+	    }
 	}
 	close(CBD);
     }

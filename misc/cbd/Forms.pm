@@ -3,7 +3,7 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_load forms_normify forms_validate/;
+@EXPORT = qw/forms_load forms_normify forms_print forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -18,7 +18,44 @@ my $forms_inline = '';
 my %seen = ();
 
 sub forms_normify {
-    
+    my $pp_file_on_entry = pp_file();
+    foreach my $cfgw (keys %forms) {
+	if (v_is_entry($cfgw)) {
+	    my @f = @{$forms{$cfgw}};
+	    my @nf = ();
+	    foreach my $f (@f) {
+		my($fi,$li,$pr,$fo) = @$f;
+		pp_file($fi);
+		pp_line($li);
+		my($m) = ($fo =~ m/\s\#(\S+)/);
+		my($b) = ($fo =~ m#\s/(\S+)#);
+		if ($m && $b) {
+		    my($c) = ($cfgw =~ /^(\S+)/);
+		    $m =~ s/~/$c/;
+		    $fo .= " \$$m";
+		    warn "new fo = $fo\n";
+		}
+		# we already warned about this error if relevant
+		# so just preserve the (bad) form		    
+		push @nf, [ $fi, $li, $pr, $fo ];
+	    }
+	    @{$forms{$cfgw}} = @nf;
+	}
+	# we already warned about this error condition in forms_validate
+    }
+    pp_file($pp_file_on_entry);
+}
+
+sub forms_print {
+    my ($cfgw,$fh) = @_;
+    if (defined $forms{$cfgw}) {
+	my @f = @{$forms{$cfgw}};
+	if ($#f >= 0) {
+	    foreach my $f (@f) {
+		print $fh "\@form\t$$f[3]\n";
+	    }
+	}
+    }
 }
 
 sub forms_register_inline {

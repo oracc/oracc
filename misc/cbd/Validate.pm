@@ -458,7 +458,13 @@ sub v_form {
     my $morph = '';
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
+    } elsif (($lang =~ /^sux/ 
+	      || ($lang =~ /^qpn/ && $flang =~ /^sux/))
+	     && !$is_compound
+	) {
+	pp_warn("no MORPH in form");
     }
+    
     if ($f =~ /\s\#\#(\S+)/) {
 	++$seen_morph2;
 	my $morph2 = $1;
