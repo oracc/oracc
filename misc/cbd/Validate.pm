@@ -112,7 +112,6 @@ my $status = 0;
 my %seen_entries = ();
 my $seen_bases = 0;
 my $seen_sense = 0;
-my %seen_forms = ();
 my $seen_morph2 = 0;
 my $trace = 0;
 my $vfields = '';
@@ -353,8 +352,8 @@ sub v_bases {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
-		++$ORACC::CBD::bases{$b};
-		$bORACC::CBD::ases{$b,'*'} = $stem
+		++$bases{$b};
+		$bases{$b,'*'} = $stem
 		    if $stem;
 		atf_add($b) if $b;
 		$pri = $b;
@@ -416,8 +415,8 @@ sub v_form {
     }
 
     my($fo) = ($f =~ /^(\S+)/);
-    if ($seen_forms{$fo,$flang}++) {
-	pp_warn("duplicate form: $fo");
+    if ($ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
+	pp_warn("duplicate form in `$curr_cfgw': $fo");
 	return;
     }
 
@@ -437,8 +436,11 @@ sub v_form {
 	$f =~ m#(?:^|\s)/(\S+)#;
 	my $b = $1;
 	if ($b) {
-	    pp_warn("unknown BASE $b")
-		unless $bases{$b} || ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	    unless ($bases{$b}) {
+		unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
+		    pp_warn("BASE $b not known for `$curr_cfgw'");
+		}
+	    }
 	} else {
 	    pp_warn("no BASE entry in form")
 	}
@@ -674,7 +676,6 @@ sub v_end {
     $curr_cfgw = '';
     $in_entry = $seen_bases = 0;
     %bases = ();
-    %seen_forms = ();
 }
 
 sub v_deprecated {
@@ -728,6 +729,8 @@ sub v_is_entry {
 
 sub v_set_cfgw {
     $curr_cfgw = $_[0];
+    my($cf) = ($curr_cfgw =~ /^(.*?)\s*\[/);
+    $is_compound = ($cf =~ /\s/);
 }
 
 1;

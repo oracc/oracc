@@ -15,6 +15,7 @@ use ORACC::CBD::Validate;
 use Getopt::Long;
 
 %ORACC::CBD::bases = ();
+%ORACC::CBD::forms = ();
 
 # bare: no need for a header
 # check: only do validation
@@ -75,6 +76,10 @@ $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 my @cbd = pp_load(\%args);
 
 pp_validate(\%args, @cbd);
+
+open(B,'>bases.dump');
+print B Dumper \%ORACC::CBD::bases;
+close(B);
 
 if ($ORACC::CBD::Forms::external) {
     $ORACC::CBD::Forms::external = 0; # so v_form will validate
