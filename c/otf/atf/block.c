@@ -914,9 +914,16 @@ $ start of reverse missing
 		      ++lnum;
 		      ++lines;
 		      if (!xstrncmp(*lines, "#lem:",5))
-			concat_continuations(lines);
-		      protocol(run, protocol_state, LINE, current, *lines);
-		      skip_blank();
+			{
+			  concat_continuations(lines);
+			  protocol(run, protocol_state, LINE, current, *lines);
+			  skip_blank();
+			}
+		      else
+			{
+			  --lnum;
+			  --lines;
+			}
 		    }
 		}
 	      appendChild(ocurrent,current);

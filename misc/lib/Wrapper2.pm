@@ -113,7 +113,7 @@ xslt {
 	    unless -f $f;
 	my $xf = load_xml($f);
 	my $vprefix = ($args{'to'} eq '-') ? '' : '*.';
-	print STDERR "$f => $vprefix$args{'to'} ... " if $verbose;
+	print STDERR "$f => $vprefix$args{'to'} ... \n" if $verbose;
 	my $txhdir = '';
 	my $txh = $f;
 	$txh =~ s/\.([^.]+)$/.txh/;

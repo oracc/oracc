@@ -18,6 +18,7 @@
   xmlns:xtr="http://oracc.org/ns/xtr/1.0"
   xmlns:gdl="http://oracc.org/ns/gdl/1.0"
   xmlns:norm="http://oracc.org/ns/norm/1.0"
+  xmlns:note="http://oracc.org/ns/note/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:exsl="http://exslt.org/common"
   xmlns:md="http://oracc.org/ns/xmd/1.0"
@@ -137,7 +138,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:transliteration|xtf:composite|xtf:score">
-<!--  <xsl:message>processing <xsl:value-of select="local-name()"/> on node match</xsl:message> -->
+ <xsl:message>processing <xsl:value-of select="local-name()"/> on node match</xsl:message>
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
@@ -155,7 +156,7 @@
 </xsl:template>
 
 <xsl:template name="call-back">
-<!--  <xsl:message>call-back activated with current node=<xsl:value-of select="local-name()"/></xsl:message> -->
+  <xsl:message>call-back activated with current node=<xsl:value-of select="local-name()"/></xsl:message>
   <h1 class="p3h2 heading border-top">
     <xsl:value-of select="@n"/>
   </h1>
@@ -175,6 +176,8 @@
       <xsl:apply-templates>
 	<xsl:with-param name="class" select="$class"/>
       </xsl:apply-templates>
+      <!-- don't gather notes here as they have to be gathered inside the div which wraps
+	   the score block table -->
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="render-top-level"/>      
@@ -183,7 +186,7 @@
 </xsl:template>
 
 <xsl:template name="render-top-level">
-<!--  <xsl:message>render-top-level processing <xsl:value-of select="local-name()"/></xsl:message> -->
+  <xsl:message>render-top-level processing <xsl:value-of select="local-name()"/></xsl:message>
   <div>
     <table class="{local-name(.)}">
       <xsl:call-template name="base-attr"/>
@@ -191,6 +194,11 @@
     </table>
     <xsl:message>#includes==<xsl:value-of select="count(xtf:include)"/>; self=<xsl:value-of select="local-name(.)"/></xsl:message>
     <xsl:apply-templates mode="print-include" select="xtf:include"/>
+    <div class="p3notes">
+      <xsl:for-each select=".//note:text">
+	<xsl:apply-templates mode="gathered" select="."/>
+      </xsl:for-each>
+    </div>
   </div>
 </xsl:template>
 
@@ -204,27 +212,20 @@
   <xsl:apply-templates select="*"/>
 </xsl:template>
 
-<!--
-<xsl:template match="xtf:score[not(@score-word='yes')]">
-  <xsl:variable name="pid" select="substring-after(/*/@xml:id,'s.')"/>
-  <score n="{@n}">
-    <xsl:for-each select=".//xtf:lg">
-      <table class="score-block">
-	<xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',@xml:id)"/></xsl:attribute>
-	<xsl:apply-templates/>
-      </table>
-    </xsl:for-each>
-  </score>
-</xsl:template>
--->
-
 <xsl:template match="xtf:lg">
   <xsl:param name="class"/>
   <div class="score_map">
+    <xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',@xml:id)"/></xsl:attribute>
     <table class="{$class} evenodd">
-      <xsl:attribute name="xml:id"><xsl:value-of select="concat('sb.',@xml:id)"/></xsl:attribute>
       <xsl:apply-templates/>
     </table>
+    <xsl:variable name="note-nodes" select=".//gdl:nonw[@type='notelink']"/>
+    <xsl:message>note-nodes count = <xsl:value-of select="count($note-nodes)"/></xsl:message>
+    <div class="p3notes">
+      <xsl:for-each select="$note-nodes">
+	<xsl:apply-templates mode="gathered" select="id(@note:ref)"/>
+      </xsl:for-each>
+    </div>
   </div>
 <!--  <hr class="score-block-sep"/> -->
 </xsl:template>
@@ -246,14 +247,6 @@
     </td>
   </tr>
 </xsl:template>
-
-<!--
-<xsl:template match="xtf:score">
-  <table class="score">
-    <xsl:apply-templates/>
-  </table>
-</xsl:template>
--->
 
 <xsl:template match="xtf:div">
   <xsl:if test="not(@type='segment') or not(@n='0')">
@@ -401,6 +394,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:object">
+  <xsl:param name="class"/>
   <xsl:if test="not(@type='tablet') or @n">
     <xsl:variable name="hclass">
       <xsl:choose>
@@ -452,17 +446,26 @@
       </td>
     </tr>
   </xsl:if>
-  <xsl:choose>
+  <xsl:apply-templates>
+    <xsl:with-param name="class" select="$class"/>
+  </xsl:apply-templates>
+
+  <!--
+      <xsl:choose>
     <xsl:when test="xtf:l|xtf:lg/xtf:l">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+	<xsl:with-param name="class" select="$class"/>
+      </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates/>
     </xsl:otherwise>
-  </xsl:choose>
+    </xsl:choose>
+    -->
 </xsl:template>
 
 <xsl:template match="xtf:surface[not(@implicit='1')]|xtf:sealing">
+  <xsl:param name="class"/>
   <xsl:if test="ancestor::xtf:object[@type='tablet' or @type='envelope'] 
 		or @face
 		or @surface
@@ -534,21 +537,32 @@
   -->
 	</h3>
   </xsl:if>
+  <xsl:apply-templates>
+    <xsl:with-param name="class" select="$class"/>
+  </xsl:apply-templates>
+<!--
   <xsl:choose>
     <xsl:when test="xtf:l|xtf:lg/xtf:l">
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+	<xsl:with-param name="class" select="$class"/>
+      </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates/>
     </xsl:otherwise>
-  </xsl:choose>
+    </xsl:choose>
+    -->
 </xsl:template>
 
 <xsl:template match="xtf:surface">
-  <xsl:apply-templates/>
+  <xsl:param name="class"/>
+  <xsl:apply-templates>
+    <xsl:with-param name="class" select="$class"/>
+  </xsl:apply-templates>
 </xsl:template>
 
 <xsl:template match="xtf:column">
+  <xsl:param name="class"/>
   <xsl:if test="not(@n = '0')">
     <tr class="h column">
       <xsl:copy-of select="@xml:id"/>
@@ -587,11 +601,14 @@
       </xsl:variable>
 <!--      <xsl:message>$maxcols = <xsl:value-of select="$maxcols"/></xsl:message> -->
       <xsl:apply-templates>
+	<xsl:with-param name="class" select="$class"/>
 	<xsl:with-param name="maxcols" select="$maxcols"/>
       </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+	<xsl:with-param name="class" select="$class"/>
+      </xsl:apply-templates>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1648,6 +1665,36 @@
     </xsl:if>
   </xsl:for-each>
   <xsl:text>} </xsl:text>
+</xsl:template>
+
+<xsl:template match="note:text"/>
+
+<xsl:template mode="gathered" match="note:text">
+  <p class="note" id="{@xml:id}">
+    <xsl:choose>
+      <xsl:when test="@note:mark">
+	<xsl:attribute name="mark">
+	  <xsl:choose>
+	    <xsl:when test="string-length(@note:auto)>0">
+	      <xsl:value-of select="@note:auto"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="@note:mark"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="@note:label">
+	<xsl:attribute name="mark">
+	  <xsl:value-of select="@note:label"/>
+	</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>mno</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates/>
+  </p>
 </xsl:template>
 
 <!--

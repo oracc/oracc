@@ -38,7 +38,7 @@ p=`oraccopt`
 if [[ $p == cdli* || $p == epsd2* ]]; then
     echo "USING LAZY HTML FOR PROJECT $p"
 else
-    xtfmanager.plx -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
+    xtfmanager.plx -proj $p -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
     [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
 fi
 

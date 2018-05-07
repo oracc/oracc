@@ -49,6 +49,7 @@
       </xsl:if>
       <link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
       <link rel="stylesheet" type="text/css" href="/css/p3colours.css" media="screen"/>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"><![CDATA[ ]]></script>
       <script src="/js/p3.js" type="text/javascript">
 	<xsl:text> </xsl:text>
       </script>
