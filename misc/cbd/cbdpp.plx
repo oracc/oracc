@@ -9,6 +9,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Geonames;
+use ORACC::CBD::Sigs;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
@@ -30,7 +31,7 @@ use Getopt::Long;
 my %args = ();
 GetOptions(
     \%args,
-    qw/bare check dry edit filter force lang:s project:s reset trace vfields:s/,
+    qw/bare check dry edit filter force lang:s project:s reset sigs trace vfields:s/,
     ) || die "unknown arg";
 
 $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -88,6 +89,7 @@ if ($ORACC::CBD::Forms::external) {
 	forms_normify();
     }
     $ORACC::CBD::Forms::external = 1;
+    forms_dump();
 } else {
     if ($args{'lang'} =~ /sux|qpn/) {
 	@cbd = ORACC::CBD::SuxNorm::normify($args{'cbd'}, @cbd);
@@ -105,7 +107,7 @@ if (pp_status() && !$args{'force'}) {
 	exit 1 if pp_status();
     }
 
-    unless ($args{'check'}) {
+    unless ($args{'check'} || $args{'sigs'}) {
 	foreach my $f (keys %ppfunc) {
 	    if ($#{$ORACC::CBD::Util::data{$f}} >= 0) {
 		pp_trace("cbdpp/calling ppfunc $f");
@@ -117,7 +119,7 @@ if (pp_status() && !$args{'force'}) {
 }
 
 pp_trace("cbdpp/writing cbd");
-pp_cbd(\%args,@cbd) unless $args{'check'};
+pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
 pp_trace("cbdpp/cbd write complete");
 
 sigs_simple(\%args,@cbd);

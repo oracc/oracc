@@ -3,7 +3,7 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_load forms_normify forms_print forms_validate/;
+@EXPORT = qw/forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -16,6 +16,22 @@ my %bases = ();
 my %forms = ();
 my $forms_inline = '';
 my %seen = ();
+
+sub forms_by_cfgw {
+    if ($_[0]) {
+	if (defined $forms{$_[0]}) {
+	    return @{$forms{$_[0]}};
+	}
+    }
+    return ();
+}
+
+sub forms_dump {
+    use Data::Dumper;
+    open(F,'>forms.dump');
+    print F Dumper \%forms;
+    close(F);
+}
 
 sub forms_normify {
     my $pp_file_on_entry = pp_file();
