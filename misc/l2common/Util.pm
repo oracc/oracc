@@ -325,7 +325,7 @@ parse_sig {
     # Remove empty continuations
     s/\+0\s*//;
 
-    if (s/^\/(.+?)([\+#\t]|$)/$2/) {
+    if (s/^\/(.+?)([#\t]|\+-|$)/$2/) {
 	my $b = $1;
 	$b =~ tr/\cA/+/;
 	$x{'base'} = "\%$baselang\:$b";

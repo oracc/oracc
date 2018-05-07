@@ -9,22 +9,34 @@ my $status = 1; # default to not needing update
 
 if ($g2 eq 'yes') {
     my $g2_verb = 1;
-    foreach my $g (<00lib/*.glo>) {
+    foreach my $g (<01tmp/*.glo>) {
 	my $glo_date = undef;
-	my $tmp = $g; $tmp =~ s/00lib/01tmp/;
+	my $lib = $g; $lib =~ s/01tmp/00lib/;
+	my $src = $g; $src =~ s/01tmp/00src/;
 	$glo_date = (stat($g))[9];
-	my $tmp_date = (stat($tmp))[9];
-	if (!defined($tmp_date) || $glo_date > $tmp_date) {
-	    warn "l2p1-needs-update.plx: updating $g > $tmp\n"
+	my $src_date = (stat($lib))[9];
+	my $gsrc = '';
+	unless (defined $src_date) {
+	    $src_date = (stat($lib))[9];
+	    if (!defined($src_date)) {
+		warn "l2p1-needs-update.plx: weird: no $lib or $src for $g\n";
+		continue;
+	    } else {
+		$gsrc = $lib;
+	    }
+	} else {
+	    $gsrc = $src;
+	}
+	if ($glo_date < $src_date) {
+	    warn "l2p1-needs-update.plx: updating $g older than $gsrc\n"
 		if $g2_verb;
 	    system 'cbdpp.plx', $g;
+	    $glo_date = (stat($g))[9];
 	    $status = 0;
 	    next;
 	} else {
-	    warn "l2p1-needs-update.plx: $tmp newer than $g\n"
+	    warn "l2p1-needs-update.plx: $g newer than $gsrc\n"
 		if $g2_verb;
-	    $g = $tmp;
-	    $glo_date = (stat($g))[9];
 	}
 	if (!-z $g
 	    && (!defined($sig_date) || $glo_date > $sig_date)) {
