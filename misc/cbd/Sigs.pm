@@ -28,6 +28,8 @@ my @instsigs = ();
 my $out = '';
 my $lang = '';
 my $project = `oraccopt`;
+my @sigs_simple = ();
+my $sigs_simple_file = '';
 my %sig = ();
 my @cof_template_heads = ();
 my @cof_template_tails = ();
@@ -338,16 +340,84 @@ sub sigs_form {
 	}
 	
     }
+    
 }
 
 sub sigs_simple_dump {
     mkdir -p "01bld/$lang";
-    open(SIMPLE, ">01bld/$lang/simple.sig");
-    print SIMPLE "\@fields sig rank\n", sort (keys %printsigs, keys %noprintsigs);
+    @sigs_simple = sort (keys %printsigs, keys %noprintsigs);
+    $sigs_simple_file = "01bld/$lang/simple.sig";
+    open(SIMPLE, ">$sigs_simple_file");
+    print SIMPLE "\@fields sig rank\n", @sigs_simple;
     close(SIMPLE);
     open(CORESIGS, ">01bld/$lang/coresigs.txt");
     print CORESIGS join("\n", sort keys %coresigs), "\n";
     close(CORESIGS);
 }
+
+######################################################################
+
+sub sigs_cofs {
+    my %cofs = ();
+    my i = 0;
+    open(C,">01bld/$lang/cofs.sig");
+    foreach my $c (@sigs_simple) {
+	++$i;
+	if (/\!0x/) {
+	    chomp;
+	    #	s/\t.*$//; # not sure what this was doing but it makes COF with RANK fail
+	    # so move instead to not anchoring the following regex with $, this means it can
+	    # have fields beyond rank without breaking anything (don't think this can happen
+	    # though)
+	    my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)/);
+	    if ($pre) {
+		my $index = $nth - 1;
+		my $v = '';
+		my ($lang) = ($pre =~ /\%(.*?)$/);
+		if ($index) {
+		    $v = "$pre:=$sig";
+		} else {
+		    $v = "$pre:$key=$sig";
+		}
+		push @{${$cofs{"$lang\:$key"}}[$index]}, $v;
+	    } else {
+		pp_file($sigs_simple_file);
+		pp_line($i);
+		pp_warn "(cof) syntax error: $_";
+	    }
+	}
+    }
+    foreach my $c (keys %cofs) {
+	my @parts = @{$cofs{$c}};
+	permute(@parts);
+    }
+    close(C);
+}
+
+# an array of arrays; the first contains the heads, the remainder
+# tails.  We join the first two lists, then call recursively to 
+# join additional ones.
+sub
+permute {
+    my @parts = @_;
+    my @newheads = ();
+    foreach my $h (@{$parts[0]}) {
+	foreach my $t (@{$parts[1]}) {
+	    push @newheads, "$h\&\&$t";
+	}
+    }
+    shift @parts; shift @parts;
+    if ($#parts >= 0) {
+	permute( [@newheads] , @parts);
+    } else {
+	foreach (@newheads) {
+	    print C "$_\t0\n";
+	}
+    }
+}
+
+######################################################################
+
+
 
 1;
