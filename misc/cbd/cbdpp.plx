@@ -94,7 +94,6 @@ if ($ORACC::CBD::Forms::external) {
     }
 }
 
-
 if (pp_status() && !$args{'force'}) {
     pp_diagnostics(\%args);
     die("cbdpp.plx: errors in glossary $args{'cbd'}. Stop.\n");
@@ -120,6 +119,8 @@ if (pp_status() && !$args{'force'}) {
 pp_trace("cbdpp/writing cbd");
 pp_cbd(\%args,@cbd) unless $args{'check'};
 pp_trace("cbdpp/cbd write complete");
+
+sigs_simple(\%args,@cbd);
 
 pp_diagnostics(\%args);
 

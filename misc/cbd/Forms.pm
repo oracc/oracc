@@ -33,7 +33,7 @@ sub forms_normify {
 		    my($c) = ($cfgw =~ /^(\S+)/);
 		    $m =~ s/~/$c/;
 		    $fo .= " \$$m";
-		    warn "new fo = $fo\n";
+#		    warn "new fo = $fo\n";
 		}
 		# we already warned about this error if relevant
 		# so just preserve the (bad) form		    
