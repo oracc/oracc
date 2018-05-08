@@ -4,6 +4,7 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Data::Dumper;
 use lib "$ENV{'ORACC'}/lib";
 
+use ORACC::L2GLO::Langcore;
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
@@ -60,6 +61,11 @@ unless ($args{'filter'}) {
 } else {
     $args{'cbd'} = '<stdin>';
 }
+
+$ORACC::CBD::bases = lang_uses_base($args{'lang'}); 
+warn "ORACC::CBD::Bases for $args{'lang'} = $ORACC::CBD::bases\n";
+
+exit 1;
 
 # Allow files of bare glossary bits for testing
 if ($args{'bare'}) {
