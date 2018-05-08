@@ -63,7 +63,7 @@ unless ($args{'filter'}) {
 }
 
 $ORACC::CBD::bases = lang_uses_base($args{'lang'}); 
-warn "ORACC::CBD::Bases for $args{'lang'} = $ORACC::CBD::bases\n";
+#warn "ORACC::CBD::Bases for $args{'lang'} = $ORACC::CBD::bases\n";
 
 $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
 
@@ -83,9 +83,6 @@ $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 my @cbd = pp_load(\%args);
 
     pp_diagnostics(\%args);
-
-exit 1;
-
 
 pp_validate(\%args, @cbd);
 

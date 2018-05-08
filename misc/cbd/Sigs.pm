@@ -73,7 +73,7 @@ my %simple;
 my $ignorable = '(?:\(to be\)|a|to|the|\s)*?';
 my $finalparens = '(?:\s+\(.*?\)\s*)?';
 
-$verbose = $psu_verbose = 1;
+#$verbose = $psu_verbose = 1;
 
 my %data = ();
 my $trace = 0;
@@ -103,7 +103,7 @@ sub sigs_simple {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
 
-	$_ = $cbd[$i];
+	local($_) = $cbd[$i];
 
 #	warn "input: $_\n" if $verbose;
 
@@ -451,8 +451,8 @@ sub sigs_psus {
 sub psu_index_coresigs {
     foreach my $c (@sigs_coresigs) {
 	my($cf,$gw) = ($c =~ m#^(.*?)\[(.*?)//#);
-	s/\!0x.*$//;
-	push @{${$psu_cfs{$cf}}{$gw}}, $_;
+	$c =~ s/\!0x.*$//;
+	push @{${$psu_cfs{$cf}}{$gw}}, $c;
     }
 }
 
@@ -467,6 +467,9 @@ sub psu_index_simple {
 	    push(@{$simple{$keysig}}, $_);
 	}
     }
+    open(S,'>simple.dump');
+    print S Dumper \%simple;
+    close(S);
 }
 
 sub psu_glo {
@@ -475,6 +478,7 @@ sub psu_glo {
     foreach my $c (@_) {
 	local($_) = $c;
 	++$i; pp_line($i);
+	pp_file($err_glo);
 	if (m/^\@entry\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
 	    @e{qw/cf gw pos/} = ($1,$2,$3);
 	    $compound = ($e{'cf'} =~ / /);
@@ -487,7 +491,7 @@ sub psu_glo {
 	    $psu_parts = $_;
 	    $psu_parts =~ s/^\@parts\s+//;
 	    chomp $psu_parts;
-	    push @entries_parts_lines, [ $. , $_ ];
+	    push @entries_parts_lines, [ pp_line() , $_ ];
 	} elsif (/^\@form/ && $compound) {
 	    if ($in_sense) {
 		my $formlang = '';
@@ -508,10 +512,11 @@ sub psu_glo {
 		@e{qw/epos sense/} = ($epos,$sense);
 		foreach my $f (@no_sense_forms) {
 		    my $formlang = '';
-		    if ($f =~ s/\s\%([a-z]\S+)//) {
+		    my $f3 = $$f[3];
+		    if ($f3 =~ s/\s\%([a-z]\S+)//) {
 			$formlang = $1;
 		    }
-		    do_psu($formlang || $lang, $f);
+		    do_psu($formlang || $lang, $f3);
 		}
 	    } else {
 		chomp;
@@ -621,7 +626,7 @@ find_in_coresigs {
 	    }
 	}
     }
-    warn "never matched $cf\[$xgw\]\n";
+#    warn "never matched $cf\[$xgw\]\n"; ## don't need this as it gets reported later
     undef;
 }
 
@@ -705,7 +710,7 @@ parts_match {
 		unless $#parts_errors == 0;
 	    return ();
 	}
-	my ($pt, $csig, @candidates) = @{$parts_data[$i]};
+	my ($pt, $csig, @candidates) = @{$parts_data[$i]}; chomp @candidates;
 	my $this_form_matched = 0;
 	my @tmp_matches = ();
 	my $pass_1 = 1;
@@ -714,7 +719,7 @@ parts_match {
 	    for (my $j = 0; $j <= $#candidates; ++$j) {
 		my($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
 		if ($form && $form eq $forms[$i] 
-		    && ($norm eq '*' || 
+		    && ($norm eq '*' || $norms[$i] eq '*' || 
 		    $norm eq $norms[$i])) {
 		    if ($pass_1) {
 			if ($candidates[$j] =~ /\%$psulang\:/) {
@@ -741,7 +746,7 @@ parts_match {
 
 	unless ($this_form_matched) {
 	    $matched = 0;
-	    push @parts_errors, "no form/norm match for $forms[$i]=$csig\$$norms[$i] in `$psulang.glo'"
+	    push @parts_errors, "no form/norm match on '$forms[$i]' = simple sig '$csig\$$norms[$i]' in `$psulang.glo'"
 		unless $#parts_errors == 0;
 	    last;
 	}
@@ -844,6 +849,7 @@ validate_parts {
 		$pos = $2 unless $pos;
 		$epos = $3 unless $epos;
 	    }
+	    $epos = $pos unless $epos;
 
 	    my $csig = "$cf\[$gw//$sense\]$pos'$epos";
 #	    warn "csig = $csig\n";
@@ -853,7 +859,7 @@ validate_parts {
 		    push(@simple_matches, @{$simple{$ptm}});
 		} else {
 		    if ($ptm) {
-			warn "l2p1-psus.plx: no match for $ptm in 01tmp/l2p1-simple.sig\n";
+			warn "l2p1-psus.plx: XXXno match for $ptm in 01tmp/l2p1-simple.sig\n";
 		    } else {
 			chomp;
 			warn "01tmp/l2p1-simple.sig:$.: l2p1-psus.plx: undefined part in $_\n";
