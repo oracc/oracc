@@ -41,15 +41,17 @@ sub forms_normify {
 	    my @nf = ();
 	    foreach my $f (@f) {
 		my($fi,$li,$pr,$fo) = @$f;
-		pp_file($fi);
-		pp_line($li);
-		my($m) = ($fo =~ m/\s\#(\S+)/);
-		my($b) = ($fo =~ m#\s/(\S+)#);
-		if ($m && $b) {
-		    my($c) = ($cfgw =~ /^(\S+)/);
-		    $m =~ s/~/$c/;
-		    $fo .= " \$$m";
-#		    warn "new fo = $fo\n";
+		unless ($fo =~ /\$\(/) {
+		    pp_file($fi);
+		    pp_line($li);
+		    my($m) = ($fo =~ m/\s\#(\S+)/);
+		    my($b) = ($fo =~ m#\s/(\S+)#);
+		    if ($m && $b) {
+			my($c) = ($cfgw =~ /^(\S+)/);
+			$m =~ s/~/$c/;
+			$fo .= " \$$m";
+			#		    warn "new fo = $fo\n";
+		    }
 		}
 		# we already warned about this error if relevant
 		# so just preserve the (bad) form		    

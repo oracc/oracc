@@ -122,7 +122,7 @@ pp_trace("cbdpp/writing cbd");
 pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
 pp_trace("cbdpp/cbd write complete");
 
-sigs_simple(\%args,@cbd);
+sigs_from_glo(\%args,@cbd);
 
 pp_diagnostics(\%args);
 
