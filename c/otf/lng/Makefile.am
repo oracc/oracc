@@ -16,4 +16,6 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/lib/{oracc,sas} \
 	-I@top_srcdir@/c/l2/{include,xli,form,xcl2,word,sigs,ngram,psus,link}
 
+data_DATA=lang_core.g
+
 EXTRA_DIST=*.h
