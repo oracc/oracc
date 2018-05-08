@@ -10,6 +10,7 @@ my @data = qw/usage collo sense/;
 
 %ORACC::CBD::Util::data = (); @ORACC::CBD::Util::data{@data} = ();
 
+use ORACC::L2GLO::Langcore;
 use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Validate;
@@ -73,8 +74,18 @@ sub pp_load {
 		} elsif ($tag eq 'lang') {
 		    pp_line($i+1);
 		    $$args{'lang'} = v_lang($c[$i]);
+		} elsif ($tag eq 'qpnbaselang') {
+		    pp_line($i+1);
+		    my $l = v_lang($c[$i]);
+		    if ($l) {
+			if (lang_uses_base($l)) {
+			    $ORACC::CBD::qpn_base_lang = $l;
+			} else {
+			    pp_warn("\@qpnbaselang language `$l' does not use bases");
+			}
+		    }
+		    $c[$i] = "\000";
 		}
-		$insert = $i;
 		push(@{$ORACC::CBD::Util::data{$tag}}, $i) if exists $ORACC::CBD::Util::data{$tag};
 	    } else {
 		$insert = -1;

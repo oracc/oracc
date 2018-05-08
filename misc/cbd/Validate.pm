@@ -47,6 +47,7 @@ my %validators = (
     pl_coord=>\&v_pl_coord
     );
 
+use ORACC::L2GLO::Langcore;
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Props;
@@ -194,8 +195,16 @@ sub v_lang {
     my($line,$arg) = @_;
     return if $arg;
     my $vlang = '';
-    if ($line =~ /\@lang\s+(\S+)\s*$/) {
+    if ($line =~ /\@(?:qpnbase)?lang\s+(\S+)\s*$/) {
 	$vlang = $1;
+	if ($vlang =~ s/^\%//) {
+	    pp_warn("language in header should not start with `%'");
+	}
+	unless (lang_known($vlang)) {
+	    pp_warn("unknown language `$vlang' in header");
+	    $vlang = '';
+	}
+	
     } else {
 	pp_warn("language empty or malformatted");
     }

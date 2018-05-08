@@ -137,7 +137,7 @@ sub sigs_simple {
 	    # check sigs to see if they already included it, supplying it if not.
 	    #
 	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
-		my $lang = ($lang =~ /^qpn/ ? 'sux' : $lang);
+		my $lang = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
 		my $instsig1 = "\@$project'}\%$lang:$current_first_base=";
 		my $xsig = "\$$sig{'cf'}/$current_first_base#~";
 		++$noprintsigs{ "$instsig1$coresig\t0\n" };

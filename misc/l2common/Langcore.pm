@@ -1,12 +1,18 @@
 package ORACC::L2GLO::Langcore;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/lang_uses_base/;
+@EXPORT = qw/lang_known lang_uses_base/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 my %langcore = ();
 my $loaded = 0;
+
+sub lang_known {
+    my $lang = shift;
+    $lang =~ s/-.*$//;
+    defined $langcore{$lang};
+}
 
 sub lang_uses_base {
     my $lang = shift;

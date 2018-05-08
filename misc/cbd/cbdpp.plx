@@ -65,7 +65,7 @@ unless ($args{'filter'}) {
 $ORACC::CBD::bases = lang_uses_base($args{'lang'}); 
 warn "ORACC::CBD::Bases for $args{'lang'} = $ORACC::CBD::bases\n";
 
-exit 1;
+$ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
 
 # Allow files of bare glossary bits for testing
 if ($args{'bare'}) {
@@ -81,6 +81,11 @@ pp_file($args{'cbd'});
 $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 
 my @cbd = pp_load(\%args);
+
+    pp_diagnostics(\%args);
+
+exit 1;
+
 
 pp_validate(\%args, @cbd);
 
