@@ -456,7 +456,7 @@ cloneNode(struct node*np)
 	appendAttr(clone,np->attr.nodes[i]);
       memset(&clone->children,'\0',sizeof(struct nodelist));
       for (i = 0; i < np->children.lastused; ++i)
-	appendChild(clone,np->children.nodes[i]);
+	appendChild(clone,cloneNode(np->children.nodes[i]));
     }
   return clone;
 }
