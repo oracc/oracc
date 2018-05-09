@@ -18,10 +18,10 @@ List *tree_mem_list = NULL;
 static struct npool *tree_pool;
 #define pool_copy(x) npool_copy((x),tree_pool)
 
-#define BLOCK_SIZE    2048
+#define BLOCK_SIZE    4096
 #define gBLOCK_SIZE   4096
 #define A_BLOCK_SIZE 16384
-#define A_gBLOCK_SIZE 2048
+#define A_gBLOCK_SIZE 8192
 
 #define NL_BASE	   1024
 
@@ -454,8 +454,9 @@ cloneNode(struct node*np)
       memset(&clone->attr,'\0',sizeof(struct nodelist));
       for (i = 0; i < np->attr.lastused; ++i)
 	appendAttr(clone,np->attr.nodes[i]);
-      /*nope: node lists work by length not by NULL termination */
-      /*clone->attr.nodes[clone->attr.lastused] = NULL;*/
+      memset(&clone->children,'\0',sizeof(struct nodelist));
+      for (i = 0; i < np->children.lastused; ++i)
+	appendChild(clone,np->children.nodes[i]);
     }
   return clone;
 }
