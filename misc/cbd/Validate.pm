@@ -51,6 +51,7 @@ use ORACC::L2GLO::Langcore;
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Props;
+use ORACC::SL::BaseC;
 use Data::Dumper;
 
 #################################################
@@ -139,6 +140,10 @@ sub pp_validate {
     @global_cbd = @cbd;
     ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
     init($vfields);
+
+    ORACC::SL::BaseC::init();
+    ORACC::SL::BaseC::pedantic();
+
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
@@ -319,10 +324,12 @@ sub v_bases {
 	pp_warn("\@bases can only be given once");
 	return;
     }
-    
+
     my $alt = '';
     my $stem = '';
     my $pri = '';
+    my %vbases = (); # this one is just for validation of the current @bases field
+    
     foreach my $b (@bits) {
 	if ($b =~ s/^\*(\S+)\s+//) {
 	    $stem = $1;
@@ -347,13 +354,29 @@ sub v_bases {
 		    $bases{$pri,'*'} = $stem
 			if $stem;
 		}
-		atf_add($pri) if $pri;
-		foreach my $t (split(/,\s+/,$alt)) {
-		    if ($t =~ /\s/ && !$is_compound) {
-			pp_warn("space in alt-base `$t'");
-			$pri = $alt = '';
+		if ($pri) {
+#		    atf_add($pri);
+		    if (defined $vbases{$pri}) {
+			pp_warn("repeated base $pri");
 		    } else {
-			atf_add($t) if $t;
+			%{$vbases{$pri}} = ();
+		    }
+		    foreach my $t (split(/,\s+/,$alt)) {
+			if ($t =~ /\s/ && !$is_compound) {
+			    pp_warn("space in alt-base `$t'");
+			    $pri = $alt = '';
+			} else {
+			    if ($t) {
+#				atf_add($t);
+				if (${$vbases{$pri}}{$t}++) {
+				    pp_warn("$pri has repeated alternate base $t");
+				}
+				# all alternates for this primary
+				push @{$vbases{"$pri#alt"}}, $t;
+				# all alternates in this @bases
+				push @{${$vbases{'#alt'}}{$t}}, $pri;
+			    }
+			}
 		    }
 		}
 	    } else {
@@ -367,15 +390,84 @@ sub v_bases {
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
-		atf_add($b) if $b;
+#		atf_add($b) if $b;
 		$pri = $b;
 		$alt = '';
+		if (defined $vbases{$pri}) {
+		    pp_warn("repeated base $pri");
+		} else {
+		    %{$vbases{$pri}} = ();
+		}
 	    }
 	}
     }
+    
+    # Now that we have all the primary and alternate bases syntactically validated
+    # and captured in %vbases we can do some more validation ...
+    
+    # 1. Does more than one primary have the same signs?
+    my %prisigs = ();
+    my %altsigs = ();
+    foreach my $p (keys %vbases) {
+	next if $p =~ /\#/;
+	my $psig = ORACC::SL::BaseC::check(undef,$p);
+	unless (pp_sl_messages()) {
+	    if (defined $prisigs{$psig}) {
+		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
+	    } else {
+		warn "adding $psig to prisigs for $p\n";
+		$prisigs{$psig} = $p;
+		$prisigs{$p} = $psig;
+	    }
+	}
+    }
+
+    # 2. Does each alternate have the same signs as its primary?
+    foreach my $p (keys %vbases) {
+	next if $p =~ /\#/;
+	my $prisig = $prisigs{$p}; # if this is empty there was an error earlier
+	if ($prisig) {
+	    my @alts = @{$vbases{"$p#alt"}};
+	    foreach my $a (@alts) {
+		my $asig = ORACC::SL::BaseC::check(undef,$a);
+		unless (pp_sl_messages()) {
+		    if ($prisig ne $asig) {
+			pp_warn("(bases) primary '$p' and alt '$a' have different signs");
+		    }
+		    warn "adding $asig to altsigs for $a\n";
+		    $altsigs{$asig} = $a;
+		    $altsigs{$a} = $asig;	
+		}
+	    }
+	}
+    }
+
+    # 3. Does a primary occur as an alternate?
+    foreach my $p (keys %vbases) {
+	next if $p =~ /\#/;
+	my $prisig = $prisigs{$p};
+	if ($prisig && $altsigs{$prisig}) {
+	    pp_warn("(bases) primary '$p' is also an alt of '$altsigs{$prisig}'");
+	}
+    }
+
+    # 4. For 
+    
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
 	pp_trace Dumper \%ORACC::CBD::bases;
+    }
+}
+
+sub pp_sl_messages {
+    my @m = ORACC::SL::BaseC::messages();
+    if ($#m >= 0) {
+	foreach my $m (@m) {
+	    pp_warn("(bases) ".$m);
+	}
+	1
+    } else {
+	0
     }
 }
 
@@ -702,16 +794,6 @@ sub v_deprecated {
 
 sub is_proper {
     $_[0] && $_[0] =~ /^[A-Z]N$/;
-}
-
-sub check_base {
-    my($b,%b) = @_;
-    my @b = keys %b;
-    unless ($b{$b}) {
-	bad('form', "unknown base `$b'");
-	0;
-    }
-    1;
 }
 
 sub v_proplist {

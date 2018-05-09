@@ -82,10 +82,11 @@ my @global_cbd = ();
 ######################################################################################
 
 sub sigs_from_glo {
+    my($args,@cbd) = @_;
     sigs_simple(@_);
     sigs_cofs();
     sigs_psus(@_);
-    sigs_dump();
+    sigs_dump() unless $$args{'check'};
 }
 
 ######################################################################################
@@ -445,7 +446,7 @@ sub sigs_psus {
     psu_index_coresigs();
     psu_index_simple();
     psu_glo(@cbd);
-    psu_dump();
+    psu_dump() unless $$args{'check'};
 }
 
 sub psu_index_coresigs {

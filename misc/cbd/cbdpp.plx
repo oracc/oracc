@@ -21,6 +21,7 @@ use Getopt::Long;
 
 # bare: no need for a header
 # check: only do validation
+# kompounds: check compounds (like |SI.A|) against OGSL
 # dry: no output files
 # edit: edit cbd via acd marks and write patch script
 # filter: read from STDIN, write CBD result to STDOUT
@@ -32,10 +33,11 @@ use Getopt::Long;
 my %args = ();
 GetOptions(
     \%args,
-    qw/bare check dry edit filter force lang:s project:s reset sigs trace vfields:s/,
+    qw/bare check kompounds dry edit filter force lang:s project:s reset sigs trace vfields:s/,
     ) || die "unknown arg";
 
 $ORACC::CBD::PPWarn::trace = $args{'trace'};
+$ORACC::CBD::check_compounds = $args{'kompounds'};
 
 my %ppfunc = (
     usage=>\&pp_usage,
@@ -81,8 +83,6 @@ pp_file($args{'cbd'});
 $args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$args{'project'}";
 
 my @cbd = pp_load(\%args);
-
-    pp_diagnostics(\%args);
 
 pp_validate(\%args, @cbd);
 

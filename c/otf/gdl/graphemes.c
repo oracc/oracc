@@ -629,7 +629,7 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	      else if (psl_get_sname(lc))
 		{
-		  vwarning("%s: sign is in PSL but not in %s",
+		  vwarning("%s: sign is in OGSL but not in %s",
 			   g, curr_lang->signlist);
 		}
 	      else
@@ -770,10 +770,10 @@ gparse(register unsigned char *g, enum t_type type)
 	  else
 	    {
 	      if (qualifier_warnings)
-		vwarning("qualified value %s is not in PSL",value);
+		vwarning("qualified value %s is not in OGSL",value);
 	      vname = psl_is_sname(qual);
 	      if (!vname && qualifier_warnings)
-		vwarning("qualifier %s is not a sign-name in PSL",qual);
+		vwarning("qualifier %s is not a sign-name in OGSL",qual);
 	    }
 #endif
 	}
@@ -809,7 +809,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  if ('#' == *curr_lang->signlist)
 		    {
 		      if (!psl_is_sname(buf))
-			vwarning("%s: compound not in PSL",buf);
+			vwarning("%s: compound not in OGSL",buf);
 		    }
 		  else
 		    {

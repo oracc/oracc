@@ -24,6 +24,8 @@ sub atf_check {
     my($proj,$lang) = @_;
 
     return unless scalar keys %atf;
+
+    my $compound_K = ($ORACC::CBD::check_compounds ? 'K' : '');
     
     open(ATF,">01tmp/$lang.atf");
     print ATF "\&X999999 = Gloss ATF\n#project: $proj\n#atf: use unicode\n#atf: use math\n";
@@ -31,7 +33,7 @@ sub atf_check {
     my @atf = map { "$_. @{$atf{$_}}" } sort { $a <=> $b } keys %atf;
     print ATF uniq_by_line(@atf);
     close(ATF);
-    system 'ox', '-cQ', '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
+    system 'ox', '-cQ'.$compound_K, '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
 
     if (open(OX,"01tmp/$lang-atf.log") || die "cbdpp.plx: can't open 01tmp/$lang-atf.log\n") {
 	my $save = pp_line();

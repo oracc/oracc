@@ -19,6 +19,7 @@ my $db_name = 'ogsl';
 
 my %db = ();
 my $loaded = 0;
+my @messages = ();
 my $pedantic = 0;
 my $sl_pid = 0;
 my %reported = ();
@@ -28,6 +29,16 @@ sub
 check {
     my($context,$test) = @_;
     _signature($context,tlitsplit($test));
+}
+
+sub messages {
+    my @tmp = @messages;
+    @messages = ();
+    return @tmp;
+}
+
+sub pedantic {
+    $pedantic = 1;
 }
 
 sub
@@ -278,7 +289,7 @@ tlitsplit {
     # protect numbers like 3(geszu)
     $tlit =~ s/(^|[- \.])([\d\/]+)\((.*?)\)/$1$2\000$3\001/g;
 
-    $tlit =~ tr/|//d;
+    if ($tlit =~ tr/|//d;
 
     $tlit =~ s/\S+\((.*?)\)/$1/g;
     $tlit =~ tr/()//d;
@@ -306,6 +317,15 @@ tlit2uni {
 sub
 tlit2cunei {
     _tlit2uni(UCHAR,@_);
+}
+
+sub msg {
+    my($ctxt,$m) = @_;
+    if ($ctxt) {
+	print STDERR "${ctxt}(BaseC): $m\n";
+    } else {
+	push @messages, $m;
+    }
 }
 
 sub
@@ -380,8 +400,8 @@ _signature {
 		if ($sn !~ /[\|.]/) {
 		    my $tmp = lc($sn);
 		    if (($sn_id = is_value($tmp))) {
-			my $nsn = sign_of($xid);
-			print STDERR "$ctxt$sn should be $nsn\n"
+			my $nsn = sign_of($sn_id);
+			msg($ctxt, "sign name '$sn' should be '$nsn'")
 			    if $pedantic && !$reported{$g}++;
 			$sn = $nsn;
 			$sn =~ tr/|//d;
@@ -391,12 +411,12 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
-		print STDERR "${ctxt}(BaseC): sign name '$sn' not in sign list\n"
+		msg($ctxt,"sign name '$sn' not in sign list")
 		    unless $silent || $reported{$g}++;
 		push @sig, 'q00';
 	    }
 	} else {
-	    print STDERR "${ctxt}(BaseC): grapheme '$g' not in sign list\n"
+	    msg($ctxt, "grapheme '$g' not in sign list")
 		unless $silent || $reported{$g}++;
 	    push @sig, 'q01';
 	}
