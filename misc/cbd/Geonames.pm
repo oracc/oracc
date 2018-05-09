@@ -13,7 +13,8 @@ use ORACC::CBD::PPWarn;
 my @pleiades_data = ();
 my %geonames = ();
 my %geonames_loaded = ();
-my @geo_keys = qw/cfgwpos cf alias id coord uid loctype/;
+#my @geo_keys = qw/cfgwpos cf alias id coord uid loctype/;
+my @geo_keys = qw/cfgwpos cf alias id coord loctype/;
 my %geo_keys = (); @geo_keys{@geo_keys} = ();
 
 sub geonames {
