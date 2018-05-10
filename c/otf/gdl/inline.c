@@ -67,7 +67,6 @@ int nline_words = 0, line_words_alloced = 0;
 struct node *atpt = NULL; /* attach point for grapheme nodes */
 /*List *group_stack = NULL;*/
 /*struct node *group_node = NULL;*/
-struct node *last_wp = NULL;
 struct node **line_words = NULL;
 
 /* Mutually exclusive flag tokens for implied, supplied, excised and
@@ -732,6 +731,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 {
   struct node *wp = NULL;
   struct node *last_g = NULL; /* cleared after word */
+  struct node *last_wp = NULL;
   int sforce_flag = 0;
   int lforce_flag = 0;
   int long_logo = 0;
