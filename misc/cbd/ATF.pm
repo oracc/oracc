@@ -1,7 +1,7 @@
 package ORACC::CBD::ATF;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/atf_add atf_check/;
+@EXPORT = qw/atf_add atf_check cpd_add cpd_check/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -9,6 +9,7 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use ORACC::CBD::PPWarn;
 
 my %atf = ();
+my %cpd = ();
 
 sub atf_add {
     my $a = shift;
@@ -54,6 +55,33 @@ sub atf_check {
 	close(OX);
 	pp_line($save);
     }
+}
+
+sub cpd_add {
+    my $a = shift;
+    if ($a) {
+	$a =~ tr/·°//d;
+	push @{$cpd{pp_line()}}, $a;
+    } else {
+	pp_warn("internal error: empty value passed to atf_add")
+    }
+}
+
+sub cpd_check {
+    my($proj,$lang) = @_;
+
+    return unless scalar keys %cpd;
+
+    my $save = pp_line();
+    open(CPD,">01tmp/cpd-$lang.atf");
+    print CPD "\&X999999 = Gloss CPD\n#project: $proj\n#atf: use unicode\n";
+    print CPD "#atf: lang $lang\n" unless $lang eq 'qpn';
+    my @cpd = map { "$_. @{$cpd{$_}}" } sort { $a <=> $b } keys %cpd;
+    print CPD uniq_by_line(@cpd);
+    close(CPD);
+    system 'ox', '-f', '-x=', '-l', "01tmp/$lang-cpd.log", "01tmp/cpd-$lang.atf";
+#    system 'xsltproc', '-o', "01tmp/cpd-$lang.tab", "$ENV{'ORACC_BUILDS'}/lib/scripts/sl-compounds.xsl';
+    pp_line($save);
 }
 
 sub

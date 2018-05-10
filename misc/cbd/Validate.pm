@@ -179,6 +179,7 @@ sub pp_validate {
 	}
     }
     atf_check($project,$lang);
+    cpd_check($project,$lang);
 #    @{$$data_ref{'edit'}} = @{$data{'edit'}};
 #    $data{'taglists'} = \%tag_lists;
     %ORACC::CBD::Util::data = %data;
@@ -361,20 +362,20 @@ sub v_bases {
 		    } else {
 			%{$vbases{$pri}} = ();
 		    }
-		    foreach my $t (split(/,\s+/,$alt)) {
-			if ($t =~ /\s/ && !$is_compound) {
-			    pp_warn("space in alt-base `$t'");
+		    foreach my $a (split(/,\s+/,$alt)) {
+			if ($a =~ /\s/ && !$is_compound) {
+			    pp_warn("space in alt-base `$a'");
 			    $pri = $alt = '';
 			} else {
-			    if ($t) {
-#				atf_add($t);
-				if (${$vbases{$pri}}{$t}++) {
-				    pp_warn("$pri has repeated alternate base $t");
+			    if ($a) {
+#				atf_add($a);
+				if (${$vbases{$pri}}{$a}++) {
+				    pp_warn("$pri has repeated alternate base $a");
 				}
 				# all alternates for this primary
-				push @{$vbases{"$pri#alt"}}, $t;
+				++${$vbases{"$pri#alt"}}{$a};
 				# all alternates in this @bases
-				push @{${$vbases{'#alt'}}{$t}}, $pri;
+				push @{${$vbases{'#alt'}}{$a}}, $pri;
 			    }
 			}
 		    }
@@ -401,7 +402,7 @@ sub v_bases {
 	    }
 	}
     }
-    
+
     # Now that we have all the primary and alternate bases syntactically validated
     # and captured in %vbases we can do some more validation ...
     
@@ -415,7 +416,7 @@ sub v_bases {
 	    if (defined $prisigs{$psig}) {
 		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
 	    } else {
-		warn "adding $psig to prisigs for $p\n";
+#		warn "adding $psig to prisigs for $p\n";
 		$prisigs{$psig} = $p;
 		$prisigs{$p} = $psig;
 	    }
@@ -427,14 +428,14 @@ sub v_bases {
 	next if $p =~ /\#/;
 	my $prisig = $prisigs{$p}; # if this is empty there was an error earlier
 	if ($prisig && defined $vbases{"$p#alt"}) {
-	    my @alts = @{$vbases{"$p#alt"}};
+	    my @alts = keys %{$vbases{"$p#alt"}};
 	    foreach my $a (@alts) {
 		my $asig = ORACC::SL::BaseC::check(undef,$a);
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
 			pp_warn("(bases) primary '$p' and alt '$a' have different signs");
 		    }
-		    warn "adding $asig to altsigs for $a\n";
+#		    warn "adding $asig to altsigs for $a\n";
 		    $altsigs{$asig} = $a;
 		    $altsigs{$a} = $asig;	
 		}
@@ -452,18 +453,26 @@ sub v_bases {
     }
 
     # 4. For compounds, if it isn't in the sign list does it use the right component names?
+    #
+    # We do this one by collecting all the bases that contain elements with compounds and
+    # then using an external script to do the heavy lifting
     foreach my $p (keys %vbases) {
 	if ($p =~ /\|/) {
-	    warn "#4: $p\n";
-	    while ($p =~ s/^.*?(\|[^|]+\|)//) {
-		my $c = $1;
-		warn "c10e: $c\n";
-		my $shouldbe = ORACC::SL::BaseC::c10e_compound($c);
-		pp_sl_messages();
+	    if ($p =~ tr/|/|/ % 2) {
+		pp_warn("(bases) odd number of pipes in compound");
+	    } else {
+		cpd_add($p);
 	    }
+	    # warn "#4: $p\n";
+	    # while ($p =~ s/^.*?(\|[^|]+\|)//) {
+	    # 	my $c = $1;
+	    # 	warn "c10e: $c\n";
+	    # 	my $shouldbe = ORACC::SL::BaseC::c10e_compound($c);
+	    # 	pp_sl_messages();
+	    # }
 	}
     }
-    
+
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
 	pp_trace Dumper \%ORACC::CBD::bases;
