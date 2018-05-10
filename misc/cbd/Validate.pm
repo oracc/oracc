@@ -426,7 +426,7 @@ sub v_bases {
     foreach my $p (keys %vbases) {
 	next if $p =~ /\#/;
 	my $prisig = $prisigs{$p}; # if this is empty there was an error earlier
-	if ($prisig) {
+	if ($prisig && defined $vbases{"$p#alt"}) {
 	    my @alts = @{$vbases{"$p#alt"}};
 	    foreach my $a (@alts) {
 		my $asig = ORACC::SL::BaseC::check(undef,$a);
@@ -451,7 +451,18 @@ sub v_bases {
 	}
     }
 
-    # 4. For 
+    # 4. For compounds, if it isn't in the sign list does it use the right component names?
+    foreach my $p (keys %vbases) {
+	if ($p =~ /\|/) {
+	    warn "#4: $p\n";
+	    while ($p =~ s/^.*?(\|[^|]+\|)//) {
+		my $c = $1;
+		warn "c10e: $c\n";
+		my $shouldbe = ORACC::SL::BaseC::c10e_compound($c);
+		pp_sl_messages();
+	    }
+	}
+    }
     
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";

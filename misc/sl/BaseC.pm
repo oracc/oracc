@@ -128,8 +128,17 @@ sign_of {
 #    Encode::_utf8_off($x);
 #    my $n = $db{$x,'name'};
 #    Encode::_utf8_on($n);
-#    $n;
-    my $xid = ($_[0] =~ /^x/ ? $_[0] : xid($_[0]));
+    #    $n;
+    my $tmp = $_[0];
+    my $xid = '';
+    unless ($tmp =~ /^x/) {
+	$tmp = "\L$tmp";
+	$xid = xid($tmp);
+	warn "sign_of: $_[0] => $tmp => $xid\n";
+    } else {
+	$xid = $tmp;
+    }
+#    my $xid = ($_[0] =~ /^x/ ? $_[0] : xid("\L$_[0]"));
     slse($xid.';name');
 }
 
@@ -285,11 +294,10 @@ tlitsplit {
     $tlit =~ tr/-.{}:+/     /;
     $tlit =~ tr/·°//d;
 
-
     # protect numbers like 3(geszu)
     $tlit =~ s/(^|[- \.])([\d\/]+)\((.*?)\)/$1$2\000$3\001/g;
 
-    if ($tlit =~ tr/|//d;
+    $tlit =~ tr/|//d;
 
     $tlit =~ s/\S+\((.*?)\)/$1/g;
     $tlit =~ tr/()//d;
@@ -365,6 +373,28 @@ _tlit2uni {
     $uni;
 }
 
+sub c10e_compound {
+    return unless $_[0] =~ /^\|(.*?)\|$/;
+    my $c = $1;
+    my $save_pedantic = $pedantic;
+    $pedantic = 0;
+    my $c_sig = _signature(undef, tlitsplit($c));
+    warn "c10e: sig of $c => $c_sig\n";
+    my @c = ();
+    foreach my $s (split(/\./,$c_sig)) {	
+	push @c, sign_of($s);
+    }
+    my $c2 = join('.',@c);
+    warn "c10e: $c_sig => $c2\n";
+    if ($c ne $c2) {
+	warn "c10e: $c is $c2\n";
+	msg(undef, "c10e: $c should be $c2");
+	return '|'.$c2.'|';
+    }
+    $pedantic = $save_pedantic;
+    return '';
+}
+	
 sub
 _signature {
     my ($context,@g) = @_;
