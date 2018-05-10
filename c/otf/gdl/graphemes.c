@@ -1894,7 +1894,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 {
   const unsigned char *aval;
   extern int suppress_next_hyphen, suppress_hyphen_delay;
-  static int depth = 0;
+  static int depth = 0, last_was_excised = 0;
 
   ++depth;
   
@@ -1917,6 +1917,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
       if (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
 	*--insertp = '\0';
 #endif
+      if (!xstrcmp(getAttr(np, "g:status"),"excised"))
+	last_was_excised = 1;
       return insertp;
     }
 
@@ -2241,15 +2243,18 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  }
 	break;
       case 'o':
-	if ((uintptr_t)np->user == 'x')
+	if (!last_was_excised)
 	  {
-	    if (!strcmp("repeated", (char*)getAttr(np, "g:type")))
-	      insertp = render_g_text(np->children.nodes[0], insertp, startp);
-	    insertp += xxstrlen(xstrcpy(insertp, utf8_times()));
+	    if ((uintptr_t)np->user == 'x')
+	      {
+		if (!strcmp("repeated", (char*)getAttr(np, "g:type")))
+		  insertp = render_g_text(np->children.nodes[0], insertp, startp);
+		insertp += xxstrlen(xstrcpy(insertp, utf8_times()));
+	      }
+	    else
+	      *insertp++ = (char)(uintptr_t)np->user;
+	    break;
 	  }
-	else
-	  *insertp++ = (char)(uintptr_t)np->user;
-	break;
       case 'x':
 	aval = getAttr(np,"g:type");
 	if (!xstrcmp(aval,"ellipsis"))
@@ -2290,6 +2295,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	fprintf(stderr,"render_g passed non-grapheme: %s\n",np->names->pname);
 	break;
       }
+  last_was_excised = 0;
   --depth;
   return insertp;
 }

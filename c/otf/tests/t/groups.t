@@ -376,3 +376,19 @@
          </g:gg>
        </g:gg>
      </g:w>
+
+030. %a UD-TI.LA{+su}-KA
+     UD-TI.LA{+su}-KA
+     <g:w xml:id="P121212.1.1" xml:lang="akk" form="UD-TI.LA{+su}KA">
+       <g:gg g:type="logo">
+         <g:s xml:id="P121212.1.1.0" g:status="ok" g:role="logo" g:logolang="sux" g:delim="-">UD</g:s>
+         <g:gg g:type="logo">
+           <g:s xml:id="P121212.1.1.1" g:status="ok" g:role="logo" g:logolang="sux" g:delim=".">TI</g:s>
+           <g:s xml:id="P121212.1.1.2" g:status="ok" g:role="logo" g:logolang="sux" g:delim="-">LA</g:s>
+         </g:gg>
+         <g:d g:role="phonetic" g:pos="post">
+           <g:v xml:id="P121212.1.1.3" g:status="ok">su</g:v>
+         </g:d>
+         <g:s xml:id="P121212.1.1.4" g:status="ok" g:role="logo" g:logolang="sux">KA</g:s>
+       </g:gg>
+     </g:w>
