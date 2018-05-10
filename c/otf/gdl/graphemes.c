@@ -2058,7 +2058,11 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 				      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
 					{
 					  if (gdelim[1])
-					    *insertp++ = '-';
+					    {
+					      const unsigned char *tmp = gdelim;
+					      while (*tmp)
+						*insertp++ = *tmp++;
+					    }
 					  else
 					    *insertp++ = *gdelim++;					  
 					}

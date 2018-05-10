@@ -290,6 +290,19 @@ tlit_reinit_inline(int with_word_list)
 }
 
 struct node *
+atpt_ancestor_gg(struct node *lastc)
+{
+  lastc = lastc->parent;
+  while (lastc)
+    {
+      if (lastc->etype == e_g_gg)
+	return lastc;
+      lastc = lastc->parent;
+  }
+  return NULL;
+}
+
+struct node *
 atpt_ancestor_or_self_gg(struct node *lastc)
 {
   while (lastc)
@@ -1046,7 +1059,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				++hacked_word_lang;
 			    }
 			  ++logo_word;
-			  anc_gg = atpt_ancestor_or_self_gg(atpt ? atpt : lastc);
+			  if (atpt || lastc)
+			    anc_gg = atpt_ancestor_or_self_gg(atpt ? atpt : lastc);
+			  else if (lastc)
+			    anc_gg = atpt_ancestor_gg(lastc);
 			  if (anc_gg)
 			    {
 			      group_flag = anc_gg->ttype;
@@ -1059,20 +1075,21 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      )
 				    {
 				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
-				      /* struct node *atpt_parent = (atpt ? atpt->parent : lastc); */
+				      /* struct node *atpt_parent =
+					 (atpt ? atpt->parent :
+					 lastc); */
 				      setAttr(n,a_g_type,ucc("logo"));
 #if 1
-				      /* A logogram (np) is inside another grouper, like +:
-					 first finish the grouper, which is the current atpt;
-					 then detach the grouper from wp and  attach it to the new logo group;
-					 then attach the new logo group to wp;
-					 then set a flag that np has been attached already
-				      */
-				      if (grouped_det)
-					appendChild(wp, np);
-				      else
-					appendChild(atpt ? atpt : lastc, np);
+				      /* np is the new grapheme which has triggered the
+					 logo, but we aren't under a logo group. */
 				      appendChild(n, removeLastChild(wp));
+				      if (grouped_det)
+					appendChild(n, np);
+				      else
+					if (atpt) 
+					appendChild(atpt, np);
+				      else
+					appendChild(n, np);
 				      appendChild(wp,n);
 				      np_already_set = 1;
 #else
@@ -1080,7 +1097,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      appendChild(wp,n);
 #endif
 				      atpt = n;
-				      group_flag = period;
+				      group_flag = atpt->ttype = period;
 			            }
 				  else
 				    {
@@ -1097,7 +1114,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				  if (!atpt && lastc)
 				    {
 				      atpt = lastc;
-				      group_flag = atpt->ttype = tp->type;
+				      group_flag = atpt->ttype = (tp->type == g_s ? period : tp->type);
 				    }
 				}
 			    }
@@ -1125,7 +1142,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			      /*list_push(group_stack, n);*/
 			      /* MORE WORK HERE? */
 			      atpt = n;
-			      group_flag = atpt->ttype = period;
+			      group_flag = atpt->ttype = np->ttype = period;
 			    }
 			}
 		      else if (lforce_flag)
@@ -1267,9 +1284,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		{
 		  if (tp->data)
-		    setAttr(lastChild(atpt?atpt:lastChild(wp)),a_g_delim,tp->data);
+		    setAttr(last_g ? last_g
+			    : lastChild(atpt?atpt:lastChild(wp)),a_g_delim,tp->data);
 		  else
-		    setAttr(lastChild(atpt?atpt:lastChild(wp)),a_g_delim,(unsigned char *)"");
+		    setAttr(last_g ? last_g
+			    : lastChild(atpt?atpt:lastChild(wp)),a_g_delim,(unsigned char *)"");
 		}
 	      if (wp)
 		{
@@ -1343,7 +1362,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			}
 		      group_flag = tp->type;
 		      if (atpt)
-			atpt->ttype = tp->type;
+			atpt->ttype = (tp->type == g_s ? period : tp->type);
 		      /*group_flag = tp->type;*/
 		    }
 		}
@@ -1754,7 +1773,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else
 		{
-		  np = elem(e_g_x,NULL,lnum,GRAPHEME);
+		  last_g = np = elem(e_g_x,NULL,lnum,GRAPHEME);
 		  appendAttr(np,attr(a_g_type,ucc("newline")));
 		  if ((end-start>1) && tokens[start+1]->type == flag)
 		    {
