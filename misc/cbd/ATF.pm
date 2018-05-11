@@ -80,7 +80,8 @@ sub cpd_check {
     print CPD uniq_by_line(@cpd);
     close(CPD);
     system 'ox', '-f', '-x=', '-l', "01tmp/$lang-cpd.log", "01tmp/cpd-$lang.atf";
-#    system 'xsltproc', '-o', "01tmp/cpd-$lang.tab", "$ENV{'ORACC_BUILDS'}/lib/scripts/sl-compounds.xsl';
+    system 'xsltproc', '-o', "01tmp/cpd-$lang.tab", "$ENV{'ORACC_BUILDS'}/lib/scripts/sl-compounds.xsl",
+	"01tmp/cpd-$lang.xml";
     pp_line($save);
 }
 

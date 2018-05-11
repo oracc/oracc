@@ -473,20 +473,21 @@ values {
     $v;
 }
 
-sub slse { slseB(@_) };
+sub slse { slseA(@_) };
 
 sub
 slseA {
     print SL_IN "$_[0]\n";
     my $res = <SL_OUT>;
     chomp($res);
+#    warn "slseA -k $_[0] => $res\n";
     $res;
 }
 
 sub slseB {
-    warn "slseB\n";
     my $res = `@@ORACC@@/bin/sl -k '$_[0]'`;
     chomp($res);
+#    warn "slseB -k $_[0] => $res\n";
     $res;
 }
 

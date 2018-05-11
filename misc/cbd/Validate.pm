@@ -330,6 +330,7 @@ sub v_bases {
     my $stem = '';
     my $pri = '';
     my %vbases = (); # this one is just for validation of the current @bases field
+    my $pricode = 0;
     
     foreach my $b (@bits) {
 	if ($b =~ s/^\*(\S+)\s+//) {
@@ -361,6 +362,7 @@ sub v_bases {
 			pp_warn("repeated base $pri");
 		    } else {
 			%{$vbases{$pri}} = ();
+			$vbases{"$pri#code"} = ++$pricode;
 		    }
 		    foreach my $a (split(/,\s+/,$alt)) {
 			if ($a =~ /\s/ && !$is_compound) {
@@ -375,7 +377,12 @@ sub v_bases {
 				# all alternates for this primary
 				++${$vbases{"$pri#alt"}}{$a};
 				# all alternates in this @bases
-				push @{${$vbases{'#alt'}}{$a}}, $pri;
+				if (defined ${${$vbases{'#alt'}}{$a}}) {
+				    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
+				    pp_warn("alt $a already defined for primary $prevpri\n");
+				} else {
+				    ${${$vbases{'#alt'}}{$a}} = $pri;
+				}
 			    }
 			}
 		    }
@@ -398,6 +405,7 @@ sub v_bases {
 		    pp_warn("repeated base $pri");
 		} else {
 		    %{$vbases{$pri}} = ();
+		    $vbases{"$pri#code"} = ++$pricode;
 		}
 	    }
 	}
@@ -405,11 +413,13 @@ sub v_bases {
 
     # Now that we have all the primary and alternate bases syntactically validated
     # and captured in %vbases we can do some more validation ...
+
+#    warn "second phase base checking\n";
     
     # 1. Does more than one primary have the same signs?
     my %prisigs = ();
     my %altsigs = ();
-    foreach my $p (keys %vbases) {
+    foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
 	my $psig = ORACC::SL::BaseC::check(undef,$p);
 	unless (pp_sl_messages()) {
@@ -424,31 +434,37 @@ sub v_bases {
     }
 
     # 2. Does each alternate have the same signs as its primary?
-    foreach my $p (keys %vbases) {
+    foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
 	my $prisig = $prisigs{$p}; # if this is empty there was an error earlier
 	if ($prisig && defined $vbases{"$p#alt"}) {
-	    my @alts = keys %{$vbases{"$p#alt"}};
+	    my @alts = sort keys %{$vbases{"$p#alt"}};
+	    my $pcode = $vbases{"$p#code"};
 	    foreach my $a (@alts) {
 		my $asig = ORACC::SL::BaseC::check(undef,$a);
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
 			pp_warn("(bases) primary '$p' and alt '$a' have different signs");
 		    }
-#		    warn "adding $asig to altsigs for $a\n";
 		    $altsigs{$asig} = $a;
-		    $altsigs{$a} = $asig;	
+		    $altsigs{"$asig#code"} = $pcode;
+		    $altsigs{$a} = $asig;
 		}
 	    }
 	}
     }
 
     # 3. Does a primary occur as an alternate?
-    foreach my $p (keys %vbases) {
+    foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
 	my $prisig = $prisigs{$p};
 	if ($prisig && $altsigs{$prisig}) {
-	    pp_warn("(bases) primary '$p' is also an alt of '$altsigs{$prisig}'");
+	    #	    my $asig = $altsigs{$prisig};
+	    my $vbpc = $vbases{"$p#code"};
+	    my $aspc = $altsigs{"$prisig#code"};
+#	    warn "vbpc = $vbpc ; aspc = $aspc\n";
+	    pp_warn("(bases) primary '$p' is also an alt of '$altsigs{$prisig}'")
+		unless  $vbpc == $aspc;
 	}
     }
 
@@ -456,7 +472,8 @@ sub v_bases {
     #
     # We do this one by collecting all the bases that contain elements with compounds and
     # then using an external script to do the heavy lifting
-    foreach my $p (keys %vbases) {
+    foreach my $p (sort keys %vbases) {
+	next if $p =~ /\#/;
 	if ($p =~ /\|/) {
 	    if ($p =~ tr/|/|/ % 2) {
 		pp_warn("(bases) odd number of pipes in compound");
