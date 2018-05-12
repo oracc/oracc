@@ -211,7 +211,11 @@ while (<SL>) {
 	    } else {
 		warn "$asl:$.: bad format in \@ucode\n";
 	    }
-	} elsif (/^\@(?:note|inote|pname|uname|unote|uphase|lit)/) {
+	} elsif (s/^\@pname\s+//) {
+	    form_check();
+	    chomp;
+	    print '<pname n="', xmlify($_), '"/>';
+	} elsif (/^\@(?:note|inote|uname|unote|uphase|lit)/) {
 	    form_check();
 	    $curr_field = 'note' if $curr_field eq 'lit';
 	    s/^\S+\s+//;

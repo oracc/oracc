@@ -9,8 +9,13 @@
 
 <xsl:include href="gdl-OATF.xsl"/>
 
-<xsl:key name="signs" match="sl:sign|sl:form" use="@n"/>
+<xsl:key name="signs" match="sl:sign|sl:pname|sl:form" use="@n"/>
+<xsl:key name="pname" match="sl:pname" use="@n"/>
 <xsl:key name="values" match="sl:v" use="@n"/>
+
+<xsl:template match="/">
+  <xsl:apply-templates select=".//g:c"/>
+</xsl:template>
 
 <xsl:template match="g:c">
   <xsl:variable name="res">
@@ -27,9 +32,31 @@
       <xsl:text>OK</xsl:text> <!-- c/@form is a known sign name -->
     </xsl:when>
     <xsl:otherwise>
-      <xsl:text>|</xsl:text>
-      <xsl:apply-templates/>
-      <xsl:text>|</xsl:text>
+      <xsl:variable name="new-form">
+	<xsl:text>|</xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>|</xsl:text>
+      </xsl:variable>
+      <xsl:variable name="new-res">
+	<xsl:call-template name="sign-node">
+	  <xsl:with-param name="n" select="$new-form"/>
+	</xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+	<xsl:when test="string-length($res) > 0 and $res = $new-res">
+	  <xsl:text>OK=</xsl:text><xsl:value-of select="$new-form"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:choose>
+	    <xsl:when test="string-length($new-res) > 0">
+	      <xsl:text>OK~</xsl:text><xsl:value-of select="$new-form"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:text>NO:</xsl:text><xsl:value-of select="$new-form"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:text>&#xa;</xsl:text>
@@ -55,7 +82,7 @@
   <xsl:choose>
     <xsl:when test="string-length($res)>0">
       <xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
-	<xsl:value-of select="id($res)/@n"/>
+	<xsl:value-of select="translate(id($res)/@n,'|','')"/>
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
@@ -67,7 +94,19 @@
 <xsl:template name="sign-node">
   <xsl:param name="n"/>
   <xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
-    <xsl:value-of select="key('signs',$n)/@xml:id"/>
+    <xsl:for-each select="key('signs',$n)">
+      <xsl:choose>
+	<xsl:when test="@xml:id">
+	  <xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of select="@xml:id"/></xsl:message>
+	  <xsl:value-of select="key('signs',$n)/@xml:id"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of
+	  select="ancestor::sl:sign/@xml:id"/></xsl:message>
+	  <xsl:value-of select="ancestor::sl:sign/@xml:id"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
   </xsl:for-each>
 </xsl:template>
 
