@@ -29,7 +29,20 @@
   <xsl:text>&#x9;</xsl:text>
   <xsl:choose>
     <xsl:when test="string-length($res) > 0">
-      <xsl:text>OK</xsl:text> <!-- c/@form is a known sign name -->
+      <xsl:variable name="res-form">
+	<xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
+	  <xsl:value-of select="id($res)/@n"/>
+	</xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+	<xsl:when test="not(@form = $res-form)">
+	  
+	  <xsl:text>OK=</xsl:text><xsl:value-of select="$res-form"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:text>OK</xsl:text> <!-- c/@form is a known sign name -->
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="new-form">
@@ -98,12 +111,13 @@
     <xsl:for-each select="$hits[1]">
       <xsl:choose>
 	<xsl:when test="@xml:id">
-	  <xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of select="@xml:id"/></xsl:message>
+	  <!--<xsl:message><xsl:value-of select="name()"
+	      /> returning <xsl:value-of select="@xml:id"/></xsl:message>-->
 	  <xsl:value-of select="@xml:id"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of
-	  select="ancestor::sl:sign/@xml:id"/></xsl:message>
+	  <!--<xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of
+	      select="ancestor::sl:sign/@xml:id"/></xsl:message>-->
 	  <xsl:value-of select="ancestor::sl:sign/@xml:id"/>
 	</xsl:otherwise>
       </xsl:choose>

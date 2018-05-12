@@ -179,7 +179,7 @@ sub pp_validate {
 	}
     }
     atf_check($project,$lang);
-    cpd_check($project,$lang);
+    cpd_check($project,$lang, $$args{'file'});
 #    @{$$data_ref{'edit'}} = @{$data{'edit'}};
 #    $data{'taglists'} = \%tag_lists;
     %ORACC::CBD::Util::data = %data;
@@ -422,7 +422,7 @@ sub v_bases {
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
 	my $psig = ORACC::SL::BaseC::check(undef,$p);
-	unless (pp_sl_messages()) {
+	unless (pp_sl_messages($p)) {
 	    if (defined $prisigs{$psig}) {
 		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
 	    } else {
@@ -497,9 +497,14 @@ sub v_bases {
 }
 
 sub pp_sl_messages {
+    my $p = shift || '';
     my @m = ORACC::SL::BaseC::messages();
     if ($#m >= 0) {
 	foreach my $m (@m) {
+	    if ($p =~ /^\|(.*?)\|$/) {
+		my $novb = $1;
+		next if $m =~ $novb;
+	    }
 	    pp_warn("(bases) ".$m);
 	}
 	1
