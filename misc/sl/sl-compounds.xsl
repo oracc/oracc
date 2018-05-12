@@ -94,7 +94,8 @@
 <xsl:template name="sign-node">
   <xsl:param name="n"/>
   <xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
-    <xsl:for-each select="key('signs',$n)">
+    <xsl:variable name="hits" select="key('signs',$n)|key('signs',translate($n,'()','')"/>
+    <xsl:for-each select="$hits[1]">
       <xsl:choose>
 	<xsl:when test="@xml:id">
 	  <xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of select="@xml:id"/></xsl:message>
