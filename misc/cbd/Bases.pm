@@ -2,12 +2,15 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_validate v_project v_lang v_form v_is_entry v_set_cfgw/;
+@EXPORT = qw/bases_hash bases_log_errors/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
+my %log_errors = ();
+my %stats = ();
+
 sub bases_hash {
-    my($arg) = shift;
+    my($arg,$is_compound) = @_;
     if ($arg =~ s/;\s*$//) {
 	pp_warn("bases entry ends with semi-colon--please remove it");
     }
@@ -33,15 +36,15 @@ sub bases_hash {
 	    ($pri,$alt) = ($b =~ /^(.*?)\s+\((.*?)\)\s*$/);
 	    if ($pri) {
 		if ($pri =~ s/>.*$//) {
-		    push @{$data{'edit'}}, pp_line()-1;
+		    pp_warn("can't merge bases in a file with unresolved edits");
 		}
 		if ($pri =~ /\s/ && !$is_compound) {
 		    pp_warn("space in base `$pri'");
 		    $pri = $alt = '';
 		} else {
-		    ++$bases{$pri};
-		    $bases{$pri,'*'} = $stem
-			if $stem;
+#		    ++$bases{$pri};
+#		    $bases{$pri,'*'} = $stem
+#			if $stem;
 		}
 		if ($pri) {
 		    if (defined $vbases{$pri}) {
@@ -80,9 +83,9 @@ sub bases_hash {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
-		++$bases{$b};
-		$bases{$b,'*'} = $stem
-		    if $stem;
+#		++$bases{$b};
+#		$bases{$b,'*'} = $stem
+#		    if $stem;
 		$pri = $b;
 		$alt = '';
 		if (defined $vbases{$pri}) {
@@ -96,3 +99,24 @@ sub bases_hash {
     }
     %vbases;
 }
+
+sub bases_log_errors {
+    my $args = shift;
+    open(L,$$args{'log'});
+    while (<L>) {
+	chomp;
+	next unless /\(bases\)/;
+	my($file,$line,$err) = (/^(.*?):(.*?):\s+\(bases\)\s+(.*?)\s*$/);
+	if ($file eq $$args{'cbd'}) {
+	    push @{$log_errors{$line}}, $err;
+	}
+    }
+    close(L);
+}
+
+sub bases_stats {
+    my($cfgw,$base) = @_;
+    ++${$stats{$cfgw}}{$base};
+}
+
+1;

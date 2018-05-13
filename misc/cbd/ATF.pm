@@ -88,15 +88,15 @@ sub cpd_check {
 	pp_file($err_file);
 	pp_line($ln);
 	if ($ret eq 'OK') {
-#	    warn "compound $in OK\n";	    
+#	    warn "compound $in OK\n";
 	} elsif ($ret =~ /^OK=(.*?)$/) {
-	    pp_warn("compound $in should be $1");
+	    pp_warn("(bases) compound $in should be $1");
 	} elsif ($ret =~ /^OK~(.*?)\s*$/) {
-	    pp_warn("compound $in should be $1");
+	    pp_warn("(bases) compound $in should be $1");
 	} elsif ($ret =~ /^NO:(.*?)\s*$/) {
-	    pp_warn("compound $in (mapped to $1) not in signlist");
+	    pp_warn("(bases) compound $in (mapped to $1) not in signlist");
 	} else {
-	    pp_warn("compound return code $ret unknown");
+	    pp_warn("(bases) compound return code $ret unknown");
 	}
     }
     pp_line($save);
