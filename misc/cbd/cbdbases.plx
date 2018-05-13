@@ -13,17 +13,6 @@ use Getopt::Long;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
-# bare: no need for a header
-# check: only do validation
-# kompounds: check compounds (like |SI.A|) against OGSL
-# dry: no output files
-# edit: edit cbd via acd marks and write patch script
-# filter: read from STDIN, write CBD result to STDOUT
-# force: generate output CBD even if there are errors
-# reset: reset cached glo and edit anyway 
-# trace: print trace messages 
-# vfields: only validate named fields, plus some essential ones supplied automatically
-
 my $project = '';
 my $lang = '';
 
@@ -58,9 +47,19 @@ sub do_bases {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
-	if ($cbd[$i] =~ /^\@entry\s+(.*?)\[/) {
+	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
+	    my $cfgw = $1;
+	    $cfgw =~ /^(.*?)\s+\[/;
 	    my $cf = $1;
 	    $is_compound = ($cf =~ tr/ / /);
+	    my @f = forms_by_cfgw($cfgw);
+	    foreach my $f (@f) {
+		$f =~ m#/(\S+)#;
+		++${$stats{$cfgw}}{$1};
+	    }
+	} elsif ($cbd[$i] =~ /^\@forms/) {
+	    $f =~ m#/(\S+)#;
+	    ++${$stats{$cfgw}}{$1};
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my @log_errors = bases_log_errors($i);
 	    my %b = bases_hash($cbd[$i], $is_compound);

@@ -357,7 +357,6 @@ sub v_bases {
 			if $stem;
 		}
 		if ($pri) {
-#		    atf_add($pri);
 		    if (defined $vbases{$pri}) {
 			pp_warn("repeated base $pri");
 		    } else {
@@ -370,7 +369,6 @@ sub v_bases {
 			    $pri = $alt = '';
 			} else {
 			    if ($a) {
-#				atf_add($a);
 				if (${$vbases{$pri}}{$a}++) {
 				    pp_warn("$pri has repeated alternate base $a");
 				}
@@ -398,7 +396,6 @@ sub v_bases {
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
-#		atf_add($b) if $b;
 		$pri = $b;
 		$alt = '';
 		if (defined $vbases{$pri}) {
@@ -459,10 +456,8 @@ sub v_bases {
 	next if $p =~ /\#/;
 	my $prisig = $prisigs{$p};
 	if ($prisig && $altsigs{$prisig}) {
-	    #	    my $asig = $altsigs{$prisig};
 	    my $vbpc = $vbases{"$p#code"};
 	    my $aspc = $altsigs{"$prisig#code"};
-#	    warn "vbpc = $vbpc ; aspc = $aspc\n";
 	    pp_warn("(bases) primary '$p' is also an alt of '$altsigs{$prisig}'")
 		unless  $vbpc == $aspc;
 	}
@@ -651,20 +646,13 @@ sub v_parts {
 
 sub v_sense {
     my($tag,$arg) = @_;
-#    if ($s =~ s/^(\S+)\s+//) {
-#	$sid = $1;
-#	if ($sid =~ s/!$//) {
-#	    $defattr = ' default="yes"';
-#	}
-#	$sigs = $sigs{$sid};
-#    }
 
     ++$seen_sense;
     
     if ($arg =~ s/^\[(.*?)\]\s+//) {
 #	$sgw = $1;
     }
-    
+
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
     if ($pre) {
