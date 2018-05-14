@@ -82,7 +82,7 @@ sub do_bases {
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 #	    if ($cfgw eq $do_cfgw) {
 		my $new_bases = bases_process(%base_data);
-		$cbd[$base_data{'line'} - 1] = $new_bases;
+		$cbd[$base_data{'line'} - 1] = "\@bases $new_bases";
 #	    }
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    next if $cbd[$i] =~ /_/;

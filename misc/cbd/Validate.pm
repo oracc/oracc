@@ -374,6 +374,7 @@ sub v_bases {
 				}
 				# all alternates for this primary
 				++${$vbases{"$pri#alt"}}{$a};
+				$bases{"#$a"} = $pri;
 				# all alternates in this @bases
 				if (defined ${${$vbases{'#alt'}}{$a}}) {
 				    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
@@ -579,7 +580,14 @@ sub v_form {
 	if ($b) {
 	    unless ($bases{$b}) {
 		unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
-		    pp_warn("BASE $b not known for `$curr_cfgw'");
+		    my $warned = 0;
+		    my $a = ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
+		    if ($a) {
+			pp_warn("alt BASE $b should be primary $a");
+			$warned = 1;
+		    }
+		    pp_warn("BASE $b not known for `$curr_cfgw'")
+			unless $warned;
 		}
 	    }
 	} else {
@@ -810,8 +818,12 @@ sub v_end {
 	unless $arg =~ /^\s*entry\s*$/;
     pp_warn("no SENSE in \@entry") unless $seen_sense;
     foreach my $b (keys %bases) {
-	++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
-	  unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	if ($b =~ /^#/) {
+	    ${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
+	} else {
+	    ++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
+	    unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	}
     }
     $curr_cfgw = '';
     $in_entry = $seen_bases = 0;

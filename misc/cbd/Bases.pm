@@ -127,6 +127,7 @@ sub bases_log_errors {
 
 sub bases_prefer {
     my($cfgw,$a,$b) = @_;
+    # try stats first
     if (defined $stats{$cfgw}) {
 	my %s = %{$stats{$cfgw}};
 	if ($s{$a} && $s{$b}) {
@@ -141,7 +142,65 @@ sub bases_prefer {
 	    return $b;
 	}
     }
+
+    # now try qualified vs. non-qualified
+    unless ($a =~ /ₓ/ || $b =~ /ₓ/) {
+	if ($a =~ /\(.*?\)$/ && $b !~ /\(.*?\)$/) {
+	    return $b;
+	} elsif ($b =~ /\(.*?\)/) {
+	    return $b;
+	}
+    }
+
+    # how about ŋ vs. g
+    if ($a =~ /ŋ/ && $b !~ /ŋ/) {
+	return $a;
+    } elsif ($b =~ /ŋ/) {
+	return $b;
+    }
+
+    # cdot or degree preferred
+    if ($a =~ /[·°]/ && $b !~ /[·°]/) {
+	return $a;
+    } elsif ($b =~ /[·°]/) {
+	return $b;
+    }
+
+    # + in det is prefered to non-+
+    if ($a =~ /\{\+/ && $b !~ /\{\+/) {
+	return $a;
+    } elsif ($b =~ /\{\+/) {
+	return $b;
+    }
+
+    my $cf = $cfgw; $cf =~ s/\s.*$//;
+    if ($a =~ /$cf/ && $b !~ /$cf/) {
+	return $a;
+    } elsif ($b =~ /$cf/) {
+	return $b;
+    }
+
+    my $acf = base_to_cf($a);
+    my $bcf = base_to_cf($b);
+    if ($acf eq $cf) {
+	return $a;
+    } elsif ($bcf eq $cf) {
+	return $b;
+    } elsif ($acf =~ /$cf/ && $b !~ /$cf/) {
+	return $a;
+    } elsif ($bcf =~ /$cf/) {
+	return $b;
+    }
+    
     undef;
+}
+
+sub base_to_cf {
+    my $x = shift;
+    $x =~ s/\{.*?\}//g;
+    $x =~ s/\(.*\)//g;
+    $x =~ tr/-₀₁₂₃₄₅₆₇₈₉ₓ//d;
+    $x;
 }
 
 sub bases_stats {
@@ -210,8 +269,8 @@ sub bases_same_primary {
     } else {
 	my $ai = ($stats{$$bdref{'cfgw'}} ? ${$stats{$$bdref{'cfgw'}}}{$a} : 0);
 	my $bi = ($stats{$$bdref{'cfgw'}} ? ${$stats{$$bdref{'cfgw'}}}{$b} : 0);
-	
-	pp_warn("can't fix 'same primary $a [$ai] and $b [$bi]'");
+	my $cf = $$bdref{'cfgw'}; $cf =~ s/\s.*$//;
+	pp_warn("$$bdref{'cfgw'}: can't fix 'same primary $a [$ai] and $b [$bi]'");
     }
 }
 
