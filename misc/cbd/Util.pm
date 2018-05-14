@@ -17,7 +17,7 @@ use ORACC::CBD::Validate;
 
 sub pp_cbd {
     my ($args,@c) = @_;
-    return if pp_status();
+    return if pp_status() && !$$args{'force'};
     if ($$args{'filter'}) {
 	foreach (@c) {
 	    print "$_\n" unless /^\000$/;

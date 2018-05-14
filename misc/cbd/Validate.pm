@@ -143,7 +143,6 @@ sub pp_validate {
     init($vfields);
 
     ORACC::SL::BaseC::init();
-    ORACC::SL::BaseC::pedantic();
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -420,7 +419,8 @@ sub v_bases {
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	my $psig = ORACC::SL::BaseC::check(undef,$p);
+	ORACC::SL::BaseC::pedantic(1);
+	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	unless (pp_sl_messages($p)) {
 	    if (defined $prisigs{$psig}) {
 		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
@@ -440,10 +440,11 @@ sub v_bases {
 	    my @alts = sort keys %{$vbases{"$p#alt"}};
 	    my $pcode = $vbases{"$p#code"};
 	    foreach my $a (@alts) {
-		my $asig = ORACC::SL::BaseC::check(undef,$a);
+		ORACC::SL::BaseC::pedantic(0);
+		my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
-			pp_warn("(bases) primary '$p' and alt '$a' have different signs");
+			pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
 		    }
 		    $altsigs{$asig} = $a;
 		    $altsigs{"$asig#code"} = $pcode;

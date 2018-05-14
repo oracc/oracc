@@ -27,8 +27,8 @@ my $silent = 0;
 
 sub
 check {
-    my($context,$test) = @_;
-    _signature($context,tlitsplit($test));
+    my($context,$test,$deep) = @_;
+    _signature($context,tlitsplit($test,$deep));
 }
 
 sub messages {
@@ -38,14 +38,18 @@ sub messages {
 }
 
 sub pedantic {
-    $pedantic = 1;
+    if (defined $_[0]) {
+	$pedantic = $_[0];
+    } else {
+	$pedantic = 1;
+    }
 }
 
 sub same_tlit {
     my($context,$test,@against) = @_;
-    my $test_sig = _signature($context,tlitsplit($test));
+    my $test_sig = _signature($context,tlitsplit($test,1));
     foreach my $a (@against) {
-	my $a_sig = _signature($context,tlitsplit($a));
+	my $a_sig = _signature($context,tlitsplit($a,1));
 	return $a if $test_sig eq $a_sig;
     }
     return undef;
@@ -53,7 +57,7 @@ sub same_tlit {
 
 sub tlit_sig {
     my($context,$test,@against) = @_;
-    _signature($context,tlitsplit($test));
+    _signature($context,tlitsplit($test,1));
 }
 
 sub
@@ -108,6 +112,14 @@ xid_form {
 #    Encode::_utf8_off($x);
 #    $db{$x,'form'};
     slse($_[0].';forms');
+}
+
+sub
+is_form {
+#    my $x = shift;
+#    Encode::_utf8_off($x);
+#    $db{$x};
+    slse("$_[0];form");
 }
 
 sub
@@ -287,8 +299,7 @@ tlitsplit {
     $tlit =~ tr/?[]#*<>//d;
 
     if ($csplit) {
-	# remove parens and contained periods in compounds
-	# this gets done naturally further down
+#	$tlit =~ tr/|+/  /;
     } else {
 	# protect parens and contained periods in compounds
 	$tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
@@ -429,7 +440,7 @@ _signature {
 	    } else {
 		$sn = $g;
 	    }
-	    my $sn_id = is_sign($sn);
+	    my $sn_id = is_form($sn) || is_sign($sn);
 	    unless ($sn_id) {
 		if ($sn !~ /[\|.]/) {
 		    my $tmp = lc($sn);
@@ -455,7 +466,37 @@ _signature {
 	    push @sig, 'q01';
 	}
     }
-    join('.',@sig);
+    my @nsig = ();
+    foreach my $s (@sig) {
+#	warn "sign_of $s ...\n";
+	if ($s eq 'q00') {
+	    push @nsig, $s;
+	} else {
+	    my $sn = sign_of($s);
+	    if ($sn =~ tr/\|//d) {
+		my @c = ();
+		my $ok = 1;
+		foreach my $c (split(/[\.\+]/, $sn)) {
+		    my $cs = is_sign($c);
+		    if ($cs) {
+			push @c, $cs;
+		    } else {
+			$ok = 0;
+			last;
+		    }
+		}
+		if ($ok) {
+		    #		warn "pushing ".join('.',@c)." onto nsig\n";
+		    push @nsig, @c;
+		} else {
+		    push @nsig, $s;
+		}
+	    } else {
+		push @nsig, $s;
+	    }
+	}
+    }
+    join('.',@nsig);
 }
 
 sub

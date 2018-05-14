@@ -108,7 +108,7 @@ if (pp_status() && !$args{'force'}) {
     pp_diagnostics(\%args);
     die("cbdpp.plx: errors in glossary $args{'cbd'}. Stop.\n");
 } else {
-
+    
     if ($args{'edit'}) {
 	@cbd = edit(\%args, @cbd);
 	pp_diagnostics(\%args);
