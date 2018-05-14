@@ -40,6 +40,7 @@ foreach my $f (qw/cbd log out/) {
 $args{'project'} = project_from_header($args{'cbd'})
     unless $args{'project'};
 
+bases_log(\%args);
 pp_file($args{'cbd'});
 my @cbd = pp_load(\%args);
 do_bases(\%args, @cbd);
@@ -68,14 +69,16 @@ sub do_bases {
 	    }
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    if ($cfgw eq $do_cfgw) {
-		bases_process(%base_data);
+		my $new_bases = bases_process(%base_data);
+		$cbd[$base_data{'line'}] = $new_bases;
 	    }
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    $cbd[$i] =~ m#/(\S+)#;	    
 	    bases_stats($cfgw,$1);
 	} elsif ($cbd[$i] =~ s/^\@bases\S*\s+//) {
-	    $base_data{'line'} = $i;
+	    $base_data{'line'} = pp_line();
 	    $base_data{'data'} = $cbd[$i];
+	    $base_data{'cfgw'} = $cfgw;
 	    $base_data{'compound'} = $is_compound;
 	}
     }

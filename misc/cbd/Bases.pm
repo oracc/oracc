@@ -125,6 +125,19 @@ sub bases_log_errors {
     }
 }
 
+sub bases_prefer {
+    my($cfgw,$a,$b) = @_;
+    if (defined $stats{$cfgw}) {
+	my %s = %{$stats{$cfgw}};
+	if ($s{$a} > $s{$b}) {
+	    return $a;
+	} elsif ($s{$b} > $s{$a}) {
+	    return $b;
+	}
+    }
+    undef;
+}
+
 sub bases_stats {
     my($cfgw,$base) = @_;
     ++${$stats{$cfgw}}{$base};
@@ -139,8 +152,61 @@ sub bases_process {
     print D Dumper \%stats;
     print D Dumper \%b;
     close(D);
-#    bases_fix(\%b,@log_errors);
+    bases_fix(\%bd,\%b,@log_errors);
     %stats = ();
+    bases_serialize(%b);
+}
+
+sub bases_serialize {
+    my %b = @_;
+    my $res = '';
+    foreach my $b (sort keys %b) {
+	next if $b =~ /\#/;
+	$res .= '; ' if $res;
+	$res .= $b;
+	if (defined $b{"$b#alt"}) {
+	    next if $b =~ /\#/;
+	    $res .= ' (';
+	    $res .= join(', ', keys %{$b{"$b#alt"}});
+	    $res .= ')';
+	}
+    }
+    $res;
+}
+
+sub bases_fix {
+    my($bdref,$bref,@e) = @_;
+    foreach my $e (@e) {
+	if ($e =~ /^primary bases '(.*?)' and '(.*?)' are the same$/) {
+	    bases_same_primary($bdref,$bref,$1,$2);
+	}
+    }
+}
+
+sub bases_same_primary {
+    my($bdref,$bref,$a,$b) = @_;
+    my $pref = bases_prefer($$bdref{'cfgw'},$a,$b);
+    if ($pref) {
+	my $fixme = ($a eq $pref) ? $b : $a;
+	warn("fixing $fixme to belong to $pref\n");
+	# save alternates of $fixme
+	my @alt = ();
+	if (defined $$bref{"$fixme#alt"}) {
+	    @alt = keys %{$$bref{"$fixme#alt"}};
+	    push @alt, $fixme;
+	} else {
+	    push @alt, $fixme;
+	}
+	# delete vbases{$fixme}
+	delete $$bref{$fixme};
+	# add $fixme and all its alternates to $pref
+	# use a hash to do the adds so they get uniq'd at the same time
+	foreach my $a (@alt) {
+	    ++${$$bref{"$pref#alt"}}{$a};
+	}
+    } else {
+	pp_warn("can't fix 'same primary $a and $b'--no stats preference");
+    }
 }
 
 1;
