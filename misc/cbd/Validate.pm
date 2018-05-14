@@ -115,6 +115,7 @@ my %seen_entries = ();
 my $seen_bases = 0;
 my $seen_sense = 0;
 my $seen_morph2 = 0;
+my %tlit_sigs = '';
 my $trace = 0;
 my $vfields = '';
 
@@ -585,8 +586,23 @@ sub v_form {
 		    if ($a) {
 			pp_warn("alt BASE $b should be primary $a");
 			$warned = 1;
+		    } else {
+			# slow but effective check for base match by tlit signature
+			my $tsig = $tlit_sigs{$b};
+			$tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
+			    unless $tsig;
+			foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
+			    my $csig = $tlit_sigs{$c};
+			    $csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
+				unless $csig;
+			    if ($tsig eq $csig) {
+				pp_warn "BASE $b should be $c";				
+				$warned = 1;
+				last;
+			    }
+			}
 		    }
-		    pp_warn("BASE $b not known for `$curr_cfgw'")
+		    pp_warn("BASE $b not known or findable for `$curr_cfgw'")
 			unless $warned;
 		}
 	    }

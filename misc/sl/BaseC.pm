@@ -41,8 +41,7 @@ sub pedantic {
     $pedantic = 1;
 }
 
-sub
-same_tlit {
+sub same_tlit {
     my($context,$test,@against) = @_;
     my $test_sig = _signature($context,tlitsplit($test));
     foreach my $a (@against) {
@@ -50,6 +49,11 @@ same_tlit {
 	return $a if $test_sig eq $a_sig;
     }
     return undef;
+}
+
+sub tlit_sig {
+    my($context,$test,@against) = @_;
+    _signature($context,tlitsplit($test));
 }
 
 sub

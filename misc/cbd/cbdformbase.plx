@@ -18,6 +18,9 @@ while (<>) {
     if (/(.*?):(.*?): alt BASE (\S+) should be primary (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fixbase($file,$line,$alt,$pri);
+    } elsif (/^(.*?):(.*?): BASE (\S+) should be (\S+)\s*$/) {
+	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
+	fixbase($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) compound (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fixbase2($file,$line,$alt,$pri);
@@ -32,7 +35,7 @@ sub fixbase {
     my($f,$l,$a,$p) = @_;
     open_and_load($f) unless $f eq $curr_file;
     my $aQ = quotemeta($a);
-    unless ($lines[$l-1] =~ s#/$aQ\s#/$p #) {
+    unless ($lines[$l-1] =~ s#/$aQ\s#/$p #g) {
 	my $err_l = $l - 1;
 	my $eline = $lines[$l-1]; chomp($eline);
 	warn "no /$a in $curr_file\:$err_l: $eline\n";
@@ -45,15 +48,20 @@ sub fixbase2 {
     my($f,$l,$a,$p) = @_;
     open_and_load($f) unless $f eq $curr_file;
     my $aQ = quotemeta($a);
-    $lines[$l-1] =~ m#/(\S+)#;
-    my $b = $1;
-    my $bound = '(?:[-.{]|$)';
-    unless ($b =~ s#($bound)$aQ($bound)#/$1$p$2#) {
+#    my $b = '';
+#    if ($lines[$l-1] =~ m#/(\S+)#) {
+#	$b = $1;
+#    } else {
+#	$b = $lines[$l-1];
+    #    }
+    my $orig = $lines[$l-1];
+    my $bound = '(?:[-.{} ();,]|$)';    
+    unless ($lines[$l-1] =~ s#($bound)$aQ($bound)#$1$p$2#g) {
 	my $err_l = $l - 1;
 	my $eline = $lines[$l-1]; chomp($eline);
 	warn "no $a in $curr_file\:$err_l: $eline\n";
     } else {
-	warn "fixing $a to /$p\n";
+	warn "---\nin: ${orig}ou: $lines[$l-1]---\n";
     }
 }
 
