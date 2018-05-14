@@ -2,9 +2,11 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/bases_hash bases_log_errors/;
+@EXPORT = qw/bases_hash bases_log bases_log_errors bases_process bases_stats/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
+
+use ORACC::CBD::PPWarn;
 
 my %log_errors = ();
 my %stats = ();
@@ -100,7 +102,7 @@ sub bases_hash {
     %vbases;
 }
 
-sub bases_log_errors {
+sub bases_log{
     my $args = shift;
     open(L,$$args{'log'});
     while (<L>) {
@@ -114,9 +116,31 @@ sub bases_log_errors {
     close(L);
 }
 
+sub bases_log_errors {
+    my $n = shift;
+    if (defined $log_errors{$n}) {
+	@{$log_errors{$n}};
+    } else {
+	()
+    }
+}
+
 sub bases_stats {
     my($cfgw,$base) = @_;
     ++${$stats{$cfgw}}{$base};
+}
+
+sub bases_process {
+    my %bd = @_;
+    my @log_errors = bases_log_errors($bd{'line'});
+    my %b = bases_hash($bd{'data'}, $bd{'compound'});
+    open(D,'>bases.dump');
+    use Data::Dumper;
+    print D Dumper \%stats;
+    print D Dumper \%b;
+    close(D);
+#    bases_fix(\%b,@log_errors);
+    %stats = ();
 }
 
 1;

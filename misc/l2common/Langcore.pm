@@ -11,6 +11,7 @@ my $loaded = 0;
 sub lang_known {
     my $lang = shift;
     $lang =~ s/-.*$//;
+    load_langcore() unless $loaded;
     defined $langcore{$lang};
 }
 

@@ -1,7 +1,7 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of/;
+@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of project_from_header/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -117,6 +117,17 @@ sub pp_sense_of {
 	--$i;
     }
     $i;
+}
+
+sub project_from_header {
+    my $c = shift;
+    my $p = `head -1 $c`;
+    if ($p =~ /^\@project\s+(.*?)\s*$/) {
+	$p = $1;
+    } else {
+	$p = undef;
+    }
+    $p;
 }
 
 1;

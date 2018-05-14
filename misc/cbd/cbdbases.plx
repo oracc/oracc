@@ -7,6 +7,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Bases;
+use ORACC::CBD::Forms;
 
 use Getopt::Long;
 
@@ -36,34 +37,46 @@ foreach my $f (qw/cbd log out/) {
     }
 }
 
+$args{'project'} = project_from_header($args{'cbd'})
+    unless $args{'project'};
+
 pp_file($args{'cbd'});
 my @cbd = pp_load(\%args);
 do_bases(\%args, @cbd);
+pp_diagnostics(\%args);
 
 sub do_bases {
     my($args,@cbd) = @_;
     ($project,$lang) = @$args{qw/project lang/}	;
     my $is_compound = 0;
+    my %base_data = ();
+    my $cfgw = '';
+    my $do_cfgw = 'a [water] N';
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
 	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
-	    my $cfgw = $1;
+	    $cfgw = $1;
 	    $cfgw =~ /^(.*?)\s+\[/;
 	    my $cf = $1;
 	    $is_compound = ($cf =~ tr/ / /);
 	    my @f = forms_by_cfgw($cfgw);
 	    foreach my $f (@f) {
-		$f =~ m#/(\S+)#;
-		++${$stats{$cfgw}}{$1};
+		my $f3 = $$f[3];
+		$f3 =~ m#/(\S+)#;
+		bases_stats($cfgw,$1);
 	    }
-	} elsif ($cbd[$i] =~ /^\@forms/) {
-	    $f =~ m#/(\S+)#;
-	    ++${$stats{$cfgw}}{$1};
-	} elsif ($cbd[$i] =~ /^\@bases/) {
-	    my @log_errors = bases_log_errors($i);
-	    my %b = bases_hash($cbd[$i], $is_compound);
-	    bases_fix(\%b,@log_errors);
+	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
+	    if ($cfgw eq $do_cfgw) {
+		bases_process(%base_data);
+	    }
+	} elsif ($cbd[$i] =~ /^\@form/) {
+	    $cbd[$i] =~ m#/(\S+)#;	    
+	    bases_stats($cfgw,$1);
+	} elsif ($cbd[$i] =~ s/^\@bases\S*\s+//) {
+	    $base_data{'line'} = $i;
+	    $base_data{'data'} = $cbd[$i];
+	    $base_data{'compound'} = $is_compound;
 	}
     }
 }

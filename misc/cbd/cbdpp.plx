@@ -55,7 +55,7 @@ unless ($args{'filter'}) {
     if ($args{'cbd'}) {
 	$lng = $args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
 	$args{'lang'} = $lng unless $args{'lang'};
-	$args{'project'} = project_from_header()
+	$args{'project'} = project_from_header($args{'cbd'})
 	    unless $args{'project'};
     } else {
 	die "cbdpp.plx: must give glossary on command line\n";
@@ -181,16 +181,6 @@ sub pp_zero {
     foreach my $i (@{$ORACC::CBD::Util::data{$func}}) {
 	$cbd[$i] = "\000";
     }
-}
-
-sub project_from_header {
-    my $p = `head -1 $args{'cbd'}`;
-    if ($p =~ /^\@project\s+(.*?)\s*$/) {
-	$p = $1;
-    } else {
-	$p = undef;
-    }
-    $p;
 }
 
 1;
