@@ -129,9 +129,15 @@ sub bases_prefer {
     my($cfgw,$a,$b) = @_;
     if (defined $stats{$cfgw}) {
 	my %s = %{$stats{$cfgw}};
-	if ($s{$a} > $s{$b}) {
+	if ($s{$a} && $s{$b}) {
+	    if ($s{$a} > $s{$b}) {
+		return $a;
+	    } elsif ($s{$b} > $s{$a}) {
+		return $b;
+	    }
+	} elsif ($s{$a}) {
 	    return $a;
-	} elsif ($s{$b} > $s{$a}) {
+	} elsif ($s{$b}) {
 	    return $b;
 	}
     }
@@ -167,7 +173,7 @@ sub bases_serialize {
 	if (defined $b{"$b#alt"}) {
 	    next if $b =~ /\#/;
 	    $res .= ' (';
-	    $res .= join(', ', keys %{$b{"$b#alt"}});
+	    $res .= join(', ', sort keys %{$b{"$b#alt"}});
 	    $res .= ')';
 	}
     }
@@ -190,12 +196,9 @@ sub bases_same_primary {
 	my $fixme = ($a eq $pref) ? $b : $a;
 	warn("fixing $fixme to belong to $pref\n");
 	# save alternates of $fixme
-	my @alt = ();
+	my @alt = ($fixme);
 	if (defined $$bref{"$fixme#alt"}) {
-	    @alt = keys %{$$bref{"$fixme#alt"}};
-	    push @alt, $fixme;
-	} else {
-	    push @alt, $fixme;
+	    push @alt, keys %{$$bref{"$fixme#alt"}};
 	}
 	# delete vbases{$fixme}
 	delete $$bref{$fixme};

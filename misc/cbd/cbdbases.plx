@@ -45,9 +45,18 @@ pp_file($args{'cbd'});
 my @cbd = pp_load(\%args);
 do_bases(\%args, @cbd);
 pp_diagnostics(\%args);
+dump_cbd();
+
+sub dump_cbd {
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	next if $cbd[$i] =~ /^\000$/;
+	print O $cbd[$i], "\n";
+    }
+    close(O);
+}
 
 sub do_bases {
-    my($args,@cbd) = @_;
+    my($args) = @_;
     ($project,$lang) = @$args{qw/project lang/}	;
     my $is_compound = 0;
     my %base_data = ();
@@ -68,10 +77,10 @@ sub do_bases {
 		bases_stats($cfgw,$1);
 	    }
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
-	    if ($cfgw eq $do_cfgw) {
+#	    if ($cfgw eq $do_cfgw) {
 		my $new_bases = bases_process(%base_data);
-		$cbd[$base_data{'line'}] = $new_bases;
-	    }
+		$cbd[$base_data{'line'} - 1] = $new_bases;
+#	    }
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    $cbd[$i] =~ m#/(\S+)#;	    
 	    bases_stats($cfgw,$1);
