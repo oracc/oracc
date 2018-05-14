@@ -208,7 +208,10 @@ sub bases_same_primary {
 	    ++${$$bref{"$pref#alt"}}{$a};
 	}
     } else {
-	pp_warn("can't fix 'same primary $a and $b'--no stats preference");
+	my $ai = ($stats{$$bdref{'cfgw'}} ? ${$stats{$$bdref{'cfgw'}}}{$a} : 0);
+	my $bi = ($stats{$$bdref{'cfgw'}} ? ${$stats{$$bdref{'cfgw'}}}{$b} : 0);
+	
+	pp_warn("can't fix 'same primary $a [$ai] and $b [$bi]'");
     }
 }
 

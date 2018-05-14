@@ -43,7 +43,7 @@ $args{'project'} = project_from_header($args{'cbd'})
 bases_log(\%args);
 pp_file($args{'cbd'});
 my @cbd = pp_load(\%args);
-do_bases(\%args, @cbd);
+@cbd = do_bases(\%args, @cbd);
 pp_diagnostics(\%args);
 dump_cbd();
 
@@ -56,7 +56,7 @@ sub dump_cbd {
 }
 
 sub do_bases {
-    my($args) = @_;
+    my($args,@cbd) = @_;
     ($project,$lang) = @$args{qw/project lang/}	;
     my $is_compound = 0;
     my %base_data = ();
@@ -73,8 +73,11 @@ sub do_bases {
 	    my @f = forms_by_cfgw($cfgw);
 	    foreach my $f (@f) {
 		my $f3 = $$f[3];
+		next if $f3 =~ /_/;
 		$f3 =~ m#/(\S+)#;
-		bases_stats($cfgw,$1);
+		my $b = $1;
+		warn "no base in $f3\n" unless $b;
+		bases_stats($cfgw,$b);
 	    }
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 #	    if ($cfgw eq $do_cfgw) {
@@ -82,8 +85,10 @@ sub do_bases {
 		$cbd[$base_data{'line'} - 1] = $new_bases;
 #	    }
 	} elsif ($cbd[$i] =~ /^\@form/) {
-	    $cbd[$i] =~ m#/(\S+)#;	    
-	    bases_stats($cfgw,$1);
+	    next if $cbd[$i] =~ /_/;
+	    $cbd[$i] =~ m#/(\S+)#;
+	    my $b = $1;
+	    bases_stats($cfgw,$b);
 	} elsif ($cbd[$i] =~ s/^\@bases\S*\s+//) {
 	    $base_data{'line'} = pp_line();
 	    $base_data{'data'} = $cbd[$i];
@@ -91,6 +96,7 @@ sub do_bases {
 	    $base_data{'compound'} = $is_compound;
 	}
     }
+    @cbd;
 }
 
 1;
