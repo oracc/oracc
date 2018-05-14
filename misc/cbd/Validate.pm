@@ -115,7 +115,7 @@ my %seen_entries = ();
 my $seen_bases = 0;
 my $seen_sense = 0;
 my $seen_morph2 = 0;
-my %tlit_sigs = '';
+my %tlit_sigs = ();
 my $trace = 0;
 my $vfields = '';
 
