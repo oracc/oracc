@@ -69,7 +69,7 @@ sub do_bases {
 	    $cfgw = $1;
 	    $cfgw =~ /^(.*?)\s+\[/;
 	    my $cf = $1;
-	    $is_compound = ($cf =~ tr/ / /);
+	    $is_compound = 1 if $cf =~ /\s/;
 	    my @f = forms_by_cfgw($cfgw);
 	    foreach my $f (@f) {
 		my $f3 = $$f[3];
