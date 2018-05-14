@@ -298,12 +298,12 @@ tlitsplit {
     $tlit =~ s/\!\(.*?\)//;
     $tlit =~ tr/?[]#*<>//d;
 
-    if ($csplit) {
+#    if ($csplit) {
 #	$tlit =~ tr/|+/  /;
-    } else {
+#    } else {
 	# protect parens and contained periods in compounds
 	$tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
-    }
+#    }
 
     $tlit =~ s/\%sux://g;
     $tlit =~ tr/-.{}:+/     /;
