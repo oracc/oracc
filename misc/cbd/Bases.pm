@@ -69,7 +69,7 @@ sub bases_hash {
 				# all alternates in this @bases
 				if (defined ${${$vbases{'#alt'}}{$a}}) {
 				    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
-				    pp_warn("alt $a already defined for primary $prevpri\n");
+				    pp_warn("alt $a already defined for primary $prevpri");
 				} else {
 				    ${${$vbases{'#alt'}}{$a}} = $pri;
 				}
@@ -244,6 +244,10 @@ sub bases_fix {
     foreach my $e (@e) {
 	if ($e =~ /^primary bases '(.*?)' and '(.*?)' are the same$/) {
 	    bases_same_primary($bdref,$bref,$1,$2);
+	} elsif ($e =~ /^compound (\S+) should be (\S+)\s*$/) {
+	    bases_sign_should($bdref,$bref,$1,$2);
+	} elsif ($e =~ /^sign name '(\S+)' should be '(\S+)'\s*$/) {
+	    bases_sign_should($bdref,$bref,$1,$2);
 	}
     }
 }
@@ -271,6 +275,46 @@ sub bases_same_primary {
 	my $bi = ($stats{$$bdref{'cfgw'}} ? ${$stats{$$bdref{'cfgw'}}}{$b} : 0);
 	my $cf = $$bdref{'cfgw'}; $cf =~ s/\s.*$//;
 	pp_warn("$$bdref{'cfgw'}: can't fix 'same primary $a [$ai] and $b [$bi]'");
+    }
+}
+
+sub bases_sign_should {
+    my($bdref,$bref,$from,$to) = @_;
+    my $fromQ = quotemeta($from);
+    my $bound = '(?:[-.{]|$)';
+    foreach my $k (keys %$bref) {
+	if (defined $$bref{"$k#alt"}) {
+	    my @a = keys %{$$bref{"$k#alt"}};
+	    my %new_alt = ();
+	    foreach my $a (@a) {
+		my $p = ${$$bref{"$k#alt"}}{$a};
+		my $orig_a = $a;
+		my $orig_p = $p;
+		if ($a =~ s/$fromQ($bound)/$to$1/) {
+		    warn "fixing $from to $to in alt $orig_a\n";
+		}
+		if ($p =~ s/$fromQ($bound)/$to$1/) {
+		    warn "fixing $from to $to in pri $orig_p ref'd from alt $orig_a\n";
+		}
+		$new_alt{$a} = $p;
+	    }
+	    %{$$bref{"$k#alt"}} = %new_alt;
+	}
+    }
+    foreach my $k (keys %$bref) {
+	next if $k =~ /#/;
+	if ($k =~ m/$fromQ/) {
+	    my $new_k = $k;
+	    if ($new_k =~ s/$fromQ($bound)/$to$1/) {
+		warn "fixing $from to $to in $k\n";
+	    }
+	    if (defined $$bref{"$k#alt"}) {
+		$$bref{$new_k} = $$bref{"$k#alt"};
+	    } else {
+		++$$bref{$new_k};
+	    }
+	    delete $$bref{$k};
+	}
     }
 }
 

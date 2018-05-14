@@ -378,7 +378,7 @@ sub v_bases {
 				# all alternates in this @bases
 				if (defined ${${$vbases{'#alt'}}{$a}}) {
 				    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
-				    pp_warn("alt $a already defined for primary $prevpri\n");
+				    pp_warn("alt $a already defined for primary $prevpri");
 				} else {
 				    ${${$vbases{'#alt'}}{$a}} = $pri;
 				}
