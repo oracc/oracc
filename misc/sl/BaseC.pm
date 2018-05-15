@@ -469,7 +469,7 @@ _signature {
     my @nsig = ();
     foreach my $s (@sig) {
 #	warn "sign_of $s ...\n";
-	if ($s eq 'q00') {
+	if ($s =~ /^q[0-9][0-9]/) {
 	    push @nsig, $s;
 	} else {
 	    my $sn = sign_of($s);
