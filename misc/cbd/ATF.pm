@@ -89,7 +89,7 @@ sub cpd_check {
 	pp_line($ln);
 	if ($ret eq 'OK') {
 #	    warn "compound $in OK\n";
-	} elsif ($ret =~ /^OK=(.*?)$/) {
+	} elsif ($ret =~ /^OK=(.*?)$/) {	    
 	    pp_warn("(bases) compound $in should be $1");
 	} elsif ($ret =~ /^OK~(.*?)\s*$/) {
 	    pp_warn("(bases) compound $in should be $1");

@@ -441,6 +441,9 @@ _signature {
 		$sn = $g;
 	    }
 	    my $sn_id = is_form($sn) || is_sign($sn);
+	    if ($sn =~ /ŠE.A.AN/) {
+		warn "$sn => $sn_id\n";
+	    }
 	    unless ($sn_id) {
 		if ($sn !~ /[\|.]/) {
 		    my $tmp = lc($sn);

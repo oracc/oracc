@@ -9,7 +9,8 @@
 
 <xsl:include href="gdl-OATF.xsl"/>
 
-<xsl:key name="signs" match="sl:sign|sl:pname|sl:form" use="@n"/>
+<xsl:key name="signs" match="sl:sign|sl:pname" use="@n"/>
+<xsl:key name="forms" match="sl:form" use="@n"/>
 <xsl:key name="pname" match="sl:pname" use="@n"/>
 <xsl:key name="values" match="sl:v" use="@n"/>
 
@@ -35,8 +36,7 @@
 	</xsl:for-each>
       </xsl:variable>
       <xsl:choose>
-	<xsl:when test="not(@form = $res-form)">
-	  
+	<xsl:when test="not(@form = $res-form)">	  
 	  <xsl:text>OK=</xsl:text><xsl:value-of select="$res-form"/>
 	</xsl:when>
 	<xsl:otherwise>
@@ -56,6 +56,8 @@
 	</xsl:call-template>
       </xsl:variable>
       <xsl:choose>
+	<xsl:when test="@form = $new-form">
+	</xsl:when>
 	<xsl:when test="string-length($res) > 0 and $res = $new-res">
 	  <xsl:text>OK=</xsl:text><xsl:value-of select="$new-form"/>
 	</xsl:when>
@@ -107,21 +109,26 @@
 <xsl:template name="sign-node">
   <xsl:param name="n"/>
   <xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
-    <xsl:variable name="hits" select="key('signs',$n)|key('signs',translate($n,'()',''))"/>
-    <xsl:for-each select="$hits[1]">
-      <xsl:choose>
-	<xsl:when test="@xml:id">
-	  <!--<xsl:message><xsl:value-of select="name()"
-	      /> returning <xsl:value-of select="@xml:id"/></xsl:message>-->
-	  <xsl:value-of select="@xml:id"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <!--<xsl:message><xsl:value-of select="name()"/> returning <xsl:value-of
-	      select="ancestor::sl:sign/@xml:id"/></xsl:message>-->
-	  <xsl:value-of select="ancestor::sl:sign/@xml:id"/>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
+    <xsl:choose>
+      <xsl:when test="count(key('signs',$n)) > 0">
+	<xsl:for-each select="key('signs',$n)[1]">
+	  <xsl:value-of select="ancestor-or-self::sl:sign/@xml:id"/>
+	</xsl:for-each>
+      </xsl:when>
+      <xsl:when test="count(key('forms',$n)) > 0">
+	<xsl:for-each select="key('forms',$n)[1]">
+	  <xsl:value-of select="ancestor-or-self::sl:form/@xml:id"/>
+	</xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:variable name="no-parens" select="translate($n,'()','')"/>
+	<xsl:if test="string-length($n) > string-length($no-parens)">
+	  <xsl:call-template name="sign-node">
+	    <xsl:with-param name="n" select="$no-parens"/>
+	  </xsl:call-template>
+	</xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:for-each>
 </xsl:template>
 
@@ -129,7 +136,14 @@
   <xsl:param name="n"/>
   <xsl:for-each select="document('file:///Users/stinney/orc/xml/ogsl/ogsl.xml')/*">
     <xsl:for-each select="key('values',$n)[1]">
-      <xsl:value-of select="ancestor::sl:sign/@xml:id"/>
+      <xsl:choose>
+	<xsl:when test="string-length(ancestor-or-self::sl:form/@xml:id) > 0">
+	  <xsl:value-of select="ancestor-or-self::sl:form/@xml:id"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="ancestor-or-self::sl:sign/@xml:id"/>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:for-each>
   </xsl:for-each>
 </xsl:template>
