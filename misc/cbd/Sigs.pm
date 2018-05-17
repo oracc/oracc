@@ -513,7 +513,12 @@ sub psu_glo {
 		@e{qw/epos sense/} = ($epos,$sense);
 		foreach my $f (@no_sense_forms) {
 		    my $formlang = '';
-		    my $f3 = $$f[3];
+		    my $f3 = '';
+		    if (ref($f) eq 'ARRAY') {
+			$f3 = $$f[3];
+		    } else {
+			$f3 = $f;
+		    }
 		    if ($f3 =~ s/\s\%([a-z]\S+)//) {
 			$formlang = $1;
 		    }
