@@ -44,7 +44,8 @@ my %validators = (
     alias=>\&v_alias,
     pl_id=>\&v_pl_id,
     pl_uid=>\&v_pl_uid,
-    pl_coord=>\&v_pl_coord
+    pl_coord=>\&v_pl_coord,
+    length=>\&v_length,
     );
 
 use ORACC::L2GLO::Langcore;
@@ -583,7 +584,7 @@ sub v_form {
 	    unless ($bases{$b}) {
 		unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
 		    my $warned = 0;
-		    my $a = ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
+		    my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
 		    if ($a) {
 			pp_warn("alt BASE $b should be primary $a");
 			$warned = 1;
@@ -879,6 +880,10 @@ sub v_pl_uid {
 }
 
 sub v_pl_coord {
+    my($tag,$arg) = @_;
+}
+
+sub v_length {
     my($tag,$arg) = @_;
 }
 

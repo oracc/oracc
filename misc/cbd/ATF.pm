@@ -95,7 +95,7 @@ sub cpd_check {
 	    pp_warn("(bases) compound $in should be $1");
 	} elsif ($ret =~ /^NO:(.*?)\s*$/) {
 	    pp_warn("(bases) compound $in (mapped to $1) not in signlist");
-	} else {
+	} elsif ($ret && length $ret) {
 	    pp_warn("(bases) compound return code $ret unknown");
 	}
     }
