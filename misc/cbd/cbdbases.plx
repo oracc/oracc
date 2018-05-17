@@ -65,6 +65,7 @@ sub do_bases {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
+#	warn pp_line()."\n";
 	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
 	    $cfgw = $1;
 	    $cfgw =~ /^(.*?)\s+\[/;
@@ -74,10 +75,13 @@ sub do_bases {
 	    foreach my $f (@f) {
 		my $f3 = $$f[3];
 		next if $f3 =~ /_/;
-		$f3 =~ m#/(\S+)#;
-		my $b = $1;
-		warn "no base in $f3\n" unless $b;
-		bases_stats($cfgw,$b);
+		# ignore forms with no base
+		if (m#/#) {
+		    $f3 =~ m#/(\S+)#;
+		    my $b = $1;
+		    warn "no base in $f3\n" unless $b;
+		    bases_stats($cfgw,$b);
+		}
 	    }
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 #	    if ($cfgw eq $do_cfgw) {
@@ -86,9 +90,11 @@ sub do_bases {
 #	    }
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    next if $cbd[$i] =~ /_/;
-	    $cbd[$i] =~ m#/(\S+)#;
-	    my $b = $1;
-	    bases_stats($cfgw,$b);
+	    if ($cbd[$i] =~ m#/#) {
+		$cbd[$i] =~ m#/(\S+)#;
+		my $b = $1;
+		bases_stats($cfgw,$b);
+	    }
 	} elsif ($cbd[$i] =~ s/^\@bases\S*\s+//) {
 	    $base_data{'line'} = pp_line();
 	    $base_data{'data'} = $cbd[$i];

@@ -7,8 +7,34 @@ my $from_glos_sig = '01bld/from-glos.sig';
 my $sig_date = (stat($from_glos_sig))[9];
 my $status = 1; # default to not needing update
 
+my @libglo = <00lib/*.glo>;
+my @srcglo = <00src/*.glo>;
+
+my $g2_verb = 0;
+
+sub init_tmp_glo {
+    foreach my $g (@srcglo) {
+	warn "g2: found $g\n" if $g2_verb;
+	my $b = $g; $b =~ s#00src##;
+	unless (-r "01tmp$b") {
+	    warn "g2: creating 01tmp$b from $g\n" if $g2_verb;
+	    system 'cbdpp.plx', $g;
+	}
+    }
+    foreach my $g (@libglo) {
+	warn "g2: found $g\n" if $g2_verb;
+	my $b = $g; $b =~ s#00lib##;
+	unless (-r "01tmp$b") {
+	    warn "g2: creating 01tmp$b from $g\n" if $g2_verb;
+	    system 'cbdpp.plx', $g;
+	}
+    }
+}
+
 if ($g2 eq 'yes') {
-    my $g2_verb = 1;
+    $g2_verb = 1;
+    init_tmp_glo();
+    
     foreach my $g (<01tmp/*.glo>) {
 	my $glo_date = undef;
 	my $lib = $g; $lib =~ s/01tmp/00lib/;
