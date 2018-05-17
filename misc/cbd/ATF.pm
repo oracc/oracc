@@ -15,6 +15,7 @@ sub atf_add {
     my $a = shift;
     if ($a) {
 	$a =~ tr/·°//d;
+	$a =~ s/\\.*$//; # remove disambiguators for checking
 	push @{$atf{pp_line()}}, $a;
     } else {
 	pp_warn("internal error: empty value passed to atf_add")
