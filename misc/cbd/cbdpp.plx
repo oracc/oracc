@@ -105,8 +105,8 @@ if ($ORACC::CBD::Forms::external) {
 }
 
 if (pp_status() && !$args{'force'}) {
-    pp_diagnostics(\%args);
-    die("cbdpp.plx: errors in glossary $args{'cbd'}. Stop.\n");
+    my $ret = pp_diagnostics(\%args);
+    die("cbdpp.plx: $ret errors in glossary $args{'cbd'}. Stop.\n");
 } else {
     
     if ($args{'edit'}) {

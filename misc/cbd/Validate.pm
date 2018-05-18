@@ -179,6 +179,7 @@ sub pp_validate {
 	    pp_warn("invalid line in glossary");
 	}
     }
+    pp_trace("calling atf_check at pp_line()==", pp_line());
     atf_check($project,$lang);
     cpd_check($project,$lang, $$args{'file'});
 #    @{$$data_ref{'edit'}} = @{$data{'edit'}};
@@ -421,6 +422,7 @@ sub v_bases {
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
 	ORACC::SL::BaseC::pedantic(1);
+	pp_trace("BaseC::check: $p");
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	unless (pp_sl_messages($p)) {
 	    if (defined $prisigs{$psig}) {
@@ -442,6 +444,7 @@ sub v_bases {
 	    my $pcode = $vbases{"$p#code"};
 	    foreach my $a (@alts) {
 		ORACC::SL::BaseC::pedantic(0);
+		pp_trace("BaseC::check: $a");
 		my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
@@ -489,6 +492,8 @@ sub v_bases {
 	}
     }
 
+    pp_sl_messages();
+    
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
 	pp_trace Dumper \%ORACC::CBD::bases;
@@ -504,6 +509,7 @@ sub pp_sl_messages {
 		my $novb = $1;
 		next if $m =~ $novb;
 	    }
+	    pp_trace("pp_sl_messages adding message `$m' with pp_line()==",pp_line());
 	    pp_warn("(bases) ".$m);
 	}
 	1
@@ -603,6 +609,7 @@ sub v_form {
 				last;
 			    }
 			}
+			pp_sl_messages();
 		    }
 		    pp_warn("BASE $b not known or findable for `$curr_cfgw'")
 			unless $warned;

@@ -21,13 +21,16 @@ sub flcmp {
 sub pp_diagnostics {
     my $args = shift;
     my @e = sort { &flcmp; } keys %errlist;
+    my $ret = $#e + 1;
     if ($#e >= 0) {
 	foreach my $e (@e) {
 	    warn @{$errlist{$e}};
-	}
+	}	
     } else {
 	warn "$file OK.\n" if $$args{'check'};
+	$ret = 0;
     }
+    $ret;
 }
 
 sub pp_file {
@@ -54,7 +57,7 @@ sub pp_status {
 
 sub pp_trace {
     if ($ORACC::CBD::PPWarn::trace) {
-	warn @_, "\n";
+	warn pp_line(), ':', @_, "\n";
     }
 }
 
