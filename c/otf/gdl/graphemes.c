@@ -806,7 +806,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      if (gp->type == g_c && compound_warnings)
 		{
-		  if ('#' == *curr_lang->signlist)
+		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
 		      if (!psl_is_sname(buf))
 			vwarning("%s: compound not in OGSL",buf);
