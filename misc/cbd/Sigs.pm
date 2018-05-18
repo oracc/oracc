@@ -83,6 +83,7 @@ my @global_cbd = ();
 
 sub sigs_from_glo {
     my($args,@cbd) = @_;
+    $lang = $$args{'lang'};
     sigs_simple(@_);
     sigs_cofs();
     sigs_psus(@_);
@@ -468,9 +469,9 @@ sub psu_index_simple {
 	    push(@{$simple{$keysig}}, $_);
 	}
     }
-    open(S,'>simple.dump');
-    print S Dumper \%simple;
-    close(S);
+#    open(S,'>simple.dump');
+#    print S Dumper \%simple;
+#    close(S);
 }
 
 sub psu_glo {
@@ -886,7 +887,7 @@ validate_parts {
 }
 
 sub psu_dump {
-    open(P, ">01bld/$lang/parts.map");
+    open(P, ">01bld/$lang/parts.map") || die "psu_dump failed to open 01bld/$lang/parts.map\n";
     print P @psu_parts;
     close(P);
 }
@@ -894,9 +895,8 @@ sub psu_dump {
 ######################################################################
 
 sub sigs_dump {
-    mkdir -p "01bld/$lang";
     $sigs_glo_file = "01bld/$lang/from_glo.sig";
-    open(SIGS, ">$sigs_glo_file");
+    open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
     print SIGS "\@fields sig rank\n";
     print SIGS @sigs_simple;
     print SIGS @sigs_cofs;

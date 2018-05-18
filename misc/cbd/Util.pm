@@ -1,7 +1,7 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of header_vals/;
+@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args setup_cbd/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -132,6 +132,55 @@ sub header_vals {
 	}
     }
     @h{qw/project lang name/};
+}
+
+sub setup_args {
+    my ($args,$file) = @_;
+    return undef unless $file;
+    $$args{'cbd'} = $file;
+    my $lng = '';
+    $lng = $$args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
+    $$args{'lang'} = $lng unless $$args{'lang'};
+    my ($h_p,$h_l,$h_n) = header_vals($$args{'cbd'});
+    $$args{'project'} = $h_p
+	unless $$args{'project'};
+    $$args{'lang'} = $h_l
+	unless $$args{'lang'};
+    $$args{'name'} = $h_n
+	unless $$args{'name'};
+    $ORACC::CBD::bases = lang_uses_base($$args{'lang'});
+    $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
+    # Allow files of bare glossary bits for testing
+    if ($$args{'bare'}) {
+	$$args{'lang'} = 'sux' unless $$args{'lang'};
+	$$args{'project'} = 'test' unless $$args{'project'};
+    } else {
+	die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
+	    unless $$args{'project'} && $$args{'lang'};
+    }
+    $$args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$$args{'project'}";
+    system 'mkdir', '-p', "01bld/$$args{'lang'}";
+    $file;
+}
+
+sub setup_cbd {
+    my $args = shift;
+    pp_file($$args{'cbd'});
+    my @cbd = pp_load($args);
+    pp_validate($args, @cbd);
+    if ($ORACC::CBD::Forms::external) {
+	$ORACC::CBD::Forms::external = 0; # so v_form will validate
+	forms_validate();
+	if ($$args{'lang'} =~ /sux|qpn/) {
+	    forms_normify();
+	}
+	$ORACC::CBD::Forms::external = 1;
+	forms_dump();
+    } else {
+	if ($$args{'lang'} =~ /sux|qpn/) {
+	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd);
+	}
+    }
 }
 
 1;

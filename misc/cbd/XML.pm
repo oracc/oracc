@@ -2,7 +2,7 @@ package ORACC::CBD::XML;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_xml/;
+@EXPORT = qw/pp_xml_from_array pp_xml_from_file/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -132,8 +132,12 @@ my %vowel_of = (
     'Û'=>'U',
     );
 
-sub
-pp_xml {
+sub pp_xml_from_file {
+    my $file = shift;
+    
+}
+
+sub pp_xml_from_array {
     #    my($input,$n,$arglang,$title) = @_;
     my ($args, @cbd) = @_;
     my $project = $$args{'project'};

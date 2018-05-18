@@ -25,7 +25,7 @@ if [ "$g2" == "yes" ]; then
     for a in $srcglo ; do
 	cbdpp.plx $a
     done
-    libglo=`ls -1 00src/*.glo | grep -v '~' | grep glo`
+    libglo=`ls -1 00lib/*.glo | grep -v '~' | grep glo`
     for a in $libglo ; do
 	globase=`basename $a`
 	if [ ! -r "00src/$globase" ]; then

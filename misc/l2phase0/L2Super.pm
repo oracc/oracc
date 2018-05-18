@@ -295,7 +295,7 @@ init {
 	chatty("checking $newfile ... ");
 	my $arg_xml = undef;
 	if ($g2) {
-	    
+	    $arg_xml = ORACC::CBD::XML::pp_glo2xml($newfile);
 	} else {
 	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
 	}
