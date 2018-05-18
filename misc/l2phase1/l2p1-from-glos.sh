@@ -11,6 +11,12 @@ rebuild_sigs()
     exit 0
 }
 
+# With G2 from-glos.sig is built directly by cbdpp.plx
+g2=`oraccopt . g2`
+if [ "$g2" == "yes" ]; then
+    exit 0
+fi
+
 projtype=`oraccopt . type`
 if [ "$projtype" == "superglo" ]; then
     l2p1-needs-update.plx

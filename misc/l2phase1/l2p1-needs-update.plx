@@ -46,7 +46,7 @@ if ($g2 eq 'yes') {
 	    $src_date = (stat($lib))[9];
 	    if (!defined($src_date)) {
 		warn "l2p1-needs-update.plx: weird: no $lib or $src for $g\n";
-		continue;
+		next;
 	    } else {
 		$gsrc = $lib;
 	    }
