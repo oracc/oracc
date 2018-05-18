@@ -1484,10 +1484,6 @@ accentify {
 sub
 acc {
     my($vow,$num,$rest) = @_;
-#     warn "acc: looking up '$vow,$num'\n";
-#     use Data::Dumper;
-#     print STDERR Dumper \%recip_acc;
-#     exit;
     my $acc = $recip_acc{$vow,$num};
     if ($acc) {
 	"$acc$rest";

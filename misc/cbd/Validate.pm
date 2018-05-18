@@ -221,6 +221,7 @@ sub v_lang {
 
 sub v_name { 
     my($tag,$arg) = @_;
+    $arg;
 }
 
 sub v_letter {

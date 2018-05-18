@@ -13,6 +13,7 @@ use ORACC::CBD::Geonames;
 use ORACC::CBD::Sigs;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
+use ORACC::CBD::XML;
 
 use Getopt::Long;
 
@@ -33,7 +34,8 @@ use Getopt::Long;
 my %args = ();
 GetOptions(
     \%args,
-    qw/bare check kompounds dry edit filter force lang:s project:s reset sigs trace vfields:s/,
+    qw/bare check kompounds dry edit filter force lang:s output:s project:s 
+       reset sigs trace vfields:s xml/,
     ) || die "unknown arg";
 
 $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -55,8 +57,13 @@ unless ($args{'filter'}) {
     if ($args{'cbd'}) {
 	$lng = $args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
 	$args{'lang'} = $lng unless $args{'lang'};
-	$args{'project'} = project_from_header($args{'cbd'})
+	my ($h_p,$h_l,$h_n) = header_vals($args{'cbd'});
+	$args{'project'} = $h_p
 	    unless $args{'project'};
+	$args{'lang'} = $h_l
+	    unless $args{'lang'};
+	$args{'name'} = $h_n
+	    unless $args{'name'};
     } else {
 	die "cbdpp.plx: must give glossary on command line\n";
     }
@@ -126,11 +133,18 @@ if (pp_status() && !$args{'force'}) {
     }
 }
 
-pp_trace("cbdpp/writing cbd");
-pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
-pp_trace("cbdpp/cbd write complete");
-
-sigs_from_glo(\%args,@cbd);
+if ($args{'xml'}) {
+    my $x = pp_xml(\%args,@cbd);
+    if ($x) {
+	binmode STDOUT, ':raw';
+	print $x->toString();
+    }
+} else {
+    pp_trace("cbdpp/writing cbd");
+    pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
+    pp_trace("cbdpp/cbd write complete");
+    sigs_from_glo(\%args,@cbd);
+}
 
 pp_diagnostics(\%args);
 

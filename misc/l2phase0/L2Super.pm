@@ -293,7 +293,12 @@ init {
 
     if ($newfile) {
 	chatty("checking $newfile ... ");
-	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
+	my $arg_xml = undef;
+	if ($g2) {
+	    
+	} else {
+	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
+	}
 	super_die("errors in $newfile") unless $arg_xml;
 	undef $arg_xml;
 	$return_data{'newfile'} = $newfile;

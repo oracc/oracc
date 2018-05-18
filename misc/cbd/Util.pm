@@ -1,7 +1,7 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of project_from_header/;
+@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of header_vals/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -119,15 +119,19 @@ sub pp_sense_of {
     $i;
 }
 
-sub project_from_header {
-    my $c = shift;
-    my $p = `head -1 $c`;
-    if ($p =~ /^\@project\s+(.*?)\s*$/) {
-	$p = $1;
-    } else {
-	$p = undef;
+sub header_vals {
+    my ($c) = @_;
+    my %h = ();
+    my @p = `head -4 $c`;
+    foreach my $p (@p) {
+	if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {
+	    my($t,$v) = ($1,$2);
+	    $h{$t} = $v;
+	} else {
+	    $p = undef;
+	}
     }
-    $p;
+    @h{qw/project lang name/};
 }
 
 1;
