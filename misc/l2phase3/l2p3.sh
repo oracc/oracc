@@ -7,6 +7,8 @@ if [ "$webdir" == "" ]; then
     exit 1
 fi
 
+cp -f 02xml/config.xml $webdir ; chmod o+r $webdir/config.xml
+
 glostyle=`oraccopt . type`
 if [ "$glostyle" == "superglo" ]; then
     xcf=l2p3-newstyle.xcf

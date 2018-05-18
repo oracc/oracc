@@ -8,10 +8,13 @@ binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
+use ORACC::CBD::XML;
 use POSIX qw(strftime);
 use File::Copy "cp";
 
 use Data::Dumper;
+
+my $g2 = `oraccopt . g2`;
 
 $ORACC::L2P0::L2Super::chatty = 1;
 $ORACC::L2P0::L2Super::qpn_lang = 0;
@@ -251,8 +254,13 @@ init {
 		unless -e $basefile;
 	    super_die("base glossary $basefile can't be read")
 		unless -r $basefile;
-	    chatty("checking $basefile ... ");
-	    my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
+	    chatty("checking base file $basefile ... ");
+	    my $arg_xml = '';
+	    if ($g2) {
+		$arg_xml = ORACC::CBD::XML::pp_xml_from_file($basefile);
+	    } else {
+		$arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
+	    }
 	    super_die("errors in $basefile") unless $arg_xml;
 #	    chatty_ok();
 	    undef $arg_xml;
@@ -270,8 +278,13 @@ init {
     }
 
     if ($srcfile) {
-	chatty("checking $srcfile ... ");
-	my $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
+	chatty("checking src file $srcfile ... ");
+	my $arg_xml = '';
+	if ($g2) {
+	    $arg_xml = ORACC::CBD::XML::pp_xml_from_file($srcfile);
+	} else {
+	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
+	}
 	super_die("errors in $srcfile") unless $arg_xml;
 #	chatty_ok();
 	undef $arg_xml;
@@ -292,10 +305,10 @@ init {
     }
 
     if ($newfile) {
-	chatty("checking $newfile ... ");
+	chatty("checking new file $newfile ... ");
 	my $arg_xml = undef;
 	if ($g2) {
-	    $arg_xml = ORACC::CBD::XML::pp_glo2xml($newfile);
+	    $arg_xml = ORACC::CBD::XML::pp_xml_from_file($newfile);
 	} else {
 	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
 	}
