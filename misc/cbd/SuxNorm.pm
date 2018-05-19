@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 
+my %known_forms = ();
 my %norms = ();
 
 #
@@ -117,7 +118,12 @@ sub normify {
 			    if ($key eq 'n=n[]n') {
 				$lines[$i] .= " \$n";
 			    } else {
-				push @this_parts_errs, "(normify) no NORM for $key";
+				if ($known_forms{$key}) {
+				    push @this_parts_errs, "(normify) no NORM for parts element $key";
+				} else {
+				    my($f,$e) = ($key =~ /^(.*?)=(.*?)$/);
+				    push @this_parts_errs, "(normify) entry $e has no form $f (needed for $form)";
+				}
 			    }
 			}
 		    }
@@ -159,6 +165,8 @@ sub norm_from_m1 {
 sub register_norm {
     my($form,$base,$norm) = @_;
     return unless $form && $base && $norm;
+    ++$known_forms{"$form=$base"};
+#    warn "setting known form $form=$base\n";
     $norms{"$form=$base"} = $norm;
     my $b2 = $base;
     $b2 =~ s/\[(.*?),.*\]/[$1]/;

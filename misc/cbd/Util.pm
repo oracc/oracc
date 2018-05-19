@@ -40,7 +40,6 @@ sub pp_args {
     } else {
 	$args{'cbd'} = '<stdin>';
     }
-
     %args;
 }
 
@@ -210,7 +209,8 @@ sub setup_cbd {
 	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd);
 	}
     }
-    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
+#    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
+    @cbd;
 }
 
 1;

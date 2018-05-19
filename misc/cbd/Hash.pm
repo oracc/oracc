@@ -32,10 +32,11 @@ sub pp_hash {
     my %langnorms = ();
     my $last_tag = '';
     my $use_norms = 0;
+    my @ee = ();
 
     if ($#cbd < 0) {
 	@cbd = setup_cbd($args);	
-	return undef if pp_status();
+	return 0 if pp_status();
     }
 
     my $cbdname = "$$args{'project'}\:$$args{'lang'}";
@@ -100,8 +101,8 @@ sub pp_hash {
 	    }
 	    if ($currtag eq 'end') {
 		if ($currarg eq 'entry') {
-		    $entries{$curr_id,'e'} = %e;
-		    push @{$entries{'entries'}}, { %e };
+		    %{$entries{$curr_id,'e'}} = %e;
+		    push @ee, $curr_id;
 		    %e = ();
 		} else {
 		    pp_warn("malformed end tag: \@end $currarg");
@@ -131,10 +132,10 @@ sub pp_hash {
 		if ($currtag eq 'prop' && $curr_sense_id) {
 		    push @{$sense_props{$curr_sense_id}}, $currarg;
 		} else {
-		    push @{$e{$currtag}}, $currarg
-			unless $currtag eq 'inote';
+		    push @{$e{$currtag}}, $currarg;
+#			unless $currtag eq 'inote';
 		}
-	    }	    
+	    }
 	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
 	    ${$e{'rws_cfs'}}{$1} = $2;
 	} else {
@@ -142,8 +143,11 @@ sub pp_hash {
 	    pp_warn("syntax error near '$_'");
 	}
     }
-
-    %{${$ORACC::CBD::data{"$cbdname"}}{'entries'}} = %entries;
+    ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;
+    %{${$ORACC::CBD::data{$cbdname}}{'header'}} = %h;
+    @{${$ORACC::CBD::data{$cbdname}}{'ids'}} = @ee;
+    %{${$ORACC::CBD::data{$cbdname}}{'entries'}} = %entries;
+    1;
 }
 
 1;

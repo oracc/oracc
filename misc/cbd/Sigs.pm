@@ -3,7 +3,7 @@ package ORACC::CBD::Sigs;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/sigs_from_glo/;
+@EXPORT = qw/sigs_check sigs_from_glo/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -79,22 +79,25 @@ my @global_cbd = ();
 
 ######################################################################################
 
-sub sigs_from_glo {
-    my($args,@cbd) = @_;
+sub sigs_check {
+    my($glo,$args,@cbd) = @_;
     $lang = $$args{'lang'};
-    sigs_simple(@_);
+    sigs_simple($args,@cbd);
     sigs_cofs();
-    sigs_psus(@_);
+    sigs_psus($args,@cbd);
     my $cbdname = "$$args{'project'}\:$$args{'lang'}";
-    if (defined $ORACC::CBD::data{$cbdname}) {
-	my %glodata = %{$ORACC::CBD::data{$cbdname}};
-	@{$glodata{'simple'}} = @sigs_simple;
-	@{$glodata{'cofs'}} = @sigs_cofs;
-	@{$glodata{'psus'}} = @sigs_psus;
+    if ($glo) {
+	@{$$glo{'sigs'}} = @sigs_simple;
+	@{$$glo{'cofs'}} = @sigs_cofs;
+	@{$$glo{'psus'}} = @sigs_psus;
     } else {
 	warn "$0: internal error: CBD data for $cbdname not yet set\n";
     }
-#    sigs_dump() unless $$args{'check'};
+}
+
+sub sigs_from_glo {
+    my($args) = @_;
+    sigs_dump($args) unless $$args{'check'};
 }
 
 ######################################################################################
@@ -468,16 +471,26 @@ sub psu_index_coresigs {
 }
 
 sub psu_index_simple {
+#    print @sigs_simple;
+
     foreach my $s (@sigs_simple) {
 	local($_) = $s;
 	s/\t.*$//;
-	m#=(.*?)\$#;
+	s#//#\000#;
+	s#V/#\001#g;
+	m#=(.*?)[/\$]#; # work with Sum when norm hasn't been done yet by terminating at /BASE or $NORM
 	my $keysig = $1;
+	s#\000#//#;
+	s#\001#V/#g;
+	$keysig =~ s#\000#//#;
+	$keysig =~ s#\001#V/#g;
 	s/\!0x.*$//; # is this the right time to kill COF markers? Or before keysig assignment?
 	if (defined $keysig) {
 	    push(@{$simple{$keysig}}, $_);
 	}
     }
+#    print Dumper \%simple;
+
 #    open(S,'>simple.dump');
 #    print S Dumper \%simple;
 #    close(S);
@@ -502,7 +515,7 @@ sub psu_glo {
 	    $psu_parts = $_;
 	    $psu_parts =~ s/^\@parts\s+//;
 	    chomp $psu_parts;
-	    push @entries_parts_lines, [ pp_line() , $_ ];
+	    push @entries_parts_lines, [ pp_line()-1 , $_ ];
 	} elsif (/^\@form/ && $compound) {
 	    if ($in_sense) {
 		my $formlang = '';
@@ -604,6 +617,8 @@ do_psu {
     }
     unless ($matched_parts) {
 	if ($#parts_errors >= 0) {
+	    my $err = pp_line();
+	    pp_line($err - 1);
 	    pp_warn(@parts_errors)
 		unless $#parts_errors == 0 && $parts_errors[0] eq '#nowarn#';
 	} else {
@@ -723,7 +738,13 @@ parts_match {
       match_pass_1:
 	{
 	    for (my $j = 0; $j <= $#candidates; ++$j) {
-		my($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
+		my($form,$norm) = ();
+		if ($candidates[$j] =~ /\$/) {
+		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
+		} else {
+		    $candidates[$j] =~ m#:(.*?)=#;
+		    ($form,$norm) = ($1,'*');
+		}
 		if ($form && $form eq $forms[$i] 
 		    && ($norm eq '*' || $norms[$i] eq '*' || 
 		    $norm eq $norms[$i])) {
@@ -899,12 +920,15 @@ sub psu_dump {
 ######################################################################
 
 sub sigs_dump {
-    $sigs_glo_file = "01bld/$lang/from_glo.sig";
+    my($args) = @_;
+    $sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
     open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
+    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
-    print SIGS @sigs_simple;
-    print SIGS @sigs_cofs;
-    print SIGS @sigs_psus;
+    print SIGS @{$g{'sigs'}};
+    print SIGS @{$g{'cofs'}};
+    print SIGS @{$g{'psus'}};
     close(SIGS);
     
     open(CORESIGS, ">01bld/$lang/coresigs.txt");

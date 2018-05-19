@@ -52,6 +52,7 @@ use ORACC::L2GLO::Langcore;
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Props;
+use ORACC::CBD::Sigs;
 use ORACC::SL::BaseC;
 use Data::Dumper;
 
@@ -191,6 +192,7 @@ sub pp_validate {
 
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
+    sigs_check(\%glodata,$args,@cbd);
 
     my $cbdname = "$$args{'project'}\:$$args{'lang'}";
     push @{$data{'cbds'}}, $cbdname;
