@@ -102,6 +102,7 @@ sub pp_hash {
 	    if ($currtag eq 'end') {
 		if ($currarg eq 'entry') {
 		    %{$entries{$curr_id,'e'}} = %e;
+		    %{$entries{$curr_id,'l'}} = %line_of;
 		    push @ee, $curr_id;
 		    %e = ();
 		} else {
@@ -140,7 +141,7 @@ sub pp_hash {
 	    ${$e{'rws_cfs'}}{$1} = $2;
 	} else {
 	    chomp;
-	    pp_warn("syntax error near '$_'");
+	    pp_warn("syntax error near '$_'") if /\S/;
 	}
     }
     ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;

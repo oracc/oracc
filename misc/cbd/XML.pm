@@ -2,12 +2,13 @@ package ORACC::CBD::XML;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_xml_from_array pp_xml_from_file/;
+@EXPORT = qw/pp_xml/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::XML;
 use ORACC::NS;
+use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
 
 my %parts_map = ();
@@ -131,18 +132,25 @@ my %vowel_of = (
 
 sub pp_xml {
     #    my($input,$n,$arglang,$title) = @_;
-    my ($args, @cbd) = @_;
-
-    if ($#cbd < 0) {
-	my @cbd = setup_cbd($args);
+    my ($args) = @_;
+    my $cbdname = "$$args{'project'}:$$args{'lang'}";
+    my $hash = $ORACC::CBD::data{$cbdname};
+    if (!$hash) {
+	if (pp_hash($args)) {
+	    $hash = \%{$ORACC::CBD::data{$cbdname}};
+	}
     }
+    return undef unless $hash;
     
     my $project = $$args{'project'};
     my $last_tag = '';
 
     %seen = ();
 
-    $lang = $$args{'lang'};
+    $cbdlang = $lang = $$args{'lang'};
+
+    $cbdid = $lang;
+    $cbdid =~ tr/-/_/;
 
     my ($title,$n) = ();
     ($project, $n, $title, $lang) = (@$args{qw/project name name lang/});
@@ -150,9 +158,15 @@ sub pp_xml {
     $n =~ s/_[^_]+$//;
     my @xml = (xmldecl(),"<entries xmlns=\"http://oracc.org/ns/cbd/1.0\" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\" xml:lang=\"$lang\" g:file=\"$lang.glo\" project=\"$project\" n=\"$n\" name=\"$title\">");
 
-    #### get %e from parser
+    my %entries = %{$$hash{'entries'}};
+    foreach my $id (@{$$hash{'ids'}}) {
+	if ($entries{$id,'e'}) {
+	    push(@xml, acdentry($hash, $id, %{$entries{$id,'e'}}));
+	} else {
+	    warn "$0: weird: no hash for entry $id\n";
+	}
+    }
     
-    push(@xml, acdentry(%e)) if $e{'entry'};
     push(@xml,'</entries>');
 
     if (pp_status()) {
@@ -171,7 +185,7 @@ sub pp_xml {
 
 sub
 acdentry {
-    my %e = @_;
+    my ($hash,$id, %e) = @_;
     my @ret = ();
     my %bases = ();
     my %xbases = ();
@@ -200,21 +214,24 @@ acdentry {
 
     %xids = ();
 
+    my %entries = %{$$hash{'entries'}};
+    my %line_of = %{$entries{$id,'l'}};
+    
     if ($e{'entry'}) {
 	$sid = 0;
 	if ($#{$e{'entry'}} > 0) {
 	    pp_warn("multiple \@entry' fields");
 	} else {
 	    $e = ${$e{'entry'}}[0];
-	    unless ($eid = $entries_index{$e}) {
-		pp_warn("no entries_index for `$e' (this can't happen)");
+	    unless ($eid = $entries{$e}) {
+		pp_warn("no entries eid for `$e' (this can't happen)");
 		return;
 	    }
-	    if ($entries_index{$eid,'bffs'}) {
-		@bffs = @{$entries_index{$eid,'bffs'}};
+	    if ($entries{$eid,'bffs'}) {
+		@bffs = @{$entries{$eid,'bffs'}};
 	    }
-	    if ($entries_index{$eid,'bffs-listed'}) {
-		@bffs_listed = @{$entries_index{$eid,'bffs-listed'}};
+	    if ($entries{$eid,'bffs-listed'}) {
+		@bffs_listed = @{$entries{$eid,'bffs-listed'}};
 	    }
 	    if ($#bffs >= 0 && $#bffs_listed >= 0) {
 		pp_warn("entry with BFFs is also owner of BFFs");
@@ -346,7 +363,7 @@ acdentry {
 	# form/cf/gw in the lemmatized files
 #	my %localfids = ();
 	my $localfid = '000';
-	$field_index = 0;
+	my $field_index = 0;
 	my %seen_forms = ();
 	foreach my $f (@{$e{'form'}}) {
 	    my ($base,$cont,$stem,$morph,$pref,$rws,$morph2) = ();

@@ -1,0 +1,36 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+
+@entry a [water] N
+@bases a
+@form a /a #~
+@sense N water
+@end entry
+
+@entry a šuš [flood] V/t
+@parts a[water]N šuš[cover]V/t
+@bases a šuš₂
+@form a_šuš₂
+@sense V/t to flood
+@inote I made this up
+@end entry
+
+@entry šuš [cover] V/t
+@bases šuš₂; u°šu₂
+@form	šuš₂ /šuš₂ #~
+@form	ušu₂ $(ud) $šuš /u°šu₂ #~
+@sense V/t to cover, to spread over
+@sense V/t to envelop, overwhelm
+@equiv %akk ašāru
+@equiv %akk erēpu
+@isslp 2006 M. Jaques, Vocabulaire des sentiments 355 n747.
+@isslp 1990 T. Krispijn, Akkadica 70 5-6.
+@end entry
+
+@entry ud [sun] N
+@bases ud (u₄); ud-de₃; ud-ud; ud{+u₂}-{+da}da; up; u·šu₂; u₂; u₃; {d}ud
+@form	ušu₂ $ud $(šuš) /u·šu₂ #~
+@sense N day
+@sense N sun
+@end entry

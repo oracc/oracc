@@ -167,8 +167,8 @@ sub setup_args {
     return undef unless $file;
     $$args{'cbd'} = $file;
     my $lng = '';
-    $lng = $$args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
-    $$args{'lang'} = $lng unless $$args{'lang'};
+#    $lng = $$args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
+#    $$args{'lang'} = $lng unless $$args{'lang'};
     my ($h_p,$h_l,$h_n) = header_vals($$args{'cbd'});
     $$args{'project'} = $h_p
 	unless $$args{'project'};

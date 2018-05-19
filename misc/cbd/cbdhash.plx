@@ -7,12 +7,11 @@ use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
-use Data::Dumper;
-
 my %args = pp_args();
 
 if (pp_hash(\%args)) {
     my $cbdname = ${$ORACC::CBD::data{'cbds'}}[0];
+    use Data::Dumper;
     print Dumper \%{$ORACC::CBD::data{$cbdname}};
 } else {
     pp_diagnostics();
