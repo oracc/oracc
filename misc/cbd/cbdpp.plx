@@ -10,15 +10,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Geonames;
-use ORACC::CBD::Sigs;
-use ORACC::CBD::SuxNorm;
-use ORACC::CBD::Validate;
 use ORACC::CBD::XML;
-
-use Getopt::Long;
-
-%ORACC::CBD::bases = ();
-%ORACC::CBD::forms = ();
 
 # bare: no need for a header
 # check: only do validation
@@ -31,16 +23,6 @@ use Getopt::Long;
 # trace: print trace messages 
 # vfields: only validate named fields, plus some essential ones supplied automatically
 
-my %args = ();
-GetOptions(
-    \%args,
-    qw/bare check kompounds dry edit filter force lang:s output:s project:s 
-       reset sigs trace vfields:s xml/,
-    ) || die "unknown arg";
-
-$ORACC::CBD::PPWarn::trace = $args{'trace'};
-$ORACC::CBD::check_compounds = $args{'kompounds'};
-
 my %ppfunc = (
     usage=>\&pp_usage,
     collo=>\&pp_collo,
@@ -50,17 +32,13 @@ my %ppfunc = (
 
 #    sense=>\&pp_geo,
 
-unless ($args{'filter'}) {
-    die "cbdpp.plx: must give glossary on command line\n"
-	unless setup_args(\%args, shift @ARGV);
-} else {
-    $args{'cbd'} = '<stdin>';
-}
+my %args = pp_args();
 
 my @cbd = setup_cbd(\%args);
 
 if (pp_status() && !$args{'force'}) {
     my $ret = pp_diagnostics(\%args);
+    system 'touch', '01bld/cancel';
     die("cbdpp.plx: $ret errors in glossary $args{'cbd'}. Stop.\n");
 } else {
     
@@ -82,7 +60,7 @@ if (pp_status() && !$args{'force'}) {
 }
 
 if ($args{'xml'}) {
-    my $x = pp_xml_from_array(\%args,@cbd);
+    my $x = pp_xml(\%args,@cbd);
     if ($x) {
 	binmode STDOUT, ':raw';
 	print $x->toString();
@@ -91,7 +69,6 @@ if ($args{'xml'}) {
     pp_trace("cbdpp/writing cbd");
     pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
     pp_trace("cbdpp/cbd write complete");
-    sigs_from_glo(\%args,@cbd);
 }
 
 pp_diagnostics(\%args);

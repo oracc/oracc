@@ -1,19 +1,48 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args setup_cbd/;
+@EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args setup_cbd/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my @data = qw/usage collo sense/;
 
-%ORACC::CBD::Util::data = (); @ORACC::CBD::Util::data{@data} = ();
+%ORACC::CBD::data = (); @ORACC::CBD::data{@data} = ();
 
 use ORACC::L2GLO::Langcore;
 use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Sigs;
+use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
+
+use Getopt::Long;
+
+%ORACC::CBD::bases = ();
+%ORACC::CBD::forms = ();
+
+sub pp_args {
+    my %args = ();
+
+    GetOptions(
+	\%args,
+	qw/bare check kompounds dry edit filter force lang:s output:s project:s 
+	reset sigs trace vfields:s xml/,
+	) || die "unknown arg";
+    
+    $ORACC::CBD::PPWarn::trace = $args{'trace'};
+    $ORACC::CBD::check_compounds = $args{'kompounds'};
+    
+    unless ($args{'filter'}) {
+	die "cbdpp.plx: must give glossary on command line\n"
+	    unless setup_args(\%args, shift @ARGV);
+    } else {
+	$args{'cbd'} = '<stdin>';
+    }
+
+    %args;
+}
 
 sub pp_cbd {
     my ($args,@c) = @_;
@@ -86,7 +115,7 @@ sub pp_load {
 		    }
 		    $c[$i] = "\000";
 		}
-		push(@{$ORACC::CBD::Util::data{$tag}}, $i) if exists $ORACC::CBD::Util::data{$tag};
+		push(@{$ORACC::CBD::data{$tag}}, $i) if exists $ORACC::CBD::data{$tag};
 	    } else {
 		$insert = -1;
 	    }
@@ -181,6 +210,7 @@ sub setup_cbd {
 	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd);
 	}
     }
+    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
 }
 
 1;

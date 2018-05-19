@@ -85,9 +85,9 @@ sub edit_apply_script {
 }
 
 sub edit_make_script {
-    return unless defined $ORACC::CBD::Util::data{'edit'};
+    return unless defined $ORACC::CBD::data{'edit'};
     my($args, @c) = @_;
-    my @eds = @{$ORACC::CBD::Util::data{'edit'}};
+    my @eds = @{$ORACC::CBD::data{'edit'}};
     my @s = ();
     warn "status on entry = ", pp_status(), "\n";
     for (my $ed = 0; $ed <= $#eds; ++$ed) {
@@ -141,16 +141,16 @@ sub edit_make_script {
 	}
     }
     unless (pp_status()) {
-	@{$ORACC::CBD::Util::data{'script'}} = @s;	
+	@{$ORACC::CBD::data{'script'}} = @s;	
     } else {
 	warn "non-zero status; no script\n";
     }
 }
 
 sub edit_save_script {
-    if (defined $ORACC::CBD::Util::data{'script'}) {
+    if (defined $ORACC::CBD::data{'script'}) {
 	binmode STDOUT, ':utf8';
-	print join("\n", @{$ORACC::CBD::Util::data{'script'}}), "\n";
+	print join("\n", @{$ORACC::CBD::data{'script'}}), "\n";
     }
 }
 

@@ -158,6 +158,7 @@ sub norm_from_m1 {
 
 sub register_norm {
     my($form,$base,$norm) = @_;
+    return unless $form && $base && $norm;
     $norms{"$form=$base"} = $norm;
     my $b2 = $base;
     $b2 =~ s/\[(.*?),.*\]/[$1]/;

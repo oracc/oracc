@@ -28,7 +28,6 @@ my $in_sense = '';
 my @instsigs = ();
 my $out = '';
 my $lang = '';
-my $project = `oraccopt`;
 
 my @sigs_cofs = ();
 my @sigs_coresigs = ();
@@ -75,7 +74,6 @@ my $finalparens = '(?:\s+\(.*?\)\s*)?';
 
 #$verbose = $psu_verbose = 1;
 
-my %data = ();
 my $trace = 0;
 my @global_cbd = ();
 
@@ -87,17 +85,25 @@ sub sigs_from_glo {
     sigs_simple(@_);
     sigs_cofs();
     sigs_psus(@_);
-    sigs_dump() unless $$args{'check'};
+    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    if (defined $ORACC::CBD::data{$cbdname}) {
+	my %glodata = %{$ORACC::CBD::data{$cbdname}};
+	@{$glodata{'simple'}} = @sigs_simple;
+	@{$glodata{'cofs'}} = @sigs_cofs;
+	@{$glodata{'psus'}} = @sigs_psus;
+    } else {
+	warn "$0: internal error: CBD data for $cbdname not yet set\n";
+    }
+#    sigs_dump() unless $$args{'check'};
 }
 
 ######################################################################################
 
 sub sigs_simple {
     my($args,@cbd) = @_;
-    %data = %ORACC::CBD::Util::data;
     $trace = $ORACC::CBD::PPWarn::trace;
     @global_cbd = @cbd;
-    ($project,$lang) = @$args{qw/project lang/};
+    my($project,$lang) = @$args{qw/project lang/};
 
     my $nsense = 0;
     
@@ -140,7 +146,7 @@ sub sigs_simple {
 	    #
 	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
 		my $lang = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
-		my $instsig1 = "\@$project'}\%$lang:$current_first_base=";
+		my $instsig1 = "\@$project\%$lang:$current_first_base=";
 		my $xsig = "\$$sig{'cf'}/$current_first_base#~";
 		++$noprintsigs{ "$instsig1$coresig\t0\n" };
 	    }
@@ -168,7 +174,7 @@ sub sigs_simple {
 			my $f3 = $$f[3];
 			$f3 =~ s/^(\S+)\s*//;
 			my $orth = $1;
-			sigs_form('',$orth,$f3);
+			sigs_form($args,'',$orth,$f3);
 		    }
 		}
 	    }
@@ -229,7 +235,7 @@ sub sigs_simple {
 	    
 	} elsif (s/^\@form(!?)\s+(\S+)//) {
 
-	    sigs_form($1,$2,$_) unless
+	    sigs_form($args,$1,$2,$_) unless
 		$ORACC::CBD::Forms::external;
 
 	}
@@ -240,6 +246,7 @@ sub sigs_simple {
 }
 
 sub sigs_form {
+    my $args = shift @_;
     my $formbang = $_[0] || '';
     $sig{'form'} = $_[1];
     local($_) = $_[2];
@@ -249,6 +256,8 @@ sub sigs_form {
     my $cof_sig = '';
     my $cof_core = '';
     my $cof_template = '';
+
+    my($project,$lang) = @$args{qw/project lang/};
     
     $formbang = '!' if $entrybang;
     
@@ -447,7 +456,7 @@ sub sigs_psus {
     psu_index_coresigs();
     psu_index_simple();
     psu_glo(@cbd);
-    psu_dump() unless $$args{'check'};
+#    psu_dump() unless $$args{'check'};
 }
 
 sub psu_index_coresigs {
@@ -527,7 +536,7 @@ sub psu_glo {
 		}
 	    } else {
 		chomp;
-		bad("malformed SENSE: $_");
+		pp_warn("malformed SENSE: $_");
 	    }
 	} elsif (/^\@end\s+entry/) {
 	    $compound = 0;
@@ -539,16 +548,6 @@ sub psu_glo {
 
 ####################################################################
 
-sub bad {
-    pp_warn "(psu) ", @_;
-}
-
-sub bad2 {
-    my($lnum,@err) = @_;
-    pp_line($lnum);
-    pp_warn "(psu) ", @err;
-}
-
 sub
 do_psu {
     my($psulang,$formline) = @_;
@@ -557,7 +556,7 @@ do_psu {
 #    my ($forms, $norms) = ($formline =~ /^(\S+)\s*(\S.*)\s*$/);
     my ($forms, $rest) = ($formline =~ /^(\S+)\s*(.*)\s*$/);
     unless ($forms) {
-	bad("syntax error, no forms in \@forms line");
+	pp_warn("syntax error, no forms in \@forms line");
     }
 
     my $psu_form = $forms; $psu_form =~ s/_0/ /g; $psu_form =~ tr/_/ /;
@@ -570,7 +569,7 @@ do_psu {
     }
 
     if ($#forms < $#norms && $#forms > 1 && $#norms > 1 && $forms[0] ne '*') {
-	bad("PSU $psu_parts FORM $formline: please use '_0' to indicate empty FORM elements\n");
+	pp_warn("PSU $psu_parts FORM $formline: please use '_0' to indicate empty FORM elements\n");
 	return;
     } elsif ($#forms < $#norms) {
 	if ($forms[0] eq '*') {
@@ -605,10 +604,10 @@ do_psu {
     }
     unless ($matched_parts) {
 	if ($#parts_errors >= 0) {
-	    bad(@parts_errors)
+	    pp_warn(@parts_errors)
 		unless $#parts_errors == 0 && $parts_errors[0] eq '#nowarn#';
 	} else {
-	    bad("unknown parts processing failure");
+	    pp_warn("unknown parts processing failure");
 	    warn Dumper \%e;
 	    warn "====\n";
 	}
@@ -660,7 +659,7 @@ match_sense {
 		}
 	    }
 	    if ($#m < 0) {
-		bad("$sense matches more than one sense: ", join(', ', keys %s));
+		pp_warn("$sense matches more than one sense: ", join(', ', keys %s));
 	    } else {
 		@m = @new_m;
 	    }
@@ -793,7 +792,8 @@ validate_parts {
 	    if ($gw =~ /\[/) { # the return was a matched coresig, not a simple GW
 		my($xgw,$xsense,$xpos,$xepos) = ($gw =~ m#^.*?\[(.*?)//(.*?)\](.*?)'(.*?)#);
 		if ($pos && $pos != $xpos && $pos != $xepos) {
-		    bad2($lnum,"$pt has wrong POS or EPOS in `$psulang.glo'");
+		    pp_line($lnum);
+		    pp_warn("$pt has wrong POS or EPOS in `$psulang.glo'");
 		    $status = 1;
 		} else {
 		    # Now it will be as though the part contained a full coresig
@@ -810,11 +810,13 @@ validate_parts {
 
 	    my @pt_matches = @{${$psu_cfs{$cf}}{$gw}};
 	    if ($epos) {
-		bad2($lnum,"if you give EPOS in \@parts you must also give POS")
+		pp_line($lnum);
+		pp_warn("if you give EPOS in \@parts you must also give POS")
 		    unless $pos;
 		my @pos_matches = grep(/\]$pos'$epos/, @pt_matches);
 		if ($#pos_matches < 0) {
-		    bad2($lnum,"$pt has wrong POS or EPOS in `$psulang.glo'");
+		    pp_line($lnum);
+		    pp_warn("$pt has wrong POS or EPOS in `$psulang.glo'");
 		} else {
 		    @pt_matches = @pos_matches;
 		}
@@ -824,7 +826,8 @@ validate_parts {
 		if ($#pos_matches < 0) {
 		    @pos_matches = grep /\].*?\'$qpos$/, @pt_matches;
 		    if ($#pos_matches < 0) {
-			bad2($lnum,"$pt has wrong POS in `$psulang.glo'");
+			pp_line($lnum);
+			pp_warn("$pt has wrong POS in `$psulang.glo'");
 		    } else {
 			$epos = $pos;
 			$pos_matches[0] =~ /\](.*?)'/;
@@ -841,7 +844,7 @@ validate_parts {
 	    }
 	    my @sense_matches = match_sense($sense, @pt_matches);
 	    if ($#sense_matches < 0) {
-		bad "$pt should match a SENSE of $cf\[$gw\] in `$psulang.glo' but doesn't";
+		pp_warn("$pt should match a SENSE of $cf\[$gw\] in `$psulang.glo' but doesn't");
 	    } else {
 		@pt_matches = @sense_matches;
 	    }
@@ -875,7 +878,8 @@ validate_parts {
 	    }
 	    push @ret, [ $pt , $csig , @simple_matches ];
 	} else {
-	    bad2($lnum,"$pt does not match a known CF[GW] in `$psulang.glo'");
+	    pp_line($lnum);
+	    pp_warn("$pt does not match a known CF[GW] in `$psulang.glo'");
 	    $status = 1;
 	}
     }

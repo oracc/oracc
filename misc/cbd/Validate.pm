@@ -61,6 +61,8 @@ use Data::Dumper;
 #
 #################################################
 
+my $bid = 'b000001';
+my $eid = 'x000001';
 
 my $acd_chars = '->+=';
 my $acd_rx = '['.$acd_chars.']';
@@ -101,9 +103,10 @@ my %vfields = ();
 my %arg_vfields = ();
 
 my %bases = ();
-my $bid = 0;
+my @bffs = ();
 my $curr_cfgw = '';
 my @global_cbd = ();
+my %entries = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
@@ -137,7 +140,9 @@ my %data = ();
 
 sub pp_validate {
     my($args,@cbd) = @_;
-    %data = %ORACC::CBD::Util::data;
+
+    %data = %ORACC::CBD::data;
+    my %glodata = (); # entries, bffs, psu, etc., for this cbd
     $trace = $ORACC::CBD::PPWarn::trace;
     @global_cbd = @cbd;
     ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
@@ -179,12 +184,25 @@ sub pp_validate {
 	    pp_warn("invalid line in glossary");
 	}
     }
+
     pp_trace("calling atf_check at pp_line()==", pp_line());
     atf_check($project,$lang);
     cpd_check($project,$lang, $$args{'file'});
-#    @{$$data_ref{'edit'}} = @{$data{'edit'}};
-#    $data{'taglists'} = \%tag_lists;
-    %ORACC::CBD::Util::data = %data;
+
+    %{$glodata{'bffs'}} = bff_check();
+    %{$glodata{'entries'}} = %entries;
+
+    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    push @{$data{'cbds'}}, $cbdname;
+    
+    %{$data{$cbdname}} = %glodata;
+
+    # psus?
+
+    # @{$$data_ref{'edit'}} = @{$data{'edit'}};
+    # $data{'taglists'} = \%tag_lists;
+    
+    %ORACC::CBD::data = %data;
 }
 
 sub v_project {
@@ -255,6 +273,11 @@ sub v_entry {
 	} else {
 	    ++$in_entry;
 	    $curr_cfgw = $arg;
+
+	    my $curr_id = $entries{$curr_cfgw} = $eid++;
+	    $entries{$curr_id} = $curr_cfgw;
+	    $entries{$curr_id,'line'} = pp_line()-1;
+	    
 	    ($cf,$gw,$pos) = ($arg =~ /^([^\[]+)\s+(\[[^\]]+\])\s+(\S+)\s*$/);
 	    if (!$cf) {
 		if ($arg =~ /\[/ && $arg !~ /\s\[/) {
@@ -746,7 +769,7 @@ sub v_bff {
     $arg =~ s/\s*$//;
     if ($arg =~ /^["<]/) {
 	pp_warn("missing CLASS in \@bff");
-	return {
+	push @bffs, {
 	    curr_id=>pp_line()-1,
 	    line=>$.,
 	    link=>''
@@ -775,7 +798,7 @@ sub v_bff {
 	    #	    pp_warn("bff is CLASS CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
 	    pp_warn("bff leftovers=$arg (out of order components?)");
 	}
-	return {
+	push @bffs, {
 	    bid=>$bid++,
 	    class=>$class,
 	    code=>$code,
@@ -903,6 +926,37 @@ sub v_set_cfgw {
     $curr_cfgw = $_[0];
     my($cf) = ($curr_cfgw =~ /^(.*?)\s*\[/);
     $is_compound = ($cf =~ /\s/);
+}
+
+sub bff_check {
+    my %bffs = ();
+    foreach my $bff (@bffs) {
+	my %bff = %$bff;
+	pp_line($bff{'line'}+1);
+	if ($bff{'link'}) {
+	    if ($entries{$bff{'link'}}) {
+		if ($entries{$bff{'link'}}) { # SOMETHING WRONG HERE: IS THIS SUPPOSED TO TEST A DIFFERENT MEMBER OF %bff?
+		    $bff{'target'} = $entries{$bff{'link'}};
+		    my $target_id =  $entries{$bff{'target'}};
+		    if ($target_id) {
+			$bffs{$bff{'bid'}} = $bff;
+			push @{$bffs{$target_id}}, $bff{'bid'};
+			push @{$entries{$bff{'ref'},'bffs-listed'}}, $bff{'bid'};
+			push @{$entries{$bff{'target'},'bffs'}}, { %bff };
+		    } else {
+			pp_warn("bff target <$bff{'target'}> has no ID\n");
+		    }
+		} else {
+		    pp_warn("bff link <$bff{'link'}> not known as entry\n");
+		}
+	    } else {
+		pp_warn("unresolved bff link <$bff{'link'}>\n");
+	    }
+	} else {
+	    pp_warn("no <link> found in bff");
+	}
+    }
+    %bffs;
 }
 
 1;

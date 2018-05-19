@@ -69,8 +69,6 @@ my $curr_sig_id = '';
 my $bid = 'b000001';
 my $eid = 'x000001';
 my $e_sig = '';
-my %entries_index = ();
-my $field_index = 0;
 my $sid = 0;
 my %formattr = ();
 my $gdtag = 'gw';
@@ -81,7 +79,6 @@ my $last_char = undef;
 my $mnglang = 'en';
 my %seen = ();
 my $seen_morph2 = '';
-my $status = 0;
 my %xids = ();
 my $last_xid;
 my %line_of = ();
@@ -132,14 +129,14 @@ my %vowel_of = (
     'Û'=>'U',
     );
 
-sub pp_xml_from_file {
-    my $file = shift;
-    
-}
-
-sub pp_xml_from_array {
+sub pp_xml {
     #    my($input,$n,$arglang,$title) = @_;
     my ($args, @cbd) = @_;
+
+    if ($#cbd < 0) {
+	my @cbd = setup_cbd($args);
+    }
+    
     my $project = $$args{'project'};
     my $last_tag = '';
 
@@ -147,196 +144,18 @@ sub pp_xml_from_array {
 
     $lang = $$args{'lang'};
 
-    my @bffs = ();
-    for (my $i = 0; $i <= $#cbd; ++$i) {
-	next if $cbd[$i] =~ /^[#\000]/;
-	pp_line($i+1);
-	local($_) = $cbd[$i];
-	if (s/^\@entry[*!]*\s+//) {
-	    chomp;
-	    s/\s*$//;
-	    $curr_id = $entries_index{$_} = $eid++;
-	    $entries_index{$curr_id} = $_;
-	} elsif (s/^\@bff\s+//) {
-	    my $b = parse_bff($curr_id, $_);
-	    push @bffs, $b;
-	}
-    }
-
-    foreach my $bff (@bffs) {
-	my %bff = %$bff;
-	my $input = $$args{'file'};
-	if ($bff{'link'}) {
-	    if ($entries_index{$bff{'link'}}) {
-		if ($entries_index{$bff{'link'}}) {
-		    $bff{'target'} = $entries_index{$bff{'link'}};
-		    my $target_id = $entries_index{$bff{'target'}};
-		    if ($target_id) {
-			$bffs_index{$bff{'bid'}} = $bff;
-			push @{$bffs_index{$target_id}}, $bff{'bid'};
-			push @{$entries_index{$bff{'ref'},'bffs-listed'}}, $bff{'bid'};
-			push @{$entries_index{$bff{'target'},'bffs'}}, { %bff };
-		    } else {
-			warn("$input:$bff{'line'}: bff target <$bff{'target'}> has no ID\n");
-		    }
-		} else {
-		    warn("$input:$bff{'line'}: bff link <$bff{'link'}> not known as entry\n");
-		}
-	    } else {
-		warn("$input:$bff{'line'}: unresolved bff link <$bff{'link'}>\n");
-	    }
-	} else {
-	    warn("$input:$bff{'line'}: no <link> found in bff");
-	}
-    }
     my ($title,$n) = ();
     ($project, $n, $title, $lang) = (@$args{qw/project name name lang/});
     $n =~ tr#/#_#;
     $n =~ s/_[^_]+$//;
     my @xml = (xmldecl(),"<entries xmlns=\"http://oracc.org/ns/cbd/1.0\" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\" xml:lang=\"$lang\" g:file=\"$lang.glo\" project=\"$project\" n=\"$n\" name=\"$title\">");
-    $status = 0;
-    $cbdlang = $lang if $lang;
-    $cbdid = $cbdlang;
-    $cbdid =~ tr/-/_/;
-    my $currtag = undef;
-    my $currarg = undef;
-    $line_of{'#init'} = 1;
-    my %e = ();
-    $use_norms = $langnorms{$lang};
-    for (my $i = 0; $i <= $#cbd; ++$i) {
-	next if $cbd[$i] =~ /^[#\000]/;
-	pp_line($i+1);
-	local($_) = $cbd[$i];
-	if (/^\@(project|name|lang)\s+(.*?)\s*$/) {
-	    next;
-	}
-	next if /^\#/ || /^\@letter/;
-	chomp;
-	s/\s+/ /g;
-	if (/^\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
-	    ($currtag,$currarg) = ($1,$2);
-	    my $defn_minus = 0;
-	    my $default = $currtag =~ s/!//;
-	    my $starred = $currtag =~ s/\*//;
-	    my $linetag = $currtag;
-	    $linetag =~ s/\*$//;
-	    next if exists $header_fields{$currtag}; # ignore header for now
 
-	    if ($last_tag eq $currtag) {
-		++$field_index;
-	    } else {
-		$field_index = 0;
-		$last_tag = $currtag;
-	    }
-
-	    $line_of{$linetag} = $.
-		unless defined $line_of{$linetag};
-	    if ($currtag =~ /^entry/) {
-		$ebang_flag = $default || '';
-		$usage_flag = $starred;
-		$currarg =~ /^(\S+)/;
-		$curr_cf = $1;
-		$currarg =~ s/^\s+//; $currarg =~ s/\s*$//;
-		$curr_id = $entries_index{$currarg};
-		unless ($curr_id) {
-		    pp_warn("weird; no entries_index entry for `$currarg' (this can't happen)\n");
-		    $curr_id = '';
-		}
-		$line_of{'entry'} = pp_line()-1;
-	    } elsif ($currtag =~ /^defn/) {
-		$defn_minus = ($currtag =~ s/-$//);
-	    }
-	    if ($currtag eq 'end') {
-		if ($currarg eq 'entry') {
-		    push @xml, acdentry(%e);
-		    %e = ();
-		} else {
-		    pp_warn("malformed end tag: \@end $currarg");
-		}
-		%line_of = ();
-		$line_of{'#init'} = pp_line()-1;
-	    } else {
-		if ($currtag eq 'sense') {
-		    my($tok1) = ($currarg =~ /^(\S+)/);
-		    if (!$tok1) {
-			pp_warn("empty SENSE");
-		    } else {
-			pp_warn("$tok1: unknown POS in SENSE") unless exists $poss{$tok1};
-			pp_warn("no content in SENSE") unless $currarg =~ /\s\S/;
-		    }
-		    $curr_sense_id = sprintf("\#%06d",$sense_id++);
-		    my $defbang = ($default ? '!' : '');
-		    $currarg = "$curr_sense_id$defbang\t$currarg";
-		} elsif ($currtag eq 'form') {
-		    my $barecheck = $currarg;
-		    $barecheck =~ s/^(\S+)\s*//;
-		    my $formform = $1;
-		    if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
-			pp_warn("accented grapheme in FORM");
-		    }
-		    if ($formform =~ /[<>]/) {
-			pp_warn("angle brackets are not allowed in FORM");
-		    }
-		    1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
-		    if ($barecheck =~ /\S/) {
-			pp_warn("bare word in FORM. barecheck=$barecheck; currarg=$currarg");
-		    } else {
-			my $tmp = $currarg;
-			$tmp =~ s#\s/(\S+)##; # remove BASE because it may contain '$'s.
-			$tmp =~ s/^\S+\s+//; # remove FORM because it may contain '$'s.
-			my $ndoll = 0;
-			if (($ndoll = ($tmp =~ tr/$/$/)) > 1 
-			    && !defined($e{'parts'})) {
-			    my $nparen = ($tmp =~ s/\$\(//g);
-			    if ($ndoll - $nparen != 1) {
-				pp_warn("COFs must have exactly one NORM without parens");
-			    } elsif ($ndoll < 2) {
-				pp_warn("COFs must have exactly one NORM without parens");
-			    }
-			}
-			if ($currarg =~ s/^\s*<(.*?)>\s+//) {
-			    push @{$sigs{$curr_sense_id}}, $1;
-			}
-			if ($default || $ebang_flag) {
-			    $currarg = "!$currarg";
-			}
-		    }
-		} elsif ($currtag eq 'bff') {
-		}
-		if ($currtag eq 'prop' && $curr_sense_id) {
-		    push @{$sense_props{$curr_sense_id}}, $currarg;
-		} else {
-		    push @{$e{$currtag}}, $currarg
-			unless $currtag eq 'inote';
-		}
-	    }	    
-	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
-	    ${$e{'rws_cfs'}}{$1} = $2;
-	} elsif (/^\s+\S/) {
-	    if ($currtag) {
-		s/^\s+/ /;
-		${$e{$currtag}}[$#{$e{$currtag}}] .= $_;
-	    } else {
-		pp_warn("continuation line before tags");
-	    }
-	} elsif (/^\s*$/) {
-	    # if %e is empty this was multiple blank lines between entries
-	    if (scalar %e) {
-		# if it's non-empty the @end entry is missing
-		pp_warn("missing \@end entry");
-		push(@xml, acdentry(%e));
-		%e = ();
-	    }
-	} else {
-	    chomp;
-	    $line_of{'#init'} = pp_line()-1;
-	    pp_warn("syntax error near '$_'");
-	}
-    }
+    #### get %e from parser
+    
     push(@xml, acdentry(%e)) if $e{'entry'};
     push(@xml,'</entries>');
 
-    if ($status) {
+    if (pp_status()) {
 	return undef;
     }
 
@@ -348,45 +167,6 @@ sub pp_xml_from_array {
 	open(BADLOAD,'>01tmp/bad-load'); print BADLOAD $str; close(BADLOAD);
     }
     $xload;
-}
-
-
-sub
-parse_bff {
-    my ($curr_id, $currarg) = @_;
-    my($class,$code,$label,$link,$target) = ();
-    $currarg =~ s/\s*$//;
-    if ($currarg =~ /^["<]/) {
-	pp_warn("missing CLASS in bff");
-	return {
-	    curr_id=>$curr_id,
-	    line=>$.,
-	    link=>''
-	};
-    } else {
-	($currarg =~ s/^(\S+)\s*//) && ($class = $1);
-	if ($currarg !~ /^["<]/) {
-	    ($currarg =~ s/^(\S+)\s*//) && ($code = $1);
-	}
-	if ($currarg =~ /^"/) {
-	    ($currarg =~ s/^"(.*?)\"\s+//) && ($label = $1);
-	}
-	if ($currarg =~ /^</) {
-	    ($currarg =~ s/<(.*?)>\s*$//) && ($link = $1);
-	}
-	if ($currarg) {
-	    pp_warn("bff is CODE \"LABEL\" <LINK> where CODE and \"LABEL\" are optional");
-	}
-	return {
-	    bid=>$bid++,
-	    class=>$class,
-	    code=>$code,
-	    label=>$label,
-	    link=>$link,
-	    line=>$.,
-	    ref=>$curr_id,
-	};
-    }
 }
 
 sub
