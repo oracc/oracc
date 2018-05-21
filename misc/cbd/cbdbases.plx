@@ -36,8 +36,8 @@ foreach my $f (qw/cbd log out/) {
 	die "cbdbases.plx must give -$f <filename> on command line\n";
     }
 }
-
-$args{'project'} = project_from_header($args{'cbd'})
+my @h = header_vals($args{'cbd'});
+$args{'project'} = $h[0]
     unless $args{'project'};
 
 bases_log(\%args);
@@ -62,6 +62,7 @@ sub do_bases {
     my %base_data = ();
     my $cfgw = '';
     my $do_cfgw = 'a [water] N';
+    my @form_i = ();
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
@@ -71,6 +72,7 @@ sub do_bases {
 	    $cfgw =~ /^(.*?)\s+\[/;
 	    my $cf = $1;
 	    $is_compound = 1 if $cf =~ /\s/;
+	    %base_data = ();
 	    my @f = forms_by_cfgw($cfgw);
 	    foreach my $f (@f) {
 		my $f3 = $$f[3];
@@ -84,16 +86,35 @@ sub do_bases {
 		}
 	    }
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
-#	    if ($cfgw eq $do_cfgw) {
+	    if ($base_data{'data'}) {
+		@{$base_data{'form_i'}} = @form_i;
+		$base_data{'cbd'} = \@cbd;
 		my $new_bases = bases_process(%base_data);
 		$cbd[$base_data{'line'} - 1] = "\@bases $new_bases";
-#	    }
+		my %fixes = bases_fixes();
+		if (scalar keys %fixes > 0) {
+		    foreach my $form_i (@form_i) {
+			my $f = $cbd[$form_i];
+			$f =~ m#/(\S+)#;
+			my $b = $1;
+			if ($b && $fixes{$b}) {
+			    warn "fixing $b to $fixes{$b} in \@form\n";
+			    $f =~ s#/(\S+)#/$fixes{$b}#;
+			    $cbd[$form_i] = $f;
+			}
+		    }
+		}
+	    } else {
+#		warn "no bases in $cfgw at $i\n";
+	    }
+	    @form_i = ();
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    next if $cbd[$i] =~ /_/;
 	    if ($cbd[$i] =~ m#/#) {
 		$cbd[$i] =~ m#/(\S+)#;
 		my $b = $1;
 		bases_stats($cfgw,$b);
+		push @form_i, $i; # we only fix inline forms not external ones
 	    }
 	} elsif ($cbd[$i] =~ s/^\@bases\S*\s+//) {
 	    $base_data{'line'} = pp_line();

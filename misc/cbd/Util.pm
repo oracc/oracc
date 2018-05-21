@@ -93,6 +93,7 @@ sub pp_load {
 
     my $insert = -1;
     for (my $i = 0; $i <= $#c; ++$i) {
+	pp_line($i+1);
 	if ($c[$i] =~ /^$ORACC::CBD::Edit::acd_rx?\@([a-z]+)/) {
 	    my $tag = $1;
 	    if ($tag ne 'end') {
@@ -115,6 +116,7 @@ sub pp_load {
 		    $c[$i] = "\000";
 		}
 		push(@{$ORACC::CBD::data{$tag}}, $i) if exists $ORACC::CBD::data{$tag};
+		$insert = $i;
 	    } else {
 		$insert = -1;
 	    }

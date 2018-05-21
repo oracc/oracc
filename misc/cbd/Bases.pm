@@ -2,14 +2,22 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/bases_hash bases_log bases_log_errors bases_process bases_stats/;
+@EXPORT = qw/bases_hash bases_log bases_log_errors bases_fixes bases_process bases_stats/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 
+my $bound = '(?:[-.{/ ]|$)';
+my %fixes = ();
 my %log_errors = ();
 my %stats = ();
+
+sub bases_fixes {
+    my %tmp = %fixes;
+    %fixes = ();
+    %tmp;
+}
 
 sub bases_hash {
     my($arg,$is_compound) = @_;
@@ -212,11 +220,11 @@ sub bases_process {
     my %bd = @_;
     my @log_errors = bases_log_errors($bd{'line'});
     my %b = bases_hash($bd{'data'}, $bd{'compound'});
-    open(D,'>bases.dump');
-    use Data::Dumper;
-    print D Dumper \%stats;
-    print D Dumper \%b;
-    close(D);
+#    open(D,'>bases.dump');
+#    use Data::Dumper;
+#    print D Dumper \%stats;
+#    print D Dumper \%b;
+#    close(D);
     bases_fix(\%bd,\%b,@log_errors);
     %stats = ();
     bases_serialize(%b);
@@ -258,6 +266,7 @@ sub bases_same_primary {
     if ($pref) {
 	my $fixme = ($a eq $pref) ? $b : $a;
 	warn("fixing $fixme to belong to $pref\n");
+	$fixes{$fixme} = $pref;
 	# save alternates of $fixme
 	my @alt = ($fixme);
 	if (defined $$bref{"$fixme#alt"}) {
@@ -281,7 +290,6 @@ sub bases_same_primary {
 sub bases_sign_should {
     my($bdref,$bref,$from,$to) = @_;
     my $fromQ = quotemeta($from);
-    my $bound = '(?:[-.{]|$)';
     foreach my $k (keys %$bref) {
 	if (defined $$bref{"$k#alt"}) {
 	    my @a = keys %{$$bref{"$k#alt"}};
@@ -292,9 +300,11 @@ sub bases_sign_should {
 		my $orig_p = $p;
 		if ($a =~ s/$fromQ($bound)/$to$1/) {
 		    warn "fixing $from to $to in alt $orig_a\n";
+		    fix_form_bases($bdref,$from,$fromQ,$to);
 		}
 		if ($p =~ s/$fromQ($bound)/$to$1/) {
 		    warn "fixing $from to $to in pri $orig_p ref'd from alt $orig_a\n";
+		    fix_form_bases($bdref,$from,$fromQ,$to);
 		}
 		$new_alt{$a} = $p;
 	    }
@@ -307,6 +317,7 @@ sub bases_sign_should {
 	    my $new_k = $k;
 	    if ($new_k =~ s/$fromQ($bound)/$to$1/) {
 		warn "fixing $from to $to in $k\n";
+		fix_form_bases($bdref,$from,$fromQ,$to);
 	    }
 	    if (defined $$bref{"$k#alt"}) {
 		$$bref{$new_k} = $$bref{"$k#alt"};
@@ -314,6 +325,20 @@ sub bases_sign_should {
 		++$$bref{$new_k};
 	    }
 	    delete $$bref{$k};
+	}
+    }
+}
+
+sub fix_form_bases {
+    my($bd,$from,$fromQ,$to) = @_;
+    if ($$bd{'form_i'}) {
+	my @from_i = @{$$bd{'form_i'}};
+	foreach my $fi (@from_i) {
+	    my $l = ${$$bd{'cbd'}}[$fi];
+	    warn "trying to fix $fromQ in '$l'\n";
+	    if (${$$bd{'cbd'}}[$fi] =~ s/($bound)$fromQ($bound)/$1$to$2/g) {
+		warn "ffb: fixing $from to $to in \@form\n";
+	    }
 	}
     }
 }
