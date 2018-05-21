@@ -169,7 +169,7 @@ sub sigs_simple {
 
 	    if (!$nsense && $ORACC::CBD::Forms::external) {
 
-		my @f = forms_by_cfgw($curr_cfgw);
+		my @f = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
 		if ($#f >= 0) {
 #		    warn "processing $#f+1 external forms for $curr_cfgw\n";
 		    foreach my $f (@f) {
@@ -524,7 +524,7 @@ sub psu_glo {
 	    }
 	} elsif (/^\@sense/ && $compound) {
 	    if ($nsense == 0 && $ORACC::CBD::Forms::external) {
-		@no_sense_forms = forms_by_cfgw($curr_cfgw);
+		@no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
 	    }
 	    $in_sense = 1;
 	    my($epos,$sense) = (/\s(\S+)\s+(.*?)\s*$/);

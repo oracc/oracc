@@ -14,6 +14,9 @@ scriptdata_DATA = sl-TeX.xsl rep-sl.xsl sl-HTML.xsl sl-sort.xsl \
 	sl-ESP-structure.xsl sl-ESP-letters.xsl sl-ESP-signs.xsl \
 	sl-letters-file.xsl sl-tsv.xsl sl-compounds.xsl
 
+sl-compounds.xsl: sl-compounds.xsl.in
+	$(ORACCIFY) sl-compounds.xsl.in
+
 slse: slse.in
 	$(ORACCIFY) slse.in
 

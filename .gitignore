@@ -398,6 +398,7 @@ misc/se/s2-pg2wrapper.plx
 misc/se/s2-pipeline.sh
 misc/se/unit-context.plx
 misc/sl/sametlit.plx
+misc/sl/sl-compounds.xsl
 misc/sma/sma.plx
 misc/system/install-00bin.sh
 misc/system/mk-wrapper.plx
