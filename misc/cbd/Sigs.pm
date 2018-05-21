@@ -472,29 +472,24 @@ sub psu_index_coresigs {
 }
 
 sub psu_index_simple {
-#    print @sigs_simple;
-
     foreach my $s (@sigs_simple) {
 	local($_) = $s;
 	s/\t.*$//;
-	s#//#\000#;
-	s#V/#\001#g;
-	m#=(.*?)[/\$]#; # work with Sum when norm hasn't been done yet by terminating at /BASE or $NORM
-	my $keysig = $1;
-	s#\000#//#;
-	s#\001#V/#g;
-	$keysig =~ s#\000#//#;
-	$keysig =~ s#\001#V/#g;
-	s/\!0x.*$//; # is this the right time to kill COF markers? Or before keysig assignment?
-	if (defined $keysig) {
+	m#^.*?=(.*\'(?:V(?:/[it])?|[A-Z]+)).*$#;	
+	my $keysig = $1; 
+	if ($keysig) {
+	    s#\000#//#;
+	    s#\001#V/#g;
+	    $keysig =~ s#\000#//#;
+	    $keysig =~ s#\001#V/i#g;
+	    $keysig =~ s#\002#V/t#g;
+	    s/\!0x.*$//; # is this the right time to kill COF markers? Or before keysig assignment?
 	    push(@{$simple{$keysig}}, $_);
+	} else {
+	    chomp($s);
+	    pp_warn "internal error: null keysig from $s";
 	}
     }
-#    print Dumper \%simple;
-
-#    open(S,'>simple.dump');
-#    print S Dumper \%simple;
-#    close(S);
 }
 
 sub psu_glo {

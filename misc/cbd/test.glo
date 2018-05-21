@@ -17,14 +17,33 @@
 @end entry
 
 @entry a [arm] N
-@bases a₂
+@bases a₂; a
 @sense N arm
 @sense N wage
 @end entry
 
-@entry a [wage] N
-@bases a₂
-@sense N wage
+@entry a [wafe] N
+@bases a₂; a
+@sense N wafe
+@end entry
+
+@entry e [water] N
+@bases e₄
+@form e₄ /e₄ #~
+@sense N water
+@ok
+@end entry
+
+@entry eš [water] N
+@bases eš₁₀
+@form eš₁₀ /eš₁₀ #~
+@sense N water
+@end entry
+
+@entry šu [cover] V/t
+@bases šu₂
+@form šu₂ /šu₂ #~
+@sense V/t to cover
 @end entry
 
 @entry šuš [cover] V/t

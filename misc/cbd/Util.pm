@@ -195,7 +195,7 @@ sub setup_cbd {
     my $args = shift;
     pp_file($$args{'cbd'});
     my @cbd = pp_load($args);
-    pp_validate($args, @cbd);
+    @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
 	$ORACC::CBD::Forms::external = 0; # so v_form will validate
 	forms_validate();

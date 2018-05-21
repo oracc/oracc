@@ -8,7 +8,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 my @tags = qw/letter entry parts bff bases stems phon root form length norms
               sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid was moved project lang name collo proplist prop/;
+              pl_id pl_uid was moved project lang name collo proplist prop ok/;
 
 my %tags = (); @tags{@tags} = ();
 
@@ -46,6 +46,7 @@ my %validators = (
     pl_uid=>\&v_pl_uid,
     pl_coord=>\&v_pl_coord,
     length=>\&v_length,
+    ok=>\&v_ok,
     );
 
 use ORACC::L2GLO::Langcore;
@@ -115,6 +116,7 @@ my $init_acd = 0;
 my $is_compound = 0;
 my $lang = '';
 my $mixed_morph = 0;
+my %ok = ();
 my $project = '';
 my $status = 0;
 #my %tag_lists = ();
@@ -166,6 +168,11 @@ sub pp_validate {
 	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
 	    my $tag = $1;
+	    if ($tag eq 'ok') {
+		++$ok{$curr_id};
+		$cbd[$i] = "\000";
+		next;
+	    }
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {
@@ -195,6 +202,7 @@ sub pp_validate {
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
     %{$glodata{'basedata'}} = %basedata;
+    %{$glodata{'ok'}} = %ok;
     sigs_check(\%glodata,$args,@cbd);
 
     my $cbdname = "$$args{'project'}\:$$args{'lang'}";
@@ -208,6 +216,8 @@ sub pp_validate {
     # $data{'taglists'} = \%tag_lists;
     
     %ORACC::CBD::data = %data;
+
+    @cbd;
 }
 
 sub v_project {

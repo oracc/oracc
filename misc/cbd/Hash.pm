@@ -141,7 +141,7 @@ sub pp_hash {
 	    ${$e{'rws_cfs'}}{$1} = $2;
 	} else {
 	    chomp;
-	    pp_warn("syntax error near '$_'") if /\S/;
+	    pp_warn("(hash) syntax error near '$_'") if /\S/;
 	}
     }
     ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;
