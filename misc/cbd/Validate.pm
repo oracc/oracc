@@ -104,8 +104,10 @@ my %vfields = ();
 my %arg_vfields = ();
 
 my %bases = ();
+my %basedata = ();
 my @bffs = ();
 my $curr_cfgw = '';
+my $curr_id = '';
 my @global_cbd = ();
 my %entries = ();
 my $in_entry = 0;
@@ -192,6 +194,7 @@ sub pp_validate {
 
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
+    %{$glodata{'basedata'}} = %basedata;
     sigs_check(\%glodata,$args,@cbd);
 
     my $cbdname = "$$args{'project'}\:$$args{'lang'}";
@@ -276,7 +279,7 @@ sub v_entry {
 	    ++$in_entry;
 	    $curr_cfgw = $arg;
 
-	    my $curr_id = $entries{$curr_cfgw} = $eid++;
+	    $curr_id = $entries{$curr_cfgw} = $eid++;
 	    $entries{$curr_id} = $curr_cfgw;
 	    $entries{$curr_id,'line'} = pp_line()-1;
 	    
@@ -458,6 +461,7 @@ sub v_bases {
 		$prisigs{$psig} = $p;
 		$prisigs{$p} = $psig;
 	    }
+	    register_base_sig($p,$psig);
 	}
     }
 
@@ -959,6 +963,11 @@ sub bff_check {
 	}
     }
     %bffs;
+}
+
+sub register_base_sig {
+    my($base,$tsig) = @_;
+    push @{$basedata{$tsig}}, [ $curr_id , $base ];
 }
 
 1;

@@ -33,6 +33,7 @@ my @sigs_cofs = ();
 my @sigs_coresigs = ();
 my @sigs_psus = ();
 my @sigs_simple = ();
+my @psu_parts = ();
 
 my %sig = ();
 my $sigs_glo_file = '';
@@ -90,6 +91,7 @@ sub sigs_check {
 	@{$$glo{'sigs'}} = @sigs_simple;
 	@{$$glo{'cofs'}} = @sigs_cofs;
 	@{$$glo{'psus'}} = @sigs_psus;
+	@{$$glo{'psu_parts'}} = @psu_parts;
     } else {
 	warn "$0: internal error: CBD data for $cbdname not yet set\n";
     }
@@ -438,7 +440,6 @@ permute {
 
 my %psu_cfs = ();
 my %psu_simple = ();
-my @psu_parts = ();
 
 my %e = ();
 my $err_glo = '';

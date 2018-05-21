@@ -145,6 +145,8 @@ sub pp_xml {
     my $project = $$args{'project'};
     my $last_tag = '';
 
+    load_parts_map(@{$$hash{'psu_parts'}});
+    
     %seen = ();
 
     $cbdlang = $lang = $$args{'lang'};
@@ -878,8 +880,6 @@ render_parts {
 
     my $POSrx = '[A-Za-z0-9]+(?:\/[a-z])?';
 
-#    load_parts_map() unless $parts_map_loaded;
-
     if ($parts_map{$cpd}) {
 	@part_sigs = split(/\+\+/, $parts_map{$cpd});
     }
@@ -1005,6 +1005,16 @@ xstem_split {
 	}
     }
     ($norm, [$stem,$func,$restrict]);
+}
+
+sub
+load_parts_map {
+    my @p = @_;
+    foreach my $p (@p) {
+#	warn "$p\n";
+	$p =~ /^(.*?)\t(.*?)$/;
+	$parts_map{$1} = $2;
+    }
 }
 
 1;

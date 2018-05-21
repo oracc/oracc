@@ -16,6 +16,17 @@
 @inote I made this up
 @end entry
 
+@entry a [arm] N
+@bases a₂
+@sense N arm
+@sense N wage
+@end entry
+
+@entry a [wage] N
+@bases a₂
+@sense N wage
+@end entry
+
 @entry šuš [cover] V/t
 @bases šuš₂; u°šu₂
 @form	šuš₂ /šuš₂ #~
