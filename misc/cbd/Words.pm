@@ -12,8 +12,11 @@ use ORACC::CBD::PPWarn;
 use String::Similarity;
 use String::Similarity::Group qw/groups groups_hard/;
 
-my @common = qw/a an and be is of off on or out the to/;
-my %common = (); @common{@common} = ();
+my @common1 = qw/a an in is of or the to/;
+my %common1 = (); @common1{@common1} = ();
+
+my @common2 = qw/and be by designation down for form make off on out part status type up/;
+my %common2 = (); @common2{@common2} = ();
 
 use Data::Dumper;
 
@@ -120,7 +123,9 @@ sub index_meanings {
 	my %t = (); # index of tokens in this entry
 	my($gw) = ($c =~ /\[(.*?)\]/);
 	$gw =~ tr/a-zA-Z0-9 //cd;
-	++$t{"$gw"};
+	foreach my $bit (split(/\s/, $gw)) {
+	    ++$t{$bit};
+	}
 	foreach my $s (@{$e{'sense'}}) {
 	    $s =~ s/^\S+\s+\S+\s+//; # remove sense-id and POS
 	    $s =~ tr/a-zA-Z0-9 //cd;
@@ -128,9 +133,9 @@ sub index_meanings {
 		++$t{"$t"};
 	    }
 	}
+	%t = de_common(%t);
 	foreach my $t (keys %t) {
-	    push (@{$m{$t}}, [ @$eb ])
-		unless exists $common{$t};
+	    push (@{$m{$t}}, [ @$eb ]);
 	}
     }
 
@@ -138,7 +143,7 @@ sub index_meanings {
     
     # now group the words by similarity
     my @w = keys %m;
-    my @g = groups_hard(0.75,\@w);
+    my @g = groups_hard(0.8,\@w);
 #    print M "g_hard= ", Dumper \@g;
 
     # and collect together the cfgws for any grouped words
@@ -182,6 +187,24 @@ sub index_meanings {
  #   print M "m-after-g= ",Dumper \%m;
 
     %m;
+}
+
+sub de_common {
+    my %t = @_;
+    my %n = ();
+    foreach my $t (keys %t) {
+	++$n{$t} unless exists($common1{$t}) || exists($common2{$t});
+    }
+    if (scalar(keys(%n)) == 0) {
+	foreach my $t (keys %t) {
+	    ++$n{$t} unless exists($common1{$t});
+	}	
+    }
+    if (scalar(keys(%n)) == 0) {
+	%t;
+    } else {
+	%n;
+    }
 }
 
 1;
