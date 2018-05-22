@@ -12,7 +12,7 @@ use ORACC::CBD::PPWarn;
 use String::Similarity;
 use String::Similarity::Group qw/groups groups_hard/;
 
-my @common = qw/a and be is of or the to/;
+my @common = qw/a an and be is of off on or out the to/;
 my %common = (); @common{@common} = ();
 
 use Data::Dumper;
