@@ -226,6 +226,8 @@ tokcheck_init()
 	  allow_token(t,prox);
 	  allow_token(t,newline);
 	  allow_token(t,notemark);
+	  allow_token(t,nong);
+	  allow_token(t,icmt);
 	case prox:
 	  allow_token(t,deto);
 	  allow_token(t,g_corr);
