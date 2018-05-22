@@ -33,9 +33,9 @@ sub words_check {
     return undef unless $hash;
 
     %g = %$hash;
-
+#    open(M, '>m.log');
     check_by_base();
-    
+#    close(M);
 }
 
 sub check_by_base {
@@ -115,10 +115,11 @@ sub index_meanings {
     # first collect all the words in the gw/senses
     foreach my $eb (@_) {
 	my $eid = $$eb[0];
-	my $c = ${$g{'entries'}}{$eid};
+	my $c = ${$g{'entries'}}{$eid};	
 	my %e = %{${$g{'entries'}}{$eid,'e'}};
 	my %t = (); # index of tokens in this entry
 	my($gw) = ($c =~ /\[(.*?)\]/);
+#	$gw =~ tr/a-zA-Z0-9 //cd;
 	++$t{"$gw"};
 	foreach my $s (@{$e{'sense'}}) {
 	    $s =~ s/^\S+\s+\S+\s+//; # remove sense-id and POS
@@ -133,25 +134,33 @@ sub index_meanings {
 	}
     }
 
+#    print M "m= ",Dumper \%m;
+    
     # now group the words by similarity
     my @w = keys %m;
     my @g = groups_hard(0.75,\@w);
-    my @ids = ();
+#    print M "g_hard= ", Dumper \@g;
 
     # and collect together the cfgws for any grouped words
+    my %new_m = ();
     foreach my $g (@g) {
+#	print M "m-in-group-loop pre g \[@$g\]= ",Dumper \%m;
 	my @gw = @$g;
 	my $head = join('/',@gw);
+	my @ids = ();
 	foreach my $w (@gw) {
 	    foreach my $x (@{$m{$w}}) {
 		push @ids, [ @$x ];
 	    }
 	    delete $m{$w};
 	}
+#	print M "m-in-group-loop after g= ",Dumper \%m;
+#	print M "ids-in-group-loop= ",Dumper \@ids;
 	my %u = ();
 	foreach my $i (@ids) {
 	    ++$u{"$$i[0]\:$$i[1]"};
 	}
+#	print M "u-in-group-loop= ",Dumper \%u;
 	my %i = ();
 	foreach my $u (keys %u) {
 	    my($id,$tlit) = ($u =~ /^(.*?):(.*?)$/);
@@ -159,12 +168,18 @@ sub index_meanings {
 	}
 	my @newids = ();
 	foreach my $i (sort keys %i) {
-	    foreach my $t (@{$i{$i}}) { # for each of the tlits belonging to this ID
+	    # for each of the tlits belonging to this ID
+	    foreach my $t (@{$i{$i}}) {
 		push @newids, [ $i, $t ];
 	    }
 	}
-	@{$m{$head}} = @newids;
+	@{$new_m{$head}} = @newids;
     }
+    foreach my $n (keys %new_m) {
+	$m{$n} = $new_m{$n};
+    }	
+
+ #   print M "m-after-g= ",Dumper \%m;
 
     %m;
 }
