@@ -86,7 +86,19 @@ sub filter_by_tlit {
     if (scalar keys %t == 1) {
 	return @m; # there is only one distinct tlit for the bases in our set
     }
-    my @g = groups_hard(0.5, [ keys %t ]);
+    my %nodet = ();
+    foreach my $t (keys %t) {
+	my $nd = $t;
+	1 while $nd =~ s/\{.*?\}//;
+	if ($nd) {
+	    push @{$nodet{$nd}}, $t;
+	} else {
+	    push @{$nodet{$t}}, $t;
+	}
+    }
+    
+    #    my @g = groups_hard(0.5, [ keys %t ]);
+    my @g = groups_hard(0.5, [ keys %nodet ]);
     if ($#g < 0) {
 	return (); # none of the tlits in our set grouped together
     }
@@ -96,8 +108,11 @@ sub filter_by_tlit {
 
     my %i = ();
     foreach my $g (@g) {
-	foreach my $t (@$g) {
-	    ++$i{$t};
+	foreach my $nd (@$g) {
+	    my @t = @{$nodet{$nd}};
+	    foreach my $t (@t) {
+		++$i{$t};
+	    }
 	}
     }
 #    print "index: ", Dumper \%i;
