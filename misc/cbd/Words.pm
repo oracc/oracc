@@ -119,7 +119,7 @@ sub index_meanings {
 	my %e = %{${$g{'entries'}}{$eid,'e'}};
 	my %t = (); # index of tokens in this entry
 	my($gw) = ($c =~ /\[(.*?)\]/);
-#	$gw =~ tr/a-zA-Z0-9 //cd;
+	$gw =~ tr/a-zA-Z0-9 //cd;
 	++$t{"$gw"};
 	foreach my $s (@{$e{'sense'}}) {
 	    $s =~ s/^\S+\s+\S+\s+//; # remove sense-id and POS
