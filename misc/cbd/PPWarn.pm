@@ -30,7 +30,7 @@ sub pp_diagnostics {
 	warn "$file OK.\n" if $$args{'check'};
 	$ret = 0;
     }
-    $ret;
+    $status;
 }
 
 sub pp_file {

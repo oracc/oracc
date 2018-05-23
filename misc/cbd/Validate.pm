@@ -154,6 +154,7 @@ sub pp_validate {
     init($vfields);
 
     ORACC::SL::BaseC::init();
+    $ORACC::SL::report_all = 1;
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -520,7 +521,7 @@ sub v_bases {
 	    if ($p =~ tr/|/|/ % 2) {
 		pp_warn("(bases) odd number of pipes in compound");
 	    } else {
-		cpd_add($p);
+		cpd_add($p) unless $p =~ /X/;
 	    }
 	    # warn "#4: $p\n";
 	    # while ($p =~ s/^.*?(\|[^|]+\|)//) {
@@ -549,6 +550,7 @@ sub pp_sl_messages {
 		my $novb = $1;
 		next if $m =~ $novb;
 	    }
+	    next if $p =~ /X/;		
 	    pp_trace("pp_sl_messages adding message `$m' with pp_line()==",pp_line());
 	    pp_warn("(bases) ".$m);
 	}

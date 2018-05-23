@@ -90,22 +90,26 @@ sub do_bases {
 		@{$base_data{'form_i'}} = @form_i;
 		$base_data{'cbd'} = \@cbd;
 		my $new_bases = bases_process(%base_data);
-		$cbd[$base_data{'line'} - 1] = "\@bases $new_bases";
-		my %fixes = bases_fixes();
-		if (scalar keys %fixes > 0) {
-		    foreach my $form_i (@form_i) {
-			my $f = $cbd[$form_i];
-			$f =~ m#/(\S+)#;
-			my $b = $1;
-			if ($b && $fixes{$b}) {
-			    warn "fixing $b to $fixes{$b} in \@form\n";
-			    $f =~ s#/(\S+)#/$fixes{$b}#;
-			    $cbd[$form_i] = $f;
+		if (length $new_bases) {
+		    $cbd[$base_data{'line'} - 1] = "\@bases $new_bases";
+		    my %fixes = bases_fixes();
+		    if (scalar keys %fixes > 0) {
+			foreach my $form_i (@form_i) {
+			    my $f = $cbd[$form_i];
+			    $f =~ m#/(\S+)#;
+			    my $b = $1;
+			    if ($b && $fixes{$b}) {
+				warn "fixing $b to $fixes{$b} in \@form\n";
+				$f =~ s#/(\S+)#/$fixes{$b}#;
+				$cbd[$form_i] = $f;
+			    }
 			}
 		    }
+		} else {
+		    warn "$base_data{'line'}: lost all the bases!\n";
 		}
 	    } else {
-#		warn "no bases in $cfgw at $i\n";
+		#		warn "no bases in $cfgw at $i\n";
 	    }
 	    @form_i = ();
 	} elsif ($cbd[$i] =~ /^\@form/) {

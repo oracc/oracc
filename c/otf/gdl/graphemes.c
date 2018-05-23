@@ -1997,16 +1997,6 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	if (!xstrcmp(np->names->pname,"g:gloss"))
 	  {
 	    suppress_next_hyphen = 1;
-#if 0
-	    if (!xstrcmp(getAttr(np,"g:pos"),"post"))
-	      {
-		/* probably wrong w new g:delim based code */
-		if (insertp[-1] != '+')
-		  *--insertp = '\0'; /* unhyphenate */
-	      }
-	    else
-	      suppress_next_hyphen = 1;
-#endif
 	  }
 	else if (!xstrcmp(np->names->pname,"g:gg"))
 	  {
@@ -2043,7 +2033,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    int i;
 		    /*int last_was_logo = !xstrcmp(gtype,"logo");*/
 		    /* if (!xstrcmp(gtype, "group")) */
-		      ++suppress_hyphen_delay;
+		    /*++suppress_hyphen_delay;*/
 		    for (i = 0; i < np->children.lastused; ++i)
 		      {
 			if (i)
@@ -2084,8 +2074,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
 			  }
 		      }
-		    if (!xstrcmp(gtype, "group"))
-		      --suppress_hyphen_delay;
+		    /* if (!xstrcmp(gtype, "group"))
+		       --suppress_hyphen_delay; */
 		  }
 	      }
 	    else if (!xstrcmp(gtype, "ligature"))
@@ -2196,6 +2186,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  insertp += xxstrlen(xstrcpy(insertp, "x-x-x"));
 	else
 	  {
+	    const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
 	    if (!xstrcmp(getAttr(np,"g:pos"),"post"))
 	      {
 		if (in_split_word)
@@ -2219,6 +2210,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		  }
 		else if (insertp_is_delim())
 		  *--insertp = '\0'; /* unhyphenate */
+		suppress_next_hyphen = 0; /* {d}UR{ki} needs it's suppress cleared */
 	      }
 	    else
 	      suppress_next_hyphen = 1;
@@ -2244,6 +2236,13 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	      *--insertp = '\0'; /* excised determinative */
 	    else
 	      *insertp++ = '}';
+
+	    if (*gdelim)
+	      {
+		const unsigned char *tmp = gdelim;
+		while (*tmp)
+		  *insertp++ = *tmp++;
+	      }
 	  }
 	break;
       case 'o':

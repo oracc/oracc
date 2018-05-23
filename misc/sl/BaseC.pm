@@ -14,6 +14,8 @@ use Encode;
 use Fcntl;
 use NDBM_File;
 
+$ORACC::SL::report_all = 0;
+
 my $db_file = "@@ORACC@@/pub/ogsl";
 my $db_name = 'ogsl';
 
@@ -450,7 +452,7 @@ _signature {
 		    if (($sn_id = is_value($tmp))) {
 			my $nsn = sign_of($sn_id);
 			msg($ctxt, "sign name '$sn' should be '$nsn'")
-			    if $pedantic && !$reported{$g}++;
+			    if $pedantic && (!$reported{$g}++ || $ORACC::SL::report_all);
 			$sn = $nsn;
 			$sn =~ tr/|//d;
 		    }

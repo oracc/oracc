@@ -390,3 +390,19 @@
          <g:s g:logolang="sux" g:role="logo">KA</g:s>
        </g:gg>
      </g:w>
+
+031. %a {d}UR{ki}.GI
+     {d}UR{ki}.GI
+     <g:w form="{d}UR{ki}.GI" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>d</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">UR</g:s>
+         <g:d g:pos="post" g:role="semantic">
+           <g:v g:delim=".">ki</g:v>
+         </g:d>
+         <g:s g:logolang="sux" g:role="logo">GI</g:s>
+       </g:gg>
+     </g:w>
+

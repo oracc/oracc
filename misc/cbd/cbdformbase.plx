@@ -27,6 +27,8 @@ while (<>) {
     } elsif (/^(.*?):(.*?): \(bases\) sign name '(\S+)' should be '(\S+)'\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fixbase2($file,$line,$alt,$pri);
+    } else {
+	warn "nothing to do with $_";
     }
 }
 close_and_dump() if $curr_file;
@@ -55,13 +57,25 @@ sub fixbase2 {
 #	$b = $lines[$l-1];
     #    }
     my $orig = $lines[$l-1];
-    my $bound = '(?:[-.{} ();,]|$)';    
-    unless ($lines[$l-1] =~ s#($bound)$aQ($bound)#$1$p$2#g) {
-	my $err_l = $l - 1;
-	my $eline = $lines[$l-1]; chomp($eline);
-	warn "no $a in $curr_file\:$err_l: $eline\n";
+    my $bound = '[-.{} ();,]';
+    if ($lines[$l-1] =~ /^\@form/) {
+	my ($prebase,$base,$postbase) = $lines[$l-1] =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#;
+	unless ($base =~ s#(^|$bound)$aQ($bound|$)#$1$p$2#g) {
+	    my $err_l = $l - 1;
+	    my $eline = $lines[$l-1]; chomp($eline);
+	    warn "no $a in $curr_file\:$err_l: $eline\n";
+	} else {
+	    $lines[$l-1] = "$prebase/$base $postbase\n";
+	    warn "---\nin: ${orig}ou: $lines[$l-1]---\n";	
+	}
     } else {
-	warn "---\nin: ${orig}ou: $lines[$l-1]---\n";
+	unless ($lines[$l-1] =~ s#(^|$bound)$aQ($bound|$)#$1$p$2#g) {
+	    my $err_l = $l - 1;
+	    my $eline = $lines[$l-1]; chomp($eline);
+	    warn "no $a in $curr_file\:$err_l: $eline\n";
+	} else {
+	    warn "---\nin: ${orig}ou: $lines[$l-1]---\n";	
+	}
     }
 }
 

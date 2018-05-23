@@ -7,8 +7,9 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
+use Data::Dumper;
 
-my $bound = '(?:[-.{/ ]|$)';
+my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
 my %log_errors = ();
 my %stats = ();
@@ -107,6 +108,7 @@ sub bases_hash {
 	    }
 	}
     }
+#    warn Dumper \%vbases;
     %vbases;
 }
 
@@ -194,9 +196,9 @@ sub bases_prefer {
 	return $a;
     } elsif ($bcf eq $cf) {
 	return $b;
-    } elsif ($acf =~ /$cf/ && $b !~ /$cf/) {
+    } elsif ($cf =~ /$acf/ && $cf !~ /$bcf/) {
 	return $a;
-    } elsif ($bcf =~ /$cf/) {
+    } elsif ($cf =~ /$bcf/) {
 	return $b;
     }
     
@@ -207,6 +209,7 @@ sub base_to_cf {
     my $x = shift;
     $x =~ s/\{.*?\}//g;
     $x =~ s/\(.*\)//g;
+    $x =~ s/ₓ.*$//;
     $x =~ tr/-₀₁₂₃₄₅₆₇₈₉ₓ//d;
     $x;
 }
@@ -244,6 +247,9 @@ sub bases_serialize {
 	    $res .= ')';
 	}
     }
+    if (!length($res)) {
+	warn "bases_serialize: empty result from ", Dumper \%b;
+    }
     $res;
 }
 
@@ -273,6 +279,7 @@ sub bases_same_primary {
 	    push @alt, keys %{$$bref{"$fixme#alt"}};
 	}
 	# delete vbases{$fixme}
+#	warn "deleting bref $fixme\n";
 	delete $$bref{$fixme};
 	# add $fixme and all its alternates to $pref
 	# use a hash to do the adds so they get uniq'd at the same time
@@ -299,11 +306,11 @@ sub bases_sign_should {
 		my $orig_a = $a;
 		my $orig_p = $p;
 		if ($a =~ s/$fromQ($bound)/$to$1/) {
-		    warn "fixing $from to $to in alt $orig_a\n";
+#		    warn "fixing $from to $to in alt $orig_a\n";
 		    fix_form_bases($bdref,$from,$fromQ,$to);
 		}
 		if ($p =~ s/$fromQ($bound)/$to$1/) {
-		    warn "fixing $from to $to in pri $orig_p ref'd from alt $orig_a\n";
+#		    warn "fixing $from to $to in pri $orig_p ref'd from alt $orig_a\n";
 		    fix_form_bases($bdref,$from,$fromQ,$to);
 		}
 		$new_alt{$a} = $p;
@@ -318,13 +325,16 @@ sub bases_sign_should {
 	    if ($new_k =~ s/$fromQ($bound)/$to$1/) {
 		warn "fixing $from to $to in $k\n";
 		fix_form_bases($bdref,$from,$fromQ,$to);
+	    } else {
+		warn "failed to fix $fromQ in $new_k\n";
 	    }
+#	    warn "deleting bref k $k\n";
+	    delete $$bref{$k};
 	    if (defined $$bref{"$k#alt"}) {
 		$$bref{$new_k} = $$bref{"$k#alt"};
 	    } else {
 		++$$bref{$new_k};
 	    }
-	    delete $$bref{$k};
 	}
     }
 }
@@ -335,10 +345,21 @@ sub fix_form_bases {
 	my @from_i = @{$$bd{'form_i'}};
 	foreach my $fi (@from_i) {
 	    my $l = ${$$bd{'cbd'}}[$fi];
-	    warn "trying to fix $fromQ in '$l'\n";
-	    if (${$$bd{'cbd'}}[$fi] =~ s/($bound)$fromQ($bound)/$1$to$2/g) {
+#	    warn "trying to fix $fromQ in '$l'\n";
+	    my ($prebase,$base,$postbase) = ($l =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#);
+	    unless ($base =~ s#(^|$bound)$fromQ($bound|$)#$1$to$2#g) {
+		warn "no luck replacing $fromQ in $l\n"
+		    if $base =~ /$fromQ/;
+	    } else {
 		warn "ffb: fixing $from to $to in \@form\n";
+		${$$bd{'cbd'}}[$fi] = "$prebase/$base $postbase";
 	    }
+#	    if (${$$bd{'cbd'}}[$fi] =~ s/($bound)$fromQ($bound)/$1$to$2/g) {
+#		warn "ffb: fixing $from to $to in \@form\n";
+#	    } else {
+#		warn "no luck with $l\n"
+#		    if $l =~ /$fromQ/;
+#	    }
 	}
     }
 }
