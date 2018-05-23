@@ -69,7 +69,7 @@ if ($args{'xml'}) {
 } else {
     pp_trace("cbdpp/writing cbd");
     pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
-    sigs_from_glo(\%args) unless $args{'check'} || pp_status();
+    sigs_from_glo(\%args) unless $args{'check'} || (pp_status() && !$args{'force'});
     pp_trace("cbdpp/cbd write complete");
 }
 

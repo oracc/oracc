@@ -273,7 +273,7 @@ sub sigs_form {
     if (s/\s+\%(\S+)//) {
 	$sig{'lang'} = $1;
 	$sig{'lang'} =~ s#/n$#-949# if $sig{'lang'};
-	warn "sig{lang} = $sig{'lang'}\n";
+#	warn "sig{lang} = $sig{'lang'}\n";
     } else {
 	$sig{'lang'} = $lang;
     }
