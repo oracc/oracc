@@ -12,11 +12,11 @@ my %atf = ();
 my %cpd = ();
 
 sub atf_add {
-    my $a = shift;
+    my ($a,$l) = @_;
     if ($a) {
 	$a =~ tr/·°//d;
 	$a =~ s/\\.*$//; # remove disambiguators for checking
-	push @{$atf{pp_line()}}, $a;
+	push @{$atf{pp_line()}}, $l ? "\%$l $a" : $a;
     } else {
 	pp_warn("internal error: empty value passed to atf_add")
     }

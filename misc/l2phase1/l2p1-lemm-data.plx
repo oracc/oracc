@@ -46,27 +46,34 @@ sub rebuild {
 }
 
 sub update {
-    my $f = "01bld/from-glos.sig";
+    my @f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
+
+    die "l2p1-lemm-data.plx: no signatures files 01bld/*/from-glo.sig\n"
+	unless $#f > 0;
+    
     my %freqs = ();
     my %ranks = ();
     my %sigs = ();
 
     # Harvest sigs and ranks from the project's glossaries
-    die "l2p1-lemm-data.plx: no signatures file $f\n"
-	unless (open(F, $f));
-    while (<F>) {
-	next if /^\@(?:project|name|lang)/ || /^\s*$/;
-	chomp;
-	if (/^\@fields/) {
-	    set_f($_, qw/sig rank/);
-	    next;
+    foreach my $f (@f) {
+	die "l2p1-lemm-data.plx: no signatures file $f\n"
+	    unless (open(F, $f));
+	warn "reading $f ...\n";
+	while (<F>) {
+	    next if /^\@(?:project|name|lang)/ || /^\s*$/;
+	    chomp;
+	    if (/^\@fields/) {
+		set_f($_, qw/sig rank/);
+		next;
+	    }
+	    my @fields = split(/\t/,$_);
+	    ++$sigs{$fields[0]};
+	    $ranks{$fields[0]} = $fields[$rank];
 	}
-	my @fields = split(/\t/,$_);
-	++$sigs{$fields[0]};
-	$ranks{$fields[0]} = $fields[$rank];
-    }    
-    close(F);
-
+	close(F);
+    }
+    
     # Harvest freqs from the last set of lemm-data
     foreach my $l (<02pub/lemm-*.sig>) {
 	open(L,$l) || die "l2p1-lemm-data.plx: can't open `$l' for update\n";
@@ -107,7 +114,7 @@ sub byfreq {
 
 sub dump_lemm {
     foreach my $l (keys %lemmdata) {
-	open(L, ">02pub/lemm-$l.new") 
+	open(L, ">02pub/lemm-$l.sig") 
 	    || die "l2p1-lemm-data.plx: Strange, can't write 02pub/lemm-$l.sig. Stop";
 	print L "\@fields sig rank freq\n";
 	print L sort { &byfreq }  @{$lemmdata{$l}};

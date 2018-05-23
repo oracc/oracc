@@ -581,20 +581,6 @@ sub v_form {
 	&ORACC::CBD::Forms::forms_register_inline(pp_file(), pp_line(), $curr_cfgw, $arg);
 	return;
     }
-    
-    my $barecheck = $arg;
-    $barecheck =~ s/^(\S+)\s*//;
-    my $formform = $1;
-    my $tmpform = $formform; $tmpform =~ tr/_/ /;
-    atf_add($tmpform) if $tmpform;
-
-    if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
-	pp_warn("accented vowels not allowed in \@form");
-    }
-
-    if ($formform =~ /[<>]/) {
-	pp_warn("angle brackets not allowed in \@form");
-    }
 
     my $f = $arg;
     my $flang = '';
@@ -604,11 +590,27 @@ sub v_form {
     } elsif ($lang =~ /^qpn/) {
 	pp_warn("no %LANG in QPN glossary \@form entry");
     }
+    
+    my $barecheck = $arg;
+    $barecheck =~ s/^(\S+)\s*//;
+    my $formform = $1;
+
+    my $tmpform = $formform; $tmpform =~ tr/_/ /;
+    atf_add($tmpform,$flang) if $tmpform;
+
+    if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
+	pp_warn("accented vowels not allowed in \@form");
+    }
+
+    if ($formform =~ /[<>]/) {
+	pp_warn("angle brackets not allowed in \@form");
+    }
 
     my($fo) = ($f =~ /^(\S+)/);
     if ($ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
-	pp_warn("duplicate form in `$curr_cfgw': $fo");
-	return;
+	# can't do this: it's legit to have al-pi $alpi and al-pi $alpī
+#	pp_warn("duplicate form in `$curr_cfgw': $fo");
+#	return;
     }
 
     if ($fo =~ tr/_/ / && !$is_compound) {

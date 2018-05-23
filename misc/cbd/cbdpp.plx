@@ -10,6 +10,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Geonames;
+use ORACC::CBD::Sigs;
 use ORACC::CBD::XML;
 
 # bare: no need for a header

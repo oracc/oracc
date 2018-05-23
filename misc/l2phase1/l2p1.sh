@@ -40,12 +40,12 @@ fi
 l2p1-from-glos.sh
 l2p1-project-sig.plx
 l2p1-lemm-data.plx
-(cd 02pub ; 
- for a in lemm-*.new ; do
-     sig=`basename $a .new`.sig
-     mv $a $sig
- done
-)
+#(cd 02pub ; 
+# for a in lemm-*.new ; do
+#     sig=`basename $a .new`.sig
+#     mv $a $sig
+# done
+#)
 if [ -s 01bld/sortinfo.tab ]; then
     l2p1-sig-invert.plx
 fi

@@ -150,8 +150,8 @@ sub sigs_simple {
 	    # check sigs to see if they already included it, supplying it if not.
 	    #
 	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
-		my $lang = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
-		my $instsig1 = "\@$project\%$lang:$current_first_base=";
+		my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
+		my $instsig1 = "\@$project\%$lng:$current_first_base=";
 		my $xsig = "\$$sig{'cf'}/$current_first_base#~";
 		++$noprintsigs{ "$instsig1$coresig\t0\n" };
 	    }
@@ -220,8 +220,8 @@ sub sigs_simple {
 	    } else {
 		unless ($sig{'cf'} =~ / /) {
 		    if ($current_first_base) {
-			my $lang = ($lang =~ /^qpn/ ? 'sux' : $lang);
-			my $instsig0 = "\@$project\%$lang:$current_first_base";
+			my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
+			my $instsig0 = "\@$project\%$lng:$current_first_base";
 			++$printsigs{ "$instsig0=$coresig\$$sig{'cf'}/$current_first_base#~\t0\n" };
 			$found_simple_sig = 1;
 		    }
@@ -273,6 +273,7 @@ sub sigs_form {
     if (s/\s+\%(\S+)//) {
 	$sig{'lang'} = $1;
 	$sig{'lang'} =~ s#/n$#-949# if $sig{'lang'};
+	warn "sig{lang} = $sig{'lang'}\n";
     } else {
 	$sig{'lang'} = $lang;
     }
@@ -349,7 +350,8 @@ sub sigs_form {
     }
     
     if ($sig{'form'}) {
-	my $instsig1 = "\@$project\%$lang:$sig{'form'}=";
+	my $l = ($sig{'lang'} ? $sig{'lang'} : $lang);
+	my $instsig1 = "\@$project\%$l:$sig{'form'}=";
 	my $instsig2 = '';
 	foreach my $field (@ORACC::L2GLO::Util::instfields) {
 	    $instsig2 .= "$ORACC::L2GLO::Util::fieldchars{$field}$sig{$field}" 
