@@ -406,3 +406,15 @@
        </g:gg>
      </g:w>
 
+032. %a |A.E|-I
+     |A.E|-I
+     <g:w form="|A.E|-I" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:c form="|A.E|" g:logolang="sux" g:role="logo">
+           <g:s>A</g:s>
+           <g:o g:type="beside"></g:o>
+           <g:s g:delim="-">E</g:s>
+         </g:c>
+         <g:s g:logolang="sux" g:role="logo">I</g:s>
+       </g:gg>
+     </g:w>

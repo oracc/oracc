@@ -1889,6 +1889,19 @@ render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp)
   return insertp;
 }
 
+static unsigned char *
+maybe_gdelim(unsigned char *ip, struct node *np)
+{
+  const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
+  if (*gdelim)
+    {
+      const unsigned char *tmp = gdelim;
+      while (*tmp)
+	*ip++ = *tmp++;
+    }
+  return ip;
+}
+
 unsigned char *
 _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const char *FILE, int LINE)
 {
@@ -1992,6 +2005,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    insertp = render_g(np->children.nodes[i], insertp, startp);
 	}
 	*insertp++ = '|';
+	insertp = maybe_gdelim(insertp, np);
 	break;
       case 'g':
 	if (!xstrcmp(np->names->pname,"g:gloss"))
@@ -2033,7 +2047,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    int i;
 		    /*int last_was_logo = !xstrcmp(gtype,"logo");*/
 		    /* if (!xstrcmp(gtype, "group")) */
-		    /*++suppress_hyphen_delay;*/
+		    ++suppress_hyphen_delay;
 		    for (i = 0; i < np->children.lastused; ++i)
 		      {
 			if (i)
@@ -2074,8 +2088,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			    insertp = render_g(np->children.nodes[i],insertp,startp);
 			  }
 		      }
-		    /* if (!xstrcmp(gtype, "group"))
-		       --suppress_hyphen_delay; */
+		    if (!xstrcmp(gtype, "group"))
+		      --suppress_hyphen_delay;
 		  }
 	      }
 	    else if (!xstrcmp(gtype, "ligature"))
