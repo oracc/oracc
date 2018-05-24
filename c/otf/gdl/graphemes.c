@@ -1597,6 +1597,25 @@ last_is_em(const unsigned char *sp, const unsigned char *ip)
   return last_is_em;
 }
 
+static int
+bracketing_ancestor(struct node *np)
+{
+  if (!np)
+    return 0;
+
+  do
+    {
+      if (!xstrcmp(np->names->pname,"g:q")
+	  || !xstrcmp(np->names->pname,"g:d")
+	  || !xstrcmp(np->names->pname,"g:n"))
+	return 1;
+      np = np->parent;
+    }
+  while (np);
+
+  return 0;
+}
+
 static struct grapheme *
 punct(register unsigned char *g)
 {
@@ -2005,7 +2024,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    insertp = render_g(np->children.nodes[i], insertp, startp);
 	}
 	*insertp++ = '|';
-	insertp = maybe_gdelim(insertp, np);
+	if (!np->parent || !bracketing_ancestor(np))
+	  insertp = maybe_gdelim(insertp, np);
 	break;
       case 'g':
 	if (!xstrcmp(np->names->pname,"g:gloss"))

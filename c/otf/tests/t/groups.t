@@ -418,3 +418,17 @@
          <g:s g:logolang="sux" g:role="logo">I</g:s>
        </g:gg>
      </g:w>
+
+033. %a en(|PA.TE|)-gal
+     en(|PA.TE|)-gal
+     <g:w form="en(|PA.TE|)-gal" xml:lang="akk">
+       <g:q form="en(|PA.TE|)">
+         <g:v>en</g:v>
+         <g:c form="|PA.TE|">
+           <g:s>PA</g:s>
+           <g:o g:type="beside"></g:o>
+           <g:s g:delim="-">TE</g:s>
+         </g:c>
+       </g:q>
+       <g:v>gal</g:v>
+     </g:w>
