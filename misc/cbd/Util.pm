@@ -75,8 +75,8 @@ sub pp_cbd {
 	    }
 	}
 	close(CBD);
-	warn "cbdpp: wrote $ldir/$$args{'lang'}/glo\n" 
-	    if $$args{'announce'};
+#	warn "cbdpp: wrote $ldir/$$args{'lang'}/glo\n" 
+#	    if $$args{'announce'};
     }
 }
 

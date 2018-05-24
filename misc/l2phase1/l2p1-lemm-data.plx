@@ -48,8 +48,8 @@ sub rebuild {
 sub update {
     my @f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
 
-    die "l2p1-lemm-data.plx: no signatures files 01bld/*/from-glo.sig\n"
-	unless $#f > 0;
+    die "l2p1-lemm-data.plx: no signatures files 01bld/*/from_glo.sig\n"
+	unless $#f >= 0;
     
     my %freqs = ();
     my %ranks = ();

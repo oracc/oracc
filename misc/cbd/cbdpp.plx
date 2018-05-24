@@ -36,8 +36,8 @@ my %ppfunc = (
 my %args = pp_args();
 
 my @cbd = setup_cbd(\%args);
-warn "cbdpp: working on $args{'cbd'}\n"
-    if $args{'announce'};
+warn "cbdpp: updating $args{'cbd'}\n";
+#    if $args{'announce'};
     
 
 if (pp_status() && !$args{'force'}) {
