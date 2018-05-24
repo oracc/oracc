@@ -23,13 +23,13 @@ if [ "$g2" == "yes" ]; then
 	srcglo=""
     fi
     for a in $srcglo ; do
-	cbdpp.plx $a
+	cbdpp.plx -a $a
     done
     libglo=`ls -1 00lib/*.glo | grep -v '~' | grep glo`
     for a in $libglo ; do
 	globase=`basename $a`
 	if [ ! -r "00src/$globase" ]; then
-	    cbdpp.plx $a
+	    cbdpp.plx -a $a
 	fi
     done
 fi
@@ -39,7 +39,7 @@ fi
 # lem rebuild is necessary so there's not much extra work involved
 l2p1-from-glos.sh
 l2p1-project-sig.plx
-l2p1-lemm-data.plx
+l2p1-lemm-data.plx -u
 #(cd 02pub ; 
 # for a in lemm-*.new ; do
 #     sig=`basename $a .new`.sig

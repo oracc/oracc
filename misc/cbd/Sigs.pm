@@ -928,6 +928,9 @@ sub sigs_dump {
     print SIGS @{$g{'cofs'}};
     print SIGS @{$g{'psus'}};
     close(SIGS);
+
+    warn "cbdpp: sigs written to $sigs_glo_file\n"
+	if $$args{'announce'};
     
     open(CORESIGS, ">01bld/$lang/coresigs.txt");
     print CORESIGS join("\n", @sigs_coresigs), "\n";

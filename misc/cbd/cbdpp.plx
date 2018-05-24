@@ -36,13 +36,16 @@ my %ppfunc = (
 my %args = pp_args();
 
 my @cbd = setup_cbd(\%args);
+warn "cbdpp: working on $args{'cbd'}\n"
+    if $args{'announce'};
+    
 
 if (pp_status() && !$args{'force'}) {
     my $ret = pp_diagnostics(\%args);
     system 'touch', '01bld/cancel';
     die("cbdpp.plx: $ret errors in glossary $args{'cbd'}. Stop.\n");
 } else {
-    
+
     if ($args{'edit'}) {
 	@cbd = edit(\%args, @cbd);
 	pp_diagnostics(\%args);

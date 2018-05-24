@@ -27,7 +27,7 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/bare check kompounds dry edit filter force lang:s output:s project:s 
+	qw/announce bare check kompounds dry edit filter force lang:s output:s project:s 
 	reset sigs trace vfields:s xml/,
 	) || die "unknown arg";
     
@@ -75,6 +75,8 @@ sub pp_cbd {
 	    }
 	}
 	close(CBD);
+	warn "cbdpp: wrote $ldir/$$args{'lang'}/glo\n" 
+	    if $$args{'announce'};
     }
 }
 
