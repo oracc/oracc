@@ -146,6 +146,7 @@ sub pp_hash {
 	    pp_warn("(hash) syntax error near '$_'") if /\S/;
 	}
     }
+    my $cbdname = ORACC::CBD::Util::cbdname();
     ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;
     %{${$ORACC::CBD::data{$cbdname}}{'header'}} = %h;
     @{${$ORACC::CBD::data{$cbdname}}{'ids'}} = @ee;
