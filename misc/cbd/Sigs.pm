@@ -922,7 +922,7 @@ sub sigs_dump {
     my($args) = @_;
     $sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
     open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
-    my $cbdname = cbdname();
+    my $cbdname = ORACC::CBD::Util::cbdname();
     my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
     print SIGS @{$g{'sigs'}};

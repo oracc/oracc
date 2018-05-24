@@ -178,6 +178,7 @@ sub header_vals {
 
 sub header_info {
     my($file,$tag) = @_;
+    return '' unless $file && $tag;
     if (%{$ORACC::CBD::data{'files'}{$file}}) {
 	my %f = %{$ORACC::CBD::data{'files'}};
 	my %h = %{$f{$file}};
@@ -187,7 +188,13 @@ sub header_info {
 }
 
 sub cbdname {
-    project().':'.lang();
+    my $p = project();
+    my $l = lang();
+    if ($p && $l) {
+	return $p.':'.$l;
+    } else {
+	return '';
+    }
 }
 sub projdir {
     header_info(pp_file(),'projdir');

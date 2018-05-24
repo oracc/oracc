@@ -134,11 +134,14 @@ my %vowel_of = (
 sub pp_xml {
     #    my($input,$n,$arglang,$title) = @_;
     my ($args) = @_;
+    my $hash = '';
     my $cbdname = ORACC::CBD::Util::cbdname();
-    my $hash = $ORACC::CBD::data{$cbdname};
-    if (!$hash) {
-	if (pp_hash($args)) {
-	    $hash = \%{$ORACC::CBD::data{$cbdname}};
+    if (!$cbdname || !($hash = $ORACC::CBD::data{$cbdname})) {
+	if (!$hash) {
+	    if (pp_hash($args)) {
+		$cbdname = ORACC::CBD::Util::cbdname();
+		$hash = \%{$ORACC::CBD::data{$cbdname}};
+	    }
 	}
     }
     return undef unless $hash;

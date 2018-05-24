@@ -9,6 +9,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use ORACC::NS;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::CBD::Hash;
 use String::Similarity;
 use String::Similarity::Group qw/groups groups_hard/;
 
@@ -26,11 +27,14 @@ my %g = ();
 
 sub words_check {
     my ($args) = @_;
-    my $cbdname = cbdname();
-    my $hash = $ORACC::CBD::data{$cbdname};
-    if (!$hash) {
-	if (pp_hash($args)) {
-	    $hash = \%{$ORACC::CBD::data{$cbdname}};
+    my $hash = undef;
+    my $cbdname = ORACC::CBD::Util::cbdname();
+    if (!$cbdname || !($hash = $ORACC::CBD::data{$cbdname})) {
+	if (!$hash) {
+	    if (pp_hash($args)) {
+		$cbdname = ORACC::CBD::Util::cbdname();
+		$hash = \%{$ORACC::CBD::data{$cbdname}};
+	    }
 	}
     }
     return undef unless $hash;
