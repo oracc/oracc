@@ -29,7 +29,7 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce bare check kompounds dry edit filter force lang:s output:s project:s 
+	qw/announce bare base:s check kompounds dry edit filter force lang:s output:s project:s 
 	reset sigs trace vfields:s xml/,
 	) || die "unknown arg";
     

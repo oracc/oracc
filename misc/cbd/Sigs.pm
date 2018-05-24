@@ -81,9 +81,33 @@ my @global_cbd = ();
 
 ######################################################################################
 
+sub sigs_init {
+    @sigs_cofs = ();
+    @sigs_coresigs = ();
+    @sigs_psus = ();
+    @sigs_simple = ();
+    @psu_parts = ();
+
+    %sig = ();
+    $sigs_glo_file = '';
+
+    @cof_template_heads = ();
+    @cof_template_tails = ();
+    %cof_heads = ();
+    %cof_tails = ();
+    $compound = 0;
+    $compound_cfgw = '';
+    %compounds = ();
+    %partsigs = ();
+    %parts_map = ();
+    %printsigs = ();
+    @global_cbd = ();
+}
+
 sub sigs_check {
     my($glo,$args,@cbd) = @_;
     $lang = ORACC::CBD::Util::lang();
+    sigs_init();
     sigs_simple($args,@cbd);
     sigs_cofs();
     sigs_psus($args,@cbd);

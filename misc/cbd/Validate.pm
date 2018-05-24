@@ -154,6 +154,16 @@ sub pp_validate {
     ($project,$lang,$vfields) = (ORACC::CBD::Util::project(), ORACC::CBD::Util::lang(), $$args{'vfields'});
     init($vfields);
 
+    $bid = 'b000001';
+    $eid = 'x000001';
+
+    %entries = ();
+    %seen_entries = ();
+    %bases = ();
+    %basedata = ();
+    @bffs = ();
+    %tlit_sigs = ();
+
     ORACC::SL::BaseC::init();
     $ORACC::SL::report_all = 1;
 
@@ -896,7 +906,7 @@ sub v_end {
 	}
     }
     $curr_cfgw = '';
-    $in_entry = $seen_bases = 0;
+    $in_entry = $seen_bases = $seen_morph2 = $seen_sense = 0;
     %bases = ();
 }
 
