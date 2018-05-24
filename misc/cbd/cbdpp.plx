@@ -85,7 +85,7 @@ pp_diagnostics(\%args);
 
 sub pp_collo {
     my $args = shift;
-    my $ndir = "$$args{'projdir'}/02pub";
+    my $ndir = projdir()."/02pub";
     system 'mkdir', '-p', $ndir;
     open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
     foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {

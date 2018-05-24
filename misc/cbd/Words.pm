@@ -7,8 +7,8 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::NS;
-use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 use String::Similarity;
 use String::Similarity::Group qw/groups groups_hard/;
 
@@ -26,7 +26,7 @@ my %g = ();
 
 sub words_check {
     my ($args) = @_;
-    my $cbdname = "$$args{'project'}:$$args{'lang'}";
+    my $cbdname = cbdname();
     my $hash = $ORACC::CBD::data{$cbdname};
     if (!$hash) {
 	if (pp_hash($args)) {

@@ -9,6 +9,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use Data::Dumper;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 use ORACC::CBD::Forms;
 
 use lib "$ENV{'ORACC'}/lib";
@@ -82,11 +83,11 @@ my @global_cbd = ();
 
 sub sigs_check {
     my($glo,$args,@cbd) = @_;
-    $lang = $$args{'lang'};
+    $lang = ORACC::CBD::Util::lang();
     sigs_simple($args,@cbd);
     sigs_cofs();
     sigs_psus($args,@cbd);
-    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    my $cbdname = ORACC::CBD::Util::cbdname();
     if ($glo) {
 	@{$$glo{'sigs'}} = @sigs_simple;
 	@{$$glo{'cofs'}} = @sigs_cofs;
@@ -108,7 +109,7 @@ sub sigs_simple {
     my($args,@cbd) = @_;
     $trace = $ORACC::CBD::PPWarn::trace;
     @global_cbd = @cbd;
-    my($project,$lang) = @$args{qw/project lang/};
+    my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
 
     my $nsense = 0;
     
@@ -262,7 +263,7 @@ sub sigs_form {
     my $cof_core = '';
     my $cof_template = '';
 
-    my($project,$lang) = @$args{qw/project lang/};
+    my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
     
     $formbang = '!' if $entrybang;
     
@@ -921,7 +922,7 @@ sub sigs_dump {
     my($args) = @_;
     $sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
     open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
-    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    my $cbdname = cbdname();
     my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
     print SIGS @{$g{'sigs'}};

@@ -22,6 +22,13 @@ sub lang_uses_base {
     ${$langcore{$lang}}{'BASE'};
 }
 
+sub lang_uses_norm {
+    my $lang = shift;
+    $lang =~ s/-.*$//;
+    load_langcore() unless $loaded;
+    ${$langcore{$lang}}{'NORM'};
+}
+
 sub load_langcore {
     my $langcore_g = "$ENV{'ORACC_BUILDS'}/lib/data/lang_core.g";
     my $inlangs = 0;

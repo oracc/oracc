@@ -49,6 +49,7 @@ my %validators = (
     ok=>\&v_ok,
     );
 
+use ORACC::CBD::Util;
 use ORACC::L2GLO::Langcore;
 use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
@@ -150,7 +151,7 @@ sub pp_validate {
     my %glodata = (); # entries, bffs, psu, etc., for this cbd
     $trace = $ORACC::CBD::PPWarn::trace;
     @global_cbd = @cbd;
-    ($project,$lang,$vfields) = @$args{qw/project lang vfields/};
+    ($project,$lang,$vfields) = (ORACC::CBD::Util::project(), ORACC::CBD::Util::lang(), $$args{'vfields'});
     init($vfields);
 
     ORACC::SL::BaseC::init();
@@ -206,7 +207,7 @@ sub pp_validate {
     %{$glodata{'ok'}} = %ok;
     sigs_check(\%glodata,$args,@cbd);
 
-    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
+    my $cbdname = ORACC::CBD::Util::cbdname();
     push @{$data{'cbds'}}, $cbdname;
     
     %{$data{$cbdname}} = %glodata;

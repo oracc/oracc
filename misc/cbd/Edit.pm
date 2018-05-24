@@ -32,7 +32,7 @@ sub edit {
 
 sub cache_check {
     my ($args,@cache) = @_; 
-    my $glofile = ".cbdpp/$$args{'lang'}.glo";
+    my $glofile = ".cbdpp/".ORACC::CBD::Util::lang().".glo";
     my $ok = 0;
     if ($$args{'reset'}) {
 	pp_trace("Edit/cache_check -- reset requested");
@@ -72,7 +72,7 @@ sub cache_diff {
 sub cache_stash {
     my $args = shift @_;
     my @c = c11e($args, @_);
-    my $glofile = ".cbdpp/$$args{'lang'}.glo";
+    my $glofile = ".cbdpp/".ORACC::CBD::Util::lang()."glo";
     system 'mkdir', '-p', '.cbdpp';
     open(C,">$glofile") || die "cbdpp/Edit: can't write cache $glofile\n";
     print C join("\n", @c), "\n";

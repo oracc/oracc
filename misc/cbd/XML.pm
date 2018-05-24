@@ -10,6 +10,7 @@ use ORACC::XML;
 use ORACC::NS;
 use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 
 my %parts_map = ();
 my $parts_map_loaded = 0;
@@ -133,7 +134,7 @@ my %vowel_of = (
 sub pp_xml {
     #    my($input,$n,$arglang,$title) = @_;
     my ($args) = @_;
-    my $cbdname = "$$args{'project'}:$$args{'lang'}";
+    my $cbdname = ORACC::CBD::Util::cbdname();
     my $hash = $ORACC::CBD::data{$cbdname};
     if (!$hash) {
 	if (pp_hash($args)) {
@@ -142,20 +143,23 @@ sub pp_xml {
     }
     return undef unless $hash;
     
-    my $project = $$args{'project'};
+    my $project = project();
     my $last_tag = '';
 
     load_parts_map(@{$$hash{'psu_parts'}});
     
     %seen = ();
 
-    $cbdlang = $lang = $$args{'lang'};
+    $cbdlang = $lang = ORACC::CBD::Util::lang();
 
     $cbdid = $lang;
     $cbdid =~ tr/-/_/;
 
     my ($title,$n) = ();
-    ($project, $n, $title, $lang) = (@$args{qw/project name name lang/});
+    ($project, $n, $title, $lang) = (ORACC::CBD::Util::project(), 
+				     ORACC::CBD::Util::name(), 
+				     ORACC::CBD::Util::name(), 
+				     ORACC::CBD::Util::lang());
     $n =~ tr#/#_#;
     $n =~ s/_[^_]+$//;
     my @xml = (xmldecl(),"<entries xmlns=\"http://oracc.org/ns/cbd/1.0\" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\" xml:lang=\"$lang\" g:file=\"$lang.glo\" project=\"$project\" n=\"$n\" name=\"$title\">");

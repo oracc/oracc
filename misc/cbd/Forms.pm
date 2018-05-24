@@ -10,6 +10,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 $ORACC::CBD::Forms::external = 0;
 
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 use ORACC::CBD::Validate;
 
 my %bases = ();
@@ -122,7 +123,7 @@ sub forms_validate {
 
 sub forms_load {
     my $args = shift;
-    $forms_inline = $$args{'project'};
+    $forms_inline = ORACC::CBD::Util::project();
     my $formsfile = $$args{'cbd'}; $formsfile =~ s/glo$/forms/;
 
     if (-r $formsfile) {
@@ -131,8 +132,9 @@ sub forms_load {
     }
 
     my @moreforms = <00src/forms/*.forms>;
+    my $l = ORACC::CBD::Util::lang();
     foreach my $m (@moreforms) {
-	if ($m =~ /:$$args{'lang'}\./o) {
+	if ($m =~ /:$l\./o) {
 	    load_formsfile($m, $args);
 	}
     }
@@ -143,7 +145,7 @@ sub load_formsfile {
     my($ftag) = ($file =~ m/^(.*?):/);
     my $pp_file_on_entry = pp_file();
     my $pp_line_on_entry = pp_line();
-    $ftag = $$args{'project'} unless $ftag;
+    $ftag = ORACC::CBD::Util::project() unless $ftag;
     warn "loading $file with project tag $ftag\n";
     open(F, $file) || die "merge-forms.plx: unable to open $file\n";
     pp_file($file);

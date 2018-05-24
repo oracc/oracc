@@ -35,21 +35,23 @@ sub pp_hash {
     my @ee = ();
 
     if ($#cbd < 0) {
-	@cbd = setup_cbd($args);	
+	@cbd = setup_cbd($args);
 	return 0 if pp_status();
+	pp_file($$args{'file'});
+
+    } else {
+	# pp_file() should be set already
     }
+    my %entries = %{${$ORACC::CBD::data{cbdname()}}{'entries'}};
 
-    my $cbdname = "$$args{'project'}\:$$args{'lang'}";
-    my %entries = %{${$ORACC::CBD::data{"$cbdname"}}{'entries'}};
 
-    $cbdlang = $$args{'lang'};
+    $cbdlang = ORACC::CBD::Util::lang();
     $cbdid = $cbdlang;
     $cbdid =~ tr/-/_/;
     my $currtag = undef;
     my $currarg = undef;
 
-    $use_norms = $langnorms{$$args{'lang'}}; ## langcore
-    pp_file($$args{'file'});
+    $use_norms = $langnorms{$cbdlang}; ## langcore
 
     my %e = ();
 
