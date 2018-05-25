@@ -168,7 +168,13 @@ sub pp_validate {
     $ORACC::SL::report_all = 1;
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
+	next if $cbd[$i] =~ /^\000$/;
+	if ($cbd[$i] =~ /^\#/) {
+	    if ($cbd[$i] =~ /^\#\@ok/) {
+		++$ok{$curr_id};
+	    }
+	    next;
+	}
 	pp_line($i+1);
 	if ($cbd[$i] =~ /^\s*$/) {
 	    pp_warn("blank lines not allowed in \@entry")
@@ -180,11 +186,6 @@ sub pp_validate {
 	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
 	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
 	    my $tag = $1;
-	    if ($tag eq 'ok') {
-		++$ok{$curr_id};
-		$cbd[$i] = "\000";
-		next;
-	    }
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {

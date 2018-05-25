@@ -10,6 +10,8 @@ use ORACC::CBD::Hash;
 
 my %args = pp_args();
 
+$ORACC::CBD::normify = 1;
+
 my @cbd = setup_cbd(\%args);
 
 if (pp_status()) {

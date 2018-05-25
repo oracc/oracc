@@ -2,7 +2,7 @@ package ORACC::CBD::Hash;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_hash pp_hash_cfgws/;
+@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_acd_serialize/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -14,16 +14,69 @@ my $sense_id = 0;
 
 my $cbdid;
 my $cbdlang;
+my %cgc = ();
+my $cgctmp = '';
 my $curr_id = '';
 my $curr_cf = '';
 my $curr_sense_id = 0;
 my $curr_sig_id = '';
 my $ebang_flag = '';
 my %entries = ();
+my $last_char = undef;
 my %line_of = ();
 my %sense_props = ();
 my %sigs = ();
 my $usage_flag = 0;
+
+my @tags = qw/entry alias parts bases bff conts morphs morph2s moved phon prefs root 
+	      form length norms sense stems equiv inote prop end isslp bib was
+	      defn note pl_coord pl_id pl_uid/;
+my %tags = (); @tags{@tags} = ();
+
+my %fseq = ();
+foreach my $f (@tags) {
+    $fseq{$f} = 0 + scalar keys %fseq;
+}
+
+my %vowel_of = (
+    'Ā'=>'A',
+    'Ē'=>'E',
+    'Ī'=>'I',
+    'Ū'=>'U',
+    'Â'=>'A',
+    'Ê'=>'E',
+    'Î'=>'I',
+    'Û'=>'U',
+    );
+
+# Create an old-style ACD-hash from a new-style PP-hash
+#
+# An ACD-hash is just a hash with CFGWPOS as key and the entry content hash as value
+sub pp_hash_acd {
+    my $h = shift;
+    my %acd = ();
+    my @ids = @{$$h{'ids'}};
+    my %ent = %{$$h{'entries'}};
+    my %ehash = ();
+    my @entries = ();
+    foreach my $id (@ids) {
+	my $cf = $ent{$id};
+	my %e = %{$ent{$id,'e'}};
+	my %f = ();
+	foreach my $f (keys %e) {
+	    ++$f{$f};
+	}
+	%{$e{'fields'}} = %f;
+	my $eref = { %e };
+	$ehash{$cf} = \$eref;
+	push @entries, \$eref;
+    }
+    %{$acd{'ehash'}} = %ehash;
+    @{$acd{'entries'}} = @entries;
+    #    use Data::Dumper;
+    #    print Dumper \%acd; exit 0;
+    %acd;
+}
 
 sub pp_hash_cfgws {
     my $h = shift;
@@ -161,4 +214,146 @@ sub pp_hash {
     $ORACC::CBD::data{$cbdname};
 }
 
+sub pp_acd_merge {
+    my($into,$from) = @_;
+    foreach my $e (keys %{$$from{'ehash'}}) {
+	if (!defined ${$$into{'ehash'}}{$e}) {
+	    my $ehash = ${$$from{'ehash'}}{$e};
+	    my $eref = { %{$$ehash} };
+	    push @{$$into{'entries'}}, $eref;
+	    ${$$into{'ehash'}{$e}} = $eref;
+	} else {
+	    my $f = ${$$from{'ehash'}}{$e};
+	    my $i = ${$$into{'ehash'}}{$e};
+	    foreach my $fld (sort {$fseq{$a}<=>$fseq{$b}} keys %{$$$f{'fields'}}) {
+		next if $fld eq 'entry';
+		# if $f = 'form', build an index of 'form's in %known
+		# this should use canonicalized versions as returned by the
+		# parse_xxx routines, but they are not done yet ...
+		my %known = ();
+		foreach my $l (@{$$$i{$fld}}) {
+		    my $tmp = $l;
+		    $tmp =~ s/\s+\@\S+\s*//;
+		    if ($fld eq 'bases') {
+			foreach my $b (split(/;\s+/, $tmp)) {
+			    ++$known{$b};
+			}
+			my @b = sort keys %known;
+		    } else {
+			++$known{$tmp};
+		    }
+		}
+		foreach my $l (@{$$$f{$fld}}) {
+		    my $tmp = $l;
+		    $tmp =~ s/\s+\@\S+\s*//;
+		    if ($fld eq 'bases') {
+			foreach my $b (split(/;\s+/, $tmp)) {
+			    if (!defined $known{$b}) {
+				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+				${$$$i{'bases'}}[0] .= "; $b";
+			    }
+			}
+		    } else {
+			if (!defined $known{$tmp}) {
+			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+			    push @{$$$i{$fld}}, $l;
+			}
+		    }
+		}
+	    }
+	}
+    }
+    $into;
+}
+
+
+sub
+pp_acd_serialize {
+    my %e = %{$_[0]};
+    my $cfgw = ${$e{'entry'}}[0];
+    my $init_char = first_letter($cfgw);
+    unless ($ORACC::L2GLO::Builtins::noletters) {
+	if (!$last_char || $last_char ne $init_char) {
+	    $last_char = $init_char;
+	    print "\@letter $last_char\n\n";
+	}
+    }
+    my $ustar = ($e{'usage_flag'} ? '*' : '');
+    print "\@entry$ustar $cfgw\n";
+    foreach my $rws (sort keys %{$e{'rws_cfs'}}) {
+	print "\@$rws ${$e{'rws_cfs'}}{$rws}\n";
+    }
+    foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} keys %{$e{'fields'}}) {
+	next if $f eq 'entry' || $f eq 'rws_cf';
+	foreach my $l (@{$e{$f}}) {
+	    print "\@$f $l\n";
+	}
+    }
+    print "\@end entry\n\n";
+}
+
+sub
+pp_acd_sort {
+    my $acd = shift;
+    my @esort = ();
+    foreach my $e (keys %{$$acd{'ehash'}}) {
+	my($cf,$dt) = ($e =~ /^(.*?)\[([^\[]+)\]/);
+	push @esort, [ $cf, $dt, $e];
+    }
+    if ($#esort > 1) {
+	set_cgc(@esort);
+	@{$$acd{'entries'}} = ();
+	foreach my $s (sort { $cgc{$$a[0]} <=> $cgc{$$b[0]} 
+			      || $$a[1] cmp $$b[1] } 
+		       @esort) {
+	    my $ehash = ${$$acd{'ehash'}}{$$s[2]};
+	    my $eref = { %{$$ehash} };
+	    push @{$$acd{'entries'}}, $eref;
+	}
+	unlink $cgctmp;
+    }
+}
+
+sub
+first_letter {
+    my($first) = ($_[0] =~ /^(.)/);
+    $first = "\U$first";
+    $first = $vowel_of{$first} if $vowel_of{$first};
+    $first;
+}
+
+sub
+set_cgc {
+    %cgc = ();
+    my $tmpname = '';
+    if (open(TMP,">01tmp/$$.cgc")) {
+	$tmpname = "01tmp/$$.cgc";
+    } elsif (open(TMP,">/tmp/$$.cgc")) {
+	$tmpname = "/tmp/$$.cgc";
+    } else {
+	die "set_cgc: can't write /tmp/$$.cgc or tmp/$$.cgc\n";
+    }
+    $cgctmp = $tmpname;
+    my %t = (); @t{@_} = (); # uniq the sort keys
+    foreach my $t (@_) {
+	my $tx = ${$t}[0];
+	$tx =~ tr/_/—/; ### HACK !!!
+	$tx =~ tr/ /_/;
+	print TMP "${tx}_\n";
+    }
+    close TMP;
+    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-s', '@@ORACC@@/lib/config/msort.order', '-x', '@@ORACC@@/lib/config/msort.exclude', $tmpname;
+    open(TMP,$tmpname);
+    my @cgc = (<TMP>);
+    close(TMP);
+    chomp @cgc;
+    @cgc = map { s/_$//; tr/_—/ _/; $_ } @cgc;
+    @cgc{@cgc} = (0..$#cgc);
+    foreach my $e (@_) {
+	warn "$$e[0]: not in cgc\n" unless exists $cgc{$$e[0]};
+    }
+}
+
 1;
+
+

@@ -66,10 +66,17 @@ sub compare {
     foreach my $m (sort keys %maybes) {
 	my $mref = $maybes{$m};
 	my ($maybe,$base,$sim) = @{$mref};
+	$base = '' unless $base;
 	$sim = sprintf("%.2f",$sim);
 	my $l = line_of($incoming, $m, 'entry');
 	pp_line($l);
-	pp_warn("incoming $base='$m' may be [$sim] '$maybe' in base");
+	if (defined($m) && defined($maybe)) {
+	    pp_warn("incoming $base='$m' may be [$sim] '$maybe' in base");
+	} else {
+	    $m = '' unless $m;
+	    $maybe = '' unless $m;
+	    pp_warn("undefined element in m=$m, maybe=$maybe");
+	}
     }
 
     foreach my $m (sort keys %base_maybes) {
@@ -158,8 +165,17 @@ sub try_nomatch_by_base {
 
 sub sim_cfgw {
     my ($t,$i) = @_;
-    my ($t_cf,$t_gw) = ($t =~ /^(\S+)\s+\[(.*?)\]/);
-    my ($i_cf,$i_gw) = ($i =~ /^(\S+)\s+\[(.*?)\]/);
+    return unless $t && $i;
+    my ($t_cf,$t_gw) = ($t =~ /^(.*?)\s+\[(.*?)\]/);
+    my ($i_cf,$i_gw) = ($i =~ /^(.*?)\s+\[(.*?)\]/);
+    unless ($t_cf && $t_gw) {
+	pp_warn("syntax error in arg $t of sim_cfgw");
+	return 0;
+    }
+    unless ($i_cf && $i_gw) {
+	pp_warn("syntax error in arg $i of sim_cfgw");
+	return 0;
+    }
     my $cf_sim = similarity($t_cf,$i_cf);
     my $gw_sim = similarity($t_gw,$i_gw);
     return ($cf_sim > $gw_sim) ? $cf_sim : $gw_sim;

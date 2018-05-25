@@ -24,6 +24,8 @@ use Getopt::Long;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
+$ORACC::CBD::nonormify = 0;
+
 sub pp_args {
     my %args = ();
 
@@ -92,12 +94,12 @@ sub pp_load {
     if ($$args{'filter'}) {
 	@c = (<>); chomp @c;
     } else {
+	%{$ORACC::CBD::data{'files'}{$file}} = header_vals($file);
 	forms_load($args) if $file =~ m#^00src#;
 	open(C,$file) || die "cbdpp.plx: unable to open $file. Stop.\n";
 	@c = (<C>); chomp @c;
 	close(C);
     }
-    %{$ORACC::CBD::data{'files'}{$file}} = header_vals($file);
 #    print Dumper \%ORACC::CBD::data; exit 0;
 
     my $insert = -1;
@@ -244,18 +246,20 @@ sub setup_cbd {
     my($args,$glossary) = @_;
     pp_file($glossary ? $glossary : $$args{'cbd'});
     my @cbd = pp_load($args, $glossary);
+    warn "nonormify = $ORACC::CBD::nonormify\n";
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
 	$ORACC::CBD::Forms::external = 0; # so v_form will validate
 	forms_validate();
 	if (lang() =~ /sux|qpn/) { # fix-me should check use base
-	    forms_normify();
+	    forms_normify() unless $ORACC::CBD::nonormify;
 	}
 	$ORACC::CBD::Forms::external = 1;
 	forms_dump();
     } else {
 	if (lang() =~ /sux|qpn/) {
-	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd);
+	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd)
+		unless $ORACC::CBD::nonormify;
 	}
     }
 #    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
