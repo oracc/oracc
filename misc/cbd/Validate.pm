@@ -179,7 +179,7 @@ sub pp_validate {
 	if ($cbd[$i] =~ /^\s*$/) {
 	    pp_warn("blank lines not allowed in \@entry")
 		if $in_entry;
-	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*$/) {
+	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*(\S*)\s*$/) {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};

@@ -8,6 +8,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use Data::Dumper;
 
 my $field_index = 0;
 my $sense_id = 0;
@@ -30,7 +31,7 @@ my $usage_flag = 0;
 
 my @tags = qw/entry alias parts bases bff conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
-	      defn note pl_coord pl_id pl_uid/;
+	      defn note collo pl_coord pl_id pl_uid/;
 my %tags = (); @tags{@tags} = ();
 
 my %fseq = ();
@@ -113,6 +114,7 @@ sub pp_hash {
     $use_norms = $langnorms{$cbdlang}; ## langcore
 
     my %e = ();
+    my %rws_cfs = ();
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 
@@ -133,6 +135,12 @@ sub pp_hash {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $default = $currtag =~ s/!//;
 	    my $starred = $currtag =~ s/\*//;
+	    my $flags = '';
+#	    $flags .= '*' if $starred;
+#	    $flags .= '!' if $default;
+
+#	    push (@{$e{$currtag,'flags'}}, "$flags");
+
 	    my $linetag = $currtag;
 	    $linetag =~ s/\*$//;
 
@@ -146,8 +154,8 @@ sub pp_hash {
 	    $line_of{$linetag} = pp_line()-1
 		unless defined $line_of{$linetag};
 	    if ($currtag =~ /^entry/) {
-		$ebang_flag = $default || '';
-		$usage_flag = $starred;
+		#		$ebang_flag = $default || '';
+		#		$usage_flag = $starred;
 		$currarg =~ /^(\S+)/;
 		$curr_cf = $1;
 		$currarg =~ s/^\s+//; $currarg =~ s/\s*$//;
@@ -157,11 +165,15 @@ sub pp_hash {
 		    $curr_id = '';
 		}
 		$line_of{'entry'} = pp_line()-1;
+		$e{'usage_flag'} = '*' if $starred;
 	    } elsif ($currtag =~ /^defn/) {
 		$defn_minus = ($currtag =~ s/-$//);
 	    }
 	    if ($currtag eq 'end') {
 		if ($currarg eq 'entry') {
+		    if (scalar keys %rws_cfs) {
+			%{$e{'rws_cfs'}} = %rws_cfs; %rws_cfs = ();
+		    }
 		    %{$entries{$curr_id,'e'}} = %e;
 		    %{$entries{$curr_id,'l'}} = %line_of;
 		    push @ee, $curr_id;
@@ -175,7 +187,7 @@ sub pp_hash {
 		    my($tok1) = ($currarg =~ /^(\S+)/);
 		    $curr_sense_id = sprintf("\#%06d",$sense_id++);
 		    my $defbang = ($default ? '!' : '');
-		    $currarg = "$curr_sense_id$defbang\t$currarg";
+		    $currarg = "$curr_sense_id $defbang\t$currarg";
 		} elsif ($currtag eq 'form') {
 		    my $barecheck = $currarg;
 		    $barecheck =~ s/^(\S+)\s*//;
@@ -198,8 +210,9 @@ sub pp_hash {
 #			unless $currtag eq 'inote';
 		}
 	    }
-	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
-	    ${$e{'rws_cfs'}}{$1} = $2;
+	} elsif (/^\@([A-Z]+)\s*(\S*)\s*$/) {
+	    my($k,$v) = ($1,$2);
+	    $rws_cfs{$k} = $v || '';
 	} else {
 	    chomp;
 	    pp_warn("(hash) syntax error near '$_'") if /\S/;
@@ -214,6 +227,16 @@ sub pp_hash {
     $ORACC::CBD::data{$cbdname};
 }
 
+sub tags_of {
+    my @ret = ();
+    foreach my $k (@_) {
+	if (exists $tags{$k}) {
+	    push @ret, $k;
+	}
+    }
+    @ret;
+}
+
 sub pp_acd_merge {
     my($into,$from) = @_;
     foreach my $e (keys %{$$from{'ehash'}}) {
@@ -225,12 +248,44 @@ sub pp_acd_merge {
 	} else {
 	    my $f = ${$$from{'ehash'}}{$e};
 	    my $i = ${$$into{'ehash'}}{$e};
-	    foreach my $fld (sort {$fseq{$a}<=>$fseq{$b}} keys %{$$$f{'fields'}}) {
+	    foreach my $fld (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$$$f{'fields'}})) {
 		next if $fld eq 'entry';
 		# if $f = 'form', build an index of 'form's in %known
 		# this should use canonicalized versions as returned by the
 		# parse_xxx routines, but they are not done yet ...
 		my %known = ();
+
+		if ($$$f{'rws_cfs'}) {
+		    my %r = ();
+#		    print STDERR "(0) r at start= ", Dumper(\%r);
+		    if ($$$i{'rws_cfs'} && ref($$$i{'rws_cfs'}) eq 'HASH') {
+			my %i = %{$$$i{'rws_cfs'}};
+#			print STDERR "i= ", Dumper(\%i);
+			foreach my $k (keys %{$$$i{'rws_cfs'}}) {
+#			    warn "(1)setting $k to ${$$$i{'rws_cfs'}}{$k}\n";
+			    $r{$k} = ${$$$i{'rws_cfs'}}{$k}
+			}
+		    }
+		    delete($$$i{'rws_cfs'});
+		    my %from_rws = %{$$$f{'rws_cfs'}};
+#		    print STDERR "(2)from_rws= ", Dumper \%from_rws;
+		    foreach my $k (keys %from_rws) {
+#			warn "(3)k=$k val=$from_rws{$k}\n";
+			unless (defined ${$$$i{'rws_cfs'}}{$k}) {
+#			    warn "(3a)setting $k to $from_rws{$k}\n";
+#			    print STDERR "(3b)r= ", Dumper \%r;
+			    $r{$k} = $from_rws{$k};
+#			    print STDERR "(3c)r= ", Dumper \%r;
+			}
+		    }
+#		    print STDERR "(4)r= ", Dumper \%r;
+#		    print STDERR "(5)r-keys= ", join(':', keys %r), "\n";
+		    foreach my $r (keys %r) {
+#			warn "(6)setting $r to $r{$r}\n";
+			${$$$i{'rws_cfs'}}{$r} = $r{$r};
+		    }
+		}
+		
 		foreach my $l (@{$$$i{$fld}}) {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
@@ -248,6 +303,7 @@ sub pp_acd_merge {
 		    $tmp =~ s/\s+\@\S+\s*//;
 		    if ($fld eq 'bases') {
 			foreach my $b (split(/;\s+/, $tmp)) {
+			    $b =~ s/^!//;
 			    if (!defined $known{$b}) {
 				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 				${$$$i{'bases'}}[0] .= "; $b";
@@ -279,7 +335,6 @@ EOH
     if ($acd) {
 	foreach my $e (@{$$acd{'entries'}}) {
 	    pp_acd_serialize_entry($e);
-	    print "\n";
 	}
     }
 }
@@ -297,14 +352,28 @@ pp_acd_serialize_entry {
     }
     my $ustar = ($e{'usage_flag'} ? '*' : '');
     print "\@entry$ustar $cfgw\n";
-    foreach my $rws (sort keys %{$e{'rws_cfs'}}) {
-	print "\@$rws ${$e{'rws_cfs'}}{$rws}\n";
+    if ($e{'rws_cfs'}) {
+	foreach my $rws (sort keys %{$e{'rws_cfs'}}) {
+#	    warn "rws key = $rws\n";
+	    my $val =  ${$e{'rws_cfs'}}{$rws};
+	    if ($val) {
+		$val = ' '.$val;
+	    } else {
+		$val = '';
+	    }
+
+	    print "\@$rws$val\n";
+	}
     }
-    foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} keys %{$e{'fields'}}) {
+    foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$e{'fields'}})) {
 	next if $f eq 'entry' || $f eq 'rws_cf';
 	foreach my $l (@{$e{$f}}) {
-	    $l =~ s/^\#\S+\s+// if $f eq 'sense';
-	    print "\@$f $l\n";
+	    $l =~ s/\#\S+\s+// if $f eq 'sense';
+	    my $defbang = '';
+	    if ($l =~ s/^!\s+//) {
+		$defbang = '!';
+	    }
+	    print "\@$f$defbang $l\n";
 	}
     }
     print "\@end entry\n\n";
