@@ -6,7 +6,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Hash;
-use ORACC::CBD::Words;
+use ORACC::CBD::Compare;
 
 my %args = pp_args();
 
@@ -36,12 +36,7 @@ if (pp_hash(\%args)) {
     pp_diagnostics();
 }
 
-if (pp_status()) {
-    pp_diagnostics();
-    exit 1;
-} else {
-    warn "cbdwords.plx: words in $args{'cbd'} have no detectable duplicates or overlaps.\n";
-    exit 0;
-}
+compare(\%args);
+pp_diagnostics();
 
 1;

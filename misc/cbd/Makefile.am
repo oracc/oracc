@@ -3,8 +3,8 @@ include ../../oracc-am-rules.txt
 bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	forms-uniq-form.plx forms-uniq-full.plx \
 	cbdsenses.plx cbdhash.plx cbdxml.plx cbdwords.plx \
-	cbdtest.plx cbdcompare.plx
+	cbdtest.plx cbdcompare.plx cbdnoinst.plx
 
-scriptdata_DATA = 
+scriptdata_DATA = entry-counts.xsl
 data_DATA = 
 schema_DATA = 

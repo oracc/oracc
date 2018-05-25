@@ -2,7 +2,7 @@ package ORACC::CBD::Hash;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_hash/;
+@EXPORT = qw/pp_hash pp_hash_cfgws/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -25,6 +25,13 @@ my %sense_props = ();
 my %sigs = ();
 my $usage_flag = 0;
 
+sub pp_hash_cfgws {
+    my $h = shift;
+    my @ids = @{$$h{'ids'}};
+    my %e = %{$$h{'entries'}};
+    sort map { $e{$_} } @ids;
+}
+
 sub pp_hash {
     my ($args,@cbd) = @_;
     my $defn_minus = 0;
@@ -43,7 +50,6 @@ sub pp_hash {
 	# pp_file() should be set already
     }
     my %entries = %{${$ORACC::CBD::data{cbdname()}}{'entries'}};
-
 
     $cbdlang = ORACC::CBD::Util::lang();
     $cbdid = $cbdlang;
@@ -147,11 +153,12 @@ sub pp_hash {
 	}
     }
     my $cbdname = ORACC::CBD::Util::cbdname();
+    ${$ORACC::CBD::data{$cbdname}}{'file'} = pp_file();
     ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;
     %{${$ORACC::CBD::data{$cbdname}}{'header'}} = %h;
     @{${$ORACC::CBD::data{$cbdname}}{'ids'}} = @ee;
     %{${$ORACC::CBD::data{$cbdname}}{'entries'}} = %entries;
-    1;
+    $ORACC::CBD::data{$cbdname};
 }
 
 1;

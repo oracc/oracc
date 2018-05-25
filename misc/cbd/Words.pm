@@ -40,9 +40,40 @@ sub words_check {
     return undef unless $hash;
 
     %g = %$hash;
-#    open(M, '>m.log');
+    check_by_groups();
     check_by_base();
-#    close(M);
+}
+
+sub check_by_groups {
+    my @ids = @{$g{'ids'}};
+    my @cfgws = map { ${$g{'entries'}}{$_}  } @ids;
+    my @groups = groups_hard(0.94, \@cfgws);
+    foreach my $g (@groups) {
+	my @m = @$g;
+	if ($#m > 0) {
+	    my $h = shift @m;
+	    foreach my $m (@m) {
+		my $l = line_of($m,'entry');
+		if ($l) {
+		    pp_line($l);
+		    pp_warn("(words) $m looks like $h");
+		}
+	    }
+	}
+    }
+}
+
+sub line_of {
+    my($what,$tag) = @_;
+    my %e = %{$g{'entries'}};
+    my $id = $e{$what};
+    my $l = ${$e{$id,'l'}}{$tag};
+    if (defined $l) {
+	return $l + 1;
+    } else {
+	warn "strange: no line number for $tag in $what\n";
+	return 0;
+    }
 }
 
 sub check_by_base {

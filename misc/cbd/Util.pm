@@ -53,10 +53,10 @@ sub pp_cbd {
 	    print "$_\n" unless /^\000$/;
 	}
     } else {
-	my $ldir = project()."/01tmp";
+	my $ldir = '01tmp';
 	system 'mkdir', '-p', $ldir;
 	my $outf = $ldir.'/'.lang().'.glo';
-	open(CBD, ">outf") 
+	open(CBD, ">$outf") 
 	    || die "cbdpp.plx: can't write to $outf";
 	if ($ORACC::CBD::Forms::external) {
 	    my $cfgw = '';
@@ -78,8 +78,8 @@ sub pp_cbd {
 	    }
 	}
 	close(CBD);
-#	warn "cbdpp: wrote $outf\n"
-#	    if $$args{'announce'};
+	warn "cbdpp: wrote $outf\n"
+	    if $$args{'announce'};
     }
 }
 

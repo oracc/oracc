@@ -975,13 +975,13 @@ sub bff_check {
 			push @{$entries{$bff{'ref'},'bffs-listed'}}, $bff{'bid'};
 			push @{$entries{$bff{'target'},'bffs'}}, { %bff };
 		    } else {
-			pp_warn("bff target <$bff{'target'}> has no ID\n");
+			pp_warn("bff target <$bff{'target'}> has no ID");
 		    }
 		} else {
-		    pp_warn("bff link <$bff{'link'}> not known as entry\n");
+		    pp_warn("bff link <$bff{'link'}> not known as entry");
 		}
 	    } else {
-		pp_warn("unresolved bff link <$bff{'link'}>\n");
+		pp_warn("unresolved bff link <$bff{'link'}>");
 	    }
 	} else {
 	    pp_warn("no <link> found in bff");

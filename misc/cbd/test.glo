@@ -34,6 +34,16 @@
 @ok
 @end entry
 
+@entry dug [speak] V/t
+@bases dug₄
+@sense V/t speak
+@end entry
+
+@entry dug [pot] N
+@bases dug
+@sense N pot
+@end entry
+
 @entry eš [water] N
 @bases eš₁₀
 @form eš₁₀ /eš₁₀ #~
