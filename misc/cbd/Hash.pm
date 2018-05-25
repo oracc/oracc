@@ -2,7 +2,7 @@ package ORACC::CBD::Hash;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_acd_serialize/;
+@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_serialize/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -266,13 +266,30 @@ sub pp_acd_merge {
     $into;
 }
 
+sub pp_serialize {
+    my ($pph,$acd) = @_;
+    my %h = %{$$pph{'header'}};
+    use Data::Dumper;
+    print <<EOH;
+\@project $h{'project'}
+\@lang    $h{'lang'}
+\@name    $h{'name'}
+
+EOH
+    if ($acd) {
+	foreach my $e (@{$$acd{'entries'}}) {
+	    pp_acd_serialize_entry($e);
+	    print "\n";
+	}
+    }
+}
 
 sub
-pp_acd_serialize {
+pp_acd_serialize_entry {
     my %e = %{$_[0]};
     my $cfgw = ${$e{'entry'}}[0];
     my $init_char = first_letter($cfgw);
-    unless ($ORACC::L2GLO::Builtins::noletters) {
+    unless ($ORACC::CBD::noletters) {
 	if (!$last_char || $last_char ne $init_char) {
 	    $last_char = $init_char;
 	    print "\@letter $last_char\n\n";
@@ -286,6 +303,7 @@ pp_acd_serialize {
     foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} keys %{$e{'fields'}}) {
 	next if $f eq 'entry' || $f eq 'rws_cf';
 	foreach my $l (@{$e{$f}}) {
+	    $l =~ s/^\#\S+\s+// if $f eq 'sense';
 	    print "\@$f $l\n";
 	}
     }

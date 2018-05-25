@@ -46,10 +46,11 @@ my %f_acd = pp_hash_acd($from_hash);
 
 my $merged = pp_acd_merge(\%b_acd, \%f_acd);
 pp_acd_sort($merged); # sorts in-place
+pp_serialize($base_hash,$merged);
 
-# Matt Todd 610-462-3787
-
-print Dumper $merged;
+open(M,'>merged.dump');
+print M Dumper $merged;
+close(M);
 
 pp_diagnostics();
 

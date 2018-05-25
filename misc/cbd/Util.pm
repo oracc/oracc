@@ -24,6 +24,7 @@ use Getopt::Long;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
+$ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 
 sub pp_args {
@@ -246,7 +247,6 @@ sub setup_cbd {
     my($args,$glossary) = @_;
     pp_file($glossary ? $glossary : $$args{'cbd'});
     my @cbd = pp_load($args, $glossary);
-    warn "nonormify = $ORACC::CBD::nonormify\n";
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
 	$ORACC::CBD::Forms::external = 0; # so v_form will validate
