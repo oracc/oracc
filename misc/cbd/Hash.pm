@@ -8,6 +8,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::CBD::Bases;
+
 use Data::Dumper;
 
 my $field_index = 0;
@@ -240,6 +242,9 @@ sub tags_of {
 sub pp_acd_merge {
     my($into,$from) = @_;
     foreach my $e (keys %{$$from{'ehash'}}) {
+	my $x = $e; $x =~ s/^.*?\s+\[//;
+	my $is_compound = ($x =~ /\s/);
+	my %basemap = ();
 	if (!defined ${$$into{'ehash'}}{$e}) {
 	    my $ehash = ${$$from{'ehash'}}{$e};
 	    my $eref = { %{$$ehash} };
@@ -248,6 +253,7 @@ sub pp_acd_merge {
 	} else {
 	    my $f = ${$$from{'ehash'}}{$e};
 	    my $i = ${$$into{'ehash'}}{$e};
+	    my $i_bases = '';
 	    foreach my $fld (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$$$f{'fields'}})) {
 		next if $fld eq 'entry';
 		# if $f = 'form', build an index of 'form's in %known
@@ -285,15 +291,16 @@ sub pp_acd_merge {
 			${$$$i{'rws_cfs'}}{$r} = $r{$r};
 		    }
 		}
-		
+		$i_bases = '';
 		foreach my $l (@{$$$i{$fld}}) {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
 		    if ($fld eq 'bases') {
-			foreach my $b (split(/;\s+/, $tmp)) {
-			    ++$known{$b};
-			}
-			my @b = sort keys %known;
+			# foreach my $b (split(/;\s+/, $tmp)) {
+			#     ++$known{$b};
+			# }
+			# my @b = sort keys %known;
+			$i_bases = $tmp;
 		    } else {
 			++$known{$tmp};
 		    }
@@ -302,14 +309,27 @@ sub pp_acd_merge {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
 		    if ($fld eq 'bases') {
-			foreach my $b (split(/;\s+/, $tmp)) {
-			    $b =~ s/^!//;
-			    if (!defined $known{$b}) {
-				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-				${$$$i{'bases'}}[0] .= "; $b";
-			    }
+			# foreach my $b (split(/;\s+/, $tmp)) {
+			#    $b =~ s/^!//;
+			#    if (!defined $known{$b}) {
+			#	++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+			#	${$$$i{'bases'}}[0] .= "; $b";
+			#    }
+			#}
+			my $b = bases_merge($i_bases, $tmp, $is_compound); # we want the hash back to map bases in forms
+			if ($$b{'map'}) {
+			    %basemap = %{$$b{'map'}};
 			}
+			${$$$i{'bases'}}[0] = bases_string($b);
 		    } else {
+			if ($fld eq 'form' && $fld =~ m#/(\S+)#) {
+			    my $fb = $1;
+			    if ($basemap{$fb}) {
+				my $nb = $basemap{$fb};
+				warn "fixing form base $fb to $nb\n";
+				$fld =~ s#/(\S+)#/$fb#;
+			    } 
+			}
 			if (!defined $known{$tmp}) {
 			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 			    push @{$$$i{$fld}}, $l;
@@ -370,7 +390,7 @@ pp_acd_serialize_entry {
 	foreach my $l (@{$e{$f}}) {
 	    $l =~ s/\#\S+\s+// if $f eq 'sense';
 	    my $defbang = '';
-	    if ($l =~ s/^!\s+//) {
+	    if ($l =~ s/^!\s*//) {
 		$defbang = '!';
 	    }
 	    print "\@$f$defbang $l\n";

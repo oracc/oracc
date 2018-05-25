@@ -2,7 +2,7 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/bases_hash bases_log bases_log_errors bases_fixes bases_process bases_stats/;
+@EXPORT = qw/bases_hash bases_log bases_log_errors bases_fixes bases_process bases_stats bases_merge bases_string/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -18,6 +18,71 @@ sub bases_fixes {
     my %tmp = %fixes;
     %fixes = ();
     %tmp;
+}
+
+# This routine assumes that the bases conform to the constraints enforced by cbdpp
+sub bases_merge {
+    my($b1,$b2,$cpd) = @_;
+    my %h1 = bases_hash($b1,$cpd);
+    my %h2 = bases_hash($b2,$cpd);
+
+    foreach my $p2 (keys %h2) {
+	next if $p2 =~ /#/;
+	if ($h1{$p2}) { # primary in b2 is already in b1
+#	    warn "found $p2 as primary in both\n";
+	    $h1{"$p2#alt"} = merge_alts($h1{"$p2#alt"}, $h2{"$p2#alt"});
+	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
+	    my $p1 = ${$h1{"#alt"}{$p2}};
+#	    warn "found $p2 as alternate to $p1 in base\n";
+	    $h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
+	    ${$h1{'#map'}}{$p2} = $p1;
+	} else { # primary in b2 isn't known in b1
+#	    warn "$p2 not found\n";
+	    $h1{$p2} = $h2{$p2};
+	    if ($h2{"$p2#alt"}) {
+		$h1{"$p2#alt"} = $h2{"$p2#alt"};
+	    }
+	}
+    }
+#    print "merged bases => ", Dumper \%h1;
+    return { %h1 };
+}
+
+sub merge_alts {
+    my($a1,$a2) = @_;
+    if ($a1 && $a2) {
+	foreach my $k (keys %$a2) {
+	    $$a1{$k} = 1;
+	}
+	return $a1;
+    } elsif ($a1) {
+	return $a1;
+    } else {
+	return $a2;
+    }
+}
+
+sub bases_string {
+    my $href = shift;
+    my %h = %$href;
+    my $s = '';
+    foreach my $p (sort keys %h) {
+	next if $p =~ /#/;
+	$s .= '; ' if $s;
+	$s .= $p;
+	if ($h{"$p#alt"}) {
+	    my $as = '';
+	    foreach my $a (sort keys %{$h{"$p#alt"}}) {
+		next if $a =~ /#/;
+		$as .= ', ' if $as;
+		$as .= $a;
+	    }
+	    if ($as) {
+		$s .= " ($as)";
+	    }
+	}
+    }
+    $s;
 }
 
 sub bases_hash {
@@ -108,7 +173,7 @@ sub bases_hash {
 	    }
 	}
     }
-#    warn Dumper \%vbases;
+#    warn "bases $arg => ", Dumper \%vbases;
     %vbases;
 }
 
