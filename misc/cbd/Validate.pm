@@ -953,7 +953,9 @@ sub v_length {
 sub v_is_entry {
     $seen_entries{$_[0]};
 }
-
+sub v_ok {
+    pp_warn("\@ok is deprecated; use \#\@ok instead");
+}
 sub v_set_cfgw {
     $curr_cfgw = $_[0];
     my($cf) = ($curr_cfgw =~ /^(.*?)\s*\[/);

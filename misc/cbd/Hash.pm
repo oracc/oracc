@@ -2,7 +2,7 @@ package ORACC::CBD::Hash;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_serialize/;
+@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_serialize fields_of/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -353,16 +353,20 @@ sub pp_serialize {
 
 EOH
     if ($acd) {
+#	print Dumper @{$$acd{'entries'}};
 	foreach my $e (@{$$acd{'entries'}}) {
 	    pp_acd_serialize_entry($e);
 	}
     }
 }
 
-sub
-pp_acd_serialize_entry {
-    my %e = %{$_[0]};
+sub pp_acd_serialize_entry {
+    my $eref = shift;
+    my %e = %{$eref};
     my $cfgw = ${$e{'entry'}}[0];
+    if (!$cfgw) {
+	warn "no cfgw in: ", Dumper $eref;
+    }
     my $init_char = first_letter($cfgw);
     unless ($ORACC::CBD::noletters) {
 	if (!$last_char || $last_char ne $init_char) {
@@ -461,6 +465,10 @@ set_cgc {
     }
 }
 
-1;
+sub fields_of {
+    sort {$fseq{$a}<=>$fseq{$b}} tags_of(@_);
+}
 
+
+1;
 

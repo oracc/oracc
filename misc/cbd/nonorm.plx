@@ -4,13 +4,13 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 while (<>) {
     unless (/\$\(/) {
-	if (/\%(\S+)/) {
+	if (/\%([-a-z]+)/) {
 	    my $lang = $1;
 	    if ($lang =~ /^sux/) {
-		s/\s+\$\S+//;
+		1 while s/\s+\$\S+//;
 	    }
 	} else {
-	    s/\s+\$\S+//;
+	    1 while s/\s+\$\S+//;
 	}
     }
     print;

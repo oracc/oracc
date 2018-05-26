@@ -49,7 +49,7 @@ if (($from_hash = pp_hash(\%args))) {
     pp_diagnostics();
 }
 
-unless (pp_status()) {
+unless (pp_status() || $args{'force'}) {
     my %b_acd = pp_hash_acd($base_hash);
     my %f_acd = pp_hash_acd($from_hash);
     

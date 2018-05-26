@@ -31,7 +31,7 @@
 @bases e₄
 @form e₄ /e₄ #~
 @sense N water
-@ok
+#@ok
 @end entry
 
 @entry dug [speak] V/t
