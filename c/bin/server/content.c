@@ -1,7 +1,9 @@
 #include <unistd.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <glob.h>
 #include "warning.h"
 #include "runexpat.h"
 #include "resolver.h"
@@ -24,6 +26,20 @@ static void printHTMLStart(struct frag *frag);
 static void printStart(struct frag *frag, const char *name, const char **atts, const char *xid);
 static void printText(const char *s, FILE *frag_fp);
 
+extern int glob_pattern(const char *pat, glob_t *gres);
+
+static const char *html_wild(const char *input)
+{
+  char *tmp = malloc(strlen(input)+2);
+  char *res = NULL;
+  glob_t gres;
+  sprintf(tmp,"%s*",input);
+  if (!glob_pattern(tmp,&gres))
+    res = strdup(gres.gl_pathv[0]);
+  globfree(&gres);
+  return res;
+}
+
 void
 content(struct content_opts *cop, const char *input)
 {
@@ -32,10 +48,13 @@ content(struct content_opts *cop, const char *input)
 
   if (access(input, R_OK))
     {
-      extern const char *no_html;
-      execl("/bin/cat", "cat", no_html, NULL);
-      perror("execl failed");
-      exit(0);
+      if (!(input = html_wild(input)))
+	{
+	  extern const char *no_html;
+	  execl("/bin/cat", "cat", no_html, NULL);
+	  perror("execl failed");
+	  exit(0);
+	}
     }
 
   fragdata.cop = cop;
