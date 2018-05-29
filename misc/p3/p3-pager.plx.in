@@ -751,6 +751,7 @@ run_item_maker {
 	my $html = $xmd;
 	my $html_en = '';
 	$html =~ s/xmd$/html/;
+	$html_en = $html;
 	if ($p{'translation'} ne 'en') {
 	    if (-r "$html.$p{'translation'}") {
 		$html .= ".$p{'translation'}";
@@ -762,6 +763,13 @@ run_item_maker {
 		}
 	    }
 	} else {
+	    unless (-r $html) {
+		my @html = eval { <$html*> };
+		print STDERR "html-wild found @html\n";
+		if ($#html >= 0) {
+		    $html = $html[0];
+		}
+	    }
 	    $html = '' unless -r $html;
 	}
 	unless (-r $html) {
