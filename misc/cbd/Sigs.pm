@@ -7,10 +7,11 @@ require Exporter;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
-use Data::Dumper;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Forms;
+
+use Data::Dumper;
 
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Util;
@@ -645,9 +646,13 @@ do_psu {
 	    pp_warn(@parts_errors)
 		unless $#parts_errors == 0 && $parts_errors[0] eq '#nowarn#';
 	} else {
-	    pp_warn("unknown parts processing failure");
-	    warn Dumper \%e;
-	    warn "====\n";
+	    my($xcfgw) = "$e{'cf'} \[$e{'gw'}\] $e{'pos'}";
+	    unless (ORACC::CBD::Validate::is_bad_compound($xcfgw)) {
+		warn '=== at ',pp_file(),':',pp_line(),"\n";
+		warn Dumper \%e;
+		warn "====\n";
+		pp_warn("unknown parts processing failure");
+	    }
 	}
     }
     @parts_errors = ();

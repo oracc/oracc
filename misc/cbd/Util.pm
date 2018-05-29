@@ -238,6 +238,7 @@ sub setup_args {
 	unless $h{'project'} && $h{'lang'};
     $ORACC::CBD::bases = lang_uses_base($h{'lang'});
     $ORACC::CBD::forms = lang_uses_base($h{'lang'});
+    $$args{'lang'} = $h{'lang'};
 #    }
 #    $$args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
     system 'mkdir', '-p', "01bld/$h{'lang'}";

@@ -296,10 +296,6 @@ sub pp_acd_merge {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
 		    if ($fld eq 'bases') {
-			# foreach my $b (split(/;\s+/, $tmp)) {
-			#     ++$known{$b};
-			# }
-			# my @b = sort keys %known;
 			$i_bases = $tmp;
 		    } else {
 			++$known{$tmp};
@@ -309,13 +305,6 @@ sub pp_acd_merge {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
 		    if ($fld eq 'bases') {
-			# foreach my $b (split(/;\s+/, $tmp)) {
-			#    $b =~ s/^!//;
-			#    if (!defined $known{$b}) {
-			#	++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-			#	${$$$i{'bases'}}[0] .= "; $b";
-			#    }
-			#}
 			my $b = bases_merge($i_bases, $tmp, $is_compound); # we want the hash back to map bases in forms
 			if ($$b{'map'}) {
 			    %basemap = %{$$b{'map'}};
@@ -331,8 +320,14 @@ sub pp_acd_merge {
 			    } 
 			}
 			if (!defined $known{$tmp}) {
-			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-			    push @{$$$i{$fld}}, $l;
+			    unless (${$$$i{'fields'}}{$fld}) {
+				++${$$$i{'fields'}}{$fld};
+				if ($fld eq 'sense') {
+				    push @{$$$i{$fld}}, "+$l";
+				} else {
+				    push @{$$$i{$fld}}, "$l";
+				}
+			    }
 			}
 		    }
 		}
@@ -392,10 +387,15 @@ sub pp_acd_serialize_entry {
     foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$e{'fields'}})) {
 	next if $f eq 'entry' || $f eq 'rws_cf';
 	foreach my $l (@{$e{$f}}) {
-	    $l =~ s/\#\S+\s+// if $f eq 'sense';
+	    if ($f eq 'sense') {
+		$l =~ s/\#\S+\s+//;
+	    }
 	    my $defbang = '';
 	    if ($l =~ s/^!\s*//) {
 		$defbang = '!';
+	    }
+	    if ($l =~ s/^\+//) {
+		$defbang = "+$defbang";
 	    }
 	    print "\@$f$defbang $l\n";
 	}

@@ -115,7 +115,15 @@ sub fix_merge {
 		}
 		if (!defined $known{$tmp}) {
 		    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-		    push @{$$$i{$fld}}, $l;
+		    if ($fld eq 'sense') {
+			warn "setting +$l\n";
+			push @{$$$i{$fld}}, "+$l";
+		    } else {
+			push @{$$$i{$fld}}, "$l";
+		    }
+#		    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+#		    push @{$$$i{$fld}}, $l;
+
 		}
 	    }
 	}

@@ -48,6 +48,8 @@ sub rebuild {
 sub update {
     my @f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
 
+    warn "l2p1-lemm-data.plx: running with -u flag for update\n";
+    
     die "l2p1-lemm-data.plx: no signatures files 01bld/*/from_glo.sig\n"
 	unless $#f >= 0;
     

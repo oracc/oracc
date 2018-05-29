@@ -105,6 +105,7 @@ my %funcs = (); @funcs{@funcs} = ();
 my %vfields = ();
 my %arg_vfields = ();
 
+my %bad_compounds = ();
 my %bases = ();
 my %basedata = ();
 my @bffs = ();
@@ -192,9 +193,9 @@ sub pp_validate {
 		    if (exists $vfields{$tag}) {
 			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
 			    my($t,$l) = ($1,$2);
-			    &{$validators{$tag}}($t,$l);
+			    &{$validators{$tag}}($t,$l,$i,\@cbd);
 			} else {
-			    &{$validators{$tag}}($cbd[$i],'');
+			    &{$validators{$tag}}($cbd[$i],'',$i,\@cbd);
 			}
 		    }
 		} else {
@@ -275,7 +276,7 @@ sub v_letter {
 }
 
 sub v_entry {
-    my($tag,$arg) = @_;
+    my($tag,$arg,$i,$cbdref) = @_;
     if ($trace && exists $arg_vfields{'entry'}) {
 	pp_trace("v_entry: tag=$tag; arg=$arg");
     }
@@ -319,6 +320,10 @@ sub v_entry {
 		}
 	    } else {
 		$is_compound = ($cf =~ /\s/);
+		if ($is_compound && !has_parts($i,$cbdref)) {
+		    pp_warn("compound or usage without \@parts entry");
+		    ++$bad_compounds{$curr_cfgw};
+		}
 		if (exists $poss{$pos}) {
 		    if (exists $geo_pos{$pos}) {
 			push @{$data{'geo'}}, pp_line()-1;
@@ -996,6 +1001,25 @@ sub bff_check {
 sub register_base_sig {
     my($base,$tsig) = @_;
     push @{$basedata{$tsig}}, [ $curr_id , $base ];
+}
+
+sub has_parts {
+    my($i,$cbdref) = @_;
+    while ($i < $#$cbdref) {
+	if ($$cbdref[$i] =~ /^\@end\s+entry/) {
+	    return 0;
+	} elsif ($$cbdref[$i] =~ /^\@parts/) {
+	    return 1;
+	} else {
+	    ++$i;
+	}
+    }
+    return 0;
+}
+
+sub is_bad_compound {
+#    print Dumper \%bad_compounds;
+    $bad_compounds{$_[0]};
 }
 
 1;

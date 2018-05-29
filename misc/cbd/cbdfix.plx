@@ -8,6 +8,8 @@ use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
+$ORACC::CBD::nonormify = 1;
+
 my %args = pp_args();
 
 my $h = '';

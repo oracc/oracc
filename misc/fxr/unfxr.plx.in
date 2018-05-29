@@ -37,6 +37,8 @@ for (my $i = 0; $i <= $#$fieldnames; ++$i) {
     $$fieldnames[$i] =~ tr/?()//d;
 }
 
+my $curr_id = '';
+
 unlink $rs_fn;
 open RS, ">>$rs_fn";
 print RS '<?xml version="1.0" encoding="utf-8"?>',"\n";
@@ -45,8 +47,17 @@ foreach my $r (@$rows) {
     print RS "<$rec_tag>";
     my $i = 0;
     foreach my $f (@$r) {
+	if ($$fieldnames[$i] =~ /^id_(?:text|composite)$/) {
+#	    warn "curr ID = $f\n" if $f;
+	    $curr_id = $f;
+	    warn "$fxr_fn:$curr_id: malformed ID '$curr_id'\n"
+		unless $curr_id =~ /^[PQX]\d\d\d\d\d\d$/;
+	}
 	print RS "<$$fieldnames[$i]";
 	if ($f) {
+	    my $bad = ($f =~ tr/\001-\007\014-\037//d);
+	    warn "$fxr_fn:$curr_id:$$fieldnames[$i]: control characters removed from field\n"
+		if $bad;
 	    if ($f =~ / \000 / && $fix_000) {
 		print RS '>';
 		foreach my $fbit (split(/ \000 /,$f)) {

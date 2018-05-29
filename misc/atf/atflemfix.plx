@@ -6,12 +6,16 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 my %from= ();
 my %from_nopos = ();
 
+my $clean = 0;
 my $from = '';
 my $to = '';
+my $nopos = 0;
 my $table = '';
 
 GetOptions (
+    'clean'=>\$clean,
     'from:s'=>\$from,
+    'nopos'=>\$nopos,
     'table:s'=>\$table,
     'to:s'=>\$to,
     );
@@ -58,14 +62,21 @@ sub fix {
     my $x = $_[0];
     $x =~ s/\+//;
     if ($from{$x}) {
-	return $from{$x};
+	my $tmp = $from{$x};
+	$tmp =~ s/\].*$/]/;
+	warn "fixing $x => $tmp\n";
+	return $tmp;
     } else {
 	my ($tmp,$post) = ($x =~ m/^(.*\])(.*)$/);
+	return $x unless $tmp; # e.g., DN, PN
 	$post = '' unless $post;
 	if ($from_nopos{$tmp}) {
+	    my $tmpo = $tmp;
 	    warn "matched nopos\n";
 	    $tmp = $from{${$from_nopos{$tmp}}[0]};
-	    $tmp .= $post;
+	    $tmp .= $post unless $clean;
+	    $tmp =~ s/\].*$/]/;
+	    warn "fixing $tmpo => $tmp\n";
 	    return $tmp;
 	}
     }
