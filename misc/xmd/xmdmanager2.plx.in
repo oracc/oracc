@@ -776,8 +776,8 @@ dump_xmd {
 	$item_index = $i and last 
 	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
     }
-    $item_index = -1 if $item_index >= $#$fields;
-    warn("xmdmanager: catalog $file has no item field\n") and return
+    $item_index = -1 if $item_index > $#$fields;
+    warn("xmdmanager: catalog $file has no id_text or id_composite field\n") and return
 	unless $item_index >= 0;
     for (my $i = 0; $i <= $#$fields; ++$i) {
 	$xurl_index = $i and last 
@@ -1722,7 +1722,7 @@ xproject {
 	$item_index = $i and last 
 	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
     }
-    $item_index = -1 if $item_index >= $#$fields;
+    $item_index = -1 if $item_index > $#$fields;
 
     # find the period field for this catalog
     for (my $i = 0; $i <= $#$fields; ++$i) {
@@ -1740,7 +1740,7 @@ xproject {
 	    if $$fields[$i] eq 'public_images';
     }
 
-    warn("xmdmanager: xproject: catalog $file has no item field\n") and return
+    warn("xmdmanager: xproject: catalog $file has no id_text or id_composite field\n") and return
 	unless $item_index >= 0;
 
     # if it is the main cat, we will dump ID:NAME table here also
@@ -1830,7 +1830,7 @@ xproject_bis {
 	$item_index = $i and last 
 	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
     }
-    $item_index = -1 if $item_index >= $#$fields;
+    $item_index = -1 if $item_index > $#$fields;
 
     # find the period field for this catalog
     for (my $i = 0; $i <= $#$fields; ++$i) {
@@ -1848,7 +1848,7 @@ xproject_bis {
 	    if $$fields[$i] eq 'public_images';
     }
 
-    warn("xmdmanager: xproject: catalog $file has no item field\n") and return
+    warn("xmdmanager: xproject: catalog $file has no id_text or id_composite field\n") and return
 	unless $item_index >= 0;
 
     for (my $i = 0; $i <= $#$fields; ++$i) {
