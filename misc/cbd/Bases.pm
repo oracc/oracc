@@ -208,9 +208,8 @@ sub bases_prefer {
     my $bsansplus = $b;
     $asansplus =~ s/\{\+*//g;
     $bsansplus =~ s/\{\+*//g;
-#    warn "trying $cfgw w $a vs $b; sans a/b = $asansplus vs $bsansplus\n";
+
     if ($asansplus eq $bsansplus) {
-#	warn "found asansplus\n";
 	if ($a =~ /\{\+/) {
 	    return $a;
 	} else {
@@ -218,7 +217,14 @@ sub bases_prefer {
 	}
     }
     
-    # try stats first
+    # cdot or degree preferred
+    if ($a =~ /[·°]/ && $b !~ /[·°]/) {
+	return $a;
+    } elsif ($b =~ /[·°]/) {
+	return $b;
+    }
+
+    # try stats 
     if (defined $stats{$cfgw}) {
 	my %s = %{$stats{$cfgw}};
 	if ($s{$a} && $s{$b}) {
@@ -247,13 +253,6 @@ sub bases_prefer {
     if ($a =~ /ŋ/ && $b !~ /ŋ/) {
 	return $a;
     } elsif ($b =~ /ŋ/) {
-	return $b;
-    }
-
-    # cdot or degree preferred
-    if ($a =~ /[·°]/ && $b !~ /[·°]/) {
-	return $a;
-    } elsif ($b =~ /[·°]/) {
 	return $b;
     }
 
