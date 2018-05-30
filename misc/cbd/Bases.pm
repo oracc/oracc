@@ -202,6 +202,22 @@ sub bases_log_errors {
 
 sub bases_prefer {
     my($cfgw,$a,$b) = @_;
+
+    # try only-difference-is-plus first
+    my $asansplus = $a;
+    my $bsansplus = $b;
+    $asansplus =~ s/\{\+*//g;
+    $bsansplus =~ s/\{\+*//g;
+#    warn "trying $cfgw w $a vs $b; sans a/b = $asansplus vs $bsansplus\n";
+    if ($asansplus eq $bsansplus) {
+#	warn "found asansplus\n";
+	if ($a =~ /\{\+/) {
+	    return $a;
+	} else {
+	    return $b;
+	}
+    }
+    
     # try stats first
     if (defined $stats{$cfgw}) {
 	my %s = %{$stats{$cfgw}};

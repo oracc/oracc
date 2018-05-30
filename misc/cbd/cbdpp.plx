@@ -35,6 +35,8 @@ my %ppfunc = (
 
 my %args = pp_args();
 
+$ORACC::CBD::nonormify = $args{'nonormify'} || 0;
+
 my @cbd = setup_cbd(\%args);
 warn "cbdpp: updating $args{'cbd'}\n";
 #    if $args{'announce'};

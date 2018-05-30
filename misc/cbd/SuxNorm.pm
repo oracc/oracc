@@ -3,6 +3,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 
+use Data::Dumper;
+
 my %known_forms = ();
 my %norms = ();
 
@@ -112,11 +114,20 @@ sub normify {
 			my $key = "$forms[$j]=$parts[$j]";
 			$key =~ s#//(.*?)\]#]#;
 			$key =~ s#'.*$##;
+#			warn "key=$key\n";
+#			print Dumper \%norms;
 			if ($norms{$key}) {
 			    $lines[$i] .= " \$$norms{$key}";
 			} else {
-			    if ($key eq 'n=n[]n') {
-				$lines[$i] .= " \$n";
+			    if ($key =~ /n\[\]nu?/i) { # this is a bit
+						     # of a hack
+						     # because it used
+						     # to work and
+						     # broke and now
+						     # I'm working
+						     # around it with
+						     # a pattern
+				$lines[$i] .= " n[]NU\$";
 			    } else {
 				if ($known_forms{$key}) {
 				    push @this_parts_errs, "(normify) no NORM for parts element $key";

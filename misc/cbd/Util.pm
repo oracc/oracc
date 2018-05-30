@@ -33,8 +33,8 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce bare base:s check kompounds dry edit filter fix:s force invert lang:s 
-           output:s project:s reset sigs trace vfields:s xml/,
+	qw/announce bare base:s check kompounds dry edit filter fix:s force invert nonormify
+           lang:s output:s project:s reset sigs trace vfields:s xml/,
 	) || die "unknown arg";
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};

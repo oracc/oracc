@@ -15,9 +15,8 @@ my $from_hash = undef;
 
 $ORACC::CBD::nonormify = 1;
 
-my $b1 = 'a (e)';
-my $b2 = 'e (esz10); duru (du)';
-
+#my $b1 = 'a (e)';
+#my $b2 = 'e (esz10); duru (du)';
 #my $b = bases_merge($b1,$b2,0);
 #print "bases_string= ", bases_string($b), "\n";
 #exit 0;
@@ -36,7 +35,7 @@ if ($args{'base'}) {
 	exit 1;
     }
 } else {
-    die "cbdcompare.plx: must give base glossary with -base\n";
+    die "cbdmerge.plx: must give base glossary with -base\n";
 }
 
 if (($from_hash = pp_hash(\%args))) {

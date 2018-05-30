@@ -82,7 +82,63 @@ my @global_cbd = ();
 
 ######################################################################################
 
+sub sigs_init_2 {
+    my $basesig = '';
+    @compound_parts = ();
+    %cof_lines = ();
+    $coresig = '';
+    %coresigs = ();
+    $currsig = '';
+    $in_sense = '';
+    @instsigs = ();
+    $out = '';
+    $lang = '';
+
+    @sigs_cofs = ();
+    @sigs_coresigs = ();
+    @sigs_psus = ();
+    @sigs_simple = ();
+    @psu_parts = ();
+
+    %sig = ();
+    $sigs_glo_file = '';
+
+    @cof_template_heads = ();
+    @cof_template_tails = ();
+    %cof_heads = ();
+    %cof_tails = ();
+    $compound = 0;
+    $compound_cfgw = '';
+    %compounds = ();
+    $curr_cfgw = '';
+    $current_first_base = '';
+    $debug_type = '';
+    $debug_arg = '';
+    %default_senses = ();
+    @externals = ();
+    %externals = ();
+    $found_simple_sig = 0;
+    %noprintsigs = ();
+    $parts_line = 0;
+    %partsigs = ();
+    %parts_map = ();
+    %printsigs = ();
+    $simple = 0;
+    $verbose = 0;
+    $cof_verbose = 0;
+    $psu_verbose = 0;
+    $rank = 0;
+    $entrybang = '';
+
+    $load_simple_counter = 0;
+
+    $simple_loaded = 0;
+    %simple;
+
+}
+
 sub sigs_init {
+    sigs_init_2();
     @sigs_cofs = ();
     @sigs_coresigs = ();
     @sigs_psus = ();
@@ -773,6 +829,7 @@ parts_match {
 		    $candidates[$j] =~ m#:(.*?)=#;
 		    ($form,$norm) = ($1,'*');
 		}
+#		warn "form=$form; norm=$norm; form[i]=$forms[$i]; norm[i]=$norms[$i]\n";
 		if ($form && $form eq $forms[$i] 
 		    && ($norm eq '*' || $norms[$i] eq '*' || 
 		    $norm eq $norms[$i])) {
@@ -801,8 +858,10 @@ parts_match {
 
 	unless ($this_form_matched) {
 	    $matched = 0;
-	    push @parts_errors, "no form/norm match on '$forms[$i]' = simple sig '$csig\$$norms[$i]' in `$psulang.glo'"
-		unless $#parts_errors == 0;
+	    unless ($#parts_errors == 0) {
+		push @parts_errors, "no form/norm match on '$forms[$i]' = simple sig '$csig\$$norms[$i]' in `$psulang.glo'";
+#		print STDERR Dumper \@candidates;
+	    }
 	    last;
 	}
     }

@@ -10,7 +10,7 @@ while (<>) {
     if (/^\@entry/) {
 	$first_sense = '';
 	print;
-    } elsif (/^\@sense\s+\S+\s+(.*?)\s*$/) {
+    } elsif (/^\@sense\+?\s+\S+\s+(.*?)\s*$/) {
 	my $s = $1;
 	if ($first_sense) {
 	    if ($first_sense =~ /$s/) {
@@ -18,6 +18,7 @@ while (<>) {
 	    } elsif ($s =~ /$first_sense/) {
 		warn "sux.glo:$.: suspicious first sense\n";
 		$first_sense = $s;
+		s/sense\+/sense/;
 		shift @senses;
 		push @senses, $_;
 	    } else {

@@ -133,7 +133,7 @@ sub pp_hash {
 
 	next if /^\#/ || /^\@letter/;
 
-	if (/^\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
+	if (/^\@([a-z_]+[-*!]*)\s*(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $default = $currtag =~ s/!//;
 	    my $starred = $currtag =~ s/\*//;
@@ -298,7 +298,8 @@ sub pp_acd_merge {
 		    if ($fld eq 'bases') {
 			$i_bases = $tmp;
 		    } else {
-			++$known{$tmp};
+			warn "tmp=$tmp\n" if $fld eq 'sense';
+			++$known{un_sense_id($tmp)};
 		    }
 		}
 		foreach my $l (@{$$$f{$fld}}) {
@@ -319,15 +320,25 @@ sub pp_acd_merge {
 				$fld =~ s#/(\S+)#/$fb#;
 			    } 
 			}
-			if (!defined $known{$tmp}) {
-			    unless (${$$$i{'fields'}}{$fld}) {
-				++${$$$i{'fields'}}{$fld};
-				if ($fld eq 'sense') {
-				    push @{$$$i{$fld}}, "+$l";
-				} else {
-				    push @{$$$i{$fld}}, "$l";
-				}
+			warn "tmp=$tmp\n" if $fld eq 'sense';
+			if (!defined $known{un_sense_id($tmp)}) {
+			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+			    ++$known{un_sense_id($tmp)};
+			    if ($fld eq 'sense') {
+				warn "setting +$l\n";
+				push @{$$$i{$fld}}, "+$l";
+			    } else {
+				push @{$$$i{$fld}}, "$l";
 			    }
+#			if (!defined $known{$tmp}) {
+#			    unless (${$$$i{'fields'}}{$fld}) {
+#				++${$$$i{'fields'}}{$fld};
+#				if ($fld eq 'sense') {
+#				    push @{$$$i{$fld}}, "+$l";
+#				} else {
+#				    push @{$$$i{$fld}}, "$l";
+#				}
+#			    }
 			}
 		    }
 		}
@@ -469,6 +480,13 @@ sub fields_of {
     sort {$fseq{$a}<=>$fseq{$b}} tags_of(@_);
 }
 
-
+sub un_sense_id {
+    my $t = shift;
+    $t =~ s/^\#\S+\s+//;
+    $t =~ s/^an?\s+//;
+    $t =~ s/^to\s+//;
+    $t =~ s/^\(to be\)\s+//;
+    $t;
+}
 1;
 
