@@ -15,7 +15,7 @@ if [ -d 00web/00config ]; then
     esp2.sh $project
     if [[ "$project" == "cdli" ]]; then
 	echo Skipping est processing for project CDLI
-    elif [[ "$project" == "epsd2" ]]; then
+    elif [[ "$project" == "epsd2"* ]]; then
 	echo Skipping est processing for project $project
     elif [[ "$project" == "neo" ]]; then
 	echo Skipping est processing for project $project
@@ -32,11 +32,16 @@ elif [ -d 00web/esp ]; then
 #    oracc esp
 #    echo You now need to call: oracc esp live to make the rebuilt portal live online
 elif [ -e 00web/index.html ] || web-default-index.plx $webdir; then
+    echo o2-portal.sh working from 00web/index.html
     mkdir -p $webdir/images
     cp -fpR 00web/* $webdir ; rm -f $webdir/*~
     cp -fp 00lib/thumb.png $webdir
     if [[ "$project" == "cdli" ]]; then
 	echo Skipping est processing for project CDLI
+    elif [[ "$project" == "epsd2"* ]]; then
+	echo Skipping est processing for project $project
+    elif [[ "$project" == "neo" ]]; then
+	echo Skipping est processing for project $project
     else
 	est-project.sh
     fi

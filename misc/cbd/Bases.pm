@@ -224,6 +224,15 @@ sub bases_prefer {
 	return $b;
     }
 
+    # now try qualified vs. non-qualified
+    unless ($a =~ /ₓ/ || $b =~ /ₓ/) {
+	if ($a =~ /\(.*?\)$/ && $b !~ /\(.*?\)$/) {
+	    return $b;
+	} elsif ($b =~ /\(.*?\)/) {
+	    return $a;
+	}
+    }
+
     # try stats 
     if (defined $stats{$cfgw}) {
 	my %s = %{$stats{$cfgw}};
@@ -236,15 +245,6 @@ sub bases_prefer {
 	} elsif ($s{$a}) {
 	    return $a;
 	} elsif ($s{$b}) {
-	    return $b;
-	}
-    }
-
-    # now try qualified vs. non-qualified
-    unless ($a =~ /ₓ/ || $b =~ /ₓ/) {
-	if ($a =~ /\(.*?\)$/ && $b !~ /\(.*?\)$/) {
-	    return $b;
-	} elsif ($b =~ /\(.*?\)/) {
 	    return $b;
 	}
     }

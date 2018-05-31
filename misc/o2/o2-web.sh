@@ -12,4 +12,5 @@ if [ -r 00lib/project.sty ]; then
     cp -p 00lib/project.sty $webdir/
 fi
 p3-colours.plx $webdir
+echo o2-web.sh calling o2-portal.sh
 o2-portal.sh
