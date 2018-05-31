@@ -27,6 +27,8 @@ int backslash_is_formvar = 1;
 static struct npool *graphemes_pool;
 struct node *pending_disamb = NULL;
 
+const unsigned char *cued_gdelim = NULL;
+
 #define pool_copy(x) npool_copy((x),graphemes_pool)
 
 #define insertp_is_delim() (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
@@ -1976,6 +1978,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  {
 	    if (np->children.lastused)
 	      {
+		cued_gdelim = getAttr(np, "g:delim");
 		struct node *cp1 = np->children.nodes[0];
 		if (!strcmp((char*)getAttr(np,"g:role"),"sign"))
 		  *insertp++ = '$';
@@ -2043,7 +2046,17 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    if (i)
 		      {
 			if (xstrcmp(getAttr(np->children.nodes[i-1],"g:pos"),"pre"))
-			  *insertp++ = '-';
+			  {
+			    const unsigned char *gdelim
+			      = getAttr(lastChild(np), "g:delim");
+			    if (*gdelim)
+			      {
+				const unsigned char *tmp = gdelim;
+				while (*tmp)
+				  *insertp++ = *tmp++;
+			      }
+			    /* *insertp++ = '-'; */
+			  }
 		      }
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
 		  }
@@ -2258,7 +2271,16 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		  if (i)
 		    {
 		      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
-			*insertp++ = '-';
+			{
+			  if (cued_gdelim)
+			    {
+			      while (*cued_gdelim)
+				*insertp++ = *cued_gdelim++;
+			      cued_gdelim = NULL;
+			    }
+			  else
+			    *insertp++ = '-';
+			}
 		    }
 		  if (*((struct node*)(np->children.nodes[i]))->type == 't')
 		    insertp = render_g_text(np->children.nodes[i], insertp, startp);
@@ -2302,7 +2324,17 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	      *--insertp = '\0'; /* unhyphenate */
 	  }
 	else if (!xstrcmp(aval,"empty"))
-	  *insertp++ = '-';
+	  {
+	    const unsigned char *gdelim
+	      = getAttr(lastChild(np), "g:delim");
+	    if (*gdelim)
+	      {
+		const unsigned char *tmp = gdelim;
+		while (*tmp)
+		  *insertp++ = *tmp++;
+	      }
+	    /* *insertp++ = '-'; */
+	  }
 	else if (!xstrcmp(aval,"disamb"))
 	  {
 	    if (insertp_is_delim())

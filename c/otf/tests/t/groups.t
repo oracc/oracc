@@ -432,3 +432,15 @@
        </g:q>
        <g:v>gal</g:v>
      </g:w>
+
+034. %a SIG₂{HI.A}
+     SIG₂{HI.A}
+     <g:w form="SIG₂{HI.A}" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:logolang="sux" g:role="logo">SIG₂</g:s>
+         <g:d g:pos="post" g:role="semantic">
+           <g:s g:delim="." g:logolang="sux" g:role="logo">HI</g:s>
+           <g:s g:logolang="sux" g:role="logo">A</g:s>
+         </g:d>
+       </g:gg>
+     </g:w>
