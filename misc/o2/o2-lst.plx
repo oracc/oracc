@@ -375,7 +375,7 @@ update_lists {
 	xsystem 
 	    "atflists.plx -p$project -o$out_outlined $have_atf -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
     } elsif ($opt eq 'static') {
-	# no action
+	 # nothing to do here
     } elsif ($opt =~ /\.ol/) {
 	## ol('outlined.lst', $opt);
 	warn "o2-lst.plx: .ol lists not yet implemented\n";
