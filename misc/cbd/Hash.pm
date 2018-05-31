@@ -330,15 +330,6 @@ sub pp_acd_merge {
 			    } else {
 				push @{$$$i{$fld}}, "$l";
 			    }
-#			if (!defined $known{$tmp}) {
-#			    unless (${$$$i{'fields'}}{$fld}) {
-#				++${$$$i{'fields'}}{$fld};
-#				if ($fld eq 'sense') {
-#				    push @{$$$i{$fld}}, "+$l";
-#				} else {
-#				    push @{$$$i{$fld}}, "$l";
-#				}
-#			    }
 			}
 		    }
 		}

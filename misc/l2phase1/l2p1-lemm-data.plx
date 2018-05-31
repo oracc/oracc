@@ -3,6 +3,8 @@ use warnings; use strict; use open ':utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Getopt::Long;
 
+my $g2 = `oraccopt . g2`;
+$g2 = undef unless ($g2 && $g2 eq 'yes');
 
 my %f = ();
 my $freq = 0;
@@ -46,7 +48,13 @@ sub rebuild {
 }
 
 sub update {
-    my @f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
+    my @f = ();
+
+    if ($g2) {
+	@f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
+    } else {
+	@f = ('01bld/from-glos.sig');
+    }
 
     warn "l2p1-lemm-data.plx: running with -u flag for update\n";
     

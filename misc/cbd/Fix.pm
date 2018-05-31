@@ -191,13 +191,17 @@ sub fix_refs {
 sub load_fixes {
     my ($args,$h) = @_;
     my $fixfile = $$args{'fix'};
-
+ 
     die "$0: must give fixes file with -f arg\n" unless $fixfile;
     die "$0: no $fixfile\n" unless -r  $fixfile;
 
     open(F,$fixfile) || die "$0: can't open $fixfile for read\n";
     while (<F>) {
-	/^(.*?)\t(.*?)$/;
+	if (/^(.*?)\s+=>\s+(.*?)$/) {
+	    ; # do nothing
+	} else {
+	    /^(.*?)\t(.*?)$/;
+	}
 	my($from,$to) = ($1,$2);
 	if ($from eq $to) {
 	    warn "$0: ignoring fix '$from' == '$to'\n";

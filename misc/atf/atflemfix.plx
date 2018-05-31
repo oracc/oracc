@@ -98,7 +98,12 @@ sub load_table {
     my $e = 'e0000';
     while (<T>) {
 	next if /^\#/ || /^\s*$/;
-	my($from,$to) = (/^(.*?)\t+(.*)$/);
+	my($from,$to) = ();
+	if (/=>/) {
+	    ($from,$to) = (/^(.*?)\s+=>\s+(.*)$/);
+	} else {
+	    ($from,$to) = (/^(.*?)\t+(.*)$/);
+	}
 	warn "$t:$.: syntax error, line must be FROM<TAB>TO\n" unless $from && $to;
 	if ($from{$from}) {
 	    warn "$t:$.: duplicate 'from' entry in table\n";
