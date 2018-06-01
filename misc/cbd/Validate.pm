@@ -628,7 +628,8 @@ sub v_form {
     my($fo) = ($f =~ /^(\S+)/);
     if ($ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
 	# can't do this: it's legit to have al-pi $alpi and al-pi $alpī
-#	pp_warn("duplicate form in `$curr_cfgw': $fo");
+	pp_warn("duplicate form in `$curr_cfgw': $fo")
+	    if $flang =~ /^sux/;
 #	return;
     }
 

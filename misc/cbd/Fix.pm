@@ -197,12 +197,12 @@ sub load_fixes {
 
     open(F,$fixfile) || die "$0: can't open $fixfile for read\n";
     while (<F>) {
+	my($from,$to) = ();
 	if (/^(.*?)\s+=>\s+(.*?)$/) {
-	    ; # do nothing
+	    ($from,$to) = ($1,$2); # do nothing
 	} else {
-	    /^(.*?)\t(.*?)$/;
+	    ($from,$to) = (/^(.*?)\t(.*?)$/);
 	}
-	my($from,$to) = ($1,$2);
 	if ($from eq $to) {
 	    warn "$0: ignoring fix '$from' == '$to'\n";
 	} elsif (exists $cfgws{$from}) {

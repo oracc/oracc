@@ -21,12 +21,17 @@ my %common2 = (); @common2{@common2} = ();
 
 use Data::Dumper;
 
+my $threshold = 0.94;
+
 my %warned = ();
 my @cfgws = ();
 my %g = ();
 
 sub words_check {
     my ($args) = @_;
+    if ($$args{'words'}) {
+	$threshold = $$args{'words'};
+    }
     my $hash = undef;
     my $cbdname = ORACC::CBD::Util::cbdname();
     if (!$cbdname || !($hash = $ORACC::CBD::data{$cbdname})) {
@@ -47,7 +52,7 @@ sub words_check {
 sub check_by_groups {
     my @ids = @{$g{'ids'}};
     my @cfgws = map { ${$g{'entries'}}{$_}  } @ids;
-    my @groups = groups_hard(0.94, \@cfgws);
+    my @groups = groups_hard($threshold, \@cfgws);
     foreach my $g (@groups) {
 	my @m = @$g;
 	if ($#m > 0) {
