@@ -3,7 +3,7 @@ project=`oraccopt`
 
 function xis {
     if [ -r $ORACC_BUILDS/pub/$project/sortinfo.csi ]; then
-	echo running xisperiods -t 02pub/cbd/$l/$l.tis -x 01bld/$l/$l.xis -p $project ...
+#	echo running xisperiods -t 02pub/cbd/$l/$l.tis -x 01bld/$l/$l.xis -p $project ...
 	xisperiods -t 02pub/cbd/$l/$l.tis -x 01bld/$l/$l.xis -p $project >01bld/$l/periods.xis
 	[ -s 01bld/$l/periods.xis ] || cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
 	(cd 01bld/$l ; \
@@ -42,7 +42,6 @@ function g2x {
 #	echo l2p2-g2x.plx -h $ldir/union.sig
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
-    exit
     xis $ldir $l
     if [ -s $ldir/$l.map ]; then
 #	echo running l2p2-g2c.plx $l
