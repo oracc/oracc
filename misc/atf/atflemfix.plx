@@ -61,6 +61,7 @@ foreach my $a (@ARGV) {
 sub fix {
     my $x = $_[0];
     $x =~ s/\+//;
+    $x =~ s/\[\]/[1]/;
     if ($from{$x}) {
 	my $tmp = $from{$x};
 	$tmp =~ s/\].*$/]/;
