@@ -603,9 +603,9 @@ sub psu_index_simple {
 	    pp_warn "internal error: null keysig from $s";
 	}
     }
-    open(S, ">simple-$passnumber.dump");
-    print S Dumper \%simple;
-    close(S);
+#    open(S, ">simple-$passnumber.dump");
+#    print S Dumper \%simple;
+#    close(S);
 }
 
 sub psu_glo {

@@ -39,6 +39,7 @@ sub pp_args {
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};
     $ORACC::CBD::check_compounds = $args{'kompounds'};
+    $ORACC::CBD::nonormify = $args{'nonormify'};
 
     unless ($args{'filter'}) {
 	die "cbdpp.plx: must give glossary on command line\n"
