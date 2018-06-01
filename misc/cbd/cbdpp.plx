@@ -40,7 +40,8 @@ $ORACC::CBD::nonormify = $args{'nonormify'} || 0;
 my @cbd = setup_cbd(\%args);
 warn "cbdpp: updating $args{'cbd'}\n";
 #    if $args{'announce'};
-    
+
+#forms_dump('forms-44.dump');
 
 if (pp_status() && !$args{'force'}) {
     my $ret = pp_diagnostics(\%args);
@@ -74,7 +75,8 @@ if ($args{'xml'}) {
 } else {
     pp_trace("cbdpp/writing cbd");
     pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
-    sigs_from_glo(\%args) unless $args{'check'} || (pp_status() && !$args{'force'});
+#    forms_dump('forms-78.dump');
+    sigs_from_glo(\%args, @cbd) unless $args{'check'} || (pp_status() && !$args{'force'});
     pp_trace("cbdpp/cbd write complete");
 }
 

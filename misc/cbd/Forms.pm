@@ -28,8 +28,10 @@ sub forms_by_cfgw {
 }
 
 sub forms_dump {
+    my $f = shift;
+    $f = 'forms.dump' unless $f;
     use Data::Dumper;
-    open(F,'>forms.dump');
+    open(F,">$f");
     print F Dumper \%forms;
     close(F);
 }
@@ -51,17 +53,17 @@ sub forms_normify {
 			my($c) = ($cfgw =~ /^(\S+)/);
 			$m =~ s/~/$c/;
 			$fo .= " \$$m";
-			#		    warn "new fo = $fo\n";
+		     	#	    warn "new fo = $fo\n";
 		    }
 		}
 		# we already warned about this error if relevant
-		# so just preserve the (bad) form		    
+		# so just preserve the (bad) form
 		push @nf, [ $fi, $li, $pr, $fo ];
 	    }
 	    @{$forms{$cfgw}} = @nf;
 	}
 	# we already warned about this error condition in forms_validate
-    }
+    }    
     pp_file($pp_file_on_entry);
 }
 

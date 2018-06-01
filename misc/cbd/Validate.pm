@@ -217,6 +217,7 @@ sub pp_validate {
     %{$glodata{'entries'}} = %entries;
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
+
     sigs_check(\%glodata,$args,@cbd);
 
     my $cbdname = ORACC::CBD::Util::cbdname();

@@ -257,7 +257,7 @@ sub setup_cbd {
 	    forms_normify() unless $ORACC::CBD::nonormify;
 	}
 	$ORACC::CBD::Forms::external = 1;
-	forms_dump();
+#	forms_dump();
     } else {
 	if (lang() =~ /sux|qpn/) {
 	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd)

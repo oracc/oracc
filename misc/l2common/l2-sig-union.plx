@@ -11,7 +11,7 @@ my $quiet = 0;
 my $project = '';
 my %sig = ();
 my $superglo = 0;
-my $verbose = 1;
+my $verbose = 0;
 
 GetOptions(
     'lang:s'=>\$lang,

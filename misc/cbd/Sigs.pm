@@ -70,7 +70,7 @@ my $entrybang = '';
 my $load_simple_counter = 0;
 
 my $simple_loaded = 0;
-my %simple;
+my %simple = ();
 
 my $ignorable = '(?:\(to be\)|a|to|the|\s)*?';
 my $finalparens = '(?:\s+\(.*?\)\s*)?';
@@ -79,6 +79,22 @@ my $finalparens = '(?:\s+\(.*?\)\s*)?';
 
 my $trace = 0;
 my @global_cbd = ();
+
+my %psu_cfs = ();
+my %psu_simple = ();
+
+my %e = ();
+my $err_glo = '';
+my $glo = '';
+my @parts_errors = ();
+my $psu_parts = '';
+my @entries_parts_lines = ();
+
+my %validated_parts_lines = ();
+my %bad_parts_lines = ();
+
+my @no_sense_forms = ();
+my @sense_forms = ();
 
 ######################################################################################
 
@@ -133,8 +149,24 @@ sub sigs_init_2 {
     $load_simple_counter = 0;
 
     $simple_loaded = 0;
-    %simple;
+    %simple = ();
 
+     %psu_cfs = ();
+     %psu_simple = ();
+
+    %e = ();
+    $err_glo = '';
+    $glo = '';
+    @parts_errors = ();
+    $psu_parts = '';
+    @entries_parts_lines = ();
+    
+    %validated_parts_lines = ();
+    %bad_parts_lines = ();
+    
+    @no_sense_forms = ();
+    @sense_forms = ();
+  
 }
 
 sub sigs_init {
@@ -161,27 +193,38 @@ sub sigs_init {
     @global_cbd = ();
 }
 
+my $passnumber = 0;
+
 sub sigs_check {
     my($glo,$args,@cbd) = @_;
+    ++$passnumber;
+#    warn "sigs_check [$passnumber]\n";
     $lang = ORACC::CBD::Util::lang();
     sigs_init();
     sigs_simple($args,@cbd);
     sigs_cofs();
     sigs_psus($args,@cbd);
-    my $cbdname = ORACC::CBD::Util::cbdname();
-    if ($glo) {
-	@{$$glo{'sigs'}} = @sigs_simple;
-	@{$$glo{'cofs'}} = @sigs_cofs;
-	@{$$glo{'psus'}} = @sigs_psus;
-	@{$$glo{'psu_parts'}} = @psu_parts;
-    } else {
-	warn "$0: internal error: CBD data for $cbdname not yet set\n";
-    }
+#    my $cbdname = ORACC::CBD::Util::cbdname();
+#    if ($glo) {
+#	@{$$glo{'sigs'}} = @sigs_simple;
+#	@{$$glo{'cofs'}} = @sigs_cofs;
+#	@{$$glo{'psus'}} = @sigs_psus;
+#	@{$$glo{'psu_parts'}} = @psu_parts;
+#   } else {
+#	warn "$0: internal error: CBD data for $cbdname not yet set\n";
+#    }
 }
 
 sub sigs_from_glo {
-    my($args) = @_;
-    sigs_dump($args) unless $$args{'check'};
+    ++$passnumber;
+#    warn "sigs_from_glo [$passnumber]\n";
+    my($args,@cbd) = @_;
+    $lang = ORACC::CBD::Util::lang();
+    sigs_init();
+    sigs_simple($args,@cbd);
+    sigs_cofs();
+    sigs_psus($args,@cbd);
+    sigs_dump($args);
 }
 
 ######################################################################################
@@ -261,6 +304,7 @@ sub sigs_simple {
 			my $f3 = $$f[3];
 			$f3 =~ s/^(\S+)\s*//;
 			my $orth = $1;
+#			warn "passing sigs_form $orth=$f3\n";
 			sigs_form($args,'',$orth,$f3);
 		    }
 		}
@@ -522,22 +566,6 @@ permute {
 
 ######################################################################
 
-my %psu_cfs = ();
-my %psu_simple = ();
-
-my %e = ();
-my $err_glo = '';
-my $glo = '';
-my @parts_errors = ();
-my $psu_parts = '';
-my @entries_parts_lines = ();
-
-my %validated_parts_lines = ();
-my %bad_parts_lines = ();
-
-my @no_sense_forms = ();
-my @sense_forms = ();
-
 sub sigs_psus {
     my($args,@cbd) = @_;
     $err_glo = $$args{'file'};
@@ -556,6 +584,7 @@ sub psu_index_coresigs {
 }
 
 sub psu_index_simple {
+    %simple = ();
     foreach my $s (@sigs_simple) {
 	local($_) = $s;
 	s/\t.*$//;
@@ -574,6 +603,9 @@ sub psu_index_simple {
 	    pp_warn "internal error: null keysig from $s";
 	}
     }
+    open(S, ">simple-$passnumber.dump");
+    print S Dumper \%simple;
+    close(S);
 }
 
 sub psu_glo {
@@ -865,6 +897,7 @@ parts_match {
 	    last;
 	}
     }
+#    use Data::Dumper; print "matched_candidates[$passnumber]: ", Dumper \@matched_candidates;
     return ( [@parts_data] , @matched_candidates );
 }
 
@@ -916,6 +949,7 @@ validate_parts {
 		}
 	    }
 
+	    # this is a list of coresigs that match the psu part
 	    my @pt_matches = @{${$psu_cfs{$cf}}{$gw}};
 	    if ($epos) {
 		pp_line($lnum);
@@ -975,6 +1009,7 @@ validate_parts {
 	    foreach my $ptm (@pt_matches) {
 		if ($ptm && $simple{$ptm}) {
 		    push(@simple_matches, @{$simple{$ptm}});
+#		    print "simple_matches[$passnumber]: ", Dumper \@simple_matches;
 		} else {
 		    if ($ptm) {
 			warn "l2p1-psus.plx: XXXno match for $ptm in 01tmp/l2p1-simple.sig\n";
@@ -1010,12 +1045,15 @@ sub sigs_dump {
     my($args) = @_;
     $sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
     open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
-    my $cbdname = ORACC::CBD::Util::cbdname();
-    my %g = %{$ORACC::CBD::data{$cbdname}};
+#    my $cbdname = ORACC::CBD::Util::cbdname();
+#    my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
-    print SIGS @{$g{'sigs'}};
-    print SIGS @{$g{'cofs'}};
-    print SIGS @{$g{'psus'}};
+    print SIGS @sigs_simple;
+    print SIGS @sigs_cofs;
+    print SIGS @sigs_psus;
+#    print SIGS @{$g{'sigs'}};
+#    print SIGS @{$g{'cofs'}};
+#    print SIGS @{$g{'psus'}};
     close(SIGS);
 
 #    warn "cbdpp: sigs written to $sigs_glo_file\n"
