@@ -2,7 +2,9 @@ package ORACC::CBD::Hash;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_serialize fields_of/;
+@EXPORT = qw/pp_hash pp_hash_cfgws pp_hash_acd pp_acd_merge pp_acd_sort pp_serialize fields_of
+    pp_hash_entry pp_hash_line
+    /;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -86,6 +88,24 @@ sub pp_hash_cfgws {
     my @ids = @{$$h{'ids'}};
     my %e = %{$$h{'entries'}};
     sort map { $e{$_} } @ids;
+}
+
+sub pp_hash_entry {
+    my($h,$c) = @_;
+    my $id = ${$$h{'entries'}}{$c};
+    my $e = ${$$h{'entries'}}{$id,'e'};
+    $e;
+}
+
+sub pp_hash_line {
+    my($h,$c) = @_;
+    my $id = ${$$h{'entries'}}{$c};
+    if ($id) {
+	my $l = ${$$h{'entries'}}{$id,'l'};
+	$$l{'entry'};
+    } else {
+	undef;
+    }
 }
 
 sub pp_hash {

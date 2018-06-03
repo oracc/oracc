@@ -33,7 +33,7 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce bare base:s check kompounds dry edit filter fix:s force invert nonormify
+	qw/announce bare base:s check kompounds dry edit entries=s filter fix:s force invert lines nonormify
            lang:s output:s project:s reset sigs trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
