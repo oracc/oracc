@@ -26,6 +26,7 @@ sub pp_fix {
     @cfgws = pp_hash_cfgws($h);
     @cfgws{@cfgws} = ();
     die unless load_fixes($args, $h);
+    exit 0 if $$args{'check'};
     %acd = pp_hash_acd($h);
     foreach my $e (@cfgws) {
 	if ($fixes{$e}) {
@@ -190,28 +191,79 @@ sub fix_refs {
 
 sub load_fixes {
     my ($args,$h) = @_;
-    my $fixfile = $$args{'fix'};
- 
-    die "$0: must give fixes file with -f arg\n" unless $fixfile;
-    die "$0: no $fixfile\n" unless -r  $fixfile;
+    my $file = '';
+    my $fixfile = $$args{'fix'} || '';
+    my @l = ();
+    my %seen = ();
+    
+    if ($fixfile eq '-') {
+	@l = (<>);
+	$file = '<stdin>';
+    } else {
+	die "$0: must give fixes file with -fix arg\n" unless $fixfile;
+	die "$0: no $fixfile\n" unless -r  $fixfile;
+	$file = $fixfile;
+	open(F,$fixfile) || die "$0: can't open $fixfile for read\n";
+	@l = (<F>);
+	close(F);
+    }
 
-    open(F,$fixfile) || die "$0: can't open $fixfile for read\n";
-    while (<F>) {
+    for (my $i = 0; $i <= $#l; ++$i) {
+	local($_) = $l[$i];
+	my $line = $i+1;
 	my($from,$to) = ();
+
+	if (/=>/) {
+	    warn "$file:$line: ignoring old => format, please replace with tab\n";
+	    next;
+	}
+	unless (/\t/) {
+	    warn "$file:$line: ignoring line without <TAB>\n";
+	    next;
+	}
+	
 	if (/^(.*?)\s+=>\s+(.*?)$/) {
 	    ($from,$to) = ($1,$2); # do nothing
 	} else {
 	    ($from,$to) = (/^(.*?)\t(.*?)$/);
 	}
-	if ($from eq $to) {
-	    warn "$0: ignoring fix '$from' == '$to'\n";
-	} elsif (exists $cfgws{$from}) {
-	    $fixes{$from} = $to;
+
+	if ($seen{$from}++) {
+	    warn "$file:$line: ignoring repeated from specification '$from'\n";
+	} elsif ($from eq $to) {
+	    warn "$file:$line: ignoring identity map '$from' == '$to'\n";
+	} elsif ($$args{'mode'} eq 'glossary') {
+	    # if mode=glossary we want to assert LHS is in glossary
+	    if (exists $cfgws{short_form($from)}) {
+		$fixes{$from} = $to;
+	    } else {
+		warn "$file:$line: from entry '$from' not in $$args{'cbd'}\n";
+	    }
+	} elsif ($$args{'mode'} eq 'corpus') {
+	    # if mode=corpus we want to assert RHS is in glossary
+	    if (exists $cfgws{short_form($to)}) {
+		$fixes{$from} = $to;
+	    } else {
+		warn "$file:$line: to entry '$to' not in $$args{'cbd'}\n"
+		    unless $to =~ /^-/; # these are deleted entries so no warning
+	    }
 	} else {
-	    warn "$0: entry '$from' not in $$args{'cbd'}\n";
+	    ; # can't happen
 	}
     }
+
     1;
+}
+
+# remove //SENSE and anything after POS, but it's OK if there isn't a POS
+# also expand to glossary form of cfgw with spaces before/after [/]
+sub short_form {
+    my $x = shift;
+    $x =~ s#//.*?\]#]#;
+    $x =~ s/\](\s+\S+).*$/]$1/;
+    $x =~ s/\s*\[/ [/;
+    $x =~ s/\]\s*/] /;
+    $x;
 }
 
 1;

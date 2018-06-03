@@ -9,6 +9,14 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
 my %args = pp_args();
+
+if ($args{'mode'}) {
+    die "$0: -mode must be glossary or corpus\n"
+	unless $args{'mode'} eq 'glossary' || $args{'mode'} eq 'corpus';
+} else {
+    die "$0: must give -mode=glossary or -mode=corpus on command line\n";
+}
+
 $ORACC::CBD::nonormify = 1;
 
 my $h = '';
