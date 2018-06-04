@@ -26,6 +26,7 @@ use Getopt::Long;
 
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
+$ORACC::CBD::nosetupargs = 0;
 
 sub pp_args {
     my $cbd = shift;
@@ -41,11 +42,15 @@ sub pp_args {
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
 
-    unless ($args{'filter'}) {
-	die "cbdpp.plx: must give glossary on command line\n"
-	    unless setup_args(\%args, shift @ARGV || $cbd);
+    if ($ORACC::CBD::nosetupargs) {
+	@{$args{'argv'}} = @ARGV;
     } else {
-	$args{'cbd'} = '<stdin>';
+        unless ($args{'filter'}) {
+	    die "cbdpp.plx: must give glossary on command line\n"
+		unless setup_args(\%args, shift @ARGV || $cbd);
+	} else {
+	    $args{'cbd'} = '<stdin>';
+	}
     }
     %args;
 }
@@ -220,28 +225,13 @@ sub setup_args {
     return undef unless $file;
     $$args{'cbd'} = $file;
     my $lng = '';
-#    $lng = $$args{'cbd'}; $lng =~ s/\.glo$//; $lng =~ s#.*?/([^/]+)$#$1#;
-#    $$args{'lang'} = $lng unless $$args{'lang'};
-#    $$args{'project'} = $h_p
-#	unless $$args{'project'};
-#    $$args{'lang'} = $h_l
-#	unless $$args{'lang'};
-#    $$args{'name'} = $h_n
-#	unless $$args{'name'};
     $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
-#    # Allow files of bare glossary bits for testing
-#    if ($$args{'bare'}) {
-#	$$args{'lang'} = 'sux' unless $$args{'lang'};
-#	$$args{'project'} = 'test' unless $$args{'project'};
-#    } else {
     my %h = header_vals($$args{'cbd'});
     die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
 	unless $h{'project'} && $h{'lang'};
     $ORACC::CBD::bases = lang_uses_base($h{'lang'});
     $ORACC::CBD::forms = lang_uses_base($h{'lang'});
     $$args{'lang'} = $h{'lang'};
-#    }
-#    $$args{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
     system 'mkdir', '-p', "01bld/$h{'lang'}";
     $file;
 }

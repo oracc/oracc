@@ -2,7 +2,7 @@ package ORACC::CBD::Fix;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_fix/;
+@EXPORT = qw/pp_fix pp_fix_load_fixes/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -23,10 +23,14 @@ my $is_compound = 0;
 
 sub pp_fix {
     my($args,$h) = @_;
-    @cfgws = pp_hash_cfgws($h);
-    @cfgws{@cfgws} = ();
-    die unless load_fixes($args, $h);
-    exit 0 if $$args{'check'};
+    if ($$args{'check'}) {
+	@cfgws = pp_hash_cfgws($h);
+	@cfgws{@cfgws} = ();
+	die unless load_fixes($args, $h);
+	exit 0;
+    } else {
+	die unless load_fixes($args, undef);
+    }
     %acd = pp_hash_acd($h);
     foreach my $e (@cfgws) {
 	if ($fixes{$e}) {
@@ -36,6 +40,12 @@ sub pp_fix {
     fix_refs();
     pp_acd_sort(\%acd);
     pp_serialize($h,\%acd);
+}
+
+sub pp_fix_load_fixes {
+    my($args,$h) = @_;
+    die unless load_fixes($args, $h);
+    %fixes;
 }
 
 sub fix_entry {
@@ -221,7 +231,9 @@ sub load_fixes {
 	    warn "$file:$line: ignoring line without <TAB>\n";
 	    next;
 	}
-	
+
+	my $lang = ''; s/^%(\S+)\s+// && ($lang = "$1:");
+
 	if (/^(.*?)\s+=>\s+(.*?)$/) {
 	    ($from,$to) = ($1,$2); # do nothing
 	} else {
@@ -233,16 +245,18 @@ sub load_fixes {
 	} elsif ($from eq $to) {
 	    warn "$file:$line: ignoring identity map '$from' == '$to'\n";
 	} elsif ($$args{'mode'} eq 'glossary') {
-	    # if mode=glossary we want to assert LHS is in glossary
-	    if (exists $cfgws{short_form($from)}) {
+	    # if mode=glossary we want to assert LHS is in glossary and we
+	    # don't need to use the lang prefix
+	    if (!$h || exists $cfgws{short_form($from)}) {
 		$fixes{$from} = $to;
 	    } else {
 		warn "$file:$line: from entry '$from' not in $$args{'cbd'}\n";
 	    }
 	} elsif ($$args{'mode'} eq 'corpus') {
 	    # if mode=corpus we want to assert RHS is in glossary
-	    if (exists $cfgws{short_form($to)}) {
-		$fixes{$from} = $to;
+	    # and we can safely prepend lang to LHS
+	    if (!$h || exists $cfgws{short_form($to)}) {
+		$fixes{$lang.$from} = $to;
 	    } else {
 		warn "$file:$line: to entry '$to' not in $$args{'cbd'}\n"
 		    unless $to =~ /^-/; # these are deleted entries so no warning
