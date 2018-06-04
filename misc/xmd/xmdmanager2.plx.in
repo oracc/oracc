@@ -765,6 +765,7 @@ dump_xmd {
     my $fields = $$cat[0];
     my $last = $#$fields;
     my $rows = $$cat[2];
+    my $designation_index = -1;
     my $item_index = -1;
     my $xurl_index = -1;
     my $prov_index = -1;
@@ -790,6 +791,10 @@ dump_xmd {
     for (my $i = 0; $i <= $#$fields; ++$i) {
 	$lang_index = $i and last 
 	    if $$fields[$i] eq 'language' || $$fields[$i] eq 'lang';
+    }
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$designation_index = $i and last 
+	    if $$fields[$i] eq 'designation';
     }
     $lang_index = $item_index if $lang_index < 0;
 #    print STDERR "lang_index = $lang_index; item_index = $item_index\n";
@@ -858,7 +863,7 @@ dump_xmd {
 				    if $verbose;
 			    } else {
 				my($type) = ($id =~ /^([A-Z])/);
-				warn "xmdmanager: no project sortcode for $id\n"
+				warn "xmdmanager: no designation sortcode for $id=$$r[$designation_index]\n"
 				    if $proj_des_sort{$type};
 			    }
 			}

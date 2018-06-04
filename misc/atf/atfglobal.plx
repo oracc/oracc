@@ -65,6 +65,8 @@ while (<>) {
 	    $line =~ s/--/-/;
 	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
+	    $line =~ s/\(::\)//g; # for etcsl
+
 	    my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
 	    my @lem = grep(defined&&length, split(/;\s+/, $lem));
 	    if ($#line != $#lem) {
