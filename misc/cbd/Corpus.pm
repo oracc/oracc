@@ -62,9 +62,19 @@ sub pp_fix_file {
 }
 
 sub pp_fix_new_atf {
-    my($file,$outf,$h) = @_;
+    my($file,$outf,$fixedref) = @_;
+    my @lines = @{$$fixedref{'lines'}};
+    my @lemma = @{$$fixedref{'lemma'}};
+    
     open(O, ">$outf") || die "$0: unable to open $outf for output\n";
-    print O Dumper $h;
+    # print O Dumper $h;
+    for (my $i = 0; $i <= $#lines; ++$i) {
+	if ($lines[$i] =~ /^\#lem/) {
+	    print O 'lem: ', join ('; ', map { ${$_}{'lem'} } @{$lemma[$i]}), "\n";
+	} else {
+	    print O $lines[$i], "\n";
+	}
+    }
     close(O);
     warn "$file: new version written to $outf\n";
 }
