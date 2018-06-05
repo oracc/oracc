@@ -4,6 +4,18 @@
 	       version="1.0"
 	       exclude-result-prefixes="g x">
 
+<xsl:template match="x:l">
+  <xsl:choose>
+    <xsl:when test="x:surro">
+      <xsl:apply-templates select="x:surro"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="words" select=".//g:w"/>
+      <xsl:apply-templates select="$words[1]"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="x:surro">
   <x:ns-wrapper g:attr="dummy">
     <x:surro>
@@ -11,7 +23,7 @@
     </x:surro>
   </x:ns-wrapper>
 </xsl:template>
-  
+
 <xsl:template match="g:w">
   <x:ns-wrapper g:attr="dummy">
     <xsl:copy>

@@ -22,5 +22,8 @@ foreach my $a (@argv) {
 	pp_fix_new_atf($a, $outfile, \%fixed);
     }
 }
-
+pp_fix_close_log();
+my $grand = pp_fix_grand_total();
+warn "$0: $grand fixes made",
+    ($grand ? "; see cbdfixatf.log for more information\n" : "\n");
 1;

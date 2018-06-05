@@ -325,7 +325,7 @@
            </g:gg>
          </g:surro>
        </g:d>
-       <g:gloss g:pos="post" g:type="lang">
+       <g:gloss g:pos="pre" g:type="lang">
          <g:w form="ku" xml:lang="akk">
            <g:v>ku</g:v>
          </g:w>

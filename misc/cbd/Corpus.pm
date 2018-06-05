@@ -1,7 +1,7 @@
 package ORACC::CBD::Corpus;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_fix_file pp_fix_new_atf/;
+@EXPORT = qw/pp_fix_file pp_fix_new_atf pp_fix_grand_total pp_fix_close_log/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -21,20 +21,39 @@ my @langshort = qw/a e s ob/;
 my @langlong = qw/akk sux sux akk/;
 @langtags{@langshort} = @langlong;
 
+
+my $log_open = 0;
+my $no_fix_warned = 0;
+my $grand_total_fixes = 0;
 my $total_fixes = 0;
+
+sub pp_fix_close_log {
+    close(FIXLOG);
+}
+
+sub pp_fix_grand_total {
+    $grand_total_fixes;
+}
 
 sub pp_fix_file {
     my($args, $file) = @_;
-    %fixes = pp_fix_load_fixes($args, undef) unless scalar keys %fixes;
+    open(FIXLOG,'>cbdfixatf.log') unless $log_open++;
+    if ($$args{'fix'}) {
+	%fixes = pp_fix_load_fixes($args, undef) unless scalar keys %fixes;
+    } else {
+	warn "$0: proceeding without fixes table\n" unless $no_fix_warned++;
+    }
     corpus_fixes();
 #    print Dumper \%fixes;
     my %f = file_words($args,$file);
-    %f = apply_fixes(\%f);
+    %f = apply_fixes(\%f,$file);
     if ($total_fixes) {
 	foreach my $f (sort keys %fixes_made) {
-	    warn "$file: $f output as a fix $fixes_made{$f} times\n";
+	    print FIXLOG "$file: $f output as a fix $fixes_made{$f} times\n";
 	}
 	%fixes_made = ();
+	$grand_total_fixes += $total_fixes;
+	$total_fixes = 0;
     } else {
 	%f = ();
     }
@@ -50,29 +69,37 @@ sub pp_fix_new_atf {
 }
 
 sub apply_fixes {
-    my($f) = @_;
+    my($f,$file) = @_;
     my %f = %$f;
     my @newlem = ();
+    my $line = 0;
     foreach my $lref (@{$f{'lemma'}}) {
+	++$line;
 	if (!ref($lref)) {
 	    push @newlem, $lref; # "\000"
 	} else {
 	    my @wds = @{$lref};
 	    foreach my $w (@wds) {
+		next unless $$w{'lem'};
 		my $inst = $$w{'lem'};
 		my $lang = "$$w{'lang'}:";
 		my ($pre,$lem,$post) = ($inst =~ /^(.*?)(\S+\[.*?\]\S*)(.*)$/);
+		next unless $lem; # u n X L M S etc.
 		$pre = '' unless $pre;
 		$post = '' unless $post;
-#		warn "lem=$lem\n";
+		if (!$lang) {
+		    warn "$file:$line: unknown language in effect for '$lem'\n";
+		    next;
+		}
 		if ($fixes{$lang.$lem}) {
 		    my $fix = $fixes{$lang.$lem};
 		    ++$total_fixes;
 		    ++$fixes_made{$fix};
 		    $fix =~ s/^.*?://;
 		    $fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
-		    $inst = "$pre$fix$post";
-		    $$w{'lem'} = $inst;
+		    my $ninst = "$pre$fix$post";
+		    print FIXLOG "$file:$line: $inst => $ninst\n";
+		    $$w{'lem'} = $ninst;
 		} else {
 		    my $sl = short_form($lem);
 		    if ($fixes{$lang.$sl}) {
@@ -81,8 +108,9 @@ sub apply_fixes {
 			++$fixes_made{$fix};			
 			$fix =~ s/^.*?://;
 			$fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
-			$inst = "$pre$fix$post";
-			$$w{'lem'} = $inst;
+			my $ninst = "$pre$fix$post";
+			print FIXLOG "$inst => $ninst\n";
+			$$w{'lem'} = $ninst;
 		    }
 		}
 	    }
@@ -150,7 +178,6 @@ sub lem_file {
 	    } elsif (/^\#atf:\s+use\s+lexical\s*$/) {
 		$lexical = 1;
 	    } elsif (/^[^\s\$\#\@]\S*?\.(?=\s|$)/) {
-#		warn "curr_line = $f[$i]\n";
 		$curr_line = $f[$i];
 		$curr_lang = $text_lang;
 	    } elsif (/^\&/) {
@@ -180,7 +207,6 @@ sub split_wds {
 
     if ($lexical) {
 	1 while ($l =~ s/\s+([@!#="\|\^~])\s+/lex_shorthands($1)/e);
-	warn "$l\n";
     }
     
     $l =~ s/\(\#.*?\#\)//g;

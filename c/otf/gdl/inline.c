@@ -609,6 +609,22 @@ next_b_or_g(ssize_t tindex)
 	    ;
 	  ++tindex; /* skip detc */
 	}
+      else if (tokens[tindex]->type == smetao)
+	{
+	  while (tindex < last_token 
+		 && tokens[++tindex] 
+		 && tokens[tindex]->type != smetac)
+	    ;
+	  ++tindex; /* skip detc */
+	}
+      else if (tokens[tindex]->type == glosso)
+	{
+	  while (tindex < last_token 
+		 && tokens[++tindex] 
+		 && tokens[tindex]->type != glossc)
+	    ;
+	  ++tindex; /* skip detc */
+	}
       else if (tokens[tindex]->type == exciso)
 	{
 	  /* ignore all the excised material */
@@ -1517,21 +1533,34 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (wp)
 		{
 		  const char *pos = "post";
-		  int i;
+		  if (start)
+		    {
+		      struct token *tp = tokens[start-1];
+		      if (tp->class == bound)
+			{
+			  pos = "pre";
+			}
+		      else
+			{
+			  struct node *cp = (struct node*)(lastChild(wp));
+			  if (*cp->type == 'e' && !strcmp(cp->names->pname, "g:d"))
+			    pos = (const char *)getAttr(cp,"g:pos");
+			}
+		    }
+#if 0
 		  for (i = wp->children.lastused-1; i >= 0; --i)
 		    {
 		      struct node *cp = (struct node*)(wp->children.nodes[i]);
 		      const char *pname = cp->names->pname;
 		      if (*np->type == 'e' && !strcmp(pname, "g:d"))
 			break;
-#if 0
 		      else if (*np->type == 'e' && (!strcmp(pname, "g:x")))
 			{
 			  pos = "post";
 			  break;
 			}
-#endif
 		    }
+#endif
 		  appendAttr(np,attr(a_g_pos,ucc(pos)));
 		  parent = appendChild(wp,np);
 		}
@@ -1550,6 +1579,13 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  wrapup_word(wp, tp->type);
 		  if (!xstrcmp(wp->parent->names->pname,"g:gloss"))
 		    {
+		      const unsigned char *pos = getAttr(wp->parent, "g:pos");
+		      if (!strcmp((const char *)pos,"post"))
+			{
+			  struct token *nexttp = tokens[start+1];
+			  if (nexttp && nexttp->class != bound && nexttp->type != field)
+			    warning("{{...}} beside text at both ends");
+			}
 		      if (!xstrcmp(getAttr(wp->parent,"g:type"),
 				   ucc(((tp->type == glossc) 
 					? "lang" : "text"))))

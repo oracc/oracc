@@ -3,8 +3,12 @@
 	       version="1.0">
 
 <xsl:output method="text" encoding="UTF-8"/>
-<xsl:template match="g:w">
-  <xsl:value-of select="@form"/>
+
+<xsl:template match="/">
+  <xsl:variable name="w" select=".//g:w"/>
+  <xsl:for-each select="$w[1]">
+    <xsl:value-of select="@form"/>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="text()"/>
