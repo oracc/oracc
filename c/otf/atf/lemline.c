@@ -358,11 +358,18 @@ lem_save_lemma(struct node *wp, const char *lemma)
 {
   struct ilem_form *form = NULL;
   unsigned const char *xmlid = getAttr(wp,"xml:id");
-  form = hash_find(word_form_index, xmlid);
-  if (form)
-    form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
+  while (isspace(*lemma))
+    ++lemma;
+  if (lemma && strlen(lemma))
+    {
+      form = hash_find(word_form_index, xmlid);
+      if (form)
+	form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
+      else
+	vwarning("internal error: word_form_index lookup failed; lemma=%s; xml:id=%s", lemma, xmlid);
+    }
   else
-    vwarning("internal error: word_form_index lookup failed; lemma=%s; xml:id=%s", lemma, xmlid);
+    warning("empty lemmatization entry");
 }
 
 void

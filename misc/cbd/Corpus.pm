@@ -14,11 +14,11 @@ my %fixes = ();
 my %fixes_made = ();
 my $lexical = 0;
 
-my %lextags = (); @lextags{qw/eq pr sg sn sv tx wp/} = ();
+my %lextags = (); @lextags{qw/cs eq pr sg sn sv tx wp/} = ();
 
 my %langtags = ();
-my @langshort = qw/a e s ob/;
-my @langlong = qw/akk sux sux akk/;
+my @langshort = qw/2   3   a   ag  an  e   es  g   n   s   ob  sb  ugag/;
+my @langlong =  qw/akk akk akk akk akk sux sux akk akk sux akk akk uga/;
 @langtags{@langshort} = @langlong;
 
 
@@ -26,6 +26,7 @@ my $log_open = 0;
 my $no_fix_warned = 0;
 my $grand_total_fixes = 0;
 my $total_fixes = 0;
+my $trace = 0;
 
 sub pp_fix_close_log {
     close(FIXLOG);
@@ -175,15 +176,21 @@ sub lem_file {
 		$use_sparse = 1;
 	    } elsif (/^\#atf:\s+lang\s+(\S+)\s*$/) {
 		$curr_lang = $text_lang = $1;
-	    } elsif (/^\#atf:\s+use\s+lexical\s*$/) {
+	    } elsif (/^\#atf:\s+use\s+lexical\s*$/
+		     || /^\#project:\s+dcclt/) {
 		$lexical = 1;
 	    } elsif (/^[^\s\$\#\@]\S*?\.(?=\s|$)/) {
 		$curr_line = $f[$i];
+		$curr_lang = $text_lang;
+	    } elsif (/^==/) {
+		$curr_line = $f[$i];
+		$curr_line =~ s/^==/b. /;
 		$curr_lang = $text_lang;
 	    } elsif (/^\&/) {
 		$curr_lang = $text_lang = 'sux';
 		$curr_line = '';
 		$lexical = $use_sparse = 0;
+		%sparse = ();
 	    }
 	    $f[$i] = "\000";
 	}
@@ -195,6 +202,7 @@ sub lem_hashes {
     my($wds,$lem,$lang,$sparseref,$file,$line) = @_;
     my @wds = split_wds($wds,$lang,$file,$line);
     my @lem = split_lem($lem,$sparseref,$file,$line,@wds);
+
     if ($#lem < 0) { #return empty list on failure in split_lem
 	return "\000";
     } else {
@@ -208,22 +216,44 @@ sub split_wds {
     if ($lexical) {
 	1 while ($l =~ s/\s+([@!#="\|\^~])\s+/lex_shorthands($1)/e);
     }
+
+    # remove punctuation
+    1 while $l =~ s/\s[\[⸢<({]*(?:\*|:\.|::|:)\S*/ /;
+
+    # remove & cell markers and their optional colspans
+    $l =~ s/\s\&\d*/ /g;
+
+    # move gloss/meta after the word that is enclosing it in constructs
+    # like a-{{ba}}-bi
+    $l =~ s/(\S+)(\{\{.*?\}\})(\S+)/$1$3$2/g;
+
+    # unwrap surrogates like MIN<(a)> and remove them from containing words if necessary
+    1 while $l =~ s/(?:KIMIN|kimin|KI.MIN|MIN|ŠU|\d+)(?:\S*?)<\((.*?)\)>/$1/;
+
+    # remove corrections
+    1 while $l =~ s/\!\(.*?\)//g;
     
     $l =~ s/\(\#.*?\#\)//g;
     $l =~ s/\(\$.*?\$\)//g;
     $l =~ s/\{\{/ /g;
     $l =~ s/\}\}/ /g;
+    $l =~ s/\{\(/ /g;
+    $l =~ s/\)\}/ /g;
     $l =~ s/^\S+\s+//;
     $l =~ s/\s$//;
     $l =~ s/<<.*?>>//g;
     $l =~ s/--/-/;
     $l =~ s/\!([a-z][a-z])\s/%$1 /g; # hack !sn to %sn
-    $l =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
+    $l =~ tr/-:. a-zA-Z0-9ḫḪšŠṣṢṭṬʾŋŊ₀-₉ₓ\|\@&~%{}()//cd; ## FIXME: not good enough for some langs
     $l =~ s/\s+/ /g;
     $l =~ s/\(::\)//g; # for etcsl
     #  my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $l));
     my @l = grep(defined&&length&&!/^\d+::\d+/ , split(/\s+/, $l));
 
+    if ($ORACC::CBD::PPWarn::trace) {
+	warn "words = ", join('::', @l), "\n";
+    }
+    
     # now factor out langs and lex field codes and build list of word hashes
     my $curr_field = '';
     my $curr_lang = $lang;
@@ -257,6 +287,17 @@ sub split_lem {
     $lem =~ s/^\S*\s+//;
     $lem =~ s/\s$//;
     my @lem = grep(defined&&length, split(/;\s+/, $lem));
+
+    if ($#lem < 0) {
+	# existing practice in ATF is that #lem: with no lemmata is ignored
+	# rather than generating a too-few-lemmata error, so we emulate that
+	# behaviour here.
+	return ();
+    }
+
+    if ($ORACC::CBD::PPWarn::trace) {
+	warn "lemma = ", join('::', @lem), "\n";
+    }
 
     #
     # iterate over words with $i and lemmata with $j

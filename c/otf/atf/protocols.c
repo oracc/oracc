@@ -517,6 +517,8 @@ lem_handler(struct node *parent, enum t_scope scope,
 	    ++l;
 	  if ('\0' == *l)
 	    warning("spurious ';' at end of #lem: line");
+	  else if (';' == *l)
+	    warning("empty lemmatization in #lem: line");
 	}
     }
   lem[nlem] = NULL;
