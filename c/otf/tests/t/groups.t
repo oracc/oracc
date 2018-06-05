@@ -444,3 +444,12 @@
          </g:d>
        </g:gg>
      </g:w>
+
+035. a:zu
+     a-zu
+     <g:w form="a-zu" xml:lang="sux">
+       <g:gg g:type="reordering">
+         <g:v g:delim=":">a</g:v>
+         <g:v>zu</g:v>
+       </g:gg>
+     </g:w>

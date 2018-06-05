@@ -10,6 +10,8 @@ use ORACC::CBD::Fix;
 use ORACC::CBD::PPWarn;
 use Data::Dumper;
 
+$ORACC::CBD::Corpus::nopos = 1;
+
 my %fixes = ();
 my %fixes_made = ();
 my $lexical = 0;
@@ -115,19 +117,32 @@ sub apply_fixes {
 			++$total_fixes;
 			++$fixes_made{$fix};
 			$fix =~ s/^.*?://;
-			$fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
+			if ($ORACC::CBD::Corpus::nopos) {
+			    $fix =~ s/\].*/]/;
+			} else {
+			    $fix =~ s/\].*/]/ unless $lem =~ /\]\S/; # preserve POS etc.
+			}
 			my $ninst = "$pre$fix$post";
 			print FIXLOG "$file:$line: $inst => $ninst\n";
 			$$w{'lem'} = $ninst;
 		    } else {
-			my $sl = short_form($lem);
-			warn "trying short form $sl\n" if $ORACC::CBD::PPWarn::trace;
-			if ($fixes{$lang.$sl}) {
-			    my $fix = $fixes{$lang.$sl};
+			my $sl = nopos_form($lem);
+			warn "trying nopos form $sl\n" if $ORACC::CBD::PPWarn::trace;
+			my $fix = $fixes{$lang.$sl};
+			unless ($fix) {
+			    $sl = short_form($lem);
+			    warn "trying nopos form $sl\n" if $ORACC::CBD::PPWarn::trace;
+			    $fix = $fixes{$lang.$sl};
+			}			
+			if ($fix) {
 			    ++$total_fixes;
 			    ++$fixes_made{$fix};			
 			    $fix =~ s/^.*?://;
-			    $fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
+			    if ($ORACC::CBD::Corpus::nopos) {
+				$fix =~ s/\].*/]/;
+			    } else {
+				$fix =~ s/\].*/]/ unless $lem =~ /\]\S/; # preserve POS etc.
+			    }
 			    my $ninst = "$pre$fix$post";
 			    print FIXLOG "$inst => $ninst\n";
 			    $$w{'lem'} = $ninst;
@@ -143,6 +158,14 @@ sub apply_fixes {
     }
     @{$f{'lemma'}} = @newlem;
     %f;
+}
+
+sub nopos_form {
+    my $x = shift;
+    $x =~ s/\].*$/]/; # match on form without POS; possibly keep some in output?
+    $x =~ s/\s*\[/[/;
+    $x =~ s/\]\s*/]/;
+    $x;
 }
 
 sub short_form {

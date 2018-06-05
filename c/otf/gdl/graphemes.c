@@ -2055,7 +2055,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 				while (*tmp)
 				  *insertp++ = *tmp++;
 			      }
-			    /* *insertp++ = '-'; */
+			    *insertp++ = '-'; /* this forced hyphenation is correct; we don't use : in form */
 			  }
 		      }
 		    insertp = render_g(np->children.nodes[i], insertp, startp);

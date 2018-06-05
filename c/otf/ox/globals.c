@@ -60,5 +60,7 @@ int harvest_notices;
 int warn_unlemmatized;
 int perform_lem;
 int force;
+int force_atf_extension = 0;
+int force_otf_extension = 0;
 int check_pnames;
 int bootstrap_mode;

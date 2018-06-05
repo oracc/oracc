@@ -13,13 +13,14 @@ ox_options(int argc, char **argv)
   while (1)
     {
       int optch = getopt(argc,argv,
-			 "$+a:Ab:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNo:OpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:89");
+			 "$+aAb:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNoOpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:89");
       if (optch < 0)
 	break;
       switch (optch)
 	{
 	case 'a':
-	  atffile = input_file = optarg;
+	  /* atffile = input_file = optarg; */
+	  force_atf_extension = 1;
 	  break;
 	case 'A':
 	  lem_autolem = perform_lem = need_lemm = 1;
@@ -113,7 +114,8 @@ ox_options(int argc, char **argv)
 	  no_xcl_map = 1;
 	  break;
 	case 'o':
-	  cdtfile = input_file = optarg;
+	  /* cdtfile = input_file = optarg; */
+	  force_otf_extension = 1;
 	  break;
 	case 'O':
 	  do_cdl = need_lemm = perform_nsa = 1;

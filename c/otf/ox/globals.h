@@ -74,6 +74,8 @@ extern int harvest_notices;
 extern int warn_unlemmatized;
 extern int perform_lem;
 extern int force;
+extern int force_atf_extension;
+extern int force_otf_extension;
 extern int check_pnames;
 extern int bootstrap_mode;
 

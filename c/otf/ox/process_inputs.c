@@ -6,6 +6,7 @@
 #include "list.h"
 #include "warning.h"
 #include "atffile.h"
+#include "globals.h"
 #include "cdt.h"
 #include "run.h"
 #include "ox.h"
@@ -81,9 +82,9 @@ process_either(struct run_context *run, unsigned const char *input)
       ext = strrchr((char*)input, '.');
       if (ext)
 	{
-	  if (!strcmp(ext, ".atf") || !strcmp(ext, ".catf"))
+	  if (force_atf_extension || !strcmp(ext, ".atf") || !strcmp(ext, ".catf"))
 	    atffile = (const char*)input;
-	  else if (!strcmp(ext, ".otf"))
+	  else if (force_otf_extension || !strcmp(ext, ".otf"))
 	    cdtfile = (const char*)input;
 	  else if (!strcmp(ext, ".ods"))
 	    atffile = (const char*)input;
