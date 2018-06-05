@@ -45,7 +45,11 @@ sub pp_fix_file {
 	warn "$0: proceeding without fixes table\n" unless $no_fix_warned++;
     }
     corpus_fixes();
-#    print Dumper \%fixes;
+    if ($ORACC::CBD::PPWarn::trace) {
+	open(D,'>fixes.dump');
+	print D Dumper \%fixes;
+	close(D);
+    }
     my %f = file_words($args,$file);
     %f = apply_fixes(\%f,$file);
     if ($total_fixes) {
@@ -70,7 +74,10 @@ sub pp_fix_new_atf {
     # print O Dumper $h;
     for (my $i = 0; $i <= $#lines; ++$i) {
 	if ($lines[$i] =~ /^\#lem/ && $lemma[$i] ne "\000") {
-	    print O 'lem: ', join ('; ', map { ${$_}{'lem'} } @{$lemma[$i]}), "\n";
+	    print O 
+		'#lem: ', 
+		join ('; ', grep defined&&length, (map { ${$_}{'lem'} } @{$lemma[$i]})),
+		"\n";
 	} else {
 	    print O $lines[$i], "\n";
 	}
@@ -95,34 +102,40 @@ sub apply_fixes {
 		my $inst = $$w{'lem'};
 		my $lang = "$$w{'lang'}:";
 		my ($pre,$lem,$post) = ($inst =~ /^(.*?)(\S+\[.*?\]\S*)(.*)$/);
-		next unless $lem; # u n X L M S etc.
-		$pre = '' unless $pre;
-		$post = '' unless $post;
-		if (!$lang) {
-		    warn "$file:$line: unknown language in effect for '$lem'\n";
-		    next;
-		}
-		if ($fixes{$lang.$lem}) {
-		    my $fix = $fixes{$lang.$lem};
-		    ++$total_fixes;
-		    ++$fixes_made{$fix};
-		    $fix =~ s/^.*?://;
-		    $fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
-		    my $ninst = "$pre$fix$post";
-		    print FIXLOG "$file:$line: $inst => $ninst\n";
-		    $$w{'lem'} = $ninst;
-		} else {
-		    my $sl = short_form($lem);
-		    if ($fixes{$lang.$sl}) {
-			my $fix = $fixes{$lang.$sl};
+
+		if ($lem) {
+		    $pre = '' unless $pre;
+		    $post = '' unless $post;
+		    $lem =~ s/\[\]/[1]/;
+		    if (!$lang) {
+			warn "$file:$line: unknown language in effect for '$lem'\n";
+			$$w{'lem'} = $inst;
+		    } elsif ($fixes{$lang.$lem}) {
+			my $fix = $fixes{$lang.$lem};
 			++$total_fixes;
-			++$fixes_made{$fix};			
+			++$fixes_made{$fix};
 			$fix =~ s/^.*?://;
 			$fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
 			my $ninst = "$pre$fix$post";
-			print FIXLOG "$inst => $ninst\n";
+			print FIXLOG "$file:$line: $inst => $ninst\n";
 			$$w{'lem'} = $ninst;
+		    } else {
+			my $sl = short_form($lem);
+			warn "trying short form $sl\n" if $ORACC::CBD::PPWarn::trace;
+			if ($fixes{$lang.$sl}) {
+			    my $fix = $fixes{$lang.$sl};
+			    ++$total_fixes;
+			    ++$fixes_made{$fix};			
+			    $fix =~ s/^.*?://;
+			    $fix =~ s/\].*/]/ unless $lem =~ /\]\S/;
+			    my $ninst = "$pre$fix$post";
+			    print FIXLOG "$inst => $ninst\n";
+			    $$w{'lem'} = $ninst;
+			}
 		    }
+		} else {
+		    # u n X L M S etc.
+		    $$w{'lem'} = $inst;
 		}
 	    }
 	    push @newlem, [ @wds ];
@@ -135,9 +148,9 @@ sub apply_fixes {
 sub short_form {
     my $x = shift;
     $x =~ s#//.*?\]#]#;
-    $x =~ s/\](\s+\S+).*$/]$1/;
-    $x =~ s/\s*\[/ [/;
-    $x =~ s/\]\s*/] /;
+    $x =~ s/\].*$/]/; # match on form without POS; possibly keep some in output?
+    $x =~ s/\s*\[/[/;
+    $x =~ s/\]\s*/]/;
     $x;
 }
 
