@@ -13,13 +13,22 @@ $ORACC::CBD::nosetupargs = 1;
 my %args = pp_args();
 $args{'mode'} = 'corpus';
 
-my @argv = @{$args{'argv'}};
-foreach my $a (@argv) {
+my @files = ();
+if ($args{'list'}) {
+    @files = `cat $args{'list'}`;
+    chomp @files;
+} else {
+    @files = @{$args{'argv'}};
+}
+
+foreach my $a (@files) {
     my %fixed = pp_fix_file(\%args, $a);
     # pp_fix_file returns () if no fixes were made
     if (scalar keys %fixed) {
 	my $outfile = "$a.new";
 	pp_fix_new_atf($a, $outfile, \%fixed);
+    } elsif ($args{'force'}) {
+	system 'cp', $a, "$a.new";
     }
 }
 pp_fix_close_log();

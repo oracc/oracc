@@ -311,7 +311,7 @@ sub split_wds {
 		$curr_field = $tag;
 	    } else {
 		if ($tag =~ s/-.*$// || length($tag) == 3) {
-		    $curr_lang = $lang;
+		    $curr_lang = $tag;
 		} else {
 		    if ($langtags{$tag}) {
 			$curr_lang = $langtags{$tag};
