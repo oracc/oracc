@@ -69,7 +69,7 @@ sub pp_fix_new_atf {
     open(O, ">$outf") || die "$0: unable to open $outf for output\n";
     # print O Dumper $h;
     for (my $i = 0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\#lem/) {
+	if ($lines[$i] =~ /^\#lem/ && $lemma[$i] ne "\000") {
 	    print O 'lem: ', join ('; ', map { ${$_}{'lem'} } @{$lemma[$i]}), "\n";
 	} else {
 	    print O $lines[$i], "\n";
