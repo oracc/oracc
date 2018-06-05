@@ -62,3 +62,28 @@
          </g:w>
        </g:gloss>
      </g:w>
+
+006. a{{ba}} & a
+     a
+     <g:w form="a" xml:lang="sux">
+       <g:v>a</g:v>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="ba" xml:lang="sux">
+           <g:v>ba</g:v>
+         </g:w>
+       </g:gloss>
+     </g:w>
+
+007. UD{{ba}}[{ki}]
+     UD{ki}
+     <g:w form="UD{ki}" xml:lang="sux">
+       <g:s>UD</g:s>
+       <g:gloss g:pos="post" g:type="lang">
+         <g:w form="ba" xml:lang="sux">
+           <g:v>ba</g:v>
+         </g:w>
+       </g:gloss>
+       <g:d g:pos="post" g:role="semantic">
+         <g:v g:break="missing" g:breakEnd="X000001.1.2.1" g:breakStart="1" g:c="]" g:o="[">ki</g:v>
+       </g:d>
+     </g:w>

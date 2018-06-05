@@ -1582,8 +1582,16 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      const unsigned char *pos = getAttr(wp->parent, "g:pos");
 		      if (!strcmp((const char *)pos,"post"))
 			{
-			  struct token *nexttp = tokens[start+1];
-			  if (nexttp && nexttp->class != bound && nexttp->type != field)
+			  int i = start+1;
+			  struct token *nexttp = tokens[i];
+			  while (nexttp && (nexttp->type == damago
+					   || nexttp->type == damagc
+					   ))
+			    nexttp = tokens[++i];
+			  if (nexttp && nexttp->class != bound
+			      && nexttp->type != deto
+			      && nexttp->type != cell
+			      && nexttp->type != field)
 			    warning("{{...}} beside text at both ends");
 			}
 		      if (!xstrcmp(getAttr(wp->parent,"g:type"),
