@@ -8,7 +8,7 @@ libf2_la_SOURCES=f2_parse.c f2_serialize.c f2_sig.c f2_alias.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
-	-I@top_srcdir@/c/otf/{gdl,lib,lng} \
+	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
 	-I@top_srcdir@/c/lib/sas \
 	-I@top_srcdir@/c/l2/{ilem,link,ngram,prop,psus,sigs,word,xcl2,xli}
 

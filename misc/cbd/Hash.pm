@@ -318,7 +318,7 @@ sub pp_acd_merge {
 		    if ($fld eq 'bases') {
 			$i_bases = $tmp;
 		    } else {
-			warn "tmp=$tmp\n" if $fld eq 'sense';
+#			warn "tmp=$tmp\n" if $fld eq 'sense';
 			++$known{un_sense_id($tmp)};
 		    }
 		}
@@ -340,7 +340,7 @@ sub pp_acd_merge {
 				$fld =~ s#/(\S+)#/$fb#;
 			    } 
 			}
-			warn "tmp=$tmp\n" if $fld eq 'sense';
+#			warn "tmp=$tmp\n" if $fld eq 'sense';
 			if (!defined $known{un_sense_id($tmp)}) {
 			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 			    ++$known{un_sense_id($tmp)};
@@ -379,6 +379,16 @@ EOH
 
 sub pp_acd_serialize_entry {
     my $eref = shift;
+    my $r = ref $eref;
+    if ($r ne 'HASH') {
+	my $rr = ref $$eref;
+	if ($rr eq 'HASH') {
+	    $eref = $$eref;
+	} else {
+	    warn "eref $eref is a $r\n";
+	    warn Dumper $eref;
+	}
+    }
     my %e = %{$eref};
     my $cfgw = ${$e{'entry'}}[0];
     if (!$cfgw) {

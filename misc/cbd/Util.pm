@@ -24,9 +24,11 @@ use Getopt::Long;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
+$ORACC::CBD::bases = 0;
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
+$ORACC::CBD::qpn_base_lang = 'sux';
 
 sub pp_args {
     my $cbd = shift;
@@ -244,13 +246,13 @@ sub setup_cbd {
     if ($ORACC::CBD::Forms::external) {
 	$ORACC::CBD::Forms::external = 0; # so v_form will validate
 	forms_validate();
-	if (lang() =~ /sux|qpn/) { # fix-me should check use base
+	if ($ORACC::CBD::bases || lang() =~ /qpn/) { # fix-me should check use base
 	    forms_normify() unless $ORACC::CBD::nonormify;
 	}
 	$ORACC::CBD::Forms::external = 1;
 #	forms_dump();
     } else {
-	if (lang() =~ /sux|qpn/) {
+	if ($ORACC::CBD::bases || lang() =~ /qpn/) {
 	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd)
 		unless $ORACC::CBD::nonormify;
 	}

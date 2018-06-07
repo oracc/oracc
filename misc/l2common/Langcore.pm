@@ -1,7 +1,7 @@
 package ORACC::L2GLO::Langcore;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/lang_known lang_uses_base/;
+@EXPORT = qw/lang_known lang_uses_base lang_uses_norm/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -50,8 +50,6 @@ sub load_langcore {
 	}
     }
     close(L);
-#    use Data::Dumper;
-#    print Dumper \%langcore;
 }
 
 1;

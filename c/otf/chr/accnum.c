@@ -208,3 +208,41 @@ numacc(const unsigned char *g)
     }
   return wcs2utf(w,len);
 }
+
+int
+hasacc(const unsigned char *u)
+{
+  wchar_t *w = NULL;
+  size_t len = 0;
+  int i;
+  
+  if ((w = utf2wcs(u, &len)))
+    for (i = 0; i < len; ++i)
+      {
+	if (w[i] > 0x80)
+	  {
+	    switch (w[i])
+	      {
+	      case A_acute:
+	      case A_grave:
+	      case E_acute:
+	      case E_grave:
+	      case I_acute:
+	      case I_grave:
+	      case U_acute:
+	      case U_grave:
+	      case a_acute:
+	      case a_grave:
+	      case e_acute:
+	      case e_grave:
+	      case i_acute:
+	      case i_grave:
+	      case u_acute:
+	      case u_grave:
+		return 1;
+	      }
+	  }
+      }
+  return 0;
+}
+

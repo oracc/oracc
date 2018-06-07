@@ -53,6 +53,7 @@ $textlist = '01bld/lists/have-lem.lst' unless $textlist;
 open(T,$textlist) || die "l2p1-from-xtfs.plx: can't open '$textlist'\n";
 while (<T>) {
     chomp;
+    warn "l2p1-from-xtfs.plx: processing $_\n";
     my $p = '';
     s/\@.*$//; # remove cat element from proxy.lst
     if (/^(.*?):(.*?)$/) {
@@ -164,10 +165,13 @@ loadsigs {
 	    my $new = $l->getAttribute('newsig');
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
+		warn "found sig=$sig\n";
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) { # && $base ne 'prx') {
+		warn "found exo=$exo\n";
 		push(@{$exos{$exo}},"$xtf_project\:$ref");
 	    } elsif ($new && $base ne 'prx') {
+		warn "found new=$new\n";
 		push(@{$news{$new}},"$xtf_project\:$ref");
 	    }
 	}

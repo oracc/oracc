@@ -479,7 +479,7 @@ sub v_bases {
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	ORACC::SL::BaseC::pedantic(1);
+	ORACC::SL::BaseC::pedantic(1) if $project =~ /epsd|dcclt|blms|gkab/;
 	pp_trace("BaseC::check: $p");
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	unless (pp_sl_messages($p)) {
@@ -644,8 +644,8 @@ sub v_form {
 	    unless $f =~ m#(?:^|\s)\$\S#;
     }
 
-    if (($lang =~ /^sux/ 
-	 || ($lang =~ /^qpn/ && $flang =~ /^sux/))
+    if (($ORACC::CBD::bases # $lang =~ /^sux/ 
+	 || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
 	&& !$is_compound) {
 	$f =~ m#(?:^|\s)/(\S+)#;
 	my $b = $1;
@@ -692,8 +692,8 @@ sub v_form {
     my $morph = '';
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
-    } elsif (($lang =~ /^sux/ 
-	      || ($lang =~ /^qpn/ && $flang =~ /^sux/))
+    } elsif (($ORACC::CBD::bases # || $lang =~ /^sux/ 
+	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::bases/))
 	     && !$is_compound
 	) {
 	pp_warn("no MORPH in form");

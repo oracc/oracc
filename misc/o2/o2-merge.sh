@@ -31,12 +31,21 @@ mkdir -p 00bak
 echo oracc merge: saving 00lib/$lang.glo as 00bak/$lang-$date.glo
 cp -a 00lib/$lang.glo 00bak/$lang-$date.glo
 
+
 # Now do the actual merge
-l2-glomanager.plx -merge -cbdlang $lang \
-    -mlist 00lib/$lang.glo,01bld/new/$lang.new > 01tmp/$lang.mrg \
-    && mv 01tmp/$lang.mrg 00lib/$lang.glo \
-    && echo oracc merge $lang successful \
-    && exit 0
+g2=`oraccopt . g2`
+if [ "$g2" == "yes" ]; then
+    cbdmerge.plx -base 00lib/$lang.glo 01bld/new/$lang.new > 01tmp/$lang.mrg \
+	&& mv 01tmp/$lang.mrg 00lib/$lang.glo \
+	&& echo oracc merge $lang successful \
+	&& exit 0
+else
+    l2-glomanager.plx -merge -cbdlang $lang \
+		      -mlist 00lib/$lang.glo,01bld/new/$lang.new > 01tmp/$lang.mrg \
+	&& mv 01tmp/$lang.mrg 00lib/$lang.glo \
+	&& echo oracc merge $lang successful \
+	&& exit 0
+fi
 
 echo oracc merge $lang failed: 00lib/$lang.glo unchanged
 exit 1

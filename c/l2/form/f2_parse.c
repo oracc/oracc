@@ -7,6 +7,7 @@
 #include "memblock.h"
 #include "npool.h"
 #include "lang.h"
+#include "atf.h"
 #include "f2.h"
 
 #if 1
@@ -33,6 +34,7 @@ static void
 validate_base(const char *file, size_t line, const Uchar *p)
 {
   const Uchar *b = p;
+  int has_non_ascii = 0;
   if (p && !strlen((const char *)p))
     {
       vwarning2(file, line, "empty BASE in Sumerian lemmatization");
@@ -55,8 +57,12 @@ validate_base(const char *file, size_t line, const Uchar *p)
 		  break;
 		}
 	    }
+	  if (*p > 128)
+	    ++has_non_ascii;
 	  ++p;
 	}
+      if (hasacc(b))
+	vwarning2(file,line,"%s: accented characters not allowed in BASE",b);
     }
 }
 

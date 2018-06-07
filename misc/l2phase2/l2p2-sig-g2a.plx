@@ -3,6 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Util;
+use ORACC::L2GLO::Langcore;
 use Getopt::Long;
 use Data::Dumper;
 
@@ -81,6 +82,7 @@ input_line {
     my %sig = ();
     s/\t.*$//; # we only use sig in this script
     my $sig = $_;
+    warn "$sig\n";
     if ($sig =~ /\&\&/) {
 	my @cof = ();
 	my $index = 0;
@@ -113,7 +115,8 @@ add_sig {
 	} else {
 	    $sig{'form'} = $curr_cof_sig;
 	}
-	if ($header{'lang'} =~ /sux/) {
+	#	if ($header{'lang'} =~ /sux/) {
+	if (lang_uses_base($header{'lang'})) {
 	    $sig{'norm'} = make_cof_sux_form($full_cof_sig,$index);
 	} else {
 	    $sig{'norm'} = make_cof_norm($full_cof_sig,$index);
@@ -214,16 +217,21 @@ if ($make_sigtab) {
 # parens in the right places
 ##		warn "norm = $$info{'norm'}\n";
 		if ($$info{'norm'} && ($$info{'norm'} =~ / /
-				       || $$info{'lang'} !~ /^sux/)) {
+				       || !lang_uses_base($$info{'lang'}))) {
+#				       || $$info{'lang'} !~ /^sux/)) {
 		    my $n = $$info{'norm'};
 		    $n =~ s/\s+/ \$/g;
 		    push @fbits, "\$$n";
 		}
 		  
 		my $b = $$info{'base'};
-		if ($b && $$info{'lang'} =~ /^sux/) {
+		#		if ($b && $$info{'lang'} =~ /^sux/) {
+		if ($b && lang_uses_base($$info{'lang'})) {
 		    $b =~ s/\%.*?://;
 		    $b =~ s/^\+//;
+		    if ($b =~ /[áéíú]/) {
+			warn "accented character detected in base $b\n";
+		    }
 		    push @fbits, "/$b";
 		}
 		push(@fbits, "+$$info{'cont'}") if $$info{'cont'};

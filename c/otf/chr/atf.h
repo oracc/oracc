@@ -107,6 +107,7 @@ extern int is_signlist(register const unsigned char *s);
 
 extern unsigned char *accnum(const unsigned char *);
 extern unsigned char *numacc(const unsigned char *g);
+extern int hasacc(const unsigned char *g);
 
 extern const unsigned char *natf2utf(const char *str, const char *end, int rx, 
 				     const char *file, int lnum);

@@ -61,7 +61,9 @@ sub normify {
 	    $in_entry = 0;
 	} elsif (/^\@form/ && $lang =~ /qpn/ && !/\%\S+/) {
 	    pp_warn "(normify) no %lang code in qpn form";
-	} elsif (/^\@form/ && !$skipping && ($lang =~ /sux/ || /\%sux/) && !/\$\(/) {
+	} elsif (/^\@form/ && !$skipping 
+		 && ($ORACC::CBD::Base || /\%$ORACC::CBD::qpn_base_lang/) 
+		 && !/\$\(/) {
 	    
 	    ## Note that this code does not get executed in sux COFs becasue
 	    ## of the test in the elsif above; this means that NORM must be
@@ -77,7 +79,7 @@ sub normify {
 		if (/\s\$/) {
 		    s/(\s\$)\S+/$1$norm /;
 		} else {
-		    s/^(\@form!?\s+\S+\s+(?:\%sux\S*\s+)?)/$1\$$norm /;
+		    s/^(\@form!?\s+\S+\s+(?:\%$ORACC::CBD::qpn_base_lang\S*\s+)?)/$1\$$norm /;
 		}
 		$lines[$i] = $_;
 	    } else {
@@ -94,7 +96,9 @@ sub normify {
 	if ($lines[$i] =~ /^\@parts/) {
 	    $compound = 1;
 	    push @pparts, [ split_parts($lines[$i]) ];
-	} elsif ($compound && $lines[$i] =~ /^\@form/ && ($lang =~ /sux/ || $lines[$i] =~ /\%sux/)) {
+	} elsif ($compound && $lines[$i] =~ /^\@form/ 
+		 && ($lang =~ /$ORACC::CBD::qpn_base_lang/ 
+		     || $lines[$i] =~ /\%$ORACC::CBD::qpn_base_lang/)) {
 	    next if $lines[$i] =~ /\s\$/;
 	    my($form) = ($lines[$i] =~ /^\@form!?\s+(\S+)/);
 	    my @forms = split(/_/,$form);
