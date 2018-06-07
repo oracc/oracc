@@ -2046,17 +2046,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    if (i)
 		      {
 			if (xstrcmp(getAttr(np->children.nodes[i-1],"g:pos"),"pre"))
-			  {
-			    const unsigned char *gdelim
-			      = getAttr(lastChild(np), "g:delim");
-			    if (*gdelim)
-			      {
-				const unsigned char *tmp = gdelim;
-				while (*tmp)
-				  *insertp++ = *tmp++;
-			      }
-			    *insertp++ = '-'; /* this forced hyphenation is correct; we don't use : in form */
-			  }
+			  *insertp++ = '-'; /* this forced hyphenation is correct; we don't use : in form */
 		      }
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
 		  }
@@ -2317,7 +2307,17 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
       case 'x':
 	aval = getAttr(np,"g:type");
 	if (!xstrcmp(aval,"ellipsis"))
-	  *insertp++ = 'x';
+	  {
+	    const unsigned char *gdelim
+	      = getAttr(np, "g:delim");
+	    *insertp++ = 'x';
+	    if (*gdelim)
+	      {
+		const unsigned char *tmp = gdelim;
+		while (*tmp)
+		  *insertp++ = *tmp++;
+	      }
+	  }
 	else if (!xstrcmp(aval,"newline"))
 	  {
 	    if (insertp_is_delim())
