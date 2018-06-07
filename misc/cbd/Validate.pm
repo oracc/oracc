@@ -751,6 +751,10 @@ sub v_sense {
 
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\!?)$/);
 
+    if ($etag =~ s/\+$//) {
+	pp_warn("please review \@sense+ before proceeding");
+    }
+    
     if ($pre) {
 	if ($global_cbd[pp_line()-1] =~ /^$acd_rx/) {
 	    pp_warn("multiple acd \@sense fields in a row not permitted");

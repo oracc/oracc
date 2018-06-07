@@ -9,6 +9,7 @@ $ORACC::CBD::PPWarn::trace = 0;
 
 my %errlist = ();
 my $line = 0;
+my $efile = '';
 my $file = '';
 my $status = 0;
 
@@ -48,7 +49,9 @@ sub pp_line {
 }
 
 sub pp_notice {
-    push @{$errlist{"$file::$line"}}, "$file:$line: @_\n";
+    $efile = ORACC::CBD::Util::errfile($file);
+    $efile = $file unless $efile;
+    push @{$errlist{"$efile::$line"}}, "$efile:$line: @_\n";
 }
 
 sub pp_status {

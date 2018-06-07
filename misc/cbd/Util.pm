@@ -1,7 +1,8 @@
 package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args setup_cbd cbdname project lang name projdir/;
+@EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args 
+    setup_cbd cbdname project lang name projdir file_index errfile/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -19,6 +20,8 @@ use ORACC::CBD::Sigs;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
+my %file_indexes = ();
+
 use Getopt::Long;
 
 %ORACC::CBD::bases = ();
@@ -29,6 +32,12 @@ $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
 $ORACC::CBD::qpn_base_lang = 'sux';
+
+my $file_index = 1;
+
+sub dump_file_indexes {
+    print Dumper \%file_indexes;
+}
 
 sub pp_args {
     my $cbd = shift;
@@ -184,7 +193,23 @@ sub header_vals {
     }
     
     $h{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
+    $file_indexes{$c} = $file_index++ unless $file_indexes{$c};
+    $h{'file_index'} = $file_indexes{$c};
 
+    if ($c =~ /^01tmp/) {
+	my $e = $c;
+	$e =~ s/01tmp/00lib/;
+	# we only track errors to 00lib glossaries because only epsd2
+	# uses 00src right now and the split forms and glo architecture
+	# there means that error messages from the combined 01tmp glo
+	# aren't useful
+	if (-r $e) {
+	    $h{'errfile'} = $e;
+	} else {
+	    $h{'errfile'} = '';
+	}
+    }
+    
     %h;
 }
 
@@ -203,10 +228,16 @@ sub cbdname {
     my $p = project();
     my $l = lang();
     if ($p && $l) {
-	return $p.':'.$l;
+	return $p.':'."${l}_$file_indexes{pp_file()}";
     } else {
 	return '';
     }
+}
+sub errfile {
+    header_info(pp_file(),'errfile');
+}
+sub file_index {
+    header_info(pp_file(),'file_index');
 }
 sub projdir {
     header_info(pp_file(),'projdir');
@@ -232,7 +263,8 @@ sub setup_args {
     die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
 	unless $h{'project'} && $h{'lang'};
     $ORACC::CBD::bases = lang_uses_base($h{'lang'});
-    $ORACC::CBD::forms = lang_uses_base($h{'lang'});
+    $ORACC::CBD::norms = lang_uses_norm($h{'lang'});
+#    warn "uses_base = $ORACC::CBD::bases\n";
     $$args{'lang'} = $h{'lang'};
     system 'mkdir', '-p', "01bld/$h{'lang'}";
     $file;

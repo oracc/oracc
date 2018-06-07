@@ -165,13 +165,13 @@ loadsigs {
 	    my $new = $l->getAttribute('newsig');
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
-		warn "found sig=$sig\n";
+#		warn "found sig=$sig\n";
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) { # && $base ne 'prx') {
-		warn "found exo=$exo\n";
+#		warn "found exo=$exo\n";
 		push(@{$exos{$exo}},"$xtf_project\:$ref");
 	    } elsif ($new && $base ne 'prx') {
-		warn "found new=$new\n";
+#		warn "found new=$new\n";
 		push(@{$news{$new}},"$xtf_project\:$ref");
 	    }
 	}

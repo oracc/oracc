@@ -27,7 +27,7 @@ if ($args{'base'}) {
     if (($base_hash = pp_hash(\%args,@cbd))) {
 	my $cbdname = ${$ORACC::CBD::data{'cbds'}}[0];
 	if ($ORACC::CBD::PPWarn::trace) {
-	    open(B,'>base.dump');
+	    open(B,'>basehash.dump');
 	    use Data::Dumper;
 	    print B Dumper \%{$ORACC::CBD::data{$cbdname}};
 	    close(B);
@@ -43,7 +43,7 @@ if ($args{'base'}) {
 if (($from_hash = pp_hash(\%args))) {
     my $cbdname = ${$ORACC::CBD::data{'cbds'}}[1];
     if ($ORACC::CBD::PPWarn::trace) {
-	open(D,'>from.dump');
+	open(D,'>fromhash.dump');
 	use Data::Dumper;
 	print D Dumper \%{$ORACC::CBD::data{$cbdname}};
 	close(D);
@@ -57,17 +57,27 @@ if (($from_hash = pp_hash(\%args))) {
 unless (pp_status() || $args{'force'}) {
     my %b_acd = pp_hash_acd($base_hash);
     my %f_acd = pp_hash_acd($from_hash);
-    
+    if ($ORACC::CBD::PPWarn::trace) {
+        open(B,'>base_acd.dump');
+	print B Dumper \%b_acd;
+	close(B);
+	open(B,'>from_acd.dump');
+	print B Dumper \%f_acd;
+	close(B);
+    }
     my $merged = pp_acd_merge(\%b_acd, \%f_acd);
-    pp_acd_sort($merged); # sorts in-place
-    pp_serialize($base_hash,$merged);
-
     if ($ORACC::CBD::PPWarn::trace) {
 	open(M,'>merged.dump');
 	print M Dumper $merged;
 	close(M);
     }
+
+    pp_acd_sort($merged); # sorts in-place
+    pp_serialize($base_hash,$merged);
+
 }
+
+#ORACC::CBD::Util::dump_file_indexes();
 
 # pp_diagnostics();
 

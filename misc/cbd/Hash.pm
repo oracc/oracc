@@ -17,6 +17,8 @@ use Data::Dumper;
 my $field_index = 0;
 my $sense_id = 0;
 
+my $cbdnum = '_new00';
+
 my $cbdid;
 my $cbdlang;
 my %cgc = ();
@@ -54,6 +56,8 @@ my %vowel_of = (
     'Û'=>'U',
     );
 
+my $pass = 0;
+
 # Create an old-style ACD-hash from a new-style PP-hash
 #
 # An ACD-hash is just a hash with CFGWPOS as key and the entry content hash as value
@@ -76,11 +80,16 @@ sub pp_hash_acd {
 	$ehash{$cf} = \$eref;
 	push @entries, \$eref;
     }
-    %{$acd{'ehash'}} = %ehash;
-    @{$acd{'entries'}} = @entries;
+    %{$acd{'ehash'}} = (%ehash);
+    if ($ORACC::CBD::PPWarn::trace) {
+	open(O,">ehash$pass.dump"); ++$pass;
+	print O Dumper \%ehash;
+	close(O);
+    }
+    @{$acd{'entries'}} = (@entries);
     #    use Data::Dumper;
     #    print Dumper \%acd; exit 0;
-    %acd;
+    (%acd);
 }
 
 sub pp_hash_cfgws {
@@ -241,11 +250,21 @@ sub pp_hash {
 	}
     }
     my $cbdname = ORACC::CBD::Util::cbdname();
+    # find the next free cbdname, adding $cbdnum to the name
+    # and incrementing it each time
+    if ($ORACC::CBD::PPWarn::trace) {
+	warn "cbdname = $cbdname\n";
+	warn "pp_file = ".pp_file()."\n";
+    }
     ${$ORACC::CBD::data{$cbdname}}{'file'} = pp_file();
+    ${$ORACC::CBD::data{$cbdname}}{'has_hash'} = 1;
     ${${$ORACC::CBD::data{$cbdname}}{'cbdname'}} = $cbdname;
     %{${$ORACC::CBD::data{$cbdname}}{'header'}} = %h;
     @{${$ORACC::CBD::data{$cbdname}}{'ids'}} = @ee;
     %{${$ORACC::CBD::data{$cbdname}}{'entries'}} = %entries;
+    if ($ORACC::CBD::PPWarn::trace) {
+	warn "cbd data pass $pass: ", Dumper $ORACC::CBD::data{$cbdname}; ++$pass;
+    }
     $ORACC::CBD::data{$cbdname};
 }
 
@@ -261,6 +280,14 @@ sub tags_of {
 
 sub pp_acd_merge {
     my($into,$from) = @_;
+    if ($ORACC::CBD::PPWarn::trace) {    
+	open(I,'>merge-into.dump');
+	open(F,'>merge-from.dump');
+	print I Dumper $into;
+	print F Dumper $from;
+	close(I);
+	close(F);
+    }
     foreach my $e (keys %{$$from{'ehash'}}) {
 	my $x = $e; $x =~ s/^.*?\s+\[//;
 	my $is_compound = ($x =~ /\s/);
@@ -270,9 +297,11 @@ sub pp_acd_merge {
 	    my $eref = { %{$$ehash} };
 	    push @{$$into{'entries'}}, $eref;
 	    ${$$into{'ehash'}{$e}} = $eref;
+#	    warn "adding eref\n";
 	} else {
 	    my $f = ${$$from{'ehash'}}{$e};
 	    my $i = ${$$into{'ehash'}}{$e};
+#	    warn "updating eref\n";
 	    my $i_bases = '';
 	    foreach my $fld (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$$$f{'fields'}})) {
 		next if $fld eq 'entry';

@@ -62,7 +62,7 @@ sub normify {
 	} elsif (/^\@form/ && $lang =~ /qpn/ && !/\%\S+/) {
 	    pp_warn "(normify) no %lang code in qpn form";
 	} elsif (/^\@form/ && !$skipping 
-		 && ($ORACC::CBD::Base || /\%$ORACC::CBD::qpn_base_lang/) 
+		 && ($ORACC::CBD::bases|| /\%$ORACC::CBD::qpn_base_lang/) 
 		 && !/\$\(/) {
 	    
 	    ## Note that this code does not get executed in sux COFs becasue
