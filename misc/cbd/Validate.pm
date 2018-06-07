@@ -693,7 +693,7 @@ sub v_form {
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
     } elsif (($ORACC::CBD::bases # || $lang =~ /^sux/ 
-	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::bases/))
+	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
 	     && !$is_compound
 	) {
 	pp_warn("no MORPH in form");
