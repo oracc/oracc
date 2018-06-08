@@ -471,7 +471,7 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
   for (i = 0; i < nparses; ++i)
     {
       struct f2 *p = parses[i];
-      if (step->wild || (p->cf && !strcmp(step->cf,(char*)p->cf)))
+      if (step && (step->wild || (p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))
 	    {

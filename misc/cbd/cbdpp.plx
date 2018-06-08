@@ -44,7 +44,12 @@ warn "cbdpp: updating $args{'cbd'}\n";
 if (pp_status() && !$args{'force'}) {
     my $ret = pp_diagnostics(\%args);
     system 'touch', '01bld/cancel';
-    die("cbdpp.plx: $ret errors in ".errfile()." (source of $args{'cbd'}). Stop.\n");
+    my $e = errfile();
+    if ($e ne $args{'cbd'}) {
+	die("cbdpp.plx: $ret errors in $e (source of $args{'cbd'}). Stop.\n");
+    } else {
+	die("cbdpp.plx: $ret errors in $e. Stop.\n");
+    }
 } else {
 
     if ($args{'edit'}) {

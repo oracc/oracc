@@ -199,27 +199,31 @@ sub header_vals {
     if ($c =~ /^01tmp/) {
 	my $e = $c;
 	$e =~ s/01tmp/00lib/;
-	# we only track errors to 00lib glossaries because only epsd2
-	# uses 00src right now and the split forms and glo architecture
-	# there means that error messages from the combined 01tmp glo
-	# aren't useful
 	if (-r $e) {
 	    $h{'errfile'} = $e;
 	} else {
-	    $h{'errfile'} = '';
+	    $h{'errfile'} = $c;
 	}
+    } else {
+	$h{'errfile'} = $c;
     }
-    
+
     %h;
 }
 
 sub header_info {
     my($file,$tag) = @_;
     return '' unless $file && $tag;
-    if (%{$ORACC::CBD::data{'files'}{$file}}) {
+    if ($ORACC::CBD::data{'files'}{$file}) {
 	my %f = %{$ORACC::CBD::data{'files'}};
 	my %h = %{$f{$file}};
-	return $h{$tag};
+	if ($h{$tag}) {
+	    return $h{$tag};
+	} else {
+	    warn "header_info no '$tag' entry in file '$file'\n";
+	}
+    } else {
+#	warn "header_info: no 'files' entry for file '$file'\n";
     }
     undef;
 }

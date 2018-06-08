@@ -283,7 +283,7 @@
 </xsl:template>
 
 <!-- process internal links -->
-<xsl:template match="esp:link[string ( @bookmark ) or string ( @page )] | esp:area[string ( @bookmark ) or string ( @page )]">
+<xsl:template match="esp:link[string ( @bookmark ) or string ( @page )] | esp:area[string ( @bookmark ) or string ( @page )]"  mode="content">
   <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
   <xsl:variable name="tag-has-content" select="count ( node () )"/>
   <xsl:variable name="bookmark" select="@bookmark"/>
@@ -370,7 +370,7 @@
 	<xsl:copy-of select="@class"/>
 	<xsl:choose>
 	  <xsl:when test="$tag-has-content">
-	    <xsl:apply-templates/>
+	    <xsl:apply-templates mode="content"/>
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:choose>
@@ -472,7 +472,7 @@
 	  <xsl:attribute name="title" select="$link-title"/>
 	  <xsl:choose>
 	    <xsl:when test="$tag-has-content">
-	      <xsl:apply-templates/>
+	      <xsl:apply-templates mode="content"/>
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <xsl:choose>
@@ -543,13 +543,13 @@
 </xsl:template>
 
 <!-- process content modification date -->
-<xsl:template match="esp:content-last-modified">
+<xsl:template match="esp:content-last-modified" mode="content">
   <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
   <xsl:value-of select="$last-modified-times/esp:lmt[@file = $current-page/@file]"/>
 </xsl:template>
 
 <!-- process flash resources -->
-<xsl:template match="esp:flash-movie">
+<xsl:template match="esp:flash-movie" mode="content">
   <xsl:message>The 'flash-movie' feature is no longer part of ESP.  Please revise your portal pages appropriately.</xsl:message>
 </xsl:template>
 
@@ -577,7 +577,7 @@
     <xsl:if test="string-length(@id) = 0">
       <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
     </xsl:if>
-    <xsl:apply-templates/>
+    <xsl:apply-templates mode="content"/>
   </xsl:copy>
 </xsl:template>
 
