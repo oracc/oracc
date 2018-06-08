@@ -27,22 +27,23 @@ extern int use_unicode;
 const char *nl_file;
 int nl_lnum;
 
-/* This is lazy ... */
 static unsigned char *
-add_str(char *dest, const char *src)
+add_str(char *dest, const char *src, struct npool *pool)
 {
   if (!src || !strlen(src))
     return (unsigned char *)dest;
-
+  
   if (dest)
     {
-      strcat(dest, " ");
-      strcat(dest, src);
+      int len = strlen(dest) + strlen(src) + 2;
+      char *n = malloc(len);
+      sprintf(n,"%s %s",dest, src);
+      dest = npool_copy((unsigned char *)n, pool);
+      free(n);
     }
   else
     {
-      dest = malloc(1024);
-      strcpy(dest,src);
+      dest = npool_copy(src, pool);
     }
   return (unsigned char *)dest;
 }
@@ -86,12 +87,18 @@ parse_psu(struct NLE *nlep, List *components, unsigned char *ngm)
 	       npool_copy(sig,nlep->owner->owner->pool),
 	       f, NULL, NULL);
       nlep->cfs[i]->f2->form = f->form;
-      nlep->psu_form->form = add_str((char*)nlep->psu_form->form, (char*)f->form);
-      nlep->psu_form->norm = add_str((char*)nlep->psu_form->norm, (char*)f->norm);
-      nlep->psu_form->base = add_str((char*)nlep->psu_form->base, (char*)f->base);
-      nlep->psu_form->cont = add_str((char*)nlep->psu_form->cont, (char*)f->cont);
-      nlep->psu_form->morph = add_str((char*)nlep->psu_form->morph, (char*)f->morph);
-      nlep->psu_form->morph2 = add_str((char*)nlep->psu_form->morph2, (char*)f->morph2);
+      nlep->psu_form->form = add_str((char*)nlep->psu_form->form, (char*)f->form,
+				     nlep->owner->owner->pool);
+      nlep->psu_form->norm = add_str((char*)nlep->psu_form->norm, (char*)f->norm,
+				     nlep->owner->owner->pool);
+      nlep->psu_form->base = add_str((char*)nlep->psu_form->base, (char*)f->base,
+				     nlep->owner->owner->pool);
+      nlep->psu_form->cont = add_str((char*)nlep->psu_form->cont, (char*)f->cont,
+				     nlep->owner->owner->pool);
+      nlep->psu_form->morph = add_str((char*)nlep->psu_form->morph, (char*)f->morph,
+				      nlep->owner->owner->pool);
+      nlep->psu_form->morph2 = add_str((char*)nlep->psu_form->morph2, (char*)f->morph2,
+				       nlep->owner->owner->pool);
       if (!nlep->psu_form->project)
 	nlep->psu_form->project = f->project;
       components->rover->data = f;
