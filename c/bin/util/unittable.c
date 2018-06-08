@@ -7,8 +7,7 @@
 #include <pool.h>
 #include "./warning.h"
 
-
-extern char *strdup(const char *);
+/*extern char *strdup(const char *);*/
 extern FILE *f_log;
 
 static const char *current_PQ = NULL;

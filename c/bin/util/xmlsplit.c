@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,7 +6,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <xsystem.h>
 
 #define progress(a,b)
@@ -112,7 +112,7 @@ cmp_n_dump(char *filename)
       if (statret < 0)
 	{
 	  create_parent_dir(filename);
-	  outfd = open(filename,O_CREAT|O_WRONLY);
+	  outfd = open(filename,O_CREAT|O_WRONLY,0644);
 	  fchmod(outfd,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	}
       else

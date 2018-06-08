@@ -16,8 +16,10 @@
 extern struct vid_data *vp;
 extern Hash_table *pretrim;
 
+#if 0
 char *strdup(const char *);
 char *strndup(const char *,size_t);
+#endif
 
 extern void debug_results(const char *label, struct Datum *dp);
 

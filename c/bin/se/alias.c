@@ -4,6 +4,8 @@
 
  $Id: alias.c,v 0.5 1997/09/08 14:50:18 sjt Exp $
 */
+#include <sys/unistd.h>
+
 #include <psd_base.h>
 #include <ctype128.h>
 #include <messages.h>
@@ -13,8 +15,6 @@
 #include "alias.h"
 #include "se.h"
 #include "selib.h"
-
-#include <sys/unistd.h>
 
 #ifndef strdup
 extern char *strdup(const char *);

@@ -1,6 +1,6 @@
 .g.c:
 	gperf -N `basename $*` -tT $< >$@
-AM_CFLAGS=-ansi -pedantic -Wall -g
+AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=bigrams form ilem link ngram prop psus \
 	sigs word xcl2 dsa nsa psa xli
 

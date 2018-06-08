@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/unistd.h>
 #include <psd_base.h>
 #include <messages.h>
 #include <options.h>

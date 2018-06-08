@@ -1,6 +1,6 @@
 /* Implementation of strndup() for libc's that don't have it. */
 
-#if !HAVE_STRNDUP
+#if 0 /* !HAVE_STRNDUP */
 
 #include <stdio.h>
 #include <string.h>

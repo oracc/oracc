@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <psd_base.h>
 #include <locale.h>
 #include <ctype128.h>
@@ -8,7 +10,6 @@
 #include <runexpat.h>
 #include <list.h>
 #include <fname.h>
-#include <unistd.h>
 #include "atflocale.h"
 
 #include "fields.h"

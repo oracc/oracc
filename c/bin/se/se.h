@@ -2,8 +2,6 @@
 #define _SE_H
 #include "types.h"
 
-#include <sys/unistd.h>
-
 struct lookup
 {
   const unsigned char *term;

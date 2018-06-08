@@ -48,7 +48,7 @@ static int ntoks = 0;
 
 #define NTOK_ALLOC 16
 
-extern char *strdup(const char *);
+/* extern char *strdup(const char *); */
 
 static struct token cat_toks(struct token *begin, struct token*end);
 static void expr_toks(char *e);

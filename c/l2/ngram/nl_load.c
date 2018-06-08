@@ -51,6 +51,8 @@ add_str(char *dest, const char *src, struct npool *pool)
 static unsigned char *
 fin_str(const char *str, struct npool *pool)
 {
+  return str;
+#if 0  
   if (str)
     {
       unsigned char *tmp = npool_copy((unsigned char *)str,pool);
@@ -59,6 +61,7 @@ fin_str(const char *str, struct npool *pool)
     }
   else
     return NULL;
+#endif
 }
 
 static struct f2 *
