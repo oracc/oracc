@@ -436,7 +436,7 @@
 </xsl:template>
 
 <!-- process external links (RH replaced text 'External site' with 'Link opens in new window')-->
-<xsl:template match="esp:link[string ( @url )] | esp:area[string ( @url )]">
+<xsl:template match="esp:link[string ( @url )] | esp:area[string ( @url )]" mode="content">
   <xsl:choose>
     <xsl:when test="@class='twitter-timeline'">
       <xsl:call-template name="twitter"/>

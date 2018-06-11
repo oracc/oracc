@@ -29,7 +29,13 @@ rm -f $tarball
 
 cd $project
 
-o2-json.sh
+jsonmode=`oraccopt . json-mode`
+if [ "$jsonmode" == "manual" ]; then
+    echo "JSON mode == manual, not building JSON as part of oracc serve"
+else
+    o2-json.sh
+fi
+
 hyphproj=`/bin/echo -n $project | tr / -`
 if [ -r ${ORACC_BUILDS}/www/json/$hyphproj.zip ]; then
     jsonzip="www/json/$hyphproj.zip"

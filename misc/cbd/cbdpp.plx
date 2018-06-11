@@ -60,7 +60,7 @@ if (pp_status() && !$args{'force'}) {
 
     unless ($args{'check'} || $args{'sigs'}) {
 	foreach my $f (keys %ppfunc) {
-	    if ($#{$ORACC::CBD::Util::data{$f}} >= 0) {
+	    if ($#{$ORACC::CBD::data{$f}} >= 0) {
 		pp_trace("cbdpp/calling ppfunc $f");
 		&{$ppfunc{$f}}(\%args, $f);
 		pp_trace("cbdpp/exited ppfunc $f");
@@ -95,7 +95,7 @@ sub pp_collo {
     my $ndir = projdir()."/02pub";
     system 'mkdir', '-p', $ndir;
     open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
-    foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
+    foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
 	my $e = pp_entry_of($i,@cbd);
 	my $c = $cbd[$e];
 	$c =~ s/^\S*//;
@@ -112,15 +112,15 @@ sub pp_collo {
 }
 
 sub pp_geo {
-    my $geo = `oraccopt $args{'project'} cbd-geonames`;
+    my $geo = `oraccopt . cbd-geonames`; #  $args{'project'}
     if ($geo && $geo ne 'no') {
-	@cbd = geonames($geo,$ORACC::CBD::Util::data{'geo'}, @cbd);
+	@cbd = geonames($geo,$ORACC::CBD::data{'geo'}, @cbd);
     }
 }
 
 sub pp_usage {
     open(USAGE,'>pp.usage');
-    foreach my $i (@{$ORACC::CBD::Util::data{'collo'}}) {
+    foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
 	print USAGE $cbd[$i], "\n";
 	$cbd[$i] = "\000";
     }
@@ -129,7 +129,7 @@ sub pp_usage {
 
 sub pp_zero {
     my ($args_ref,$func) = @_;
-    foreach my $i (@{$ORACC::CBD::Util::data{$func}}) {
+    foreach my $i (@{$ORACC::CBD::data{$func}}) {
 	$cbd[$i] = "\000";
     }
 }
