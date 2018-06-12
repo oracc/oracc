@@ -11,6 +11,7 @@ my $freq = 0;
 my %lemmdata = ();
 my $rank = 0;
 my $update = 0;
+my $verbose = 1;
 
 GetOptions (
     'update'=>\$update
@@ -26,7 +27,9 @@ if ($update) {
 
 sub rebuild {
     my $f = "01bld/project.sig";
- 
+
+    warn "l2p1-lemm-data.plx: running rebuild\n";
+    
     die "l2p1-lemm-data.plx: no signatures file $f\n"
 	unless (open(F, $f));
     while (<F>) {
