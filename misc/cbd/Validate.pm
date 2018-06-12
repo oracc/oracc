@@ -7,8 +7,9 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 my @tags = qw/letter entry parts bff bases stems phon root form length norms
-              sense equiv inote prop end isslp bib defn note pl_coord
-              pl_id pl_uid was moved project lang name collo proplist prop ok/;
+    sense equiv inote prop end isslp bib defn note pl_coord
+    pl_id pl_uid was moved project lang name collo proplist prop ok
+    allow/;
 
 my %tags = (); @tags{@tags} = ();
 
@@ -105,6 +106,7 @@ my %funcs = (); @funcs{@funcs} = ();
 my %vfields = ();
 my %arg_vfields = ();
 
+my %allow = ();
 my %bad_compounds = ();
 my %bases = ();
 my %basedata = ();
@@ -199,7 +201,18 @@ sub pp_validate {
 			}
 		    }
 		} else {
-		    pp_warn("internal error: no validator function defined for tag `$tag'");
+		    if ($tag eq 'allow') {
+			my $a = $cbd[$i];
+			if ($cbd[$i] =~ /(\S+)\s+=\s+(\S+)/) {
+			    ++${$allow{$1}}{$2};
+			    ++${$allow{$2}}{$1};
+			} else {
+			    pp_warn("\@allow must have the form PRIMARY_BASE = PRIMARY_BASE");
+			}
+#			$cbd[$i] = "\000";
+		    } else {
+			pp_warn("internal error: no validator function defined for tag `$tag'");
+		    }
 		}
 	    } else {
 		pp_warn("\@$1 unknown tag");
@@ -483,7 +496,7 @@ sub v_bases {
 	pp_trace("BaseC::check: $p");
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	unless (pp_sl_messages($p)) {
-	    if (defined $prisigs{$psig}) {
+	    if (defined $prisigs{$psig} && !is_allowed($p,$prisigs{$psig})) {
 		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
 	    } else {
 #		warn "adding $psig to prisigs for $p\n";
@@ -892,6 +905,10 @@ sub v_prefs {
     my($tag,$arg) = @_;
 }
 
+sub v_allow {
+    my($tag,$arg) = @_;
+}
+
 sub v_collo {
     my($tag,$arg) = @_;
 }
@@ -919,6 +936,7 @@ sub v_end {
     }
     $curr_cfgw = '';
     $in_entry = $seen_bases = $seen_morph2 = $seen_sense = 0;
+    %allow = ();
     %bases = ();
 }
 
@@ -1020,6 +1038,16 @@ sub has_parts {
 	    ++$i;
 	}
     }
+    return 0;
+}
+
+sub is_allowed {
+    my($p1,$p2) = @_;
+#    warn "is_allowed($p1,$p2)\n";
+#    warn Dumper \%allow;
+#    my $ret = 
+#    warn "is_allowed == $ret\n";
+    return ${$allow{$p1}}{$p2} if defined($allow{$p1});
     return 0;
 }
 

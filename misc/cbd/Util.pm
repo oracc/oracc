@@ -9,7 +9,7 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 use Data::Dumper;
 
-my @data = qw/usage collo sense/;
+my @data = qw/allow usage collo sense/;
 
 %ORACC::CBD::data = (); @ORACC::CBD::data{@data} = ();
 
