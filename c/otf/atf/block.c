@@ -1765,6 +1765,8 @@ line_nts(unsigned char *lp)
 static void
 line_lgs(unsigned char *lp)
 {
+  extern int suppress_lem;
+  suppress_lem = 1;
   struct node *lnode = elem(e_l,NULL,lnum,LINE);
   unsigned char *s = lp+2;
   unsigned char *end = lp+xxstrlen(lp);
@@ -1799,6 +1801,7 @@ line_lgs(unsigned char *lp)
 	}
     }  
   appendChild(current,lnode);
+  suppress_lem = 0;
 }
 
 static char *

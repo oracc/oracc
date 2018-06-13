@@ -28,6 +28,8 @@ extern char *new_note_id(int);
 int ods_cols = 0;
 int ods_mode = 0;
 
+int suppress_lem = 0;
+
 static int grouped_det = 0; /* a bandaid to separate 
 			    KI.{d}NANNA 
 			  from 
@@ -2187,7 +2189,7 @@ finish_word(struct node *wp)
 	fprintf(f_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);
       
       /* need to do this unconditionally? */
-      if (need_lemm || do_show_insts)
+      if ((need_lemm || do_show_insts) && !suppress_lem)
 	(*lemm_save_form_p)((const char*)getAttr(wp,"xml:id"),
 			    (const char *)getAttr(wp,"xml:lang"),
 			    (in_split_word<=1)?(const char *)form:"-",
