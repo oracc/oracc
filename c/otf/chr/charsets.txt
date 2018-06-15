@@ -4,8 +4,10 @@
 # Allow ŋ and Ŋ in Akk because Sumerian names in Akkadian context
 # are not tagged as Sumerian.
 
+# Allow C in Akk because REC169 in OAkk texts
+
 @chars %akk/g
-@allow abdefgŋhḫiklmnopqrsṣśštṭuwxyzABDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@allow abdefgŋhḫiklmnopqrsṣśštṭuwxyzABCDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
 @nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
 @trans
 j  ŋ

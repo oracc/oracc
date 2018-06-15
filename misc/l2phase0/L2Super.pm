@@ -257,7 +257,9 @@ init {
 	    chatty("checking base file $basefile ... ");
 	    my $arg_xml = '';
 	    if ($g2) {
-		$arg_xml = ORACC::CBD::XML::pp_xml_from_file($basefile);
+		my %args = ();
+		$args{'cbd'} = $basefile;
+		$arg_xml = ORACC::CBD::XML::pp_xml(\%args);
 	    } else {
 		$arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
 	    }

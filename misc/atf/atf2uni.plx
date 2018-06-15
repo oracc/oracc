@@ -8,14 +8,20 @@
 use warnings; use strict; use open ':utf8'; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::ATF::Unicode;
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 while (<>) {
-    if (/^\S+\.\s/) {
+    if (/^(\S+\.\s)(.*)$/) {
+	my($lnum,$text) = ($1,$2);
 	chomp;
-	my $u = ORACC::ATF::Unicode::gconv($_);
-	1 while $u =~ s/([₀-₉]+\()/updig($1)/e;
-	1 while $u =~ s,([₁₂₃₄₅]/[0-9]),updig($1),e;
-	print $u, "\n";
+	my $u = ORACC::ATF::Unicode::gconv($text);
+#	warn "$u\n";
+#	1 while $u =~ s/([^a-zA-ZšŠṣṢṭṬŋŊḫḪ₀-₉])([₀-₉]+\()/updig($1,$2)/e;
+#	1 while $u =~ s/(^|[-\s])([₀-₉]+\()/updig($1,$2)/e;
+#	warn "$u\n";
+	1 while $u =~ s#([₁₂₃₄₅]/[0-9])#updig('',$1)#e;
+	1 while $u =~ s#(LAK|REŠ)([₀-₉])#updig($1,$2)#e;
+	1 while $u =~ s/REŠ([0-9])/REC$1/;
+	print "$lnum$u", "\n";
     } elsif (s/^(\#lem:\s+)//) {
 	print $1;
 	chomp;
@@ -37,9 +43,10 @@ while (<>) {
 
 sub
 updig {
-    my $x = shift;
+    my ($az,$x) = @_;
+    $az = '' unless $az;
     $x =~ tr/₀-₉/0-9/;
-    $x;
+    "$az$x";
 }
 
 1;

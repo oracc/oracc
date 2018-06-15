@@ -15,12 +15,12 @@ while (<>) {
 	if ($first_sense) {
 	    if ($first_sense =~ /$s/) {
 		warn "sux.glo:$.: suspicious second sense\n";
-	    } elsif ($s =~ /$first_sense/) {
-		warn "sux.glo:$.: suspicious first sense\n";
-		$first_sense = $s;
-		s/sense\+/sense/;
-		shift @senses;
-		push @senses, $_;
+#	    } elsif ($s =~ /$first_sense/) {
+#		warn "sux.glo:$.: suspicious first sense\n";
+#		$first_sense = $s;
+#		s/sense\+/sense/;
+#		shift @senses;
+#		push @senses, $_;
 	    } else {
 		warn "sux.glo:$.: multiple senses\n" if $multi;
 		push @senses, $_;

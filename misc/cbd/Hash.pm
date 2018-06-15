@@ -35,7 +35,7 @@ my %sense_props = ();
 my %sigs = ();
 my $usage_flag = 0;
 
-my @tags = qw/entry alias parts bases bff conts morphs morph2s moved phon prefs root 
+my @tags = qw/entry alias parts allow bases bff conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
 	      defn note collo pl_coord pl_id pl_uid/;
 my %tags = (); @tags{@tags} = ();
