@@ -45,7 +45,8 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce bare base:s check kompounds dry edit entries=s filter fix:s force invert lines list:s
+	qw/announce bare base:s check kompounds dry edit entries=s file 
+	filter fix:s force invert lines list:s
 	nonormify lang:s mode:s output:s project:s reset sigs trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
@@ -114,7 +115,7 @@ sub pp_load {
 	@c = (<>); chomp @c;
     } else {
 	%{$ORACC::CBD::data{'files'}{$file}} = header_vals($file);
-	forms_load($args) if $file =~ m#^00src#;
+	ORACC::CBD::Forms::forms_load($args) if $file =~ m#^00src#;
 	open(C,$file) || die "cbdpp.plx: unable to open $file. Stop.\n";
 	@c = (<C>); chomp @c;
 	close(C);
@@ -281,12 +282,12 @@ sub setup_cbd {
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
 	$ORACC::CBD::Forms::external = 0; # so v_form will validate
-	forms_validate();
+	ORACC::CBD::Forms::forms_validate();
 	if ($ORACC::CBD::bases || lang() =~ /qpn/) { # fix-me should check use base
-	    forms_normify() unless $ORACC::CBD::nonormify;
+	    ORACC::CBD::Forms::forms_normify() unless $ORACC::CBD::nonormify;
 	}
 	$ORACC::CBD::Forms::external = 1;
-#	forms_dump();
+#	ORACC::CBD::Forms::forms_dump();
     } else {
 	if ($ORACC::CBD::bases || lang() =~ /qpn/) {
 	    @cbd = ORACC::CBD::SuxNorm::normify($$args{'cbd'}, @cbd)

@@ -9,6 +9,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
 use ORACC::CBD::XML;
+use ORACC::CBD::PPWarn;
 use POSIX qw(strftime);
 use File::Copy "cp";
 
@@ -257,13 +258,11 @@ init {
 	    chatty("checking base file $basefile ... ");
 	    my $arg_xml = '';
 	    if ($g2) {
-		my %args = ();
-		$args{'cbd'} = $basefile;
-		$arg_xml = ORACC::CBD::XML::pp_xml(\%args);
+		$arg_xml = ORACC::CBD::XML::pp_xml_from_file($basefile);
 	    } else {
 		$arg_xml = ORACC::L2GLO::Builtins::acd2xml($basefile);
 	    }
-	    super_die("errors in $basefile") unless $arg_xml;
+	    super_die("errors in base file $basefile") unless $arg_xml;
 #	    chatty_ok();
 	    undef $arg_xml;
 	    $basedata = ORACC::L2GLO::Builtins::input_acd($basefile);
@@ -287,7 +286,7 @@ init {
 	} else {
 	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($srcfile);
 	}
-	super_die("errors in $srcfile") unless $arg_xml;
+	super_die("errors in src file $srcfile") unless $arg_xml;
 #	chatty_ok();
 	undef $arg_xml;
 	$srcdata = ORACC::L2GLO::Builtins::input_acd($srcfile);
@@ -314,7 +313,7 @@ init {
 	} else {
 	    $arg_xml = ORACC::L2GLO::Builtins::acd2xml($newfile);
 	}
-	super_die("errors in $newfile") unless $arg_xml;
+	super_die("errors in new file $newfile") unless $arg_xml;
 	undef $arg_xml;
 	$return_data{'newfile'} = $newfile;
     }
@@ -457,8 +456,8 @@ setup_file {
     return ($file,$fh);
 }
 
-sub
-super_die {
+sub super_die {
+    pp_diagnostics();
     die "super $function: @_. Stop.\n";
 }
 

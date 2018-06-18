@@ -13,6 +13,8 @@ my @tags = qw/letter entry parts bff bases stems phon root form length norms
 
 my %tags = (); @tags{@tags} = ();
 
+my $allowed_pre_at_chars = '';
+
 my %validators = (
     letter=>\&v_letter,
     entry=>\&v_entry,
@@ -187,8 +189,8 @@ sub pp_validate {
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
 	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
-	} elsif ($cbd[$i] =~ /@([a-z]+)/) {
-	    my $tag = $1;
+	} elsif ($cbd[$i] =~ /^($allowed_pre_at_chars)@([a-z]+)/o) {
+	    my ($pre,$tag) = ($1,$2);
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {
@@ -640,7 +642,8 @@ sub v_form {
     }
 
     my($fo) = ($f =~ /^(\S+)/);
-    if ($ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
+    if ($ORACC::CBD::Forms::external 
+	&& $ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
 	# can't do this: it's legit to have al-pi $alpi and al-pi $alpī
 	pp_warn("duplicate form in `$curr_cfgw': $fo")
 	    if $flang =~ /^sux/;
@@ -875,6 +878,8 @@ sub v_bib {
 
 sub v_isslp {
     my($tag,$arg) = @_;
+    pp_warn("\@isslp must start with year or 'nd'")
+	unless $arg =~ /^\d\d\d\d\S*\s/ || $arg =~ /^nd\s/;
 }
 
 sub v_equiv {

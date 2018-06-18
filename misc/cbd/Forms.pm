@@ -3,7 +3,7 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_validate/;
+@EXPORT = qw/forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -140,6 +140,11 @@ sub forms_load {
 	    load_formsfile($m, $args);
 	}
     }
+}
+
+sub forms_reset {
+    %forms = ();
+    $ORACC::CBD::Forms::external_forms = 0;
 }
 
 sub load_formsfile {

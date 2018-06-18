@@ -8,8 +8,13 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
 my %args = pp_args();
+my $x = undef;
 
-my $x = pp_xml(\%args);
+if ($args{'file'}) {
+    $x = pp_xml_from_file($args{'cbd'});
+} else {
+    $x = pp_xml(\%args);
+}
 
 if ($x) {
     binmode STDOUT, ':raw';

@@ -2,12 +2,13 @@ package ORACC::CBD::XML;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/pp_xml/;
+@EXPORT = qw/pp_xml pp_xml_from_file/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::XML;
 use ORACC::NS;
+use ORACC::CBD::Forms;
 use ORACC::CBD::Hash;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
@@ -130,6 +131,15 @@ my %vowel_of = (
     'Î'=>'I',
     'Û'=>'U',
     );
+
+sub pp_xml_from_file {
+    my $file = shift;
+    my %args = pp_args($file);
+    pp_file($file);
+    pp_line(0);
+    forms_reset();
+    pp_xml(\%args);
+}
 
 sub pp_xml {
     #    my($input,$n,$arglang,$title) = @_;
@@ -770,6 +780,10 @@ acdentry {
 	    my $date = '';
 	    $i =~ s/(\S+)\.?\s+//;
 	    $date = $1;
+	    if (!$date) {
+		pp_warn("missing date from \@isslp");
+		$date = '';
+	    }
 	    push @ret, "<ref year=\"$date\">$i</ref>";
 	}
 	push @ret, '</bib>';
