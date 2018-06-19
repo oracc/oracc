@@ -195,9 +195,9 @@ if ($sort) {
 	$cbdlang =~ s#^00lib/(.*?)\.glo$#$1#;
 	
 	if ($g2 == 0 && $cbdlang =~ /^(sux|qpn)/) {
-	    #	system('l2-sux-norm.plx', $glofile); # this is forced in g2a-simple now
-	    $glofile =~ s/00lib/01bld/;
-	    $glofile .= ".norm";
+	    # system('l2-sux-norm.plx', $glofile); # this is forced in g2a-simple now
+	    # $glofile =~ s/01tmp/01bld/;
+	    # $glofile .= ".norm";
 	}
 	my $xdoc = ORACC::L2GLO::Builtins::acd2xml($glofile,
 						   $clang||'sux',

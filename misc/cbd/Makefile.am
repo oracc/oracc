@@ -7,7 +7,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	make-fixes-tab.plx cbdmerge.plx nonorm.plx \
 	cbdentries.plx cbdepsd.plx cbd-lem-fix.plx \
 	cbdsubset.plx cbdfix.plx cbdqpnsplit.plx \
-	cbdfixatf.plx
+	cbdfixatf.plx cbdalignbases.plx
 
 scriptdata_DATA = entry-counts.xsl
 data_DATA = 

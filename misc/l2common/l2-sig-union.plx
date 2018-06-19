@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
 use Getopt::Long;
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my $all = 1;
 my $first = 1;
@@ -25,6 +25,10 @@ GetOptions(
 #$all = 1 if $withall && $withall eq 'yes';
 
 my %f = ();
+
+if ($superglo) {
+    unshift @ARGV, "01bld/$lang/from_glo.sig";
+}
 
 foreach my $s (@ARGV) {
     unless (open(S,$s)) {

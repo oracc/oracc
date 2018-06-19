@@ -20,6 +20,16 @@ sub bases_fixes {
     %tmp;
 }
 
+sub bases_align {
+    # get bases from base cbd
+    # for all the bases in align cbd
+    #     replace @bases in base cbd w merged bases
+    #     create new @bases for align cbd w only the ones that occur there
+    #     apply base map to forms in align cbd
+    # save base cbd w new bases
+    # save 
+}
+
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
     my($b1,$b2,$cpd) = @_;
