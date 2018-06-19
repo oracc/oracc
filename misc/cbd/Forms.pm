@@ -104,11 +104,11 @@ sub forms_validate {
 	if (v_is_entry($cfgw)) {
 	    my @f = @{$forms{$cfgw}};
 	    foreach my $f (@f) {
-		my($fi,$li,$pr,$fo) = @$f;
+		my($fi,$li,$pr,$fo,$af) = @$f;
 		pp_file($fi);
 		pp_line($li);
 		v_set_cfgw($cfgw);
-		v_form('form', $fo);
+		v_form('form', $fo,$af); # af = autofix
 	    }
 	} else {
 	    my @f = @{$forms{$cfgw}};
@@ -129,7 +129,7 @@ sub forms_load {
     my $formsfile = $$args{'cbd'}; $formsfile =~ s/glo$/forms/;
 
     if (-r $formsfile) {
-	load_formsfile($formsfile, $args);
+	load_formsfile($formsfile, $args, 0);
 	$ORACC::CBD::Forms::external = 1;
     }
 
@@ -137,7 +137,7 @@ sub forms_load {
     my $l = ORACC::CBD::Util::lang();
     foreach my $m (@moreforms) {
 	if ($m =~ /:$l\./o) {
-	    load_formsfile($m, $args);
+	    load_formsfile($m, $args, 1);
 	}
     }
 }
@@ -148,7 +148,7 @@ sub forms_reset {
 }
 
 sub load_formsfile {
-    my($file,$args) = @_;
+    my($file,$args,$autofix) = @_;
     my($ftag) = ($file =~ m/^(.*?):/);
     my $pp_file_on_entry = pp_file();
     my $pp_line_on_entry = pp_line();
@@ -166,7 +166,7 @@ sub load_formsfile {
 	    ++${$bases{$cfgw}}{$1};
 	}
 	unless ($seen{"$cfgw\:\:$orthform"}++) {
-	    push @{$forms{$cfgw}}, [ $file, $., $ftag , $form ];
+	    push @{$forms{$cfgw}}, [ $file, $., $ftag , $form , $autofix ];
 	} else {
 	    my $tmp = $cfgw;
 	    $tmp =~ s/\s+(\[.*?\])\s+/$1/;

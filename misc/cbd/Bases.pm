@@ -38,21 +38,31 @@ sub bases_merge {
 
     foreach my $p2 (keys %h2) {
 	next if $p2 =~ /#/;
-	if ($h1{$p2}) { # primary in b2 is already in b1
-#	    warn "found $p2 as primary in both\n";
-	    $h1{"$p2#alt"} = merge_alts($h1{"$p2#alt"}, $h2{"$p2#alt"});
-	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
-	    my $p1 = ${$h1{"#alt"}{$p2}};
-#	    warn "found $p2 as alternate to $p1 in base\n";
-	    $h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
-	    ${$h1{'#map'}}{$p2} = $p1;
-	} else { # primary in b2 isn't known in b1
-#	    warn "$p2 not found\n";
-	    $h1{$p2} = $h2{$p2};
-	    if ($h2{"$p2#alt"}) {
-		$h1{"$p2#alt"} = $h2{"$p2#alt"};
+ 	if ($h1{$p2}) { # primary in b2 is already in b1
+ #	    warn "found $p2 as primary in both\n";
+ 	    $h1{"$p2#alt"} = merge_alts($h1{"$p2#alt"}, $h2{"$p2#alt"});
+ 	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
+ 	    my $p1 = ${$h1{"#alt"}{$p2}};
+ #	    warn "found $p2 as alternate to $p1 in base\n";
+ 	    $h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
+ 	    ${$h1{'#map'}}{$p2} = $p1;
+ 	} else { # primary in b2 isn't known in b1
+	    my $b2sig = ORACC::SL::BaseC::check(undef,$p2, 1);
+	    my $b1pri = '';
+	    if (($b1pri = ${$h1{'#sigs'}}{$b2sig})) {
+		# This is a new alternate transliteration of $b1pri
+		my $p1 = ${$h1{"#alt"}{$p2}};
+		#  warn "found $p2 as alternate to $p1 in base\n";
+		$h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
+		${$h1{'#map'}}{$p2} = $p1;
+	    } else {
+		# This is a new primary transliteration
+		$h1{$p2} = $h2{$p2};
+		if ($h2{"$p2#alt"}) {
+		    $h1{"$p2#alt"} = $h2{"$p2#alt"};
+		}
 	    }
-	}
+ 	}
     }
 #    print "merged bases => ", Dumper \%h1;
     return { %h1 };
@@ -100,6 +110,8 @@ sub bases_hash {
     if ($arg =~ s/;\s*$//) {
 	pp_warn("bases entry ends with semi-colon--please remove it");
     }
+    $arg =~ s/^\@bases\s+//;
+
     my @bits = split(/;\s+/, $arg);
 
     my $alt = '';
@@ -138,6 +150,7 @@ sub bases_hash {
 		    } else {
 			%{$vbases{$pri}} = ();
 			$vbases{"$pri#code"} = ++$pricode;
+			${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef,$pri, 1) } = $pri;
 		    }
 		    foreach my $a (split(/,\s+/,$alt)) {
 			if ($a =~ /\s/ && !$is_compound) {
