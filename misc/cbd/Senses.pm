@@ -2,7 +2,7 @@ package ORACC::CBD::Senses;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/senses_collect senses_merge senses_string/;
+@EXPORT = qw/senses_align senses_collect senses_merge senses_string/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -15,18 +15,62 @@ my %common1 = (); @common1{@common1} = ();
 my @common2 = qw/and be by designation down for form make off on out part status type up/;
 my %common2 = (); @common2{@common2} = ();
 
+sub senses_align {
+    my($args,$base_cbd,$cbd) = @_;
+
+    my @base_cbd = @$base_cbd;
+    my @cbd = @$cbd;
+
+    my @senses = ();
+    my %base_senses = senses_collect(@base_cbd);
+    my $curr_entry = '';
+    my $last_sense = 0;
+
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /^\@sense/) {
+	    push @senses, $cbd[$i];
+	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
+	    if ($#senses >= 0) {
+		my $senses_b = $base_senses{$curr_entry};
+		if ($senses_b) {
+		    my $senses_b_str = senses_string($senses_b);
+		    my $senses_i_str = senses_string([ @senses ]);
+		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n";
+		    my $nsenses = senses_merge($curr_entry, [ @senses ], $senses_b);
+		    if ($#$nsenses >= 0) {
+			my $nsenses_str = senses_string($nsenses);
+			$nsenses_str =~ tr/\t//d;
+			$nsenses_str =~ s/^/\n/;
+			my $ins = $base_senses{$curr_entry,'insert'};
+			$base_cbd[$ins] .= $nsenses_str;
+			warn "adding $senses_b_str after sense at pos $ins\n";
+		    }
+		}
+		@senses = ();
+	    } else {
+		warn "$0: no \@senses in $curr_entry\n";
+	    }
+	}    
+    }
+}
+
 sub senses_collect {
     my @cbd = @_;
     my %s = ();
     my $curr_entry = '';
+    my $last_sense = 0;
     my @s = ();
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    push @s, $cbd[$i];
+	    $last_sense = $i;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    $s{$curr_entry} = [ @s ];
+	    $s{$curr_entry,'insert'} = $last_sense;
 	    @s = ();
 	}
     }
@@ -34,9 +78,9 @@ sub senses_collect {
 }
 
 sub senses_merge {
-    my($i,$b) = @_;
+    my($entry,$i,$b) = @_;
     my %map = ();
-    my @newb = (@$b);
+    my @newb = ();
     my %b = index_senses(@$b);
 #    print Dumper \%b;
     foreach my $s (@$i) {
@@ -48,7 +92,7 @@ sub senses_merge {
 	    }
 	}
 	if ($#matches == 0) {
-	    map_sense('1', $s, $matches[0]);	    
+	    map_sense('1', $entry, $s, $matches[0]);	    
 	    next;
 	} else {
 	    my %i = index_senses($s);
@@ -67,7 +111,7 @@ sub senses_merge {
 	    if (scalar keys %bs) {
 		my @m = sort { $bs{$b} <=> $bs{$a} || $a cmp $b } keys %bs;
 		my $index = $m[0]; $index =~ s/^#//;
-		map_sense('2', $s, ${$b}[$index]);
+		map_sense('2', $entry, $s, ${$b}[$index]);
 	    } else {
 		$s =~ s/sense/sense+/;
 		warn "Senses[3]: adding $s\n";
@@ -79,8 +123,15 @@ sub senses_merge {
 }
 
 sub map_sense {
-    my($code,$in,$base) = @_;
-    warn "Senses[$code]: mapping $in => base $base\n";
+    my($code,$entry,$in,$base) = @_;
+    my $from_sig = $entry;
+    $from_sig =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    my $to_sig = $from_sig;
+    my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
+    $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
+    ($epos,$sense) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
+    $to_sig =~ s#](\S+)#//$sense]$1'$epos#;
+    warn "Senses[$code]: mapping $from_sig => base $to_sig\n";
 }
 
 sub senses_string {
