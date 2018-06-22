@@ -2,7 +2,8 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/bases_hash bases_log bases_log_errors bases_fixes bases_process bases_stats bases_merge bases_string/;
+@EXPORT = qw/bases_align bases_hash bases_init bases_log bases_log_errors bases_fixes
+    bases_process bases_stats bases_term bases_merge bases_string/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -13,6 +14,8 @@ my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
 my %log_errors = ();
 my %stats = ();
+
+my %base_cpd_flags = ();
 
 sub bases_fixes {
     my %tmp = %fixes;
@@ -51,18 +54,20 @@ sub bases_align {
 sub bases_collect {
     my @cbd = @_;
     my $curr_entry = '';
-    for (my $i = 0; $i <= $#base_cbd; ++$i) {
-	if ($base_cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+    my %b = ();
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	    my $cf = $curr_entry;
 	    $cf =~ s/\s+\[.*$//;
 	    if ($cf =~ /\s/) {
 		$base_cpd_flags{$curr_entry} = 1;
 	    }
-	} elsif ($base_cbd[$i] =~ /^\@bases/) {
-	    $base_bases{$curr_entry} = $i;
+	} elsif ($cbd[$i] =~ /^\@bases/) {
+	    $b{$curr_entry} = $i;
 	}
     }
+    %b;
 }
 
 sub bases_init {
@@ -75,7 +80,7 @@ sub bases_init {
 }
 
 sub bases_term {
-    close(SENSE_FH);
+    close(BASE_FH);
 }
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
