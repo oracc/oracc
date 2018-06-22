@@ -2,7 +2,7 @@ package ORACC::CBD::Senses;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/senses_align senses_collect senses_merge senses_string/;
+@EXPORT = qw/senses_align senses_collect senses_init senses_term senses_merge senses_string/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -37,7 +37,8 @@ sub senses_align {
 		if ($senses_b) {
 		    my $senses_b_str = senses_string($senses_b);
 		    my $senses_i_str = senses_string([ @senses ]);
-		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n";
+		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" 
+			if $ORACC::CBD::PPWarn::trace;
 		    my $nsenses = senses_merge($curr_entry, [ @senses ], $senses_b);
 		    if ($#$nsenses >= 0) {
 			my $nsenses_str = senses_string($nsenses);
@@ -45,12 +46,13 @@ sub senses_align {
 			$nsenses_str =~ s/^/\n/;
 			my $ins = $base_senses{$curr_entry,'insert'};
 			$base_cbd[$ins] .= $nsenses_str;
-			warn "adding $senses_b_str after sense at pos $ins\n";
+			warn "adding $senses_b_str after sense at pos $ins\n"
+			    if $ORACC::CBD::PPWarn::trace;
 		    }
 		}
 		@senses = ();
 	    } else {
-		warn "$0: no \@senses in $curr_entry\n";
+		warn "$0: no \@senses in $curr_entry\n" if $ORACC::CBD::PPWarn::trace;
 	    }
 	}    
     }
@@ -114,7 +116,7 @@ sub senses_merge {
 		map_sense('2', $entry, $s, ${$b}[$index]);
 	    } else {
 		$s =~ s/sense/sense+/;
-		warn "Senses[3]: adding $s\n";
+		warn "Senses[3]: adding $s\n" if $ORACC::CBD::PPWarn::trace;
 		push @newb, $s;
 	    }
 	}	
@@ -131,11 +133,25 @@ sub map_sense {
     $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
     ($epos,$sense) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     $to_sig =~ s#](\S+)#//$sense]$1'$epos#;
-    warn "Senses[$code]: mapping $from_sig => base $to_sig\n";
+    warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
+    print SENSE_FH "$from_sig => $to_sig\n";
+}
+
+sub senses_init {
+    my $args = shift;
+    my $senses_outfile = $$args{'lang'}.'.map';
+    if (-d '01tmp') {
+	$senses_outfile = "01tmp/$senses_outfile";
+    }
+    open(SENSE_FH, ">>$senses_outfile");
 }
 
 sub senses_string {
     join ("\n\t", @{$_[0]});
+}
+
+sub senses_term {
+    close(SENSE_FH);
 }
 
 sub index_senses {
