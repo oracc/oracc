@@ -21,15 +21,62 @@ sub bases_fixes {
 }
 
 sub bases_align {
-    # get bases from base cbd
-    # for all the bases in align cbd
-    #     replace @bases in base cbd w merged bases
-    #     create new @bases for align cbd w only the ones that occur there
-    #     apply base map to forms in align cbd
-    # save base cbd w new bases
-    # save 
+    my($args,$base_cbd,$cbd) = @_;
+
+    my @base_cbd = @$base_cbd;
+    my @cbd = @$cbd;
+
+    my %base_bases = bases_collect(@base_cbd);
+    my $curr_entry = '';
+
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /^\@bases/) {
+	    my $base_i = $base_bases{$curr_entry};
+	    if ($base_i) {
+		warn "aligning:\n\t$cbd[$i]\n\t$base_cbd[$base_i]\n";
+		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
+		my %bmap = %{$$b{'map'}};
+		foreach my $b (keys %bmap) {
+		    print BASE_FH "$curr_entry /$b => /$bmap{$b}\n";
+		}
+		$base_cbd[$base_i] = bases_string($b);
+		warn "=>$base_cbd[$base_i]\n";
+	    }
+	}
+    }
 }
 
+sub bases_collect {
+    my @cbd = @_;
+    my $curr_entry = '';
+    for (my $i = 0; $i <= $#base_cbd; ++$i) {
+	if ($base_cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
+	    my $cf = $curr_entry;
+	    $cf =~ s/\s+\[.*$//;
+	    if ($cf =~ /\s/) {
+		$base_cpd_flags{$curr_entry} = 1;
+	    }
+	} elsif ($base_cbd[$i] =~ /^\@bases/) {
+	    $base_bases{$curr_entry} = $i;
+	}
+    }
+}
+
+sub bases_init {
+    my $args = shift;
+    my $bases_outfile = $$args{'lang'}.'.map';
+    if (-d '01tmp') {
+	$bases_outfile = "01tmp/$bases_outfile";
+    }
+    open(BASE_FH, ">>$bases_outfile");
+}
+
+sub bases_term {
+    close(SENSE_FH);
+}
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
     my($b1,$b2,$cpd) = @_;

@@ -13,6 +13,8 @@ my %args = pp_args();
 my @base_cbd = ();
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
+} else {
+    die "$0: must give base glossary with -base GLOSSARY\n";
 }
 
 my @cbd = setup_cbd(\%args);
