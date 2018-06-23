@@ -106,10 +106,14 @@ sub pp_cbd {
 }
 
 sub pp_load {
-    my $args = shift;
+    my ($args,$file) = @_;
     my @c = ();
-    
-    my $file = pp_file();
+
+    if ($file) {
+	pp_file($file);
+    } else {
+	$file = pp_file();
+    }
     
     if ($$args{'filter'}) {
 	@c = (<>); chomp @c;
@@ -119,6 +123,7 @@ sub pp_load {
 	open(C,$file) || die "cbdpp.plx: unable to open $file. Stop.\n";
 	@c = (<C>); chomp @c;
 	close(C);
+#	print Dumper $ORACC::CBD::data{'files'};
     }
 #    print Dumper \%ORACC::CBD::data; exit 0;
 
@@ -183,32 +188,37 @@ sub pp_sense_of {
 sub header_vals {
     my ($c) = @_;
     my %h = ();
-    my @p = `head -4 $c`;
-    foreach my $p (@p) {
-	if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {
-	    my($t,$v) = ($1,$2);
-	    $h{$t} = $v;
-	} else {
-	    $p = undef;
+    if ($c) {
+	my @p = `head -4 $c`;
+#	print Dumper \@p;
+	foreach my $p (@p) {
+	    if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {
+		my($t,$v) = ($1,$2);
+		$h{$t} = $v;
+	    } else {
+		$p = undef;
+	    }
 	}
-    }
     
-    $h{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
-    $file_indexes{$c} = $file_index++ unless $file_indexes{$c};
-    $h{'file_index'} = $file_indexes{$c};
-
-    if ($c =~ /^01tmp/) {
-	my $e = $c;
-	$e =~ s/01tmp/00lib/;
-	if (-r $e) {
-	    $h{'errfile'} = $e;
+	$h{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
+	$file_indexes{$c} = $file_index++ unless $file_indexes{$c};
+	$h{'file_index'} = $file_indexes{$c};
+	
+	if ($c =~ /^01tmp/) {
+	    my $e = $c;
+	    $e =~ s/01tmp/00lib/;
+	    if (-r $e) {
+		$h{'errfile'} = $e;
+	    } else {
+		$h{'errfile'} = $c;
+	    }
 	} else {
 	    $h{'errfile'} = $c;
 	}
     } else {
-	$h{'errfile'} = $c;
+	die "$0: can't get header info from empty file name\n";
     }
-
+#    print "header_vals $c = ", Dumper  \%h;
     %h;
 }
 
@@ -230,32 +240,39 @@ sub header_info {
 }
 
 sub cbdname {
-    my $p = project();
-    my $l = lang();
+    my $p = project(@_);
+    my $l = lang(@_);
     if ($p && $l) {
 	return $p.':'."${l}_$file_indexes{pp_file()}";
     } else {
 	return '';
     }
 }
-sub errfile {
-    header_info(pp_file(),'errfile');
+sub h_file {
+    if ($_[0]) {
+	warn "h_file: _[0] = $_[0]\n";
+	$_[0]
+    } else {
+	pp_file()
+    }
+}
+sub errfile {    
+    header_info(h_file(@_),'errfile');
 }
 sub file_index {
-    header_info(pp_file(),'file_index');
+    header_info(h_file(@_),'file_index');
 }
-sub projdir {
-    header_info(pp_file(),'projdir');
-}
-sub project {
-    header_info(pp_file(),'project');
+sub lang {
+    header_info(h_file(@_),'lang');
 }
 sub name {
-    header_info(pp_file(),'name');
+    header_info(h_file(@_),'name');
 }
-
-sub lang {
-    header_info(pp_file(),'lang');
+sub projdir {
+    header_info(h_file(@_),'projdir');
+}
+sub project {
+    header_info(h_file(@_),'project');
 }
 
 sub setup_args {

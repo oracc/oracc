@@ -8,6 +8,7 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 use Data::Dumper;
 
 my $bound = '(?:[-\|.{}()/ ]|$)';
@@ -38,17 +39,23 @@ sub bases_align {
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
-		warn "aligning:\n\t$cbd[$i]\n\t$base_cbd[$base_i]\n";
+		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n";
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
-		my %bmap = %{$$b{'map'}};
-		foreach my $b (keys %bmap) {
-		    print BASE_FH "$curr_entry /$b => /$bmap{$b}\n";
+		if ($$b{'#map'}) {
+		    my %bmap = %{$$b{'#map'}};
+		    foreach my $b (keys %bmap) {
+			my $p = $curr_entry;
+			$p =~ s/\s*\[(.*?)\]\s*/[$1]/;
+			print BASE_FH 
+			    '@'.project($$args{'cbd'}).'%'.lang().":$p /$b => /$bmap{$b}\n";
+		    }
 		}
 		$base_cbd[$base_i] = bases_string($b);
 		warn "=>$base_cbd[$base_i]\n";
 	    }
 	}
     }
+#    print Dumper $ORACC::CBD::data{'files'};
 }
 
 sub bases_collect {
@@ -72,7 +79,7 @@ sub bases_collect {
 
 sub bases_init {
     my $args = shift;
-    my $bases_outfile = $$args{'lang'}.'.map';
+    my $bases_outfile = lang().'.map';
     if (-d '01tmp') {
 	$bases_outfile = "01tmp/$bases_outfile";
     }
@@ -82,6 +89,7 @@ sub bases_init {
 sub bases_term {
     close(BASE_FH);
 }
+
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
     my($b1,$b2,$cpd) = @_;
@@ -92,21 +100,30 @@ sub bases_merge {
 	next if $p2 =~ /#/;
  	if ($h1{$p2}) { # primary in b2 is already in b1
  #	    warn "found $p2 as primary in both\n";
- 	    $h1{"$p2#alt"} = merge_alts($h1{"$p2#alt"}, $h2{"$p2#alt"});
+ 	    $h1{"$p2#alt"} = merge_alts($p2, $h1{"$p2#alt"}, $h2{"$p2#alt"});
  	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
  	    my $p1 = ${$h1{"#alt"}{$p2}};
  #	    warn "found $p2 as alternate to $p1 in base\n";
- 	    $h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
+ 	    $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
  	    ${$h1{'#map'}}{$p2} = $p1;
  	} else { # primary in b2 isn't known in b1
-	    my $b2sig = ORACC::SL::BaseC::check(undef,$p2, 1);
-	    my $b1pri = '';
-	    if (($b1pri = ${$h1{'#sigs'}}{$b2sig})) {
-		# This is a new alternate transliteration of $b1pri
-		my $p1 = ${$h1{"#alt"}{$p2}};
-		#  warn "found $p2 as alternate to $p1 in base\n";
-		$h1{"$p1#alt"} = merge_alts($h1{"$p1#alt"}, $h2{"$p2#alt"});
+	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2, 1);
+	    my $p1 = '';
+	    if (($p1 = ${$h1{'#sigs'}}{$p2sig})) {
+		# This is a new alternate transliteration of $p1
+		#  warn "found $p2 as new alternate to $p1 in base\n";
+		
+		# register it in the global alt array
+		${${$h1{'#alt'}}{$p2}} = $p1;
+		
+		# register it in the pri-local alt array
+		++${$h1{"$p1#alt"}}{$p2};
+
+		# $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
 		${$h1{'#map'}}{$p2} = $p1;
+
+#		my $p1 = ${$h1{"#alt"}{$p2}};
+
 	    } else {
 		# This is a new primary transliteration
 		$h1{$p2} = $h2{$p2};
@@ -121,10 +138,10 @@ sub bases_merge {
 }
 
 sub merge_alts {
-    my($a1,$a2) = @_;
+    my($pri, $a1,$a2) = @_;
     if ($a1 && $a2) {
 	foreach my $k (keys %$a2) {
-	    $$a1{$k} = 1;
+	    $$a1{$k} = 1 unless $k eq $pri;
 	}
 	return $a1;
     } elsif ($a1) {
