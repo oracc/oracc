@@ -250,7 +250,7 @@ sub cbdname {
 }
 sub h_file {
     if ($_[0]) {
-	warn "h_file: _[0] = $_[0]\n";
+#	warn "h_file: _[0] = $_[0]\n";
 	$_[0]
     } else {
 	pp_file()

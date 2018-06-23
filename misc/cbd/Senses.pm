@@ -16,11 +16,14 @@ my %common1 = (); @common1{@common1} = ();
 my @common2 = qw/and be by designation down for form make off on out part status type up/;
 my %common2 = (); @common2{@common2} = ();
 
+my $map_fh = undef;
+
 sub senses_align {
-    my($args,$base_cbd,$cbd) = @_;
+    my($args,$base_cbd,$cbd,$xmap_fh) = @_;
 
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
+    $map_fh = $xmap_fh if $xmap_fh;
 
     my @senses = ();
     my %base_senses = senses_collect(@base_cbd);
@@ -40,18 +43,19 @@ sub senses_align {
 		    my $senses_i_str = senses_string([ @senses ]);
 		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" 
 			if $ORACC::CBD::PPWarn::trace;
-		    my $nsenses = senses_merge($args, 
-					       $curr_entry, 
-					       [ @senses ], $senses_b);
-		    if ($#$nsenses >= 0) {
-			my $nsenses_str = senses_string($nsenses);
-			$nsenses_str =~ tr/\t//d;
-			$nsenses_str =~ s/^/\n/;
-			my $ins = $base_senses{$curr_entry,'insert'};
-			$base_cbd[$ins] .= $nsenses_str;
-			warn "adding $senses_b_str after sense at pos $ins\n"
-			    if $ORACC::CBD::PPWarn::trace;
-		    }
+#		    my $nsenses = 
+		    senses_merge($args, 
+				 $curr_entry, 
+				 [ @senses ], $senses_b);
+#		    if ($#$nsenses >= 0) {
+#			my $nsenses_str = senses_string($nsenses);
+#			$nsenses_str =~ tr/\t//d;
+#			$nsenses_str =~ s/^/\n/;
+#			my $ins = $base_senses{$curr_entry,'insert'};
+#			$base_cbd[$ins] .= $nsenses_str;
+#			warn "adding $senses_b_str after sense at pos $ins\n"
+#			    if $ORACC::CBD::PPWarn::trace;
+#		    }
 		}
 		@senses = ();
 	    } else {
@@ -97,7 +101,7 @@ sub senses_merge {
 	    }
 	}
 	if ($#matches == 0) {
-	    map_sense($args, '1', $entry, $s, $matches[0]);	    
+	    map_sense($args, '1', $entry, $s, $matches[0]);
 	    next;
 	} else {
 	    my %i = index_senses($s);
@@ -120,11 +124,21 @@ sub senses_merge {
 	    } else {
 		$s =~ s/sense/sense+/;
 		warn "Senses[3]: adding $s\n" if $ORACC::CBD::PPWarn::trace;
+		add_sense($args, $entry, $s);
 		push @newb, $s;
 	    }
 	}	
     }
-    [ @newb ];
+#    [ @newb ];
+}
+
+sub add_sense {
+    my($args,$entry,$in) = @_;
+    my $add_sig = $entry;
+    $add_sig =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
+    $add_sig =~ s#](\S+)#//$sense]$1'$epos#;
+    print $map_fh "add sense $add_sig\n";
 }
 
 sub map_sense {
@@ -133,12 +147,14 @@ sub map_sense {
     $from_sig =~ s/\s+\[(.*?)\]\s+/[$1]/;
     my $to_sig = $from_sig;
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
-    $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
-    ($epos,$sense) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
-    $to_sig =~ s#](\S+)#//$sense]$1'$epos#;
-    warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
-    
-    print SENSE_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
+    my ($epos_b,$sense_b) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
+    if ($sense ne $sense_b) {
+	$from_sig =~ s#](\S+)#//$sense]$1'$epos#;
+	$to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;
+	warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
+	# print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
+	print $map_fh "map sense $from_sig => $to_sig\n";
+    }
 }
 
 sub senses_init {
@@ -147,7 +163,8 @@ sub senses_init {
     if (-d '01tmp') {
 	$senses_outfile = "01tmp/$senses_outfile";
     }
-    open(SENSE_FH, ">>$senses_outfile");
+    open(MAP_FH, ">>$senses_outfile");
+    $map_fh = \*MAP_FH;
 }
 
 sub senses_string {
@@ -155,7 +172,7 @@ sub senses_string {
 }
 
 sub senses_term {
-    close(SENSE_FH);
+    close(MAP_FH);
 }
 
 sub index_senses {

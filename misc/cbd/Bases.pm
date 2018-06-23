@@ -18,6 +18,8 @@ my %stats = ();
 
 my %base_cpd_flags = ();
 
+my $map_fh = undef;
+
 sub bases_fixes {
     my %tmp = %fixes;
     %fixes = ();
@@ -25,10 +27,11 @@ sub bases_fixes {
 }
 
 sub bases_align {
-    my($args,$base_cbd,$cbd) = @_;
+    my($args,$base_cbd,$cbd,$xmap_fh) = @_;
 
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
+    $map_fh = $xmap_fh if $xmap_fh;
 
     my %base_bases = bases_collect(@base_cbd);
     my $curr_entry = '';
@@ -41,17 +44,23 @@ sub bases_align {
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n";
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
-		if ($$b{'#map'}) {
-		    my %bmap = %{$$b{'#map'}};
-		    foreach my $b (keys %bmap) {
-			my $p = $curr_entry;
-			$p =~ s/\s*\[(.*?)\]\s*/[$1]/;
-			print BASE_FH 
-			    '@'.project($$args{'cbd'}).'%'.lang().":$p /$b => /$bmap{$b}\n";
+		if ($$b{'#map'} || $$b{'#new'}) {
+		    my $p = $curr_entry;
+		    if ($$b{'#map'}) {
+			my %bmap = %{$$b{'#map'}};
+			foreach my $b (keys %bmap) {
+			    $p =~ s/\s*\[(.*?)\]\s*/[$1]/;
+			    print $map_fh "map base $p/$b => $bmap{$b}\n";
+			    #			print MAP_FH 
+			    #			    '@'.project($$args{'cbd'}).'%'.lang().":$p /$b => /$bmap{$b}\n";
+			}
+		    }
+		    $base_cbd[$base_i] = bases_string($b);
+		    warn "=>$base_cbd[$base_i]\n";
+		    if ($$b{'#new'}) {
+			print $map_fh "new bases $p => $base_cbd[$base_i]\n";
 		    }
 		}
-		$base_cbd[$base_i] = bases_string($b);
-		warn "=>$base_cbd[$base_i]\n";
 	    }
 	}
     }
@@ -83,11 +92,12 @@ sub bases_init {
     if (-d '01tmp') {
 	$bases_outfile = "01tmp/$bases_outfile";
     }
-    open(BASE_FH, ">>$bases_outfile");
+    open(MAP_FH, ">>$bases_outfile");
+    $map_fh = \*MAP_FH;
 }
 
 sub bases_term {
-    close(BASE_FH);
+    close(MAP_FH);
 }
 
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
@@ -95,6 +105,8 @@ sub bases_merge {
     my($b1,$b2,$cpd) = @_;
     my %h1 = bases_hash($b1,$cpd);
     my %h2 = bases_hash($b2,$cpd);
+
+    $h1{'#new'} = 0;
 
     foreach my $p2 (keys %h2) {
 	next if $p2 =~ /#/;
@@ -131,11 +143,14 @@ sub bases_merge {
 		    $h1{"$p2#alt"} = $h2{"$p2#alt"};
 		}
 	    }
+	    $h1{'#new'} = 1;
  	}
     }
 #    print "merged bases => ", Dumper \%h1;
     return { %h1 };
 }
+
+
 
 sub merge_alts {
     my($pri, $a1,$a2) = @_;
