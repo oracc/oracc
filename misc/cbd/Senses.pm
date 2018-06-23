@@ -7,6 +7,7 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Util;
 use Data::Dumper;
 
 my @common1 = qw/a an in is of or the to/;
@@ -39,7 +40,9 @@ sub senses_align {
 		    my $senses_i_str = senses_string([ @senses ]);
 		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" 
 			if $ORACC::CBD::PPWarn::trace;
-		    my $nsenses = senses_merge($curr_entry, [ @senses ], $senses_b);
+		    my $nsenses = senses_merge($args, 
+					       $curr_entry, 
+					       [ @senses ], $senses_b);
 		    if ($#$nsenses >= 0) {
 			my $nsenses_str = senses_string($nsenses);
 			$nsenses_str =~ tr/\t//d;
@@ -80,7 +83,7 @@ sub senses_collect {
 }
 
 sub senses_merge {
-    my($entry,$i,$b) = @_;
+    my($args,$entry,$i,$b) = @_;
     my %map = ();
     my @newb = ();
     my %b = index_senses(@$b);
@@ -94,7 +97,7 @@ sub senses_merge {
 	    }
 	}
 	if ($#matches == 0) {
-	    map_sense('1', $entry, $s, $matches[0]);	    
+	    map_sense($args, '1', $entry, $s, $matches[0]);	    
 	    next;
 	} else {
 	    my %i = index_senses($s);
@@ -113,7 +116,7 @@ sub senses_merge {
 	    if (scalar keys %bs) {
 		my @m = sort { $bs{$b} <=> $bs{$a} || $a cmp $b } keys %bs;
 		my $index = $m[0]; $index =~ s/^#//;
-		map_sense('2', $entry, $s, ${$b}[$index]);
+		map_sense($args, '2', $entry, $s, ${$b}[$index]);
 	    } else {
 		$s =~ s/sense/sense+/;
 		warn "Senses[3]: adding $s\n" if $ORACC::CBD::PPWarn::trace;
@@ -125,7 +128,7 @@ sub senses_merge {
 }
 
 sub map_sense {
-    my($code,$entry,$in,$base) = @_;
+    my($args,$code,$entry,$in,$base) = @_;
     my $from_sig = $entry;
     $from_sig =~ s/\s+\[(.*?)\]\s+/[$1]/;
     my $to_sig = $from_sig;
@@ -134,7 +137,8 @@ sub map_sense {
     ($epos,$sense) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     $to_sig =~ s#](\S+)#//$sense]$1'$epos#;
     warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
-    print SENSE_FH "$from_sig => $to_sig\n";
+    
+    print SENSE_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
 }
 
 sub senses_init {
