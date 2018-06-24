@@ -16,7 +16,7 @@ if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
     if (pp_status()) {
 	pp_diagnostics();
-	die "$0: can't align bases unless base glossary is clean. Stop.\n";
+	die "$0: can't align forms unless base glossary is clean. Stop.\n";
     }
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
@@ -26,7 +26,7 @@ my @cbd = setup_cbd(\%args);
 
 if (pp_status()) {
     pp_diagnostics();
-    die "$0: can't align bases unless incoming glossary is clean. Stop.\n";
+    die "$0: can't align forms unless incoming glossary is clean. Stop.\n";
 }
 
 forms_init(\%args);

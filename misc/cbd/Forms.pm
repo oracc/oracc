@@ -3,7 +3,8 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_align forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
+@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw forms_dump forms_load 
+    forms_normify forms_print forms_reset forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -26,13 +27,14 @@ sub forms_align {
     $map_fh = $xmap_fh if $xmap_fh;
     my %forms = forms_collect(@base_cbd);
     my %f_index = ();
-    my $incoming_forms = forms_collect(@cbd);
+    my %incoming_forms = forms_collect(@cbd);
     foreach my $if (keys %incoming_forms) {
 	if ($forms{$if}) {
 	    my %fi = ();
 	    if ($f_index{$if}) {
 		%fi = $f_index{$if};
 	    } else {
+		warn "indexing forms for $if\n";
 		foreach my $f (keys %{$forms{$if}}) {
 		    $f =~ /^\S+\s+(\S+)/;
 		    ++$fi{$1};

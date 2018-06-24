@@ -42,7 +42,7 @@ sub bases_align {
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
-		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n";
+#		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n";
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    my $p = $curr_entry;
@@ -56,8 +56,9 @@ sub bases_align {
 			}
 		    }
 		    $base_cbd[$base_i] = bases_string($b);
-		    warn "=>$base_cbd[$base_i]\n";
+#		    warn "=>$base_cbd[$base_i]\n";
 		    if ($$b{'#new'}) {
+			$p =~ s/\s+(\[.*?\])\s+/$1/;
 			print $map_fh "new bases $p => $base_cbd[$base_i]\n";
 		    }
 		}

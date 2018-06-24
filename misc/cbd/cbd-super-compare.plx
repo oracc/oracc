@@ -9,6 +9,7 @@ use ORACC::CBD::Util;
 use ORACC::CBD::Entries;
 use ORACC::CBD::Senses;
 use ORACC::CBD::Bases;
+use ORACC::CBD::Forms;
 
 my %args = pp_args();
 
@@ -40,6 +41,7 @@ open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n
 entries_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 senses_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 bases_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
+forms_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 close(MAP_FH);
 
 1;
