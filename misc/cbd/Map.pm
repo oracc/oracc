@@ -15,6 +15,7 @@ my @cmdcombos = qw/addentry addsense mapentry mapsense mapbase newbases/;
 my %combofuncs = (
     addentry => \&addentry,
     addsense => \&addsense,
+    addform => \&addform,
     newbases => \&newbases,
     mapentry => \&mapentry,
     mapsense => \&mapsense,
@@ -31,12 +32,12 @@ sub map_load {
 	    my ($cmd,$arg) = ($1,$2);
 	    my($what,$from,$to) = ();
 	    if (/=>/) {
-		unless (($what,$from,$to) = ($arg =~ /^(entry|sense|bases|base)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
+		unless (($what,$from,$to) = ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
 		    warn "$map:$.: syntax error: bad field\n";
 		    next;
 		}
 	    } else {
-		unless (($what,$from) = ($arg =~ /^(entry|sense|bases|base)\s+(.*?)\s*$/)) {
+		unless (($what,$from) = ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*$/)) {
 		    warn "$map:$.: syntax error: bad field\n";
 		    next;
 		}
@@ -66,11 +67,15 @@ sub addentry {
 }
 
 sub addsense {
-    my($k,$f) = @_;
-    my $to = $k;
-    $to =~ s#\]#//$$f{'sense'}]#;
-    $to .= "'$$f{'epos'}";
+    my($k,$f,$to) = @_;
+#    $to =~ s#\]#//$$f{'sense'}]#;
+#   $to .= "'$$f{'epos'}";
     ($k,['addsense',$to]);
+}
+
+sub addform {
+    my($k,$f,$to) = @_;
+    ($k,['addform',$to]);
 }
 
 sub newbases {
@@ -92,8 +97,8 @@ sub mapsense {
 
 sub mapbase {
     my($k,$f,$to) = @_;
-    $$f{'base'} =~ s/^%://;
-    ($k,['mapbase',$$f{'base'},$to]);
+    $to =~ /^(\S+)\s+~\s+(\S+)$/;
+    ($k,['mapbase',$1,$2]);
 }
 
 1;

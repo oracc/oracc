@@ -50,7 +50,7 @@ sub bases_align {
 			my %bmap = %{$$b{'#map'}};
 			foreach my $b (keys %bmap) {
 			    $p =~ s/\s*\[(.*?)\]\s*/[$1]/;
-			    print $map_fh "map base $p/$b => $bmap{$b}\n";
+			    print $map_fh "map base $p => $b ~ $bmap{$b}\n";
 			    #			print MAP_FH 
 			    #			    '@'.project($$args{'cbd'}).'%'.lang().":$p /$b => /$bmap{$b}\n";
 			}
@@ -59,7 +59,7 @@ sub bases_align {
 #		    warn "=>$base_cbd[$base_i]\n";
 		    if ($$b{'#new'}) {
 			$p =~ s/\s+(\[.*?\])\s+/$1/;
-			print $map_fh "new bases $p => $base_cbd[$base_i]\n";
+			print $map_fh "new bases $p => \@bases $base_cbd[$base_i]\n";
 		    }
 		}
 	    }

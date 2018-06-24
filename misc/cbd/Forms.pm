@@ -34,7 +34,7 @@ sub forms_align {
 	    if ($f_index{$if}) {
 		%fi = $f_index{$if};
 	    } else {
-		warn "indexing forms for $if\n";
+#		warn "indexing forms for $if\n";
 		foreach my $f (keys %{$forms{$if}}) {
 		    $f =~ /^\S+\s+(\S+)/;
 		    ++$fi{$1};

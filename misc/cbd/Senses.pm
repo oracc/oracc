@@ -134,11 +134,12 @@ sub senses_merge {
 
 sub add_sense {
     my($args,$entry,$in) = @_;
-    my $add_sig = $entry;
-    $add_sig =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;
+#    my $add_sig = $entry;
+#    $entry = $add_sig;
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
-    $add_sig =~ s#](\S+)#//$sense]$1'$epos#;
-    print $map_fh "add sense $add_sig\n";
+#    $add_sig =~ s#](\S+)#//$sense]$1'$epos#;
+    print $map_fh "add sense $entry => \@sense $epos $sense\n";
 }
 
 sub map_sense {
