@@ -3,7 +3,7 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
+@EXPORT = qw/forms_align forms_by_cfgw forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -16,7 +16,71 @@ use ORACC::CBD::Validate;
 my %bases = ();
 my %forms = ();
 my $forms_inline = '';
+my $map_fh = undef;
 my %seen = ();
+
+sub forms_align {
+    my($args,$base_cbd,$cbd,$xmap_fh) = @_;
+    my @base_cbd = @$base_cbd;
+    my @cbd = @$cbd;
+    $map_fh = $xmap_fh if $xmap_fh;
+    my %forms = forms_collect(@base_cbd);
+    my %f_index = ();
+    my $incoming_forms = forms_collect(@cbd);
+    foreach my $if (keys %incoming_forms) {
+	if ($forms{$if}) {
+	    my %fi = ();
+	    if ($f_index{$if}) {
+		%fi = $f_index{$if};
+	    } else {
+		foreach my $f (keys %{$forms{$if}}) {
+		    $f =~ /^\S+\s+(\S+)/;
+		    ++$fi{$1};
+		}
+		$f_index{$if} = %fi;
+	    }
+	    foreach my $f (keys %{$incoming_forms{$if}}) {
+		$f =~ /^\S+\s+(\S+)/;
+		map_form($args,$if, $f) unless $f_index{$f};
+	    }
+	}
+	# silently ignore missing entries because entries_align gets those
+    }
+}
+
+sub map_form {
+    my($args,$entry,$form) = @_;
+    $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    print $map_fh "add form $entry => $form\n";
+}
+
+sub forms_collect {
+    my @cbd = @_;
+    my $curr_entry = '';
+    my %f = ();
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /^\@form/) {
+	    ++${$f{$curr_entry}}{$cbd[$i]};
+	}
+    }
+    %f;
+}
+
+sub forms_init {
+    my $args = shift;
+    my $forms_outfile = $$args{'lang'}.'.map';
+    if (-d '01tmp') {
+	$forms_outfile = "01tmp/$forms_outfile";
+    }
+    open(MAP_FH, ">>$forms_outfile");
+    $map_fh = \*MAP_FH;
+}
+
+sub forms_term {
+    close(MAP_FH);
+}
 
 sub forms_by_cfgw {
     if ($_[0]) {
