@@ -1,7 +1,7 @@
 package ORACC::L2GLO::Util;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/parse_sig/;
+@EXPORT = qw/parse_sig serialize_sig/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
