@@ -112,13 +112,19 @@ sub senses_merge {
 	    # count is the best match
 	    foreach my $i (keys %i) {
 		if ($b{$i}) {
-		    foreach my $bs (@{$b{$i}}) {			
+		    foreach my $bs (@{$b{$i}}) {
 			++$bs{"#$bs"};
 		    }
 		}
 	    }
+	    foreach my $k (keys %bs) {
+		unless (defined $bs{$k}) {
+		    warn "\$bs{ $k } has undefined value\n" ;
+		    $bs{$k} = 0;
+		}
+	    }
 	    if (scalar keys %bs) {
-		my @m = sort { $bs{$b} <=> $bs{$a} || $a cmp $b } keys %bs;
+		my @m = sort { &bscmp(\%bs) } keys %bs;
 		my $index = $m[0]; $index =~ s/^#//;
 		map_sense($args, '2', $entry, $s, ${$b}[$index]);
 	    } else {
@@ -132,6 +138,12 @@ sub senses_merge {
 #    [ @newb ];
 }
 
+sub bscmp {
+    my %bs = %{$_[0]};
+    my $bsa = $bs{$a} || 0;
+    my $bsb = $bs{$b} || 0;
+    $bsb <=> $bsa || $a cmp $b
+}
 sub add_sense {
     my($args,$entry,$in) = @_;
     $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;

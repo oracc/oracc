@@ -30,9 +30,20 @@ if ($map) {
 	my %map = map_load($map,'glos');
 	# print Dumper \%map; exit 1;
 	my @c = map_apply_glo(@base_cbd);
+	if ($args{'inplace'}) {
+	    my $bak = 'bak';
+	    if ($args{'increment'}) {
+		$bak = sprintf("%02d", $args{'increment'});
+	    }
+	    system 'mv', $args{'base'}, "$args{'base'}.$bak";
+	    open(OUT, ">$args{'base'}") 
+		|| die "$0: unable to open $args{'base'} for inplace edit\n";
+	    select OUT;
+	}
 	foreach (@c) {
 	    print "$_\n" unless /^\000$/;
 	}
+	close(OUT) if $args{'inplace'};
     } else {
 	die "$0: can't read map file $map\n";
     }

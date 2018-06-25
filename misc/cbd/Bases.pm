@@ -120,11 +120,11 @@ sub bases_merge {
  	    $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
  	    ${$h1{'#map'}}{$p2} = $p1;
  	} else { # primary in b2 isn't known in b1
-	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2, 1);
+	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2,1);
 	    my $p1 = '';
 	    if (($p1 = ${$h1{'#sigs'}}{$p2sig})) {
 		# This is a new alternate transliteration of $p1
-		#  warn "found $p2 as new alternate to $p1 in base\n";
+#		warn "found $p2 as new alternate to $p1 in base\n";
 		
 		# register it in the global alt array
 		${${$h1{'#alt'}}{$p2}} = $p1;
@@ -139,6 +139,8 @@ sub bases_merge {
 
 	    } else {
 		# This is a new primary transliteration
+#		warn "incoming $p2 is new primary\n";
+#		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
 		if ($h2{"$p2#alt"}) {
 		    $h1{"$p2#alt"} = $h2{"$p2#alt"};
@@ -150,8 +152,6 @@ sub bases_merge {
 #    print "merged bases => ", Dumper \%h1;
     return { %h1 };
 }
-
-
 
 sub merge_alts {
     my($pri, $a1,$a2) = @_;
@@ -277,6 +277,7 @@ sub bases_hash {
 		} else {
 		    %{$vbases{$pri}} = ();
 		    $vbases{"$pri#code"} = ++$pricode;
+		    ${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef,$pri, 1) } = $pri;
 		}
 	    }
 	}

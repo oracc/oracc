@@ -11,7 +11,10 @@ use ORACC::CBD::Senses;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Forms;
 
-$ORACC::CBD::nonormify = 1;
+## No: we are working on 01tmp/xxx.glo where the normification
+## has already been done, so we want to do it correspondingly to
+## incoming glossaries
+## $ORACC::CBD::nonormify = 1;
 
 my %args = pp_args();
 
@@ -36,7 +39,12 @@ if (pp_status()) {
 
 my $mapfile = project($args{'cbd'});
 $mapfile =~ tr#/#-#;
-$mapfile = '00map/'.$mapfile;
+if ($args{'dynamic'}) {
+    system 'mkdir', '-p', '01map';
+    $mapfile = '01map/'.$mapfile;
+} else {
+    $mapfile = '00map/'.$mapfile;
+}
 $mapfile .= '~'.lang($args{'cbd'}).'.map';
 
 open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n";    
@@ -45,5 +53,14 @@ senses_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 bases_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 forms_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 close(MAP_FH);
+
+if ($args{'apply'}) {
+    my @exec_args = ();
+    push @exec_args, '-inplace' if $args{'inplace'};
+    push @exec_args, '-increment', $args{'increment'} if defined $args{'increment'};
+    push @exec_args, '-base', $args{'base'}, $mapfile;
+    warn "cbd-super-compare.plx: applying @exec_args\n";
+    exec "$ENV{'ORACC_BUILDS'}/bin/cbd-super-map-glos.plx", @exec_args;
+}
 
 1;

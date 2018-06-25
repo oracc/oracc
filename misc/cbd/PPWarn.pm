@@ -28,7 +28,7 @@ sub pp_diagnostics {
 	    warn @{$errlist{$e}};
 	}	
     } else {
-	warn "$file OK.\n" if $$args{'check'};
+	warn "$file OK.\n" if $$args{'check'} && $$args{'announce'};
 	$ret = 0;
     }
     $status;

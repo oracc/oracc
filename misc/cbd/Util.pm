@@ -31,6 +31,7 @@ $ORACC::CBD::bases = 0;
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
+$ORACC::CBD::nosigs = 0;
 $ORACC::CBD::qpn_base_lang = 'sux';
 
 my $file_index = 1;
@@ -45,9 +46,9 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce bare base:s check kompounds dry edit entries=s file 
-	filter fix:s force invert lines list:s
-	nonormify lang:s mode:s output:s project:s reset sigs trace vfields:s words=f xml/,
+	qw/announce apply bare base:s check kompounds dry dynamic edit entries=s file 
+	filter fix:s force increment:s inplace invert lines list:s lang:s mode:s 
+	nonormify nosigs output:s project:s reset sigs trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -100,7 +101,7 @@ sub pp_cbd {
 	    }
 	}
 	close(CBD);
-	warn "cbdpp: wrote $outf\n"
+	warn "cbdpp.plx: wrote $outf\n"
 	    if $$args{'announce'};
     }
 }
@@ -135,10 +136,8 @@ sub pp_load {
 	    if ($tag ne 'end') {
 		if ($tag eq 'project') {
 		    pp_line($i+1);
-#		    $$args{'project'} = v_project($c[$i]);
 		} elsif ($tag eq 'lang') {
 		    pp_line($i+1);
-#		    $$args{'lang'} = v_lang($c[$i]);
 		} elsif ($tag eq 'qpnbaselang') {
 		    pp_line($i+1);
 		    my $l = v_lang($c[$i]);
@@ -277,6 +276,39 @@ sub project {
 
 sub setup_args {
     my ($args,$file) = @_;
+    if (!$file) {
+	if ($$args{'project'}) {
+	    my $p = $$args{'project'};
+	    my $l = undef;
+	    if ($p =~ s/:(.*?)$//) {
+		$l = $1;
+	    } else {
+		if ($$args{'base'}) {
+		    if (-r $$args{'base'}) {
+			my %h = header_vals($$args{'base'});
+			if ($h{'lang'}) {
+			    $l = $h{'lang'};
+			} else {
+			    warn "$0: no \@lang in base glossary $$args{'base'}\n";
+			}
+		    } else {
+			warn "$0: base glossary $$args{'base'} not readable\n";
+		    }
+		} else {
+		    warn "$0: no base glossary\n";
+		}
+	    }
+	    if ($p && $l) {
+		$file = "$ENV{'ORACC_BUILDS'}/$p/00lib/$l.glo";
+		unless (-r $file) {
+		    warn "$0: looked for $file but couldn't find it\n";
+		    $file = undef;
+		} else {
+		    warn "$0: found $file via -project arg\n";
+		}
+	    }
+	}
+    }
     return undef unless $file;
     $$args{'cbd'} = $file;
     my $lng = '';

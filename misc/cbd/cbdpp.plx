@@ -36,10 +36,16 @@ my %ppfunc = (
 my %args = pp_args();
 
 my @cbd = setup_cbd(\%args);
-warn "cbdpp: updating $args{'cbd'}\n";
-#    if $args{'announce'};
 
-#forms_dump('forms-44.dump');
+if ($args{'announce'}) {
+    my $whatting = 'updating';
+    if ($args{'check'}) {
+	$whatting = 'checking';
+    } elsif ($args{'sigs'}) {
+	$whatting = 'getting signatures from';
+    }
+    warn "cbdpp.plx: $whatting $args{'cbd'}\n";
+}
 
 if (pp_status() && !$args{'force'}) {
     my $ret = pp_diagnostics(\%args);
@@ -79,7 +85,7 @@ if ($args{'xml'}) {
     pp_trace("cbdpp/writing cbd");
     pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
 #    forms_dump('forms-78.dump');
-    sigs_from_glo(\%args, @cbd) unless $args{'check'} || (pp_status() && !$args{'force'});
+    sigs_from_glo(\%args, @cbd) unless $args{'nosigs'} || $args{'check'} || (pp_status() && !$args{'force'});
     pp_trace("cbdpp/cbd write complete");
 }
 

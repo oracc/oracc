@@ -2,11 +2,16 @@
 
 echo "o2-super-prep.sh: entering at " `date`
 
-# First harvest all the sigs from the projects' xtfs 
+# First produce the base superglo in 01tmp
+superglo=`o2-cbdpp.sh`
+
+o2-super-dyn.sh $superglo
+
+# harvest all the sigs from the projects' xtfs 
 # (i.e., 01bld/from-xtf-glo.sig).
-echo "o2-super-prep.sh: getting sigs via 00map"
+echo "o2-super-prep.sh: getting sigs via 00map and 01map"
 mkdir -p 01sig
-for a in 00map/*.map ; do
+for a in 00map/*.map 01map/*.map ; do
     super-getsigs.plx $a
 done
 
