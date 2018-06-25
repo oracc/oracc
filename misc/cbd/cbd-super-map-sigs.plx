@@ -12,29 +12,18 @@ use Data::Dumper;
 $ORACC::CBD::nosetupargs = 1;
 my %args = pp_args();
 
-my @base_cbd = ();
-
-if ($args{'base'}) {
-    @base_cbd = setup_cbd(\%args,$args{'base'});
-    if (pp_status()) {
-	pp_diagnostics();
-	die "$0: can't align bases unless base glossary is clean. Stop.\n";
+my $map = shift @ARGV;
+if (-r $map) {
+    my %map = map_load(shift @ARGV,'sigs');
+    while (<>) {
+	if (/^\@[^%]+\s/ || /^\s*$/ || /^#/) {
+	    print;
+	} else {
+	    print map_apply_sig($_);
+	}
     }
 } else {
-    die "$0: must give base glossary with -base GLOSSARY\n";
-}
-
-my %map = map_load(shift @ARGV,'sigs');
-
-#print Dumper \%map; exit 1;
-
-while (<>) {
-    if (/^\@[^%]+\s/ || /^\s*$/ || /^#/) {
-	print;
-    } else {
-	print map_apply_sig($_);
-    }
-}
-
+    die "$0: must give map on command line\n";
+} 
 
 1;

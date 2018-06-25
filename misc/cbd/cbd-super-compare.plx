@@ -11,6 +11,8 @@ use ORACC::CBD::Senses;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Forms;
 
+$ORACC::CBD::nonormify = 1;
+
 my %args = pp_args();
 
 my @base_cbd = ();

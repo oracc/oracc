@@ -2,7 +2,7 @@ package ORACC::CBD::Map;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/map_apply_sig map_load map_set_map/;
+@EXPORT = qw/map_apply_glo map_apply_sig map_load map_set_map/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -29,6 +29,70 @@ my %currmap = ();
 sub map_set_map {
     my $ref = shift;
     %currmap = %$ref;
+}
+
+sub map_apply_glo {
+    my @cbd = @_;
+    my @n = ();
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    my $key = $1;
+	    $key =~ s/\s*(\[.*?\])\s*/$1/;
+	    if ($currmap{$key}) {
+		push @n, $cbd[$i];
+		my %emap = %{$currmap{$key}};
+		# emap may have @bases @form @sense:
+		if ($emap{'bases'}) {
+		    while ($cbd[$i] !~ /^\@bases/) {
+			push @n, $cbd[$i];
+		    }
+		    push @n, ${$emap{'bases'}}[0];
+		    ++$i;
+		}
+		if ($emap{'form'}) {
+		    while ($cbd[$i] !~ /^\@form/) {
+			push @n, $cbd[$i];
+		    }
+		    while ($cbd[$i] =~ /^\@form/) {
+			push @n, $cbd[$i];
+		    }
+		    if ($emap{'#basemap'}) {
+			my %bmap = %{$emap{'#basemap'}};
+			foreach my $f (@{$emap{'form'}}) {
+			    my $b =~ m#\s/(\S+)#;
+			    if ($bmap{$b}) {
+				$f =~ s#\s/(\S+)# /$bmap{$b}#;
+			    }
+			    push @n, $f;
+			}
+		    } else {
+			push @n, @{$emap{'form'}};
+		    }
+		}
+		if ($emap{'sense'}) {
+		    while ($cbd[$i] !~ /^\@sense/) {
+			push @n, $cbd[$i];
+		    }
+		    while ($cbd[$i] =~ /^\@sense/) {
+			push @n, $cbd[$i];
+		    }
+		    push @n, @{$emap{'sense'}}
+		}
+	    }
+	    do {
+		push @n, $cbd[$i++];
+	    } until ($cbd[$i] =~ /^\@end\s+entry/);
+	    
+	} else {
+	    push @n, $cbd[$i];
+	}
+    }
+    my @newentries = @{$currmap{'#entries'}};
+    for (@newentries) {
+	my @e = split(/\cA/,$_);
+	push @n, @e, '';
+    }
+    @n;
 }
 
 sub map_apply_sig {
@@ -65,14 +129,15 @@ sub map_load {
     my ($map,$for) = @_;
     $marshalling = $for;
     my %map = ();
-    open(M, $map);
+    open(M, $map) || die "$0: failed to open map file for read\n";
     while (<M>) {
 	next if /^\s*$/ || /^\#/;
 	if (/^(add|cut|fix|map|new)\s+(.*?)$/) {
 	    my ($cmd,$arg) = ($1,$2);
 	    my($what,$from,$to) = ();
 	    if (/=>/) {
-		unless (($what,$from,$to) = ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
+		unless (($what,$from,$to) 
+			= ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
 		    warn "$map:$.: syntax error: bad field\n";
 		    next;
 		}
@@ -93,6 +158,20 @@ sub map_load {
 			my($what,$from,$to) = @$mapdata;
 			$map{$mapkey} = 1;
 			${${$map{$mapkey,$what}}{$from}} = $to;
+		    } elsif ($marshalling eq 'glos') {
+			my($what,$from,$to) = @$mapdata;
+			if ($to =~ /^\@(\S+)/) {
+			    my $tag = $1;
+			    if ($to =~ /^\@entry/) {
+				push @{$map{'#entries'}}, $to;
+			    } else {
+				push @{${$map{$mapkey}{$tag}}}, $to;
+			    }
+			} else {
+			    ${${$map{$mapkey}{'#basemap'}}}{$from} = $to;
+			}
+		    } else {
+			die "$0: no support for marshalling type '$marshalling'\n";
 		    }
 		}
 	    } else {
@@ -117,8 +196,6 @@ sub addentry {
 sub addsense {
     return undef if $marshalling eq 'sigs';
     my($k,$f,$to) = @_;
-#    $to =~ s#\]#//$$f{'sense'}]#;
-#   $to .= "'$$f{'epos'}";
     ($k,['add','sense',$to]);
 }
 
