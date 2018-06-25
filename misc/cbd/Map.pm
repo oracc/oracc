@@ -39,50 +39,50 @@ sub map_apply_glo {
 	    my $key = $1;
 	    $key =~ s/\s*(\[.*?\])\s*/$1/;
 	    if ($currmap{$key}) {
-		push @n, $cbd[$i];
 		my %emap = %{$currmap{$key}};
+#		print Dumper \%emap;
 		# emap may have @bases @form @sense:
 		if ($emap{'bases'}) {
 		    while ($cbd[$i] !~ /^\@bases/) {
-			push @n, $cbd[$i];
+			push @n, $cbd[$i++];
 		    }
-		    push @n, ${$emap{'bases'}}[0];
+		    push @n, $${$emap{'bases'}}[0];
 		    ++$i;
 		}
+		while ($cbd[$i] !~ /^\@form/) {
+		    push @n, $cbd[$i++];
+		}
+		while ($cbd[$i] =~ /^\@form/) {
+		    push @n, $cbd[$i++];
+		}
 		if ($emap{'form'}) {
-		    while ($cbd[$i] !~ /^\@form/) {
-			push @n, $cbd[$i];
-		    }
-		    while ($cbd[$i] =~ /^\@form/) {
-			push @n, $cbd[$i];
-		    }
 		    if ($emap{'#basemap'}) {
-			my %bmap = %{$emap{'#basemap'}};
-			foreach my $f (@{$emap{'form'}}) {
-			    my $b =~ m#\s/(\S+)#;
+			my %bmap = %{${$emap{'#basemap'}}};
+			foreach my $f (@{${$emap{'form'}}}) {
+			    my($b) = ($f =~ m#\s/(\S+)#);
 			    if ($bmap{$b}) {
 				$f =~ s#\s/(\S+)# /$bmap{$b}#;
 			    }
 			    push @n, $f;
 			}
 		    } else {
-			push @n, @{$emap{'form'}};
+			push @n, @{${$emap{'form'}}};
 		    }
+		}
+		while ($cbd[$i] !~ /^\@sense/) {
+		    push @n, $cbd[$i++];
+		}
+		while ($cbd[$i] =~ /^\@sense/) {
+		    push @n, $cbd[$i++];
 		}
 		if ($emap{'sense'}) {
-		    while ($cbd[$i] !~ /^\@sense/) {
-			push @n, $cbd[$i];
-		    }
-		    while ($cbd[$i] =~ /^\@sense/) {
-			push @n, $cbd[$i];
-		    }
-		    push @n, @{$emap{'sense'}}
+		    push @n, @{${$emap{'sense'}}};
 		}
 	    }
-	    do {
+	    while ($cbd[$i] !~ /^\@end\s+entry/) {
 		push @n, $cbd[$i++];
-	    } until ($cbd[$i] =~ /^\@end\s+entry/);
-	    
+	    }
+	    push @n, $cbd[$i];
 	} else {
 	    push @n, $cbd[$i];
 	}
