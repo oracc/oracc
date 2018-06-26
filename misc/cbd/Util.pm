@@ -313,14 +313,19 @@ sub setup_args {
     $$args{'cbd'} = $file;
     my $lng = '';
     $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
-    my %h = header_vals($$args{'cbd'});
-    die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
-	unless $h{'project'} && $h{'lang'};
-    $ORACC::CBD::bases = lang_uses_base($h{'lang'});
-    $ORACC::CBD::norms = lang_uses_norm($h{'lang'});
-#    warn "uses_base = $ORACC::CBD::bases\n";
-    $$args{'lang'} = $h{'lang'};
-    system 'mkdir', '-p', "01bld/$h{'lang'}";
+    if (-r $$args{'cbd'}) {
+	my %h = header_vals($$args{'cbd'});
+	die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
+	    unless $h{'project'} && $h{'lang'};
+	$ORACC::CBD::bases = lang_uses_base($h{'lang'});
+	$ORACC::CBD::norms = lang_uses_norm($h{'lang'});
+	#    warn "uses_base = $ORACC::CBD::bases\n";
+	$$args{'lang'} = $h{'lang'};
+	system 'mkdir', '-p', "01bld/$h{'lang'}";
+    } else {
+	die "cbdpp.plx: can't read glossary $$args{'cbd'}\n";
+    }
+
     $file;
 }
 
