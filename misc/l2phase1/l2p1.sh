@@ -11,7 +11,7 @@ projtype=`oraccopt . type`
 if [ "$projtype" == "superglo" ]; then
     true;
 else
-    o2-g2-glo.sh
+    o2-cbdpp.sh
 fi
 
 # This may have been done already as part of the automatic

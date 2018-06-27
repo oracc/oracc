@@ -113,16 +113,20 @@ my %bad_compounds = ();
 my %bases = ();
 my %basedata = ();
 my @bffs = ();
+my $curr_cf = '';
 my $curr_cfgw = '';
 my $curr_id = '';
 my @global_cbd = ();
 my %entries = ();
+my %entries_nopos = ();
+my %entries_cfmng = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
 my $lang = '';
 my $mixed_morph = 0;
 my %ok = ();
+my @parts = ();
 my $project = '';
 my $status = 0;
 #my %tag_lists = ();
@@ -224,6 +228,14 @@ sub pp_validate {
 	}
     }
 
+#    open(D,'>cfmng.dump');
+#    print D Dumper \%entries_cfmng;
+#    close(D);
+    
+    foreach my $p (@parts) {
+	v_part($p);
+    }
+
     pp_trace("calling atf_check at pp_line()==", pp_line());
     atf_check($project,$lang);
     cpd_check($project,$lang, $$args{'file'});
@@ -239,8 +251,6 @@ sub pp_validate {
     push @{$data{'cbds'}}, $cbdname;
     
     %{$data{$cbdname}} = %glodata;
-
-    # psus?
 
     # @{$$data_ref{'edit'}} = @{$data{'edit'}};
     # $data{'taglists'} = \%tag_lists;
@@ -320,6 +330,10 @@ sub v_entry {
 	    $curr_cfgw = $arg;
 
 	    $curr_id = $entries{$curr_cfgw} = $eid++;
+	    my $nopos = $curr_cfgw; $nopos =~ s/\].*$/]/;
+	    warn "$i: $nopos has no [...]\n" unless $nopos =~ /\[.*?\]/;
+	    $curr_cf = $nopos; $curr_cf =~ s/\s*\[.*$//;
+	    push @{$entries_nopos{$nopos}}, $curr_cfgw;
 	    $entries{$curr_id} = $curr_cfgw;
 	    $entries{$curr_id,'line'} = pp_line()-1;
 	    
@@ -335,6 +349,9 @@ sub v_entry {
 		    pp_warn("syntax error in \@entry's CF [GW] POS");
 		}
 	    } else {
+		if ($cf =~ tr/'/'/) {
+		    pp_warn("quote mark ' in citation form should be raised right half circle, ʾ");
+		}
 		$is_compound = ($cf =~ /\s/);
 		if ($is_compound && !has_parts($i,$cbdref)) {
 		    pp_warn("compound or usage without \@parts entry");
@@ -753,7 +770,88 @@ sub v_form {
 
 sub v_parts {
     my($tag,$arg) = @_;
+    $arg =~ s/(\]\S*)\s+/$1\cA/g;
+    my @p = split(/\cA/,$arg);
+    foreach my $p (@p) {
+	my $cf = $p;
+	$cf =~ s/\[.*$//;
+	if ($cf =~ tr/'/'/) {
+	    pp_warn("quote mark ' in citation form should be raised right half circle, ʾ");
+	}
+	push @parts, [ $curr_cfgw, $p, pp_file(), pp_line() ];
+    }
     $_[0];
+}
+
+# We process this for each of the parts recorded in v_parts but after
+# all the entries have been read
+sub v_part {
+    my $pref = shift;
+    my($cmpd,$part,$file,$line) = @$pref;
+    my $cfgwpos = $part;
+    $cfgwpos =~ s#//.*?\]#]#;
+    $cfgwpos =~ s/'\S+//;
+    $cfgwpos =~ s/\s*(\[.*?\])\s*/ $1 /;
+    
+    return if $entries{$cfgwpos} || $cfgwpos =~ /^n \[/;
+    
+    my $fsave = pp_file();
+    my $lsave = pp_line();
+    pp_file($file);
+    pp_line($line);
+    my $tmp = $cfgwpos;
+    $tmp =~ s/\].*$/]/;
+    if ($entries_nopos{$tmp}) {
+	my $b = best_list_string(@{$entries_nopos{$tmp}});
+	pp_warn("part $part better $b");
+	pp_file($fsave);
+	pp_line($lsave);
+	return;
+    }
+#    warn "tmp = $tmp\n";
+    my($cf,$gw) = ($tmp =~ /^(.*?) \[(.*?)\]$/);
+    warn "$file:$line: no [] in part $tmp of $cmpd\n" unless $gw;
+    $gw =~ tr/a-zA-Z0-9 \t//cd;
+    my @best_list = ();
+    foreach my $m (split(/\s+/, $gw)) {
+	if ($entries_cfmng{"$cf$m"}) {
+	    my @l = @{$entries_cfmng{"$cf$m"}};
+#	    warn "found entries_cfmng for $cf$m = @l\n";
+	    if ($#best_list < 0) {
+		@best_list = @l;
+		last if $#best_list == 0;
+	    } else {
+		if ($#l < $#best_list) {
+		    @best_list = @l;
+		    last if $#best_list == 0;
+		}
+	    }
+	}
+    }
+    
+    if ($#best_list == 0) {
+	my $b = best_list_string(@best_list);
+	pp_warn("part $part better $b");
+	pp_file($fsave);
+	pp_line($lsave);
+	return;
+    } elsif ($#best_list > 0) {
+	my $b = best_list_string(@best_list);
+	pp_warn("part $part better $b");
+	pp_file($fsave);
+	pp_line($lsave);
+	return;	
+    }
+    
+    pp_warn("$cmpd: part $part is not an \@entry in this glossary");
+    pp_file($fsave);
+    pp_line($lsave);
+}
+
+sub best_list_string {
+    my $b = $_[0];
+    $b =~ s/\s+\[/[/; $b =~ s/\]\s+/]/;
+    $b;
 }
 
 sub v_sense {
@@ -818,7 +916,13 @@ sub v_sense {
 	pp_warn("$tok1: unknown POS in SENSE") unless exists $poss{$tok1};
 	pp_warn("no content in SENSE") unless $arg =~ /\s\S/;
     }
-    
+
+    $arg =~ s/^\S+\s+//;
+    $arg =~ tr/a-zA-Z0-9 \t//cd;
+    foreach my $m (split(/\s+/, $arg)) {
+	push @{$entries_cfmng{"$curr_cf$m"}}, $curr_cfgw;
+    }
+
     $_[0];
 }
 

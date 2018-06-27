@@ -8,7 +8,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdentries.plx cbdepsd.plx cbd-lem-fix.plx \
 	cbdsubset.plx cbdfix.plx cbdqpnsplit.plx cbdfixatf.plx \
 	cbdalignbases.plx cbdalignsenses.plx cbdalignentries.plx \
-	cbdalignforms.plx \
+	cbdalignforms.plx cbdfixparts.plx \
 	cbd-super-compare.plx cbd-super-map-sigs.plx \
 	cbd-super-map-glos.plx
 
