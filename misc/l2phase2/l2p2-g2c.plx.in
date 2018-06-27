@@ -15,6 +15,7 @@ my @imports = ();
 my $lang = shift @ARGV;
 my $out = '';
 my $project = `oraccopt`;
+my $suffix = '';
 my $verbose = 0;
 my $warnings = 1;
 
@@ -73,6 +74,7 @@ create_g2c {
 	unless $xg2x;
     index_g2x($xg2x,\%g2x);
     my $i = 0;
+    $suffix = 'a';
     foreach my $add (@add) {
 	$xadd = load_xml($add,\%add);
 	die "l2p2-g2c.plx: XML load failed on $add\n"
@@ -82,6 +84,7 @@ create_g2c {
 	augment($add, 1);
 	undef($xadd);
 	%add = ();
+	++$suffix;
     }
 
     $out = "01bld/$lang/$lang.g2c";
@@ -137,13 +140,13 @@ augment {
 	    my @equiv = tags($anode, $CBD, 'equivs');
 	    if ($#equiv >= 0) {
 		foreach my $n (@equiv) {
-		    $enode->appendChild($n);
+		    append($enode,$n);
 		}
 	    }
 	    my @bib = tags($anode, $CBD, 'bib');
 	    if ($#bib >= 0) {
 		foreach my $n (@bib) {
-		    $enode->appendChild($n);
+		    append($enode,$n);
 		}
 	    }
 	    my @props = tags($anode, $CBD, 'props');
@@ -160,20 +163,20 @@ augment {
 			    }
 			}
 		    } else {
-			$enode->appendChild($n);
+			append($enode,$n);
 		    }
 		}		
 	    }
 	    my @pl_id = tags($anode, $CBD, 'pl_id');
 	    if ($#pl_id >= 0) {
 		foreach my $n (@pl_id) {
-		    $enode->appendChild($n);
+		    append($enode,$n);
 		}
 	    }
 	    my @pl_coord = tags($anode, $CBD, 'pl_coord');
 	    if ($#pl_coord >= 0) {
 		foreach my $n (@pl_coord) {
-		    $enode->appendChild($n);
+		    append($enode,$n);
 		}
 	    }
 	} else {
@@ -246,6 +249,28 @@ sub
 maybe_warn {
     if ($warnings) {
 	warn "l2p2-g2c.plx: @_\n";
+    }
+}
+
+sub append {
+    my($enode,$n) = @_;
+    update_xid($n);
+    $enode->appendChild($n);
+}
+
+sub update_xid {
+    my $n = shift @_;
+    my $xid = xid($n);
+    if ($xid) {
+	my $orig = $xid;
+	$xid .= ".$suffix";
+#	warn "$orig -> $xid\n";
+	$n->setAttribute('xml:id',$xid);
+    }
+    foreach my $c ($n->childNodes()) {
+	if ($c->isa('XML::LibXML::Element')) {
+	    update_xid($c);
+	}
     }
 }
 

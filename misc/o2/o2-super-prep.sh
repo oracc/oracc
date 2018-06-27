@@ -11,8 +11,11 @@ o2-super-dyn.sh $superglo
 # (i.e., 01bld/from-xtf-glo.sig).
 echo "o2-super-prep.sh: getting sigs via 00map and 01map"
 mkdir -p 01sig
-for a in 00map/*.map 01map/*.map ; do
+for a in 00map/*.map ; do
     super-getsigs.plx $a
+done
+for a in 01map/*.map ; do
+    cbd-super-map-sigs.plx -map $a -auto
 done
 
 # Now treat all of the imported sigs as proxies, which

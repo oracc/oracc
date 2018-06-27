@@ -46,7 +46,7 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce apply bare base:s check kompounds dry dynamic edit entries=s file 
+	qw/announce apply auto bare base:s check kompounds dry dynamic edit entries=s file 
 	filter fix:s force increment:s inplace invert lines list:s lang:s mode:s 
 	nonormify nosigs output:s project:s reset sigs trace vfields:s words=f xml/,
 	) || die "unknown arg";
