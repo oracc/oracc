@@ -10,6 +10,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
 
+my %entry_indexes = ();
 my $map_fh = undef;
 
 sub entries_align {
@@ -36,7 +37,7 @@ sub entries_align {
 	    while ($cbd[$i] !~ /^\@end\s+entry/) {
 		if ($cbd[$i] =~ /^\@parts/) {
 		    foreach my $p (split_parts($cbd[$i])) {
-			++$parts{$p};
+			push @{$parts{$p}} , [pp_line(), $entry];
 		    }
 		}
 		++$i;
@@ -44,20 +45,24 @@ sub entries_align {
 	}
     }
     foreach my $p (sort keys %parts) {
-	$p =~ s/\s*\[(.*?)\]\s*/ \[$1\] /;
-	if ((my $i = $incoming_entries{$p})) {
-	    if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
-		my $entry = $1;
-		unless (exists $entries{$entry}
-		    || $added_entries{$entry}) {
-		    my $e = grab_entry($i,@cbd);
-		    map_entry($args, $entry, $e);
+	foreach my $pref (@{$parts{$p}}) {
+	    my($l,$e) = @$pref;
+	    $p =~ s/\s*\[(.*?)\]\s*/ \[$1\] /;
+	    if ((my $i = $incoming_entries{$p})) {
+		if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+		    my $entry = $1;
+		    unless (exists $entries{$entry}
+			    || $added_entries{$entry}) {
+			my $e = grab_entry($i,@cbd);
+			map_entry($args, $entry, $e);
+		    }
+		} else {
+		    warn "$0: internal error: cbd[$i] is not an \@entry line\n";
 		}
 	    } else {
-		warn "$0: internal error: cbd[$i] is not an \@entry line\n";
+		pp_line($l);
+		pp_warn("parts entry $p is not in glossary");
 	    }
-	} else {
-	    warn("parts entry $p is not in glossary");
 	}
     }
 }
@@ -91,6 +96,7 @@ sub entries_collect {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    ++$e{$1};
+	    $entry_indexes{$1} = $i;
 	}
     }
     %e;

@@ -11,6 +11,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
 
+my $base_trace = 0;
 my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
 my %log_errors = ();
@@ -42,7 +43,7 @@ sub bases_align {
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
-#		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n";
+		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    my $p = $curr_entry;
@@ -56,7 +57,7 @@ sub bases_align {
 			}
 		    }
 		    $base_cbd[$base_i] = bases_string($b);
-#		    warn "=>$base_cbd[$base_i]\n";
+		    warn "=>$base_cbd[$base_i]\n" if $base_trace;
 		    if ($$b{'#new'}) {
 			$p =~ s/\s+(\[.*?\])\s+/$1/;
 			print $map_fh "new bases $p => \@bases $base_cbd[$base_i]\n";
@@ -111,12 +112,13 @@ sub bases_merge {
 
     foreach my $p2 (keys %h2) {
 	next if $p2 =~ /#/;
+	warn "processing incoming base $p2\n" if $base_trace;
  	if ($h1{$p2}) { # primary in b2 is already in b1
- #	    warn "found $p2 as primary in both\n";
+	    warn "found $p2 as primary in both\n" if $base_trace;
  	    $h1{"$p2#alt"} = merge_alts($p2, $h1{"$p2#alt"}, $h2{"$p2#alt"});
  	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
  	    my $p1 = ${$h1{"#alt"}{$p2}};
- #	    warn "found $p2 as alternate to $p1 in base\n";
+ 	    warn "found $p2 as alternate to $p1 in base\n" if $base_trace;
  	    $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
  	    ${$h1{'#map'}}{$p2} = $p1;
  	} else { # primary in b2 isn't known in b1
@@ -124,7 +126,7 @@ sub bases_merge {
 	    my $p1 = '';
 	    if (($p1 = ${$h1{'#sigs'}}{$p2sig})) {
 		# This is a new alternate transliteration of $p1
-#		warn "found $p2 as new alternate to $p1 in base\n";
+		warn "found $p2 as new alternate to $p1 in base\n" if $base_trace;
 		
 		# register it in the global alt array
 		${${$h1{'#alt'}}{$p2}} = $p1;
@@ -139,7 +141,7 @@ sub bases_merge {
 
 	    } else {
 		# This is a new primary transliteration
-#		warn "incoming $p2 is new primary\n";
+		warn "incoming $p2 is new primary\n" if $base_trace;
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
 		if ($h2{"$p2#alt"}) {
@@ -196,6 +198,7 @@ sub bases_hash {
 	pp_warn("bases entry ends with semi-colon--please remove it");
     }
     $arg =~ s/^\@bases\s+//;
+    $arg =~ s/\s*$//;
 
     my @bits = split(/;\s+/, $arg);
 
@@ -206,6 +209,7 @@ sub bases_hash {
     my $pricode = 0;
 
     foreach my $b (@bits) {
+	warn "processing bit $b\n" if $base_trace;
 	if ($b =~ s/^\*(\S+)\s+//) {
 	    $stem = $1;
 	} elsif ($b =~ /^\*/) {
@@ -213,6 +217,7 @@ sub bases_hash {
 	    pp_warn("misplaced '*' in \@bases");
 	}
 	if ($b =~ /\s+\(/) {
+	    warn "primary with alternates $b\n" if $base_trace;
 	    my $tmp = $b;
 	    pp_warn("malformed alt-base in `$b'")
 		if ($tmp =~ tr/()// % 2);
@@ -263,6 +268,7 @@ sub bases_hash {
 		pp_warn("syntax error in base with (...) [missing paren?]");
 	    }
 	} else {
+	    warn "primary $b with no alternates\n" if $base_trace;
 	    if ($b =~ /\s/ && !$is_compound) {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';

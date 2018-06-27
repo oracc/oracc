@@ -167,10 +167,13 @@ sub pp_validate {
     $eid = 'x000001';
 
     %entries = ();
+    %entries_nopos = ();
+    %entries_cfmng = ();
     %seen_entries = ();
     %bases = ();
     %basedata = ();
     @bffs = ();
+    @parts = ();
     %tlit_sigs = ();
 
     ORACC::SL::BaseC::init();
@@ -228,9 +231,9 @@ sub pp_validate {
 	}
     }
 
-#    open(D,'>cfmng.dump');
-#    print D Dumper \%entries_cfmng;
-#    close(D);
+    open(D,'>cfmng.dump');
+    print D Dumper \%entries;
+    close(D);
     
     foreach my $p (@parts) {
 	v_part($p);
@@ -792,6 +795,8 @@ sub v_part {
     $cfgwpos =~ s#//.*?\]#]#;
     $cfgwpos =~ s/'\S+//;
     $cfgwpos =~ s/\s*(\[.*?\])\s*/ $1 /;
+
+#    warn "cfgwpos=$cfgwpos\n";
     
     return if $entries{$cfgwpos} || $cfgwpos =~ /^n \[/;
     

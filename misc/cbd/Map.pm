@@ -87,10 +87,12 @@ sub map_apply_glo {
 	    push @n, $cbd[$i];
 	}
     }
-    my @newentries = @{$currmap{'#entries'}};
-    for (@newentries) {
-	my @e = split(/\cA/,$_);
-	push @n, @e, '';
+    if ($currmap{'#entries'}) {
+	my @newentries = @{$currmap{'#entries'}};
+	for (@newentries) {
+	    my @e = split(/\cA/,$_);
+	    push @n, @e, '';
+	}
     }
     @n;
 }
