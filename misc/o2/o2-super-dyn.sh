@@ -13,6 +13,9 @@ if [ -r 00lib/superdyn.lst ]; then
 	ext=$((1+$ext))
 	cbd-super-compare.plx -apply -dynamic -incr $ext -inplace -base $superglo -proj $a
     done
+    for m in 01map/*.map ; do
+	cbd-super-map-sigs.plx -auto $m
+    done
 else
     echo "$0: no 00lib/superdyn.lst, nothing to do."
 fi

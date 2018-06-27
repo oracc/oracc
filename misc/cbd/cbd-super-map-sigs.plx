@@ -32,12 +32,16 @@ if ($args{'auto'}) {
     } else {
 	die "$0: can't open $sigs for read\n";
     }
+    my $out = $map;
+    $out =~ s/01map/01sig/; $out =~ s/map$/sig/;
+    open(OUT,">$out") || die "$0: can't open $out for write\n";
+    select OUT;
 } else {
     @input = (<>);
 }
 
 my %map = map_load($map,'sigs');
-warn Dumper \%map;
+#warn Dumper \%map;
 foreach (@input) {
     if (/^\@[^%]+\s/ || /^\s*$/ || /^#/) {
 	print;
@@ -49,5 +53,9 @@ foreach (@input) {
 	}
     }
 } 
+
+if ($args{'auto'}) {
+    close(OUT);
+}
 
 1;
