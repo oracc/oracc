@@ -108,7 +108,7 @@ my %poss = (); @poss{@poss} = ();
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
 
-my @tags = qw/entry alias parts allow bases bff conts morphs morph2s moved phon prefs root 
+my @tags = qw/entry alias parts allow bases bff collo conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
 	      defn note pl_coord pl_id pl_uid/;
 my %tags = (); @tags{@tags} = ();
@@ -144,6 +144,7 @@ my %parsers = (
     parts=>\&parse_parts,
     bases=>\&parse_bases,
     conts=>\&parse_conts,
+    collo=>\&parse_collo,
     prefs=>\&parse_prefs,
     root =>\&parse_root,
     form =>\&parse_form,
@@ -1980,6 +1981,11 @@ parse_bases {
 
 sub
 parse_conts {
+    $_[0];
+}
+
+sub
+parse_collo {
     $_[0];
 }
 

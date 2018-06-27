@@ -696,7 +696,7 @@ check_vals {
 		# each field available in turn; it might be good
 		# to have generic field-hooks here ...
 		if ($f eq 'period') {
-		    # $v =~ s/\s+\(.*$//;
+		    $v =~ s/\s+\(.*$//;
 		    # $v =~ s/Early Dynastic IIIb/Early Dynastic/;
 		    if ($cat_merge_periods && $cat_merge_periods eq 'yes') {
 #			warn "xmdmanager: merging periodizations\n";

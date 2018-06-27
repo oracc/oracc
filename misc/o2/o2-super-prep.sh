@@ -14,9 +14,6 @@ mkdir -p 01sig
 for a in 00map/*.map ; do
     super-getsigs.plx $a
 done
-for a in 01map/*.map ; do
-    cbd-super-map-sigs.plx -map $a -auto
-done
 
 # Now treat all of the imported sigs as proxies, which
 # they effectively are.

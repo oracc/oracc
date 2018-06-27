@@ -100,7 +100,8 @@ sub map_apply_glo {
 sub map_apply_sig {
     my $s = shift;
     chomp($s);
-    my($t) = ($s =~ s/\t(.*$)//);
+    $s =~ s/\t(.*$)//;
+    my $t = $1;
     my %f = parse_sig($s);
     my $key = "$f{'cf'}\[$f{'gw'}]$f{'pos'}";
 #    print Dumper \%currmap;
@@ -123,7 +124,6 @@ sub map_apply_sig {
 	}
 	$s = serialize_sig(%f);	
     }
-    
     "$s\t$t\n";
 }
 

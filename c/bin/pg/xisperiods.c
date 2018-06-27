@@ -189,7 +189,7 @@ xis_dump(void)
 	}
       else
 	{
-	  fprintf(stderr,"pg: bad list `%s'\n",listfile);
+	  fprintf(stderr,"pg: bad list entry `%s'\n",s);
 	  exit(1);
 	}
     }

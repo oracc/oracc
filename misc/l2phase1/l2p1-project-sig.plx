@@ -119,6 +119,7 @@ unless ($dynamic) {
 open(P, '>01bld/project.sig');
 print P "\@fields sig rank freq inst\n";
 foreach my $s (sort keys %sigs) {
+    next if $s =~ /^\@field/;
     $s =~ /\%(.*?):/;
     my $this_lang = $1;
     $this_lang =~ s/-[0-9]+$//;

@@ -66,6 +66,10 @@ if [ "$projtype" == "superglo" ]; then
 	l=$a
 	mkdir -p $ldir
 	cbd $l $ldir
+	if [ -e 01bld/cancel ]; then
+	    echo REBUILD CANCELLED
+	    exit 1
+	fi
 	echo l2p2.sh: processing sigs for superglo $a
 	rm -f $ldir/union.sig
 	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
