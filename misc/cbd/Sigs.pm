@@ -60,7 +60,7 @@ my $parts_line = 0;
 my %partsigs = ();
 my %parts_map = ();
 my %printsigs = ();
-my $simple = 0;
+my %simple_bases = ();
 my $verbose = 0;
 my $cof_verbose = 0;
 my $psu_verbose = 0;
@@ -139,7 +139,6 @@ sub sigs_init_2 {
     %partsigs = ();
     %parts_map = ();
     %printsigs = ();
-    $simple = 0;
     $verbose = 0;
     $cof_verbose = 0;
     $psu_verbose = 0;
@@ -236,7 +235,8 @@ sub sigs_simple {
     my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
 
     my $nsense = 0;
-    
+    my $coresig1 = '';
+ 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
@@ -251,6 +251,7 @@ sub sigs_simple {
 	    @instsigs = ();
 	    $basesig = undef;
 	    $coresig = undef;
+	    $coresig1 = undef;
 	    $nsense = 0;
 	    $entrybang = $1 || '';
 	    @compound_parts = ();
@@ -270,15 +271,16 @@ sub sigs_simple {
 		pp_warn("(sigs) undefined coresig--bad entry\n");
 		next;
 	    }
-	    #
-	    # NOT GOOD ENOUGH: should emit sig for each primary base, and should
-	    # check sigs to see if they already included it, supplying it if not.
-	    #
-	    if (!$compound && $simple && !$found_simple_sig && $current_first_base) {
+	    if (!$compound && $current_first_base) {
 		my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
-		my $instsig1 = "\@$project\%$lng:$current_first_base=";
-		my $xsig = "\$$sig{'cf'}/$current_first_base#~";
-		++$noprintsigs{ "$instsig1$coresig\t0\n" };
+		foreach my $b (split(/\s+/, $current_first_base)) {
+		    my $f = $b; $f =~ tr/·°//d;
+		    my $instsig1 = "\@$project\%$lng:$f=";
+		    my $xsig = "\$$sig{'cf'}/$b#~";
+		    ++$noprintsigs{ "$instsig1$coresig1/$b\t0\n" };
+		    ++$printsigs{ "$instsig1$coresig1$xsig\t0\n" };
+#		    warn "base-form $b => $instsig1$coresig1$xsig\t0\n";
+		}
 	    }
 
 	    $curr_cfgw = '';
@@ -327,6 +329,7 @@ sub sigs_simple {
 #	    }
 	    
 	    $coresig = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
+	    $coresig1 = $coresig unless $coresig1;
 	    ++$coresigs{$coresig};
 
 	    if ($#instsigs >= 0) {
@@ -347,23 +350,28 @@ sub sigs_simple {
 		unless ($sig{'cf'} =~ / /) {
 		    if ($current_first_base) {
 			my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
-			my $instsig0 = "\@$project\%$lng:$current_first_base";
-			++$printsigs{ "$instsig0=$coresig\$$sig{'cf'}/$current_first_base#~\t0\n" };
-			$found_simple_sig = 1;
+			foreach my $b (split(/\s+/, $current_first_base)) {
+			    my $instsig1 = "\@$project\%$lng:$b=";
+			    my $xsig = "\$$sig{'cf'}/$b#~";
+			    ++$noprintsigs{ "$instsig1$coresig/$b\t0\n" };
+			    ++$printsigs{ "$instsig1$coresig$xsig\t0\n" };
+			}
 		    }
 		}
 	    }
 	    
-	} elsif (/\@bases\s+(\S+)/) {
+	} elsif (/\@bases\s+(.*)\s*$/) {
 
-	    #
-	    # Need to index primary bases here and autogenerate sigs for all of them
-	    #
-	    
 	    $current_first_base = $1;
-	    $current_first_base =~ s/;$//;
-	    $current_first_base =~ s/^\*//;
+	    my @bits = split(/;\s+/,$current_first_base);
+	    @bits = map { s/\s+\(.*$//; $_ } @bits;
+	    $current_first_base = join(' ', @bits);
 	    
+#	    warn "cfb=$current_first_base\n";
+	   
+	    my $basekey = $curr_cfgw; $basekey =~ s/\s+\[/[/; $basekey =~ s/\]\s+/]/;
+	    $simple_bases{$basekey} = $bits[0];
+ 
 	} elsif (s/^\@form(!?)\s+(\S+)//) {
 
 	    sigs_form($args,$1,$2,$_) unless
@@ -372,7 +380,7 @@ sub sigs_simple {
 	}
     }
 
-    @sigs_simple = sort (keys %printsigs, keys %noprintsigs);
+    @sigs_simple = sort (keys %printsigs); #, keys %noprintsigs);
     @sigs_coresigs = sort keys %coresigs;
 }
 
@@ -585,11 +593,12 @@ sub psu_index_coresigs {
 
 sub psu_index_simple {
     %simple = ();
+#    warn Dumper \@sigs_simple;
     foreach my $s (@sigs_simple) {
 	local($_) = $s;
 	s/\t.*$//;
-	m#^.*?=(.*\'(?:V(?:/[it])?|[A-Z]+)).*$#;	
-	my $keysig = $1; 
+	m#^.*?=(.*\'(?:V(?:/[it])?|[A-Z]+)).*$#;
+	my $keysig = $1;
 	if ($keysig) {
 	    s#\000#//#;
 	    s#\001#V/#g;
@@ -615,7 +624,7 @@ sub psu_glo {
 	local($_) = $c;
 	++$i; pp_line($i);
 	pp_file($err_glo);
-	if (m/^\@entry\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
+	if (m/^\@entry[\*!]*\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
 	    @e{qw/cf gw pos/} = ($1,$2,$3);
 	    $compound = ($e{'cf'} =~ / /);
 	    $in_sense = $nsense = 0;
@@ -639,8 +648,32 @@ sub psu_glo {
 		push @no_sense_forms, $_;
 	    }
 	} elsif (/^\@sense/ && $compound) {
-	    if ($nsense == 0 && $ORACC::CBD::Forms::external) {
-		@no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
+	    if ($nsense == 0) {
+		if ($ORACC::CBD::Forms::external) {
+		    @no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
+		}
+		if ($#no_sense_forms < 0) {
+		    # create a form from primary bases
+		    my $pline = ${$entries_parts_lines[0]}[1];
+		    $pline =~ s/\@parts\s+//;
+		    $pline =~ s/(\]\S+)\s+/$1\cA/g;
+		    my @nsf = ();
+		    foreach my $p (split(/\cA/,$pline)) {
+			$p =~ s#//.*?\]#]#;
+			$p =~ s/\'.*//;
+			if ($simple_bases{$p}) {
+			    # warn "$p => $simple_bases{$p}\n";
+			    my $f = $simple_bases{$p}; $f =~ tr/·°//d;
+			    push @nsf, $f;
+			} elsif ($p =~ /^n\[/) {
+			    push @nsf, 'n';
+			} else {
+			    warn "$p not in simple_bases\n";
+			}
+		    }
+		    push @no_sense_forms, '@form '.join('_',@nsf);
+#		    warn "@no_sense_forms\n";
+		}
 	    }
 	    $in_sense = 1;
 	    my($epos,$sense) = (/\s(\S+)\s+(.*?)\s*$/);
@@ -667,6 +700,8 @@ sub psu_glo {
 	    $compound = 0;
 	    %e = ();
 	    @entries_parts_lines = ();
+	} elsif (/\@entry/) {
+	    warn "suspicious entry $_\n" unless /^\@i?note/;
 	}
     }
 }
@@ -824,6 +859,8 @@ parts_match {
 	@parts_data = @$parts_ref;
     }
 
+#    print Dumper \@parts_data;
+    
     if ($#forms > $#parts_data) {
 	push @parts_errors, "`@forms' has too many forms for $psu_parts";
 	return ();
@@ -861,8 +898,12 @@ parts_match {
 		    $candidates[$j] =~ m#:(.*?)=#;
 		    ($form,$norm) = ($1,'*');
 		}
-#		warn "form=$form; norm=$norm; form[i]=$forms[$i]; norm[i]=$norms[$i]\n";
-		if ($form && $form eq $forms[$i] 
+		#		warn "form=$form; norm=$norm; form[i]=$forms[$i]; norm[i]=$norms[$i]\n";
+		if ($form eq 'n') {
+		    $this_form_matched = 1;
+		    $matched_candidates[$i] = $candidates[0];
+		    last match_pass_1;		    
+		} elsif ($form && $form eq $forms[$i] 
 		    && ($norm eq '*' || $norms[$i] eq '*' || 
 		    $norm eq $norms[$i])) {
 		    if ($pass_1) {
@@ -1012,7 +1053,7 @@ validate_parts {
 #		    print "simple_matches[$passnumber]: ", Dumper \@simple_matches;
 		} else {
 		    if ($ptm) {
-			warn "l2p1-psus.plx: XXXno match for $ptm in 01tmp/l2p1-simple.sig\n";
+			warn "l2p1-psus.plx: no match for $ptm in 01tmp/l2p1-simple.sig\n";
 		    } else {
 			chomp;
 			warn "01tmp/l2p1-simple.sig:$.: l2p1-psus.plx: undefined part in $_\n";
@@ -1020,6 +1061,9 @@ validate_parts {
 		}
 	    }
 	    push @ret, [ $pt , $csig , @simple_matches ];
+	} elsif ($pt =~ /^n\[/) {
+	    my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
+	    push @ret, [ $pt , 'n[n]NU', "\@$project%$lang:n=n[n//n]NU'NU" ];
 	} else {
 	    pp_line($lnum);
 	    pp_warn("$pt does not match a known CF[GW] in `$psulang.glo'");
@@ -1048,9 +1092,9 @@ sub sigs_dump {
 #    my $cbdname = ORACC::CBD::Util::cbdname();
 #    my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
-    print SIGS @sigs_simple;
-    print SIGS @sigs_cofs;
-    print SIGS @sigs_psus;
+    print SIGS uniq(@sigs_simple);
+    print SIGS uniq(@sigs_cofs);
+    print SIGS uniq(@sigs_psus);
 #    print SIGS @{$g{'sigs'}};
 #    print SIGS @{$g{'cofs'}};
 #    print SIGS @{$g{'psus'}};
@@ -1060,8 +1104,14 @@ sub sigs_dump {
 #	if $$args{'announce'};
     
     open(CORESIGS, ">01bld/$lang/coresigs.txt");
-    print CORESIGS join("\n", @sigs_coresigs), "\n";
+    print CORESIGS join("\n", uniq(@sigs_coresigs)), "\n";
     close(CORESIGS);
 }
 
+sub uniq  {
+    my %u = ();
+    @u{@_} = ();
+    sort keys %u;
+}
+    
 1;

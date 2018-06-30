@@ -22,9 +22,23 @@
 @sense N wage
 @end entry
 
+@entry a [time] N
+@bases a₂
+@form a₂ /a₂ #~
+@sense N time
+@end entry
+
 @entry a [wafe] N
 @bases a₂; a
 @sense N wafe
+@end entry
+
+@entry* a ŋušurak [season] N
+@parts a[time]N ŋušur[harrow]N
+@bases a₂ {ŋeš}ŋušur
+@form a₂_{ŋeš}ŋušur
+@sense N the season of harrowing
+@isslp 2008 M. Civil, Studies Sigrist 36
 @end entry
 
 @entry e [water] N
@@ -48,6 +62,15 @@
 @bases eš₁₀
 @form eš₁₀ /eš₁₀ #~
 @sense N water
+@end entry
+
+@entry ŋušur [harrow] N
+@bases gana₂-ur₃; niŋ₂-gan₂-ur₃; {ŋeš}{gana₂}ŋušur ({geš}{gana₂}gušur, {ŋeš}gana₂-ur₃); {ŋeš}ŋušur ({geš}gušur)
+@form {ŋeš}ŋušur /{ŋeš}ŋušur #~
+@sense N harrow
+@equiv %akk maškakātu
+@isslp 1994 M. Civil, Farmer's Instructions 77-78.
+@isslp 1973 M. Powell, JCS 25 179 wn3.
 @end entry
 
 @entry šu [cover] V/t
