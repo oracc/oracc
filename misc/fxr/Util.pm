@@ -2,8 +2,11 @@ package ORACC::FXR::Util;
 use warnings; use strict; use open 'utf8';
 my @fields = ();
 my %fields = ();
+my $file = '';
 my $fxr_rnc = '@@ORACC@@/lib/ORACC/FXR/fxr.rnc';
 my $fxr_ns = '';
+
+$ORACC::FXR::Util::quiet = 0;
 
 my $verbose = 0;
 
@@ -79,6 +82,7 @@ internalize {
     my $arg = shift;
     die "ORACC::FXR::Util: no such file $arg\n"
 	unless open(FXR,$arg);
+    $file = $arg;
     initialize_xmlns();
     close(FXR);
     open(FXR,$arg);
@@ -119,7 +123,8 @@ fmpxmlresult_rows {
     $/ = '</ROW>';
     my @rows = ();
     my $pacifier = 0;
-    print STDERR "ORACC::FXR::Util: reading records " if $verbose;
+#    print STDERR "ORACC::FXR::Util: reading records " if $verbose;
+    print STDERR "ORACC::FXR::Util: reading records from $file " unless $ORACC::FXR::Util::quiet;
     my $nfields = $#fields;
     while (<FXR>) {
 	last unless /<COL/;
@@ -127,12 +132,14 @@ fmpxmlresult_rows {
 	print STDERR and warn("$#row != $nfields\n") unless $#row == $nfields;
 	@row = map { fix_data($_) } @row;
 	push @rows, [ map {tr/\r\n/  /;$_} @row ];
-	if ($verbose) {
-	    print STDERR '.' unless ($pacifier++ % 10000);
+	unless ($ORACC::FXR::Util::quiet) {
+	    print STDERR '.' unless ($pacifier++ % 10000)
 	}
     }
     close(FXR);
-    print STDERR " $#rows\n" if $verbose;
+    print STDERR " $#rows\n"
+	unless $ORACC::FXR::Util::quiet;
+#    print STDERR " $#rows\n" if $verbose;
     [@rows];
 }
 

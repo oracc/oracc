@@ -191,7 +191,7 @@ sub pp_validate {
 	if ($cbd[$i] =~ /^\s*$/) {
 	    pp_warn("blank lines not allowed in \@entry")
 		if $in_entry;
-	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s*(\S*)\s*$/) {
+	} elsif ($cbd[$i] =~ /^\@([A-Z]+)(?:\s*(\S.*))?$/) {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
@@ -227,7 +227,7 @@ sub pp_validate {
 		pp_warn("\@$1 unknown tag");
 	    }
 	} else {
-	    pp_warn("invalid line in glossary");
+	    pp_warn("invalid line in glossary: $cbd[$i]");
 	}
     }
 
@@ -627,7 +627,7 @@ sub v_form {
 	return;
     }
 
-    if ($arg =~ /^[\%\$\#\@\+\/\*]/) {
+    if ($arg =~ /^[\%\$\#\@\+\/\*]\S/) {
 	pp_warn("\@form must begin with writing of form (arg=$arg)");
 	return;
     }

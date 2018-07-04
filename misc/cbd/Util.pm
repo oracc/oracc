@@ -279,9 +279,13 @@ sub setup_args {
     if (!$file) {
 	if ($$args{'project'}) {
 	    my $p = $$args{'project'};
-	    my $l = undef;
+	    my $l = '';
+	    my $qpnlang = '';
 	    if ($p =~ s/:(.*?)$//) {
-		$l = $1;
+		$l = $1;		
+		if ($l =~ s#/(\S+)$##) {
+		    $qpnlang = $1;
+		}
 	    } else {
 		if ($$args{'base'}) {
 		    if (-r $$args{'base'}) {

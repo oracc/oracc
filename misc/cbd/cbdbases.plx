@@ -40,6 +40,8 @@ my @h = header_vals($args{'cbd'});
 $args{'project'} = $h[0]
     unless $args{'project'};
 
+ORACC::SL::BaseC::init();
+
 bases_log(\%args);
 pp_file($args{'cbd'});
 my @cbd = pp_load(\%args);

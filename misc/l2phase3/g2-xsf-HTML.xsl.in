@@ -220,7 +220,7 @@
       <xsl:apply-templates/>
     </table>
     <xsl:variable name="note-nodes" select=".//gdl:nonw[@type='notelink']"/>
-    <xsl:message>note-nodes count = <xsl:value-of select="count($note-nodes)"/></xsl:message>
+<!--    <xsl:message>note-nodes count = <xsl:value-of select="count($note-nodes)"/></xsl:message> -->
     <div class="p3notes">
       <xsl:for-each select="$note-nodes">
 	<xsl:apply-templates mode="gathered" select="id(@note:ref)"/>
