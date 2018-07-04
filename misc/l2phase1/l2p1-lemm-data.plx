@@ -41,7 +41,7 @@ sub rebuild {
 	}
 	my @fields = split(/\t/,$_);
 	my $sig = $fields[0]."\t$fields[$rank]\t$fields[$freq]\n";
-	my ($lng) = ($sig =~ /\%(.*?):/);
+	my $lng = lng_of($sig);
 	$lng =~ s/-\d\d\d//; # remove script codes
 	push @{$lemmdata{$lng}}, $sig;
     }
@@ -110,13 +110,24 @@ sub update {
 	my ($r,$f) = (0,0);
 	$r = $ranks{$s} if $ranks{$s};
 	$f = $freqs{$s} if $freqs{$s};
-	my ($lng) = ($s =~ /\%(.*?):/);
+	my $lng = lng_of($s);
+	warn "no lng in $s\n" unless $lng;
 	$lng =~ s/-\d\d\d//; # remove script codes
 	$s = "$s\t$r\t$f\n";
 	push @{$lemmdata{$lng}}, $s;
     }
 
     dump_lemm();
+}
+
+sub lng_of {
+    if ($_[0] =~ /^\{/) {
+	$_[0] =~ /\}::.*?\%(.*?):/;
+	return $1;
+    } else {
+	$_[0] =~ /\%(.*?):/;
+	return $1;
+    }
 }
 
 sub byfreq {

@@ -773,6 +773,7 @@ sub v_form {
 
 sub v_parts {
     my($tag,$arg) = @_;
+    $arg =~ s/\s+n\s+/ n\cA/g;
     $arg =~ s/(\]\S*)\s+/$1\cA/g;
     my @p = split(/\cA/,$arg);
     foreach my $p (@p) {
@@ -808,41 +809,48 @@ sub v_part {
     $tmp =~ s/\].*$/]/;
     if ($entries_nopos{$tmp}) {
 	my $b = best_list_string(@{$entries_nopos{$tmp}});
-	pp_warn("part $part better $b");
+	pp_warn("part $part better $b") unless $part eq $b;
 	pp_file($fsave);
 	pp_line($lsave);
 	return;
     }
 #    warn "tmp = $tmp\n";
     my($cf,$gw) = ($tmp =~ /^(.*?) \[(.*?)\]$/);
-    warn "$file:$line: no [] in part $tmp of $cmpd\n" unless $gw;
-    $gw =~ tr/a-zA-Z0-9 \t//cd;
     my @best_list = ();
-    foreach my $m (split(/\s+/, $gw)) {
-	if ($entries_cfmng{"$cf$m"}) {
-	    my @l = @{$entries_cfmng{"$cf$m"}};
-#	    warn "found entries_cfmng for $cf$m = @l\n";
-	    if ($#best_list < 0) {
-		@best_list = @l;
-		last if $#best_list == 0;
-	    } else {
-		if ($#l < $#best_list) {
+    if ($gw) {
+	$gw =~ tr/a-zA-Z0-9 \t//cd;
+	foreach my $m (split(/\s+/, $gw)) {
+	    if ($entries_cfmng{"$cf$m"}) {
+		my @l = @{$entries_cfmng{"$cf$m"}};
+		#	    warn "found entries_cfmng for $cf$m = @l\n";
+		if ($#best_list < 0) {
 		    @best_list = @l;
 		    last if $#best_list == 0;
+		} else {
+		    if ($#l < $#best_list) {
+			@best_list = @l;
+			last if $#best_list == 0;
+		    }
 		}
 	    }
+	}
+    } else {
+	if ($tmp eq 'n') {
+	    @best_list = ('n');
+	} else {
+	    warn "$file:$line: no [] in part $tmp of $cmpd\n" unless $gw;
 	}
     }
     
     if ($#best_list == 0) {
 	my $b = best_list_string(@best_list);
-	pp_warn("part $part better $b");
+	pp_warn("part $part better $b") unless $part eq $b;
 	pp_file($fsave);
 	pp_line($lsave);
 	return;
     } elsif ($#best_list > 0) {
 	my $b = best_list_string(@best_list);
-	pp_warn("part $part better $b");
+	pp_warn("part $part better $b") unless $part eq $b;
 	pp_file($fsave);
 	pp_line($lsave);
 	return;	

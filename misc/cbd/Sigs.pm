@@ -656,6 +656,7 @@ sub psu_glo {
 		    # create a form from primary bases
 		    my $pline = ${$entries_parts_lines[0]}[1];
 		    $pline =~ s/\@parts\s+//;
+		    $pline =~ s/\sn\s/ n\cA/g;
 		    $pline =~ s/(\]\S+)\s+/$1\cA/g;
 		    my @nsf = ();
 		    foreach my $p (split(/\cA/,$pline)) {
@@ -665,7 +666,7 @@ sub psu_glo {
 			    # warn "$p => $simple_bases{$p}\n";
 			    my $f = $simple_bases{$p}; $f =~ tr/·°//d;
 			    push @nsf, $f;
-			} elsif ($p =~ /^n\[/) {
+			} elsif ($p =~ /^n$/) {
 			    push @nsf, 'n';
 			} else {
 			    warn "$p not in simple_bases\n";
@@ -813,9 +814,13 @@ match_sense {
     if ($#m > 0) {
 	my %s = ();
 	foreach my $s (@m) {
-	    my $tmp = $s;
-	    $tmp =~ s#^.*?//(.*?)\].*$#$1#;
-	    ++$s{$tmp};
+	    if ($s eq 'n') {
+		++$s{'n'};
+	    } else {
+		my $tmp = $s;
+		$tmp =~ s#^.*?//(.*?)\].*$#$1#;
+		++$s{$tmp};
+	    }
 	}
 	if (scalar keys %s > 1) {
 	    my @new_m = ();
@@ -963,6 +968,7 @@ validate_parts {
     $p =~ s/^\@parts\s+//;
     $p =~ s/\s[\%\#\@\/\+]\S+/ /g;
     $p =~ s/\s+/ /g;
+    $p =~ s/\s+n\s+/ n\cA/g;
     $p =~ s/(\]\S+)\s+/$1\cA/g;
     my @parts = grep defined&&length, split(/\cA/,$p);
     my @ret = ();
@@ -970,7 +976,7 @@ validate_parts {
 	my($cf,$gw) = ($pt =~ /^(.*?)\[(.*?)(?:\/\/|\])/);
 	my($pos,$epos) = ('','');
 	my $sense = '';
-	if (($gw = find_in_coresigs($cf,$gw))) {
+	if ($cf && $gw && ($gw = find_in_coresigs($cf,$gw))) {
 	    if ($gw =~ /\[/) { # the return was a matched coresig, not a simple GW
 		my($xgw,$xsense,$xpos,$xepos) = ($gw =~ m#^.*?\[(.*?)//(.*?)\](.*?)'(.*?)#);
 		if ($pos && $pos != $xpos && $pos != $xepos) {
@@ -1061,9 +1067,9 @@ validate_parts {
 		}
 	    }
 	    push @ret, [ $pt , $csig , @simple_matches ];
-	} elsif ($pt =~ /^n\[/) {
+	} elsif ($pt =~ /^n$/) {
 	    my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
-	    push @ret, [ $pt , 'n[n]NU', "\@$project%$lang:n=n[n//n]NU'NU" ];
+	    push @ret, [ $pt , "n[n//n]NU'NU", "\@$project%$lang:n=n[n//n]NU'NU" ];
 	} else {
 	    pp_line($lnum);
 	    pp_warn("$pt does not match a known CF[GW] in `$psulang.glo'");
