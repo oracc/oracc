@@ -57,6 +57,7 @@ xmd_from_list {
     foreach my $f (@lst) {
 	$f =~ tr/\cM//d;
 	next unless $f;
+	next if $f =~ /^\@field/;
 	my $xmd = '';
 	my ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
 	unless ($proxyid) {
