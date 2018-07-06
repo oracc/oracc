@@ -138,7 +138,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:transliteration|xtf:composite|xtf:score">
- <xsl:message>processing <xsl:value-of select="local-name()"/> on node match</xsl:message>
+<!-- <xsl:message>processing <xsl:value-of select="local-name()"/> on node match</xsl:message> -->
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
@@ -156,7 +156,7 @@
 </xsl:template>
 
 <xsl:template name="call-back">
-  <xsl:message>call-back activated with current node=<xsl:value-of select="local-name()"/></xsl:message>
+<!--  <xsl:message>call-back activated with current node=<xsl:value-of select="local-name()"/></xsl:message> -->
   <h1 class="p3h2 heading border-top">
     <xsl:value-of select="@n"/>
   </h1>

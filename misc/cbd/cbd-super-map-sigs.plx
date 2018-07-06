@@ -24,13 +24,20 @@ if ($args{'auto'}) {
     ($proj,$lang) = ($map =~ m#^01map/(.*?)~(.*?)\.map#);
     $proj =~ tr#-#/#;
     $sigs = "$ENV{'ORACC_BUILDS'}/$proj/01bld/from-xtf-glo.sig";
+    unless (-r $sigs) {
+	my $sigs2 = "$ENV{'ORACC_BUILDS'}/$proj/01bld/from-prx-glo.sig";
+	unless (-r $sigs2) {
+	    die "$0: can't find $sigs or $sigs2\n";
+	} else {
+	    $sigs = $sigs2;
+	}
+    }
+    
     warn "applying $map to $proj/$lang from $sigs\n";
     if (-r $sigs) {
 	open(M,$sigs) || die "$0: can't open $sigs for read\n";
 	@input = (<M>);
 	close(M);
-    } else {
-	die "$0: can't open $sigs for read\n";
     }
     my $out = $map;
     $out =~ s/01map/01sig/; $out =~ s/map$/sig/;

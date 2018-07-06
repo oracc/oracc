@@ -211,6 +211,9 @@ int opts(int och,char *oarg)
     case 'u':
       use_unicode = 1;
       break;
+    case 'x':
+      no_gdl_xids = 0;
+      break;
     default:
       return 1;
     }

@@ -13,6 +13,7 @@ $ORACC::CBD::Forms::external = 0;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Validate;
+use Data::Dumper;
 
 my %bases = ();
 my %forms = ();
@@ -32,18 +33,20 @@ sub forms_align {
 	if ($forms{$if}) {
 	    my %fi = ();
 	    if ($f_index{$if}) {
-		%fi = $f_index{$if};
+		%fi = %{$f_index{$if}};
 	    } else {
 #		warn "indexing forms for $if\n";
 		foreach my $f (keys %{$forms{$if}}) {
-		    $f =~ /^\S+\s+(\S+)/;
-		    ++$fi{$1};
+#		    $f =~ /^\S+\s+(\S+)/;
+		    ++$fi{$f};
 		}
 		$f_index{$if} = %fi;
 	    }
+#	    print "fi=", Dumper \%fi;
 	    foreach my $f (keys %{$incoming_forms{$if}}) {
+#		print "f = $f\n";
 		$f =~ /^\S+\s+(\S+)/;
-		map_form($args,$if, $f) unless $f_index{$f};
+		map_form($args,$if, $f) unless $fi{$f};
 	    }
 	}
 	# silently ignore missing entries because entries_align gets those
@@ -64,7 +67,9 @@ sub forms_collect {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@form/) {
-	    ++${$f{$curr_entry}}{$cbd[$i]};
+	    my $tmp = $cbd[$i];
+	    $tmp =~ s/\s+/ /g;
+	    ++${$f{$curr_entry}}{$tmp};
 	}
     }
     %f;

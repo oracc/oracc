@@ -19,7 +19,11 @@ fi
 # lem rebuild is necessary so there's not much extra work involved
 l2p1-from-glos.sh
 l2p1-project-sig.plx
-l2p1-lemm-data.plx -u
+if [ -r .nolemmdata ]; then
+    rm .nolemmdata
+else
+    l2p1-lemm-data.plx -u
+fi
 
 #if [ -s 01bld/sortinfo.tab ]; then
 #    l2p1-sig-invert.plx

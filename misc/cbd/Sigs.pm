@@ -643,7 +643,7 @@ sub psu_glo {
 		if (s/\s\%([a-z]\S+)//) {
 		    $formlang = $1 || '';
 		}
-		do_psu($formlang || $lang, $_);
+		do_psu($formlang || ORACC::CBD::Util::lang(), $_);
 	    } else {
 		push @no_sense_forms, $_;
 	    }
@@ -657,7 +657,7 @@ sub psu_glo {
 		    my $pline = ${$entries_parts_lines[0]}[1];
 		    $pline =~ s/\@parts\s+//;
 		    $pline =~ s/\sn\s/ n\cA/g;
-		    $pline =~ s/(\]\S+)\s+/$1\cA/g;
+		    $pline =~ s/(\]\S*)\s+/$1\cA/g;
 		    my @nsf = ();
 		    foreach my $p (split(/\cA/,$pline)) {
 			$p =~ s#//.*?\]#]#;
@@ -669,7 +669,8 @@ sub psu_glo {
 			} elsif ($p =~ /^n$/) {
 			    push @nsf, 'n';
 			} else {
-			    warn "$p not in simple_bases\n";
+			    # don't need this because we get better pp_warns later
+			    pp_warn "$p not in simple_bases";
 			}
 		    }
 		    push @no_sense_forms, '@form '.join('_',@nsf);
@@ -691,7 +692,8 @@ sub psu_glo {
 		    if ($f3 =~ s/\s\%([a-z]\S+)//) {
 			$formlang = $1;
 		    }
-		    do_psu($formlang || $lang, $f3);
+#		    warn "f3=$f3\n";
+		    do_psu($formlang || ORACC::CBD::Util::lang(), $f3);
 		}
 	    } else {
 		chomp;
@@ -718,6 +720,7 @@ do_psu {
     my ($forms, $rest) = ($formline =~ /^(\S+)\s*(.*)\s*$/);
     unless ($forms) {
 	pp_warn("syntax error, no forms in \@forms line");
+	return;
     }
 
     my $psu_form = $forms; $psu_form =~ s/_0/ /g; $psu_form =~ tr/_/ /;
@@ -969,7 +972,7 @@ validate_parts {
     $p =~ s/\s[\%\#\@\/\+]\S+/ /g;
     $p =~ s/\s+/ /g;
     $p =~ s/\s+n\s+/ n\cA/g;
-    $p =~ s/(\]\S+)\s+/$1\cA/g;
+    $p =~ s/(\]\S*)\s+/$1\cA/g;
     my @parts = grep defined&&length, split(/\cA/,$p);
     my @ret = ();
     foreach my $pt (@parts) {
@@ -1071,7 +1074,7 @@ validate_parts {
 	    my($project,$lang) = (ORACC::CBD::Util::project(),ORACC::CBD::Util::lang());
 	    push @ret, [ $pt , "n[n//n]NU'NU", "\@$project%$lang:n=n[n//n]NU'NU" ];
 	} else {
-	    pp_line($lnum);
+	    pp_line($lnum+1);
 	    pp_warn("$pt does not match a known CF[GW] in `$psulang.glo'");
 	    $status = 1;
 	}

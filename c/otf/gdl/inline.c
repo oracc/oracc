@@ -688,6 +688,14 @@ next_b_or_g(ssize_t tindex)
       pending_varo = 0; \
     }
 
+static void
+maybeAppendXid(struct node *np, const char *id)
+{
+  if (strncmp(id,"gdl",3) || !no_gdl_xids)
+    appendAttr(np,attr(a_xml_id,ucc(id)));
+}
+		      
+
 static struct node *
 init_word_func(struct node *parent, struct token *tp, 
 	       int *pending_varo_p, int varo_tok,
@@ -709,7 +717,7 @@ init_word_func(struct node *parent, struct token *tp,
   wp = elem(tp->lang->mode==m_graphemic ? e_g_w : e_n_w,NULL,lnum,WORD);
   sprintf(word_id_insertp, "%d", word_id++);
   grapheme_id_reset();
-  appendAttr(wp,attr(a_xml_id,ucc(word_id_buf)));
+  maybeAppendXid(wp,word_id_buf);
   langhand(wp,tp);
   appendChild(parent,wp);
   word_tokp = tp;
@@ -836,7 +844,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  struct node *nw = elem(e_n_w,NULL,lnum,WORD);
 			  struct node *seg = elem(e_n_s,NULL,lnum,GRAPHEME);
 			  sprintf(word_id_insertp, "%d", word_id++);
-			  appendAttr(nw,attr(a_xml_id,ucc(word_id_buf)));
+			  maybeAppendXid(nw,word_id_buf);
 			  langhand(nw,tp);
 			  normnum(seg, datap);
 			  appendChild(seg,textNode(datap));
@@ -869,7 +877,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  last_g = seg;
 		}
 
-	      setAttr(last_g,a_xml_id,ucc(grapheme_id()));
+	      maybeAppendXid(last_g,grapheme_id());
 
 	      if (breakStart && *breakStart == 0x01)
 		{
@@ -943,7 +951,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  else if (tp->type == wm_linecont)
 		    setAttr(np,a_g_type,(unsigned char *)"word-linecont");
 		}
-	      setAttr(np,a_xml_id,ucc(grapheme_id()));
+	      maybeAppendXid(np,grapheme_id());
 	      if (breakStart && *breakStart == 0x01)
 		{
 		  breakStart = getAttr(np,"xml:id");
@@ -1848,7 +1856,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      np = elem(e_g_x,NULL,lnum,GRAPHEME);
 	      appendAttr(np,attr(a_g_type,ucc("ellipsis")));
-	      setAttr(np,a_xml_id,ucc(grapheme_id()));
+	      maybeAppendXid(np,grapheme_id());
 	      if (breakStart && *breakStart == 0x01)
 		{
 		  breakStart = getAttr(np,"xml:id");

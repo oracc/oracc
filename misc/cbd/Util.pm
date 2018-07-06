@@ -14,6 +14,7 @@ my @data = qw/allow usage collo sense/;
 %ORACC::CBD::data = (); @ORACC::CBD::data{@data} = ();
 
 use ORACC::L2GLO::Langcore;
+use ORACC::CBD::ATF;
 use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Sigs;
@@ -336,6 +337,7 @@ sub setup_args {
 sub setup_cbd {
     my($args,$glossary) = @_;
     pp_file($glossary ? $glossary : $$args{'cbd'});
+    atf_reset();
     my @cbd = pp_load($args, $glossary);
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {

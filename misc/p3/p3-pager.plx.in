@@ -62,6 +62,8 @@ dbgitems {
 
 %p = decode_args(@ARGV);
 
+$rt{'tmpdir'} = $p{'tmpdir'};
+
 p3_oas_triage()
     if $p{'referer'} && $p{'referer'} =~ m,/as$,;
 
@@ -501,11 +503,20 @@ run_form_maker {
     my $projectname = '';
     my $projabb = `@@ORACC@@/bin/oraccopt $p{'project'} abbrev`;
     my $projname = `@@ORACC@@/bin/oraccopt $p{'project'} name`;
+    my $localhost = 0;
+    if ($ENV{'HTTP_REFERER'}) {
+	warn "HTTP_REFERER = $ENV{'HTTP_REFERER'}\n";
+	if ($ENV{'HTTP_REFERER'} =~ /localhost/) {
+	    $localhost = 1;
+	}
+    }
     if ($projname =~ /^$projabb/) {
 	$projectname = $projname;
     } else {
 	$projectname = "$projabb : $projname";
     }
+    $projectname .= " \[$rt{'tmpdir'}]" if $localhost;
+#    $projectname .= " \@ $ENV{'HTTP_REFERER'}";
     print '<!DOCTYPE html>', "\n" unless $t =~ /\.xml$/;
     open(T,$t);
     while (<T>) {
@@ -521,7 +532,7 @@ run_form_maker {
 	    }
 	    print;
 	} elsif (m#<p>\@</p>#) {
-	    if ($p{'glos'}) {
+	    if ($p{'glos'} && !$p{'gxis'}) {
 		warn "run_form_maker: glos\n";
 		print '<div id="p3left" class="border-right">';
 		system "$oraccbin/xfrag", '-u', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";

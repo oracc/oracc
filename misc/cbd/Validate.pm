@@ -617,6 +617,8 @@ sub v_form {
     my($tag,$arg) = @_;
 
     $arg = '' unless $arg;
+    my $f = $arg;
+    my $flang = '';
     
     if ($trace) {
 	pp_trace "v_form: tag=$tag; arg='$arg'; lang=$lang";
@@ -637,13 +639,13 @@ sub v_form {
 	return;
     }
 
-    my $f = $arg;
-    my $flang = '';
     if ($f =~ s/(?:^|\s+)\%(\S+)//) {
 	$flang = $1;
 	$f =~ s/^\s*//;
     } elsif ($lang =~ /^qpn/) {
 	pp_warn("no %LANG in QPN glossary \@form entry");
+    } else {
+	$flang = ''
     }
     
     my $barecheck = $arg;
@@ -773,6 +775,9 @@ sub v_form {
 
 sub v_parts {
     my($tag,$arg) = @_;
+    if ($arg =~ /\](\s|$)/) {
+	pp_warn("parts component has no POS after ']'");
+    }
     $arg =~ s/\s+n\s+/ n\cA/g;
     $arg =~ s/(\]\S*)\s+/$1\cA/g;
     my @p = split(/\cA/,$arg);
@@ -856,7 +861,9 @@ sub v_part {
 	return;	
     }
     
-    pp_warn("$cmpd: part $part is not an \@entry in this glossary");
+    # This message duplicates XXX does not match a known CF[GW] in XXX.glo
+    #    pp_warn("$cmpd: part $part is not an \@entry in this glossary");
+    
     pp_file($fsave);
     pp_line($lsave);
 }

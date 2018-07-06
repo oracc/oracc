@@ -205,6 +205,7 @@
 	<input type="hidden" name="project" id="project" value="@@project@@"/>
 	<input type="hidden" name="sorttype" id="sorttype" p3:value="@@runtime:sorttype@@"/>
 	<input type="hidden" name="srchtype" id="srchtype" p3:value="@@runtime:srchtype/txt@@"/>
+	<input type="hidden" name="sorttype" id="tmpdir" p3:value="@@runtime:tmpdir@@"/>
 	<input type="hidden" name="transcheck" id="transcheck" p3:value="@@cgivar:transonly/0@@"/>
 	<input type="hidden" name="translation" id="translation" p3:value="@@cgivar:translation/en@@"/>
 	<input type="hidden" name="uimode" id="uimode" p3:value="@@cgivar:uimode@@"/>

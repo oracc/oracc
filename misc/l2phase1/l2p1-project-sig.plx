@@ -33,7 +33,7 @@ GetOptions(
     'lemm-only'=>\$lemm_only,
     );
 
-my @cand = ('01bld/from-glos.sig');
+my @cand = ();
 
 # This allows a superglo to have a glossary that constrains the umbrella
 # children.  If there is no superglo glossary, from-glos.sig won't exist

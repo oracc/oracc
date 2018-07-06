@@ -114,6 +114,7 @@ sub map_apply_sig {
 	    my %f2 = parse_sig($$to); # why is this a ref to a scalar??
 #	    print Dumper \%f2;
 	    $f{'sense'} = $f2{'sense'};
+	    $f{'epos'} = $f2{'epos'};
 	}
 	$f{'form'} =~ s/^%.*?://;
 	$f{'base'} =~ s/^%.*?://;

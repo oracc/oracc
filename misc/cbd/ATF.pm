@@ -1,7 +1,7 @@
 package ORACC::CBD::ATF;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/atf_add atf_check cpd_add cpd_check/;
+@EXPORT = qw/atf_add atf_check atf_reset cpd_add cpd_check/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -16,10 +16,17 @@ sub atf_add {
     if ($a) {
 	$a =~ tr/·°//d;
 	$a =~ s/\\.*$//; # remove disambiguators for checking
-	push @{$atf{pp_line()}}, $l ? "\%$l $a" : $a;
+	my $add = $l ? "\%$l $a" : $a;
+#	warn pp_line().": $add\n";
+	push @{$atf{pp_line()}}, $add;
     } else {
 	pp_warn("internal error: empty value passed to atf_add")
     }
+}
+
+sub atf_reset {
+    %atf = ();
+    %cpd = ();
 }
 
 sub atf_check {

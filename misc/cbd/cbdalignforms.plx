@@ -33,4 +33,6 @@ forms_init(\%args);
 forms_align(\%args, \@base_cbd, \@cbd);
 forms_term();
 
+pp_diagnostics() if pp_status();
+
 1;

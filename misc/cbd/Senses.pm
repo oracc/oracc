@@ -96,7 +96,7 @@ sub senses_merge {
 	my @matches = ();
 	# does s occur in @b?
 	foreach my $b (@$b) {
-	    if ($b =~ /$s/ || $s =~ /$b/) {
+	    if ($b =~ /\Q$s/ || $s =~ /\Q$b/) {
 		push @matches, $b;
 	    }
 	}

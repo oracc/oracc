@@ -32,6 +32,7 @@ extern int gdl_bootstrap;
 extern int lnum;
 extern int need_lemm;
 extern int no_destfile;
+extern int no_gdl_xids;
 extern int no_pi;
 extern int odt_serial;
 extern int report_all_label_errors;

@@ -29,13 +29,14 @@ my %f = ();
 if ($superglo) {
     unshift @ARGV, "01bld/$lang/from_glo.sig";
 }
-
+open(NOTF, '>01tmp/sigs-not-in-superglo.tab');
 foreach my $s (@ARGV) {
     unless (open(S,$s)) {
 	warn "l2-sig-union.plx: no sig file $s\n"
 	    unless $quiet;
 	next;
     }
+    $f{'inst'} = 1; # default for .sig files
     warn "l2-sig-union.plx: processing $s\n" if $verbose;
     while (<S>) {
 	chomp;
@@ -69,11 +70,13 @@ foreach my $s (@ARGV) {
 		    @{$sig{$t[0]}}{@r} = ();
 		}
 	    } else {
+		#		print NOTF "$_\n";
+		my $p = $r; $p =~ s/:.*$//; $p = '#NOREFS' unless $p;
 		if ($lang =~ /^qpn/) {
-		    warn "l2-sig-union: $t[0] not found in superglo\n"
+		    print NOTF "$p\t$t[0]\n"
 			if $t[0] =~ /\][A-Z]N/;
 		} else {
-		    warn "l2-sig-union: $t[0] not found in superglo\n"
+		    print NOTF "$p\t$t[0]\n"
 			unless $t[0] =~ /\][A-Z]N/;
 		}
 	    }
@@ -87,6 +90,8 @@ foreach my $s (@ARGV) {
     close(S);
     $first = 0;
 }
+
+close(NOTF);
 
 $header{'project'} = $project unless $header{'project'};
 $header{'lang'} = $lang unless $header{'lang'};
