@@ -22,6 +22,7 @@ die "$0: can't open map $map\n" unless $map && -r $map;
 
 if ($args{'auto'}) {
     ($proj,$lang) = ($map =~ m#^01map/(.*?)~(.*?)\.map#);
+    $lang = $args{'lang'} if $args{'lang'};
     $proj =~ tr#-#/#;
     $sigs = "$ENV{'ORACC_BUILDS'}/$proj/01bld/from-xtf-glo.sig";
     unless (-r $sigs) {

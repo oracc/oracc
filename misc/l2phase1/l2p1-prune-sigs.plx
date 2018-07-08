@@ -60,7 +60,11 @@ sub prune_sigs {
     while ($i++ <= $#s) {
 	next unless $s[$i];
 	my @f = split(/\t/,$s[$i]);
-	$f[$inst_field] = prune($f[$inst_field]);
+	if ($f[$inst_field]) {
+	    $f[$inst_field] = prune($f[$inst_field]);
+	} else {
+	    warn "$s:$.: inst_field=$inst_field: no inst in: $s[$i]\n";
+	}
 	print S join("\t", @f), "\n";
     }
 }

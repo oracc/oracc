@@ -3,6 +3,11 @@ use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
 my $multi = 0;
+if ($ARGV[0] eq '-m') {
+    $multi = 1;
+    shift @ARGV;
+}
+
 my $first_sense = '';
 my @senses = ();
 
