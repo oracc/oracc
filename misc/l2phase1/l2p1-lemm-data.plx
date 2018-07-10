@@ -10,6 +10,7 @@ my %f = ();
 my $freq = 0;
 my %lemmdata = ();
 my $rank = 0;
+my %sigorder = ();
 my $update = 0;
 my $verbose = 1;
 
@@ -66,7 +67,7 @@ sub update {
     
     my %freqs = ();
     my %ranks = ();
-    my %sigs = ();
+    my @sigs = ();
 
     # Harvest sigs and ranks from the project's glossaries
     foreach my $f (@f) {
@@ -81,7 +82,7 @@ sub update {
 		next;
 	    }
 	    my @fields = split(/\t/,$_);
-	    ++$sigs{$fields[0]};
+	    push @sigs, $fields[0];
 	    $ranks{$fields[0]} = $fields[$rank];
 	}
 	close(F);
@@ -106,13 +107,15 @@ sub update {
     # Add freqs to sigs/ranks and dump new lemm-data. If a project
     # is using dynamic lemm-data from proxies that proxy data will 
     # not make it into this version. This is a limitation of update.
-    foreach my $s (keys %sigs) {
+    my $sigorder = 0;
+    foreach my $s (@sigs) {
 	my ($r,$f) = (0,0);
 	$r = $ranks{$s} if $ranks{$s};
 	$f = $freqs{$s} if $freqs{$s};
 	my $lng = lng_of($s);
 	warn "no lng in $s\n" unless $lng;
 	$lng =~ s/-\d\d\d//; # remove script codes
+	$sigorder{$s} = ++$sigorder;
 	$s = "$s\t$r\t$f\n";
 	push @{$lemmdata{$lng}}, $s;
     }
@@ -133,7 +136,13 @@ sub lng_of {
 sub byfreq {
     my ($af) = ($a =~ /(\d+)$/);
     my ($bf) = ($b =~ /(\d+)$/);
-    $bf <=> $af;
+    if ($bf || $af) {
+	$bf <=> $af;
+    } else {
+	my ($as) = ($a =~ /^(.*?)\t/);
+	my ($bs) = ($b =~ /^(.*?)\t/);
+	$sigorder{$as} <=> $sigorder{$bs};
+    }
 }
 
 sub dump_lemm {

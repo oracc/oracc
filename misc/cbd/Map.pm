@@ -102,6 +102,24 @@ sub map_apply_sig {
     chomp($s);
     $s =~ s/\t(.*$)//;
     my $t = $1;
+    if ($s =~ /^\{/) {
+	my($psu,$sigs) = ($s =~ /^(.*?)::(.*?)$/);
+	my @s = ();
+	foreach my $s (split(/\+\+/,$sigs)) {
+#	    warn "map_apply_sig_sub in psu\n";
+	    push @s, map_apply_sig_sub($s);
+	}
+	$s = $psu.'::'.join('++',@s);
+    } else {
+#	warn "map_apply_sig_sub non-psu\n";
+	$s = map_apply_sig_sub($s);
+    }
+    "$s\t$t\n";
+}
+
+sub map_apply_sig_sub {
+    my $s = shift @_;
+    my $orig = $s;
     my %f = parse_sig($s);
     my $key = "$f{'cf'}\[$f{'gw'}]$f{'pos'}";
 #    print Dumper \%currmap;
@@ -123,9 +141,11 @@ sub map_apply_sig {
 		$f{'base'} = $$mbase;
 	    }
 	}
-	$s = serialize_sig(%f);	
+	$s = serialize_sig(%f);
+	my $op = (($orig eq $s) ? '==' : '->');
+#	warn "map_apply_sig_sub $orig $op $s\n";
     }
-    "$s\t$t\n";
+    $s;
 }
 
 sub map_load {

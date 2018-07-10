@@ -211,37 +211,41 @@ proxy_lists {
 	foreach my $p (@p) {
 	    ++$lnum;
 	    $p =~ tr/\r\n//d;
+	    next unless $p =~ /\S/;
+	    
 	    # if the proxy has a ':' we want it for its atf:
 	    # if it has no catalogue, default it to the source project
-	    if ($p =~ /^(.*?):/) {
-		my $proxproj = $1;
-		$p .= "\@$proxproj" unless $p =~ /\@/;
-		my($id) = ($p =~ /:(.*?)\@/);
-		if ($host_atf{$id}) {
-		    warn "$proxy_lst:$lnum: ignoring proxy of $id because $project already has that ATF\n";
-		} elsif ($pa_seen{$id}++) {
-		    warn "$proxy_lst:$lnum: ignoring duplicate ATF proxy for $id\n";
+	    my($p_atf_proj,$p_id,$p_cat_proj) = ();
+	    if ($p =~ /^(.*?):(.*?)\@(.*)$/) { # blms:P123456@blms
+		($p_atf_proj,$p_id,$p_cat_proj) = ($1,$2,$3);
+	    } elsif ($p =~ /^(.*?):(.*?)$/) { # blms:P123456
+		($p_atf_proj,$p_id,$p_cat_proj) = ($1,$2,$1);
+		$p .= "\@$p_cat_proj";
+	    } elsif ($p =~ /^(.*?)\@(.*)$/) { # P123456@blms
+		($p_atf_proj,$p_id,$p_cat_proj) = ($project,$1,$2);
+		$p = "$p_atf_proj:$p";
+	    } else {
+		warn "$proxy_lst:$.: $p: can't proxy without giving project\n";
+		next;
+	    }
+
+	    if ($host_atf{$p_id}) {
+		warn "$proxy_lst:$lnum: ignoring proxy of $p_atf_proj:$p_id because $project already has that ATF\n";
+	    } elsif ($pa_seen{$p_id}++) {
+		warn "$proxy_lst:$lnum: ignoring duplicate ATF proxy for $p_atf_proj:$p_id\n";
+	    } else {
+		print PA "$p\n";
+	    }
+
+	    if ($p_cat_proj && $p_cat_proj ne $project) {
+		if ($host_cat{$p_id}) {
+		    warn "$proxy_lst:$lnum: ignoring proxy of $p_atf_proj:$p_id because $project CAT already has it\n";
+		} elsif ($px_seen{$p_id}++) {
+		    warn "$proxy_lst:$lnum: ignoring duplicate CAT proxy for $p_atf_proj:$p_id\n";
 		} else {
-		    print PA "$p\n";
+		    print PX "$p\n";
 		}
 	    }
-	    # if the proxy has a '@' we want it for its cat unless the project eq host
-	    if ($p =~ /\@(.*)$/) {
-		my $xc = $1;
-		if ($xc ne $project) {
-		    # if there is no ':' default it to host project
-		    $p = "$project:$p" unless $p =~ /:/;
-		    my($id) = ($p =~ /:(.*?)\@/);
-		    if ($host_cat{$id}) {
-			warn "$proxy_lst:$lnum: ignoring proxy of $id because $project CAT already has it\n";
-		    } elsif ($px_seen{$id}++) {
-			warn "$proxy_lst:$lnum: ignoring duplicate CAT proxy for $id\n";
-		    } else {
-			print PX "$p\n";
-		    }
-		}
-	    }
-	    # just ignore bare proxies (i.e., those with no : or @) for now.
 	}
 	close(PA);
 	close(PX);

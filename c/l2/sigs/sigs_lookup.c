@@ -91,6 +91,7 @@ struct sig_find_state
   struct sigset *sp;
   struct ilem_form *fp;
   struct ilem_form **finds;
+  const unsigned char *fp_aliased_form;
   int nfinds;
   struct sig const * const *sigs_found; 
   int no_form;
@@ -166,6 +167,10 @@ sigs_state_save(struct sigset *sp, struct ilem_form *fp,
   struct sig_find_state *s = malloc(sizeof(struct sig_find_state));
   s->sp = sp;
   s->fp = fp;
+  if (fp->f2.oform)
+    s->fp_aliased_form = fp->f2.form;
+  else
+    s->fp_aliased_form = NULL;
   s->finds = fp->finds;
   s->sigs_found = sigs_found;
   s->nfinds = nfinds;
@@ -659,6 +664,12 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  ifp = best->fp;
 	  ifp->finds = best->finds;
 	  ifp->fcount = nfinds = best->nfinds;
+
+	  if (best->fp_aliased_form)
+	    {
+	      ifp->f2.oform = ifp->f2.form;
+	      ifp->f2.form = best->fp_aliased_form;
+	    }
 	  
 	  /* sigs_found = best->sigs_found; */
 	  

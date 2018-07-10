@@ -236,6 +236,7 @@ sub sigs_simple {
 
     my $nsense = 0;
     my $coresig1 = '';
+    my $sigorder = 0;
  
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -278,7 +279,7 @@ sub sigs_simple {
 		    my $instsig1 = "\@$project\%$lng:$f=";
 		    my $xsig = "\$$sig{'cf'}/$b#~";
 		    ++$noprintsigs{ "$instsig1$coresig1/$b\t0\n" };
-		    ++$printsigs{ "$instsig1$coresig1$xsig\t0\n" };
+		    $printsigs{ "$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
 #		    warn "base-form $b => $instsig1$coresig1$xsig\t0\n";
 		}
 	    }
@@ -330,7 +331,7 @@ sub sigs_simple {
 	    
 	    $coresig = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
 	    $coresig1 = $coresig unless $coresig1;
-	    ++$coresigs{$coresig};
+	    $coresigs{$coresig} = ++$sigorder;
 
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
@@ -343,7 +344,7 @@ sub sigs_simple {
 			$rank |= 1;
 		    }
 			
-		    ++$printsigs{ "$$instsig[0]$coresig$$instsig[1]\t$rank\n" };
+		    $printsigs{ "$$instsig[0]$coresig$$instsig[1]\t$rank\n" } = ++$sigorder;
 		    $found_simple_sig = 1;
 		}
 	    } else {
@@ -354,7 +355,7 @@ sub sigs_simple {
 			    my $instsig1 = "\@$project\%$lng:$b=";
 			    my $xsig = "\$$sig{'cf'}/$b#~";
 			    ++$noprintsigs{ "$instsig1$coresig/$b\t0\n" };
-			    ++$printsigs{ "$instsig1$coresig$xsig\t0\n" };
+			    $printsigs{ "$instsig1$coresig$xsig\t0\n" } = ++$sigorder;
 			}
 		    }
 		}
@@ -380,8 +381,9 @@ sub sigs_simple {
 	}
     }
 
-    @sigs_simple = sort (keys %printsigs); #, keys %noprintsigs);
-    @sigs_coresigs = sort keys %coresigs;
+    @sigs_simple = sort ( { $printsigs{$a} <=> $printsigs{$b} } keys %printsigs); #, keys %noprintsigs);
+    open(S,'>sigs_simple.dump'); print S @sigs_simple; close(S);
+    @sigs_coresigs = sort { $coresigs{$a} <=> $coresigs{$b} } keys %coresigs;
 }
 
 sub sigs_form {
@@ -612,9 +614,9 @@ sub psu_index_simple {
 	    pp_warn "internal error: null keysig from $s";
 	}
     }
-#    open(S, ">simple-$passnumber.dump");
-#    print S Dumper \%simple;
-#    close(S);
+    open(S, ">simple-$passnumber.dump");
+    print S Dumper \%simple;
+    close(S);
 }
 
 sub psu_glo {
@@ -1117,10 +1119,14 @@ sub sigs_dump {
     close(CORESIGS);
 }
 
+# slower uniq with stable order w/r/t incoming array
 sub uniq  {
     my %u = ();
-    @u{@_} = ();
-    sort keys %u;
+    my @u = ();
+    foreach my $s (@_) {
+	push @u, $s unless $u{$s}++;
+    }
+    @u;
 }
     
 1;

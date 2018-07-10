@@ -20,6 +20,7 @@ static unsigned char *
 sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
 {
   unsigned char buf[1024];
+  const unsigned char *form_to_use;
   int wild_form = 0;
 
   if (ifp && lem_extended)
@@ -31,12 +32,18 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (BIT_ISSET(fp->flags, F2_FLAGS_NORM_IS_CF)) 
     fp->cf = fp->norm;
 
+  if (BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_PROJ)
+      || BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_LANG))
+    form_to_use = fp->form;
+  else
+    form_to_use = (Uchar*)(wild_form 
+			   ? "*" 
+			   : (fp->oform ? (char*)fp->oform : (char*)fp->form));
+
   sprintf((char*)buf,"@%s%%%s:%s=%s[%s//%s]%s'%s",
 	  (char*)(fp->project),
 	  (char*)(fp->lang),
-	  (char*)(tail ? (Uchar*)"" : (Uchar*)(wild_form 
-					       ? "*" 
-					       : (fp->oform ? (char*)fp->oform : (char*)fp->form))),
+	  (char*)(tail ? (Uchar*)"" : form_to_use),
 	  (char*)(fp->cf ? fp->cf : (Uchar*)"X"),
 	  (char*)(fp->gw ? fp->gw : (Uchar*)"X"),
 	  (char*)(fp->sense ? fp->sense : (Uchar*)"X"),
@@ -168,7 +175,10 @@ f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 	    {
 	      if (!fp->parts[i]->tail_sig)
 		{
-		  if (fp->parts[i]->oform)
+		  if (BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_PROJ)
+		      || BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_LANG))
+		    strcat((char*)psu_form, (char*)fp->parts[i]->form);
+		  else if (fp->parts[i]->oform)
 		    strcat((char*)psu_form, (char*)fp->parts[i]->oform);
 		  else
 		    strcat((char*)psu_form, (char*)fp->parts[i]->form);
@@ -176,7 +186,10 @@ f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 	    }
 	  else
 	    {
-	      if (fp->parts[i]->oform)
+	      if (BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_PROJ)
+		       || BIT_ISSET(fp->flags, F2_FLAGS_NEW_BY_LANG))
+		strcat((char*)psu_form, (char*)fp->parts[i]->form);
+	      else if (fp->parts[i]->oform)
 		strcat((char*)psu_form, (char*)fp->parts[i]->oform);
 	      else
 		strcat((char*)psu_form, (char*)fp->parts[i]->form);

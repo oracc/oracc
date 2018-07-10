@@ -288,6 +288,7 @@ if (-r '01bld/lists/proxy-cat.lst') {
 #    open(P,'01bld/lists/proxy-cat.lst');
     open(P,'01bld/lists/proxy-atf.lst');
     while (<P>) {
+	next if /^\s*$/;
 	chomp;
 	my($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
 	$id_projects{$id,'xtf'} = $xtf;

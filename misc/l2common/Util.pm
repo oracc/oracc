@@ -348,7 +348,7 @@ parse_sig {
 	$x{'morph2'} = $1;
     }
     if (length $_) {
-	warn "$0: parse_sig: $.: bad parse: leftovers=`$_'\n";
+	warn "$0: parse_sig: $.: bad parse: sig=`$sig'; leftovers=`$_'\n";
     }
     ( %x );
 }

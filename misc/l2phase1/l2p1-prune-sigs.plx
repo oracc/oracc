@@ -10,7 +10,15 @@ close(P);
 @prunes{@p} = ();
 my $pruned = 0;
 
-my @sig = <01bld/*.sig>;
+my $sig = shift @ARGV;
+
+my @sig = ();
+
+if ($sig) {
+    @sig = ($sig);
+} else {
+    @sig = <01bld/*.sig>;
+}
 
 foreach my $s (@sig) {
     $pruned = 0;
