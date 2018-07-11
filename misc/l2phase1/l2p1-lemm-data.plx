@@ -75,7 +75,7 @@ sub update {
 	    unless (open(F, $f));
 	warn "reading $f ...\n";
 	while (<F>) {
-	    next if /^\@(?:project|name|lang)/ || /^\s*$/;
+	    next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format
 	    chomp;
 	    if (/^\@fields/) {
 		set_f($_, qw/sig rank/);

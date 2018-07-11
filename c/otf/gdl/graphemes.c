@@ -1917,8 +1917,12 @@ maybe_gdelim(unsigned char *ip, struct node *np)
   if (*gdelim)
     {
       const unsigned char *tmp = gdelim;
+#if 1
+      *ip++ = *tmp;
+#else
       while (*tmp)
 	*ip++ = *tmp++;
+#endif
     }
   return ip;
 }
@@ -2082,17 +2086,15 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 				  {
 				    const unsigned char *gdelim = getAttr(np->children.nodes[i-1], "g:delim");
 				    if (*gdelim)
-				      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
-					{
-					  if (gdelim[1])
-					    {
-					      const unsigned char *tmp = gdelim;
-					      while (*tmp)
-						*insertp++ = *tmp++;
-					    }
-					  else
-					    *insertp++ = *gdelim++;					  
-					}
+				      {
+					if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
+					  {
+					    if (gdelim[1])
+					      *insertp++ = '-';
+					    else
+					      *insertp++ = *gdelim;
+					  }
+				      }
 				    if (!suppress_hyphen_delay)
 				      suppress_next_hyphen = 0;
 				  }
@@ -2286,8 +2288,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    if (*gdelim)
 	      {
 		const unsigned char *tmp = gdelim;
-		while (*tmp)
-		  *insertp++ = *tmp++;
+		if (tmp[1])
+		  *insertp++ = '-';
+		else
+		  *insertp++ = *tmp;
 	      }
 	  }
 	break;

@@ -520,10 +520,18 @@ sub sigs_form {
 
 ######################################################################
 
+sub cofs_marshall {
+    my @smpl = grep(/\!0x0/, @_);
+    my @extl = `grep -h '\!0x0[2-9]' 01bld/*/from_glo.sig`; chomp @extl;
+#    warn "cofs_marshall: ", Dumper(\@smpl), Dumper(\@extl), "\n===\n";
+    (@smpl, @extl);
+}
+
 sub sigs_cofs {
     my %cofs = ();
     my $i = 0;
-    foreach my $c (@sigs_simple) {
+    my @cof_sigs = cofs_marshall(@sigs_simple);
+    foreach my $c (@cof_sigs) {
 	++$i;
 	local($_) = $c;
 	if (/\!0x/) {
@@ -542,7 +550,10 @@ sub sigs_cofs {
 		} else {
 		    $v = "$pre:$key=$sig";
 		}
-		push @{${$cofs{"$lang\:$key"}}[$index]}, $v;
+		my $ckey = "$lang\:$key";
+		if ($nth == 1 || $cofs{$ckey}) {
+		    push @{${$cofs{$ckey}}[$index]}, $v;
+		}
 	    } else {
 		pp_file('<simple sigs list>');
 		pp_line($i);
@@ -553,6 +564,8 @@ sub sigs_cofs {
     foreach my $c (keys %cofs) {
 	my @parts = @{$cofs{$c}};
 	permute(@parts);
+#	warn Dumper \@parts;
+#	warn Dumper \@sigs_cofs;
     }
 }
 
@@ -590,6 +603,32 @@ sub sigs_psus {
 #    psu_dump() unless $$args{'check'};
 }
 
+sub psu_marshall {
+    my $l = shift;
+    my $p = ORACC::CBD::Util::project();
+    my @core = ();
+    my @smpl = ();
+    my $coresigs_txt = "$ENV{'ORACC_BUILDS'}/$p/01bld/$l/coresigs.txt";
+    my $from_glos = "$ENV{'ORACC_BUILDS'}/$p/01bld/$l/from_glo.sig";
+    if (-r $coresigs_txt) {
+	warn "psu_marshall: loading $coresigs_txt\n";
+	@core = `cat $coresigs_txt`; chomp @core;
+    } else {
+	warn "psu_marshall: can't find $coresigs_txt\n";
+	return (undef,undef);
+    }
+    if (-r $from_glos) {
+	warn "psu_marshall: loading $from_glos\n";
+	open(S,$from_glos) || die;
+	while (<S>) {
+	    next if /^\{/;
+	    s/\t.*$//;
+	    push @smpl, $_;
+	}
+    }
+    return (\@core, \@smpl);
+}
+
 sub psu_index {
     my $l = shift;
     my %ix = ();
@@ -597,15 +636,17 @@ sub psu_index {
     if ($l eq ORACC::CBD::Util::lang()) {
 	%{$ix{'core'}} = psu_index_coresigs(@sigs_coresigs);
 	%{$ix{'smpl'}} = psu_index_simple(@sigs_simple);
+	$ix{'ok'} = 'yes';
     } else {
 	my($core,$smpl) = psu_marshall($l);
 	if ($core) {
 	    %{$ix{'core'}} = psu_index_coresigs(@$core);
 	    %{$ix{'smpl'}} = psu_index_simple(@$smpl);
+	    $ix{'ok'} = 'yes';
 	}
     }
     $psu_indexes{$l} = { %ix };
-    print Dumper \%psu_indexes;
+#    print Dumper \%psu_indexes;
 }
 
 sub psu_index_coresigs {
@@ -813,27 +854,39 @@ do_psu {
 
 sub
 find_in_coresigs {
-    my($cf,$xgw,$l) = @_;
+    my($cf,$xgw,$l) = @_;    
     psu_index($l) unless $psu_indexes{$l};
     if ($psu_indexes{$l}) {
 	my $ix = $psu_indexes{$l};
-	my %psu_cfs = %{$$ix{'core'}};
-	if (defined ${$psu_cfs{$cf}}{$xgw}) {
-	    $$ix{'sig'} = $xgw;
-	    return $ix;
-	} elsif (defined $psu_cfs{$cf}) {
-	    foreach my $gw (keys %{$psu_cfs{$cf}}) {
-		my @sigs = @{${$psu_cfs{$cf}}{$gw}};
-		foreach my $s (@sigs) {
-		    my $qxgw = quotemeta($xgw);
-		    if ($s =~ m#//[^\]]*$qxgw#) {
-			# warn "matched $cf\[$xgw] in $s\n";
-			$$ix{'sig'} = $s;
-			return $ix;
+	if ($$ix{'ok'}) {
+	    my %psu_cfs = %{$$ix{'core'}};
+	    if (defined ${$psu_cfs{$cf}}{$xgw}) {
+		$$ix{'sig'} = $xgw;
+		return $ix;
+	    } elsif (defined $psu_cfs{$cf}) {
+		foreach my $gw (keys %{$psu_cfs{$cf}}) {
+		    my @sigs = @{${$psu_cfs{$cf}}{$gw}};
+		    foreach my $s (@sigs) {
+			my $qxgw = quotemeta($xgw);
+			if ($s =~ m#//[^\]]*$qxgw#) {
+			    # warn "matched $cf\[$xgw] in $s\n";
+			    $$ix{'sig'} = $s;
+			    return $ix;
+			}
 		    }
 		}
 	    }
 	}
+    }
+    my $this_l = ORACC::CBD::Util::lang();
+    if ($l ne $this_l) {
+#	warn "find_in_coresigs: trying $cf/$xgw/$this_l vs. $l\n";
+	my $res = find_in_coresigs($cf,$xgw,$this_l);
+	return $res if $res;
+    }
+    if ($l ne 'qpn') {
+	my $res = find_in_coresigs($cf,$xgw,'qpn');
+	return $res if $res;
     }
     undef;
 }
@@ -990,6 +1043,7 @@ print_psu_sig {
 	push @p, $$r[0];
     }
     my $psusig = join('++', @sigs);
+    $psuform =~ s/\s*$//;
     push (@sigs_psus, 
 	  "{$psuform = @p += $$eref{'cf'}\[$$eref{'gw'}//$$eref{'sense'}\]$$eref{'pos'}'$$eref{'epos'}}"
 	  .'::'.$psusig."\t0\n");
@@ -1142,7 +1196,7 @@ sub sigs_dump {
 #    warn "cbdpp: sigs written to $sigs_glo_file\n"
 #	if $$args{'announce'};
     
-    open(CORESIGS, ">01bld/$lang/coresigs.txt");
+    open(CORESIGS, ">01bld/$$args{'lang'}/coresigs.txt");
     print CORESIGS join("\n", uniq(@sigs_coresigs)), "\n";
     close(CORESIGS);
 }
