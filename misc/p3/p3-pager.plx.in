@@ -67,10 +67,19 @@ $rt{'tmpdir'} = $p{'tmpdir'};
 p3_oas_triage()
     if $p{'referer'} && $p{'referer'} =~ m,/as$,;
 
+#  <option name="outline-default-select" value="true"/>
+#  <option name="outline-default-sort-fields" value="period,subgenre,provenience"/>
+#  <option name="outline-default-sort-labels" value="Time,Genre,Place"/>
+
 $p{'p3OSspecial'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-special-sort-fields`
     unless $p{'p3OSspecial'};
-$p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`
-    unless $p{'p3OSdefault'};
+
+unless ($p{'p3OSdefault'}) {
+    $p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`;
+    unless ($p{'p3OSdefault'}) {
+	$p{'p3OSdefault'} = "period,subgenre,provenience";
+    }
+}
 
 arg_state();
 setup_navigation();

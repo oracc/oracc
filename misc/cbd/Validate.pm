@@ -248,7 +248,7 @@ sub pp_validate {
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
 
-    sigs_check(\%glodata,$args,@cbd);
+    sigs_check(\%glodata,$args,@cbd) if $$args{'check'};
 
     my $cbdname = ORACC::CBD::Util::cbdname();
     push @{$data{'cbds'}}, $cbdname;
@@ -514,7 +514,7 @@ sub v_bases {
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	ORACC::SL::BaseC::pedantic(1) if $project =~ /epsd|dcclt|blms|gkab/;
+	ORACC::SL::BaseC::pedantic(1) if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/);
 	pp_trace("BaseC::check: $p");
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	unless (pp_sl_messages($p)) {
@@ -630,8 +630,10 @@ sub v_form {
     }
 
     if ($arg =~ /^[\%\$\#\@\+\/\*]\S/) {
-	pp_warn("\@form must begin with writing of form (arg=$arg)");
-	return;
+	unless ($arg =~ /^\$[A-ZḪŊṢŠṬʾ]/) {
+	    pp_warn("\@form must begin with writing of form (arg=$arg)");
+	    return;
+	}
     }
 
     if ($ORACC::CBD::Forms::external) {

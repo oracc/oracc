@@ -69,6 +69,9 @@
 <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
 <!-- This must lead to where the cbd stuff is being staged, which is webdir in o2-web-corpus.sh -->
+
+<!-- FIX ME MUST POINT TO 01bld/www/cbd/LANG -->
+
 <xsl:variable name="summaries-doc" select="concat('@@ORACC@@/bld/',$basename,'/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
 
 <!--<xsl:strip-space elements="*"/>-->

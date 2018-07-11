@@ -24,17 +24,21 @@ my $basesig = '';
 my @compound_parts = ();
 my %cof_lines = ();
 my $coresig = '';
-my %coresigs = ();
+#my %coresigs = ();
 my $currsig = '';
 my $in_sense = '';
 my @instsigs = ();
 my $out = '';
 my $lang = '';
 
+my $sigorder = 0;
+
 my @sigs_cofs = ();
 my @sigs_coresigs = ();
 my @sigs_psus = ();
 my @sigs_simple = ();
+
+my %psu_indexes = ();
 my @psu_parts = ();
 
 my %sig = ();
@@ -69,8 +73,7 @@ my $entrybang = '';
 
 my $load_simple_counter = 0;
 
-my $simple_loaded = 0;
-my %simple = ();
+#my %simple = ();
 
 my $ignorable = '(?:\(to be\)|a|to|the|\s)*?';
 my $finalparens = '(?:\s+\(.*?\)\s*)?';
@@ -80,8 +83,7 @@ my $finalparens = '(?:\s+\(.*?\)\s*)?';
 my $trace = 0;
 my @global_cbd = ();
 
-my %psu_cfs = ();
-my %psu_simple = ();
+#my %psu_cfs = ();
 
 my %e = ();
 my $err_glo = '';
@@ -103,7 +105,7 @@ sub sigs_init_2 {
     @compound_parts = ();
     %cof_lines = ();
     $coresig = '';
-    %coresigs = ();
+#    %coresigs = ();
     $currsig = '';
     $in_sense = '';
     @instsigs = ();
@@ -147,11 +149,11 @@ sub sigs_init_2 {
 
     $load_simple_counter = 0;
 
-    $simple_loaded = 0;
-    %simple = ();
+#    %simple = ();
 
-     %psu_cfs = ();
-     %psu_simple = ();
+    #     %psu_cfs = ();
+
+    %psu_indexes = ();
 
     %e = ();
     $err_glo = '';
@@ -236,8 +238,10 @@ sub sigs_simple {
 
     my $nsense = 0;
     my $coresig1 = '';
-    my $sigorder = 0;
- 
+    $sigorder = 0;
+
+    my %coresigs = ();
+    
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
@@ -369,7 +373,7 @@ sub sigs_simple {
 	    $current_first_base = join(' ', @bits);
 	    
 #	    warn "cfb=$current_first_base\n";
-	   
+
 	    my $basekey = $curr_cfgw; $basekey =~ s/\s+\[/[/; $basekey =~ s/\]\s+/]/;
 	    $simple_bases{$basekey} = $bits[0];
  
@@ -505,7 +509,7 @@ sub sigs_form {
 	    if ($formbang) {
 		$srank |= 4;
 	    }
-	    ++$printsigs{ "$instsig1$coresig$instsig2\t$srank\n" };
+	    $printsigs{ "$instsig1$coresig$instsig2\t$srank\n" } = ++$sigorder;
 	} else {
 	    $found_simple_sig = 1;
 	    push @instsigs, [ $formbang.$instsig1, $instsig2 ];
@@ -579,24 +583,46 @@ permute {
 sub sigs_psus {
     my($args,@cbd) = @_;
     $err_glo = $$args{'file'};
+    psu_index(ORACC::CBD::Util::lang());
     psu_index_coresigs();
     psu_index_simple();
     psu_glo(@cbd);
 #    psu_dump() unless $$args{'check'};
 }
 
+sub psu_index {
+    my $l = shift;
+    my %ix = ();
+    $ix{'lang'} = $l;
+    if ($l eq ORACC::CBD::Util::lang()) {
+	%{$ix{'core'}} = psu_index_coresigs(@sigs_coresigs);
+	%{$ix{'smpl'}} = psu_index_simple(@sigs_simple);
+    } else {
+	my($core,$smpl) = psu_marshall($l);
+	if ($core) {
+	    %{$ix{'core'}} = psu_index_coresigs(@$core);
+	    %{$ix{'smpl'}} = psu_index_simple(@$smpl);
+	}
+    }
+    $psu_indexes{$l} = { %ix };
+    print Dumper \%psu_indexes;
+}
+
 sub psu_index_coresigs {
-    foreach my $c (@sigs_coresigs) {
+    my @input = @_;
+    my %psu_cfs = ();
+    foreach my $c (@input) {	
 	my($cf,$gw) = ($c =~ m#^(.*?)\[(.*?)//#);
 	$c =~ s/\!0x.*$//;
 	push @{${$psu_cfs{$cf}}{$gw}}, $c;
     }
+    %psu_cfs;
 }
 
 sub psu_index_simple {
-    %simple = ();
-#    warn Dumper \@sigs_simple;
-    foreach my $s (@sigs_simple) {
+    my @input = @_;
+    my %simple = ();
+    foreach my $s (@input) {
 	local($_) = $s;
 	s/\t.*$//;
 	m#^.*?=(.*\'(?:V(?:/[it])?|[A-Z]+)).*$#;
@@ -614,9 +640,7 @@ sub psu_index_simple {
 	    pp_warn "internal error: null keysig from $s";
 	}
     }
-    open(S, ">simple-$passnumber.dump");
-    print S Dumper \%simple;
-    close(S);
+    %simple;
 }
 
 sub psu_glo {
@@ -789,22 +813,28 @@ do_psu {
 
 sub
 find_in_coresigs {
-    my($cf,$xgw) = @_;
-    if (defined ${$psu_cfs{$cf}}{$xgw}) {
-	return $xgw;
-    } elsif (defined $psu_cfs{$cf}) {
-	foreach my $gw (keys %{$psu_cfs{$cf}}) {
-	    my @sigs = @{${$psu_cfs{$cf}}{$gw}};
-	    foreach my $s (@sigs) {
-		my $qxgw = quotemeta($xgw);
-		if ($s =~ m#//[^\]]*$qxgw#) {
-		    # warn "matched $cf\[$xgw] in $s\n";
-		    return $s;
+    my($cf,$xgw,$l) = @_;
+    psu_index($l) unless $psu_indexes{$l};
+    if ($psu_indexes{$l}) {
+	my $ix = $psu_indexes{$l};
+	my %psu_cfs = %{$$ix{'core'}};
+	if (defined ${$psu_cfs{$cf}}{$xgw}) {
+	    $$ix{'sig'} = $xgw;
+	    return $ix;
+	} elsif (defined $psu_cfs{$cf}) {
+	    foreach my $gw (keys %{$psu_cfs{$cf}}) {
+		my @sigs = @{${$psu_cfs{$cf}}{$gw}};
+		foreach my $s (@sigs) {
+		    my $qxgw = quotemeta($xgw);
+		    if ($s =~ m#//[^\]]*$qxgw#) {
+			# warn "matched $cf\[$xgw] in $s\n";
+			$$ix{'sig'} = $s;
+			return $ix;
+		    }
 		}
 	    }
 	}
     }
-#    warn "never matched $cf\[$xgw\]\n"; ## don't need this as it gets reported later
     undef;
 }
 
@@ -981,17 +1011,15 @@ validate_parts {
 	my($cf,$gw) = ($pt =~ /^(.*?)\[(.*?)(?:\/\/|\])/);
 	my($pos,$epos) = ('','');
 	my $sense = '';
-	if ($cf && $gw && ($gw = find_in_coresigs($cf,$gw))) {
+	my $ix = undef;
+	if ($cf && $gw && ($ix = find_in_coresigs($cf,$gw,$psulang))) {
+	    my $gw = $$ix{'sig'};
+	    my %psu_cfs = %{$$ix{'core'}};
+	    my %simple = %{$$ix{'smpl'}};
 	    if ($gw =~ /\[/) { # the return was a matched coresig, not a simple GW
 		my($xgw,$xsense,$xpos,$xepos) = ($gw =~ m#^.*?\[(.*?)//(.*?)\](.*?)'(.*?)#);
-		if ($pos && $pos != $xpos && $pos != $xepos) {
-		    pp_line($lnum);
-		    pp_warn("$pt has wrong POS or EPOS in `$psulang.glo'");
-		    $status = 1;
-		} else {
-		    # Now it will be as though the part contained a full coresig
-		    ($gw,$sense,$pos,$epos) = ($xgw,$xsense,$xpos,$xepos);
-		}
+		# Ensure the part has all elements of a coresig
+		($gw,$sense,$pos,$epos) = ($xgw,$xsense,$xpos,$xepos);
 	    } else {
 		if ($pt =~ /\](.*?)'([A-Za-z\/]+)/) {
 		    ($pos,$epos) = ($1,$2);
@@ -1124,7 +1152,8 @@ sub uniq  {
     my %u = ();
     my @u = ();
     foreach my $s (@_) {
-	push @u, $s unless $u{$s}++;
+	my $s1 = $s; $s1 =~ s/\t.*$//;
+	push @u, $s unless $u{$s1}++;
     }
     @u;
 }

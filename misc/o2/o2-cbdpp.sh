@@ -25,7 +25,7 @@ if [ "$g2" == "yes" ]; then
 	    if [ "$projtype" == "superglo" ]; then
 		cbdpp.plx -nosigs -announce $a
 		# there can only be one .glo in a superglo so print its name and exit
-		/bin/echo -n $a | sed s/00lib/01tmp
+		/bin/echo -n $a | sed s/00lib/01tmp/
 		exit 0
 	    else
 		cbdpp.plx -announce $a

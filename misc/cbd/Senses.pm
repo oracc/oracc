@@ -105,6 +105,7 @@ sub senses_merge {
 	    next;
 	} else {
 	    my %i = index_senses($s);
+#	    print Dumper \%i;
 	    my %bs = ();
 	    # create a hash where they keys are the index into @$b
 	    # and the values are the number of tokens that occur in
@@ -123,6 +124,7 @@ sub senses_merge {
 		    $bs{$k} = 0;
 		}
 	    }
+#	    print Dumper \%bs;
 	    if (scalar keys %bs) {
 		my @m = sort { &bscmp(\%bs) } keys %bs;
 		my $index = $m[0]; $index =~ s/^#//;
@@ -192,8 +194,9 @@ sub index_senses {
     my %t = ();
     for (my $i = 0; $i <= $#_; ++$i) {
 	my $s = $_[$i];
-	$s =~ s/^\@sense\S*\s+\S+\s+//;
-	$s =~ s/^\S+\s+\S+\s+//; # remove sense-id and POS
+	$s =~ s/^\@sense\S*\s+//;
+	$s =~ s/\#\S+\s+//; # remove sense-id
+	$s =~ s/^\S+\s+\S+\s+//; # and POS
 	$s =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
 	foreach my $t (split(/\s/,$s)) {
 	    push @{$t{$t}}, $i; # register token $t as occurring in sense $i
