@@ -882,6 +882,8 @@ sub find_in_coresigs_sub {
 
 sub find_in_coresigs {
     my($cf,$xgw,$l) = @_;    
+    $l =~ s/-\d+$//;
+    $l =~ s#/n##;
     my $res = find_in_coresigs_sub($cf,$xgw,$l);
     return $res if $res;
     my $this_l = ORACC::CBD::Util::lang();

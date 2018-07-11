@@ -135,7 +135,7 @@ sub map_apply_sig_sub {
 	    $f{'epos'} = $f2{'epos'};
 	}
 	$f{'form'} =~ s/^%.*?://;
-	$f{'base'} =~ s/^%.*?://;
+	$f{'base'} =~ s/^%.*?:// if $f{'base'};
 	if ($currmap{$key,'base'}) {
 	    if ((my $mbase = ${$currmap{$key,'base'}}{$f{'base'}})) {
 		$f{'base'} = $$mbase;
