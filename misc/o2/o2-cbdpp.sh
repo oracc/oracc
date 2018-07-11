@@ -19,6 +19,13 @@ if [ "$g2" == "yes" ]; then
 	fi
     done
     libglo=`ls -1 00lib/*.glo | grep -v '~' | grep glo`
+    if [ "$projtype" == "superglo" ]; then
+	true
+    else
+	for a in $libglo ; do
+	    cbdpp.plx -s -nopsus $a
+	done
+    fi    
     for a in $libglo ; do
 	globase=`basename $a`
 	if [ ! -r "00src/$globase" ]; then

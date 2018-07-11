@@ -219,6 +219,8 @@
 
     <xsl:apply-templates select="cbd:usages"/>
 
+    <xsl:apply-templates select="cbd:equivs"/>
+
     <xsl:apply-templates select="cbd:bib"/>
 
     <!--

@@ -66,6 +66,7 @@ foreach my $s (@sigs) {
     open(S,$s);
     my $fields = <S>;
     while (<S>) {
+	next if /^\s*$/;
 	chomp;
 	next if /\!0x(\d+)/;
 	/\%(.*?):/;

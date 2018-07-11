@@ -204,7 +204,7 @@ sub sigs_check {
     sigs_init();
     sigs_simple($args,@cbd);
     sigs_cofs();
-    sigs_psus($args,@cbd);
+    sigs_psus($args,@cbd) unless $$args{'nopsus'};
 #    my $cbdname = ORACC::CBD::Util::cbdname();
 #    if ($glo) {
 #	@{$$glo{'sigs'}} = @sigs_simple;
@@ -224,7 +224,7 @@ sub sigs_from_glo {
     sigs_init();
     sigs_simple($args,@cbd);
     sigs_cofs();
-    sigs_psus($args,@cbd);
+    sigs_psus($args,@cbd) unless $$args{'nopsus'};
     sigs_dump($args);
 }
 
@@ -852,8 +852,7 @@ do_psu {
     @parts_errors = ();
 }
 
-sub
-find_in_coresigs {
+sub find_in_coresigs_sub {
     my($cf,$xgw,$l) = @_;    
     psu_index($l) unless $psu_indexes{$l};
     if ($psu_indexes{$l}) {
@@ -878,14 +877,20 @@ find_in_coresigs {
 	    }
 	}
     }
+    undef;
+}
+
+sub find_in_coresigs {
+    my($cf,$xgw,$l) = @_;    
+    my $res = find_in_coresigs_sub($cf,$xgw,$l);
+    return $res if $res;
     my $this_l = ORACC::CBD::Util::lang();
     if ($l ne $this_l) {
-#	warn "find_in_coresigs: trying $cf/$xgw/$this_l vs. $l\n";
-	my $res = find_in_coresigs($cf,$xgw,$this_l);
+	my $res = find_in_coresigs_sub($cf,$xgw,$this_l);
 	return $res if $res;
     }
     if ($l ne 'qpn') {
-	my $res = find_in_coresigs($cf,$xgw,'qpn');
+	my $res = find_in_coresigs_sub($cf,$xgw,'qpn');
 	return $res if $res;
     }
     undef;
@@ -1187,7 +1192,7 @@ sub sigs_dump {
     print SIGS "\@fields sig rank\n";
     print SIGS uniq(@sigs_simple);
     print SIGS uniq(@sigs_cofs);
-    print SIGS uniq(@sigs_psus);
+    print SIGS uniq(@sigs_psus) unless $$args{'nopsus'};
 #    print SIGS @{$g{'sigs'}};
 #    print SIGS @{$g{'cofs'}};
 #    print SIGS @{$g{'psus'}};

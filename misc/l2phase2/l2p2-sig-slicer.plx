@@ -36,6 +36,7 @@ my $slice_lang = '';
 my $slice_name = '';
 my @slice_tests = ();
 my $stdout = 0;
+my $superlang = '';
 my $verbose = 0;
 
 my $withall = `oraccopt . cbd-with-all`;
@@ -61,11 +62,13 @@ GetOptions(
     'project:s'=>\$slice_proj,
     'sigs:s'=>\$sigs,
     'stdout'=>\$stdout,
+    'superlang:s'=>\$superlang,
     'test:s'=>\@slice_tests,
     'verbose'=>\$verbose,
     );
 
 $sigs = '01bld/project.sig' unless $sigs;
+
 $slice = shift @ARGV unless $slice;
 $dir_output = "01bld/$slice_lang" unless $dir_output;
 my @printsigs = ();
@@ -133,10 +136,12 @@ while (<SIGS>) {
 	# need to be imported there by some other mechanism.
 	$sig =~ s/\&\&.*?\t/\t/;
     }
+    
     my $matched = 1;
 
     $sig =~ s/-[0-9][0-9][0-9]:/:/
 	unless $slice_lang && $slice_lang =~ /-\d\d\d$/; # remove script codes unless we've asked for a script
+
     foreach my $c (@constraints) {
 	if ($sig =~ /$$c[1]/) {
 	    $matched = ($$c[0] eq 'yes');
@@ -154,6 +159,9 @@ while (<SIGS>) {
 	chomp;
 	my @f = split(/\t/,$_);
 	my $msig = $f[0];
+	if ($superlang) {
+	    $msig =~ s/\%.*?:/\%$superlang:/g;
+	}
 #	my $rank = $f[$f{'rank'}];
 #	my $freq = $f[$f{'freq'}];
 	my $refs = '';
