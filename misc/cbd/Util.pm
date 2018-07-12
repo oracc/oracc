@@ -56,6 +56,11 @@ sub pp_args {
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
 
+    # We reset args{'lang'} to header lang for output files, so we
+    # stash the original in #lang for modules that special purpose the
+    # -lang arg
+    $args{'#lang'} = $args{'lang'};
+
     if ($ORACC::CBD::nosetupargs) {
 	@{$args{'argv'}} = @ARGV;
     } else {
@@ -318,26 +323,24 @@ sub setup_args {
     $$args{'cbd'} = $file;
     my $lng = '';
     $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
-    if (-r $$args{'cbd'}) {
-	my %h = header_vals($$args{'cbd'});
-	die "cbdpp.plx: $$args{'cbd'}: can't continue without project and language\n"
-	    unless $h{'project'} && $h{'lang'};
-	$ORACC::CBD::bases = lang_uses_base($h{'lang'});
-	$ORACC::CBD::norms = lang_uses_norm($h{'lang'});
-	#    warn "uses_base = $ORACC::CBD::bases\n";
-	$$args{'lang'} = $h{'lang'};
-	system 'mkdir', '-p', "01bld/$h{'lang'}";
-    } else {
-	die "cbdpp.plx: can't read glossary $$args{'cbd'}\n";
-    }
-
     $file;
 }
 
 sub setup_cbd {
     my($args,$glossary) = @_;
-    pp_file($glossary ? $glossary : $$args{'cbd'});
+    my $file = $glossary ? $glossary : $$args{'cbd'};
+    die "cbdpp.plx: can't read glossary $file\n" unless -r $file;
+    pp_file($file);
     atf_reset();
+    
+    my %h = header_vals($file);
+    die "cbdpp.plx: $file: can't continue without project and language\n"
+	    unless $h{'project'} && $h{'lang'};
+    $ORACC::CBD::bases = lang_uses_base($h{'lang'});
+    $ORACC::CBD::norms = lang_uses_norm($h{'lang'});
+    #    warn "uses_base = $ORACC::CBD::bases\n";
+    $$args{'lang'} = $h{'lang'};
+    system 'mkdir', '-p', "01bld/$h{'lang'}";
     my @cbd = pp_load($args, $glossary);
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
