@@ -42,6 +42,7 @@ function g2x {
 #	echo l2p2-g2x.plx -h $ldir/union.sig
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
+#    echo running xis $ldir $l
     xis $ldir $l
     if [ -s $ldir/$l.map ]; then
 #	echo running l2p2-g2c.plx $l

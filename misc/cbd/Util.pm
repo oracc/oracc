@@ -49,7 +49,7 @@ sub pp_args {
 	\%args,
 	qw/announce apply auto bare base:s check kompounds dry dynamic edit entries=s file 
 	filter fix:s force increment:s inplace invert lines list:s lang:s mode:s 
-	nonormify nopsus nosigs output:s project:s reset sigs trace vfields:s words=f xml/,
+	nonormify nopsus nosigs output:s project:s reset sigs stdout trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};
@@ -77,7 +77,7 @@ sub pp_args {
 sub pp_cbd {
     my ($args,@c) = @_;
     return if pp_status() && !$$args{'force'};
-    if ($$args{'filter'}) {
+    if ($$args{'filter'} || $$args{'stdout'}) {
 	foreach (@c) {
 	    print "$_\n" unless /^\000$/;
 	}

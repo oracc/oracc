@@ -1045,12 +1045,41 @@ parts_match {
 sub
 print_psu_sig {
     my ($eref, $psuform, $res_ref, @sigs) = @_;
+    my $glolang = ORACC::CBD::Util::lang();
     my @p = ();
     foreach my $r (@$res_ref) {
 	push @p, $$r[0];
     }
+    # rewrite the form to make sure we get any necessary language switches into it
+    my %f = ();
+    foreach my $s (@sigs) {
+	my($flang,$form) = ($s =~ m/\%(.*?):(.*?)=/);
+	if ($flang && $flang ne $glolang) {
+	    $f{$form} = $flang;
+	}
+    }
+    my @f = ();
+    my $curr_lang = $glolang;
+    foreach my $p (split(/\s+/, $psuform)) {
+	if ($f{$p}) {
+	    if ($curr_lang ne $f{$p}) {
+		push @f, "\%$f{$p} $p";
+		$curr_lang = $f{$p};
+	    } else {
+		push @f, $p;
+	    }
+	} else {
+	    if ($curr_lang ne $glolang) {
+		push @f, "\%$glolang $p";
+		$curr_lang = $glolang;
+	    } else {
+		push @f, $p;
+	    }
+	}
+    }
+    $psuform = join(' ', @f);
     my $psusig = join('++', @sigs);
-    $psuform =~ s/\s*$//;
+#    $psuform =~ s/\s*$//;
     push (@sigs_psus, 
 	  "{$psuform = @p += $$eref{'cf'}\[$$eref{'gw'}//$$eref{'sense'}\]$$eref{'pos'}'$$eref{'epos'}}"
 	  .'::'.$psusig."\t0\n");

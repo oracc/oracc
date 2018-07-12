@@ -55,9 +55,9 @@ foreach (@input) {
 	print;
     } else {
 	if ($lang) {
-	    print map_apply_sig($_) if /\%$lang/;
+	    print map_apply_sig(\%args,$_) if /\%$lang/;
 	} else {
-	    print map_apply_sig($_);
+	    print map_apply_sig(\%args,$_);
 	}
     }
 } 

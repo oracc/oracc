@@ -23,7 +23,7 @@ if [ "$g2" == "yes" ]; then
 	true
     else
 	for a in $libglo ; do
-	    cbdpp.plx -s -nopsus $a
+	    cbdpp.plx -sigs -nopsus $a
 	done
     fi    
     for a in $libglo ; do

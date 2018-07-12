@@ -68,7 +68,7 @@
 <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
 <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
-<xsl:variable name="summaries-doc" select="concat('@@ORACC@@/www/',$basename,'/cbd/',/*/@xml:lang,'/summaries.html')"/>
+<xsl:variable name="summaries-doc" select="concat('@@ORACC_BUILDS@@/',$basename,'01bld/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
 
 <!--<xsl:strip-space elements="*"/>-->
 

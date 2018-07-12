@@ -49,7 +49,7 @@
       </xsl:for-each>
     </xsl:attribute>
     <xsl:apply-templates 
-	select="cbd:cf|cbd:gw|cbd:pos|cbd:root|cbd:dt|./*/cbd:base|./*/*/cbd:mng|./*/*/cbd:term"/>
+	select="cbd:cf|cbd:gw|cbd:pos|cbd:root|cbd:dt|./*/cbd:base|./cbd:senses/cbd:sense/cbd:mng|./*/*/cbd:term"/>
   </summary>
 </xsl:template>
 

@@ -98,7 +98,7 @@ sub map_apply_glo {
 }
 
 sub map_apply_sig {
-    my $s = shift;
+    my ($args,$s) = @_;
     chomp($s);
     $s =~ s/\t(.*$)//;
     my $t = $1;
@@ -107,18 +107,18 @@ sub map_apply_sig {
 	my @s = ();
 	foreach my $s (split(/\+\+/,$sigs)) {
 #	    warn "map_apply_sig_sub in psu\n";
-	    push @s, map_apply_sig_sub($s);
+	    push @s, map_apply_sig_sub($args,$s);
 	}
 	$s = $psu.'::'.join('++',@s);
     } else {
 #	warn "map_apply_sig_sub non-psu\n";
-	$s = map_apply_sig_sub($s);
+	$s = map_apply_sig_sub($args,$s);
     }
     "$s\t$t\n";
 }
 
 sub map_apply_sig_sub {
-    my $s = shift @_;
+    my ($args, $s) = @_;
     my $orig = $s;
     my %f = parse_sig($s);
     my $key = "$f{'cf'}\[$f{'gw'}]$f{'pos'}";
@@ -134,7 +134,10 @@ sub map_apply_sig_sub {
 	    $f{'sense'} = $f2{'sense'};
 	    $f{'epos'} = $f2{'epos'};
 	}
-	$f{'form'} =~ s/^%.*?://;
+	if ($$args{'#lang'}) { # could add && $$args{'coerce-lang'} here
+	    $f{'lang'} = $$args{'#lang'};
+	}
+#	$f{'form'} =~ s/^%.*?://;
 	$f{'base'} =~ s/^%.*?:// if $f{'base'};
 	if ($currmap{$key,'base'}) {
 	    if ((my $mbase = ${$currmap{$key,'base'}}{$f{'base'}})) {
@@ -144,6 +147,8 @@ sub map_apply_sig_sub {
 	$s = serialize_sig(%f);
 	my $op = (($orig eq $s) ? '==' : '->');
 #	warn "map_apply_sig_sub $orig $op $s\n";
+    } elsif ($$args{'#lang'}) {
+	$s =~ s/\%.*?:/\%$$args{'#lang'}:/
     }
     $s;
 }
