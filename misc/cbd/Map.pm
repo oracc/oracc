@@ -137,7 +137,7 @@ sub map_apply_sig_sub {
 	if ($$args{'#lang'}) { # could add && $$args{'coerce-lang'} here
 	    $f{'lang'} = $$args{'#lang'};
 	}
-#	$f{'form'} =~ s/^%.*?://;
+	$f{'form'} =~ s/^%.*?://;
 	$f{'base'} =~ s/^%.*?:// if $f{'base'};
 	if ($currmap{$key,'base'}) {
 	    if ((my $mbase = ${$currmap{$key,'base'}}{$f{'base'}})) {

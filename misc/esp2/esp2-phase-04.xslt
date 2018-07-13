@@ -284,6 +284,14 @@
 
 <!-- process internal links -->
 <xsl:template match="esp:link[string ( @bookmark ) or string ( @page )] | esp:area[string ( @bookmark ) or string ( @page )]"  mode="content">
+  <xsl:call-template name="internal-link"/>
+</xsl:template>
+
+<xsl:template match="esp:link[string ( @bookmark ) or string ( @page )] | esp:area[string ( @bookmark ) or string ( @page )]">
+  <xsl:call-template name="internal-link"/>
+</xsl:template>
+
+<xsl:template name="internal-link">
   <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
   <xsl:variable name="tag-has-content" select="count ( node () )"/>
   <xsl:variable name="bookmark" select="@bookmark"/>
@@ -436,7 +444,15 @@
 </xsl:template>
 
 <!-- process external links (RH replaced text 'External site' with 'Link opens in new window')-->
+<xsl:template match="esp:link[string ( @url )] | esp:area[string ( @url )]">
+  <xsl:call-template name="external-link"/>
+</xsl:template>
+
 <xsl:template match="esp:link[string ( @url )] | esp:area[string ( @url )]" mode="content">
+  <xsl:call-template name="external-link"/>
+</xsl:template>
+
+<xsl:template name="external-link">
   <xsl:choose>
     <xsl:when test="@class='twitter-timeline'">
       <xsl:call-template name="twitter"/>

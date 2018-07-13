@@ -68,7 +68,7 @@
 <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
 <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
-<xsl:variable name="summaries-doc" select="concat('@@ORACC_BUILDS@@/',$basename,'01bld/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
+<xsl:variable name="summaries-doc" select="concat('@@ORACC_BUILDS@@/',$basename,'/01bld/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
 
 <!--<xsl:strip-space elements="*"/>-->
 
@@ -1196,11 +1196,18 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:value-of select="concat(translate(substring(*[1]/@xml:lang,1,1),$lower,$upper),
 			    substring(*[1]/@xml:lang,2),'. ')"/>
       <xsl:for-each select="cbd:equiv">
-        <span class="{@xml:lang}"><xsl:apply-templates select="cbd:term"/></span>
-  	<xsl:if test="string-length(cbd:mean) > 0">
-          <span class="mean"> &quot;<xsl:apply-templates 
-				select="cbd:mean"/>&quot;</span>
-        </xsl:if>
+	<xsl:choose>
+	  <xsl:when test="cbd:term">
+            <span class="{@xml:lang}"><xsl:apply-templates select="cbd:term"/></span>
+  	    <xsl:if test="string-length(cbd:mean) > 0">
+              <span class="mean"> &quot;<xsl:apply-templates 
+	      select="cbd:mean"/>&quot;</span>
+            </xsl:if>
+	  </xsl:when>
+	  <xsl:otherwise>
+            <span class="{@xml:lang}"><xsl:value-of select="."/></span>
+	  </xsl:otherwise>
+	</xsl:choose>
  	<xsl:choose>
           <xsl:when test="not(position() = last())">
     	    <xsl:text>; </xsl:text>
@@ -1208,7 +1215,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	  <xsl:otherwise>
 	    <xsl:text>.</xsl:text>
 	  </xsl:otherwise>
-	</xsl:choose>	
+	</xsl:choose>
       </xsl:for-each>
     </p>
   </div>
