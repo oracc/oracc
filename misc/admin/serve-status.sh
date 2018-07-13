@@ -1,3 +1,7 @@
 #!/bin/sh
-$ORACC/bin/agg-list-public-projects.sh | perl -e \
-    '@p=(<>);chomp @p; map {$f="$ENV{qw/ORACC_BUILDS/}/$_/servestamp";-f $f && printf("$_ %s\n", (stat($f))[9])} @p'
+for a in $ORACC_BUILDS/www/srv/*.tar.gz ; do
+    sec=`stat -c %Y $a`
+    prj=`basename $a .tar.gz`
+    prj=`/bin/echo -n $prj | tr - /`
+    echo "$prj	$sec"
+done
