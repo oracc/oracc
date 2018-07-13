@@ -19,7 +19,8 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	osync-fixlinks.plx osync-all.sh orc list-subprojects.sh		\
 	osync-tar.sh osync-snc.sh osync-snc-all.sh osync-tar-dir.sh	\
 	osync-tar-get.sh build-all.sh build-umbrella.sh			\
-	list-all-subs.sh home-full-back.sh user-full-back.sh
+	list-all-subs.sh home-full-back.sh user-full-back.sh 		\
+	nserve-status.sh
 
 #data_DATA = usermode.xml
 #
