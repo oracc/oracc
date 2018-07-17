@@ -369,8 +369,11 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		   NULL, sp->owner);
 	}
 
+#if 0
+      /* This is wrong now that we allow lem of akk-x-stdbab against, e.g., ogca:akk */
       if (strcmp((const char *)f->lang, (const char *)c->f2p->lang))
 	continue;
+#endif
 
       f2 = c->f2p;
       if (psu_bit_ok(f,f2) && cfnorm_ok(f,f2))

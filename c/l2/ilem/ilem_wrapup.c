@@ -11,6 +11,7 @@ int lem_do_wrapup = 1;
 int lem_percent_threshold = 20;
 int lem_extended = 1;
 extern int verbose;
+extern int bootstrap_mode;
 
 static int md_match(const char *value, const char *key, Hash_table *mdsets, const char *mdrefs);
 static struct ilem_form **md_selector(Hash_table *xcl_context_meta, Hash_table *mdsets, struct ilem_form **fp, int *nfinds);
@@ -287,7 +288,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
       ilem_inherit(fp, fp->finds[0]); /* not lp->f because of ambig */
 
       /* check this after inherit to get fields set correctly */
-      if (strcmp((char*)fp->f2.lang, (char*)fp->finds[0]->f2.lang))
+      if (!bootstrap_mode && strcmp((char*)fp->f2.lang, (char*)fp->finds[0]->f2.lang))
 	{
 	  char *errsig = err_sig(fp);
 	  vwarning2(fp->file,fp->lnum,
