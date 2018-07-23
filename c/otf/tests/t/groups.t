@@ -216,7 +216,7 @@
 
 
 018. %a A--U
-     A—U
+     A-U
      <g:gg g:type="logo">
        <g:s g:delim="—" g:em="1" g:logolang="sux" g:role="logo">A</g:s>
        <g:s g:logolang="sux" g:role="logo">U</g:s>
@@ -351,8 +351,8 @@
      </g:w>
 
 028. %a {m}aš+šur--EN--GUB
-     {m}aš+šur—EN—GUB
-     <g:w form="{m}aš+šur—EN—GUB" xml:lang="akk">
+     {m}aš+šur-EN-GUB
+     <g:w form="{m}aš+šur-EN-GUB" xml:lang="akk">
        <g:d g:pos="pre" g:role="semantic">
          <g:v>m</g:v>
        </g:d>
@@ -451,5 +451,22 @@
        <g:gg g:type="reordering">
          <g:v g:delim=":">a</g:v>
          <g:v>zu</g:v>
+       </g:gg>
+     </g:w>
+
+036. %a E-MIN<(NIN-URTA)>
+     E-NIN-URTA
+     <g:w form="E-NIN-URTA" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s>E</g:s>
+         <g:surro>
+           <g:gg g:type="logo">
+             <g:s g:logolang="sux" g:role="logo">MIN</g:s>
+           </g:gg>
+           <g:gg g:surroStart="1" g:type="group">
+             <g:s g:delim="-">NIN</g:v>
+             <g:s g:surroEnd="X000001.1.1.2">URTA</g:v>
+           </g:gg>
+         </g:surro>
        </g:gg>
      </g:w>
