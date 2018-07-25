@@ -103,7 +103,7 @@ my %xis_periods = ();
 
 $ORACC::L2GLO::Util::project = '';
 
-@ORACC::L2GLO::Util::instfields = qw/norm base cont morph morph2 stem/;
+@ORACC::L2GLO::Util::instfields = qw/norm base cont morph morph2 stem rws/;
 
 %ORACC::L2GLO::Util::fieldchars = (
     norm => '$',
@@ -112,6 +112,7 @@ $ORACC::L2GLO::Util::project = '';
     morph => '#',
     morph2 => '##',
     stem => '*',
+    rws => '@',
     flags => '!',
     );
 

@@ -21,6 +21,18 @@ use ORACC::CBD::Sigs;
 use ORACC::CBD::SuxNorm;
 use ORACC::CBD::Validate;
 
+# FIXME: this should use Unicode Norm D
+my %vowel_of = (
+    'Ā'=>'A',
+    'Ē'=>'E',
+    'Ī'=>'I',
+    'Ū'=>'U',
+    'Â'=>'A',
+    'Ê'=>'E',
+    'Î'=>'I',
+    'Û'=>'U',
+    );
+
 my %file_indexes = ();
 
 use Getopt::Long;
@@ -48,7 +60,7 @@ sub pp_args {
     GetOptions(
 	\%args,
 	qw/announce apply auto bare base:s check kompounds dry dynamic edit entries=s file 
-	filter fix:s force increment:s inplace invert lines list:s lang:s mode:s 
+	filter fix:s force increment:s inplace invert letters lines list:s lang:s mode:s 
 	nonormify nopsus nosigs output:s project:s reset sigs stdout trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
@@ -74,13 +86,29 @@ sub pp_args {
     %args;
 }
 
+my $last_char = '';
+sub cbd_dump {
+    my($args, $outh, @c) = @_;
+    foreach (@c) {
+	next if /^\000$/;
+	if (/^\@entry\S*\s+(.*?)\s*$/ && $$args{'letters'}) {
+	    my $cfgw = $1;
+	    my $init_char = first_letter($cfgw);
+	    if (!$last_char || $last_char ne $init_char) {
+		$last_char = $init_char;
+		print $outh "\@letter $last_char\n\n";
+	    }
+	}
+	print $outh "$_\n";
+    }
+}
+
 sub pp_cbd {
     my ($args,@c) = @_;
     return if pp_status() && !$$args{'force'};
     if ($$args{'filter'} || $$args{'stdout'}) {
-	foreach (@c) {
-	    print "$_\n" unless /^\000$/;
-	}
+	$last_char = '';
+	cbd_dump($args, \*STDOUT, @c);
     } else {
 	my $ldir = '01tmp';
 	system 'mkdir', '-p', $ldir;
@@ -102,14 +130,20 @@ sub pp_cbd {
 		print CBD "$_\n";
 	    }
 	} else {
-	    foreach (@c) {
-		print CBD "$_\n" unless /^\000$/;
-	    }
+	    $last_char = '';
+	    cbd_dump($args, \*CBD, @c);
 	}
 	close(CBD);
 	warn "cbdpp.plx: wrote $outf\n"
 	    if $$args{'announce'};
     }
+}
+
+sub first_letter {
+    my($first) = ($_[0] =~ /^(.)/);
+    $first = "\U$first";
+    $first = $vowel_of{$first} if $vowel_of{$first};
+    $first;
 }
 
 sub pp_load {

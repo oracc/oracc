@@ -493,7 +493,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 		  break;
 #endif
 		case '@':
-		  f2p->project = lp;
+		  f2p->rws = lp;
 		  break;
 		case '%':
 		  f2p->lang = lp;

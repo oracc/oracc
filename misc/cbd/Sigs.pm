@@ -299,6 +299,8 @@ sub sigs_simple {
 
 	    my $sensebang = $1 || '';
 
+	    s/\s\*\S+//; # remove stems
+
 	    if (!$nsense && $ORACC::CBD::Forms::external) {
 
 		my @f = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
@@ -475,6 +477,8 @@ sub sigs_form {
     $sig{'base'} = $1 if s/\s+\/(\S+)//;
     $sig{'cont'} = $1 if s/\s+\+(\S+)//;
     $sig{'stem'} = $1 if s/\s+\*(\S+)//;
+
+#    warn "stem=$sig{'stem'}\n" if $sig{'stem'};
     
     if (s/\s\@(\S+)//) {
 	my $rws = $1;
@@ -715,6 +719,7 @@ sub psu_glo {
 		push @no_sense_forms, $_;
 	    }
 	} elsif (/^\@sense/ && $compound) {
+	    s/\s\*\S+//;
 	    if ($nsense == 0) {
 		if ($ORACC::CBD::Forms::external) {
 		    @no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
@@ -993,7 +998,7 @@ parts_match {
 	    for (my $j = 0; $j <= $#candidates; ++$j) {
 		my($form,$norm) = ();
 		if ($candidates[$j] =~ /\$/) {
-		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#);
+		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@\*])#);
 		} else {
 		    $candidates[$j] =~ m#:(.*?)=#;
 		    ($form,$norm) = ($1,'*');

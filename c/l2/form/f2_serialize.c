@@ -81,6 +81,7 @@ f2_serialize_form(FILE *f_f2, struct f2 *f)
   f2_attr(f_f2,"stem",(char*)f->stem);
   f2_attr(f_f2,"morph",(char*)f->morph);
   f2_attr(f_f2,"morph2",(char*)f->morph2);
+  f2_attr(f_f2,"rws",(char*)f->rws);
   fputs("/>",f_f2);
 }
 

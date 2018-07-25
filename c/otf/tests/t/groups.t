@@ -131,18 +131,18 @@
 012. %a {d}MIN<(nin-urta)>
      {d}nin-urta
      <g:w form="{d}nin-urta" xml:lang="akk">
-       <g:d g:pos="pre" g:role="semantic">
-         <g:v>d</g:v>
-       </g:d>
-       <g:surro>
-         <g:gg g:type="logo">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>d</g:v>
+         </g:d>
+         <g:surro>
            <g:s g:logolang="sux" g:role="logo">MIN</g:s>
-         </g:gg>
-         <g:gg g:surroStart="1" g:type="group">
-           <g:v g:delim="-">nin</g:v>
-           <g:v g:surroEnd="X000001.1.1.2">urta</g:v>
-         </g:gg>
-       </g:surro>
+           <g:gg g:surroStart="1" g:type="group">
+             <g:v g:delim="-">nin</g:v>
+             <g:v g:surroEnd="X000001.1.1.2">urta</g:v>
+           </g:gg>
+         </g:surro>
+       </g:gg>
      </g:w>
 
 013. %a GU{+qu-u}-u

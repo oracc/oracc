@@ -79,7 +79,8 @@ struct f2
   const Uchar *stem;
   const Uchar *augment; /* need to store +.*ra until we get morphology from cbd */
   const Uchar *restrictor;
-
+  const Uchar *rws;
+  
   /* Data structure for use by wordset lookup */
   struct w2_set *words;
 

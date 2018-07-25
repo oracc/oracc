@@ -25,9 +25,9 @@ load {
     $builtins{'projecthome'} = "$builtins{'oracc'}/$builtins{'project'}";
     chomp(@builtins{qw/datestamp dateversion timestamp/});
 
-    rnv($xcf_rnc,undef,0);
-    rnv($xcf_rnc,$fn,0);
-    rnv($set_rnc,undef,0) if $set_rnc;
+#    rnv($xcf_rnc,undef,0);
+#    rnv($xcf_rnc,$fn,0);
+#    rnv($set_rnc,undef,0) if $set_rnc;
     my $x = load_xml($fn);
 # print STDERR $x->toString(1); exit 0;
     my %set = (%builtins,%predefs);

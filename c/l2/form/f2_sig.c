@@ -81,6 +81,12 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (fp->morph2)
     sprintf((char*)(buf+strlen((char*)buf)),"##%s",fp->morph2);
 
+  if (fp->stem)
+    sprintf((char*)(buf+strlen((char*)buf)),"*%s",fp->stem);
+
+  if (fp->rws)
+    sprintf((char*)(buf+strlen((char*)buf)),"@%s",fp->rws);
+
   return (unsigned char *)strdup((char*)buf);
 }
 

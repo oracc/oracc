@@ -105,6 +105,8 @@ my %rws_map = (
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
 
+my $stem_validator;
+
 my %vfields = ();
 my %arg_vfields = ();
 
@@ -179,6 +181,14 @@ sub pp_validate {
     ORACC::SL::BaseC::init();
     $ORACC::SL::report_all = 1;
 
+    if ($lang =~ /^akk/) {
+	$stem_validator = \&v_stem_akk;
+    } elsif ($lang =~ /^sux/) {
+	$stem_validator = \&v_stem_sux;
+    } else {
+	$stem_validator = \&v_stem_bad;
+    }
+    
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/;
 	if ($cbd[$i] =~ /^\#/) {
@@ -752,7 +762,11 @@ sub v_form {
 		unless $mixed_morph;
 	}
     }
-    
+
+    if ($f =~ /\s\*(\S+)/) {
+	&$stem_validator($1);
+    }
+
     1 while $barecheck =~ s#(^|\s)[\%\$\#\@\+\/\*!]\S+#$1#g;
 
     if ($barecheck =~ /\S/) {
@@ -898,6 +912,12 @@ sub v_sense {
 	    push @{$data{'edit'}}, pp_line()-1;
 	}
     }
+
+    my $stem = undef;
+    if ($arg =~ s/\s\*(\S+)//) {
+	$stem = $1;
+	&$stem_validator($stem);
+    }
     
     my($pos,$mng) = ();
     if ($arg =~ /^[A-Z]+(?:\/[it])?\s/) {
@@ -996,6 +1016,14 @@ sub v_bff {
 }
 
 sub v_stems {
+    my($tag,$arg) = @_;
+    if ($lang =~ /^akk/) {
+	# possibly do nothing
+    } elsif ($lang =~ /^sux/) {
+	# this is actually used a few times in epsd2; need rules for it
+    } else {
+	pp_warn("STEM not yet implemented for lang=$lang");
+    }
 }
 
 sub v_bib {
@@ -1185,6 +1213,24 @@ sub is_allowed {
 sub is_bad_compound {
 #    print Dumper \%bad_compounds;
     $bad_compounds{$_[0]};
+}
+
+my %akk_stem = (); 
+my @akk_stem = qw/B G Bt Gt Btn Gtn D Dt Dtn Š Št Štn N Nt Ntn/;
+@akk_stem{@akk_stem} = ();
+
+sub v_stem_akk {
+    my $stems = shift;
+    foreach my $s (split(/,/,$stems)) {
+	pp_warn("unknown stem $s") unless exists $akk_stem{$s};
+    }
+}
+
+sub v_stem_sux {
+}
+
+sub v_stem_bad {
+    pp_warn("no stem validator for lang=$lang");
 }
 
 1;

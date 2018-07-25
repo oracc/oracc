@@ -1453,7 +1453,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      else
 		{
-		  wp = appendChild(lastChild(wp),np);
+		  wp = appendChild(atpt ? atpt : lastChild(wp),np);
 		  grouped_det = 1;
 		}
 	      break;
