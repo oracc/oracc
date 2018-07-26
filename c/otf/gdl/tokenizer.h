@@ -14,7 +14,7 @@
 #define T_MODS   C(g_b)C(g_m)C(g_a)C(g_f)
 #define T_DISAMB C(g_disamb)
 #define T_NORM   C(norm)
-#define T_PROX   C(prox)
+#define T_PROX   C(prox)C(surro_mark)
 #define T_OL     C(sol)C(eol)
 #define T_VAR    C(varo)C(varc)
 #define T_UB	 C(ub_plus)C(ub_minus)

@@ -1658,7 +1658,18 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  if (last_text_or_bound == text 
 		      || (tokindex && tokens[tokindex-1]->type == detc))
 		    {
+		      int lastg = tokindex-1;
 		      (void)lang_push(curr_lang);
+		      while (tokens[lastg]->class != text && lastg >= 0)
+			--lastg;
+		      if (tokens[lastg]->class == text)
+			{
+			  int smark = lastg, count = tokindex - lastg;
+			  lastg = tokindex;
+			  while (count--)
+			    tokens[tokindex++] = tokens[--lastg];
+			  tokens[smark] = create_token(meta,surro_mark,"<(=>");
+			}
 		      tokens[tokindex++] = clone_token(static_tokens[surro]);
 		      push_surrimpl(surrc);
 		      last_text_or_bound = meta;

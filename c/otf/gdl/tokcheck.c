@@ -24,7 +24,8 @@ const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , per
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
 				     g_corr , g_g , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
-				     wm_absent , wm_broken , wm_linecont , 
+				     wm_absent , wm_broken , wm_linecont ,
+				     surro_mark ,
 				     type_top };
 const enum t_type g_flag_m[] = { flag, type_top };
 const enum t_type g_opener_m[] = { deto , glosso , damago , hdamago , supplo , exciso ,
@@ -247,6 +248,7 @@ tokcheck_init()
 	case exciso:
 	case implo:
 	case surro:
+	case surro_mark:
 	case maybeo:
 	case eraso:
 	case varo:

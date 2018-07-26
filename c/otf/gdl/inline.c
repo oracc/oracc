@@ -58,6 +58,7 @@ const unsigned char *surroStart = NULL;
 const unsigned char *statusStart = NULL;
 
 int in_g_surro = 0;
+int post_surro_mark = 0;
 static int split_word_unfinished;
 int in_split_word = 0;
 int max_cells = 1, curr_cell = 0;
@@ -966,7 +967,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (in_g_surro && !surroStart)
 		{
 		  surroStart = getAttr(np,"xml:id");
-		  setAttr(wp,a_g_surroStart,(unsigned char *)"1");
+		  /* setAttr(surro_node,a_g_surroStart,(unsigned char *)"1"); */
 		}
 	      np->lnum = lnum;
 	      if (!watch)
@@ -1638,13 +1639,17 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    }
 		}
 	      break;
-	    case surro:
+	    case surro_mark:
 	      if (g_surro(start))
 		{
 		  in_g_surro = 1;
 		  surroStart = NULL;
+		  atpt = np = elem(e_g_surro,NULL,lnum,GRAPHEME);
+		  surro_node = appendChild(wp,np);
 		}
-	      else
+	      break;
+	    case surro:
+	      if (!in_g_surro)
 		{
 		  wrapup_word(wp, tp->type);
 		  setName(wp,e_g_nonw);
@@ -1657,10 +1662,18 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  if (nline_words > 0 && (!sparse_lem || w_sparse_lem))
 		    --nline_words;
 		  wp = NULL;
+		  atpt = NULL;
+		  group_flag = notoken;
 		}
-	      atpt = NULL;
-	      group_flag = notoken;
-	      np = elem(in_g_surro ? e_g_surro : e_surro,NULL,lnum,GRAPHEME);
+#if 1
+	      if (in_g_surro)
+		{
+		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
+		  surro_wp = wp;
+		  appendAttr(gg,attr(a_g_type,ucc("group")));
+		  atpt = wp = appendChild(surro_node,gg);
+		}
+#else
 	      if (in_g_surro)
 		{
 		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
@@ -1679,7 +1692,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      if (show) serialize(at,0);
 		      surro_node = np;
 		      if (show) printf("</x>");
-		    }
+		    }		    
 		  else
 		    {
 		      appendChild(np,removeLastChild(wp));
@@ -1696,6 +1709,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendAttr(gg,attr(a_g_type,ucc("group")));
 		  wp = appendChild(surro_node,gg);
 		}
+#endif
 	      else
 		{
 		  appendChild(np,removeLastChild(parent));
