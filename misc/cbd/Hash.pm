@@ -347,7 +347,6 @@ sub pp_acd_merge {
 		    if ($fld eq 'bases') {
 			$i_bases = $tmp;
 		    } else {
-#			warn "tmp=$tmp\n" if $fld eq 'sense';
 			++$known{un_sense_id($tmp)};
 		    }
 		}
@@ -369,7 +368,6 @@ sub pp_acd_merge {
 				$fld =~ s#/(\S+)#/$fb#;
 			    } 
 			}
-#			warn "tmp=$tmp\n" if $fld eq 'sense';
 			if (!defined $known{un_sense_id($tmp)}) {
 			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 			    ++$known{un_sense_id($tmp)};
@@ -536,6 +534,9 @@ sub un_sense_id {
     $t =~ s/^an?\s+//;
     $t =~ s/^to\s+//;
     $t =~ s/^\(to be\)\s+//;
+    $t =~ s/\s+/ /;
+    $t =~ s/\s*$//;
+    $t =~ s/^\s*//;
     $t;
 }
 1;
