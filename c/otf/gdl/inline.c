@@ -37,7 +37,7 @@ static int grouped_det = 0; /* a bandaid to separate
 		       */
 static int np_already_set = 0;
 
-struct node *surro_wp = NULL;
+struct node *surro_wp = NULL, *surro_atpt = NULL;
 
 extern FILE*f_forms;
 extern int check_only;
@@ -58,7 +58,7 @@ const unsigned char *surroStart = NULL;
 const unsigned char *statusStart = NULL;
 
 int in_g_surro = 0;
-int post_surro_mark = 0;
+int surro_mark_grapheme = 0;
 static int split_word_unfinished;
 int in_split_word = 0;
 int max_cells = 1, curr_cell = 0;
@@ -101,7 +101,7 @@ static unsigned char *forms_insertp;
 static ssize_t formsbuf_size;
 static enum t_type word_init_mutex = notoken;
 
-static int g_surro(int tindex);
+/*static int g_surro(int tindex);*/
 static int has_cells(void);
 static int has_fields(void);
 static void langhand(struct node *wp, struct token *tp);
@@ -600,6 +600,19 @@ prev_b_or_g(ssize_t tindex)
   return space;
 }
 
+static struct token *
+next_text(ssize_t tindex)
+{
+  while (tindex < last_token)
+    {
+      if (tokens[tindex]->class == text)
+	return tokens[tindex];
+      else
+	++tindex;
+    }
+  return NULL;
+}
+
 static enum t_type
 next_b_or_g(ssize_t tindex)
 {
@@ -1056,7 +1069,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  struct node *target = np;
 		  if (np->etype == e_g_gg && np->children.lastused > 0)
 		    target = firstChild(np);
-		  if (sforce_flag)
+		  if (surro_mark_grapheme)
+		    {
+		      surro_mark_grapheme = 0; /* appendChild(surro_node, removeLastChild(wp)); */
+		    }
+		  else if (sforce_flag)
 		    {
 		      enum t_type gt = ((struct grapheme*)datap)->type;
 		      if (gt == g_s || gt == g_c)
@@ -1114,7 +1131,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      if (grouped_det)
 					appendChild(n, np);
 				      else
-					if (atpt) 
+					if (atpt)
 					  appendChild(atpt, np);
 					else
 					  appendChild(n, np);
@@ -1127,23 +1144,32 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				      atpt = n;
 				      group_flag = atpt->ttype = period;
 			            }
+				  else if (!xstrcmp(atype,"group"))
+				    {
+				      struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME);
+				      setAttr(n,a_g_type,ucc("logo"));
+				      appendChild(n, removeLastChild(atpt ? atpt : wp));
+				      appendChild(atpt, n);
+				      atpt = n;
+				      group_flag = period;
+				    }
 				  else
 				    {
-				      /* this is a logo group in a
-					 context where there is
-					 already an ancestor logo
-					 group.  We don't need the
-					 group, so just add the
-					 grapheme to the atpt */
+				      fprintf(stderr, "unhandled group type in logo processing: %s\n", atype);
 				    }
 				}
 			      else
 				{
+#if 0
+				  /* There is a logo ancestor, just attach graphemes */
 				  if (!atpt && anc_gg)
 				    {
 				      atpt = anc_gg;
 				      group_flag = atpt->ttype = (tp->type == g_s ? period : tp->type);
 				    }
+#else
+				  group_flag = period;
+#endif
 				}
 			    }
 			  else
@@ -1188,7 +1214,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  else
 		    {
 		      if (!atpt)
-			fprintf(stderr, "ox: internal error: attach point not set in group context\n");
+			warning("ox: internal error: attach point not set in group context");
 		      appendChild(atpt ? atpt : lastChild(wp), np);		  
 		    }
 		}
@@ -1211,7 +1237,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      wp = surro_wp;
 			/*surro_node->parent;*/
-		      surro_wp = surro_node = NULL;
+		      surro_atpt = surro_wp = surro_node = NULL;
 		    }
 		  wrapup_word(wp, space);
 		  setAttr(wp,a_g_delim,tp->data);
@@ -1278,18 +1304,24 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      if (atpt)
 		{
-		  atpt = atpt->parent;
-		  if (atpt->etype == e_g_gg)
+		  if (atpt->parent && atpt->parent->etype == e_g_gg)
 		    {
-		      if (atpt)
-			group_flag = atpt->ttype;
-		      else
-			group_flag = notoken;
+		      atpt = atpt->parent;
+		      group_flag = atpt->ttype;
 		    }
 		  else
 		    {
-		      atpt = NULL;
-		      group_flag = notoken;
+		      struct token *next_g = next_text(start);
+		      if (!tokens[start+1]
+			  || group_flag == plus
+			  || (next_g
+			      && next_g->type != g_s
+			      && next_g->type != g_c
+			      ))
+			{
+			  atpt = NULL;
+			  group_flag = notoken;
+			}
 		    }
 		}
 	      break;
@@ -1640,115 +1672,81 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      break;
 	    case surro_mark:
-	      if (g_surro(start))
+#if 0
+	      if (wp && (wp->etype == e_g_d || wp->children.lastused)) /* g_surro(start)) */
 		{
-		  in_g_surro = 1;
-		  surroStart = NULL;
-		  atpt = np = elem(e_g_surro,NULL,lnum,GRAPHEME);
-		  surro_node = appendChild(wp,np);
+		  ;
 		}
-	      break;
-	    case surro:
-	      if (!in_g_surro)
-		{
-		  wrapup_word(wp, tp->type);
-		  setName(wp,e_g_nonw);
-		  appendAttr(wp,attr(a_type, ucc("surro")));
-		  if (need_lemm || do_show_insts)
-		    (*lemm_unform_p)();
-		  removeAttr(wp,"form");
-		  /* back up the word list also b/c we consider the surro
-		     host to be a non-word */
-		  if (nline_words > 0 && (!sparse_lem || w_sparse_lem))
-		    --nline_words;
-		  wp = NULL;
-		  atpt = NULL;
-		  group_flag = notoken;
-		}
-#if 1
-	      if (in_g_surro)
-		{
-		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
-		  surro_wp = wp;
-		  appendAttr(gg,attr(a_g_type,ucc("group")));
-		  atpt = wp = appendChild(surro_node,gg);
+	      else
+		{		  
+		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
+				      &logo_word, with_word_list);
 		}
 #else
-	      if (in_g_surro)
-		{
-		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
-		  struct node *lastG = lastGrapheme(wp);
-		  if (lastG && lastG->parent && lastG->parent->etype == e_g_gg)
-		    {
-		      struct node *at = lastG->parent;
-		      int show = 0;
-		      if (show) printf("<x xmlns:g=\"http://oracc.org/ns/gdl/1.0\">");
-		      if (show) serialize(at,0);
-		      lastG = removeLastChild(at);
-		      if (show) serialize(at,0);
-		      appendChild(np,lastG);
-		      if (show) serialize(np,0);
-		      appendChild(at,np);
-		      if (show) serialize(at,0);
-		      surro_node = np;
-		      if (show) printf("</x>");
-		    }		    
-		  else
-		    {
-		      appendChild(np,removeLastChild(wp));
-		      if (lastChild(np)->etype == e_g_gg)
-			{
-			  /* fprintf(stderr,"g_gg\n"); */
-			  struct node *l_f = firstChild(lastChild(np));
-			  if (l_f && l_f->etype == e_g_d)
-			    appendChild(wp, removeFirstChild(lastChild(np)));
-			}
-		      surro_node = appendChild(wp,np);
-		    }
-		  surro_wp = wp;
-		  appendAttr(gg,attr(a_g_type,ucc("group")));
-		  wp = appendChild(surro_node,gg);
-		}
-#endif
-	      else
-		{
-		  appendChild(np,removeLastChild(parent));
-#if 0
-		  if (tokens[start-1]->type == detc)
-		    appendChild(np,removeLastChild(parent));
-#endif
-		  appendChild(parent,np);
-		  surro_node = parent = np;
-		}
+	      if (!wp)
+		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
+				      &logo_word, with_word_list);
+#endif	      
+	      surroStart = NULL;
+	      in_g_surro = 1;
+	      np = elem(e_g_surro,NULL,lnum,GRAPHEME);
+	      surro_atpt = atpt;
+	      atpt = surro_node = appendChild(atpt ? atpt : wp, np);
+	      surro_mark_grapheme = 1;
+	      break;
+	    case surro:
+	      {
+		struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
+		group_flag = gg->ttype = surro;
+		surro_wp = wp;
+		appendAttr(gg,attr(a_g_type,ucc("group")));
+		atpt = wp = appendChild(surro_node,gg);
+	      }
 	      break;
 	    case surrc:
-	      if (in_g_surro)
+	      if (NULL == surro_node)
 		{
-		  setAttr(lastChild(wp),a_g_surroEnd,surroStart);
-		  if (surro_node)
-		    {
-		      wp = surro_wp;
-			/*surro_node->parent;*/
-		      surro_wp = surro_node = NULL;
-		    }
+		  fprintf(stderr, "ox: internal error: found surrc when surro_node == NULL\n");
+		  wp = surro_wp;
+		  atpt = surro_atpt;
+		  surro_wp = surro_atpt = NULL;
 		  in_g_surro = 0;
 		}
 	      else
 		{
-		  if (start+1 < end && tokens[start+1]->type == hyphen)
-		    in_split_word = 1;
-		  wrapup_word(wp,tp->type);
-		  parent = surro_node->parent;
-		  if (!xstrcmp(parent->names->pname,"g:w"))
+		  if (in_g_surro)
 		    {
-		      wp = parent;
-		      parent = wp->parent;
-		      atpt = NULL;
+		      if (surro_node)
+			{
+			  if (atpt)
+			    setAttr(lastChild(atpt),a_g_surroEnd,surroStart);
+			  else
+			    setAttr(lastChild(lastChild(surro_node)),a_g_surroEnd,surroStart);
+			  wp = surro_wp;
+			  /*surro_node->parent;*/
+			  atpt = surro_atpt;
+			  surro_atpt = surro_wp = surro_node = NULL;
+			}
+		      in_g_surro = 0;		      
 		    }
 		  else
 		    {
-		      last_wp = wp;
-		      wp = NULL;
+		      if (start+1 < end && tokens[start+1]->type == hyphen)
+			in_split_word = 1;
+		      parent = surro_node->parent;
+		      wrapup_word(wp,tp->type);
+		      atpt = surro_atpt;
+		      if (!xstrcmp(parent->names->pname,"g:w"))
+			{
+			  wp = parent;
+			  parent = wp->parent;
+			  /* atpt = NULL; */
+			}
+		      else
+			{
+			  last_wp = wp;
+			  wp = NULL;
+			}
 		    }
 		}
 	      break;
@@ -2085,7 +2083,15 @@ process_words(struct node *parent, int start, int end, int with_word_list)
   emit_vari();
 
   if (wp)
-    wrapup_word(wp,eol);
+    {
+      if (in_g_surro && surro_node)
+	{
+	  wp = surro_wp;
+	  /*surro_node->parent;*/
+	  surro_atpt = surro_wp = surro_node = NULL;
+	}
+      wrapup_word(wp,eol);
+    }
 }
 
 static struct node *
@@ -2390,6 +2396,7 @@ nowt_to_render(struct node *n)
   return 1;
 }
 
+#if 0
 static int
 g_surro(int tindex)
 {
@@ -2444,6 +2451,7 @@ g_surro(int tindex)
 
   return 1;
 }
+#endif
 
 const char *
 curr_word_id(void)

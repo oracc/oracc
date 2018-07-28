@@ -116,33 +116,29 @@
 
 011. %a MIN<(su-ri)>
    su-ri
-   <x:surro>
-     <g:nonw type="surro" xml:lang="akk">
-       <g:gg g:type="logo">
-         <g:s g:logolang="sux" g:role="logo">MIN</g:s>
+   <g:w form="su-ri" xml:lang="akk">
+     <g:surro>
+       <g:s>MIN</g:s>
+       <g:gg g:type="group">
+         <g:v g:delim="-">su</g:v>
+         <g:v g:surroEnd="X000001.1.1.0">ri</g:v>
        </g:gg>
-     </g:nonw>
-     <g:w form="su-ri" xml:lang="akk">
-        <g:v g:delim="-">su</g:v>
-        <g:v>ri</g:v>
-     </g:w>
-   </x:surro>
+     </g:surro>
+   </g:w>
 
 012. %a {d}MIN<(nin-urta)>
      {d}nin-urta
      <g:w form="{d}nin-urta" xml:lang="akk">
-       <g:gg g:type="logo">
-         <g:d g:pos="pre" g:role="semantic">
-           <g:v>d</g:v>
-         </g:d>
-         <g:surro>
-           <g:s g:logolang="sux" g:role="logo">MIN</g:s>
-           <g:gg g:surroStart="1" g:type="group">
-             <g:v g:delim="-">nin</g:v>
-             <g:v g:surroEnd="X000001.1.1.2">urta</g:v>
-           </g:gg>
-         </g:surro>
-       </g:gg>
+       <g:d g:pos="pre" g:role="semantic">
+         <g:v>d</g:v>
+       </g:d>
+       <g:surro>
+         <g:s>MIN</g:s>
+         <g:gg g:type="group">
+           <g:v g:delim="-">nin</g:v>
+           <g:v g:surroEnd="X000001.1.1.1">urta</g:v>
+         </g:gg>
+       </g:surro>
      </g:w>
 
 013. %a GU{+qu-u}-u
@@ -317,11 +313,9 @@
      <g:w form="{+a}20" xml:lang="akk">
        <g:d g:pos="pre" g:role="phonetic">
          <g:surro>
-           <g:gg g:type="logo">
-             <g:s g:logolang="sux" g:role="logo">MIN</g:s>
-           </g:gg>
-           <g:gg g:surroStart="1" g:type="group">
-             <g:v g:surroEnd="X000001.1.1.1">a</g:v>
+           <g:s>MIN</g:s>
+           <g:gg g:type="group">
+             <g:v g:surroEnd="X000001.1.1.0">a</g:v>
            </g:gg>
          </g:surro>
        </g:d>
@@ -336,8 +330,8 @@
      </g:w>
 
 027. %a {m}aš+šur--EN
-     {m}aš+šur—EN
-     <g:w form="{m}aš+šur—EN" xml:lang="akk">
+     {m}aš+šur-EN
+     <g:w form="{m}aš+šur-EN" xml:lang="akk">
        <g:d g:pos="pre" g:role="semantic">
          <g:v>m</g:v>
        </g:d>
@@ -410,24 +404,34 @@
      |A.E|-I
      <g:w form="|A.E|-I" xml:lang="akk">
        <g:gg g:type="logo">
-         <g:c form="|A.E|" g:logolang="sux" g:role="logo">
+         <g:c form="|A.E|" g:delim="-" g:logolang="sux" g:role="logo">
            <g:s>A</g:s>
            <g:o g:type="beside"></g:o>
-           <g:s g:delim="-">E</g:s>
+           <g:s>E</g:s>
          </g:c>
          <g:s g:logolang="sux" g:role="logo">I</g:s>
        </g:gg>
      </g:w>
+
+    <g:q form="en(|PA.TE|)">
+      <g:v>en</g:v>
+      <g:c form="|PA.TE|" g:delim="-">
+        <g:s>PA</g:s>
+        <g:o g:type="beside"/>
+        <g:s>TE</g:s>
+      </g:c>
+    </g:q>
+    <g:v>gal</g:v>
 
 033. %a en(|PA.TE|)-gal
      en(|PA.TE|)-gal
      <g:w form="en(|PA.TE|)-gal" xml:lang="akk">
        <g:q form="en(|PA.TE|)">
          <g:v>en</g:v>
-         <g:c form="|PA.TE|">
+         <g:c form="|PA.TE|" g:delim="-">
            <g:s>PA</g:s>
            <g:o g:type="beside"></g:o>
-           <g:s g:delim="-">TE</g:s>
+           <g:s>TE</g:s>
          </g:c>
        </g:q>
        <g:v>gal</g:v>
@@ -454,19 +458,71 @@
        </g:gg>
      </g:w>
 
-036. %a E-MIN<(NIN-URTA)>
-     E-NIN-URTA
-     <g:w form="E-NIN-URTA" xml:lang="akk">
+036. %a E.MIN<(NIN.URTA)>
+     E.NIN.URTA
+     <g:w form="E.NIN.URTA" xml:lang="akk">
        <g:gg g:type="logo">
-         <g:s>E</g:s>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">E</g:s>
          <g:surro>
-           <g:gg g:type="logo">
-             <g:s g:logolang="sux" g:role="logo">MIN</g:s>
-           </g:gg>
-           <g:gg g:surroStart="1" g:type="group">
-             <g:s g:delim="-">NIN</g:v>
-             <g:s g:surroEnd="X000001.1.1.2">URTA</g:v>
+           <g:s>MIN</g:s>
+           <g:gg g:type="group">
+             <g:s g:delim="." g:logolang="sux" g:role="logo">NIN</g:s>
+             <g:s g:logolang="sux" g:role="logo" g:surroEnd="X000001.1.1.1">URTA</g:s>
            </g:gg>
          </g:surro>
        </g:gg>
+     </g:w>
+
+037. %a MIN#<(IN.NIN)>
+     IN.NIN
+     <g:w form="IN.NIN" xml:lang="akk">
+       <g:surro>
+         <g:s g:break="damaged" g:hc="1" g:ho="1">MIN</g:s>
+         <g:gg g:type="group">
+           <g:gg g:type="logo">
+             <g:s g:delim="." g:logolang="sux" g:role="logo">IN</g:s>
+             <g:s g:logolang="sux" g:role="logo" g:surroEnd="X000001.1.1.0">NIN</g:s>
+           </g:gg>
+         </g:gg>
+       </g:surro>
+     </g:w>
+
+038. %a {d}A.NUN.NA
+     {d}A.NUN.NA
+     <g:w form="{d}A.NUN.NA" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:d g:pos="pre" g:role="semantic">
+           <g:v>d</g:v>
+         </g:d>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">A</g:s>
+         <g:s g:delim="." g:logolang="sux" g:role="logo">NUN</g:s>
+         <g:s g:logolang="sux" g:role="logo">NA</g:s>
+       </g:gg>
+     </g:w>
+
+039. %a DINGIR-ME
+     DINGIR-ME
+     <g:w form="DINGIR-ME" xml:lang="akk">
+       <g:gg g:type="logo">
+         <g:s g:delim="-" g:logolang="sux" g:role="logo">DINGIR</g:s>
+         <g:s g:logolang="sux" g:role="logo">ME</g:s>
+       </g:gg>
+     </g:w>
+
+040. %a MIN<({d}A.NUN.NA)>
+     {d}A.NUN.NA
+     <g:w form="{d}A.NUN.NA" xml:lang="akk">
+       <g:surro>
+         <g:s>MIN</g:s>
+         <g:gg g:type="group">
+           <g:gg g:type="logo">
+             <g:d g:pos="pre" g:role="semantic">
+               <g:v>d</g:v>
+             </g:d>
+             <g:s g:delim="." g:logolang="sux" g:role="logo">A</g:s>
+             <g:s g:delim="." g:logolang="sux" g:role="logo">NUN</g:s>
+             <g:s g:logolang="sux" g:role="logo" g:surroEnd="X000001.1.1.0">NA</g:s>
+           </g:gg>
+         </g:gg>
+       </g:surro>
      </g:w>

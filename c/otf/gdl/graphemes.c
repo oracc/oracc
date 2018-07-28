@@ -2129,8 +2129,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    if (*gdelim)
 		      {
 			const unsigned char *tmp = gdelim;
-			while (*tmp)
-			  *insertp++ = *tmp++;
+			if (tmp[1])
+			  *insertp++ = '-';
+			else
+			  *insertp++ = *tmp;
 		      }
 #else
 		    if (i)
@@ -2266,9 +2268,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			{
 			  if (cued_gdelim)
 			    {
-			      while (*cued_gdelim)
-				*insertp++ = *cued_gdelim++;
-			      cued_gdelim = NULL;
+			      if (cued_gdelim[1])
+				*insertp++ = '-';
+			      else
+				*insertp++ = *cued_gdelim;
 			    }
 			  else
 			    *insertp++ = '-';
@@ -2318,8 +2321,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    if (*gdelim)
 	      {
 		const unsigned char *tmp = gdelim;
-		while (*tmp)
-		  *insertp++ = *tmp++;
+		if (tmp[1])
+		  *insertp++ = '-';
+		else
+		  *insertp++ = *tmp;
 	      }
 	  }
 	else if (!xstrcmp(aval,"newline"))
@@ -2334,8 +2339,10 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    if (*gdelim)
 	      {
 		const unsigned char *tmp = gdelim;
-		while (*tmp)
-		  *insertp++ = *tmp++;
+		if (tmp[1])
+		  *insertp++ = '-';
+		else
+		  *insertp++ = *tmp;
 	      }
 	    /* *insertp++ = '-'; */
 	  }

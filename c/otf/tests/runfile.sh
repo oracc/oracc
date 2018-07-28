@@ -23,6 +23,7 @@ while read l; do
 	cat >atf/$b/$t.atf <<EOF
 &X000001=Test
 #project: test
+#atf: use unicode
 $l
 EOF
 	cat >tst/$b/$t.grp <<EOF
@@ -33,7 +34,7 @@ EOF
 	if [[ $f == $form ]]; then
 	    true # echo "$l: $f = $form ok"
 	else
-	    echo "$1 $l failed form test $f != $form"
+	    echo "$1 $l failed form test: ouput $f != expected $form"
 	fi
 	xsltproc testxml.xsl xml/$b/$t.xml|xmllint --c14n - >tst/$b/$t.xml
 	grep -F -qf tst/$b/$t.grp tst/$b/$t.xml || echo "$1 $l failed XML test"

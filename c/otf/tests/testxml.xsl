@@ -56,6 +56,8 @@
   <xsl:copy-of select="@g:c"/>
   <xsl:copy-of select="@g:delim"/>
   <xsl:copy-of select="@g:em"/>
+  <xsl:copy-of select="@g:hc"/>
+  <xsl:copy-of select="@g:ho"/>
   <xsl:copy-of select="@g:logolang"/>
   <xsl:copy-of select="@g:o"/>
   <xsl:copy-of select="@g:pos"/>

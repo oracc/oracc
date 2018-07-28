@@ -1664,11 +1664,17 @@ tokenize(register unsigned char *l,unsigned char *e)
 			--lastg;
 		      if (tokens[lastg]->class == text)
 			{
+#if 1
+			  memmove(&tokens[lastg+1], &tokens[lastg], (tokindex-lastg) * sizeof(struct token*));
+			  ++tokindex;
+			  tokens[lastg] = create_token(meta,surro_mark,"<(=>");
+#else
 			  int smark = lastg, count = tokindex - lastg;
 			  lastg = tokindex;
 			  while (count--)
-			    tokens[tokindex++] = tokens[--lastg];
+			    tokens[tokindex++] = tokens[lastg--];
 			  tokens[smark] = create_token(meta,surro_mark,"<(=>");
+#endif
 			}
 		      tokens[tokindex++] = clone_token(static_tokens[surro]);
 		      push_surrimpl(surrc);
