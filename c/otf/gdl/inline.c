@@ -58,6 +58,7 @@ const unsigned char *surroStart = NULL;
 const unsigned char *statusStart = NULL;
 
 int in_g_surro = 0;
+int in_long_surro = 0;
 int surro_mark_grapheme = 0;
 static int split_word_unfinished;
 int in_split_word = 0;
@@ -102,6 +103,7 @@ static ssize_t formsbuf_size;
 static enum t_type word_init_mutex = notoken;
 
 /*static int g_surro(int tindex);*/
+static int long_surro(int tindex);
 static int has_cells(void);
 static int has_fields(void);
 static void langhand(struct node *wp, struct token *tp);
@@ -1672,36 +1674,52 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      break;
 	    case surro_mark:
-#if 0
-	      if (wp && (wp->etype == e_g_d || wp->children.lastused)) /* g_surro(start)) */
+	      if (long_surro(start))
 		{
-		  ;
+		  group_flag = notoken;
+		  np = elem(e_surro,NULL,lnum,GRAPHEME);
+		  in_long_surro = 1;
+		  in_g_surro = 0;
+		  appendChild(parent, np); /* attach to line node */
+		  surro_node = parent = np;
 		}
 	      else
-		{		  
-		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
-				      &logo_word, with_word_list);
+		{
+		  if (!wp)
+		    wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
+				    &logo_word, with_word_list);
+		  surroStart = NULL;
+		  in_g_surro = 1;
+		  in_long_surro = 0;
+		  np = elem(e_g_surro,NULL,lnum,GRAPHEME);
+		  surro_atpt = atpt;
+		  atpt = surro_node = appendChild(atpt ? atpt : wp, np);
 		}
-#else
-	      if (!wp)
-		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
-				      &logo_word, with_word_list);
-#endif	      
-	      surroStart = NULL;
-	      in_g_surro = 1;
-	      np = elem(e_g_surro,NULL,lnum,GRAPHEME);
-	      surro_atpt = atpt;
-	      atpt = surro_node = appendChild(atpt ? atpt : wp, np);
 	      surro_mark_grapheme = 1;
-	      break;
+	      break;	      
 	    case surro:
-	      {
-		struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
-		group_flag = gg->ttype = surro;
-		surro_wp = wp;
-		appendAttr(gg,attr(a_g_type,ucc("group")));
-		atpt = wp = appendChild(surro_node,gg);
-	      }
+	      if (in_g_surro)
+		{
+		  struct node *gg = elem(e_g_gg,NULL,lnum,GRAPHEME);
+		  group_flag = gg->ttype = surro;
+		  surro_wp = wp;
+		  appendAttr(gg,attr(a_g_type,ucc("group")));
+		  atpt = wp = appendChild(surro_node,gg);
+		}
+	      else
+		{
+		  setName(firstChild(surro_node),e_g_nonw);
+                  if (need_lemm || do_show_insts)
+                    (*lemm_unform_p)();
+                  removeAttr(wp,"form");
+                  /* back up the word list also b/c we consider the surro
+                     host to be a non-word */
+                  if (nline_words > 0 && (!sparse_lem || w_sparse_lem))
+                    --nline_words;
+                  wp = NULL;
+		  /*		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
+				  &logo_word, with_word_list); */
+		}
 	      break;
 	    case surrc:
 	      if (NULL == surro_node)
@@ -1725,7 +1743,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  wp = surro_wp;
 			  /*surro_node->parent;*/
 			  atpt = surro_atpt;
-			  surro_atpt = surro_wp = surro_node = NULL;
+			  surro_atpt = surro_wp = surro_node = NULL;			  
 			}
 		      in_g_surro = 0;		      
 		    }
@@ -1749,6 +1767,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			}
 		    }
 		}
+	      if (atpt && atpt->etype == e_g_gg)
+		group_flag = atpt->ttype;
+	      else
+		group_flag = notoken;
 	      break;
 	    case damago:
 	      if (square_bracket == damago)
@@ -2394,6 +2416,21 @@ nowt_to_render(struct node *n)
 	return 0;
 
   return 1;
+}
+
+static int
+long_surro(int tindex)
+{
+  while (tokens[tindex])
+    {
+      if (tokens[tindex]->type == surrc)
+	return 0;
+      if (tokens[tindex]->type == space)
+	return 1;
+      ++tindex;
+    }
+  /* This is an error condition but is reported elsewhere */
+  return 0;
 }
 
 #if 0
