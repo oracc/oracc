@@ -159,6 +159,7 @@ sub pp_validate {
     my($args,@cbd) = @_;
 
     %data = %ORACC::CBD::data;
+    
     my %glodata = (); # entries, bffs, psu, etc., for this cbd
     $trace = $ORACC::CBD::PPWarn::trace;
     @global_cbd = @cbd;
@@ -241,9 +242,9 @@ sub pp_validate {
 	}
     }
 
-    open(D,'>cfmng.dump');
-    print D Dumper \%entries;
-    close(D);
+#    open(D,'>cfmng.dump');
+#    print D Dumper \%entries;
+#    close(D);
     
     foreach my $p (@parts) {
 	v_part($p);
@@ -260,13 +261,12 @@ sub pp_validate {
 
     sigs_check(\%glodata,$args,@cbd) if $$args{'check'};
 
+    pp_status(0) if $ORACC::CBD::novalidate;
+    
     my $cbdname = ORACC::CBD::Util::cbdname();
     push @{$data{'cbds'}}, $cbdname;
     
     %{$data{$cbdname}} = %glodata;
-
-    # @{$$data_ref{'edit'}} = @{$data{'edit'}};
-    # $data{'taglists'} = \%tag_lists;
     
     %ORACC::CBD::data = %data;
 

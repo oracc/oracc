@@ -45,7 +45,9 @@ $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
 $ORACC::CBD::nosigs = 0;
+$ORACC::CBD::novalidate = 0;
 $ORACC::CBD::qpn_base_lang = 'sux';
+$ORACC::CBD::nodiagnostics = 0;
 
 my $file_index = 1;
 
@@ -61,12 +63,14 @@ sub pp_args {
 	\%args,
 	qw/announce apply auto bare base:s check kompounds dry dynamic edit entries=s file 
 	filter fix:s force increment:s inplace invert letters lines list:s lang:s mode:s 
-	nonormify nopsus nosigs output:s project:s reset sigs stdout trace vfields:s words=f xml/,
+	nonormify nopsus nosigs novalid output:s project:s quiet reset sigs stdout trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};
     $ORACC::CBD::check_compounds = $args{'kompounds'};
+    $ORACC::CBD::nodiagnostics = $args{'quiet'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
+    $ORACC::CBD::novalidate = $args{'novalid'};
 
     # We reset args{'lang'} to header lang for output files, so we
     # stash the original in #lang for modules that special purpose the

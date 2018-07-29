@@ -21,6 +21,7 @@ sub flcmp {
 
 sub pp_diagnostics {
     my $args = shift;
+    return if $ORACC::CBD::nodiagnostics;
     my @e = sort { &flcmp; } keys %errlist;
     my $ret = $#e + 1;
     if ($#e >= 0) {
@@ -55,7 +56,12 @@ sub pp_notice {
 }
 
 sub pp_status {
-    $status;
+    my $arg = shift;
+    if (defined($arg)) {
+	$status = $arg;
+    } else {
+	$status;
+    }
 }
 
 sub pp_trace {

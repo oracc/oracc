@@ -8,6 +8,8 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
 my %args = pp_args();
+$ORACC::CBD::novalidate = 1;
+
 my @entries = ();
 if ($args{'entries'}) {
     if ($args{'entries'} eq '-') {
