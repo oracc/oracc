@@ -208,7 +208,7 @@ ox_options(int argc, char **argv)
 	  cuneify_notices = 1;
 	  break;
 	case '4':
-	  dump_sigs = 1;
+	  do_cdl = need_lemm = dump_sigs = 1;
 	  check_only = 1;
 	  break;
 	case '5':

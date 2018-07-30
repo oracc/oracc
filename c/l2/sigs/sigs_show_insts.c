@@ -40,6 +40,7 @@ sigs_l_show_insts(struct xcl_context *xcp, struct xcl_l *l)
   /*  if (l && l->f && l->f->sublem) */
   if (l)
     {
+      printf("%s:%d: ", l->f->file, (int)l->f->lnum);
       if (l->f && l->f->sublem)
 	printf("@%s%s\n", project, l->f->sublem);
       else if (l->inst)
