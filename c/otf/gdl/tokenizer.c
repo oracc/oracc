@@ -479,7 +479,7 @@ set_128(int *start)
 void
 tokenize_init()
 {
-  enum t_type i;
+  volatile int i;
   register int c;
 
   tok_mem = mb_init(sizeof(struct token),1024);
@@ -530,8 +530,9 @@ tokenize_init()
   tablep = hash_create(4999);
   table = *tablep;
 
-  for (i = 0; i < type_top; ++i)
+  for (i = 0; i < (int)type_top; ++i)
     {
+      /* fprintf(stderr,"i=%d; type_top=%d\n", i, type_top); */
       if (type_data[i])
 	static_tokens[i] = hash_insert((unsigned char*)type_data[i],
 				       s_create_token((!type_data[i][1]
