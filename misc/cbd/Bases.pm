@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/bases_align bases_hash bases_init bases_log bases_log_errors bases_fixes
-    bases_process bases_stats bases_term bases_merge bases_string/;
+    bases_process bases_stats bases_term bases_merge bases_string bases_serialize/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -94,12 +94,14 @@ sub bases_init {
     if (-d '01tmp') {
 	$bases_outfile = "01tmp/$bases_outfile";
     }
+    ORACC::SL::BaseC::init();
     open(MAP_FH, ">>$bases_outfile");
     $map_fh = \*MAP_FH;
 }
 
 sub bases_term {
     close(MAP_FH);
+    ORACC::SL::BaseC::term();
 }
 
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
