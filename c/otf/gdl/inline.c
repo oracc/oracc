@@ -1777,7 +1777,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  wp = surro_wp;
 			  /*surro_node->parent;*/
 			  atpt = surro_atpt;
-			  surro_atpt = surro_wp = surro_node = NULL;			  
+			  surro_atpt = surro_wp = NULL;
 			}
 		      in_g_surro = 0;		      
 		    }
@@ -1806,6 +1806,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		group_flag = atpt->ttype;
 	      else
 		group_flag = notoken;
+	      surro_node = NULL;
 	      break;
 	    case damago:
 	      if (square_bracket == damago)

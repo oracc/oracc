@@ -274,8 +274,8 @@ ancestor_or_self(struct node *node,char *name)
 static void
 ack(struct node *p,struct node *c)
 {
-  if (p
-      && c
+  if (p && p->names
+      && c && c->names
       && (!strcmp(p->names->pname,"g:v")
 	  || !strcmp(p->names->pname,"g:s"))
       && (!strcmp(c->names->pname,"g:v")
