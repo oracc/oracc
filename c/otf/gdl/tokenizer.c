@@ -19,6 +19,8 @@
 
 #define NEW_ERROR_RECOVERY
 
+struct lang_context *saved_lang;
+
 #define hash_lookup(keyp,tablep) hash_find(tablep,keyp)
 
 #define C(x) #x,
@@ -34,6 +36,8 @@ extern int cbd_rules, use_legacy, use_unicode;
 extern int show_toks, word_matrix;
 
 int last_token;
+
+int temp_no_norm = 0;
 
 static List *meta_graphemes = NULL;
 /*static const char *const flag_names[] = { F0 F1 F2 F3 F4 };*/
@@ -882,6 +886,23 @@ tokenize(register unsigned char *l,unsigned char *e)
 	  switch (effective_lang->mode)
 	    {
 	    case m_graphemic:
+	    m_graphemic_norm:
+	      if (temp_no_norm)
+		{
+		  char *tag = malloc(strlen(curr_lang->fulltag)), *mtag;
+		  const char *ctag = curr_lang->fulltag;
+		  mtag = tag;
+		  *tag = '%';
+		  while (isalpha(*ctag) || '-' == *ctag)
+		    *tag++ = *ctag++;
+		  if (tag[-1] == '-')
+		    tag[-1] = '\0';
+		  else
+		    *tag = '\0';
+		  saved_lang = curr_lang;
+		  curr_lang = lang_switch(curr_lang, mtag, NULL, file, lnum);
+		  free(mtag);
+		}
 	      l = tokenize_grapheme(l,&g,&following,&t);
 	      if (g)
 		{
@@ -1049,6 +1070,11 @@ tokenize(register unsigned char *l,unsigned char *e)
 			  goto ret;
 			}
 		    }
+		  if (temp_no_norm)
+		    {
+		      curr_lang = saved_lang;
+		      temp_no_norm = 0;
+		    }
 		}
 	      else
 		{
@@ -1056,13 +1082,32 @@ tokenize(register unsigned char *l,unsigned char *e)
 #if 0 /* no, this is bogus; */
 		  --tokindex; /* ignore bad grapheme token */
 #endif
-#else		  
+#else
+		  if (temp_no_norm)
+		    {
+		      curr_lang = saved_lang;
+		      temp_no_norm = 0;
+		    }
 		  status = 1;
 		  goto ret;
 #endif
 		}
 	      break;
 	    case m_normalized:
+	      if (tokindex
+		  && (tokens[tokindex-1]->type == deto
+		      || (tokindex >= 2
+			  && (tokens[tokindex-1]->type == plus
+			      || tokens[tokindex-1]->type == damago)
+			  && tokens[tokindex-2]->type == deto)
+		  || (tokindex >= 3
+		      && (tokens[tokindex-1]->type == damago
+			  || tokens[tokindex-2]->type == plus)
+		      && tokens[tokindex-3]->type == deto)))
+		{
+		  temp_no_norm = 1;
+		  goto m_graphemic_norm;
+		}
 	      l = tokenize_normalized(l, &g, &following, &t);
 	      if (g)
 		{

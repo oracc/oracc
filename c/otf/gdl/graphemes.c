@@ -1971,7 +1971,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	break;
       case 'v':
       case 's':
-	if (np->names->pname[3] && !strcmp(np->names->pname,"g:surro"))
+	if (np->names->pname[3] && !strcmp(np->names->pname,"g:surro")
+	    && np->children.lastused > 1)
 	  {
 	    if (*((struct node *)(np->children.nodes[1]))->type == 't') /* normalization */
 	      insertp = render_g_text(np->children.nodes[1], insertp, startp);
@@ -2227,74 +2228,77 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  insertp += xxstrlen(xstrcpy(insertp, "x-x-x"));
 	else
 	  {
-	    const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
-	    if (!xstrcmp(getAttr(np,"g:pos"),"post"))
+	    if (xstrcmp(np->parent->names->pname, "n:w"))
 	      {
-		if (in_split_word)
+		const unsigned char *gdelim = getAttr(lastChild(np), "g:delim");
+		if (!xstrcmp(getAttr(np,"g:pos"),"post"))
 		  {
-		    if (insertp == startp)
+		    if (in_split_word)
 		      {
-			*insertp++ = 0x1; /* put a flag in byte 0 to tell us
-					     to unhyphenate when assembling
-					     the components of a form */
-		      }
-		    else if (insertp - startp == 2 
-			     && startp[0] == '%' 
-			     && startp[1] == '%')
-		      {
-			startp[0] = 0x1;
-			startp[1] = startp[2] = '%';
-			insertp = startp + 3;
+			if (insertp == startp)
+			  {
+			    *insertp++ = 0x1; /* put a flag in byte 0 to tell us
+						 to unhyphenate when assembling
+						 the components of a form */
+			  }
+			else if (insertp - startp == 2 
+				 && startp[0] == '%' 
+				 && startp[1] == '%')
+			  {
+			    startp[0] = 0x1;
+			    startp[1] = startp[2] = '%';
+			    insertp = startp + 3;
+			  }
+			else if (insertp_is_delim())
+			  *--insertp = '\0';
 		      }
 		    else if (insertp_is_delim())
-		      *--insertp = '\0';
+		      *--insertp = '\0'; /* unhyphenate */
+		    suppress_next_hyphen = 0; /* {d}UR{ki} needs it's suppress cleared */
 		  }
-		else if (insertp_is_delim())
-		  *--insertp = '\0'; /* unhyphenate */
-		suppress_next_hyphen = 0; /* {d}UR{ki} needs it's suppress cleared */
-	      }
-	    else
-	      suppress_next_hyphen = 1;
-	    *insertp++ = '{';
-	    if (!xstrcmp(getAttr(np,"g:role"),"phonetic"))
-	      *insertp++ = '+';
-	    {
-	      int i;
-	      for (i = 0; i < np->children.lastused; ++i)
-		{
-		  if (i)
-		    {
-		      if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
-			{
-			  if (cued_gdelim)
-			    {
-			      if (cued_gdelim[1])
-				*insertp++ = '-';
-			      else
-				*insertp++ = *cued_gdelim;
-			    }
-			  else
-			    *insertp++ = '-';
-			}
-		    }
-		  if (*((struct node*)(np->children.nodes[i]))->type == 't')
-		    insertp = render_g_text(np->children.nodes[i], insertp, startp);
-		  else
-		    insertp = render_g(np->children.nodes[i], insertp, startp);
-		}
-	    }
-	    if (insertp[-1] == '{')
-	      *--insertp = '\0'; /* excised determinative */
-	    else
-	      *insertp++ = '}';
-
-	    if (*gdelim)
-	      {
-		const unsigned char *tmp = gdelim;
-		if (tmp[1])
-		  *insertp++ = '-';
 		else
-		  *insertp++ = *tmp;
+		  suppress_next_hyphen = 1;
+		*insertp++ = '{';
+		if (!xstrcmp(getAttr(np,"g:role"),"phonetic"))
+		  *insertp++ = '+';
+		{
+		  int i;
+		  for (i = 0; i < np->children.lastused; ++i)
+		    {
+		      if (i)
+			{
+			  if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
+			    {
+			      if (cued_gdelim)
+				{
+				  if (cued_gdelim[1])
+				    *insertp++ = '-';
+				  else
+				    *insertp++ = *cued_gdelim;
+				}
+			      else
+				*insertp++ = '-';
+			    }
+			}
+		      if (*((struct node*)(np->children.nodes[i]))->type == 't')
+			insertp = render_g_text(np->children.nodes[i], insertp, startp);
+		      else
+			insertp = render_g(np->children.nodes[i], insertp, startp);
+		    }
+		}
+		if (insertp[-1] == '{')
+		  *--insertp = '\0'; /* excised determinative */
+		else
+		  *insertp++ = '}';
+		
+		if (*gdelim)
+		  {
+		    const unsigned char *tmp = gdelim;
+		    if (tmp[1])
+		      *insertp++ = '-';
+		    else
+		      *insertp++ = *tmp;
+		  }
 	      }
 	  }
 	break;

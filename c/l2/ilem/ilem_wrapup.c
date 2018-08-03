@@ -291,9 +291,11 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
       if (!bootstrap_mode && strcmp((char*)fp->f2.lang, (char*)fp->finds[0]->f2.lang))
 	{
 	  char *errsig = err_sig(fp);
+#if 0
 	  vwarning2(fp->file,fp->lnum,
 		    "%s is new for lang %s",
 		    errsig, fp->f2.lang);
+#endif
 	  BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_LANG);
 	}
 

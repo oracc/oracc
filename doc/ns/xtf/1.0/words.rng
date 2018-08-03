@@ -211,6 +211,7 @@
           <ref name="group"/>
           <ref name="grapheme"/>
           <ref name="normword"/>
+          <ref name="normseg"/>
         </choice>
       </oneOrMore>
     </element>
@@ -249,6 +250,7 @@
       </optional>
       <zeroOrMore>
         <choice>
+          <ref name="gsurro"/>
           <ref name="normwordword"/>
           <ref name="normwordgroup"/>
           <ref name="gloss"/>

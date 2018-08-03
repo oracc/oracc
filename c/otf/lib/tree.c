@@ -271,6 +271,21 @@ ancestor_or_self(struct node *node,char *name)
    return node;
 }
 
+static void
+ack(struct node *p,struct node *c)
+{
+  if (p
+      && c
+      && (!strcmp(p->names->pname,"g:v")
+	  || !strcmp(p->names->pname,"g:s"))
+      && (!strcmp(c->names->pname,"g:v")
+	  || !strcmp(c->names->pname,"g:s")))
+    {
+      vwarning("internal error: suspicious attach point %s",
+	       p->names->pname);
+    }
+}
+
 struct node *
 _appendChild(struct node*parent, struct node*child, const char *FILE, int LINE)
 {
@@ -288,6 +303,7 @@ _appendChild(struct node*parent, struct node*child, const char *FILE, int LINE)
 	  else
 	    up = up->parent;
 	}
+      ack(parent,child);
       addToNodeList(&parent->children,child);
       child->parent = parent;
       return child;

@@ -1655,7 +1655,7 @@ groupgroup =
   element g:gg {
     attribute g:type { "group" } ,
     g.meta ,
-    (group | grapheme | normword)+
+    (group | grapheme | normword | normseg)+
   }
 
 syntax.attributes = 
@@ -1677,7 +1677,7 @@ normword =
     word.attributes , 
     break? , status.flags? , status.spans? , opener? , closer? , 
     hsqb_o? , hsqb_c? ,
-    (normwordword | normwordgroup | gloss | nongrapheme | group)* ,
+    (gsurro | normwordword | normwordgroup | gloss | nongrapheme | group)* ,
     syntax.attributes*,
     breakStart? , breakEnd? ,
     damageStart? , damageEnd? ,
