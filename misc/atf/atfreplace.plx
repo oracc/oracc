@@ -12,6 +12,7 @@ use constant {
     CELL_OR_FIELD => 6,
 };
 
+my $curr_lang = '';
 my $flag_chars = '[\#?!*]';
 my $grapheme_chars = '[a-zA-Z0-9₀-₉áéíúàèìùÁÉÍÚÀÈÌÙšŠḫḪŋŊṣṢṭṬʾʿ`\',…@~]';
 my $pre_junk_chars = '[\[(<\|]';
@@ -80,6 +81,28 @@ if ($test && !$identity) {
     }
 }
 
+sub lang_of {
+    my $l = shift;
+    if (length($l) >= 3) {
+	return $l;
+    } else {
+	my %l = (a=>'akk',
+		 e=>'sux-x-emesal',
+		 eg=>'sux-x-emegir',
+		 es=>'sux-x-emesal',
+		 ob=>'akk-x-olddbab'
+		 s=>'sux'
+		 sb=>'akk-x-stdbab',
+	    );
+	if ($l{$l}) {
+	    $l{$l};
+	} else {
+	    warn "ignoring unknown language abbreviation `\%$l'\n";
+	    return $l;
+	}
+    }
+}
+
 sub
 process_line {
     if (/^[\&\@\#\$]/) {
@@ -100,6 +123,12 @@ process_line {
 	print "\t";
 	for (my $i = 0; $i <= $#words; ++$i) {
 	    my $w = $words[$i];
+	    if ($w =~ /^\%(\S+)/) {
+		my $lang = $1;
+		$curr_lang_atf = lang_of($lang);
+		push @neww, $w;
+		next;
+	    }
 	    if ($w !~ /$grapheme_chars/o) {
 		push @neww, $w;
 		next;

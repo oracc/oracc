@@ -11,7 +11,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
 
-my $base_trace = 0;
+my $base_trace = 1;
 my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
 my %log_errors = ();

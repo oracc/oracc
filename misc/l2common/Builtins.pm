@@ -1,4 +1,8 @@
 package ORACC::L2GLO::Builtins;
+require Exporter;
+@ISA=qw/Exporter/;
+@EXPORT = qw//;
+
 use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
