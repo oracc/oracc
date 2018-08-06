@@ -3,10 +3,14 @@
 		xmlns:xcl="http://oracc.org/ns/xcl/1.0"
 		xmlns:xff="http://oracc.org/ns/xff/1.0"
 		xmlns:lsi="http://oracc.org/ns/lsi/1.0"
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		exclude-result-prefixes="xcl xff">
 
 <xsl:template match="/">
   <lsi:text>
+    <xsl:copy-of select="*/*[1]/@project"/>
+    <xsl:copy-of select="*/*[1]/@xml:id"/>
+    <xsl:copy-of select="*/*[1]/@n"/>
     <xsl:apply-templates select=".//xcl:c[@type='sentence']"/>
   </lsi:text>
 </xsl:template>
@@ -26,7 +30,7 @@
       <xsl:attribute name="read">
 	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sv']]/xff:f/@form"/>
       </xsl:attribute>
-      <xsl:attribute name="pron">
+      <xsl:attribute name="spel">
 	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='pr']]/xff:f/@form"/>
       </xsl:attribute>
       <xsl:for-each select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sv']]/xff:f">
