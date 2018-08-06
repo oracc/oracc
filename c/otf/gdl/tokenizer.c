@@ -114,7 +114,7 @@ const char *const type_data[] =
     " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "---", "[-]","-->",
     NULL, NULL, NULL, NULL,
-    NULL, NULL, "$",
+    NULL, NULL, "$","<(=>",
     "#sol", "#eol",
     "(:", ":)",
     "+.", "-.",
@@ -1970,6 +1970,18 @@ tokenize(register unsigned char *l,unsigned char *e)
 	}
     }
  ret:
+  if (line_is_unit)
+    {
+      if (tokens[tokindex-1]->type != ub_minus
+	  && tokens[tokindex-1]->type != ub_plus)
+	{
+	  if (tokens[tokindex-1]->class != bound
+	      && tokens[tokindex-1]->type != field
+	      && tokens[tokindex-1]->type != ftype)
+	    tokens[tokindex++] = clone_token(static_tokens[space]);
+	  tokens[tokindex++] = clone_token(static_tokens[ub_plus]);
+	}
+    }
   tokens[tokindex] = NULL;
   last_token = tokindex;
   curr_lang = lang_on_entry;

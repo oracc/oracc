@@ -371,6 +371,7 @@ protocol(struct run_context *run,
 	  e = appendChild(parent,elem(e_protocol,NULL,lnum,level));
 	  setAttr(e, a_type, ucc("syntax"));
 	  appendChild(e,cdata(uc("line_is_unit")));
+	  line_is_unit = 1;
 	}
       return 1;
     }

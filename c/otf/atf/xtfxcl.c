@@ -210,7 +210,7 @@ xcl_sentence_labels(struct xcl_context *xc, struct xcl_c *c)
 
   if (first)
     {
-      if (last)
+      if (last && first != last)
 	{
 	  char *l = malloc(strlen(first)+strlen(last)+4);
 	  sprintf(l,"%s - %s",first,last);

@@ -29,6 +29,7 @@ extern int check_lem;
 extern int cuneify_notices;
 extern int fuzzy_aliasing;
 extern int gdl_bootstrap;
+extern int line_is_unit;
 extern int lnum;
 extern int need_lemm;
 extern int no_destfile;
