@@ -33,6 +33,7 @@ struct sig_context;
 #define F2_FLAGS_DEF_FORM    0x0800000
 #define F2_FLAGS_DEF_ESENSE  0x1000000
 #define F2_FLAGS_DEF_ISENSE  0x2000000
+#define F2_FLAGS_READ_ONLY   0x4000000
 
 /* This includes '<' because it is the delimiter for post-F2 
    predicates, and ' ' and '\t' because after ']' no spaces are

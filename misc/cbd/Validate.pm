@@ -1216,7 +1216,7 @@ sub is_bad_compound {
 }
 
 my %akk_stem = (); 
-my @akk_stem = qw/B G Bt Gt Btn Gtn D Dt Dtn Š Št Štn N Nt Ntn/;
+my @akk_stem = qw/B G Bt Gt Btn Gtn D ŠD Dt Dtn Š Št Štn N Nt Ntn/;
 @akk_stem{@akk_stem} = ();
 
 sub v_stem_akk {

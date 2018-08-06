@@ -10,6 +10,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Geonames;
+use ORACC::CBD::Collo;
 use ORACC::CBD::Sigs;
 use ORACC::CBD::XML;
 
@@ -68,7 +69,7 @@ if (pp_status() && !$args{'force'}) {
 	foreach my $f (keys %ppfunc) {
 	    if ($#{$ORACC::CBD::data{$f}} >= 0) {
 		pp_trace("cbdpp/calling ppfunc $f");
-		&{$ppfunc{$f}}(\%args, $f);
+		&{$ppfunc{$f}}(\%args, $f, @cbd);
 		pp_trace("cbdpp/exited ppfunc $f");
 	    }
 	}
@@ -95,27 +96,6 @@ pp_diagnostics(\%args);
 #
 # CBDPP Operational Functions
 #
-
-sub pp_collo {
-    my $args = shift;
-    my $ndir = projdir()."/02pub";
-    system 'mkdir', '-p', $ndir;
-    open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
-    foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
-	my $e = pp_entry_of($i,@cbd);
-	my $c = $cbd[$e];
-	$c =~ s/^\S*//;
-	$c =~ s/\].*$/\]/;
-	$c =~ s/\s+\[/\[/;
-	my $cc = $cbd[$i];
-	$cc =~ s/\s+-(\s+|$)/ $c /;
-	$cc =~ s/\s+$//;
-	$cc =~ s/^\S+\s+//;
-	print COLLO $cc, "\n";
-	$cbd[$i] = "\000";
-    }
-    close(COLLO);
-}
 
 sub pp_geo {
     my $geo = `oraccopt . cbd-geonames`; #  $args{'project'}

@@ -49,8 +49,12 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 	  int i;
 	  for (i = 0; mp->matching_f2s[i]; ++i)
 	    {
-	      apply_tts(mp->matching_f2s[i], mp->tt);
-	      mp->lp->f->finds[i]->f2 = *mp->matching_f2s[i];
+	      if (!BIT_ISSET(mp->lp->f->finds[i]->f2,F2_FLAGS_READ_ONLY))
+		{
+		  apply_tts(mp->matching_f2s[i], mp->tt);
+		  mp->lp->f->finds[i]->f2 = *mp->matching_f2s[i];
+		  BIT_SET(mp->lp->f->finds[i]->f2,F2_FLAGS_READ_ONLY));
+		}
 	    }
 #if 1
 	  mp->lp->f->finds[i] = NULL;
