@@ -292,7 +292,39 @@ protocol(struct run_context *run,
 	    {
 	      suppress_output = 1;
 	      if (need_lemm || do_show_insts)
-		lem_handler(parent, scope,level,line);
+		{
+		  unsigned char *oline = NULL;
+		  if (line_is_unit)
+		    {
+		      int found_ub = 0;
+		      unsigned char *e = line + strlen(line);
+		      while (e > line)
+			{
+			  if ('.' == e[-1] && ('+' == e[-2] || '-' == e[-2]))
+			    {
+			      found_ub = 1;
+			      break;
+			    }
+			  else if (';' == e[-1])
+			    break;
+			  else
+			    --e;
+			}
+		      if (!found_ub)
+			{
+			  unsigned char *nline = malloc(strlen(line)+5);
+			  sprintf(nline, "%s +.", line);
+			  oline = line;
+			  line = nline;
+			}
+		    }
+		  lem_handler(parent, scope,level,line);
+		  if (oline)
+		    {
+		      free(line);
+		      line = oline;
+		    }
+		}
 	    }
 	  else if (!xstrcmp(type,"bib"))
 	    {

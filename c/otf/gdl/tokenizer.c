@@ -1970,6 +1970,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	}
     }
  ret:
+#if 0
   if (line_is_unit)
     {
       if (tokens[tokindex-1]->type != ub_minus
@@ -1982,6 +1983,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	  tokens[tokindex++] = clone_token(static_tokens[ub_plus]);
 	}
     }
+#endif
   tokens[tokindex] = NULL;
   last_token = tokindex;
   curr_lang = lang_on_entry;
