@@ -2,22 +2,22 @@
 <xsl:stylesheet version="1.0" 
 		xmlns:xcl="http://oracc.org/ns/xcl/1.0"
 		xmlns:xff="http://oracc.org/ns/xff/1.0"
-		xmlns:lsi="http://oracc.org/ns/lsi/1.0"
+		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		exclude-result-prefixes="xcl xff">
 
 <xsl:template match="/">
-  <lsi:text>
+  <lex:text>
     <xsl:copy-of select="*/*[1]/@project"/>
     <xsl:copy-of select="*/*[1]/@xml:id"/>
     <xsl:copy-of select="*/*[1]/@n"/>
     <xsl:apply-templates select=".//xcl:c[@type='sentence']"/>
-  </lsi:text>
+  </lex:text>
 </xsl:template>
 
 <xsl:template match="xcl:c">
   <xsl:if test="xcl:d[@subtype='sg']">
-    <lsi:data>
+    <lex:data>
       <xsl:copy-of select="@xml:id"/>
       <xsl:copy-of select="@n"/>
       <xsl:copy-of select="@label"/>
@@ -54,7 +54,7 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:for-each>
-    </lsi:data>
+    </lex:data>
   </xsl:if>
 </xsl:template>
 

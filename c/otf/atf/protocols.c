@@ -294,35 +294,38 @@ protocol(struct run_context *run,
 	      if (need_lemm || do_show_insts)
 		{
 		  unsigned char *oline = NULL;
-		  if (line_is_unit)
+		  if (*line)
 		    {
-		      int found_ub = 0;
-		      unsigned char *e = line + strlen(line);
-		      while (e > line)
+		      if (line_is_unit)
 			{
-			  if ('.' == e[-1] && ('+' == e[-2] || '-' == e[-2]))
+			  int found_ub = 0;
+			  unsigned char *e = line + strlen(line);
+			  while (e > line)
 			    {
-			      found_ub = 1;
-			      break;
+			      if ('.' == e[-1] && ('+' == e[-2] || '-' == e[-2]))
+				{
+				  found_ub = 1;
+				  break;
+				}
+			      else if (';' == e[-1])
+				break;
+			      else
+				--e;
 			    }
-			  else if (';' == e[-1])
-			    break;
-			  else
-			    --e;
+			  if (!found_ub)
+			    {
+			      unsigned char *nline = malloc(strlen(line)+5);
+			      sprintf(nline, "%s +.", line);
+			      oline = line;
+			      line = nline;
+			    }
 			}
-		      if (!found_ub)
+		      lem_handler(parent, scope,level,line);
+		      if (oline)
 			{
-			  unsigned char *nline = malloc(strlen(line)+5);
-			  sprintf(nline, "%s +.", line);
-			  oline = line;
-			  line = nline;
+			  free(line);
+			  line = oline;
 			}
-		    }
-		  lem_handler(parent, scope,level,line);
-		  if (oline)
-		    {
-		      free(line);
-		      line = oline;
 		    }
 		}
 	    }

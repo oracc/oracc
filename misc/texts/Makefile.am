@@ -3,9 +3,10 @@ include ../../oracc-am-rules.txt
 bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	ls1R2lst.plx atflinks.plx linknorm.plx \
 	translist.sh proxtrans.sh fixtilde.plx \
-	lex-sign-info.sh lsi-one-xtf.sh lsi-master.sh
+	lex-sign-data.sh lex-sign-xtf.sh \
+	lex-master.sh
 
-scriptdata_DATA = lsi-get-data.xsl
+scriptdata_DATA = lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl
 
 proj-linkbase.sh: proj-linkbase.sh.in
 	$(ORACCIFY) proj-linkbase.sh.in
