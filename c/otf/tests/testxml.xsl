@@ -1,5 +1,6 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	       xmlns:g="http://oracc.org/ns/gdl/1.0"
+	       xmlns:n="http://oracc.org/ns/norm/1.0"
 	       xmlns:x="http://oracc.org/ns/xtf/1.0"
 	       version="1.0"
 	       exclude-result-prefixes="g x">
@@ -10,7 +11,7 @@
       <xsl:apply-templates select="x:surro"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:variable name="words" select=".//g:w"/>
+      <xsl:variable name="words" select=".//g:w|.//n:w"/>
       <xsl:apply-templates select="$words[1]"/>
     </xsl:otherwise>
   </xsl:choose>
@@ -24,7 +25,7 @@
   </x:ns-wrapper>
 </xsl:template>
 
-<xsl:template match="g:w">
+<xsl:template match="g:w|n:w">
   <x:ns-wrapper g:attr="dummy">
     <xsl:copy>
       <xsl:call-template name="copy-attr"/>
