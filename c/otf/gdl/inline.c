@@ -1135,6 +1135,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 				{
 				  const char *atype = (const char *)getAttr(anc_gg,"g:type");
 				  if (!xstrcmp(atype,"reordering")
+				      || !xstrcmp(atype,"alternation")
 				      || !xstrcmp(atype,"ligature")
 				      || !xstrcmp(atype,"correction")
 				      )
