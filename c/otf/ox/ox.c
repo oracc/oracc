@@ -17,6 +17,7 @@
 #include "run.h"
 #include "cdf_rnc.h"
 #include "list.h"
+#include "globals.h"
 
 #include "ox.h"
 
@@ -153,6 +154,7 @@ main(int argc, char **argv)
   verbose = 0;
   signals(argc, argv);
   run = run_init();
+  no_gdl_xids = 0;
   if (!ox_options(argc,argv))
     {
       ox_init();
