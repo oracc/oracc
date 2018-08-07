@@ -66,6 +66,8 @@ process(struct xcl_context *xc, struct node*n)
 {
   int saved_status = status;
   int saved_exit_status = exit_status;
+  static struct xcl_c *atpt_cell = NULL;
+  static struct xcl_c *atpt_field = NULL;
   /* fprintf(stderr, "xtfxcl: process invoked\n"); */
   if (*n->type == 'e')
     {
@@ -120,9 +122,11 @@ process(struct xcl_context *xc, struct node*n)
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonx, NULL);
 	  break;
 	case e_c:
+	  atpt_cell = xc->curr;
 	  xcl_discontinuity(xc, NULL, xcl_d_cell_start, NULL);
 	  break;
 	case e_f:
+	  atpt_field = xc->curr;
 	  xcl_discontinuity(xc, NULL, xcl_d_field_start, (const char *)n->data);
 	  break;
 	default:
@@ -138,10 +142,28 @@ process(struct xcl_context *xc, struct node*n)
       switch (n->etype)
 	{
 	case e_c:
-	  xcl_discontinuity(xc, NULL, xcl_d_cell_end, NULL);
+	  if (atpt_cell != xc->curr)
+	    {
+	      struct xcl_c *save = xc->curr;
+	      xc->curr = atpt_cell;
+	      xcl_discontinuity(xc, NULL, xcl_d_cell_end, NULL);
+	      xc->curr = save;
+	      atpt_cell = NULL;
+	    }
+	  else
+	    xcl_discontinuity(xc, NULL, xcl_d_cell_end, NULL);
 	  break;
 	case e_f:
-	  xcl_discontinuity(xc, NULL, xcl_d_field_end, (const char*)n->data);
+	  if (atpt_field != xc->curr)
+	    {
+	      struct xcl_c *save = xc->curr;
+	      xc->curr = atpt_field;
+	      xcl_discontinuity(xc, NULL, xcl_d_field_end, (const char*)n->data);
+	      xc->curr = save;
+	      atpt_field = NULL;
+	    }
+	  else
+	    xcl_discontinuity(xc, NULL, xcl_d_field_end, (const char*)n->data);
 	  break;
 	default:
 	  break;

@@ -37,6 +37,7 @@
 const char *const scope_names[] = { T_SCOPES };
 enum t_scope protocol_state = s_global;
 
+extern const unsigned char *default_ftype;
 extern int has_links;
 extern int lem_extended;
 extern int lem_simplify;
@@ -479,7 +480,6 @@ atf_handler(struct node *parent, enum t_scope scope,
 	++l;
       if (!xstrncmp(l,"lexical",7))
 	{
-	  extern const unsigned char *default_ftype;
 	  need_auto_syntax_line_is_unit = mylines = lexical = 1;
 	  default_ftype = ucc("wp");
 	}
@@ -682,6 +682,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   else if (!xstrncmp(l,"dcclt",5))
     {
       need_auto_syntax_line_is_unit = lexical = mylines = math_mode = 1;
+      default_ftype = ucc("wp");
       /*lemmatizer_mode = lem_global_only;*/
       /* lem_extended = 1; */
     }
