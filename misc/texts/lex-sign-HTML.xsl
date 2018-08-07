@@ -1,6 +1,7 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" 
 		xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:esp="http://oracc.org/ns/esp/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -33,9 +34,9 @@
 </xsl:template>
 
 <xsl:template match="lex:data">
-  <xsl:value-of select="@n"/>
+  <esp:link url="http://oracc.org/{@project}/{@sref}" site-name="{@project} on Oracc"><xsl:value-of select="@n"/>
   <xsl:text>, </xsl:text>
-  <xsl:value-of select="@label"/>
+  <xsl:value-of select="@label"/></esp:link>
   <xsl:choose>
     <xsl:when test="@word">
       <xsl:value-of select="concat(' (',@word,'/',@base,')')"/>

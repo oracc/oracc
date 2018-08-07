@@ -8,6 +8,9 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 
 scriptdata_DATA = lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl
 
+lex-sign-lookup.xsl: lex-sign-lookup.xsl.in
+	$(ORACCIFY) lex-sign-lookup.xsl.in
+
 proj-linkbase.sh: proj-linkbase.sh.in
 	$(ORACCIFY) proj-linkbase.sh.in
 

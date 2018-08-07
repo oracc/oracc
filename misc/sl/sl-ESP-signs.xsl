@@ -13,6 +13,8 @@
 
 <!--<xsl:include href="formdiv.xsl"/>-->
 
+<xsl:include href="lex-sign-lookup.xsl"/>
+
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
 <xsl:template match="sl:sign">
@@ -92,9 +94,12 @@
 	</p>
       </div>
     </xsl:if>
+
+    <xsl:call-template name="lex-sign"/>
+
     <xsl:apply-templates select="sl:note"/>
     <xsl:call-template name="unicode-info"/>
-    <xsl:apply-templates mode="rest"/>
+    <xsl:apply-templates mode="rest"/>    
     <xsl:if test="sl:form">
       <div class="ogsl-signforms">
 	<xsl:apply-templates select="sl:form"/>
