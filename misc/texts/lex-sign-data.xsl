@@ -8,9 +8,6 @@
 
 <xsl:template match="/">
   <lex:text>
-    <xsl:copy-of select="*/*[1]/@project"/>
-    <xsl:copy-of select="*/*[1]/@xml:id"/>
-    <xsl:copy-of select="*/*[1]/@n"/>
     <xsl:apply-templates select=".//xcl:c[@type='sentence']"/>
   </lex:text>
 </xsl:template>
@@ -18,22 +15,26 @@
 <xsl:template match="xcl:c">
   <xsl:if test="xcl:d[@subtype='sg']">
     <lex:data>
+      <xsl:copy-of select="/*/@project"/>
+      <xsl:attribute name="id_text">
+	<xsl:value-of select="/*/@xml:id"/>
+      </xsl:attribute>
+      <xsl:copy-of select="/*/@n"/>
       <xsl:copy-of select="@xml:id"/>
-      <xsl:copy-of select="@n"/>
       <xsl:copy-of select="@label"/>
       <xsl:attribute name="sref">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sg']]/@ref"/>
+	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/@ref"/>
       </xsl:attribute>
       <xsl:attribute name="sign">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sg']]/xff:f/@form"/>
+	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/xff:f/@form"/>
       </xsl:attribute>
       <xsl:attribute name="read">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sv']]/xff:f/@form"/>
+	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f/@form"/>
       </xsl:attribute>
       <xsl:attribute name="spel">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[1][@subtype='pr']]/xff:f/@form"/>
+	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='pr']]/xff:f/@form"/>
       </xsl:attribute>
-      <xsl:for-each select="xcl:l[preceding-sibling::xcl:d[1][@subtype='sv']]/xff:f">
+      <xsl:for-each select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f">
 	<xsl:choose>
 	  <xsl:when test="string-length(@cf)>0">
 	    <xsl:attribute name="wref">

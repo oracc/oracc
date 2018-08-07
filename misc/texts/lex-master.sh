@@ -11,5 +11,5 @@ for a in `find $type -type f` ; do
     xi="<xi:include href=\"$a\"/>"
     echo $xi >>lex-$type-master.xml
 done
-cd ..
+cd ../..
 echo '</lex:dataset>' >>01tmp/lex/lex-$type-master.xml

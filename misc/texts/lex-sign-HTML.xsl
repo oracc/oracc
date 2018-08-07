@@ -1,39 +1,39 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" 
 		xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:lsi="http://oracc.org/ns/lsi/1.0"
+		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:template match="lsi:sign-data">
+<xsl:template match="lex:sign-data">
   <body>
     <xsl:apply-templates/>
   </body>
 </xsl:template>
 
-<xsl:template match="lsi:group[@type='sign']">
-  <div class="lsi-sign" title="{@value}">
+<xsl:template match="lex:group[@type='sign']">
+  <div class="lex-sign" title="{@value}">
     <xsl:apply-templates/>
   </div>
 </xsl:template>
 
-<xsl:template match="lsi:group[@type='read']">
-  <div class="lsi-read" title="{@value}">
+<xsl:template match="lex:group[@type='read']">
+  <div class="lex-read" title="{@value}">
     <h2><xsl:value-of select="@value"/></h2>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
 
-<xsl:template match="lsi:group[@type='spel']">
-  <p class="lsi-spel" title="{@value}">
-    <span class="lsi-spel-tlit"><xsl:value-of select="@value"/></span>
+<xsl:template match="lex:group[@type='spel']">
+  <p class="lex-spel" title="{@value}">
+    <span class="lex-spel-tlit"><xsl:value-of select="@value"/></span>
     <xsl:text>: </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>.</xsl:text>
   </p>
 </xsl:template>
 
-<xsl:template match="lsi:data">
-  <xsl:value-of select="/*/@n"/>
+<xsl:template match="lex:data">
+  <xsl:value-of select="@n"/>
   <xsl:text>, </xsl:text>
   <xsl:value-of select="@label"/>
   <xsl:choose>
