@@ -71,6 +71,14 @@
   </xsl:call-template>
 </xsl:param>
 
+<xsl:param name="cbd-word-qakk">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-qakk-base'"/>
+    <xsl:with-param name="default" select="''"/>
+  </xsl:call-template>
+</xsl:param>
+
 <xsl:variable name="q">'</xsl:variable>
 
 <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
@@ -86,7 +94,7 @@
 
 <xsl:key name="signmap" match="do" use="@from"/>
 <xsl:key name="summary-id" match="xh:p" use="@id"/>
-<xsl:key name="word-bases" match="xh:div[@class='lex-word']" use="@title"/>
+<xsl:key name="lex-words" match="xh:div[@class='lex-word']" use="@title"/>
 
 <xsl:output method="xml" encoding="utf-8"
    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -106,6 +114,19 @@
   </xsl:if>
 </xsl:variable>
 
+<xsl:variable name="word-qakk-data">
+  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-qakk)>0">
+    <xsl:choose>
+      <xsl:when test="$cbd-word-qakk='.'">
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-qakk.xhtml')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-qakk,'/lex-word-qakk.xhtml')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+</xsl:variable>
+
 <xsl:template match="cbd:articles">
   <xsl:message>config-file=<xsl:value-of select="$config-file"
   />; cbd-word-base=<xsl:value-of select="$cbd-word-base"
@@ -113,6 +134,10 @@
 
   <xsl:if test="string-length($word-base-data)">
     <xsl:message>Using word-base data from <xsl:value-of select="$word-base-data"/></xsl:message>
+  </xsl:if>
+  
+  <xsl:if test="string-length($word-qakk-data)">
+    <xsl:message>Using word-base data from <xsl:value-of select="$word-qakk-data"/></xsl:message>
   </xsl:if>
   
   <xsl:call-template name="make-html">
@@ -246,6 +271,10 @@
     <xsl:call-template name="add-word-base-data"/>
   </xsl:if>
   
+  <xsl:if test="string-length($word-qakk-data)>0">
+    <xsl:call-template name="add-word-qakk-data"/>
+  </xsl:if>
+  
   <xsl:apply-templates select="cbd:bib"/>
 
 <!--
@@ -277,7 +306,15 @@
   <xsl:message>adding word-base data for <xsl:value-of select="@n"/></xsl:message>
   <xsl:variable name="n" select="@n"/>
   <xsl:for-each select="document($word-base-data)/*">
-    <xsl:copy-of select="key('word-bases',$n)"/>
+    <xsl:copy-of select="key('lex-words',$n)"/>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="add-word-qakk-data">
+  <xsl:message>adding word-qakk data for <xsl:value-of select="@n"/></xsl:message>
+  <xsl:variable name="n" select="@n"/>
+  <xsl:for-each select="document($word-qakk-data)/*">
+    <xsl:copy-of select="key('lex-words',$n)"/>
   </xsl:for-each>
 </xsl:template>
 

@@ -15,4 +15,4 @@ for p in $* ; do
 done
 lex-master.sh word
 lex-word-base.sh
-# lex-word-qakk.sh
+lex-word-qakk.sh
