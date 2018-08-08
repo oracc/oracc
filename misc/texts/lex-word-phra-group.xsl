@@ -24,7 +24,7 @@
 
 <xsl:template match="lex:data" mode="word">
   <xsl:variable name="wd-node" select="(lex:sv|lex:wp)[1]"/>
-  <xsl:if test="count($wd-node/*) > 1">
+  <xsl:if test="starts-with($wd-node[1]/lex:word[1]/@lang, 'sux') and count($wd-node/*) > 1">
     <xsl:variable name="wd" select="(lex:sv|lex:wp)[1]/lex:word/@cfgw"/>
     <xsl:variable name="ph" select="(lex:sv|lex:wp)[1][starts-with(lex:word[1]/@lang,'sux')]/lex:word/@cfgw"/>
     <lex:group type="word" value="{$wd}">
@@ -55,7 +55,8 @@
   </xsl:variable>
   <lex:group type="phra" value="{$val}">
     <xsl:attribute name="xml:id"><xsl:value-of select="generate-id()"/></xsl:attribute>
-    <xsl:for-each select="key('phra', concat($wd,':',$ph))">
+    <!--    <xsl:for-each select="key('phra', concat($wd,':',$ph))"> -->
+    <xsl:for-each select="*">
       <xsl:copy>
 	<xsl:copy-of select="@*[not(name()='xml:id')]"/>
 	<xsl:copy-of select="*"/>
