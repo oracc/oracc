@@ -20,14 +20,14 @@
 						    )"/>
 <!--<xsl:key name="spels"  match="lex:data" use="concat(@sign,':',@read,':',@spel)"/>-->
 
-<xsl:template match="lex:dataset|lex:text">
-  <lex:word-sign-data>
+<xsl:template match="lex:dataset">
+  <lex:word-base-data>
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates mode="word"
 			 select=".//lex:data[generate-id(.)
 				 =generate-id(key('words',
 				 (lex:sv[1]/lex:word/@cfgw)|(lex:wp[1]/lex:word/@cfgw)))]"/>
-  </lex:word-sign-data>
+  </lex:word-base-data>
 </xsl:template>
 
 <xsl:template match="lex:data" mode="word">
@@ -64,9 +64,10 @@
   <xsl:variable name="bs" select="(lex:sv|lex:wp)[1]/lex:word/@base"/>
   <xsl:variable name="wdbs" select="concat($wd,':',$bs)"/>
   <lex:group type="spel" value="{@spel}">
+    <xsl:attribute name="xml:id"><xsl:value-of select="generate-id()"/></xsl:attribute>
     <xsl:for-each select="key('spels', concat($wdbs,':',@spel))">
       <xsl:copy>
-	<xsl:copy-of select="@*"/>
+	<xsl:copy-of select="@*[not(name()='xml:id')]"/>
       </xsl:copy>
     </xsl:for-each>
   </lex:group>

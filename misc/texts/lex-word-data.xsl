@@ -65,7 +65,9 @@
 <xsl:template name="get-words-one">
   <xsl:param name="type"/>
   <xsl:param name="nth"/>
-  <xsl:message>type=<xsl:value-of select="$type"/>; nth=<xsl:value-of select="$nth"/></xsl:message>
+  <!--
+      <xsl:message>type=<xsl:value-of select="$type"
+      />; nth=<xsl:value-of select="$nth"/></xsl:message> -->
   <xsl:variable name="f-start">
     <xsl:for-each select="../xcl:d[@type='field-start'][@subtype=$type][$nth]">
       <xsl:value-of select="count(preceding-sibling::*)+1"/>
@@ -84,7 +86,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:message><xsl:value-of select="$type"/> start=<xsl:value-of select="$f-start"/>; end=<xsl:value-of select="$f-end"/></xsl:message>
+  <!--
+      <xsl:message><xsl:value-of select="$type"
+      /> start=<xsl:value-of select="$f-start"
+      />; end=<xsl:value-of select="$f-end"/></xsl:message> -->
   <xsl:if test="$f-start > 0">
     <xsl:element name="lex:{$type}">
       <xsl:for-each select="../*[position()>$f-start and position()&lt;$f-end]">
@@ -116,7 +121,10 @@
       </xsl:choose>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:message><xsl:value-of select="concat('line@',$ref)"/> start=<xsl:value-of select="$l-start"/>; end=<xsl:value-of select="$l-end"/></xsl:message>
+  <!--
+      <xsl:message><xsl:value-of select="concat('line@',$ref)"
+      /> start=<xsl:value-of select="$l-start"
+      />; end=<xsl:value-of select="$l-end"/></xsl:message>-->
   <lex:data>
     <xsl:call-template name="lex-data-meta"/>
     <lex:wp>

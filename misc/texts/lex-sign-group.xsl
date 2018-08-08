@@ -41,6 +41,7 @@
 
 <xsl:template match="lex:data" mode="spel">
   <lex:group type="spel" value="{@spel}">
+    <xsl:attribute name="xml:id"><xsl:value-of select="generate-id()"/></xsl:attribute>
     <xsl:for-each select="key('spels', concat(@sign,':',@read,':',@spel))">
       <xsl:copy>
 	<xsl:copy-of select="@*"/>

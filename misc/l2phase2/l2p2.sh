@@ -126,6 +126,8 @@ if [ -r 01bld/pleiades.tab ]; then
     cp 01bld/pleiades.tab 02pub
 fi
 
+o2-lex.sh
+
 #usages=`oraccopt . cbd-usages`
 #if [ "$usages" = "yes" ]; then
 #    if [ "$project" = "epsd2" ]; then
