@@ -137,6 +137,9 @@
     <xsl:if test="string-length(xff:f/@cf)>0">
       <xsl:attribute name="cfgw"><xsl:value-of select="concat(xff:f/@cf,'[',xff:f/@gw,']',xff:f/@pos)"/></xsl:attribute>
     </xsl:if>
+    <xsl:if test="xff:f/@base">
+      <xsl:attribute name="base"><xsl:value-of select="xff:f/@base"/></xsl:attribute>
+    </xsl:if>
   </lex:word>
 </xsl:template>
 

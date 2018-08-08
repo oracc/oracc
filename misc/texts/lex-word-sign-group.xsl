@@ -7,7 +7,7 @@
 
 <xsl:key name="signs" match="lex:data" use="@sign"/>
 <xsl:key name="reads" match="lex:data" use="concat(@sign,':',@read)"/>
-<xsl:key name="spels" match="lex:data" use="concat(@sign,':',@read,':',@spel)"/>
+<xsl:key name="spels"  match="lex:data" use="concat(@sign,':',@read,':',@spel)"/>
 
 <xsl:template match="lex:dataset">
   <lex:sign-data>
