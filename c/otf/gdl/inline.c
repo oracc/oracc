@@ -1262,6 +1262,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			/*surro_node->parent;*/
 		      surro_atpt = surro_wp = surro_node = NULL;
 		    }
+		  if (wp->etype == e_g_gg)
+		    {
+		      while (wp->etype == e_g_gg)
+			wp = wp->parent;
+		    }
 		  wrapup_word(wp, space);
 		  setAttr(wp,a_g_delim,tp->data);
 		}
@@ -2152,6 +2157,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	  /*surro_node->parent;*/
 	  surro_atpt = surro_wp = surro_node = NULL;
 	}
+      if (wp->etype == e_g_gg)
+	{
+	  while (wp->etype == e_g_gg)
+	    wp = wp->parent;
+	}
       wrapup_word(wp,eol);
     }
 }
@@ -2201,6 +2211,8 @@ finish_word(struct node *wp)
       pending_disamb = NULL;
     }
 
+  
+  
   rendering_word_form = 1;
   for (suppress_next_hyphen = i = 0; 
        i < wp->children.lastused; 
