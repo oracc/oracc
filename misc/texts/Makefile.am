@@ -4,8 +4,8 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	ls1R2lst.plx atflinks.plx linknorm.plx \
 	translist.sh proxtrans.sh fixtilde.plx \
 	lex-sign-data.sh lex-sign-xtf.sh \
-	lex-word-data.sh lex-word-xtf.sh \
-	lex-word-base.sh lex-word-qakk.sh \
+	lex-word-data.sh lex-word-get-data.sh lex-word-xtf.sh \
+	lex-word-base.sh lex-word-qakk.sh lex-word-phra.sh \
 	lex-master.sh
 
 scriptdata_DATA = \
@@ -13,6 +13,7 @@ scriptdata_DATA = \
 	lex-word-data.xsl \
 	lex-word-base-group.xsl lex-word-base-HTML.xsl \
 	lex-word-qakk-group.xsl lex-word-qakk-HTML.xsl \
+	lex-word-phra-group.xsl lex-word-phra-HTML.xsl \
 	lex-refs-group.xsl
 
 lex-sign-lookup.xsl: lex-sign-lookup.xsl.in

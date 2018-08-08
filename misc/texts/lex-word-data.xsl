@@ -138,17 +138,19 @@
 </xsl:template>
 
 <xsl:template name="lex-word">
-  <lex:word>
-    <xsl:attribute name="wref"><xsl:value-of select="@ref"/></xsl:attribute>
-    <xsl:attribute name="form"><xsl:value-of select="xff:f/@form"/></xsl:attribute>
-    <xsl:attribute name="lang"><xsl:value-of select="xff:f/@xml:lang"/></xsl:attribute>
-    <xsl:if test="string-length(xff:f/@cf)>0">
-      <xsl:attribute name="cfgw"><xsl:value-of select="concat(xff:f/@cf,'[',xff:f/@gw,']',xff:f/@pos)"/></xsl:attribute>
-    </xsl:if>
-    <xsl:if test="xff:f/@base">
-      <xsl:attribute name="base"><xsl:value-of select="xff:f/@base"/></xsl:attribute>
-    </xsl:if>
-  </lex:word>
+  <xsl:if test="self::xcl:l">
+    <lex:word>
+      <xsl:attribute name="wref"><xsl:value-of select="@ref"/></xsl:attribute>
+      <xsl:attribute name="form"><xsl:value-of select="xff:f/@form"/></xsl:attribute>
+      <xsl:attribute name="lang"><xsl:value-of select="xff:f/@xml:lang"/></xsl:attribute>
+      <xsl:if test="string-length(xff:f/@cf)>0">
+	<xsl:attribute name="cfgw"><xsl:value-of select="concat(xff:f/@cf,'[',xff:f/@gw,']',xff:f/@pos)"/></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="xff:f/@base">
+	<xsl:attribute name="base"><xsl:value-of select="xff:f/@base"/></xsl:attribute>
+      </xsl:if>
+    </lex:word>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="lex-data-meta">
