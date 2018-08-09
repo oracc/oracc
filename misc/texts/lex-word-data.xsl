@@ -73,7 +73,7 @@
       <xsl:value-of select="count(preceding-sibling::*)+1"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:variable name="f-top" select="count(../*)"/>
+  <xsl:variable name="f-top" select="count(../*)+1"/>
   <xsl:variable name="f-end">
     <xsl:choose>
       <xsl:when test="../xcl:d[@type='field-end'][@subtype=$type][$nth]">
@@ -106,7 +106,7 @@
       <xsl:value-of select="count(preceding-sibling::*)+1"/>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:variable name="l-top" select="count(../*)"/>
+  <xsl:variable name="l-top" select="count(../*)+1"/>
   <xsl:variable name="l-end">
     <xsl:for-each select="../xcl:d[@type='line-start'][@ref=$ref]">
       <xsl:choose>
@@ -148,6 +148,9 @@
       </xsl:if>
       <xsl:if test="xff:f/@base">
 	<xsl:attribute name="base"><xsl:value-of select="xff:f/@base"/></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="xff:f/@norm">
+	<xsl:attribute name="norm"><xsl:value-of select="xff:f/@norm"/></xsl:attribute>
       </xsl:if>
     </lex:word>
   </xsl:if>

@@ -13,15 +13,15 @@
 
 <xsl:template match="lex:group[@type='word']">
   <div class="lex-word" title="{@value}">
-    <h3 class="word-base">Akkadian Data</h3>
+    <h3 class="word-base">Phrasal Data</h3>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
 
-<xsl:template match="lex:group[@type='qakk']">
-  <div class="lex-qakk" title="{@value}">
-    <h2 class="lex-qakk"><i><xsl:value-of select="@value"/></i></h2>
-    <p class="lex-qakk">
+<xsl:template match="lex:group[@type='phra']">
+  <div class="lex-phra" title="{@value}">
+    <h2 class="lex-phra"><xsl:value-of select="@value"/></h2>
+    <p class="lex-phra">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
 	<xsl:if test="not(position()=last())">
