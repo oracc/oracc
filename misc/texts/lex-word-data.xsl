@@ -152,6 +152,9 @@
       <xsl:if test="xff:f/@norm">
 	<xsl:attribute name="norm"><xsl:value-of select="xff:f/@norm"/></xsl:attribute>
       </xsl:if>
+      <xsl:if test="xff:f/@sense">
+	<xsl:attribute name="sense"><xsl:value-of select="xff:f/@sense"/></xsl:attribute>
+      </xsl:if>
     </lex:word>
   </xsl:if>
 </xsl:template>

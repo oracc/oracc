@@ -10,7 +10,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 
 scriptdata_DATA = \
 	lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl \
-	lex-word-data.xsl \
+	lex-word-data.xsl lex-data-line.xsl \
 	lex-word-base-group.xsl lex-word-base-HTML.xsl \
 	lex-word-qakk-group.xsl lex-word-qakk-HTML.xsl \
 	lex-word-phra-pull.xsl lex-word-phra-group.xsl lex-word-phra-sort.xsl lex-word-phra-HTML.xsl \

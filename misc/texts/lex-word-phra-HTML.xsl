@@ -20,16 +20,25 @@
 
 <xsl:template match="lex:group[@type='phra']">
   <div class="lex-phra" title="{@value}">
-    <h2 class="lex-phra"><xsl:value-of select="@value"/></h2>
-    <p class="lex-phra">
-      <xsl:for-each select="*">
-	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
-	  <xsl:text>; </xsl:text>
-	</xsl:if>
+    <h2 class="lex-phra"><xsl:value-of select="@value"/>
+    </h2>
+    <xsl:for-each select="*">
+      <p class="lex-equi"> <!-- a para for each equiv and its refs -->
+	<xsl:if test="not(@value='#none')">
+	  <span class="lex-equi">
+	    <xsl:text>= </xsl:text>
+	    <i><xsl:value-of select="{@value}"/></i>
+	    </span>
+	  </xsl:if>
+	<xsl:for-each select="*">
+ 	  <xsl:apply-templates select="."/>
+	  <xsl:if test="not(position()=last())">
+	    <xsl:text>; </xsl:text>
+	  </xsl:if>
+	</xsl:for-each>
+	<xsl:text>.</xsl:text>
+      </p>
       </xsl:for-each>
-      <xsl:text>.</xsl:text>
-    </p>
   </div>
 </xsl:template>
 

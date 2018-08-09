@@ -29,9 +29,19 @@
 </xsl:template>
 
 <xsl:template name="line">
-    <xsl:call-template name="phrase">
-      <xsl:with-param name="p" select="lex:wp[1]"/>
-    </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="lex:wp[1]">
+      <xsl:call-template name="phrase">
+	<xsl:with-param name="p" select="lex:wp[1]"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:when test="lex:sv[1]">
+      <xsl:call-template name="phrase">
+	<xsl:with-param name="p" select="lex:sv[1]"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise/>
+  </xsl:choose>
     <xsl:if test="lex:eq">
       <xsl:text> = </xsl:text>
       <xsl:call-template name="phrase">

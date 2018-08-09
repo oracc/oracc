@@ -21,7 +21,7 @@
 <xsl:template match="lex:data">
   <xsl:for-each select="*[1]">
     <xsl:if test="self::lex:sv or self::lex:wp">
-      <xsl:if test="count(*)>1">
+<!--      <xsl:if test="count(*)>0"> -->
 	<xsl:variable name="head">
 	  <xsl:for-each select="*[1]">
 	    <xsl:choose>
@@ -76,7 +76,7 @@
 	<lex:phrase lang="{*[1]/@lang}" head="{$head}" phrase="{$phrase}" equiv="{$equiv}">
 	  <xsl:copy-of select="ancestor::lex:data"/>
 	</lex:phrase>
-      </xsl:if>
+<!--      </xsl:if> -->
     </xsl:if>
   </xsl:for-each>
 </xsl:template>

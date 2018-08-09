@@ -23,7 +23,7 @@ extern const char *textid;
 extern FILE *f_lemma;
 static Hash_table *lemtab = NULL;
 extern Hash_table *word_form_index;
-extern int lem_standalone, v2;
+extern int lem_standalone, line_is_unit, v2;
 
 extern int lemmata(struct xcl_context *xc, struct ilem_form *fp);
 static void process(struct xcl_context *xc, struct node *n);
@@ -107,6 +107,8 @@ process(struct xcl_context *xc, struct node*n)
 	  break;
 	case e_l:
 	case e_lg:
+	  if (line_is_unit && xc->curr && xc->curr->parent)
+	    xcl_insert_ub(xc, 0, xcl_c_sentence, 0);
 	  xcl_fix_context(xc,NULL);
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_line_start, NULL);
 	  break;

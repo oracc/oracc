@@ -297,6 +297,7 @@ protocol(struct run_context *run,
 		  unsigned char *oline = NULL;
 		  if (*line)
 		    {
+#if 0		      
 		      if (line_is_unit)
 			{
 			  int found_ub = 0;
@@ -321,6 +322,7 @@ protocol(struct run_context *run,
 			      line = nline;
 			    }
 			}
+#endif
 		      lem_handler(parent, scope,level,line);
 		      if (oline)
 			{
