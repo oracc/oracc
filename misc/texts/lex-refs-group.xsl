@@ -21,6 +21,14 @@
 
 <xsl:template match="lex:data" mode="refs">
   <lex:group type="refs" value="{@id_text}">
+    <xsl:attribute name="xis">
+      <xsl:for-each select="key('refgroups', concat(../@xml:id,':',@id_text))/*/lex:word">
+	<xsl:value-of select="@wref"/>
+	<xsl:if test="not(position()=last())">
+	  <xsl:text>+</xsl:text>
+	</xsl:if>
+      </xsl:for-each>
+    </xsl:attribute>
     <xsl:copy-of select="key('refgroups', concat(../@xml:id,':',@id_text))"/>
   </lex:group>
 </xsl:template>

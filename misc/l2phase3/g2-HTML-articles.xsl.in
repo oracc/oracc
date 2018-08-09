@@ -71,10 +71,10 @@
   </xsl:call-template>
 </xsl:param>
 
-<xsl:param name="cbd-word-qakk">
+<xsl:param name="cbd-word-phra">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="config-xml" select="$config-file"/>
-    <xsl:with-param name="option" select="'cbd-qakk-base'"/>
+    <xsl:with-param name="option" select="'cbd-phra-base'"/>
     <xsl:with-param name="default" select="''"/>
   </xsl:call-template>
 </xsl:param>
@@ -114,14 +114,14 @@
   </xsl:if>
 </xsl:variable>
 
-<xsl:variable name="word-qakk-data">
-  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-qakk)>0">
+<xsl:variable name="word-phra-data">
+  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-phra)>0">
     <xsl:choose>
-      <xsl:when test="$cbd-word-qakk='.'">
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-qakk.xhtml')"/>
+      <xsl:when test="$cbd-word-phra='.'">
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-phra.xhtml')"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-qakk,'/lex-word-qakk.xhtml')"/>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-phra,'/lex-word-phra.xhtml')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -136,8 +136,8 @@
     <xsl:message>Using word-base data from <xsl:value-of select="$word-base-data"/></xsl:message>
   </xsl:if>
   
-  <xsl:if test="string-length($word-qakk-data)">
-    <xsl:message>Using word-base data from <xsl:value-of select="$word-qakk-data"/></xsl:message>
+  <xsl:if test="string-length($word-phra-data)">
+    <xsl:message>Using word-phra data from <xsl:value-of select="$word-phra-data"/></xsl:message>
   </xsl:if>
   
   <xsl:call-template name="make-html">
@@ -271,8 +271,8 @@
     <xsl:call-template name="add-word-base-data"/>
   </xsl:if>
   
-  <xsl:if test="string-length($word-qakk-data)>0">
-    <xsl:call-template name="add-word-qakk-data"/>
+  <xsl:if test="string-length($word-phra-data)>0">
+    <xsl:call-template name="add-word-phra-data"/>
   </xsl:if>
   
   <xsl:apply-templates select="cbd:bib"/>
@@ -310,10 +310,10 @@
   </xsl:for-each>
 </xsl:template>
 
-<xsl:template name="add-word-qakk-data">
-  <xsl:message>adding word-qakk data for <xsl:value-of select="@n"/></xsl:message>
+<xsl:template name="add-word-phra-data">
+  <xsl:message>adding word-phra data for <xsl:value-of select="@n"/></xsl:message>
   <xsl:variable name="n" select="@n"/>
-  <xsl:for-each select="document($word-qakk-data)/*">
+  <xsl:for-each select="document($word-phra-data)/*">
     <xsl:copy-of select="key('lex-words',$n)"/>
   </xsl:for-each>
 </xsl:template>

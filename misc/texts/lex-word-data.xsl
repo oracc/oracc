@@ -90,6 +90,8 @@
       <xsl:message><xsl:value-of select="$type"
       /> start=<xsl:value-of select="$f-start"
       />; end=<xsl:value-of select="$f-end"/></xsl:message> -->
+
+  <!-- FIXME: this creates empty lex:wp elements for nonw nodes -->
   <xsl:if test="$f-start > 0">
     <xsl:element name="lex:{$type}">
       <xsl:for-each select="../*[position()>$f-start and position()&lt;$f-end]">

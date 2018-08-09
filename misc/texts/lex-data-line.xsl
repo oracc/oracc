@@ -15,7 +15,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="lex:wp|lex:eq">
+<xsl:template match="lex:wp|lex:sv|lex:eq">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:attribute name="lang"><xsl:value-of select="*/@lang[1]"/></xsl:attribute>
@@ -30,7 +30,7 @@
 
 <xsl:template name="line">
   <xsl:choose>
-    <xsl:when test="lex:wp[1]">
+    <xsl:when test="string-length(lex:wp[1]/*/@form)>0">
       <xsl:call-template name="phrase">
 	<xsl:with-param name="p" select="lex:wp[1]"/>
       </xsl:call-template>
