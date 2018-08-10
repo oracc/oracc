@@ -74,7 +74,7 @@
 <xsl:param name="cbd-word-phra">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="config-xml" select="$config-file"/>
-    <xsl:with-param name="option" select="'cbd-phra-base'"/>
+    <xsl:with-param name="option" select="'cbd-word-phra'"/>
     <xsl:with-param name="default" select="''"/>
   </xsl:call-template>
 </xsl:param>
@@ -303,7 +303,7 @@
 </xsl:template>
 
 <xsl:template name="add-word-base-data">
-  <xsl:message>adding word-base data for <xsl:value-of select="@n"/></xsl:message>
+<!--  <xsl:message>adding word-base data for <xsl:value-of select="@n"/></xsl:message> -->
   <xsl:variable name="n" select="@n"/>
   <xsl:for-each select="document($word-base-data)/*">
     <xsl:copy-of select="key('lex-words',$n)"/>
@@ -311,7 +311,7 @@
 </xsl:template>
 
 <xsl:template name="add-word-phra-data">
-  <xsl:message>adding word-phra data for <xsl:value-of select="@n"/></xsl:message>
+<!--  <xsl:message>adding word-phra data for <xsl:value-of select="@n"/></xsl:message> -->
   <xsl:variable name="n" select="@n"/>
   <xsl:for-each select="document($word-phra-data)/*">
     <xsl:copy-of select="key('lex-words',$n)"/>

@@ -22,8 +22,8 @@
   <div class="lex-phra" title="{@value}">
     <h2 class="lex-phra"><a href="/{descendant::lex:data/@project}/{@lang}?xis={@xis}"
 			    ><xsl:value-of select="@value"/></a></h2>
-    <xsl:for-each select="*">
-      <p class="lex-equi"> <!-- a para for each equiv and its refs -->
+    <xsl:for-each select="*"> <!-- equi groups -->
+      <!-- <p class="lex-equi"> --> <!-- a para for each equiv and its refs -->
 	<!--
 	<xsl:if test="not(@value='#none')">
 	  <span class="lex-equi">
@@ -33,23 +33,24 @@
 	  </xsl:if>
 	  -->
 	<xsl:for-each select="*"> <!-- line groups -->
-	  <xsl:call-template name="emit-line"/>
-	  <xsl:text> (</xsl:text>
-	  <xsl:for-each select="*"> <!-- ref groups -->
-	    <xsl:apply-templates select="."/>
-	    <xsl:if test="not(position()=last())">
-	      <xsl:text>); </xsl:text>
-	    </xsl:if>
-	  </xsl:for-each>
-	  <xsl:text>).</xsl:text>
+	  <p class="lex-line">
+	    <xsl:call-template name="emit-line"/>
+	    <xsl:text> (</xsl:text>
+	    <xsl:for-each select="*"> <!-- ref groups -->
+	      <xsl:apply-templates select="."/>
+	      <xsl:if test="not(position()=last())">
+		<xsl:text>; </xsl:text>
+	      </xsl:if>
+	    </xsl:for-each>
+	    <xsl:text>).</xsl:text>
+	  </p>
 	</xsl:for-each>
-      </p>
       </xsl:for-each>
   </div>
 </xsl:template>
 
 <xsl:template name="emit-line">
-  <xsl:for-each select="descendant::*/lex:data[1]">
+  <xsl:for-each select="*[1]/*[1]">
     <span class="lex-line">
       <xsl:value-of select="*[1]/@form"/>
       <xsl:if test="string-length(lex:eq/@form) > 0">

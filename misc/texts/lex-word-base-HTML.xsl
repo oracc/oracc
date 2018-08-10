@@ -20,7 +20,7 @@
 
 <xsl:template match="lex:group[@type='base']">
   <div class="lex-base" title="{@value}">
-    <h2>Base: <xsl:value-of select="@value"/></h2>
+    <h2><xsl:value-of select="@value"/></h2>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
@@ -32,7 +32,7 @@
     <xsl:for-each select="*">
       <xsl:apply-templates select="."/>
       <xsl:if test="not(position()=last())">
-	<xsl:text>, </xsl:text>
+	<xsl:text>; </xsl:text>
       </xsl:if>
     </xsl:for-each>
     <xsl:text>.</xsl:text>
