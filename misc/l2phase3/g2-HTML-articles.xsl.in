@@ -22,8 +22,8 @@
 
 <xsl:include href="xpd.xsl"/>
 
-<xsl:param name="basename"/>
 <xsl:param name="project"/>
+<xsl:param name="basename" select="$project"/>
 <xsl:param name="projectDir"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
 

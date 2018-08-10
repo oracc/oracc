@@ -998,7 +998,8 @@ parts_match {
 	    for (my $j = 0; $j <= $#candidates; ++$j) {
 		my($form,$norm) = ();
 		if ($candidates[$j] =~ /\$/) {
-		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@\*])#);
+		    #		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@\*])#);
+		    ($form,$norm) = ($candidates[$j] =~ m#:(.*?)=.*?\$(.*?)(?:$|[/+\#\@])#); # no STEM here
 		} else {
 		    $candidates[$j] =~ m#:(.*?)=#;
 		    ($form,$norm) = ($1,'*');

@@ -5,7 +5,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		exclude-result-prefixes="xi">
 
-<xsl:template match="lex:group">
+<xsl:template match="lex:group[@type='phra']">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:attribute name="xis">

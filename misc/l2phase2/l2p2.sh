@@ -10,6 +10,7 @@ function xis {
 	 mv $l.xis $l.xis.top ; \
 	 xsltproc -stringparam sub $l.xis.sub $ORACC/lib/scripts/l2p2-xis-merge.xsl $l.xis.top >$l.xis
 	)
+	lex-data-tis.sh
     else
 	cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
     fi

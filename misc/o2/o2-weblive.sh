@@ -11,7 +11,8 @@ else
     fi
     p3-colours.plx $webdir
 #    (cd $webdir ; mv -f *.* $prjdir/02www ; \
-#	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    #	for a in * ; do rm -fr $prjdir/02www/$a ; mv -f $a $prjdir/02www ; done)
+    l2p3-install-cbd.sh
     o2-weblive.plx | /bin/sh -s
     p3-project.sh
     o2-prm.sh

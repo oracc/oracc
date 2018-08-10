@@ -53,7 +53,7 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (BIT_ISSET(fp->core->features,LF_BASE)
       && !fp->base)
     {
-      if (ifp->fcount)
+      if (ifp && ifp->fcount)
 	{
 	  fp->base = ifp->finds[0]->f2.base;
 	  fp->cont = ifp->finds[0]->f2.cont;

@@ -3,8 +3,8 @@ shopt -s nullglob
 webdir=$1
 shift 1
 if [ "$webdir" == "" ]; then
-    echo l2p3.sh: must give webdir on command line
-    exit 1
+    echo l2p3.sh: defaulting to webdir=01bld/www
+    webdir=01bld/www
 fi
 
 cp -f 02xml/config.xml $webdir ; chmod o+r $webdir/config.xml
@@ -28,12 +28,17 @@ if [ "$g2c" != "" ]; then
 	    ldir=`dirname $g2c`
 	    l=`basename $ldir`
 	    echo producing web version of $l
+	    echo "l2-glomanager -webdir=$webdir -conf $xcf -cbdlang $l $*"
 	    l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
+	    echo g2c-sig-map
 	    xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
+	    echo xff
 	    xfftab=`oraccopt . cbd-forms-table`
 	    if [ "$xfftab" = 'yes' ]; then
+		echo xff=yes
 		rm -fr $webdir/cbd/$l/xff
 		art2xff.plx -l sux
+		echo after art2xff
 	    fi
 	fi
     done
