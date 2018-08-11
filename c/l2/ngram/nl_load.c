@@ -284,6 +284,7 @@ nl_process_one_line(struct NL *nlp, const char *lp, List *components)
   struct f2 *psu_form = NULL;
   if (!isspace(*lp) && '#' != *lp)
     {
+      ngdebug("loading:%d: %s",nl_lnum,lp);
       switch (*lp)
 	{
 	case ' ':
@@ -316,6 +317,7 @@ nl_load_file(struct sigset *sp,
 	     enum nlcp_actions act, const char *lang)
 {
   char **ngram_lines;
+  const char *n = NULL;
   unsigned char *fmem;
   size_t nlines, i, nngrams;
   struct NL *nlp = nl_setup(NULL, act, lang);
@@ -323,6 +325,12 @@ nl_load_file(struct sigset *sp,
   nlcp->nlp = nlp;
   nlcp->owner = sig_new_context_free_sigset();
   nlp->file = fname;
+  n = strrchr(fname, '/');
+  if (n)
+    nlp->name = n+1;
+  else
+    nlp->name = fname;
+  ngdebug("input file=%s", fname);
   nl_set_location(fname,1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
   for (nngrams = i = 0; i < nlines; ++i)

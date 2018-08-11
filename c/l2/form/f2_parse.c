@@ -262,6 +262,13 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	    }
 	}
     }
+  else if (':' == *lp)
+    {
+      *lp++ = '\0';
+      f2p->form = lp;
+      lp = (Uchar*)strchr((char*)lp,'=');
+      *lp++ = '\0';
+    }
 
   /* pass over the new PSU form and remember where it is; we don't do
      anything with it here for now but that should probably change

@@ -51,36 +51,34 @@ sub c_expand {
 	if ($$t[0] == C_HYPH) {
 	    my $p = c_parent($i,@cbd);
 	    push @l, $p;
+	    push @r, '*';
 	} elsif ($$t[0] == C_FORM) {
 	    my $p = c_parent($i,@cbd);
-	    push @l, "$$t[1]=$p";
+	    push @l, ":$$t[1]=$p";
+	    push @r, '*';
 	} elsif ($$t[0] == C_POS) {
 	    push @l, $$t[1];
+	    push @r, '*';
 	} elsif ($$t[0] == C_SENSE) {
 	    my $p = c_parent($i,@cbd);
-	    $p =~ s#\]#//$$t[1]\]#;
 	    push @l, $p;
-#	    my $r = $p;
-#	    $r =~ s#\]#//$$t[1]\]#;
-#	    $r[$$t[2]] = $r;
+	    $p =~ s#\]#//$$t[1]\]#;
+	    push @r, $p;
 	} elsif ($$t[0] == C_SIG) {
 	    push @l, $$t[1];
+	    push @r, '*';
 	} elsif ($$t[0] == C_BAD) {
 	} else {
 	    warn pp_file().':'.pp_line().
 		": internal error: unhandled token type $$t[0]\n";
 	}
     }
-#    print Dumper \@l;
-    my $e = join(' ', @l);
-#    if ($#r >= 0) {
-#	for (my $i = 0; $i <= $#l; ++$i) {
-#	    $r[$i] = '*' unless $r[$i];
-#	}
-#	$e .= ' => ';
-#	$e .= join(' ',@r);
-#    }
-    $e;
+    my $r = join('',@r);
+    if ($r =~ /^\*+$/) {
+	"@l";
+    } else {
+	"@l => @r";
+    }
 }
 
 sub c_tokenize {
@@ -99,7 +97,7 @@ sub c_tokenize {
 	    push @t, [ C_POS, $1, $i ];
 	} elsif ($c =~ s/^([^\s]+?\].*?)\s+//) {
 	    push @t, [ C_SIG, $1, $i ];
-	} elsif ($c =~ s/,(\S+)\s+//) {
+	} elsif ($c =~ s/-(\S+)\s+//) {
 	    push @t, [ C_FORM, $1, $i ];
 	} else {
 	    @t = ();

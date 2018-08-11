@@ -47,6 +47,7 @@ ngdebug(const char *mess,...)
     {
       va_list ap;
       va_start(ap,mess);
+      fputs("[ng]: ",f_log);
       vfprintf(f_log,mess,ap);
       fputc('\n',f_log);
       va_end(ap);
@@ -132,14 +133,24 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 	      if (xcp->user)
 		{
 		  if ((int)(uintptr_t)xcp->user == NGRAMIFY_USE_BIGRAMS)
-		    nlcp = clnodes[i].l->f->sp->bigrams;
+		    {
+		      nlcp = clnodes[i].l->f->sp->bigrams;
+		      ngdebug("context=bigrams");
+		    }
 		  else if ((int)(uintptr_t)xcp->user == NGRAMIFY_USE_COLLOS)
-		    nlcp = clnodes[i].l->f->sp->collos;
+		    {
+		      nlcp = clnodes[i].l->f->sp->collos;
+		      ngdebug("context=collos");
+		    }
 		  else
 		    {
 		      enum langcode c = c_none;
+		      const char *lang = NULL;
 		      if (clnodes[i].l->f->lang)
-			c = clnodes[i].l->f->lang->core->code;
+			{
+			  c = clnodes[i].l->f->lang->core->code;
+			  lang = clnodes[i].l->f->lang->core->name;
+			}
 		      else
 			{
 			  char base[4], *b = base;
@@ -147,6 +158,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 			  if ((tmp = (const char*)clnodes[i].l->f->f2.lang))
 			    {
 			      struct langcore *lcp = NULL;
+			      lang = (const char*)clnodes[i].l->f->f2.lang;
 			      while (*tmp && '-' != *tmp)
 				*b++ = *tmp++;
 			      *b = '\0';
@@ -155,9 +167,15 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 			    }
 			}
 		      if (c != c_none)
-			nlcp = ((struct NL_context **)xcp->user)[c];
+			{
+			  nlcp = ((struct NL_context **)xcp->user)[c];
+			  ngdebug("context=psus for lang %s", clnodes[i].l->f->lang);
+			}
 		      else
-			nlcp = NULL;
+			{
+			  nlcp = NULL;
+			  ngdebug("context=null");
+			}
 		    }
 		}
 	      else
@@ -179,12 +197,14 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
       for (i_nle = 0; i_nle < n_nle; ++i_nle)
 	{
 	  ngramify_reset();
-	  ngdebug("[ngramify] testing NLE#%d: %s",
-		  nle[i_nle]->priority,nle[i_nle]->line);
+	  ngdebug("[ngramify] testing %s:NLE#%d: %s",
+		  nle[i_nle]->owner->name,
+		  nle[i_nle]->priority,
+		  nle[i_nle]->line);
 	  if (match_nle(nle[i_nle], clnodes, i, nclnodes))
 	    {
 	      int first_non_d;
-	      ngdebug("[ngramify] match to NLE#%d (%s:%d) [user=%p] triggers %s",
+	      ngdebug("[ngramify] NLE#%d match triggers %s",
 		      nle[i_nle]->priority,
 		      nle[i_nle]->file,
 		      nle[i_nle]->lnum,
@@ -223,6 +243,11 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 	       */
 	      i += match_list->matches_used - 1;
 	      break;
+	    }
+	  else
+	    {
+	      ngdebug("[ngramify] NLE#%d test failed",
+		      nle[i_nle]->priority);
 	    }
 	}
     }
@@ -652,7 +677,7 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
 		       (unsigned char *)p[i]->cf);
       if (nles)
 	{
-	  ngdebug("[nle_heads] found CF %s in active hash",p[i]->cf);
+	  ngdebug("[nle_heads] found CF %s in %s",p[i]->cf, nlp->name);
 	  nles_p[n_nles++] = nles;
 	  total_nles += nles->pp_used;
 	  hash_add(seen_cfs, p[i]->cf, &one);

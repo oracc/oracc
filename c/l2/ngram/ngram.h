@@ -41,6 +41,7 @@ struct NL_context
 struct NL
 {
   const char *file;
+  const char *name;
   int initial_line; /* subtract this from NLE# to get 
 		       line number of match */
   char **ngram_lines;
