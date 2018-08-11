@@ -7,7 +7,7 @@ static void
 apply_tts(struct f2 *fp, struct CF *tt)
 {
   int i;
-  if (tt)
+  if (tt && tt->preds)
     {
       for (i = 0; tt->preds[i]; ++i)
 	{
@@ -52,7 +52,14 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 	      if (!BIT_ISSET(mp->lp->f->finds[i]->f2.flags,F2_FLAGS_READ_ONLY))
 		{
 		  apply_tts(mp->matching_f2s[i], mp->tt);
-		  mp->lp->f->finds[i]->f2 = *mp->matching_f2s[i];
+		  if (mp->tt && mp->tt->f2)
+		    {
+		      /* mp->lp->f->finds[i]->f2 = *mp->tt->f2; */
+		      if (mp->tt->f2->sense)
+			mp->lp->f->finds[i]->f2.sense = mp->tt->f2->sense;
+		    }
+		  else
+		    mp->lp->f->finds[i]->f2 = *mp->matching_f2s[i];
 		  BIT_SET(mp->lp->f->finds[i]->f2.flags,F2_FLAGS_READ_ONLY);
 		}
 	    }

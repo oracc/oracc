@@ -4,7 +4,7 @@
 #include "sigs.h"
 #include "warning.h"
 
-extern int lem_autolem, verbose;
+extern int lem_autolem, lem_dynalem, verbose;
 #if 0
 static int
 freq_cmp(struct ilem_form **a,struct ilem_form **b)
@@ -92,7 +92,7 @@ ilem_lnode(struct xcl_context *xcp, struct xcl_l *lp)
     {
       sigs_l_check(xcp,lp);
     }
-  else if (lem_autolem && lp->f->f2.form)
+  else if ((lem_autolem || lem_dynalem) && lp->f->f2.form)
     {
       if (verbose > 1)
 	fprintf(stderr,"lem_lnode:%s:%d: processing %s\n",

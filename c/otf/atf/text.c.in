@@ -365,7 +365,7 @@ process_text(struct run_context *run, unsigned char **lines)
 		 candidate matches are still available to prevent
 		 match-failures or mismatches like mar shipri
 		 matching shipru[//work] */
-	      if (!lem_autolem)
+	      if (!lem_autolem && !lem_dynalem)
 		psus2(text_xc);
 
 	      if (lem_do_wrapup)

@@ -326,7 +326,10 @@ nl_load_file(struct sigset *sp,
   nl_set_location(fname,1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
   for (nngrams = i = 0; i < nlines; ++i)
-    nl_process_one_line(nlp, ngram_lines[i], NULL);
+    {
+      if (ngram_lines[i] && *ngram_lines[i])
+	nl_process_one_line(nlp, ngram_lines[i], NULL);
+    }
   free(fmem);
   free(ngram_lines);
   return nlcp;

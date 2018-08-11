@@ -9,6 +9,7 @@
 #include "xcl.h"
 #include "words.h"
 
+extern int lem_dynalem;
 extern int verbose;
 extern const char *xcl_project;
 
@@ -453,7 +454,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	  goto top;
 	}
     }
-  else if (ncand > 1)
+  else if (ncand > 1 && !lem_dynalem)
     {
       if (!f->sense)
 	{
@@ -506,7 +507,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
     }
   else
     {
-      /* ncand == 0 and pass1 == 1 */
+      /* lem_dynalem || (ncand == 0 and pass1 == 1) */
     }
   *nfinds = ncand;
   return ncand ? (struct sig const * const *)res : NULL;

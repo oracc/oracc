@@ -275,7 +275,7 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 
   if (fp->fcount == 1 
       || (fp->fcount > 1 
-	  && (lem_autolem || BIT_ISSET(fp->f2.flags, F2_FLAGS_LEM_NEW))))
+	  && (lem_autolem || lem_dynalem || BIT_ISSET(fp->f2.flags, F2_FLAGS_LEM_NEW))))
     {
       /* must do this before inherit so that ->multi inheriting works */
       if (fp->finds[0]->f2.parts)

@@ -250,6 +250,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
   struct sigset *sp_parent = NULL;
 
   extern int lem_autolem;
+  extern int lem_dynalem;
 
   if (!ifp->f2.cf && !ifp->f2.norm && look->type == sig_look_check)
     return;
@@ -302,7 +303,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	     from the cache by definition there must be a form */
 	  BIT_SET(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
 	  BIT_CLEAR(l->f->f2.flags, F2_FLAGS_NO_FORM);
-	  if (sigs_found && lem_autolem && !ifp->f2.cf)
+	  if (sigs_found && (lem_autolem || lem_dynalem) && !ifp->f2.cf)
 	    {
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 	      ifp->sp = sp;
@@ -341,7 +342,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	     
 	     !!! FIXME !!! THIS DOES NOT WORK BECAUSE AKK-949 ALSO HAS CF=NULL 
 	   */
-	  if (sigs_found && lem_autolem && !ifp->f2.cf)
+	  if (sigs_found && (lem_autolem || lem_dynalem) && !ifp->f2.cf)
 	    {
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 	      ifp->sp = sp;
@@ -722,7 +723,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       l->f->sp = sp;
       l->f->look = look;
 
-      if ((lem_autolem || BIT_ISSET(ifp->f2.flags, F2_FLAGS_LEM_NEW)) && !cache_find)
+      if ((lem_autolem || BIT_ISSET(ifp->f2.flags, F2_FLAGS_LEM_NEW)) && !cache_find) /* lem_dynalem not needed */
 	{
 	  if (!ifp->sp)
 	    {

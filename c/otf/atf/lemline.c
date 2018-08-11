@@ -543,7 +543,7 @@ lem_serialize(FILE *fp)
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
 		continue;
 
-	      set_sframe(&sframe, f->literal);
+	      set_sframe(&sframe, (lem_dynalem && f->finds) ? NULL : f->literal);
 	      if (sframe.lit)
 		{
 		  fputs(sframe.lit,fp);
