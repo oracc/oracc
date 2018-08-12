@@ -128,7 +128,9 @@
       /> start=<xsl:value-of select="$l-start"
       />; end=<xsl:value-of select="$l-end"/></xsl:message>-->
   <lex:data>
-    <xsl:call-template name="lex-data-meta"/>
+    <xsl:for-each select="ancestor::xcl:c[@type='sentence'][1]">
+      <xsl:call-template name="lex-data-meta"/>
+    </xsl:for-each>
     <lex:wp>
       <xsl:for-each select="../*[position()>$l-start and position()&lt;$l-end]">
 	<xsl:if test="self::xcl:l">

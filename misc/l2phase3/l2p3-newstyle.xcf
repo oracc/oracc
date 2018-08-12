@@ -93,6 +93,10 @@
   </set>
 
   <set var="process">
+    <key k="action"   to="$oracc/bin/lex-tis.sh"/>
+  </set>
+
+  <set var="process">
     <key k="action"   to="$oracc/bin/xisdb"/>
     <key k="args"     to="02pub/cbd/$cbdlang/$cbdlang.tis"/>
   </set>

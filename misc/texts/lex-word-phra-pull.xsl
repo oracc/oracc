@@ -7,6 +7,7 @@
 
 <xsl:template match="lex:dataset">
   <lex:phrases>
+    <xsl:copy-of select="@*"/>
     <xsl:apply-templates/>
   </lex:phrases>
 </xsl:template>

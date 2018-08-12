@@ -5,7 +5,7 @@
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:template match="lex:word-phra-data">
+<xsl:template match="lex:phra-base-data">
   <body>
     <xsl:apply-templates/>
   </body>
@@ -13,46 +13,40 @@
 
 <xsl:template match="lex:group[@type='word']">
   <div class="lex-word" title="{@value}">
-    <h3 class="word-base">Lexical Data</h3>
+    <h3 class="lex-base">Pronunciation Data</h3>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
 
-<xsl:template match="lex:group[@type='phra']">
-  <div class="lex-phra" title="{@value}">
-    <h2 class="lex-phra"><a href="javascript:distprof2('{/*/@project}','{@lang}','{../@xis}')"
+<xsl:template match="lex:group[@type='base']">
+  <div class="lex-base" title="{@value}">
+    <!-- href="/{descendant::lex:data/@project}/{@lang}?xis={../@xis}" -->
+    <h2 class="lex-base"><a href="javascript:distprof2('{/*/@project}','{@lang}','{../@xis}')"
 			    ><xsl:value-of select="@value"/></a></h2>
-    <xsl:for-each select="*"> <!-- equi groups -->
-      <!-- <p class="lex-equi"> --> <!-- a para for each equiv and its refs -->
-	<!--
-	<xsl:if test="not(@value='#none')">
-	  <span class="lex-equi">
-	    <xsl:text>= </xsl:text>
-	    <i><xsl:value-of select="{@value}"/></i>
-	  </span>
+    <xsl:for-each select="*"> <!-- spel groups -->
+      <p class="lex-line">
+	<xsl:call-template name="emit-line"/>
+	<xsl:text> (</xsl:text>
+	<xsl:for-each select="*"> <!-- ref groups -->
+	  <xsl:apply-templates select="."/>
+	  <xsl:if test="not(position()=last())">
+	    <xsl:text>; </xsl:text>
 	  </xsl:if>
-	  -->
-	<xsl:for-each select="*"> <!-- line groups -->
-	  <p class="lex-line">
-	    <xsl:call-template name="emit-line"/>
-	    <xsl:text> (</xsl:text>
-	    <xsl:for-each select="*"> <!-- ref groups -->
-	      <xsl:apply-templates select="."/>
-	      <xsl:if test="not(position()=last())">
-		<xsl:text>; </xsl:text>
-	      </xsl:if>
-	    </xsl:for-each>
-	    <xsl:text>).</xsl:text>
-	  </p>
 	</xsl:for-each>
-      </xsl:for-each>
+	<xsl:text>).</xsl:text>
+      </p>
+    </xsl:for-each>
   </div>
 </xsl:template>
 
 <xsl:template name="emit-line">
-  <xsl:for-each select="*[1]/*[1]">
-    <span class="lex-line">
-      <xsl:value-of select="*[1]/@form"/>
+  <xsl:for-each select="lex:group[1]/lex:data[1]">
+    <span class="lex-spel">
+      <xsl:value-of select="@spel"/>
+      <xsl:if test="string-length(@read) > 0">
+	<xsl:text> = </xsl:text>
+	<i><xsl:value-of select="@read"/></i>
+      </xsl:if>
       <xsl:if test="string-length(lex:eq/@form) > 0">
 	<xsl:text> = </xsl:text>
 	<i><xsl:value-of select="lex:eq/@form"/></i>
@@ -63,7 +57,7 @@
 
 <xsl:template match="lex:group[@type='refs']">
   <xsl:variable name="wrefs">
-    <xsl:for-each select="lex:data/*/lex:word/@wref">
+    <xsl:for-each select="lex:data/lex:eq/*/@wref">
       <xsl:value-of select="."/>
       <xsl:if test="not(position()=last())">
 	<xsl:text>+</xsl:text>

@@ -105,10 +105,10 @@
   <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-base)>0">
     <xsl:choose>
       <xsl:when test="$cbd-word-base='.'">
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-base.xhtml')"/>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-phra-base.xhtml')"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-base,'/lex-word-base.xhtml')"/>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-base,'/lex-phra-base.xhtml')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>

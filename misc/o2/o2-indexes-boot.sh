@@ -27,6 +27,7 @@ for a in 02pub/cbd/[a-z]* ; do
 	/bin/echo -n indexing $lang glossary
 	secbdx -p $project -l $lang 01bld/$lang/articles.xml
 	echo ", compiling instances database"
+	lex-tis.sh
 	xisdb 02pub/cbd/$lang/$lang.tis
     fi
 done

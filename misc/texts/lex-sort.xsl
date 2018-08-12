@@ -5,18 +5,21 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		exclude-result-prefixes="xi">
 
-<xsl:template match="lex:group[@type='word' or @type='phra']">
+<xsl:template match="/*">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
-    <xsl:attribute name="xis">
-      <xsl:for-each select=".//@xis">
-	<xsl:value-of select="."/>
-	<xsl:if test="not(position()=last())">
-	  <xsl:text> </xsl:text>
-	</xsl:if>
-      </xsl:for-each>
-    </xsl:attribute>
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+      <xsl:sort select="@value"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="lex:group[@value]">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates>
+      <xsl:sort select="@value"/>
+    </xsl:apply-templates>
   </xsl:copy>
 </xsl:template>
 
