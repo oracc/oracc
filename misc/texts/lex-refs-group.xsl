@@ -20,10 +20,11 @@
 </xsl:template>
 
 <xsl:template match="lex:data" mode="refs">
+  <xsl:variable name="p" select="@project"/>
   <lex:group type="refs" value="{@id_text}">
     <xsl:attribute name="xis">
       <xsl:for-each select="key('refgroups', concat(../@xml:id,':',@id_text))/*/lex:word">
-	<xsl:value-of select="@wref"/>
+	<xsl:value-of select="concat($p,':',@wref)"/>
 	<xsl:if test="not(position()=last())">
 	  <xsl:text>+</xsl:text>
 	</xsl:if>

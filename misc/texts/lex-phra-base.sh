@@ -12,7 +12,7 @@ xsltproc $libscripts/lex-refs-group.xsl 01tmp/lex/phra-base-grouped.xml \
 
 xsltproc --stringparam idbase base $libscripts/lex-data-xis-ids.xsl 01tmp/lex/phra-base-refs.xml >01tmp/lex/base.xis
 
-xsltproc $libscripts/xis2tis.xsl 01tmp/lex/base.xis >02pub/base.tis
+xsltproc $libscripts/xis2tis.xsl 01tmp/lex/base.xis | tis-sort.plx >02pub/base.tis
 
 xsltproc --stringparam xis-file base.xis $libscripts/lex-data-xis-remap.xsl 01tmp/lex/phra-base-refs.xml \
 	 >01tmp/lex/phra-base-remapped.xml
