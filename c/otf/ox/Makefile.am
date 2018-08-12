@@ -10,7 +10,7 @@ SUFFIXES=.g .c .o
 AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
 bin_PROGRAMS=ox gdlme2
-noinst_PROGRAMS=prj tok
+noinst_PROGRAMS=prj tok f2test
 
 ox_SOURCES = \
 	atffile.c help.c initterm.c odt_writer.c options.c \
@@ -42,6 +42,11 @@ xLDADD = \
 
 ox_LDADD = $(xLDADD)
 ox_DEPENDENCIES = $(ox_LDADD)
+
+f2test_SOURCES = \
+	f2test.c
+
+f2test_LDADD = $(xLDADD)
 
 gdlme2_SOURCES = \
 	gdlme2.c globals.c

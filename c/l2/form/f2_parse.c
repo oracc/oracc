@@ -431,62 +431,49 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	     that starts with a field char */
 
 	pos_parse:
-	  if (isupper(*lp))
+	  if (isupper(*lp) || '\'' == *lp)
 	    {
-	      Uchar *end = NULL;
-	      Uchar *epos = NULL;
-	      for (end = lp; *end && !isspace(*end); ++end)
-		;
-	      epos = (Uchar*)strchr((const char *)lp,'\'');
 	      f2p->pos = lp;
-	      if (epos && epos < end)
-		lp = epos;
-	      else
-		lp = field_end(lp);
-	      if (*f2p->pos == 'V' && '/' == *lp && (lp[1] == 't' || lp[1] == 'i'))
+	      if (*lp == 'V' && '/' == lp[1] && (lp[2] == 't' || lp[2] == 'i'))
 		{
-		  ++lp;
-		  epos = (Uchar*)strchr((const char *)lp,'\'');
-		  if (epos && epos < end)
-		    lp = epos;
-		  else
-		    lp = field_end(lp);
+		  lp += 3;
 		}
-	      field = *lp;
-	      if (field == '\'')
+	      else
+		{
+		  unsigned char *e = field_end(lp), *tmp = lp;
+		  while (tmp < e)
+		    {
+		      if ('\'' == *tmp)
+			break;
+		      else
+			++tmp;
+		    }
+		  if ('\'' == *tmp)
+		    lp = tmp;
+		  else
+		    lp = e;
+		}
+	      if (*lp == '\'')
 		{
 		  *lp++ = '\0';
 		  f2p->epos = lp;
+		  if (*lp == 'V' && '/' == lp[1] && (lp[2] == 't' || lp[2] == 'i'))
+		    lp += 3;
 		  lp = field_end(lp);
-		  if (*f2p->epos == 'V' && '/' == *lp && (lp[1] == 't' || lp[1] == 'i'))
-		    {
-		      ++lp;
-		      lp = field_end(lp);
-		    }
-		  field = *lp;
-		  *lp++ = '\0';
 		}
 	      else
-		*lp++ = '\0';
+		lp = field_end(lp);
 	    }
-	  else if (*lp == '\'')
-	    {
-	      *lp++ = '\0';
-	      f2p->epos = lp;
-	      lp = field_end(lp);
-	      field = *lp;
-	      *lp++ = '\0';
-	    }
-	  else if (*lp)
+
+	  if (*lp)
 	    {
 	      field = *lp;
 	      *lp++ = '\0';
 	    }
 
-	  /* Now we are at a variable set of instance
-	     fields; parse as though they can be in any
-	     order, though in principle the order should
-	     always be fixed. */
+	  /* Now we are at a (possibly empty) variable set of instance
+	     fields; parse as though they can be in any order, though
+	     in principle the order should always be fixed. */
 	  while (*lp)
 	    {
 	      switch (field)
@@ -564,8 +551,21 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 
  break_switch_loop:
 
-  validate_pos((const char *)file, line, f2p->pos);
-  validate_pos((const char *)file, line, f2p->epos);
+  if (f2p->pos)
+    {
+      if (*f2p->pos)
+	validate_pos((const char *)file, line, f2p->pos);
+      else
+	f2p->pos = NULL;
+    }
+  if (f2p->epos)
+    {
+      if (*f2p->epos)
+	validate_pos((const char *)file, line, f2p->epos);
+      else
+	f2p->epos = NULL;
+    }
+  
   if (f2p->base)
     validate_base((const char *)file, line, f2p->base);
 
