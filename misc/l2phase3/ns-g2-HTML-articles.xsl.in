@@ -90,7 +90,8 @@
 
 <xsl:key name="signmap" match="do" use="@from"/>
 <xsl:key name="summary-id" match="xh:p" use="@id"/>
-<xsl:key name="lex-words" match="xh:div[@class='lex-word']" use="@title"/>
+<xsl:key name="lex-bases" match="xh:div[@class='lex-word']" use="@title"/>
+<xsl:key name="lex-phras" match="xh:div[@class='lex-word']" use="@title"/>
 
 <xsl:output method="xml" encoding="utf-8"
    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -361,7 +362,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <xsl:template name="add-word-base-data">
   <xsl:variable name="n" select="@n"/>
   <xsl:for-each select="document($word-base-data)/*">
-    <xsl:for-each select="key('lex-words',$n)">
+    <xsl:for-each select="key('lex-bases',$n)">
       <!--<xsl:message>adding word-base data for <xsl:value-of select="$n"/></xsl:message>-->
       <xsl:copy-of select="."/>
     </xsl:for-each>
@@ -371,7 +372,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <xsl:template name="add-word-phra-data">
   <xsl:variable name="n" select="@n"/>
   <xsl:for-each select="document($word-phra-data)/*">
-    <xsl:for-each select="key('lex-words',$n)">
+    <xsl:for-each select="key('lex-phras',$n)">
       <!--<xsl:message>adding word-phra data for <xsl:value-of select="$n"/></xsl:message>-->
       <xsl:copy-of select="."/>
     </xsl:for-each>
@@ -1306,7 +1307,10 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:bib">
-  <div class="bib"><xsl:apply-templates/></div>
+  <div class="ns-glo-sec bib">
+    <h1>Bibliography</h1>
+    <xsl:apply-templates/>
+  </div>
 </xsl:template>
 
 <xsl:template match="cbd:ref">

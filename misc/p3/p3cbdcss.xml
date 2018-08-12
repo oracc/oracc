@@ -13,7 +13,7 @@ span.pos { font-size: 90%; }
 span.phon { font-size: 90%; font-family: serif; padding-left: 2em }
 span.selected { background-color: silver }
 
-div.summary { width: 90%; margin: auto;
+div.summary { width: 90%; margin: auto; margin-bottom: 5px; padding-bottom: 10px;
 	    border-bottom: 6px solid #cfc; }
 
 p.summary { margin-left: 1.1em; text-indent: -1em; 
@@ -24,7 +24,7 @@ p.norms    { width: 90%; margin: auto; }
 
 div.morphology { width: 90%; margin: auto; }
 div.equivs     { width: 90%; margin: auto; }
-div.bib        { width: 90%; margin: auto; }
+/* div.bib        { width: 90%; margin: auto; } */
 
 div.props      { width: 90%; margin: auto; }
 
@@ -120,7 +120,7 @@ span.what { font-size: 100%; font-weight: bold; padding-right: 10pt; }
 a.epsdissl  { color: blue !important; text-decoration: none; }
 a.epsdprime { color: fuchsia !important; text-decoration: none; }
 
-p.ref        { font-size: 90%; margin-left: 20pt; margin-bottom: 2pt; 
+p.ref        { font-size: 90%; margin-left: 3em; margin-bottom: 2pt; 
 	margin-top: 2pt; text-indent: -10pt; }
 span.refyear { font-size: 90%; }
 
@@ -518,4 +518,10 @@ div.header { margin-bottom: 1em; }
 
 span.issl-term { color: red; margin-right: 1em; }
 
+.lex-word div { margin-left: 0em; }
+.lex-word h1 { font-size: medium; margin-left: 1em; }
+.lex-word h2 { font-size: medium; margin-left: 2em; }
+.lex-word h3 { font-size: medium; margin-left: 1em; }
+p.lex-line  { margin-left: 3em; text-indent: 0em; }
+p.lex-spel  { margin-left: 3em; text-indent: 0em; }
 </css>
