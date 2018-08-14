@@ -56,6 +56,7 @@ load {
 	warn "Pleiades::load: reading $fn\n";
 	while (<P>) {
 	    chomp;
+	    next if /^\s*$/;
 	    my @fields = split(/\t/,$_);
 	    @fields = map { /^\s*(.*?)\s*$/ } @fields;
 	    my $cfgwpos = $fields[0];

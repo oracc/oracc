@@ -2,7 +2,7 @@
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
-#use Data::Dumper;
+use Data::Dumper;
 
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
@@ -27,7 +27,9 @@ my $done = 0;
 my %entry_ids = ();
 my %entry_lines = ();
 my %entry_xis = ();
+my %entryformstems = ();
 my %f = ();
+my %form_ids = ();
 my %header = ();
 my $header_vars = 0;
 my $have_disamb = 0;
@@ -264,6 +266,11 @@ foreach my $lang (sort keys %data) {
 			    }
 			}
 			print "<$f xml:id=\"$xid\"$m2attr n=\"$kn\"";
+			if ($f eq 'form') {
+			    if ($form_ids{$k}) {
+				print " ref=\"$form_ids{$k}\"";
+			    }
+			}
 			xis_attr(%xis_info);
 			print '/>';
 		    }
@@ -391,6 +398,7 @@ add_sig {
 	    }
 	    $cof_norm = make_cof_norm($full_cof_sig);
 	}
+#	print Dumper \%sig;
     }
     if ($psu_ngram) {
 	$sig{'psu_ngram'} = $psu_ngram;
@@ -399,6 +407,14 @@ add_sig {
     
     $sig{'sid'} = sprintf("sig%06x",$sid++);
 
+    if ($sig{'stem'}) {
+	if ($sig{'stem'}) {
+	    warn "found stem\n";
+	    $entryformstems{"$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}",$sig{'form'}} = $sig{'stem'};
+	    print Dumper \%entryformstems;
+	}
+    }
+    
     ++$seen_morph2 if $sig{'morph2'};
 
     ++$norms{$sig{'norm'}} if $sig{'norm'};
@@ -502,8 +518,9 @@ compute_and_print_entry_data {
     my %entry = @_;
     my %freqs = ();
     my %insts = ();
-    my %form_ids = ();
     my $entry_xid = $entry_ids{$entry};
+
+    %form_ids = ();
 
     foreach my $sense (keys %entry) {
 	foreach my $f (@sigfields) {
@@ -526,7 +543,7 @@ compute_and_print_entry_data {
 	}	
     }
 
-#   use Data::Dumper; warn Dumper(\%freqs), "\n";
+    # use Data::Dumper; warn Dumper(\%freqs), "\n";
 
     foreach my $f (@sigfields) {
 	if ($freqs{$f} || $with_zero_freqs) {
@@ -570,6 +587,9 @@ compute_and_print_entry_data {
 #			$gme = '';
 #		    }
 		    print "<$f xml:id=\"$xid\" n=\"$xk_n\"";
+		    if ($entryformstems{$entry,$k}) {
+			print " stem=\"$entryformstems{$entry,$k}\"";
+		    }
 		    xis_attr(%xis_info);
 		    print '>';
 #		    icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\">";

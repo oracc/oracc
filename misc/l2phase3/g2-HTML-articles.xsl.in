@@ -27,9 +27,9 @@
 <xsl:param name="projectDir"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
 
-<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
+<xsl:variable name="periods-xis" select="concat('@@ORACC_BUILDS@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
 
-<xsl:variable name="config-file" select="concat('@@ORACC@@/xml/',$project,'/config.xml')"/>
+<xsl:variable name="config-file" select="concat('@@ORACC_BUILDS@@/xml/',$project,'/config.xml')"/>
 
 <xsl:param name="cbd-article-summaries">
   <xsl:call-template name="xpd-option">
@@ -88,7 +88,7 @@
 
 <!-- FIX ME MUST POINT TO 01bld/www/cbd/LANG -->
 
-<xsl:variable name="summaries-doc" select="concat('@@ORACC@@/bld/',$basename,'/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
+<xsl:variable name="summaries-doc" select="concat('@@ORACC_BUILDS@@/bld/',$basename,'/www/cbd/',/*/@xml:lang,'/summaries.html')"/>
 
 <!--<xsl:strip-space elements="*"/>-->
 
@@ -370,6 +370,11 @@
       </a>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:if test="string-length(@stem)>0">
+    <span class="stem">
+      <xsl:value-of select="concat(' (',@stem,')')"/>
+    </span>
+  </xsl:if>
   <xsl:if test="cbd:cof-form-norm">
     <span class="cof-form-norm">
       <xsl:text> [</xsl:text>
@@ -1039,6 +1044,9 @@
 	  <xsl:value-of select="@num"/>
 	</span>
 	<xsl:text> </xsl:text>
+	<xsl:if test="string-length(@stem)>0">
+	  <xsl:value-of select="concat('(',@stem,') ')"/>
+	</xsl:if>
         <xsl:value-of select="cbd:mng"/>
 
 	<xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)">

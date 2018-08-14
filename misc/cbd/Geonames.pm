@@ -57,7 +57,7 @@ sub get_tags {
     my($i,@cbd) = @_;
     my %tags = ();
     while ($cbd[$i] !~ /^\@end\s+entry/) {
-	if (/^\@([a-z0-9_]+)\s/) {
+	if ($cbd[$i] =~ /^\@([a-z0-9_]+)\s/) {
 	    my $t = $1;
 	    if (exists $geo_keys{$t}) {
 		my($v) = ($cbd[$i] =~ /\@(\S+)\s+(.*)\s*$/);
@@ -72,6 +72,7 @@ sub get_tags {
 		}
 	    }
 	}
+	++$i;
     }
     (%tags);
 }
@@ -186,8 +187,12 @@ sub pleiades_init {
     foreach $p (@pleiades_data) {
 	foreach my $pk (keys %$p) {
 	    my $pkn = $$p{$pk};
-	    $pkn =~ s/\t.*//;
-	    $geonames{$pkn} = $$p{$pk};
+	    if ($pkn) {
+		$pkn =~ s/\t.*//;
+		$geonames{$pkn} = $$p{$pk};
+	    } else {
+		warn "Geonames: no value for key $pk\n";
+	    }
 	}
     }
 }

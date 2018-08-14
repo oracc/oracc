@@ -105,9 +105,9 @@ sub
 augment {
     my ($add,$ignore_errors) = @_;
     foreach my $e (keys %g2x) {
-	my $enode = ${$g2x{$e}}{'node'};
-	if ($add{$e}) {
-	    my $anode = ${$add{$e}}{'node'};
+	my $enode = ${$g2x{$e}}{'#node'};
+	if ($add{$e}) { # is the entry from ADD in the base .g2x ?
+	    my $anode = ${$add{$e}}{'#node'};
 	    my @edcf = tags($enode,$CBD,'dcf');
 	    unless (has_dcf($enode,$lang)) {
 		my $dcf = has_dcf($anode,$lang);
@@ -126,10 +126,16 @@ augment {
 		    $dcf->firstChild()->setData($cf_text);
 		}
 	    }
-	    foreach my $s (keys %{$g2x{$e}}) {
-		next if $s eq 'node';
+	    foreach my $s (keys %{$g2x{$e}}) { # iterate over ADD entry's senses
+		next if $s eq '#node';
 		if (${$add{$e}}{$s}) {
 		    ${$g2x{$e}}{$s}->setAttribute('ok','1');
+		    if ($s =~ /V$/) {
+			my @stemtag = tags(${$add{$e}}{$s},$CBD,'stem');
+			if ($#stemtag >= 0) {
+			    ${$g2x{$e}}{$s}->setAttribute('stem',$stemtag[0]->textContent());
+			}
+		    }
 		} else {
 		    ${$g2x{$e}}{$s}->setAttribute('ok','0');
 		    my $xis = ${$g2x{$e}}{$s}->getAttribute('xis');
@@ -224,7 +230,7 @@ index_g2x {
 	next unless $e->isa('XML::LibXML::Element');
 	if ($e->localName() eq 'entry') {
 	    my $curr_e = $e->getAttribute('n');
-	    ${$$xhash{$curr_e}}{'node'} = $e;
+	    ${$$xhash{$curr_e}}{'#node'} = $e;
 	    foreach my $ss ($e->childNodes()) {
 		next unless $ss->isa('XML::LibXML::Element');
 		if ($ss->localName() eq 'senses') {

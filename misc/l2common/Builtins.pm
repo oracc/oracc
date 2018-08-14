@@ -828,6 +828,10 @@ acdentry {
 		    bad('form', "malformed CONT '$c'");
 		}
 	    }
+	    if ($f =~ /\s\*(\S*)/) {
+		# do we need ++$stems{$stem=$1} as with other attr?
+		$stem = $1;
+	    }
 	    if ($f =~ /\s\#([^\#]\S*)/) {
 		my $m = $1;
 		++$morphs{$morph=$m};
@@ -995,7 +999,8 @@ acdentry {
 #		}
 		$xattr .= " base=\"$bases{$base}\"" if $base;
 		$xattr .= " cont=\"$conts{$cont}\"" if $cont;
-		$xattr .= " stem=\"$stems{$stem}\"" if $stem;
+		#		$xattr .= " stem=\"$stems{$stem}\"" if $stem;
+		$xattr .= " stem=\"$stem\"" if $stem;
 		$xattr .= " morph=\"$morphs{$morph}\"" if $morph;
 		$xattr .= " morph2=\"$morph2s{$morph2}\"" if $morph2;
 		$xattr .= " pref=\"$prefs{$pref}\"" if $pref;
@@ -1077,7 +1082,7 @@ acdentry {
     }
     push @ret, '<senses>';
     foreach my $s (@{$e{'sense'}}) {
-	my ($sid,$sigs,$sgw,$pos,$mng) = ();
+	my ($sid,$sigs,$sgw,$pos,$mng,$stem) = ();
 	my $defattr = '';
 
 	if ($s =~ s/^(\S+)\s+//) {
@@ -1090,6 +1095,9 @@ acdentry {
 	if ($s =~ s/^\[(.*?)\]\s+//) {
 	    $sgw = $1;
 #	    warn "found sgw = $sgw\n";
+	}
+	if ($s =~ s/\s+\*(\S+)//) {
+	    $stem = $1;
 	}
 	if ($s =~ /^[A-Z]+(?:\/[it])?\s/) {
 	    ($pos,$mng) = ($s =~ /^([A-Z]+(?:\/[it])?)\s+(.*)\s*$/);
@@ -1116,6 +1124,8 @@ acdentry {
 	$sgwTag = "<sgw>$sgw</sgw>" if $sgw;
 	my $posTag = '';
 	$posTag = "<pos>$pos</pos>" if $pos;
+	my $stemTag = '';
+	$stemTag = "<stem>$stem</stem>" if $stem;
 	my $s_sig = $e_sig;
 	if ($sgw) {
 	    $s_sig =~ s#\]#//$sgw\]#;
@@ -1127,7 +1137,7 @@ acdentry {
 	} else {
 	    $s_sig =~ s/\](.*)$/]$1'$1/;
 	}
-	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag<mng xml:lang=\"$mnglang\">$mng</mng>");
+	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag$stemTag<mng xml:lang=\"$mnglang\">$mng</mng>");
 	if (defined $sense_props{$sid}) {
 	    push @ret, '<props>';
 	    foreach my $p (@{$sense_props{$sid}}) {

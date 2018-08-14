@@ -27,9 +27,9 @@
 <xsl:param name="projectDir"/>
 <xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
 
-<xsl:variable name="periods-xis" select="concat('@@ORACC@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
+<xsl:variable name="periods-xis" select="concat('@@ORACC_BUILDS@@/bld/',$basename,'/',/*/@xml:lang,'/periods.xis')"/>
 
-<xsl:variable name="config-file" select="concat('@@ORACC@@/xml/',$project,'/config.xml')"/>
+<xsl:variable name="config-file" select="concat('@@ORACC_BUILDS@@/xml/',$project,'/config.xml')"/>
 
 <xsl:param name="cbd-article-summaries">
   <xsl:call-template name="xpd-option">
@@ -102,10 +102,10 @@
   <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-base)>0">
     <xsl:choose>
       <xsl:when test="$cbd-word-base='.'">
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-base.xhtml')"/>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-phra-base.xhtml')"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-base,'/lex-word-base.xhtml')"/>
+	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-base,'/lex-phra-base.xhtml')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>

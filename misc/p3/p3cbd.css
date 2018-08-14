@@ -523,3 +523,5 @@ span.issl-term { color: red; margin-right: 1em; }
 .lex-word h3 { font-size: medium; margin-left: 1em; }
 p.lex-line  { margin-left: 3em; text-indent: 0em; }
 p.lex-spel  { margin-left: 3em; text-indent: 0em; }
+
+span.stem { font-size: 90%; }

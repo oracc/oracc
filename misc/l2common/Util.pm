@@ -315,9 +315,12 @@ parse_sig {
     #	s/^.*?\]//; # delete everything up to end of GW//SENSE
     #	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
 
-    if (s/^\$(.*?)([\/#\t]|$)/$2/) {
+    # protect * in morphology; this is not robust enough yet
+    s/\*([a-z])/\cB$1/g;
+    if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
     }
+    tr/\cB/*/;
     
     # Map + in compounds (|...+...|) to \cA
     1 while s#(/.*?\|[^\|]+?)\+(.*?\|)#$1\cA$2#;
@@ -339,14 +342,14 @@ parse_sig {
 	}
 	s/^\+.*?(?=[#\t])|$//;
     }
-    if (s/^\*.+?(?:[#\t]|$)//) {
-	$x{'stem'} = $1;
-    }
     if (s/^\#(.+?)([#\t]|$)/$2/) {
 	$x{'morph'} = $1;
     }
     if (s/^\#\#(.+?)([#\t]|$)/$2/) {
 	$x{'morph2'} = $1;
+    }
+    if (s/^\*(.+?)(?:[#\t]|$)//) {
+	$x{'stem'} = $1;
     }
     if (length $_) {
 	warn "$0: parse_sig: $.: bad parse: sig=`$sig'; leftovers=`$_'\n";
