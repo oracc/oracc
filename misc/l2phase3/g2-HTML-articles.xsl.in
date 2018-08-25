@@ -95,8 +95,6 @@
 <xsl:key name="signmap" match="do" use="@from"/>
 <xsl:key name="summary-id" match="xh:p" use="@id"/>
 
-<!--<xsl:key name="lex-words" match="xh:div[@class='lex-word']" use="@title"/> -->
-
 <xsl:key name="oid" match="oid" use="@id"/>
 
 <xsl:output method="xml" encoding="utf-8"
@@ -116,50 +114,12 @@
   </xsl:if>
 </xsl:variable>
 
-<!--<xsl:variable name="lex-provides-word-phra" select="document('/dcclt/lex-provides-word-phra.xml')"/> -->
-
-<xsl:variable name="word-base-data">
-  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-base)>0">
-    <xsl:choose>
-      <xsl:when test="$cbd-word-base='.'">
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-phra-base.xhtml')"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-base,'/lex-phra-base.xhtml')"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:if>
-</xsl:variable>
-
-<xsl:variable name="word-phra-data">
-  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-phra)>0">
-    <xsl:choose>
-      <xsl:when test="$cbd-word-phra='.'">
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$project,'/lex-word-phra.xhtml')"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="concat('@@ORACC_BUILDS@@/pub/',$cbd-word-phra,'/lex-word-phra.xhtml')"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:if>
-</xsl:variable>
-
 <xsl:template match="cbd:articles">
   <xsl:message>config-file=<xsl:value-of select="$config-file"
   />; cbd-word-base=<xsl:value-of select="$cbd-word-base"
   /></xsl:message>
 
-<!--
-  <xsl:if test="string-length($word-base-data)">
-    <xsl:message>Using word-base data from <xsl:value-of select="$word-base-data"/></xsl:message>
-  </xsl:if>
-  
-  <xsl:if test="string-length($word-phra-data)">
-    <xsl:message>Using word-phra data from <xsl:value-of select="$word-phra-data"/></xsl:message>
-  </xsl:if>
--->
-
-<xsl:if test="string-length($lex-provides-base)">
+  <xsl:if test="string-length($lex-provides-base)">
     <xsl:message>Using word-base data from <xsl:value-of select="$lex-provides-base"/></xsl:message>
   </xsl:if>
   
@@ -350,22 +310,6 @@
       <iframe class="lex" src="{$src}"/>
 <!--      <xsl:message>iframe src=<xsl:value-of select="$src"/></xsl:message> -->
     </xsl:if>
-  </xsl:for-each>
-</xsl:template>
-
-<xsl:template name="x-add-word-base-data">
-<!--  <xsl:message>adding word-base data for <xsl:value-of select="@n"/></xsl:message> -->
-  <xsl:variable name="n" select="@n"/>
-  <xsl:for-each select="document($word-base-data)/*">
-    <xsl:copy-of select="key('lex-words',$n)"/>
-  </xsl:for-each>
-</xsl:template>
-
-<xsl:template name="x-add-word-phra-data">
-<!--  <xsl:message>adding word-phra data for <xsl:value-of select="@n"/></xsl:message> -->
-  <xsl:variable name="n" select="@n"/>
-  <xsl:for-each select="document($word-phra-data)/*">
-    <xsl:copy-of select="key('lex-words',$n)"/>
   </xsl:for-each>
 </xsl:template>
 
