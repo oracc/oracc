@@ -18,4 +18,10 @@ xsltproc --stringparam xis-file base.xis $libscripts/lex-data-xis-remap.xsl 01tm
 	 >01tmp/lex/phra-base-remapped.xml
 
 xsltproc $libscripts/lex-phra-base-HTML.xsl 01tmp/lex/phra-base-remapped.xml \
-	 >02pub/lex-phra-base.xhtml
+	 >01tmp/lex/lex-phra-base.xhtml
+
+xsltproc $libscripts/lex-provides.xsl 01tmp/lex/lex-phra-base.xhtml \
+	 >01tmp/lex/lex-provides-phra-base.xml
+
+xsltproc -stringparam project `oraccopt` -stringparam type pb \
+	 $libscripts/lex-split-HTML.xsl 01tmp/lex/lex-phra-base.xhtml

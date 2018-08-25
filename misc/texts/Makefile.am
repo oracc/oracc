@@ -7,7 +7,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	lex-word-data.sh lex-word-get-data.sh lex-word-xtf.sh \
 	lex-word-base.sh lex-word-qakk.sh lex-word-phra.sh \
 	lex-master.sh lex-data-tis.sh lex-phra-base.sh lex-tis.sh \
-	tis-sort.plx
+	tis-sort.plx lex-word-tail.sh
 
 scriptdata_DATA = \
 	lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl \
@@ -16,10 +16,14 @@ scriptdata_DATA = \
 	lex-word-phra-pull.xsl lex-word-phra-group.xsl lex-word-phra-sort.xsl lex-word-phra-HTML.xsl \
 	lex-refs-group.xsl lex-sort.xsl \
 	lex-data-xis-ids.xsl lex-data-xis-remap.xsl lex-data-xis.xsl \
-	lex-pull-base.xsl lex-phra-base-group.xsl lex-phra-base-HTML.xsl
+	lex-pull-base.xsl lex-phra-base-group.xsl lex-phra-base-HTML.xsl \
+	lex-provides.xsl lex-split-HTML.xsl lex-pull-tail.xsl lex-merge-phra.xsl
 
 lex-sign-lookup.xsl: lex-sign-lookup.xsl.in
 	$(ORACCIFY) lex-sign-lookup.xsl.in
+
+lex-word-data.xsl: lex-word-data.xsl.in
+	$(ORACCIFY) lex-word-data.xsl.in
 
 proj-linkbase.sh: proj-linkbase.sh.in
 	$(ORACCIFY) proj-linkbase.sh.in

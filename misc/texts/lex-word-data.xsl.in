@@ -6,6 +6,9 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		exclude-result-prefixes="xcl xff">
 
+<xsl:variable name="oid-doc" select="'@@ORACC_BUILDS@@/oid/oid.xml'"/>
+<xsl:key name="oid" match="oid" use="@key"/>
+
 <xsl:template match="/">
   <lex:text>
     <xsl:apply-templates select=".//xcl:c[@type='sentence']"/>
@@ -148,7 +151,27 @@
       <xsl:attribute name="form"><xsl:value-of select="xff:f/@form"/></xsl:attribute>
       <xsl:attribute name="lang"><xsl:value-of select="xff:f/@xml:lang"/></xsl:attribute>
       <xsl:if test="string-length(xff:f/@cf)>0">
-	<xsl:attribute name="cfgw"><xsl:value-of select="concat(xff:f/@cf,'[',xff:f/@gw,']',xff:f/@pos)"/></xsl:attribute>
+	<xsl:variable name="cfgw"><xsl:value-of select="concat(xff:f/@cf,'[',xff:f/@gw,']',xff:f/@pos)"/></xsl:variable>
+	<xsl:attribute name="cfgw"><xsl:value-of select="$cfgw"/></xsl:attribute>
+	<xsl:variable name="lcfgw">
+	  <xsl:choose>
+	    <xsl:when test="contains(xff:f/@xml:lang,'-')">
+	      <xsl:value-of select="concat('%',substring-before(xff:f/@xml:lang,'-'),':',$cfgw)"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="concat('%',xff:f/@xml:lang,':',$cfgw)"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="oid">
+	  <!-- <xsl:message>looking for <xsl:value-of select="$lcfgw"/> in <xsl:value-of select="$oid-doc"/></xsl:message> -->
+	  <xsl:for-each select="document($oid-doc)">
+	    <xsl:value-of select="key('oid',$lcfgw)/@id"/>
+	  </xsl:for-each>
+	</xsl:variable>
+	<xsl:if test="string-length($oid)>0">
+	  <xsl:attribute name="oid"><xsl:value-of select="$oid"/></xsl:attribute>
+	</xsl:if>
       </xsl:if>
       <xsl:if test="xff:f/@base">
 	<xsl:attribute name="base"><xsl:value-of select="xff:f/@base"/></xsl:attribute>

@@ -35,6 +35,13 @@
 	    </xsl:choose>
 	  </xsl:for-each>
 	</xsl:variable>
+	<xsl:variable name="oid">
+	  <xsl:for-each select="*[1]">
+	    <xsl:if test="@cfgw">
+	      <xsl:value-of select="@oid"/>
+	    </xsl:if>
+	  </xsl:for-each>
+	</xsl:variable>
 	<xsl:variable name="phrase">
 	  <xsl:for-each select="*">
 	    <xsl:choose>
@@ -74,7 +81,7 @@
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:variable>	
-	<lex:phrase lang="{*[1]/@lang}" head="{$head}" phrase="{$phrase}" equiv="{$equiv}">
+	<lex:phrase lang="{*[1]/@lang}" head="{$head}" oid="{$oid}" phrase="{$phrase}" equiv="{$equiv}">
 	  <xsl:copy-of select="ancestor::lex:data"/>
 	</lex:phrase>
 <!--      </xsl:if> -->

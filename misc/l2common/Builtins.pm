@@ -6,6 +6,7 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
+use ORACC::OID;
 use ORACC::NS;
 use ORACC::XMD::Pleiades;
 use Data::Dumper;
@@ -183,12 +184,16 @@ my %bffs_index = ();
 my $curr_id = '';
 my %entries_index = ();
 
+my $blang = '';
+
 sub
 acd2xml {
     my($input,$n,$arglang,$title) = @_;
     my $project = undef;
     my $last_tag = '';
 
+    oid_init();
+    
     %seen = ();
 
     $lang = $arglang;
@@ -268,6 +273,7 @@ acd2xml {
     $bad_action = 'load_acd';
     $bad_input = $input; $bad_input =~ s/\.norm$//;
     $cbdlang = $lang if $lang;
+    $blang = $cbdlang; $blang =~ s/-.*//;
     $cbdid = $cbdlang;
     $cbdid =~ tr/-/_/;
     my $currtag = undef;
@@ -674,7 +680,12 @@ acdentry {
 			$gd = '' unless $pos;
 			$pos = '' unless $pos;
 			$e_sig = "$cf\[$gd\]$pos";
-			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
+			my $oid = oid_lookup("\%$blang:$e_sig");
+			my $oidattr = '';
+			if ($oid) {
+			    $oidattr = " oid=\"$oid\"";
+			}
+			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
 				push @ret, "<alias>$alias</alias>";
@@ -1136,6 +1147,11 @@ acdentry {
 	    $s_sig .= "'$pos";
 	} else {
 	    $s_sig =~ s/\](.*)$/]$1'$1/;
+	}
+	my $oid = oid_lookup("\%$blang:$s_sig");
+	my $oidattr = '';
+	if ($oid) {
+	    $oidattr = " oid=\"$oid\"";
 	}
 	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag$stemTag<mng xml:lang=\"$mnglang\">$mng</mng>");
 	if (defined $sense_props{$sid}) {

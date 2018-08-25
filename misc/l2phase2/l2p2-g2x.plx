@@ -6,6 +6,7 @@ use Data::Dumper;
 
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use ORACC::OID;
 use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
 use ORACC::SL::BaseC;
@@ -117,6 +118,8 @@ my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdl
 
 ORACC::SL::BaseC::init();
 
+oid_init();
+
 $ORACC::L2GLO::Util::project = $project;
 
 my $dirname = `dirname $input`;
@@ -180,9 +183,11 @@ foreach my $lang (sort keys %data) {
 	
 	$entry_xis{$entry_xid} = { %xis_info };
 
+	my $oid = oid_lookup("\%$baselang:$entry");
 	my $xentry = xmlify($entry);
 	my $p_icount = $entry_freqs{$entry} || -1;
 	print "<entry xml:id=\"$xid\" n=\"$xentry\"";
+	print " oid=\"$oid\"" if $oid;
 	xis_attr(%xis_info);
 	print '>';
 	my $entry_periods = $xis_info{'periods'};
@@ -239,8 +244,10 @@ foreach my $lang (sort keys %data) {
 	    my $p_icount = $sense_freqs{$sense} || -1;
 	    my $sense_no_norm = $sense;
 	    $sense_no_norm =~ s/\$.*$//;
+	    my $oid = oid_lookup("\%$baselang:$sense_no_norm");
 	    my $xsense = xmlify($sense_no_norm);
 	    print "<sense xml:id=\"$xid\" n=\"$xsense\"";
+	    print " oid=\"$oid\"" if $oid;
 	    xis_attr(%xis_info);
 	    print '>';
 	    my($mng,$pos) = ($sense_no_norm =~ m#//(.*?)\].*?'(.*?)$#);

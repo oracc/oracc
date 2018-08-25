@@ -17,5 +17,16 @@ xsltproc $libscripts/lex-data-xis-ids.xsl 01tmp/lex/word-phra-refs.xml >01tmp/le
 xsltproc $libscripts/xis2tis.xsl 01tmp/lex/word.xis | tis-sort.plx >02pub/word.tis
 
 xsltproc $libscripts/lex-data-xis-remap.xsl 01tmp/lex/word-phra-refs.xml \
-	 | xsltproc $libscripts/lex-word-phra-HTML.xsl - \
-	 >02pub/lex-word-phra.xhtml
+    | xsltproc $libscripts/lex-word-phra-HTML.xsl - \
+	       >01tmp/lex/lex-phra-head.xhtml
+
+lex-word-tail.sh
+
+xsltproc $libscripts/lex-merge-phra.xsl 01tmp/lex/lex-phra-head.xhtml \
+	 >01tmp/lex/lex-word-phra.xhtml
+
+xsltproc $libscripts/lex-provides.xsl 01tmp/lex/lex-word-phra.xhtml \
+	 >01tmp/lex/lex-provides-word-phra.xml
+
+xsltproc -stringparam project `oraccopt` -stringparam type wp \
+	 $libscripts/lex-split-HTML.xsl 01tmp/lex/lex-word-phra.xhtml

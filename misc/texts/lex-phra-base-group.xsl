@@ -22,7 +22,7 @@
 </xsl:template>
 
 <xsl:template match="lex:phrase[@lang='sux']" mode="word">
-  <lex:group type="word" value="{@head}">
+  <lex:group type="word" value="{@head}" oid="{@oid}">
     <xsl:variable name="nodes" select="key('words',concat(@lang,':',@head))"/>
     <xsl:for-each select="$nodes[generate-id(.)
 			  =generate-id(key('bases',concat(@lang,':',@head,':',

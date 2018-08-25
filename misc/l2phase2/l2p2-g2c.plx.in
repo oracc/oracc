@@ -126,6 +126,10 @@ augment {
 		    $dcf->firstChild()->setData($cf_text);
 		}
 	    }
+#	    my $oid = $enode->getAttribute('oid');
+#	    if ($oid) {
+#		$anode->setAttribute('oid',$oid);
+#	    }
 	    foreach my $s (keys %{$g2x{$e}}) { # iterate over ADD entry's senses
 		next if $s eq '#node';
 		if (${$add{$e}}{$s}) {

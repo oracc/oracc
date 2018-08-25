@@ -21,6 +21,7 @@
 
 <xsl:template match="lex:phrase[@lang='sux']" mode="word">
   <lex:group type="word" value="{@head}">
+    <xsl:copy-of select="@oid"/>
     <xsl:variable name="nodes" select="key('words',concat(@lang,':',@head))"/>
     <xsl:for-each select="$nodes[generate-id(.)
 			  =generate-id(key('phras',concat(@lang,':',@head,':',@phrase)))]">
