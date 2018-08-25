@@ -518,10 +518,17 @@ div.header { margin-bottom: 1em; }
 
 span.issl-term { color: red; margin-right: 1em; }
 
+iframe.lex { width: 90%; margin-left: 2em;
+	     border: 1px; border-style: solid; border-color: silver;
+	   }
+h2.lex { font-size: medium; margin-left: 1em; }
+
 .lex-word div { margin-left: 0em; }
 .lex-word h1 { font-size: medium; margin-left: 1em; }
 .lex-word h2 { font-size: medium; margin-left: 2em; }
 .lex-word h3 { font-size: medium; margin-left: 1em; }
+h2.lex-base  { font-size: 110%; margin-left: 1em; text-indent: 0em; margin-top: 5px; padding-top: 5px; }
+h2.lex-phra  { font-size: 110%; margin-left: 1em; text-indent: 0em; margin-top: 5px; padding-top: 5px; }
 p.lex-line  { margin-left: 3em; text-indent: 0em; }
 p.lex-spel  { margin-left: 3em; text-indent: 0em; }
 
