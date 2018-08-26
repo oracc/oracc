@@ -848,7 +848,8 @@ run_item_maker {
 		find_xmdoutline(),
 		$xmd);
     } elsif ($rt{'itemtype'} eq 'cbd') {
-	$rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+	# $rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+	xsystem 'xmllint', '-o', "$p{'tmpdir'}/results.html", '--xinclude', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
     } elsif ($rt{'itemtype'} eq 'ood') {
 	xsystem("$oraccbin/xfrag @@ORACC@@/pub/$p{'project'}/data.xml $id | xsltproc -stringparam html yes @@ORACC@@/lib/scripts/ood-record.xsl - >$p{'tmpdir'}/results.html");
     } else {

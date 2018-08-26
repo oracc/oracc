@@ -3,6 +3,7 @@
 <xsl:stylesheet version="1.0" 
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:xh="http://www.w3.org/1999/xhtml"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:cbd="http://oracc.org/ns/cbd/1.0"
   xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
   xmlns:ex="http://exslt.org/common"
@@ -299,9 +300,13 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="n" select="@oid"/>
   <xsl:for-each select="document($lex-provides-base)">
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
-      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/pb/',$n,'.html')"/>
+      <xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/pb/',$n,'.html')"/>
+<!--      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/pb/',$n,'.html')"/> -->
       <h2 class="lex">Pronunciation Data</h2>
-      <iframe class="lex" src="{$src}"/>
+      <xsl:element name="xi:include">
+	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+      </xsl:element>
+<!--      <iframe class="lex" src="{$src}"/> -->
 <!--      <xsl:message>adding base data for OID <xsl:value-of select="$n"/></xsl:message> -->
     </xsl:if>
   </xsl:for-each>
@@ -311,9 +316,13 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="n" select="@oid"/>
   <xsl:for-each select="document($lex-provides-word)">
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
-      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/wp/',$n,'.html')"/>
+      <xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/wp/',$n,'.html')"/>
+<!--      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/wp/',$n,'.html')"/> -->
       <h2 class="lex">Phrase Data</h2>
-      <iframe class="lex" src="{$src}"/>
+      <xsl:element name="xi:include">
+	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+      </xsl:element>
+<!--      <iframe class="lex" src="{$src}"/> -->
 <!--      <xsl:message>iframe src=<xsl:value-of select="$src"/></xsl:message> -->
     </xsl:if>
   </xsl:for-each>

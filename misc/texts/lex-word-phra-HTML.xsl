@@ -15,13 +15,14 @@
 <xsl:template match="lex:group[@type='word']">
   <div class="lex-word" title="{@value}" o:id="{@oid}">
     <!--  <h3 class="word-base">Lexical Data</h3> -->
+    <p><a href="javascript:distprof2('{/*/@project}','{*[1]/@lang}','{@xis}')"><span class="lex-button">References for all phrases</span></a></p>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
 
 <xsl:template match="lex:group[@type='phra']">
   <div class="lex-phra" title="{@value}">
-    <h2 class="lex-phra"><a href="javascript:distprof2('{/*/@project}','{@lang}','{../@xis}')"
+    <h2 class="lex-phra"><a href="javascript:distprof2('{/*/@project}','{@lang}','{@xis}')"
 			    ><xsl:value-of select="@value"/></a></h2>
     <xsl:for-each select="*"> <!-- equi groups -->
       <!-- <p class="lex-equi"> --> <!-- a para for each equiv and its refs -->
