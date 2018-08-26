@@ -78,18 +78,22 @@ create_have_atf {
 	chomp @u; @u = split(/\s+/, join(' ', @u));
 	%have_atf = ();
 	%have_lem = ();
+	my %outlined = ();
 	foreach my $u (@u) {
 	    if (-r "$u/01bld/lists/have-atf.lst") {
 		my @a = `cat $u/01bld/lists/have-atf.lst`;
 		chomp(@a);
-		#		@have_atf{ map { s/^.*?://; $_ } @a } = ();
 		@have_atf{ @a } = ();
 	    }
 	    if (-r "$u/01bld/lists/have-lem.lst") {
 		my @a = `cat $u/01bld/lists/have-lem.lst`;
 		chomp(@a);
-		#		@have_lem{ map { s/^.*?://; $_ } @a } = ();
 		@have_lem{ @a } = ();
+	    }
+	    if (-r "$u/01bld/lists/outlined.lst") {
+		my @a = `cat $u/01bld/lists/outlined.lst`;
+		chomp(@a);
+		@outlined{ @a } = ();
 	    }
 	}
 	open(A, '>01bld/lists/have-atf.lst');
@@ -97,8 +101,11 @@ create_have_atf {
 	close(A);
 	open(L, '>01bld/lists/have-lem.lst');
 	print L join("\n", sort { &qcmp; } sort keys %have_lem), "\n";
-#	print L join("\n",map { "$project:$_" } sort { &qcmp; } sort keys %have_lem), "\n";
-	close(L);	
+	close(L);
+	open(L, '>01bld/lists/outlined.lst');
+	print L join("\n", sort { &qcmp; } sort keys %outlined), "\n";
+	close(L);
+	
     } else {
 	open(L,">$have_atf");
 	if (scalar keys %have_atf) {

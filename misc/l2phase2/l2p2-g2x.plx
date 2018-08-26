@@ -416,9 +416,9 @@ add_sig {
 
     if ($sig{'stem'}) {
 	if ($sig{'stem'}) {
-	    warn "found stem\n";
+#	    warn "found stem\n";
 	    $entryformstems{"$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}",$sig{'form'}} = $sig{'stem'};
-	    print Dumper \%entryformstems;
+#	    print Dumper \%entryformstems;
 	}
     }
     
