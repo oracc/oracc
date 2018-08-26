@@ -84,6 +84,7 @@ ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
   inheritx(status);
 #undef inheritx
   inherit_f2(&inheritor->f2, &from->f2);
+  
   /* mcount == -1 means this is a TAIL not a HEAD */
   if (inheritor->multi && inheritor->mcount > 0)
     {

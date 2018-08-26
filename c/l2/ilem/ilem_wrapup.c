@@ -287,11 +287,13 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 
       ilem_inherit(fp, fp->finds[0]); /* not lp->f because of ambig */
 
+      fp->f2.sig = f2_sig(xcp, fp, &fp->f2);
+      
       /* check this after inherit to get fields set correctly */
       if (!bootstrap_mode && strcmp((char*)fp->f2.lang, (char*)fp->finds[0]->f2.lang))
 	{
-	  char *errsig = err_sig(fp);
 #if 0
+	  char *errsig = err_sig(fp);
 	  vwarning2(fp->file,fp->lnum,
 		    "%s is new for lang %s",
 		    errsig, fp->f2.lang);
