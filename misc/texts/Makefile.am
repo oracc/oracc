@@ -17,7 +17,8 @@ scriptdata_DATA = \
 	lex-refs-group.xsl lex-sort.xsl \
 	lex-data-xis-ids.xsl lex-data-xis-remap.xsl lex-data-xis.xsl \
 	lex-pull-base.xsl lex-phra-base-group.xsl lex-phra-base-HTML.xsl \
-	lex-provides.xsl lex-split-HTML.xsl lex-pull-tail.xsl lex-merge-phra.xsl
+	lex-provides.xsl lex-split-HTML.xsl \
+	lex-pull-tail.xsl lex-phra-tail-group.xsl lex-merge-phra.xsl
 
 lex-sign-lookup.xsl: lex-sign-lookup.xsl.in
 	$(ORACCIFY) lex-sign-lookup.xsl.in

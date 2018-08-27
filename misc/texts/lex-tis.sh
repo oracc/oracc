@@ -1,11 +1,8 @@
 #!/bin/sh
-if [ -r 02pub/base.tis ]; then
-    cat 02pub/base.tis >>02pub/cbd/sux/sux.tis
-    (cd 02pub ; mv base.tis base.tis.done)
-    echo lex-tis.sh added base.tis to 02pub/cbd/sux/sux.tis and renamed it to base.tis.done
-fi
-if [ -r 02pub/word.tis ]; then
-    cat 02pub/word.tis >>02pub/cbd/sux/sux.tis
-    (cd 02pub ; mv word.tis word.tis.done)
-    echo lex-tis.sh added word.tis to 02pub/cbd/sux/sux.tis and renamed it to word.tis.done
-fi
+for a in base word tail ; do
+    if [ -r 02pub/$a.tis ]; then
+	cat 02pub/$a.tis >>02pub/cbd/sux/sux.tis
+	(cd 02pub ; mv $a.tis $a.tis.done)
+	echo lex-tis.sh added $a.tis to 02pub/cbd/sux/sux.tis and renamed it to $a.tis.done
+    fi
+done

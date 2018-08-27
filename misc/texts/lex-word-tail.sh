@@ -3,7 +3,7 @@ libscripts=$ORACC_BUILDS/lib/scripts
 
 (cd 01tmp/lex ; \
  xsltproc $libscripts/lex-pull-tail.xsl word-phrases.xml >phra-tail.xml
- xsltproc $libscripts/lex-word-phra-group.xsl phra-tail.xml \
+ xsltproc $libscripts/lex-phra-tail-group.xsl phra-tail.xml \
      | xsltproc $libscripts/lex-word-phra-sort.xsl - >phra-tail-grouped.xml ; \
      )
 
