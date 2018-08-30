@@ -18,47 +18,53 @@ GetOptions (
     'update'=>\$update
     );
 
-if ($update) {
+#if ($update) {
     update();
-} else {
-    rebuild();
-}
+#} else {
+#    rebuild();
+#}
 
 ########################################################################################
 
-sub rebuild {
-    my $f = "01bld/project.sig";
-
-    warn "l2p1-lemm-data.plx: running rebuild\n";
-    
-    die "l2p1-lemm-data.plx: no signatures file $f\n"
-	unless (open(F, $f));
-    while (<F>) {
-	next if /^\@(?:project|name|lang)/ || /^\s*$/;
-	chomp;
-	if (/^\@fields/) {
-	    set_f($_);
-	    next;
-	}
-	my @fields = split(/\t/,$_);
-	my $sig = $fields[0]."\t$fields[$rank]\t$fields[$freq]\n";
-	my $lng = lng_of($sig);
-	$lng =~ s/-\d\d\d//; # remove script codes
-	push @{$lemmdata{$lng}}, $sig;
-    }
-    close(F);    
-    
-    dump_lemm();
-}
-
-sub update {
-    my @f = ();
-
+sub get_from_glos_files {
+    my @f;
     if ($g2) {
 	@f = `ls 01bld/*/from_glo.sig`; chomp @f; @f = grep /\.sig$/, @f;
     } else {
 	@f = ('01bld/from-glos.sig');
     }
+}
+
+sub xrebuild_not_used {
+    my @f = get_from_glos_files();
+
+    warn "l2p1-lemm-data.plx: running rebuild\n";
+    
+    foreach my $f (@f) {
+	die "l2p1-lemm-data.plx: no signatures file $f\n"
+	    unless (open(F, $f));
+	warn "reading $f ...\n";
+	while (<F>) {
+	    next if /^\@(?:project|name|lang)/ || /^\s*$/;
+	    chomp;
+	    if (/^\@fields/) {
+		set_f($_);
+		next;
+	    }
+	    my @fields = split(/\t/,$_);
+	    my $sig = $fields[0]."\t$fields[$rank]\t$fields[$freq]\n";
+	    my $lng = lng_of($sig);
+	    $lng =~ s/-\d\d\d//; # remove script codes
+	    push @{$lemmdata{$lng}}, $sig;
+	}
+	close(F);
+    }
+    
+    dump_lemm();
+}
+
+sub update {
+    my @f = get_from_glos_files();
 
     warn "l2p1-lemm-data.plx: running with -u flag for update\n";
     
@@ -141,6 +147,8 @@ sub byfreq {
     } else {
 	my ($as) = ($a =~ /^(.*?)\t/);
 	my ($bs) = ($b =~ /^(.*?)\t/);
+	$sigorder{$as} = 0 unless $sigorder{$as};
+	$sigorder{$bs} = 0 unless $sigorder{$bs};
 	$sigorder{$as} <=> $sigorder{$bs};
     }
 }
