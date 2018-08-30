@@ -1707,16 +1707,22 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  warning("bad surrogate grapheme before <(...)>");
 		}
+#if 0
 	      if (long_surro(start))
 		{
 		  group_flag = notoken;
 		  np = elem(e_surro,NULL,lnum,GRAPHEME);
 		  in_long_surro = 1;
 		  in_g_surro = 0;
+		  /* if we're in the middle of a word make the word the 
+		     initial child of surro */
+		  if (wp)
+		    appendChild(np, removeLastChild(parent));
 		  appendChild(parent, np); /* attach to line node */
 		  surro_node = parent = np;
 		}
 	      else
+#endif		
 		{
 		  if (!wp)
 		    {
@@ -1725,8 +1731,9 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 					  &logo_word, with_word_list);
 		    }
 		  surroStart = NULL;
+		  in_long_surro = long_surro(start);
 		  in_g_surro = 1;
-		  in_long_surro = 0;
+		  /* in_long_surro = 0; */
 		  np = elem(e_g_surro,NULL,lnum,GRAPHEME);
 		  surro_atpt = atpt;
 		  if (grouped_det)
@@ -1748,7 +1755,15 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      else
 		{
 		  if (surro_node->children.lastused)
-		    setName(firstChild(surro_node),e_g_nonw);
+		    {
+		      struct node *f = firstChild(surro_node);
+		      if (f->children.lastused == 1)
+			setName(f,e_g_nonw);
+		      else
+			{
+			  
+			}
+		    }
                   if (need_lemm || do_show_insts)
                     (*lemm_unform_p)();
                   removeAttr(wp,"form");
@@ -1764,11 +1779,15 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case surrc:
 	      if (NULL == surro_node)
 		{
-		  fprintf(stderr, "ox: internal error: found surrc when surro_node == NULL\n");
-		  wp = surro_wp;
-		  atpt = surro_atpt;
-		  surro_wp = surro_atpt = NULL;
-		  in_g_surro = 0;
+		  if (surroStart)
+		    {
+		      setAttr(lastGrapheme(wp),a_g_surroEnd,surroStart);
+		      surroStart = NULL;
+		    }
+		  else
+		    {
+		      fprintf(stderr,"internal error: found surrc when surroStart==NULL\n");
+		    }
 		}
 	      else
 		{
@@ -1785,7 +1804,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  atpt = surro_atpt;
 			  surro_atpt = surro_wp = NULL;
 			}
-		      in_g_surro = 0;		      
+		      in_g_surro = 0;
 		    }
 		  else
 		    {

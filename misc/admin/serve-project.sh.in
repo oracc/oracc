@@ -19,13 +19,14 @@ fi
 
 projfile=`/bin/echo -n $project | tr / -`
 srvdir=${ORACC_BUILDS}/www/srv
-tarball=$srvdir/${projfile}.tar.gz
+tarball=$srvdir/${projfile}.part
+tarballfinal=$srvdir/${projfile}.tar.gz
 mkdir -p $srvdir
 
 echo "serve-project.sh: generating $tarball"
 
 cd ${ORACC_BUILDS}
-rm -f $tarball
+rm -f $tarball $tarballfinal
 
 cd $project
 
@@ -72,5 +73,6 @@ tar --exclude 00any --exclude 00res --exclude estindex --exclude espdev \
     -zcf $tarball $project/00* {bld,pub,xml,www}/$project $jsonzip
 
 chmod 0644 $tarball
+mv $tarball $tarballfinal
 
 touch ${ORACC_BUILDS}/$project/servestamp

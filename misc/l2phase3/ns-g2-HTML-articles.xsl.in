@@ -300,7 +300,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="n" select="@oid"/>
   <xsl:for-each select="document($lex-provides-base)">
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
-      <xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/pb/',$n,'.html')"/>
+      <xsl:variable name="src" select="concat('../../../dcclt/cbd/sux/pb/',$n,'.html')"/>
 <!--      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/pb/',$n,'.html')"/> -->
       <h2 class="lex">Pronunciation Data</h2>
       <xsl:element name="xi:include">
@@ -316,7 +316,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="n" select="@oid"/>
   <xsl:for-each select="document($lex-provides-word)">
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
-      <xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/wp/',$n,'.html')"/>
+      <xsl:variable name="src" select="concat('../../../dcclt/cbd/sux/wp/',$n,'.html')"/>
 <!--      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/wp/',$n,'.html')"/> -->
       <h2 class="lex">Phrase Data</h2>
       <xsl:element name="xi:include">

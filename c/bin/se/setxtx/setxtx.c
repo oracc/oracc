@@ -203,10 +203,16 @@ startElement(void *userData, const char *name, const char **atts)
 	  case 'w':
 	    {
 	      static char qualified_id[128];
+	      const char *form;
 	      pos_props(pos(atts));
 	      sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
 	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
-	      est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
+	      form = attr_by_name(atts,"form");
+	      if (form)
+		est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
+	      else
+		fprintf(stderr,"setxtx:warning:%s: word has NULL form attribute\n",
+			qualified_id);
 	      if (swc_flag)
 		{
 		  swc_flag = 0;
