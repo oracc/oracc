@@ -653,12 +653,20 @@ sub psu_index {
 #    print Dumper \%psu_indexes;
 }
 
+sub remove_stem {
+    # B G Bt Gt Btn Gtn D ŠD Dt Dtn Š Št Štn N Nt Ntn
+    my $tmp = shift;
+    $tmp =~ s/\s*\*[BGDŠN][Dt]?n?//;
+    $tmp;
+}
+
 sub psu_index_coresigs {
     my @input = @_;
     my %psu_cfs = ();
     foreach my $c (@input) {	
 	my($cf,$gw) = ($c =~ m#^(.*?)\[(.*?)//#);
 	$c =~ s/\!0x.*$//;
+	$c = remove_stem($c);
 	push @{${$psu_cfs{$cf}}{$gw}}, $c;
     }
     %psu_cfs;
@@ -679,6 +687,7 @@ sub psu_index_simple {
 	    $keysig =~ s#\001#V/i#g;
 	    $keysig =~ s#\002#V/t#g;
 	    s/\!0x.*$//; # is this the right time to kill COF markers? Or before keysig assignment?
+	    $_ = remove_stem($_);
 	    push(@{$simple{$keysig}}, $_);
 	} else {
 	    chomp($s);
