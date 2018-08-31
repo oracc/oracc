@@ -110,7 +110,7 @@ my %sense_freqs = ();
 my %sense_sigrefs = ();
 my %sig_lines = ();
 my $xrefid = '';
-my $xrefid_counter = -1;
+my $xrefid_counter = 0;
 my %xrefs = ();
 my %xrefs_infos = ();
 
@@ -763,7 +763,7 @@ load_rewrites {
 
 sub
 next_xid {
-    sprintf("$id_base.x%06d",++$id_counter);
+    sprintf("$id_base.x%07d",++$id_counter);
 }
 
 sub
@@ -844,7 +844,7 @@ xis {
     if (($xis_pair = $xrefs{"@xrefs"})) {
 	$xrefid = $$xis_pair[0];
     } else {
-	$xrefid = sprintf("%s.r%05x", $lang, ++$xrefid_counter);
+	$xrefid = sprintf("%s.r%06x", $lang, ++$xrefid_counter);
 	$xrefs{"@xrefs"} = [ $xrefid , $entry_id ];
     }
 

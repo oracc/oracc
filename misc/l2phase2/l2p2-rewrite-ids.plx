@@ -37,7 +37,7 @@ load_ids {
 	$id_base =~ s/\..*$/.x/;
 	my $new_id = 0;
 	foreach (@ids) {
-	    $new_ids{$_} = sprintf("$id_base%06d",$new_id++)
+	    $new_ids{$_} = sprintf("$id_base%07d",$new_id++)
 		unless defined $new_ids{$_};
 	}
     }

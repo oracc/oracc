@@ -38,10 +38,16 @@ my @slice_tests = ();
 my $stdout = 0;
 my $superlang = '';
 my $verbose = 0;
+my $with_nn = 0;
 
 my $withall = `oraccopt . cbd-with-all`;
 if ($withall eq 'yes') {
     $all = 1;
+}
+
+my $withnn = `oraccopt . cbd-with-nn`;
+if ($withnn eq 'yes') {
+    $with_nn = 1;
 }
 
 my %type_of = (
@@ -65,6 +71,7 @@ GetOptions(
     'superlang:s'=>\$superlang,
     'test:s'=>\@slice_tests,
     'verbose'=>\$verbose,
+    'with-nn'=>\$with_nn
     );
 
 $sigs = '01bld/project.sig' unless $sigs;
@@ -100,9 +107,9 @@ $slice_proj = `oraccopt` unless $slice_proj;
 warn "l2p2-sig-slicer.plx: no constraints in $slice\n" 
     unless $#constraints >= 0;
 
-lang_suppress_NN();
+lang_suppress_NN() unless $with_nn;
 
-#use Data::Dumper; warn Dumper(\@constraints);
+use Data::Dumper; warn Dumper(\@constraints);
 
 load_corpus($corpus) if $corpus;
 

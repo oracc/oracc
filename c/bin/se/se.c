@@ -209,7 +209,7 @@ show_results(struct Datum *dp)
 	{
 	  struct location8 *l8p = dp->l.l8p[i];
 	  if ('x' == id_prefix(l8p->text_id))
-	    fprintf(out_f, "%s.x%06d\n", 
+	    fprintf(out_f, "%s.x%07d\n", 
 		    cbd_lang ? cbd_lang : se_curr_project, XidVal(l8p->text_id));
 	  else
 	    fprintf(out_f, "%c%06d\n", 
