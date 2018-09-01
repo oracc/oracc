@@ -337,7 +337,8 @@ sub sigs_simple {
 	    
 	    $coresig = "$sig{'cf'}\[$sig{'gw'}//$sig{'sense'}\]$sig{'pos'}'$sig{'epos'}";
 	    $coresig1 = $coresig unless $coresig1;
-	    $coresigs{$coresig} = ++$sigorder;
+	    $coresigs{$coresig} = ++$sigorder
+		unless $coresigs{$coresig};
 
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
@@ -389,7 +390,9 @@ sub sigs_simple {
 
     @sigs_simple = sort ( { $printsigs{$a} <=> $printsigs{$b} } keys %printsigs); #, keys %noprintsigs);
     open(S,'>sigs_simple.dump'); print S @sigs_simple; close(S);
+#    print Dumper \%coresigs;
     @sigs_coresigs = sort { $coresigs{$a} <=> $coresigs{$b} } keys %coresigs;
+#    print Dumper \@sigs_coresigs;
 }
 
 sub sigs_form {
@@ -669,6 +672,7 @@ sub psu_index_coresigs {
 	$c = remove_stem($c);
 	push @{${$psu_cfs{$cf}}{$gw}}, $c;
     }
+#    print Dumper \%psu_cfs;
     %psu_cfs;
 }
 
