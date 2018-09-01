@@ -320,7 +320,7 @@ parse_sig {
     if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
     }
-    tr/\cB/*/tr/\cB/*/;
+    tr/\cB/*/;
     $x{'norm'} =~ tr/\cB/*/;
     
     # Map + in compounds (|...+...|) to \cA
