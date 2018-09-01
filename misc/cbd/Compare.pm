@@ -85,7 +85,8 @@ sub compare {
 	$sim = sprintf("%.2f",$sim);
 	my $l = line_of($incoming, $m, 'entry');
 	pp_line($l);
-	pp_warn("incoming $base='$m' homograph [$sim] of '$maybe' in base");
+	#	pp_warn("incoming $base='$m' homograph [$sim] of '$maybe' in base");
+	pp_warn("incoming '$m' not in base glossary ($base = homograph [$sim] of '$maybe'?)");
     }
 
     foreach my $n (sort keys %i_nomatch) {

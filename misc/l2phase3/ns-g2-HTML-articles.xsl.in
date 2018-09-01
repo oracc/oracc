@@ -177,6 +177,7 @@
 	<xsl:apply-templates mode="print" select="cbd:root"/>
       </h1>
 
+      <!--
       <xsl:if test="@rws">
 	<span class="rws">
 	  <xsl:text> (</xsl:text>
@@ -184,7 +185,8 @@
 	  <xsl:text>)</xsl:text>
 	</span>
       </xsl:if>
-
+      -->
+      
       <xsl:if test="@icount > 0">
 	<!--    <xsl:variable name="jarg">
 	     <xsl:text>'</xsl:text>
