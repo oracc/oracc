@@ -25,4 +25,7 @@ echo "o2-super-prep.sh: pruning sigs"
 mkdir -p 01bld/sigbak ; cp -a 01bld/*.sig 01bld/sigbak
 l2p1-prune-sigs.plx
 
+## And provide a searchable index of the superglo corpus
+selemx -p `oraccopt` <01bld/lists/lemindex.lst
+
 echo "o2-super-prep.sh: exiting at " `date`

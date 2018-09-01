@@ -29,6 +29,12 @@
 	<a href="{$href}">
 	  <xsl:apply-templates select="cbd:cf|cbd:gw|cbd:pos|cbd:root"/>
 	</a>
+	<xsl:if test="@rws">
+	  <xsl:text> </xsl:text>
+	  <span class="rws">
+	    <xsl:text>(</xsl:text><xsl:value-of select="@rws"/><xsl:text>)</xsl:text>
+	  </span>
+	</xsl:if>
 	<xsl:if test="@icount">
 	  <xsl:text> (</xsl:text>
 	  <xsl:value-of select="@icount"/>

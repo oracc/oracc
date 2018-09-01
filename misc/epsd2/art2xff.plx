@@ -11,8 +11,10 @@ use Data::Dumper;
 my @fields = qw/base cont form morph/; # norm needs fixing
 my @forms = ();
 my $lang = '';
+my $xffdir = '';
 
 GetOptions(
+    'dir:s'=>\$xffdir,
     'lang:s'=>\$lang,
     );
 
@@ -62,10 +64,10 @@ dump_xff(@forms);
 
 sub
 dump_xff {
-    system 'mkdir', '-p', "02www/cbd/$lang/xff";
+    system 'mkdir', '-p', $xffdir;
     foreach my $f (@_) {
 	my %e = %$f;
-	open(E, ">02www/cbd/$lang/xff/$e{'id'}.xff"); select E;
+	open(E, ">$xffdir/$e{'id'}.xff"); select E;
 	print '<?xml version="1.0" encoding="utf-8"?>', "\n";
 	print "<sigs xmlns=\"http://oracc.org/ns/xff/1.0\" xmlns:xff=\"http://oracc.org/ns/xff/1.0\" xml:lang=\"$lang\" sortopt=\"freq\" reverse=\"yes\" eid=\"$e{'id'}\" formset=\"$e{'cfgw'}\">";
 	foreach my $s (@{$e{'forms'}}) {

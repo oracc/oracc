@@ -35,10 +35,7 @@ if [ "$g2c" != "" ]; then
 	    echo xff
 	    xfftab=`oraccopt . cbd-forms-table`
 	    if [ "$xfftab" = 'yes' ]; then
-		echo xff=yes
-		rm -fr $webdir/cbd/$l/xff
-		art2xff.plx -l sux
-		echo after art2xff
+		l2p3-xff.sh $webdir $l
 	    fi
 	fi
     done

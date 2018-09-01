@@ -50,6 +50,12 @@
 	<a href="{$href}">
 	  <xsl:apply-templates select="cbd:cf|cbd:gw|cbd:pos|cbd:root"/>
 	</a>
+	<xsl:if test="@rws">
+	  <xsl:text> </xsl:text>
+	  <span class="rws">
+	    <xsl:text>(</xsl:text><xsl:value-of select="@rws"/><xsl:text>)</xsl:text>
+	  </span>
+	</xsl:if>
 	<xsl:if test="@icount">
 	  <xsl:text> (</xsl:text>
 	  <xsl:value-of select="@icount"/>
@@ -136,11 +142,6 @@
       </xsl:otherwise>
     </xsl:choose>
   </span>
-<!--
-  <xsl:if test="not(following-sibling::cbd:base)">
-    <xsl:text>.</xsl:text>
-  </xsl:if>
- -->
 </xsl:template>
 
 <xsl:template match="cbd:mng">

@@ -109,7 +109,7 @@ warn "l2p2-sig-slicer.plx: no constraints in $slice\n"
 
 lang_suppress_NN() unless $with_nn;
 
-use Data::Dumper; warn Dumper(\@constraints);
+#use Data::Dumper; warn Dumper(\@constraints);
 
 load_corpus($corpus) if $corpus;
 

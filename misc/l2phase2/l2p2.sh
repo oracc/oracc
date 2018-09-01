@@ -43,7 +43,12 @@ function g2x {
 #	echo l2p2-g2x.plx -h $ldir/union.sig
 	l2p2-g2x.plx -h $ldir/union.sig
     fi
-#    echo running xis $ldir $l
+    #    echo running xis $ldir $l
+    if [ "$project" == "epsd2" ]; then
+	echo running emesalify for epsd2
+	emesalify.plx
+	echo emesalify done
+    fi
     xis $ldir $l
     if [ -s $ldir/$l.map ]; then
 #	echo running l2p2-g2c.plx $l

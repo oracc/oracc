@@ -74,6 +74,8 @@ if ($xff_file =~ /^[PQ]\d+[a-z]*(\.xff)?$/) {
     # FIXME: SHOULD LOOK UP RELATIVE NAMES ON A PATH
 }
 
+die "xff: no such file $xff_file\n" unless -r $xff_file;
+
 my $xff_xml = load_xml($xff_file);
 my $xff_doc = $xff_xml->getDocumentElement();
 $xff_name = $xff_doc->getAttribute('formset');

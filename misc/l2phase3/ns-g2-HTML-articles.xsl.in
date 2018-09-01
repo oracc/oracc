@@ -176,7 +176,15 @@
 	</xsl:if>
 	<xsl:apply-templates mode="print" select="cbd:root"/>
       </h1>
-      
+
+      <xsl:if test="@rws">
+	<span class="rws">
+	  <xsl:text> (</xsl:text>
+	  <xsl:value-of select="translate(@rws,$lower,$upper)"/>
+	  <xsl:text>)</xsl:text>
+	</span>
+      </xsl:if>
+
       <xsl:if test="@icount > 0">
 	<!--    <xsl:variable name="jarg">
 	     <xsl:text>'</xsl:text>
@@ -429,6 +437,13 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       </a>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:if test="@rws and not(@rws=ancestor::cbd:entry/@rws)">
+    <span class="rws">
+      <xsl:text> (</xsl:text>
+      <xsl:value-of select="translate(@rws,$lower,$upper)"/>
+      <xsl:text>)</xsl:text>
+    </span>
+  </xsl:if>
   <xsl:if test="cbd:cof-form-norm">
     <span class="cof-form-norm">
       <xsl:text> [</xsl:text>
