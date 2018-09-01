@@ -437,6 +437,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       </a>
     </xsl:otherwise>
   </xsl:choose>
+  <!--
   <xsl:if test="@rws and not(@rws=ancestor::cbd:entry/@rws)">
     <span class="rws">
       <xsl:text> (</xsl:text>
@@ -444,6 +445,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:text>)</xsl:text>
     </span>
   </xsl:if>
+  -->
   <xsl:if test="cbd:cof-form-norm">
     <span class="cof-form-norm">
       <xsl:text> [</xsl:text>
