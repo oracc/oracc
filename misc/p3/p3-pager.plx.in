@@ -822,7 +822,6 @@ run_item_maker {
 	if ($hilite_words) {
 	    $fragid = $hilite_words;
 	    $fragid =~ s/[,\+].*$//;
-	    warn "hilite_words = $hilite_words; fragid = $fragid\n";
 	    my($fragline) = ($fragid =~ m/\.(\d+)/);
 	    if ($fragline && $fragline > 5) {
 		$fragline -= 5;
@@ -830,6 +829,7 @@ run_item_maker {
 	    } else {
 		$fragid = '';
 	    }
+	    warn "hilite_words = $hilite_words; fragid = $fragid\n";
 	    xsystem("$oraccbin/p3-selector.plx", "$p{'tmpdir'}/results.html", $hilite_words);
 	}
       OUTLINE:
