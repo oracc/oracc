@@ -34,6 +34,8 @@ my %ppfunc = (
 
 #    sense=>\&pp_geo,
 
+unlink '01bld/cancel';
+
 my %args = pp_args();
 
 my @cbd = setup_cbd(\%args);

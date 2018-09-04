@@ -3,6 +3,7 @@
 		xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:esp="http://oracc.org/ns/esp/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
+		xmlns:g="http://oracc.org/ns/gdl/1.0"
 		xmlns:o="http://oracc.org/ns/oracc/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -53,11 +54,31 @@
 
 <xsl:template name="emit-line">
   <xsl:for-each select="*[1]/*[1]">
-    <span class="lex-line">
+    <span class="lex-line" g:me="1">
+      <xsl:choose>
+	<!-- lex-line always uses @norm if it is present -->
+	<xsl:when test="*[1]/*[1]/@norm and starts-with(*[1]/*[1]/@lang,'akk')">
+	  <xsl:text> %akk-949 </xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="concat(' %',*[1]/@lang,' ')"/>
+	</xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="*[1]/@form"/>
       <xsl:if test="string-length(lex:eq/@form) > 0">
-	<xsl:text> = </xsl:text>
-	<i><xsl:value-of select="lex:eq/@form"/></i>
+	<xsl:text> ($=$) </xsl:text>
+	<xsl:for-each select="lex:eq">
+	  <xsl:choose>
+	    <!-- lex-line always uses @norm if it is present -->
+	    <xsl:when test="*[1]/@norm and starts-with(*[1]/@lang,'akk')">
+	      <xsl:text> %akk-949 </xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="concat(' %',*[1]/@lang,' ')"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	  <xsl:value-of select="@form"/>
+	</xsl:for-each>
       </xsl:if>
     </span>
   </xsl:for-each>

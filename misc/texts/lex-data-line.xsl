@@ -53,8 +53,9 @@
 <xsl:template name="phrase">
   <xsl:param name="p"/>
   <xsl:for-each select="$p/*">
+<!--  <xsl:value-of select="concat('%',@lang,' ')"/> -->
     <xsl:choose>
-      <xsl:when test="@norm">
+      <xsl:when test="@norm and starts-with(@lang,'akk')">
 	<xsl:value-of select="@norm"/>
       </xsl:when>
       <xsl:otherwise>
