@@ -1,5 +1,8 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" 
+		xmlns:g="http://oracc.org/ns/gdl/1.0"
+		xmlns:n="http://oracc.org/ns/note/1.0"
+		xmlns:x="http://oracc.org/ns/xtf/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xi="http://www.w3.org/2001/XInclude"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -63,5 +66,25 @@
     </xsl:for-each>
   </lex:group>
 </xsl:template>
+
+<xsl:template match="lex:phrase" mode="word"/>
+
+<xsl:template match="*" mode="word">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=word</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="phra">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=phra</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="equi">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=equi</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="line">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=line</xsl:message>
+</xsl:template>
+
+<xsl:template match="text()"/>
 
 </xsl:stylesheet>

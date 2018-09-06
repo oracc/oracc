@@ -1,5 +1,8 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" 
+		xmlns:g="http://oracc.org/ns/gdl/1.0"
+		xmlns:n="http://oracc.org/ns/note/1.0"
+		xmlns:x="http://oracc.org/ns/xtf/1.0"
 		xmlns:xcl="http://oracc.org/ns/xcl/1.0"
 		xmlns:xff="http://oracc.org/ns/xff/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
@@ -182,6 +185,9 @@
       <xsl:if test="xff:f/@sense">
 	<xsl:attribute name="sense"><xsl:value-of select="xff:f/@sense"/></xsl:attribute>
       </xsl:if>
+      <xsl:for-each select="id(@ref)">
+	<xsl:apply-templates mode="gdl" select="."/>
+      </xsl:for-each>
     </lex:word>
   </xsl:if>
 </xsl:template>
@@ -194,6 +200,13 @@
   <xsl:copy-of select="/*/@n"/>
   <xsl:copy-of select="@xml:id"/>
   <xsl:copy-of select="@label"/>
+</xsl:template>
+
+<xsl:template match="*" mode="gdl">
+  <xsl:copy>
+    <xsl:copy-of select="@*[not(name()='xml:id')]"/>
+    <xsl:apply-templates mode="gdl"/>
+  </xsl:copy>
 </xsl:template>
 
 </xsl:stylesheet>

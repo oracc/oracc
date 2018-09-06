@@ -77,4 +77,24 @@
   </lex:group>
 </xsl:template>
 
+<xsl:template match="lex:phrase" mode="word"/>
+
+<xsl:template match="*" mode="word">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=word</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="phra">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=phra</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="equi">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=equi</xsl:message>
+</xsl:template>
+
+<xsl:template match="*" mode="line">
+  <xsl:message>warning: unhandled node <xsl:value-of select="name()"/> while mode=line</xsl:message>
+</xsl:template>
+
+<xsl:template match="text()"/>
+
 </xsl:stylesheet>

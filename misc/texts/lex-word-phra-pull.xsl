@@ -3,6 +3,9 @@
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:xi="http://www.w3.org/2001/XInclude"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:g="http://oracc.org/ns/gdl/1.0"
+		xmlns:n="http://oracc.org/ns/norm/1.0"
+		xmlns:note="http://oracc.org/ns/note/1.0"
 		exclude-result-prefixes="xi">
 
 <xsl:template match="lex:dataset">

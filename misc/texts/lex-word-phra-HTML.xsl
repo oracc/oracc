@@ -5,7 +5,11 @@
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:g="http://oracc.org/ns/gdl/1.0"
 		xmlns:o="http://oracc.org/ns/oracc/1.0"
+		xmlns:note="http://oracc.org/ns/note/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:param name="project" select="'dcclt'"/>
+<xsl:include href="g2-gdl-HTML.xsl"/>
 
 <xsl:template match="lex:word-phra-data">
   <body>
@@ -15,8 +19,7 @@
 
 <xsl:template match="lex:group[@type='word']">
   <div class="lex-word" title="{@value}" o:id="{@oid}">
-    <!--  <h3 class="word-base">Lexical Data</h3> -->
-    <p><a href="javascript:distprof2('{/*/@project}','{*[1]/@lang}','{@xis}')"><span class="lex-button">References for all phrases</span></a></p>
+    <p class="refheading"><a href="javascript:distprof2('{/*/@project}','{*[1]/@lang}','{@xis}')"><span class="lex-button">References for all phrases</span></a></p>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
@@ -53,6 +56,24 @@
 </xsl:template>
 
 <xsl:template name="emit-line">
+  <xsl:for-each select="*[1]/*[1]">
+    <span class="lex-line">
+      <xsl:for-each select="*[1]//lex:word">
+	<xsl:apply-templates/>
+	<xsl:if test="not(position()=last())"><xsl:text> </xsl:text></xsl:if>
+      </xsl:for-each>
+      <xsl:if test="string-length(lex:eq/@form) > 0">
+	<xsl:text> = </xsl:text>
+	<xsl:for-each select="lex:eq//lex:word">
+	  <xsl:apply-templates/>
+	  <xsl:if test="not(position()=last())"><xsl:text> </xsl:text></xsl:if>
+	</xsl:for-each>
+      </xsl:if>
+    </span>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="xemit-line">
   <xsl:for-each select="*[1]/*[1]">
     <span class="lex-line" g:me="1">
       <xsl:choose>

@@ -24,7 +24,9 @@
 	    <xsl:if test="key('oid',$oid)/@o:id">
 <!--	      <xsl:message>found <xsl:value-of select="$oid"/> in tail</xsl:message> -->
 	      <hr class="lex"/>
-	      <xsl:copy-of select="key('oid',$oid)/*"/>
+	      <xsl:for-each select="key('oid',$oid)">
+		<xsl:copy-of select="xh:div"/> <!--xh:p is 'References for all phrases'-->
+	      </xsl:for-each>
 	    </xsl:if>
 	  </xsl:for-each>
 	</xsl:if>

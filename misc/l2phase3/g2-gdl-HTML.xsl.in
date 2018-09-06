@@ -906,8 +906,14 @@
   </a>
 </xsl:template>
 
+<xsl:template match="g:gloss">
+  <sup>
+    <xsl:apply-templates/>
+  </sup>
+</xsl:template>
+
 <xsl:template match="g:*">
-  <xsl:message>gdl-HTML: <xsl:value-of select="name()"/> not handled</xsl:message>
+  <xsl:message>g2-gdl-HTML: <xsl:value-of select="name()"/> not handled</xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
 
