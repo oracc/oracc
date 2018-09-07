@@ -17,7 +17,7 @@ xsltproc $libscripts/lex-data-xis-ids.xsl 01tmp/lex/word-phra-refs.xml >01tmp/le
 xsltproc $libscripts/xis2tis.xsl 01tmp/lex/word.xis | tis-sort.plx >02pub/word.tis
 
 xsltproc $libscripts/lex-data-xis-remap.xsl 01tmp/lex/word-phra-refs.xml \
-	 >lex-word-phra-xis.xml
+	 >01tmp/lex/lex-word-phra-xis.xml
 
 xsltproc $libscripts/lex-word-phra-HTML.xsl 01tmp/lex/lex-word-phra-xis.xml \
 	 >01tmp/lex/lex-phra-head.xhtml
