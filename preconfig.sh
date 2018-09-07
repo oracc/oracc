@@ -29,5 +29,12 @@ fi
 if [ ! -d $ORACC_BUILDS/tmp/sop ]; then
     mkdir -p $ORACC_BUILDS/tmp/sop
 fi
+mkdir -p $ORACC_BUILDS/srv
+mkdir -p $ORACC_BUILDS/lib/data
+if [ "$ORACC_MODE" = "single" ]; then
+    cp usermode-single.xml $ORACC_BUILDS/lib/data/usermode.xml
+else
+    cp usermode-multi.xml $ORACC_BUILDS/lib/data/usermode.xml
+fi
 chown -R $httpduser:$httpduser /var/tmp/oracc $ORACC_BUILDS/tmp/sop
 chmod og-rwx /var/tmp/oracc/*
