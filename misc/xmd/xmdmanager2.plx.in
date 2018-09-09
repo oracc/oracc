@@ -802,9 +802,13 @@ dump_xmd {
     $lang_index = $item_index if $lang_index < 0;
 #    print STDERR "lang_index = $lang_index; item_index = $item_index\n";
     my %slice_wanted = ();
-    my @catslice = @{$$cat[3]};
-#    print STDERR "index slice = @catslice\n" if $verbose;
-    @slice_wanted{ @catslice } = ();
+#    warn Dumper \$cat;
+    my @catslice = ();
+    if (ref($$cat[3]) eq 'ARRAY') {
+	@catslice = @{$$cat[3]};
+	@slice_wanted{ @catslice } = ();
+	# print STDERR "index slice = @catslice\n" if $verbose;
+    }
     my @sort_types = @{$$cat[4]};
     my @sortrows = ();
 #    if ($l2) {
