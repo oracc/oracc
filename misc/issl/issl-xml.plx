@@ -12,7 +12,7 @@ my %skeys = ();
 my %nepsd = ();
 my %ix = ();
 my $skid = 'aaaa';
-my $nid = '000000';
+my $nid = '0000001';
 
 ORACC::SL::Alias::init();
 while (<>) {
