@@ -183,26 +183,26 @@
   <h3 class="h3">Numbers</h3>
   <ul>
     <xsl:for-each select="/*/md:cat">
-      <li>
 	<xsl:if test="string-length($project-numbers)>0">
-	  <xsl:variable name="abbrev">
-	    <xsl:call-template name="xpd-option">
-	      <xsl:with-param name="config-xml" select="$config-xml-file"/>
-	      <xsl:with-param name="option" select="'external-proj-abbrev'"/>
-	    </xsl:call-template>
-	  </xsl:variable>	  
-	  <xsl:choose>
-	    <xsl:when test="md:id_text">
-	      <a href="http://{$project-numbers}/{md:id_text}"
-		 target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
-	    </xsl:when>
-	    <xsl:otherwise>
-	      <a href="http://{$project-numbers}/{md:id_composite}"
-		 target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
-	    </xsl:otherwise>
-	  </xsl:choose>
+	  <li>
+	    <xsl:variable name="abbrev">
+	      <xsl:call-template name="xpd-option">
+		<xsl:with-param name="config-xml" select="$config-xml-file"/>
+		<xsl:with-param name="option" select="'external-proj-abbrev'"/>
+	      </xsl:call-template>
+	    </xsl:variable>	  
+	    <xsl:choose>
+	      <xsl:when test="md:id_text">
+		<a href="http://{$project-numbers}/{md:id_text}"
+		   target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<a href="http://{$project-numbers}/{md:id_composite}"
+		   target="_blank"><xsl:value-of select="$abbrev"/> Page</a>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </li>
 	</xsl:if>
-      </li>
       <li>
 	<xsl:choose>	  
 	  <xsl:when test="starts-with(md:id_text,'P')">
