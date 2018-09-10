@@ -287,6 +287,8 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 
       ilem_inherit(fp, fp->finds[0]); /* not lp->f because of ambig */
 
+      fp->f2.project = (unsigned char *)xcp->project;
+      
       fp->f2.sig = f2_sig(xcp, fp, &fp->f2);
       
       /* check this after inherit to get fields set correctly */
@@ -309,8 +311,6 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
       if (fp->fcount)
 	wrapup_props(lp, fp);
 
-      fp->f2.project = (unsigned char *)xcp->project;
-      
       /* Now attach the final version of the form to the lem node as a sig;
        *  - failed matches don't get a sig as it pollutes the glossary
        *  - COF tails don't get a sig either

@@ -2,6 +2,7 @@
 shopt -s nullglob
 p=`oraccopt`
 dwww=${ORACC_BUILDS}/$p/02www/cbd
+mkdir -p $dwww
 for a in 01bld/www/cbd/* ; do
     d=`basename $a`
     dbld=${ORACC_BUILDS}/$p/01bld/www/cbd/$d

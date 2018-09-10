@@ -132,7 +132,9 @@ posepos_ok(struct f2 *f1, struct f2 *f2)
   else if (f2->pos && f2->epos)
     {
       if (f1->pos) /* no f1->epos */
-	return (field_ok(f1->pos,f2->pos) && !strcmp((char*)f2->pos, (char*)f2->epos))
+	return (field_ok(f1->pos,f2->pos) /* null f1->epos matches any f2->epos */
+		/*&& !strcmp((char*)f2->pos, (char*)f2->epos) // this test was bad */
+		)
 	  || field_ok(f1->pos, f2->epos); /* allow sag[good]N to mean sag[good]'N */
       else if (f1->epos) /* a[blah]'N */
 	return field_ok(f1->epos, f2->epos);

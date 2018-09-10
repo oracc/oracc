@@ -63,8 +63,10 @@ psu2_register(const char *file, size_t lnum,
   else
     nlp = sp->psus->nlp;
 
+  nlp->name = "psu";
+
   if (verbose > 1)
-    fprintf(stderr, "psu: registering psu %s from %s:%d\n", ngram_line, file, lnum);
+    fprintf(stderr, "psu: registering psu %s from %s:%d\n", ngram_line, file, (int)lnum);
 
   return nl_process_one_line(nlp, (char *)ngram_line, component_sigs);
 }
