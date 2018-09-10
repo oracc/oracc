@@ -82,7 +82,7 @@ input_line {
     my %sig = ();
     s/\t.*$//; # we only use sig in this script
     my $sig = $_;
-    warn "$sig\n";
+#    warn "$sig\n";
     if ($sig =~ /\&\&/) {
 	my @cof = ();
 	my $index = 0;

@@ -101,8 +101,37 @@ if ($new_mode) {
     }
 }
 
+## if there is a lemm-path for the language in config.xml
+## and . is not in the path, don't include the exosigs because
+## we are harvesting for inclusion in the external glossary
+
+# set up non-exo hash
+#for each option if %option split value on space and look for '.' entry
+# if . entry non-exo-hash for lang option = 1
+use Data::Dumper;
+my %no_exo = ();
+foreach my $l (ORACC::XPD::Util::lang_options()) {
+    my @v = split(/\s+/, ORACC::XPD::Util::option($l));
+    my $nodot = 1;
+    foreach my $v (@v) {
+	if ($v eq '.') {
+	    $nodot = 0;
+	    last;
+	}
+    }
+    $l =~ s/^\%//;
+    ++$no_exo{$l} if $nodot;
+}
+#warn Dumper \%no_exo;
 foreach my $s (keys %exos) {
-    push @exores, "$s\t@{$exos{$s}}\n";
+    my ($sl) = ($s =~ /\%(.*?):/);
+    $sl =~ s/-\d\d\d//;
+#    warn "found lang $sl in $s\n";
+    if ($no_exo{$sl}) {
+#	warn "skipping $s\n";
+    } else {
+	push @exores, "$s\t@{$exos{$s}}\n";
+    }
 }
 
 my $fields = "\@fields\tsig\tinst\n";

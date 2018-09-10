@@ -15,6 +15,11 @@ all_options {
 }
 
 sub
+lang_options {
+    sort grep /^\%/, keys %option;
+}
+
+sub
 unload {
     $loaded = 0;
     %options = ();
