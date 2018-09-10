@@ -135,7 +135,15 @@ if ($rt{'prod'} eq 'list') {
     } elsif ($p{'adhoc'}) {
 	p3adhoc();
     } elsif ($p{'list'} eq '_all') {
-	$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cat/pqids.lst";
+	my $olist = "@@ORACC_BUILDS@@/bld/$p{'project'}/lists/outlined.lst";
+	warn "p{list}[0] eq _all; olist=$olist\n";
+	if (-r $olist) {
+	    $p{'#list'} = $olist;
+	    warn "p{list}[1] eq $p{'list'}\n";
+	} else {
+	    $p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cat/pqids.lst";
+	    warn "p{list}[2] eq $p{'list'}\n";
+	}
 	$rt{'#list_type'} = 'cat';
 	unless (-r $p{'#list'}) {
 	    p3srch($p{'list'});
@@ -357,6 +365,9 @@ decode_args {
 	if ($special_list) {
 	    $tmp{'list'} = $special_list;
 	    $tmp{'p3outl'} = $tmp{'state'} = 'special' unless $tmp{'p3outl'};
+	} elsif (-r "01bld/lists/outlined.lst") {
+	    $tmp{'list'} = "01bld/lists/outlined.lst";
+	    $tmp{'p3outl'} = $tmp{'state'} = 'default';
 	} else {
 	    $tmp{'list'} = '_all';
 	    $tmp{'p3outl'} = $tmp{'state'} = 'default' unless $tmp{'p3outl'};

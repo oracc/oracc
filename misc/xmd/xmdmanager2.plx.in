@@ -204,7 +204,9 @@ unless ($project eq 'cdli') {
     }
 }
 
-if (-r '00lib/designation-sort-codes.lst') {
+if (-r '00lib/designation-sort-order.lst') {
+    load_designation_sort_order();
+} elsif (-r '00lib/designation-sort-codes.lst') {
     load_designation_sort_codes();
 }
 
@@ -1950,6 +1952,23 @@ load_designation_sort_codes {
 	chomp;
 	my($q,$c) = split(/\t/,$_);
 	$proj_des_sort{$q} = $c;
+	$q =~ /^([A-Z])/;
+	# track which ID types have project designation codes so we can warn only if an ID of the same type is lacking a code.
+	# this allows projects to provide sort codes for Qs but not have to for Ps.
+	++$proj_des_sort{$1};
+    }
+    close(IN);
+    $project_designation_codes = 1;
+}
+
+sub
+load_designation_sort_order {
+    my $code = 0;
+    open(IN,'00lib/designation-sort-order.lst');
+    while (<IN>) {
+	chomp;
+	my($q,$c) = split(/\t/,$_);
+	$proj_des_sort{$q} = ++$code;
 	$q =~ /^([A-Z])/;
 	# track which ID types have project designation codes so we can warn only if an ID of the same type is lacking a code.
 	# this allows projects to provide sort codes for Qs but not have to for Ps.
