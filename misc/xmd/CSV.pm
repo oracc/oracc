@@ -52,10 +52,15 @@ internalize {
 	++$i;
 	if ($xmd) {
 	    my $id = $$xmd[$id_text];
-	    my $sid = sprintf("%s", $xmd[$id_text]);
-	    $xmd[$id_text] = sprintf("P%06d", $id);
-	    $$xmd[$period_index] =~ s/\s+\([^\(]+\)?\s*$//;
-	    warn "$file:$i: $sid => $xmd[$id_text]\n";
+	    if ($id =~ /^P\d\d\d\d\d\d$/) {
+		# good ID
+	    } else {
+		my $sid = sprintf("%s", $xmd[$id_text]);
+		$id =~ s/^P0*//;
+		$xmd[$id_text] = sprintf("P%06d", $id);
+		$$xmd[$period_index] =~ s/\s+\([^\(]+\)?\s*$//;
+		warn "$file:$i: id_text=$id; $sid => $xmd[$id_text]\n";
+	    }
 	    push @xmd, $xmd;
 	} else {
 	    warn "$.: parse failed\n";
@@ -68,13 +73,14 @@ internalize {
 #	warn "ORACC::XMD::CSV: no period_index found in $file\n";
 #    }
 
-    ([@fields],{%fields}, [@xmd], $id_text);
+    ([@fields], {%fields}, [@xmd]);
 }
 
 sub
 initialize_fields {
     my $f = shift;
     chomp $f;
+    $f =~ s/^\x{ef}\x{bb}\x{bf}//; # remove BOM
     $f =~ tr/"//d;
     @fields = split(/,/, $f);
     %fields = ();

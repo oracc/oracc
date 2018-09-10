@@ -67,7 +67,7 @@ internalize {
 	warn "ORACC::XMD::TSV: no period_index found in $file\n";
     }
 
-    ([@fields],{%fields},$xmd, $id_text_index);
+    ([@fields],{%fields},$xmd);
 }
 
 sub
