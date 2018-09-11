@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Invoke with -u for oracc update
+
 # All of the different project types that may have glossaries must
 # have produced a list of sigs from their respective corpus before
 # this script is called.  For simple corpora this is done directly
@@ -22,7 +24,7 @@ l2p1-project-sig.plx
 if [ -r .nolemmdata ]; then
     rm .nolemmdata
 else
-    l2p1-lemm-data.plx -u
+    nl2p1-lemm-data.plx $*
 fi
 
 #if [ -s 01bld/sortinfo.tab ]; then

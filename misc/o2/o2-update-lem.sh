@@ -5,5 +5,5 @@ if [ -e $ORACC/bin/$project-update.sh ]; then
     exit 1
 else
     o2-cnf.sh
-    l2p1.sh
+    l2p1.sh -u
 fi
