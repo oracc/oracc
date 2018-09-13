@@ -16,19 +16,23 @@ use constant C_FORM  => 2;
 use constant C_POS   => 3;
 use constant C_SENSE => 4;
 use constant C_SIG   => 5;
+use constant C_GOESTO=> 6;
 
 sub pp_collo {
     my ($args,$f,@cbd) = @_;
     my $ndir = projdir()."/02pub";
     system 'mkdir', '-p', $ndir;
     open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
+    open(CLOG,">01tmp/collo.log");
     foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
-	my $p = c_parent($i,@cbd);
 	my $e = c_expand($i,@cbd);
+	next unless $e;
 	print COLLO $e, "\n";
+	print CLOG pp_file().":$i: $cbd[$i] >> $e\n";
 	$cbd[$i] = "\000";
     }
     close(COLLO);
+    close(CLOG);
 }
 
 sub c_parent {
@@ -44,40 +48,61 @@ sub c_parent {
 sub c_expand {
     my($i,@cbd) = @_;
     my @t = c_tokenize($cbd[$i]);
+    if ($#t == 0) {
+	pp_line($i+1);
+	pp_warn("\@collo must have more than one token");
+	return "";
+    }
 #    print Dumper \@t;
     my @l = ();
     my @r = ();
+    my $r_mode = 0;
     foreach my $t (@t) {
-	if ($$t[0] == C_HYPH) {
-	    my $p = c_parent($i,@cbd);
-	    push @l, $p;
-	    push @r, '*';
-	} elsif ($$t[0] == C_FORM) {
-	    my $p = c_parent($i,@cbd);
-	    push @l, ":$$t[1]=$p";
-	    push @r, '*';
-	} elsif ($$t[0] == C_POS) {
-	    push @l, $$t[1];
-	    push @r, '*';
-	} elsif ($$t[0] == C_SENSE) {
-	    my $p = c_parent($i,@cbd);
-	    push @l, $p;
-	    $p =~ s#\]#//$$t[1]\]#;
-	    push @r, $p;
-	} elsif ($$t[0] == C_SIG) {
-	    push @l, $$t[1];
-	    push @r, '*';
-	} elsif ($$t[0] == C_BAD) {
+	if ($r_mode) {
+	    push @r, $$t[1];
 	} else {
-	    warn pp_file().':'.pp_line().
-		": internal error: unhandled token type $$t[0]\n";
+	    if ($$t[0] == C_HYPH) {
+		my $p = c_parent($i,@cbd);
+		push @l, $p;
+		push @r, '*';
+	    } elsif ($$t[0] == C_FORM) {
+		my $p = c_parent($i,@cbd);
+		push @l, ":$$t[1]=$p";
+		push @r, '*';
+	    } elsif ($$t[0] == C_POS) {
+		push @l, $$t[1];
+		push @r, '*';
+	    } elsif ($$t[0] == C_SENSE) {
+		my $p = c_parent($i,@cbd);
+		push @l, $p;
+		$p =~ s#\]#//$$t[1]\]#;
+		push @r, $p;
+	    } elsif ($$t[0] == C_SIG) {
+		push @l, $$t[1];
+		push @r, '*';
+	    } elsif ($$t[0] == C_GOESTO) {
+		# we know we've processed all the lhs; 
+		# just replace the entire rhs with the remaining tokens
+		$r_mode = 1;
+		@r = ();
+	    } elsif ($$t[0] == C_BAD) {
+	    } else {
+		warn pp_file().':'.pp_line().
+		    ": internal error: unhandled token type $$t[0]\n";
+	    }
 	}
     }
     my $r = join('',@r);
     if ($r =~ /^\*+$/) {
 	"@l";
     } else {
-	"@l => @r";
+	if ($#l != $#r) {
+	    pp_line($i+1);
+	    pp_warn("\@collo has different length left and right sides /@l/=>/@r/");
+	    "";
+	} else {
+	    "@l => @r";
+	}
     }
 }
 
@@ -93,12 +118,14 @@ sub c_tokenize {
 	    push @t, [ C_HYPH, '-', $i ];
 	} elsif ($c =~ s/^\[(.*?)\]\s+//) {
 	    push @t, [ C_SENSE, $1, $i ];
-	} elsif ($c =~ s/([A-Z][A-Z]*)\s+//) {
+	} elsif ($c =~ s/^(n|[A-Z][A-Z]*)\s+//) {
 	    push @t, [ C_POS, $1, $i ];
 	} elsif ($c =~ s/^([^\s]+?\].*?)\s+//) {
 	    push @t, [ C_SIG, $1, $i ];
-	} elsif ($c =~ s/-(\S+)\s+//) {
+	} elsif ($c =~ s/^-(\S+)\s+//) {
 	    push @t, [ C_FORM, $1, $i ];
+	} elsif ($c =~ s/^=>\s+//) {
+	    push @t, [ C_GOESTO, $1, $i ];
 	} else {
 	    @t = ();
 	    push @t, [ C_BAD, $c, $i ];
