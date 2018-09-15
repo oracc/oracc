@@ -51,6 +51,12 @@ struct f2
   const Uchar *file;
   int lnum;
   Unsigned32 flags;
+
+  /* If this f2 is a structure within an ilem this pointer is to the enclosing ilem.
+     Note that many f2s are not within ilems, so this pointer will often be null.
+   */
+  struct ilem_form *owner;
+  
   /* needs thinking; record instance-explicit in f2 of ilem_form; 
      record matches in f2 from sigset; reset sigset f2 match
      before calling cfnorm_ok ? What are the persistency issues? */
@@ -114,5 +120,7 @@ extern void f2_term(void);
 
 extern int f2_form_signs(const unsigned char *f1, const unsigned char *f2);
 extern int f2_extreme_alias(struct sig_context *scp, struct f2 *fp, struct f2 *ref_fp);
+
+extern void f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2);
 
 #endif/*F2_H_*/

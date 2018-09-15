@@ -38,12 +38,12 @@ add_str(char *dest, const char *src, struct npool *pool)
       int len = strlen(dest) + strlen(src) + 2;
       char *n = malloc(len);
       sprintf(n,"%s %s",dest, src);
-      dest = npool_copy((unsigned char *)n, pool);
+      dest = (char*)npool_copy((unsigned char *)n, pool);
       free(n);
     }
   else
     {
-      dest = npool_copy(src, pool);
+      dest = (char*)npool_copy((unsigned char *)src, pool);
     }
   return (unsigned char *)dest;
 }
@@ -51,7 +51,7 @@ add_str(char *dest, const char *src, struct npool *pool)
 static unsigned char *
 fin_str(const char *str, struct npool *pool)
 {
-  return str;
+  return (unsigned char *)str;
 #if 0  
   if (str)
     {

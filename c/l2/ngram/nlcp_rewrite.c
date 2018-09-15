@@ -4,6 +4,86 @@
 #include "ilem_form.h"
 
 static void
+replace_finds(struct ilem_form *ilemp, struct f2**f2s, int nf2s)
+{
+  int i;
+  if (!ilemp->finds)
+    ilemp->finds = malloc(nf2s * sizeof(struct ilem_form*)); /* FIXME: this should use better mem alloc */
+  for (i = 0; i < nf2s; ++i)
+    ilemp->finds[i] = f2s[i]->owner;
+  ilemp->fcount = nf2s;
+}
+
+void
+nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
+{
+  int j;
+
+  for (j = 0; j < mlp->matches_used; ++j)
+    {
+      struct match *mp = &mlp->matches[j];
+
+      if (!mp->lp->f->finds)
+	continue;
+
+      if (!mp->wild)
+	{
+	  int i;
+	  for (i = 0; mp->matching_f2s[i]; ++i)
+	    {
+	      if (!BIT_ISSET(mp->matching_f2s[i]->flags,F2_FLAGS_READ_ONLY))
+		{
+		  if (mp->tt && mp->tt->f2)
+		    f2_inherit(mp->matching_f2s[i], mp->tt->f2);
+		  BIT_SET(mp->matching_f2s[i]->flags, F2_FLAGS_READ_ONLY);
+		}
+	    }
+	  if (mp->lp->f->ambig)
+	    {
+	      struct ilem_form *ifp = NULL, *rover = NULL;
+	      for (i = 0; i < mp->nmatches; )
+		{
+		  struct ilem_form *this = mp->matching_f2s[i]->owner;
+		  int j = 1;
+		  while ((i+j) < mp->nmatches)
+		    {
+		      if (mp->matching_f2s[i+j]->owner == this)
+			++j;
+		      else
+			break;
+		    }
+		  replace_finds(mp->matching_f2s[i]->owner, &mp->matching_f2s[i], j);
+		  if (ifp)
+		    {
+		      rover->ambig = mp->matching_f2s[i]->owner;
+		      rover = rover->ambig;
+		    }
+		  else
+		    {
+		      rover = ifp = mp->matching_f2s[i]->owner;
+		      if (ifp != mp->lp->f)
+			{
+			  /* The match is not from the first of the ambiguous alternates
+			     so we need to set some of its members from the head */
+			  ifp->ref = mp->lp->ref;
+			}
+		    }
+		  i += j;
+		}
+	      if (rover)
+		rover->ambig = NULL;
+	      mp->lp->f = ifp;
+	    }
+	  else
+	    {
+	      replace_finds(mp->lp->f, mp->matching_f2s, mp->nmatches);
+	    }
+	}
+    }
+}
+
+#if 0
+static void
 apply_tts(struct f2 *fp, struct CF *tt)
 {
   int i;
@@ -30,9 +110,10 @@ apply_tts(struct f2 *fp, struct CF *tt)
 	}
     }
 }
+#endif
 
 void
-nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
+xnlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 {
   int j;
 
@@ -49,8 +130,13 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 	  int i;
 	  for (i = 0; mp->matching_f2s[i]; ++i)
 	    {
-	      if (!BIT_ISSET(mp->lp->f->finds[i]->f2.flags,F2_FLAGS_READ_ONLY))
+	      if (!BIT_ISSET(mp->matching_f2s[i]->flags /*mp->lp->f->finds[i]->f2.flags*/,
+			     F2_FLAGS_READ_ONLY))
 		{
+		  f2_inherit(mp->matching_f2s[i], mp->tt->f2);
+		  BIT_SET(mp->matching_f2s[i]->flags /*mp->lp->f->finds[i]->f2.flags*/,
+			  F2_FLAGS_READ_ONLY);
+#if 0
 		  apply_tts(mp->matching_f2s[i], mp->tt);
 		  if (mp->tt && mp->tt->f2)
 		    {
@@ -60,7 +146,7 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 		    }
 		  else
 		    mp->lp->f->finds[i]->f2 = *mp->matching_f2s[i];
-		  BIT_SET(mp->lp->f->finds[i]->f2.flags,F2_FLAGS_READ_ONLY);
+#endif
 		}
 	    }
 #if 1

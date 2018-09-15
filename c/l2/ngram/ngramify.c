@@ -592,14 +592,25 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
 
   if (fp->ambig)
     {
-      int i;
+      int i, j;
       struct ilem_form *tmp;
-      /* FIXME should this take into account multiple finds on secondary
-	 ambig forms? */
-      parses = malloc((*nparsesp = fp->acount) * sizeof(struct f2 *));
+      int n = 0;
+      /* count the total number of finds */
+      for (tmp = fp; tmp; tmp = tmp->ambig)
+	n += tmp->fcount;
+      /* make parses an array containing all the finds of all the ambigs */
+      parses = malloc(n * sizeof(struct f2 *));
+      for (i = 0, tmp = fp; tmp; tmp = tmp->ambig)
+	{
+	  for (j = 0; j < tmp->fcount; ++j)
+	    parses[i++] = &tmp->finds[j]->f2;
+	}
+      *nparsesp = n;
+#if 0
       for (i = 0, tmp = fp; i < fp->acount; ++i, tmp = tmp->ambig)
 	if (tmp->f2.cf) /* FIXME: this needs to use fp->finds */
 	  parses[i] = &tmp->f2;
+#endif
     }
   else if (fp->finds)
     {

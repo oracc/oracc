@@ -9,6 +9,7 @@
 #include "atf.h"
 #include "charsets.h"
 #include "xcl.h"
+#include "lemline.h"
 #include "warning.h"
 #include "f2.h"
 #include "ilem_form.h"
@@ -89,7 +90,7 @@ check_cf(const char *f, size_t lnum, const char *cf)
    calling and pass the result as form arg if non-NULL; NULL arg means
    form is embedded in lemma */
 void
-ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
+ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
 {
   unsigned char *lem;
   int newflag = 0;
@@ -102,14 +103,16 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 #define FORMBUF_LEN 128
   char formbuf[FORMBUF_LEN+1];
 #endif
-
+  
   struct xcl_l *master_lp = NULL;
-
+  struct ilem_form *master_formp = xi->i;
+  
   if (!xc)
     {
       vwarning("internal error: ilem_parse called with NULL args");
       return;
     }
+
   if (!master_formp)
     {
       /* this can happen after ATF parse errors */
@@ -260,6 +263,7 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	  struct ilem_form *mrover = NULL;
 	  /*lp->f = NULL;*/ /* NEW ILEM_FORM  form_allocator();*/
 	  lp->f = mb_new(xc->sigs->mb_ilem_forms);
+	  lp->f->f2.owner = lp->f;
 	  lp->f->newflag = newflag;
 	  lp->f->f2.lang = master_formp->f2.lang;
 	  lp->f->f2.core = master_formp->f2.core;
@@ -293,7 +297,7 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 	  lp->f->newflag = newflag;
 	  lp->ref = lp->f->ref;
 	  lp->f->type = NULL;
-	  master_lp = lp;
+	  xi->x = master_lp = lp;
 	}
 
       /* This inner loop splits on '|'; it is where each lemma is actually
@@ -347,6 +351,7 @@ ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp)
 
 	      /*f->f2 = NULL form_allocator();*/
 	      f = mb_new(xc->sigs->mb_ilem_forms);
+	      f->f2.owner = f;
 	      /* f->newflag = newflag; */
 	      lp->f->ref = master_formp->ref;
 	      f->instance_flags = iflags;

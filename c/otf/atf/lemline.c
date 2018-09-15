@@ -27,7 +27,8 @@ struct lem_save
   unsigned char *line;
   int lnum;
   int* cells; /* parallel with forms */
-  struct ilem_form **forms;
+  /*struct ilem_form **forms;*/
+  struct xcl_ilem *forms;
   int forms_used;
   int forms_alloced;
   struct lem_save *cont;
@@ -37,7 +38,6 @@ int lem_simplify = 0;
 extern int lem_autolem, lem_dynalem;
 extern const char *lem_dynalem_tab;
 
-Hash_table *word_form_index;
 extern const char *curr_dialect;
 static void set_sframe(struct serializer_frame *sfp, char *literal);
 
@@ -241,11 +241,11 @@ lem_save_cont(unsigned char *lp)
 void
 lem_reset_form(const char *ref, const char *form)
 {
-  struct ilem_form *fp = hash_find(word_form_index,(unsigned char *)ref);
+  struct xcl_ilem /*ilem_form*/ *fp = hash_find(word_form_index,(unsigned char *)ref);
   if (fp)
     {
-      fp->f2.form = npool_copy((unsigned char *)form,lemline_xcp->pool);
-      form = (const char*)fp->f2.form;
+      fp->i->f2.form = npool_copy((unsigned char *)form,lemline_xcp->pool);
+      form = (const char*)fp->i->f2.form;
     }	
 }
 
@@ -257,6 +257,7 @@ lem_save_form(const char *ref, const char *lang,
 {
   struct ilem_form *form = mb_new(lemline_xcp->sigs->mb_ilem_forms);
   extern int curr_cell;
+  form->f2.owner = form;
   form->ref = (char*)ref;
   if (lang)
     {
@@ -284,7 +285,7 @@ lem_save_form(const char *ref, const char *lang,
     {
       curr_lsp->forms_alloced += 16;
       curr_lsp->forms = realloc(curr_lsp->forms,
-				curr_lsp->forms_alloced*sizeof(struct ilem_form*));
+				curr_lsp->forms_alloced*sizeof(struct xcl_ilem /* struct ilem_form* */));
       curr_lsp->cells = realloc(curr_lsp->cells,
 				curr_lsp->forms_alloced*sizeof(int));
       if (curr_lsp->forms_used < 0)
@@ -294,8 +295,11 @@ lem_save_form(const char *ref, const char *lang,
      all content in such a line is in cell 2 (because cell 1 is the line
      number) */
   curr_lsp->cells[curr_lsp->forms_used] = (curr_cell ? curr_cell : 2);
-  curr_lsp->forms[curr_lsp->forms_used++] = form;
-  hash_add(word_form_index,npool_copy((unsigned char*)ref,lemline_xcp->pool),form);
+  curr_lsp->forms[curr_lsp->forms_used].i = form;
+  /* We hash the address of the xcl_ilem form structure */
+  hash_add(word_form_index,npool_copy((unsigned char*)ref,lemline_xcp->pool),
+	   &curr_lsp->forms[curr_lsp->forms_used] /*form*/);
+  ++curr_lsp->forms_used;
 }
 
 static const unsigned char *
@@ -344,19 +348,19 @@ lem_save_form_dynalem(const char *ref, const char *lang,
   if (ref && *ref && formstr)
     {
       const unsigned char *dynalem = NULL;
-      struct ilem_form *form = NULL;
+      struct xcl_ilem /*ilem_form*/ *form = NULL;
       lem_save_form(ref, lang, formstr, langcon);
       dynalem = lem_dynalem_lem(lang, formstr); /* always returns at least 'u' or 'X' */
       form = hash_find(word_form_index, (const unsigned char *)ref);
-      if (form) /* shouldn't be able to happen */
-	form->literal = (char*)npool_copy(dynalem,lemline_xcp->pool);
+      if (form)
+	form->i->literal = (char*)npool_copy(dynalem,lemline_xcp->pool);
     }
 }
 
 void
 lem_save_lemma(struct node *wp, const char *lemma)
 {
-  struct ilem_form *form = NULL;
+  struct xcl_ilem /*ilem_form*/ *form = NULL;
   unsigned const char *xmlid = getAttr(wp,"xml:id");
   while (isspace(*lemma))
     ++lemma;
@@ -364,7 +368,7 @@ lem_save_lemma(struct node *wp, const char *lemma)
     {
       form = hash_find(word_form_index, xmlid);
       if (form)
-	form->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
+	form->i->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
       else
 	vwarning("internal error: word_form_index lookup failed; lemma=%s; xml:id=%s", lemma, xmlid);
     }
@@ -537,7 +541,8 @@ lem_serialize(FILE *fp)
 	  fprintf(fp,"#lem: ");
 	  for (j = 0; j < lem_lines[i].forms_used; ++j)
 	    {
-	      struct ilem_form *f = lem_lines[i].forms[j];
+	      /* use the ilem_form that was processed by XCL */
+	      struct ilem_form *f = lem_lines[i].forms[j].x->f;
 	      static struct serializer_frame sframe;
 
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
@@ -600,7 +605,7 @@ lem_ods_serialize(FILE *fp)
 	  fprintf(fp,"<l n=\"%d\">",lem_lines[i].lnum);
 	  for (j = 0; j < lem_lines[i].forms_used; ++j)
 	    {
-	      struct ilem_form *f = lem_lines[i].forms[j];
+	      struct ilem_form *f = lem_lines[i].forms[j].x->f;
 	      fprintf(fp,"<c n=\"%d\">",lem_lines[i].cells[j]);
 	      if (use_literal(f->literal))
 		{

@@ -1,6 +1,12 @@
 #ifndef _XTLEM_H
 #define _LEMLINE_H
 
+struct xcl_ilem
+{
+  struct xcl_l *x;
+  struct ilem_form *i;
+};
+
 struct lang_context;
 struct xcl_c;
 

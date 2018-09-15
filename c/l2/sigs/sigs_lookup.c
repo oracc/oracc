@@ -13,9 +13,11 @@
 
 extern int fuzzy_aliasing;
 
+#if 0
 static void already_tried_aliasing_init(void);
 static void already_tried_aliasing_term(void);
 static int already_tried_aliasing(const char *form, struct f2 *f2);
+#endif
 
 /* this must return 0 if the ref_fp->pos == fp->pos */
 static int 
@@ -183,6 +185,7 @@ void
 setup_ilem_form(struct sig_context *scp, struct xcl_l *l, unsigned char*pinst)
 {
   l->f = mb_new(scp->mb_ilem_forms);
+  l->f->f2.owner = l->f;
   l->f->f2.lang = ++pinst;
   while (*pinst && ':' != *pinst)
     ++pinst;
@@ -216,6 +219,7 @@ setup_ilem_finds(struct sig_context *scp, struct ilem_form *ip,
       for (i = 0; i < count; ++i)
 	{
 	  ip->finds[i] = mb_new(scp->mb_ilem_forms);
+	  ip->finds[i]->f2.owner = ip->finds[i];
 	  f2_parse(sigs[i]->set ? sigs[i]->set->file : (const unsigned char *)"cache", 
 		   sigs[i]->lnum, 
 		   npool_copy(sigs[i]->sig,scp->pool),
@@ -363,7 +367,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		  int i;
 		  static int alias_nfinds;
 		  int no_form = BIT_ISSET(ifp->f2.flags,F2_FLAGS_NO_FORM);
+#if 0
 		  already_tried_aliasing_init();
+#endif
 		  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 		  for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		    {
@@ -392,7 +398,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 			    }
 			}
 		    }
+#if 0
 		  already_tried_aliasing_term();
+#endif
 		  if (no_form)
 		    BIT_SET(ifp->f2.flags,F2_FLAGS_NO_FORM);
 		  /* This just frees the temp setup we did for aliasing */
@@ -786,6 +794,7 @@ sigs_lookup(struct xcl_context *xcp, struct xcl_l *l, struct siglook *look)
     }
 }
 
+#if 0
 static struct npool *already_aliased_pool = NULL;
 static Hash_table *already_aliased = NULL;
 
@@ -828,3 +837,4 @@ already_tried_aliasing_term(void)
       already_aliased_pool = NULL;
     }
 }
+#endif
