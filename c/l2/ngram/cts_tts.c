@@ -96,6 +96,11 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
 	  cfp->neg = 1;
 	  ++s;
 	}
+      else if (*s == ';')
+	{
+	  cfp->clear = 1;
+	  ++s;
+	}
 
       if ('<' == *s)
 	s = parse_angled_preds(cfp, tts_mode, s);

@@ -401,7 +401,7 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
     }
   else
     {
-      if (f2->norm || f2->cf)
+      if (f2->cf || (f2->norm && strcmp((char*)f2->norm, "X")))
 	{
 	  if (strncmp((char*)f2->lang,"sux",3) && f2->norm)
 	    fputs((char*)f2->norm,fp);
@@ -453,7 +453,10 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	}
       else
 	{
-	  fputs("X",fp);
+	  if (f2->pos)
+	    fputs((char*)f2->pos,fp);
+	  else
+	    fputs("X",fp);
 	}
     }
 }

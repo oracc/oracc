@@ -34,7 +34,11 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 	      if (!BIT_ISSET(mp->matching_f2s[i]->flags,F2_FLAGS_READ_ONLY))
 		{
 		  if (mp->tt && mp->tt->f2)
-		    f2_inherit(mp->matching_f2s[i], mp->tt->f2);
+		    {
+		      if (mp->tt->clear)
+			f2_clear(mp->matching_f2s[i]);
+		      f2_inherit(mp->matching_f2s[i], mp->tt->f2);
+		    }
 		  BIT_SET(mp->matching_f2s[i]->flags, F2_FLAGS_READ_ONLY);
 		}
 	    }

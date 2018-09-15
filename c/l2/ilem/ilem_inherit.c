@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "lang.h"
 #include "ilem_form.h"
+#include "f2.h"
 void
 ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
 {
@@ -16,6 +17,8 @@ ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
   inheritx(xml_id);
   inheritx(status);
 #undef inheritx
+  if (BIT_ISSET(from->f2.flags, F2_FLAGS_CLEARED))
+    f2_clear(&inheritor->f2);
   f2_inherit(&inheritor->f2, &from->f2);
   
   /* mcount == -1 means this is a TAIL not a HEAD */

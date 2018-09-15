@@ -134,6 +134,7 @@ struct CF
   int bad;
   int neg;
   int wild;
+  int clear;
   const char *cf;
   struct f2 *f2;
   struct PRED **preds;

@@ -33,16 +33,17 @@ f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2)
      of a match without these either matching CF/NORM or
      GW/SENSE, so this coercion is safe */
   if (!inheritor_f2->cf || (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS)
-			    && strcmp((char*)inheritor_f2->cf,(char*)from_f2->cf)))
+			    && from_f2->cf && strcmp((char*)inheritor_f2->cf,(char*)from_f2->cf)))
     {
       inheritor_f2->cf = from_f2->cf;
       BIT_CLEAR(inheritor_f2->flags, F2_FLAGS_NORM_IS_CF);
     }
   if (!inheritor_f2->gw || (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS)
+			    && from_f2->gw && strcmp((char*)from_f2->gw, "X")
 			    && strcmp((char*)inheritor_f2->gw,(char*)from_f2->gw)))
     inheritor_f2->gw = from_f2->gw;
   if (!inheritor_f2->sense || (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS)
-			       && strcmp((char*)inheritor_f2->sense,(char*)from_f2->sense)))
+			       && from_f2->sense && strcmp((char*)inheritor_f2->sense,(char*)from_f2->sense)))
     inheritor_f2->sense = from_f2->sense;
 
   if (!inheritor_f2->pos)
@@ -66,4 +67,15 @@ f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2)
   inherit(morph);
   inherit(morph2);
 #undef inherit
+}
+
+void
+f2_clear(struct f2 *f2p)
+{
+  f2p->cf = f2p->gw = f2p->sense = f2p->pos = f2p->epos
+    = f2p->norm = f2p->base = f2p->cont = f2p->morph
+    = f2p->morph2 = f2p->rws = f2p->stem = f2p->augment
+    = f2p->restrictor = f2p->sig
+    = NULL;
+  BIT_SET(f2p->flags, F2_FLAGS_CLEARED);
 }

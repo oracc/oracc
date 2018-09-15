@@ -34,6 +34,7 @@ struct sig_context;
 #define F2_FLAGS_DEF_ESENSE  0x1000000
 #define F2_FLAGS_DEF_ISENSE  0x2000000
 #define F2_FLAGS_READ_ONLY   0x4000000
+#define F2_FLAGS_CLEARED     0x8000000
 
 /* This includes '<' because it is the delimiter for post-F2 
    predicates, and ' ' and '\t' because after ']' no spaces are
@@ -122,5 +123,5 @@ extern int f2_form_signs(const unsigned char *f1, const unsigned char *f2);
 extern int f2_extreme_alias(struct sig_context *scp, struct f2 *fp, struct f2 *ref_fp);
 
 extern void f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2);
-
+extern void f2_clear(struct f2*f);
 #endif/*F2_H_*/

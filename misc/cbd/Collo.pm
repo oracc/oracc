@@ -48,9 +48,9 @@ sub c_parent {
 sub c_expand {
     my($i,@cbd) = @_;
     my @t = c_tokenize($cbd[$i]);
-    if ($#t == 0) {
+    if ($#t == 0 && ${$t[0]}[0] eq '-') {
 	pp_line($i+1);
-	pp_warn("\@collo must have more than one token");
+	pp_warn("\@collo with '-' must have more than one token");
 	return "";
     }
 #    print Dumper \@t;
@@ -86,6 +86,8 @@ sub c_expand {
 		$r_mode = 1;
 		@r = ();
 	    } elsif ($$t[0] == C_BAD) {
+		pp_line($i+1);
+		pp_warn("\@collo has unparseable token '$$t[1]'");
 	    } else {
 		warn pp_file().':'.pp_line().
 		    ": internal error: unhandled token type $$t[0]\n";
@@ -101,7 +103,14 @@ sub c_expand {
 	    pp_warn("\@collo has different length left and right sides /@l/=>/@r/");
 	    "";
 	} else {
-	    "@l => @r";
+	    my $l = "@l";
+	    my $r = "@r";
+	    if ($l && $r) {
+		"@l => @r";
+	    } else {
+		pp_line($i+1);
+		pp_warn("\@collo has empty side(s) '$l => $r'");		
+	    }
 	}
     }
 }
@@ -118,11 +127,11 @@ sub c_tokenize {
 	    push @t, [ C_HYPH, '-', $i ];
 	} elsif ($c =~ s/^\[(.*?)\]\s+//) {
 	    push @t, [ C_SENSE, $1, $i ];
-	} elsif ($c =~ s/^(n|[A-Z][A-Z]*)\s+//) {
+	} elsif ($c =~ s/^([;!]*(?:n|[A-Z][A-Z]*))\s+//) {
 	    push @t, [ C_POS, $1, $i ];
-	} elsif ($c =~ s/^([^\s]+?\].*?)\s+//) {
+	} elsif ($c =~ s/^([;!]*[^\s]+?\].*?)\s+//) {
 	    push @t, [ C_SIG, $1, $i ];
-	} elsif ($c =~ s/^-(\S+)\s+//) {
+	} elsif ($c =~ s/^-([;!]*\S+)\s+//) {
 	    push @t, [ C_FORM, $1, $i ];
 	} elsif ($c =~ s/^=>\s+//) {
 	    push @t, [ C_GOESTO, $1, $i ];
