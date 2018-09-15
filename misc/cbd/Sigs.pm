@@ -747,6 +747,7 @@ sub psu_glo {
 		    foreach my $p (split(/\cA/,$pline)) {
 			$p =~ s#//.*?\]#]#;
 			$p =~ s/\'.*//;
+			$p =~ s/<.*?>$//; # remove ngram predicates in <...>
 			if ($simple_bases{$p}) {
 			    # warn "$p => $simple_bases{$p}\n";
 			    my $f = $simple_bases{$p}; $f =~ tr/·°//d;
@@ -754,7 +755,6 @@ sub psu_glo {
 			} elsif ($p =~ /^n$/) {
 			    push @nsf, 'n';
 			} else {
-			    # don't need this because we get better pp_warns later
 			    pp_warn "$p not in simple_bases";
 			}
 		    }

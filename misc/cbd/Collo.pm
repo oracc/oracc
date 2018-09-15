@@ -24,12 +24,16 @@ sub pp_collo {
     system 'mkdir', '-p', $ndir;
     open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
     open(CLOG,">01tmp/collo.log");
+    my %collo = ();
     foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
 	my $e = c_expand($i,@cbd);
 	next unless $e;
-	print COLLO $e, "\n";
+	++$collo{$e};
 	print CLOG pp_file().":$i: $cbd[$i] >> $e\n";
 	$cbd[$i] = "\000";
+    }
+    foreach my $c (sort keys %collo) {
+	print COLLO $c, "\n";
     }
     close(COLLO);
     close(CLOG);
