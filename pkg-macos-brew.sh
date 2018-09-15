@@ -16,5 +16,6 @@ brew install gmp
 brew install gsoap
 cpan install Text::CSV_XS
 cpan install RTF::Writer
+cpan install String::Similarity
 # no packages for msort and libuninum on brew yet
 
