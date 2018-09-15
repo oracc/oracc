@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <xmlutil.h>
 #include "f2.h"
 #include "ilem_form.h"
 #include "links.h"
@@ -22,7 +23,7 @@ linkset_dump(FILE*fp,struct linkset *lsp)
   fprintf(fp,"<linkset xl:title=\"%s\" xml:id=\"%s\" xl:type=\"extended\" xl:role=\"%s\"",
 	  lsp->title,lsp->xml_id,lsp->role);
   if (lsp->form && lsp->form->sig)
-    fprintf(fp, " sig=\"%s\"", lsp->form->sig);
+    fprintf(fp, " sig=\"%s\"", xmlify(lsp->form->sig));
   fputc('>',fp);
   for (i = 0; i < lsp->used; ++i)
     {

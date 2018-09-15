@@ -503,22 +503,16 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
 	    {
 	      if (!step->neg)
 		{
-#if 0 /* WHAT? What was this meant to do? As it stands it corrupts the sense of finds[0] */
-		  if (lp->f->psu_sense)
-		    p->sense = (unsigned char *)lp->f->psu_sense;
-#endif
 		  add_lp_match(p);
+		  BIT_SET(p->flags,F2_FLAGS_NGRAM_MATCH);
 		}
 	    }
 	  else
 	    {
 	      if (step->neg)
 		{
-#if 0 /* WHAT? What was this meant to do? */
-		  if (lp->f->psu_sense)
-		    p->sense = (unsigned char *)lp->f->psu_sense;
-#endif
 		  add_lp_match(p);
+		  BIT_SET(p->flags,F2_FLAGS_NGRAM_MATCH);
 		}
 	    }
 	  if (step->wild && wild_reset == -1)
@@ -538,11 +532,8 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
 static int
 check_predicates(struct f2 *p, struct CF *cfp)
 {
-#if 1
-  /* FOR NOW JUST COMPARE F2's -- one day other comparisons may be
-     implemented */
-  int ret = 0;
   const char *pform = (char*)p->form;
+  int i = 0;
 
   if (cfp->f2->form && *cfp->f2->form)
     if (pform && !*pform && p->cof_id)
@@ -554,30 +545,55 @@ check_predicates(struct f2 *p, struct CF *cfp)
       /* Care needed with f2_test because we have to reverse argument 
 	 order to ensure that no sense on instance still matches 
 	 glossary's sig */
-      ret = (cfnorm_ok(p, cfp->f2) && f2_test(cfp->f2, p));
-      if (ret)
-	BIT_SET(p->flags,F2_FLAGS_NGRAM_MATCH);
+      if (!(cfnorm_ok(p, cfp->f2) && f2_test(cfp->f2, p)))
+	return 0;
     }
-  return ret;
-#else
-  int i;
-  for (i = 0; cfp->preds[i]; ++i)
+  if (cfp->preds)
     {
-      const char *aname = cfp->preds[i]->key;
-      struct tok_tab *tp = NULL/*xfftok(aname,strlen(aname))*/;
-      if (tp)
+      for (i = 0; cfp->preds[i]; ++i)
 	{
-	  const char *lval = NULL/*fbyo(p,tp->offset)*/;
-	  ngdebug("[check_predicates] testing %s for predval %s==instval %s",
-		  aname,cfp->preds[i]->value, lval);
-	  if (!strcmp(cfp->preds[i]->value,"*"))
-	    return 1;
-	  if (!lval || strcmp(cfp->preds[i]->value,lval))
-	    return 0;
+	  if (!strcmp(cfp->preds[i]->key, "vpr"))
+	    {
+	      /* is there a verb prefix? look at pos[0] == 'V' and morph =~ /:~/ */
+	      if (p->pos && *p->pos == 'V' && p->morph && strstr((char*)p->morph, ":~"))
+		{
+		  if (cfp->preds[i]->neg)
+		    return 0;
+		}
+	      else
+		{
+		  if (cfp->preds[i]->neg)
+		    ; /* test passes , keep checking more preds */
+		  else
+		    return 0;
+		}
+	    }
+	  else
+	    {
+	      fprintf(stderr, "%s:%d: bad <predicate> name '%s'\n",
+		      cfp->owner->file,
+		      cfp->owner->lnum,
+		      cfp->preds[i]->key);
+	      return 0; /* error condition, don't care about cfp->neg */
+#if 0
+	      const char *aname = cfp->preds[i]->key;
+	      struct tok_tab *tp = NULL/*xfftok(aname,strlen(aname))*/;
+	      if (tp)
+		{
+		  const char *lval = NULL/*fbyo(p,tp->offset)*/;
+		  ngdebug("[check_predicates] testing %s for predval %s==instval %s",
+			  aname,cfp->preds[i]->value, lval);
+		  if (!strcmp(cfp->preds[i]->value,"*"))
+		    ret = 1; /* NB no ret variable any more */
+		  if (!lval || strcmp(cfp->preds[i]->value,lval))
+		    ret = 0;
+		}
+#endif
+	    }
 	}
     }
+  /* each cfp->neg has been handled by the time we get here, do don't check any more */
   return 1;
-#endif
 }
 
 /*The name of this routine is an anachronism preserved to simplify the

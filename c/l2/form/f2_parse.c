@@ -468,7 +468,10 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	  if (*lp)
 	    {
 	      field = *lp;
-	      *lp++ = '\0';
+#if 0
+	      if ('<' != *lp) /* leave < because it will exit loop below and return len for ngram to process preds */
+#endif
+		*lp++ = '\0';
 	    }
 
 	  /* Now we are at a (possibly empty) variable set of instance
@@ -633,9 +636,11 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
  
  ret:
   free(err_lp);
-  /* '<' == *lp must be dealt with by caller */
+
   if (isspace(*lp))
     *lp++ = '\0';
+  else if (field == '<')
+    *--lp = '<';
 
   if (!f2p->gw || !*f2p->gw)
     {

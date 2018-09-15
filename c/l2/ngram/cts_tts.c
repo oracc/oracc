@@ -14,7 +14,13 @@ parse_angled_preds(struct CF *cfp, int tts_mode, char *s)
   while (*s && '<' == *s)
     {
       predp = new_pred(preds);
+      predp->owner = cfp;
       ++s;
+      if ('!' == *s)
+	{
+	  predp->neg = 1;
+	  ++s;
+	}
       if ((anglec = strchr(s,'>')))
 	{
 	  char *e = NULL;
@@ -28,9 +34,10 @@ parse_angled_preds(struct CF *cfp, int tts_mode, char *s)
 	  else
 	    {
 	      predp->key = s;
-	      predp->value = "1";
+	      predp->value = "";
 	    }
-	  ++anglec;
+	  *anglec = '\0';
+	  s = ++anglec;
 	}
       else
 	{
@@ -72,10 +79,13 @@ static char *
 parse_cts_f2(struct CF *cfp, int tts_mode, char *s)
 {
   int len = 0;
+  
   cfp->f2 = mb_new(cfp->owner->owner->owner->owner->owner->mb_f2s);
+
   len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
 		 (unsigned char *)s, cfp->f2, NULL, 
 		 cfp->owner->owner->owner->owner->owner);
+
   if (len > 0)
     return s + len;
   else
@@ -110,6 +120,8 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);
 	  cfp->cf = (const char *)cfp->f2->cf;
+	  if ('<' == *s)
+	    s = parse_angled_preds(cfp, tts_mode, s);
 	}
       while (isspace(*s))
 	++s;

@@ -24,7 +24,7 @@ l2p1-project-sig.plx
 if [ -r .nolemmdata ]; then
     rm .nolemmdata
 else
-    nl2p1-lemm-data.plx $*
+    l2p1-lemm-data.plx $*
 fi
 
 #if [ -s 01bld/sortinfo.tab ]; then

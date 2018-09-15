@@ -830,6 +830,7 @@ sub v_part {
     $tmp =~ s/\].*$/]/;
     if ($entries_nopos{$tmp}) {
 	my $b = best_list_string(@{$entries_nopos{$tmp}});
+	$part =~ s/<.*?>$//;
 	pp_warn("part $part better $b") unless $part eq $b;
 	pp_file($fsave);
 	pp_line($lsave);
