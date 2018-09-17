@@ -201,7 +201,11 @@ sub bases_hash {
     }
     $arg =~ s/^\@bases\s+//;
     $arg =~ s/\s*$//;
-
+    if ($arg =~ s/^\s*;//) {
+	pp_warn("bases entry starts with semi-colon--please remove it");
+    }
+    $arg =~ s/^\s*$//;
+    
     my @bits = split(/;\s+/, $arg);
 
     my $alt = '';
@@ -435,6 +439,7 @@ sub bases_serialize {
     my $res = '';
     foreach my $b (sort keys %b) {
 	next if $b =~ /\#/;
+	next unless $b; ## FIXME: should issue a warning
 	$res .= '; ' if $res;
 	$res .= $b;
 	if (defined $b{"$b#alt"}) {

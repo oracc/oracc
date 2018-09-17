@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Invoke with -u for oracc update
+# Invoke with -u for oracc update; 20180916: -u is now deprecated
 
 # All of the different project types that may have glossaries must
 # have produced a list of sigs from their respective corpus before
@@ -21,10 +21,17 @@ fi
 # lem rebuild is necessary so there's not much extra work involved
 l2p1-from-glos.sh
 l2p1-project-sig.plx
+
 if [ -r .nolemmdata ]; then
     rm .nolemmdata
 else
-    l2p1-lemm-data.plx $*
+    # if we have project.sig use it for lemm data, otherwise try
+    # to reuse stats from previous lemm data with -u option
+    if [ -s 01bld/project.sig ]; then
+	l2p1-lemm-data.plx
+    else
+	l2p1-lemm-data.plx -u
+    fi
 fi
 
 #if [ -s 01bld/sortinfo.tab ]; then

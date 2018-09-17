@@ -243,6 +243,9 @@
         </choice>
       </attribute>
       <optional>
+        <ref name="surroEnd"/>
+      </optional>
+      <optional>
         <ref name="delim"/>
       </optional>
       <ref name="pos"/>

@@ -1308,6 +1308,7 @@ render_parts {
     for (my $i = 0; $i <= $#c; ++$i) {
 	my $c = $c[$i];
 	my $xmorph = '';
+	$c =~ s/<.*?>$//;
 	my $part_attr = " partsig=\"$c\"";
 	if ($part_sigs[$i]) {
 	    my $esig = $part_sigs[$i];

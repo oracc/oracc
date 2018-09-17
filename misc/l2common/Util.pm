@@ -319,9 +319,9 @@ parse_sig {
     s/\*([a-z])/\cB$1/g;
     if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
+	$x{'norm'} =~ tr/\cB/*/;
     }
     tr/\cB/*/;
-    $x{'norm'} =~ tr/\cB/*/;
     
     # Map + in compounds (|...+...|) to \cA
     1 while s#(/.*?\|[^\|]+?)\+(.*?\|)#$1\cA$2#;

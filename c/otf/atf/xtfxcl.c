@@ -72,6 +72,7 @@ process(struct xcl_context *xc, struct node*n)
   if (*n->type == 'e')
     {
       register int i;
+      const unsigned char *xid = NULL;
       switch (n->etype)
 	{
 	case e_composite:
@@ -115,7 +116,8 @@ process(struct xcl_context *xc, struct node*n)
 	case e_g_w:
 	case e_n_w:
 	  xcl_fix_context(xc,NULL);
-	  ilem_parse(xc, hash_find(word_form_index,getAttr(n,"xml:id")));
+	  xid = getAttr(n,"xml:id");
+	  ilem_parse(xc, hash_find(word_form_index, xid));
 	  break;
 	case e_g_nonw:
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonw, NULL);

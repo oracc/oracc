@@ -1617,7 +1617,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		      else
 			{
 			  struct node *cp = (struct node*)(lastChild(wp));
-			  if (*cp->type == 'e' && !strcmp(cp->names->pname, "g:d"))
+			  if (cp && *cp->type == 'e' && !strcmp(cp->names->pname, "g:d"))
 			    pos = (const char *)getAttr(cp,"g:pos");
 			}
 		    }
@@ -1665,7 +1665,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  if (nexttp && nexttp->class != bound
 			      && nexttp->type != deto
 			      && nexttp->type != cell
-			      && nexttp->type != field)
+			      && nexttp->type != field
+			      && nexttp->type != surrc)
 			    warning("{{...}} beside text at both ends");
 			}
 		      if (!xstrcmp(getAttr(wp->parent,"g:type"),
@@ -2496,7 +2497,9 @@ long_surro(int tindex)
     {
       if (tokens[tindex]->type == surrc)
 	return 0;
-      if (tokens[tindex]->type == space/* || tokens[tindex]->type == norm*/)
+      if (tokens[tindex]->type == space) /* norm */
+	return 1;
+      else if (tokens[tindex]->type == smetao)
 	return 1;
       ++tindex;
     }

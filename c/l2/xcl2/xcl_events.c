@@ -507,8 +507,10 @@ xcl_fix_context(struct xcl_context *xc, const unsigned char *discourse)
 	  && xc->curr->nchildren == 0)
 	{
 	  /* delete the empty sentence */
-	  xc->curr = xc->curr->parent;
-	  --xc->curr->nchildren;
+	  if (xc->curr->parent)
+	    xc->curr = xc->curr->parent;
+	  if (xc->curr->nchildren)
+	    --xc->curr->nchildren;
 	}
 #if 1
       /* Clear container discourses:

@@ -28,7 +28,7 @@ struct lem_save
   int lnum;
   int* cells; /* parallel with forms */
   /*struct ilem_form **forms;*/
-  struct xcl_ilem *forms;
+  struct xcl_ilem **forms;
   int forms_used;
   int forms_alloced;
   struct lem_save *cont;
@@ -55,6 +55,8 @@ Hash_table *word_form_index;
 static const char *peri, *prov,*genr,*subg;
 
 struct xcl_context *lemline_xcp;
+
+static struct mb *xi_mem = NULL;
 
 static struct lem_save*
 new_lsp(void)
@@ -136,6 +138,7 @@ lemline_init(void)
   lemline_xcp->textid = textid;
   lemline_xcp->pool = npool_init();
   lemline_xcp->sigs = sig_context_init();
+  xi_mem = mb_init(sizeof(struct xcl_ilem), 1024);
 }
 
 void
@@ -147,6 +150,7 @@ lemline_term(void)
 #endif
   free(lemline_xcp);
   lemline_xcp = NULL;
+  mb_free(xi_mem);
 }
 
 void
@@ -257,6 +261,8 @@ lem_save_form(const char *ref, const char *lang,
 {
   struct ilem_form *form = mb_new(lemline_xcp->sigs->mb_ilem_forms);
   extern int curr_cell;
+  struct xcl_ilem *xip = NULL;
+  
   form->f2.owner = form;
   form->ref = (char*)ref;
   if (lang)
@@ -283,22 +289,25 @@ lem_save_form(const char *ref, const char *lang,
   if (!curr_lsp->forms_alloced
       || curr_lsp->forms_used == curr_lsp->forms_alloced)
     {
-      curr_lsp->forms_alloced += 16;
-      curr_lsp->forms = realloc(curr_lsp->forms,
-				curr_lsp->forms_alloced*sizeof(struct xcl_ilem /* struct ilem_form* */));
+      curr_lsp->forms_alloced += 1024;
       curr_lsp->cells = realloc(curr_lsp->cells,
 				curr_lsp->forms_alloced*sizeof(int));
+      curr_lsp->forms = realloc(curr_lsp->forms,
+				curr_lsp->forms_alloced*sizeof(struct xcl_ilem *));
       if (curr_lsp->forms_used < 0)
 	curr_lsp->forms_used = 0;
     }
+
   /* when curr_cell = 0 we are in a line with no cells; by definition,
      all content in such a line is in cell 2 (because cell 1 is the line
      number) */
   curr_lsp->cells[curr_lsp->forms_used] = (curr_cell ? curr_cell : 2);
-  curr_lsp->forms[curr_lsp->forms_used].i = form;
-  /* We hash the address of the xcl_ilem form structure */
+
+  curr_lsp->forms[curr_lsp->forms_used] = xip = mb_new(xi_mem);
+  xip->i = form;
   hash_add(word_form_index,npool_copy((unsigned char*)ref,lemline_xcp->pool),
-	   &curr_lsp->forms[curr_lsp->forms_used] /*form*/);
+	   xip /* &curr_lsp->forms[curr_lsp->forms_used]*/ /*form*/);
+
   ++curr_lsp->forms_used;
 }
 
@@ -545,7 +554,7 @@ lem_serialize(FILE *fp)
 	  for (j = 0; j < lem_lines[i].forms_used; ++j)
 	    {
 	      /* use the ilem_form that was processed by XCL */
-	      struct ilem_form *f = lem_lines[i].forms[j].x->f;
+	      struct ilem_form *f = lem_lines[i].forms[j]->x->f;
 	      static struct serializer_frame sframe;
 
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
@@ -608,7 +617,7 @@ lem_ods_serialize(FILE *fp)
 	  fprintf(fp,"<l n=\"%d\">",lem_lines[i].lnum);
 	  for (j = 0; j < lem_lines[i].forms_used; ++j)
 	    {
-	      struct ilem_form *f = lem_lines[i].forms[j].x->f;
+	      struct ilem_form *f = lem_lines[i].forms[j]->x->f;
 	      fprintf(fp,"<c n=\"%d\">",lem_lines[i].cells[j]);
 	      if (use_literal(f->literal))
 		{

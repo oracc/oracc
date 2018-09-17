@@ -48,7 +48,7 @@ pos = attribute g:pos { "pre" | "post" | "free" }
 det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
                     (word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
-glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , surroEnd? , delim? , pos , words }
 
 status.spans =
   attribute g:status {

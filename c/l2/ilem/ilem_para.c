@@ -317,7 +317,9 @@ process_boundaries(struct xcl_context*xc,struct ilem_para *p,int pos)
 	  if (xcl_t != xcl_c_top)
 	    {
 	      xcl_insert_ub(xc, pos, xcl_t,pp->level);
+	      /* FIXME: if xc->curr->parent is NULL where are we supposed to put the annotation? */
 	      if (pp->next && pp->next->type == LPT_label
+		  && xc->curr->parent
 		  && xc->curr->parent->nchildren > 1)
 		xc->curr->parent->children[xc->curr->parent->nchildren-2].c->subtype = (const char*)pp->next->text;
 	    }

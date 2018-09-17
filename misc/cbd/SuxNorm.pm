@@ -118,6 +118,7 @@ sub normify {
 			my $key = "$forms[$j]=$parts[$j]";
 			$key =~ s#//(.*?)\]#]#;
 			$key =~ s#'.*$##;
+			$key =~ s/<.*?>$//;
 #			warn "key=$key\n";
 #			print Dumper \%norms;
 			if ($norms{$key}) {

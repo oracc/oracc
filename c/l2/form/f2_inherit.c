@@ -50,7 +50,7 @@ f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2)
     inheritor_f2->pos = from_f2->pos;
   else
     {
-      if (!BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS))
+      if (from_f2->pos && !BIT_ISSET(inheritor_f2->flags, F2_FLAGS_NOT_IN_SIGS))
 	{
 	  if (strcmp((char*)inheritor_f2->pos,(char*)from_f2->pos))
 	    {
