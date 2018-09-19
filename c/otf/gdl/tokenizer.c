@@ -828,7 +828,10 @@ tokenize(register unsigned char *l,unsigned char *e)
 	  l += 3;
 	}
       /* WATCHME: the new is_grapheme1[l[1]] may break some texts;
-	 although ':' as punct should require following space */
+	 although ':' as punct should require following space;
+	 addendum: rare but legal notation 10.:3 must allow number 
+	 after punct
+      */
       else if ((is_grapheme1[*l]
 	   || (('*' == *l 
 		|| (':' == *l 
@@ -843,7 +846,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 		|| ('/' == *l && (isspace(l[1]) || !l[1] || '(' == l[1])))))
 	  && ((last_text_or_bound != text)
 	      || (curr_lang->mode != m_graphemic 
-		  && modechars[curr_lang->mode][*l])))
+		  && modechars[curr_lang->mode][*l])
+	      || (isdigit(*l) && ':' == l[-1]) /* looser than 10.:3 notation but probably OK */
+	      ))
 	{
 	  unsigned char *g,*following;
 	  enum t_type t;
