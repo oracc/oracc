@@ -17,7 +17,7 @@ my $update = 0;
 my $verbose = 1;
 
 GetOptions (
-    'glossary'=>\$glossary,
+    'glossary:s'=>\$glossary,
     'update'=>\$update
     );
 
