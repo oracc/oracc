@@ -1235,8 +1235,12 @@ sub psu_dump {
 
 sub sigs_dump {
     my($args) = @_;
-    $sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
-    open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
+    if ($$args{'stdout'}) {
+	*SIGS = *STDOUT;
+    } else {
+	$sigs_glo_file = "01bld/$$args{'lang'}/from_glo.sig";
+	open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
+    }
 #    my $cbdname = ORACC::CBD::Util::cbdname();
 #    my %g = %{$ORACC::CBD::data{$cbdname}};
     print SIGS "\@fields sig rank\n";
@@ -1250,10 +1254,11 @@ sub sigs_dump {
 
 #    warn "cbdpp: sigs written to $sigs_glo_file\n"
 #	if $$args{'announce'};
-    
-    open(CORESIGS, ">01bld/$$args{'lang'}/coresigs.txt");
-    print CORESIGS join("\n", uniq(@sigs_coresigs)), "\n";
-    close(CORESIGS);
+    unless ($$args{'stdout'}) {
+	open(CORESIGS, ">01bld/$$args{'lang'}/coresigs.txt");
+	print CORESIGS join("\n", uniq(@sigs_coresigs)), "\n";
+	close(CORESIGS);
+    }
 }
 
 # slower uniq with stable order w/r/t incoming array

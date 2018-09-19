@@ -9,6 +9,7 @@ $g2 = undef unless ($g2 && $g2 eq 'yes');
 
 my %f = ();
 my $freq = 0;
+my $glossary = '';
 my %lemmdata = ();
 my $rank = 0;
 my %sigorder = ();
@@ -16,6 +17,7 @@ my $update = 0;
 my $verbose = 1;
 
 GetOptions (
+    'glossary'=>\$glossary,
     'update'=>\$update
     );
 
@@ -26,36 +28,57 @@ my %freqs = ();
 my %ranks = ();
 my @sigs = ();
 
-my @glosig_files = ();
-
-if ($g2) {
-    @glosig_files = `ls 01bld/*/from_glo.sig`; 
-    chomp @glosig_files; @glosig_files = grep /\.sig$/, @glosig_files;
+my @glosigs = ();
+if ($glossary) {
+    @glosigs = `cbdpp.plx -sig -std $glossary`;
 } else {
-    @glosig_files = ('01bld/from-glos.sig');
-}
-
-die "l2p1-lemm-data.plx: no glossary signature files. Stop.\n"
-    unless $#glosig_files >= 0;
-
-# Harvest sigs and ranks from the project's glossaries
-foreach my $f (@glosig_files) {
-    die "l2p1-lemm-data.plx: no signatures file $f\n"
-	unless (open(F, $f));
-    warn "reading glossary sigs from $f ...\n";
-    while (<F>) {
-	next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format
-	chomp;
-	if (/^\@fields/) {
-	    set_f($_, qw/sig rank/);
-	    next;
-	}
-	my @fields = split(/\t/,$_);
-	push @sigs, $fields[0];
-	$ranks{$fields[0]} = $fields[$rank];
+    my @glosig_files = ();
+    if ($g2) {
+	@glosig_files = `ls 01bld/*/from_glo.sig`; 
+	chomp @glosig_files; @glosig_files = grep /\.sig$/, @glosig_files;
+    } else {
+	@glosig_files = ('01bld/from-glos.sig');
     }
-    close(F);
+    die "l2p1-lemm-data.plx: no glossary signature files. Stop.\n"
+	unless $#glosig_files >= 0;
+    foreach my $f (@glosig_files) {
+	die "l2p1-lemm-data.plx: no signatures file $f\n"
+	    unless (open(F, $f));
+	warn "reading glossary sigs from $f ...\n";
+	push @glosigs, (<F>);
+	close(F);
+    }
 }
+chomp @glosigs;
+foreach (@glosigs) {
+    next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format
+    if (/^\@fields/) {
+	set_f($_, qw/sig rank/);
+	next;
+    }
+    my @fields = split(/\t/,$_);
+    push @sigs, $fields[0];
+    $ranks{$fields[0]} = $fields[$rank];
+}
+
+# # Harvest sigs and ranks from the project's glossaries
+# foreach my $f (@glosig_files) {
+#     die "l2p1-lemm-data.plx: no signatures file $f\n"
+# 	unless (open(F, $f));
+#     warn "reading glossary sigs from $f ...\n";
+#     while (<F>) {
+# 	next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format
+# 	chomp;
+# 	if (/^\@fields/) {
+# 	    set_f($_, qw/sig rank/);
+# 	    next;
+# 	}
+# 	my @fields = split(/\t/,$_);
+# 	push @sigs, $fields[0];
+# 	$ranks{$fields[0]} = $fields[$rank];
+#     }
+#     close(F);
+# }
 
 my @freq_files = ();
 if ($update) {
