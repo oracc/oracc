@@ -134,6 +134,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
       lp->f = master_formp;
       lp->inst = make_inst(xc,lp->f);
       phase = NULL;
+      xi->x = lp;
       return;
     }
 

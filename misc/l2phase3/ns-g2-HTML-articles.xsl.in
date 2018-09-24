@@ -95,8 +95,6 @@
 <xsl:key name="oid" match="oid" use="@id"/>
 
 <xsl:output method="xml" encoding="utf-8"
-   doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
    indent="no"/>
 
 <xsl:variable name="lex-provides-base">
@@ -151,7 +149,7 @@
 </xsl:template>
 
 <xsl:template match="cbd:entry">
-  <div class="body" name="{concat(/*/@project,'/',/*/@xml:lang,'/',cbd:cf,'[',cbd:gw,']')}">
+  <div class="body" name="{concat(/*/@project,'/',/*/@xml:lang,'/',cbd:cf,'[',cbd:gw,']')}" id="top">
   <xsl:copy-of select="@xml:id"/>
   <div class="ns-glo">
     <div class="header">
@@ -371,7 +369,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template name="ns-glo-periods">
-    <div class="ns-glo-sec">
+    <div class="ns-glo-sec" id="periods">
       <h1>Attested in the following periods:</h1>
       <xsl:for-each select="cbd:periods/*">
 	<h2>
@@ -396,7 +394,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:forms|cbd:form-sanss"> <!-- mode="do-forms" -->
-  <div class="forms">
+  <div class="forms" id="forms">
     <xsl:if test="string-length(ancestor::cbd:entry/cbd:overview/@periods) > 0">
       <p class="periods">
 	<span class="iheader">Periods:</span>
@@ -474,7 +472,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <xsl:template match="cbd:compound|cbd:see-compounds"/>
 
 <xsl:template mode="doit" match="cbd:compound">
-  <div class="compounds">
+  <div class="compounds" id="compounds">
     <p class="cpd">
       <xsl:text>(</xsl:text>
       <xsl:for-each select="*">
@@ -852,7 +850,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template name="bases-table">
-  <div class="orth">
+  <div class="orth" id="bases">
     <table>
       <xsl:for-each select="cbd:base">
 	<tr class="orth">
@@ -992,7 +990,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:senses">
-  <div class="ns-glo-sec">
+  <div class="ns-glo-sec" id="senses">
     <h1>Senses:</h1>
     <xsl:choose>
       <xsl:when test="not(../cbd:pos='PN')">
@@ -1016,7 +1014,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:usages">
   <xsl:if test="*">
-    <div class="usages">
+    <div class="usages" id="usages">
       <xsl:apply-templates/>
     </div>
   </xsl:if>
@@ -1287,7 +1285,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:equivs">
-  <div class="equivs">
+  <div class="equivs" id="equivs">
     <p>
       <!-- FIXME: equivs need to be grouped by lang so we can emit, e.g., Akk. only
       once -->
@@ -1324,7 +1322,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:bib">
-  <div class="ns-glo-sec bib">
+  <div class="ns-glo-sec bib" id="bib">
     <h1>Bibliography</h1>
     <xsl:apply-templates/>
   </div>

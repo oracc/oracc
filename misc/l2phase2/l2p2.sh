@@ -134,6 +134,11 @@ fi
 
 o2-lex.sh
 
+if [ -r 01bld/sux/articles.xml ]; then
+    xsltproc $ORACC_BUILDS/lib/scripts/l2p2-oxtab.xsl 01bld/sux/articles.xml \
+	     >01bld/sux/oidxid.tab
+fi
+
 #usages=`oraccopt . cbd-usages`
 #if [ "$usages" = "yes" ]; then
 #    if [ "$project" = "epsd2" ]; then

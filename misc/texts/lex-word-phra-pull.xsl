@@ -49,7 +49,7 @@
 	  <xsl:for-each select="*">
 	    <xsl:choose>
 	      <xsl:when test="@cfgw">
-		<xsl:value-of select="@cfgw"/>
+		<xsl:value-of select="concat(substring-before(@cfgw,']'),']')"/>
 	      </xsl:when>
 	      <xsl:otherwise>
 		<xsl:value-of select="@form"/>

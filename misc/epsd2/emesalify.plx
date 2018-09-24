@@ -39,6 +39,15 @@ foreach my $esf (@esf) {
     ++$esf{$esf} unless exists $egf{$esf};
 }
 
+open(L,'>01tmp/emesalify.log');
+foreach (sort keys %ese) {
+    print L "ES word $_\n";
+}
+foreach (sort keys %esf) {
+    print L "ES form $_\n";
+}
+close(L);
+
 #print Dumper \%esf;
 
 # index the entries and forms to make annotating articles.xml easier

@@ -33,7 +33,3 @@ else
 	l2p1-lemm-data.plx -u
     fi
 fi
-
-#if [ -s 01bld/sortinfo.tab ]; then
-#    l2p1-sig-invert.plx
-#fi

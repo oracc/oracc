@@ -7,6 +7,8 @@
 #include "warning.h"
 #include "xli.h"
 
+extern int lem_autolem, lem_dynalem;
+
 int lem_do_wrapup = 1;
 int lem_percent_threshold = 20;
 int lem_extended = 1;
@@ -16,6 +18,7 @@ extern int bootstrap_mode;
 static int md_match(const char *value, const char *key, Hash_table *mdsets, const char *mdrefs);
 static struct ilem_form **md_selector(Hash_table *xcl_context_meta, Hash_table *mdsets, struct ilem_form **fp, int *nfinds);
 static void md_select(struct xcl_l *lp, struct ilem_form *fp);
+static void rank_disambig(struct xcl_context *xcp, struct xcl_l *lp);
 static void wrapup_props(struct xcl_l *lp, struct ilem_form *fp);
 
 static void ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp);
@@ -100,6 +103,8 @@ ilem_wrapup(struct xcl_context *xcp, struct xcl_l *lp)
 	    }
 	}
       while (fp);
+      if (lem_autolem || lem_dynalem)
+	rank_disambig(xcp, lp);
     }
   else
     {
@@ -110,7 +115,6 @@ ilem_wrapup(struct xcl_context *xcp, struct xcl_l *lp)
 void
 ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 {
-  extern int lem_autolem, lem_dynalem;
   struct ilem_form **fretp;
   int fcount;
 
@@ -505,5 +509,31 @@ wrapup_props(struct xcl_l *lp, struct ilem_form *fp)
 	last->next = more;
       else
 	fp->props = more;
+    }
+}
+
+/* This is a very simple initial implementation: just look for the 
+   result with the highest rank and use that.
+ */
+static void
+rank_disambig(struct xcl_context *xcp, struct xcl_l *lp)
+{
+  struct ilem_form *fp = lp->f, *top = NULL;
+  int top_rank = 0;
+  for (fp = lp->f; fp; fp = fp->ambig)
+    {
+      if (fp->fcount)
+	{
+	  if (fp->finds[0]->f2.rank > top_rank)
+	    {
+	      top_rank = fp->finds[0]->f2.rank;
+	      top = fp->finds[0];
+	    }
+	}
+    }
+  if (top)
+    {
+      lp->f = top;
+      lp->f->ambig = NULL;
     }
 }

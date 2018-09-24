@@ -12,7 +12,7 @@
 </xsl:template>
 
 <xsl:template match="lex:group[@type='word']">
-  <div class="lex-word" title="{@value}">
+  <div class="lex-word" title="{@value}" id="lexpronounce">
     <h3 class="word-base">Pronunciation Data</h3>
     <xsl:apply-templates/>
   </div>
