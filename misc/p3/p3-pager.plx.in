@@ -861,6 +861,24 @@ run_item_maker {
     } elsif ($rt{'itemtype'} eq 'cbd') {
 	# $rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
 	xsystem 'xmllint', '-o', "$p{'tmpdir'}/results.html", '--xinclude', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+	my $jumps = `@@ORACC@@/bin/oraccopt $p{'project'} outline-cbd-jumps`;
+	warn "jumps: got outline-cbd-jumps=$jumps\n";
+	my $pbase = "@@ORACC_BUILDS@@/$p{'project'}";
+	if (-r "$pbase/01bld/$p{'glos'}/templates.tab") {
+	    warn "jumps: found $pbase/01bld/$p{'glos'}/templates.tab\n";
+	} else {
+	    warn "jumps: no such file $pbase/01bld/$p{'glos'}/templates.tab\n";
+	}
+	if ($jumps && $jumps eq 'yes' && -r "$pbase/01bld/$p{'glos'}/templates.tab") {
+	    my $template = `grep $id $pbase/01bld/$p{'glos'}/templates.tab`;
+	    $template =~ s/^.*?\t//;
+	    chomp $template;
+	    if (-r "$pbase/01bld/$p{'glos'}/$template.html") {
+		xsystem 'cp',  "$pbase/01bld/$p{'glos'}/$template.html", "$p{'tmpdir'}/outline.html";
+	    } else {
+		warn "jumps: template file $pbase/01bld/$p{'glos'}/$template.html not found\n";
+	    }
+	}
     } elsif ($rt{'itemtype'} eq 'ood') {
 	xsystem("$oraccbin/xfrag @@ORACC@@/pub/$p{'project'}/data.xml $id | xsltproc -stringparam html yes @@ORACC@@/lib/scripts/ood-record.xsl - >$p{'tmpdir'}/results.html");
     } else {
@@ -1236,7 +1254,7 @@ setup_pg_args {
     if ($rt{'sorttype'}) {
 	my $tmp = undef;
 	if ($p{'#coerce'}) {
-	    $tmp = `oraccopt $p{'project'} outline-default-sort-fields`;
+	    $tmp = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`;
 	} else {
 	    $tmp = $rt{'sorttype'};
 	}

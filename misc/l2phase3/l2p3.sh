@@ -45,3 +45,8 @@ if [ -r 01bld/cat.geojson ]; then
     mkdir -p $webdir/downloads
     cp 01bld/cat.geojson $webdir/downloads
 fi
+
+jumps=`oraccopt . outline-cbd-jumps`
+if [ "$jumps" == "yes" ]; then
+    ns-art-outlines.sh
+fi
