@@ -37,6 +37,7 @@ my $oraccwww = "@@ORACC@@/www";
 
 my $force_page = 0;
 my $fragid = '';
+my $jumpfile = '';
 my $no_html = "@@ORACC@@/www/no_html.xml";
 my $oas_instance = '';
 my $oas_template = "@@ORACC@@/lib/data/oas-template.xml";
@@ -555,7 +556,11 @@ run_form_maker {
 	    if ($p{'glos'} && !$p{'gxis'}) {
 		warn "run_form_maker: glos\n";
 		print '<div id="p3left" class="border-right">';
-		system "$oraccbin/xfrag", '-u', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
+		if ($jumpfile) {
+		    system 'cat', $jumpfile;
+		} else {
+		    system "$oraccbin/xfrag", '-u', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/p2-toc.html";
+		}
 		print '</div><div id="p3right" class="p3right80">';
 		if ($rt{'#content_url'}) {
 		    system "$oraccbin/xfrag", '-u', $rt{'#content_url'};
@@ -874,7 +879,8 @@ run_item_maker {
 	    $template =~ s/^.*?\t//;
 	    chomp $template;
 	    if (-r "$pbase/01bld/$p{'glos'}/$template.html") {
-		xsystem 'cp',  "$pbase/01bld/$p{'glos'}/$template.html", "$p{'tmpdir'}/outline.html";
+#		xsystem 'cp',  "$pbase/01bld/$p{'glos'}/$template.html", "$p{'tmpdir'}/outline.html";
+		$jumpfile = "$pbase/01bld/$p{'glos'}/$template.html";
 	    } else {
 		warn "jumps: template file $pbase/01bld/$p{'glos'}/$template.html not found\n";
 	    }

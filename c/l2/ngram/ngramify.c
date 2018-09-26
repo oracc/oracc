@@ -497,6 +497,7 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
     {
       struct f2 *p = parses[i];
       if (step && (step->wild
+		   || (step->cf && !strcmp(step->cf, "*")) /* match to POS w no CF */
 		   || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))

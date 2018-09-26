@@ -179,6 +179,9 @@ parse_ngram_line(struct NL*nlp, const char *line, int ngram_index,
   else
     {
       end_cts = tts;
+      while (isspace(end_cts[-1]))
+	--end_cts;
+      *end_cts = '\0';		     
       tts += 2;
       while (isspace(*tts))
 	++tts;

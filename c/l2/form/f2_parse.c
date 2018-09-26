@@ -289,6 +289,22 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
       }      
     }
 
+  /* Get numbers early */
+  if ('n' == *lp && !strchr((const char *)lp,'['))
+    {
+      f2p->pos = (const Uchar *)"n";
+      ++lp;
+      if (*lp == '\'')
+	{
+	  ++lp;
+	  f2p->epos = lp;
+	  while (*lp && !isspace(*lp))
+	    ++lp;
+	  *lp = '\0';
+	}
+      return lp - orig_lp;
+    }
+  
   if ('[' == *lp)
     {
       /* FIXME: this needs to be more rigorous and check for CF-legal char in initial position */

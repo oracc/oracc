@@ -119,7 +119,10 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
       else
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);
-	  cfp->cf = (const char *)cfp->f2->cf;
+	  if (NULL == cfp->f2->cf)
+	    /*cfp->f2->cf*/ cfp->cf = "*";
+	  else
+	    cfp->cf = (const char *)cfp->f2->cf;
 	  if ('<' == *s)
 	    s = parse_angled_preds(cfp, tts_mode, s);
 	}

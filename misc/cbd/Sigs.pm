@@ -342,7 +342,8 @@ sub sigs_simple {
 
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
-		    if ($$instsig[0] =~ s/^!//) {
+		    my $instsig0 = $$instsig[0];
+		    if ($instsig0 =~ s/^!//) {
 			$rank = 4;
 		    }
 		    if ($sensebang) {
@@ -351,7 +352,7 @@ sub sigs_simple {
 			$rank |= 1;
 		    }
 			
-		    $printsigs{ "$$instsig[0]$coresig$$instsig[1]\t$rank\n" } = ++$sigorder;
+		    $printsigs{ "$instsig0$coresig$$instsig[1]\t$rank\n" } = ++$sigorder;
 		    $found_simple_sig = 1;
 		}
 	    } else {

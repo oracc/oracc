@@ -622,3 +622,8 @@ popupXSF(project,text) {
     var url = '/'+project+'/'+text+'/score';
     popup(url,'XSF',500,600,100,100);
 }
+
+function
+hashjump(id) {
+    window.location.hash = id;
+}
