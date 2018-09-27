@@ -417,6 +417,8 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	  else
 	    fputs((char*)f2->cf,fp);
 	  if (f2->sense
+	      && strncmp((const char *)f2->gw,"unmng",5)
+	      && strcmp((const char *)f2->gw,"cnne")
 	      && strcmp((const char *)f2->gw,"cvne")
 	      && strcmp((const char *)f2->gw,"cvve"))
 	    {

@@ -82,7 +82,13 @@ threshold_test(struct ilem_form *fp, void *user, void *setup)
    any further items in the list are dropped unless their percentage
    of occurrences is >= lem_percent_threshold.
  */
-
+#if 0
+void
+ilem_drop_ambig_no_finds(xcl_l *lp)
+{
+  
+}
+#endif
 void
 ilem_wrapup(struct xcl_context *xcp, struct xcl_l *lp)
 {
@@ -92,7 +98,13 @@ ilem_wrapup(struct xcl_context *xcp, struct xcl_l *lp)
   /* Now attach the final version of the form to the lem node as a sig */
   if (lp->f->ambig)
     {
-      struct ilem_form *fp = lp->f, *first_fp = lp->f;
+      struct ilem_form *fp = NULL, *first_fp = NULL;
+#if 0
+      if (lem_dynalem)
+	ilem_drop_ambig_no_finds(lp);
+#endif
+      fp = lp->f;
+      first_fp = lp->f;
       do
 	{
 	  ilem_wrapup_sub(xcp, lp, fp);

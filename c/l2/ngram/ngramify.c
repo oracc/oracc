@@ -637,7 +637,8 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
 	parses[i] = &fp->finds[i]->f2;
       *nparsesp = fp->fcount;
     }
-  else if (fp->f2.cf || (fp->f2.pos && !strcmp((char*)fp->f2.pos,"n")))
+  else if (fp->f2.cf
+	   || (fp->f2.pos /* && !strcmp((char*)fp->f2.pos,"n") */)) /* need to match GN etc. */
     {
       parses = malloc(sizeof(struct f2*));
       parses[0] = &fp->f2;

@@ -243,7 +243,7 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
     }
  else
    {
-     if ((fp->fcount == 0 && (!BIT_ISSET(fp->f2.flags,F2_FLAGS_LEM_NEW)))
+     if ((fp->fcount == 0 && (!BIT_ISSET(fp->f2.flags,F2_FLAGS_LEM_NEW)) && fp->f2.cf)
 	 )
        /*	 || BIT_ISSET(fp->f2.flags,F2_FLAGS_COF_INVALID)) */
        {
