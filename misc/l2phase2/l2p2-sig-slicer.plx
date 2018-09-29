@@ -55,9 +55,9 @@ my %type_of = (
     p=>'pos',
     );
 
-#    'all'=>\$all,
 
 GetOptions(
+    'all'=>\$all,
     'choice:s'=>\@choice_tests,
     'corpus:s'=>\$corpus,
     'dir:s'=>\$dir_output,
@@ -109,7 +109,9 @@ warn "l2p2-sig-slicer.plx: no constraints in $slice\n"
 
 lang_suppress_NN() unless $with_nn;
 
-#use Data::Dumper; warn Dumper(\@constraints);
+if ($verbose) {
+    use Data::Dumper; warn Dumper(\@constraints);
+}
 
 load_corpus($corpus) if $corpus;
 
@@ -117,7 +119,7 @@ open(SIGS,$sigs) || die "l2p2-sig-slicer.plx: can't open '$sigs'\n";
 warn "l2p2-sig-slicer.plx: processing file $sigs\n"
     if $verbose;
 while (<SIGS>) {
-    next if /^\@(?:proj|name|lang)/;
+    next if /^\@(?:proj|name|lang|qpnbase)/;
     next if /^\s*$/;
     chomp;
     if (/^\@fields/) {
@@ -186,6 +188,8 @@ while (<SIGS>) {
 		$matches{$msig} = '';
 	    }
 	}
+    } elsif ($verbose) {
+	warn "no match for $_\n";
     }
 }
 close SIGS;
