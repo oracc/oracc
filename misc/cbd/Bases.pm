@@ -21,6 +21,8 @@ my %base_cpd_flags = ();
 
 my $map_fh = undef;
 
+my $p_entry = '';
+
 sub bases_fixes {
     my %tmp = %fixes;
     %fixes = ();
@@ -40,27 +42,26 @@ sub bases_align {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
+	    $p_entry = $curr_entry;
+	    $p_entry =~ s/\s*\[(.*?)\]\s*/[$1]/;
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
 		if ($$b{'#map'} || $$b{'#new'}) {
-		    my $p = $curr_entry;
 		    if ($$b{'#map'}) {
 			my %bmap = %{$$b{'#map'}};
 			foreach my $b (keys %bmap) {
-			    $p =~ s/\s*\[(.*?)\]\s*/[$1]/;
-			    print $map_fh "map base $p => $b ~ $bmap{$b}\n";
+			    print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
 			    #			print MAP_FH 
-			    #			    '@'.project($$args{'cbd'}).'%'.lang().":$p /$b => /$bmap{$b}\n";
+			    #			    '@'.project($$args{'cbd'}).'%'.lang().":$p_entry /$b => /$bmap{$b}\n";
 			}
 		    }
 		    $base_cbd[$base_i] = bases_string($b);
 		    warn "=>$base_cbd[$base_i]\n" if $base_trace;
 		    if ($$b{'#new'}) {
-			$p =~ s/\s+(\[.*?\])\s+/$1/;
-			print $map_fh "new bases $p => \@bases $base_cbd[$base_i]\n";
+			print $map_fh "new bases $p_entry => \@bases $base_cbd[$base_i]\n";
 		    }
 		}
 	    }
@@ -144,6 +145,7 @@ sub bases_merge {
 	    } else {
 		# This is a new primary transliteration
 		warn "incoming $p2 is new primary\n" if $base_trace;
+		print $map_fh "add base $p_entry => $p2\n";
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
 		if ($h2{"$p2#alt"}) {

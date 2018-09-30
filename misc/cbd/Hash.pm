@@ -309,6 +309,7 @@ sub pp_acd_merge {
 		# this should use canonicalized versions as returned by the
 		# parse_xxx routines, but they are not done yet ...
 		my %known = ();
+		my %sknown = ();
 
 		if ($$$f{'rws_cfs'}) {
 		    my %r = ();
@@ -343,9 +344,11 @@ sub pp_acd_merge {
 		$i_bases = '';
 		foreach my $l (@{$$$i{$fld}}) {
 		    my $tmp = $l;
-		    $tmp =~ s/\s+\@\S+\s*//;
+		    $tmp =~ s/\s+\@\S+\!?\s*//;
 		    if ($fld eq 'bases') {
 			$i_bases = $tmp;
+		    } elsif ($fld eq 'sense') {
+			++$sknown{un_sense_id($tmp)};
 		    } else {
 			++$known{un_sense_id($tmp)};
 		    }

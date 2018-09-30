@@ -47,7 +47,11 @@ if ($args{'dynamic'}) {
 }
 $mapfile .= '~'.lang($args{'cbd'}).'.map';
 
-open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n";    
+if ($args{'stdout'}) {
+    *MAP_FH = *STDOUT;
+} else {
+    open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n";
+}
 entries_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 senses_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 bases_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
