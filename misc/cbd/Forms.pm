@@ -21,14 +21,21 @@ my $forms_inline = '';
 my $map_fh = undef;
 my %seen = ();
 
+sub dump_forms {
+    my($f,$h) = @_;
+    open(F,">$f.dump"); print F Dumper $h; close(F);
+}
+
 sub forms_align {
     my($args,$base_cbd,$cbd,$xmap_fh) = @_;
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
     $map_fh = $xmap_fh if $xmap_fh;
     my %forms = forms_collect(@base_cbd);
+    dump_forms('base',\%forms);
     my %f_index = ();
     my %incoming_forms = forms_collect(@cbd);
+    dump_forms('incoming',\%incoming_forms);
     foreach my $if (keys %incoming_forms) {
 	if ($forms{$if}) {
 	    my %fi = ();
@@ -37,16 +44,20 @@ sub forms_align {
 	    } else {
 #		warn "indexing forms for $if\n";
 		foreach my $f (keys %{$forms{$if}}) {
-#		    $f =~ /^\S+\s+(\S+)/;
+		    $f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
 		    ++$fi{$f};
 		}
 		$f_index{$if} = %fi;
 	    }
 #	    print "fi=", Dumper \%fi;
 	    foreach my $f (keys %{$incoming_forms{$if}}) {
-#		print "f = $f\n";
-		$f =~ /^\S+\s+(\S+)/;
-		map_form($args,$if, $f) unless $fi{$f};
+		my $fullform = $f;
+		$f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
+		if ($fi{$f}) {
+#		    warn "$if: incoming form $f already in glossary\n";
+		} else {
+		    map_form($args,$if,$fullform)
+		}
 	    }
 	}
 	# silently ignore missing entries because entries_align gets those

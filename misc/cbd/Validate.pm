@@ -418,9 +418,19 @@ sub v_bases {
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: tag=$tag; arg=$arg";
     }
+
+    if ($arg =~ s/^\s*;//) {
+	pp_warn("bases entry begins with semi-colon--please remove it");
+    }
+
+    if ($arg =~ s/;\s*;/;/g) {
+	pp_warn("bases entry contains '; ;' or similar--please fix this");
+    }
+
     if ($arg =~ s/;\s*$//) {
 	pp_warn("bases entry ends with semi-colon--please remove it");
     }
+
     my @bits = split(/;\s+/, $arg);
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: \@bits=@bits";

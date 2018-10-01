@@ -22,6 +22,7 @@ my %combofuncs = (
     mapentry => \&mapentry,
     mapsense => \&mapsense,
     mapbase => \&mapbase,
+    addbase => undef,
 );
 
 my %currmap = ();
@@ -34,6 +35,7 @@ sub map_set_map {
 sub map_apply_glo {
     my @cbd = @_;
     my @n = ();
+#    print STDERR Dumper \%currmap;
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    my $key = $1;
@@ -49,7 +51,7 @@ sub map_apply_glo {
 		    push @n, $${$emap{'bases'}}[0];
 		    ++$i;
 		}
-		while ($cbd[$i] !~ /^\@form/) {
+		while ($i < $#cbd && $cbd[$i] !~ /^\@form/) {
 		    push @n, $cbd[$i++];
 		}
 		while ($cbd[$i] =~ /^\@form/) {
@@ -69,7 +71,7 @@ sub map_apply_glo {
 			push @n, @{${$emap{'form'}}};
 		    }
 		}
-		while ($cbd[$i] !~ /^\@sense/) {
+		while ($i < $#cbd &&$cbd[$i] !~ /^\@sense/) {
 		    push @n, $cbd[$i++];
 		}
 		while ($cbd[$i] =~ /^\@sense/) {
@@ -79,7 +81,7 @@ sub map_apply_glo {
 		    push @n, @{${$emap{'sense'}}};
 		}
 	    }
-	    while ($cbd[$i] !~ /^\@end\s+entry/) {
+	    while ($i < $#cbd && $cbd[$i] !~ /^\@end\s+entry/) {
 		push @n, $cbd[$i++];
 	    }
 	    push @n, $cbd[$i];
@@ -203,7 +205,8 @@ sub map_load {
 		    }
 		}
 	    } else {
-		warn "$map:$.: cmd/field combination '$combo' not handled\n";
+		warn "$map:$.: cmd/field combination '$combo' not handled\n"
+		    unless exists $combofuncs{$combo};
 	    }
 	} else {
 	    warn "$map:$.: syntax error: bad command\n";

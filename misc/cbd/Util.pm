@@ -164,7 +164,13 @@ sub pp_load {
 	@c = (<>); chomp @c;
     } else {
 	%{$ORACC::CBD::data{'files'}{$file}} = header_vals($file);
-	ORACC::CBD::Forms::forms_load($args) if $file =~ m#^00src#;
+	if ($file =~ m#^00src#) {
+	    # spoof args{cbd} so forms_load works
+	    my $actual_args_cbd = $$args{'cbd'};
+	    $$args{'cbd'} = $file;
+	    ORACC::CBD::Forms::forms_load($args);
+	    $$args{'cbd'} = $actual_args_cbd;
+	}
 	open(C,$file) || die "cbdpp.plx: unable to open $file. Stop.\n";
 	@c = (<C>); chomp @c;
 	close(C);
@@ -366,7 +372,7 @@ sub setup_args {
 
 sub setup_cbd {
     my($args,$glossary) = @_;
-    my $file = $glossary ? $glossary : $$args{'cbd'};
+    my $file = $glossary ? $glossary : $$args{'cbd'};    
     die "cbdpp.plx: can't read glossary $file\n" unless -r $file;
     pp_file($file);
     atf_reset();

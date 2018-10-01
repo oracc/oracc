@@ -16,11 +16,15 @@ my %args = pp_args();
 my @base_cbd = ();
 
 if ($args{'base'}) {
-    @base_cbd = setup_cbd(\%args,$args{'base'});
-    if (pp_status()) {
-	pp_diagnostics();
-	die "$0: can't apply map to glossary unless it's clean. Stop.\n";
-    }
+    if ($args{'base'} =~ /00src/) {
+	die "$0: -base should be a cbd with internal forms\n";
+    } else {
+	@base_cbd = setup_cbd(\%args,$args{'base'});
+	if (pp_status()) {
+	    pp_diagnostics();
+	    die "$0: can't apply map to glossary unless it's clean. Stop.\n";
+	}
+    }	
 } else {
     die "$0: must give base glossary for mapping with -base GLOSSARY\n";
 }
