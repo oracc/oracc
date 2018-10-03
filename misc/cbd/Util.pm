@@ -178,6 +178,9 @@ sub pp_load {
     }
 #    print Dumper \%ORACC::CBD::data; exit 0;
 
+    $c[0] =~ s/^\x{ef}\x{bb}\x{bf}//; # remove BOM
+    $c[0] =~ s/^\x{feff}//; # remove BOMs
+    
     my $insert = -1;
     for (my $i = 0; $i <= $#c; ++$i) {
 	pp_line($i+1);
@@ -239,6 +242,8 @@ sub header_vals {
     my %h = ();
     if ($c) {
 	my @p = `head -4 $c`;
+	$p[0] =~ s/^\x{ef}\x{bb}\x{bf}//; # remove BOMs
+	$p[0] =~ s/^\x{feff}//; # remove BOMs
 #	print Dumper \@p;
 	foreach my $p (@p) {
 	    if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {

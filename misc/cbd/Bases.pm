@@ -145,7 +145,7 @@ sub bases_merge {
 	    } else {
 		# This is a new primary transliteration
 		warn "incoming $p2 is new primary\n" if $base_trace;
-		print $map_fh "add base $p_entry => $p2\n";
+		print $map_fh pp_file().':'.pp_line().": add base $p_entry => $p2\n";
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
 		if ($h2{"$p2#alt"}) {
@@ -460,7 +460,7 @@ sub bases_serialize {
 sub bases_fix {
     my($bdref,$bref,@e) = @_;
     foreach my $e (@e) {
-	if ($e =~ /^primary bases '(.*?)' and '(.*?)' are the same$/) {
+	if ($e =~ /^primary bases '(.*?)' and '(.*?)' are the same/) {
 	    bases_same_primary($bdref,$bref,$1,$2);
 	} elsif ($e =~ /^compound (\S+) should be (\S+)\s*$/) {
 	    bases_sign_should($bdref,$bref,$1,$2);

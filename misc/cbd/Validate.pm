@@ -537,9 +537,12 @@ sub v_bases {
 	ORACC::SL::BaseC::pedantic(1) if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/);
 	pp_trace("BaseC::check: $p");
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
+	if ($psig eq 'q00') {
+	    pp_warn("(bases) primary base $p not in OGSL");
+	}
 	unless (pp_sl_messages($p)) {
 	    if (defined $prisigs{$psig} && !is_allowed($p,$prisigs{$psig})) {
-		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same");
+		pp_warn("(bases) primary bases '$p' and '$prisigs{$psig}' are the same (both = $psig)");
 	    } else {
 #		warn "adding $psig to prisigs for $p\n";
 		$prisigs{$psig} = $p;
