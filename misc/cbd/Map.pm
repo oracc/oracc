@@ -208,6 +208,8 @@ sub map_load {
 		warn "$map:$.: cmd/field combination '$combo' not handled\n"
 		    unless exists $combofuncs{$combo};
 	    }
+	} else if (/: add base /) {
+	    # do nothing; this is for human review
 	} else {
 	    warn "$map:$.: syntax error: bad command\n";
 	}

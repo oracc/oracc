@@ -9,6 +9,7 @@
 <xsl:template match="c:form">
   <xsl:copy>
     <xsl:copy-of select="@*"/>
+    <xsl:copy-of select="c:t"/>
     <xsl:apply-templates mode="refs"
    		         select="x:r[generate-id(.)
 		 	                  =generate-id(

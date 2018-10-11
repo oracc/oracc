@@ -536,6 +536,7 @@ sub v_bases {
 	next if $p =~ /\#/;
 	ORACC::SL::BaseC::pedantic(1) if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/);
 	pp_trace("BaseC::check: $p");
+	my $px = $p; $px =~ s/ₓ\(//; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
