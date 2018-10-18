@@ -1494,6 +1494,10 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      break;
 	    case '{':
 	      /* suppress successive text/bound warnings */
+#if 0
+	      if (!strncmp(curr_lang->core->name,"egy",3))
+		fprintf(stderr, "found { in %%egy\n");
+#endif
 	      (void)lang_push(curr_lang);
 	      last_text_or_bound = meta;
 	      if ('(' == l[1])

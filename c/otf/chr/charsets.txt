@@ -91,15 +91,8 @@ t      t	0x05E9
 @end chars
 
 @chars %egy/a
-@allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
-@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯṮ₀₁₂₃₄₅₆₇₈₉ₓ
-@trans
-s, ṣ
-S, Ṣ
-sz š
-SZ Š
-t, ṭ
-T, Ṭ
+@allow JjYyWwBbPpFfMmNnRrHhZzSsQqKkGgTtDd0123456789ĀāČčČ̣č̣ḎḏǦǧḤḥḪḫH̱ẖH̭h̭I͗ı͗I̯i̯ÏïḲḳŌōŚśŠšṮṯṭṰṱŪūU̯u̯ꜢꜣʾꜤꜥ
+@nokey ĀāČčČ̣č̣ḎḏǦǧḤḥḪḫH̱ẖH̭h̭I͗ı͗I̯i̯ÏïḲḳŌōŚśŠšṮṯṭṰṱŪūU̯u̯ꜢꜣʾꜤꜥ
 @end chars
 
 @chars %egy/g
@@ -371,7 +364,7 @@ T, Ṭ
 
 @chars %uga/a
 @allow ʾʿaAbBCdDeEfgGǵǴġĠŋŊhHḫḪḥḤiIkKlLmMnNopPqQrRsSṣṢšŠtTṭṬṯṮuUwWxXyYzZ₀₁₂₃₄₅₆₇₈₉ₓ0123456789'
-@nokey ʾʿǵǴġĠḫḪḥḤṬṬṯ₀₁₂₃₄₅₆₇₈₉ₓ
+@nokey ʾʿǵǴġĠḫḪḥḤṬṬṮṯ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 s, ṣ
 S, Ṣ

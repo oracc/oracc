@@ -2,7 +2,7 @@
 use warnings; use strict; use open ':utf8';
 use Encode;
 
-binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8'; binmode STDOUT, ':utf8';
 
 my %curr_chars = ();
 my $curr_lang = '';

@@ -42,9 +42,11 @@ sub load_langcore {
 	    @l{qw/lang script logolang upper uscore enum feat/} = split(/,\s+/, $_);
 	    $l{'script'} =~ s/^\"(.*?)\"/$1/;
 	    $l{'logolang'} =~ s/^\"(.*?)\"/$1/;
-	    foreach my $f (split(/\|/, $l{'feat'})) {
-		$f =~ s/^LF_(.*?)$/$1/;
-		$l{$f} = 1;
+	    if ($l{'feat'}) {
+		foreach my $f (split(/\|/, $l{'feat'})) {
+		    $f =~ s/^LF_(.*?)$/$1/;
+		    $l{$f} = 1;
+		}
 	    }
 	    %{$langcore{$l{'lang'}}} = (%l);
 	}

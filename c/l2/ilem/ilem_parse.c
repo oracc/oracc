@@ -105,19 +105,21 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
 #endif
   
   struct xcl_l *master_lp = NULL;
-  struct ilem_form *master_formp = xi->i;
-  
+  struct ilem_form *master_formp = NULL;
+
   if (!xc)
     {
       vwarning("internal error: ilem_parse called with NULL args");
       return;
     }
 
-  if (!master_formp)
+  if (!xi || !xi->i)
     {
       /* this can happen after ATF parse errors */
       return;
     }
+  else
+    master_formp = xi->i;
 
   phase = "lem";
 
