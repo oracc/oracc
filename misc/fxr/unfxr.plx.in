@@ -10,6 +10,7 @@ binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
 
 my $fix_000 = 0;
+my $lower = 0;
 my $rs_tag = 'xmd';
 my $rs_ns_prefix = 'xmd';
 my $rs_ns_uri = 'http://oracc.org/ns/xmd/1.0';
@@ -19,6 +20,7 @@ my $rs_fn = '';
 
 GetOptions(
     'fix0'=>\$fix_000,
+    'lower'=>\$lower,
     'rs:s'=>\$rs_tag,
     'rs-ns-prefix:s'=>\$rs_ns_prefix,
     'rs-ns-uri:s'=>\$rs_ns_uri,
@@ -35,6 +37,7 @@ my($fieldnames,$fieldindexes,$rows) = ORACC::FXR::Util::internalize($fxr_fn);
 for (my $i = 0; $i <= $#$fieldnames; ++$i) {
     $$fieldnames[$i] =~ tr/ /-/;
     $$fieldnames[$i] =~ tr/?()//d;
+    $$fieldnames[$i] = "\L$$fieldnames[$i]" if $lower && $$fieldnames[$i] eq 'Designation';
 }
 
 my $curr_id = '';
@@ -58,6 +61,7 @@ foreach my $r (@$rows) {
 	    my $bad = ($f =~ tr/\001-\007\014-\037//d);
 	    warn "$fxr_fn:$curr_id:$$fieldnames[$i]: control characters removed from field\n"
 		if $bad;
+	    $f =~ s/\&amp;/\&/g;
 	    if ($f =~ / \000 / && $fix_000) {
 		print RS '>';
 		foreach my $fbit (split(/ \000 /,$f)) {

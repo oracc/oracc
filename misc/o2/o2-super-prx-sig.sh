@@ -1,6 +1,7 @@
 #!/bin/sh
 # First produce the base superglo in 01tmp
 
+rm -fr 01sig
 mkdir -p 01sig
 
 superglo=`o2-cbdpp.sh`

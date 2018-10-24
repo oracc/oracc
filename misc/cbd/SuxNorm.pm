@@ -62,7 +62,7 @@ sub normify {
 	} elsif (/^\@form/ && $lang =~ /qpn/ && !/\%\S+/) {
 	    pp_warn "(normify) no %lang code in qpn form";
 	} elsif (/^\@form/ && !$skipping 
-		 && ($ORACC::CBD::bases|| /\%$ORACC::CBD::qpn_base_lang/) 
+		 && ($ORACC::CBD::bases || /\%$ORACC::CBD::qpn_base_lang/) 
 		 && !/\$\(/) {
 	    
 	    ## Note that this code does not get executed in sux COFs becasue
@@ -133,6 +133,8 @@ sub normify {
 						     # around it with
 						     # a pattern
 				$lines[$i] .= " n[]NU\$";
+			    } elsif ($key eq '0') {
+				# no alignment
 			    } else {
 				if ($known_forms{$key}) {
 				    push @this_parts_errs, "(normify) no NORM for parts element $key";

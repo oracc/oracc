@@ -12,7 +12,7 @@ die unless $split_lang;
 
 while (<>) {
     if (/^\@form/) {
-	if (/\%$split_lang/o) {
+	if (/\%$split_lang /o) {
 	    push @s, $_;
 	} else {
 	    push @g, $_;

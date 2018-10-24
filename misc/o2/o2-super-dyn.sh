@@ -12,6 +12,10 @@ if [ -r 00lib/superdyn.lst ]; then
 	echo Mapping $a into $superglo
 	ext=$((1+$ext))
 	cbd-super-compare.plx -apply -dynamic -incr $ext -inplace -base $superglo -proj $a
+	if [ -r '.supercancel' ]; then
+	    echo "o2-super-dyn.sh: failed to map $a into $superglo (incr=$ext)"
+	    exit 1
+	fi
     done
     superlang=`basename $superglo .glo`
     for m in 01map/*.map ; do

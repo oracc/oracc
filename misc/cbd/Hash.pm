@@ -151,6 +151,8 @@ sub pp_hash {
 
 	next if $cbd[$i] =~ /^[#\000]/;
 
+	$cbd[$i] =~ s/\s+/ /g; $cbd[$i] =~ s/\s*$//;
+
 	pp_line($i+1);
 	local($_) = $cbd[$i];
 

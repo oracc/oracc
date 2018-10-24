@@ -48,6 +48,7 @@ sub bases_align {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
+		pp_line($i+1);
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    if ($$b{'#map'}) {
@@ -145,7 +146,9 @@ sub bases_merge {
 	    } else {
 		# This is a new primary transliteration
 		warn "incoming $p2 is new primary\n" if $base_trace;
-		print $map_fh pp_file().':'.pp_line().": add base $p_entry => $p2\n";
+		if ($map_fh) {
+		    print $map_fh pp_file().':'.pp_line().": add base $p_entry => $p2\n";
+		}
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
 		if ($h2{"$p2#alt"}) {

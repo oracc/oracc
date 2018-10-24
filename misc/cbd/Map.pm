@@ -62,7 +62,7 @@ sub map_apply_glo {
 			my %bmap = %{${$emap{'#basemap'}}};
 			foreach my $f (@{${$emap{'form'}}}) {
 			    my($b) = ($f =~ m#\s/(\S+)#);
-			    if ($bmap{$b}) {
+			    if ($b && $bmap{$b}) {
 				$f =~ s#\s/(\S+)# /$bmap{$b}#;
 			    }
 			    push @n, $f;
@@ -162,6 +162,7 @@ sub map_load {
     open(M, $map) || die "$0: failed to open map file for read\n";
     while (<M>) {
 	next if /^\s*$/ || /^\#/;
+	s/^.*?:\d+:\s+//; # remove file:line: info
 	if (/^(add|cut|fix|map|new)\s+(.*?)$/) {
 	    my ($cmd,$arg) = ($1,$2);
 	    my($what,$from,$to) = ();
@@ -189,7 +190,7 @@ sub map_load {
 			$map{$mapkey} = 1;
 			${${$map{$mapkey,$what}}{$from}} = $to;
 		    } elsif ($marshalling eq 'glos') {
-			my($what,$from,$to) = @$mapdata;
+			my($what,$from,$to) = @$mapdata;		       
 			if ($to =~ /^\@(\S+)/) {
 			    my $tag = $1;
 			    if ($to =~ /^\@entry/) {
@@ -208,7 +209,7 @@ sub map_load {
 		warn "$map:$.: cmd/field combination '$combo' not handled\n"
 		    unless exists $combofuncs{$combo};
 	    }
-	} else if (/: add base /) {
+	} elsif (/: add base /) {
 	    # do nothing; this is for human review
 	} else {
 	    warn "$map:$.: syntax error: bad command\n";
@@ -264,7 +265,7 @@ sub mapsense {
 
 sub mapbase {
     my($k,$f,$to) = @_;
-    $to =~ /^(\S+)\s+~\s+(\S+)$/;
+    $to =~ /^(.*?)\s+~\s+(.*?)$/;
     ($k,['base',$1,$2]);
 }
 

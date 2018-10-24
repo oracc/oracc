@@ -536,7 +536,10 @@ sub v_bases {
 	next if $p =~ /\#/;
 	ORACC::SL::BaseC::pedantic(1) if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/);
 	pp_trace("BaseC::check: $p");
-	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
+	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
+	unless ($lang =~ /qpn/) {
+	    atf_add($p,$lang) if $p;
+	}
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
@@ -564,6 +567,9 @@ sub v_bases {
 		ORACC::SL::BaseC::pedantic(0);
 		pp_trace("BaseC::check: $a");
 		my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
+		unless ($lang =~ /qpn/) {
+		    atf_add($a,$lang) if $a;
+		}
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
 			pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
@@ -723,6 +729,7 @@ sub v_form {
 			$warned = 1;
 		    } else {
 			# slow but effective check for base match by tlit signature
+			atf_add($b,$lang) if $b;
 			my $tsig = $tlit_sigs{$b};
 			$tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
 			    unless $tsig;

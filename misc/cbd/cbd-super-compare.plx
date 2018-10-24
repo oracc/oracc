@@ -16,6 +16,8 @@ use ORACC::CBD::Forms;
 ## incoming glossaries
 ## $ORACC::CBD::nonormify = 1;
 
+system 'rm', '-f', '.super-compare-failed';
+
 my %args = pp_args();
 
 my @base_cbd = ();
@@ -27,6 +29,7 @@ if ($args{'base'}) {
 	@base_cbd = setup_cbd(\%args,$args{'base'});
 	if (pp_status()) {
 	    pp_diagnostics();
+	    system 'touch', '.supercancel';
 	    die "$0: can't align bases unless base glossary is clean. Stop.\n";
 	}
     }
@@ -38,6 +41,7 @@ my @cbd = setup_cbd(\%args);
 
 if (pp_status()) {
     pp_diagnostics();
+    system 'touch', '.supercancel';
     die "$0: can't align bases unless incoming glossary is clean. Stop.\n";
 }
 

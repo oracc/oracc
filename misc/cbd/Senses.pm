@@ -16,6 +16,8 @@ my %common1 = (); @common1{@common1} = ();
 my @common2 = qw/and be by designation down for form make off on out part status type up/;
 my %common2 = (); @common2{@common2} = ();
 
+my %sense_lnum = ();
+
 my $map_fh = undef;
 
 sub senses_align {
@@ -34,7 +36,11 @@ sub senses_align {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
+	    $cbd[$i] =~ s/\s+/ /g;
+	    $cbd[$i] =~ s/\s*$//;
 	    push @senses, $cbd[$i];
+	    my $ss = $cbd[$i]; $ss =~ s/^\@sense\s+//;
+	    $sense_lnum{$ss} = $i+1;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    if ($#senses >= 0) {
 		my $senses_b = $base_senses{$curr_entry};
@@ -75,6 +81,8 @@ sub senses_collect {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
+	    $cbd[$i] =~ s/\s+/ /g;
+	    $cbd[$i] =~ s/\s*$//;
 	    push @s, $cbd[$i];
 	    $last_sense = $i;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
@@ -152,8 +160,9 @@ sub add_sense {
 #    my $add_sig = $entry;
 #    $entry = $add_sig;
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
-#    $add_sig =~ s#](\S+)#//$sense]$1'$epos#;
-    print $map_fh "add sense $entry => \@sense $epos $sense\n";
+    #    $add_sig =~ s#](\S+)#//$sense]$1'$epos#;
+    pp_line($sense_lnum{"$epos $sense"});
+    print $map_fh pp_file().':'.pp_line().": add sense $entry => \@sense $epos $sense\n";
 }
 
 sub map_sense {
@@ -196,13 +205,15 @@ sub index_senses {
 	my $s = $_[$i];
 	$s =~ s/^\@sense\S*\s+//;
 	$s =~ s/\#\S+\s+//; # remove sense-id
-	$s =~ s/^\S+\s+\S+\s+//; # and POS
+	$s =~ s/^\S+\s+//; # and POS
 	$s =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
 	foreach my $t (split(/\s/,$s)) {
 	    push @{$t{$t}}, $i; # register token $t as occurring in sense $i
 	}
     }
     %t = de_common(%t);
+#    print Dumper \%t;
+    %t;
 }
 
 sub de_common {

@@ -25,6 +25,7 @@ sub entries_align {
     my %incoming_entries = ();
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
+	pp_line($i+1);
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    my $entry = $1;
 	    $incoming_entries{$1} = $i;
@@ -86,8 +87,9 @@ sub grab_entry {
 sub map_entry {
     my($args,$entry,$xentry) = @_;
     $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;
-    #    print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$entry => #new\n";  
-    print $map_fh "add entry $entry => $xentry\n";
+    #    print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$entry => #new\n";
+    $xentry = '' if $$args{'log'};
+    print $map_fh pp_file().':'.pp_line().": add entry $entry => $xentry\n";
 }
 
 sub entries_collect {
