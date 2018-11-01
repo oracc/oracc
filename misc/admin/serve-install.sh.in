@@ -37,21 +37,15 @@ if [ -s $tarball ]; then
     echo "Installing $tarball"
     cd $oracc_builds
     tar zxf srv/$tarball
+    mkdir -p $oracc/tmp/$project
     mkdir -p $project
     cd $project
-    rm -f 01bld 02pub 02www 02xml
+    rm -f 01bld 01tmp 02pub 02www 02xml
     ln -sf $oracc/bld/$project 01bld
+    ln -sf $oracc/tmp/$project 01tmp
     ln -sf $oracc/pub/$project 02pub
     ln -sf $oracc/www/$project 02www
     ln -sf $oracc/xml/$project 02xml
-#    cd $oracc_builds/$project
-#    $oracc/bin/o2-indexes-boot.sh
-#    $oracc/bin/est-project-web.sh
-#    cd 02www
-#    for a in `grep -r -l http://$buildserver *` ; do
-#	perl -pi -e "s/$buildserver/$oracc_host/g" $a
-#    done
-#    touch $oracc_builds/$project/installstamp
     exit 0
 else
     echo "serve-install.sh: must give valid tarball on command line"
