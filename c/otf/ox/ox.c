@@ -18,6 +18,7 @@
 #include "cdf_rnc.h"
 #include "list.h"
 #include "globals.h"
+#include <signal.h>
 
 #include "ox.h"
 

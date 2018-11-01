@@ -43,14 +43,14 @@ struct seltab
   const char *name;
   enum e_selection val;
 };
-extern struct seltab *selections(register const char *str, register unsigned int len);
+extern struct seltab *selections(register const char *str, register size_t len);
 
 struct builtinstab
 {
   const char *name;
   enum e_builtins type;
 };
-extern struct builtinstab *builtins(register const char *str, register unsigned int len);
+extern struct builtinstab *builtins(register const char *str, register size_t len);
 extern struct builtinstab *legacy (register const char *str, register unsigned int len);
 
 struct h_pqxtab
@@ -58,7 +58,7 @@ struct h_pqxtab
   const char *name;
   void (*func)(const char *,struct component*);
 };
-extern struct h_pqxtab *pqx_h_tab(register const char *str, register unsigned int len);
+extern struct h_pqxtab *pqx_h_tab(register const char *str, register size_t len);
 
 extern void or_builtins(void);
 extern void or_gdf(void);
