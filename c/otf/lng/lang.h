@@ -106,7 +106,7 @@ extern struct lang_context *text_lang;
 extern struct lang_context *curr_lang;
 extern struct lang_context *logo_lang;
 
-extern struct langcore *lang_core(register const char *str,register unsigned int len);
+extern struct langcore *lang_core(register const char *str,register size_t len);
 extern struct langcore *langcore_of(const char *lang);
 extern struct langmode *lang_mode(register const char *str,register unsigned int len);
 extern struct langatf *lang_atf(register const char *str, register unsigned int len);

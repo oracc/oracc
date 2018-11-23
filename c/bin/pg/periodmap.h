@@ -6,6 +6,6 @@ struct periodmap
   const char *name;
   enum period_code p;
 };
-extern struct periodmap *periodmap(register const char *str, register unsigned int len);
+extern struct periodmap *periodmap(register const char *str, register size_t len);
 
 #endif/*PERIOD_MAP_*/
