@@ -1,10 +1,4 @@
-SUFFIXES=.lst .g .c .o
-
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
-
-.lst.c:
-	gperf -N$* -I -7 -e: $< >$@
+include ../../../oracc-am-rules.txt
 
 #AM_CFLAGS=-ansi
 AM_CFLAGS=-pedantic -Wall -g

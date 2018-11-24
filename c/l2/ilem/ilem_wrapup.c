@@ -299,12 +299,18 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 
       if (!fp->finds[0]->f2.project
 	  || strcmp(xcp->project, (char*)fp->finds[0]->f2.project))
-	BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_PROJ);
+	{
+	  BIT_SET(fp->f2.flags, F2_FLAGS_NEW_BY_PROJ);
+	  fp->finds[0]->f2.exo_project = fp->finds[0]->f2.project; /* save external source of sig */
+	  fp->finds[0]->f2.exo_lang = fp->finds[0]->f2.lang; /* save lang of external sig */
+	}
+      else
+	fp->f2.exo_project = NULL;
+      /* Now force f2.project to the project being lemmatized */
+      fp->f2.project = (unsigned char *)xcp->project;
 
       ilem_inherit(fp, fp->finds[0]); /* not lp->f because of ambig */
 
-      fp->f2.project = (unsigned char *)xcp->project;
-      
       fp->f2.sig = f2_sig(xcp, fp, &fp->f2);
       
       /* check this after inherit to get fields set correctly */

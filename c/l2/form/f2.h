@@ -75,6 +75,8 @@ struct f2
 
   /* Additional fields which vary with instance and language */
   const Uchar *project;
+  const Uchar *exo_project; /* used to save project that exosig comes from; output as exoprj when set */
+  const Uchar *exo_lang; /* used to save lang of exosig; output as exolng when set */
   const Uchar *form;
   const Uchar *oform;
   const Uchar *lang;

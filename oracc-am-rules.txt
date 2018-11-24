@@ -25,3 +25,11 @@ clean-local:
 install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
 	$(top_srcdir)/maybe-install-cgi-bin.sh
+
+SUFFIXES=.lst .g .c .o
+
+.g.c:
+	gperf --size-type=size_t -N `basename $*` -tT $< >$@
+
+.lst.c:
+	gperf --size-type=size_t -N$* -I -7 -e: $< >$@

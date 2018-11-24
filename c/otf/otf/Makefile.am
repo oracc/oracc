@@ -2,9 +2,6 @@ include ../../../oracc-am-rules.txt
 
 SUFFIXES=.g .c .o
 
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
-
 AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libotf.la

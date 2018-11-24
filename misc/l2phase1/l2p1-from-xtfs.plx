@@ -19,6 +19,7 @@ my $new_mode = 0;
 my %news = ();
 my $output = undef;
 my $project = `oraccopt`;
+my $cbd_no_harvest = '';
 my $proxy_mode = 0;
 my %rws_map = (
     EG => '',
@@ -45,6 +46,12 @@ GetOptions (
 
 #$output = '01bld/from-xtfs.sig'
 #   unless $output;
+
+if ($new_mode) {
+    if (($cbd_no_harvest = `oraccopt . cbd-no-harvest`)) {
+	cbd_no_harvest_setup();
+    }
+}
 
 $base = 'prx' if $proxy_mode;
 
@@ -197,8 +204,12 @@ loadsigs {
 #		warn "found sig=$sig\n";
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) { # && $base ne 'prx') {
-#		warn "found exo=$exo\n";
-		push(@{$exos{$exo}},"$xtf_project\:$ref");
+		#		warn "found exo=$exo\n";
+		my $xp = $l->getAttribute('exoprj');
+		my $xl = $l->getAttribute('exolng');
+		if (!$cbd_no_harvest || !cbd_no_harvest($xp,$xl)) {
+		    push(@{$exos{$exo}},"$xtf_project\:$ref");
+		}
 	    } elsif ($new && $base ne 'prx') {
 #		warn "found new=$new\n";
 		push(@{$news{$new}},"$xtf_project\:$ref");
@@ -237,6 +248,32 @@ psuref {
 	}
     }
     join('+',@refs);
+}
+
+my %cbd_nh_proj = ();
+my %cbd_nh_lang = ();
+
+sub cbd_no_harvest_setup {
+    foreach my $nh (split(/\s+/, $cbd_no_harvest)) {
+	if ($nh =~ /:/) {
+	    ++$cbd_nh_lang{$nh};
+	} else {
+	    ++$cbd_nh_proj{$nh};
+	}
+    }
+}
+
+sub cbd_no_harvest {
+    my($xproj,$xlang) = @_;
+    if ($xproj && $xlang) {
+	if ($cbd_nh_proj{$xproj}) {
+	    return 1;
+	}
+	if ($cbd_nh_lang{"$xproj:$xlang"}) {
+	    return 1;
+	}
+    }
+    0;
 }
 
 1;

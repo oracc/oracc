@@ -13,6 +13,11 @@ f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2)
       return;
     }
 
+  if (from_f2->exo_project)
+    inheritor_f2->exo_project = from_f2->exo_project;
+  if (from_f2->exo_lang)
+    inheritor_f2->exo_lang = from_f2->exo_lang;
+  
 #if 0
   if (!strcmp((const char *)inheritor_f2->form, "*"))
     inherit(cf);

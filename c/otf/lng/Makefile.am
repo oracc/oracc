@@ -1,6 +1,4 @@
 include ../../../oracc-am-rules.txt
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
 AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=liblng.la

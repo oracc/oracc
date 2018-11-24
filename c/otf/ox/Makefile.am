@@ -1,10 +1,5 @@
 include ../../../oracc-am-rules.txt
 
-SUFFIXES=.g .c .o
-
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
-
 #datadir=$(prefix)/lib/data
 
 AM_CFLAGS=-pedantic -Wall -g -std=c99

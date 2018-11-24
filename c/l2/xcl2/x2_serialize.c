@@ -111,7 +111,11 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
 	    {
 	      if (BIT_ISSET(lp->f->f2.flags, F2_FLAGS_NEW_BY_PROJ)
 		       || BIT_ISSET(lp->f->f2.flags, F2_FLAGS_NEW_BY_LANG))
-		x2_attr(f_xcl,"exosig",(char *)lp->f->f2.sig);
+		{
+		  x2_attr(f_xcl,"exosig",(char *)lp->f->f2.sig);
+		  x2_attr(f_xcl,"exoprj",(char *)lp->f->f2.exo_project);
+		  x2_attr(f_xcl,"exolng",(char *)lp->f->f2.exo_lang);
+		}
 	      else
 		x2_attr(f_xcl,"sig",(char *)lp->f->f2.sig);
 	      x2_attr(f_xcl,"tail-sig",((const char*)lp->f->f2.tail_sig));
