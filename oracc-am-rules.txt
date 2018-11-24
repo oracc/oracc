@@ -29,7 +29,8 @@ install-exec-local:
 SUFFIXES=.lst .g .c .o
 
 .g.c:
-	gperf --size-type=size_t -N `basename $*` -tT $< >$@
+#	gperf --size-type=size_t -N `basename $*` -tT $< >$@
+	$(top_srcdir)/gperf-size_t.sh `basename $*` $< $@
 
 .lst.c:
 	gperf --size-type=size_t -N$* -I -7 -e: $< >$@
