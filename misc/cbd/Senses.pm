@@ -115,7 +115,7 @@ sub senses_merge {
 	    my %i = index_senses($s);
 #	    print Dumper \%i;
 	    my %bs = ();
-	    # create a hash where they keys are the index into @$b
+	    # create a hash where the keys are the index into @$b
 	    # and the values are the number of tokens that occur in
 	    # each of the keys--this means that the highest token
 	    # count is the best match

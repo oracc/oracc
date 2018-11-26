@@ -14,6 +14,12 @@ use ORACC::CBD::Bases;
 
 use Data::Dumper;
 
+my $cbd_use_sense_plus = 0;
+my $cbd_use_sense_plus_config = `oraccopt . cbd-use-sense+`;
+if ($cbd_use_sense_plus_config eq 'yes') {
+    $cbd_use_sense_plus = 1;
+}
+
 my $field_index = 0;
 my $sense_id = 0;
 
@@ -373,14 +379,22 @@ sub pp_acd_merge {
 				$fld =~ s#/(\S+)#/$fb#;
 			    } 
 			}
-			if (!defined $known{un_sense_id($tmp)}) {
-			    ++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-			    ++$known{un_sense_id($tmp)};
-			    if ($fld eq 'sense') {
-				warn "setting +$l\n";
-				push @{$$$i{$fld}}, "+$l";
-			    } else {
+			if ($fld eq 'sense') {
+			    if (!defined $sknown{un_sense_id($tmp)}) {
+				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
+				if ($cbd_use_sense_plus) {
+				    warn "setting +$l\n";
+				    push @{$$$i{$fld}}, "+$l";
+				} else {
+				    push @{$$$i{$fld}}, $l;
+				}
+				++$sknown{un_sense_id($tmp)};
+			    }
+			} else {
+			    if (!defined $known{$tmp}) {
+				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 				push @{$$$i{$fld}}, "$l";
+				++$known{$tmp};
 			    }
 			}
 		    }
