@@ -7,9 +7,6 @@
 
 include ../../../oracc-am-rules.txt
 
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
-
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/lib/expat/xmlparse -I/opt/local/include
 
 AM_CFLAGS=-pedantic -g -Wall
