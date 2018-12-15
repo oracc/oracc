@@ -372,6 +372,7 @@ main(int argc, char * const*argv)
 	{
 	  while (NULL != (fn = fgets(fnbuf,_MAX_PATH,stdin)))
 	    {
+	      /*fprintf(stderr, "%s", fn);*/
 	      fn[strlen(fn)-1] = '\0';
 	      list_add(files,strdup(fn));
 	    }
