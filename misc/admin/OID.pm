@@ -11,13 +11,16 @@ use Data::Dumper;
 my %oid = ();
 
 sub oid_init {
-    open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab") || warn "$0: can't read OID file\n";
-    while (<O>) {
-	my($oid,$key) = split(/\t/, $_);
-	$oid{$key} = $oid;
+    if (open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab")) {
+	while (<O>) {
+	    my($oid,$key) = split(/\t/, $_);
+	    $oid{$key} = $oid;
+	}
+	close(O);
+    } else {
+	warn "$0: can't read OID file\n";
     }
-    close(O);
-}
+}    
 
 sub oid_lookup {
 #    warn "oid_lookup passed $_[0]\n";

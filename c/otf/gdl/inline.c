@@ -160,7 +160,7 @@ lastGrapheme(struct node *np)
 	  const char *n = gp->names ? gp->names->pname : "";
 	  deepest = gp;
 	  if (strlen(n) == 3
-	      && (strchr("cnpsvx",n[2])
+	      && (strchr("cnpsvxq",n[2])
 		  || (!grouped_det && strchr("d",n[2]))))
 	    break;
 	}

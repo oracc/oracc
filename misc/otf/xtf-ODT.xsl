@@ -39,7 +39,10 @@
 <xsl:include href="xpd.xsl"/>
 <xsl:include href="xtr-label.xsl"/>
 
-<xsl:key name="tr-id" match="xh:p" use="@xtr:ref|@xtr:sref"/>
+ <!--[ancestor::xtr:translation][starts-with(@xml:lang,$trans-default-lang)] -->
+<xsl:key name="tr-id"
+	 match="xh:p"
+	 use="@xtr:ref|@xtr:sref"/>
 
 <!-- These are the XTR headings that do match up with a heading in the XTF -->
 <xsl:key name="tr-h-to-h" match="xh:h1|xh:h2|xh:h3|xh:h4" use="@xtr:hdr-ref"/>
@@ -65,6 +68,13 @@
 <xsl:param name="char-rulings" select="0"/>
 <xsl:param name="render-surface-inits" select="'yes'"/>
 <xsl:param name="render-labels-for-lnums" select="'no'"/>
+
+<xsl:variable name="trans-default-lang">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="option" select="'trans-default-lang'"/>
+    <xsl:with-param name="default" select="''"/>
+  </xsl:call-template>
+</xsl:variable>
 
 <xsl:variable name="render-lnum-char">
   <xsl:call-template name="xpd-option">
@@ -188,6 +198,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:l|xtf:v">
+  <xsl:message>trans-default-lang=<xsl:value-of select="$trans-default-lang"/></xsl:message>
   <xsl:variable name="xlat-hdrs" select="key('tr-h-to-l',@xml:id)"/>
   <xsl:variable name="this-tlit" select="."/>
   <xsl:if test="count($xlat-hdrs) > 0">
@@ -195,7 +206,8 @@
       <xsl:with-param name="hdrs" select="$xlat-hdrs"/>
     </xsl:call-template>
   </xsl:if>
-  <xsl:variable name="xlat" select="key('tr-id',@xml:id)"/>
+  <xsl:variable name="xlat" select="key('tr-id',@xml:id)[starts-with(ancestor::xtr:translation/@xml:lang,$trans-default-lang)]"/>
+  <xsl:message>count xlat=<xsl:value-of select="count($xlat)"/></xsl:message>
   <table:table-row>
     <xsl:choose>
       <xsl:when test="last()-position()=1">

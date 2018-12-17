@@ -192,7 +192,7 @@ acd2xml {
     my $project = undef;
     my $last_tag = '';
 
-    oid_init();
+    oid_init() if $arglang =~ /^sux/;
     
     %seen = ();
 
@@ -680,11 +680,13 @@ acdentry {
 			$gd = '' unless $pos;
 			$pos = '' unless $pos;
 			$e_sig = "$cf\[$gd\]$pos";
-			my $oid = oid_lookup("\%$blang:$e_sig");
 			my $oidattr = '';
-			if ($oid) {
-			    $oidattr = " oid=\"$oid\"";
-			}
+			if ($blang =~ /^sux/) {
+			    my $oid = oid_lookup("\%$blang:$e_sig");
+			    if ($oid) {
+				$oidattr = " oid=\"$oid\"";
+			    }
+			} 
 			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
@@ -1148,10 +1150,12 @@ acdentry {
 	} else {
 	    $s_sig =~ s/\](.*)$/]$1'$1/;
 	}
-	my $oid = oid_lookup("\%$blang:$s_sig");
 	my $oidattr = '';
-	if ($oid) {
-	    $oidattr = " oid=\"$oid\"";
+	if ($blang =~ /^sux/) {
+	    my $oid = oid_lookup("\%$blang:$s_sig");
+	    if ($oid) {
+		$oidattr = " oid=\"$oid\"";
+	    }
 	}
 	push @ret, xidify("<sense n=\"$s_sig\"$defattr>$sgwTag$posTag$stemTag<mng xml:lang=\"$mnglang\">$mng</mng>");
 	if (defined $sense_props{$sid}) {

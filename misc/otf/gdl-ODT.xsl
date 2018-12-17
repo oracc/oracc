@@ -134,16 +134,27 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+  <xsl:value-of select="@g:delim"/>
+<!--  <xsl:call-template name="deep-g-delim"/> -->
 </xsl:template>
 
 <xsl:template match="g:s">
   <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>
+  <xsl:variable name="sac-style">
+    <xsl:choose>
+      <xsl:when test="@g:logolang='akk'">
+	<xsl:text>sac-akk</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>sac-sign</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">
       <text:span text:style-name="sup">
-	<text:span text:style-name="sac-sign">
+	<text:span text:style-name="{$sac-style}">
 	  <xsl:call-template name="render-g"/>
 	</text:span>
 	<xsl:call-template name="render-flags"/>
@@ -151,7 +162,7 @@
       </text:span>
     </xsl:when>
     <xsl:otherwise>
-      <text:span text:style-name="sac-sign">
+      <text:span text:style-name="{$sac-style}">
 	<xsl:call-template name="render-g"/>
       </text:span>
       <xsl:call-template name="render-flags"/>
@@ -167,7 +178,8 @@
       <xsl:text>.</xsl:text>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:call-template name="deep-g-delim"/>
+      <xsl:value-of select="@g:delim"/>
+      <!--<xsl:call-template name="deep-g-delim"/>-->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -182,7 +194,8 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+  <!--<xsl:call-template name="deep-g-delim"/>-->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:r">
@@ -219,7 +232,8 @@
       </text:span>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:call-template name="deep-g-delim"/>
+  <!--<xsl:call-template name="deep-g-delim"/>-->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:b">
@@ -248,7 +262,8 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+  <!--<xsl:call-template name="deep-g-delim"/>-->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:q">
@@ -273,7 +288,8 @@
   </xsl:choose>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
-  <xsl:call-template name="deep-g-delim"/>
+  <!--<xsl:call-template name="deep-g-delim"/>-->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:a">
@@ -312,7 +328,8 @@
   <xsl:if test="@note:mark">
     <xsl:call-template name="process-notes"/>
   </xsl:if>
-  <xsl:call-template name="deep-g-delim"/>
+  <!--<xsl:call-template name="deep-g-delim"/>-->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template name="render-n">
@@ -700,6 +717,7 @@
   <xsl:apply-templates mode="print" select="id(@note:ref)"/>
 </xsl:template>
 
+<!--
 <xsl:template name="deep-g-delim">
   <xsl:value-of select="@g:delim"/>
 </xsl:template>  
@@ -709,6 +727,7 @@
     <xsl:value-of select="@g:delim"/>
   </xsl:if>
 </xsl:template>
+-->
 
 <xsl:template match="g:*">
   <xsl:message>gdl-ODT: <xsl:value-of select="name()"/> not handled</xsl:message>

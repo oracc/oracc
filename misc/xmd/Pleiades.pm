@@ -1,8 +1,10 @@
 package ORACC::XMD::Pleiades;
 use warnings; use strict; use open 'utf8';
 
+my $data_names = '';
 my @ignored_places = qw/unclear/;
 my %ignored_places = (); @ignored_places{@ignored_places} = ();
+my %seen_bad_places = ();
 
 sub
 pleiades_id {
@@ -22,8 +24,9 @@ pleiades_id {
 		push @ids, $id;
 	    } else {
 		if ($xmd_id) {
-		    warn("pleiades_id:$xmd_id: no ID for place $p in @pdata\n")
-			unless exists($ignored_places{$p});
+		    warn("pleiades_id:$xmd_id: no ID for place $p in $data_names\n")
+			unless exists($ignored_places{$p})
+			|| $seen_bad_places{$p}++;
 		}
 		push @ids, 0;
 	    }
@@ -54,6 +57,8 @@ load {
     my %p = ();
     if (open(P,$fn)) {
 	warn "Pleiades::load: reading $fn\n";
+	$data_names .= ', ' if $data_names;
+	$data_names .= $fn;
 	while (<P>) {
 	    chomp;
 	    next if /^\s*$/;

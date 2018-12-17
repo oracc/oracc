@@ -621,6 +621,9 @@
 	<xsl:when test="@text:style-name='sac-sign'">
 	  <xsl:text>\sac</xsl:text>
 	</xsl:when>
+	<xsl:when test="@text:style-name='sac-akk'">
+	  <xsl:text>\sak</xsl:text>
+	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="concat('\X{',@text:style-name,'}%&#xa;')"/>
 	</xsl:otherwise>
