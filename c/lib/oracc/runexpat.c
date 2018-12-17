@@ -348,7 +348,7 @@ set_input(struct runinfo *rip)
       rip->more_sources = 1;
       while (rip->more_sources)
 	{
-	  if (NULL == (rip->source = fopen(*rip->todo,"r")) && verbose)
+	  if (NULL == (rip->source = fopen(*rip->todo,"r"))/* && verbose*/)
 	    fprintf(stderr,"runexpat: open failed on %s\n",*rip->todo);
 	  else
 	    {

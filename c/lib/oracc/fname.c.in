@@ -255,8 +255,9 @@ l2_expand (const char *project, const char *pqid, const char *ext)
 {
   static char buf[_MAX_PATH];
   static const char*cdl;
-  char projbuf[1024], prefix[5], *bp;
+  char projbuf[1024], prefix[5], pqid_buf[8], *bp;
   const char*colon;
+  char *at;
 
   *buf = '\0';
   if (!pqid || !ext)
@@ -276,7 +277,9 @@ l2_expand (const char *project, const char *pqid, const char *ext)
   bp = buf;
   strncpy(prefix,pqid,4);
   prefix[4] = '\0';
-  sprintf(buf,"%s/bld/%s/%s/%s/%s.%s",cdl,projbuf,prefix,pqid,pqid,ext);
+  strncpy(pqid_buf,pqid,7);
+  pqid_buf[7] = '\0';
+  sprintf(buf,"%s/bld/%s/%s/%s/%s.%s",cdl,projbuf,prefix,pqid_buf,pqid_buf,ext);
   return buf;
 }
 
