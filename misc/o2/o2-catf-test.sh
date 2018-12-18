@@ -7,6 +7,7 @@ if [ "$project" == "" ]; then
 fi
 catf=`oraccopt . catf-ok`
 if [ "$catf" = "yes" ]; then
+    echo o2-catf.sh: CATF output is properly enabled for project $project
 else
     echo o2-catf.sh: CATF output is not enabled for project $project but testing anyway
 fi
