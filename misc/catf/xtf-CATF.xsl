@@ -326,6 +326,9 @@
     <xsl:when test="@type='comment'">
       <!-- inline comments are dropped in CATF -->
     </xsl:when>
+    <xsl:when test="@type='notelink'">
+      <!-- notelinks are dropped in CATF -->
+    </xsl:when>
     <xsl:when test="@type='dollar'">
       <xsl:value-of select="concat('($',text(),'$)')"/>
     </xsl:when>
