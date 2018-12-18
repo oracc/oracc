@@ -8,7 +8,7 @@ fi
 catf=`oraccopt . catf-ok`
 if [ "$catf" = "yes" ]; then
     fproj=`/bin/echo -n $project | tr '/' '-'`
-    ox -I01bld/atfsources.lst | catf-manager.plx -s 2>01tmp/catf-manager.log >02pub/$project.catf
+    ox -I01bld/atfsources.lst | catf-manager.plx -s 2>01tmp/catf-manager.log >02pub/$fproj.catf
     echo o2-catf.sh: created 02pub/$fproj.catf
     errcount=`grep -c ^xtf 01tmp/catf-manager.log`
     echo 01tmp/catf-manager.log error count = $errcount
