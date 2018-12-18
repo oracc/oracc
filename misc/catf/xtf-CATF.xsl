@@ -377,7 +377,7 @@
     <xsl:when test="@g:type='newline'">
       <xsl:text>;</xsl:text>
     </xsl:when>
-    <xsl:when test="@g:type='empty'"/> <-- carrier for hyphen in @akk{-ir} -->
+    <xsl:when test="@g:type='empty'"/> <!-- carrier for hyphen in @akk{-ir} -->
     <xsl:when test="@g:type='dollar'">
       <xsl:text>($</xsl:text>
       <xsl:value-of select="text()"/>
