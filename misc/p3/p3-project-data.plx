@@ -19,6 +19,8 @@ if ($project) {
     exit 1;
 }
 
+my $trans_default_lang = `oraccopt . trans-default-lang`; $trans_default_lang = 'en' unless $trans_default_lang;
+
 my $umbrella = (`oraccopt . build-approved-policy` eq 'umbrella');
 my @umbrella = ();
 if ($umbrella) {
@@ -183,11 +185,15 @@ open(T, ">$trafile") || die "p3-project-data.plx: unable to open $otlfile for ou
 print T "<span class=\"translations\">";
 print T "<select name=\"setlang\" id=\"setlang\" onchange=\"p3action('viewstateItems');\">";
 foreach my $tl (@translangs) {
+    my $selected = '';
+    if ($tl eq $trans_default_lang) {
+	$selected = " selected=\"selected\"";
+    }
     if ($longlang{$tl}) {
-	print T "<option value=\"$tl\">$longlang{$tl}</option>";
+	print T "<option value=\"$tl\"$selected>$longlang{$tl}</option>";
     } else {
 	warn "p3-project-data.plx: no longlang for $tl\n";
-	print T "<option value=\"$tl\">$tl</option>";
+	print T "<option value=\"$tl\"$selected>$tl</option>";
     }
 }
 print T '</select>';

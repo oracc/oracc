@@ -72,7 +72,7 @@
 <xsl:variable name="trans-default-lang">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="option" select="'trans-default-lang'"/>
-    <xsl:with-param name="default" select="''"/>
+    <xsl:with-param name="default" select="'en'"/>
   </xsl:call-template>
 </xsl:variable>
 
