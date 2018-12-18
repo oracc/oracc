@@ -173,12 +173,13 @@
 	<li><xsl:value-of select="md:object_type"/></li>
       </xsl:if>
       <xsl:if test="string-length(md:period)>0">
-	<li><xsl:value-of select="md:period"/>
-	<xsl:if test="string-length(md:date_of_origin)>0">
-	  <xsl:text> (</xsl:text><xsl:value-of select="md:date_of_origin"/><xsl:text>)</xsl:text>
-	</xsl:if>
-	</li>
+	<li><xsl:value-of select="md:period"/></li>
       </xsl:if>
+
+      <xsl:if test="string-length(md:date_of_origin)>0">
+	<xsl:text>Written ca. </xsl:text><xsl:value-of select="md:date_of_origin"/><xsl:text></xsl:text>
+      </xsl:if>
+
       <xsl:if test="string-length(md:provenience)>0">
 	<li>
 	  <xsl:value-of select="md:provenience"/>
