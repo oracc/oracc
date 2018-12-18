@@ -142,6 +142,12 @@
   <xsl:text>)</xsl:text>
 </xsl:template>
 
+<xsl:template match="g:gloss">
+  <xsl:text>{{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}}</xsl:text>
+</xsl:template>
+
 <xsl:template match="g:m">
   <xsl:text>@</xsl:text>
   <xsl:apply-templates/>
@@ -370,6 +376,12 @@
     </xsl:when>
     <xsl:when test="@g:type='newline'">
       <xsl:text>;</xsl:text>
+    </xsl:when>
+    <xsl:when test="@g:type='empty'"/> <-- carrier for hyphen in @akk{-ir} -->
+    <xsl:when test="@g:type='dollar'">
+      <xsl:text>($</xsl:text>
+      <xsl:value-of select="text()"/>
+      <xsl:text>$)</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
