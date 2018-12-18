@@ -7,7 +7,7 @@ use ORACC::XML;
 use ORACC::CATF;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 
-my $curated = `oraccopt . catf-maintained`;
+my $curated = `oraccopt . catf-maintained`; $curated = 'no' unless $curated;
 die "catf-manager.plx: no 'catf-maintained' option in config.xml. Stop."
     unless $curated;
 die "catf-manager.plx: illegal value `$curated' for option 'catf-maintained'. Must be 'yes' or 'no'. Stop."
