@@ -248,7 +248,7 @@
       </xsl:if>
 
       <xsl:if test="string-length(md:date_of_origin)>0">
-	<xsl:text>Written ca. </xsl:text><xsl:value-of select="md:date_of_origin"/><xsl:text></xsl:text>
+	<li><xsl:text>Written ca. </xsl:text><xsl:value-of select="md:date_of_origin"/><xsl:text></xsl:text></li>
       </xsl:if>
 
 	<xsl:if test="string-length(md:provenience)>0">
