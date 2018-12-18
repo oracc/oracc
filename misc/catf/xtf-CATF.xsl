@@ -514,6 +514,7 @@
 </xsl:template>
 
 <xsl:template match="x:transliteration">
+  <xsl:message>CATF: processing <xsl:value-of select="@project"/>:<xsl:value-of select="@xml:id"/></xsl:message>
   <xsl:value-of select="concat('&amp;',@xml:id,' = ',@n,'&#xa;')"/>
   <xsl:value-of select="concat('#atf: lang ', $text-lang, '&#xa;')"/>
   <xsl:choose>
