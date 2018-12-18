@@ -13,7 +13,7 @@ bin_SCRIPTS = o2-atf.plx o2-atf.sh o2-atfsources.plx \
 	o2-tr-lst.plx o2-indexes-boot.sh o2-finish.sh o2-json.sh o2-super-prep.sh \
 	neo-rebuild.sh o2-lazy-xtf.sh cdli-rebuild.sh o2-megaglo.sh o2-mega-prep.sh \
 	o2-update-lem.sh o2-cbdpp.sh o2-super-dyn.sh o2-super-prx-sig.sh o2-super-sig.sh \
-	o2-super-corpus.sh o2-lex.sh
+	o2-super-corpus.sh o2-lex.sh o2-catf-test.sh
 
 scriptdata_DATA = o2-public.xsl
 
