@@ -47,11 +47,17 @@ sub ox4_next {
 	}
     }
     if ($ox4sig_hash) {
+	chomp $next;
 	my($l,$r) = split(/\t/,$next);
-	chomp $r;
-	%sig = parse_sig($r);
+	if ($r) {
+	    %sig = parse_sig($r);
+	} else {
+#	    warn "$l\n";
+	}
+	($next,$ox4tok,\%sig);
+    } else {
+	($next,$ox4tok,undef);
     }
-    ($next,$ox4tok,\%sig);
 }
 
 1;

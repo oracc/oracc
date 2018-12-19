@@ -53,6 +53,7 @@ cat $teilist | while read line; do
 	$file \
 	> $teidir/$pqx.xml
 done
+# Additional TEI files can be put here for inclusion in TEI dist
 xmltei=${ORACC}/$project/00xml/tei
 #ls -A $xmltei/* >/dev/null 2>&1 && ln -sf $xmltei/* ${ORACC}/xml/$project/00tei
 cp -f $xmltei/* ${ORACC}/xml/$project/00tei

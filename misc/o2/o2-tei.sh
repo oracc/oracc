@@ -15,7 +15,8 @@ tei_dist=`oraccopt . build-tei-dist`;
 
 if [ "$tei_list" == "" ]; then
     # nothing to do
-    exit 0;
+    #    exit 0;
+    tei_list=all
 fi
 if [ "$tei_list" == "atf" ]; then
     tei_list_file=01bld/lists/have-atf.lst
@@ -43,6 +44,6 @@ fi
 #rnv $ORACC/lib/schemas/xtf-tei.rnc 01tmp/$xmlfile 2>01tmp/tei-valid.log
 #wc -l 01tmp/tei-valid.log
 
-if [ "$tei_dist" == "yes" ]; then
+#if [ "$tei_dist" == "yes" ]; then
     tei-dist.sh $xmlfile
-fi
+#fi

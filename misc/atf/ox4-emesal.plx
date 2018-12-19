@@ -4,6 +4,12 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::ATF::OX4;
 use ORACC::CBD::Bases;
 use Data::Dumper;
+use Getopt::Long;
+
+my $byforms = 0;
+GetOptions(
+    f=>\$byforms,
+    );
 
 my %ambo = ();
 my %eg = ();
@@ -15,7 +21,11 @@ bases_init();
 open(F, "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.forms");
 while (<F>) {
     my($word,$form) = (/^(.*?)\t\@form\s+(\S+)/);
-    ++$eg{"$form=$word"};
+    if ($byforms) {
+	++$eg{"$form"};
+    } else {
+	++$eg{"$form=$word"};
+    }
 }
 close(F);
 my $is_compound = 0;
@@ -29,10 +39,18 @@ while (<F>) {
 	my %h = bases_hash($_,$is_compound);
 	foreach my $b (keys %h) {
 	    next if $b =~ /#/;
-	    ++$es{"$b=$curr_cfgw"};
+	    if ($byforms) {
+		++$es{$b};
+	    } else {
+		++$es{"$b=$curr_cfgw"};
+	    }
 	}
     } elsif (/^\@form\s+(\S+)/) {
-	++$es{"$1=$curr_cfgw"};
+	if ($byforms) {
+	    ++$es{$1};
+	} else {
+	    ++$es{"$1=$curr_cfgw"};
+	}
     }
 }
 close(F);
@@ -54,20 +72,33 @@ foreach my $e (keys %es) {
 
 open(OX4, "ox -4 @ARGV |");
 
-ox4_init(\*OX4,1,1);
+if ($byforms) {
+    ox4_init(\*OX4,0,0);
+} else {
+    ox4_init(\*OX4,1,1);
+}
+
 while (1) {
     my($ox4,$tok,$sigref) = ox4_next();
     last unless $ox4;
     #    print "$ox4: tok=$tok; sig=", Dumper $sigref;
-    my $ox4_cfgw = "$$sigref{'cf'} \[$$sigref{'gw'}\] $$sigref{'pos'}";
+    my $ox4_cfgw = '';
+    if ($sigref && $$sigref{'cf'}) {
+	$ox4_cfgw = "$$sigref{'cf'} \[$$sigref{'gw'}\] $$sigref{'pos'}";
+    }
     my($lang,$form) = ($ox4 =~ /\%(.*?):(.*?)=/);
+#    warn "found mu-tin\n" if $form eq 'mu-tin';
     if ($lang eq 'sux-x-emesal') {
 	if (exists($eg{$form}) && !exists($ambo{$form})) {
 	    warn "EG `$form' tagged as ES\n";
+	} elsif (!exists($es{$form})) {
+	    warn "ES unknown form `$form'\n";
 	}
     } elsif ($lang eq 'sux') {
-	if (exists($es{$form}) && !exists($ambo{$form})) {
+	if (exists($es{$form}) && (!exists($ambo{$form}))) { # bias towards emesal when forms only # $byforms || 
 	    warn "ES `$form' tagged as EG\n";
+	} elsif (!exists($eg{$form})) {
+	    warn "EG unknown form `$form'\n";
 	}
     }
 }
