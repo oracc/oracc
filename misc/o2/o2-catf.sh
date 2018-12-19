@@ -22,7 +22,7 @@ if [ "$catf" = "yes" ]; then
     fi
     echo Updating github repo github.com/oracc/catf
     if [[ $host = "build-oracc" ]]; then
-	sudo -u stinney ./git-oracc-catf.sh $fproj.catf
+	sudo -i -u stinney ./git-oracc-catf.sh $fproj.catf
     else
 	sudo -u stinney ssh build-oracc.museum.upenn.edu ./git-oracc-catf.sh $fproj.catf
     fi
