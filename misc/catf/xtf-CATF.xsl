@@ -6,6 +6,7 @@
   xmlns:t="http://oracc.org/ns/xtr/1.0"
   xmlns:c="http://oracc.org/ns/xcl/1.0"
   xmlns:n="http://oracc.org/ns/norm/1.0"
+  xmlns:note="http://oracc.org/ns/note/1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:output method="text" indent="no" encoding="utf-8"/>
@@ -732,6 +733,8 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+
+<xsl:template match="note:*"/>
 
 <xsl:template name="error">
   <xsl:param name="msg"/>
