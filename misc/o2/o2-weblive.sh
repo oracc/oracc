@@ -15,5 +15,6 @@ else
     l2p3-install-cbd.sh
     o2-weblive.plx | /bin/sh -s
     p3-project.sh
+    o2-index-downloads.sh
     o2-prm.sh
 fi

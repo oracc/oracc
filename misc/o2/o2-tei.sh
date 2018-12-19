@@ -45,5 +45,6 @@ fi
 #wc -l 01tmp/tei-valid.log
 
 #if [ "$tei_dist" == "yes" ]; then
-    tei-dist.sh $xmlfile
+tei-dist.sh $xmlfile
 #fi
+o2-index-downloads.sh
