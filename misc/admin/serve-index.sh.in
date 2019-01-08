@@ -17,15 +17,15 @@ export PATH=$ORACC/bin:$PATH
 project=$1
 buildserver=$2
 if [ "$project" == "" ]; then
-    echo "serve-install.sh: must give project name on command line"
+    echo "serve-index.sh: must give project name on command line"
     exit 1
 fi
 if [ "$buildserver" == "" ]; then
-    echo "serve-install.sh: must give buildserver on command line"
+    echo "serve-index.sh: must give buildserver on command line"
     exit 1
 fi
 
-echo "serve-install.sh: indexing $project"
+echo "serve-index.sh: indexing $project"
 cd $oracc_builds/$project
 $oracc/bin/o2-indexes-boot.sh
 # $oracc/bin/est-project-web.sh
