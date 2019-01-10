@@ -464,7 +464,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	     sense to gw at the very beginning because
 	     leaving sense empty allows single-sense 
 	     words to match even when only the GW is used */
-	  int i;
+	  int i, s_pct_top = 0;
 	  f->sense = f->gw;
 	  for (i = 0; i < ncand; ++i)
 	    {
@@ -475,14 +475,16 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		  if (f->words)
 		    {
 		      res[i]->pct = f->words->pct;
-		      if (f->words->pct > pct_top)
-			pct_top = f->words->pct;
+		      if (f->words->pct > s_pct_top)
+			s_pct_top = f->words->pct;
 		    }
 		}
 	      else
 		res[i]->pct = 0;
 	    }
 	  f->sense = NULL;
+	  if (s_pct_top)
+	    pct_top = s_pct_top;
 	}
       if (pct_top)
 	{
