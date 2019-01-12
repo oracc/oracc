@@ -5,6 +5,8 @@ apt install \
     gcc \
     bison \
     flex \
+    gperf \
+    apache2 \
     autoconf \
     automake \
     libtool \
@@ -18,7 +20,9 @@ apt install \
     zlib1g-dev \
     libgdbm-dev \
     libexpat1-dev \
+    libxml-perl \
     libxml-libxml-perl \
+    libxml-libxslt-perl
 
 # libfrontier-rpc-perl
 

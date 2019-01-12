@@ -254,7 +254,7 @@ main(int argc, char **argv)
 
   options(argc, argv, "ac:gl:p:s");
 
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,"C.UTF-8");
 
   alias_index_aliases(curr_project,curr_index);
   if (aliases_only)

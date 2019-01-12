@@ -5,11 +5,11 @@ function fail {
 }
 uname=`uname`
 if [ "$uname" = "Linux" ]; then
-    sudo useradd -s /sbin/nologin oracc
+    sudo useradd -m -s /sbin/nologin oracc
     sudo passwd oracc
-    chmod -R g+rx /home/oracc
-    chmod -R go-w /home/oracc
-    chmod -R o-r /home/oracc
+    sudo chmod -R g+rx /home/oracc
+    sudo chmod -R go-w /home/oracc
+    sudo chmod -R o-r /home/oracc
 else
     if [ ! -d /Users/oracc ]; then
 	fail 'oracc-user.sh: please create the oracc user on this machine before proceeding'

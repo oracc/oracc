@@ -400,7 +400,7 @@ main(int argc, char * const*argv)
   else
     f_err = stderr;
   exit_on_error = TRUE;
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,"C.UTF-8");
   options(argc, argv, "28acdg:j:o:p:P:stuvx:");
   if (!out_f)
     out_f = stdout;
@@ -604,7 +604,7 @@ same_loc8(struct location8 *a, struct location8 *b)
   return 
     a->text_id == b->text_id
     && a->unit_id == b->unit_id
-    && a->word_id == a->word_id;
+    && a->word_id == b->word_id;
 }
 
 static void

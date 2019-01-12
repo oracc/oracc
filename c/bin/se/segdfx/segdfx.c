@@ -174,7 +174,7 @@ main(int argc, char * const*argv)
   if (!curr_project)
     usage();
 
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,"C.UTF-8");
 
   vid_obey_dots = 0;
   vidp = vid_init();

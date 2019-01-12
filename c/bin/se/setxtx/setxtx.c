@@ -405,7 +405,7 @@ main (int argc, char **argv)
   const unsigned char *key;
   Dbi_index *mapdb;
 
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,"C.UTF-8");
   options (argc, argv, "2ac:gp:sx:v");
   project = curr_project;
   set_proxies(proxies_arg);

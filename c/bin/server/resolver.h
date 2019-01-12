@@ -1,11 +1,7 @@
 #ifndef RESOLVER_H_
 #define RESOLVER_H_
 
-#ifdef __APPLE__
-#define LOCALE "en_GB.UTF-8"
-#else
-#define LOCALE "en_GB.utf-8"
-#endif
+#define LOCALE "C.UTF-8"
 
 #include "ccgi/ccgi.h"
 

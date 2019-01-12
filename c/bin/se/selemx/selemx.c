@@ -614,7 +614,7 @@ main (int argc, char **argv)
   const unsigned char *key;
   Dbi_index *mapdb;
 
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,"C.UTF-8");
   f2_mem = mb_init(sizeof(struct f2), 128);
 
   options (argc, argv, "2ac:gp:qsx:v");
