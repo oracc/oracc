@@ -101,14 +101,23 @@ sub normify {
 		     || $lines[$i] =~ /\%$ORACC::CBD::qpn_base_lang/)) {
 	    next if $lines[$i] =~ /\s\$/;
 	    my($form) = ($lines[$i] =~ /^\@form!?\s+(\S+)/);
+#	    warn "testing $form\n";
 	    my @forms = split(/_/,$form);
 	    my $parts_ok = 0;
 	    my @parts_errs = ();
+	    my $form_matched_parts = 0;
+	    my @form_nomatch_parts = ();
+#	    warn "pparts has ", 1+$#pparts, " members\n";
+#	    warn Dumper \@pparts;
 	    foreach my $pparts (@pparts) {
 		my @parts = @{$pparts};
+#		warn "trying against @parts\n";
 		my @this_parts_errs = ();
+		my $parts_mismatch = 0;
 		if ($#forms == $#parts) {
+#		    warn "@forms == @parts\n";
 		    my $last_non_zero_form = '';
+		    $form_matched_parts = 1;
 		    for (my $j = 0; $j <= $#forms; ++$j) {
 			if ($forms[$j] eq '0') {
 			    $forms[$j] = $last_non_zero_form;
@@ -146,15 +155,21 @@ sub normify {
 			}
 		    }
 		} else {
-		    pp_warn "(normify) compound's # of forms != # of parts (`@forms' vs. `@parts'";
+		    push @form_nomatch_parts, "(normify) compound's # of forms != # of parts (`@forms' vs. `@parts'";
 		}
-		if ($#this_parts_errs < 0) {
+		if ($#this_parts_errs < 0 && $form_matched_parts) {
 		    $parts_ok = 1;
 		    @parts_errs = ();
 		    last;
 		} else {
 		    @parts_errs = @this_parts_errs;
 		    $lines[$i] =~ s/\s\$.*$//;
+		}
+	    }
+	    # when there are multiple @parts lines an @form only has to match length of one of them, not all
+	    unless ($form_matched_parts) {
+		foreach (@form_nomatch_parts) {
+		    pp_warn $_;
 		}
 	    }
 	    if (!$parts_ok) {

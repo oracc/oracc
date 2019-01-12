@@ -856,8 +856,11 @@ do_psu {
 	if ($#parts_errors >= 0) {
 	    my $err = pp_line();
 	    pp_line($err - 1);
-	    pp_warn(@parts_errors)
-		unless $#parts_errors == 0 && $parts_errors[0] eq '#nowarn#';
+	    unless ($#parts_errors == 0 && $parts_errors[0] eq '#nowarn#') {
+		foreach (@parts_errors) {
+		    pp_warn($_)
+		}
+	    }
 	} else {
 	    my($xcfgw) = "$e{'cf'} \[$e{'gw'}\] $e{'pos'}";
 	    unless (ORACC::CBD::Validate::is_bad_compound($xcfgw)) {
