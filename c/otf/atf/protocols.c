@@ -111,11 +111,13 @@ protocols(struct run_context *run,
 	      if (doctype == e_score)
 		{
 		  extern void load_labels_init(void);
+		  extern int auto_lg;
 		  parse_score_doctype(np, s+1);
 		  symbolattr_init();
 		  key_init();
 		  load_labels_init();
 		  check_links = 1;
+		  auto_lg = 1;
 		}
 	    }
 	  *s = save;

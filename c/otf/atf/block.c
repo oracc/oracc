@@ -35,6 +35,8 @@
 
 extern int lem_autolem, mylines;
 
+int auto_lg = 0;
+
 struct lno
 {
   int colno;
@@ -193,7 +195,7 @@ nth_tlit_hdr(const unsigned char *id, int nth)
 static int
 needs_lg(unsigned char **ll)
 {
-#if 1
+#if 1 
   while (ll[0] && (!strncmp((char*)ll[0],"#lem:",5) 
 		   || !strncmp((char*)ll[0],"#etcsl:",7)
 		   || ll[0][0] == '<'
@@ -792,7 +794,7 @@ $ start of reverse missing
 
 	  note_initialize_line();
 
-	  if (needs_lg(lines+1))
+	  if (auto_lg || needs_lg(lines+1))
 	    {
 	      struct node *ocurrent = current;
 	      struct attr *xid;

@@ -20,7 +20,7 @@
 
 <xsl:param name="basename"/>
 <xsl:param name="project"/>
-<xsl:param name="imgdir" select="'/epsd/psl/img/'"/>
+<!--<xsl:param name="imgdir" select="'/epsd/psl/img/'"/>-->
 <xsl:param name="cbd-bases-table" select="'no'"/>
 <xsl:param name="cbd-article-summaries" select="'no'"/>
 
@@ -39,7 +39,7 @@
 <xsl:output method="text" encoding="utf-8"/>
 
 <xsl:template match="cbd:articles">
-\macrofile{00lib/epsdpv}
+\macrofile{00lib/nepsdpv}
 \beginglossary
 
 <xsl:apply-templates/>
