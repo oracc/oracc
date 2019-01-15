@@ -19,7 +19,7 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
-	xns xisdb testutf8
+	xns xisdb
 
 #pqoutline pqsort xml2json
 
@@ -95,7 +95,3 @@ xmlsplit_SOURCES=xmlsplit.c
 xmlsplit_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 utf8v_sources=utf8v.c
-
-testutf8_SOURCES=testutf8.c
-testutf8_LDADD = @top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/lib/liboracc.la
