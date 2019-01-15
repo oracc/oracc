@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "atf.h"
+#include "oracclocale.h"
 
 extern const char *file;
 extern int lnum;
@@ -23,7 +24,7 @@ main(int argc, char **argv)
   lnum = 0;
 
   atf_init();
-  fprintf(stderr,"locale: %s\n",setlocale(LC_ALL,NULL));
+  fprintf(stderr,"locale: %s\n",setlocale(LC_ALL,ORACC_LOCALE));
   fprintf(stderr,"atf: %s\n",atf);
   utf = atf2utf(atf,0);
   fprintf(stderr,"utf: %s\n",utf);

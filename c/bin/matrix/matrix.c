@@ -2,6 +2,7 @@
 #include <string.h>
 #include <locale.h>
 #include "atf.h"
+#include "oracclocale.h"
 #include "collate.h"
 #include "psd_da94.h"
 #include "pf_lib.h"
@@ -107,7 +108,7 @@ strip_trailing_white (Uchar *lp)
 int
 main (int argc, char **argv) 
 {
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,ORACC_LOCALE);
   options (argc, argv, "abcdE:efklmo:prstvxX4");
   srcs_init ();
   gdlif_init();

@@ -1,6 +1,7 @@
 #include <locale.h>
 #include <stdio.h>
 #include <string.h>
+#include "oracclocale.h"
 #include "atf.h"
 int lnum,verbose;
 const char *file="<stdin>";
@@ -8,7 +9,7 @@ int
 main(int argc, char **argv)
 {
   char buf[128];
-  setlocale(LC_ALL,LOCALE/*"en_GB.utf8"*/);
+  setlocale(LC_ALL, ORACC_LOCALE);
   while (fgets(buf,127,stdin))
     {
       size_t len, i;

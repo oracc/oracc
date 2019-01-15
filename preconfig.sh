@@ -36,5 +36,6 @@ if [ "$ORACC_MODE" = "single" ]; then
 else
     cp usermode-multi.xml $ORACC_BUILDS/lib/data/usermode.xml
 fi
+. ./create_oracclocale_h.sh
 chown -R $httpduser:$httpduser /var/tmp/oracc $ORACC_BUILDS/tmp/sop
 chmod og-rwx /var/tmp/oracc/*

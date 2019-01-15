@@ -39,6 +39,7 @@
 #include "error.h"
 #include "xstrtod.h"
 #include <collate.h>
+#include "oracclocale.h"
 
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
@@ -1795,7 +1796,7 @@ main (int argc, char **argv)
 #endif				/* SA_INTERRUPT */
 
   program_name = argv[0];
-  setlocale (LC_ALL, "");
+  setlocale (LC_ALL, ORACC_LOCALE);
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
   collate_init ("unicode");

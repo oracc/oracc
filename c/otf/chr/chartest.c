@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "oracclocale.h"
 #include "atf.h"
 #include "inctrie.h"
 #include "charsets.h"
@@ -30,7 +30,7 @@ main(int argc, char **argv)
   cp = get_charset(c_sux,m_graphemic);
   chartrie_init(cp);
 
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,ORACC_LOCALE);
   fprintf(stderr,"locale: %s\n",setlocale(LC_ALL,NULL));
   fprintf(stderr,"atf: %s\n",atf);
 

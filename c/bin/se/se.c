@@ -13,6 +13,7 @@
 #include "se.h"
 #include "selib.h"
 #include "atflocale.h"
+#include "oracclocale.h"
 #include "charsets.h"
 #include "lang.h"
 #include "vid.h"
@@ -400,7 +401,7 @@ main(int argc, char * const*argv)
   else
     f_err = stderr;
   exit_on_error = TRUE;
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
   options(argc, argv, "28acdg:j:o:p:P:stuvx:");
   if (!out_f)
     out_f = stdout;

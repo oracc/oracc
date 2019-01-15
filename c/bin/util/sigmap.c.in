@@ -7,6 +7,7 @@
 #include <ctype128.h>
 #include "fname.h"
 #include "atflocale.h"
+#include "oracclocale.h"
 
 static char *CGI_decode_url(const char *p);
 const char *lang = NULL, *project = NULL, *map_proj = NULL;
@@ -228,7 +229,7 @@ main(int argc, char **argv)
   project = argv[1];
   
   print_hdr();
-  if ((locale = setlocale(LC_ALL, LOCALE)))
+  if ((locale = setlocale(LC_ALL, ORACC_LOCALE)))
     fprintf(stderr, "locale=%s\n", locale);
   else
     fprintf(stderr, "setlocale(LC_ALL, \"en_GB\") failed\n");

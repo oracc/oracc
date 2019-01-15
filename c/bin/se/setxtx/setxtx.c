@@ -10,6 +10,7 @@
 #include <runexpat.h>
 #include <list.h>
 #include <fname.h>
+#include "oracclocale.h"
 
 #include "fields.h"
 #include "property.h"
@@ -405,7 +406,7 @@ main (int argc, char **argv)
   const unsigned char *key;
   Dbi_index *mapdb;
 
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
   options (argc, argv, "2ac:gp:sx:v");
   project = curr_project;
   set_proxies(proxies_arg);

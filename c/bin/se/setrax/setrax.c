@@ -11,6 +11,7 @@
 #include <list.h>
 #include <fname.h>
 #include "atflocale.h"
+#include "oracclocale.h"
 
 #include "fields.h"
 #include "property.h"
@@ -204,7 +205,7 @@ main (int argc, char **argv)
 
   options (argc, argv, "2ac:gp:stx:");
   set_proxies(proxies_arg);
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));
   else

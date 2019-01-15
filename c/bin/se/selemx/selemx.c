@@ -12,6 +12,7 @@
 #include <locale.h>
 #include "memblock.h"
 #include "atflocale.h"
+#include "oracclocale.h"
 #include "charsets.h"
 
 #include "fields.h"
@@ -614,7 +615,7 @@ main (int argc, char **argv)
   const unsigned char *key;
   Dbi_index *mapdb;
 
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
   f2_mem = mb_init(sizeof(struct f2), 128);
 
   options (argc, argv, "2ac:gp:qsx:v");

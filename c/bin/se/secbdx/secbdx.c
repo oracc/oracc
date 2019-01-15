@@ -9,6 +9,7 @@
 #include <fname.h>
 #include <locale.h>
 #include "atflocale.h"
+#include "oracclocale.h"
 
 #include "fields.h"
 #include "property.h"
@@ -254,7 +255,7 @@ main(int argc, char **argv)
 
   options(argc, argv, "ac:gl:p:s");
 
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
 
   alias_index_aliases(curr_project,curr_index);
   if (aliases_only)

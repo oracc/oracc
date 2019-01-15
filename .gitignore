@@ -8,6 +8,7 @@ c/otf/tests/tst
 c/otf/tests/xml
 misc/admin/orc
 c/bin/server/or_common.c
+c/include/oracclocale.h
 oracc-vhost.conf
 se.dbg
 xns

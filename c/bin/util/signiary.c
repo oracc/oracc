@@ -2,6 +2,7 @@
 #include <string.h>
 #include <locale.h>
 #include "atflocale.h"
+#include "oracclocale.h"
 #include "gsl.h"
 #include "hash.h"
 #include "npool.h"
@@ -140,7 +141,7 @@ printsigns(const unsigned char *key,void *data)
 int
 main(int argc, char **argv)
 {
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,ORACC_LOCALE);
   sig_pool = npool_init();
   signiary = hash_create(1000);
   pertext = hash_create(1000);

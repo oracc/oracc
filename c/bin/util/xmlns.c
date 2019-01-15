@@ -2,6 +2,7 @@
 #include <string.h>
 #include <locale.h>
 #include "atflocale.h"
+#include "oracclocale.h"
 #include "hash.h"
 #include "runexpat.h"
 
@@ -29,7 +30,7 @@ int
 main(int argc, char **argv)
 {
   const char *f[2];
-  setlocale(LC_ALL,LOCALE);
+  setlocale(LC_ALL,ORACC_LOCALE);
   f[0] = argv[1];
   f[1] = NULL;
   runexpatNS(i_list,f,sH,eH,"|");

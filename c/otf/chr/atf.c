@@ -1,9 +1,10 @@
 #include <locale.h>
 #include "atf.h"
+#include "oracclocale.h"
 void
 atf_init(void)
 {
-  char *locret = setlocale(LC_ALL,LOCALE /*"en_GB.utf8"*/);
+  char *locret = setlocale(LC_ALL,ORACC_LOCALE);
   if (locret)
     atf2utf_init();
   else

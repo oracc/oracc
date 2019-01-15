@@ -7,6 +7,7 @@
 #include <locale.h>
 #include <runexpat.h>
 #include "atflocale.h"
+#include "oracclocale.h"
 #include "../types.h"
 #include "../selib.h"
 #include "../se.h"
@@ -191,7 +192,7 @@ main(int argc, char * const*argv)
   if (!curr_project)
     usage();
 
-  setlocale(LC_ALL,"C.UTF-8");
+  setlocale(LC_ALL,ORACC_LOCALE);
 
   if (l2)
     vidp = vid_load_data(se_file(curr_project,"cat","vid.dat"));

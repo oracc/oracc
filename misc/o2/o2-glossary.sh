@@ -5,6 +5,10 @@ o2-glo.sh
 [ -e 00lib/aliases.asa ] && cp 00lib/aliases.asa 02pub
 o2-web.sh
 l2p3.sh 01bld/www
+proj=`oraccopt`
+if [ "$proj" == "epsd2" ]; then
+    g2plus-make-all-indexes.sh sux 01bld/www
+fi
 for a in 02pub/cbd/* ; do 
     lang=`basename $a`
     if [ -r 01bld/$lang/letter_ids.tab ]; then
