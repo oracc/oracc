@@ -12,10 +12,12 @@
 
 <xsl:template match="/">
   <xsl:call-template name="make-index">
-    <xsl:with-param name="basename" select="'akkadian'"/>
-    <xsl:with-param name="title" select="'Akkadian Index'"/>
-    <xsl:with-param name="node-list" select="//cbd:equiv[@xml:lang='akk']/text()"/>
-    <!--<xsl:with-param name="node-list" select="//cbd:equiv[@xml:lang='akk']/cbd:term"/>-->
+    <xsl:with-param name="title" select="'Sumerian Simple Verb Index'"/>
+    <xsl:with-param name="basename" select="'VS'"/>
+    <xsl:with-param name="node-list"
+		    select="//cbd:entry/cbd:cf
+			    [starts-with(following-sibling::cbd:pos,'V')]
+			    [count(following-sibling::cbd:compound)=0]"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -28,7 +30,7 @@
 </xsl:template>
 
 <xsl:template name="make-where">
-  <xsl:value-of select="concat(ancestor::cbd:entry/cbd:cf,'[',ancestor::cbd:entry/cbd:gw,']')"/>
+  <xsl:value-of select="concat(.,'[',../cbd:gw,']')"/>
 </xsl:template>
 
 <xsl:template name="make-href">

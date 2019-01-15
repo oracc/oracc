@@ -51,6 +51,22 @@
 
  -->
 
+<p class="toces">
+  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
+    <xsl:text>Simple Verbs</xsl:text>
+  </a>
+  <br/>
+  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
+    <xsl:text>Compound Verbs</xsl:text>
+  </a>
+  <br/>
+  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
+    <xsl:text>Compound Verbs by Verb</xsl:text>
+  </a>
+</p>
+
+     <hr class="toces"/>
+
   <table class="tocmatrix">
 
     <tr class="toc-matrix-headers">
@@ -88,7 +104,7 @@
 
 <xsl:template name="make-row">
   <tr>
-    <xsl:variable name="base" select="concat('../../../01bld/',$lang,'/')"/>
+    <xsl:variable name="base" select="concat('../../',$project,'/01bld/',$lang,'/')"/>
     <xsl:call-template name="make-letter-cell">
       <xsl:with-param name="letter" select="@u"/>
       <xsl:with-param name="title" select="'Browsable ePSD'"/>

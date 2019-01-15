@@ -11,6 +11,7 @@
 <xsl:include href="g2-gdl-HTML.xsl"/>
 
 <xsl:param name="project"/>
+<xsl:param name="with-count" select="'no'"/>
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
 <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
@@ -28,6 +29,15 @@
 </xsl:template>
 
 <xsl:template name="call-back">
+  <xsl:if test="count(*/xix:letter) = 0">
+    <div class="tocbanner">
+      <xsl:text>ePSD </xsl:text>
+      <xsl:value-of select="translate(/*/@title,' ','&#xa0;')"/>
+      <xsl:if test="$with-count = 'yes'">
+	<xsl:value-of select="concat(' (', count(/*/xix:ix), ' entries)')"/>
+      </xsl:if>
+    </div>
+  </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
 

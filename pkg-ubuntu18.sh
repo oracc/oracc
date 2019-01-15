@@ -22,7 +22,8 @@ apt install \
     libexpat1-dev \
     libxml-perl \
     libxml-libxml-perl \
-    libxml-libxslt-perl
+    libxml-libxslt-perl \
+    libcgi-pm-perl
 
 # libfrontier-rpc-perl
 

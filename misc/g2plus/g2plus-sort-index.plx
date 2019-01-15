@@ -64,5 +64,9 @@ printkey {
     my $sk2 = 'a';
     $sk2 = 'x' if $n->firstChild()->lastChild()->hasChildNodes();
 
+    $sk =~ tr/ /_/;
+    $sk0 =~ tr/ /_/;
+    $sk2 =~ tr/ /_/;
+    
     "$sort_id $sk0 $sk $sk2\n";
 }

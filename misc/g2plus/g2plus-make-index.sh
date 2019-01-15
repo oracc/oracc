@@ -14,6 +14,7 @@ if [ "$webdir" == "" ]; then
     echo g2plus-make-index.sh: must give webdir as third argument
     exit 1
 fi
+mkdir -p $webdir/cbd/$lang
 base=01bld/$lang/$type
 bin=$ORACC/bin
 xsl=$ORACC/lib/scripts
@@ -22,6 +23,8 @@ $bin/g2plus-sort-index.plx $base.srt
 xsltproc $xsl/g2plus-merge-index-wheres.xsl $base.srt >$base.xix
 xsltproc $xsl/g2plus-merge-index-summaries.xsl $base.xix >$base-summaries.xix
 xsltproc --stringparam base 01bld/$lang $xsl/g2plus-index-toc.xsl $base-summaries.xix >$base.toc
+xsltproc --stringparam project `oraccopt` \
+    $xsl/xix-HTML.xsl $base-summaries.xix > $webdir/cbd/$lang/`basename $base-summaries.xix xix`html
 for a in $base-toc-*.xix ; \
   do echo $a ; xsltproc --stringparam project `oraccopt` \
     $xsl/xix-HTML.xsl $a > $webdir/cbd/$lang/`basename $a xix`html ; \
