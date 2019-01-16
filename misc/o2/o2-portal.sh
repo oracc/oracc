@@ -13,6 +13,7 @@ if [ -d 00web/00config ]; then
     fi
     echo calling esp2.sh `oraccopt` ...
     esp2.sh $project
+    cp -a 00web/00html/* $webdir/
     if [[ "$project" == "cdli" ]]; then
 	echo Skipping est processing for project CDLI
     elif [[ "$project" == "epsd2"* ]]; then
