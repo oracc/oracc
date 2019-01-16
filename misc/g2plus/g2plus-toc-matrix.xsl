@@ -25,6 +25,7 @@
     <xsl:with-param name="title" select="'TOC Matrix'"/>
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>
+    <xsl:with-param name="with-epsd1" select="true()"/>
   </xsl:call-template>
 </xsl:template>
 
@@ -52,16 +53,16 @@
  -->
 
 <p class="toces">
-  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
+  <a href="javascript:showpage('/epsd2/cbd/sux/VS-summaries.html', 'tocbrowser')">
     <xsl:text>Simple Verbs</xsl:text>
   </a>
   <br/>
-  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
-    <xsl:text>Compound Verbs</xsl:text>
+  <a href="javascript:showpage('/epsd2/cbd/sux/VC-summaries.html', 'tocbrowser')">
+    <xsl:text>Compound Verbs Sorted by Noun</xsl:text>
   </a>
   <br/>
-  <a href="javascript:showpage('/epsd2/sux/VS.html', 'tocbrowser')">
-    <xsl:text>Compound Verbs by Verb</xsl:text>
+  <a href="javascript:showpage('/epsd2/cbd/sux/VCV-summaries.html', 'tocbrowser')">
+    <xsl:text>Compound Verbs Sorted by Verb</xsl:text>
   </a>
 </p>
 

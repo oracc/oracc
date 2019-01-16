@@ -60,7 +60,8 @@
     <xsl:with-param name="webtype" select="'cbd'"/>
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>
-      <xsl:with-param name="title" select="'TOC'"/>
+    <xsl:with-param name="title" select="'TOC'"/>
+    <xsl:with-param name="with-epsd1" select="true()"/>
     </xsl:call-template>
   </ex:document>
 </xsl:template>
