@@ -2057,6 +2057,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendAttr(np,attr(a_type,
 				     ucc((type == '#' ? "comment" : "dollar"))));
 		}
+	      sprintf(word_id_insertp, "%d", word_id++);
+	      maybeAppendXid(np,word_id_buf);
 	      if (*cued_opener)
 		{
 		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
