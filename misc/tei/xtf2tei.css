@@ -26,7 +26,9 @@ t|p				{ display: block; margin-left: .75in; }
 
 t|note[type="helplink"]		{ display: block; font-style: normal; 
 				  text-align: right; padding-right: 2em; }
-t|note				{ display: block; font-style: normal; }
+
+t|note[type="line"]		{ display: block;  font-style: normal; font-size: 90%; color: grey }
+t|note[type="inline"]		{ display: inline; font-style: normal; font-size: 90%; color: grey }
 
 t|milestone,t|cb  		{ display: block; text-indent: -.7in; 
 				  font-style: normal; }

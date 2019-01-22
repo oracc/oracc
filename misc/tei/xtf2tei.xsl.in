@@ -376,6 +376,7 @@
 </xsl:template>
 
 <xsl:template mode="person" match="xcl:l">
+  <!-- <xsl:message>calling xcl:l[mode=person] on node-id <xsl:value-of select="@xml:id"/></xsl:message> -->
   <xsl:variable name="pos">
     <xsl:call-template name="set-pos"/>
   </xsl:variable>
@@ -448,7 +449,7 @@
       </xsl:if>
     </xsl:when>
     <xsl:when test="@type='nonw'">
-      <xsl:apply-templates select="id(@ref)"/>
+      <note type="inline" rend="dollar"><xsl:apply-templates select="id(@ref)"/></note>
     </xsl:when>
     <xsl:when test="@type='nonx'">
       <!--FIXME: should be @type-->
@@ -540,6 +541,7 @@
 </xsl:template>
 
 <xsl:template match="xcl:l">
+  <!-- <xsl:message>form=<xsl:value-of select="*[1]/@form"/>: calling xcl:l[mode=none] on node-id <xsl:value-of select="@xml:id"/></xsl:message> -->
   <xsl:if test="not(@cof-head)">
     <xsl:variable name="pos">
       <xsl:call-template name="set-pos"/>
@@ -547,7 +549,9 @@
     <xsl:for-each select="*[1]">
       <xsl:choose>
 	<xsl:when test="substring(@epos,string-length(@epos))='N'">
-	  <xsl:variable name="pos-node" select="(.|id(@cof-tails))/xff:f[string-length(@epos)=2 and substring(@epos,string-length(@epos))='N'][1]/@epos"/>
+	  <!-- <xsl:message>chose when[1]</xsl:message>	-->
+	  <xsl:variable name="pos-node" select="(.|id(@cof-tails))"/>
+	  <!-- <xsl:message>count(pos-node) = <xsl:value-of select="count($pos-node)"/></xsl:message> -->
 	  <xsl:for-each select="$pos-node">
 	    <xsl:call-template name="nn-sub">
 	      <xsl:with-param name="pos" select="$pos"/>
@@ -556,9 +560,10 @@
 	</xsl:when>
 	<xsl:when test="not($pos='X') and not($pos='U') and not($pos='u')
 			and not($pos='n') and not($pos='L')">
-	  <xsl:call-template name="w"/>
+	  <xsl:apply-templates select="id(../@ref)"/>
 	</xsl:when>
 	<xsl:otherwise>
+	  <!-- <xsl:message>chose otherwise</xsl:message> -->
 	  <xsl:apply-templates select="id(../@ref)"/>
 	</xsl:otherwise>
       </xsl:choose>
@@ -602,26 +607,34 @@
     <xsl:when test="@gdl:type='logo'">
       <xsl:for-each select="*">
 	<xsl:apply-templates mode="gsub" select="."/>
+	<xsl:value-of select="@gdl:delim"/>
+<!--
 	<xsl:if test="position() &lt; last()">
 	  <xsl:text>.</xsl:text>
-	</xsl:if>
+	  </xsl:if>
+-->
       </xsl:for-each>
     </xsl:when>
     <!--alternation/reordering/ligature need better TEI-ing-->
     <xsl:when test="@gdl:type='alternation'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
+	<xsl:value-of select="@gdl:delim"/>
+<!--	<xsl:if test="not(position()=last())">
 	  <xsl:text>/</xsl:text>
-	</xsl:if>
+	  </xsl:if>
+-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@gdl:type='reordering'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
+	<xsl:value-of select="@gdl:delim"/>
+<!--
 	<xsl:if test="not(position()=last())">
 	  <xsl:text>:</xsl:text>
-	</xsl:if>
+	  </xsl:if>
+-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@gdl:type='ligature'">
@@ -689,6 +702,7 @@
 
 <xsl:template mode="gsub" match="gdl:gg|gdl:c">
   <xsl:apply-templates select="."/>
+  <xsl:value-of select="@gdl:delim"/>
 </xsl:template>
 
 <xsl:template mode="gsub" match="gdl:g">
@@ -775,11 +789,12 @@
 
 <xsl:template mode="gsub" match="gdl:s|gdl:v|gdl:x">
   <xsl:choose>
-    <xsl:when test="ancestor::*[1][self::gdl:d]">
-      <c type="determinative">
-	<xsl:if test="../@gdl:role">
+    <xsl:when test="ancestor::*[1][self::gdl:d]
+		    or (ancestor::*[2][self::gdl:d] and ancestor::*[1][self::gdl:gg])">
+      <c type="determinative" rend="{../@gdl:pos|../../@gdl:pos}">
+	<xsl:if test="../@gdl:role|../../@gdl:role">
 	  <xsl:attribute name="subtype">
-	    <xsl:value-of select="../@gdl:role"/>
+	    <xsl:value-of select="../@gdl:role|../../@gdl:role"/>
 	  </xsl:attribute>
 	</xsl:if>
 	<xsl:choose>
@@ -805,7 +820,8 @@
       </c>
     </xsl:when>
     <xsl:when test="self::gdl:s">
-<!--      <xsl:message>s = <xsl:value-of select="text()"/></xsl:message> -->
+      <!--      <xsl:message>s = <xsl:value-of select="text()"/></xsl:message> -->
+      <xsl:if test="ancestor::gdl:d/@gdl:pos = 'post'">.</xsl:if>
       <xsl:variable name="s-subtype">
 	<xsl:choose>
 	  <xsl:when test="@gdl:role">
@@ -816,9 +832,11 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:variable>
+      <xsl:call-template name="g-meta-before"/>
       <c type="sign" subtype="{$s-subtype}">
 	<xsl:value-of select="text()"/>
       </c>
+      <xsl:call-template name="g-meta-after"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:value-of select="text()"/>
@@ -831,6 +849,91 @@
   <xsl:attribute name="spanTo">
     <xsl:value-of select="concat('#',$prefix,key('statusEnd',@xml:id)/@xml:id)"/>
   </xsl:attribute>
+</xsl:template>
+
+<xsl:template name="g-meta-before">
+    <xsl:if test="@gdl:breakStart">
+    <anchor type="breakStart">
+      <xsl:copy-of select="@xml:id"/>
+    </anchor>
+  </xsl:if>
+  <xsl:if test="@gdl:statusStart">
+    <xsl:choose>
+      <xsl:when test="@gdl:status='excised'">
+	<delSpan type="excised">
+	  <xsl:call-template name="spanTo">
+	    <xsl:with-param name="prefix" select="'s.e.'"/>
+	  </xsl:call-template>
+	</delSpan>
+      </xsl:when>
+      <xsl:when test="@gdl:status='implied'">
+	<addSpan type="implied">
+	  <xsl:call-template name="spanTo">
+	    <xsl:with-param name="prefix" select="'s.i.'"/>
+	  </xsl:call-template>
+	</addSpan>
+      </xsl:when>
+      <xsl:when test="@gdl:status='supplied'">
+	<addSpan type="supplied">
+	  <xsl:call-template name="spanTo">
+	    <xsl:with-param name="prefix" select="'s.s.'"/>
+	  </xsl:call-template>
+	</addSpan>
+      </xsl:when>
+      <xsl:when test="@gdl:status='maybe'">
+	<addSpan type="maybe">
+	  <xsl:call-template name="spanTo">
+	    <xsl:with-param name="prefix" select="'s.m.'"/>
+	  </xsl:call-template>
+	</addSpan>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:message>@gdl:statusStart <xsl:value-of select="@gdl:status"/> not handled</xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+  <xsl:if test="@gdl:ho">
+    <xsl:choose>
+      <xsl:when test="@gdl:hc">
+	<damageSpan spanTo="{concat('#d.',@xml:id)}"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<damageSpan spanTo="{concat('#d.',following::gdl:*[@gdl:hc][1]/@xml:id)}"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="g-meta-after">
+  <xsl:if test="@gdl:hc">
+    <anchor type="damage">
+      <xsl:attribute name="xml:id">
+	<xsl:value-of select="concat('d.',@xml:id)"/>
+      </xsl:attribute>
+    </anchor>
+  </xsl:if>
+  <xsl:if test="@gdl:statusEnd">
+    <xsl:variable name="prefix">
+      <xsl:choose>
+	<xsl:when test="@gdl:status='excised'"><xsl:text>s.e.</xsl:text></xsl:when>
+	<xsl:when test="@gdl:status='implied'"><xsl:text>s.i.</xsl:text></xsl:when>
+	<xsl:when test="@gdl:status='maybe'"><xsl:text>s.m.</xsl:text></xsl:when>
+	<xsl:when test="@gdl:status='supplied'"><xsl:text>s.s.</xsl:text></xsl:when>
+	<xsl:otherwise>unhandled statusEnd: <xsl:value-of select="@gdl:status"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <anchor>
+      <xsl:attribute name="xml:id">
+	<xsl:value-of select="concat($prefix,@xml:id)"/>
+      </xsl:attribute>
+      <xsl:attribute name="type">
+	<xsl:value-of select="id(@gdl:statusEnd)/@gdl:status"/>
+      </xsl:attribute>
+    </anchor>
+  </xsl:if>
+  <xsl:if test="@gdl:breakEnd">
+    <anchor type="breakEnd" corresp="{concat('#',@gdl:breakEnd)}"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="g-with-meta">
@@ -946,8 +1049,9 @@
 <!-- ignored tags at the line level -->
 <xsl:template match="xtf:cmt|xtf:m|xtf:note"/>
 
-<!-- ignored tags which are line children -->
-<xsl:template match="gdl:nonw"/>
+<xsl:template match="gdl:nonw">
+  <xsl:value-of select="text()"/>
+</xsl:template>
 
 <xsl:template name="forename-n">
   <xsl:attribute name="xml:id">
