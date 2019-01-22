@@ -1,5 +1,6 @@
 @namespace t   "http://www.tei-c.org/ns/1.0";
 @namespace xml "http://www.w3.org/XML/1998/namespace";
+@namespace xtr "http://oracc.org/ns/xtr/1.0"
 
 t|TEI				{ background-color: white; color: black; 
 		 	  	  padding-left: 3px; padding-bottom: 5px; }
@@ -17,18 +18,25 @@ t|resp:before     	        { content: " ("; padding-left: 2em; }
 t|respStmt,t|sourceDesc		{ font-size: 90%; color: silver; }
 
 t|body				{ display: block; border-left: solid black 4px; }
-t|div[subtype="witnesses"]	{ display: block; border-left: solid red 4px; }
-t|div[subtype="colophon"]	{ display: block; border-left: solid green 4px; }
-t|div[subtype="sealings"]	{ display: block; border-left: solid blue 4px; }
-t|div[subtype="summary"]	{ display: block; border-left: solid purple 4px; }
+
+t|div1				{ display: block; padding-top: 20pt; }
+
+t|div1[subtype="witnesses"]	{ display: block; border-left: solid red 4px; }
+t|div1[subtype="colophon"]	{ display: block; border-left: solid green 4px; }
+t|div1[subtype="sealings"]	{ display: block; border-left: solid blue 4px; }
+t|div1[subtype="summary"]	{ display: block; border-left: solid purple 4px; }
+
+t|div1[type="translation"]:before { content: " TRANSLATION"; }
+
+t|div3   { display: block; }
+t|div3:first-of-type { padding-top: 10pt; }
+t|div3:before { content: attr(n) }
 
 t|p				{ display: block; margin-left: .75in; }
 
 t|note[type="helplink"]		{ display: block; font-style: normal; 
 				  text-align: right; padding-right: 2em; }
-
-t|note[type="line"]		{ display: block;  font-style: normal; font-size: 90%; color: grey }
-t|note[type="inline"]		{ display: inline; font-style: normal; font-size: 90%; color: grey }
+t|note				{ display: block; font-style: normal; }
 
 t|milestone,t|cb  		{ display: block; text-indent: -.7in; 
 				  font-style: normal; }
