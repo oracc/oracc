@@ -195,6 +195,9 @@
 	<xsl:value-of select="@xml:id"/>
       </xsl:attribute>
     </xsl:if>
+    <xsl:attribute name="n">
+      <xsl:value-of select="@xtr:label"/>
+    </xsl:attribute>
     <xsl:copy-of select="@xtr:*"/>
     <xsl:if test="string-length(@class)>0">
       <xsl:attribute name="subtype">
