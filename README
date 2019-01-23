@@ -1,5 +1,12 @@
-To install on mac use 'mac-install.sh'.
+This repository contains the core source code for Oracc, the Open
+Richly Annotated Cuneiform Corpus.
 
-OUSTANDING ISSUE FOR ORACC_MODE=multi installations?
+All of the material in this repo--source code, fonts, etc., all of
+it--is released into the Public Domain by its author, Steve Tinney
+(stinney@upenn.edu).
 
-	   lib/data needs g+w
+If you are interested in installing Oracc I suggest you contact
+me--installation is not too difficult, but it is not quite an
+out-of-the-box exercise either.  The starting point for installation
+notes is the file ORACC-INSTALL in this repo.
+
