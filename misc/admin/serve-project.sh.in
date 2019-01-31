@@ -3,6 +3,7 @@
 #printenv | grep -i oracc
 
 project=$1
+subs=$2
 
 if [ "$project" == "" ]; then
     echo "serve-project.sh: must give project as argument"
@@ -44,12 +45,18 @@ else
     jsonzip=""
 fi
 
-servesubs=`oraccopt . serve-subs`
+
+if [ "$subs" == "" ]; then
+    servesubs=`oraccopt . serve-subs`
+else
+    servesubs="#all"
+fi
+
 if [ "$servesubs" == "" ]; then
     true
 else
     if [ "$servesubs" == "#all" ]; then
-	allsubs=`list-subprojects.sh $project`
+	allsubs=`list-pub-subs.sh $project`
 	for a in $allsubs ; do
 	    serve-project.sh $a
 	done
