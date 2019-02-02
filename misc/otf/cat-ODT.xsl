@@ -39,7 +39,7 @@
   <name n="frgm"     sig="Q"><oracc:br/>Frgm.</name>
   <name n="section"  sig="R"><oracc:br/>Section</name>
   <name n="fuchs"    sig="S">Fuchs,<oracc:br/>ISAK line</name>
-  <name n="botta"    sig="T"><oracc:br/>Botta,<oracc:br/>MdN</name>
+  <name n="botta"    sig="T">Botta,<oracc:br/>MdN</name>
   <name n="pub"      sig="U">Publication<oracc:br/>reference</name>
   <name n="text_no"  sig="V">Text<oracc:br/>no.</name>
   <name n="winckler" sig="W">Winkler,<oracc:br/>Sar. 2</name>
@@ -52,17 +52,18 @@
   <name n="flandin_albenda" sig="3">Flandin in<oracc:br/>Albenda</name>
   <name n="maniori"  sig="4">Maniori, Campagne<oracc:br/>di Sargon </name>
   <name n="gadd"     sig="5">Gadd<oracc:br/>prism</name>
-  <name n="copy_wt"  sig="6">Published copy<oracc:br/>(Winckler or Tadmor)</name>
-  <name n="copy_fuchs" sig="7">Published copy<oracc:br/>(Fuchs)</name>
-  <name n="saas8"    sig="8"><oracc:br/>Fuchs, SAAS §</name>
+  <name n="copy_wt"  sig="6">Published Copy<oracc:br/>(Winckler or Tadmor)</name>
+  <name n="copy_fuchs" sig="7">Published Copy<oracc:br/>(Fuchs)</name>
+  <name n="saas8"    sig="8">Fuchs,<oracc:br/>SAAS §</name>
   <name n="ziegeln1" sig="9">Marzahn<oracc:br/>and Rost no.</name>
   <name n="cast"     sig="a">Louvre<oracc:br/>Cast</name>
   <name n="delongperier" sig="b"><oracc:br/>de Longpérier</name>
-  <name n="text73"   sig="c"><oracc:br/>Text no. 73</name>
-  <name n="topic"    sig="d"><oracc:br/>Topic</name>
-  <name n="date"     sig="e"><oracc:br/>Date</name>
+  <name n="text74"   sig="c">Text no. 74</name>
+  <name n="topic"    sig="d">Topic</name>
+  <name n="date"     sig="e">Date</name>
   <name n="column"   sig="f"><oracc:br/>Column</name>
-  <name n="khors_date" sig="g">Date in Khorsabad Annals<oracc:br/>(text nos. 1–6)</name>
+  <name n="khors_date" sig="g">Date in Khorsabad<oracc:br/>Annals (text nos. 1–6)</name>
+    <name n="subject" sig="h"><oracc:br/>Subject</name>
 </xsl:template>
 
 <xsl:template match="oracc:data[@oracc:type='catalog']">
