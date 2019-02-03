@@ -262,6 +262,8 @@
 
     <xsl:call-template name="ns-glo-periods"/>
 
+    <xsl:apply-templates select="cbd:prefixs"/>
+
     <xsl:apply-templates select="cbd:senses"/>
 
     <xsl:apply-templates select="cbd:usages"/>
@@ -635,6 +637,28 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
     </xsl:for-each>
     <xsl:text>)</xsl:text>
   </xsl:if>
+</xsl:template>
+
+<xsl:template match="cbd:prefixs">
+  <div class="morphs prefix">
+    <p>
+    <span class="iheader">Verbal prefixes:</span>
+    <xsl:for-each select="cbd:prefix">
+      <xsl:apply-templates select="."/>
+      <xsl:if test="position() &lt; last()">
+	<span class="punct-sc"><xsl:text>; </xsl:text></span>
+      </xsl:if>
+    </xsl:for-each>
+    <span class="punct-sc"><xsl:text>.</xsl:text></span>
+    </p>
+  </div>
+</xsl:template>
+
+<xsl:template match="cbd:prefix">
+  <a class="icountu" 
+     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"
+     ><xsl:value-of select="@n"
+		  /></a>
 </xsl:template>
 
 <xsl:template match="cbd:prefs">

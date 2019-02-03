@@ -251,6 +251,8 @@
     <xsl:apply-templates select="cbd:morphs"/>
   </xsl:if>
 
+  <xsl:apply-templates select="cbd:prefixs"/>
+
   <xsl:apply-templates select="cbd:senses"/>
 
   <xsl:apply-templates select="cbd:usages"/>
@@ -519,11 +521,15 @@
 	</xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-	<p class="norms">
+<!--	<p class="norms"> -->
 	  <xsl:for-each select="cbd:morph">
 	    <xsl:apply-templates select="."/>
+	    <xsl:if test="position() &lt; last()">
+	      <span class="punct-sc"><xsl:text>; </xsl:text></span>
+	    </xsl:if>
 	  </xsl:for-each>
-	</p>
+	  <span class="punct-sc"><xsl:text>.</xsl:text></span>
+<!--	</p> -->
       </xsl:otherwise>
     </xsl:choose>
   </div>
@@ -568,7 +574,29 @@
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="cbd:prefs">
+<xsl:template match="cbd:prefixs">
+  <div class="morphs prefix">
+    <p>
+    <span class="iheader">Verbal prefixes:</span>
+    <xsl:for-each select="cbd:prefix">
+      <xsl:apply-templates select="."/>
+      <xsl:if test="position() &lt; last()">
+	<span class="punct-sc"><xsl:text>; </xsl:text></span>
+      </xsl:if>
+    </xsl:for-each>
+    <span class="punct-sc"><xsl:text>.</xsl:text></span>
+    </p>
+  </div>
+</xsl:template>
+
+<xsl:template match="cbd:prefix">
+  <a class="icountu" 
+     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"
+     ><xsl:value-of select="@n"
+		  /></a>
+</xsl:template>
+
+ <xsl:template match="cbd:prefs">
   <p class="norms">
     <span class="iheader">Verbal prefixes:</span>
     <xsl:for-each select="cbd:pref">

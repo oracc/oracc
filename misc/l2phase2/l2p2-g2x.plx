@@ -82,7 +82,7 @@ my %parts = ();
 my $parts_loaded = 0;
 my $psu_debug = 0;
 my $sid = 0;
-my @sigfields = qw/form norm base cont morph morph2 stem/;
+my @sigfields = qw/form norm base cont morph morph2 stem prefix/;
 my %sigmap = ();
 my %sigmap_ids = ();
 my %sigrefs = ();
@@ -397,6 +397,13 @@ add_sig {
 	%sig = (ORACC::L2GLO::Util::parse_psu($sig));
     } else {
 	%sig = (ORACC::L2GLO::Util::parse_sig($sig));
+	if ($sig{'morph'} && $header{'lang'} =~ /^sux/) {
+	    my $p = $sig{'morph'};
+	    if ($p =~ /:/) {
+		$p =~ s/:.*$//;
+		$sig{'prefix'} = $p;
+	    }
+	}
 	if ($full_cof_sig) {
 	    if (!$cof_index) {
 		$curr_cof_form = $sig{'form'};
@@ -590,10 +597,14 @@ compute_and_print_entry_data {
 
 		    # FIXME: check the script code if we start using it any way
 		    # except internally
-#		    if ($scriptcode{$formlang}) {
-#			$gme = '';
-#		    }
-		    print "<$f xml:id=\"$xid\" n=\"$xk_n\"";
+		    #		    if ($scriptcode{$formlang}) {
+		    #			$gme = '';
+		    #		    }
+		    if ($f eq 'form') {
+			print "<$f xml:id=\"$xid\" n=\"$xk_n\"";
+		    } else {
+			print "<$f cbd:id=\"$xid\" n=\"$xk_n\"";
+		    }
 		    if ($entryformstems{$entry,$k}) {
 			print " stem=\"$entryformstems{$entry,$k}\"";
 		    }
@@ -659,21 +670,21 @@ compute_and_print_entry_data {
 #				print '</f>';
 #			    } else {
 			    if ($form_ids{$f} && defined($freq) && defined($ipct) && $xrefid) {
-				print "<f xml:id=\"$xid\" ref=\"$form_ids{$f}\"";
+				print "<f cbd:id=\"$xid\" ref=\"$form_ids{$f}\"";
 				xis_attr(%xis_info);
 				print '/>';
 #				icount=\"$freq\" ipct=\"$ipct\" xis=\"$xrefid\"/>";
 			    } else {
 				if (!defined($freq) || !defined($ipct) || !$xrefid) {
 				    warn "$input:$entry_lines{$entry}: no freqs/instances when printing form $f\n";
-				    print "<f xml:id=\"$xid\"/>";
+				    print "<f cbd:id=\"$xid\"/>";
 				} elsif (!$form_ids{$f}) {
 				    warn "$input:$entry_lines{$entry}: no form_id when printing form $f\n";
 #				    use Data::Dumper; warn Dumper(\%form_ids);
-				    print "<f xml:id=\"$xid\" bad-form=\"$f\"/>";
+				    print "<f cbd:id=\"$xid\" bad-form=\"$f\"/>";
 				} else {
 				    warn "$input:$entry_lines{$entry}: undef when printing form $f\n";
-#				    print "<f xml:id=\"$xid\" bad-form=\"$f\"/>";
+#				    print "<f cbd:id=\"$xid\" bad-form=\"$f\"/>";
 				}
 			    }
 #			    }
