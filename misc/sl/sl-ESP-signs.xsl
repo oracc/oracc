@@ -100,12 +100,44 @@
     <xsl:apply-templates select="sl:note"/>
     <xsl:call-template name="unicode-info"/>
     <xsl:apply-templates mode="rest"/>    
+    <xsl:if test="count(sl:v)>0">
+      <div class="ogsl-glo">
+	<h2 class="ogsl-glo">Glossary Attestations</h2>
+	<xsl:for-each select="sl:v">
+	  <xsl:if test="sl:glo">
+	    <h3 class="ogsl-glo">Value <span class="ogsl-glo-value"><xsl:value-of select="@n"/></span></h3>
+	    <xsl:apply-templates/>
+	  </xsl:if>
+	</xsl:for-each>
+      </div>
+    </xsl:if>
     <xsl:if test="sl:form">
       <div class="ogsl-signforms">
 	<xsl:apply-templates select="sl:form"/>
       </div>
     </xsl:if>
   </div>
+</xsl:template>
+
+<xsl:template match="sl:glo">
+  <xsl:for-each select="*">
+    <h4 class="ogsl-glo">
+      <xsl:choose>
+	<xsl:when test="@type='s'"><xsl:text>Independent</xsl:text></xsl:when>
+	<xsl:when test="@type='i'"><xsl:text>Initial</xsl:text></xsl:when>
+	<xsl:when test="@type='m'"><xsl:text>Medial</xsl:text></xsl:when>
+	<xsl:when test="@type='f'"><xsl:text>Final</xsl:text></xsl:when>
+	<xsl:otherwise><xsl:message>sl:glo with unknown @type <xsl:value-of select="@type"/></xsl:message></xsl:otherwise>
+      </xsl:choose>
+    </h4>
+    <table>
+      <xsl:apply-templates/>
+    </table>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template match="sl:form">
+  <tr><td><xsl:value-of select="@n"/></td><td><xsl:value-of select="@cfgw"/></td></tr>
 </xsl:template>
 
 <xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>

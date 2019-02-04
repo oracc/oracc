@@ -266,7 +266,7 @@ static void showhash(void);
 int
 is_uflag(unsigned char *p)
 {
-  return p[0] == 0xe2 && p[1] == 0x80 && p[2] >= 0xa0 && p[2] <= 0x03;
+  return p && (strlen((const char *)p)>2) && p[0] == 0xe2 && p[1] == 0x80 && p[2] >= 0xa0 && p[2] <= 0xa3;
 }
 
 static void *
@@ -2318,7 +2318,10 @@ tokenize_grapheme(register unsigned char*l,
 		      if ('~' == *l && ('-' == l[1] || '+' == l[1]))
 			l += 2;
 		      else if (nbytes == 3 && is_uflag(l))
-			goto ret;
+			{
+			  *following = l;
+			  goto ret;
+			}
 		      else
 			l += nbytes;
 		    }
@@ -2354,7 +2357,15 @@ tokenize_grapheme(register unsigned char*l,
       l -= 3;
       *following = l;
     }
-
+#if 0
+  while (gp && *gp && (l - *gp) >= 3
+	 && is_uflag(&l[-3]))
+    {
+      l -= 3;
+      *following = l;
+    }  
+#endif
+  
   return l;
 }
 

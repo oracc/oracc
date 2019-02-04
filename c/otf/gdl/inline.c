@@ -1064,6 +1064,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			}
 		    }
 		}
+	      else if ((end-start>1) && tokens[start+1]->type == uflag)
+		{
+		  struct uflags *ufp = (struct uflags *)tokens[++start]->data;
+		  set_uflags(np,ufp);
+		}
 	      else
 		{
 		  if (in_hash)
@@ -1951,7 +1956,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		{
 		  last_g = np = elem(e_g_x,NULL,lnum,GRAPHEME);
 		  appendAttr(np,attr(a_g_type,ucc("newline")));
-		  if ((end-start>1) && tokens[start+1]->type == flag)
+		  if ((end-start>1) && tokens[start+1]->type == flag) /* add uflag */
 		    {
 		      struct flags *fp = (struct flags *)tokens[++start]->data;
 		      set_flags(np,fp);
@@ -2004,23 +2009,11 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      prev_g = last_g = np;
 	      appendChild(np,textNode(ucc("...")));
-#if 0
-	      if ((end-start>1) && tokens[start+1]->type == flag)
-		np->fattr = ((struct flags*)tokens[++start]->data)->xtf;
-	      else
-		np->fattr = NULL;
-#endif
-	      /*appendChild(group_node ? group_node : wp,np);*/
 	      if (grouped_det)
 		atpt = surro_node = appendChild(wp, np);
 	      else
 		appendChild(atpt ? atpt: wp,np);
 	      break;
-#if 0
-	    case dialect:
-	      curr_dialect = tokens[start++]->data;
-	      break;
-#endif
 	    case sforce:
 	      if (lforce_flag)
 		warning("$ ignored after ~");
@@ -2036,6 +2029,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case ftype:
 	      break;
 	    case flag:
+	    case uflag:
 	      /* in meta belonging to corr allow ? */
 	      warning("misplaced flag");
 	      break;
@@ -2138,20 +2132,6 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		pending_disamb = m;
 	      }
 	      break;
-#if 0
-	    case g_emptyten:
-	      {
-		struct node *n = elem(e_g_gg,NULL,lnum,GRAPHEME), *np;
-		setAttr(n,a_g_type,ucc("emptyten"));
-		appendChild(wp,n);
-		np = elem(e_g_x,NULL,lnum,GRAPHEME);
-		setAttr(np, a_g_type, ucc("emptyten"));
-		appendChild(n, np);
-		
-		group_node = lastc;
-	      }
-	      break;
-#endif
 	    default:
 	      vwarning("unhandled token type %s", type_names[tp->type]);
 	      /*exit(2);*/
@@ -2446,6 +2426,20 @@ set_flags(struct node *np, struct flags *fp)
       setAttr(np,a_g_ho,ucc("1"));
       in_hash = 1;
     }
+}
+
+void
+set_uflags(struct node *np, struct uflags *ufp)
+{
+  int i;
+  if (NULL == np)
+    {
+      fprintf(stderr, "ox: internal error, attempt to set uflag on NULL node. Ignoring uflags\n");
+      return;
+    }
+  for (i = 0; i < ufp->nattr; ++i)
+    if (setAttr(np,ufp->a[i].a, ucc(ufp->a[i].s)))
+      vwarning("%c: superfluous flag", ufp->atf);
 }
 
 static int
