@@ -493,19 +493,19 @@ parse_uflags(unsigned char *fptr, int *unflags)
       switch (fptr[2])
 	{
 	case 0xa0:
-	  if (bang) warning("repeated ! flag");
-	  else ++bang;
+	  if (bang) warning("repeated U# flag");
+	  else ++hash;
 	  break;
 	case 0xa1:
-	  if (query) warning("repeated ? flag");
+	  if (query) warning("repeated U? flag");
 	  else ++query;
 	  break;
 	case 0xa2:
-	  if (hash) warning("repeated # flag");
-	  else ++hash;
+	  if (hash) warning("repeated U! flag");
+	  else ++bang;
 	  break;
 	case 0xa3:
-	  if (star) warning("repeated * flag");
+	  if (star) warning("repeated U* flag");
 	  else ++star;
 	  break;
 	default:
@@ -548,6 +548,13 @@ print_token(struct token *tp)
     {
       fprintf(stderr,"%s\t%s\t%s\n",
 	      ((struct flags*)(tp->data))->atf,
+	      class_names[tp->class],
+	      type_names[tp->type]);
+    }
+  else if (tp->type==uflag)
+    {
+      fprintf(stderr,"%s\t%s\t%s\n",
+	      ((struct uflags*)(tp->data))->atf,
 	      class_names[tp->class],
 	      type_names[tp->type]);
     }
@@ -721,10 +728,10 @@ tokenize_init()
 	  uflag_info[c].a[i].s = one; \
 	  ++i;\
 	}
-      setup_flag(h,a_g_uflag1);
-      setup_flag(q,a_g_uflag2);
-      setup_flag(b,a_g_uflag3);
-      setup_flag(s,a_g_uflag4);
+      setup_uflag(h,a_g_uflag1);
+      setup_uflag(q,a_g_uflag2);
+      setup_uflag(b,a_g_uflag3);
+      setup_uflag(s,a_g_uflag4);
     }
 
   meta_graphemes = list_create(LIST_SINGLE);
