@@ -40,7 +40,6 @@ int last_token;
 int temp_no_norm = 0;
 
 static List *meta_graphemes = NULL;
-/*static const char *const flag_names[] = { F0 F1 F2 F3 F4 };*/
 
 static char *one,*damaged;
 
@@ -94,6 +93,55 @@ struct flags flag_info[] =
     { f_hqs, 1,1,0,1,3,NULL,NULL, },
     { f_qbs, 0,1,1,1,3,NULL,NULL, },
     { f_hqbs,1,1,1,1,4,NULL,NULL, },
+  };
+
+static const char *const uflag_strings[] = 
+{
+  "",
+  "U#", "U?", "U!", "U*", 
+  "U#?", "U#!", "U#*", "U!?", "U?*", "U!*", 
+  "U#?!", "U#!*", "U#?*", "U?!*", 
+  "U#?!*", 
+};
+
+const char *const uflag_xtfs[] = 
+{
+  /* */         "",
+  /* U# */	" g:uflag1=\"1\"", 
+  /* U? */	" g:uflag2=\"1\"", 
+  /* U! */	" g:uflag3=\"1\"", 
+  /* U* */	" g:uflag4=\"1\"", 
+  /* U#? */	" g:uflag1=\"1\" g:uflag2=\"1\"", 
+  /* U#! */	" g:uflag1=\"1\" g:uflag3=\"1\"", 
+  /* U#* */	" g:uflag1=\"1\" g:uflag4=\"1\"", 
+  /* U!? */	" g:uflag3=\"1\" g:uflag2=\"1\"", 
+  /* U?* */	" g:uflag2=\"1\" g:uflag4=\"1\"", 
+  /* U!* */	" g:uflag3=\"1\" g:uflag4=\"1\"", 
+  /* U#?! */	" g:uflag1=\"1\" g:uflag2=\"1\" g:uflag3=\"1\"", 
+  /* U#!* */	" g:uflag1=\"1\" g:uflag3=\"1\" g:uflag4=\"1\"", 
+  /* U#?* */	" g:uflag1=\"1\" g:uflag2=\"1\" g:uflag4=\"1\"",
+  /* U?!* */	" g:uflag2=\"1\" g:uflag3=\"1\" g:uflag4=\"1\"", 
+  /* U#?!* */	" g:uflag1=\"1\" g:uflag2=\"1\" g:uflag3=\"1\" g:uflag4=\"1\"", 
+};
+
+struct uflags uflag_info[] =
+  {
+    { uf_none,0,0,0,0,0,NULL,NULL, },
+    { uf_h,   1,0,0,0,1,NULL,NULL, },
+    { uf_q,   0,1,0,0,1,NULL,NULL, },
+    { uf_b,   0,0,1,0,1,NULL,NULL, },
+    { uf_s,   0,0,0,1,1,NULL,NULL, },
+    { uf_hq,  1,1,0,0,2,NULL,NULL, },
+    { uf_hb,  1,0,1,0,2,NULL,NULL, },
+    { uf_hs,  1,0,0,1,2,NULL,NULL, },
+    { uf_qb,  0,1,1,0,2,NULL,NULL, },
+    { uf_qs,  0,1,0,1,2,NULL,NULL, },
+    { uf_bs,  0,0,1,1,2,NULL,NULL, },
+    { uf_hqb, 1,1,1,0,3,NULL,NULL, },
+    { uf_hbs, 1,0,1,1,3,NULL,NULL, },
+    { uf_hqs, 1,1,0,1,3,NULL,NULL, },
+    { uf_qbs, 0,1,1,1,3,NULL,NULL, },
+    { uf_hqbs,1,1,1,1,4,NULL,NULL, },
   };
 
 static const char *const class_names[] = { T_CLASSES };
@@ -214,6 +262,12 @@ static unsigned char *tokenize_normalized(register unsigned char*l,
 static void printer(char *string, void *data);
 static void showhash(void);
 #endif
+
+int
+is_uflag(unsigned char *p)
+{
+  return p[0] == 0xe2 && p[1] == 0x80 && p[2] >= 0xa0 && p[2] <= 0x03;
+}
 
 static void *
 hash_insert(unsigned char *keyp, void *datap, Hash_table *tablep)
@@ -429,6 +483,64 @@ parse_flags(unsigned char *fptr, int *nflags)
     return star ? f_s : f_none;
 }
 
+enum uf_type
+parse_uflags(unsigned char *fptr, int *unflags)
+{
+  int bang = 0, query = 0, hash = 0, star = 0;
+  unsigned char *start = fptr;
+  while (is_uflag(fptr))
+    {
+      switch (fptr[2])
+	{
+	case 0xa0:
+	  if (bang) warning("repeated ! flag");
+	  else ++bang;
+	  break;
+	case 0xa1:
+	  if (query) warning("repeated ? flag");
+	  else ++query;
+	  break;
+	case 0xa2:
+	  if (hash) warning("repeated # flag");
+	  else ++hash;
+	  break;
+	case 0xa3:
+	  if (star) warning("repeated * flag");
+	  else ++star;
+	  break;
+	default:
+	  abort();
+	}
+      fptr += 3;
+    }
+  *unflags = fptr - start;
+  if (hash)
+    {
+      if (query)
+	{
+	  if (bang)
+	    return star ? uf_hqbs : uf_hqb;
+	  else
+	    return star ? uf_hqs : uf_hq;
+	}
+      else if (bang) 
+	return star ? uf_hbs : uf_hb;
+      else
+	return star ? uf_hs : uf_h;
+    }
+  else if (query)
+    {
+      if (bang)
+	return star ? uf_qbs : uf_qb;
+      else
+	return star ? uf_qs : uf_q;
+    }
+  else if (bang)
+    return star ? uf_bs : uf_b;
+  else
+    return star ? uf_s : uf_none;
+}
+
 void
 print_token(struct token *tp)
 {
@@ -595,6 +707,24 @@ tokenize_init()
       setup_flag(q,a_g_queried);
       setup_flag(b,a_g_remarked);
       setup_flag(s,a_g_collated);
+    }
+
+  for (c = 0; c < uf_type_top; ++c)
+    {
+      int i = 0;
+      uflag_info[c].t = s_create_token(meta,uflag,&uflag_info[c]);
+      uflag_info[c].atf = uflag_strings[c];
+#define setup_uflag(f,a_t)\
+      if (uflag_info[c].f) \
+	{\
+	  uflag_info[c].a[i].a = a_t; \
+	  uflag_info[c].a[i].s = one; \
+	  ++i;\
+	}
+      setup_flag(h,a_g_uflag1);
+      setup_flag(q,a_g_uflag2);
+      setup_flag(b,a_g_uflag3);
+      setup_flag(s,a_g_uflag4);
     }
 
   meta_graphemes = list_create(LIST_SINGLE);
@@ -1229,7 +1359,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      exit(2);
 	    }
 	}
-      else if (is_flag[*l] 
+      else if ((is_flag[*l] || is_uflag(l))
 	       && (last_text_or_bound == text 
 		   || (last_text_or_bound == meta
 		       && tokindex 
@@ -1239,10 +1369,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 		       ))
 	       && !in_icomment)
 	{
-	  int nflags;
+	  int nflags, unflags;
 	  enum f_type type;
+	  enum uf_type utype;
 
           type = parse_flags(l,&nflags);
+          utype = parse_uflags(l,&unflags);
+
 	  if (type != f_none)
 	    {
 	      if (tokindex && tokens[tokindex-1]->type == flag)
@@ -1250,9 +1383,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      else
 		tokens[tokindex++] = flag_info[type].t;
 	    }
-	  else
-	    abort(); /* can't happen */
-	  l+=nflags;
+
+	  if (utype != uf_none)
+	    tokens[tokindex++] = uflag_info[utype].t;
+	  
+	  l += nflags+unflags;
+
 	  /* a!(b): scan graphemes in parens and give them the regular type 
 	     for their form but give them class=meta instead of class=text;
 	     this means the parser/tree builder will have a sequence, e.g.,
@@ -2181,6 +2317,8 @@ tokenize_grapheme(register unsigned char*l,
 		    {
 		      if ('~' == *l && ('-' == l[1] || '+' == l[1]))
 			l += 2;
+		      else if (nbytes == 3 && is_uflag(l))
+			goto ret;
 		      else
 			l += nbytes;
 		    }

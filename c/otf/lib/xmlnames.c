@@ -65,6 +65,10 @@ struct xname anames[] =
   { "g:surroEnd", "http://oracc.org/ns/gdl/1.0:surroEnd" },
   { "g:surroStart", "http://oracc.org/ns/gdl/1.0:surroStart" },
   { "g:type", "http://oracc.org/ns/gdl/1.0:type" },
+  { "g:uflag1", "http://oracc.org/ns/gdl/1.0:uflag1" },
+  { "g:uflag2", "http://oracc.org/ns/gdl/1.0:uflag2" },
+  { "g:uflag3", "http://oracc.org/ns/gdl/1.0:uflag3" },
+  { "g:uflag4", "http://oracc.org/ns/gdl/1.0:uflag4" },
   { "g:utf8", "http://oracc.org/ns/gdl/1.0:utf8" },
   { "g:varc", "http://oracc.org/ns/gdl/1.0:varc" },
   { "g:vari", "http://oracc.org/ns/gdl/1.0:vari" },
@@ -295,6 +299,10 @@ struct attr abases[] =
   { { anames[135].qname,NULL } , { anames[135].pname,NULL } },
   { { anames[136].qname,NULL } , { anames[136].pname,NULL } },
   { { anames[137].qname,NULL } , { anames[137].pname,NULL } },
+  { { anames[138].qname,NULL } , { anames[138].pname,NULL } },
+  { { anames[139].qname,NULL } , { anames[139].pname,NULL } },
+  { { anames[140].qname,NULL } , { anames[140].pname,NULL } },
+  { { anames[141].qname,NULL } , { anames[141].pname,NULL } },
 };
 struct xname enames[] =
 {

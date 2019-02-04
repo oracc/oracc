@@ -39,7 +39,11 @@ varnum = (
 status.flags =
   attribute g:collated { xsd:boolean } ? ,
   attribute g:queried  { xsd:boolean } ? ,
-  attribute g:remarked { xsd:boolean } ?
+  attribute g:remarked { xsd:boolean } ? ,
+  attribute g:uflag1 { xsd:boolean } ? ,
+  attribute g:uflag2 { xsd:boolean } ? ,
+  attribute g:uflag3 { xsd:boolean } ? ,
+  attribute g:uflag4 { xsd:boolean } ? 
 
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }

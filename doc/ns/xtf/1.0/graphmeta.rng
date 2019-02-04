@@ -187,6 +187,26 @@
         <data type="boolean"/>
       </attribute>
     </optional>
+    <optional>
+      <attribute name="g:uflag1">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="g:uflag2">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="g:uflag3">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="g:uflag4">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
   </define>
   <define name="gloss">
     <choice>

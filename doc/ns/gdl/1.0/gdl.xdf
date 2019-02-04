@@ -1110,6 +1110,12 @@ grapheme is flagged as remarkable it may indicate a correction or an
 unusual form.  Corrections are often followed by the actual sign in
 parenthesis, and this convention is supported but not required in ATF
 transliterations.</p>
+<p>Added 2019-02-03 for RINAP2, user flags give limited scope for
+adding flag-type semantics.  The flags themselves are fixed: user flag
+1 = dagger (U+2020); user flag 2 = double dagger (U+2021); user flag 3
+= bullet (U+2022); user flag 4 = triangular bullet (U+2023). Projects
+and publications using these flags should explain what they mean
+within the scope of their usage.</p>
 <pre class="cookbook">
 a*               ki?            šum!              ki!?*(DI)
 </pre>
@@ -1118,7 +1124,11 @@ a*               ki?            šum!              ki!?*(DI)
 status.flags =
   attribute g:collated { xsd:boolean } ? ,
   attribute g:queried  { xsd:boolean } ? ,
-  attribute g:remarked { xsd:boolean } ?
+  attribute g:remarked { xsd:boolean } ? ,
+  attribute g:uflag1 { xsd:boolean } ? ,
+  attribute g:uflag2 { xsd:boolean } ? ,
+  attribute g:uflag3 { xsd:boolean } ? ,
+  attribute g:uflag4 { xsd:boolean } ? 
 </d:rnc>
 <h2 class="tutorial">Glosses</h2>
 <div class="atf tutorial">

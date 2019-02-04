@@ -27,7 +27,7 @@ const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
 				     wm_absent , wm_broken , wm_linecont ,
 				     surro_mark ,
 				     type_top };
-const enum t_type g_flag_m[] = { flag, type_top };
+const enum t_type g_flag_m[] = { flag, uflag, type_top };
 const enum t_type g_opener_m[] = { deto , glosso , damago , hdamago , supplo , exciso ,
 				   implo , smetao , maybeo , uscoreo , agroupo, 
 				   surro , eraso , varo , normo , someo , type_top };
@@ -210,6 +210,7 @@ tokcheck_init()
 	case wm_linecont:
 	  allow_token(t,newline);
 	  allow_token(t,flag);
+	  allow_token(t,uflag);
 	  allow_token(t,prox);
 	  allow_group(t,g_boundary);
 	  /* FIXME: this should really look ahead to check for det after opener */
@@ -223,6 +224,7 @@ tokcheck_init()
 	  allow_token(t,norm);
 	  break;
 	case flag:
+	case uflag:
 	  allow_token(t,norm);
 	  allow_token(t,prox);
 	  allow_token(t,newline);
@@ -295,6 +297,7 @@ tokcheck_init()
 	  allow_group(t,g_boundary);
 	  allow_group(t,g_closer);
 	  allow_token(t,flag);
+	  allow_token(t,uflag);
 	  allow_token(t,deto);
 	  allow_token(t,glosso);
 	  allow_token(t,notemark);
@@ -304,6 +307,7 @@ tokcheck_init()
 	  allow_group(t,g_boundary);
 	  allow_group(t,g_opener);
 	  allow_token(t,flag);
+	  allow_token(t,uflag);
 	  /*allow_token(t,damago);*/
 	  break;
 	case uscoreo:
@@ -378,6 +382,7 @@ tokcheck_init()
   allow_token(space,linebreak);
   allow_token(linebreak,space);
   allow_token(linebreak,flag);
+  allow_token(linebreak,uflag);
   allow_token(deto,plus);
   allow_token(deto,ilig);
   allow_token(detc,damago);
@@ -475,6 +480,7 @@ except(enum t_type prev, enum t_type curr, int index)
 	    case g_v:
 	    case g_s:
 	    case flag:
+	    case uflag:
 	      switch (tokens[index+1]->type)
 		{
 		case deto:

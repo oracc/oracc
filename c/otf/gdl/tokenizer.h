@@ -3,9 +3,35 @@
 
 #include "xmlnames.h"
 
+/* User Flags Implementation 2019-02-03- 
+   =====================================
+
+   User flags were implemented because a few extra flags were needed
+   for RINAP2.
+
+   To keep it quick (and dirty) to implement, a second set of four
+   flags are defined which have the same token names etc. as the basic
+   four flags, but with a 'u' prepended to them.
+
+   The user flags are bound to the following symbols:
+
+     dagger            U+2020
+     double-dagger     U+2021
+     bullet            U+2022
+     triangular bullet U+2023
+
+   They must be input in UTF-8.     
+   
+ */
+
+#define UFLAG1_STR "\xe2\x80\xa0" /* dagger */
+#define UFLAG2_STR "\xe2\x80\xa1" /* double-dagger */
+#define UFLAG3_STR "\xe2\x80\xa2" /* bullet */
+#define UFLAG4_STR "\xe2\x80\xa3" /* triangular bullet */
+
 #define C(x) x,
 
-#define T_MISC   C(notoken)C(cell)C(cellspan)C(field)C(ftype)C(nong)C(flag)
+#define T_MISC   C(notoken)C(cell)C(cellspan)C(field)C(ftype)C(nong)C(flag)C(uflag)
 #define T_SHIFT  C(percent)C(sforce)C(lforce)
 #define T_O      C(deto)C(glosso)C(damago)C(hdamago)C(supplo)C(implo)C(smetao)C(maybeo)C(exciso)C(uscoreo)C(agroupo)C(surro)C(eraso)C(normo)C(someo)
 #define T_C      C(detc)C(glossc)C(damagc)C(hdamagc)C(supplc)C(implc)C(smetac)C(maybec)C(excisc)C(uscorec)C(agroupc)C(surrc)C(erasc)C(normc)C(somec)
@@ -45,6 +71,15 @@ enum t_class
 
 enum f_type { F0 F1 F2 F3 F4 f_type_top };
 
+/* h=uflag1 q=uflag2 b=uflag3 s=uflag4 */
+#define UF0 C(uf_none)
+#define UF1 C(uf_h)C(uf_q)C(uf_b)C(uf_s)
+#define UF2 C(uf_hq)C(uf_hb)C(uf_hs)C(uf_qb)C(uf_qs)C(uf_bs)
+#define UF3 C(uf_hqb)C(uf_hbs)C(uf_hqs)C(uf_qbs)
+#define UF4 C(uf_hqbs)
+
+enum uf_type { UF0 UF1 UF2 UF3 UF4 uf_type_top };
+
 #undef C
 
 struct fattr
@@ -56,6 +91,19 @@ struct fattr
 struct flags
 {
   enum f_type type;
+  int h;
+  int q;
+  int b;
+  int s;
+  int nattr;
+  struct token *t;
+  const char *atf;
+  struct fattr a[4];
+};
+
+struct uflags
+{
+  enum uf_type type;
   int h;
   int q;
   int b;
@@ -100,6 +148,8 @@ extern const char *const type_names[];
 extern struct token *tokens[];
 extern int last_token;
 enum f_type parse_flags(unsigned char *fptr, int *nflags);
+enum uf_type parse_uflags(unsigned char *fptr, int *unflags);
+int is_uflag(unsigned char *p);
 void print_token(struct token *tp);
 void showtoks(void);
 void tokcheck_init(void);
