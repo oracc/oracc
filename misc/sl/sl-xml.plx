@@ -8,7 +8,20 @@ binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 my $project = 'ogsl';
 my $proof = '';
 
-my @sortcodes = `sl-sortcodes.plx`; chomp @sortcodes;
+# you can say sl-xml.plx epsd2 01tmp/signdata.asl
+if ($#ARGV == 1) {
+    $project = shift @ARGV;
+}
+
+my $asl = shift @ARGV;
+if ($asl) {
+    unless (-e $asl) {
+	$asl = "00lib/$asl.asl";
+    }
+} else {
+    $asl = "00lib/ogsl.asl";
+}
+my @sortcodes = `sl-sortcodes.plx $asl`; chomp @sortcodes;
 my %sortcodes = ();
 foreach my $s (@sortcodes) {
     my($sign,@codes) = split(/\t/, $s);
@@ -19,14 +32,6 @@ foreach my $s (@sortcodes) {
 #print C Dumper \%sortcodes;
 #close(C);
 
-my $asl = shift @ARGV;
-if ($asl) {
-    unless (-e $asl) {
-	$asl = "00lib/$asl.asl";
-    }
-} else {
-    $asl = "00lib/ogsl.asl";
-}
 my $xid = 'x0000';
 my %sign_ids = (); sign_ids();
 
@@ -52,7 +57,7 @@ my $in_value = 0;
 my $post_form = 0;
 my $utf8 = undef;
 
-my $pi_file = '00lib/ogsl.asl';
+my $pi_file = $asl;
 
 print '<?xml version="1.0" encoding="utf-8"?>',"\n";
 print "<?file $pi_file?>";

@@ -17,6 +17,7 @@ project=`oraccopt`
     for a in xml www pub ; do
 	ln -sf $ORACC/$a/$project/signlist 02$a
     done
+    mkdir -p 01bld/www
 )
 cp -a 00lib/signlist-config.xml signlist/00lib/config.xml
 cp -a 00lib/signlist-parameters.xml signlist/00web/00config/parameters.xml

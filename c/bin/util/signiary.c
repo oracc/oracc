@@ -30,7 +30,6 @@ incr_val(Hash_table *h, const unsigned char *v)
 static void
 sH(void *userData, const char *name, const char **atts)
 {
-  
   if (name[22] == 'f'
       && (!strcmp(name, "http://oracc.org/ns/xtf/1.0:transliteration")
 	  || !strcmp(name, "http://oracc.org/ns/xtf/1.0:composite")))
