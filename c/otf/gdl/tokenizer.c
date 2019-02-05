@@ -155,7 +155,7 @@ const char *const type_names[] =
 const char *const type_data[] =
   {
     "(nothing)",
-    "&", NULL, ",", NULL, NULL, NULL,
+    "&", NULL, ",", NULL, NULL, NULL, NULL,
     "%", "$", "~", 
     "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",
     "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",
