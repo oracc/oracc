@@ -261,8 +261,9 @@ sub
 dump_db {
     unlink "$dbdir/$dbname";
 #    tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
-#	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
-    my $ix = ORACC::SE::Indexer::index('ogsl','OGSL Index','x1',0,
+    #	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
+    my $ixname = "\U$project". ' Index';
+    my $ix = ORACC::SE::Indexer::index($project,$ixname,'x1',0,
 				       [ qw/h aka c cinit clast contains contained forms multi mod link/ ],
 				       [], 0, 10000, 0, 1);
     my %db = %$ix;

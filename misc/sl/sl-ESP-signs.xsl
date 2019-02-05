@@ -121,7 +121,7 @@
 
 <xsl:template match="sl:glo">
   <xsl:for-each select="*">
-    <h4 class="ogsl-glo">
+    <h3 class="ogsl-glo">
       <xsl:choose>
 	<xsl:when test="@type='s'"><xsl:text>Independent</xsl:text></xsl:when>
 	<xsl:when test="@type='i'"><xsl:text>Initial</xsl:text></xsl:when>
@@ -129,7 +129,7 @@
 	<xsl:when test="@type='f'"><xsl:text>Final</xsl:text></xsl:when>
 	<xsl:otherwise><xsl:message>sl:glo with unknown @type <xsl:value-of select="@type"/></xsl:message></xsl:otherwise>
       </xsl:choose>
-    </h4>
+    </h3>
     <table>
       <xsl:apply-templates/>
     </table>
