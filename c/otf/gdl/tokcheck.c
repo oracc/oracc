@@ -224,6 +224,7 @@ tokcheck_init()
 	  allow_token(t,norm);
 	  break;
 	case flag:
+	  allow_token(t,uflag);
 	case uflag:
 	  allow_token(t,norm);
 	  allow_token(t,prox);

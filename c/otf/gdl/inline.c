@@ -2029,9 +2029,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    case ftype:
 	      break;
 	    case flag:
-	    case uflag:
 	      /* in meta belonging to corr allow ? */
 	      warning("misplaced flag");
+	      break;
+	    case uflag:
+	      if (tokens[start-1]->type != flag)
+		warning("misplaced uflag");
 	      break;
 	    case prox:
 	      warning("misplaced prox");
