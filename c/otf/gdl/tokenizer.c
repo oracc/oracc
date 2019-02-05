@@ -1085,6 +1085,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 				      int tokrover = tokindex, damagc_tok;
 				      while (tokrover 
 					     && tokens[tokrover-1]->type != flag
+					     && tokens[tokrover-1]->type != uflag
 					     && tokens[tokrover-1]->class != text
 					     && tokens[tokrover-1]->type != ellipsis
 					     )
@@ -2364,7 +2365,7 @@ tokenize_grapheme(register unsigned char*l,
       l -= 3;
       *following = l;
     }
-#if 0
+#if 1
   while (gp && *gp && (l - *gp) >= 3
 	 && is_uflag(&l[-3]))
     {

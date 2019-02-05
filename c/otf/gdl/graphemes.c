@@ -1682,6 +1682,7 @@ numerical(register unsigned char *g)
   unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g;
   while (*g && '(' != *g && '@' != *g && '~' != *g)
     ++g;
+  
   if ('(' == *g)
     {
       unsigned char *gsaveo = g;
