@@ -11,7 +11,7 @@ const char *xsltproc = "/usr/bin/xsltproc";
 extern int options(int, char**,const char*);
 extern int optind;
 
-static int html_mode = 0, sig_fixer = 0, unwrap_html = 0;
+static int html_mode = 0, sig_fixer = 0, unwrap_html = 0, htmlid = 0;
 static int cued_printStart = 0, need_gdf_closer = 0;
 
 static const char *project = NULL, *xsl = NULL;
@@ -132,7 +132,7 @@ printEnd(struct frag *frag, const char *name)
 void
 gdf_sH(void *userData, const char *name, const char **atts)
 {
-  const char *xid = get_xml_id(atts);
+  const char *xid = (htmlid ? findAttr(atts, "id") : get_xml_id(atts));
 
   if (unwrap_html)
     {
@@ -201,7 +201,7 @@ main(int argc, char **argv)
 {
   FILE *outfp = stdout;
 
-  options(argc, argv, "hp:sux:");
+  options(argc, argv, "hHp:sux:");
   
   if (xsl)
     {
@@ -225,13 +225,14 @@ int verbose = 0;
 const char *prog = "xfrag";
 int major_version = 1;
 int minor_version = 0;
-const char *usage_string = " [-h -s] [-p PROJECT] [XML_FILE] [XML_ID]";
+const char *usage_string = " [-h -H -s] [-p PROJECT] [XML_FILE] [XML_ID]";
 int
 opts(int argc, char *arg)
 {
   switch (argc)
     {
     case 'h': html_mode = 1; break;
+    case 'H': htmlid = 1; break;
     case 'p': project = arg; break;
     case 's': sig_fixer = 1; break;
     case 'u': unwrap_html = 1; break;

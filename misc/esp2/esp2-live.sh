@@ -49,6 +49,9 @@ rm -f 02www/_test
 # note: addition of / to $espdev here is deliberate
 cp -Rv $espdev/* 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
 
+# copy files for revised signlist interface
+cp -fa 00web/slmain.html 00web/slform.html $webdir
+
 cp -fp 00lib/thumb.png $webdir
 p3-colours.plx $webdir
 

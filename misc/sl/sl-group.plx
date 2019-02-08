@@ -26,7 +26,7 @@ open(EM,'>02xml/sl-grouped.xml'); select EM;
 
 print '<signlist xmlns="http://oracc.org/ns/sl/1.0" xmlns:sl="http://oracc.org/ns/sl/1.0" xmlns:g="http://oracc.org/ns/gdl/1.0">';
 foreach my $g (sort { &kcmp; } keys %groups) {
-    my $lxid = 'L'.sprintf("%04d", ord($g));
+    my $lxid = 'l'.sprintf("%04d", ord($g));
     print "<letter name=\"$g\" title=\"$g\" xml:id=\"$lxid\">";
     my %sgroups = ();
     foreach my $s (@{$groups{$g}}) {

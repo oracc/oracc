@@ -114,7 +114,7 @@ main(int argc, char **argv)
 {
   const char *fname[2];
 
-  options(argc,argv,"bcdgno:p:su");
+  options(argc,argv,"bcdgno:p:sux");
 
   if (!stdin_input)
     {

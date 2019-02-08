@@ -133,7 +133,9 @@
           <xsl:value-of select="$current-page/esp:title"/>
         </h1>
         <!-- process rest of content -->
-        <xsl:apply-templates/>
+	<div id="innerContent">
+          <xsl:apply-templates/>
+	</div>
         <!-- references and further readings -->
         <xsl:call-template name="references"/>
         <!-- author credits and citation info -->

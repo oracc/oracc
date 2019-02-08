@@ -64,7 +64,7 @@
 		       | abbr | acronym | br | h2 | h3 | code | kbd 
 		       | table | th | tr | td | thead | tbody | caption | tfoot
 		       | dl | dd | dt | strong | style | sup | sub | address 
-		       | object | param | embed | div | script | small 
+		       | object | param | embed | div | script | small | iframe
 		       | span | form | input | select | hr | audio | source">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
@@ -74,7 +74,7 @@
 
   <!-- strip unrecognised tags and warn -->
   <xsl:template match="*">
-    <xsl:message>	WARNING! Unrecognised element '<xsl:value-of select="name ()"/>' was filtered.</xsl:message>
+    <xsl:message>	esp2 WARNING! Unrecognised element '<xsl:value-of select="name ()"/>' was filtered.</xsl:message>
     <xsl:apply-templates/>
   </xsl:template>
 

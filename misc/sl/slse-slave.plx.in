@@ -220,7 +220,7 @@ if ($pr) {
 sub
 sign_frame {
     inter_frame_divs();
-    print "<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/ogsl/signs/$_[0].html\"> </iframe>";
+    print "<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/$project/signs/$_[0].html\"> </iframe>";
     close_frame_divs();
 }
 
