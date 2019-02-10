@@ -82,9 +82,9 @@ sl(char *ctext)
 
   if (!grapheme || !*grapheme)
     grapheme = "#none";
-  if (!extension || !*extension)
+  if (!extension || !*extension || !strcmp(extension, "sign"))
     extension = "#none";
-
+  
   fprintf(stderr, "sl[2]: grapheme=%s; extension=%s\n", grapheme, extension);
 
   if (!sl_valid_extension(extension) || !sl_valid_grapheme(grapheme))

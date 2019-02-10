@@ -24,6 +24,8 @@ GetOptions(
     'project:s'=>\$project
     ) || die;
 
+$extension = '' if $extension eq 'sign';
+
 # If the project actually has a signlist use that, otherwise reset project to ogsl
 $ixproject = $project;
 if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist") {
@@ -395,7 +397,7 @@ esp_printhtml {
     }
     my $letter = letter_of($id);
     my $html = "http://@@ORACC_HOST@@/$ixproject/signlist/$letter/$id/index.html";
-    print "<p><a href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
+    print "<p><a target=\"slmain\" href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
 }
 
 1;
