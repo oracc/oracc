@@ -23,7 +23,7 @@ cp -a 00lib/signlist-config.xml signlist/00lib/config.xml
 cp -a 00lib/signlist-parameters.xml signlist/00web/00config/parameters.xml
 cp -a 00lib/signlist-home.xml signlist/00web/home.xml
 cp -a 00lib/slform.html signlist/00web/
-cp -a 00lib/signlist-projesp.css signlist/00res/css/projesp.js
+cp -a 00lib/signlist-projesp.css signlist/00res/css/projesp.css
 cp -a 00lib/signlist-sl.css signlist/00res/css/sl.css
 cp -a 00lib/signlist-projesp.js signlist/00res/js/projesp.js
 cp -a 00lib/signlist-sl.js signlist/00res/js/sl.js

@@ -108,7 +108,7 @@
 	<h2 class="ogsl-glo">Glossary Attestations</h2>
 	<xsl:for-each select="sl:v">
 	  <xsl:if test="sl:glo">
-	    <h3 class="ogsl-glo">Value <span class="ogsl-glo-value"><xsl:value-of select="@n"/></span></h3>
+	    <h2 class="psl-e"><span class="psl-ahead"><xsl:value-of select="@n"/></span></h2>
 	    <xsl:apply-templates/>
 	  </xsl:if>
 	</xsl:for-each>
@@ -133,14 +133,16 @@
 	<xsl:otherwise><xsl:message>sl:glo with unknown @type <xsl:value-of select="@type"/></xsl:message></xsl:otherwise>
       </xsl:choose>
     </h3>
-    <table>
+    <table class="psl">
       <xsl:apply-templates/>
     </table>
   </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="sl:glo-inst">
-  <tr><td><xsl:apply-templates/></td><td><xsl:value-of select="@cfgw"/></td></tr>
+  <tr><td class="psl-eleft"><xsl:apply-templates/></td
+  ><td class="psl-eright"
+  ><esp:link hide-print="yes" url="/epsd2/cbd/sux/{@ref}.html"><xsl:value-of select="@cfgw"/></esp:link></td></tr>
 </xsl:template>
 
 <xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>
