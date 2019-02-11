@@ -13,11 +13,13 @@
 <xsl:include href="esp2-chars-symbols-maths-greek.xslt"/>
 <xsl:include href="esp2-chars-markup-internationalization.xslt"/>
 <xsl:include href="esp2-dumb-quotes.xslt"/>
+
+<!--	doctype-system="/xhtml1-strict.dtd"
+	doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"  -->
+
 <xsl:output	
 	name="xhtml"
 	method="xhtml" 
-	doctype-system="/xhtml1-strict.dtd"
-	doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" 
 	encoding="utf-8"
 	include-content-type="no"
 	indent="no"
@@ -45,7 +47,7 @@
 			<xsl:text>index.html</xsl:text>
 		</xsl:variable>
 		<xsl:message>ESP processing <xsl:value-of select="$output-file"/></xsl:message>
-		<xsl:result-document href="{$output-file}" format="xhtml" >
+		<xsl:result-document href="{$output-file}" format="xhtml">
 			<xsl:copy copy-namespaces="no" exclude-result-prefixes="esp">
 				<xsl:attribute name="xml:lang">en</xsl:attribute>
 				<xsl:attribute name="lang">en</xsl:attribute>

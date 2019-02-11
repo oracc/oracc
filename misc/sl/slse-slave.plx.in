@@ -15,6 +15,7 @@ my $caller = '';
 my $extension = '';
 my $grapheme = '';
 my $project = 'ogsl';
+my $ixproject = '';
 
 GetOptions(
     'caller:s'=>\$caller,
@@ -23,10 +24,29 @@ GetOptions(
     'project:s'=>\$project
     ) || die;
 
-my $db_file = "@@ORACC@@/pub/ogsl";
-my $db_name = 'ogsl';
+$extension = '' if $extension eq 'sign';
 
-my $letterfile = "@@ORACC@@/pub/ogsl/letters.tab";
+# If the project actually has a signlist use that, otherwise reset project to ogsl
+$ixproject = $project;
+if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist") {
+    ; # OK
+} else {
+    $ixproject =~ s#/signlist##;
+    if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist") {
+	; # OK
+    } else {
+	$ixproject = 'ogsl';
+    }    
+}
+
+my $db_file = "@@ORACC@@/pub/$ixproject";
+my $db_name = $ixproject;
+
+my $letterfile = "@@ORACC@@/pub/$ixproject/letters.tab";
+
+warn "slse-slave: dbfile = $db_file\n";
+warn "slse-slave: db_name = $db_name\n";
+warn "slse-slave: letterfile = $letterfile\n";
 
 my $www = "@@ORACC_HOST@@/www";
 
@@ -133,7 +153,7 @@ if ($pr) {
 	my $pr1 = $pr;
 	$pr1 =~ s/\s.*$//;
 	my $letter = letter_of($pr1);
-	my $html = "http://@@ORACC_HOST@@/$project/signlist/$letter/$pr1/index.html";
+	my $html = "http://@@ORACC_HOST@@/$ixproject/signlist/$letter/$pr1/index.html";
 	warn "slse-slave: caller=esp so returning $html\n";
 #	use CGI;
 #	my $q = new CGI;
@@ -186,11 +206,6 @@ if ($pr) {
 	html_header();
 	sign_frame($pr);
 	html_trailer();
-#	if ($project ne 'ogsl') {
-#	    print redirect("/$project/sl/brief/$pr.html");
-#	} else {
-#	    print redirect("/ogsl/signs/$pr.html");
-#	}
     }
 } elsif ($grapheme eq '#none') {
     html_header();
@@ -207,7 +222,7 @@ if ($pr) {
 sub
 sign_frame {
     inter_frame_divs();
-    print "<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/ogsl/signs/$_[0].html\"> </iframe>";
+    print "<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/$project/signs/$_[0].html\"> </iframe>";
     close_frame_divs();
 }
 
@@ -294,7 +309,7 @@ is_signlist {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl -k '$_[0]'`
+    `@@ORACC@@/bin/sl -p $ixproject -k '$_[0]'`
 }
 
 sub
@@ -381,8 +396,8 @@ esp_printhtml {
 	$p = '';
     }
     my $letter = letter_of($id);
-    my $html = "http://@@ORACC_HOST@@/$project/signlist/$letter/$id/index.html";
-    print "<p><a href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
+    my $html = "http://@@ORACC_HOST@@/$ixproject/signlist/$letter/$id/index.html";
+    print "<p><a target=\"slmain\" href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
 }
 
 1;

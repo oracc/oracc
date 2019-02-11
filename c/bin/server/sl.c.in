@@ -82,14 +82,14 @@ sl(char *ctext)
 
   if (!grapheme || !*grapheme)
     grapheme = "#none";
-  if (!extension || !*extension)
+  if (!extension || !*extension || !strcmp(extension, "sign"))
     extension = "#none";
-
+  
   fprintf(stderr, "sl[2]: grapheme=%s; extension=%s\n", grapheme, extension);
 
   if (!sl_valid_extension(extension) || !sl_valid_grapheme(grapheme))
     do404();
 
   /* run signlist UI */
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/slse-slave.plx", "-caller", caller, "-extension", extension, "-grapheme", grapheme, NULL);
+  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/slse-slave.plx", "-caller", caller, "-project", project, "-extension", extension, "-grapheme", grapheme, NULL);
 }

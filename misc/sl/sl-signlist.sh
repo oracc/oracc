@@ -22,9 +22,12 @@ project=`oraccopt`
 cp -a 00lib/signlist-config.xml signlist/00lib/config.xml
 cp -a 00lib/signlist-parameters.xml signlist/00web/00config/parameters.xml
 cp -a 00lib/signlist-home.xml signlist/00web/home.xml
+cp -a 00lib/slmain.html 00lib/slform.html signlist/00web/
 cp -a 00lib/signlist-projesp.css signlist/00res/css/projesp.css
 cp -a 00lib/signlist-projesp.js signlist/00res/js/projesp.js
 xsltproc $ORACC/lib/scripts/sl-ESP-structure.xsl 02xml/sl-grouped.xml >signlist/00web/00config/structure.xml
 xsltproc $ORACC/lib/scripts/sl-ESP-letters.xsl 02xml/sl-grouped.xml
-xsltproc $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+xsltproc -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
 (cd signlist ; o2-portal.sh)
+sl-inner.sh
+sl-brief.sh

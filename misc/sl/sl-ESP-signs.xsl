@@ -14,8 +14,11 @@
 <!--<xsl:include href="formdiv.xsl"/>-->
 
 <xsl:include href="lex-sign-lookup.xsl"/>
+<xsl:include href="g2-gdl-HTML.xsl"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
+
+<xsl:param name="project"/>
 
 <xsl:template match="sl:sign">
   <ex:document href="{concat('signlist/00web/',@xml:id,'.xml')}"
@@ -121,7 +124,7 @@
 
 <xsl:template match="sl:glo">
   <xsl:for-each select="*">
-    <h4 class="ogsl-glo">
+    <h3 class="ogsl-glo">
       <xsl:choose>
 	<xsl:when test="@type='s'"><xsl:text>Independent</xsl:text></xsl:when>
 	<xsl:when test="@type='i'"><xsl:text>Initial</xsl:text></xsl:when>
@@ -129,15 +132,15 @@
 	<xsl:when test="@type='f'"><xsl:text>Final</xsl:text></xsl:when>
 	<xsl:otherwise><xsl:message>sl:glo with unknown @type <xsl:value-of select="@type"/></xsl:message></xsl:otherwise>
       </xsl:choose>
-    </h4>
+    </h3>
     <table>
       <xsl:apply-templates/>
     </table>
   </xsl:for-each>
 </xsl:template>
 
-<xsl:template match="sl:form">
-  <tr><td><xsl:value-of select="@n"/></td><td><xsl:value-of select="@cfgw"/></td></tr>
+<xsl:template match="sl:glo-inst">
+  <tr><td><xsl:apply-templates/></td><td><xsl:value-of select="@cfgw"/></td></tr>
 </xsl:template>
 
 <xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>
