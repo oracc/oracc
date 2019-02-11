@@ -303,8 +303,9 @@ tokcheck_init()
 	  allow_token(t,glosso);
 	  allow_token(t,notemark);
 	  break;
-	case linebreak:
 	case newline:
+	  allow_token(t,notemark);
+	case linebreak:
 	  allow_group(t,g_boundary);
 	  allow_group(t,g_opener);
 	  allow_token(t,flag);

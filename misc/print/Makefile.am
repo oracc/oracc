@@ -1,6 +1,7 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = chresto-index.sh mk-cbd-index.sh bki-HTML.sh r-labels.plx r-sort.plx
+bin_SCRIPTS = chresto-index.sh mk-cbd-index.sh bki-HTML.sh \
+	r-labels.plx r-sort.plx r-uniq.plx r-trim.plx
 css_DATA = chresto-index.css gloss.css
 
 scriptdata_DATA = chresto-index-TeX.xsl cbd-sort.xsl			\
@@ -9,7 +10,7 @@ scriptdata_DATA = chresto-index-TeX.xsl cbd-sort.xsl			\
 	chresto-sortcodes.xsl chresto-sortkeys.xsl			\
 	chresto-strip-cpd-refs.xsl index-HTML.xsl 			\
 	bki-subset.xsl bki-xis.xsl bki-xis-group.xsl bki-labels.xsl bki-sort.xsl \
-	bki-akk-HTML.xsl
+	bki-akk-HTML.xsl bki-qpn-HTML.xsl
 
 config_DATA = cbd-chresto.xcf
 

@@ -7,7 +7,7 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::XML;
 
 my %l = ();
-open(L,'labels.tab');
+open(L,'../labels.tab');
 while (<L>) {
     chomp;
     my($id,$lab) = split(/\t/,$_);
@@ -33,8 +33,9 @@ foreach my $rr (@rr) {
 	if ($l{$v}) {
 	    my $rl = $l{$v};
 	    $r->setAttribute('label1',$l{$v});
-	    $rl =~ s/^$rrl_rx\.//;
-	    $r->setAttribute('label2',"$rrl.$rl");
+	    $rl =~ s/^$rrl_rx[.:]//;
+	    my $punct = ($rl =~ /:/ ? '.' : ':');
+	    $r->setAttribute('label2',"$rrl$punct$rl");
 	} else {
 	    print "$v\n";
 	}

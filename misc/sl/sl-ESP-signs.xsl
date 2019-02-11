@@ -49,7 +49,7 @@
 </xsl:template>
 
 <xsl:template name="sign-or-form">
-  <div class="ogsl-{local-name(.)}">
+  <div iclass="ogsl-{local-name(.)}">
     <div class="ogsl-info">
 <!--
       <esp:sh>
@@ -104,7 +104,7 @@
     <xsl:call-template name="unicode-info"/>
     <xsl:apply-templates mode="rest"/>    
     <xsl:if test="count(sl:v)>0">
-      <div class="ogsl-glo">
+      <div id="glodata">
 	<h2 class="ogsl-glo">Glossary Attestations</h2>
 	<xsl:for-each select="sl:v">
 	  <xsl:if test="sl:glo">

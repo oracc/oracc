@@ -18,7 +18,7 @@
 #include "memblock.h"
 
 #define NEW_ERROR_RECOVERY
-
+extern int gdl_fragment_ok;
 struct lang_context *saved_lang;
 
 #define hash_lookup(keyp,tablep) hash_find(tablep,keyp)
@@ -1585,6 +1585,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 	    case '-':
 	    case ':':
 	    case '+':
+#if 0
+	      if (tokindex == 0 && !gdl_fragment_ok)
+		{
+		  /* Really should make a carrier for the initial hyphen */
+		  vwarning("line cannot start with boundary character '%c'", *l);
+		}
+#endif
 	      if (last_text_or_bound == bound)
 		{
 		  /* pass silently over -- in saa_mode */

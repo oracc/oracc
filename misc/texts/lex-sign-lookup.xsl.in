@@ -15,7 +15,7 @@
   <xsl:choose>
     <xsl:when test="string-length($test-sign)>0">
       <xsl:message>have <xsl:value-of select="$test-sign"/></xsl:message>
-      <div>
+      <div id="lexdata">
 	<h2 class="lex-sign">Signlist data</h2>      
 	<xsl:call-template name="emit-data"/>
       </div>
