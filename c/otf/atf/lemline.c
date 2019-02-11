@@ -556,7 +556,7 @@ lem_serialize(FILE *fp)
 	  for (j = 0; j < lem_lines[i].forms_used; ++j)
 	    {
 	      /* use the ilem_form that was processed by XCL */
-	      struct ilem_form *f = lem_lines[i].forms[j]->x->f;
+	      struct ilem_form *f = lem_lines[i].forms[j]->x ? lem_lines[i].forms[j]->x->f : lem_lines[i].forms[j]->i;
 	      static struct serializer_frame sframe;
 
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))

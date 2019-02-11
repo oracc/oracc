@@ -10,7 +10,8 @@ replace_finds(struct ilem_form *ilemp, struct f2**f2s, int nf2s)
   if (!ilemp->finds)
     ilemp->finds = malloc(nf2s * sizeof(struct ilem_form*)); /* FIXME: this should use better mem alloc */
   for (i = 0; i < nf2s; ++i)
-    ilemp->finds[i] = f2s[i]->owner;
+    if (f2s[i]->owner) /* COF TAILs have null owner; is this right? */
+      ilemp->finds[i] = f2s[i]->owner;
   ilemp->fcount = nf2s;
 }
 

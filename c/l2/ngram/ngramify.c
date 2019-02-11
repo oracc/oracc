@@ -204,7 +204,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 	  if (match_nle(nle[i_nle], clnodes, i, nclnodes))
 	    {
 	      int first_non_d;
-	      ngdebug("[ngramify] NLE#%d match triggers %s",
+	      ngdebug("[ngramify] NLE#%d match triggers %s:%d; user=%s; action=%s",
 		      nle[i_nle]->priority,
 		      nle[i_nle]->file,
 		      nle[i_nle]->lnum,
