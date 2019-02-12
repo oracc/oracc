@@ -855,7 +855,7 @@
 </xsl:template>
 
 <xsl:template name="g-meta-before">
-  <xsl:message>g-meta-before: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
+<!--  <xsl:message>g-meta-before: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message> -->
     <xsl:if test="@gdl:breakStart">
     <anchor type="breakStart">
       <xsl:copy-of select="@xml:id"/>
@@ -909,7 +909,7 @@
 </xsl:template>
 
 <xsl:template name="g-meta-after">
-  <xsl:message>g-meta-after: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
+<!--  <xsl:message>g-meta-after: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message> -->
   <xsl:if test="@gdl:hc">
     <anchor type="damage">
       <xsl:attribute name="xml:id">
@@ -943,7 +943,7 @@
 
 <xsl:template name="g-with-meta">
   <xsl:param name="nodes"/>
-  <xsl:message>g-with-meta: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
+<!--  <xsl:message>g-with-meta: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message> -->
   <xsl:if test="@gdl:breakStart">
     <anchor type="breakStart">
       <xsl:copy-of select="@xml:id"/>
