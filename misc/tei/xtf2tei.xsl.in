@@ -620,7 +620,7 @@
     <!--alternation/reordering/ligature need better TEI-ing-->
     <xsl:when test="@gdl:type='alternation'">
       <xsl:for-each select="*">
-	<xsl:apply-templates select="."/>
+	<xsl:apply-templates mode="gsub" select="."/>
 	<xsl:value-of select="@gdl:delim"/>
 <!--	<xsl:if test="not(position()=last())">
 	  <xsl:text>/</xsl:text>
@@ -630,7 +630,7 @@
     </xsl:when>
     <xsl:when test="@gdl:type='reordering'">
       <xsl:for-each select="*">
-	<xsl:apply-templates select="."/>
+	<xsl:apply-templates mode="gsub" select="."/>
 	<xsl:value-of select="@gdl:delim"/>
 <!--
 	<xsl:if test="not(position()=last())">
@@ -641,19 +641,21 @@
     </xsl:when>
     <xsl:when test="@gdl:type='ligature'">
       <xsl:for-each select="*">
-	<xsl:apply-templates select="."/>
+	<xsl:apply-templates mode="gsub" select="."/>
+<!--
 	<xsl:if test="not(position()=last())">
 	  <xsl:text>+</xsl:text>
 	</xsl:if>
+-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@gdl:type='group'">
       <!-- FIXME: should probably do some kind of TEI grouping here -->
-      <xsl:apply-templates/>
+      <xsl:apply-templates mode="gsub"/>
     </xsl:when>
     <xsl:when test="@gdl:type='implicit-ligature'">
       <!-- this is : used as zero rather than punctuation -->
-      <xsl:apply-templates/>
+      <xsl:apply-templates mode="gsub"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:message>gdl:gg type <xsl:value-of select="@gdl:type"/> not handled</xsl:message>
@@ -783,7 +785,7 @@
   </choice>
 </xsl:template>
 
-<xsl:template match="gdl:d|gdl:n|gdl:s|gdl:v|gdl:x">
+<xsl:template match="gdl:d|gdl:n|gdl:v|gdl:s|gdl:x">
   <xsl:call-template name="g-with-meta">
     <xsl:with-param name="nodes" select="."/>
   </xsl:call-template>
@@ -822,7 +824,6 @@
       </c>
     </xsl:when>
     <xsl:when test="self::gdl:s">
-      <!--      <xsl:message>s = <xsl:value-of select="text()"/></xsl:message> -->
       <xsl:if test="ancestor::gdl:d/@gdl:pos = 'post'">.</xsl:if>
       <xsl:variable name="s-subtype">
 	<xsl:choose>
@@ -854,6 +855,7 @@
 </xsl:template>
 
 <xsl:template name="g-meta-before">
+  <xsl:message>g-meta-before: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
     <xsl:if test="@gdl:breakStart">
     <anchor type="breakStart">
       <xsl:copy-of select="@xml:id"/>
@@ -907,6 +909,7 @@
 </xsl:template>
 
 <xsl:template name="g-meta-after">
+  <xsl:message>g-meta-after: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
   <xsl:if test="@gdl:hc">
     <anchor type="damage">
       <xsl:attribute name="xml:id">
@@ -940,6 +943,7 @@
 
 <xsl:template name="g-with-meta">
   <xsl:param name="nodes"/>
+  <xsl:message>g-with-meta: <xsl:value-of select="name()"/> = <xsl:value-of select="@xml:id"/></xsl:message>
   <xsl:if test="@gdl:breakStart">
     <anchor type="breakStart">
       <xsl:copy-of select="@xml:id"/>
