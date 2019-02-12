@@ -74,6 +74,8 @@ for a in [a-z][a-z0-9][a-z0-9][a-z0-9]*; do
 done
 
 cd ${ORACC_BUILDS}
+echo serving $project from `pwd`
+echo subs=$subs
 tar --exclude 00any --exclude 00git --exclude 00res --exclude estindex --exclude espdev \
     --exclude '*.dbi' --exclude '*.dbh' --exclude pqids.lst \
     $subs \

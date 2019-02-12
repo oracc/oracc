@@ -1,7 +1,13 @@
 #!/bin/sh
 project=`proj-from-conf.sh`
-if [ -e $ORACC/bin/$project-rebuild.sh ]; then
-    exec $ORACC/bin/$project-rebuild.sh
+hproj=`/bin/echo -n $project | tr / -`
+
+echo o2-rebuild project = $project
+echo o2-rebuild hproj = $hproj
+
+if [ -e $ORACC/bin/$hproj-rebuild.sh ]; then
+    echo o2-rebuild.sh redirecting to $hproj-rebuild.sh
+    exec $ORACC/bin/$hproj-rebuild.sh
     exit 1
 fi
 type=`oraccopt . type`
