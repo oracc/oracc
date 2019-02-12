@@ -560,11 +560,13 @@
 	</xsl:when>
 	<xsl:when test="not($pos='X') and not($pos='U') and not($pos='u')
 			and not($pos='n') and not($pos='L')">
-	  <xsl:apply-templates select="id(../@ref)"/>
+			<!--<xsl:apply-templates select="id(../@ref)"/>-->
+			<xsl:call-template name="w"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <!-- <xsl:message>chose otherwise</xsl:message> -->
-	  <xsl:apply-templates select="id(../@ref)"/>
+	  <xsl:call-template name="w"/>
+	  <!-- <xsl:apply-templates select="id(../@ref)"/> -->
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
