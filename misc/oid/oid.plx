@@ -18,12 +18,14 @@ my $oid_dir = "$ENV{'ORACC_BUILDS'}/oid";
 my $oid_file = "$oid_dir/oid.tab";
 my $oid_lock = "$oid_dir/.oidlock";
 my %oid_ids = ();
+my %oid_keys = ();
 my %oid_doms = ();
 my %oid_key = ();
 my %oid_ext = ();
 my @oid_add = ();
 my $oid_top = 'o0000000';
 my $project = '';
+my @res = ();
 my $status = 0;
 my $xid_template = 'x0000000';
 
@@ -40,33 +42,41 @@ GetOptions(
     'project:s' => \$project,
     );
 
-fail("must give project with -project\n") unless $project;
-fail("must give domain with -domain\n") unless $domain;
-fail("must give domain with -domain\n") unless $domain;
+fail("must give project with -project") unless $project;
+fail("must give domain with -domain") unless $domain;
 
 if ($keyfile) {
-    open(K,$keyfile) || die("$0: can't open key file $keyfile\n");
+    open(K,$keyfile) || fail("can't open key file $keyfile");
     @keys = (<K>);
     chomp(@keys);
 } else {
-    @keys = @ARGV;
+    @keys = (<>);
 }
+chomp @keys;
 
 oid_load();
-oid_check();
+
+oid_keys();
+
 if ($status) {
-    fail("errors in processing. Stop.\n");
+    fail("errors in processing. Stop.");
 }
+
 if ($assign) {
-    fail("project $project lacks authority to assign IDs in domain $domain\n")
+    fail("project $project lacks authority to assign IDs in domain $domain")
 	unless $domain_authorities{$domain} eq $project;
     oid_add();
+
 # print Dumper \%oid_ids;
-# print Dumper \%oid_key;
+# print Dumper \%oid_keys;
+# print Dumper \%oid_doms;
 # print Dumper \%oid_ext;
 # exit 1;
+
     oid_dump() unless $status || $nowrite;
 }
+
+print @res;
 
 unlink $oid_lock;
 
@@ -81,9 +91,32 @@ sub bad {
 
 sub fail {
     unlink $oid_lock;
-    my $f = $errfile || '';
+    my $f = $errfile || $0;
     $. = '' unless defined $.;
     die "$f:$.: ", @_, "\n";
+}
+
+sub oid_add {
+    foreach my $a (@oid_add) {
+	my($dom,$key,$typ,$ext) = @$a;
+	++$oid_top;
+	$oid_keys{$oid_top} = $key;
+	$oid_doms{$oid_top} = $dom;
+	$oid_ids{$dom,$key} = $oid_top;
+	$oid_ext{$dom,$key} = [ $typ, $ext ];
+	push @res, "$key\t$oid_top\n";
+    }
+}
+
+sub oid_keys {
+    foreach my $key (@keys) {
+	my($d,$k,$t,$x) = split(/\t/, $key);
+	if ($oid_ids{$d,$k}) {
+	    push @res, "$k\t$oid_key{$d,$k}\n";
+	} else {
+	    push @oid_add, [ $d, $k, $t, $x ];
+	}
+    }
 }
 
 sub oid_lock {
@@ -100,17 +133,6 @@ sub oid_lock {
     open OUT, '>$oid_lock';
     print OUT $$;
     close OUT;
-}
-
-sub oid_add {
-    foreach my $a (@oid_add) {
-	my($dom,$key,@f) = @$a;
-	++$oid_top;
-	$oid_ids{$oid_top} = $key;
-	$oid_doms{$oid_top} = $dom;
-	$oid_key{$dom,$key} = $oid_top;
-	$oid_ext{$dom,$key} = [ @f ];
-    }
 }
 
 sub oid_check {
@@ -135,13 +157,14 @@ sub oid_dump {
     $oid_file =~ s/tab$/xml/;
     open(X,">$oid_file");
     print X '<oids>';
-    foreach my $oid (sort {$a <=> $b} keys %oid_ids) {
-	my @e = @{$oid_ext{$oid_ids{$oid}}};
+    foreach my $oid (sort {$a cmp $b} keys %oid_keys) {
+	my @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
+	my $e1 = '';
 	if ($e[0] eq 'sense') {
-	    $e[1] = $oid_key{$oid_doms{$oid},$e[1]};
+	    $e1 = $oid_key{$oid_doms{$oid},$e[1]};	    
 	}
-	print T "$oid\t$oid_doms{$oid}\t$oid_ids{$oid}\t\n";
-	my $xk = xmlify($oid_ids{$oid});
+	print T "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
+	my $xk = xmlify($oid_keys{$oid});
 	print X "<oid id=\"$oid\" dom=\"$oid_doms{$oid}\" key=\"$xk\"/>";
     }
     close(T);
@@ -162,23 +185,25 @@ sub oid_load {
     if (-r $oid_file) {
 	open(O,$oid_file) || die "$0: unable to open $oid_file for read\n";
 	while (<O>) {
-	    my($oid,$dom,$key,@f) = oid_parse($_);
+	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
 	    oid_validate($oid,$dom,$key) && next;
 	    $oid_top = $oid if $oid gt $oid_top;
 	    # load only validations--these don't apply when reading check data
-	    if ($oid_ids{$oid}) {
-		bad("duplicate OID $oid; already defined for $oid_ids{$oid}");
+	    if ($oid_keys{$oid}) {
+		bad("duplicate OID $oid; already defined for $oid_keys{$oid} in domain $oid_doms{$oid}");
 		next;
+	    } else {
+		$oid_keys{$oid} = $key;
 	    }
 	    if ($oid_key{$dom,$key}) {
 		bad("duplicate KEY $key; already defined in DOMAIN $dom for $oid_key{$dom,$key}");
 		next;
 	    }
 	    if ($oid =~ /^o\d+$/) {
-		$oid_ids{$oid} = $key;
+		$oid_ids{$dom,$key} = $oid;
 	    }
 	    $oid_key{$dom,$key} = $oid;
-	    $oid_ext{$dom,$key} = [ @f ];
+	    $oid_ext{$dom,$key} = [ $typ, $ext ];
 	}
 	close(O);
 	$errfile = $keyfile || '<keys>';
@@ -200,9 +225,9 @@ sub oid_validate {
 	return 1;
     }
     if ($oid) {
-	if ($oid_ids{$oid}) {
-	    if ($oid_ids{$oid} ne $key) {
-		return bad("OID $oid should have KEY $oid_ids{$dom,$key} not $key");
+	if ($oid_keys{$oid}) {
+	    if ($oid_keys{$oid} ne $key || $oid_doms{$oid} ne $dom) {
+		return bad("OID $oid should have KEY $oid_keys{$dom,$key} not $key");
 	    }
 	} else {
 	    if ($oid_key{$dom,$key}) {
