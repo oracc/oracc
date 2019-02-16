@@ -13,6 +13,7 @@ my $domain = '';
 my $errfile = '';
 my $keyfile = '';
 my @keys = ();
+my $nowrite = 0;
 my $oid_dir = "$ENV{'ORACC_BUILDS'}/oid";
 my $oid_file = "$oid_dir/oid.tab";
 my $oid_lock = "$oid_dir/.oidlock";
@@ -33,14 +34,15 @@ my %domain_authorities = (
 
 GetOptions(
     assign  => \$assign,
-    domain  => "\$domain:s",
-    keyfile => "\$keyfile:s",
-    project => "\$project:s",
+    'domain:s'  => \$domain,
+    'keyfile:s' => \$keyfile,
+    nowrite => \$nowrite,
+    'project:s' => \$project,
     );
 
-fail("$0: must give project with -project\n") unless $project;
-fail("$0: must give domain with -domain\n") unless $domain;
-fail("$0: must give domain with -domain\n") unless $domain;
+fail("must give project with -project\n") unless $project;
+fail("must give domain with -domain\n") unless $domain;
+fail("must give domain with -domain\n") unless $domain;
 
 if ($keyfile) {
     open(K,$keyfile) || die("$0: can't open key file $keyfile\n");
@@ -53,17 +55,17 @@ if ($keyfile) {
 oid_load();
 oid_check();
 if ($status) {
-    fail("$0: errors in processing. Stop.\n");
+    fail("errors in processing. Stop.\n");
 }
 if ($assign) {
-    fail("$0: project $project lacks authority to assign IDs in domain $domain\n")
+    fail("project $project lacks authority to assign IDs in domain $domain\n")
 	unless $domain_authorities{$domain} eq $project;
     oid_add();
 # print Dumper \%oid_ids;
 # print Dumper \%oid_key;
 # print Dumper \%oid_ext;
 # exit 1;
-    oid_dump() unless $status;
+    oid_dump() unless $status || $nowrite;
 }
 
 unlink $oid_lock;
@@ -79,7 +81,9 @@ sub bad {
 
 sub fail {
     unlink $oid_lock;
-    die "$errfile:$.: ", @_, "\n";
+    my $f = $errfile || '';
+    $. = '' unless defined $.;
+    die "$f:$.: ", @_, "\n";
 }
 
 sub oid_lock {
