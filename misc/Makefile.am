@@ -34,6 +34,7 @@ SUBDIRS = \
 	nsa \
 	o2 \
 	ods \
+	oid \
 	ol \
 	ood \
 	oss2 \
