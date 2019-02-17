@@ -22,6 +22,7 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     selemx -p $project <01bld/lists/lemindex.lst
 fi
 if [ -s 02pub/sl/*.tsv ]; then
+    echo indexing signlist
     if [ "$project" == "ogsl" ]; then
 	sl-index -boot
     else
