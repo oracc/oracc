@@ -161,13 +161,14 @@ sub oid_dump {
 	my @e = ();
 	my $e1 = '';
 	if ($oid_ext{$domain,$oid_keys{$oid}}) {
-	    my @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
-	    my $e1 = '';
+	    @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
 	    if ($e[0] eq 'sense') {
 		$e1 = $oid_ids{$oid_doms{$oid},$e[1]};	    
+	    } else {
+		$e1 = '';
 	    }
 	} else {
-	    $e[0] = '';
+	    $e[0] = 'X';
 	    $e1 = '';
 	}
 	print T "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
