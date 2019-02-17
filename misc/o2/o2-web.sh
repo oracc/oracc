@@ -1,5 +1,6 @@
 #!/bin/sh
 [ -r 01bld/cancel ] && exit 1
+[ -r .nobuild ] && exit 1
 shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
 # N.B.: can't create empty $webdir/cbd like this because it causes 

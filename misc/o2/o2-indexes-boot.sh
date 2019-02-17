@@ -22,7 +22,11 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     selemx -p $project <01bld/lists/lemindex.lst
 fi
 if [ -s 02pub/sl/*.tsv ]; then
-    sl-index 02pub/sl/*.tsv
+    if [ "$project" == "ogsl" ]; then
+	sl-index -boot
+    else
+	cat 02pub/sl/*.tsv | sl-index $project
+    fi
 fi
 for a in 02pub/cbd/[a-z]* ; do 
     lang=`basename $a`

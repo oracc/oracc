@@ -1,4 +1,8 @@
 #!/bin/sh
+if [ -r .nobuild ]; then
+    echo 'You are not allowed to build ogsl here; it can only be built on build-oracc. Stop.'
+    exit 1
+fi
 sl-oid.sh
 sl-xml.plx ogsl
 sl-group.plx
