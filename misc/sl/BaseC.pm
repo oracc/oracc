@@ -16,7 +16,7 @@ use NDBM_File;
 
 $ORACC::SL::report_all = 0;
 
-my $db_file = "@@ORACC@@/pub/ogsl";
+my $db_file = "@@ORACC@@/pub/ogsl/sl";
 my $db_name = 'ogsl';
 
 my %db = ();
@@ -67,7 +67,7 @@ init {
     return if $loaded;
 
     # check if the sldb exists
-    my $db_file = "@@ORACC@@/pub/ogsl";
+    my $db_file = "@@ORACC@@/pub/ogsl/sl";
     my $db_name = 'ogsl';
     if (-r "$db_file/$db_name.dbh") {
 	$loaded = 1;
@@ -149,7 +149,7 @@ sign_of {
     #    $n;
     my $tmp = $_[0];
     my $xid = '';
-    unless ($tmp =~ /^x/) {
+    unless ($tmp =~ /^o/) {
 	$tmp = "\L$tmp";
 	$xid = xid($tmp);
 	warn "sign_of: $_[0] => $tmp => $xid\n";

@@ -13,7 +13,7 @@ sl-index -boot
 xsltproc -stringparam project ogsl ${ORACC}/lib/scripts/sl-HTML.xsl 02xml/ogsl-sl.xml >02www/ogsl.html
 o2-portal.sh
 cp -p 00lib/alias-*.txt 02pub
-(cd 02xml ; rm -f ogsl.xml ; ln -sf ogsl-sl.xml ogsl.xml)
+(cd ${ORACC_BUILDS}/xml/ogsl ; rm -f ogsl.xml ; ln -sf ogsl-sl.xml ogsl.xml)
 pubfiles.sh ogsl
 serve-project.sh ogsl
 # host=`hostname`

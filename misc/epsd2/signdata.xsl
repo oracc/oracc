@@ -40,5 +40,11 @@
     <xsl:text>&#xa;</xsl:text>
   </xsl:for-each>
 </xsl:template>
-<xsl:template match="text()"/>
+
+<xsl:template match="*">
+  <xsl:apply-templates select="*"/>
+</xsl:template>
+
+<!--<xsl:template match="text()"/>-->
+
 </xsl:stylesheet>
