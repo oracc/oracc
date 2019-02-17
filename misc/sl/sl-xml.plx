@@ -2,6 +2,7 @@
 use warnings; use strict; use open ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
+use ORACC::OID;
 use Data::Dumper;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
@@ -12,6 +13,8 @@ my $proof = '';
 if ($#ARGV == 1) {
     $project = shift @ARGV;
 }
+
+my %oids = oid_load_domain('sl');
 
 my $asl = shift @ARGV;
 if ($asl) {

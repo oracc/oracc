@@ -69,10 +69,10 @@ if ($boot) {
 	warn "sl-db.plx: must install ogsl-sl.xml in $ENV{'ORACC'}/ogsl first. Stop.\n";
 	exit 1;
     }
-    $dbdir = "$ENV{'ORACC'}/pub/ogsl"; system 'mkdir', '-p', $dbdir;
+    $dbdir = "$ENV{'ORACC'}/pub/ogsl/sl"; system 'mkdir', '-p', $dbdir;
     $dbname = "ogsl-db";
 } else {
-    $dbdir = '02pub/'; system 'mkdir','-p',$dbdir;
+    $dbdir = '02pub/sl'; system 'mkdir','-p',$dbdir;
     $dbbase = shift @ARGV;
     unless ($dbbase) {
 	warn "sl-db.plx: must either give db-name or '-boot' on command line. Stop.\n";

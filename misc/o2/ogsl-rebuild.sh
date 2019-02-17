@@ -1,4 +1,5 @@
 #!/bin/sh
+sl-oid.sh
 sl-xml.plx ogsl
 sl-group.plx
 xsltproc ${ORACC}/lib/scripts/sl-letters-file.xsl 02xml/sl-grouped.xml >02pub/letters.tab
