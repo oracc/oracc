@@ -11,10 +11,10 @@ o2-portal.sh
 cp -p 00lib/alias-*.txt 02pub
 (cd 02xml ; rm -f ogsl.xml ; ln -sf ogsl-sl.xml ogsl.xml)
 pubfiles.sh ogsl
-host=`hostname`
-if [[ $host = "build-oracc" ]]; then
-    echo Rebuilding ogsl on Munich build server ...
-    sudo -u ogsl ssh -p 22000 ogsl@oracc.ub.uni-muenchen.de git pull
-    sudo -u ogsl ssh -p 22000 ogsl@oracc.ub.uni-muenchen.de \
-	/home/oracc/bin/orc oracc build
-fi
+# host=`hostname`
+# if [[ $host = "build-oracc" ]]; then
+#    echo Rebuilding ogsl on Munich build server ...
+#    sudo -u ogsl ssh -p 22000 ogsl@oracc.ub.uni-muenchen.de git pull
+#    sudo -u ogsl ssh -p 22000 ogsl@oracc.ub.uni-muenchen.de \
+#	/home/oracc/bin/orc oracc build
+# fi
