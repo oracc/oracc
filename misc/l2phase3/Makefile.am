@@ -31,6 +31,9 @@ g2-xtf-HTML.xsl: g2-xtf-HTML.xsl.in
 g2-gdl-HTML.xsl: g2-gdl-HTML.xsl.in
 	$(ORACCIFY) g2-gdl-HTML.xsl.in
 
+g2-gdl-TEXT.xsl: g2-gdl-TEXT.xsl.in
+	$(ORACCIFY) g2-gdl-TEXT.xsl.in
+
 g2-gdl-TeX.xsl: g2-gdl-TeX.xsl.in
 	$(ORACCIFY) g2-gdl-TeX.xsl.in
 

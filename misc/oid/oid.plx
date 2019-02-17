@@ -158,10 +158,17 @@ sub oid_dump {
     open(X,">$oid_file");
     print X '<oids>';
     foreach my $oid (sort {$a cmp $b} keys %oid_keys) {
-	my @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
+	my @e = ();
 	my $e1 = '';
-	if ($e[0] eq 'sense') {
-	    $e1 = $oid_ids{$oid_doms{$oid},$e[1]};	    
+	if ($oid_ext{$domain,$oid_keys{$oid}}) {
+	    my @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
+	    my $e1 = '';
+	    if ($e[0] eq 'sense') {
+		$e1 = $oid_ids{$oid_doms{$oid},$e[1]};	    
+	    }
+	} else {
+	    $e[0] = '';
+	    $e1 = '';
 	}
 	print T "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
 	my $xk = xmlify($oid_keys{$oid});

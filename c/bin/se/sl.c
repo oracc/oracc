@@ -57,8 +57,8 @@ main(int argc, char **argv)
     project = "ogsl";
 
   oracc = oracc_home();
-  db = malloc(strlen(oracc)+strlen("/pub/") + strlen(project) + 1);
-  sprintf(db, "%s/pub/%s", oracc, project);
+  db = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + 1);
+  sprintf(db, "%s/pub/%s/sl", oracc, project);
   if ((dbi = dbi_open(project, db)))
     {
       /* do the look up or sit or enter stdin_mode */

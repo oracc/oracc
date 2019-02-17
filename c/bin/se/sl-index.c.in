@@ -6,7 +6,7 @@
 int
 main(int argc, char **argv)
 {
-  unsigned char *buf[10240], *k;
+  unsigned char *buf[20480], *k;
   char dbname[_MAX_PATH], dbdir[_MAX_PATH];
   int boot = 0;
   Dbi_index *dbi = NULL;
@@ -26,8 +26,8 @@ main(int argc, char **argv)
   if (boot)
     {
       strcpy(dbname, "ogsl");
-      strcpy(dbdir, "@@ORACC@@/pub/ogsl");
-      if (!(infile = fopen("@@ORACC@@/pub/ogsl/ogsl-db.tsv", "r")))
+      strcpy(dbdir, "@@ORACC@@/pub/ogsl/sl");
+      if (!(infile = fopen("@@ORACC@@/pub/ogsl/sl/ogsl-db.tsv", "r")))
 	{
 	  fprintf(stderr, "sl-index.c: boot mode requires @@ORACC@@/pub/ogsl/ogsl-db.tsv\n");
 	  exit(1);
@@ -36,12 +36,12 @@ main(int argc, char **argv)
   else
     {
       strcpy(dbname, argv[1]);
-      strcpy(dbdir, "02pub");
+      strcpy(dbdir, "02pub/sl");
       infile = stdin;
     }
 
   dbi = dbi_create(dbname, dbdir, 0, 1, DBI_BALK);
-  while ((k = (unsigned char *)fgets((char*)buf,10240,infile)))
+  while ((k = (unsigned char *)fgets((char*)buf,20480,infile)))
     {
       unsigned char *v = (unsigned char*)strchr((char*)k,'\t');
       if (v)

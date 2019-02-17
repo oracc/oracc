@@ -21,6 +21,9 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     echo indexing lemmatized texts
     selemx -p $project <01bld/lists/lemindex.lst
 fi
+if [ -s 02pub/sl/*.tsv ]; do
+    sl-index 02pub/sl/*.tsv
+fi
 for a in 02pub/cbd/[a-z]* ; do 
     lang=`basename $a`
     if [ -f 01bld/$lang/articles.xml ]; then

@@ -6,5 +6,5 @@ bin_SCRIPTS = epsd2-merge-forms.plx epsd2-init.sh epsd2-epadify.plx \
 	super-check-glo.sh super-build-subs.sh \
 	emesalify.plx
 
-scriptdata_DATA =
+scriptdata_DATA = signdata.xsl
 EXTRA_DIST = 

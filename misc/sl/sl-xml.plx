@@ -16,6 +16,10 @@ if ($#ARGV == 1) {
 
 my %oids = oid_load_domain('sl');
 
+# print Dumper %oids; exit 0;
+
+my $sid = '';
+
 my $asl = shift @ARGV;
 if ($asl) {
     unless (-e $asl) {
@@ -35,7 +39,7 @@ foreach my $s (@sortcodes) {
 #print C Dumper \%sortcodes;
 #close(C);
 
-my $xid = 'x0000';
+my $xid = 'x0000000';
 my %sign_ids = (); sign_ids();
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
@@ -87,11 +91,11 @@ while (<SL>) {
 	    # warn "undefined n\n";
 	    $n = '';
 	}
-	my $sid = $sign_ids{$signname};
+	$sid = $sign_ids{$signname};
 	
 	unless ($sid) {
-	    warn "sl-xml.plx: internal error: no ID found for $signname\n";
-	    $sid = $xid++;
+	    die "sl-xml.plx: internal error: no ID found for $signname\n";
+#	    $sid = $xid++;
 	}
 	pi_line();
 	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>";
@@ -155,8 +159,8 @@ while (<SL>) {
 		    $ref = sprintf(" ref=\"%s\"", $sign_ids{$formname});
 		}
 		pi_line();
-		print "<form n=\"$n\" var=\"$v\" xml:id=\"$xid\"$uattr$ref><name g:me=\"1\">$n</name>";
-		++$xid;
+		my $vv = $v; $vv =~ s/^~//;
+		print "<form n=\"$n\" var=\"$v\" xml:id=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>";
 		$in_form = 1;
 		if ($sortcodes{$n}) {
 		    print "<sort";
@@ -282,16 +286,8 @@ pi_line {
 
 sub
 sign_ids {
-    my @signs = `grep \@sign $asl`; chomp @signs;
     my @nosigns = `grep \@nosign $asl`; chomp @nosigns;
-    foreach (@signs) {
-	/\s(\S+)/;
-	if ($sign_ids{$1}) {
-	    warn "sl-xml.plx: duplicate \@sign $1\n";
-	} else {
-	    $sign_ids{$1} = $xid++;
-	}
-    }
+    %sign_ids = %oids;
     foreach (@nosigns) {
 	/\s(\S+)\s*$/;
 	if ($sign_ids{$1}) {
