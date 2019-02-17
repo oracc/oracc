@@ -41,6 +41,7 @@ use Getopt::Long;
 %ORACC::CBD::forms = ();
 
 $ORACC::CBD::bases = 0;
+$ORACC::CBD::noforms = 0;
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
@@ -62,13 +63,14 @@ sub pp_args {
     GetOptions(
 	\%args,
 	qw/announce apply auto bare base:s check kompounds dry dynamic edit entries=s file 
-	filter fix:s force homograph increment:s inplace invert letters lines list:s lang:s log mode:s 
+	filter fix:s force homograph increment:s inplace invert letters lines list:s lang:s log mode:s noforms
 	nonormify nopsus nosigs novalid output:s project:s quiet reset sigs stdout trace vfields:s words=f xml/,
 	) || die "unknown arg";
     
     $ORACC::CBD::PPWarn::trace = $args{'trace'};
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nodiagnostics = $args{'quiet'};
+    $ORACC::CBD::noforms = $args{'noforms'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
     $ORACC::CBD::novalidate = $args{'novalid'};
 
@@ -168,7 +170,7 @@ sub pp_load {
 	    # spoof args{cbd} so forms_load works
 	    my $actual_args_cbd = $$args{'cbd'};
 	    $$args{'cbd'} = $file;
-	    ORACC::CBD::Forms::forms_load($args);
+	    ORACC::CBD::Forms::forms_load($args) unless $ORACC::CBD::noforms;
 	    $$args{'cbd'} = $actual_args_cbd;
 	}
 	open(C,$file) || die "cbdpp.plx: unable to open $file. Stop.\n";
@@ -393,12 +395,14 @@ sub setup_cbd {
     my @cbd = pp_load($args, $glossary);
     @cbd = pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
-	$ORACC::CBD::Forms::external = 0; # so v_form will validate
-	ORACC::CBD::Forms::forms_validate();
-	if ($ORACC::CBD::bases || lang() =~ /qpn/) { # fix-me should check use base
-	    ORACC::CBD::Forms::forms_normify() unless $ORACC::CBD::nonormify;
+	unless ($ORACC::CBD::noforms) {
+	    $ORACC::CBD::Forms::external = 0; # so v_form will validate
+	    ORACC::CBD::Forms::forms_validate();
+	    if ($ORACC::CBD::bases || lang() =~ /qpn/) { # fix-me should check use base
+		ORACC::CBD::Forms::forms_normify() unless $ORACC::CBD::nonormify;
+	    }
+	    $ORACC::CBD::Forms::external = 1;
 	}
-	$ORACC::CBD::Forms::external = 1;
 #	ORACC::CBD::Forms::forms_dump();
     } else {
 	if ($ORACC::CBD::bases || lang() =~ /qpn/) {

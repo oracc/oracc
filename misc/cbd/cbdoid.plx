@@ -20,14 +20,14 @@ for (my $i = 0; $i <= $#cbd; ++$i) {
 	$cfgwpos = $1;
 	$cfgwpos =~ s/\s+\[/[/;
 	$cfgwpos =~ s/\]\s+/]/;
-	print "0\t\%$lang:$cfgwpos\tword\n";
+	print "$lang\t$cfgwpos\tword\n";
     } elsif ($cbd[$i] =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/) {
 	my($epos,$sense) = ($1,$2);
 	$sense =~ s/\s+\*\S+$//;
 	my $ssig = $cfgwpos;
 	$ssig =~ s#\]#//$sense]#;
 	$ssig .= "'$epos";
-	print "0\t\%$lang:$ssig\tsense\t\%$lang:$cfgwpos\n";
+	print "$lang\t$ssig\tsense\t$cfgwpos\n";
     }
 }
 
