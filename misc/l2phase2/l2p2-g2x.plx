@@ -243,7 +243,8 @@ foreach my $lang (sort keys %data) {
 	    my $p_icount = $sense_freqs{$sense} || -1;
 	    my $sense_no_norm = $sense;
 	    $sense_no_norm =~ s/\$.*$//;
-	    my $oid = oid_lookup("\%$baselang:$sense_no_norm");
+	    my $oid = '';
+	    $oid = oid_lookup('sux',$sense_no_norm") if $baselang =~ /^sux/;
 	    my $xsense = xmlify($sense_no_norm);
 	    print "<sense xml:id=\"$xid\" n=\"$xsense\"";
 	    print " oid=\"$oid\"" if $oid;
