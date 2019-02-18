@@ -204,11 +204,13 @@ process_text(struct run_context *run, unsigned char **lines)
   unsigned char *saved_atf = NULL;
   int saved_len = 0;
   int saved_check_only = check_only;
+  extern int auto_lg;
 
   word_matrix = 0;
   labtab = create_labtab();
   text->xmlns = xtf_xmlns;
   doctype = e_transliteration;
+  auto_lg = 0;
   div_level = sparse_lem = status = 0;
   current_level = TEXT;
   curr_lang = text_lang = global_lang;
