@@ -118,8 +118,6 @@ my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdl
 
 ORACC::SL::BaseC::init();
 
-oid_init();
-
 $ORACC::L2GLO::Util::project = $project;
 
 my $dirname = `dirname $input`;
@@ -183,7 +181,8 @@ foreach my $lang (sort keys %data) {
 	
 	$entry_xis{$entry_xid} = { %xis_info };
 
-	my $oid = oid_lookup("\%$baselang:$entry");
+	my $oid = '';
+	$oid = oid_lookup('sux', $entry) if $baselang =~ /^sux/
 	my $xentry = xmlify($entry);
 	my $p_icount = $entry_freqs{$entry} || -1;
 	print "<entry xml:id=\"$xid\" n=\"$xentry\"";

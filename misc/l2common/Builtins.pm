@@ -192,8 +192,6 @@ acd2xml {
     my $project = undef;
     my $last_tag = '';
 
-    oid_init() if $arglang =~ /^sux/;
-    
     %seen = ();
 
     $lang = $arglang;
@@ -682,7 +680,7 @@ acdentry {
 			$e_sig = "$cf\[$gd\]$pos";
 			my $oidattr = '';
 			if ($blang =~ /^sux/) {
-			    my $oid = oid_lookup("\%$blang:$e_sig");
+			    my $oid = oid_lookup('sux',$e_sig);
 			    if ($oid) {
 				$oidattr = " oid=\"$oid\"";
 			    }
@@ -1152,7 +1150,7 @@ acdentry {
 	}
 	my $oidattr = '';
 	if ($blang =~ /^sux/) {
-	    my $oid = oid_lookup("\%$blang:$s_sig");
+	    my $oid = oid_lookup('sux',$s_sig);
 	    if ($oid) {
 		$oidattr = " oid=\"$oid\"";
 	    }
