@@ -102,6 +102,7 @@ if ($new_mode) {
     foreach my $s (keys %news) {
 	push @newres, "$s\t@{$news{$s}}\n";
     }
+    warn "newres has ", $#newres+1, " entries\n";
 } else {
     foreach my $s (sort keys %sigs) {
 	push @glores, "$s\t@{$sigs{$s}}\n";
