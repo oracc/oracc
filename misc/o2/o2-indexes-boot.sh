@@ -34,13 +34,13 @@ for a in 02pub/cbd/[a-z]* ; do
 	xisdb 02pub/cbd/$lang/$lang.tis
     fi
 done
-
-if [ -r 02pub/sl/*.tsv ]; then
+hproj=`/bin/echo -n $project | tr / -`
+if [ -r 02pub/sl/$hproj-db.tsv ]; then
     echo indexing signlist
     if [ "$project" == "ogsl" ]; then
 	sl-index -boot
     else
-	cat 02pub/sl/*.tsv | sl-index $project
+	cat 02pub/sl/$hproj-db.tsv | sl-index $project
     fi
 fi
 
