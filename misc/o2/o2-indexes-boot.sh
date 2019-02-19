@@ -11,24 +11,19 @@ else
 	zcat 01bld/cdlicat.xmd.gz | secatx -s -p $project
     fi
 fi
+
 if [ -s 01bld/lists/xtfindex.lst ]; then
     echo indexing transliterations
     setxtx -p $project <01bld/lists/xtfindex.lst
     echo indexing translations
     setrax -p $project <01bld/lists/xtfindex.lst
 fi
+
 if [ -s 01bld/lists/xtfindex.lst ]; then
     echo indexing lemmatized texts
     selemx -p $project <01bld/lists/lemindex.lst
 fi
-if [ -s 02pub/sl/*.tsv ]; then
-    echo indexing signlist
-    if [ "$project" == "ogsl" ]; then
-	sl-index -boot
-    else
-	cat 02pub/sl/*.tsv | sl-index $project
-    fi
-fi
+
 for a in 02pub/cbd/[a-z]* ; do 
     lang=`basename $a`
     if [ -f 01bld/$lang/articles.xml ]; then
@@ -39,4 +34,14 @@ for a in 02pub/cbd/[a-z]* ; do
 	xisdb 02pub/cbd/$lang/$lang.tis
     fi
 done
+
+if [ -r 02pub/sl/*.tsv ]; then
+    echo indexing signlist
+    if [ "$project" == "ogsl" ]; then
+	sl-index -boot
+    else
+	cat 02pub/sl/*.tsv | sl-index $project
+    fi
+fi
+
 echo o2-indexes-boot.sh: done.
