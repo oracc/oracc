@@ -164,7 +164,11 @@ sub oid_dump {
 	if ($oid_ext{$domain,$oid_keys{$oid}}) {
 	    @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
 	    if ($e[0] eq 'sense') {
-		$e1 = $oid_ids{$oid_doms{$oid},$e[1]};	    
+		if ($e[1] !~ /^[ox]\d+/) {
+		    $e1 = $oid_ids{$oid_doms{$oid},$e[1]};
+		} else {
+		    $e1 = $e[1];
+		}
 	    } else {
 		$e1 = '';
 	    }

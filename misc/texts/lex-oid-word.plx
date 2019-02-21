@@ -31,7 +31,7 @@ Encode::_utf8_on($s);
 open(X,'>word-master.xml'); print X $s; close(X);
 
 foreach my $bad (sort keys %badwords) {
-    warn "$0: no sl OID for word $bad\n";
+    warn "$0: no sux OID for word $bad\n";
 }
 
 1;
