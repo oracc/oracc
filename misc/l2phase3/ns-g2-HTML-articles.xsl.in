@@ -640,18 +640,20 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:prefixs">
-  <div class="morphs prefix">
-    <p>
-    <span class="iheader">Verbal prefixes:</span>
-    <xsl:for-each select="cbd:prefix">
-      <xsl:apply-templates select="."/>
+  <xsl:if test="count(*)>0">
+    <div class="morphs prefix">
+      <p>
+	<span class="iheader">Verbal prefixes:</span>
+	<xsl:for-each select="cbd:prefix">
+	  <xsl:apply-templates select="."/>
       <xsl:if test="position() &lt; last()">
 	<span class="punct-sc"><xsl:text>; </xsl:text></span>
       </xsl:if>
-    </xsl:for-each>
-    <span class="punct-sc"><xsl:text>.</xsl:text></span>
-    </p>
-  </div>
+	</xsl:for-each>
+	<span class="punct-sc"><xsl:text>.</xsl:text></span>
+      </p>
+    </div>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="cbd:prefix">
