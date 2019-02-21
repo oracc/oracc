@@ -116,9 +116,9 @@
 </xsl:variable>
 
 <xsl:template match="cbd:articles">
-  <xsl:message>config-file=<xsl:value-of select="$config-file"
+  <!-- <xsl:message>config-file=<xsl:value-of select="$config-file"
   />; cbd-word-base=<xsl:value-of select="$cbd-word-base"
-  /></xsl:message>
+  /></xsl:message> -->
 
   <xsl:if test="string-length($lex-provides-base)">
     <xsl:message>Using word-base data from <xsl:value-of select="$lex-provides-base"/></xsl:message>

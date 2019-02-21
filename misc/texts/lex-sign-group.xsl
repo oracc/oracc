@@ -12,13 +12,13 @@
 <xsl:template match="lex:dataset">
   <lex:sign-data>
     <xsl:copy-of select="@*"/>
-    <xsl:apply-templates mode="sign"
+    <xsl:apply-templates mode="sign" 
 	select=".//lex:data[generate-id(.)=generate-id(key('signs',@sign)[1])]"/>
   </lex:sign-data>
 </xsl:template>
 
 <xsl:template match="lex:data" mode="sign">
-  <lex:group type="sign" value="{@sign}">
+  <lex:group type="sign" value="{@sign}" oid="{@oid}">
     <xsl:for-each select="key('signs', @sign)[1]">
       <xsl:variable name="nodes" select="key('signs', @sign)"/>
       <xsl:apply-templates mode="read"

@@ -28,17 +28,28 @@ if [ "$g2c" != "" ]; then
 	    ldir=`dirname $g2c`
 	    l=`basename $ldir`
 	    echo producing web version of $l
-	    echo "l2-glomanager -webdir=$webdir -conf $xcf -cbdlang $l $*"
+#	    echo "l2-glomanager -webdir=$webdir -conf $xcf -cbdlang $l $*"
 	    l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
-	    echo g2c-sig-map
+#	    echo g2c-sig-map
 	    xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
-	    echo xff
+#	    echo xff
 	    xfftab=`oraccopt . cbd-forms-table`
 	    if [ "$xfftab" = 'yes' ]; then
 		l2p3-xff.sh $webdir $l
 	    fi
 	fi
     done
+fi
+
+# if lexdata is being made the XHTML files are in 01tmp/lex/cbd/$lang/{pb,wp}
+if [ -d 01tmp/lex/cbd/sux/pb ]; then
+    echo installing lex data cbd/sux/pb
+    mv 01tmp/lex/cbd/sux/pb $webdir/cbd/sux
+fi
+
+if [ -d 01tmp/lex/cbd/sux/wp ]; then
+    echo installing lex data cbd/sux/wp
+    mv 01tmp/lex/cbd/sux/wp $webdir/cbd/sux
 fi
 
 if [ -r 01bld/cat.geojson ]; then

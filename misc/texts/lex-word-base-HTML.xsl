@@ -3,6 +3,7 @@
 		xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:esp="http://oracc.org/ns/esp/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
+		xmlns:o="http://oracc.org/ns/oracc/1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="lex:word-base-data">
@@ -12,7 +13,7 @@
 </xsl:template>
 
 <xsl:template match="lex:group[@type='word']">
-  <div class="lex-word" title="{@value}" id="lexpronounce">
+  <div class="lex-word" title="{@value}" o:id="{@oid}" id="lexpronounce">
     <h3 class="word-base">Pronunciation Data</h3>
     <xsl:apply-templates/>
   </div>

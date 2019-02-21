@@ -12,30 +12,25 @@ my %oid = ();
 my $inited = 0;
 
 sub oid_init {
+    my $d = shift @_;
     if (open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab")) {
-	while (<O>) {
-	    my($oid,$dom,$key) = split(/\t/, $_);
-	    $oid{$dom,$key} = $oid;
+	if ($d) {
+	    while (<O>) {
+		my($oid,$dom,$key) = split(/\t/, $_);
+		$oid{$dom,$key} = $oid if ($d eq $dom);
+	    }
+	    close(O);
+	} else {
+	    while (<O>) {
+		my($oid,$dom,$key) = split(/\t/, $_);
+		$oid{$dom,$key} = $oid;
+	    }
+	    close(O);
 	}
-	close(O);
     } else {
 	warn "$0: can't read OID file\n";
     }
     ++$inited;
-}
-
-sub oid_load_domain {
-    oid_init() unless $inited;
-    my $d = shift @_;
-    if (open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab")) {
-	while (<O>) {
-	    my($oid,$dom,$key) = split(/\t/, $_);
-	    $oid{$key} = $oid if ($d eq $dom);
-	}
-	close(O);
-    } else {
-	warn "$0: can't read OID file\n";
-    }
     %oid;
 }    
 

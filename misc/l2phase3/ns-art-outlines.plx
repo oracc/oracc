@@ -39,7 +39,9 @@ my @base = (<BASE>); close(BASE);
 chomp @base;
 foreach my $oid (@base) {
     my $xid = $ox{$oid};
-    push @{$t{$xid}}, 'base';
+    if ($xid) {
+	push @{$t{$xid}}, 'base';
+    }
 }
 
 open(PHRA,"$ENV{'ORACC_BUILDS'}/dcclt/02pub/lex-provides-word-phra.txt");
@@ -81,7 +83,7 @@ close(T);
 
 sub html_template {
     my($template, @ids) = @_;
-    open(H,">01bld/sux/$template.html");
+    open(H,">01bld/sux/$template.html") || die "$0: can't write to 01bld/sux/$template.html\n";
     print H '<div class="jumps"><ul>';
     foreach my $id (@ids) {
 	print H "<li><a js=\"window.hash='$id'\">$print{$id}</a></li>";

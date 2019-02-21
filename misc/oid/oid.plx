@@ -18,8 +18,9 @@ my $oid_dir = "$ENV{'ORACC_BUILDS'}/oid";
 my $oid_file = "$oid_dir/oid.tab";
 my $oid_lock = "$oid_dir/.oidlock";
 my %oid_ids = ();
-my %oid_keys = ();
 my %oid_doms = ();
+my %oid_keys = ();
+my %oid_typs = ();
 my %oid_key = ();
 my %oid_ext = ();
 my @oid_add = ();
@@ -168,7 +169,7 @@ sub oid_dump {
 		$e1 = '';
 	    }
 	} else {
-	    $e[0] = 'X';
+	    $e[0] = $oid_typs{$oid};
 	    $e1 = '';
 	}
 	print T "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
@@ -211,6 +212,7 @@ sub oid_load {
 		$oid_ids{$dom,$key} = $oid;
 	    }
 	    $oid_doms{$oid} = $dom;
+	    $oid_typs{$oid} = $typ;
 	    $oid_key{$dom,$key} = $oid;
 	    $oid_ext{$dom,$key} = [ $typ, $ext ];
 	}
