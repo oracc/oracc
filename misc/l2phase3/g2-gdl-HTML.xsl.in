@@ -216,7 +216,8 @@
 </xsl:template>
 
 <xsl:template match="g:r">
-  <xsl:apply-templates/>
+<!--  <xsl:message>g:r=<xsl:value-of select="."/></xsl:message> -->
+  <xsl:value-of select="."/>
 </xsl:template>
 
 <xsl:template match="g:x">
@@ -374,6 +375,7 @@
 </xsl:template>
 
 <xsl:template name="render-n">
+  <!-- <xsl:message>render-n</xsl:message> -->
   <xsl:choose>
     <xsl:when test="g:b">
       <xsl:for-each select="g:b">
