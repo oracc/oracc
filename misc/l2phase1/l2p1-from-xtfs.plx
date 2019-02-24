@@ -42,6 +42,7 @@ GetOptions (
     'output:s'=>\$output,
     'proxy'=>\$proxy_mode,
     'textlist:s'=>\$textlist,
+    'verbose'=>\$verbose
     );
 
 #$output = '01bld/from-xtfs.sig'
@@ -102,7 +103,7 @@ if ($new_mode) {
     foreach my $s (keys %news) {
 	push @newres, "$s\t@{$news{$s}}\n";
     }
-    warn "newres has ", $#newres+1, " entries\n";
+#    warn "newres has ", $#newres+1, " entries\n";
 } else {
     foreach my $s (sort keys %sigs) {
 	push @glores, "$s\t@{$sigs{$s}}\n";
@@ -185,6 +186,16 @@ lang {
     }
 }
 
+sub showattr {
+    my $n = shift @_;
+    my @a = $n->attributes();
+    foreach my $a (@a) {
+	my $nm = $a->nodeName();
+	my $vl = $a->getValue();
+	warn "\t$nm=$vl\n";
+    }
+}
+
 sub
 loadsigs {
     my $x = load_xml($_[0]);
@@ -202,6 +213,9 @@ loadsigs {
 	    my $sig = $l->getAttribute('sig');
 	    my $exo = $l->getAttribute('exosig');
 	    my $new = $l->getAttribute('newsig');
+	    $new = '' unless $new;
+#	    warn "processing node with xml:id $xid and ref $ref; new=$new\n";
+#	    showattr($l);
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
 #		warn "$ref: found sig=$sig\n";
