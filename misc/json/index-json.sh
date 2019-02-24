@@ -21,16 +21,20 @@ fi
 for a in 01bld/*/*.g2x ; do 
     lang=`basename $a .g2x`
     if [ -s $a ]; then
-	echo Creating $lang index
-	cbd-json.plx ${project}:$lang >01bld/json/gloss-$lang.json
-	mangletab=02pub/cbd/$lang/mangle.tab
-	dbi=02pub/cbd/$lang/cbd.dbi
-	if [ -r $dbi ]; then
-	    if [ -r $mangletab ]; then
-		sort -u -o $mangletab $mangletab
-		sedbg -p $project -i cbd/$lang \
-		    | index-json.plx $project cbd/$lang \
-				     >01bld/json/index-$lang.json
+	if [[ $lang == qpn-* ]]; then
+	    echo Skipping $lang--slice from main qpn glo instead
+	else
+	    echo Creating $lang index
+	    cbd-json.plx ${project}:$lang >01bld/json/gloss-$lang.json
+	    mangletab=02pub/cbd/$lang/mangle.tab
+	    dbi=02pub/cbd/$lang/cbd.dbi
+	    if [ -r $dbi ]; then
+		if [ -r $mangletab ]; then
+		    sort -u -o $mangletab $mangletab
+		    sedbg -p $project -i cbd/$lang \
+			| index-json.plx $project cbd/$lang \
+					 >01bld/json/index-$lang.json
+		fi
 	    fi
 	fi
     fi
