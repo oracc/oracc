@@ -96,6 +96,7 @@ else
     zip=`zip-json.sh`
     rm -fr 01bld/json/*
     chmod o+r $zip
+    bzip=`basename $zip`
     echo "o2-json.sh: JSON created and validated without errors."
-    echo "o2-json.sh: $zip is now public"
+    echo "o2-json.sh: http://$ORACC_HOST/json/$bzip can now be downloaded"
 fi

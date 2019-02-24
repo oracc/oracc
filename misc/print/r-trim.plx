@@ -30,7 +30,7 @@ sub trim_i {
     my @t = split(/;\s*/, $t);
     if ($#t > 0) {
 	my @t2 = do_trim(@t);
-	warn "@t => @t2\n";
+#	warn "@t => @t2\n";
 	$t = join('; ', @t2);
 	$t .= $end_punct;
 	Encode::_utf8_on($t);

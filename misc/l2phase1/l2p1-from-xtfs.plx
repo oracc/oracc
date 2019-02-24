@@ -115,22 +115,23 @@ if ($new_mode) {
 ## we are harvesting for inclusion in the external glossary
 
 # set up non-exo hash
-#for each option if %option split value on space and look for '.' entry
+# for each option if %option split value on space and look for '.' entry
 # if . entry non-exo-hash for lang option = 1
-use Data::Dumper;
+## use Data::Dumper;
 my %no_exo = ();
-foreach my $l (ORACC::XPD::Util::lang_options()) {
-    my @v = split(/\s+/, ORACC::XPD::Util::option($l));
-    my $nodot = 1;
-    foreach my $v (@v) {
-	if ($v eq '.') {
-	    $nodot = 0;
-	    last;
-	}
-    }
-    $l =~ s/^\%//;
-    ++$no_exo{$l} if $nodot;
-}
+## foreach my $l (ORACC::XPD::Util::lang_options()) {
+##    my @v = split(/\s+/, ORACC::XPD::Util::option($l));
+##    my $nodot = 1;
+##    foreach my $v (@v) {
+##	if ($v eq '.') {
+##	    $nodot = 0;
+##	    last;
+##	}
+##    }
+##    $l =~ s/^\%//;
+##    ++$no_exo{$l} if $nodot;
+##}
+
 #warn Dumper \%no_exo;
 foreach my $s (keys %exos) {
     my ($sl) = ($s =~ /\%(.*?):/);
@@ -149,6 +150,7 @@ if ($new_mode) {
     open(O,">01bld/from-$base-glo.sig"); print O $fields, sort (@glores); close(O);
     open(O,">01bld/from-$base-new.sig"); print O $fields, sort (@newres, @exores); close(O);
 } else {
+    open(L,">xlog"); print L @glores; print L @exores; close(L);
     open(O,">01bld/from-$base-glo.sig"); print O $fields, sort (@glores, @exores); close(O);
     open(O,">01bld/from-$base-new.sig"); print O $fields, sort @newres; close(O);
 }
@@ -216,10 +218,10 @@ loadsigs {
 #	    showattr($l);
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
-#		warn "found sig=$sig\n";
+		warn "$ref: found sig=$sig\n";
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) { # && $base ne 'prx') {
-		#		warn "found exo=$exo\n";
+		warn "$ref: found exo=$exo\n";
 		my $xp = $l->getAttribute('exoprj');
 		my $xl = $l->getAttribute('exolng');
 		if (!$cbd_no_harvest || !cbd_no_harvest($xp,$xl)) {

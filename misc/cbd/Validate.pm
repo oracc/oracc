@@ -715,42 +715,46 @@ sub v_form {
     }
 
     if (($ORACC::CBD::bases # $lang =~ /^sux/ 
-	 || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
-	&& !$is_compound) {
-	$f =~ m#(?:^|\s)/(\S+)#;
+	 || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))) {
+	if ($f =~ m#(?:^|\s)/(\S+)#) {
 	my $b = $1;
 	if ($b) {
-	    unless ($bases{$b}) {
-		unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
-		    my $warned = 0;
-		    my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
-		    if ($a) {
-			pp_warn("alt BASE $b should be primary $a");
-			$warned = 1;
-		    } else {
-			# slow but effective check for base match by tlit signature
-			atf_add($b,$lang) if $b;
-			my $tsig = $tlit_sigs{$b};
-			$tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
-			    unless $tsig;
-			foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
-			    my $csig = $tlit_sigs{$c};
-			    $csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
-				unless $csig;
-			    if ($tsig eq $csig) {
-				pp_warn "BASE $b should be $c";				
-				$warned = 1;
-				last;
+	    if ($is_compound) {
+		pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
+	    } else {
+		unless ($bases{$b}) {
+		    unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
+			my $warned = 0;
+			my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
+			if ($a) {
+			    pp_warn("alt BASE $b should be primary $a");
+			    $warned = 1;
+			} else {
+			    # slow but effective check for base match by tlit signature
+			    atf_add($b,$lang) if $b;
+			    my $tsig = $tlit_sigs{$b};
+			    $tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
+				unless $tsig;
+			    foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
+				my $csig = $tlit_sigs{$c};
+				$csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
+				    unless $csig;
+				if ($tsig eq $csig) {
+				    pp_warn "BASE $b should be $c";				
+				    $warned = 1;
+				    last;
+				}
 			    }
+			    pp_sl_messages();
 			}
-			pp_sl_messages();
+			pp_warn("BASE $b not known or findable for `$curr_cfgw'")
+			    unless $warned;
 		    }
-		    pp_warn("BASE $b not known or findable for `$curr_cfgw'")
-			unless $warned;
 		}
 	    }
+	}
 	} else {
-	    pp_warn("no BASE entry in form")
+	    pp_warn("no BASE entry in form") unless $is_compound;
 	}
     }
 
