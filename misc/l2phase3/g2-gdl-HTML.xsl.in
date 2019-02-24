@@ -621,6 +621,10 @@
       <xsl:if test="@g:queried"><xsl:text>?</xsl:text></xsl:if>
     </sup>
   </xsl:if>
+  <xsl:if test="@g:uflag1"><sup class="sux"><xsl:text>&#x2020;</xsl:text></sup></xsl:if>
+  <xsl:if test="@g:uflag2"><sup class="sux"><xsl:text>&#x2021;</xsl:text></sup></xsl:if>
+  <xsl:if test="@g:uflag3"><sup class="sux"><xsl:text>&#x2022;</xsl:text></sup></xsl:if>
+  <xsl:if test="@g:uflag4"><sup class="sux"><xsl:text>&#x2023;</xsl:text></sup></xsl:if>
 </xsl:template>
 
 <xsl:template name="render-o">

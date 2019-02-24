@@ -600,6 +600,12 @@ sub gdl_howtos {
     $$attmap{'gdl_pos'} = 'pos';
     $$attmap{'gdl_role'} = 'role';
     $$attmap{'gdl_queried'} = 'queried';
+
+    $$attmap{'gdl_uflag1'} = 'uflag1';
+    $$attmap{'gdl_uflag2'} = 'uflag2';
+    $$attmap{'gdl_uflag3'} = 'uflag3';
+    $$attmap{'gdl_uflag4'} = 'uflag4';
+    
     $$attmap{'gdl_break'} = 'break';
     $$attmap{'gdl_breakEnd'} = 'breakEnd';
     $$attmap{'gdl_breakStart'} = 'breakStart';
@@ -609,6 +615,8 @@ sub gdl_howtos {
     $$attmap{'gdl_hc'} = 'hc';
     $$attmap{'gdl_statusStart'} = 'statusStart';
     $$attmap{'gdl_statusEnd'} = 'statusStart';
+
+    $$attmap{'gdl_utf8'} = 'utf8';
 }
 
 1;
