@@ -204,10 +204,10 @@ loadsigs {
 	    my $new = $l->getAttribute('newsig');
 	    $wordrefs{$xid} = $ref;
 	    if ($sig && $sig =~ /^.+\[/) {
-		warn "$ref: found sig=$sig\n";
+#		warn "$ref: found sig=$sig\n";
 		push(@{$sigs{$sig}},"$xtf_project\:$ref");
 	    } elsif ($exo) { # && $base ne 'prx') {
-		warn "$ref: found exo=$exo\n";
+#		warn "$ref: found exo=$exo\n";
 		my $xp = $l->getAttribute('exoprj');
 		my $xl = $l->getAttribute('exolng');
 		if (!$cbd_no_harvest || !cbd_no_harvest($xp,$xl)) {

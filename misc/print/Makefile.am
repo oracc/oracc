@@ -10,7 +10,7 @@ scriptdata_DATA = chresto-index-TeX.xsl cbd-sort.xsl			\
 	chresto-sortcodes.xsl chresto-sortkeys.xsl			\
 	chresto-strip-cpd-refs.xsl index-HTML.xsl 			\
 	bki-subset.xsl bki-xis.xsl bki-xis-group.xsl bki-labels.xsl bki-sort.xsl \
-	bki-akk-HTML.xsl bki-qpn-HTML.xsl
+	bki-akk-HTML.xsl bki-qpn-HTML.xsl bki-sux-HTML.xsl
 
 config_DATA = cbd-chresto.xcf
 

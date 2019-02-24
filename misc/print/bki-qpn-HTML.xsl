@@ -30,15 +30,6 @@
       <i><xsl:value-of select="c:cf"/></i>
       [<xsl:value-of select="c:gw"/>]
       (<xsl:value-of select="c:pos"/>)
-<!--
-      <xsl:if test="count(c:senses/c:sense)>1">
-	<xsl:for-each select="c:senses/c:sense">
-	  <xsl:text> </xsl:text>
-	  <xsl:value-of select="c:mng"/>
-	  <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-	</xsl:for-each>
-      </xsl:if>
- -->
       <xsl:for-each select="c:senses/c:sense">
 	<xsl:text> wr. </xsl:text>
 	<xsl:for-each select="c:forms/c:form">

@@ -14,7 +14,7 @@
       <style>
 	.akk { font-style: italic }
       </style>
-      <title>CMAWRO Akk Index</title>
+      <title>CMAWRO Sux Index</title>
     </head>
     <body>
       <xsl:apply-templates select=".//c:entry"/>
@@ -29,34 +29,14 @@
       [<xsl:value-of select="c:gw"/>]
       (<xsl:value-of select="c:pos"/>)
     </p>
-    <p>
-      <xsl:for-each select="c:senses/c:sense">
-	<xsl:choose>
-	  <xsl:when test="@stem">
-	    <xsl:value-of select="@stem"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:if test="not(c:pos = ancestor::c:pos)">
-	      <xsl:value-of select="c:pos"/>
-	    </xsl:if>
-	  </xsl:otherwise>
-	</xsl:choose>
+    <xsl:for-each select="c:senses/c:sense">
+      <xsl:text>"</xsl:text><xsl:value-of select="c:mng"/><xsl:text>"</xsl:text>
+      <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+      <xsl:text> wr. </xsl:text>
+      <xsl:for-each select="c:forms/c:form">
+	<b><xsl:apply-templates select="c:t/*"/></b>
 	<xsl:text> </xsl:text>
-	<xsl:value-of select="c:mng"/>
-	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-      </xsl:for-each>
-    </p>
-    <p>
-      <xsl:for-each select="c:senses/c:sense">
-	<xsl:if test="@stem">
-	  <xsl:text>[</xsl:text>
-	  <xsl:value-of select="@stem"/>
-	  <xsl:text>] </xsl:text>
-	</xsl:if>
-	<xsl:for-each select="c:forms/c:form">
-	  <!--<xsl:value-of select="@n"/>-->
-	  <xsl:apply-templates select="c:t/*"/>
-	  <xsl:text> </xsl:text>
+	<span class="instances">
 	  <xsl:for-each select="x:rr/x:r">
 	    <xsl:choose>
 	      <xsl:when test="starts-with(@label2,'vm_')">
@@ -69,11 +49,11 @@
 	    <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
 	  </xsl:for-each>
 	  <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-	</xsl:for-each>
-	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+	</span>
       </xsl:for-each>
-    </p>
-    </div>
+      <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text><br/></xsl:if>
+    </xsl:for-each>
+  </div>
 </xsl:template>
 
 <xsl:template match="text()"/>
