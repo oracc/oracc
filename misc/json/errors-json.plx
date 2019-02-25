@@ -5,12 +5,8 @@ my @lines = (<L>);
 close(L);
 
 foreach (my $i = 0; $i <= $#lines; ++$i) {
-    if ($lines[$i] =~ /^Creating/) {
-	if ($lines[$i+1] =~ /^Creating/ || $lines[$i+1] =~ /^$/) {
-	    $lines[$i] = 'DEL';
-	}
-    } elsif ($lines[$i] =~ /^Validating/) {
-	if ($lines[$i+1] =~ /^Validating/ || $lines[$i+1] =~ /^$/) {
+    if ($lines[$i] =~ /^(Creating|Skipping|Validating)/) {
+	if ($lines[$i+1] =~ /^(Creating|Skipping|Validating)/ || $lines[$i+1] =~ /^$/) {
 	    $lines[$i] = 'DEL';
 	}
     }
