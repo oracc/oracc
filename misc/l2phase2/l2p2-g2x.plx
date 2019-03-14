@@ -29,7 +29,9 @@ my %entry_ids = ();
 my %entry_lines = ();
 my %entry_xis = ();
 my %entryformstems = ();
+my %entrynormstems = ();
 my %f = ();
+my %forms = ();
 my %form_ids = ();
 my %header = ();
 my $header_vars = 0;
@@ -132,6 +134,7 @@ load_rewrites($rewrites) if -r $rewrites;
 
 read_input($input);
 
+sort_forms();
 sort_norms();
 
 #use Data::Dumper;
@@ -422,15 +425,15 @@ add_sig {
     $sig{'sid'} = sprintf("sig%06x",$sid++);
 
     if ($sig{'stem'}) {
-	if ($sig{'stem'}) {
-#	    warn "found stem\n";
-	    $entryformstems{"$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}",$sig{'form'}} = $sig{'stem'};
-#	    print Dumper \%entryformstems;
-	}
+	#	    warn "found stem\n";
+	++${$entryformstems{"$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}",$sig{'form'}}{$sig{'stem'}}};
+	$entrynormstems{"$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}",$sig{'norm'}} = $sig{'stem'};
+	#	    print Dumper \%entryformstems;
     }
     
     ++$seen_morph2 if $sig{'morph2'};
 
+    ++$forms{$sig{'form'}} if $sig{'form'};
     ++$norms{$sig{'norm'}} if $sig{'norm'};
 
     my $datalang = '';
@@ -570,6 +573,8 @@ compute_and_print_entry_data {
 	    my @k = ();
 	    if ($f eq 'norm') {
 		@k = sort { $norms{$a} <=> $norms{$b} } keys %{$freqs{$f}};
+	    } elsif ($f eq 'form') {
+		@k = sort { $forms{$a} <=> $forms{$b} } keys %{$freqs{$f}};
 	    } else {
 		@k = sort keys %{$freqs{$f}};
 	    }
@@ -606,7 +611,8 @@ compute_and_print_entry_data {
 			print "<$f cbd:id=\"$xid\" n=\"$xk_n\"";
 		    }
 		    if ($entryformstems{$entry,$k}) {
-			print " stem=\"$entryformstems{$entry,$k}\"";
+			my $efs = entry_form_string($entry,$k);
+			print " stem=\"$efs\"";
 		    }
 		    xis_attr(%xis_info);
 		    print '>';
@@ -643,7 +649,11 @@ compute_and_print_entry_data {
 		    print "</$f>";
 		} else {
 		    if ($f eq 'norm') {
-			printf "<norm xml:id=\"$xid\" icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\">";
+			printf "<norm xml:id=\"$xid\" icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\"";
+			if ($entrynormstems{$entry,$k}) {
+			    printf " stem=\"$entrynormstems{$entry,$k}\"";
+			}
+			    printf(">");
 			if ($k =~ /\s/) {
 			    print '<n>';
 			    foreach my $kk (split(/\s+/,$k)) {
@@ -1063,6 +1073,39 @@ read_input_line {
 }
 
 sub
+sort_forms {
+    my %cgc = ();
+    my $tmpname = '';
+    if (open(TMP,">01tmp/$$-forms.cgc")) {
+	$tmpname = "01tmp/$$-forms.cgc";
+    } elsif (open(TMP,">/tmp/$$-forms.cgc")) {
+	$tmpname = "/tmp/$$-forms.cgc";
+    } else {
+	die "set_cgc: can't write /tmp/$$-forms.cgc or tmp/$$-forms.cgc\n";
+    }
+    foreach my $t (keys %forms) {
+	$t =~ tr/_/—/; ### HACK !!!
+	$t =~ tr/ /_/;
+	print TMP "${t}_\n";
+    }
+    close TMP;
+    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-s', 
+    "$ENV{'ORACC'}/lib/config/msort.order", '-x', "$ENV{'ORACC'}/lib/config/msort.exclude", $tmpname;
+    open(TMP,$tmpname);
+    my @cgc = (<TMP>);
+    close(TMP);
+#    unlink $tmpname;
+    chomp @cgc;
+    @cgc = map { s/_$//; tr/_—/ _/; $_ } @cgc;
+    @cgc{@cgc} = (0..$#cgc);
+    foreach my $n (keys %forms) {
+	warn "sort forms failure: norm $n has no sort code\n"
+	    unless defined $cgc{$n};
+	$forms{$n} = $cgc{$n};
+    }
+}
+
+sub
 sort_norms {
     my %cgc = ();
     my $tmpname = '';
@@ -1093,6 +1136,11 @@ sort_norms {
 	    unless defined $cgc{$n};
 	$norms{$n} = $cgc{$n};
     }
+}
+
+sub entry_form_string {
+    my @k = keys %{$entryformstems{$_[0],$_[1]}};
+    join(',',@k);
 }
 
 1;

@@ -354,6 +354,7 @@
 </xsl:template>
 
 <xsl:template match="cbd:form|cbd:form-sans">
+  <xsl:param name="no-stem" select="false()"/>
   <xsl:choose>
     <xsl:when test="@n='*'">
       <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
@@ -375,9 +376,11 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:if test="string-length(@stem)>0">
-    <span class="stem">
-      <xsl:value-of select="concat(' (',@stem,')')"/>
-    </span>
+    <xsl:if test="$no-stem = false()">
+      <span class="stem">
+	<xsl:value-of select="concat(' (',@stem,')')"/>
+      </span>
+    </xsl:if>
   </xsl:if>
   <xsl:if test="cbd:cof-form-norm">
     <span class="cof-form-norm">
@@ -710,10 +713,17 @@
       <xsl:call-template name="cbd-norm-1"/>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:if test="string-length(@stem)>0">
+    <span class="stem">
+      <xsl:value-of select="concat(' (',@stem,')')"/>
+    </span>
+  </xsl:if>
   <xsl:if test="cbd:forms">
     <xsl:text> (</xsl:text>
     <xsl:for-each select="cbd:forms/cbd:f">
-      <xsl:apply-templates select="id(@ref)"/>
+      <xsl:apply-templates select="id(@ref)">
+	<xsl:with-param name="no-stem" select="true()"/>
+      </xsl:apply-templates>
 <!--
       <xsl:choose>
 	<xsl:when test="@icount > 0">
