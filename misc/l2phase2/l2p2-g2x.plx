@@ -1084,22 +1084,35 @@ sort_forms {
 	die "set_cgc: can't write /tmp/$$-forms.cgc or tmp/$$-forms.cgc\n";
     }
     foreach my $t (keys %forms) {
-	$t =~ tr/_/—/; ### HACK !!!
-	$t =~ tr/ /_/;
-	print TMP "${t}_\n";
+	my $k = $t;
+	$t =~ s/^\%.*?://;
+	my $t2 = "\L$t";
+	if ($t eq '*') {
+	    $t = '0';
+	} else {
+	    $t =~ s/\{.*?\}//g;
+	    $t =~ tr/./-/;
+	    $k =~ tr/ /_/;
+	    $t =~ tr/ /_/;
+	    $t2 =~ tr/ /_/;
+	}
+	print TMP "$t\t$t2\t$k\n";
     }
     close TMP;
-    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-s', 
-    "$ENV{'ORACC'}/lib/config/msort.order", '-x', "$ENV{'ORACC'}/lib/config/msort.exclude", $tmpname;
+    system 'cp', "01tmp/$$-forms.cgc", "01tmp/$$-forms.bak";
+#    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-n2', '-s',
+    #    "$ENV{'ORACC'}/lib/config/msort.order", '-x', "$ENV{'ORACC'}/lib/config/msort.exclude", $tmpname;
+    system 'psdsort', '-G', '-o', $tmpname, $tmpname;
     open(TMP,$tmpname);
     my @cgc = (<TMP>);
     close(TMP);
 #    unlink $tmpname;
     chomp @cgc;
-    @cgc = map { s/_$//; tr/_—/ _/; $_ } @cgc;
+    @cgc = map { tr/_/ /; m/^.*?\t.*?\t(.*)$/; $1 } @cgc;
     @cgc{@cgc} = (0..$#cgc);
+#    use Data::Dumper; warn Dumper \%cgc;
     foreach my $n (keys %forms) {
-	warn "sort forms failure: norm $n has no sort code\n"
+	warn "sort forms failure: form $n has no sort code\n"
 	    unless defined $cgc{$n};
 	$forms{$n} = $cgc{$n};
     }
