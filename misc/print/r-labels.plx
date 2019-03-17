@@ -20,7 +20,7 @@ if (-r $dsc) {
     close(D);
 }
 
-use Data::Dumper; warn Dumper \%d;
+#use Data::Dumper; warn Dumper \%d;
 
 my %l = ();
 open(L,'../labels.tab');

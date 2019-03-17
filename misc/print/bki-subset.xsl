@@ -28,6 +28,7 @@
       <xsl:copy>
 	<xsl:copy-of select="@*"/>
 	<xsl:copy-of select="id(@ref)/@stem"/>
+	<xsl:copy-of select="id(@ref)/@c"/>
 	<xsl:copy-of select="id(@ref)/c:t"/>
 	<xsl:copy-of select="c:t"/>
       </xsl:copy>
