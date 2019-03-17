@@ -15,7 +15,6 @@
 </xsl:template>
 
 <xsl:template match="c:forms">
-  <xsl:message>forms</xsl:message>
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:for-each select="*">
