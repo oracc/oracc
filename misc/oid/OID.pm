@@ -11,6 +11,10 @@ use Data::Dumper;
 my %oid = ();
 my $inited = 0;
 
+sub oid_load_domain {
+    oid_init(@_);
+}
+
 sub oid_init {
     my $d = shift @_;
     if (open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab")) {

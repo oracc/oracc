@@ -91,7 +91,7 @@ while (<SL>) {
 	    # warn "undefined n\n";
 	    $n = '';
 	}
-	$sid = $sign_ids{$signname};
+	$sid = $sign_ids{'sl',$signname};
 	
 	unless ($sid) {
 	    die "sl-xml.plx: internal error: no ID found for $signname\n";
@@ -155,8 +155,8 @@ while (<SL>) {
 		my $uattr = "";
 		$uattr = " utf8=\"$u\"" if $u;
 		my $ref = '';
-		if ($sign_ids{$formname}) {
-		    $ref = sprintf(" ref=\"%s\"", $sign_ids{$formname});
+		if ($sign_ids{'sl',$formname}) {
+		    $ref = sprintf(" ref=\"%s\"", $sign_ids{'sl',$formname});
 		}
 		pi_line();
 		my $vv = $v; $vv =~ s/^~//;
@@ -290,10 +290,10 @@ sign_ids {
     %sign_ids = %oids;
     foreach (@nosigns) {
 	/\s(\S+)\s*$/;
-	if ($sign_ids{$1}) {
+	if ($sign_ids{'sl',$1}) {
 	    warn "sl-xml.plx: duplicate \@nosign $1\n";
 	} else {
-	    $sign_ids{$1} = $xid++;
+	    $sign_ids{'sl',$1} = $xid++;
 	}	
     }
 }
