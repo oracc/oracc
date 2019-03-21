@@ -14,6 +14,16 @@
   </xsl:copy>    
 </xsl:template>
 
+<xsl:template match="c:forms">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:for-each select="*">
+      <xsl:sort select="@c" data-type="number"/>
+      <xsl:apply-templates select="."/>
+    </xsl:for-each>
+  </xsl:copy>
+</xsl:template>
+
 <xsl:template match="c:form">
   <xsl:copy>
     <xsl:copy-of select="@*"/>

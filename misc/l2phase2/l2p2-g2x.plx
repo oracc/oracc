@@ -584,6 +584,7 @@ compute_and_print_entry_data {
 		my $ipct = ipct($icount, $entry_freqs{$entry});
 		my $xid = $pre_ids{$entry_ids{$entry},$f,$k} || next_xid();
 		my %xis_info = xis($lang,$entry_xid,$xid,$icount,$ipct,@sigs);
+		my $sort_k = $k;
 
 		if (exists $gdlme{$f}) {
 		    my $gme = ' g:me="1"';
@@ -606,7 +607,7 @@ compute_and_print_entry_data {
 		    #			$gme = '';
 		    #		    }
 		    if ($f eq 'form') {
-			print "<$f xml:id=\"$xid\" n=\"$xk_n\"";
+			print "<$f xml:id=\"$xid\" n=\"$xk_n\" c=\"$forms{$sort_k}\"";
 		    } else {
 			print "<$f cbd:id=\"$xid\" n=\"$xk_n\"";
 		    }
@@ -1109,7 +1110,7 @@ sort_forms {
 #    unlink $tmpname;
     chomp @cgc;
     @cgc = map { tr/_/ /; m/^.*?\t.*?\t(.*)$/; $1 } @cgc;
-    @cgc{@cgc} = (0..$#cgc);
+    @cgc{@cgc} = (1..($#cgc+1));
 #    use Data::Dumper; warn Dumper \%cgc;
     foreach my $n (keys %forms) {
 	warn "sort forms failure: form $n has no sort code\n"
