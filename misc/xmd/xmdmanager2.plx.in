@@ -52,6 +52,7 @@ my %merge_periods_all = (
     'Hellenistic'=>'Hellenistic',
     'Seleucid'=>'Hellenistic',
     'Parthian'=>'Parthian',
+    'Sassanian'=>'Sassanian',
     'Uncertain'=>'Uncertain',
     'uncertain'=>'Uncertain',
     'Unknown'=>'Uncertain',
