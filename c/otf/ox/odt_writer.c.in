@@ -239,6 +239,12 @@ cdt_write_node(struct cdt_node*np)
     cdt_write_text((const char *)np->text, wfile);
 }
 
+void
+cdt_write_node_public(struct cdt_node*np)
+{
+  cdt_write_node(np);
+}
+
 static int
 cdt_write_children(struct cdt_node *np)
 {

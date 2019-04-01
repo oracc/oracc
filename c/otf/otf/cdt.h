@@ -119,10 +119,14 @@ extern void cdt_styles_term(void);
 extern void cdt_style_writer(FILE *wfile);
 extern void cdt_warning(const char *myfile, size_t mylnum, const char *fmt,...);
 extern void cdt_writer(FILE*wout, List *master, List *metalist);
-extern struct cdt_node*cdttoks(register const char *str,register unsigned int len);
+extern struct cdt_node*cdttoks(register const char *str,register size_t len);
 extern void gdl_reader(struct cdt_node *np, unsigned char *gdlinput);
 extern void gdl_writer(FILE *f,struct cdt_node *np);
 extern void set_project(struct proj_context *p, const char *proj);
 extern char *cdt_findfile(const char *file);
+
+extern struct cdt_node *cdt_string_node(struct cdt_node *parent,unsigned char *text,const char *file, size_t lnum);
+
+extern void cdt_write_node_public(struct cdt_node*np);
 
 #endif/*_CDT_H*/

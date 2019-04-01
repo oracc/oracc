@@ -182,6 +182,7 @@
 \def\catalogue{\setbox\catbox=\vbox\bgroup % \begingroup
         \parindent0pt\relax\nine\rm
         \frenchspacing \baselineskip10pt \lineskip0pt\relax}
+\let\cattable\catalogue
 \let\cataloguncertain\catalogue
 \def\endc@talogue#1{\endgraf
    \baselineskip0pt \nobreak\kern3pt\relax
@@ -191,9 +192,6 @@
    \advance\needspace35pt
    \ifdim\needspace>100pt
      \needspace100pt \fi
-
-%   \advance\needspace-.5\pageshrink
-
    \newreallyMaybeEject\needspace\headingspacing
    \centerline{\ExpandedRm #1}%
    \nointerlineskip
@@ -201,7 +199,14 @@
    \nobreak
    \unvbox\catbox
 }
+\def\endc@talogueB{\endgraf
+   \baselineskip0pt \nobreak\kern3pt\relax
+   \nointerlineskip\catrule
+   \egroup
+   \unvbox\catbox
+}
 \def\endcatalogue{\endc@talogue{CATALOGUE}}
+\def\endcattable{\endc@talogueB}
 \def\endcataloguncertain{\endc@talogue{CATALOGUE OF UNCERTAIN EXEMPLARS}}
 
 \let\catalog\catalogue

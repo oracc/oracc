@@ -122,6 +122,21 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
     }
 }
 
+struct cdt_node *
+cdt_string_node(struct cdt_node *parent,unsigned char *text,const char *file, size_t lnum)
+{
+  struct cdt_node *np = calloc(1,sizeof(struct cdt_node));
+  np->name = "inline";
+  np->file = file;
+  np->lnum = lnum;
+  np->parent = parent;
+  np->text = text;
+  np->class = cdt_none;
+  np->code = odt_span;
+  np->term = cdt_self;
+  return np;
+}
+
 static struct cdt_node *
 cdt_char_node(struct cdt_node *parent,unsigned char *text,size_t lnum)
 {

@@ -23,6 +23,7 @@ struct cdt_field
 {
   const char *name;
   unsigned char *text;
+  struct cdt_node *inp;
 };
 
 static void *
@@ -103,6 +104,15 @@ db_reader(struct cdt_node *np)
 		  while (isspace(*ftext))
 		    ++ftext;
 		  fld->text = scan_field(tok,&ftext);
+		  if (fld->text && strchr(fld->text, '@'))
+		    {
+		      fprintf(stderr, "found @ in %s\n", fld->text);
+		      struct cdt_node *sp = cdt_string_node(NULL,fld->text,np->file,local_lnum);
+		      cdt_inline(sp,NULL,NULL);
+		      fld->inp = sp;
+		    }
+		  else
+		    fld->inp = NULL;
 		}
 	    }
 	  else if (!strcmp((const char *)tok,"record"))
@@ -147,7 +157,10 @@ static void
 field_writer(struct cdt_field *fp)
 {
   fprintf(wfile,"<oracc:field oracc:name=\"%s\">",fp->name);
-  fputs((const char *)xmlify(fp->text),wfile);
+  if (fp->inp)
+    cdt_write_node_public(fp->inp);
+  else
+    fputs((const char *)xmlify(fp->text),wfile);
   fputs("</oracc:field>",wfile);
 }
 

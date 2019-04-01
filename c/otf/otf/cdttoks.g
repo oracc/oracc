@@ -19,6 +19,7 @@ atffile,         odt_none,    cdt_atf_file,         cdt_line,  cdt_none
 xmlfile,         odt_none,    cdt_xml_file,         cdt_line,  cdt_none
 bibliography,    odt_foreign, foreign_bibliography, cdt_end,   cdt_data
 catalog,         odt_foreign, foreign_catalog,      cdt_end,   cdt_data
+cattable,        odt_foreign, foreign_catalog,      cdt_end,   cdt_data
 include,         odt_none,    cdt_include,          cdt_line,  cdt_none
 project,         odt_meta,    cdt_project_c,        cdt_line,  cdt_none
 end,             odt_none,    cdt_end_tag,          cdt_line,  cdt_none
