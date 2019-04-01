@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include "loadfile.h"
 
 extern const char *prog;
@@ -91,6 +93,7 @@ loadfile(unsigned const char *fname, size_t *nbytes)
   if (fdesc >= 0)
     {
       ssize_t ret = read(fdesc,ftext,fsize);
+      close(fdesc);
       if (ret != fsize)
 	{
 	  fprintf(stderr,"%s: %s: read %ld bytes failed\n", prog, fname, (unsigned long)fsize);
@@ -102,7 +105,7 @@ loadfile(unsigned const char *fname, size_t *nbytes)
     }
   else
     {
-      fprintf(stderr, "%s: %s: open failed\n", prog, fname);
+      fprintf(stderr, "%s: %s: open failed (system error %d: %s)\n", prog, fname, errno, strerror(errno));
       exit(2);
     }
 

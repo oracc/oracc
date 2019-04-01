@@ -106,7 +106,7 @@ db_reader(struct cdt_node *np)
 		  fld->text = scan_field(tok,&ftext);
 		  if (fld->text && strchr(fld->text, '@'))
 		    {
-		      fprintf(stderr, "found @ in %s\n", fld->text);
+		      /* fprintf(stderr, "found @ in %s\n", fld->text); */
 		      struct cdt_node *sp = cdt_string_node(NULL,fld->text,np->file,local_lnum);
 		      cdt_inline(sp,NULL,NULL);
 		      fld->inp = sp;

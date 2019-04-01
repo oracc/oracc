@@ -133,6 +133,7 @@ process_cdt_list(struct run_context *run,
       if (*ftext == '@')
 	{
 	  tok = scan_token(ftext, &endtok, &save);
+	  /* fprintf(stderr,"@ tok = %s\n", tok); */
 	  if ((tokp = cdttoks((const char *)tok,endtok-tok)))
 	    {
 	      struct cdt_node *np;

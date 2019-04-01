@@ -27,6 +27,7 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
     {
       unsigned char *start = p;
       int found_at = 0;
+
       while (*p && '@' != *p)
 	{
 	  if ('\n' == *p)
@@ -43,7 +44,10 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
 	}
 
       if (p - start)
-	list_add(np->children, cdt_char_node(np,start,local_lnum));
+	{
+	  list_add(np->children, cdt_char_node(np,start,local_lnum));
+	  start = NULL;
+	}
 
       if (found_at)
 	{
@@ -115,7 +119,15 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
 	    }
 	  else
 	    {
-	      list_add(np->children, cdt_ctag_node(np,start,local_lnum));
+	      if (start)
+		list_add(np->children, cdt_ctag_node(np,start,local_lnum));
+	      else
+		{
+		  if (*p == '@')
+		    list_add(np->children, cdt_char_node(np,"@",local_lnum));
+		  else
+		    cdt_warning(np->file,local_lnum,"orphan @-sign");
+		}
 	      ++p;
 	    }
 	}
@@ -166,10 +178,24 @@ cdt_span_node(struct cdt_node *parent,const unsigned char *name,size_t lnum)
   return np;
 }
 
+static int
+cdt_bad_tag_name(const char *t)
+{
+  while (*t)
+    if (*t < 128 && !isalnum(*t))
+      return 1;
+  return 0;
+}
+
 static struct cdt_node *
 cdt_ctag_node(struct cdt_node *parent,const unsigned char *name,size_t lnum)
 {
   struct cdt_node *np = calloc(1,sizeof(struct cdt_node));
+  if (cdt_bad_tag_name(name))
+    {
+      cdt_warning(np->file,lnum,"bad tag name '%s'", name);
+      name="BAD";
+    }
   np->name = (const char *)name;
   np->file = parent->file;
   np->lnum = lnum;
