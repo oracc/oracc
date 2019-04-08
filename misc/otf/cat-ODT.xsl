@@ -38,16 +38,16 @@
   <name n="squeeze"  sig="P">Louvre<oracc:br/>Squeeze</name>
   <name n="frgm"     sig="Q"><oracc:br/>Frgm.</name>
   <name n="section"  sig="R"><oracc:br/>Section</name>
-  <name n="fuchs"    sig="S">Fuchs,<oracc:br/>ISAK line</name>
+  <name n="fuchs"    sig="S">Fuchs,<oracc:br/>Khorsabad line</name>
   <name n="botta"    sig="T">Botta,<oracc:br/>MdN</name>
   <name n="pub"      sig="U">Publication<oracc:br/>reference</name>
   <name n="text_no"  sig="V">Text<oracc:br/>no.</name>
-  <name n="winckler" sig="W">Winkler,<oracc:br/>Sar. 2</name>
+  <name n="winckler" sig="W">Winckler,<oracc:br/>Sar. 2</name>
   <name n="luckenbill" sig="X">Luckenbill,<oracc:br/>ARAB 2</name>
   <name n="el_amin"  sig="Y">El-Amin,<oracc:br/>Sumer</name>
   <name n="waefler"  sig="Z">Wäfler,<oracc:br/>AOAT 26</name>
   <name n="walker"   sig="0">Walker<oracc:br/>in Albenda</name>
-  <name n="isak"     sig="1">Fuchs,<oracc:br/>ISAK</name>
+  <name n="isak"     sig="1">Fuchs,<oracc:br/>Khorsabad</name>
   <name n="flandin_mdn" sig="2">Flandin in<oracc:br/>Botta, MdN 1–2</name>
   <name n="flandin_albenda" sig="3">Flandin in<oracc:br/>Albenda</name>
   <name n="maniori"  sig="4">Maniori, Campagne<oracc:br/>di Sargon </name>
