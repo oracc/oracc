@@ -195,7 +195,7 @@
 
 <xsl:template match="table:table">
   <xsl:choose>
-    <xsl:when test="ancestor::text:section[@text:name='catalog' or @text:name='cataloguncertain']">
+    <xsl:when test="ancestor::text:section[@text:name='catalog' or @text:name='cataloguncertain' or @text:name='cattable']">
       <xsl:call-template name="cat-table"/>
     </xsl:when>
     <xsl:when test="ancestor::text:section[@text:name='edition']">
@@ -206,7 +206,7 @@
     </xsl:when>
     <xsl:otherwise>
       <xsl:message>table:table[@<xsl:value-of 
-        select="ancestor::text:section/@text:name"/>] not handled</xsl:message>
+        select="ancestor::text:section/@text:name"/>] not handled (X1)</xsl:message>
     </xsl:otherwise>
   </xsl:choose>      
 </xsl:template>

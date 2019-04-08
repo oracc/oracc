@@ -122,13 +122,7 @@
 	</xsl:if>
 	<xsl:call-template name="render-g"/>
 	<xsl:call-template name="render-flags"/>
-	<xsl:if test="count(following-sibling::*)>0">
-	  <xsl:value-of select="@g:delim"/>
-	</xsl:if>
       </sup>
-      <xsl:if test="count(following-sibling::*)=0">
-	<xsl:value-of select="@g:delim"/>
-      </xsl:if>
     </xsl:when>
     <xsl:when test="self::norm:s">
       <span x="6">
@@ -157,15 +151,6 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
-<!--
-  <xsl:if test="self::norm:s">
-    <span x="10">
-      <xsl:if test="@g:delim">
-	<xsl:value-of select="@g:delim"/>
-      </xsl:if>
-    </span>
-  </xsl:if>
- -->
 </xsl:template>
 
 <xsl:template match="g:s">
@@ -178,7 +163,6 @@
 	  <xsl:apply-templates/>
 	</span>
 	<xsl:call-template name="render-flags"/>
-	<xsl:value-of select="@g:delim"/>
       </sup>
     </xsl:when>
     <xsl:otherwise>
@@ -362,7 +346,6 @@
 	</xsl:choose>
 	<xsl:apply-templates select="g:a|g:m"/>
 	<xsl:call-template name="render-flags"/>
-	<xsl:value-of select="@g:delim"/>
       </sup>
     </xsl:when>
     <xsl:otherwise>
@@ -453,15 +436,11 @@
     <xsl:when test="@g:type='alternation'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
-	  <xsl:text>/</xsl:text>
-        </xsl:if>
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<!--	<xsl:if test="not(position()=last())">-->
 	  <xsl:choose>
 	    <xsl:when test="text()='x'">
 	      <xsl:choose>
@@ -469,56 +448,37 @@
 		<xsl:otherwise>
 		  <xsl:choose>
 		    <xsl:when test="@g:delim='+'">
-		      <xsl:text> </xsl:text>
+		      <!-- <xsl:text> </xsl:text> -->
 		    </xsl:when>
 		    <xsl:otherwise>
-		      <xsl:value-of select="@g:delim"/>
+		      <!--<xsl:value-of select="@g:delim"/>-->
 		    </xsl:otherwise>
 		  </xsl:choose>
 		</xsl:otherwise>
 	      </xsl:choose>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <!--<xsl:text>+</xsl:text>-->
-	      <xsl:value-of select="@g:delim"/>
+	      <!-- <xsl:value-of select="@g:delim"/> -->
 	    </xsl:otherwise>
 	  </xsl:choose>
-        <!--</xsl:if>-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='implicit-ligature'">
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:when test="@g:type='group' or @g:type='logo'">
-<!--
-      <xsl:variable name="boundary">
-	<xsl:choose>
-	  <xsl:when test="g:s|g:c|g:n">
-	    <xsl:text>.</xsl:text>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:text>-</xsl:text>
-	  </xsl:otherwise>
-	</xsl:choose>
-	</xsl:variable>
--->
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
 	<xsl:choose>
 	  <xsl:when test="self::g:d[@g:pos='pre']
 			  or following-sibling::*[1][self::g:d[@g:pos='post']]"/>
 	  <xsl:otherwise>
-	    <!--
-	    <xsl:if test="not(position()=last())">
-	      <xsl:value-of select="$boundary"/>
-	      </xsl:if>
-	    -->
 	    <xsl:choose>
 	      <xsl:when test="@g:delim='--'">
-		<xsl:text>—</xsl:text>
+		<!--<xsl:text>—</xsl:text>-->
 	      </xsl:when>
 	      <xsl:otherwise>
-		<xsl:value-of select="@g:delim"/>
+		<!--<xsl:value-of select="@g:delim"/>-->
 	      </xsl:otherwise>
 	    </xsl:choose>
 	  </xsl:otherwise>
@@ -560,9 +520,7 @@
     <xsl:when test="@type='punct' or @type='excised'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="@g:delim">
-	  <xsl:value-of select="@g:delim"/>
-	</xsl:if>
+	<xsl:value-of select="@g:delim"/>
       </xsl:for-each>
       <xsl:choose>
 	<xsl:when test="@g:delim">
@@ -633,20 +591,19 @@
   </xsl:if>
   <xsl:value-of select="@g:o"/>
   <xsl:if test="@g:ho">
-<!--    <xsl:text>&#x02f9;</xsl:text>-->
     <xsl:text>&#x2e22;</xsl:text>
   </xsl:if>
 </xsl:template>
 
 <xsl:template name="render-c">
   <xsl:if test="@g:hc">
-<!--    <xsl:text>&#x02fa;</xsl:text> -->
     <xsl:text>&#x2e23;</xsl:text>
   </xsl:if>
   <xsl:value-of select="@g:c"/>
   <xsl:if test="@g:varc">
     <sup class="varmark"><xsl:value-of select="concat(':',@g:varc,')')"/></sup>
   </xsl:if>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template name="gdl-w">
@@ -806,9 +763,7 @@
   </span>
   <xsl:if test="self::norm:w">
     <span x="11">
-      <xsl:if test="@g:delim">
-	<xsl:value-of select="@g:delim"/>
-      </xsl:if>
+      <xsl:value-of select="@g:delim"/>
     </span>
   </xsl:if>
 </xsl:template>
@@ -836,69 +791,14 @@
       </xsl:when>
       <xsl:otherwise>
 	<!--	<xsl:call-template name="maybe-hyphen"/> -->
-	<xsl:if test="not(@g:delim='--')">
+<!--
+	<xsl:if test="not(@g:delim='- -')">
 	  <xsl:value-of select="@g:delim"/>
 	</xsl:if>
+-->
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-</xsl:template>
-
-<!--
-<xsl:template name="maybe-hyphen">
-  <xsl:choose>
-      <xsl:when test="@g:em">
-	<xsl:text>—</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="@g:delim"/>
-      </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
--->
-<xsl:template name="x-maybe-hyphen">
-  <xsl:variable name="hyph">
-    <xsl:choose>
-      <xsl:when test="@g:em">
-	<xsl:text>—</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-<!--	<xsl:text>-</xsl:text>-->
-	<xsl:value-of select="@g:delim"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:choose>
-    <xsl:when test="self::g:d">
-      <xsl:if test="@g:pos='post' and not(position()=last())
-		    and not(following-sibling::*[1][@g:type='disamb'])">
-	<xsl:value-of select="$hyph"/>
-      </xsl:if>
-    </xsl:when>
-    <xsl:when test="following-sibling::*[1][self::g:d]">
-      <xsl:if test="following-sibling::*[1][@g:pos='pre']">
-	<xsl:value-of select="$hyph"/>
-      </xsl:if>
-    </xsl:when>
-    <xsl:when test="@gloss='cont' 
-		    or (@gloss='post' and following::xtf:g[1]/@gloss='cont')">
-<!--      <sup><xsl:text>-</xsl:text></sup> -->
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:if test="not(position() = last())
-		and not(@gloss = 'pre')
-	        and not(following-sibling::xtf:g[1]/@gloss='post')
-	        and not(following-sibling::*[1][local-name()='gloss'])
-	        and not(following-sibling::*[1][@g:type='disamb'])
-	        and not(../following-sibling::xtf:g[1]/@gloss='post')
-	        and not(../following-sibling::*[1][local-name()='gloss']
-	        and not(../following-sibling::*[1][@g:type='disamb'])
-		)
-		">
-	<xsl:value-of select="$hyph"/>
-      </xsl:if>
-    </xsl:otherwise>
-  </xsl:choose>
 </xsl:template>
 
 <!-- This is the note mark in the transliteration line of XTF data -->

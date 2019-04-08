@@ -66,7 +66,7 @@
     <name n="subject" sig="h"><oracc:br/>Subject</name>
 </xsl:template>
 
-<xsl:template match="oracc:data[@oracc:type='catalog']">
+<xsl:template match="oracc:data[@oracc:type='catalog' or @oracc:type='cattable']">
   <xsl:variable name="width">
     <xsl:choose>
       <xsl:when test="@width">

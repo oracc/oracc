@@ -414,35 +414,16 @@
     <xsl:when test="@g:type='alternation'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:if test="not(position()=last())">
-	  <xsl:text>/</xsl:text>
-        </xsl:if>
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='ligature'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-<!--	<xsl:value-of select="@g:delim"/> -->
-	<!--
-	<xsl:if test="not(position()=last())">
-          <xsl:text>+</xsl:text>
-        </xsl:if>
-	-->
       </xsl:for-each>
     </xsl:when>
     <xsl:when test="@g:type='group' or @g:type='logo'">
       <xsl:variable name="boundary">
 	<xsl:value-of select="@g:delim"/>
-<!--
-	<xsl:choose>
-	  <xsl:when test="g:s|g:c|g:n">
-	    <xsl:text>.</xsl:text>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:text>-</xsl:text>
-	  </xsl:otherwise>
-        </xsl:choose>
- -->
       </xsl:variable>
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
@@ -571,6 +552,7 @@
 </xsl:template>
 
 <xsl:template name="render-o">
+  <text:span text:style-name="r">
   <xsl:if test="@g:varo">
     <text:span text:style-name="sup" text:classes="varmark"><xsl:value-of select="concat('(',@g:varo,':')"/></text:span>
   </xsl:if>
@@ -578,9 +560,11 @@
   <xsl:if test="@g:ho">
     <xsl:text>&#x2e22;</xsl:text>
   </xsl:if>
+  </text:span>
 </xsl:template>
 
 <xsl:template name="render-c">
+  <text:span text:style-name="r">
   <xsl:if test="@g:hc">
     <xsl:text>&#x2e23;</xsl:text>
   </xsl:if>
@@ -588,6 +572,7 @@
   <xsl:if test="@g:varc">
     <text:span text:style-name="sup" text:classes="varmark"><xsl:value-of select="concat(':',@g:varc,')')"/></text:span>
   </xsl:if>
+  </text:span>
 </xsl:template>
 
 <xsl:template name="gdl-w">
