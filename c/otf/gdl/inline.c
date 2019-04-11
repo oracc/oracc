@@ -1063,6 +1063,19 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  break;
 			}
 		    }
+		  if ((end-start>1) && tokens[start+1]->type == uflag)
+		    {
+		      struct uflags *ufp = (struct uflags *)tokens[++start]->data;
+#if 0
+		      if (in_hash)
+			{
+			  appendAttr(prev_g ? prev_g : np,attr(a_g_hc,ucc("1")));
+			  in_hash = 0;			  
+			}
+#endif		      
+		      set_uflags(np,ufp);
+		      
+		    }
 		}
 	      else if ((end-start>1) && tokens[start+1]->type == uflag)
 		{

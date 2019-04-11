@@ -8,3 +8,5 @@ xsltproc $lib/bki-xis-group.xsl bki-xis.xml \
 r-labels.plx bki-grouped.xml
 xsltproc $lib/bki-sort.xsl bki-grouped+.xml >bki-sorted.xml
 r-uniq.plx bki-sorted.xml
+r-trim-label2.plx bki-sorted+.xml
+r-vol.plx bki-sorted++.xml

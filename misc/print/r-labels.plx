@@ -46,6 +46,7 @@ foreach my $rr (@rr) {
     my $rrl = $rr->getAttribute('name');
     my $rrl_rx = $rrl;
     $rrl_rx =~ s/^.*?_//;
+    my $last_pre_colon = '';
     foreach my $r ($rr->childNodes()) {
 	my $v = $r->textContent();
 	$v =~ s/\+.*$//;
@@ -54,12 +55,13 @@ foreach my $rr (@rr) {
 	my $c = $v;
 	$c =~ s/^.*?\.//;
 	$r->setAttribute('c',$c);
+	my $same_text = 0;
 	if ($l{$v}) {
 	    my $rl = $l{$v};
 	    $r->setAttribute('label1',$l{$v});
 	    $rl =~ s/^$rrl_rx[.:]//;
 	    my $punct = ($rl =~ /:/ ? '.' : ':');
-	    $r->setAttribute('label2',"$rrl$punct$rl");
+	    $r->setAttribute('label2', "$rrl$punct$rl");
 	} else {
 	    warn "$0: $v not in labelset\n";
 	}

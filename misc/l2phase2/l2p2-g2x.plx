@@ -1097,13 +1097,13 @@ sort_forms {
 	    $t =~ tr/ /_/;
 	    $t2 =~ tr/ /_/;
 	}
-	print TMP "$t\t$t2\t$k\n";
+	print TMP "${t} \t$t2\t$k\n";
     }
     close TMP;
     system 'cp', "01tmp/$$-forms.cgc", "01tmp/$$-forms.bak";
 #    system 'msort', '-j', '--out', $tmpname, '-ql', '-n1', '-n2', '-s',
     #    "$ENV{'ORACC'}/lib/config/msort.order", '-x', "$ENV{'ORACC'}/lib/config/msort.exclude", $tmpname;
-    system 'psdsort', '-G', '-o', $tmpname, $tmpname;
+    system 'psdsort', '-i', '-G', '-o', $tmpname, $tmpname;
     open(TMP,$tmpname);
     my @cgc = (<TMP>);
     close(TMP);

@@ -239,7 +239,7 @@
 	    <xsl:value-of select="text()"/>
 	  </xsl:otherwise>
 	</xsl:choose>
-	<xsl:value-of select="@g:c"/>
+	<xsl:call-template name="render-c"/>
       </span>
     </xsl:otherwise>
   </xsl:choose>

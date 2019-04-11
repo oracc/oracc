@@ -47,31 +47,42 @@
       </xsl:for-each>
     </p>
     <p>
-      <xsl:for-each select="c:senses/c:sense">
-	<xsl:if test="@stem">
+<!--      <xsl:for-each select="c:senses/c:sense"> -->
+
+	<!--<xsl:if test="@stem">
 	  <xsl:text>[</xsl:text>
 	  <xsl:value-of select="@stem"/>
 	  <xsl:text>] </xsl:text>
 	</xsl:if>
+	-->
+
+	<xsl:text>wr. </xsl:text>
+	
 	<xsl:for-each select="c:forms/c:form">
 	  <!--<xsl:value-of select="@n"/>-->
 	  <xsl:apply-templates select="c:t/*"/>
+	  <xsl:if test="@stem">
+	    <xsl:value-of select="concat(' [',@stem,']')"/>
+	  </xsl:if>
 	  <xsl:text> </xsl:text>
-	  <xsl:for-each select="x:rr/x:r">
-	    <xsl:choose>
-	      <xsl:when test="starts-with(@label2,'vm_')">
-		<xsl:value-of select="substring-after(@label2,'vm_')"/>
-	      </xsl:when>
-	      <xsl:otherwise>
-		<xsl:value-of select="@label2"/>
-	      </xsl:otherwise>
-	    </xsl:choose>
+	  <xsl:for-each select="x:rr">
+	    <xsl:for-each select="x:r">
+	      <xsl:choose>
+		<xsl:when test="starts-with(@label2,'vm_')">
+		  <xsl:value-of select="substring-after(@label2,'vm_')"/>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:value-of select="@label2"/>
+		</xsl:otherwise>
+	      </xsl:choose>
+	      <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+	    </xsl:for-each>
 	    <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-	  </xsl:for-each>
+	  </xsl:for-each>	      
 	  <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
 	</xsl:for-each>
-	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
-      </xsl:for-each>
+<!--	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>-->
+<!--      </xsl:for-each> -->
     </p>
     </div>
 </xsl:template>

@@ -1,8 +1,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
 		xmlns:c="http://oracc.org/ns/cbd/1.0"
 		xmlns:g="http://oracc.org/ns/gdl/1.0"
+		xmlns:x="http://oracc.org/ns/xis/1.0"
 		>
 
+<xsl:param name="sense-forms" select="'no'"/>
+  
 <xsl:template match="c:articles|c:letter|c:entry|c:senses">
   <xsl:copy>
     <xsl:copy-of select="@*[not(name()='xis')]"/>
@@ -14,11 +17,26 @@
   <xsl:copy-of select="."/>
 </xsl:template>
 
+<xsl:template match="c:forms">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:apply-templates/>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="c:form">
+  <xsl:if test="not(@n='*')">
+    <xsl:copy-of select="."/>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template match="c:sense">
   <xsl:copy>
     <xsl:copy-of select="@*[not(name()='xis')]"/>
     <xsl:copy-of select="c:pos|c:mng"/>
-    <xsl:apply-templates select="c:forms" mode="sense"/>
+    <xsl:if test="$sense-forms = 'yes'">
+      <xsl:apply-templates select="c:forms" mode="sense"/>
+    </xsl:if>
   </xsl:copy>
 </xsl:template>
 
