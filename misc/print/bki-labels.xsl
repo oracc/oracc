@@ -10,11 +10,13 @@
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:variable name="stem" select="@stem"/>
-    <xsl:attribute name="stemkey">
-      <xsl:for-each select="document('stems.xml',/)">
-	<xsl:value-of select="key('kv',$stem)/@v"/>
-      </xsl:for-each>
-    </xsl:attribute>
+    <xsl:if test="string-length($stem) > 0">
+      <xsl:attribute name="stemkey">
+	<xsl:for-each select="document('stems.xml',/)">
+	  <xsl:value-of select="key('kv',$stem)/@v"/>
+	</xsl:for-each>
+      </xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates/>
   </xsl:copy>    
 </xsl:template>

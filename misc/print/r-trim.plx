@@ -15,7 +15,8 @@ my $x = load_xml($f);
 
 my @spans = tags($x,'http://www.w3.org/1999/xhtml','span');
 foreach my $s (@spans) {
-    if ($s->getAttribute('class') eq 'instances') {
+    my $c = $s->getAttribute('class');
+    if ($c && $c eq 'instances') {
 	trim_i($s);
     }
 }

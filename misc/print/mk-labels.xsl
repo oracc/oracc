@@ -3,8 +3,8 @@
 
 <xsl:output method="text" encoding="UTF-8"/>
   
-<xsl:template match="*[@xml:id and @n]">
-  <xsl:value-of select="concat(@xml:id,'&#x9;',@n,'&#xa;')"/>
+<xsl:template match="*[@xml:id and @label]">
+  <xsl:value-of select="concat(@xml:id,'&#x9;',@label,'&#xa;')"/>
   <xsl:apply-templates/>
 </xsl:template>
 

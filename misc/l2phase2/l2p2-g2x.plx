@@ -899,6 +899,10 @@ xis_rr {
     foreach my $rr (sort { $xrefs{$a} cmp $xrefs{$b} } keys %xrefs) {
 	my $xispair = $xrefs{$rr};
 	my $xid = $$xispair[0];
+	if ($xid =~ /^[^a-zA-Z]/) {
+	    warn("bad xid $xid, fixing to XXX.$xid");
+	    $xid = "XXX.$xid";
+	}
 	my %exis = %{$entry_xis{$$xispair[1]}};
 	my $icount = $exis{'icount'} || 0;
 	printf XIS "<xis xml:id=\"$xid\" efreq=\"$icount\">";
