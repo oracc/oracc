@@ -31,10 +31,14 @@
 
 <xsl:variable name="summaries-doc" select="concat('@@ORACC@@/web/',$basename,'/',/*/@xml:lang,'/summaries.html')"/>
 
+<xsl:variable name="periods-xis" select="concat('@@ORACC_BUILDS@@/bld/',$project,'/',/*/@xml:lang,'/periods.xis')"/>
+
 <!--<xsl:strip-space elements="*"/>-->
 
 <xsl:key name="signmap" match="do" use="@from"/>
 <xsl:key name="summary-id" match="xh:p" use="@id"/>
+
+<xsl:strip-space elements="*"/>
 
 <xsl:output method="text" encoding="utf-8"/>
 
@@ -241,15 +245,15 @@
 </xsl:template>
 
 <xsl:template name="bases-para">
-\begin{bases}
-  <xsl:for-each select="cbd:base"
+\beginbases
+<xsl:for-each select="cbd:base"
   ><xsl:apply-templates mode="base" select="cbd:text[1]"
 /></xsl:for-each
->\end{bases}
+>\endbases
 </xsl:template>
 
-<xsl:template mode="base" match="cbd:text">\base{<xsl:apply-templates mode="cuneify"/>}{<xsl:apply-templates
-/>}{<xsl:call-template name="inst-bar"/>}
+<xsl:template mode="base" match="cbd:text">  \base{<xsl:apply-templates mode="cuneify"/>}{<xsl:apply-templates
+/>}{<xsl:call-template name="inst-bar"/>}%
 </xsl:template>
 
 <xsl:template name="inst-pct">
@@ -280,8 +284,11 @@
   <xsl:for-each select="ancestor::cbd:base">
     <xsl:if test="@icount and @icount > 0"
       >\instbar{<xsl:value-of select="@icount"
-      />}<xsl:for-each select="id(@xis-periods)/*[position()&lt;10]"
-      >{<xsl:call-template name="inst-cnt"/>}</xsl:for-each>
+      />}<xsl:variable name="i-id" select="concat(@xis,'.i')"
+      /><xsl:for-each select="document($periods-xis)">
+         <xsl:for-each select="id($i-id)/*[position()&lt;10]"
+		  >{<xsl:call-template name="inst-cnt"/>}</xsl:for-each>
+       </xsl:for-each>
     </xsl:if>
   </xsl:for-each>
 </xsl:template>
@@ -419,8 +426,10 @@
 </xsl:template>
 -->
 
-<xsl:template match="cbd:senses">\beginsenses
-<xsl:apply-templates/>\endsenses
+<xsl:template match="cbd:senses">
+\beginsenses
+<xsl:apply-templates
+    />\endsenses
 </xsl:template>
 
 <xsl:template match="cbd:usages">
@@ -481,12 +490,11 @@
   </div>
 </xsl:template>
 
-<xsl:template match="cbd:sense"
->\sense{<xsl:value-of select="@num"
+<xsl:template match="cbd:sense">  \sense{<xsl:value-of select="@num"
       />}{<xsl:value-of select="cbd:mng"
-      />}{<xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)">
-         <xsl:value-of select="concat(' (',cbd:pos,') ')"/>
-       </xsl:if>}
+      />}{<xsl:if test="cbd:pos and not(cbd:pos=../../cbd:pos)"
+      ><xsl:value-of select="concat(' (',cbd:pos,') ')"
+      /></xsl:if>}%
 <!--<xsl:apply-templates select="cbd:usages"/>
 --></xsl:template>
 
