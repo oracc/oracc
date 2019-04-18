@@ -85,9 +85,31 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="map-period">
+  <xsl:variable name="p" select="text()"/>
+  <xsl:choose>
+    <xsl:when test="$p='Early Dynastic I'"><xsl:text>ED I</xsl:text></xsl:when>
+    <xsl:when test="$p='Early Dynastic IIIa'"><xsl:text>ED IIIa</xsl:text></xsl:when>
+    <xsl:when test="$p='Early Dynastic IIIb'"><xsl:text>ED IIIb</xsl:text></xsl:when>
+    <xsl:when test="$p='Ebla'"><xsl:text>Old Akk.</xsl:text></xsl:when>
+    <xsl:when test="$p='Old Akkadian'"><xsl:text>Old Akk.</xsl:text></xsl:when>
+    <xsl:when test="$p='Lagash II'"><xsl:text></xsl:text>Gudea</xsl:when>
+    <xsl:when test="$p='Ur III'"><xsl:text>Ur III</xsl:text></xsl:when>
+    <xsl:when test="$p='Old Babylonian'"><xsl:text>OB</xsl:text></xsl:when>
+    <xsl:when test="$p='Middle Babylonian'"><xsl:text>MB</xsl:text></xsl:when>
+    <xsl:when test="$p='Neo-Babylonian'"><xsl:text>NB</xsl:text></xsl:when>
+    <xsl:when test="$p='Middle Assyrian'"><xsl:text>MA</xsl:text></xsl:when>
+    <xsl:when test="$p='Neo-Assyrian'"><xsl:text>NA</xsl:text></xsl:when>
+    <xsl:when test="$p='Persian'"><xsl:text>Pers.</xsl:text></xsl:when>
+    <xsl:when test="$p='Hellenistic'"><xsl:text>Grk.</xsl:text></xsl:when>
+    <xsl:when test="$p='unknown'"><xsl:text>unplaced</xsl:text></xsl:when>
+    <xsl:otherwise><xsl:message>map-period: no when clause for <xsl:value-of select="$p"/></xsl:message></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="periods"
 	      ><xsl:if test="cbd:periods/cbd:p">(<xsl:for-each select="cbd:periods/cbd:p"
-	      ><xsl:value-of select="text()"/> [<xsl:value-of select="@icount"/>]<xsl:if
+	      ><xsl:call-template name="map-period"/> [<xsl:value-of select="@icount"/>]<xsl:if
 	      test="not(position()=last())">; </xsl:if></xsl:for-each
 	      ></xsl:if
 	      ></xsl:template>
@@ -581,7 +603,7 @@
 \equivs{<xsl:value-of select="concat(translate(substring(*[1]/@xml:lang,1,1),$lower,$upper),
 				substring(*[1]/@xml:lang,2),'. ')"
 /><xsl:for-each select="cbd:equiv"
->{<xsl:value-of select="concat('\', @xml:lang, ' ')"/><xsl:apply-templates select="cbd:term"
+>{<xsl:value-of select="concat('\', @xml:lang, ' ')"/><xsl:apply-templates select="cbd:term|text()"
 />}<xsl:if test="string-length(cbd:mean) > 0"> &quot;<xsl:apply-templates select="cbd:mean"
 />&quot;</xsl:if
 ><xsl:choose
