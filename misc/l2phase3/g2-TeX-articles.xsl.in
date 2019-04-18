@@ -85,17 +85,21 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="periods"
+	      ><xsl:if test="cbd:periods/cbd:p">(<xsl:for-each select="cbd:periods/cbd:p"
+	      ><xsl:value-of select="text()"/> [<xsl:value-of select="@icount"/>]<xsl:if
+	      test="not(position()=last())">; </xsl:if></xsl:for-each
+	      ></xsl:if
+	      ></xsl:template>
+
 <xsl:template match="cbd:entry">
 \beginentry
 \cfgw{<xsl:call-template name="make-cf"/>}{<xsl:value-of select="cbd:gw"
        />}{<xsl:value-of select="cbd:pos"
        />}{<xsl:apply-templates select="cbd:phon"
-       />}{<xsl:apply-templates select="@icount"
-       />}{<xsl:value-of select="cbd:overview/@periods"
-       />}<!--      {<xsl:call-template name="instref">
-         <xsl:with-param name="instances-only" select="true()"/>
-       </xsl:call-template>}%
--->
+       />}{<xsl:apply-templates select="@icount"/>×%
+<!--       />}{<xsl:value-of select="cbd:overview/@periods"
+       -->}{<xsl:call-template name="periods"/>}%
   <xsl:apply-templates mode="do-it" select="cbd:compound"
   /><xsl:apply-templates select="cbd:senses"
   /><xsl:apply-templates select="cbd:bases"
