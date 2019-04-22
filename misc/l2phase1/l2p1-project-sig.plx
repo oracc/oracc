@@ -97,8 +97,7 @@ foreach my $s (@sigs) {
 	    %{$sigs{$1}} = ();
 	    $ranks{$1} = $2;
 	} else {
-	    warn "l2p1-project-sig.plx: $s: bad .sig file format\n";
-	    goto SIGFILE_END;
+	    warn "$s:$.: ignoring bad .sig file line\n";
 	}
     }
   SIGFILE_END:
