@@ -47,7 +47,6 @@ sub map_apply_glo {
 		# emap may have @parts @bases @form @sense:
 
 		if ($emap{'parts'}) {
-		    warn "emap parts\n";
 		    while ($i < $#cbd && $cbd[$i] !~ /^\@parts/) {
 			push @n, $cbd[$i++];
 		    }
