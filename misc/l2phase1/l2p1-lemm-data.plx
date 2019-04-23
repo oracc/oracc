@@ -110,6 +110,11 @@ foreach my $l (@freq_files) {
 # not make it into this version. This is a limitation of update.
 my $sigorder = 0;
 foreach my $s (@sigs) {
+    my ($form) = ($s =~ /:(.*?)=/);
+    if ($form eq 'x') {
+	warn "$0: form 'x' illegal in lemm data ($s)\n";
+	next;
+    }
     my ($r,$f) = (0,0);
     $r = $ranks{$s} if $ranks{$s};
     $f = $freqs{$s} if $freqs{$s};
