@@ -13,9 +13,10 @@ use Data::Dumper;
 
 my $marshalling = '';
 
-my @cmdcombos = qw/addentry addsense mapentry mapsense mapbase newbases/;
+my @cmdcombos = qw/addentry addparts addsense mapentry mapsense mapbase newbases/;
 my %combofuncs = (
     addentry => \&addentry,
+    addparts => \&addparts,
     addsense => \&addsense,
     addform => \&addform,
     newbases => \&newbases,
@@ -43,7 +44,19 @@ sub map_apply_glo {
 	    if ($currmap{$key}) {
 		my %emap = %{$currmap{$key}};
 #		print Dumper \%emap;
-		# emap may have @bases @form @sense:
+		# emap may have @parts @bases @form @sense:
+
+		if ($emap{'parts'}) {
+		    warn "emap parts\n";
+		    while ($i < $#cbd && $cbd[$i] !~ /^\@parts/) {
+			push @n, $cbd[$i++];
+		    }
+		    while ($cbd[$i] =~ /^\@parts/) {
+			push @n, $cbd[$i++];
+		    }
+		    push @n, @{${$emap{'parts'}}};
+		}
+		
 		if ($emap{'bases'}) {
 		    while ($cbd[$i] !~ /^\@bases/) {
 			push @n, $cbd[$i++];
@@ -51,7 +64,7 @@ sub map_apply_glo {
 		    push @n, $${$emap{'bases'}}[0];
 		    ++$i;
 		}
-		while ($i < $#cbd && $cbd[$i] !~ /^\@form/) {
+		while ($i < $#cbd && $cbd[$i] !~ /^\@(?:form|sense)/) {
 		    push @n, $cbd[$i++];
 		}
 		while ($cbd[$i] =~ /^\@form/) {
@@ -168,12 +181,12 @@ sub map_load {
 	    my($what,$from,$to) = ();
 	    if (/=>/) {
 		unless (($what,$from,$to) 
-			= ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
+			= ($arg =~ /^(entry|parts|sense|bases|base|form)\s+(.*?)\s*=>\s*(.*?)\s*$/)) {
 		    warn "$map:$.: syntax error: bad field\n";
 		    next;
 		}
 	    } else {
-		unless (($what,$from) = ($arg =~ /^(entry|sense|bases|base|form)\s+(.*?)\s*$/)) {
+		unless (($what,$from) = ($arg =~ /^(entry|parts|sense|bases|base|form)\s+(.*?)\s*$/)) {
 		    warn "$map:$.: syntax error: bad field\n";
 		    next;
 		}
@@ -225,6 +238,12 @@ sub addentry {
     return undef if $marshalling eq 'sigs';
     my($k,$f,$to) = @_;
     ($k,['add','entry',$to]);
+}
+
+sub addparts {
+    return undef if $marshalling eq 'sigs';
+    my($k,$f,$to) = @_;
+    ($k,['add','parts',$to]);
 }
 
 sub addsense {

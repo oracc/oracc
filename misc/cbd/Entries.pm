@@ -12,6 +12,7 @@ use Data::Dumper;
 
 my %entry_indexes = ();
 my $map_fh = undef;
+my %entry_parts = ();
 
 sub entries_align {
     my($args,$base_cbd,$cbd,$xmap_fh) = @_;
@@ -23,11 +24,12 @@ sub entries_align {
     my %parts = ();
     my %added_entries = ();
     my %incoming_entries = ();
+    my $entry = '';
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	pp_line($i+1);
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
-	    my $entry = $1;
+	    $entry = $1;
 	    $incoming_entries{$1} = $i;
 	    unless (exists $entries{$entry}) {
 		# collect entry and list parts needed by it
@@ -36,7 +38,10 @@ sub entries_align {
 		++$added_entries{$entry};
 	    }
 	    while ($cbd[$i] !~ /^\@end\s+entry/) {
-		if ($cbd[$i] =~ /^\@parts/) {
+		if ($cbd[$i] =~ /^\@parts\s+(.*?)\s*$/) {
+		    my $p = $1;
+		    $p =~ s/\s+/ /g;
+		    map_parts($args,$entry,$p) unless ${$entry_parts{$entry}}{$p};
 		    foreach my $p (split_parts($cbd[$i])) {
 			push @{$parts{$p}} , [pp_line(), $entry];
 		    }
@@ -92,13 +97,25 @@ sub map_entry {
     print $map_fh pp_file().':'.pp_line().": add entry $entry => $xentry\n";
 }
 
+sub map_parts {
+    my($args,$entry,$parts) = @_;
+    $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    print $map_fh "add parts $entry => \@parts $parts\n";
+}
+
 sub entries_collect {
     my @cbd = @{$_[0]};
     my %e = ();
+    my $curr_entry = '';
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
 	    ++$e{$1};
 	    $entry_indexes{$1} = $i;
+	} elsif ($cbd[$i] =~ /^\@parts\s+(.*?)\s*$/) {
+	    my $p = $1;
+	    $p =~ s/\s+/ /g;
+	    ++${$entry_parts{$curr_entry}}{$p};
 	}
     }
     %e;

@@ -51,10 +51,12 @@ sub forms_align {
 	    }
 #	    print "fi=", Dumper \%fi;
 	    foreach my $f (keys %{$incoming_forms{$if}}) {
+		next if $f eq '#';
 		my $fullform = $f;
 		$f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
-		if ($fi{$f}) {
-#		    warn "$if: incoming form $f already in glossary\n";
+		#		if ($fi{$f}) {
+		if (${$forms{$if}}{$f}) {
+		    warn "$if: incoming form $f already in glossary\n";
 		} else {
 		    map_form($args,$if,$fullform)
 		}
@@ -77,6 +79,7 @@ sub forms_collect {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
+	    ++${$f{$curr_entry}}{'#'};
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    my $tmp = $cbd[$i];
 	    $tmp =~ s/\s+/ /g;
