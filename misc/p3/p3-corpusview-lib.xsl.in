@@ -285,6 +285,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="do-tlit">
+    <xsl:with-param name="pqid" select="$pqid"/>
     <xsl:with-param name="xmd" select="$xmd"/>
     <xsl:with-param name="txh" select="$txh"/>
     <xsl:with-param name="xtr" select="$xtr"/>
@@ -342,6 +343,7 @@
 </xsl:template>
 
 <xsl:template name="do-tlit">
+  <xsl:param name="pqid"/>
   <xsl:param name="xmd"/>
   <xsl:param name="txh"/>
   <xsl:param name="xtr"/>
@@ -357,7 +359,22 @@
       </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
-      <p>(No transliteration available)</p>
+      <xsl:variable name="external-url-host">
+	<xsl:call-template name="xpd-option">
+	  <xsl:with-param name="config-xml" select="$config-xml-file"/>
+	  <xsl:with-param name="option" select="'pager-fallback-cdli'"/>
+	</xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+	<xsl:when test="$pager-fallback-cdli='yes' and starts-with($pqid,'P')">
+	  <xsl:variable name="cdli-url" select="concat('https://cdli.ucla.edu/',$pqid)"/>
+	  <h2>No transliteration available: displaying CDLI page <xsl:value-of select="$cdli-url"/></h2>
+	  <object href="{$cdli-url}"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <p>(No transliteration available)</p>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
