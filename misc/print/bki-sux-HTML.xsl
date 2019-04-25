@@ -40,15 +40,18 @@
       <b><xsl:apply-templates select="c:t/*"/></b>
       <xsl:text> </xsl:text>
       <span class="instances">
-	<xsl:for-each select="x:rr/x:r">
-	  <xsl:choose>
-	    <xsl:when test="starts-with(@label2,'vm_')">
-	      <xsl:value-of select="substring-after(@label2,'vm_')"/>
-	    </xsl:when>
-	    <xsl:otherwise>
-	      <xsl:value-of select="@label2"/>
-	    </xsl:otherwise>
-	  </xsl:choose>
+	<xsl:for-each select="x:rr">
+	  <xsl:for-each select="x:r">
+	    <xsl:choose>
+	      <xsl:when test="starts-with(@label2,'vm_')">
+		<xsl:value-of select="substring-after(@label2,'vm_')"/>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:value-of select="@label2"/>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	    <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+	  </xsl:for-each>
 	  <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
 	</xsl:for-each>
 	<xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
