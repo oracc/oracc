@@ -325,6 +325,8 @@ function p3controls() {
     var uimode = document.getElementById('uimode').value;
     var asrch = document.getElementById('asrch').value;
 
+    // alert("p3controls() entry");
+    
     if (uimode === 'search') {
 
 	no_sorters();
@@ -416,7 +418,9 @@ function p3controls() {
 	}
 	
     }
-    
+
+    // alert("p3controls() exit");
+
     return 1;
 }
 

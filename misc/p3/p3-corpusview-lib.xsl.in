@@ -313,7 +313,7 @@
     </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
-      <p>(No transliteration available)</p>
+      <p>(No transliterationX available)</p>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -359,7 +359,7 @@
       </xsl:apply-templates>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:variable name="external-url-host">
+      <xsl:variable name="pager-fallback-cdli">
 	<xsl:call-template name="xpd-option">
 	  <xsl:with-param name="config-xml" select="$config-xml-file"/>
 	  <xsl:with-param name="option" select="'pager-fallback-cdli'"/>
@@ -368,8 +368,9 @@
       <xsl:choose>
 	<xsl:when test="$pager-fallback-cdli='yes' and starts-with($pqid,'P')">
 	  <xsl:variable name="cdli-url" select="concat('https://cdli.ucla.edu/',$pqid)"/>
-	  <h2>No transliteration available: displaying CDLI page <xsl:value-of select="$cdli-url"/></h2>
-	  <object href="{$cdli-url}"/>
+	  <h3>No transliteration available: displaying CDLI page
+	  <a href="{$cdli-url}"><xsl:value-of select="$cdli-url"/></a></h3>
+	  <iframe width="90%" height="100%" src="{$cdli-url}">&#xa0;</iframe>
 	</xsl:when>
 	<xsl:otherwise>
 	  <p>(No transliteration available)</p>
