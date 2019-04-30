@@ -67,14 +67,14 @@ sub oid_lookup {
 	}
     }
     my $ret = $oid{$type,$sign};
-    unless ($ret) {
-	my $sign2 = $sign; $sign2 =~ tr/|//d;
-	my $s = ORACC::SL::BaseC::tlit_sig('oid',$sign2);
-	if ($s) {
-	    my $ss = '';
-	    warn "OID.pm: $sign => sig $s\n" if $ORACC::OID::verbose;	    
-	}
-    }
+#    unless ($ret) {
+#	my $sign2 = $sign; $sign2 =~ tr/|//d;
+#	my $s = ORACC::SL::BaseC::tlit_sig('oid',$sign2);
+#	if ($s) {
+#	    my $ss = '';
+#	    warn "OID.pm: $sign => sig $s\n" if $ORACC::OID::verbose;	    
+#	}
+#    }
     $ret;
 }
 

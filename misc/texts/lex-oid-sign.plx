@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDERR, ':utf8'; binmode STDOUT, ':utf8';
 
 use Encode;
@@ -26,6 +26,8 @@ my $master = load_xml("sign-master.xml");
 foreach (tags($master, 'http://oracc.org/ns/lex/1.0', 'data')) {
     my $sign = $_->getAttribute('sign');
     next unless $sign;
+    $sign =~ s/\{.*?\}//g; # ignore determinatives
+    $sign =~ s/×\|$/|/; $sign =~ s/×\(\)\|$/|/; # fix a few rare writings
     my $oid = oid_lookup('sl', $sign);
     if ($oid) {
 	$_->setAttribute('oid', $oid);

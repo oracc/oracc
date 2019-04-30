@@ -121,6 +121,7 @@ c/bin/util/xfrag
 c/bin/util/xmlnl
 c/bin/util/xmlns
 c/bin/util/xmlsplit
+c/bin/util/wid2err
 c/l2/bigrams/bigrams.c
 c/l2/bigrams/collos.c
 c/l2/nsa/nsatest
