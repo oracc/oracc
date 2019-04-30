@@ -15,4 +15,3 @@ done
 cd ../..
 echo '</lex:dataset>' >>01tmp/lex/$type-master.xml
 (cd 01tmp/lex ; lex-oid-$type.plx)
-

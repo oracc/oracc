@@ -66,6 +66,7 @@ extern int check_only;
 extern int validate;
 extern int do_cdl;
 extern int do_show_insts;
+extern int do_signnames;
 extern int dump_sigs;
 extern int no_xcl_map;
 extern int lem_forms_raw;

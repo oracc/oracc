@@ -152,7 +152,7 @@ sign_of {
     unless ($tmp =~ /^o/) {
 	$tmp = "\L$tmp";
 	$xid = xid($tmp);
-	warn "sign_of: $_[0] => $tmp => $xid\n";
+#	warn "sign_of: $_[0] => $tmp => $xid\n";
     } else {
 	$xid = $tmp;
     }
@@ -396,14 +396,15 @@ sub c10e_compound {
     my $save_pedantic = $pedantic;
     $pedantic = 0;
     my $c_sig = _signature(undef, tlitsplit($c));
-    warn "c10e: sig of $c => $c_sig\n";
+#    warn "c10e: sig of $c => $c_sig\n";
     my @c = ();
     foreach my $s (split(/\./,$c_sig)) {	
 	push @c, sign_of($s);
     }
     my $c2 = join('.',@c);
-    warn "c10e: $c_sig => $c2\n";
-    if ($c ne $c2) {
+    #    warn "c10e: $c_sig => $c2\n";
+    $c2 =~ s/^\|(.*?)\|$/$1/;
+    if ($c2 && $c ne $c2) {
 	warn "c10e: $c is $c2\n";
 	msg(undef, "c10e: $c should be $c2");
 	return '|'.$c2.'|';
@@ -411,7 +412,7 @@ sub c10e_compound {
     $pedantic = $save_pedantic;
     return '';
 }
-	
+
 sub
 _signature {
     my ($context,@g) = @_;

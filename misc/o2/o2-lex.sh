@@ -4,10 +4,12 @@ if [ "$buildlex" = "yes" ]; then
     proj=`oraccopt`
     if [ "$proj" = "dcclt" ]; then
 	echo "o2-lex.sh: collecting lex data from  dcclt dcclt/nineveh dcclt/signlists"
+	lex-wid2err.sh dcclt dcclt/nineveh dcclt/signlists
 	lex-sign-data.sh dcclt dcclt/nineveh dcclt/signlists
 	lex-word-data.sh dcclt dcclt/nineveh dcclt/signlists
     else
 	echo "o2-lex.sh: collecting lex data in $proj"
+	lex-wid2err.sh $proj
 	lex-sign-data.sh $proj
 	lex-word-data.sh $proj
     fi

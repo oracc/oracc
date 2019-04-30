@@ -13,7 +13,7 @@ ox_options(int argc, char **argv)
   while (1)
     {
       int optch = getopt(argc,argv,
-			 "$+aAb:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNoOpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:89");
+			 "$+aAb:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNoOpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:689");
       if (optch < 0)
 	break;
       switch (optch)
@@ -215,6 +215,9 @@ ox_options(int argc, char **argv)
 	  lem_dynalem_tab = optarg;
 	  lem_dynalem = do_cdl = perform_lem = need_lemm = 1;
 	  no_destfile = 1;
+	  break;
+	case '6':
+	  do_signnames = 1;
 	  break;
 	case '8':
 	  arg_use_unicode = 1;

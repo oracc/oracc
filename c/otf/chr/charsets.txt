@@ -262,7 +262,7 @@ T, Ṭ
 @end chars
 
 @chars %qpc/g
-@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'
+@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'ʾ
 @nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 J Ŋ
@@ -272,7 +272,7 @@ T, Ṭ
 @end chars
 
 @chars %qpe/g
-@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'
+@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'ʾ
 @nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 J Ŋ
