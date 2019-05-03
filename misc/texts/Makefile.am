@@ -8,7 +8,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	lex-word-base.sh lex-word-qakk.sh lex-word-phra.sh \
 	lex-master.sh lex-data-tis.sh lex-phra-base.sh lex-tis.sh \
 	tis-sort.plx lex-word-tail.sh lex-oid-sign.plx lex-oid-word.plx \
-	wid2err.plx lex-wid2err.sh lex-sign-check.sh
+	lex-sign-check.sh
 
 scriptdata_DATA = \
 	lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl \
@@ -19,8 +19,7 @@ scriptdata_DATA = \
 	lex-data-xis-ids.xsl lex-data-xis-remap.xsl lex-data-xis.xsl \
 	lex-pull-base.xsl lex-phra-base-group.xsl lex-phra-base-HTML.xsl \
 	lex-provides.xsl lex-split-HTML.xsl \
-	lex-pull-tail.xsl lex-phra-tail-group.xsl lex-merge-phra.xsl \
-	wid2err.xsl
+	lex-pull-tail.xsl lex-phra-tail-group.xsl lex-merge-phra.xsl
 
 lex-sign-lookup.xsl: lex-sign-lookup.xsl.in
 	$(ORACCIFY) lex-sign-lookup.xsl.in
