@@ -94,8 +94,8 @@ while (<SL>) {
 	$sid = $sign_ids{'sl',$signname};
 	
 	unless ($sid) {
-	    die "sl-xml.plx: internal error: no ID found for $signname\n";
-#	    $sid = $xid++;
+	    warn "sl-xml.plx: internal error: no ID found for $signname\n";
+	    $sid = $xid++;
 	}
 	pi_line();
 	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>";
@@ -291,7 +291,7 @@ sign_ids {
     foreach (@nosigns) {
 	/\s(\S+)\s*$/;
 	if ($sign_ids{'sl',$1}) {
-	    warn "sl-xml.plx: duplicate \@nosign $1\n";
+#	    warn "sl-xml.plx: duplicate \@nosign $1\n";
 	} else {
 	    $sign_ids{'sl',$1} = $xid++;
 	}	

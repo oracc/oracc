@@ -405,7 +405,7 @@ sub c10e_compound {
     #    warn "c10e: $c_sig => $c2\n";
     $c2 =~ s/^\|(.*?)\|$/$1/;
     if ($c2 && $c ne $c2) {
-	warn "c10e: $c is $c2\n";
+#	warn "c10e: $c is $c2\n";
 	msg(undef, "c10e: $c should be $c2");
 	return '|'.$c2.'|';
     }

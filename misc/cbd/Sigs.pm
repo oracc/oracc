@@ -790,7 +790,7 @@ sub psu_glo {
 	    %e = ();
 	    @entries_parts_lines = ();
 	} elsif (/\@entry/) {
-	    warn "suspicious entry $_\n" unless /^\@i?note/;
+	    pp_warn("suspicious entry $_") unless /^\@i?note/;
 	}
     }
 }

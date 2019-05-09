@@ -16,7 +16,7 @@ while (<W>) {
 }
 close(W);
 
-$ORACC::OID::verbose = 1;
+$ORACC::OID::verbose = 0;
 
 my %badsigns = ();
 my $xid = 'x0000000';
@@ -24,26 +24,41 @@ oid_init('sl');
 
 my $master = load_xml("sign-master.xml");
 foreach (tags($master, 'http://oracc.org/ns/lex/1.0', 'data')) {
-    my $sign = $_->getAttribute('sign');
-    next unless $sign;
-    $sign =~ s/\{.*?\}//g; # ignore determinatives
-    $sign =~ s/×\|$/|/; $sign =~ s/×\(\)\|$/|/; # fix a few rare writings
-    my $oid = oid_lookup('sl', $sign);
-    if ($oid) {
-	$_->setAttribute('oid', $oid);
-    } else {
-	$badsigns{$sign} = ++$xid unless $badsigns{$sign};
-	my $proj = $_->getAttribute('project');
-	my $sref = $_->getAttribute('sref');
-	my $werr = $wid2err{$sref};
-	$_->setAttribute('oid', $badsigns{$sign});
-	warn "$ENV{'ORACC_BUILDS'}/$proj/$werr: no OID for sign $sign\n";
+    my $signattr = $_->getAttribute('sign');
+    next unless $signattr;
+    my @signs = split(/\s+/, $signattr);
+    my @oids = ();
+    foreach my $sign (@signs) {
+	$sign =~ s/\{.*?\}//g; # ignore determinatives
+	$sign =~ s/×\|$/|/; $sign =~ s/×\(\)\|$/|/; # fix a few rare writings
+	my $oid = oid_lookup('sl', $sign);
+	if ($oid) {
+	    push @oids, $oid;
+#	    $_->setAttribute('oid', $oid);
+	} else {
+	    $badsigns{$sign} = ++$xid unless $badsigns{$sign};
+	    next if ignore_sign($sign);
+	    my $proj = $_->getAttribute('project');
+	    my $sref = $_->getAttribute('sref');
+	    my $werr = $wid2err{$sref};
+	    push @oids, $badsigns{$sign};
+#	    $_->setAttribute('oid', $badsigns{$sign});
+	    warn "$ENV{'ORACC_BUILDS'}/$proj/$werr: no OID for sign $sign\n";
+	}
     }
+    $_->setAttribute('oid', "@oids");
 }
 
 my $s = $master->toString();
 Encode::_utf8_on($s);
 open(X,'>sign-master.xml'); print X $s; close(X);
+
+sub ignore_sign {
+    my $t = shift;
+    $t =~ tr/-.xX//d;
+#    print "t = $t\n";
+    length $t == 0;
+}
 
 #foreach my $bad (sort keys %badsigns) {
 #    warn "$0: no sl OID for sign $bad\n";

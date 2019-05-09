@@ -1,5 +1,6 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" 
+		xmlns:g="http://oracc.org/ns/gdl/1.0"
 		xmlns:xcl="http://oracc.org/ns/xcl/1.0"
 		xmlns:xff="http://oracc.org/ns/xff/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
@@ -26,7 +27,7 @@
 	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/@ref"/>
       </xsl:attribute>
       <xsl:attribute name="sign">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/xff:f/@form"/>
+	<xsl:call-template name="sg"/>
       </xsl:attribute>
       <xsl:attribute name="read">
 	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f/@form"/>
@@ -57,6 +58,19 @@
       </xsl:for-each>
     </lex:data>
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="sg">
+  <xsl:variable name="f-node"
+		select="id(xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/@ref)"/>
+  <xsl:choose>
+    <xsl:when test="$f-node/../g:nonw[@type='comment']">
+      <xsl:value-of select="$f-node/../g:nonw[@type='comment']"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/xff:f/@form"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>

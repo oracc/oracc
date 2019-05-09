@@ -448,6 +448,7 @@ sub v_bases {
     my $pricode = 0;
     
     foreach my $b (@bits) {
+#	warn "base bit :$b:\n";
 	if ($b =~ s/^\*(\S+)\s+//) {
 	    $stem = $1;
 	} elsif ($b =~ /^\*/) {
@@ -491,11 +492,17 @@ sub v_bases {
 				++${$vbases{"$pri#alt"}}{$a};
 				$bases{"#$a"} = $pri;
 				# all alternates in this @bases
-				if (defined ${${$vbases{'#alt'}}{$a}}) {
-				    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
-				    pp_warn("alt $a already defined for primary $prevpri");
-				} else {
-				    ${${$vbases{'#alt'}}{$a}} = $pri;
+				if ($vbases{'#alt'} && ${$vbases{'#alt'}}{$a}) {
+				    if (${$vbases{'#alt'}}{$a} eq '1') {
+					pp_warn("detected error in alt base--check other error messages");
+				    } else {
+					if (defined ${${$vbases{'#alt'}}{$a}}) {
+					    my $prevpri =  ${${$vbases{'#alt'}}{$a}};
+					    pp_warn("alt $a already defined for primary $prevpri");
+					} else {
+					    ${${$vbases{'#alt'}}{$a}} = $pri;
+					}
+				    }
 				}
 			    }
 			}
