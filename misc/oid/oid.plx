@@ -102,7 +102,6 @@ sub fail {
 sub oid_add {
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
-	$dom = $domain if $dom eq 'qpn';
 	++$oid_top;
 	$oid_keys{$oid_top} = $key;
 	$oid_doms{$oid_top} = $dom;
@@ -115,6 +114,7 @@ sub oid_add {
 sub oid_keys {
     foreach my $key (@keys) {
 	my($d,$k,$t,$x) = split(/\t/, $key);
+	$d = $domain if $dom eq 'qpn';
 	if ($oid_ids{$d,$k}) {
 	    push @res, "$k\t$oid_key{$d,$k}\n";
 	} else {
