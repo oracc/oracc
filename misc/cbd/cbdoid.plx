@@ -8,8 +8,6 @@ use ORACC::CBD::Util;
 use ORACC::CBD::C11e;
 use ORACC::CBD::Validate;
 
-# Test harness for CBD canonicalize module
-
 my %args = pp_args();
 my @cbd = setup_cbd(\%args);
 my $lang = lang();

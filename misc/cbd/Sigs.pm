@@ -87,6 +87,7 @@ my @global_cbd = ();
 
 my %e = ();
 my $err_glo = '';
+my %forms_in_entry = ();
 my $glo = '';
 my @parts_errors = ();
 my $psu_parts = '';
@@ -254,6 +255,7 @@ sub sigs_simple {
 	    $curr_cfgw = $_; $curr_cfgw =~ s/\s*$//;
 	    $compound = $in_sense = 0;
 	    @instsigs = ();
+	    %forms_in_entry = ();
 	    $basesig = undef;
 	    $coresig = undef;
 	    $coresig1 = undef;
@@ -280,6 +282,7 @@ sub sigs_simple {
 		my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
 		foreach my $b (split(/\s+/, $current_first_base)) {
 		    my $f = $b; $f =~ tr/·°//d;
+		    next if $forms_in_entry{$f};
 		    my $instsig1 = "\@$project\%$lng:$f=";
 		    my $xsig = "\$$sig{'cf'}/$b#~";
 		    ++$noprintsigs{ "$instsig1$coresig1/$b\t0\n" };
@@ -400,6 +403,7 @@ sub sigs_form {
     my $args = shift @_;
     my $formbang = $_[0] || '';
     $sig{'form'} = $_[1];
+    ++$forms_in_entry{$_[1]};
     local($_) = $_[2];
     my @cof_tails = ();
     my $cof = $COF_NONE;
