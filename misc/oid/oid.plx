@@ -113,7 +113,7 @@ sub oid_keys {
     foreach my $key (@keys) {
 	my($d,$k,$t,$x) = split(/\t/, $key);
 	if ($oid_ids{$d,$k}) {
-	    push @res, "$k\t$oid_ids{$d,$k}\n";
+	    push @res, "$k\t$oid_key{$d,$k}\n";
 	} else {
 	    push @oid_add, [ $d, $k, $t, $x ];
 	}
