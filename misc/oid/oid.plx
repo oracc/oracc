@@ -35,6 +35,8 @@ my %domain_authorities = (
     sl  => 'ogsl',
     );
 
+my %typ_has_ext = (); @typ_has_ext{qw/form sense/} = (1,1);
+
 GetOptions(
     assign  => \$assign,
     'domain:s'  => \$domain,
@@ -140,7 +142,7 @@ sub oid_check {
     $checking = 1;
     while (<>) {
 	my($oid,$dom,$key,@f) = oid_parse($_);
-	oid_validate($oid,$dom,$key) && next;
+	oid_validate($oid,$dom,$key,@f) && next;
 	if ($oid eq '0') {
 	    if ($oid_key{$dom,$key}) {
 		$oid_ext{$dom,$key} = [ @f ];
@@ -197,9 +199,10 @@ sub oid_dump {
 sub oid_load {
     if (-r $oid_file) {
 	open(O,$oid_file) || die "$0: unable to open $oid_file for read\n";
+	$errfile = $oid_file;
 	while (<O>) {
 	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
-	    oid_validate($oid,$dom,$key) && next;
+	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
 	    $oid_top = $oid if $oid gt $oid_top;
 	    # load only validations--these don't apply when reading check data
 	    if ($oid_keys{$oid}) {
@@ -231,7 +234,7 @@ sub oid_parse {
 }
 
 sub oid_validate {
-    my($oid,$dom,$key) = @_;
+    my($oid,$dom,$key,$typ,$ext) = @_;
     return bad("no OID in line") unless $oid;
     return bad("no KEY in line") unless $key;
     return bad("no DOMAIN in line") unless $key;
@@ -250,6 +253,9 @@ sub oid_validate {
 	    } else {
 		return bad("OID $oid not defined") if $checking;
 	    }
+	}
+	if ($typ && $typ_has_ext{$typ}) {
+	    return bad("type $typ has no extended data") unless $ext;
 	}
     } else {
 	if ($oid_key{$key} && $oid ne '0') {
