@@ -102,6 +102,7 @@ sub fail {
 sub oid_add {
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
+	$dom = $domain if $dom eq 'qpn';
 	++$oid_top;
 	$oid_keys{$oid_top} = $key;
 	$oid_doms{$oid_top} = $dom;
@@ -237,7 +238,7 @@ sub oid_validate {
     my($oid,$dom,$key,$typ,$ext) = @_;
     return bad("no OID in line") unless $oid;
     return bad("no KEY in line") unless $key;
-    return bad("no DOMAIN in line") unless $key;
+    return bad("no DOMAIN in line") unless $dom;
     if ($oid !~ /^[ox]\d+$/) {
 	return bad("malformed OID; should be [ox]+digits");
 	return 1;
