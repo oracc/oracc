@@ -254,7 +254,8 @@ sub oid_validate {
 		return bad("OID $oid not defined") if $checking;
 	    }
 	}
-	if ($typ && $typ_has_ext{$typ}) {
+	return bad("OID $oid has no type") unless $typ;
+	if ($typ_has_ext{$typ}) {
 	    return bad("type $typ has no extended data") unless $ext;
 	}
     } else {
