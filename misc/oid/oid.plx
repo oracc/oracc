@@ -114,7 +114,7 @@ sub oid_add {
 sub oid_keys {
     foreach my $key (@keys) {
 	my($d,$k,$t,$x) = split(/\t/, $key);
-	$d = $domain if $dom eq 'qpn';
+	$d = $domain if $d eq 'qpn';
 	if ($oid_ids{$d,$k}) {
 	    push @res, "$k\t$oid_key{$d,$k}\n";
 	} else {
