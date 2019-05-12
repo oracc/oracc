@@ -15,7 +15,7 @@
 
 <xsl:template match="/">
   <xsl:call-template name="make-index">
-    <xsl:with-param name="basename" select="'translit'"/>
+    <xsl:with-param name="basename" select="'bases'"/>
     <xsl:with-param name="title" select="'Sumerian Bases Index'"/>
     <xsl:with-param name="node-list" select="//cbd:base/cbd:text[1]"/>
   </xsl:call-template>
