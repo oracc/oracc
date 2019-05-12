@@ -774,6 +774,7 @@ sub v_form {
     my $morph = '';
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
+	$morph =~ tr/*/✻/; #map * to U+273B TEARDROP-SPOKED ASTERISK
     } elsif (($ORACC::CBD::bases # || $lang =~ /^sux/ 
 	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
 	     && !$is_compound

@@ -124,6 +124,12 @@ sub map_apply_sig {
 	    push @s, map_apply_sig_sub($args,$s);
 	}
 	$s = $psu.'::'.join('++',@s);
+    } elsif ($s =~ /\&\&/) {
+	foreach my $s (split(/\&\&/,$sigs)) {
+	    warn "map_apply_sig_sub in cof\n";
+	    push @s, map_apply_sig_sub($args,$s);
+	}
+	$s = join('&&',@s);
     } else {
 #	warn "map_apply_sig_sub non-psu\n";
 	$s = map_apply_sig_sub($args,$s);

@@ -372,7 +372,7 @@ sub sigs_simple {
 		}
 	    }
 	    
-	} elsif (/\@bases\s+(.*)\s*$/) {
+	} elsif (/^\@bases\s+(.*)\s*$/) {
 
 	    $current_first_base = $1;
 	    my @bits = split(/;\s+/,$current_first_base);
