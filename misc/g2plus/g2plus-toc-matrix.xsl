@@ -121,10 +121,17 @@
       <xsl:with-param name="title" select="'Transliteration'"/>
     </xsl:call-template>
     <xsl:call-template name="make-cell">
+      <xsl:with-param name="toc" select="concat($base,'bases.toc')"/>
+      <xsl:with-param name="letter" select="@u"/>
+      <xsl:with-param name="title" select="'Bases'"/>
+    </xsl:call-template>
+<!--
+    <xsl:call-template name="make-cell">
       <xsl:with-param name="toc" select="concat($base,'signnames.toc')"/>
       <xsl:with-param name="letter" select="@u"/>
       <xsl:with-param name="title" select="'Signnames'"/>
     </xsl:call-template>
+ -->
     <xsl:call-template name="make-cell">
       <xsl:with-param name="toc" select="concat($base,'akkadian.toc')"/>
       <xsl:with-param name="letter" select="@u"/>
