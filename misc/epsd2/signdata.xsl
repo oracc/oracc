@@ -28,7 +28,14 @@
 	<xsl:text>i</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>s</xsl:text>
+	<xsl:choose>
+	  <xsl:when test="count(ancestor::c:text/g:w)>1">
+	    <xsl:text>i</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>s</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>&#x9;</xsl:text>
