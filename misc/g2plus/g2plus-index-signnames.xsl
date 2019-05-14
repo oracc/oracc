@@ -14,7 +14,7 @@
   <xsl:call-template name="make-index">
     <xsl:with-param name="basename" select="'signnames'"/>
     <xsl:with-param name="title" select="'Sumerian Sign-name Index'"/>
-    <xsl:with-param name="node-list" select="//cbd:s"/>
+    <xsl:with-param name="node-list" select="//cbd:base/cbd:s"/>
   </xsl:call-template>
 </xsl:template>
 

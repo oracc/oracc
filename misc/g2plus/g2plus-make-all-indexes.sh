@@ -13,7 +13,7 @@ if [ "$webdir" == "" ]; then
 fi
 mkdir -p $webdir/cbd/$lang
 # signnames
-for a in akkadian cf english bases translit VS VC VCV ; do \
+for a in akkadian cf english bases signnames translit VS VC VCV ; do \
     g2plus-make-index.sh $a $lang $webdir ; \
 done
 xsltproc --stringparam lang $lang --stringparam project `oraccopt` \

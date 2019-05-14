@@ -31,8 +31,13 @@ fi
 xsltproc --stringparam project `oraccopt` --stringparam withcount $withcount \
     $xsl/xix-HTML.xsl $base-summaries.xix > $webdir/cbd/$lang/`basename $base-summaries.xix xix`html
 for a in $base-toc-*.xix ; \
-  do echo $a ; xsltproc --stringparam project `oraccopt` \
-    $xsl/xix-HTML.xsl $a > $webdir/cbd/$lang/`basename $a xix`html ; \
-done
+    do echo $a ; xsltproc --stringparam project `oraccopt` \
+			  $xsl/xix-HTML.xsl $a > $webdir/cbd/$lang/`basename $a xix`html ; \
+    done
+if [ "$type" = "signnames" ]; then
+    xsltprox g2plus-signnames-homographs.xsl $webdir/cbd/$lang/`basename $base-summaries.xix xix`html \
+	     >$webdir/cbd/$lang/signname-homographs.html
+fi
+
 #ln -sf `pwd`/indexes/$type.xix print/full
 #rm -f tmp/$type.srt

@@ -64,6 +64,9 @@
   <a href="javascript:showpage('/epsd2/cbd/sux/VCV-summaries.html', 'tocbrowser')">
     <xsl:text>Compound Verbs Sorted by Verb</xsl:text>
   </a>
+  <a href="javascript:showpage('/epsd2/cbd/sux/signnames-homographs.html', 'tocbrowser')">
+    <xsl:text>List of Homographs</xsl:text>
+  </a>
 </p>
 
      <hr class="toces"/>
@@ -77,7 +80,7 @@
 					  'tocbrowser')"
 		><span class="homebutton">e</span></a></td>
 	<td>C</td>
-	<td>T</td>
+	<td>B</td>
 	<td>S</td>
 	<td>A</td>
 	<td>E</td>
@@ -95,7 +98,7 @@
 -->
 	<td/>
 	<td>C</td>
-	<td>T</td>
+	<td>B</td>
 	<td>S</td>
 	<td>A</td>
 	<td>E</td>
@@ -116,22 +119,22 @@
       <xsl:with-param name="title" select="'Citation Forms'"/>
     </xsl:call-template>
     <xsl:call-template name="make-cell">
-      <xsl:with-param name="toc" select="concat($base,'translit.toc')"/>
-      <xsl:with-param name="letter" select="@u"/>
-      <xsl:with-param name="title" select="'Transliteration'"/>
-    </xsl:call-template>
-    <xsl:call-template name="make-cell">
       <xsl:with-param name="toc" select="concat($base,'bases.toc')"/>
       <xsl:with-param name="letter" select="@u"/>
       <xsl:with-param name="title" select="'Bases'"/>
     </xsl:call-template>
 <!--
     <xsl:call-template name="make-cell">
+      <xsl:with-param name="toc" select="concat($base,'translit.toc')"/>
+      <xsl:with-param name="letter" select="@u"/>
+      <xsl:with-param name="title" select="'Transliteration'"/>
+    </xsl:call-template>
+-->
+    <xsl:call-template name="make-cell">
       <xsl:with-param name="toc" select="concat($base,'signnames.toc')"/>
       <xsl:with-param name="letter" select="@u"/>
       <xsl:with-param name="title" select="'Signnames'"/>
     </xsl:call-template>
- -->
     <xsl:call-template name="make-cell">
       <xsl:with-param name="toc" select="concat($base,'akkadian.toc')"/>
       <xsl:with-param name="letter" select="@u"/>
