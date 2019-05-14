@@ -35,7 +35,7 @@ for a in $base-toc-*.xix ; \
 			  $xsl/xix-HTML.xsl $a > $webdir/cbd/$lang/`basename $a xix`html ; \
     done
 if [ "$type" = "signnames" ]; then
-    xsltprox g2plus-signnames-homographs.xsl $webdir/cbd/$lang/`basename $base-summaries.xix xix`html \
+    xsltproc g2plus-signnames-homographs.xsl $webdir/cbd/$lang/`basename $base-summaries.xix xix`html \
 	     >$webdir/cbd/$lang/signname-homographs.html
 fi
 
