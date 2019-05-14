@@ -1,4 +1,5 @@
 #!/bin/sh
+stats=$*
 rm -fr signlist ; mkdir signlist
 project=`oraccopt`
 (cd $ORACC ;
@@ -29,7 +30,12 @@ cp -a 00lib/signlist-projesp.js signlist/00res/js/projesp.js
 cp -a 00lib/signlist-sl.js signlist/00res/js/sl.js
 xsltproc $ORACC/lib/scripts/sl-ESP-structure.xsl 02xml/sl-grouped.xml >signlist/00web/00config/structure.xml
 xsltproc $ORACC/lib/scripts/sl-ESP-letters.xsl 02xml/sl-grouped.xml
-xsltproc -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+if [ "$stats" = "with-stats" ]; then
+    echo with-stats=true
+    xsltproc -stringparam with-stats yes -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+else 
+    xsltproc -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+fi
 (cd signlist ; o2-portal.sh)
 if [ -r 00lib/signlist-index.html ]; then
     (cd signlist/02www ; mv index.html home.html)

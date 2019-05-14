@@ -34,6 +34,7 @@
   <item>
     <xsl:copy-of select="*"/>
   </item>
+  <!--
   <head>
     <xsl:choose>
       <xsl:when test="ancestor::cbd:bases/cbd:base[@primary='yes']">
@@ -48,6 +49,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </head>
+  -->
 </xsl:template>
 
 <xsl:template name="make-where">

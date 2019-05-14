@@ -19,8 +19,10 @@
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
 <xsl:param name="project"/>
+<xsl:param name="with-stats"/>
 
 <xsl:template match="sl:sign">
+<!--  <xsl:if test="$with-stats='yes'"><xsl:message>with-stats=yes</xsl:message></xsl:if> -->
   <ex:document href="{concat('signlist/00web/',@xml:id,'.xml')}"
     method="xml" encoding="utf-8"
     indent="yes">
@@ -142,7 +144,10 @@
 <xsl:template match="sl:glo-inst">
   <tr><td class="psl-eleft"><xsl:apply-templates/></td
   ><td class="psl-eright"
-  ><esp:link hide-print="yes" url="/epsd2/cbd/sux/{@ref}.html"><xsl:value-of select="@cfgw"/></esp:link></td></tr>
+  ><esp:link hide-print="yes" url="/epsd2/cbd/sux/{@ref}.html"><xsl:value-of select="@cfgw"/></esp:link
+  ><xsl:if test="$with-stats='yes'"><xsl:value-of select="concat(' (',@icount,'× / ',@ipct,'%)')"/></xsl:if>
+  </td
+  ></tr>
 </xsl:template>
 
 <xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>
