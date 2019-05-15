@@ -64,6 +64,7 @@
   <a href="javascript:showpage('/epsd2/cbd/sux/VCV-summaries.html', 'tocbrowser')">
     <xsl:text>Compound Verbs Sorted by Verb</xsl:text>
   </a>
+  <br/>
   <a href="javascript:showpage('/epsd2/cbd/sux/signnames-homographs.html', 'tocbrowser')">
     <xsl:text>List of Homographs</xsl:text>
   </a>
