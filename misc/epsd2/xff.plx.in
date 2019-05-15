@@ -76,10 +76,12 @@ if ($sortopt) {
     # hack around a bug in psdsort until I fix it...
     if ($sortopt{$sortopt} eq '-n') {
 	$sortcmd[0] = '|/usr/bin/sort';
+	push @sortcmd, $sortopt{$sortopt};
+	push @sortcmd, '-r' if $reverse;
+    } else {
+	push @sortcmd, $sortopt{$sortopt};
     }
     my $tmpfile = "/tmp/$$.srt";
-    push @sortcmd, '-r' if $reverse;
-    push @sortcmd, $sortopt{$sortopt};
     push @sortcmd, "-t\"	\"";
     push @sortcmd, ">$tmpfile";
     my $sortcmd = join(' ', @sortcmd);
