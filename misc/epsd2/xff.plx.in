@@ -24,13 +24,23 @@ my $no_formset = 0;
 
 GetOptions(
     'project:s'=>\$project,
-    'arrow:s'=>\$reverse,
+    'arrow:s'=>\$arrow,
     'sortopt:s'=>\$sortopt,
     'xff:s'=>\$xff_file,
     );
 
-$reverse = '' if $reverse eq 'none';
-$sortopt = '' if $sortopt eq 'none';
+warn "arrow=$arrow\n";
+
+if ($arrow eq 'up') {
+    $reverse = 0;
+} elsif ($arrow eq 'down') {
+    $reverse = 1;
+} else {
+    $arrow = 'down';
+    $reverse = 1;
+}
+
+$sortopt = 'form' if $sortopt eq 'none';
 
 warn "REACHED xff.plx\n";
 
@@ -51,7 +61,7 @@ $xff_name = $xff_doc->getAttribute('formset');
 if ($sortopt) {
 
     $xff_doc->setAttribute('sortopt',$sortopt);
-    $xff_doc->setAttribute('reverse',$arrow eq 'down' ? 'yes' : 'no');
+    $xff_doc->setAttribute('arrow',$arrow);
     
     my %sortopt = (
 		   'base' =>"-G",
@@ -62,44 +72,56 @@ if ($sortopt) {
 		   'freq' =>"-n",
 		   );
     
-    my @sortcmd = ('|@@ORACC@@/bin/psdsort');
+    my @sortcmd = ('|@@ORACC@@/bin/psdsort -i');
     # hack around a bug in psdsort until I fix it...
     if ($sortopt{$sortopt} eq '-n') {
 	$sortcmd[0] = '|/usr/bin/sort';
     }
     my $tmpfile = "/tmp/$$.srt";
-    push @sortcmd, '-r' if $reverse eq 'down';
+    push @sortcmd, '-r' if $reverse;
     push @sortcmd, $sortopt{$sortopt};
     push @sortcmd, "-t\"	\"";
     push @sortcmd, ">$tmpfile";
     my $sortcmd = join(' ', @sortcmd);
-    # print STDERR $sortcmd,"\n";
+    print STDERR $sortcmd,"\n";
     open(SRT,$sortcmd);
     if ($sortopt eq 'freq') {
 	foreach my $c ($xff_doc->childNodes()) {
-	    print SRT $c->getAttribute('icount'), "\t", $c->getAttributeNS($xml_uri,
-									   'id'), "\n";
+	    my $i = $c->getAttribute('icount');
+	    print SRT "$i\t", $c->getAttributeNS($xml_uri, 'id'), "\n";
 	}
     } else {
 	foreach my $c ($xff_doc->childNodes()) {
-	    print SRT getValue($c, $sortopt), "\t", $c->getAttributeNS($xml_uri,
-								       'id'), "\n";
+	    my $t = getValue($c,$sortopt);
+	    my $t2 = $t;
+	    $t =~ tr/~/0/ if $sortopt eq 'morph';
+	    $t =~ s/\{.*?\}//g;
+	    $t =~ tr/.,;:!/-\-\-\-\-/;
+#	    $k =~ tr/ /_/;
+	    $t =~ tr/ /_/;
+	    $t2 =~ tr/ /_/;
+#	    print TMP "${t} \t$t2\t$k\n";
+	    print SRT "${t} \t$t2\t", $c->getAttributeNS($xml_uri,'id'), "\n";
 	}
     }
     close(SRT);
-
+    
     my @new_order = ();
     open(IN,$tmpfile);
     while (<IN>) {
-	/\s(\S+)$/ && push(@new_order, $xff_xml->getElementsById($1));
+	chomp;
+	/\t(\S+)$/ && push(@new_order, $xff_xml->getElementsById($1));
+#	warn "sortval=$1\n";
     }
     close(IN);    
-    unlink $tmpfile;
+#    unlink $tmpfile;
 
     $xff_doc->removeChildNodes();
     foreach my $n (@new_order) {
+#	warn "adding ", xid($n), "\n";
 	$xff_doc->appendChild($n);
     }
+#    open(X,'>internal.xff'); my $x=$xff_xml->toString(); use Encode; Encode::_utf8_on($x); print X $x; close(X);
 }
 
 ### Output Phase

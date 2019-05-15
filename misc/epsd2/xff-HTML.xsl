@@ -52,12 +52,12 @@
 	      <xsl:if test="@reversible='yes'">
  	        <xsl:variable name="arrow">
 	          <xsl:choose>
-		    <xsl:when test="$forms/@reverse='yes'">up</xsl:when>
+		    <xsl:when test="$forms/@arrow='down'">up</xsl:when>
 		    <xsl:otherwise>down</xsl:otherwise>
        	          </xsl:choose>
 	        </xsl:variable>
  	        <a href="/{$project}/xff/{$forms/@eid}?sortopt={@attr}&amp;arrow={$arrow}" class="xff">
-	 	  <img class="xff" src="/img/{$arrow}.gif"/>
+	 	  <img class="xff" src="/img/{$forms/@arrow}.gif"/>
  	        </a>
 	      </xsl:if>
 	      <xsl:text>&#xa0;</xsl:text>
@@ -95,7 +95,7 @@
     <xsl:call-template name="tda-node">
       <xsl:with-param name="at" select="xff:morph"/></xsl:call-template>
     <xsl:call-template name="tda">
-      <xsl:with-param name="at" select="xff:form/@icount"/></xsl:call-template>
+      <xsl:with-param name="at" select="@icount"/></xsl:call-template>
   </tr>
 </xsl:template>
 

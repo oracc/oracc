@@ -20,8 +20,8 @@ xff(const char *e2)
       if (arrow)
 	{
 	  arrow += strlen("arrow=");
-	  if (strcmp(arrow, "down") && strcmp("arrow", "up"))
-	    arrow = "none";
+	  if (strcmp(arrow, "down") && strcmp(arrow, "up"))
+	    arrow = "down";
 	}
       
       sort = strstr(qs, "sortopt="); sort += strlen("sortopt=");
