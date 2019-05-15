@@ -51,7 +51,7 @@ distprof(proj,lang,inst) {
 
 function
 distprof2(proj,lang,inst) {
-    cbdPopup('/'+proj+'/xis/'+lang+'/'+inst,'dpframe',600,700,0,0,1);
+    cbdPopup('/'+proj+'/'+lang+'?xis='+inst,'dpframe',700,800,0,0,1);
 }
 
 function
@@ -62,8 +62,8 @@ xdistprof(cfgw,eid,pagefile) {
 
 function
 popxff(project,eid) {
-    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
-	'xffwin',600,400,700,0,1);
+    //    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
+    cbdPopup('/'+project+'/xff/'+eid,'xffwin',600,400,700,0,1);
 }
 
 function

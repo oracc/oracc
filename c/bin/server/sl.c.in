@@ -91,5 +91,5 @@ sl(char *ctext)
     do404();
 
   /* run signlist UI */
-  execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/slse-slave.plx", "-caller", caller, "-project", project, "-extension", extension, "-grapheme", grapheme, NULL);
+  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/slse-slave.plx", "-caller", caller, "-project", project, "-extension", extension, "-grapheme", grapheme, NULL);
 }

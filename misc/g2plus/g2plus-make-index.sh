@@ -36,7 +36,7 @@ for a in $base-toc-*.xix ; \
     done
 if [ "$type" = "signnames" ]; then
     xsltproc g2plus-signnames-homographs.xsl $webdir/cbd/$lang/`basename $base-summaries.xix xix`html \
-	     >$webdir/cbd/$lang/signname-homographs.html
+	     >$webdir/cbd/$lang/signnames-homographs.html
 fi
 
 #ln -sf `pwd`/indexes/$type.xix print/full

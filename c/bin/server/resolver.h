@@ -8,7 +8,7 @@
 enum e_builtins  { B_NONE, B_ATF, B_AS, B_DATESTAMP, B_DOC, B_FIND, 
 		   B_ITEMMAIN, B_ITEMSIDE, B_OUTLINE, B_RESULTS, B_RPC, 
 		   B_SIG, B_XFORMS, B_XIS, B_RUNTIME, B_SL, B_OAS, 
-		   B_ATFTMP, B_VOLTMP, B_SEARCHBAR , B_SRV, B_JSON
+		   B_ATFTMP, B_VOLTMP, B_SEARCHBAR , B_SRV, B_JSON, B_XFF
 };
 enum e_component { C_NONE, C_RES, C_SEL, C_VIEW, C_FORMAT, C_UI };
 enum e_resource  { R_NONE, R_PQX, R_WORD, R_ENTITY, R_LANG, R_KEY, R_LIST };
@@ -105,6 +105,7 @@ extern void tei(const char *item);
 extern void list(const char *list);
 extern void sed_project(const char *xml, const char *session);
 extern void statistics(void);
+extern void xff(const char *e2);
 extern void xis(const char *xlang, const char *xid);
 
 extern void pqx_handler(struct component *);

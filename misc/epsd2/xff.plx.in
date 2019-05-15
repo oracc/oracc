@@ -1,0 +1,132 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8';
+use lib '@@ORACC@@/lib';
+use ORACC::XML;
+use Getopt::Long;
+use CGI; my $cgi = undef;
+
+binmode STDIN, ':utf8'; binmode STDOUT, ':raw';
+my $pS = 0;
+#pS();
+
+my $XFF = 'http://oracc.org/ns/xff/1.0';
+my $xml_uri = 'http://www.w3.org/XML/1998/namespace';
+my $styler = undef;
+my $project = '';
+my $arrow = '';
+my $reverse = '';
+my $sortopt = '';
+my $update = '';
+my %uvars = ();
+my $xff_file = '';
+my $xff_name = '';
+my $no_formset = 0;
+
+GetOptions(
+    'project:s'=>\$project,
+    'arrow:s'=>\$reverse,
+    'sortopt:s'=>\$sortopt,
+    'xff:s'=>\$xff_file,
+    );
+
+$reverse = '' if $reverse eq 'none';
+$sortopt = '' if $sortopt eq 'none';
+
+warn "REACHED xff.plx\n";
+
+if ($xff_file =~ /^sux\.x\d+$/) {
+    $xff_file = "@@ORACC@@/www/$project/cbd/sux/xff/$xff_file.xff";
+    $no_formset = 1;
+} else {
+    do_404();
+}
+
+die "xff: no such file $xff_file\n" unless -r $xff_file;
+
+my $xff_xml = load_xml($xff_file);
+my $xff_doc = $xff_xml->getDocumentElement();
+$xff_name = $xff_doc->getAttribute('formset');
+
+### Optional Sort Phase
+if ($sortopt) {
+
+    $xff_doc->setAttribute('sortopt',$sortopt);
+    $xff_doc->setAttribute('reverse',$arrow eq 'down' ? 'yes' : 'no');
+    
+    my %sortopt = (
+		   'base' =>"-G",
+		   'cfgw' =>"-G",
+		   'form' =>"-G",
+		   'morph'=>"-G",
+		   'pos'  =>"-d",
+		   'freq' =>"-n",
+		   );
+    
+    my @sortcmd = ('|@@ORACC@@/bin/psdsort');
+    # hack around a bug in psdsort until I fix it...
+    if ($sortopt{$sortopt} eq '-n') {
+	$sortcmd[0] = '|/usr/bin/sort';
+    }
+    my $tmpfile = "/tmp/$$.srt";
+    push @sortcmd, '-r' if $reverse eq 'down';
+    push @sortcmd, $sortopt{$sortopt};
+    push @sortcmd, "-t\"	\"";
+    push @sortcmd, ">$tmpfile";
+    my $sortcmd = join(' ', @sortcmd);
+    # print STDERR $sortcmd,"\n";
+    open(SRT,$sortcmd);
+    if ($sortopt eq 'freq') {
+	foreach my $c ($xff_doc->childNodes()) {
+	    print SRT $c->getAttribute('icount'), "\t", $c->getAttributeNS($xml_uri,
+									   'id'), "\n";
+	}
+    } else {
+	foreach my $c ($xff_doc->childNodes()) {
+	    print SRT getValue($c, $sortopt), "\t", $c->getAttributeNS($xml_uri,
+								       'id'), "\n";
+	}
+    }
+    close(SRT);
+
+    my @new_order = ();
+    open(IN,$tmpfile);
+    while (<IN>) {
+	/\s(\S+)$/ && push(@new_order, $xff_xml->getElementsById($1));
+    }
+    close(IN);    
+    unlink $tmpfile;
+
+    $xff_doc->removeChildNodes();
+    foreach my $n (@new_order) {
+	$xff_doc->appendChild($n);
+    }
+}
+
+### Output Phase
+my $xsl = '@@ORACC@@/lib/scripts/xff-HTML.xsl';
+my $xsldoc = load_xml($xsl);
+$styler = parse_xsl($xsldoc);
+my %parms = ();
+$parms{'formset'} = "'$xff_file'" unless $no_formset;
+$parms{'project'} = "'$project'";
+print $styler->transform($xff_xml, %parms)->toString(1);
+
+##########################################################################
+
+sub do_404 {
+    die;
+}
+
+sub
+getValue {
+    my ($sig_node,$field) = @_;
+    my $node = (tags($sig_node,$XFF,$field))[0];
+    $node->getAttribute('n');
+}
+
+sub
+pS {
+    print STDERR $pS++, "\n";
+}
+
+1;

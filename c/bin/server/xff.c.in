@@ -1,0 +1,56 @@
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "ctype128.h"
+#include "resolver.h"
+
+void
+xff(const char *e2)
+{
+  const char *sort = "none";
+  const char *arrow = "none";
+
+  fprintf(stderr, "ENTERED xff\n");
+
+  if (query_string && *query_string)
+    {
+      char *qs = strdup(query_string);
+      
+      arrow = strstr(qs, "arrow=");
+      if (arrow)
+	{
+	  arrow += strlen("arrow=");
+	  if (strcmp(arrow, "down") && strcmp("arrow", "up"))
+	    arrow = "none";
+	}
+      
+      sort = strstr(qs, "sortopt="); sort += strlen("sortopt=");
+      if (sort)
+	{
+	  qs = (char*)sort;
+	  while (*qs && *qs != '&')
+	    ++qs;
+	  if ('&' == *qs)
+	    *qs = '\0';
+	}
+      if (strcmp(sort, "base")
+	  && strcmp(sort, "form")
+	  && strcmp(sort, "freq")
+	  && strcmp(sort, "morph")
+	  )
+	sort = "none";
+    }
+
+  fprintf(stderr, "xff print_hdr\n");
+  
+  print_hdr();
+
+  fprintf(stderr, "xff execl\n");
+
+  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/xff.plx",
+	"-project", project,
+	"-xff", e2,
+	"-sort", sort,
+	"-arrow", arrow,
+	NULL);
+}

@@ -37,6 +37,7 @@ builtin *builtins_handlers[] =
 void
 or_builtins(void)
 {
+  fprintf(stderr, "OR_BUILTINS entered\n");
   if (elements[0] && !strcmp(elements[0], "or"))
     {
       struct builtinstab *builtinsp = NULL;
@@ -89,6 +90,10 @@ or_builtins(void)
 	    case B_XIS:
 	      xis(elements[2], elements[3]);
 	      break;
+	    case B_XFF:
+	      fprintf(stderr, "B_XFF REACHED elements[1]=%s; elements[2]=%s\n", elements[1], elements[2]);
+	      xff(elements[2]);
+	      break;
 	    case B_ITEMMAIN:
 	    case B_ITEMSIDE:
 	    case B_OUTLINE:
@@ -108,6 +113,7 @@ or_builtins(void)
 	      break;
 	    }
 	}
+      fprintf(stderr, "OR_BUILTINS reached 404\n");
       do404();
     }
   else if (!strcmp(elements[0], "cgi-bin") 

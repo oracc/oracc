@@ -435,8 +435,9 @@ hideNote(e,nid) {
 
 function
 popxff(project,eid) {
-    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
-	'xffwin',600,400,700,0,1);
+    cbdPopup('/'+project+'/xff/'+eid,'xffwin',600,400,700,0,1);
+//    cbdPopup('/cgi-bin/xff?xff='+eid+'&project='+project,
+//	'xffwin',600,400,700,0,1);
 }
 
 function popup(url,windowName,height,width,screenX,screenY) {

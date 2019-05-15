@@ -9,7 +9,6 @@ SUBDIRS = \
 	chi \
 	cs \
 	emacs \
-	epsd \
 	epsd2 \
 	esp \
 	esp2 \
@@ -69,3 +68,5 @@ SUBDIRS = \
 	xtl \
 	xtr \
 	xvl
+
+# epsd \

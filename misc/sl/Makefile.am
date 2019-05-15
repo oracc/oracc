@@ -6,7 +6,7 @@ bin_SCRIPTS = sametlit.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh \
 	sl-values-index.sh sl-values-index-tex.sh slse-slave.plx \
 	sl-group.plx sl-signlist.sh sl-brief.sh sl-inner.sh sl-oid.sh
 
-cgibin_SCRIPTS=slse
+# cgibin_SCRIPTS=slse
 texdata_DATA = slmac.tex repmac.tex
 
 scriptdata_DATA = sl-TeX.xsl rep-sl.xsl sl-HTML.xsl sl-sort.xsl \
