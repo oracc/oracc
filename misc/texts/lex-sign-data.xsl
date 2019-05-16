@@ -14,7 +14,15 @@
 </xsl:template>
 
 <xsl:template match="xcl:c">
-  <xsl:if test="xcl:d[@subtype='sg']">
+  <xsl:variable name="has-spel"
+		select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='pr']]/xff:f/@form"/>
+  <!--<xsl:message>spel=<xsl:value-of select="$has-spel"/></xsl:message>-->
+  <xsl:variable name="has-pr"
+		select="string-length(
+			xcl:l
+			[count(id(@ref)//g:v[not(@g:status='implied')])>0]
+			[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='pr']]/xff:f/@form)"/>
+  <xsl:if test="xcl:d[@subtype='sg'] and string-length($has-spel)>0"> <!-- and $has-pr > 0 -->
     <lex:data>
       <xsl:copy-of select="/*/@project"/>
       <xsl:attribute name="id_text">
@@ -30,31 +38,34 @@
 	<xsl:call-template name="sg"/>
       </xsl:attribute>
       <xsl:attribute name="read">
-	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f/@form"/>
+	<xsl:value-of select="xcl:l[count(id(@ref)//g:v[not(@g:status='implied')])>0][preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f/@form"/>
       </xsl:attribute>
       <xsl:attribute name="spel">
 	<xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='pr']]/xff:f/@form"/>
       </xsl:attribute>
       <xsl:for-each select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f">
-	<xsl:choose>
-	  <xsl:when test="string-length(@cf)>0">
-	    <xsl:attribute name="wref">
-	      <xsl:value-of select="../@ref"/>
-	    </xsl:attribute>
-	    <xsl:attribute name="word">
-	      <xsl:value-of select="concat(@cf,'[',@gw,']',@pos)"/>
-	    </xsl:attribute>
-	    <xsl:attribute name="base">
-	      <xsl:value-of select="@base"/>
-	    </xsl:attribute>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:attribute name="pos">
-	      <xsl:value-of
-		  select="@pos"/>
-	    </xsl:attribute>
-	  </xsl:otherwise>
-	</xsl:choose>
+	<xsl:if test="count(id(../@ref)//g:v[not(@g:status='implied')])>0">
+<!--	  <xsl:message><xsl:value-of select="ancestor::xcl:c[@type='sentence']/@label"/>::<xsl:value-of select="../@ref"/></xsl:message> -->
+	  <xsl:choose>
+	    <xsl:when test="string-length(@cf)>0">
+	      <xsl:attribute name="wref">
+		<xsl:value-of select="../@ref"/>
+	      </xsl:attribute>
+	      <xsl:attribute name="word">
+		<xsl:value-of select="concat(@cf,'[',@gw,']',@pos)"/>
+	      </xsl:attribute>
+	      <xsl:attribute name="base">
+		<xsl:value-of select="@base"/>
+	      </xsl:attribute>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:attribute name="pos">
+		<xsl:value-of
+		    select="@pos"/>
+	      </xsl:attribute>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:if>
       </xsl:for-each>
     </lex:data>
   </xsl:if>
