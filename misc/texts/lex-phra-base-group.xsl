@@ -21,7 +21,7 @@
   </lex:phra-base-data>
 </xsl:template>
 
-<xsl:template match="lex:phrase[@lang='sux']" mode="word">
+<xsl:template match="lex:phrase[starts-with(@lang,'sux')]" mode="word">
   <lex:group type="word" value="{@head}" oid="{@oid}">
     <xsl:variable name="nodes" select="key('words',concat(@lang,':',@head))"/>
     <xsl:for-each select="$nodes[generate-id(.)
@@ -32,7 +32,7 @@
   </lex:group>
 </xsl:template>
 
-<xsl:template match="lex:phrase[@lang='sux']" mode="base">
+<xsl:template match="lex:phrase[starts-with(@lang,'sux')]" mode="base">
   <lex:group type="base" lang="{@lang}" value="{lex:data[1]/@read}">
     <xsl:variable name="nodes" select="key('bases',concat(@lang,':',@head,':',
 			  lex:data[1]/@read))"/>
@@ -40,12 +40,12 @@
 			  =generate-id(key('spels',concat(@lang,':',@head,':',
 					      lex:data[1]/@read,
 					      lex:data[1]/@spel)))]">
-      <xsl:apply-templates select="." mode="spels"/>
+      <xsl:apply-templates select="." mode="spel"/>
     </xsl:for-each>
   </lex:group>
 </xsl:template>
 
-<xsl:template match="lex:phrase" mode="spels">
+<xsl:template match="lex:phrase" mode="spel">
   <lex:group type="spel" value="{lex:data[1]/@spel}">
     <xsl:attribute name="xml:id"><xsl:value-of select="generate-id()"/></xsl:attribute>
     <xsl:for-each select="key('spels',concat(@lang,':',@head,':',
@@ -60,5 +60,10 @@
     </xsl:for-each>
   </lex:group>
 </xsl:template>
+
+<xsl:template match="text()"/>
+<xsl:template mode="word" match="text()"/>
+<xsl:template mode="base" match="text()"/>
+<xsl:template mode="spel" match="text()"/>
 
 </xsl:stylesheet>

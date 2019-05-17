@@ -58,7 +58,7 @@
 
 <xsl:template match="lex:group[@type='refs']">
   <xsl:variable name="wrefs">
-    <xsl:for-each select="lex:data/lex:eq/*/@wref">
+    <xsl:for-each select="lex:data/@sref">
       <xsl:value-of select="."/>
       <xsl:if test="not(position()=last())">
 	<xsl:text>+</xsl:text>
