@@ -322,7 +322,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	  </xsl:call-template>
 
 	  <div class="lex attrs">
-	    <h3>Lexical Attestations</h3>
+	    <h3>Lexical Attestations:</h3>
 	    <xsl:element name="xi:include">
 	      <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
 	    </xsl:element>

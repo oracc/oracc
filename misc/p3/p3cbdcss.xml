@@ -523,6 +523,8 @@ iframe.lex { width: 90%; margin-left: 2em;
 	   }
 h2.lex { font-size: medium; margin-left: 1em; }
 
+.lex h3 { font-weight: normal; font-family: Sans-serif; font-size: 90%; margin-left: 1em; }
+
 .lex-word div { margin-left: 0em; }
 .lex-word h1 { font-size: medium; margin-left: 1em; }
 .lex-word h2 { font-size: medium; margin-left: 2em; }
