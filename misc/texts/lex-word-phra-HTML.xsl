@@ -19,7 +19,7 @@
 
 <xsl:template match="lex:group[@type='word']">
   <div class="lex-word" title="{@value}" o:id="{@oid}" id="lexphrases">
-    <p class="refheading"><a href="javascript:distprof2('{/*/@project}','{*[1]/@lang}','{@xis}')"><span class="lex-button">References for all phrases</span></a></p>
+    <h3 class="lex refs"><a href="javascript:distprof2('{/*/@project}','{*[1]/@lang}','{@xis}')"><span class="lex-button">References for all phrases</span></a></h3>
     <xsl:apply-templates/>
   </div>
 </xsl:template>

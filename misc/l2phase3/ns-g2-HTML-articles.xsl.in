@@ -321,10 +321,13 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	    <xsl:with-param name="c" select="$cont-nodes"/>
 	  </xsl:call-template>
 
-	  <xsl:element name="xi:include">
-	    <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
-	  </xsl:element>
-	</xsl:when>
+	  <div class="lex attrs">
+	    <h3>Lexical Attestations</h3>
+	    <xsl:element name="xi:include">
+	      <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+	    </xsl:element>
+	  </div>
+	  </xsl:when>
 	<xsl:otherwise>
 	  <xsl:if test="count($base-nodes)>0 or count($cont-nodes)>0">
 	    <h2 class="lex">Pronunciation Data</h2>
@@ -348,9 +351,6 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <p class="norms">
 	<xsl:for-each select="$b">
 	  <xsl:call-template name="base-para-sub"/>
-	  <xsl:if test="position() &lt; last()">
-	    <span class="punct-sc"><xsl:text>; </xsl:text></span>
-	  </xsl:if>
 	</xsl:for-each>
 	<xsl:text>.</xsl:text>
       </p>

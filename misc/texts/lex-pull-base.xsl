@@ -6,7 +6,7 @@
 		exclude-result-prefixes="xi">
 
 <xsl:template match="lex:phrase">
-  <xsl:if test=".//lex:sv[string-length(@form)>0]">
+  <xsl:if test="lex:data[string-length(@spel)>0][lex:sv[string-length(@form)>0]]">
     <xsl:copy-of select="."/>
   </xsl:if>
 </xsl:template>
