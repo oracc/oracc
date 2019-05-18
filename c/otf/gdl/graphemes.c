@@ -826,7 +826,12 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  static const unsigned char *cattr = NULL;
 		  if (gp->type == g_q)
-		    cattr = cuneify(gp->g.q.q->g.s.base);
+		    {
+		      if (gp->g.q.q->type == g_n)
+			cattr = cuneify(gp->g.q.q->atf);
+		      else
+			cattr = cuneify(gp->g.q.q->g.s.base);
+		    }
 		  else
 		    cattr = cuneify(buf);
 		  if (cattr)
@@ -837,7 +842,12 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  static const unsigned char *cattr = NULL;
 		  if (gp->type == g_q)
-		    cattr = signify(gp->g.q.q->g.s.base);
+		    {
+		      if (gp->g.q.q->type == g_n)
+			cattr = cuneify(gp->g.q.q->atf);
+		      else
+			cattr = cuneify(gp->g.q.q->g.s.base);
+		    }
 		  else
 		    cattr = signify(buf);
 		  if (cattr)

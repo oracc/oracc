@@ -941,7 +941,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	  </td>
 	  <td class="orth">
 	    <span class="cuneiform">
-	      <xsl:for-each select="cbd:text[1]//*[@g:utf8]">
+	      <xsl:for-each select="cbd:text[1]//*[@g:utf8][not(ancestor::g:q)]">
 		<xsl:value-of select="@g:utf8"/>
 	      </xsl:for-each>
 	    </span>
