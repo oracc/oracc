@@ -31,6 +31,8 @@ my @instsigs = ();
 my $out = '';
 my $lang = '';
 
+my %pref_bases = ();
+
 my $sigorder = 0;
 
 my @sigs_cofs = ();
@@ -242,6 +244,17 @@ sub sigs_simple {
     $sigorder = 0;
 
     my %coresigs = ();
+
+    if (-r '00lib/preferred-bases.tab') {
+	# FIXME: preferred-bases.tab should only be tried for lang=~ /^sux/, should be publically available and should index via OID
+	open(P,'00lib/preferred-bases.tab') || die;
+	while (<P>) {
+	    chomp;
+	    my($cfgw,$base) = split(/\t/,$_);
+	    $pref_bases{$cfgw} = $base;
+	}
+	close(P);
+    }
     
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
@@ -377,12 +390,22 @@ sub sigs_simple {
 	    $current_first_base = $1;
 	    my @bits = split(/;\s+/,$current_first_base);
 	    @bits = map { s/\s+\(.*$//; $_ } @bits;
+	    my %bits = (); @bits { @bits } = ();
 	    $current_first_base = join(' ', @bits);
 	    
 #	    warn "cfb=$current_first_base\n";
 
 	    my $basekey = $curr_cfgw; $basekey =~ s/\s+\[/[/; $basekey =~ s/\]\s+/]/;
-	    $simple_bases{$basekey} = $bits[0];
+	    if ($pref_bases{$basekey}) {
+		if (exists $bits{$pref_bases{$basekey}}) {
+		    $simple_bases{$basekey} = $pref_bases{$basekey};
+		} else {
+		    pp_notice("$basekey: preferred base $pref_bases{$basekey} unknown; defaulting to $bits[0]");
+		    $simple_bases{$basekey} = $bits[0];
+		}
+	    } else {
+		$simple_bases{$basekey} = $bits[0];
+	    }
  
 	} elsif (s/^\@form(!?)\s+(\S+)//) {
 
@@ -648,6 +671,7 @@ sub psu_index {
     if ($l eq ORACC::CBD::Util::lang()) {
 	%{$ix{'core'}} = psu_index_coresigs(@sigs_coresigs);
 	%{$ix{'smpl'}} = psu_index_simple(@sigs_simple);
+	open(D,'>D'); print D Dumper \@sigs_coresigs; print D Dumper \@sigs_simple; print D Dumper \%ix; close(D);
 	$ix{'ok'} = 'yes';
     } else {
 	my($core,$smpl) = psu_marshall($l);
@@ -740,7 +764,7 @@ sub psu_glo {
 	    s/\s\*\S+//;
 	    if ($nsense == 0) {
 		if ($ORACC::CBD::Forms::external) {
-		    @no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);
+		    @no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);		    
 		}
 		if ($#no_sense_forms < 0) {
 		    # create a form from primary bases
@@ -804,7 +828,7 @@ sub psu_glo {
 sub
 do_psu {
     my($psulang,$formline) = @_;
-    warn "do_psu: psulang=$psulang; formline=$formline" if $verbose;
+    warn "do_psu: psulang=$psulang; formline=$formline\n" if $verbose;
     $formline =~ s/^\@form\s+//;
 #    my ($forms, $norms) = ($formline =~ /^(\S+)\s*(\S.*)\s*$/);
     my ($forms, $rest) = ($formline =~ /^(\S+)\s*(.*)\s*$/);
@@ -862,6 +886,7 @@ do_psu {
 	    pp_line($err - 1);
 	    unless ($#parts_errors == 0 && $parts_errors[0] eq '#nowarn#') {
 		foreach (@parts_errors) {
+		    warn "do_psu: psulang=$psulang; formline=$formline\n"; #  if $verbose;
 		    pp_warn($_)
 		}
 	    }

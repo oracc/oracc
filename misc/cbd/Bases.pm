@@ -23,6 +23,25 @@ my $map_fh = undef;
 
 my $p_entry = '';
 
+sub bases_tab {
+    my %base_bases = ();
+    my $cpd = 0;
+    my $e = '';
+    foreach (@_) {
+	if (/^\@bases/) {
+	    my %b = bases_hash($_,$cpd);
+	    print "$e\t", join("\t", sort grep(!/\#/, keys %b)), "\n";
+	} elsif (/^\@parts/) {
+	    $cpd = 1;
+	} elsif (/^\@entry\S*\s*(.*?)\s*$/) {
+	    $e = $1;
+	    $e =~ s/\s+\[/[/;
+	    $e =~ s/\]\s/]/;
+	    $cpd = 0;
+	}
+    }
+}
+
 sub bases_fixes {
     my %tmp = %fixes;
     %fixes = ();
