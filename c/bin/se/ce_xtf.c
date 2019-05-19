@@ -13,6 +13,7 @@
 #include <loadfile.h>
 #include <npool.h>
 #include "selib.h"
+#include "xmlutil.h"
 #include "wm.h"
 #include "ce.h"
 
@@ -673,8 +674,12 @@ ce_xtf_eH(void *userData, const char *name)
 	      fprintf(ce_out_fp, "</ce:%s>", content_tagc);
 	      if (*last_label && cetype == KU_UNIT) /* we must be in unit context */
 		sprintf(label+strlen(label), " - %s", last_label);
-	      fprintf(ce_out_fp, "<ce:label>%s: %s</ce:label></ce:data>", 
-		      text_name, label);
+	      fprintf(ce_out_fp, "<ce:label>%s: ",
+		      (const char *)xmlify((const unsigned char*)text_name)
+		      );
+	      fprintf(ce_out_fp, "%s</ce:label></ce:data>", 
+		      (const char *)xmlify((const unsigned char*)label)
+		      );
 	      *last_label = '\0';
 	      *label = '\0';
 	      echoing = 0;
