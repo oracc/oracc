@@ -39,12 +39,17 @@ foreach my $entry (tags($art,$CBD,'entry')) {
 	$sig{'icount'} = $sig->getAttribute('icount');
 	$sig{'ipct'} = $sig->getAttribute('ipct');
 	$sig{'xis'} = $sig->getAttribute('xis');
-	$sig{'parsed'} = { ORACC::L2GLO::Util::parse_sig($sig->getAttribute('sig')) };
+	my $sigfromattr = $sig->getAttribute('sig');
+	if ($sigfromattr =~ /^\{/) {
+	    $sig{'parsed'} = { ORACC::L2GLO::Util::parse_psu($sigfromattr) };
+	} else {
+	    $sig{'parsed'} = { ORACC::L2GLO::Util::parse_sig($sigfromattr) };
+	}
 	foreach my $f (@fields) {
 	    my $sig_v = ${$sig{'parsed'}}{$f};
 	    if ($sig_v && $fields{$f}) {
 		my $sig_v_no_lang = $sig_v;
-		$sig_v_no_lang =~ s/^\%.*?://;
+		$sig_v_no_lang =~ s/^\%.*?://g;
 		if (${$fields{$f}}{$sig_v_no_lang}) {
 		    my $f_data = ${$fields{$f}}{$sig_v_no_lang};
 		    ${$sig{'parsed'}}{$f} = $f_data;
