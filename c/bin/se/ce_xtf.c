@@ -582,7 +582,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 
       if (h)
 	fprintf(ce_out_fp, "<ce:start ref=\"%s\" h=\"%s\"/>", 
-		xid, h);
+		xid, (const char *)xmlify((const unsigned char *)h));
       else
 	fprintf(ce_out_fp, "<ce:start ref=\"%s\"/>", xid);
 
