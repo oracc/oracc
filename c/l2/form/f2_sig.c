@@ -201,11 +201,10 @@ f2_psu_sig(struct xcl_context *xcp, struct f2 *fp)
 		strcat((char*)psu_form, (char*)fp->parts[i]->form);
 	    }
 
+	  strcat((char*)psu_form, " ");
+
           if (i)
-	    {
-	      strcat((char*)buf, "++");
-	      strcat((char*)psu_form, " ");
-	    }
+	    strcat((char*)buf, "++");
 
           if (fp->parts[i]->tail_sig)
             strcat((char*)buf, (char*)fp->parts[i]->tail_sig);

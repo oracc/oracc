@@ -77,11 +77,15 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 	sigs_l_check(xc, lp);
       mlp->matches[0].psu_nfinds = lp->f->fcount;
 
+ #if 0
+      /* Removed 2019-05-19 because it gets set correctly via f2_psu_sig then
+	 this rubbish breaks it */
       /* WATCHME: should I be using psu_finds and reporting ambig here? 
        * For now, just use the first sig.
        */
       if (lp->f->fcount > 0)
         lsp->form->sig = lp->f->finds[0]->f2.sig;
+#endif
 
       /* can't free this now because it may be referenced via the cache */
       /* free(lp->f); */
