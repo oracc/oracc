@@ -113,7 +113,7 @@
 <xsl:template name="tda-node">
   <xsl:param name="at"/>
   <td class="xff">
-    <a href="javascript:distprof2('{$project}','{/*/@eid}','{$at/@xis}')">
+    <a href="javascript:distprof2('{$project}','{/*/@xml:lang}','{$at/@xis}')">
       <xsl:call-template name="html-text">
         <xsl:with-param name="text" select="$at/@n"/>
       </xsl:call-template>

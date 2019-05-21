@@ -9,19 +9,23 @@ use Getopt::Long;
 use Data::Dumper;
 
 my @fields = qw/base cont form morph/; # norm needs fixing
+my $file = '';
 my @forms = ();
 my $lang = '';
 my $xffdir = '';
 
 GetOptions(
     'dir:s'=>\$xffdir,
+    'file:s'=>\$file,
     'lang:s'=>\$lang,
     );
 
 die "art2xff.plx: must give language on command line (e.g., art2xff.plx -lang sux)\n"
     unless $lang;
 
-my $art = load_xml("01bld/$lang/articles.xml");
+$file = "01bld/$lang/articles.xml" unless $file;
+
+my $art = load_xml($file);
 foreach my $entry (tags($art,$CBD,'entry')) {
     my $icount = $entry->getAttribute('icount');
     next if $icount eq '-1' || $icount eq '0';
@@ -42,14 +46,25 @@ foreach my $entry (tags($art,$CBD,'entry')) {
 	my $sigfromattr = $sig->getAttribute('sig');
 	if ($sigfromattr =~ /^\{/) {
 	    $sig{'parsed'} = { ORACC::L2GLO::Util::parse_psu($sigfromattr) };
+	    my @p = @{@{$sig{'parsed'}}{'part_sigs'}};
+#	    warn Dumper \@p;
+	    my $f = '';
+	    foreach my $p (@p) {
+#		warn "$p\n";
+		$f .= ' ' if $f;
+		$p =~ /\%.*?:(.*?)=/;
+		$f .= $1;
+	    }
+	    ${$sig{'parsed'}}{'form'} = $f;
 	} else {
 	    $sig{'parsed'} = { ORACC::L2GLO::Util::parse_sig($sigfromattr) };
 	}
+#	print Dumper \%sig;
 	foreach my $f (@fields) {
 	    my $sig_v = ${$sig{'parsed'}}{$f};
 	    if ($sig_v && $fields{$f}) {
 		my $sig_v_no_lang = $sig_v;
-		$sig_v_no_lang =~ s/^\%.*?://g;
+		$sig_v_no_lang =~ s/^\%.*?://;
 		if (${$fields{$f}}{$sig_v_no_lang}) {
 		    my $f_data = ${$fields{$f}}{$sig_v_no_lang};
 		    ${$sig{'parsed'}}{$f} = $f_data;
@@ -80,6 +95,10 @@ dump_xff {
 	    print "<sig xml:id=\"$sig{'id'}\" icount=\"$sig{'icount'}\" ipct=\"$sig{'ipct'}\" xis=\"$sig{'xis'}\">";
 	    foreach my $f (@fields) {
 		my $v = ${$sig{'parsed'}}{$f} || '';
+		if ($f eq 'base') {
+		    $$v[0] =~ s/^\%.*?://;
+		    $$v[0] =~ s/\s+\%.*?:/ /;
+		}
 		if (ref($v) eq 'ARRAY') {
 		    print "<$f n=\"$$v[0]\" icount=\"$$v[1]\" ipct=\"$$v[2]\" xis=\"$$v[3]\"/>";
 		} else {
