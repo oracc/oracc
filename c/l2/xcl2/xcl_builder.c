@@ -167,13 +167,13 @@ xcl_eH(void *userData, const char *name)
 					   curr_form,
 					   NULL, ll_type);
 	      lp->inst = curr_inst;
-	      lp->sig = npool_copy(curr_sig,xcp->pool);
+	      lp->sig = (const char *)npool_copy((const unsigned char*)curr_sig,xcp->pool);
 	      lp->lnum = curr_lnum;
 	      lp->f = mb_new(xcp->sigs->mb_ilem_forms);
 	      lp->f->f2.owner = lp->f;
 	      lp->f->ref = (char*)npool_copy((unsigned char *)curr_ref, xcp->pool);
 	      /* FIXME: this is not good enough for COF and PSU */
-	      lp->f->f2.sig = lp->sig;
+	      lp->f->f2.sig = (unsigned char *)lp->sig; /* FIXME: drops const */
 	      f2_parse((unsigned char *)xcp->file, lp->lnum, npool_copy((unsigned char*)curr_sig,xcp->pool), &lp->f->f2, NULL, xcp->sigs);	      
 	    }
 #if 0

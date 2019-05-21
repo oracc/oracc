@@ -70,7 +70,7 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 			{
 			  /* The match is not from the first of the ambiguous alternates
 			     so we need to set some of its members from the head */
-			  ifp->ref = mp->lp->ref;
+			  ifp->ref = (char*)mp->lp->ref; /* FIXME: ifp->ref should be const char */
 			}
 		    }
 		  i += j;

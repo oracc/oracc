@@ -89,7 +89,7 @@ xcl_chunkify(struct xcl_context *xc)
 {
   struct xcl_chunk_spec *cs;
   int cindex = 0;
-  FILE *clog;
+  /* FILE *clog; */
   if (xc && xc->linkbase && xc->linkbase->nsets)
     {
       cs = links_chunks(xc->linkbase,0);

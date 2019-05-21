@@ -75,6 +75,7 @@ d_action(enum xcl_d_types d)
     case xcl_d_cell_end:
     case xcl_d_field_start:
     case xcl_d_field_end:
+    case xcl_d_object:
     case xcl_d_surface:
     case xcl_d_column:
     case xcl_d_nonw:

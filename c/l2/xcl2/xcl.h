@@ -1,6 +1,11 @@
 #ifndef _XCL_H
 #define _XCL_H
 #include <hash.h>
+
+struct xcl_c;
+struct xcl_l;
+struct xcl_context;
+
 #include "links.h"
 
 enum xcl_load_sigs { XCL_LOAD_SANS_SIGSETS , 
@@ -62,7 +67,6 @@ struct xcl_d
 
 #include "f2.h"
 
-struct xcl_context;
 struct xcl_l
 {
   enum xcl_node_types node_type;

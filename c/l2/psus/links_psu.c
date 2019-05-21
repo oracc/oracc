@@ -59,16 +59,15 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 	mlp->matches[0].psu_form->pos = parsed_psu->pos;
       if (parsed_psu->epos)
 	mlp->matches[0].psu_form->epos = parsed_psu->epos;
-	
 
       lp->parent = xc->root; /* fake this */
-      lsp->form = mlp->matches[0].psu_form;
-      lsp->form->file = (unsigned char*)xc->file;
-      lsp->form->lnum = mlp->matches[0].lp->lnum;
+      lsp->form = *mlp->matches[0].psu_form;
+      lsp->form.file = (unsigned char*)xc->file;
+      lsp->form.lnum = mlp->matches[0].lp->lnum;
 
-      lsp->form->sig = f2_psu_sig(xc, mlp->matches[0].psu_form);
+      lsp->form.sig = f2_psu_sig(xc, mlp->matches[0].psu_form);
 
-      lp->inst = psu_inst((char*)lsp->form->sig);
+      lp->inst = psu_inst((char*)lsp->form.sig);
       lp->f = calloc(1,sizeof(struct ilem_form));
       lp->f->file = (char*)mlp->matches[0].psu_form->file;
       lp->f->lnum = mlp->matches[0].psu_form->lnum;

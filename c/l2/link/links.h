@@ -1,6 +1,7 @@
 #ifndef _LINKS_H
 #define _LINKS_H
 
+#include "f2.h"
 #include "xcl.h"
 
 struct linkbase
@@ -22,7 +23,7 @@ struct linkset
   struct link *links;
   int used;
   int alloced;
-  struct f2 *form;
+  struct f2 form;
   struct linkset *next;
   void *user;
   user_dump_func *user_dump_function;

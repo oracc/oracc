@@ -22,8 +22,8 @@ linkset_dump(FILE*fp,struct linkset *lsp)
   int i;
   fprintf(fp,"<linkset xl:title=\"%s\" xml:id=\"%s\" xl:type=\"extended\" xl:role=\"%s\"",
 	  lsp->title,lsp->xml_id,lsp->role);
-  if (lsp->form && lsp->form->sig)
-    fprintf(fp, " sig=\"%s\"", xmlify(lsp->form->sig));
+  if (/* lsp->form && */ lsp->form.sig)
+    fprintf(fp, " sig=\"%s\"", xmlify(lsp->form.sig));
   fputc('>',fp);
   for (i = 0; i < lsp->used; ++i)
     {

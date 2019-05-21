@@ -9,6 +9,7 @@ struct xcl_ilem
 
 struct lang_context;
 struct xcl_c;
+struct node;
 
 extern int need_lemm;
 extern void lem_reset_form(const char *ref, const char *form);
