@@ -73,6 +73,7 @@ struct xcl_l
   const char *xml_id;
   int lnum;
   const char *ref;
+  const char *subtype;  /* subtype of field l belongs to, if any */
   const char *inst;
   const char *sig;
   struct xcl_c *parent;

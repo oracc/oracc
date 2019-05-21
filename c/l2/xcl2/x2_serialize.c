@@ -60,6 +60,7 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
     x2_attr(f_xcl,"xml:id",lp->xml_id);
   x2_attr_i(f_xcl,"lnum",fp ? fp->lnum : lp->lnum);
   x2_attr(f_xcl,"ref",lp->ref);
+  x2_attr(f_xcl,"ftype",lp->subtype);
 
   if (lp->cof_head)
     {

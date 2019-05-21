@@ -22,19 +22,33 @@
   <xsl:choose>
     <xsl:when test="xcl:d[@type='field-start']">
       <xsl:if test="xcl:d[@subtype='wp']|xcl:d[@subtype='sv']">
+	<xsl:variable name="sign">
+	  <!-- need to descend in all of these xcl:l selectors because of potential for c:phr children of c:sentence -->
+	  <xsl:value-of select=".//xcl:l[@ftype='sg'][1]/xff:f/@form"/>
+	</xsl:variable>
+	<xsl:variable name="read">
+	  <xsl:for-each select=".//xcl:l[@ftype='sv']">
+	    <xsl:if test="count(id(@ref)//g:v[not(@g:status='implied')>0])">
+	      <xsl:value-of select="xff:f/@form"/>
+	      <xsl:text> </xsl:text>
+	    </xsl:if>
+	  </xsl:for-each>
+	</xsl:variable>
 	<lex:data>
 	  <xsl:call-template name="lex-data-meta"/>
-	  <xsl:attribute name="sref">
-	    <xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/@ref"/>
-	  </xsl:attribute>
-	  <xsl:attribute name="sign">
-	    <xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sg']]/xff:f/@form"/>
-	  </xsl:attribute>
+	  <xsl:if test="string-length($sign)">
+	    <xsl:attribute name="sign">
+	      <xsl:value-of select="$sign"/>
+	    </xsl:attribute>
+	    <xsl:attribute name="sref">
+	      <xsl:value-of select=".//xcl:l[@ftype='sg'][1]/@ref"/>
+	    </xsl:attribute>
+	  </xsl:if>
 	  <xsl:attribute name="read">
-	    <xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='sv']]/xff:f/@form"/>
+	    <xsl:value-of select="normalize-space($read)"/>
 	  </xsl:attribute>
 	  <xsl:attribute name="spel">
-	    <xsl:value-of select="xcl:l[preceding-sibling::xcl:d[@type='field-start'][1][@subtype='pr']]/xff:f/@form"/>
+	    <xsl:value-of select=".//xcl:l[@ftype='sg'][1]/xff:f/@form"/>
 	  </xsl:attribute>
 	  <xsl:call-template name="get-words">
 	    <xsl:with-param name="type" select="'sv'"/>

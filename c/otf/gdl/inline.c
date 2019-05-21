@@ -104,13 +104,14 @@ static enum t_type word_init_mutex = notoken;
 
 /*static int g_surro(int tindex);*/
 static struct token *surro_norm(int tindex);
+static int nfields = 0;
 static int long_surro(int tindex);
 static int has_cells(void);
 static int has_fields(void);
 static void langhand(struct node *wp, struct token *tp);
 static int nowt_to_render(struct node *n);
-static void process_cells(struct node *parent);
-static void process_fields(struct node *parent, int start, int end);
+static void process_cells(struct node *parent, unsigned char *line_id);
+static void process_fields(struct node *parent, int start, int end, unsigned char *line_id);
 static void process_words(struct node *parent, int start, int end, int with_word_list);
 static void wrapup_word(struct node *wp, enum t_type trigger);
 
@@ -356,6 +357,7 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
 
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
+  nfields = 0;
 
 #if 0
   if (text_lang)
@@ -404,9 +406,9 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   curr_cell = 0;
 
   if (has_cells())
-    process_cells(lnode);
+    process_cells(lnode,line_id);
   else if (has_fields())
-    process_fields(lnode,0,last_token);
+    process_fields(lnode,0,last_token,line_id);
   else
     process_words(lnode,0,last_token, with_word_list);
 
@@ -445,7 +447,7 @@ nextfield(int start)
 }
 
 static void
-process_cells(struct node *parent)
+process_cells(struct node *parent, unsigned char *line_id)
 {
   int start = 0;
   int end = last_token;
@@ -473,7 +475,7 @@ process_cells(struct node *parent)
 	}
       if (has_fields())
 	{
-	  process_fields(cp,start,next_cell);
+	  process_fields(cp,start,next_cell,line_id);
 	  start = next_cell + 1;
 	}
       else
@@ -487,12 +489,20 @@ process_cells(struct node *parent)
 }
 
 static void
-process_fields(struct node *parent, int start, int end)
+process_fields(struct node *parent, int start, int end, unsigned char *line_id)
 {
   while (start < end)
     {
       struct node *cp = elem(e_f,NULL,lnum,FIELD);
       int next_field;
+      unsigned char *f_id = malloc(strlen((const char *)line_id) + strlen(".f1000") + 1);
+      if (++nfields > 9999)
+	{
+	  warning("too many fields in line; remainder ignored");
+	  free(f_id);
+	  return;
+	}
+      sprintf((char*)f_id,"%s.f%d",line_id,nfields);
       if (tokens[start] && tokens[start]->type == field)
 	++start;
       if (tokens[start] && tokens[start]->type == ftype)
@@ -515,6 +525,8 @@ process_fields(struct node *parent, int start, int end)
 	next_field = nextfield(start+1);
       appendChild(parent,cp);
       process_words(cp,start,next_field, 1);
+      appendAttr(cp,attr(a_xml_id,f_id));
+      free(f_id);
       start = next_field + 1;
     }
 }

@@ -131,7 +131,7 @@ process(struct xcl_context *xc, struct node*n)
 	  break;
 	case e_f:
 	  atpt_field = xc->curr;
-	  xcl_discontinuity(xc, NULL, xcl_d_field_start, (const char *)n->data);
+	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_field_start, (const char *)n->data);
 	  break;
 	default:
 	  break;

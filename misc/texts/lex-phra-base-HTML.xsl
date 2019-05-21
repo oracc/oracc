@@ -65,6 +65,9 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
+  <xsl:if test="string-length($wrefs)=0">
+    <xsl:message><xsl:value-of select="concat(*[1]/@id_text,':',*[1]/@label)"/>: lex:data/@sref is empty</xsl:message>
+  </xsl:if>
   <xsl:variable name="proj" select="lex:data[1]/@project"/>
   <a href="http://oracc.org/{$proj}/{$wrefs}" title="{$proj} on Oracc">
     <xsl:value-of select="lex:data[1]/@n"/>

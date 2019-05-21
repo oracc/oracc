@@ -29,6 +29,8 @@ struct mm
 
 static struct npool *xcl_pool;
 
+static char *curr_subtype = NULL;
+
 static struct mm c_mm_info = { NULL, sizeof(struct xcl_c), -1, -1, 0, 0 };
 static struct mm d_mm_info = { NULL, sizeof(struct xcl_d), -1, -1, 0, 0 };
 static struct mm l_mm_info = { NULL, sizeof(struct xcl_l), -1, -1, 0, 0 };
@@ -324,7 +326,7 @@ xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t, c
   struct xcl_d *c = new_node(&d_mm_info);
   c->node_type = xcl_node_d;
   c->type = t;
-  c->subtype = st;
+  curr_subtype = c->subtype = st;
   c->xc = xc;
   c->ref = ref;
   add_child(xc->curr, c, c->node_type);
@@ -337,7 +339,7 @@ xcl_discontinuity2(struct xcl_context *xc, const char *xid, const char *ref, enu
   c->node_type = xcl_node_d;
   c->type = t;
   c->xc = xc;
-  c->xml_id = xid;
+  c->xml_id = (char*)npool_copy(xid,xc->pool);
   c->ref = ref;
   add_child(xc->curr, c, c->node_type);
 }
@@ -395,6 +397,8 @@ xcl_lemma(struct xcl_context *xc, const char *xml_id, const char *ref,
       c->parent = xc->curr;
       c->nth = xc->curr->nchildren;
       c->xc = xc;
+      if (curr_subtype && strlen(curr_subtype))
+	c->subtype = (char*)npool_copy(curr_subtype,xc->pool);
       add_child(xc->curr,c,c->node_type);
       return c;
     }

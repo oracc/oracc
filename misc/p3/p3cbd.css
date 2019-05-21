@@ -22,12 +22,13 @@ p.summary { margin-left: 1.1em; text-indent: -1em;
 p.norms    { width: 90%; margin: auto; }
 
 div.morphology { width: 90%; margin: auto; }
+
+.morphology p { margin-left: 0em; margin-top: 10px; }
+
 div.equivs     { width: 90%; margin: auto; }
 /* div.bib        { width: 90%; margin: auto; } */
 
 div.props      { width: 90%; margin: auto; }
-
-.morphology p { margin-left: 1em; }
 
 div.forms { width: 90%; margin-left: 1em; }
 div.morphs { width: 90%; margin-left: 1em; margin-top: .5em; }
