@@ -48,7 +48,7 @@
 	    <xsl:value-of select="normalize-space($read)"/>
 	  </xsl:attribute>
 	  <xsl:attribute name="spel">
-	    <xsl:value-of select=".//xcl:l[@ftype='sg'][1]/xff:f/@form"/>
+	    <xsl:value-of select=".//xcl:l[@ftype='pr'][1]/xff:f/@form"/>
 	  </xsl:attribute>
 	  <xsl:call-template name="get-words">
 	    <xsl:with-param name="type" select="'sv'"/>

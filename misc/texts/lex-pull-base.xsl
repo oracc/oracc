@@ -10,20 +10,42 @@
     ]"> -->
 
 <xsl:template match="lex:phrase">
-  <xsl:if test="lex:data
-		[string-length(@spel)>0 and string-length(lex:sv/@form)>0]"
-		>
-		<xsl:message>lex:phrase with form <xsl:value-of select="lex:sv/@form"/></xsl:message>
-		<xsl:choose>
-		  <xsl:when test="count(lex:data/lex:sv/lex:word/*/g:v[not(@g:status='implied')])>0">
-		    <xsl:message>lex:implied OK</xsl:message>
-		    <xsl:copy-of select="."/>
-		  </xsl:when>
-		  <xsl:otherwise>
-		    <xsl:message>lex:implied NO</xsl:message>
-		  </xsl:otherwise>
-		</xsl:choose>
+  <xsl:variable name="use-data"
+		select="lex:data
+			[string-length(@spel)>0 and (string-length(lex:sv/@form)>0 or string-length(@read)>0)]"/>
+
+<!--<xsl:message>lex:phrase <xsl:value-of select="@phrase"/> has <xsl:value-of select="count($use-data)"/> members</xsl:message>-->
+			
+  <xsl:if test="count($use-data) > 0">
+    <xsl:copy-of select="."/>
+    <!--
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="$use-data"/>
+    </xsl:copy>
+    -->
   </xsl:if>
+</xsl:template>
+
+<xsl:template match="lex:datax">
+  <xsl:copy>
+    <xsl:copy-of select="@*"/>
+    <xsl:for-each select="*">
+      <xsl:choose>
+	<xsl:when test="self::lex:sv">
+	  <xsl:if test="count(lex:data/lex:sv/lex:word//g:v[not(@g:status='implied')])>0">
+	    <xsl:copy>
+	      <xsl:copy-of select="@*"/>
+	      <xsl:copy-of select="lex:word//g:v[not(@g:status='implied')]"/>
+	    </xsl:copy>
+	  </xsl:if>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:copy-of select="."/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="lex:text">

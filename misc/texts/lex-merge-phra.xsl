@@ -20,9 +20,9 @@
 	<xsl:variable name="oid" select="@o:id"/>
 	<xsl:if test="string-length($oid)>0">
 	  <xsl:for-each select="$tail">
-<!--	    <xsl:message>looking for <xsl:value-of select="$oid"/></xsl:message> -->
-	    <xsl:if test="key('oid',$oid)/@o:id">
-<!--	      <xsl:message>found <xsl:value-of select="$oid"/> in tail</xsl:message> -->
+	    <!-- <xsl:message>looking for <xsl:value-of select="$oid"/></xsl:message> -->
+	    <xsl:if test="starts-with(key('oid',$oid)/@o:id,'o')">
+	      <!-- <xsl:message>found <xsl:value-of select="$oid"/> in tail</xsl:message> -->
 	      <hr class="lex"/>
 	      <xsl:for-each select="key('oid',$oid)">
 		<xsl:copy-of select="xh:div"/> <!--xh:p is 'References for all phrases'-->
@@ -32,6 +32,7 @@
 	</xsl:if>
       </xsl:copy>
     </xsl:for-each>
+    <!-- <xsl:message>Passed lex-merge-phra phase 1</xsl:message> -->
     <xsl:variable name="head-node" select="/"/>
     <xsl:for-each select="$tail/*/*">
       <xsl:if test="string-length(@o:id)>0">
@@ -39,11 +40,11 @@
 	<xsl:for-each select="$head-node">
 	  <xsl:choose>
 	    <xsl:when test="string-length(key('oid',$tail-node/@o:id))=0">
-<!--	      <xsl:message>dumped tail node <xsl:value-of select="$tail-node/@o:id"/></xsl:message> -->
+	      <!-- <xsl:message>dumped tail node <xsl:value-of select="$tail-node/@o:id"/></xsl:message> -->
 	      <xsl:copy-of select="$tail-node"/>
 	    </xsl:when>
 	    <xsl:otherwise>
-<!--	      <xsl:message>found tail node <xsl:value-of select="$tail-node/@o:id"/> among heads</xsl:message>	       -->
+	      <!-- <xsl:message>found tail node <xsl:value-of select="$tail-node/@o:id"/> among heads</xsl:message> -->
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:for-each>
