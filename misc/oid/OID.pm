@@ -47,32 +47,32 @@ sub oid_init {
 }
 
 sub oid_lookup {
-    my($type,$sign) = @_;
+    my($type,$key) = @_;
     oid_init() unless $inited;
     if ($type eq 'sl') {
-	if ($sign =~ /^\|/) {
-	    if (!$oid{$type,$sign}) {
-		my $res = ORACC::SL::BaseC::c10e_compound($sign);
+	if ($key =~ /^\|/) {
+	    if (!$oid{$type,$key}) {
+		my $res = ORACC::SL::BaseC::c10e_compound($key);
 		if ($res) {
-		    warn "OID.pm: mapping $sign to $res via c10e\n" if $ORACC::OID::verbose;
-		    $sign = $res;
+		    warn "OID.pm: mapping $key to $res via c10e\n" if $ORACC::OID::verbose;
+		    $key = $res;
 		}
 	    }
 	} else {
-	    my $res = ORACC::SL::BaseC::sign_of($sign);
-	    if ($res && $res ne $sign) {
-		warn "OID.pm: mapping $sign to $res via OGSL\n" if $ORACC::OID::verbose;
-		$sign = $res;
+	    my $res = ORACC::SL::BaseC::sign_of($key);
+	    if ($res && $res ne $key) {
+		warn "OID.pm: mapping $key to $res via OGSL\n" if $ORACC::OID::verbose;
+		$key = $res;
 	    }
 	}
     }
-    my $ret = $oid{$type,$sign};
+    my $ret = $oid{$type,$key};
 #    unless ($ret) {
-#	my $sign2 = $sign; $sign2 =~ tr/|//d;
-#	my $s = ORACC::SL::BaseC::tlit_sig('oid',$sign2);
+#	my $key2 = $key; $key2 =~ tr/|//d;
+#	my $s = ORACC::SL::BaseC::tlit_sig('oid',$key2);
 #	if ($s) {
 #	    my $ss = '';
-#	    warn "OID.pm: $sign => sig $s\n" if $ORACC::OID::verbose;	    
+#	    warn "OID.pm: $key => sig $s\n" if $ORACC::OID::verbose;	    
 #	}
 #    }
     $ret;
