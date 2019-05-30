@@ -6,7 +6,7 @@ require Exporter;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
-my @tags = qw/letter entry parts bff bases stems phon root form length norms
+my @tags = qw/letter entry oid parts bff bases stems phon root form length norms
     sense equiv inote prop end isslp bib defn note pl_coord
     pl_id pl_uid was moved project lang name collo proplist prop ok
     allow/;
@@ -36,6 +36,7 @@ my %validators = (
     project=>\&v_project,
     lang=>\&v_lang,
     name=>\&v_name,
+    oid=>\&v_oid,
     was=>\&v_deprecated,
     moved=>\&v_deprecated,
     bff=>\&v_bff,
@@ -1265,6 +1266,13 @@ sub v_stem_sux {
 
 sub v_stem_bad {
     pp_warn("no stem validator for lang=$lang");
+}
+
+sub v_oid {
+    my($tag,$arg) = @_;
+    if ($arg !~ /^[ox]\d+$/) {
+	pp_warn("bad OID $arg");
+    }    
 }
 
 1;

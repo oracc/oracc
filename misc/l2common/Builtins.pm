@@ -94,6 +94,7 @@ my %header = ();
 my $is_compound = 0;
 my $last_char = undef;
 my $mnglang = 'en';
+my $oid = '';
 my %seen = ();
 my $seen_morph2 = '';
 my $status = 0;
@@ -113,7 +114,7 @@ my %poss = (); @poss{@poss} = ();
 my @stems = qw/B rr RR rR Rr rrr RRR rrrr RRRR S₁ S₂ S₃ S₄/;
 my %stems = (); @stems{@stems} = ();
 
-my @tags = qw/entry alias parts allow bases bff collo conts morphs morph2s moved phon prefs root 
+my @tags = qw/entry oid alias parts allow bases bff collo conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
 	      defn note pl_coord pl_id pl_uid/;
 my %tags = (); @tags{@tags} = ();
@@ -297,6 +298,11 @@ acd2xml {
 	    $linetag =~ s/\*$//;
 	    next if exists $header_fields{$currtag}; # ignore header for now
 
+	    if ($currtag eq 'oid') {
+		$curr_id = $cbdid = $oid = $currarg;
+		next;
+	    }
+	    
 	    if ($last_tag eq $currtag) {
 		++$field_index;
 	    } else {
