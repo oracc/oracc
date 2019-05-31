@@ -208,8 +208,14 @@ acd2xml {
 	if (s/^\@entry[*!]*\s+//) {
 	    chomp;
 	    s/\s*$//;
-	    $curr_id = $entries_index{$_} = $eid++;
-	    $entries_index{$curr_id} = $_;
+	    my $cfgw = $_;
+	    my $oid_ln = <IN>; chomp $oid_ln;
+	    if ($oid_ln =~ /^\@oid\s+(\S+)\s*/) {
+		$curr_id = $entries_index{$cfgw} = $1;
+	    } else {
+		$curr_id = $entries_index{$cfgw} = $eid++;
+	    }
+	    $entries_index{$curr_id} = $cfgw;
 	} elsif (s/^\@bff\s+//) {
 	    my $b = parse_bff($curr_id, $_);
 	    push @bffs, $b;
@@ -299,7 +305,9 @@ acd2xml {
 	    next if exists $header_fields{$currtag}; # ignore header for now
 
 	    if ($currtag eq 'oid') {
-		$curr_id = $cbdid = $oid = $currarg;
+		## handled in indexing phase
+		# $curr_id = $cbdid
+		# $curr_id = $oid = $currarg;
 		next;
 	    }
 	    
@@ -690,8 +698,9 @@ acdentry {
 			    if ($oid) {
 				$oidattr = " oid=\"$oid\"";
 			    }
-			} 
-			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
+			}
+			# $cbdid.$eid
+			push @ret, "<entry xml:id=\"$eid\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
 				push @ret, "<alias>$alias</alias>";
@@ -758,7 +767,8 @@ acdentry {
 		if ($$b{$k}) {
 		    my $v = xmlify($$b{$k});
 		    $k = 'xml:id' if $k eq 'bid';
-		    $v = "$cbdid.$v" if $k eq 'ref';
+		    # $cbdid.$v
+		    $v = "$v" if $k eq 'ref';
 		    push @ret, " $k=\"$v\"";
 		}
 	    }
@@ -1398,17 +1408,23 @@ xidify {
 	    $tmp =~ /^<([a-z]+)[^>]*>(.*?)</;
 	    ($tag,$val) = ($1,$2);
 	}
-	$tmp =~ s#(/?>)# xml:id="$cbdid.$eid.$sid"$1#;
-	$xids{"$tag\:$val"} = $last_xid = "$cbdid.$eid.$sid";
+	# $cbdid.$eid
+	$tmp =~ s#(/?>)# xml:id="$eid.$sid"$1#;
+	# $cbdid.$eid
+	$xids{"$tag\:$val"} = $last_xid = "$eid.$sid";
     } elsif ($tmp =~ /^<([a-z]+)[^>]*>(.*?)</) {
 	($tag,$val) = ($1,$2);
-	$tmp =~ s#(/?>)# xml:id="$cbdid.$eid.$sid"$1#;
-	$last_xid = "$cbdid.$eid.$sid";
+	# $cbdid.$eid
+	$tmp =~ s#(/?>)# xml:id="$eid.$sid"$1#;
+	# $cbdid.$eid
+	$last_xid = "$eid.$sid";
     } else {
 	$tmp =~ /^<([a-z]+)/;
 	($tag,$val) = ($1,'');
-	$tmp =~ s#( )# xml:id="$cbdid.$eid.$sid"$1#;
-	$last_xid = "$cbdid.$eid.$sid";
+	# $cbdid.$eid
+	$tmp =~ s#( )# xml:id="$eid.$sid"$1#;
+	# $cbdid.$eid
+	$last_xid = "$eid.$sid";
     }
     ++$sid;
     $tmp;

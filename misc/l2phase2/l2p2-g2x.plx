@@ -73,6 +73,7 @@ my $input = shift @ARGV;
 die "l2p2-g2x.plx: must give name of .sig file on command line\n"
     unless $input;
 
+my $cbd_oid = 0;
 my %form_cofs = ();
 my %m1m2 = ();
 my %norm_form_cofs = ();
@@ -104,6 +105,12 @@ my %cofs = ();
 my %cof_index = ();
 my $curr_cof_form = '';
 my $project = ($proj ? $proj : `oraccopt`);
+
+my $cbd_oid_opt = `oraccopt $project cbd-oid`;
+if ($cbd_oid_opt eq 'yes' || $lang =~ /^sux/) {
+    $cbd_oid = 1;
+}
+
 my %scriptcode = (
     arc=>'950',
     );
@@ -176,16 +183,17 @@ foreach my $lang (sort keys %data) {
 	    	if $sense_freqs{$sense};
 	    push @{$entry_sigrefs{$entry}}, @{$sense_sigrefs{$sense}};
 	}
+	my $oid = '';
+	$oid = oid_lookup('sux', $entry) if $cbd_oid; # $baselang =~ /^sux/
 	my $entry_xid;
 	my $xid = $entry_xid = $entry_ids{$entry};
+	$xid = $oid if $oid;
 	my ($letter) = ($entry =~ /^(.)/);
 	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
 	$entry_xis{$entry_xid} = { %xis_info };
 
-	my $oid = '';
-	$oid = oid_lookup('sux', $entry) if $baselang =~ /^sux/;
 	my $xentry = xmlify($entry);
 	my $p_icount = $entry_freqs{$entry} || -1;
 	print "<entry xml:id=\"$xid\" n=\"$xentry\"";

@@ -6,6 +6,7 @@ use ORACC::XML;
 use ORACC::NS;
 binmode STDOUT, ':raw';
 
+my $CBD = 'http://oracc.org/ns/cbd/1.0';
 my $lang = shift @ARGV;
 my %new_ids = ();
 
@@ -16,7 +17,7 @@ exit 0 unless -s "01bld/$lang/$lang.map";
 system 'cp', "01bld/$lang/$lang.map", "01tmp/$lang-pre-rewrite-ids.map";
 system 'cp', "01bld/$lang/$lang.xml", "01tmp/$lang-pre-rewrite-ids.xml";
 
-load_ids();
+load_ids(); # use Data::Dumper; open(D,'>D'); print D Dumper \%new_ids; close D;
 
 map_ids_in_xml("01bld/$lang/$lang.xml");
 map_ids_in_map("01bld/$lang/$lang.map");
@@ -27,18 +28,30 @@ foreach my $lid (@LID) {
 }
 
 ################################################################
+my $new_id = 0;
+my $oid = '';
 
 sub
 load_ids {
     my @ids = `xsltproc $ENV{'ORACC'}/lib/scripts/l2p2-list-ids.xsl 01bld/$lang/$lang.xml`;
     if ($#ids >= 0) {
 	chomp @ids;
-	my $id_base = $ids[0];
-	$id_base =~ s/\..*$/.x/;
-	my $new_id = 0;
 	foreach (@ids) {
-	    $new_ids{$_} = sprintf("$id_base%07d",$new_id++)
-		unless defined $new_ids{$_};
+	    if (/^[ox]\d+$/) { # it's an OID
+		$oid = $_;
+		$new_id = 0;
+		$new_ids{$_} = $_;
+	    } else {
+		if ($oid) {
+		    $new_ids{$_} = sprintf("$oid.%d",$new_id++)
+			unless defined $new_ids{$_};
+		} else {
+		    my $id_base = $_;
+		    $id_base =~ s/\..*$/.x/;
+		    $new_ids{$_} = sprintf("$id_base%07d",$new_id++)
+			unless defined $new_ids{$_};
+		}
+	    }
 	}
     }
 }
@@ -47,12 +60,18 @@ sub
 map_ids {
     my $n = shift;
     my $xid = xid($n);
+    my $cid = $n->getAttributeNS($CBD,'id');
     my $ref = $n->getAttribute('ref');
     my $eref = $n->getAttribute('eref');
     my $morph2 = $n->getAttribute('morph2');
     if ($xid) {
 	my $new_id = $new_ids{$xid};
 	$n->setAttributeNS($XML,'id',$new_id) if $new_id;
+    }
+    if ($cid) {
+	my $new_id = $new_ids{$cid} || '';
+#	warn "found cid=$cid => $new_id\n";
+	$n->setAttributeNS($CBD,'id',$new_id) if $new_id;
     }
     if ($ref) {
 	if ($ref !~ /^\#/) { # FIXME: xrefs to external glo
