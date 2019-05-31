@@ -27,7 +27,10 @@ AM_LDFLAGS=-L/opt/local/lib
 sl-index.c: sl-index.c.in
 	$(ORACCIFY) sl-index.c.in
 
-bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
+bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index v2
+
+v2_SOURCES=v2.c
+v2_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 sl_SOURCES=sl.c
 sl_LDADD=@top_srcdir@/c/lib/liboracc.la

@@ -5,15 +5,6 @@
 
 #undef POOL_DEBUG
 
-struct pool_block
-{
-  unsigned char *mem;
-  unsigned char *top;
-  unsigned char *last_begin;
-  unsigned char *avail;
-  struct pool_block *next;
-};
-
 static struct pool_block *new_block(struct npool *p);
 
 struct npool *
@@ -54,7 +45,7 @@ new_block(struct npool *p)
       (void)fputs("out of core",stderr);
       exit(2);
     }
-  new->avail = new->mem = calloc(1,POOL_BLOCK_SIZE);
+  new->used = new->mem = calloc(1,POOL_BLOCK_SIZE);
   if (!new->mem)
     {
       (void)fputs("out of core",stderr);
@@ -76,9 +67,9 @@ npool_copy(register const unsigned char *s, struct npool *p)
   if (!s)
     return NULL;
   len = strlen((char *)s) + 1;
-  if ((p->rover->avail+len) >= p->rover->top)
+  if ((p->rover->used+len) >= p->rover->top)
     p->rover = new_block(p);
-  p->rover->last_begin = memcpy(p->rover->avail, s, len);
-  p->rover->avail += len;
+  p->rover->last_begin = memcpy(p->rover->used, s, len);
+  p->rover->used += len;
   return p->rover->last_begin;
 }

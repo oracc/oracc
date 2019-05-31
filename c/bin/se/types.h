@@ -20,6 +20,12 @@ typedef signed char    One_byte_s;
 #define BRANCH_ID_MAX	      	TWO_BYTES_s_MAX
 #define FOUR_BYTES_MAX		USHORT_MAX
 
+#if 0
+#define V2_BIT        	(1<<30)
+#define setV2(x)      	((x)|=V2_BIT)
+#define isV2(t)       	((t)&V2_BIT)
+#endif
+
 #define PQ_MAX 		0x00200000
 #define PQ_BIT 		(1<<31)
 #define setQ(x)		((x)|=PQ_BIT)

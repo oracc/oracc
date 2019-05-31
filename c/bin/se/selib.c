@@ -78,6 +78,10 @@ wid2loc8(const char *id, const char *lang, struct location8 *l8p)
       if (lang)
 	l8p->text_id |= lang2mask(lang);
     }
+  else if ('o' == *id || 'x' == *id)
+    {
+      /*      l8p->text_id = vid2_map_id(id); */
+    }
   else
     {
       char *x = strchr(id,'.');
