@@ -23,7 +23,7 @@ setxtx_SOURCES=setxtx.c \
 	grapheme.c node.c parallel.c statnames.c
 
 setxtx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
-	../propmask.o ../vid.o ../est.o ../keymangler.o ../signmap.o \
+	../propmask.o ../vid.o ../est.o ../keymangler.o ../signmap.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la

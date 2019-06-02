@@ -273,6 +273,9 @@ main(int argc, char **argv)
   f_mangletab = create_mangle_tab(curr_project,idxlang);
 
   progress("indexing %s ...\n", index_dir);
+  se_v2(curr_project);
+  if (v2)
+    v2s_init();
   indexed_mm = init_mm(sizeof (struct indexed), 256);
   parallels_mm = init_mm(sizeof (struct parallel), 256);
   grapheme_mm = init_mm(sizeof (struct grapheme), 256);
@@ -319,8 +322,10 @@ main(int argc, char **argv)
       runexpat(i_list, fnlist, startElement, endElement);
 #endif
     }
-
+  
   /*  progress (NULL); */
+
+  v2s_save(v2s_file(index_dir));
   xfclose(idlist, f_idlist);
   free(idlist);
   idlist = NULL;

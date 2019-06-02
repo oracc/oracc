@@ -26,7 +26,7 @@ secbdx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
 	../setxtx/grapheme.o ../setxtx/node.o ../setxtx/parallel.o \
 	../setxtx/indexed.o ../setxtx/intercha.o \
 	../setxtx/option.o ../setxtx/property.o ../est.o \
-	../setxtx/branch.o ../rulestab.o ../keymangler.o \
+	../setxtx/branch.o ../rulestab.o ../keymangler.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la

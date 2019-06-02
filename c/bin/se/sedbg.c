@@ -46,6 +46,8 @@ enum What_to_do
 
 int l2 = 1;
 
+int verbose = 0;
+
 enum What_to_do what_to_do = WTD_INDEX;
 Boolean brief = FALSE, freq = FALSE;
 int xml_output = FALSE;

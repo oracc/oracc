@@ -24,7 +24,7 @@ selemx_SOURCES=selemx.c \
 	grapheme.c node.c parallel.c statnames.c
 
 selemx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
-	../propmask.o ../vid.o ../keymangler.o ../est.o ../signmap.o \
+	../propmask.o ../vid.o ../keymangler.o ../est.o ../signmap.o ../v2.o \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/l2/libl2.la \

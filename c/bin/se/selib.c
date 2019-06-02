@@ -4,10 +4,50 @@
 #include <ctype128.h>
 #include <psd_base.h>
 #include <fname.h>
+#include <xpd2.h>
+#include <npool.h>
 #include "types.h"
 #include "selib.h"
 
+struct xpd *xp = NULL;
+struct npool *sepool;
+
+int v2;
+
 extern struct lm_tab *langmask(register const char *str, register unsigned int len);
+
+static void
+se_xpd(const char *proj)
+{
+  if (!proj)
+    {
+      if (sepool)
+	npool_term(sepool);
+      if (xp)
+	xpd_term(xp);
+      sepool = NULL;
+      xp = NULL;
+      return;
+    }
+  else if (!sepool)
+    sepool = npool_init();
+  if (!xp)
+    xp = xpd_init(proj, sepool);
+}
+
+void
+se_v2(const char *proj)
+{
+  const char *v2_opt = NULL;
+  v2 = 0;
+  se_xpd(proj);
+  if (xp)
+    {
+      v2_opt = xpd_option(xp, "v2");
+      if (v2_opt && !strcmp(v2_opt, "yes"))
+	v2 = 1;
+    }
+}
 
 const char *
 attr_by_name(const char **atts,const char *name)
@@ -62,36 +102,41 @@ lang2mask(const char *l)
 void
 wid2loc8(const char *id, const char *lang, struct location8 *l8p)
 {
-  if (isupper(*id) || 'v' == *id)
+  if (v2)
     {
-      l8p->text_id = atoi(id+1);
-      if (*id == 'Q')
-	setQ(l8p->text_id);
-      else if (*id == 'X')
-	l8p->text_id = XIFY_ID(l8p->text_id);
-      id += 8;
-      l8p->unit_id = atoi(id);
-      while (*id && '.' != *id)
-	++id;
-      ++id;
-      l8p->word_id = atoi(id);
+      l8p->text_id = v2s_add(id);
       if (lang)
 	l8p->text_id |= lang2mask(lang);
     }
-  else if ('o' == *id || 'x' == *id)
-    {
-      /*      l8p->text_id = vid2_map_id(id); */
-    }
   else
     {
-      char *x = strchr(id,'.');
-      if (x)
+      if (isupper(*id) || 'v' == *id)
 	{
-	  l8p->text_id = atoi(x+2);
-	  x += 2;
+	  l8p->text_id = atoi(id+1);
+	  if (*id == 'Q')
+	    setQ(l8p->text_id);
+	  else if (*id == 'X')
+	    l8p->text_id = XIFY_ID(l8p->text_id);
+	  id += 8;
+	  l8p->unit_id = atoi(id);
+	  while (*id && '.' != *id)
+	    ++id;
+	  ++id;
+	  l8p->word_id = atoi(id);
+	  if (lang)
+	    l8p->text_id |= lang2mask(lang);
 	}
       else
-	fprintf(stderr,"wid2loc8: %s: malformed ID\n", id);
+	{
+	  char *x = strchr(id,'.');
+	  if (x)
+	    {
+	      l8p->text_id = atoi(x+2);
+	      x += 2;
+	    }
+	  else
+	    fprintf(stderr,"wid2loc8: %s: malformed ID\n", id);
+	}
     }
 }
 

@@ -23,7 +23,7 @@ bin_PROGRAMS=setrax
 setrax_SOURCES=setrax.c
 
 setrax_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
-	../vid.o ../est.o \
+	../vid.o ../est.o ../v2.o \
 	../setxtx/grapheme.o ../setxtx/node.o ../setxtx/parallel.o \
 	../setxtx/indexed.o ../setxtx/intercha.o \
 	../setxtx/option.o ../setxtx/property.o \

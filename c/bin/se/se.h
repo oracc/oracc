@@ -95,6 +95,7 @@ extern struct Datum *merge_data_pair (struct Datum *d1, struct Datum *d2);
 extern void binop_init(void);
 extern void binop24_init(void);
 extern void se_vids_init(const char *index);
+extern void se_v2(const char *proj);
 extern const char ** xmldir_toks(const char *xmldir);
 extern void xmldir_results(const char *xmldir, int count);
 

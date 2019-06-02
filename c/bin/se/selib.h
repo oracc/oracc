@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "types.h"
 #include "ce.h"
+#include "v2.h"
 
 struct est;
 
@@ -23,7 +24,8 @@ struct est;
 
 extern const char *curr_se_lang;
 
-int use_unicode;
+extern int use_unicode;
+extern int v2;
 
 const char *attr_by_name(const char **atts,const char *name);
 extern void ce_cfg(const char *project, const char *index,const char *ce_tag, 

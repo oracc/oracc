@@ -16,7 +16,7 @@ bin_PROGRAMS=segdfx
 
 segdfx_SOURCES=segdfx.c
 segdfx_LDADD = ../selib.o ../langmask.o \
-	../rulestab.o ../keymangler.o ../vid.o ../est.o \
+	../rulestab.o ../keymangler.o ../vid.o ../est.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la

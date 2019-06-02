@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "npool.h"
+#include "selib.h"
+#include "xsystem.h"
 #include "v2.h"
 
 static struct npool *v2_pool;
@@ -10,6 +12,14 @@ static int v2h = 0;
 static int v2l = 0;
 static int v2n = 0;
 static unsigned char *v2s = NULL;
+
+int
+v2_ids(const char *proj, const char *indx)
+{
+  const char *v2ids = se_file(proj,indx,"v2.ids");
+  fprintf (stderr, "checking %s\n", v2ids);
+  return !xaccess(v2ids, R_OK, 0);
+}
 
 void
 v2s_init()
@@ -94,16 +104,19 @@ v2s_file(const char *dir)
 }
 
 int
-v2s_save(int blocksize, int fh)
+v2s_save(int fh)
 {
   struct pool_block *pbp;
   const char *empty = NULL;
   char lbuf[5];
   int lbuf_len = 0;
-  
+  int blocksize = 0;
+
   if (!v2_pool)
     return -1;
-  
+
+  blocksize = v2s_max();
+
   if (blocksize > 1 && blocksize < 1024)
     {
       empty = calloc(1, blocksize);
@@ -145,12 +158,12 @@ v2g_init(const char *dir)
   v2s = malloc(v2l);
 }
 
-const unsigned char *
-v2g_get(int n)
+const char *
+v2g_get(unsigned int n)
 {
   lseek(v2h, n * v2l, SEEK_SET);
   read(v2h, v2s, v2l);
-  return v2s;
+  return (const char *)v2s;
 }
 
 void
@@ -160,21 +173,21 @@ v2g_term()
   v2g_file(NULL);
 }
 
+#ifdef MAIN
+
 int
 main(int argc, const char **argv)
 {
   int len = 0;
   int n = 2;
   int id = 0;
-  
+
   v2s_init();
   id = v2s_add((const unsigned char *)"one"); printf("added one with ID = %d\n", id);
   id = v2s_add((const unsigned char *)"two"); printf("added two with ID = %d\n", id);
-  id = v2s_add((const unsigned char *)"three"); printf("added three with ID = %d\n", id);
-  len = v2s_max();
-  
+  id = v2s_add((const unsigned char *)"three"); printf("added three with ID = %d\n", id);  
   printf("len = %d\n", len);
-  v2s_save(len, v2s_file("."));
+  v2s_save(v2s_file("."));
   v2s_file(NULL);
   v2s_term();
 
@@ -184,3 +197,5 @@ main(int argc, const char **argv)
 
   return 0;
 }
+
+#endif

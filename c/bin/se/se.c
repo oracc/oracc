@@ -29,6 +29,7 @@ int verbose = 0;
 const char *xmldir = NULL;
 const char *errfile = NULL;
 const char *outfile = NULL;
+const char *arg_index = NULL;
 const char *project = NULL;
 const char *return_index = NULL;
 FILE*out_f = NULL, *f_log, *f_err;
@@ -382,6 +383,100 @@ vid_show_results(struct Datum *dp)
     }
 }
 
+static void
+v2_show_results(struct Datum *dp)
+{
+  int i;
+  switch (res_gran)
+    {
+    case g_not_set:
+    case g_text:
+    case g_record:
+      for (i = 0; i < dp->count; ++i)
+	{
+	  struct location8 *l8p = dp->l.l8p[i];
+	  fprintf(out_f, "%s\n", 
+		  v2g_get(idVal(l8p->text_id)));
+	}
+      break;
+    case g_field:
+      for (i = 0; i < dp->count; ++i)
+	{
+	  struct location8 *l8p = dp->l.l8p[i];
+	  fprintf(out_f, "%s.%d\n",
+		  v2g_get(idVal(l8p->text_id)),
+		  l8p->unit_id);
+	}
+      break;
+    case g_word:
+    case g_grapheme:
+      if (dp->data_size == sizeof(struct location24))
+	{
+	  for (i = 0; i < dp->count; ++i)
+	    {
+	      struct location8 *l8p = dp->l.l8p[i];
+	      const char *tra = "";
+	      
+	      if (return_index && !strcmp(return_index,"tra"))
+		tra = set_tra_suffix(dp->l.l16p[i]->branch_id);
+	      
+	      fprintf(out_f, "%s%s.%d.%d", 
+		      v2g_get(idVal(l8p->text_id)), 
+		      tra,
+		      l8p->unit_id,
+		      l8p->word_id);
+	      while (more_in_unit24(l8p, dp->l.l8p[i+1]))
+		{
+		  if (l8p->word_id != dp->l.l8p[i+1]->word_id)
+		    {
+		      /* FIXME: both the fprinted l8p[i]
+			 here were l8p[++i] which must be
+			 wrong--but with new wmapper this 
+			 code is going to go away anyway */			
+		      ++i;
+		      fprintf(out_f, ",%d.%d",
+			      dp->l.l8p[i]->unit_id,
+			      dp->l.l8p[i]->word_id);
+		      l8p = dp->l.l8p[i];
+		    }
+		  else
+		    ++i;
+		}
+	      fputc('\n',out_f);
+	    }
+	}
+      else
+	{
+	  for (i = 0; i < dp->count; ++i)
+	    {
+	      struct location8 *l8p = dp->l.l8p[i];
+	      const char *tra = "";
+	      
+	      if (return_index && !strcmp(return_index,"tra"))
+		tra = set_tra_suffix(dp->l.l16p[i]->branch_id);
+	      
+	      fprintf(out_f, "%s%s.%d.%d", 
+		      v2g_get(idVal(l8p->text_id)), 
+		      tra,
+		      l8p->unit_id,
+		      l8p->word_id);
+	      while (more_in_unit(l8p, dp->l.l8p[i+1]))
+		{
+		  if (l8p->word_id != dp->l.l8p[i+1]->word_id)
+		    {
+		      fprintf(out_f, ",%d",dp->l.l8p[++i]->word_id);
+		      l8p = dp->l.l8p[i];
+		    }
+		  else
+		    ++i;
+		}
+	      fputc('\n',out_f);
+	    }
+	}
+      break;
+    }
+}
+
 int
 main(int argc, char * const*argv)
 {
@@ -402,7 +497,7 @@ main(int argc, char * const*argv)
     f_err = stderr;
   exit_on_error = TRUE;
   setlocale(LC_ALL,ORACC_LOCALE);
-  options(argc, argv, "28acdg:j:o:p:P:stuvx:");
+  options(argc, argv, "28acdg:i:j:o:p:P:stuvx:");
   if (!out_f)
     out_f = stdout;
 
@@ -508,15 +603,26 @@ main(int argc, char * const*argv)
 	      return_index = &index[best_findset][1];
 	      put_results(&results[best_findset]);
 	    }
-	  else
+	  /* else */
 	    
 	  fclose(anyout);
+	}
+      else if (project && arg_index)
+	{
+	  const char **toklist = NULL;
+	  toklist = anytoks(project, arg_index,
+			    xmldir ? xmldir_toks(xmldir) : (const char **)(argv+optind));
+	  toks = tokenize(toklist,&ntoks);
+	  run_search(toks);
+	  put_results(&result);
+	  fclose(out_f);	  
 	}
       else
 	{
 	  toks = tokenize(xmldir ? xmldir_toks(xmldir) : (const char **)(argv+optind),&ntoks);
 	  run_search(toks);
 	  put_results(&result);
+	  fclose(out_f);
 	}
     }
 
@@ -584,16 +690,25 @@ put_results(struct Datum *res)
     {
       if (xmldir)
 	xmldir_results(xmldir,res->count);
-      if ('v' == id_prefix(res->l.l8p[0]->text_id))
+      if (v2_ids(se_curr_project, return_index))
 	{
-	  if (!strcmp(return_index, "cat"))
-	    vid_display_proj = vid_proj_xmd;
-	  else
-	    vid_display_proj = vid_proj_xtf;
-	  vid_show_results(res);
+	  v2g_init(se_dir(se_curr_project, return_index));
+	  v2_show_results(res);
+	  v2g_term();
 	}
       else
-	show_results(res);
+	{
+	  if ('v' == id_prefix(res->l.l8p[0]->text_id))
+	    {
+	      if (!strcmp(return_index, "cat"))
+		vid_display_proj = vid_proj_xmd;
+	      else
+		vid_display_proj = vid_proj_xtf;
+	      vid_show_results(res);
+	    }
+	  else
+	    show_results(res);
+	}
     }
   else if (xmldir)
     xmldir_results(xmldir,res->count);
@@ -722,6 +837,9 @@ opts(int argc, char *arg)
       break;
     case 'e':
       errfile = arg;
+      break;
+    case 'i':
+      arg_index = arg;
       break;
     case 'j':
       project = arg;
