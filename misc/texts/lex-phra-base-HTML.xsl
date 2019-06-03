@@ -57,19 +57,42 @@
 </xsl:template>
 
 <xsl:template match="lex:group[@type='refs']">
-  <xsl:variable name="wrefs">
-    <xsl:for-each select="lex:data//*[@wref]">
-      <xsl:value-of select="@wref"/>
-      <xsl:if test="not(position()=last())">
-	<xsl:text>+</xsl:text>
-      </xsl:if>
-    </xsl:for-each>
-  </xsl:variable>
-  <xsl:if test="string-length($wrefs)=0">
+  <xsl:variable name="word" select="lex:data/*/lex:word/@wref[1]"/>
+  <xsl:if test="string-length($word)=0">
     <xsl:message><xsl:value-of select="concat(*[1]/@id_text,':',*[1]/@label)"/>: lex:data/@sref is empty</xsl:message>
   </xsl:if>
+  <xsl:variable name="text">
+    <xsl:choose>
+      <xsl:when test="contains($word,'.')">
+	<xsl:value-of select="substring-before($word,'.')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$word"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="line-dots">
+    <xsl:choose>
+      <xsl:when test="contains($word,'.')">
+	<xsl:value-of select="substring-after($word,'.')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$word"/> <!-- shouldn't be able to happen -->
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="line">
+    <xsl:choose>
+      <xsl:when test="contains($line-dots,'.')">
+	<xsl:value-of select="substring-before($line-dots,'.')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="$line-dots"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="proj" select="lex:data[1]/@project"/>
-  <a href="http://oracc.org/{$proj}/{$wrefs}" title="{$proj} on Oracc">
+  <a href="http://oracc.org/{$proj}/{$text}.{$line}" title="{$proj} on Oracc">
     <xsl:value-of select="lex:data[1]/@n"/>
     <xsl:text> </xsl:text>
     <xsl:for-each select="lex:data/@label">

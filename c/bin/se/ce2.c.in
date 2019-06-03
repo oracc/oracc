@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/unistd.h>
 #include <ctype.h>
 #include <psd_base.h>
@@ -105,7 +106,7 @@ ce_config()
 	}
     }
   cfg.tag = strchr(p,' ');
-  if (cfg.tag && cfg.f >= 0 && cfg.f < ce_bad)
+  if (cfg.tag && cfg.f < ce_bad)
     ++cfg.tag;
   else
     {
@@ -464,7 +465,7 @@ sH(void *userData, const char *name, const char **atts)
       if (id && (idcountp = hash_find(ht,(const unsigned char*)id)))
 	{
 	  unsigned char *h = hash_find(xtf_headings, (unsigned char *)id);
-	  if (idps[next_idp] && strcmp(idps[next_idp],id))
+	  if (cfg.f != ce_summary && idps[next_idp] && strcmp(idps[next_idp],id))
 	    {
 	      do
 		fputs("<ce:data/>",stdout);
@@ -585,11 +586,11 @@ main(int argc, char * const*argv)
       static char fn[_MAX_PATH];
       if (lang)
 	{
-	  sprintf(fn,"@@ORACC@@/pub/%s/%s/%s/summaries.html",
+	  sprintf(fn,"@@ORACC@@/www/%s/%s/%s/summaries.html",
 		  project,ce_index,lang);
 	}
       else
-	sprintf(fn,"@@ORACC@@/pub/%s/%s/summaries.html",project,ce_index);
+	sprintf(fn,"@@ORACC@@/www/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }
@@ -621,6 +622,7 @@ main(int argc, char * const*argv)
 	xmd_print_labels();
       if (gdf_xml)
 	{
+	  extern void gdfprinter(void);
 	  runexpat(i_list, list2charstarstar(files), gdf_sH, gdf_eH);
 	  gdfprinter();
 	}

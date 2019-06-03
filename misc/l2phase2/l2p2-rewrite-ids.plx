@@ -22,10 +22,10 @@ load_ids(); # use Data::Dumper; open(D,'>D'); print D Dumper \%new_ids; close D;
 map_ids_in_xml("01bld/$lang/$lang.xml");
 map_ids_in_map("01bld/$lang/$lang.map");
 
-my @LID = eval("<01bld/$lang/L*.lst>");
-foreach my $lid (@LID) {
-    map_ids_in_lst($lid);
-}
+# my @LID = eval("<01bld/$lang/L*.lst>");
+# foreach my $lid (@LID) {
+#     map_ids_in_lst($lid);
+# }
 
 ################################################################
 my $new_id = 0;

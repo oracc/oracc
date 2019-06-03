@@ -79,7 +79,7 @@
   <xsl:copy>
     <xsl:copy-of select="@*"/>
     <xsl:copy-of select="*[1]"/>
-    <xsl:call-template name="do-children" select="*[position()>1]">
+    <xsl:call-template name="do-children"> <!-- select="*[position()>1]" -->
       <xsl:with-param name="doc" select="/*"/>
     </xsl:call-template>  
   </xsl:copy>

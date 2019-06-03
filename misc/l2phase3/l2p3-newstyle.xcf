@@ -66,7 +66,7 @@
   </set>
 
   <set var="process">
-    <key k="input"   to="01bld/$cbdlang/subpage-form.xml"/>
+    <key k="input"    to="01bld/$cbdlang/subpage-form.xml"/>
     <key k="action"   to="$scripts/g2-split-html.xsl"/>
   </set>
 
@@ -77,7 +77,18 @@
   </set>
 
   <set var="process">
-    <key k="input"   to="01bld/$cbdlang/subpage-norm.xml"/>
+    <key k="input"    to="01bld/$cbdlang/subpage-norm.xml"/>
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-morphs-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-morph.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"    to="01bld/$cbdlang/subpage-morph.xml"/>
     <key k="action"   to="$scripts/g2-split-html.xsl"/>
   </set>
 

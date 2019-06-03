@@ -189,7 +189,7 @@ foreach my $lang (sort keys %data) {
 	my $xid = $entry_xid = $entry_ids{$entry};
 	$xid = $oid if $oid;
 	my ($letter) = ($entry =~ /^(.)/);
-	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
+#	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
 	
 	$entry_xis{$entry_xid} = { %xis_info };
@@ -357,23 +357,23 @@ unless ($nox) {
     close(M);
 }
 
-unless ($nox) {
-    my $lid = 'L000';
-    my @l = ();
-    foreach my $l (sort keys %letter_ids) {
-	open(L,">$dirname$lid.lst");
-	foreach my $id (@{$letter_ids{$l}}) {
-	    print L "$id\n";
-	}
-	close(L);
-	push @l, [ $l, $lid++ ];
-    }
-    open(L,">${dirname}letter_ids.tab");
-    foreach my $l (@l) {
-	print L "$$l[0]\t$$l[1]\t";
-    }
-    close(L);
-}
+# unless ($nox) {
+#     my $lid = 'L000';
+#     my @l = ();
+#     foreach my $l (sort keys %letter_ids) {
+# 	open(L,">$dirname$lid.lst");
+# 	foreach my $id (@{$letter_ids{$l}}) {
+# 	    print L "$id\n";
+# 	}
+# 	close(L);
+# 	push @l, [ $l, $lid++ ];
+#     }
+#     open(L,">${dirname}letter_ids.tab");
+#     foreach my $l (@l) {
+# 	print L "$$l[0]\t$$l[1]\t";
+#     }
+#     close(L);
+# }
 
 ###################################################################
 

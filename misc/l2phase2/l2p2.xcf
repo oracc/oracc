@@ -61,6 +61,11 @@
   </set>
 
   <set var="process">
+    <key k="action" to="$oracc/bin/l2p2-letter-lists.plx"/>
+    <key k="args"   to="$cbdlang"/>
+  </set>
+
+  <set var="process">
     <key k="action" to="input"/>
     <key k="input" to="01bld/$cbdlang/$cbdlang.xml"/>
   </set>

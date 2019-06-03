@@ -98,13 +98,13 @@
    indent="no"/>
 
 <xsl:variable name="lex-provides-base">
-  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-base)>0">
+  <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-base)>0">
     <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-phra-base.xml'"/>
   </xsl:if>
 </xsl:variable>
 
 <xsl:variable name="lex-provides-word">
-  <xsl:if test="starts-with(/*/@xml:lang,'sux') and string-length($cbd-word-base)>0">
+  <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-phra)>0">
     <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-word-phra.xml'"/>
   </xsl:if>
 </xsl:variable>
@@ -312,32 +312,32 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="cont-nodes" select="cbd:conts/cbd:cont"/>
   <xsl:for-each select="document($lex-provides-base)">
     <xsl:choose>
-	<xsl:when test="string-length(key('oid',$n)/@id)>0">
-	  <xsl:variable name="src" select="concat('../../../dcclt/cbd/sux/pb/',$n,'.html')"/>
+      <xsl:when test="string-length(key('oid',$n)/@id)>0">
+	<xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/pb/',$n,'.html')"/>
+	<h2 class="lex">Pronunciation Data</h2>
+
+	<xsl:call-template name="pd-bases-conts">
+	  <xsl:with-param name="b" select="$base-nodes"/>
+	  <xsl:with-param name="c" select="$cont-nodes"/>
+	</xsl:call-template>
+
+	<div class="lex attrs">
+	  <h3>Lexical Attestations:</h3>
+	  <xsl:element name="xi:include">
+	    <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+	  </xsl:element>
+	</div>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:if test="count($base-nodes)>0 or count($cont-nodes)>0">
 	  <h2 class="lex">Pronunciation Data</h2>
 
 	  <xsl:call-template name="pd-bases-conts">
 	    <xsl:with-param name="b" select="$base-nodes"/>
 	    <xsl:with-param name="c" select="$cont-nodes"/>
 	  </xsl:call-template>
-
-	  <div class="lex attrs">
-	    <h3>Lexical Attestations:</h3>
-	    <xsl:element name="xi:include">
-	      <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
-	    </xsl:element>
-	  </div>
-	  </xsl:when>
-	<xsl:otherwise>
-	  <xsl:if test="count($base-nodes)>0 or count($cont-nodes)>0">
-	    <h2 class="lex">Pronunciation Data</h2>
-
-	    <xsl:call-template name="pd-bases-conts">
-	      <xsl:with-param name="b" select="$base-nodes"/>
-	      <xsl:with-param name="c" select="$cont-nodes"/>
-	    </xsl:call-template>
-	  </xsl:if>
-	</xsl:otherwise>
+	</xsl:if>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
 </xsl:template>
@@ -376,14 +376,11 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
   <xsl:variable name="n" select="@oid"/>
   <xsl:for-each select="document($lex-provides-word)">
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
-      <xsl:variable name="src" select="concat('../../../dcclt/cbd/sux/wp/',$n,'.html')"/>
-<!--      <xsl:variable name="src" select="concat('/dcclt/cbd/sux/wp/',$n,'.html')"/> -->
+      <xsl:variable name="src" select="concat('@@ORACC_BUILDS@@/www/dcclt/cbd/sux/wp/',$n,'.html')"/>
       <h2 class="lex">Phrase Data</h2>
       <xsl:element name="xi:include">
 	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
       </xsl:element>
-<!--      <iframe class="lex" src="{$src}"/> -->
-<!--      <xsl:message>iframe src=<xsl:value-of select="$src"/></xsl:message> -->
     </xsl:if>
   </xsl:for-each>
 </xsl:template>

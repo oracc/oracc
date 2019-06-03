@@ -1,7 +1,7 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = l2p2-g2c.plx l2p2-langs.plx l2p2-g2x.plx l2p2-rewrite-ids.plx l2p2-sig-g2a.plx \
-	l2p2-sig-slicer.plx l2p2-union.plx l2p2.sh l2p2-letters.plx
+	l2p2-sig-slicer.plx l2p2-union.plx l2p2.sh l2p2-letters.plx l2p2-letter-lists.plx
 scriptdata_DATA = cbd-super-periods.xsl cbd-usage-ids.xsl g2-articles.xsl g2-base-s.xsl \
 	g2-primary-base.xsl g2-see-cpds.xsl g2-summaries.xsl l2p2-list-ids.xsl g2-periods.xsl \
 	l2p2-xis-merge.xsl g2-toc-banner.xsl xis2tis.xsl l2p2-oxtab.xsl
