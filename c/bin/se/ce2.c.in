@@ -372,12 +372,17 @@ static void
 ce_data(const char *xid)
 {
   char *dot = strchr(xid,'.');
-  char text_id[32];
+  char text_id[128];
 
   if (dot)
     {
       strncpy(text_id, xid, dot-xid);
       text_id[dot-xid] = '\0';
+    }
+  else
+    {
+      strcpy(text_id, xid);
+      xid = "";
     }
   
   fprintf(stdout, "<ce:data project=\"%s\" text-id=\"%s\" line-id=\"%s\">",
@@ -580,11 +585,11 @@ main(int argc, char * const*argv)
       static char fn[_MAX_PATH];
       if (lang)
 	{
-	  sprintf(fn,"@@ORACC@@/www/%s/%s/%s/summaries.html",
+	  sprintf(fn,"@@ORACC@@/pub/%s/%s/%s/summaries.html",
 		  project,ce_index,lang);
 	}
       else
-	sprintf(fn,"@@ORACC@@/www/%s/%s/summaries.html",project,ce_index);
+	sprintf(fn,"@@ORACC@@/pub/%s/%s/summaries.html",project,ce_index);
       list_add(files,fn);
       idattr = "id";
     }

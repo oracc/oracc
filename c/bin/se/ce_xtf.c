@@ -533,7 +533,7 @@ ce_data(const char *xid)
 {
   int linenum = 0;
   char *dot = strchr(xid,'.');
-  char cid[32];
+  char cid[128];
 
   if (dot)
     {
@@ -549,6 +549,10 @@ ce_data(const char *xid)
 	{
 	  *cid = '\0';
 	}
+    }
+  else
+    {
+      *cid = '\0';      
     }
   
   fprintf(ce_out_fp, "<ce:data project=\"%s\" text-id=\"%s\" line-id=\"%s\" context-id=\"%s\"%s><ce:%s>", 

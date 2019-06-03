@@ -2,12 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "hash.h"
 #include "npool.h"
 #include "selib.h"
 #include "xsystem.h"
 #include "v2.h"
 
 static struct npool *v2_pool;
+static Hash_table *v2_hash;
 static int v2h = 0;
 static int v2l = 0;
 static int v2n = 0;
@@ -25,6 +27,7 @@ void
 v2s_init()
 {
   v2_pool = npool_init();
+  v2_hash = hash_create(1);
   v2n = 0;
 }
 
@@ -32,16 +35,19 @@ void
 v2s_term()
 {
   npool_term(v2_pool);
+  hash_free(v2_hash, NULL);
   v2n = 0;
 }
 
 int
 v2s_add(const unsigned char *s)
 {
-  npool_copy(s,v2_pool);
-  return ++v2n;
+  void *vp = hash_find(v2_hash, s);
+  if (vp)
+    return (int)vp;
+  hash_add(v2_hash, npool_copy(s,v2_pool), (void*)(uintptr_t)++v2n);
+  return v2n;
 }
-
 
 int
 v2s_max()
