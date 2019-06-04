@@ -7,7 +7,7 @@ void
 oid(const char *e2)
 {
   print_hdr();
-  execl("/usr/bin/perl", "perl", "/Users/stinney/orc/bin/oid-resolver.plx",
+  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/oid-resolver.plx",
 	project,
 	e2,
 	NULL);

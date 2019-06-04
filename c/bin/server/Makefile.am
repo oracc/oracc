@@ -23,6 +23,9 @@ oracc_server_LDADD=ccgi/libccgi.la -lexpat
 ccgi/libccgi.la:
 	(cd ccgi ; make)
 
+oid.c: oid.c.in
+	$(ORACCIFY) oid.c.in
+
 or_builtins.c: or_builtins.c.in
 	$(ORACCIFY) or_builtins.c.in
 
