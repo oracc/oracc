@@ -37,7 +37,7 @@ $cuneiform = `@@ORACC@@/bin/ox -w -a /tmp/$$.cun | xsltproc @@ORACC@@/lib/script
     if ($cuneiform) {
 	1 while $cuneiform =~ s/\x{2591}\s+\x{2591}/\x{2591}\x{2591}/;
     } else {
-	$cuneiform = "Sorry, I didn't understand your transliteration ($atf_input)" 
+	$cuneiform = "Sorry, I didn't understand your transliteration, please try again.";
     }
     unlink "/tmp/$$.cun";
 } else {

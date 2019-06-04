@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "ctype128.h"
 #include <locale.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -170,6 +171,17 @@ main(int argc, char *argv[])
 	cat_index_html("/");
     }
 
+  if ((*elements[0] == 'o' || *elements[0] == 'x')
+      && isdigit(elements[0][1]))
+    {
+      extern void oid(const char*);
+      int d = 2;
+      while (elements[0][d] && isdigit(elements[0][d]))
+	++d;
+      if (!elements[0][d])
+	oid(elements[0]);
+    }
+  
   if (!project || !strcmp(elements[0], "or"))
     or_builtins();
 
