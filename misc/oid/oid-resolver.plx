@@ -11,7 +11,7 @@ if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
 	    my $o = `grep '^$oid' $idx`;
 	    if ($o) {
 		chomp $o;
-		$o =~ s/^.*?\t//;
+		$o =~ s#^.*?\t#$ENV{'ORACC_BUILDS'}/#;
 		system 'xmllint', '-xinclude', $o;
 	    } else {
 		oid_404("OID $oid not found in project $prj");
