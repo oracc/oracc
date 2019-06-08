@@ -18,12 +18,21 @@ my %unify = ();
 
 unless ($superglo eq 'superglo') {
     @proj_sig_langs = split(/\s+/, `sig-langs.sh 01bld/project.sig`);
-    %proj_sig_langs = (); @proj_sig_langs{@proj_sig_langs} = ();
-    
+    %proj_sig_langs = (); @proj_sig_langs{@proj_sig_langs} = ();    
+
     @proj_sig_langs = qpn_langs();
     if ($#proj_sig_langs >= 0) {
 	@proj_sig_langs{@proj_sig_langs} = ();
 	++$proj_sig_langs{'qpn'} unless exists $proj_sig_langs{'qpns'};
+    }
+} else {
+    my $p = `oraccopt`;
+    if ($p =~ m#/names$#) {
+	@proj_sig_langs = qpn_langs();
+	if ($#proj_sig_langs >= 0) {
+	    @proj_sig_langs{@proj_sig_langs} = ();
+	    ++$proj_sig_langs{'qpn'} unless exists $proj_sig_langs{'qpns'};
+	}
     }
 }
 

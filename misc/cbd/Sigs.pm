@@ -769,26 +769,36 @@ sub psu_glo {
 		if ($#no_sense_forms < 0) {
 		    # create a form from primary bases
 		    my $pline = ${$entries_parts_lines[0]}[1];
-		    $pline =~ s/\@parts\s+//;
-		    $pline =~ s/\sn\s/ n\cA/g;
-		    $pline =~ s/(\]\S*)\s+/$1\cA/g;
-		    my @nsf = ();
-		    foreach my $p (split(/\cA/,$pline)) {
-			$p =~ s#//.*?\]#]#;
-			$p =~ s/\'.*//;
-			$p =~ s/<.*?>$//; # remove ngram predicates in <...>
-			if ($simple_bases{$p}) {
-			    # warn "$p => $simple_bases{$p}\n";
-			    my $f = $simple_bases{$p}; $f =~ tr/·°//d;
-			    push @nsf, $f;
-			} elsif ($p =~ /^n$/) {
-			    push @nsf, 'n';
+		    if ($pline) {
+			$pline =~ s/\@parts\s+//;
+			$pline =~ s/\sn\s/ n\cA/g;
+			$pline =~ s/(\]\S*)\s+/$1\cA/g;
+			my @nsf = ();
+			foreach my $p (split(/\cA/,$pline)) {
+			    $p =~ s#//.*?\]#]#;
+			    $p =~ s/\'.*//;
+			    $p =~ s/<.*?>$//; # remove ngram predicates in <...>
+			    if ($simple_bases{$p}) {
+				# warn "$p => $simple_bases{$p}\n";
+				my $f = $simple_bases{$p}; $f =~ tr/·°//d;
+				push @nsf, $f;
+			    } elsif ($p =~ /^n$/) {
+				push @nsf, 'n';
+			    } else {
+				pp_warn "$p not in simple_bases";
+			    }
+			}
+			push @no_sense_forms, '@form '.join('_',@nsf);
+			#		    warn "@no_sense_forms\n";
+		    } else {
+			if ($#entries_parts_lines
+			    && $entries_parts_lines[0]
+			    && ${$entries_parts_lines[0]}[1]) {
+			    pp_warn "no parts line info for ${$entries_parts_lines[0]}[1]";
 			} else {
-			    pp_warn "$p not in simple_bases";
+			    pp_warn "no parts line info in entry";
 			}
 		    }
-		    push @no_sense_forms, '@form '.join('_',@nsf);
-#		    warn "@no_sense_forms\n";
 		}
 	    }
 	    $in_sense = 1;
@@ -828,7 +838,7 @@ sub psu_glo {
 sub
 do_psu {
     my($psulang,$formline) = @_;
-    warn "do_psu: psulang=$psulang; formline=$formline\n" if $verbose;
+#    warn "do_psu: psulang=$psulang; formline=$formline\n" if $verbose;
     $formline =~ s/^\@form\s+//;
 #    my ($forms, $norms) = ($formline =~ /^(\S+)\s*(\S.*)\s*$/);
     my ($forms, $rest) = ($formline =~ /^(\S+)\s*(.*)\s*$/);

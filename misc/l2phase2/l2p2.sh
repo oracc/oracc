@@ -68,20 +68,24 @@ super=`oraccopt . cbd-super`
 if [ "$projtype" == "superglo" ]; then
     for aa in `oraccopt . cbd-super-list` ; do
 	# new: cbd-super-list could be qpn/sux in which case drop /sux
-	a=`/bin/echo -n $aa | perl -p -e 's#/.*$##'`
-	ldir=01bld/$a
-	l=$a
-	mkdir -p $ldir
-	cbd $l $ldir
-	if [ -e 01bld/cancel ]; then
-	    echo REBUILD CANCELLED
-	    exit 1
+	aaa=`/bin/echo -n $aa | perl -p -e 's#/.*$##'`
+	if [ "$aaa" == "qpn" ]; then
+	    aa=`l2p2-langs.plx`
 	fi
-	echo l2p2.sh: processing sigs for superglo $a
-	rm -f $ldir/union.sig
-	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
-	l2-sig-union.plx -super -proj $project -lang $l $ldir/$l.sig >$ldir/union.sig
-	g2x $ldir $l
+	for l in $aa; do
+	    ldir=01bld/$l
+	    mkdir -p $ldir
+	    cbd $l $ldir
+	    if [ -e 01bld/cancel ]; then
+		echo REBUILD CANCELLED
+		exit 1
+	    fi
+	    echo l2p2.sh: processing sigs for superglo $a
+	    rm -f $ldir/union.sig
+	    [ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
+	    l2-sig-union.plx -super -proj $project -lang $l $ldir/$l.sig >$ldir/union.sig
+	    g2x $ldir $l
+	done
     done
 else
     for l in `l2p2-langs.plx` ; do
