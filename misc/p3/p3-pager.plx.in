@@ -891,6 +891,7 @@ run_item_maker {
 	    if (-r "$pbase/01bld/$p{'glos'}/$template.html") {
 #		xsystem 'cp',  "$pbase/01bld/$p{'glos'}/$template.html", "$p{'tmpdir'}/outline.html";
 		$jumpfile = "$pbase/01bld/$p{'glos'}/$template.html";
+		warn "jumpfile=$jumpfile\n";
 	    } else {
 		warn "jumps: template file $pbase/01bld/$p{'glos'}/$template.html not found\n";
 	    }
