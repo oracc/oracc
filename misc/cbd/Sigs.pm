@@ -896,7 +896,7 @@ do_psu {
 	    pp_line($err - 1);
 	    unless ($#parts_errors == 0 && $parts_errors[0] eq '#nowarn#') {
 		foreach (@parts_errors) {
-		    warn "do_psu: psulang=$psulang; formline=$formline\n"; #  if $verbose;
+#		    pp_warn("psulang=$psulang; formline=$formline");
 		    pp_warn($_)
 		}
 	    }

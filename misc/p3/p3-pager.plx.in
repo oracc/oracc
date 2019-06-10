@@ -538,8 +538,12 @@ run_form_maker {
 	$projectname = "$projabb : $projname";
     }
     $projectname .= " \[$rt{'tmpdir'}]" if $localhost;
-#    $projectname .= " \@ $ENV{'HTTP_REFERER'}";
-    print '<!DOCTYPE html>', "\n" unless $t =~ /\.xml$/;
+    #    $projectname .= " \@ $ENV{'HTTP_REFERER'}";
+    if ($t =~ m/p3-template/) {
+	print '<!DOCTYPE html>', "\n";
+    } else {
+	print '<!DOCTYPE html>', "\n" unless $t =~ /\.xml$/;
+    }
     open(T,$t);
     while (<T>) {
 	if (m#^\@\@ga\@\@#) {
@@ -569,7 +573,12 @@ run_form_maker {
 		    if ($proxy_host) {
 			xsystem "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
 		    } else {
-			xsystem 'cat', "$p{'tmpdir'}/results.html";
+			my $rn = `$oraccbin/rootnode $p{'tmpdir'}/results.html`;
+			if ($rn eq 'html') {
+			    xsystem "$oraccbin/xfrag", '-u', "$p{'tmpdir'}/results.html";
+			} else {
+			    xsystem 'cat', "$p{'tmpdir'}/results.html";
+			}
 		    }
 		}
 		print '</div>';
