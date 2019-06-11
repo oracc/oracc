@@ -875,7 +875,8 @@ run_item_maker {
 		$xmd);
     } elsif ($rt{'itemtype'} eq 'cbd') {
 	# $rt{'#content_url'} = "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
-	xsystem 'xmllint', '-o', "$p{'tmpdir'}/results.html", '--xinclude', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+#	xsystem 'xmllint', '-o', "$p{'tmpdir'}/results.html", '--xinclude', "@@ORACC@@/www/$p{'project'}/cbd/$p{'glos'}/$id.html";
+	xsystem "$oraccbin/oid-resolver.plx $p{'project'} $id >$p{'tmpdir'}/results.html";
 	my $jumps = `@@ORACC@@/bin/oraccopt $p{'project'} outline-cbd-jumps`;
 	warn "jumps: got outline-cbd-jumps=$jumps\n";
 	my $pbase = "@@ORACC_BUILDS@@/$p{'project'}";

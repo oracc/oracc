@@ -12,7 +12,7 @@ if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
 	    if ($o) {
 		chomp $o;
 		$o =~ s#^.*?\t#$ENV{'ORACC_BUILDS'}/#;
-		system "sed 's#\@\@OB\@\@#$ENV{'ORACC_BUILDS'}#' $o | xmllint -xinclude -";
+		system "sed 's#\@\@OB\@\@#$ENV{'ORACC_BUILDS'}#' $o | xmllint --xinclude -";
 	    } else {
 		oid_404("OID $oid not found in project $prj");
 	    }
