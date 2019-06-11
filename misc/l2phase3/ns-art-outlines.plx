@@ -2,7 +2,7 @@
 use warnings; use strict;
 use Data::Dumper;
 
-my @order = qw/top compounds bases periods senses base phra equivs bib/;
+my @order = qw/top compounds bases periods senses pronounce phrases equivs bib/;
 my %order = (); @order{@order} = 1..9;
 
 foreach my $o (@order) {

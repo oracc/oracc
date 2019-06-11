@@ -4,7 +4,8 @@
 		xmlns:esp="http://oracc.org/ns/esp/1.0"
 		xmlns:lex="http://oracc.org/ns/lex/1.0"
 		xmlns:o="http://oracc.org/ns/oracc/1.0"
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		exclude-result-prefixes="esp lex">
 
 <xsl:template match="lex:word-base-data">
   <body>

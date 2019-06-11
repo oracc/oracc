@@ -59,7 +59,7 @@ fi
 
 # if we are using OIDs we need to index the files
 oid=`oraccopt . cbd-oid`
-if [ "$oid" == "yes"] ; then
+if [ "$oid" == "yes" ] ; then
     oid-index-cbd.sh `oraccopt`
 fi
 

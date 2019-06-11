@@ -315,7 +315,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:when test="string-length(key('oid',$n)/@id)>0">
 	<!-- @@OB@@ is edited by the server, not by the Make .in procedure -->
 	<xsl:variable name="src" select="concat('@@OB@@/www/dcclt/cbd/sux/pb/',$n,'.html')"/>
-	<h2 class="lex">Pronunciation Data</h2>
+	<h2 class="lex" id="pronounce">Pronunciation Data</h2>
 
 	<xsl:call-template name="pd-bases-conts">
 	  <xsl:with-param name="b" select="$base-nodes"/>
@@ -379,7 +379,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
       <!-- @@OB@@ is edited by the server, not by the Make .in procedure -->
       <xsl:variable name="src" select="concat('@@OB@@/www/dcclt/cbd/sux/wp/',$n,'.html')"/>
-      <h2 class="lex">Phrase Data</h2>
+      <h2 class="lex" id="phrases">Phrase Data</h2>
       <xsl:element name="xi:include">
 	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
       </xsl:element>
