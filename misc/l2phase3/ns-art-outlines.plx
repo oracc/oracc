@@ -86,7 +86,7 @@ sub html_template {
     open(H,">01bld/sux/$template.html") || die "$0: can't write to 01bld/sux/$template.html\n";
     print H '<div class="jumps"><ul>';
     foreach my $id (@ids) {
-	print H "<li><a js=\"window.hash='$id'\">$print{$id}</a></li>";
+	print H "<li><a href=\"#$id\">$print{$id}</a></li>";
     }
     print H '</ul></div>';
     close(H);
