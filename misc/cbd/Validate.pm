@@ -106,6 +106,9 @@ my %rws_map = (
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
 
+my @known_det = qw/kuš/;
+my %known_det = (); @known_det{@known_det} = ();
+
 my $stem_validator;
 
 my %vfields = ();
@@ -474,6 +477,7 @@ sub v_bases {
 			if $stem;
 		}
 		if ($pri) {
+		    det_check($pri);
 		    if (defined $vbases{$pri}) {
 			pp_warn("repeated base $pri");
 		    } else {
@@ -522,6 +526,7 @@ sub v_bases {
 		    if $stem;
 		$pri = $b;
 		$alt = '';
+		det_check($pri);
 		if (defined $vbases{$pri}) {
 		    pp_warn("repeated base $pri");
 		} else {
@@ -1273,6 +1278,22 @@ sub v_oid {
     if ($arg !~ /^[ox]\d+$/) {
 	pp_warn("bad OID $arg");
     }    
+}
+
+sub det_check {
+    my $b = shift;
+    my $b2 = $b;
+    while ($b2 =~ s/\{(.*?)\}//) {
+	my $d = $1;
+	my $plus = ($d =~ s/^\+//);
+	if ($plus) {
+	    # pp_warn("det in base $b :: $d");
+	} else {
+	    unless (exists $known_det{$d}) {		
+		pp_warn("determinative $d missing + in base $b");
+	    }
+	}
+    }
 }
 
 1;
