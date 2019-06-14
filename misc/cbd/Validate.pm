@@ -106,7 +106,13 @@ my %rws_map = (
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
 
-my @known_det = qw/kuš/;
+# semantic {e} and {ga} are marked in sux.glo w {-e} and {-ga}
+my @known_det = qw/
+    anše buru₅ d dug e₂ gada gana₂ geme₂ gi gud 
+    hašhur ŋeš id₂ iku im iri itud ki ku₆ kug-babbar kug-sig₁₇ 
+    kaš kuš lu₂ mul munus mušen na₄ ninda peš₂
+    sar siki su-din šah šah₂ še šim tug₂ tumu u₂ 
+    udu urud uzu zabar zabar₃ zid₂/;
 my %known_det = (); @known_det{@known_det} = ();
 
 my $stem_validator;
@@ -1289,7 +1295,8 @@ sub det_check {
 	if ($plus) {
 	    # pp_warn("det in base $b :: $d");
 	} else {
-	    unless (exists $known_det{$d}) {		
+	    # {-ga} is a @bases only convention to mark semantic dets
+	    unless (exists $known_det{$d} || $d =~ s/^-//;) {
 		pp_warn("determinative $d missing + in base $b");
 	    }
 	}
