@@ -15,6 +15,7 @@ sub atf_add {
     my ($a,$l) = @_;
     if ($a) {
 	$a =~ tr/·°//d;
+	$a =~ s/\{-/{/g;
 	$a =~ s/\\.*$//; # remove disambiguators for checking
 	my $add = $l ? "\%$l $a" : $a;
 #	warn pp_line().": $add\n";

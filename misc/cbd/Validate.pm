@@ -128,6 +128,7 @@ my @bffs = ();
 my $curr_cf = '';
 my $curr_cfgw = '';
 my $curr_id = '';
+my $detcheck = 0;
 my @global_cbd = ();
 my %entries = ();
 my %entries_nopos = ();
@@ -169,6 +170,8 @@ sub pp_validate {
     my($args,@cbd) = @_;
 
     %data = %ORACC::CBD::data;
+
+    $detcheck = 1 if $$args{'dets'};
     
     my %glodata = (); # entries, bffs, psu, etc., for this cbd
     $trace = $ORACC::CBD::PPWarn::trace;
@@ -229,6 +232,9 @@ sub pp_validate {
 			} else {
 			    &{$validators{$tag}}($cbd[$i],'',$i,\@cbd);
 			}
+		    }
+		    if ($tag eq 'bases' && $cbd[$i] =~ /\{-/) {
+			$cbd[$i] =~ s/\{-/{/g;
 		    }
 		} else {
 		    if ($tag eq 'allow') {
@@ -483,7 +489,7 @@ sub v_bases {
 			if $stem;
 		}
 		if ($pri) {
-		    det_check($pri);
+		    det_check($pri) if $detcheck;
 		    if (defined $vbases{$pri}) {
 			pp_warn("repeated base $pri");
 		    } else {
@@ -532,7 +538,7 @@ sub v_bases {
 		    if $stem;
 		$pri = $b;
 		$alt = '';
-		det_check($pri);
+		det_check($pri) if $detcheck;
 		if (defined $vbases{$pri}) {
 		    pp_warn("repeated base $pri");
 		} else {
@@ -746,6 +752,7 @@ sub v_form {
 			my $warned = 0;
 			my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
 			if ($a) {
+			    $a =~ s/^\#//;
 			    pp_warn("alt BASE $b should be primary $a");
 			    $warned = 1;
 			} else {
@@ -759,6 +766,7 @@ sub v_form {
 				$csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
 				    unless $csig;
 				if ($tsig eq $csig) {
+				    $c =~ s/^\#//;
 				    pp_warn "BASE $b should be $c";				
 				    $warned = 1;
 				    last;
@@ -1296,8 +1304,8 @@ sub det_check {
 	    # pp_warn("det in base $b :: $d");
 	} else {
 	    # {-ga} is a @bases only convention to mark semantic dets
-	    unless (exists $known_det{$d} || $d =~ s/^-//;) {
-		pp_warn("determinative $d missing + in base $b");
+	    unless (exists $known_det{$d} || $d =~ s/^-//) {
+		pp_notice("determinative $d missing + in base $b");
 	    }
 	}
     }
