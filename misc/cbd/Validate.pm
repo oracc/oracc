@@ -233,9 +233,6 @@ sub pp_validate {
 			    &{$validators{$tag}}($cbd[$i],'',$i,\@cbd);
 			}
 		    }
-		    if ($tag eq 'bases' && $cbd[$i] =~ /\{-/) {
-			$cbd[$i] =~ s/\{-/{/g;
-		    }
 		} else {
 		    if ($tag eq 'allow') {
 			my $a = $cbd[$i];
@@ -457,6 +454,8 @@ sub v_bases {
 	return;
     }
 
+    ++$ORACC::CBD::det_minus if $arg =~ /\{-/;
+    
     my $alt = '';
     my $stem = '';
     my $pri = '';

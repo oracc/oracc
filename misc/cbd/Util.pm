@@ -41,6 +41,7 @@ use Getopt::Long;
 %ORACC::CBD::forms = ();
 
 $ORACC::CBD::bases = 0;
+$ORACC::CBD::det_minus = 0;
 $ORACC::CBD::noforms = 0;
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nonormify = 0;
@@ -132,6 +133,8 @@ sub pp_cbd {
 		} elsif (/\@sense/ && !$forms_printed) {
 		    forms_print($cfgw, \*CBD);
 		    ++$forms_printed;
+		} elsif ($ORACC::CBD::det_minus && /^\@(?:bases|form)/) {
+		    s/\{-/{/g;
 		}
 		print CBD "$_\n";
 	    }
@@ -377,6 +380,17 @@ sub setup_args {
     $file;
 }
 
+sub pp_clean_det_minus {
+    my @n = ();
+    foreach (@_) {
+	if (/^\@(?:bases|form)/) {
+	    s/\{-/{/g;
+	}
+	push @n, $_;
+    }
+    @n;
+}
+
 sub setup_cbd {
     my($args,$glossary) = @_;
     my $file = $glossary ? $glossary : $$args{'cbd'};    
@@ -410,7 +424,12 @@ sub setup_cbd {
 		unless $ORACC::CBD::nonormify;
 	}
     }
-#    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
+    #    sigs_from_glo($args,@cbd) unless $$args{'check'} || pp_status();
+    if ($ORACC::CBD::det_minus) {
+	@cbd = pp_clean_det_minus(@cbd);
+	forms_det_clean() if $ORACC::CBD::Forms::external && $ORACC::CBD::det_minus;
+	
+    }
     @cbd;
 }
 

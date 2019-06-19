@@ -3,8 +3,8 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw forms_dump forms_load 
-    forms_normify forms_print forms_reset forms_validate/;
+@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw forms_det_clean
+    forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -110,6 +110,19 @@ sub forms_by_cfgw {
 	}
     }
     return ();
+}
+
+sub forms_det_clean {
+    foreach my $cfgw (keys %forms) {
+	my @f = @{$forms{$cfgw}};
+	my @nf = ();
+	foreach my $f (@f) {
+	    my($fi,$li,$pr,$fo) = @$f;
+	    $fo =~ s/\{-/{/g; # && warn "$fi:$li: killing {- in $fo\n";
+	    push @nf, [ $fi, $li, $pr, $fo ];
+	}
+	@{$forms{$cfgw}} = @nf;
+    }
 }
 
 sub forms_dump {

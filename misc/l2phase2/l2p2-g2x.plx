@@ -183,11 +183,10 @@ foreach my $lang (sort keys %data) {
 	    	if $sense_freqs{$sense};
 	    push @{$entry_sigrefs{$entry}}, @{$sense_sigrefs{$sense}};
 	}
+	my $entry_xid = $entry_ids{$entry};
 	my $oid = '';
 	$oid = oid_lookup('sux', $entry) if $cbd_oid; # $baselang =~ /^sux/
-	my $entry_xid;
-	my $xid = $entry_xid = $entry_ids{$entry};
-	$xid = $oid if $oid;
+	my $xid = ($oid ? $oid : $entry_xid);
 	my ($letter) = ($entry =~ /^(.)/);
 #	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
 	my %xis_info = xis($lang,$entry_xid,$xid,$entry_freqs{$entry},'100',@{$entry_sigrefs{$entry}});
@@ -213,7 +212,11 @@ foreach my $lang (sort keys %data) {
 	    my @sparts = @{$compound_parts{$entry,'senses'}};
 	    for (my $p_i = 0; $p_i <= $#parts; ++$p_i) {
 		my $p = $parts[$p_i];
-		my $eid = $entry_ids{$p};
+		my $eid = '';
+		if ($cbd_oid) {
+		    $eid = oid_lookup('sux',$p);
+		}
+		$eid = $entry_ids{$p} unless $eid;
 		unless ($eid) {
 		    # This block is where we set up refs for cross-glossary PSUs
 		    load_parts() unless $parts_loaded;
@@ -596,9 +599,10 @@ compute_and_print_entry_data {
 
 		if (exists $gdlme{$f}) {
 		    my $gme = ' g:me="1"';
-### GRAPHETIC MARKERS ARE NOT ALLOWED INTO FORM SO WE SHOULD NOT NEED
-### TO DELETE THEM HERE.
-#		    $k =~ s/\\.*$//; 
+		    ### GRAPHETIC MARKERS ARE NOT ALLOWED INTO FORM SO WE SHOULD NOT NEED
+		    ### TO DELETE THEM HERE.
+		    ###
+		    $k =~ tr/°·//d;
 		    $k =~ /^\%(.*?):/;
 		    my $formlang = $1 || '';
 		    my $xk = $k;

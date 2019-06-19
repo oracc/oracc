@@ -24,6 +24,7 @@ die "art2xff.plx: must give language on command line (e.g., art2xff.plx -lang su
     unless $lang;
 
 $file = "01bld/$lang/articles.xml" unless $file;
+$xffdir = "01bld/www/cbd/$lang" unless $xffdir;
 
 my $art = load_xml($file);
 foreach my $entry (tags($art,$CBD,'entry')) {
@@ -33,9 +34,12 @@ foreach my $entry (tags($art,$CBD,'entry')) {
     my %e = ();
     $e{'cfgw'} = $entry->getAttribute('n');
     $e{'id'} = xid($entry);
+    my @sigs = tags($entry,$CBD,'sig');
+    my $nsigs = $#sigs + 1;
+    warn "processing entry $e{'id'} with $nsigs sigs\n";
     $e{'freq'} = $entry->getAttribute('icount');
     $e{'xis'} = $entry->getAttribute('xis');
-    foreach my $sig (tags($entry,$CBD,'sig')) {
+    foreach my $sig (@sigs) {
 	my $icount = $sig->getAttribute('icount');
 	next if $icount eq '-1' || $icount eq '0';
 	my %sig = ();
@@ -94,10 +98,12 @@ dump_xff {
 	    my %sig = %$s;
 	    print "<sig xml:id=\"$sig{'id'}\" icount=\"$sig{'icount'}\" ipct=\"$sig{'ipct'}\" xis=\"$sig{'xis'}\">";
 	    foreach my $f (@fields) {
-		my $v = ${$sig{'parsed'}}{$f} || '';
+		my $v = ${$sig{'parsed'}}{$f} || undef;
 		if ($f eq 'base') {
-		    $$v[0] =~ s/^\%.*?://;
-		    $$v[0] =~ s/\s+\%.*?:/ /;
+		    if ($v) {
+			$$v[0] =~ s/^\%.*?://;
+			$$v[0] =~ s/\s+\%.*?:/ /;
+		    }
 		}
 		if (ref($v) eq 'ARRAY') {
 		    print "<$f n=\"$$v[0]\" icount=\"$$v[1]\" ipct=\"$$v[2]\" xis=\"$$v[3]\"/>";

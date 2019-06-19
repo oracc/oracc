@@ -44,7 +44,7 @@ $sortopt = 'form' if $sortopt eq 'none';
 
 warn "REACHED xff.plx\n";
 
-if ($xff_file =~ /^sux\.x\d+$/) {
+if ($xff_file =~ /^sux\.x\d+$/ || $xff_file =~ /^o/) {
     $xff_file = "@@ORACC@@/www/$project/cbd/sux/xff/$xff_file.xff";
     $no_formset = 1;
 } else {

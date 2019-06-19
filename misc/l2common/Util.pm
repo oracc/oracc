@@ -316,7 +316,7 @@ parse_sig {
     #	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
 
     # protect * in morphology; this is not robust enough yet
-    s/\*([a-z])/\cB$1/g;
+    s/\*([a-zšŋV])/\cB$1/g;
     if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
 	$x{'norm'} =~ tr/\cB/*/;

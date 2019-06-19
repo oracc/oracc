@@ -389,7 +389,7 @@ sub sigs_simple {
 
 	    $current_first_base = $1;
 	    my @bits = split(/;\s+/,$current_first_base);
-	    @bits = map { s/\s+\(.*$//; $_ } @bits;
+	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; $_ } @bits;
 	    my %bits = (); @bits { @bits } = ();
 	    $current_first_base = join(' ', @bits);
 	    
@@ -399,7 +399,7 @@ sub sigs_simple {
 	    if ($pref_bases{$basekey}) {
 		if (exists $bits{$pref_bases{$basekey}}) {
 		    $simple_bases{$basekey} = $pref_bases{$basekey};
-		} else {
+		} else {		    
 		    pp_notice("$basekey: preferred base $pref_bases{$basekey} unknown; defaulting to $bits[0]");
 		    $simple_bases{$basekey} = $bits[0];
 		}

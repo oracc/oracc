@@ -39,7 +39,7 @@ sub oid_init {
 	warn "$0: can't read OID file\n";
     }
     ++$inited;
-    if ($d eq 'sl' || !$d) {
+    if (!$d || $d eq 'sl') {
 	ORACC::SL::BaseC::init();
     }
 

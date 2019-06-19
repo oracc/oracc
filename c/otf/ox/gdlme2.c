@@ -32,6 +32,46 @@ int gdl_line = 0;
 struct npool *gdl_pool = NULL;
 struct xpd *xpd = NULL;
 
+static unsigned char *
+cbd_strip_backslash(unsigned char *in)
+{
+  static unsigned char *ret = NULL, *r;
+  if (in)
+    {
+      if (strchr((const char *)in,'\\'))
+	{
+	  if (ret)
+	    free(ret);
+	  r = ret = malloc(strlen((const char *)in)+1);
+	  while (*in)
+	    {
+	      if ('\\' == *in)
+		{
+		  while (*in && ' ' != *in)
+		    ++in;
+		  if (*in)
+		    *r++ = *in++;
+		}
+	      else
+		*r++ = *in++;
+	    }
+	  *r = '\0';
+	  return ret;
+	}
+      else
+	{
+	  return in;
+	}
+    }
+  else
+    {
+      if (ret)
+	free(ret);
+      ret = NULL;
+      return NULL;
+    }
+}
+
 static void
 gdlme_sH(void *userData, const char *name, const char **atts)
 {
@@ -86,6 +126,10 @@ gdlme_eH(void *userData, const char *name)
 	  file = (char*)pi_file;
 	  lnum = pi_line;
 	}
+
+      if (cbd_rules)
+	gdlinput = cbd_strip_backslash(gdlinput);
+      
       if (gdlme_debug)
 	fprintf(f_log, "%s:%d: gdlme processing `%s'\n", pi_file, pi_line, gdlinput);
 
@@ -162,6 +206,7 @@ main(int argc, char **argv)
 	fprintf(f_log,"gdlme: can't open %s for input\n",fname[0]);
     }
 
+  (void)cbd_strip_backslash(NULL);
   npool_term(gdl_pool);
   lang_term();
   gdl_term();

@@ -28,9 +28,10 @@ done
 
 # Now treat all of the imported sigs as proxies, which
 # they effectively are.
+project=`oraccopt`
 echo "o2-super-prep.sh: creating 01bld/from-prx-glo.sig"
 echo "@fields sig inst" >01bld/from-prx-glo.sig
-grep -h -v '@\(project\|lang\|name\|fields\)' 01sig/*.sig | perl -p -e 's/\@.*?\%/\@epsd2%/g' >>01bld/from-prx-glo.sig
+grep -h -v '@\(project\|lang\|name\|fields\)' 01sig/*.sig | perl -p -e "s#^\@.*?\%#\@$project%#" >>01bld/from-prx-glo.sig
 
 # create lemm-sux.sig based on the original glossary so it has all the instances
 # possible in its statistics but it isn't contaminated by forms only inducted via

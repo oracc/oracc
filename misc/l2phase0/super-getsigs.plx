@@ -119,9 +119,9 @@ while (<S>) {
 	print $outfh serialize_sig($sig), "\n";
     } else {
 	if ($data{'baselang'} eq 'qpn') {
-	    $sig =~ s/\@.*?\%/\@$data{'baseproj'}\%/g;
+	    $sig =~ s/\@.*?\%/\@$data{'baseproj'}\%/; # REMOVED /g
 	} else {
-	    $sig =~ s/\@.*?:/\@$data{'baseproj'}\%$data{'baselang'}\:/g;
+	    $sig =~ s/\@.*?:/\@$data{'baseproj'}\%$data{'baselang'}\:/; # REMOVED /g
 	}
 	print $outfh "$sig\t$inst\n";
     }

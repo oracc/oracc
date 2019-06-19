@@ -149,7 +149,7 @@
 </xsl:template>
 
 <xsl:template match="cbd:entry">
-  <div class="body" name="{concat(/*/@project,'/',/*/@xml:lang,'/',cbd:cf,'[',cbd:gw,']')}" id="top">
+  <div class="body" name="{concat(/*/@project,'/',/*/@xml:lang,'/',cbd:cf,'[',cbd:gw,']')}">
   <xsl:copy-of select="@xml:id"/>
   <div class="ns-glo" id="top">
     <div class="header">

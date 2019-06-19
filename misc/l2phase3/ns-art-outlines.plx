@@ -9,7 +9,7 @@ foreach my $o (@order) {
     die "$0: ID $o undefined in order; extend values range\n" unless $order{$o};
 }
 
-my @abbrev = qw/t c b p s lb lp e b/;
+my @abbrev = qw/t c b p s B P e r/;
 die "$0: bad order/abbrev: @order vs. @abbrev\n" unless $#order == $#abbrev;
 my %abbrev = (); @abbrev{@order} = @abbrev;
 
@@ -40,7 +40,7 @@ chomp @base;
 foreach my $oid (@base) {
     my $xid = $ox{$oid};
     if ($xid) {
-	push @{$t{$xid}}, 'base';
+	push @{$t{$xid}}, 'pronounce';
     }
 }
 
@@ -50,7 +50,7 @@ chomp @phra;
 foreach my $oid (@phra) {
     my $xid = $ox{$oid};
     if ($xid) {
-	push @{$t{$xid}}, 'phra';
+	push @{$t{$xid}}, 'phrases';
     }
 }
 
