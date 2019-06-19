@@ -298,7 +298,7 @@ sub sigs_simple {
 		    next if $forms_in_entry{$f};
 		    my $instsig1 = "\@$project\%$lng:$f=";
 		    my $xsig = "\$$sig{'cf'}/$b#~";
-		    ++$noprintsigs{ "$instsig1$coresig1/$b\t0\n" };
+		    ++$noprintsigs{ "$instsig1$coresig1/$f\t0\n" };
 		    $printsigs{ "$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
 #		    warn "base-form $b => $instsig1$coresig1$xsig\t0\n";
 		}

@@ -36,7 +36,7 @@ foreach my $entry (tags($art,$CBD,'entry')) {
     $e{'id'} = xid($entry);
     my @sigs = tags($entry,$CBD,'sig');
     my $nsigs = $#sigs + 1;
-    warn "processing entry $e{'id'} with $nsigs sigs\n";
+#    warn "processing entry $e{'id'} with $nsigs sigs\n";
     $e{'freq'} = $entry->getAttribute('icount');
     $e{'xis'} = $entry->getAttribute('xis');
     foreach my $sig (@sigs) {
