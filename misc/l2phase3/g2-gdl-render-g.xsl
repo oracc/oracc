@@ -27,7 +27,14 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:value-of select="translate($body,'hH','ḫḪ')"/>
+  <xsl:choose>
+    <xsl:when test="starts-with(ancestor::*/@xml:lang,'uga')">
+      <xsl:value-of select="$body"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="translate($body,'hH','ḫḪ')"/>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="g:b">
     <xsl:apply-templates select="g:m|g:a"/>
   </xsl:if>

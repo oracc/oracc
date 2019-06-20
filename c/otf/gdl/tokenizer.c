@@ -1330,7 +1330,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      last_text_or_bound = text;
 		      *following = save;
 		    }
-		  else if (('*' == *g || ':' == *g) && ('\0' == g[1] 
+		  else if (('|' == *g ||
+			    '*' == *g || ':' == *g) && ('\0' == g[1] 
 							|| isspace(g[1])
 							|| (g[1] > 128 
 							    || !isalnum(g[1]))))

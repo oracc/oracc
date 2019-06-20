@@ -27,9 +27,17 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:call-template name="hethify">
-    <xsl:with-param name="text" select="$body"/>
-  </xsl:call-template>
+  <xsl:message>render-g</xsl:message>
+  <xsl:choose>
+    <xsl:when test="starts-with(ancestor::*/@xml:lang,'uga')">
+      <xsl:value-of select="$body"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="hethify">
+	<xsl:with-param name="text" select="$body"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="g:b">
     <xsl:apply-templates select="g:m|g:a"/>
   </xsl:if>
