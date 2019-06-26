@@ -60,11 +60,10 @@ extern void or_builtins(void);
 extern void or_gdf(void);
 extern void uri_patterns(void);
 
-
 extern const char *script_url;
 
 extern const char **elements, *project, *query_string, *mode, *docroot, *xmlroot;
-extern int nelements;
+extern int nelements, map_PQX_force;
 
 extern const char *make_find_phrase(const char *xkey, const char *phrase, int uncomma);
 extern const char *cgi_arg(const char *arg, const char *val);

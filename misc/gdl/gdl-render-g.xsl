@@ -27,7 +27,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:message>render-g</xsl:message>
+ <!-- <xsl:message>render-g</xsl:message>-->
   <xsl:choose>
     <xsl:when test="starts-with(ancestor::*/@xml:lang,'uga')">
       <xsl:value-of select="$body"/>

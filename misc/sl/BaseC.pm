@@ -30,7 +30,9 @@ my $silent = 0;
 sub
 check {
     my($context,$test,$deep) = @_;
-    _signature($context,tlitsplit($test,$deep));
+    my $sig = _signature($context,tlitsplit($test,$deep));
+#    warn "$test=>$sig\n";
+    $sig;
 }
 
 sub messages {
@@ -304,7 +306,8 @@ tlitsplit {
 #	$tlit =~ tr/|+/  /;
 #    } else {
 	# protect parens and contained periods in compounds
-	$tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
+    $tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
+#    warn "protected = $tlit\n";
 #    }
 
     $tlit =~ s/\%sux://g;
@@ -314,7 +317,7 @@ tlitsplit {
     # protect numbers like 3(geszu)
     $tlit =~ s/(^|[- \.])([\d\/]+)\((.*?)\)/$1$2\000$3\001/g;
 
-    $tlit =~ tr/|//d;
+#    $tlit =~ tr/|//d;
 
     $tlit =~ s/\S+\((.*?)\)/$1/g;
     $tlit =~ tr/()//d;
@@ -322,6 +325,8 @@ tlitsplit {
     # undo protection measures only after we will make no further changes
     $tlit =~ tr/\000\001\002\003/().+/;
 
+#    warn "presplit = $tlit\n";
+    
     my @bits = grep(defined && length, split(/\s+/,$tlit));
 
 #    warn("$orig => ", join(' :: ', @bits), "\n");
@@ -433,6 +438,7 @@ _signature {
 	next if !$g;
 	my $xid = is_value($g);
 	if ($xid) {
+#	    warn "g=$g=$xid\n";
 	    push @sig, $xid;
 	} elsif ($g =~ /[A-ZŠŊṢṬ]/) {
 	    my $sn;
@@ -447,6 +453,7 @@ _signature {
 	    if ($sn =~ /ŠE.A.AN/) {
 		warn "$sn => $sn_id\n";
 	    }
+#	    warn "g=$g=$sn_id\n";
 	    unless ($sn_id) {
 		if ($sn !~ /[\|.]/) {
 		    my $tmp = lc($sn);

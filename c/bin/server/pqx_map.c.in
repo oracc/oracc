@@ -15,6 +15,8 @@ struct pqx_info
   int xmd_ok;
 };
 
+int map_PQX_force = 0;
+
 static int map_one_pqx(const char *p, struct pqx_info **r);
 static void map_remaps(struct pqx_info **r, int rlen);
 static char *map_needs_remap(const char *pqx);
@@ -125,7 +127,7 @@ map_PQX(const char *text, int count)
 	}
       else
 	curr = end;
-      if (project && !(pqx[i].xmd = map_needs_remap(pqx[i].orig)))
+      if (project && (map_PQX_force || !(pqx[i].xmd = map_needs_remap(pqx[i].orig))))
 	remaps[r++] = &pqx[i];
     }
   if (r > 0)

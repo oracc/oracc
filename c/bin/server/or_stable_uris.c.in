@@ -471,6 +471,10 @@ uri_patterns(void)
   int i;
 
   for (i = 0; i < nelements; ++i)
+    if (!strcmp(elements[i], "html"))
+      map_PQX_force = 1;
+
+  for (i = 0; i < nelements; ++i)
     {
       components[i].index = i;
       components[i].text = elements[i];

@@ -22,7 +22,9 @@ my $silent = 0;
 sub
 check {
     my($context,$test) = @_;
-    _signature($context,tlitsplit($test));
+    my $sig = _signature($context,tlitsplit($test));
+    warn "$test=>$sig\n";
+    $sig;
 }
 
 sub
