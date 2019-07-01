@@ -396,11 +396,13 @@ sub sigs_simple {
 #	    warn "cfb=$current_first_base\n";
 
 	    my $basekey = $curr_cfgw; $basekey =~ s/\s+\[/[/; $basekey =~ s/\]\s+/]/;
-	    if ($pref_bases{$basekey}) {
-		if (exists $bits{$pref_bases{$basekey}}) {
-		    $simple_bases{$basekey} = $pref_bases{$basekey};
+	    my $p = $pref_bases{$basekey};
+	    if ($p) {
+		$p =~ s/^\!//;
+		if (exists $bits{$p}) {
+		    $simple_bases{$basekey} = $p;
 		} else {		    
-		    pp_notice("$basekey: preferred base $pref_bases{$basekey} unknown; defaulting to $bits[0]");
+		    pp_notice("$basekey: preferred base $p unknown; defaulting to $bits[0]");
 		    $simple_bases{$basekey} = $bits[0];
 		}
 	    } else {

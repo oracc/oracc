@@ -255,6 +255,7 @@ sub load_formsfile {
     open(F, $file) || die "merge-forms.plx: unable to open $file\n";
     pp_file($file);
     while (<F>) {
+	next if /^#/;
 	chomp;
 	pp_line($.);
 	my($cfgw,$form) = (/^(.*?)\t(\@form.*)$/);
