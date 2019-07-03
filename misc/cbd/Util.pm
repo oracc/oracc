@@ -2,7 +2,7 @@ package ORACC::CBD::Util;
 require Exporter;
 @ISA=qw/Exporter/;
 @EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args 
-    setup_cbd cbdname project lang name projdir file_index errfile/;
+    setup_cbd cbdname project lang name projdir file_index errfile pp_tags/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -431,6 +431,18 @@ sub setup_cbd {
 	
     }
     @cbd;
+}
+
+sub pp_tags {
+    my $i = 0;
+    my $t = shift;
+    my @t = ();
+    for ($i = 0; $i <= $#_; ++$i) {
+	if ($_[$i] =~ /^@([a-z]+)/) {
+	    push(@t,$i) if $t eq $1;
+	}
+    }
+    @t;
 }
 
 1;
