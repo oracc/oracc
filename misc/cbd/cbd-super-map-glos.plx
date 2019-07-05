@@ -28,6 +28,13 @@ if ($args{'base'}) {
 } else {
     die "$0: must give base glossary for mapping with -base GLOSSARY\n";
 }
+
+for (my $i = 0; $i <= $#base_cbd; ++$i) {
+    if ($base_cbd[$i] =~ /^\@letter/) {
+	$base_cbd[$i] = "\000";
+    }
+}
+
 my $map = shift @ARGV;
 if ($map) {
     if (-r $map) {

@@ -129,6 +129,11 @@ sub pp_cbd {
 		next if /^\000$/;
 		if (/\@entry.*?\s+(.*)$/) {
 		    $cfgw = $1;
+		    my $init_char = first_letter($cfgw);
+		    if (!$last_char || $last_char ne $init_char) {
+			$last_char = $init_char;
+			print CBD "\@letter $last_char\n\n";
+		    }
 		    $forms_printed = 0;
 		} elsif (/\@sense/ && !$forms_printed) {
 		    forms_print($cfgw, \*CBD);

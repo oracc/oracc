@@ -8,6 +8,11 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
 my %args = pp_args();
+
+$args{'letters'} = 1;
+$ORACC::CBD::noforms = 1;
+$ORACC::CBD::nonormify = 1;
+
 my @cbd = setup_cbd(\%args);
 
 if (pp_status()) {

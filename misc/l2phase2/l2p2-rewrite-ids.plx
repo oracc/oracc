@@ -28,6 +28,7 @@ map_ids_in_map("01bld/$lang/$lang.map");
 # }
 
 ################################################################
+my $id_base = '';
 my $new_id = 0;
 my $oid = '';
 
@@ -37,6 +38,7 @@ load_ids {
     if ($#ids >= 0) {
 	chomp @ids;
 	foreach (@ids) {
+	    $id_base = $oid = '' if s/^-//;
 	    if (/^[ox]\d+$/) { # it's an OID
 		$oid = $_;
 		$new_id = 0;
@@ -45,10 +47,15 @@ load_ids {
 		if ($oid) {
 		    $new_ids{$_} = sprintf("$oid.%d",$new_id++)
 			unless defined $new_ids{$_};
+		} elsif ($id_base) {
+		    $new_ids{$_} = sprintf("$id_base.%d",$new_id++)
+			unless defined $new_ids{$_};
 		} else {
-		    my $id_base = $_;
-		    $id_base =~ s/\..*$/.x/;
-		    $new_ids{$_} = sprintf("$id_base%07d",$new_id++)
+		    $id_base = $_;
+		    $id_base =~ s/^.*?\.//;
+		    $id_base =~ s/\..*$//;
+		    $new_id = 0;
+		    $new_ids{$_} = sprintf("$id_base%d",$new_id++)
 			unless defined $new_ids{$_};
 		}
 	    }

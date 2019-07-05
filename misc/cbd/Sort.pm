@@ -40,7 +40,7 @@ sub sort_cbd {
 	    $cbd[$i] = "\000";
 	}
     }
-    push @{$e[$#e]}, $i-1;
+    push @{$e[$#e]}, $i;
     if ($#e > 0) {
 	set_cgc(@e);
 	my @ncbd = ();

@@ -36,6 +36,11 @@ if ($args{'base'}) {
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
+for (my $i = 0; $i <= $#base_cbd; ++$i) {
+    if ($base_cbd[$i] =~ /^\@letter/) {
+	$base_cbd[$i] = "\000";
+    }
+}
 
 my @cbd = setup_cbd(\%args);
 
@@ -43,6 +48,12 @@ if (pp_status()) {
     pp_diagnostics();
     system 'touch', '.supercancel';
     die "$0: can't align bases unless incoming glossary is clean. Stop.\n";
+}
+
+for (my $i = 0; $i <= $#cbd; ++$i) {
+    if ($cbd[$i] =~ /^\@letter/) {
+	$cbd[$i] = "\000";
+    }
 }
 
 my $mapfile = project($args{'cbd'});

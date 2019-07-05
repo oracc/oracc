@@ -6,6 +6,9 @@
 
 <xsl:template match="*">
   <xsl:for-each select="//*[@xml:id or @cbd:id]">
+    <xsl:if test="name() = 'entry'">
+      <xsl:text>-</xsl:text>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="string-length(@oid)>0">
 	<xsl:value-of select="@oid"/>
