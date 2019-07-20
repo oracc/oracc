@@ -213,12 +213,15 @@ uri_json()
       && !strcmp(elements[0],"corpusjson"))
     {
       json_ext = strstr(elements[1],".json");
-      if (json_ext[5])
-	json_ext = NULL;
-      else
+      if (json_ext)
 	{
-	  efile = malloc(strlen(elements[0])+strlen(elements[1])+2);
-	  sprintf(efile, "%s/%s", elements[0],elements[1]);
+	  if (json_ext[5])
+	    json_ext = NULL;
+	  else
+	    {
+	      efile = malloc(strlen(elements[0])+strlen(elements[1])+2);
+	      sprintf(efile, "%s/%s", elements[0],elements[1]);
+	    }
 	}
     }
 
@@ -227,10 +230,13 @@ uri_json()
       if (nelements == 1)
 	{
 	  json_ext = strstr(elements[0],".json");
-	  if (json_ext[5])
-	    json_ext = NULL;
-	  else
-	    efile = (char*)elements[0];
+	  if (json_ext)
+	    {
+	      if (json_ext[5])
+		json_ext = NULL;
+	      else
+		efile = (char*)elements[0];
+	    }
 	}
     }
   
