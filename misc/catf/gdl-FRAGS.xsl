@@ -197,6 +197,9 @@
     <xsl:when test="@g:type='word-linecont'">
       <xsl:text>→</xsl:text>
     </xsl:when>
+    <xsl:when test="@g:type='word-linefrom'">
+      <xsl:text>←</xsl:text>
+    </xsl:when>
     <xsl:when test="@g:type='dollar'">
       <xsl:value-of select="concat('($',text(),'$)')"/>
     </xsl:when>
@@ -321,6 +324,9 @@
     </xsl:when>
     <xsl:when test="g:x[@g:type='word-linecont']">
       <xsl:apply-templates/>
+    </xsl:when>
+    <xsl:when test="g:x[@g:type='word-linefrom']">
+      <xsl:text>←</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">

@@ -1519,7 +1519,7 @@ should be expressed using either an <code>@</code>-modifier or a
 nongrapheme = 
   element g:x {
     ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" | "dollar" | "comment" }
-    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" | "word-linefrom" } 
         , status.spans , opener? , closer? , break? )),
     delim? , text? , varnum? ,
     attribute xml:id { xsd:ID }? ,

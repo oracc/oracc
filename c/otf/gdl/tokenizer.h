@@ -36,7 +36,7 @@
 #define T_O      C(deto)C(glosso)C(damago)C(hdamago)C(supplo)C(implo)C(smetao)C(maybeo)C(exciso)C(uscoreo)C(agroupo)C(surro)C(eraso)C(normo)C(someo)
 #define T_C      C(detc)C(glossc)C(damagc)C(hdamagc)C(supplc)C(implc)C(smetac)C(maybec)C(excisc)C(uscorec)C(agroupc)C(surrc)C(erasc)C(normc)C(somec)
 #define T_BOUND  C(space)C(hyphen)C(slash)C(colon)C(ellipsis)C(linebreak)C(newline)C(icmt)C(plus)C(period)C(ilig)
-#define T_GRAPH  C(g_c)C(g_v)C(g_n)C(g_s)C(g_q)C(g_corr)C(g_g)C(g_p)C(wm_absent)C(wm_broken)C(wm_linecont)
+#define T_GRAPH  C(g_c)C(g_v)C(g_n)C(g_s)C(g_q)C(g_corr)C(g_g)C(g_p)C(wm_absent)C(wm_broken)C(wm_linecont)C(wm_linefrom)
 #define T_MODS   C(g_b)C(g_m)C(g_a)C(g_f)
 #define T_DISAMB C(g_disamb)
 #define T_NORM   C(norm)
@@ -133,6 +133,7 @@ struct token
 
 #define WORD_MATRIX_ABSENT_CHAR 	0x2014 /* EM DASH */
 #define WORD_MATRIX_BROKEN_CHAR 	0x00B1 /* PLUS-MINUS */
+#define WORD_MATRIX_LINEFROM_CHAR 	0x2190 /* LEFT ARROW */
 #define WORD_MATRIX_LINECONT_CHAR 	0x2192 /* RIGHT ARROW */
 
 struct medial_info

@@ -24,7 +24,7 @@ const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , per
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
 				     g_corr , g_g , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
-				     wm_absent , wm_broken , wm_linecont ,
+				     wm_absent , wm_broken , wm_linecont , wm_linefrom ,
 				     surro_mark ,
 				     type_top };
 const enum t_type g_flag_m[] = { flag, uflag, type_top };
@@ -207,6 +207,7 @@ tokcheck_init()
 	case norm:
 	case wm_absent:
 	case wm_broken:
+	case wm_linefrom:
 	case wm_linecont:
 	  allow_token(t,newline);
 	  allow_token(t,flag);

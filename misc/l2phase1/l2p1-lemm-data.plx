@@ -7,6 +7,9 @@ use Data::Dumper;
 my $g2 = `oraccopt . g2`;
 $g2 = undef unless ($g2 && $g2 eq 'yes');
 
+my $lem_allow_x = `oraccopt . lem-allow-x`;
+$lem_allow_x = undef unless ($lem_allow_x && $lem_allow_x eq 'yes');
+
 my %f = ();
 my $freq = 0;
 my $glossary = '';
@@ -111,7 +114,7 @@ foreach my $l (@freq_files) {
 my $sigorder = 0;
 foreach my $s (@sigs) {
     my ($form) = ($s =~ /:(.*?)=/);
-    if ($form eq 'x') {
+    if ($form eq 'x' && !$lem_allow_x) {
 	warn "$0: form 'x' illegal in lemm data ($s)\n";
 	next;
     }

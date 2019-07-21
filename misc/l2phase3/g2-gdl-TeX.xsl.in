@@ -37,6 +37,7 @@
 
 <xsl:variable name="word-absent-char" select="'&#x2014;'"/>
 <xsl:variable name="word-broken-char" select="'&#x2014;'"/>
+<xsl:variable name="word-linefrom-char" select="'&#x2190;'"/>
 <xsl:variable name="word-linecont-char" select="'&#x2192;'"/>
 
 <xsl:key name="lnodes" match="xcl:l" use="@ref"/>
@@ -158,6 +159,9 @@
 	  </xsl:when>
 	  <xsl:when test="@g:type='word-linecont'">
 	    <xsl:value-of select="$word-linecont-char"/>
+	  </xsl:when>
+	  <xsl:when test="@g:type='word-linefrom'">
+	    <xsl:value-of select="$word-linefrom-char"/>
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:value-of select="text()"/>

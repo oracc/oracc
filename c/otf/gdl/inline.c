@@ -1000,6 +1000,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    setAttr(np,a_g_type,(unsigned char*)"word-broken");
 		  else if (tp->type == wm_linecont)
 		    setAttr(np,a_g_type,(unsigned char *)"word-linecont");
+		  else if (tp->type == wm_linefrom)
+		    setAttr(np,a_g_type,(unsigned char *)"word-linefrom");
 		}
 	      maybeAppendXid(np,grapheme_id());
 	      if (breakStart && *breakStart == 0x01)

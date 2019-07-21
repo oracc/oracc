@@ -342,6 +342,7 @@
               <value>word-absent</value>
               <value>word-broken</value>
               <value>word-linecont</value>
+              <value>word-linefrom</value>
             </choice>
           </attribute>
           <ref name="status.spans"/>

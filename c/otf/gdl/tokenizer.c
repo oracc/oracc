@@ -212,7 +212,7 @@ struct token*tokens[MAX_TOKS];
 struct token *static_tokens[type_top];
 struct token *prox_tokens[10];
 struct token *em_token;
-static struct token *ilig_token, *wm_absent_token, *wm_broken_token, *wm_linecont_token;
+static struct token *ilig_token, *wm_absent_token, *wm_broken_token, *wm_linecont_token, *wm_linefrom_token;
 int tokindex = 0;
 
 static Hash_table table, *tablep;
@@ -678,6 +678,7 @@ tokenize_init()
   wm_absent_token = s_create_token(text,wm_absent,NULL);
   wm_broken_token = s_create_token(text,wm_broken,NULL);
   wm_linecont_token = s_create_token(text,wm_linecont,NULL);
+  wm_linefrom_token = s_create_token(text,wm_linefrom,NULL);
 
   (void)hash_insert((unsigned char*)"!sv",s_create_token(meta,ftype,"sv"),&table);
   (void)hash_insert((unsigned char*)"!pr",s_create_token(meta,ftype,"pr"),&table);
@@ -860,7 +861,8 @@ word_matrix_char(register unsigned char *l, wchar_t *bufp)
     {
       count = mbtowc(bufp,(char*)l,6);
       if (*bufp == WORD_MATRIX_ABSENT_CHAR || *bufp == WORD_MATRIX_BROKEN_CHAR
-	  || *bufp == WORD_MATRIX_LINECONT_CHAR)
+	  || *bufp == WORD_MATRIX_LINECONT_CHAR || *bufp == WORD_MATRIX_LINEFROM_CHAR
+	  )
 	return count;
     }
   *bufp = 0;
@@ -989,7 +991,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	{
 	  unsigned char *g,*following;
 	  enum t_type t;
-	  if (word_matrix && (wm_used = word_matrix_char(l, wmbuf)))
+	  if (/* word_matrix && */ (wm_used = word_matrix_char(l, wmbuf))) /* NEW: now allow WM chars everywhere */
 	    {
 	      switch (*wmbuf)
 		{
@@ -1001,6 +1003,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  break;
 		case WORD_MATRIX_LINECONT_CHAR:
 		  tokens[tokindex++] = clone_token(wm_linecont_token);
+		  break;
+		case WORD_MATRIX_LINEFROM_CHAR:
+		  tokens[tokindex++] = clone_token(wm_linefrom_token);
 		  break;
 		}
 	      l += wm_used;
@@ -1113,7 +1118,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  if ((*g != ':' && *g != '/')
 		      && 0 /*NULL != (tp = hash_lookup(g,&table))*/)
 		    {
-		      if ((!tp->data && tp->type != wm_absent && !tp->data && tp->type != wm_linecont 
+		      if ((!tp->data && tp->type != wm_absent && !tp->data
+			   && tp->type != wm_linecont && tp->type != wm_linefrom 
 			   && tp->type != wm_broken && tp->type != ilig)
 			  || (((struct grapheme*)tp->data)->gflags&GFLAGS_BAD)) 
 			/* subsequent accesses of bad grapheme */
@@ -1434,7 +1440,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 							     gparse(pool_copy(g2),t)),
 						&table);
 			  else
-			    if ((!gtokp->data && gtokp->type != wm_absent && gtokp->type != wm_broken && gtokp->type != wm_linecont)
+			    if ((!gtokp->data && gtokp->type != wm_absent && gtokp->type != wm_broken
+				 && gtokp->type != wm_linecont && gtokp->type != wm_linefrom)
 				|| (((struct grapheme*)gtokp->data)->gflags&GFLAGS_BAD))
 			      /* subsequent accesses of bad grapheme */
 			      {
