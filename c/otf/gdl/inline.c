@@ -371,10 +371,13 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
 
   tokenize(line,end);
 
-  if (tokcheck())
+  if (!curr_lang || curr_lang->mode != m_alphabetic) /* FIXME: tokcheck should be tuned for alpha vs graphemic */
     {
-      status = 1;
-      return;
+      if (tokcheck())
+	{
+	  status = 1;
+	  return;
+	}
     }
   word_id = 1 * word_id_base;
   xstrcpy(word_id_buf,line_id);
