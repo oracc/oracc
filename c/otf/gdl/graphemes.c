@@ -844,9 +844,9 @@ gparse(register unsigned char *g, enum t_type type)
 		  if (gp->type == g_q)
 		    {
 		      if (gp->g.q.q->type == g_n)
-			cattr = cuneify(gp->g.q.q->atf);
+			cattr = signify(gp->g.q.q->atf);
 		      else
-			cattr = cuneify(gp->g.q.q->g.s.base);
+			cattr = signify(gp->g.q.q->g.s.base);
 		    }
 		  else
 		    cattr = signify(buf);

@@ -57,12 +57,6 @@ if [ -r 01bld/cat.geojson ]; then
     cp 01bld/cat.geojson $webdir/downloads
 fi
 
-# if we are using OIDs we need to index the files
-oid=`oraccopt . cbd-oid`
-if [ "$oid" == "yes" ] ; then
-    oid-index-cbd.sh `oraccopt`
-fi
-
 jumps=`oraccopt . outline-cbd-jumps`
 if [ "$jumps" == "yes" ]; then
     ns-art-outlines.sh

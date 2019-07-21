@@ -25,3 +25,9 @@ if [ -d 01tmp/lex/cbd ]; then
     done
     cp 01tmp/lex/*provides*.xml 02www
 fi
+
+# if we are using OIDs we need to index the files
+oid=`oraccopt . cbd-oid`
+if [ "$oid" == "yes" ] ; then
+    oid-index-cbd.sh `oraccopt`
+fi

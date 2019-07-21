@@ -126,6 +126,8 @@ kcmp {
     } elsif ($bnum) {
 	return -1;
     }
+    warn "$0: null alet in $a\n" and return -1 unless $alet;
+    warn "$0: null blet in $b\n" and return -1 unless $blet;
     return $alet cmp $blet;
 }
 
