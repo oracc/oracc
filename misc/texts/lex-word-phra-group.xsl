@@ -44,7 +44,20 @@
 </xsl:template>
 
 <xsl:template match="lex:phrase[@lang='sux']" mode="equi">
-  <lex:group type="equi" lang="{@lang}" value="{@equiv}">
+  <xsl:variable name="xlang" select=".//lex:eq[1]/@lang"/>
+  <xsl:variable name="lang">
+    <xsl:if test="string-length($xlang)>0">
+      <xsl:choose>
+	<xsl:when test="contains($xlang,'-')">
+	  <xsl:value-of select="concat('%',substring-before($xlang,'-'),':')"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="concat('%',$xlang,':')"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+  </xsl:variable>
+  <lex:group type="equi" lang="{@lang}" value="{@equiv}"> <!-- value="{$lang}{@equiv}"> --> <!-- for now we only pull %akk equivs anyway -->
     <xsl:variable name="nodes" select="key('equis',concat(@phrase,':',@equiv))"/>
     <xsl:for-each select="$nodes[generate-id(.)
 			  =generate-id(key('lines',concat(@phrase,':',lex:data/@line)))]">

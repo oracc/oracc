@@ -289,7 +289,7 @@
     </xsl:if>
 
     <xsl:if test="string-length($lex-provides-equi)>0">
-      <xsl:call-template name="add-word-equi"/>
+      <xsl:call-template name="add-equi-data"/>
     </xsl:if>
 
     <xsl:apply-templates select="cbd:bib"/>
