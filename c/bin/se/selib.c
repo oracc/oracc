@@ -47,6 +47,7 @@ se_v2(const char *proj)
       if (v2_opt && !strcmp(v2_opt, "yes"))
 	v2 = 1;
     }
+  v2 = 1; /* will remove this function soon */
 }
 
 const char *
