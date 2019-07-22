@@ -7,4 +7,5 @@ fi
 lex-word-get-data.sh $*
 lex-master.sh word
 lex-word-phra.sh
+lex-word-equi.sh
 lex-phra-base.sh

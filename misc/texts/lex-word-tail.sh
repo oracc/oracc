@@ -15,6 +15,6 @@ xsltproc  --stringparam idbase tail $libscripts/lex-data-xis-ids.xsl \
 
 xsltproc $libscripts/xis2tis.xsl 01tmp/lex/tail.xis | tis-sort.plx >02pub/tail.tis
 
-xsltproc $libscripts/lex-data-xis-remap.xsl 01tmp/lex/phra-tail-refs.xml \
-    | xsltproc $libscripts/lex-word-phra-HTML.xsl - \
-	       >01tmp/lex/lex-phra-tail.xhtml
+xsltproc $libscripts/lex-data-xis-remap.xsl 01tmp/lex/phra-tail-refs.xml >01tmp/lex/lex-word-phra-xis-tail.xml
+
+xsltproc $libscripts/lex-word-phra-HTML.xsl 01tmp/lex/lex-word-phra-xis-tail.xml >01tmp/lex/lex-phra-tail.xhtml

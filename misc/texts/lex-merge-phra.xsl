@@ -7,8 +7,11 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		exclude-result-prefixes="lex">
 
+<xsl:param name="tail-file" select="'lex-phra-tail.xhtml'"/>
+  
 <xsl:key name="oid" match="xh:div" use="@o:id"/>
-<xsl:variable name="tail" select="document('lex-phra-tail.xhtml',/)"/>
+  
+<xsl:variable name="tail" select="document($tail-file,/)"/>
   
 <xsl:template match="/*">
   <xsl:copy>

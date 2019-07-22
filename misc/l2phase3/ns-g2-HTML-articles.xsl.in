@@ -109,6 +109,12 @@
   </xsl:if>
 </xsl:variable>
 
+<xsl:variable name="lex-provides-equi">
+  <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-phra)>0">
+    <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-word-equi.xml'"/>
+  </xsl:if>
+</xsl:variable>
+
 <xsl:template match="cbd:articles">
   
   <xsl:if test="string-length($lex-provides-base)">
@@ -117,6 +123,10 @@
   
   <xsl:if test="string-length($lex-provides-word)">
     <xsl:message>Using word-phra data from <xsl:value-of select="$lex-provides-word"/></xsl:message>
+  </xsl:if>
+
+  <xsl:if test="string-length($lex-provides-equi)">
+    <xsl:message>Using word-equi data from <xsl:value-of select="$lex-provides-equi"/></xsl:message>
   </xsl:if>
 
   <xsl:call-template name="make-html">
@@ -278,6 +288,10 @@
       <xsl:call-template name="add-word-data"/>
     </xsl:if>
 
+    <xsl:if test="string-length($lex-provides-equi)>0">
+      <xsl:call-template name="add-word-equi"/>
+    </xsl:if>
+
     <xsl:apply-templates select="cbd:bib"/>
 
     <!--
@@ -380,6 +394,20 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <!-- @@OB@@ is edited by the server, not by the Make .in procedure -->
       <xsl:variable name="src" select="concat('@@OB@@/www/dcclt/cbd/sux/wp/',$n,'.html')"/>
       <h2 class="lex" id="phrases">Phrase Data</h2>
+      <xsl:element name="xi:include">
+	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+      </xsl:element>
+    </xsl:if>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="add-equi-data">
+  <xsl:variable name="n" select="@oid"/>
+  <xsl:for-each select="document($lex-provides-equi)">
+    <xsl:if test="string-length(key('oid',$n)/@id)>0">
+      <!-- @@OB@@ is edited by the server, not by the Make .in procedure -->
+      <xsl:variable name="src" select="concat('@@OB@@/www/dcclt/cbd/sux/eq/',$n,'.html')"/>
+      <h2 class="lex" id="phrases">Associated Phrases</h2>
       <xsl:element name="xi:include">
 	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
       </xsl:element>

@@ -206,7 +206,7 @@ process_text(struct run_context *run, unsigned char **lines)
   int saved_check_only = check_only;
   extern int auto_lg;
 
-  word_matrix = 0;
+  lexical = word_matrix = 0;
   labtab = create_labtab();
   text->xmlns = xtf_xmlns;
   doctype = e_transliteration;
