@@ -41,21 +41,30 @@ if [ "$g2c" != "" ]; then
     done
 fi
 
-# if lexdata is being made the XHTML files are in 01tmp/lex/cbd/$lang/{pb,wp}
-if [ -d 01tmp/lex/cbd/sux/pb ]; then
-    echo installing lex data cbd/sux/pb
-    mv 01tmp/lex/cbd/sux/pb $webdir/cbd/sux
-fi
+# Do this late so that all the necessary support files have been built
+o2-lex.sh
 
-if [ -d 01tmp/lex/cbd/sux/wp ]; then
-    echo installing lex data cbd/sux/wp
-    mv 01tmp/lex/cbd/sux/wp $webdir/cbd/sux
-fi
+# ## THIS IS NOW DONE IN l2p3-install-cbd.sh
+# # if lexdata is being made the XHTML files are in 01tmp/lex/cbd/$lang/{pb,wp,eq}
+# if [ -d 01tmp/lex/cbd/sux/pb ]; then
+#     echo installing lex data cbd/sux/pb
+#     mv 01tmp/lex/cbd/sux/pb $webdir/cbd/sux
+# fi
 
-if [ -r 01bld/cat.geojson ]; then
-    mkdir -p $webdir/downloads
-    cp 01bld/cat.geojson $webdir/downloads
-fi
+# if [ -d 01tmp/lex/cbd/sux/wp ]; then
+#     echo installing lex data cbd/sux/wp
+#     mv 01tmp/lex/cbd/sux/wp $webdir/cbd/sux
+# fi
+
+# if [ -d 01tmp/lex/cbd/sux/eq ]; then
+#     echo installing lex data cbd/sux/eq
+#     mv 01tmp/lex/cbd/sux/eq $webdir/cbd/sux
+# fi
+
+# if [ -r 01bld/cat.geojson ]; then
+#     mkdir -p $webdir/downloads
+#     cp 01bld/cat.geojson $webdir/downloads
+# fi
 
 jumps=`oraccopt . outline-cbd-jumps`
 if [ "$jumps" == "yes" ]; then

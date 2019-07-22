@@ -136,8 +136,6 @@ if [ -r 01bld/pleiades.tab ]; then
     cp 01bld/pleiades.tab 02pub
 fi
 
-o2-lex.sh
-
 if [ -r 01bld/sux/articles.xml ]; then
     xsltproc $ORACC_BUILDS/lib/scripts/l2p2-oxtab.xsl 01bld/sux/articles.xml \
 	     >01bld/sux/oidxid.tab

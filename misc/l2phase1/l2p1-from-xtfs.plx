@@ -61,7 +61,7 @@ $textlist = '01bld/lists/have-lem.lst' unless $textlist;
 open(T,$textlist) || die "l2p1-from-xtfs.plx: can't open '$textlist'\n";
 while (<T>) {
     chomp;
-    warn "l2p1-from-xtfs.plx: processing $_\n";
+#    warn "l2p1-from-xtfs.plx: processing $_\n";
     my $p = '';
     s/\@.*$//; # remove cat element from proxy.lst
     if (/^(.*?):(.*?)$/) {
