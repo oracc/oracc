@@ -69,6 +69,7 @@ sub forms_align {
 sub map_form {
     my($args,$entry,$form) = @_;
     $entry =~ s/\s+\[(.*?)\]\s+/[$1]/;
+    $form =~ s/form\!/form/;
     print $map_fh "add form $entry => $form\n";
 }
 
