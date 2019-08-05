@@ -132,8 +132,15 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
 	fp->f2.pos = fp->finds[0]->f2.pos;
       else
 	{
-	  vwarning2(file, fp->lnum, "%s: must give POS with new lemm", fp->sublem);
-	  ++status;
+#if 0
+	  if (bootstrap_mode)
+	    return 1;
+	  else
+#endif
+	    {
+	      vwarning2(file, fp->lnum, "%s: must give POS with new lemm", fp->sublem);
+	      ++status;
+	    }
 	}
     }
 
@@ -167,9 +174,17 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
     }
   else
     {
-      fp->f2.sense = fp->f2.gw;
+      if (fp->fcount && fp->finds && fp->finds[0]->f2.sense)
+	fp->f2.sense = fp->finds[0]->f2.sense;
+      else
+	fp->f2.sense = fp->f2.gw;
       if (!fp->f2.epos)
-	fp->f2.epos = fp->f2.pos;
+	{
+	  if (fp->fcount && fp->finds && fp->finds[0]->f2.epos)
+	    fp->f2.epos = fp->finds[0]->f2.epos;
+	  else
+	    fp->f2.epos = fp->f2.pos;
+	}	  
     }
 
   if (BIT_ISSET(fp->f2.core->features,LF_BASE) && !fp->f2.base)

@@ -1104,6 +1104,11 @@ sub
 make_dynacat {
     my @todo = @_;
     my $cat_list = `oraccopt . catalog-build-list`;
+
+    if ($cat_list) {
+	die "$0: config.xml's catalog-build-list = $cat_list is unreadable or missing. Stop.\n"
+	    unless -r $cat_list;
+    }
     my $list = $cat_list || '01bld/lists/approved.lst';
     my $pcat = "01bld/cat/dynamic-p.xml";
     my $qcat = "01bld/cat/dynamic-q.xml";
@@ -1121,9 +1126,13 @@ make_dynacat {
     if ($#todo >= 0) {
 	@lst = @todo;
     } else {
-	open(L,$list) || die;
-	@lst = (<L>); chomp(@lst);
-	close(L);
+	if (-r $list) {
+	    open(L,$list);
+	    @lst = (<L>); chomp(@lst);
+	    close(L);
+	} else {
+	    warn "$0: proceeding without $list.\n";
+	}
     }
     local($/) = undef;
     my @trylist = ();

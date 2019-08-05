@@ -656,7 +656,7 @@ sig_context_langs(struct sig_context *scp, const char *langs)
 		    {
 		      struct xli *xlip;
 		      xlem_tried[lcp->code] = 1;
-		      if ((xlip = xli_system(langp[i])))
+		      if ((xlip = xli_system(lcp->name)))
 			{
 			  xlem[lcp->code] = xlip;
 			  if (xlip->init)

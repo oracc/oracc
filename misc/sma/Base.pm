@@ -39,9 +39,11 @@ load {
     my($proj) = @_;
     my $glo = "@@ORACC@@/pub/epsd2/sux.glo";
     my $qpn = "@@ORACC@@/pub/epsd2/qpn.glo";
+    my $sal = "@@ORACC@@/pub/epsd2/sux-x-emesal.glo";
     $sma_debug = $ORACC::SMA::verbose;
     load_glo($proj,$glo);
-#    load_glo($proj,$qpn);
+    load_glo($proj,$qpn);
+    load_glo($proj,$sal);
     ORACC::SL::BaseC::init(1);
 }
 
@@ -50,6 +52,7 @@ load_glo {
     my($proj,$glo) = @_;
     open(GLO, $glo) || die "open failed on $glo";
     my $lemma = undef;
+    my $lemma_no_pos = undef;
     my $bstar = '';
     my $in_bases = 0;
     my @b = ();
@@ -61,6 +64,7 @@ load_glo {
 		next;
 	    }
 	    $lemma = "$cf\[$gw\]$pos";
+	    $lemma_no_pos = "$cf\[$gw\]";
 #	    push @{$no_pos_lemma{"$cf\[$gw\]"}}, $lemma;
 	    $bstar = 0;
 	    @b = ();
@@ -87,7 +91,8 @@ load_glo {
 		    }
 		}
 	    }
-	    @{$bases{$lemma}} = @b;
+	    push @{$bases{$lemma}}, @b;
+	    push @{$bases{$lemma_no_pos}}, @b;
 	    my @b_nodet = @b;
 	    map { s/\{.*?\}//g; $_ } @b_nodet;
 	    if ($#b_nodet >= 0) {
@@ -97,7 +102,7 @@ load_glo {
 		my %u = ();
 		@u{@b_nodet} = ();
 		@u{@b_undet} = ();
-		@{$nodet_bases{$lemma}} = keys %u;
+		push @{$nodet_bases{$lemma}}, keys %u;
 	    }
 	    ++$in_bases;
 	} else {
@@ -105,6 +110,7 @@ load_glo {
 	}
     }
     close(GLO);
+#    use Data::Dumper; open(B,'>bases.log'); print B Dumper \%bases; close(B);
 }
 
 sub

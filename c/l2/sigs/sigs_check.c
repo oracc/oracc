@@ -156,6 +156,8 @@ posepos_ok(struct f2 *f1, struct f2 *f2)
 int
 sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild)
 {
+  int sub = 0;
+  extern int wordset_debug;
   if (gw_wild)
     {
       /* blank GW is a wildcard and matches any GW/SENSE */
@@ -168,17 +170,23 @@ sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild)
   /* else: setup_set will index gw instead of sense */
   setup_set(f1);
   setup_set(f2);
-  switch (w2_subset(f2->words, f1->words))
+  sub = w2_subset(f2->words, f1->words);
+  if (wordset_debug)
+    fprintf(stderr, "wordset result = %d (f1->gw=%s; f2->gw=%s)\n", sub, f1->gw, f2->gw);
+  switch (sub)
     {
-    case W2_NONE:
-    case W2_UNKNOWN:
-      return 0;
     case W2_PARTIAL:
     case W2_FULL:
       return 1;
+    case W2_NONE:
+    case W2_UNKNOWN:
+      /* return 0 */; /* FALL THROUGH TO GW CHECK */
     }
-  if (!strcmp((char*)f1->gw,(char*)f2->gw))
+  /*if (!strcmp((char*)f1->gw,(char*)f2->gw))*/
+  if ((!f1->sense || !*f1->sense)
+      && (!strcmp((char*)f1->gw,(char*)f2->gw)))
     return 1;
+
   return 0;
 }
 
@@ -278,6 +286,17 @@ cof_ok(struct ilem_form *ifp, struct f2 *f2p, int force_sense)
   return 1;
 }
 
+static int skip_pass1 = 0;
+struct sig const * const *
+sigs_inst_in_sigset_pass2(struct xcl_context *xcp, struct ilem_form *ifp, 
+		    struct sigset *sp, int *nfinds)
+{
+  struct sig const * const *ret = NULL;
+  skip_pass1 = 1;
+  ret = sigs_inst_in_sigset(xcp,ifp,sp,nfinds);
+  skip_pass1 = 0;
+  return ret;
+}
 /* This routine is only called from sigs_lookup when there is a CF */
 struct sig const * const *
 sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp, 
@@ -293,6 +312,9 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
   if (ifp->type && !strcmp(ifp->type, "cof-tail"))
     return NULL;
 
+  if (skip_pass1)
+    pass1 = 0;
+  
  top:
 
   /* select a candidate list: 

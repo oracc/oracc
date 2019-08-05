@@ -59,6 +59,7 @@ while (<>) {
 	    $line =~ s/\}\}/ /g;
 	    $line =~ s/^\S*\s+//;
 	    $line =~ s/\s$//;
+	    $line =~ s/\%[a-z]+\s*//g;
 	    $lem =~ s/^\S*\s+//;
 	    $lem =~ s/\s$//;
 	    $line =~ s/<<.*?>>//g;
@@ -66,12 +67,15 @@ while (<>) {
 	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
 	    $line =~ s/\(::\)//g; # for etcsl
+	    $line =~ s/:\(MIN\)//g; # for liturgies
+	    $line =~ s/:\?//g; # for liturgies
 
 	    my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
 	    my @lem = grep(defined&&length, split(/;\s+/, $lem));
 	    if ($#line != $#lem) {
 		warn("$.: $#line != $#lem\n");
-		warn("$.: ", join('|',@line),"\n");
+		warn("$.:tlt: ", join('|',@line),"\n");
+		warn("$.:lem: ", join('|',@lem),"\n");
 		print("#lem: ", join('; ', @lem), "\n") unless $dump_table;
 	    } else {
 		for (my $i = 0; $i <= $#line; ++$i) {

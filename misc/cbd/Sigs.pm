@@ -401,8 +401,9 @@ sub sigs_simple {
 		$p =~ s/^\!//;
 		if (exists $bits{$p}) {
 		    $simple_bases{$basekey} = $p;
-		} else {		    
-		    pp_notice("$basekey: preferred base $p unknown; defaulting to $bits[0]");
+		} else {
+		    my $bits0 = $bits[0] || '<no default>';
+		    pp_notice("$basekey: preferred base $p unknown; defaulting to $bits0");
 		    $simple_bases{$basekey} = $bits[0];
 		}
 	    } else {

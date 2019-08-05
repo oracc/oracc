@@ -338,10 +338,14 @@ parse_vpr {
 		$gsub = $g[$g_index];
 		@breg = ($b[$g_index]);
 	    }
-	    ($vpr[1],$rest,$dreg) = @{$mp_data{$gsub}};
-	    g_reg(1,[$sreg,\@breg,@$dreg]);
-	    $g_index += $n;
-	    $vx = 2;
+	    if ($gsub && $mp_data{$gsub}) {
+		($vpr[1],$rest,$dreg) = @{$mp_data{$gsub}};
+		g_reg(1,[$sreg,\@breg,@$dreg]);
+		$g_index += $n;
+		$vx = 2;
+	    } else {
+		warn "mp passed but no mp_data for mp($g[$g_index],$g[$g_index+1])\n";
+	    }
 	}
 	
 	last PARSE if vpr_terminal($vx,$rest,$g_index,@g);
@@ -716,11 +720,12 @@ mp {
     if (exists $mpg{$g}) {
 	if ($g eq 'a') {
 	    return 1 if $_[0] eq 'ba' || $_[0] eq 'ma';
-	} elsif ($g eq 'i3' || $g eq 'i') {
+	} elsif ($g eq 'i3' || $g eq 'i₃' || $g eq 'i') {
 	    return 1 if $_[0] eq 'bi2' || $_[0] eq 'bi₂' || $_[0] eq 'mi';
 	} elsif ($g eq 'gi4' || $g eq 'gi₄') {
 	    return 1 if exists($cpg{$_[0]}) || $_[0] =~ /^i[nb]$dig*$/;
 	} else {
+	    return 0 if $g eq 'uš' || $g eq 'uc';
 	    return 1 if (($g ne 'nu' || $_[0] !~ /^u[cš]$/) && $g ne 'ba');
 	    return 2 if ($g eq 'nu' && $_[0] =~ /^u[cš]$/)
 		|| ($g eq 'ba' && $_[0] eq 'ra');

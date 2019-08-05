@@ -14,6 +14,7 @@ EXTRA_DIST = \
 	Number.pm \
 	ParseManual.pm \
 	Rootless.pm \
+	StripNSF.pm \
 	StripVPR.pm \
 	VPR.pm \
 	VSF.pm \

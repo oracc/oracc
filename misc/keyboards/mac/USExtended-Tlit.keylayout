@@ -1309,10 +1309,6 @@
 		  <when state="none" output="."/>
 		  <when state="tlit" output="·"/>
 		</action>
-		<action id="+">
-		  <when state="none" output="+"/>
-		  <when state="tlit" output="⁺"/>
-		</action>
 		<action id="A">
 			<when state="tlit" output="Ā"/>
 			<when state="tlit_s" output="Á"/>

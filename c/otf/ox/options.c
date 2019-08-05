@@ -6,6 +6,7 @@
 #include "ox.h"
 #include "globals.h"
 
+extern int wordset_debug;
 int v_flag = 0;
 int
 ox_options(int argc, char **argv)
@@ -173,7 +174,10 @@ ox_options(int argc, char **argv)
 	case 'V':
 	  ++verbose;
 	  if (verbose > 1)
-	    ng_debug = 1;
+	    {
+	      ng_debug = 1;
+	      wordset_debug = 1;
+	    }
 	  break;
 	case 'w':
 	  do_cuneify = 1;

@@ -41,11 +41,13 @@ default_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
     return 1;
 }
 
-/* this must return 1 if the ref_fp->gw matches fp->sense */
+/* this must return 1 if the ref_fp->gw matches fp->sense.
+ * Argument order in sense_ok is important--we want ref_fp to test as subset of fp.
+ */
 static int 
 rematch_on_sense(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
-  int ret = sense_ok(&fp->f2, &ref_fp->f2, 0);
+  int ret = sense_ok(&ref_fp->f2, &fp->f2, 0);
   return !ret;
 #if 0
   if (ref_fp->f2.cf && fp->f2.norm)
@@ -252,7 +254,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
   static int nfinds = 0;
   struct sig const * const *sigs_found = NULL;
   struct sigset *sp_parent = NULL;
-
+  int look_pass2 = 0;
+  
   extern int lem_autolem;
   extern int lem_dynalem;
 
@@ -278,7 +281,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 
   for (sp = list_first(sigsets); sp; sp = list_next(sigsets))
     {
-      ifp->fcount = nfinds = 0; /* must reset these each time */
+      look_pass2 = ifp->fcount = nfinds = 0; /* must reset these each time */
       ifp->finds = NULL;
       sigs_found = NULL;
 
@@ -336,7 +339,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	{
 	  BIT_CLEAR(ifp->f2.flags, F2_FLAGS_NO_FORM);
 	  BIT_CLEAR(ifp->f2.flags, F2_FLAGS_PARTIAL);
-	  sigs_found = look->test(xcp,ifp,sp,&nfinds);
+
+	  if (look_pass2)
+	    sigs_found = sigs_inst_in_sigset_pass2(xcp,ifp,sp,&nfinds);
+	  else
+	    sigs_found = look->test(xcp,ifp,sp,&nfinds);
 
 	  /* fprintf(stderr, "sigs_found after %s:%s = %p\n", sp->project, sp->lang, (void*)sigs_found); */
 
@@ -515,7 +522,21 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  struct ilem_form **fpp;
 	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
 			    (select_func*)rematch_on_sense, NULL, &tmp_nfinds);
-	  if (tmp_nfinds < nfinds && tmp_nfinds > 0)
+	  if (tmp_nfinds == 0)
+	    {
+#if 1
+	      /* If there's no match on GW/SENSE we can't assume any of the CF matches is good */
+	      ifp->fcount = nfinds = 0;
+	      ifp->finds = NULL;
+	      sigs_found = NULL;
+	      if (look_pass2 == 0)
+		{
+		  look_pass2 = 1;
+		  goto retry_after_cache;
+		}
+#endif
+	    }
+	  else if (tmp_nfinds < nfinds)
 	    {
 	      int i;
 	      for (i = 0; i < tmp_nfinds; ++i)
