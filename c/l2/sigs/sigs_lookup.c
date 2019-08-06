@@ -516,7 +516,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    }
 	}
 
-      if (nfinds > 1 && !ifp->f2.sense)
+      if (BIT_ISSET(ifp->f2.flags,F2_FLAGS_PARTIAL) || (nfinds > 1 && !ifp->f2.sense))
 	{
 	  int tmp_nfinds = 0;
 	  struct ilem_form **fpp;
@@ -529,6 +529,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      ifp->fcount = nfinds = 0;
 	      ifp->finds = NULL;
 	      sigs_found = NULL;
+	      BIT_CLEAR(ifp->f2.flags,F2_FLAGS_PARTIAL);
 	      if (look_pass2 == 0)
 		{
 		  look_pass2 = 1;
