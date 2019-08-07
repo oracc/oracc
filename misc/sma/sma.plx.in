@@ -42,6 +42,7 @@ GetOptions(
     "project:s"=>\$project,
     "sig"=>\$sig_output,
     "slave"=>\$slave,
+    "try"=>\$ORACC::SMA::try_only_zero,
     "verbose"=>\$verbose,
     "xli"=>\$xli,
     ) || pod2usage(1);
@@ -358,6 +359,7 @@ t {
 	    }
 	}
       sub_retry:
+	return 1 if $ORACC::SMA::try_only_zero;
 	if ($try_number < MAX_TRIES) {
 	    ++$try_number;
 	    if ($try_number == 1) { 

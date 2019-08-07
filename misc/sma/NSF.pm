@@ -79,7 +79,7 @@ my %poss_data = (
 my @post = qw/
     e
     a
-    gin7 gin₇ de ŋen
+    gi gin7 gin₇ de ŋen
     ce3 še₃ ac aš ec eš ec2 eš₂ ic iš uc uš
     ra ar er ir ur ur2 ur₂
     da
@@ -97,6 +97,7 @@ my %post_data = (
     'gin7'=>'gin',
     'ŋen'=>'gin',
     'gin₇'=>'gin',
+    'gi-in'=>'gin',
     'de-ej3'=>'gin',
     'de-eŋ₃'=>'gin',
     'ce3'=>'eše',
@@ -381,6 +382,11 @@ parse_nsf {
 			 && $g_index < $#g 
 			 && $g[$g_index+1] =~ /^e[jŋ][3₃]$/) {
 		    $nsf[7] = $post_data{'de-ej3'};
+		    $g_index += 2;
+		} elsif ($g[$g_index] eq 'gi' 
+			 && $g_index < $#g 
+			 && $g[$g_index+1] =~ /^in$/) {
+		    $nsf[7] = $post_data{'gi-in'};
 		    $g_index += 2;
 		} else {
 		    $nsf[7] = $post_data{$g[$g_index]};

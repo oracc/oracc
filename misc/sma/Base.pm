@@ -18,6 +18,7 @@ binmode STDIN, ':utf8';
 #binmode STDOUT, ':utf8';
 
 $ORACC::SMA::no_external_bases = 0;
+$ORACC::SMA::try_only_zero = 0;
 $ORACC::SMA::period = '';
 $ORACC::SMA::verbose = 1;
 
@@ -143,10 +144,9 @@ parse {
 	@bases = ($arg_base);
     } else {
 	if ($try_number == 0) {
+	    @bases = ($arg_base) if $arg_base;
 	    if ($bases{$lemma}) {
-		@bases = @{$bases{$lemma}};
-	    } else {
-		@bases = ($arg_base);
+		push @bases, @{$bases{$lemma}};
 	    }
 	} elsif ($try_number == 1) {
 	    # we are trying sans determinatives
