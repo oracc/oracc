@@ -18,6 +18,8 @@ use ORACC::CBD::Forms;
 
 system 'rm', '-f', '.super-compare-failed';
 
+warn "$0 invoked as: @ARGV\n";
+
 my %args = pp_args();
 
 my @base_cbd = ();

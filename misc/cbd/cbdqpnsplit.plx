@@ -46,7 +46,12 @@ close(N);
 
 open(S,'>split-lang.glo');
 for (my $i = 0; $i < $#s; ++$i) {
-    if ($s[$i] =~ /^\@entry/) {
+    if ($s[$i] =~ /^\@proj/) {
+	print S $s[$i];
+	print S "\@lang $split_lang\n";
+	$s[$i] =~ s/\@project\s+//; chomp $s[$i];
+	print S "\@name $s[$i],$split_lang\n\n";
+    } elsif ($s[$i] =~ /^\@entry/) {
 	my $ok = has_form($i,@s);
 	if ($ok) {
 	    while ($s[$i]) {

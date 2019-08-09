@@ -56,7 +56,7 @@ sub forms_align {
 		$f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
 		#		if ($fi{$f}) {
 		if (${$forms{$if}}{$f}) {
-		    warn "$if: incoming form $f already in glossary\n";
+		    # warn "$if: incoming form $f already in glossary\n";
 		} else {
 		    map_form($args,$if,$fullform)
 		}

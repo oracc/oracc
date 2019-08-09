@@ -6,14 +6,18 @@ if [ "$superlang" == "" ]; then
     exit 1
 fi
 if [ -r 00lib/supersig.lst ]; then
-    for a in `cat 00lib/supersig.lst`; do
+    for a in `grep -v '^#' 00lib/supersig.lst`; do
 	sigproj=`/bin/echo -n $a | cut -d: -f1`
 	if [[ $a = *":"* ]]; then
 	    siglang=`/bin/echo -n $a | cut -d: -f2`
 	else
 	    siglang=""
 	fi
-	sig=$ORACC_BUILDS/$sigproj/01bld/from-xtf-glo.sig
+	if [ -r $ORACC_BUILDS/$sigproj/01bld/from-xtf-glo.sig ]; then
+	    sig=$ORACC_BUILDS/$sigproj/01bld/from-xtf-glo.sig
+	else
+	    sig=$ORACC_BUILDS/$sigproj/01bld/from-prx-glo.sig
+	fi
 	sig01=`/bin/echo -n $sigproj | tr / -`
 	sig01="01sig/$sig01.sig"
 	proj=`oraccopt`

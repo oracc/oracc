@@ -61,10 +61,12 @@ foreach my $a (@ARGV) {
 sub fix {
     my $x = $_[0];
     $x =~ s/\+//;
-    $x =~ s/\[\]/[1]/;
-    if ($from{$x}) {
+    my $x2 = $x;
+    $x2 =~ s/\[\]/[1]/;
+    if ($from{$x} || $from{$x2}) {
 	my $tmp = $from{$x};
-	$tmp =~ s/\].*$/]/;
+	$tmp = $from{$x2} unless $tmp;
+#	$tmp =~ s/\].*$/]/;
 	warn "fixing $x => $tmp\n";
 	return $tmp;
     } else {
