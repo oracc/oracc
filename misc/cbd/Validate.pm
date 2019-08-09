@@ -558,15 +558,27 @@ sub v_bases {
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	ORACC::SL::BaseC::pedantic(1) if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/);
+	if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
+	    $ORACC::SL::report_all = 1;
+	    ORACC::SL::BaseC::pedantic(1)
+	}
 	pp_trace("BaseC::check: $p");
 	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
-	unless ($lang =~ /qpn/) {
-	    atf_add($p,$lang) if $p;
-	}
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
+	} elsif (@ORACC::SL::fixes_needed >= 0) {
+	    foreach my $f_n (@ORACC::SL::fixes_needed) {
+		my $new_p = bases_fix_base($p,$f_n[0], $f_n[1]);
+		if ($new_p) {
+		    $p = $new_p;
+		} else {
+		    pp_warn("(bases) autofix of $p ($f_n[0] -> $f_n[1]) failed");
+		}
+	    }
+	}
+	unless ($lang =~ /qpn/) {
+	    atf_add($p,$lang) if $p;
 	}
 	unless (pp_sl_messages($p)) {
 	    if (defined $prisigs{$psig} && !is_allowed($p,$prisigs{$psig})) {

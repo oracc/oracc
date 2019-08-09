@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/bases_align bases_hash bases_init bases_log bases_log_errors bases_fixes
-    bases_process bases_stats bases_term bases_merge bases_string bases_serialize/;
+    bases_process bases_stats bases_term bases_merge bases_string bases_serialize bases_fix_base/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -22,6 +22,19 @@ my %base_cpd_flags = ();
 my $map_fh = undef;
 
 my $p_entry = '';
+
+sub bases_fix_base {
+    my($b,$f,$p) = @_;
+    my $orig_b = $b;
+    foreach my $f (@f) {
+	my $fQ = quotemeta($f);
+	unless ($lines[$l-1] =~ s#(^|$bound)$fQ($bound|$)#$1$p$2#g) {
+	    warn "no $f in $b\n" if $base_trace;
+	} else {
+	    warn "---\nin: ${orig_b}ou: $b---\n" if $base_trace;
+	}
+    }
+}
 
 sub bases_tab {
     my %base_bases = ();
