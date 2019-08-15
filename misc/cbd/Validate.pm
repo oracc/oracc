@@ -567,15 +567,15 @@ sub v_bases {
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
-	} elsif (@ORACC::SL::fixes_needed >= 0) {
-	    foreach my $f_n (@ORACC::SL::fixes_needed) {
-		my $new_p = bases_fix_base($p,$f_n[0], $f_n[1]);
-		if ($new_p) {
-		    $p = $new_p;
-		} else {
-		    pp_warn("(bases) autofix of $p ($f_n[0] -> $f_n[1]) failed");
-		}
-	    }
+#	} elsif (@ORACC::SL::fixes_needed >= 0) {
+#	    foreach my $f_n (@ORACC::SL::fixes_needed) {
+#		my $new_p = bases_fix_base($p,$f_n[0], $f_n[1]);
+#		if ($new_p) {
+#		    $p = $new_p;
+#		} else {
+#		    pp_warn("(bases) autofix of $p ($f_n[0] -> $f_n[1]) failed");
+#		}
+#	    }
 	}
 	unless ($lang =~ /qpn/) {
 	    atf_add($p,$lang) if $p;

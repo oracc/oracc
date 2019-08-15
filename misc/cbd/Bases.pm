@@ -26,14 +26,14 @@ my $p_entry = '';
 sub bases_fix_base {
     my($b,$f,$p) = @_;
     my $orig_b = $b;
-    foreach my $f (@f) {
+#    foreach my $f (@f) {
 	my $fQ = quotemeta($f);
-	unless ($lines[$l-1] =~ s#(^|$bound)$fQ($bound|$)#$1$p$2#g) {
+	unless ($b =~ s#(^|$bound)$fQ($bound|$)#$1$p$2#g) {
 	    warn "no $f in $b\n" if $base_trace;
 	} else {
 	    warn "---\nin: ${orig_b}ou: $b---\n" if $base_trace;
 	}
-    }
+#    }
 }
 
 sub bases_tab {

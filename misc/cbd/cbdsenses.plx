@@ -8,6 +8,8 @@ if ($ARGV[0] eq '-m') {
     shift @ARGV;
 }
 
+my $file = $ARGV[0];
+
 my $first_sense = '';
 my @senses = ();
 
@@ -19,7 +21,7 @@ while (<>) {
 	my $s = $1;
 	if ($first_sense) {
 	    if ($first_sense =~ /$s/) {
-		warn "sux.glo:$.: suspicious second sense\n";
+		warn "$file:$.: suspicious second sense\n";
 #	    } elsif ($s =~ /$first_sense/) {
 #		warn "sux.glo:$.: suspicious first sense\n";
 #		$first_sense = $s;
