@@ -19,7 +19,7 @@ fi
 echo l2p3.sh: using configuration file $xcf
 
 rm -fr $webdir/cbd ; mkdir -p $webdir/cbd
-g2c=`find 01bld/* -name '*.g2c' -maxdepth 1`
+g2c=`find 01bld/* -maxdepth 1 -name '*.g2c'`
 if [ "$g2c" != "" ]; then
     for g2c in `ls 01bld/*/*.g2c` ; do
 	# -r fails if the glossary is empty because it points to *.cbd,

@@ -66,7 +66,7 @@ while (<>) {
 	    $line =~ s/--/-/;
 	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
-	    $line =~ s/\(::\)//g; # for etcsl
+	    $line =~ s/\(\d*::\d*\)//g; # for etcsl
 	    $line =~ s/:\(MIN\)//g; # for liturgies
 	    $line =~ s/:\?//g; # for liturgies
 
