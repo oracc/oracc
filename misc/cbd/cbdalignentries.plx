@@ -33,4 +33,6 @@ entries_init(\%args);
 entries_align(\%args, \@base_cbd, \@cbd);
 entries_term();
 
+pp_diagnostics();
+
 1;
