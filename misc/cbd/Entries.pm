@@ -33,9 +33,13 @@ sub entries_align {
 	    $incoming_entries{$1} = $i;
 	    unless (exists $entries{$entry}) {
 		# collect entry and list parts needed by it
-		my $e = grab_entry($i,@cbd);
-		map_entry($args, $entry, $e, $xmap_fh);
-		++$added_entries{$entry};
+		if ($xmap_fh) {
+		    my $e = grab_entry($i,@cbd);
+		    map_entry($args, $entry, $e, $xmap_fh);
+		    ++$added_entries{$entry};
+		} else {
+		    pp_warn("entry $entry not in base glossary");
+		}
 	    }
 	    while ($cbd[$i] !~ /^\@end\s+entry/) {
 		if ($cbd[$i] =~ /^\@parts\s+(.*?)\s*$/) {
