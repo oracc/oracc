@@ -203,6 +203,11 @@ sigs_new_sig(struct xcl_context *xcp, struct ilem_form *fp)
 	  vwarning2(file, fp->lnum, "%s: must give BASE with new lemm in lang %s", fp->sublem, fp->f2.core->name);
 	  ++status;
 	}
+      else if (!fp->f2.base && fp->f2.morph)
+	{
+	  vwarning2(file, fp->lnum, "%s: must give BASE when giving MORPH in lang %s", fp->sublem, fp->f2.core->name);
+	  ++status;
+	}
 #endif
     }
   if (BIT_ISSET(fp->f2.core->features,LF_NORM) && !fp->f2.norm)

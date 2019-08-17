@@ -54,6 +54,7 @@ xli_sux_handler(struct xcl_context *xcp, struct xli *xlip, struct ilem_form *f, 
 	      if (f2p->base)
 		sprintf(buf+strlen(buf),"\t%s",f2p->base);
 	      strcat(buf,"\n");
+
 	      xli_send(xlip,(unsigned char *)buf);
 	      res = xli_recv(xlip);
 
