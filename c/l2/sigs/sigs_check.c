@@ -94,7 +94,7 @@ cfnorm_ok(struct f2 *f1, struct f2 *f2)
 	     form could be using the cf-position to
 	     give a norm; otherwise the notation 
 	     a[thing]N$ would result in norm=a */
-	  if (f2->norm)
+	  if (f2->norm && BIT_ISSET(f2->flags, F2_FLAGS_LEM_BY_NORM))
 	    {
 	      ok = field_ok(f1->cf, f2->norm);
 #if 0
