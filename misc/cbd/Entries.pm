@@ -2,12 +2,16 @@ package ORACC::CBD::Entries;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/entries_align entries_init entries_term/;
+@EXPORT = qw/entries_align entries_init entries_term entries_merge/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::CBD::Bases;
+use ORACC::CBD::Forms;
+use ORACC::CBD::Senses;
+
 use Data::Dumper;
 
 my %entry_indexes = ();
@@ -132,13 +136,15 @@ sub entries_merge {
     my($base,$from,$b_file,$b_line,$s_file,$s_line) = @_;
     my @b = @$base;
     my @s = @$from;
+
     my $base_b = find_bases(@b);
     my $base_s = find_bases(@s);
+    my $new_b_hash = undef;
+    my $new_b = '';
     if ($base_b && $base_s) {
 	if ($base_b) {
-	    my %new_bases = bases_merge($base_b, $base_s, undef);
-	    warn Dumper \%new_bases;
-	    exit 1;
+	    $new_b_hash = bases_merge($base_b, $base_s, undef);
+	    warn Dumper $new_b_hash;
 	}
     } else {
 	if ($base_s) {
@@ -147,7 +153,37 @@ sub entries_merge {
 	    pp_warn("dropping bases from source glo because none in base glo");
 	}
     }
-    @b;
+    if ($new_b_hash) {
+	$new_b = bases_serialize(%$new_b_hash);
+	warn "new bases => $new_b\n";
+    } else {
+	$new_b = $base_b;
+    }
+
+    my @new_f = forms_merge(\@b,\@s,%{$$new_b_hash{'#map'}});
+    my @new_s = senses_merge_2(\@b,\@s);
+    
+    my @n = ();
+    my $forms_done = 0;
+    my $senses_done = 0;
+    foreach my $b (@b) {
+	if ($b =~ /^\@bases/) {
+	    push @n, "\@bases $new_b";
+	} elsif ($b =~ /^\@form/) {
+	    unless ($forms_done) {
+		++$forms_done;
+		push @n, @new_f;
+	    }
+	} elsif ($b =~ /^\@sense/) {
+	    unless ($senses_done) {
+		++$senses_done;
+		push @n, @new_s;
+	    }
+	} else {
+	    push @n, $b;
+	}
+    }
+    @n;
 }
 
 sub entries_init {
@@ -162,6 +198,13 @@ sub entries_init {
 
 sub entries_term {
     close(MAP_FH);
+}
+
+sub find_bases {
+    foreach (@_) {
+	return $_ if /^\@bases/;
+    }
+    undef;
 }
 
 1;

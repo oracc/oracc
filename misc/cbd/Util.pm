@@ -131,7 +131,7 @@ sub pp_cbd {
 	    my $cfgw = '';
 	    my $forms_printed = 0;
 	    foreach (@c) {
-		next if /^\000$/;
+		next if /^\000$/ || /^\s*$/;
 		if (/\@entry.*?\s+(.*)$/) {
 		    $cfgw = $1;
 		    my $init_char = first_letter($cfgw);
@@ -145,6 +145,9 @@ sub pp_cbd {
 		    ++$forms_printed;
 		} elsif ($ORACC::CBD::det_minus && /^\@(?:bases|form)/) {
 		    s/\{-/{/g;
+		} elsif (/^\@end\s+entry/) {
+		    chomp;
+		    $_ .= "\n"; # double blank line after entry
 		}
 		print CBD "$_\n";
 	    }

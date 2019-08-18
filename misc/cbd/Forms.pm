@@ -3,8 +3,9 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw forms_det_clean
-    forms_dump forms_load forms_normify forms_print forms_reset forms_validate/;
+@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw
+    forms_det_clean forms_dump forms_load forms_normify forms_print
+    forms_reset forms_validate forms_merge/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -64,6 +65,42 @@ sub forms_align {
 	}
 	# silently ignore missing entries because entries_align gets those
     }
+}
+
+sub forms_find {
+    my @f = ();
+    foreach (@_) {
+	push @f, $_ if /^\@form/;
+    }
+    @f;
+}
+
+sub forms_merge {
+    my($b,$s,%map) = @_;
+    my %b = ();
+    my @b = forms_find(@$b);
+    foreach my $bf (@b) {
+	$bf =~ /\@form\S*\s+(\S+)/;
+	$b{$1} = $bf;
+    }
+    my %s = ();
+    my @s = forms_find(@$s);
+    foreach my $sf (@s) {
+	$sf =~ /\@form\S*\s+(\S+)/;
+	$s{$1} = $sf;
+    }
+    foreach my $sf (keys %s) {
+	unless ($b{$sf}) {
+	    my $sff = $s{$sf};
+	    my($base) = ($sff =~ m#\s/(\S+)#);
+	    if ($map{$base}) {
+		$base = "\Q$map{$base}";
+		$sff =~ s#^(.*?\s+)/\S+(.*)$#$1/${base}$2#;
+	    }
+	    $b{$sf} = $sff;
+	}
+    }
+    sort values %b;
 }
 
 sub map_form {

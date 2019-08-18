@@ -38,8 +38,10 @@ unlink '01bld/cancel';
 
 my %args = pp_args();
 
-if ($args{'edit'} && $args{'force'}) {
-    die "cbdpp.plx: -force is not allowed with -edit. Stop.\n";
+if ($args{'edit'}) {
+    die "cbdpp.plx: -force is not allowed with -edit. Stop.\n"
+	if $args{'force'};
+    $ORACC::CBD::nonormify = 1;
 }
 
 my @cbd = setup_cbd(\%args);
@@ -67,9 +69,10 @@ if (pp_status() && !$args{'force'}) {
 
     if ($args{'edit'}) {
 	@cbd = edit(\%args, @cbd);
+	warn "edit() returned $#cbd lines\n";
 	pp_diagnostics(\%args);
-	# exit 1 if pp_status();
-	warn "cbdpp.plx: exiting after edit.\n";
+#	exit 1 if pp_status();
+	pp_cbd(\%args,@cbd);
 	exit 0;
     }
 

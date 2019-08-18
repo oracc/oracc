@@ -2,7 +2,7 @@ package ORACC::CBD::Senses;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/senses_align senses_collect senses_init senses_term senses_merge senses_string/;
+@EXPORT = qw/senses_align senses_collect senses_init senses_term senses_merge senses_merge_2 senses_string/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -232,6 +232,56 @@ sub de_common {
     } else {
 	%n;
     }
+}
+
+sub senses_find {
+    my @f = ();
+    foreach (@_) {
+	push @f, $_ if /^\@sense/;
+    }
+    @f;
+}
+
+sub senses_merge_2 {
+    my ($b_e,$i_e) = @_;
+    my @bb = senses_find(@$b_e);
+    my @ii = senses_find(@$i_e);
+    my $b = [ @bb ];
+    my $i = [ @ii ];
+    my @newb = ();
+    if ($b) {
+	@newb = @$b;
+
+	my $senses_b_str = senses_string($b);
+	my $senses_i_str = senses_string($i);
+	warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" 
+	    if $ORACC::CBD::PPWarn::trace;
+
+	my %b = index_senses(@$b);
+	#    print Dumper \%b;
+	foreach my $s (@$i) {
+	    my @matches = ();
+	    my $s_no_pos = $s; $s_no_pos =~ s/^\@sense\S*\s+\S+//;		
+	    # does s occur in @b?
+	    foreach my $b (@$b) {
+		my $b_no_pos = $b; $b_no_pos =~ s/^\@sense\S*\s+\S+//;
+		warn "testing b_no_pos $b_no_pos vs s_no_pos $s_no_pos\n";
+		if ($b_no_pos =~ /\Q$s_no_pos/ || $s_no_pos =~ /\Q$b_no_pos/) {
+		    push @matches, $b;
+		}
+	    }
+	    if ($#matches >= 0) {
+		warn "Senses[1] $s == $matches[0]\n" if $ORACC::CBD::PPWarn::trace;
+	    } else {
+		$s =~ s/sense/sense+/;
+		warn "Senses[2] ADD $s\n" if $ORACC::CBD::PPWarn::trace;
+		push @newb, $s;
+	    }	
+	}
+    } else {
+	warn "$0: internal error in senses_merge_2: received undefined bases senses array\n";
+    }
+    @newb;
 }
 
 1;

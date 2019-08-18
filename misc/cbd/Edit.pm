@@ -13,6 +13,7 @@ $ORACC::CBD::Edit::force = 0;
 use ORACC::CBD::Util;
 use ORACC::CBD::C11e;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Entries;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Senses;
 
@@ -87,6 +88,9 @@ sub edit_apply_script {
     my($args, @c) = @_;
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
+    my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
+    my %edit_cache = ();
+    my %deletia = ();
     for (my $i = 0; $i <= $#s; ++$i) {
 	if ($s[$i] =~ /^:cbd (\S+)$/) {
 	    pp_file($1);
@@ -94,33 +98,74 @@ sub edit_apply_script {
 	    $from_line = pp_line($1);
 	} elsif ($s[$i] =~ s/^:map =//) {
 	    --$from_line; # map = line is the one after \@entry
-	    my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
+	    $deletia{$from_line} = 1;
 	    my $eid = ${$cbddata{'entries'}}{$s[$i]};
 	    if ($eid) {
-		my $to_line = ${$cbddata{'entries'}}{$eid,'line'};
-		my $to_end_line = $to_line;
-		until ($c[$to_end_line] =~ /^\@end/ || $i > $#c) {
-		    ++$to_end_line;
+		my $to_line = -1;
+		my @t_slice = ();
+		if ($edit_cache{$eid}) {
+		    ($to_line,@t_slice) = @{$edit_cache{$eid}};
+		} else {
+		    $to_line = ${$cbddata{'entries'}}{$eid,'line'};
+		    my $to_end_line = $to_line;
+		    until ($c[$to_end_line] =~ /^\@end/ || $i > $#c) {
+			++$to_end_line;
+		    }
+		    @t_slice = @c[$to_line .. $to_end_line];
 		}
 		my $from_end_line = $from_line;
 		until ($c[$from_end_line] =~ /^\@end/ || $i > $#c) {
 		    ++$from_end_line;
 		}
 		my @f_slice = @c[$from_line .. $from_end_line];
-		my @t_slice = @c[$to_line .. $to_end_line];
 		my $f = join("\n", @f_slice);
 		my $t = join("\n", @t_slice);
 		warn "map-from block:\n$f\n";
 		warn "-----------------\n";
 		warn "map-to block:\n$t\n";
-		warn "=================\n";
+		warn "-----------------\n";
 		my @res = entries_merge(\@t_slice, \@f_slice, pp_file(), $to_line, pp_file(), $from_line);
+		warn "result block:\n";
+		warn join("\n",@res), "\n";
+		warn "=================\n";
+		@{$edit_cache{$eid}} = ($to_line,@res);
 	    } else {
 		pp_warn("non-existent map target '$s[$i]'");
 	    }
 	}
     }
-    @c;
+    my @newc = ();
+    for (my $i = 0; $i <= $#c; ++$i) {
+	if ($c[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	    my $e = $1;
+	    if ($deletia{$i}) {
+		until ($c[$i] =~ /^\@end\s+entry/) {
+		    ++$i;
+		    last if $i > $#c;
+		}
+		++$i;
+	    } else {
+		my $eid = ${$cbddata{'entries'}}{$e};
+		if ($edit_cache{$eid}) {		    
+		    my($ln,@e) = @{$edit_cache{$eid}};
+		    push @newc, @e;
+		    until ($c[$i] =~ /^\@end\s+entry/) {
+			++$i;
+			last if $i > $#c;
+		    }
+		} else {
+		    until ($c[$i] =~ /^\@end\s+entry/) {
+			push @newc, "$c[$i++]";
+			last if $i > $#c;
+		    }
+		    push @newc, $c[$i];
+		}
+	    }
+	} else {
+	    push @newc, $c[$i];
+	}
+    }
+    @newc;
 }
 
 sub edit_make_script {
