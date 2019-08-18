@@ -73,8 +73,10 @@ my $eid = 'x000001';
 
 my $acd_chars = '->+=';
 my $acd_rx = '['.$acd_chars.']';
-
 $ORACC::CBD::Edit::acd_rx = $acd_rx;
+
+my @acd_ok_tags = qw/entry sense/;
+my %acd_ok_tags = (); @acd_ok_tags{@acd_ok_tags} = ();
 
 my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
     SBJ NP M MOD REL XP NU AN BN CN DN EN FN GN HN IN JN KN LN MN NN
@@ -219,8 +221,8 @@ sub pp_validate {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
-	    #	} elsif ($cbd[$i] =~ /^$acd_rx?@([a-z]+)\s+(.*)\s*$/o
-	} elsif ($cbd[$i] =~ /^($allowed_pre_at_chars)@([a-z]+)/o) {
+	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)\s+(.*)\s*$/o) {
+#	} elsif ($cbd[$i] =~ /^($allowed_pre_at_chars)@([a-z]+)/o) {
 	    my ($pre,$tag) = ($1,$2);
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
@@ -247,9 +249,15 @@ sub pp_validate {
 			pp_warn("internal error: no validator function defined for tag `$tag'");
 		    }
 		}
+		if ($pre) {
+		    pp_warn("edit mark '$pre' doesn't belong on \@$tag")
+			unless exists $acd_ok_tags{$tag};
+		}
 	    } else {
 		pp_warn("\@$1 unknown tag");
 	    }
+	} elsif ($cbd[$i] =~ /^$acd_rx/o) {
+	    push @{$data{'edit'}}, pp_line()-1;
 	} else {
 	    pp_warn("invalid line in glossary: $cbd[$i]");
 	}

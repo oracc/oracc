@@ -13,18 +13,21 @@ $ORACC::CBD::Edit::force = 0;
 use ORACC::CBD::Util;
 use ORACC::CBD::C11e;
 use ORACC::CBD::PPWarn;
+use ORACC::CBD::Bases;
+use ORACC::CBD::Senses;
 
 sub edit {
     my($args,@cbd) = @_;
+    $ORACC::CBD::PPWarn::trace = 1 if $ORACC::CBD::PPWarn::edit_trace;
     my @clean = c11e($args, @cbd);
     if (cache_check($args,@clean)) {
 #	print Dumper \@cbd;
 	edit_make_script($args,@cbd); # saves in global %data
 	edit_save_script($args);
 	@cbd = edit_apply_script($args,@cbd);
-	cache_stash($args,@cbd);
+#	cache_stash($args,@cbd);
     } else {
-	pp_warn("glossary fields have been edited directly. Stop.");
+	pp_warn("$$args{'cbd'}: glossary fields have been edited directly. Stop. (See 'edit.diff')");
 	cache_diff($args);
     }
     @cbd;
@@ -66,7 +69,8 @@ sub cache_check {
 
 sub cache_diff {
     my $args = shift;
-    system 'diff', $$args{'cbd'}, $$args{'cached_cbd'};
+    system "diff $$args{'cbd'} $$args{'cached_cbd'} >edit.diff";
+    exit 1;
 }
 
 sub cache_stash {
@@ -81,6 +85,41 @@ sub cache_stash {
 
 sub edit_apply_script {
     my($args, @c) = @_;
+    my @s = @{$ORACC::CBD::data{'script'}};
+    my $from_line = 0;
+    for (my $i = 0; $i <= $#s; ++$i) {
+	if ($s[$i] =~ /^:cbd (\S+)$/) {
+	    pp_file($1);
+	} elsif ($s[$i] =~ /^\@(\d+)$/) {
+	    $from_line = pp_line($1);
+	} elsif ($s[$i] =~ s/^:map =//) {
+	    --$from_line; # map = line is the one after \@entry
+	    my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
+	    my $eid = ${$cbddata{'entries'}}{$s[$i]};
+	    if ($eid) {
+		my $to_line = ${$cbddata{'entries'}}{$eid,'line'};
+		my $to_end_line = $to_line;
+		until ($c[$to_end_line] =~ /^\@end/ || $i > $#c) {
+		    ++$to_end_line;
+		}
+		my $from_end_line = $from_line;
+		until ($c[$from_end_line] =~ /^\@end/ || $i > $#c) {
+		    ++$from_end_line;
+		}
+		my @f_slice = @c[$from_line .. $from_end_line];
+		my @t_slice = @c[$to_line .. $to_end_line];
+		my $f = join("\n", @f_slice);
+		my $t = join("\n", @t_slice);
+		warn "map-from block:\n$f\n";
+		warn "-----------------\n";
+		warn "map-to block:\n$t\n";
+		warn "=================\n";
+		my @res = entries_merge(\@t_slice, \@f_slice, pp_file(), $to_line, pp_file(), $from_line);
+	    } else {
+		pp_warn("non-existent map target '$s[$i]'");
+	    }
+	}
+    }
     @c;
 }
 
@@ -89,9 +128,11 @@ sub edit_make_script {
     my($args, @c) = @_;
     my @eds = @{$ORACC::CBD::data{'edit'}};
     my @s = ();
-    warn "status on entry = ", pp_status(), "\n";
+    push @s, ":cbd $$args{'cbd'}";
+    warn "edit_make_script: status on entry = ", pp_status(), "\n";
     for (my $ed = 0; $ed <= $#eds; ++$ed) {
 	my $i = $eds[$ed];
+	push @s, "\@$i";
 	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;
 	    my @e = ();
@@ -101,7 +142,7 @@ sub edit_make_script {
 	    }
 	    if ($i > $#c) {
 		pp_warn("never found \@end for \@entry starting at line $entry");
-	    } else {
+	    } else {		
 		push @s, @e;
 	    }
 	} elsif ($c[$i] =~ /^\+\@sense/) {
@@ -143,14 +184,15 @@ sub edit_make_script {
     unless (pp_status()) {
 	@{$ORACC::CBD::data{'script'}} = @s;	
     } else {
-	warn "non-zero status; no script\n";
+	warn "edit_make_script: non-zero status; no script\n";
     }
 }
 
 sub edit_save_script {
     if (defined $ORACC::CBD::data{'script'}) {
-	binmode STDOUT, ':utf8';
-	print join("\n", @{$ORACC::CBD::data{'script'}}), "\n";
+	open(S, ">edit.edit");
+	print S join("\n", @{$ORACC::CBD::data{'script'}}), "\n";
+	close(S);
     }
 }
 

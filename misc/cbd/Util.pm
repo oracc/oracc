@@ -65,11 +65,15 @@ sub pp_args {
 	\%args,
 	qw/announce apply auto bare base:s check kompounds dets dry dynamic edit entries=s file 
 	filter fix:s force glo:s homograph increment:s inplace invert letters lines list:s lang:s log mode:s noforms
-	nonormify nopsus nosigs novalid output:s project:s quiet reset sigs stdout trace vfields:s words=f xml/,
+	nonormify nopsus nosigs novalid output:s project:s quiet reset sigs stdout trace+ vfields:s words=f xml/,
 	) || die "unknown arg";
 
     $cbd = $args{'glo'} if $args{'glo'};
-    $ORACC::CBD::PPWarn::trace = $args{'trace'};
+    if ($args{'trace'} == 1) {
+	$ORACC::CBD::PPWarn::trace = 1
+    } elsif ($args{'trace'} == 2) {
+	$ORACC::CBD::PPWarn::edit_trace = 1;
+    }
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nodiagnostics = $args{'quiet'};
     $ORACC::CBD::noforms = $args{'noforms'};

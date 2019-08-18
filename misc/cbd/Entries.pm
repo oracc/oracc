@@ -125,6 +125,31 @@ sub entries_collect {
     %e;
 }
 
+# This routine requires refs to two arrays, each of which is the collection of lines for a single entry.
+# All of the constituents of the from slice, $from, are merged into the to slice, $base.
+# The merged result is returned as an array.
+sub entries_merge {
+    my($base,$from,$b_file,$b_line,$s_file,$s_line) = @_;
+    my @b = @$base;
+    my @s = @$from;
+    my $base_b = find_bases(@b);
+    my $base_s = find_bases(@s);
+    if ($base_b && $base_s) {
+	if ($base_b) {
+	    my %new_bases = bases_merge($base_b, $base_s, undef);
+	    warn Dumper \%new_bases;
+	    exit 1;
+	}
+    } else {
+	if ($base_s) {
+	    pp_file($s_file);
+	    pp_line($s_line);
+	    pp_warn("dropping bases from source glo because none in base glo");
+	}
+    }
+    @b;
+}
+
 sub entries_init {
     my $args = shift;
     my $entries_outfile = $$args{'lang'}.'.map';

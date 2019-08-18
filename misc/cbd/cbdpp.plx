@@ -38,6 +38,10 @@ unlink '01bld/cancel';
 
 my %args = pp_args();
 
+if ($args{'edit'} && $args{'force'}) {
+    die "cbdpp.plx: -force is not allowed with -edit. Stop.\n";
+}
+
 my @cbd = setup_cbd(\%args);
 
 if ($args{'announce'}) {
@@ -64,7 +68,9 @@ if (pp_status() && !$args{'force'}) {
     if ($args{'edit'}) {
 	@cbd = edit(\%args, @cbd);
 	pp_diagnostics(\%args);
-	exit 1 if pp_status();
+	# exit 1 if pp_status();
+	warn "cbdpp.plx: exiting after edit.\n";
+	exit 0;
     }
 
     unless ($args{'check'} || $args{'sigs'}) {

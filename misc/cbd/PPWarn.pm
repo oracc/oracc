@@ -6,6 +6,7 @@ require Exporter;
 use warnings; use strict; binmode STDERR, ':utf8';
 
 $ORACC::CBD::PPWarn::trace = 0;
+$ORACC::CBD::PPWarn::edit_trace = 0;
 
 my %errlist = ();
 my $line = 0;
