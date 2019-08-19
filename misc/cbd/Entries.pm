@@ -25,7 +25,17 @@ sub entries_align {
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
     $map_fh = $xmap_fh if $xmap_fh;
+
+    my $base_cbdname = cbdname_from_fn($$args{'base'});
+    my %cbddata = %{$ORACC::CBD::data{$base_cbdname}};
+
+    my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
+    my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
+
     my %entries = entries_collect($base_cbd);
+    my %entry_map = %{$in_cbddata{'entry_map'}};
+    print 'entries_align: ', Dumper \%entry_map;
+
     my %parts = ();
     my %added_entries = ();
     my %incoming_entries = ();
@@ -48,12 +58,25 @@ sub entries_align {
 		    map_entry($args, $entry, $e, $xmap_fh);
 		    ++$added_entries{$entry};
 		} else {
-		    my ($type,@guesses) = guess_entry($entry, $bix, $cix);
-		    if ($#guesses >= 0) {
-			my $g = join('; ', @guesses);
-			pp_warn("entry $entry unknown: [$type]: maybe $g ?");
+		    if ($entry_map{$entry}) {
+			if (exists $entries{$entry_map{$entry}}) {
+			    pp_warn("[m]: $entry >> $entry_map{$entry}");
+			} else {
+			    pp_warn("[m]: $entry > $entry_map{$entry}: map target not in base glossary");
+			}
 		    } else {
-			pp_warn("entry $entry not in base glossary");
+			my ($type,@guesses) = guess_entry($entry, $bix, $cix);
+			if ($#guesses >= 0) {
+			    if ($#guesses == 0) {
+				$type =~ s/^#(.).*$/$1/;
+				pp_warn("[$type]: $entry >> $guesses[0]");
+			    } else {
+				my $g = join('; ', @guesses);
+				pp_warn("$entry unknown--[$type] suggests $g");
+			    }
+			} else {
+			    pp_warn("entry $entry not in base glossary");
+			}
 		    }
 		}
 	    }

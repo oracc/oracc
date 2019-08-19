@@ -85,6 +85,8 @@ my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
 push @poss, ('V/t', 'V/i'); 
 my %poss = (); @poss{@poss} = ();
 
+my %entry_map = ();
+
 my @geo_pos = qw/AN EN FN GN ON SN QN TN WN/;
 my %geo_pos = (); @geo_pos{@geo_pos} = ();
 
@@ -180,6 +182,8 @@ sub pp_validate {
     @global_cbd = @cbd;
     ($project,$lang,$vfields) = (ORACC::CBD::Util::project(), ORACC::CBD::Util::lang(), $$args{'vfields'});
     init($vfields);
+
+    %entry_map = ();
 
     $bid = 'b000001';
     $eid = 'x000001';
@@ -277,6 +281,7 @@ sub pp_validate {
 
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
+    %{$glodata{'entry_map'}} = %entry_map; print 'Validate: ', Dumper \%entry_map;
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
 
@@ -286,7 +291,7 @@ sub pp_validate {
     
     my $cbdname = ORACC::CBD::Util::cbdname();
     push @{$data{'cbds'}}, $cbdname;
-    
+    ${$data{'cbdmap'}}{pp_file()} = $cbdname;
     %{$data{$cbdname}} = %glodata;
     
     %ORACC::CBD::data = %data;
@@ -340,6 +345,14 @@ sub v_entry {
     if ($trace && exists $arg_vfields{'entry'}) {
 	pp_trace("v_entry: tag=$tag; arg=$arg");
     }
+
+    if ($arg =~ s/\s+>\s+(.*?)\s*$//) {
+	$entry_map{$arg} = $1;
+	warn " > $$cbdref[$i]\n";
+	$$cbdref[$i] =~ s/\s+>\s+.*$//;
+	warn " > $$cbdref[$i]\n";
+    }
+    
     $seen_sense = 0;
     my($pre,$etag,$pst) = ($tag =~ /^($acd_rx)?\@(\S+?)(\*?\!?)$/);
     my ($cf,$gw,$pos) = ();

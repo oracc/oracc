@@ -1,8 +1,8 @@
-package ORACC::CBD::Util;
-require Exporter;
-@ISA=qw/Exporter/;
-@EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of header_vals setup_args 
-    setup_cbd cbdname project lang name projdir file_index errfile pp_tags/;
+package ORACC::CBD::Util; require Exporter; @ISA=qw/Exporter/;
+
+@EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of
+    header_vals setup_args setup_cbd cbdname cbdname_from_fn project
+    lang name projdir file_index errfile pp_tags/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -322,6 +322,12 @@ sub cbdname {
 	return '';
     }
 }
+
+sub cbdname_from_fn {
+    my $fn = shift;
+    ${$ORACC::CBD::data{'cbdmap'}}{$fn};
+}
+
 sub h_file {
     if ($_[0]) {
 #	warn "h_file: _[0] = $_[0]\n";
