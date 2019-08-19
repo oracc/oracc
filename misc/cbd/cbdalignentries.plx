@@ -10,6 +10,8 @@ use ORACC::CBD::Entries;
 
 my %args = pp_args();
 
+$ORACC::CBD::nonormify = 1;
+
 my @base_cbd = ();
 
 if ($args{'base'}) {

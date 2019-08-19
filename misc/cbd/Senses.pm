@@ -2,7 +2,8 @@ package ORACC::CBD::Senses;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/senses_align senses_collect senses_init senses_term senses_merge senses_merge_2 senses_string/;
+@EXPORT = qw/senses_align senses_collect senses_init senses_term
+    senses_merge senses_merge_2 senses_string de_common_list/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -91,6 +92,7 @@ sub senses_collect {
 	    @s = ();
 	}
     }
+    open(S,'>senses.dump'); print S Dumper \%s; close(S);
     %s;
 }
 
@@ -214,6 +216,12 @@ sub index_senses {
     %t = de_common(%t);
 #    print Dumper \%t;
     %t;
+}
+
+sub de_common_list {
+    my %c = (); @c{@_} = ();
+    %c = de_common(%c);
+    return keys %c;
 }
 
 sub de_common {

@@ -2,8 +2,9 @@ package ORACC::CBD::Bases;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/bases_align bases_hash bases_init bases_log bases_log_errors bases_fixes
-    bases_process bases_stats bases_term bases_merge bases_string bases_serialize bases_fix_base/;
+@EXPORT = qw/bases_align bases_hash bases_init bases_log bases_collect
+    bases_log_errors bases_fixes bases_process bases_stats bases_term
+    bases_merge bases_string bases_serialize bases_fix_base/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 

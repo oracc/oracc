@@ -221,9 +221,9 @@ sub pp_validate {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
-	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)\s+(.*)\s*$/o) {
+	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)/) { # \s+(.*)\s*$/o) {
 #	} elsif ($cbd[$i] =~ /^($allowed_pre_at_chars)@([a-z]+)/o) {
-	    my ($pre,$tag) = ($1,$2);
+	    my ($pre,$tag,$post) = ($1,$2);
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
 		if ($validators{$tag}) {

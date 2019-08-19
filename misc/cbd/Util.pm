@@ -69,10 +69,12 @@ sub pp_args {
 	) || die "unknown arg";
 
     $cbd = $args{'glo'} if $args{'glo'};
-    if ($args{'trace'} == 1) {
-	$ORACC::CBD::PPWarn::trace = 1
-    } elsif ($args{'trace'} == 2) {
-	$ORACC::CBD::PPWarn::edit_trace = 1;
+    if ($args{'trace'}) {
+	if ($args{'trace'} == 1) {
+	    $ORACC::CBD::PPWarn::trace = 1
+	} elsif ($args{'trace'} == 2) {
+	    $ORACC::CBD::PPWarn::edit_trace = 1;
+	}
     }
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nodiagnostics = $args{'quiet'};

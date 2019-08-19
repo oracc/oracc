@@ -2,7 +2,7 @@ package ORACC::CBD::Entries;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/entries_align entries_init entries_term entries_merge/;
+@EXPORT = qw/entries_align entries_init entries_term entries_merge entries_collect/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -11,6 +11,7 @@ use ORACC::CBD::Util;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Senses;
+use ORACC::CBD::Guess;
 
 use Data::Dumper;
 
@@ -29,6 +30,11 @@ sub entries_align {
     my %added_entries = ();
     my %incoming_entries = ();
     my $entry = '';
+    my $bix = guess_init(@base_cbd);
+    my $cix = guess_init(@cbd);
+
+    open(BIX,'>bix.dump'); print BIX Dumper $bix; close(BIX);
+    open(BIX,'>cix.dump'); print BIX Dumper $cix; close(BIX);
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	pp_line($i+1);
@@ -42,7 +48,13 @@ sub entries_align {
 		    map_entry($args, $entry, $e, $xmap_fh);
 		    ++$added_entries{$entry};
 		} else {
-		    pp_warn("entry $entry not in base glossary");
+		    my ($type,@guesses) = guess_entry($entry, $bix, $cix);
+		    if ($#guesses >= 0) {
+			my $g = join('; ', @guesses);
+			pp_warn("entry $entry unknown: [$type]: maybe $g ?");
+		    } else {
+			pp_warn("entry $entry not in base glossary");
+		    }
 		}
 	    }
 	    while ($cbd[$i] !~ /^\@end\s+entry/) {
@@ -116,7 +128,7 @@ sub entries_collect {
     my %e = ();
     my $curr_entry = '';
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^[-+>=]*\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	    ++$e{$1};
 	    $entry_indexes{$1} = $i;
@@ -127,6 +139,13 @@ sub entries_collect {
 	}
     }
     %e;
+}
+
+sub find_bases {
+    foreach (@_) {
+	return $_ if /^\@bases/;
+    }
+    undef;
 }
 
 # This routine requires refs to two arrays, each of which is the collection of lines for a single entry.
@@ -198,13 +217,6 @@ sub entries_init {
 
 sub entries_term {
     close(MAP_FH);
-}
-
-sub find_bases {
-    foreach (@_) {
-	return $_ if /^\@bases/;
-    }
-    undef;
 }
 
 1;
