@@ -34,7 +34,7 @@ sub entries_align {
 
     my %entries = entries_collect($base_cbd);
     my %entry_map = %{$in_cbddata{'entry_map'}};
-    print 'entries_align: ', Dumper \%entry_map;
+    #    print 'entries_align: ', Dumper \%entry_map;
 
     my %parts = ();
     my %added_entries = ();
@@ -70,6 +70,7 @@ sub entries_align {
 			    if ($#guesses == 0) {
 				$type =~ s/^#(.).*$/$1/;
 				pp_warn("[$type]: $entry >> $guesses[0]");
+				$entry_map{$entry} = $guesses[0];
 			    } else {
 				my $g = join('; ', @guesses);
 				pp_warn("$entry unknown--[$type] suggests $g");
@@ -114,6 +115,7 @@ sub entries_align {
 	    }
 	}
     }
+    %entry_map;
 }
 
 sub split_parts {

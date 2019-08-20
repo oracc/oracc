@@ -281,7 +281,7 @@ sub pp_validate {
 
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
-    %{$glodata{'entry_map'}} = %entry_map; print 'Validate: ', Dumper \%entry_map;
+    %{$glodata{'entry_map'}} = %entry_map; # print 'Validate: ', Dumper \%entry_map;
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
 
@@ -348,9 +348,9 @@ sub v_entry {
 
     if ($arg =~ s/\s+>\s+(.*?)\s*$//) {
 	$entry_map{$arg} = $1;
-	warn " > $$cbdref[$i]\n";
+#	warn " > $$cbdref[$i]\n";
 	$$cbdref[$i] =~ s/\s+>\s+.*$//;
-	warn " > $$cbdref[$i]\n";
+#	warn " > $$cbdref[$i]\n";
     }
     
     $seen_sense = 0;

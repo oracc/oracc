@@ -32,9 +32,25 @@ if (pp_status()) {
 }
 
 entries_init(\%args);
-entries_align(\%args, \@base_cbd, \@cbd);
+my %map = entries_align(\%args, \@base_cbd, \@cbd);
 entries_term();
 
-pp_diagnostics();
+if ($args{'apply'}) {
+    my $mapto = '';
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
+	    if ($map{$1}) {
+		$mapto = $map{$1};
+	    }
+	}
+	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
+	if ($mapto) {
+	    print ">$mapto\n";
+	    $mapto = '';
+	}
+    }
+} else {
+    pp_diagnostics();
+}
 
 1;

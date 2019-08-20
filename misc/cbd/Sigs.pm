@@ -740,7 +740,7 @@ sub psu_glo {
 	local($_) = $c;
 	++$i; pp_line($i);
 	pp_file($err_glo);
-	if (m/^\@entry[\*!]*\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
+	if (m/^[-+>=]?\@entry[\*!]*\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
 	    @e{qw/cf gw pos/} = ($1,$2,$3);
 	    $compound = ($e{'cf'} =~ / /);
 	    $in_sense = $nsense = 0;
