@@ -28,6 +28,11 @@ sub senses_align {
     my @cbd = @$cbd;
     $map_fh = $xmap_fh if $xmap_fh;
 
+    my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
+    my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
+    my %entry_map = %{$in_cbddata{'entry_map'}};
+    my %sense_map = %{$in_cbddata{'sense_map'}};
+    
     my @senses = ();
     my %base_senses = senses_collect(@base_cbd);
     my $curr_entry = '';
@@ -39,15 +44,25 @@ sub senses_align {
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    $cbd[$i] =~ s/\s+/ /g;
 	    $cbd[$i] =~ s/\s*$//;
-	    push @senses, $cbd[$i];
+	    if ($sense_map{$curr_entry}) {
+		if (${$sense_map{$curr_entry}}{$cbd[$i]}) {
+		    push @senses, ${$sense_map{$curr_entry}}{$cbd[$i]};
+		}
+	    } else {
+		push @senses, $cbd[$i];
+	    }
 	    my $ss = $cbd[$i]; $ss =~ s/^\@sense\s+//;
 	    $sense_lnum{$ss} = $i+1;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    if ($#senses >= 0) {
 
 		### need to use entry_map here to pull senses from mapped base glo entry
-		
-		my $senses_b = $base_senses{$curr_entry};
+		my $sense_entry = $curr_entry;
+		if ($entry_map{$sense_entry}) {
+		    $sense_entry = $entry_map{$sense_entry};
+		}
+
+		my $senses_b = $base_senses{$sense_entry};
 		if ($senses_b) {
 		    my $senses_b_str = senses_string($senses_b);
 		    my $senses_i_str = senses_string([ @senses ]);
@@ -73,6 +88,7 @@ sub senses_align {
 	    }
 	}    
     }
+    %sense_map;
 }
 
 sub senses_collect {
@@ -114,7 +130,7 @@ sub senses_merge {
 	    }
 	}
 	if ($#matches == 0) {
-	    map_sense($args, '1', $entry, $s, $matches[0]);
+	    map_sense($args, '1', $entry, $s, $matches[0]); # ideally would check for leftover tokens not in base
 	    next;
 	} else {
 	    my %i = index_senses($s);
@@ -140,7 +156,7 @@ sub senses_merge {
 #	    print Dumper \%bs;
 	    if (scalar keys %bs) {
 		my @m = sort { &bscmp(\%bs) } keys %bs;
-		my $index = $m[0]; $index =~ s/^#//;
+		my $index = $m[0]; $index =~ s/^#//; # this may be too rough and ready; perhaps need diagnostic when multiple candidates
 		map_sense($args, '2', $entry, $s, ${$b}[$index]);
 	    } else {
 		$s =~ s/sense/sense+/;
@@ -181,11 +197,25 @@ sub map_sense {
     #### need to store in sense map if map_fh is undef
 
     if ($sense ne $sense_b) {
-	$from_sig =~ s#](\S+)#//$sense]$1'$epos#;
-	$to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;
-	warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
-	# print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
-	print $map_fh "map sense $from_sig => $to_sig\n";
+	if ($map_fh) {
+	    $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
+	    $to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;
+	    warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
+	    # print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
+	    print $map_fh "map sense $from_sig => $to_sig\n";
+	} else {
+	    if ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
+		pp_warn("SENSE[1] $in > $base");
+		${$sense_map{$entry}}{$in} = $base;
+	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE
+		pp_warn("SENSE[2] $in > $base");
+		${$sense_map{$entry}}{$in} = $base;
+	    } elsif ($code == 3) { # this SENSE doesn't match anything in base cbd
+		pp_warn("SENSE[3] doesn't match anything in base glossary");
+	    } else {
+		pp_warn("unknown SENSE map code == $code\n";
+	    }
+	}
     }
 }
 

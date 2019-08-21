@@ -8,6 +8,8 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Senses;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 my %args = pp_args();
 
 my @base_cbd = ();
@@ -20,11 +22,43 @@ if ($args{'base'}) {
 my @cbd = setup_cbd(\%args);
 
 senses_init(\%args);
-senses_align(\%args, \@base_cbd, \@cbd);
+my %map = senses_align(\%args, \@base_cbd, \@cbd);
 senses_term();
 
 ### need to output revised glo here if -apply is given
 
-pp_diagnostics() if pp_status();
+if ($args{'apply'}) {
+    my $mapto = '';
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	my $noprint_plus_1 = 0;
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /^\@sense\s+(.*?)\s*$/) {
+	    my($acd,$sns) = ($1,$2);
+	    if (${$map{$curr_entry}}{$sns}) {
+		$mapto = ${$map{$curr_entry}}{$sns};
+		if ($cbd[$i+1] =~ /^>/) {
+		    my ($s) = (/^>\s*(?:\@sense\S*)\s*(.*?)\s*$/);
+		    $s = "\@sense $s";
+		    if ($s ne $mapto) {
+			warn "$.: $s ne $mapto\n";
+			$mapto = undef;
+		    } else {
+			$noprint_plus_1 = 1 if $acd;
+		    }
+		}
+	    }
+	}
+	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
+	if ($mapto) {
+	    print ">$mapto\n"; # CARE with this if we start handling '=' as well as '>'
+	    $mapto = '';
+	    ++$i if $no_print_plus_1;
+	    $no_print_plus_1 = 0;
+	}
+    }
+} else {
+    pp_diagnostics() if pp_status();
+}
 
 1;

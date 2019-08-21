@@ -13,8 +13,6 @@ my @tags = qw/letter entry oid parts bff bases stems phon root form length norms
 
 my %tags = (); @tags{@tags} = ();
 
-my $allowed_pre_at_chars = '';
-
 my %validators = (
     letter=>\&v_letter,
     entry=>\&v_entry,
@@ -184,7 +182,8 @@ sub pp_validate {
     init($vfields);
 
     %entry_map = ();
-
+    %sense_map = ();
+    
     $bid = 'b000001';
     $eid = 'x000001';
 
@@ -226,7 +225,6 @@ sub pp_validate {
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
 	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)/) { # \s+(.*)\s*$/o) {
-#	} elsif ($cbd[$i] =~ /^($allowed_pre_at_chars)@([a-z]+)/o) {
 	    my ($pre,$tag,$post) = ($1,$2);
 	    if (exists $tags{$tag}) {
 #		push @{$tag_lists{$tag}}, $i;
@@ -234,9 +232,9 @@ sub pp_validate {
 		    if (exists $vfields{$tag}) {
 			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
 			    my($t,$l) = ($1,$2);
-			    &{$validators{$tag}}($t,$l,$i,\@cbd);
+			    &{$validators{$tag}}($t,$l,$i,\@cbd,$pre);
 			} else {
-			    &{$validators{$tag}}($cbd[$i],'',$i,\@cbd);
+			    &{$validators{$tag}}($cbd[$i],'',$i,\@cbd,$pre);
 			}
 		    }
 		} else {
@@ -254,21 +252,47 @@ sub pp_validate {
 		    }
 		}
 		if ($pre) {
-		    pp_warn("edit mark '$pre' doesn't belong on \@$tag")
-			unless exists $acd_ok_tags{$tag};
+		    if ($pre eq '>') {
+			if (exists $acd_ok_tags{$tag}) {
+			    if ($tag eq 'entry') {
+				$cbd[$i] =~ /entry\S*\s+(.*)$*$/;
+				$entry_map{$curr_cfgw} = $1;
+			    } elsif ($tag eq 'sense') {
+				$cbd[$i] =~ /sense\S*\s+(.*)$*$/;
+				my $to_sense = $1;
+				my $from_sense = '';
+				if ($cbd[$i-1] =~ /^\@sense\S*\s+(.*?)\s*$/) {
+					$from_sense = $1;
+				}
+				if ($from_sense) {
+				    ${$sense_map{$curr_cfgw}}{$from_sense} = $to_sense;
+				} else {
+				    pp_warn("no previous SENSE corresponding to edit mark > (nothing allowed between \@sense and >\@sense)");
+				}
+			    } else {
+				pp_warn("internal error: tag `$tag': edit mark processing not defined in Validate.pm");
+			    }
+			}
+		    } else {
+			pp_warn("edit mark '$pre' doesn't belong on \@$tag");
+		    }
 		}
 	    } else {
 		pp_warn("\@$1 unknown tag");
 	    }
 	} elsif ($cbd[$i] =~ /^($acd_rx)/o) {
+
 	    my $x = $1;
 	    push @{$data{'edit'}}, pp_line()-1;
-	    if ($x eq '>' && $cbd[$i] =~ /^\@entry/) {
-		$cbd[$i] =~ /^>(?:\@entry?)\s*(.*?)\s*$/;
+	    if ($x eq '>' && $cbd[$i-1] =~ /^\@entry/) {
+		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
 		$entry_map{$curr_cfgw} = $1;
+	    } elsif ($x eq '>' && $cbd[$i-1] =~ /^\@sense/) {
+		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
+		$entry_map{$curr_cfgw} = "\@sense $1"; # should validate tok1 of $1 for legal POS
+	    } elsif ($x eq '>') {
+		pp_warn("misplaced edit marker '>' (preceding line must be \@entry or \@sense)");
 	    }
-
-	    ### need to save mapped sense if it's >@sense or follows @sense
 
 	} else {
 	    pp_warn("invalid line in glossary: $cbd[$i]");
@@ -290,6 +314,7 @@ sub pp_validate {
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
     %{$glodata{'entry_map'}} = %entry_map; # print 'Validate: ', Dumper \%entry_map;
+    %{$glodata{'sense_map'}} = %sense_map; print 'Validate: ', Dumper \%sense_map;
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
 
