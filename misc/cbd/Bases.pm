@@ -10,6 +10,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
 my $base_trace = 0;
@@ -47,7 +48,7 @@ sub bases_tab {
 	    print "$e\t", join("\t", sort grep(!/\#/, keys %b)), "\n";
 	} elsif (/^\@parts/) {
 	    $cpd = 1;
-	} elsif (/^\@entry\S*\s*(.*?)\s*$/) {
+	} elsif (/^$acd_rx?\@entry\S*\s*(.*?)\s*$/) {
 	    $e = $1;
 	    $e =~ s/\s+\[/[/;
 	    $e =~ s/\]\s/]/;
@@ -73,7 +74,7 @@ sub bases_align {
     my $curr_entry = '';
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	    $p_entry = $curr_entry;
 	    $p_entry =~ s/\s*\[(.*?)\]\s*/[$1]/;
@@ -109,7 +110,7 @@ sub bases_collect {
     my $curr_entry = '';
     my %b = ();
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	    my $cf = $curr_entry;
 	    $cf =~ s/\s+\[.*$//;

@@ -2,16 +2,22 @@ package ORACC::CBD::Util; require Exporter; @ISA=qw/Exporter/;
 
 @EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of
     header_vals setup_args setup_cbd cbdname cbdname_from_fn project
-    lang name projdir file_index errfile pp_tags/;
+    lang name projdir file_index errfile pp_tags set_acd_rx/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
+
+# warn "hello from Util.pm\n";
 
 use Data::Dumper;
 
 my @data = qw/allow usage collo sense/;
 
+
 %ORACC::CBD::data = (); @ORACC::CBD::data{@data} = ();
+
+$ORACC::CBD::acd_rx = '[-+>=]?';
 
 use ORACC::L2GLO::Langcore;
 use ORACC::CBD::ATF;
@@ -39,8 +45,6 @@ use Getopt::Long;
 
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
-
-$ORACC::CBD::acd_rx = '[-+>=]?';
 $ORACC::CBD::bases = 0;
 $ORACC::CBD::det_minus = 0;
 $ORACC::CBD::noforms = 0;
@@ -53,6 +57,10 @@ $ORACC::CBD::qpn_base_lang = 'sux';
 $ORACC::CBD::nodiagnostics = 0;
 
 my $file_index = 1;
+
+sub set_acd_rx {
+    return $ORACC::CBD::acd_rx;
+}
 
 sub dump_file_indexes {
     print Dumper \%file_indexes;
@@ -106,7 +114,8 @@ sub cbd_dump {
     my($args, $outh, @c) = @_;
     foreach (@c) {
 	next if /^\000$/;
-	if (/^\@entry\S*\s+(.*?)\s*$/ && $$args{'letters'}) {
+	my $acd_rx = $ORACC::CBD::acd_rx;
+	if (/^$acd_rx?\@entry\S*\s+(.*?)\s*$/ && $$args{'letters'}) {
 	    my $cfgw = $1;
 	    my $init_char = first_letter($cfgw);
 	    if (!$last_char || $last_char ne $init_char) {
@@ -204,6 +213,7 @@ sub pp_load {
     
     my $insert = -1;
     for (my $i = 0; $i <= $#c; ++$i) {
+	my $acd_rx = $ORACC::CBD::acd_rx;
 	pp_line($i+1);
 	if ($c[$i] =~ /^$ORACC::CBD::Edit::acd_rx?\@([a-z]+)/) {
 	    my $tag = $1;
@@ -429,7 +439,7 @@ sub setup_cbd {
     $$args{'lang'} = $h{'lang'};
     system 'mkdir', '-p', "01bld/$h{'lang'}";
     my @cbd = pp_load($args, $glossary);
-    @cbd = pp_validate($args, @cbd);
+    @cbd = ORACC::CBD::Validate::pp_validate($args, @cbd);
     if ($ORACC::CBD::Forms::external) {
 	unless ($ORACC::CBD::noforms) {
 	    $ORACC::CBD::Forms::external = 0; # so v_form will validate

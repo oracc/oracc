@@ -84,6 +84,7 @@ push @poss, ('V/t', 'V/i');
 my %poss = (); @poss{@poss} = ();
 
 my %entry_map = ();
+my %sense_map = ();
 
 my @geo_pos = qw/AN EN FN GN ON SN QN TN WN/;
 my %geo_pos = (); @geo_pos{@geo_pos} = ();
@@ -252,17 +253,17 @@ sub pp_validate {
 		    }
 		}
 		if ($pre) {
-		    if ($pre eq '>') {
-			if (exists $acd_ok_tags{$tag}) {
+		    if (exists $acd_ok_tags{$tag}) {
+			if ($pre eq '>') {
 			    if ($tag eq 'entry') {
-				$cbd[$i] =~ /entry\S*\s+(.*)$*$/;
+				$cbd[$i] =~ /entry\S*\s+(.*)\s*$/;
 				$entry_map{$curr_cfgw} = $1;
 			    } elsif ($tag eq 'sense') {
-				$cbd[$i] =~ /sense\S*\s+(.*)$*$/;
+				$cbd[$i] =~ /sense\S*\s+(.*)\s*$/;
 				my $to_sense = $1;
 				my $from_sense = '';
 				if ($cbd[$i-1] =~ /^\@sense\S*\s+(.*?)\s*$/) {
-					$from_sense = $1;
+				    $from_sense = $1;
 				}
 				if ($from_sense) {
 				    ${$sense_map{$curr_cfgw}}{$from_sense} = $to_sense;
@@ -284,7 +285,7 @@ sub pp_validate {
 
 	    my $x = $1;
 	    push @{$data{'edit'}}, pp_line()-1;
-	    if ($x eq '>' && $cbd[$i-1] =~ /^\@entry/) {
+	    if ($x eq '>' && $cbd[$i-1] =~ /^$acd_rx?\@entry/) {
 		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
 		$entry_map{$curr_cfgw} = $1;
 	    } elsif ($x eq '>' && $cbd[$i-1] =~ /^\@sense/) {

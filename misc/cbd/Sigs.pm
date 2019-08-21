@@ -8,8 +8,9 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
-use ORACC::CBD::Util;
 use ORACC::CBD::Forms;
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
 
 use Data::Dumper;
 
@@ -264,7 +265,7 @@ sub sigs_simple {
 
 #	warn "input: $_\n" if $verbose;
 
-	if (s/^\@entry\*?(!?)\s+//) {
+	if (s/^$acd_rx?\@entry\*?(!?)\s+//) {
 	    $curr_cfgw = $_; $curr_cfgw =~ s/\s*$//;
 	    $compound = $in_sense = 0;
 	    @instsigs = ();

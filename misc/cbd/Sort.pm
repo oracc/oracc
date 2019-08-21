@@ -25,7 +25,7 @@ sub sort_cbd {
     my $hdr_end;
 
     for ($i = 0; $i < $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    if ($#e >= 0) {
 		push @{$e[$#e]}, $i-1;
 	    } else {

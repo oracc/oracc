@@ -12,8 +12,9 @@ use warnings; use strict; use open 'utf8'; use utf8;
 $ORACC::CBD::Forms::external = 0;
 
 use ORACC::CBD::PPWarn;
-use ORACC::CBD::Util;
 use ORACC::CBD::Validate;
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
 my %bases = ();
@@ -115,7 +116,7 @@ sub forms_collect {
     my $curr_entry = '';
     my %f = ();
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	    ++${$f{$curr_entry}}{'#'};
 	} elsif ($cbd[$i] =~ /^\@form/) {

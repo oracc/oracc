@@ -19,10 +19,10 @@ sub oid_add {
     my %oid = oid_init($l);
 #    print Dumper \%oid;
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry/) {
 	    my $j = end_entry($i,@cbd);
 	    if (!has_oid($i,$j,@cbd)) {
-		my ($head) = ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/);
+		my ($head) = ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/);
 		$head =~ s/\s+\[/[/; $head =~ s/\]\s+/]/;
 		if ($oid{$l,$head}) {
 		    # pp_notice("adding OID $oid{$l,$head} for $head");

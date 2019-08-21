@@ -13,6 +13,9 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::Senses;
 use ORACC::CBD::Guess;
 
+
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 use Data::Dumper;
 
 my %entry_indexes = ();
@@ -48,7 +51,7 @@ sub entries_align {
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	pp_line($i+1);
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $entry = $1;
 	    $incoming_entries{$1} = $i;
 	    unless (exists $entries{$entry}) {
@@ -99,7 +102,7 @@ sub entries_align {
 	    my($l,$e) = @$pref;
 	    $p =~ s/\s*\[(.*?)\]\s*/ \[$1\] /;
 	    if ((my $i = $incoming_entries{$p})) {
-		if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+		if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 		    my $entry = $1;
 		    unless (exists $entries{$entry}
 			    || $added_entries{$entry}) {

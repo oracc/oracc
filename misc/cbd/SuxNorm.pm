@@ -1,7 +1,12 @@
 package ORACC::CBD::SuxNorm;
+
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
+
+use ORACC::CBD::Util;
+
+my $acd_rx = '[-+>=]?';;
 
 use Data::Dumper;
 
@@ -39,7 +44,7 @@ sub normify {
 	    $lang = $1;
 	} if (/^\@parts/) {
 	    $skipping = 1;
-	} elsif (/^\@entry/) {
+	} elsif (/^$acd_rx?\@entry/) {
 	    pp_warn "(normify) missing \@end entry" if $in_entry;
 	    @forms = ();
 	    my($xcf,$gw,$pos) = (/\s(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/);

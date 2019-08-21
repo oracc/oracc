@@ -136,7 +136,7 @@ sub edit_apply_script {
     }
     my @newc = ();
     for (my $i = 0; $i <= $#c; ++$i) {
-	if ($c[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($c[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    my $e = $1;
 	    if ($deletia{$i}) {
 		until ($c[$i] =~ /^\@end\s+entry/) {

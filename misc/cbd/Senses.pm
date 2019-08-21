@@ -9,6 +9,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 use Data::Dumper;
 
 my @common1 = qw/a an in is of or the to/;
@@ -18,6 +20,8 @@ my @common2 = qw/and be by designation down for form make off on out part status
 my %common2 = (); @common2{@common2} = ();
 
 my %sense_lnum = ();
+
+my %sense_map = ();
 
 my $map_fh = undef;
 
@@ -31,7 +35,7 @@ sub senses_align {
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
     my %entry_map = %{$in_cbddata{'entry_map'}};
-    my %sense_map = %{$in_cbddata{'sense_map'}};
+    %sense_map = %{$in_cbddata{'sense_map'}};
     
     my @senses = ();
     my %base_senses = senses_collect(@base_cbd);
@@ -39,7 +43,7 @@ sub senses_align {
     my $last_sense = 0;
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    $cbd[$i] =~ s/\s+/ /g;
@@ -98,7 +102,7 @@ sub senses_collect {
     my $last_sense = 0;
     my @s = ();
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    $cbd[$i] =~ s/\s+/ /g;
@@ -213,7 +217,7 @@ sub map_sense {
 	    } elsif ($code == 3) { # this SENSE doesn't match anything in base cbd
 		pp_warn("SENSE[3] doesn't match anything in base glossary");
 	    } else {
-		pp_warn("unknown SENSE map code == $code\n";
+		pp_warn("unknown SENSE map code == $code");
 	    }
 	}
     }

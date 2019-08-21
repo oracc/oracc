@@ -38,7 +38,7 @@ sub map_apply_glo {
     my @n = ();
 #    print STDERR Dumper \%currmap;
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    my $key = $1;
 	    $key =~ s/\s*(\[.*?\])\s*/$1/;
 	    if ($currmap{$key}) {
@@ -212,7 +212,7 @@ sub map_load {
 			my($what,$from,$to) = @$mapdata;		       
 			if ($to =~ /^\@(\S+)/) {
 			    my $tag = $1;
-			    if ($to =~ /^\@entry/) {
+			    if ($to =~ /^$acd_rx?\@entry/) {
 				push @{$map{'#entries'}}, $to;
 			    } else {
 				push @{${$map{$mapkey}{$tag}}}, $to;

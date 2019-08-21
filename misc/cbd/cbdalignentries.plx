@@ -5,8 +5,8 @@ use lib "$ENV{'ORACC'}/lib";
 
 use ORACC::CBD::XML;
 use ORACC::CBD::PPWarn;
-use ORACC::CBD::Util;
 use ORACC::CBD::Entries;
+use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 
 my %args = pp_args();
