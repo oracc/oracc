@@ -260,8 +260,13 @@ sub pp_validate {
 	    } else {
 		pp_warn("\@$1 unknown tag");
 	    }
-	} elsif ($cbd[$i] =~ /^$acd_rx/o) {
+	} elsif ($cbd[$i] =~ /^($acd_rx)/o) {
+	    my $x = $1;
 	    push @{$data{'edit'}}, pp_line()-1;
+	    if ($x eq '>' && $cbd[$i] =~ /^\@entry/) {
+		$cbd[$i] =~ /^>(?:\@entry?)\s*(.*?)\s*$/;
+		$entry_map{$curr_cfgw} = $1;
+	    }
 	} else {
 	    pp_warn("invalid line in glossary: $cbd[$i]");
 	}
