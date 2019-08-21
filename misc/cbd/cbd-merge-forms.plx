@@ -3,7 +3,11 @@ use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Bases;
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 use Data::Dumper;
+
 my $glo = shift @ARGV;
 die "$0: need <LANG>.glo <FORMS>.forms\n" unless $glo;
 die "$0: can't read glossary $glo\n" unless -r $glo;
@@ -31,7 +35,7 @@ open(G2, ">$glo.m") || die;
 select G2;
 my $is_compound = 0;
 while (<G>) {
-    if (/^\@entry\*?\S*\s+(.*?)\s*$/) {
+    if (/^$acd_rx\@entry\*?\S*\s+(.*?)\s*$/) {
 	$curr_cfgw = $1;
 	my $cf = $curr_cfgw; $cf =~ s/\s*\[.*//; $is_compound = ($cf =~ /\s/);
 	if ($f{$curr_cfgw}) {
@@ -48,7 +52,7 @@ while (<G>) {
 	my $newb = bases_serialize(%$newbref);
 	warn "newb = $newb\n";
 	$_ = "\@bases $newb\n";
-    } elsif (/^\@sense/ && !$printed_forms) {
+    } elsif (/^$acd_rx\@sense/ && !$printed_forms) {
 	if ($#forms >= 0) {
 	    print join("\n", uniq(@forms)), "\n";
 	    ++$printed_forms;

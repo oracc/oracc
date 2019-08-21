@@ -11,6 +11,8 @@ use ORACC::CBD::Forms;
 
 use Getopt::Long;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
@@ -69,7 +71,7 @@ sub do_bases {
 	next if $cbd[$i] =~ /^\000$/ || $cbd[$i] =~ /^\#/;
 	pp_line($i+1);
 #	warn pp_line()."\n";
-	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx\@entry\s+(.*?)\s*$/) {
 	    $cfgw = $1;
 	    $cfgw =~ /^(.*?)\s+\[/;
 	    my $cf = $1;

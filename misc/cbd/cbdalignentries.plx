@@ -7,6 +7,7 @@ use ORACC::CBD::XML;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Entries;
+my $acd_rx = $ORACC::CBD::acd_rx;
 
 my %args = pp_args();
 
@@ -38,7 +39,7 @@ entries_term();
 if ($args{'apply'}) {
     my $mapto = '';
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	if ($cbd[$i] =~ /^\@entry\s+(.*?)\s*$/) {
+	if ($cbd[$i] =~ /^$acd_rx\@entry\s+(.*?)\s*$/) {
 	    if ($map{$1}) {
 		$mapto = $map{$1};
 	    }

@@ -5,7 +5,8 @@ use lib "$ENV{'ORACC'}/lib";
 
 my @g = ();
 my @s = ();
-
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
 my $split_lang = shift @ARGV;
 
 die unless $split_lang;
@@ -25,7 +26,7 @@ while (<>) {
 
 open(N,'>split-base.glo');
 for (my $i = 0; $i < $#g; ++$i) {
-    if ($g[$i] =~ /^\@entry/) {
+    if ($g[$i] =~ /^$acd_rx\@entry/) {
 	my $ok = has_form($i,@g);
 	if ($ok) {
 	    while ($g[$i]) {
@@ -51,7 +52,7 @@ for (my $i = 0; $i < $#s; ++$i) {
 	print S "\@lang $split_lang\n";
 	$s[$i] =~ s/\@project\s+//; chomp $s[$i];
 	print S "\@name $s[$i],$split_lang\n\n";
-    } elsif ($s[$i] =~ /^\@entry/) {
+    } elsif ($s[$i] =~ /^$acd_rx\@entry/) {
 	my $ok = has_form($i,@s);
 	if ($ok) {
 	    while ($s[$i]) {

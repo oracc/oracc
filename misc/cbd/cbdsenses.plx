@@ -1,6 +1,9 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
 
 my $multi = 0;
 if ($ARGV[0] eq '-m') {
@@ -14,10 +17,10 @@ my $first_sense = '';
 my @senses = ();
 
 while (<>) {
-    if (/^\@entry/) {
+    if (/^$acd_rx\@entry/) {
 	$first_sense = '';
 	print;
-    } elsif (/^\@sense\+?\s+\S+\s+(.*?)\s*$/) {
+    } elsif (/^$acd_rx\@sense\+?\s+\S+\s+(.*?)\s*$/) {
 	my $s = $1;
 	if ($first_sense) {
 	    if ($first_sense =~ /$s/) {

@@ -2,10 +2,14 @@
 use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
+use lib "$ENV{'ORACC'}/lib";
+use ORACC::CBD::Util;
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 my %forms = ();
 
 while (<>) {
-    if (/^\@entry/) {
+    if (/^$acd_rx\@entry/) {
 	warn "$.: missing \@end entry\n" if scalar keys %forms > 0;
 	%forms = ();
     } elsif (s/^\@form\s*//) {
@@ -15,7 +19,7 @@ while (<>) {
 	/^(\S+)/;
 	$forms{$1} = $_;
 	$_ = undef;
-    } elsif (/^\@sense/ || /^\@end/) {
+    } elsif (/^$acd_rx\@sense/ || /^\@end/) {
 	foreach my $f (sort keys %forms) {
 	    print "\@form $forms{$f}\n";
 	}

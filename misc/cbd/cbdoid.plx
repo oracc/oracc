@@ -8,18 +8,19 @@ use ORACC::CBD::Util;
 use ORACC::CBD::C11e;
 use ORACC::CBD::Validate;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
 my %args = pp_args();
 my @cbd = setup_cbd(\%args);
 my $lang = lang();
 my $cfgwpos = '';
 
 for (my $i = 0; $i <= $#cbd; ++$i) {
-    if ($cbd[$i] =~ /^\@entry\S*\s+(.*?)\s*$/) {
+    if ($cbd[$i] =~ /^$acd_rx\@entry\S*\s+(.*?)\s*$/) {
 	$cfgwpos = $1;
 	$cfgwpos =~ s/\s+\[/[/;
 	$cfgwpos =~ s/\]\s+/]/;
 	print "$lang\t$cfgwpos\tword\n";
-    } elsif ($cbd[$i] =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/) {
+    } elsif ($cbd[$i] =~ /^$acd_rx\@sense\S*\s+(\S+)\s+(.*?)\s*$/) {
 	my($epos,$sense) = ($1,$2);
 	$sense =~ s/\s+\*\S+$//;
 	my $ssig = $cfgwpos;

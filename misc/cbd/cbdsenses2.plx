@@ -27,7 +27,7 @@ sub edit_and_dump {
     my @senses = ();
     
     for (my $i = 0; $i <= $#entry; ++$i) {
-	if ($entry[$i] =~ /^\@sense/) {
+	if ($entry[$i] =~ /^$acd_rx\@sense/) {
 	    push @senses, [ $i , $entry[$i] ];
 	}
     }

@@ -40,6 +40,7 @@ use Getopt::Long;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
+$ORACC::CBD::acd_rx = '[-+>=]?';
 $ORACC::CBD::bases = 0;
 $ORACC::CBD::det_minus = 0;
 $ORACC::CBD::noforms = 0;
