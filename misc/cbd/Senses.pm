@@ -11,6 +11,8 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 
+my $use_map_fh;
+
 use Data::Dumper;
 
 my @common1 = qw/a an in is of or the to/;
@@ -30,7 +32,13 @@ sub senses_align {
 
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
-    $map_fh = $xmap_fh if $xmap_fh;
+    
+    if ($xmap_fh) {
+	$map_fh = $xmap_fh;
+	$use_map_fh = 1;
+    } else {
+	$use_map_fh = 0;
+    }
 
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
@@ -38,6 +46,7 @@ sub senses_align {
     %sense_map = %{$in_cbddata{'sense_map'}};
     
     my @senses = ();
+    my @lines = ();
     my %base_senses = senses_collect(@base_cbd);
     my $curr_entry = '';
     my $last_sense = 0;
@@ -45,6 +54,7 @@ sub senses_align {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
+	    @lines = ();
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    $cbd[$i] =~ s/\s+/ /g;
 	    $cbd[$i] =~ s/\s*$//;
@@ -55,12 +65,12 @@ sub senses_align {
 	    } else {
 		push @senses, $cbd[$i];
 	    }
+	    push @lines, $i+1;
 	    my $ss = $cbd[$i]; $ss =~ s/^\@sense\s+//;
 	    $sense_lnum{$ss} = $i+1;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    if ($#senses >= 0) {
 
-		### need to use entry_map here to pull senses from mapped base glo entry
 		my $sense_entry = $curr_entry;
 		if ($entry_map{$sense_entry}) {
 		    $sense_entry = $entry_map{$sense_entry};
@@ -70,12 +80,14 @@ sub senses_align {
 		if ($senses_b) {
 		    my $senses_b_str = senses_string($senses_b);
 		    my $senses_i_str = senses_string([ @senses ]);
-		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" 
-			if $ORACC::CBD::PPWarn::trace;
+#		    warn "aligning:\n\t$senses_i_str\ninto\t$senses_b_str\n" ;
+#			if $ORACC::CBD::PPWarn::trace;
 #		    my $nsenses = 
 		    senses_merge($args, 
 				 $curr_entry, 
-				 [ @senses ], $senses_b);
+				 [ @senses ], $senses_b,
+				 @lines,
+			);
 #		    if ($#$nsenses >= 0) {
 #			my $nsenses_str = senses_string($nsenses);
 #			$nsenses_str =~ tr/\t//d;
@@ -120,12 +132,13 @@ sub senses_collect {
 }
 
 sub senses_merge {
-    my($args,$entry,$i,$b) = @_;
+    my($args,$entry,$i,$b,@l) = @_;
     my %map = ();
     my @newb = ();
     my %b = index_senses(@$b);
 #    print Dumper \%b;
     foreach my $s (@$i) {
+	pp_line(shift @l);
 	my @matches = ();
 	# does s occur in @b?
 	foreach my $b (@$b) {
@@ -133,7 +146,7 @@ sub senses_merge {
 		push @matches, $b;
 	    }
 	}
-	if ($#matches == 0) {
+	if ($#matches == 0) {	    
 	    map_sense($args, '1', $entry, $s, $matches[0]); # ideally would check for leftover tokens not in base
 	    next;
 	} else {
@@ -197,11 +210,9 @@ sub map_sense {
     my $to_sig = $from_sig;
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     my ($epos_b,$sense_b) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
-
-    #### need to store in sense map if map_fh is undef
-
+    
     if ($sense ne $sense_b) {
-	if ($map_fh) {
+	if ($use_map_fh) {
 	    $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
 	    $to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;
 	    warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;

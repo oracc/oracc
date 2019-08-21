@@ -17,6 +17,8 @@ use ORACC::CBD::Entries;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Senses;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 sub edit {
     my($args,@cbd) = @_;
     $ORACC::CBD::PPWarn::trace = 1 if $ORACC::CBD::PPWarn::edit_trace;

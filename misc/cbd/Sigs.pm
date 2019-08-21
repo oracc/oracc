@@ -10,7 +10,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Forms;
 use ORACC::CBD::Util;
-my $acd_rx = $ORACC::CBD::acd_rx;
+
+my $acd_rx = '[-+>=]?';
 
 use Data::Dumper;
 

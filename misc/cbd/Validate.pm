@@ -315,7 +315,7 @@ sub pp_validate {
     %{$glodata{'bffs'}} = bff_check();
     %{$glodata{'entries'}} = %entries;
     %{$glodata{'entry_map'}} = %entry_map; # print 'Validate: ', Dumper \%entry_map;
-    %{$glodata{'sense_map'}} = %sense_map; print 'Validate: ', Dumper \%sense_map;
+    %{$glodata{'sense_map'}} = %sense_map; warn 'Validate: ', Dumper \%sense_map;
     %{$glodata{'basedata'}} = %basedata;
     %{$glodata{'ok'}} = %ok;
 

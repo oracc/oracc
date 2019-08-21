@@ -6,7 +6,7 @@ use ORACC::CBD::PPWarn;
 
 use ORACC::CBD::Util;
 
-my $acd_rx = '[-+>=]?';;
+my $acd_rx = '[-+>=]?';
 
 use Data::Dumper;
 

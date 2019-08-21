@@ -11,6 +11,8 @@ use ORACC::CBD::Util;
 use ORACC::L2GLO::Util;
 use Data::Dumper;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
+
 my $marshalling = '';
 
 my @cmdcombos = qw/addentry addparts addsense mapentry mapsense mapbase newbases/;

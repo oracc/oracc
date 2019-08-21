@@ -11,6 +11,7 @@ use ORACC::CBD::Senses;
 my $acd_rx = $ORACC::CBD::acd_rx;
 
 my %args = pp_args();
+$ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 if ($args{'base'}) {
@@ -25,7 +26,7 @@ senses_init(\%args);
 my %map = senses_align(\%args, \@base_cbd, \@cbd);
 senses_term();
 
-### need to output revised glo here if -apply is given
+my $curr_entry = '';
 
 if ($args{'apply'}) {
     my $mapto = '';
@@ -53,8 +54,8 @@ if ($args{'apply'}) {
 	if ($mapto) {
 	    print ">$mapto\n"; # CARE with this if we start handling '=' as well as '>'
 	    $mapto = '';
-	    ++$i if $no_print_plus_1;
-	    $no_print_plus_1 = 0;
+	    ++$i if $noprint_plus_1;
+	    $noprint_plus_1 = 0;
 	}
     }
 } else {

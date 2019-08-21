@@ -13,7 +13,6 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::Senses;
 use ORACC::CBD::Guess;
 
-
 my $acd_rx = $ORACC::CBD::acd_rx;
 
 use Data::Dumper;
