@@ -290,7 +290,7 @@ sub pp_validate {
 		$entry_map{$curr_cfgw} = $1;
 	    } elsif ($x eq '>' && $cbd[$i-1] =~ /^\@sense/) {
 		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
-		$entry_map{$curr_cfgw} = "\@sense $1"; # should validate tok1 of $1 for legal POS
+		${$sense_map{$curr_cfgw}}{$cbd[$i-1]} = "\@sense $1"; # should validate tok1 of $1 for legal POS
 	    } elsif ($x eq '>') {
 		pp_warn("misplaced edit marker '>' (preceding line must be \@entry or \@sense)");
 	    }
