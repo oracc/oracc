@@ -44,6 +44,9 @@ sub senses_align {
 	    $sense_lnum{$ss} = $i+1;
 	} elsif ($cbd[$i] =~ /^\@end\s+entry/) {
 	    if ($#senses >= 0) {
+
+		### need to use entry_map here to pull senses from mapped base glo entry
+		
 		my $senses_b = $base_senses{$curr_entry};
 		if ($senses_b) {
 		    my $senses_b_str = senses_string($senses_b);
@@ -174,6 +177,9 @@ sub map_sense {
     my $to_sig = $from_sig;
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     my ($epos_b,$sense_b) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
+
+    #### need to store in sense map if map_fh is undef
+
     if ($sense ne $sense_b) {
 	$from_sig =~ s#](\S+)#//$sense]$1'$epos#;
 	$to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;

@@ -23,6 +23,8 @@ senses_init(\%args);
 senses_align(\%args, \@base_cbd, \@cbd);
 senses_term();
 
+### need to output revised glo here if -apply is given
+
 pp_diagnostics() if pp_status();
 
 1;

@@ -267,6 +267,9 @@ sub pp_validate {
 		$cbd[$i] =~ /^>(?:\@entry?)\s*(.*?)\s*$/;
 		$entry_map{$curr_cfgw} = $1;
 	    }
+
+	    ### need to save mapped sense if it's >@sense or follows @sense
+
 	} else {
 	    pp_warn("invalid line in glossary: $cbd[$i]");
 	}
