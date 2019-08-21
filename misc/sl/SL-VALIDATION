@@ -1,0 +1,8 @@
+unique @sign
+
+unique @form within @sign
+
+unique ~var within @sign
+
+unique @v across @signs -- may recur in @form(s) under same @sign
+

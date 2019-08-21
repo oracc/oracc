@@ -17,7 +17,16 @@ static FILE *tab = NULL;
 static void
 sH(void *userData, const char *name, const char **atts)
 {
-  if (name[0] == 'l' && !name[1])
+  if (!strcmp(name, "g:w")) /* name[0] == 'w' && name[1] == '\0') */
+    {
+      int i;
+      for (i = 0; atts[i] != NULL; i+=2)
+	{
+	  if (!strcmp(atts[i],"xml:id"))
+	    fprintf(tab,"%s\t%s\t%d\n",atts[i+1],pi_file,pi_line);
+	}
+    }
+  else if (name[0] == 'l' && !name[1])
     {
       int i, ref = -1, inst = -1, sig = -1;
       for (i = 0; atts[i] != NULL; i+=2)
@@ -34,7 +43,7 @@ sH(void *userData, const char *name, const char **atts)
 	    sig = i+1;
 	}
       if (inst > 0)
-	fprintf(tab, "%s\t%d\t%s\t%s\t%s\n", pi_file, pi_line,atts[ref], atts[inst], (sig > 0) ? atts[sig] : "");
+	fprintf(tab, "%s\t%s\t%s\n", atts[ref], atts[inst], (sig > 0) ? atts[sig] : "");
     }
 }
 
