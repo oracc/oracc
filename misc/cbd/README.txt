@@ -3,6 +3,8 @@ Aligning with epsd2
 
 0. save location data for instances before making edits
 
+   - this is done automatically during the build process in a file named 02pub/loc-data-DATA.tar.gz
+
 1. use cbdalignentries.plx to identify entries that need to be renamed
 or added: use +@entry to mark additions; use '>new [word] N' to
 identify entries to rename.  It's easiest to do this using the notation:
