@@ -38,6 +38,7 @@ sub entries_align {
     my %entry_map = %{$in_cbddata{'entry_map'}};
     #    print 'entries_align: ', Dumper \%entry_map;
 
+    my $acd= '';
     my %parts = ();
     my %added_entries = ();
     my %incoming_entries = ();
@@ -50,10 +51,10 @@ sub entries_align {
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	pp_line($i+1);
-	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
-	    $entry = $1;
-	    $incoming_entries{$1} = $i;
-	    unless (exists $entries{$entry}) {
+	if ($cbd[$i] =~ /^($acd_rx?)\@entry\S*\s+(.*?)\s*$/) {
+	    ($acd,$entry) = ($1,$2);
+	    $incoming_entries{$2} = $i;
+	    unless (exists $entries{$entry} || $acd) {
 		# collect entry and list parts needed by it
 		if ($xmap_fh) {
 		    my $e = grab_entry($i,@cbd);

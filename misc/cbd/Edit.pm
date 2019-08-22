@@ -174,6 +174,7 @@ sub edit_make_script {
     return unless defined $ORACC::CBD::data{'edit'};
     my($args, @c) = @_;
     my @eds = @{$ORACC::CBD::data{'edit'}};
+    my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
     my @s = ();
     push @s, ":cbd $$args{'cbd'}";
     warn "edit_make_script: status on entry = ", pp_status(), "\n";
@@ -204,12 +205,24 @@ sub edit_make_script {
 	} elsif ($c[$i] =~ /^>/) {
 	    my($tag) = ($c[$i] =~ /(\@[a-z]+)/);
 	    my $e = pp_entry_of($i,@c);
-	    if ($c[$i-1] =~ /^$tag/) {
-		push @s, ":ent $c[$e]";
-		push @s, ":del $c[$i-1]";
-		push @s, ":add $c[$i]";
+	    my $action = 'rename';
+	    
+	    if ($tag eq 'entry') {
+		# decide whether we rename or merge
+		my $eid = ${$cbddata{'entries'}}{$e};
+		$action = 'map' if $eid;
+	    }
+	    if ($action eq 'rename') {
+		if ($c[$i-1] =~ /^$tag/) {
+		    push @s, ":ent $c[$e]";
+		    push @s, ":del $c[$i-1]";
+		    push @s, ":add $c[$i]";
+		} else {
+		    pp_warn("expected $tag before '>$tag'");
+		}
 	    } else {
-		pp_warn("expected $tag before '>$tag'");
+		$c[$i] =~ s/^>/=/;
+		push @s, ":map $c[$i]";
 	    }
 	} elsif ($c[$i] =~ /^-/) {
 	    my $e = pp_entry_of($i,@c);
