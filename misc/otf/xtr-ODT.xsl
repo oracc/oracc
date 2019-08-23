@@ -222,7 +222,7 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="xh:span[@class='SIGN']">
+<xsl:template match="xh:span[@class='sign']">
   <xsl:apply-templates/>
 </xsl:template>
 
