@@ -110,7 +110,7 @@
 <xsl:template match="xh:innerp[@class='tr-comment']"/>
 
 <xsl:template match="xh:span[@class='marker']">
-  <xsl:message>xtr-ODT.xsl: translation notes are not yet supported; please complain to Steve</xsl:message>
+  <xsl:message>xtr-ODT-plain.xsl: translation notes are not yet supported; please complain to Steve</xsl:message>
 </xsl:template>
 
 <xsl:template match="xh:span[@class='foreign']">
@@ -144,12 +144,12 @@
 <xsl:template match="xh:p[@class='note']"/>
 
 <xsl:template match="xh:p">
-  <xsl:message>xtr-ODT.xsl: p's class=<xsl:value-of select="@class"/> not translated to ODF</xsl:message>
+  <xsl:message>xtr-ODT-plain.xsl: p's class=<xsl:value-of select="@class"/> not translated to ODF</xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="xh:span">
-  <xsl:message>xtr-ODT.xsl: span's class=<xsl:value-of select="@class"/> not translated to ODF</xsl:message>
+  <xsl:message>xtr-ODT-plain.xsl: span's class=<xsl:value-of select="@class"/> not translated to ODF</xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -157,11 +157,11 @@
 </xsl:template>
 
 <xsl:template match="xh:*">
-  <xsl:message>xtr-ODT.xsl: XHTML tag <xsl:value-of select="local-name()"/> not translated to ODF</xsl:message>
+  <xsl:message>xtr-ODT-plain.xsl: XHTML tag <xsl:value-of select="local-name()"/> not translated to ODF</xsl:message>
 </xsl:template>
 
 <xsl:template match="xtr:*">
-  <xsl:message>xtr-ODT.xsl: XTR tag <xsl:value-of select="local-name()"/> not translated to ODF</xsl:message>
+  <xsl:message>xtr-ODT-plain.xsl: XTR tag <xsl:value-of select="local-name()"/> not translated to ODF</xsl:message>
 </xsl:template>
 
 <xsl:template name="xtr-dollar">

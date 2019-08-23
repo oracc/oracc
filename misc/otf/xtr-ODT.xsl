@@ -59,6 +59,7 @@
 </xsl:template>
 
 <xsl:template match="xtr:translation">
+  <!-- <xsl:message>Translation</xsl:message> -->
   <text:p text:style-name="Heading_20_2">
     <xsl:text>Translation</xsl:text>
   </text:p>
@@ -88,6 +89,7 @@
 </xsl:template>
 
 <xsl:template name="translation-cells">
+  <!-- <xsl:message>Translation-cells</xsl:message> -->
   <xsl:variable name="top-node" select="ancestor::xtf:translation"/>
   <table:table-cell office:value-type="string" table:style-name="xtf_lnum_cell">
     <text:p text:style-name="xtf_lnum_par">
@@ -116,6 +118,26 @@
     </text:p>
   </table:table-cell>
   <xsl:choose>
+    <xsl:when test="xh:span[@class='cell']">
+      <!-- <xsl:message>Xh-span-cells</xsl:message> -->
+      <xsl:for-each select="xh:span[@class='cell']">
+	<xsl:variable name="span" select="@xh:span"/>
+	<xsl:call-template name="emit-content-cell">
+	  <xsl:with-param name="span" select="$span"/>
+	</xsl:call-template>
+	<xsl:if test="$span > 1">
+	  <xsl:call-template name="emit-covered-cells">
+	    <xsl:with-param name="count" select="@span"/>
+	  </xsl:call-template>
+	</xsl:if>
+      </xsl:for-each>
+      <xsl:variable name="ecols" select="$top-node/@xtr:cols - sum(xh:innerp/xh:span/@xtr:span)"/>
+      <xsl:if test="$ecols > 0">
+	<xsl:call-template name="emit-empty-cells">
+	  <xsl:with-param name="count" select="$ecols+1"/>
+	</xsl:call-template>
+      </xsl:if>
+    </xsl:when>
     <xsl:when test="xh:innerp/xh:span[@class='cell']">
       <xsl:for-each select="xh:innerp/xh:span[@class='cell']">
 	<xsl:variable name="span" select="@xh:span"/>
@@ -197,6 +219,10 @@
 </xsl:template>
 
 <xsl:template match="xh:span[@class='gdl']">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="xh:span[@class='SIGN']">
   <xsl:apply-templates/>
 </xsl:template>
 

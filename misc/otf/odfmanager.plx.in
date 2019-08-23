@@ -10,6 +10,7 @@ my $driver_only = 0;
 my @files = ();
 my $list = '';
 my $project = '';
+my $tabular = 0;
 my $title = '';
 my $tmpdir = "01tmp/odt$$";
 
@@ -17,6 +18,7 @@ GetOptions (
     'driver'=>\$driver_only,
     'list:s'=>\$list,
     'project:s'=>\$project,
+    'tabular'=>\$tabular,
     'title:s'=>\$title,
     );
 
@@ -50,7 +52,12 @@ if ($driver_only) {
     exit 0;
 }
 
-exec 'otf2odt.sh', $driver, $project;
+if ($tabular) {
+    warn "odfmanager using tabular mode\n";
+    exec 'otf2odt-tab.sh', $driver, $project;
+} else {
+    exec 'otf2odt.sh', $driver, $project;
+}
 
 #################################################################################
 

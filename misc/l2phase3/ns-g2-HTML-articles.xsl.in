@@ -915,13 +915,15 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template name="bases-para">
-  <p class="norms">
-    <span class="iheader">Base forms:</span>
-    <xsl:for-each select="cbd:base">
-      <xsl:call-template name="base-para-sub"/>
-    </xsl:for-each>
-    <xsl:text>.</xsl:text>
-  </p>
+  <xsl:if test="cbd:bases/cbd:base">
+    <p class="norms">
+      <span class="iheader">Base forms:</span>
+      <xsl:for-each select="cbd:base">
+	<xsl:call-template name="base-para-sub"/>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="base-para-sub">
@@ -1106,6 +1108,9 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	</div>
       </xsl:when>
       <xsl:otherwise>
+	<div class="senses">
+	  <xsl:apply-templates/>
+	</div>
 	<div class="props">
 	  <xsl:if test="../cbd:prop[@name='gender']">
 	    <p span="prop gender"><xsl:value-of select="../cbd:prop[@name='gender']/@value"/><xsl:text>.</xsl:text></p>

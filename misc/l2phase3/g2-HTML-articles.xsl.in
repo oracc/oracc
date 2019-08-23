@@ -515,16 +515,17 @@
 </xsl:template>
 
 <xsl:template match="cbd:morphs">
-  <div class="morphs">
-    <span class="iheader">Morphological forms:</span>
-    <xsl:choose>
-      <xsl:when test="*/*[@morph2]">
-	<xsl:for-each select="cbd:morph">
-	  <xsl:apply-templates select="."/>
-	</xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-<!--	<p class="norms"> -->
+  <xsl:if test="cbd:morph">
+    <div class="morphs">
+      <span class="iheader">Morphological forms:</span>
+      <xsl:choose>
+	<xsl:when test="*/*[@morph2]">
+	  <xsl:for-each select="cbd:morph">
+	    <xsl:apply-templates select="."/>
+	  </xsl:for-each>
+	</xsl:when>
+	<xsl:otherwise>
+	  <!--	<p class="norms"> -->
 	  <xsl:for-each select="cbd:morph">
 	    <xsl:apply-templates select="."/>
 	    <xsl:if test="position() &lt; last()">
@@ -532,10 +533,11 @@
 	    </xsl:if>
 	  </xsl:for-each>
 	  <span class="punct-sc"><xsl:text>.</xsl:text></span>
-<!--	</p> -->
-      </xsl:otherwise>
-    </xsl:choose>
-  </div>
+	  <!--	</p> -->
+	</xsl:otherwise>
+      </xsl:choose>
+    </div>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="cbd:morph">
@@ -578,18 +580,20 @@
 </xsl:template>
 
 <xsl:template match="cbd:prefixs">
-  <div class="morphs prefix">
-    <p>
-    <span class="iheader">Verbal prefixes:</span>
-    <xsl:for-each select="cbd:prefix">
-      <xsl:apply-templates select="."/>
-      <xsl:if test="position() &lt; last()">
-	<span class="punct-sc"><xsl:text>; </xsl:text></span>
-      </xsl:if>
-    </xsl:for-each>
-    <span class="punct-sc"><xsl:text>.</xsl:text></span>
-    </p>
-  </div>
+  <xsl:if test="cbd:prefix">
+    <div class="morphs prefix">
+      <p>
+	<span class="iheader">Verbal prefixes:</span>
+	<xsl:for-each select="cbd:prefix">
+	  <xsl:apply-templates select="."/>
+	  <xsl:if test="position() &lt; last()">
+	    <span class="punct-sc"><xsl:text>; </xsl:text></span>
+	  </xsl:if>
+	</xsl:for-each>
+	<span class="punct-sc"><xsl:text>.</xsl:text></span>
+      </p>
+    </div>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="cbd:prefix">
@@ -770,14 +774,16 @@
 </xsl:template>
 
 <xsl:template match="cbd:bases">
-  <xsl:choose>
-    <xsl:when test="$cbd-bases-table='no'">
-      <xsl:call-template name="bases-para"/>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="bases-table"/>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:if test="cbd:base">
+    <xsl:choose>
+      <xsl:when test="$cbd-bases-table='no'">
+	<xsl:call-template name="bases-para"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:call-template name="bases-table"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="bases-para">
@@ -966,6 +972,9 @@
       </div>
     </xsl:when>
     <xsl:otherwise>
+      <div class="senses">
+	<xsl:apply-templates/>
+      </div>
       <div class="props">
 	<xsl:if test="../cbd:prop[@name='gender']">
 	  <p span="prop gender"><xsl:value-of select="../cbd:prop[@name='gender']/@value"/><xsl:text>.</xsl:text></p>
