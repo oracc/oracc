@@ -88,54 +88,77 @@ sub cache_stash {
 
 sub edit_apply_script {
     my($args, @c) = @_;
+    open(H,'>history.edit');
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
     my %edit_cache = ();
-    my %deletia = ();
-    for (my $i = 0; $i <= $#s; ++$i) {
-	if ($s[$i] =~ /^:cbd (\S+)$/) {
-	    pp_file($1);
-	} elsif ($s[$i] =~ /^\@(\d+)$/) {
-	    $from_line = pp_line($1);
-	} elsif ($s[$i] =~ s/^:map =//) {
-	    --$from_line; # map = line is the one after \@entry
-	    $deletia{$from_line} = 1;
-	    my $eid = ${$cbddata{'entries'}}{$s[$i]};
-	    if ($eid) {
-		my $to_line = -1;
-		my @t_slice = ();
-		if ($edit_cache{$eid}) {
-		    ($to_line,@t_slice) = @{$edit_cache{$eid}};
-		} else {
-		    $to_line = ${$cbddata{'entries'}}{$eid,'line'};
-		    my $to_end_line = $to_line;
-		    until ($c[$to_end_line] =~ /^\@end/ || $i > $#c) {
-			++$to_end_line;
+    my %deletia = (); # only used for @entry -- @sense is assigned \000 in @c
+    my $edit_entry = '';
+    my $edit_sense = '';
+    my @mrg = ();
+    my $mrg_pass = 0;
+#    warn Dumper \%{$cbddata{'entries'}};
+  apply:
+    {
+	for (my $i = 0; $i <= $#s; ++$i) {
+	    if ($s[$i] =~ /^:cbd (\S+)$/) {
+		pp_file($1);
+	    } elsif ($s[$i] =~ /^\@(\d+)$/) {
+		$from_line = pp_line($1);
+	    } elsif ($mrg_pass && $s[$i] =~ s/^:mrg =//) {
+		--$from_line; # mrg = line is the one after \@entry
+		$deletia{$from_line} = 1;
+		my $this_e = $s[$i]; $this_e =~ s/\@entry\s*//;
+		my $eid = ${$cbddata{'entries'}}{$this_e};
+		if ($eid) {
+		    my $to_line = -1;
+		    my @t_slice = ();
+		    if ($edit_cache{$eid}) {
+			($to_line,@t_slice) = @{$edit_cache{$eid}};
+		    } else {
+			$to_line = ${$cbddata{'entries'}}{$eid,'line'};
+			my $to_end_line = $to_line;
+			until ($c[$to_end_line] =~ /^\@end/ || $i > $#c) {
+			    ++$to_end_line;
+			}
+			@t_slice = @c[$to_line .. $to_end_line];
 		    }
-		    @t_slice = @c[$to_line .. $to_end_line];
+		    my $from_end_line = $from_line;
+		    until ($c[$from_end_line] =~ /^\@end/ || $i > $#c) {
+			++$from_end_line;
+		    }
+		    my @f_slice = @c[$from_line .. $from_end_line];
+		    my $f = join("\n", @f_slice);
+		    my $t = join("\n", @t_slice);
+		    warn "map-from block:\n$f\n";
+		    warn "-----------------\n";
+		    warn "map-to block:\n$t\n";
+		    warn "-----------------\n";
+		    my @res = entries_merge(\@t_slice, \@f_slice, pp_file(), $to_line, pp_file(), $from_line);
+		    warn "result block:\n";
+		    warn join("\n",@res), "\n";
+		    warn "=================\n";
+		    @{$edit_cache{$eid}} = ($to_line,@res);
+		} else {
+		    pp_warn("non-existent map target '$this_e'");
 		}
-		my $from_end_line = $from_line;
-		until ($c[$from_end_line] =~ /^\@end/ || $i > $#c) {
-		    ++$from_end_line;
-		}
-		my @f_slice = @c[$from_line .. $from_end_line];
-		my $f = join("\n", @f_slice);
-		my $t = join("\n", @t_slice);
-		warn "map-from block:\n$f\n";
-		warn "-----------------\n";
-		warn "map-to block:\n$t\n";
-		warn "-----------------\n";
-		my @res = entries_merge(\@t_slice, \@f_slice, pp_file(), $to_line, pp_file(), $from_line);
-		warn "result block:\n";
-		warn join("\n",@res), "\n";
-		warn "=================\n";
-		@{$edit_cache{$eid}} = ($to_line,@res);
+	    } elsif ($s[$i] =~ s/^:rnm >\s*//) {
+		$c[$from_line] = $s[$i];
+		history($edit_entry, $edit_sense, $s[$i]);
+	    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
+		$edit_entry = $1;
+		$edit_sense = '';
+	    } elsif ($s[$i] =~ /:sns\s+(.*?)$/) {
+		$edit_sense = $1;
 	    } else {
-		pp_warn("non-existent map target '$s[$i]'");
+		warn "unhandled edit script tag $s[$i]\n";
 	    }
 	}
     }
+
+    goto apply unless $mrg_pass++;
+    
     my @newc = ();
     for (my $i = 0; $i <= $#c; ++$i) {
 	if ($c[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
@@ -174,6 +197,7 @@ sub edit_make_script {
     return unless defined $ORACC::CBD::data{'edit'};
     my($args, @c) = @_;
     my @eds = @{$ORACC::CBD::data{'edit'}};
+#    print STDERR Dumper \@eds;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
     my @s = ();
     push @s, ":cbd $$args{'cbd'}";
@@ -183,46 +207,40 @@ sub edit_make_script {
 	push @s, "\@$i";
 	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;
-	    my @e = ();
-	    until ($c[$i] =~ /^\@end/ || $i > $#c) {
-		push @e, ":add entry";
-		push @e, $c[$i];
-	    }
-	    if ($i > $#c) {
-		pp_warn("never found \@end for \@entry starting at line $entry");
-	    } else {		
-		push @s, @e;
-	    }
+	    push @s, ":add $c[$i]";
 	} elsif ($c[$i] =~ /^\+\@sense/) {
-	    my $pos = ($c[$i-1] =~ /^\@sense/ ? 'mid' : '1st');
-	    if ($pos eq 'mid') {
-		$pos = ($c[$i+1] =~ /^\@sense/ ? 'mid' : 'end');
-	    }
 	    my $e = pp_entry_of($i,@c);
 	    push @s, ":ent $c[$e]";
-	    push @s, ":pos $pos";
 	    push @s, ":add $c[$i]";
 	} elsif ($c[$i] =~ /^>/) {
-	    my($tag) = ($c[$i] =~ /(\@[a-z]+)/);
+	    my($tag) = ($c[$i-1] =~ /(\@[a-z]+)/);
 	    my $e = pp_entry_of($i,@c);
-	    my $action = 'rename';
+	    my $action = 'rename';	    
 	    
-	    if ($tag eq 'entry') {
+	    if ($tag eq '@entry') {
+		my $renstr = $c[$i]; $renstr =~ s/^>\s*//;
 		# decide whether we rename or merge
-		my $eid = ${$cbddata{'entries'}}{$e};
-		$action = 'map' if $eid;
+#		if ($renstr =~ /diri/) {
+#		    warn "renstr = $renstr\n";
+#		}
+		my $eid = ${$cbddata{'entries'}}{$renstr};
+		$action = 'mrg' if $eid;
 	    }
 	    if ($action eq 'rename') {
 		if ($c[$i-1] =~ /^$tag/) {
 		    push @s, ":ent $c[$e]";
-		    push @s, ":del $c[$i-1]";
-		    push @s, ":add $c[$i]";
+		    if ($tag eq '@sense') {
+			push @s, ":sns $c[$i-1]";
+		    }
+		    $c[$i] =~ s/>\s*/>$tag /;
+		    push @s, ":rnm $c[$i]";
 		} else {
 		    pp_warn("expected $tag before '>$tag'");
 		}
 	    } else {
-		$c[$i] =~ s/^>/=/;
-		push @s, ":map $c[$i]";
+		$c[$i] =~ s/^>/=\@entry /;
+		push @s, ":ent $c[$e]";
+		push @s, ":mrg $c[$i]";
 	    }
 	} elsif ($c[$i] =~ /^-/) {
 	    my $e = pp_entry_of($i,@c);
@@ -254,6 +272,13 @@ sub edit_save_script {
 	print S join("\n", @{$ORACC::CBD::data{'script'}}), "\n";
 	close(S);
     }
+}
+
+sub history {
+    my($e,$s,$to) = @_;
+    $s = '' unless $s;
+    my $date = `date +\%Y-\%m-\%d`; chomp $date;
+    print H "$date\t$e\t$s\t$to\n";
 }
 
 1;

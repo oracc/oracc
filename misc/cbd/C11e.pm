@@ -10,10 +10,10 @@ sub c11e {
     my($args,@cbd) = @_;
     my @c = @cbd;
     for (my $i = 0; $i <= $#c; ++$i) {
-	if ($c[$i] =~ /^\+\@entry/) {
+	if ($c[$i] =~ /^-\@entry/) {
 	    my $entry = $i;
 	    until ($c[$i] =~ /^\@end/ || $i > $#c) {
-		$c[$i] = "\000";
+		$c[$i++] = "\000";
 	    }
 	    if ($i > $#c) {
 		pp_warn("never found \@end for \@entry starting at line $entry");

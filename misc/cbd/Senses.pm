@@ -176,10 +176,16 @@ sub senses_merge {
 		my $index = $m[0]; $index =~ s/^#//; # this may be too rough and ready; perhaps need diagnostic when multiple candidates
 		map_sense($args, '2', $entry, $s, ${$b}[$index]);
 	    } else {
-		$s =~ s/sense/sense+/;
-		warn "Senses[3]: adding $s\n" if $ORACC::CBD::PPWarn::trace;
-		add_sense($args, $entry, $s);
-		push @newb, $s;
+		if ($use_map_fh) {
+		    $s =~ s/sense/sense+/;
+		    warn "Senses[3]: adding $s\n" if $ORACC::CBD::PPWarn::trace;
+		    add_sense($args, $entry, $s);
+		    push @newb, $s;
+		} else {
+		    my $ee = $entry;
+		    $ee =~ s/\s+\[/[/; $ee =~ s/\]\s+$/]/;
+		    pp_warn("SENSE[3] $ee: $s looks to be a new sense");
+		}
 	    }
 	}	
     }
@@ -219,14 +225,15 @@ sub map_sense {
 	    # print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
 	    print $map_fh "map sense $from_sig => $to_sig\n";
 	} else {
+	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+$/]/;
 	    if ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
-		pp_warn("SENSE[1] $in > $base");
+		pp_warn("SENSE[1] $entry: $in ~ $base");
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE
-		pp_warn("SENSE[2] $in > $base");
+		pp_warn("SENSE[2] $entry: $in > $base");
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 3) { # this SENSE doesn't match anything in base cbd
-		pp_warn("SENSE[3] doesn't match anything in base glossary");
+		die "(This can't happen)\n";
 	    } else {
 		pp_warn("unknown SENSE map code == $code");
 	    }

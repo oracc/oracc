@@ -41,7 +41,7 @@ if ($args{'apply'}) {
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    if (${$map{$curr_entry}}{$cbd[$i]}) {
 		$mapto = ${$map{$curr_entry}}{$cbd[$i]};
-		warn "mapping $cbd[$i] => $mapto\n";
+#		warn "mapping $cbd[$i] => $mapto\n";
 		if ($cbd[$i+1] =~ /^>/) {
 		    my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
 		    $s = "\@sense $s";
@@ -52,6 +52,7 @@ if ($args{'apply'}) {
 			$noprint_plus_1 = 1;
 		    }
 		}
+		$mapto =~ s/\@sense\s+// if $mapto; # new style drops @entry/@sense after >
 	    }
 	}
 	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
