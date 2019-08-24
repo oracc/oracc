@@ -84,7 +84,8 @@ sub senses_align {
 #			if $ORACC::CBD::PPWarn::trace;
 #		    my $nsenses = 
 		    senses_merge($args, 
-				 $curr_entry, 
+				 # $curr_entry
+				 $sense_entry, 
 				 [ @senses ], $senses_b,
 				 @lines,
 			);
@@ -184,7 +185,11 @@ sub senses_merge {
 		} else {
 		    my $ee = $entry;
 		    $ee =~ s/\s+\[/[/; $ee =~ s/\]\s+$/]/;
-		    pp_warn("SENSE[3] $ee: $s looks to be a new sense");
+		    if ($#$b == 0) {
+			pp_warn("SENSE[3] $ee: $s >> $$b[0]");
+		    } else {
+			pp_warn("SENSE[4] $ee: $s !! new or bad sense");
+		    }
 		}
 	    }
 	}	
