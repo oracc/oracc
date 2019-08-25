@@ -119,7 +119,7 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
 		{
 		  x2_attr(f_xcl,"newsig",(char *)lp->f->f2.tail_sig);
 		  if (cbd_lem_sigs)
-		    vnotice2((char*)lp->f->file,lp->f->lnum,"\t%s", lp->f->f2.tail_sig);		
+		    vnotice2((char*)lp->f->file,lp->f->lnum,"\t%s", lp->f->f2.tail_sig);
 		}
 	      phase = ophase;
 	    }
