@@ -720,7 +720,8 @@ compute_and_print_entry_data {
 				$m2attr = ' morph2="'.join(' ',@{$m1m2{$entry_ids{$entry},$k}}).'"';
 			    }
 			}
-			print "<$f xml:id=\"$xid\" n=\"$k\"$m2attr icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\"/>";
+			# 20190825 changed xml:id to cbd:id because overflowing LibXML2's xml:ids again :(
+			print "<$f cbd:id=\"$xid\" n=\"$k\"$m2attr icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\"/>";
 		    }
 		}
 	    }
