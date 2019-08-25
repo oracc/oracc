@@ -106,10 +106,12 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
 	  else if (BIT_ISSET(lp->f->f2.flags, F2_FLAGS_NOT_IN_SIGS))
 	    {
 	      extern const char *phase;
+	      extern int cbd_lem_sigs;
 	      const char *ophase = phase;
 	      phase = "sig";
 	      x2_attr(f_xcl,"newsig",(char *)lp->f->f2.sig);
-	      vnotice2((char*)lp->f->file,lp->f->lnum,"\t%s", lp->f->f2.sig);
+	      if (cbd_lem_sigs)
+		vnotice2((char*)lp->f->file,lp->f->lnum,"\t%s", lp->f->f2.sig);
 	      phase = ophase;
 	    }
 	  else if (BIT_ISSET(lp->f->f2.flags,F2_FLAGS_PARTIAL)
