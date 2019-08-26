@@ -7,8 +7,6 @@ use ORACC::Texts::Util;
 
 my @w = (<>); chomp @w;
 
-wid2lem_load('stdin',\@w);
-
-
+wid2lem_by_sig('stdin',\@w, );
 
 1;

@@ -104,7 +104,9 @@ sub c_expand {
     } else {
 	if ($#l != $#r) {
 	    pp_line($i+1);
-	    pp_warn("\@collo has different length left and right sides /@l/=>/@r/");
+	    my $ll = join('|',@l);
+	    my $rr = join('|',@r);
+	    pp_warn("\@collo has different length left and right sides /$ll/=>/$rr/");
 	    "";
 	} else {
 	    my $l = "@l";
@@ -133,7 +135,7 @@ sub c_tokenize {
 	    push @t, [ C_SENSE, $1, $i ];
 	} elsif ($c =~ s/^([;!]*(?:n|[A-Z][A-Z]*))\s+//) {
 	    push @t, [ C_POS, $1, $i ];
-	} elsif ($c =~ s/^([;!]*[^\s]+?\].*?)\s+//) {
+	} elsif ($c =~ s/^([;!]*\S+\[.*?\].*?)\s+//) {
 	    push @t, [ C_SIG, $1, $i ];
 	} elsif ($c =~ s/^-([;!]*\S+)\s+//) {
 	    push @t, [ C_FORM, $1, $i ];
