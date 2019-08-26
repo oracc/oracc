@@ -10,44 +10,63 @@ use ORACC::L2GLO::Util;
 
 use Data::Dumper;
 
-my %w2l_index = ();
+my $w2l_trace = 0;
+
 my %w2l_data = ();
+my %w2l_index = ();
+my %wid_map = ();
 
 sub wid2lem_by_sig {
     my ($w2l_err,$wid2lem,$sig_err,$sigs,$warn_not_found) = @_;
     wid2lem_load($w2l_err, $wid2lem);
     my $i = 0;
     my %ok = ();
-    foreach my $s (@_) {
+    foreach my $s (@$sigs) {
 	++$i;
 	next if $s =~ /^\s*$/; # blank lines allowed to maintain line numbers as in source file for sigs
 	my %p = parse_sig($s);
 	if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
 	    my $cfgwpos = "$p{'cf'}\[$p{'gw'}\]$p{'pos'}";
+	    warn "W2L: resolving sig $s via cfgw $cfgwpos\n" if $w2l_trace;
 	    if ($w2l_index{$cfgwpos}) {
 		if ($p{'lang'}) {
 		    my @cand = @{$w2l_index{$cfgwpos}};
 		    my @ok = ();
-		  candidate:
-		    {
-			foreach my $c (@cand) {
+		    if ($p{'base'}) {
+			$p{'base'} =~ s/^\%.*?://;
+		    }
+		    foreach my $c (@cand) {
+		      candidate:
+			{
+			    warn "W2L: matching sig $s against cand $c\n" if $w2l_trace;
 			    foreach my $k (keys %p) {
 				next if $k =~ /^#/;
+				warn "W2L: testing $k: $p{$k} vs. $$c{$k}\n" if $w2l_trace;
 				next candidate unless $p{$k} eq $$c{$k};
 			    }
-			    my $sig = $$c{'sig'};
-			    my $data = $w2l_data{$sig};
-			    my $wid = $$data[0];
-			    my $inst = $$data[1];
-			    if ($w2l_map{$wid}) {
-				push @ok, [ @$w2l_map{$wid} , $wid , $inst , $sig ];
+			    my $sig = $$c{'#sig'};
+			    if ($sig) {
+				foreach my $d (@{$w2l_data{$sig}}) {
+				    my ($wid,$inst) = @$d;
+				    if ($wid_map{$wid}) {
+					warn "push \@ok, [ @{$wid_map{$wid}} , $wid , $inst , $sig ]\n" if $w2l_trace;
+					push @ok, [ @{$wid_map{$wid}} , $wid , $inst , $sig ];
+				    } else {
+					warn "$0: internal error: wid $wid not in wid_map";
+				    }
+				}
 			    } else {
-				warn "$0: internal error: wid $wid not in w2l_map";
-			    }			      
+				warn "$0: sig not in w2l_data\n";
+				warn Dumper $c;
+			    }
 			}
 		    }
 		    ### now @ok is all the matches to this sig in wid2lem
-		    push @{$ok{$s}}, @ok;
+		    if ($#ok >= 0) {
+			push @{$ok{$s}}, @ok;
+		    } else {
+			warn "$0: $s not found in lemmatized corpus\n";
+		    }
 		} else {
 		    warn "$sig_err:$i: no \%lang in sig $s\n";
 		}
@@ -58,13 +77,14 @@ sub wid2lem_by_sig {
 	    warn "$sig_err:$i: no CF[GW]POS found in sig $s\n";
 	}
     }
-    print Dumper \%ok; exit 0;
+    # print Dumper \%ok; exit 0;
+    %ok;
 }
 
 sub wid2lem_load {
     my ($w2l_err,$wid2lem) = @_;
-    my %wid_map = ();
     my $i = 0;
+    my %seen = ();
     foreach my $w2l (@$wid2lem) {
 	++$i;
 	my($f1,$f2,$f3) = split(/\t/, $w2l);
@@ -72,14 +92,18 @@ sub wid2lem_load {
 	    $wid_map{$f1} = [ $f2 , $f3 ];
 	} elsif ($f3 && $f3 =~ /^\@/) { # it's a WID INSTANCE SIGNATURE triple
 	    push @{$w2l_data{$f3}}, [ $f1 , $f2 ];
-	    my %p = parse_sig($f3);
-	    if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
-		$p{'#sig'} = $f3;
-		$p{'base'} =~ s/^\%.*?://
-		$p{'form'} =~ s/^\%.*?://
-		push @{$w2l_index{"$p{'cf'}\[$p{'gw'}\]$p{'pos'}"}}, { %p };
-	    } else {
-		warn "$w2l_err:$i: no CF[GW]POS found in sig $f3\n";
+	    unless ($seen{$f3}++) {
+		my %p = parse_sig($f3);
+		if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
+		    $p{'#sig'} = $f3;
+		    if ($p{'lang'} =~ /^sux/) {
+			$p{'base'} =~ s/^\%.*?://;
+		    }
+		    $p{'form'} =~ s/^\%.*?://;
+		    push @{$w2l_index{"$p{'cf'}\[$p{'gw'}\]$p{'pos'}"}}, { %p };
+		} else {
+		    warn "$w2l_err:$i: no CF[GW]POS found in sig $f3\n";
+		}
 	    }
 	} else {
 	    if ($f3) {
@@ -87,8 +111,8 @@ sub wid2lem_load {
 	    } # else it's a WID and unlemmatized token entry
 	}
     }
-    print Dumper \%w2l_data;
-    print Dumper \%w2l_index;
+    open(W,'>w2l_data.dump'); print W Dumper \%w2l_data; close(W);
+    open(W,'>w2l_index.dump'); print W Dumper \%w2l_index; close(W);
 }
 
 1;
