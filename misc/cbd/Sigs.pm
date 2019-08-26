@@ -562,7 +562,7 @@ sub sigs_form {
 
 sub cofs_marshall {
     my @smpl = grep(/\!0x0/, @_);
-    my @extl = `grep -h '\!0x0[2-9]' 01bld/*/from_glo.sig`; chomp @extl;
+    my @extl = `grep -q -h '\!0x0[2-9]' 01bld/*/from_glo.sig`; chomp @extl;
 #    warn "cofs_marshall: ", Dumper(\@smpl), Dumper(\@extl), "\n===\n";
     (@smpl, @extl);
 }

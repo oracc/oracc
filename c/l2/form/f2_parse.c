@@ -584,7 +584,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
       else
 	f2p->epos = NULL;
     }
-  
+
   if (f2p->base)
     validate_base((const char *)file, line, f2p->base);
 

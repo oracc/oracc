@@ -8,8 +8,8 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Bases;
 
-# $ORACC::CBD::nosetupargs = 1;
 my %args = pp_args();
+$ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 
@@ -31,7 +31,9 @@ if (pp_status()) {
 }
 
 bases_init(\%args);
-bases_align(\%args, \@base_cbd, \@cbd);
+bases_align(\%args, \@base_cbd, \@cbd, undef);
 bases_term();
+
+pp_diagnostics();
 
 1;

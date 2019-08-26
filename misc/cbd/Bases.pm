@@ -18,6 +18,7 @@ my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
 my %log_errors = ();
 my %stats = ();
+my $use_map_fh;
 
 my %base_cpd_flags = ();
 
@@ -68,7 +69,13 @@ sub bases_align {
 
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
-    $map_fh = $xmap_fh if $xmap_fh;
+
+    if ($xmap_fh) {
+	$map_fh = $xmap_fh;
+	$use_map_fh = 1;
+    } else {
+	$use_map_fh = 0;
+    }
 
     my %base_bases = bases_collect(@base_cbd);
     my $curr_entry = '';
@@ -88,15 +95,19 @@ sub bases_align {
 		    if ($$b{'#map'}) {
 			my %bmap = %{$$b{'#map'}};
 			foreach my $b (keys %bmap) {
-			    print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
-			    #			print MAP_FH 
-			    #			    '@'.project($$args{'cbd'}).'%'.lang().":$p_entry /$b => /$bmap{$b}\n";
+			    if ($use_map_fh) {
+				print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
+			    } else {
+				pp_warn("$p_entry: map base $b ~ $bmap{$b}");
+			    }
 			}
 		    }
 		    $base_cbd[$base_i] = bases_string($b);
 		    warn "=>$base_cbd[$base_i]\n" if $base_trace;
 		    if ($$b{'#new'}) {
-			print $map_fh "new bases $p_entry => \@bases $base_cbd[$base_i]\n";
+			if ($use_map_fh) {
+			    print $map_fh "new bases $p_entry => \@bases $base_cbd[$base_i]\n";
+			} # else already reported in bases_merge
 		    }
 		}
 	    }
@@ -180,8 +191,10 @@ sub bases_merge {
 	    } else {
 		# This is a new primary transliteration
 		warn "incoming $p2 is new primary\n" if $base_trace;
-		if ($map_fh) {
+		if ($use_map_fh) {
 		    print $map_fh pp_file().':'.pp_line().": add base $p_entry => $p2\n";
+		} else {
+		    pp_warn("$p_entry: new base $p2");
 		}
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};

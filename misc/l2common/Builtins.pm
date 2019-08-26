@@ -205,7 +205,7 @@ acd2xml {
     open(IN,$input) || die "acd2xml: unable to open glossary $input\n";
     my @bffs = ();
     while (<IN>) {
-	if (s/^\@entry[*!]*\s+//) {
+	if (s/^[+->]?\@entry[*!]*\s+//) {
 	    chomp;
 	    s/\s*$//;
 	    my $cfgw = $_;
@@ -275,7 +275,7 @@ acd2xml {
     $n =~ s/_[^_]+$//;
     my @xml = (xmldecl(),"<entries xmlns=\"http://oracc.org/ns/cbd/1.0\" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\" xml:lang=\"$lang\" g:file=\"$lang.glo\" project=\"$project\" n=\"$n\" name=\"$title\">");
     $status = 0;
-    $bad_action = 'load_acd';
+    $bad_action = 'acd2xml';
     $bad_input = $input; $bad_input =~ s/\.norm$//;
     $cbdlang = $lang if $lang;
     $blang = $cbdlang; $blang =~ s/-.*//;
@@ -295,7 +295,7 @@ acd2xml {
 	next if /^\#/ || /^\@letter/;
 	chomp;
 	s/\s+/ /g;
-	if (/^\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
+	if (/^[+->]?\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $defn_minus = 0;
 	    my $default = $currtag =~ s/!//;
@@ -447,6 +447,8 @@ acd2xml {
 		%e = ();
 		$bstar = '';
 	    }
+	} elsif (/^>/) {
+	    # ignore edit map commands
 	} else {
 	    chomp;
 	    $line_of{'#init'} = $.; # $curr_line;

@@ -36,6 +36,8 @@ static int
 cfgwpos_test(struct ilem_form *fp, void *user, void *setup)
 {
   struct ilem_form*up = user;
+  if (!fp->f2.pos)
+    return 0;
   return strcmp((const char *)fp->f2.cf, (const char *)up->f2.cf)
     ||  strcmp((const char *)fp->f2.gw, (const char *)up->f2.gw)
     ||  strcmp((const char *)fp->f2.pos, (const char *)up->f2.pos);
