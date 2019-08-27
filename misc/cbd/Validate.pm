@@ -1026,8 +1026,10 @@ sub v_sense {
     }
     
     if ($pre) {
-	if ($global_cbd[pp_line()-1] =~ /^$acd_rx/) {
-	    pp_warn("multiple acd \@sense fields in a row not permitted");
+	if ($pre eq '>' && $global_cbd[pp_line()-2] =~ /^$acd_rx/) {
+	    pp_warn("edit command '>' can't follow another edit command");
+	    pp_warn('prev='.$global_cbd[pp_line()-2]);
+	    pp_warn('curr='.$global_cbd[pp_line()-1]);
 	} else {
 	    push @{$data{'edit'}}, pp_line()-1;
 	}

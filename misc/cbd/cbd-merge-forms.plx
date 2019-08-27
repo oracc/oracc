@@ -8,6 +8,9 @@ my $acd_rx = $ORACC::CBD::acd_rx;
 
 use Data::Dumper;
 
+### THIS IS AN OLD AND DEPRECATED SCRIPT THAT DOES NOT FIX THE /BASE
+### IN INCOMING FORMS
+
 my $glo = shift @ARGV;
 die "$0: need <LANG>.glo <FORMS>.forms\n" unless $glo;
 die "$0: can't read glossary $glo\n" unless -r $glo;

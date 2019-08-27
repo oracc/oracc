@@ -31,9 +31,42 @@ if (pp_status()) {
 }
 
 bases_init(\%args);
-bases_align(\%args, \@base_cbd, \@cbd, undef);
+my %bases = bases_align(\%args, \@base_cbd, \@cbd, undef);
 bases_term();
 
-pp_diagnostics();
+if ($args{'apply'}) {
+    my $curr_entry = '';
+    my %curr_map = ();
+    $ORACC::CBD::Bases::serialize_ref = 1;
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	next if $cbd[$i] =~ /^\000/;
+	if ($cbd[$i] =~ /^[-+>]*\@entry\S*\s+(.*?)\s*$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /^\@bases/) {
+	    if ($bases{$curr_entry}) {
+		my %curr_bases = %{$bases{$curr_entry}};
+		$cbd[$i] = '@bases '.bases_serialize(%curr_bases);
+		if ($curr_bases{'#map'}) {
+		    %curr_map = %{$curr_bases{'#map'}};
+		} else {
+		    %curr_map = ();
+		}
+	    } else {
+		%curr_map = ();
+	    }
+	} elsif ($cbd[$i] =~ /^\@form/) {
+	    if (scalar %curr_map) {
+		my ($this_base) = ($cbd[$i] =~ m#\s/(\S+)#);
+		if ($curr_map{$this_base}) {
+		    my $b = $curr_map{$this_base};
+		    $cbd[$i] =~ s#^(.*?\s+)/\S+(.*)$#$1/${b}$2#;
+		}
+	    }
+	}
+	print $cbd[$i], "\n";
+    }
+} else {
+    pp_diagnostics();
+}
 
 1;

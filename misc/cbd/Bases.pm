@@ -13,6 +13,8 @@ use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
+$ORACC::CBD::Bases::serialize_ref = 0;
+
 my $base_trace = 0;
 my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
@@ -70,6 +72,8 @@ sub bases_align {
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
 
+    my %bases = ();
+
     if ($xmap_fh) {
 	$map_fh = $xmap_fh;
 	$use_map_fh = 1;
@@ -92,28 +96,32 @@ sub bases_align {
 		pp_line($i+1);
 		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
 		if ($$b{'#map'} || $$b{'#new'}) {
-		    if ($$b{'#map'}) {
-			my %bmap = %{$$b{'#map'}};
-			foreach my $b (keys %bmap) {
-			    if ($use_map_fh) {
-				print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
-			    } else {
-				pp_warn("$p_entry: map base $b ~ $bmap{$b}");
+		    if ($$args{'apply'}) {
+			$bases{$curr_entry} = $b;
+		    } else {
+			if ($$b{'#map'}) {
+			    my %bmap = %{$$b{'#map'}};
+			    foreach my $b (keys %bmap) {
+				if ($use_map_fh) {
+				    print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
+				} else {
+				    pp_warn("$p_entry: map base $b ~ $bmap{$b}");
+				}
 			    }
 			}
-		    }
-		    $base_cbd[$base_i] = bases_string($b);
-		    warn "=>$base_cbd[$base_i]\n" if $base_trace;
-		    if ($$b{'#new'}) {
-			if ($use_map_fh) {
-			    print $map_fh "new bases $p_entry => \@bases $base_cbd[$base_i]\n";
-			} # else already reported in bases_merge
+			$base_cbd[$base_i] = bases_string($b);
+			warn "=>$base_cbd[$base_i]\n" if $base_trace;
+			if ($$b{'#new'}) {
+			    if ($use_map_fh) {
+				print $map_fh "new bases $p_entry => \@bases $base_cbd[$base_i]\n";
+			    } # else already reported in bases_merge
+			}
 		    }
 		}
 	    }
 	}
     }
-#    print Dumper $ORACC::CBD::data{'files'};
+    return %bases;
 }
 
 sub bases_collect {
@@ -165,11 +173,13 @@ sub bases_merge {
  	if ($h1{$p2}) { # primary in b2 is already in b1
 	    warn "found $p2 as primary in both\n" if $base_trace;
  	    $h1{"$p2#alt"} = merge_alts($p2, $h1{"$p2#alt"}, $h2{"$p2#alt"});
+	    ++${$h1{'#ref'}}{$p2};
  	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
  	    my $p1 = ${$h1{"#alt"}{$p2}};
  	    warn "found $p2 as alternate to $p1 in base\n" if $base_trace;
  	    $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
  	    ${$h1{'#map'}}{$p2} = $p1;
+	    ++${$h1{'#ref'}}{$p1};
  	} else { # primary in b2 isn't known in b1
 	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2,1);
 	    my $p1 = '';
@@ -187,6 +197,7 @@ sub bases_merge {
 		${$h1{'#map'}}{$p2} = $p1;
 
 #		my $p1 = ${$h1{"#alt"}{$p2}};
+		++${$h1{'#ref'}}{$p1};
 
 	    } else {
 		# This is a new primary transliteration
@@ -201,6 +212,7 @@ sub bases_merge {
 		if ($h2{"$p2#alt"}) {
 		    $h1{"$p2#alt"} = $h2{"$p2#alt"};
 		}
+		++${$h1{'#ref'}}{$p2};
 	    }
 	    $h1{'#new'} = 1;
  	}
@@ -492,13 +504,15 @@ sub bases_serialize {
     foreach my $b (sort keys %b) {
 	next if $b =~ /\#/;
 	next unless $b; ## FIXME: should issue a warning
-	$res .= '; ' if $res;
-	$res .= $b;
-	if (defined $b{"$b#alt"}) {
-	    next if $b =~ /\#/;
-	    $res .= ' (';
-	    $res .= join(', ', sort keys %{$b{"$b#alt"}});
-	    $res .= ')';
+	if (!$ORACC::CBD::Bases::serialize_ref || ${$b{'#ref'}}{$b}) {
+	    $res .= '; ' if $res;
+	    $res .= $b;
+	    if (defined $b{"$b#alt"}) {
+		next if $b =~ /\#/;
+		$res .= ' (';
+		$res .= join(', ', sort keys %{$b{"$b#alt"}});
+		$res .= ')';
+	    }
 	}
     }
     if (!length($res)) {
