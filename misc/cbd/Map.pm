@@ -8,6 +8,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::CBD::Bases;
 use ORACC::L2GLO::Util;
 use Data::Dumper;
 
@@ -18,6 +19,7 @@ my $marshalling = '';
 my @cmdcombos = qw/addentry addparts addsense mapentry mapsense mapbase newbases/;
 my %combofuncs = (
     addentry => \&addentry,
+    addbase => \&addbase,
     addparts => \&addparts,
     addsense => \&addsense,
     addform => \&addform,
@@ -25,7 +27,6 @@ my %combofuncs = (
     mapentry => \&mapentry,
     mapsense => \&mapsense,
     mapbase => \&mapbase,
-    addbase => undef,
 );
 
 my %currmap = ();
@@ -38,14 +39,15 @@ sub map_set_map {
 sub map_apply_glo {
     my @cbd = @_;
     my @n = ();
-#    print STDERR Dumper \%currmap;
+#    print STDERR Dumper \%currmap; exit 0;
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    my $key = $1;
 	    $key =~ s/\s*(\[.*?\])\s*/$1/;
 	    if ($currmap{$key}) {
 		my %emap = %{$currmap{$key}};
-#		print Dumper \%emap;
+#		warn "$key\n"; # print STDERR Dumper \%emap if $key =~ /ašte/;
+
 		# emap may have @parts @bases @form @sense:
 
 		if ($emap{'parts'}) {
@@ -64,7 +66,22 @@ sub map_apply_glo {
 		    }
 		    push @n, $${$emap{'bases'}}[0];
 		    ++$i;
+		} elsif ($emap{'base'}) {
+#		    print STDERR Dumper \%emap;
+		    my $addb = join('; ', @{$emap{'base'}});
+		    while ($cbd[$i] !~ /^\@bases/) {
+			push @n, $cbd[$i++];
+		    }
+		    my $bm = bases_merge($cbd[$i++],$addb,0);
+		    my $nb = bases_serialize(%{$bm});
+		    warn "bases = $cbd[$i-1]\n";
+		    warn "addb = $addb\n";
+		    warn "new bases = $nb\n";
+		    warn Dumper $bm;
+		    warn "====\n";
+		    push @n, '@bases '.$nb;
 		}
+		
 		while ($i < $#cbd && $cbd[$i] !~ /^\@(?:form|sense)/) {
 		    push @n, $cbd[$i++];
 		}
@@ -129,7 +146,7 @@ sub map_apply_sig {
     } elsif ($s =~ /\&\&/) {
 	my @s = ();
 	foreach my $s2 (split(/\&\&/,$s)) {
-	    warn "map_apply_sig_sub in cof\n";
+#	    warn "map_apply_sig_sub in cof\n";
 	    push @s, map_apply_sig_sub($args,$s2);
 	}
 	$s = join('&&',@s);
@@ -183,7 +200,10 @@ sub map_load {
     open(M, $map) || die "$0: failed to open map file for read\n";
     while (<M>) {
 	next if /^\s*$/ || /^\#/;
+	chomp;
 	s/^.*?:\d+:\s+//; # remove file:line: info
+	s/:add base /add base/;
+#	warn "$_\n" if /add base/;
 	if (/^(add|cut|fix|map|new)\s+(.*?)$/) {
 	    my ($cmd,$arg) = ($1,$2);
 	    my($what,$from,$to) = ();
@@ -219,6 +239,8 @@ sub map_load {
 			    } else {
 				push @{${$map{$mapkey}{$tag}}}, $to;
 			    }
+			} elsif ($what eq 'add' && $from eq 'base') {
+			    push @{${$map{$mapkey}}{$from}}, $to;
 			} else {
 			    ${${$map{$mapkey}{'#basemap'}}}{$from} = $to;
 			}
@@ -230,8 +252,8 @@ sub map_load {
 		warn "$map:$.: cmd/field combination '$combo' not handled\n"
 		    unless exists $combofuncs{$combo};
 	    }
-	} elsif (/: add base /) {
-	    # do nothing; this is for human review
+	} elsif (/: add base (.*)\s=>\s+(\S+)/) {
+	    # now handled above
 	} else {
 	    warn "$map:$.: syntax error: bad command\n";
 	}
@@ -252,6 +274,14 @@ sub addparts {
     return undef if $marshalling eq 'sigs';
     my($k,$f,$to) = @_;
     ($k,['add','parts',$to]);
+}
+
+sub addbase {
+    return undef if $marshalling eq 'sigs';
+# This is not needed after all    
+#    my($k,$f,$to) = @_;
+#    warn "addbase $k $f $to\n";
+#    ($k,['add','base',$to]);
 }
 
 sub addsense {

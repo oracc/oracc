@@ -217,7 +217,7 @@ sub bases_merge {
 	    $h1{'#new'} = 1;
  	}
     }
-#    print "merged bases => ", Dumper \%h1;
+    # print STDERR "merged bases => ", Dumper \%h1;
     return { %h1 };
 }
 

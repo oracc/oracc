@@ -73,13 +73,19 @@ if ($args{'stdout'}) {
 } else {
     open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n";
 }
+
+# Now that the *_align routines do multiple duty we need to be sure apply is switched
+# off when this program calls them.
+my $saved_args_apply = $args{'apply'};
+$args{'apply'} = 0;
+
 entries_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 senses_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 bases_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 forms_align(\%args, \@base_cbd, \@cbd, \*MAP_FH);
 close(MAP_FH);
 
-if ($args{'apply'}) {
+if ($saved_args_apply) {
     my @exec_args = ();
     push @exec_args, '-inplace' if $args{'inplace'};
     push @exec_args, '-increment', $args{'increment'} if defined $args{'increment'};

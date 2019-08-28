@@ -401,6 +401,7 @@ sub sigs_simple {
 	    my $p = $pref_bases{$basekey};
 	    if ($p) {
 		$p =~ s/^\!//;
+		$p =~ s/\@[ox].*$//;
 		if (exists $bits{$p}) {
 		    $simple_bases{$basekey} = $p;
 		} else {
