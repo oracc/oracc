@@ -205,7 +205,7 @@ sub bases_merge {
 		if ($use_map_fh) {
 		    print $map_fh pp_file().':'.pp_line().": add base $p_entry => $p2\n";
 		} else {
-		    pp_warn("$p_entry: new base $p2");
+		    pp_notice("$p_entry: new base $p2");
 		}
 #		warn Dumper \%h1;
 		$h1{$p2} = $h2{$p2};
@@ -613,7 +613,7 @@ sub fix_form_bases {
 	my @from_i = @{$$bd{'form_i'}};
 	foreach my $fi (@from_i) {
 	    my $l = ${$$bd{'cbd'}}[$fi];
-#	    warn "trying to fix $fromQ in '$l'\n";
+#	    warn "trying to fix $fromQ to $to in '$l'\n";
 	    my ($prebase,$base,$postbase) = ($l =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#);
 	    unless ($base =~ s#(^|$bound)$fromQ($bound|$)#$1$to$2#g) {
 		warn "no luck replacing $fromQ in $l\n"
@@ -622,12 +622,6 @@ sub fix_form_bases {
 		warn "ffb: fixing $from to $to in \@form\n";
 		${$$bd{'cbd'}}[$fi] = "$prebase/$base $postbase";
 	    }
-#	    if (${$$bd{'cbd'}}[$fi] =~ s/($bound)$fromQ($bound)/$1$to$2/g) {
-#		warn "ffb: fixing $from to $to in \@form\n";
-#	    } else {
-#		warn "no luck with $l\n"
-#		    if $l =~ /$fromQ/;
-#	    }
 	}
     }
 }

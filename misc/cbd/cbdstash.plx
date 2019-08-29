@@ -1,41 +1,60 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/check done help show start status update/; @args{@args} = ();
+my %args = (); my @args = qw/bases check done entries help init senses show status update/; @args{@args} = ();
+my @lang_args = qw/bases entries senses/;
 
 my %funcs = (
     check    => \&check,
     done     => \&done,
+    entries  => \&entries,
     help     => \&help,
+    init     => \&init,
     show     => \&show,
-    start    => \&start,
     status   => \&status,
     update   => \&update,
     );
 
 my %helps = (
+    bases    => 'stash the bases work',
     check    => 'check that no manual edits have been made according to the current stash',
     done     => 'mark the edits for which the current stash was created are complete',
+    entries  => 'stash the entries work',
     help     => 'print this help',
+    init     => 'initialize a new stash, saving 00atf/*.atf, 00lib/*.glo, and all lemdata',
+    senses   => 'stash the senses work',
     show     => 'show the ISODATE of the current stash',
-    start    => 'start a new stash, saving 00atf/*.atf, 00lib/*.glo, and all lemdata',
     status   => 'print the status of the current stash, with no trailing newline',
     update   => 'replace the stashed files with a fresh set; only valid if status=init',
     );
 
+my @sequence = qw/notused init entries senses bases done/;
+my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
+
 #########################################################################################
 
 my $arg = shift @ARGV;
+my $lang = shift @ARGV;
 
-if (exists $args{$arg}) {
-    &{$funcs{$arg}};
+if ($arg) {
+    if (exists $args{$arg}) {
+	&{$funcs{$arg}};
+    } else {
+	warn "$0: unknown argument.\n";
+	help();
+	exit 1;
+    }
 } else {
-    warn "$0: unknown argument.\n";
-    help();
-    exit 1;
+	warn "$0: requires an argument.\n";
+	help();
+	exit 1;
 }
 
 #########################################################################################
+
+sub bases {
+    phase_save('bases');
+}
 
 sub check {
     my $dir = stashdir();
@@ -68,12 +87,55 @@ sub done {
     }
 }
 
+sub entries {
+    phase_save('entries');
+}
+
 sub help {
     warn "\n$0: The following arguments are allowed\n\n";
     foreach my $a (sort @args) {
 	warn "\t$a\t$helps{$a}\n";
     }
     warn "\n";
+}
+
+sub phase_check {
+    my $p = shift;
+    my $s = getstatus();
+    die "$0: unknown status $p\n" unless $sequence{$p};
+    if (($sequence{$p} - $sequence{$s}) == 1) {
+	unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
+	    die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
+	} else {
+	    # todo: make sure -edited is later than -aligned
+	}
+    } else {
+	shift @sequence;
+	warn "$0: you can't stash $p right after $s.\n";
+	warn "$0: correct sequence is @sequence. Stop.\n";
+	exit 1;
+    }
+    return 1;
+}
+
+sub phase_save {
+    my $p = shift;
+    die "$0: must give LANG with @lang_args action\n"
+	unless $lang;
+    if (phase_check($p)) {
+	my $d = stashdir();
+	my $s = getstatus();
+	system 'cp', '-va', "$lang-$p-aligned.glo", $d;
+	system 'cp', '-va', "$lang-$p-edited.glo", $d;
+	system 'cp', '-va', "$d/$lang.glo", "$d/$lang.glo.$s";
+	system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+	system 'cp', '-va', "00lib/$lang.glo", $d;
+	setstatus($p);
+    }
+}
+
+sub senses {
+    phase_save('senses');
 }
 
 sub show {

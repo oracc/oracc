@@ -63,20 +63,20 @@ sub entries_align {
 		} else {
 		    if ($entry_map{$entry}) {
 			if (exists $entries{$entry_map{$entry}}) {
-			    pp_warn("[m]: $entry >> $entry_map{$entry}");
+			    pp_notice("[m]: $entry >> $entry_map{$entry}");
 			} else {
-			    pp_warn("[m]: $entry > $entry_map{$entry}: map target not in base glossary");
+			    pp_notice("[m]: $entry > $entry_map{$entry}: map target not in base glossary");
 			}
 		    } else {
 			my ($type,@guesses) = guess_entry($entry, $bix, $cix);
 			if ($#guesses >= 0) {
 			    if ($#guesses == 0) {
 				$type =~ s/^#(.).*$/$1/;
-				pp_warn("[$type]: $entry >> $guesses[0]");
+				pp_notice("[$type]: $entry >> $guesses[0]");
 				$entry_map{$entry} = $guesses[0];
 			    } else {
 				my $g = join('; ', @guesses);
-				pp_warn("$entry unknown--[$type] suggests $g");
+				pp_notice("$entry unknown--[$type] suggests $g");
 			    }
 			} else {
 			    pp_warn("entry $entry not in base glossary");
@@ -180,7 +180,7 @@ sub find_bases {
 # All of the constituents of the from slice, $from, are merged into the to slice, $base.
 # The merged result is returned as an array.
 sub entries_merge {
-    my($base,$from,$b_file,$b_line,$s_file,$s_line) = @_;
+    my($base,$from,$b_file,$b_line,$s_file,$s_line,$no_sense_plus) = @_;
     my @b = @$base;
     my @s = @$from;
 
@@ -208,7 +208,7 @@ sub entries_merge {
     }
 
     my @new_f = forms_merge(\@b,\@s,%{$$new_b_hash{'#map'}});
-    my @new_s = senses_merge_2(\@b,\@s);
+    my @new_s = senses_merge_2(\@b,\@s,$no_sense_plus);
     
     my @n = ();
     my $forms_done = 0;

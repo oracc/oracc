@@ -314,7 +314,7 @@ sub senses_find {
 }
 
 sub senses_merge_2 {
-    my ($b_e,$i_e) = @_;
+    my ($b_e,$i_e,$no_sense_plus) = @_;
     my @bb = senses_find(@$b_e);
     my @ii = senses_find(@$i_e);
     my $b = [ @bb ];
@@ -344,7 +344,7 @@ sub senses_merge_2 {
 	    if ($#matches >= 0) {
 		warn "Senses[1] $s == $matches[0]\n" if $ORACC::CBD::PPWarn::trace;
 	    } else {
-		$s =~ s/sense/sense+/;
+		$s =~ s/sense/sense+/ unless $no_sense_plus;
 		warn "Senses[2] ADD $s\n" if $ORACC::CBD::PPWarn::trace;
 		push @newb, $s;
 	    }	

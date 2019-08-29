@@ -9,13 +9,26 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
 
 my %args = pp_args();
-$args{'stdout'} = 1;
 
-if ($args{'edit'}) {
-    die "cbdpp.plx: -force is not allowed with -edit. Stop.\n"
-	if $args{'force'};
-    $ORACC::CBD::nonormify = 1;
+$args{'cbd'} = shift @ARGV unless $args{'cbd'};
+
+if (-r $args{'cbd'}) {
+    unless ($args{'output'}) {
+	if ($args{'cbd'} =~ /aligned/) {
+	    if ($args{'cbd'} =~ /entries|senses|bases|/) {
+		$args{'output'} = $args{'cbd'};
+		$args{'output'} =~ s/aligned/edited/;
+		die "$0: unable to write to $args{'output'} to save edits. Stop\n"
+		    unless -w ".";
+	    }
+	}
+    }
+    $args{'stdout'} = 1 unless $args{'output'};
+} else {
+    die "$0: unable to read $args{'cbd'} for edit. Stop.\n";
 }
+
+$ORACC::CBD::nonormify = 1;
 
 my @cbd = setup_cbd(\%args);
 
@@ -33,9 +46,8 @@ if (pp_status()) {
 } else {
 
     @cbd = edit(\%args, @cbd);
-#    warn "edit() returned $#cbd lines\n";
     pp_cbd(\%args,@cbd);
-    pp_diagnostics(\%args);
+    pp_diagnostics(\%args) if pp_status();
     
 }
 

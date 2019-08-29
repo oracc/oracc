@@ -133,6 +133,15 @@ sub pp_cbd {
     if ($$args{'filter'} || $$args{'stdout'}) {
 	$last_char = '';
 	cbd_dump($args, \*STDOUT, @c);
+    } elsif ($$args{'output'}) {
+	if ($ORACC::CBD::Forms::external) {
+	    die "$0: can't use -output with external forms\n";
+	} else {
+	    my $outf = $$args{'output'};
+	    open(CBD, ">$outf") || die "$0: unable to open $outf for output\n";
+	    $last_char = '';
+	    cbd_dump($args, \*CBD, @c);
+	}
     } else {
 	my $ldir = '01tmp';
 	system 'mkdir', '-p', $ldir;

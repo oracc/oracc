@@ -44,7 +44,12 @@ foreach my $cgp (sort { $sc{$a} <=> $sc{$b} } keys %cgp) {
 	    my %p = parse_sig($$ok[4]);
 	    unless ($seen{$cgp,$p{'form'}}++) {
 		$p{'form'} =~ s/^\%.*?://;
-		print "$$ok[0]:$$ok[1]: $cgp:\t$p{'form'}=$$ok[3] check$err{$sig}\n";
+		if ($err{$sig} =~ /new base (\S+)/) {
+		    my $b = $1;
+		    print "$$ok[0]:$$ok[1]: $cgp:\t$b < $p{'form'} is new\n"; # =$ok[3]
+		} else {
+		    print "$$ok[0]:$$ok[1]: $cgp:\t$p{'form'} check$err{$sig}\n"; # =$ok[3]
+		}
 	    }
 	}
     }

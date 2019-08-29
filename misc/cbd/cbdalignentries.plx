@@ -15,12 +15,16 @@ $ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 
+$args{'base'} = "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo" unless $args{'base'};
+
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
     if (pp_status()) {
 	pp_diagnostics();
 	die "$0: can't align bases unless base glossary is clean. Stop.\n";
     }
+    $args{'lang'} = lang() unless $args{'lang'};
+    $args{'output'} = "$args{'lang'}-entries-aligned.glo" unless $args{'output'};
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
@@ -42,14 +46,13 @@ if ($args{'apply'}) {
 	if ($cbd[$i] =~ /^$acd_rx\@entry\s+(.*?)\s*$/) {
 	    if ($map{$1}) {
 		$mapto = $map{$1};
+		$cbd[$i] .= "\n>$mapto";
 	    }
 	}
-	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
-	if ($mapto) {
-	    print ">$mapto\n";
-	    $mapto = '';
-	}
     }
+    $args{'force'} = 1; # print even when errors
+    pp_cbd(\%args,@cbd);
+    pp_diagnostics() if pp_status();
 } else {
     pp_diagnostics();
 }

@@ -95,7 +95,7 @@ sub forms_merge {
 	    my $sff = $s{$sf};
 	    my($base) = ($sff =~ m#\s/(\S+)#);
 	    if ($map{$base}) {
-		$base = "\Q$map{$base}";
+		$base = $map{$base};
 		$sff =~ s#^(.*?\s+)/\S+(.*)$#$1/${base}$2#;
 	    }
 	    $b{$sf} = $sff;

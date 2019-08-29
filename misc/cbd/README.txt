@@ -77,17 +77,20 @@ Aligning with epsd2
 
 0. stash corpus and lem data before making edits
 
-	cbdstash.plx -start
+	cbdstash.plx -init
 
 1. use cbdalignentries.plx to identify entries that need to be renamed
 or added:
 
-	cbdalignentries.plx -base ~/orc/epsd2/00src/sux.glo 00lib/sux.glo 2>log
+	cbdalignentries.plx 00lib/sux.glo
 
-use +@entry to mark additions so they stay out of the log; use '>new [word] N' to
+You can use the -base argument to select which glossary you're
+aligning against; the default is epsd2/00src/sux.glo.
+
+Use +@entry to mark additions so they stay out of the log; use '>new [word] N' to
 identify entries to rename manually.  It's easiest to do this using the notation:
 
-	@entry old [word] N > new [word N
+	@entry old [word] N > new [word] N
 
 The validator understands the ' > ' notation and puts them in the log
 file as [m] (map) items, then they get converted to edit items in with
@@ -99,24 +102,47 @@ guesses--it does make mistakes occasionally.
 2. use cbdalignentries -apply to output the new version of the aligned
 glossary with edit markers in it:
 
-	cbdalignentries.plx -apply -base ~/orc/epsd2/00src/sux.glo 00lib/sux.glo >new.glo
+	cbdalignentries.plx -apply 00lib/sux.glo
 
-2. use cbdpp.plx -edit 00lib/sux.glo >new.glo to apply edit markers; check new.glo and replace 00lib/sux.glo with it
+In -apply mode cbdalignentries puts its output in [LANG]-entries-aligned.glo.
 
-3. now align senses using a similar approach
+3. use, e.g.,
 
-4. now align bases and forms--these are done together because the base alignment map is used to rewrite /BASE in the form
+	cbdedit.plx sux-entries-aligned.glo
 
-5. check and correct glossary; be sure to continue to use edit markers because this updates the history correctly
+to apply edit markers; cbdedit.plx places its output in a file based
+on the name of the input; for entries-aligned.glo the output is in
+entries-edited.glo.
 
-6. apply corpus update script to corpus
+4. Now stash your work so far:
+
+	cbdstash.plx -entries LANG
+
+e.g.,
+
+	cbdstash.plx -entries sux
+
+4. To align senses do:
+
+       cbdalignsenses.plx 00lib/sux.glo
+       cbdalignsenses.plx -apply 00lib/sux.glo
+       cbdedit.plx sux-senses-aligned.glo
+       cbdstash.plx -senses sux
+
+Reviewing at each step as for entry alignment.
+
+5. now align bases and forms--these are done together because the base alignment map is used to rewrite /BASE in the form
+
+6. check and correct glossary; be sure to continue to use edit markers because this updates the history correctly
+
+7. apply corpus update script to corpus
 
    4a. create use stashed lem data and alignment history to create new input table for atfglobal
    4b. apply table to ATF corpus
 
-7. now complete the process
+8. now complete the process
 
-	cbdstash.plx -complete
+	cbdstash.plx -done
 
 
 Edit Controls

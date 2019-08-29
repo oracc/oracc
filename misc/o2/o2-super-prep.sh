@@ -7,7 +7,8 @@ o2-super-prx-sig.sh
 
 # Finally, construct a virtual corpus based on the instances
 echo "o2-super-prep.sh: constructing virtual corpus"
-grep -v ^@fields 01bld/from-prx-glo.sig | cut -f2 | tr ' ' '\n' | cut -d. -f1 | sort -u >00lib/proxy.lst
+grep -v ^@fields 01bld/from-prx-glo.sig | cut -f2 | tr ' ' '\n' \
+    | cut -d. -f1 | sort -u | grep -v '^$' >00lib/proxy.lst
 o2-lst.sh
 o2-cat.sh
 
