@@ -165,6 +165,10 @@ sub edit_apply_script {
 			$edit_sense = $1;
 		    } elsif ($s[$i] =~ /:mrg/) {
 			# ignore on this pass
+		    } elsif ($s[$i] =~ /:del/) {
+			$c[$from_line] = "\000";
+		    } elsif ($s[$i] =~ /:add/) {
+			$c[$from_line] =~ s/^\+//;
 		    } else {
 			warn "edit.edit:$i: unhandled edit script tag $s[$i]\n";
 		    }

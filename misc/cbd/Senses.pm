@@ -54,6 +54,7 @@ sub senses_align {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
+	    # warn "$curr_entry\n";
 	    @lines = ();
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    $cbd[$i] =~ s/\s+/ /g;
@@ -230,7 +231,7 @@ sub map_sense {
 	    # print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
 	    print $map_fh "map sense $from_sig => $to_sig\n";
 	} else {
-	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+$/]/;
+	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+/]/;
 	    if ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
 		pp_warn("SENSE[1] $entry: $in ~ $base");
 		${$sense_map{$entry}}{$in} = $base;

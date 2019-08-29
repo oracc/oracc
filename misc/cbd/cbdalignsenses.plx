@@ -44,10 +44,11 @@ if ($args{'apply'}) {
 #	my $noprint_plus_1 = 0;
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)$/) {
 	    $curr_entry = $1;
+	    $curr_entry =~ s/\s+(\[.*?\])\s+/$1/;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
 	    if (${$map{$curr_entry}}{$cbd[$i]}) {
 		$mapto = ${$map{$curr_entry}}{$cbd[$i]};
-#		warn "mapping $cbd[$i] => $mapto\n";
+		warn "mapping $cbd[$i] => $mapto\n";
 		if ($cbd[$i+1] =~ /^>/) {
 		    my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
 		    $s = "\@sense $s";
