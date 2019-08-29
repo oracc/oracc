@@ -16,8 +16,14 @@ my %args = pp_args();
 $ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
+
+$args{'base'} = "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo" unless $args{'base'};
+$args{'log'} = 'align-senses.log' unless $args{'log'};
+
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
+    $args{'lang'} = lang() unless $args{'lang'};
+    $args{'output'} = "$args{'lang'}-senses-aligned.glo" unless $args{'output'};
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
@@ -28,14 +34,14 @@ senses_init(\%args);
 my %map = senses_align(\%args, \@base_cbd, \@cbd);
 senses_term();
 
-open(M,'>map.dump'); print M Dumper \%map; close(M);
+open(M,'>senses-map.dump'); print M Dumper \%map; close(M);
 
 my $curr_entry = '';
 
 if ($args{'apply'}) {
     my $mapto = '';
     for (my $i = 0; $i <= $#cbd; ++$i) {
-	my $noprint_plus_1 = 0;
+#	my $noprint_plus_1 = 0;
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)$/) {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
@@ -46,23 +52,30 @@ if ($args{'apply'}) {
 		    my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
 		    $s = "\@sense $s";
 		    if ($s ne $mapto) {
-			warn "$.: $s ne $mapto\n";
+			pp_line($i);
+			pp_warn("map-to sense in > line differs from stored sense ($s ne $mapto)");
 			$mapto = undef;
 		    } else {
-			$noprint_plus_1 = 1;
+			# $noprint_plus_1 = 1;
+			++$i;
 		    }
+		} else {
+		    $mapto =~ s/\@sense\s+// if $mapto; # new style drops @entry/@sense after >
+		    $cbd[$i] .= "\n>$mapto";
 		}
-		$mapto =~ s/\@sense\s+// if $mapto; # new style drops @entry/@sense after >
 	    }
 	}
-	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
-	if ($mapto) {
-	    print ">$mapto\n"; # CARE with this if we start handling '=' as well as '>'
-	    $mapto = '';
-	    ++$i if $noprint_plus_1;
-	    $noprint_plus_1 = 0;
-	}
     }
+    $args{'force'} = 1; # print even when errors
+    pp_cbd(\%args,@cbd);
+    pp_diagnostics() if pp_status();
+    #	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
+    #	if ($mapto) {
+    #	    print ">$mapto\n"; # CARE with this if we start handling '=' as well as '>'
+    #	    $mapto = '';
+    #	    ++$i if $noprint_plus_1;
+    #	    $noprint_plus_1 = 0;
+    #	}
 } else {
     pp_diagnostics() if pp_status();
 }
