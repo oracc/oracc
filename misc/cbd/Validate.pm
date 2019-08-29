@@ -218,17 +218,27 @@ sub pp_validate {
 	    next;
 	}
 	pp_line($i+1);
+
 	if ($cbd[$i] =~ /^\s*$/) {
-	    pp_warn("blank lines not allowed in \@entry")
-		if $in_entry;
-	} elsif ($cbd[$i] =~ /^\@([A-Z]+)(?:\s*(\S.*))?$/) {
+	    if ($in_entry) {
+		pp_warn("blank lines not allowed in \@entry");
+	    }
+	    next;
+	} else {
+	    unless ($in_entry || $cbd[$i] =~ /^$acd_rx*\@(?:project|lang|name|entry|letter)/) {
+		$i = out_entry($i, @cbd);
+		next;
+	    }
+	}
+
+	if ($cbd[$i] =~ /^\@([A-Z]+)(?:\s*(\S.*))?$/) {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
 	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)/) { # \s+(.*)\s*$/o) {
 	    my ($pre,$tag,$post) = ($1,$2);
 	    if (exists $tags{$tag}) {
-#		push @{$tag_lists{$tag}}, $i;
+		# push @{$tag_lists{$tag}}, $i;		
 		if ($validators{$tag}) {
 		    if (exists $vfields{$tag}) {
 			if ($cbd[$i] =~ m/^(\S+)\s+(.*?)\s*$/) {
@@ -331,6 +341,16 @@ sub pp_validate {
     %ORACC::CBD::data = %data;
 
     @cbd;
+}
+
+sub out_entry {
+    my($i,@c) = @_;
+    pp_warn("missing \@entry");
+    while ($i < $#c) {
+	last if $c[$i] =~ /^\@end/;
+	++$i;
+    }
+    $i;
 }
 
 sub v_project {

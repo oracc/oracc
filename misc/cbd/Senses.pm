@@ -336,7 +336,7 @@ sub senses_merge_2 {
 	    # does s occur in @b?
 	    foreach my $b (@$b) {
 		my $b_no_pos = $b; $b_no_pos =~ s/^\@sense\S*\s+\S+//;
-		warn "testing b_no_pos $b_no_pos vs s_no_pos $s_no_pos\n";
+		# warn "testing b_no_pos $b_no_pos vs s_no_pos $s_no_pos\n";
 		if ($b_no_pos =~ /\Q$s_no_pos/ || $s_no_pos =~ /\Q$b_no_pos/) {
 		    push @matches, $b;
 		}

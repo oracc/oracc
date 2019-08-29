@@ -19,9 +19,12 @@ use ORACC::CBD::Senses;
 
 my $acd_rx = $ORACC::CBD::acd_rx;
 
+my $lang = '';
+
 sub edit {
     my($args,@cbd) = @_;
     $ORACC::CBD::PPWarn::trace = 1 if $ORACC::CBD::PPWarn::edit_trace;
+    $lang = lang();
     my @clean = c11e($args, @cbd);
     if (cache_check($args,@clean)) {
 #	print Dumper \@cbd;
@@ -37,7 +40,7 @@ sub edit {
 }
 
 sub cache_check {
-    my ($args,@cache) = @_; 
+    my ($args,@cache) = @_;
     my $glofile = ".cbdpp/".ORACC::CBD::Util::lang().".glo";
     my $ok = 0;
     if ($$args{'reset'}) {
@@ -88,7 +91,7 @@ sub cache_stash {
 
 sub edit_apply_script {
     my($args, @c) = @_;
-    open(H,'>>history.edit');
+    open(H,'>>00etc/history.edit');
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
@@ -134,14 +137,14 @@ sub edit_apply_script {
 			    my @f_slice = @c[$from_line .. $from_end_line];
 			    my $f = join("\n", @f_slice);
 			    my $t = join("\n", @t_slice);
-			    warn "map-from block:\n$f\n";
-			    warn "-----------------\n";
-			    warn "map-to block:\n$t\n";
-			    warn "-----------------\n";
+#			    warn "map-from block:\n$f\n";
+#			    warn "-----------------\n";
+#			    warn "map-to block:\n$t\n";
+#			    warn "-----------------\n";
 			    my @res = entries_merge(\@t_slice, \@f_slice, pp_file(), $to_line, pp_file(), $from_line,1);
-			    warn "result block:\n";
-			    warn join("\n",@res), "\n";
-			    warn "=================\n";
+#			    warn "result block:\n";
+#			    warn join("\n",@res), "\n";
+#			    warn "=================\n";
 			    @{$edit_cache{$eid}} = ($to_line,@res);
 			} else {
 			    pp_warn("non-existent map target '$this_e'");
@@ -149,8 +152,11 @@ sub edit_apply_script {
 		    }
 		} else {
 		    if ($s[$i] =~ s/^:rnm \>\s*//) {
-			$c[$from_line] = $s[$i];
+			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
 			$c[$from_line-1] = "\000";
+			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
+			$c[$from_line] = $s[$i];
+			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
 			history($edit_entry, $edit_sense, $s[$i]);
 		    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
 			$edit_entry = $1;
@@ -200,6 +206,7 @@ sub edit_apply_script {
 		    # This happens legitimately if we rename an entry because we don't update the {'entries'} hash
 		    ## pp_line($i+1);
 		    ## pp_warn("no eid for entry $e");
+		    push @newc, $c[$i];
 		}
 	    }
 	} else {
@@ -217,7 +224,7 @@ sub edit_make_script {
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
     my @s = ();
     push @s, ":cbd $$args{'cbd'}";
-    warn "edit_make_script: status on entry = ", pp_status(), "\n";
+#    warn "edit_make_script: status on entry = ", pp_status(), "\n";
     for (my $ed = 0; $ed <= $#eds; ++$ed) {
 	my $i = $eds[$ed];
 	push @s, "\@$i";
@@ -294,7 +301,7 @@ sub history {
     my($e,$s,$to) = @_;
     $s = '' unless $s;
     my $date = `date +\%Y-\%m-\%d`; chomp $date;
-    print H "$date\t$e\t$s\t$to\n";
+    print H "$date\t$lang\t$e\t$s\t$to\n";
 }
 
 1;

@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check done entries help init senses show status update/; @args{@args} = ();
-my @lang_args = qw/bases entries senses/;
+my %args = (); my @args = qw/bases check done entries help init repeat senses show status update/; @args{@args} = ();
+my %lang_args = (); my @lang_args = qw/bases entries senses/; @lang_args{@lang_args} = ();
 
 my %funcs = (
     check    => \&check,
@@ -10,6 +10,8 @@ my %funcs = (
     entries  => \&entries,
     help     => \&help,
     init     => \&init,
+    repeat   => \&repeat,
+    senses   => \&senses,
     show     => \&show,
     status   => \&status,
     update   => \&update,
@@ -22,6 +24,7 @@ my %helps = (
     entries  => 'stash the entries work',
     help     => 'print this help',
     init     => 'initialize a new stash, saving 00atf/*.atf, 00lib/*.glo, and all lemdata',
+    repeat   => 'do the last stash again',
     senses   => 'stash the senses work',
     show     => 'show the ISODATE of the current stash',
     status   => 'print the status of the current stash, with no trailing newline',
@@ -35,6 +38,7 @@ my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 my $arg = shift @ARGV;
 my $lang = shift @ARGV;
+my $repeat = 0;
 
 if ($arg) {
     if (exists $args{$arg}) {
@@ -122,15 +126,26 @@ sub phase_save {
     my $p = shift;
     die "$0: must give LANG with @lang_args action\n"
 	unless $lang;
-    if (phase_check($p)) {
+    if ($repeat || phase_check($p)) {
 	my $d = stashdir();
 	my $s = getstatus();
+	system 'cp', '-va', "$d/$lang.glo", "$d/$lang.glo.$s"
+	    unless $repeat;
 	system 'cp', '-va', "$lang-$p-aligned.glo", $d;
 	system 'cp', '-va', "$lang-$p-edited.glo", $d;
-	system 'cp', '-va', "$d/$lang.glo", "$d/$lang.glo.$s";
 	system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
 	system 'cp', '-va', "00lib/$lang.glo", $d;
 	setstatus($p);
+    }
+}
+
+sub repeat {
+    my $p = getstatus();
+    if (exists $lang_args{$p}) {
+	$repeat = 1;
+	phase_save($p);
+    } else {
+	die "$0: repeat only allowed with @lang_args\n";
     }
 }
 

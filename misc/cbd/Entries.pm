@@ -191,7 +191,7 @@ sub entries_merge {
     if ($base_b && $base_s) {
 	if ($base_b) {
 	    $new_b_hash = bases_merge($base_b, $base_s, undef);
-	    warn Dumper $new_b_hash;
+#	    warn Dumper $new_b_hash;
 	}
     } else {
 	if ($base_s) {
@@ -202,7 +202,7 @@ sub entries_merge {
     }
     if ($new_b_hash) {
 	$new_b = bases_serialize(%$new_b_hash);
-	warn "new bases => $new_b\n";
+#	warn "new bases => $new_b\n";
     } else {
 	$new_b = $base_b;
     }
