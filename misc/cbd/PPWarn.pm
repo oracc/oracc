@@ -25,6 +25,9 @@ sub pp_diagnostics {
     return if $ORACC::CBD::nodiagnostics;
     my @e = sort { &flcmp; } keys %errlist;
     my $ret = $#e + 1;
+    if ($$args{'log'}) {
+	open(STDERR, '>', $$args{'log'}) || die "$0: unable to open $$args{'log'} to save diagnostics\n";
+    }
     if ($#e >= 0) {
 	foreach my $e (@e) {
 	    warn @{$errlist{$e}};

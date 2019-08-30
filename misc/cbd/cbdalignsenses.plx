@@ -17,7 +17,7 @@ $ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 
-$args{'base'} = "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo" unless $args{'base'};
+set_default_base(\%args) unless $args{'base'};
 $args{'log'} = 'align-senses.log' unless $args{'log'};
 
 if ($args{'base'}) {
@@ -46,23 +46,25 @@ if ($args{'apply'}) {
 	    $curr_entry = $1;
 	    $curr_entry =~ s/\s+(\[.*?\])\s+/$1/;
 	} elsif ($cbd[$i] =~ /^\@sense/) {
-	    if (${$map{$curr_entry}}{$cbd[$i]}) {
-		$mapto = ${$map{$curr_entry}}{$cbd[$i]};
-		warn "mapping $cbd[$i] => $mapto\n";
-		if ($cbd[$i+1] =~ /^>/) {
-		    my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
-		    $s = "\@sense $s";
-		    if ($s ne $mapto) {
-			pp_line($i);
-			pp_warn("map-to sense in > line differs from stored sense ($s ne $mapto)");
-			$mapto = undef;
+	    if ($map{$curr_entry}) {
+		if (${$map{$curr_entry}}{$cbd[$i]}) {
+		    $mapto = ${$map{$curr_entry}}{$cbd[$i]};
+		    # warn "mapping $cbd[$i] => $mapto\n";
+		    if ($cbd[$i+1] =~ /^>/) {
+			warn "$cbd[$i+1]\n";
+			my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
+			$s = "\@sense $s";
+			if ($s ne $mapto) {
+			    pp_line($i);
+			    pp_warn("map-to sense in > line differs from stored sense ($s ne $mapto)");
+			    $mapto = undef;
+			} else {
+			    # $noprint_plus_1 = 1;
+			}
 		    } else {
-			# $noprint_plus_1 = 1;
-			++$i;
+			$mapto =~ s/\@sense\s+// if $mapto; # new style drops @entry/@sense after >
+			$cbd[$i] .= "\n>$mapto";
 		    }
-		} else {
-		    $mapto =~ s/\@sense\s+// if $mapto; # new style drops @entry/@sense after >
-		    $cbd[$i] .= "\n>$mapto";
 		}
 	    }
 	}

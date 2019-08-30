@@ -6,9 +6,23 @@ use Data::Dumper;
 use ORACC::L2GLO::Util;
 use ORACC::Texts::Util;
 
-my($w2l_file,$log_file) = @ARGV;
-open(W,$w2l_file); my @w = (<W>); chomp @w; close(W);
-open(L,$log_file); my @log = (<L>); chomp @log; close(L);
+my $log_file = shift @ARGV;
+my @log = ();
+if ($log_file) {
+    open(L,$log_file) || die "$0: can't open log $log_file for read\n";
+    @log = (<L>);
+    chomp @log; close(L);
+}
+
+my $w2l_file = `cbdstash.plx locdata`;
+my @w = ();
+if ($w2l_file) {
+    if (-r $w2l_file) {
+	@w = `unxz -c $w2l_file`; chomp @w;
+    } else {
+	die "$0: can't open wid2loc data $w2l_file for read\n";
+    }
+}
 
 my %cgp = ();
 my %err = ();
@@ -33,7 +47,7 @@ foreach my $l (@log) {
     }
 }
 
-open(S,'>base-instances.lst'); print S join("\n", @sig), "\n"; close(S);
+#open(S,'>base-instances.lst'); print S join("\n", @sig), "\n"; close(S);
 
 my %w2l = wid2lem_by_sig($w2l_file,\@w,$log_file,\@sig);
 

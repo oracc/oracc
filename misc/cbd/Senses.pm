@@ -187,7 +187,11 @@ sub senses_merge {
 		    my $ee = $entry;
 		    $ee =~ s/\s+\[/[/; $ee =~ s/\]\s+$/]/;
 		    if ($#$b == 0) {
-			pp_warn("SENSE[3] $ee: $s >> $$b[0]");
+			if ($$args{'apply'}) {
+			    map_sense($args, '2', $entry, $s, $$b[0]);			    
+			} else {
+			    pp_warn("SENSE[3] $ee: $s >> $$b[0]");
+			}
 		    } else {
 			pp_warn("SENSE[4] $ee: $s !! new or bad sense");
 		    }
@@ -233,10 +237,10 @@ sub map_sense {
 	} else {
 	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+/]/;
 	    if ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
-		pp_warn("SENSE[1] $entry: $in ~ $base");
+		pp_warn("SENSE[1] $entry: $in ~ $base") unless $$args{'apply'};
 		${$sense_map{$entry}}{$in} = $base;
-	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE
-		pp_warn("SENSE[2] $entry: $in > $base");
+	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE or has been vetted
+		pp_warn("SENSE[2]X $entry: $in > $base") unless $$args{'apply'};
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 3) { # this SENSE doesn't match anything in base cbd
 		die "(This can't happen)\n";

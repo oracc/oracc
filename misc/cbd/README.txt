@@ -75,7 +75,7 @@ Implementation Notes
 Aligning with epsd2
 ===================
 
-0. stash corpus and lem data before making edits
+0. do clean build of project and stash corpus and lem data before making edits:
 
 	cbdstash.plx -init
 
@@ -124,23 +124,32 @@ e.g.,
 
 4. To align senses do:
 
-       cbdalignsenses.plx 00lib/sux.glo
+       cbdalignsenses.plx 00lib/sux.glo ; [REVIEW LOG FILE, CORRECT AS NECESSARY, RUN AGAIN]
        cbdalignsenses.plx -apply 00lib/sux.glo
        cbdedit.plx sux-senses-aligned.glo
        cbdstash.plx -senses sux
 
 Reviewing at each step as for entry alignment.
 
-5. now align bases and forms--these are done together because the base alignment map is used to rewrite /BASE in the form
+5. apply corpus update script to corpus
 
-6. check and correct glossary; be sure to continue to use edit markers because this updates the history correctly
-
-7. apply corpus update script to corpus
-
-   4a. create use stashed lem data and alignment history to create new input table for atfglobal
+   4a. use stashed lem data and alignment history to create new input table for atfglobal
    4b. apply table to ATF corpus
+   4c. rebuild corpus
+   4d. stash new version of loc-data
 
-8. now complete the process
+6. now align bases and forms--these are done together because the base alignment map is used to rewrite /BASE in the form
+
+       cbdalignbases.plx 00lib/sux.glo ; [REVIEW LOG FILE, CORRECT AS NECESSARY, RUN AGAIN]
+       cbdalignbases.plx -apply 00lib/sux.glo
+       cbdedit.plx sux-bases-aligned.glo
+       cbdstash.plx -bases sux
+
+7. check and correct glossary; be sure to continue to use edit markers because this updates the history correctly
+
+8. do final checking of glossary and corpus; if correcting glossary, use edit markers and cbdedit.plx
+
+9. now complete the process
 
 	cbdstash.plx -done
 

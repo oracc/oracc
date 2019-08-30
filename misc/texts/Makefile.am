@@ -8,7 +8,8 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	lex-word-base.sh lex-word-qakk.sh lex-word-phra.sh lex-word-equi.sh \
 	lex-master.sh lex-data-tis.sh lex-phra-base.sh lex-tis.sh \
 	tis-sort.plx lex-word-tail.sh lex-oid-sign.plx lex-oid-word.plx \
-	lex-sign-check.sh lex-wid2err.sh err-sort.plx wid2lem_sigs.plx
+	lex-sign-check.sh lex-wid2err.sh err-sort.plx wid2lem_sigs.plx \
+	inst-fix-tab.plx
 
 scriptdata_DATA = \
 	lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl \

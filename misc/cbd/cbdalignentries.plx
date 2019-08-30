@@ -15,7 +15,7 @@ $ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 
-$args{'base'} = "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo" unless $args{'base'};
+set_default_base(\%args) unless $args{'base'};
 
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
@@ -46,7 +46,19 @@ if ($args{'apply'}) {
 	if ($cbd[$i] =~ /^$acd_rx\@entry\s+(.*?)\s*$/) {
 	    if ($map{$1}) {
 		$mapto = $map{$1};
-		$cbd[$i] .= "\n>$mapto";
+		if ($cbd[$i+1] =~ /^>/) {
+		    my ($s) = ($cbd[$i+1] =~ /^>\s*(.*?)\s*$/);
+		    if ($s ne $mapto) {
+			pp_line($i);
+			pp_warn("map-to entry in > line differs from stored sense ($s ne $mapto)");
+			$mapto = undef;
+		    } else {
+			++$i;
+		    }
+		} else {
+		    $mapto =~ s/\@entry\s+// if $mapto; # new style drops @entry/@sense after >
+		    $cbd[$i] .= "\n>$mapto";
+		}
 	    }
 	}
     }

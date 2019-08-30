@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check done entries help init repeat senses show status update/; @args{@args} = ();
+my %args = (); my @args = qw/bases check done entries help init locdata repeat senses show status update/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries senses/; @lang_args{@lang_args} = ();
 
 my %funcs = (
@@ -9,7 +9,9 @@ my %funcs = (
     done     => \&done,
     entries  => \&entries,
     help     => \&help,
+    fixed    => \&fixed,
     init     => \&init,
+    locdata  => \&locdata,
     repeat   => \&repeat,
     senses   => \&senses,
     show     => \&show,
@@ -24,6 +26,7 @@ my %helps = (
     entries  => 'stash the entries work',
     help     => 'print this help',
     init     => 'initialize a new stash, saving 00atf/*.atf, 00lib/*.glo, and all lemdata',
+    locdata  => 'get the path to the current location data',
     repeat   => 'do the last stash again, only allowed when status is bases, entries, or senses',
     senses   => 'stash the senses work',
     show     => 'show the ISODATE of the current stash',
@@ -31,13 +34,14 @@ my %helps = (
     update   => 'replace the stashed files with a fresh set; only valid if status=init',
     );
 
-my @sequence = qw/notused init entries senses bases done/;
+my @sequence = qw/notused init entries senses fixed bases done/;
 my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 #########################################################################################
 
 my $arg = shift @ARGV;
 my $lang = shift @ARGV;
+my $argphase = shift @ARGV; # only with repeat sux entries, for example
 my $repeat = 0;
 
 if ($arg) {
@@ -49,9 +53,9 @@ if ($arg) {
 	exit 1;
     }
 } else {
-	warn "$0: requires an argument.\n";
-	help();
-	exit 1;
+    warn "$0: requires an argument.\n";
+    help();
+    exit 1;
 }
 
 #########################################################################################
@@ -103,6 +107,36 @@ sub help {
     warn "\n";
 }
 
+sub fixed {
+    if (phase_check('fixed')) {
+	my $d = stashdir();
+	system "wid2lem <01bld/lists/have-xtf.lst | xz >$d/fixed-loc-data.xz";
+	setstatus('fixed');
+    }
+}
+
+sub init {
+    my $newiso = `date +\%Y-\%m-\%d`;
+    chomp $newiso;
+    my $newdir = "00etc/stash/$newiso";
+    if (-d $newdir) {
+	die "$0: stash $newiso already exists; use 'update' if you want to stash a new set of files\n";
+    } else {
+	system 'mkdir', '-p', $newdir;
+	setstatus("init");
+	stash($newdir, 'init');
+    }
+}
+
+sub locdata {
+    my $d = stashdir();
+    if ($lang) { # overloaded to use 'init' or 'fixed' for locdata
+	print "$d/$lang-loc-data.xz";
+    } else {
+	print "$d/init-loc-data.xz";
+    }
+}
+
 sub phase_check {
     my $p = shift;
     my $s = getstatus();
@@ -143,7 +177,19 @@ sub repeat {
     my $p = getstatus();
     if (exists $lang_args{$p}) {
 	$repeat = 1;
-	phase_save($p);
+	if (-r "00lib/$lang.glo") {
+	    if ($argphase) {
+		if (exists $lang_args{$argphase}) {
+		    phase_save($argphase);
+		} else {
+		    die "$0: repeat LANG PHASE only allowed with @lang_args\n";
+		}
+	    } else {
+		phase_save($p);
+	    }
+	} else {
+	    die "$0: no such glossary 00lib/$lang.glo\n";
+	}
     } else {
 	die "$0: repeat only allowed with @lang_args\n";
     }
@@ -155,19 +201,6 @@ sub senses {
 
 sub show {
     print stashiso();
-}
-
-sub start {
-    my $newiso = `date +\%Y-\%m-\%d`;
-    chomp $newiso;
-    my $newdir = "00etc/stash/$newiso";
-    if (-d $newdir) {
-	die "$0: stash $newiso already exists; use 'update' if you want to stash a new set of files\n";
-    } else {
-	system 'mkdir', '-p', $newdir;
-	setstatus("init");
-	stash($newdir);
-    }
 }
 
 sub status {
@@ -205,12 +238,12 @@ sub setstatus {
 }
 
 sub stash {
-    my $newdir = shift;
+    my($newdir,$p) = @_;
     system 'cp', '-pPR', '00atf', $newdir;
     foreach my $g (<00lib/*.glo>) {
 	system 'cp', '-pPR', $g, $newdir;
     }
-    system "wid2lem <01bld/lists/have-xtf.lst | xz >$newdir/loc-data.xz";
+    system "wid2lem <01bld/lists/have-xtf.lst | xz >$newdir/$p-loc-data.xz";
 }
 
 sub stashdir {

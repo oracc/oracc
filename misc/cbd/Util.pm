@@ -2,7 +2,9 @@ package ORACC::CBD::Util; require Exporter; @ISA=qw/Exporter/;
 
 @EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of
     header_vals setup_args setup_cbd cbdname cbdname_from_fn project
-    lang name projdir file_index errfile pp_tags set_acd_rx/;
+    lang name projdir file_index errfile pp_tags set_acd_rx
+    set_default_base
+    /;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -222,6 +224,7 @@ sub pp_load {
     
     my $insert = -1;
     for (my $i = 0; $i <= $#c; ++$i) {
+	$c[$i] =~ s/\s+/ /g; # normalize white space
 	my $acd_rx = $ORACC::CBD::acd_rx;
 	pp_line($i+1);
 	if ($c[$i] =~ /^$ORACC::CBD::Edit::acd_rx?\@([a-z]+)/) {
@@ -484,6 +487,29 @@ sub pp_tags {
 	}
     }
     @t;
+}
+
+sub default_base_glo {
+    my $glo = shift;
+    if ($glo =~ /sux-x-emesal/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2/emesal/00lib/sux-x-emesal.glo";
+    } elsif ($glo =~ /sux/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo";
+    } elsif ($glo =~ /qpn/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2/names/00lib/qpn.glo";
+    } else {
+	return undef;
+    }
+}
+
+sub set_default_base {
+    my $args = shift;
+    my $default_base = default_base_glo($$args{'cbd'});
+    if ($default_base) {
+	$$args{'base'} = $default_base;
+    } else {
+	warn "$0: no default base defined for glossary $$args{'cbd'}\n";
+    }
 }
 
 1;

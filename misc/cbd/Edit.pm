@@ -168,7 +168,7 @@ sub edit_apply_script {
 		    } elsif ($s[$i] =~ /:del/) {
 			$c[$from_line] = "\000";
 		    } elsif ($s[$i] =~ /:add/) {
-			$c[$from_line] =~ s/^\+//;
+			# $c[$from_line] =~ s/^\+//; # the +@sense has to stay so it goes through to base eventually
 		    } else {
 			warn "edit.edit:$i: unhandled edit script tag $s[$i]\n";
 		    }

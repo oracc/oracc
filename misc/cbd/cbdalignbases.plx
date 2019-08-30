@@ -13,6 +13,10 @@ $ORACC::CBD::nonormify = 1;
 
 my @base_cbd = ();
 
+set_default_base(\%args) unless $args{'base'};
+
+$args{'log'} = 'bases.log';
+
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
     if (pp_status()) {
@@ -66,7 +70,8 @@ if ($args{'apply'}) {
 	print $cbd[$i], "\n";
     }
 } else {
-    pp_diagnostics();
+    pp_diagnostics(\%args);
+    system "base-instances.plx bases.log >base-check.log 2>base-inst.log";
 }
 
 1;

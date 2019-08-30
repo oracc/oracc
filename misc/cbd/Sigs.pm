@@ -313,7 +313,7 @@ sub sigs_simple {
 	    do { ++$i; } 
 	    while ($cbd[$i] !~ /^\@end\s+entry/ && $i < $#cbd);
 
-	} elsif (/^\@sense(!?)/) {
+	} elsif (/^[-+>]?\@sense(!?)/) {
 
 	    my $sensebang = $1 || '';
 
@@ -743,7 +743,7 @@ sub psu_glo {
 	local($_) = $c;
 	++$i; pp_line($i);
 	pp_file($err_glo);
-	if (m/^[-+>=]?\@entry[\*!]*\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
+	if (m/^[-+>]?\@entry[\*!]*\s+(.*?)\s*\[(.*?)\]\s*(\S+)\s*$/) {
 	    @e{qw/cf gw pos/} = ($1,$2,$3);
 	    $compound = ($e{'cf'} =~ / /);
 	    $in_sense = $nsense = 0;
@@ -766,7 +766,7 @@ sub psu_glo {
 	    } else {
 		push @no_sense_forms, $_;
 	    }
-	} elsif (/^\@sense/ && $compound) {
+	} elsif (/^[-+>]?\@sense/ && $compound) {
 	    s/\s\*\S+//;
 	    if ($nsense == 0) {
 		if ($ORACC::CBD::Forms::external) {
