@@ -1,10 +1,11 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check done entries help init locdata repeat senses show status update/; @args{@args} = ();
-my %lang_args = (); my @lang_args = qw/bases entries senses/; @lang_args{@lang_args} = ();
+my %args = (); my @args = qw/bases check done entries fixed help init locdata repeat senses show status update/; @args{@args} = ();
+my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
 
 my %funcs = (
+    bases    => \&bases,
     check    => \&check,
     done     => \&done,
     entries  => \&entries,
@@ -24,6 +25,7 @@ my %helps = (
     check    => 'check that no manual edits have been made according to the current stash',
     done     => 'mark the edits for which the current stash was created are complete',
     entries  => 'stash the entries work',
+    fixed    => 'stash the fixed corpus after aligning entries and senses',
     help     => 'print this help',
     init     => 'initialize a new stash, saving 00atf/*.atf, 00lib/*.glo, and all lemdata',
     locdata  => 'get the path to the current location data',
@@ -81,12 +83,12 @@ sub check {
 }
 
 sub done {
+    setstatus('done');
+    return;
     my $status = getstatus();
     if ($status eq 'done') {
 	my $curriso = stashiso();
 	warn "$0: current stash $curriso already marked 'done'\n";
-    } elsif ($status eq 'edit') {
-	setstatus('done');
     } elsif ($status eq 'init') {
 	my $curriso = stashiso();
 	warn "$0: current stash $curriso has no edits.\n";
@@ -99,20 +101,25 @@ sub entries {
     phase_save('entries');
 }
 
+sub fixed {
+    die "$0: must give LANG with @lang_args action\n"
+	unless $lang;
+    if (phase_check('fixed')) {
+	my $d = stashdir();
+	system 'mv', '-v', "$d/00atf", "$d/00atf.orig";
+	system 'cp', '-pPR', '00atf', $d;
+	system "wid2lem <01bld/lists/have-xtf.lst | xz >$d/fixed-loc-data.xz";
+	system 'cp', '-va', "00lib/$lang.glo", $d;
+	setstatus('fixed');
+    }
+}
+
 sub help {
     warn "\n$0: The following arguments are allowed\n\n";
     foreach my $a (sort @args) {
 	warn "\t$a\t$helps{$a}\n";
     }
     warn "\n";
-}
-
-sub fixed {
-    if (phase_check('fixed')) {
-	my $d = stashdir();
-	system "wid2lem <01bld/lists/have-xtf.lst | xz >$d/fixed-loc-data.xz";
-	setstatus('fixed');
-    }
 }
 
 sub init {
@@ -141,11 +148,13 @@ sub phase_check {
     my $p = shift;
     my $s = getstatus();
     die "$0: unknown status $p\n" unless $sequence{$p};
-    if (($sequence{$p} - $sequence{$s}) == 1) {
-	unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
-	    die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
-	} else {
-	    # todo: make sure -edited is later than -aligned
+    if ($repeat || ($sequence{$p} - $sequence{$s}) == 1) {
+	unless ($p eq 'fixed') {
+	    unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
+		die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
+	    } else {
+		# todo: make sure -edited is later than -aligned
+	    }
 	}
     } else {
 	shift @sequence;
@@ -165,9 +174,13 @@ sub phase_save {
 	my $s = getstatus();
 	system 'cp', '-va', "$d/$lang.glo", "$d/$lang.glo.$s"
 	    unless $repeat;
-	system 'cp', '-va', "$lang-$p-aligned.glo", $d;
-	system 'cp', '-va', "$lang-$p-edited.glo", $d;
-	system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+	if (-r "$lang-$p-aligned.glo") { # there isn't an aligned glo for bases or fixed
+	    system 'cp', '-va', "$lang-$p-aligned.glo", $d;
+	}
+	if (-r "$lang-$p-edited.glo") { # there isn't an edited glo for fixed
+	    system 'cp', '-va', "$lang-$p-edited.glo", $d;
+	    system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+	}
 	system 'cp', '-va', "00lib/$lang.glo", $d;
 	setstatus($p);
     }
@@ -179,10 +192,14 @@ sub repeat {
 	$repeat = 1;
 	if (-r "00lib/$lang.glo") {
 	    if ($argphase) {
-		if (exists $lang_args{$argphase}) {
-		    phase_save($argphase);
+		if ($argphase eq 'fixed') {
+		    fixed();
 		} else {
-		    die "$0: repeat LANG PHASE only allowed with @lang_args\n";
+		    if (exists $lang_args{$argphase}) {
+			phase_save($argphase);
+		    } else {
+			die "$0: argphase=$argphase: repeat LANG PHASE only allowed with @lang_args\n";
+		    }
 		}
 	    } else {
 		phase_save($p);
@@ -204,13 +221,9 @@ sub show {
 }
 
 sub status {
-    my $newstatus = shift @ARGV;
+    my $newstatus = $lang;
     if ($newstatus) {
-	if ($newstatus eq 'edit') { 
-	    setstatus('edit');
-	} else {
-	    die "$0: only allowed value for status is 'edit'. Stop.\n";
-	}
+	setstatus($newstatus);
     } else {
 	print getstatus();
     }

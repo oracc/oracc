@@ -22,6 +22,10 @@ $args{'log'} = 'align-senses.log' unless $args{'log'};
 
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
+    if (pp_status()) {
+	pp_diagnostics();
+	die "$0: can't align bases unless base glossary is clean. Stop.\n";
+    }
     $args{'lang'} = lang() unless $args{'lang'};
     $args{'output'} = "$args{'lang'}-senses-aligned.glo" unless $args{'output'};
 } else {
@@ -72,13 +76,6 @@ if ($args{'apply'}) {
     $args{'force'} = 1; # print even when errors
     pp_cbd(\%args,@cbd);
     pp_diagnostics() if pp_status();
-    #	print $cbd[$i], "\n" unless $cbd[$i] =~ /^\000/;
-    #	if ($mapto) {
-    #	    print ">$mapto\n"; # CARE with this if we start handling '=' as well as '>'
-    #	    $mapto = '';
-    #	    ++$i if $noprint_plus_1;
-    #	    $noprint_plus_1 = 0;
-    #	}
 } else {
     pp_diagnostics() if pp_status();
 }

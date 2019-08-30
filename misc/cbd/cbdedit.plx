@@ -16,11 +16,13 @@ $args{'cbd'} = shift @ARGV unless $args{'cbd'};
 if (-r $args{'cbd'}) {
     unless ($args{'output'}) {
 	if ($args{'cbd'} =~ /aligned/) {
-	    if ($args{'cbd'} =~ /entries|senses|bases|/) {
+	    if ($args{'cbd'} =~ /entries|senses/) {
 		$args{'output'} = $args{'cbd'};
 		$args{'output'} =~ s/aligned/edited/;
 		die "$0: unable to write to $args{'output'} to save edits. Stop\n"
 		    unless -w ".";
+	    } elsif ($args{'cbd'} =~ /bases/) {
+		die "$0: no need to run edit phase on $args{'cbd'}\n";
 	    }
 	}
     }

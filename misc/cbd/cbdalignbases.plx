@@ -23,6 +23,9 @@ if ($args{'base'}) {
 	pp_diagnostics();
 	die "$0: can't align bases unless base glossary is clean. Stop.\n";
     }
+    $args{'lang'} = lang() unless $args{'lang'};
+    # we do the editing inline in cbdalignbases so there is no -bases-aligned.glo
+    $args{'output'} = "$args{'lang'}-bases-edited.glo" unless $args{'output'};
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
@@ -67,8 +70,10 @@ if ($args{'apply'}) {
 		}
 	    }
 	}
-	print $cbd[$i], "\n";
     }
+    $args{'force'} = 1; # print even when errors
+    pp_cbd(\%args,@cbd);
+    pp_diagnostics() if pp_status();
 } else {
     pp_diagnostics(\%args);
     system "base-instances.plx bases.log >base-check.log 2>base-inst.log";

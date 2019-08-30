@@ -25,6 +25,8 @@ my %orig_inst = wid2lem_inst($w2l,\@w);
 # Get the form=inst pairs that don't parse as a result of the edits
 my @bad = `ox -CD 00atf/*.atf 2>/dev/null | wid2lem -s | grep BAD\$ | grep -F \'[\' | cut -f2`; chomp @bad;
 
+print join("\n", @bad), "\n";
+
 # Now we need a hash of the changes made in the history file
 my %h = history_map();
 open(H,'>history.dump'); print H Dumper \%h; close(H);

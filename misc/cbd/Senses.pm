@@ -240,7 +240,7 @@ sub map_sense {
 		pp_warn("SENSE[1] $entry: $in ~ $base") unless $$args{'apply'};
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE or has been vetted
-		pp_warn("SENSE[2]X $entry: $in > $base") unless $$args{'apply'};
+		pp_warn("SENSE[2] $entry: $in > $base") unless $$args{'apply'};
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 3) { # this SENSE doesn't match anything in base cbd
 		die "(This can't happen)\n";

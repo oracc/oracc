@@ -80,7 +80,7 @@ main(int argc, char **argv)
   char PQ[512];
   const char *fname[2];
   tab = stdout;
-  if (argc > 0)
+  if (argc > 1)
     {
       if (!strcmp(argv[1], "-s"))
 	{

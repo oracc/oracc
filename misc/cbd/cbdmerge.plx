@@ -75,6 +75,8 @@ unless (pp_status() || $args{'force'}) {
     pp_acd_sort($merged); # sorts in-place
     pp_serialize($base_hash,$merged);
 
+} else {
+    pp_diagnostics();
 }
 
 #ORACC::CBD::Util::dump_file_indexes();

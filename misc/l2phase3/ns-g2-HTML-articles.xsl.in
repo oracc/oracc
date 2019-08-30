@@ -407,7 +407,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
     <xsl:if test="string-length(key('oid',$n)/@id)>0">
       <!-- @@OB@@ is edited by the server, not by the Make .in procedure -->
       <xsl:variable name="src" select="concat('@@OB@@/www/dcclt/cbd/sux/eq/',$n,'.html')"/>
-      <h2 class="lex" id="phrases">Associated Phrases</h2>
+      <!--<h2 class="lex" id="phrases">Associated Phrases</h2>-->
       <xsl:element name="xi:include">
 	<xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
       </xsl:element>
