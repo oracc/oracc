@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/senses_align senses_collect senses_init senses_term
-    senses_merge senses_merge_2 senses_string de_common_list/;
+    senses_merge senses_merge_2 senses_string senses_uniq de_common_list/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -245,6 +245,23 @@ sub map_sense {
 	    }
 	}
     }
+}
+
+sub senses_uniq {
+    my @c = @_;
+    my %seen = ();
+    for (my $i = 0; $i <= $#c; ++$i) {
+	if ($c[$i] =~ /^[-+>]?\@entry/) {
+	    %seen = ();
+	} elsif ($c[$i] =~ /^\@sense/) {
+	    my $s = $c[$i];
+	    $s =~ s/\s+/ /g;
+	    if ($seen{$s}++) {
+		$c[$i] = "\000";
+	    }
+	}
+    }
+    @c;
 }
 
 sub senses_init {

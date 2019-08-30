@@ -7,6 +7,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Edit;
+use ORACC::CBD::Senses;
 
 my %args = pp_args();
 
@@ -46,6 +47,9 @@ if (pp_status()) {
 } else {
 
     @cbd = edit(\%args, @cbd);
+    if ($args{'cbd'} =~ /senses/) {
+	@cbd = senses_uniq(@cbd);
+    }
     pp_cbd(\%args,@cbd);
     pp_diagnostics(\%args) if pp_status();
     
