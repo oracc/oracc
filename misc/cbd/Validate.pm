@@ -225,7 +225,7 @@ sub pp_validate {
 	    }
 	    next;
 	} else {
-	    unless ($in_entry || $cbd[$i] =~ /^$acd_rx*\@(?:project|lang|name|entry|letter)/) {
+	    unless ($in_entry || $cbd[$i] =~ /^$acd_rx*\@(?:project|lang|name|entry|letter|proplist)/) {
 		$i = out_entry($i, @cbd);
 		next;
 	    }
