@@ -10,8 +10,11 @@ sub xsystem;
 my $dashline = "--------------------------------------------------------------";
 my $dry = shift @ARGV;
 
-my @BUILD_HOSTS = ('build-oracc.museum.upenn.edu',
-		   'oracc.ub.uni-muenchen.de');
+#my @BUILD_HOSTS = ('build-oracc.museum.upenn.edu',
+#		   'oracc.ub.uni-muenchen.de');
+#
+
+my @BUILD_HOSTS = `cat /etc/oracc-build-hosts`; chomp @BUILD_HOSTS;
 
 my @need_indexing = ();
 
