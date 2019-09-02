@@ -524,9 +524,9 @@ sub sigs_form {
 	    if ($rws eq 'EG' 
 		&& ($lang && $lang ne 'sux')) {
 		$sig{'lang'} = 'sux';
-	    } else {
-		pp_warn("(sigs) unknown RWS code \@$rws has been ignored");
 	    }
+	} else {
+	    pp_warn("(sigs) unknown RWS code \@$rws has been ignored");
 	}
     }
     
@@ -562,16 +562,17 @@ sub sigs_form {
 ######################################################################
 
 sub cofs_marshall {
-    my @smpl = grep(/\!0x0/, @_);
-    my @extl = `grep -q -h '\!0x0[2-9]' 01bld/*/from_glo.sig`; chomp @extl;
+    my @smpl = grep(/\!0x0/, @_); chomp @smpl;
+    my @extl = `grep -h -F '!0x0' 01bld/*/from_glo.sig | grep -v -F '!0x01'`; chomp @extl;
 #    warn "cofs_marshall: ", Dumper(\@smpl), Dumper(\@extl), "\n===\n";
-    (@smpl, @extl);
+    uniq(@smpl, @extl);
 }
 
 sub sigs_cofs {
     my %cofs = ();
     my $i = 0;
-    my @cof_sigs = cofs_marshall(@sigs_simple);
+    my @cof_sigs = sort { &cof_cmp; } cofs_marshall(@sigs_simple);
+#    print STDERR 'marshalled cofs: ', Dumper \@cof_sigs;
     foreach my $c (@cof_sigs) {
 	++$i;
 	local($_) = $c;
@@ -594,6 +595,10 @@ sub sigs_cofs {
 		my $ckey = "$lang\:$key";
 		if ($nth == 1 || $cofs{$ckey}) {
 		    push @{${$cofs{$ckey}}[$index]}, $v;
+		} else {
+		    # this is not an error--it just means the COF head is not in the glossary
+		    # currently being processed
+		    # pp_warn("missing element in COF before $_");
 		}
 	    } else {
 		pp_file('<simple sigs list>');
@@ -602,12 +607,19 @@ sub sigs_cofs {
 	    }
 	}
     }
+#    print STDERR Dumper \%cofs;
     foreach my $c (keys %cofs) {
 	my @parts = @{$cofs{$c}};
 	permute(@parts);
 #	warn Dumper \@parts;
 #	warn Dumper \@sigs_cofs;
     }
+}
+
+sub cof_cmp {
+    my ($aa) = ($a =~ /\!0x0(\d)/);
+    my ($bb) = ($b =~ /\!0x0(\d)/);
+    $aa <=> $bb;
 }
 
 # an array of arrays; the first contains the heads, the remainder
@@ -1291,7 +1303,9 @@ sub sigs_dump {
 	open(SIGS, ">$sigs_glo_file") || die "sigs_dump failed to open $sigs_glo_file\n";
     }
 #    my $cbdname = ORACC::CBD::Util::cbdname();
-#    my %g = %{$ORACC::CBD::data{$cbdname}};
+    #    my %g = %{$ORACC::CBD::data{$cbdname}};
+#    print STDERR Dumper \@sigs_cofs;
+    pp_diagnostics();
     print SIGS "\@fields sig rank\n";
     print SIGS uniq(@sigs_simple);
     print SIGS uniq(@sigs_cofs);

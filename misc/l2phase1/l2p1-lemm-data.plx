@@ -54,7 +54,7 @@ if ($glossary) {
 }
 chomp @glosigs;
 foreach (@glosigs) {
-    next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format
+    next if /^\@(?:project|name|lang)/ || /^\s*$/ || /\!0x0/; # ignore COFs in the 0x0 format because they used in the && format
     if (/^\@fields/) {
 	set_f($_, qw/sig rank/);
 	next;
