@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check done entries fixed help init locdata repeat senses show status update/; @args{@args} = ();
+my %args = (); my @args = qw/bases check done entries fixed help init 
+    locdata repeat senses show status update work/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
+
+my %status = ();
 
 my %funcs = (
     bases    => \&bases,
@@ -18,6 +21,7 @@ my %funcs = (
     show     => \&show,
     status   => \&status,
     update   => \&update,
+    work     => \&work,
     );
 
 my %helps = (
@@ -34,6 +38,7 @@ my %helps = (
     show     => 'show the ISODATE of the current stash',
     status   => 'print the status of the current stash, with no trailing newline',
     update   => 'replace the stashed files with a fresh set; only valid if status=init',
+    work     => 'set the current working language to LANG'
     );
 
 my @sequence = qw/notused init entries senses fixed bases done/;
@@ -41,14 +46,20 @@ my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 #########################################################################################
 
-my $arg = shift @ARGV;
-my $lang = shift @ARGV;
+my $arg1 = shift @ARGV;
+my $arg2 = shift @ARGV;
+my $lang = '';
 my $argphase = shift @ARGV; # only with repeat sux entries, for example
 my $repeat = 0;
 
-if ($arg) {
-    if (exists $args{$arg}) {
-	&{$funcs{$arg}};
+if ($arg1) {
+    if (exists $args{$arg1}) {
+	unless ($arg1 eq 'init') {
+	    status_load();
+	    $lang = $status{'#current'};
+	}
+	&{$funcs{$arg1}};
+	status_dump() unless $arg1 eq 'status';
     } else {
 	warn "$0: unknown argument.\n";
 	help();
@@ -102,8 +113,8 @@ sub entries {
 }
 
 sub fixed {
-    die "$0: must give LANG with @lang_args action\n"
-	unless $lang;
+#    die "$0: must give LANG with @lang_args action\n"
+#	unless $lang;
     if (phase_check('fixed')) {
 	my $d = stashdir();
 	system 'mv', '-v', "$d/00atf", "$d/00atf.orig";
@@ -123,6 +134,13 @@ sub help {
 }
 
 sub init {
+    if ($arg2) {
+	$lang = $arg2;
+	die "$0: LANG=arg2 but no glossary 00lib/$lang.glo. Stop.\n"
+	    unless -r "00lib/$lang.glo";
+    } else {
+	die "$0: must give LANG with 'init', e.g., cbdstatus.plx init sux\n";
+    }
     my $newiso = `date +\%Y-\%m-\%d`;
     chomp $newiso;
     my $newdir = "00etc/stash/$newiso";
@@ -130,15 +148,16 @@ sub init {
 	die "$0: stash $newiso already exists; use 'update' if you want to stash a new set of files\n";
     } else {
 	system 'mkdir', '-p', $newdir;
-	setstatus("init");
+	setstatus($lang,"init");
+	setstatus('#current',$lang);
 	stash($newdir, 'init');
     }
 }
 
 sub locdata {
     my $d = stashdir();
-    if ($lang) { # overloaded to use 'init' or 'fixed' for locdata
-	print "$d/$lang-loc-data.xz";
+    if ($arg2) {
+	print "$d/$arg2-loc-data.xz";
     } else {
 	print "$d/init-loc-data.xz";
     }
@@ -221,11 +240,11 @@ sub show {
 }
 
 sub status {
-    my $newstatus = $lang;
+    my $newstatus = $arg2;    
     if ($newstatus) {
-	setstatus($newstatus);
+	setstatus($lang,$newstatus);
     } else {
-	print getstatus();
+	print getstatus($lang);
     }
 }
 
@@ -240,14 +259,36 @@ sub update {
 
 ########################################################################################
 
-sub getstatus {
+sub status_load {
+    %status = ();
     my $stashdir = stashdir();
-    `cat $stashdir/status`;
+    die "$0: can't read status from $stashdir/status\n" unless
+	open(S,"$stashdir/status");
+    while (<S>) {
+	my($l,$s) = (/(\S+)\s+(\S+)\s*$/);
+	die "$0: corrupt status file $stashdir/status\n" unless $l && $s;
+	$status{$l} = $s;
+    }
+    close(S);
+}
+
+sub status_dump {
+    my $stashdir = stashdir();
+    open(S,">$stashdir/status") || die "$0: unable to save status to $stashdir/status\n";
+    foreach my $l (sort keys %status) {
+	print S "$l\t$status{$l}\n";
+    }
+    close(S);
+}
+
+sub getstatus {
+    my $l = shift @_;
+    $status{$l};
 }
 
 sub setstatus {
-    my $stashdir = stashdir();
-    system "/bin/echo -n $_[0] >$stashdir/status";
+    my ($l,$s) = @_;
+    $status{$l} = $s;
 }
 
 sub stash {
