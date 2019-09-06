@@ -54,12 +54,12 @@ my $repeat = 0;
 
 if ($arg1) {
     if (exists $args{$arg1}) {
-	unless ($arg1 eq 'init') {
+	unless ($arg1 eq 'init' or $arg1 eq 'help') {
 	    status_load();
 	    $lang = $status{'#current'};
 	}
 	&{$funcs{$arg1}};
-	status_dump() unless $arg1 eq 'status';
+	status_dump() unless $arg1 eq 'status' || $arg1 eq 'help';
     } else {
 	warn "$0: unknown argument.\n";
 	help();

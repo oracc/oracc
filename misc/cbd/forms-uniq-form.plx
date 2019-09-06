@@ -17,7 +17,7 @@ while (<>) {
 	s/\s+/ /;
 	s/\s*$//;
 	/^(\S+)/;
-	$forms{$1} = $_;
+	$forms{$1} = $_ unless $forms{$1};
 	$_ = undef;
     } elsif (/^$acd_rx\@sense/ || /^\@end/) {
 	foreach my $f (sort keys %forms) {

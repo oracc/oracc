@@ -1,0 +1,248 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+use lib "$ENV{'ORACC'}/lib";
+
+my @verbs = qw/align build check help make stash update/; my %verbs = (); @verbs{@verbs} = ();
+my @objects = qw/bases commands entries final init senses/; my %objects = (); @objects{@objects} = ();
+
+my %commands = (
+    build=>\&build,
+    check=>\&check,
+    help=>\&help,
+    make=>\&make,
+    stash=>\&stash,
+    update=>\&update,
+    );
+
+my %help = (
+    commands=>\&help_commands,
+    );
+
+my %stash = (
+    init=>\&stash_init,
+    );
+
+use constant { NO=>0, YES=>1, MAYBE=>2 };
+sub cbd_die;
+sub cbd_next;
+sub cbd_warn;
+
+my %argcheck = ();
+args_config('align', NO, qw/bases entries senses/);
+args_config('build', NO);
+args_config('check', MAYBE);
+args_config('help', NO, @verbs, 'commands');
+args_config('make', NO);
+args_config('stash', MAYBE, qw/bases commands entries final init senses/);
+args_config('update', NO);
+
+################################################################################################
+
+my $verb = '';
+my $object = '';
+my $lang = '';
+my $nohelp = 0;
+
+args_process();
+
+&{$commands{$verb}}($object, $lang);
+
+#################################################################################################
+
+sub args_check {
+    if (defined $argcheck{$verb}) {
+	if ($object) {
+	    return cbd_warn "command $verb doesn't take object $object"
+		unless exists ${$argcheck{$verb}}{$object};
+	}
+    } elsif ($object) {
+	return cbd_warn "command $verb doesn't take an object";
+    }
+    if ($lang) {
+	return cbd_warn "command $verb is not allowed to have a language argument"
+	    if $argcheck{$verb,'lang'} == YES;
+    } else {
+	return cbd_warn "command $verb must have a language argument"
+	    if $argcheck{$verb,'lang'} == YES;
+    }
+    return 0;
+}
+
+sub args_config {
+    my($vb,$lng,@ok) = @_;
+    $argcheck{$vb,'lang'} = $lng;
+    @{$argcheck{$vb}}{@ok} = ();
+}
+
+sub args_process {    
+    foreach my $a (@ARGV) {
+	if (exists $verbs{$a}) {
+	    $verb = $a;
+	} elsif (exists $objects{$a}) {
+	    $object = $a;
+	} elsif ($a =~ /^[a-z]{3}(?:-x-[a-z]{6})?$/) {
+	    $lang = $a;
+	} else {
+	    cbd_die("unknown argument '$a'");
+	}
+    }
+    cbd_die "Exiting because arguments are incorrect."
+	if args_check($verb, $object, $lang);
+}
+
+sub build {
+    system 'makemake.plx';
+    system 'make', '-rR', '-f', '00lib/Makefile';
+}
+
+sub cbd_die {
+    warn "$0: ", @_, "\n";
+    help($verb) unless $nohelp;
+    exit 1;
+}
+
+sub cbd_next {
+    warn "\nNext step:\n\n\t", @_, "\n\n";
+    exit 0;
+}
+
+sub cbd_warn {
+    warn "$0: ", @_, "\n";
+    return 1;
+}
+
+sub check {
+    my $internal = shift @_;
+    system 'o2-atfsources.plx';
+    system 'ox', '-cvm', '-I01bld/atfsources.lst', '-lox.log';
+    if ($?) {
+	if ($internal) {
+	    return 1;
+	} else {
+	    cbd_warn "errors in ATF checking, see ox.log.";
+	    exit 1;
+	}
+    }
+    my @glo = <00lib/*.glo>;
+    foreach my $g (@glo) {
+	my $log = $g; $log =~ s#^00lib/##; $log =~ s/\./-/; $log .= '.log';
+	system 'cbdpp.plx', '-check', '-log', $log, $g;
+	if ($?) {
+	    if ($internal) {
+		return 1;
+	    } else {
+		cbd_warn "errors checking $g, see $log.";
+		exit 1;
+	    }
+	}
+    }
+    return 0;
+}
+
+sub help {
+    my $h = shift @_;
+    if ($h) {
+	if (exists $help{$h}) {
+	    &{$help{$h}};
+	    exit 1;
+	} else {
+	    help();
+	    exit 1;
+	}
+    } else {
+	print <<EOF;
+
+cbd helps you work with Corpus-Based Dictionaries (.glo files).  It
+provides a unified, simple interface to a collection of CBD programs
+and functions, and helps you know which steps to take next when
+aligning and correcting glossaries and corpora.  For more help try:
+
+	cbd help commands
+
+EOF
+    }
+}
+
+sub help_commands {
+    print <<EOF;
+
+cbd understands the following commands:
+
+	align:	carry out cbd alignment tasks
+	check:	check glossaries
+	help: 	print help on cbd commands
+    	stash:	stash data while working on alignment
+	update:	update the glossary
+
+Try:
+
+	cbd help align|check|stash|update
+
+for more information.
+
+EOF
+
+}
+
+sub help_stash {
+    print <<EOF;
+
+cbd stash is an interface for the program cbdstash.plx.  The following commands are available:
+
+	cbd stash help
+	cbd stash init LANG
+	cbd stash entries
+	cbd stash senses
+	cbd stash fixed
+	cbd stash done
+
+Try:
+
+	cbdstash.plx help
+
+for more information.
+
+EOF
+}
+    
+sub make {
+    system 'makemake.plx';
+}
+
+sub stash {
+    my $a = shift @_;
+    if ($a) {
+	if (exists $stash{$a}) {
+	    &{$stash{$a}};
+	    exit 1;
+	} else {
+	    help_stash();
+	    exit 1;
+	}
+    } else {
+	help_stash();
+    }
+}
+
+sub stash_init {
+    cbd_die "must give language with cbd stash init"
+	unless $lang;
+    cbd_die "no glossary 00lib/$lang.glo"
+	unless -r "00lib/$lang.glo";
+    cbd_die "project must check clean before init"
+	if check(1);
+    system 'makemake.plx';
+    system 'make', '-qrR', '-f', '00lib/Makefile';
+    if ($?) {
+	++$nohelp; cbd_die "project needs rebuilding before init";
+    }
+    system 'cbdstash.plx', 'init', $lang;
+    cbd_next("cbd align bases");
+}
+
+sub update {
+    system 'oracc', 'update';
+}
+
+1;

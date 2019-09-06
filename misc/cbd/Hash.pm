@@ -364,6 +364,8 @@ sub pp_acd_merge {
 		foreach my $l (@{$$$f{$fld}}) {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
+		    $tmp =~ s/\s+/ /g;
+		    $tmp =~ s/\s*$//;
 		    if ($fld eq 'bases') {
 			my $b = bases_merge($i_bases, $tmp, $is_compound); # we want the hash back to map bases in forms
 			if ($$b{'map'}) {
@@ -376,7 +378,7 @@ sub pp_acd_merge {
 			    if ($basemap{$fb}) {
 				my $nb = $basemap{$fb};
 				warn "fixing form base $fb to $nb\n";
-				$fld =~ s#/(\S+)#/$fb#;
+				$tmp =~ s#/(\S+)#/$fb#;
 			    } 
 			}
 			if ($fld eq 'sense') {
