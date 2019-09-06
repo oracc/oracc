@@ -23,7 +23,7 @@ $args{'log'} = 'align-senses.log' unless $args{'log'};
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
     if (pp_status()) {
-	pp_diagnostics();
+	pp_diagnostics(\%args);
 	die "$0: can't align bases unless base glossary is clean. Stop.\n";
     }
     $args{'lang'} = lang() unless $args{'lang'};
@@ -75,9 +75,9 @@ if ($args{'apply'}) {
     }
     $args{'force'} = 1; # print even when errors
     pp_cbd(\%args,@cbd);
-    pp_diagnostics() if pp_status();
+    pp_diagnostics(\%args) if pp_status();
 } else {
-    pp_diagnostics() if pp_status();
+    pp_diagnostics(\%args) if pp_status();
 }
 
 1;

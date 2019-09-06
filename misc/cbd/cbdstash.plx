@@ -54,9 +54,21 @@ my $repeat = 0;
 
 if ($arg1) {
     if (exists $args{$arg1}) {
+	if ($arg1 eq 'status') {
+	    # arg2 is optional lang, arg3 is optional phase
+	    if ($arg2) {
+		my $arg3 = $lang;
+		$lang = $arg2;
+		if ($arg3) {
+		    $arg2 = $arg3;
+		} else {
+		    $arg2 = '' unless $arg2 eq '#current';
+		}
+	    }
+	}
 	unless ($arg1 eq 'init' or $arg1 eq 'help') {
 	    status_load();
-	    $lang = $status{'#current'};
+	    $lang = $status{'#current'} unless $arg1 eq 'status' && $arg2 && $arg2 eq '#current';
 	}
 	&{$funcs{$arg1}};
 	status_dump() unless $arg1 eq 'status' || $arg1 eq 'help';
@@ -149,7 +161,7 @@ sub init {
     } else {
 	system 'mkdir', '-p', $newdir;
 	setstatus("init");
-	setstatus('#current');
+	setstatus($lang,'#current');
 	stash($newdir, 'init');
     }
 }
@@ -240,9 +252,9 @@ sub show {
 }
 
 sub status {
-    my $newstatus = $arg2;    
-    if ($newstatus) {
-	setstatus($newstatus);
+    my $newstatus = $arg2;
+    if ($newstatus && $newstatus ne '#current') {
+	setstatus($newstatus,$lang);
     } else {
 	print getstatus();
     }
