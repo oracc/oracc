@@ -146,6 +146,7 @@ sub edit_apply_script {
 #			    warn join("\n",@res), "\n";
 #			    warn "=================\n";
 			    @{$edit_cache{$eid}} = ($to_line,@res);
+			    history($edit_entry, $edit_sense, $s[$i]);
 			} else {
 			    pp_warn("non-existent map target '$this_e'");
 			}
@@ -168,7 +169,7 @@ sub edit_apply_script {
 		    } elsif ($s[$i] =~ /:del/) {
 			$c[$from_line] = "\000";
 		    } elsif ($s[$i] =~ /:add/) {
-			# $c[$from_line] =~ s/^\+//; # the +@sense has to stay so it goes through to base eventually
+			# $c[$from_line] =~ s/^\+//; # the +@sense has to stay so it goes through to base glo eventually
 		    } else {
 			warn "edit.edit:$i: unhandled edit script tag $s[$i]\n";
 		    }

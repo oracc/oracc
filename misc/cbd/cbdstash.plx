@@ -148,8 +148,8 @@ sub init {
 	die "$0: stash $newiso already exists; use 'update' if you want to stash a new set of files\n";
     } else {
 	system 'mkdir', '-p', $newdir;
-	setstatus($lang,"init");
-	setstatus('#current',$lang);
+	setstatus("init");
+	setstatus('#current');
 	stash($newdir, 'init');
     }
 }
@@ -168,7 +168,7 @@ sub phase_check {
     my $s = getstatus();
     die "$0: unknown status $p\n" unless $sequence{$p};
     if ($repeat || ($sequence{$p} - $sequence{$s}) == 1) {
-	unless ($p eq 'fixed') {
+	unless ($p eq 'bases' || $p eq 'fixed') {
 	    unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
 		die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
 	    } else {
@@ -242,9 +242,9 @@ sub show {
 sub status {
     my $newstatus = $arg2;    
     if ($newstatus) {
-	setstatus($lang,$newstatus);
+	setstatus($newstatus);
     } else {
-	print getstatus($lang);
+	print getstatus();
     }
 }
 
@@ -283,11 +283,13 @@ sub status_dump {
 
 sub getstatus {
     my $l = shift @_;
+    $l = $lang unless $l;
     $status{$l};
 }
 
 sub setstatus {
-    my ($l,$s) = @_;
+    my ($s,$l) = @_;
+    $l = $lang unless $l;
     $status{$l} = $s;
 }
 

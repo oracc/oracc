@@ -25,7 +25,7 @@ sub history_trim {
 	}
 	push @n, $h[$i] unless $seen{$k}++;
     }
-    print join ("\n", reverse @n), "\n";
+    history_dump(reverse @n);
 }
 
 
@@ -83,6 +83,12 @@ sub history_load {
     my @h = (<H>); chomp @h;
     close(H);
     @h;
+}
+
+sub history_dump {
+    open(H, '>00etc/history.edit') || die "$0: can't write to 00etc/history.edit.\n";
+    print H join("\n", @_), "\n";
+    close(H);    
 }
 
 1;

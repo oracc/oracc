@@ -116,7 +116,9 @@ entries-edited.glo.
 
 4. Now stash your work so far:
 
-	cbdstash.plx -entries LANG
+	cbdstash.plx -entries
+
+By default this operates on the glossary for the '#current' language in the stash.
 
 e.g.,
 
@@ -133,10 +135,11 @@ Reviewing at each step as for entry alignment.
 
 5. apply corpus update script to corpus
 
-   4a. use stashed lem data and alignment history to create new input table for atfglobal
-   4b. apply table to ATF corpus
-   4c. rebuild corpus
-   4d. stash new version of loc-data
+   5a. oracc update
+   4b. use stashed lem data and alignment history to create new input table for atfglobal
+   4c. apply table to ATF corpus
+   4d. rebuild corpus
+   4e. cbdstash.plx fixed : stash new version of loc-data
 
 6. now align bases and forms--these are done together because the base alignment map is used to rewrite /BASE in the form
 

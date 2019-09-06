@@ -251,6 +251,10 @@ parse_sig {
 
     return parse_psu($sig) if $sig =~ /^\{/;
 
+    if ($sig =~ /\&\&/) {
+	$sig =~ s/\&\&.*$//; # this is rough and ready but may be enough for the use of this routine
+    }
+    
 #    warn "$sig\n";
 
     my($sig2,@rest) = split(/\t/,$sig);
