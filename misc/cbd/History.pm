@@ -2,13 +2,28 @@ package ORACC::CBD::History;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/history_map history_trim/;
+@EXPORT = qw/history history_init history_term history_map history_trim/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
+
+sub history {
+    my($l,$e,$s,$to) = @_;
+    $s = '' unless $s;
+    my $date = `date +\%Y-\%m-\%d`; chomp $date;
+    print H "$date\t$l\t$e\t$s\t$to\n";
+}
+
+sub history_init {
+    open(H,'>>00etc/history.edit');
+}
+
+sub history_term {
+    close(H);
+}
 
 sub history_trim {
     my @h = history_load();

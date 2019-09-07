@@ -5,7 +5,7 @@ use ORACC::XPD::Util;
 
 my @atf = <00atf/*.atf>;
 my @glo = <00lib/*.glo>;
-my @dep = ();
+my @lem = ();
 
 ORACC::XPD::Util::load_xpd();
 my @l = ORACC::XPD::Util::lang_options();
@@ -22,7 +22,7 @@ foreach my $l (@l) {
 	} else {
 	    $proj = $l;
 	}
-	push @glo, "$ENV{'ORACC_BUILDS'}/$proj/02pub/lemm-$gl.sig";
+	push @lem, "$ENV{'ORACC_BUILDS'}/$proj/02pub/lemm-$gl.sig";
     }
 }
 
@@ -30,20 +30,24 @@ my @nglo = ();
 foreach my $g (@glo) {
     if (-r $g) {
 	push @nglo, $g;
-    # } else {
-    # 	my $g2 = $g;
-    # 	$g2 =~ s/00lib/00src/;
-    # 	if (-r $g2) {
-    # 	    push(@nglo, $g2);
-    # 	} else {
-    # 	    $g =~ s#/[^/]+\.glo$#/qpn.glo#;
-    # 	    push(@nglo,$g) if -r $g;
-    # 	}
+    }
+}
+
+my @nlem = ();
+foreach my $l (@lem) {
+    if (-r $l) {
+	push @nlem, $l;
     }
 }
 
 open(M,'>00lib/Makefile');
-print M "ATF=@atf\n\nLEM=@nglo\n\n01bld/buildstamp: \$\{ATF} \$\{LEM}\n\toracc build\n";
+print M "ATF=@atf\n\nGLO=@nglo\n\nLEM=@nlem\n\n";
+print M "01bld/buildstamp: \$\{ATF} \$\{GLO} \$\{LEM}\n\toracc build\n\n";
+foreach my $g (@nglo) {
+    my $l = $g;
+    $l =~ s#00lib/(.*?)\.glo$#$1#;
+    print M "02pub/lemm-$l.sig: $g\n\toracc update\n\n";
+}
 close(M);
 
 1;

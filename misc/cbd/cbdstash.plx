@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check done entries fixed help init 
+my %args = (); my @args = qw/bases check culled done entries fixed help init 
     locdata repeat senses show status update work/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
 
@@ -10,6 +10,7 @@ my %status = ();
 my %funcs = (
     bases    => \&bases,
     check    => \&check,
+    culled   => \&culled,
     done     => \&done,
     entries  => \&entries,
     help     => \&help,
@@ -27,6 +28,7 @@ my %funcs = (
 my %helps = (
     bases    => 'stash the bases work',
     check    => 'check that no manual edits have been made according to the current stash',
+    culled   => 'stash glossary from which unreferenced forms and bases have been culled',
     done     => 'mark the edits for which the current stash was created are complete',
     entries  => 'stash the entries work',
     fixed    => 'stash the fixed corpus after aligning entries and senses',
@@ -41,7 +43,7 @@ my %helps = (
     work     => 'set the current working language to LANG'
     );
 
-my @sequence = qw/notused init entries senses fixed bases done/;
+my @sequence = qw/notused init entries senses fixed culled bases done/;
 my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 #########################################################################################
@@ -105,7 +107,12 @@ sub check {
     }
 }
 
+sub culled {
+    phase_save('culled');   
+}
+
 sub done {
+#    fixed();
     setstatus('done');
     return;
     my $status = getstatus();
@@ -180,11 +187,15 @@ sub phase_check {
     my $s = getstatus();
     die "$0: unknown status $p\n" unless $sequence{$p};
     if ($repeat || ($sequence{$p} - $sequence{$s}) == 1) {
-	unless ($p eq 'bases' || $p eq 'fixed') {
+	if ($p eq 'entries' || $p eq 'senses' ) {
 	    unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
 		die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
 	    } else {
 		# todo: make sure -edited is later than -aligned
+	    }
+	} elsif ($p eq 'culled') {
+	    unless (-r "$lang-culled-forms.glo" && -r "$lang-culled-bases.glo") {
+		die "$0: must have both $lang-forms-$p.glo and $lang-bases-$p.glo\n";
 	    }
 	}
     } else {
@@ -205,14 +216,22 @@ sub phase_save {
 	my $s = getstatus();
 	system 'cp', '-va', "$d/$lang.glo", "$d/$lang.glo.$s"
 	    unless $repeat;
-	if (-r "$lang-$p-aligned.glo") { # there isn't an aligned glo for bases or fixed
-	    system 'cp', '-va', "$lang-$p-aligned.glo", $d;
+	if ($p eq 'culled') {
+	    if (-r "$lang-culled-forms.glo" && -r "$lang-culled-bases.glo") {
+		system 'cp', '-va', "$lang-culled-forms.glo", $d;
+		system 'cp', '-va', "$lang-culled-bases.glo", $d;
+		system 'cp', '-va', "$lang-culled-bases.glo", "00lib/$lang.glo";
+	    }
+	} else {
+	    if (-r "$lang-$p-aligned.glo") { # there isn't an aligned glo for bases or fixed
+		system 'cp', '-va', "$lang-$p-aligned.glo", $d;
+	    }
+	    if (-r "$lang-$p-edited.glo") { # there isn't an edited glo for fixed
+		system 'cp', '-va', "$lang-$p-edited.glo", $d;
+		system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+	    }
+	    system 'cp', '-va', "00lib/$lang.glo", $d;
 	}
-	if (-r "$lang-$p-edited.glo") { # there isn't an edited glo for fixed
-	    system 'cp', '-va', "$lang-$p-edited.glo", $d;
-	    system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
-	}
-	system 'cp', '-va', "00lib/$lang.glo", $d;
 	setstatus($p);
     }
 }

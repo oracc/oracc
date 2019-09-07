@@ -2,6 +2,14 @@
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
+###
+### Exit status =
+###	0 for table created
+###	1 for error
+###	2 for no table needed
+###
+
+
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::History;
 use ORACC::L2GLO::Util;
@@ -10,8 +18,7 @@ use ORACC::Texts::Util;
 use Data::Dumper;
 
 # Under the stash/align system, $w2l here must be init-locdata
-my $w2l = shift @ARGV;
-$w2l = `cbdstash.plx locdata init`;
+my $w2l = `cbdstash.plx locdata init`;
 my @w = ();
 if ($w2l =~ /xz$/) {
     @w = `unxz -c $w2l`;
@@ -23,9 +30,13 @@ chomp @w;
 my %orig_inst = wid2lem_inst($w2l,\@w);
 
 # Get the form=inst pairs that don't parse as a result of the edits
-my @bad = `ox -CD 00atf/*.atf 2>/dev/null | wid2lem -s | grep BAD\$ | grep -F \'[\' | cut -f2`; chomp @bad;
+my @bad = `ox -CD 00atf/*.atf 2>/dev/null | wid2lem -s | grep 'BAD\$' | grep -F \'[\' | cut -f2`; chomp @bad;
 
-print join("\n", @bad), "\n";
+if ($#bad < 0) {
+    exit 2;
+}
+
+# print join("\n", @bad), "\n";
 
 # Now we need a hash of the changes made in the history file
 my %h = history_map();
@@ -34,7 +45,7 @@ open(H,'>history.dump'); print H Dumper \%h; close(H);
 # Now for each of the bad form=inst pairs look it up in orig_inst to
 # get the orig sig and then map that to the new sig via the history
 # map:
-
+open(T, '>>00etc/history.tab');
 foreach my $b (@bad) {
     my $n = '';
     if ($orig_inst{$b}) {
@@ -61,11 +72,12 @@ foreach my $b (@bad) {
 	my $s = $n{'sense'} || $n{'gw'};
 	my $ninst = "$n{'cf'}\[$s\]";
 	if ($f) {
-	    print "$f\t$i\t$ninst\n";
+	    print T "$f\t$i\t$ninst\n";
 	} else {
-	    print "\t$b\t$ninst\n";
+	    print T "\t$b\t$ninst\n";
 	}
     }
 }
+close(T);
 
 1;

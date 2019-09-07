@@ -16,6 +16,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Entries;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Senses;
+use ORACC::CBD::History;
 
 my $acd_rx = $ORACC::CBD::acd_rx;
 
@@ -91,7 +92,7 @@ sub cache_stash {
 
 sub edit_apply_script {
     my($args, @c) = @_;
-    open(H,'>>00etc/history.edit');
+    history_init();
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
@@ -146,10 +147,13 @@ sub edit_apply_script {
 #			    warn join("\n",@res), "\n";
 #			    warn "=================\n";
 			    @{$edit_cache{$eid}} = ($to_line,@res);
-			    history($edit_entry, $edit_sense, $s[$i]);
+			    history($lang, $edit_entry, $edit_sense, $s[$i]);
 			} else {
 			    pp_warn("non-existent map target '$this_e'");
 			}
+		    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
+			$edit_entry = $1;
+			$edit_sense = '';
 		    }
 		} else {
 		    if ($s[$i] =~ s/^:rnm \>\s*//) {
@@ -158,7 +162,7 @@ sub edit_apply_script {
 			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
 			$c[$from_line] = $s[$i];
 			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
-			history($edit_entry, $edit_sense, $s[$i]);
+			history($lang, $edit_entry, $edit_sense, $s[$i]);
 		    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
 			$edit_entry = $1;
 			$edit_sense = '';
@@ -218,6 +222,7 @@ sub edit_apply_script {
 	    push @newc, $c[$i];
 	}
     }
+    history_term();
     @newc;
 }
 
@@ -300,13 +305,6 @@ sub edit_save_script {
 	print S join("\n", @{$ORACC::CBD::data{'script'}}), "\n";
 	close(S);
     }
-}
-
-sub history {
-    my($e,$s,$to) = @_;
-    $s = '' unless $s;
-    my $date = `date +\%Y-\%m-\%d`; chomp $date;
-    print H "$date\t$lang\t$e\t$s\t$to\n";
 }
 
 1;

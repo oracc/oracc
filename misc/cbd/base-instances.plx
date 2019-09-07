@@ -14,7 +14,7 @@ if ($log_file) {
     chomp @log; close(L);
 }
 
-my $w2l_file = `cbdstash.plx locdata`;
+my $w2l_file = `cbdstash.plx locdata fixed`;
 my @w = ();
 if ($w2l_file) {
     if (-r $w2l_file) {

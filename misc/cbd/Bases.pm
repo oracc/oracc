@@ -516,7 +516,8 @@ sub bases_serialize {
 	}
     }
     if (!length($res)) {
-	warn "bases_serialize: empty result from ", Dumper \%b;
+	warn "bases_serialize: empty result from ", Dumper \%b
+	    unless $ORACC::CBD::Bases::ignore_empty_serializations;
     }
     $res;
 }

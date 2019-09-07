@@ -145,7 +145,8 @@ sub wid2lem_load {
 	    }
 	} else {
 	    if ($f3) {
-		warn "$w2l_err:$i: third field is not a line number or signature\n";
+		warn "$w2l_err:$i: third field is not a line number or signature (f3=$f3)\n"
+		    unless $f3 eq 'BAD';
 	    } # else it's a WID and unlemmatized token entry
 	}
     }
