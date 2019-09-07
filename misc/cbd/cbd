@@ -68,8 +68,14 @@ $verb = 'help' unless $verb;
 sub align {
     $lang=`cbdstash.plx status '#current'`;
     if ($lang) {
-	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";
-	cbd_next("Review '$object.log'; adjust 00lib/$lang.glo; repeat cbd align $object as necessary", "cbd apply");
+	my $nxt = '';
+
+	if ($object eq 'bases') {
+	    $nxt=" and/or 'base-check.log'";
+	}
+	
+	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";	
+	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary", "cbd apply");
     } else {
 	++$nohelp; cbd_die("cbd align $object failed. Stop");
     }

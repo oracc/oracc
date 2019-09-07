@@ -5,6 +5,7 @@ use lib "$ENV{'ORACC'}/lib";
 use Data::Dumper;
 use ORACC::L2GLO::Util;
 use ORACC::Texts::Util;
+use Data::Dumper;
 
 my $log_file = shift @ARGV;
 my @log = ();
@@ -51,20 +52,25 @@ foreach my $l (@log) {
 
 my %w2l = wid2lem_by_sig($w2l_file,\@w,$log_file,\@sig);
 
+#open(W,'>base-instances.w2l'); print W Dumper \%w2l; close(W);
+#open(W,'>base-instances.cgp'); print W Dumper \%cgp; close(W);
+
 foreach my $cgp (sort { $sc{$a} <=> $sc{$b} } keys %cgp) {
     foreach my $sig (keys %{$cgp{$cgp}}) {
 	my $w2l = $w2l{$sig};
 	foreach my $ok (@$w2l) {
 	    my %p = parse_sig($$ok[4]);
-	    unless ($seen{$cgp,$p{'form'}}++) {
+#	    unless ($seen{$cgp,$p{'form'}}++) {
+#		warn "dumping $cgp with form $p{'form'}\n";
 		$p{'form'} =~ s/^\%.*?://;
 		if ($err{$sig} =~ /new base (\S+)/) {
 		    my $b = $1;
 		    print "$$ok[0]:$$ok[1]: $cgp:\t$b < $p{'form'} is new\n"; # =$ok[3]
 		} else {
-		    print "$$ok[0]:$$ok[1]: $cgp:\t$p{'form'} check$err{$sig}\n"; # =$ok[3]
+		    # the map entries don't generally need checking against the corpus
+#		    print "$$ok[0]:$$ok[1]: $cgp:\t$p{'form'} check$err{$sig}\n"; # =$ok[3]
 		}
-	    }
+#	    }
 	}
     }
 }
