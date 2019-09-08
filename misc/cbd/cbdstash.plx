@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my %args = (); my @args = qw/bases check culled done entries fixed help init 
+my %args = (); my @args = qw/bases check culled dir done entries fixed help init 
     locdata repeat senses show status update work/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
 
@@ -11,6 +11,7 @@ my %funcs = (
     bases    => \&bases,
     check    => \&check,
     culled   => \&culled,
+    dir      => \&dir,
     done     => \&done,
     entries  => \&entries,
     help     => \&help,
@@ -29,6 +30,7 @@ my %helps = (
     bases    => 'stash the bases work',
     check    => 'check that no manual edits have been made according to the current stash',
     culled   => 'stash glossary from which unreferenced forms and bases have been culled',
+    dir	     => 'print the name of the working directory for the current stash',
     done     => 'mark the edits for which the current stash was created are complete',
     entries  => 'stash the entries work',
     fixed    => 'stash the fixed corpus after aligning entries and senses',
@@ -109,6 +111,11 @@ sub check {
 
 sub culled {
     phase_save('culled');   
+}
+
+sub dir {
+    print stashdir();
+    exit 0;
 }
 
 sub done {

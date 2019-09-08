@@ -3,7 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply build check cull edit fix help make stash update/; my %verbs = (); @verbs{@verbs} = ();
+my @verbs = qw/align apply build check cull edit fix help make ok stash update/; my %verbs = (); @verbs{@verbs} = ();
 my @objects = qw/bases commands culled entries final fixed forms init senses/; my %objects = (); @objects{@objects} = ();
 
 my %commands = (
@@ -16,9 +16,37 @@ my %commands = (
     fix=>\&fix,
     help=>\&help,
     make=>\&make,
+    ok=>\&ok,
     stash=>\&stash,
     update=>\&update,
     );
+
+my %steps = ();
+my @steps = (
+    "cbd init",
+    "cbd align entries",
+    "cbd ok",
+    "cbd apply",
+    "cbd edit",
+    "cbd stash",
+    "cbd align senses",
+    "cbd ok",
+    "cbd apply",
+    "cbd edit",
+    "cbd stash",
+    "cbd align bases",
+    "cbd ok",
+    "cbd stash",
+    "cbd cull forms",
+    "cbd cull bases",
+    "cbd stash",
+    "cbd fix",
+    "cbd ok",
+    "cbd stash",
+    "cbd merge",
+    "cbd done",    
+    );
+@steps{@steps} = ();
 
 my %help = (
     commands=>\&help_commands,
@@ -45,6 +73,7 @@ args_config('edit', NO);
 args_config('fix', NO);
 args_config('help', NO, @verbs, 'commands');
 args_config('make', NO);
+args_config('ok', NO);
 args_config('stash', MAYBE, 'help', @stash);
 args_config('update', NO);
 args_sanity();
@@ -76,6 +105,7 @@ sub align {
 	
 	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";	
 	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary", "cbd apply");
+	cbd_needs_ok();
     } else {
 	++$nohelp; cbd_die("cbd align $object failed. Stop");
     }
@@ -150,7 +180,7 @@ sub args_process {
 sub args_sanity {
     my @not = ();
     foreach my $v (@verbs) {
-	push @not, $v unless $argcheck{$v};
+	push(@not, $v) unless $argcheck{$v};
     }
     if ($#not >= 0) {
 	cbd_die "internal error: no arg info for @not";
@@ -171,8 +201,17 @@ sub cbd_die {
 sub cbd_next {
     foreach (@_) {
 	warn "\nNext step:\n\n\t$_\n\n";
+	if (exists $steps{$_}) {
+	    my $d = `cbdstash.plx dir`;
+	    xsystem "echo $_ >$d/next";
+	}
     }
     exit 0;
+}
+
+sub cbd_needs_ok {
+    my $d = `cbdstash.plx dir`;
+    xsystem 'touch', "$d/needs_ok";
 }
 
 sub cbd_warn {
@@ -348,6 +387,11 @@ EOF
     
 sub make {
     xsystem 'makemake.plx';
+}
+
+sub ok {
+    my $d = `cbdstash.plx dir`;
+    xsystem 'rm', '-f', "$d/needs_ok";
 }
 
 sub stash {
