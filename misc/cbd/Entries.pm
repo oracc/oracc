@@ -235,6 +235,7 @@ sub entries_merge {
 
 sub entries_init {
     my $args = shift;
+    pp_file($$args{'cbd'});
     my $entries_outfile = $$args{'lang'}.'.map';
     if (-d '01tmp') {
 	$entries_outfile = "01tmp/$entries_outfile";

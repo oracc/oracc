@@ -1,0 +1,24 @@
+need msort in ubuntu18 packages
+
+need to run perl-modules.sh in sudo mode (is there a cli option for that?)
+
+need to run boot-projects.sh
+
+need to build ogsl/sl as part of ogsl install (does this happen on regular install? Is it just the way I'm doing it in boot-projects.sh?)
+
+need
+
+ ln -sf /home/oracc/pub/cdli/catpnums.vec /home/oracc/lib/data/
+ 
+need to create /home/oracc/snc [dir]
+
+need to auto-create 01tmp in projects [cbdpp]
+
+need pub/epsd2/sux.glo for SMA::Base -- or some other new derivative that it can pull from web
+
+need to use names/qpn.glo not epsd2/qpn.glo in SMA::Base
+
+need lemm-sux.sig and other lemm*.sig to be saved and untarred as part of build repo and all others
+
+possibly other 02pub files, or perhaps all of them?
+

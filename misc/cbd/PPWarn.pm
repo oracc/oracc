@@ -55,9 +55,9 @@ sub pp_line {
 
 sub pp_notice {
     $efile = ORACC::CBD::Util::errfile($file);
-    $efile = $file unless $efile;
+    $efile = pp_file() unless $efile;
     $line = pp_line() unless $line;
-    push @{$errlist{"$efile::$line"}}, "$efile:$line: @_\n";
+    push @{$errlist{"${efile}::$line"}}, "$efile:$line: @_\n";
 }
 
 sub pp_status {
