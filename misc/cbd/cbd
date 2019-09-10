@@ -3,7 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply build check cull done edit fix help make ok stash status update/; my %verbs = (); @verbs{@verbs} = ();
+my @verbs = qw/align apply build check cull done edit fix help init make ok stash status update/; my %verbs = (); @verbs{@verbs} = ();
 my @objects = qw/bases commands culled entries final fixed forms init senses/; my %objects = (); @objects{@objects} = ();
 
 my %commands = (
@@ -16,6 +16,7 @@ my %commands = (
     edit=>\&edit,
     fix=>\&fix,
     help=>\&help,
+    init=>\&init,
     make=>\&make,
     ok=>\&ok,
     stash=>\&stash,
@@ -66,7 +67,7 @@ sub cbd_warn;
 sub xsystem;
 
 my %argcheck = ();
-args_config('align', NO, qw/bases entries senses/);
+args_config('align', NO, qw/init bases entries senses/);
 args_config('apply', NO);
 args_config('build', NO);
 args_config('check', MAYBE);
@@ -75,6 +76,7 @@ args_config('done', NO);
 args_config('edit', NO);
 args_config('fix', NO);
 args_config('help', NO, @verbs, 'commands');
+args_config('init', YES);
 args_config('make', NO);
 args_config('ok', NO);
 args_config('stash', MAYBE, 'help', @stash);
@@ -88,18 +90,24 @@ my $verb = '';
 my $object = '';
 my $lang = '';
 my $nohelp = 0;
+my $phase = '';
 my $verbose = 1;
 
 args_process();
 
 $verb = 'help' unless $verb;
 
+unless ($verb eq 'help' || $verb eq 'init') {
+    $lang =  `cbdstash.plx status '#current'`;
+    $phase = `cbdstash.plx status $lang`;
+}
+
 &{$commands{$verb}}($object, $lang);
 
 #################################################################################################
 
 sub align {
-    $lang=`cbdstash.plx status '#current'`;
+    cbd_object() unless $object;
     if ($lang) {
 	my $nxt = '';
 
@@ -116,8 +124,6 @@ sub align {
 }
 
 sub apply {
-    my $lang =  `cbdstash.plx status '#current'`;
-    my $phase = `cbdstash.plx status $lang`;
     if ($phase eq 'init') {
 	$object = 'entries';
     } elsif ($phase eq 'entries') {
@@ -148,7 +154,7 @@ sub args_check {
     if (defined $argcheck{$verb,'lang'}) {
 	if ($lang) {
 	    return cbd_warn "command $verb is not allowed to have a language argument"
-		if $argcheck{$verb,'lang'} == YES;
+		unless $argcheck{$verb,'lang'} == YES;
 	} else {
 	    return cbd_warn "command $verb must have a language argument"
 		if $argcheck{$verb,'lang'} == YES;
@@ -218,6 +224,18 @@ sub cbd_needs_ok {
     xsystem 'touch', "$d/needs_ok";
 }
 
+sub cbd_object {
+    if ($phase eq 'init') {
+	$object = 'entries';
+    } elsif ($phase eq 'entries') {
+	$object = 'senses';
+    } elsif ($phase eq 'culled') {
+	$object = 'bases';
+    } else {
+	cbd_die("I can't figure out the object type when phase = '$phase'");
+    }
+}
+
 sub cbd_warn {
     warn "$0: ", @_, "\n";
     return 1;
@@ -252,8 +270,6 @@ sub check {
 }
 
 sub cull {
-    my $lang =  `cbdstash.plx status '#current'`;
-    my $phase = `cbdstash.plx status $lang`;
     if ($phase eq 'fixed') {
 	if ($object eq 'bases') {
 	    if (-r "$lang-culled-forms.glo") {
@@ -277,8 +293,6 @@ sub done {
 }
 
 sub edit {
-    my $lang =  `cbdstash.plx status '#current'`;
-    my $phase = `cbdstash.plx status $lang`;
     my $next = '';
     if ($phase eq 'init') {
 	$object = 'entries';
@@ -298,8 +312,6 @@ sub edit {
 }
 
 sub fix {
-    my $lang =  `cbdstash.plx status '#current'`;
-    my $phase = `cbdstash.plx status $lang`;
     if ($phase eq 'senses') {
 	xsystem 'make', '-qrR', '-f', '00lib/Makefile', "02pub/lemm-$lang.sig";
 	if ($?) {
@@ -392,7 +404,11 @@ for more information.
 
 EOF
 }
-    
+
+sub init {
+    stash_init();
+}
+
 sub make {
     xsystem 'makemake.plx';
 }
@@ -443,7 +459,7 @@ sub stash_init {
 	++$nohelp; cbd_die "project needs rebuilding before init";
     }
     xsystem 'cbdstash.plx', 'init', $lang;
-    cbd_next("cbd align bases");
+    cbd_next("cbd align entries");
 }
 
 sub status {

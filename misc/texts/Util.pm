@@ -12,9 +12,10 @@ use Data::Dumper;
 
 my $w2l_trace = 0;
 
+my %wid_map = ();
 my %w2l_data = ();
 my %w2l_index = ();
-my %wid_map = ();
+my %w2l_langs = ();
 
 sub wid2lem_by_sig {
     my ($w2l_err,$wid2lem,$sig_err,$sigs,$warn_not_found) = @_;
@@ -29,7 +30,7 @@ sub wid2lem_by_sig {
 	    my $cfgwpos = "$p{'cf'}\[$p{'gw'}\]$p{'pos'}";
 	    warn "W2L: resolving sig $s via cfgw $cfgwpos\n" if $w2l_trace;
 	    if ($w2l_index{$cfgwpos}) {
-		if ($p{'lang'}) {
+#		if ($p{'lang'}) { ## drop this becuase lang is not used in key of w2l_index
 		    my @cand = @{$w2l_index{$cfgwpos}};
 		    my @ok = ();
 		    if ($p{'base'}) {
@@ -67,9 +68,9 @@ sub wid2lem_by_sig {
 		    } else {
 			warn "$0: $s not found in lemmatized corpus\n";
 		    }
-		} else {
-		    warn "$sig_err:$i: no \%lang in sig $s\n";
-		}
+#		} else {
+#		    warn "$sig_err:$i: no \%lang in sig $s\n";
+#		}
 	    } else {
 		warn "$sig_err:$i: $cfgwpos not found in wid2lem input\n" if $warn_not_found;
 	    }
@@ -133,6 +134,7 @@ sub wid2lem_load {
 	    unless ($seen{$f3}++) {
 		my %p = parse_sig($f3);
 		if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
+		    ++$w2l_langs{$p{'lang'}};
 		    $p{'#sig'} = $f3;
 		    if ($p{'lang'} =~ /^sux/) {
 			$p{'base'} =~ s/^\%.*?://;

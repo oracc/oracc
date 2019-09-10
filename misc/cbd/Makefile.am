@@ -16,7 +16,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdcollo.plx cbdoid.plx cbd-bases-tab.plx cbd-add-oid.plx \
 	cbd-fix-glo.plx cbdstash.plx cbdminglo.sh cbdedit.plx \
 	base-instances.plx cbdhistory.plx cbd forms-cull-zero.plx \
-	bases-cull-zero.plx
+	bases-cull-zero.plx entry-instances.plx
 
 scriptdata_DATA = entry-counts.xsl
 data_DATA = 
