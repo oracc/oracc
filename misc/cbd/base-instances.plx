@@ -36,7 +36,8 @@ foreach my $l (@log) {
     $cfgw =~ s/^\s*(.*?)\s*$/$1/;
     $sc{$cfgw} = $line;
     if ($err[0] =~ /new base (\S+)/) {
-	push @sig, "\%sux:$cfgw/$1";
+	#	push @sig, "\%sux:$cfgw/$1";
+	push @sig, "$cfgw/$1";
 	++${$cgp{$cfgw}}{$sig[$#sig]};
 	$err{$sig[$#sig]} = $err[0];
     } elsif ($err[0] =~ /map base (\S+)/) {

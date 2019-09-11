@@ -128,10 +128,12 @@ sub apply {
 	$object = 'entries';
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
-    } elsif ($phase eq 'senses') {
+#    } elsif ($phase eq 'senses') {
+#	$object = 'bases';
+    } elsif ($phase eq 'culled') {
 	$object = 'bases';
     } else {
-	cbd_die "cbd apply only works when current phase is 'init', 'entries', or 'senses', not '$object'";
+	cbd_die "cbd apply only works when current phase is 'init', 'entries', or 'senses', not '$phase'";
     }
     xsystem "cbdalign${object}.plx", '-apply', "00lib/$lang.glo";
     if ($object eq 'bases') {
@@ -231,6 +233,8 @@ sub cbd_object {
 	$object = 'senses';
     } elsif ($phase eq 'culled') {
 	$object = 'bases';
+    } elsif ($phase eq 'fixed') {
+	$object = 'culled';
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
     }
@@ -315,7 +319,7 @@ sub fix {
     if ($phase eq 'senses') {
 	xsystem 'make', '-qrR', '-f', '00lib/Makefile', "02pub/lemm-$lang.sig";
 	if ($?) {
-	    cbd_die "please do oracc update before cbd fix";
+	    ++$nohelp; cbd_die "please do oracc update before cbd fix";
 	} else {
 	    xsystem 'make', '-f', '00lib/Makefile';
 	    xsystem 'inst-fix-tab.plx';
@@ -420,6 +424,7 @@ sub ok {
 
 sub stash {
     my $a = shift @_;
+    $a = cbd_object() unless $a;
     if ($a) {
 	if (exists $stash{$a}) {
 	    &{$stash{$a}};
@@ -437,6 +442,8 @@ sub stash {
 		cbd_next("cbd done");
 	    } elsif ($a eq 'fixed') {
 		cbd_next("cbd cull forms");
+	    } elsif ($next eq 'fixed') {
+		cbd_next("cbd fix");
 	    } else {
 		cbd_next("cbd align $next");
 	    }
