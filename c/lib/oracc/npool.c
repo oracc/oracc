@@ -58,6 +58,29 @@ new_block(struct npool *p)
   return new;
 }
 
+static struct pool_block *
+new_block2(struct npool *p, size_t len)
+{
+  struct pool_block *new;
+  new = malloc(sizeof(struct pool_block));
+  if (!new)
+    {
+      (void)fputs("out of core",stderr);
+      exit(2);
+    }
+  new->used = new->mem = malloc(len);
+  if (!new->mem)
+    {
+      (void)fputs("out of core",stderr);
+      exit(2);
+    }
+  new->top = new->mem + POOL_BLOCK_SIZE;
+  new->next = NULL;
+  if (p->rover)
+    p->rover->next = new;
+  return new;
+}
+
 /* FIXME: this routine will break if strlen(s)+1 > POOL_BLOCK_SIZE */
 unsigned char *
 npool_copy(register const unsigned char *s, struct npool *p)
@@ -67,8 +90,15 @@ npool_copy(register const unsigned char *s, struct npool *p)
   if (!s)
     return NULL;
   len = strlen((char *)s) + 1;
-  if ((p->rover->used+len) >= p->rover->top)
-    p->rover = new_block(p);
+  if (len >= POOL_BLOCK_SIZE)
+    {
+      fprintf(stderr, "len = %ld\n", len);
+      p->rover = new_block2(p,len);
+    }
+  else {
+    if ((p->rover->used+len) >= p->rover->top)
+      p->rover = new_block(p);
+  }
   p->rover->last_begin = memcpy(p->rover->used, s, len);
   p->rover->used += len;
   return p->rover->last_begin;
