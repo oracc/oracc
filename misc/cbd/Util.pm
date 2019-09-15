@@ -103,7 +103,7 @@ sub pp_args {
     } else {
         unless ($args{'filter'}) {
 	    die "cbdpp.plx: must give glossary on command line\n"
-		unless setup_args(\%args, shift @ARGV || $cbd);
+		unless setup_args(\%args, shift @ARGV || $cbd) || $ORACC::CBD::no_cbd_ok;
 	} else {
 	    $args{'cbd'} = '<stdin>';
 	}
@@ -380,6 +380,7 @@ sub project {
 
 sub setup_args {
     my ($args,$file) = @_;
+    my $tried_file = '';
     if (!$file) {
 	if ($$args{'project'}) {
 	    my $p = $$args{'project'};
@@ -391,7 +392,7 @@ sub setup_args {
 		    $qpnlang = $1;
 		}
 	    } else {
-		if ($$args{'base'}) {
+		if ($$args{'base'} && !$$args{'#did_base'}) {
 		    if (-r $$args{'base'}) {
 			my %h = header_vals($$args{'base'});
 			if ($h{'lang'}) {
@@ -402,6 +403,7 @@ sub setup_args {
 		    } else {
 			warn "$0: base glossary $$args{'base'} not readable\n";
 		    }
+		    $$args{'#did_base'} = 1;
 		} else {
 		    warn "$0: no base glossary\n";
 		}
@@ -410,6 +412,7 @@ sub setup_args {
 		$file = "$ENV{'ORACC_BUILDS'}/$p/00lib/$l.glo";
 		unless (-r $file) {
 		    warn "$0: looked for $file but couldn't find it\n";
+		    $tried_file = $file;
 		    $file = undef;
 		} else {
 		    warn "$0: found $file via -project arg\n";
@@ -417,8 +420,9 @@ sub setup_args {
 	    }
 	}
     }
+    $$args{'#cbd_ok'} = ($file ? 1 : 0);
+    $$args{'cbd'} = $file || $tried_file;
     return undef unless $file;
-    $$args{'cbd'} = $file;
     my $lng = '';
     $ORACC::CBD::qpn_base_lang = 'sux'; # reset with @qpnbaselang in glossary header
     $file;
@@ -472,7 +476,6 @@ sub setup_cbd {
     if ($ORACC::CBD::det_minus) {
 	@cbd = pp_clean_det_minus(@cbd);
 	forms_det_clean() if $ORACC::CBD::Forms::external && $ORACC::CBD::det_minus;
-	
     }
     @cbd;
 }

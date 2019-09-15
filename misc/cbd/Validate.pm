@@ -334,6 +334,7 @@ sub pp_validate {
     pp_status(0) if $ORACC::CBD::novalidate;
     
     my $cbdname = ORACC::CBD::Util::cbdname();
+    warn "$0: validate: setting cbdname to $cbdname\n";
     push @{$data{'cbds'}}, $cbdname;
     ${$data{'cbdmap'}}{pp_file()} = $cbdname;
     %{$data{$cbdname}} = %glodata;

@@ -29,9 +29,11 @@ sub entries_align {
     $map_fh = $xmap_fh if $xmap_fh;
 
     my $base_cbdname = cbdname_from_fn($$args{'base'});
+    warn "base_cbdname = $base_cbdname; args{'base'} = $$args{'base'}\n";
     my %cbddata = %{$ORACC::CBD::data{$base_cbdname}};
 
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
+    warn "cbd_cbdname = $cbd_cbdname; args{'cbd'} = $$args{'cbd'}\n";
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
 
     my %entries = entries_collect($base_cbd);
