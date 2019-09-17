@@ -47,6 +47,7 @@ sub bases_tab {
     my $e = '';
     foreach (@_) {
 	if (/^\@bases/) {
+#	    warn "bases_tab calling bases_hash\n";
 	    my %b = bases_hash($_,$cpd);
 	    print "$e\t", join("\t", sort grep(!/\#/, keys %b)), "\n";
 	} elsif (/^\@parts/) {
@@ -94,7 +95,7 @@ sub bases_align {
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
 		pp_line($i+1);
-		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry});
+		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i);
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    if ($$args{'apply'}) {
 			$bases{$curr_entry} = $b;
@@ -161,9 +162,13 @@ sub bases_term {
 
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
-    my($b1,$b2,$cpd) = @_;
-    my %h1 = bases_hash($b1,$cpd);
-    my %h2 = bases_hash($b2,$cpd);
+    my($b1,$b2,$cpd,$base_i) = @_;
+
+#    warn "bases_merge calling bases_hash\n";
+    
+    my %h1 = bases_hash($b1,$cpd, $base_i);
+    
+    my %h2 = bases_hash($b2,$cpd, pp_line());
 
     $h1{'#new'} = 0;
 
@@ -259,7 +264,13 @@ sub bases_string {
 }
 
 sub bases_hash {
-    my($arg,$is_compound) = @_;
+    my($arg,$is_compound,$line) = @_;
+    my $saved_line = pp_line();
+#    warn 'bases_hash caller: ', join(':', caller()), "\n";
+    if (defined $line) {
+#	warn "bases_hash: resetting line to $line\n";
+	pp_line($line);
+    }
     if ($arg =~ s/;\s*$//) {
 	pp_warn("bases entry ends with semi-colon--please remove it");
     }
@@ -353,12 +364,14 @@ sub bases_hash {
 		} else {
 		    %{$vbases{$pri}} = ();
 		    $vbases{"$pri#code"} = ++$pricode;
-		    ${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef,$pri, 1) } = $pri;
+		    ${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef, $pri, 1) } = $pri;
 		}
 	    }
 	}
     }
 #    warn "bases $arg => ", Dumper \%vbases;
+    ORACC::CBD::Validate::pp_sl_messages();
+    pp_line($saved_line);
     %vbases;
 }
 
@@ -487,6 +500,7 @@ sub bases_stats {
 sub bases_process {
     my %bd = @_;
     my @log_errors = bases_log_errors($bd{'line'});
+#    warn "bases_process calling bases_hash\n";
     my %b = bases_hash($bd{'data'}, $bd{'compound'});
 #    open(D,'>bases.dump');
 #    use Data::Dumper;

@@ -15,7 +15,7 @@ use Fcntl;
 use NDBM_File;
 
 $ORACC::SL::report_all = 0;
-@ORACC::SL::fixes_needed = ();
+#@ORACC::SL::fixes_needed = ();
 
 my $db_file = "@@ORACC@@/pub/ogsl/sl";
 my $db_name = 'ogsl';
@@ -31,6 +31,7 @@ my $silent = 0;
 sub
 check {
     my($context,$test,$deep) = @_;
+#    warn join(':',caller()), "\n";
     my $sig = _signature($context,tlitsplit($test,$deep));
 #    warn "$test=>$sig\n";
     $sig;
@@ -355,6 +356,7 @@ sub msg {
     if ($ctxt) {
 	print STDERR "${ctxt}(BaseC): $m\n";
     } else {
+#	warn "adding $m to sl messages\n";
 	push @messages, $m;
     }
 }
@@ -422,7 +424,7 @@ sub c10e_compound {
 sub
 _signature {
     my ($context,@g) = @_;
-    @ORACC::SL::fixes_needed = ();
+#    @ORACC::SL::fixes_needed = ();
     my @sig = ();
     my $ctxt = $context ? "$context: " : "";
     my @newg = ();
@@ -461,9 +463,12 @@ _signature {
 		    my $tmp = lc($sn);
 		    if (($sn_id = is_value($tmp))) {
 			my $nsn = sign_of($sn_id);
-			push @ORACC::SL::fixes_needed, [ $sn, $nsn ];
-			msg($ctxt, "sign name '$sn' should be '$nsn'")
-			    if $pedantic && (!$reported{$g}++ || $ORACC::SL::report_all);
+			#			push @ORACC::SL::fixes_needed, [ $sn, $nsn ];
+			if ($pedantic && (!$reported{$g}++ || $ORACC::SL::report_all)) {
+			    # warn join(':',caller()), "\n";
+			    msg($ctxt, "sign name '$sn' should be '$nsn'");
+			}
+			    
 			$sn = $nsn;
 			$sn =~ tr/|//d;
 		    }

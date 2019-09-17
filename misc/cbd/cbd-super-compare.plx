@@ -57,11 +57,16 @@ if ($args{'list'}) {
     my @l = `cat $args{'list'}`; chomp @l;
     foreach my $l (@l) {
 	pp_status(0);
+	pp_reinit();
 	$args{'file'} = undef;
 	$args{'cbd'} = undef;
 	$args{'project'} = $l;
 	setup_args(\%args);
 	do_one();
+	if (pp_status()) {
+	    pp_diagnostics();
+	    pp_status(0);
+	}	
     }
 } else {
     do_one();
@@ -75,7 +80,7 @@ sub do_one {
     if (pp_status()) {
 	pp_diagnostics();
 	system 'touch', '.supercancel';
-	die "$0: can't align bases unless incoming glossary is clean. Stop.\n";
+	die "$0: can't compare unless incoming glossary $args{'cbd'} is clean. Stop.\n";
     }
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
@@ -100,8 +105,11 @@ sub do_one {
 	open(MAP_FH,">$mapfile") || die "$0: unable to open $mapfile for output. Stop.\n";
     }
 
-    warn "$0: Skipping non-existent glossary $args{'cbd'}\n" and return
-	unless $args{'#cbd_ok'};
+    unless ($args{'#cbd_ok'}) {
+	# warn "$0: Skipping non-existent glossary $args{'cbd'}\n";
+	close(MAP_FH);
+	return;
+    }
 
     # Now that the *_align routines do multiple duty we need to be sure apply is switched
     # off when this program calls them.

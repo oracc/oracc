@@ -3,7 +3,7 @@ package ORACC::CBD::Util; require Exporter; @ISA=qw/Exporter/;
 @EXPORT = qw/pp_args pp_cbd pp_load pp_entry_of pp_sense_of
     header_vals setup_args setup_cbd cbdname cbdname_from_fn project
     lang name projdir file_index errfile pp_tags set_acd_rx
-    set_default_base
+    set_default_base pp_reinit
     /;
 
 use warnings; use strict; use open 'utf8'; use utf8;
@@ -59,6 +59,11 @@ $ORACC::CBD::qpn_base_lang = 'sux';
 $ORACC::CBD::nodiagnostics = 0;
 
 my $file_index = 1;
+
+sub pp_reinit {
+    ORACC::CBD::Validate::reinit();
+    ORACC::CBD::Entries::reinit();
+}
 
 sub set_acd_rx {
     return $ORACC::CBD::acd_rx;
@@ -392,18 +397,22 @@ sub setup_args {
 		    $qpnlang = $1;
 		}
 	    } else {
-		if ($$args{'base'} && !$$args{'#did_base'}) {
-		    if (-r $$args{'base'}) {
-			my %h = header_vals($$args{'base'});
-			if ($h{'lang'}) {
-			    $l = $h{'lang'};
+		if ($$args{'base'}) {
+		    unless ($$args{'#did_base'}) {
+			if (-r $$args{'base'}) {
+			    my %h = header_vals($$args{'base'});
+			    if ($h{'lang'}) {
+				$l = $h{'lang'};
+			    } else {
+				warn "$0: no \@lang in base glossary $$args{'base'}\n";
+			    }
 			} else {
-			    warn "$0: no \@lang in base glossary $$args{'base'}\n";
+			    warn "$0: base glossary $$args{'base'} not readable\n";
 			}
+			$$args{'#did_base'} = 1;
 		    } else {
-			warn "$0: base glossary $$args{'base'} not readable\n";
+			$l = lang();
 		    }
-		    $$args{'#did_base'} = 1;
 		} else {
 		    warn "$0: no base glossary\n";
 		}
@@ -417,6 +426,10 @@ sub setup_args {
 		} else {
 		    warn "$0: found $file via -project arg\n";
 		}
+	    } else {
+		$p = '' unless $p;
+		$l = '' unless $l;
+		warn "$0: need project and lang but have project=$p and lang=$l\n";
 	    }
 	}
     }

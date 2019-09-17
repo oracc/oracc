@@ -63,7 +63,11 @@ sub pp_notice {
 sub pp_status {
     my $arg = shift;
     if (defined($arg)) {
+#	warn "status: arg=$arg\n";
 	$status = $arg;
+	if ($status == 0) {
+	    %errlist = ();
+	}
     } else {
 	$status;
     }

@@ -154,6 +154,8 @@ my %tlit_sigs = ();
 my $trace = 0;
 my $vfields = '';
 
+my %data = ();
+
 sub init {
     my $vfields = shift;
     if ($vfields) {
@@ -167,11 +169,42 @@ sub init {
 	}
     }
 }
-my %data = ();
+sub reinit {
+    %allow = ();
+    %bad_compounds = ();
+    %bases = ();
+    %basedata = ();
+    @bffs = ();
+    $curr_cf = '';
+    $curr_cfgw = '';
+    $curr_id = '';
+    $detcheck = 0;
+    @global_cbd = ();
+    %entries = ();
+    %entries_nopos = ();
+    %entries_cfmng = ();
+    $in_entry = 0;
+    $init_acd = 0;
+    $is_compound = 0;
+    $lang = '';
+    $mixed_morph = 0;
+    %ok = ();
+    @parts = ();
+    $project = '';
+    $status = 0;
+    %seen_entries = ();
+    $seen_bases = 0;
+    $seen_sense = 0;
+    $seen_morph2 = 0;
+    %tlit_sigs = ();
+    %data = ();
+}
 
 sub pp_validate {
     my($args,@cbd) = @_;
 
+#    warn "validate: entering pp_validate for ".ORACC::CBD::Util::cbdname()."\n";
+    
     %data = %ORACC::CBD::data;
 
     $detcheck = 1 if $$args{'dets'};
@@ -334,12 +367,15 @@ sub pp_validate {
     pp_status(0) if $ORACC::CBD::novalidate;
     
     my $cbdname = ORACC::CBD::Util::cbdname();
-    warn "$0: validate: setting cbdname to $cbdname\n";
+#    warn "$0: validate: setting cbdname to $cbdname\n";
     push @{$data{'cbds'}}, $cbdname;
     ${$data{'cbdmap'}}{pp_file()} = $cbdname;
     %{$data{$cbdname}} = %glodata;
     
     %ORACC::CBD::data = %data;
+
+#    warn "validate: exiting pp_validate status=".pp_status()."\n";
+#    warn "pp_status now=".pp_status()."\n";
 
     @cbd;
 }
@@ -641,6 +677,7 @@ sub v_bases {
 	pp_trace("BaseC::check: $p");
 	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
+#	warn ORACC::SL::BaseC::messages(), "\n";
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
 #	} elsif (@ORACC::SL::fixes_needed >= 0) {
@@ -727,8 +764,6 @@ sub v_bases {
 	    # }
 	}
     }
-
-    pp_sl_messages();
     
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
@@ -739,15 +774,20 @@ sub v_bases {
 sub pp_sl_messages {
     my $p = shift || '';
     my @m = ORACC::SL::BaseC::messages();
+#    warn "pp_sl_messages p=$p; m = @m\n";
     if ($#m >= 0) {
 	foreach my $m (@m) {
 	    if ($p =~ /^\|(.*?)\|$/) {
 		my $novb = $1;
+#		warn "m=$m; novb=$novb\n";
 		next if $m =~ $novb;
 	    }
-	    next if $p =~ /X/;		
+	    next if $p =~ /X/ && $m =~ /X/;
+#	    warn join(':', caller()), "\n";
+#	    $ORACC::CBD::PPWarn::trace = 1;
 	    pp_trace("pp_sl_messages adding message `$m' with pp_line()==",pp_line());
 	    pp_warn("(bases) ".$m);
+#	    $ORACC::CBD::PPWarn::trace = 0;
 	}
 	1
     } else {

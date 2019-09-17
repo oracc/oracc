@@ -21,19 +21,26 @@ my %entry_indexes = ();
 my $map_fh = undef;
 my %entry_parts = ();
 
+sub reinit {
+    %entry_indexes = ();
+    %entry_parts = ();
+}
+
 sub entries_align {
     my($args,$base_cbd,$cbd,$xmap_fh) = @_;
 
+#    warn "entries_align xmap_fh = $xmap_fh\n";
+    
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
     $map_fh = $xmap_fh if $xmap_fh;
 
     my $base_cbdname = cbdname_from_fn($$args{'base'});
-    warn "base_cbdname = $base_cbdname; args{'base'} = $$args{'base'}\n";
+#    warn "base_cbdname = $base_cbdname; args{'base'} = $$args{'base'}\n";
     my %cbddata = %{$ORACC::CBD::data{$base_cbdname}};
 
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
-    warn "cbd_cbdname = $cbd_cbdname; args{'cbd'} = $$args{'cbd'}\n";
+#    warn "cbd_cbdname = $cbd_cbdname; args{'cbd'} = $$args{'cbd'}\n";
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
 
     my %entries = entries_collect($base_cbd);
@@ -45,11 +52,17 @@ sub entries_align {
     my %added_entries = ();
     my %incoming_entries = ();
     my $entry = '';
-    my $bix = guess_init(@base_cbd);
-    my $cix = guess_init(@cbd);
 
-    open(BIX,'>bix.dump'); print BIX Dumper $bix; close(BIX);
-    open(BIX,'>cix.dump'); print BIX Dumper $cix; close(BIX);
+    my $bix = undef;
+    my $cix = undef;
+
+    unless ($xmap_fh) {
+#	warn "Entries.pm: calling guess_init; xmap_fh=$xmap_fh\n";
+	$bix = guess_init(@base_cbd);
+	$cix = guess_init(@cbd);
+	open(BIX,'>bix.dump'); print BIX Dumper $bix; close(BIX);
+	open(BIX,'>cix.dump'); print BIX Dumper $cix; close(BIX);
+    }
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	pp_line($i+1);
@@ -103,7 +116,11 @@ sub entries_align {
 	foreach my $pref (@{$parts{$p}}) {
 	    my($l,$e) = @$pref;
 	    $p =~ s/\s*\[(.*?)\]\s*/ \[$1\] /;
-	    if ((my $i = $incoming_entries{$p})) {
+	    my $cfgwpos = $p;
+	    $cfgwpos =~ s#//.*?\]#]#;
+	    $cfgwpos =~ s/'\S+//;
+	    $cfgwpos =~ s/\s*(\[.*?\])\s*/ $1 /;
+	    if ((my $i = $incoming_entries{$cfgwpos})) {
 		if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 		    my $entry = $1;
 		    unless (exists $entries{$entry}
@@ -116,7 +133,7 @@ sub entries_align {
 		}
 	    } else {
 		pp_line($l);
-		pp_warn("parts entry $p is not in glossary");
+		pp_warn("parts entry $p (looked for as $cfgwpos) is not in glossary");
 	    }
 	}
     }
