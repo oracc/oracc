@@ -170,6 +170,19 @@ sub pp_hash {
 
 	next if /^\#/ || /^\@letter/;
 
+	if (s/^([-+])//) {
+	    my $flag = $1;
+	    if ($flag eq '-') {
+		# ignore this entry
+		if (/^\@entry/) {
+		    while ($cbd[$i] !~ /^\@end\s+entry/) {
+			++$i;
+		    }
+		    ++$i;
+		}
+	    } # otherwise allow +-ed entry/sense without warning
+	}
+
 	if (/^\@([a-z_]+[-*!]*)\s*(.*?)\s*$/) {
 	    ($currtag,$currarg) = ($1,$2);
 	    my $default = $currtag =~ s/!//;

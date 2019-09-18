@@ -1,6 +1,10 @@
 #!/usr/bin/perl
 use warnings; use strict; use integer;
 
+my $nozero = shift @ARGV || '';
+die "$0: only allowed argument is '-z' to suppress entries which are all zero\n"
+    unless !$nozero || $nozero eq '-z';
+
 my $len = 0;
 my %stats = ();
 
@@ -24,8 +28,13 @@ foreach my $f (@maps) {
 
 @maps = sort { ${$stats{$b}}[0] <=> ${$stats{$a}}[0] } @maps;
 
-tab('');
-print "Entries\tSenses\tBases\n";
+if ($nozero) {
+    @maps = grep (${$stats{$_}}[0] && ${$stats{$_}}[1] && ${$stats{$_}}[2], @maps);
+}
+
+print "\n";
+tab('Additional: ');
+print "Entries\tSenses\tBases\n\n";
 foreach my $f (@maps) {
     tab($f);
     print join("\t", @{$stats{$f}}), "\n";

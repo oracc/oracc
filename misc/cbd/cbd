@@ -116,7 +116,9 @@ sub align {
 	}
 	
 	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";	
-	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary", "cbd apply");
+	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary",
+		 ($object eq 'senses' ? "-To see the senses most likely to need fixing say: grep '\\[[34]\\]' senses.log" : ''),
+		 "cbd apply");
 	cbd_needs_ok();
     } else {
 	++$nohelp; cbd_die("cbd align $object failed. Stop");
@@ -135,6 +137,9 @@ sub apply {
     } else {
 	cbd_die "cbd apply only works when current phase is 'init', 'entries', or 'senses', not '$phase'";
     }
+
+    cbd_test_ok();
+
     xsystem "cbdalign${object}.plx", '-apply', "00lib/$lang.glo";
     if ($object eq 'bases') {
 	cbd_next("cbd stash bases");
@@ -211,11 +216,25 @@ sub cbd_die {
 }
 
 sub cbd_next {
-    foreach (@_) {
-	warn "\nNext step:\n\n\t$_\n\n";
-	if (exists $steps{$_}) {
-	    my $d = `cbdstash.plx dir`;
-	    xsystem "echo $_ >$d/next";
+    if ($#_ >0) {
+        foreach (@_) {
+	    next unless length;
+	    if (/^-/) {
+		my $t = $_; $t =~ s/^-/\t/;
+		warn "\n$t\n\n";
+	    } else {
+		warn "\nNext step:\n\n\t$_\n\n";
+	    }
+	    if (exists $steps{$_}) {
+		my $d = `cbdstash.plx dir`;
+		xsystem "echo $_ >$d/next";
+	    }
+	}
+    } else {
+	my $d = `cbdstash.plx dir`;
+	my @n = `cat $d/next`;
+	if ($#n >= 0) {
+	    cbd_next(@n);
 	}
     }
     exit 0;
@@ -237,6 +256,14 @@ sub cbd_object {
 	$object = 'culled';
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
+    }
+}
+
+sub cbd_test_ok {
+    my $d = `cbdstash.plx dir`;
+    if (-r "$d/needs_ok") {
+	warn "$0: please do `cbd ok' to confirm you have reviewed the $phase log before proceeding\n";
+	cbd_next();
     }
 }
 
@@ -420,6 +447,7 @@ sub make {
 sub ok {
     my $d = `cbdstash.plx dir`;
     xsystem 'rm', '-f', "$d/needs_ok";
+    
 }
 
 sub stash {
