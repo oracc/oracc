@@ -70,7 +70,7 @@ if ($arg1) {
 		}
 	    }
 	}
-	unless ($arg1 eq 'init' or $arg1 eq 'help') {
+	unless ($arg1 eq 'dir' || $arg1 eq 'init' || $arg1 eq 'help') {
 	    status_load();
 	    $lang = $status{'#current'} unless $arg1 eq 'status' && $arg2 && $arg2 eq '#current';
 	}
@@ -342,12 +342,19 @@ sub stash {
 
 sub stashdir {
     my $iso = stashiso();
-    "00etc/stash/$iso";
+    if ($iso) {
+	"00etc/stash/$iso";
+    } else {
+	'';
+    }
 }
 
 sub stashiso {
-    my $iso = `ls 00etc/stash | tail -1`;
-    chomp $iso;
+    my $iso = undef;
+    if (-r '00etc/stash') {
+	$iso = `ls 00etc/stash | tail -1`;
+	chomp $iso;
+    }
     return $iso;
 }
 

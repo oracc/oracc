@@ -26,7 +26,7 @@ my %commands = (
 
 my %steps = ();
 my @steps = (
-    "cbd init",
+    "cbd init [LANG]",
     "cbd align entries",
     "cbd ok",
     "cbd apply",
@@ -180,14 +180,57 @@ sub args_config {
 
 sub args_process {
     foreach my $a (@ARGV) {
-	if (exists $verbs{$a} && !$verb) {
-	    $verb = $a;
-	} elsif (exists $objects{$a} && !$object) {
-	    $object = $a;
-	} elsif ($a =~ /^[a-z]{3}(?:-x-[a-z]{6})?$/ && !$lang) {
-	    $lang = $a;
+	if ($a eq '.') {
+	    my $d = `cbdstash.plx dir`;
+	    if ($d) {
+		my @n = ();
+		if (-r "$d/next") {
+		    @n = `cat $d/next`; chomp @n;
+		}
+		if ($n[0]) {
+		    cbd_next(@n);
+		} else {
+		    die "$0: no alignment in process; use cbd init [LANG] to begin alignment\n";		    
+		}
+	    } else {
+		die "$0: no alignment in process; use cbd init [LANG] to begin alignment\n";		    
+	    }
+	} elsif ($a eq '-') {
+	    my $d = `cbdstash.plx dir`;
+	    if ($d) {
+		my @n = `cat $d/next`; chomp @n;
+		die "$0: - executing @n\n"
+	    } else {
+		die "$0: no next command; use cbd init [LANG] to begin alignment\n";
+	    }
+	} elsif ($a eq '=') {
+	    my $d = `cbdstash.plx dir`;
+	    my @n = ();
+	    if ($d) {
+		@n = `cat $d/next`; chomp @n;
+		$n[0] = "$steps[0]" unless $n[0];
+	    } else {
+		@n = ('cbd init');
+		print("$0: no alignment in progress\n");
+	    }
+	    print "\n";
+	    foreach my $s (@steps) {
+		if ($s =~ /^$n[0]/) {
+		    print ">>>\t$s\n";
+		} else {
+		    print "\t$s\n";
+		}
+	    }
 	} else {
-	    cbd_die("unknown argument '$a'");
+	    if (exists $verbs{$a} && !$verb) {
+		$verb = $a;
+	    } elsif (exists $objects{$a} && !$object) {
+		$object = $a;
+	    } elsif ($a =~ /^[a-z]{3}(?:-x-[a-z]{6})?$/ && !$lang) {
+		$lang = $a;
+	    } else {
+		cbd_die("unknown argument '$a'");
+	    }
 	}
     }
     cbd_die "Exiting because arguments are incorrect."
@@ -232,7 +275,7 @@ sub cbd_next {
 	}
     } else {
 	my $d = `cbdstash.plx dir`;
-	my @n = `cat $d/next`;
+	my @n = `cat $d/next`; chomp @n;
 	if ($#n >= 0) {
 	    cbd_next(@n);
 	}
@@ -410,6 +453,12 @@ Try:
 	cbd help align|check|stash|update
 
 for more information.
+
+To see next operation:\tcbd .
+
+To see progress:\tcbd =
+
+To run next command:\tcbd -
 
 EOF
 
