@@ -225,17 +225,29 @@ sub phase_save {
 	    unless $repeat;
 	if ($p eq 'culled') {
 	    if (-r "$lang-culled-forms.glo" && -r "$lang-culled-bases.glo") {
-		system 'cp', '-va', "$lang-culled-forms.glo", $d;
-		system 'cp', '-va', "$lang-culled-bases.glo", $d;
-		system 'cp', '-va', "$lang-culled-bases.glo", "00lib/$lang.glo";
+		if (-s "$lang-culled-forms.glo" && -s "$lang-culled-bases.glo") {
+		    system 'cp', '-va', "$lang-culled-forms.glo", $d;
+		    system 'cp', '-va', "$lang-culled-bases.glo", $d;
+		    system 'cp', '-va', "$lang-culled-bases.glo", "00lib/$lang.glo";
+		} else {
+		    die "$0: either of $lang-culled-forms.glo or $lang-culled-bases.glo is empty. Stop\n";
+		}
 	    }
 	} else {
 	    if (-r "$lang-$p-aligned.glo") { # there isn't an aligned glo for bases or fixed
-		system 'cp', '-va', "$lang-$p-aligned.glo", $d;
-	    }
+		if (-s "$lang-$p-edited.glo") {
+		    system 'cp', '-va', "$lang-$p-aligned.glo", $d;
+		} else {
+		    die "$0: $lang-$p-aligned.glo is empty. Stop.\n";
+		}
+	    }		
 	    if (-r "$lang-$p-edited.glo") { # there isn't an edited glo for fixed
-		system 'cp', '-va', "$lang-$p-edited.glo", $d;
-		system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+		if (-s "$lang-$p-edited.glo") {
+		    system 'cp', '-va', "$lang-$p-edited.glo", $d;
+		    system 'cp', '-va', "$lang-$p-edited.glo", "00lib/$lang.glo";
+		} else {
+		    die "$0: $lang-$p-edited.glo is empty. Stop.\n";
+		}
 	    }
 	    system 'cp', '-va', "00lib/$lang.glo", $d;
 	}

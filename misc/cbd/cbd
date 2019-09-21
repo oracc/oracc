@@ -37,13 +37,12 @@ my @steps = (
     "cbd apply",
     "cbd edit",
     "cbd stash",
-    "cbd align bases",
-    "cbd ok",
+    "cbd fix",
     "cbd stash",
     "cbd cull forms",
     "cbd cull bases",
     "cbd stash",
-    "cbd fix",
+    "cbd align bases",
     "cbd ok",
     "cbd stash",
     "cbd merge",
@@ -89,7 +88,10 @@ args_sanity();
 my $verb = '';
 my $object = '';
 my $lang = '';
+my $equals_object = '';
+my $needok = 0;
 my $nohelp = 0;
+my $nonext = 0;
 my $phase = '';
 my $verbose = 1;
 
@@ -115,11 +117,11 @@ sub align {
 	    $nxt=" and/or 'base-check.log'";
 	}
 	
-	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";	
+	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";
+	++$needok;
 	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary",
 		 ($object eq 'senses' ? "-To see the senses most likely to need fixing say: grep '\\[[34]\\]' senses.log" : ''),
 		 "cbd apply");
-	cbd_needs_ok();
     } else {
 	++$nohelp; cbd_die("cbd align $object failed. Stop");
     }
@@ -142,7 +144,7 @@ sub apply {
 
     xsystem "cbdalign${object}.plx", '-apply', "00lib/$lang.glo";
     if ($object eq 'bases') {
-	cbd_next("cbd stash bases");
+	cbd_next("cbd stash");
     } else {
 	cbd_next("cbd edit");
     }
@@ -188,7 +190,7 @@ sub args_process {
 		    @n = `cat $d/next`; chomp @n;
 		}
 		if ($n[0]) {
-		    cbd_next(@n);
+		    ++$nonext; cbd_next(@n);
 		} else {
 		    die "$0: no alignment in process; use cbd init [LANG] to begin alignment\n";		    
 		}
@@ -198,8 +200,12 @@ sub args_process {
 	} elsif ($a eq '-') {
 	    my $d = `cbdstash.plx dir`;
 	    if ($d) {
-		my @n = `cat $d/next`; chomp @n;
-		die "$0: - executing @n\n"
+		my @n = ();
+		if (-r "$d/next") {
+		    @n = `cat $d/next`; chomp @n;
+		}
+		die "$0: failed to exec @n\n"
+		    unless exec @n;
 	    } else {
 		die "$0: no next command; use cbd init [LANG] to begin alignment\n";
 	    }
@@ -207,20 +213,32 @@ sub args_process {
 	    my $d = `cbdstash.plx dir`;
 	    my @n = ();
 	    if ($d) {
-		@n = `cat $d/next`; chomp @n;
-		$n[0] = "$steps[0]" unless $n[0];
+		if (-r "$d/next") {
+		    @n = `cat $d/next`; chomp @n;
+		    $phase = `cbdstash.plx status $lang`;
+		    cbd_object();
+		    $object = $equals_object if $equals_object; # we want to trigger >>> after equals_object
+		} else {
+		    $n[0] = "$steps[0]" unless $n[0];
+		    $object = '';
+		}
 	    } else {
 		@n = ('cbd init');
 		print("$0: no alignment in progress\n");
 	    }
+	    my $found_object = 0;
 	    print "\n";
 	    foreach my $s (@steps) {
-		if ($s =~ /^$n[0]/) {
+		++$found_object if $s =~ /$object/;
+		if ($found_object && $s =~ /^$n[0]/) {
 		    print ">>>\t$s\n";
+		    $found_object = 0;
 		} else {
 		    print "\t$s\n";
 		}
 	    }
+	    print "\n";
+	    exit 0;
 	} else {
 	    if (exists $verbs{$a} && !$verb) {
 		$verb = $a;
@@ -259,7 +277,7 @@ sub cbd_die {
 }
 
 sub cbd_next {
-    if ($#_ >0) {
+    if ($#_ >= 0) {
         foreach (@_) {
 	    next unless length;
 	    if (/^-/) {
@@ -268,18 +286,22 @@ sub cbd_next {
 	    } else {
 		warn "\nNext step:\n\n\t$_\n\n";
 	    }
-	    if (exists $steps{$_}) {
+	    if (!$nonext && exists $steps{$_}) {
 		my $d = `cbdstash.plx dir`;
-		xsystem "echo $_ >$d/next";
+		system "echo $_ >$d/next";
 	    }
 	}
     } else {
 	my $d = `cbdstash.plx dir`;
-	my @n = `cat $d/next`; chomp @n;
+	my @n = ();
+	if (-r "$d/next") {
+	    @n = `cat $d/next`; chomp @n;
+	}
 	if ($#n >= 0) {
 	    cbd_next(@n);
 	}
     }
+    cbd_needs_ok() if $needok;
     exit 0;
 }
 
@@ -293,10 +315,13 @@ sub cbd_object {
 	$object = 'entries';
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
+    } elsif ($phase eq 'senses') {
+	$object = 'fixed';
+    } elsif ($phase eq 'fixed') {
+	$equals_object = 'fix';
+	$object = 'culled';
     } elsif ($phase eq 'culled') {
 	$object = 'bases';
-    } elsif ($phase eq 'fixed') {
-	$object = 'culled';
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
     }
@@ -349,12 +374,18 @@ sub cull {
 	    if (-r "$lang-culled-forms.glo") {
 		## do the cbd cull bases operation
 		xsystem "bases-cull-zero.plx $lang-culled-forms.glo >$lang-culled-bases.glo";
-		cbd_next("cbd stash cull");
+		if ($?) {
+		    ++$nohelp; cbd_die("cbd cull bases failed. Stop");
+		}
+		cbd_next("cbd stash");
 	    } else {
 		cbd_die "you must do cbd cull forms before cbd cull bases";
 	    }
 	} else {
 	    xsystem "forms-cull-zero.plx 00lib/$lang.glo >$lang-culled-forms.glo";
+	    if ($?) {
+		++$nohelp; cbd_die("cbd cull forms failed. Stop");
+	    }
 	    cbd_next("cbd cull bases");
 	}
     } else {
@@ -370,10 +401,10 @@ sub edit {
     my $next = '';
     if ($phase eq 'init') {
 	$object = 'entries';
-	$next = 'cbd stash entries';
+	$next = 'cbd stash';
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
-	$next = 'cbd stash senses';
+	$next = 'cbd stash';
     } else {
 	cbd_die "cbd edit only works when current phase is 'init' or 'entries', not '$object'";
     }
@@ -397,7 +428,7 @@ sub fix {
 		warn "? = $?\n";
 		if (($?>>8) == 2) {
 		    cbd_warn "no corpus fixes identified in this cbd fix operation";
-		    cbd_next "cbd stash fixed";
+		    cbd_next "cbd stash";
 		} else {
 		    cbd_die "inst-fix-tab.plx failed";
 		}
@@ -406,8 +437,10 @@ sub fix {
 		## apply the fix tab
 		## next=check the corpus and fix it manually until it's aligned w glossaries
 		## next-next=cbd stash fixed
+		## cbd_next "cbd stash";
 	    }
 	}
+	
     } else {
 	cbd_die "you must do cbd stash senses before cbd fix";
     }
@@ -520,7 +553,7 @@ sub stash {
 	    } elsif ($a eq 'fixed') {
 		cbd_next("cbd cull forms");
 	    } elsif ($next eq 'fixed') {
-		cbd_next("cbd fix");
+		cbd_next("cbd fix"); # if the next stash is 'fixed' we need 'cbd fix' to happen first
 	    } else {
 		cbd_next("cbd align $next");
 	    }
