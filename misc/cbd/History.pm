@@ -2,13 +2,16 @@ package ORACC::CBD::History;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/history history_init history_term history_map history_trim/;
+@EXPORT = qw/history history_init history_term history_map history_trim history_all 
+    history_all_init history_all_term history_guess/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
+
+my %history = ();
 
 sub history {
     my($l,$e,$s,$to) = @_;
@@ -23,6 +26,29 @@ sub history_init {
 
 sub history_term {
     close(H);
+}
+
+sub history_all_init {
+    %history = history_map("$ENV{'ORACC_BUILDS'}/epsd2/00etc/history.all");
+    print Dumper \%history;
+}
+sub history_all_term {
+    %history = ();
+}
+
+sub history_guess {
+    my $g = shift;
+    $g =~ s/\s*\[(.*?)\]\s*/[$1]/;
+    my %seen = ();
+    while ($history{$g}) {
+	$g = $history{$g};
+	if ($seen{$g}++) {
+	    warn "$0: detected map loop with $g\n";
+	    last;
+	}
+    }
+    $g =~ s/\s*\[(.*?)\]\s*/ [$1] /;
+    $g;
 }
 
 sub history_trim {
@@ -43,7 +69,6 @@ sub history_trim {
     history_dump(reverse @n);
 }
 
-
 # History file format is tabbed list:
 #
 #   DATE LANG CFGWPOS SENSE NEW
@@ -53,7 +78,7 @@ sub history_trim {
 #
 sub history_map {
     my %h = ();
-    my @h = history_load();
+    my @h = history_load(@_);
     my %new_ent = ();
     foreach (@h) {
 	my @f = split(/\t/,$_);
@@ -94,7 +119,8 @@ sub history_map {
 }
 
 sub history_load {
-    open(H, '00etc/history.edit') || die "$0: no history in 00etc/history.edit. Stop\n";
+    my $histfile = shift || '00etc/history.edit';
+    open(H, $histfile) || die "$0: no history in $histfile. Stop\n";
     my @h = (<H>); chomp @h;
     close(H);
     @h;

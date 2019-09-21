@@ -10,6 +10,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Forms;
+use ORACC::CBD::History;
 use ORACC::CBD::Senses;
 use ORACC::SL::BaseC;
 use Data::Dumper;
@@ -20,6 +21,13 @@ sub guess_entry {
     my($entry,$bix,$cix) = @_;
 
     print G "===\nentering guess_entry for '$entry'\n" if $guess_trace;
+
+    #let's see if we've done this one before in the history of cbd edit
+    my $g = history_guess($entry);
+    if ($g ne $entry) {
+	print G "returning via history\n===\n" if $guess_trace;
+	return '#history', $g;
+    }
     
     my $e_no_pos = $entry; $e_no_pos =~ s/\].*$/]/;
 
@@ -92,6 +100,8 @@ sub guess_init {
     my %cix = ();
     my %ix = ();
 
+    history_all_init();
+    
     if ($guess_trace) {
 	open(G, '>guess.log');
     }

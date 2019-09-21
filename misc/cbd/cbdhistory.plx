@@ -5,6 +5,13 @@ use lib "$ENV{'ORACC'}/lib";
 use Data::Dumper;
 use ORACC::CBD::History;
 
-history_trim();
+if ($#ARGV >= 0) {
+    my $g = "@ARGV";
+    history_all_init();
+    my $m = history_guess($g);
+    print "$g => $m\n";
+} else {
+    history_trim();
+}
 
 1;
