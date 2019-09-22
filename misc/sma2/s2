@@ -1,0 +1,2 @@
+#!/bin/sh
+sma2.plx -extended -no-external-bases -lemma $1 -base $2 -form $3

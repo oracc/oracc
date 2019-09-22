@@ -1,0 +1,50 @@
+vpr
+
+₁0	IND
+₁nu	NEG
+₁bara	M1
+₁ga	M2
+₁ha	M3
+₁na	M4
+₁nuš	M5
+₁u	M6
+₁ša	M7
+
+₂inga	CNJ
+
+₃mu	C1
+₃ba	C2
+₃V	C3
+₃Vmma	C4
+₃al	C5
+
+₄a	D1s
+₄ra	D2s
+₄na	D3s
+₄me	D1p
+₄ne	D3p
+
+₅m	Pm
+₅e	P2
+₅n	P3a
+₅b	P3i
+
+₆da	COM
+
+₇m	Pm
+₇e	P2
+₇n	P3a
+₇b	P3i
+
+₈ši	ALL
+₈ta	ABL
+
+₉ni	L0C0
+₉a	L0C1
+₉i	L0C2
+
+₁₀m	Pm
+₁₀e	P2
+₁₀en	P0	for 1p use P0-1 for 2p use P0-2
+₁₀n	P3a
+₁₀b	P3i

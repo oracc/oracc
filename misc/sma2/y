@@ -1,0 +1,90 @@
+$VAR1 = {
+          'ambig' => [
+                       0
+                     ],
+          'graph' => [
+                       undef,
+                       'ha',
+                       undef,
+                       'ha'
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     undef,
+                     'V'
+                   ],
+          'post_vpr' => 1
+        };
+$VAR1 = {
+          'ambig' => [
+                       0
+                     ],
+          'graph' => [
+                       undef,
+                       'ha',
+                       undef,
+                       'ha'
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     undef,
+                     'V'
+                   ],
+          'post_vpr' => 1
+        };
+$VAR1 = {
+          'ambig' => [
+                       0
+                     ],
+          'graph' => [
+                       undef,
+                       'ha',
+                       undef,
+                       'ha'
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     undef,
+                     'V'
+                   ],
+          'post_vpr' => 1
+        };
+$VAR1 = {
+          'ambig' => [
+                       0
+                     ],
+          'graph' => [
+                       undef,
+                       'ha',
+                       undef,
+                       'ha'
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     undef,
+                     'V'
+                   ],
+          'post_vpr' => 1
+        };
+$VAR1 = {
+          'ambig' => [
+                       0
+                     ],
+          'graph' => [
+                       undef,
+                       'ha',
+                       undef,
+                       'ha'
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     undef,
+                     'V'
+                   ],
+          'post_vpr' => 1
+        };

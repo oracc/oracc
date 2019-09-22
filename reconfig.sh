@@ -6,5 +6,5 @@ autoheader
 automake
 autoconf
 ./configure --prefix=$ORACC
-make CFLAGS=-g
+#make CFLAGS=-g
 #make install

@@ -1,0 +1,3 @@
+Use of uninitialized value in pattern match (m//) at /usr/local/share/cdl/lib/CDL/SSA/Phrasal.pm line 207.
+Use of uninitialized value in pattern match (m//) at /usr/local/share/cdl/lib/CDL/SSA/Phrasal.pm line 203.
+Can't call method "isa" on unblessed reference at /usr/local/share/cdl/lib/CDL/SSA/Phrasal.pm line 3172.

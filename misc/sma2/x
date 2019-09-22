@@ -1,0 +1,13 @@
+cp passed:  :: mu :: 0 :: mu :: in :: 
+cp_pair: passed mu in 
+cp passed:  :: mu :: 0 :: mu :: in :: 
+cp_pair: passed mu in 
+cp passed:  :: mu :: 0 :: mu :: in :: 
+cp_pair: passed mu in 
+cp passed:  :: mu :: 0 :: mu :: in :: 
+cp_pair: passed mu in 
+cp passed:  :: mu :: 0 :: mu :: in :: du
+cp_pair: passed mu in du
+cp passed:  :: mu :: 0 :: mu :: in
+cp_pair: passed mu in in
+sma:0: no parse for mu-in-du du[go]V/i du

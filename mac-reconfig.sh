@@ -6,5 +6,5 @@ autoheader
 automake
 autoconf
 ./configure --prefix=/Users/stinney/orc
-make
-make install
+#make
+#make install

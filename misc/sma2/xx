@@ -1,0 +1,48 @@
+$VAR1 = {
+          'graph' => [
+                       undef,
+                       [
+                         "he\x{2082}",
+                         0
+                       ],
+                       [
+                         'en-ga',
+                         1,
+                         2
+                       ],
+                       [
+                         'mu',
+                         3
+                       ],
+                       undef,
+                       undef,
+                       undef,
+                       undef,
+                       undef,
+                       [
+                         'i(n)',
+                         4
+                       ],
+                       [
+                         '(i)n',
+                         4
+                       ]
+                     ],
+          'ambig' => [
+                       0
+                     ],
+          'vpr' => [
+                     undef,
+                     'ha',
+                     'inga',
+                     'mu',
+                     undef,
+                     undef,
+                     undef,
+                     undef,
+                     undef,
+                     'i',
+                     'n'
+                   ],
+          'post_vpr' => 5
+        };

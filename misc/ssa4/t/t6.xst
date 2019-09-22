@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<units xml:id="" n="T1" xmlns="http://emegir.info/syntax-tree"
+><unit n="T1, 1 - 8" u="0" ref="X121212.U0"
+><struct id="X121212.U0.s0"><feat type="syn-cat">S</feat
+><feat type="stype">MAT</feat
+><struct id="X121212.U0.s1"><feat type="syn-cat">NP</feat
+><feat type="genitive">GEN</feat
+><feat type="left-dislocated">LFD</feat
+><feat type="index">1</feat
+><struct id="X121212.U0.s2"><feat type="syn-cat">NP</feat
+><struct id="X121212.U0.s3"><feat type="ms-cat">N</feat
+><seg target="X121212.1.1"/><data><item>lu</item><gloss>person</gloss><orth>lu₂</orth></data
+></struct
+><struct id="X121212.U0.s4"><feat type="syn-cat">S</feat
+><feat type="stype">REL</feat
+><struct id="X121212.U0.s5"><feat type="ms-cat">RPRO</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+><struct id="X121212.U0.s6"><feat type="syn-cat">S</feat
+><feat type="stype">SUB</feat
+><struct id="X121212.U0.s7"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s8"><feat type="ms-cat">*T*</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s9"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABL</feat
+><struct id="X121212.U0.s10"><feat type="ms-cat">TN</feat
+><seg target="X121212.1.2"/><data><item>Eanak</item><gloss>1</gloss><orth>e₂-an-na</orth></data
+></struct
+><struct id="X121212.U0.s11"><feat type="ms-cat">ABL</feat
+><seg target="X121212.1.2"/><data><item>ta</item></data
+></struct
+></struct><struct id="X121212.U0.s12"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s13"><feat type="ms-cat">0</feat
+><seg target="#N"/><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s14"><feat type="syn-cat">VC</feat
+><feat type="finiteness">F</feat
+><struct id="X121212.U0.s15"><feat type="ms-cat">CN</feat
+><seg target="X121212.2.1"/><data><item>V</item><orth>e₃</orth></data
+></struct
+><struct id="X121212.U0.s16"><feat type="ms-cat">P2</feat
+><seg target="X121212.2.1"/><data><item>b</item></data
+></struct
+><struct id="X121212.U0.s17"><feat type="ms-cat">ABL</feat
+><seg target="X121212.2.1"/><data><item>ta</item></data
+></struct
+><struct id="X121212.U0.s18"><feat type="ms-cat">P1</feat
+><seg target="X121212.2.1"/><data><item>b</item></data
+></struct
+><struct id="X121212.U0.s19"><feat type="ms-cat">V</feat
+><seg target="X121212.2.1"/><data><item>e</item><gloss>leave</gloss><orth>e₃</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s20"><feat type="ms-cat">NOM</feat
+><seg target="X121212.2.1"/><data><item>a</item><orth>e₃</orth></data
+></struct
+></struct><struct id="X121212.U0.s21"><feat type="syn-cat">S</feat
+><feat type="stype">REL</feat
+><feat type="parenthetic">PRN</feat
+><struct id="X121212.U0.s22"><feat type="ms-cat">RPRO</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+><struct id="X121212.U0.s23"><feat type="syn-cat">S</feat
+><feat type="stype">SUB</feat
+><struct id="X121212.U0.s24"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s25"><feat type="ms-cat">*T*</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s26"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s27"><feat type="ms-cat">0</feat
+><seg target="#N"/><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s28"><feat type="syn-cat">VC</feat
+><feat type="finiteness">F</feat
+><struct id="X121212.U0.s29"><feat type="ms-cat">CN</feat
+><seg target="X121212.3.1"/><data><item>V</item><orth>zi</orth></data
+></struct
+><struct id="X121212.U0.s30"><feat type="ms-cat">P1</feat
+><seg target="X121212.3.1"/><data><item>b</item></data
+></struct
+><struct id="X121212.U0.s31"><feat type="ms-cat">V</feat
+><seg target="X121212.3.1"/><data><item>zir</item><gloss>break</gloss><orth>zi</orth></data
+></struct
+><struct id="X121212.U0.s32"><feat type="ms-cat">E</feat
+><seg target="X121212.3.1"/><data><item>e</item></data
+></struct
+></struct></struct><struct id="X121212.U0.s33"><feat type="ms-cat">NOM</feat
+><seg target="X121212.3.1"/><data><item>a</item><orth>zi</orth></data
+></struct
+></struct><struct id="X121212.U0.s34"><feat type="syn-cat">S</feat
+><feat type="stype">REL</feat
+><feat type="parenthetic">PRN</feat
+><struct id="X121212.U0.s35"><feat type="ms-cat">RPRO</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+><struct id="X121212.U0.s36"><feat type="syn-cat">S</feat
+><feat type="stype">SUB</feat
+><struct id="X121212.U0.s37"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s38"><feat type="ms-cat">*T*</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s39"><feat type="syn-cat">NP</feat
+><feat type="ms-case">LOC</feat
+><struct id="X121212.U0.s40"><feat type="syn-cat">NP</feat
+><feat type="possessive">POS</feat
+><struct id="X121212.U0.s41"><feat type="syn-cat">NP</feat
+><feat type="genitive">GEN</feat
+><struct id="X121212.U0.s42"><feat type="ms-cat">N</feat
+><seg target="X121212.4.1"/><data><item>musara</item><gloss>inscription</gloss><orth>mu-sar</orth></data
+></struct
+><struct id="X121212.U0.s43"><feat type="ms-cat">GEN</feat
+><seg target="X121212.4.1"/><data><item>ak</item><orth>mu-sar</orth></data
+></struct
+></struct><struct id="X121212.U0.s44"><feat type="ms-cat">POS</feat
+><seg target="X121212.4.1"/><data><item>bi</item></data
+></struct
+></struct><struct id="X121212.U0.s45"><feat type="ms-cat">LOC</feat
+><seg target="X121212.4.1"/><data><item>a</item></data
+></struct
+></struct><struct id="X121212.U0.s46"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s47"><feat type="ms-cat">N</feat
+><seg target="X121212.4.2"/><data><item>šu</item><gloss>hand</gloss><orth>šu</orth></data
+></struct
+></struct><struct id="X121212.U0.s48"><feat type="syn-cat">VC</feat
+><feat type="finiteness">F</feat
+><struct id="X121212.U0.s49"><feat type="ms-cat">CN</feat
+><seg target="X121212.4.3"/><data><item>ba</item><orth>ur₃</orth></data
+></struct
+><struct id="X121212.U0.s50"><feat type="ms-cat">LT</feat
+><seg target="X121212.4.3"/><data><item>i</item></data
+></struct
+><struct id="X121212.U0.s51"><feat type="ms-cat">P1</feat
+><seg target="X121212.4.3"/><data><item>b</item></data
+></struct
+><struct id="X121212.U0.s52"><feat type="ms-cat">V</feat
+><seg target="X121212.4.3"/><data><item>ur</item><gloss>drag</gloss><orth>ur₃</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s53"><feat type="ms-cat">NOM</feat
+><seg target="X121212.4.3"/><data><item>a</item><orth>ur₃</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s54"><feat type="ms-cat">GEN</feat
+><seg target="X121212.4.3"/><data><item>*</item><orth>ur₃</orth></data
+></struct
+></struct><struct id="X121212.U0.s55"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s56"><feat type="ms-cat">DN</feat
+><seg target="X121212.5.1"/><data><item>Inanak</item><gloss>1</gloss><orth>{d}inana</orth></data
+></struct
+><struct id="X121212.U0.s57"><feat type="syn-cat">NP</feat
+><feat type="parenthetic">PRN</feat
+><struct id="X121212.U0.s58"><feat type="ms-cat">N</feat
+><seg target="X121212.6.1"/><data><item>nin</item><gloss>lady</gloss><orth>nin</orth></data
+></struct
+><struct id="X121212.U0.s59"><feat type="syn-cat">NP</feat
+><feat type="genitive">GEN</feat
+><struct id="X121212.U0.s60"><feat type="ms-cat">N</feat
+><seg target="X121212.6.2"/><data><item>kur</item><gloss>mountain</gloss><orth>kur-kur</orth></data
+></struct
+><struct id="X121212.U0.s61"><feat type="ms-cat">GEN</feat
+><seg target="X121212.6.2"/><data><item>ak</item><orth>kur-kur</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s62"><feat type="ms-cat">ERG</feat
+><seg target="X121212.6.2"/><data><item>e</item></data
+></struct
+></struct><struct id="X121212.U0.s63"><feat type="syn-cat">NP</feat
+><feat type="ms-case">LT</feat
+><struct id="X121212.U0.s64"><feat type="syn-cat">NP</feat
+><feat type="possessive">POS</feat
+><struct id="X121212.U0.s65"><feat type="ms-cat">N</feat
+><seg target="X121212.7.1"/><data><item>saŋ</item><gloss>head</gloss><orth>saŋ</orth></data
+></struct
+><struct id="X121212.U0.s66"><feat type="ms-cat">POS</feat
+><feat type="resumptive">1</feat
+><seg target="X121212.7.1"/><data><item>ani</item></data
+></struct
+></struct><struct id="X121212.U0.s67"><feat type="ms-cat">LT</feat
+><seg target="X121212.7.1"/><data><item>eL</item></data
+></struct
+></struct><struct id="X121212.U0.s68"><feat type="syn-cat">NP</feat
+><feat type="ms-case">LOC</feat
+><struct id="X121212.U0.s69"><feat type="ms-cat">N</feat
+><seg target="X121212.7.2"/><data><item>unkin</item><gloss>assembly</gloss><orth>unken-na\a</orth></data
+></struct
+><struct id="X121212.U0.s70"><feat type="ms-cat">LOC</feat
+><seg target="X121212.7.2"/><data><item>a</item></data
+></struct
+></struct><struct id="X121212.U0.s71"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s72"><feat type="ms-cat">N</feat
+><seg target="X121212.8.1"/><data><item>nam</item><gloss>fate</gloss><orth>nam</orth></data
+></struct
+></struct><struct id="X121212.U0.s73"><feat type="syn-cat">VC</feat
+><feat type="finiteness">F</feat
+><struct id="X121212.U0.s74"><feat type="ms-cat">MD</feat
+><seg target="X121212.8.2"/><data><item>ha</item></data
+></struct
+><struct id="X121212.U0.s75"><feat type="ms-cat">CN</feat
+><seg target="X121212.8.2"/><data><item>mu</item><orth>kud</orth></data
+></struct
+><struct id="X121212.U0.s76"><feat type="ms-cat">LOC</feat
+><seg target="X121212.8.2"/><data><item>a</item></data
+></struct
+><struct id="X121212.U0.s77"><feat type="ms-cat">V</feat
+><seg target="X121212.8.2"/><data><item>kud</item><gloss>cut</gloss><orth>kud</orth></data
+></struct
+><struct id="X121212.U0.s78"><feat type="ms-cat">E</feat
+><seg target="X121212.8.2"/><data><item>e</item></data
+></struct
+></struct></struct></unit></units>

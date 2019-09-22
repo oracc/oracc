@@ -191,6 +191,7 @@ AC_OUTPUT([Makefile
 	misc/se/Makefile
 	misc/sl/Makefile
 	misc/sma/Makefile
+	misc/sma2/Makefile
 	misc/ssa3/Makefile
 	misc/system/Makefile
 	misc/tei/Makefile

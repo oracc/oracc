@@ -46,6 +46,7 @@ SUBDIRS = \
 	se \
 	sl \
 	sma \
+	sma2 \
 	ssa3 \
 	system \
 	tei \

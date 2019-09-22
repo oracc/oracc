@@ -1,0 +1,43 @@
+# List of N N modifier pairs; default is to assume post-mod
+# for pre-mod put '+' before first element
+#
+# input must be a list of pairs of ePSD CFGWs; proper nouns should
+# not have a guideword element
+
+e[house] ub[corner]
+
+šita[weapon] saŋ[head]
+šita[weapon] ur[lion]
+ur[lion] saŋ[head]
+
+aga[rear] eren[cedar]
+
+eš[shrine] Bagara[1]
+eš[shrine] Gutur[1]
+eš[shrine] Nibru[1]
+e[house] Ŋirsu[1]
+eš[shrine] Ŋirsu[1]
+gu[neck] Idigna[1]
+iri[city] Ŋirsu[1]
+egal[palace] Tiraš[1]
+hursaŋ[mountain] Uringiriaz[1]
+hursaŋ[mountain] Magan[1]
+kur[foreign land] Magan[1]
+kur[mountain] Magan[1]
+kur[foreign land] Dilmun[1]
+abula[gate] Kasura[1]
+
+#a'abak[sea] iginim[upper land]
+
+i[oil] nun[prince]
+ir[scent] nun[prince]
+
+mu[name] gilsa[treasure]
+
+#gun[load] ŋeš[tree]
+#ma[ship] ŋeš[tree]
+
+kar[harbor] zagin[lapis lazuli]
+udu[sheep] i[oil]
+udu[sheep] nita[male]
+gur[unit] lugal[king]

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<units xml:id="" n="T1" xmlns="http://emegir.info/syntax-tree"
+><unit n="T1, 1 - 6" u="0" ref="X121212.U0"
+><struct id="X121212.U0.s0"><feat type="syn-cat">S</feat
+><feat type="stype">MAT</feat
+><struct id="X121212.U0.s1"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s2"><feat type="ms-cat">RN</feat
+><seg target="X121212.1.1"/><data><item>Gudea</item><gloss>1</gloss><orth>gu₃-de₂-a</orth></data
+></struct
+><struct id="X121212.U0.s3"><feat type="syn-cat">NP</feat
+><feat type="parenthetic">PRN</feat
+><struct id="X121212.U0.s4"><feat type="ms-cat">N</feat
+><seg target="X121212.2.1"/><data><item>ensik</item><gloss>ruler</gloss><orth>ensi₂</orth></data
+></struct
+><struct id="X121212.U0.s5"><feat type="syn-cat">NP</feat
+><feat type="genitive">GEN</feat
+><struct id="X121212.U0.s6"><feat type="ms-cat">SN</feat
+><seg target="X121212.3.1"/><data><item>Lagaš</item><gloss>1</gloss><orth>lagaš{ki}</orth></data
+></struct
+><struct id="X121212.U0.s7"><feat type="ms-cat">GEN</feat
+><seg target="X121212.3.1"/><data><item>*</item><orth>lagaš{ki}</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s8"><feat type="ms-cat">ERG</feat
+><seg target="X121212.3.1"/><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s9"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s10"><feat type="ms-cat">N</feat
+><seg target="X121212.4.1"/><data><item>lu</item><gloss>person</gloss><orth>lu₂</orth></data
+></struct
+><struct id="X121212.U0.s11"><feat type="syn-cat">S</feat
+><feat type="stype">REL</feat
+><struct id="X121212.U0.s12"><feat type="ms-cat">RPRO</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+><struct id="X121212.U0.s13"><feat type="syn-cat">S</feat
+><feat type="stype">SUB</feat
+><struct id="X121212.U0.s14"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ERG</feat
+><struct id="X121212.U0.s15"><feat type="ms-cat">*T*</feat
+><feat type="index">1</feat
+><data><item>*</item></data
+></struct
+></struct><struct id="X121212.U0.s16"><feat type="syn-cat">NP</feat
+><feat type="ms-case">ABS</feat
+><struct id="X121212.U0.s17"><feat type="ms-cat">TN</feat
+><seg target="X121212.4.2"/><data><item>Eninnu</item><gloss>1</gloss><orth>e₂-ninnu</orth></data
+></struct
+><struct id="X121212.U0.s18"><feat type="syn-cat">NP</feat
+><feat type="genitive">GEN</feat
+><struct id="X121212.U0.s19"><feat type="ms-cat">DN</feat
+><seg target="X121212.5.1"/><data><item>Ninŋirsuk</item><gloss>1</gloss><orth>{d}nin-ŋir₂-su</orth></data
+></struct
+><struct id="X121212.U0.s20"><feat type="ms-cat">GEN</feat
+><seg target="X121212.5.1"/><data><item>ak</item><orth>{d}nin-ŋir₂-su</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s21"><feat type="syn-cat">VC</feat
+><feat type="finiteness">F</feat
+><struct id="X121212.U0.s22"><feat type="ms-cat">CN</feat
+><seg target="X121212.6.1"/><data><item>V</item><orth>du₃</orth></data
+></struct
+><struct id="X121212.U0.s23"><feat type="ms-cat">P1</feat
+><seg target="X121212.6.1"/><data><item>n</item></data
+></struct
+><struct id="X121212.U0.s24"><feat type="ms-cat">V</feat
+><seg target="X121212.6.1"/><data><item>du</item><gloss>build</gloss><orth>du₃</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s25"><feat type="ms-cat">NOM</feat
+><seg target="X121212.6.1"/><data><item>a</item><orth>du₃</orth></data
+></struct
+></struct></struct><struct id="X121212.U0.s26"><feat type="ms-cat">COP</feat
+><seg target="X121212.6.1"/><data><item>*</item></data
+></struct
+></struct></unit></units>
