@@ -137,6 +137,87 @@ static int grapheme_id_index = 0;
 
 extern int use_unicode;
 
+static int nonw_id = 1;
+
+/* From https://www.geeksforgeeks.org/convert-base-decimal-vice-versa/
+   Function to convert a given decimal number to a base 'base'
+*/ 
+/* To return char for a value. For example '2' 
+    is returned for 2. 'A' is returned for 10. 'B' 
+    for 11 
+*/
+static char
+reVal(int num) 
+{ 
+  return (char)((num-1) + 'a'); 
+} 
+  
+/* Utility function to reverse a string */
+static void
+strev(char *str) 
+{ 
+    int len = strlen(str); 
+    int i; 
+    for (i = 0; i < len/2; i++) 
+    { 
+        char temp = str[i]; 
+        str[i] = str[len-i-1]; 
+        str[len-i-1] = temp;
+    } 
+}
+static char*
+fromDeci(char *res, int base, int inputNum) 
+{ 
+    int index = 0;  // Initialize index of result 
+  
+    // Convert input number is given base by repeatedly 
+    // dividing it by base and taking remainder 
+    while (inputNum > 0) 
+    { 
+        res[index++] = reVal(inputNum % base); 
+        inputNum /= base; 
+    } 
+    res[index] = '\0'; 
+  
+    // Reverse the result 
+    strev(res); 
+  
+    return res; 
+}
+
+static void
+set_nonw_id(struct node *wp)
+{
+  const unsigned char *p = NULL; 
+  char *p2 = NULL;
+  static char buf[10];
+
+  if (wp)
+    {
+      p = getAttr(wp,"xml:id");
+      if (p && strlen((char*)p))
+	{
+	  const unsigned char *ptmp = p + strlen((char*)p);
+	  while (ptmp > p)
+	    if (ptmp[-1] == '.')
+	      break;
+	    else
+	      --ptmp;
+	  --word_id; --word_id;
+	  /* This cast to char * from const is safe because the xml id is in a string pool */
+	  sprintf((char*)ptmp, "%d", word_id++);
+	  p2 = malloc(strlen((char*)p)+strlen(".aa")+1);
+	  sprintf(p2, "%s.%s", p, fromDeci(buf, 26, nonw_id++));
+	  setAttr(wp,a_xml_id,(const unsigned char*)p2);
+	  free(p2);
+	}
+      else
+	{
+	  fprintf(stderr, "%s:%d: attempt to reset never-set nonw_id\n", __FILE__, __LINE__);
+	}
+    }
+}
+
 static void
 vck(struct node *a, struct node *w)
 {
@@ -355,6 +436,8 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   if (verbose > 1)
     fprintf(stderr, "%d\n", lnum);
 
+  nonw_id = 1;
+  
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
   nfields = 0;
@@ -725,6 +808,7 @@ next_b_or_g(ssize_t tindex)
       if (pending_varo == 2) \
 	{ \
 	  struct node *np = elem(e_g_nonw,NULL,lnum,WORD); \
+	  set_nonw_id(np); \
 	  appendAttr(np,attr(a_type, ucc("vari"))); \
 	  appendChild(np,textNode((unsigned char*)(tokens[varo_tok]->data))); \
 	  appendChild(parent,np); \
@@ -737,8 +821,7 @@ maybeAppendXid(struct node *np, const char *id)
 {
   if (strncmp(id,"gdl",3) || !no_gdl_xids)
     appendAttr(np,attr(a_xml_id,ucc(id)));
-}
-		      
+}	      
 
 static struct node *
 init_word_func(struct node *parent, struct token *tp, 
@@ -1799,7 +1882,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    {
 		      struct node *f = firstChild(surro_node);
 		      if (f->children.lastused == 1)
-			setName(f,e_g_nonw);
+			{
+			  setName(f,e_g_nonw);
+			  set_nonw_id(f);
+			}
 		      else
 			{
 			  
@@ -2091,6 +2177,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		}
 	      sprintf(word_id_insertp, "%d", word_id++);
 	      maybeAppendXid(np,word_id_buf);
+	      set_nonw_id(np);
 	      if (*cued_opener)
 		{
 		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
@@ -2148,6 +2235,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (wp)
 		{
 		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
+		  set_nonw_id(np);
 		  appendAttr(np,attr(a_type, ucc("notelink")));
 		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
 		  note_register_tag(tokens[start]->data, np);
@@ -2367,6 +2455,7 @@ finish_word(struct node *wp)
     {
       wp->etype = e_g_nonw;
       wp->names = &enames[e_g_nonw];
+      set_nonw_id(wp);
       if (punct_word)
 	appendAttr(wp,attr(a_type,ucc("punct")));
       else if (word_init_mutex == exciso)

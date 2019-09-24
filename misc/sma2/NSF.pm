@@ -445,7 +445,21 @@ parse_nsf {
     }
 
     unless ($disambig eq 'a') {
-	$nsf[7] .= 'k' if $nsf[7] && $nsf[7] eq 'a';
+	if ($nsf[7] && $nsf[7] eq 'a') {
+	    my $tmp = $nx;
+	    $nsf[7] = undef;
+	    while ($tmp--) {
+		last if $nsf[$tmp];
+	    }
+	    if ($tmp <= 1) {
+		$nsf[1] = 'ak';
+	    } elsif ($tmp <= 5) {
+		$nsf[5] = 'ak';
+	    } else {
+		# leave it as 'a'
+		$nsf[7] = 'a';
+	    }
+	}
     }
 
     if ($g_index <= $#g) {

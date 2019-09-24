@@ -271,7 +271,7 @@ is_vpr {
     $last_vpr{'inter'} = [ @interslot ];
     $last_vpr{'ambig'} = $ambig_ref;
     @last_vpr{'graph','igraph'} = (g_data());
-    print Dumper \%last_vpr;
+#    print Dumper \%last_vpr;
     $ix;
 }
 
@@ -759,17 +759,18 @@ parse_vpr {
 	    $sreg = $g[$g_index];
 	    @breg = @b[$g_index,$g_index+1];
 	    @gix = ($g_index);
-	    warn "LOC2 from rest=i; sreg=$sreg\n";
+	    # warn "LOC2 from rest=i; sreg=$sreg\n";
 	    g_reg(9,[$sreg,\@breg,\@gix,(1)]);
 
 	    # delete ni after te/ti/de/di
 	    if ($g_index < $#g && $g[$g_index] eq 'ni') {
 		# need to record this in g_reg somehow
-		++$g_index;
+	#	++$g_index;
 	    }
 
 	    $vx = 10;
 	    $rest = '';
+	    # for bi₂-in-du g_index is currently at in already 
 	    ++$g_index; # this now passes the bi₂ vel sim
 	} elsif ($g[$g_index] eq 'a') {
 	    $vpr[9] = 'i';
@@ -784,6 +785,7 @@ parse_vpr {
 	    ) {
 #		 || ($g[$g_index] =~ /^n[ie]$dig*$/ 
 #		     && $g_index && $g[$g_index-1] =~ /i$dig*$/)) {
+
 	    $rest = $1 || '';
 	    $vpr[9] = 'i';
 	    $sreg = $g[$g_index];

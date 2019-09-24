@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8'; use utf8;
+
 use lib '@@ORACC@@/lib';
 use ORACC::SMA2::Base;
 use ORACC::SMA2::StripVPR;
@@ -23,6 +24,7 @@ my $output = '';
 my $project = 'epsd';
 my $sig_output = 0;
 my $slave = 0;
+my $tabbed = 0;
 my $V_hack_flag = 0;
 my $verbose = 0;
 my $with_id = 0;
@@ -44,11 +46,13 @@ GetOptions(
     "project:s"=>\$project,
     "sig"=>\$sig_output,
     "slave"=>\$slave,
+    "tab"=>\$tabbed,
     "try"=>\$ORACC::SMA2::try_only_zero,
     "verbose"=>\$verbose,
     "xli"=>\$xli,
     ) || pod2usage(1);
 
+Encode::_utf8_on($base) if $base;
 Encode::_utf8_on($form) if $form;
 Encode::_utf8_on($lemma) if $lemma;
 
@@ -57,6 +61,7 @@ binmode STDIN,  ':utf8';
 #binmode STDOUT, ':utf8';
 
 $ORACC::SMA2::verbose = $verbose;
+$tabbed = $ORACC::SMA2::extended;
 
 $| = 1;
 
@@ -339,7 +344,7 @@ t {
 		$wstr = "\@$project%sux:$f=$cfgw$stemstr/$newbase$base+$cont#$morph\n";
 	    } else {
 		if ($ORACC::SMA2::extended) {
-		    $wstr = "\@form $f=$l $stemstr/$newbase$base +$cont #$morph ##$morph2 #:$graph\n";
+		    $wstr = "$l\t$f\t$stemstr\t/$base\t+$cont\t#$morph\t##$morph2\t#:$graph\n";
 		} else {
 		    $wstr = "\@form $f=$l $stemstr/$newbase$base +$cont #$morph\n";
 		}
@@ -490,9 +495,9 @@ get_info {
     my ($cont,$morph,$graph,$m2) = ('0','','','');
     if ($p{'vpr'}) {
 	my $vpr_ref = $p{'vpr'};
-	$morph .= ORACC::SMA2::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'inter'});
+	$morph .= ORACC::SMA2::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'inter'},'vpr');
 	$morph .= ':';
-	$graph .= ORACC::SMA2::Display::gcat($$vpr_ref{'graph'},$$vpr_ref{'igraph'});
+	$graph .= ORACC::SMA2::Display::gcat($$vpr_ref{'graph'},$$vpr_ref{'igraph'},$base,'vpr');
     }
     $morph .= '~';
     if ($p{'vsf'}) {
@@ -503,19 +508,22 @@ get_info {
 	} else {
 	    $morph .= ';';
 	}
-	$morph .= ORACC::SMA2::Display::mcat($$vsf_ref{'vsf'});
+	$morph .= ORACC::SMA2::Display::mcat($$vsf_ref{'vsf'},$$vsf_ref{'inter'},'vsf');
+	$graph .= ORACC::SMA2::Display::gcat($$vsf_ref{'graph'},$$vsf_ref{'igraph'},$base,'vsf');
     }
     if ($p{'nsf'}) {
 	my $nsf_ref = $p{'nsf'};
 	$morph .= ',';
-	$morph .= ORACC::SMA2::Display::mcat($$nsf_ref{'nsf'});
+	$morph .= ORACC::SMA2::Display::mcat($$nsf_ref{'nsf'},$$nsf_ref{'inter'},'nsf');
 	$cont = ORACC::SMA2::Display::auslaut($$nsf_ref{'nsf'}) || '0';
+	$graph .= ORACC::SMA2::Display::gcat($$nsf_ref{'graph'},$$nsf_ref{'igraph'},$base,'nsf');
     }
     if ($p{'isf'}) {
 	my $isf_ref = $p{'isf'};
 	$morph .= '!';
-	$morph .= ORACC::SMA2::Display::mcat($$isf_ref{'isf'});
+	$morph .= ORACC::SMA2::Display::mcat($$isf_ref{'isf'},$$isf_ref{'inter'},'isf');
 	$cont = ORACC::SMA2::Display::auslaut($$isf_ref{'isf'}) || '0';
+	$graph .= ORACC::SMA2::Display::gcat($$isf_ref{'graph'},$$isf_ref{'igraph'},$base,'isf');
     }
     if ($cont && !$p{'backup'}) {
 	$cont =~ s/=/=+/;

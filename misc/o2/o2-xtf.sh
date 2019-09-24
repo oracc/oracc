@@ -42,6 +42,9 @@ else
     [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
 fi
 
+wid2err <01bld/lists/have-xtf.lst >01bld/wid2err.tab
+wid2lem <01bld/lists/have-lem.lst >01bld/wid2lem.tab
+
 o2-xtfindex.plx
 
 if [ -s 01bld/lists/xtfindex.lst ]; then

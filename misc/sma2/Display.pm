@@ -247,23 +247,23 @@ sem_sprint_chains {
 
 sub
 mcat {
-    my ($aref,$iref) = @_;
+    my ($aref,$iref,$type) = @_;
     my @m = @{$aref};
-    my @i = @{$iref};
+    my @i = $iref ? @{$iref} : '';
     shift @m;
     shift @i;
     if ($ORACC::SMA2::extended) {
 	my @n = ();
 	for (my $i = 0; $i <= $#m; ++$i) {
 	    if ($m[$i]) {
-		my $slot = sprintf("%d", $i+1);
+		my $slot = sprintf("%02d", $i+1);
 		$slot =~ tr/0-9/₀-₉/;
-		push @n, "$slot$m[$i]";
+		push @n, "$type$slot=$m[$i]";
 	    } else {
 		push @n, undef;
 	    }
 	    if ($i[$i]) {
-		push @n, "₀$i[$i]";
+		push @n, "₀₀$i[$i]";
 	    }
 	}
 	@m = @n;
@@ -332,14 +332,14 @@ ncat {
 }
 
 sub gcat {
-    my ($graph,$igraph) = @_;
-    my @g = @$graph; shift @g;
-    my @i = @$igraph; shift @i;
+    my ($graph,$igraph,$base,$type) = @_;
+    my @g = $graph ? @$graph : (); shift @g;
+    my @i = $igraph ? @$igraph : (); shift @i;
     my $s = '';
     for (my $i = 0; $i <= $#g; ++$i) {
 	if ($g[$i]) {
-	    my $slot = sprintf("%d", $i+1); $slot =~ tr/0-9/₀-₉/;
-	    $s .= $slot;
+	    my $slot = sprintf("%02d", $i+1); $slot =~ tr/0-9/₀-₉/;
+	    $s .= "$type$slot=";
 	    my @gg = @{$g[$i]};
 	    $s .= shift @gg;
 	    my $gix = '';
@@ -374,9 +374,16 @@ sub gcat {
 	    $s .= '-';
 	}
     }
-    $s =~ s/-$//;
+    $s .= base_slot($base);
+#    $s =~ s/-$//;
     Encode::_utf8_on($s);
     $s;
+}
+
+sub base_slot {
+    my $b = shift @_;
+    my @b = split(/-/,$b);
+    "b₁=".join("₋",@b);
 }
 
 sub upnum {

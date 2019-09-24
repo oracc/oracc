@@ -49,12 +49,13 @@ sub m2m2 {
     my @c = split(/\./,$chain);
     my $s = '';
     foreach (@c) {
-	my $m2 = $m2{$prefix,$_};
+	my $key = "$_";
+	my $m2 = $m2{$key};
 	if ($m2) {
 	    $s .= $m2;
 	    $s .= '.';
 	} else {
-	    warn "m2: no equivalency for $prefix , $_\n";
+	    warn "m2: no equivalency for $key\n";
 	}
     }
     $s =~ s/\.$//;
@@ -65,15 +66,12 @@ sub m2_init {
     my $prefix = '';
     while (<DATA>) {
 	next if /^\s*$/;
-	if (/^(vpr|vsf|isf|nsf)\s*$/) {
-	    $prefix = $1;
-	} else {
-	    chomp;
-	    my($m,$m2) = split(/\t/,$_);
-	    $m2{$prefix,$m} = $m2;
-	}
+	chomp;
+	s/\t+/\t/g;
+	my($m,$m2) = split(/\t/,$_);
+	$m2{$m} = $m2;
     }
-#    use Data::Dumper; print Dumper \%m2;
+    # use Data::Dumper; print Dumper \%m2;
 }
 
 1;
@@ -82,56 +80,87 @@ sub m2_init {
 
 __DATA__
 
-vpr
+vpr₀₁=0		IND
+vpr₀₁=nu	NEG
+vpr₀₁=bara	M1
+vpr₀₁=ga	M2
+vpr₀₁=ha	M3
+vpr₀₁=na	M4
+vpr₀₁=nuš	M5
+vpr₀₁=u		M6
+vpr₀₁=ša	M7
 
-₁0	IND
-₁nu	NEG
-₁bara	M1
-₁ga	M2
-₁ha	M3
-₁na	M4
-₁nuš	M5
-₁u	M6
-₁ša	M7
+vpr₀₂=inga	CNJ
 
-₂inga	CNJ
+vpr₀₃=mu	C1
+vpr₀₃=ba	C2
+vpr₀₃=V		C3
+vpr₀₃=Vmma	C4
+vpr₀₃=al	C5
 
-₃mu	C1
-₃ba	C2
-₃V	C3
-₃Vmma	C4
-₃al	C5
+vpr₀₄=a		D1s
+vpr₀₄=ra	D2s
+vpr₀₄=na	D3s
+vpr₀₄=me	D1p
+vpr₀₄=ne	D3p
 
-₄a	D1s
-₄ra	D2s
-₄na	D3s
-₄me	D1p
-₄ne	D3p
+vpr₀₅=m		Pm
+vpr₀₅=e		P2
+vpr₀₅=n		P3a
+vpr₀₅=b		P3i
 
-₅m	Pm
-₅e	P2
-₅n	P3a
-₅b	P3i
+vpr₀₆=da	COM
 
-₆da	COM
+vpr₀₇=m		Pm
+vpr₀₇=e		P2
+vpr₀₇=n		P3a
+vpr₀₇=b		P3i
 
-₇m	Pm
-₇e	P2
-₇n	P3a
-₇b	P3i
+vpr₀₈=ši	ALL
+vpr₀₈=ta	ABL
 
-₈ši	ALL
-₈ta	ABL
+vpr₀₉=ni	L0C0
+vpr₀₉=a		L0C1
+vpr₀₉=i		L0C2
 
-₉ni	L0C0
-₉a	L0C1
-₉i	L0C2
+vpr₁₀=m		Pm
+vpr₁₀=e		P2
+vpr₁₀=en	P0	for 1p use P0-1 for 2p use P0-2
+vpr₁₀=n		P3a
+vpr₁₀=b		P3i
 
-₁₀m	Pm
-₁₀e	P2
-₁₀en	P0	for 1p use P0-1 for 2p use P0-2
-₁₀n	P3a
-₁₀b	P3i
+nsf₀₁=ak	GEN
+nsf₀₂=ŋu	POSS1s
+nsf₀₂=zu	POSS2s
+nsf₀₂=ani	POSS3sa
+nsf₀₂=bi	POSS3si
+nsf₀₂=me	POSS1p
+nsf₀₂=zunene	POSS2p
+nsf₀₂=anene	POSS3p
+nsf₀₂=bida	POSS3d
 
+nsf₀₃=ak	GEN
 
-1;
+nsf₀₄=ene	PLUR
+
+nsf₀₅=ak	GEN
+
+nsf₀₆=ene	PLUR
+
+nsf₀₇=e		ERG
+nsf₀₇=0		ABS
+nsf₀₇=ra	DAT
+nsf₀₇=ta	ABL
+nsf₀₇=da	COM
+nsf₀₇=a		LC1
+nsf₀₇=l		LC2
+nsf₀₇=v		VOC
+nsf₀₇=eše	ALL
+nsf₀₇=gin	EQU
+
+nsf₀₈=men1	COP1s
+nsf₀₈=men2	COP2s
+nsf₀₈=am	COP3s
+nsf₀₈=menden	COP1p
+nsf₀₈=menzen	COP2p
+nsf₀₈=meš	COP3p
