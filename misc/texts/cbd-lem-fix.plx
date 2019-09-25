@@ -32,17 +32,46 @@ open(H,'>history.dump'); print H Dumper \%h; close(H);
 my %changes = ();
 my %s = wid2lem_sigs('01bld/wid2lem.tab');
 my @n = ();
-foreach my $s (keys %s) {
-    my %p = parse_sig($s);
-    my $ocore = "$p{'cf'}\[$p{'gw'}//$p{'sense'}\]$p{'pos'}'$p{'epos'}";
+foreach my $sig (keys %s) {
     my $n = '';
+    my $e = '';
+    my $s = '';
+
+    my %p = parse_sig($sig);
+    my $ocore = "$p{'cf'}\[$p{'gw'}\]$p{'pos'}";
     if ($h{$ocore}) {
-	$changes{$s} = $h{$ocore};
+	$e = $h{$ocore};
+    }
+    $ocore = "$p{'cf'}\[$p{'gw'}//$p{'sense'}\]$p{'pos'}'$p{'epos'}";
+    if ($h{$ocore}) {
+	$s = $h{$ocore};
+    }
+    if ($e && $s) {
+	my %e = parse_sig($e);
+	my %s = parse_sig($s);
+	my $es = "$e{'cf'}\[$e{'gw'}//$s{'sense'}\]$e{'pos'}'$s{'pos'}";
+	warn "merge $sig changes into $es\n";
+	$changes{$sig} = $es;
+    } elsif ($e) {
+	warn "change $sig via entry $e\n";
+	$changes{$sig} = $e;
+    } elsif ($s) {
+	warn "change $sig via sense $s\n";
+	$changes{$sig} = $s;
+    } else {
+	# nothing to fix in this sig
     }
 }
 
+open(C,'>changes.dump'); print C Dumper \%changes; close(C);
+
 if (scalar keys %changes > 0) {
-    print Dumper \%changes;
+    foreach my $c (keys %changes) {
+	my @i = @{$s{$c}};
+	foreach my $i (@i) {
+	    print "$$i[0]\t$$i[1]\t$changes{$c}\n";
+	}
+    }
 } else {
     warn "$0: no 01bld/from-xtf.glo so no corpus fixes applied\n";
     exit 2;
