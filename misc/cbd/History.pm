@@ -30,7 +30,7 @@ sub history_term {
 
 sub history_all_init {
     %history = history_map("$ENV{'ORACC_BUILDS'}/epsd2/00etc/history.all");
-    print Dumper \%history;
+#    print Dumper \%history;
 }
 sub history_all_term {
     %history = ();

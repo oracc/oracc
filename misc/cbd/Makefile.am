@@ -5,7 +5,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdsenses.plx cbdhash.plx cbdxml.plx cbdwords.plx \
 	cbdtest.plx cbdcompare.plx cbdnoinst.plx \
 	make-fixes-tab.plx cbdmerge.plx nonorm.plx \
-	cbdentries.plx cbdepsd.plx cbd-lem-fix.plx \
+	cbdentries.plx cbdepsd.plx \
 	cbdsubset.plx cbdfix.plx cbdqpnsplit.plx cbdfixatf.plx \
 	cbdalignbases.plx cbdalignsenses.plx cbdalignentries.plx \
 	cbdalignforms.plx cbdfixparts.plx \
@@ -18,6 +18,8 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	base-instances.plx cbdhistory.plx cbd forms-cull-zero.plx \
 	bases-cull-zero.plx entry-instances.plx cbd-super-map-tab.plx \
 	history-all.sh
+
+# cbd-lem-fix.plx # now in old/
 
 scriptdata_DATA = entry-counts.xsl
 data_DATA = 

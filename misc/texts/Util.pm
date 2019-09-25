@@ -1,6 +1,6 @@
 package ORACC::Texts::Util; require Exporter; @ISA=qw/Exporter/;
 
-@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig/;
+@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig wid2lem_sigs/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -12,10 +12,17 @@ use Data::Dumper;
 
 my $w2l_trace = 0;
 
+my $do_w2l_index = 1;
 my %wid_map = ();
 my %w2l_data = ();
 my %w2l_index = ();
 my %w2l_langs = ();
+
+sub wid2lem_sigs {
+    $do_w2l_index = 0;
+    wid2lem_load(@_);
+    %w2l_data;
+}
 
 sub wid2lem_by_sig {
     my ($w2l_err,$wid2lem,$sig_err,$sigs,$warn_not_found) = @_;
@@ -122,6 +129,12 @@ sub wid2lem_inst {
 
 sub wid2lem_load {
     my ($w2l_err,$wid2lem) = @_;
+    my @wid2lem = ();
+    unless ($wid2lem) {
+	@wid2lem = `cat $w2l_err`;
+	chomp @wid2lem;
+	$wid2lem = \@wid2lem;
+    }
     my $i = 0;
     my %seen = ();
     foreach my $w2l (@$wid2lem) {
@@ -131,18 +144,20 @@ sub wid2lem_load {
 	    $wid_map{$f1} = [ $f2 , $f3 ];
 	} elsif ($f3 && $f3 =~ /^\@/) { # it's a WID INSTANCE SIGNATURE triple
 	    push @{$w2l_data{$f3}}, [ $f1 , $f2 ];
-	    unless ($seen{$f3}++) {
-		my %p = parse_sig($f3);
-		if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
-		    ++$w2l_langs{$p{'lang'}};
-		    $p{'#sig'} = $f3;
-		    if ($p{'lang'} =~ /^sux/) {
-			$p{'base'} =~ s/^\%.*?://;
+	    if ($do_w2l_index) {
+		unless ($seen{$f3}++) {
+		    my %p = parse_sig($f3);
+		    if ($p{'cf'} && $p{'gw'} && $p{'pos'}) {
+			++$w2l_langs{$p{'lang'}};
+			$p{'#sig'} = $f3;
+			if ($p{'lang'} =~ /^sux/) {
+			    $p{'base'} =~ s/^\%.*?://;
+			}
+			$p{'form'} =~ s/^\%.*?://;
+			push @{$w2l_index{"$p{'cf'}\[$p{'gw'}\]$p{'pos'}"}}, { %p };
+		    } else {
+			warn "$w2l_err:$i: no CF[GW]POS found in sig $f3\n";
 		    }
-		    $p{'form'} =~ s/^\%.*?://;
-		    push @{$w2l_index{"$p{'cf'}\[$p{'gw'}\]$p{'pos'}"}}, { %p };
-		} else {
-		    warn "$w2l_err:$i: no CF[GW]POS found in sig $f3\n";
 		}
 	    }
 	} else {

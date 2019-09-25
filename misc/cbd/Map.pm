@@ -77,7 +77,7 @@ sub map_apply_glo {
 		    warn "bases = $cbd[$i-1]\n";
 		    warn "addb = $addb\n";
 		    warn "new bases = $nb\n";
-		    warn Dumper $bm;
+#		    warn Dumper $bm;
 		    warn "====\n";
 		    push @n, '@bases '.$nb;
 		}
