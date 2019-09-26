@@ -106,8 +106,7 @@ sub history_map {
 	    my $n_sig = $n_ent;
 	    $n_sig =~ s/\s+(\[.*?\])\s+/$1/;
 
-
-	    $h{$o_sig} = $n_sig unless exists $h{$o_sig};
+##	    $h{$o_sig} = $n_sig unless exists $h{$o_sig};
 
 	    my ($oepos,$osns) = ($o_sns =~ /^(\S+)\s+(.*?)\s*$/);
 	    $o_sig =~ s#\](\S+)#//$osns]$1'$oepos#;

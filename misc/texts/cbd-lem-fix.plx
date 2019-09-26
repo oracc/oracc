@@ -54,6 +54,7 @@ foreach my $sig (keys %s) {
 	$changes{$sig} = $es;
     } elsif ($e) {
 	warn "change $sig via entry $e\n";
+	$e =~ s#\]#//$p{'sense'}]#;
 	$changes{$sig} = $e;
     } elsif ($s) {
 	warn "change $sig via sense $s\n";
@@ -63,13 +64,19 @@ foreach my $sig (keys %s) {
     }
 }
 
-open(C,'>changes.dump'); print C Dumper \%changes; close(C);
+# generate the change list
 
+open(C,'>changes.dump'); print C Dumper \%changes; close(C);
+open(NOUT, "|err-sort.plx"); select NOUT;
 if (scalar keys %changes > 0) {
     foreach my $c (keys %changes) {
 	my @i = @{$s{$c}};
 	foreach my $i (@i) {
-	    print "$$i[0]\t$$i[1]\t$changes{$c}\n";
+	    my $new = '';
+	    if (($new = has_changes($$i[1], $changes{$c}))) {
+		my $loc = wid2lem_loc($$i[0]);
+		print "$$loc[0]\:$$loc[1]:\t$$i[0]\t$$i[1]\t$new\t<<$changes{$c}\n";
+	    }
 	}
     }
 } else {
@@ -77,9 +84,27 @@ if (scalar keys %changes > 0) {
     exit 2;
 }
 
-# apply the changes in the change list
+########################################################################################
 
-# report which projects have changed so that we can trigger git checkins
-# and oracc rebuilds
+sub has_changes {
+    my ($inst,$change) = @_;
+    my $new = undef;
+    my $ii = $inst; $ii =~ s/\].*$/]/; $ii =~ s/^\+//;
+    my %i = parse_sig($ii);
+    my %c = parse_sig($change);
+    if ($c{'gw'} =~ /^c[vn][vn]e$/) {
+	$new = "$c{'cf'}\[$c{'gw'}\]";
+    } else {
+	if ($c{'sense'}) {
+	    $c{'sense'} =~ s/,\s.*$//;
+	    $c{'sense'} =~ s/^a\s+//;
+	    $c{'sense'} =~ s/^to\s+//;
+	    $c{'sense'} =~ s/^\(to be\)\s+//;
+	    $new = "$c{'cf'}\[$c{'sense'}\]";
+	}
+    }
+    $new = undef if $ii eq $new;
+    $new;
+}
 
 1;

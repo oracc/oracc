@@ -1,6 +1,6 @@
 package ORACC::Texts::Util; require Exporter; @ISA=qw/Exporter/;
 
-@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig wid2lem_sigs/;
+@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig wid2lem_sigs wid2lem_loc/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -17,6 +17,10 @@ my %wid_map = ();
 my %w2l_data = ();
 my %w2l_index = ();
 my %w2l_langs = ();
+
+sub wid2lem_loc {
+    $wid_map{$_[0]};
+}
 
 sub wid2lem_sigs {
     $do_w2l_index = 0;
