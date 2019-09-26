@@ -23,7 +23,7 @@ while (<>) {
     if ($file ne $curr_file) {
 	if ($#lines >= 0) {
 	    close(F);
-	    open(F,">$file") || die "$0: can't open $file to write changes\n";
+	    open(F,">$curr_file") || die "$0: can't open $file to write changes\n";
 	    print F @lines;
 	    close(F);
 	}
@@ -49,7 +49,7 @@ while (<>) {
 }
 
 close(F);
-#open(F,">$file") || die "$0: can't open $file to write changes\n";
+#open(F,">$curr_file") || die "$0: can't open $file to write changes\n";
 print F @lines;
 #close(F);
 
