@@ -424,7 +424,12 @@ sub fix {
 	    ++$nohelp; cbd_die "please do oracc update before cbd fix";
 	} else {
 	    xsystem 'make', '-f', '00lib/Makefile';
-	    xsystem 'inst-fix-tab.plx';
+
+	    #  xsystem 'inst-fix-tab.plx';
+
+	    ## create the fix tab
+	    xsystem "cbd-lem-fix.plx >to-fix.tab 2>to-fix.log";
+
 	    if ($?) {
 		warn "? = $?\n";
 		if (($?>>8) == 2) {
@@ -434,11 +439,19 @@ sub fix {
 		    cbd_die "inst-fix-tab.plx failed";
 		}
 	    } else {
-		## create the fix tab
+		## save the 00atf files
+		xsystem 'rm', '-fr', 'fix00atf';
+		xsystem 'cp', '-a', '00atf', 'fix00atf';
+	
 		## apply the fix tab
+		xsystem 'cbd-lem-fix-apply.plx', 'to-fix.tab';
+
+		cbd_needs_ok();
+
 		## next=check the corpus and fix it manually until it's aligned w glossaries
 		## next-next=cbd stash fixed
-		## cbd_next "cbd stash";
+		cbd_next("Now do 'oracc update' then check the corpus and fix until aligned with\nglossaries.",
+			 'cbd stash');
 	    }
 	}
 	
