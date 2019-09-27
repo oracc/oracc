@@ -23,19 +23,22 @@ while (<>) {
     } elsif (/^\@form\s*/) {
 	m#\s/(\S+)# && ++$baserefs{$1};
     } elsif (/^\@end\s+entry/) {
-	# print "\@$bases_line: ", Dumper \%baserefs;
-	my @del = ();
-	foreach my $b (keys %bases) {
-	    next if $b =~ /#/;
-	    push @del, $b unless $baserefs{$b};
+	if ($bases_line > 0) {
+	    # print "\@$bases_line: ", Dumper \%baserefs;
+	    my @del = ();
+	    foreach my $b (keys %bases) {
+		next if $b =~ /#/;
+		push @del, $b unless $baserefs{$b};
+	    }
+	    foreach my $d (@del) {
+		delete $bases{$d};
+	    }
+	    my $n = bases_serialize(%bases);
+	    $out[$bases_line] = "\@bases $n\n";
+	    %bases = ();
+	    %baserefs = ();
+	    $bases_line = -1;
 	}
-	foreach my $d (@del) {
-	    delete $bases{$d};
-	}
-	my $n = bases_serialize(%bases);
-	$out[$bases_line] = "\@bases $n\n";
-	%bases = ();
-	%baserefs = ();
     }
     push @out, $_ if $_;
     ++$line;
