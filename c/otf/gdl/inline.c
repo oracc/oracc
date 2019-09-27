@@ -52,6 +52,7 @@ static void (*lemm_save_form_p)(const char *ref, const char *lang,
 static void (*lemm_unform_p)(void) = NULL;
 
 static int logo_word_lang(struct node *wp, struct token *tp);
+static const char *grapheme_id(void);
 
 const unsigned char *breakStart = NULL;
 const unsigned char *surroStart = NULL;
@@ -198,6 +199,7 @@ set_nonw_id(struct node *wp)
       if (p && strlen((char*)p))
 	{
 	  const unsigned char *ptmp = p + strlen((char*)p);
+	  struct node *c = NULL;
 	  while (ptmp > p)
 	    if (ptmp[-1] == '.')
 	      break;
@@ -209,6 +211,15 @@ set_nonw_id(struct node *wp)
 	  p2 = malloc(strlen((char*)p)+strlen(".aa")+1);
 	  sprintf(p2, "%s.%s", p, fromDeci(buf, 26, nonw_id++));
 	  setAttr(wp,a_xml_id,(const unsigned char*)p2);
+	  xstrcpy(word_id_buf,p2);
+	  grapheme_id_reset();
+	  c = firstChild(wp);
+	  if (c)
+	    {
+	      const unsigned char *a = getAttr(c,"xml:id");
+	      if (a && *a)
+		setAttr(c,a_xml_id,(const unsigned char *)grapheme_id());
+	    }
 	  free(p2);
 	}
       else
