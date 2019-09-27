@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/history history_init history_term history_map history_trim history_all 
-    history_all_init history_all_term history_guess/;
+    history_all_init history_all_term history_guess history_guess_sense/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -49,6 +49,19 @@ sub history_guess {
     }
     $g =~ s/\s*\[(.*?)\]\s*/ [$1] /;
     $g;
+}
+
+sub history_guess_sense {
+    my $gs = shift;
+    my %seen = ();
+    while ($history{$gs}) {
+	$gs = $history{$gs};
+	if ($seen{$gs}++) {
+	    warn "$0: detected map loop with $gs\n";
+	    last;
+	}
+    }
+    $gs;
 }
 
 sub history_trim {

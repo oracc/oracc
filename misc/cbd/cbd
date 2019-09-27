@@ -538,6 +538,7 @@ EOF
 
 sub init {
     xsystem 'touch', '.nobuild';
+    xsystem 'history-all.sh';
     stash_init();
 }
 
