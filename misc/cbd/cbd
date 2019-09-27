@@ -3,7 +3,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply build check cull done edit fix help init make ok stash status update/; my %verbs = (); @verbs{@verbs} = ();
+my @verbs = qw/align apply build check cull done edit fix help init make merge ok stash status update/; my %verbs = (); @verbs{@verbs} = ();
 my @objects = qw/bases commands culled entries final fixed forms init senses/; my %objects = (); @objects{@objects} = ();
 
 my %commands = (
@@ -18,6 +18,7 @@ my %commands = (
     help=>\&help,
     init=>\&init,
     make=>\&make,
+    merge=>\&merge,
     ok=>\&ok,
     stash=>\&stash,
     status=>\&status,
@@ -45,8 +46,8 @@ my @steps = (
     "cbd align bases",
     "cbd ok",
     "cbd stash",
-    "cbd merge",
     "cbd done",    
+    "cbd merge",
     );
 @steps{@steps} = ();
 
@@ -77,6 +78,7 @@ args_config('fix', NO);
 args_config('help', NO, @verbs, 'commands');
 args_config('init', YES);
 args_config('make', NO);
+args_config('merge', NO);
 args_config('ok', NO);
 args_config('stash', MAYBE, 'help', @stash);
 args_config('status', NO);
@@ -90,6 +92,7 @@ my $object = '';
 my $lang = '';
 my $equals_object = '';
 my $needok = 0;
+my $noexit = 0;
 my $nohelp = 0;
 my $nonext = 0;
 my $phase = '';
@@ -302,7 +305,7 @@ sub cbd_next {
 	}
     }
     cbd_needs_ok() if $needok;
-    exit 0;
+    exit 0 unless $noexit;
 }
 
 sub cbd_needs_ok {
@@ -395,6 +398,7 @@ sub cull {
 
 sub done {
     xsystem 'rm', '-f', '.nobuild';
+    ++$noexit; cbd_next("cbd merge");
     exec 'cbdstash.plx', 'done';
 }
 
@@ -541,6 +545,27 @@ sub make {
     xsystem 'makemake.plx';
 }
 
+sub merge {
+    die "$0: you can only do 'cbd merge' when cbd status == 'done'. Stop\n"
+	unless $phase eq 'done';
+    my $p = super_project();
+    if ($p) {
+	my $bin = "$p/00bin/cbd-merge.sh";
+	if (-x $bin) {
+	    my $proj = `oraccopt`;
+	    if ($proj && $lang) {
+		warn "$0: merging $proj/$lang into $p using $bin\n";
+		exec $bin, $proj, $lang;
+	    } else {
+		die "$0: don't know how to merge language $lang because no project\n";
+	    }
+	} else {
+	    die "$0: can't execute $bin. Stop.\n";
+	}
+    } else {
+    }
+}
+
 sub ok {
     my $d = `cbdstash.plx dir`;
     xsystem 'rm', '-f', "$d/needs_ok";
@@ -596,6 +621,18 @@ sub stash_init {
 
 sub status {
     exec 'cbdstash.plx', 'status';
+}
+
+sub super_project {
+    if ($lang =~ /sux-x-emesal/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2/emesal";
+    } elsif ($lang =~ /sux/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2";
+    } elsif ($lang =~ /qpn/) {
+	return "$ENV{'ORACC_BUILDS'}/epsd2/names";
+    } else {
+	return undef;
+    }
 }
 
 sub update {
