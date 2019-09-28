@@ -9,6 +9,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::CBD::History;
+
 my $acd_rx = $ORACC::CBD::acd_rx;
 
 my $use_map_fh;
@@ -40,6 +42,8 @@ sub senses_align {
 	$use_map_fh = 0;
     }
 
+    history_all_init();
+    
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
     my %entry_map = %{$in_cbddata{'entry_map'}};
@@ -106,6 +110,9 @@ sub senses_align {
 	    }
 	}    
     }
+
+    history_all_term();
+    
     %sense_map;
 }
 
@@ -133,15 +140,39 @@ sub senses_collect {
     %s;
 }
 
+sub make_entry_sense {
+    my($e,$s) = @_;
+    warn "make_entry_sense passed $e; $s\n";
+    $e =~ s/\s+(\[.*?\])\s+/$1/;
+    my($pos,$sns) = ($s =~ /^\@sense\s+(\S+)\s+(.*)$/);
+    $e =~ s#(\]\S+)$#//$sns$1'$pos#;
+    $e;
+}
+
 sub senses_merge {
     my($args,$entry,$i,$b,@l) = @_;
     my %map = ();
     my @newb = ();
+    my %bb = ();
+    @bb{@$b} = ();
+#    print Dumper \%bb;
     my %b = index_senses(@$b);
 #    print Dumper \%b;
     foreach my $s (@$i) {
 	pp_line(shift @l);
 	my @matches = ();
+	if (exists $bb{$s}) {
+	    # warn "$s exists verbatim in base\n";
+	    next;
+	}
+	my $es = make_entry_sense($entry,$s);
+	my $guess = history_guess_sense($es);
+	if ($guess ne $es) {
+	    my $m = $guess; $m =~ s#^.*?//##; $m =~ s/\].*?'/]/; $m =~ s/^(.*?)](\S+)$/\@sense $2 $1/;
+#	    warn "history_guess found $guess from $es; mapping to $m\n";
+	    map_sense($args, '0', $entry, $s, $m);
+	    next;
+	}
 	# does s occur in @b?
 	foreach my $b (@$b) {
 	    if ($b =~ /\Q$s/ || $s =~ /\Q$b/) {
@@ -236,7 +267,10 @@ sub map_sense {
 	    print $map_fh "map sense $from_sig => $to_sig\n";
 	} else {
 	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+/]/;
-	    if ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
+	    if ($code == 0) { # this SENSE was mapped based on history.all
+		pp_warn("SENSE[0] $entry: $in ~ $base") unless $$args{'apply'};
+		${$sense_map{$entry}}{$in} = $base;
+	    } elsif ($code == 1) { # this SENSE is a subset of base SENSE or vice versa
 		pp_warn("SENSE[1] $entry: $in ~ $base") unless $$args{'apply'};
 		${$sense_map{$entry}}{$in} = $base;
 	    } elsif ($code == 2) { # this SENSE has token matches with base SENSE or has been vetted

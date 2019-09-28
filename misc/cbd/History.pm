@@ -30,7 +30,7 @@ sub history_term {
 
 sub history_all_init {
     %history = history_map("$ENV{'ORACC_BUILDS'}/epsd2/00etc/history.all");
-#    print Dumper \%history;
+#    open(H,'>history-all.dump'); print H Dumper \%history; close(H);
 }
 sub history_all_term {
     %history = ();
@@ -53,6 +53,7 @@ sub history_guess {
 
 sub history_guess_sense {
     my $gs = shift;
+#    warn "history_guess_sense passed $gs\n";
     my %seen = ();
     while ($history{$gs}) {
 	$gs = $history{$gs};
