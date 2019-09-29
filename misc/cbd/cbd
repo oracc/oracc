@@ -537,7 +537,6 @@ EOF
 }
 
 sub init {
-    xsystem 'touch', '.nobuild';
     xsystem 'history-all.sh';
     stash_init();
 }
@@ -617,7 +616,12 @@ sub stash_init {
 	++$nohelp; cbd_die "project needs rebuilding before init";
     }
     xsystem 'cbdstash.plx', 'init', $lang;
-    cbd_next("cbd align entries");
+    if ($? == 0) {
+	xsystem 'touch', '.nobuild';
+	cbd_next("cbd align entries");
+    } else {
+	die "$0: cbdstash.plx init $lang returned $?\n";
+    }
 }
 
 sub status {

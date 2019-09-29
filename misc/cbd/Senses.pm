@@ -142,10 +142,13 @@ sub senses_collect {
 
 sub make_entry_sense {
     my($e,$s) = @_;
-    warn "make_entry_sense passed $e; $s\n";
     $e =~ s/\s+(\[.*?\])\s+/$1/;
-    my($pos,$sns) = ($s =~ /^\@sense\s+(\S+)\s+(.*)$/);
-    $e =~ s#(\]\S+)$#//$sns$1'$pos#;
+    my($pos,$sns) = ($s =~ /^\@sense\!?\s+(\S+)\s+(.*)$/);
+    if ($pos && $sns) {
+	$e =~ s#(\]\S+)$#//$sns$1'$pos#;
+    } else {
+	warn "make_entry_sense passed bad args: $e , $s\n";
+    }
     $e;
 }
 

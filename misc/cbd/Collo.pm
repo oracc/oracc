@@ -63,7 +63,13 @@ sub c_expand {
     my $r_mode = 0;
     foreach my $t (@t) {
 	if ($r_mode) {
-	    push @r, $$t[1];
+	    if ($$t[1] eq '-') {
+		# warn "Collo: replacing '-' with $l[$r_mode-1]\n";
+		push @r, $l[$r_mode-1];
+	    } else {
+		push @r, $$t[1];
+	    }
+	    ++$r_mode;
 	} else {
 	    if ($$t[0] == C_HYPH) {
 		my $p = c_parent($i,@cbd);
