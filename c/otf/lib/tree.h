@@ -38,7 +38,7 @@ struct node
   struct grapheme *grapheme;
 };
 
-#define firstChild(n) (n)->children.nodes[0]
+#define firstChild(n) ((n&&n->children.lastused)?(n)->children.nodes[0]:NULL)
 void addToNodeList(struct nodelist*nl, void *vp);
 #define appendAttr(p,a) addToNodeList(&((p)->attr),a)
 void appendAttrCat(struct node *p, char sep, enum a_type atype, const char *aname, unsigned const char *aval);

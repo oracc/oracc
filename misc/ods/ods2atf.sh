@@ -12,13 +12,16 @@ if [ "$ODS2ATF" == "" ]; then
     echo " If -s is given, output is to stdout"
     exit 1
 fi
-rm -f ${ODS2ATF}.atf
-if [ "$STDOUT" == "-s" ]; then
-    unzip -p ${ODS2ATF} content.xml | \
-	xsltproc ${ORACC}/lib/scripts/ods2atf.xsl - 2>ods2atf.log
-else
-    unzip -p ${ODS2ATF} content.xml | \
-	xsltproc ${ORACC}/lib/scripts/ods2atf.xsl - \
-	>${ODS2ATF}.atf 2>${ODS2ATF}.log
+if [ ! -r ${ODS2ATF}.atf ] || [ ${ODS2ATF} -nt ${ODS2ATF}.atf ]; then
+    rm -f ${ODS2ATF}.atf
+    if [ "$STDOUT" == "-s" ]; then
+	unzip -p ${ODS2ATF} content.xml | \
+	    xsltproc ${ORACC}/lib/scripts/ods2atf.xsl - 2>ods2atf.log
+    else
+	echo ods2atf updating ${ODS2ATF}.atf
+	unzip -p ${ODS2ATF} content.xml | \
+	    xsltproc ${ORACC}/lib/scripts/ods2atf.xsl - \
+		     >${ODS2ATF}.atf 2>${ODS2ATF}.log
+    fi
+    chmod -f -w ${ODS2ATF}.atf
 fi
-chmod -f -w ${ODS2ATF}.atf

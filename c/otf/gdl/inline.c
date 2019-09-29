@@ -187,6 +187,24 @@ fromDeci(char *res, int base, int inputNum)
 }
 
 static void
+set_nonw_rewrite_gid(struct node *n)
+{
+  int i;
+  for (i = 0; i < n->children.lastused; ++i)
+    {
+      struct node *c = n->children.nodes[i];
+      if (c)
+	{
+	  const unsigned char *a = getAttr(c,"xml:id");
+	  if (a && *a)
+	    setAttr(c,a_xml_id,(const unsigned char *)grapheme_id());
+	  if (c->children.lastused)
+	    set_nonw_rewrite_gid(c);
+	}
+    }
+}
+
+static void
 set_nonw_id(struct node *wp)
 {
   const unsigned char *p = NULL; 
@@ -199,7 +217,6 @@ set_nonw_id(struct node *wp)
       if (p && strlen((char*)p))
 	{
 	  const unsigned char *ptmp = p + strlen((char*)p);
-	  struct node *c = NULL;
 	  while (ptmp > p)
 	    if (ptmp[-1] == '.')
 	      break;
@@ -213,13 +230,7 @@ set_nonw_id(struct node *wp)
 	  setAttr(wp,a_xml_id,(const unsigned char*)p2);
 	  xstrcpy(word_id_buf,p2);
 	  grapheme_id_reset();
-	  c = firstChild(wp);
-	  if (c)
-	    {
-	      const unsigned char *a = getAttr(c,"xml:id");
-	      if (a && *a)
-		setAttr(c,a_xml_id,(const unsigned char *)grapheme_id());
-	    }
+	  set_nonw_rewrite_gid(wp);
 	  free(p2);
 	}
       else
@@ -2434,7 +2445,8 @@ finish_word(struct node *wp)
   
   rendering_word_form = 0;
   
-  if (forms_insertp > formsbuf && forms_insertp[-1] == '-')
+  if (forms_insertp > formsbuf
+      && ((forms_insertp[-1] == '-') || (forms_insertp[-1] == '.')))
     forms_insertp[-1] = '\0';
   else
     *forms_insertp++ = '\0';
