@@ -100,6 +100,8 @@ process_either(struct run_context *run, unsigned const char *input)
     {
       if (*logfile == '=')
 	logfile = new_ext_no_alloc((char*)npool_copy(input,run->pool),".log");
+      if (f_log)
+	fclose(f_log);
       f_log = fopen(logfile,"w");
       if (!f_log)
 	{

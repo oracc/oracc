@@ -2,10 +2,18 @@ package ORACC::CBD::Guess;
 require Exporter;
 @ISA=qw/Exporter/;
 
+# TO ADD
+#
+# - remove noise/common words before compare
+# - remove {+...} glosses from bases in incoming
+# - try matching on CF[SENSE] and not just CF[GW] (or: look up by meaning-words is not working)
+#
+
 @EXPORT = qw/guess_entry guess_init/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
+use String::Similarity;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use ORACC::CBD::Bases;
@@ -47,6 +55,8 @@ sub guess_entry {
 
     if (${$cix{'words'}}{$entry}) {
 	foreach my $w (@{$cix{'words'}{$entry}}) {
+	    $w =~ tr/a-zA-Z0-9 //cd;
+	    $w = "\L$w";
 	    if (${$bix{'words'}}{$w}) {
 		my @ww = keys %{$bix{'words'}{$w}};
 		print G "bix-words{$w} => @ww\n" if $guess_trace;
@@ -90,9 +100,35 @@ sub guess_entry {
 
     print G "u-words = @u\n" if $guess_trace;
 
-    return '#words', @u if $#u >= 0 && $#u <= 4; # don't print pathological cases like 'fish'
+    my @uws = similar($entry, @u);
+    return '#words', @uws if $#uws >= 0; # && $#u <= 4; # don't print pathological cases like 'fish'
     
     ();
+}
+
+sub similar {
+    my($e,@w) = @_;
+    $e =~ s/\s*\[.*//;
+    my %sim = ();
+    my $sim_top = 0;
+    foreach my $w (@w) {
+	my $cf = $w; $cf =~ s/\s*\[.*//;
+	my $s = similarity($e,$cf);
+	warn "similarity($e,$cf) == $s\n";
+	if ($s) {
+	    $sim_top = $s if $s > $sim_top;
+	    $sim{$w} = $s;
+	}
+    }
+    if ($sim_top > 0.6) {
+	my @ret = ();
+	foreach my $w (keys %sim) {
+	    push @ret, $w if $sim{$w} == $sim_top;
+	}
+	return @ret;
+    } else {
+	();
+    }
 }
 
 sub guess_init {
@@ -100,6 +136,7 @@ sub guess_init {
     my %cix = ();
     my %ix = ();
 
+    
     history_all_init();
     
     if ($guess_trace) {
@@ -118,6 +155,8 @@ sub guess_init {
     my %s = senses_collect(@cbd);
     foreach my $e (keys %e) {
 	my $e2 = $e; $e2 =~ s/^.*?\[(.*?)\].*$/$1/; $e2 =~ s#//# #;
+	$e2 =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
+	$e2 = "\L$e2"; # reduce to lowercase
 	my @e_words = grep(length,de_common_list(split(/[\s,]/, $e2)));
 	my %ew = ();
 	foreach my $ew (@e_words) {
@@ -129,6 +168,8 @@ sub guess_init {
 	    foreach my $s (@{$s{$e}}) {
 #		warn "\t$s\n";
 		$s =~ s/^.*?\@sense\s+\S+\s+//;
+		$s =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
+		$s = "\L$s"; # reduce to lowercase
 		@e_words = grep(length,de_common_list(split(/[\s,]/, $s)));
 		foreach my $ew (@e_words) {
 		    # push @{$ix{$ew}}, $e;

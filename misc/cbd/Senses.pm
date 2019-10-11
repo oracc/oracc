@@ -331,6 +331,7 @@ sub index_senses {
 	$s =~ s/\#\S+\s+//; # remove sense-id
 	$s =~ s/^\S+\s+//; # and POS
 	$s =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
+	$s =~ "\L$s"; # reduce to lowercase
 	foreach my $t (split(/\s/,$s)) {
 	    push @{$t{$t}}, $i; # register token $t as occurring in sense $i
 	}
