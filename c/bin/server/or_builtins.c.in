@@ -109,6 +109,9 @@ or_builtins(void)
 	    case B_JSON:
 	      json_zip(project);
 	      break;
+	    case B_OAI:
+	      oai();
+	      break;
 	    case B_NONE:
 	      break;
 	    }

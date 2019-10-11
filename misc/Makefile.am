@@ -31,6 +31,7 @@ SUBDIRS = \
 	msv \
 	neo \
 	nsa \
+	oai \
 	o2 \
 	ods \
 	oid \
