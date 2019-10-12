@@ -14,6 +14,7 @@ static void datestamp(void);
 static void itemmain(const char *session, const char *list);
 static void itemside(const char *session, const char *list);
 static void json_zip(const char *project);
+extern void oai(void);
 static void outline(const char *session, const char *list);
 static void results(const char *session, const char *list);
 static void rpc(void);
