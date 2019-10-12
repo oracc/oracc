@@ -12,14 +12,15 @@ extern void dump_vl(CGI_varlist *vl);
 static void oai_exec(char **va, int len)
 {
   char **ea = NULL;
-  int i = 0;
+  int i, j;
+  /* fprintf(stderr, "oai_exec: len=%d\n", len); */
   ea = malloc((7+len)*sizeof(char*));
   ea[0] = "/usr/bin/perl";
-  ea[1] = "/home/oracc/bin/oai.plx";
+  ea[1] = "@@ORACC_BUILDS@@/bin/oai.plx";
   ea[2] = "project";
-  ea[3] = project;
+  ea[3] = (char*)(project ? project : "nul");
   ea[4] = "request";
-  ea[5] = "http://oracc.org/oai";
+  ea[5] = "@@ORACC_HOST@@";
   for (i = 6, j=0; va[j]; ++i, ++j)
     ea[i] = va[j];
   ea[i] = NULL;
@@ -28,14 +29,15 @@ static void oai_exec(char **va, int len)
   exit(1);  
 }
 
-static char **
+void
 oai_err(const char *err, const char *str)
 {
-  static char *va[3];
+  static const char *va[3];
+  fprintf(stderr, "oai_err: err=%s; str=%s\n", err, str);
   va[0] = err;
   va[1] = str;
   va[2] = NULL;
-  oai_exec(va, 2);
+  oai_exec((char**)va, 2);
 }
 
 static int
@@ -51,6 +53,18 @@ is_oai_arg(const char *name)
 }
 
 static int
+is_oai_verb(CGI_varlist *vl)
+{
+  CGI_value *v = CGI_lookup_all(vl, "verb");
+  return !v[1] && (!strcmp(v[0],"GetRecord")
+		   || !strcmp(v[0],"Identify")
+		   || !strcmp(v[0],"ListIdentifiers")
+		   || !strcmp(v[0],"ListMetadataFormats")
+		   || !strcmp(v[0],"ListRecords")
+		   || !strcmp(v[0],"ListSets"));
+}
+
+static int
 countv(CGI_varlist *v)
 {
   int i = 0;
@@ -59,10 +73,18 @@ countv(CGI_varlist *v)
        name != 0;
        name = CGI_next_name(v))
     {
-      if (is_oai_arg)
-	++i;
+      fprintf(stderr, "countv name=%s\n", name);
+      if (is_oai_arg(name))
+	{
+	  if (strcmp(name,"verb") || is_oai_verb(v))
+	    ++i;
+	  else
+	    oai_err("badVerb", "illegal verb");
+	}
       else
-	oai_err("badArgument", "illegal argument");
+	{
+	  oai_err("badArgument", "illegal argument");
+	}
     }
   return i;
 }
@@ -86,16 +108,18 @@ oai(void)
   v = CGI_get_post(v, NULL);
   dump_vl(v);
   vcount = countv(v);
-  for (name = CGI_first_name(v), i=6;
+  va = malloc((1+(2*vcount))*sizeof(char*));
+  for (name = CGI_first_name(v), i=0;
        name != 0;
        name = CGI_next_name(v), ++i)
     {
-      CGI_value *all = CGI_lookup_all(name,v);
+      CGI_value *all = CGI_lookup_all(v, name);
       const char *v = NULL;
       if (all)
 	{
 	  if (all[0])
 	    {
+	      fprintf(stderr, "oai: name=%s; all[0]=%s\n", name, all[0]);
 	      if (all[1])
 		oai_err("badArgument","duplicate argument");
 	      else
