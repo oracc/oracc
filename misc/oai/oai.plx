@@ -7,7 +7,7 @@ my $response_date = `date -u +\%FT\%TZ`; chomp $response_date;
 my $request = $args{'request'};
 
 ### Handle server-detected error first ###
-warn "$ARGV[4] ; $ARGV[5]\n";
+#warn "$ARGV[4] ; $ARGV[5]\n";
 if ($ARGV[4] =~ /^bad/) {
      er($ARGV[4],$ARGV[5],$response_date,$request);   
 }
@@ -16,7 +16,8 @@ if ($ARGV[4] =~ /^bad/) {
 
 my @verbs = qw/GetRecord Identify ListIdentifiers ListMetadataFormats ListRecords ListSets/;
 my %verbs = (); @verbs{@verbs} = ();
-my @oracc_args = qw/project request verb/; # cheat to say 'verb' is an oracc_arg but we don't want to arg check it
+my @oracc_args = qw/project request verb/; # it's a cheat to say 'verb' is an oracc_arg
+					   # but we don't want to arg check it
 my %oracc_args = (); @oracc_args{@oracc_args} = ();
 
 my @verbargs = qw/
@@ -39,11 +40,8 @@ foreach my $va (@oracc_args, @verbargs) {
 
 #######
 
-my $earliest_date = `date -u +\%FT\%TZ`; chomp $earliest_date;
-
-#foreach my $a (keys %args) {
-#    warn "oai.plx: $a = $args{$a}\n";
-#}
+my $earliest_date = `head -1 $ENV{'ORACC_BUILDS'}/agg/projects/public-project-dates.tab|cut -f2`;
+chomp $earliest_date;
 
 validate();
 
@@ -179,8 +177,7 @@ sub ListMetadataFormats {
    <metadataFormat>
     <metadataPrefix>oai_dc</metadataPrefix>
     <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>
-    <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/
-      </metadataNamespace>
+    <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>
    </metadataFormat>
 </OAI-PMH>
 EOF
