@@ -3,7 +3,7 @@ include ../../oracc-am-rules.txt
 bin_SCRIPTS = agg-list-public-projects.sh agg-project-list.sh agg-thumbs.sh \
 	agg-test.sh agg-editions.sh agg-linkbase.sh \
 	agg-master-xtl.plx agg-proxify.plx agg-list-all-projects.sh \
-	agg-projects-json.plx
+	agg-projects-json.plx agg-project-dates.plx
 
 scriptdata_DATA = agg-html-projects.xsl agg-index.xsl agg-list-public-projects.xsl \
 	agg-public-image.xsl agg-public-projects.xsl url.xsl
