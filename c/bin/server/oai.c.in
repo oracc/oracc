@@ -83,7 +83,10 @@ countv(CGI_varlist *v)
 	}
       else
 	{
-	  oai_err("badArgument", "illegal argument");
+	  if (CGI_lookup(v,"verb"))
+	    oai_err("badArgument", "illegal argument");
+	  else
+	    oai_err("badVerb", "no verb in request");
 	}
     }
   return i;

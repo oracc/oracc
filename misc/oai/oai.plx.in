@@ -98,15 +98,18 @@ sub validate {
     # is there a verb and is it legal
     badVerb() unless $args{'verb'} && exists($verbs{$args{'verb'}});
     # do we have all the arguments we need for this verb?
-    badArgument() if need_args();
-    # are the arguments legal for this verb?
-    badArgument() if check_args();
+    badArgument('1') if check_args();
     # if there is a resumptionToken are there, wrongly, other arguments?
-    badArgument() if $args{'resumptionToken'} && $valid_args > 1;
+    badResumptionToken() if $args{'resumptionToken'}; # && $valid_args > 1; # always bad on Oracc/OAI
     # if from or until are given, check their formats
-    badArgument() if $args{'from'} && !is_oai_iso_date($args{'from'});
-    badArgument() if $args{'until'} && !is_oai_iso_date($args{'until'});
-    badArgument() if ($args{'from'} && $args{'until'}) && $args{'from'} ge $args{'until'};
+    badArgument('2') if need_args();
+    # are the arguments legal for this verb?
+    badArgument('3') if $args{'from'} && !is_oai_iso_date($args{'from'});
+    badArgument('4') if $args{'until'} && !is_oai_iso_date($args{'until'});
+    badArgument('5')
+	if ($args{'from'} && $args{'until'})
+	&& (length($args{'from'}) != length($args{'until'})
+	    || $args{'from'} gt $args{'until'});
 }
 
 sub check_args {
@@ -122,6 +125,7 @@ sub check_args {
 
 sub need_args {
     foreach my $a (@{$args4verbs_r{$args{'verb'}}}) {
+	warn "need_args trying $a for $args{'verb'}\n";
 	return 1 unless exists $args{$a};
     }
     return 0;
@@ -134,7 +138,7 @@ sub verb_args {
 	foreach my $arg (keys %args) {
 	    next if exists $oracc_args{$arg};
 	    # if this arg is a required or optional arg keep checking, otherwise error
-	    badArgument() unless exists $a{$arg};
+	    badArgument('6') unless exists $a{$arg};
 	    $thisargs .= " $arg=\"$args{$arg}\"";
 	}
     }
@@ -144,7 +148,9 @@ sub verb_args {
 ############################################################################################
 
 sub badArgument {
-    er('badArgument','Missing, repeated or illegal argument',$response_date,$request);
+    my $nth = shift;
+    $nth = '0' unless $nth;
+    er('badArgument',"[$nth] ".'Missing, repeated or illegal argument',$response_date,$request);
 }
 
 sub badResumptionToken {
@@ -330,6 +336,7 @@ sub ListIdentifiers {
 }
 
 sub ListRecords {
+    badResumptionToken() if $args{'resumptionToken'};
     ListIdentifiers(); # works because different output is based on args{'verb'}
 }
 
