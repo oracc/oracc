@@ -12,7 +12,7 @@ my %args = @ARGV;
 
 my $earliest_date = `head -1 $project_tab|cut -f2`; chomp $earliest_date;
 my $response_date = `date -u +\%FT\%TZ`; chomp $response_date;
-my $request = $args{'request'};
+my $request = 'http://oracc.org/oai'; # $args{'request'};
 
 ### Handle server-detected error first ###
 #warn "$ARGV[4] ; $ARGV[5]\n";
