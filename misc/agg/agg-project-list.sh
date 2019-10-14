@@ -21,6 +21,7 @@ xsltproc --xinclude $xsl/agg-public-projects.xsl \
 
 agg-project-dates.plx public-projects.xml
 xsltproc ${ORACC}/lib/scripts/oai-records.xsl public-projects-ds.xml >public-projects.oai
+chmod o+r public-projects.oai public-project-dates.tab
 
 agg-projects-json.plx
 xsltproc $xsl/xpd-JSON.xsl public-projects.xml >${ORACC}/www/json/projectlist.json

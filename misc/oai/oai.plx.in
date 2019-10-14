@@ -5,7 +5,12 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use Data::Dumper;
 
+my $project_oai = '@@ORACC_BUILDS@@/agg/projects/public-projects.oai';
+my $project_tab = '@@ORACC_BUILDS@@/agg/projects/public-project-dates.tab';
+
 my %args = @ARGV;
+
+my $earliest_date = `head -1 $project_tab|cut -f2`; chomp $earliest_date;
 my $response_date = `date -u +\%FT\%TZ`; chomp $response_date;
 my $request = $args{'request'};
 
@@ -61,9 +66,6 @@ foreach my $va (@verbargs_r) {
 }
 
 #######
-
-my $earliest_date = `head -1 $ENV{'ORACC_BUILDS'}/agg/projects/public-project-dates.tab|cut -f2`;
-chomp $earliest_date;
 
 validate();
 
@@ -127,12 +129,14 @@ sub need_args {
 
 sub verb_args {
     my $thisargs = '';
-    my %a = (); @a{@{$args4verbs{$args{'verb'}}}} = ();
-    foreach my $arg (keys %args) {
-	next if exists $oracc_args{$arg};
-	# if this arg is a required or optional arg keep checking, otherwise error
-	badArgument() unless exists $a{$arg};
-	$thisargs .= " $arg=\"$args{$arg}\"";
+    if ($args4verbs{$args{'verb'}}) {
+	my %a = (); @a{@{$args4verbs{$args{'verb'}}}} = ();
+	foreach my $arg (keys %args) {
+	    next if exists $oracc_args{$arg};
+	    # if this arg is a required or optional arg keep checking, otherwise error
+	    badArgument() unless exists $a{$arg};
+	    $thisargs .= " $arg=\"$args{$arg}\"";
+	}
     }
     $thisargs;
 }
@@ -194,7 +198,7 @@ EOF
 
 sub is_identifier {
     my $id = shift;
-    my $ok = `grep '$id	' $ENV{'ORACC_BUILDS'}/agg/projects/public-project-dates.tab`;
+    my $ok = `grep '$id	' $project_tab`;
     chomp $ok;
     $ok;
 }
@@ -202,7 +206,7 @@ sub is_identifier {
 sub outputRecords {
     my %need = ();
     @need{@_} = ();
-    my $x = load_xml("$ENV{'ORACC_BUILDS'}/agg/projects/public-projects.oai");
+    my $x = load_xml($project_oai);
     my @or = tags($x,undef,'oai-record');
     
     my $thisargs = verb_args();
@@ -291,7 +295,7 @@ sub ListIdentifiers {
     noSetHierarchy($thisargs) if $args{'set'};
     cannotDisseminateFormat($thisargs)
 	unless $args{'metadataPrefix'} && $args{'metadataPrefix'} eq 'oai_dc';
-    my @r = `cat $ENV{'ORACC_BUILDS'}/agg/projects/public-project-dates.tab`;
+    my @r = `cat $project_tab`;
     chomp @r;
     if ($args{'from'}) {
 	my @new_r = ();
@@ -349,6 +353,7 @@ sub ListMetadataFormats {
     <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>
     <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>
    </metadataFormat>
+  </ListMetadataFormats>
 </OAI-PMH>
 EOF
     exit 0;
