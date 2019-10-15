@@ -94,7 +94,8 @@ sub guess_entry {
 
     print G "u-bases = @u\n" if $guess_trace;
 
-    return '#bases', @u if $#u >= 0;
+    my @ubs = similar($entry, @u);
+    return '#bases', @ubs if $#ubs >= 0;
     
     @u = sort keys %ew;
 
@@ -120,7 +121,7 @@ sub similar {
 	    $sim{$w} = $s;
 	}
     }
-    if ($sim_top > 0.6) {
+    if ($sim_top > 0.7) {
 	my @ret = ();
 	foreach my $w (keys %sim) {
 	    push @ret, $w if $sim{$w} == $sim_top;

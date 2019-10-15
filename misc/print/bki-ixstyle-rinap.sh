@@ -17,9 +17,10 @@ else
 fi
 
 mkdir -p 01tmp/bki/qpn ; cp 00lib/names.xml 01tmp/bki/qpn ; cd 01tmp/bki
+mk-labels.sh $project
 lib=$ORACC_BUILDS/lib/scripts
 (cd qpn ; 
- bki-HTML.sh $projdir/01bld/qpn/articles.xml $projdir/01bld/qpn/qpn.xis
+ bki-HTML.sh $project $projdir/01bld/qpn/articles.xml $projdir/01bld/qpn/qpn.xis
  bki-merge-xrr.sh bki-sorted+++.xml
  bki-split-qpn.plx bki-flat-rr.xml
  (cd qpn-bits ; \
@@ -30,6 +31,7 @@ lib=$ORACC_BUILDS/lib/scripts
      )
  )
 zip -j qpn-indices qpn/qpn-bits/qpn-x-*.html $ORACC_BUILDS/www/css/chresto-index.css
-cp qpn-indices.zip $ORACC_BUILDS/www/$project/downloads
-chmod o+r $ORACC_BUILDS/www/$project/downloads
+chmod o+r qpn-indices.zip
+cp -a qpn-indices.zip $ORACC_BUILDS/www/$project/downloads
+chmod o+r $ORACC_BUILDS/www/$project/downloads/*
 cd $ORACC_BUILDS/$project ; o2-index-downloads.sh

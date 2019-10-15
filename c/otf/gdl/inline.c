@@ -235,7 +235,9 @@ set_nonw_id(struct node *wp)
 	}
       else
 	{
-	  fprintf(stderr, "%s:%d: attempt to reset never-set nonw_id\n", __FILE__, __LINE__);
+	  const char *t = (const char *)getAttr(wp,"type");
+	  if (strcmp(t, "notelink"))
+	    vwarning("internal error: attempt to reset never-set nonw_id");
 	}
     }
 }
@@ -2257,8 +2259,8 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	      if (wp)
 		{
 		  struct node *np = elem(e_g_nonw,NULL,lnum,WORD);
-		  set_nonw_id(np);
 		  appendAttr(np,attr(a_type, ucc("notelink")));
+		  set_nonw_id(np);
 		  appendChild(np, textNode(pool_copy(tokens[start]->data)));
 		  note_register_tag(tokens[start]->data, np);
 		  appendChild(wp->parent, np);

@@ -15,7 +15,9 @@ scriptdata_DATA = chresto-index-TeX.xsl cbd-sort.xsl			\
 	chresto-strip-cpd-refs.xsl index-HTML.xsl 			\
 	bki-subset.xsl bki-xis.xsl bki-xis-group.xsl bki-labels.xsl bki-sort.xsl \
 	bki-akk-HTML.xsl bki-qpn-HTML.xsl bki-sux-HTML.xsl mk-labels.xsl \
-	bki-chresto-HTML.xsl bki-flatten-rr.xsl bki-group-rr.xsl
+	bki-chresto-HTML.xsl bki-flatten-rr.xsl bki-group-rr.xsl \
+	bki-names-tab.xsl
+
 config_DATA = cbd-chresto.xcf
 
 chresto-index.sh: chresto-index.sh.in

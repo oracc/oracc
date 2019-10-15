@@ -6,7 +6,10 @@ binmode STDOUT, 'utf8';
 use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::XML;
 
-my $dsc = '../../00lib/designation-sort-order.lst';
+my $proj = shift @ARGV;
+
+my $dsc = "$ENV{'ORACC_BUILDS'}/$proj/00lib/designation-sort-order.lst";
+
 my %d = ();
 if (-r $dsc) {
     my $i = 0;
@@ -23,7 +26,7 @@ if (-r $dsc) {
 #use Data::Dumper; warn Dumper \%d;
 
 my %l = ();
-open(L,'../labels.tab');
+open(L,'../labels.tab') || open(L,'../../labels.tab') || die "$0: can't open ../labels.tab or ../../labels.tab\n";
 while (<L>) {
     chomp;
     my($id,$lab) = split(/\t/,$_);
@@ -34,7 +37,7 @@ while (<L>) {
 close(L);
 
 my $f = shift @ARGV;
-my $x = load_xml($f);
+my $x = load_xml($f); die "$0: unable to load XML file $f. Stop.\n" unless $x;
 
 my @rr = tags($x,'http://oracc.org/ns/xis/1.0','rr');
 foreach my $rr (@rr) {
