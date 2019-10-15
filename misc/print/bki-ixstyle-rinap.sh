@@ -1,6 +1,7 @@
 #!/bin/sh
 
 project=$1
+zipname=bookindex
 if [ "$project" == "" ]; then
     echo "$0: must give project on command line. Stop."
     exit 1
@@ -28,10 +29,11 @@ lib=$ORACC_BUILDS/lib/scripts
 	 h=`basename $a .xml`.html 
 	 xsltproc $ORACC_BUILDS/lib/scripts/bki-chresto-HTML.xsl $a >$h 
      done
-     )
  )
-zip -j qpn-indices qpn/qpn-bits/qpn-x-*.html $ORACC_BUILDS/www/css/chresto-index.css
-chmod o+r qpn-indices.zip
-cp -a qpn-indices.zip $ORACC_BUILDS/www/$project/downloads
+)
+
+zip -j $zipname qpn/qpn-bits/qpn-x-*.html $ORACC_BUILDS/www/css/chresto-index.css
+chmod o+r $zipname.zip
+cp -a $zipname.zip $ORACC_BUILDS/www/$project/downloads
 chmod o+r $ORACC_BUILDS/www/$project/downloads/*
 cd $ORACC_BUILDS/$project ; o2-index-downloads.sh
