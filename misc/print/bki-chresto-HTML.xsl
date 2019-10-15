@@ -13,6 +13,7 @@
       <meta charset="utf-8"/>
       <title><xsl:value-of select="@title"/></title>
       <link rel="stylesheet" type="text/css" href="/css/chresto-index.css"/>
+      <link rel="stylesheet" type="text/css" href="chresto-index.css"/>
     </head>
     <body>
       <xsl:for-each select="c:entry">
