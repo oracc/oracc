@@ -19,6 +19,7 @@
 <xsl:template match="x:r" mode="refs">
   <x:rr name="{@name}" c="{@xrr-c}">
     <xsl:for-each select="key('refgroups', concat(ancestor::c:entry/@xml:id,@name))">
+      <xsl:sort select="@c" data-type="number"/>
       <xsl:for-each select=".">
 	<xsl:copy>
 	  <xsl:copy-of select="@*"/>
