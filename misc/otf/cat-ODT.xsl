@@ -64,7 +64,6 @@
   <name n="column"   sig="f"><oracc:br/>Column</name>
   <name n="khors_date" sig="g">Date in Khorsabad<oracc:br/>Annals (text nos. 1–6)</name>
   <name n="subject"  sig="h"><oracc:br/>Subject</name>
-  <name n="subject"  sig="h"><oracc:br/>Subject</name>
   <name n="prov_s"   sig="i"><oracc:br/>Provenance</name>
   <name n="reg_s"    sig="j">Registration<oracc:br/>Number</name>
   <name n="exc_s"    sig="k">Excavation<oracc:br/>Number</name>
