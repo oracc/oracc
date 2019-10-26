@@ -14,6 +14,8 @@ if [ -r 00lib/superchk.lst ]; then
 	exit 1
     fi
     cbd-super-map-tab.plx
+    exit 0
 else
     echo "$0: no 00lib/superchk.lst, nothing to do."
+    exit 1
 fi

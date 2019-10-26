@@ -19,6 +19,7 @@ my @base_cbd = ();
 
 set_default_base(\%args) unless $args{'base'};
 $args{'log'} = 'align-senses.log' unless $args{'log'};
+unlink $args{'log'};
 
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
@@ -77,7 +78,8 @@ if ($args{'apply'}) {
     pp_cbd(\%args,@cbd);
     pp_diagnostics(\%args) if pp_status();
 } else {
-    pp_diagnostics(\%args) if pp_status();
+    pp_diagnostics(\%args);
+    system "grep '\[[34]\]' senses.log >senses-34.log";
 }
 
 1;

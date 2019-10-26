@@ -130,7 +130,7 @@ sub align {
 	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";
 	++$needok;
 	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary",
-		 ($object eq 'senses' ? "-To see the senses most likely to need fixing say: grep '\\[[34]\\]' senses.log" : ''),
+		 ($object eq 'senses' ? "-To see the senses most likely to need fixing see senses-34.log" : ''),
 		 "cbd apply");
     } else {
 	++$nohelp; cbd_die("cbd align $object failed. Stop");
@@ -380,11 +380,19 @@ sub check {
 
 sub clean {
     if ($phase eq 'merged') {
-	my $d = `cbdstash.plx dir`;
-	my $l =  "00lib/$lang.glo";
-	my $g =  "$d/$lang.glo-pre-clean";
-	xsystem 'cp', '-av', $l, $g;
-	xsystem "sed s/^+// <$g >$l";
+	cbd_test_ok();
+	my $p = super_project();
+	if ($p) {
+	    my $d = `cbdstash.plx dir`;
+	    my $l =  "00lib/$lang.glo";
+	    my $g =  "$d/$lang.glo-pre-clean";
+	    xsystem 'cp', '-av', $l, $g;
+	    xsystem "sed s/^+// <$g >$l";
+	    xsystem "oracc update";
+	    xsystem "(cd $p ; make update check)";
+	} else {
+	    die "$0: unable to establish super_project for $lang. Stop.\n";
+	}
     } else {
 	++$nohelp; cbd_die("cbd clean is only allowed when status==merged");
     }
@@ -579,11 +587,16 @@ sub merge {
 	if (-x $bin) {
 	    my $proj = `oraccopt`;
 	    if ($proj && $lang) {
-		warn "$0: merging $proj/$lang into $p using $bin\n";
-		cbd_next("If merge was successful it is safe to do cbd clean;\notherwise review merge status and proceed only when you are sure that it is safe to do so.");
-		cbd_next("cbd clean");
-		cbd_needs_ok();
-		exec $bin, $proj, $lang;
+		warn "$0: merge via $bin $proj $lang\n";
+		system $bin, $proj, $lang;
+		if ($?) {
+		    die "$0: merge script failed. Stop.\n";
+		} else {
+		    ++$noexit; cbd_next("If merge was successful it is safe to do cbd clean;\n".
+			     "\totherwise review merge status and proceed\n".
+			     "\tonly when you are sure that it is safe to do so.");
+		    ++$needok; --$noexit; cbd_next('cbd clean');
+		}
 	    } else {
 		die "$0: don't know how to merge language $lang because no project\n";
 	    }

@@ -33,21 +33,27 @@ if ($nozero) {
 }
 
 print "\n";
+open(T,'>map-status.txt');
 tab('Additional: ');
-print "Entries\tSenses\tBases\n\n";
+print "Entries\tSenses\tBases\tBmaps\tForms\n\n";
+print T "Entries\tSenses\tBases\tBmaps\tForms\n\n";
 foreach my $f (@maps) {
     tab($f);
     print join("\t", @{$stats{$f}}), "\n";
+    print T join("\t", @{$stats{$f}}), "\n";
 }
+close(T);
 
 sub stats {
-    my $f = shift;
-    my ($e,$s,$b) = (`grep -c 'add entry' $f`,
-		     `grep -c 'add sense' $f`,
-		     `grep -c 'add base' $f`,
+    my $file = shift;
+    my ($e,$s,$b,$m,$f) = (`grep -c 'add entry' $file`,
+			   `grep -c 'add sense' $file`,
+			   `grep -c 'add base' $file`,
+			   `grep -c 'map base' $file`,
+			   `grep -c 'add form' $file`,
 	);
-    chomp($e,$s,$b);
-    [ $e, $s, $b ];
+    chomp($e,$s,$b,$m,$f);
+    [ $e, $s, $b, $m, $f ];
 }
 
 sub tab {
@@ -56,6 +62,8 @@ sub tab {
     my $t = $l / 8 + ($l % 8 ? 1 : 0);
     print $f;
     print "\t"x$t;
+    print T $f;
+    print T "\t"x$t;
 }
 
 1;

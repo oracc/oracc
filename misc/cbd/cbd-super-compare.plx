@@ -12,11 +12,6 @@ use ORACC::CBD::Bases;
 use ORACC::CBD::Forms;
 use Data::Dumper;
 
-## No: we are working on 01tmp/xxx.glo where the normification
-## has already been done, so we want to do it correspondingly to
-## incoming glossaries
-## $ORACC::CBD::nonormify = 1;
-
 system 'rm', '-f', '.super-compare-failed';
 
 warn "$0 invoked as: @ARGV\n";
@@ -24,6 +19,16 @@ warn "$0 invoked as: @ARGV\n";
 $ORACC::CBD::no_cbd_ok = 1;
 
 my %args = pp_args();
+
+## No: we are working on 01tmp/xxx.glo where the normification
+## has already been done, so we want to do it correspondingly to
+## incoming glossaries
+##
+## 2019-10-26: this program is now used differently, comparison
+## is to a nonorm superglo so we need nonorm here, too
+
+$ORACC::CBD::nonormify = 1;
+
 my @base_cbd = ();
 my %base_h = ();
 

@@ -51,21 +51,22 @@ sub forms_align {
 		}
 		$f_index{$if} = %fi;
 	    }
-#	    print "fi=", Dumper \%fi;
 	    foreach my $f (keys %{$incoming_forms{$if}}) {
 		next if $f eq '#';
 		my $fullform = $f;
 		$f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
-		#		if ($fi{$f}) {
-		if (${$forms{$if}}{$f}) {
-		    # warn "$if: incoming form $f already in glossary\n";
+		if ($fi{$f}) {
+		    # if (${$forms{$if}}{$f}) { ## why did I try this?
+#		    warn "$if: incoming form $f already in glossary\n";
 		} else {
+#		    warn "$if: form $f/fullform=$fullform not found in glossary\n";
 		    map_form($args,$if,$fullform)
 		}
 	    }
 	}
 	# silently ignore missing entries because entries_align gets those
     }
+    open(FI,'>fi.dump'); print FI "fi=", Dumper \%f_index; close(FI);
 }
 
 sub forms_find {
