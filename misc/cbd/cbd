@@ -3,14 +3,18 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply build check cull done edit fix help init make merge ok stash status update/; my %verbs = (); @verbs{@verbs} = ();
-my @objects = qw/bases commands culled entries final fixed forms init senses/; my %objects = (); @objects{@objects} = ();
+my @verbs = qw/align apply build check clean cull done edit fix help init make merge ok stash status update/;
+my %verbs = (); @verbs{@verbs} = ();
+
+my @objects = qw/bases commands culled entries final fixed forms init merged senses/;
+my %objects = (); @objects{@objects} = ();
 
 my %commands = (
     align=>\&align,
     apply=>\&apply,
     build=>\&build,
     check=>\&check,
+    clean=>\&clean,
     cull=>\&cull,
     done=>\&done,
     edit=>\&edit,
@@ -48,6 +52,8 @@ my @steps = (
     "cbd stash",
     "cbd done",    
     "cbd merge",
+    "cbd ok",
+    "cbd clean",
     );
 @steps{@steps} = ();
 
@@ -71,6 +77,7 @@ args_config('align', NO, qw/init bases entries senses/);
 args_config('apply', NO);
 args_config('build', NO);
 args_config('check', MAYBE);
+args_config('clean', NO);
 args_config('cull', NO, qw/forms bases/);
 args_config('done', NO);
 args_config('edit', NO);
@@ -371,6 +378,18 @@ sub check {
     return 0;
 }
 
+sub clean {
+    if ($phase eq 'merged') {
+	my $d = `cbdstash.plx dir`;
+	my $l =  "00lib/$lang.glo";
+	my $g =  "$d/$lang.glo-pre-clean";
+	xsystem 'cp', '-av', $l, $g;
+	xsystem "sed s/^+// <$g >$l";
+    } else {
+	++$nohelp; cbd_die("cbd clean is only allowed when status==merged");
+    }
+}
+
 sub cull {
     if ($phase eq 'fixed') {
 	if ($object eq 'bases') {
@@ -484,6 +503,12 @@ aligning and correcting glossaries and corpora.  For more help try:
 
 	cbd help commands
 
+to get started aligning a language say:
+
+	cbd init [LANG]
+
+and cbd will assist you from there on.
+
 EOF
     }
 }
@@ -555,6 +580,9 @@ sub merge {
 	    my $proj = `oraccopt`;
 	    if ($proj && $lang) {
 		warn "$0: merging $proj/$lang into $p using $bin\n";
+		cbd_next("If merge was successful it is safe to do cbd clean;\notherwise review merge status and proceed only when you are sure that it is safe to do so.");
+		cbd_next("cbd clean");
+		cbd_needs_ok();
 		exec $bin, $proj, $lang;
 	    } else {
 		die "$0: don't know how to merge language $lang because no project\n";
@@ -563,6 +591,7 @@ sub merge {
 	    die "$0: can't execute $bin. Stop.\n";
 	}
     } else {
+	die "$0: can't determine super projectl Stop.\n";
     }
 }
 
@@ -625,7 +654,7 @@ sub stash_init {
 }
 
 sub status {
-    exec 'cbdstash.plx', 'status';
+    exec 'cbdstash.plx', 'status', @_;
 }
 
 sub super_project {

@@ -52,6 +52,7 @@ my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 my $arg1 = shift @ARGV;
 my $arg2 = shift @ARGV;
+my $arg3 = shift @ARGV;
 my $lang = '';
 my $argphase = shift @ARGV; # only with repeat sux entries, for example
 my $repeat = 0;
@@ -61,7 +62,6 @@ if ($arg1) {
 	if ($arg1 eq 'status') {
 	    # arg2 is optional lang, arg3 is optional phase
 	    if ($arg2) {
-		my $arg3 = $lang;
 		$lang = $arg2;
 		if ($arg3) {
 		    $arg2 = $arg3;
@@ -341,6 +341,7 @@ sub setstatus {
     my ($s,$l) = @_;
     $l = $lang unless $l;
     $status{$l} = $s;
+    status_dump();
 }
 
 sub stash {

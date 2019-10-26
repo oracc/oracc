@@ -115,7 +115,7 @@ sub similar {
     foreach my $w (@w) {
 	my $cf = $w; $cf =~ s/\s*\[.*//;
 	my $s = similarity($e,$cf);
-	warn "similarity($e,$cf) == $s\n";
+	# warn "similarity($e,$cf) == $s\n";
 	if ($s) {
 	    $sim_top = $s if $s > $sim_top;
 	    $sim{$w} = $s;
