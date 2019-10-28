@@ -21,10 +21,19 @@ use ORACC::CBD::History;
 use ORACC::L2GLO::Util;
 use ORACC::Texts::Util;
 
+my $all = shift @ARGV;
+$all = undef unless $all eq '-all';
+
 use Data::Dumper;
 
 # get a hash of the changes made in the history file
-my %h = history_map();
+my %h = ();
+if ($all) {
+    %h = history_all_init();
+} else {
+    %h = history_map();
+}
+
 open(H,'>history.dump'); print H Dumper \%h; close(H);
 
 # read the wid2lem data and determine which signatures change according

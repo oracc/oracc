@@ -588,7 +588,7 @@ sub merge {
 	    my $proj = `oraccopt`;
 	    if ($proj && $lang) {
 		warn "$0: merge via $bin $proj $lang\n";
-		system $bin, $proj, $lang;
+		system $bin, $proj, $lang, 'stash';
 		if ($?) {
 		    die "$0: merge script failed. Stop.\n";
 		} else {
