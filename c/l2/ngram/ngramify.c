@@ -448,7 +448,7 @@ next_match(void)
      within the routine that calls next_match */
   if (match_list->matches_used == match_list->matches_alloced)
     {
-      match_list->matches_alloced += 16;
+      match_list->matches_alloced += 128;
       match_list->matches = realloc(match_list->matches,
 				    match_list->matches_alloced * sizeof(struct match));
     }
