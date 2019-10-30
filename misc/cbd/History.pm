@@ -21,7 +21,7 @@ sub history {
 }
 
 sub history_init {
-    open(H,'>>00etc/history.edit');
+    open(H,'>>00etc/history.edit') || die "$0: can't open 00etc/history.edit for write. Stop.\n";
 }
 
 sub history_term {
@@ -30,8 +30,8 @@ sub history_term {
 
 sub history_all_init {
     %history = history_map("$ENV{'ORACC_BUILDS'}/epsd2/00etc/history.all");
- #   open(H,'>history-all.dump'); print H Dumper \%history; close(H);
- 
+}
+
 sub history_all_term {
     %history = ();
 }

@@ -14,12 +14,12 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdequivs.plx cbdsort.plx \
 	cbd-pull-forms.plx cbd-merge-forms.plx dotforms-dups.plx \
 	cbdcollo.plx cbdoid.plx cbd-bases-tab.plx cbd-add-oid.plx \
-	cbd-fix-glo.plx cbdstash.plx cbdminglo.sh cbdedit.plx \
+	cbdstash.plx cbdminglo.sh cbdedit.plx \
 	base-instances.plx cbdhistory.plx cbd forms-cull-zero.plx \
 	bases-cull-zero.plx entry-instances.plx cbd-super-map-tab.plx \
-	history-all.sh cbd-tidy.sh
+	history-all.sh cbd-tidy.sh cbd-trusted.plx
 
-# cbd-lem-fix.plx # now in old/
+# cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 
 scriptdata_DATA = entry-counts.xsl
 data_DATA = 

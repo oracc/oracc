@@ -3,8 +3,11 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply build check clean cull done edit fix help init make merge ok stash status update/;
+my @verbs = qw/align apply auto autodone build check clean cull done edit fix help init make merge ok stash status trusted update/;
 my %verbs = (); @verbs{@verbs} = ();
+
+my @autoverbs = qw/auto autodone ok trusted/;
+my %autoverbs = (); @autoverbs{@autoverbs} = ();
 
 my @objects = qw/bases commands culled entries final fixed forms init merged senses/;
 my %objects = (); @objects{@objects} = ();
@@ -12,6 +15,7 @@ my %objects = (); @objects{@objects} = ();
 my %commands = (
     align=>\&align,
     apply=>\&apply,
+    auto=>\&auto,
     build=>\&build,
     check=>\&check,
     clean=>\&clean,
@@ -26,6 +30,7 @@ my %commands = (
     ok=>\&ok,
     stash=>\&stash,
     status=>\&status,
+    trusted=>\&trusted,
     update=>\&update,
     );
 
@@ -57,6 +62,24 @@ my @steps = (
     );
 @steps{@steps} = ();
 
+my @auto_steps = (
+    "cbd init [LANG]",
+    "cbd trusted",
+    "cbd ok",
+    "cbd auto",
+    "cbd autodone",
+    "cbd clean",
+    );
+
+my @autofix_steps = (
+    "cbd edit",
+    "cbd fix",
+    "cbd cull trusted forms",
+    "cbd cull trusted bases",
+    "cbd align trusted bases",
+    "cbd stash",
+    );
+
 my %help = (
     commands=>\&help_commands,
     );
@@ -75,6 +98,8 @@ sub xsystem;
 my %argcheck = ();
 args_config('align', NO, qw/init bases entries senses/);
 args_config('apply', NO);
+args_config('auto', NO);
+args_config('autodone', NO);
 args_config('build', NO);
 args_config('check', MAYBE);
 args_config('clean', NO);
@@ -89,6 +114,7 @@ args_config('merge', NO);
 args_config('ok', NO);
 args_config('stash', MAYBE, 'help', @stash);
 args_config('status', NO);
+args_config('trusted', NO);
 args_config('update', NO);
 args_sanity();
 
@@ -98,6 +124,7 @@ my $verb = '';
 my $object = '';
 my $lang = '';
 my $equals_object = '';
+my $mode = 'standard';
 my $needok = 0;
 my $noexit = 0;
 my $nohelp = 0;
@@ -112,6 +139,18 @@ $verb = 'help' unless $verb;
 unless ($verb eq 'help' || $verb eq 'init') {
     $lang =  `cbdstash.plx status '#current'`;
     $phase = `cbdstash.plx status $lang`;
+    if (exists $autoverbs{$phase}) {
+	if (exists $autoverbs{$verb}) {
+	    $mode = 'auto';
+	    @steps = @auto_steps;
+	    %steps = (); @steps{@steps} = ();
+	} else {
+	    die "$0: can't use standard mode verb $verb in auto mode\n";
+	}
+    } else {
+	die "$0: can't use auto mode verb $verb in standard mode\n"
+	    if exists $autoverbs{$verb};
+    }
 }
 
 &{$commands{$verb}}($object, $lang);
@@ -272,6 +311,13 @@ sub args_sanity {
     }
     if ($#not >= 0) {
 	cbd_die "internal error: no arg info for @not";
+    }
+}
+
+sub auto {
+    cbd_test_ok();
+    foreach my $a (@autofix_steps) {
+	warn "xsystem $a\n";
     }
 }
 
@@ -680,6 +726,12 @@ sub super_project {
     } else {
 	return undef;
     }
+}
+
+sub trusted {
+    xsystem 'cbd-trusted.plx','-all',"00lib/$lang.glo";
+    ++$needok; cbd_next("cbd auto");
+    status($lang,'trusted');
 }
 
 sub update {

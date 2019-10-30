@@ -16,6 +16,8 @@ $ORACC::CBD::nonormify = 1;
 
 my @cbd = setup_cbd(\%args);
 
+my $changes = 0;
+
 if (pp_status()) {
     pp_diagnostics();
     warn "$0: glossary must be clean before attempting to fix. Stop.\n";
@@ -30,17 +32,22 @@ if ($args{'all'}) {
     %h = history_map();
 }
 
+unlink 'trusted.glo';
 $args{'output'} = 'trusted.glo';
-open(L,'trusted.log');
+#open(L,'>trusted.log');
 my $curr_entry = '';
 for (my $i = 0; $i <= $#cbd; ++$i) {
     if ($cbd[$i] =~ /^\@entry(\S*)\s+(.*?)\s*$/) {
 	my ($x,$cfgw) = ($1,$2); $x = '' unless $x;
+	my $orig = $cfgw;
 	$cfgw =~ s/\s+\[/[/; $cfgw =~ s/\]\s+/]/;
 	$curr_entry = $cfgw;
 	my $n = history_guess($cfgw);
-	print L "trust entry $cfgw => $n\n";
-	$cbd[$i] .= "\n>$n";
+	if ($n ne $orig) {
+#	print L "trust entry $cfgw => $n\n";
+	    $cbd[$i] .= "\n>$n";
+	    ++$changes;
+	}
     } elsif ($cbd[$i] =~ /^\@sense(\S*)\s+(\S+)\s+(.*?)\s*$/) {
 	my($x,$pos,$sns) = ($1,$2,$3); $x = '' unless $x;
 	my $sig = $curr_entry;
@@ -50,13 +57,19 @@ for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($n ne $sig) {
 	    my($nsns,$npos) = ($n =~ m#//(.*?)\].*'(\S+)#);
 	    my $orig = $cbd[$i];
-	    print L "trust sense $orig => $npos $nsns\n";
+#	    print L "trust sense $orig => $npos $nsns\n";
 	    $cbd[$i] .= "\n>$npos $nsns";
+	    ++$changes;
 	}
     }
 }
-close(L);
+#close(L);
 
-pp_cbd(@cbd);
+if ($changes) {
+    pp_cbd(\%args, @cbd);
+    exit 1;
+} else {
+    exit 0;
+}
 
 1;
