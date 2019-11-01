@@ -58,7 +58,7 @@ while (<>) {
 	my $l = $lines[$line];
 	$l =~ s/^\#lem:\s+//; chomp $l;
 	my @l = split(/;\s+/,$l);
-	# use contains rather than eq because parasyntax notations
+	$w %= 1000 if $w > 1000;
 	my $found_w = find_inst($inst,$w,@l);
 	if ($found_w) {
 	    if ($found_w ne $w) {
