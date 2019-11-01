@@ -130,9 +130,8 @@ sub wid2lem_inst {
     %w2l_index;
 }
 
-
 sub wid2lem_load {
-    my ($w2l_err,$wid2lem) = @_;
+    my ($w2l_err,$wid2lem,$lang) = @_;
     my @wid2lem = ();
     unless ($wid2lem) {
 	@wid2lem = `cat $w2l_err`;
@@ -147,6 +146,7 @@ sub wid2lem_load {
 	if ($f3 && $f3 =~ /^\d+$/) { # it's a WID FILE LINE triple
 	    $wid_map{$f1} = [ $f2 , $f3 ];
 	} elsif ($f3 && $f3 =~ /^\@/) { # it's a WID INSTANCE SIGNATURE triple
+	    next if ($lang && $w2l !~ /\%$lang:/);
 	    push @{$w2l_data{$f3}}, [ $f1 , $f2 ];
 	    if ($do_w2l_index) {
 		unless ($seen{$f3}++) {

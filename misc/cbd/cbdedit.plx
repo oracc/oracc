@@ -16,7 +16,7 @@ $args{'cbd'} = shift @ARGV unless $args{'cbd'};
 if (-r $args{'cbd'}) {
     unless ($args{'output'}) {
 	if ($args{'cbd'} =~ /aligned/) {
-	    if ($args{'cbd'} =~ /entries|senses/) {
+	    if ($args{'cbd'} =~ /entries|senses|trusted/) {
 		$args{'output'} = $args{'cbd'};
 		$args{'output'} =~ s/aligned/edited/;
 		die "$0: unable to write to $args{'output'} to save edits. Stop\n"

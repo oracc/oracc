@@ -567,6 +567,10 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	    }
 	}
     }
+  else
+    {
+      vwarning2((char*)file,line,"%s: missing ']'", err_lp);
+    }
 
  break_switch_loop:
 

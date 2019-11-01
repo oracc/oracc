@@ -33,6 +33,8 @@ while (<>) {
 		open(F,">$curr_file") || die "$0: can't open $file to write changes\n";
 		print F @lines;
 		close(F);
+	    } else {
+		warn "$0: changes not written to $curr_file because of errors\n";
 	    }
 	}
 	open(F,$file) || die "$0: can't open $file to read input.\n";
@@ -84,6 +86,8 @@ unless ($status) {
     print F @lines;
     close(F);
     print "$0: made $changes changes in $filecount files in project $project\n";
+} else {
+    warn "$0: changes not written to $curr_file because of errors\n";
 }
 
 sub find_inst {

@@ -43,6 +43,7 @@ foreach my $l (@lem) {
 open(M,'>00lib/Makefile');
 print M "ATF=@atf\n\nGLO=@nglo\n\nLEM=@nlem\n\n";
 print M "01bld/buildstamp: \$\{ATF} \$\{GLO} \$\{LEM}\n\toracc build\n\n";
+print M "01bld/updatestamp: \$\{ATF} \$\{GLO} \$\{LEM}\n\toracc update\n\ttouch 01bld/updatestamp\n\n";
 foreach my $g (@nglo) {
     my $l = $g;
     $l =~ s#00lib/(.*?)\.glo$#$1#;

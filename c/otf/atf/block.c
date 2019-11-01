@@ -63,6 +63,7 @@ struct node*current = NULL;
 
 int div_level = 0;
 
+int already_lemmed = 0;
 static int lg_mode = 0;
 
 /* offset used in calculation of word-ids.  In main text word-ids
@@ -839,7 +840,9 @@ $ start of reverse missing
 		      ++lnum;
 		      ++lines;
 		      if (!xstrncmp(*lines, "#lem:",5))
-			concat_continuations(lines);
+			{
+			  concat_continuations(lines);
+			}
 		      else
 			lem_save_line(lines[0]);
 		      if (xstrncmp(*lines,"#eid:",5))
@@ -882,7 +885,9 @@ $ start of reverse missing
 		      ++lnum;
 		      ++lines;
 		      if (!xstrncmp(*lines, "#lem:",5))
-			concat_continuations(lines);
+			{
+			  concat_continuations(lines);
+			}
 		      protocol(run, protocol_state, LINE, current, *lines);
 		      skip_blank();
 		    }		  
@@ -1603,6 +1608,7 @@ line_mts(unsigned char *lp)
 
   ++lninfo.lineno;
 
+  already_lemmed = 0;
   curr_lang = text_lang;
   protocol_state = s_intra;
 
@@ -1698,6 +1704,7 @@ line_bil(unsigned char *lp)
   unsigned char *s = lp+2;
   unsigned char *end = lp+xxstrlen(lp);
   
+  already_lemmed = 0;
   appendAttr(lnode,attr(a_type,ucc("bil")));
   appendChild(current,lnode);
   while (*s && isspace(*s))
@@ -1748,6 +1755,7 @@ line_nts(unsigned char *lp)
   unsigned char *s = lp+2;
   unsigned char *end = lp+xxstrlen(lp);
   
+  already_lemmed = 0;
   appendAttr(lnode,attr(a_type,ucc("nts")));
   appendChild(current,lnode);
   while (*s && isspace(*s))

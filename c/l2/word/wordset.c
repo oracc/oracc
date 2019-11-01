@@ -13,6 +13,8 @@ int wordset_debug = 0;
 static int defseps[256];
 static int keyseps[256];
 
+static int curr_seg_len = 0;
+
 static const char *defsep_chars = ".,;:/";
 static const char *keysep_chars = " .,;:/[](){}"; /* - */
 
@@ -67,10 +69,11 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
 		  struct w2_set *set2, int start2, int top2)
 {
   int hits = 0;
-  int i, j;
+  int i;
+  int seg_nkeys = 0;
   for (i = start2; i < top2; ++i)
     {
-      int found = 0;
+      int found = 0, j;
       for (j = start1; j < top1; ++j)
 	{
 	  if (!strcmp((char*)set2->keys[i], (char*)set1->keys[j]))
@@ -84,14 +87,24 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
       else
 	return W2_NONE; /* a positive miss means this can't be a subset */
     }
-  if (hits == set1->nkeys)
+  if (hits)
     {
-      set2->pct = pct(hits,set1->nkeys);
+      for (i = start1; i < set1->nkeys; ++i)
+	if (NULL==set1->keys[i])
+	  break;
+	else
+	  ++seg_nkeys;
+    }
+  if (wordset_debug)
+    fprintf(stderr, "seg_nkeys = %d\n", seg_nkeys);
+  if (hits >= seg_nkeys /*set1->nkeys*/)
+    {
+      set2->pct = 100; /*pct(hits,seg_nkeys)*/ /*set1->nkeys*/
       return W2_FULL;
     }
   else if (hits)
     {
-      set2->pct = pct(hits,set1->nkeys);
+      set2->pct = pct(hits,seg_nkeys /*set1->nkeys*/);
       return W2_PARTIAL;
     }
   else
@@ -108,6 +121,13 @@ w2_create_set(const Uchar *word_set)
   const Uchar *k;
   int index = 0;
 
+  if (!strncmp((const char *)word_set, "(to be) ", strlen("(to be) ")))
+    word_set += strlen("(to be) ");
+  else if (!strncmp((const char *)word_set, "to ", strlen("to ")))
+    word_set += strlen("to ");
+  else if (!strncmp((const char *)word_set, "a ", strlen("a ")))
+    word_set += strlen("a ");    
+  
   while ((k = getkey(word_set)))
     ++set->nkeys;
   getkey(NULL);
@@ -239,7 +259,10 @@ next_top(struct w2_set *set, int start)
   while (start < set->nkeys)
     {
       if (!set->keys[start])
-	return start;
+	{
+	  curr_seg_len = 0;
+	  return start;
+	}
       else
 	++start;
     }

@@ -20,18 +20,25 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::History;
 use ORACC::L2GLO::Util;
 use ORACC::Texts::Util;
-
-my $all = shift @ARGV;
-$all = undef unless $all eq '-all';
-
+use Getopt::Long;
 use Data::Dumper;
+
+my $all = 0;
+my $lang = undef;
+GetOptions(
+    all=>\$all,
+    'lang:s'=>\$lang,
+    );
+
+die "$0: must give language with -lang option. Stop.\n"
+    unless $lang;
 
 # get a hash of the changes made in the history file
 my %h = ();
 if ($all) {
     %h = history_all_init();
 } else {
-    %h = history_map();
+    %h = history_etc_init();
 }
 
 open(H,'>history.dump'); print H Dumper \%h; close(H);
@@ -39,7 +46,7 @@ open(H,'>history.dump'); print H Dumper \%h; close(H);
 # read the wid2lem data and determine which signatures change according
 # to the history file; keep a list of changes to be made by file:line:wid
 my %changes = ();
-my %s = wid2lem_sigs('01bld/wid2lem.tab');
+my %s = wid2lem_sigs('01bld/wid2lem.tab',undef,$lang);
 my @n = ();
 foreach my $sig (keys %s) {
     my $n = '';
@@ -48,12 +55,16 @@ foreach my $sig (keys %s) {
 
     my %p = parse_sig($sig);
     my $ocore = "$p{'cf'}\[$p{'gw'}\]$p{'pos'}";
-    if ($h{$ocore}) {
-	$e = $h{$ocore};
+    my $xn = history_guess($ocore);
+#    warn "$ocore got $xn back from history_guess\n";
+    if ($xn ne $ocore) {
+	$e = $xn;
     }
     $ocore = "$p{'cf'}\[$p{'gw'}//$p{'sense'}\]$p{'pos'}'$p{'epos'}";
-    if ($h{$ocore}) {
-	$s = $h{$ocore};
+    $xn = history_guess_sense($ocore);
+#    warn "$ocore got $xn back from history_guess_sense\n";
+    if ($xn ne $ocore) {
+	$s = $xn;
     }
     if ($e && $s) {
 	my %e = parse_sig($e);
@@ -62,8 +73,8 @@ foreach my $sig (keys %s) {
 	warn "merge $sig changes into $es\n";
 	$changes{$sig} = $es;
     } elsif ($e) {
-	warn "change $sig via entry $e\n";
 	$e =~ s#\]#//$p{'sense'}]#;
+	warn "change $sig via entry $e\n";
 	$changes{$sig} = $e;
     } elsif ($s) {
 	warn "change $sig via sense $s\n";
@@ -89,7 +100,7 @@ if (scalar keys %changes > 0) {
 	}
     }
 } else {
-    warn "$0: no 01bld/from-xtf.glo so no corpus fixes applied\n";
+    warn "$0: no changes identified.\n"; # ???
     exit 2;
 }
 
@@ -99,7 +110,9 @@ sub has_changes {
     my ($inst,$change) = @_;
     my $new = undef;
     my $ii = $inst; $ii =~ s/\].*$/]/; $ii =~ s/^\+//;
+#    warn "parse_sig ii = $ii\n";
     my %i = parse_sig($ii);
+#    warn "parse_sig change = $change\n";
     my %c = parse_sig($change);
     if ($c{'gw'} =~ /^c[vn][vn]e$/) {
 	$new = "$c{'cf'}\[$c{'gw'}\]";
@@ -112,8 +125,17 @@ sub has_changes {
 	    $new = "$c{'cf'}\[$c{'sense'}\]";
 	}
     }
-    $new = undef if $ii eq $new;
+    $new = undef if unspace($ii) eq unspace($new);
     $new;
 }
+
+sub unspace {
+    my $tmp = shift;
+    $tmp =~ s/\s+\[/[/; $tmp =~ s/\]\s+/]/;
+    $tmp;
+}
+
+#    } elsif (!$i{'sense'} && $i{'gw'} eq $c{'gw'}) {
+#	$new = "$c{'cf'}\[$c{'gw'}\]";
 
 1;

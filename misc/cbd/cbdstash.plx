@@ -2,7 +2,7 @@
 use warnings; use strict;
 
 my %args = (); my @args = qw/bases check culled dir done entries fixed help init 
-    locdata repeat senses show status update work/; @args{@args} = ();
+    locdata repeat senses show status trusted update work/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
 
 my %status = ();
@@ -22,6 +22,7 @@ my %funcs = (
     senses   => \&senses,
     show     => \&show,
     status   => \&status,
+    trusted  => \&trusted,
     update   => \&update,
     work     => \&work,
     );
@@ -45,7 +46,7 @@ my %helps = (
     work     => 'set the current working language to LANG'
     );
 
-my @sequence = qw/notused init entries senses fixed culled bases done/;
+my @sequence = qw/notused init entries senses trusted fixed culled bases done/;
 my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
 #########################################################################################
@@ -193,8 +194,8 @@ sub phase_check {
     my $p = shift;
     my $s = getstatus();
     die "$0: unknown status $p\n" unless $sequence{$p};
-    if ($repeat || ($sequence{$p} - $sequence{$s}) == 1) {
-	if ($p eq 'entries' || $p eq 'senses' ) {
+    if ($repeat || (($sequence{$p} - $sequence{$s}) == 1) || $p eq 'trusted') {
+	if ($p eq 'entries' || $p eq 'senses' || $p eq 'trusted') {
 	    unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
 		die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
 	    } else {
@@ -298,6 +299,9 @@ sub status {
     }
 }
 
+sub trusted {
+    phase_save('trusted');
+}
 sub update {
     my $status = getstatus();
     if ($status eq 'init') {

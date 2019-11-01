@@ -33,7 +33,7 @@ if ($args{'all'}) {
 }
 
 unlink 'trusted.glo';
-$args{'output'} = 'trusted.glo';
+$args{'output'} = lang().'-trusted-aligned.glo';
 #open(L,'>trusted.log');
 my $curr_entry = '';
 for (my $i = 0; $i <= $#cbd; ++$i) {

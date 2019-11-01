@@ -3,13 +3,13 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply auto autodone build check clean cull done edit fix help init make merge ok stash status trusted update/;
+my @verbs = qw/align apply auto autodone build check clean cull done edit fix help init make merge ok stash status trust trusted update/;
 my %verbs = (); @verbs{@verbs} = ();
 
-my @autoverbs = qw/auto autodone ok trusted/;
+my @autoverbs = qw/auto autodone edit fix ok stash trusted/;
 my %autoverbs = (); @autoverbs{@autoverbs} = ();
 
-my @objects = qw/bases commands culled entries final fixed forms init merged senses/;
+my @objects = qw/bases commands culled entries final fixed forms init merged senses trusted/;
 my %objects = (); @objects{@objects} = ();
 
 my %commands = (
@@ -30,6 +30,7 @@ my %commands = (
     ok=>\&ok,
     stash=>\&stash,
     status=>\&status,
+    trust=>\&trust,
     trusted=>\&trusted,
     update=>\&update,
     );
@@ -63,20 +64,20 @@ my @steps = (
 @steps{@steps} = ();
 
 my @auto_steps = (
-    "cbd init [LANG]",
+    "cbd trust [LANG]",
     "cbd trusted",
-    "cbd ok",
     "cbd auto",
-    "cbd autodone",
+    "cbd done",
     "cbd clean",
     );
 
 my @autofix_steps = (
     "cbd edit",
+    "cbd stash",
     "cbd fix",
-    "cbd cull trusted forms",
-    "cbd cull trusted bases",
-    "cbd align trusted bases",
+    "cbd cull forms",
+    "cbd cull bases",
+    "cbd align bases",
     "cbd stash",
     );
 
@@ -84,9 +85,10 @@ my %help = (
     commands=>\&help_commands,
     );
 
-my @stash = qw/init entries senses fixed culled bases final/;
+my @stash = qw/init entries senses trust trusted fixed culled bases final/;
 my %stash = (
     init=>\&stash_init,
+    trust=>\&stash_init,
     );
 
 use constant { NO=>0, YES=>1, MAYBE=>2 };
@@ -105,8 +107,8 @@ args_config('check', MAYBE);
 args_config('clean', NO);
 args_config('cull', NO, qw/forms bases/);
 args_config('done', NO);
-args_config('edit', NO);
-args_config('fix', NO);
+args_config('edit', NO, qw/trusted/);
+args_config('fix', NO, qw/trusted/);
 args_config('help', NO, @verbs, 'commands');
 args_config('init', YES);
 args_config('make', NO);
@@ -114,6 +116,7 @@ args_config('merge', NO);
 args_config('ok', NO);
 args_config('stash', MAYBE, 'help', @stash);
 args_config('status', NO);
+args_config('trust', YES);
 args_config('trusted', NO);
 args_config('update', NO);
 args_sanity();
@@ -136,7 +139,7 @@ args_process();
 
 $verb = 'help' unless $verb;
 
-unless ($verb eq 'help' || $verb eq 'init') {
+unless ($verb eq 'help' || $verb eq 'init' || $verb eq 'trust') {
     $lang =  `cbdstash.plx status '#current'`;
     $phase = `cbdstash.plx status $lang`;
     if (exists $autoverbs{$phase}) {
@@ -151,6 +154,9 @@ unless ($verb eq 'help' || $verb eq 'init') {
 	die "$0: can't use auto mode verb $verb in standard mode\n"
 	    if exists $autoverbs{$verb};
     }
+} elsif ($verb eq 'trust') {
+    @steps = @auto_steps;
+    %steps = (); @steps{@steps} = ();
 }
 
 &{$commands{$verb}}($object, $lang);
@@ -371,6 +377,8 @@ sub cbd_object {
 	$object = 'entries';
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
+    } elsif ($phase eq 'trusted') {
+	$object = 'trusted';
     } elsif ($phase eq 'senses') {
 	$object = 'fixed';
     } elsif ($phase eq 'fixed') {
@@ -381,6 +389,7 @@ sub cbd_object {
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
     }
+    $object;
 }
 
 sub cbd_test_ok {
@@ -483,6 +492,9 @@ sub edit {
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
 	$next = 'cbd stash';
+    } elsif ($phase eq 'trusted') {
+	$object = 'trusted';
+	$next = 'cbd stash';
     } else {
 	cbd_die "cbd edit only works when current phase is 'init' or 'entries', not '$object'";
     }
@@ -495,17 +507,21 @@ sub edit {
 }
 
 sub fix {
-    if ($phase eq 'senses') {
-	xsystem 'make', '-qrR', '-f', '00lib/Makefile', "02pub/lemm-$lang.sig";
-	if ($?) {
-	    ++$nohelp; cbd_die "please do oracc update before cbd fix";
-	} else {
-	    xsystem 'make', '-f', '00lib/Makefile';
+    if ($phase eq 'senses' || $phase eq 'trusted') {
+	
+	# xsystem 'make', '-qrR', '-f', '00lib/Makefile', "02pub/lemm-$lang.sig";
+
+	# xsystem 'make', '-qrR', '-f', '00lib/Makefile', 'update';
+	
+#	if ($?) {
+#	    ++$nohelp; cbd_die "please do oracc update before cbd fix";
+#	} else {
+	    # xsystem 'make', '-f', '00lib/Makefile';
 
 	    #  xsystem 'inst-fix-tab.plx';
 
 	    ## create the fix tab
-	    xsystem "cbd-lem-fix.plx >to-fix.tab 2>to-fix.log";
+	    xsystem "cbd-lem-fix.plx -lang $lang >to-fix.tab 2>to-fix.log";
 
 	    if ($?) {
 		warn "? = $?\n";
@@ -513,7 +529,7 @@ sub fix {
 		    cbd_warn "no corpus fixes identified in this cbd fix operation";
 		    cbd_next "cbd stash";
 		} else {
-		    cbd_die "inst-fix-tab.plx failed";
+		    cbd_die "cbd-lem-fix.plx failed";
 		}
 	    } else {
 		## save the 00atf files
@@ -530,10 +546,10 @@ sub fix {
 		cbd_next("Now do 'oracc update' then check the corpus and fix until aligned with\nglossaries.",
 			 'cbd stash');
 	    }
-	}
+#	}
 	
     } else {
-	cbd_die "you must do cbd stash senses before cbd fix";
+	cbd_die "you must do cbd stash senses or cbd stash trusted before cbd fix";
     }
 }
 
@@ -560,6 +576,10 @@ aligning and correcting glossaries and corpora.  For more help try:
 to get started aligning a language say:
 
 	cbd init [LANG]
+
+or
+
+	cbd trust [LANG]
 
 and cbd will assist you from there on.
 
@@ -680,7 +700,7 @@ sub stash {
 		cbd_next("cbd done");
 	    } elsif ($a eq 'fixed') {
 		cbd_next("cbd cull forms");
-	    } elsif ($next eq 'fixed') {
+	    } elsif ($next eq 'fixed' || $next eq 'trusted') {
 		cbd_next("cbd fix"); # if the next stash is 'fixed' we need 'cbd fix' to happen first
 	    } else {
 		cbd_next("cbd align $next");
@@ -692,6 +712,7 @@ sub stash {
 }
 
 sub stash_init {
+    my $trusted = shift @_;
     cbd_die "must give language with cbd stash init"
 	unless $lang;
     cbd_die "no glossary 00lib/$lang.glo"
@@ -706,7 +727,12 @@ sub stash_init {
     xsystem 'cbdstash.plx', 'init', $lang;
     if ($? == 0) {
 	xsystem 'touch', '.nobuild';
-	cbd_next("cbd align entries");
+	if ($trusted) {
+	    ++$noexit; cbd_next("cbd trusted");
+	    status($lang,'trusted');
+	} else {
+	    cbd_next("cbd align entries");
+	}
     } else {
 	die "$0: cbdstash.plx init $lang returned $?\n";
     }
@@ -728,10 +754,14 @@ sub super_project {
     }
 }
 
+sub trust {
+    xsystem 'history-all.sh';
+    stash_init('trusted');
+}
+
 sub trusted {
     xsystem 'cbd-trusted.plx','-all',"00lib/$lang.glo";
     ++$needok; cbd_next("cbd auto");
-    status($lang,'trusted');
 }
 
 sub update {

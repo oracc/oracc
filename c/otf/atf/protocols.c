@@ -293,10 +293,15 @@ protocol(struct run_context *run,
 	    version_handler(parent, scope, level, line);
 	  else if (!xstrcmp(type,"lem"))
 	    {
+	      extern int already_lemmed;
 	      suppress_output = 1;
 	      if (need_lemm || do_show_insts)
 		{
 		  unsigned char *oline = NULL;
+		  if (already_lemmed)
+		    vwarning("multiple #lem: lines not allowed");
+		  else
+		    ++already_lemmed;
 		  if (*line)
 		    {
 #if 0		      

@@ -12,6 +12,7 @@
 extern int lem_dynalem;
 extern int verbose;
 extern const char *xcl_project;
+extern int wordset_debug;
 
 static struct siglook look_check = { "sigs_check", sigs_inst_in_sigset, sig_look_check };
 
@@ -158,7 +159,6 @@ int
 sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild)
 {
   int sub = 0;
-  extern int wordset_debug;
   if (gw_wild)
     {
       /* blank GW is a wildcard and matches any GW/SENSE */
@@ -425,6 +425,8 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	      res[ncand] = c;
 	      if (f->words)
 		{
+		  if (wordset_debug)
+		    fprintf(stderr, "f->words->pct = %d; pct_top = %d\n", f->words->pct, pct_top);
 		  res[ncand]->pct = f->words->pct;
 		  if (f->words->pct > pct_top)
 		    pct_top = f->words->pct;
@@ -497,6 +499,8 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		{
 		  if (f->words)
 		    {
+		      if (wordset_debug)
+			fprintf(stderr, "f->words->pct = %d; pct_top = %d\n", f->words->pct, pct_top);
 		      res[i]->pct = f->words->pct;
 		      if (f->words->pct > s_pct_top)
 			s_pct_top = f->words->pct;
