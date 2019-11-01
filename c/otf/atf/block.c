@@ -1609,6 +1609,7 @@ line_mts(unsigned char *lp)
   ++lninfo.lineno;
 
   already_lemmed = 0;
+  bil_offset = exemplar_offset = 0;
   curr_lang = text_lang;
   protocol_state = s_intra;
 
@@ -1717,7 +1718,7 @@ line_bil(unsigned char *lp)
 	{
 	  *end = '\0';
 	  tlit_parse_inline(s,end,lnode, 
-			    ++bil_offset * 1000, 
+			    1 + (++bil_offset * 1000), 
 			    WITH_WORD_LIST, uc(line_id_buf));
 	}
     }
@@ -1742,7 +1743,7 @@ line_gus(unsigned char *lp)
       if (end > s)
 	{
 	  *end = '\0';
-	  tlit_parse_inline(s,end,lnode,1000, WITH_WORD_LIST,uc(line_id_buf));
+	  tlit_parse_inline(s,end,lnode,1001, WITH_WORD_LIST,uc(line_id_buf));
 	}
     }
 }
@@ -1767,7 +1768,7 @@ line_nts(unsigned char *lp)
       if (end > s)
 	{
 	  *end = '\0';
-	  tlit_parse_inline(s,end,lnode,2000, WITH_WORD_LIST,uc(line_id_buf));
+	  tlit_parse_inline(s,end,lnode,2001, WITH_WORD_LIST,uc(line_id_buf));
 	}
     }
 }
@@ -1791,7 +1792,7 @@ line_lgs(unsigned char *lp)
 	{
 	  int i;
 	  *end = '\0';
-	  tlit_parse_inline(s,end,lnode,3000, NO_WORD_LIST,uc(line_id_buf));
+	  tlit_parse_inline(s,end,lnode,3001, NO_WORD_LIST,uc(line_id_buf));
 	  /* this gives us g:w wrappers; unwrap and check there were only
 	     space boundaries */
 	  for (i = 0; i < lnode->children.lastused; ++i)
@@ -1896,7 +1897,7 @@ line_var(unsigned char *lp)
       if (end > s)
 	{
 	  *end = '\0';
-	  tlit_parse_inline(s, end, lnode, 1000 * exemplar_offset,
+	  tlit_parse_inline(s, end, lnode, 1 + (1000 * exemplar_offset),
 			    WITH_WORD_LIST, uc(line_id_buf));
 	}
     }
