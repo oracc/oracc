@@ -502,7 +502,13 @@ sub edit {
     if ($?) {
 	++$nohelp; cbd_die("cbd edit $object failed. Stop");
     } else {
-	cbd_next($next);
+	xsystem 'cbdpp.plx', '-c', "$lang-$object-edited.glo";
+	if ($?) {
+	    ++$nohelp; cbd_die("cbd edit $object created errors in $lang-$object-edited.glo. Stop");
+	} else {
+	    xsystem 'make', '-f', '00lib/Makefile', '01bld/updatestamp';
+	    cbd_next($next);
+	}
     }
 }
 
@@ -539,12 +545,15 @@ sub fix {
 		## apply the fix tab
 		xsystem 'cbd-lem-fix-apply.plx', 'to-fix.tab';
 
-		cbd_needs_ok();
+		xsystem 'ox', '-cvm', '-I01bld/atfsources.atf','-lfixcheck.log';
 
-		## next=check the corpus and fix it manually until it's aligned w glossaries
-		## next-next=cbd stash fixed
-		cbd_next("Now do 'oracc update' then check the corpus and fix until aligned with\nglossaries.",
-			 'cbd stash');
+		if ($?) {
+		    ## next=check the corpus and fix it manually until it's aligned w glossaries
+		    ## next-next=cbd stash fixed
+		    cbd_next("Fixed corpus doesn't check clean; repair and 'cbd ok' before proceeding");
+		    ++$needok;
+		}
+		cbd_next('cbd stash');
 	    }
 #	}
 	
