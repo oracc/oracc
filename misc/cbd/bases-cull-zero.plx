@@ -13,15 +13,28 @@ my %bases = ();
 my %baserefs = ();
 my $line = 0;
 
+my @bases_used = `base-inst.sh`; chomp @bases_used; @bases_used = map { s/^.*?=//; $_; } @bases_used;
+my %bases_used = (); @bases_used{@bases_used} = (); open(B,'>bases_used.dump'); print B Dumper \%bases_used; close(B);
+
 my @out = ();
 bases_init();
+my $curr = '';
 while (<>) {
-    if (/^$acd_rx\@entry/) {
+    if (/^$acd_rx\@entry\S*\s+(.*?)\s*$/) {
+	$curr = $1;
+	$curr =~ s/\s+\[/[/;
+	$curr =~ s/\].*$/]/;
     } elsif (/^\@bases\s*/) {
 	%bases = bases_hash($_);
 	$bases_line = $line;
-    } elsif (/^\@form\s*/) {
-	m#\s/(\S+)# && ++$baserefs{$1};
+	foreach my $b (keys %bases) {
+	    next if $b =~ /#/;
+	    if (exists $bases_used{"$curr/$b"}) {
+		++$baserefs{$b} 
+	    } else {
+		warn "dropping unused base '$curr/$b'\n";
+	    }
+	}
     } elsif (/^\@end\s+entry/) {
 	if ($bases_line > 0) {
 	    # print "\@$bases_line: ", Dumper \%baserefs;

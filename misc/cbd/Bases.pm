@@ -95,7 +95,7 @@ sub bases_align {
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
 		pp_line($i+1);
-		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i);
+		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i, $curr_entry);
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    if ($$args{'apply'}) {
 			$bases{$curr_entry} = $b;
@@ -162,7 +162,7 @@ sub bases_term {
 
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
-    my($b1,$b2,$cpd,$base_i) = @_;
+    my($b1,$b2,$cpd,$base_i,$curr) = @_;
 
 #    warn "bases_merge calling bases_hash\n";
     

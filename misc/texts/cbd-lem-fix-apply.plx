@@ -58,6 +58,7 @@ while (<>) {
 	my $l = $lines[$line];
 	$l =~ s/^\#lem:\s+//; chomp $l;
 	my @l = split(/;\s+/,$l);
+	warn "inst=$inst; w=$w; l=$l\n";
 	$w %= 1000 if $w > 1000;
 	my $found_w = find_inst($inst,$w,@l);
 	if ($found_w) {

@@ -3,10 +3,10 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
-my @verbs = qw/align apply auto autodone build check clean cull done edit fix help init make merge ok stash status trust trusted update/;
+my @verbs = qw/align apply auto done build check clean cull done edit fix help init make merge ok stash status trust trusted update/;
 my %verbs = (); @verbs{@verbs} = ();
 
-my @autoverbs = qw/auto autodone edit fix ok stash trusted/;
+my @autoverbs = qw/align auto done cull edit fix ok stash trusted/;
 my %autoverbs = (); @autoverbs{@autoverbs} = ();
 
 my @objects = qw/bases commands culled entries final fixed forms init merged senses trusted/;
@@ -77,7 +77,6 @@ my @autofix_steps = (
     "cbd fix",
     "cbd cull forms",
     "cbd cull bases",
-    "cbd align bases",
     "cbd stash",
     );
 
@@ -101,7 +100,6 @@ my %argcheck = ();
 args_config('align', NO, qw/init bases entries senses/);
 args_config('apply', NO);
 args_config('auto', NO);
-args_config('autodone', NO);
 args_config('build', NO);
 args_config('check', MAYBE);
 args_config('clean', NO);
@@ -323,7 +321,11 @@ sub args_sanity {
 sub auto {
     cbd_test_ok();
     foreach my $a (@autofix_steps) {
-	warn "xsystem $a\n";
+	my @a = split(/\s+/, $a);
+	xsystem @a;
+	if ($?) {
+	    die "$0: cbd auto aborted after failure of phase. Stop.\n";
+	}
     }
 }
 
@@ -454,7 +456,7 @@ sub clean {
 }
 
 sub cull {
-    if ($phase eq 'fixed') {
+    if ($phase eq 'fixed' || $phase eq 'trusted') {
 	if ($object eq 'bases') {
 	    if (-r "$lang-culled-forms.glo") {
 		## do the cbd cull bases operation
@@ -504,9 +506,9 @@ sub edit {
     } else {
 	xsystem 'cbdpp.plx', '-c', "$lang-$object-edited.glo";
 	if ($?) {
-	    ++$nohelp; cbd_die("cbd edit $object created errors in $lang-$object-edited.glo. Stop");
+	    ++$nohelp; cbd_die("cbd edit $object created errors in $lang-$object-edited.glo. Stop.");
 	} else {
-	    xsystem 'make', '-f', '00lib/Makefile', '01bld/updatestamp';
+	    xsystem 'make', '-f', '00lib/Makefile', '01bld/updatestamp'; # update the lemm info
 	    cbd_next($next);
 	}
     }
@@ -545,13 +547,14 @@ sub fix {
 		## apply the fix tab
 		xsystem 'cbd-lem-fix-apply.plx', 'to-fix.tab';
 
-		xsystem 'ox', '-cvm', '-I01bld/atfsources.atf','-lfixcheck.log';
+		xsystem 'ox', '-cvm', '-I01bld/atfsources.lst','-lfixcheck.log';
 
 		if ($?) {
 		    ## next=check the corpus and fix it manually until it's aligned w glossaries
 		    ## next-next=cbd stash fixed
+		    ++$needok; ++$noexit;
 		    cbd_next("Fixed corpus doesn't check clean; repair and 'cbd ok' before proceeding");
-		    ++$needok;
+		    die "$0: processing aborted.\n";
 		}
 		cbd_next('cbd stash');
 	    }
@@ -738,6 +741,8 @@ sub stash_init {
 	xsystem 'touch', '.nobuild';
 	if ($trusted) {
 	    ++$noexit; cbd_next("cbd trusted");
+	    my $d = `cbdstash.plx dir`;
+	    open(T,">$d/mode"); print T 'trusted'; close(T);
 	    status($lang,'trusted');
 	} else {
 	    cbd_next("cbd align entries");

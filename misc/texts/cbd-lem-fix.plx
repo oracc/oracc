@@ -95,6 +95,7 @@ if (scalar keys %changes > 0) {
 	    my $new = '';
 	    if (($new = has_changes($$i[1], $changes{$c}))) {
 		my $loc = wid2lem_loc($$i[0]);
+		$new =~ s/\s+\[/[/; $new =~ s/\]\s+/]/;
 		print "$$loc[0]\:$$loc[1]:\t$$i[0]\t$$i[1]\t$new\t<<$changes{$c}\n";
 	    }
 	}

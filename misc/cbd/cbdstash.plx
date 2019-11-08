@@ -353,6 +353,8 @@ sub stash {
     system 'cp', '-pPR', '00atf', $newdir;
     foreach my $g (<00lib/*.glo>) {
 	system 'cp', '-pPR', $g, $newdir;
+	$g =~ s#^00lib/##;
+	system 'cp', '-pPR', "$newdir/$g", "$newdir/$g.orig";
     }
     system "wid2lem <01bld/lists/have-xtf.lst | xz >$newdir/$p-loc-data.xz";
 }

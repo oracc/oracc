@@ -16,7 +16,7 @@ my $newiso = `date +\%Y-\%m-\%d`; chomp $newiso;
 my $cullfile = "00any/cull-$newiso.forms";
 open(CULL,">$cullfile") || die "$0: can't write culled forms to $cullfile\n";
 
-while (<>) {    
+while (<>) {
     if (/^$acd_rx\@entry/) {
 	warn "$.: missing \@end entry\n" if scalar keys %forms > 0;
 	$curr_entry = $_;
