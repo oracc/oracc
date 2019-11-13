@@ -510,9 +510,14 @@ lem_end(unsigned char *lem)
     {
       while (*s && (']' != *s || '\\' == s[-1]))
 	++s;
-      while (*s && !isspace(*s))
-	++s;
-      return s;
+      if (*s && s[1] == '|')
+	return s+1;
+      else
+	{
+	  while (*s && !isspace(*s))
+	    ++s;
+	  return s;
+	}
     }
   else
     {
