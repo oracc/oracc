@@ -13,6 +13,9 @@ if [ -r 00lib/config.xml ]; then
 		rm -fr $a
 	    fi
 	done
+	rm -f $ORACC_BUILDS/epsd2/new*.glo
+	rm -f $ORACC_BUILDS/epsd2/emesal/new*.glo
+	rm -f $ORACC_BUILDS/epsd2/names/new*.glo
     fi
 else
     echo "$0: this doesn't look like a project directory. Stop."

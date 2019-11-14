@@ -51,7 +51,7 @@ my %helps = (
 my @sequence = qw/notused init entries senses fixed culled bases done/;
 my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
 
-my @tsequence = qw/notused trusted bases done/;
+my @tsequence = qw/notused init trusted culled done/;
 
 #########################################################################################
 
@@ -380,7 +380,7 @@ sub stashdir {
 sub stashiso {
     my $iso = undef;
     if (-r '00etc/stash') {
-	$iso = `ls 00etc/stash | tail -1`;
+	$iso = `ls 00etc/stash | grep -v tar | tail -1`;
 	chomp $iso;
     }
     return $iso;

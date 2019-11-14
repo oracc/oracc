@@ -88,7 +88,7 @@ my %help = (
     );
 
 my @stash = qw/init entries senses fixed culled bases final/;
-my @tstash = qw/trust trusted bases/;
+my @tstash = qw/init trusted auto culled final/;
 my %stash = (
     init=>\&stash_init,
     trust=>\&stash_init,
@@ -361,7 +361,7 @@ sub cbd_next {
 	    next unless length;
 	    if (/^-/) {
 		my $t = $_; $t =~ s/^-/\t/;
-		warn "\n$t\n\n" unless $mode eq 'auto';
+		warn "\n$t\n\n" unless $mode eq 'auto' || $t eq 'cbd done';
 	    } else {
 		warn "\nNext step:\n\n\t$_\n\n" unless $mode eq 'auto';
 	    }
@@ -389,22 +389,20 @@ sub cbd_needs_ok {
 
 sub cbd_object {
     if ($phase eq 'init') {
-	$object = 'entries';
-    } elsif ($phase eq 'entries') {
-	$object = 'senses';
-    } elsif ($phase eq 'trusted') {
-	if ($mode eq 'auto' && -r "$lang-culled-bases.glo") {
-	    $object = 'bases';
+	unless ($trusted_mode) {
+	    $object = 'entries';
 	} else {
 	    $object = 'trusted';
 	}
+    } elsif ($phase eq 'entries') {
+	$object = 'senses';
     } elsif ($phase eq 'senses') {
 	$object = 'fixed';
     } elsif ($phase eq 'fixed') {
 	$equals_object = 'fix';
 	$object = 'culled';
-    } elsif ($phase eq 'culled') {
-	$object = 'bases';
+    } elsif ($phase eq 'culled' || $phase eq 'trusted') { # in auto mode trusted then culled
+	$object = 'culled';
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
     }
@@ -464,6 +462,7 @@ sub clean {
 	    xsystem "sed s/^+// <$g >$l";
 	    xsystem "oracc update";
 	    xsystem "(cd $p ; make update check)";
+	    xsystem 'cbd-tidy.sh';
 	} else {
 	    die "$0: unable to establish super_project for $lang. Stop.\n";
 	}
@@ -506,16 +505,17 @@ sub done {
 sub edit {
     my $next = '';
     if ($phase eq 'init') {
-	$object = 'entries';
+	if ($trusted_mode) {
+	    $object = 'trusted';
+	} else {
+	    $object = 'entries';
+	}
 	$next = 'cbd stash';
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
 	$next = 'cbd stash';
-    } elsif ($phase eq 'trusted') {
-	$object = 'trusted';
-	$next = 'cbd stash';
     } else {
-	cbd_die "cbd edit only works when current phase is 'init', 'entries', or 'trusted', not '$phase'";
+	cbd_die "cbd edit only works when current phase is 'init', 'entries', not '$phase'";
     }
     ++$noexit; xsystem 'cbdedit.plx', "$lang-$object-aligned.glo";
     if ($?) {
@@ -725,9 +725,10 @@ sub stash {
 	} else {
 	    xsystem 'cbdstash.plx', $a;
 	    my $next;
-	    for (my $i = 0; $i <= $#stash; ++$i) {
-		if ($stash[$i] eq $a) {
-		    $next = $stash[$i+1];
+	    my @tmpstash = $trusted_mode ? @tstash : @stash;
+	    for (my $i = 0; $i <= $#tmpstash; ++$i) {
+		if ($tmpstash[$i] eq $a) {
+		    $next = $tmpstash[$i+1];
 		    last;
 		}
 	    }
@@ -735,8 +736,10 @@ sub stash {
 		cbd_next("cbd done");
 	    } elsif ($a eq 'fixed') {
 		cbd_next("cbd cull forms");
-	    } elsif ($next eq 'fixed' || $next eq 'trusted') {
+	    } elsif ($next eq 'fixed') {
 		cbd_next("cbd fix"); # if the next stash is 'fixed' we need 'cbd fix' to happen first
+	    } elsif ($next eq 'auto') {
+		cbd_next("cbd auto");
 	    } else {
 		cbd_next("cbd align $next");
 	    }
