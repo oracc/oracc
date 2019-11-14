@@ -19,20 +19,22 @@ my %bases_used = (); @bases_used{@bases_used} = (); open(B,'>bases_used.dump'); 
 my @out = ();
 bases_init();
 my $curr = '';
+open(L,'>bases-cull-zero.log');
 while (<>) {
+    my $input = $_;
     if (/^$acd_rx\@entry\S*\s+(.*?)\s*$/) {
 	$curr = $1;
 	$curr =~ s/\s+\[/[/;
 	$curr =~ s/\].*$/]/;
     } elsif (/^\@bases\s*/) {
+	$bases_line = $#out+1;
 	%bases = bases_hash($_);
-	$bases_line = $line;
 	foreach my $b (keys %bases) {
 	    next if $b =~ /#/;
 	    if (exists $bases_used{"$curr/$b"}) {
 		++$baserefs{$b} 
 	    } else {
-		warn "dropping unused base '$curr/$b'\n";
+		print L "dropping unused base '$curr/$b'\n";
 	    }
 	}
     } elsif (/^\@end\s+entry/) {
@@ -43,21 +45,28 @@ while (<>) {
 		next if $b =~ /#/;
 		push @del, $b unless $baserefs{$b};
 	    }
-	    foreach my $d (@del) {
-		delete $bases{$d};
+	    if ($#del >= 0) {
+		foreach my $d (@del) {
+		    delete $bases{$d};
+		}
+		my $n = bases_serialize(%bases);
+		if ($n) {
+		    $out[$bases_line] = "\@bases $n\n";
+		} else {
+		    1 while ($#out >= 0 && pop(@out) !~ /^\@entry/);
+		    $input = '';
+		}
 	    }
-	    my $n = bases_serialize(%bases);
-	    $out[$bases_line] = "\@bases $n\n";
 	    %bases = ();
 	    %baserefs = ();
 	    $bases_line = -1;
 	}
     }
-    push @out, $_ if $_;
-    ++$line;
+    push(@out, $input) if $input;
 }
 bases_term();
-
+close(L);
+open(O,'>O'); print O Dumper \@out; close(O);
 print @out;
 
 1;

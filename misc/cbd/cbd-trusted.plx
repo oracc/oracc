@@ -66,10 +66,9 @@ for (my $i = 0; $i <= $#cbd; ++$i) {
 #close(L);
 
 if ($changes) {
+    my $lang = lang();
     pp_cbd(\%args, @cbd);
-    exit 1;
-} else {
-    exit 0;
+    system "grep -B1 '^>' $lang-trusted-aligned.glo >$lang-trusted.log";
 }
 
 1;

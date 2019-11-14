@@ -5,6 +5,8 @@ my %args = (); my @args = qw/bases check culled dir done entries fixed help init
     locdata repeat senses show status trusted update work/; @args{@args} = ();
 my %lang_args = (); my @lang_args = qw/bases entries fixed senses/; @lang_args{@lang_args} = ();
 
+my $mode = 'standard';
+
 my %status = ();
 
 my %funcs = (
@@ -46,8 +48,10 @@ my %helps = (
     work     => 'set the current working language to LANG'
     );
 
-my @sequence = qw/notused init entries senses trusted fixed culled bases done/;
+my @sequence = qw/notused init entries senses fixed culled bases done/;
 my %sequence = (); @sequence{@sequence} = (0 .. $#sequence+1);
+
+my @tsequence = qw/notused trusted bases done/;
 
 #########################################################################################
 
@@ -194,7 +198,7 @@ sub phase_check {
     my $p = shift;
     my $s = getstatus();
     die "$0: unknown status $p\n" unless $sequence{$p};
-    if ($repeat || (($sequence{$p} - $sequence{$s}) == 1) || $p eq 'trusted') {
+    if ($repeat || (($sequence{$p} - $sequence{$s}) == 1)) {
 	if ($p eq 'entries' || $p eq 'senses' || $p eq 'trusted') {
 	    unless (-r "$lang-$p-aligned.glo" && -r "$lang-$p-edited.glo") {
 		die "$0: must have both $lang-$p-aligned.glo and $lang-$p-edited.glo\n";
@@ -324,6 +328,11 @@ sub status_load {
 	$status{$l} = $s;
     }
     close(S);
+    if (-r "$stashdir/mode") {
+	$mode = 'trusted';
+	@sequence = @tsequence;
+	@sequence{@tsequence} = (0 .. $#tsequence+1);
+    }
 }
 
 sub status_dump {

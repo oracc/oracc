@@ -17,7 +17,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdstash.plx cbdminglo.sh cbdedit.plx \
 	base-instances.plx cbdhistory.plx cbd forms-cull-zero.plx \
 	bases-cull-zero.plx entry-instances.plx cbd-super-map-tab.plx \
-	history-all.sh cbd-tidy.sh cbd-trusted.plx
+	history-all.sh cbd-tidy.sh cbd-trusted.plx cbd-drop-epsd2.sh
 
 # cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 

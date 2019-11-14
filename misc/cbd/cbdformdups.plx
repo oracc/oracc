@@ -21,6 +21,7 @@ for (my $i = 0; $i <= $#cbd; ++$i) {
     if ($cbd[$i] =~ /^\@form/) {
 	my $fstart = $i;
 	do {
+	    $cbd[$i] =~ s/\s+/ /;
 	    ++$f{$cbd[$i]};
 	} while ($cbd[++$i] =~ /^\@form/);
 	my $nforms = $i - $fstart;

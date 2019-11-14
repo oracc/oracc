@@ -46,6 +46,7 @@ open(H,'>history.dump'); print H Dumper \%h; close(H);
 # read the wid2lem data and determine which signatures change according
 # to the history file; keep a list of changes to be made by file:line:wid
 my %changes = ();
+$ORACC::Texts::Util::drop_derived = 1;
 my %s = wid2lem_sigs('01bld/wid2lem.tab',undef,$lang);
 my @n = ();
 foreach my $sig (keys %s) {

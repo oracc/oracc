@@ -9,6 +9,9 @@ my %verbs = (); @verbs{@verbs} = ();
 my @autoverbs = qw/align auto done cull edit fix ok stash trusted/;
 my %autoverbs = (); @autoverbs{@autoverbs} = ();
 
+my @auto_only_verbs = qw/auto trusted/;
+my %auto_only_verbs = (); @auto_only_verbs{@auto_only_verbs} = ();
+
 my @objects = qw/bases commands culled entries final fixed forms init merged senses trusted/;
 my %objects = (); @objects{@objects} = ();
 
@@ -84,7 +87,8 @@ my %help = (
     commands=>\&help_commands,
     );
 
-my @stash = qw/init entries senses trust trusted fixed culled bases final/;
+my @stash = qw/init entries senses fixed culled bases final/;
+my @tstash = qw/trust trusted bases/;
 my %stash = (
     init=>\&stash_init,
     trust=>\&stash_init,
@@ -121,6 +125,7 @@ args_sanity();
 
 ################################################################################################
 
+my $dir = '';
 my $verb = '';
 my $object = '';
 my $lang = '';
@@ -131,8 +136,10 @@ my $noexit = 0;
 my $nohelp = 0;
 my $nonext = 0;
 my $phase = '';
+my $trusted_mode = 0;
 my $verbose = 1;
 
+$dir = `cbdstash.plx dir`;
 args_process();
 
 $verb = 'help' unless $verb;
@@ -140,7 +147,13 @@ $verb = 'help' unless $verb;
 unless ($verb eq 'help' || $verb eq 'init' || $verb eq 'trust') {
     $lang =  `cbdstash.plx status '#current'`;
     $phase = `cbdstash.plx status $lang`;
-    if (exists $autoverbs{$phase}) {
+    if (-r "$dir/mode") {
+	my $m = `cat $dir/mode`;
+	if ($m eq 'trusted') {
+	    $trusted_mode = 1;
+	}
+    }
+    if ($trusted_mode) {
 	if (exists $autoverbs{$verb}) {
 	    $mode = 'auto';
 	    @steps = @auto_steps;
@@ -150,9 +163,11 @@ unless ($verb eq 'help' || $verb eq 'init' || $verb eq 'trust') {
 	}
     } else {
 	die "$0: can't use auto mode verb $verb in standard mode\n"
-	    if exists $autoverbs{$verb};
+	    if exists $auto_only_verbs{$verb};
     }
-} elsif ($verb eq 'trust') {
+}
+
+if ($verb eq 'trust' || $trusted_mode) {
     @steps = @auto_steps;
     %steps = (); @steps{@steps} = ();
 }
@@ -234,9 +249,9 @@ sub args_config {
 }
 
 sub args_process {
+    my $d = $dir;
     foreach my $a (@ARGV) {
 	if ($a eq '.') {
-	    my $d = `cbdstash.plx dir`;
 	    if ($d) {
 		my @n = ();
 		if (-r "$d/next") {
@@ -256,9 +271,9 @@ sub args_process {
 		my @n = ();
 		if (-r "$d/next") {
 		    @n = `cat $d/next`; chomp @n;
+		    die "$0: failed to exec @n\n"
+			unless exec @n;
 		}
-		die "$0: failed to exec @n\n"
-		    unless exec @n;
 	    } else {
 		die "$0: no next command; use cbd init [LANG] to begin alignment\n";
 	    }
@@ -322,7 +337,7 @@ sub auto {
     cbd_test_ok();
     foreach my $a (@autofix_steps) {
 	my @a = split(/\s+/, $a);
-	xsystem @a;
+	++$noexit; xsystem @a;
 	if ($?) {
 	    die "$0: cbd auto aborted after failure of phase. Stop.\n";
 	}
@@ -346,20 +361,18 @@ sub cbd_next {
 	    next unless length;
 	    if (/^-/) {
 		my $t = $_; $t =~ s/^-/\t/;
-		warn "\n$t\n\n";
+		warn "\n$t\n\n" unless $mode eq 'auto';
 	    } else {
-		warn "\nNext step:\n\n\t$_\n\n";
+		warn "\nNext step:\n\n\t$_\n\n" unless $mode eq 'auto';
 	    }
 	    if (!$nonext && exists $steps{$_}) {
-		my $d = `cbdstash.plx dir`;
-		system "echo $_ >$d/next";
+		xsystem "echo $_ >$dir/next";
 	    }
 	}
     } else {
-	my $d = `cbdstash.plx dir`;
 	my @n = ();
-	if (-r "$d/next") {
-	    @n = `cat $d/next`; chomp @n;
+	if (-r "$dir/next") {
+	    @n = `cat $dir/next`; chomp @n;
 	}
 	if ($#n >= 0) {
 	    cbd_next(@n);
@@ -380,7 +393,11 @@ sub cbd_object {
     } elsif ($phase eq 'entries') {
 	$object = 'senses';
     } elsif ($phase eq 'trusted') {
-	$object = 'trusted';
+	if ($mode eq 'auto' && -r "$lang-culled-bases.glo") {
+	    $object = 'bases';
+	} else {
+	    $object = 'trusted';
+	}
     } elsif ($phase eq 'senses') {
 	$object = 'fixed';
     } elsif ($phase eq 'fixed') {
@@ -410,7 +427,7 @@ sub cbd_warn {
 sub check {
     my $internal = shift @_;
     xsystem 'o2-atfsources.plx';
-    xsystem 'ox', '-cvm', '-I01bld/atfsources.lst', '-lox.log';
+    ++$noexit; xsystem 'ox', '-cvm', '-I01bld/atfsources.lst', '-lox.log';
     if ($?) {
 	if ($internal) {
 	    return 1;
@@ -422,7 +439,7 @@ sub check {
     my @glo = <00lib/*.glo>;
     foreach my $g (@glo) {
 	my $log = $g; $log =~ s#^00lib/##; $log =~ s/\./-/; $log .= '.log';
-	xsystem 'cbdpp.plx', '-check', '-log', $log, $g;
+	++$noexit; xsystem 'cbdpp.plx', '-check', '-log', $log, $g;
 	if ($?) {
 	    if ($internal) {
 		return 1;
@@ -460,7 +477,7 @@ sub cull {
 	if ($object eq 'bases') {
 	    if (-r "$lang-culled-forms.glo") {
 		## do the cbd cull bases operation
-		xsystem "bases-cull-zero.plx $lang-culled-forms.glo >$lang-culled-bases.glo";
+		++$noexit; xsystem "bases-cull-zero.plx $lang-culled-forms.glo >$lang-culled-bases.glo";
 		if ($?) {
 		    ++$nohelp; cbd_die("cbd cull bases failed. Stop");
 		}
@@ -469,7 +486,7 @@ sub cull {
 		cbd_die "you must do cbd cull forms before cbd cull bases";
 	    }
 	} else {
-	    xsystem "forms-cull-zero.plx 00lib/$lang.glo >$lang-culled-forms.glo";
+	    ++$noexit; xsystem "forms-cull-zero.plx 00lib/$lang.glo >$lang-culled-forms.glo";
 	    if ($?) {
 		++$nohelp; cbd_die("cbd cull forms failed. Stop");
 	    }
@@ -498,18 +515,24 @@ sub edit {
 	$object = 'trusted';
 	$next = 'cbd stash';
     } else {
-	cbd_die "cbd edit only works when current phase is 'init' or 'entries', not '$object'";
+	cbd_die "cbd edit only works when current phase is 'init', 'entries', or 'trusted', not '$phase'";
     }
-    xsystem 'cbdedit.plx', "$lang-$object-aligned.glo";
+    ++$noexit; xsystem 'cbdedit.plx', "$lang-$object-aligned.glo";
     if ($?) {
 	++$nohelp; cbd_die("cbd edit $object failed. Stop");
     } else {
-	xsystem 'cbdpp.plx', '-c', "$lang-$object-edited.glo";
+	++$noexit; xsystem 'cbdpp.plx', '-c', "$lang-$object-edited.glo";
 	if ($?) {
 	    ++$nohelp; cbd_die("cbd edit $object created errors in $lang-$object-edited.glo. Stop.");
 	} else {
-	    xsystem 'make', '-f', '00lib/Makefile', '01bld/updatestamp'; # update the lemm info
-	    cbd_next($next);
+	    ++$noexit; xsystem 'make', '-f', '00lib/Makefile', '01bld/updatestamp'; # update the lemm info
+	    if ($?) {
+		print "Contents of ox.err follow:\n";
+		system 'cat', 'ox.err';
+		exit 1;
+	    } else {
+		cbd_next($next);
+	    }
 	}
     }
 }
@@ -529,7 +552,7 @@ sub fix {
 	    #  xsystem 'inst-fix-tab.plx';
 
 	    ## create the fix tab
-	    xsystem "cbd-lem-fix.plx -lang $lang >to-fix.tab 2>to-fix.log";
+	    ++$noexit; xsystem "cbd-lem-fix.plx -lang $lang >to-fix.tab 2>to-fix.log";
 
 	    if ($?) {
 		warn "? = $?\n";
@@ -547,7 +570,7 @@ sub fix {
 		## apply the fix tab
 		xsystem 'cbd-lem-fix-apply.plx', 'to-fix.tab';
 
-		xsystem 'ox', '-cvm', '-I01bld/atfsources.lst','-lfixcheck.log';
+		++$noexit; xsystem 'ox', '-cvm', '-I01bld/atfsources.lst','-lfixcheck.log';
 
 		if ($?) {
 		    ## next=check the corpus and fix it manually until it's aligned w glossaries
@@ -732,18 +755,20 @@ sub stash_init {
     cbd_die "project must check clean before init"
 	if check(1);
     xsystem 'makemake.plx';
-    xsystem 'make', '-qrR', '-f', '00lib/Makefile';
+    ++$noexit; xsystem 'make', '-qrR', '-f', '00lib/Makefile';
     if ($?) {
 	++$nohelp; cbd_die "project needs rebuilding before init";
     }
     xsystem 'cbdstash.plx', 'init', $lang;
     if ($? == 0) {
+	$dir = `cbdstash.plx dir`;
 	xsystem 'touch', '.nobuild';
 	if ($trusted) {
 	    ++$noexit; cbd_next("cbd trusted");
 	    my $d = `cbdstash.plx dir`;
 	    open(T,">$d/mode"); print T 'trusted'; close(T);
-	    status($lang,'trusted');
+	    # no: leave status as 'init' so next stash works and set trusted mode from mode file
+	    # status($lang,'trusted');
 	} else {
 	    cbd_next("cbd align entries");
 	}
@@ -774,8 +799,14 @@ sub trust {
 }
 
 sub trusted {
+    my $f = "$lang-trusted-aligned.glo";
+    xsystem 'rm', '-f', $f;
     xsystem 'cbd-trusted.plx','-all',"00lib/$lang.glo";
-    ++$needok; cbd_next("cbd auto");
+    if (-r $f) {
+	++$needok; cbd_next("cbd auto");
+    } else {
+	cbd_next("-No changes required to 00lib/$lang.glo", "cbd done");
+    }
 }
 
 sub update {
@@ -785,6 +816,10 @@ sub update {
 sub xsystem {
     warn "@_\n" if $verbose;
     system @_;
+    if ($?) {
+	warn "$0: system command failed, error code = $?\n";
+	exit 1 unless $noexit;
+    }
 }
 
 1;

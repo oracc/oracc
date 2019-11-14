@@ -23,12 +23,12 @@ while (<>) {
 	$curr_entry =~ s/^.*\@entry\s+(.*?)\s*$/$1/;
 	$curr_entry =~ s/\s+\[(.*?)\].*$/[$1]/;
 	%forms = ();
-    } elsif (s/^\@form\s*//) {
+    } elsif (s/^\@form\s*// && !/_/) { # ignore compound forms because they are always zero via this method
 	chomp;
 	s/\s+/ /;
 	s/\s*$//;
 	my ($f) = (/^(\S+)/);
-	my $k = "$lang:$f=$curr_entry"; # warn "k=$k\n";
+	my $k = "$lang:$f=$curr_entry"; warn "k=$k\n";
 	if (exists $inst{$k}) {
 	    $forms{$f} = $_ unless $forms{$f};
 	} else {

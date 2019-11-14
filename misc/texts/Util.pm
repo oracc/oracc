@@ -10,6 +10,7 @@ use ORACC::L2GLO::Util;
 
 use Data::Dumper;
 
+$ORACC::Texts::Util::drop_derived = 0;
 my $w2l_trace = 0;
 
 my $do_w2l_index = 1;
@@ -136,6 +137,13 @@ sub wid2lem_load {
     unless ($wid2lem) {
 	@wid2lem = `cat $w2l_err`;
 	chomp @wid2lem;
+	if ($ORACC::Texts::Util::drop_derived && -r '00lib/derived.lst') {
+	    my @d = `cat 00lib/derived.lst`; chomp @d;
+	    my %d = (); @d{@d} = ();
+	    warn "$#wid2lem entries before dropping derived\n";
+	    @wid2lem = grep(/^(.*?)\./&&!exists($d{$1}), @wid2lem);
+	    warn "$#wid2lem entries left after dropping derived\n";
+	}
 	$wid2lem = \@wid2lem;
     }
     my $i = 0;
