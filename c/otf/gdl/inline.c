@@ -236,7 +236,11 @@ set_nonw_id(struct node *wp)
       else
 	{
 	  const char *t = (const char *)getAttr(wp,"type");
-	  if (strcmp(prog,"gdlme2") && strcmp(t, "notelink"))
+	  if (strcmp(prog,"gdlme2")
+	      && (*t
+		  && strcmp(t, "notelink")
+		  && strcmp(t, "vari"))
+	      )
 	    vwarning("internal error: attempt to reset never-set nonw_id");
 	}
     }

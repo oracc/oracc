@@ -911,6 +911,7 @@ $ start of reverse missing
 		{
 		  ++lnum;
 		  ++lines;
+		  already_lemmed = 0;
 		  if (need_lemm || do_show_insts)
 		    lem_save_line(*lines);
 		  line_var(*lines);

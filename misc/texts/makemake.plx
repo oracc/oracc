@@ -50,7 +50,9 @@ if (-r '00bin/do.sh') {
 open(M,'>00lib/Makefile');
 print M "ATF=@atf\n\nGLO=@nglo\n\nLEM=@nlem\n\n";
 print M "01bld/buildstamp: \$\{ATF} \$\{GLO} \$\{LEM}\n$maybe_do_sh\toracc build\n\n";
+print M "01bld/location.data: \$\{ATF} \$\{GLO} \$\{LEM}\n$maybe_do_sh\tlocdata.sh\n\n";
 print M "01bld/updatestamp: \$\{ATF} \$\{GLO} \$\{LEM}\n$maybe_do_sh\toracc update\n\ttouch 01bld/updatestamp\n\n";
+print M "01bld/xtfstamp: \$\{ATF} \$\{GLO} \$\{LEM}\n$maybe_do_sh\to2-atf.plx\n\n";
 foreach my $g (@nglo) {
     my $l = $g;
     $l =~ s#00lib/(.*?)\.glo$#$1#;

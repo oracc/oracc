@@ -107,7 +107,7 @@ main(int argc, char **argv)
 	  runexpat(i_list, fname, sH, eH);
 	}
     }
-  return 1;
+  return 0;
 }
 
 const char *prog = "wid2err";

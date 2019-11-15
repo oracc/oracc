@@ -6,7 +6,7 @@ use lib "$ENV{'ORACC'}/lib";
 my @verbs = qw/align apply auto done build check clean cull done edit fix help init make merge ok stash status trust trusted update/;
 my %verbs = (); @verbs{@verbs} = ();
 
-my @autoverbs = qw/align auto done cull edit fix ok stash trusted/;
+my @autoverbs = qw/align auto done clean cull edit fix ok stash trusted/;
 my %autoverbs = (); @autoverbs{@autoverbs} = ();
 
 my @auto_only_verbs = qw/auto trusted/;
@@ -401,7 +401,9 @@ sub cbd_object {
     } elsif ($phase eq 'fixed') {
 	$equals_object = 'fix';
 	$object = 'culled';
-    } elsif ($phase eq 'culled' || $phase eq 'trusted') { # in auto mode trusted then culled
+    } elsif ($phase eq 'culled') {
+	$object = 'bases';
+    } elsif ($phase eq 'trusted') { # in auto mode trusted then culled
 	$object = 'culled';
     } else {
 	cbd_die("I can't figure out the object type when phase = '$phase'");
@@ -451,7 +453,7 @@ sub check {
 }
 
 sub clean {
-    if ($phase eq 'merged') {
+    if ($phase eq 'merged' || ($trusted_mode && $phase eq 'done')) {
 	cbd_test_ok();
 	my $p = super_project();
 	if ($p) {
@@ -461,7 +463,6 @@ sub clean {
 	    xsystem 'cp', '-av', $l, $g;
 	    xsystem "sed s/^+// <$g >$l";
 	    xsystem "oracc update";
-	    xsystem "(cd $p ; make update check)";
 	    xsystem 'cbd-tidy.sh';
 	} else {
 	    die "$0: unable to establish super_project for $lang. Stop.\n";

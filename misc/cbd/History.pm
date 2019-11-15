@@ -119,8 +119,8 @@ sub history_map {
 	my @f = split(/\t/,$_);
 	if ($f[3] =~ /\@sense/) {
 	    my $o_ent = $new_ent{$f[2]} || $f[2]; $o_ent =~ s/\@entry\s+//;
-	    my $o_sns = $f[3]; $o_sns =~ s/\@sense\s+//;
-	    my $n_sns = $f[4]; $n_sns =~ s/\@sense\s+//;
+	    my $o_sns = $f[3]; $o_sns =~ s/\@sense\!?\s+//;
+	    my $n_sns = $f[4]; $n_sns =~ s/\@sense\!?\s+//;
 	    my $n_ent = $f[2]; $n_ent =~ s/\@entry\s+//;
 
 	    my $o_sig = $o_ent;

@@ -259,13 +259,16 @@ sub edit_make_script {
 		my $eid = ${$cbddata{'entries'}}{$renstr};
 		$action = 'mrg' if $eid;
 	    }
+
 	    if ($action eq 'rename') {
 		if ($c[$i-1] =~ /^$tag/) {
 		    push @s, ":ent $c[$e]";
 		    if ($tag eq '@sense') {
 			push @s, ":sns $c[$i-1]";
+			$c[$i] =~ s/>\s*/>$tag / unless $c[$i] =~ /^>\@sense/;
+		    } else {
+			$c[$i] =~ s/>\s*/>$tag /;
 		    }
-		    $c[$i] =~ s/>\s*/>$tag /;
 		    push @s, ":rnm $c[$i]";
 		} else {
 		    pp_warn("expected $tag before '>$tag'");
