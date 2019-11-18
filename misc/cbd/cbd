@@ -474,6 +474,8 @@ sub clean {
 
 sub cull {
     if ($phase eq 'fixed' || $phase eq 'trusted') {
+	xsystem 'makemake.plx' unless -r '00lib/Makefile';
+	xsystem 'make', '-f', '00lib/Makefile', '01bld/xtfstamp';
 	if ($object eq 'bases') {
 	    if (-r "$lang-culled-forms.glo") {
 		## do the cbd cull bases operation

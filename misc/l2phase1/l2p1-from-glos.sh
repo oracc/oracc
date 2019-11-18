@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# now that g2 is default this script is not used
+
+exit 0
+
 rebuild_sigs()
 {
     echo updating 01bld/from-glos.sig ...

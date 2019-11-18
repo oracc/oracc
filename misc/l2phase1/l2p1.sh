@@ -19,7 +19,7 @@ fi
 # This may have been done already as part of the automatic
 # update that is part of o2-prepare.sh, but it checks to see if the
 # lem rebuild is necessary so there's not much extra work involved
-l2p1-from-glos.sh
+#l2p1-from-glos.sh
 l2p1-project-sig.plx
 
 if [ -r .nolemmdata ]; then

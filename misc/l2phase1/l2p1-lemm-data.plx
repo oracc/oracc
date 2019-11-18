@@ -4,8 +4,10 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use Getopt::Long;
 use Data::Dumper;
 
-my $g2 = `oraccopt . g2`;
-$g2 = undef unless ($g2 && $g2 eq 'yes');
+#my $g2 = `oraccopt . g2`;
+#$g2 = undef unless ($g2 && $g2 eq 'yes');
+
+my $g2 = 1;
 
 my $lem_allow_x = `oraccopt . lem-allow-x`;
 $lem_allow_x = undef unless ($lem_allow_x && $lem_allow_x eq 'yes');

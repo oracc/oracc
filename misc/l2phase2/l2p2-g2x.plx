@@ -286,7 +286,11 @@ foreach my $lang (sort keys %data) {
 				$m2attr = ' morph2="'.join(' ',@{$m1m2{$entry_ids{$entry},$k}}).'"';
 			    }
 			}
-			print "<$f xml:id=\"$xid\"$m2attr n=\"$kn\"";
+			if ($f eq 'form') {
+			    print "<$f cbd:id=\"$xid\"$m2attr n=\"$kn\"";
+			} else {
+			    print "<$f xml:id=\"$xid\"$m2attr n=\"$kn\"";
+			}
 			if ($f eq 'form') {
 			    if ($form_ids{$k}) {
 				print " ref=\"$form_ids{$k}\"";

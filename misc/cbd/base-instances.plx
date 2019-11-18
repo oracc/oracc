@@ -18,7 +18,7 @@ if ($log_file) {
 #my $w2l_file = `cbdstash.plx locdata fixed`;
 my $w2l_file = '01bld/location.data';
 system 'makemake.plx' unless -r '00lib/Makefile';
-system 'make', '-f', '00lib/Makefile', '01bld/xtfstamp', '01bld/updatestamp', $w2l_file;
+system 'make', '-f', '00lib/Makefile', '01bld/xtfstamp', $w2l_file;
 my @w = ();
 if ($w2l_file) {
     if (-r $w2l_file) {

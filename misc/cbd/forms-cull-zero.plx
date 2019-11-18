@@ -12,6 +12,7 @@ my @inst = `form-inst.sh`; chomp(@inst);
 my %inst = (); @inst{@inst} = (); # print Dumper \%inst; exit;
 my $lang = '';
 
+system 'mkdir', '-p', '00any';
 my $newiso = `date +\%Y-\%m-\%d`; chomp $newiso;
 my $cullfile = "00any/cull-$newiso.forms";
 open(CULL,">$cullfile") || die "$0: can't write culled forms to $cullfile\n";
