@@ -3,6 +3,10 @@ use warnings; use strict; use open 'utf8';
 
 my $prj = shift @ARGV || '';
 my $oid = shift @ARGV || '';
+my $lng = shift @ARGV || '';
+my $xml = shift @ARGV || '';
+
+#warn "prj=$prj; oid=$oid; lng=$lng; xml=$xml\n";
 
 if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
     if ($oid =~ /^[ox]\d+$/) {
@@ -17,7 +21,16 @@ if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
 		oid_404("OID $oid not found in project $prj");
 	    }
 	} else {
-	    oid_404("OIDs not used project $prj");
+	    if ($xml) {
+		exec 'xfrag', "$ENV{'ORACC_BUILDS'}/bld/$prj/$lng/articles-with-periods.xml", $oid;
+	    } else {
+		my $html = "$ENV{'ORACC_BUILDS'}/www/$prj/cbd/$lng/$oid.html";
+		if (-r $html) {
+		    exec 'cat', $html;
+		} else {
+		    oid_404("OID $oid not known in $prj/$lng (looked for $html)");
+		}
+	    } 
 	}
     } else {
 	oid_404("malformed OID.");

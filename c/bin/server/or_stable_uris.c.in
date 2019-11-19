@@ -35,6 +35,22 @@ static void lst_handler(struct component *);
 
 struct component *have_component[C_UI+1];
 
+static int
+is_oid(const char *id)
+{
+  if ('o' == *id || 'x' == *id)
+    {
+      do
+	++id;
+      while (*id && isdigit(*id));
+      if (*id)
+	return 0;
+      else
+	return 1;
+    }
+  return 0;
+}
+
 handler *resource_handlers[] =
 {
   NULL, &pqx_handler, &wrd_handler, &ent_handler, &lng_handler, &key_handler, &lst_handler
@@ -106,9 +122,10 @@ ent_handler(struct component *components)
 static void 
 lng_handler(struct component *components)
 {
+  fprintf(stderr, "lng_handler\n");
   if (patterns_debug)
     show_components(components);
-  else if (project)
+  if (project)
     {
       if (query_string && strlen(query_string))
 	{
@@ -130,6 +147,13 @@ lng_handler(struct component *components)
 	      sprintf(idx, "cbd/%s", elements[0]);
 	      p3_fake_srch(project, idx, query_string);
 	    }
+	}
+      else if (elements[1] && is_oid(elements[1]))
+	{
+	  if (elements[2] && !strcmp(elements[2], "xml"))
+	    glossary_article_xml(elements[0], elements[1]);
+	  else
+	    glossary_article(elements[0], elements[1]);
 	}
       else
 	p3glossary(elements[0], NULL);
@@ -492,12 +516,13 @@ uri_patterns(void)
       ++i;
     }
 
+  /* if it begins with a known type send it to the handler to deal with */
+  if (components[0].type && resource_handlers[components[0].value])
+    resource_handlers[components[0].value](components);
   /* If we didn't parse the whole thing it may be a different type of
      URI, so just silently return */
-  if (i < nelements)
+  else if (i < nelements)
     return;
-  else if (components[0].type && resource_handlers[components[0].value])
-    resource_handlers[components[0].value](components);
   else /* assume it's keys for a cat search */
     p3_fake_srch(project, "cat", elements[0]);
 

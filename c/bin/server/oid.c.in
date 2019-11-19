@@ -4,6 +4,29 @@
 #include "resolver.h"
 
 void
+glossary_article_xml(const char *lng, const char *art)
+{
+  print_hdr_xml();
+  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/oid-resolver.plx",
+	project,
+	art,
+	lng,
+	"xml",
+	NULL);
+}
+
+void
+glossary_article(const char *lng, const char *art)
+{
+  print_hdr();
+  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/oid-resolver.plx",
+	project,
+	art,
+	lng,
+	NULL);
+}
+
+void
 oid(const char *e2)
 {
   print_hdr();

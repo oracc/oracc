@@ -150,4 +150,8 @@ extern void xmlrpc(void);
 
 extern void p3glossary(const char *glos, const char *xis);
 
+extern void oid(const char *oid);
+extern void glossary_article(const char *lng, const char *art);
+extern void glossary_article_xml(const char *lng, const char *art);
+
 #endif/*RESOLVER_H_*/
