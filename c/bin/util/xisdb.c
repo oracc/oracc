@@ -106,6 +106,13 @@ tis_init(const char *dir, const char *name, const char *tis_file)
   tis_dip = dbi_open(name, dir);
 }
 
+int
+tis_exists(const char *id)
+{
+  dbi_find(tis_dip, (Uchar*)id);
+  return tis_dip->nfound;
+}
+
 struct tis_info
 tis_find(const char *id)
 {
@@ -184,18 +191,33 @@ tis_dump(const char *tis_file)
 int
 main(int argc, char **argv)
 {
+  int idarg = 2;
+  int exists_only = 0;
   if (argv[1])
     {
       if (!access(argv[1], R_OK))
 	{
 	  tis_paths(argv[1]);
-	  if (argv[2])
+	  if (argv[2] && !strcmp(argv[2], "-x"))
+	    {
+	      idarg = 3;
+	      exists_only = 1;
+	    }
+	  if (argv[idarg])
 	    {
 	      {
 		tis_init(f_info.dir, f_info.nam, argv[1]);
-		t_info = tis_find(argv[2]);
+		if (exists_only)
+		  {
+		    int count = tis_exists(argv[idarg]);
+		    printf("%d\n", count);
+		  }
+		else
+		  {
+		    t_info = tis_find(argv[idarg]);
+		    tis_dump(argv[1]);
+		  }
 		tis_term();
-		tis_dump(argv[1]);
 	      }
 	    }
 	  else
@@ -219,7 +241,7 @@ int verbose = 0;
 const char *prog = "xisdb";
 int major_version = 1;
 int minor_version = 0;
-const char *usage_string = " TIS_FILE [XML_ID]";
+const char *usage_string = " TIS_FILE [-x] [XML_ID]";
 int
-opts(int argc, char *arg) {return 0;}
+opts(int argc, char *arg) { return 0;}
 void help() {}
