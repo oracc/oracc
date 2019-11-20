@@ -22,7 +22,8 @@ if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
 	    }
 	} else {
 	    if ($xml) {
-		exec 'xfrag', "$ENV{'ORACC_BUILDS'}/bld/$prj/$lng/articles-with-periods.xml", $oid;
+		exec "$ENV{'ORACC_BUILDS'}/bin/xfrag", '-c',
+		"$ENV{'ORACC_BUILDS'}/bld/$prj/$lng/articles-with-periods.xml", $oid;
 	    } else {
 		my $html = "$ENV{'ORACC_BUILDS'}/www/$prj/cbd/$lng/$oid.html";
 		if (-r $html) {

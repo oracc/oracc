@@ -11,7 +11,7 @@ const char *xsltproc = "/usr/bin/xsltproc";
 extern int options(int, char**,const char*);
 extern int optind;
 
-static int html_mode = 0, sig_fixer = 0, unwrap_html = 0, htmlid = 0;
+static int cbd_namespaces = 0, html_mode = 0, sig_fixer = 0, unwrap_html = 0, htmlid = 0;
 static int cued_printStart = 0, need_gdf_closer = 0;
 
 static const char *project = NULL, *xsl = NULL;
@@ -82,6 +82,12 @@ printStart(struct frag *frag, const char *name, const char **atts)
 	      fputc('"', frag->fp);
 	    }
 	}
+    }
+  if (cbd_namespaces)
+    {
+      fputs(" xmlns:cbd=\"http://oracc.org/ns/cbd/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
+	    frag->fp);
+      cbd_namespaces = 0;
     }
   fputc('>', frag->fp);
   ++frag->nesting;
@@ -201,7 +207,7 @@ main(int argc, char **argv)
 {
   FILE *outfp = stdout;
 
-  options(argc, argv, "hHp:sux:");
+  options(argc, argv, "chHp:sux:");
   
   if (xsl)
     {
@@ -225,12 +231,13 @@ int verbose = 0;
 const char *prog = "xfrag";
 int major_version = 1;
 int minor_version = 0;
-const char *usage_string = " [-h -H -s] [-p PROJECT] [XML_FILE] [XML_ID]";
+const char *usage_string = " [-c -h -H -s] [-p PROJECT] [XML_FILE] [XML_ID]";
 int
 opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case 'c': cbd_namespaces = 1; break;
     case 'h': html_mode = 1; break;
     case 'H': htmlid = 1; break;
     case 'p': project = arg; break;
