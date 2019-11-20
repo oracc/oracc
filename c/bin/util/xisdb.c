@@ -13,9 +13,9 @@
 char *tis_file = NULL;
 struct tis_dir_name { const char *dir; const char *nam; };
 struct tis_dir_name f_info = { NULL, NULL };
-struct tis_info { long int seek; int len; };
+struct tis_info { long int seek; int len; int count; };
 struct tis_info tis_bad = { -1, -1 };
-struct tis_info t_info = { -1, -1 };
+struct tis_info t_info = { -1, -1 , -1};
 
 Dbi_index *tis_dip = NULL;
 
@@ -24,6 +24,7 @@ tis_add(const char *r_id, long int s, int l)
 {
   t_info.seek = s;
   t_info.len = l;
+  t_info.count = n + 1;
   if (DBI_BALK == dbi_add(tis_dip, (Uchar*)r_id, &t_info, 1))
     fprintf(stderr, "xisdb: will not add duplicate ID %s\n", r_id);
   l = 0;
@@ -33,7 +34,7 @@ void
 tis_index(const char *dir, const char *name, const char *tis_file)
 {
   FILE *tis_fp = NULL;
-  int s = 0, l = 0;
+  int s = 0, n = 0, l = 0;
 #define R_LEN 127
   static char r_buf[R_LEN+1];
   int r_len = 0, tis_line = 0;
@@ -43,6 +44,29 @@ tis_index(const char *dir, const char *name, const char *tis_file)
       if ((tis_dip = dbi_create (name, dir, 1024, sizeof(struct tis_info), DBI_BALK)))
 	{
 	  int ch;
+	  while (EOF != (ch = fgetc(tis_fp)))
+	    {
+	      if ('\n' == ch)
+		{		  
+		  ungetc(ch, tis_fp);
+		  break;
+		}
+	      else if ('\t' == ch)
+		{
+		  r_buf[r_len] = '\0';
+		}
+	      else if ('\t' == ch)
+		{
+		  s = ftell(tis_fp);
+		  n  = l = 0;
+		}
+	      else
+		{
+		  if (' ' == ch)
+		    ++n;
+		  ++l;
+		}
+	    }
 	  while (EOF != (ch = fgetc(tis_fp)))
 	    {  
 	      if ('\n' == ch)
@@ -79,7 +103,11 @@ tis_index(const char *dir, const char *name, const char *tis_file)
 		  l = 0;
 		}	  
 	      else
-		++l;
+		{
+		  if (' ' == ch)
+		    ++n;
+		  ++l;
+		}
 	    }
 	  if (l > 0)
 	    tis_add(r_buf, s, l);
