@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate, no-transform" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>XIS API Documentation</title>
+</head>
+
+<body>
+  <div>
+    <h1>Oracc XML Instance Set (XIS) API Documentation</h1>
+
+    <h2>Overview</h2>
+
+    <p>Oracc is organized around the concept of the project,
+    e.g., <code>neo</code>.  Projects typically contain a corpus
+    consisting of a catalogue, text editions, and one or more
+    glossaries.  The glossaries are named by ISO639 language codes,
+    e.g., <code>akk</code>.</p>
+
+    <p>Glossaries are collections of entries, words or phrases, which
+    have IDs of the form <code>o12345678</code>
+    or <code>x12345678</code>; these IDs are called OIDs (Oracc IDs).
+    Work to make these OIDs persistent is under way but not yet
+    complete.</p>
+
+    <p>Each entry contains several lists of instances of the words
+    with particular features--the basic meaning, a finer-grained
+    sense, various grammatical parts, etc.  These instances are stored
+    as lists whose abbreviation is XIS: XML Instance Sets, so we call
+    the ID for such an instance sets an <code>XIS</code>
+    <p>These elements and additional selection features make up the XIS API.</p>
+    
+    <h2>Components</h2>
+    
+<!--
+<form action="/instances" method="post" name="xisdemo" id="xisdemo" target="result">
+<div>
+
+  <input type="text" name="project" value="neo" size="10" id="project" />
+  <input type="text" name="glossary" value="lang" size="10" id="lang" />
+  <input type="text" name="xis" value="" size="10" id="xis" />
+  <input type="text" name="page" value="1" size="4" id="page" />
+  <input type="text" name="size" value="25" size="4" id="size" />
+  <input type="text" name="mode" value="25" size="4" id="size" />
+  
+  <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
+    <option value="xml">XML</option>
+    <option value="div">&lt;div&gt;</option>
+    <option value="html">HTML</option>
+    <option value="cat">Catalogue</option>
+  </select>
+  
+  <input type="checkbox" name="all" value="" />
+</div>
+</form>
+-->
+
+  </div>
+
+  <div>
+  </div>
+</body>
+
+</html>
