@@ -11,6 +11,8 @@
 #include <dbi.h>
 
 char *tis_file = NULL;
+FILE *tis_fp = NULL;
+  
 struct tis_dir_name { const char *dir; const char *nam; };
 struct tis_dir_name f_info = { NULL, NULL };
 struct tis_info { long int seek; int len; int count; };
@@ -20,7 +22,7 @@ struct tis_info t_info = { -1, -1 , -1};
 Dbi_index *tis_dip = NULL;
 
 void
-tis_add(const char *r_id, long int s, int l)
+tis_add(const char *r_id, long int s, int n, int l)
 {
   t_info.seek = s;
   t_info.len = l;
@@ -31,91 +33,70 @@ tis_add(const char *r_id, long int s, int l)
 }
 
 void
-tis_index(const char *dir, const char *name, const char *tis_file)
+tis_line()
 {
-  FILE *tis_fp = NULL;
+  int ch, r_len = 0;
   int s = 0, n = 0, l = 0;
 #define R_LEN 127
   static char r_buf[R_LEN+1];
-  int r_len = 0, tis_line = 0;
-  
+  static int tis_line = 0;
+
+  ++tis_line;
+  while (EOF != (ch = fgetc(tis_fp)))
+    {  
+      if ('\n' == ch)
+	break;
+      else if ('\t' == ch)
+	{
+	  if (r_len >= 0)
+	    {
+	      r_buf[r_len] = '\0';
+	      r_len = -1;
+	    }
+	  s = ftell(tis_fp);
+	  n = l = 0;
+	}
+      else if (' ' == ch)
+	{
+	  ++n;
+	  ++l;
+	}
+      else
+	{
+	  if (r_len >= 0)
+	    {
+	      if (r_len < R_LEN)
+		r_buf[r_len++] = ch;
+	      else
+		{
+		  fprintf(stderr, "%s:%d: invalid ID while creating xisdb. Stop\n",
+			  tis_file, tis_line);
+		  exit(1);
+		}
+	    }
+	  else
+	    ++l;
+	}
+    }
+  if (l > 0)
+    tis_add(r_buf, s, n, l);
+}
+
+void
+tis_index(const char *dir, const char *name, const char *tis_file)
+{
   if ((tis_fp = fopen(tis_file, "r")))
     {
       if ((tis_dip = dbi_create (name, dir, 1024, sizeof(struct tis_info), DBI_BALK)))
 	{
-	  int ch;
-	  while (EOF != (ch = fgetc(tis_fp)))
-	    {
-	      if ('\n' == ch)
-		{		  
-		  ungetc(ch, tis_fp);
-		  break;
-		}
-	      else if ('\t' == ch)
-		{
-		  r_buf[r_len] = '\0';
-		}
-	      else if ('\t' == ch)
-		{
-		  s = ftell(tis_fp);
-		  n  = l = 0;
-		}
-	      else
-		{
-		  if (' ' == ch)
-		    ++n;
-		  ++l;
-		}
-	    }
-	  while (EOF != (ch = fgetc(tis_fp)))
-	    {  
-	      if ('\n' == ch)
-		{
-		  ++tis_line;
-		  if (l > 0)
-		    {
-		      tis_add(r_buf, s, l);
-		      r_len = l = 0;
-		    }
-		  while (EOF != (ch = fgetc(tis_fp)))
-		    {
-		      if ('\t' == ch || '\n' == ch)
-			{
-			  r_buf[r_len] = '\0';
-			  ungetc(ch, tis_fp);
-			  break;
-			}
-		      else
-			{
-			  if (r_len < R_LEN)
-			    r_buf[r_len++] = ch;
-			  else
-			    {
-			      fprintf(stderr, "xisdb:%s:%d: invalid ID. Stop\n", tis_file, tis_line);
-			      exit(1);
-			    }
-			}
-		    }
-		}
-	      else if ('\t' == ch)
-		{
-		  s = ftell(tis_fp);
-		  l = 0;
-		}	  
-	      else
-		{
-		  if (' ' == ch)
-		    ++n;
-		  ++l;
-		}
-	    }
-	  if (l > 0)
-	    tis_add(r_buf, s, l);
+	  do
+	    tis_line();
+	  while (!feof(tis_fp));
 	  dbi_flush(tis_dip);
-	  fclose (tis_fp);
 	}
       else
 	{
+	  fclose (tis_fp);
 	  fprintf(stderr, "xisdb: failed to create %s/%s.dbh\n", dir, name);
 	  exit(1);
 	}
@@ -220,7 +201,7 @@ int
 main(int argc, char **argv)
 {
   int idarg = 2;
-  int exists_only = 0;
+  int count_only = 0, exists_only = 0;
   if (argv[1])
     {
       if (!access(argv[1], R_OK))
@@ -231,19 +212,26 @@ main(int argc, char **argv)
 	      idarg = 3;
 	      exists_only = 1;
 	    }
+	  else if (argv[2] && !strcmp(argv[2], "-c"))
+	    {
+	      idarg = 3;
+	      count_only = 1;
+	    }
 	  if (argv[idarg])
 	    {
 	      {
 		tis_init(f_info.dir, f_info.nam, argv[1]);
 		if (exists_only)
 		  {
-		    int count = tis_exists(argv[idarg]);
-		    printf("%d\n", count);
+		    exit(!tis_exists(argv[idarg]));
 		  }
 		else
 		  {
 		    t_info = tis_find(argv[idarg]);
-		    tis_dump(argv[1]);
+		    if (count_only)
+		      printf("%d", t_info.count);
+		    else
+		      tis_dump(argv[1]);
 		  }
 		tis_term();
 	      }

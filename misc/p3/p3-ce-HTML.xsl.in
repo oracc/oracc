@@ -15,6 +15,7 @@
 <xsl:param name="fragment" select="'yes'"/>
 <xsl:param name="item-offset"/>
 <xsl:param name="project"/>
+<xsl:param name="divwrap" select="'no'"/>
 
 <xsl:variable name="ce-config-file" select="concat('@@ORACC_BUILDS@@/xml/',$project,'/config.xml')"/>
 
@@ -32,7 +33,16 @@
 <xsl:template match="ce:ce">
   <xsl:choose>
     <xsl:when test="$fragment = 'yes'">
-      <xsl:call-template name="call-back"/>
+      <xsl:choose>
+	<xsl:when test="$divwrap = 'yes'">
+	  <div>
+	    <xsl:call-template name="call-back"/>
+	  </div>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:call-template name="call-back"/>
+	</xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="make-html">

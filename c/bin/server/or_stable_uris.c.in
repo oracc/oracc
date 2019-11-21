@@ -122,12 +122,23 @@ ent_handler(struct component *components)
 static void 
 lng_handler(struct component *components)
 {
+  extern void instances(const char *lang, const char *id);
+
   fprintf(stderr, "lng_handler\n");
   if (patterns_debug)
     show_components(components);
   if (project)
     {
-      if (query_string && strlen(query_string))
+      if (elements[1] && is_oid(elements[1]))
+	{
+	  if (elements[2] && !strcmp(elements[2], "xml"))
+	    glossary_article_xml(elements[0], elements[1]);
+	  else
+	    glossary_article(elements[0], elements[1]);
+	}
+      else if (elements[1])
+	instances(elements[0], elements[1]);
+      else if (query_string && strlen(query_string))
 	{
 	  char *xis;
 	  if ((xis = strstr(query_string,"xis=")))
@@ -147,13 +158,6 @@ lng_handler(struct component *components)
 	      sprintf(idx, "cbd/%s", elements[0]);
 	      p3_fake_srch(project, idx, query_string);
 	    }
-	}
-      else if (elements[1] && is_oid(elements[1]))
-	{
-	  if (elements[2] && !strcmp(elements[2], "xml"))
-	    glossary_article_xml(elements[0], elements[1]);
-	  else
-	    glossary_article(elements[0], elements[1]);
 	}
       else
 	p3glossary(elements[0], NULL);

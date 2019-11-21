@@ -1,7 +1,12 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include "resolver.h"
+#include "ccgi/ccgi.h"
+
+extern void dump_vl(CGI_varlist *vl);
 
 void
 glossary_article_xml(const char *lng, const char *art)
@@ -35,3 +40,59 @@ oid(const char *e2)
 	e2,
 	NULL);
 }
+
+static int
+countv(CGI_varlist *v)
+{
+  int i = 0;
+  const char *name;
+  for (name = CGI_first_name(v);
+       name != 0;
+       name = CGI_next_name(v))
+    ++i;
+  return i;
+}
+
+const char *
+cgi_val(CGI_varlist *v, const char *name, const char *deflt)
+{
+  CGI_value *val = CGI_lookup_all(v, name);
+  if (val)
+    return val[0];
+  else
+    return deflt;
+}
+
+void
+instances(const char *lang, const char *id)
+{
+  CGI_varlist *v = NULL;
+  int vcount = -1;
+  const char **va = NULL;
+
+  fprintf(stderr, "instances handler\n");
+  
+  print_hdr_xml();
+  
+  setenv("QUERY_STRING", query_string, 1);
+  v = CGI_get_query(v);
+  v = CGI_get_post(v, NULL);
+  dump_vl(v);
+  vcount = countv(v);
+  
+  va = malloc(8*sizeof(char*));
+  va[0] = "/usr/bin/perl";
+  va[1] = "@@ORACC_BUILDS@@/bin/xis-resolver.plx";
+  va[2] = strdup(project ? project : "nul");
+  va[3] = strdup(lang);
+  va[4] = strdup(id);
+  va[5] = cgi_val(v, "page", "0");
+  va[6] = cgi_val(v, "size", "0");
+  va[7] = cgi_val(v, "mode", "html");
+  va[8] = cgi_val(v, "all", "");
+  va[9] = NULL;
+  execv("/usr/bin/perl", (char*const*)va);
+  fprintf(stderr, "execv /usr/bin/perl failed\n");  
+  exit(1);
+}
+
