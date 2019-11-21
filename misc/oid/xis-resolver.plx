@@ -34,7 +34,7 @@ my $baselang = $lang; $baselang =~ s/-.*$//;
 my $bucket = $xis; $bucket =~ s/^$baselang\.//; $bucket =~ s/^(.....).*$/$1/;
 my $bucketpath = "$projwdir/cbd/$lang/xis/$bucket"; warn "bucketpath=$bucketpath\n";
 my $xisdata = "$bucketpath/$xis";
-my $instances = "$xisdata/instances";
+my $instances = "$xisdata/instances.lst";
 
 unless (-r $instances) {
     xml_error("no web language data") unless -d "$projwdir/cbd/$lang";
@@ -97,7 +97,7 @@ sub xis_xml {
 }
 
 sub xis_init {
-    system("/Users/stinney/orc/bin/xisdb $tisfile $xis >$xisdata/instances");
+    system("/Users/stinney/orc/bin/xisdb $tisfile $xis >$instances");
     open(C,">$xisdata/count"); print C $count; close(C);
 }
 
@@ -105,19 +105,19 @@ sub xis_init {
 sub xis_page {
     my $pagefile = '';
     if ($all eq 'all') {
-	$pagefile = "$xisdata/instances";
+	$pagefile = $instances;
     } else {
 	$pagefile = "$xisdata/p${page}s$size.lst";
 	unless (-r $pagefile) {
 	    if ($page == 1) {
-		system "head -$size $xisdata/instances >$pagefile";
+		system "head -$size $instances >$pagefile";
 	    } else {
 		my $from = (($page-1) * $size) + 1;
 		my $to = ($page * $size);
 		if ($to > $count) {
 		    $to = $count;
 		}
-		system "sed -n '${from},${to}p' $xisdata/instances >$pagefile";
+		system "sed -n '${from},${to}p' $instances >$pagefile";
 	    }
 	}
     }
