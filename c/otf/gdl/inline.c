@@ -195,11 +195,17 @@ set_nonw_rewrite_gid(struct node *n)
       struct node *c = n->children.nodes[i];
       if (c)
 	{
-	  const unsigned char *a = getAttr(c,"xml:id");
-	  if (a && *a)
-	    setAttr(c,a_xml_id,(const unsigned char *)grapheme_id());
-	  if (c->children.lastused)
-	    set_nonw_rewrite_gid(c);
+	  /* In a surro this can be a nested word, in which case quit rewriting the IDs */
+	  if (c->names && !strcmp(c->names->pname,"g:w"))
+	    return;
+	  else
+	    {
+	      const unsigned char *a = getAttr(c,"xml:id");
+	      if (a && *a)
+		setAttr(c,a_xml_id,(const unsigned char *)grapheme_id());
+	      if (c->children.lastused)
+		set_nonw_rewrite_gid(c);
+	    }
 	}
     }
 }

@@ -190,35 +190,6 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
       ++lemma;
     }
 
-#if 0
-  /* In L1 this routine had to handle lems with a form prepended and separated
-     by * (not = , because that conflicts with = in ASCII macron).  This is
-     no longer the case in L2 */
-  if (NULL == master_formp->f2.form)
-    {
-      char *formbufp = formbuf;
-      while (*lemma != '*')
-	{
-	  if (formbufp - formbuf == FORMBUF_LEN)
-	    {
-	      formbuf[10] = '\0';
-	      vwarning2(file,lnum,"[94]: form starting '%s' is too long (MAX %d)",formbuf,FORMBUF_LEN);
-	      phase = NULL;
-	      return;
-	    }
-	  *formbufp++ = *lemma++;
-	}
-      if ('*' != *lemma)
-	{
-	  formbuf[10] = '\0';
-	  vwarning2(file,lnum,"[95]: form starting '%s' has no '*'",formbuf,FORMBUF_LEN);
-	  phase = NULL;
-	  return;
-	}
-      ++lemma;
-    }
-#endif
-
   /* Now we know that lemma points to the start of the lemmatization */
   lem_init((const unsigned char *)lemma);
 
@@ -229,7 +200,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
       int alt_count = 0;
       int iflags = 0;
       struct ilem_form *curr_f = NULL;
-
+  
       lem = lem_next(xc);
       if (!lem)
 	break;
@@ -430,11 +401,13 @@ static unsigned char *
 lem_next(struct xcl_context *xc)
 {
   unsigned char *this_lem = lem_next_lem;
+  int saw_square = 0;
   if (this_lem)
     {
       lem_next_lem = this_lem;
       while (*lem_next_lem)
-	if ('&' == *lem_next_lem 
+	if ('&' == *lem_next_lem
+	    && saw_square
 	    && (lem_next_lem[-1] != '\\'
 		&& lem_next_lem[-1] != '+' && lem_next_lem[-1] != '-'))
 	  {
@@ -446,6 +419,11 @@ lem_next(struct xcl_context *xc)
 		lem_next_lem[-3] = '\0';
 	      }
 	    break;
+	  }
+	else if ('[' == *lem_next_lem)
+	  {
+	    ++saw_square;
+	    ++lem_next_lem;
 	  }
 	else
 	  ++lem_next_lem;

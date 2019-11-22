@@ -365,16 +365,47 @@ lem_save_form_dynalem(const char *ref, const char *lang,
 	form->i->literal = (char*)npool_copy(dynalem,lemline_xcp->pool);
     }
 }
+static struct node *
+find_w_node(struct node *n)
+{
+  int i;
+  for (i = 0; i < n->children.lastused; ++i)
+    {
+      struct node *c = n->children.nodes[i];
+      if (c)
+	{
+	  if (c->names
+	      && (!strcmp(c->names->pname,"g:w")
+		  || !strcmp(c->names->pname,"n:w"))
+	      )
+	    return c;
+	  else if (c->children.lastused)
+	    {
+	      c = find_w_node(c);
+	      if (c)
+		return c;
+	    }
+	}
+    }
+  return NULL;
+}
 
 void
 lem_save_lemma(struct node *wp, const char *lemma)
 {
   struct xcl_ilem /*ilem_form*/ *form = NULL;
-  unsigned const char *xmlid = getAttr(wp,"xml:id");
+  unsigned const char *xmlid = NULL;
   while (isspace(*lemma))
     ++lemma;
   if (lemma && strlen(lemma))
     {
+      struct node *wp2 = NULL;
+      if (strcmp(wp->names->pname,"g:w")
+	  && strcmp(wp->names->pname,"n:w"))
+	wp2 = find_w_node(wp);
+      if (wp2)
+	wp = wp2;
+      xmlid = getAttr(wp,"xml:id");
       form = hash_find(word_form_index, xmlid);
       if (form)
 	form->i->literal = (char*)npool_copy((unsigned char *)lemma,lemline_xcp->pool);
