@@ -33,9 +33,9 @@
     <p>The Glossary Article URI consists of one of each of the above
     components, in that order.  So, for project <code>neo</code>,
     glossary for language glossary <code>akk</code>, article
-    <code>x00000010</code>, the URI is <a
-    href="/neo/akk/x00000010"
-    >http://oracc.org/neo/akk/x00000010</a></p>.
+    <code>x00000040</code>, the URI is <a
+    href="/neo/akk/x00000040"
+    >http://oracc.org/neo/akk/x00000040</a></p>.
 
     <h2>Glossary Article Instances (XIS)</h2>
     
@@ -46,8 +46,8 @@
     the ID for such an instance sets an <code>XIS</code>.</p>
 
     <p>The base URI for an XIS is <code>PROJECT/LANG/XIS</code>: <a
-    href="/neo/akk/akk.r0000d2"
-    >http://oracc.org/neo/akk/akk.r0000d2</a>.  This URL
+    href="/neo/akk/akk.r0001d6"
+    >http://oracc.org/neo/akk/akk.r0001d6</a>.  This URL
     returns the first page of results from the XIS.</p>
 
     <h2>Query String</h2>
@@ -56,27 +56,27 @@
     
     <p>The XIS API has three operations:</p>
     <dl>
-      <dt>count</dt><dd>Return the count of instances in the XIS in
+      <dt>page=0</dt><dd>Return the count of instances in the XIS in
       the XML form <code>&lt;count>[COUNT]&lt;/count></code>.  <a
-      href="/neo/akk/akk.r0000d2?count"
-      >http://oracc.org/neo/akk/akk.r0000d2?count</a>.</dd>
+      href="/neo/akk/akk.r0001d6?page=0"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=0</a>.</dd>
 
       <dt>all</dt><dd>Return all the instances at once.  This is a
       misnomer because the server will only return a maximum of 100
       instances.  If the number of instances in the XIS is greater
       than 100 the paging API must be used.  <a
-      href="/neo/akk/akk.r0000d2?all"
-      >http://oracc.org/neo/akk/akk.r0000d2?all</a>.</dd>
+      href="/neo/akk/akk.r0001d6?all"
+      >http://oracc.org/neo/akk/akk.r0001d6?all</a>.</dd>
 
       <dt>[PAGE]</dt><dd>Return a page full of instances.  <a
-      href="/neo/akk/akk.r0000d2?page=3"
-      >http://oracc.org/neo/akk/akk.r0000d2?page=3</a>.</dd>
+      href="/neo/akk/akk.r0001d6?page=3"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=3</a>.</dd>
     </dl>
 
     <p>The page size can also be set with <code>size=[ 25 | 50 | 100
     ]</code>. Other sizes are not permitted. <a
-      href="/neo/akk/akk.r0000d2?page=3&amp;size=50"
-      >http://oracc.org/neo/akk/akk.r0000d2?page=2&amp;size=50</a></p>
+      href="/neo/akk/akk.r0001d6?page=3&amp;size=50"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=2&amp;size=50</a></p>
 
     <p>The mode in which results are returned can be specified with
     <code>mode=[ xml | div | html ]</code>.</p>
@@ -86,22 +86,31 @@
       the result set fragment--this is of limited use because the
       cuneiform transliteration is in Oracc's somewhat technical GDL
       format. <a
-      href="/neo/akk/akk.r0000d2?page=3&amp;mode=xml"
-      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=xml</a></dd>
-      <dt><code>div</code></dt><dd>returns a formated HTML version of
-      each instance in the set, wrapped in a <code>div</code>.  <a
-      href="/neo/akk/akk.r0000d2?page=3&amp;mode=div"
-      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=div</a></dd>
-      <dt><code>html</code></dt><dd>returns a complete HTML page with
+      href="/neo/akk/akk.r0001d6?page=3&amp;mode=xml"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=3&amp;mode=xml</a></dd>
+      <dt><code>html</code></dt><dd>returns a formated HTML version of
+      each instance in the set, wrapped in a <code>html</code>.  <a
+      href="/neo/akk/akk.r0001d6?page=3&amp;mode=html"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=3&amp;mode=html</a></dd>
+      <!-- <dt><code>html</code></dt><dd>returns a complete HTML page with
       the result set fragment. <a
-      href="/neo/akk/akk.r0000d2?page=3&amp;mode=div"
-      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=div</a></dd>
+      href="/neo/akk/akk.r0001d6?page=3&amp;mode=div"
+      >http://oracc.org/neo/akk/akk.r0001d6?page=3&amp;mode=div</a></dd>-->
     </dl>
 
   </div>
 
-  <div>
-  </div>
+  <h2>Retrieving Documents with Hilited Words</h2>
+
+  <p>The label part of the instance (the part in parenthesis after the
+  textual instance) contains a word ID of the form P, Q, or X,
+  followed by 6 digits, followed by a period with more digits, then
+  another period with more digits.  This is a Word ID. A Word ID can
+  simply be appended to a project URL to display the document with
+  word hilited and scrolled to a reasonable point.</p>
+
+  <p><a href="/neo/"></a></p>
+  
 </body>
 
 </html>
