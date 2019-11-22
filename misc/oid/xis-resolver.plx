@@ -16,8 +16,8 @@ $page = 1 unless defined $page;
 $size = 25 unless $size;
 
 my $count = -1;
-my $projwdir = "/Users/stinney/orc/www/$proj";
-my $projpdir = "/Users/stinney/orc/pub/$proj";
+my $projwdir = "/home/oracc/www/$proj";
+my $projpdir = "/home/oracc/pub/$proj";
 my $tisfile = "$projpdir/cbd/$lang/$lang.tis";
 
 xml_error("bad page specification") unless $page==0 || $page =~ /^\d+/;
@@ -25,7 +25,7 @@ xml_error("bad size specification") unless $size==0 || $size =~ /^(25|50|100)$/;
 xml_error("bad mode specification") unless $mode eq 'xml' || $mode eq 'html';
 
 unless (-r $tisfile) {
-    xml_error("bad project in request") unless -d "/Users/stinney/orc/lib/$proj";
+    xml_error("bad project in request") unless -d "/home/oracc/lib/$proj";
     xml_error("bad language in request") unless -d "$projpdir/cbd/$lang";
     xml_error("no public language data") unless -d "$projpdir/cbd/$lang.tis";
 }
@@ -34,11 +34,11 @@ my $baselang = $lang; $baselang =~ s/-.*$//;
 my $bucket = $xis; $bucket =~ s/^$baselang\.//; $bucket =~ s/^(.....).*$/$1/;
 my $bucketpath = "$projwdir/cbd/$lang/xis/$bucket"; warn "bucketpath=$bucketpath\n";
 my $xisdata = "$bucketpath/$xis";
-my $instances = "$xisdata/instances.lst";
+my $instances = "$xisdata/instances";
 
 unless (-r $instances) {
     xml_error("no web language data") unless -d "$projwdir/cbd/$lang";
-    $count = `/Users/stinney/orc/bin/xisdb $tisfile -c $xis`;
+    $count = `/home/oracc/bin/xisdb $tisfile -c $xis`;
     xml_error("bad xis in request") unless $count;
     my $xisdir = "$projwdir/cbd/$lang/xis";
     mkdir $xisdir unless -d $xisdir;
@@ -86,18 +86,18 @@ sub xis_xml {
     $htmlfile =~ s/lst$/html/;
     $xmlfile =~ s/lst$/xml/;
     unless (-r $xmlfile) {
-	system("/Users/stinney/orc/bin/wm -p$proj -l -i$list | /Users/stinney/orc/bin/ce_xtf -3 -l -p $proj >$xmlfile");
+	system("/home/oracc/bin/wm -p$proj -l -i$list | /home/oracc/bin/ce_xtf -3 -l -p $proj >$xmlfile");
 	system('xsltproc',
 	       '-stringparam', 'divwrap', 'yes',
 	       '-stringparam', 'fragment', 'yes',
 	       '-stringparam', 'project', $proj,
-	       '-o', $htmlfile, '/Users/stinney/orc/lib/scripts/p3-ce-HTML.xsl', $xmlfile)
+	       '-o', $htmlfile, '/home/oracc/lib/scripts/p3-ce-HTML.xsl', $xmlfile)
     }
     $xmlfile;
 }
 
 sub xis_init {
-    system("/Users/stinney/orc/bin/xisdb $tisfile $xis >$instances");
+    system("/home/oracc/bin/xisdb $tisfile $xis >$xisdata/instances");
     open(C,">$xisdata/count"); print C $count; close(C);
 }
 
@@ -105,19 +105,19 @@ sub xis_init {
 sub xis_page {
     my $pagefile = '';
     if ($all eq 'all') {
-	$pagefile = $instances;
+	$pagefile = "$xisdata/instances";
     } else {
 	$pagefile = "$xisdata/p${page}s$size.lst";
 	unless (-r $pagefile) {
 	    if ($page == 1) {
-		system "head -$size $instances >$pagefile";
+		system "head -$size $xisdata/instances >$pagefile";
 	    } else {
 		my $from = (($page-1) * $size) + 1;
 		my $to = ($page * $size);
 		if ($to > $count) {
 		    $to = $count;
 		}
-		system "sed -n '${from},${to}p' $instances >$pagefile";
+		system "sed -n '${from},${to}p' $xisdata/instances >$pagefile";
 	    }
 	}
     }
