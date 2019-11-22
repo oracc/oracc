@@ -12,12 +12,14 @@
   <div>
     <h1>Oracc XML Instance Set (XIS) API Documentation</h1>
 
-    <h2>Overview</h2>
+    <h2>Glossary Articles</h2>
 
     <p>Oracc is organized around the concept of the project,
     e.g., <code>neo</code>.  Projects typically contain a corpus
     consisting of a catalogue, text editions, and one or more
-    glossaries.  The glossaries are named by ISO639 language codes,
+    glossaries.</p>
+
+    <p>The glossaries are named by ISO639 language codes,
     e.g., <code>akk</code>.</p>
 
     <p>Glossaries are collections of entries, words or phrases, which
@@ -26,37 +28,75 @@
     Work to make these OIDs persistent is under way but not yet
     complete.</p>
 
-    <p>Each entry contains several lists of instances of the words
+    <h2>Glossary Article URIs</h2>
+
+    <p>The Glossary Article URI consists of one of each of the above
+    components, in that order.  So, for project <code>neo</code>,
+    glossary for language glossary <code>akk</code>, article
+    <code>x00000010</code>, the URI is <a
+    href="/neo/akk/x00000010"
+    >http://oracc.org/neo/akk/x00000010</a></p>.
+
+    <h2>Glossary Article Instances (XIS)</h2>
+    
+    <p>Each article contains several lists of instances of the words
     with particular features--the basic meaning, a finer-grained
     sense, various grammatical parts, etc.  These instances are stored
     as lists whose abbreviation is XIS: XML Instance Sets, so we call
-    the ID for such an instance sets an <code>XIS</code>
-    <p>These elements and additional selection features make up the XIS API.</p>
-    
-    <h2>Components</h2>
-    
-<!--
-<form action="/instances" method="post" name="xisdemo" id="xisdemo" target="result">
-<div>
+    the ID for such an instance sets an <code>XIS</code>.</p>
 
-  <input type="text" name="project" value="neo" size="10" id="project" />
-  <input type="text" name="glossary" value="lang" size="10" id="lang" />
-  <input type="text" name="xis" value="" size="10" id="xis" />
-  <input type="text" name="page" value="1" size="4" id="page" />
-  <input type="text" name="size" value="25" size="4" id="size" />
-  <input type="text" name="mode" value="25" size="4" id="size" />
-  
-  <select id="p3srchtype" name="p3srchtype" onchange="p3action('qsrch')">
-    <option value="xml">XML</option>
-    <option value="div">&lt;div&gt;</option>
-    <option value="html">HTML</option>
-    <option value="cat">Catalogue</option>
-  </select>
-  
-  <input type="checkbox" name="all" value="" />
-</div>
-</form>
--->
+    <p>The base URI for an XIS is <code>PROJECT/LANG/XIS</code>: <a
+    href="/neo/akk/akk.r0000d2"
+    >http://oracc.org/neo/akk/akk.r0000d2</a>.  This URL
+    returns the first page of results from the XIS.</p>
+
+    <h2>Query String</h2>
+
+    <p>Variables in the query string select operations and subsets of the instances returned.</p>
+    
+    <p>The XIS API has three operations:</p>
+    <dl>
+      <dt>count</dt><dd>Return the count of instances in the XIS in
+      the XML form <code>&lt;count>[COUNT]&lt;/count></code>.  <a
+      href="/neo/akk/akk.r0000d2?count"
+      >http://oracc.org/neo/akk/akk.r0000d2?count</a>.</dd>
+
+      <dt>all</dt><dd>Return all the instances at once.  This is a
+      misnomer because the server will only return a maximum of 100
+      instances.  If the number of instances in the XIS is greater
+      than 100 the paging API must be used.  <a
+      href="/neo/akk/akk.r0000d2?all"
+      >http://oracc.org/neo/akk/akk.r0000d2?all</a>.</dd>
+
+      <dt>[PAGE]</dt><dd>Return a page full of instances.  <a
+      href="/neo/akk/akk.r0000d2?page=3"
+      >http://oracc.org/neo/akk/akk.r0000d2?page=3</a>.</dd>
+    </dl>
+
+    <p>The page size can also be set with <code>size=[ 25 | 50 | 100
+    ]</code>. Other sizes are not permitted. <a
+      href="/neo/akk/akk.r0000d2?page=3&amp;size=50"
+      >http://oracc.org/neo/akk/akk.r0000d2?page=2&amp;size=50</a></p>
+
+    <p>The mode in which results are returned can be specified with
+    <code>mode=[ xml | div | html ]</code>.</p>
+
+    <dl>
+      <dt><code>xml</code></dt><dd>returns the server's XML version of
+      the result set fragment--this is of limited use because the
+      cuneiform transliteration is in Oracc's somewhat technical GDL
+      format. <a
+      href="/neo/akk/akk.r0000d2?page=3&amp;mode=xml"
+      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=xml</a></dd>
+      <dt><code>div</code></dt><dd>returns a formated HTML version of
+      each instance in the set, wrapped in a <code>div</code>.  <a
+      href="/neo/akk/akk.r0000d2?page=3&amp;mode=div"
+      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=div</a></dd>
+      <dt><code>html</code></dt><dd>returns a complete HTML page with
+      the result set fragment. <a
+      href="/neo/akk/akk.r0000d2?page=3&amp;mode=div"
+      >http://oracc.org/neo/akk/akk.r0000d2?page=3&amp;mode=div</a></dd>
+    </dl>
 
   </div>
 

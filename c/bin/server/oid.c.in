@@ -71,10 +71,10 @@ instances(const char *lang, const char *id)
   const char **va = NULL;
 
   fprintf(stderr, "instances handler\n");
+
+  if (query_string)
+    setenv("QUERY_STRING", query_string, 1);
   
-  print_hdr_xml();
-  
-  setenv("QUERY_STRING", query_string, 1);
   v = CGI_get_query(v);
   v = CGI_get_post(v, NULL);
   dump_vl(v);
@@ -86,10 +86,10 @@ instances(const char *lang, const char *id)
   va[2] = strdup(project ? project : "nul");
   va[3] = strdup(lang);
   va[4] = strdup(id);
-  va[5] = cgi_val(v, "page", "0");
-  va[6] = cgi_val(v, "size", "0");
-  va[7] = cgi_val(v, "mode", "html");
-  va[8] = cgi_val(v, "all", "");
+  va[5] = v ? cgi_val(v, "page", "1") : "1";
+  va[6] = v ? cgi_val(v, "size", "25") : "25";
+  va[7] = v ? cgi_val(v, "mode", "html") : "html";
+  va[8] = v ? cgi_val(v, "all", "") : "";
   va[9] = NULL;
   execv("/usr/bin/perl", (char*const*)va);
   fprintf(stderr, "execv /usr/bin/perl failed\n");  
