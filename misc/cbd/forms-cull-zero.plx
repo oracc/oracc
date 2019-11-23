@@ -17,31 +17,50 @@ my $newiso = `date +\%Y-\%m-\%d`; chomp $newiso;
 my $cullfile = "00any/cull-$newiso.forms";
 open(CULL,">$cullfile") || die "$0: can't write culled forms to $cullfile\n";
 
+my %part_forms = ();
+my @input = ();
 while (<>) {
+    push @input, $_;
+    chomp;
+    if (/^\@form\S*\s+(\S+)/) {
+	my $f = $1;
+	if ($f =~ /_/) {
+	    my @f = split(/_/, $f);
+	    @part_forms{@f} = ();
+	}
+    }
+}
+
+open(F,'>F'); print F join("\n", keys \%part_forms); close(F);
+
+foreach (@input) {
     if (/^$acd_rx\@entry/) {
 	warn "$.: missing \@end entry\n" if scalar keys %forms > 0;
 	$curr_entry = $_;
 	$curr_entry =~ s/^.*\@entry\s+(.*?)\s*$/$1/;
 	$curr_entry =~ s/\s+\[(.*?)\].*$/[$1]/;
 	%forms = ();
-    } elsif (!/_/ && s/^\@form\s*//) { # ignore compound forms because they are always zero via this method
+    } elsif (!/_/ && /^\@form/) { # ignore compound forms because they are always zero via this method
 	chomp;
+	my $bang = '';
+	$bang = '!' if /^\@form\!/;
+	s/^\@form\S*\s+//;
 	s/\s+/ /;
 	s/\s*$//;
 	my ($f) = (/^(\S+)/);
 	my $k = "$lang:$f=$curr_entry"; # warn "k=$k\n";
-	if (exists $inst{$k}) {
-	    $forms{$f} = $_ unless $forms{$f};
+	if (exists($part_forms{$f}) || exists($inst{$k})) {
+	    $forms{$f} = "\@form$bang $_" unless $forms{$f};
 	} else {
-	    $forms{$f} = "-$_";
+	    $forms{$f} = "-\@form $_";
 	}
 	$_ = undef;
     } elsif (/^$acd_rx\@sense/ || /^\@end/) {
 	foreach my $f (sort keys %forms) {
 	    if ($forms{$f} =~ s/^-//) {
-		print CULL "$curr_entry\t\@form $forms{$f}\n";
+		print CULL "$curr_entry\t$forms{$f}\n";
 	    } else {
-		print "\@form $forms{$f}\n";
+		print "$forms{$f}\n";
 	    }
 	}
 	%forms = ();
