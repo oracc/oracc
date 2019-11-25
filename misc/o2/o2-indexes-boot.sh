@@ -19,7 +19,7 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     setrax -p $project <01bld/lists/xtfindex.lst
 fi
 
-if [ -s 01bld/lists/xtfindex.lst ]; then
+if [ -s 01bld/lists/lemindex.lst ]; then
     echo indexing lemmatized texts
     selemx -p $project <01bld/lists/lemindex.lst
 fi
