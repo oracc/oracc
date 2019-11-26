@@ -41,6 +41,8 @@ bases_init(\%args);
 my %bases = bases_align(\%args, \@base_cbd, \@cbd, undef);
 bases_term();
 
+my $file = pp_file();
+
 if ($args{'apply'}) {
     my $curr_entry = '';
     my %curr_map = ();
@@ -64,9 +66,16 @@ if ($args{'apply'}) {
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    if (scalar %curr_map) {
 		my ($this_base) = ($cbd[$i] =~ m#\s/(\S+)#);
-		if ($curr_map{$this_base}) {
-		    my $b = $curr_map{$this_base};
-		    $cbd[$i] =~ s#^(.*?\s+)/\S+(.*)$#$1/${b}$2#;
+		if ($this_base) {
+		    if ($curr_map{$this_base}) {
+			my $b = $curr_map{$this_base};
+			$cbd[$i] =~ s#^(.*?\s+)/\S+(.*)$#$1/${b}$2#;
+		    }
+		} else {
+		    unless ($cbd[$i] =~ /_/) {
+			my $l = $i+1;
+			warn "$file:$l: no base in form\n";
+		    }
 		}
 	    }
 	}
