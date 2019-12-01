@@ -236,9 +236,12 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		  if (first_non_d < nclnodes)
 		    {
 		      if (ng_match_logging)
-			fprintf(ng_match_log, "%s:%d: %s triggered at %s:%d\n",
-				nle[i_nle]->file, nle[i_nle]->lnum, nlcp->nlp->name,
-				clnodes[first_non_d].l->f->file, (int)clnodes[first_non_d].l->f->lnum
+			fprintf(ng_match_log, "%s\t%s:%d\t%s:%d\t%s/%s\t%s\n",
+				nlcp->nlp->name,
+				nle[i_nle]->file, nle[i_nle]->lnum, 
+				clnodes[first_non_d].l->f->file, (int)clnodes[first_non_d].l->f->lnum,
+				clnodes[first_non_d].l->parent->xc->project, clnodes[first_non_d].l->ref,
+				nle[i_nle]->line
 				);
 		      match_list->matches->user = nle[i_nle]->user;
 		      if (match_list->matches->psu_form)
