@@ -82,7 +82,7 @@ struct NL
   The psu is a Phrasal Semantic Unit structure (this was named
   DSU (Discontinous Semantic Unit) in PV; the name change reflects the
   fact that PSUs are only occasionally discontinuous--which they
-  continue to be permitted to be.
+  continue to be permitted to be).
  */
 struct NLE
 {

@@ -6,15 +6,23 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Bases;
 
 my $curr_cfgw = '';
+my %baseconts = ();
 my %count = ();
+my %count_w_cont = ();
 my $nwords = 0;
-my @bcount = `base-count.plx 01bld/from-prx-glo.sig`; chomp(@bcount);
-foreach my $b (@bcount) {
-    my($k,$c) = split(/\t/,$b);
-    $count{$k} = $c;
+#my @bcount = `base-count.plx 01bld/from-prx-glo.sig`; chomp(@bcount);
+open(B,'00etc/base-count.tab');
+while (<B>) {
+    chomp;
+    my($k,$c) = split(/\t/,$_);
+    $count_w_cont{$k} = $c;
+    my($ba,$co) = ($k =~ /^(.*?)\+(?:(o)|-(.*))$/);
+    $count{$ba} += $c;
+    push @{$baseconts{$ba}}, $co;
 }
+close(B);
 
-open(L,'>audit.log'); select L;
+open(L,'>00etc/base-audit.tab'); select L;
 
 bases_init();
 while (<>) {
@@ -34,7 +42,7 @@ close(L);
 
 sub audit {
     my @b = @_;
-    warn "audit @b\n";
+#    warn "audit @b\n";
     my $cf = $curr_cfgw;
     $cf =~ s/\s+\[.*$//;
     return if $cf =~ /\s/;

@@ -8,11 +8,13 @@ use ORACC::L2GLO::Util;
 my $proper = 0; # 1 to process proper nouns
 
 my %count = ();
+my $ninst = 0;
 
 my $line_one = <>;
 if ($line_one =~ /^\@fields/) {
     while (<>) {
-	s/\t.*$//;
+	s/\t(.*)$//;
+	my $inst = $1; $ninst = ($inst =~ tr/ / /) + 1;
 	chomp;
 	if (/^\{/) {
 	    s/^.*?:://;
@@ -37,7 +39,8 @@ sub count1 {
     my %s = parse_sig(shift);
     return unless $proper || $s{'pos'} !~ /^[A-Z]N$/;
     if ($s{'base'}) {
-	++$count{"$s{'cf'}\[$s{'gw'}\]$s{'pos'}/$s{'base'}"};
+	my $cont = $s{'cont'} || 'o';
+	$count{"$s{'cf'}\[$s{'gw'}\]$s{'pos'}/$s{'base'}\+$cont"} += $ninst;
     }
 }
 

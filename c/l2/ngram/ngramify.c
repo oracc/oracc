@@ -9,8 +9,11 @@
 #include "sigs.h"
 
 int ng_debug = 0;
+static int ng_match_logging = 1;
 int ngramify_per_lang = 0;
 int ngramify_disambiguating = 0;
+
+static FILE *ng_match_log = NULL;
 
 extern int verbose;
 static int ngram_id = -1;
@@ -57,6 +60,15 @@ ngdebug(const char *mess,...)
 void
 ngramify_init()
 {
+  if (ng_match_logging && !ng_match_log)
+    {
+      ng_match_log = xfopen("01tmp/ng_match.log", "wb");
+      if (NULL == ng_match_log)
+	{
+	  fprintf(stderr, "ngramify_init: couldn't open 01tmp/ng_match.log--no ngram match logging will be done.\n");
+	  ng_match_logging = 0;
+	}
+    }
   if (!match_list)
     {
       match_list = calloc(1,sizeof(struct ML));
@@ -223,6 +235,11 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		    ;
 		  if (first_non_d < nclnodes)
 		    {
+		      if (ng_match_logging)
+			fprintf(ng_match_log, "%s:%d: %s triggered at %s:%d\n",
+				nle[i_nle]->file, nle[i_nle]->lnum, nlcp->nlp->name,
+				clnodes[first_non_d].l->f->file, (int)clnodes[first_non_d].l->f->lnum
+				);
 		      match_list->matches->user = nle[i_nle]->user;
 		      if (match_list->matches->psu_form)
 			if (clnodes[first_non_d].l->f->newflag)
