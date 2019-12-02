@@ -43,13 +43,14 @@ unless ($x) {
 
 my %images = ();
 my @i = tags($x,$XMD,'images');
-if ($#i == 0 && $i[0]->getAttribute("public") eq 'yes') {
+# Many (all?) public CDLI images are tagged as non-public atm for some reason
+if ($#i == 0 && 1) { # $i[0]->getAttribute("public") eq 'yes') {
     foreach my $c ($i[0]->childNodes()) {
 	next unless $c->isa('XML::LibXML::Element');
 	$images{$c->getAttribute("type").':'.$c->getAttribute("scale")} = $c;
     }
 } else {
-    print $i[0]->toString(1);
+#    print $i[0]->toString(1);
     error_return("No CDLI images found.");
 }
 
@@ -80,7 +81,7 @@ foreach my $w (@wanted) {
 }
 
 if ($result) {
-    my $uri = "http://cdli.ucla.edu/dl/".$result->getAttribute('src');
+    my $uri = "https://cdli.ucla.edu/dl/".$result->getAttribute('src');
     my $full = $uri;
     $full =~ s#/tn_#/#;
 
@@ -96,7 +97,7 @@ Content-type: text/html; charset=utf-8
 <div class="oracc-cdli-image">
 <h1>TERMS OF USE</h1>
 <p>This thumbnail and the full-size version which can be reached by clicking on it are distributed under the terms of the 
-<a href="http://cdli.ucla.edu/info/copyright.html">CDLI Copyright and Permissions statement.</a></p>
+<a href="https://cdli.ucla.edu/info/copyright.html">CDLI Copyright and Permissions statement.</a></p>
 <a href="$full"><img src="$uri" alt="CDLI $type of text $pqx"/></a>
 </div>
 </body>
