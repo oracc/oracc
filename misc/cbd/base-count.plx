@@ -8,6 +8,7 @@ use ORACC::L2GLO::Util;
 my $proper = 0; # 1 to process proper nouns
 
 my %count = ();
+my %insts = ();
 my $ninst = 0;
 
 my $line_one = <>;
@@ -19,10 +20,10 @@ if ($line_one =~ /^\@fields/) {
 	if (/^\{/) {
 	    s/^.*?:://;
 	    foreach my $s (split(/\+\+/, $_)) {
-		count1($s);
+		count1($inst,$s);
 	    }
 	} else {
-	    count1($_);
+	    count1($inst,$_);
 	}
     }
 } else {
@@ -30,17 +31,20 @@ if ($line_one =~ /^\@fields/) {
 }
 
 foreach my $c (sort keys %count) {
-    print "$c\t$count{$c}\n";
+    print "$c\t$count{$c}\t@{$insts{$c}}\n";
 }
 
 ####################################################################################
 
 sub count1 {
+    my $i = shift;
     my %s = parse_sig(shift);
     return unless $proper || $s{'pos'} !~ /^[A-Z]N$/;
     if ($s{'base'}) {
 	my $cont = $s{'cont'} || 'o';
-	$count{"$s{'cf'}\[$s{'gw'}\]$s{'pos'}/$s{'base'}\+$cont"} += $ninst;
+	my $key = "$s{'cf'}\[$s{'gw'}\]$s{'pos'}/$s{'base'}\+$cont";
+	$count{$key} += $ninst;
+	push @{$insts{$key}}, $i;
     }
 }
 
