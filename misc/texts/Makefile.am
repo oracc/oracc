@@ -10,7 +10,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	tis-sort.plx lex-word-tail.sh lex-oid-sign.plx lex-oid-word.plx \
 	lex-sign-check.sh lex-wid2err.sh err-sort.plx wid2lem_sigs.plx \
 	inst-fix-tab.plx makemake.plx form-inst.sh cbd-lem-fix.plx \
-	cbd-lem-fix-apply.plx base-inst.sh locdata.sh
+	cbd-lem-fix-apply.plx base-inst.sh locdata.sh ngram-matches.plx
 
 scriptdata_DATA = \
 	lex-sign-data.xsl lex-sign-group.xsl lex-sign-lookup.xsl lex-sign-HTML.xsl \

@@ -236,7 +236,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		  if (first_non_d < nclnodes)
 		    {
 		      if (ng_match_logging)
-			fprintf(ng_match_log, "%s\t%s:%d\t%s:%d\t%s/%s\t%s\n",
+			fprintf(ng_match_log, "%s\t%s:%d\t%s:%d\t/%s/%s\t%s\n",
 				nlcp->nlp->name,
 				nle[i_nle]->file, nle[i_nle]->lnum, 
 				clnodes[first_non_d].l->f->file, (int)clnodes[first_non_d].l->f->lnum,
