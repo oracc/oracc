@@ -480,7 +480,10 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 			}
 		    }
 		}
-	      
+
+	      while (' ' == tmp[strlen((const char*)tmp)-1])
+		tmp[strlen((const char*)tmp)-1] = '\0';
+
 	      fprintf(fp,"[%s]",(char*)tmp);
 	    }
 	  else

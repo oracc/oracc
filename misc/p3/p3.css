@@ -135,6 +135,9 @@ sub { font-style: normal; }
 .akk { font-style: italic; }
 .arc { font-style: italic; }
 .egy { font-style: italic; }
+.hit { font-style: italic; }
+.hit-akk { font-style: normal; }
+.hit-xhu { font-style: normal; }
 
 .zoomed { background-color: silver; }
 .selected { background-color: silver; }

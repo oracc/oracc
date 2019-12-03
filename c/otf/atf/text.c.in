@@ -214,6 +214,7 @@ process_text(struct run_context *run, unsigned char **lines)
   div_level = sparse_lem = status = 0;
   current_level = TEXT;
   curr_lang = text_lang = global_lang;
+  fwhost = NULL;
   protocol_state = s_text;
   has_links = header_id = line_id = sym_warning = use_legacy = 0;
   use_unicode = arg_use_unicode;

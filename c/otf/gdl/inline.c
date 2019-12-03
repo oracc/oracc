@@ -409,6 +409,8 @@ static void
 langhand(struct node *wp, struct token *tp)
 {
   appendAttr(wp,attr(a_xml_lang,ucc(tp->lang->fulltag)));
+  if (tp->fwhost)
+    setAttr(wp,a_fwhost,(unsigned const char *)strdup(tp->fwhost));
 }
 
 extern int tokcheck(void);
@@ -2371,9 +2373,7 @@ finish_word(struct node *wp)
     {
       appendChild(wp,pending_disamb);
       pending_disamb = NULL;
-    }
-
-  
+    }  
   
   rendering_word_form = 1;
   for (suppress_next_hyphen = i = 0; 

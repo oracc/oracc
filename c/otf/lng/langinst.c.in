@@ -149,6 +149,8 @@ lang_switch(struct lang_context *curr, const char *tag, int *taglenp,
 
   if ((lt = langtag_create(curr, tag, taglenp, file, lnum)))
     {
+      if (fwhost && !strcmp(fwhost, lt->lang))
+	fwhost = NULL;
       if (!curr || strcmp(lt->tag,curr->fulltag))
 	{
 	  if (!(lp = lang_load(curr ? curr->owner : NULL, lt)))

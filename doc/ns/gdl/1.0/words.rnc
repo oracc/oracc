@@ -35,6 +35,7 @@ sword.cont =
 word.attributes = 
     attribute xml:id { xsd:ID } ,
     attribute xml:lang { xsd:language } ,
+    attribute fwhost { xsd:language }? ,
     attribute form  { text }? ,
     attribute lemma { text }? ,
     attribute guide { text }? ,

@@ -616,7 +616,14 @@
 	  <xsl:when test="not(@xml:lang='sux')">
 	    <span>
 	      <xsl:attribute name="class">
-		<xsl:value-of select="ancestor-or-self::*[@xml:lang]/@xml:lang"/>
+		<xsl:choose>
+		  <xsl:when test="@fwhost">
+		    <xsl:value-of select="concat(@fwhost,'-',ancestor-or-self::*[@xml:lang]/@xml:lang)"/>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:value-of select="ancestor-or-self::*[@xml:lang]/@xml:lang"/>
+		  </xsl:otherwise>
+		</xsl:choose>
 	      </xsl:attribute>
 	      <xsl:apply-templates/>
 	    </span>

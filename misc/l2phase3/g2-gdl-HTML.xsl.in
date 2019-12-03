@@ -62,7 +62,7 @@
 </xsl:template>
 
 <xsl:template match="g:swc">
-  <xsl:text>-</xsl:text>
+  <!--<xsl:text>-</xsl:text>--> <!--removed in attempt to fix duplicate hyphen on split word-->
   <xsl:choose>
     <xsl:when test="@swc-final = '0'">
       <xsl:call-template name="gdl-w">
@@ -95,15 +95,22 @@
 -->
 
 <xsl:template name="set-lang">
+  <!--<xsl:message>set-lang fwhost=<xsl:value-of select="ancestor-or-self::g:w/@fwhost"/></xsl:message>-->
   <xsl:variable name="xml-lang">
     <xsl:value-of select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
   </xsl:variable>
+  <xsl:variable name="fwhost">
+    <xsl:if test="ancestor-or-self::g:w/@fwhost">
+      <xsl:value-of select="concat(ancestor-or-self::g:w/@fwhost,'-')"/>
+    </xsl:if>
+  </xsl:variable>
+  <!--<xsl:message>$fwhost=<xsl:value-of select="$fwhost"/></xsl:message>-->
   <xsl:choose>
     <xsl:when test="contains($xml-lang,'-')">
-      <xsl:value-of select="substring-before($xml-lang,'-')"/>
+      <xsl:value-of select="concat($fwhost,substring-before($xml-lang,'-'))"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$xml-lang"/>
+      <xsl:value-of select="concat($fwhost,$xml-lang)"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -155,10 +162,18 @@
 </xsl:template>
 
 <xsl:template match="g:s">
-  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>
+  <!--<xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>-->
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">
+      <sup>
+	<span class="sign {@g:logolang}">
+	  <xsl:apply-templates/>
+	</span>
+	<xsl:call-template name="render-flags"/>
+      </sup>
+    </xsl:when>
+    <xsl:when test="ancestor-or-self::g:w/@xml:lang = 'hit' and ancestor::g:d">
       <sup>
 	<span class="sign {@g:logolang}">
 	  <xsl:apply-templates/>
@@ -174,9 +189,10 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
+  <!-- probably not right as of 2019-12-03
   <xsl:if test="not(ancestor::g:q) and ancestor::g:d 
 		and not(ancestor::g:d/@g:pos = 'post')"
-	  >.</xsl:if> <!-- no @g:delim on these nodes -->
+		>.</xsl:if> --><!-- no @g:delim on these nodes -->
 </xsl:template>
 
 <xsl:template match="g:d">
@@ -432,7 +448,8 @@
 	<xsl:for-each select="*[position()>1]">
 	  <xsl:apply-templates select="."/>
 	  <xsl:if test="not(position()=last())">
-	    <xsl:text>-</xsl:text>
+	    <!--<xsl:text>-</xsl:text>-->
+	    <xsl:value-of select="@g:delim"/>
           </xsl:if>
  	</xsl:for-each>
       <xsl:text>)</xsl:text>

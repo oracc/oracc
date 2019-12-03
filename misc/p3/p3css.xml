@@ -133,9 +133,11 @@ a[onclick]:hover   { color: white; background-color: red; }
 
 sub { font-style: normal; }
 .sux { font-style: normal; }
+.hit>.akk { font-style: normal; }
 .akk { font-style: italic; }
 .arc { font-style: italic; }
 .egy { font-style: italic; }
+.hit { font-style: italic; }
 
 .zoomed { background-color: silver; }
 .selected { background-color: silver; }

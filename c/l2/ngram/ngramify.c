@@ -560,15 +560,16 @@ check_predicates(struct f2 *p, struct CF *cfp)
     if (pform && !*pform && p->cof_id)
       pform = (char*)((struct f2*)((void*)(uintptr_t)p->cof_id))->form;
 
-  if ((!cfp->f2->form || !*cfp->f2->form)
-      || (pform && !strcmp((char*)pform, (char*)cfp->f2->form)))
-    {
-      /* Care needed with f2_test because we have to reverse argument 
-	 order to ensure that no sense on instance still matches 
-	 glossary's sig */
-      if (!(cfnorm_ok(p, cfp->f2) && f2_test(cfp->f2, p)))
-	return 0;
-    }
+  if (pform && cfp->f2->form && *cfp->f2->form
+      && strcmp((char*)pform, (char*)cfp->f2->form))
+    return 0;
+  
+  /* Care needed with f2_test because we have to reverse argument 
+     order to ensure that no sense on instance still matches 
+     glossary's sig */
+  if (!(cfnorm_ok(p, cfp->f2) && f2_test(cfp->f2, p)))
+    return 0;
+  
   if (cfp->preds)
     {
       for (i = 0; cfp->preds[i]; ++i)

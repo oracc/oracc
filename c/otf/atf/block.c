@@ -272,6 +272,7 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
   start_lnum = -1;
   transtype = 0;
   curr_lang = global_lang;
+  fwhost = NULL;
   protocol_state = s_inter;
   current = text_element = text;
   reset_labels();

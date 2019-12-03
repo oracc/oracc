@@ -5,6 +5,8 @@ use lib '@@ORACC@@/lib';
 use Getopt::Long;
 use Data::Dumper;
 
+my $type = shift @ARGV;
+
 my %d = ();
 my %l = ();
 
@@ -31,7 +33,7 @@ foreach my $f (keys %d) {
     }
     print "\n";
     @src = map { /\t/ || s/^/0\t/; $_ } @src;
-    open(S,'>notused.lst'); print S join("\n", @src, ''); close(S);
+    open(S,">01tmp/$type-match.log"); print S join("\n", @src, ''); close(S);
 }
 
 1;

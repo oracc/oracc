@@ -1445,6 +1445,7 @@ added directly to the XTF version of the text.</p>
 <h4>Logograms</h4>
 <p>The surface syntax for logograms is described under Sign Names
 above.</p>
+<p>The notation <code>_%LANG LOGOGRAMS_</code> can be used to specify the logogram language, e.g., in Urartean context, <code>_%akk DAN-NU_</code></p>
 <p>A normalization may be given after a word containing at least one
 logogram by following the word immediately with <code>(=...)</code>,
 e.g., <code>SAL(=mimma)</code>.</p>
@@ -1456,6 +1457,48 @@ linguistic.attr =
   | (attribute g:role     { "logo" } ,
      attribute g:logolang { xsd:language }))
 </d:rnc>
+
+<h4>Scripts</h4>
+<table class="eighty">
+<caption>Predefined Script Codes</caption>
+<thead>
+<tr><th>Code</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td class="cookbook">020</td><td>Sumero-Akkadian Cuneiform (SAC)</td></tr>
+<tr><td class="cookbook">030</td><td>Old Persian Cuneiform</td></tr>
+<tr><td class="cookbook">040</td><td>Ugaritic Cuneiform</td></tr>
+<tr><td class="cookbook">050</td><td>Egyptian Hieroglyphic</td></tr>
+<tr><td class="cookbook">124</td><td>Aramaic</td></tr>
+<tr><td class="cookbook">200</td><td>Greek</td></tr>
+<tr><td class="cookbook">900</td><td>Proto-Cuneiform</td></tr>
+<tr><td class="cookbook">901</td><td></td></tr>
+<tr><td class="cookbook">902</td><td></td></tr>
+<tr><td class="cookbook">903</td><td></td></tr>
+<tr><td class="cookbook">904</td><td></td></tr>
+<tr><td class="cookbook">905</td><td></td></tr>
+<tr><td class="cookbook">915</td><td></td></tr>
+<tr><td class="cookbook">916</td><td></td></tr>
+<tr><td class="cookbook">917</td><td></td></tr>
+<tr><td class="cookbook">918</td><td></td></tr>
+<tr><td class="cookbook">919</td><td></td></tr>
+<tr><td class="cookbook">920</td><td></td></tr>
+<tr><td class="cookbook">935</td><td></td></tr>
+<tr><td class="cookbook">936</td><td></td></tr>
+<tr><td class="cookbook">937</td><td></td></tr>
+<tr><td class="cookbook">938</td><td>Proto-Elamite</td></tr>
+<tr><td class="cookbook">944</td><td>Akkadian Logogram</td></tr>
+<tr><td class="cookbook">945</td><td>Luwian Logogram</td></tr>
+<tr><td class="cookbook">946</td><td>Sumerian Logogram</td></tr>
+<tr><td class="cookbook">947</td><td></td></tr>
+<tr><td class="cookbook">948</td><td></td></tr>
+<tr><td class="cookbook">949</td><td></td></tr>
+<tr><td class="cookbook">950</td><td>Urartian Hieroglyphic</td></tr>
+<tr><td class="cookbook">951</td><td>Luwian Hieroglyphic</td></tr>
+<tr><td class="cookbook">998</td><td></td></tr>
+<tr><td class="cookbook">999</td><td>(Artifical code for PNs; not used)</td></tr>
+</tbody>
+</table>
 
 <h1 class="tutorial">Proximity</h1>
 
@@ -1582,6 +1625,9 @@ a-ba mu-un-ba-al-e     KI/DI-bi     LAGAB-DUL₃      mu:un-du₃
 generation in ATF; all non-compound groups are generated as necessary
 by the ATF processor.</p></div>
 
+<h3 class="primary">Foreign Words</h3>
+<p class="primary">To mark foreign words use the <code>%fw</code> shift.  This must be used before the language of the foreign word itself, and results in an <code>fwhost</code> attribute being placed on the word's XML node.  The <code>fwhost</code> attribute gives the host language, i.e., the language of the environment within which the foreign word is an intrusion.  The <code>%fw</code> is cancelled the next time the host language is reverted to. So, to give an Akkadian word in Hittite context use <code>%hit bu %fw %akk šar-ru %hit ba</code>.</p>
+
 <d:rnc>
 namespace g = "http://oracc.org/ns/gdl/1.0"
 namespace n = "http://oracc.org/ns/norm/1.0"
@@ -1620,6 +1666,7 @@ sword.cont =
 word.attributes = 
     attribute xml:id { xsd:ID } ,
     attribute xml:lang { xsd:language } ,
+    attribute fwhost { xsd:language }? ,
     attribute form  { text }? ,
     attribute lemma { text }? ,
     attribute guide { text }? ,

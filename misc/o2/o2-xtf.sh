@@ -50,10 +50,19 @@ o2-xtfindex.plx
 if [ -s 01bld/lists/xtfindex.lst ]; then
     sort -t: -k2 -o 01bld/lists/xtfindex.lst 01bld/lists/xtfindex.lst
     wmapper -i 01bld/lists/xtfindex.lst -p $project
-    cat 01bld/lists/xtfindex.lst | bigrams -p $project
     # linkbase
     proj-linkbase.sh
     xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
+fi
+
+if [ -s 01bld/lists/lemindex.lst ]; then
+    rm 02pub/bgrm-*.ngm
+    if [ -r 00lib/derived.lst ]; then
+	atflists.plx -U 01bld/lists/lemindex.lst - 00lib/derived.lst | \
+	    bigrams -p $project
+    else
+	cat 01bld/lists/lemindex.lst | bigrams -p $project
+    fi
 fi
 
 # scores

@@ -30,6 +30,7 @@ enum a_type
   a_form,
   a_fragid,
   a_from,
+  a_fwhost,
   a_g_accented,
   a_g_break,
   a_g_breakEnd,

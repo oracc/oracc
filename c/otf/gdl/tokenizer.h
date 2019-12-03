@@ -122,6 +122,7 @@ struct token
   const void  *data;
   struct lang_context *lang;
   const char *altlang;
+  const char *fwhost;
   const void *grapheme;
   int lnum;
 };

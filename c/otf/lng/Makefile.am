@@ -1,4 +1,7 @@
 include ../../../oracc-am-rules.txt
+
+SUFFIXES=.g .c .o
+
 AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=liblng.la

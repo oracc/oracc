@@ -75,6 +75,11 @@
       <data type="language"/>
     </attribute>
     <optional>
+      <attribute name="fwhost">
+        <data type="language"/>
+      </attribute>
+    </optional>
+    <optional>
       <attribute name="form"/>
     </optional>
     <optional>

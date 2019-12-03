@@ -3,6 +3,9 @@
 #include "lang.h"
 #include "npool.h"
 #include "hash.h"
+#include "warning.h"
+
+const char *fwhost = NULL;
 
 struct lang_tag *default_langtag;
 
@@ -191,7 +194,7 @@ langtag_parse(const char *tag, const char *file, int lnum)
 	    tmp->script = s;
 	  else
 	    {
-	      langtag_error(file,lnum,tag,"bad language tag: expected abc-x-abcdef-1234");
+	      langtag_error(file,lnum,tag,"bad language tag: expected format abc-x-abcdef-123");
 	      break;
 	    }
 	}
@@ -320,6 +323,16 @@ langtag_create(struct lang_context *base, const char *tag,
   taglen = (slash ? (slash-tag) : (tagend-tag));
   strncpy(tagbuf,tag,taglen);
   tagbuf[taglen] = '\0';
+
+  if (taglen == 2 && !strcmp(tagbuf, "fw"))
+    {
+      if (base)
+	fwhost = base->core->name;
+      else
+	fwhost = NULL;
+      *taglenp = percent + taglen;
+      return NULL;
+    }
 
   if ((atf = langtag_atf(tagbuf,file,lnum)))
     {

@@ -76,7 +76,7 @@ $ORACC::CBD::Edit::acd_rx = $acd_rx;
 my @acd_ok_tags = qw/entry sense/;
 my %acd_ok_tags = (); @acd_ok_tags{@acd_ok_tags} = ();
 
-my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP
+my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP PTC
     SBJ NP M MOD REL XP NU AN BN CN DN EN FN GN HN IN JN KN LN MN NN
     ON PN QN PNF RN SN TN U UN VN WN X XN YN ZN/; 
 

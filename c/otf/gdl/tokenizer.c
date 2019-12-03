@@ -309,8 +309,10 @@ create_token_sub(struct token *tp, enum t_class c, enum t_type t, const void *d)
     }
   else
     {
-      tp->lang = global_lang;
+      tp->lang = global_lang;      
     }
+  if (fwhost)
+    tp->fwhost = fwhost;
   return tp;
 }
 
@@ -566,13 +568,17 @@ print_token(struct token *tp)
       else
 	textp = type_data[tp->type];
 
-      fprintf(stderr,"%s\t%s\t%s\t%s [%s]\n",
+      fprintf(stderr,"%s\t%s\t%s\t%s [%s]",
 	      textp,
 	      class_names[tp->class],
 	      type_names[tp->type],
 	      tp->lang->fulltag,
 	      tp->lang->script
 	      );
+
+      if (tp->fwhost)
+	fprintf(stderr, " (fwhost=%s)", tp->fwhost);
+      fprintf(stderr, "\n");
     }
   else
     {

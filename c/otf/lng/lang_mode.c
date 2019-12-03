@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -N lang_mode -tT lang_mode.g  */
+/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -N lang_mode -tT lang_mode.g  */
 /* Computed positions: -k'1-3' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -51,7 +51,7 @@ inline
 static unsigned int
 hash (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   static unsigned char asso_values[] =
     {
@@ -85,16 +85,10 @@ hash (str, len)
   return len + asso_values[(unsigned char)str[2]+1] + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]];
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct langmode *
 lang_mode (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   static struct langmode wordlist[] =
     {
@@ -168,9 +162,9 @@ lang_mode (str, len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

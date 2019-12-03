@@ -106,7 +106,7 @@ my $ebang_flag = 0;
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
 
-my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP SBJ NP M MOD REL XP NU
+my @poss = qw/AJ AV N V DP IP PP CNJ J MA O QP RP DET PRP POS PRT PSP PTC SBJ NP M MOD REL XP NU
 	AN BN CN DN EN FN GN HN IN JN KN LN MN NN ON PN QN PNF RN SN TN U UN VN WN X XN YN ZN/;
 push @poss, ('V/t', 'V/i');
 my %poss = (); @poss{@poss} = ();

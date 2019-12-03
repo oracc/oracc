@@ -18,7 +18,7 @@ enum langcode
   c_sux , c_uga , c_qpn , c_grc ,
   c_xlc , c_xld , c_xlu , c_hlu ,
   c_imy , c_plq , c_qse , c_qca ,
-  c_egy , 
+  c_egy , c_xht ,
   c_count , c_none
 };
 
@@ -108,7 +108,7 @@ extern struct lang_context *logo_lang;
 
 extern struct langcore *lang_core(register const char *str,register size_t len);
 extern struct langcore *langcore_of(const char *lang);
-extern struct langmode *lang_mode(register const char *str,register unsigned int len);
+extern struct langmode *lang_mode(register const char *str,register size_t len);
 extern struct langatf *lang_atf(register const char *str, register unsigned int len);
 extern void lang_init(void);
 extern void lang_term(void);
@@ -136,5 +136,7 @@ extern char *texttag_langs(void);
 extern void texttag_register(const char *tag);
 extern void texttag_term(void);
 extern char *tag_no_script(const char *tag);
+
+extern const char *fwhost;
 
 #endif /*LANG_H_*/
