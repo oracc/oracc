@@ -451,7 +451,13 @@
 
 %\makeother{#} \makeother{&}
 
-\catcode"00AD=\active \def­{\-}%
-\catcode"EFFF=\active \def{\&}%
+\let\everymathextra\relax
 
+\xdef\fixedLarrow{←}
+\xdef\fixedRarrow{→}
+
+\catcode"00AD=\active \def­{\-}%
+\catcode"2190=\active \def←{{\Sanserif\fixedLarrow}}%
+\catcode"2192=\active \def→{{\Sanserif\fixedRarrow}}%
+\catcode"EFFF=\active \def{\&}%
 \endinput
