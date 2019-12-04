@@ -51,6 +51,7 @@ my $current_type = '';
 my $old_atf = '';
 my $new_atf = '';
 my @updates = ();
+my $final_text = 0; # this is horrible flow control
 
 if ($list) {
     open(IN,$list) || die "can't open list file $list\n";
@@ -70,137 +71,138 @@ if ($list) {
 }
 
 #if ($install && !length($base)) {
-#    $base = '@@ORACC@@/texts';
+#   $base = '@@ORACC@@/texts';
 #}
 
 while (<>) {
-#    if (/^\@(?:composite|synopticon|transliteration)/) {
-#	$current_type = $_;
-#	next;
-#    }
-#    if (/^\#atf use lexical/) {
-#	$use_lexical = 1;
-#	next;
-#    }
     s/^\x{ef}\x{bb}\x{bf}//; # remove BOMs
     if (/^&([PQX]\d+)/) {
-	print "\n" if $printing;
-	if ($P ne $1) {
-	    my $last_P = $P;
-	    $P = $1;
-	    close OUT unless $cat;
-	    if (!$dryrun && $install && $update && $old_atf) {
-		my $old = slurp($old_atf);
-		my $new = slurp($new_atf);
-		if ($old ne $new) {
-		    print STDERR "updating $old_atf\n" if $verbose;
-		    open(OLD,">$old_atf");
-		    print OLD $new;
-		    close(OLD);
-		    push @updates, $last_P;
-		} else {
-		    print STDERR "$old_atf is unchanged\n" if $verbose;
-		}
-		unlink $new;
-	    }
-	    select STDOUT;
-	    print "$fname\n" if $fname && $verbose && !$update;
-	    if ($list && !print_this_p($P)) {
-		@preamble = ();
-		$printing = 0;
-		next;
-	    }
-#	    exit if $counter++ > 3;
-	    if ($fancy) {
-		my $x = $_;
-		if ($x =~ s/^\&[PQX]\d+\s*=\s*//) {
-		    $x =~ s/ +/ /g;
-		    $x =~ tr/ /_/;
-		    $x =~ tr/a-zA-Z0-9_//cd;
-		    $x =~ s/_+/_/g;
-		    $x =~ s/_$//;
-		    $fancy_part = "-$x";
-		} else {
-		    $x =~ /([PQX]\d+)/;
-		    warn "atfsplit.plx: no name for $1: name will consist only of ID\n";
-		    $fancy_part = '';
-		}
-	    } else {
-		$fancy_part = '';
-	    }
-	    if ($install) {
-		my $dname = $P;
-		my $PQ = $P;
-		$PQ =~ s/^([PQX]).*$/$1/;
-#		$dname =~ s/...$/xxx/;
-		$dname =~ s/...$//;
-		if ($shallow) {
-		    $dname = "$base/$dname";
-		} else {
-		    $dname = "$base/$dname/$P";
-		}
-		$fname = "$dname/$P$fancy_part.atf";
-		if ($dryrun) {
-		    print "$fname\n";
-		}
-		if (!$dryrun) {
-		    system("mkdir -p $dname") unless -d $dname;
-		    if ($update) {
-			$old_atf = $fname;
-			$new_atf = "$fname.new";
-			$fname = $new_atf;
-		    }			
-		    open(OUT,">$fname") || die "atfsplit.plx: can't write '$fname'\n";
-		    select OUT;
-		    $printing = 1;
-#		    print "#atf use lexical\n" if $use_lexical;
-#		    print $current_type if $current_type;
-#		    print OUT @preamble; @preamble = ();
-		    print OUT;
-		    chown 48, 48, $fname;
-		    chmod 0664, $fname;
-		}
-	    } else {
-		my $samedir = (++$counter % 1000);
-		if (!$cat && !$samedir) {
-		    ++$dir if $dir =~ /\d$/;
-		    system "mkdir -p $dir" if $dir;
-#		    print STDERR "$dir\r";
-		}
-#	    print STDERR "$counter\r" unless 
-		if (!defined $P{$P}) {
-		    ++$P{$P};
-		    $fname = "$P.atf";
-		    $fname = "$dir/$fname" if $dir;
-		    if ($dryrun) {
-			print "$fname\n";
-		    }
-		    if (!$dryrun) {
-			if (!$cat) {
-			    if ($dir) {
-				system "mkdir -p $dir" 
-				    || die "can't mkdir $dir\n";
-			    }
-			    open(OUT,">$fname") 
-				|| die "can't open $fname for write\n";
-			    select OUT;
-			}
-			$printing = 1;
-			print @preamble; @preamble = ();
-			print;
-		    }
-		} else {
-		    warn "atfsplit.plx: $P occurs more than once\n";
-		    $printing = 0;
-		}
-	    }
-	}
+	finish_text($1);
     } elsif (/^&/) {
 	chomp;
 	warn "atfsplit.plx: bad &-line '$_'" unless /^&\s/;
 	$printing = 0;
     } else {
 	print if $printing;
+    }
+}
+finish_text('');
+
+#############################################################################################
+
+sub finish_text {
+    my $argP = shift @_;
+    print "\n" if $printing;
+    if ($P ne $argP) {
+	my $last_P = $P;
+	$P = $argP;
+	close OUT unless $cat;
+	if (!$dryrun && $install && $update && $old_atf) {
+	    my $old = slurp($old_atf);
+	    my $new = slurp($new_atf);
+	    if (!$old || $old ne $new) {
+		print STDERR "updating $old_atf\n" if $verbose;
+		open(OLD,">$old_atf");
+		print OLD $new;
+		close(OLD);
+		push @updates, $last_P;
+	    } else {
+		print STDERR "$old_atf is unchanged\n" if $verbose;
+	    }
+	    unlink $new_atf;
+	}
+	select STDOUT;
+	print "$fname\n" if $fname && $verbose && !$update;
+	return unless $P;
+	if ($list && !print_this_p($P)) {
+	    @preamble = ();
+	    $printing = 0;
+	    return;
+	}
+	#	    exit if $counter++ > 3;
+	if ($fancy) {
+	    my $x = $_;
+	    if ($x =~ s/^\&[PQX]\d+\s*=\s*//) {
+		$x =~ s/ +/ /g;
+		$x =~ tr/ /_/;
+		$x =~ tr/a-zA-Z0-9_//cd;
+		$x =~ s/_+/_/g;
+		$x =~ s/_$//;
+		$fancy_part = "-$x";
+	    } else {
+		$x =~ /([PQX]\d+)/;
+		warn "atfsplit.plx: no name for $1: name will consist only of ID\n";
+		$fancy_part = '';
+	    }
+	} else {
+	    $fancy_part = '';
+	}
+	if ($install) {
+	    my $dname = $P;
+	    my $PQ = $P;
+	    $PQ =~ s/^([PQX]).*$/$1/;
+	    #		$dname =~ s/...$/xxx/;
+	    $dname =~ s/...$//;
+	    if ($shallow) {
+		$dname = "$base/$dname";
+	    } else {
+		$dname = "$base/$dname/$P";
+	    }
+	    $fname = "$dname/$P$fancy_part.atf";
+	    if ($dryrun) {
+		print "$fname\n";
+	    }
+	    if (!$dryrun) {
+		system("mkdir -p $dname") unless -d $dname;
+		if ($update) {
+		    $old_atf = $fname;
+		    $new_atf = "$fname.new";
+		    $fname = $new_atf;
+		}			
+		open(OUT,">$fname") || die "atfsplit.plx: can't write '$fname'\n";
+		select OUT;
+		$printing = 1;
+		#		    print "#atf use lexical\n" if $use_lexical;
+		#		    print $current_type if $current_type;
+		#		    print OUT @preamble; @preamble = ();
+		print OUT;
+		#		    chown 48, 48, $fname;
+		chmod 0664, $fname;
+	    }
+	} else {
+	    my $samedir = (++$counter % 1000);
+	    if (!$cat && !$samedir) {
+		++$dir if $dir =~ /\d$/;
+		system "mkdir -p $dir" if $dir;
+		#		    print STDERR "$dir\r";
+	    }
+	    #	    print STDERR "$counter\r" unless 
+	    if (!defined $P{$P}) {
+		++$P{$P};
+		$fname = "$P.atf";
+		$fname = "$dir/$fname" if $dir;
+		if ($dryrun) {
+		    print "$fname\n";
+		}
+		if (!$dryrun) {
+		    if (!$cat) {
+			if ($dir) {
+			    system "mkdir -p $dir" 
+				|| die "can't mkdir $dir\n";
+			}
+			open(OUT,">$fname") 
+			    || die "can't open $fname for write\n";
+			select OUT;
+		    }
+		    $printing = 1;
+		    print @preamble; @preamble = ();
+		    print;
+		}
+	    } else {
+		warn "atfsplit.plx: $P occurs more than once\n";
+		$printing = 0;
+	    }
+	}
     }
 }
 

@@ -1,7 +1,8 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = odtpictures.plx otf2odt.sh otf2pdf.sh otf2tex.sh odfmanager.plx \
-	otf2odt-serial.sh otf2odt-plain.sh otf2odt-tab.sh
+	otf2odt-serial.sh otf2odt-plain.sh otf2odt-tab.sh atf2pdf.sh \
+	atf-driver.plx pdf-driver.sh
 config_DATA = default.sty office-automatic-styles.xml office-master-styles.xml \
 	office-styles.xml
 scriptdata_DATA = bib-ODT.xsl cat-ODT.xsl doc-split.xsl gdl-ODT.xsl \

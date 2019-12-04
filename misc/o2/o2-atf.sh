@@ -8,4 +8,5 @@ if [ -d 00atf ]; then
     if [ "$LIST" != "" ]; then
 	o2-unscore.sh
     fi
+    atfsplit.plx -V -update -install -base 01bld 00atf/*.atf
 fi

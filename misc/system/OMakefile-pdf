@@ -1,0 +1,11 @@
+.SUFFIXES:
+
+.SUFFIXES: .atf .otf .pdf
+
+.PRECIOUS: %.otf
+
+%.otf : %.atf
+	atf-driver.plx -project ${PROJECT} -atf $< -otf $@
+
+%.pdf : %.otf
+	pdf-driver.sh ${PROJECT} $*
