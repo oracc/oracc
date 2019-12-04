@@ -667,7 +667,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   
   o = xpd_option(run->proj->xpd,"trans-dollar-align");
   if (o && !strcmp(o, "yes"))
-    dollar_fifo = 1;
+    dollar_fifo = mylines = 1;
   else
     dollar_fifo = 0;
 
@@ -712,11 +712,11 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
       trans_parenned_labels = 0;
       /*curr_dialect = "NA";*/
     }
-  else if (!xstrncmp(l,"rinap",5) || !xstrncmp(l,"ribo",4) || !xstrncmp(l,"cmawro",6))
+  else if (!xstrncmp(l,"rinap",5) || !xstrncmp(l,"cmawro",6))
     {
       /*system_project = "saa";*/
       /*shadow_lem = 1;*/
-      fprintf(stderr, "%s triggers dollar_fifo=1\n", l);
+      /* fprintf(stderr, "%s triggers dollar_fifo=1\n", l); */
       dollar_fifo = mylines = 1;
     }
   else if (!xstrncmp(l,"pfa",3))
