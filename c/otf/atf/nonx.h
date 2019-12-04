@@ -39,6 +39,7 @@ extern void dollar_init(void);
 extern const char *dollar_add(const char *xid);
 extern const char *dollar_get(void);
 extern int dollar_clear(void);
+extern void dollar_reset(void);
 extern int dollar_term(void);
 extern const char *dollar_peek(void);
 #endif /*_NONX_H*/

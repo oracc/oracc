@@ -363,6 +363,11 @@ dollar_get(void)
   else
     return NULL;
 }
+void
+dollar_reset(void)
+{
+  fifo_read = 0;
+}
 int
 dollar_clear(void)
 {

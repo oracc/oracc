@@ -94,6 +94,9 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
   last_label = 0;
   trans_wid = 0;
 
+  if (dollar_fifo)
+    dollar_reset();
+
   /* trans_inter does not call the translation() routine, which is good
      because we don't want to reinitialize the line notes in interlinear
      translations */
