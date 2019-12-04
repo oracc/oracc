@@ -54,7 +54,7 @@
   <xsl:call-template name="gdl-w">
     <xsl:with-param name="allow-space" select="$allow-space"/>
   </xsl:call-template>
-  <xsl:if test="@headform"><xsl:text>-</xsl:text></xsl:if>
+<!--  <xsl:if test="@headform"><xsl:text>-</xsl:text></xsl:if> -->
 </xsl:template>
 
 <xsl:template match="g:swc">
@@ -64,6 +64,7 @@
       <xsl:call-template name="gdl-w">
 	<xsl:with-param name="allow-space" select="false()"/>
       </xsl:call-template>
+      <!--put a hyphen between multiline swc constituents-->
       <xsl:text>-</xsl:text>
     </xsl:when>
     <xsl:otherwise>
@@ -365,6 +366,7 @@
     <xsl:call-template name="process-notes"/>
   </xsl:if>
 <!--  <xsl:call-template name="deep-g-delim"/> -->
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template match="g:g">
