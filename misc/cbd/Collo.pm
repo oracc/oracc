@@ -29,7 +29,8 @@ sub pp_collo {
 	my $e = c_expand($i,@cbd);
 	next unless $e;
 	++$collo{$e};
-	print CLOG pp_file().":$i: $cbd[$i] >> $e\n";
+	my $er = $i+1;
+	print CLOG pp_file().":$er: $cbd[$i] >> $e\n";
 	$cbd[$i] = "\000";
     }
     foreach my $c (sort keys %collo) {

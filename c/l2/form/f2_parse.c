@@ -362,6 +362,9 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
   else
     goto ret;
 
+#if 0
+  /* The RESTRICTOR feature was hardly used (two times in GKAB) and not really suited to task.
+     Now that stems are implemented (see CMAWRO) they can be used instead */
   if (lp[-1] == ')' && lp[-2] != '\\')
     {
       char *oparen = strchr((char*)f2p->cf,'(');
@@ -384,7 +387,8 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
       ret = -1;
       goto ret;
     }
-
+#endif
+  
   f2p->gw = ++lp;
   if ((psu_tmp = (Uchar *)strstr(cc(lp),"+=")))
     {
