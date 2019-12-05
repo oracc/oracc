@@ -53,7 +53,7 @@ if ($withnn eq 'yes') {
 my $scriptglo = `oraccopt . cbd-script-glo`;
 my %scriptglo = ();
 if ($scriptglo) {
-    
+    @scriptglo{split(/\s+/,$scriptglo)} = ();
 }
 
 my %type_of = (
@@ -151,12 +151,14 @@ while (<SIGS>) {
 	# need to be imported there by some other mechanism.
 	$sig =~ s/\&\&.*?\t/\t/;
     }
+
+    next if $slice_lang !~ /-\d/ && script_glo($sig);
     
     my $matched = 1;
 
-    # remove script codes unless we've asked for a script or they have their own glossary
+    # remove script codes unless we've asked for a script
     $sig =~ s/-[0-9][0-9][0-9]:/:/
-	unless $slice_lang && ($slice_lang =~ /-\d\d\d$/ || script_glo($sig));
+	unless $slice_lang && $slice_lang =~ /-\d\d\d$/;
 
     foreach my $c (@constraints) {
 	if ($sig =~ /$$c[1]/) {
@@ -323,7 +325,9 @@ print_sigs {
 # Check if a sig's lang is one that has its own script glossary so we
 # can drop the entry from the main language if necessary
 sub script_glo {
-    
+    my $s = shift;
+    $s =~ /\%(.*?):/;
+    return exists $scriptglo{$1};
 }
 
 sub
