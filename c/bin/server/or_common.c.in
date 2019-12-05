@@ -166,6 +166,14 @@ print_hdr_json()
 }
 
 void
+print_hdr_pdf(const char *pname)
+{
+  fprintf(stdout,
+	  "Content-type: application/pdf\nContent-disposition: attachment; filename=\"%s\"\n\n", pname);
+  fflush(stdout);
+}
+
+void
 print_hdr_zip(const char *zname)
 {
   fprintf(stdout,

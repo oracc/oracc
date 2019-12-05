@@ -74,6 +74,15 @@ cat_json(const char *zip, const char *file)
 }
 
 void
+cat_pdf(const char *ppath, const char *pname)
+{
+  print_hdr_pdf(pname);
+  fprintf(stderr,"oracc-despatcher/cat_pdf: %s\n", ppath);
+  execl("/bin/cat", "cat", ppath, NULL);
+  perror("execl failed");
+}
+
+void
 cat_zip(const char *zpath, const char *zname)
 {
   print_hdr_zip(zname);

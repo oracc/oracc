@@ -5,6 +5,7 @@
 struct h_pqxtab;
 %%
 html,	    	  h_pqx_html
+pdf,	    	  h_pqx_pdf
 cat, 	    	  h_pqx_cat_html
 tei,              h_pqx_tlit_tei
 translit,     	  h_pqx_tlit_html

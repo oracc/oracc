@@ -466,3 +466,61 @@ or_image(const char *project, const char *pqx, const char *type)
 	"-subtype", subtype,
 	NULL);
 }
+
+static void
+h_pqx_pdf_handler(const char *project, struct component *components,
+		   int tlit, const char *xlat)
+{
+  char *pqx = NULL;
+  char *pdf = NULL;
+
+  pqx = (char*)(components[0].replace ? components[0].replace : components[0].text);
+  pdf = or_find_pqx_file(project, pqx, "pdf");
+
+#if 0 /* don't handle non-English yet */
+  if (strcmp(xlat,"en"))
+    {
+      /* the Spanish version of babrit P363710 is P363710/pdf.es */
+      char *tmp = malloc(strlen(div) + strlen(xlat) + 2);
+      sprintf(tmp, "%s.%s", div, xlat);
+      free(div);
+      div = tmp;
+    }
+#endif
+
+  if (!access(pdf, R_OK))
+    {
+      char *tmp = malloc(strlen(pqx) + strlen(".pdf0"));
+      sprintf(tmp,"%s.%s",pqx,"pdf");
+      cat_pdf(pdf,tmp);
+    }
+  else
+    {
+      char **ea = NULL;
+      ea = malloc(7*sizeof(char*));
+      ea[0] = "/usr/bin/perl";
+      ea[1] = "@@ORACC_BUILDS@@/bin/pdf.plx";
+      ea[2] = "project";
+      ea[3] = (char*)(project ? project : "nul");
+      ea[4] = "pqx";
+      ea[5] = pqx;
+      ea[6] = NULL;
+      execv("/usr/bin/perl", ea);
+      fprintf(stderr, "execv /usr/bin/perl failed\n");
+      exit(1);  
+    }  
+}
+
+void
+h_pqx_pdf(const char *project, struct component *components)
+{
+  if (components[0].count == 1)
+    {
+      if (components[nelements-1].type == C_SEL)
+	h_pqx_pdf_handler(project, components, 1, components[nelements-1].text);
+      else
+	h_pqx_pdf_handler(project, components, 1, "en");
+    }
+  else
+    do400("PQX lists cannot be returned as PDF");
+}
