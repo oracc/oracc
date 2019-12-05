@@ -62,7 +62,7 @@ ngramify_init()
 {
   if (ng_match_logging && !ng_match_log)
     {
-      ng_match_log = xfopen("01tmp/ng_match.log", "wb");
+      ng_match_log = fopen("01tmp/ng_match.log", "wb");
       if (NULL == ng_match_log)
 	{
 	  fprintf(stderr, "ngramify_init: couldn't open 01tmp/ng_match.log--no ngram match logging will be done.\n");

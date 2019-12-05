@@ -50,6 +50,12 @@ if ($withnn eq 'yes') {
     $with_nn = 1;
 }
 
+my $scriptglo = `oraccopt . cbd-script-glo`;
+my %scriptglo = ();
+if ($scriptglo) {
+    
+}
+
 my %type_of = (
     l=>'lang',
     p=>'pos',
@@ -148,8 +154,9 @@ while (<SIGS>) {
     
     my $matched = 1;
 
+    # remove script codes unless we've asked for a script or they have their own glossary
     $sig =~ s/-[0-9][0-9][0-9]:/:/
-	unless $slice_lang && $slice_lang =~ /-\d\d\d$/; # remove script codes unless we've asked for a script
+	unless $slice_lang && ($slice_lang =~ /-\d\d\d$/ || script_glo($sig));
 
     foreach my $c (@constraints) {
 	if ($sig =~ /$$c[1]/) {
@@ -311,6 +318,12 @@ print_sigs {
     if ($#printsigs >= 0) {
 	print @printsigs;
     }
+}
+
+# Check if a sig's lang is one that has its own script glossary so we
+# can drop the entry from the main language if necessary
+sub script_glo {
+    
 }
 
 sub
