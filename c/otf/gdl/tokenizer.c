@@ -1349,7 +1349,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      l = tokenize_alphabetic(l, &g, &following, &t);
 	      if (g)
 		{
-		  if (l - g > 0)
+		  if (l - g > 0 && 0xc2 != g[0] && 0xb7 != g[1])
 		    {
 		      unsigned char save = *following;
 		      unsigned char *res = NULL;
@@ -1373,21 +1373,29 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      last_text_or_bound = text;
 		      *following = save;
 		    }
-		  else if (('|' == *g ||
-			    '*' == *g || ':' == *g) && ('\0' == g[1] 
-							|| isspace(g[1])
-							|| (g[1] > 128 
-							    || !isalnum(g[1]))))
+		  else if ((('|' == *g || '*' == *g || ':' == *g)
+			    && (('\0' == g[1]
+				 || isspace(g[1])
+				 || (g[1] > 128 || !isalnum(g[1])))))
+			   || (*g == 0xc2 && g[1] == 0xb7 && (!g[2] || isspace(g[2]))))
 		    {
 		      struct token *puncttok = NULL;
-		      char gbuf[2];
+		      char gbuf[3];
 		      t = g_p;
-		      *gbuf = *g; gbuf[1] = '\0';
+		      *gbuf = *g;
+		      if (*g == 0xc2)
+			{
+			  gbuf[1] = g[1];
+			  gbuf[2] = '\0';
+			}
+		      else
+			gbuf[1] = '\0';
 		      puncttok = s_create_token(text,t,
 						gparse(pool_copy((const unsigned char *)gbuf),t));
 		      tokens[tokindex++] = puncttok;
 		      last_text_or_bound = text;
-		      ++l;
+		      if (l == g)
+			++l;
 		    }
 		  else
 		    {

@@ -1634,9 +1634,10 @@ punct(register unsigned char *g)
   register unsigned char *g2;
   struct grapheme *gp = NULL;
   struct grapheme *p_q = NULL;
-  char ptok[4];
+  unsigned char ptok[4];
   *ptok = g[0];
-  if (g[1] == ':' || g[1] == '.' || g[1] == '\'' || g[1] == '"' || (g[1] == 'r' && g[2] == ':'))
+  if (g[1] == ':' || g[1] == '.' || g[1] == '\'' || g[1] == '"' || (g[1] == 'r' && g[2] == ':')
+      || g[1] == 0xb7)
     {
       ptok[1] = g[1];
       if (g[1] == 'r')
@@ -1654,6 +1655,7 @@ punct(register unsigned char *g)
   if ((ptok[0] == '*' && !ptok[1])
       || (ptok[0] == '/' && !ptok[1])
       || (ptok[0] == '|' && !ptok[1])
+      || (ptok[0] == 0xc2 && ptok[1] == 0xb7 && !ptok[2])
       || (ptok[0] == ':' 
 	  && ((!ptok[1] || ptok[1] == ':' || ptok[1] == '.' || ptok[1] == '\'' || ptok[1] == '"')
 	      || (ptok[1] == 'r' && ptok[2] == ':'))))
