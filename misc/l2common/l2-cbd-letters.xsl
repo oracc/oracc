@@ -11,8 +11,8 @@
 
 <xsl:key name="groups" match="/*/xh:body/xh:p/*[1]/*[1]/xh:a|/*/*"
 	use="translate(substring(*[1]/text(),1,1),
-		       'ʾʿABCDEFGHḪIJKLMNOPQRSTUVWXYZŠŊṢṬŚāēīūĀĒĪŪâêîûʾʿǴḤ',
-		       'ʾʿabcdefghḫijklmnopqrstuvwxyzšŋṣṭśaeiuaeiuaeiuǵḥ')"/>
+		       'ʾʿABCÇDEFGHḪIJKLMNOPQRṚSTUVWXYZŠŊṢṬṮΘŚāēīūĀĒĪŪâêîûǴḤ',
+		       'ʾʿabcçdefghḫijklmnopqrṛstuvwxyzšŋṣṭṯθśaeiuaeiuaeiuǵḥ')"/>
 
 <xsl:template name="initials">
   <i l="ʾ" u="ʾ"/>
@@ -20,6 +20,7 @@
   <i l="a" u="A"/>
   <i l="b" u="B"/>
   <i l="c" u="C"/>
+  <i l="ç" u="Ç"/>
   <i l="d" u="D"/>
   <i l="e" u="E"/>
   <i l="f" u="F"/>
@@ -39,6 +40,7 @@
   <i l="p" u="P"/>
   <i l="q" u="Q"/>
   <i l="r" u="R"/>
+  <i l="ṛ" u="Ṛ"/>
   <i l="s" u="S"/>
   <i l="ṣ" u="Ṣ"/>
   <i l="š" u="Š"/>
@@ -46,6 +48,7 @@
   <i l="t" u="T"/>
   <i l="ṭ" u="Ṭ"/>
   <i l="ṯ" u="Ṯ"/>
+  <i l="θ" u="Θ"/>
   <i l="u" u="U"/>
   <i l="v" u="V"/>
   <i l="w" u="W"/>

@@ -224,6 +224,7 @@ print_this_p {
 sub
 slurp {
     my $fn = shift;
+    return '' unless -r $fn;
     local $/ = undef;
     open(IN,$fn); my $ret = <IN>; close(IN);
     $ret;
