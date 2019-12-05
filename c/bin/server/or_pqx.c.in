@@ -504,7 +504,9 @@ h_pqx_pdf_handler(const char *project, struct component *components,
       ea[3] = (char*)(project ? project : "nul");
       ea[4] = "pqx";
       ea[5] = pqx;
-      ea[6] = NULL;
+      ea[6] = "pdf";
+      ea[7] = pdf;
+      ea[8] = NULL;
       execv("/usr/bin/perl", ea);
       fprintf(stderr, "execv /usr/bin/perl failed\n");
       exit(1);  

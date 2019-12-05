@@ -107,6 +107,13 @@
     </xsl:call-template>
   </xsl:variable>
 
+  <xsl:variable name="views-PDF">
+    <xsl:call-template name="xpd-option">
+      <xsl:with-param name="config-xml" select="$config-xml-file"/>
+      <xsl:with-param name="option" select="'views-PDF'"/>
+    </xsl:call-template>
+  </xsl:variable>
+
   <xsl:variable name="views-proofing">
     <xsl:call-template name="xpd-option">
       <xsl:with-param name="config-xml" select="$config-xml-file"/>
@@ -144,6 +151,9 @@
   </xsl:if>
   <xsl:if test="$views-proofing='true'">
     <li><a href="javascript:viewsProofing('{$project}','{$text}')">Proofing</a></li>
+  </xsl:if>
+  <xsl:if test="$views-PDF='true'">
+    <li><a target="_blank" href="/{$project}/{$text}/pdf">PDF</a></li>
   </xsl:if>
   <xsl:if test="$views-TEI='true'">
     <li><a target="_blank" href="/{$project}/tei/{$text}.xml">TEI</a></li>

@@ -8,7 +8,7 @@ if [ "$qname" == "" ]; then
     exit 1
 fi
 
-atffile=`/Users/stinney/orc/bin/pqxpand atf $qname`
+atffile=`@@ORACC_BUILDS@@/bin/pqxpand atf $qname`
 
 if [ ! -r $atffile ]; then
     echo atf2pdf.sh: ATF file $atffile non-existent or unreadable
@@ -16,11 +16,11 @@ if [ ! -r $atffile ]; then
 fi
 
 project=`/bin/echo -n $qname | cut -d: -f1` ; export project
-PATH=$PATH:/Users/stinney/orc/bin ; export PATH
+PATH=$PATH:@@ORACC_BUILDS@@/bin ; export PATH
 workdir=`dirname $atffile`
 pqxbase=`basename $atffile .atf`
 pdffile="$pqxbase.pdf"
-makefile=/Users/stinney/orc/lib/data/OMakefile-pdf
+makefile=@@ORACC_BUILDS@@/lib/data/OMakefile-pdf
 >&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
 (cd $workdir ; rm -fr odt ; mkdir -p odt ; PROJECT=$project make -s -f $makefile $pdffile)
 

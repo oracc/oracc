@@ -20,11 +20,17 @@ scriptdata_DATA = bib-ODT.xsl cat-ODT.xsl doc-split.xsl gdl-ODT.xsl \
 	xtr-ODT-plain.xsl \
 	xtr-ODT.xsl
 
+atf2pdf.sh: atf2pdf.sh.in
+	$(ORACCIFY) atf2pdf.sh.in
+
 odfmanager.plx: odfmanager.plx.in
 	$(ORACCIFY) odfmanager.plx.in
 
 oracc-odtTeX.xsl: oracc-odtTeX.xsl.in
 	$(ORACCIFY) oracc-odtTeX.xsl.in
+
+pdf.plx: pdf.plx.in
+	$(ORACCIFY) pdf.plx.in
 
 EXTRA_DIST = \
 	bib-ODT.xsl \
