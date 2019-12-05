@@ -21,6 +21,11 @@
 
 <xsl:param name="project"/>
 
+<xsl:variable name="word-absent-char" select="'&#x2014;'"/>
+<xsl:variable name="word-broken-char" select="'&#x2014;'"/>
+<xsl:variable name="word-linefrom-char" select="'&#x2190;'"/>
+<xsl:variable name="word-linecont-char" select="'&#x2192;'"/>
+
 <xsl:param name="render-accents">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="option" select="'render-accents'"/>
@@ -225,7 +230,23 @@
     <xsl:otherwise>
       <text:span text:style-name="r"> <!-- text:classes="r" -->
 	<xsl:value-of select="@g:o"/>
-	<xsl:value-of select="text()"/>
+	<xsl:choose>
+	  <xsl:when test="@g:type='word-absent'">
+	    <xsl:value-of select="$word-absent-char"/>
+	  </xsl:when>
+	  <xsl:when test="@g:type='word-broken'">
+	    <xsl:value-of select="$word-broken-char"/>
+	  </xsl:when>
+	  <xsl:when test="@g:type='word-linecont'">
+	    <xsl:value-of select="$word-linecont-char"/>
+	  </xsl:when>
+	  <xsl:when test="@g:type='word-linefrom'">
+	    <xsl:value-of select="$word-linefrom-char"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="text()"/>
+	  </xsl:otherwise>
+	</xsl:choose>
 	<xsl:if test="@note:mark">
 	  <xsl:call-template name="process-notes"/>
 	</xsl:if>
@@ -505,6 +526,12 @@
       <xsl:call-template name="process-notes"/>
     </xsl:when>
     <xsl:when test="@type='comment'"/>
+    <xsl:when test="starts-with(g:x/@g:type,'word-')">
+      <xsl:apply-templates/>
+      <xsl:if test="following-sibling::*">
+	<xsl:text> </xsl:text>
+      </xsl:if>
+    </xsl:when>
     <xsl:otherwise>
       <!-- it's wrong to include pre-spaces here; handle that with word
 	   spacing
