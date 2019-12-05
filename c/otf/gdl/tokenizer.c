@@ -605,6 +605,35 @@ set_128(int *start)
     start[i] = 1;
 }
 
+static void
+icmt_check(char *c)
+{
+  int po = 0, pc = 0, suspicious = 0;
+  char *init = c;
+  while (*c)
+    {
+      if (*c == '(')
+	{
+	  if (c[1] == '$' || c[1] == '#')
+	    ++suspicious;
+	  ++po;
+	}
+      else if (*c == ')')
+	{
+	  if (!po)
+	    vwarning("closing ')' before any opening '(' in ($...$) or (#...#)");
+	  if (c > init && (c[-1] == '$' || c[-1] == '#'))
+	    ++suspicious;
+	  ++pc;
+	}
+      ++c;
+    }
+  if (po != pc)
+    vwarning("mismatched parens inside ($...$) or (#...#)");
+  if (suspicious)
+    vwarning("suspicious $ or # in ($...$) or (#...#)");
+}
+
 void
 tokenize_init()
 {
@@ -891,6 +920,8 @@ tok_is_closer(struct token *tp)
     return 1;
   return 0;
 }
+
+
 
 void
 tokenize(register unsigned char *l,unsigned char *e)
@@ -1720,6 +1751,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  if (*l)
 		    {
 		      *l++ = '\0';
+		      icmt_check(start);
 		      last_text_or_bound = meta;
 		      icmtp->data = pool_copy((unsigned char *)start);
 		    }
