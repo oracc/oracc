@@ -14,7 +14,7 @@ ox_options(int argc, char **argv)
   while (1)
     {
       int optch = getopt(argc,argv,
-			 "$+aAb:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNoOpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:689");
+			 "$+aAb:BcCd:De:EfFg:G:hHiI:jJkKl:L:mMnNoOpP:qQr:Rs:StT:uU:vVwWx:XyYz:Z?012345:67:89");
       if (optch < 0)
 	break;
       switch (optch)
@@ -223,6 +223,9 @@ ox_options(int argc, char **argv)
 	  break;
 	case '6':
 	  do_signnames = 1;
+	  break;
+	case '7':
+	  arg_trans_default_lang = optarg;
 	  break;
 	case '8':
 	  arg_use_unicode = 1;

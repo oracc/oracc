@@ -182,6 +182,8 @@ cdt_write_node(struct cdt_node*np)
 	      if (np->code == cdt_project_c)
 		{
 		  fprintf(wfile,"<oracc:project>%s</oracc:project>",np->text);
+		  if (arg_trans_default_lang)
+		    fprintf(wfile,"<oracc:trans-default-lang>%s</oracc:trans-default-lang>",arg_trans_default_lang);
 		  return;
 		}
 	      else

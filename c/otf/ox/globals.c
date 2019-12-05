@@ -14,6 +14,7 @@ FILE *f_graphemes = NULL;
 FILE *f_insts = NULL;
 FILE *f_xml = NULL;
 
+const char *arg_trans_default_lang = NULL;
 int arg_use_unicode = 0;
 int cbd_lem_sigs = 0;
 int check_lem = 0;

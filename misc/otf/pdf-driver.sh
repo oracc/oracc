@@ -8,7 +8,14 @@ otfname="$pqxname.otf"
 texname="$pqxname.tex"
 pdfname="$pqxname.pdf"
 
-ox $otfname | xmllint --xinclude - | xsltproc - \
+translang=$ORACC_TRANS_DEFAULT_LANG
+if [ "$translang" = "" ]; then
+    argtranslang=""
+else
+    argtranslang="-7$translang"
+fi
+
+ox $argtranslang $otfname | xmllint --xinclude - | xsltproc - \
     | xsltproc ${ORACC}/lib/scripts/odt-table-width.xsl - \
     | xsltproc -stringparam package odt ${ORACC}/lib/scripts/doc-split.xsl -
 mv odtpictures.lst odt

@@ -22,6 +22,7 @@ extern FILE *f_insts;
 extern FILE *f_graphemes;
 
 extern int atf_cbd_err;
+extern const char *arg_trans_default_lang;
 extern int arg_use_unicode;
 extern int cbd_err_line;
 extern int cbd_lem_sigs;

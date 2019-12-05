@@ -14,8 +14,10 @@ while (<>) {
     chomp;
     my ($type,$ngm_fl,$atf_fl,$url,$ngm_line) = split(/\t/,$_);
     my ($nf,$nl) = ($ngm_fl =~ /^(.*?):(.*)$/);
-    push @{${$d{$nf}}{$nl}}, [ $atf_fl, $url ];
-    $l{$ngm_fl} = $ngm_line;
+    if ($nf && $nl) {
+	push @{${$d{$nf}}{$nl}}, [ $atf_fl, $url ];
+	$l{$ngm_fl} = $ngm_line;
+    }
 }
 
 foreach my $f (keys %d) {

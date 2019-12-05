@@ -70,10 +70,17 @@
 <xsl:param name="render-labels-for-lnums" select="'no'"/>
 
 <xsl:variable name="trans-default-lang">
-  <xsl:call-template name="xpd-option">
-    <xsl:with-param name="option" select="'trans-default-lang'"/>
-    <xsl:with-param name="default" select="'en'"/>
-  </xsl:call-template>
+  <xsl:choose>
+    <xsl:when test="/office:document/office:meta/oracc:trans-default-lang">
+      <xsl:value-of select="/office:document/office:meta/oracc:trans-default-lang"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="xpd-option">
+	<xsl:with-param name="option" select="'trans-default-lang'"/>
+	<xsl:with-param name="default" select="'en'"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:variable>
 
 <xsl:variable name="render-lnum-char">
@@ -198,7 +205,7 @@
 </xsl:template>
 
 <xsl:template match="xtf:l|xtf:v">
-<!--  <xsl:message>trans-default-lang=<xsl:value-of select="$trans-default-lang"/></xsl:message> -->
+  <xsl:message>trans-default-lang=<xsl:value-of select="$trans-default-lang"/></xsl:message>
   <xsl:variable name="xlat-hdrs" select="key('tr-h-to-l',@xml:id)"/>
   <xsl:variable name="this-tlit" select="."/>
   <xsl:if test="count($xlat-hdrs) > 0">
@@ -207,7 +214,7 @@
     </xsl:call-template>
   </xsl:if>
   <xsl:variable name="xlat" select="key('tr-id',@xml:id)[starts-with(ancestor::xtr:translation/@xml:lang,$trans-default-lang)]"/>
-<!--  <xsl:message>count xlat=<xsl:value-of select="count($xlat)"/></xsl:message> -->
+  <xsl:message>count xlat=<xsl:value-of select="count($xlat)"/></xsl:message>
   <table:table-row>
     <xsl:choose>
       <xsl:when test="last()-position()=1">

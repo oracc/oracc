@@ -17,6 +17,7 @@ use constant C_POS   => 3;
 use constant C_SENSE => 4;
 use constant C_SIG   => 5;
 use constant C_GOESTO=> 6;
+use constant C_STAR  => 7;
 
 sub pp_collo {
     my ($args,$f,@cbd) = @_;
@@ -89,13 +90,34 @@ sub c_expand {
 		$p =~ s#\]#//$$t[1]\]#;
 		push @r, $p;
 	    } elsif ($$t[0] == C_SIG) {
-		push @l, $$t[1];
-		push @r, '*';
+		if ($$t[1] =~ /^-(.+?)([=\[].*)$/) {
+		    my($f,$s) = ($1,$2);
+		    if ($s =~ /^\[/) {
+			# get the CF from parent
+			my $p = c_parent($i,@cbd);
+			$p =~ s/\s*\[.*//;
+			$s = "$p$s";
+		    } else {
+			$s =~ s/^=//;
+			if ($s =~ /^\[/) {
+			    pp_line($i+1);
+			    pp_warn("\@collo has bad format in $$t[0] (expected -FORM=CF\[GW\])\n");
+			}
+		    }
+		    push @l, ":$f=$s";
+		    push @r, '*';
+		} else {
+		    push @l, $$t[1];
+		    push @r, '*';
+		}
 	    } elsif ($$t[0] == C_GOESTO) {
 		# we know we've processed all the lhs; 
 		# just replace the entire rhs with the remaining tokens
 		$r_mode = 1;
 		@r = ();
+	    } elsif ($$t[0] == C_STAR) {
+		push @l, '*';
+		push @r, '*';
 	    } elsif ($$t[0] == C_BAD) {
 		pp_line($i+1);
 		pp_warn("\@collo has unparseable token '$$t[1]'");
@@ -148,6 +170,8 @@ sub c_tokenize {
 	    push @t, [ C_FORM, $1, $i ];
 	} elsif ($c =~ s/^=>\s+//) {
 	    push @t, [ C_GOESTO, $1, $i ];
+	} elsif ($c =~ s/^\*\s+//) {
+	    push @t, [ C_STAR, '*', $i ];
 	} else {
 	    @t = ();
 	    push @t, [ C_BAD, $c, $i ];
