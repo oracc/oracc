@@ -117,9 +117,13 @@ serialize_one_l_sub(FILE *f_xcl, struct xcl_l*lp, struct ilem_form *fp)
 		}
 	      else if (lp->f->f2.tail_sig)
 		{
+ #if 0
+		  /* You can't generate newsig for tail sigs; if the tail is new, make the whole
+		     COF new so that harvest creates the right members */
 		  x2_attr(f_xcl,"newsig",(char *)lp->f->f2.tail_sig);
 		  if (cbd_lem_sigs)
 		    vnotice2((char*)lp->f->file,lp->f->lnum,"\t%s", lp->f->f2.tail_sig);
+#endif
 		}
 	      phase = ophase;
 	    }
