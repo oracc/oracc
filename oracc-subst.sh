@@ -9,6 +9,9 @@ function check_env_or_die {
 
 ORACC=$1
 
+xetex=`which xetex`
+TeXLive=`dirname $xetex`
+
 check_env_or_die ORACC_BUILDS $ORACC_BUILDS
 check_env_or_die ORACC_HOME $ORACC_HOME
 check_env_or_die ORACC_HOST $ORACC_HOST
@@ -23,7 +26,8 @@ pat3="s#\@\@ORACC_HOME\@\@#${ORACC_HOME}#g"
 pat4="s#\@\@ORACC_BUILDS\@\@#${ORACC_BUILDS}#g"
 pat5="s#\@\@ORACC_MODE\@\@#${ORACC_MODE}#g"
 pat6="s#\@\@ORACC_USER\@\@#${ORACC_USER}#g"
-pat="$pat1;$pat2;$pat3;$pat4;$pat5;$pat6"
+pat7="s#\@\@TeXLive\@\@#${TeXLive}#g"
+pat="$pat1;$pat2;$pat3;$pat4;$pat5;$pat6;$pat7"
 rm -f $out
 perl -C0 -pe "$pat" <$in >$out
 chmod -w $out

@@ -5,7 +5,9 @@
 .PRECIOUS: %.otf
 
 %.otf : %.atf
-	atf-driver.plx -project ${PROJECT} -atf $< -otf $@
+	atf-driver.plx -atf $< -otf $@
+	chmod 0644 $@
 
 %.pdf : %.otf
-	pdf-driver.sh ${PROJECT} $*
+	pdf-driver.sh $*
+	chmod 0644 $@

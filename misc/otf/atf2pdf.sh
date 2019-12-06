@@ -22,6 +22,6 @@ pqxbase=`basename $atffile .atf`
 pdffile="$pqxbase.pdf"
 makefile=/Users/stinney/orc/lib/data/OMakefile-pdf
 >&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
-(cd $workdir ; rm -fr odt ; mkdir -p odt ; PROJECT=$project make -s -f $makefile $pdffile)
+(cd $workdir ; rm -fr odt ; mkdir -p odt ; make -s -f $makefile $pdffile)
 
 exit 0

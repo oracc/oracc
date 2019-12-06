@@ -10,8 +10,9 @@ my $project = '';
 GetOptions(
     'atf:s'=>\$atf,
     'otf:s'=>\$otf,
-    'project:s'=>\$project,
     );
+
+my $project = `cat ../../buildstamp`; warn "$0: project=$project\n";
 
 open(O,">$otf");
 print O <<EOF;

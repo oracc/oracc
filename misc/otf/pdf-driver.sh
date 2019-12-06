@@ -2,8 +2,8 @@
 #
 # N.B. THIS SCRIPT IS TO MAKE A PDF FROM otf-driver.plx OUTPUT
 #
-project=$1
-pqxname=$2
+project=`cat ../../buildstamp`
+pqxname=$1
 otfname="$pqxname.otf"
 texname="$pqxname.tex"
 pdfname="$pqxname.pdf"
@@ -30,8 +30,13 @@ mv odtpictures.lst odt
      odtTeX=$ORACC/lib/scripts/oracc-odtTeX.xsl
  fi
  odtTeX=$ORACC_BUILDS/rinap/00lib/project-odtTeX.xsl
- echo pdf-driver.sh: creating $texname output using $odtTeX
+ >&2 echo pdf-driver.sh: creating $texname output using $odtTeX
  xsltproc -xinclude $odtTeX content.xml >$texname
- oracctex $texname 2>/dev/null
- mv $pdfname ..
+ >&2 echo ORACC=${ORACC}
+ oracctex $texname
+ if [ -r $pdfname ]; then
+     mv $pdfname ..
+ else
+     >&2 echo "pdf-driver.sh: $pdfname creation failed."
+ fi
 )
