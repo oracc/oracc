@@ -156,6 +156,10 @@ It can also be done manually with:
 
 but this is not recommended as it can be tricky to get the rules in the correct order.
 
+TCP is normally on line 4, use this command to modify line 4 :
+sudo iptables -I INPUT 4 -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+
+
 Also now: enable 8085 for tcp to support oscs. And add ${ORACC}/sbin/oscs -s to etc/rc.d/rc.local
 
 ********
