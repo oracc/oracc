@@ -190,10 +190,10 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-c"/>
-  <!-- probably not right as of 2019-12-03
+  <!-- This is necessary for {KUR}TIN.TIR -> KUR.TIN.TIR because no @g:delim on these nodes -->
   <xsl:if test="not(ancestor::g:q) and ancestor::g:d 
 		and not(ancestor::g:d/@g:pos = 'post')"
-		>.</xsl:if> --><!-- no @g:delim on these nodes -->
+		>.</xsl:if>
 </xsl:template>
 
 <xsl:template match="g:d">
