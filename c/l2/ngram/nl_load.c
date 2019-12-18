@@ -330,9 +330,9 @@ nl_load_file(struct sigset *sp,
   nlp->file = fname;
   n = strrchr(fname, '/');
   if (n)
-    nlp->name = n+1;
+    nlp->name = strdup(n+1);
   else
-    nlp->name = fname;
+    nlp->name = strdup(fname);
   ngdebug("input file=%s", fname);
   nl_set_location(fname,1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);

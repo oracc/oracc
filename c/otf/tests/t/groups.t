@@ -426,9 +426,9 @@
 033. %a en(|PA.TE|)-gal
      en(|PA.TE|)-gal
      <g:w form="en(|PA.TE|)-gal" xml:lang="akk">
-       <g:q form="en(|PA.TE|)">
+       <g:q form="en(|PA.TE|)" g:delim="-">
          <g:v>en</g:v>
-         <g:c form="|PA.TE|" g:delim="-">
+         <g:c form="|PA.TE|">
            <g:s>PA</g:s>
            <g:o g:type="beside"></g:o>
            <g:s>TE</g:s>

@@ -162,7 +162,8 @@
 </xsl:template>
 
 <xsl:template match="g:s">
-  <!--<xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>-->
+  <!-- This is needed because TIN.TIR{KI} renders as TIN.TIR.KI but there is no @g:delim on the g:s -->
+  <xsl:if test="ancestor::g:d/@g:pos = 'post'">.</xsl:if>
   <xsl:call-template name="render-o"/>
   <xsl:choose>
     <xsl:when test="ancestor::g:d and ancestor::g:q">

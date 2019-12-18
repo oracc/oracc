@@ -227,7 +227,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		{
 		  /* Is this right; shouldn't we be setting from clnodes[i_nle]
 		     rather than hopefully setting from the first node? */
-		  for (first_non_d = 0; 
+		  for (first_non_d = i_nle; /* 0 */
 		       first_non_d < nclnodes 
 			 && clnodes[first_non_d].c
 			 && clnodes[first_non_d].c->node_type != xcl_node_l;
@@ -236,13 +236,16 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		  if (first_non_d < nclnodes)
 		    {
 		      if (ng_match_logging)
-			fprintf(ng_match_log, "%s\t%s:%d\t%s:%d\t/%s/%s\t%s\n",
-				nlcp->nlp->name,
-				nle[i_nle]->file, nle[i_nle]->lnum, 
-				clnodes[first_non_d].l->f->file, (int)clnodes[first_non_d].l->f->lnum,
-				clnodes[first_non_d].l->parent->xc->project, clnodes[first_non_d].l->ref,
-				nle[i_nle]->line
-				);
+			{
+			  struct ilem_form *ip = match_list->matches->lp->f;
+			  fprintf(ng_match_log, "%s\t%s:%d\t%s:%d\t/%s/%s\t%s\n",
+				  nlcp->nlp->name,
+				  nle[i_nle]->file, nle[i_nle]->lnum, 
+				  ip->file, (int)ip->lnum,
+				  clnodes[first_non_d].l->parent->xc->project, clnodes[first_non_d].l->ref,
+				  nle[i_nle]->line
+				  );
+			}
 		      match_list->matches->user = nle[i_nle]->user;
 		      if (match_list->matches->psu_form)
 			if (clnodes[first_non_d].l->f->newflag)
