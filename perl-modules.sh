@@ -1,2 +1,2 @@
 #!/bin/sh
-cpan install RTF::Writer Text::CSV_XS
+cpan install Log::Log4perl RTF::Writer Text::CSV_XS String::Similarity
