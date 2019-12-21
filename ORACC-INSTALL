@@ -1,3 +1,11 @@
+Before lnx-config:
+
+Install TeX-Live basic+xetex package; add path to installing user's .profile; . ~/.profile
+
+Inside lnx-config: add (cd c/bin/rnv ; make ; sudo make install)
+
+install java
+
 need to do oscs install including
 
      /usr/local/tmp/sop chown apache:apache /usr/local/tmp/sop

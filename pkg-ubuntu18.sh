@@ -23,8 +23,9 @@ apt install \
     libxml-perl \
     libxml-libxml-perl \
     libxml-libxslt-perl \
-    libcgi-pm-perl
-
-# libfrontier-rpc-perl
+    libcgi-pm-perl \
+    default-jre default-jdk \
+    gsoap libgsoap-dev \
+    libfrontier-rpc-perl
 
 #    policycoreutils-python \

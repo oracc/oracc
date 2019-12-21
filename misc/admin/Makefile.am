@@ -20,7 +20,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	osync-tar.sh osync-snc.sh osync-snc-all.sh osync-tar-dir.sh	\
 	osync-tar-get.sh build-all.sh build-umbrella.sh			\
 	list-all-subs.sh home-full-back.sh user-full-back.sh		\
-	update-all.sh serve-get-one.sh list-pub-subs.sh
+	update-all.sh serve-get-one.sh list-pub-subs.sh install-tar.sh
 
 #data_DATA = usermode.xml
 #
@@ -44,6 +44,9 @@ projsave-full.sh: projsave-full.sh.in
 
 incr-backup.sh: incr-backup.sh.in
 	$(ORACCIFY) incr-backup.sh.in
+
+install-tar.sh: install-tar.sh.in
+	$(ORACCIFY) install-tar.sh.in
 
 oraccenv-single.sh: oraccenv-single.sh.in
 	$(ORACCIFY) oraccenv-single.sh.in
