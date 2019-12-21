@@ -1,8 +1,9 @@
 #/bin/sh
 
 projtype=`oraccopt . type`
-g2=`oraccopt . g2`
-if [ "$g2" == "yes" ]; then
+#20191221 g2 is now default (has been for a while)
+#g2=`oraccopt . g2`
+#if [ "$g2" == "yes" ]; then
     if [ -d "00src" ]; then
 	srcglo=`ls -1 00src/*.glo | grep -v '~' | grep glo`
     else
@@ -39,4 +40,4 @@ if [ "$g2" == "yes" ]; then
 	    fi
 	fi
     done
-fi
+#fi

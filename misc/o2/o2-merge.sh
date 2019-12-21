@@ -33,7 +33,8 @@ cp -a 00lib/$lang.glo 00bak/$lang-$date.glo
 
 
 # Now do the actual merge
-g2=`oraccopt . g2`
+#`oraccopt . g2`
+g2="yes"
 if [ "$g2" == "yes" ]; then
     cbdmerge.plx -base 00lib/$lang.glo 01bld/new/$lang.new > 01tmp/$lang.mrg \
 	&& mv 01tmp/$lang.mrg 00lib/$lang.glo \

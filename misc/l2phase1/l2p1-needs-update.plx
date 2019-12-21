@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my $g2 = `oraccopt . g2`;
+my $g2 = 'yes'; # `oraccopt . g2`;
 
 my $from_glos_sig = '01bld/from-glos.sig';
 my $sig_date = (stat($from_glos_sig))[9];

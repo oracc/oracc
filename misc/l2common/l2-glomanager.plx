@@ -41,7 +41,7 @@ my $config = undef;
 my $clang = '';
 my $debug = 0;
 my $force = 0; # not used; just for oraccproject
-my $g2 = 0;
+my $g2 = 1;
 my $glofile = '';
 my $inplace = 0;
 my $merge = 0;
@@ -122,10 +122,10 @@ if ($cbd_post_process && !$clang) {
     }
 }
 
-if ($project) {
-    my $g2val = `oraccopt . g2`;
-    $g2 = 1 if $g2val eq 'yes';
-}
+#if ($project) {
+#    my $g2val = `oraccopt . g2`;
+#    $g2 = 1 if $g2val eq 'yes';
+#}
 
 my $projectPath = "$ENV{'ORACC_BUILDS'}/$project";
 

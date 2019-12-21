@@ -48,7 +48,7 @@ close(S);
 
 #warn Dumper \%cfs;
 
-my $g2 = `oraccopt . g2`;
+my $g2 = 'yes'; # `oraccopt . g2`;
 
 open(PARTSMAP, '>01bld/parts.map');
 open(P, '>01tmp/l2p1-psus.sig'); select P;

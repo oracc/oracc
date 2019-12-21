@@ -15,9 +15,9 @@ function xis {
 	cp $ORACC/lib/data/dummy.xis 01bld/$l/periods.xis
     fi
 }
-
+#`oraccopt . g2`
 function cbd {
-    g2=`oraccopt . g2`
+    g2="yes"
     if [[ $g2 == "yes" ]]; then
 	# it's OK for there to be no glossary in cbd=dynamic
 	if [ -r 01tmp/$l.glo ] ; then
