@@ -123,7 +123,7 @@ div.imagefloat img {
     display: block;
     /* This width:100% is needed to make images grow to the width of their grid div; */
     /* If used with inline images it makes all images 100% instead of respecting the grid class */
-    width:100%;
+    /*width:100%;*/ /* Commented out sjt 20191223 */
     margin: 0;
     padding: 0;
     max-width:100%;
