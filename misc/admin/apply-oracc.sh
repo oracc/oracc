@@ -7,4 +7,4 @@ fi
 for a in `list-all-subs.sh` ; do
     (cd $a ; oracc $what)
 done
-oracc . $what
+oracc $what
