@@ -22,7 +22,7 @@ my $sid = '';
 
 my $asl = shift @ARGV;
 if ($asl) {
-    unless (-e $asl) {
+    unless (-f $asl) {
 	$asl = "00lib/$asl.asl";
     }
 } else {
