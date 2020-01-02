@@ -26,6 +26,7 @@ apt install \
     libcgi-pm-perl \
     default-jre default-jdk \
     gsoap libgsoap-dev \
-    libfrontier-rpc-perl
+    libfrontier-rpc-perl \
+    jq
 
 #    policycoreutils-python \
