@@ -21,6 +21,10 @@ while (<>) {
 }
 
 foreach my $f (keys %d) {
+    unless (-r $f) {
+	warn "$0: unable to read collo file $f\n";
+	next;
+    }
     my @src = `cat $f`; chomp @src;
     print "$f\t";
     foreach my $l (sort { $a <=> $b } keys %{$d{$f}}) {
@@ -30,7 +34,7 @@ foreach my $f (keys %d) {
 	    my $t = sprintf("%d\t", $#{${$d{$f}}{$l}}+1);
 	    $src[$l-1] =~ s/^/$t/;
 	} else {
-	    warn "$0: $src[$l-1] ne $l{$nfl}\n";
+	    warn "$0: [f=$f;l=$l] $src[$l-1] ne $l{$nfl}\n";
 	}
     }
     print "\n";

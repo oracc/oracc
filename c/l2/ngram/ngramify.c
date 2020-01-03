@@ -225,9 +225,8 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 
 	      if (clnodes)
 		{
-		  /* Is this right; shouldn't we be setting from clnodes[i_nle]
-		     rather than hopefully setting from the first node? */
-		  for (first_non_d = i_nle; /* 0 */
+		  /* i is the index into the clnodes where we started this successful match_nle */
+		  for (first_non_d = i;
 		       first_non_d < nclnodes 
 			 && clnodes[first_non_d].c
 			 && clnodes[first_non_d].c->node_type != xcl_node_l;
@@ -491,7 +490,12 @@ add_match(struct xcl_l *lp, struct f2 **matches, struct CF*tt,
   mp->psu = psu;
   mp->psu_form = psu_form;
   mp->user = user;
-  ngdebug("[add_match] registering match to %s[%s]",matches[0]->cf,matches[0]->gw);
+  if (matches[0]->cf)
+    ngdebug("[add_match] registering match to %s[%s]",matches[0]->cf,matches[0]->gw);
+  else if (matches[0]->pos)
+    ngdebug("[add_match] registering match to %s",matches[0]->pos);
+  else
+    ngdebug("[add_match] registering match with no cf/pos");
 }
 
 static void
@@ -661,6 +665,7 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
 	parses[i] = &fp->finds[i]->f2;
       *nparsesp = fp->fcount;
     }
+  /* This already ensures that xcl lnodes with only POS get returned as candidate parses */
   else if (fp->f2.cf
 	   || (fp->f2.pos /* && !strcmp((char*)fp->f2.pos,"n") */)) /* need to match GN etc. */
     {
@@ -711,6 +716,7 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
     }
   else
     {
+      /* support POS here as well as form ? */
       if (fp->f2.cf)
 	ngdebug("[nle_heads] processing fp %s[%s]",fp->f2.cf,fp->f2.gw);
       else
@@ -720,9 +726,10 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
   p = lnodes_of(fp,&nparses);
   ngdebug("[nle_heads] nparses == %d",nparses);
   seen_cfs = hash_create(1);
-  nles_p = malloc(nparses*sizeof(struct NLE_set*));
+  nles_p = malloc((nparses+1)*sizeof(struct NLE_set*)); /* have to +1 for possible '*' in active hash */
   for (total_nles = n_nles = i = 0; i < nparses; ++i)
     {
+      /* allow lookup by ->pos here if ->cf == NULL */
       if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
 	continue;
 

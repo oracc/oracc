@@ -490,7 +490,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       if (nfinds)
 	setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 
-      if (nfinds > 1 && !ifp->f2.pos && !ifp->f2.epos)
+      /* 2020-01-03: not clear that this reduction of senses is
+	 correct; probably better to keep all the senses and then use
+	 statistics to select most common sense */
+      if ((!lem_dynalem && !lem_autolem)
+	  && (nfinds > 1 && !ifp->f2.pos && !ifp->f2.epos))
 	{
 	  int tmp_nfinds = 0;
 	  struct ilem_form **fpp;
