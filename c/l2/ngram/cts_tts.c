@@ -170,9 +170,13 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
       else
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);
-	  /* Probably shouldn't do this when the CT is a POS; instead hash add/find via POS another way */
+	  /* POS handling */
 	  if (NULL == cfp->f2->cf)
-	    /*cfp->f2->cf*/ cfp->cf = "*";
+	    {
+	      /*cfp->f2->cf*/ /* cfp->cf = "*"; */
+	      if (cfp->f2->pos)
+		cfp->cf = (const char*)cfp->f2->pos;
+	    }
 	  else
 	    cfp->cf = (const char *)cfp->f2->cf;
 	  if ('<' == *s)

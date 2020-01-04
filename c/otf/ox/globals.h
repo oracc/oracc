@@ -39,6 +39,7 @@ extern int no_pi;
 extern int odt_serial;
 extern int report_all_label_errors;
 extern int show_toks;
+extern int sigs_debug;
 extern int sparse_lem;
 extern int verbose;
 extern int with_textid;

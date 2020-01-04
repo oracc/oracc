@@ -81,6 +81,10 @@ struct lang_context
   List *sigsets;		/* this is a pointer to the list of sigsets
 				   for a language-within-a-project that is
 				   stored in the sig_context.langs */
+  struct sigset *defsigs;	/* this is the default sigset for use with the language;
+				   it is not guaranteed to be set: it only gets set when 
+				   the sigset is loaded in sigs_lookup
+				 */
   struct sigset *runsigs;	/* this is the sigset for items that are
 				   generated/registered during the run; it is
 				   also included in the sigsets list */
