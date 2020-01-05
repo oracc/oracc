@@ -535,7 +535,7 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
     {
       struct f2 *p = parses[i];
       if (step && (step->wild
-		   || (step->cf && !p->cf && p->pos && !strcmp(step->cf,(char*)p->pos))
+		   || (step->f2 && !step->f2->cf && step->f2->pos && !strcmp(step->f2->pos,(char*)p->pos))
 		   || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))
@@ -653,13 +653,26 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
       int n = 0;
       /* count the total number of finds */
       for (tmp = fp; tmp; tmp = tmp->ambig)
-	n += tmp->fcount;
+	{
+	  if (tmp->finds)
+	    n += tmp->fcount;
+	  else if (tmp->f2.cf || tmp->f2.pos)
+	    ++n;
+	}
       /* make parses an array containing all the finds of all the ambigs */
       parses = malloc(n * sizeof(struct f2 *));
       for (i = 0, tmp = fp; tmp; tmp = tmp->ambig)
 	{
-	  for (j = 0; j < tmp->fcount; ++j)
-	    parses[i++] = &tmp->finds[j]->f2;
+	  if (tmp->finds)
+	    {
+	      for (j = 0; j < tmp->fcount; ++j)
+		parses[i++] = &tmp->finds[j]->f2;
+	    }
+	  else
+	    {
+	      if (tmp->f2.cf || tmp->f2.pos)
+		parses[i++] = &tmp->f2;
+	    }
 	}
       *nparsesp = n;
 #if 0

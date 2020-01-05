@@ -79,6 +79,7 @@ static int
 is_a_pos(unsigned char *s, unsigned char *tmp)
 {
   unsigned char c = *tmp;
+  int retval = 0;
   *tmp = '\0';
   if (!strcmp((const char*)s, "n"))
     {
@@ -92,9 +93,10 @@ is_a_pos(unsigned char *s, unsigned char *tmp)
 	  break;
 	else
 	  ++s;
-      
+
+      retval = !*s;
       *tmp = c;
-      return !*s;
+      return retval;
     }
 }
 
@@ -135,8 +137,11 @@ parse_cts_f2(struct CF *cfp, int tts_mode, char *s)
       len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
 		     (unsigned char *)s, cfp->f2, NULL, 
 		     cfp->owner->owner->owner->owner->owner);
+      cfp->f2->pos = strdup(cfp->f2->pos);
       *tmp = save;
     }
+  if (cfp->f2 && cfp->f2->gw && !strcmp(cfp->f2->gw, "X"))
+    cfp->f2->gw = NULL;
   if (len > 0)
     return s + len;
   else
