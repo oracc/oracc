@@ -34,10 +34,12 @@ else
 fi
 echo "Installing $tarball"
 cd $ORACC_BUILDS
-sudo tar zxof $tarball
+tar --warning=no-unknown-keyword -zxof $tarball
 cd $project
 rm -f 01bld 02pub 02www 02xml
+mkdir -p $ORACC_BUILDS/tmp/$project
 ln -sf $ORACC_BUILDS/bld/$project 01bld
+ln -sf $ORACC_BUILDS/tmp/$project 01tmp
 ln -sf $ORACC_BUILDS/pub/$project 02pub
 ln -sf $ORACC_BUILDS/www/$project 02www
 ln -sf $ORACC_BUILDS/xml/$project 02xml
