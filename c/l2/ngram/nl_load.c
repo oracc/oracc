@@ -89,8 +89,11 @@ parse_psu(struct NLE *nlep, List *components, unsigned char *ngm)
 	       nlep->lnum,
 	       npool_copy(sig,nlep->owner->owner->pool),
 	       f, NULL, NULL);
-      nlep->cfs[i]->f2->form = f->form;
-      nlep->psu_form->form = add_str((char*)nlep->psu_form->form, (char*)f->form,
+
+      /* Not necessary any more but need to add f->pos to psu form string */
+      /* nlep->cfs[i]->f2->form = f->form; */
+      
+      nlep->psu_form->form = add_str((char*)nlep->psu_form->form, (char*)(f->form ? f->form : f->pos),
 				     nlep->owner->owner->pool);
       nlep->psu_form->norm = add_str((char*)nlep->psu_form->norm, (char*)f->norm,
 				     nlep->owner->owner->pool);

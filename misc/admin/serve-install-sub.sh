@@ -34,7 +34,7 @@ else
 fi
 echo "Installing $tarball"
 cd $ORACC_BUILDS
-sudo tar zxof $tarball
+tar zxof $tarball
 cd $project
 rm -f 01bld 02pub 02www 02xml
 ln -sf $ORACC_BUILDS/bld/$project 01bld
