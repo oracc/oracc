@@ -1,8 +1,8 @@
 #!/bin/sh
 
-oracc=/home/oracc
-oracc_builds=/home/oracc
-oracc_host=build-oracc.museum.upenn.edu
+oracc=@@ORACC@@
+oracc_builds=@@ORACC_BUILDS@@
+oracc_host=@@ORACC_HOST@@
 
 export ORACC=$oracc
 export ORACC_BUILDS=$oracc_builds
