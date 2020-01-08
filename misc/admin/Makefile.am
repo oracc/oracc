@@ -79,6 +79,9 @@ serve-install.sh: serve-install.sh.in
 serve-project.sh: serve-project.sh.in
 	$(ORACCIFY) serve-project.sh.in
 
+serve-status.sh: serve-status.sh.in
+	$(ORACCIFY) serve-status.sh.in
+
 sync-runtimes.plx: sync-runtimes.plx.in
 	$(ORACCIFY) sync-runtimes.plx.in
 

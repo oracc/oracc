@@ -16,6 +16,7 @@ need to install usermode.xml
 
 need to creat $ORACC/sbin
 
+/home/oracc/www/srv must be owned www-data:oracc
 
 Operating System Setup
 ======================
