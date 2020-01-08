@@ -21,7 +21,7 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	osync-tar-get.sh build-all.sh build-umbrella.sh			\
 	list-all-subs.sh home-full-back.sh user-full-back.sh		\
 	update-all.sh serve-get-one.sh list-pub-subs.sh install-tar.sh 	\
-	apply-oracc.sh apply-oracc-resources.sh
+	apply-oracc.sh apply-oracc-resources.sh serve-install-sub.sh
 
 #data_DATA = usermode.xml
 #
@@ -76,8 +76,14 @@ serve-index.sh: serve-index.sh.in
 serve-install.sh: serve-install.sh.in
 	$(ORACCIFY) serve-install.sh.in
 
+serve-install-sub.sh: serve-install-sub.sh.in
+	$(ORACCIFY) serve-install-sub.sh.in
+
 serve-project.sh: serve-project.sh.in
 	$(ORACCIFY) serve-project.sh.in
+
+serve-status.sh: serve-status.sh.in
+	$(ORACCIFY) serve-status.sh.in
 
 sync-runtimes.plx: sync-runtimes.plx.in
 	$(ORACCIFY) sync-runtimes.plx.in
