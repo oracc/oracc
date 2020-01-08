@@ -135,6 +135,7 @@ static void
 nleps_add(Hash_table *hash, struct NLE*nlep)
 {
   struct NLE_set *nleps;
+  /* set key here to ->cf or ->pos */
   if (!(nleps = hash_find(hash,(unsigned char *)nlep->cfs[0]->cf)))
     {
       hash_add(hash,(unsigned char *)nlep->cfs[0]->cf,
@@ -334,7 +335,7 @@ nl_load_file(struct sigset *sp,
   else
     nlp->name = strdup(fname);
   ngdebug("input file=%s", fname);
-  nl_set_location(fname,1);
+  nl_set_location(strdup(fname),1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
   for (nngrams = i = 0; i < nlines; ++i)
     {

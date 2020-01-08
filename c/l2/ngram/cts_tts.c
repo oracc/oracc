@@ -75,17 +75,73 @@ parse_wild_cf(struct CF *cfp, int tts_mode, char *s)
   return s;
 }
 
+static int
+is_a_pos(unsigned char *s, unsigned char *tmp)
+{
+  unsigned char c = *tmp;
+  int retval = 0;
+  *tmp = '\0';
+  if (!strcmp((const char*)s, "n"))
+    {
+      *tmp = c;
+      return 1;
+    }
+  else
+    {
+      while (*s)
+	if (*s > 127 || !isupper(*s))
+	  break;
+	else
+	  ++s;
+
+      retval = !*s;
+      *tmp = c;
+      return retval;
+    }
+}
+
 static char *
 parse_cts_f2(struct CF *cfp, int tts_mode, char *s)
 {
   int len = 0;
+  int found_square = 0;
+  char *tmp = s;
   
   cfp->f2 = mb_new(cfp->owner->owner->owner->owner->owner->mb_f2s);
 
-  len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
-		 (unsigned char *)s, cfp->f2, NULL, 
-		 cfp->owner->owner->owner->owner->owner);
-
+  while (*tmp)
+    {
+      if (*tmp == '[')
+	{
+	  ++found_square;
+	  break;
+	}
+      else if (*tmp == ' ' || *tmp == '\t')
+	break;
+      else
+	++tmp;
+    }
+  
+  if (found_square || !is_a_pos((unsigned char *)s, (unsigned char *)tmp))
+    {
+      len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
+		     (unsigned char *)s, cfp->f2, NULL, 
+		     cfp->owner->owner->owner->owner->owner);
+    }
+  else
+    {
+      /* FIXME: should do some POS validation */
+      /*cfp->f2->pos = (unsigned char*)strndup(s, len);*/
+      char save = *tmp;
+      *tmp = '\0';
+      len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
+		     (unsigned char *)s, cfp->f2, NULL, 
+		     cfp->owner->owner->owner->owner->owner);
+      cfp->f2->pos = strdup(cfp->f2->pos);
+      *tmp = save;
+    }
+  if (cfp->f2 && cfp->f2->gw && !strcmp(cfp->f2->gw, "X"))
+    cfp->f2->gw = NULL;
   if (len > 0)
     return s + len;
   else
@@ -119,8 +175,13 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
       else
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);
+	  /* POS handling */
 	  if (NULL == cfp->f2->cf)
-	    /*cfp->f2->cf*/ cfp->cf = "*";
+	    {
+	      /*cfp->f2->cf*/ /* cfp->cf = "*"; */
+	      if (cfp->f2->pos)
+		cfp->cf = (const char*)cfp->f2->pos;
+	    }
 	  else
 	    cfp->cf = (const char *)cfp->f2->cf;
 	  if ('<' == *s)

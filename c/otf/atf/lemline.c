@@ -495,6 +495,11 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	      else
 		fputs((char*)f2->pos,fp);
 	    }
+	  else
+	    {
+	      if (f2->pos && f2->pos[1] == 'N')
+		fputs((char*)f2->pos,fp);
+	    }
 	}
       else
 	{

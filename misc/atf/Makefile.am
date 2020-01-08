@@ -12,7 +12,7 @@ bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx \
 	repo-status.sh sort-by-size.plx unloose.plx unstrict.plx ur3uniq.plx \
 	invert-lem-dump.plx revert-lem-dump.plx prune-lists.plx atfsuxlem.plx \
 	atflemfix.plx mk-atf-reptab.plx lem-err-culprits.sh atfchunk.plx \
-	atffix-p.plx atf-cdli.sh ox4.plx ox4-emesal.plx atf-uni-lem.plx
+	atffix-p.plx atf-cdli.sh ox4.plx ox4-emesal.plx atf-uni-lem.plx atfstrip.plx
 
 #atfreplace.plx
 

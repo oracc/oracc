@@ -177,6 +177,8 @@ ox_options(int argc, char **argv)
 	    {
 	      ng_debug = 1;
 	      wordset_debug = 1;
+	      if (verbose > 2)
+		sigs_debug = 1;
 	    }
 	  break;
 	case 'w':

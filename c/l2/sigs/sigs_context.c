@@ -23,6 +23,7 @@
 
 extern int lem_extended;
 extern int lem_autolem;
+int sigs_debug = 0;
 
 #ifndef strdup
 extern char *strdup(const char*);
@@ -139,7 +140,7 @@ sig_context_register(struct sig_context *scp,
 	 is non-zero */
       if (!xaccess((char*)fname, R_OK, 0))
 	{
-	  if (verbose)
+	  if (sigs_debug)
 	    fprintf(stderr,
 		    "sig_context: registering sigs for %s:%s from `%s'\n", 
 		    proj_to_be_lemmed, lang_to_be_lemmed, fname);
@@ -497,7 +498,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
     {
       s->count = 1;
       hash_add(sp->forms, npool_copy(form, scp->pool), s);
-      if (verbose > 1)
+      if (sigs_debug)
 	fprintf(stderr, "sigs_load_sigs: registering form %s\n", form);
     }
 
@@ -523,7 +524,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
     {
       s2->count = 1;
       hash_add(sp->norms, npool_copy(cf_or_norm, scp->pool), s2);
-      if (verbose > 1)
+      if (sigs_debug)
 	fprintf(stderr, "sigs_load_sigs: registering cf_or_norm %s\n", cf_or_norm);
     }
 }

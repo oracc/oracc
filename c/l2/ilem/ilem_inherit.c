@@ -5,6 +5,10 @@
 void
 ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from)
 {
+  /* This can happen in dynalem when the Ngrammer has already rewritten ilem forms */
+  if (inheritor == from)
+    return;
+  
 #define inheritx(memb) if(!(inheritor->memb)&&from->memb)inheritor->memb=from->memb
 
   inheritx(type);

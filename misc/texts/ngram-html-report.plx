@@ -9,7 +9,7 @@ my $type = shift @ARGV;
 
 open(W,">00web/$type-report.html"); select W;
 print "<html><head><title>$type Report</title></head><body><h1>$type Report</h1>";
-open(I,"01tmp/$type-zero.log");
+open(I,"00etc/$type-zero.log");
 print "<h2>$type entries with no matches</h2><table>";
 while (<I>) {
     chomp; s/^.*?\t//;
@@ -18,7 +18,7 @@ while (<I>) {
 print "</table>";
 close(I);
 print "<h2>$type entries which have matches</h2><table>";
-open(I,"01tmp/$type-hits.log");
+open(I,"00etc/$type-hits.log");
 while (<I>) {
     chomp;
     my($n,$c) = split(/\t/,$_);

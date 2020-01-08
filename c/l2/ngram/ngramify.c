@@ -120,7 +120,9 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
   struct NL_context *nlcp = xcp->user;
   union xcl_u*clnodes = cp->children;
   int nclnodes = cp->nchildren;
+  const char *user_name = NULL;
   ng_debug = verbose;
+  
   ++ngram_id;
   ngdebug("[ngramify@%d] start processing %d XCL children",ngram_id,nclnodes);
   /* we have to have at least two nodes left in the list to be able to make an ngram match */
@@ -139,8 +141,13 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 
       if (ngramify_per_lang)
 	{
-	  if (clnodes[i].l->f && clnodes[i].l->f->sp)
+	  if (clnodes[i].l->f)
 	    {
+	      if (!clnodes[i].l->f->sp /*&& (clnodes[i].l->f->sp || clnodes[i].l->f->f2.pos))*/
+		  && (!clnodes[i].l->f || !clnodes[i].l->f->lang
+		      || !(clnodes[i].l->f->sp = clnodes[i].l->f->lang->defsigs)))
+		continue; /* silently ignore l nodes whose lang can't be associated with a sigset */
+	      
 	      /* This should switch for bigrams as well */
 	      if (xcp->user)
 		{
@@ -148,11 +155,13 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		    {
 		      nlcp = clnodes[i].l->f->sp->bigrams;
 		      ngdebug("context=bigrams");
+		      user_name = "bigrams";
 		    }
 		  else if ((int)(uintptr_t)xcp->user == NGRAMIFY_USE_COLLOS)
 		    {
 		      nlcp = clnodes[i].l->f->sp->collos;
 		      ngdebug("context=collos");
+		      user_name = "collos";
 		    }
 		  else
 		    {
@@ -182,11 +191,13 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 			{
 			  nlcp = ((struct NL_context **)xcp->user)[c];
 			  ngdebug("context=psus for lang %s", clnodes[i].l->f->lang);
+			  user_name = "psus";
 			}
 		      else
 			{
 			  nlcp = NULL;
 			  ngdebug("context=null");
+			  user_name = "null";
 			}
 		    }
 		}
@@ -220,14 +231,13 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		      nle[i_nle]->priority,
 		      nle[i_nle]->file,
 		      nle[i_nle]->lnum,
-		      nle[i_nle]->user,
+		      user_name,
 		      action_name(nlcp->action));
 
 	      if (clnodes)
 		{
-		  /* Is this right; shouldn't we be setting from clnodes[i_nle]
-		     rather than hopefully setting from the first node? */
-		  for (first_non_d = i_nle; /* 0 */
+		  /* i is the index into the clnodes where we started this successful match_nle */
+		  for (first_non_d = i;
 		       first_non_d < nclnodes 
 			 && clnodes[first_non_d].c
 			 && clnodes[first_non_d].c->node_type != xcl_node_l;
@@ -491,7 +501,12 @@ add_match(struct xcl_l *lp, struct f2 **matches, struct CF*tt,
   mp->psu = psu;
   mp->psu_form = psu_form;
   mp->user = user;
-  ngdebug("[add_match] registering match to %s[%s]",matches[0]->cf,matches[0]->gw);
+  if (matches[0]->cf)
+    ngdebug("[add_match] registering match to %s[%s]",matches[0]->cf,matches[0]->gw);
+  else if (matches[0]->pos)
+    ngdebug("[add_match] registering match to %s",matches[0]->pos);
+  else
+    ngdebug("[add_match] registering match with no cf/pos");
 }
 
 static void
@@ -520,7 +535,7 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
     {
       struct f2 *p = parses[i];
       if (step && (step->wild
-		   || (step->cf && !strcmp(step->cf, "*")) /* match to POS w no CF */
+		   || (step->f2 && !step->f2->cf && step->f2->pos && !strcmp(step->f2->pos,(char*)p->pos))
 		   || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))
@@ -638,13 +653,26 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
       int n = 0;
       /* count the total number of finds */
       for (tmp = fp; tmp; tmp = tmp->ambig)
-	n += tmp->fcount;
+	{
+	  if (tmp->finds)
+	    n += tmp->fcount;
+	  else if (tmp->f2.cf || tmp->f2.pos)
+	    ++n;
+	}
       /* make parses an array containing all the finds of all the ambigs */
       parses = malloc(n * sizeof(struct f2 *));
       for (i = 0, tmp = fp; tmp; tmp = tmp->ambig)
 	{
-	  for (j = 0; j < tmp->fcount; ++j)
-	    parses[i++] = &tmp->finds[j]->f2;
+	  if (tmp->finds)
+	    {
+	      for (j = 0; j < tmp->fcount; ++j)
+		parses[i++] = &tmp->finds[j]->f2;
+	    }
+	  else
+	    {
+	      if (tmp->f2.cf || tmp->f2.pos)
+		parses[i++] = &tmp->f2;
+	    }
 	}
       *nparsesp = n;
 #if 0
@@ -661,6 +689,7 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
 	parses[i] = &fp->finds[i]->f2;
       *nparsesp = fp->fcount;
     }
+  /* This already ensures that xcl lnodes with only POS get returned as candidate parses */
   else if (fp->f2.cf
 	   || (fp->f2.pos /* && !strcmp((char*)fp->f2.pos,"n") */)) /* need to match GN etc. */
     {
@@ -699,6 +728,8 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
   struct NLE_set *nles;
   int nparses, i, n_nles, total_nles, one = 1;
   Hash_table *seen_cfs = NULL;
+  int try_pos = 0, arg_try_pos = 0;
+  const unsigned char *cf_or_pos = NULL;
 
   if (!nlp)
     return NULL;
@@ -711,29 +742,49 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
     }
   else
     {
+      /* support POS here as well as form ? */
       if (fp->f2.cf)
 	ngdebug("[nle_heads] processing fp %s[%s]",fp->f2.cf,fp->f2.gw);
-      else
+      else if (fp->f2.pos)
+	ngdebug("[nle_heads] processing fp POS %s",fp->f2.pos);
+      else /* This probably shouldn't be here unless it gets used by NSA vel sim */
 	ngdebug("[nle_heads] processing fp form %s",fp->f2.form);
     }
 
   p = lnodes_of(fp,&nparses);
   ngdebug("[nle_heads] nparses == %d",nparses);
   seen_cfs = hash_create(1);
-  nles_p = malloc(nparses*sizeof(struct NLE_set*));
+  nles_p = malloc((nparses+1)*sizeof(struct NLE_set*)); /* have to +1 for possible '*' in active hash */
   for (total_nles = n_nles = i = 0; i < nparses; ++i)
     {
+#if 1
+      try_pos = (arg_try_pos || !p[i]->cf);
+      if (try_pos)
+	{
+	  if (!p[i]->pos || hash_find(seen_cfs, p[i]->pos))
+	    continue;
+	  cf_or_pos = p[i]->pos;
+	}
+      else
+	{
+	  if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
+	    continue;
+	  cf_or_pos = p[i]->cf;
+	}
+#else
+      /* allow lookup by ->pos here if ->cf == NULL */
       if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
 	continue;
+#endif
 
       nles = hash_find(nlp->owner->active_hash,
-		       (unsigned char *)p[i]->cf);
+		       (unsigned char *)cf_or_pos);
       if (nles)
 	{
-	  ngdebug("[nle_heads] found CF %s in %s",p[i]->cf, nlp->name);
+	  ngdebug("[nle_heads] found %s %s in %s", (try_pos ? "POS" : "CF"), cf_or_pos, nlp->name);
 	  nles_p[n_nles++] = nles;
 	  total_nles += nles->pp_used;
-	  hash_add(seen_cfs, p[i]->cf, &one);
+	  hash_add(seen_cfs, cf_or_pos, &one);
 	}
     }
   hash_free(seen_cfs, NULL);

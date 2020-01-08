@@ -24,6 +24,7 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
     {
       struct match *mp = &mlp->matches[j];
 
+      /* WATCHME: this means that 'n', for example, can't be rewritten */
       if (!mp->lp->f->finds)
 	continue;
 

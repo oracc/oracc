@@ -273,6 +273,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
   projlang = malloc(strlen((char*)xcp->project)+strlen((char*)lem_lang)+2);
   sprintf(projlang,"%s%%%s",xcp->project,lem_lang);
 
+  /* Load the list of sets from the config.xml but don't load any actual signatures yet */
   if (!(sigsets = hash_find(xcp->sigs->langs,(unsigned char *)projlang)))
     sigsets = sig_autoload_sets(xcp->sigs,xcp->project,(const char*)lem_lang);
 
@@ -290,9 +291,14 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  ifp->f2.form = ifp->f2.oform;
 	  ifp->f2.oform = NULL;
 	}
-      
+
+      /* This is where the actual lemm-xxx.sig sets get loaded */
       if (!sp->loaded)
-	sig_load_set(xcp->sigs,sp);
+	{
+	  sig_load_set(xcp->sigs,sp);
+	  if (ifp->lang && !ifp->lang->defsigs)
+	    ifp->lang->defsigs = sp;
+	}
 
       if (verbose)
 	fprintf(stderr, "trying sig_set %s:%s\n", sp->project, sp->lang);
@@ -490,7 +496,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       if (nfinds)
 	setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 
-      if (nfinds > 1 && !ifp->f2.pos && !ifp->f2.epos)
+      /* 2020-01-03: not clear that this reduction of senses is
+	 correct; probably better to keep all the senses and then use
+	 statistics to select most common sense */
+      if ((!lem_dynalem && !lem_autolem)
+	  && (nfinds > 1 && !ifp->f2.pos && !ifp->f2.epos))
 	{
 	  int tmp_nfinds = 0;
 	  struct ilem_form **fpp;
