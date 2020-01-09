@@ -32,8 +32,15 @@ void
 links_psu(struct xcl_context *xc, struct ML *mlp)
 {
   struct linkset *lsp;
-  int i;
-  lsp = new_linkset(xc->linkbase,"psu",mlp->matches[0].psu);
+  int i, title_len = 0;
+  const char *role = NULL;
+
+  if (mlp && mlp->matches && mlp->matches[0].tt)
+    role = mlp->matches[0].tt->owner->owner->owner->role;
+
+  lsp = new_linkset(xc->linkbase,
+		    role ? role : "psu",
+		    mlp->matches[0].psu);
   if (mlp->matches[0].psu_form)
     {
       struct xcl_l*lp = calloc(1,sizeof(struct xcl_l));
@@ -114,9 +121,11 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
   lsp->used = mlp->matches_used;
   for (i = 0; i < mlp->matches_used; ++i)
     {
-      
       lsp->links[i].role = "elt";
-      lsp->links[i].title = (const char *)(mlp->matches[i].lp->f->f2.cf ? mlp->matches[i].lp->f->f2.cf : mlp->matches[i].lp->f->f2.pos);
+      lsp->links[i].title = (const char *)(mlp->matches[i].lp->f->f2.cf
+					   ? mlp->matches[i].lp->f->f2.cf
+					   : mlp->matches[i].lp->f->f2.pos);
+      title_len += strlen(lsp->links[i].title);
       lsp->links[i].lp = mlp->matches[i].lp;
       lsp->links[i].lref = mlp->matches[i].lp->xml_id;
 
@@ -132,6 +141,19 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 	  mlp->matches[i].lp->f->finds[mlp->matches[i].nmatches] = NULL;
 	  mlp->matches[i].lp->f->fcount = mlp->matches[i].nmatches;
 	}
+    }
+  if (!lsp->title)
+    {
+      char *tmp = malloc(title_len + mlp->matches_used + 1);
+      *tmp = '\0';
+      for (i = 0; i < mlp->matches_used; ++i)
+	{
+	  strcat(tmp, lsp->links[i].title);
+	  if (i < mlp->matches_used)
+	    strcat(tmp, " ");
+	}
+      tmp[strlen(tmp)-1] = '\0';
+      lsp->title = tmp;
     }
 }
 

@@ -326,8 +326,13 @@ nl_load_file(struct sigset *sp,
   char **ngram_lines;
   const char *n = NULL;
   unsigned char *fmem;
-  size_t nlines, i, nngrams;
-  struct NL *nlp = nl_setup(NULL, act, lang);
+  size_t nlines, i, nngrams, init_line = 0;
+  struct NL *nlp = NULL;
+
+  if (!fname)
+    return NULL;
+  
+  nlp = nl_setup(NULL, act, lang);
   nlcp = nlp->owner;
   nlcp->nlp = nlp;
   nlcp->owner = sig_new_context_free_sigset();
@@ -340,7 +345,15 @@ nl_load_file(struct sigset *sp,
   ngdebug("input file=%s", fname);
   nl_set_location(strdup(fname),1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
-  for (nngrams = i = 0; i < nlines; ++i)
+  if (ngram_lines[0] && !strncmp(ngram_lines[0], "@role",strlen("@role")))
+    {
+      char *tmp = ngram_lines[0] + strlen("@role");
+      while (*tmp && isspace(*tmp))
+	++tmp;
+      nlcp->role = strdup(tmp);
+      ++init_line;
+    }
+  for (nngrams = i = init_line; i < nlines; ++i)
     {
       if (ngram_lines[i] && *ngram_lines[i])
 	nl_process_one_line(nlp, ngram_lines[i], NULL);

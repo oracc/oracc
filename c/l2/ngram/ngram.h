@@ -30,6 +30,7 @@ struct NL_context
   struct NL*nlp;
   const char *lang;
   struct sigset *owner;
+  const char *role;
 };
 
 /*

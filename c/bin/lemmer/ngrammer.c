@@ -37,7 +37,7 @@ main(int argc, char **argv)
 
   f_log = stderr;
   nl_init();
-  options(argc, argv, "dl:n:p:x:");
+  options(argc, argv, "dl:n:p:x:v");
   nlcp = nl_load_file(sp,NULL,nl_file,nlcp_action_psu,lang);
   f_nlx = fopen(nlx_file,"w");
   if (f_nlx)
@@ -45,7 +45,7 @@ main(int argc, char **argv)
   else
     fprintf(stderr,"ngram: can't open %s to dump NLX\n",nlx_file);
 
-  project = "cdli";
+  project = "epsd2";
 #if 1
   curr_lang = NULL;
 #else
@@ -91,6 +91,9 @@ opts (int o, char *c)
       break;
     case 'x':
       xcl_file = c;
+      break;
+    case 'v':
+      verbose = 2;
       break;
     default:
       ret = 1;

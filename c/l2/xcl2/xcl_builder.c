@@ -30,6 +30,7 @@ static int in_ll = 0;
 static enum ll_types ll_type;
 const char *curr_xml_id = NULL;
 const char *curr_inst = NULL;
+const char *curr_pos = NULL;
 const char *curr_ref = NULL;
 const char *curr_sig = NULL;
 const char *psu_lang = NULL;
@@ -138,6 +139,10 @@ xcl_sH(void *userData, const char *name, const char **atts)
 	    }
 	}
     }
+  else if (!strncmp("http://oracc.org/ns/xff/1.0",name,vbar-name))
+    {
+      curr_pos = xpool_copy(findAttr(atts,"pos"),xcp->pool);
+    }
 }
 
 void
@@ -173,8 +178,13 @@ xcl_eH(void *userData, const char *name)
 	      lp->f->f2.owner = lp->f;
 	      lp->f->ref = (char*)npool_copy((unsigned char *)curr_ref, xcp->pool);
 	      /* FIXME: this is not good enough for COF and PSU */
-	      lp->f->f2.sig = (unsigned char *)lp->sig; /* FIXME: drops const */
-	      f2_parse((unsigned char *)xcp->file, lp->lnum, npool_copy((unsigned char*)curr_sig,xcp->pool), &lp->f->f2, NULL, xcp->sigs);	      
+	      if (curr_sig || curr_pos)
+		{
+		  lp->f->f2.sig = (unsigned char *)lp->sig; /* FIXME: drops const */
+		  f2_parse((unsigned char *)xcp->file, lp->lnum,
+			   npool_copy((unsigned char*)((curr_sig&&*curr_sig) ? curr_sig : curr_pos),xcp->pool),
+			   &lp->f->f2, NULL, xcp->sigs);	      
+		}
 	    }
 #if 0
     {
