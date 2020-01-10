@@ -29,6 +29,9 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (strstr((const char *)fp->lang, "-949"))
     wild_form = 1;
 
+  if (!fp->project)
+    fp->project = (const Uchar *)xcp->project;
+  
   if (BIT_ISSET(fp->flags, F2_FLAGS_NORM_IS_CF)) 
     fp->cf = fp->norm;
 
@@ -40,6 +43,13 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
 			   ? "*" 
 			   : (fp->oform ? (char*)fp->oform : (char*)fp->form));
 
+  if (!fp->cf && fp->pos && !strcmp((char *)fp->pos,"n"))
+    {
+      fp->cf = (const Uchar *)"n";
+      fp->gw = fp->sense = (const Uchar *)"n";
+      fp->epos = (const Uchar *)"n";
+    }
+  
   sprintf((char*)buf,"@%s%%%s:%s=%s[%s//%s]%s'%s",
 	  (char*)(fp->project),
 	  (char*)(fp->lang),
@@ -53,7 +63,14 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (BIT_ISSET(fp->core->features,LF_BASE)
       && !fp->base)
     {
-      if (ifp && ifp->fcount)
+      if (fp->pos && !strcmp((char *)fp->pos, "n"))
+	{
+	  fp->base = fp->form;
+	  fp->morph = (const Uchar *)"~";
+	  fp->cont = (const Uchar *)"";
+	  fp->norm = (const Uchar *)"n";
+	}
+      else if (ifp && ifp->fcount)
 	{
 	  fp->base = ifp->finds[0]->f2.base;
 	  fp->cont = ifp->finds[0]->f2.cont;
@@ -72,7 +89,7 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (fp->base)
     sprintf((char*)(buf+strlen((char*)buf)),"/%s",fp->base);
 
-  if (fp->cont)
+  if (fp->cont && *fp->cont)
     sprintf((char*)(buf+strlen((char*)buf)),"+%s",fp->cont);
 
   if (fp->morph)

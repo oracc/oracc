@@ -906,6 +906,7 @@ render_parts {
     }
 
     $pindex = 0;
+    $cpd =~ s/\sn\s/ n[n]NU /g;
     $cpd =~ s/(\]\S+)\s+/$1\cA/g;
     push @ret, '<compound>';
     my @c = split(/\cA/,$cpd);

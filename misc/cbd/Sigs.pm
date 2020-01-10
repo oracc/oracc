@@ -785,36 +785,38 @@ sub psu_glo {
 		    @no_sense_forms = ORACC::CBD::Forms::forms_by_cfgw($curr_cfgw);		    
 		}
 		if ($#no_sense_forms < 0) {
-		    # create a form from primary bases
-		    my $pline = ${$entries_parts_lines[0]}[1];
-		    if ($pline) {
-			$pline =~ s/\@parts\s+//;
-			$pline =~ s/\sn\s/ n\cA/g;
-			$pline =~ s/(\]\S*)\s+/$1\cA/g;
-			my @nsf = ();
-			foreach my $p (split(/\cA/,$pline)) {
-			    $p =~ s#//.*?\]#]#;
-			    $p =~ s/\'.*//;
-			    $p =~ s/<.*?>$//; # remove ngram predicates in <...>
-			    if ($simple_bases{$p}) {
-				# warn "$p => $simple_bases{$p}\n";
-				my $f = $simple_bases{$p}; $f =~ tr/·°//d;
-				push @nsf, $f;
-			    } elsif ($p =~ /^n$/) {
-				push @nsf, 'n';
-			    } else {
-				pp_warn "$p not in simple_bases";
+		    foreach my $epl (@entries_parts_lines) {
+			# create a form from primary bases
+			my $pline = $$epl[1];
+			if ($pline) {
+			    $pline =~ s/\@parts\s+//;
+			    $pline =~ s/(\]\S*)\s+/$1\cA/g;
+			    $pline =~ s/\cAn\s/\cAn\cA/g;
+			    my @nsf = ();
+			    foreach my $p (split(/\cA/,$pline)) {
+				$p =~ s#//.*?\]#]#;
+				$p =~ s/\'.*//;
+				$p =~ s/<.*?>$//; # remove ngram predicates in <...>
+				if ($simple_bases{$p}) {
+				    # warn "$p => $simple_bases{$p}\n";
+				    my $f = $simple_bases{$p}; $f =~ tr/·°//d;
+				    push @nsf, $f;
+				} elsif ($p =~ /^n$/) {
+				    push @nsf, 'n';
+				} else {
+				    pp_warn "$p not in simple_bases";
+				}
 			    }
-			}
-			push @no_sense_forms, '@form '.join('_',@nsf);
-			#		    warn "@no_sense_forms\n";
-		    } else {
-			if ($#entries_parts_lines
-			    && $entries_parts_lines[0]
-			    && ${$entries_parts_lines[0]}[1]) {
-			    pp_warn "no parts line info for ${$entries_parts_lines[0]}[1]";
+			    push @no_sense_forms, '@form '.join('_',@nsf);
+			    #		    warn "@no_sense_forms\n";
 			} else {
-			    pp_warn "no parts line info in entry";
+			    if ($#entries_parts_lines
+				&& $entries_parts_lines[0]
+				&& ${$entries_parts_lines[0]}[1]) {
+				pp_warn "no parts line info for ${$entries_parts_lines[0]}[1]";
+			    } else {
+				pp_warn "no parts line info in entry";
+			    }
 			}
 		    }
 		}
@@ -1173,8 +1175,8 @@ validate_parts {
     $p =~ s/^\@parts\s+//;
     $p =~ s/\s[\%\#\@\/\+]\S+/ /g;
     $p =~ s/\s+/ /g;
-    $p =~ s/\s+n\s+/ n\cA/g;
     $p =~ s/(\]\S*)\s+/$1\cA/g;
+    $p =~ s/\cAn\s+/\cAn\cA/g;
     my @parts = grep defined&&length, split(/\cA/,$p);
     my @ret = ();
     foreach my $pt (@parts) {
