@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "f2.h"
 #include "ngram.h"
+#include "props.h"
 
 static FILE *dump_fp;
 
@@ -34,6 +35,8 @@ dump_nle(struct NLE*nlep)
   fprintf(dump_fp,"<nle priority=\"%d\"\n>",nlep->priority);
   if (nlep->meta)
     dump_meta(nlep->meta);
+  if (nlep->props)
+    props_dump_props_sub(nlep->props,dump_fp);
   if (nlep->ncfs)
     {
       int i;
@@ -43,6 +46,9 @@ dump_nle(struct NLE*nlep)
 	  fputs("<ct>",dump_fp);
 	  if (nlep->cfs[i])
 	    dump_cf_tts(nlep->cfs[i]);
+	  if (nlep->cfs[i]->props)
+	    props_dump_props_sub(nlep->cfs[i]->props,dump_fp);
+
 	  fputs("</ct>",dump_fp);
 	}
       fputs("</cts>",dump_fp);

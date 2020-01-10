@@ -298,9 +298,11 @@ nl_process_one_line(struct NL *nlp, const char *lp, List *components)
 	case '\t':
 	case '#':
 	  break;
+#if 0
 	case '@':
-	  vwarning2(nl_file,nl_lnum,"unknown @-line: %s",*lp);
+	  vwarning2(nl_file,nl_lnum,"unknown @-line: %s",lp);
 	  break;
+#endif
 	default:
 	  psu_form = parse_ngram_line(nlp, lp, nlp->nngrams, nlp->owner, components, NULL);
 	  break;

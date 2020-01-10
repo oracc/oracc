@@ -155,6 +155,7 @@ main(int argc, char **argv)
   verbose = 0;
   signals(argc, argv);
   run = run_init();
+  pool_init();
   no_gdl_xids = 0;
   if (!ox_options(argc,argv))
     {

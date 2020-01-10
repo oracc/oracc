@@ -6,6 +6,7 @@
 #include "charsets.h"
 #include "warning.h"
 #include "ngram.h"
+#include "pool.h"
 
 FILE *f_log, *f_nlx;
 const char *nlx_file = "ngram.nlx";
@@ -35,6 +36,8 @@ main(int argc, char **argv)
   (void)sig_context_init();
   sp = sig_new_context_free_sigset();
 
+  pool_init();
+  
   f_log = stderr;
   nl_init();
   options(argc, argv, "dl:n:p:x:v");

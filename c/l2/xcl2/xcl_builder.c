@@ -48,7 +48,7 @@ const char *next_k = NULL;
 static void
 xcl_sH(void *userData, const char *name, const char **atts)
 {
-  static struct ilem_form *curr_form = NULL;
+  /*static struct ilem_form *curr_form = NULL*//*shadows file-scoped static struct ilem_form*curr_form*/
   const char *vbar = strchr(name,EXPAT_NS_CHAR);
   struct xcl_context *xcp = userData;
 
@@ -66,6 +66,7 @@ xcl_sH(void *userData, const char *name, const char **atts)
 	      if (*curr_ref)
 		curr_ref = xpool_copy(curr_ref,xcp->pool);
 	      curr_sig = xpool_copy(findAttr(atts,"sig"),xcp->pool);
+	      curr_form = mb_new(xcp->sigs->mb_ilem_forms);
 	    }
 	  else if (vbar[1] == 'l' && !vbar[2])
 	    {
@@ -174,7 +175,6 @@ xcl_eH(void *userData, const char *name)
 	      lp->inst = curr_inst;
 	      lp->sig = (const char *)npool_copy((const unsigned char*)curr_sig,xcp->pool);
 	      lp->lnum = curr_lnum;
-	      lp->f = mb_new(xcp->sigs->mb_ilem_forms);
 	      lp->f->f2.owner = lp->f;
 	      lp->f->ref = (char*)npool_copy((unsigned char *)curr_ref, xcp->pool);
 	      /* FIXME: this is not good enough for COF and PSU */

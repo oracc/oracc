@@ -105,6 +105,14 @@ extern void props_dump_props(struct ilem_form *f, FILE *fp);
 extern struct prop*props_find_prop(struct ilem_form *f, const unsigned char *name, const unsigned char *value);
 extern struct prop*props_find_prop_group(struct ilem_form *f, const unsigned char *group);
 
+extern struct prop*props_add_prop_sub(struct prop *p, const unsigned char *group,
+			  const unsigned char *name, const unsigned char *value, 
+			  const char *ref, const char *xml_id, const char *pref,
+			  int ngram_id);
+extern void props_dump_props_sub(struct prop *p, FILE *fp);
+extern struct prop*props_find_prop_sub(struct prop *p, const unsigned char *name, const unsigned char *value);
+extern struct prop*props_find_prop_group_sub(struct prop *p, const unsigned char *group);
+
 void props_auto_init(void);
 void props_auto_term(void);
 struct propdef *props_auto_name(const unsigned char *value);

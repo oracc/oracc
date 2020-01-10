@@ -3,6 +3,7 @@
 #include "list.h"
 #include "memblock.h"
 #include "ngram.h"
+#include "props.h"
 
 static char *
 parse_angled_preds(struct CF *cfp, int tts_mode, char *s)
@@ -137,10 +138,10 @@ parse_cts_f2(struct CF *cfp, int tts_mode, char *s)
       len = f2_parse((unsigned char *)cfp->owner->owner->file, cfp->owner->lnum, 
 		     (unsigned char *)s, cfp->f2, NULL, 
 		     cfp->owner->owner->owner->owner->owner);
-      cfp->f2->pos = strdup(cfp->f2->pos);
+      cfp->f2->pos = (const Uchar *)strdup((const char*)cfp->f2->pos);
       *tmp = save;
     }
-  if (cfp->f2 && cfp->f2->gw && !strcmp(cfp->f2->gw, "X"))
+  if (cfp->f2 && cfp->f2->gw && !strcmp((const char*)cfp->f2->gw, "X"))
     cfp->f2->gw = NULL;
   if (len > 0)
     return s + len;
@@ -148,14 +149,68 @@ parse_cts_f2(struct CF *cfp, int tts_mode, char *s)
     return ++s;
 }
 
+static char *
+cts_props(struct prop **p, char *s)
+{
+  char *tmp = s;
+  char *buf = NULL, save = '\0';
+  buf = malloc(strlen(tmp)+1);
+  while (*tmp == '@')
+    {
+      char *group = NULL, *name = NULL, *value = NULL, *end = tmp+1;
+      while (*end)
+	if ('@' == *end || isspace(*end))
+	  {
+	    save = *end;
+	    *end = '\0';
+	    break;
+	  }
+	else
+	  ++end;
+      strcpy(buf, tmp+1);
+      s = end;
+      *end = save;
+      tmp = buf;
+      if ((end = strchr(tmp, ':')))
+	{
+	  group = buf;
+	  *end = '\0';
+	  tmp = end + 1;
+	}
+      if ((end = strchr(tmp, '=')))
+	{
+	  name = tmp;
+	  *end = '\0';
+	  tmp = end + 1;
+	}
+      value = tmp;
+      if (!group && !name)
+	{
+	  if (!strcmp(value, "yn"))
+	    name = "field";
+	  else if (!strcmp(value, "date"))
+	    name = "discourse";
+	}
+      *p = props_add_prop_sub(*p, (const unsigned char *)group, (const unsigned char *)name,
+			      (const unsigned char *)value, NULL, NULL, NULL, -1);
+    }
+  return s;
+}
+
 int
 nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
 {
   char *s = line;
   List *cfs = list_create(LIST_SINGLE);
+  int do_new_cf = 1;
   while (s < end)
     {
-      struct CF* cfp = new_cf(cfs);
+      static struct CF* cfp = NULL;
+
+      if (do_new_cf)
+	cfp = new_cf(cfs);
+      else
+	do_new_cf = 1;
       cfp->owner = nlep;
       if (*s == '!')
 	{
@@ -172,6 +227,11 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
 	s = parse_angled_preds(cfp, tts_mode, s);
       else if (*s == '*' && s[1] != '[')
 	s = parse_wild_cf(cfp, tts_mode, s);
+      else if (*s == '@')
+	{
+	  s = cts_props(&nlep->props, s);
+	  do_new_cf = 0;
+	}
       else
 	{
 	  s = parse_cts_f2(cfp, tts_mode, s);

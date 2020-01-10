@@ -6,6 +6,7 @@
 #include <ilem_form.h>
 #include "xcl.h"
 #include "npool.h"
+#include "props.h"
 
 #ifndef strdup
 char *strdup(const char *);
@@ -35,6 +36,9 @@ static struct mm c_mm_info = { NULL, sizeof(struct xcl_c), -1, -1, 0, 0 };
 static struct mm d_mm_info = { NULL, sizeof(struct xcl_d), -1, -1, 0, 0 };
 static struct mm l_mm_info = { NULL, sizeof(struct xcl_l), -1, -1, 0, 0 };
 static struct mm u_mm_info = { NULL, sizeof(union  xcl_u), -1, -1, 0, 0 };
+
+const char *curr_xcl_discourse = NULL;
+const char *curr_xcl_field = NULL;
 
 static void *
 new_node(struct mm* i)
@@ -330,6 +334,8 @@ xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t, c
   c->xc = xc;
   c->ref = ref;
   add_child(xc->curr, c, c->node_type);
+  if (t == xcl_d_field_start)
+    curr_xcl_field = c->subtype;
 }
 
 void
@@ -342,6 +348,8 @@ xcl_discontinuity2(struct xcl_context *xc, const char *xid, const char *ref, enu
   c->xml_id = (char*)npool_copy(xid,xc->pool);
   c->ref = ref;
   add_child(xc->curr, c, c->node_type);
+  if (t == xcl_d_field_start)
+    curr_xcl_field = c->subtype;
 }
 
 static const char *
@@ -400,6 +408,8 @@ xcl_lemma(struct xcl_context *xc, const char *xml_id, const char *ref,
       if (curr_subtype && strlen(curr_subtype))
 	c->subtype = (char*)npool_copy(curr_subtype,xc->pool);
       add_child(xc->curr,c,c->node_type);
+      props_add_prop(fp,"env","discourse",curr_xcl_discourse,ref,NULL,NULL,-1);
+      props_add_prop(fp,"env","field",curr_xcl_field,ref,NULL,NULL,-1);
       return c;
     }
 }
@@ -481,7 +491,7 @@ void
 xcl_add_discourse(struct xcl_context *xc, const char *discourse)
 {
   xcl_chunk(xc,NULL,xcl_c_discourse);
-  xc->curr->subtype = discourse;
+  curr_xcl_discourse = xc->curr->subtype = discourse;
   /*  xcl_chunk(xc,NULL,xcl_c_sentence); */
 }
 

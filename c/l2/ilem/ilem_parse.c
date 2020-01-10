@@ -131,9 +131,9 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
     }
   else
     {
-      struct xcl_l*lp = xcl_lemma(xc,NULL,master_formp->ref,NULL,NULL,0);
+      struct xcl_l*lp = xcl_lemma(xc,NULL,master_formp->ref,master_formp,NULL,0);
       lp->lnum = master_formp->lnum;
-      lp->f = master_formp;
+      /*lp->f = master_formp;*/ /*now done in xcl_lemma*/
       lp->inst = make_inst(xc,lp->f);
       phase = NULL;
       xi->x = lp;
@@ -205,7 +205,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
       if (!lem)
 	break;
 
-      lp = xcl_lemma(xc,NULL,master_formp->ref,NULL,NULL,0);
+      lp = xcl_lemma(xc,NULL,master_formp->ref,master_formp,NULL,0);
       lp->inst = master_formp->literal;
       lp->lnum = lnum;
       lp->ante_para = ilem_para_parse(xc, lem,&lem,master_formp->lnum, ilem_para_pos_ante);

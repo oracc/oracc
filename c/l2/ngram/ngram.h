@@ -104,6 +104,7 @@ struct NLE
   void *user;
   struct NL *owner;
   int deleted;
+  struct prop *props;
   struct NLE *next;
 };
 
@@ -139,6 +140,7 @@ struct CF
   const char *cf;
   struct f2 *f2;
   struct PRED **preds;
+  struct prop *props;
   struct NLE *owner;
 };
 
