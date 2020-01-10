@@ -7,6 +7,7 @@
 #include "links.h"
 #include "lang.h"
 #include "sigs.h"
+#include "props.h"
 
 int ng_debug = 0;
 static int ng_match_logging = 1;
@@ -25,7 +26,7 @@ static void add_match(struct xcl_l *matches, struct f2 **fmatches,
 		      void *user, int nmatches);
 static void add_wild_match(struct xcl_l *lp);
 static int check_predicates(struct f2 *p, struct CF *cfp);
-static struct f2 **match(struct CF *step, struct xcl_l *lp, int *nmatchesp);
+static struct f2 **match(struct CF *step, struct xcl_l *lp, int *nmatchesp, struct prop *p);
 static int match_nle(struct NLE *nle, union xcl_u *cl, int cl_index, int cl_max);
 static struct match *next_match(void);
 static struct NLE **nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes);
@@ -33,7 +34,8 @@ static int nle_cmp(struct NLE **a, struct NLE **b);
 static int try_match(int match_index, 
 		     struct CF**steps, int max_steps, int step_index,
 		     union xcl_u*cls, int cl_index, int cl_max,
-		     struct CF **tts, const char *psu, struct f2 *psu_form);
+		     struct CF **tts, const char *psu, struct f2 *psu_form,
+		     struct prop *props);
 static struct f2 **lnodes_of(struct ilem_form *ifp, int *nparsesp);
 static int psu_cofs_ok(void);
 
@@ -297,7 +299,8 @@ match_nle(struct NLE *nle, union xcl_u *cl, int cl_index, int cl_max)
 		   nle->cfs, nle->ncfs, 0,
 		   cl, cl_index, cl_max,
 		   nle->tts,
-		   nle->psu, nle->psu_form)
+		   nle->psu, nle->psu_form,
+		   nle->props)
     && psu_cofs_ok();
 }
 
@@ -420,7 +423,8 @@ static int
 try_match(int match_index, 
 	  struct CF**steps, int max_steps, int step_index,
 	  union xcl_u *cls, int cl_index, int cl_max,
-	  struct CF **tts, const char* psu, struct f2 *psu_form)
+	  struct CF **tts, const char* psu, struct f2 *psu_form,
+	  struct prop *p)
 {
   int wild_tries = 0;
 
@@ -447,7 +451,7 @@ try_match(int match_index,
     if (curr_l->f && BIT_ISSET(curr_l->f->instance_flags,F2_FLAGS_PSU_STOP))
       return 0;
 
-    matches = match(steps[step_index],curr_l,&nmatches);
+    matches = match(steps[step_index],curr_l,&nmatches,p);
     if (matches)
       {
 	add_match(curr_l, matches, tts ? tts[step_index] : NULL, psu, psu_form,
@@ -455,7 +459,7 @@ try_match(int match_index,
 	if (try_match(match_index+wild_tries+1,
 		      steps, max_steps, step_index+1,
 		      cls, cl_index+wild_tries+1, cl_max,
-		      tts, psu, psu_form))
+		      tts, psu, psu_form, p))
 	  return 1;
 	else
 	  {
@@ -517,8 +521,27 @@ add_wild_match(struct xcl_l *lp)
   mp->lp = lp;
 }
 
+static int
+match_props(struct prop *ilemp, struct prop *ngrmp)
+{
+  if (NULL == ilemp)
+    return 0;
+  while (ngrmp)
+    {
+      if (props_find_prop_sub(ilemp, ngrmp->name, ngrmp->value))
+	ngrmp = ngrmp->next;
+      else
+	{
+	  ngdebug("[props] failed on %s=%s", ngrmp->name, ngrmp->value);
+	  return 0;
+	}
+    }
+  ngdebug("[props] all prop tests passed OK");
+  return 1;
+}
+
 static struct f2 **
-match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
+match(struct CF *step, struct xcl_l *lp, int *nmatchesp, struct prop *props)
 {
   static struct f2 *matches[128]; /*FIXME: dynamic please*/
   int nmatches = 0, i, nparses;
@@ -533,9 +556,15 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp)
   ngdebug("[match] testing %d parses for match to %s",nparses,step->cf);
   for (i = 0; i < nparses; ++i)
     {
-      struct f2 *p = parses[i];
+      struct f2 *p = NULL;
+
+      if (props)
+	if (parses[i]->owner == NULL || !match_props(parses[i]->owner->props, props))
+	  continue;
+      
+      p = parses[i];
       if (step && (step->wild
-		   || (step->f2 && !step->f2->cf && step->f2->pos && !strcmp(step->f2->pos,(char*)p->pos))
+		   || (step->f2 && !step->f2->cf && step->f2->pos && !strcmp((const char*)step->f2->pos,(char*)p->pos))
 		   || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))
