@@ -183,8 +183,10 @@ props_dump_props_sub(struct prop *props, FILE *fp)
 	    fprintf(fp," ref=\"%s\"",p->ref);
 	  if (p->p)
 	    fprintf(fp," p=\"%s\"",p->p);
+#if 0
 	  if (p->xml_id)
 	    fprintf(fp," xml:id=\"%s\"",p->xml_id);
+#endif
 	  fputs("/>",fp);
 	}
       fputs("</props>",fp);

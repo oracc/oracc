@@ -13,9 +13,12 @@ open(GLO,"$where/$what-glo.log");
 while (<GLO>) {
     chomp;
     />>\s+(.*?)\s*$/;
-    $glo{$1} = $_;
+    my $x = $1; $x =~ s/\s+=>.*$//;
+    $glo{$x} = $_;
 }
 close(GLO);
+
+open(N,'>ngram.dump'); print N Dumper \%glo; close(N);
 
 open(LOG,"$where/$what-zero.log");
 while (<LOG>) {

@@ -791,7 +791,9 @@ sub psu_glo {
 			if ($pline) {
 			    $pline =~ s/\@parts\s+//;
 			    $pline =~ s/(\]\S*)\s+/$1\cA/g;
+			    $pline =~ s/\cAn\sn\s/\cAn\cAn\cA/g;
 			    $pline =~ s/\cAn\s/\cAn\cA/g;
+			    $pline =~ s/^n\s+/n\cA/g;
 			    my @nsf = ();
 			    foreach my $p (split(/\cA/,$pline)) {
 				$p =~ s#//.*?\]#]#;
@@ -1176,7 +1178,9 @@ validate_parts {
     $p =~ s/\s[\%\#\@\/\+]\S+/ /g;
     $p =~ s/\s+/ /g;
     $p =~ s/(\]\S*)\s+/$1\cA/g;
+    $p =~ s/\cAn\sn\s/\cAn\cAn\cA/g;
     $p =~ s/\cAn\s+/\cAn\cA/g;
+    $p =~ s/^n\s+/n\cA/g;
     my @parts = grep defined&&length, split(/\cA/,$p);
     my @ret = ();
     foreach my $pt (@parts) {

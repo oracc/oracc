@@ -1323,6 +1323,7 @@ render_parts {
 
     $pindex = 0;
     $cpd =~ s/^n\s/n[n]NU /g;
+    $cpd =~ s/\sn\sn\s/ n[n]NU n[n]NU /g;
     $cpd =~ s/\sn\s/ n[n]NU /g;
     $cpd =~ s/(\]\S+)\s+/$1\cA/g;
     push @ret, '<compound>';

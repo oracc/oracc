@@ -20,6 +20,9 @@ while (<>) {
     }
 }
 
+open(D,'>ngm-match-D.dump'); print D Dumper \%d; close(D);
+open(L,'>ngm-match-L.dump'); print L Dumper \%l; close(L);
+
 foreach my $f (keys %d) {
     unless (-r $f) {
 	warn "$0: unable to read collo file $f\n";
@@ -31,6 +34,9 @@ foreach my $f (keys %d) {
 	my $nfl = "$f:$l";
 	print "$l ";
 	if ($src[$l-1] eq $l{$nfl}) {
+	    if ($src[$l-1] =~ /eš₂-gar₃/) {
+		warn "detected eš₂-gar₃\n";
+	    }
 	    my $t = sprintf("%d\t", $#{${$d{$f}}{$l}}+1);
 	    $src[$l-1] =~ s/^/$t/;
 	} else {
