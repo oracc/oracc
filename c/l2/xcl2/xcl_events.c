@@ -336,6 +336,8 @@ xcl_discontinuity(struct xcl_context *xc, const char *ref, enum xcl_d_types t, c
   add_child(xc->curr, c, c->node_type);
   if (t == xcl_d_field_start)
     curr_xcl_field = c->subtype;
+  else if (t == xcl_d_field_end)
+    curr_xcl_field = NULL;
 }
 
 void

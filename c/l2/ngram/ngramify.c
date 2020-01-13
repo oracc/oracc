@@ -560,7 +560,10 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp, struct prop *props)
 
       if (props)
 	if (parses[i]->owner == NULL || !match_props(parses[i]->owner->props, props))
-	  continue;
+	  {
+	    ngdebug("[props]: failed prop test because NLE has props and parse has none");
+	    continue;
+	  }
       
       p = parses[i];
       if (step && (step->wild

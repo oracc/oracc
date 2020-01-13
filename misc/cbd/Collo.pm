@@ -18,6 +18,7 @@ use constant C_SENSE => 4;
 use constant C_SIG   => 5;
 use constant C_GOESTO=> 6;
 use constant C_STAR  => 7;
+use constant C_PROP  => 8;
 
 sub pp_collo {
     my ($args,$f,@cbd) = @_;
@@ -53,6 +54,7 @@ sub c_parent {
 
 sub c_expand {
     my($i,@cbd) = @_;
+    my $need_prop = 0;
     my @t = c_tokenize($cbd[$i]);
     if ($#t == 0 && ${$t[0]}[0] eq '-') {
 	pp_line($i+1);
@@ -115,9 +117,18 @@ sub c_expand {
 		# just replace the entire rhs with the remaining tokens
 		$r_mode = 1;
 		@r = ();
+		push @r, '' if $need_prop;
 	    } elsif ($$t[0] == C_STAR) {
 		push @l, '*';
 		push @r, '*';
+	    } elsif ($$t[0] == C_PROP) {
+		if ($#l >= 0) {
+		    pp_warn("\@collo \@-property only allowed at start of Left Hand Side");
+		} else {
+		    push @l, $$t[1];
+		    push @r, '';
+		    ++$need_prop;
+		}
 	    } elsif ($$t[0] == C_BAD) {
 		pp_line($i+1);
 		pp_warn("\@collo has unparseable token '$$t[1]'");
@@ -141,7 +152,9 @@ sub c_expand {
 	    my $l = "@l";
 	    my $r = "@r";
 	    if ($l && $r) {
-		"@l => @r";
+		my $s = "@l => @r";
+		$s =~ s/\s+/ /g;
+		$s;
 	    } else {
 		pp_line($i+1);
 		pp_warn("\@collo has empty side(s) '$l => $r'");		
@@ -172,6 +185,8 @@ sub c_tokenize {
 	    push @t, [ C_GOESTO, $1, $i ];
 	} elsif ($c =~ s/^\*\s+//) {
 	    push @t, [ C_STAR, '*', $i ];
+	} elsif ($c =~ s/^(\@\S+)\s+//) {
+	    push @t, [ C_PROP, $1, $i ];
 	} else {
 	    @t = ();
 	    push @t, [ C_BAD, $c, $i ];

@@ -14,6 +14,9 @@
 #include "npool.h"
 #include "xmlutil.h"
 #include "lang.h"
+#include "props.h"
+
+#define uxpool_copy(x,p) (const unsigned char*)npool_copy((unsigned char*)x,p)
 
 struct serializer_frame 
 {
@@ -257,7 +260,8 @@ lem_reset_form(const char *ref, const char *form)
    that is the job of ilem_parse */
 void
 lem_save_form(const char *ref, const char *lang, 
-	      const char *formstr, struct lang_context *langcon)
+	      const char *formstr, struct lang_context *langcon,
+	      const char *field)
 {
   struct ilem_form *form = mb_new(lemline_xcp->sigs->mb_ilem_forms);
   extern int curr_cell;
@@ -283,6 +287,18 @@ lem_save_form(const char *ref, const char *lang,
   form->lnum = lnum;
   form->lang = langcon;
 
+  if (field)
+    {
+      props_add_prop(form,
+		     uxpool_copy("env",lemline_xcp->pool),
+		     uxpool_copy("field",lemline_xcp->pool),
+		     uxpool_copy(field,lemline_xcp->pool),
+		     NULL,
+		     NULL,
+		     NULL,
+		     -1);
+    }
+  
   if (!ref[0])
     return;
 
@@ -352,13 +368,14 @@ lem_dynalem_lem(const char *lang, const char *formstr)
 
 void
 lem_save_form_dynalem(const char *ref, const char *lang, 
-		      const char *formstr, struct lang_context *langcon)
+		      const char *formstr, struct lang_context *langcon,
+		      const char *field)
 {
   if (ref && *ref && formstr)
     {
       const unsigned char *dynalem = NULL;
       struct xcl_ilem /*ilem_form*/ *form = NULL;
-      lem_save_form(ref, lang, formstr, langcon);
+      lem_save_form(ref, lang, formstr, langcon, field);
       dynalem = lem_dynalem_lem(lang, formstr); /* always returns at least 'u' or 'X' */
       form = hash_find(word_form_index, (const unsigned char *)ref);
       if (form)

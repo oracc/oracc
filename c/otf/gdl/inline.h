@@ -12,7 +12,8 @@ extern void reset_forms_insertp(void);
 extern void forms_init();
 extern void forms_term();
 extern void inline_functions(void (*lemm_save_form_arg)(const char *,const char*,
-							const char*,struct lang_context *),
+							const char*,struct lang_context *,
+							const char *field),
 			     void (*lemm_unform_arg)(void),
 			     void (*lemm_reset_form_arg)(const char *,const char *));
 extern void inline_init(void);

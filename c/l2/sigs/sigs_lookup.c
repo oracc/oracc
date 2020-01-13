@@ -221,6 +221,7 @@ setup_ilem_finds(struct sig_context *scp, struct ilem_form *ip,
       for (i = 0; i < count; ++i)
 	{
 	  ip->finds[i] = mb_new(scp->mb_ilem_forms);
+	  ip->finds[i]->props = ip->props;
 	  ip->finds[i]->f2.owner = ip->finds[i];
 	  f2_parse(sigs[i]->set ? sigs[i]->set->file : (const unsigned char *)"cache", 
 		   sigs[i]->lnum, 

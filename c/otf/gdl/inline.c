@@ -48,7 +48,8 @@ extern void set_or_append_attr(struct node *n, enum a_type atype, const char *an
 
 static void (*lemm_reset_form_p)(const char *ref, const char *form) = NULL;
 static void (*lemm_save_form_p)(const char *ref, const char *lang, 
-				const char *formstr,struct lang_context *) = NULL;
+				const char *formstr,struct lang_context *,
+				const char *field) = NULL;
 static void (*lemm_unform_p)(void) = NULL;
 
 static int logo_word_lang(struct node *wp, struct token *tp);
@@ -95,6 +96,7 @@ const char *curr_dialect = NULL /*"SB"*/;
 static struct node *surro_node;
 static struct node *prev_g = NULL; /* cleared after field/cell/line */
 static struct node *last_word = NULL;
+static const char *curr_field = NULL;
 static struct token *pending_ub = NULL;
 static struct token *word_tokp = NULL;
 static const unsigned char *curr_logolang;
@@ -396,7 +398,8 @@ inline_term()
 
 void
 inline_functions(void (*lemm_save_form_arg)(const char *,const char*,
-					    const char*,struct lang_context*),
+					    const char*,struct lang_context*,
+					    const char *field),
 		 void (*lemm_unform_arg)(void),
 		 void (*lemm_reset_form_arg)(const char *,const char *))
 {
@@ -477,6 +480,7 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   tlit_reinit_inline(with_word_list);
   tokenize_reinit();
   nfields = 0;
+  curr_field = NULL;
 
 #if 0
   if (text_lang)
@@ -634,6 +638,7 @@ process_fields(struct node *parent, int start, int end, unsigned char *line_id)
 	    w_sparse_lem = 1;
 	  else
 	    w_sparse_lem = 0;
+	  curr_field = (const char *)tokens[start]->data;
 	  cp->data = (unsigned char*)strdup(tokens[start]->data);
 	  appendAttr(cp,attr(a_type,ucc(tokens[start++]->data)));
 	}
@@ -641,6 +646,7 @@ process_fields(struct node *parent, int start, int end, unsigned char *line_id)
 	{
 	  appendAttr(cp,attr(a_type,default_ftype));
 	  cp->data = default_ftype;
+	  curr_field = NULL;
 	}
       next_field = nextfield(start);
       if (!next_field)
@@ -2484,7 +2490,8 @@ finish_word(struct node *wp)
 	(*lemm_save_form_p)((const char*)getAttr(wp,"xml:id"),
 			    (const char *)getAttr(wp,"xml:lang"),
 			    (in_split_word<=1)?(const char *)form:"-",
-			    word_tokp ? word_tokp->lang : NULL);
+			    word_tokp ? word_tokp->lang : NULL,
+			    curr_field);
     }
   else
     {

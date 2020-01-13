@@ -87,8 +87,10 @@ props_dump_props(struct ilem_form *f, FILE *fp)
 	    fprintf(fp," ref=\"%s\"",p->ref);
 	  if (p->p)
 	    fprintf(fp," p=\"%s\"",p->p);
+#if 0
 	  if (p->xml_id)
 	    fprintf(fp," xml:id=\"%s\"",p->xml_id);
+#endif
 	  fputs("/>",fp);
 	}
       fputs("</props>",fp);
@@ -98,12 +100,16 @@ props_dump_props(struct ilem_form *f, FILE *fp)
 struct prop*
 props_find_prop(struct ilem_form *f, const unsigned char *name, const unsigned char *value)
 {
+#if 1
+  return props_find_prop_sub(f->props, name, value);
+#else
   struct prop *p = NULL;
   for (p = f->props; p; p = p->next)
     if (!xstrcmp(p->name,name) 
 	&& (!value || !p->value || (!value || !xstrcmp(p->value,value))))
       return p;
   return NULL;
+#endif
 }
 
 struct prop*
@@ -196,9 +202,11 @@ props_dump_props_sub(struct prop *props, FILE *fp)
 struct prop*
 props_find_prop_sub(struct prop * p, const unsigned char *name, const unsigned char *value)
 {
+  if (!p || !name)
+    return NULL;
   for (; p; p = p->next)
     if (!xstrcmp(p->name,name) 
-	&& (!value || !p->value || (!value || !xstrcmp(p->value,value))))
+	&& ((!value && !p->value) || (value && p->value && !xstrcmp(p->value,value))))
       return p;
   return NULL;
 }
@@ -207,7 +215,7 @@ struct prop*
 props_find_prop_group_sub(struct prop *p, const unsigned char *group)
 {
   for (; p; p = p->next)
-    if (p->group && !xstrcmp(p->group,group))
+    if (group && p->group && !xstrcmp(p->group,group))
       return p;
   return NULL;
 }
