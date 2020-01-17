@@ -364,6 +364,8 @@ process_text(struct run_context *run, unsigned char **lines)
 
 	      xcl_map(text_xc,xcl_sentence_labels,NULL,NULL,NULL);
 
+	      ngram_obey_lines = 0;
+	      
 	      /* PSU matching must take place while the lists of
 		 candidate matches are still available to prevent
 		 match-failures or mismatches like mar shipri

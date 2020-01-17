@@ -451,7 +451,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	     that starts with a field char */
 
 	pos_parse:
-	  if (isupper(*lp) || '\'' == *lp)
+	  if (isupper(*lp) || '\'' == *lp || 'n' == *lp)
 	    {
 	      f2p->pos = lp;
 	      if (*lp == 'V' && '/' == lp[1] && (lp[2] == 't' || lp[2] == 'i'))

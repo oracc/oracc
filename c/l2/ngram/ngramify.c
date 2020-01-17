@@ -14,6 +14,8 @@ static int ng_match_logging = 1;
 int ngramify_per_lang = 0;
 int ngramify_disambiguating = 0;
 
+int ngram_obey_lines = 0;
+
 static FILE *ng_match_log = NULL;
 
 extern int verbose;
@@ -448,7 +450,8 @@ try_match(int match_index,
     else
       curr_l = cls[cl_index+wild_tries].l;
 
-    if (curr_l->f && BIT_ISSET(curr_l->f->instance_flags,F2_FLAGS_PSU_STOP))
+    /* Don't use PSU_STOP for the first item in an NLE */
+    if (curr_l->f && step_index && BIT_ISSET(curr_l->f->instance_flags,F2_FLAGS_PSU_STOP))
       return 0;
 
     matches = match(steps[step_index],curr_l,&nmatches,p);

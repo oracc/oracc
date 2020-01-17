@@ -124,10 +124,12 @@ sigs_cache_find(struct sigset *sp, struct ilem_form *fp)
 }
 #endif
 
+extern int lem_dynalem;
+
 static struct sig const * const *
 sigs_cache_lookup(struct xcl_context *xcp, struct ilem_form *ifp, struct sigset *sp, int *nfinds)
 {
-  if (sp->cache)
+  if (!lem_dynalem && sp->cache)
     return sigs_inst_in_sigset(xcp, ifp, sp->cache, nfinds);
   else
     return NULL;

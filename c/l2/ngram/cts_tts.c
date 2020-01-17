@@ -4,6 +4,7 @@
 #include "memblock.h"
 #include "ngram.h"
 #include "props.h"
+#include "warning.h"
 
 static char *
 parse_angled_preds(struct CF *cfp, int tts_mode, char *s)
@@ -220,6 +221,11 @@ nl_parse_cts(char *line, char *end, struct NLE *nlep, int tts_mode)
       else if (*s == ';')
 	{
 	  cfp->clear = 1;
+	  ++s;
+	}
+      else if (tts_mode && *s == ':')
+	{
+	  vwarning2(nl_file, nl_lnum, "%s: syntax error in RHS (did you mean ';')",line);
 	  ++s;
 	}
 

@@ -220,7 +220,7 @@ ox_options(int argc, char **argv)
 	  break;
 	case '5':
 	  lem_dynalem_tab = optarg;
-	  lem_dynalem = do_cdl = perform_lem = need_lemm = 1;
+	  ngram_obey_lines = lem_dynalem = do_cdl = perform_lem = need_lemm = 1;
 	  no_destfile = 1;
 	  break;
 	case '6':

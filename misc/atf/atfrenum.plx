@@ -19,7 +19,6 @@ my $block = 0;
 my $default_renumber = 0;
 my $number = 0;
 my $primes = '';
-my $verbose = 0;
 
 GetOptions(
     'all'=>\$all,

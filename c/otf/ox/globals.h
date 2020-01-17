@@ -33,6 +33,7 @@ extern int gdl_bootstrap;
 extern int line_is_unit;
 extern int lnum;
 extern int need_lemm;
+extern int ngram_obey_lines;
 extern int no_destfile;
 extern int no_gdl_xids;
 extern int no_pi;

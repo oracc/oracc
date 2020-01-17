@@ -5,9 +5,7 @@ include ../../../oracc-am-rules.txt
 AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
 bin_PROGRAMS=ox gdlme2
-noinst_PROGRAMS=prj tok
-
-#f2test
+noinst_PROGRAMS=prj tok f2test
 
 ox_SOURCES = \
 	atffile.c help.c initterm.c odt_writer.c options.c \

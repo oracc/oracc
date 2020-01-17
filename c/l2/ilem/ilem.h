@@ -10,7 +10,7 @@ extern int lem_do_wrapup;
 
 typedef int select_func(struct ilem_form *, void *, void *);
 
-extern void ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp);
+extern void ilem_parse(struct xcl_context *xc, struct ilem_form *master_formp, int first_word);
 extern void ilem_harvest_notices(struct xcl_context *xcp, struct xcl_l *lp);
 extern void ilem_inherit(struct ilem_form*inheritor, struct ilem_form *from);
 extern void ilem_lnode(struct xcl_context *,struct xcl_l*);

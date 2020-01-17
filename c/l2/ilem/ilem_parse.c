@@ -17,6 +17,7 @@
 #include "props.h"
 
 extern int bootstrap_mode;
+extern int ngram_obey_lines;
 
 #define cc(s) ((const char *)s)
 #define uc(s) ((unsigned char *)s)
@@ -90,7 +91,7 @@ check_cf(const char *f, size_t lnum, const char *cf)
    calling and pass the result as form arg if non-NULL; NULL arg means
    form is embedded in lemma */
 void
-ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
+ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_word)
 {
   unsigned char *lem;
   int newflag = 0;
@@ -306,6 +307,9 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi)
 		}
 	    }
 
+	  if (first_word && ngram_obey_lines)
+	    BIT_SET(iflags, F2_FLAGS_PSU_STOP);
+	  
 	  if (bootstrap_mode && !BIT_ISSET(iflags, F2_FLAGS_LEM_NEW))
 	    BIT_SET(iflags, F2_FLAGS_LEM_NEW);
 

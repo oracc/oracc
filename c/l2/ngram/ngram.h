@@ -215,7 +215,7 @@ extern void nlcp_rewrite(struct xcl_context *xcp, struct ML *mp);
 
 extern const char *nl_file;
 extern FILE *f_log;
-extern int ng_debug, nl_lnum, ngramify_per_lang;
+extern int ng_debug, nl_lnum, ngramify_per_lang, ngram_obey_lines;
 extern const char *file;
 struct NL_context *nl_load(struct NL_context*nlcp, const char *fname,
 			   enum nlcp_actions act, const char *lang);

@@ -7,8 +7,8 @@ binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 # it doesn't consider the context of brackets.
 
 while (<>) {
-    unless (/^\#lem:/) {
-	tr/[]<>#*?!//d;
+    unless (/\#lem:/) {
+	tr/[]<>#*?!\;//d;
     }
     print;
 }

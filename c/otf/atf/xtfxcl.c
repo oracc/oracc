@@ -68,6 +68,8 @@ process(struct xcl_context *xc, struct node*n)
   int saved_exit_status = exit_status;
   static struct xcl_c *atpt_cell = NULL;
   static struct xcl_c *atpt_field = NULL;
+  static int first_word = 0;
+
   /* fprintf(stderr, "xtfxcl: process invoked\n"); */
   if (*n->type == 'e')
     {
@@ -112,15 +114,18 @@ process(struct xcl_context *xc, struct node*n)
 	    xcl_insert_ub(xc, 0, xcl_c_sentence, 0);
 	  xcl_fix_context(xc,NULL);
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_line_start, NULL);
+	  first_word = 1;
 	  break;
 	case e_g_w:
 	case e_n_w:
 	  xcl_fix_context(xc,NULL);
 	  xid = getAttr(n,"xml:id");
-	  ilem_parse(xc, hash_find(word_form_index, xid));
+	  ilem_parse(xc, hash_find(word_form_index, xid), first_word);
+	  first_word = 0;
 	  break;
 	case e_g_nonw:
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonw, NULL);
+	  first_word = 0;
 	  break;
 	case e_nonx:
 	  xcl_discontinuity(xc, (const char *)getAttr(n,"xml:id"), xcl_d_nonx, NULL);
