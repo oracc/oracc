@@ -315,7 +315,9 @@ process_text(struct run_context *run, unsigned char **lines)
 	}
 
       if (do_cdl)
-	text_xc = xcl_process(run, text);
+	{
+	  text_xc = xcl_process(run, text);
+	}
 
       if (do_show_insts)
 	{
@@ -352,7 +354,9 @@ process_text(struct run_context *run, unsigned char **lines)
 		sig_check(text_xc);
 
 	      if ((lem_autolem || lem_dynalem) && !lem_forms_raw)
-		collos(text_xc);
+		{
+		  collos(text_xc);
+		}
 
 	      if ((lem_autolem || lem_dynalem) && !lem_forms_raw)
 		bigrams(text_xc);
@@ -364,7 +368,6 @@ process_text(struct run_context *run, unsigned char **lines)
 
 	      xcl_map(text_xc,xcl_sentence_labels,NULL,NULL,NULL);
 
-	      ngram_obey_lines = 0;
 	      
 	      /* PSU matching must take place while the lists of
 		 candidate matches are still available to prevent

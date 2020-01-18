@@ -97,6 +97,8 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
   int newflag = 0;
   extern const char *phase;
   unsigned char *lemma = NULL;
+  extern int lem_dynalem;
+  
 #define LANGBUF_LEN 32
   char langbuf[LANGBUF_LEN+1];
 
@@ -307,7 +309,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
 		}
 	    }
 
-	  if (first_word && ngram_obey_lines)
+	  if (first_word && lem_dynalem)
 	    BIT_SET(iflags, F2_FLAGS_PSU_STOP);
 	  
 	  if (bootstrap_mode && !BIT_ISSET(iflags, F2_FLAGS_LEM_NEW))
