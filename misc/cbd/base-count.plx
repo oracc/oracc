@@ -14,6 +14,7 @@ my $ninst = 0;
 my $line_one = <>;
 if ($line_one =~ /^\@fields/) {
     while (<>) {
+	next if /^\s*$/;
 	s/\t(.*)$//;
 	my $inst = $1; $ninst = ($inst =~ tr/ / /) + 1;
 	chomp;
