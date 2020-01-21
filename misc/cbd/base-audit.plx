@@ -50,6 +50,8 @@ bases_term();
 
 summary();
 
+warn "$0: audit results written to 00etc/base-audit.tab\n";
+
 close(L);
 
 #############################################################################
@@ -84,7 +86,7 @@ sub audit {
 	++$fit_counts[$info{'fit'}];
 	++$fit_zeroes[$info{'fit'}] unless $info{'count'};
 	
-	$fit_max = $info{'fit'} if $info{'fit'} > $fit_max;
+	$fit_max = $info{'fit'} if $info{'fit'} > $fit_max && $info{'fit'} < 9;
 	$info{'type'} = base_type($cf,$b);
 	push @i, { %info };
     }
@@ -99,9 +101,11 @@ sub summary {
     print "=summary\n";
     for (my $i = 0; $i <= $fit_max; ++$i) {
 	if (defined $fit_counts[$i]) {
-	    print "$fit_counts[$i] fits at level $i \[$fit_zeroes[$i] are unattested]\n";
+	    $fit_zeroes[$i] = 0 unless $fit_zeroes[$i];
+	    print "$fit_counts[$i] fits at level $i \[$fit_zeroes[$i] unattested]\n";
 	}
     }
+    print "$fit_counts[9] fit failures \[$fit_zeroes[9] unattested]\n";
 }
 
 sub mangle {
@@ -147,6 +151,7 @@ sub base_fit {
     }
     ++$fit;
 
+    $fit = 9;
     ($b,$fit);
 }
 
