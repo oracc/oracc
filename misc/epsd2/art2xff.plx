@@ -100,7 +100,7 @@ dump_xff {
 	    foreach my $f (@fields) {
 		my $v = ${$sig{'parsed'}}{$f} || undef;
 		if ($f eq 'base') {
-		    if ($v) {
+		    if ($v && ref($v) eq 'ARRAY') {
 			$$v[0] =~ s/^\%.*?://;
 			$$v[0] =~ s/\s+\%.*?:/ /;
 		    }
@@ -108,7 +108,11 @@ dump_xff {
 		if (ref($v) eq 'ARRAY') {
 		    print "<$f n=\"$$v[0]\" icount=\"$$v[1]\" ipct=\"$$v[2]\" xis=\"$$v[3]\"/>";
 		} else {
-		    print "<$f/>";
+		    if ($v) {
+			print "<$f n=\"$v\"/>";
+		    } else {
+			print "<$f/>";
+		    }
 		}
 	    }
 	    print '</sig>';
