@@ -187,13 +187,13 @@ sub base_fit {
 
     return ($b,$fit) if ${$redup{$cfgw_spaced}}{$b};
 
-    $fit = 1;
+    $fit = 2;
     $b = mangle($b);
     1 while $b =~ s/([a-z])\1/$1/;
 
     return ($b,$fit) if $b eq $c;
 
-    $fit = 2;
+    $fit = 3;
     my $bq = quotemeta($b);
     if ($c =~ /^$bq(.+)$/) {
 	my $rest = $1;
@@ -201,14 +201,14 @@ sub base_fit {
 	return($b,$fit);	    
     }
     
-    $fit = 3;
+    $fit = 4;
     if ($c =~ /k$/) {
 	my $tmp = $c;
 	$tmp =~ s/k$//;
 	return ($b,$fit) if $b eq $tmp;
     }
 
-    $fit = 4;
+    $fit = 5;
     my $stemmed_c = stem($c);
     my $stemmed_b = stem($b);
 
@@ -219,7 +219,7 @@ sub base_fit {
 	print SLOG "$c > $stemmed_c !== $b > $stemmed_b\n";	
     }
 
-    $fit = 5;
+    $fit = 6;
     my $soundex_c = soundex1($c);
     my $soundex_b = soundex1($b);
 
@@ -251,7 +251,7 @@ sub base_fit {
 	}
     }
 
-    ++$fit;
+    $fit = 7;
     $stemmed_c = stem($soundex_c);
     $stemmed_b = stem($soundex_b);
 
@@ -262,7 +262,7 @@ sub base_fit {
 	print SLOG "$c > $stemmed_c !== $b > $stemmed_b\n";	
     }
 
-    ++$fit;
+    $fit = 8;
     if (redup($c,$b)) {
 	return ($b,$fit);
     }

@@ -50,6 +50,12 @@ redup {
 	}
 	unless ($solved{$i}) {
 	    if ($s[$i] =~ /^(.*?)-\1$/) {
+		print "$curr_cfgw\t$s[$i] *RR* $1\n";
+		++$solved{$i};
+	    } elsif ($s[$i] =~ /^.*?-(.*?)-\1$/) {
+		print "$curr_cfgw\t$s[$i] RR* $1\n";
+		++$solved{$i};
+	    } elsif ($s[$i] =~ /^(.*?)-\1-$/) {
 		print "$curr_cfgw\t$s[$i] *RR $1\n";
 		++$solved{$i};
 	    }
