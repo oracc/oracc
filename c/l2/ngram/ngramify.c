@@ -569,9 +569,11 @@ match(struct CF *step, struct xcl_l *lp, int *nmatchesp, struct prop *props)
 	  }
       
       p = parses[i];
-      if (step && (step->wild
-		   || (step->f2 && !step->f2->cf && step->f2->pos && !strcmp((const char*)step->f2->pos,(char*)p->pos))
-		   || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
+      if ((step && p)
+	  && (step->wild
+	      || (step->f2 && !step->f2->cf && step->f2->pos && p->pos
+		  && !strcmp((const char*)step->f2->pos,(char*)p->pos))
+	      || (step->cf && p->cf && !strcmp(step->cf,(char*)p->cf))))
 	{
 	  if (check_predicates(p,step))
 	    {

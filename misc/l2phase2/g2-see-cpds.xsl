@@ -11,8 +11,8 @@
   exclude-result-prefixes="c g s">
 
 <xsl:key name="enam" match="c:entry" use="@n"/>
-<xsl:key name="xcpd" match="c:cpd" use="@eref"/>
-<xsl:key name="xsig" match="c:cpd" use="@esig"/>
+<xsl:key name="xcpd" match="c:cpd" use="@ref"/>
+<xsl:key name="xsig" match="c:cpd" use="@partsig"/>
 
 <xsl:template match="c:entry/c:pos">
   <xsl:copy>
