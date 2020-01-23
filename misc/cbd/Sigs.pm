@@ -379,9 +379,9 @@ sub sigs_simple {
 			my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
 			foreach my $b (split(/\s+/, $current_first_base)) {
 			    my $f = $b; $f =~ tr/·°//d;
-			    my $instsig1 = "\@$project\%$lng:$b=";
+			    my $instsig1 = "\@$project\%$lng:$f=";
 			    my $xsig = "\$$sig{'cf'}/$b#~";
-			    ++$noprintsigs{ "$instsig1$coresig/$b\t0\n" };
+			    ++$noprintsigs{ "$instsig1$coresig/$f\t0\n" };
 			    $printsigs{ "$instsig1$coresig$xsig\t0\n" } = ++$sigorder;
 			}
 		    }
