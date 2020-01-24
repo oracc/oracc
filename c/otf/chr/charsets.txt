@@ -387,12 +387,15 @@ T, Ṭ
 @end chars
 
 #This is a fake charset for search engine keys
+#
+# removed because we never search for Ŋ but we do search for ASJ and JCS
+#J  Ŋ
+#
 @chars %qse/n
 @allow aāâbcdeēêfgŋhḫiīîjklmnopqrsṣśštṭuūûvwxyzʾ'AĀÂBCDEĒÊFGŊHḪIĪÎJKLMNOPQRSṢŚŠTṬUŪÛVWXYZ-?`<>[]*0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙ;,:₀₁₂₃₄₅₆₇₈₉ₓ|
 @nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°
 @trans
 j  ŋ
-J  Ŋ
 s, ṣ
 s' ś
 sz š

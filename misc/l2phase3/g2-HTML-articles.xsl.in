@@ -267,6 +267,16 @@
   
   <xsl:apply-templates select="cbd:bib"/>
 
+  <xsl:if test="starts-with(/*/@project, 'epsd2')">
+    <div class="purl">
+      <p><xsl:text>ID=http://oracc.org/</xsl:text>
+      <xsl:value-of select="concat(/*/@project,'/',@oid)"/><xsl:text></xsl:text></p>
+      <xsl:if test="starts-with(/*/@project, 'epsd2/')">
+	<p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article</a></p>
+      </xsl:if>
+    </div>
+  </xsl:if>
+    
 <!--
 
  THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
