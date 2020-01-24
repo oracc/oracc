@@ -498,6 +498,7 @@ p3srch {
 	if ($rt{'#index'} =~ /^cbd/) {
 	    # With OIDs we want to keep results in document order of summaries.html and uniq'ing works in ce2
 	    # xsystem('sort', '-o', "$p{'tmpdir'}/results.lst", '-u', "$p{'tmpdir'}/results.lst");
+	    xsystem("$oraccbin/oiduniq.plx", "$p{'tmpdir'}/results.lst");
 	    my $ncount = `wc -l $p{'tmpdir'}/results.lst`;
 	    chomp($ncount);
 	    $ncount =~ s/^.*?(\d+).*$/$1/;
