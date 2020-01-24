@@ -45,6 +45,7 @@
       <xsl:value-of select="@periods"/><xsl:text> </xsl:text>
       <xsl:apply-templates select="cbd:base|cbd:mng|cbd:term"/>
     </span>
+    <span class="purl"><xsl:text>(ID=http://oracc.org/</xsl:text><xsl:value-of select="@oid"/><xsl:text>)</xsl:text></span>
   </p>
 </xsl:template>
 

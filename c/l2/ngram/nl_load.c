@@ -164,10 +164,12 @@ parse_ngram_line(struct NL*nlp, const char *line, int ngram_index,
   /*char *cts_save = NULL;*/
   /*int cts_len = 0;*/
 
+#if 0
   if (!strncmp(line, "n ", 2))
     {
       fprintf(stderr, "found 'n '\n");
     }
+#endif
   
   nlep->file = nl_file;
   nlep->lnum = nl_lnum;

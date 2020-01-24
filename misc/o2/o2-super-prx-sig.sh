@@ -33,6 +33,10 @@ echo "o2-super-prep.sh: creating 01bld/from-prx-glo.sig"
 echo "@fields sig inst" >01bld/from-prx-glo.sig
 grep -h -v '@\(project\|lang\|name\|fields\)' 01sig/*.sig | perl -p -e "s#^\@.*?\%#\@$project%#" >>01bld/from-prx-glo.sig
 
+if [ -r 00lib/NN-simple.sig ]; then
+    l2p1-remap-sigs.plx 01bld/from-prx-glo.sig 00lib/NN-simple.sig
+fi
+
 # create lemm-sux.sig based on the original glossary so it has all the instances
 # possible in its statistics but it isn't contaminated by forms only inducted via
 # superdyn, 
