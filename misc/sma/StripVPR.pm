@@ -11,6 +11,8 @@ use ORACC::SMA::VPR;
 use ORACC::SMA::VSF;
 use ORACC::SMA::NSF;
 
+$ORACC::SMA::StripVPR::prefix = '';
+
 sub
 strip_vpr {
     my @g = @_;
@@ -29,6 +31,7 @@ strip_vpr {
 
     if ($vpr_end > 0) {
 	# take the following graphemes as a verb root
+	$ORACC::SMA::StripVPR::prefix = join('-',@g[0..$vpr_end-1]);
 	return join('-',@g[$vpr_end..$#g]);
     } else {
 	return undef;

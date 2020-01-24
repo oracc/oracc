@@ -164,6 +164,11 @@ parse_ngram_line(struct NL*nlp, const char *line, int ngram_index,
   /*char *cts_save = NULL;*/
   /*int cts_len = 0;*/
 
+  if (!strncmp(line, "n ", 2))
+    {
+      fprintf(stderr, "found 'n '\n");
+    }
+  
   nlep->file = nl_file;
   nlep->lnum = nl_lnum;
   nlep->owner = nlp;
@@ -328,7 +333,7 @@ nl_load_file(struct sigset *sp,
   char **ngram_lines;
   const char *n = NULL;
   unsigned char *fmem;
-  size_t nlines, i, nngrams, init_line = 0;
+  size_t nlines, i, init_line = 0;
   struct NL *nlp = NULL;
 
   if (!fname)
@@ -341,21 +346,21 @@ nl_load_file(struct sigset *sp,
   nlp->file = fname;
   n = strrchr(fname, '/');
   if (n)
-    nlp->name = strdup(n+1);
+    nlp->name = xstrdup(n+1);
   else
-    nlp->name = strdup(fname);
+    nlp->name = xstrdup(fname);
   ngdebug("input file=%s", fname);
-  nl_set_location(strdup(fname),1);
+  nl_set_location(xstrdup(fname),1);
   ngram_lines = (char**)loadfile_lines3((unsigned char *)fname,&nlines,&fmem);
   if (ngram_lines[0] && !strncmp(ngram_lines[0], "@role",strlen("@role")))
     {
       char *tmp = ngram_lines[0] + strlen("@role");
       while (*tmp && isspace(*tmp))
 	++tmp;
-      nlcp->role = strdup(tmp);
+      nlcp->role = xstrdup(tmp);
       ++init_line;
     }
-  for (nngrams = i = init_line; i < nlines; ++i)
+  for (i = init_line; i < nlines; ++i)
     {
       if (ngram_lines[i] && *ngram_lines[i])
 	nl_process_one_line(nlp, ngram_lines[i], NULL);

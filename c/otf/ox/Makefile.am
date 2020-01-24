@@ -33,6 +33,8 @@ xLDADD = \
 	../prj/libprj.la \
 	../run/librun.la \
 	@top_srcdir@/c/l2/libl2.la \
+	../chr/libchr.la \
+	../lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la
 
 ox_LDADD = $(xLDADD)
