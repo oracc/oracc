@@ -262,6 +262,7 @@ body.xffeditform {padding: 0px; margin-top: 0px; margin-bottom: 0px;
 		margin-left: auto; margin-right: auto; width: 96% }
 body.xffeditform form {padding: 0px; margin: 0px}
 
+h2.xff { text-align: center; }
 
 div.unisearch { height: 100%; width: 100%; text-align: center; vertical-align: middle; 
 	margin-top: auto; margin-bottom: auto; padding: 0; 

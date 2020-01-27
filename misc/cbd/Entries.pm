@@ -131,6 +131,8 @@ sub entries_align {
 		} else {
 		    warn "$0: internal error: cbd[$i] is not an \@entry line\n";
 		}
+	    } elsif ($cfgwpos eq 'n') {
+		# do nothing
 	    } else {
 		pp_line($l);
 		pp_warn("parts entry $p (looked for as $cfgwpos) is not in glossary");
@@ -141,9 +143,13 @@ sub entries_align {
 }
 
 sub split_parts {
+#    warn "entries split parts\n";
     my $p = shift;
     $p =~ s/^\@parts\S*\s+//;
-    $p =~ s/(\]\S+)\s+/$1\cA/g;
+    $p =~ s/(\]\S*)\s+/$1\cA/g;
+    $p =~ s/\cAn\sn\s/\cAn\cAn\cA/g;
+    $p =~ s/\cAn\s/\cAn\cA/g;
+    $p =~ s/^n\s+/n\cA/g;
     split(/\cA/, $p);
 }
 

@@ -56,7 +56,7 @@
 
 <xsl:template match="xff:sigs">
   <xsl:variable name="forms" select="."/>
-<!--  <h1 class="xff">ePSD Forms: <xsl:value-of select="@formset"/></h1> -->
+  <h2 class="xff">ePSD Forms: <xsl:value-of select="@formset"/> (<xsl:value-of select="@eid"/>)</h2>
   <div class="xff">
   <table class="xff">
     <tr>

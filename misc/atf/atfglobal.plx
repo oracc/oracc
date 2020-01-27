@@ -144,7 +144,7 @@ load_table {
     while (<T>) {
 	next if /^\#/ || /^\s*$/;
 	my($when,$from,$to) = (/^(\S+)\t+(.*?)\t+(.*)$/);
-	die "$0:$.: bad syntax\n" unless $when && $from && $to;
+	die "$t:$.: bad syntax\n" unless $when && $from && $to;
 	$edits{$e} = { when=>$when, 
 			 from=>$from,
 			 to=>$to,
