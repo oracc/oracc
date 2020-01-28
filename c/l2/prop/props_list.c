@@ -205,7 +205,7 @@ props_find_prop_sub(struct prop * p, const unsigned char *name, const unsigned c
   if (!p || !name)
     return NULL;
   for (; p; p = p->next)
-    if (!xstrcmp(p->name,name) 
+    if (p->name && name && !xstrcmp(p->name,name) 
 	&& ((!value && !p->value) || (value && p->value && !xstrcmp(p->value,value))))
       return p;
   return NULL;

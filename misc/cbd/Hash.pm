@@ -331,7 +331,7 @@ sub pp_acd_merge {
 		# parse_xxx routines, but they are not done yet ...
 		my %known = ();
 		my %sknown = ();
-
+		
 		if ($$$f{'rws_cfs'}) {
 		    my %r = ();
 #		    print STDERR "(0) r at start= ", Dumper(\%r);
@@ -377,6 +377,7 @@ sub pp_acd_merge {
 		foreach my $l (@{$$$f{$fld}}) {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
+		    $tmp =~ s/^\!\s*//;
 		    $tmp =~ s/\s+/ /g;
 		    $tmp =~ s/\s*$//;
 		    if ($fld eq 'bases') {

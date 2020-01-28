@@ -1349,7 +1349,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      l = tokenize_alphabetic(l, &g, &following, &t);
 	      if (g)
 		{
-		  if (l - g > 0 && 0xc2 != g[0] && 0xb7 != g[1])
+		  if (l - g > 0 && (0xc2 != g[0] || 0xb7 != g[1]))
 		    {
 		      unsigned char save = *following;
 		      unsigned char *res = NULL;
@@ -1377,7 +1377,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 			    && (('\0' == g[1]
 				 || isspace(g[1])
 				 || (g[1] > 128 || !isalnum(g[1])))))
-			   || (*g == 0xc2 && g[1] == 0xb7 && (!g[2] || isspace(g[2]))))
+			   || ((*g == 0xc2 && g[1] == 0xb7) && (!g[2] || isspace(g[2]))))
 		    {
 		      struct token *puncttok = NULL;
 		      char gbuf[3];
