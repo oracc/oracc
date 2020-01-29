@@ -296,10 +296,16 @@
 
     <xsl:if test="starts-with(/*/@project, 'epsd2')">
       <div class="purl">
-	<p><xsl:text>ID=http://oracc.org/</xsl:text>
-	<xsl:value-of select="concat(/*/@project,'/',@oid)"/><xsl:text>)</xsl:text></p>
+	<p><xsl:text>Word ID: </xsl:text><xsl:value-of select="@oid"/>
+	<xsl:text>; Citation URL: http://oracc.org/</xsl:text>
+	<xsl:value-of select="concat(/*/@project,'/',@oid)"/>
+	<xsl:if test="/*/@version">
+	  <xsl:text>; version </xsl:text><xsl:value-of select="/*/@version"/>
+	  <xsl:text> (built </xsl:text><xsl:value-of select="/*/@date"/><xsl:text>)</xsl:text>
+	</xsl:if>
+	</p>
 	<xsl:if test="starts-with(/*/@project, 'epsd2/')">
-	  <p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article</a></p>
+	  <p><a href="http://oracc.org/epsd2/{@oid}">Link to full ePSD2 article</a></p>
 	</xsl:if>
       </div>
     </xsl:if>

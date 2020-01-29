@@ -211,7 +211,7 @@ xmdprinter2(const char *pq)
       else
 	in_group = 1;
       fputs("<ce:group>", stdout);
-      fprintf(stdout, "<ce:heading>%s</ce:heading>", ++pq);
+      fprintf(stdout, "<ce:heading>%s</ce:heading>", xmlify((unsigned char *)++pq));
     }
   else
     {
@@ -277,7 +277,7 @@ xmdprinter2(const char *pq)
       fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s/%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, id, icon, id, icon_alt);
 #else
       /* fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/%s\" alt=\"%s in %s\"/></a></td>", url_base, icon, id, icon_alt); */
-      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/viewtext.png\" alt=\"View text\"/></a></td>", url_base, icon, id, icon_alt);
+      fprintf(stdout, "<td class=\"ce-xmd-icon\"><a href=\"%s\"><img src=\"/img/viewtext.png\" alt=\"View text\"/></a></td>", url_base);
 #endif
       for (i = 0; width_specs[i]; ++i)
 	{
@@ -315,16 +315,16 @@ xmdprinter2(const char *pq)
 	  if (p3)
 	    {
 	      if (this_is_designation || i < link_fields)
-		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:p3item('xtf',%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:p3item('xtf',%d)\">%s</a></td>", pct, item_offset+nth, xmlify((unsigned char *)value));
 	      else
-		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify((unsigned char *)value));
 	    }
 	  else
 	    {
 	      if (this_is_designation || i < link_fields)
-		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify(value));
+		fprintf(stdout, "<td style=\"width: %s\"><a href=\"javascript:itemView(%d)\">%s</a></td>", pct, item_offset+nth, xmlify((unsigned char *)value));
 	      else
-		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify(value));
+		fprintf(stdout, "<td style=\"width: %s;\">%s</td>", pct, xmlify((unsigned char *)value));
 	    }
 	}
       fputs("</tr></ce:data>",stdout);

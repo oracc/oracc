@@ -34,6 +34,8 @@
     <xsl:copy-of select="@n"/>
     <xsl:copy-of select="@name"/>
     <xsl:copy-of select="@project"/>
+    <xsl:copy-of select="@version"/>
+    <xsl:copy-of select="@date"/>
     <xsl:attribute name="dc:title">
       <xsl:value-of select="concat(@project,' ',@xml:lang,' Glossary')"/>
     </xsl:attribute>

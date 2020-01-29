@@ -167,9 +167,17 @@ if ($outfile) {
     open(G, ">$dirname$header{'lang'}.g2x")
 	|| die "l2p2-g2x.plx: can't open $dirname$header{'name'}.g2x for output\n";
 }
+
+my $versionattr = '';
+my $dateattr = '';
+if (-r 'VERSION') {
+    $versionattr = ' version="'.`cat VERSION`.'"';
+    $dateattr = ' date="'.`cat DATE`.'"';
+}
+
 select G;
 print '<?xml version="1.0" encoding="utf-8"?>', "\n";
-print "<entries $ns project=\"$header{'project'}\" xml:lang=\"$header{'lang'}\" n=\"$header{'name'}\">";
+print "<entries $ns project=\"$header{'project'}\" xml:lang=\"$header{'lang'}\" n=\"$header{'name'}\"$versionattr$dateattr>";
 
 foreach my $lang (sort keys %data) {
     foreach my $entry (sort keys %{$data{$lang}}) {

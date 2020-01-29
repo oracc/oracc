@@ -9,6 +9,7 @@
 #include <fname.h>
 #include <hash.h>
 #include <list.h>
+#include <xmlutil.h>
 #include <runexpat.h>
 #include <loadfile.h>
 #include <npool.h>
@@ -73,7 +74,7 @@ chomp(unsigned char *s)
 static void
 scan_heading(char *buf)
 {
-  buf = (char*)chomp((unsigned char *)buf);
+  buf = (char*)xmlify(chomp((unsigned char *)buf));
   pending_heading = malloc(strlen(buf)+1);
   strcpy((char*)pending_heading, buf);
 }

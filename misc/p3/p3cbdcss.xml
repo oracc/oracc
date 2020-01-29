@@ -538,7 +538,8 @@ p.lex-spel  { margin-left: 3em; text-indent: 0em; }
 
 span.stem { font-size: 90%; }
 
-div.purl { padding-left: 1em; padding-top: 5px; padding-bottom: 5px; }
+div.purl {  border: 0px; border-top: 2px; border-style: solid; border-color: silver;
+	    padding-left: 1em; padding-top: 5px; padding-bottom: 5px; margin-top: 5px; }
 .purl p { padding-top: 5px; }
 
 div.compounds { padding-top: 5px; padding-bottom: 5px; }
