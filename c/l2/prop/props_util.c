@@ -26,11 +26,11 @@ props_exec(struct xcl_context *xc, const char *name,
   struct props_context *pcp = props_init(xc, name);
   if (pcp)
     {
-      props_decorate(text_xc, pcp);
+      props_decorate(xc, pcp);
       if (analyzer)
 	{
-	  analyzer(text_xc, pcp);
-	  xcl_map(text_xc,NULL,NULL,NULL,props_heads);
+	  analyzer(xc, pcp);
+	  xcl_map(xc,NULL,NULL,NULL,props_heads);
 	}
     }
 }

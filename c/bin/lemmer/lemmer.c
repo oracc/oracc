@@ -7,6 +7,9 @@
 #include "sigs.h"
 #include "xcl.h"
 
+extern void dsa_exec(struct xcl_context *xc);
+extern void psa_exec(struct xcl_context *xc);
+
 const char *config_file;
 const char *out_file;
 const char *sig_file;
@@ -19,6 +22,7 @@ FILE*outfp = NULL;
 
 int bootstrap_mode = 0;
 int cbd_lem_sigs = 0;
+int do_DSA = 0, do_NSA = 0, do_PSA = 0;
 int fuzzy_aliasing = 0;
 int inplace = 0;
 int lem_autolem = 0;
@@ -48,18 +52,24 @@ main(int argc, char **argv)
 
   scp = sig_context_init();
 
-  while (-1 != (optch = getopt(argc, argv, "c:dino::ps:tvx:")))
+  while (-1 != (optch = getopt(argc, argv, "c:DdiNno::Pps:tvx:")))
     {
       switch (optch)
 	{
 	case 'c':
 	  config_file = optarg;
 	  break;
+	case 'D':
+	  do_DSA = 1;
+	  break;
 	case 'd':
 	  sig_dump = 1;
 	  break;
 	case 'i':
 	  inplace = 1;
+	  break;
+	case 'N':
+	  do_NSA = 1;
 	  break;
 	case 'n':
 	  new_lem = 1;
@@ -77,6 +87,9 @@ main(int argc, char **argv)
 	    }
 	  else
 	    outfp = stdout;
+	  break;
+	case 'P':
+	  do_PSA = 1;
 	  break;
 	case 'p':
 	  psu = 1;
@@ -138,11 +151,18 @@ main(int argc, char **argv)
       else
 	sig_check(xcp);
 
-      if (psu)
+      if (psu || do_DSA || do_NSA || do_PSA)
 	{
 	  xcp->linkbase = new_linkbase();
 	  xcp->linkbase->textid = textid;
-	  psus2(xcp);
+	  if (psu)
+	    psus2(xcp);
+	  else if (do_DSA)
+	    dsa_exec(xcp);
+	  else if (do_PSA)
+	    psa_exec(xcp);
+	  else if (do_NSA)
+	    /*nsa_exec(xcp)*/;
 	}
 
       if (lem_do_wrapup)

@@ -1,11 +1,11 @@
-bin_PROGRAMS=bigrams lemmer ngrammer xis xis2
+bin_PROGRAMS=bigrams lemmer ngrammer nsa xis xis2
 
 noinst_PROGRAMS=test
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,lib,lng} \
-	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2,xli}
+	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,nsa,prop,psus,sigs,word,xcl2,xli}
 
 xLDADD= @top_srcdir@/c/l2/libl2.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
@@ -26,6 +26,9 @@ lemmer_LDADD=$(xLDADD)
 
 ngrammer_SOURCES=ngrammer.c
 ngrammer_LDADD=$(xLDADD)
+
+nsa_SOURCES=nsa.c
+nsa_LDADD=$(xLDADD)
 
 xis_SOURCES=xis.c
 xis_LDADD=$(xLDADD)
