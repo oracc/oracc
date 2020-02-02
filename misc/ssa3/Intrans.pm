@@ -2,20 +2,20 @@ package ORACC::SSA3::Intrans;
 use warnings; use strict; use open ':utf8';
 use Data::Dumper;
 
-my %intrans = ();
-my $intrans_loaded = 0;
+#my %intrans = ();
+#my $intrans_loaded = 0;
 
-sub
-load_intrans {
-    return if $intrans_loaded++;
-    open(IN,'@@ORACC@@/lib/ORACC/SSA2/data/intrans.lst')
-	|| die("Intrans: can't find intrans.lst");
-    while (<IN>) {
-	chomp;
-	$intrans{$_} = 1;
-    }
-    close(IN);
-}
+#sub
+#load_intrans {
+#    return if $intrans_loaded++;
+#    open(IN,'@@ORACC@@/lib/ORACC/SSA2/data/intrans.lst')
+#	|| die("Intrans: can't find intrans.lst");
+#    while (<IN>) {
+#	chomp;
+#	$intrans{$_} = 1;
+#    }
+#    close(IN);
+#}
 
 sub
 is_intrans {

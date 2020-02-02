@@ -249,9 +249,12 @@ dim_infixes {
 sub
 load_core_args {
     $loaded = 1;
-    open(IN,'@@ORACC@@/lib/ORACC/SSA3/data/coreargs.txt') 
-	|| die("CoreArgs: can't find coreargs.txt");
-    while (<IN>) {
+    #    open(IN,'@@ORACC@@/lib/ORACC/SSA3/data/coreargs.txt') 
+    #	|| die("CoreArgs: can't find coreargs.txt");
+
+    ORACC::SSA3::Util::open_data('coreargs.txt');
+    
+    while (<DATA>) {
 	next if /^\s*\#/ || /^\s*$/;
 	s/\s*$//;
 	my @data = split;
@@ -298,7 +301,7 @@ load_core_args {
 	    dims=>[ @dims ]
 	};
     }
-    close(IN);
+    close(DATA);
 
     if ($logging) {
 #	open CLOG, ">01tmp/coreargs.log";

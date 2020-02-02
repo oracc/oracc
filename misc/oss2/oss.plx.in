@@ -8,6 +8,7 @@ use ORACC::NS;
 use Data::Dumper;
 
 use ORACC::SMA::ParseManual;
+use ORACC::SSA3::Util;
 use ORACC::SSA3::MakeLeaves;
 use ORACC::OSS2::Manager;
 use ORACC::OSS2::XCL;
@@ -40,7 +41,9 @@ my $status = 0;
 my @files = ();
 my $xcldoc = undef;
 
-$project = `oraccopt` unless $project || $standalone;
+#$project = `oraccopt` unless $project || $standalone;
+$project = 'epsdc' unless $project;
+ORACC::SSA3::Util::set_data_dir("@@ORACC_BUILDS@@/$project/00etc/ssa/");
 
 ORACC::OSS2::Log::log_init();
 

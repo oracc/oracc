@@ -46,7 +46,7 @@ my $empty_node = ORACC::OSS2::Node::make_empty_node();
 
 sub
 phrasal_init {
-    ORACC::SSA3::Intrans::load_intrans();
+#    ORACC::SSA3::Intrans::load_intrans();
 }
 
 sub
