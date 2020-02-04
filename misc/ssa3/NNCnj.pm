@@ -20,7 +20,7 @@ load_nncnj {
     $loaded = 1;
 #    open(IN,'@@ORACC@@/lib/ORACC/SSA3/data/nncnj.lst') 
 #	|| die("NNCnj: can't find nncnj.lst");
-    ORACC::SSA3::Util::open_data('nnmod.lst');
+    *DATA = ORACC::SSA3::Util::open_data('nnmod.lst');
     while (<DATA>) {
 	next if /^\s*\#/ || /^\s*$/;
 	s/\s*$//;

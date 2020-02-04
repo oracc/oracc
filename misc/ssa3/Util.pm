@@ -14,4 +14,5 @@ sub open_data {
     } else {
 	die "$0: unable to open $f. Stop.\n";
     }
+    return \*DATA;
 }
