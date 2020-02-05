@@ -518,7 +518,7 @@ parse_sentence {
 		    push @phrase_nodes, $$nodes[$i];
 		} else {
 		    $node_index = $i;
-		    my $s = parse_sentence(clone($sent,$map);
+		    my $s = parse_sentence(clone($sent),$map);
 		    $i = $node_index;
 		    my $rrc;
 		    if ($#phrase_nodes >= 0 
@@ -709,7 +709,7 @@ parse_sentence {
 		# subordinate clauses marked by de.
 		my $start = $i+1;
 		$node_index = $i+1;
-		my $s = parse_sentence(clone($sent,$map);
+		my $s = parse_sentence(clone($sent),$map);
 		my $end = $i;
 		$i = $node_index;
 		if ($$s{'label'} eq 'RRC') {
@@ -752,7 +752,7 @@ parse_sentence {
     ++$n_sentence_exit;
     log_nodes("==== sentence nodes on parse_sentence exit $n_sentence_exit =====\n", 1, '', @sentence_nodes);
     
-    $$sent{'children'} = [ @sentence_nodes ];
+    $$sent{'children'} = clone(\@sentence_nodes);
 
     warn "==== sentence dump $n_sentence_exit ===\n", Dumper $sent, "================";
 

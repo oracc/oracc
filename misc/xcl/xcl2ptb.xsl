@@ -16,13 +16,13 @@
 <xsl:variable name="from-chars" select="' ()'"/>
 <xsl:variable name="to-chars"   select="'_&lt;>'"/>
 
-<xsl:template match="/xtf:*">
+<xsl:template match="xtf:composite|xtf:transliteration">
   <xsl:text>( (REF </xsl:text>
   <xsl:value-of select="concat('(CODE &lt;', translate(@n,' ','_'),'>)')"/>
   <xsl:text>)&#xa;</xsl:text>
   <xsl:value-of select="concat('  (ID ', @xml:id, ')')"/>
   <xsl:text>)&#xa;&#xa;</xsl:text>
-  <xsl:apply-templates select="xcl:xcl/*/*/xcl:c[@type='sentence']"/>
+  <xsl:apply-templates select="/xtf:*/*/xcl:xcl/*/*/xcl:c[@type='sentence']"/>
 </xsl:template>
 
 <xsl:template match="xcl:c[@type='sentence']">
