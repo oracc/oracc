@@ -1,6 +1,7 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = oss.plx
+scriptdata_DATA = oss-l-ids.xsl
+bin_SCRIPTS = oss.plx oss-check-l.sh
 
 oss.plx: oss.plx.in
 	$(ORACCIFY) oss.plx.in

@@ -162,7 +162,7 @@ make_leaves {
 	    }
 	    wrap_cn(@leaves);
 	} elsif ($$pw{'type'} eq 'sentence' || $$pw{'type'} eq 'clause' || $$pw{'type'} eq 'phrase') {
-	    my $tag = $$pw{'node'}->getAttribute('tag') || '';
+	    my $tag = ''; # $$pw{'node'}->getAttribute('tag') || ''; ## rethink relationship between this and psa
 	    my $nodetype = undef;
 	    if ($tag) {
 		if ($tag =~ s/^C-/S-/) {

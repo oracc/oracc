@@ -13,6 +13,8 @@ use ORACC::SSA3::CoreArgs;
 use ORACC::SSA3::MakeLeaves;
 use ORACC::SSA3::Is;
 
+use Clone::PP qw/clone/;
+
 my %known_prn = (
     'e[house]' => 1,
     'gu[neck]' => 1,
@@ -23,6 +25,8 @@ sub make_node ($$$$$);
 
 my $error_id = '';
 my $error_label = '';
+
+my $n_sentence_exit = 0;
 
 # Phrasal Parsing Layer
 # =====================
@@ -373,9 +377,9 @@ parse_sentence {
     my $nodes = $$sent{'children'};
     
     if ($ORACC::OSS2::verbose > 1) {
-	log_args("===parse_sentence nodes====\n", Dumper($sent), "=======\n");
+	log_args("===parse_sentence nodes with node_index=$node_index ====\n", Dumper($sent), "=======\n");
     }
-    log_node_map("===parse_sentence map====\n", $nodes, $map);
+    log_node_map("===parse_sentence map with node_index=$node_index ====\n", $nodes, $map);
 
     #N.B.: '#'-map entries are not handled in these hashes
     my %res_nodes = ('S'=>'S-MAT','R'=>'S-REL','H'=>'S-REL','I'=>'S-REL','P'=>'NP', 
@@ -410,6 +414,8 @@ parse_sentence {
 
     if (!$result_node) {
 	warn("parse_sentence: $$map[$node_index] yields no result type\n");
+    } else {
+	$$sent{'label'} = $result_node unless $result_node eq 'S-MAT';
     }
 
     my $i = $node_index;
@@ -466,7 +472,8 @@ parse_sentence {
 		    my $s;
 		    my $start = $i;
 		    $node_index = $i;
-		    $s = parse_sentence($sent,$map);
+		    $s = parse_sentence(clone($sent),$map);
+		    warn "S LABEL == $$s{'label'}\n";
 		    my $end = $i;
 		    $i = $node_index;
 		    if ($$map[$start] eq 'R') {
@@ -477,7 +484,8 @@ parse_sentence {
 		    if ($$map[$start] eq 'R' || $$map[$start] eq 'H') {
 			if ($rc_head) {
 			    push @phrase_nodes, ORACC::OSS2::Node::make_node('phrase', 
-							  [$rc_head,$s], 'NP', 'Phrasal',735);
+									     [$rc_head, $s],
+									     'NP', 'Phrasal',735);
 			} else {
 			    $$s{'label'} .= '-PRN';
 			    if ($#phrase_nodes >= 0) {
@@ -510,7 +518,7 @@ parse_sentence {
 		    push @phrase_nodes, $$nodes[$i];
 		} else {
 		    $node_index = $i;
-		    my $s = parse_sentence($sent,$map);
+		    my $s = parse_sentence(clone($sent),$map);
 		    $i = $node_index;
 		    my $rrc;
 		    if ($#phrase_nodes >= 0 
@@ -582,6 +590,9 @@ parse_sentence {
 			push @sentence_nodes, parse_phrases(@phrase_nodes);
 		    }
 		    @phrase_nodes = ();
+		} else {
+		    warn "orphan P in map\n";
+		    push @phrase_nodes, $$nodes[$i];
 		}
 	    } elsif ($$map[$i] eq 'G') {
 		if ($#phrase_nodes < 0) {
@@ -698,7 +709,7 @@ parse_sentence {
 		# subordinate clauses marked by de.
 		my $start = $i+1;
 		$node_index = $i+1;
-		my $s = parse_sentence($sent,$map);
+		my $s = parse_sentence(clone($sent),$map);
 		my $end = $i;
 		$i = $node_index;
 		if ($$s{'label'} eq 'RRC') {
@@ -738,11 +749,12 @@ parse_sentence {
 
 #    return ORACC::OSS2::Node::make_node($node_type, [ @sentence_nodes ], $result_node, 'Phrasal',994);
 
-    log_nodes("==== sentence nodes on parse_sentence exit =====\n", 1, '', @sentence_nodes);
+    ++$n_sentence_exit;
+    log_nodes("==== sentence nodes on parse_sentence exit $n_sentence_exit =====\n", 1, '', @sentence_nodes);
     
-    $$sent{'children'} = [ @sentence_nodes ];
+    $$sent{'children'} = clone(\@sentence_nodes);
 
-    warn "==== sentence dump ===\n", Dumper $sent, "================";
+    warn "==== sentence dump $n_sentence_exit ===\n", Dumper $sent, "================";
 
     $sent;
 }

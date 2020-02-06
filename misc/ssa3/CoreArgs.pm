@@ -252,7 +252,7 @@ load_core_args {
     #    open(IN,'@@ORACC@@/lib/ORACC/SSA3/data/coreargs.txt') 
     #	|| die("CoreArgs: can't find coreargs.txt");
 
-    ORACC::SSA3::Util::open_data('coreargs.txt');
+    *DATA = ORACC::SSA3::Util::open_data('coreargs.txt');
     
     while (<DATA>) {
 	next if /^\s*\#/ || /^\s*$/;
