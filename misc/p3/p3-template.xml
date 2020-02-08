@@ -6,11 +6,11 @@
     <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen"/>
     <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print"/>
     <link rel="stylesheet" type="text/css" href="/css/p3.css" />
+    <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
+    <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css"/>
     <link rel="stylesheet" type="text/css" href="/css/transonly_off.css" title="to_off"/>
     <link rel="stylesheet" type="text/css" href="/css/transonly_on.css" title="to_on"/>
     <link rel="stylesheet" type="text/css" href="/css/transnone.css" title="transnone"/>
-    <link rel="stylesheet" type="text/css" href="/@@project@@/css/p3colours.css" />
-    <link rel="stylesheet" type="text/css" href="/@@project@@/css/projcss.css" title="projcss"/>
     <script src="/js/p3.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="/js/p3-transonly.js" type="text/javascript"><![CDATA[ ]]></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"><![CDATA[ ]]></script>

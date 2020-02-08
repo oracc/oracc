@@ -657,7 +657,7 @@
       <xsl:when test="$lemnode/@exosig">
 	<xsl:value-of select="substring-after($lemnode/@exosig,'=')"/>
       </xsl:when>
-      <xsl:when test="$lemdict">
+      <xsl:when test="$lemform">
 	<xsl:value-of select="concat($lemform/@norm0,
 			      '[',$lemform/@sense,']',
 			      $lemform/@epos)"/>
@@ -682,6 +682,7 @@
       <xsl:call-template name="gdl-w-span">
 	<xsl:with-param name="lemdict" select="$lemdict"/>
 	<xsl:with-param name="lemnode" select="$lemnode"/>
+	<xsl:with-param name="lemform" select="$lemform"/>
 	<xsl:with-param name="ltitle" select="$ltitle"/>
       </xsl:call-template>
   <xsl:if test="$allow-space and following-sibling::*">

@@ -115,6 +115,10 @@ glossary_howtos {
     $howto{'cbd_pl_coord'} = { nam=>'pl_coord',val=>'text()',att=>'' };    
     
     $howto{'cbd_letter'} = { type=>'#ignore' };
+
+    $howto{'cbd_see-compounds'} = { type=>'#ignore' };
+    $howto{'cbd_xcpd'} = { type=>'#ignore' };
+
     $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_s'} = { type=>'#ignore', recurse=>'no' };

@@ -1,0 +1,21 @@
+.n  { color: slategrey !important }
+.AN { color: sandybrown !important }
+.DN { color: deepskyblue !important }
+.FN { color: lightgreen !important }
+.GN { color: green !important }
+.MN { color: cornflowerblue }
+.PN { color: mediumvioletred !important }
+.RN { color: mediumpurple !important }
+.SN { color: darkgreen !important }
+.WN { color: olive !important }
+
+.n a:link { color: slategrey !important }
+.AN a:link { color: sandybrown !important }
+.DN a:link { color: deepskyblue !important }
+.FN a:link { color: lightgreen !important }
+.GN a:link { color: green !important }
+.MN a:link { color: cornflowerblue }
+.PN a:link { color: darkcyan !important }
+.RN a:link { color: mediumpurple !important }
+.SN a:link { color: darkgreen !important }
+.WN a:link { color: olive !important }
