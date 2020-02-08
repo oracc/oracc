@@ -540,15 +540,22 @@ if ($geojson_first < 0) {
 }
 #xmd_json_end();
 
+warn "$0: xmdfile = $xmdfile\n";
+warn "$0: xmdsplit = $xmlsplit\n";
+
 if ($onebigfile) {
     if (!$split) {
 	if ($skip_xmd) {
 	    # open(RS,">/dev/null");
 	} else {
-	    open(XOUT,">$xmdfile");
+	    unless (open(XOUT,">$xmdfile")) {
+		die "$0: can't write $xmdfile.\n";
+	    }
 	}
     } else {
-	open(XOUT,"|tee $xmdfile|$xmlsplit");
+	unless (open(XOUT,"|tee $xmdfile|$xmlsplit")) {
+	    die "$0: can't write \|tee $xmdfile\|$xmlsplit.\n";
+	}
     }
     select XOUT;
     print XOUT xmldecl();
