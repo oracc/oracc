@@ -466,7 +466,7 @@ _signature {
 			#			push @ORACC::SL::fixes_needed, [ $sn, $nsn ];
 			if ($pedantic && (!$reported{$g}++ || $ORACC::SL::report_all)) {
 			    # warn join(':',caller()), "\n";
-			    msg($ctxt, "sign name '$sn' should be '$nsn'");
+			    msg($ctxt, "sign name $sn should be $nsn");
 			}
 			    
 			$sn = $nsn;
@@ -477,12 +477,12 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
-		msg($ctxt,"sign name '$sn' not in sign list")
+		msg($ctxt,"sign name $sn not in sign list")
 		    unless $silent || $reported{$g}++;
 		push @sig, 'q00';
 	    }
 	} else {
-	    msg($ctxt, "grapheme '$g' not in sign list")
+	    msg($ctxt, "grapheme $g not in sign list")
 		unless $silent || $reported{$g}++;
 	    push @sig, 'q01';
 	}

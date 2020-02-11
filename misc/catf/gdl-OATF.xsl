@@ -74,32 +74,24 @@
 
 <xsl:template match="g:m">
   <xsl:text>@</xsl:text>
-  <xsl:apply-templates/>
+  <xsl:value-of select="."/>
 </xsl:template>
 
 <xsl:template match="g:n">
   <xsl:choose>
-    <xsl:when test="g:b">
-      <xsl:for-each select="g:b">
-        <xsl:apply-templates select="g:r"/>
-	<xsl:if test="string-length(*[2])>0">
-	  <xsl:text>(</xsl:text>
-	  <xsl:apply-templates select="*[2]"/>
-	  <xsl:apply-templates select="g:a|g:m"/>
-	  <xsl:text>)</xsl:text>
-	</xsl:if>
-      </xsl:for-each>
-     </xsl:when>
+    <xsl:when test="@form">
+      <xsl:value-of select="@form"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates select="g:r"/>
-	<xsl:if test="string-length(*[2])>0">
-	  <xsl:text>(</xsl:text>
-	  <xsl:apply-templates select="*[2]"/>
-	  <xsl:text>)</xsl:text>
-	</xsl:if>
+      <xsl:if test="string-length(*[2])>0">
+	<xsl:text>(</xsl:text>
+	<xsl:apply-templates select="*[2]"/>
+	<xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:apply-templates select="g:a|g:m"/>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:apply-templates select="g:a|g:m"/>
   <xsl:value-of select="@g:delim"/>
 </xsl:template>
 

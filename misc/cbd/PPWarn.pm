@@ -5,6 +5,7 @@ require Exporter;
 
 use warnings; use strict; binmode STDERR, ':utf8';
 
+$ORACC::CBD::PPWarn::err_file = undef;
 $ORACC::CBD::PPWarn::trace = 0;
 $ORACC::CBD::PPWarn::edit_trace = 0;
 
@@ -55,9 +56,13 @@ sub pp_line {
 }
 
 sub pp_notice {
-    $efile = ORACC::CBD::Util::errfile($file);
-    $efile = pp_file() unless $efile;
-    $line = pp_line() unless $line;
+    if ($ORACC::CBD::PPWarn::err_file) {
+	$efile = $ORACC::CBD::PPWarn::err_file;
+    } else {
+	$efile = ORACC::CBD::Util::errfile($file);
+	$efile = pp_file() unless $efile;
+    }
+    # $line = pp_line() unless $line;
     push @{$errlist{"${efile}::$line"}}, "$efile:$line: @_\n";
 }
 

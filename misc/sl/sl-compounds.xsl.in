@@ -24,6 +24,7 @@
       <xsl:with-param name="n" select="@form"/>
     </xsl:call-template>
   </xsl:variable>
+  <!--<xsl:message>working on <xsl:value-of select="@form"/></xsl:message>-->
   <xsl:value-of select="ancestor::x:l/@n"/>
   <xsl:text>&#x9;</xsl:text>
   <xsl:value-of select="@form"/>
@@ -80,8 +81,8 @@
 <xsl:template match="g:s">
   <xsl:variable name="body">
     <xsl:choose>
-      <xsl:when test="g:b">
-	<xsl:value-of select="g:b"/>
+      <xsl:when test="@form">
+	<xsl:value-of select="@form"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:value-of select="."/>
@@ -94,6 +95,7 @@
       <xsl:with-param name="n" select="$vbody"/>
     </xsl:call-template>
   </xsl:variable>
+<!--  <xsl:message>body=<xsl:value-of select="$body"/>; vbody=<xsl:value-of select="$vbody"/>; res=<xsl:value-of select="$res"/></xsl:message>-->
   <xsl:choose>
     <xsl:when test="string-length($res)>0">
       <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/ogsl.xml')/*">

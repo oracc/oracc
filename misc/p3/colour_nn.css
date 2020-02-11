@@ -1,21 +1,27 @@
 .n  { color: slategrey !important }
 .AN { color: sandybrown !important }
+.CN { color: fuchsia !important }
 .DN { color: deepskyblue !important }
-.FN { color: lightgreen !important }
+.FN { color: springgreen !important }
 .GN { color: green !important }
 .MN { color: cornflowerblue }
+.ON { color: darksalmon !important }
 .PN { color: mediumvioletred !important }
-.RN { color: mediumpurple !important }
+.RN { color: purple !important }
 .SN { color: darkgreen !important }
+.TN { color: turquoise !important }
 .WN { color: olive !important }
 
-.n a:link { color: slategrey !important }
+.n  a:link { color: slategrey !important }
 .AN a:link { color: sandybrown !important }
+.CN a:link { color: fuchsia !important }
 .DN a:link { color: deepskyblue !important }
-.FN a:link { color: lightgreen !important }
+.FN a:link { color: springgreen !important }
 .GN a:link { color: green !important }
 .MN a:link { color: cornflowerblue }
-.PN a:link { color: darkcyan !important }
-.RN a:link { color: mediumpurple !important }
+.ON a:link { color: darksalmon !important }
+.PN a:link { color: mediumvioletred !important }
+.RN a:link { color: purple !important }
 .SN a:link { color: darkgreen !important }
+.TN a:link { color: turquoise !important }
 .WN a:link { color: olive !important }

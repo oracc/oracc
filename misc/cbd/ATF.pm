@@ -72,7 +72,7 @@ sub cpd_add {
 	$a =~ tr/·°//d;
 	push @{$cpd{pp_line()}}, $a;
     } else {
-	pp_warn("internal error: empty value passed to atf_add")
+	pp_warn("internal error: empty value passed to cpd_add")
     }
 }
 
