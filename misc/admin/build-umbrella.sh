@@ -17,9 +17,9 @@ projbuild="00bin/${project}-build-all.sh"
 if [ -r $projbuild ]; then
     $projbuild
 else
-    subs=`cat 00bin/umbrella.lst`
+    subs=`cat 00lib/umbrella.lst`
     oracc update
-    for a in $subs ; do (cd $a ; oracc resources ; oracc build) ; done
+    for a in $subs ; do (cd $a ; oracc resources ; oracc build clean) ; done
     oracc resources
     oracc build clean
 fi

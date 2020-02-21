@@ -63,7 +63,12 @@ sub same_tlit {
 
 sub tlit_sig {
     my($context,$test,@against) = @_;
-    _signature($context,tlitsplit($test,1));
+    my $s = _signature($context,tlitsplit($test,1));
+    if ($s =~ /q/ && $test =~ /\|/) {
+	$test =~ tr/|//d;
+	$s = _signature($context,tlitsplit($test,1));
+    }
+    return $s;
 }
 
 sub
@@ -302,7 +307,7 @@ tlitsplit {
     return '' unless $tlit;
     my $orig = $tlit;
     $tlit =~ s/\!\(.*?\)//;
-    $tlit =~ tr/?[]#*<>//d;
+    $tlit =~ tr/?![]#*<>//d;
 
 #    if ($csplit) {
 #	$tlit =~ tr/|+/  /;
@@ -454,9 +459,9 @@ _signature {
 		$sn = $g;
 	    }
 	    my $sn_id = is_form($sn) || is_sign($sn);
-	    if ($sn =~ /ŠE.A.AN/) {
-		warn "$sn => $sn_id\n";
-	    }
+#	    if ($sn =~ /ŠE.A.AN/) {
+#		warn "$sn => $sn_id\n";
+#	    }
 #	    warn "g=$g=$sn_id\n";
 	    unless ($sn_id) {
 		if ($sn !~ /[\|.]/) {
@@ -471,6 +476,15 @@ _signature {
 			    
 			$sn = $nsn;
 			$sn =~ tr/|//d;
+		    # } else {
+		    # 	my $n = $g;
+		    # 	$n =~ tr/|//d;
+		    # 	my @n = tlitsplit($n);
+		    # 	my $nsig = _signature('',@n);
+		    # 	if ($nsig) {
+		    # 	    msg($ctxt,"bad sign name $sn");
+		    # 	    $sn_id = $nsig;
+		    # 	}
 		    }
 		}
 	    }

@@ -17,14 +17,26 @@ if ($projxtf eq '-s') {
     $singles_mode = 1;
     $projxtf = shift @ARGV;
     $output = shift @ARGV;
+    unless ($output) {
+	$output = $projxtf;
+	$output =~ s/xtf$/jsn/;
+    }
 }
 
 die "xcl-json.plx: must give project:PQXID on commandline\n"
     unless $projxtf;
 
-my ($project,$PQX) = split(/:/, $projxtf);
-my ($four) = ($PQX =~ /^(....)/);
-my $xtf = "$ENV{'ORACC'}/bld/$project/$four/$PQX/$PQX.xtf";
+my ($project,$PQX) = ();
+my ($four) = ();
+my $xtf = '';
+
+unless ($singles_mode) {
+    ($project,$PQX) = split(/:/, $projxtf);
+    ($four) = ($PQX =~ /^(....)/);
+    $xtf = "$ENV{'ORACC'}/bld/$project/$four/$PQX/$PQX.xtf";
+} else {
+    $xtf = $projxtf;
+}
 
 die "xcl-json.plx: no such file $xtf\n"
     unless -r $xtf;
@@ -52,6 +64,10 @@ my @in = `cat $xtf | $ENV{'ORACC'}/bin/xns`;
 my $xtf_nons = join('', @in);
 my $xxtf = load_xml_string($xtf_nons);
 my $xcl = $xxtf->getDocumentElement()->lastChild();
+
+if ($xcl && $xcl->localName() && $xcl->localName() eq 'xtf_transliteration') {
+    $xcl = $xcl->lastChild();
+}
 
 if ($xcl && $xcl->localName() && $xcl->localName() eq 'xcl_xcl') {
     ORACC::JSON::iterate($xcl);
