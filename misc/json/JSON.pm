@@ -451,6 +451,7 @@ sub
 jattrs {
     my $n = shift;
     my @att = @_;
+#    warn "@att\n";
     foreach my $a (@att) {
 	next if $attmap{$a->name()} && $attmap{$a->name()} eq '#ignore';	    
 	if ($need_comma) {
@@ -461,7 +462,8 @@ jattrs {
 	    print ",\n" if $nattr++;
 	}
 	my $qname = $n->nodeName().':'.$a->name();
-#	warn "jattrs: qname=$qname\n";
+#	my $aval = $a->value;
+#	warn "jattrs: qname=$qname = $aval\n";
 	if ($trigger_before{$qname}) {
 	    my $h = $trigger_before{$qname};
 	    my $prop = &$h($n);

@@ -118,7 +118,7 @@ xcl_howtos {
     };
     $howto{'xcl_c'} = { type=>"{",nam=>'node',val=>'c',att=>'-bracketing_level level',
 			chld=>['cdl','['] };
-    $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',xid=>[ 'ref', '-xml:id id' ],
+    $howto{'xcl_d'} = { type=>"{",nam=>'node',val=>'d',att=>'',xid=>[ 'ref', '-xml:id id type subtype' ],
 			hook=>\&textfrag };
     $howto{'xcl_ll'} = { type=>"{",nam=>'node',val=>'ll',att=>'',
 			 hook=>\&textfrag,chld=>['choices','['] };
