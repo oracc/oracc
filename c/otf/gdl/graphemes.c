@@ -825,7 +825,7 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
-		      if (!psl_is_sname(buf))
+		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
 			{
 			  const unsigned char *cattr = signify(buf);
 			  if (cattr)
