@@ -84,6 +84,7 @@ extern void print_xforms_pi(void);
 extern void adhoc(const char *adhoc_texts, const char *line_id, const char *frag_id);
 extern void cat_file(const char *file);
 extern void cat_html_file(const char *file);
+extern void cat_json_file(const char *file);
 extern void cat_index_html(const char *dir);
 extern void cat_json(const char *zip, const char *file);
 extern void cat_pdf(const char *ppath, const char *pname);
