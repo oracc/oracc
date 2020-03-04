@@ -211,7 +211,7 @@ ox_options(int argc, char **argv)
 	  report_all_label_errors = 1;
 	  break;
 	case '3':
-	  cuneify_notices = 1;
+	  ++cuneify_notices;
 	  break;
 	case '4':
 	  ++dump_sigs;

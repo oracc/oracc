@@ -212,7 +212,7 @@ while (<SL>) {
 	    if ($hex) {
 		my $utf = '';
 		foreach my $h (split(/\./, $hex)) {
-		    if ($h =~ /^x[0-9A-F]+/) {
+		    if ($h =~ /^x[0-9A-F]+/i) {
 			$utf .= chr(hex("0$h"));
 		    } else {
 			$utf .= 'X';

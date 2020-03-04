@@ -221,7 +221,7 @@ cuneify_sequence(const unsigned char *seq)
 	}
       else
 	{
-	  if (cuneify_notices)
+	  if (cuneify_notices > 1)
 	    vnotice("cuneify failed trying to render %s in %s", rtab_buf, seq);
 	  return (const unsigned char *)Qret;
 	}
