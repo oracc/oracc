@@ -218,15 +218,14 @@ uri_json()
   const char *json_ext = NULL;
   char *efile = NULL;
 
-  if (nelements == 2 
-      && !strcmp(elements[0],"corpusjson"))
+  if (nelements == 2 && !strcmp(elements[0],"corpusjson"))
     {
       json_ext = strstr(elements[1],".json");
       if (json_ext)
 	{
 	  if (json_ext[5])
 	    json_ext = NULL;
-	  else
+	  else if (nelements == 2)
 	    {
 	      efile = malloc(strlen(elements[0])+strlen(elements[1])+2);
 	      sprintf(efile, "%s/%s", elements[0],elements[1]);
@@ -248,8 +247,14 @@ uri_json()
 	    }
 	}
     }
-  
-  if (efile)
+
+  if (json_ext && efile)
+    {
+      char *z = malloc(strlen("@@ORACC_BUILDS@@")+strlen(efile)+strlen("/www/json/")+1);
+      sprintf(z,"%s/www/json/%s", "@@ORACC_BUILDS@@", efile);
+      cat_json_file(z);
+    }
+  else if (efile)
     {
       char *zipbase = NULL, *z, *f;
       const char *e;
@@ -262,7 +267,7 @@ uri_json()
 	    *z = *e;
 	}
       *z = '\0';
-      z = malloc(strlen("@@ORACC_BUILDS")+strlen(zipbase)+strlen("/www/json/.zip")+1);
+      z = malloc(strlen("@@ORACC_BUILDS@@")+strlen(zipbase)+strlen("/www/json/.zip")+1);
       sprintf(z,"%s/www/json/%s.zip", "@@ORACC_BUILDS@@", zipbase);
       f = malloc(strlen(project)+strlen(elements[0])+2);
       sprintf(f,"%s/%s",project,efile);

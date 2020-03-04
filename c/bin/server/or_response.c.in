@@ -47,6 +47,15 @@ cat_html_file(const char *file)
 }
 
 void
+cat_json_file(const char *file)
+{
+  print_hdr_json();
+  fprintf(stderr,"oracc-despatcher/cat_html_file: %s\n", file);
+  execl("/bin/cat", "cat", file, NULL);
+  perror("execl failed");
+}
+
+void
 cat_index_html(const char *dir)
 {
   char *buf = NULL, *slash = "";

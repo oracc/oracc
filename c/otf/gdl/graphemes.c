@@ -788,6 +788,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  static unsigned char buf[1024];
 	  unsigned char *insertp = buf;
 	  unsigned char *cleang = orig;
+
 	  if (strpbrk((const char *)orig,bad_cg_chars))
 	    cleang = gclean(cleang);
 
@@ -820,8 +821,23 @@ gparse(register unsigned char *g, enum t_type type)
 				 buf,curr_lang->signlist);
 		    }
 		}
+	      else if (gp->type == g_s)
+		{
+		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
+		    {
+		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
+			{
+			  const unsigned char *cattr = signify(buf);
+			  if (cattr)
+			    vwarning("%s: sign name should be %s", buf, cattr);
+			  else
+			    vwarning("%s: sign name not in OGSL",buf);
+			}
+		    }
+		}
 
 	      appendAttr(gp->xml,gattr(a_form,buf));
+
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
 		  static const unsigned char *cattr = NULL;
@@ -841,17 +857,22 @@ gparse(register unsigned char *g, enum t_type type)
 	      if (do_signnames)
 		{
 		  static const unsigned char *cattr = NULL;
-		  if (gp->type == g_q)
+		  const unsigned char *input = NULL;
+		  if (*buf) /* always use buf now because it includes modifiers */
+		    cattr = signify(input = buf);
+		  else if (gp->type == g_q)
 		    {
 		      if (gp->g.q.q->type == g_n)
-			cattr = signify(gp->g.q.q->atf);
+			cattr = signify(input = gp->g.q.q->atf);
 		      else
-			cattr = signify(gp->g.q.q->g.s.base);
+			cattr = signify(input = gp->g.q.q->g.s.base);
 		    }
 		  else
-		    cattr = signify(buf);
+		    cattr = signify(input = buf);
 		  if (cattr)
 		    appendAttr(gp->xml,gattr(a_g_sign,cattr));
+		  else if (gp->type != g_c)
+		    vwarning("unable to signify %s", input);
 		}
 
 	      if (!inner_parse && f_graphemes)
@@ -2438,13 +2459,39 @@ signify(const unsigned char *utf)
 	  if (try)
 	    return try;
 	}
+#if 0
       else
 	altname = utf;
-#if 0
       withpipes = addpipes(altname);
       if ((try = psl_cuneify(withpipes)))
 	return try;
 #endif
+    }
+  /* if we're still here, see if we can dig a sign name out of the qualification */
+  if (utf[strlen((char*)utf)-1] == ')')
+    {
+      utf = (unsigned char *)strchr((char*)utf,'(');
+      if (utf)
+	{
+	  /* memleak here */
+	  unsigned char *tmp = NULL;
+	  ++utf;
+	  tmp = malloc(strlen((char*)utf)+1);
+	  strcpy((char*)tmp,(char *)utf);
+	  tmp[strlen((char *)utf)-1] = '\0';
+	  if (psl_is_sname(tmp))
+	    return tmp;
+	  if (!ret)
+	    {
+	      if (psl_looks_like_sname(tmp))
+		{
+		  const unsigned char *altname = psl_get_sname(utf_lcase(utf));
+		  if (altname && strcmp((char*)altname,(char*)utf))
+		    ret = signify(altname);
+		}
+	    }
+	  free(tmp);
+	}
     }
   return ret;
 }
