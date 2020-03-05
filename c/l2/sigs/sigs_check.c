@@ -168,6 +168,11 @@ sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild)
 	  && (!f2->gw || !strcmp((char*)f1->gw,(char*)f2->gw)))
 	return 1;
     }
+  if ((f1->sense && f2->sense && !strcmp((char*)f1->sense, (char*)f2->sense))
+      || (!f1->sense && !f2->sense && f1->gw && f2->gw && !strcmp((char*)f1->gw, (char*)f2->gw))
+      )
+    return 1;
+
   /* else: setup_set will index gw instead of sense */
   setup_set(f1);
   setup_set(f2);
