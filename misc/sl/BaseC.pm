@@ -358,6 +358,7 @@ tlit2cunei {
 
 sub msg {
     my($ctxt,$m) = @_;
+    $m =~ tr/\cA/./;
     if ($ctxt) {
 	print STDERR "${ctxt}(BaseC): $m\n";
     } else {
@@ -372,7 +373,7 @@ _tlit2uni {
     my $uni = '';
     foreach my $g (@g) {
 	my $sig = _signature($context, $g);
-	warn "_signature: $g => $sig\n";
+#	warn "_signature: $g => $sig\n";
 	foreach my $s (split(/\./,$sig)) {
 	    my $u = ($mode==UCODE ? ucode($s) : uchar($s));
 	    if ($u) {
@@ -459,15 +460,16 @@ _signature {
 	    if ($g =~ /^([^(0-9\/]+?)\((.*?)\)$/) {
 		$g = $1;
 		$sn = $2;
-		$sn =~ tr/|//d;
+		$sn =~ tr/|//d unless $sn =~ /^\d\(\|/;
 	    } else {
 		$sn = $g;
 	    }
+	    $sn =~ tr/\cA/./;
 	    my $sn_id = is_form($sn) || is_sign($sn);
+	    warn "g=$g; sn=$sn; sn_id=$sn_id\n";
 #	    if ($sn =~ /ŠE.A.AN/) {
 #		warn "$sn => $sn_id\n";
 #	    }
-#	    warn "g=$g=$sn_id\n";
 	    unless ($sn_id) {
 		if ($sn !~ /[\|.]/) {
 		    my $tmp = lc($sn);
@@ -478,7 +480,7 @@ _signature {
 			    # warn join(':',caller()), "\n";
 			    msg($ctxt, "sign name $sn should be $nsn");
 			}
-			    
+			
 			$sn = $nsn;
 			$sn =~ tr/|//d;
 		    # } else {
@@ -496,9 +498,14 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
-		msg($ctxt,"sign name $sn not in sign list")
-		    unless $silent || $reported{$g}++;
-		push @sig, 'q00';
+		my $nsn = is_sign($sn);
+		if ($nsn) {
+		    push @sig, $sn_id;
+		} else {
+		    msg($ctxt,"sign name $sn not in sign list")
+			unless $silent || $reported{$g}++;
+		    push @sig, 'q00';
+		}
 	    }
 	} else {
 	    msg($ctxt, "grapheme $g not in sign list")

@@ -120,8 +120,10 @@ add_comp {
     my($id,$cg) = @_;
 #    warn "add_comp $id ", $cg->toString(), "\n";
     my $atf = $cg->getAttribute('form');
-    $atf =~ tr/\|//d;
     $values{$atf} = $id;
+    if ($atf =~ tr/\|//d) {
+	$values{$atf} = $id;
+    }
 #    push @{$values{$id,'values'}}, "|$atf|";
 #    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
     add_comp_children($cg,$id);
