@@ -380,6 +380,7 @@ _tlit2uni {
 		my $sn = sign_of($s);
 		if ($sn) {
 		    if ($sn =~ tr/\|//d) {
+			$sn =~ s/\(([^\)]+)\)/&hidedots($1)/eg;
 			foreach my $s2 (split(/\./,$sn)) {
 			    my $s2sig = _signature($context,$s2);
 			    my $u = $mode==UCODE ? ucode($s2sig) : uchar($s2sig);
@@ -387,6 +388,7 @@ _tlit2uni {
 				$uni .= $mode==UCODE? "\&#$u;" : $u;
 			    } else {
 				$uni .= 'X';
+				$s2 =~ tr/\cA/./;
 				warn("$context: $s2: no ucode for compound element\n");
 			    }
 			}
@@ -510,6 +512,7 @@ _signature {
 	    my $sn = sign_of($s);
 	    if ($sn =~ tr/\|//d) {
 		my @c = ();
+		$sn =~ s/\(([^\)]+)\)/&hidedots($1)/eg;
 		my $ok = 1;
 		foreach my $c (split(/[\.\+]/, $sn)) {
 		    my $cs = is_sign($c);
@@ -534,9 +537,15 @@ _signature {
     join('.',@nsig);
 }
 
+sub hidedots {
+    my $d = shift;
+    $d =~ tr/./\cA/;
+    "($d)";
+}
+
 sub
 ucode {
-    $db{$_[0],'ucode'}
+    slse("$_[0];ucode");
 }
 sub
 uchar {

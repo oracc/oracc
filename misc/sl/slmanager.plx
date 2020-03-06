@@ -7,7 +7,7 @@ use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
 my $check = 0;
-my $signlist = 'sl';
+my $signlist = 'ogsl';
 my $unicodify = 0;
 my $xml = 0;
 my $verbose = 0;
@@ -26,7 +26,7 @@ if ($asl) {
 	$asl = "00lib/$asl.asl";
     }
 } else {
-    $asl = "00lib/sl.asl" unless $asl;
+    $asl = "00lib/ogsl.asl" unless $asl;
 }
 open(SL,$asl) || die "slmanager.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
