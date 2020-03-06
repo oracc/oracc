@@ -372,6 +372,7 @@ _tlit2uni {
     my $uni = '';
     foreach my $g (@g) {
 	my $sig = _signature($context, $g);
+	warn "_signature: $g => $sig\n";
 	foreach my $s (split(/\./,$sig)) {
 	    my $u = ($mode==UCODE ? ucode($s) : uchar($s));
 	    if ($u) {
@@ -396,6 +397,8 @@ _tlit2uni {
 			$uni .= 'X';
 			warn("$context: $sn: no ucode (id=$s)\n");
 		    }
+		} else {
+		    warn("$context: $s: undefined return from sign_of\n");
 		}
 	    }
 	}
@@ -515,7 +518,7 @@ _signature {
 		$sn =~ s/\(([^\)]+)\)/&hidedots($1)/eg;
 		my $ok = 1;
 		foreach my $c (split(/[\.\+]/, $sn)) {
-		    my $cs = is_sign($c);
+		    my $cs = is_sign(sign_of($c));
 		    if ($cs) {
 			push @c, $cs;
 		    } else {
@@ -547,9 +550,11 @@ sub
 ucode {
     slse("$_[0];ucode");
 }
+
 sub
 uchar {
-    my $n = $db{$_[0],'uchar'};
+#    my $n = $db{$_[0],'uchar'};
+    my $n = slse("$_[0];uchar");
     Encode::_utf8_on($n);
     $n;
 }
