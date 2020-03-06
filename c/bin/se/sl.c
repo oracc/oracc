@@ -1,14 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <wchar.h>
+#include <wctype.h>
+#include <locale.h>
 #include <psd_base.h>
 #include <fname.h>
 #include <options.h>
 #include <dbi.h>
+#include <oracclocale.h>
 
 static char *db = NULL, *project = NULL;
 static char *key;
 static int human_readable = 0;
 static const char *oracc = NULL;
+static int utf8 = 0;
+static int uhex = 0;
 
 void
 sl(Dbi_index *dbi, char *key)
@@ -35,6 +41,26 @@ sl(Dbi_index *dbi, char *key)
 	  dbi_find(dbi, tmp);
 	  fprintf(stdout, "%s\n", (char*)dbi->data);
 	}
+      else if (utf8)
+	{
+	  unsigned char tmp[128];
+	  sprintf((char*)tmp, "%s;uchar", v);
+	  dbi_find(dbi, tmp);
+	  if (dbi->data)
+	    fprintf(stdout, "%s\n", (char*)dbi->data);
+	  else
+	    fputc('\n',stdout);
+	}
+      else if (uhex)
+	{
+	  unsigned char tmp[128];
+	  sprintf((char*)tmp, "%s;ucode", v);
+	  dbi_find(dbi, tmp);
+	  if (dbi->data)
+	    fprintf(stdout, "%s\n", (char*)dbi->data);
+	  else
+	    fputc('\n',stdout);
+	}
       else
 	fprintf(stdout, "%s\n", v);
     }
@@ -50,7 +76,9 @@ main(int argc, char **argv)
 {
   Dbi_index *dbi = NULL;
 
-  options(argc, argv, "hk:p:");
+  setlocale(LC_ALL,ORACC_LOCALE);
+  
+  options(argc, argv, "hk:p:u8");
 
   /* Figure out the db and open it */
   if (!project)
@@ -103,6 +131,12 @@ int opts(int argc, char *arg)
       break;
     case 'p':
       project = arg;
+      break;
+    case 'u':
+      uhex = 1;
+      break;
+    case '8':
+      utf8 = 1;
       break;
     default:
       usage();

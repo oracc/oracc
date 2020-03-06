@@ -68,6 +68,14 @@ frequency_test(struct ilem_form *fp, void *user, void *setup)
 }
 
 static int
+gw_eq_sense_test(struct ilem_form *fp, void *user, void *setup)
+{
+  if (!fp->f2.gw || !fp->f2.sense)
+    return 0;
+  return !strcmp((char*)fp->f2.gw,(char*)fp->f2.sense);
+}
+
+static int
 threshold_test(struct ilem_form *fp, void *user, void *setup)
 {
   return (lem_percent_threshold > fp->freq) ? 0 : 1;
@@ -232,6 +240,17 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
 		  if (fp->fcount > 1)
 		    {
 		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,default_isense_test,
+					  NULL,&fcount);
+		      if (fcount && fcount < fp->fcount)
+			{
+			  memcpy(fp->finds,fretp,(1+fcount)*sizeof(struct ilem_form *));
+			  fp->fcount = fcount;
+			}
+		    }
+		  if (fp->fcount > 1)
+		    {
+		      /* disambiguate cases where daku[kill] should match daku[kill//kill] but not daku[kill//defeat] */
+		      fretp = ilem_select(fp->finds,fp->fcount,NULL,NULL,gw_eq_sense_test,
 					  NULL,&fcount);
 		      if (fcount && fcount < fp->fcount)
 			{
