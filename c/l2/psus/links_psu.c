@@ -124,7 +124,12 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       lsp->links[i].role = "elt";
       lsp->links[i].title = (const char *)(mlp->matches[i].lp->f->f2.cf
 					   ? mlp->matches[i].lp->f->f2.cf
-					   : mlp->matches[i].lp->f->f2.pos);
+					   : (mlp->matches[i].lp->f->f2.norm
+					      ? mlp->matches[i].lp->f->f2.norm
+					      : (mlp->matches[i].lp->f->f2.pos
+						 ? mlp->matches[i].lp->f->f2.pos
+						 : mlp->matches[i].lp->f->f2.epos
+						 )));
       title_len += strlen(lsp->links[i].title);
       lsp->links[i].lp = mlp->matches[i].lp;
       lsp->links[i].lref = mlp->matches[i].lp->xml_id;

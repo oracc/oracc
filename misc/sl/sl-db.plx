@@ -440,8 +440,10 @@ subsign {
     $xsn =~ tr/|//d;
 
     if ($mode == TOP) {
+	$values{$sn} = $id;
 	$values{$xsn} = $id;
     } else {
+	push @{$values{$sn,'form'}}, $id;
 	push @{$values{$xsn,'form'}}, $id;
     }
 
