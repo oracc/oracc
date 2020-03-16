@@ -5,6 +5,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use Data::Dumper;
 use Encode;
 
+$ORACC::SMA2::Display::gcat_base_done = 0;
+
 sub
 xml_preamble {
     my($id,$n);
@@ -133,8 +135,9 @@ sprint {
                   'isf' => mcat(${$p{'isf'}}[1]),
                   'nsf' => mcat(${$p{'nsf'}}[1]),
                  );
-    my $auslaut = auslaut(${$p{'vsf'}}[1])
-	|| auslaut(${$p{'nsf'}}[1]);
+    #    my $auslaut = auslaut(${$p{'vsf'}}[1])
+    #	|| auslaut(${$p{'nsf'}}[1]);
+    my $auslaut = '';
 
     my $ret;
 #    $ret = (length($p{'pos'}) ? $p{'pos'} : 'O') . ' ';
@@ -250,6 +253,7 @@ mcat {
     my ($aref,$iref,$type) = @_;
     my @m = @{$aref};
     my @i = $iref ? @{$iref} : '';
+    $type = '' unless $type;
     shift @m;
     shift @i;
     if ($ORACC::SMA2::extended) {
@@ -336,6 +340,11 @@ sub gcat {
     my @g = $graph ? @$graph : (); shift @g;
     my @i = $igraph ? @$igraph : (); shift @i;
     my $s = '';
+    my $last_gix = 0;
+    if ($type ne 'vp') {
+	$s .= base_slot($base,$last_gix+1) unless $ORACC::SMA2::Display::gcat_base_done++;
+	$s .= ($type eq 'vs' ? ';' : (($type eq 'ns') ? ',' : '!'));
+    }
     for (my $i = 0; $i <= $#g; ++$i) {
 	if ($g[$i]) {
 	    my $slot = sprintf("%02d", $i+1); $slot =~ tr/0-9/₀-₉/;
@@ -346,6 +355,7 @@ sub gcat {
 	    if ($#gg > 0) {
 		foreach (@gg) {
 		    $gix .= 1+$_.'-';
+		    $last_gix = $_ if $_ > $last_gix;
 		}
 		$gix =~ s/-$//;
 	    } else {
@@ -363,6 +373,7 @@ sub gcat {
 	    if ($#ii > 0) {
 		foreach (@ii) {
 		    $gix .= 1+$_.'-';
+		    $last_gix = $_ if $_ > $last_gix;
 		}
 		$gix =~ s/-$//;
 	    } else {
@@ -371,19 +382,29 @@ sub gcat {
 	    1 while $gix =~ s/([0-9])/&upnum($1)/e;
 	    $gix =~ tr/-/⁻/;
 	    $s .= $gix;
-	    $s .= '-';
+	    $s .= '-';	    
 	}
     }
-    $s .= base_slot($base);
+    if ($type eq 'vp') {
+	$s =~ s/-$/:/;
+	$s .= base_slot($base,$last_gix+1);
+	$ORACC::SMA2::Display::gcat_base_done++;
+    }
 #    $s =~ s/-$//;
     Encode::_utf8_on($s);
     $s;
 }
 
 sub base_slot {
-    my $b = shift @_;
+    my ($b,$ix) = @_;
     my @b = split(/-/,$b);
-    "b₁=".join("₋",@b);
+    my @nb = ();
+    foreach (my $i = 0; $i <= $#b; ++$i) {
+	my $upix = $ix+$i;
+	1 while $upix =~ s/([0-9])/&upnum($1)/e;
+	push @nb, $b[$i].$upix;
+    }
+    "ba₁=".join("₋",@nb);
 }
 
 sub upnum {

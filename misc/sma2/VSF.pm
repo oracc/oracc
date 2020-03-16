@@ -6,8 +6,11 @@ require Exporter;
 
 use warnings; use strict; use utf8;
 
+use ORACC::SMA2::Graphinfo;
+
 use ORACC::SMA2::NSF;
 
+my $cont = '';
 my $dig = '[0-9₀-₉₊]';
 my %last_vsf = ('vsf'=>undef,
 		'ambig'=>undef,
@@ -48,6 +51,7 @@ my @vsm = qw/
 
 my @de_graphemes = qw/
     de3 de₃
+b
     da
     dam
     /;
@@ -59,6 +63,9 @@ my %de_graphemes = ();
 sub
 is_vsf {
     my ($root,$orth,$vpr,@g) = @_;
+
+    g_clear();
+
     my($ix,$vsf_ref,$ambig_ref) = parse_vsf(@_);
     my $ret;
     if ($ix <= $#g && exists($NSF::nsm{$g[$ix]})) {
@@ -70,7 +77,9 @@ is_vsf {
 
     $last_vsf{'post_vsf'} = $ix;
     $last_vsf{'vsf'} = $vsf_ref;
-    $last_vsf{'ambig'}= $ambig_ref;
+    $last_vsf{'ambig'} = $ambig_ref;
+    $last_vsf{'cont'} = $cont;
+    @last_vsf{'graph','igraph'} = (g_data());
 
     $ret;
 }
@@ -80,7 +89,9 @@ parse_vsf {
     my $root = shift;
     my $orth = shift;
     my $vpr = shift;
+    my @b = ();
     my @g = @_;
+    my $orig = join('-',@g);
     my $g_index = 0;
     my @vsf = ();
     my $rest = '';
@@ -90,6 +101,21 @@ parse_vsf {
     my $original_g0 = undef;
     my $possible_nonfunctional_a = 0;
 
+    my @breg = ();
+    my $dreg = undef;
+    my $sreg = '';
+    my @gix = ();
+
+    my ($gref,$bref) = g_breaks(@g);
+    my $gsub = '';
+    @b = @$bref;
+    @g = @$gref;    
+    
+    $root = '' unless $root;
+    $orth = '' unless $orth;
+    $vpr = '' unless $vpr;
+    warn "parse_vsf: root=$root; orth=$orth; vpr=$vpr; g = @g\n" if $ORACC::SMA2::verbose;
+    
 #    print STDERR "parse_vsf: entered with root = '$root'\n";
 
   PARSE:
@@ -108,16 +134,25 @@ parse_vsf {
 		    || ($auslaut eq 'd' && $g[0] =~ /^(?:ra[2₂]?|re[6₆]?|ru)$/)) {
 		    if ($vowel eq 'a') {
 			$g[0] = 'a';
-			$possible_nonfunctional_a = 1;
-			++$g_index;
+			if ($#g > 0) {
+			    $possible_nonfunctional_a = 1;
+	#		    ++$g_index; # if there is only one grapheme in @g this fails with -a
+			}
 		    } else {
 			$g[0] = 'e';
 		    }
+		    $cont = "$original_g0=$anlaut.$g[0]";
+	#	    if ($#g == 0) {
+	#		$vx = 3;
+	#		$rest = $g[0];
+	#	    }
 		} else {
 		    $auslaut = '';
 		}
-		$vsf[0] = $original_g0 
+
+		$vsf[0] = $original_g0
 		    if $anlaut && $auslaut; # && ($auslaut eq $anlaut);
+
 		if ($vsf[0] && $g[1]) {
 		    my $v = $vsf[0];
 		    $v =~ s/^.*?(.)$/$1/;
@@ -133,14 +168,20 @@ parse_vsf {
 	#VSF1
 	if ($g[0] eq 'e' || $g[0] eq 'u₈'
 	    || ($g[0] eq 'i' && ($root =~ /i/ || $orth =~ /i$dig*$/))
-	   ) {
+	    ) {
+
+	    $sreg = $gsub = $g[$g_index];
+	    @gix = ($g_index);
+	    @breg = ($b[$g_index]);
+	    g_reg(1,[$sreg,\@breg,\@gix,()]);
+
 	    ++$g_index;
 	    ++$g_index if $g_index <= $#g && $g[$g_index] eq 'e'; # skip pleonastic 'e'
 	    $vsf[1] = 'e';
 	    $vx = 2;
 	}
 
-	last PARSE if $g_index > $#g;
+	last PARSE if $g_index > $#g && !length($rest);
 
 	#VSF2
 	if (exists $de_graphemes{$g[$g_index]}
@@ -157,6 +198,12 @@ parse_vsf {
 		$rest = '';
 		$vx = 3;
 	    }
+
+	    $sreg = $gsub = $g[$g_index];
+	    @gix = ($g_index);
+	    @breg = ($b[$g_index]);
+	    g_reg(2,[$sreg,\@breg,\@gix,()]);
+
 	    ++$g_index;
 	}
 
@@ -197,6 +244,12 @@ parse_vsf {
 		    $g_index += 2; # only reach here on R-ze2-en
 		} elsif ($g[$g_index] eq 'ne') {
 		    $vsf[3] = 'ene';
+
+		    $sreg = $gsub = $g[$g_index];
+		    @gix = ($g_index);
+		    @breg = ($b[$g_index]);
+		    g_reg(3,[$sreg,\@breg,\@gix,()]);
+
 		    ++$g_index;
 		} elsif (($rest =~ /^[aeiu]$/ && $g[$g_index] =~ /^n/)
 			 || ($g_index 
@@ -210,6 +263,12 @@ parse_vsf {
 		    } else {
 			$rest = '';
 		    }
+
+		    $sreg = $gsub = $g[$g_index];
+		    @gix = ($g_index);
+		    @breg = ($b[$g_index]);
+		    g_reg(3,[$sreg,\@breg,\@gix,()]);
+
 		    ++$g_index;
 		} else {
 		    warn("untrapped VSF[3]: g = '$g[$g_index]'\n");
@@ -217,6 +276,13 @@ parse_vsf {
 		$vx = 4;
 	    } elsif ($g[$g_index] eq 'ne') {
 		$vsf[3] = 'ene';
+		
+		# FIX ME: THIS IS PROBABLY NOT RIGHT FOR -e-ne
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(3,[$sreg,\@breg,\@gix,()]);
+
 		++$g_index;
 		if ($g_index <= $#g && $g[$g_index] eq 'e') {
 		    ++$g_index;
@@ -225,10 +291,22 @@ parse_vsf {
 	    } elsif ($g[$g_index] =~ /^e[cš][2₂]?$/
 		    || (($root =~ /u/ || $orth =~ /u/) && $g[$g_index] =~ /^u[cš]$/)) {
 		$vsf[3] = 'eš';
+
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(3,[$sreg,\@breg,\@gix,()]);
+
 		++$g_index;
 		$vx = 4;
 	    } elsif ($g[$g_index] =~ /^[cš]a?$/) {
 		$vsf[3] = 'eš';
+
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(3,[$sreg,\@breg,\@gix,()]);
+
 		++$g_index;
 		$vx = 4;
 		$rest = 'a';
@@ -236,7 +314,7 @@ parse_vsf {
 	}
 
 	if ($possible_nonfunctional_a && $g_index >= $#g) {
-	    $vsf[0] .= '*';
+	#    $vsf[0] .= '*'; # how is this supposed to work?
 	}
 	
 	last PARSE if ($g_index > $#g && !length($rest));
@@ -247,6 +325,12 @@ parse_vsf {
 		|| ($g_index <= $#g && $g[$g_index] =~ /^am[36₃₆]$/)) {
 
 		$vsf[4] = 'am';
+
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(4,[$sreg,\@breg,\@gix,()]);
+		
 		++$g_index unless $rest eq 'am';
 		$vx = 5;
 		$rest = '';
@@ -260,6 +344,12 @@ parse_vsf {
 		    $vx = 6;
 		} else {
 		    $vsf[4] = 'a';
+
+		    $sreg = $gsub = $g[$g_index];
+		    @gix = ($g_index);
+		    @breg = ($b[$g_index]);
+		    g_reg(4,[$sreg,\@breg,\@gix,()]);
+
 		    if ($rest eq 'a') {
 			$rest = '';
 		    } else {
@@ -272,12 +362,24 @@ parse_vsf {
 		     && $vsf[3] =~ /n$/ && $g[$g_index] =~ /^n/) {
 
 		$vsf[4] = ($g[$g_index] =~ /m$dig*$/) ? 'am' : 'a';
+
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(4,[$sreg,\@breg,\@gix,()]);
+
 		++$g_index;
 		$vx = 5;
 
 	    } elsif ($g_index <= $#g && $g[$g_index] eq 'ma') {
 
 		$vsf[4] = 'ma';
+
+		$sreg = $gsub = $g[$g_index];
+		@gix = ($g_index);
+		@breg = ($b[$g_index]);
+		g_reg(4,[$sreg,\@breg,\@gix,()]);
+
 		++$g_index;
 		$vx = 5;
 	    }
@@ -292,6 +394,12 @@ parse_vsf {
 	    && (defined($vsf[4]) && $vsf[4] eq 'a')) {
 	    
 	    $vsf[5] = 'ri';
+
+	    $sreg = $gsub = $g[$g_index];
+	    @gix = ($g_index);
+	    @breg = ($b[$g_index]);
+	    g_reg(5,[$sreg,\@breg,\@gix,()]);
+
 	    ++$g_index;
 	    
 	} elsif ($g_index <= $#g && $g[$g_index] =~ /^ŋu₁₀|zu$/) {
