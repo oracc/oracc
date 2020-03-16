@@ -170,7 +170,13 @@ parse_vsf {
 	    || ($g[0] eq 'i' && ($root =~ /i/ || $orth =~ /i$dig*$/))
 	    ) {
 
-	    $sreg = $gsub = $g[$g_index];
+	    if ($g_index == 0 && $original_g0) {
+		warn "using original_g0 = $original_g0\n";
+		$sreg = $gsub = $original_g0;
+	    } else {
+		warn "not using original_g0 = $original_g0; g_index = $g_index\n";
+		$sreg = $gsub = $g[$g_index];
+	    }
 	    @gix = ($g_index);
 	    @breg = ($b[$g_index]);
 	    g_reg(1,[$sreg,\@breg,\@gix,()]);
@@ -326,7 +332,14 @@ parse_vsf {
 
 		$vsf[4] = 'am';
 
-		$sreg = $gsub = $g[$g_index];
+		if ($g_index == 0 && $original_g0) {
+		    warn "vsf[4]=am: using original_g0 = $original_g0\n";
+		    $sreg = $gsub = $original_g0;
+		} else {
+		    warn "vsf[4]=am: not using original_g0 = $original_g0; g_index = $g_index\n";
+		    $sreg = $gsub = $g[$g_index];
+		}
+
 		@gix = ($g_index);
 		@breg = ($b[$g_index]);
 		g_reg(4,[$sreg,\@breg,\@gix,()]);
@@ -345,7 +358,14 @@ parse_vsf {
 		} else {
 		    $vsf[4] = 'a';
 
-		    $sreg = $gsub = $g[$g_index];
+		    if ($g_index == 0 && $original_g0) {
+			warn "vsf[4]=a: using original_g0 = $original_g0\n";
+			$sreg = $gsub = $original_g0;
+		    } else {
+			warn "vsf[4]=a: not using original_g0 = $original_g0; g_index = $g_index\n";
+			$sreg = $gsub = $g[$g_index];
+		    }
+
 		    @gix = ($g_index);
 		    @breg = ($b[$g_index]);
 		    g_reg(4,[$sreg,\@breg,\@gix,()]);

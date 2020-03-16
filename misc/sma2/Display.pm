@@ -340,11 +340,21 @@ sub gcat {
     my @g = $graph ? @$graph : (); shift @g;
     my @i = $igraph ? @$igraph : (); shift @i;
     my $s = '';
-    my $last_gix = 0;
-    if ($type ne 'vp') {
-	$s .= base_slot($base,$last_gix+1) unless $ORACC::SMA2::Display::gcat_base_done++;
+    my $init_gix = 0;
+    if ($type ne 'vp' && !$ORACC::SMA2::Display::gcat_base_done++) {
+	$s .= base_slot($base);
 	$s .= ($type eq 'vs' ? ';' : (($type eq 'ns') ? ',' : '!'));
     }
+    if ($type eq 'vs') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'vsf'} || 0;
+    } elsif ($type eq 'ns') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'nsf'} || 0;
+    } elsif ($type eq 'is') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'isf'} || 0;
+    } else {
+	$init_gix = 1;
+    }
+    # warn "init_gix = $init_gix\n"; 215-980-9989
     for (my $i = 0; $i <= $#g; ++$i) {
 	if ($g[$i]) {
 	    my $slot = sprintf("%02d", $i+1); $slot =~ tr/0-9/₀-₉/;
@@ -354,12 +364,11 @@ sub gcat {
 	    my $gix = '';
 	    if ($#gg > 0) {
 		foreach (@gg) {
-		    $gix .= 1+$_.'-';
-		    $last_gix = $_ if $_ > $last_gix;
+		    $gix .= $init_gix+$_.'-';
 		}
 		$gix =~ s/-$//;
 	    } else {
-		$gix = ''.$gg[0]+1;
+		$gix = ''.$init_gix+$gg[0];
 	    }
 	    1 while $gix =~ s/([0-9])/&upnum($1)/e;
 	    $gix =~ tr/-/⁻/;
@@ -372,12 +381,11 @@ sub gcat {
 	    my $gix = '';
 	    if ($#ii > 0) {
 		foreach (@ii) {
-		    $gix .= 1+$_.'-';
-		    $last_gix = $_ if $_ > $last_gix;
+		    $gix .= 1+$init_gix+$_.'-';
 		}
 		$gix =~ s/-$//;
 	    } else {
-		$gix = ''.$ii[0]+1;
+		$gix = ''.$ii[0]+1+$init_gix;
 	    }
 	    1 while $gix =~ s/([0-9])/&upnum($1)/e;
 	    $gix =~ tr/-/⁻/;
@@ -387,18 +395,19 @@ sub gcat {
     }
     if ($type eq 'vp') {
 	$s =~ s/-$/:/;
-	$s .= base_slot($base,$last_gix+1);
+	$s .= base_slot($base);
 	$ORACC::SMA2::Display::gcat_base_done++;
     }
-#    $s =~ s/-$//;
+    $s =~ s/-$//;
     Encode::_utf8_on($s);
     $s;
 }
 
 sub base_slot {
-    my ($b,$ix) = @_;
+    my ($b) = @_;
     my @b = split(/-/,$b);
     my @nb = ();
+    my $ix = $ORACC::SMA2::Base::gindices{'bas'};
     foreach (my $i = 0; $i <= $#b; ++$i) {
 	my $upix = $ix+$i;
 	1 while $upix =~ s/([0-9])/&upnum($1)/e;
