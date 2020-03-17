@@ -3,6 +3,7 @@ use warnings; use strict; use open ':utf8'; use utf8;
 binmode STDERR, ':utf8'; binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
 use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::SL::BaseC;
+use ORACC::CBD::Util;
 use ORACC::CBD::PPWarn;
 use Getopt::Long;
 
@@ -21,6 +22,9 @@ GetOptions(
 );
 
 my %cpd = ();
+my $formflag = 0;
+my $formsig = '';
+my $formtlit = '';
 my %known_bad = ();
 my %seen = ();
 
@@ -59,11 +63,21 @@ while (<>) {
 	next if $seen{$t}++;
 	my $s = ORACC::SL::BaseC::tlit_sig('',$t);
 	my @m = ORACC::SL::BaseC::messages();
-	if ($#m >= 0) {
+	if ($#m >= 0 && $formflag != 1) {
 	    foreach my $m (@m) {
 		pp_warn($m);
 	    }
 	    ${$known_bad{$t}} = [ @m ];
+	}
+	if ($formflag == 2) {
+	    $formflag = 0;
+	    if ($formsig !~ /$s/) {
+		pp_warn("form $formtlit does not contain base $t");
+	    }
+	} elsif ($formflag == 1) {
+	    ++$formflag;
+	    $formsig = $s;
+	    $formtlit = $t;
 	}
 	print "$t\t$s\n" if $output;
     }
@@ -85,7 +99,7 @@ pp_diagnostics(\%args);
 
 sub make_todo_list {
     my $line = shift;
-    if ($nametab) {	
+    if ($nametab) {
 	$line =~ /^(?:.*?:)?(\S+)/;
 	my $todo = $1;
 	return ($todo);
@@ -93,6 +107,24 @@ sub make_todo_list {
 	$line =~ /(?:sux.*?:)(\S+?)=/;
 	my $todo = $1;
 	return ($todo) if $todo;
+    } elsif ($line =~ /\@form/) {
+	if ($line =~ /\@form\s+(\S+)\s+/) {
+	    my $f = $1;
+	    $f =~ s#\\.*$##;
+	    if ($line =~ m#\@form.*?\s/(\S+)#) {
+		my $b = $1;
+		$formflag = 1;
+		return ($f,$b);
+	    } else {
+		return ($f);
+	    }
+	} else {
+	    $formflag = 0;
+	    return ();
+	}
+    } else {
+	$line =~ s/^\s*//; $line =~ s/\s*$//;
+	return split(/\s+/, $line);
     }
     ()
 }

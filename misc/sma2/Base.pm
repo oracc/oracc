@@ -21,6 +21,7 @@ $ORACC::SMA2::no_external_bases = 0;
 $ORACC::SMA2::try_only_zero = 0;
 $ORACC::SMA2::period = '';
 $ORACC::SMA2::verbose = 1;
+%ORACC::SMA2::Base::gindices = ();
 
 my $sma_debug = 0;
 my %bases = ();
@@ -126,6 +127,7 @@ parse {
     my @bases = ();
     my %found_bases = ();
     my $disamb = '';
+    my %gindices = ();
 
     if ($form =~ s/\\(.*)$//) {
 	$disamb = $1;
@@ -205,6 +207,7 @@ parse {
 	my $obase = $b;
 	my $backup = ($b =~ tr/·//d);
 	my $prefbase = ($b =~ tr/°//d);
+	my @bas_g = ();
 #	if ($form =~ /(?:^|(\S+?)-)($b(?:-$b)*)(?:-(\S+))?$/) {
 	my $qb = quotemeta($b);
 	warn "matching quoted base `$qb'\n" if $ORACC::SMA2::verbose;
@@ -229,6 +232,7 @@ parse {
 	    print STDERR "INIT: $form => '$pre' / '$bas' / '$post'\n" 
 		if $sma_debug;
 	    if ($bas) {
+		@bas_g = split(/-/,$bas);
 		if ($basemap{"$lemma/$obase"}) {
 		    ++$found_bases{$basemap{"$lemma/$obase"}};
 		} else {
@@ -257,6 +261,7 @@ parse {
 		    if ($pre) {
 			warn("vpr_g = `$pre'\n") if $ORACC::SMA2::verbose;
 			my @vpr_g = split(/-/,$pre);
+			$gindices{'bas'} = $#vpr_g+1+1;
 			if (is_vpr(@vpr_g,'')) {
 			    my $vpr_ref = get_last_vpr();
 			    my $vpr = $$vpr_ref{'vpr'};
@@ -272,10 +277,13 @@ parse {
 			} else { # if there is pre but no vpr it doesn't parse
 			    next;
 			}
+		    } else {
+			$gindices{'bas'} = 0;
 		    }
 		    if ($post) {
 			my @vsf_g = split(/-/,$post);
 			if (($have_vsf = is_vsf($cf,$bas,$have_vpr,@vsf_g,''))) {
+			    $gindices{'vsf'} = $gindices{'bas'} + $#bas_g + 1;
 			    my $vsf_ref = get_last_vsf();
 			    my $vsf = $$vsf_ref{'vsf'};
 			    $p{'vsf'} = $vsf_ref;
@@ -283,6 +291,7 @@ parse {
 			    ORACC::SMA2::Display::mcat($vsf), "\n"
 				if $sma_debug;
 			    if ($$vsf_ref{'post_vsf'} <= $#vsf_g) {
+				$gindices{'nsf'} = $gindices{'vsf'} + $$vsf_ref{'post_vsf'};
 				if ($$vsf_ref{'post_vsf'} == $#vsf_g) {
 				    @nsf_g = ($vsf_g[$#vsf_g]);
 				} else {
@@ -294,6 +303,7 @@ parse {
 				    $nsf_cf = $cf;
 				}
 			    } else {
+				$gindices{'nsf'} = 0;
 				goto ok;
 			    }
 			} else {
@@ -304,17 +314,21 @@ parse {
 
 			if ($#nsf_g >= 0 && is_nsf($nsf_cf,$bas,@nsf_g)) {
 			    my $nsf_ref = get_last_nsf();
+			    $gindices{'nsf'} = $gindices{'bas'} + $#bas_g + 1;
 			    if ($$nsf_ref{'post_nsf'} > $#nsf_g) {
 				my $nsf = $$nsf_ref{'nsf'};
 				$p{'nsf'} = $nsf_ref;
 				goto ok;
 			    }
+			} else {
+			    $gindices{'nsf'} = $0;
 			}
 
 			my @isf_g = split(/-/,$post);
 			if (!$have_vpr && $#isf_g >= 0) {
 			    if (is_isf($cf,@isf_g)) {
 				my $isf_ref = get_last_isf();
+				$gindices{'isf'} = $gindices{'bas'} + $#bas_g + 1;
 				if ($$isf_ref{'post_isf'} > $#isf_g) {
 				    my $isf = $$isf_ref{'isf'};
 				    $p{'isf'} = $isf_ref;
@@ -322,6 +336,8 @@ parse {
 				    delete $p{'nsf'};
 				    goto ok;
 				}
+			    } else {
+				$gindices{'isf'} = $gindices{'bas'} + $#bas_g + 1;
 			    }
 			}
 			next;
@@ -330,6 +346,7 @@ parse {
 		    if ($post) {
 			my @nsf_g = split(/-/,$post);
 			if (is_nsf($cf,$bas,@nsf_g)) {
+			    $gindices{'nsf'} = $gindices{'bas'} + $#bas_g + 1;
 			    my $nsf_ref = get_last_nsf();
 			    if ($$nsf_ref{'post_nsf'} > $#nsf_g) {
 				my $nsf = $$nsf_ref{'nsf'};
@@ -353,6 +370,11 @@ parse {
 	print STDERR Dumper(\@found_bases);
 	print STDERR "Dump of \@parses:\n";
 	print STDERR Dumper(\@parses);
+    }
+    %ORACC::SMA2::Base::gindices = %gindices;
+    if ($ORACC::SMA2::verbose) {
+	print STDERR "parse exit gindices=\n";
+	print STDERR Dumper \%ORACC::SMA2::Base::gindices;
     }
     (\@found_bases, @parses);
 }

@@ -492,38 +492,42 @@ disambig_morph {
 sub
 get_info {
     my %p = %{$_[0]};
+    $ORACC::SMA2::Display::gcat_base_done = 0;
     my ($cont,$morph,$graph,$m2) = ('0','','','');
     if ($p{'vpr'}) {
 	my $vpr_ref = $p{'vpr'};
-	$morph .= ORACC::SMA2::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'inter'},'vpr');
+	$morph .= ORACC::SMA2::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'inter'},'vp');
 	$morph .= ':';
-	$graph .= ORACC::SMA2::Display::gcat($$vpr_ref{'graph'},$$vpr_ref{'igraph'},$base,'vpr');
+	$graph .= ORACC::SMA2::Display::gcat($$vpr_ref{'graph'},$$vpr_ref{'igraph'},$base,'vp');
     }
     $morph .= '~';
     if ($p{'vsf'}) {
 	my $vsf_ref = $p{'vsf'};
-	$cont = ORACC::SMA2::Display::auslaut($$vsf_ref{'vsf'}) || '0';
-	if ($cont =~ s/\*=/=/) {
+	#	$cont = ORACC::SMA2::Display::auslaut($$vsf_ref{'vsf'}) || '0';
+	$cont = $$vsf_ref{'cont'} || '0';
+	if ($cont =~ s/\*=/=/) { # not currently implemented
 	    $morph .= ";(a).";
 	} else {
 	    $morph .= ';';
 	}
-	$morph .= ORACC::SMA2::Display::mcat($$vsf_ref{'vsf'},$$vsf_ref{'inter'},'vsf');
-	$graph .= ORACC::SMA2::Display::gcat($$vsf_ref{'graph'},$$vsf_ref{'igraph'},$base,'vsf');
+	$morph .= ORACC::SMA2::Display::mcat($$vsf_ref{'vsf'},$$vsf_ref{'inter'},'vs');
+	$graph .= ';' if $graph;
+	$graph .= ORACC::SMA2::Display::gcat($$vsf_ref{'graph'},$$vsf_ref{'igraph'},$base,'vs');
     }
     if ($p{'nsf'}) {
 	my $nsf_ref = $p{'nsf'};
+	$cont = $$nsf_ref{'cont'} || '0';
 	$morph .= ',';
-	$morph .= ORACC::SMA2::Display::mcat($$nsf_ref{'nsf'},$$nsf_ref{'inter'},'nsf');
-	$cont = ORACC::SMA2::Display::auslaut($$nsf_ref{'nsf'}) || '0';
-	$graph .= ORACC::SMA2::Display::gcat($$nsf_ref{'graph'},$$nsf_ref{'igraph'},$base,'nsf');
+	$morph .= ORACC::SMA2::Display::mcat($$nsf_ref{'nsf'},$$nsf_ref{'inter'},'ns');
+	$graph .= ';' if $graph;
+	$graph .= ORACC::SMA2::Display::gcat($$nsf_ref{'graph'},$$nsf_ref{'igraph'},$base,'ns');
     }
     if ($p{'isf'}) {
 	my $isf_ref = $p{'isf'};
+	$cont = $$isf_ref{'cont'} || '0';
 	$morph .= '!';
-	$morph .= ORACC::SMA2::Display::mcat($$isf_ref{'isf'},$$isf_ref{'inter'},'isf');
-	$cont = ORACC::SMA2::Display::auslaut($$isf_ref{'isf'}) || '0';
-	$graph .= ORACC::SMA2::Display::gcat($$isf_ref{'graph'},$$isf_ref{'igraph'},$base,'isf');
+	$morph .= ORACC::SMA2::Display::mcat($$isf_ref{'isf'},$$isf_ref{'inter'},'is');
+	$graph .= ORACC::SMA2::Display::gcat($$isf_ref{'graph'},$$isf_ref{'igraph'},$base,'is');
     }
     if ($cont && !$p{'backup'}) {
 	$cont =~ s/=/=+/;
