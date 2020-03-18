@@ -39,6 +39,11 @@ my $build_mode = length $prefix;
 my $refsxml_fn = ($build_mode 
 		  ? "$prefix/misc/xdf/refs.xml" 
 		  : '@@ORACC@@/lib/data/refs.xml');
+
+my $rnv = ($build_mode 
+	   ? "$prefix/c/bin/rnv/rnv" 
+	   : '@@ORACC@@/bin/rnv');
+
 my $xdf_rnc = ($build_mode
 	       ? "$prefix/misc/xdf/xdf.rnc"
 	       : '@@ORACC@@/lib/data/xdf.rnc');
@@ -935,7 +940,7 @@ rnv {
 	    print STDERR "checking grammar $rnc ...\n";
 	}
     }
-    system("rnv -q -c $rnc $doc 2>rnv.log");
+    system("$rnv -q -c $rnc $doc 2>rnv.log");
     unless (-z 'rnv.log') {
 	# seems like there should be an easier way to cat
 	# to stderr than the following...
