@@ -58,7 +58,7 @@ p3-xmd-div.xsl: p3-xmd-div.xsl.in
 	$(ORACCIFY) p3-xmd-div.xsl.in
 
 colour_nn.html: colour_nn.css colour_nn-html.plx
-	colour_nn-html.plx
+	./colour_nn-html.plx
 
 extra_DIST=\
 	Slicer.pm
