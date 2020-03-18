@@ -28,4 +28,5 @@ apt install \
     gsoap libgsoap-dev \
     libfrontier-rpc-perl \
     jq \
-    msort
+    msort \
+    libxmlrpc-core-c3-dev
