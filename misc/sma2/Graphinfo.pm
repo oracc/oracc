@@ -2,7 +2,7 @@ package ORACC::SMA2::Graphinfo;
 
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/g_breaks g_data g_reg g_skip/;
+@EXPORT = qw/g_breaks g_clear g_data g_reg g_skip g_sub/;
 
 use warnings; use strict; use utf8; use open 'utf8';
 
@@ -39,11 +39,17 @@ g_breaks {
 }
 
 sub
-g_data {
-    return ([ @data ], [ @idata]);
+g_clear {
+    @data = ();
+    @idata = ();
 }
 
-# Args are the VPR slot; string version of graphemes
+sub
+g_data {
+    return ([ @data ], [ @idata ]);
+}
+
+# Args are the morphology slot; string version of graphemes
 # (hyphen-separated); ref to a list of grapheme indexes; index of
 # first char in graphemes that belongs to the morphem; index of last
 # char in graphemes that belongs to the morpheme.
@@ -110,6 +116,12 @@ g_reg {
 sub g_skip {
     my($at,$g,$ix) = @_;
     $idata[$at] = [ "₀$g" , $ix ];
+}
+
+sub g_sub {
+    my($from,$to) = @_;
+    $data[$to] = $data[$from];
+    $data[$from] = undef;
 }
 
 1;

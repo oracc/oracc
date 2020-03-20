@@ -10,7 +10,12 @@ function check_env_or_die {
 ORACC=$1
 
 xetex=`which xetex`
-TeXLive=`dirname $xetex`
+if [ "$xetex" == "" ]; then
+    echo "$0: xetex not yet installed"
+    TeXLive=missing-texlive
+else
+    TeXLive=`dirname $xetex`
+fi
 
 check_env_or_die ORACC_BUILDS $ORACC_BUILDS
 check_env_or_die ORACC_HOME $ORACC_HOME

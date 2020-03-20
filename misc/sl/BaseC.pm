@@ -466,7 +466,7 @@ _signature {
 	    }
 	    $sn =~ tr/\cA/./;
 	    my $sn_id = is_form($sn) || is_sign($sn);
-	    warn "g=$g; sn=$sn; sn_id=$sn_id\n";
+#	    warn "g=$g; sn=$sn; sn_id=$sn_id\n";
 #	    if ($sn =~ /ŠE.A.AN/) {
 #		warn "$sn => $sn_id\n";
 #	    }

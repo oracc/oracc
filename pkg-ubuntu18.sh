@@ -27,6 +27,7 @@ apt install \
     default-jre default-jdk \
     gsoap libgsoap-dev \
     libfrontier-rpc-perl \
-    jq
-
-#    policycoreutils-python \
+    jq \
+    msort \
+    libxmlrpc-core-c3-dev \
+    zip

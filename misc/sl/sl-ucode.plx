@@ -10,8 +10,9 @@ ORACC::SL::BaseC::init();
 my @sl = `cat 00lib/ogsl.asl`; chomp @sl;
 
 for (my $i = 0; $i <= $#sl; ++$i) {
+    print $sl[$i], "\n";
     if (($sl[$i] =~ /^\@sign/ || $sl[$i] =~ /^\@form/) && $sl[$i] =~ /\|/) {
-	unless (has_ucode($i)) {
+	unless (has_ucode($i+1)) {
 	    my($s) = ($sl[$i] =~ /(\S+)\s*$/);
 	    my $u = ORACC::SL::BaseC::tlit2uni('',$s);
 	    my @m = ORACC::SL::BaseC::messages();

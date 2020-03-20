@@ -52,7 +52,9 @@ sub m2m2 {
 	my $key = "$_";
 	my $m2 = $m2{$key};
 	if ($m2) {
-	    $s .= $m2;
+	    my $slot = $key;
+	    $slot =~ s/=.*$//;
+	    $s .= "$slot=$m2";
 	    $s .= '.';
 	} else {
 	    warn "m2: no equivalency for $key\n";
@@ -80,87 +82,101 @@ sub m2_init {
 
 __DATA__
 
-vpr₀₁=0		IND
-vpr₀₁=nu	NEG
-vpr₀₁=bara	M1
-vpr₀₁=ga	M2
-vpr₀₁=ha	M3
-vpr₀₁=na	M4
-vpr₀₁=nuš	M5
-vpr₀₁=u		M6
-vpr₀₁=ša	M7
+vp₀₁=0		IND
+vp₀₁=nu	NEG
+vp₀₁=bara	M1
+vp₀₁=ga	M2
+vp₀₁=ha	M3
+vp₀₁=na	M4
+vp₀₁=nuš	M5
+vp₀₁=u		M6
+vp₀₁=ša	M7
 
-vpr₀₂=inga	CNJ
+vp₀₂=inga	CNJ
 
-vpr₀₃=mu	C1
-vpr₀₃=ba	C2
-vpr₀₃=V		C3
-vpr₀₃=Vmma	C4
-vpr₀₃=al	C5
+vp₀₃=mu	C1
+vp₀₃=ba	C2
+vp₀₃=V		C3
+vp₀₃=Vmma	C4
+vp₀₃=al	C5
 
-vpr₀₄=a		D1s
-vpr₀₄=ra	D2s
-vpr₀₄=na	D3s
-vpr₀₄=me	D1p
-vpr₀₄=ne	D3p
+vp₀₄=a		D1s
+vp₀₄=ra	D2s
+vp₀₄=na	D3s
+vp₀₄=me	D1p
+vp₀₄=ne	D3p
 
-vpr₀₅=m		Pm
-vpr₀₅=e		P2
-vpr₀₅=n		P3a
-vpr₀₅=b		P3i
+vp₀₅=m		Pm
+vp₀₅=e		P2
+vp₀₅=n		P3a
+vp₀₅=b		P3i
 
-vpr₀₆=da	COM
+vp₀₆=da	COM
 
-vpr₀₇=m		Pm
-vpr₀₇=e		P2
-vpr₀₇=n		P3a
-vpr₀₇=b		P3i
+vp₀₇=m		Pm
+vp₀₇=e		P2
+vp₀₇=n		P3a
+vp₀₇=b		P3i
 
-vpr₀₈=ši	ALL
-vpr₀₈=ta	ABL
+vp₀₈=ši	ALL
+vp₀₈=ta	ABL
 
-vpr₀₉=ni	L0C0
-vpr₀₉=a		L0C1
-vpr₀₉=i		L0C2
+vp₀₉=ni	L0C0
+vp₀₉=a		L0C1
+vp₀₉=i		L0C2
 
-vpr₁₀=m		Pm
-vpr₁₀=e		P2
-vpr₁₀=en	P0	for 1p use P0-1 for 2p use P0-2
-vpr₁₀=n		P3a
-vpr₁₀=b		P3i
+vp₁₀=m		Pm
+vp₁₀=e		P2
+vp₁₀=en	P0	for 1p use P0-1 for 2p use P0-2
+vp₁₀=n		P3a
+vp₁₀=b		P3i
 
-nsf₀₁=ak	GEN
-nsf₀₂=ŋu	POSS1s
-nsf₀₂=zu	POSS2s
-nsf₀₂=ani	POSS3sa
-nsf₀₂=bi	POSS3si
-nsf₀₂=me	POSS1p
-nsf₀₂=zunene	POSS2p
-nsf₀₂=anene	POSS3p
-nsf₀₂=bida	POSS3d
+vs₀₁=e		AF
 
-nsf₀₃=ak	GEN
+vs₀₂=de       	FO
 
-nsf₀₄=ene	PLUR
+vs₀₃=en	P0s	for 1p use P0s-1 for 2p use P0s-2
+vs₀₃=e		P3s
+vs₀₃=enden	P1p
+vs₀₃=enzen	P2p	
+vs₀₃=ene	P3p
+vs₀₃=eš	P3p
 
-nsf₀₅=ak	GEN
+vs₀₄=a		NOM
+vs₀₄=am       	COP
 
-nsf₀₆=ene	PLUR
+ns₀₁=ak	GEN
+ns₀₂=ŋu	POSS1s
+ns₀₂=zu	POSS2s
+ns₀₂=ani	POSS3sa
+ns₀₂=bi	POSS3si
+ns₀₂=me	POSS1p
+ns₀₂=zunene	POSS2p
+ns₀₂=anene	POSS3p
+ns₀₂=bida	POSS3d
 
-nsf₀₇=e		ERG
-nsf₀₇=0		ABS
-nsf₀₇=ra	DAT
-nsf₀₇=ta	ABL
-nsf₀₇=da	COM
-nsf₀₇=a		LC1
-nsf₀₇=l		LC2
-nsf₀₇=v		VOC
-nsf₀₇=eše	ALL
-nsf₀₇=gin	EQU
+ns₀₃=ak	GEN
 
-nsf₀₈=men1	COP1s
-nsf₀₈=men2	COP2s
-nsf₀₈=am	COP3s
-nsf₀₈=menden	COP1p
-nsf₀₈=menzen	COP2p
-nsf₀₈=meš	COP3p
+ns₀₄=ene	PLUR
+
+ns₀₅=ak	GEN
+
+ns₀₆=ene	PLUR
+
+ns₀₇=e		ERG
+ns₀₇=0		ABS
+ns₀₇=ra	DAT
+ns₀₇=ta	ABL
+ns₀₇=da	COM
+ns₀₇=a		LC1
+ns₀₇=l		LC2
+ns₀₇=v		VOC
+ns₀₇=eše	ALL
+ns₀₇=gin	EQU
+
+ns₀₈=men1	COP1s
+ns₀₈=men2	COP2s
+ns₀₈=am	COP3s
+ns₀₈=menden	COP1p
+ns₀₈=menzen	COP2p
+ns₀₈=meš	COP3p

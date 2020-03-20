@@ -833,6 +833,7 @@ parse_vpr {
 		if ($i == 7 || $i == 5) {
 		    $vpr[10] = $vpr[$i];
 		    $vpr[$i] = undef;
+		    g_sub(5,10);
 		} else {
 		    last;
 		}

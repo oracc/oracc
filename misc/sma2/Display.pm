@@ -5,6 +5,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use Data::Dumper;
 use Encode;
 
+$ORACC::SMA2::Display::gcat_base_done = 0;
+
 sub
 xml_preamble {
     my($id,$n);
@@ -133,8 +135,9 @@ sprint {
                   'isf' => mcat(${$p{'isf'}}[1]),
                   'nsf' => mcat(${$p{'nsf'}}[1]),
                  );
-    my $auslaut = auslaut(${$p{'vsf'}}[1])
-	|| auslaut(${$p{'nsf'}}[1]);
+    #    my $auslaut = auslaut(${$p{'vsf'}}[1])
+    #	|| auslaut(${$p{'nsf'}}[1]);
+    my $auslaut = '';
 
     my $ret;
 #    $ret = (length($p{'pos'}) ? $p{'pos'} : 'O') . ' ';
@@ -250,6 +253,7 @@ mcat {
     my ($aref,$iref,$type) = @_;
     my @m = @{$aref};
     my @i = $iref ? @{$iref} : '';
+    $type = '' unless $type;
     shift @m;
     shift @i;
     if ($ORACC::SMA2::extended) {
@@ -336,6 +340,21 @@ sub gcat {
     my @g = $graph ? @$graph : (); shift @g;
     my @i = $igraph ? @$igraph : (); shift @i;
     my $s = '';
+    my $init_gix = 0;
+    if ($type ne 'vp' && !$ORACC::SMA2::Display::gcat_base_done++) {
+	$s .= base_slot($base);
+	$s .= ($type eq 'vs' ? ';' : (($type eq 'ns') ? ',' : '!'));
+    }
+    if ($type eq 'vs') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'vsf'} || 0;
+    } elsif ($type eq 'ns') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'nsf'} || 0;
+    } elsif ($type eq 'is') {
+	$init_gix = $ORACC::SMA2::Base::gindices{'isf'} || 0;
+    } else {
+	$init_gix = 1;
+    }
+    # warn "init_gix = $init_gix\n"; 215-980-9989
     for (my $i = 0; $i <= $#g; ++$i) {
 	if ($g[$i]) {
 	    my $slot = sprintf("%02d", $i+1); $slot =~ tr/0-9/₀-₉/;
@@ -345,11 +364,11 @@ sub gcat {
 	    my $gix = '';
 	    if ($#gg > 0) {
 		foreach (@gg) {
-		    $gix .= 1+$_.'-';
+		    $gix .= $init_gix+$_.'-';
 		}
 		$gix =~ s/-$//;
 	    } else {
-		$gix = ''.$gg[0]+1;
+		$gix = ''.$init_gix+$gg[0];
 	    }
 	    1 while $gix =~ s/([0-9])/&upnum($1)/e;
 	    $gix =~ tr/-/⁻/;
@@ -362,28 +381,39 @@ sub gcat {
 	    my $gix = '';
 	    if ($#ii > 0) {
 		foreach (@ii) {
-		    $gix .= 1+$_.'-';
+		    $gix .= 1+$init_gix+$_.'-';
 		}
 		$gix =~ s/-$//;
 	    } else {
-		$gix = ''.$ii[0]+1;
+		$gix = ''.$ii[0]+1+$init_gix;
 	    }
 	    1 while $gix =~ s/([0-9])/&upnum($1)/e;
 	    $gix =~ tr/-/⁻/;
 	    $s .= $gix;
-	    $s .= '-';
+	    $s .= '-';	    
 	}
     }
-    $s .= base_slot($base);
-#    $s =~ s/-$//;
+    if ($type eq 'vp') {
+	$s =~ s/-$/:/;
+	$s .= base_slot($base);
+	$ORACC::SMA2::Display::gcat_base_done++;
+    }
+    $s =~ s/-$//;
     Encode::_utf8_on($s);
     $s;
 }
 
 sub base_slot {
-    my $b = shift @_;
+    my ($b) = @_;
     my @b = split(/-/,$b);
-    "b₁=".join("₋",@b);
+    my @nb = ();
+    my $ix = $ORACC::SMA2::Base::gindices{'bas'};
+    foreach (my $i = 0; $i <= $#b; ++$i) {
+	my $upix = $ix+$i;
+	1 while $upix =~ s/([0-9])/&upnum($1)/e;
+	push @nb, $b[$i].$upix;
+    }
+    "ba₁=".join("₋",@nb);
 }
 
 sub upnum {
