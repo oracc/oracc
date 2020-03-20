@@ -1,6 +1,9 @@
 #!/bin/sh
 . ./oraccenv.sh
-serve-install.sh xcat build-oracc.museum.upenn.edu
-serve-install.sh qcat build-oracc.museum.upenn.edu
-serve-install.sh ogsl build-oracc.museum.upenn.edu
-serve-install.sh cdli build-oracc.museum.upenn.edu
+proj="xcat qcat ogsl cdli"
+for a in $proj ; do
+    serve-install.sh $a build-oracc.museum.upenn.edu
+done
+for a in $proj ; do
+    serve-index.sh $a build-oracc.museum.upenn.edu
+done
