@@ -29,4 +29,5 @@ apt install \
     libfrontier-rpc-perl \
     jq \
     msort \
-    libxmlrpc-core-c3-dev
+    libxmlrpc-core-c3-dev \
+    zip

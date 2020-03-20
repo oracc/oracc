@@ -7,4 +7,4 @@ done
 for a in $proj ; do
     serve-index.sh $a build-oracc.museum.upenn.edu
 done
-ln -sf /home/oracc/pub/cdli/catpnums.vec /home/oracc/lib/data/
+ln -sf $ORACC_BUILDS/pub/cdli/catpnums.vec $ORACC_BUILDS/lib/data/
