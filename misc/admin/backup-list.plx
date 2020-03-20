@@ -13,6 +13,8 @@ my $refdate = ($reffile ? (stat($reffile))[9] : 0);
 
 #warn "$refdate\n";
 
+dotfiles();
+
 my $cdir = '';
 my @dirs = grep !/00any/, <00*>;
 find(\&wanted, @dirs);
@@ -25,6 +27,15 @@ if ($deep) {
 	@dirs = grep !/00any/, eval "<$s/00*>";
 	find(\&wanted, @dirs);
     }
+}
+
+########################################################################
+
+sub dotfiles {
+    print ".bashrc\n" if -r '.bashrc';
+    print ".bash_profile\n" if -r '.bash_profile';
+    print ".emacs\n" if -r '.emacs';
+    print ".profile\n" if -r '.profile';
 }
 
 sub
