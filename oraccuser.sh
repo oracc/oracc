@@ -14,9 +14,9 @@ if [ "$uname" = "Linux" ]; then
     sudo chmod -R g+rx /home/oracc
     sudo chmod -R go-w /home/oracc
     sudo chmod -R o-r /home/oracc
+    printf '%s' oracc >.oraccuser
+    printf '%s' oracc >.oraccgroup
 else
-    if [ ! -d /Users/oracc ]; then
-	fail 'oracc-user.sh: please create the oracc user on this machine before proceeding'
-    fi
-    chmod o+r /Users/oracc
+    echo "$0: oracc multi-user mode only supported on Linux. Stop."
+    exit 1
 fi

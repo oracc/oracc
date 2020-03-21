@@ -35,13 +35,14 @@ mkdir -p $ORACC_BUILDS/snc
 mkdir -p $ORACC_BUILDS/lib/data
 if [ "$ORACC_MODE" = "single" ]; then
     cp usermode-single.xml $ORACC_BUILDS/lib/data/usermode.xml
-    oraccuser=`cat .oraccuser`
 else
     cp usermode-multi.xml $ORACC_BUILDS/lib/data/usermode.xml
-    oraccuser=oracc
 fi
+oraccuser=`cat .oraccuser`
+oraccgroup=`cat .oraccgroup`
 . ./create_oracclocale_h.sh
 mkdir -p $ORACC_BUILDS/{bld,xml,pub}
-chown -R $httpduser:$oraccuser /var/tmp/oracc $ORACC_BUILDS/tmp/sop $ORACC_BUILDS/{bld,htm,pub,xml}
+chown -R $httpduser:$oraccgroup /var/tmp/oracc $ORACC_BUILDS/tmp/sop $ORACC_BUILDS/{bld,htm,pub,xml}
+chmod g+w /var/tmp/oracc $ORACC_BUILDS/tmp/sop $ORACC_BUILDS/{bld,htm,pub,xml}
 chmod +s $ORACC_BUILDS/{bld,htm,pub,xml}
 chmod og-rwx /var/tmp/oracc/*
