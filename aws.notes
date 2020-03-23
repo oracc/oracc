@@ -1,0 +1,16 @@
+Notes on playing with free AWS instance
+
+* basic Ubuntu needs disk added when provisioning
+  * disk /dev/sdb appears in Ubuntu as /dev/xvdb
+  * fdisk /dev/xvdb and create partition / primary / #1 / full extent of disk
+  * mkfs.ext4 /dev/xvdb1 to create fs on it
+  * (should I have labeled with e4label?)
+  * mkdir /[MOUNTPOINT]
+  * mount /dev/xvdb1 /[MOUNTPOINT]
+
+* access via .pem -- create key pair and download
+  * (perhaps same key can be uploaded for subsequent instances?)
+  * I save .pem to ~/.ssh
+  * then use ssh -i ~/.ssh/sjt-aws.pem and scp -i ~/.ssh/sjt-aws.pem
+
+* haven't tried pkg-ubuntu and oracc install yet on AWS
