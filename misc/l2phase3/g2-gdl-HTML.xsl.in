@@ -542,7 +542,7 @@
     <xsl:when test="@type='punct' or @type='excised'">
       <xsl:for-each select="*">
 	<xsl:apply-templates select="."/>
-	<xsl:value-of select="@g:delim"/>
+	<!--<xsl:value-of select="@g:delim"/>-->
       </xsl:for-each>
       <xsl:choose>
 	<xsl:when test="@g:delim">

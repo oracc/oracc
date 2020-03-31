@@ -512,7 +512,7 @@
 	<xsl:if test="not(position()=last())">
 	  <xsl:choose>
 	    <xsl:when test="@g:delim">
-	      <xsl:value-of select="@g:delim"/>
+	      <!--<xsl:value-of select="@g:delim"/>-->
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <xsl:text>-</xsl:text>
