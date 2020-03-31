@@ -6,7 +6,7 @@ fi
 cd @@ORACC@@
 if [ -e $1 ]; then
   backdir=/oraccbak/$1 ; mkdir -p $backdir
-  tarball=$backdir/$1-incr-`date +%Y-%m-%d`.tar.gz
+  tarball=$backdir/$1-incr-`date +%Y-%m-%d`.tar.xz
   reffile=`ls -tr $backdir/*-full-* | tail -1`
   find $1/00* $1/[a-z]*/00* -type f -newer $reffile \
       | grep -v '~$' | grep -v 00any >$1/01tmp/dist.lst

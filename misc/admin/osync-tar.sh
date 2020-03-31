@@ -97,8 +97,8 @@ if [ -d $project ]; then
 fi
 
 echo "osync-tar.sh: $src"
-scp -P $port $there:/home/oracc/snc/$project.tar.gz .
-tar zxpf $project.tar.gz
+scp -P $port $there:/home/oracc/snc/$project.tar.xz .
+tar Jxpf $project.tar.xz
 touch $project/.sync
 
 if [[ $fixlinks = "yes" ]]; then

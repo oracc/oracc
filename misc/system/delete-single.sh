@@ -15,7 +15,7 @@ if [ ! -d ${ORACC_HOME}/$1 ]; then
 else
     cd ${ORACC_HOME} 
     mkdir -p oracc-deleted
-    tar zcf oracc-deleted/$1.tar.gz $1
+    tar Jcf oracc-deleted/$1.tar.xz $1
 fi
 rm -fr ${ORACC_HOME}/$1
 rm -fr ${ORACC}/$1

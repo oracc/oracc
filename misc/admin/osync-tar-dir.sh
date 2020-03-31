@@ -49,17 +49,17 @@ else
     fixlinks=yes
 fi
 
-for tarball in tar/*.tar.gz ; do
-    project=`basename $tarball .tar.gz`
+for tarball in tar/*.tar.xz ; do
+    project=`basename $tarball .tar.xz`
     remove_old_project $project
     echo "osync-tar-dir.sh: unpacking $tarball"
-    tar zxpf $tarball
+    tar Jxpf $tarball
     touch $project/.sync
     fix_links
 done
 
-for a in tar/*.tar.gz ; do
-    project=`basename $a .tar.gz`
+for a in tar/*.tar.xz ; do
+    project=`basename $a .tar.xz`
     for a in `list-subprojects.sh $project` ; do
 	sudo $ORACC_BUILDS/bin/serve-index.sh $a $there
     done

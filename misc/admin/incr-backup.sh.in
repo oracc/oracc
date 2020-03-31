@@ -3,4 +3,4 @@ backups=/oraccbak
 backbase=$backups/oracc-src-incr-
 reffile=`ls -tr $backups/oracc-full-* | tail -1`
 @@ORACC@@/bin/backup-list.plx $reffile \
-    | tar -zcf $backbase`date +%Y-%m-%d`.tar.gz -T -
+    | tar -Jcf $backbase`date +%Y-%m-%d`.tar.xz -T -

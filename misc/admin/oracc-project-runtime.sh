@@ -16,7 +16,7 @@ fi
 fproj=`/bin/echo -n $proj | tr / -`
 echo :$fproj:
 cd $ORACC
-tar --exclude www/$proj/estindex -zcf $destdir/$fproj-runtime.tar.gz \
+tar --exclude www/$proj/estindex -Jcf $destdir/$fproj-runtime.tar.xz \
     agg/projects/images/$proj.png \
     bld/$proj/[PQX][0-9][0-9][0-9] \
     pub/$proj \

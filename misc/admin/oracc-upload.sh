@@ -13,13 +13,13 @@ version=`cat .version`
 if [ "$version" = "" ]; then
     version=1
     oracc-project-sources.sh $project $versions || exit 1
-    curr_sources=01tmp/$usproject-$version.tar.gz
+    curr_sources=01tmp/$usproject-$version.tar.xz
     copysent $curr_sources $uploads
 else
     newvers=`expr $version + 1`
     oracc-project-sources.sh $project $newvers || exit 1
-    sent_sources=$uploads/$usproject-$newvers.tar.gz
-    curr_sources=01tmp/$usproject-$version.tar.gz
+    sent_sources=$uploads/$usproject-$newvers.tar.xz
+    curr_sources=01tmp/$usproject-$version.tar.xz
     sent_size=`filesize $sent_sources`
     curr_size=`filesize $curr_sources`
     if [ "$sent_size" = "$this_size" ]; then

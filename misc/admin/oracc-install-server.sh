@@ -1,9 +1,9 @@
 #!/bin/sh
 clouddir=$ORACC/Dropbox/oracc-builds
 project=$1
-tarball=$clouddir/$project-runtime.tar.gz
-if [ -r $clouddir/$project-runtime.tar.gz ]; then
-    tar -C $ORACC -zxf $tarball
+tarball=$clouddir/$project-runtime.tar.xz
+if [ -r $clouddir/$project-runtime.tar.xz ]; then
+    tar -C $ORACC -Jxf $tarball
     echo oracc install: installed runtime version of $project
     exit 0
 else

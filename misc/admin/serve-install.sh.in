@@ -29,14 +29,14 @@ mkdir -p $oracc_builds/srv
 cd $oracc_builds/srv
 
 projfile=`/bin/echo -n $project | tr / -`
-tarball=$projfile.tar.gz
+tarball=$projfile.tar.xz
 httpurl="http://$buildserver/srv/$tarball"
 echo Retrieving $httpurl ...
 curl -s -O $httpurl
 if [ -s $tarball ]; then
     echo "Installing $tarball"
     cd $oracc_builds
-    tar zxf srv/$tarball
+    tar Jxf srv/$tarball
     mkdir -p $oracc/tmp/$project
     mkdir -p $project
     cd $project

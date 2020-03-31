@@ -21,7 +21,7 @@ fi
 projfile=`/bin/echo -n $project | tr / -`
 srvdir=${ORACC_BUILDS}/www/srv
 tarball=$srvdir/${projfile}.part
-tarballfinal=$srvdir/${projfile}.tar.gz
+tarballfinal=$srvdir/${projfile}.tar.xz
 mkdir -p $srvdir
 
 echo "serve-project.sh: generating $tarball"
@@ -79,7 +79,7 @@ echo subs=$subs
 tar --exclude 00any --exclude 00git --exclude 00res --exclude estindex --exclude espdev \
     --exclude '*.dbi' --exclude '*.dbh' --exclude pqids.lst \
     $subs \
-    -zcf $tarball $project/00* {bld,pub,xml,www}/$project $jsonzip
+    -Jcf $tarball $project/00* {bld,pub,xml,www}/$project $jsonzip
 
 chmod 0644 $tarball
 mv $tarball $tarballfinal

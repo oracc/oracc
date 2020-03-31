@@ -24,4 +24,4 @@ if [ ! -d snc ]; then
     exit 1;
 fi
 
-tar zpcf snc/$project.tar.gz $project {bld,pub,tmp,www,xml}/$project
+tar zpcf snc/$project.tar.xz $project {bld,pub,tmp,www,xml}/$project

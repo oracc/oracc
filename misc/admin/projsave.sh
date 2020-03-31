@@ -8,7 +8,7 @@ then
   cd /home
   if [ -e $1 ]; then
     backdir=${VORACC}/bak/$1
-    tarball=$backdir/$1-full-`date +%Y-%m-%d`.tar.gz
+    tarball=$backdir/$1-full-`date +%Y-%m-%d`.tar.xz
     find 00* -type f | grep -v '~$' >$1/01tmp/dist.lst
     ${ORACC}/bin/projsave-sub.sh $1 $backdir $tarball
   fi

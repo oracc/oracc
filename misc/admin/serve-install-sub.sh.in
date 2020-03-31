@@ -25,7 +25,7 @@ else
     echo "serve-install-sub.sh: no such tarball $tarball. Stop."
     exit 1
 fi
-tarproj=`basename $tarball .tar.gz | tr - /`
+tarproj=`basename $tarball .tar.xz | tr - /`
 if [ "$tarproj" == "$project" ]; then
     true
 else
@@ -34,7 +34,7 @@ else
 fi
 echo "Installing $tarball"
 cd $ORACC_BUILDS
-tar --warning=no-unknown-keyword -zxof $tarball
+tar --warning=no-unknown-keyword -Jxof $tarball
 cd $project
 rm -f 01bld 02pub 02www 02xml
 mkdir -p $ORACC_BUILDS/tmp/$project

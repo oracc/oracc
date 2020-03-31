@@ -6,9 +6,9 @@ if [ "$1" == "" ]; then
     exit 1
 fi
 project=`echo $1 | tr / -`;
-tarball=$srcdir/web-$project.tar.gz
+tarball=$srcdir/web-$project.tar.xz
 if [ -r $tarball ]; then
-    tar -C $ORACC -zxf $tarball
+    tar -C $ORACC -Jxf $tarball
     echo $PROG: installed runtime version of $project
     exit 0
 else

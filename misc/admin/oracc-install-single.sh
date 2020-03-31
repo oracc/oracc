@@ -7,18 +7,18 @@ projfile=`echo $project | tr / -`
 echo dir=$projdir
 
 if [ ! -d $projdir ]; then
-    if [ -r $projfile-runtime.tar.gz ]; then
-	tar -C $ORACC -zxf $projfile-runtime.tar.gz
+    if [ -r $projfile-runtime.tar.xz ]; then
+	tar -C $ORACC -Jxf $projfile-runtime.tar.xz
 	echo oracc install: installed runtime version of $project
 	exit 0
     else
-	if [ -r $projfile-00data.tar.gz ]; then
-	    tar zxf $projfile-00data.tar.gz
+	if [ -r $projfile-00data.tar.xz ]; then
+	    tar Jxf $projfile-00data.tar.xz
 	else
-	    if [ -r 00data/$projfile-00data.tar.gz ]; then
-		tar zxf 00data/$projfile-00data.tar.gz
+	    if [ -r 00data/$projfile-00data.tar.xz ]; then
+		tar Jxf 00data/$projfile-00data.tar.xz
 	    else
-		echo oracc-install.sh: no directory $projdir and no file $projfile-00data.tar.gz or $projfile-runtime.tar.gz
+		echo oracc-install.sh: no directory $projdir and no file $projfile-00data.tar.xz or $projfile-runtime.tar.xz
 		exit 1
 	    fi
 	fi

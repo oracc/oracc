@@ -8,8 +8,8 @@ if [ -r 00lib/config.xml ]; then
 	cd 00etc/stash || ( echo "$0: cd 00etc/stash failed. Stop." ; exit 1 )
 	for a in 20* ; do
 	    if [ -d $a ]; then
-		echo creating $a.tar.gz and removing $a ...
-		tar zcf $a.tar.gz $a
+		echo creating $a.tar.xz and removing $a ...
+		tar Jcf $a.tar.xz $a
 		rm -fr $a
 	    fi
 	done

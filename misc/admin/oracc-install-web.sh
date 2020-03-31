@@ -1,9 +1,9 @@
 #!/bin/sh
 srcdir=/tmp/oracc-runtimes
 project=$1
-tarball=$srcdir/web-$project.tar.gz
+tarball=$srcdir/web-$project.tar.xz
 if [ -r $tarball ]; then
-    tar -C $ORACC -zxf $tarball
+    tar -C $ORACC -Jxf $tarball
     oracc-index-runtime.sh
     echo oracc install: installed runtime version of $project
     exit 0

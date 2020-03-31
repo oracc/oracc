@@ -46,7 +46,7 @@ else
     here=localhost
 fi
 
-(cd tar ; scp -P $port $there:/home/oracc/snc/*.tar.gz . )
+(cd tar ; scp -P $port $there:/home/oracc/snc/*.tar.xz . )
 
 ENDTIME=$(date +%s)
 

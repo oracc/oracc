@@ -10,7 +10,7 @@ if [ ! -d $proj ]; then
     exit 1
 fi
 fproj=`/bin/echo -n $proj | tr / -`
-tarball=$ORACC/00any/$fproj-sources.tar.gz
+tarball=$ORACC/00any/$fproj-sources.tar.xz
 tar --exclude $proj/00any \
     --exclude $proj/00bak \
     --exclude $proj/00web/esp/backups \
@@ -25,6 +25,6 @@ tar --exclude $proj/00any \
     --exclude .DS_Store \
     --exclude '*~' \
     --exclude '*.bak' \
-    --exclude '*.tar.gz' \
-    -zcf $tarball $proj/00*
+    --exclude '*.tar.xz' \
+    -Jcf $tarball $proj/00*
 chown oracc:oracc $tarball
