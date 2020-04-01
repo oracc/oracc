@@ -16,7 +16,7 @@ my $dry = shift @ARGV;
 
 my $build_hosts_file = '/etc/oracc-build-hosts';
 if (-r '@@ORADMIN@@/.vm_name') {
-    my $vmname = `cat @@ORADMIN@@.vm_name`;
+    my $vmname = `cat @@ORADMIN@@/.vm_name`;
     my $f = "@@ORADMIN@@/etc/oracc-build-hosts.$vmname";
     if (-r $f) {
 	$build_hosts_file = $f;
