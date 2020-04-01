@@ -14,7 +14,16 @@ my $dry = shift @ARGV;
 #		   'oracc.ub.uni-muenchen.de');
 #
 
-my @BUILD_HOSTS = `cat /etc/oracc-build-hosts`; chomp @BUILD_HOSTS;
+my $build_hosts_file = '/etc/oracc-build-hosts';
+if (-r '@@ORADMIN@@/.vm_name') {
+    my $vmname = `cat @@ORADMIN@@.vm_name`;
+    my $f = "@@ORADMIN@@/etc/oracc-build-hosts.$vmname";
+    if (-r $f) {
+	$build_hosts_file = $f;
+    }
+}
+
+my @BUILD_HOSTS = `cat $build_hosts_file`; chomp @BUILD_HOSTS;
 
 my @need_indexing = ();
 

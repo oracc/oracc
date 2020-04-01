@@ -23,6 +23,14 @@ check_env_or_die ORACC_HOST $ORACC_HOST
 check_env_or_die ORACC_MODE $ORACC_MODE
 check_env_or_die ORACC_USER $ORACC_USER
 
+if [ -d /Users ]; then
+    ORADMIN=/Users/oradmin
+elif [ -d /home ]; then
+    ORADMIN=/home/oradmin
+else
+    echo "$0: unable to set ORADMIN--no /home or /Users"
+fi
+
 in=$2
 out=`basename $in .in`
 pat1="s#\@\@ORACC\@\@#${ORACC}#g"
@@ -32,7 +40,8 @@ pat4="s#\@\@ORACC_BUILDS\@\@#${ORACC_BUILDS}#g"
 pat5="s#\@\@ORACC_MODE\@\@#${ORACC_MODE}#g"
 pat6="s#\@\@ORACC_USER\@\@#${ORACC_USER}#g"
 pat7="s#\@\@TeXLive\@\@#${TeXLive}#g"
-pat="$pat1;$pat2;$pat3;$pat4;$pat5;$pat6;$pat7"
+pat8="s#\@\@ORADMIN\@\@#${ORADMIN}#g"
+pat="$pat1;$pat2;$pat3;$pat4;$pat5;$pat6;$pat7;$pat8"
 rm -f $out
 perl -C0 -pe "$pat" <$in >$out
 chmod -w $out
