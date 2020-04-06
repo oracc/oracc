@@ -5,4 +5,6 @@
 #
 # cpanm -S Log::Log4perl RTF::Writer Text::CSV_XS String::Similarity DateTime Clone::PP
 
-cpan install Log::Log4perl RTF::Writer Text::CSV_XS String::Similarity DateTime Clone::PP
+#cpan install Log::Log4perl RTF::Writer Text::CSV_XS String::Similarity DateTime Clone::PP
+
+cpanm -S Log::Log4perl RTF::Writer Text::CSV_XS String::Similarity DateTime Clone::PP
