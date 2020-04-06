@@ -15,7 +15,8 @@
   <xsl:param name="node-list"/>
   <xsl:message>make-index passed node-list with <xsl:value-of 
 	select="count($node-list)"/> entries</xsl:message>
-  <index xml:base="'http://oracc.museum.upenn.edu/'" title="{$title}" basename="{$basename}">
+  <index xml:base="'http://oracc.museum.upenn.edu/'" title="{$title}" basename="{$basename}"
+	 xml:lang="{/*/@xml:lang}">
     <xsl:for-each select="$node-list">
       <xsl:variable name="xid">
 	<xsl:choose>

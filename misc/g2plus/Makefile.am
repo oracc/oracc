@@ -7,7 +7,7 @@ scriptdata_DATA = g2plus-html-toc.xsl g2plus-index-akkadian.xsl g2plus-index-bas
 	g2plus-index-html-print.xsl g2plus-index-signnames.xsl g2plus-index-toc.xsl \
 	g2plus-index-translit.xsl g2plus-merge-index-summaries.xsl g2plus-merge-index-wheres.xsl \
 	g2plus-toc-matrix.xsl g2plus-index-VS.xsl g2plus-index-VC.xsl g2plus-index-VCV.xsl \
-	g2plus-signnames-homographs.xsl
+	g2plus-signnames-homographs.xsl g2plus-index-letters.xsl
 
 g2plus-index-toc.xsl: g2plus-index-toc.xsl.in
 	$(ORACCIFY) g2plus-index-toc.xsl.in

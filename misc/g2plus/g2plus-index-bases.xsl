@@ -34,7 +34,6 @@
   <item>
     <xsl:copy-of select="*"/>
   </item>
-  <!--
   <head>
     <xsl:choose>
       <xsl:when test="ancestor::cbd:bases/cbd:base[@primary='yes']">
@@ -49,11 +48,16 @@
       </xsl:otherwise>
     </xsl:choose>
   </head>
-  -->
 </xsl:template>
 
 <xsl:template name="make-where">
-  <xsl:value-of select="concat(ancestor::cbd:entry/cbd:cf,'[',ancestor::cbd:entry/cbd:gw,']')"/>
+  <!--<xsl:value-of select="concat(ancestor::cbd:entry/cbd:cf,'[',ancestor::cbd:entry/cbd:gw,']')"/>-->
+  <xsl:variable name="e" select="ancestor::cbd:entry"/>
+  <xsl:for-each select="$e/cbd:cf|$e/cbd:gw|$e/cbd:pos">
+    <xsl:element name="{local-name()}">
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template name="make-href">

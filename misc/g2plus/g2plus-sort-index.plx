@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 use XML::LibXML;
 
 binmode STDERR, ':utf8'; binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
@@ -33,7 +33,7 @@ $ix_root->removeChildNodes();
 my $preamble = $ix_root->toString();
 $preamble =~ s,/>$,>,;
 
-open OUT, ">$ix_file"; binmode(OUT, ':raw'); select OUT;
+open OUT, ">$ix_file.srt"; binmode(OUT, ':raw'); select OUT;
 print '<?xml version="1.0" encoding="utf-8"?>',"\n";
 print $preamble;
 foreach my $r (@results) {
@@ -51,6 +51,19 @@ printkey {
     my $n = shift;
 
     my $sk = $n->getAttribute('sortkey');
+    my $sktmp = $sk;
+    $sktmp =~ s/\{\+.*?\}//g;
+    $sktmp =~ s/ₓ\(.*?\)/ₓₓ/g;
+    $sktmp =~ tr/ʾ//d;
+    if ($sk ne $sktmp) {
+	$sk = $sktmp;
+	$n->setAttribute('sortkey', $sk);
+#	warn "reset sortkey $sk\n";
+    }
+
+    my $letterkey = $sk; $letterkey =~ s/\{.*?\}//g; $letterkey =~ tr/|()ʾ//d;
+    $n->setAttribute('letterkey',$letterkey);
+    
     my $ref = ($n->childNodes())[1]->getAttribute('ref');
 
     return undef if !$sk || $sk !~ /[a-zA-Z0-9]/ || ${$seen{$ref}}{$sk}++;
@@ -67,6 +80,8 @@ printkey {
     $sk =~ tr/ /_/;
     $sk0 =~ tr/ /_/;
     $sk2 =~ tr/ /_/;
+
+    $sk0 =~ s/^/~/ if $sk0 =~ /^[0-9]/;
     
     "$sort_id $sk0 $sk $sk2\n";
 }

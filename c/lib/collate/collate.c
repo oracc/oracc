@@ -13,7 +13,7 @@
 int collate_obey_delims = 1;
 static struct Collate_info *curr_collate;
 static const unsigned char **curr_tiles;
-static const char collate_digit_values[12] = {0,1,2,3,4,5,6,7,8,9,10,20};
+static const char collate_digit_values[12] = {0,1,2,3,4,5,6,7,8,9,100,200};
 
 void
 collate_init (const unsigned char *name)

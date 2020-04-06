@@ -78,7 +78,7 @@
   <xsl:choose>
     <xsl:when test="ancestor::g:d"
        >\up{<xsl:if test="ancestor::g:d[@g:role='phonetic']"
-            >a\<xsl:value-of select="$lang"/><xsl:text> </xsl:text>
+            >\<xsl:value-of select="$lang"/><xsl:text> </xsl:text>
 	  </xsl:if
 	  ><xsl:call-template name="render-g"
 	  /><xsl:call-template name="render-flags"
@@ -117,7 +117,7 @@
   </xsl:choose><xsl:call-template name="render-c"
   /><xsl:if test="not(ancestor::g:q) and ancestor::g:d 
 		and not(ancestor::g:d/@g:pos = 'post')">.</xsl:if
-></xsl:template>
+		></xsl:template>
 
 <xsl:template match="g:d">
   <xsl:call-template name="render-o"/>

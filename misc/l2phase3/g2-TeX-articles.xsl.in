@@ -88,7 +88,8 @@
 <xsl:template name="map-period">
   <xsl:variable name="p" select="text()"/>
   <xsl:choose>
-    <xsl:when test="$p='Early Dynastic I'"><xsl:text>ED I</xsl:text></xsl:when>
+    <xsl:when test="$p='Archaic'"><xsl:text>Archaic</xsl:text></xsl:when>
+    <xsl:when test="$p='Uruk III'"><xsl:text>Archaic</xsl:text></xsl:when>
     <xsl:when test="$p='Early Dynastic IIIa'"><xsl:text>ED IIIa</xsl:text></xsl:when>
     <xsl:when test="$p='Early Dynastic IIIb'"><xsl:text>ED IIIb</xsl:text></xsl:when>
     <xsl:when test="$p='Ebla'"><xsl:text>Old Akk.</xsl:text></xsl:when>
@@ -103,13 +104,14 @@
     <xsl:when test="$p='Persian'"><xsl:text>Pers.</xsl:text></xsl:when>
     <xsl:when test="$p='Hellenistic'"><xsl:text>Grk.</xsl:text></xsl:when>
     <xsl:when test="$p='unknown'"><xsl:text>unplaced</xsl:text></xsl:when>
+    <xsl:when test="$p='Uncertain'"><xsl:text>unplaced</xsl:text></xsl:when>
     <xsl:otherwise><xsl:message>map-period: no when clause for <xsl:value-of select="$p"/></xsl:message></xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
 <xsl:template name="periods"
-	      ><xsl:if test="cbd:periods/cbd:p">(<xsl:for-each select="cbd:periods/cbd:p"
-	      ><xsl:call-template name="map-period"/> [<xsl:value-of select="@icount"/>]<xsl:if
+	      ><xsl:if test="cbd:periods/cbd:p"><xsl:for-each select="cbd:periods/cbd:p"
+	      ><xsl:call-template name="map-period"/>~[<xsl:value-of select="@icount"/>]<xsl:if
 	      test="not(position()=last())">; </xsl:if></xsl:for-each
 	      ></xsl:if
 	      ></xsl:template>
@@ -278,8 +280,15 @@
 >\endbases
 </xsl:template>
 
-<xsl:template mode="base" match="cbd:text">  \base{<xsl:apply-templates mode="cuneify"/>}{<xsl:apply-templates
-/>}{<xsl:call-template name="inst-bar"/>}%
+<xsl:template mode="base" match="cbd:text">  \base{<xsl:apply-templates mode="cuneify"/>}{%
+<xsl:choose>
+  <xsl:when test="../@literal">
+    <xsl:apply-templates select="../g:w"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:apply-templates/>
+  </xsl:otherwise>
+</xsl:choose>}{<xsl:call-template name="inst-bar"/>}%
 </xsl:template>
 
 <xsl:template name="inst-pct">
@@ -621,8 +630,8 @@
 <xsl:apply-templates/>\endbib
 </xsl:template>
 
-<xsl:template match="cbd:ref">\ref{<xsl:value-of select="@year"/>}{<xsl:apply-templates/>}<xsl:choose
-  ><xsl:when test="position()=last()">.</xsl:when><xsl:otherwise>; </xsl:otherwise></xsl:choose>
+<xsl:template match="cbd:ref">\ref{<xsl:value-of select="@year"/>}{<xsl:apply-templates/>}%
+<!--  <xsl:choose><xsl:when test="position()=last()">.</xsl:when><xsl:otherwise>; </xsl:otherwise></xsl:choose> -->
 </xsl:template>
 
 <xsl:template match="cbd:sup">
