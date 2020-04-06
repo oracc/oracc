@@ -1,5 +1,5 @@
 #!/bin/sh
-apt-get install \
+apt-get -y --autoremove upgrade \
     nano \
     emacs \
     gcc \
