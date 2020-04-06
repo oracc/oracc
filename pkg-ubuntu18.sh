@@ -30,4 +30,5 @@ apt install \
     jq \
     msort \
     libxmlrpc-core-c3-dev \
-    zip
+    zip \
+    cpanminus
