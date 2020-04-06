@@ -1,5 +1,5 @@
 #!/bin/sh
-apt install \
+apt-get install \
     nano \
     emacs \
     gcc \
