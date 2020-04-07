@@ -1,8 +1,7 @@
 #!/bin/sh
 . ./oraccenv.sh
 . ./oraccpaths.sh
-#proj="xcat qcat ogsl cdli"
-proj=xcat
+proj="xcat qcat ogsl cdli"
 for a in $proj ; do
     stash-install.sh $a
 done
