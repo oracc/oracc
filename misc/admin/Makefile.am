@@ -21,7 +21,8 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 	osync-tar-get.sh build-all.sh build-umbrella.sh			\
 	list-all-subs.sh home-full-back.sh user-full-back.sh		\
 	update-all.sh serve-get-one.sh list-pub-subs.sh install-tar.sh 	\
-	apply-oracc.sh apply-oracc-resources.sh serve-install-sub.sh
+	apply-oracc.sh apply-oracc-resources.sh serve-install-sub.sh	\
+	stash-install.sh
 
 #data_DATA = usermode.xml
 #

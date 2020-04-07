@@ -3,7 +3,7 @@
 . ./oraccpaths.sh
 proj="xcat qcat ogsl cdli"
 for a in $proj ; do
-    serve-install.sh $a build-oracc.museum.upenn.edu
+    stash-install.sh $a
 done
 for a in $proj ; do
     serve-index.sh $a build-oracc.museum.upenn.edu
