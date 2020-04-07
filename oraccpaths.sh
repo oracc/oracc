@@ -1,3 +1,6 @@
 #!/bin/sh
-PATH=$PATH:$ORACC/bin
+PATH=$PATH:$ORACC_BUILDS/bin
+if [[ $ORACC_MODE == "single" ]]; then
+    PATH=$PATH:$ORACC_BUILDS/sbin
+fi
 export PATH
