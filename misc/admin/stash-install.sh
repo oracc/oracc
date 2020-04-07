@@ -12,7 +12,7 @@ fi
 projfile=`/bin/echo -n $project | tr / -`
 tarball=stash/srv/$projfile.tar.xz
 
-if [ -s $tarball ]; then
+if [ -r $tarball ]; then
     echo "Installing $tarball"
     cd $ORACC_BUILDS
     tar Jxf $tarball
