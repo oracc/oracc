@@ -14,8 +14,7 @@ tarball=stash/srv/$projfile.tar.xz
 
 if [ -r $tarball ]; then
     echo "Installing $tarball"
-    cd $ORACC_BUILDS
-    tar Jxf $tarball
+    tar -C $ORACC_BUILDS -Jxf $tarball
     mkdir -p $ORACC/tmp/$project
     mkdir -p $project
     cd $project
