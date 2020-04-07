@@ -8,4 +8,5 @@ done
 for a in $proj ; do
     serve-index.sh $a build-oracc.museum.upenn.edu
 done
+agg-project-list.sh
 ln -sf $ORACC_BUILDS/pub/cdli/catpnums.vec $ORACC_BUILDS/lib/data/
