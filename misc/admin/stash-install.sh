@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd ~
+
 project=$1
 
 if [ "$project" == "" ]; then
@@ -25,6 +27,6 @@ if [ -s $tarball ]; then
     ln -sf $ORACC/xml/$project 02xml
     exit 0
 else
-    echo "stash-install.sh: must give valid tarball on command line"
+    echo "stash-install.sh: failed to find $project tarball $tarball"
     exit 1
 fi
