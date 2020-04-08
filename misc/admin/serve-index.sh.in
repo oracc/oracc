@@ -16,6 +16,13 @@ export PATH=$ORACC/bin:$PATH
 
 project=$1
 buildserver=$2
+
+logdir=$oracc_builds/log/$project
+mkdir -p $logdir
+logfile=$logdir/serve-index.log
+exec 1>$logfile
+exec 2>&1
+
 if [ "$project" == "" ]; then
     echo "serve-index.sh: must give project name on command line"
     exit 1

@@ -14,6 +14,12 @@ if [[ ORACC_BUILDS == "" ]]; then
     exit 1
 fi
 
+logdir=$ORACC_BUILDS/log/$project
+mkdir -p $logdir
+logfile=$logdir/stash-install.log
+exec 1>$logfile
+exec 2>&1
+
 projfile=`/bin/echo -n $project | tr / -`
 tarball=stash/srv/$projfile.tar.xz
 
