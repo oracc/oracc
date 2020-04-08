@@ -17,14 +17,16 @@ fi
 logdir=$ORACC_BUILDS/log/$project
 mkdir -p $logdir
 logfile=$logdir/stash-install.log
-exec 1>$logfile
-exec 2>&1
 
 projfile=`/bin/echo -n $project | tr / -`
 tarball=stash/srv/$projfile.tar.xz
 
 if [ -r $tarball ]; then
-    echo "Installing $tarball"
+    echo "Installing $tarball with logging to $logfile"
+
+    exec 1>$logfile
+    exec 2>&1
+
     tar -C $ORACC_BUILDS -Jxf $tarball
     cd $ORACC_BUILDS/$project
 # why this mkdir ?

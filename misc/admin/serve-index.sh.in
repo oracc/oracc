@@ -17,12 +17,6 @@ export PATH=$ORACC/bin:$PATH
 project=$1
 buildserver=$2
 
-logdir=$oracc_builds/log/$project
-mkdir -p $logdir
-logfile=$logdir/serve-index.log
-exec 1>$logfile
-exec 2>&1
-
 if [ "$project" == "" ]; then
     echo "serve-index.sh: must give project name on command line"
     exit 1
@@ -32,7 +26,15 @@ if [ "$buildserver" == "" ]; then
     exit 1
 fi
 
-echo "serve-index.sh: indexing $project"
+logdir=$oracc_builds/log/$project
+mkdir -p $logdir
+logfile=$logdir/serve-index.log
+
+echo "serve-index.sh: indexing $project with logging to $logfile"
+
+exec 1>$logfile
+exec 2>&1
+
 cd $oracc_builds/$project
 $oracc/bin/o2-indexes-boot.sh
 # $oracc/bin/est-project-web.sh
