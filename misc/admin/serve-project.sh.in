@@ -85,3 +85,10 @@ chmod 0644 $tarball
 mv $tarball $tarballfinal
 
 touch ${ORACC_BUILDS}/$project/servestamp
+
+#sudo su -l oradmin -c "put depot /home/oracc/www/srv/aemw-ugarit.tar.xz stash/srv"
+
+if [ -r /home/oradmin/etc/depot.env ]; then
+    echo "$0: serving $tarballfinal to depot:stash/srv"
+    sudo su -l oradmin -c "put depot $tarballfinal stash/srv"
+fi
