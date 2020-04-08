@@ -9,7 +9,7 @@ if [ "$project" == "" ]; then
     exit 1
 fi
 
-if [[ ORACC_BUILDS == "" ]; then
+if [[ ORACC_BUILDS == "" ]]; then
     echo "$0: ORACC_BUILDS not set. Stop."
     exit 1
 fi
