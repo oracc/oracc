@@ -5,7 +5,12 @@ cd ~
 project=$1
 
 if [ "$project" == "" ]; then
-    echo "stash-install.sh: must give project name on command line"
+    echo "$0: must give project name on command line"
+    exit 1
+fi
+
+if [[ ORACC_BUILDS == "" ]; then
+    echo "$0: ORACC_BUILDS not set. Stop."
     exit 1
 fi
 
