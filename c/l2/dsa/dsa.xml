@@ -1,0 +1,8 @@
+<config xmlns="http://emegir.info/psa/1" xmlns:psa="http://emegir.info/psa/1">
+  <lang lang="akk">
+    <term>
+      <ngram>*[*]MN ūmu[day]N *[*]n šattu[year]N *[*]n *[*]RN šarru[king]N</ngram>
+      <prop on="this" name="date" value="1"/>
+    </term>
+  </lang>
+</config>

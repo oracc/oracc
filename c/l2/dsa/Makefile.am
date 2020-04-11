@@ -4,6 +4,9 @@ AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libdsa.la
 
+instdir=$(libdir)/data
+inst_DATA=dsa.xml
+
 libdsa_la_SOURCES=dsa.c cdlidate.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
