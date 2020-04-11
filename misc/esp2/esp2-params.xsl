@@ -8,6 +8,8 @@
 	       xmlns="http://www.w3.org/1999/xhtml"
 	       >
 
+<xsl:output method="xml" indent="yes" encoding="UTF-8"/>
+
 <xsl:template match="/">
   <param:parameters>
     <param:title><xsl:value-of select="//xpd:name"/></param:title>

@@ -6,7 +6,7 @@ use integer;
 
 sub xsystem;
 
-my($command,$file,@args) = @ARGV;
+my($project,$command,$file,@args) = @ARGV;
 
 die "$0: must give 'init' or 'subproject' then short and long project names\n"
     unless $command;
@@ -15,15 +15,16 @@ my $pwd = `pwd`; chomp $pwd;
 my $begin = `date +%s`;
 warn "Begin command $command in $pwd\n";
 
-my $project = `osc-proj-from-conf.sh`;
-unless ($project) {
-   if ($command eq 'init') {
-	$project = `id -u -n`;
-	chomp $project;
-   } else {
-   	die "oracc: unable to determine project name from 00lib/config.xml. Stop.\n";
-   }
-}
+## Now we give the project name as arg1 on the cli
+#my $project = `osc-proj-from-conf.sh`;
+#unless ($project) {
+#   if ($command eq 'init') {
+#	$project = `id -u -n`;
+#	chomp $project;
+#   } else {
+#   	die "ofs-createproj.plx: unable to determine project name from 00lib/config.xml. Stop.\n";
+#   }
+#}
 
 my $bin = "$ENV{'ORACC'}/bin";
 

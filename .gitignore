@@ -339,6 +339,7 @@ misc/admin/projsave-all.sh
 misc/admin/projsave-full.sh
 misc/admin/projsave-incr.sh
 misc/admin/serve-project.sh
+misc/admin/serve-install-sub.sh
 misc/admin/usermode.xml
 misc/admin/wwwify.sh
 misc/admin/wwwperm.sh
@@ -485,7 +486,8 @@ oraccenv.sh
 stamp-h1
 
 c/bin/oraccnet/client/oracc-client-pack-project.sh
-
+c/bin/lemmer/nsa
+c/otf/ox/f2test
 c/bin/server/oracc-server.c
 
 misc/p3/p3-project.xsl

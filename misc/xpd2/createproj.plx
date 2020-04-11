@@ -71,12 +71,16 @@ create_project {
 	die "createproj.plx: could not change directory to $ENV{'ORACC_HOME'}/$project\n";
     }
 
-    open(INDEX,">00web/index.html");
-    print INDEX <<EOI;
-<html><body onload="location='/$project/corpus'">
-</body></html>
-EOI
-    close(INDEX);
+
+    # Projects are now initialized with esp2-create.sh but after creating 00lib/config.xml
+##
+##    open(INDEX,">00web/index.html");
+##    print INDEX <<EOI;
+##<html><body onload="location='/$project/corpus'">
+##</body></html>
+##EOI
+##    close(INDEX);
+##
 
     if ($init) {
 	system "cp $ENV{'ORACC'}/lib/data/p3colours.txt 00lib"
@@ -118,6 +122,7 @@ EOO
     }
     xsystem ("cd 00lib; ln -sf approved.lst outlined.lst");
     xsystem 'touch', '00lib/rejected.lst', '00lib/new.lst';
+    xsystem "$ENV{'ORACC'}/bin/esp2-create.sh";
     xsystem "$ENV{'ORACC'}/bin/$projperm.sh", $project;
     exit 0;
 }

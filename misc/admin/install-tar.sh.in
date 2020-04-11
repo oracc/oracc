@@ -12,32 +12,34 @@ export PATH=$ORACC/bin:$PATH
 project=$1
 tarball=$2
 if [ "$project" == "" ]; then
-    echo "serve-install-sub.sh: must give project as first arg. Stop."
+    echo "install-tar.sh: must give project as first arg. Stop."
     exit 1
 fi
 if [ "$tarball" == "" ]; then
-    echo "serve-install-sub.sh: must give tarball as second arg. Stop."
+    echo "install-tar.sh: must give tarball as second arg. Stop."
     exit 1
 fi
 if [ -r $tarball ]; then
     true
 else
-    echo "serve-install-sub.sh: no such tarball $tarball. Stop."
+    echo "install-tar.sh: no such tarball $tarball. Stop."
     exit 1
 fi
 tarproj=`basename $tarball .tar.xz | tr - /`
 if [ "$tarproj" == "$project" ]; then
     true
 else
-    echo "serve-install-sub.sh: tarball project $tarproj != project $project. Stop."
+    echo "install-tar.sh: tarball project $tarproj != project $project. Stop."
     exit 1
 fi
 echo "Installing $tarball"
 cd $ORACC_BUILDS
-sudo tar Jxof $tarball
+sudo tar --warning=no-unknown-keyword Jxof $tarball
 cd $project
 rm -f 01bld 02pub 02www 02xml
+mkdir -p $ORACC_BUILDS/tmp/$project
 ln -sf $ORACC_BUILDS/bld/$project 01bld
+ln -sf $ORACC_BUILDS/tmp/$project 01tmp
 ln -sf $ORACC_BUILDS/pub/$project 02pub
 ln -sf $ORACC_BUILDS/www/$project 02www
 ln -sf $ORACC_BUILDS/xml/$project 02xml

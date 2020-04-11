@@ -6,6 +6,8 @@
     xmlns:xpd="http://oracc.org/ns/xpd/1.0"
     >
 
+<xsl:output method="xml" indent="yes" encoding="UTF-8"/>
+  
 <xsl:template match="/">
   <esp:page
       xmlns:esp="http://oracc.org/ns/esp/1.0"
