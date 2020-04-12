@@ -156,29 +156,43 @@ posepos_ok(struct f2 *f1, struct f2 *f2)
 }
 
 int
-sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild)
+xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LINE)
 {
   int sub = 0;
+  
   if (gw_wild)
     {
       /* blank GW is a wildcard and matches any GW/SENSE */
       if (!f1->gw || !*f1->gw)
-	return 1;
+	{
+	  if (f1->words)
+	    f1->words->pct = 100;
+	  return 1;
+	}
       if ((!f1->sense || !*f1->sense)
 	  && (!f2->gw || !strcmp((char*)f1->gw,(char*)f2->gw)))
-	return 1;
+	{
+	  if (f1->words)
+	    f1->words->pct = 100;
+	  return 1;
+	}
     }
+
   if ((f1->sense && f2->sense && !strcmp((char*)f1->sense, (char*)f2->sense))
       || (!f1->sense && !f2->sense && f1->gw && f2->gw && !strcmp((char*)f1->gw, (char*)f2->gw))
       )
-    return 1;
+    {
+      if (f1->words)
+	f1->words->pct = 100;
+      return 1;
+    }
 
   /* else: setup_set will index gw instead of sense */
   setup_set(f1);
   setup_set(f2);
   sub = w2_subset(f2->words, f1->words);
   if (wordset_debug)
-    fprintf(stderr, "wordset result = %d (f1->gw=%s; f2->gw=%s)\n", sub, f1->gw, f2->gw);
+    fprintf(stderr, "[%s:%d]: wordset result = %d (f1->gw=%s; f2->gw=%s)\n", FILE, (int)LINE, sub, f1->gw, f2->gw);
   switch (sub)
     {
     case W2_PARTIAL:
@@ -431,7 +445,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	      if (f->words)
 		{
 		  if (wordset_debug)
-		    fprintf(stderr, "f->words->pct = %d; pct_top = %d\n", f->words->pct, pct_top);
+		    fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n", __FILE__, __LINE__, f->words->pct, pct_top);
 		  res[ncand]->pct = f->words->pct;
 		  if (f->words->pct > pct_top)
 		    pct_top = f->words->pct;
@@ -505,11 +519,13 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		  if (f->words)
 		    {
 		      if (wordset_debug)
-			fprintf(stderr, "f->words->pct = %d; pct_top = %d\n", f->words->pct, pct_top);
+			fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n", __FILE__, __LINE__, f->words->pct, pct_top);
 		      res[i]->pct = f->words->pct;
 		      if (f->words->pct > s_pct_top)
 			s_pct_top = f->words->pct;
 		    }
+		  else
+		    res[i]->pct = s_pct_top = 100;
 		}
 	      else
 		res[i]->pct = 0;

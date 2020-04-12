@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <assert.h>
+#include "xmem.h"
 #include "cdf.h"
 #include "xmlnames.c"
 #include "tree.h"
@@ -11,6 +12,7 @@
 #include "xcl.h"
 #include "list.h"
 #include "graphemes.h"
+#include "warning.h"
 
 extern int lnum;
 
@@ -259,8 +261,15 @@ tree_term()
 void
 addToNodeList(struct nodelist*nl, void *vp)
 {
-  check_node_list(nl);
-  nl->nodes[nl->lastused++] = vp;
+  if (nl->lastused == nl->lastnode)
+    {
+      nl->lastnode = (nl->lastnode ? (nl->lastnode * 2) : NL_BASE);
+      nl->nodes = xrealloc(nl->nodes, nl->lastnode*sizeof(struct node*));
+    }
+  if (nl && nl->nodes)
+    nl->nodes[nl->lastused++] = vp;
+  else
+    fprintf(stderr,"%s:%d: NULL nl\n", __FILE__, __LINE__);
 }
 
 struct node *

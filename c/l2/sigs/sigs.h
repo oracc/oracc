@@ -123,7 +123,8 @@ extern void setup_ilem_form(struct sig_context *scp, struct xcl_l *l, unsigned c
 extern int field_ok(const Uchar *s1, const Uchar *s2);
 extern int cfnorm_ok(struct f2 *f1, struct f2 *f2);
 extern int posepos_ok(struct f2 *f1, struct f2 *f2);
-extern int sense_ok(struct f2 *f1, struct f2 *f2, int gw_wild);
+extern int xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LINE);
+#define sense_ok(a1,a2,a3) xsense_ok((a1),(a2),(a3),__FILE__,__LINE__)
 extern int f2_test(struct f2 *f1, struct f2 *f2);
 extern int f2_test_no_sense(struct f2 *f, struct f2 *f2);
 extern void sigs_cof_finds(struct xcl_l *l);
