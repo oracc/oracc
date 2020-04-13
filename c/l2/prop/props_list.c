@@ -6,6 +6,38 @@
 #define xstrcmp(a,b) strcmp((const char *)a,(const char *)b)
 static int prop_id = 0;
 
+static List *prop_mem = NULL;
+
+void
+xcl_props_init(void)
+{
+  if (!prop_mem)
+    prop_mem = list_create(LIST_SINGLE);
+}
+
+void
+xcl_props_term(void)
+{
+  if (prop_mem)
+    {
+      list_free(prop_mem,free);
+      prop_mem = NULL;
+    }
+}
+
+static struct prop *
+prop_alloc(void)
+{
+  struct prop *p = NULL;
+  if (!(p = calloc(1,sizeof(struct prop))))
+    {
+      fputs("out of core\n",stderr);
+      exit(2);
+    }
+  list_add(prop_mem,p);
+  return p;
+}	 
+
 static const char *
 next_prop_id(void)
 {
@@ -47,11 +79,8 @@ props_add_prop(struct ilem_form *f, const unsigned char *group,
 	p->p = pref;
       return 1;
     }
-  if (!(p = calloc(1,sizeof(struct prop))))
-    {
-      fputs("out of core\n",stderr);
-      exit(2);
-    }
+
+  p = prop_alloc();
   p->group = group;
   p->name = name;
   p->value = value;
@@ -150,11 +179,8 @@ props_add_prop_sub(struct prop *props, const unsigned char *group,
 	p->p = pref;
       return props;
     }
-  if (!(p = calloc(1,sizeof(struct prop))))
-    {
-      fputs("out of core\n",stderr);
-      exit(2);
-    }
+
+  p = prop_alloc();
   p->group = group;
   p->name = name;
   p->value = value;

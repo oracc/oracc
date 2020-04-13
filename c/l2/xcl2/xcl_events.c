@@ -88,6 +88,7 @@ xcl_create()
   xc->pool = xcl_pool;
   xc->langs = xc->project = xc->textid = NULL;
   xc->psus = hash_create(1);
+  xcl_props_init();
   return xc;
 }
 
@@ -179,6 +180,7 @@ xcl_destroy(struct xcl_context **xc)
       free(*xc);
       *xc = NULL;
     }
+  xcl_props_term();
 }
 
 void

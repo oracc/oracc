@@ -117,6 +117,9 @@ void props_auto_init(void);
 void props_auto_term(void);
 struct propdef *props_auto_name(const unsigned char *value);
 
+void xcl_props_init(void);
+void xcl_props_term(void);
+
 extern struct prop_ref_cache prop_cache;
 
 #endif/*_PROPS_H*/
