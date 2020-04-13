@@ -206,6 +206,7 @@ psl_term()
 {
   hash_free(cuneify_tab,NULL);
   hash_free(psl,NULL);
+  hash_free(psl_id,NULL);
   hash_free(psl_v,NULL);
   npool_term(psl_pool);
   hash_free(hex_tab,NULL);

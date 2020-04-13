@@ -480,7 +480,7 @@ trans_finish_labels(struct node *text, struct translation *tp)
 void
 trans_cols_attr(struct node *tp)
 {
-  if (!*(getAttr(tp,"xtr:cols")))
+  if (tp && !*(getAttr(tp,"xtr:cols")))
     {
       char colsbuf[128];
       (void)sprintf(colsbuf,"%d",max_trans_cols);
@@ -1161,7 +1161,12 @@ static void
 add_trans(struct translation *t)
 {
   if (t == NULL)
-    ntrans = 0;
+    {
+      int i;
+      for (i = 0; i < ntrans; ++i)
+	translations[i]->tree = NULL;
+      ntrans = 0;
+    }
   else
     {
       if (ntrans == ntrans_alloc)

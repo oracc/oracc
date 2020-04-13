@@ -80,7 +80,7 @@ struct node *gtextElem(enum e_type e, struct node *parent,
 struct node *gtextNode(const unsigned char *data);
 int tree_get_line(void);
 void tree_init(void);
-void tree_term(void);
+void tree_term(int clones_too);
 void tree_validate(struct node *np);
 unsigned char *cdf_xmlify(const unsigned char *s);
 unsigned char *xmlify_no_pool(const unsigned char *s);

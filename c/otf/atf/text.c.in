@@ -91,6 +91,7 @@ extern int check_pnames;
 extern int sparse_lem;
 extern int validate;
 extern void bigrams(struct xcl_context *xc);
+extern void block_current_trans_clear(void);
 extern void collos(struct xcl_context *xc);
 extern int check_pname(const char *id,const unsigned char *name);
 extern void cdl_create(struct node *text);
@@ -205,6 +206,7 @@ process_text(struct run_context *run, unsigned char **lines)
   int saved_len = 0;
   int saved_check_only = check_only;
   extern int auto_lg;
+  extern struct translation *current_trans;
 
   lexical = word_matrix = 0;
   labtab = create_labtab();
@@ -425,6 +427,7 @@ process_text(struct run_context *run, unsigned char **lines)
 		{
 		  struct translation *trans = translations[i];
 
+		  /* NO: this assumes all translations have the same column widths */
 		  trans_cols_attr(trans->tree);
 		  trans_finish_labels(text, trans);
 		  
@@ -439,6 +442,7 @@ process_text(struct run_context *run, unsigned char **lines)
 		}
 	    }
 	}
+      block_current_trans_clear();
 
       if (perform_lem && (!exit_status || force || lem_dynalem))
 	{
@@ -503,6 +507,9 @@ process_text(struct run_context *run, unsigned char **lines)
     }
 
   lemline_term();
+  tree_term(1);
+  trans_clear();
+  current_trans = NULL;
   return lines;
 }
 

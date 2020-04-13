@@ -98,6 +98,8 @@ ngramify_term()
       free(match_list);
       match_list = NULL;
     }
+  if (ng_match_log)
+    fclose(ng_match_log);
 }
 
 static const char *

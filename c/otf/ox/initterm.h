@@ -43,7 +43,7 @@ extern void text_init(void);
 extern void text_term(void);
 extern void tokcheck_init(void);
 extern void tree_init(void);
-extern void tree_term(void);
+extern void tree_term(int clones_too);
 extern void xcl_init(void);
 extern void xtflem_init(void);
 #endif/*INITTERM_H_*/

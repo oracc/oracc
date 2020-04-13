@@ -135,6 +135,13 @@ note_initialize(void)
 }
 
 void
+note_term(void)
+{
+  mb_free(mb);
+  npool_term(note_pool);
+}
+
+void
 note_initialize_line(void)
 {
   if (notes_in_line)

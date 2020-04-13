@@ -10,6 +10,8 @@ int gdl_fragment_ok = 0;
 static int lid_base = 0;
 static int lid = 0;
 
+extern void note_term(void);
+
 void
 gdl_init()
 {
@@ -38,6 +40,7 @@ gdl_term()
   forms_term();
   tokenize_term();
   graphemes_term();
+  note_term();
 }
 
 struct node *

@@ -211,7 +211,7 @@ main(int argc, char **argv)
   lang_term();
   gdl_term();
   pool_term();
-  tree_term();
+  tree_term(1);
   cuneify_term();
   if (gdl_file)
     free(gdl_file);

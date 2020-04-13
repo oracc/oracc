@@ -111,6 +111,7 @@ parse_psu(struct NLE *nlep, List *components, unsigned char *ngm)
     }
   nlep->psu_form->psu_ngram = ngm;
   nlep->psu_form->parts = (struct f2 **)list2array(components);
+  list_free(components,NULL);
   nlep->psu_form->form = fin_str((char*)nlep->psu_form->form,nlep->owner->owner->pool);
   nlep->psu_form->norm = fin_str((char*)nlep->psu_form->norm,nlep->owner->owner->pool);
   nlep->psu_form->base = fin_str((char*)nlep->psu_form->base,nlep->owner->owner->pool);
@@ -118,6 +119,30 @@ parse_psu(struct NLE *nlep, List *components, unsigned char *ngm)
   nlep->psu_form->morph = fin_str((char*)nlep->psu_form->morph,nlep->owner->owner->pool);
   nlep->psu_form->morph2 = fin_str((char*)nlep->psu_form->morph2,nlep->owner->owner->pool);
   return nlep->psu_form;
+}
+
+void
+nlep_free(struct NLE *p)
+{
+  if (p->psu_form && p->psu_form->parts)
+    free(p->psu_form->parts);
+  if (p->cfs)
+    free(p->cfs);
+  if (p->tts)
+    free(p->tts);
+}
+
+void
+nleps_free(struct NLE_set *p)
+{
+  int i;
+  if (p->pp)
+    {
+      for (i = 0; i < p->pp_used; ++i)
+	nlep_free(p->pp[i]);
+      free(p->pp);
+    }
+  free(p);
 }
 
 struct CF *
@@ -257,14 +282,15 @@ nl_free_context(struct NL_context *nlcp)
 {
   if (nlcp->posNgrams)
     {
-      hash_free(nlcp->posNgrams, NULL);
+      hash_free(nlcp->posNgrams, (void (*)(void *))nleps_free);
       nlcp->posNgrams = NULL;
     }
   if (nlcp->psuNgrams)
     {
-      hash_free(nlcp->psuNgrams, NULL);
+      hash_free(nlcp->psuNgrams, (void (*)(void *))nleps_free);
       nlcp->psuNgrams = NULL;
     }
+  npool_term(nlcp->pool);
 }
 
 struct NL*

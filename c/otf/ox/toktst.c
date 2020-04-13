@@ -45,7 +45,7 @@ main(int argc, char **argv)
   atf_term();
   charsets_term();
   gdl_term();
-  tree_term();
+  tree_term(1);
   return 0;
 }
 const char *prog = "tok";

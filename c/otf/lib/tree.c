@@ -17,6 +17,7 @@
 extern int lnum;
 
 List *tree_mem_list = NULL;
+List *gtree_mem_list = NULL;
 static struct npool *tree_pool;
 #define pool_copy(x) npool_copy((x),tree_pool)
 
@@ -196,15 +197,14 @@ tree_init()
   xmlchars['<'] = "&lt;";
 
   tree_mem_list = list_create(LIST_SINGLE);
+  gtree_mem_list = list_create(LIST_SINGLE);
 }
 
 void
-tree_term()
+tree_term(int clones_too)
 {
   int i;
-  (void)cdf_xmlify(NULL);
-  list_free(tree_mem_list,free);
-  tree_mem_list = NULL;
+
   for (i = 0; i <= block_lastallocated; ++i)
     {
       int j;
@@ -220,7 +220,7 @@ tree_term()
 	    continue;
 	  if (blocks[i][j].children.nodes)
 	    {
-	      if (!blocks[i][j].clone)
+	      if (clones_too || !blocks[i][j].clone)
 		free(blocks[i][j].children.nodes);
 	    }
 	  if (blocks[i][j].attr.nodes)
@@ -232,6 +232,22 @@ tree_term()
 	}
       free(blocks[i]);
     }
+
+  block_lastused = -1;
+  block_lastallocated = -1;
+  lastused = 0;
+  lastnode = 0;
+
+}
+
+void
+tree_gterm()
+{
+  int i;
+
+  (void)cdf_xmlify(NULL);
+  list_free(gtree_mem_list,free);
+  gtree_mem_list = NULL;
 
   for (i = 0; i <= gblock_lastallocated; ++i)
     {
@@ -250,10 +266,29 @@ tree_term()
       free(gblocks[i]);
     }
 
-  for (i = 0; i <= a_block_lastallocated; ++i)
-    free(a_blocks[i]);
   for (i = 0; i <= a_gblock_lastallocated; ++i)
     free(a_gblocks[i]);
+
+  gblock_lastused = -1;
+  gblock_lastallocated = -1;
+  glastused = 0;
+  glastnode = 0;
+
+  a_gblock_lastused = -1;
+  a_gblock_lastallocated = -1;
+  a_glastused = 0;
+  a_glastnode = 0;
+
+  list_free(tree_mem_list,free);
+  tree_mem_list = NULL;
+
+  for (i = 0; i <= a_block_lastallocated; ++i)
+    free(a_blocks[i]);
+
+  a_block_lastused = -1;
+  a_block_lastallocated = -1;
+  a_lastused = 0;
+  a_lastnode = 0;
 
   npool_term(tree_pool);
 }
@@ -381,7 +416,7 @@ gattr(enum a_type a, const unsigned char *value)
       if (last_avpair_used == AVPAIR_SIZE)
 	{
 	  avblock = malloc(AVPAIR_SIZE * sizeof(struct avpair));
-	  list_add(tree_mem_list,avblock);
+	  list_add(gtree_mem_list,avblock);
 	  last_avpair_used = 0;
 	}
       avp = &avblock[last_avpair_used++];
@@ -431,6 +466,8 @@ void
 clear_blocks()
 {
   int i = 0;
+
+#if 0
   while (i <= block_lastused)
     {
       int j;
@@ -457,6 +494,7 @@ clear_blocks()
   lastused = 0;
   lastnode = BLOCK_SIZE;
   block_lastused = 0;
+#endif
 
   for (i = 0; i <= a_block_lastused; ++i)
     memset(a_blocks[i],'\0',A_BLOCK_SIZE*sizeof(struct attr));

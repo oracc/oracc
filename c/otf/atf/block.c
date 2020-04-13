@@ -315,7 +315,9 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	case '&':
 	  if (current_trans)
 	    {
-	      trans_cols_attr(current_trans);
+	      /* NO: do this in text.c:
+		 trans_cols_attr(current_trans); 
+	       */
 	      current_trans = NULL;
 	    }
 	  return lines;
@@ -1413,6 +1415,12 @@ block(unsigned char *line,unsigned char *eol,struct block_token *bp)
 	  abort();
 	}
     }
+}
+
+void
+block_current_trans_clear(void)
+{
+  current_trans = NULL;
 }
 
 static struct node *

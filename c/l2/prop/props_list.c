@@ -5,6 +5,7 @@
 
 #define xstrcmp(a,b) strcmp((const char *)a,(const char *)b)
 static int prop_id = 0;
+
 static const char *
 next_prop_id(void)
 {

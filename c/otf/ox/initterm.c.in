@@ -72,10 +72,12 @@ ox_init(void)
 void
 ox_term(void)
 {
+  extern void tree_gterm(void);
   catvec_term();
   gdl_term();
   pool_term();
-  tree_term();
+  tree_term(1);
+  tree_gterm();
   cdfrnc_term();
   /*  lemline_term(); */
   label_term();
