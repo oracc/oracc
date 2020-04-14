@@ -139,6 +139,11 @@ note_term(void)
 {
   mb_free(mb);
   npool_term(note_pool);
+  if (notes_in_line)
+    list_free(notes_in_line, NULL);
+  if (notes_in_text)
+    list_free(notes_in_text, NULL);
+  notes_in_line = notes_in_text = NULL;
 }
 
 void

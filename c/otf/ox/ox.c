@@ -173,6 +173,7 @@ main(int argc, char **argv)
       finish_outputs();
 
       ox_term();
+      free(crashbuf);
     }
 
   if (!exit_status && lem_status)

@@ -283,6 +283,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 
   for (sp = list_first(sigsets); sp; sp = list_next(sigsets))
     {
+      int free_flag = 0;
       look_pass2 = ifp->fcount = nfinds = 0; /* must reset these each time */
       ifp->finds = NULL;
       sigs_found = NULL;
@@ -350,7 +351,10 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  if (look_pass2)
 	    sigs_found = sigs_inst_in_sigset_pass2(xcp,ifp,sp,&nfinds);
 	  else
-	    sigs_found = look->test(xcp,ifp,sp,&nfinds);
+	    {
+	      sigs_found = look->test(xcp,ifp,sp,&nfinds);
+	      free_flag = 1;
+	    }
 
 	  /* fprintf(stderr, "sigs_found after %s:%s = %p\n", sp->project, sp->lang, (void*)sigs_found); */
 
@@ -367,6 +371,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 	      ifp->sp = sp;
 	      ifp->look = look;
+	      if (free_flag)
+		{
+		  free_flag = 0;
+		  free((void*)sigs_found);
+		}
 	      return;
 	    }
 
@@ -387,6 +396,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		  already_tried_aliasing_init();
 #endif
 		  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
+		  if (free_flag)
+		    {
+		      free_flag = 0;
+		      free((void*)sigs_found);
+		    }
 		  for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		    {
 #if 0
@@ -437,7 +451,10 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		      if (alias_nfinds)
 			{
 			  if (sigs_found)
-			    free((void*)sigs_found);
+			    {
+			      free((void*)sigs_found);
+			      free_flag = 0;
+			    }
 			  sigs_found = alias_sigs_found;
 			  nfinds = alias_nfinds;
 			  no_form = 0;
@@ -462,6 +479,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      int no_form = BIT_ISSET(ifp->f2.flags,F2_FLAGS_NO_FORM);
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 
+	      if (free_flag)
+		{
+		  free((void*)sigs_found);
+		  free_flag = 0;
+		}
 	      for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		{
 		  if (f2_extreme_alias(xcp->sigs, &ifp->f2, &ifp->finds[i]->f2))
@@ -492,11 +514,18 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      ifp->fcount = 0;
 	      
 	    }
-	}    
+	}
 
       if (nfinds)
-	setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
-
+	{
+	  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
+	  if (free_flag)
+	    {
+	      free((void*)sigs_found);
+	      free_flag = 0;
+	    }
+	}
+      
       /* 2020-01-03: not clear that this reduction of senses is
 	 correct; probably better to keep all the senses and then use
 	 statistics to select most common sense */

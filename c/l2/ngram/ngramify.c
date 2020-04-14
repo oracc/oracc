@@ -18,6 +18,8 @@ int ngram_obey_lines = 0;
 
 static FILE *ng_match_log = NULL;
 
+static List *ngramify_mem = NULL;
+
 extern int verbose;
 static int ngram_id = -1;
 static struct ML *match_list = NULL;
@@ -82,11 +84,15 @@ ngramify_init()
     }
   else
     ngramify_reset();
+  if (!ngramify_mem)
+    ngramify_mem = list_create(LIST_SINGLE);
 }
 void
 ngramify_reset()
 {
   match_list->matches_used = 0;
+  list_free(ngramify_mem,free);
+  ngramify_mem = list_create(LIST_SINGLE);
 }
 
 void
@@ -100,6 +106,11 @@ ngramify_term()
     }
   if (ng_match_log)
     fclose(ng_match_log);
+  if (ngramify_mem)
+    {
+      list_free(ngramify_mem, free);
+      ngramify_mem = NULL;
+    }
 }
 
 static const char *
@@ -172,11 +183,11 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		  else
 		    {
 		      enum langcode c = c_none;
-		      const char *lang = NULL;
+		      /*const char *lang = NULL;*/
 		      if (clnodes[i].l->f->lang)
 			{
 			  c = clnodes[i].l->f->lang->core->code;
-			  lang = clnodes[i].l->f->lang->core->name;
+			  /*lang = clnodes[i].l->f->lang->core->name;*/
 			}
 		      else
 			{
@@ -185,7 +196,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 			  if ((tmp = (const char*)clnodes[i].l->f->f2.lang))
 			    {
 			      struct langcore *lcp = NULL;
-			      lang = (const char*)clnodes[i].l->f->f2.lang;
+			      /*lang = (const char*)clnodes[i].l->f->f2.lang;*/
 			      while (*tmp && '-' != *tmp)
 				*b++ = *tmp++;
 			      *b = '\0';
@@ -459,6 +470,7 @@ try_match(int match_index,
     matches = match(steps[step_index],curr_l,&nmatches,p);
     if (matches)
       {
+	list_add(ngramify_mem,matches);
 	add_match(curr_l, matches, tts ? tts[step_index] : NULL, psu, psu_form,
 		  steps[step_index]->owner->user, nmatches);
 	if (try_match(match_index+wild_tries+1,
@@ -741,6 +753,8 @@ lnodes_of(struct ilem_form *fp, int *nparsesp)
       parses = NULL;
       *nparsesp = 0;
     }
+  if (parses)
+    list_add(ngramify_mem,parses);
   return parses;
 }
 
@@ -835,6 +849,7 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
     }
 
   retp = malloc(total_nles * sizeof(struct NLE*));
+  list_add(ngramify_mem,retp);
   *n_nodes = total_nles;
 
   for (total_nles = i = 0; i < n_nles; ++i)
