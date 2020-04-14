@@ -561,7 +561,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
     {
       /* lem_dynalem || (ncand == 0 and pass1 == 1) */
     }
-  if (part)
+  if (part && res != part)
     free(part);
   *nfinds = ncand;
   return ncand ? (struct sig const * const *)res : NULL;

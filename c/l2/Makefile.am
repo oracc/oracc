@@ -6,6 +6,12 @@ SUBDIRS=bigrams form ilem link ngram prop psus \
 
 noinst_LTLIBRARIES=libl2.la
 
+libl2_la_DEPENDENCIES=sigs/libsigs.la word/libwords.la xcl2/libxcl2.la \
+	form/libf2.la prop/libprops.la ilem/libilem.la \
+	link/liblinks.la psus/libpsus.la bigrams/libbigrams.la \
+	ngram/libngram.la xli/libxli.la \
+	dsa/libdsa.la nsa/libnsa.la psa/libpsa.la psus/libpsus.la
+
 libl2_la_LIBADD=sigs/libsigs.la word/libwords.la xcl2/libxcl2.la \
 	form/libf2.la prop/libprops.la ilem/libilem.la \
 	link/liblinks.la psus/libpsus.la bigrams/libbigrams.la \

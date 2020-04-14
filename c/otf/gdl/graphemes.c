@@ -7,6 +7,7 @@
 #include <wctype.h>
 #include <psdtypes.h>
 #include <assert.h>
+#include <memblock.h>
 #include <hash.h>
 #include <cdf.h>
 #include "npool.h"
@@ -116,6 +117,28 @@ static struct grapheme *qualified(register unsigned char *g);
 static struct grapheme *singleton(register unsigned char *g, enum t_type type);
 static struct grapheme *icmt_grapheme(const unsigned char *icmt);
 static const unsigned char *signify(const unsigned char *utf);
+
+/* These grapheme allocations are cleared after every text; if they
+   need to be preserved across a run use a hash and new memory for the
+   keys */
+struct mb *galloc_mb = NULL;
+void
+galloc_init()
+{
+  if (!galloc_mb)
+    galloc_mb = mb_init(sizeof(struct grapheme),4096);
+}
+void
+galloc_term()
+{
+  mb_free(galloc_mb);
+  galloc_mb = NULL;
+}
+struct grapheme *
+galloc()
+{
+  return mb_new(galloc_mb);
+}
 
 void
 g_reinit()
@@ -803,6 +826,8 @@ gparse(register unsigned char *g, enum t_type type)
 			     cleang,curr_lang->signlist);
 		}
 	    }
+	  if (cleang != orig)
+	    free(cleang);
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)
@@ -1125,7 +1150,7 @@ gtype(register unsigned char *g)
 static struct grapheme *
 compound(register unsigned char *g)
 {
-  struct grapheme *gp = calloc(1,sizeof(struct grapheme));
+  struct grapheme *gp = galloc();
   int status = 0;
   gp->type = g_c;
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
@@ -1135,7 +1160,7 @@ compound(register unsigned char *g)
       if (gp->xml->children.lastused == 1)
 	{
 	  warning("unnecessary pipes");
-	  free(gp);
+	  /*free(gp);*/
 	  return NULL;
 	}
       else
@@ -1147,7 +1172,7 @@ compound(register unsigned char *g)
     }
   else
     {
-      free(gp);
+      /*free(gp);*/
       return NULL;
     }
 }
@@ -1290,7 +1315,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  if (gp)
 	    {
 	      last_g = np = gp->xml;
-	      free(gp);
+	      /*free(gp);*/
 	      gp = NULL;
 	      if (in_square)
 		appendAttr(np,brokenattr);
@@ -1589,7 +1614,7 @@ qualified(register unsigned char *g)
 		    }
 		  else
 		    {
-		      gp = calloc(1,sizeof(struct grapheme));
+		      gp = galloc();
 		      gp->gflags = q_g->gflags;
 		      gp->type = g_q;
 		      gp->g.q.g = q_g;
@@ -1698,7 +1723,7 @@ punct(register unsigned char *g)
       p_q = gparse(g,type_top);
       --inner_parse;
     }
-  gp = calloc(1,sizeof(struct grapheme));
+  gp = galloc();
   gp->type = g_p;
   gp->g.p.g = p_q;
   gp->xml = gelem(e_g_p,NULL,lnum,GRAPHEME);
@@ -1719,12 +1744,12 @@ numerical(register unsigned char *g)
   if ('(' == *g)
     {
       unsigned char *gsaveo = g;
-      gp = calloc(1,sizeof(struct grapheme));
+      gp = galloc();
       gp->type = g_n;
       if (g[-1] == '/')
 	{
 	  vwarning("%s: incomplete fraction", gp->g.n.r);
-	  free(gp);
+	  /*free(gp);*/
 	  return NULL;
 	}
       *g++ = '\0';
@@ -1752,7 +1777,7 @@ numerical(register unsigned char *g)
 	      if (gp->g.n.n->type == g_n)
 		{
 		  warning("number graphemes not nestable");
-		  free(gp);
+		  /*free(gp);*/
 		  gp = NULL;
 		}
 	      else
@@ -1774,28 +1799,28 @@ numerical(register unsigned char *g)
 		    }
 		  else
 		    {
-		      free(gp);
+		      /*free(gp);*/
 		      gp = NULL;
 		    }
 		}
 	    }
 	  else
 	    {
-	      free(gp);
+	      /*free(gp);*/
 	      gp = NULL;
 	    }
 	}
       else
 	{
 	  warning("malformed numeric grapheme: no closing ')'");
-	  free(gp);
+	  /*free(gp);*/
 	  gp = NULL;
 	}
     }
   else if ('n' == *orig_g) /*(*gp->g.n.r == 'n') */
     {
       struct node *r;
-      gp = calloc(1,sizeof(struct grapheme));
+      gp = galloc();
       gp->type = g_n;
       gp->g.n.r = orig_g;
       r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
@@ -1816,7 +1841,7 @@ numerical(register unsigned char *g)
 	  int nmods = 0;
 	  static struct mods modsbuf[MODS_MAX];
 	  unsigned char *qnum = NULL, *qtmp = NULL;
-	  gp = calloc(1,sizeof(struct grapheme));
+	  gp = galloc();
 	  gp->g.n.r = orig_g;
 	  g = orig_g;
 	  while (is_grapheme_base[*g] || '/' == *g)
@@ -1871,7 +1896,7 @@ numerical(register unsigned char *g)
 static struct grapheme *
 singleton(register unsigned char *g, enum t_type type)
 {
-  struct grapheme*gp = calloc(1,sizeof(struct grapheme));
+  struct grapheme*gp = galloc();
   int nmods = 0;
   static struct mods modsbuf[MODS_MAX];
   const unsigned char *utf8g = NULL;
@@ -2421,7 +2446,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 static struct grapheme *
 icmt_grapheme(const unsigned char *icmt_tok)
 {
-  struct grapheme *g = calloc(1,sizeof(struct grapheme));
+  struct grapheme *g = galloc();
   g->type = icmt;
   g->g.s.base = pool_copy(icmt_tok);
   return g;

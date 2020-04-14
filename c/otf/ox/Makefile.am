@@ -11,18 +11,6 @@ ox_SOURCES = \
 	atffile.c help.c initterm.c odt_writer.c options.c \
 	ox.c post_option_setup.c process_inputs.c globals.c
 
-atffile.c: atffile.c.in
-	$(ORACCIFY) atffile.c.in
-
-initterm.c: initterm.c.in
-	$(ORACCIFY) initterm.c.in
-
-odt_writer.c: odt_writer.c.in
-	$(ORACCIFY) odt_writer.c.in
-
-post_option_setup.c: post_option_setup.c.in
-	$(ORACCIFY) post_option_setup.c.in
-
 xLDADD = \
 	../gdl/libgdl.la \
 	../atf/libatf.la \
@@ -39,6 +27,20 @@ xLDADD = \
 
 ox_LDADD = $(xLDADD)
 ox_DEPENDENCIES = $(ox_LDADD)
+
+## ox$(EXEEXT): $(ox_DEPENDENCIES) $(ox_SOURCES)
+
+atffile.c: atffile.c.in
+	$(ORACCIFY) atffile.c.in
+
+initterm.c: initterm.c.in
+	$(ORACCIFY) initterm.c.in
+
+odt_writer.c: odt_writer.c.in
+	$(ORACCIFY) odt_writer.c.in
+
+post_option_setup.c: post_option_setup.c.in
+	$(ORACCIFY) post_option_setup.c.in
 
 f2test_SOURCES = \
 	f2test.c

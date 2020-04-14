@@ -135,10 +135,8 @@ xcl_free_tree(void *vp)
       
       break;
     case xcl_node_l:
-#if 0
-      if (lp->sigs_found)
-	free(lp->sigs_found);
-#endif
+      if (lp->f && lp->f->finds)
+	free(lp->f->finds);
       break;
     }
 

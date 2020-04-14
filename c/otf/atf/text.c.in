@@ -3,6 +3,7 @@
 #include <ctype128.h>
 #include <stdio.h>
 #include "globals.h"
+#include "memblock.h"
 #include "l2.h"
 #include "tree.h"
 #include "xtfxcl.h"
@@ -22,6 +23,7 @@
 #include "lang.h"
 #include "label.h"
 #include "charsets.h"
+#include "graphemes.h"
 #include "inline.h"
 #include "ilem.h"
 #include "gdlopts.h"
@@ -52,6 +54,8 @@ extern size_t max_cat_id;
 char text_idbuf[16];
 
 extern void note_initialize_text(void);
+
+List *per_text_mem_list = NULL;
 
 extern int do_cdl;
 extern int harvest_notices;
@@ -137,6 +141,7 @@ void
 text_init()
 {
   textid = (char*)text_idbuf;
+  per_text_mem_list = list_create(LIST_SINGLE);
 }
 
 void
@@ -146,6 +151,14 @@ text_term(void)
   text_n = NULL;
   text_n_alloced = 0;
   savetext(NULL,NULL);
+  list_free(per_text_mem_list,list_xfree);
+  per_text_mem_list = NULL;
+}
+
+void
+per_text_mem(void *p)
+{
+  list_add(per_text_mem_list, p);
 }
 
 void
@@ -228,6 +241,7 @@ process_text(struct run_context *run, unsigned char **lines)
   text_init();
   lemline_init();
   note_initialize_text();
+  galloc_init();
 
   trans_dollar_fifo = has_trans_labeled(lines);
 
@@ -510,6 +524,8 @@ process_text(struct run_context *run, unsigned char **lines)
   tree_term(1);
   trans_clear();
   current_trans = NULL;
+  galloc_term();
+  text_term();
   return lines;
 }
 

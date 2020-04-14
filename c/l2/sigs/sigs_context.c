@@ -29,7 +29,7 @@ int sigs_debug = 0;
 extern char *strdup(const char*);
 #endif
 
-static struct sig_context *global_scp;
+struct sig_context *global_scp;
 
 static void sig_lang_free(List *lp);
 

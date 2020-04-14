@@ -100,6 +100,7 @@ struct sig_find_state
   struct sig const * const *sigs_found; 
   int no_form;
   int partial;
+  int best;
 };
 
 static List *sig_state = NULL;
@@ -144,6 +145,16 @@ sigs_state_best(void)
     return best_sans_form;
 }
 
+static void
+ss_list_xfree(struct sig_find_state *s)
+{
+#if 0
+  if (!s->best && s->finds)
+    free(s->finds);
+#endif
+  free(s);
+}
+
 /* FIXME: this causes memory leaks if finds that are
    not later used are not freed during sigs_state_free */
 static void
@@ -151,7 +162,7 @@ sigs_state_free(void)
 {
   if (sig_state)
     {
-      list_free(sig_state,list_xfree);
+      list_free(sig_state,(list_free_func*)ss_list_xfree);
       sig_state = NULL;
     }
 }
@@ -180,6 +191,7 @@ sigs_state_save(struct sigset *sp, struct ilem_form *fp,
   s->nfinds = nfinds;
   s->no_form = (BIT_ISSET(fp->f2.flags, F2_FLAGS_NO_FORM) ? F2_FLAGS_NO_FORM : 0);
   s->partial = (BIT_ISSET(fp->f2.flags, F2_FLAGS_PARTIAL) ? F2_FLAGS_PARTIAL : s->no_form);
+  s->best = 0;
   list_add(sig_state, s);
 }
 
@@ -256,6 +268,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
   struct sig const * const *sigs_found = NULL;
   struct sigset *sp_parent = NULL;
   int look_pass2 = 0;
+  int free_flag = 0;
   
   extern int lem_autolem;
   extern int lem_dynalem;
@@ -283,9 +296,12 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 
   for (sp = list_first(sigsets); sp; sp = list_next(sigsets))
     {
-      int free_flag = 0;
       look_pass2 = ifp->fcount = nfinds = 0; /* must reset these each time */
-      ifp->finds = NULL;
+      if (ifp->finds)
+	{
+	  free(ifp->finds);
+	  ifp->finds = NULL;
+	}
       sigs_found = NULL;
 
       if (ifp->f2.oform) /* A previous sigset tried aliasing */
@@ -396,11 +412,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		  already_tried_aliasing_init();
 #endif
 		  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
-		  if (free_flag)
-		    {
-		      free_flag = 0;
-		      free((void*)sigs_found);
-		    }
+		  /* can't free sigs_found here */
 		  for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		    {
 #if 0
@@ -478,12 +490,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      static int alias_nfinds;
 	      int no_form = BIT_ISSET(ifp->f2.flags,F2_FLAGS_NO_FORM);
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
-
-	      if (free_flag)
-		{
-		  free((void*)sigs_found);
-		  free_flag = 0;
-		}
+	      /* can't free sigs_found here */
 	      for (alias_nfinds = i = 0; ifp->finds[i]; ++i)
 		{
 		  if (f2_extreme_alias(xcp->sigs, &ifp->f2, &ifp->finds[i]->f2))
@@ -519,11 +526,13 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       if (nfinds)
 	{
 	  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
+#if 0
 	  if (free_flag)
 	    {
 	      free((void*)sigs_found);
 	      free_flag = 0;
 	    }
+#endif
 	}
       
       /* 2020-01-03: not clear that this reduction of senses is
@@ -567,7 +576,12 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 #if 1
 	      /* If there's no match on GW/SENSE we can't assume any of the CF matches is good */
 	      ifp->fcount = nfinds = 0;
-	      ifp->finds = NULL;
+	      if (ifp->finds)
+		{
+		  free(ifp->finds);
+		  ifp->finds = NULL;
+		}
+	      free((void*)sigs_found);
 	      sigs_found = NULL;
 	      BIT_CLEAR(ifp->f2.flags,F2_FLAGS_PARTIAL);
 	      if (look_pass2 == 0)
@@ -679,8 +693,10 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
       else if (nfinds > 1 && !strcmp((const char *)sp->file, "cache"))
 	{
 	  sp = sp_parent;
+	  if (sigs_found)
+	    free((void*)sigs_found);
 	  sigs_found = NULL;
-	  nfinds = 0;
+	  nfinds = 0;	  
 	  BIT_CLR(l->f->f2.flags, F2_FLAGS_FROM_CACHE);
 	  goto retry_after_cache;
 	}
@@ -749,9 +765,13 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	{
 	  sp = best->sp;
 	  ifp = best->fp;
-	  ifp->finds = best->finds;
-	  ifp->fcount = nfinds = best->nfinds;
-
+	  if (ifp->finds != best->finds)
+	    {
+	      free(ifp->finds);
+	      ifp->finds = best->finds;
+	      ifp->fcount = nfinds = best->nfinds;
+	    }
+	  best->best = 1;
 	  if (best->fp_aliased_form)
 	    {
 	      ifp->f2.oform = ifp->f2.form;
@@ -819,8 +839,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  BIT_SET(ifp->f2.flags, F2_FLAGS_NOT_IN_SIGS);
 	}
     }
-
-  free(tmplang);
+  if (free_flag)
+    free((void*)sigs_found);
 }
 
 static void

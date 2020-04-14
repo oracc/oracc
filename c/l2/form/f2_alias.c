@@ -52,7 +52,7 @@ f2_extreme_alias(struct sig_context *scp, struct f2 *fp, struct f2 *ref_fp)
 int
 f2_form_signs(const unsigned char *f1, const unsigned char *f2)
 {
-  int i;
+  int i, ret = 1;
   int m1len = 0, m2len = 0;
   struct sas_map *m1 = NULL, *m2 = NULL;
 
@@ -60,14 +60,33 @@ f2_form_signs(const unsigned char *f1, const unsigned char *f2)
   m2 = sas_map_form(f2, &m2len);
 
   if (m1len != m2len)
-    return 0;
+    ret = 0;
+  else
+    {
+      gsl_map_ids(m1);
+      gsl_map_ids(m2);
+      
+      for (i = 0; m1[i].v; ++i)
+	if (strcmp((const char *)m1[i].a, (const char *)m2[i].a))
+	  {
+	    ret = 0;
+	    break;
+	  }
+    }
 
-  gsl_map_ids(m1);
-  gsl_map_ids(m2);
+  if (m1)
+    {
+      if (m1[0].tmp_ptr_in_map0)
+	free(m1[0].tmp_ptr_in_map0);
+      free(m1);
+    }
 
-  for (i = 0; m1[i].v; ++i)
-    if (strcmp((const char *)m1[i].a, (const char *)m2[i].a))
-      return 0;
+  if (m2)
+    {
+      if (m2[0].tmp_ptr_in_map0)
+	free(m2[0].tmp_ptr_in_map0);
+      free(m2);
+    }
 
-  return 1;
+  return ret;
 }

@@ -828,7 +828,7 @@ tokenize_term()
   tokpool = NULL;
   /* Free tablep first because it references tokens which may
      be freed by the block-free following */
-  hash_free(tablep,text_free);
+  hash_free(tablep,NULL /*text_free*/);
   list_free(meta_graphemes,free);
   list_free(medial_info_list, list_xfree);
   mb_free(tok_mem);
@@ -1190,7 +1190,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 				   && g[3] >= 0xa2 && g[3] <= 0xa5)))
 		    {
 		      struct token *puncttok = NULL;
-		      puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
+		      puncttok = /*s_*/create_token(text,t,gparse(pool_copy(g),t));
 		      tokens[tokindex++] = puncttok;
 		    }
 		  else
@@ -1204,10 +1204,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 			}
 		      else
 			{
-			  tokens[tokindex++] 
-			    = hash_insert(pool_copy(g),
+			  tokens[tokindex++] = /*s_*/create_token(text, t, gp);
+#if 0
+			  = hash_insert(pool_copy(g),
 					  s_create_token(text,t,gp),
 					  &table);
+#endif
 			  if (gp && (gp->gflags&GFLAGS_HAVE_SQUARE))
 			    {
 			      unsigned char *f2 = following;
@@ -1328,7 +1330,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    {
 		      struct token *puncttok = NULL;
 		      t = g_p;
-		      puncttok = s_create_token(text,t,gparse(pool_copy(g),t));
+		      puncttok = /*s_*/create_token(text,t,gparse(pool_copy(g),t));
 		      tokens[tokindex++] = puncttok;
 		      ++l;
 		    }
@@ -1390,7 +1392,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 			}
 		      else
 			gbuf[1] = '\0';
-		      puncttok = s_create_token(text,t,
+		      puncttok = /*s_*/create_token(text,t,
 						gparse(pool_copy((const unsigned char *)gbuf),t));
 		      tokens[tokindex++] = puncttok;
 		      last_text_or_bound = text;
@@ -1480,10 +1482,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 			  *following = '\0';
 			  gtokp = hash_lookup(g2,&table);
 			  if (!gtokp)
-			    gtokp = hash_insert(pool_copy(g2),
+			    gtokp = /*s_*/create_token(text, t, gparse(pool_copy(g2),t));
+#if 0
+			  gtokp = hash_insert(pool_copy(g2),
 						s_create_token(text,t,
 							     gparse(pool_copy(g2),t)),
 						&table);
+#endif
 			  else
 			    if ((!gtokp->data && gtokp->type != wm_absent && gtokp->type != wm_broken
 				 && gtokp->type != wm_linecont && gtokp->type != wm_linefrom)

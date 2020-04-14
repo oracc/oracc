@@ -45,10 +45,14 @@ sas_map_form(const unsigned char *form, int *maplen)
     }
 
   maps = malloc((i+1)*sizeof(struct sas_map));
+  maps[0].tmp_ptr_in_map0 = (char*)tmp;
+
   i = postdet_flag = 0;
   s = tmp;
   do
     {
+      if (i)
+	maps[i].tmp_ptr_in_map0 = NULL;
       if (*s == '{')
 	{
 	  maps[i].det = (postdet_flag ? 1 : -1);

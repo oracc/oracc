@@ -60,6 +60,7 @@ struct sas_constraint
 
 struct sas_map
 {
+  char*tmp_ptr_in_map0;
   const unsigned char *v;
   const unsigned char *a;
   int det; /* -1 = predet; 0 = nondet; +1 = postdet */

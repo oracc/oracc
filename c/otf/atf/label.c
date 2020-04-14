@@ -387,6 +387,7 @@ struct label *
 newlabel(char type, enum block_levels level, const void *p)
 {
   struct label *lp = calloc(1,sizeof(struct label));
+  per_text_mem(lp);
   lp->type = type;
   lp->level = level;
   lp->ptr = p;

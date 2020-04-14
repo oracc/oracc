@@ -34,6 +34,8 @@ prop_alloc(void)
       fputs("out of core\n",stderr);
       exit(2);
     }
+  if (!prop_mem)
+    xcl_props_init();
   list_add(prop_mem,p);
   return p;
 }	 

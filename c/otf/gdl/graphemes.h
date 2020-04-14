@@ -49,6 +49,8 @@ void g_reinit(void);
 struct grapheme *gparse(register unsigned char *g, enum t_type type);
 void graphemes_init(void);
 void graphemes_term(void);
+void galloc_init(void);
+void galloc_term(void);
 enum t_type gtype(register unsigned char *g);
 unsigned char *unicodify(register const unsigned char *s);
 extern char cued_opener[];

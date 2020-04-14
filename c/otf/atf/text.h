@@ -13,5 +13,7 @@ extern const char *const xtf_xmlns[];
 unsigned char **process_text(struct run_context *run, unsigned char **lines);
 extern void text_vec_init(void);
 
+extern void per_text_mem(void*);
+
 extern enum e_type doctype;
 #endif /*_TEXT_H*/

@@ -43,8 +43,11 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 		    mlp->matches[0].psu);
   if (mlp->matches[0].psu_form)
     {
+      extern struct sig_context *global_scp;
       struct xcl_l*lp = calloc(1,sizeof(struct xcl_l));
       struct f2 *parsed_psu = mb_new(xc->sigs->mb_f2s);
+      unsigned char *tmp = NULL;
+      
       set_instance_fields(xc,mlp);
       /* PSU's don't use the && COF notation, so NULL final arg
 	 is safe here */
@@ -74,8 +77,18 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 
       lsp->form.sig = f2_psu_sig(xc, mlp->matches[0].psu_form);
 
+#if 1
+      tmp = psu_inst((char*)lsp->form.sig);
+      if (tmp)
+	{
+	  lp->inst = npool_copy(tmp,global_scp->pool);
+	  free(tmp);
+	}
+      lp->f = mb_new(global_scp->mb_ilem_forms);
+#else
       lp->inst = psu_inst((char*)lsp->form.sig);
       lp->f = calloc(1,sizeof(struct ilem_form));
+#endif
       lp->f->file = (char*)mlp->matches[0].psu_form->file;
       lp->f->lnum = mlp->matches[0].psu_form->lnum;
       lp->f->f2 = *mlp->matches[0].psu_form;

@@ -302,6 +302,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	    ++lp;
 	  *lp = '\0';
 	}
+      free(err_lp);
       return lp - orig_lp;
     }
   

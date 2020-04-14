@@ -11,6 +11,7 @@ struct lang_tag *default_langtag;
 
 static Hash_table *langtag_hash;
 static Hash_table *texttag_hash = NULL;
+static Hash_table *noscript_hash = NULL;
 static char *texttag_buf = NULL;
 static struct npool *langtag_pool;
 static void langtag_error(const char *file, int lnum, 
@@ -71,6 +72,7 @@ langtag_init(void)
   langtag_pool = npool_init();
   langtag_hash = hash_create(1);
   default_langtag = langtag_create(NULL,"sux",NULL,NULL,0);
+  noscript_hash = hash_create(1);
   texttag_init();
 }
 
@@ -83,6 +85,10 @@ langtag_term(void)
       hash_free(langtag_hash, hash_xfree);
       langtag_hash = NULL;
     }
+
+  if (noscript_hash)
+    hash_free(noscript_hash, NULL);
+
   /*  free(default_langtag); */
 }
 
@@ -123,6 +129,10 @@ tag_no_script(const char *tag)
 
   if (tag)
     {
+      char *ret = hash_find(noscript_hash,tag);
+      if (ret)
+	return ret;
+      
       tmp = malloc(strlen(tag)+1);
       strcpy(tmp,tag);
       script = tmp + strlen(tmp);
@@ -130,9 +140,12 @@ tag_no_script(const char *tag)
 	--script;
       if (script > tmp && '-' == script[-1])
 	script[-1] = '\0';
+      hash_add(noscript_hash, npool_copy(tag,langtag_pool), (ret = npool_copy(tmp,langtag_pool)));
+      free(tmp);
+      return ret;
     }
 
-  return tmp;
+  return NULL;
 }
 
 void

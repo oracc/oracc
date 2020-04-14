@@ -91,8 +91,10 @@ void
 ngramify_reset()
 {
   match_list->matches_used = 0;
+#if 0
   list_free(ngramify_mem,free);
   ngramify_mem = list_create(LIST_SINGLE);
+#endif
 }
 
 void
