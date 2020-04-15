@@ -11,6 +11,8 @@
 
 int psus_sig_check = 1;
 
+extern void per_text_mem(void *);
+
 static void set_instance_fields(struct xcl_context *xc, struct ML *mlp);
 
 static char *
@@ -93,10 +95,12 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
       lp->f->lnum = mlp->matches[0].psu_form->lnum;
       lp->f->f2 = *mlp->matches[0].psu_form;
       if (psus_sig_check)
-	sigs_l_check(xc, lp);
+	{
+	  sigs_l_check(xc, lp);
+	}
       mlp->matches[0].psu_nfinds = lp->f->fcount;
 
- #if 0
+#if 0
       /* Removed 2019-05-19 because it gets set correctly via f2_psu_sig then
 	 this rubbish breaks it */
       /* WATCHME: should I be using psu_finds and reporting ambig here? 
@@ -118,8 +122,8 @@ links_psu(struct xcl_context *xc, struct ML *mlp)
 	    {
 	      struct f2 *e = mlp->matches[0].psu_form;
 	      vwarning2((const char *)e->file, e->lnum, 
-			"psu: %s[%s]%s: compound not found",
-			e->cf,e->gw,e->pos);
+			"psu: %s[%s]%s: compound FORM %s not found",
+			e->cf,e->gw,e->pos,e->form);
 	    }
 	  else if (verbose)
 	    {

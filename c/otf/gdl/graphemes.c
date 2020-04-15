@@ -810,11 +810,11 @@ gparse(register unsigned char *g, enum t_type type)
 	{
 	  static unsigned char buf[1024];
 	  unsigned char *insertp = buf;
-	  unsigned char *cleang = orig;
-
+	  unsigned char *cleang = orig, *tmpcg = NULL;
+	  
 	  if (strpbrk((const char *)orig,bad_cg_chars))
-	    cleang = gclean(cleang);
-
+	    tmpcg = cleang = gclean(cleang);
+	  
 	  if (curr_lang->values && !hash_find(curr_lang->values,cleang))
 	    {
 	      if (!curr_lang->snames || !hash_find(curr_lang->snames,cleang))
@@ -826,8 +826,13 @@ gparse(register unsigned char *g, enum t_type type)
 			     cleang,curr_lang->signlist);
 		}
 	    }
-	  if (cleang != orig)
-	    free(cleang);
+#if 0
+	  if (tmpcg)
+	    {
+	      free(tmpcg);
+	      tmpcg = NULL;
+	    }
+#endif
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)

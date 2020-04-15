@@ -741,6 +741,7 @@ savetext(unsigned char **l, int *lenp)
   if (!l)
     {
       free(buf);
+      buflen = 0;
       return buf = NULL;
     }
   start = *l;

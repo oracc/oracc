@@ -297,11 +297,14 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
   for (sp = list_first(sigsets); sp; sp = list_next(sigsets))
     {
       look_pass2 = ifp->fcount = nfinds = 0; /* must reset these each time */
+#if 0
+      /* Can't do this because sig_state references it */
       if (ifp->finds)
 	{
 	  free(ifp->finds);
 	  ifp->finds = NULL;
 	}
+#endif
       sigs_found = NULL;
 
       if (ifp->f2.oform) /* A previous sigset tried aliasing */
@@ -365,7 +368,17 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  BIT_CLEAR(ifp->f2.flags, F2_FLAGS_PARTIAL);
 
 	  if (look_pass2)
-	    sigs_found = sigs_inst_in_sigset_pass2(xcp,ifp,sp,&nfinds);
+	    {
+#if 0
+	      if (sigs_found)
+		{
+		  free(sigs_found);
+		  free_flag = 0;
+		}
+#endif
+	      sigs_found = sigs_inst_in_sigset_pass2(xcp,ifp,sp,&nfinds);
+	      free_flag = 1;
+	    }
 	  else
 	    {
 	      sigs_found = look->test(xcp,ifp,sp,&nfinds);
@@ -767,7 +780,8 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  ifp = best->fp;
 	  if (ifp->finds != best->finds)
 	    {
-	      free(ifp->finds);
+	      if (ifp->finds)
+		free(ifp->finds);
 	      ifp->finds = best->finds;
 	      ifp->fcount = nfinds = best->nfinds;
 	    }
