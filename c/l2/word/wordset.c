@@ -71,6 +71,13 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
   int hits = 0;
   int i;
   int seg_nkeys = 0;
+
+  if (!strcmp(set1->literal, set2->literal))
+    {
+      set2->pct = 101;
+      return W2_FULL;
+    }
+  
   for (i = start2; i < top2; ++i)
     {
       int found = 0, j;
@@ -121,6 +128,8 @@ w2_create_set(const Uchar *word_set)
   const Uchar *k;
   int index = 0;
 
+  set->literal = npool_copy(word_set, w2_pool);
+  
   if (!strncmp((const char *)word_set, "(to be) ", strlen("(to be) ")))
     word_set += strlen("(to be) ");
   else if (!strncmp((const char *)word_set, "to ", strlen("to ")))

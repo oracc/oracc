@@ -155,6 +155,7 @@ posepos_ok(struct f2 *f1, struct f2 *f2)
     }
 }
 
+/* f1 is the instance lemmatization; f2 is a candidate from the lemm-xxx.sig file */
 int
 xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LINE)
 {
@@ -162,28 +163,38 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
   
   if (gw_wild)
     {
-      /* blank GW is a wildcard and matches any GW/SENSE */
-      if (!f1->gw || !*f1->gw)
-	{
-	  if (f1->words)
-	    f1->words->pct = 100;
-	  return 1;
-	}
       if ((!f1->sense || !*f1->sense)
 	  && (!f2->gw || !strcmp((char*)f1->gw,(char*)f2->gw)))
 	{
-	  if (f1->words)
-	    f1->words->pct = 100;
+	  if (!f1->words)
+	    setup_set(f1);
+	  f1->words->pct = 101;
+	  return 1;
+	}
+      /* blank GW is a wildcard and matches any GW/SENSE */
+      if (!f1->gw || !*f1->gw)
+	{
+	  if (!f1->words)
+	    setup_set(f1);
+	  f1->words->pct = 100;
 	  return 1;
 	}
     }
 
   if ((f1->sense && f2->sense && !strcmp((char*)f1->sense, (char*)f2->sense))
-      || (!f1->sense && !f2->sense && f1->gw && f2->gw && !strcmp((char*)f1->gw, (char*)f2->gw))
+      || (!f1->sense && f1->gw && f2->sense && !strcmp((char*)f1->gw, (char*)f2->sense))
       )
     {
-      if (f1->words)
-	f1->words->pct = 100;
+      if (!f1->words)
+	setup_set(f1);
+      f1->words->pct = 101;
+      return 1;
+    }
+  else if (!f1->sense && f1->gw && f2->gw && !strcmp((char*)f1->gw, (char*)f2->gw))
+    {
+      if (!f1->words)
+	setup_set(f1);
+      f1->words->pct = 99;
       return 1;
     }
 
@@ -512,10 +523,16 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	  f->sense = f->gw;
 	  for (i = 0; i < ncand; ++i)
 	    {
-	      if (f->words)
-		f->words->pct = 0;
-	      if (sense_ok(f,res[i]->f2p,0))
+	      if (f->words && f->words->pct >= 99)
 		{
+		  res[i]->pct = f->words->pct;
+		  if (f->words->pct > s_pct_top)
+		    s_pct_top = f->words->pct;
+		}
+	      else if (sense_ok(f,res[i]->f2p,0))
+		{
+		  if (f->words)
+		    f->words->pct = 0;
 		  if (f->words)
 		    {
 		      if (wordset_debug)

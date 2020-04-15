@@ -14,6 +14,7 @@ struct tab
 
 struct w2_set
 {
+  Uchar *literal;
   Uchar **keys;
   int nkeys;
   int pct;

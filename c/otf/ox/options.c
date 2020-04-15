@@ -6,7 +6,6 @@
 #include "ox.h"
 #include "globals.h"
 
-extern int wordset_debug;
 int v_flag = 0;
 int
 ox_options(int argc, char **argv)
@@ -179,6 +178,8 @@ ox_options(int argc, char **argv)
 	      wordset_debug = 1;
 	      if (verbose > 2)
 		sigs_debug = 1;
+	      if (verbose > 3)
+		sigsets_debug = 1;
 	    }
 	  break;
 	case 'w':

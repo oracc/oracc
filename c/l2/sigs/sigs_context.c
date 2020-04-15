@@ -24,6 +24,7 @@
 extern int lem_extended;
 extern int lem_autolem;
 int sigs_debug = 0;
+int sigsets_debug = 0;
 
 #ifndef strdup
 extern char *strdup(const char*);
@@ -498,7 +499,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
     {
       s->count = 1;
       hash_add(sp->forms, npool_copy(form, scp->pool), s);
-      if (sigs_debug)
+      if (sigsets_debug)
 	fprintf(stderr, "sigs_load_sigs: registering form %s\n", form);
     }
 
@@ -524,7 +525,7 @@ sigs_load_one_sig(struct sig_context*scp, struct sigset *sp, const unsigned char
     {
       s2->count = 1;
       hash_add(sp->norms, npool_copy(cf_or_norm, scp->pool), s2);
-      if (sigs_debug)
+      if (sigsets_debug)
 	fprintf(stderr, "sigs_load_sigs: registering cf_or_norm %s\n", cf_or_norm);
     }
 }

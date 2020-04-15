@@ -74,6 +74,9 @@ sigs_cache_term(struct sigset *sp)
 void
 sigs_cache_add(struct ilem_form *ifp, struct sig const *const *sigs)
 {
+  return;
+
+#if 0
   if (!ifp || !ifp->sp || BIT_ISSET(ifp->f2.flags, F2_FLAGS_FROM_CACHE))
     return;
 
@@ -84,6 +87,7 @@ sigs_cache_add(struct ilem_form *ifp, struct sig const *const *sigs)
     fprintf(stderr, "sigs_cache: adding %s to cache\n", ifp->f2.form);
 
   sigs_load_one_sig(ifp->sp->owner, ifp->sp->cache, sigs[0]->sig, 0, ifp, 0);
+#endif
 
 #if 0
   if (BIT_ISSET(fp->f2.flags, F2_FLAGS_LEM_BY_NORM))

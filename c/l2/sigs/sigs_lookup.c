@@ -47,13 +47,17 @@ default_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 static int 
 rematch_on_sense(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
-  int ret = sense_ok(&ref_fp->f2, &fp->f2, 0);
-  return !ret;
 #if 0
-  if (ref_fp->f2.cf && fp->f2.norm)
-    return strcmp((char*)ref_fp->f2.cf,(char*)fp->f2.norm);
-  else
+  int ret = 0;
+  if (fp->f2.gw && !fp->f2.sense && ref_fp->f2.sense)
+    if (!strcmp(ref_fp->f2.sense, fp->f2.gw))
+      return 1;
+  if (!strcmp(ref_fp->f2.gw, fp->f2.gw))
     return 1;
+  ret = sense_ok(&ref_fp->f2, &fp->f2, 0);
+  return !ret;
+#else
+  return sense_ok(&ref_fp->f2, &fp->f2, 0);
 #endif
 }
 
