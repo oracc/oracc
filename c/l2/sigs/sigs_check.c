@@ -168,7 +168,7 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	{
 	  if (!f1->words)
 	    setup_set(f1);
-	  f1->words->pct = 101;
+	  f1->words->pct = 1;
 	  return 1;
 	}
       /* blank GW is a wildcard and matches any GW/SENSE */
@@ -190,6 +190,8 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
       f1->words->pct = 101;
       return 1;
     }
+
+#if 0 /* NO: don't do this test here, do it after wordset stuff further down */
   else if (!f1->sense && f1->gw && f2->gw && !strcmp((char*)f1->gw, (char*)f2->gw))
     {
       if (!f1->words)
@@ -197,6 +199,7 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
       f1->words->pct = 99;
       return 1;
     }
+#endif
 
   /* else: setup_set will index gw instead of sense */
   setup_set(f1);
@@ -213,11 +216,17 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
     case W2_UNKNOWN:
       /* return 0 */; /* FALL THROUGH TO GW CHECK */
     }
-  /*if (!strcmp((char*)f1->gw,(char*)f2->gw))*/
-  if ((!f1->sense || !*f1->sense)
-      && (!strcmp((char*)f1->gw,(char*)f2->gw)))
-    return 1;
 
+  if (gw_wild)
+    {
+      if ((!f1->sense || !*f1->sense)
+	  && (!strcmp((char*)f1->gw,(char*)f2->gw)))
+	{
+	  f1->words->pct = 1;
+	  return 1;
+	}
+    }
+  
   return 0;
 }
 
@@ -456,7 +465,8 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	      if (f->words)
 		{
 		  if (wordset_debug)
-		    fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n", __FILE__, __LINE__, f->words->pct, pct_top);
+		    fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n",
+			    __FILE__, __LINE__, f->words->pct, pct_top);
 		  res[ncand]->pct = f->words->pct;
 		  if (f->words->pct > pct_top)
 		    pct_top = f->words->pct;
@@ -532,11 +542,10 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	      else if (sense_ok(f,res[i]->f2p,0))
 		{
 		  if (f->words)
-		    f->words->pct = 0;
-		  if (f->words)
 		    {
 		      if (wordset_debug)
-			fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n", __FILE__, __LINE__, f->words->pct, pct_top);
+			fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n",
+				__FILE__, __LINE__, f->words->pct, pct_top);
 		      res[i]->pct = f->words->pct;
 		      if (f->words->pct > s_pct_top)
 			s_pct_top = f->words->pct;
@@ -545,7 +554,11 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		    res[i]->pct = s_pct_top = 100;
 		}
 	      else
-		res[i]->pct = 0;
+		{ /* f->words->pct can == 1 if gw match happened earlier when gw was wild */
+		  if (f->words->pct > s_pct_top)
+		    s_pct_top = f->words->pct;
+		  res[i]->pct = f->words->pct;
+		}
 	    }
 	  f->sense = NULL;
 	  if (s_pct_top)

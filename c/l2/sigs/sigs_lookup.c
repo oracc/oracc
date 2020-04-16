@@ -41,24 +41,13 @@ default_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
     return 1;
 }
 
-/* this must return 1 if the ref_fp->gw matches fp->sense.
+/* this must return 0 if the ref_fp->gw matches fp->sense.
  * Argument order in sense_ok is important--we want ref_fp to test as subset of fp.
  */
 static int 
 rematch_on_sense(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
-#if 0
-  int ret = 0;
-  if (fp->f2.gw && !fp->f2.sense && ref_fp->f2.sense)
-    if (!strcmp(ref_fp->f2.sense, fp->f2.gw))
-      return 1;
-  if (!strcmp(ref_fp->f2.gw, fp->f2.gw))
-    return 1;
-  ret = sense_ok(&ref_fp->f2, &fp->f2, 0);
-  return !ret;
-#else
-  return sense_ok(&ref_fp->f2, &fp->f2, 0);
-#endif
+  return !sense_ok(&ref_fp->f2, &fp->f2, 0);
 }
 
 /* this must return 0 if the ref_fp->norm == fp->cf */
@@ -588,10 +577,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	  struct ilem_form **fpp;
 	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
 			    (select_func*)rematch_on_sense, NULL, &tmp_nfinds);
-	  if (tmp_nfinds == 0)
+	  if (tmp_nfinds == 0 && (!ifp->f2.words || !ifp->f2.words->pct))
 	    {
 #if 1
 	      /* If there's no match on GW/SENSE we can't assume any of the CF matches is good */
+	      /* We check words->pct because that gets set when gw_wild = 1 and we have a GW match */
 	      ifp->fcount = nfinds = 0;
 	      if (ifp->finds)
 		{
@@ -608,7 +598,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 		}
 #endif
 	    }
-	  else if (tmp_nfinds < nfinds)
+	  else if (tmp_nfinds && tmp_nfinds < nfinds)
 	    {
 	      int i;
 	      for (i = 0; i < tmp_nfinds; ++i)
@@ -787,8 +777,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      if (ifp->finds)
 		free(ifp->finds);
 	      ifp->finds = best->finds;
-	      ifp->fcount = nfinds = best->nfinds;
 	    }
+	  /* this needs to be set regardless of whether ifp->finds == best->finds */
+	  ifp->fcount = nfinds = best->nfinds;
 	  best->best = 1;
 	  if (best->fp_aliased_form)
 	    {
