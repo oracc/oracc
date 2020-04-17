@@ -16,6 +16,15 @@ extern int wordset_debug;
 
 static struct siglook look_check = { "sigs_check", sigs_inst_in_sigset, sig_look_check };
 
+static void
+zero_word_pct(struct sig **s, int n)
+{
+  int i;
+  for (i = 0; i < n; ++i)
+    if (s[i] && s[i]->f2p && s[i]->f2p->words)
+      s[i]->f2p->words->pct = 0;
+}
+
 void
 sig_check(struct xcl_context *xcp)
 {
@@ -168,7 +177,9 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	{
 	  if (!f1->words)
 	    setup_set(f1);
-	  f1->words->pct = 1;
+	  if (!f2->words)
+	    setup_set(f2);
+	  f1->words->pct = f2->words->pct = 1;
 	  return 1;
 	}
       /* blank GW is a wildcard and matches any GW/SENSE */
@@ -176,7 +187,9 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	{
 	  if (!f1->words)
 	    setup_set(f1);
-	  f1->words->pct = 100;
+	  if (!f2->words)
+	    setup_set(f2);
+	  f1->words->pct = f2->words->pct = 100;
 	  return 1;
 	}
     }
@@ -187,7 +200,9 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
     {
       if (!f1->words)
 	setup_set(f1);
-      f1->words->pct = 101;
+      if (!f2->words)
+	setup_set(f2);
+      f1->words->pct = f2->words->pct = 101;
       return 1;
     }
 
@@ -222,7 +237,7 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
       if ((!f1->sense || !*f1->sense)
 	  && (!strcmp((char*)f1->gw,(char*)f2->gw)))
 	{
-	  f1->words->pct = 1;
+	  f1->words->pct = f2->words->pct = 1;
 	  return 1;
 	}
     }
@@ -593,6 +608,11 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
     }
   if (part && res != part)
     free(part);
+
   *nfinds = ncand;
+
+  if (ncand)
+    zero_word_pct(res, ncand);
+  
   return ncand ? (struct sig const * const *)res : NULL;
 }

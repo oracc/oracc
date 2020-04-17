@@ -9,6 +9,8 @@
 
 extern int bootstrap_mode, lem_extended;
 
+/* static void zero_word_pct(struct sig *s, int n); */
+
 static void sigs_d_new(struct xcl_context *xcp, struct xcl_d *d);
 static void sigs_l_new(struct xcl_context *xcp, struct xcl_l *l);
 static struct sig const* const*sigs_form_in_sigset(struct xcl_context *xcp, 
@@ -114,6 +116,8 @@ sigs_form_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
   else if (verbose)
     fprintf(stderr,"sigs_new.c: no results for %s in %s:%s\n", f->form, sp->project,sp->lang);
 
+  /* zero_word_pct(res, ncand); */ /* do we need this here ? res has a different type than in sigs_context */
+  
   return (struct sig const * const *)res;
 }
 

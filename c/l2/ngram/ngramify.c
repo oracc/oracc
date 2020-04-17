@@ -79,8 +79,6 @@ ngramify_init()
     {
       match_list = calloc(1,sizeof(struct ML));
       match_list->matches = NULL;
-      if (verbose > 1)
-	ng_debug = 1;
     }
   else
     ngramify_reset();
@@ -140,7 +138,6 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
   union xcl_u*clnodes = cp->children;
   int nclnodes = cp->nchildren;
   const char *user_name = NULL;
-  ng_debug = verbose;
   
   ++ngram_id;
   ngdebug("[ngramify@%d] start processing %d XCL children",ngram_id,nclnodes);

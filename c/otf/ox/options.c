@@ -172,12 +172,11 @@ ox_options(int argc, char **argv)
 	  break;
 	case 'V':
 	  ++verbose;
+	  wordset_debug = 1;
 	  if (verbose > 1)
 	    {
 	      ng_debug = 1;
-	      wordset_debug = 1;
-	      if (verbose > 2)
-		sigs_debug = 1;
+	      sigs_debug = 1;
 	      if (verbose > 3)
 		sigsets_debug = 1;
 	    }

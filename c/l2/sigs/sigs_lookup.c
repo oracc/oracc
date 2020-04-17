@@ -50,6 +50,14 @@ rematch_on_sense(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
   return !sense_ok(&ref_fp->f2, &fp->f2, 0);
 }
 
+static int 
+wordset_pct_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
+{
+  if (ref_fp && ref_fp->f2.words && ref_fp->f2.words->pct >= 100)
+    return 0;
+  return 1;
+}
+
 /* this must return 0 if the ref_fp->norm == fp->cf */
 static int 
 implicit_norm_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
@@ -604,6 +612,19 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	      for (i = 0; i < tmp_nfinds; ++i)
 		if (f2_test_no_sense(&ifp->f2, &fpp[i]->f2))
 		  BIT_CLEAR(fpp[i]->f2.flags, F2_FLAGS_PARTIAL);
+	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
+	      ifp->fcount = nfinds = tmp_nfinds;
+	    }
+	}
+
+      if (nfinds > 1)
+	{
+	  int tmp_nfinds = 0;
+	  struct ilem_form **fpp;
+	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
+			    (select_func*)wordset_pct_test, NULL, &tmp_nfinds);
+	  if (tmp_nfinds < nfinds && tmp_nfinds > 0)
+	    {
 	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
 	      ifp->fcount = nfinds = tmp_nfinds;
 	    }

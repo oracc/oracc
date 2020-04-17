@@ -4,6 +4,8 @@
 #include "memblock.h"
 #include "npool.h"
 
+/* N.B. IF YOU START USING THE CACHE AGAIN YOU NEED TO ZERO WORDSET PCT */
+
 struct npool *sigs_cache_pool = NULL;
 int sigs_cache_pool_refs = 0;
 

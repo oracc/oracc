@@ -125,7 +125,7 @@ struct w2_set *
 w2_create_set(const Uchar *word_set)
 {
   struct w2_set *set = mb_new(mb_w2_sets);
-  const Uchar *k;
+  const Uchar *k, *orig_ws = word_set;
   int index = 0;
 
   set->literal = npool_copy(word_set, w2_pool);
@@ -135,7 +135,7 @@ w2_create_set(const Uchar *word_set)
   else if (!strncmp((const char *)word_set, "to ", strlen("to ")))
     word_set += strlen("to ");
   else if (!strncmp((const char *)word_set, "a ", strlen("a ")))
-    word_set += strlen("a ");    
+    word_set += strlen("a ");
   
   while ((k = getkey(word_set)))
     ++set->nkeys;
@@ -154,12 +154,17 @@ w2_create_set(const Uchar *word_set)
   if (wordset_debug)
     {
       int i;
-      fprintf(stderr, "wordset for %s=", word_set);
+      fprintf(stderr, "wordset for %s=", orig_ws);
       for (i = 0; i < set->nkeys; ++i)
 	{
-	  fprintf(stderr, "%s", set->keys[i]);
+	  if (set->keys[i])
+	    fprintf(stderr, "%s ", set->keys[i]);
+	  else
+	    fprintf(stderr, "; ");
+#if 0
 	  if ((i+1) < set->nkeys)
 	    fprintf(stderr, "; ");
+#endif
 	}
       fprintf(stderr, "\n");
     }
@@ -307,6 +312,6 @@ w2_subset(struct w2_set *set1, struct w2_set *set2)
 	}
     }
   if (best_res == W2_PARTIAL)
-    set2->pct = best_pct;
+    set1->pct = set2->pct = best_pct;
   return best_res;
 }
