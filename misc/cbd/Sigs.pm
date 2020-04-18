@@ -392,7 +392,7 @@ sub sigs_simple {
 
 	    $current_first_base = $1;
 	    my @bits = split(/;\s+/,$current_first_base);
-	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; $_ } @bits;
+	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; s/\{\+.*?\}//g; $_ } @bits;
 	    my %bits = (); @bits { @bits } = ();
 	    $current_first_base = join(' ', @bits);
 	    
@@ -403,6 +403,7 @@ sub sigs_simple {
 	    if ($p) {
 		$p =~ s/^\!//;
 		$p =~ s/\@[ox].*$//;
+		$p =~ s/\{\+.*?\}//g;
 		if (exists $bits{$p}) {
 		    $simple_bases{$basekey} = $p;
 		} else {

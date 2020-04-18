@@ -53,7 +53,7 @@ sub oid_lookup {
 	if ($key =~ /^\|/) {
 	    if (!$oid{$type,$key}) {
 		my $res = ORACC::SL::BaseC::c10e_compound($key);
-		if ($res) {
+		if ($res ne $key) {
 		    warn "OID.pm: mapping $key to $res via c10e\n" if $ORACC::OID::verbose;
 		    $key = $res;
 		}

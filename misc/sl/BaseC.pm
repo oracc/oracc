@@ -14,6 +14,9 @@ use Encode;
 use Fcntl;
 use NDBM_File;
 
+# Sign names that frustrate the parser
+my %exceptions = ('|(4×ZA)×KUR|'=>'ŋeštae');
+
 $ORACC::SL::report_all = 0;
 #@ORACC::SL::fixes_needed = ();
 
@@ -30,11 +33,12 @@ my $silent = 0;
 
 sub
 check {
-    my($context,$test,$deep) = @_;
+    tlit_sig(@_);
+#    my($context,$test,$deep) = @_;
 #    warn join(':',caller()), "\n";
-    my $sig = _signature($context,tlitsplit($test,$deep));
+#    my $sig = _signature($context,tlitsplit($test,$deep));
 #    warn "$test=>$sig\n";
-    $sig;
+#    $sig;
 }
 
 sub messages {
@@ -62,7 +66,7 @@ sub same_tlit {
 }
 
 sub tlit_sig {
-    my($context,$test,@against) = @_;
+    my($context,$test) = @_;
     my $s = _signature($context,tlitsplit($test,1));
     if ($s =~ /q/ && $test =~ /\|/) {
 	$test =~ tr/|//d;
@@ -295,42 +299,98 @@ xlist {
 }
 
 sub
-protect {
+protect1 {
     my $tmp = shift;
-    $tmp =~ tr/().+/\000\001\002\003/;
+    $tmp =~ tr/./\003/;
+    "×(".$tmp.")";
+}
+
+sub
+protect2 {
+    my $tmp = shift;
+    $tmp =~ tr/()+/\000\001\002/;
     $tmp;
+}
+
+sub deepsplit {
+    my $deep = shift;
+    $deep =~ tr/{}/  /;
+    my @d = split(/[-\s]/,$deep);
+    my @n = ();
+    foreach my $d (@d) {
+	# remove value being qualified if any
+	if ($d =~ /\)$/) {
+	    $d =~ s/^[a-zšŋṣṭḫ].*?\((.*?)\)$/$1/;
+	}
+	my $sn = ($d =~ /^\|/ ? $d : sign_of("\L$d"));
+	if ($exceptions{$sn}) {
+	    push @n, $exceptions{$sn};
+	} else {
+	    if ($sn && $sn =~ /^\|/) {
+		$sn =~ tr/|//d;
+		# split on inner periods--safe as long as caller has
+		# hidden inner periods as tlitsplit does
+		my @b = split(/\./,$sn);
+		my $s = _signature('',@b);
+		if ($s && $s !~ /q/) {
+		    push @n, join('-',@b);
+		} else {
+		    @messages = ();
+		    push @n, $d;
+		}
+	    } else {
+		push @n, $sn || $d;
+	    }
+	}
+    }
+    join('-',@n);
 }
 
 sub
 tlitsplit {
     my ($tlit,$csplit) = @_;
     return '' unless $tlit;
+
     my $orig = $tlit;
+
+#    my $c10ed = c10e_tlit($tlit);
+#
+#    $tlit = $c10ed if $c10ed;
+    
     $tlit =~ s/\!\(.*?\)//;
     $tlit =~ tr/?![]#*<>//d;
 
-#    if ($csplit) {
-#	$tlit =~ tr/|+/  /;
-#    } else {
-	# protect parens and contained periods in compounds
-    $tlit =~ s/(\|[^\|]+\|)/protect($1)/eg;
-#    warn "protected = $tlit\n";
-#    }
+    # protect periods in parenthesized signs in compounds
+    1 while $tlit =~ s/×\(([^)]+\..*?)\)/protect1($1)/eg;
+    
+    # protect parens and + in compounds
+    $tlit =~ s/(\|[^\|]+\|)/protect2($1)/eg;
 
+    # remove vertical bars if we are splitting compounds
+    if ($csplit) {
+	my $d = deepsplit($tlit);
+	$tlit = $d if $d;
+    }
+
+    # now do a basic split into graphemes
     $tlit =~ s/\%sux://g;
-    $tlit =~ tr/-.{}:+/     /;
+    $tlit =~ tr/-{}:+/     /;
+
+    # if we did a deep split we've already segmented compounds if they
+    # can be successfully segmented
+    $tlit =~ tr/./ / unless $csplit;
+
+    # remove base-morphology characters
     $tlit =~ tr/·°//d;
 
     # protect numbers like 3(geszu)
     $tlit =~ s/(^|[- \.])([\d\/]+)\((.*?)\)/$1$2\000$3\001/g;
 
-#    $tlit =~ tr/|//d;
-
     $tlit =~ s/\S+\((.*?)\)/$1/g;
     $tlit =~ tr/()//d;
 
     # undo protection measures only after we will make no further changes
-    $tlit =~ tr/\000\001\002\003/().+/;
+    $tlit =~ tr/\000\001\002\003/()+./;
 
 #    warn "presplit = $tlit\n";
     
@@ -409,16 +469,40 @@ _tlit2uni {
     $uni;
 }
 
+sub c10e_tlit {
+    my $tlit = shift;
+    my @t = split(/-/,$tlit);
+    my @n = ();
+    foreach my $t (@t) {
+	if ($t =~ /^\|/) {
+	    push @n, c10e_compound($t);
+	} else {
+	    my $sn = sign_of($t);
+	    if ($sn) {
+		push @n, $sn;
+	    } else {
+		push @n, $t;
+	    }
+	}
+    }
+    join('-',@n);
+}
+
 sub c10e_compound {
-    return unless $_[0] =~ /^\|(.*?)\|$/;
+    return $_[0] unless $_[0] =~ /^\|(.*?)\|$/;
     my $c = $1;
     my $save_pedantic = $pedantic;
     $pedantic = 0;
     my $c_sig = _signature(undef, tlitsplit($c));
 #    warn "c10e: sig of $c => $c_sig\n";
     my @c = ();
-    foreach my $s (split(/\./,$c_sig)) {	
-	push @c, sign_of($s);
+    foreach my $s (split(/\./,$c_sig)) {
+	my $sn = sign_of($s);
+	if ($sn) {
+	    push @c, $sn;
+	} else {
+	    return $c; # abort c10e if a compound element doesn't exist as a separate sign
+	}
     }
     my $c2 = join('.',@c);
     #    warn "c10e: $c_sig => $c2\n";
@@ -429,7 +513,7 @@ sub c10e_compound {
 	return '|'.$c2.'|';
     }
     $pedantic = $save_pedantic;
-    return '';
+    return $c;
 }
 
 sub
@@ -501,12 +585,16 @@ _signature {
 		my $nsn = is_sign($sn);
 		if ($nsn) {
 		    push @sig, $sn_id;
+		} elsif ($g eq '...') {
+		    push @sig, 'q99';
 		} else {
 		    msg($ctxt,"sign name $sn not in sign list")
 			unless $silent || $reported{$g}++;
 		    push @sig, 'q00';
 		}
 	    }
+	} elsif ($g eq '...') {
+	    push @sig, 'q99';
 	} else {
 	    msg($ctxt, "grapheme $g not in sign list")
 		unless $silent || $reported{$g}++;
