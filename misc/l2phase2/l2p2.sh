@@ -141,6 +141,13 @@ if [ -r 01bld/sux/articles.xml ]; then
 	     >01bld/sux/oidxid.tab
 fi
 
+## This is a temporary hack to do sense and base sorting in
+## epsd2--this will almost certainly be applied to all projects soon
+if [[ $project = "epsd2" ]]; then
+    00bin/awp-sense-sort.plx epsd2
+    00bin/awp-base-sort.plx epsd2
+fi
+
 #usages=`oraccopt . cbd-usages`
 #if [ "$usages" = "yes" ]; then
 #    if [ "$project" = "epsd2" ]; then
