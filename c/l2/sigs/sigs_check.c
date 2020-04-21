@@ -172,30 +172,6 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 {
   int sub = 0;
   
-  if (gw_wild)
-    {
-      if ((!f1->sense || !*f1->sense)
-	  && (!f2->gw || !strcmp((char*)f1->gw,(char*)f2->gw)))
-	{
-	  if (!f1->words)
-	    setup_set(f1);
-	  if (!f2->words)
-	    setup_set(f2);
-	  f1->words->pct = f2->words->pct = 1;
-	  return 1;
-	}
-      /* blank GW is a wildcard and matches any GW/SENSE */
-      if (!f1->gw || !*f1->gw)
-	{
-	  if (!f1->words)
-	    setup_set(f1);
-	  if (!f2->words)
-	    setup_set(f2);
-	  f1->words->pct = f2->words->pct = 100;
-	  return 1;
-	}
-    }
-
   if ((f1->sense && f2->sense && !strcmp((char*)f1->sense, (char*)f2->sense))
       || (!f1->sense && f1->gw && f2->sense && !strcmp((char*)f1->gw, (char*)f2->sense))
       )
@@ -206,6 +182,34 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	setup_set(f2);
       f1->words->pct = f2->words->pct = 101;
       return 1;
+    }
+
+  if (gw_wild)
+    {
+
+#if 0 /* wait until end of subr to do this */
+      if ((!f1->sense || !*f1->sense)
+	  && (!f2->gw || !strcmp((char*)f1->gw,(char*)f2->gw)))
+	{
+	  if (!f1->words)
+	    setup_set(f1);
+	  if (!f2->words)
+	    setup_set(f2);
+	  f1->words->pct = f2->words->pct = 1;
+	  return 1;
+	}
+#endif
+
+      /* blank GW is a wildcard and matches any GW/SENSE */
+      if (!f1->gw || !*f1->gw)
+	{
+	  if (!f1->words)
+	    setup_set(f1);
+	  if (!f2->words)
+	    setup_set(f2);
+	  f1->words->pct = f2->words->pct = 100;
+	  return 1;
+	}
     }
 
 #if 0 /* NO: don't do this test here, do it after wordset stuff further down */
@@ -477,7 +481,6 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		  else
 		    BIT_CLEAR(f->flags, F2_FLAGS_COF_INVALID);
 		}
-
 	      res[ncand] = c;
 	      if (f->words)
 		{
@@ -506,6 +509,24 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	}
     }
 
+  if (pct_top >= 100 && !BIT_ISSET(f->flags,F2_FLAGS_PARTIAL) && !BIT_ISSET(f->flags,F2_FLAGS_NO_FORM))
+    {
+      int dest, i;
+      for (i = dest = 0; i < ncand; ++i)
+	{
+	  if (res[i]->pct >= 100)
+	    {
+	      if (dest < i)
+		res[dest++] = res[i];
+	      else
+		++dest;
+	    }
+	}
+      res[dest] = NULL;
+      *nfinds = dest;
+      return (struct sig const * const *)res;
+    }
+  
   /* CHECKME: is this unconditional return correct, or is the COF case
      different? */
   if (ncand == 0 && sp_is_cache)
@@ -550,13 +571,11 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	  f->sense = f->gw;
 	  for (i = 0; i < ncand; ++i)
 	    {
-	      if (res[i]->f2p->words && res[i]->f2p->words->pct)
+	      /* if gw matched on first pass pct = 1 */
+	      if (res[i]->pct /* > 1 */ )
 		{
-		  if (f->words->pct >= s_pct_top)
-		    {
-		      res[i]->pct = f->words->pct;
-		      s_pct_top = f->words->pct;
-		    }
+		  if (res[i]->pct >= s_pct_top)
+		    s_pct_top = res[i]->pct;
 		  else
 		    res[i]->pct = 0;
 		}

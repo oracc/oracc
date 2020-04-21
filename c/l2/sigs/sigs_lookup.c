@@ -19,6 +19,16 @@ static void already_tried_aliasing_term(void);
 static int already_tried_aliasing(const char *form, struct f2 *f2);
 #endif
 
+static int
+has_perfect_match(struct ilem_form **fpp, int nfinds)
+{
+  int i;
+  for (i = 0; i < nfinds; ++i)
+    if (fpp[i]->pct >= 100)
+      return 1;
+  return 0;
+}
+
 /* this must return 0 if the ref_fp->pos == fp->pos */
 static int 
 implicit_epos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
@@ -552,6 +562,19 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 #endif
 	}
       
+      if (nfinds > 1 && has_perfect_match(ifp->finds, nfinds))
+	{
+	  int tmp_nfinds = 0;
+	  struct ilem_form **fpp;
+	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
+			    (select_func*)wordset_pct_test, NULL, &tmp_nfinds);
+	  if (tmp_nfinds < nfinds && tmp_nfinds > 0)
+	    {
+	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
+	      ifp->fcount = nfinds = tmp_nfinds;
+	    }
+	}
+
       /* 2020-01-03: not clear that this reduction of senses is
 	 correct; probably better to keep all the senses and then use
 	 statistics to select most common sense */
