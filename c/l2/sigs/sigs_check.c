@@ -75,6 +75,8 @@ setup_set(struct f2 *f)
       else
 	f->words = w2_create_set(f->gw);
     }
+  else
+    f->words->pct = 0;
 }
 
 int
@@ -548,11 +550,15 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 	  f->sense = f->gw;
 	  for (i = 0; i < ncand; ++i)
 	    {
-	      if (f->words && f->words->pct >= 99)
+	      if (res[i]->f2p->words && res[i]->f2p->words->pct)
 		{
-		  res[i]->pct = f->words->pct;
-		  if (f->words->pct > s_pct_top)
-		    s_pct_top = f->words->pct;
+		  if (f->words->pct >= s_pct_top)
+		    {
+		      res[i]->pct = f->words->pct;
+		      s_pct_top = f->words->pct;
+		    }
+		  else
+		    res[i]->pct = 0;
 		}
 	      else if (sense_ok(f,res[i]->f2p,0))
 		{
@@ -561,9 +567,11 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
 		      if (wordset_debug)
 			fprintf(stderr, "[%s:%d]: f->words->pct = %d; pct_top = %d\n",
 				__FILE__, __LINE__, f->words->pct, pct_top);
-		      res[i]->pct = f->words->pct;
 		      if (f->words->pct > s_pct_top)
-			s_pct_top = f->words->pct;
+			{
+			  s_pct_top = f->words->pct;
+			  res[i]->pct = f->words->pct;
+			}
 		    }
 		  else
 		    res[i]->pct = s_pct_top = 100;

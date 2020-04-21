@@ -74,7 +74,7 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
 
   if (!strcmp(set1->literal, set2->literal))
     {
-      set2->pct = 101;
+      set1->pct = set2->pct = 101;
       return W2_FULL;
     }
   
@@ -106,17 +106,17 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
     fprintf(stderr, "seg_nkeys = %d\n", seg_nkeys);
   if (hits >= seg_nkeys /*set1->nkeys*/)
     {
-      set2->pct = 100; /*pct(hits,seg_nkeys)*/ /*set1->nkeys*/
+      set1->pct = set2->pct = 100; /*pct(hits,seg_nkeys)*/ /*set1->nkeys*/
       return W2_FULL;
     }
   else if (hits)
     {
-      set2->pct = pct(hits,seg_nkeys /*set1->nkeys*/);
+      set1->pct = set2->pct = pct(hits,seg_nkeys /*set1->nkeys*/);
       return W2_PARTIAL;
     }
   else
     {
-      set2->pct = 0;
+      set1->pct = set2->pct = 0;
       return W2_NONE;
     }
 }

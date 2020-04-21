@@ -47,13 +47,16 @@ default_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 static int 
 rematch_on_sense(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
-  return !sense_ok(&ref_fp->f2, &fp->f2, 0);
+  int ret = sense_ok(&ref_fp->f2, &fp->f2, 0);
+  if (ref_fp->f2.words)
+    fp->pct = ref_fp->f2.words->pct;
+  return !ret;
 }
 
 static int 
 wordset_pct_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
-  if (ref_fp && ref_fp->f2.words && ref_fp->f2.words->pct >= 100)
+  if (fp && fp->pct >= 100)
     return 0;
   return 1;
 }
@@ -583,26 +586,44 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	{
 	  int tmp_nfinds = 0;
 	  struct ilem_form **fpp;
+	  int *saved_pct = NULL, i, top_saved = 0;
+	  
+	  saved_pct = malloc(nfinds * sizeof(int));
+	  for (i = 0; i < nfinds; ++i)
+	    {
+	      if (ifp->finds[i]->pct > top_saved)
+		top_saved = ifp->finds[i]->pct;
+	      saved_pct[i] = ifp->finds[i]->pct;
+	    }
+
 	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
 			    (select_func*)rematch_on_sense, NULL, &tmp_nfinds);
-	  if (tmp_nfinds == 0 && (!ifp->f2.words || !ifp->f2.words->pct))
+	  if (tmp_nfinds == 0)
 	    {
 #if 1
-	      /* If there's no match on GW/SENSE we can't assume any of the CF matches is good */
-	      /* We check words->pct because that gets set when gw_wild = 1 and we have a GW match */
-	      ifp->fcount = nfinds = 0;
-	      if (ifp->finds)
+	      if (top_saved)
 		{
-		  free(ifp->finds);
-		  ifp->finds = NULL;
+		  for (i = 0; i < nfinds; ++i)
+		    ifp->finds[i]->pct = saved_pct[i];
 		}
-	      free((void*)sigs_found);
-	      sigs_found = NULL;
-	      BIT_CLEAR(ifp->f2.flags,F2_FLAGS_PARTIAL);
-	      if (look_pass2 == 0)
+	      else
 		{
-		  look_pass2 = 1;
-		  goto retry_after_cache;
+		  /* If there's no match on GW/SENSE we can't assume any of the CF matches is good */
+		  /* We check words->pct because that gets set when gw_wild = 1 and we have a GW match */
+		  ifp->fcount = nfinds = 0;
+		  if (ifp->finds)
+		    {
+		      free(ifp->finds);
+		      ifp->finds = NULL;
+		    }
+		  free((void*)sigs_found);
+		  sigs_found = NULL;
+		  BIT_CLEAR(ifp->f2.flags,F2_FLAGS_PARTIAL);
+		  if (look_pass2 == 0)
+		    {
+		      look_pass2 = 1;
+		      goto retry_after_cache;
+		    }
 		}
 #endif
 	    }
