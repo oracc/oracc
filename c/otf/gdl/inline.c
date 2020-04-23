@@ -530,6 +530,7 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
     }
 
   curr_cell = 0;
+  surro_node = NULL;
 
   if (has_cells())
     process_cells(lnode,line_id);
