@@ -1730,9 +1730,9 @@ trwords_w(struct node *p, unsigned char *s)
 void
 trans_clear()
 {
+  add_trans(NULL);
   free(itrans);
   itrans = NULL;
-  add_trans(NULL);
 }
 
 unsigned char **

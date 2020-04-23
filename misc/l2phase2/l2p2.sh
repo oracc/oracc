@@ -83,7 +83,7 @@ if [ "$projtype" == "superglo" ]; then
 	    echo l2p2.sh: processing sigs for superglo $a
 	    rm -f $ldir/union.sig
 	    [ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
-	    l2-sig-union.plx -super -proj $project -lang $l $ldir/$l.sig >$ldir/union.sig
+	    l2-sig-union.plx -super $super -proj $project -lang $l $ldir/$l.sig >$ldir/union.sig
 	    g2x $ldir $l
 	done
     done
@@ -143,10 +143,8 @@ fi
 
 ## This is a temporary hack to do sense and base sorting in
 ## epsd2--this will almost certainly be applied to all projects soon
-if [[ $project = "epsd2" ]]; then
-    00bin/awp-sense-sort.plx epsd2
-    00bin/awp-base-sort.plx epsd2
-fi
+
+l2p2-new.sh $project
 
 #usages=`oraccopt . cbd-usages`
 #if [ "$usages" = "yes" ]; then

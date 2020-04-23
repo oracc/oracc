@@ -61,22 +61,27 @@ foreach my $s (@ARGV) {
 	my @t = split(/\t/, $_);
 #	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
 	my $r = ($f{'inst'} ? $t[$f{'inst'}] : '');
+	my $sig = $t[0];
+	# we have to map subproject project names to match PSUs
+	if ($sig =~ /^\{/ && !$first) {
+	    $sig =~ s/\@.*?\%/\@$project\%/g;
+	}
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
-	    if ($first || $sig{$t[0]}) {
+	    if ($first || $sig{$sig}) {
 		my @r = split(/\s/, $r||'');
 		if ($all || $#r >= 0) {
-		    @{$sig{$t[0]}}{@r} = ();
+		    @{$sig{$sig}}{@r} = ();
 		}
 	    } else {
 		#		print NOTF "$_\n";
 		my $p = $r; $p =~ s/:.*$//; $p = '#NOREFS' unless $p;
 		if ($lang =~ /^qpn/) {
-		    print NOTF "$p\t$t[0]\n"
+		    print NOTF "$p\t$sig\t@r\n"
 			if $t[0] =~ /\][A-Z]N/;
 		} else {
-		    print NOTF "$p\t$t[0]\n"
+		    print NOTF "$p\t$sig\t@r\n"
 			unless $t[0] =~ /\][A-Z]N/;
 		}
 	    }
