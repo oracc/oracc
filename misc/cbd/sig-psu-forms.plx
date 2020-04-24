@@ -7,24 +7,30 @@ use ORACC::L2GLO::Util;
 while (<>) {
     /^\{/ || next;
     chomp;
+    s#\$.*?/#/#g;
     s/\}::(.*)$// || next;
     my $subsigs = $1;
     my($form,$cfgw) = (m/^\{(.*?) = .*? \+= (.*?)$/);
     $form =~ tr/ /_/;
-    $cfgw =~ s#//.*?\]#]#;
+    $cfgw =~ s#//.*?\]#] #;
+    $cfgw =~ s/\[/ [/;
     $cfgw =~ s/'.*$//;
     print "$cfgw\t\@form $form\n";
     foreach my $s (split(/\+\+/,$subsigs)) {
 	my %s = parse_sig($s);
-	my $s = "\@form\t$s{'form'} /$s{'base'} ";
+	next unless $s{'base'};
+	my $c = "$s{'cf'} \[$s{'gw'}\] $s{'pos'}";
+	$s{'form'} =~ s/\%.*://;
+	$s{'base'} =~ s/\%.*://;
+	my $s = "\@form $s{'form'} /$s{'base'} ";
 	if ($s{'cont'}) {
-	    $s .= "+$s{'base'} ";
+	    $s .= "+$s{'cont'} ";
 	}
-	$s .= $s{'morph'};
+	$s .= '#'.$s{'morph'};
 	if ($s{'morph2'}) {
 	    $s .= " $s{'morph2'}";
 	}
-	print "$cfgw\t$s\n";
+	print "$c\t$s\n";
     }
 }
 

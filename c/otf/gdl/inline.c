@@ -530,7 +530,6 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
     }
 
   curr_cell = 0;
-  surro_node = NULL;
 
   if (has_cells())
     process_cells(lnode,line_id);
@@ -539,6 +538,12 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
   else
     process_words(lnode,0,last_token, with_word_list);
 
+ if (surro_node)
+   {
+     warning("unclosed surrogate");
+     surro_node = NULL;
+   }
+   
   return;
 }
 
