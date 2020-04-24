@@ -691,7 +691,7 @@ sub psu_index {
     if ($l eq ORACC::CBD::Util::lang()) {
 	%{$ix{'core'}} = psu_index_coresigs(@sigs_coresigs);
 	%{$ix{'smpl'}} = psu_index_simple(@sigs_simple);
-	open(D,'>D'); print D Dumper \@sigs_coresigs; print D Dumper \@sigs_simple; print D Dumper \%ix; close(D);
+#	open(D,'>D'); print D Dumper \@sigs_coresigs; print D Dumper \@sigs_simple; print D Dumper \%ix; close(D);
 	$ix{'ok'} = 'yes';
     } else {
 	my($core,$smpl) = psu_marshall($l);

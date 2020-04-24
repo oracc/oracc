@@ -64,7 +64,8 @@ foreach my $s (@ARGV) {
 	my $sig = $t[0];
 	# we have to map subproject project names to match PSUs
 	if ($sig =~ /^\{/ && !$first) {
-	    $sig =~ s/\@.*?\%/\@$project\%/g;
+	    $sig =~ s/::\@.*?\%/::\@$project\%/;
+	    $sig =~ s/\+\+\@.*?\%/++\@$project\%/g;
 	}
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
@@ -78,10 +79,10 @@ foreach my $s (@ARGV) {
 		#		print NOTF "$_\n";
 		my $p = $r; $p =~ s/:.*$//; $p = '#NOREFS' unless $p;
 		if ($lang =~ /^qpn/) {
-		    print NOTF "$p\t$sig\t@r\n"
+		    print NOTF "$p\t$sig\t$r\n"
 			if $t[0] =~ /\][A-Z]N/;
 		} else {
-		    print NOTF "$p\t$sig\t@r\n"
+		    print NOTF "$p\t$sig\t$r\n"
 			unless $t[0] =~ /\][A-Z]N/;
 		}
 	    }
