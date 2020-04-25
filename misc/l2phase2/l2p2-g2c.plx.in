@@ -90,12 +90,12 @@ create_g2c {
     $out = "01bld/$lang/$lang.g2c";
     my $str = $xg2x->toString(0);
     Encode::_utf8_on($str);
-#    open(GME, ">01bld/$lang/$lang.gdlme2-input");
-#    print GME $str;
-#    close(GME);
-    open(OUT,"|$ENV{'ORACC'}/bin/gdlme2 -cng -s >$out");
-    print OUT $str;
-    close(OUT);
+    open(GME, ">01bld/$lang/$lang.gdlme2-input");
+    print GME $str;
+    close(GME);
+#    open(OUT,"|$ENV{'ORACC'}/bin/gdlme2 -cng -s >$out");
+#    print OUT $str;
+#    close(OUT);
 }
 
 #my $project = $xcbd->getDocumentElement()->getAttribute('project');

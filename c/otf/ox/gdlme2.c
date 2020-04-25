@@ -173,7 +173,7 @@ main(int argc, char **argv)
   f_log = stderr;
   
   gdl_pool = npool_init();
-
+  galloc_init();
   pool_init();
   tree_init();
   gdl_init();
@@ -213,6 +213,7 @@ main(int argc, char **argv)
   pool_term();
   tree_term(1);
   cuneify_term();
+  galloc_term();
   if (gdl_file)
     free(gdl_file);
   if (outfp)
