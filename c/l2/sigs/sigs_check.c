@@ -180,7 +180,10 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	setup_set(f1);
       if (!f2->words)
 	setup_set(f2);
-      f1->words->pct = f2->words->pct = 101;
+      if (f1->words)
+	f1->words->pct = 101;
+      if (f2->words)
+	f2->words->pct = 101;
       return 1;
     }
 
@@ -207,7 +210,10 @@ xsense_ok(struct f2 *f1, struct f2 *f2, int gw_wild, const char *FILE, size_t LI
 	    setup_set(f1);
 	  if (!f2->words)
 	    setup_set(f2);
-	  f1->words->pct = f2->words->pct = 100;
+	  if (f1->words)
+	    f1->words->pct = 100;
+	  if (f2->words)
+	    f2->words->pct = 100;
 	  return 1;
 	}
     }

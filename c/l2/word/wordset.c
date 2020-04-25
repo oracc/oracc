@@ -124,10 +124,14 @@ compare_sequences(struct w2_set *set1, int start1, int top1,
 struct w2_set *
 w2_create_set(const Uchar *word_set)
 {
-  struct w2_set *set = mb_new(mb_w2_sets);
+  struct w2_set *set = NULL;
   const Uchar *k, *orig_ws = word_set;
   int index = 0;
 
+  if (!word_set)
+    return NULL;
+
+  set = mb_new(mb_w2_sets);
   set->literal = npool_copy(word_set, w2_pool);
   
   if (!strncmp((const char *)word_set, "(to be) ", strlen("(to be) ")))
