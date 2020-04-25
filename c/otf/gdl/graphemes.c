@@ -888,6 +888,12 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  static const unsigned char *cattr = NULL;
 		  const unsigned char *input = NULL;
+#if 1
+		  if (gp->type == g_q)
+		    cattr = signify(input = gp->g.q.q->atf);
+		  else
+		    cattr = signify(input = buf);
+#else
 		  if (*buf) /* always use buf now because it includes modifiers */
 		    cattr = signify(input = buf);
 		  else if (gp->type == g_q)
@@ -899,9 +905,10 @@ gparse(register unsigned char *g, enum t_type type)
 		    }
 		  else
 		    cattr = signify(input = buf);
+#endif
 		  if (cattr)
 		    appendAttr(gp->xml,gattr(a_g_sign,cattr));
-		  else if (gp->type != g_c)
+		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", input);
 		}
 
