@@ -582,7 +582,13 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
-		my $nsn = is_sign($sn);
+		my $snn = $sn;
+		my $nsn = '';
+		if ($snn =~ tr/|//d == 1) {
+		    $nsn = is_sign($snn);
+		} else {
+		    $nsn = is_sign($sn);
+		}
 		if ($nsn) {
 		    push @sig, $sn_id;
 		} elsif ($g eq '...') {

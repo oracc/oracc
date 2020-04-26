@@ -1,4 +1,5 @@
 #!/bin/sh
+exec >01log/o2-atf.log ; exec 2>&1
 l2p1-pre-atf.sh
 if [ -d 00atf ]; then
     # rebuild files that have changed
@@ -8,5 +9,5 @@ if [ -d 00atf ]; then
     if [ "$LIST" != "" ]; then
 	o2-unscore.sh
     fi
-    atfsplit.plx -V -update -install -base 01bld 00atf/*.atf
+    atfsplit.plx -update -install -base 01bld 00atf/*.atf
 fi

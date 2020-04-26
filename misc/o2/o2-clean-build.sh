@@ -3,6 +3,9 @@ if [ -r .nobuild ]; then
     echo 'You are not allowed to build this project here. Stop.'
     exit 1
 fi
+
+mkdir -p 01log
+
 rm -f 01bld/cancel
 o2-unbuild.sh
 touch 01tmp/building

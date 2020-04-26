@@ -1,4 +1,7 @@
 #!/bin/sh
+
+exec >01log/l2p3.log ; exec 2>&1
+
 shopt -s nullglob
 webdir=$1
 shift 1

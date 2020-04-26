@@ -10,6 +10,8 @@
 
 projtype=`oraccopt . type`
 
+exec >01log/l2p1.log ; exec 2>&1
+
 if [ "$projtype" == "superglo" ]; then
     true;
 else

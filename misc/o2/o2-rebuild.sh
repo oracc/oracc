@@ -1,4 +1,7 @@
 #!/bin/sh
+
+mkdir -p 01log
+
 project=`proj-from-conf.sh`
 hproj=`/bin/echo -n $project | tr / -`
 
