@@ -32,4 +32,6 @@ extern void lem_ods_serialize(FILE *fp);
 extern void xcl_sentence_labels(struct xcl_context *xc,struct xcl_c *c);
 extern void lemline_init(void);
 extern void lemline_term(void);
+extern void lemline_run_init(void);
+extern void lemline_run_term(void);
 #endif /*_LEMLINE_H*/

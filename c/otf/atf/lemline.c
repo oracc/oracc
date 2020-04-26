@@ -95,9 +95,20 @@ static void
 lem_dynalem_load(const char *tab)
 {
   static int loaded = 0;
-  unsigned char **tablines = NULL, *fmem;
+  static unsigned char **tablines = NULL;
+  static unsigned char *fmem = NULL;
   size_t nlines = 0, i;
 
+  if (!tab)
+    {
+      free(fmem);
+      fmem = NULL;
+      free(tablines);
+      tablines = NULL;
+      loaded = 0;
+      return;
+    }
+  
   if (loaded)
     return;
   
@@ -129,13 +140,6 @@ lem_dynalem_load(const char *tab)
 void
 lemline_init(void)
 {
-  if (lem_dynalem)
-    {
-      lem_dynalem_load(lem_dynalem_tab);
-      inline_functions(lem_save_form_dynalem,lem_unform,lem_reset_form);      
-    }
-  else
-    inline_functions(lem_save_form,lem_unform,lem_reset_form);
   lemline_xcp = calloc(1,sizeof(struct xcl_context));
   lemline_xcp->project = xcl_project = project;
   lemline_xcp->textid = textid;
@@ -148,12 +152,31 @@ void
 lemline_term(void)
 {
   npool_term(lemline_xcp->pool);
-#if 0
-  sig_context_term(lemline_xcp->sigs);
-#endif
   free(lemline_xcp);
   lemline_xcp = NULL;
   mb_free(xi_mem);
+}
+
+void
+lemline_run_init(void)
+{
+  if (lem_dynalem)
+    {
+      lem_dynalem_load(lem_dynalem_tab);
+      inline_functions(lem_save_form_dynalem,lem_unform,lem_reset_form);      
+    }
+  else
+    inline_functions(lem_save_form,lem_unform,lem_reset_form);
+}
+
+void
+lemline_run_term(void)
+{
+  if (lem_dynalem)
+    lem_dynalem_load(NULL);
+#if 0
+  sig_context_term(lemline_xcp->sigs);
+#endif
 }
 
 void

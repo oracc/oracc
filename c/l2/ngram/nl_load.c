@@ -290,7 +290,11 @@ nl_free_context(struct NL_context *nlcp)
       hash_free(nlcp->psuNgrams, (void (*)(void *))nleps_free);
       nlcp->psuNgrams = NULL;
     }
-  npool_term(nlcp->pool);
+  if (nlcp->pool)
+    {
+      npool_term(nlcp->pool);
+      nlcp->pool = NULL;
+    }
 }
 
 struct NL*

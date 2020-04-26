@@ -22,7 +22,7 @@ ox_init(void)
   tree_init();
   gdl_init();
   text_vec_init();
-  /*lemline_init();*/
+  lemline_run_init();
   tree_functions(x2_serialize);
   ncname_init();
   catvec_init();
@@ -79,7 +79,7 @@ ox_term(void)
   tree_term(1);
   tree_gterm();
   cdfrnc_term();
-  /*  lemline_term(); */
+  lemline_run_term();
   label_term();
   load_labels_term();
   text_term();

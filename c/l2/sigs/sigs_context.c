@@ -236,6 +236,7 @@ sig_context_term(void)
       w2_term();
       sigs_cof_term();
       free(global_scp);
+      collos_term();
     }
 }
 
