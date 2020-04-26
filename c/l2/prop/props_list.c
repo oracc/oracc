@@ -11,12 +11,22 @@ static List *prop_mem = NULL;
 void
 xcl_props_init(void)
 {
+}
+
+void
+xcl_props_term(void)
+{
+}
+
+void
+props_run_init(void)
+{
   if (!prop_mem)
     prop_mem = list_create(LIST_SINGLE);
 }
 
 void
-xcl_props_term(void)
+props_run_term(void)
 {
   if (prop_mem)
     {
