@@ -280,6 +280,9 @@ nl_new_context(struct sigset *sp, enum nlcp_actions act, const char *lang)
 void
 nl_free_context(struct NL_context *nlcp)
 {
+  if (!nlcp)
+    return;
+
   if (nlcp->posNgrams)
     {
       hash_free(nlcp->posNgrams, (void (*)(void *))nleps_free);
