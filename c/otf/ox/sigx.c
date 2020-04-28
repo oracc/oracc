@@ -20,6 +20,7 @@ main(int argc, char **argv)
   int line = 0;
   char *file = NULL;
   atf_init();
+  f2_init();
   sig_context_init();
   if (argc > 0)
     {
@@ -49,6 +50,7 @@ main(int argc, char **argv)
       fprintf(stdout, "</x>");
       xmlify(NULL);
     }
+  f2_term();
   return 0;
 }
 const char *prog = "sigx";
