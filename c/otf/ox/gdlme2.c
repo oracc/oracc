@@ -132,6 +132,8 @@ gdlme_eH(void *userData, const char *name)
       
       if (gdlme_debug)
 	fprintf(f_log, "%s:%d: gdlme processing `%s'\n", pi_file, pi_line, gdlinput);
+      
+      reset_forms_insertp();
 
       res = gdl(gdlinput, GDL_FRAG_OK);
       if (res && res->children.lastused)

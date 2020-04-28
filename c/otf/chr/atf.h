@@ -18,6 +18,7 @@ enum t_unicode
   u_mod_r , 
   u_ulhsq , u_urhsq , u_llhsq , u_lrhsq , 
   u_cdot ,
+  u_rplus, u_rminus,
   u_top 
 };
 
@@ -68,6 +69,8 @@ enum t_unicode
 #define U_times 0x00d7
 #define U_mod_r 0x02b3
 
+#define U_rplus 0x207a
+#define U_rminus 0x207b
 #define U_ulhsq 0x2e22
 #define U_urhsq 0x2e23
 #define U_llhsq 0x2e24

@@ -23,6 +23,7 @@ const char *const atf_strings[] =
     "x",
     "{r}", "[#", "#]", "[#_", "_#]",
     "",
+    "^+", "^-",
     NULL,
   };
 
@@ -204,6 +205,10 @@ wcs2atf(wchar_t *wc, size_t len)
 	    break;
 	  case U_lrhsq:
 	    atfstr(atf_strings[u_lrhsq]);
+	    break;
+	  case U_rminus:
+	    break;
+	  case U_rplus:
 	    break;
 	  default:
 	    warning2(file,lnum,"unicode U+%04x not allowed in ATF",(int)wc[-1]);
