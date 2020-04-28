@@ -5,7 +5,7 @@ include ../../../oracc-am-rules.txt
 AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
 bin_PROGRAMS=ox gdlme2
-noinst_PROGRAMS=prj tok f2test
+noinst_PROGRAMS=prj tok f2test sigx
 
 ox_SOURCES = \
 	atffile.c help.c initterm.c odt_writer.c options.c \
@@ -46,6 +46,11 @@ f2test_SOURCES = \
 	f2test.c
 
 f2test_LDADD = $(xLDADD)
+
+sigx_SOURCES = \
+	sigx.c
+
+sigx_LDADD = $(xLDADD)
 
 gdlme2_SOURCES = \
 	gdlme2.c globals.c

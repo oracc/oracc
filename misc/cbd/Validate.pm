@@ -839,6 +839,11 @@ sub v_form {
     my $tmpform = $formform; $tmpform =~ tr/_/ /;
     atf_add($tmpform,$flang) if $tmpform;
 
+    if ($formform =~ tr/°·//d) {
+	$tmpform =~ tr/ /_/;
+	pp_warn("FORM $tmpform may not contain degree (°) or centre-dot (·)");
+    }
+    
     if ($formform =~ /[áéíúàèìùÁÉÍÚÀÈÌÙ]/) {
 	pp_warn("accented vowels not allowed in \@form");
     }

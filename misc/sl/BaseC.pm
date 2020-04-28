@@ -582,6 +582,7 @@ _signature {
 	    if ($sn_id) {
 		push @sig, $sn_id;
 	    } else {
+		# warn "BaseC checking sign $sn\n";
 		my $snn = $sn;
 		my $nsn = '';
 		if ($snn =~ tr/|//d == 1) {
@@ -594,7 +595,7 @@ _signature {
 		} elsif ($g eq '...') {
 		    push @sig, 'q99';
 		} else {
-		    msg($ctxt,"sign name $sn not in sign list")
+		    msg($ctxt,"sign name $nsn not in sign list")
 			unless $silent || $reported{$g}++;
 		    push @sig, 'q00';
 		}

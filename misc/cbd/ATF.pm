@@ -43,7 +43,7 @@ sub atf_check {
     my @atf = map { "$_. @{$atf{$_}}" } sort { $a <=> $b } keys %atf;
     print ATF uniq_by_line(@atf);
     close(ATF);
-    system 'ox', '-cQ'.$compound_K, '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
+    system 'ox', '-c6Q'.$compound_K, '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
 
     if (open(OX,"01tmp/$lang-atf.log") || die "cbdpp.plx: can't open 01tmp/$lang-atf.log\n") {
 	my $save = pp_line();
