@@ -391,8 +391,9 @@ sub sigs_simple {
 	} elsif (/^\@bases\s+(.*)\s*$/) {
 
 	    $current_first_base = $1;
+	    $current_first_base =~ s/\{d\}/\001/g;
 	    my @bits = split(/;\s+/,$current_first_base);
-	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; s/\{\+.*?\}//g; $_ } @bits;
+	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; s/\{\+.*?\}//g; s/\001/{d}/g; $_ } @bits;
 	    my %bits = (); @bits { @bits } = ();
 	    $current_first_base = join(' ', @bits);
 	    
