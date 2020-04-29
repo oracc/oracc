@@ -7,6 +7,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 use ORACC::CBD::PPWarn;
+use ORACC::Legacy::Sexify;
 
 my %atf = ();
 my %cpd = ();
@@ -14,6 +15,23 @@ my %cpd = ();
 sub atf_add {
     my ($a,$l) = @_;
     if ($a) {
+	my @a = split(/\s+/, $a);
+	my @aa = ();
+	foreach my $aa (@a) {
+	    if ($aa eq '0') {
+		# skip
+	    } elsif ($aa =~ /(^|[-} ])([0-9]+)(-|$)/) {
+		my $z = $1 || '';
+		my $x = $2;
+		my $y = $3 || '';
+		$x = ORACC::Legacy::Sexify::sexify($x,0,1,0);
+		$aa =~ s/((?:^|[-} ])[0-9]+(?:-|$))/$z$x$y/;
+		push @aa, $aa;
+	    } else {
+		push @aa, $aa;
+	    }
+	}
+	$a = join(' ', @aa);
 	$a =~ tr/·°//d;
 	$a =~ s/\{-/{/g;
 	$a =~ s/\\.*$//; # remove disambiguators for checking
