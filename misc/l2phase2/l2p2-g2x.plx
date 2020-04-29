@@ -993,7 +993,7 @@ rewrite_bases {
     foreach my $b (keys %b) {
 	my $tmpb = $b;
 	$tmpb =~ s/^%[-a-z0-9]+://;
-	my $sig = ORACC::SL::BaseC::_signature("$project/$input\:$tmpb", ORACC::SL::BaseC::tlitsplit($tmpb));
+	my $sig = ORACC::SL::BaseC::tlit_sig("$project/$input\:$tmpb", $tmpb);
 	push @{$sig{$sig}}, $b;
     }
  
