@@ -1240,14 +1240,19 @@ validate_parts {
 	    }
 	    if ($pt =~ m#//(.*?)\]#) {
 		$sense = $1;
-	    } else {
-		$sense = $gw;
+#	    } else {
+#		$sense = $gw;
 	    }
-	    my @sense_matches = match_sense($sense, @pt_matches);
-	    if ($#sense_matches < 0) {
-		pp_warn("$pt should match a SENSE of $cf\[$gw\] in `$psulang.glo' but doesn't");
+	    my @sense_matches = ();
+	    if ($sense) {
+		@sense_matches = match_sense($sense, @pt_matches);
+		if ($#sense_matches < 0) {
+		    pp_warn("$pt should match a SENSE of $cf\[$gw\] in `$psulang.glo' but doesn't");
+		} else {
+		    @pt_matches = @sense_matches;
+		}
 	    } else {
-		@pt_matches = @sense_matches;
+		@sense_matches = @pt_matches;
 	    }
 	    
 	    # Now create the canonical base sig for the part; we require 
@@ -1266,6 +1271,9 @@ validate_parts {
 #	    warn "csig = $csig\n";
 	    my @simple_matches = ();
 	    foreach my $ptm (@pt_matches) {
+#		if ($ptm =~ /teŋ/) {
+#		    warn "teŋ $ptm\n";
+#		}
 		if ($ptm && $simple{$ptm}) {
 		    push(@simple_matches, @{$simple{$ptm}});
 #		    print "simple_matches[$passnumber]: ", Dumper \@simple_matches;

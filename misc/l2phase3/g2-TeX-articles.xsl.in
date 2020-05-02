@@ -122,8 +122,9 @@
        />}{<xsl:value-of select="cbd:pos"
        />}{<xsl:apply-templates select="cbd:phon"
        />}{<xsl:apply-templates select="@icount"/>×%
-<!--       />}{<xsl:value-of select="cbd:overview/@periods"
-       -->}{<xsl:call-template name="periods"/>}%
+       }{<xsl:call-template name="periods"
+       />}{<xsl:value-of select="@xml:id"
+       />}%
   <xsl:apply-templates mode="do-it" select="cbd:compound"
   /><xsl:apply-templates select="cbd:senses"
   /><xsl:apply-templates select="cbd:bases"

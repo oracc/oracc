@@ -198,8 +198,10 @@ while (<SL>) {
 
 	    if (/^(\S+)$/) {
 		my $n = $1;
-		$n =~ tr/_/ /;
-		print " n=\"$n\">";
+		my $xn = xmlify($n);
+		$xn =~ tr/_/ /;
+		print " n=\"$xn\">";
+		print "<name g:me=\"1\">$xn</name>";
 		print "<proof>$proof</proof>" if $proof;
 		$proof = '';
 		$in_value = 1;

@@ -13,6 +13,7 @@ my $xsl = load_xml($slxml) || die;
 
 my %groups = ();
 foreach my $c ($xsl->getDocumentElement()->childNodes()) {
+    next if $c->isa('XML::LibXML::PI');
     my $n = $c->getAttribute('n');
     my ($first) = ($n =~ /([A-ZŠṢṬŊ0-9])/);
     if ($first) {

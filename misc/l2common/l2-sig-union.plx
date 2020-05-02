@@ -9,6 +9,7 @@ my %header = ();
 my $lang = '';
 my $quiet = 0;
 my $project = '';
+my %psu_keys = ();
 my %sig = ();
 my $superglo = 0;
 my $verbose = 0;
@@ -18,6 +19,7 @@ GetOptions(
     'project:s'=>\$project,
     'quiet'=>\$quiet,
     'super'=>\$superglo,
+    'verbose'=>\$verbose,
     );
 
 ## No, we have to move this downstream to prevent failed resolution of parts of PSUs
@@ -62,15 +64,23 @@ foreach my $s (@ARGV) {
 #	my $r = (($#t == 2) ? $t[2] : (($#t == 1) ? $t[1] : ''));
 	my $r = ($f{'inst'} ? $t[$f{'inst'}] : '');
 	my $sig = $t[0];
+	my $psu_key = '';
 	# we have to map subproject project names to match PSUs
-	if ($sig =~ /^\{/ && !$first) {
+	if ($sig =~ /^\{/) {
+	    my $orig = $sig;
 	    $sig =~ s/::\@.*?\%/::\@$project\%/;
 	    $sig =~ s/\+\+\@.*?\%/++\@$project\%/g;
+	    # warn "l2-sig-union mapped $orig => $sig\n" unless $orig eq $sig;
+	    $sig =~ /\+= (.*?)\}::/;
+	    $psu_key = $1;
+	    if ($first) {
+		++$psu_keys{$psu_key};
+	    }
 	}
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
-	    if ($first || $sig{$sig}) {
+	    if ($first || $sig{$sig} || ($psu_key && $psu_keys{$psu_key})) {
 		my @r = split(/\s/, $r||'');
 		if ($all || $#r >= 0) {
 		    @{$sig{$sig}}{@r} = ();

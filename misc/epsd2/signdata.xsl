@@ -11,7 +11,7 @@
   <xsl:for-each select=".//*[@g:sign][not(ancestor-or-self::g:d)]">
     <xsl:value-of select="@g:sign"/>
     <xsl:text>&#x9;</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="."/>
     <xsl:text>&#x9;</xsl:text>
     <xsl:choose>
       <xsl:when test="preceding-sibling::*[not(self::g:d)] or ancestor::g:w/preceding-sibling::*">

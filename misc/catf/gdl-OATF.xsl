@@ -105,7 +105,7 @@
     <xsl:when test="@g:type='opposing'"><xsl:text>@</xsl:text></xsl:when>
     <xsl:when test="@g:type='reordered'"><xsl:text>:</xsl:text></xsl:when>
     <xsl:when test="@g:type='repeated'">
-      <xsl:value-of select="concat(.,'x')"/>
+      <xsl:value-of select="concat(.,'×')"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">

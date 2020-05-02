@@ -13,6 +13,7 @@ $ORACC::NS::G2SLICE  = 'http://oracc.org/ns/g2-slice/1.0';
 $ORACC::NS::LEM   = 'http://oracc.org/ns/lemma/1.0';
 $ORACC::NS::NGM   = 'http://oracc.org/ns/ngram/1.0';
 $ORACC::NS::SKL   = 'http://oracc.org/ns/skl/1.0';
+$ORACC::NS::SL   = 'http://oracc.org/ns/sl/1.0';
 $ORACC::NS::STT   = 'http://oracc.org/ns/stats/1.0';
 $ORACC::NS::TEI   = 'http://www.tei-c.org/ns/1.0';
 $ORACC::NS::XCL   = 'http://oracc.org/ns/xcl/1.0';
@@ -44,7 +45,7 @@ $ORACC::NS::ODFTEXT =  'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
 
 @EXPORT = qw/$CBD $CBH $DC $DCO3 $DCTERMS $ETCSL $GDL 
 	     $G2SLICE
-	     $LEM $NGM $SKL $STT $TEI
+	     $LEM $NGM $SKL $SL $STT $TEI
              $XCL $XTF $XTF2 $XFF $XLF $XST $XIM $XIX $XVL 
 	     $XOC $XMD $XML $XHTML $XPD
              $XLINK $XDF $XRU $XCF $XTC $XI $XTR
