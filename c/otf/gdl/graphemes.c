@@ -891,6 +891,21 @@ gparse(register unsigned char *g, enum t_type type)
 #if 1
 		  if (gp->type == g_q)
 		    cattr = signify(input = gp->g.q.q->atf);
+		  else if (gp->type == g_n)
+		    {
+		      if (!strchr(gp->atf,'('))
+			{
+			  int n = atoi(gp->atf);
+			  char *sx = sexify(n,"disz");
+			  if (sx)
+			    input = sx;
+			  else
+			    input = gp->atf;
+			  cattr = signify(input);
+			}
+		      else
+			cattr = signify(input = buf);
+		    }
 		  else
 		    cattr = signify(input = buf);
 #else
@@ -898,8 +913,13 @@ gparse(register unsigned char *g, enum t_type type)
 		    cattr = signify(input = buf);
 		  else if (gp->type == g_q)
 		    {
-		      if (gp->g.q.q->type == g_n)
-			cattr = signify(input = gp->g.q.q->atf);
+			{
+
+			    {
+			    }
+			  else
+			    cattr = signify(input = gp->g.q.q->atf);
+			}
 		      else
 			cattr = signify(input = gp->g.q.q->g.s.base);
 		    }
