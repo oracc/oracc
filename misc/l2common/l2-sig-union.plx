@@ -10,6 +10,7 @@ my $lang = '';
 my $quiet = 0;
 my $project = '';
 my %psu_keys = ();
+my %short_keys = ();
 my %sig = ();
 my $superglo = 0;
 my $verbose = 0;
@@ -65,6 +66,7 @@ foreach my $s (@ARGV) {
 	my $r = ($f{'inst'} ? $t[$f{'inst'}] : '');
 	my $sig = $t[0];
 	my $psu_key = '';
+	my $short_key = '';
 	# we have to map subproject project names to match PSUs
 	if ($sig =~ /^\{/) {
 	    my $orig = $sig;
@@ -76,11 +78,19 @@ foreach my $s (@ARGV) {
 	    if ($first) {
 		++$psu_keys{$psu_key};
 	    }
+	} else {
+	    $short_key = $sig;
+	    $short_key =~ s/\$.*$//;
+	    if ($first) {
+		$short_keys{$short_key} = $sig;
+	    }
 	}
 	if ($superglo) {
 	    # in a superglo we read the glossary sigs first, then only allow in
 	    # the ones that have been vetted into the main superglo file
-	    if ($first || $sig{$sig} || ($psu_key && $psu_keys{$psu_key})) {
+	    if ($first || $sig{$sig}
+		|| ($psu_key && $psu_keys{$psu_key})
+		|| ($short_key && ($sig = use_short_key($short_key, $sig)))) {
 		my @r = split(/\s/, $r||'');
 		if ($all || $#r >= 0) {
 		    @{$sig{$sig}}{@r} = ();
@@ -141,6 +151,16 @@ uniq {
 	@x{grep($_, split(/\s+/,$_))} = ();
     }
     sort keys %x;
+}
+
+sub use_short_key {
+    my($short,$sig) = @_;
+    if ($short_keys{$short}) {
+	warn "map\t$sig\n=>\t$short_keys{$short}\n\n";
+	return $short_keys{$short};
+    } else {
+	return $sig;
+    }
 }
 
 1;

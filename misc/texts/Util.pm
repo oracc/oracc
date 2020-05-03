@@ -1,6 +1,6 @@
 package ORACC::Texts::Util; require Exporter; @ISA=qw/Exporter/;
 
-@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig wid2lem_sigs wid2lem_loc/;
+@EXPORT = qw/wid2lem_load wid2lem_inst wid2lem_by_sig wid2lem_sigs wid2lem_loc wid2err/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -15,6 +15,8 @@ my $w2l_trace = 0;
 
 my $do_w2l_index = 1;
 my %wid_map = ();
+my %w2e = ();
+my %w2e_loaded = ();
 my %w2l_data = ();
 my %w2l_index = ();
 my %w2l_langs = ();
@@ -27,6 +29,44 @@ sub wid2lem_sigs {
     $do_w2l_index = 0;
     wid2lem_load(@_);
     %w2l_data;
+}
+
+# A single qualified inst is returned as a file:line prefix for error lines
+sub wid2err {
+    my($i,$pflag) = @_;
+    if ($i && $i =~ m/^(.*?):(.*)$/) {
+	my($p,$id) = ($1,$2);
+	wid2err_load($p) unless $w2e_loaded{$p};
+	my $fl = undef;
+	if (($fl = ${$w2e{$p}}{$id})) {
+	    if ($pflag) {
+		return "$ENV{'ORACC_BUILDS'}/$p/$fl";
+	    } else {
+		return $fl;
+	    }
+	} else {
+	    warn "wid2errline: no word ID $id in project $p\n";
+	    return undef;
+	}
+    } else {
+	return undef;
+    }
+}
+sub wid2err_load {
+    my $p = shift;
+    ++$w2e_loaded{$p};
+    my %w = ();
+    if ($p) {
+	my $t = "$ENV{'ORACC_BUILDS'}/$p/01bld/wid2err.tab";
+	open(E,"$ENV{'ORACC_BUILDS'}/$p/01bld/wid2err.tab") || die "wid2err_load: no such file $t\n";
+	while (<E>) {
+	    chomp;
+	    my($id,$er) = split(/\t/,$_);
+	    $w{$id} = $er;
+	}
+	close(E);
+    }
+    %{$w2e{$p}} = %w;
 }
 
 sub wid2lem_by_sig {

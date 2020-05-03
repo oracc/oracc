@@ -20,7 +20,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	history-all.sh cbd-tidy.sh cbd-trusted.plx cbd-drop-epsd2.sh \
 	base-audit.plx base-count.plx cbd-from_glo.sh cbdbasenoform.plx \
 	base-redup.plx cbd-check-form-base.plx cbd-fix-form-base.plx \
-	sig-stats.plx sig-psu-forms.plx
+	sig-stats.plx sig-psu-forms.plx sigs-invert.plx
 
 # cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 

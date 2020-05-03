@@ -3,7 +3,7 @@ package ORACC::CBD::Sigs;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/sigs_check sigs_from_glo/;
+@EXPORT = qw/sigs_check sigs_from_glo sigs_invert/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -559,6 +559,17 @@ sub sigs_form {
 	    push @instsigs, [ $formbang.$instsig1, $instsig2 ];
 	}
 	
+    }
+}
+
+# turn SIG\tinst inst into inst\tSIG\ninst\tSIG\n
+sub sigs_invert {
+    while (<>) {
+	chomp;
+	my(@f) = split(/\t/,$_);
+	foreach my $i (split(/\s+/, $f[$#f])) {
+	    print "$i\t$f[0]\n";
+	}
     }
 }
 
