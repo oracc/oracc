@@ -595,7 +595,7 @@ _signature {
 		} elsif ($g eq '...') {
 		    push @sig, 'q99';
 		} else {
-		    msg($ctxt,"sign name $nsn not in sign list")
+		    msg($ctxt,"sign name $sn not in sign list")
 			unless $silent || $reported{$g}++;
 		    push @sig, 'q00';
 		}
