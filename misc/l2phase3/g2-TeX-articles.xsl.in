@@ -279,6 +279,8 @@
   ><xsl:apply-templates mode="base" select="cbd:text[1]"
 /></xsl:for-each
 >\endbases
+<xsl:apply-templates select="cbd:rare-bases"/>
+<xsl:apply-templates select="cbd:phon-bases"/>
 </xsl:template>
 
 <xsl:template mode="base" match="cbd:text">  \base{<xsl:apply-templates mode="cuneify"/>}{%
@@ -290,6 +292,34 @@
     <xsl:apply-templates/>
   </xsl:otherwise>
 </xsl:choose>}{<xsl:call-template name="inst-bar"/>}%
+</xsl:template>
+
+<xsl:template mode="base-b" match="cbd:text">
+  <xsl:choose>
+    <xsl:when test="../@literal">
+      <xsl:apply-templates select="../g:w"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:if test="not(position() = last())">\interbaseb </xsl:if>
+</xsl:template>
+
+<xsl:template match="cbd:rare-bases">
+\beginrare
+<xsl:for-each select="cbd:rbase"
+  ><xsl:apply-templates mode="base-b" select="cbd:text[1]"
+/></xsl:for-each
+>\endrare
+</xsl:template>
+
+<xsl:template match="cbd:phon-bases">
+\beginphon
+<xsl:for-each select="cbd:rbase"
+  ><xsl:apply-templates mode="base-b" select="cbd:text[1]"
+/></xsl:for-each
+>\endphon
 </xsl:template>
 
 <xsl:template name="inst-pct">

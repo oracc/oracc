@@ -90,7 +90,7 @@ foreach my $s (@ARGV) {
 	    # the ones that have been vetted into the main superglo file
 	    if ($first || $sig{$sig}
 		|| ($psu_key && $psu_keys{$psu_key})
-		|| ($short_key && ($sig = use_short_key($short_key, $sig)))) {
+		|| ($short_key && $short_keys{$short_key} && ($sig = $short_keys{$short_key}))) {
 		my @r = split(/\s/, $r||'');
 		if ($all || $#r >= 0) {
 		    @{$sig{$sig}}{@r} = ();
@@ -151,16 +151,6 @@ uniq {
 	@x{grep($_, split(/\s+/,$_))} = ();
     }
     sort keys %x;
-}
-
-sub use_short_key {
-    my($short,$sig) = @_;
-    if ($short_keys{$short}) {
-	warn "map\t$sig\n=>\t$short_keys{$short}\n\n";
-	return $short_keys{$short};
-    } else {
-	return $sig;
-    }
 }
 
 1;
