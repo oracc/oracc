@@ -26,8 +26,7 @@ GetOptions (
     'update'=>\$update
     );
 
-warn "l2p1-lemm-data.plx: running with -u flag for update\n" if $update;
-warn "l2p1-lemm-data.plx: glossary mode == g2\n" if $g2;
+#warn "l2p1-lemm-data.plx: running with -u flag for update\n" if $update;
 
 my %freqs = ();
 my %ranks = ();

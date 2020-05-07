@@ -290,7 +290,7 @@ sub sigs_simple {
 	    }
 	} elsif (/^\@end\s+entry/) {
 	    unless (defined $coresig) {
-		pp_warn("(sigs) undefined coresig--bad entry\n");
+		pp_warn("(sigs) undefined coresig--bad entry");
 		next;
 	    }
 	    if (!$compound && $current_first_base) {

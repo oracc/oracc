@@ -15,7 +15,7 @@ if (-s '01bld/atfsources.lst') {
     warn("o2-atf.plx: updating ATF installation in project $project\n")
 	if $verbose;
     xsystem 'rm', '-f', "01bld/lists/valid.lst", "01bld/lists/invalid.lst";
-    xsystem "$ox -I01bld/atfsources.lst -Cq${O2ARGS} -P$project -b01bld/lists/invalid.lst -g01bld/lists/valid.lst | xmlsplit -f -u -c01bld/lists/changed.lst";
+    xsystem "$ox -I01bld/atfsources.lst -C${O2ARGS} -P$project -b01bld/lists/invalid.lst -g01bld/lists/valid.lst | xmlsplit -f -u -c01bld/lists/changed.lst";
 }
 
 sub

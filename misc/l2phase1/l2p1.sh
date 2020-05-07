@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # Invoke with -u for oracc update; 20180916: -u is now deprecated
 

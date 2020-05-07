@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 mkdir -p 01log
 
@@ -14,12 +14,19 @@ if [ -e $ORACC/bin/$hproj-rebuild.sh ]; then
     exit 1
 fi
 type=`oraccopt . type`
+
 if [ "$type" == "" ]; then
     type=corpus
 fi
+
 if [ "$type" == "catalogue" ]; then
     type=catalog
 fi
+
+if [[ $type == "corpus" ]]; then
+    o2-update-lem.sh
+fi
+
 exe=${ORACC}/bin/o2-$type.sh
 if [ -x $exe ]; then
     $exe $*

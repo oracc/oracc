@@ -110,11 +110,12 @@
 </xsl:template>
 
 <xsl:template name="periods"
-	      ><xsl:if test="cbd:periods/cbd:p"><xsl:for-each select="cbd:periods/cbd:p"
+	      ><xsl:choose><xsl:when test="count(cbd:periods/cbd:p)>1"><xsl:for-each select="cbd:periods/cbd:p"
 	      ><xsl:call-template name="map-period"/>~[<xsl:value-of select="@icount"/>]<xsl:if
 	      test="not(position()=last())">; </xsl:if></xsl:for-each
-	      ></xsl:if
-	      ></xsl:template>
+	      ></xsl:when><xsl:when test="cbd:periods/cbd:p"><xsl:for-each select="cbd:periods/cbd:p"
+	      ><xsl:call-template name="map-period"
+	      ></xsl:call-template></xsl:for-each></xsl:when><xsl:otherwise/></xsl:choose></xsl:template>
 
 <xsl:template match="cbd:entry">
 \beginentry
@@ -303,22 +304,23 @@
       <xsl:apply-templates/>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="not(position() = last())">\interbaseb </xsl:if>
 </xsl:template>
 
 <xsl:template match="cbd:rare-bases">
 \beginrare
 <xsl:for-each select="cbd:rbase"
   ><xsl:apply-templates mode="base-b" select="cbd:text[1]"
-/></xsl:for-each
+/><xsl:if test="not(position() = last())">\interbaseb </xsl:if>
+</xsl:for-each
 >\endrare
 </xsl:template>
 
 <xsl:template match="cbd:phon-bases">
 \beginphon
-<xsl:for-each select="cbd:rbase"
+<xsl:for-each select="cbd:pbase"
   ><xsl:apply-templates mode="base-b" select="cbd:text[1]"
-/></xsl:for-each
+/><xsl:if test="not(position() = last())">\interbaseb </xsl:if>
+</xsl:for-each
 >\endphon
 </xsl:template>
 
@@ -493,9 +495,11 @@
 -->
 
 <xsl:template match="cbd:senses">
+  <xsl:if test="count(*)>1 or not(*/cbd:mng='1')">
 \beginsenses
 <xsl:apply-templates
     />\endsenses
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="cbd:usages">

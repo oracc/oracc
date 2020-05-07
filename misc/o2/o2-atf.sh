@@ -1,5 +1,5 @@
 #!/bin/sh
-exec >01log/o2-atf.log ; exec 2>&1
+# exec >01log/o2-atf.log ; exec 2>&1
 l2p1-pre-atf.sh
 if [ -d 00atf ]; then
     # rebuild files that have changed
