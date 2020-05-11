@@ -54,7 +54,7 @@
 
 <xsl:template match="gdl:w">
   <xsl:for-each select=".//*[@gdl:utf8]">
-    <xsl:if test="contains(@gdl:o,'[')"><span class="osquare"/></xsl:if>
+    <xsl:if test="contains(@gdl:o,'[')"><span class="osquare"><![CDATA[]]></span></xsl:if>
     <xsl:choose>
       <xsl:when test="@gdl:break='missing'">
 	<xsl:choose>
@@ -63,7 +63,14 @@
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <span class="broken">
-	      <xsl:value-of select="@gdl:utf8"/>
+	      <xsl:choose>
+		<xsl:when test="@gdl:utf8='x'">
+		  <span class="roman">x</span>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:value-of select="@gdl:utf8"/>
+		</xsl:otherwise>
+	      </xsl:choose>
 	    </span>
 	  </xsl:otherwise>
 	</xsl:choose>
@@ -72,7 +79,7 @@
 	<xsl:value-of select="@gdl:utf8"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="contains(@gdl:c,']')"><span class="csquare"/></xsl:if>
+    <xsl:if test="contains(@gdl:c,']')"><span class="csquare"><![CDATA[]]></span></xsl:if>
   </xsl:for-each>
   <xsl:if test="not(@form='x') and not(@form='(xx)')
 		and not('x'=substring(@form,string-length(@form)))
