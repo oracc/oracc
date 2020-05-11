@@ -51,6 +51,8 @@
     <xsl:value-of select="ancestor::c:base/@icount"/>
     <xsl:text>&#x9;</xsl:text>
     <xsl:value-of select="ancestor::c:base/@ipct"/>
+    <xsl:text>&#x9;</xsl:text>
+    <xsl:value-of select="ancestor::c:base/@c:id"/>
     <xsl:text>&#xa;</xsl:text>
   </xsl:for-each>
 </xsl:template>
