@@ -36,10 +36,11 @@ struct npool *xtf_pool;
 unsigned char *pending_heading = NULL;
 int kwic_select_pending = 0;
 int kwic_pivot_pending = 0;
+int kwic_select_is_end = 0;
 int l2 = 1;
 int line_context = 0;
 int line_count = 0;
-int p3 = 0;
+int p3 = 1;
 int xml_output = 1;
 int xtf_context = 1;
 int xtf_selecting = 0;
@@ -85,6 +86,8 @@ int curr_idp = 0, next_idp = 0;
 int hashvals[1000];
 int curr_hashval = 0;
 int *idcountp = 0;
+
+static void eH_sub(const char *name);
 
 static int
 llg_match(const char *name)
@@ -404,6 +407,10 @@ printStart(const char *name, const char **atts)
 		  kwic_pivot_pending = 1;
 		  kwic_select_pending = 0;
 		  xtf_selecting = 1;
+		  if (hash_find(xtf_end, (unsigned char *)xid))
+		    kwic_select_is_end = 1;
+		  else
+		    kwic_select_is_end = 0;
 		}
 	    }
 	  else
@@ -500,9 +507,12 @@ printEnd(const char *name)
     {
       fputs("</ce:kwic2><ce:kwic3>", ce_out_fp);
       kwic_pivot_pending = 0;
+      if (kwic_select_is_end)
+	eH_sub(name);
     }
 }
 
+#define is_xcl(s) (!strncmp(s, xcl_ns_uri, strlen(xcl_ns_uri)))
 #define is_xtf(s) (!strncmp(s, xtf_ns_uri, strlen(xtf_ns_uri)))
 
 typedef char context_id_buf[128];
@@ -566,7 +576,15 @@ ce_data(const char *xid)
 void
 ce_xtf_sH(void *userData, const char *name, const char **atts)
 {
-  const char *xid = xml_id(atts);
+  const char *xid = NULL;
+
+  if (is_xcl(name))
+    {
+      echoing_suspended = 1;
+      return;
+    }
+  
+  xid = xml_id(atts);
 
   if (xid && verbose)
     fprintf(stderr,"ce_xtf: ce_xtf_sH found ID %s\n", xid);
@@ -648,6 +666,51 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
     this_node_terminates = 1;
 }
 
+static void
+eH_sub(const char *name)
+{
+  if (!strcmp(&name[strlen(name)-2], "|w"))
+    {      
+      /* If this is a terminating g:w we need to
+	 continue echoing structure to balance 
+	 the fragment 
+      */
+      if (echoing == 2)
+	fputs("<ce:end/>", ce_out_fp);
+      echoing = 1;
+    }
+  else if (llg_match(name))
+    {
+      if (echoing == 2)
+	fputs("<ce:end/>", ce_out_fp);
+      /* if we are at the terminating xtf:l
+	 we are done with this ce:data frag
+      */
+      fprintf(ce_out_fp, "</ce:%s>", content_tagc);
+      if (*last_label && cetype == KU_UNIT) /* we must be in unit context */
+	sprintf(label+strlen(label), " - %s", last_label);
+      fprintf(ce_out_fp, "<ce:label>%s: ",
+	      (const char *)xmlify((const unsigned char*)text_name)
+	      );
+      fprintf(ce_out_fp, "%s</ce:label></ce:data>", 
+	      (const char *)xmlify((const unsigned char*)label)
+	      );
+      *last_label = '\0';
+      *label = '\0';
+      echoing = 0;
+      this_node_terminates = 0;
+      ce_l_tag = NULL;
+    }
+  else
+    {
+      /* this is a node which is being printed
+	 to balance the structure; the tag got
+	 printed on entry to this block so down
+	 here we're a no-op.
+      */
+    }
+}
+
 void
 ce_xtf_eH(void *userData, const char *name)
 {
@@ -657,47 +720,7 @@ ce_xtf_eH(void *userData, const char *name)
 	{
 	  /* always print the tag */
 	  printEnd(name);
-	  if (!strcmp(&name[strlen(name)-2], "|w"))
-	    {
-	      
-	      /* If this is a terminating g:w we need to
-		 continue echoing structure to balance 
-		 the fragment 
-	       */
-	      if (echoing == 2)
-		fputs("<ce:end/>", ce_out_fp);
-	      echoing = 1;
-	    }
-	  else if (llg_match(name))
-	    {
-	      if (echoing == 2)
-		fputs("<ce:end/>", ce_out_fp);
-	      /* if we are at the terminating xtf:l
-		 we are done with this ce:data frag
-	       */
-	      fprintf(ce_out_fp, "</ce:%s>", content_tagc);
-	      if (*last_label && cetype == KU_UNIT) /* we must be in unit context */
-		sprintf(label+strlen(label), " - %s", last_label);
-	      fprintf(ce_out_fp, "<ce:label>%s: ",
-		      (const char *)xmlify((const unsigned char*)text_name)
-		      );
-	      fprintf(ce_out_fp, "%s</ce:label></ce:data>", 
-		      (const char *)xmlify((const unsigned char*)label)
-		      );
-	      *last_label = '\0';
-	      *label = '\0';
-	      echoing = 0;
-	      this_node_terminates = 0;
-	      ce_l_tag = NULL;
-	    }
-	  else
-	    {
-	      /* this is a node which is being printed
-		 to balance the structure; the tag got
-		 printed on entry to this block so down
-		 here we're a no-op.
-	       */
-	    }
+	  eH_sub(name);
 	}
       else
 	printEnd(name);
