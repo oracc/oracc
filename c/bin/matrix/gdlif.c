@@ -22,7 +22,7 @@ gdlif_term()
   atf_term();
   gdl_term();
   pool_term();
-  tree_term();
+  tree_term(1);
 }
 void
 gdl_print(FILE*fp,const unsigned char *gdlinput)

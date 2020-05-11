@@ -901,7 +901,11 @@ gparse(register unsigned char *g, enum t_type type)
 			    input = sx;
 			  else
 			    input = gp->atf;
-			  cattr = signify(input);
+			  /* sign "15" becomes "1(u) 5(disz)" which breaks signify for now */
+			  if (!strcmp(input, ' '))
+			    cattr = signify(input);
+			  else
+			    cattr = NULL;
 			}
 		      else
 			cattr = signify(input = buf);
