@@ -28,7 +28,7 @@
 <xsl:template match="xtf:transliteration|xtf:composite">
   <h1>Cuneified <xsl:value-of select="@n"/></h1>
   <p class="disclaimer">[This cuneiform text was computer-generated
-  from a transliteration.]</p>
+  from a transliteration. <a href="/cuneify-trouble.html">See this page for trouble-shooting tips.</a>]</p>
   <table class="cuneify-text">
     <xsl:apply-templates/>
   </table>
@@ -38,11 +38,16 @@
   <tr class="cuneify-line cuneiform">
     <td class="cuneify-label">
       <xsl:variable name="num" select="number(translate(@n,$apos,''))"/>
-      <xsl:if test="count(preceding-sibling::xtf:l) = 0
-		 or $num mod  5 = 0
-	         or $num mod 10 = 0">
-	<xsl:value-of select="@label"/>
-      </xsl:if>
+      <xsl:choose>
+	<xsl:when test="count(preceding-sibling::xtf:l) = 0
+			or $num mod  5 = 0
+			or $num mod 10 = 0">
+			<xsl:value-of select="@label"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:text>&#xa0;</xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
     </td>
     <td>
       <p class="cuneify-content">
