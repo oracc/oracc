@@ -809,7 +809,7 @@ main(int argc, char * const*argv)
   exit_on_error = TRUE;
 
   init_wm_names();
-
+  cetype = KU_LINE;
   options(argc, argv, "23c:f:i:lkm:p:tuvx");
 
   if (!project || (!ce_index && !xtf_context))
