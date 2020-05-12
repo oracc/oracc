@@ -24,8 +24,8 @@ const char *wm_names[5];
 unsigned char *buf = NULL;
 int buf_len = 0;
 
-char label[128], last_label[128], 
-  text_name[128], text_id[16], text_project[128];
+char curr_label[1024], label[1024], last_label[1024], 
+  text_name[1024], text_id[128], text_project[1024];
 
 const char *ce_l_tag = NULL;
 const char *content_tago = "content";
@@ -506,9 +506,24 @@ printEnd(const char *name)
 	  || !strcmp(name, norm_w_name)))
     {
       fputs("</ce:kwic2><ce:kwic3>", ce_out_fp);
-      kwic_pivot_pending = 0;
+      kwic_pivot_pending = this_node_terminates = 0;
       if (kwic_select_is_end)
-	eH_sub(name);
+	{
+	  fputs("<ce:end/>", ce_out_fp);
+	  fprintf(ce_out_fp, "</ce:%s>", content_tagc);
+	  fprintf(ce_out_fp, "<ce:label>%s: ",
+		  (const char *)xmlify((const unsigned char*)text_name)
+		  );
+	  fprintf(ce_out_fp, "%s</ce:label></ce:data>", 
+		  (const char *)xmlify((const unsigned char*)(*label ? label : curr_label))
+		  );
+	  *last_label = '\0';
+	  *label = '\0';
+	  echoing = 0;
+	  echoing_suspended = 0;
+	  kwic_select_is_end = 0;
+	  ce_l_tag = NULL;
+	}
     }
 }
 
@@ -589,6 +604,12 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
   if (xid && verbose)
     fprintf(stderr,"ce_xtf: ce_xtf_sH found ID %s\n", xid);
 
+  if (is_xtf(name) 
+      && (!strcmp(&name[strlen(name)-2], "|l") 
+	  || !strcmp(&name[strlen(name)-3], "|lg")
+	  || !strcmp(&name[strlen(name)-2], "|v")))
+    strcpy(curr_label,findAttr(atts,"label"));
+
   if (xid && hash_find(xtf_start, (unsigned char *)xid))
     {
       unsigned char *h = hash_find(xtf_headings, (unsigned char *)xid);
@@ -609,6 +630,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	fprintf(ce_out_fp, "<ce:start ref=\"%s\"/>", xid);
 
       /* always print the name and atts */
+      echoing_suspended = 0;
       printStart(name, atts);
 
       /* and now echo text nodes as well as structure */
@@ -673,11 +695,14 @@ eH_sub(const char *name)
     {      
       /* If this is a terminating g:w we need to
 	 continue echoing structure to balance 
-	 the fragment 
+	 the fragment unless we are in KWIC mode
       */
       if (echoing == 2)
 	fputs("<ce:end/>", ce_out_fp);
-      echoing = 1;
+      if (cetype != KU_KWIC)
+	echoing = 1;
+      else
+	echoing = 0;
     }
   else if (llg_match(name))
     {
@@ -698,6 +723,7 @@ eH_sub(const char *name)
       *last_label = '\0';
       *label = '\0';
       echoing = 0;
+      echoing_suspended = 0;
       this_node_terminates = 0;
       ce_l_tag = NULL;
     }
