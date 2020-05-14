@@ -37,7 +37,7 @@ if (-r $list) {
 		print OUT "," if $texts++;
 		my $json = "corpusjson/$PQX.json";
 		print OUT "\"$PQX\": \"$json\"";
-		system("$ENV{'ORACC'}/bin/xcl-json.plx -s $t $dir/$PQX.json");
+		system("$ENV{'ORACC'}/bin/xcl-json.plx -s $xtf $dir/$PQX.json");
 	    } else {
 		warn "corpus-json.plx: no such file $xtf\n"
 	    }
