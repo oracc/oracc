@@ -46,9 +46,11 @@
 <xsl:template match="g:w">
   <xsl:param name="allow-space" select="not(@headform)"/>
   <xsl:param name="proofing-mode" select="false()"/>
+  <xsl:param name="noq" select="false()"/>
   <xsl:call-template name="gdl-w">
     <xsl:with-param name="allow-space" select="$allow-space"/>
     <xsl:with-param name="proofing-mode" select="$proofing-mode"/>
+    <xsl:with-param name="noq" select="$noq"/>
   </xsl:call-template>
   <xsl:if test="@headform"><xsl:text>-</xsl:text></xsl:if>
 </xsl:template>
@@ -190,16 +192,22 @@
 </xsl:template>
 
 <xsl:template match="g:q">
+  <xsl:param name="noq" select="false()"/>
   <xsl:call-template name="render-o"/>
   <xsl:apply-templates select="*[1]"/>
   <xsl:choose>
-    <xsl:when test="ancestor::g:d"><sup>(</sup></xsl:when>
-    <xsl:otherwise>(</xsl:otherwise>
-  </xsl:choose>
-  <xsl:apply-templates select="*[2]"/>
-  <xsl:choose>
-    <xsl:when test="ancestor::g:d"><sup>)</sup></xsl:when>
-    <xsl:otherwise>)</xsl:otherwise>
+    <xsl:when test="$noq"/>
+    <xsl:otherwise>
+      <xsl:choose>
+	<xsl:when test="ancestor::g:d"><sup>(</sup></xsl:when>
+	<xsl:otherwise>(</xsl:otherwise>
+      </xsl:choose>
+      <xsl:apply-templates select="*[2]"/>
+      <xsl:choose>
+	<xsl:when test="ancestor::g:d"><sup>)</sup></xsl:when>
+	<xsl:otherwise>)</xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="render-flags"/>
   <xsl:call-template name="render-c"/>
@@ -462,10 +470,13 @@
 
 <xsl:template name="gdl-w">
   <xsl:param name="allow-space" select="true()"/>
+  <xsl:param name="noq" select="false()"/>
   <xsl:variable name="lang">
     <xsl:call-template name="set-lang"/>
   </xsl:variable>
-  <xsl:call-template name="gdl-w-span"/>
+  <xsl:call-template name="gdl-w-span">
+    <xsl:with-param name="noq" select="$noq"/>
+  </xsl:call-template>
   <xsl:if test="$allow-space and following-sibling::*">
     <xsl:text> </xsl:text>
   </xsl:if>
@@ -483,20 +494,26 @@
 </xsl:template>
 
 <xsl:template name="gdl-w-span">
+  <xsl:param name="noq" select="false()"/>
   <xsl:choose>
     <xsl:when test="self::norm:w">
       <xsl:call-template name="render-o"/>
       <xsl:apply-templates/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:call-template name="render-word"/>
+      <xsl:call-template name="render-word">
+	<xsl:with-param name="noq" select="$noq"/>
+      </xsl:call-template>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
 <xsl:template name="render-word">
+  <xsl:param name="noq" select="false()"/>
   <xsl:for-each select="*">
-    <xsl:apply-templates select="."/>
+    <xsl:apply-templates select=".">
+      <xsl:with-param name="noq" select="$noq"/>
+    </xsl:apply-templates>
     <xsl:if test="@notemark">
       <xsl:call-template name="process-notes"/>
     </xsl:if>
