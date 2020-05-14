@@ -8,10 +8,21 @@
 #include "npool.h"
 #include "runexpat.h"
 
-char curr_project[1024], curr_text_id[8];
+char curr_project[1024], curr_text_id[8], curr_lang[1024];
 struct npool *sig_pool;
 Hash_table *signiary, *pertext, *curr_hash = NULL, *curr_sig_hash = NULL;
 int total_sign_instances = 0, verbose;
+
+static const unsigned char *
+langval(const unsigned char *v)
+{
+  static unsigned char lvbuf[1024];
+  if (*curr_lang)
+    sprintf(lvbuf, "%s:%s", curr_lang, v);
+  else
+    strcpy(lvbuf, v);
+  return lvbuf;
+}
 
 static void
 incr_val(Hash_table *h, const unsigned char *v)
@@ -31,15 +42,15 @@ static void
 sH(void *userData, const char *name, const char **atts)
 {
   if (name[22] == 'f'
-      && (!strcmp(name, "http://oracc.org/ns/xtf/1.0:transliteration")
-	  || !strcmp(name, "http://oracc.org/ns/xtf/1.0:composite")))
+      && (!strcmp(name, "http://oracc.org/ns/xtf/1.0|transliteration")
+	  || !strcmp(name, "http://oracc.org/ns/xtf/1.0|composite")))
     {
       strcpy(curr_project, findAttr(atts,"project"));
       strcpy(curr_text_id, get_xml_id(atts));
     }
   else
     {
-      const char *utf8 = findAttr(atts,"http://oracc.org/ns/gdl/1.0:utf8");
+      const char *utf8 = findAttr(atts,"http://oracc.org/ns/gdl/1.0|utf8");
       if (*utf8)
 	{
 	  static wchar_t wbuf[128];
@@ -93,6 +104,12 @@ sH(void *userData, const char *name, const char **atts)
 	      curr_sig_hash = curr_hash = NULL;
 	    }
 	}
+      else
+	{
+	  const char *lang = findAttr(atts, "http://www.w3.org/XML/1998/namespace|lang");
+	  if (lang)
+	    strcpy(curr_lang,lang);
+	}
     }
 }
 
@@ -102,8 +119,8 @@ eH(void *userData, const char *name)
   if (curr_hash)
     {
       unsigned char *val = (unsigned char *)charData_retrieve();
-      incr_val(curr_sig_hash, val);
-      incr_val(curr_hash, val);
+      incr_val(curr_sig_hash, langval(val));
+      incr_val(curr_hash, langval(val));
       curr_sig_hash = curr_hash = NULL;
     }
   else
@@ -145,7 +162,7 @@ main(int argc, char **argv)
   signiary = hash_create(1000);
   pertext = hash_create(1000);
   psl_init();
-  runexpatNS(i_stdin,NULL,sH,eH,":");
+  runexpatNS(i_stdin,NULL,sH,eH,"|");
   hash_exec2(signiary, printsigns);
   npool_term(sig_pool);
   psl_term();

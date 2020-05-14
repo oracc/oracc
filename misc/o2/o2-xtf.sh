@@ -54,6 +54,9 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     # linkbase
     proj-linkbase.sh
     xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
+elif [ -s 01bld/lists/proxy-atf.lst ]; then
+    sort -t: -k2 -o 01bld/lists/proxy-atf.lst 01bld/lists/proxy-atf.lst
+    wmapper -i 01bld/lists/proxy-atf.lst -p $project
 fi
 
 if [ -s 01bld/lists/lemindex.lst ]; then
