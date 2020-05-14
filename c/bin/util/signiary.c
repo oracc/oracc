@@ -106,7 +106,7 @@ sH(void *userData, const char *name, const char **atts)
 	}
       else
 	{
-	  const char *lang = findAttr(atts, "http://www.w3.org/XML/1998/namespace|lang");
+	  const char *lang = findAttr(atts, "xml:lang");
 	  if (lang)
 	    strcpy(curr_lang,lang);
 	}
