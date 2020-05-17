@@ -176,7 +176,7 @@ print_grep {
 sub
 xmlify {
     my $tmp = shift;
-    $tmp =~ s/\&/\&amp;/g;
+    $tmp =~ s/\&(?!amp;)/\&amp;/g;
     $tmp =~ s/\"/\&quot;/g;
     $tmp;
 }

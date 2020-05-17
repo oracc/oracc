@@ -219,7 +219,7 @@ while (<SL>) {
 
 		if ($curr_form) {
 		    ++${$v{'#forms'}}{$curr_form};
-		    ++${$v{$curr_form}{$n}};
+		    ++${$v{$curr_form}}{$n};
 		    push @{$v{$n}}, $curr_form;
 		} else {
 		    ++${$v{'#signv'}}{$n};
@@ -320,44 +320,61 @@ if ($project eq 'ogsl') {
 
 sub compute_qualified {
 #    use Data::Dumper; print STDERR Dumper \%v;
-    print '<qs>';
-    foreach my $f (keys %{$v{'#forms'}}) {
-	# does the @form have any values
-	if ($v{$f}) {
-	    my @fv = keys %{$v{$f}};
-	    # A value is only qualifiable if it is in the @sign's values
-	    foreach my $fv (@fv) {
-		if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv})) {
-		    # sign is either x-value or both in form and in sign; must be qualified
-		    $fv = xmlify($fv);
-		    $f = xmlify($f);
-		    print "<q type=\"must\" qn=\"$fv($f)\"/>";
-		} else {
-		    # sign may be qualified in corpora but not in @bases
-		    # if there is a base value with different index, record that also
-		    my $nn = $fv; $nn =~ tr/₀-₉ₓ⁻⁺//d;
-		    my $base = '';
-		    if (${$v{'#basev'}}{$nn}) {
-			my $bn = ${$v{'#basev'}}{$nn};
-			$bn = xmlify($bn);
-			$base = " base=\"$bn\"";
+    my @qs = ();
+
+    if ($v{'#signv'}) {
+	foreach my $v (grep /ₓ$/, keys %{$v{'#signv'}}) {
+	    my $xv = xmlify($v);
+	    my $xs = xmlify($curr_sign);
+	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\"/>";
+	}
+    }
+
+    if ($v{'#forms'}) {
+	foreach my $f (keys %{$v{'#forms'}}) {
+	    my %seen = ();
+	    # does the @form have any values
+	    if ($v{$f}) {
+		my @fv = keys %{$v{$f}};
+		push @fv, keys %{$v{'#signv'}} if $v{'#signv'};
+		# A value is only qualifiable if it is in the @sign's values
+		foreach my $fv (@fv) {
+		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ⁻⁺//d;
+		    next if $seen{$fvbase}++;
+		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv})) {
+			# sign is either x-value or both in form and in sign; must be qualified
+			$fv = xmlify($fv);
+			$f = xmlify($f);
+			push @qs, "<q type=\"must\" qn=\"$fv($f)\"/>";
+		    } else {
+			# sign may be qualified in corpora but not in @bases
+			# if there is a base value with different index, record that also
+			my $nn = $fv; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+			my $base = '';
+			if (${$v{'#basev'}}{$nn}) {
+			    my $bn = ${$v{'#basev'}}{$nn};
+			    $bn = xmlify($bn);
+			    $base = " base=\"$bn\"";
+			}
+			$fv = xmlify($fv);
+			$f = xmlify($f);
+			push @qs, "<q type=\"may\" qn=\"$fv($f)\"$base/>";
 		    }
-		    $fv = xmlify($fv);
-		    $f = xmlify($f);
-		    print "<q type=\"may\" qn=\"$fv($f)\"$base/>";
 		}
-	    }
-	} elsif ($v{'#signv'}) {
-	    my @sv = keys %{$v{'#signv'}};
-	    # all signs are considered to be both in form and in sign; must be qualified
-	    foreach my $sv (@sv) {
-		$sv = xmlify($sv);
-		$f = xmlify($f);
-		print "<q type=\"must\" qn=\"$sv($f)\"/>";
+	    } elsif ($v{'#signv'}) {
+		my @sv = keys %{$v{'#signv'}};
+		# all signs are considered to be both in form and in sign; must be qualified
+		foreach my $sv (@sv) {
+		    $sv = xmlify($sv);
+		    $f = xmlify($f);
+		    push @qs, "<q type=\"must\" qn=\"$sv($f)\"/>";
+		}
 	    }
 	}
     }
-    print '</qs>';
+    if ($#qs >= 0) {
+	print '<qs>', @qs, '</qs>';
+    }
 }
 
 sub

@@ -604,6 +604,7 @@ sub v_bases {
 		    if (defined $vbases{$pri}) {
 			pp_warn("repeated base $pri");
 		    } else {
+			qualcheck($pri) if $pri =~ /\(/;
 			%{$vbases{$pri}} = ();
 			$vbases{"$pri#code"} = ++$pricode;
 		    }
@@ -653,6 +654,7 @@ sub v_bases {
 		if (defined $vbases{$pri}) {
 		    pp_warn("repeated base $pri");
 		} else {
+		    qualcheck($pri) if $pri =~ /\(/;
 		    %{$vbases{$pri}} = ();
 		    $vbases{"$pri#code"} = ++$pricode;
 		}
@@ -779,6 +781,53 @@ sub v_bases {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
 	pp_trace Dumper \%ORACC::CBD::bases;
     }
+}
+
+# This is not ideal because we are checking bases rather than signs; really need to move this to BaseC
+sub qualcheck {
+    my $qn = shift;
+    1 while $qn =~ s/\{[^\}]+\}//;
+    $qn =~ s/^.*?_//; $qn =~ s/-.*$//;
+    # is this qualified sign known?
+    my $q = ORACC::SL::BaseC::is_value($qn);
+    if ($q) {
+	# is it type 'may'--those must be unqualified in @bases
+	if ($q eq 'may') {
+	    my $qv = $qn; $qv =~ s/\(.*$//;
+	    pp_warn("redundant qualifier in $qn--use plain $qv");
+	}
+    } else {
+	# are then any known qns for this value?
+	my $qv = $qn; $qv =~ s/\(.*$//;
+	my $qq = ORACC::SL::BaseC::is_value("$qn;qual");
+	if ($qq) {
+	    pp_warn("$qn unknown: known for $qv = $qq");
+	} else {
+	    my $qc = qualcorr($qn);
+ 	    if ($qc) {
+		pp_warn("unknown value-qualifier pair $qn; did you mean $qc?");
+	    } else {
+		pp_warn("unknown value-qualifier pair $qn");
+	    }
+	}
+    }
+}
+sub qualcorr {
+    my $qn = shift;
+    my ($qv,$qq) = ($qn =~ /^(.*?)\((.*?)\)$/);
+    if ($qv) {
+	my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
+	my $q0 = ORACC::SL::BaseC::is_value("$qb₀;qual");
+	if ($q0) {
+	    foreach my $qc (split(/\s+/,$q0)) {
+		my $qcq = $qc; $qcq =~ s/^.*?\((.*?)\)$/$1/;
+		if ($qcq eq $qq) {
+		    return $qc;
+		}
+	    }
+	}
+    }
+    undef;
 }
 
 sub pp_sl_messages {

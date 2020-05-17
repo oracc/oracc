@@ -99,6 +99,21 @@ foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     }
 }
 
+# now register all the qualified forms and make the lists of allowable qualifications by value
+foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
+								 'q')) {
+    my $qn = $q->getAttribute('qn');
+    my $type = $q->getAttribute('type');
+    my $base = $q->getAttribute('base');
+    # warn "setting values $qn to $type\n";
+    $values{$qn} = $type;
+    my $qv = $qn; $qv =~ s/\(.*$//;
+    push @{$values{$qv,'qual'}}, $qn;
+    my $q0 = $qv; $q0 =~ tr/₀-₉ₓ⁻⁺//d; $q0 .= '₀';
+    push @{$values{$q0,'qual'}}, $qn;
+    $values{$qv,'qbase'} = $base if $base;
+}
+
 #add_aliases() if $do_aliases;
 
 add_dumb_aliases();
@@ -273,7 +288,7 @@ dump_db {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;

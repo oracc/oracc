@@ -210,7 +210,7 @@ xmlify {
     return '' unless $_[0];
     my $tmp = shift;
     if ($tmp && $tmp =~ /[&<\"]/) {
-	$tmp =~ s/&/&amp;/g;
+	$tmp =~ s/\&(?!amp;)/\&amp;/g;
 	$tmp =~ s/</&lt;/g;
 	$tmp =~ s/\"/&quot;/g
     }
