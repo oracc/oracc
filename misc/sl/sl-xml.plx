@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open ':utf8';
+use warnings; use strict; use open ':utf8'; use utf8;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::OID;
@@ -50,6 +50,10 @@ $xl =~ s/\.a?sl$/-sl.xml/;
 open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
 select XL;
 
+my %slv_val2sign = ();
+my %slv_form_vars = ();
+my %v = ();
+
 my %v_closers = ();
 my @v_closers = qw/v form end/;
 @v_closers{@v_closers} = ();
@@ -64,18 +68,26 @@ my $in_value = 0;
 my $post_form = 0;
 my $utf8 = undef;
 
+my $curr_sign = '';
+my $curr_form = '';
+
 my $pi_file = $asl;
 
 print '<?xml version="1.0" encoding="utf-8"?>',"\n";
 print "<?file $pi_file?>";
-print "<signlist project=\"$project\" xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\"\n>";
+print "<signlist project=\"$project\" xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\"\n>";
 while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
 	my $deprecated = '';
-	my $signname = $1;
+	my $signname = $curr_sign = $1;
 	my $n = xmlify($signname);
+	
+	%slv_form_vars = ();
+	%v = ();
+	$curr_form = '';
 	$post_form = 0;
+	
 	if (/^\@nosign/) {
 	    $deprecated = ' deprecated="1"';
 	}
@@ -149,7 +161,8 @@ while (<SL>) {
 		$in_form = 0;
 	    } else {
 		my ($n,$v,$u) = ($2,$1,$3);
-		my $formname = $n;
+		my $formname = $curr_form = $n;
+		++${$v{'#forms'}}{$curr_form};
 		$n = xmlify($n);
 		$v = xmlify($v);
 		my $uattr = "";
@@ -160,6 +173,10 @@ while (<SL>) {
 		}
 		pi_line();
 		my $vv = $v; $vv =~ s/^~//;
+		if ($slv_form_vars{$vv}++) {
+		    warn "$asl:$.: duplicate var code $vv\n";
+		    continue;
+		}
 		print "<form n=\"$n\" var=\"$v\" xml:id=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>";
 		$in_form = 1;
 		if ($sortcodes{$n}) {
@@ -187,21 +204,45 @@ while (<SL>) {
 	    if (s/^\#(\S+)\s+//) {
 		print " comment=\"$1\"";
 	    }
-
+	    my $v_lang = '';
 	    if (s/^\%(\S+)\s+//) {
+		$v_lang = "\%$1 ";
 		print " xml:lang=\"$1\"";
 	    }
 
-#	    if (s/\s+\[(.*?)\]\s*$//) {
-#		$proof = xmlify($1);
-#	    }
+	    if (s/\s+\[(.*?)\]\s*$//) {
+		$proof = xmlify($1);
+	    }
 
 	    if (/^(\S+)$/) {
 		my $n = $1;
+
+		if ($curr_form) {
+		    ++${$v{'#forms'}}{$curr_form};
+		    ++${$v{$curr_form}{$n}};
+		    push @{$v{$n}}, $curr_form;
+		} else {
+		    ++${$v{'#signv'}}{$n};
+		    my $nn = $n; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+		    ${$v{'#basev'}}{$nn} = $n;
+		    ++${$v{$curr_sign}{$n}};
+		    push @{$v{$n}}, $curr_sign;
+		}
+		
+		if ($slv_val2sign{$n} && $slv_val2sign{$n} ne $curr_sign) {
+		    warn "$asl:$.: value $n not allowed in $curr_sign because it's in $slv_val2sign{$n}\n";
+		    continue;
+		}
+		
 		my $xn = xmlify($n);
 		$xn =~ tr/_/ /;
 		print " n=\"$xn\">";
-		print "<name g:me=\"1\">$xn</name>";
+		# don't GDL [...]ri and friends
+		if ($n =~ /\[\.\.\.\]/ || $n =~ m#^/# || $n =~ /\?/) {
+		    print "<name>$xn</name>";
+		} else {
+		    print "<name g:me=\"1\">$v_lang$xn</name>";
+		}
 		print "<proof>$proof</proof>" if $proof;
 		$proof = '';
 		$in_value = 1;
@@ -253,6 +294,9 @@ while (<SL>) {
 	    }
 	    if ($in_sign) {
 		$in_sign = 0;
+		if (scalar keys %v) {
+		    compute_qualified();
+		}
 		print "</sign\n>";
 	    } else {
 		warn "$asl:$.: superfluous '\@end sign'\n";
@@ -273,6 +317,48 @@ if ($project eq 'ogsl') {
 }
 
 ##########################################################################################
+
+sub compute_qualified {
+#    use Data::Dumper; print STDERR Dumper \%v;
+    print '<qs>';
+    foreach my $f (keys %{$v{'#forms'}}) {
+	# does the @form have any values
+	if ($v{$f}) {
+	    my @fv = keys %{$v{$f}};
+	    # A value is only qualifiable if it is in the @sign's values
+	    foreach my $fv (@fv) {
+		if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv})) {
+		    # sign is either x-value or both in form and in sign; must be qualified
+		    $fv = xmlify($fv);
+		    $f = xmlify($f);
+		    print "<q type=\"must\" qn=\"$fv($f)\"/>";
+		} else {
+		    # sign may be qualified in corpora but not in @bases
+		    # if there is a base value with different index, record that also
+		    my $nn = $fv; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+		    my $base = '';
+		    if (${$v{'#basev'}}{$nn}) {
+			my $bn = ${$v{'#basev'}}{$nn};
+			$bn = xmlify($bn);
+			$base = " base=\"$bn\"";
+		    }
+		    $fv = xmlify($fv);
+		    $f = xmlify($f);
+		    print "<q type=\"may\" qn=\"$fv($f)\"$base/>";
+		}
+	    }
+	} elsif ($v{'#signv'}) {
+	    my @sv = keys %{$v{'#signv'}};
+	    # all signs are considered to be both in form and in sign; must be qualified
+	    foreach my $sv (@sv) {
+		$sv = xmlify($sv);
+		$f = xmlify($f);
+		print "<q type=\"must\" qn=\"$sv($f)\"/>";
+	    }
+	}
+    }
+    print '</qs>';
+}
 
 sub
 form_check {

@@ -527,7 +527,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  gcheck = g2utf(gcheck);
 	if (is_xvalue(gcheck))
 	  {
-	    if (!inner_qual)
+	    if (!inner_qual && !gdl_bootstrap)
 	      vwarning("%s: x-values must be qualified with sign name", gcheck);
 	    gp = singleton(g,type);
 	  }
@@ -569,7 +569,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 		if (!ok && (!mixed_case_ok || !is_mixed(g)))
 		  {
-		    if (!ok)
+		    if (!ok && !gdl_bootstrap)
 		      {
 			const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 			vwarning("%s: unknown grapheme. To request adding it please visit:\n\t%s",g,report);
@@ -631,7 +631,7 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       else if (curr_lang->snames)
 	{
-	  if (is_xvalue(g) && !inner_qual)
+	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
 	    vwarning("%s: x-values must be qualified with sign name", g);
 
 	  if (!hash_find(curr_lang->snames,g))
@@ -673,7 +673,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  const unsigned char *noheth = NULL;
 	  int len = 0;
 
-	  if (is_xvalue(g) && !inner_qual)
+	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
 	    vwarning("%s: x-values must be qualified with sign name", g);
 
 	  if (use_unicode)
@@ -1024,7 +1024,7 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       else if (gp->type == g_v && !inner_parse)
 	{
-	  if (x_value(gp->g.s.base) && qualifier_warnings)
+	  if (x_value(gp->g.s.base) && qualifier_warnings && !gdl_bootstrap)
 	    vnotice("%s: x-values should be qualified",gp->g.s.base);
 	}
     }

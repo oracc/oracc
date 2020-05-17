@@ -700,6 +700,16 @@ sub v_bases {
 #		warn "adding $psig to prisigs for $p\n";
 		$prisigs{$psig} = $p;
 		$prisigs{$p} = $psig;
+		if ($p =~ /\{/) {
+		    my $core = $p;
+		    1 while $core =~ s/\{[^}]+\}//;
+		    if (!defined $vbases{$core}) {
+			my $csig = ORACC::SL::BaseC::check(undef,$core,1);
+			if (defined $prisigs{$csig}) {
+			    pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
+			}
+		    }
+		}
 	    }
 	    register_base_sig($p,$psig);
 	}
