@@ -749,11 +749,23 @@ sub qualcheck {
 		# Also, if the qq is a FORM, get the SIGN and see if this shares a base with that
 		# like adda(|LU₂×BAD|) for addaₓ(|LU₂×BAD|)
 		if (!$found_base) {
-		    
+		    my $signs = is_value("$qoid;signs");
+		    if ($signs) {
+			foreach my $s (split(/\s+/,$signs)) {
+			    my $svv = is_value("$s;values");
+			    foreach my $vb (split(/\s+/,$svv)) {
+				if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
+				    $supp = " did you mean $vb($qq)?";
+				    ++$found_base;
+				    last;
+				}
+			    }			    
+			}
+		    }
 		}
 	    }
 	    if ($found_base) {
-		qmsg("(bases) [Q4] vq=$qn: $qv unknown for $qq: $supp");
+		qmsg("(bases) [Q4] vq=$qn: $qv unknown for $qq:$supp");
 	    } else {
 	 	my $vsn = ORACC::SL::BaseC::sign_of($void);
 		my $qvv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
