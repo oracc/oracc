@@ -395,11 +395,12 @@ subsign {
     }
     my $sn = $node->getAttribute('n');
     
-#    if ($parent_id) {
+    if ($parent_id) {
+	push @{$values{$rf,'signs'}}, $parent_id;
 #	warn "FORM: parent-id=$parent_id; form id=$id; sn=$sn\n";
 #    } else {
 #	warn "SIGN: id=$id; sn=$sn\n";
-#    }
+    }
 
     my($ucode,$uchar) = ('','');
     my @v = ();
