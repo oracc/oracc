@@ -428,16 +428,18 @@ subsign {
 	} elsif ($lname eq 'v') {
 	    my $v = $c->getAttribute('n');
 	    $v =~ tr/?//d;
+	    my $orig_v = $v;
 	    $v =~ s/\{.*?\}//g;
 	    next unless $v;
 	    if ($values{$v}) {
+		# This is now fixed in sl-xml.plx
 		### FIXME: THIS IS A TODO LIST ITEM IN OGSL
 #		warn "duplicate value in ogsl-sl.xml: $v occurs in $values{$values{$v},'name'} and $sn\n"
 #		    unless !defined($v) || !length($v) || $v  =~ /ₓ/ || $v =~ /\.\.\./;
 	    } else {
 		$values{$v} = $id;
 	    }
-	    push(@{$values{$id,'values'}}, $v) if $v;
+	    push(@{$values{$id,'values'}}, $orig_v) if $v;
 	    # homophones: each value is a space-delimited string of IDs
 	    #   strip off the digits
 	    #   add the id to the entry $v,h

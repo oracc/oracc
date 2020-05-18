@@ -313,7 +313,7 @@ close(SL);
 
 if ($project eq 'ogsl') {
     system 'rm', '-f', '02xml/ogsl.xml';
-    system 'ln', '-sf', '02xml/ogsl-sl.xml', '02xml/ogsl.xml';
+    system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml', '02xml/ogsl.xml';
 }
 
 ##########################################################################################

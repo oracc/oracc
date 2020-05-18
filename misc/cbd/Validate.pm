@@ -783,31 +783,75 @@ sub v_bases {
     }
 }
 
+sub
+protect2 {
+    my $tmp = shift;
+    $tmp =~ tr/()+/\000\001\002/;
+    $tmp;
+}
 # This is not ideal because we are checking bases rather than signs; really need to move this to BaseC
 sub qualcheck {
     my $qn = shift;
     1 while $qn =~ s/\{[^\}]+\}//;
-    $qn =~ s/^.*?_//; $qn =~ s/-.*$//;
+    $qn =~ s/(\|[^\|]+\|)/protect2($1)/eg;
+    $qn =~ s/^.*?(\S+?\(.*?\)).*$/$1/;
+    $qn =~ tr/\000\001\002/()+/;
+    $qn =~ s/^.*?_//;
+    $qn =~ s/^.*?-//;
+    $qn =~ s/\s*$//;
     # is this qualified sign known?
     my $q = ORACC::SL::BaseC::is_value($qn);
     if ($q) {
 	# is it type 'may'--those must be unqualified in @bases
 	if ($q eq 'may') {
 	    my $qv = $qn; $qv =~ s/\(.*$//;
-	    pp_warn("redundant qualifier in $qn--use plain $qv");
+	    pp_warn("(bases) [Q1] vq=$qn: redundant qualifier in $qn--use plain $qv");
 	}
     } else {
 	# are then any known qns for this value?
-	my $qv = $qn; $qv =~ s/\(.*$//;
-	my $qq = ORACC::SL::BaseC::is_value("$qn;qual");
-	if ($qq) {
-	    pp_warn("$qn unknown: known for $qv = $qq");
+	my ($qv,$qq) = ($qn =~ /^(.*?)\((.*)\)$/);
+	unless ($qv && $qq) {
+	    pp_warn("vq $qn doesn't parse into v and q");
+	    return;
+	}
+	my $void = ORACC::SL::BaseC::is_value($qv);
+	my $qoid = ORACC::SL::BaseC::is_value($qq);
+	my $vsn = ORACC::SL::BaseC::sign_of($void);
+	my $qsn = ORACC::SL::BaseC::sign_of($qoid);
+	if ($qoid) {
+	    my $qvv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
+	    my $supp = '';
+	    if ($qvv) {
+		$supp = "; $qsn can qualify $qvv";
+	    }
+	    pp_warn("(bases) [Q6] vq=$qn: value $qv belongs to $vsn$supp");
 	} else {
-	    my $qc = qualcorr($qn);
- 	    if ($qc) {
-		pp_warn("unknown value-qualifier pair $qn; did you mean $qc?");
+	    my $qqq = ORACC::SL::BaseC::is_value("$qv;qual");
+	    if ($qqq) {
+		pp_warn("(bases) [Q2] vq=$qn: unknown: known for $qv = $qqq");
 	    } else {
-		pp_warn("unknown value-qualifier pair $qn");
+		my $qc = qualcorr($qn);
+		if ($qc) {
+		    pp_warn("(bases) [Q3] vq=$qn: unknown value-qualifier; did you mean $qc?");
+		} else {		
+		    if ($qoid) {
+			my $qvv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
+			my $supp = "known values are: $qvv";
+			if ($qvv) {
+			    my %vb = ();
+			    my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
+			    foreach my $vb (split(/\s+/,$qvv)) {
+				if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
+				    $supp = " did you mean $vb($qq)?";
+				    last;
+				}
+			    }			
+			}
+			pp_warn("(bases) [Q4] vq=$qn: $qv unknown for $qq: $supp");
+		    } else {
+			pp_warn("(bases) [Q5] vq=$qn: unknown qualifier $qq");
+		    }
+		}
 	    }
 	}
     }

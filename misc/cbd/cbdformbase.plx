@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use warnings; use strict; use open 'utf8';
+use warnings; use strict; use open 'utf8'; use utf8;
 
 binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
@@ -27,8 +27,12 @@ while (<>) {
     } elsif (/^(.*?):(.*?): \(bases\) sign name '(\S+)' should be '(\S+)'\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fixbase2($file,$line,$alt,$pri);
+    } elsif (/^(.*?):(.*?): \(bases\) core (\S+) of base (\S+) should be (\S+)$/) {
+	my($file,$line,$core,$base,$should) = ($1,$2,$3,$4,$5);
+	fixbase3($file,$line,$base,$core,$should);
     } else {
-	warn "nothing to do with $_";
+	warn "nothing to do with $_"
+	    unless /\(bases\)/ || /cbdpp/;
     }
 }
 close_and_dump() if $curr_file;
@@ -79,13 +83,44 @@ sub fixbase2 {
     }
 }
 
+sub fixbase3 {
+    my($f,$l,$base,$core,$should) = @_;
+    open_and_load($f) unless $f eq $curr_file;
+    my $baseQ = quotemeta($base);
+    my $nmatch = $lines[$l-1] =~ m/$baseQ/;
+    if ($nmatch == 1) {
+	my $coreQ = quotemeta($core);
+	my $nbase = $base;
+	my $nmatch = $nbase =~ m/$coreQ/;
+	$nmatch = 0 unless $nmatch;
+	if ($nmatch != 1) {
+	    warn "$nmatch matches to $coreQ in $nbase, aborting fixbase3\n";
+	    return;
+	}
+	unless ($nbase =~ s/$coreQ/$should/) {
+	    warn "failed to edit $coreQ to $should in $nbase\n";
+	} else {
+	    warn "$base => $nbase (core=$core; should=$should)\n";
+	}
+	if ($lines[$l-1] =~ s/$baseQ/$nbase/) {
+	    warn "$base replaced with $nbase\n";
+	} else {
+	    warn "$base fix to $nbase failed\n";
+	}
+    } elsif ($nmatch > 1) {
+	warn "$base (as $baseQ) found $nmatch times in $lines[$l-1]\n";
+    } else {
+	warn "$base (as $baseQ) not found in $lines[$l-1]\n";
+    }
+}
+
 sub open_and_load {
     my $f = shift;
     close_and_dump() if $curr_file;
     if (open(F,$f)) {
 	$curr_file = $f;
 	@lines = (<F>);
-	warn "$curr_file has $#lines lines\n";
+	# warn "$curr_file has $#lines lines\n";
     } else {
 	die "can't open err forms file $f\n";
     }
