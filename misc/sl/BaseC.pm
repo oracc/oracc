@@ -320,6 +320,10 @@ sub deepsplit {
     foreach my $d (@d) {
 	# remove value being qualified if any
 	if ($d =~ /\)$/) {
+	    if ($pedantic) {
+		warn "BaseC q-checking $d\n";
+		qualcheck($d);
+	    }
 	    $d =~ s/^[a-zšŋṣṭḫ].*?\((.*?)\)$/$1/;
 	}
 	my $sn = ($d =~ /^\|/ ? $d : sign_of("\L$d"));
@@ -685,6 +689,111 @@ sub slseB {
     chomp($res);
 #    warn "slseB -k $_[0] => $res\n";
     $res;
+}
+
+### Qualifier checking routines
+
+sub qmsg { msg '', @_ };
+
+sub qualcheck {
+    my $qn = shift;
+#    1 while $qn =~ s/\{[^\}]+\}//;
+#    $qn =~ s/(\|[^\|]+\|)/protect2($1)/eg;
+#    $qn =~ s/^.*?(\S+?\(.*?\)).*$/$1/;
+#    $qn =~ tr/\000\001\002/()+/;
+#    $qn =~ s/^.*?_//;
+#    $qn =~ s/^.*?-//;
+#    $qn =~ s/\s*$//;
+    # is this qualified sign known?
+    my $q = ORACC::SL::BaseC::is_value($qn);
+    if ($q) {
+	# is it type 'may'--those must be unqualified in @bases
+	if ($q eq 'may') {
+	    my $qv = $qn; $qv =~ s/\(.*$//;
+	    qmsg("(bases) [Q1] vq=$qn: redundant qualifier in $qn--use plain $qv");
+	}
+    } else {
+	# are then any known qns for this value?
+	my ($qv,$qq) = ($qn =~ /^(.*?)\((.*)\)$/);
+	unless ($qv && $qq) {
+	    qmsg("vq $qn doesn't parse into v and q");
+	    return;
+	}
+	my $void = ORACC::SL::BaseC::is_value($qv);
+	my $qoid = ORACC::SL::BaseC::is_value($qq);
+	if (!$qoid) {
+	    # perform sametlit check, warn && return if it should be something else
+	    my $should = tlit_sig($qq);
+	    if ($should) {
+		qmsg("(bases) [Q5] vq=$qn: qualifier $qq should be $should");
+		qualcheck("$qv($should)");
+	    } else {
+		qmsg("(bases) [Q7] vq=$qn: unknown qualifier $qq");
+	    }
+	} else {
+	    my $qqv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
+	    my $supp = "known values are: $qqv";
+	    my $found_base = 0;
+	    if ($qqv) {
+		my %vb = ();
+		my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
+		# Try to find a base that matches this q, like meₓ(AK) for me₆(AK)
+		warn("looking[1] for base $qb in $qqv\n");
+		foreach my $vb (split(/\s+/,$qqv)) {
+		    if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
+			$supp = " did you mean $vb($qq)?";
+			++$found_base;
+			last;
+		    }
+		}
+		# Also, if the qq is a FORM, get the SIGN and see if this shares a base with that
+		# like adda(|LU₂×BAD|) for addaₓ(|LU₂×BAD|)
+		if (!$found_base) {
+		    
+		}
+	    }
+	    if ($found_base) {
+		qmsg("(bases) [Q4] vq=$qn: $qv unknown for $qq: $supp");
+	    } else {
+	 	my $vsn = ORACC::SL::BaseC::sign_of($void);
+		my $qvv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
+		my $supp = '';
+		if ($qqv) {
+		    $supp = "; $qq can qualify $qqv";
+		}
+		qmsg("(bases) [Q6] vq=$qn: value $qv belongs to $vsn$supp");
+	    }
+	    #	} else {
+#	    my $qqq = ORACC::SL::BaseC::is_value("$qv;qual");
+#	    if ($qqq) {
+#		qmsg("(bases) [Q2] vq=$qn: unknown: known for $qv = $qqq");
+#	    } else {
+#		my $qc = qualcorr($qn);
+#		if ($qc) {
+#		    qmsg("(bases) [Q3] vq=$qn: unknown value-qualifier; did you mean $qc?");
+#		} else {		
+#		}
+#	    }
+	}
+    }
+}
+
+sub qualcorr {
+    my $qn = shift;
+    my ($qv,$qq) = ($qn =~ /^(.*?)\((.*?)\)$/);
+    if ($qv) {
+	my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
+	my $q0 = ORACC::SL::BaseC::is_value("$qb₀;qual");
+	if ($q0) {
+	    foreach my $qc (split(/\s+/,$q0)) {
+		my $qcq = $qc; $qcq =~ s/^.*?\((.*?)\)$/$1/;
+		if ($qcq eq $qq) {
+		    return $qc;
+		}
+	    }
+	}
+    }
+    undef;
 }
 
 1;
