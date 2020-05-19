@@ -116,10 +116,10 @@ sub cpd_check {
 	pp_line($ln);
 	if ($ret eq 'OK') {
 #	    warn "compound $in OK\n";
-	} elsif ($ret =~ /^OK=(.*?)$/) {	    
-	    pp_warn("(bases) compound $in should be $1");
+	} elsif ($ret =~ /^OK=(.*?)$/) {
+	    pp_warn("(bases) compound $in should be $1") if $ORACC::SL::BaseC::pedantic;
 	} elsif ($ret =~ /^OK~(.*?)\s*$/) {
-	    pp_warn("(bases) compound $in should be $1");
+	    pp_warn("(bases) compound $in should be $1") if $ORACC::SL::BaseC::pedantic;
 	} elsif ($ret =~ /^NO:(.*?)\s*$/) {
 	    my $m = $1;
 	    pp_warn("(bases) compound $in (mapped to $m) not in signlist") unless $m =~ /X/;

@@ -540,6 +540,12 @@ sub v_acd_ok {
 
 sub v_bases {
     my($tag,$arg) = @_;
+
+    if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
+	$ORACC::SL::report_all = 1;
+	ORACC::SL::BaseC::pedantic(1)
+    }
+
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: tag=$tag; arg=$arg";
     }
@@ -672,10 +678,6 @@ sub v_bases {
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
-	    $ORACC::SL::report_all = 1;
-	    ORACC::SL::BaseC::pedantic(1)
-	}
 	pp_trace("BaseC::check: $p");
 	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
 	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
