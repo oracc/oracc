@@ -131,12 +131,15 @@ galloc_init()
 void
 galloc_term()
 {
-  mb_free(galloc_mb);
+  if (galloc_mb)
+    mb_free(galloc_mb);
   galloc_mb = NULL;
 }
 struct grapheme *
 galloc()
 {
+  if (!galloc_mb)
+    galloc_init();
   return mb_new(galloc_mb);
 }
 
