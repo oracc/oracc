@@ -890,6 +890,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      if (do_signnames)
 		{
 		  static const unsigned char *cattr = NULL;
+		  const unsigned char *showerr = "yes";
 		  const unsigned char *input = NULL;
 #if 1
 		  if (gp->type == g_q)
@@ -908,7 +909,7 @@ gparse(register unsigned char *g, enum t_type type)
 			  if (!strchr(input, ' '))
 			    cattr = signify(input);
 			  else
-			    cattr = NULL;
+			    showerr = cattr = NULL;
 			}
 		      else
 			cattr = signify(input = buf);
@@ -935,7 +936,7 @@ gparse(register unsigned char *g, enum t_type type)
 #endif
 		  if (cattr)
 		    appendAttr(gp->xml,gattr(a_g_sign,cattr));
-		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
+		  else if (showerr && gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", input);
 		}
 
