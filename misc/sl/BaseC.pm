@@ -163,8 +163,10 @@ sign_of {
     my $tmp = $_[0];
     my $xid = '';
     unless ($tmp =~ /^o/) {
-	$tmp = "\L$tmp";
-	$xid = xid($tmp);
+	unless (($xid = xid($tmp))) {
+	    $tmp = "\L$tmp";
+	    $xid = xid($tmp);
+	}
 #	warn "sign_of: $_[0] => $tmp => $xid\n";
     } else {
 	$xid = $tmp;
@@ -734,7 +736,7 @@ sub qualcheck {
 	    }
 	} else {
 	    if ($void eq $qoid) {
-		qmsg("[Q1b] vq=$qn: redundant qualifier in $qn--use plain $qv");		
+		qmsg("[Q1b] vq=$qn: redundant qualifier in $qn--use plain $qv");
 	    } else {
 		my $qqv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
 		my $supp = "known values are: $qqv";
@@ -745,8 +747,9 @@ sub qualcheck {
 		    #		warn("looking[1] for base $qb in $qqv\n");
 		    foreach my $vb (split(/\s+/,$qqv)) {
 			if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
-			    if (is_value("$vb($qq)")) {
-				$supp = " suggest $vb($qq)";
+			    my $qqname = sign_of($qq);
+			    if (is_value("$vb($qqname)") || $vb =~ /ₓ$/) {
+				$supp = " suggest $vb($qqname)";
 			    } else {
 				$supp = " suggest $vb";
 			    }
@@ -765,8 +768,9 @@ sub qualcheck {
 			    my $svv = is_value("$s;values");
 			    foreach my $vb (split(/\s+/,$svv)) {
 				if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
-				    if (is_value("$vb($qq)")) {
-					$supp = " suggest $vb($qq)";
+				    my $qqname = sign_of($qq);
+				    if (is_value("$vb($qqname)") || $vb =~ /ₓ$/) {
+					$supp = " suggest $vb($qqname)";
 				    } else {
 					$supp = " suggest $vb";
 				    }
