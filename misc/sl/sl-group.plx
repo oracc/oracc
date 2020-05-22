@@ -25,7 +25,7 @@ foreach my $c ($xsl->getDocumentElement()->childNodes()) {
 
 open(EM,'>02xml/sl-grouped.xml'); select EM;
 
-print '<signlist xmlns="http://oracc.org/ns/sl/1.0" xmlns:sl="http://oracc.org/ns/sl/1.0" xmlns:g="http://oracc.org/ns/gdl/1.0">';
+print '<signlist xmlns="http://oracc.org/ns/sl/1.0" xmlns:sl="http://oracc.org/ns/sl/1.0" xmlns:g="http://oracc.org/ns/gdl/1.0" xmlns:n="http://oracc.org/ns/norm/1.0">';
 foreach my $g (sort { &kcmp; } keys %groups) {
     my $lxid = 'l'.sprintf("%04d", ord($g));
     print "<letter name=\"$g\" title=\"$g\" xml:id=\"$lxid\">";
