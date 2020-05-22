@@ -324,7 +324,7 @@ sub deepsplit {
 		my $q = $d;
 		$q =~ tr/\000\001\002\003/()+./;
 #		warn "BaseC q-checking $q\n";
-####		qualcheck($q);
+		qualcheck($q);
 	    }
 	    $d =~ s/^[a-zšŋṣṭḫ].*?\((.*?)\)$/$1/;
 	}
@@ -739,36 +739,45 @@ sub qualcheck {
 		my $qqv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
 		my $supp = "known values are: $qqv";
 		my $found_base = 0;
+		my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
 		if ($qqv) {
-		    my %vb = ();
-		    my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
 		    # Try to find a base that matches this q, like meₓ(AK) for me₆(AK)
 		    #		warn("looking[1] for base $qb in $qqv\n");
 		    foreach my $vb (split(/\s+/,$qqv)) {
 			if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
-			    $supp = " did you mean $vb($qq)?";
+			    if (is_value("$vb($qq)")) {
+				$supp = " suggest $vb($qq)";
+			    } else {
+				$supp = " suggest $vb";
+			    }
 			    ++$found_base;
 			    last;
 			}
 		    }
-		    # Also, if the qq is a FORM, get the SIGN and see if this shares a base with that
-		    # like adda(|LU₂×BAD|) for addaₓ(|LU₂×BAD|)
-		    if (!$found_base) {
-			my $signs = is_value("$qoid;signs");
-			if ($signs) {
-			    foreach my $s (split(/\s+/,$signs)) {
-				my $svv = is_value("$s;values");
-				foreach my $vb (split(/\s+/,$svv)) {
-				    if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
-					$supp = " did you mean $vb($qq)?";
-					++$found_base;
-					last;
+		}
+		
+		# Also, if the qq is a FORM, get the SIGN and see if this shares a base with that
+		# like adda(|LU₂×BAD|) for addaₓ(|LU₂×BAD|)
+		if (!$found_base) {
+		    my $signs = is_value("$qoid;signs");
+		    if ($signs) {
+			foreach my $s (split(/\s+/,$signs)) {
+			    my $svv = is_value("$s;values");
+			    foreach my $vb (split(/\s+/,$svv)) {
+				if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
+				    if (is_value("$vb($qq)")) {
+					$supp = " suggest $vb($qq)";
+				    } else {
+					$supp = " suggest $vb";
 				    }
+				    ++$found_base;
+				    last;
 				}
 			    }
 			}
 		    }
 		}
+		
 		if ($found_base) {
 		    qmsg("[Q4] vq=$qn: $qv unknown for $qq:$supp");
 		} else {

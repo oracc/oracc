@@ -30,6 +30,9 @@ while (<>) {
     } elsif (/^(.*?):(.*?): \(bases\) core (\S+) of base (\S+) should be (\S+)$/) {
 	my($file,$line,$core,$base,$should) = ($1,$2,$3,$4,$5);
 	fixbase3($file,$line,$base,$core,$should);
+    } elsif (/^(.*?):(.*?): \(bases\).*?Q4.*?vq=(\S+?): .*?suggest (\S+)\s*$/) {
+	my($file,$line,$vq,$sugg) = ($1,$2,$3,$4);
+	fixbase4($file,$line,$vq,$sugg);
     } else {
 	warn "nothing to do with $_"
 	    unless /\(bases\)/ || /cbdpp/;
@@ -111,6 +114,24 @@ sub fixbase3 {
 	warn "$base (as $baseQ) found $nmatch times in $lines[$l-1]\n";
     } else {
 	warn "$base (as $baseQ) not found in $lines[$l-1]\n";
+    }
+}
+
+sub fixbase4 {
+    my($f,$l,$vq,$sugg) = @_;
+    open_and_load($f) unless $f eq $curr_file;
+    my $vqQ = quotemeta($vq);
+    my $nmatch = $lines[$l-1] =~ m/$vqQ/;
+    if ($nmatch == 1) {
+	if ($lines[$l-1] =~ s/$vqQ/$sugg/) {
+	    warn "$vq replaced with $sugg\n";
+	} else {
+	    warn "$vq fix to $sugg failed\n";
+	}
+    } elsif ($nmatch > 1) {
+	warn "$vq (as $vqQ) found $nmatch times in $lines[$l-1]\n";
+    } else {
+	warn "$vq (as $vqQ) not found in $lines[$l-1]\n";
     }
 }
 

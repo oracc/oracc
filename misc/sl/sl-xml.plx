@@ -134,8 +134,10 @@ while (<SL>) {
 	}
 	if (exists $form_closers{$curr_field} && $in_form) {
 	    if ($curr_field ne 'end' || /sign/) {
+#		compute_qualified();
 		print "</form>";
 		$in_form = 0;
+		$curr_form = '';
 	    }
 	}
 
@@ -284,6 +286,7 @@ while (<SL>) {
 	    if ($in_form) {
 		$in_form = 0;
 		print "</form\n>";
+		$curr_form = '';
 	    } else {
 		warn "$asl:$.: superfluous '\@end form'\n";
 	    }
