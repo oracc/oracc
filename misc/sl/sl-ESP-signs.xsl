@@ -150,7 +150,7 @@
   ></tr>
 </xsl:template>
 
-<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note"/>
+<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs"/>
 
 <xsl:template match="sl:note">
   <p class="ogsl-note"><xsl:apply-templates/></p>
