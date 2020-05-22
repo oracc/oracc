@@ -520,7 +520,7 @@ sigs_inst_in_sigset(struct xcl_context *xcp, struct ilem_form *ifp,
       int dest, i;
       for (i = dest = 0; i < ncand; ++i)
 	{
-	  if (res[i]->pct >= 100)
+	  if (res[i]->pct == pct_top)
 	    {
 	      if (dest < i)
 		res[dest++] = res[i];

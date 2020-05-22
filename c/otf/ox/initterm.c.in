@@ -20,6 +20,7 @@ ox_init(void)
 {
   pool_init();
   tree_init();
+  galloc_init();
   gdl_init();
   text_vec_init();
   lemline_run_init();
@@ -74,6 +75,7 @@ ox_term(void)
 {
   extern void tree_gterm(void);
   catvec_term();
+  galloc_term();
   gdl_term();
   pool_term();
   tree_term(1);
