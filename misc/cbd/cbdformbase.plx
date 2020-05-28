@@ -33,6 +33,9 @@ while (<>) {
     } elsif (/^(.*?):(.*?): \(bases\).*?Q4.*?vq=(\S+?): .*?suggest (\S+)\s*$/) {
 	my($file,$line,$vq,$sugg) = ($1,$2,$3,$4);
 	fixbase4($file,$line,$vq,$sugg);
+    } elsif (/^(.*?):(.*?): \(bases\).*?Q1c.*?vq=(\S+?): .*?use (\S+)\s*$/) {
+	my($file,$line,$vq,$sugg) = ($1,$2,$3,$4);
+	fixbase4($file,$line,$vq,$sugg);
     } else {
 	warn "nothing to do with $_"
 	    unless /\(bases\)/ || /cbdpp/;
