@@ -78,6 +78,7 @@ values {
     if ($#v >= 0) {
 	my @pv = ();
 	foreach my $v (@v) {
+	    next unless $v->parentNode() == $n;
 	    my $n = $v->getAttribute('n');
 	    my $pn = ORACC::JSON::jsonify($n);
 	    push @pv, $pn;
@@ -95,11 +96,14 @@ asl_howtos {
     };
 
     $howto{'sl_sign'} = { type=>"",nam=>'@n',val=>'{',att=>'-id n', hook=>\&values };
-    $howto{'sl_form'} = { type=>"",nam=>'@n',val=>'{',att=>'-id n' };
+    $howto{'sl_form'} = { type=>"",nam=>'@n',val=>'{',att=>'-id n', hook=>\&values };
     $howto{'sl_name'} = { type=>'', nam=>'gdl', val=>'text()', chld=>['gdl','['], att=>'-id' };
     $howto{'sl_inote'} = { type=>"#ignore" };
     $howto{'sl_note'} = { type=>"#ignore" };
     $howto{'sl_proof'} = { type=>"#ignore" };
+    # The values go in the "values:" member of the sign/form
+    $howto{'sl_v'} = { type=>"#ignore", recurse=>'no' };
+    $howto{'sl_qs'} = { type=>"#ignore", recurse=>'no' };
     
     $howto{'#auto'} = 1;
     $howto{'#skipempty'} = 1;
