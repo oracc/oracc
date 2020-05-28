@@ -103,10 +103,12 @@ foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 								 'q')) {
     my $qn = $q->getAttribute('qn');
+    my $qm = $q->getAttribute('qm');
     my $type = $q->getAttribute('type');
     my $base = $q->getAttribute('base');
     # warn "setting values $qn to $type\n";
     $values{$qn} = $type;
+    push(@{$values{$qn,'map'}}, $qm) if $qm;
     my $qv = $qn; $qv =~ s/\(.*$//;
     push @{$values{$qv,'qual'}}, $qn;
     my $q0 = $qv; $q0 =~ tr/₀-₉ₓ⁻⁺//d; $q0 .= '₀';

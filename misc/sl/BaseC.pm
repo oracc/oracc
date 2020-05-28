@@ -715,6 +715,10 @@ sub qualcheck {
 	if ($q eq 'may') {
 	    my $qv = $qn; $qv =~ s/\(.*$//;
 	    qmsg("[Q1a] vq=$qn: redundant qualifier in $qn--use plain $qv");
+	} elsif ($q eq 'map') {
+	    # or is it 'map', in which case we can look up what it should be
+	    my $qm = ORACC::SL::BaseC::is_value("$qn;map");
+	    qmsg("[Q1c] vq=$qn: non-canonical qualifier--use $qm");
 	}
     } else {
 	# are then any known qns for this value?
@@ -739,7 +743,7 @@ sub qualcheck {
 		qmsg("[Q1b] vq=$qn: redundant qualifier in $qn--use plain $qv");
 	    } else {
 		my $qqv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
-		my $supp = "known values are: $qqv";
+		my $supp = " known values are: $qqv";
 		my $found_base = 0;
 		my $qb = $qv; $qb =~ tr/₀-₉ₓ⁻⁺//d;
 		if ($qqv) {
@@ -748,10 +752,24 @@ sub qualcheck {
 		    foreach my $vb (split(/\s+/,$qqv)) {
 			if ($vb =~ /^${qb}[₀-₉ₓ⁻⁺]*$/) {
 			    my $qqname = sign_of($qq);
-			    if (is_value("$vb($qqname)") || $vb =~ /ₓ$/) {
+			    if ($vb =~ /ₓ$/) {
 				$supp = " suggest $vb($qqname)";
+			    } elsif (is_value("$vb($qqname)")) {
+				my $t = is_value("$vb($qqname)");
+				if ($t eq 'map') {
+				    my $m = ORACC::SL::BaseC::is_value("$vb($qqname);map");
+				    $supp = " suggest $m";
+				} elsif ($t eq 'may') {
+				    if ($vb =~ tr/⁻⁺//d) {
+					$supp = " suggest $vb($qqname)";
+				    } else {
+					$supp = " suggest $vb";
+				    }
+				} else {
+				    $supp = " suggest $vb($qqname)";
+				}
 			    } else {
-				$supp = " suggest $vb";
+				# $supp = " suggest $vb";
 			    }
 			    ++$found_base;
 			    last;
@@ -771,8 +789,22 @@ sub qualcheck {
 				    my $qqname = sign_of($qq);
 				    if (is_value("$vb($qqname)") || $vb =~ /ₓ$/) {
 					$supp = " suggest $vb($qqname)";
+				    } elsif (is_value("$vb($qqname)")) {
+					my $t = is_value("$vb($qqname)");
+					if ($t eq 'map') {
+					    my $m = ORACC::SL::BaseC::is_value("$vb($qqname);map");
+					    $supp = " suggest $m";
+					} elsif ($t eq 'may') {
+					    if ($vb =~ tr/⁻⁺//d) {
+						$supp = " suggest $vb($qqname)";
+					    } else {
+						$supp = " suggest $vb";
+					    }
+					} else {
+					    $supp = " suggest $vb($qqname)";
+					}
 				    } else {
-					$supp = " suggest $vb";
+					# $supp = " suggest $vb";
 				    }
 				    ++$found_base;
 				    last;

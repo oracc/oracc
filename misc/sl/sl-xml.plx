@@ -148,7 +148,12 @@ while (<SL>) {
 	if (/^\@list\s+(\S+)(?:\s+(\S+)?)?\s*$/) {
 	    form_check();
 	    my ($n,$name) = ($1,$2);
-	    $n = xmlify($n);
+	    my $xn = xmlify($n);
+	    if ($curr_form) {
+		push @{${$v{$curr_form}}{'#forml'}}, $n;
+	    } else {
+		push @{$v{'#signl'}}, $n;
+	    }
 	    if ($name) {
 		$name = xmlify($name);
 		$name = " name=\"$name\"";
@@ -156,7 +161,7 @@ while (<SL>) {
 		$name = '';
 	    }
 	    pi_line();
-	    print "<list n=\"$n\"$name/>";
+	    print "<list n=\"$xn\"$name/>";
 	} elsif (/^\@form\s+(\S+)\s+(\S+)(?:\s+\S+\s+(\S+))?$/) {
 	    if ($in_form) {
 		warn "$asl:$.: missing `\@end form'\n";
@@ -326,10 +331,30 @@ sub compute_qualified {
     my @qs = ();
 
     if ($v{'#signv'}) {
+	my $xs = xmlify($curr_sign);
 	foreach my $v (grep /ₓ$/, keys %{$v{'#signv'}}) {
 	    my $xv = xmlify($v);
-	    my $xs = xmlify($curr_sign);
 	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\"/>";
+	    if ($v{'#signl'}) {
+		foreach my $l (@{$v{'#signl'}}) {
+		    next if $l eq $curr_sign;
+		    my $xl = xmlify($l);
+		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv($xs)\"/>";
+		}
+	    }
+	}
+	foreach my $v (grep !/ₓ$/, keys %{$v{'#signv'}}) {
+#	    warn "compute_qualified $v\n";
+	    my $xv = xmlify($v);
+	    push @qs, "<q type=\"map\" qn=\"$xv($xs)\" qm=\"$xv\"/>";
+	    if ($v{'#signl'}) {
+#		warn "processing #signl for $v\n";
+		foreach my $l (@{$v{'#signl'}}) {
+		    next if $l eq $curr_sign;
+		    my $xl = xmlify($l);
+		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv\"/>";
+		}
+	    }
 	}
     }
 
@@ -340,15 +365,25 @@ sub compute_qualified {
 	    if ($v{$f}) {
 		my @fv = keys %{$v{$f}};
 		push @fv, keys %{$v{'#signv'}} if $v{'#signv'};
-		# A value is only qualifiable if it is in the @sign's values
+		# A value is qualifiable if:
+		#    it is in the @sign's values
+		#    it applies to more than one @form
 		foreach my $fv (@fv) {
 		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ⁻⁺//d;
 		    next if $seen{$fvbase}++;
-		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv})) {
-			# sign is either x-value or both in form and in sign; must be qualified
+		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv}) || $#{$v{$fv}}) {
+			# sign is either x-value or both in form and in sign or applies to more than one @form
+			# must be qualified
 			$fv = xmlify($fv);
 			$f = xmlify($f);
 			push @qs, "<q type=\"must\" qn=\"$fv($f)\"/>";
+			if (${$v{$f}}{'#forml'}) {
+			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
+				next if $fl eq $f;
+				my $xfl = xmlify($fl);
+				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\"/>";				
+			    }
+			}
 		    } else {
 			# sign may be qualified in corpora but not in @bases
 			# if there is a base value with different index, record that also
@@ -362,15 +397,29 @@ sub compute_qualified {
 			$fv = xmlify($fv);
 			$f = xmlify($f);
 			push @qs, "<q type=\"may\" qn=\"$fv($f)\"$base/>";
+			if (${$v{$f}}{'#forml'}) {
+			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
+				next if $fl eq $f;
+				my $xfl = xmlify($fl);
+				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\"/>";				
+			    }
+			}
 		    }
 		}
 	    } elsif ($v{'#signv'}) {
 		my @sv = keys %{$v{'#signv'}};
-		# all signs are considered to be both in form and in sign; must be qualified
+		# all values are considered to be both in form and in sign; must be qualified
 		foreach my $sv (@sv) {
 		    $sv = xmlify($sv);
 		    $f = xmlify($f);
 		    push @qs, "<q type=\"must\" qn=\"$sv($f)\"/>";
+		    if (${$v{$f}}{'#forml'}) {
+			foreach my $fl (@{${$v{$f}}{'#forml'}}) {
+			    next if $fl eq $f;
+			    my $xfl = xmlify($fl);
+			    push @qs, "<q type=\"map\" qn=\"$sv($xfl)\" qm=\"$sv($f)\"/>";
+			}
+		    }
 		}
 	    }
 	}
