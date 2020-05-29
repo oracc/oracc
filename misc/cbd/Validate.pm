@@ -709,7 +709,7 @@ sub v_bases {
 		    1 while $core =~ s/\{[^}]+\}//;
 		    if (!defined $vbases{$core}) {
 			my $csig = ORACC::SL::BaseC::check(undef,$core,1);
-			if (defined $prisigs{$csig}) {
+			if (defined $prisigs{$csig} && !is_allowed($core,$prisigs{$csig})) {
 			    pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
 			}
 		    }
