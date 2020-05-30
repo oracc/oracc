@@ -5,37 +5,49 @@ binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
-# initially narrowly focussed script to apply warnings of type
-# 00src/sux.forms:75: alt BASE e₄ should be primary a
-# to file named in message and write to STDOUT.
+# fix a variety of errors as logged by BaseC and CBD/Validate
+# applied to file/line named in message and write to STDOUT.
 # log file read from STDIN
 
+my $bound = '[-.{} ();,]';
 my $curr_file = '';
 my @lines = ();
+my $verbose = 0;
 
 my %log = ();
 while (<>) {
     if (/(.*?):(.*?): alt BASE (\S+) should be primary (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	fixbase($file,$line,$alt,$pri);
-    } elsif (/^(.*?):(.*?): BASE (\S+) should be (\S+)\s*$/) {
+	# fixbase($file,$line,$alt,$pri);
+	fix_in_base($file,$line,$alt,$pri);
+    } elsif (/^(.*?):(.*?): form's BASE (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	fixbase($file,$line,$alt,$pri);
+	# fixbase($file,$line,$alt,$pri);
+	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) compound (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	fixbase2($file,$line,$alt,$pri);
+	# fixbase2($file,$line,$alt,$pri);
+	fix_in_base($file,$line,$alt,$pri);
+	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) sign name '(\S+)' should be '(\S+)'\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	fixbase2($file,$line,$alt,$pri);
+	# fixbase2($file,$line,$alt,$pri);
+	fix_in_base($file,$line,$alt,$pri);
+	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) core (\S+) of base (\S+) should be (\S+)$/) {
 	my($file,$line,$core,$base,$should) = ($1,$2,$3,$4,$5);
-	fixbase3($file,$line,$base,$core,$should);
+	# fixbase3($file,$line,$base,$core,$should);
+	fix_in_base($file,$line,$core,$should);
     } elsif (/^(.*?):(.*?): \(bases\).*?Q4.*?vq=(\S+?): .*?suggest (\S+)\s*$/) {
-	my($file,$line,$vq,$sugg) = ($1,$2,$3,$4);
-	fixbase4($file,$line,$vq,$sugg);
+	my($file,$line,$vq,$use) = ($1,$2,$3,$4);
+	# fixbase4($file,$line,$vq,$sugg);
+	fix_in_base($file,$line,$vq,$use);
+	fix_in_form($file,$line,$vq,$use);
     } elsif (/^(.*?):(.*?): \(bases\).*?Q1c.*?vq=(\S+?): .*?use (\S+)\s*$/) {
-	my($file,$line,$vq,$sugg) = ($1,$2,$3,$4);
-	fixbase4($file,$line,$vq,$sugg);
+	my($file,$line,$vq,$use) = ($1,$2,$3,$4);
+	# fixbase4($file,$line,$vq,$sugg);
+	fix_in_base($file,$line,$vq,$use);
+	fix_in_form($file,$line,$vq,$use);
     } else {
 	warn "nothing to do with $_"
 	    unless /\(bases\)/ || /cbdpp/;
@@ -43,6 +55,82 @@ while (<>) {
 }
 close_and_dump() if $curr_file;
 
+sub fix_in_base {
+    my($f,$l,$bad,$good) = @_;
+    my $ln = fix_get_line($f,$l);
+    if ($ln =~ /^\@bases/) {
+	my @bases = fix_bases_list($ln);
+#	use Data::Dumper;
+#	warn Dumper \@bases;
+	my $badQ = quotemeta($bad);
+	my $nfix = 0;
+	foreach my $b (@bases) {
+	    my $b0b = $$b[0];
+	    $nfix += ($$b[0] =~ s/(^|$bound)$badQ($|$bound)/$1$good$2/g);
+	    warn "before=$b0b; after=$$b[0]\n";
+	}
+	if ($nfix) {
+	    fix_set_line($l,fix_bases_back(@bases));
+	} else {
+	    warn "$f:$l: $bad not found in any primary base\n";
+	}
+    } else {
+	warn "$f:$l: not a \@bases line\n" if $verbose;
+    }
+}
+sub fix_in_form {
+    my($f,$l,$bad,$good) = @_;
+    my $ln = fix_get_line($f,$l);
+    if ($ln =~ /^\@form/) {
+	my ($prebase,$base,$postbase) = $ln =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#;
+	my $badQ = quotemeta($bad);
+	if ($base =~ s#(^|$bound)$badQ($|$bound)#$1$good$2#g) {
+	    fix_set_line($l,"$prebase/$base $postbase");
+	} else {
+	    warn "$f:$l: $bad not found as /BASE in form (base=$base)\n";
+	}
+    } else {
+	warn "$f:$l: not a \@form line\n" if $verbose;
+    }
+}
+sub fix_get_line {
+    my($f,$l) = @_;
+    open_and_load($f) unless $f eq $curr_file;
+    $lines[$l-1];
+}
+sub fix_set_line {
+    my($l,$ln) = @_;
+    chomp($ln);
+    warn "setting to $ln\n";
+    $lines[$l-1] = "$ln\n";
+}
+sub fix_bases_list {
+    my $ln = shift;
+    chomp $ln;
+    $ln =~ s/^\@bases\S*\s+//;
+    my @b = split(/;\s+/, $ln);
+    my @bb = ();
+    foreach my $b (@b) {
+	my $p = $b;
+	my $a = '';
+	if ($p =~ s/\s+(.*)$//) {
+	    $a = $1;
+	}
+	push @bb, [ $p, $a ];
+    }
+    return @bb;
+}
+sub fix_bases_back {
+    my @bb = @_;
+    my $ln = '@bases ';
+    foreach my $bb (@bb) {
+	$ln .= "@$bb\; ";
+    }
+    $ln =~ s/\;\s*/\n/;
+    $ln;
+}
+
+# Safe because tied to the / in a @form
 sub fixbase {
     my($f,$l,$a,$p) = @_;
     open_and_load($f) unless $f eq $curr_file;

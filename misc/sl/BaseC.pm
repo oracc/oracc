@@ -47,12 +47,15 @@ sub messages {
     return @tmp;
 }
 
+# return the previous value
 sub pedantic {
+    my $ret = $pedantic;
     if (defined $_[0]) {
 	$pedantic = $_[0];
     } else {
 	$pedantic = 1;
     }
+    $ret;
 }
 
 sub same_tlit {

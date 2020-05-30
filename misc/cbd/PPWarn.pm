@@ -25,6 +25,7 @@ sub pp_diagnostics {
     my $args = shift;
     return if $ORACC::CBD::nodiagnostics;
     my @e = sort { &flcmp; } keys %errlist;
+    pp_uniq(@e);
     my $ret = $#e + 1;
     if ($#e >= 0) {
 	if ($$args{'log'}) {
@@ -82,6 +83,17 @@ sub pp_status {
 sub pp_trace {
     if ($ORACC::CBD::PPWarn::trace) {
 	warn pp_line(), ':', @_, "\n";
+    }
+}
+
+sub pp_uniq {
+    foreach (@_) {
+	my %e = ();
+	my @e = ();
+	foreach my $k (@{$errlist{$_}}) {
+	    push @e, $k unless $e{$k}++;
+	}
+	@{$errlist{$_}} = @e;
     }
 }
 

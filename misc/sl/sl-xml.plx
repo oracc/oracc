@@ -369,7 +369,7 @@ sub compute_qualified {
 		#    it is in the @sign's values
 		#    it applies to more than one @form
 		foreach my $fv (@fv) {
-		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ⁻⁺//d;
+		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ//d;
 		    next if $seen{$fvbase}++;
 		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv}) || $#{$v{$fv}}) {
 			# sign is either x-value or both in form and in sign or applies to more than one @form

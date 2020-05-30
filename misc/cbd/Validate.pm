@@ -153,7 +153,7 @@ my $seen_morph2 = 0;
 my %tlit_sigs = ();
 my $trace = 0;
 my $vfields = '';
-
+my $always_check_base = 0;
 my %data = ();
 
 sub init {
@@ -233,6 +233,10 @@ sub pp_validate {
 
     ORACC::SL::BaseC::init();
     $ORACC::SL::report_all = 1;
+    if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
+	ORACC::SL::BaseC::pedantic(1);
+	$always_check_base = 1;
+    }
 
     if ($lang =~ /^akk/) {
 	$stem_validator = \&v_stem_akk;
@@ -541,11 +545,6 @@ sub v_acd_ok {
 sub v_bases {
     my($tag,$arg) = @_;
 
-    if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
-	$ORACC::SL::report_all = 1;
-	ORACC::SL::BaseC::pedantic(1)
-    }
-
     if ($trace && exists $arg_vfields{'bases'}) {
 	pp_trace "v_bases: tag=$tag; arg=$arg";
     }
@@ -706,6 +705,7 @@ sub v_bases {
 		$prisigs{$p} = $psig;
 		if ($p =~ /\{/) {
 		    my $core = $p;
+		    1 while $core =~ s/\{[^\}]+?\{.*?\}.*?\}//; # remove { ... {...} ... } first
 		    1 while $core =~ s/\{[^}]+\}//;
 		    if (!defined $vbases{$core}) {
 			my $csig = ORACC::SL::BaseC::check(undef,$core,1);
@@ -727,9 +727,10 @@ sub v_bases {
 	    my @alts = sort keys %{$vbases{"$p#alt"}};
 	    my $pcode = $vbases{"$p#code"};
 	    foreach my $a (@alts) {
-		ORACC::SL::BaseC::pedantic(0);
+		my $ped = ORACC::SL::BaseC::pedantic(0);
 		pp_trace("BaseC::check: $a");
 		my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
+		ORACC::SL::BaseC::pedantic($ped) if $ped;
 		unless ($lang =~ /qpn/) {
 		    atf_add($a,$lang) if $a;
 		}
@@ -783,6 +784,16 @@ sub v_bases {
 	pp_trace "v_bases: dump of \%ORACC::CBD::bases:";
 	pp_trace Dumper \%ORACC::CBD::bases;
     }
+
+    # get bases registered now so they are available for @form processing
+    foreach my $b (keys %bases) {
+	if ($b =~ /^#/) {
+	    ${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
+	} else {
+	    ++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
+	    unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	}
+    }
 }
 
 sub pp_sl_messages {
@@ -791,6 +802,9 @@ sub pp_sl_messages {
 #    warn "pp_sl_messages p=$p; m = @m\n";
     if ($#m >= 0) {
 	foreach my $m (@m) {
+	    if ($p eq 'Q') {
+		next unless $m =~ /\[Q/;
+	    }
 	    if ($p =~ /^\|(.*?)\|$/) {
 		my $novb = $1;
 #		warn "m=$m; novb=$novb\n";
@@ -890,6 +904,10 @@ sub v_form {
 	if ($f =~ m#(?:^|\s)/(\S+)#) {
 	my $b = $1;
 	if ($b) {
+	    if ($always_check_base) {
+		ORACC::SL::BaseC::check('',$b);
+		pp_sl_messages('Q');
+	    }
 	    if ($is_compound) {
 		pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
 	    } else {
@@ -897,6 +915,7 @@ sub v_form {
 		    unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
 			my $warned = 0;
 			my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
+			# warn "alt for $b == $a\n";
 			if ($a) {
 			    $a =~ s/^\#//;
 			    pp_warn("alt BASE $b should be primary $a");
@@ -907,13 +926,17 @@ sub v_form {
 			    my $tsig = $tlit_sigs{$b};
 			    $tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
 				unless $tsig;
+			    # warn "tsig for $b == $tsig\n";
+			    # my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
+			    # warn "curr_cfgw == $curr_cfgw; nkeys = $nkeys\n";
 			    foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
 				my $csig = $tlit_sigs{$c};
 				$csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
 				    unless $csig;
+				# warn "csig for $c == $csig\n";
 				if ($tsig eq $csig) {
 				    $c =~ s/^\#//;
-				    pp_warn "BASE $b should be $c";				
+				    pp_warn "form's BASE $b should be $c";				
 				    $warned = 1;
 				    last;
 				}
@@ -1287,14 +1310,6 @@ sub v_end {
     pp_warn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
     pp_warn("no SENSE in \@entry") unless $seen_sense;
-    foreach my $b (keys %bases) {
-	if ($b =~ /^#/) {
-	    ${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
-	} else {
-	    ++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
-	    unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
-	}
-    }
     $curr_cfgw = '';
     $in_entry = $seen_bases = $seen_morph2 = $seen_sense = 0;
     %allow = ();
