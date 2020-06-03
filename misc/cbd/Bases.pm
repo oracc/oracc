@@ -4,7 +4,7 @@ require Exporter;
 
 @EXPORT = qw/bases_align bases_hash bases_init bases_log bases_collect
     bases_log_errors bases_fixes bases_process bases_stats bases_term
-    bases_merge bases_string bases_serialize bases_fix_base/;
+    bases_merge bases_string bases_serialize bases_fix_base bases_sigs/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -27,6 +27,20 @@ my %base_cpd_flags = ();
 my $map_fh = undef;
 
 my $p_entry = '';
+
+sub bases_sigs {
+    my $x = shift;
+    my %x = %$x;
+    my $l = ORACC::CBD::Util::lang();
+    open(B,">01bld/$l/base-sigs.tab");
+    foreach my $c (sort keys %x) {
+	my @b = @{$x{$c}};
+	foreach my $b (@b) {
+	    print B "$c\t$$b[0]\t$$b[1]\n";
+	}
+    }
+    close(B);
+}
 
 sub bases_fix_base {
     my($b,$f,$p) = @_;

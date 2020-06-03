@@ -60,16 +60,15 @@ sub fix_in_base {
     my $ln = fix_get_line($f,$l);
     if ($ln =~ /^\@bases/) {
 	my @bases = fix_bases_list($ln);
-#	use Data::Dumper;
-#	warn Dumper \@bases;
+#	use Data::Dumper; warn Dumper \@bases;
 	my $badQ = quotemeta($bad);
 	my $nfix = 0;
+#	warn "elements in bases = ", $#bases+1, "\n";
 	foreach my $b (@bases) {
-	    my $b0b = $$b[0];
-	    $nfix += ($$b[0] =~ s/(^|$bound)$badQ($|$bound)/$1$good$2/g);
-	    warn "before=$b0b; after=$$b[0]\n";
+	    next if $$b[0] eq $good;
+	    $nfix += fix_b($b,$badQ,$good);
 	}
-	if ($nfix) {
+	if ($nfix) {	    
 	    fix_set_line($l,fix_bases_back(@bases));
 	} else {
 	    warn "$f:$l: $bad not found in any primary base\n";
@@ -78,13 +77,36 @@ sub fix_in_base {
 	warn "$f:$l: not a \@bases line\n" if $verbose;
     }
 }
+
+sub fix_b {
+    my ($b,$badQ,$good) = @_;
+    my $bb0 = $$b[0];
+    my $n = 0;
+    $good = fix_hide_bound($good);
+    ++$n while $bb0 =~ s/(^|$bound)$badQ($|$bound)/$1$good$2/;
+    $bb0 = fix_show_bound($bb0);
+    warn "base $$b[0] => $bb0\n" if $n;
+    $$b[0] = $bb0 if $n;
+    $n;
+}
+
 sub fix_in_form {
     my($f,$l,$bad,$good) = @_;
     my $ln = fix_get_line($f,$l);
     if ($ln =~ /^\@form/) {
 	my ($prebase,$base,$postbase) = $ln =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#;
+	my $orig_base = $base;
 	my $badQ = quotemeta($bad);
-	if ($base =~ s#(^|$bound)$badQ($|$bound)#$1$good$2#g) {
+	my $nfix = 0;
+	my $n = 0;
+	$good = fix_hide_bound($good);
+	do {
+	    $n = ($base =~ s#(^|$bound)$badQ($|$bound)#$1$good$2#);
+	    ++$nfix if $n;
+	} while ($n);
+	$base = fix_show_bound($base);
+	if ($nfix) {
+	    warn "base /$orig_base => /$base\n";
 	    fix_set_line($l,"$prebase/$base $postbase");
 	} else {
 	    warn "$f:$l: $bad not found as /BASE in form (base=$base)\n";
@@ -123,11 +145,26 @@ sub fix_bases_list {
 sub fix_bases_back {
     my @bb = @_;
     my $ln = '@bases ';
+    my @bbb = ();
     foreach my $bb (@bb) {
-	$ln .= "@$bb\; ";
+	my $bbb = "@$bb";
+	$bbb =~ s/\s*$//;
+	push @bbb, $bbb;
     }
-    $ln =~ s/\;\s*/\n/;
+    $ln .= join('; ', @bbb);
     $ln;
+}
+
+sub fix_hide_bound {
+    my $tmp = shift;
+    $tmp =~ tr/{}()/\000\001\002\003/;
+    $tmp;
+}
+
+sub fix_show_bound {
+    my $tmp = shift;
+    $tmp =~ tr/\000\001\002\003/{}()/;
+    $tmp;
 }
 
 # Safe because tied to the / in a @form

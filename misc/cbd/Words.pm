@@ -23,6 +23,8 @@ use Data::Dumper;
 
 my $threshold = 0.94;
 
+my $verbose = 0;
+
 my %warned = ();
 my @cfgws = ();
 my %g = ();
@@ -43,9 +45,16 @@ sub words_check {
 	}
     }
     return undef unless $hash;
-
+    warn "Checking words in $cbdname\n";
     %g = %$hash;
+    if ($verbose) {
+	open(G,'>g.dump');
+	print G Dumper \%g;
+	close(G);
+	warn "Beginning check_by_groups ...\n";
+    }
     check_by_groups();
+    warn "Beginning check_by_base ...\n" if $verbose;
     check_by_base();
 }
 

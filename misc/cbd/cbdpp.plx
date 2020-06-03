@@ -95,7 +95,8 @@ if ($args{'xml'}) {
     }
 } else {
     pp_trace("cbdpp/writing cbd");
-    pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'};
+    pp_cbd(\%args,@cbd) unless $args{'check'} || $args{'sigs'} || $args{'bases'};
+
 #    forms_dump('forms-78.dump');
     sigs_from_glo(\%args, @cbd) unless $args{'nosigs'} || $args{'check'} || (pp_status() && !$args{'force'});
     pp_trace("cbdpp/cbd write complete");

@@ -57,6 +57,7 @@ use ORACC::CBD::ATF;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Props;
 use ORACC::CBD::Sigs;
+use ORACC::CBD::Bases;
 use ORACC::SL::BaseC;
 use Data::Dumper;
 
@@ -127,6 +128,7 @@ my %allow = ();
 my %bad_compounds = ();
 my %bases = ();
 my %basedata = ();
+my %basesigs = ();
 my @bffs = ();
 my $curr_cf = '';
 my $curr_cfgw = '';
@@ -233,7 +235,7 @@ sub pp_validate {
 
     ORACC::SL::BaseC::init();
     $ORACC::SL::report_all = 1;
-    if ($lang =~ /^sux/ && $project =~ /epsd|dcclt|blms|gkab/) {
+    if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
 	ORACC::SL::BaseC::pedantic(1);
 	$always_check_base = 1;
     }
@@ -369,6 +371,7 @@ sub pp_validate {
     sigs_check(\%glodata,$args,@cbd) if $$args{'check'};
 
     pp_status(0) if $ORACC::CBD::novalidate;
+
     
     my $cbdname = ORACC::CBD::Util::cbdname();
 #    warn "$0: validate: setting cbdname to $cbdname\n";
@@ -377,6 +380,8 @@ sub pp_validate {
     %{$data{$cbdname}} = %glodata;
     
     %ORACC::CBD::data = %data;
+
+    bases_sigs(\%basesigs) if $$args{'bases'};
 
 #    warn "validate: exiting pp_validate status=".pp_status()."\n";
 #    warn "pp_status now=".pp_status()."\n";
@@ -785,13 +790,15 @@ sub v_bases {
 	pp_trace Dumper \%ORACC::CBD::bases;
     }
 
-    # get bases registered now so they are available for @form processing
-    foreach my $b (keys %bases) {
-	if ($b =~ /^#/) {
-	    ${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
-	} else {
-	    ++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
-	    unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+    unless ($ORACC::CBD::Forms::external) {
+	# get bases registered now so they are available for @form processing
+	foreach my $b (keys %bases) {
+	    if ($b =~ /^#/) {
+		${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
+	    } else {
+		++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
+		unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	    }
 	}
     }
 }
@@ -911,8 +918,8 @@ sub v_form {
 	    if ($is_compound) {
 		pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
 	    } else {
-		unless ($bases{$b}) {
-		    unless (${$ORACC::CBD::bases{$curr_cfgw}}{$b}) {
+		if (!$bases{$b}) { ###  || $ORACC::SL::report_all
+		    if (!${$ORACC::CBD::bases{$curr_cfgw}}{$b}) { ### || $ORACC::SL::report_all) {
 			my $warned = 0;
 			my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
 			# warn "alt for $b == $a\n";
@@ -934,9 +941,9 @@ sub v_form {
 				$csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
 				    unless $csig;
 				# warn "csig for $c == $csig\n";
-				if ($tsig eq $csig) {
+				if ($tsig eq $csig && $b ne $c) {
 				    $c =~ s/^\#//;
-				    pp_warn "form's BASE $b should be $c";				
+				    pp_warn "form's BASE $b should be $c";
 				    $warned = 1;
 				    last;
 				}
@@ -944,7 +951,7 @@ sub v_form {
 			    pp_sl_messages();
 			}
 			pp_warn("BASE $b not known or findable for `$curr_cfgw'")
-			    unless $warned;
+			    unless $bases{$b} || $warned;
 		    }
 		}
 	    }
@@ -1310,6 +1317,16 @@ sub v_end {
     pp_warn("malformed \@end entry")
 	unless $arg =~ /^\s*entry\s*$/;
     pp_warn("no SENSE in \@entry") unless $seen_sense;
+    if ($ORACC::CBD::Forms::external) {
+	foreach my $b (keys %bases) {
+	    if ($b =~ /^#/) {
+		${$ORACC::CBD::bases{$curr_cfgw}}{$b} = $bases{$b};
+	    } else {
+		++${$ORACC::CBD::bases{$curr_cfgw}}{$b}
+		unless ${$ORACC::CBD::bases{$curr_cfgw}}{$b};
+	    }
+	}
+    }
     $curr_cfgw = '';
     $in_entry = $seen_bases = $seen_morph2 = $seen_sense = 0;
     %allow = ();
@@ -1401,6 +1418,7 @@ sub bff_check {
 sub register_base_sig {
     my($base,$tsig) = @_;
     push @{$basedata{$tsig}}, [ $curr_id , $base ];
+    push @{$basesigs{$curr_cfgw}}, [ $base , $tsig ];
 }
 
 sub has_parts {

@@ -106,10 +106,12 @@ dump_xff {
 		    }
 		}
 		if (ref($v) eq 'ARRAY') {
-		    print "<$f n=\"$$v[0]\" icount=\"$$v[1]\" ipct=\"$$v[2]\" xis=\"$$v[3]\"/>";
+		    my $nx = xmlify($$v[0]);
+		    print "<$f n=\"$nx\" icount=\"$$v[1]\" ipct=\"$$v[2]\" xis=\"$$v[3]\"/>";
 		} else {
 		    if ($v) {
-			print "<$f n=\"$v\"/>";
+			my $nx = xmlify($v);
+			print "<$f n=\"$nx\"/>";
 		    } else {
 			print "<$f/>";
 		    }
