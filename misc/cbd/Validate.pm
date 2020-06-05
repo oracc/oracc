@@ -238,7 +238,7 @@ sub pp_validate {
     if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
 	ORACC::SL::BaseC::pedantic(1);
 	$always_check_base = 1;
-	# $detcheck = 1;
+	$detcheck = 1 if $project eq 'epsd2';
     }
 
     if ($lang =~ /^akk/) {
