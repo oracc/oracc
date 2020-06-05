@@ -29,6 +29,7 @@ open(S,$sig) || die "$0: can't open sigs $sig\n";
 my $header = <S>;
 while (<S>) {
     next if /^\s*$/;
+    s/^\!//; # notation for base-merge not needed here
     chomp;
     my($sig,$inst) = split(/\t/,$_);
     my($pre,$core,$post) = ($sig =~ /^(.*?)=(.*?)\$(.*?)$/);

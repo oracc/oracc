@@ -986,9 +986,12 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	  </td>
 	  <td class="orth">
 	    <span class="cuneiform">
+	      <xsl:apply-templates mode="cuneify"/>
+	      <!--
 	      <xsl:for-each select="cbd:text[1]//*[@g:utf8][not(ancestor::g:q)]">
 		<xsl:value-of select="@g:utf8"/>
 	      </xsl:for-each>
+	      -->
 	    </span>
 	  </td>
 	  <td class="orth">
@@ -1520,5 +1523,12 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
     </xsl:choose>
   </a>
 </xsl:template>
+
+<xsl:template match="*" mode="cuneify">
+  <xsl:value-of select="@g:utf8"/>
+  <xsl:apply-templates mode="cuneify"/>
+</xsl:template>
+
+<xsl:template mode="cuneify" match="text()"/>
 
 </xsl:stylesheet>

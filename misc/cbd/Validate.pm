@@ -114,8 +114,8 @@ my %funcs = (); @funcs{@funcs} = ();
 my @known_det = qw/
     anše buru₅ d dug e₂ gada gana₂ geme₂ gi gud 
     hašhur ŋeš id₂ iku im iri itud ki ku₆ kug-babbar kug-sig₁₇ 
-    kaš kuš lu₂ mul munus mušen na₄ ninda peš₂
-    sar siki su-din šah šah₂ še šim tug₂ tumu u₂ 
+    kaš kuš lu₂ mul munus muš mušen na₄ ninda peš₂
+    sar siki su-din šah šah₂ še šim šum₂ tug₂ tumu u₂ 
     udu urud uzu zabar zabar₃ zid₂/;
 my %known_det = (); @known_det{@known_det} = ();
 
@@ -238,6 +238,7 @@ sub pp_validate {
     if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
 	ORACC::SL::BaseC::pedantic(1);
 	$always_check_base = 1;
+	# $detcheck = 1;
     }
 
     if ($lang =~ /^akk/) {
@@ -372,7 +373,6 @@ sub pp_validate {
 
     pp_status(0) if $ORACC::CBD::novalidate;
 
-    
     my $cbdname = ORACC::CBD::Util::cbdname();
 #    warn "$0: validate: setting cbdname to $cbdname\n";
     push @{$data{'cbds'}}, $cbdname;
@@ -381,7 +381,7 @@ sub pp_validate {
     
     %ORACC::CBD::data = %data;
 
-    bases_sigs(\%basesigs) if $$args{'bases'};
+    bases_sigs(\%basesigs) if $$args{'bases'} || $project eq 'epsd2';
 
 #    warn "validate: exiting pp_validate status=".pp_status()."\n";
 #    warn "pp_status now=".pp_status()."\n";
@@ -1477,7 +1477,9 @@ sub v_oid {
 
 sub det_check {
     my $b = shift;
+    my $orig_b = $b;
     my $b2 = $b;
+    my $fixes = 0;
     while ($b2 =~ s/\{(.*?)\}//) {
 	my $d = $1;
 	my $plus = ($d =~ s/^\+//);
@@ -1486,10 +1488,11 @@ sub det_check {
 	} else {
 	    # {-ga} is a @bases only convention to mark semantic dets
 	    unless (exists $known_det{$d} || $d =~ s/^-//) {
-		pp_notice("determinative $d missing + in base $b");
+		$fixes += $b =~ s/\{$d\}/{+$d}/;
 	    }
 	}
     }
+    pp_warn("(bases) phonetically determined BASE $orig_b should be $b") if $fixes;
 }
 
 1;

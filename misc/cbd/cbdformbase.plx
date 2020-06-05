@@ -18,36 +18,32 @@ my %log = ();
 while (<>) {
     if (/(.*?):(.*?): alt BASE (\S+) should be primary (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	# fixbase($file,$line,$alt,$pri);
 	fix_in_base($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): form's BASE (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	# fixbase($file,$line,$alt,$pri);
 	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) compound (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	# fixbase2($file,$line,$alt,$pri);
 	fix_in_base($file,$line,$alt,$pri);
 	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) sign name '(\S+)' should be '(\S+)'\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
-	# fixbase2($file,$line,$alt,$pri);
 	fix_in_base($file,$line,$alt,$pri);
 	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) core (\S+) of base (\S+) should be (\S+)$/) {
 	my($file,$line,$core,$base,$should) = ($1,$2,$3,$4,$5);
-	# fixbase3($file,$line,$base,$core,$should);
 	fix_in_base($file,$line,$core,$should);
     } elsif (/^(.*?):(.*?): \(bases\).*?Q4.*?vq=(\S+?): .*?suggest (\S+)\s*$/) {
 	my($file,$line,$vq,$use) = ($1,$2,$3,$4);
-	# fixbase4($file,$line,$vq,$sugg);
 	fix_in_base($file,$line,$vq,$use);
 	fix_in_form($file,$line,$vq,$use);
     } elsif (/^(.*?):(.*?): \(bases\).*?Q1c.*?vq=(\S+?): .*?use (\S+)\s*$/) {
 	my($file,$line,$vq,$use) = ($1,$2,$3,$4);
-	# fixbase4($file,$line,$vq,$sugg);
 	fix_in_base($file,$line,$vq,$use);
 	fix_in_form($file,$line,$vq,$use);
+    } elsif (/^(.*?):(.*?): \(bases\) phonetically determined BASE (.*?) should be (.*?)$/) {
+	my($file,$line,$base,$should) = ($1,$2,$3,$4);
+	fix_in_base($file,$line,$base,$should);
     } else {
 	warn "nothing to do with $_"
 	    unless /\(bases\)/ || /cbdpp/;
@@ -93,8 +89,8 @@ sub fix_b {
 sub fix_in_form {
     my($f,$l,$bad,$good) = @_;
     my $ln = fix_get_line($f,$l);
-    if ($ln =~ /^\@form/) {
-	my ($prebase,$base,$postbase) = $ln =~ m#^(\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#;
+    if ($ln =~ /^\@form/ || $ln =~ /\t\@form/) {
+	my ($prebase,$base,$postbase) = $ln =~ m#^(.*?\@form\s+\S+\s+.*?)/(\S+)\s+(.*)\s*$#;
 	my $orig_base = $base;
 	my $badQ = quotemeta($bad);
 	my $nfix = 0;
