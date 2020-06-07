@@ -112,9 +112,9 @@ my %funcs = (); @funcs{@funcs} = ();
 
 # semantic {e} and {ga} are marked in sux.glo w {-e} and {-ga}
 my @known_det = qw/
-    anše buru₅ d dug e₂ gada gana₂ geme₂ gi gud 
+    anše bad₃ buru₅ d dug e₂ gada gana₂ geme₂ gi gud 
     hašhur ŋeš id₂ iku im iri itud ki ku₆ kug-babbar kug-sig₁₇ 
-    kaš kuš lu₂ mul munus muš mušen na₄ ninda peš₂
+    kaš kur kuš lu₂ m mul munus muš mušen na₄ ninda peš₂
     sar siki su-din šah šah₂ še šim šum₂ tug₂ tumu u₂ 
     udu urud uzu zabar zabar₃ zid₂/;
 my %known_det = (); @known_det{@known_det} = ();
@@ -238,7 +238,7 @@ sub pp_validate {
     if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
 	ORACC::SL::BaseC::pedantic(1);
 	$always_check_base = 1;
-	$detcheck = 1 if $project eq 'epsd2';
+	$detcheck = 1 if pp_file() eq '00src/sux.glo';
     }
 
     if ($lang =~ /^akk/) {
@@ -247,6 +247,10 @@ sub pp_validate {
 	$stem_validator = \&v_stem_sux;
     } else {
 	$stem_validator = \&v_stem_bad;
+    }
+
+    if ($lang =~ /emesal/ && $detcheck) {
+	++$known_det{'mu'};
     }
     
     for (my $i = 0; $i <= $#cbd; ++$i) {

@@ -38,7 +38,7 @@ open(G2, ">$glo.m") || die;
 select G2;
 my $is_compound = 0;
 while (<G>) {
-    if (/^$acd_rx\@entry\*?\S*\s+(.*?)\s*$/) {
+    if (/^$acd_rx\@entry[\!\*]*\S*\s+(.*?)\s*$/) {
 	$curr_cfgw = $1;
 	my $cf = $curr_cfgw; $cf =~ s/\s*\[.*//; $is_compound = ($cf =~ /\s/);
 	if ($f{$curr_cfgw}) {
@@ -50,10 +50,11 @@ while (<G>) {
 	$printed_forms = 0;
     } elsif (/^\@bases/ && $bases{$curr_cfgw}) {
 	my $incoming = '@bases '.join("; ", sort keys $bases{$curr_cfgw});
-	warn "incoming = $incoming\n";
+	#	warn "incoming = $incoming\n";
 	my $newbref = bases_merge($_, $incoming, $is_compound);
 	my $newb = bases_serialize(%$newbref);
-	warn "newb = $newb\n";
+	#	warn "newb = $newb\n";
+	# warn "newb != incoming (\@bases $newb != $incoming)\n" unless "\@bases $newb" eq $incoming;
 	$_ = "\@bases $newb\n";
     } elsif (/^$acd_rx\@sense/ && !$printed_forms) {
 	if ($#forms >= 0) {
@@ -71,7 +72,7 @@ foreach my $cfgw (sort keys %f) {
     my @proj = map { $$_[0] } @{$f{$cfgw}};
     my %proj = (); @proj{@proj} = ();
     @proj = keys %proj;
-    warn "forms for $cfgw were not merged (occurs in @proj)\n";
+    warn "forms for $cfgw were not merged (occurs in @proj but not in .glo file)\n";
 }
 
 ########################################################################
@@ -84,7 +85,7 @@ load_forms {
     while (<F>) {
 	chomp;
 	my($cfgw,$form) = (/^(.*?)\t(\@form.*)$/);
-	$form =~ m/\@form\s+(\S+)/;
+	$form =~ m/\@form\!?\s+(\S+)/;
 	my $orthform = $1;
 	if ($form =~ m#\s/(\S+)#) {
 	    ++${$bases{$cfgw}}{$1};
