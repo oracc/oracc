@@ -481,7 +481,12 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
     }
   else
     {
-      if (f2->cf || (f2->norm && strcmp((char*)f2->norm, "X")))
+      if (f2->owner && f2->owner->literal
+	  && (strchr(f2->owner->literal, '[')
+	      || (*f2->owner->literal == 'u'
+		  && (!*f2->owner->literal || isspace(*f2->owner->literal)))))
+	fputs((char*)f2->owner->literal, fp);
+      else if (f2->cf || (f2->norm && strcmp((char*)f2->norm, "X")))
 	{
 	  if (strncmp((char*)f2->lang,"sux",3) && f2->norm)
 	    fputs((char*)f2->norm,fp);

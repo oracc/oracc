@@ -237,7 +237,7 @@ loadsigs {
 	next unless $l->getAttributeNS($XLINK,'role') eq 'psu';
 	my $ref = $l->getAttribute('ref');
 	my $sig = $l->getAttribute('sig');
-	warn "psu sig = $sig\n" if $sig =~ /command/;
+	# warn "psu sig = $sig\n" if $sig =~ /command/;
 	if (!$ref) {
 	    $ref = psuref($l);
 	}
