@@ -272,6 +272,8 @@ getkey(const Uchar *str)
 static int
 next_top(struct w2_set *set, int start)
 {
+  if (!set)
+    return -1; /* check this */
   if (start >= set->nkeys)
     return -1;
   while (start < set->nkeys)

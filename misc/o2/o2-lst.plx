@@ -74,38 +74,44 @@ create_have_atf {
         close(A);
     }
     if (-r '00lib/umbrella.lst') {
-	my @u = `cat 00lib/umbrella.lst`;
-	chomp @u; @u = split(/\s+/, join(' ', @u));
-	%have_atf = ();
-	%have_lem = ();
-	my %outlined = ();
-	foreach my $u (@u) {
-	    if (-r "$u/01bld/lists/have-atf.lst") {
-		my @a = `cat $u/01bld/lists/have-atf.lst`;
-		chomp(@a);
-		@have_atf{ @a } = ();
+	my $catbuild = `oraccopt . catalog-build-list`;	
+	if ($catbuild && -r $catbuild) {
+	    system 'cp', $catbuild, '01bld/lists/have-atf.lst';
+	    system 'cp', $catbuild, '01bld/lists/have-lem.lst';
+	    system 'cp', $catbuild, '01bld/lists/outlined.lst';
+	} else {
+	    my @u = `cat 00lib/umbrella.lst`;
+	    chomp @u; @u = split(/\s+/, join(' ', @u));
+	    %have_atf = ();
+	    %have_lem = ();
+	    my %outlined = ();
+	    foreach my $u (@u) {
+		if (-r "$u/01bld/lists/have-atf.lst") {
+		    my @a = `cat $u/01bld/lists/have-atf.lst`;
+		    chomp(@a);
+		    @have_atf{ @a } = ();
+		}
+		if (-r "$u/01bld/lists/have-lem.lst") {
+		    my @a = `cat $u/01bld/lists/have-lem.lst`;
+		    chomp(@a);
+		    @have_lem{ @a } = ();
+		}
+		if (-r "$u/01bld/lists/outlined.lst") {
+		    my @a = `cat $u/01bld/lists/outlined.lst`;
+		    chomp(@a);
+		    @outlined{ @a } = ();
+		}
 	    }
-	    if (-r "$u/01bld/lists/have-lem.lst") {
-		my @a = `cat $u/01bld/lists/have-lem.lst`;
-		chomp(@a);
-		@have_lem{ @a } = ();
-	    }
-	    if (-r "$u/01bld/lists/outlined.lst") {
-		my @a = `cat $u/01bld/lists/outlined.lst`;
-		chomp(@a);
-		@outlined{ @a } = ();
-	    }
+	    open(A, '>01bld/lists/have-atf.lst');
+	    print A join("\n", sort { &qcmp; } keys %have_atf), "\n";
+	    close(A);
+	    open(L, '>01bld/lists/have-lem.lst');
+	    print L join("\n", sort { &qcmp; } sort keys %have_lem), "\n";
+	    close(L);
+	    open(L, '>01bld/lists/outlined.lst');
+	    print L join("\n", sort { &qcmp; } sort keys %outlined), "\n";
+	    close(L);
 	}
-	open(A, '>01bld/lists/have-atf.lst');
-	print A join("\n", sort { &qcmp; } keys %have_atf), "\n";
-	close(A);
-	open(L, '>01bld/lists/have-lem.lst');
-	print L join("\n", sort { &qcmp; } sort keys %have_lem), "\n";
-	close(L);
-	open(L, '>01bld/lists/outlined.lst');
-	print L join("\n", sort { &qcmp; } sort keys %outlined), "\n";
-	close(L);
-	
     } else {
 	open(L,">$have_atf");
 	if (scalar keys %have_atf) {
@@ -290,7 +296,8 @@ update_lists {
 	my $projlist = undef;
 	my @projatfs = ();
 	my $projbase = '';
-	if ($opt eq 'umbrella') {
+	my $catbuild = `oraccopt . catalog-build-list`;	
+	if ($opt eq 'umbrella') {	    
 	    $projlist = '00lib/umbrella.lst';
 	    @projatfs = ('approved');
 	    $projbase = "$ENV{'ORACC'}/$project";
@@ -299,47 +306,65 @@ update_lists {
 	    @projatfs = ('xtfindex');
 	    $projbase = $ENV{'ORACC'};
 	}
-	if (-r $projlist) {
-	    ## either use the list provided by the project
-	    open(U,$projlist) || die "o2-lst.plx: strange: can't open readable file '$projlist'\n";
-	    while (<U>) {
-		chomp;
-		push @pubsub, split(/\s+/,$_);
-	    }
-	    close(U);
-	    warn "$projlist => @pubsub\n";
-	    my @pubexpanded = ();
-	    foreach my $a (@projatfs) {
-		push(@pubexpanded, map { "$projbase/$_/01bld/lists/$a.lst" } @pubsub);
-	    }
-	    @pubsub = @pubexpanded;
+	if ($catbuild) {
+	    die "$0: catalog-build-list defined but $catbuild is not readable\n"
+		unless -r $catbuild;
 	} else {
-	    ## or automatically include all approved texts from
-	    ## all public subprojects
-	    grep(m#/#, `projpublic.sh $project`);	    
-	    chomp @pubsub;
-	    @pubsub = map { s#^$project/## ; 
-			    "$_/01bld/lists/approved.lst" } @pubsub;
+	    if (-r $projlist) {
+		## either use the list provided by the project
+		open(U,$projlist) || die "o2-lst.plx: strange: can't open readable file '$projlist'\n";
+		while (<U>) {
+		    chomp;
+		    push @pubsub, split(/\s+/,$_);
+		}
+		close(U);
+		warn "$projlist => @pubsub\n";
+		my @pubexpanded = ();
+		foreach my $a (@projatfs) {
+		    push(@pubexpanded, map { "$projbase/$_/01bld/lists/$a.lst" } @pubsub);
+		}
+		@pubsub = @pubexpanded;
+	    } else {
+		## or automatically include all approved texts from
+		## all public subprojects
+		grep(m#/#, `projpublic.sh $project`);	    
+		chomp @pubsub;
+		@pubsub = map { s#^$project/## ; 
+				"$_/01bld/lists/approved.lst" } @pubsub;
+	    }
 	}
 	my %seen = ();
 	open(A, '>01bld/lists/proxy-atf.lst')
 	    || die "o2-lst.plx: can't write 01bld/lists/proxy-atf.lst\n";
-	foreach my $p (@pubsub) {
-	    if (open(P, $p)) {
-		my @l = (<P>);
-		chomp @l;
-		foreach my $p (@l) {
-		    $p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
-		    if ($seen{$2}) {
-			warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
-		    } else {
-			$seen{$2} = $1;
-			print A "$p\n";
-		    }
+	if ($catbuild) {
+	    my @l = `cat $catbuild`; chomp @l;
+	    foreach my $p (@l) {
+		$p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
+		if ($seen{$2}) {
+		    warn "o2-lst.plx: $catbuild: using $seen{$2}/$2 instead of $1/$2\n";
+		} else {
+		    $seen{$2} = $1;
+		    print A "$p\n";
 		}
-		close(P);
-	    } else {
-		warn "o2-lst.plx: can't read search text list $p\n";
+	    }
+	} else {
+	    foreach my $p (@pubsub) {
+		if (open(P, $p)) {
+		    my @l = (<P>);
+		    chomp @l;
+		    foreach my $p (@l) {
+			$p =~ s/^(.*?):(.*?)$/$1:$2\@$1/;
+			if ($seen{$2}) {
+			    warn "o2-lst.plx: using $seen{$2}/$2 instead of $1/$2\n";
+			} else {
+			    $seen{$2} = $1;
+			    print A "$p\n";
+			}
+		    }
+		    close(P);
+		} else {
+		    warn "o2-lst.plx: can't read search text list $p\n";
+		}
 	    }
 	}
 	close(A);

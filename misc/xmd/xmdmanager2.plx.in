@@ -1259,6 +1259,7 @@ make_vcat {
 	    warn "no metadata for $f found in $xmd_proj\n" 
 		and next unless -r $xmd;
 	} else {
+	    $f =~ s/^.*?://; # reduce to PQX
 	    foreach my $p (@trylist) {
 		$proj = $p;
 		$xmd = expand_in_project(undef,"$f.xmd",$p);
