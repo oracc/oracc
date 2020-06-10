@@ -8,10 +8,17 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::SL::BaseC;
 ORACC::SL::BaseC::init();
 
-my $t = shift @ARGV; Encode::_utf8_on($t);
-
-my $s = ORACC::SL::BaseC::tlit_sig('',$t);
-
-print "$t => $s\n";
+if ($#ARGV >= 0) {
+    my $t = shift @ARGV; Encode::_utf8_on($t);
+    my $s = ORACC::SL::BaseC::tlit_sig('',$t);
+    print "$t => $s\n";
+} else {
+    while (<>) {
+	chomp;
+	my $t = $_;
+	my $s = ORACC::SL::BaseC::tlit_sig('',$t);
+	print "$t => $s\n";
+    }
+}
 
 1;
