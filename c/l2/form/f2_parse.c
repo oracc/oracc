@@ -209,7 +209,7 @@ clean_gw_sense(const char *file, int line, Uchar *s)
 int
 f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_sense, struct sig_context *scp)
 {
-  Uchar *tmp = NULL, *err_lp = NULL,
+  Uchar *err_lp = NULL,
     *disambig = NULL, *ampamp = NULL, 
     *orig_lp = lp, field = '\0', *psu_tmp = NULL, *psu_form = NULL;
   int ret = 0;
@@ -223,7 +223,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 
   phase = "f2";
   with_textid = 0;
-
+  
   /* skip the old shadow lem codes */
   if (*lp == '`')
     {
@@ -231,6 +231,12 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
       lp += 1 + (lp[1] == '?');
     }
 
+  if (*lp == '$' || *lp == '\\' || *lp == '#' || *lp == '\'')
+    {
+      vwarning2((char*)file,line,"%s: lemmatization cannot begin with '%c'",err_lp, *lp);
+      return 1;
+    }
+  
   if ((ampamp = (unsigned char*)strstr((char*)lp, "&&")))
     {
       f2_parse_cof(file, line, lp, f2p, psu_sense, ampamp, scp);

@@ -546,6 +546,8 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	      if (f2->pos && f2->pos[1] == 'N')
 		fputs((char*)f2->pos,fp);
 	    }
+	  if (f2->augment && *f2->augment)
+	    fprintf(fp,"+%s",f2->augment);
 	}
       else
 	{
