@@ -7,5 +7,5 @@ if [[ $weblistdir == "" ]]; then
 fi
 mkdir -p $weblistdir
 for a in 00lib/lists/* ; do 
-    tr '\r' '\n' <$a | tr -s '\n' >$weblistdir/`basename $a`
+    echo | cat $a - | tr '\r' '\n' | tr -s '\n' >$weblistdir/`basename $a`
 done
