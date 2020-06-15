@@ -30,8 +30,10 @@ sub edit {
     if (cache_check($args,@clean)) {
 #	print Dumper \@cbd;
 	edit_make_script($args,@cbd); # saves in global %data
-	edit_save_script($args);
-	@cbd = edit_apply_script($args,@cbd);
+	unless (pp_status()) {
+	    edit_save_script($args);
+	    @cbd = edit_apply_script($args,@cbd);
+	}
 #	cache_stash($args,@cbd);
     } else {
 	pp_warn("$$args{'cbd'}: glossary fields have been edited directly. Stop. (See 'edit.diff')");
@@ -90,12 +92,23 @@ sub cache_stash {
     close(C);
 }
 
+sub parts_inverted {
+    my %p = ();
+    foreach my $p (@_) {
+	my($c,$p,$f,$l) = @$p;
+	push @{$p{$p}}, $l;
+    }
+    %p;
+}
+
 sub edit_apply_script {
     my($args, @c) = @_;
     history_init();
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
+    my %p = parts_inverted(@{$cbddata{'parts'}});
+#    print STDERR Dumper \%p;
     my %edit_cache = ();
     my %deletia = (); # only used for @entry -- @sense is assigned \000 in @c
     my $edit_entry = '';
@@ -163,6 +176,14 @@ sub edit_apply_script {
 			$c[$from_line] = $s[$i];
 			# warn "rnm: from_line=$from_line; c[f-1]=$c[$from_line-1]; c[f]=$c[$from_line]; s[i]=$s[$i]\n";
 			history($lang, $edit_entry, $edit_sense, $s[$i]);
+			my $ee = $edit_entry; $ee =~ s/^\@entry\s+//; $ee =~ s/\s+(\[.*?\])\s+/$1/;
+			my $n = $s[$i]; $n =~  s/^\@entry\s+//; $n =~ s/\s+(\[.*?\])\s+/$1/;
+			foreach my $l (@{$p{$ee}}) {
+			    # warn "mapping $ee to $n in $c[$l-1]\n";
+			    my $Qee = quotemeta($ee);
+			    pp_warn "failed to map  $ee to $n in $c[$l-1]"
+				unless $c[$l-1] =~ s/ $Qee(\s|$)/ $n$1/;
+			}
 		    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
 			$edit_entry = $1;
 			$edit_sense = '';
@@ -171,9 +192,26 @@ sub edit_apply_script {
 		    } elsif ($s[$i] =~ /:mrg/) {
 			# ignore on this pass
 		    } elsif ($s[$i] =~ /:del/) {
-			$c[$from_line] = "\000";
+			if ($s[$i] =~ /^:del\s+-\@entry/) {
+			    my $i = $from_line;
+			    while (1) {
+				if ($c[$i] =~ /^\@end\s+entry/) {
+				    $c[$i] = "\000";
+				    last;
+				} else {
+				    $c[$i] = "\000";
+				}
+				++$i;
+			    }
+			} else {
+			    $c[$from_line] = "\000";
+			}
 		    } elsif ($s[$i] =~ /:add/) {
-			# $c[$from_line] =~ s/^\+//; # the +@sense has to stay so it goes through to base glo eventually
+			# in a non-base glo the +@entry/+@sense has to stay so it goes through to base glo eventually
+			# in a base glo use -strip to strip the + out on cbdedit
+			$c[$from_line] =~ s/^\+// if $$args{'strip'};
+		    } elsif ($s[$i] =~ /^:why/) {
+			# this is ignored by edit apply -- just there for edit/oid history
 		    } else {
 			warn "edit.edit:$i: unhandled edit script tag $s[$i]\n";
 		    }
@@ -248,7 +286,7 @@ sub edit_make_script {
 	} elsif ($c[$i] =~ /^>/) {
 	    my($tag) = ($c[$i-1] =~ /(\@[a-z]+)/);
 	    my $e = pp_entry_of($i,@c);
-	    my $action = 'rename';	    
+	    my $action = 'rename';
 	    
 	    if ($tag eq '@entry') {
 		my $renstr = $c[$i]; $renstr =~ s/^>\s*//;
@@ -257,7 +295,13 @@ sub edit_make_script {
 #		    warn "renstr = $renstr\n";
 #		}
 		my $eid = ${$cbddata{'entries'}}{$renstr};
-		$action = 'mrg' if $eid;
+		if ($eid) {
+		    $action = 'mrg';
+		} else {
+		    my $ecfgw = $c[$e];
+		    $ecfgw =~ s/^.*?\s+//; $ecfgw =~ s/\s*$//; chomp $ecfgw;
+		    ${$cbddata{'entries'}}{$renstr} = ${$cbddata{'entries'}}{$ecfgw};
+		}
 	    }
 
 	    if ($action eq 'rename') {
@@ -274,7 +318,7 @@ sub edit_make_script {
 		    pp_warn("expected $tag before '>$tag'");
 		}
 	    } else {
-		$c[$i] =~ s/^>/=\@entry /;
+		$c[$i] =~ s/^>\s*/=\@entry /;
 		push @s, ":ent $c[$e]";
 		push @s, ":mrg $c[$i]";
 	    }
@@ -282,6 +326,13 @@ sub edit_make_script {
 	    my $e = pp_entry_of($i,@c);
 	    push @s, ":ent $c[$e]";
 	    push @s, ":del $c[$i]";
+	    if ($c[$i] =~ /\@entry/) {
+		if ($c[$i+1] =~ /^\#why:\s+(.*?)$/) {
+		    push @s, ":why $1";
+		} else {
+		    pp_warn("must give single line #why: comment after entry-deleting code -\@entry");
+		}
+	    }
 	} elsif ($c[$i] =~ /^\@bases/) {
 	    my @b = ($c[$i] =~ m/\s([-+]\S+)/g);
 	    push @b, ($c[$i] =~ m/(\S+=[0-9])/g);

@@ -215,6 +215,8 @@ sub entries_merge {
     my $new_b = '';
     if ($base_b && $base_s) {
 	if ($base_b) {
+	    $base_b =~ s/\@bases\s+//;
+	    $base_s =~ s/\@bases\s+//;
 	    $new_b_hash = bases_merge($base_b, $base_s, undef);
 #	    warn Dumper $new_b_hash;
 	}
@@ -234,12 +236,15 @@ sub entries_merge {
 
     my @new_f = forms_merge(\@b,\@s,%{$$new_b_hash{'#map'}});
     my @new_s = senses_merge_2(\@b,\@s,$no_sense_plus);
+    my @new_e = equivs_merge(\@b,\@s);
+    my @new_i = isslp_merge(\@b,\@s);
     
     my @n = ();
     my $forms_done = 0;
     my $senses_done = 0;
     foreach my $b (@b) {
 	if ($b =~ /^\@bases/) {
+	    $new_b =~ s/^\@bases\s+//;
 	    push @n, "\@bases $new_b";
 	} elsif ($b =~ /^\@form/) {
 	    unless ($forms_done) {
@@ -251,8 +256,14 @@ sub entries_merge {
 		++$senses_done;
 		push @n, @new_s;
 	    }
+	} elsif ($b =~ /^\@(equiv|isslp)/ ) {
+	    # don't push now, wait until @end
 	} else {
-	    push @n, $b;
+	    if ($b =~ /^\@end\s+entry/) {
+		push @n, @new_e if $#new_e >= 0;
+		push @n, @new_i if $#new_i >= 0;
+	    }
+	    push @n, $b;	    
 	}
     }
     @n;
@@ -271,6 +282,50 @@ sub entries_init {
 
 sub entries_term {
     close(MAP_FH);
+}
+
+sub equivs_find {
+    my @f = ();
+    foreach (@_) {
+	push @f, $_ if /^\@equiv/;
+    }
+    @f;
+}
+sub equivs_merge {
+    my ($b_e,$i_e) = @_;
+    my @b_e = equivs_find(@$b_e);
+    my @i_e = equivs_find(@$i_e);
+    my %e = ();
+    @e{@b_e} = ();
+    @e{@i_e} = ();
+    sort keys %e;
+}
+
+sub isslp_find {
+    my @f = ();
+    foreach (@_) {
+	push @f, $_ if /^\@isslp/;
+    }
+    @f;
+}
+sub isslp_merge {
+    my ($b_e,$i_e) = @_;
+    my @b_e = isslp_find(@$b_e);
+    my @i_e = isslp_find(@$i_e);
+    my %e = ();
+    @e{@b_e} = ();
+    @e{@i_e} = ();
+    sort { &isslp_cmp } keys %e;
+}
+
+sub isslp_cmp {
+    my($ay) = ($a =~ /isslp\s+(\S+)/);
+    my($by) = ($b =~ /isslp\s+(\S+)/);
+    $ay =~ tr/0-9//cd;
+    $by =~ tr/0-9//cd;
+    $ay = 0 unless $ay;
+    $by = 0 unless $by;
+    $by <=> $ay;
 }
 
 1;

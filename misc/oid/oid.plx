@@ -59,6 +59,8 @@ chomp @keys;
 
 oid_load();
 
+open(D,'>ids.dump'); print D Dumper \%oid_ids; close(D);
+
 oid_keys();
 
 if ($status) {
@@ -70,7 +72,6 @@ if ($assign) {
 	unless $domain_authorities{$domain} eq $project;
     oid_add();
 
-# print Dumper \%oid_ids;
 # print Dumper \%oid_keys;
 # print Dumper \%oid_doms;
 # print Dumper \%oid_ext;
@@ -102,12 +103,13 @@ sub fail {
 sub oid_add {
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
-	++$oid_top;
-	$oid_keys{$oid_top} = $key;
-	$oid_doms{$oid_top} = $dom;
-	$oid_ids{$dom,$key} = $oid_top;
+	my $this_oid = oid_next_available();
+	warn "add @$a => $this_oid\n";
+	$oid_keys{$this_oid} = $key;
+	$oid_doms{$this_oid} = $dom;
+	$oid_ids{$dom,$key} = $this_oid;
 	$oid_ext{$dom,$key} = [ $typ, $ext ];
-	push @res, "$key\t$oid_top\n";
+	push @res, "$key\t$this_oid\n";
     }
 }
 
@@ -204,7 +206,7 @@ sub oid_load {
 	while (<O>) {
 	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
 	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
-	    $oid_top = $oid if $oid gt $oid_top;
+#	    $oid_top = $oid if $oid gt $oid_top;
 	    # load only validations--these don't apply when reading check data
 	    if ($oid_keys{$oid}) {
 		bad("duplicate OID $oid; already defined for $oid_keys{$oid} in domain $oid_doms{$oid}");
@@ -227,6 +229,12 @@ sub oid_load {
 	close(O);
 	$errfile = $keyfile || '<keys>';
     }
+}
+
+sub oid_next_available {
+    1 while $oid_keys{++$oid_top};
+#    warn "$0: oid_next_available = $oid_top\n";
+    $oid_top;
 }
 
 sub oid_parse {
@@ -264,5 +272,6 @@ sub oid_validate {
 	    return bad("won't add KEY `$key' because it already has OID $oid_key{$dom,$key}");
 	}
     }
+    0;
 }
 

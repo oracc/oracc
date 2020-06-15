@@ -308,6 +308,7 @@ sub pp_validate {
 		}
 		if ($pre) {
 		    if (exists $acd_ok_tags{$tag}) {
+			push @{$data{'edit'}}, pp_line()-1;
 			if ($pre eq '>') {
 			    if ($tag eq 'entry') {
 				$cbd[$i] =~ /entry\S*\s+(.*)\s*$/;
@@ -341,6 +342,8 @@ sub pp_validate {
 	    push @{$data{'edit'}}, pp_line()-1;
 	    if ($x eq '>' && $cbd[$i-1] =~ /^$acd_rx?\@entry/) {
 		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
+		my $ncfgw = $1;
+		pp_warn("syntax error in > $ncfgw") unless $ncfgw =~ s/^(.*?)\s+(\[.*?\])\s+(\S+)$/$1 $2 $3/;
 		$entry_map{$curr_cfgw} = $1;
 	    } elsif ($x eq '>' && $cbd[$i-1] =~ /^\@sense/) {
 		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
@@ -371,6 +374,7 @@ sub pp_validate {
     %{$glodata{'entry_map'}} = %entry_map; # warn 'Validate: ', Dumper \%entry_map;
     %{$glodata{'sense_map'}} = %sense_map; # warn 'Validate: ', Dumper \%sense_map;
     %{$glodata{'basedata'}} = %basedata;
+    @{$glodata{'parts'}} = @parts;
     %{$glodata{'ok'}} = %ok;
 
     sigs_check(\%glodata,$args,@cbd) if $$args{'check'};
@@ -468,7 +472,7 @@ sub v_entry {
 		if ($in_entry > 1) {
 		    pp_warn("multiple acd \@entry fields not permitted");
 		} else {
-		    push @{$data{'edit'}}, pp_line()-1;
+		    # push @{$data{'edit'}}, pp_line()-1;
 		}
 	    } else {
 		pp_warn("multiple \@entry fields not permitted");
@@ -1145,7 +1149,7 @@ sub v_sense {
 	    pp_warn('prev='.$global_cbd[pp_line()-2]);
 	    pp_warn('curr='.$global_cbd[pp_line()-1]);
 	} else {
-	    push @{$data{'edit'}}, pp_line()-1;
+	    # push @{$data{'edit'}}, pp_line()-1;
 	}
     }
 

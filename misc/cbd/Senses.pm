@@ -327,7 +327,8 @@ sub index_senses {
     my %t = ();
     for (my $i = 0; $i <= $#_; ++$i) {
 	my $s = $_[$i];
-	$s =~ s/^\@sense\S*\s+//;
+	next if $s =~ /^-\@sense/;
+	$s =~ s/^\+?\@sense\S*\s+//;
 	$s =~ s/\#\S+\s+//; # remove sense-id
 	$s =~ s/^\S+\s+//; # and POS
 	$s =~ tr/a-zA-Z0-9 //cd; # reduce to alphanumerics
@@ -391,6 +392,7 @@ sub senses_merge_2 {
 	my %b = index_senses(@$b);
 	#    print Dumper \%b;
 	foreach my $s (@$i) {
+	    next if $s =~ /^-/;
 	    my @matches = ();
 	    my $s_no_pos = $s; $s_no_pos =~ s/^\@sense\S*\s+\S+//;		
 	    # does s occur in @b?
