@@ -81,7 +81,7 @@ sub pp_args {
 	\%args,
 	qw/announce all apply auto bare base:s bases check kompounds dets dry dynamic edit entries=s file 
 	filter fix:s force glo:s homograph increment:s inplace invert letters lines list:s lang:s log:s mode:s noforms
-	nonormify nopsus nosigs novalid output:s project:s quiet reset sigs stdout strip trace+ vfields:s words=f xml/,
+	nonormify nopsus nosigs novalid oids output:s project:s quiet reset sigs stdout strip trace+ vfields:s words=f xml/,
 	) || die "unknown arg";
 
     $cbd = $args{'glo'} if $args{'glo'};

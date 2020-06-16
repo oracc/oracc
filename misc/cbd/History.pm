@@ -4,10 +4,11 @@ require Exporter;
 
 @EXPORT = qw/history history_init history_term history_map history_trim history_all 
     history_all_init history_all_term history_etc_init history_etc_term 
-    history_guess history_guess_sense/;
+    history_guess history_guess_sense history_dumper history_oid/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
+use ORACC::OID;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
@@ -38,7 +39,7 @@ sub history_all_term {
 }
 
 sub history_etc_init {
-    %history = history_map();
+    %history = history_map();    
 }
 
 sub history_etc_term {
@@ -72,6 +73,17 @@ sub history_guess_sense {
 	}
     }
     $gs;
+}
+
+sub history_oid {
+    oid_init();
+    foreach my $k (keys %history) {
+	my $k_oid = oid_lookup('sux',$k);
+#	my $v_oid = oid_lookup('sux',$history{$k});
+	warn "no oid for $k\n" unless $k_oid;
+#	warn "no oid for $history{$k}\n" unless $v_oid;
+	print "$k_oid $k => $history{$k}\n" if $k_oid;
+    }
 }
 
 sub history_trim {
@@ -114,11 +126,13 @@ sub history_map {
 	    $h{$f[2]} = $f[4];
 	}
     }
-    # print Dumper \%h;
+    print Dumper \%h;
+    print Dumper \%new_ent;
     foreach (@h) {
 	my @f = split(/\t/,$_);
 	if ($f[3] =~ /\@sense/) {
-	    my $o_ent = $new_ent{$f[2]} || $f[2]; $o_ent =~ s/\@entry\s+//;
+	    my $f2 = $f[2]; $f2 =~ s/\s*(\[.*?)\]\s*/ $1 /;
+	    my $o_ent = $new_ent{$f2} || $h{$f2} || $f[2]; $o_ent =~ s/\@entry\s+//;
 	    my $o_sns = $f[3]; $o_sns =~ s/\@sense\!?\s+//;
 	    my $n_sns = $f[4]; $n_sns =~ s/\@sense\!?\s+//;
 	    my $n_ent = $f[2]; $n_ent =~ s/\@entry\s+//;
@@ -153,6 +167,12 @@ sub history_dump {
     open(H, '>00etc/history.edit') || die "$0: can't write to 00etc/history.edit.\n";
     print H join("\n", @_), "\n";
     close(H);    
+}
+
+sub history_dumper {
+    open(D,'>history.dump');
+    print D Dumper \%history;
+    close(D);
 }
 
 1;
