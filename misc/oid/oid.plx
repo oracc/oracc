@@ -172,6 +172,7 @@ sub oid_dump {
 	    if ($e[0] eq 'sense') {
 		if ($e[1] !~ /^[ox]\d+/) {
 		    $e1 = $oid_ids{$oid_doms{$oid},$e[1]};
+		    warn "$0: no OID for sense's owner $e[1]\n";
 		} else {
 		    $e1 = $e[1];
 		}

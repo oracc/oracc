@@ -7,6 +7,8 @@ use ORACC::OID;
 
 # edit2oid.plx : turn a CBD edit script into an OID edit script
 
+my $D = ''; # date field configured from :dat
+
 my $e = '';
 my $edit_oid = '';
 
@@ -23,7 +25,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	if (s/^.?\@entry\s+//) {
 	    if ($edit_oid) {
 		s/\s+(\[.*?\])\s+/$1/;
-		print "$edit_oid\t$edit_entry\t>\t$_\n";
+		print "$D$edit_oid\t$edit_entry\t>\t$_\n";
 		$new_oid{$_} = $edit_oid;
 		$new_ent{$edit_entry} = $_;
 	    }
@@ -36,7 +38,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $to_e = $new_ent{$edit_entry} || $edit_entry;
 	    ($epos,$mean) = (m/^(\S+)\s+(.*)$/);
 	    $to_e =~ s#](\S+)$#//$mean]$1'$epos#;
-	    print "$from_o\t$from_e\t>\t$to_e\n";
+	    print "$D$from_o\t$from_e\t>\t$to_e\n" if $from_o;
 	}
     } elsif (/:ent\s+(.*?)$/) {
 	$edit_entry = $1; $edit_entry =~ s/^-?\@entry\s+//; $edit_entry =~ s/\s+(\[.*?\])\s+/$1/;
@@ -50,7 +52,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $mrg_entry = $_; $mrg_entry =~ s/.?\@entry\s+//; $mrg_entry =~ s/\s+(\[.*?\])\s+/$1/;
 	    my $mrg_oid = $new_oid{$mrg_entry} || oid_lookup('sux',$mrg_entry);
 	    if ($mrg_oid) {
-		print "$edit_oid\t$edit_entry\t=\t$mrg_oid\t$mrg_entry\n";
+		print "$D$edit_oid\t$edit_entry\t=\t$mrg_oid\t$mrg_entry\n";
 		$new_oid{$edit_entry} = $mrg_oid;
 		$new_ent{$edit_entry} = $mrg_entry;
 	    } else {
@@ -62,7 +64,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
     } elsif (/:del/) {
 	my $why = $edit[$i+1]; $why =~ s/:why\s+// || ($why = '');
 	if (/entry/) {
-	    print "$edit_oid\t$edit_entry\t-\t$why\n";
+	    print "$D$edit_oid\t$edit_entry\t-\t$why\n";
 	} else {
 	    my $s = $edit_entry; 
 	    my($epos,$mean) = (/^:del\s+-\@sense\s+(\S+)\s+(.*$)/);
@@ -70,7 +72,8 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $s_oid = oid_lookup('sux', $s);
 	    my $r_oid = $new_oid{$edit_entry} || $edit_oid;
 	    my $r_ent = $new_ent{$edit_entry} || $edit_entry;
-	    print "$s_oid\t$s\t-\t$r_oid\t$r_ent\n";
+	    # warn "$i: undefined s_oid\n";
+	    print "$D$s_oid\t$s\t-\t$r_oid\t$r_ent\n" if $s_oid;
 	}
     } elsif (s/^:add\s+//) {
 	if (s/^.?\@entry\s+//) {
@@ -78,7 +81,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $ent = $_;
 	    my $o = oid_lookup('sux',$ent);
 	    if ($o) {
-		print "$o\t$ent\t+\n";
+		print "$D$o\t$ent\t+\n";
 	    } else {
 		warn "$ent\n";
 	    }
@@ -88,7 +91,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    $s =~ s#\](\S+)#//$mean]$1'$epos#;
 	    my $o = oid_lookup('sux',$s);
 	    if ($o) {
-		print "$o\t$s\t+\n";
+		print "$D$o\t$s\t+\n";
 	    } else {
 		warn "$s\n";
 	    }
@@ -97,6 +100,8 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	# already handled
     } elsif (/^\@/ || /^:cbd/) {
 	# ignore line numbers
+    } elsif (/^:dat\s+(\S+)/) {
+	$D = "$1\t";
     } else {
 	warn "edit.edit:$i: unhandled edit script tag $_\n";
     }

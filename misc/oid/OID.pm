@@ -65,6 +65,8 @@ sub oid_lookup {
 		$key = $res;
 	    }
 	}
+    } else {
+	$key =~ s/\s*(\[.*?\])\s*/$1/;
     }
     my $ret = $oid{$type,$key};
 #    unless ($ret) {
