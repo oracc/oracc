@@ -77,7 +77,11 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    s/\s+(\[.*?\])\s+/$1/;
 	    my $ent = $_;
 	    my $o = oid_lookup('sux',$ent);
-	    print "$o\t$ent\t+\n";
+	    if ($o) {
+		print "$o\t$ent\t+\n";
+	    } else {
+		warn "$ent\n";
+	    }
 	} else {
 	    my $s = $new_ent{$edit_entry} || $edit_entry; 
 	    my($epos,$mean) = (/^.?\@sense\s+(\S+)\s+(.*$)/);
@@ -86,7 +90,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    if ($o) {
 		print "$o\t$s\t+\n";
 	    } else {
-		warn "$s needs an OID\n";
+		warn "$s\n";
 	    }
 	}
     } elsif (/^:why/) {

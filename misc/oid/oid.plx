@@ -104,7 +104,8 @@ sub oid_add {
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
 	my $this_oid = oid_next_available();
-	warn "add @$a => $this_oid\n";
+	$ext = '' unless $ext;
+	warn "add $dom $key $typ $ext => $this_oid\n";
 	$oid_keys{$this_oid} = $key;
 	$oid_doms{$this_oid} = $dom;
 	$oid_ids{$dom,$key} = $this_oid;

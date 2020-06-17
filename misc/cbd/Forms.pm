@@ -158,7 +158,7 @@ sub forms_det_clean {
 	my @nf = ();
 	foreach my $f (@f) {
 	    my($fi,$li,$pr,$fo) = @$f;
-	    $fo =~ s/\{-/{/g; # && warn "$fi:$li: killing {- in $fo\n";
+	    $fo =~ s/\{-/{/g unless $ORACC::CBD::nominusstripping; # && warn "$fi:$li: killing {- in $fo\n";
 	    push @nf, [ $fi, $li, $pr, $fo ];
 	}
 	@{$forms{$cfgw}} = @nf;

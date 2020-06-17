@@ -27,7 +27,7 @@ sub equivs_resolve {
 	    $cbd[$i] .= " => @$res";
 	}
     }
-    #    print Dumper \%base_senses;
+#    print Dumper \%base_senses;
     @cbd;
 }
 

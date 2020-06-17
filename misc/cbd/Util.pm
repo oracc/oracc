@@ -51,6 +51,7 @@ $ORACC::CBD::bases = 0;
 $ORACC::CBD::det_minus = 0;
 $ORACC::CBD::noforms = 0;
 $ORACC::CBD::noletters = 0;
+$ORACC::CBD::nominusstripping = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
 $ORACC::CBD::nosigs = 0;
@@ -81,7 +82,8 @@ sub pp_args {
 	\%args,
 	qw/announce all apply auto bare base:s bases check kompounds dets dry dynamic edit entries=s file 
 	filter fix:s force glo:s homograph increment:s inplace invert letters lines list:s lang:s log:s mode:s noforms
-	nonormify nopsus nosigs novalid oids output:s project:s quiet reset sigs stdout strip trace+ vfields:s words=f xml/,
+	nominusstripping nonormify nopsus nosigs novalid oids output:s project:s quiet reset sigs stdout strip trace+ 
+        vfields:s words=f xml/,
 	) || die "unknown arg";
 
     $cbd = $args{'glo'} if $args{'glo'};
@@ -95,6 +97,7 @@ sub pp_args {
     $ORACC::CBD::check_compounds = $args{'kompounds'};
     $ORACC::CBD::nodiagnostics = $args{'quiet'};
     $ORACC::CBD::noforms = $args{'noforms'};
+    $ORACC::CBD::nominusstripping = $args{'nominusstripping'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
     $ORACC::CBD::novalidate = $args{'novalid'};
 
@@ -177,7 +180,7 @@ sub pp_cbd {
 		    forms_print($cfgw, \*CBD);
 		    ++$forms_printed;
 		} elsif ($ORACC::CBD::det_minus && /^\@(?:bases|form)/) {
-		    s/\{-/{/g;
+		    s/\{-/{/g unless $ORACC::CBD::nominusstripping;
 		} elsif (/^\@end\s+entry/) {
 		    chomp;
 		    $_ .= "\n"; # double blank line after entry
@@ -447,6 +450,7 @@ sub setup_args {
 }
 
 sub pp_clean_det_minus {
+    return @_ if $ORACC::CBD::nominusstripping;
     my @n = ();
     foreach (@_) {
 	if (/^\@(?:bases|form)/) {

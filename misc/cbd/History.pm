@@ -126,8 +126,8 @@ sub history_map {
 	    $h{$f[2]} = $f[4];
 	}
     }
-    print Dumper \%h;
-    print Dumper \%new_ent;
+#    print Dumper \%h;
+#    print Dumper \%new_ent;
     foreach (@h) {
 	my @f = split(/\t/,$_);
 	if ($f[3] =~ /\@sense/) {

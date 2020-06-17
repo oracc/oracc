@@ -390,7 +390,7 @@ sub senses_merge_2 {
 	    if $ORACC::CBD::PPWarn::trace;
 
 	my %b = index_senses(@$b);
-	#    print Dumper \%b;
+#    print Dumper \%b;
 	foreach my $s (@$i) {
 	    next if $s =~ /^-/;
 	    my @matches = ();

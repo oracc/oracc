@@ -45,7 +45,7 @@ sub entries_align {
 
     my %entries = entries_collect($base_cbd);
     my %entry_map = %{$in_cbddata{'entry_map'}};
-    #    print 'entries_align: ', Dumper \%entry_map;
+#    print 'entries_align: ', Dumper \%entry_map;
 
     my $acd= '';
     my %parts = ();
@@ -60,8 +60,8 @@ sub entries_align {
 #	warn "Entries.pm: calling guess_init; xmap_fh=$xmap_fh\n";
 	$bix = guess_init(@base_cbd);
 	$cix = guess_init(@cbd);
-	open(BIX,'>bix.dump'); print BIX Dumper $bix; close(BIX);
-	open(BIX,'>cix.dump'); print BIX Dumper $cix; close(BIX);
+#	open(BIX,'>bix.dump'); print BIX Dumper $bix; close(BIX);
+#	open(BIX,'>cix.dump'); print BIX Dumper $cix; close(BIX);
     }
 
     for (my $i = 0; $i <= $#cbd; ++$i) {
