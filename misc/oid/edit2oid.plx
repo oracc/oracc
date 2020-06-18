@@ -38,7 +38,12 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $to_e = $new_ent{$edit_entry} || $edit_entry;
 	    ($epos,$mean) = (m/^(\S+)\s+(.*)$/);
 	    $to_e =~ s#](\S+)$#//$mean]$1'$epos#;
-	    print "$D$from_o\t$from_e\t>\t$to_e\n" if $from_o;
+	    if ($from_o) {
+		print "$D$from_o\t$from_e\t>\t$to_e\n" if $from_o;
+	    } else {
+		### don't warn here: we are renaming something that never got an OID
+		### warn "no OID for $from_e\n" unless $from_o; ### 
+	    }
 	}
     } elsif (/:ent\s+(.*?)$/) {
 	$edit_entry = $1; $edit_entry =~ s/^-?\@entry\s+//; $edit_entry =~ s/\s+(\[.*?\])\s+/$1/;
@@ -72,8 +77,12 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $s_oid = oid_lookup('sux', $s);
 	    my $r_oid = $new_oid{$edit_entry} || $edit_oid;
 	    my $r_ent = $new_ent{$edit_entry} || $edit_entry;
-	    # warn "$i: undefined s_oid\n";
-	    print "$D$s_oid\t$s\t-\t$r_oid\t$r_ent\n" if $s_oid;
+	    if ($s_oid) {
+		print "$D$s_oid\t$s\t-\t$r_oid\t$r_ent\n";
+	    } else {
+		### don't warn here: we are deleting something that never got an OID
+		### warn "no OID for sense $s\n"; ###
+	    }
 	}
     } elsif (s/^:add\s+//) {
 	if (s/^.?\@entry\s+//) {

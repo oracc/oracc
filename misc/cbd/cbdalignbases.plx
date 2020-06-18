@@ -10,6 +10,7 @@ use ORACC::CBD::Bases;
 
 my %args = pp_args();
 $ORACC::CBD::nonormify = 1;
+$ORACC::CBD::nominusstripping = 1;
 
 my @base_cbd = ();
 
