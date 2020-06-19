@@ -2,8 +2,9 @@ package ORACC::OID;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/oid_args oid_edit oid_edit_mode oid_fail oid_finish oid_init oid_load
-    oid_keys oid_dump oid_load_domain oid_lookup oid_merge oid_rename oid_status/;
+@EXPORT = qw/oid_args oid_check oid_check_mode oid_edit oid_edit_mode
+    oid_fail oid_finish oid_init oid_load oid_keys oid_dump
+    oid_load_domain oid_lookup oid_merge oid_rename oid_status/;
 
 $ORACC::OID::verbose = 0;
 
@@ -20,11 +21,16 @@ my %oid_keys = ();
 my %oid_typs = ();
 my %oid_key = ();
 my %oid_ext = ();
+
+my %oid_deletions = ();
+my %oid_redirects = ();
+
 my @oid_add = ();
 my $oid_top = 'o0000000';
 
 my $arg_oid_file = '';
 my $assign = 0;
+my $check = 0;
 my $checking = '';
 my $domain = '';
 my $edit = '';
@@ -57,6 +63,7 @@ sub oid_args {
     use Getopt::Long;
     GetOptions(
 	assign  => \$assign,
+	check => \$check,
 	'domain:s'  => \$domain,
 	edit  => \$edit,
 	'keyfile:s' => \$keyfile,
@@ -74,7 +81,8 @@ sub oid_args {
 	$oid_file = $arg_oid_file;
     }
 
-    if ($edit) {
+    if ($check) {
+    } elsif ($edit) {
 	@edits = (<>);
 	chomp @edits;
     } else {
@@ -87,6 +95,10 @@ sub oid_args {
 	}
 	chomp @keys;
     }
+}
+
+sub oid_check_mode {
+    $check;
 }
 
 sub oid_edit_mode {
@@ -262,18 +274,12 @@ sub oid_lock {
 
 sub oid_check {
     $checking = 1;
-    while (<>) {
+    open(O,$oid_file);
+    while (<O>) {
 	my($oid,$dom,$key,@f) = oid_parse($_);
-	oid_validate($oid,$dom,$key,@f) && next;
-	if ($oid eq '0') {
-	    if ($oid_key{$dom,$key}) {
-		$oid_ext{$dom,$key} = [ @f ];
-	    } else {
-		$oid_key{$dom,$key} = -1;
-		push @oid_add, [ $dom, $key, @f ];
-	    }
-	}
+	oid_validate($oid,$dom,$key,@f);
     }
+    close(O);
     $checking = 0;
 }
 
@@ -329,6 +335,13 @@ sub oid_load {
 	while (<O>) {
 	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
 	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
+	    if ($key eq 'deleted') {
+		++$oid_deletions{$oid};
+#		next;
+	    } elsif ($key =~ /^o\d+$/) {
+		$oid_redirects{$oid} = $key;
+#		next;
+	    }
 #	    $oid_top = $oid if $oid gt $oid_top;
 	    # load only validations--these don't apply when reading check data
 	    if ($oid_keys{$oid}) {
@@ -346,12 +359,14 @@ sub oid_load {
 	    }
 	    $oid_doms{$oid} = $dom;
 	    $oid_typs{$oid} = $typ;
-	    $oid_key{$dom,$key} = $oid;
-	    $oid_ext{$dom,$key} = [ $typ, $ext ];
+	    $oid_key{$dom,$key} = $oid unless $oid_deletions{$oid} || $oid_redirects{$oid};
+	    $oid_ext{$dom,$key} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
 	}
 	close(O);
 	$errfile = $keyfile || '<keys>';
     }
+    # print Dumper \%oid_deletions;
+    # print Dumper \%oid_redirects;
 }
 
 sub oid_next_available {
@@ -375,20 +390,26 @@ sub oid_validate {
 	return 1;
     }
     if ($oid) {
-	if ($oid_keys{$oid}) {
-	    if ($oid_keys{$oid} ne $key || $oid_doms{$oid} ne $dom) {
-		return oid_bad("OID $oid should have KEY $oid_keys{$dom,$key} not $key");
-	    }
+	if ($oid_deletions{$oid}) {
+	    
+	} elsif ($oid_redirects{$oid}) {
+	    
 	} else {
-	    if ($oid_key{$dom,$key}) {
-		return oid_bad("KEY `$key' should have OID $oid_key{$dom,$key} not $oid");
+	    if ($oid_keys{$oid}) {
+		if ($oid_keys{$oid} ne $key || $oid_doms{$oid} ne $dom) {
+		    return oid_bad("OID $oid should have KEY $oid_keys{$dom,$key} not $key");
+		}
 	    } else {
-		return oid_bad("OID $oid not defined") if $checking;
+		if ($oid_key{$dom,$key}) {
+		    return oid_bad("KEY `$key' should have OID $oid_key{$dom,$key} not $oid");
+		} else {
+		    return oid_bad("OID $oid not defined (needed by $key)") if $checking;
+		}
 	    }
-	}
-	return oid_bad("OID $oid has no type") unless $typ;
-	if ($typ_has_ext{$typ}) {
-	    return oid_bad("type $typ has no extended data") unless $ext;
+	    return oid_bad("OID $oid has no type") unless $typ;
+	    if ($typ_has_ext{$typ}) {
+		return oid_bad("type $typ has no extended data") unless $ext;
+	    }
 	}
     } else {
 	if ($oid_key{$key} && $oid ne '0') {

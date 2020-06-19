@@ -10,7 +10,9 @@ oid_args();
 
 oid_load();
 
-if (oid_edit_mode()) {
+if (oid_check_mode()) {
+    oid_check();
+} elsif (oid_edit_mode()) {
     oid_edit();
 } else {
     oid_keys();
