@@ -1,185 +1,109 @@
 <?xml version='1.0'?>
 
-<xsl:stylesheet version="1.0" 
-  xmlns:md="http://oracc.org/ns/xmd/1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet
+    version="1.0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:output method="xml" indent="no"/>
+<xsl:output method="xml" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
+
+<xsl:param name="project"/>
+
+<xsl:include href="html-standard.xsl"/>
 
 <xsl:template match="/">
-  <xsl:variable name="name" select="/*/md:name|/*/md:designation"/>
-  <html>
-    <head>
-      <link rel="stylesheet" type="text/css" href="/oracc/www/xmd.css"/>
-      <title>Catalog: <xsl:value-of select="$name"/></title>
-    </head>
-    <body>
-      <xsl:call-template name="format-xmd" />
-    </body>
-  </html>  
+  <xsl:call-template name="make-html">
+    <xsl:with-param name="project" select="$project"/>
+    <xsl:with-param name="title" select="'OID History'"/>
+    <xsl:with-param name="body-class" select="'oid'"/>
+  </xsl:call-template>
 </xsl:template>
 
-<xsl:template name="format-xmd" >
-  <table class="xmd" >
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	Primary Publication 
-      </td>
-      <td class="xmd" width="500">
-	<xsl:if test="string-length(/*/md:primary_publication) > 0">
-	  <xsl:value-of select="/*/md:primary_publication"
-			/><xsl:text>, </xsl:text><xsl:value-of select="/*/md:author"
-					  /><xsl:if test="string-length(/*/md:publication_date) > 0">,
-	    <xsl:value-of select="/*/md:publication_date"/></xsl:if>
-	</xsl:if>
-	<xsl:if test="string-length(/*/md:pubelectronic) > 0">
-	  <a href="{/*/md:pubelectronic}" target="blank"
-	     >&#xa0;[<span style="font-variant:small-caps" >link</span>]</a>
-	</xsl:if>
-      </td>
-    </tr>
-    <xsl:if test="string-length(/*/md:publication_history)">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Publication history 
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:publication_history"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	Collection 
-      </td>
-      <!-- COLLECTION INFORMATION HAS TO BE ADDED, HERE USED OWNER -->
-      <td class="xmd" width="500">
-	<xsl:value-of select="/*/md:owner"/>
-      </td>
-    </tr>
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	Museum no. 
-      </td>
-      <td class="xmd" width="500">
-	<xsl:value-of select="/*/md:museum_no"/>
-      </td>
-    </tr>
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	Excavation no. 
-      </td>
-      <td class="xmd" width="500">
-	<xsl:value-of select="/*/md:excavation_no"/>
-      </td>
-    </tr>
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	ORACCI no. 
-      </td>
-      <td class="xmd" width="500">
-	<xsl:value-of select="/*/@xml:id"/>
-      </td>
-    </tr>
-    <xsl:if test="string-length(/*/md:provenience) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Provenience 
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:provenience"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:genre) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Genre 
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:genre"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:subgenre) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Subgenre 
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:subgenre"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <tr align="left" valign="top">
-      <td class="xmd" width="150" align="left">
-	Period 
-      </td>
-      <td class="xmd" width="500">
-	<xsl:value-of select="/*/md:period"/>
-      </td>
-    </tr>
-    <xsl:if test="string-length(/*/md:dateoforigin) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Date of Origin 
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:dateoforigin"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:display_size) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Measurements (mm)
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:display_size"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:sealinfo) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Seal information
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:sealinfo"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:displaysize) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Measurements (mm)
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:displaysize"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:authorremarks) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Author remarks
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:authorremarks"/>
-	</td>
-      </tr>
-    </xsl:if>
-    <xsl:if test="string-length(/*/md:collation) > 0">
-      <tr align="left" valign="top">
-	<td class="xmd" width="150" align="left">
-	  Collation
-	</td>
-	<td class="xmd" width="500">
-	  <xsl:value-of select="/*/md:collation"/>
-	</td>
-      </tr>
-    </xsl:if>
+<xsl:template name="call-back">
+  <h1><xsl:value-of select="$project"/> OID History</h1>
+  <xsl:call-template name="about"/>
+  <xsl:call-template name="oid-group">
+    <xsl:with-param name="nodes" select="*/add"/>
+    <xsl:with-param name="title" select="'Additions'"/>
+  </xsl:call-template>
+  <xsl:call-template name="oid-group">
+    <xsl:with-param name="nodes" select="*/ren"/>
+    <xsl:with-param name="title" select="'Renamings'"/>
+  </xsl:call-template>
+  <xsl:call-template name="oid-group">
+    <xsl:with-param name="nodes" select="*/mrg"/>
+    <xsl:with-param name="title" select="'Mergers'"/>
+  </xsl:call-template>
+  <xsl:call-template name="oid-group">
+    <xsl:with-param name="nodes" select="*/del"/>
+    <xsl:with-param name="title" select="'Deletions'"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="oid-group">
+  <xsl:param name="nodes"/>
+  <xsl:param name="title"/>
+  <h2><xsl:value-of select="$title"/></h2>
+  <table>
+    <colgroup>
+      <col style="width: 10%"/>
+      <col style="width: 10%"/>
+      <col style="width: 30%"/>
+      <col style="width: 30%"/>
+      <col style="width: 20%"/>
+    </colgroup>
+    <xsl:apply-templates select="$nodes"/>
   </table>
+</xsl:template>
+
+<xsl:template match="add">
+  <tr>
+    <td><xsl:value-of select="@day"/></td>
+    <td><a href="/{$project}/{@oid}"><xsl:value-of select="@oid"/></a></td>
+    <td><xsl:value-of select="@cgp"/></td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="ren">
+  <tr>
+    <td><xsl:value-of select="@day"/></td>
+    <td><a href="/{$project}/{@oid}"><xsl:value-of select="@oid"/></a></td>
+    <td><xsl:value-of select="@cgp"/></td>
+    <td><xsl:value-of select="@now-cgp"/></td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="mrg">
+  <tr>
+    <td><xsl:value-of select="@day"/></td>
+    <td><a href="/{$project}/{@now-oid}"><xsl:value-of select="@now-oid"/></a></td>
+    <td><xsl:value-of select="@cgp"/></td>
+    <td><xsl:value-of select="@now-cgp"/></td>
+  </tr>
+</xsl:template>
+
+<xsl:template match="del">
+  <tr>
+    <td><xsl:value-of select="@day"/></td>
+    <td><xsl:value-of select="@oid"/></td>
+    <td><xsl:value-of select="@cgp"/></td>
+    <xsl:choose>
+      <xsl:when test="string-length(@why-oid) > 0">
+	<td>
+	  <a href="/{$project}/{@why-oid}">
+	    <xsl:value-of select="@why"/>
+	  </a>
+	</td>
+      </xsl:when>
+      <xsl:otherwise>
+	<td><xsl:value-of select="@why"/></td>
+      </xsl:otherwise>
+    </xsl:choose>
+  </tr>
+</xsl:template>
+
+<xsl:template name="about">
+  
 </xsl:template>
 
 </xsl:stylesheet>
