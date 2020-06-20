@@ -253,7 +253,7 @@ sas_asa_load(const char *fname)
 			  char *tmp = malloc(strlen(cand)+strlen(head)+2);
 			  ++cand;
 			  sprintf(tmp,"%s>%s",cand,head);
-			  hash_add(sip->nodumb,strdup(tmp),&one);
+			  hash_add(sip->nodumb,xstrdup(tmp),&one);
 			  free(tmp);
 			}
 		      if ((candlist = hash_find(sip->cand,cand)))
