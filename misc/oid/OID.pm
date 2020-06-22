@@ -330,45 +330,61 @@ sub oid_dump {
 
 sub oid_load {
     if (-r $oid_file) {
+	my @later = ();
 	open(O,$oid_file) || die "$0: unable to open $oid_file for read\n";
 	$errfile = $oid_file;
 	while (<O>) {
 	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
-	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
-	    if ($key eq 'deleted') {
-		++$oid_deletions{$oid};
-#		next;
-	    } elsif ($key =~ /^o\d+$/) {
-		$oid_redirects{$oid} = $key;
-#		next;
-	    }
-#	    $oid_top = $oid if $oid gt $oid_top;
-	    # load only validations--these don't apply when reading check data
-	    if ($oid_keys{$oid}) {
-		oid_bad("duplicate OID $oid; already defined for $oid_keys{$oid} in domain $oid_doms{$oid}");
-		next;
+	    if ($typ eq 'sense') {
+		push @later, [ $.,$oid,$dom,$key,$typ,$ext ];
 	    } else {
-		$oid_keys{$oid} = $key;
+		oid_validate($oid,$dom,$key,$typ,$ext) && next;
 	    }
-	    if ($oid_key{$dom,$key}) {
-		oid_bad("duplicate KEY $key; already defined in DOMAIN $dom for $oid_key{$dom,$key}");
-		next;
-	    }
-	    if ($oid =~ /^o\d+$/) {
-		$oid_ids{$dom,$key} = $oid;
-	    }
-	    $oid_doms{$oid} = $dom;
-	    $oid_typs{$oid} = $typ;
-	    $oid_key{$dom,$key} = $oid unless $oid_deletions{$oid} || $oid_redirects{$oid};
-	    $oid_ext{$dom,$key} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
+	    do_entry($oid,$dom,$key,$typ,$ext);
 	}
 	close(O);
 	$errfile = $keyfile || '<keys>';
+	foreach my $l (@later) {
+	    my($ln,$oid,$dom,$key,$typ,$ext) = @$l;
+	    $. = $ln;
+	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
+	    do_entry($oid,$dom,$key,$typ,$ext);
+	}
     }
     # print Dumper \%oid_deletions;
     # print Dumper \%oid_redirects;
 }
 
+sub do_entry {
+    my($oid,$dom,$key,$typ,$ext) = @_;
+    if ($key eq 'deleted') {
+	++$oid_deletions{$oid};
+	#		next;
+    } elsif ($key =~ /^o\d+$/) {
+	$oid_redirects{$oid} = $key;
+	#		next;
+    }
+    #	    $oid_top = $oid if $oid gt $oid_top;
+    # load only validations--these don't apply when reading check data
+    if ($oid_keys{$oid}) {
+	oid_bad("duplicate OID $oid; already defined for $oid_keys{$oid} in domain $oid_doms{$oid}");
+	next;
+    } else {
+	$oid_keys{$oid} = $key;
+    }
+    if ($oid_key{$dom,$key}) {
+	oid_bad("duplicate KEY $key; already defined in DOMAIN $dom for $oid_key{$dom,$key}");
+	next;
+    }
+    if ($oid =~ /^o\d+$/) {
+	$oid_ids{$dom,$key} = $oid;
+    }
+    $oid_doms{$oid} = $dom;
+    $oid_typs{$oid} = $typ;
+    $oid_key{$dom,$key} = $oid unless $oid_deletions{$oid} || $oid_redirects{$oid};
+    $oid_ext{$dom,$key} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
+}
+    
 sub oid_next_available {
     1 while $oid_keys{++$oid_top};
 #    warn "$0: oid_next_available = $oid_top\n";
@@ -408,7 +424,18 @@ sub oid_validate {
 	    }
 	    return oid_bad("OID $oid has no type") unless $typ;
 	    if ($typ_has_ext{$typ}) {
-		return oid_bad("type $typ has no extended data") unless $ext;
+		my $xmsg = '';
+		if ($typ eq 'sense') {
+		    my $cgp = $key;
+		    $cgp =~ s#//.*?](\S+)'.*$#]$1#;
+		    my $cgp_id = $oid_key{$dom,$cgp};
+		    if ($cgp_id) {
+			$xmsg = "--expected\t$oid\t$dom\t$key\t$typ\t$cgp_id";
+		    } else {
+			$xmsg = "--expected $cgp = $cgp_id but no WORD OID";
+		    }
+		}
+		return oid_bad("type $typ has no extended data$xmsg") unless $ext;
 	    }
 	}
     } else {
