@@ -1,3 +1,4 @@
+*.err
 serve-status.sh
 .oraccuser
 .oraccgroup
@@ -165,6 +166,7 @@ c/otf/ox/atffile.c
 c/otf/ox/gdlme2
 c/otf/ox/initterm.c
 c/otf/ox/log
+c/otf/ox/sigx
 c/otf/ox/odt_writer.c
 c/otf/ox/ox
 c/otf/ox/post_option_setup.c
@@ -438,6 +440,7 @@ misc/tei/teicorpus.xsl
 misc/tei/teitexts.sh
 misc/tei/xtf2tei.xsl
 misc/tex/mk-oracctex.sh
+misc/tex/oracctex
 misc/texts/harvest-links.plx
 misc/texts/proj-linkbase.sh
 misc/texts/tlit-sort.sh

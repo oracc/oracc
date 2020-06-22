@@ -1,7 +1,0 @@
-#!/bin/sh
-
-TEXINPUTS=$TEXINPUTS:/Users/stinney/orc/lib/tex/:. \
-    TEXFORMATS=/Users/stinney/orc/lib/tex/:. \
-    TEXFONTS=/Users/stinney/orc/lib/tex:/Users/stinney/orc/lib/tex/fonts:. \
-    PATH=$PATH:/usr/local/texlive/2018/bin/x86_64-darwin \
-    xetex -kpathsea-debug=12 -interaction=batchmode -papersize=letter -fmt oracctex $* >xetex.out 2>xetex.err
