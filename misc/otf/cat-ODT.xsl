@@ -71,6 +71,8 @@
   <name n="mus_s"    sig="n">Museum<oracc:br/>Number</name>
   <name n="gives2"   sig="o">Lines<oracc:br/>Preserved</name>
   <name n="source2"  sig="p"><oracc:br/>Source</name>
+  <name n="prov_l"   sig="q">Provenance</name>
+  <name n="prov_m"   sig="r">Provenance</name>
 </xsl:template>
 
 <xsl:template match="oracc:data[@oracc:type='catalog' or @oracc:type='cattable']">
