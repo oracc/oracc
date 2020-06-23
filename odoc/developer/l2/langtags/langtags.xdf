@@ -136,6 +136,7 @@ Unicode web site</a>.</p>
 <tr><td class="cookbook">Xpeo</td><td>030</td><td>Old Persian cuneiform</td></tr>
 <tr><td class="cookbook">Xsux</td><td>020</td><td>Sumero-Akkadian cuneiform</td></tr>
 <tr><td class="cookbook">Ugar</td><td>040</td><td>Ugaritic cuneiform</td></tr>
+<tr><td class="cookbook"></td><td>080</td><td>Anatolian hieroglphs (including Luwian)</td></tr>
 </tbody>
 </table>
 
@@ -169,6 +170,7 @@ needs can be met through the general private use tags.</p>
 <tr><td class="cookbook">947</td><td>Sumerian in syllabic/unorthographic writing</td></tr>
 <tr><td class="cookbook">948</td><td>Sumerian in the Udgalnun writing system</td></tr>
 <tr><td class="cookbook">949</td><td>Normalized Akkadian in Latin script</td></tr>
+<tr><td class="cookbook">980</td><td>Urartian hieroglphs</td></tr>
 </tbody>
 </table>
 

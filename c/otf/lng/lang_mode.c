@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "langmode.h"
 
-#define TOTAL_KEYWORDS 26
+#define TOTAL_KEYWORDS 27
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 3
-#define MIN_HASH_VALUE 3
-#define MAX_HASH_VALUE 53
-/* maximum key range = 51, duplicates = 0 */
+#define MIN_HASH_VALUE 16
+#define MAX_HASH_VALUE 83
+/* maximum key range = 68, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,34 +55,34 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 10,  5,
-       1,  3, 20, 30, 18, 28,  5,  0, 21, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54, 54, 54, 54,
-      54, 54, 54, 54, 54, 54, 54
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84,  3, 30,
+      10,  5,  0, 30, 16,  1, 18, 25, 10, 11,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
+      84, 84, 84, 84, 84, 84, 84, 84
     };
-  return len + asso_values[(unsigned char)str[2]+1] + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]];
+  return len + asso_values[(unsigned char)str[2]+2] + asso_values[(unsigned char)str[1]] + asso_values[(unsigned char)str[0]];
 }
 
 struct langmode *
@@ -92,77 +92,81 @@ lang_mode (str, len)
 {
   static struct langmode wordlist[] =
     {
-      {""}, {""}, {""},
-#line 32 "lang_mode.g"
-      {"998", m_graphemic},
-      {""}, {""},
-#line 25 "lang_mode.g"
-      {"938", m_graphemic},
-      {""},
-#line 19 "lang_mode.g"
-      {"918", m_graphemic},
-#line 21 "lang_mode.g"
-      {"920", m_graphemic},
-      {""},
-#line 24 "lang_mode.g"
-      {"937", m_graphemic},
-      {""},
-#line 18 "lang_mode.g"
-      {"917", m_graphemic},
-#line 11 "lang_mode.g"
-      {"901", m_graphemic},
-      {""},
-#line 12 "lang_mode.g"
-      {"902", m_graphemic},
-      {""},
-#line 10 "lang_mode.g"
-      {"900", m_graphemic},
-#line 7 "lang_mode.g"
-      {"020", m_graphemic},
-      {""},
-#line 8 "lang_mode.g"
-      {"030", m_graphemic},
-      {""},
-#line 30 "lang_mode.g"
-      {"948", m_graphemic},
-#line 22 "lang_mode.g"
-      {"935", m_graphemic},
-      {""},
-#line 16 "lang_mode.g"
-      {"915", m_graphemic},
-      {""},
-#line 29 "lang_mode.g"
-      {"947", m_graphemic},
-#line 20 "lang_mode.g"
-      {"919", m_graphemic},
-      {""},
-#line 15 "lang_mode.g"
-      {"905", m_graphemic},
-      {""},
-#line 13 "lang_mode.g"
-      {"903", m_graphemic},
-#line 23 "lang_mode.g"
-      {"936", m_graphemic},
-      {""},
-#line 17 "lang_mode.g"
-      {"916", m_graphemic},
-      {""},
+      {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
+      {""}, {""}, {""}, {""}, {""}, {""}, {""},
 #line 9 "lang_mode.g"
       {"040", m_alphabetic},
+      {""}, {""}, {""}, {""},
+#line 8 "lang_mode.g"
+      {"030", m_graphemic},
+      {""}, {""}, {""}, {""},
+#line 7 "lang_mode.g"
+      {"020", m_graphemic},
       {""}, {""},
 #line 27 "lang_mode.g"
       {"945", m_graphemic},
       {""},
-#line 14 "lang_mode.g"
-      {"904", m_graphemic},
+#line 12 "lang_mode.g"
+      {"902", m_graphemic},
+#line 15 "lang_mode.g"
+      {"905", m_graphemic},
+      {""},
+#line 22 "lang_mode.g"
+      {"935", m_graphemic},
+      {""},
+#line 11 "lang_mode.g"
+      {"901", m_graphemic},
+      {""},
+#line 30 "lang_mode.g"
+      {"948", m_graphemic},
 #line 31 "lang_mode.g"
       {"949", m_normalized},
-      {""}, {""}, {""}, {""}, {""}, {""},
+      {""},
+#line 10 "lang_mode.g"
+      {"900", m_graphemic},
+      {""},
+#line 25 "lang_mode.g"
+      {"938", m_graphemic},
+#line 26 "lang_mode.g"
+      {"944", m_graphemic},
+      {""},
 #line 28 "lang_mode.g"
       {"946", m_graphemic},
+#line 14 "lang_mode.g"
+      {"904", m_graphemic},
+#line 21 "lang_mode.g"
+      {"920", m_graphemic},
+      {""}, {""},
+#line 23 "lang_mode.g"
+      {"936", m_graphemic},
       {""},
-#line 26 "lang_mode.g"
-      {"944", m_graphemic}
+#line 29 "lang_mode.g"
+      {"947", m_graphemic},
+      {""}, {""},
+#line 32 "lang_mode.g"
+      {"980", m_graphemic},
+      {""},
+#line 24 "lang_mode.g"
+      {"937", m_graphemic},
+#line 16 "lang_mode.g"
+      {"915", m_graphemic},
+      {""},
+#line 13 "lang_mode.g"
+      {"903", m_graphemic},
+      {""},
+#line 33 "lang_mode.g"
+      {"998", m_graphemic},
+      {""}, {""}, {""}, {""},
+#line 19 "lang_mode.g"
+      {"918", m_graphemic},
+#line 20 "lang_mode.g"
+      {"919", m_graphemic},
+      {""}, {""}, {""}, {""}, {""}, {""},
+#line 17 "lang_mode.g"
+      {"916", m_graphemic},
+      {""}, {""}, {""}, {""}, {""}, {""},
+#line 18 "lang_mode.g"
+      {"917", m_graphemic}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)

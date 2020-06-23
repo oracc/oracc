@@ -14,7 +14,6 @@ qca, "020", "qca", m_sign, m_lang, c_qca, LF_NORM|LF_SAC
 qpc, "900", "qpc", m_sign, m_lang, c_qpc, LF_NORM
 qpe, "938", "qpe", m_sign, m_lang, c_qpe, LF_NORM
 elx, "020", "sux", m_sign, m_logo, c_elx, LF_BASE|LF_SAC
-hlu, "951", "hlu", m_logo, m_logo, c_hlu, LF_NORM
 peo, "030", "peo", m_logo, m_lang, c_peo, LF_NORM
 plq, "020", "plq", m_logo, m_lang, c_plq, LF_NORM
 qam, "020", "qam", m_sign, m_lang, c_qam, LF_NORM|LF_SAC
@@ -23,7 +22,9 @@ qeb, "020", "qeb", m_sign, m_lang, c_qeb, LF_NORM|LF_SAC
 xht, "020", "sux", m_logo, m_logo, c_xht, LF_NORM|LF_SAC|LF_LOGO
 xhu, "020", "sux", m_logo, m_logo, c_xhu, LF_NORM|LF_SAC|LF_LOGO
 xur, "020", "sux", m_logo, m_logo, c_xur, LF_NORM|LF_SAC|LF_LOGO
+qur, "980", "sux", m_logo, m_logo, c_qur, 
 xlu, "020", "xlu", m_logo, m_logo, c_xlu, LF_NORM|LF_SAC
+hlu, "080", "hlu", m_logo, m_logo, c_hlu, 
 uga, "020", "uga", m_logo, m_lang, c_uga, LF_NORM|LF_SAC
 qpn, "999", "qpn", m_sign, m_lang, c_qpn, LF_NORM|LF_SAC
 %%
