@@ -270,7 +270,7 @@ t {
 	@found_bases_ok = @$found_bases;
     }
     if ($#parses == 0) {
-	my($base,$cont,$morph,$stem) = ($$found_bases[0], get_info($parses[0]));
+	my($base,$cont,$morph,$stem) = ($$found_bases[0], ORACC::SMA::Base::get_info($parses[0]));
 	my $newbase = ($try_number ? '+' : '');
 	clear_V_hack($l);
 	if ($morph_disambig) {
@@ -403,12 +403,14 @@ t {
         if (!$glossary || $glossary_last) {
 	    if ($#found_bases_ok < 0) {
 		if ($b) {
-		    new_sma_warn("`$b' is not a valid base for $f=$l");
+		    Encode::_utf8_on($b);
+		    new_sma_warn("no parses found for base `$b' and form/lem $f=$l");
 		} else {
 		    warn "sma: $f=$l no acceptable bases found in form\n";
 		}
 	    } else {
 		if ($b) {
+		    Encode::_utf8_on($b);
 		    new_sma_warn("no parse for $f $l $b");
 		} else {
 		    new_sma_warn("$f=$l no parse found for @found_bases_ok\n");
@@ -475,44 +477,6 @@ disambig_morph {
 	}
     }
     ($f,$m);
-}
-
-sub
-get_info {
-    my %p = %{$_[0]};
-    my ($cont,$morph) = ('0','');
-    if ($p{'vpr'}) {
-	my $vpr_ref = $p{'vpr'};
-	$morph .= ORACC::SMA::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'graph'});
-	$morph .= ':';
-    }
-    $morph .= '~';
-    if ($p{'vsf'}) {
-	my $vsf_ref = $p{'vsf'};
-	$cont = ORACC::SMA::Display::auslaut($$vsf_ref{'vsf'}) || '0';
-	if ($cont =~ s/\*=/=/) {
-	    $morph .= ";(a).";
-	} else {
-	    $morph .= ';';
-	}
-	$morph .= ORACC::SMA::Display::mcat($$vsf_ref{'vsf'});
-    }
-    if ($p{'nsf'}) {
-	my $nsf_ref = $p{'nsf'};
-	$morph .= ',';
-	$morph .= ORACC::SMA::Display::mcat($$nsf_ref{'nsf'});
-	$cont = ORACC::SMA::Display::auslaut($$nsf_ref{'nsf'}) || '0';
-    }
-    if ($p{'isf'}) {
-	my $isf_ref = $p{'isf'};
-	$morph .= '!';
-	$morph .= ORACC::SMA::Display::mcat($$isf_ref{'isf'});
-	$cont = ORACC::SMA::Display::auslaut($$isf_ref{'isf'}) || '0';
-    }
-    if ($cont && !$p{'backup'}) {
-	$cont =~ s/=/=+/;
-    }
-    ($cont,$morph,$p{'stem'}||'');
 }
 
 #sub

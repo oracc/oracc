@@ -78,6 +78,18 @@ sub tlit_sig {
     return $s;
 }
 
+# Use this when you know the input $test string is clean and
+# conforms to OGSL sign name rules
+sub tlit_sig_clean {
+    my($context,$test) = @_;
+    my $s = _signature($context,tlitsplit($test,0));
+    if ($s =~ /q/ && $test =~ /\|/) {
+	$test =~ tr/|//d;
+	$s = _signature($context,tlitsplit($test,0));
+    }
+    return $s;
+}
+
 sub
 init {
     return if $loaded;

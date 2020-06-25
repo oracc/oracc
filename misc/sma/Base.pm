@@ -20,7 +20,7 @@ binmode STDIN, ':utf8';
 $ORACC::SMA::no_external_bases = 0;
 $ORACC::SMA::try_only_zero = 0;
 $ORACC::SMA::period = '';
-$ORACC::SMA::verbose = 1;
+$ORACC::SMA::verbose = 0;
 
 my $sma_debug = 0;
 my %bases = ();
@@ -420,6 +420,44 @@ uniq {
 	push @n, $a unless $seen{$a}++;
     }
     return @n;
+}
+
+sub
+get_info {
+    my %p = %{$_[0]};
+    my ($cont,$morph) = ('0','');
+    if ($p{'vpr'}) {
+	my $vpr_ref = $p{'vpr'};
+	$morph .= ORACC::SMA::Display::mcat($$vpr_ref{'vpr'},$$vpr_ref{'graph'});
+	$morph .= ':';
+    }
+    $morph .= '~';
+    if ($p{'vsf'}) {
+	my $vsf_ref = $p{'vsf'};
+	$cont = ORACC::SMA::Display::auslaut($$vsf_ref{'vsf'}) || '0';
+	if ($cont =~ s/\*=/=/) {
+	    $morph .= ";(a).";
+	} else {
+	    $morph .= ';';
+	}
+	$morph .= ORACC::SMA::Display::mcat($$vsf_ref{'vsf'});
+    }
+    if ($p{'nsf'}) {
+	my $nsf_ref = $p{'nsf'};
+	$morph .= ',';
+	$morph .= ORACC::SMA::Display::mcat($$nsf_ref{'nsf'});
+	$cont = ORACC::SMA::Display::auslaut($$nsf_ref{'nsf'}) || '0';
+    }
+    if ($p{'isf'}) {
+	my $isf_ref = $p{'isf'};
+	$morph .= '!';
+	$morph .= ORACC::SMA::Display::mcat($$isf_ref{'isf'});
+	$cont = ORACC::SMA::Display::auslaut($$isf_ref{'isf'}) || '0';
+    }
+    if ($cont && !$p{'backup'}) {
+	$cont =~ s/=/=+/;
+    }
+    ($cont,$morph,$p{'stem'}||'');
 }
 
 1;

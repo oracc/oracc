@@ -33,7 +33,7 @@ my @nsm = qw/
     ra ar ir ur ur2 ur₂
     ta 
     ce3 še₃ ac aš aš₂ ec ec2 eš₂ ic iš uc uš
-    gin7 gin₇ de ŋen
+    gen₇ gin7 gin₇ de ŋen
     me men3 men₃ jen mec meš
     /;
 
@@ -79,7 +79,7 @@ my %poss_data = (
 my @post = qw/
     e
     a
-    gi gin7 gin₇ de ŋen
+    gi gen₇ gin7 gin₇ de ŋen
     ce3 še₃ ac aš ec eš ec2 eš₂ ic iš uc uš
     ra ar er ir ur ur2 ur₂
     da
@@ -96,6 +96,7 @@ my %post_data = (
     'a'=>'a',
     'gin7'=>'gin',
     'ŋen'=>'gin',
+    'gen₇'=>'gin',
     'gin₇'=>'gin',
     'gi-in'=>'gin',
     'de-ej3'=>'gin',
