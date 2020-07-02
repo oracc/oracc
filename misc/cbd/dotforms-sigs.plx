@@ -12,7 +12,7 @@ die unless $file;
 open(F,$file) || die;
 while (<F>) {
     chomp;
-    my($cfgw,$form,$base,$cont,$morph) = (m#^(\S+)\s+\@form\s+(\S+)\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
+    my($cfgw,$form,$base,$cont,$morph) = (m#^(.*)\t\@form\s+(\S+)\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
     $cfgw =~ s#\[(.*?)\]#[$1//$1]#;
     $cfgw =~ s/\](\S+)/\]$1'$1/;
     $cont = '' unless $cont; $cont =~ s/^\s*//;

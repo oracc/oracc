@@ -3,10 +3,12 @@ use warnings; use strict;
 
 my $keys = '';
 my %keys = ();
+my $psort = 0;
 
 use Getopt::Long;
 GetOptions(
     'keys:s'=>\$keys,
+    P=>\$psort,
     );
 
 if ($keys) {
@@ -26,7 +28,7 @@ my @file = (<>);
 foreach (@file) {
     s/^[\n\t ]*\&?/&/;
     s/\&$//;
-    if ($keys) {
+    if ($keys || $psort) {
 	/\&([PQX]\d+)/;
 	$texts{$1} = $_;
     } else {
@@ -36,7 +38,11 @@ foreach (@file) {
 }
  
 
-if ($keys) {
+if ($psort) {
+    foreach my $t (sort keys %texts) {
+	print $texts{$t}, "\n";
+    }    
+} elsif ($keys) {
     foreach my $t (sort { &kcmp } keys %texts) {
 	print $texts{$t};
     }    
