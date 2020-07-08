@@ -137,7 +137,7 @@ sub xml_error {
 }
 
 sub xml_header {
-    print "Content-type: text/xml; charset=utf-8\n\n";
+    print "Content-type: text/xml; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n";
 }
 
 1;
