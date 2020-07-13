@@ -267,8 +267,12 @@ if ($p{'item'} == 0) {
 }
 
 # echo the template including outline/content as we go
-print "Content-type: text/html; Encoding=utf-8\n\n"
-    unless $p{'noheader'};
+if ($p{'project'} eq 'neo') {
+    print "Content-type: text/html; Encoding=utf-8\nAccess-Control-Allow-Origin: *\n\n"    
+} else {
+    print "Content-type: text/html; Encoding=utf-8\n\n"
+	unless $p{'noheader'};
+}
 
 run_form_maker("@@ORACC@@/lib/data/p3-template.xml");
 
