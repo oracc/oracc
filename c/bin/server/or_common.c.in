@@ -139,7 +139,10 @@ or_find_pqx_xtr(const char *project, const char *pqid, const char *code, const c
 void
 print_hdr(void)
 {
-  fputs("Content-type: text/html; charset=utf-8\n\n", stdout);
+  if (!strcmp(project, "neo"))
+    fputs("Content-type: text/html; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
+  else
+    fputs("Content-type: text/html; charset=utf-8\n\n", stdout);
   fflush(stdout);
 }
 
