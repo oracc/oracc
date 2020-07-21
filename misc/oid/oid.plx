@@ -12,6 +12,8 @@ oid_load();
 
 if (oid_check_mode()) {
     oid_check();
+} elsif (oid_dump_mode()) {
+    # fall through to oid_finish
 } elsif (oid_edit_mode()) {
     oid_edit();
 } else {

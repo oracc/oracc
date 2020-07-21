@@ -2,9 +2,10 @@ package ORACC::OID;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/oid_args oid_check oid_check_mode oid_edit oid_edit_mode
-    oid_fail oid_finish oid_init oid_load oid_keys oid_dump
-    oid_load_domain oid_lookup oid_merge oid_rename oid_status/;
+@EXPORT = qw/oid_args oid_check oid_check_mode oid_dump_mode oid_edit
+    oid_edit_mode oid_fail oid_finish oid_init oid_load oid_keys
+    oid_dump oid_load_domain oid_lookup oid_merge oid_rename
+    oid_status/;
 
 $ORACC::OID::verbose = 0;
 
@@ -33,6 +34,7 @@ my $assign = 0;
 my $check = 0;
 my $checking = '';
 my $domain = '';
+my $dumpout = 0; # does an identity dump to stdout for testing load/dump
 my $edit = '';
 my @edits = '';
 my $errfile = '';
@@ -65,6 +67,7 @@ sub oid_args {
 	assign  => \$assign,
 	check => \$check,
 	'domain:s'  => \$domain,
+	dump => \$dumpout,
 	edit  => \$edit,
 	'keyfile:s' => \$keyfile,
 	nowrite => \$nowrite,
@@ -81,7 +84,7 @@ sub oid_args {
 	$oid_file = $arg_oid_file;
     }
 
-    if ($check) {
+    if ($check || $dumpout) {
     } elsif ($edit) {
 	@edits = (<>);
 	chomp @edits;
@@ -99,6 +102,10 @@ sub oid_args {
 
 sub oid_check_mode {
     $check;
+}
+
+sub oid_dump_mode {
+    $dumpout;
 }
 
 sub oid_edit_mode {
@@ -175,7 +182,7 @@ sub oid_finish {
 	oid_fail("errors in processing. Stop.");
     }
 
-    if ($edit) {
+    if ($dumpout || $edit) {
 	oid_dump();
     } elsif ($assign) {
 	oid_add();
@@ -286,10 +293,12 @@ sub oid_check {
 sub oid_dump {
     return if $status || $nowrite;
     $oid_file = $outfile if $outfile;
-    open(T,">$oid_file");
-    $oid_file =~ s/tab$/xml/ || ($oid_file .= '.xml');
-    open(X,">$oid_file");
-    print X '<oids>';
+    unless ($dumpout) {
+	open(T,">$oid_file"); select T;
+	$oid_file =~ s/tab$/xml/ || ($oid_file .= '.xml');
+	open(X,">$oid_file");
+	print X '<oids>';
+    }
     foreach my $oid (sort {$a cmp $b} keys %oid_keys) {
 	my @e = ();
 	my $e1 = '';
@@ -310,13 +319,17 @@ sub oid_dump {
 	    $e[0] = $oid_typs{$oid};
 	    $e1 = '';
 	}
-	print T "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
-	my $xk = xmlify($oid_keys{$oid});
-	print X "<oid id=\"$oid\" dom=\"$oid_doms{$oid}\" key=\"$xk\"/>";
+	print "$oid\t$oid_doms{$oid}\t$oid_keys{$oid}\t$e[0]\t$e1\n";
+	unless ($dumpout) {
+	    my $xk = xmlify($oid_keys{$oid});
+	    print X "<oid id=\"$oid\" dom=\"$oid_doms{$oid}\" key=\"$xk\"/>";
+	}
     }
-    close(T);
-    print X '</oids>';
-    close(X);
+    unless ($dumpout) {
+	close(T);
+	print X '</oids>';
+	close(X);
+    }
 }
 
 # OID FILE FORMAT
@@ -339,8 +352,8 @@ sub oid_load {
 		push @later, [ $.,$oid,$dom,$key,$typ,$ext ];
 	    } else {
 		oid_validate($oid,$dom,$key,$typ,$ext) && next;
+		do_entry($oid,$dom,$key,$typ,$ext);
 	    }
-	    do_entry($oid,$dom,$key,$typ,$ext);
 	}
 	close(O);
 	$errfile = $keyfile || '<keys>';
@@ -357,25 +370,25 @@ sub oid_load {
 
 sub do_entry {
     my($oid,$dom,$key,$typ,$ext) = @_;
+
     if ($key eq 'deleted') {
 	++$oid_deletions{$oid};
-	#		next;
     } elsif ($key =~ /^o\d+$/) {
 	$oid_redirects{$oid} = $key;
-	#		next;
     }
-    #	    $oid_top = $oid if $oid gt $oid_top;
-    # load only validations--these don't apply when reading check data
+
     if ($oid_keys{$oid}) {
 	oid_bad("duplicate OID $oid; already defined for $oid_keys{$oid} in domain $oid_doms{$oid}");
-	next;
+	return;
     } else {
 	$oid_keys{$oid} = $key;
     }
+
     if ($oid_key{$dom,$key}) {
 	oid_bad("duplicate KEY $key; already defined in DOMAIN $dom for $oid_key{$dom,$key}");
-	next;
+	return;
     }
+
     if ($oid =~ /^o\d+$/) {
 	$oid_ids{$dom,$key} = $oid;
     }

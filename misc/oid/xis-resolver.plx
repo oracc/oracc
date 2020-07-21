@@ -16,8 +16,8 @@ $page = 1 unless defined $page;
 $size = 25 unless $size;
 
 my $count = -1;
-my $projwdir = "/home/oracc/www/$proj";
-my $projpdir = "/home/oracc/pub/$proj";
+my $projwdir = "/Users/stinney/orc/www/$proj";
+my $projpdir = "/Users/stinney/orc/pub/$proj";
 my $tisfile = "$projpdir/cbd/$lang/$lang.tis";
 
 xml_error("bad page specification") unless $page==0 || $page =~ /^\d+/;
@@ -25,7 +25,7 @@ xml_error("bad size specification") unless $size==0 || $size =~ /^(25|50|100)$/;
 xml_error("bad mode specification") unless $mode eq 'xml' || $mode eq 'html';
 
 unless (-r $tisfile) {
-    xml_error("bad project in request") unless -d "/home/oracc/lib/$proj";
+    xml_error("bad project in request") unless -d "/Users/stinney/orc/lib/$proj";
     xml_error("bad language in request") unless -d "$projpdir/cbd/$lang";
     xml_error("no public language data") unless -d "$projpdir/cbd/$lang.tis";
 }
@@ -38,7 +38,7 @@ my $instances = "$xisdata/instances";
 
 unless (-r $instances) {
     xml_error("no web language data") unless -d "$projwdir/cbd/$lang";
-    $count = `/home/oracc/bin/xisdb $tisfile -c $xis`;
+    $count = `/Users/stinney/orc/bin/xisdb $tisfile -c $xis`;
     xml_error("bad xis in request") unless $count;
     my $xisdir = "$projwdir/cbd/$lang/xis";
     mkdir $xisdir unless -d $xisdir;
@@ -86,18 +86,18 @@ sub xis_xml {
     $htmlfile =~ s/lst$/html/;
     $xmlfile =~ s/lst$/xml/;
     unless (-r $xmlfile) {
-	system("/home/oracc/bin/wm -p$proj -l -i$list | /home/oracc/bin/ce_xtf -3 -l -p $proj >$xmlfile");
+	system("/Users/stinney/orc/bin/wm -p$proj -l -i$list | /Users/stinney/orc/bin/ce_xtf -3 -l -p $proj >$xmlfile");
 	system('xsltproc',
 	       '-stringparam', 'divwrap', 'yes',
 	       '-stringparam', 'fragment', 'yes',
 	       '-stringparam', 'project', $proj,
-	       '-o', $htmlfile, '/home/oracc/lib/scripts/p3-ce-HTML.xsl', $xmlfile)
+	       '-o', $htmlfile, '/Users/stinney/orc/lib/scripts/p3-ce-HTML.xsl', $xmlfile)
     }
     $xmlfile;
 }
 
 sub xis_init {
-    system("/home/oracc/bin/xisdb $tisfile $xis >$xisdata/instances");
+    system("/Users/stinney/orc/bin/xisdb $tisfile $xis >$xisdata/instances");
     open(C,">$xisdata/count"); print C $count; close(C);
 }
 
