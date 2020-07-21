@@ -38,11 +38,12 @@ my $dumpout = 0; # does an identity dump to stdout for testing load/dump
 my $edit = '';
 my @edits = '';
 my $errfile = '';
+my $ids = 'oid';
 my $keyfile = '';
 my @keys = ();
 my $nowrite = 0;
 my $oid_dir = "$ENV{'ORACC_BUILDS'}/oid";
-my $oid_file = "$oid_dir/oid.tab";
+my $oid_file = "$oid_dir/$ids.tab";
 my $oid_lock = "$oid_dir/.oidlock";
 my $outfile = '';
 my $project = '';
@@ -50,6 +51,10 @@ my @res = ();
 my $status = 0;
 my $stdout = 0;
 my $xid_template = 'x0000000';
+my $xids = 0;
+
+my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb xht xhu xur qur xlu hlu uga/;
+my %domains = (); @domains{@domains} = ();
 
 my %domain_authorities = (
     sux => 'epsd2',
@@ -74,10 +79,12 @@ sub oid_args {
 	'oidfile:s' => \$arg_oid_file,
 	'outfile:s' => \$outfile,
 	'project:s' => \$project,
+	x => \$xids,
 	);
 
     oid_fail("must give project with -project") unless $project;
     oid_fail("must give domain with -domain") unless $domain;
+    oid_fail("unknown domain $domain") unless exists $domains{$domain};
 
     if ($arg_oid_file) {
 	$oid_lock = '';
@@ -97,6 +104,11 @@ sub oid_args {
 	    @keys = (<>);
 	}
 	chomp @keys;
+	if ($xids) {
+	    $ids = 'xid';
+	    $oid_top = $xid_template;
+	    $arg_oid_file = 'xid.tab' unless $arg_oid_file;
+	}
     }
 }
 
@@ -118,7 +130,7 @@ sub oid_load_domain {
 
 sub oid_init {
     my $d = shift @_;
-    if (open(O, "$ENV{'ORACC_BUILDS'}/oid/oid.tab")) {
+    if (open(O, "$ENV{'ORACC_BUILDS'}/oid/$ids.tab")) {
 	if ($d) {
 	    while (<O>) {
 		my($oid,$dom,$key) = split(/\t/, $_);
@@ -184,7 +196,7 @@ sub oid_finish {
 
     if ($dumpout || $edit) {
 	oid_dump();
-    } elsif ($assign) {
+    } elsif ($assign || $xids) {
 	oid_add();
 	oid_dump();
     }
@@ -214,7 +226,7 @@ sub oid_fail {
 
 sub oid_add {
     oid_fail("project $project lacks authority to assign IDs in domain $domain")
-	unless $domain_authorities{$domain} eq $project;
+	unless $xids || $domain_authorities{$domain} eq $project;
 
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
@@ -224,7 +236,7 @@ sub oid_add {
 	$oid_keys{$this_oid} = $key;
 	$oid_doms{$this_oid} = $dom;
 	$oid_ids{$dom,$key} = $this_oid;
-	$oid_ext{$dom,$key} = [ $typ, $ext ];
+	$oid_ext{$this_oid} = [ $typ, $ext ];
 	push @res, "$key\t$this_oid\n";
     }
 }
@@ -302,8 +314,8 @@ sub oid_dump {
     foreach my $oid (sort {$a cmp $b} keys %oid_keys) {
 	my @e = ();
 	my $e1 = '';
-	if ($oid_ext{$domain,$oid_keys{$oid}}) {
-	    @e = @{$oid_ext{$domain,$oid_keys{$oid}}};
+	if ($oid_ext{$oid}) {
+	    @e = @{$oid_ext{$oid}};
 	    if ($e[0] eq 'sense') {
 		if ($e[1] !~ /^[ox]\d+/) {
 		    $e1 = $oid_ids{$oid_doms{$oid},$e[1]};
@@ -326,7 +338,7 @@ sub oid_dump {
 	}
     }
     unless ($dumpout) {
-	close(T);
+	close(T); select STDOUT;
 	print X '</oids>';
 	close(X);
     }
@@ -364,6 +376,7 @@ sub oid_load {
 	    do_entry($oid,$dom,$key,$typ,$ext);
 	}
     }
+    open(D,'>D'); print D Dumper \%oid_ext; close(D);
     # print Dumper \%oid_deletions;
     # print Dumper \%oid_redirects;
 }
@@ -395,7 +408,7 @@ sub do_entry {
     $oid_doms{$oid} = $dom;
     $oid_typs{$oid} = $typ;
     $oid_key{$dom,$key} = $oid unless $oid_deletions{$oid} || $oid_redirects{$oid};
-    $oid_ext{$dom,$key} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
+    $oid_ext{$oid} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
 }
     
 sub oid_next_available {
