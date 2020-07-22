@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/oid_args oid_check oid_check_mode oid_dump_mode oid_edit
-    oid_edit_mode oid_fail oid_finish oid_init oid_load oid_keys
+    oid_edit_mode oid_wants_mode oid_wants oid_fail oid_finish oid_init oid_load oid_keys
     oid_dump oid_load_domain oid_lookup oid_merge oid_rename
     oid_status/;
 
@@ -50,6 +50,7 @@ my $project = '';
 my @res = ();
 my $status = 0;
 my $stdout = 0;
+my $wants = 0; # read cbdoid input and output the ones that are wanted
 my $xid_template = 'x0000000';
 my $xids = 0;
 
@@ -80,11 +81,16 @@ sub oid_args {
 	'outfile:s' => \$outfile,
 	'project:s' => \$project,
 	x => \$xids,
+	w => \$wants, 
 	);
 
     oid_fail("must give project with -project") unless $project;
     oid_fail("must give domain with -domain") unless $domain;
     oid_fail("unknown domain $domain") unless exists $domains{$domain};
+
+    if ($xids) {
+	$oid_file = 'xid.tab' unless $arg_oid_file;
+    }
 
     if ($arg_oid_file) {
 	$oid_lock = '';
@@ -107,7 +113,7 @@ sub oid_args {
 	if ($xids) {
 	    $ids = 'xid';
 	    $oid_top = $xid_template;
-	    $arg_oid_file = 'xid.tab' unless $arg_oid_file;
+	    $oid_file = $arg_oid_file = 'xid.tab' unless $arg_oid_file;
 	}
     }
 }
@@ -122,6 +128,10 @@ sub oid_dump_mode {
 
 sub oid_edit_mode {
     $edit;
+}
+
+sub oid_wants_mode {
+    $wants;
 }
 
 sub oid_load_domain {
@@ -275,22 +285,6 @@ sub oid_edit {
     }
 }
 
-sub oid_lock {
-    if (-r $oid_lock) {
-	my $ntries = 0;
-	while (1) {
-	    if ($ntries++ == 3) {
-		warn "$0: removing stale lock file\n";
-		unlink $oid_lock;
-	    }
-	    sleep 5;
-	}
-    }
-    open OUT, '>$oid_lock';
-    print OUT $$;
-    close OUT;
-}
-
 sub oid_check {
     $checking = 1;
     open(O,$oid_file);
@@ -410,7 +404,23 @@ sub do_entry {
     $oid_key{$dom,$key} = $oid unless $oid_deletions{$oid} || $oid_redirects{$oid};
     $oid_ext{$oid} = [ $typ, $ext ] unless $oid_deletions{$oid} || $oid_redirects{$oid};
 }
-    
+
+sub oid_lock {
+    if (-r $oid_lock) {
+	my $ntries = 0;
+	while (1) {
+	    if ($ntries++ == 3) {
+		warn "$0: removing stale lock file\n";
+		unlink $oid_lock;
+	    }
+	    sleep 5;
+	}
+    }
+    open OUT, '>$oid_lock';
+    print OUT $$;
+    close OUT;
+}
+
 sub oid_next_available {
     1 while $oid_keys{++$oid_top};
 #    warn "$0: oid_next_available = $oid_top\n";
@@ -470,6 +480,23 @@ sub oid_validate {
 	}
     }
     0;
+}
+
+sub oid_wants {
+    my @wants = ();
+    foreach my $key (@keys) {
+	my($d,$k,$t,$x) = split(/\t/, $key);
+	$d = $domain if ($d eq 'qpn' || $d eq 'sux-x-emesal');
+	if (!$oid_ids{$d,$k}) {
+	    if ($x) {
+		my $parent = $oid_ids{$d,$x};
+		$key =~ s/\t[^\t]+$/\t$parent/ if $parent;
+	    }
+	    push @wants, $key, "\n";
+	}
+    }
+    print @wants;
+    exit 0;
 }
 
 sub oid_delete {
