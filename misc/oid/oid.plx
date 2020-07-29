@@ -16,6 +16,8 @@ if (oid_check_mode()) {
     # fall through to oid_finish
 } elsif (oid_edit_mode()) {
     oid_edit();
+} elsif (oid_wants_mode()) {
+    oid_wants();
 } else {
     oid_keys();
 }
