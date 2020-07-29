@@ -132,6 +132,10 @@ main(int argc, char *argv[])
 	  xmlrpc();
 	  exit(1); /* only reach this if exec() fails */
 	}
+#if 0
+      else if (query_string)
+	p3_fake_srch(project, "cat", query_string);
+#endif
       
       fprintf(stderr, "oracc-resolver: passed pager and xmlrpc\n");
 
