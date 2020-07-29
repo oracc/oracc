@@ -211,7 +211,15 @@ main(int argc, char *argv[])
       if (nelements == 1)
 	{
 	  /* assume it's keys for a cat search if it's one step only */
-	  p3_fake_srch(project, "cat", elements[0]);
+	  if (query_string)
+	    {
+	      /* this is a hack and needs to check if elements[0] actually is a glossary in the project */
+	      char *tmp = malloc(strlen("cbd/0")+strlen(elements[0]));
+	      sprintf(tmp,"cbd/%s",elements[0]);
+	      p3_fake_srch(project, tmp, query_string);
+	    }
+	  else
+	    p3_fake_srch(project, "cat", elements[0]);
 	}
       else
 	do404();
