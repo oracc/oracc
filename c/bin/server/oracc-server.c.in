@@ -132,10 +132,6 @@ main(int argc, char *argv[])
 	  xmlrpc();
 	  exit(1); /* only reach this if exec() fails */
 	}
-#if 0
-      else if (query_string)
-	p3_fake_srch(project, "cat", query_string);
-#endif
       
       fprintf(stderr, "oracc-resolver: passed pager and xmlrpc\n");
 
@@ -175,10 +171,17 @@ main(int argc, char *argv[])
     {
       if (project)
 	{
-	  nelements = elements_used = 0;
-	  free(elements);
-	  elements = NULL;
-	  decompose_script_url("/corpus");
+	  if (query_string)
+	    {
+	      p3_fake_srch(project, "cat", query_string);
+	    }
+	  else
+	    {
+	      nelements = elements_used = 0;
+	      free(elements);
+	      elements = NULL;
+	      decompose_script_url("/corpus");
+	    }
 	}
       else
 	cat_index_html("/");
