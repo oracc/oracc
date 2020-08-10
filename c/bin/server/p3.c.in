@@ -59,12 +59,56 @@ p3srch(CGI_varlist *vl)
     }
 }
 
+static void
+urldecode2(char *dst, const char *src)
+{
+  char a, b;
+  while(*src)
+    {
+      if ((*src == '%')
+	  && ((a = src[1]) && (b = src[2])) && (isxdigit(a) && isxdigit(b)))
+	{
+	  if (a >= 'a')
+	    a -= 'a'-'A';
+	  if (a >= 'A')
+	    a -= ('A' - 10);
+	  else
+	    a -= '0';
+	  if (b >= 'a')
+	    b -= 'a'-'A';
+	  if (b >= 'A')
+	    b -= ('A' - 10);
+	  else
+	    b -= '0';
+	  *dst++ = 16*a+b;
+	  src+=3;
+	}
+      else if (*src == '+')
+	{
+	  *dst++ = ' ';
+	  src++;
+	}
+      else
+	{
+	  *dst++ = *src++;
+	}
+    }
+  *dst++ = '\0';
+}
+
 void
 p3_fake_srch(const char *project, const char *idx, const char *srch)
 {
   CGI_varlist *vl = NULL;
   char *qsrch = malloc(strlen(srch) + strlen(idx) + 2);
   char *glosp = NULL;
+  char *dsrch = NULL;
+  if (strchr(srch,'%'))
+    {
+      dsrch = malloc(strlen(srch) + 1);
+      urldecode2(dsrch,srch);
+      srch = dsrch;
+    }
   sprintf(qsrch, "!%s %s", idx, srch);
   vl = CGI_add_var(vl, "project", project);
   vl = CGI_add_var(vl, "srch", qsrch);
