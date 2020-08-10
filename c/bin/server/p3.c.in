@@ -100,7 +100,7 @@ void
 p3_fake_srch(const char *project, const char *idx, const char *srch)
 {
   CGI_varlist *vl = NULL;
-  char *qsrch = malloc(strlen(srch) + strlen(idx) + 2);
+  char *qsrch = malloc(strlen(srch) + strlen(idx) + 3);
   char *glosp = NULL;
   char *dsrch = NULL;
   if (strchr(srch,'%'))
