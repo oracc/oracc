@@ -67,8 +67,10 @@ create_project {
 	}
     }
 
-    unless (chdir "$ENV{'ORACC_HOME'}/$project") {
-	die "createproj.plx: could not change directory to $ENV{'ORACC_HOME'}/$project\n";
+    my $home_d = ($ENV{'ORACC_MODE'} eq 'multi') ? '/home' : $ENV{'ORACC_HOME'};
+
+    unless (chdir "$home_d/$project") {
+	die "createproj.plx: could not change directory to $home_d/$project\n";
     }
 
 
