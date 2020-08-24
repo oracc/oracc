@@ -295,7 +295,21 @@ if (-r '01bld/lists/proxy-cat.lst') {
     while (<P>) {
 	next if /^\s*$/;
 	chomp;
-	my($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
+	my($xtf,$id,$xmd) = ();
+	
+	if (/:.*?\@/) {
+	    ($xtf,$id,$xmd) = (/^(.*?):(.*?)\@(.*?)$/);
+	} elsif (/:/) {
+	    ($xtf,$id) = (/^(.*?):(.*?)$/);
+	    $xmd = $xtf;
+	} elsif (/\@/) {
+	    ($id,$xmd) = (/^(.*?)\@(.*?)$/);
+	    $xtf = $project;
+	} else {
+	    warn "xmdmanager2.plx: ignoring bare ID $_ in proxy-atf.lst\n";
+	    next;
+	}
+	
 	$id_projects{$id,'xtf'} = $xtf;
 	$id_projects{$id,'xmd'} = $xmd;
     }

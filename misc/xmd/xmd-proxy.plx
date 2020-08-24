@@ -59,7 +59,20 @@ xmd_from_list {
 	next unless $f;
 	next if $f =~ /^\@field/;
 	my $xmd = '';
-	my ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
+	my ($xtf_project,$proxyid,$xmd_project) = ();
+
+	if ($f =~ /:.*?\@/) {
+	    ($xtf_project,$proxyid,$xmd_project) = ($f =~ /^(.*?):(.*?)\@(.*?)$/);
+	} elsif ($f =~ /:/) {
+	    ($xtf_project,$proxyid) = ($f =~ /^(.*?):(.*?)$/);
+	    $xmd_project = $xtf_project;
+	} elsif ($f =~ /\@/) {
+	    ($proxyid,$xmd_project) = ($f =~ /^(.*?)\@(.*?)$/);
+	    $xtf_project = $project;
+	} else {
+	    warn "xmd-proxy.plx: ignoring bare ID $f in proxy.lst\n";
+	    next;
+	}
 	unless ($proxyid) {
 	    warn "xmd-proxy.plx: no proxyid found in $f\n";
 	    next;
