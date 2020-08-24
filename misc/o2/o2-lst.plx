@@ -247,7 +247,7 @@ proxy_lists {
 	    } elsif ($pa_seen{$p_id}++) {
 		warn "$proxy_lst:$lnum: ignoring duplicate ATF proxy for $p_atf_proj:$p_id\n";
 	    } else {
-		print PA "$p\n";
+		print PA "$p_atf_proj:$p_id\n";
 	    }
 
 	    if ($p_cat_proj && $p_cat_proj ne $project) {
@@ -256,7 +256,7 @@ proxy_lists {
 		} elsif ($px_seen{$p_id}++) {
 		    warn "$proxy_lst:$lnum: ignoring duplicate CAT proxy for $p_atf_proj:$p_id\n";
 		} else {
-		    print PX "$p\n";
+		    print PX "$p_cat_proj:$p_id\n";
 		}
 	    }
 	}
@@ -392,7 +392,7 @@ update_lists {
 
     $opt = `oraccopt . build-outlined-policy`;
 
-    if (!$opt || $opt eq 'approved') {
+    if (!$opt || $opt eq 'approved' || $opt eq 'atf') {
 	unless (-s $out_approved) {
 	    system 'touch', $out_approved;
 	}
@@ -400,7 +400,8 @@ update_lists {
 	    'atflists.plx', "-o$out_outlined", '-p', $project,
 	    $out_approved,
 	    '-?', '00lib/not-outlined.lst',
-	    '+?', '00lib/add-outlined.lst';
+	    '+?', '00lib/add-outlined.lst',
+	    '+?', '01bld/lists/proxy-atf.lst';
     } elsif ($opt eq 'P') {
 	xsystem 
 	    "grep :[PX] $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";

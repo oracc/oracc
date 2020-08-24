@@ -113,7 +113,8 @@ sub oid_args {
 	if ($xids) {
 	    $ids = 'xid';
 	    $oid_top = $xid_template;
-	    $oid_file = $arg_oid_file = 'xid.tab' unless $arg_oid_file;
+	    $oid_file = $arg_oid_file = "$oid_dir/xid.tab" unless $arg_oid_file;
+	    $oid_lock = "$oid_dir/.xidlock" if $oid_lock;	    
 	}
     }
 }
@@ -240,6 +241,7 @@ sub oid_add {
 
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
+	next if $xids && $typ eq 'sense';
 	my $this_oid = oid_next_available();
 	$ext = '' unless $ext;
 	warn "add $dom $key $typ $ext => $this_oid\n";
@@ -355,7 +357,7 @@ sub oid_load {
 	while (<O>) {
 	    my($oid,$dom,$key,$typ,$ext) = oid_parse($_);
 	    if ($typ eq 'sense') {
-		push @later, [ $.,$oid,$dom,$key,$typ,$ext ];
+		push (@later, [ $.,$oid,$dom,$key,$typ,$ext ]) unless $xids;
 	    } else {
 		oid_validate($oid,$dom,$key,$typ,$ext) && next;
 		do_entry($oid,$dom,$key,$typ,$ext);
@@ -363,14 +365,16 @@ sub oid_load {
 	}
 	close(O);
 	$errfile = $keyfile || '<keys>';
-	foreach my $l (@later) {
-	    my($ln,$oid,$dom,$key,$typ,$ext) = @$l;
-	    $. = $ln;
-	    oid_validate($oid,$dom,$key,$typ,$ext) && next;
-	    do_entry($oid,$dom,$key,$typ,$ext);
+	unless ($xids) {
+	    foreach my $l (@later) {
+		my($ln,$oid,$dom,$key,$typ,$ext) = @$l;
+		$. = $ln;
+		oid_validate($oid,$dom,$key,$typ,$ext) && next;
+		do_entry($oid,$dom,$key,$typ,$ext);
+	    }
 	}
-    }
-    open(D,'>D'); print D Dumper \%oid_ext; close(D);
+    }	
+    open(D,'>D'); print D Dumper \%oid_ids; close(D);
     # print Dumper \%oid_deletions;
     # print Dumper \%oid_redirects;
 }
@@ -396,7 +400,7 @@ sub do_entry {
 	return;
     }
 
-    if ($oid =~ /^o\d+$/) {
+    if ($oid =~ /^[ox]\d+$/) {
 	$oid_ids{$dom,$key} = $oid;
     }
     $oid_doms{$oid} = $dom;
@@ -409,7 +413,7 @@ sub oid_lock {
     if (-r $oid_lock) {
 	my $ntries = 0;
 	while (1) {
-	    if ($ntries++ == 3) {
+	    if ($ntries++ == 6) {
 		warn "$0: removing stale lock file\n";
 		unlink $oid_lock;
 	    }
