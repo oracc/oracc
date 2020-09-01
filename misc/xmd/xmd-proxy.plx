@@ -90,7 +90,7 @@ xmd_from_list {
 	next unless $xmd_project && $xmd_project ne $project;
 
 	$xmd = expand_in_project(undef,"$proxyid.xmd",$xmd_project);
-	warn "xmd_proxy.plx: no catalogue information for $proxyid found in $xmd_project\n" 
+	warn "xmd_proxy.plx: $xmd not found: need $proxyid found in $xmd_project\n" 
 	    and next unless -r $xmd;
 	open(XMD,$xmd);
 	$_ = <XMD>;

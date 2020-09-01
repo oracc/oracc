@@ -295,7 +295,7 @@ xmdprinter2(const char *pq)
 		  break;
 		}
 	    }
-	  if (!strcmp(field_used, "designation"))
+	  if (!strcmp(field_used, "designation") || !strcmp(field_used, "title"))
 	    {
 	      designation = value;
 	      this_is_designation = 1;
