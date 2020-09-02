@@ -223,6 +223,7 @@ proxy_lists {
 	my $lnum = 0;
 	foreach my $p (@p) {
 	    ++$lnum;
+	    next if $p =~ /^#/ || $p =~ /^\s*$/;
 	    $p =~ tr/\r\n//d;
 	    next unless $p =~ /\S/;
 	    
