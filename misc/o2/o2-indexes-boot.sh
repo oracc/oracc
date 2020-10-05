@@ -5,10 +5,12 @@ echo o2-indexes-boot.sh: working on $project in `pwd`
 if [ -s 01bld/cdlicat.xmd ]; then
     echo indexing catalogue
     cat 01bld/cdlicat.xmd | secatx -s -p $project
+    pqxrecurse.plx $project
 else
     if [ -s 01bld/cdlicat.xmd.gz ]; then
 	echo indexing catalogue
 	zcat 01bld/cdlicat.xmd.gz | secatx -s -p $project
+	pqxrecurse.plx $project
     fi
 fi
 
