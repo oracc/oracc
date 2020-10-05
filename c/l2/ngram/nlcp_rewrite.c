@@ -7,11 +7,16 @@ static void
 replace_finds(struct ilem_form *ilemp, struct f2**f2s, int nf2s)
 {
   int i;
+  extern int lem_dynalem;
   if (!ilemp->finds)
     ilemp->finds = malloc(nf2s * sizeof(struct ilem_form*)); /* FIXME: this should use better mem alloc */
   for (i = 0; i < nf2s; ++i)
-    if (f2s[i]->owner) /* COF TAILs have null owner; is this right? */
-      ilemp->finds[i] = f2s[i]->owner;
+    {
+      if (f2s[i]->owner) /* COF TAILs have null owner; is this right? */
+	ilemp->finds[i] = f2s[i]->owner;
+      if (lem_dynalem)
+	ilemp->finds[i]->literal = f2s[i]->owner->literal;
+    }
   ilemp->fcount = nf2s;
 }
 
@@ -19,6 +24,7 @@ void
 nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 {
   int j;
+  extern int lem_dynalem;
 
   for (j = 0; j < mlp->matches_used; ++j)
     {
@@ -40,6 +46,12 @@ nlcp_rewrite(struct xcl_context *xcp, struct ML *mlp)
 		      if (mp->tt->clear)
 			f2_clear(mp->matching_f2s[i]);
 		      f2_inherit(mp->matching_f2s[i], mp->tt->f2);
+#if 0
+		      if (mp->matching_f2s[i]->owner)
+			mp->matching_f2s[i]->owner->literal = NULL;
+		      if (lem_dynalem)
+			mp->matching_f2s[i]->owner->literal = NULL;
+#endif
 		    }
 		  BIT_SET(mp->matching_f2s[i]->flags, F2_FLAGS_READ_ONLY);
 		}

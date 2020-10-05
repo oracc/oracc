@@ -13,7 +13,7 @@ open(GLO,"$where/$what-glo.log");
 while (<GLO>) {
     chomp;
     />>\s+(.*?)\s*$/;
-    my $x = $1; $x =~ s/\s+=>.*$//;
+    my $x = $1; $x =~ s/\s+=>.*$//; $x =~ s/\s+/ /g;
     $glo{$x} = $_;
 }
 close(GLO);
@@ -24,10 +24,11 @@ open(LOG,"$where/$what-zero.log");
 while (<LOG>) {
     chomp;
     /\t(.*?)\s*$/;
-    if ($glo{$1}) {
-	print $glo{$1}, "\n";
+    my $n = $1; $n =~ s/\s+=>.*$//; $n =~ s/\s+/ /g;
+    if ($glo{$n}) {
+	print $glo{$n}, "\n";
     } else {
-	warn "$0: $where/$what-glo.log doesn't have: $1\n";
+	warn "$0: $where/$what-glo.log doesn't have: $n\n";
     }
 }
 close(LOG);

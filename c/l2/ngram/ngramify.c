@@ -624,6 +624,12 @@ check_predicates(struct f2 *p, struct CF *cfp)
   const char *pform = (char*)p->form;
   int i = 0;
 
+#if 0
+  /* wildcards on lhs have no f2 and match everything */
+  if (!cfp->f2)
+    return 1;
+#endif
+  
   if (cfp->f2->form && *cfp->f2->form)
     if (pform && !*pform && p->cof_id)
       pform = (char*)((struct f2*)((void*)(uintptr_t)p->cof_id))->form;
@@ -780,7 +786,7 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
   struct NLE_set *nles;
   int nparses, i, n_nles, total_nles, one = 1;
   Hash_table *seen_cfs = NULL;
-  int try_pos = 0, arg_try_pos = 0;
+  int try_pos = 0, try_pos_bis = 0;
   const unsigned char *cf_or_pos = NULL;
 
   if (!nlp)
@@ -809,35 +815,40 @@ nle_heads(struct NL*nlp, struct ilem_form *fp, int *n_nodes)
   nles_p = malloc((nparses+1)*sizeof(struct NLE_set*)); /* have to +1 for possible '*' in active hash */
   for (total_nles = n_nles = i = 0; i < nparses; ++i)
     {
-#if 1
-      try_pos = (arg_try_pos || !p[i]->cf);
-      if (try_pos)
-	{
-	  if (!p[i]->pos || hash_find(seen_cfs, p[i]->pos))
-	    continue;
-	  cf_or_pos = p[i]->pos;
-	}
-      else
-	{
-	  if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
-	    continue;
-	  cf_or_pos = p[i]->cf;
-	}
-#else
-      /* allow lookup by ->pos here if ->cf == NULL */
-      if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
-	continue;
-#endif
+    try_pos_re_entry:
+      {
+	try_pos = (try_pos_bis || !p[i]->cf);
+	if (try_pos)
+	  {
+	    if (!p[i]->pos || hash_find(seen_cfs, p[i]->pos))
+	      continue;
+	    cf_or_pos = p[i]->pos;
+	  }
+	else
+	  {
+	    if (!p[i]->cf || hash_find(seen_cfs, p[i]->cf))
+	      continue;
+	    cf_or_pos = p[i]->cf;
+	  }
 
-      nles = hash_find(nlp->owner->active_hash,
-		       (unsigned char *)cf_or_pos);
-      if (nles)
-	{
-	  ngdebug("[nle_heads] found %s %s in %s", (try_pos ? "POS" : "CF"), cf_or_pos, nlp->name);
-	  nles_p[n_nles++] = nles;
-	  total_nles += nles->pp_used;
-	  hash_add(seen_cfs, cf_or_pos, &one);
-	}
+	nles = hash_find(nlp->owner->active_hash,
+			 (unsigned char *)cf_or_pos);
+	if (nles)
+	  {
+	    ngdebug("[nle_heads] found %s %s in %s", (try_pos ? "POS" : "CF"), cf_or_pos, nlp->name);
+	    nles_p[n_nles++] = nles;
+	    total_nles += nles->pp_used;
+	    hash_add(seen_cfs, cf_or_pos, &one);
+	  }
+	else
+	  {
+	    if (!try_pos_bis && p[i]->pos && p[i]->pos[1] == 'N' && !p[i]->pos[2])
+	      {
+		try_pos_bis = 1;
+		goto try_pos_re_entry;
+	      }
+	  }
+      }
     }
   hash_free(seen_cfs, NULL);
   if ((nles = hash_find(nlp->owner->active_hash, (unsigned char *)"*")))

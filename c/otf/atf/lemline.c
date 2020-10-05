@@ -649,6 +649,9 @@ lem_serialize(FILE *fp)
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
 		continue;
 
+	      if (lem_dynalem && f->finds) /* && BIT_ISSET(f->finds[0]->f2.flags, F2_FLAGS_NEWLITERAL)) */
+		f->literal = f->finds[0]->literal;
+
 	      set_sframe(&sframe, ((lem_autolem || lem_dynalem) && f->finds) ? NULL : f->literal);
 	      if (sframe.lit)
 		{

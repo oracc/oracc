@@ -72,6 +72,7 @@ f2_inherit(struct f2 *inheritor_f2, struct f2 *from_f2)
   inherit(morph);
   inherit(morph2);
 #undef inherit
+  BIT_SET(inheritor_f2->flags, F2_FLAGS_NEWLITERAL);
 }
 
 void
