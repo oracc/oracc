@@ -26,10 +26,15 @@ sub fbm_base_in_form {
     return if fbm_data_setup(\%data);
     my $form_sig = ORACC::SL::BaseC::tlit_sig('',$data{'form'});
     my $base_sig = ORACC::SL::BaseC::tlit_sig('',$data{'base'});
-    my $nmatch = ($form_sig =~ m/$base_sig/g);
+    my $nmatch = 0;
+    my $f = $form_sig;
+    while ($f) {
+	++$nmatch if $f =~ /^$base_sig/;
+	$f =~ s/^[^\.]+\.?//;
+    }
     pp_warn("base $data{'base'} not found in form $data{'form'}")
 	unless $nmatch;
-    pp_warn("base $data{'base'} found at multiple locations in form $data{'form'}")
+    pp_warn("base $data{'base'} found at $nmatch locations in form $data{'form'}")
 	if $nmatch > 1;
 }
 
