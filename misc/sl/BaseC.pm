@@ -338,9 +338,9 @@ sub deepsplit {
     $deep =~ s/\}-/\}: /g;
     $deep =~ s/\}(?!\:)/} /g;
     $deep =~ s/\s+/ /g; $deep =~ s/^\s+//; $deep =~ s/\s+$//;
-    warn "deep = $deep\n";
+#    warn "deep = $deep\n";
     my @d = split(/[-\s]+/,$deep);
-    warn "at-d = @d\n";
+#    warn "at-d = @d\n";
     my @n = ();
     @ORACC::SL::BaseC::last_tlit = ();
     foreach my $d (@d) {
