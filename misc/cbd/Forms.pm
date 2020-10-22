@@ -5,7 +5,7 @@ require Exporter;
 
 @EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw
     forms_det_clean forms_dump forms_load forms_normify forms_print
-    forms_reset forms_validate forms_merge/;
+    forms_reset forms_validate forms_merge forms_dot_forms/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -16,6 +16,15 @@ use ORACC::CBD::Validate;
 use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
+
+
+my %formcharkeys = (
+    '%'=>'lang',
+    '$'=>'norm',
+    '/'=>'base',
+    '+'=>'cont',
+    '#'=>'morph',
+    );
 
 my %bases = ();
 my %forms = ();
@@ -321,6 +330,53 @@ sub uniq {
     my %u = ();
     @u{@_} = ();
     sort keys %u;
+}
+
+# parse a .forms line and fill the arg hashref with the components
+# hashref must contain 'input' field, and pp_file and pp_line must
+# be set by caller
+sub forms_dot_forms {
+    my $data = shift;
+    my $l = $$data{'input'};
+    @$data{'cf','gw','pos','formsig'} = ($l =~ m/^(.*?)\s*\[(.*?)\]\s*(\S+)\t\s*(.*?)$/);
+    pp_warn("(forms_dot_forms) cfgwpos parse failure in .forms style entry")
+	unless $$data{'cf'} && $$data{'gw'} && $$data{'pos'};
+    pp_diagnostics() && return if pp_status();
+    pp_status(0);
+    forms_at_form($data,$$data{'formsig'});
+    pp_diagnostics() && return if pp_status();
+}
+
+# parse the part of a form that follows @form; pass a hashref to store
+# the parts and the string to parse as arg2
+sub forms_at_form {
+    my($data,$l) = @_;
+    $l =~ s/^\@form\s+//;
+    $l =~ s/(\S+)//;
+    $$data{'form'} = $1;
+    $l =~ s/^\s*(.*?)\s*$/$1/;
+    pp_warn("(forms_at_form) empty form") unless length $l;
+    $l = " $l";
+    while (length $l) {
+	my $err_l = $l;
+	$l =~ s/^\s+(.)(\S+)//;
+	my($char,$value) = ($1,$2);
+	if ($char) {
+	    my $key = $formcharkeys{$char};
+	    if ($key) {
+		if ($char eq '#' && ($value =~ s/^#//)) {
+		    $char = '##';
+		    $key = 'morph2';
+		}
+		## FIXME: NEED TO HANDLE COF NORMS HERE
+		$$data{$key} = $value;
+	    } else {
+		pp_warn("(forms_at_form) unknown form sig key char '$char' at \"$err_l\" in \"$$data{'formsig'}\"");
+	    }
+	} else {
+	    warn "exiting with l = $l\n";
+	}
+    }
 }
 
 1;

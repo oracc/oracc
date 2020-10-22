@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+use warnings; use strict; use open 'utf8'; use utf8; 
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+use Data::Dumper;
+use lib "$ENV{'ORACC_BUILDS'}/lib";
+use ORACC::CBD::FBM;
+use ORACC::CBD::Forms;
+use ORACC::CBD::PPWarn;
+use ORACC::CBD::Validate;
+
+my $file = $ARGV[0];
+$file = '-' unless $file;
+
+fbm_init();
+while (<>) {
+    chomp;
+    do_fbm($file,$.,$_);
+}
+fbm_term();
+
+#########################################################################
+
+sub do_fbm {
+    my %data = ();
+    @data{'file','line','input'} = @_;
+    pp_file($data{'file'});
+    pp_line($data{'line'});
+    # .forms file style:
+    if ($data{'input'} =~ /^.*?\t\s*\@form\s+/) {
+	forms_dot_forms(\%data);
+	print Dumper \%data; 
+	fbm_base_in_form(%data);
+	pp_diagnostics() if pp_status();
+	pp_status(0);
+    }
+}
+
+1;
