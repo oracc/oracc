@@ -71,10 +71,10 @@ sub same_tlit {
 
 sub tlit_sig {
     my($context,$test) = @_;
-    my $s = _signature($context,@ORACC::SL::BaseC::last_tlit = tlitsplit($test,1));
+    my $s = _signature($context,tlitsplit($test,1));
     if ($s =~ /q/ && $test =~ /\|/) {
 	$test =~ tr/|//d;
-	$s = _signature($context,@ORACC::SL::BaseC::last_tlit = tlitsplit($test,1));
+	$s = _signature($context,tlitsplit($test,1));
     }
     return $s;
 }
@@ -332,10 +332,22 @@ protect2 {
 
 sub deepsplit {
     my $deep = shift;
-    $deep =~ tr/{}/  /;
-    my @d = split(/[-\s]/,$deep);
+    #    $deep =~ tr/{}/  /;
+    $deep =~ s/-\{/ :\{/g;
+    $deep =~ s/(?<!:)\{/ \{/g;
+    $deep =~ s/\}-/\}: /g;
+    $deep =~ s/\}(?!\:)/} /g;
+    $deep =~ s/\s+/ /g; $deep =~ s/^\s+//; $deep =~ s/\s+$//;
+    warn "deep = $deep\n";
+    my @d = split(/[-\s]+/,$deep);
+    warn "at-d = @d\n";
     my @n = ();
+    @ORACC::SL::BaseC::last_tlit = ();
     foreach my $d (@d) {
+	my $orig_d = $d;
+	$d =~ s/:\{//g;
+	$d =~ s/\}://g;
+	$d =~ tr/{}//;
 	# remove value being qualified if any
 	if ($d =~ /\)$/) {
 	    if ($pedantic) {
@@ -348,6 +360,7 @@ sub deepsplit {
 	}
 	my $sn = ($d =~ /^\|/ ? $d : sign_of("\L$d"));
 	if ($exceptions{$sn}) {
+	    push @ORACC::SL::BaseC::last_tlit, $orig_d;
 	    push @n, $exceptions{$sn};
 	} else {
 	    if ($sn && $sn =~ /^\|/) {
@@ -357,12 +370,16 @@ sub deepsplit {
 		my @b = split(/\./,$sn);
 		my $s = _signature('',@b);
 		if ($s && $s !~ /q/) {
+		    my $nbits = ($s =~ tr/././) + 1;
+		    push @ORACC::SL::BaseC::last_tlit, "^$nbits^$orig_d";
 		    push @n, join('-',@b);
 		} else {
+		    push @ORACC::SL::BaseC::last_tlit, $orig_d;
 		    @messages = ();
 		    push @n, $d;
 		}
 	    } else {
+		push @ORACC::SL::BaseC::last_tlit, $orig_d;
 		push @n, $sn || $d;
 	    }
 	}
