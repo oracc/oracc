@@ -8,7 +8,7 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Validate;
 
-my $verbose = 0;
+my $verbose = 1;
 
 my $file = $ARGV[0];
 $file = '-' unless $file;

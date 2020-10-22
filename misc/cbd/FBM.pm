@@ -74,8 +74,21 @@ sub fbm_morph_check {
     return unless $data && ref($data) eq 'HASH' && !$$data{'morph_check'};
     $$data{'morph_check'} = 1;
     my @mframes_ok = ();
-    foreach my $m (@{$$data{'mframes'}}) {
-	warn "morph_check $m\n";
+    foreach my $mf (@{$$data{'mframes'}}) {
+	# warn "morph_check @$mf\n";
+	my($pre,$base,$post) = @$mf;
+	my $m = $$data{'morph'};
+	if ($pre) {
+	    if ($m =~ /^(.*?):/) {
+	    } else {
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
+	    }
+	} elsif ($post) {
+	    if ($m =~ /[,!]\S+$/) {
+	    } else {
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
+	    } 
+	}
     }
 }
 
