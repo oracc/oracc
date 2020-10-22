@@ -8,6 +8,8 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Validate;
 
+my $verbose = 0;
+
 my $file = $ARGV[0];
 $file = '-' unless $file;
 
@@ -28,8 +30,9 @@ sub do_fbm {
     # .forms file style:
     if ($data{'input'} =~ /^.*?\t\s*\@form\s+/) {
 	forms_dot_forms(\%data);
-	print Dumper \%data; 
-	fbm_base_in_form(%data);
+	fbm_base_in_form(\%data);
+	print Dumper \%data if $verbose;
+	fbm_morph_check(\%data);
 	pp_diagnostics() if pp_status();
 	pp_status(0);
     }

@@ -18,6 +18,7 @@ use NDBM_File;
 my %exceptions = ('|(4×ZA)×KUR|'=>'ŋeštae');
 
 $ORACC::SL::report_all = 0;
+@ORACC::SL::BaseC::last_tlit = '';
 #@ORACC::SL::fixes_needed = ();
 
 my $db_file = "@@ORACC@@/pub/ogsl/sl";
@@ -70,10 +71,10 @@ sub same_tlit {
 
 sub tlit_sig {
     my($context,$test) = @_;
-    my $s = _signature($context,tlitsplit($test,1));
+    my $s = _signature($context,@ORACC::SL::BaseC::last_tlit = tlitsplit($test,1));
     if ($s =~ /q/ && $test =~ /\|/) {
 	$test =~ tr/|//d;
-	$s = _signature($context,tlitsplit($test,1));
+	$s = _signature($context,@ORACC::SL::BaseC::last_tlit = tlitsplit($test,1));
     }
     return $s;
 }

@@ -2,7 +2,7 @@ package ORACC::CBD::FBM;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/fbm_init fbm_term fbm_base_in_form/;
+@EXPORT = qw/fbm_init fbm_term fbm_base_in_form fbm_morph_check/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -22,19 +22,31 @@ sub fbm_term {
 }
 
 sub fbm_base_in_form {
-    my %data = @_;
-    return if fbm_data_setup(\%data);
-    my $form_sig = ORACC::SL::BaseC::tlit_sig('',$data{'form'});
-    my $base_sig = ORACC::SL::BaseC::tlit_sig('',$data{'base'});
+    my $data = shift;
+    return unless $data && ref($data) eq 'HASH' && !$$data{'base_in_form'};
+    $$data{'base_in_form'} = 1;
+    return if fbm_data_setup($data);
+    my $form_sig = $$data{'form_sig'} = ORACC::SL::BaseC::tlit_sig('',$$data{'form'});
+    $$data{'form_tlit'} = join(' ',@ORACC::SL::BaseC::last_tlit);
+    my $base_sig = $$data{'base_sig'} = ORACC::SL::BaseC::tlit_sig('',$$data{'base'});
+    $$data{'base_tlit'} = join(' ',@ORACC::SL::BaseC::last_tlit);
     my $nmatch = 0;
     my $f = $form_sig;
+    my @mframes = ();
+    my $pre = '';
     while ($f) {
-	++$nmatch if $f =~ /^$base_sig/;
-	$f =~ s/^[^\.]+\.?//;
+	if ($f =~ /^$base_sig(\.\S+)?$/) {
+	    ++$nmatch;
+	    my $post = $1 || '';
+	    push @mframes, [ $pre, $base_sig, $post ];
+	}
+	$f =~ s/^([^\.]+\.?)//;
+	$pre .= $1;
     }
-    pp_warn("base $data{'base'} not found in form $data{'form'}")
+    $$data{'mframes'} = \@mframes;
+    pp_warn("base $$data{'base'} not found in form $$data{'form'}")
 	unless $nmatch;
-    pp_warn("base $data{'base'} found at $nmatch locations in form $data{'form'}")
+    pp_warn("base $$data{'base'} found at $nmatch locations in form $$data{'form'}")
 	if $nmatch > 1;
 }
 
@@ -55,6 +67,16 @@ sub fbm_data_setup {
 	    unless $ORACC::CBD::FBM::no_warn_incomplete;
     }
     return 0;
+}
+
+sub fbm_morph_check {
+    my $data = shift;
+    return unless $data && ref($data) eq 'HASH' && !$$data{'morph_check'};
+    $$data{'morph_check'} = 1;
+    my @mframes_ok = ();
+    foreach my $m (@{$$data{'mframes'}}) {
+	warn "morph_check $m\n";
+    }
 }
 
 1;
