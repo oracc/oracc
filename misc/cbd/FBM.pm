@@ -38,13 +38,15 @@ sub fbm_base_in_form {
 	if ($f =~ /^$base_sig(\.\S+)?$/) {
 	    ++$nmatch;
 	    my $post = $1 || ''; $post =~ s/^\.// if $post;
-	    # detect anteshare and postshare graphemes where base and morphology are
-	    # written sharing a grapheme and flag them in the frames
+
+	    # Detect anteshare and postshare graphemes where base and morphology are
+	    # written sharing a grapheme and flag them in the frames.
+	    # If there is a cont we don't record that in postshare becuase it
+	    # won't be needed for morphology lookup as it's already included in
+	    # the post graphemes.
 	    my $anteshare = ($$data{'base'} =~ /°/ || 0);
 	    my $postshare = ($$data{'base'} =~ /·/ || 0);
-	    unless ($postshare) {
-		$postshare = 2 if $$data{'cont'};
-	    }
+
 	    my $tmp = $pre; $tmp =~ s/\.$// if $tmp;
 	    push @mframes, [ $tmp, $base_sig, $post, $anteshare, $postshare ];
 	}
@@ -88,11 +90,26 @@ sub fbm_morph_check {
 	my $m = $$data{'morph'};
 	if ($pre) {
 	    if ($m =~ /^(.*?):/) {
+		my $prefix = $1;
+		if ($$data{'anteshare'}) {
+		    my $share = $base; $share =~ s/\..*$//;
+		    my $mlook = "$pre.$share";
+		    if (ORACC::SMA::MorphData::is_prefix($prefix,$mlook)) {
+		    } else {
+			
+			pp_warn("(fbm) sig $mlook ($mtlit) not known for prefix $prefix");
+		    }
+		}
 	    } else {
 		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
 	    }
 	} elsif ($post) {
 	    if ($m =~ /[,!]\S+$/) {
+		if ($$data{'postshare'}) {
+		    my $share = $base; $share =~ s/\..*$//;
+		    my $mlook = "$pre.$share";
+		}
+		
 	    } else {
 		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
 	    } 
