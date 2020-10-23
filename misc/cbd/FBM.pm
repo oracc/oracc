@@ -37,8 +37,16 @@ sub fbm_base_in_form {
     while ($f) {
 	if ($f =~ /^$base_sig(\.\S+)?$/) {
 	    ++$nmatch;
-	    my $post = $1 || '';
-	    push @mframes, [ $pre, $base_sig, $post ];
+	    my $post = $1 || ''; $post =~ s/^\.// if $post;
+	    # detect anteshare and postshare graphemes where base and morphology are
+	    # written sharing a grapheme and flag them in the frames
+	    my $anteshare = ($$data{'base'} =~ /°/ || 0);
+	    my $postshare = ($$data{'base'} =~ /·/ || 0);
+	    unless ($postshare) {
+		$postshare = 2 if $$data{'cont'};
+	    }
+	    my $tmp = $pre; $tmp =~ s/\.$// if $tmp;
+	    push @mframes, [ $tmp, $base_sig, $post, $anteshare, $postshare ];
 	}
 	$f =~ s/^([^\.]+\.?)//;
 	$pre .= $1;
