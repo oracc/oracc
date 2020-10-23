@@ -90,14 +90,21 @@ sub fbm_morph_check {
 	my $m = $$data{'morph'};
 	if ($pre) {
 	    if ($m =~ /^(.*?):/) {
-		my $prefix = $1;
+		my $m1 = $1;
 		if ($$data{'anteshare'}) {
 		    my $share = $base; $share =~ s/\..*$//;
-		    my $mlook = "$pre.$share";
-		    if (ORACC::SMA::MorphData::is_prefix($prefix,$mlook)) {
+		    my $msig = "$pre.$share";
+		    my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
+		    my $res = undef;
+		    if (($res = ORACC::SMA::MorphData::mdata('vpr',$m1,$msig,$mtlit))) {
+			if ($res == 1) { # match at mtlit level
+			} elsif ($res == 2) { # match at msig level
+			} elsif ($res == 3) { # match at m1 level
+			} else {
+			    die "$0: unknown return value from ORACC::SMA::MorphData::is_known('vpr',$m1,$msig,$mtlit)\n";
+			}
 		    } else {
-			my $mtlit = fbm_tlit($data,0,$mlook =~ tr/././ + 1);
-			pp_warn("(fbm) sig $mlook ($mtlit) not known for prefix $prefix");
+			pp_warn("(fbm) sig $mtlit/$msig not known for prefix $m1");
 		    }
 		}
 	    } else {
@@ -124,7 +131,10 @@ sub fbm_tlit {
     my @t = split(/\s+/,$$data{'form_tlit'});
     my $i = $index; $i = 1 + $#t + $index if $index < 0;
     my $end = $i+$length-1;
-    @t[$i..$end];
+    my @g = @t[$i..$end];
+    # This is a grapheme spec where some items contain ^N^ encoding for signature spans
+    # and others can contain determinative info.  Need to code the hyphenation better ...
+    join('-',@g);
 }
 
 1;
