@@ -117,4 +117,14 @@ sub fbm_morph_check {
     }
 }
 
+sub fbm_tlit {
+    my ($data,$index,$length) = @_;
+    warn "$0: null or bad hashref passed to fbm_lit\n" and return ''
+	unless $data && ref($data) eq 'HASH' && $$data{'form_tlit'};
+    my @t = split(/\s+/,$$data{'form_tlit'});
+    my $i = $index; $i = 1 + $#t + $index if $index < 0;
+    my $end = $i+$length-1;
+    @t[$i..$end];
+}
+
 1;
