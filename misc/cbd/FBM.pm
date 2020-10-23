@@ -96,7 +96,7 @@ sub fbm_morph_check {
 		    my $mlook = "$pre.$share";
 		    if (ORACC::SMA::MorphData::is_prefix($prefix,$mlook)) {
 		    } else {
-			
+			my $mtlit = fbm_tlit($data,0,$mlook =~ tr/././ + 1);
 			pp_warn("(fbm) sig $mlook ($mtlit) not known for prefix $prefix");
 		    }
 		}
