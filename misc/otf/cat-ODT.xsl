@@ -74,7 +74,7 @@
   <name n="prov_l"   sig="q">Provenance</name>
   <name n="prov_m"   sig="r">Provenance</name>
   <name n="prov_ss"  sig="s">Provenance</name>
-  <name n="bab_ph"   sig="t">Babylon/<oracc:br/>Photo No.</name>
+  <name n="bab_ph"   sig="t">Babylon<oracc:br/>Photo No.</name>
 </xsl:template>
 
 <xsl:template match="oracc:data[@oracc:type='catalog' or @oracc:type='cattable']">
