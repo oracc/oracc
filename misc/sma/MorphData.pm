@@ -19,20 +19,20 @@ my $status_local = 0;
 
 # Hash the tokens that are allowed in an ePSD2 morph string
 my %t = ();
-my @t = qw/~ x 
+my @t = qw/~ x
     a ak al am anene ani
-    e en ene enzen eš eše
+    e eE eL en enden ene enzen eš eše eV
     i inga
     u 
     V Vmma
     b ba bara bi
     da de ga gin ŋišen ŋu ha 
-    m me men menden meš mu 
+    m ma me men menden meš mu 
     n na ne ni NI nu nuš 
     ra ri 
     ša ši 
     ta 
-    x zenden zu zunene/;
+    zenden zu zunene/;
 @t{@t} = ();
 
 # NSF tokens
@@ -145,8 +145,8 @@ sub mdata_validate {
     $status_local = 0;
     my $m = shift;
 
-    # a bare base is always ok
-    return 0 if $m eq '~';
+    # a bare base is always ok as is the unparseable morph #X
+    return 0 if $m eq '~' || $m eq 'X';
 
     # and there must be a base, but only one
     mdata_warn("no ~ in $m") and goto done unless $m =~ /~/;
@@ -179,15 +179,16 @@ sub mdata_validate {
     $m =~ tr/*✻//d;
 
     # remove dividers by mapping them to '.'
-    $m =~ tr/:;!,/..../;
+    my $m2 = $m;
+    $m2 =~ tr/:;!,/..../;
 
     # now it's an error to have two dots in a row
-    mdata_warn("spurious . in $m") and goto done if $m =~ /\.\./;
+    mdata_warn("spurious . in $m") and goto done if $m2 =~ /\.\./;
 
     # now we can split on dot and check that each token is allowed--we
     # aren't validating this for legitimate Sumerian here, just
     # sanity-checking the tokens
-    my @t = split(/\./, $m);
+    my @t = split(/\./, $m2);
     foreach my $t (@t) {
 	mdata_warn("bad token $t in $m") and last unless exists $t{$t};
     }

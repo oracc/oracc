@@ -96,42 +96,42 @@ sub fbm_morph_check {
 	    return;
 	}
 	
-	if ($m ne '~') { # 
-	    if ($pre) {
-		if ($m =~ /^(.*?):/) {
-		    my $m1 = $1;
-		    my $msig = $pre;
-		    my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
-		    if ($$data{'anteshare'}) {
-			my $share = $base; $share =~ s/\..*$//;
-			$msig = "$pre.$share";
-			$mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
-		    }
-		    my $res = undef;
-		    if (($res = ORACC::SMA::MorphData::mdata('vpr',$m1,$msig,$mtlit))) {
-			if ($res == 1) { # match at mtlit level
-			} elsif ($res == 2) { # match at msig level
-			} elsif ($res == 3) { # match at m1 level
-			} else {
-			    die "$0: unknown return value from ORACC::SMA::MorphData::is_known('vpr',$m1,$msig,$mtlit)\n";
-			}
-		    } else {
-			pp_warn("(fbm) sig $mtlit/$msig not known for prefix $m1");
-		    }
-		} else {
-		    pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
+	# Now we have prefix/suffix substrings in %mparse to use for
+	# lookup in morphdata to see if transliteration is allowed
+	if ($pre) {
+	    if ($m =~ /^(.*?):/) {
+		my $m1 = $1;
+		my $msig = $pre;
+		my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
+		if ($$data{'anteshare'}) {
+		    my $share = $base; $share =~ s/\..*$//;
+		    $msig = "$pre.$share";
+		    $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
 		}
-	    } elsif ($post) {
-		if ($m =~ /[,!]\S+$/) {
-		    if ($$data{'postshare'}) {
-			my $share = $base; $share =~ s/\..*$//;
-			my $mlook = "$pre.$share";
+		my $res = undef;
+		if (($res = ORACC::SMA::MorphData::mdata('vpr',$m1,$msig,$mtlit))) {
+		    if ($res == 1) { # match at mtlit level
+		    } elsif ($res == 2) { # match at msig level
+		    } elsif ($res == 3) { # match at m1 level
+		    } else {
+			die "$0: unknown return value from ORACC::SMA::MorphData::is_known('vpr',$m1,$msig,$mtlit)\n";
 		    }
-		    
 		} else {
-		    pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
-		} 
+		    pp_warn("(fbm) sig $mtlit/$msig not known for prefix $m1");
+		}
+	    } else {
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
 	    }
+	} elsif ($post) {
+	    if ($m =~ /[,!]\S+$/) {
+		if ($$data{'postshare'}) {
+		    my $share = $base; $share =~ s/\..*$//;
+		    my $mlook = "$pre.$share";
+		}
+		
+	    } else {
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
+	    } 
 	}
     }
 }
