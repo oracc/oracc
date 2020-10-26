@@ -87,14 +87,19 @@ sub fbm_morph_check {
     foreach my $mf (@{$$data{'mframes'}}) {
 	# warn "morph_check @$mf\n";
 	my($pre,$base,$post) = @$mf;
-	my $m = $$data{'morph'};
-	if ($pre) {
-	    if ($m =~ /^(.*?):/) {
-		my $m1 = $1;
-		if ($$data{'anteshare'}) {
-		    my $share = $base; $share =~ s/\..*$//;
-		    my $msig = "$pre.$share";
+	my %mparse = mdata_parse($$data{'morph'});
+	
+	if ($m ne '~') { # 
+	    if ($pre) {
+		if ($m =~ /^(.*?):/) {
+		    my $m1 = $1;
+		    my $msig = $pre;
 		    my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
+		    if ($$data{'anteshare'}) {
+			my $share = $base; $share =~ s/\..*$//;
+			$msig = "$pre.$share";
+			$mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
+		    }
 		    my $res = undef;
 		    if (($res = ORACC::SMA::MorphData::mdata('vpr',$m1,$msig,$mtlit))) {
 			if ($res == 1) { # match at mtlit level
@@ -106,20 +111,20 @@ sub fbm_morph_check {
 		    } else {
 			pp_warn("(fbm) sig $mtlit/$msig not known for prefix $m1");
 		    }
+		} else {
+		    pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
 		}
-	    } else {
-		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
+	    } elsif ($post) {
+		if ($m =~ /[,!]\S+$/) {
+		    if ($$data{'postshare'}) {
+			my $share = $base; $share =~ s/\..*$//;
+			my $mlook = "$pre.$share";
+		    }
+		    
+		} else {
+		    pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
+		} 
 	    }
-	} elsif ($post) {
-	    if ($m =~ /[,!]\S+$/) {
-		if ($$data{'postshare'}) {
-		    my $share = $base; $share =~ s/\..*$//;
-		    my $mlook = "$pre.$share";
-		}
-		
-	    } else {
-		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
-	    } 
 	}
     }
 }

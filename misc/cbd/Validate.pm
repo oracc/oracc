@@ -979,6 +979,7 @@ sub v_form {
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
 	$morph =~ tr/*/✻/; #map * to U+273B TEARDROP-SPOKED ASTERISK
+	# hook into ORACC::SMA::MorphData::mdata_validate() when epsd2 is cleaned
     } elsif (($ORACC::CBD::bases # || $lang =~ /^sux/ 
 	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
 	     && !$is_compound

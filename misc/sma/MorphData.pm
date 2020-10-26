@@ -1,7 +1,8 @@
 package ORACC::SMA::MorphData;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw//;
+@EXPORT = qw/mdata_messages mdata_validate/;
+
 use warnings; use strict; use open 'utf8'; use utf8;
 
 my $morphdata = "/Users/stinney/oracc/misc/sma/morph.data";
@@ -10,7 +11,29 @@ my %vsf = ();
 my %isf = ();
 my %nsf = ();
 
+my @messages = ();
+my $status_global = 0;
+my $status_local = 0;
+
 ## SOMEWHERE WE NEED TO ENFORCE UNIQUE m1<=>tlit<=>signs RELATIONSHIP
+
+# Hash the tokens that are allowed in an ePSD2 morph string
+my %t = ();
+my @t = qw/~ x 
+    a ak al am anene ani
+    e en ene enzen eš eše
+    i inga
+    u 
+    V Vmma
+    b ba bara bi
+    da de ga gin ŋišen ŋu ha 
+    m me men menden meš mu 
+    n na ne ni NI nu nuš 
+    ra ri 
+    ša ši 
+    ta 
+    x zenden zu zunene/;
+@t{@t} = ();
 
 sub init {
     open(M,$morphdata) || die;
@@ -83,6 +106,91 @@ sub mdata {
 	return [ 4 , @{$h{$m1s}} ];
     }
     
+}
+
+sub mdata_parse {
+    my $m = shift;
+
+    mdata_validate($m);
+    
+    my %m = ();
+    
+    if ($m =~ s/^(.*?)://) {
+	$m{'vpr'} = $1;
+    }
+    # ; ! , 
+}
+
+# This is a validator for Sumerian morphology as used by ePSD2 and the SMA.
+#
+sub mdata_validate {
+    @messages = ();
+    $status_local = 0;
+    my $m = shift;
+
+    # a bare base is always ok
+    return 0 if $m eq '~';
+
+    # and there must be a base, but only one
+    mdata_warn("no ~ in $m") and goto done unless $m =~ /~/;
+    mdata_warn("multiple ~ in $m") and goto done if $m =~ tr/~/~/ > 1;
+
+    # and there must be a morph divider
+    mdata_warn("missing : ; ! or , in $m") and goto done unless $m =~ /[:;!,]/;
+
+    # but no more than one of any divider
+    mdata_warn("multiple : in $m") and goto done if $m =~ tr/:/:/ > 1;
+    mdata_warn("multiple ; in $m") and goto done if $m =~ tr/;/;/ > 1;
+    mdata_warn("multiple ! in $m") and goto done if $m =~ tr/!/!/ > 1;
+    mdata_warn("multiple , in $m") and goto done if $m =~ tr/,/,/ > 1;
+
+    # NSF must follow any VSF or ISF, and if no VSF or ISF , must come after ~
+    mdata_warn(", must follow any ; or ! in $m") and goto done if $m =~ /,.*?[;!]/;
+
+    
+    # dividers must be in the right place
+    mdata_warn(": after ~ in $m") and goto done if $m =~ /~.*?:/;
+    mdata_warn("junk between : and ~ in $m") and goto done if $m =~ /:.+?~/;
+    mdata_warn("; before ~ in $m") and goto done if $m =~ /;.*?~/;
+    mdata_warn("junk between ~ and ; in $m") and goto done if $m =~ /~.+?;/;
+    mdata_warn("! before ~ in $m") and goto done if $m =~ /!.*?~/;
+    mdata_warn("junk between ~ and ! in $m") and goto done if $m =~ /~.+?\!/;
+    mdata_warn(", before ~ in $m") and goto done if $m =~ /,.*?~/;
+    mdata_warn("junk between ~ and , in $m") and goto done if $m =~ /~.+?,/ && ($m =~ tr/!;/!;/ == 0);
+
+    # * is allowed for non-functional graphemes; cbdpp's validation routine maps
+    # * to U+273B TEARDROP-SPOKED ASTERISK so remove them now.
+    $m =~ tr/*✻//d;
+
+    # remove dividers by mapping them to '.'
+    $m =~ tr/:;!,/..../;
+
+    # now it's an error to have two dots in a row
+    mdata_warn("spurious . in $m") and goto done if $m =~ /\.\./;
+
+    # now we can split on dot and check that each token is allowed--we
+    # aren't validating this for legitimate Sumerian here, just
+    # sanity-checking the tokens
+    my @t = split(/\./, $m);
+    foreach my $t (@t) {
+	mdata_warn("bad token $t in $m") and last unless exists $t{$t};
+    }
+
+  done:
+    
+    ++$status_global if $status_local;
+    return $status_local;
+}
+
+sub mdata_messages {
+    my @tmp = @messages;
+    @messages = ();
+    @tmp;
+}
+
+sub mdata_warn {
+    ++$status_local;
+    push @messages, "(mdata) @_";
 }
 
 1;

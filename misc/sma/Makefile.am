@@ -1,6 +1,6 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = sma.plx
+bin_SCRIPTS = sma.plx morph.plx
 
 sma.plx: sma.plx.in
 	$(ORACCIFY) sma.plx.in
