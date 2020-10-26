@@ -35,6 +35,11 @@ my @t = qw/~ x
     x zenden zu zunene/;
 @t{@t} = ();
 
+# NSF tokens
+my %nsf_t = ();
+my @nsf_t = qw/a ak am anene ani e ene eše bi ŋu me men meš ri ta zu zunene/;
+@nsf_t{@nsf_t} = ();
+
 sub init {
     open(M,$morphdata) || die;
     while (<M>) {
@@ -110,15 +115,27 @@ sub mdata {
 
 sub mdata_parse {
     my $m = shift;
-
-    mdata_validate($m);
-    
     my %m = ();
+
+    if (mdata_validate($m)) {
+	$m{'error'} = 1;
+	return %m;
+    }
     
     if ($m =~ s/^(.*?)://) {
 	$m{'vpr'} = $1;
     }
-    # ; ! , 
+    if ($m =~ s/,(.*)$//) {
+	$m{'nsf'} = $1;
+    }
+    if ($m =~ s/;(.*?)$//) {
+	$m{'vsf'} = $1;
+    }
+    if ($m =~ s/\!(.*?)$//) {
+	$m{'isf'} = $1;
+    }
+
+    %m;
 }
 
 # This is a validator for Sumerian morphology as used by ePSD2 and the SMA.
@@ -147,7 +164,6 @@ sub mdata_validate {
     # NSF must follow any VSF or ISF, and if no VSF or ISF , must come after ~
     mdata_warn(", must follow any ; or ! in $m") and goto done if $m =~ /,.*?[;!]/;
 
-    
     # dividers must be in the right place
     mdata_warn(": after ~ in $m") and goto done if $m =~ /~.*?:/;
     mdata_warn("junk between : and ~ in $m") and goto done if $m =~ /:.+?~/;

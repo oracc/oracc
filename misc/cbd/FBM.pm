@@ -87,7 +87,14 @@ sub fbm_morph_check {
     foreach my $mf (@{$$data{'mframes'}}) {
 	# warn "morph_check @$mf\n";
 	my($pre,$base,$post) = @$mf;
+
 	my %mparse = mdata_parse($$data{'morph'});
+	if ($mparse{'error'}) {
+	    foreach my $m (mdata_messages()) {
+		pp_warn($m);
+	    }
+	    return;
+	}
 	
 	if ($m ne '~') { # 
 	    if ($pre) {
