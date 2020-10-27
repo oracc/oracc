@@ -86,7 +86,7 @@ sub fbm_morph_check {
     my @mframes_ok = ();
     foreach my $mf (@{$$data{'mframes'}}) {
 	# warn "morph_check @$mf\n";
-	my($pre,$base,$post) = @$mf;
+	my($pre,$base,$post,$anteshare,$postshare) = @$mf;
 
 	my %mparse = mdata_parse($$data{'morph'});
 	if ($mparse{'error'}) {
@@ -98,31 +98,67 @@ sub fbm_morph_check {
 	
 	# Now we have prefix/suffix substrings in %mparse to use for
 	# lookup in morphdata to see if transliteration is allowed
-	if ($pre) {
-	    if ($m =~ /^(.*?):/) {
-		my $m1 = $1;
-		my $msig = $pre;
-		my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
-		if ($$data{'anteshare'}) {
-		    my $share = $base; $share =~ s/\..*$//;
-		    $msig = "$pre.$share";
-		    $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
-		}
-		my $res = undef;
-		if (($res = ORACC::SMA::MorphData::mdata('vpr',$m1,$msig,$mtlit))) {
-		    if ($res == 1) { # match at mtlit level
-		    } elsif ($res == 2) { # match at msig level
-		    } elsif ($res == 3) { # match at m1 level
-		    } else {
-			die "$0: unknown return value from ORACC::SMA::MorphData::is_known('vpr',$m1,$msig,$mtlit)\n";
-		    }
-		} else {
-		    pp_warn("(fbm) sig $mtlit/$msig not known for prefix $m1");
-		}
+
+	my $antesig;
+	my $postsig;
+	# first construct versions of the grapheme sequences that take account of any shared graphemes
+	if ($anteshare) {
+	    my $share = $base; $share =~ s/\..*$//;
+	    $antesig = "$pre.$share";
+	} else {
+	    $antesig = $pre;
+	}
+	if ($postshare) {
+	    my $share = $base; $share =~ s/^.*?\.([^.]+)$/$1/;
+	    $postsig = "$share.$post";
+	} else {
+	    $postsig = $post;
+	}
+	
+	if ($antesig) { # there should be some morphology before the base
+	    if ($mparse{'vpr'}) {
+		mcheck_sub('vpr',$antesig);
 	    } else {
 		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
 	    }
-	} elsif ($post) {
+	} elsif ($postsig) {
+	    # There could be more than one morpheme subsequence here:
+	    # vsf nsf
+	    # isf nsf (*possibly never happens)
+	    # vsf
+	    # isf
+	    # nsf
+	    if (($mparse{'vsf'} || $mparse{'isf'}) && $mparse{'nsf'}) {
+		my @s = split(/\./,$postsig);
+		my $splitpoint = 1;
+		my @tries = ();
+		while ($splitpoint <= $#s) {
+		    my @sf1 = @s[0 .. $splitpoint-1];
+		    my @sf2 = @s[$splitpoint .. $#s];
+		    # print "sf1 == @sf1 :::: sf2 == @sf2\n";
+		    my $res1 = mcheck_sub($mparse{'vsf'} ? 'vsf' : 'isf', join('.',@sf1));
+		    my $res2 = mcheck_sub('nsf', join('.',@sf2));
+		    if ($res1 && $res2) {
+			push @tries, [ join('.',@sf1) , join('.',@sf2) , $res1 , $res2 ];
+		    }
+		    ++$splitpoint;
+		}
+		if ($#tries < 0) {
+		    my $morph = ",$mparse{'nsf'}";
+		    if ($mparse{'vsf'}) {
+			$morph = ";$mparse{'vsf'}$morph";
+		    } else {
+			$morph = "!$mparse{'isf'}$morph";
+		    }
+		    pp_warn("(fbm) no match for $morph == $postsig");
+		}
+	    } elsif ($mparse{'vsf'}) {
+		mcheck_sub('vsf',$postsig);
+	    } elsif ($mparse{'isf'}) {
+		mcheck_sub('isf',$postsig);
+	    } elsif ($mparse{'nsf'}) {
+		mcheck_sub('nsf',$postsig);
+	    }
 	    if ($m =~ /[,!]\S+$/) {
 		if ($$data{'postshare'}) {
 		    my $share = $base; $share =~ s/\..*$//;
@@ -134,6 +170,23 @@ sub fbm_morph_check {
 	    } 
 	}
     }
+}
+
+sub mcheck_sub {
+    my($type,$sig,$noerr) = @_;
+    my $mtlit = fbm_tlit($data,0,$type =~ tr/././ + 1);
+    my $res = undef;
+    if (($res = ORACC::SMA::MorphData::mdata($type,$m1,$msig,$mtlit))) {
+	if ($res == 1) { # match at mtlit level
+	} elsif ($res == 2) { # match at msig level
+	} elsif ($res == 3) { # match at m1 level
+	} else {
+	    die "$0: unknown return value from ORACC::SMA::MorphData::is_known($type,$m1,$msig,$mtlit)\n";
+	}
+    } else {
+	pp_warn("(fbm) sig $mtlit/$msig not known for $type prefix $m1") unless $noerr;
+    }
+    $res;
 }
 
 sub fbm_tlit {
