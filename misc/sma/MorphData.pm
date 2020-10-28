@@ -1,9 +1,10 @@
 package ORACC::SMA::MorphData;
 require Exporter;
 @ISA=qw/Exporter/;
-@EXPORT = qw/mdata_messages mdata_validate/;
+@EXPORT = qw/mdata_messages mdata_parse mdata_validate/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
+use Data::Dumper;
 
 my $morphdata = "/Users/stinney/oracc/misc/sma/morph.data";
 my %vpr = ();
@@ -14,6 +15,7 @@ my %nsf = ();
 my @messages = ();
 my $status_global = 0;
 my $status_local = 0;
+my $verbose = 1;
 
 ## SOMEWHERE WE NEED TO ENFORCE UNIQUE m1<=>tlit<=>signs RELATIONSHIP
 
@@ -30,7 +32,7 @@ my @t = qw/~ x
     m ma me men menden meš mu 
     n na ne ni NI nu nuš 
     ra ri 
-    ša ši 
+    ša ši
     ta 
     zenden zu zunene/;
 @t{@t} = ();
@@ -76,8 +78,9 @@ sub term {
 # Test if m1-text is known for m1-type
 #      && m1-tlit is known for m1-text in m1-type
 #      || m1-sig is known for m1-text in m1-type and if so what is m1-text for this m1-sig?
-sub mdata {
-    my($t,$m1,$m1s,$m1t) = @_;
+sub mdata_lookup {
+    warn "mdata args: @_\n" if $verbose;
+    my($t,$m1,$m1s,$m1t) = @_;    
     my %h = ();
     if ($t eq 'vpr') {
 	%h = %vpr;
@@ -91,26 +94,35 @@ sub mdata {
 	die "$0: bad type '$t' passed as arg1 of ORACC::SMA::MorphData::mdata\n";
     }
 
+    # warn("mdata h hash = ", Dumper \%h) if $verbose;
+    
     if ($h{$m1,$m1t}) { # the m1 interpretation of the value sequence is known
+	push (@messages, "(mdata) $m1 ~~ $m1t OK") if $verbose;
 	return [ 1 ];
     } elsif ($h{$m1,$m1s}) { # the m1 interpretation of the sign sequence is known
 	if ($h{$m1t}) { # the value sequence is known for type/sig but with different m1
 	    # There are two possibilities here:
 	    # 1) the passed m1 should use a different transliteration of m1s than the passed m1t
 	    # 2) the passed m1 is wrong, m1t should be read as a different m1
-	    return [ 2, $h{$m1,$m1s} , $h{$m1t} ]; ## $h{$m1t} => known M1 not passed one
+	    push @messages, "(mdata) m1 $m1 written $m1t should be different m1 or should be written $h{$m1t}";
+	    return [ 2, $h{$m1,$m1s} , $h{$m1t} ]; ## $h{$m1t} => known M1 not passed one	    
 	} else {
 	    # The known transliteration for m1 using signs m1s is different than passed one
+	    push @messages, "(mdata) expected transliteration for m1 $m1 is $h{$m1,$m1s}, not $m1t";
 	    return [ 2 , $h{$m1,$m1s} ]; ## $h{$m1,$m1s} => known value not passed one
 	}
     } elsif ($h{$m1t}) {
-	# The transliteration is known but has one or more different m1
-	return [ 3 , @{$h{$m1t}} ]; # return format is $m1==$m1s
+	# The transliteration is known but only with one or more different m1
+	my @e = map { s/==.*$// && $_ } @{$h{$m1t}};
+	push @messages, "(mdata) m1 $m1 not known for tlit $m1t; known m1s are: @e";
+	return [ 3 , "$m1 != @{$h{$m1t}}" ]; # return format is $m1==$m1s
     } elsif ($h{$m1s}) {
-	# The sign sequence is known but has one or more different m1; return format is $m1==$m1t
-	return [ 4 , @{$h{$m1s}} ];
+	# The sign sequence is known but only with one or more different m1; return format is $m1==$m1t
+	push @messages, "(mdata) m1 $m1 not known for tlit $m1t; known sigs are: @{$h{$m1s}}";
+	return [ 4 , "$m1 != @{$h{$m1s}}" ];
     }
     
+    return [ 0 ];
 }
 
 sub mdata_parse {

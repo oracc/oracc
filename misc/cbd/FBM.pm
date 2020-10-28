@@ -9,16 +9,21 @@ use warnings; use strict; use open 'utf8'; use utf8;
 use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::CBD::PPWarn;
 use ORACC::SL::BaseC;
+use ORACC::SMA::MorphData;
 
 # set this to 1 if you are calling fbm routines with no cf/gw/pos
 $ORACC::CBD::FBM::no_warn_incomplete = 0;
 
+my $verbose = 1;
+
 sub fbm_init {
     ORACC::SL::BaseC::init();
+    ORACC::SMA::MorphData::init();
 }
 
 sub fbm_term {
     ORACC::SL::BaseC::term();
+    ORACC::SMA::MorphData::term();
 }
 
 sub fbm_base_in_form {
@@ -85,43 +90,63 @@ sub fbm_morph_check {
     $$data{'morph_check'} = 1;
     my @mframes_ok = ();
     foreach my $mf (@{$$data{'mframes'}}) {
-	# warn "morph_check @$mf\n";
+	warn "fbm_morph_check mframes: @$mf\n" if $verbose;
+
 	my($pre,$base,$post,$anteshare,$postshare) = @$mf;
 
-	my %mparse = mdata_parse($$data{'morph'});
+	my $n_base_g = ($base =~ tr/././ + 1);
+
+	my %mparse = ORACC::SMA::MorphData::mdata_parse($$data{'morph'});
 	if ($mparse{'error'}) {
 	    foreach my $m (mdata_messages()) {
 		pp_warn($m);
 	    }
 	    return;
 	}
-	
+	my @mp = %mparse;
+	warn "fbm_morph_check mparse: @mp\n" if $verbose;
+
 	# Now we have prefix/suffix substrings in %mparse to use for
 	# lookup in morphdata to see if transliteration is allowed
 
 	my $antesig;
 	my $postsig;
+	my $index = 0;
+	my $res;
 	# first construct versions of the grapheme sequences that take account of any shared graphemes
 	if ($anteshare) {
 	    my $share = $base; $share =~ s/\..*$//;
 	    $antesig = "$pre.$share";
+	    --$n_base_g; # decrement because we just ate the first base grapheme
 	} else {
 	    $antesig = $pre;
 	}
 	if ($postshare) {
 	    my $share = $base; $share =~ s/^.*?\.([^.]+)$/$1/;
 	    $postsig = "$share.$post";
+	    # unless base is one grapheme and also has anteshare,
+	    # decrement because we just ate the first base grapheme
+	    --$n_base_g if $n_base_g;
 	} else {
 	    $postsig = $post;
 	}
-	
+
 	if ($antesig) { # there should be some morphology before the base
 	    if ($mparse{'vpr'}) {
-		mcheck_sub('vpr',$antesig);
+		if (($res = mcheck_sub($data,'vpr',$index,$mparse{'vpr'},$antesig))) {
+		    $index += ($antesig =~ tr/././);
+		} else {
+		    return;
+		}
 	    } else {
-		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $m");
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no prefix in MORPH $$data{'morph'}");
 	    }
-	} elsif ($postsig) {
+	}
+
+	# From here on we are working on suffixes
+	$index += $n_base_g;
+
+	if ($postsig) {
 	    # There could be more than one morpheme subsequence here:
 	    # vsf nsf
 	    # isf nsf (*possibly never happens)
@@ -132,14 +157,27 @@ sub fbm_morph_check {
 		my @s = split(/\./,$postsig);
 		my $splitpoint = 1;
 		my @tries = ();
+		my $used = 0;
 		while ($splitpoint <= $#s) {
 		    my @sf1 = @s[0 .. $splitpoint-1];
 		    my @sf2 = @s[$splitpoint .. $#s];
 		    # print "sf1 == @sf1 :::: sf2 == @sf2\n";
-		    my $res1 = mcheck_sub($mparse{'vsf'} ? 'vsf' : 'isf', join('.',@sf1));
-		    my $res2 = mcheck_sub('nsf', join('.',@sf2));
-		    if ($res1 && $res2) {
-			push @tries, [ join('.',@sf1) , join('.',@sf2) , $res1 , $res2 ];
+		    my $res1 = '';
+		    if ($mparse{'vsf'}) {
+			$res1 = mcheck_sub($data, 'vsf', $index, $mparse{'vsf'}, join('.',@sf1));
+		    } else {
+			$res1 = mcheck_sub($data, 'isf', $index, $mparse{'isf'}, join('.',@sf1));
+		    }
+		    return unless $res1;
+		    $index += $#sf1 + 1;
+		    my $res2 = mcheck_sub($data, 'nsf', $index, $mparse{'nsf'}, join('.',@sf2));
+		    if ($res2) {
+			$index += $#sf2 + 1;
+			if ($index > ($$data{'form_tlit'} =~ tr/ / /)) {
+			    push @tries, [ join('.',@sf1) , join('.',@sf2) , $res1 , $res2 ];
+			} else {
+			    pp_warn("(fbm) unused graphemes at end of $$data{'form'}");
+			}
 		    }
 		    ++$splitpoint;
 		}
@@ -153,35 +191,42 @@ sub fbm_morph_check {
 		    pp_warn("(fbm) no match for $morph == $postsig");
 		}
 	    } elsif ($mparse{'vsf'}) {
-		mcheck_sub('vsf',$postsig);
+		$res = mcheck_sub($data,'vsf',$index,$mparse{'vsf'},$postsig);
+		return unless $res;
+		$index += ($postsig =~ tr/././ + 1);
+		pp_warn("(fbm) unused graphemes at end of $$data{'form'}") unless $index > ($$data{'form'} =~ tr/ / /);
 	    } elsif ($mparse{'isf'}) {
-		mcheck_sub('isf',$postsig);
+		$res = mcheck_sub($data,'isf',$index,$mparse{'isf'},$postsig);
+		return unless $res;
+		$index += ($postsig =~ tr/././ + 1);
+		pp_warn("(fbm) unused graphemes at end of $$data{'form'}") unless $index > ($$data{'form'} =~ tr/ / /);
 	    } elsif ($mparse{'nsf'}) {
-		mcheck_sub('nsf',$postsig);
-	    }
-	    if ($m =~ /[,!]\S+$/) {
-		if ($$data{'postshare'}) {
-		    my $share = $base; $share =~ s/\..*$//;
-		    my $mlook = "$pre.$share";
-		}
-		
+		$res = mcheck_sub($data,'nsf',$index,$mparse{'nsf'},$postsig);
+		return unless $res;
+		$index += ($postsig =~ tr/././ + 1);
+		pp_warn("(fbm) unused graphemes at end of $$data{'form'}") unless $index > ($$data{'form'} =~ tr/ / /);
 	    } else {
-		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $m");
+		pp_warn("(fbm) FORM $$data{'form'} has medial BASE $$data{'base'} but no postfix in MORPH $$data{'morph'}");
 	    } 
 	}
     }
 }
 
 sub mcheck_sub {
-    my($type,$sig,$noerr) = @_;
-    my $mtlit = fbm_tlit($data,0,$type =~ tr/././ + 1);
-    my $res = undef;
-    if (($res = ORACC::SMA::MorphData::mdata($type,$m1,$msig,$mtlit))) {
-	if ($res == 1) { # match at mtlit level
-	} elsif ($res == 2) { # match at msig level
-	} elsif ($res == 3) { # match at m1 level
+    warn "mcheck_sub args: @_\n" if $verbose;
+    my($data,$type,$index,$m1,$msig,$noerr) = @_;
+    #    my $mtlit = fbm_tlit($data,0,$msig =~ tr/././ + 1);
+    my $mtlit = fbm_tlit($data,$index,$msig =~ tr/././ + 1);
+    my $resref = ORACC::SMA::MorphData::mdata_lookup($type,$m1,$msig,$mtlit);
+    warn "mcheck_sub return from mdata: @$resref\n" if $verbose;
+    my ($res,$val) = @$resref;
+    if ($res) {
+	if ($res == 1 || $res == 2 || $res == 3) {
+	    foreach my $m (mdata_messages()) {
+		pp_warn($m);
+	    }
 	} else {
-	    die "$0: unknown return value from ORACC::SMA::MorphData::is_known($type,$m1,$msig,$mtlit)\n";
+	    die "$0: unknown return value ($res) from ORACC::SMA::MorphData::is_known($type,$m1,$msig,$mtlit)\n";
 	}
     } else {
 	pp_warn("(fbm) sig $mtlit/$msig not known for $type prefix $m1") unless $noerr;
