@@ -15,7 +15,7 @@ my %nsf = ();
 my @messages = ();
 my $status_global = 0;
 my $status_local = 0;
-my $verbose = 1;
+my $verbose = 0;
 
 ## SOMEWHERE WE NEED TO ENFORCE UNIQUE m1<=>tlit<=>signs RELATIONSHIP
 
@@ -104,7 +104,7 @@ sub mdata_lookup {
 	    # There are two possibilities here:
 	    # 1) the passed m1 should use a different transliteration of m1s than the passed m1t
 	    # 2) the passed m1 is wrong, m1t should be read as a different m1
-	    push @messages, "(mdata) m1 $m1 written $m1t should be different m1 or should be written $h{$m1t}";
+	    push @messages, "(mdata) m1 $m1 written $m1t should be different m1 or should be written @{$h{$m1t}}";
 	    return [ 2, $h{$m1,$m1s} , $h{$m1t} ]; ## $h{$m1t} => known M1 not passed one	    
 	} else {
 	    # The known transliteration for m1 using signs m1s is different than passed one

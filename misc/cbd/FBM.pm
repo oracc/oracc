@@ -14,7 +14,7 @@ use ORACC::SMA::MorphData;
 # set this to 1 if you are calling fbm routines with no cf/gw/pos
 $ORACC::CBD::FBM::no_warn_incomplete = 0;
 
-my $verbose = 1;
+my $verbose = 0;
 
 sub fbm_init {
     ORACC::SL::BaseC::init();
@@ -242,9 +242,16 @@ sub fbm_tlit {
     my $i = $index; $i = 1 + $#t + $index if $index < 0;
     my $end = $i+$length-1;
     my @g = @t[$i..$end];
-    # This is a grapheme spec where some items contain ^N^ encoding for signature spans
-    # and others can contain determinative info.  Need to code the hyphenation better ...
-    join('-',@g);
+    my @dg = grep defined, @g;
+    if ($#g != $#dg) {
+	warn "$0: @t segment $index .. $end produced null array element\n";
+	return join('-',grep(defined,@g));
+    } else {
+	# This is a grapheme spec where some items contain ^N^ encoding for signature spans
+	# and others can contain determinative info.  Need to code the hyphenation better ...
+	return join('-',@g);
+    }
+    
 }
 
 1;

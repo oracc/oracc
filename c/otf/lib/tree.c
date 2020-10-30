@@ -21,7 +21,7 @@ List *gtree_mem_list = NULL;
 static struct npool *tree_pool;
 #define pool_copy(x) npool_copy((x),tree_pool)
 
-#define BLOCK_SIZE    4096
+#define BLOCK_SIZE    8192
 #define gBLOCK_SIZE   4096
 #define A_BLOCK_SIZE 16384
 #define A_gBLOCK_SIZE 8192

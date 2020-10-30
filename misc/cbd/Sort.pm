@@ -15,6 +15,7 @@ use ORACC::CBD::PPWarn;
 
 use Data::Dumper;
 
+my $acd_rx = $ORACC::CBD::acd_rx;
 my %cgc = ();
 my $cgctmp = '';
 

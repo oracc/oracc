@@ -499,38 +499,41 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	      && strcmp((const char *)f2->gw,"cvne")
 	      && strcmp((const char *)f2->gw,"cvve"))
 	    {
-	      char *comma = NULL;
-	      Uchar *tmp = (Uchar*)f2->sense;
-
-	      if (lem_simplify)
+	      if (strcmp((const char *)f2->gw,"n"))
 		{
-		  if ((comma = strchr((const char *)f2->sense, ',')))
-		    *comma = '\0';
-		  if (!strncmp((const char*)f2->sense, "(to be) ", 8))
-		    tmp += 8;
-		  else if (!strncmp((const char*)f2->sense, "to ", 3))
+		  char *comma = NULL;
+		  Uchar *tmp = (Uchar*)f2->sense;
+		  		  
+		  if (lem_simplify)
 		    {
-		      tmp += 3;
-		      if (!strncmp((const char*)tmp, "be ", 3))
-			tmp += 3;
-		      else if (!strncmp((const char*)tmp, "make ", 5))
-			tmp += 5;
-		    }
-		  if (tmp[strlen((const char *)tmp)-1] == ')')
-		    {
-		      unsigned char *end = tmp+strlen((const char *)tmp);
-		      while (end > tmp)
+		      if ((comma = strchr((const char *)f2->sense, ',')))
+			*comma = '\0';
+		      if (!strncmp((const char*)f2->sense, "(to be) ", 8))
+			tmp += 8;
+		      else if (!strncmp((const char*)f2->sense, "to ", 3))
 			{
-			  if (*--end == '(')
-			    *end = '\0';
+			  tmp += 3;
+			  if (!strncmp((const char*)tmp, "be ", 3))
+			    tmp += 3;
+			  else if (!strncmp((const char*)tmp, "make ", 5))
+			    tmp += 5;
+			}
+		      if (tmp[strlen((const char *)tmp)-1] == ')')
+			{
+			  unsigned char *end = tmp+strlen((const char *)tmp);
+			  while (end > tmp)
+			    {
+			      if (*--end == '(')
+				*end = '\0';
+			    }
 			}
 		    }
+		  
+		  while (' ' == tmp[strlen((const char*)tmp)-1])
+		    tmp[strlen((const char*)tmp)-1] = '\0';
+		  
+		  fprintf(fp,"[%s]",(char*)tmp);
 		}
-
-	      while (' ' == tmp[strlen((const char*)tmp)-1])
-		tmp[strlen((const char*)tmp)-1] = '\0';
-
-	      fprintf(fp,"[%s]",(char*)tmp);
 	    }
 	  else
 	    fprintf(fp,"[%s]",f2->gw);
