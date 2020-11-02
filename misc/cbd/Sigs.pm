@@ -1324,6 +1324,7 @@ sub psu_dump {
 
 sub sigs_dump {
     my($args) = @_;
+    my $project = ORACC::CBD::Util::project();
     if ($$args{'stdout'}) {
 	*SIGS = *STDOUT;
     } else {
@@ -1335,7 +1336,11 @@ sub sigs_dump {
 #    print STDERR Dumper \@sigs_cofs;
     pp_diagnostics();
     print SIGS "\@fields sig rank\n";
-    print SIGS uniq(@sigs_simple);
+    if ($#sigs_simple >= 0) {
+	print SIGS uniq(@sigs_simple);
+    } else {	
+	print SIGS map { "\@$project%qpn:*=$_\t1\t1\n" } uniq(@sigs_coresigs);
+    }
     print SIGS uniq(@sigs_cofs);
     print SIGS uniq(@sigs_psus) unless $$args{'nopsus'};
 #    print SIGS @{$g{'sigs'}};
