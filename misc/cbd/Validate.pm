@@ -7,8 +7,8 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 
 my @tags = qw/letter entry oid parts bff bases stems phon root form length norms
-    sense equiv inote prop end isslp bib defn note pl_coord
-    pl_id pl_uid was moved project lang name collo proplist prop ok
+    sense equiv inote prop end isslp bib defn note alias
+    pl_coord pl_id pl_uid was moved project lang name collo proplist prop ok
     allow/;
 
 my %tags = (); @tags{@tags} = ();
@@ -279,7 +279,7 @@ sub pp_validate {
 	    my $rws = $1;
 	    pp_warn("\@$1 unknown register/writing-system/dialect")
 		unless $rws_map{$rws};
-	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z]+)/) { # \s+(.*)\s*$/o) {
+	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z_]+)/) { # \s+(.*)\s*$/o) {
 	    my ($pre,$tag,$post) = ($1,$2);
 	    if (exists $tags{$tag}) {
 		# push @{$tag_lists{$tag}}, $i;		
@@ -334,7 +334,7 @@ sub pp_validate {
 		    }
 		}
 	    } else {
-		pp_warn("\@$1 unknown tag");
+		pp_warn("\@$tag unknown tag");
 	    }
 	} elsif ($cbd[$i] =~ /^($acd_rx)/o) {
 
