@@ -16,7 +16,15 @@ int verbose = 1;
 static void
 print_hdr(void)
 {
-  puts("Content-type: text/html; charset=utf-8\n");
+#if 0
+  /* sigmap doesn't know the originating project so just make all sigmap pages CORS ok for now */
+  if (!strcmp(project, "neo"))
+    puts("Content-type: text/html; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n");
+  else
+    puts("Content-type: text/html; charset=utf-8\n\n");
+#else
+  puts("Content-type: text/html; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n");
+#endif
   fflush(stdout);
 }
 

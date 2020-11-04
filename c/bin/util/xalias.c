@@ -1,5 +1,6 @@
 #include <psd_base.h>
 #include <f2.h>
+#include <gsl.h>
 extern void usage(void);
 int verbose = 0;
 int
