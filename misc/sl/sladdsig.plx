@@ -7,13 +7,15 @@ use ORACC::SL::BaseC;
 use Getopt::Long;
 
 my $addtlit = 0;
+my $readfield = -1;
 my $sigfield = -1;
 my $tlitfield = -1;
 
 GetOptions(
-    'a' => \$addtlit,
+    'a'   => \$addtlit,
+    'r:i' => \$readfield,
     's:i' => \$sigfield,
-    't:i'  => \$tlitfield,
+    't:i' => \$tlitfield,
     );
 
 ORACC::SL::BaseC::init();
@@ -21,9 +23,10 @@ ORACC::SL::BaseC::init();
 while (<>) {
     chomp;
     my @f = split(/\t/,$_);
+    $readfield = $#f unless $readfield >= 0;
     $sigfield = $#f+1 unless $sigfield >= 0;
     unless (length $f[$sigfield]) {
-	my $t = $f[$#f];
+	my $t = $f[$readfield];
 	my $s = ORACC::SL::BaseC::tlit_sig('',$t);
 	## NEED TO DETECT ERRORS IN TLIT_SIG AND EXIT WITH ERROR STATUS
 	if ($sigfield >= 0) {

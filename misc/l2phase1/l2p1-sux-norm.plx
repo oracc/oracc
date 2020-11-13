@@ -31,7 +31,7 @@ while (<G>) {
 	warn "glo:$.: (normify) missing \@end entry\n" if $in_entry;
 	@forms = ();
 	my($xcf,$gw,$pos) = (/\s(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/);
-	if ($xcf && $gw && $pos) {
+	if ($xcf && defined($gw) && $pos) { # when gw = "0" test $gw fails
 	    $cf = $xcf;
 	    $base = "$xcf\[$gw\]$pos";
 	} else {

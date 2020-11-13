@@ -1178,7 +1178,7 @@ sub v_sense {
     } else {
 	$pos = '';
     }
-    if (!$mng) {
+    if (!defined($mng)) { # allow mng="0"
 	pp_warn("no content in SENSE");
 	$mng = '';
     }

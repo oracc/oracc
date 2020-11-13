@@ -48,7 +48,7 @@ sub normify {
 	    pp_warn "(normify) missing \@end entry" if $in_entry;
 	    @forms = ();
 	    my($xcf,$gw,$pos) = (/\s(\S+)\s+\[(.*?)\]\s+(\S+)\s*$/);
-	    if ($xcf && $gw && $pos) {
+	    if ($xcf && defined($gw) && $pos) {
 		$cf = $xcf;
 		$base = "$xcf\[$gw\]$pos";
 	    } else {

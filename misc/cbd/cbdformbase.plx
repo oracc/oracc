@@ -5,6 +5,9 @@ binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
+use lib "$ENV{'ORACC_BUILDS'}/lib";
+use ORACC::CBD::Bases;
+
 # fix a variety of errors as logged by BaseC and CBD/Validate
 # applied to file/line named in message and write to STDOUT.
 # log file read from STDIN
@@ -44,9 +47,26 @@ while (<>) {
     } elsif (/^(.*?):(.*?): \(bases\) phonetically determined BASE (.*?) should be (.*?)$/) {
 	my($file,$line,$base,$should) = ($1,$2,$3,$4);
 	fix_in_base($file,$line,$base,$should);
+    } elsif (/^(.*?):(.*?): \(bases\) primary bases '(.*?)' and '(.*?)' are the same/) {
+	my($file,$line,$base1,$base2) = ($1,$2,$3,$4);
+	my $pref = bases_prefer('',$base1,$base2) || '';
+	if ($pref eq $base1) {
+	    warn "$file:$line: FYI: deleting base $base2 and keeping $pref\n";
+	    delete_base($file,$line,$base2);
+	} elsif ($pref eq $base2) {
+	    warn "$file:$line: FYI: deleting base $base1 and keeping $pref\n";
+	    delete_base($file,$line,$base1);
+	} else {
+	    # bases_prefer couldn't make a decision, so leave it
+	    warn "$file:$line: bases_prefer failed to choose between $base1 and $base2\n";
+	}
     } else {
-	warn "nothing to do with $_"
-	    unless /\(bases\)/ || /cbdpp/;
+	if (/primary bases.*same/) {
+	    warn "MISSED $_";
+	} else {
+	    warn "nothing to do with $_"
+		unless /\(bases\)/ || /cbdpp/;
+	}
     }
 }
 close_and_dump() if $curr_file;
@@ -64,10 +84,29 @@ sub fix_in_base {
 	    next if $$b[0] eq $good;
 	    $nfix += fix_b($b,$badQ,$good);
 	}
-	if ($nfix) {	    
+	if ($nfix) {
 	    fix_set_line($l,fix_bases_back(@bases));
 	} else {
 	    warn "$f:$l: $bad not found in any primary base\n";
+	}
+    } else {
+	warn "$f:$l: not a \@bases line\n" if $verbose;
+    }
+}
+
+sub delete_base {
+    my($f,$l,$bad) = @_;
+    my $ln = fix_get_line($f,$l);
+    if ($ln =~ /^\@bases/) {
+	my @bases = fix_bases_list($ln);
+	my @nbases = ();
+	foreach my $b (@bases) {
+	    push @nbases, $b unless $$b[0] eq $bad;
+	}
+	if ($#nbases < $#bases) {
+	    fix_set_line($l,fix_bases_back(@nbases));
+	} else {
+	    warn "$f:$l: $bad not found so not deleted\n";
 	}
     } else {
 	warn "$f:$l: not a \@bases line\n" if $verbose;
