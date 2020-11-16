@@ -49,7 +49,14 @@ while (<>) {
 	fix_in_base($file,$line,$base,$should);
     } elsif (/^(.*?):(.*?): \(bases\) primary bases '(.*?)' and '(.*?)' are the same/) {
 	my($file,$line,$base1,$base2) = ($1,$2,$3,$4);
-	my $pref = bases_prefer('',$base1,$base2) || '';
+	my $cfgw = find_cfgw($file,$line);
+	my $pref = '';
+	if ($cfgw) {
+	    $pref = bases_prefer($cfgw,$base1,$base2) || '';
+	} else {
+	    warn "$file:$line: didn't find CFGW for line\n";
+	    $pref = bases_prefer('',$base1,$base2) || '';
+	}
 	if ($pref eq $base1) {
 	    warn "$file:$line: FYI: deleting base $base2 and keeping $pref\n";
 	    delete_base($file,$line,$base2);
@@ -58,9 +65,15 @@ while (<>) {
 	    delete_base($file,$line,$base1);
 	} else {
 	    # bases_prefer couldn't make a decision, so leave it
-	    warn "$file:$line: bases_prefer failed to choose between $base1 and $base2\n";
+	    warn "$file:$line: bases_prefer failed to choose between $base1 and $base2 for word $cfgw\n";
 	}
+
+    } elsif (/^(.*?):(.*?): FORM .*? may not contain degree/) {
+	my($file,$line) = ($1,$2);
+	warn "exec form_degree_cdot\n";
+	form_degree_cdot($file,$line);
     } else {
+	
 	if (/primary bases.*same/) {
 	    warn "MISSED $_";
 	} else {
@@ -100,8 +113,17 @@ sub delete_base {
     if ($ln =~ /^\@bases/) {
 	my @bases = fix_bases_list($ln);
 	my @nbases = ();
+	my $bad_fixed = 0;
 	foreach my $b (@bases) {
-	    push @nbases, $b unless $$b[0] eq $bad;
+	    if ($$b[0] ne $bad) {
+		push @nbases, $b;
+	    } else {
+		if ($bad_fixed++) {
+		    push @nbases, $b;
+		} else {
+		    warn "deleting $$b[0]\n";
+		}
+	    }
 	}
 	if ($#nbases < $#bases) {
 	    fix_set_line($l,fix_bases_back(@nbases));
@@ -111,6 +133,18 @@ sub delete_base {
     } else {
 	warn "$f:$l: not a \@bases line\n" if $verbose;
     }
+}
+
+sub form_degree_cdot {
+    my ($file,$line) = @_;
+    my $x = fix_get_line($file,$line);
+    $x =~ s/form\s+(\S+)/_degree_cdot($1)/e;
+    fix_set_line($line,$x);
+}
+sub _degree_cdot {
+    my $t = shift;
+    $t =~ tr/°·//d;
+    "form $t";
 }
 
 sub fix_b {
@@ -150,6 +184,20 @@ sub fix_in_form {
 	warn "$f:$l: not a \@form line\n" if $verbose;
     }
 }
+
+sub find_cfgw {
+    my($f,$l) = @_;
+    open_and_load($f) unless $f eq $curr_file;
+    $lines[$l-1];
+    while ($lines[$l-1] !~ /^\@entry/) {
+	--$l;
+    }
+    if ($lines[$l-1] =~ /\@entry\s+(.*?)\s*$/) {
+	return $1;
+    } else {
+	return undef;
+    }
+}
 sub fix_get_line {
     my($f,$l) = @_;
     open_and_load($f) unless $f eq $curr_file;
@@ -181,13 +229,24 @@ sub fix_bases_back {
     my @bb = @_;
     my $ln = '@bases ';
     my @bbb = ();
-    foreach my $bb (@bb) {
+    foreach my $bb (bb_uniq(@bb)) {
 	my $bbb = "@$bb";
 	$bbb =~ s/\s*$//;
 	push @bbb, $bbb;
     }
     $ln .= join('; ', @bbb);
     $ln;
+}
+
+sub bb_uniq {
+    my @bb = @_;
+    my @nbb = ();
+    my %seen = ();
+    # NB: This loses alt bases from duplicates
+    foreach $b (@bb) {
+	push @nbb, $b unless $seen{$$b[0]}++;
+    }
+    @nbb;
 }
 
 sub fix_hide_bound {

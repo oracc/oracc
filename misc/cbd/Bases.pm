@@ -476,7 +476,7 @@ sub bases_prefer {
 	return $b;
     }
 
-    my $cf = $cfgw; $cf =~ s/\s.*$//;
+    my $cf = $cfgw; $cf =~ s/\s.*$//; $cf = "\L$cf";
     if ($a =~ /$cf/ && $b !~ /$cf/) {
 	return $a;
     } elsif ($b =~ /$cf/) {
@@ -504,6 +504,7 @@ sub base_to_cf {
     $x =~ s/\(.*\)//g;
     $x =~ s/ₓ.*$//;
     $x =~ tr/-₀₁₂₃₄₅₆₇₈₉ₓ//d;
+    $x =~ "\L$x";
     $x;
 }
 
