@@ -1,6 +1,6 @@
 #!/bin/sh
 
-exec >01log/l2p2.log ; exec 2>&1
+#exec >01log/l2p2.log ; exec 2>&1
 
 project=`oraccopt`
 
@@ -26,6 +26,11 @@ function cbd {
 	if [ -r 01tmp/$l.glo ] ; then
 	    echo "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
 	    l2-glomanager.plx -xml 01tmp/$l.glo -out $ldir/$l.cbd
+	elif [ -r 00lib/$l.glo ]; then
+	    echo "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
+	    l2-glomanager.plx -xml 00lib/$l.glo -out $ldir/$l.cbd
+	else
+	    echo "g2=yes, no glossary found for $l"
 	fi
     elif [ -r 01bld/$l.glo.norm ]; then
 	echo creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
@@ -108,10 +113,10 @@ else
 	rm -f $ldir/union.sig
 	[ -r 01bld/project.sig ] && l2p2-sig-slicer.plx -lang $l
 	[ -r 01bld/from-glos.sig ] && l2p2-sig-slicer.plx -lang $l -name glossary -sigs 01bld/from-glos.sig
-	if [ -r $ldir/glossary.sig ] && [ -r $ldir/$l.sig ]; then
-	    l2-sig-union.plx $ldir/$l.sig $ldir/glossary.sig >$ldir/union.sig
-	elif [ -r $ldir/glossary.sig ]; then
-	    l2-sig-union.plx $ldir/glossary.sig >$ldir/union.sig
+	if [ -r $ldir/from_glo.sig ] && [ -r $ldir/$l.sig ]; then
+	    l2-sig-union.plx $ldir/$l.sig $ldir/from_glo.sig >$ldir/union.sig
+	elif [ -r $ldir/from_glo.sig ]; then
+	    l2-sig-union.plx -lang $l -proj $project $ldir/from_glo.sig >$ldir/union.sig
 	else
 	    l2-sig-union.plx $ldir/$l.sig >$ldir/union.sig
 	fi
