@@ -116,7 +116,7 @@ my %stems = (); @stems{@stems} = ();
 
 my @tags = qw/entry oid alias parts allow bases bff collo conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
-	      defn note pl_coord pl_id pl_uid/;
+	      defn note pl_coord pl_id pl_uid proplist/;
 my %tags = (); @tags{@tags} = ();
 
 my %fseq = ();
@@ -292,7 +292,7 @@ acd2xml {
 #    load_sigs($input);
     while (<IN>) {
 	++$curr_line;
-	next if /^\#/ || /^\@letter/;
+	next if /^\#/ || /^\@letter/ || /^\@proplist/;
 	chomp;
 	s/\s+/ /g;
 	if (/^[+->]?\@([a-z_]+[-*!]*)\s+(.*?)\s*$/) {
