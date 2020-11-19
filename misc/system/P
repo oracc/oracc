@@ -1,0 +1,2 @@
+#!/bin/sh
+se \#cdli \!cat `echo $* | tr ' ' _`
