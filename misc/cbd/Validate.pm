@@ -482,6 +482,9 @@ sub v_entry {
 	    pp_warn("max two \@entry fields allowed");
 	} else {
 	    ++$in_entry;
+
+	    # $curr_cfgw =~ tr/_/ /; #map _ to &nbsp;
+
 	    $curr_cfgw = $arg;
 
 	    $curr_id = $entries{$curr_cfgw} = $eid++;
