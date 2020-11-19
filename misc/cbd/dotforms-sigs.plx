@@ -12,12 +12,15 @@ die unless $file;
 open(F,$file) || die;
 while (<F>) {
     chomp;
-    my($cfgw,$form,$base,$cont,$morph) = (m#^(.*)\t\@form\s+(\S+)\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
+    my($cfgw,$form,$lxng,$base,$cont,$morph)
+	= (m#^(.*)\t\@form\s+(\S+)(\s+\%\S+)?\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
     $cfgw =~ s/\s+(\[.*?\])\s+/$1/;
     $cfgw =~ s#\[(.*?)\]#[$1//$1]#;
     $cfgw =~ s/\](\S+)/\]$1'$1/;
     $cont = '' unless $cont; $cont =~ s/^\s*//;
-    print "\@$proj\%$lang:$form=$cfgw/$base$cont$morph\n";
+    $lang =~ s/^\s*// if $lang;
+    $lang = "\%$lang" unless $lang =~ /^\%/;
+    print "\@$proj$lang:$form=$cfgw/$base$cont$morph\n";
 }
 
 1;
