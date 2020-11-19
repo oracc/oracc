@@ -111,6 +111,7 @@ glossary_howtos {
     $howto{'cbd_prop'} = { nam=>'@key',val=>'[',att=>'-key' };
     $howto{'cbd_v'} = { nam=>'#ignore',val=>'text()',att=>'' };
 
+    $howto{'cbd_alias'} = { nam=>'alias',val=>'text()',att=>'' };
     $howto{'cbd_pl_id'} = { nam=>'pl_id',val=>'text()',att=>'' };
     $howto{'cbd_pl_coord'} = { nam=>'pl_coord',val=>'text()',att=>'' };    
     
