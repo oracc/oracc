@@ -890,26 +890,29 @@ gparse(register unsigned char *g, enum t_type type)
 	      if (do_signnames)
 		{
 		  static const unsigned char *cattr = NULL;
-		  const unsigned char *showerr = "yes";
+		  const char *showerr = "yes";
 		  const unsigned char *input = NULL;
 #if 1
 		  if (gp->type == g_q)
 		    cattr = signify(input = gp->g.q.q->atf);
 		  else if (gp->type == g_n)
 		    {
-		      if (!strchr(gp->atf,'('))
+		      if (!strchr((char*)gp->atf,'('))
 			{
-			  int n = atoi(gp->atf);
-			  char *sx = sexify(n,"disz");
+			  int n = atoi((char*)gp->atf);
+			  unsigned char *sx = sexify(n,"disz");
 			  if (sx)
 			    input = sx;
 			  else
 			    input = gp->atf;
 			  /* sign "15" becomes "1(u) 5(disz)" which breaks signify for now */
-			  if (!strchr(input, ' '))
+			  if (!strchr((char*)input, ' '))
 			    cattr = signify(input);
 			  else
-			    showerr = cattr = NULL;
+			    {
+			      showerr = NULL;
+			      cattr = NULL;
+			    }
 			}
 		      else
 			cattr = signify(input = buf);
@@ -1433,6 +1436,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		  }
 		else
 		  {
+		    if (use_unicode)
+		      notice("'x' deprecated with 'use unicode'; replace with TIMES symbol");
 		    np = ops_by_char['x'];
 		    last_g = NULL;
 		    ++g;

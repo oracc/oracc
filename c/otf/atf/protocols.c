@@ -44,7 +44,7 @@ extern int lem_simplify;
 const char *lem_simplify_opt;
 extern int mixed_case_ok;
 static int need_auto_syntax_line_is_unit = 0;
-extern int use_legacy, use_unicode;
+extern int use_legacy, use_unicode, use_ilem_conv;
 extern const char *curr_dialect;
 
 static void atf_handler(struct node *parent, enum t_scope scope, 
@@ -506,6 +506,8 @@ atf_handler(struct node *parent, enum t_scope scope,
 	math_mode = 1;
       else if (!xstrncmp(l,"unicode",7))
 	use_unicode = 1;
+      else if (!xstrncmp(l,"lemconv",7))
+	use_ilem_conv = 1;
       else if (!xstrncmp(l,"legacy",7))
 	use_legacy = 1;
       else if (!xstrncmp(l,"cuneiform",9))

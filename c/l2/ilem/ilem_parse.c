@@ -97,7 +97,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
   int newflag = 0;
   extern const char *phase;
   unsigned char *lemma = NULL;
-  extern int lem_dynalem;
+  extern int lem_dynalem, use_ilem_conv;
   
 #define LANGBUF_LEN 32
   char langbuf[LANGBUF_LEN+1];
@@ -378,7 +378,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
 	  if (check_cf((char*)lp->f->file, lp->f->lnum, (char*)curr_f->f2.cf))
 	    BIT_SET(curr_f->f2.flags, F2_FLAGS_INVALID);
 
-	  if (curr_f->lang)
+	  if (use_ilem_conv && curr_f->lang)
 	    {
 	      curr_lang = curr_f->lang;
 	      if (!BIT_ISSET(curr_f->f2.flags,F2_FLAGS_CF_QUOTED))

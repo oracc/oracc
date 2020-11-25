@@ -38,9 +38,16 @@ exec 2>&1
 cd $oracc_builds/$project
 $oracc/bin/o2-indexes-boot.sh
 # $oracc/bin/est-project-web.sh
+
 cd 02www
 for a in `grep -r -l http://$buildserver *` ; do
     perl -pi -e "s/$buildserver/$oracc_host/g" $a
 done
+
+if [ "$project" == "cdli" ]; then
+    rm -f $oracc_builds/lib/data/catpnums.vec
+    cp -a $oracc_builds/$project/02pub/catpnums.vec $oracc_builds/lib/data
+fi
+
 touch $oracc_builds/$project/installstamp
 exit 0

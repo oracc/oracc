@@ -25,7 +25,7 @@ my $disambig = '';
 
 my @nsm = qw/
     a ka ke4 ke₄
-    kam kam₂ am3 am₃ am6 am₆ nam um im
+    kam kam₂ kam₃ kam₄ am3 am₃ am6 am₆ nam um im
     mu gu10 gu₁₀ ju10 ŋu₁₀ zu zu5 zu₅ ni bi be6 be₆ bi3 bi₃ ne ne2 ne₂
     ja2 ŋa₂ ga2 ga₂ za na ba
     e en6 en₆ ne2 ne₂ be2 be₂
