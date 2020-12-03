@@ -5,11 +5,35 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 use Data::Dumper;
 use ORACC::SL::BaseC;
 use ORACC::L2GLO::Util;
+use Getopt::Long;
+
+my $force = 0;
+
+GetOptions(
+    f=>\$force,
+    );
 
 # Read project.sig and generate FORM and BASE statistics by CFGWPOS and SL signatures
 
-die "$0: no 01bld/project.sig\n" unless -r '01bld/project.sig';
+my $sigs = '01bld/project.sig';
+die "$0: no $sigs\n" unless -r $sigs;
+my $stats = $sigs; $stats =~ s/\.sig$/.stats/ || die "$0: sigs file must end in .sig\n";
 
+my $sigs_date = (stat($sigs))[9];
+my $stats_date = (stat($stats))[9];
+
+if (defined($stats_date) && ($sigs_date < $stats_date)) {
+    if ($force) {
+	warn "$0: $sigs older than $stats; forcing rebuild\n";
+    } else {
+	warn "$0: $sigs older than $stats; no need to rebuild\n";
+	exit 0;
+    }
+}
+
+open(STATS, ">$stats") || die "$0: unable to write stats file $stats\n"; select STATS;
+
+my %forms = ();
 my %index = ();
 
 my @input = `cut -f1,3 01bld/project.sig`;
@@ -35,6 +59,10 @@ foreach (@input) {
     unless ($fs =~ /q/) {
 	${$index{$fs}}{"$cfgwpos"} += $count; # most frequent lemma for form sig
 	${$index{"$cfgwpos\::=$fs"}}{$form} += $count unless $fs =~ /q/; # most frequent tlit of form in lemma
+	my $f = "/$s{'base'} "; $f =~ s#\%.*?:##;
+	$f .= " +$s{'cont'}" if $s{'cont'};
+	$f .= " #$s{'morph'}";
+	$forms{"$cfgwpos\::=$fs"} = $f;
     }
 }
 ORACC::SL::BaseC::term();
@@ -50,7 +78,7 @@ foreach (sort keys %index) {
 	    $s .= "$v<${$index{$_}}{$v}> " unless $seen{$v};
 	}
 	$s =~ s/\s$/\n/;
-	push @bytlit, $s;
+	push @bytlit, $s;	
     } else {
 	my $s = "$_\t";
 	my %seen = ();
@@ -64,6 +92,10 @@ foreach (sort keys %index) {
 
 print @bytlit;
 print @bycf;
+foreach my $f (sort keys %forms) {
+    print "$f\t$forms{$f}\n";
+}
+close STATS;
 
 # print Dumper \%index;
 
