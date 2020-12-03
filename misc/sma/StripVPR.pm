@@ -30,7 +30,7 @@ strip_vpr {
     }
 
     if ($vpr_end > 0) {
-	# take the following graphemes as a verb root
+	# take the following graphemes as a verb base
 	$ORACC::SMA::StripVPR::prefix = join('-',@g[0..$vpr_end-1]);
 	return join('-',@g[$vpr_end..$#g]);
     } else {

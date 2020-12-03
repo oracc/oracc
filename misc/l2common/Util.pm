@@ -295,6 +295,9 @@ parse_sig {
     $x{'pos'} =~ tr,\cA,/, if $x{'pos'};
     $x{'epos'} =~ tr,\cA,/, if $x{'epos'};
 
+    # unprotect remainder from V/[ti] protection because tum₂-u₃=tum[bring//to bring]V/t'V/t$tum!V/tum₂#~!V
+    tr,\cA,/,;
+    
     if (s/\!(0x.[0-9a-f]+)//i) {
 	$x{'flags'} = $1;
     }

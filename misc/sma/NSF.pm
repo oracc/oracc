@@ -26,7 +26,7 @@ my $disambig = '';
 my @nsm = qw/
     a ka ke4 ke₄
     kam kam₂ kam₃ kam₄ am3 am₃ am6 am₆ nam um im
-    mu gu10 gu₁₀ ju10 ŋu₁₀ zu zu5 zu₅ ni bi be6 be₆ bi3 bi₃ ne ne2 ne₂
+    mu gu10 gu₁₀ ju10 ŋu₁₀ zu zu5 zu₅ ni bi biₓ(DUG) be6 be₆ bi₆ bi3 be₃ bi₃ ne ne2 ne₂
     ja2 ŋa₂ ga2 ga₂ za na ba
     e en6 en₆ ne2 ne₂ be2 be₂
     da 
@@ -42,7 +42,7 @@ my @nsm = qw/
 
 my @poss = qw/
     mu gu10 gu₁₀ ju10 ŋu₁₀ zu zu5 zu₅ ni 
-    bi be2 be₂ bi3 bi₃ be6 be₆
+    bi biₓ(DUG) be2 be₂ be₃ bi3 bi₃ be6 be₆ bi₆
     me ne ne2 ne₂
     ja2 ŋa₂ ga2 ga₂ za na ba
     /;
@@ -62,8 +62,11 @@ my %poss_data = (
     'ne₂' => [ 'ani',  'e'],
     'be₂' => [ 'bi',  'e'],
     'bi'  => [ 'bi',  ''],
-    'be₆' => [ 'bi',  'e'],
+    'biₓ(DUG)'  => [ 'bi',  ''],
     'bi₃' => [ 'bi',  ''],
+    'bi₆' => [ 'bi',  ''],
+    'be₃' => [ 'bi',  'e'],
+    'be₆' => [ 'bi',  'e'],
     'be6' => [ 'bi',  'e'],
     'bi3' => [ 'bi',  ''],
     'me'  => [ 'me', ''],
