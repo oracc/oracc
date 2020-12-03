@@ -8,15 +8,19 @@ use ORACC::L2GLO::Util;
 use Getopt::Long;
 
 my $force = 0;
+my $project = '';
 
 GetOptions(
     f=>\$force,
+    'p:s'=>\$project,
     );
 
 # Read project.sig and generate FORM and BASE statistics by CFGWPOS and SL signatures
 
-my $sigs = '01bld/project.sig';
+my $sigs = '01bld/project.sig'; $sigs = "$ENV{'ORACC_BUILDS'}/$project/$sigs" if $project;
+
 die "$0: no $sigs\n" unless -r $sigs;
+
 my $stats = $sigs; $stats =~ s/\.sig$/.stats/ || die "$0: sigs file must end in .sig\n";
 
 my $sigs_date = (stat($sigs))[9];
@@ -60,8 +64,8 @@ foreach (@input) {
 	${$index{$fs}}{"$cfgwpos"} += $count; # most frequent lemma for form sig
 	${$index{"$cfgwpos\::=$fs"}}{$form} += $count unless $fs =~ /q/; # most frequent tlit of form in lemma
 	my $f = "/$s{'base'} "; $f =~ s#\%.*?:##;
-	$f .= " +$s{'cont'}" if $s{'cont'};
-	$f .= " #$s{'morph'}";
+	$f .= "+$s{'cont'} " if $s{'cont'};
+	$f .= "#$s{'morph'}";
 	$forms{"$cfgwpos\::=$fs"} = $f;
     }
 }
@@ -75,7 +79,7 @@ foreach (sort keys %index) {
 	my($cf,$type,$sig) = (m#^(.*?)::([/=])(.*?)$#);
 	my $s = "$sig\::$cf\t$type";
 	foreach my $v (sort { ${$index{$_}}{$b} <=> ${$index{$_}}{$a} } keys %{$index{$_}}) {
-	    $s .= "$v<${$index{$_}}{$v}> " unless $seen{$v};
+	    $s .= "$v<${$index{$_}}{$v}>\t" unless $seen{$v};
 	}
 	$s =~ s/\s$/\n/;
 	push @bytlit, $s;	
@@ -83,7 +87,7 @@ foreach (sort keys %index) {
 	my $s = "$_\t";
 	my %seen = ();
 	foreach my $v (sort { ${$index{$_}}{$b} <=> ${$index{$_}}{$a} } keys %{$index{$_}}) {
-	    $s .= "$v<${$index{$_}}{$v}> " unless $seen{$v};
+	    $s .= "$v<${$index{$_}}{$v}>\t" unless $seen{$v};
 	}
 	$s =~ s/\s$/\n/;
 	push @bycf, $s;
@@ -95,8 +99,7 @@ print @bycf;
 foreach my $f (sort keys %forms) {
     print "$f\t$forms{$f}\n";
 }
-close STATS;
 
-# print Dumper \%index;
+close STATS;
 
 1;
