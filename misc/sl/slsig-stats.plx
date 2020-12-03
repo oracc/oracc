@@ -33,21 +33,29 @@ if (defined($stats_date) && ($sigs_date < $stats_date)) {
 	warn "$0: $sigs older than $stats; no need to rebuild\n";
 	exit 0;
     }
+} else {
+    warn "$0: no $stats file, building from $sigs\n";
 }
+
+my $union = "01bld/sux/union.sig"; $union = "$ENV{'ORACC_BUILDS'}/$project/$union" if $project;
 
 open(STATS, ">$stats") || die "$0: unable to write stats file $stats\n"; select STATS;
 
 my %forms = ();
 my %index = ();
 
-my @input = `cut -f1,3 01bld/project.sig`;
+my @input = `cut -f1,3 $sigs`;
+my @more = `cut -f1 $union`;
+push @input, @more;
 my %seen = ();
+my %seensig = ();
 
 ORACC::SL::BaseC::init();
 foreach (@input) {
-    next if /^\{/ || /^\@fields/;
+    next if /^\{/ || /^\@(?:fields|project|lang|name)/ || /^\s*$/;
     chomp;
-    my ($sig,$count) = split(/\t/,$_);
+    my ($sig,$count) = split(/\t/,$_); $count = 0 unless defined $count;
+    next if $seensig{$sig}++;
     my %s = parse_sig($sig);
     my $cfgwpos = "$s{'cf'}\[$s{'gw'}\]$s{'pos'}";
     my $base = $s{'base'}; warn "$0: bad base in $_\n" unless $base;
