@@ -45,9 +45,9 @@ my @bytlit = ();
 foreach (sort keys %index) {
     if (/::/) {
 	my($cf,$type,$sig) = (m#^(.*?)::([/=])(.*?)$#);
-	my $s = "$sig\t$cf\t$type\t";
+	my $s = "$sig\::$cf\t$type";
 	foreach my $v (sort { ${$index{$_}}{$b} <=> ${$index{$_}}{$a} } keys %{$index{$_}}) {
-	    $s .= "$v " unless $seen{$v};
+	    $s .= "$v<${$index{$_}}{$v}> " unless $seen{$v};
 	}
 	$s =~ s/\s$/\n/;
 	push @bytlit, $s;
@@ -55,7 +55,7 @@ foreach (sort keys %index) {
 	my $s = "$_\t";
 	my %seen = ();
 	foreach my $v (sort { ${$index{$_}}{$b} <=> ${$index{$_}}{$a} } keys %{$index{$_}}) {
-	    $s .= "$v " unless $seen{$v};
+	    $s .= "$v<${$index{$_}}{$v}> " unless $seen{$v};
 	}
 	$s =~ s/\s$/\n/;
 	push @bycf, $s;
