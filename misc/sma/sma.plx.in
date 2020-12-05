@@ -347,11 +347,11 @@ t {
 	if (!$try_number) {
 	    if (!$xli_base) {
 		if ($glossary) {
-		    warn "$.: no parse for form `$f' with base `$b'\n";
+		    warn "sma:$.: no parse for form `$f' with base `$b'\n";
 		} elsif ($b) {
 #		    new_sma_warn("no parse for $f $l $b");
 		} else {
-		    warn "sma: no parses found and no base given; try giving BASE\n"
+		    warn "sma:$.: no parses found and no base given; try giving BASE\n"
 			unless $xli;
 		}
 	    } else {

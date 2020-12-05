@@ -52,7 +52,7 @@ my %seensig = ();
 
 ORACC::SL::BaseC::init();
 foreach (@input) {
-    next if /^\{/ || /^\@(?:fields|project|lang|name)/ || /^\s*$/;
+    next if /^\{/ || /^\@(?:fields|project|lang|name)/ || /^\s*$/ || !/\%sux:/;
     chomp;
     my ($sig,$count) = split(/\t/,$_); $count = 0 unless defined $count;
     next if $seensig{$sig}++;

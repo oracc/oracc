@@ -8,9 +8,15 @@ my %seen = ();
 my $proj = 'epsd2';
 my $lang = 'sux';
 my $file = shift @ARGV;
-die unless $file;
-open(F,$file) || die;
-while (<F>) {
+my @input = ();
+if ($file) {
+    die unless -r $file;
+    @input = `cat $file`;
+} else {
+    @input = (<>);
+}
+   
+foreach (@input) {
     chomp;
     my($cfgw,$form,$lxng,$base,$cont,$morph)
 	= (m#^(.*)\t\@form\s+(\S+)(\s+\%\S+)?\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
