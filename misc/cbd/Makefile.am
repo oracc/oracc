@@ -2,6 +2,7 @@ include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	forms-uniq-form.plx forms-uniq-full.plx \
+	forms-add-dot-forms.sh forms-augment-post.plx \
 	cbdsenses.plx cbdhash.plx cbdxml.plx cbdwords.plx \
 	cbdtest.plx cbdcompare.plx cbdnoinst.plx \
 	make-fixes-tab.plx cbdmerge.plx nonorm.plx \
@@ -21,8 +22,9 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	base-audit.plx base-count.plx cbd-from_glo.sh cbdbasenoform.plx \
 	base-redup.plx cbd-check-form-base.plx cbd-fix-form-base.plx \
 	sig-stats.plx sig-psu-forms.plx sigs-invert.plx dotforms-sigs.plx \
-	cbdskel.sh forms-add-dot-forms.sh bases-add-map-bases.plx \
-	cbd-fbm.plx cbd-add-base-form.plx
+	cbdskel.sh \
+	cbd-fbm.plx cbd-add-base-form.plx \
+	bases-add-map-bases.plx 
 
 # cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 

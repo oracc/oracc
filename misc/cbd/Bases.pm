@@ -5,7 +5,7 @@ require Exporter;
 @EXPORT = qw/bases_align bases_hash bases_init bases_log bases_collect
     bases_log_errors bases_fixes bases_process bases_stats bases_term
     bases_merge bases_string bases_serialize bases_fix_base bases_sigs 
-    bases_prefer/;
+    bases_prefer bases_primaries/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -28,6 +28,17 @@ my %base_cpd_flags = ();
 my $map_fh = undef;
 
 my $p_entry = '';
+
+sub bases_primaries {
+    my $bases = shift; chomp $bases; $bases =~ s/^\@bases\S*\s+//;
+    my @b = split(/;\s+/, $bases);
+    my @new_b = ();
+    foreach my $b (@b) {
+	$b =~ s/\s.*$//;
+	push @new_b, $b;
+    }
+    @new_b;
+}
 
 sub bases_sigs {
     my $x = shift;
