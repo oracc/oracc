@@ -103,6 +103,7 @@ sub parts_inverted {
 
 sub edit_apply_script {
     my($args, @c) = @_;
+    return @c unless defined $ORACC::CBD::data{'script'};
     history_init();
     my @s = @{$ORACC::CBD::data{'script'}};
     my $from_line = 0;
