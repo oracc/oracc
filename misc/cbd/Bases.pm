@@ -199,7 +199,7 @@ sub bases_term {
 sub bases_merge {
     my($b1,$b2,$cpd,$base_i,$curr) = @_;
 
-    $p_entry = $curr;
+    $p_entry = $curr || '';
 
     #    warn "bases_merge calling bases_hash\n";
     
