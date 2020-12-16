@@ -14,6 +14,7 @@ use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
+$ORACC::CBD::Bases::ignore_empty_serializations = 0;
 $ORACC::CBD::Bases::serialize_ref = 0;
 
 my $base_trace = 0;
@@ -69,12 +70,19 @@ sub bases_fix_base {
 
 sub bases_tab {
     my %base_bases = ();
+    my $b_ln = 0;
     my $cpd = 0;
     my $e = '';
+    my $e_ln = 0;
+    my $ln = 0;
+    my $file = pp_file();
     foreach (@_) {
+	++$ln;
 	if (/^\@bases/) {
-#	    warn "bases_tab calling bases_hash\n";
+	    # warn "bases_tab calling bases_hash\n";
+	    $b_ln = $ln;
 	    my %b = bases_hash($_,$cpd);
+	    print "$file\t$e_ln\t$b_ln\t";
 	    print "$e\t", join("\t", sort grep(!/\#/, keys %b)), "\n";
 	} elsif (/^\@parts/) {
 	    $cpd = 1;
@@ -83,6 +91,7 @@ sub bases_tab {
 	    $e =~ s/\s+\[/[/;
 	    $e =~ s/\]\s/]/;
 	    $cpd = 0;
+	    $e_ln = $ln;
 	}
     }
 }
@@ -172,7 +181,7 @@ sub bases_collect {
 
 sub bases_init {
     my $args = shift;
-    my $bases_outfile = lang().'.map';
+    my $bases_outfile = ORACC::CBD::Util::lang().'.map';
     if (-d '01tmp') {
 	$bases_outfile = "01tmp/$bases_outfile";
     }
@@ -190,7 +199,9 @@ sub bases_term {
 sub bases_merge {
     my($b1,$b2,$cpd,$base_i,$curr) = @_;
 
-#    warn "bases_merge calling bases_hash\n";
+    $p_entry = $curr;
+
+    #    warn "bases_merge calling bases_hash\n";
     
     my %h1 = bases_hash($b1,$cpd, $base_i);
     
@@ -555,10 +566,6 @@ sub bases_serialize {
 		$res .= ')';
 	    }
 	}
-    }
-    if (!length($res)) {
-	warn "bases_serialize: empty result from ", Dumper \%b
-	    unless $ORACC::CBD::Bases::ignore_empty_serializations;
     }
     $res;
 }

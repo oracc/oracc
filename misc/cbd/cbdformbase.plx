@@ -188,7 +188,7 @@ sub fix_in_form {
 sub find_cfgw {
     my($f,$l) = @_;
     open_and_load($f) unless $f eq $curr_file;
-    $lines[$l-1];
+    # $lines[$l-1];
     while ($lines[$l-1] !~ /^\@entry/) {
 	--$l;
     }

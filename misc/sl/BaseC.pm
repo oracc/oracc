@@ -773,7 +773,7 @@ sub qualcheck {
 	    }
 	} else {
 	    if ($void eq $qoid) {
-		qmsg("[Q1b] vq=$qn: redundant qualifier in $qn--use plain $qv");
+		qmsg("[Q1b] vq=$qn: redundant qualifier in $qn--use plain $qv") unless $qv =~ /ₓ/;
 	    } else {
 		my $qqv = ORACC::SL::BaseC::is_value("$qoid;values") || '';
 		my $supp = " known values are: $qqv";

@@ -3,7 +3,7 @@ require Exporter;
 @ISA=qw/Exporter/;
 
 @EXPORT = qw/history history_init history_term history_map history_trim history_all 
-    history_all_init history_all_term history_etc_init history_etc_term 
+    history_all_init history_all_term history_etc_init history_etc_term history_all_etc_init
     history_guess history_guess_sense history_dumper history_oid/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
@@ -44,6 +44,14 @@ sub history_etc_init {
 
 sub history_etc_term {
     %history = ();
+}
+
+sub history_all_etc_init {
+    history_all_init();
+    my %h = history_map();
+    foreach my $k (keys %h) {
+	$history{$k} = $h{$k};
+    }
 }
 
 sub history_guess {

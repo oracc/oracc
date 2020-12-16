@@ -138,7 +138,7 @@ sub guess_init {
     my %ix = ();
 
     
-    history_all_init();
+    history_all_etc_init();
     
     if ($guess_trace) {
 	open(G, '>guess.log');

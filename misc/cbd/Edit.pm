@@ -330,6 +330,7 @@ sub edit_make_script {
 		if ($c[$i+1] =~ /^\#why:\s+(.*?)$/) {
 		    push @s, ":why $1";
 		} else {
+		    pp_line($i);
 		    pp_warn("must give single line #why: comment after entry-deleting code -\@entry");
 		}
 	    }

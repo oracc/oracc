@@ -13,7 +13,7 @@ bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx \
 	invert-lem-dump.plx revert-lem-dump.plx prune-lists.plx atfsuxlem.plx \
 	atflemfix.plx mk-atf-reptab.plx lem-err-culprits.sh atfchunk.plx \
 	atffix-p.plx atf-cdli.sh ox4.plx ox4-emesal.plx atf-uni-lem.plx \
-	atfstrip.plx atf-igigal.plx lemstats.plx
+	atfstrip.plx atf-igigal.plx lemstats.plx fix-x-times.plx
 
 #atfreplace.plx
 

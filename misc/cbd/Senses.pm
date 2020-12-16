@@ -42,7 +42,7 @@ sub senses_align {
 	$use_map_fh = 0;
     }
 
-    history_all_init();
+    history_all_etc_init();
     
     my $cbd_cbdname = cbdname_from_fn($$args{'cbd'});
     my %in_cbddata = %{$ORACC::CBD::data{$cbd_cbdname}};
@@ -177,12 +177,14 @@ sub senses_merge {
 	    next;
 	}
 	# does s occur in @b?
-	foreach my $b (@$b) {
-	    if ($b =~ /\Q$s/ || $s =~ /\Q$b/) {
-		push @matches, $b;
+	my $s_no_pos = $s; $s_no_pos =~ s/^\@sense\S*\s+\S+\s+//;
+	foreach my $b2 (@$b) {
+	    my $b_no_pos = $b2; $b_no_pos =~ s/^\@sense\S*\s+\S+\s+//;
+	    if ($b_no_pos =~ /\Q$s_no_pos/ || $s_no_pos =~ /\Q$b_no_pos/) {
+		push @matches, $b2;
 	    }
 	}
-	if ($#matches == 0) {	    
+	if ($#matches == 0) {
 	    map_sense($args, '1', $entry, $s, $matches[0]); # ideally would check for leftover tokens not in base
 	    next;
 	} else {
@@ -261,7 +263,8 @@ sub map_sense {
     my($epos,$sense) = ($in =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     my ($epos_b,$sense_b) = ($base =~ /^\@sense\S*\s+(\S+)\s+(.*?)\s*$/);
     
-    if ($sense ne $sense_b) {
+    # if ($sense ne $sense_b) { # This can't be right--it considers 'V/t upper' as the same as 'AJ upper'
+    if (1) {
 	if ($use_map_fh) {
 	    $from_sig =~ s#](\S+)#//$sense]$1'$epos#;
 	    $to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;

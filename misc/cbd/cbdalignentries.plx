@@ -3,6 +3,8 @@ use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC'}/lib";
 
+use Data::Dumper;
+
 use ORACC::CBD::XML;
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Entries;
@@ -67,6 +69,7 @@ if ($args{'apply'}) {
     pp_diagnostics(\%args) if pp_status();
 } else {
     pp_diagnostics(\%args);
+    # print Dumper \%map;
 }
 
 1;

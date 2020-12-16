@@ -13,6 +13,8 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::Senses;
 use ORACC::CBD::Guess;
 
+$ORACC::CBD::Entries::LogMerges = 1;
+
 my $acd_rx = $ORACC::CBD::acd_rx;
 
 use Data::Dumper;
@@ -34,7 +36,7 @@ sub entries_align {
     my @base_cbd = @$base_cbd;
     my @cbd = @$cbd;
     $map_fh = $xmap_fh if $xmap_fh;
-
+    
     my $base_cbdname = cbdname_from_fn($$args{'base'});
 #    warn "base_cbdname = $base_cbdname; args{'base'} = $$args{'base'}\n";
     my %cbddata = %{$ORACC::CBD::data{$base_cbdname}};
@@ -201,6 +203,20 @@ sub find_bases {
     undef;
 }
 
+sub find_cfgw {
+    foreach (@_) {
+	return $1 if /^.?\@entry\s+(.*?)\s*$/;
+    }
+    undef;
+}
+
+sub find_parts {
+    foreach (@_) {
+	return 1 if /^\@parts/;
+    }
+    0;
+}
+
 # This routine requires refs to two arrays, each of which is the collection of lines for a single entry.
 # All of the constituents of the from slice, $from, are merged into the to slice, $base.
 # The merged result is returned as an array.
@@ -209,6 +225,8 @@ sub entries_merge {
     my @b = @$base;
     my @s = @$from;
 
+    my $cfgw = find_cfgw(@b);
+    my $parts = find_parts(@b);
     my $base_b = find_bases(@b);
     my $base_s = find_bases(@s);
     my $new_b_hash = undef;
@@ -217,7 +235,7 @@ sub entries_merge {
 	if ($base_b) {
 	    $base_b =~ s/\@bases\s+//;
 	    $base_s =~ s/\@bases\s+//;
-	    $new_b_hash = bases_merge($base_b, $base_s, undef);
+	    $new_b_hash = bases_merge($base_b, $base_s, $parts, $b_line, $cfgw);
 #	    warn Dumper $new_b_hash;
 	}
     } else {
@@ -228,8 +246,13 @@ sub entries_merge {
 	}
     }
     if ($new_b_hash) {
+	pp_file($b_file);
+	pp_line($b_line);
 	$new_b = bases_serialize(%$new_b_hash);
-#	warn "new bases => $new_b\n";
+	if (!length($new_b)) {
+	    pp_notice "bases_serialize: no result merging $base_s into $base_b"
+		unless $ORACC::CBD::Bases::ignore_empty_serializations;
+	}
     } else {
 	$new_b = $base_b;
     }
@@ -265,6 +288,9 @@ sub entries_merge {
 	    }
 	    push @n, $b;	    
 	}
+    }
+    if ($ORACC::CBD::Entries::LogMerges) {
+	warn("$b_file:$b_line: entries_merge result: \n\t" . join("\n\t", grep(/^[^\000]/,@n))."\n");
     }
     @n;
 }

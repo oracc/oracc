@@ -172,7 +172,10 @@ sub pp_hash {
 
 	if (s/^([-+])//) {
 	    my $flag = $1;
-	    if ($flag eq '-') {
+	    # nominusstripping preserves - entries and deletes + entries,
+	    # counter to the normal behaviour
+	    if (($flag eq '-' && !$ORACC::CBD::nominusstripping)
+		|| $flag eq '+' && $ORACC::CBD::nominusstripping) {
 		# ignore this entry
 		if (/^\@entry/) {
 		    while ($cbd[$i] !~ /^\@end\s+entry/) {
@@ -180,7 +183,7 @@ sub pp_hash {
 		    }
 		    ++$i;
 		}
-	    } # otherwise allow +-ed entry/sense without warning
+	    } # otherwise allow - or + entry/sense without warning
 	}
 
 	if (/^\@([a-z_]+[-*!]*)\s*(.*?)\s*$/) {
