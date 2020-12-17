@@ -53,6 +53,7 @@ $ORACC::CBD::noforms = 0;
 $ORACC::CBD::noletters = 0;
 $ORACC::CBD::nomapping = 0; # don't adjust for -@entry and +@entry
 $ORACC::CBD::nominusstripping = 0; # don't remove - in {-ga}i₃-te-er-da
+$ORACC::CBD::nondestructive = 0;
 $ORACC::CBD::nonormify = 0;
 $ORACC::CBD::nosetupargs = 0;
 $ORACC::CBD::nosigs = 0;
@@ -83,7 +84,8 @@ sub pp_args {
 	\%args,
 	qw/announce all apply auto bare base:s bases check kompounds dets dry dynamic edit entries=s file 
 	filter fix:s force glo:s homograph increment:s inplace invert letters lines list:s lang:s log:s mode:s noforms
-	nominusstripping nonormify nopsus nosigs novalid oids output:s project:s quiet reset sigs stdout strip trace+ 
+	nominusstripping nondestructive nonormify nopsus nosigs novalid oids output:s project:s quiet 
+	reset sigs stdout strip trace+ 
         vfields:s words=f xml/,
 	) || die "unknown arg";
 
@@ -99,6 +101,7 @@ sub pp_args {
     $ORACC::CBD::nodiagnostics = $args{'quiet'};
     $ORACC::CBD::noforms = $args{'noforms'};
     $ORACC::CBD::nominusstripping = $args{'nominusstripping'};
+    $ORACC::CBD::nondestructive = $args{'nondestructive'};
     $ORACC::CBD::nonormify = $args{'nonormify'};
     $ORACC::CBD::novalidate = $args{'novalid'};
 

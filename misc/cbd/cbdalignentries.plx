@@ -31,6 +31,8 @@ if ($args{'base'}) {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
 
+$args{'bases'} = 1; # Force generation of 01bld/<LANG>/base-sigs.tab
+
 my @cbd = setup_cbd(\%args);
 
 if (pp_status()) {

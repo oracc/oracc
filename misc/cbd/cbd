@@ -186,8 +186,11 @@ sub align {
 	}
 	
 	xsystem "cbdalign${object}.plx", '-log', "$object.log", "00lib/$lang.glo";
+	my $h = '';
+	$h = homographs() if $object eq 'entry';
 	++$needok;
 	cbd_next("Review '$object.log'$nxt; adjust 00lib/$lang.glo; repeat cbd align $object as necessary",
+		 ($h ? "-Homographs were found for missing entries, see homographs.log" : ''),
 		 ($object eq 'senses' ? "-To see the senses most likely to need fixing see senses-34.log" : ''),
 		 "cbd apply");
     } else {
@@ -676,6 +679,11 @@ Try:
 for more information.
 
 EOF
+}
+
+sub homographs {
+    system 'entries-log-homographs.sh';
+    -s 'homographs.log';
 }
 
 sub init {

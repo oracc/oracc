@@ -93,10 +93,10 @@ sub entries_align {
 				$entry_map{$entry} = $guesses[0];
 			    } else {
 				my $g = join('; ', @guesses);
-				pp_notice("[3]: $entry unknown--[$type] suggests $g");
+				pp_notice("[3]: $entry unknown--[$type] suggests: $g");
 			    }
 			} else {
-			    pp_warn("[4]: $entry not in base glossary");
+			    pp_warn("[4]: add to base glossary: $entry");
 			}
 		    }
 		}

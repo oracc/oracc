@@ -8,11 +8,19 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 
 my %args = pp_args();
-
-if (pp_hash(\%args)) {
+my $hash = undef;
+if (($hash = pp_hash(\%args))) {
     my $cbdname = ${$ORACC::CBD::data{'cbds'}}[0];
-    use Data::Dumper;
-    print Dumper \%{$ORACC::CBD::data{$cbdname}};
+    if ($args{'output'}) {
+	open(O,">$args{'output'}") || die "$0: can't save output to $args{'output'}\n";
+	select O;
+	my %acd = ORACC::CBD::Hash::pp_hash_acd($hash);
+	ORACC::CBD::Hash::pp_serialize($hash,\%acd);
+	close(O);
+    } else {
+	use Data::Dumper;
+	print Dumper \%{$ORACC::CBD::data{$cbdname}};
+    }
 } else {
     pp_diagnostics();
 }

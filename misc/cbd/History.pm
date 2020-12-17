@@ -165,9 +165,13 @@ sub history_map {
 
 sub history_load {
     my $histfile = shift || '00etc/history.edit';
-    open(H, $histfile) || die "$0: no history in $histfile. Stop\n";
-    my @h = (<H>); chomp @h;
-    close(H);
+    my @h = ();
+    if (open(H, $histfile)) {
+	@h = (<H>); chomp @h;
+	close(H);
+    } else {
+	# warn "$0: no history in $histfile. Continuing without it.\n";
+    }
     @h;
 }
 

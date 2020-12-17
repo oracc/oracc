@@ -8,7 +8,7 @@ use ORACC::CBD::Util;
 
 
 my %args = pp_args();
-$ORACC::CBD::noforms = 1;
+$ORACC::CBD::nominusstripping = $ORACC::CBD::novalidate = $ORACC::CBD::nonormify = $ORACC::CBD::noforms = 1;
 my @cbd = setup_cbd(\%args);
 
 print ORACC::CBD::Bases::bases_tab(@cbd);

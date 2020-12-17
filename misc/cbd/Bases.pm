@@ -20,6 +20,7 @@ $ORACC::CBD::Bases::serialize_ref = 0;
 my $base_trace = 0;
 my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
+my %homographs = ();
 my %log_errors = ();
 my %stats = ();
 my $use_map_fh;
@@ -53,6 +54,47 @@ sub bases_sigs {
 	}
     }
     close(B);
+}
+
+sub bases_homographs_init {
+    my($proj,$lang) = @_;
+    return unless $proj && $lang;
+    return if $homographs{"##$proj\:$lang"}++;
+    my $tab = "$ENV{'ORACC_BUILDS'}/$proj/01bld/$lang/base-sigs.tab";
+    if (open(T,$tab)) {
+	while (<T>) {
+	    chomp;
+	    my($c,$b,$s) = split(/\t/,$_);
+	    push @{$homographs{"$proj\:$lang\:$s"}}, [ $c , $b ];
+	    ${$homographs{"$proj\:$lang\:$c"}{$s}} = $b;
+	}
+	close T;
+	return 1;
+    } else {
+	return 0;
+    }
+}
+
+sub bases_homographs_lookup {
+    my ($proj,$lang,$key) = @_;
+    my @ret = ();
+    if ($key =~ /^o\d/) {
+	my $k = "$proj\:$lang\:$key";
+	if ($homographs{$k}) {
+	    @ret = @{$homographs{$k}};
+	}
+    } else {
+	$key =~ s/\s*\[/ [/;
+	$key =~ s/\]\s*/] /;
+	my $k = "$proj\:$lang\:$key";
+	if ($homographs{$k}) {
+	    foreach my $s (keys %{$homographs{$k}}) {
+		my $b = ${$homographs{$k}}{$s};
+		push @ret, [ $s , $b ];
+	    }
+	}
+    }
+    @ret;
 }
 
 sub bases_fix_base {

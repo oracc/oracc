@@ -13,7 +13,7 @@ my %args = pp_args();
 my $base_hash = undef;
 my $from_hash = undef;
 
-$ORACC::CBD::nonormify = 1;
+$ORACC::CBD::nondestructive = $ORACC::CBD::nonormify = 1;
 
 #my $b1 = 'a (e)';
 #my $b2 = 'e (esz10); duru (du)';

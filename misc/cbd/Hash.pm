@@ -147,6 +147,7 @@ sub pp_hash {
     $cbdid =~ tr/-/_/;
     my $currtag = undef;
     my $currarg = undef;
+    my $acd = '';
 
     $use_norms = $langnorms{$cbdlang}; ## langcore
 
@@ -170,12 +171,13 @@ sub pp_hash {
 
 	next if /^\#/ || /^\@letter/;
 
-	if (s/^([-+])//) {
+	# nondestructive preserves the +/- flags as well as the +/- entries
+	if (!$ORACC::CBD::nondestructive && s/^([-+])//) {
 	    my $flag = $1;
-	    # nominusstripping preserves - entries and deletes + entries,
+	    # nomapping preserves - entries and deletes + entries,
 	    # counter to the normal behaviour
-	    if (($flag eq '-' && !$ORACC::CBD::nominusstripping)
-		|| $flag eq '+' && $ORACC::CBD::nominusstripping) {
+	    if (($flag eq '-' && !$ORACC::CBD::nomapping)
+		|| $flag eq '+' && $ORACC::CBD::nomapping) {
 		# ignore this entry
 		if (/^\@entry/) {
 		    while ($cbd[$i] !~ /^\@end\s+entry/) {
@@ -186,8 +188,8 @@ sub pp_hash {
 	    } # otherwise allow - or + entry/sense without warning
 	}
 
-	if (/^\@([a-z_]+[-*!]*)\s*(.*?)\s*$/) {
-	    ($currtag,$currarg) = ($1,$2);
+	if (/^([-+>=])?\@([a-z_]+[-*!]*)\s*(.*?)\s*$/) {
+	    ($acd,$currtag,$currarg) = ($1,$2,$3);
 	    my $default = $currtag =~ s/!//;
 	    my $starred = $currtag =~ s/\*//;
 	    my $flags = '';
@@ -195,6 +197,7 @@ sub pp_hash {
 #	    $flags .= '!' if $default;
 
 #	    push (@{$e{$currtag,'flags'}}, "$flags");
+	    $e{$currtag,'acd'} = $acd || '';
 
 	    my $linetag = $currtag;
 	    $linetag =~ s/\*$//;
@@ -268,6 +271,14 @@ sub pp_hash {
 	} elsif (/^\@([A-Z]+)\s*(\S*)\s*$/) {
 	    my($k,$v) = ($1,$2);
 	    $rws_cfs{$k} = $v || '';
+	} elsif (/^[=>]/) {
+	    if ($currtag eq 'entry') {
+		push @{$e{'entry','acdlines'}}, $_;
+	    } elsif ($currtag eq 'sense') {
+		push @{$e{$curr_sense_id,'acdlines'}}, $_;
+	    } else {
+		pp_warn("(hash) syntax error-- > or = not allowed with $currtag: '$_'") if /\S/;
+	    }
 	} else {
 	    chomp;
 	    pp_warn("(hash) syntax error near '$_'") if /\S/;
@@ -319,6 +330,7 @@ sub pp_acd_merge {
 	if (!defined ${$$into{'ehash'}}{$e}) {
 	    my $ehash = ${$$from{'ehash'}}{$e};
 	    my $eref = { %{$$ehash} };
+	    $$eref{'entry','acd'} = '+';
 	    push @{$$into{'entries'}}, $eref;
 	    ${$$into{'ehash'}{$e}} = $eref;
 #	    warn "adding eref\n";
@@ -467,7 +479,11 @@ sub pp_acd_serialize_entry {
 	}
     }
     my $ustar = ($e{'usage_flag'} ? '*' : '');
-    print "\@entry$ustar $cfgw\n";
+    print "$e{'entry','acd'}\@entry$ustar $cfgw\n";
+    if ($e{'entry','acdlines'}) {
+	my @more = @{$e{'entry','acdlines'}};
+	print join("\n", @more), "\n";
+    }
     if ($e{'rws_cfs'}) {
 	foreach my $rws (sort keys %{$e{'rws_cfs'}}) {
 #	    warn "rws key = $rws\n";
@@ -483,9 +499,15 @@ sub pp_acd_serialize_entry {
     }
     foreach my $f (sort {$fseq{$a}<=>$fseq{$b}} tags_of(keys %{$e{'fields'}})) {
 	next if $f eq 'entry' || $f eq 'rws_cf';
+	my @more = ();
 	foreach my $l (@{$e{$f}}) {
 	    if ($f eq 'sense') {
-		$l =~ s/\#\S+\s+//;
+		my $sense_id = '';
+		$l =~ s/(\#\S+)\s+//;
+		$sense_id = $1;
+		if ($e{$sense_id,'acdlines'}) {
+		    @more = @{$e{$sense_id,'acdlines'}};
+		}
 	    }
 	    my $defbang = '';
 	    if ($l =~ s/^!\s*//) {
@@ -494,7 +516,11 @@ sub pp_acd_serialize_entry {
 	    if ($l =~ s/^\+//) {
 		$defbang = "+$defbang";
 	    }
-	    print "\@$f$defbang $l\n";
+	    my $acd = $e{$f,'acd'} || '';
+	    print "$acd\@$f$defbang $l\n";
+	    if ($#more >= 0) {
+		print join("\n",@more), "\n";
+	    }
 	}
     }
     print "\@end entry\n\n";
