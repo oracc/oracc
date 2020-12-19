@@ -46,7 +46,8 @@ sub map_apply_glo {
 	    $key =~ s/\s*(\[.*?\])\s*/$1/;
 	    if ($currmap{$key}) {
 		my %emap = %{$currmap{$key}};
-#		warn "$key\n"; # print STDERR Dumper \%emap if $key =~ /ašte/;
+		# warn "$key\n";
+		print STDERR Dumper \%emap if $key =~ /^ašte/;
 
 		# emap may have @parts @bases @form @sense:
 
@@ -219,6 +220,7 @@ sub map_load {
 		    next;
 		}
 	    }
+	    $from =~ s/\s+(\[.*?\])\s+/$1/;
 	    my %f = parse_sig($from);
 	    my $key = "$f{'cf'}\[$f{'gw'}]$f{'pos'}";
 	    my $combo = "$cmd$what";

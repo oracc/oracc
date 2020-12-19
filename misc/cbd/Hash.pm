@@ -392,9 +392,9 @@ sub pp_acd_merge {
 		foreach my $l (@{$$$f{$fld}}) {
 		    my $tmp = $l;
 		    $tmp =~ s/\s+\@\S+\s*//;
-		    $tmp =~ s/^\!\s*//;
 		    $tmp =~ s/\s+/ /g;
 		    $tmp =~ s/\s*$//;
+		    $tmp =~ s/^\!//;
 		    if ($fld eq 'bases') {
 			my $b = bases_merge($i_bases, $tmp, $is_compound); # we want the hash back to map bases in forms
 			if ($$b{'map'}) {
@@ -402,6 +402,7 @@ sub pp_acd_merge {
 			}
 			${$$$i{'bases'}}[0] = bases_string($b);
 		    } else {
+			# warn "$tmp\n" if $tmp =~ /\!/;
 			if ($fld eq 'form' && $fld =~ m#/(\S+)#) {
 			    my $fb = $1;
 			    if ($basemap{$fb}) {
@@ -414,17 +415,17 @@ sub pp_acd_merge {
 			    if (!defined $sknown{un_sense_id($tmp)}) {
 				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
 				if ($cbd_use_sense_plus) {
-				    warn "setting +$l\n";
-				    push @{$$$i{$fld}}, "+$l";
+				    warn "setting +$tmp\n";
+				    push @{$$$i{$fld}}, "+$tmp";
 				} else {
-				    push @{$$$i{$fld}}, $l;
+				    push @{$$$i{$fld}}, $tmp;
 				}
 				++$sknown{un_sense_id($tmp)};
 			    }
 			} else {
 			    if (!defined $known{$tmp}) {
 				++${$$$i{'fields'}}{$fld} unless ${$$$i{'fields'}}{$fld};
-				push @{$$$i{$fld}}, "$l";
+				push @{$$$i{$fld}}, $tmp;
 				++$known{$tmp};
 			    }
 			}

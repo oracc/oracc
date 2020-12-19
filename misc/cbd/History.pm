@@ -166,6 +166,7 @@ sub history_map {
 sub history_load {
     my $histfile = shift || '00etc/history.edit';
     my @h = ();
+    warn "$0: loading history from $histfile\n";
     if (open(H, $histfile)) {
 	@h = (<H>); chomp @h;
 	close(H);

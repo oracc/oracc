@@ -24,6 +24,7 @@ while (<>) {
 		$whycgp = $1;
 	    } elsif ($why =~ /(\S+\[(.*?)\]\S+)/) {
 		$whycgp = $1;
+		$whycgp =~ tr/_/ /; # compounds in #why must be, e.g., a_sa[draw water]V/t
 	    }
 	    if ($whycgp) {
 		my $whyoid = oid_lookup('sux',$whycgp);

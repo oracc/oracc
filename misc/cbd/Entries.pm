@@ -13,7 +13,7 @@ use ORACC::CBD::Forms;
 use ORACC::CBD::Senses;
 use ORACC::CBD::Guess;
 
-$ORACC::CBD::Entries::LogMerges = 1;
+$ORACC::CBD::Entries::LogMerges = 0;
 
 my $acd_rx = $ORACC::CBD::acd_rx;
 

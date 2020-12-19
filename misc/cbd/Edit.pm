@@ -179,12 +179,12 @@ sub edit_apply_script {
 			history($lang, $edit_entry, $edit_sense, $s[$i]);
 			my $ee = $edit_entry; $ee =~ s/^\@entry\s+//; $ee =~ s/\s+(\[.*?\])\s+/$1/;
 			my $n = $s[$i]; $n =~  s/^\@entry\s+//; $n =~ s/\s+(\[.*?\])\s+/$1/;
-			foreach my $l (@{$p{$ee}}) {
-			    # warn "mapping $ee to $n in $c[$l-1]\n";
-			    my $Qee = quotemeta($ee);
-			    pp_warn "failed to map  $ee to $n in $c[$l-1]"
-				unless $c[$l-1] =~ s/ $Qee(\s|$)/ $n$1/;
-			}
+			# foreach my $l (@{$p{$ee}}) {
+			#    # warn "mapping $ee to $n in $c[$l-1]\n";
+			#    my $Qee = quotemeta($ee);
+			#    pp_warn "failed to map  $ee to $n in $c[$l-1]"
+			#	unless $c[$l-1] =~ s/ $Qee(\s|$)/ $n$1/;
+			# }
 		    } elsif ($s[$i] =~ /:ent\s+(.*?)$/) {
 			$edit_entry = $1;
 			$edit_sense = '';

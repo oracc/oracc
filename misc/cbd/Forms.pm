@@ -103,6 +103,8 @@ sub forms_merge {
     foreach my $sf (keys %s) {
 	unless ($b{$sf}) {
 	    my $sff = $s{$sf};
+	    warn "$sff\n" if $sff =~ /\s\!/;
+	    $sff =~ s/\@form\s*\!\s*/\@form /;
 	    my($base) = ($sff =~ m#\s/(\S+)#);
 	    if ($map{$base}) {
 		$base = $map{$base};
