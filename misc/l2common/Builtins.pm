@@ -664,7 +664,7 @@ acdentry {
 		    bad('entry', "missing space after ]");
 		}
 		if ($cf) {
-		    if ($gdtag eq 'gw' && !$gd) {
+		    if ($gdtag eq 'gw' && !defined($gd)) {
 			bad('entry',"no guideword in entry field");
 		    } else {
 			my $cacf = '';
@@ -1145,7 +1145,7 @@ acdentry {
 	} else {
 	    $pos = '';
 	}
-	if (!$mng) {
+	if (!defined($mng)) {
 	    bad('sense',"meaning not given");
 	    $mng = '';
 	}
