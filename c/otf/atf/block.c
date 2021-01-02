@@ -20,6 +20,7 @@
 #include "blocktok.h"
 #include "xmlnames.h"
 #include "tree.h"
+#include "atffile.h"
 #include "warning.h"
 /*#include "tokenizer.h"*/
 #include "pool.h"
@@ -121,6 +122,46 @@ static unsigned const char *lnstr(int number,int primes);
 static unsigned char *ntoken(unsigned char *s,unsigned char *eol,int multi,enum a_type a);
 static struct node *scan_incref(unsigned char *s, enum e_type type);
 static unsigned char **line_trans(unsigned char **lines, enum e_tu_types transtype);
+
+unsigned char *hash_hash_file = NULL;
+
+void
+hash_hash_get_file(unsigned char *t)
+{
+  if (t && '#' == t[0] && !strncmp((const char *)t, "##file ", 7))
+    {
+      unsigned char *f = t + 7;
+      unsigned char *end = f;
+      while (*end && !isspace(*end))
+	++end;
+      hash_hash_file = realloc(hash_hash_file, (end - f) + 1);
+      strncpy(hash_hash_file, f, end - f);
+      hash_hash_file[end-f] = '\0';
+    }
+  else
+    {
+      if (hash_hash_file)
+	free(hash_hash_file);
+    }
+}
+
+void
+hash_hash_get_line(unsigned char *t)
+{
+  if (t && '#' == t[0] && !strncmp((const char *)t, "##line ", 7))
+    {
+      int hash_hash_line = atoi(t+7);
+      if (hash_hash_line)
+	atf_lnum_pi_int(hash_hash_line);
+      else
+	{
+	  while (*t && '\n' != *t)
+	    ++t;
+	  *t = '\0';
+	  fprintf(stderr, "hash_hash_get_line failed on input: %s\n", t);
+	}
+    }
+}
 
 static int
 is_exemplar(const unsigned char *l)
@@ -329,6 +370,12 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	    if (lines[0][1] == 'e' && !xstrncmp(*lines,"#eid:",5))
 	      {
 		++lines;
+		continue;
+	      }
+	    else if (lines[0][1] == '#')
+	      {
+		extern void hash_hash_get_line(unsigned char *t);
+		hash_hash_get_line(lines[0]);
 		continue;
 	      }
 

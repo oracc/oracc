@@ -1125,6 +1125,19 @@ atf_lnum_pi(struct node *n)
 }
 
 void
+atf_lnum_pi_int(int n)
+{
+  if (!no_pi)
+    {
+      fputs("<?atf-line ",f_xml);
+      fprintf(f_xml,"%d",n);
+      fputs("?>",f_xml);
+      if (pretty)
+	fputc('\n',f_xml);
+    }
+}
+
+void
 xml_decl()
 {
   fprintf(f_xml,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");

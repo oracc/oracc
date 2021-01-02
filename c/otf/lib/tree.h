@@ -86,6 +86,7 @@ unsigned char *cdf_xmlify(const unsigned char *s);
 unsigned char *xmlify_no_pool(const unsigned char *s);
 void atf_file_pi(const char *file);
 void atf_lnum_pi(struct node *n);
+void atf_lnum_pi_int(int n);
 void xml_decl(void);
 
 extern void tree_functions(void (*xcl_serialize_arg)(struct xcl_context *,FILE*,int));

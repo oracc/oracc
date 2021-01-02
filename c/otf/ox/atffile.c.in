@@ -134,13 +134,16 @@ process_file(struct run_context *run, const char *fname)
       return -1;
     }
 
-  file = errmsg_fn ? errmsg_fn : fname;
+  if ('#' == ftext[0] && !strncmp((const char*)ftext, "##file ", 7))
+    hash_hash_get_file(ftext);
+
+  file = errmsg_fn ? errmsg_fn : (hash_hash_file ? hash_hash_file : fname);
 
   if (!check_only && !perform_lem && !do_show_insts)
     {
       if (!one_big_file)
 	begin_file();
-      atf_file_pi(fname);
+      atf_file_pi(hash_hash_file ? hash_hash_file : fname);
     }
   ret = process_string(run, ftext, fsize);
   free(ftext);
@@ -221,7 +224,19 @@ process_string(struct run_context *run, unsigned char *ftext, ssize_t fsize)
 	}
       else if (**rest == '#')
 	{
-	  warning("comments not allowed before text");
+	  if (rest[0][1] == '#')
+	    {
+	      if (!strncmp((const char*)rest[0], "##file ", 7))
+		hash_hash_get_file(rest[0]);
+	      else if (!strncmp((const char*)rest[0], "##line ", 7))
+		hash_hash_get_line(rest[0]);
+	      else
+		warning("comments not allowed before text");
+	    }
+	  else
+	    {
+	      warning("comments not allowed before text");
+	    }
 	  ++lnum;
 	  ++rest;
 	}
