@@ -2,7 +2,7 @@
 scope=$1
 echo entering o2-xtf.sh and logging to 01log/o2-xtf.log
 exec >01log/o2-xtf.log ; exec 2>&1
-# Build list before cancelling because it JSON depends
+# Build list before cancelling because JSON depends
 # on have-xtf.lst
 o2-xtf-lst.sh
 

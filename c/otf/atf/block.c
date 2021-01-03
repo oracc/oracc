@@ -375,7 +375,8 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	    else if (lines[0][1] == '#')
 	      {
 		extern void hash_hash_get_line(unsigned char *t);
-		hash_hash_get_line(lines[0]);
+		hash_hash_get_line(lines[0]); /* FIXME: this needs to handle ##file , ##line, or ##<regular comment */
+		++lines;
 		continue;
 	      }
 
