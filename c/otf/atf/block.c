@@ -135,7 +135,7 @@ hash_hash_get_file(unsigned char *t)
       while (*end && !isspace(*end))
 	++end;
       hash_hash_file = realloc(hash_hash_file, (end - f) + 1);
-      strncpy(hash_hash_file, f, end - f);
+      strncpy((char*)hash_hash_file, (const char *)f, end - f);
       hash_hash_file[end-f] = '\0';
     }
   else
@@ -150,9 +150,9 @@ hash_hash_get_line(unsigned char *t)
 {
   if (t && '#' == t[0] && !strncmp((const char *)t, "##line ", 7))
     {
-      int hash_hash_line = atoi(t+7);
+      int hash_hash_line = atoi(((const char*)t)+7);
       if (hash_hash_line)
-	atf_lnum_pi_int(hash_hash_line);
+	lnum = hash_hash_line; /* atf_lnum_pi_int(hash_hash_line); */
       else
 	{
 	  while (*t && '\n' != *t)
