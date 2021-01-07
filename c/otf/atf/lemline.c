@@ -1,5 +1,6 @@
 #include <ctype128.h>
 #include "hash.h"
+#include "globals.h"
 #include "warning.h"
 #include "tree.h"
 #include "loadfile.h"
@@ -470,12 +471,15 @@ lem_unform(void)
 static void
 lem_f2_serialize(FILE *fp, struct f2 *f2)
 {
-  if (BIT_ISSET(f2->flags, F2_FLAGS_NOT_IN_SIGS))
+  if (BIT_ISSET(f2->flags, F2_FLAGS_NOT_IN_SIGS)
+      || (lem_autolem_NN_only
+	  && (f2->owner && f2->owner->literal && !strcmp((const char *)f2->owner->literal, "X")
+	      && (f2->pos && ((strlen(f2->pos) != 2) || f2->pos[1] != 'N')))))
     {
-      if (f2->pos)
-	{
-	  fputs((char*)f2->pos,fp);
-	}
+      if (f2->owner && f2->owner->literal && strcmp((const char*)f2->owner->literal, "X"))
+	fputs((char*)f2->owner->literal,fp);
+      else if (f2->pos)
+	fputs((char*)f2->pos,fp);
       else
 	fputs("X",fp);
     }

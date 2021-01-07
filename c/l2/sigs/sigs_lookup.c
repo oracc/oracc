@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "globals.h"
 #include "warning.h"
 #include "hash.h"
 #include "npool.h"
@@ -30,6 +31,16 @@ has_perfect_match(struct ilem_form **fpp, int nfinds)
 }
 
 /* this must return 0 if the ref_fp->pos == fp->pos */
+static int 
+exact_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
+{
+  if (ref_fp->f2.pos && fp->f2.pos)
+    return strcmp((char*)ref_fp->f2.pos,(char*)fp->f2.pos);
+  else
+    return 1;
+}
+
+/* this must return 0 if the ref_fp->pos == fp->epos */
 static int 
 implicit_epos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
 {
@@ -409,7 +420,9 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	     
 	     !!! FIXME !!! THIS DOES NOT WORK BECAUSE AKK-949 ALSO HAS CF=NULL 
 	   */
-	  if (sigs_found && (lem_autolem || lem_dynalem) && !ifp->f2.cf)
+	  if (sigs_found
+	      && ((lem_autolem && (!ifp->f2.pos || !strcmp((const char *)ifp->f2.pos,"X"))) || lem_dynalem)
+	      && !ifp->f2.cf)
 	    {
 	      setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);
 	      ifp->sp = sp;
@@ -592,6 +605,20 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    }
 	}
 
+      if (nfinds && lem_autolem && ifp->f2.pos)
+	{
+	  int tmp_nfinds = 0;
+	  struct ilem_form **fpp;
+	  fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
+			    (select_func*)exact_pos_test, NULL, &tmp_nfinds);
+	  /* This one is allowed to produce 0 results so we ignore N matches to '; PN' in autolem */
+	  if (tmp_nfinds < nfinds)
+	    {
+	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
+	      ifp->fcount = nfinds = tmp_nfinds;
+	    }
+	}
+      
       if (nfinds > 1 && ifp->f2.pos)
 	{
 	  int tmp_nfinds = 0;

@@ -10,6 +10,7 @@ int v_flag = 0;
 int
 ox_options(int argc, char **argv)
 {
+  int Mcount = 0;
   while (1)
     {
       int optch = getopt(argc,argv,
@@ -104,6 +105,8 @@ ox_options(int argc, char **argv)
 	case 'M':
 	  lem_autolem = do_cdl = perform_lem = need_lemm = 1;
 	  no_destfile = 1;
+	  if (Mcount++)
+	    lem_autolem_NN_only = 1;
 	  break;
 	case 'n':
 	  no_pi = 1;
