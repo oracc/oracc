@@ -6,11 +6,18 @@
 #
 # v1.0.  Placed in the Public Domain.
 use warnings; use strict; use open ':utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+use Getopt::Long;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::ATF::Unicode;
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
+my $lem_only = 0;
+GetOptions(
+    lem=>\$lem_only,
+    );
+
 while (<>) {
-    if (/^(\S+\.\s)(.*)$/) {
+    if (/^(\S+\.\s)(.*)$/ && !$lem_only) {
 	my($lnum,$text) = ($1,$2);
 	chomp;
 	my $u = ORACC::ATF::Unicode::gconv($text);

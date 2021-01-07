@@ -667,7 +667,7 @@ lem_serialize(FILE *fp)
 		    f->f2.pos = (unsigned char*)lem_base_type((char*)f->f2.form);
 #endif
 		  lem_serialize_one(fp,f,&sframe);
-		  if (f->f2.parts)
+		  if (f->f2.parts && !f->literal)
 		    {
 #if 1
 		      int k;

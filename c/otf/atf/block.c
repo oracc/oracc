@@ -409,6 +409,8 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	    else
 	      {
 		int lines_used = comment(lines) - 1;
+		if (!strncmp((const char*)*lines,"#lem:", 5))
+		  vwarning("no space after #lem: (should be '#lem: ')");
 		lines += lines_used;
 		lnum += lines_used;
 	      }

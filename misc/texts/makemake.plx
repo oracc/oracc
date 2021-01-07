@@ -12,7 +12,7 @@ my @l = ORACC::XPD::Util::lang_options();
 
 foreach my $l (@l) {
     my $lv = ORACC::XPD::Util::option($l);
-#    warn "$l = $lv\n";
+    warn "$l = $lv\n";
     my $gl = $l; $gl =~ s/^%//;
     my $proj = '';
     foreach my $g (split(/\s+/, $lv)) {
@@ -20,7 +20,7 @@ foreach my $l (@l) {
 	if ($g =~ /^(.*?):(.*?)$/) {
 	    ($proj,$gl) = ($1,$2);
 	} else {
-	    $proj = $l;
+	    $proj = $g;
 	}
 	push @lem, "$ENV{'ORACC_BUILDS'}/$proj/02pub/lemm-$gl.sig";
     }
@@ -37,14 +37,18 @@ my @nlem = ();
 foreach my $l (@lem) {
     if (-r $l) {
 	push @nlem, $l;
+    } else {
+	warn "ignoring $l\n";
     }
 }
 
 my $maybe_do_sh = '';
-if (-r '00bin/do.sh') {
-    $maybe_do_sh = "\t00bin/do.sh\n";
-} elsif (-r '../00bin/do.sh') {
-    $maybe_do_sh = "\t../00bin/do.sh\n";
+unless (-r '.nodo') {
+    if (-r '00bin/do.sh') {
+	$maybe_do_sh = "\t00bin/do.sh\n";
+    } elsif (-r '../00bin/do.sh') {
+	$maybe_do_sh = "\t../00bin/do.sh\n";
+    }
 }
 
 open(M,'>00lib/Makefile');

@@ -687,12 +687,18 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
   if (f2p->sense)
     clean_gw_sense((char*)file, line, (unsigned char *)f2p->sense);
 
+#if 0
+  /* NO: it's wrong to add augment in the way that we add disambig--the point
+     of augment is that it gets added to the morphology not the FORM
+     FIXME: should print it to MORPH on output
+   */
   if (f2p->augment)
-    {
+    {      
       char buf[1024];
       sprintf(buf,"%s%s%s",f2p->form,AUGMENT_STR,f2p->augment);
       f2p->form = npool_copy((unsigned char *)buf,f2_pool);
     }
+#endif
 
   if (disambig)
     {
