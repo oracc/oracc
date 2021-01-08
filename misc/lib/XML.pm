@@ -207,7 +207,7 @@ xmldecl {
 
 sub
 xmlify {
-    return '' unless $_[0];
+    return '' unless defined($_[0]);
     my $tmp = shift;
     if ($tmp && $tmp =~ /[&<\"]/) {
 	$tmp =~ s/\&(?!amp;)/\&amp;/g;

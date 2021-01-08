@@ -30,6 +30,13 @@ has_perfect_match(struct ilem_form **fpp, int nfinds)
   return 0;
 }
 
+/* this must return 0 if the ref_fp->gw eq 0 */
+static int 
+select_gw_zero(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
+{
+  return strcmp((char*)ref_fp->f2.pos,"0");
+}
+
 /* this must return 0 if the ref_fp->pos == fp->pos */
 static int 
 exact_pos_test(struct ilem_form *fp, struct ilem_form *ref_fp, void *setup)
@@ -629,6 +636,19 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    {
 	      memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
 	      ifp->fcount = nfinds = tmp_nfinds;
+	    }
+	  if (lem_autolem && nfinds > 1)
+	    {
+	      fpp = ilem_select(ifp->finds, nfinds, ifp, NULL, 
+				(select_func*)select_gw_zero, NULL, &tmp_nfinds);
+	      if (tmp_nfinds)
+		{
+		  tmp_nfinds = 1;
+		  memcpy(ifp->finds,fpp,(1+tmp_nfinds)*sizeof(struct ilem_form *));
+		  ifp->fcount = nfinds = tmp_nfinds;
+		}
+	      else
+		ifp->fcount = nfinds = 1; /* Just use the first result */
 	    }
 	}
 

@@ -470,7 +470,7 @@ add_sig {
 	warn "$input:$.: no CF in sig $sig\n";
     }
     $sig{'cf'} = 'X' unless $sig{'cf'};
-    $sig{'gw'} = 'X' unless $sig{'gw'};
+    $sig{'gw'} = 'X' unless defined $sig{'gw'};
     $sig{'sense'} = 'X' unless $sig{'sense'};
     $sig{'pos'} = 'X' unless $sig{'pos'};
     $sig{'epos'} = 'X' unless $sig{'epos'};

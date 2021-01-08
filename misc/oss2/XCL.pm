@@ -439,7 +439,7 @@ getCFGW {
     my $f = shift;
     my $cf = $f->getAttribute('cf');
     my $gw = $f->getAttribute('gw');
-    if ($cf && $gw) {
+    if ($cf && defined($gw)) {
 	if ($f->getAttribute('epos') &&
 	    $f->getAttribute('epos') ne $f->getAttribute('pos')) {
 	    my $s = $f->getAttribute('sense');

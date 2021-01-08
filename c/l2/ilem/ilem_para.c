@@ -411,6 +411,26 @@ ilem_para_dump(FILE *fp, struct xcl_l *lp)
     }
 }
 
+static void
+ilem_para_dump_text(FILE *fp, struct ilem_para *p)
+{
+  struct ilem_para *pp;
+  for (pp = p; pp; pp = pp->next)
+    fprintf(fp,"%s ", pp->text);
+}
+void
+ilem_para_dump_text_ante(FILE *fp, struct xcl_l *lp)
+{
+  if (fp && lp)
+    ilem_para_dump_text(fp,lp->ante_para);
+}
+void
+ilem_para_dump_text_post(FILE *fp, struct xcl_l *lp)
+{
+  if (fp && lp)
+    ilem_para_dump_text(fp,lp->post_para);
+}
+
 struct ilem_para *
 ilem_para_find(struct xcl_l *lp, enum ilem_para_class class, enum ilem_para_type type)
 {

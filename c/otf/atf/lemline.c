@@ -7,6 +7,7 @@
 #include "memblock.h"
 #include "lemline.h"
 #include "ilem_form.h"
+#include "ilem_para.h"
 #include "xcl.h"
 #include "sigs.h"
 #include "xmd.h"
@@ -511,6 +512,15 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 		  		  
 		  if (lem_simplify)
 		    {
+		      if (tmp[strlen((const char *)tmp)-1] == ')')
+			{
+			  unsigned char *end = tmp+strlen((const char *)tmp);
+			  while (end > tmp)
+			    {
+			      if (*--end == '(')
+				*end = '\0';
+			    }
+			}
 		      if ((comma = strchr((const char *)f2->sense, ',')))
 			*comma = '\0';
 		      if (!strncmp((const char*)f2->sense, "(to be) ", 8))
@@ -523,14 +533,13 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 			  else if (!strncmp((const char*)tmp, "make ", 5))
 			    tmp += 5;
 			}
-		      if (tmp[strlen((const char *)tmp)-1] == ')')
+		      if (isdigit(*tmp))
 			{
-			  unsigned char *end = tmp+strlen((const char *)tmp);
-			  while (end > tmp)
-			    {
-			      if (*--end == '(')
-				*end = '\0';
-			    }
+			  Uchar *t2 = tmp;
+			  while (isdigit(*t2))
+			    ++t2;
+			  if (' ' == *t2)
+			    *t2 = '\0';
 			}
 		    }
 		  
@@ -659,6 +668,9 @@ lem_serialize(FILE *fp)
 	      if (BIT_ISSET(f->instance_flags, ILEM_FLAG_SPARSE_SKIP))
 		continue;
 
+	      if (lem_lines[i].forms[j]->x->ante_para)
+		ilem_para_dump_text_ante(fp,lem_lines[i].forms[j]->x);
+	      
 	      if (lem_dynalem && f->finds) /* && BIT_ISSET(f->finds[0]->f2.flags, F2_FLAGS_NEWLITERAL)) */
 		f->literal = f->finds[0]->literal;
 
@@ -693,6 +705,9 @@ lem_serialize(FILE *fp)
 #endif
 		    }
 		}
+
+	      if (lem_lines[i].forms[j]->x->post_para)
+		ilem_para_dump_text_post(fp,lem_lines[i].forms[j]->x);
 
 	      if (j + 1 < lem_lines[i].forms_used)
 		fputs("; ", fp);

@@ -1202,7 +1202,7 @@ validate_parts {
 	my($pos,$epos) = ('','');
 	my $sense = '';
 	my $ix = undef;
-	if ($cf && $gw && ($ix = find_in_coresigs($cf,$gw,$psulang))) {
+	if ($cf && defined($gw) && ($ix = find_in_coresigs($cf,$gw,$psulang))) {
 	    my $gw = $$ix{'sig'};
 	    my %psu_cfs = %{$$ix{'core'}};
 	    my %simple = %{$$ix{'smpl'}};

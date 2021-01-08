@@ -11,6 +11,7 @@
    to other processing phases to do the heavy lifting.
  */
 
+#undef C
 #define C(x) LPC_##x,
 #define LPC  C(none)C(boundary)C(property)C(pointer)C(syntax)C(linkset)C(nsa)
 enum ilem_para_class 
@@ -55,5 +56,8 @@ extern struct ilem_para *ilem_para_parse(struct xcl_context *xc, unsigned const 
 extern void ilem_para_dump(FILE *fp, struct xcl_l *lp);
 extern const unsigned char *ilem_para_head_label(struct xcl_c *c, int depth);
 extern struct ilem_para *ilem_para_find(struct xcl_l *lp, enum ilem_para_class class, enum ilem_para_type type);
+
+extern void ilem_para_dump_text_ante(FILE *fp, struct xcl_l *lp);
+extern void ilem_para_dump_text_post(FILE *fp, struct xcl_l *lp);
 
 #endif/*ILEM_PARA_*/

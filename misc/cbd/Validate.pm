@@ -1080,7 +1080,7 @@ sub v_part {
 #    warn "tmp = $tmp\n";
     my($cf,$gw) = ($tmp =~ /^(.*?) \[(.*?)\]$/);
     my @best_list = ();
-    if ($gw) {
+    if (defined($gw)) {
 	$gw =~ tr/a-zA-Z0-9 \t//cd;
 	foreach my $m (split(/\s+/, $gw)) {
 	    if ($entries_cfmng{"$cf$m"}) {
