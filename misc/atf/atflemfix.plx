@@ -60,7 +60,7 @@ foreach my $a (@ARGV) {
 
 sub fix {
     my $x = $_[0];
-    $x =~ s/\+//;
+    $x =~ s/^\+//;
     my $x2 = $x;
     $x2 =~ s/\[\]/[1]/;
     if ($from{$x} || $from{$x2}) {

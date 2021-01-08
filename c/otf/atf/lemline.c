@@ -476,7 +476,7 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	  && (f2->owner && f2->owner->literal && !strcmp((const char *)f2->owner->literal, "X")
 	      && (f2->pos && ((strlen(f2->pos) != 2) || f2->pos[1] != 'N')))))
     {
-      if (f2->owner && f2->owner->literal && strcmp((const char*)f2->owner->literal, "X"))
+      if (f2->owner && f2->owner->literal)
 	fputs((char*)f2->owner->literal,fp);
       else if (f2->pos)
 	fputs((char*)f2->pos,fp);

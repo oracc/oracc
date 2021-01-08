@@ -397,13 +397,21 @@ sub senses_merge_2 {
 	foreach my $s (@$i) {
 	    next if $s =~ /^-/;
 	    my @matches = ();
-	    my $s_no_pos = $s; $s_no_pos =~ s/^\@sense\S*\s+\S+//;		
+	    my $s_no_pos = $s; $s_no_pos =~ s/^\@sense\S*\s+(\S+)//;
+	    my $s_pos = $1;
 	    # does s occur in @b?
 	    foreach my $b (@$b) {
-		my $b_no_pos = $b; $b_no_pos =~ s/^\@sense\S*\s+\S+//;
+		my $b_no_pos = $b; $b_no_pos =~ s/^\@sense\S*\s+(\S+)//;
+		my $b_pos = $1;
 		# warn "testing b_no_pos $b_no_pos vs s_no_pos $s_no_pos\n";
 		if ($b_no_pos =~ /\Q$s_no_pos/ || $s_no_pos =~ /\Q$b_no_pos/) {
-		    push @matches, $b;
+		    # check for match by POS as well;
+		    # preserve identical senses that have different NN POS, e.g., SN 1 and GN 1
+		    if ($s_pos =~ /^[A-Z]N$/) {
+			push @matches, $b if $s_pos eq $b_pos; # only count NN as a match if they are identical
+		    } else {
+			push @matches, $b;
+		    }
 		}
 	    }
 	    if ($#matches >= 0) {
