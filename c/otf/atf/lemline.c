@@ -471,6 +471,7 @@ lem_unform(void)
 static void
 lem_f2_serialize(FILE *fp, struct f2 *f2)
 {
+  const char *bs = NULL;
   if (BIT_ISSET(f2->flags, F2_FLAGS_NOT_IN_SIGS)
       || (lem_autolem_NN_only
 	  && (f2->owner && f2->owner->literal && !strcmp((const char *)f2->owner->literal, "X")
@@ -553,6 +554,8 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 	      if (f2->pos && f2->pos[1] == 'N')
 		fputs((char*)f2->pos,fp);
 	    }
+	  if ((bs = strchr((const char *)f2->form, '\\')))
+	    fputs(bs,fp);
 	  if (f2->augment && *f2->augment)
 	    fprintf(fp,"+%s",f2->augment);
 	}
