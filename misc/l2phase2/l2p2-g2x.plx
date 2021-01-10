@@ -757,7 +757,8 @@ ipct {
 sub
 load_parts {
     ++$parts_loaded;
-    if (open(P,'01tmp/l2p1-simple.sig')) {
+    my $parts_file = '01tmp/l2p1-simple.sig';
+    if (open(P,$parts_file)) {
 	my $fields = <P>;
 	while (<P>) {
 	    chomp;
@@ -773,7 +774,7 @@ load_parts {
 	warn "dumping parts\n";
 #	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
     } else {
-	warn "l2p2-g2.plx: no 01bld/parts.map\n";
+	warn "l2p2-g2x.plx: no $parts_file\n";
 	return;
     }
 }
@@ -791,7 +792,7 @@ xload_parts {
 	warn "dumping parts\n";
 #	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
     } else {
-	warn "l2p2-g2.plx: no 01bld/parts.map\n";
+	warn "l2p2-g2x.plx: no 01bld/parts.map\n";
 	return;
     }
 }

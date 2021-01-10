@@ -24,6 +24,8 @@ fi
 #l2p1-from-glos.sh
 l2p1-project-sig.plx
 
+l2p1-simple-from-project.sh
+
 if [ -r .nolemmdata ]; then
     rm .nolemmdata
 else

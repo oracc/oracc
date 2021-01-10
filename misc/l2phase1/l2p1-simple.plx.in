@@ -6,7 +6,7 @@ use ORACC::L2GLO::Util;
 use Getopt::Long;
 use Data::Dumper;
 
-my $g2 = `oraccopt . g2`;
+my $g2 = 'yes'; ## `oraccopt . g2`;
 
 my $COF_NONE = 0;
 my $COF_HEAD = 1;
@@ -188,7 +188,7 @@ do_g2a {
 	    @instsigs = ();
 	    $basesig = undef;
 	    $coresig = undef;
-	} elsif (/^\@sense(!?)/) {
+	} elsif (/^\+?\@sense(!?)/) {
 	    my $sensebang = $1 || '';
 	    $in_sense = 1;
 	    ++$nsense;
