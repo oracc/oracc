@@ -471,7 +471,7 @@ add_sig {
     }
     $sig{'cf'} = 'X' unless $sig{'cf'};
     $sig{'gw'} = 'X' unless defined $sig{'gw'};
-    $sig{'sense'} = 'X' unless $sig{'sense'};
+    $sig{'sense'} = 'X' unless defined $sig{'sense'};
     $sig{'pos'} = 'X' unless $sig{'pos'};
     $sig{'epos'} = 'X' unless $sig{'epos'};
     my $entry = "$sig{'cf'}\[$sig{'gw'}\]$sig{'pos'}";

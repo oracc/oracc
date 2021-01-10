@@ -130,11 +130,32 @@ foreach my $s (@sigs) {
     push @{$lemmdata{$lng}}, $s;
 }
 
+my %use_psus = ();
+my $use_psus = `oraccopt . cbd-use-psus`;
+if ($use_psus) {
+    foreach my $u (split(/\s+/,$use_psus)) {
+	my($l,$p) = ($u =~ /^\%(.*?):(.*?)$/);
+	if ($l && $p) {
+	    $use_psus{$l} = $p;
+	} else {
+	    warn "$0: bad spec in cbd-use-psus: $u should be '\%LANG:PROJ'\n";
+	}
+    }
+}
 foreach my $l (keys %lemmdata) {
     open(L, ">02pub/lemm-$l.sig") 
 	|| die "l2p1-lemm-data.plx: Strange, can't write 02pub/lemm-$l.sig. Stop";
     print L "\@fields sig rank freq\n";
     print L sort { &byfreq }  @{$lemmdata{$l}};
+    if ($use_psus{$l}) {
+	my $psu_lemm_sig = "$ENV{'ORACC_BUILDS'}/$use_psus{$l}/02pub/lemm-$l.sig";
+	if (-r $psu_lemm_sig) {
+	    warn "$0: using PSUs from $psu_lemm_sig\n";
+	    print L `grep '^{' $psu_lemm_sig`;
+	} else {
+	    warn "$0: can't find $psu_lemm_sig to use PSUs from\n";
+	}
+    }    
     close L;
 }
 

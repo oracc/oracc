@@ -13,7 +13,8 @@
 
   <set var="process">
     <key k="action" to="input"/>
-    <key k="input" to="01bld/$cbdlang/$cbdlang.g2c"/>
+    <key k="input"  to="01bld/$cbdlang/$cbdlang.g2c"/>
+    <!--<key k="output" to="01tmp/$cbdlang-010.xml"/>-->
   </set>
 
 <!--
@@ -23,11 +24,15 @@
   </set>
 -->
 
-  <set var="process"><key k="action" to="sort"/></set>
+  <set var="process">
+    <key k="action" to="sort"/>
+    <!--<key k="output"   to="01tmp/$cbdlang-020.xml"/>-->
+  </set>
 
   <set var="process">
     <key k="action" to="$scripts/g2-primary-base.xsl"/>
     <key k="cbdresult" to="1"/>
+    <!--<key k="output"   to="01tmp/$cbdlang-030.xml"/>-->
   </set>
 
   <set var="process">
@@ -38,6 +43,7 @@
   <set var="process">
     <key k="action" to="$scripts/l2-cbd-letters.xsl"/>
     <key k="cbdresult" to="1"/>
+    <!--<key k="output"   to="01tmp/$cbdlang-050.xml"/>-->
   </set>
 
   <set var="process">

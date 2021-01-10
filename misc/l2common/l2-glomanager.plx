@@ -355,6 +355,7 @@ foreach my $p (@{$cfg{'process'}}) {
 	undef $styler;
     } elsif ($builtins{$p{'action'}}) {
 	$cbd = &{$builtins{$p{'action'}}}($p,\%cfg,$cbd);
+	do_output_cbd($p) if $p{'output'};	    
     } elsif (-x $p{'action'}) {
 	if ($p{'cbdresult'}) {
 	    my @res = `$p{'action'} $args`;
@@ -387,6 +388,21 @@ add_project_options {
 	$ORACC::L2GLO::Builtins::accents = 1 
 	    if $o eq 'render-accents' && $project_params{$o} eq 'yes';
     }
+}
+
+sub do_output_cbd {
+    my ($p) = @_;
+    warn ("writing output $$p{'output'}\n") if $verbose;
+    open(O,">$$p{'output'}") || die "l2-glomanager.plx: $$p{'output'}: open failed\n";
+    binmode O, ':raw'; # work around a XML::LibXSLT encoding bug
+    if ($$p{'text'} && $$p{'text'} eq 'yes') {
+	my $x = $cbd->toString();
+	$x =~ s/^<\?xml.*?\?>\n?//;
+	print O $x;
+    } else {
+	print O $cbd->toString();
+    }
+    close(O);
 }
 
 sub

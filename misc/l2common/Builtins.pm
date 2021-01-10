@@ -1656,7 +1656,7 @@ sort {
 	if ($cf_node) {
 	    my $cf = $cf_node->textContent();
 	    my $dt = $cf_node->nextSibling()->textContent();
-	    if (!$cf || !$dt) {
+	    if (!$cf || !defined($dt)) {
 		$cf = '' unless $cf;
 		$dt = '' unless $dt;
 	    } else {
