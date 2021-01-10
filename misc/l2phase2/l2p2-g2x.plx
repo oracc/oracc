@@ -274,7 +274,7 @@ foreach my $lang (sort keys %data) {
 	    print '>';
 	    my($mng,$pos) = ($sense_no_norm =~ m#//(.*?)\].*?'(.*?)$#);
 	    $mng = xmlify($mng);
-	    warn "$input:$entry_lines{$entry}: no mng in $entry :: $sense_no_norm\n" unless $mng;
+	    warn "$input:$entry_lines{$entry}: no mng in $entry :: $sense_no_norm\n" unless defined $mng;
 	    warn "$input:$entry_lines{$entry}: no epos in $entry :: $sense_no_norm\n" unless $pos;
 	    print "<pos>$pos</pos><mng xml:lang=\"en\">$mng</mng>";
 	    foreach my $f (@sigfields) {
@@ -992,7 +992,7 @@ rewrite_bases {
     my %sig = ();
     foreach my $b (keys %b) {
 	my $tmpb = $b;
-	$tmpb =~ s/^%[-a-z0-9]+://;
+	$tmpb =~ s/%[-a-z0-9]+://g;
 	my $sig = ORACC::SL::BaseC::tlit_sig("$project/$input\:$tmpb", $tmpb);
 	push @{$sig{$sig}}, $b;
     }

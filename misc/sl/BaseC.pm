@@ -392,6 +392,8 @@ tlitsplit {
     my ($tlit,$csplit) = @_;
     return '' unless $tlit;
 
+    $tlit = remove_lang($tlit);
+    
     my $orig = $tlit;
 
 #    my $c10ed = c10e_tlit($tlit);
@@ -414,7 +416,6 @@ tlitsplit {
     }
 
     # now do a basic split into graphemes
-    $tlit =~ s/\%sux://g;
     $tlit =~ tr/-{}:+/     /;
 
     # if we did a deep split we've already segmented compounds if they
@@ -566,7 +567,7 @@ _signature {
     my @newg = ();
     foreach my $g (@g) {
 	$g =~ s/^\$//;
-	$g =~ s/\%sux://g;
+	$g = remove_lang($g); warn "$0: leftover lang in $g\n" if $g =~ /\%.*?:/;
 	$g =~ tr/·°//d;
 	if ($g =~ m#^[/0-9]+(?:\@v)?$#) {
 	    push @newg, ORACC::Legacy::Sexify::sexify($g,0,1,0);
@@ -894,6 +895,12 @@ sub qualcorr {
 	}
     }
     undef;
+}
+
+sub remove_lang {
+    my $t = shift;
+    1 while $t =~ s/\%[-a-z]?://;
+    $t;
 }
 
 1;

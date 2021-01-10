@@ -152,6 +152,8 @@ new_idrefs {
     foreach (@old) {
 	if ($new_ids{$_}) {
 	    push @new, $new_ids{$_};
+	} elsif (/o\d+/) {
+	    push @new, $_; # this allows ePSD2 to work; may need more tweaks for other projects
 	} else {
 	    warn "l2p2-rewrite-ids.plx: no new_id for old ID $_\n";
 	}
