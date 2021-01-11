@@ -231,7 +231,8 @@ foreach my $lang (sort keys %data) {
 		    if ($parts{$p}) {
 			my @p = keys %{$parts{$p}};
 			my $p0 = $p[0];
-			$p0 =~ s/-.*$//;
+			$p0 =~ s/-.*$//; # remove sub-lang tag, e.g., from sux-x-emesal to sux -- questionable?
+			$p0 = 'qpn' if $p =~ /\][A-Z]N$/; # coerce NN to 'qpn' glossary
 			my $xp = xmlify($p);
 			$eid = "\#$p0\:$xp";
 			$eid =~ s/\s+:/:/;
@@ -762,7 +763,8 @@ load_parts {
 	my $fields = <P>;
 	while (<P>) {
 	    chomp;
-	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\t\d+\$/);
+	    #	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\t\d+\$/);
+	    my($lang,$entry) = (/\%(.*?):.*?=(.*?)\t/);
 	    if ($lang) {
 		$entry =~ s,//.*?\],],;
 		$entry =~ s/'.*$//;
@@ -771,7 +773,7 @@ load_parts {
 	    }
 	}
 	close(P);
-	warn "dumping parts\n";
+#	warn "dumping parts\n";
 #	open(P,'>parts.dump'); use Data::Dumper; print P Dumper(\%parts); close(P);
     } else {
 	warn "l2p2-g2x.plx: no $parts_file\n";
