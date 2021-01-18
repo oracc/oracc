@@ -1,4 +1,4 @@
-<?xml version='1.0'?>
+<?xml version='1.0' encoding="UTF-8"?>
 
 <xsl:stylesheet version="1.0" 
   xmlns="http://www.w3.org/1999/xhtml"
@@ -64,10 +64,26 @@
   </xsl:call-template>
 </xsl:param>
 
+<xsl:param name="cbd-inline-senses">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-inline-senses'"/>
+    <xsl:with-param name="default" select="'no'"/>
+  </xsl:call-template>
+</xsl:param>
+
 <xsl:param name="cbd-word-base">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="config-xml" select="$config-file"/>
     <xsl:with-param name="option" select="'cbd-word-base'"/>
+    <xsl:with-param name="default" select="''"/>
+  </xsl:call-template>
+</xsl:param>
+
+<xsl:param name="cbd-use-epsd-oids">
+  <xsl:call-template name="xpd-option">
+    <xsl:with-param name="config-xml" select="$config-file"/>
+    <xsl:with-param name="option" select="'cbd-oid'"/>
     <xsl:with-param name="default" select="''"/>
   </xsl:call-template>
 </xsl:param>
@@ -137,6 +153,7 @@
 </xsl:template>
 
 <xsl:template name="call-back">
+  <xsl:message>cbd-use-epsd-oids = <xsl:value-of select="$cbd-use-epsd-oids"/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -267,13 +284,15 @@
   
   <xsl:apply-templates select="cbd:bib"/>
 
-  <xsl:if test="starts-with(/*/@project, 'epsd2')">
+  <!--  <xsl:if test="starts-with(/*/@project, 'epsd2/')
+       or $cbd-use-epsd-oids = 'yes'"> 
+  -->
+  <xsl:if test="starts-with(/*/@project, 'epsd2/') or $cbd-use-epsd-oids = 'yes'">
     <div class="purl">
       <p><xsl:text>ID=http://oracc.org/</xsl:text>
       <xsl:value-of select="concat(/*/@project,'/',@oid)"/><xsl:text></xsl:text></p>
-      <xsl:if test="starts-with(/*/@project, 'epsd2/')">
-	<p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article</a></p>
-      </xsl:if>
+      <p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article for <xsl:value-of
+	select="@n"/></a></p>
     </div>
   </xsl:if>
     
@@ -1132,6 +1151,21 @@
 <!--      <xsl:apply-templates select="cbd:usages"/> -->
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:if test="$cbd-inline-senses">
+    <xsl:choose>
+      <xsl:when test="@icount &lt; 101">
+	<xsl:variable name="src"
+		      select="concat('@@ORACC_BUILDS@@/www/',$project,'/cbd/',/*/@xml:lang,'/sns/',@xis,'.html')"/>
+	<!--<xsl:message>inlining senses from <xsl:value-of select="$src"/></xsl:message>-->
+	<xsl:element name="xi:include">
+	  <xsl:attribute name="href"><xsl:value-of select="$src"/></xsl:attribute>
+	</xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:message>not inlining senses in <xsl:value-of select="ancestor::cbd:entry/@n"/> because icount of <xsl:value-of select="@icount"/> > 100</xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
 </xsl:template>
 
 <!--

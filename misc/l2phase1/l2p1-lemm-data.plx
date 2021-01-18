@@ -9,6 +9,8 @@ use Data::Dumper;
 
 my $g2 = 1;
 
+my $cbd_mode = `oraccopt . cbd-mode`;
+
 my $lem_allow_x = `oraccopt . lem-allow-x`;
 $lem_allow_x = undef unless ($lem_allow_x && $lem_allow_x eq 'yes');
 
@@ -38,7 +40,11 @@ if ($glossary) {
 } else {
     my @glosig_files = ();
     if ($g2) {
-	@glosig_files = `ls 01bld/*/from_glo.sig`; 
+#	if ($cbd_mode eq 'dynamic') {
+#	    @glosig_files = `ls 01bld/*/union.sig`;
+#	} else {
+	    @glosig_files = `ls 01bld/*/from_glo.sig`;
+#	}
 	chomp @glosig_files; @glosig_files = grep /\.sig$/, @glosig_files;
     } else {
 	@glosig_files = ('01bld/from-glos.sig');

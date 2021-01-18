@@ -17,7 +17,7 @@ fi
 xffdir=$webdir/cbd/$l/xff
 rm -fr $xffdir
 mkdir -p $xffdir
-art2xff.plx -d $xffdir -l sux
+art2xff.plx -d $xffdir -l $l
 chmod +rx $webdir/cbd/$l/xff
 chmod -R o+r $webdir/cbd/$l/xff
 echo after art2xff

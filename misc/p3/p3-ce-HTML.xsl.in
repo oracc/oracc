@@ -35,7 +35,7 @@
     <xsl:when test="$fragment = 'yes'">
       <xsl:choose>
 	<xsl:when test="$divwrap = 'yes'">
-	  <div>
+	  <div class="ce">
 	    <xsl:call-template name="call-back"/>
 	  </div>
 	</xsl:when>

@@ -19,6 +19,8 @@ else
     xcf=l2p3.xcf 
 fi
 
+inlinesenses=`oraccopt . cbd-inline-senses`
+
 echo l2p3.sh: using configuration file $xcf
 
 rm -fr $webdir/cbd ; mkdir -p $webdir/cbd
@@ -39,6 +41,9 @@ if [ "$g2c" != "" ]; then
 	    xfftab=`oraccopt . cbd-forms-table`
 	    if [ "$xfftab" = 'yes' ]; then
 		l2p3-xff.sh $webdir $l
+	    fi
+	    if [ "$inlinesenses" == "yes" ]; then
+		l2p3-inline-senses.sh $webdir $l
 	    fi
 	fi
     done
