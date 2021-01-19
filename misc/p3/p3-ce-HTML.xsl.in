@@ -14,6 +14,7 @@
 
 <xsl:param name="fragment" select="'yes'"/>
 <xsl:param name="item-offset"/>
+<xsl:param name="item-url"/>
 <xsl:param name="project"/>
 <xsl:param name="divwrap" select="'no'"/>
 
@@ -252,6 +253,19 @@
     <xsl:when test="string-length($url-host)>0">
       <a href="http://{$url-host}/{$ce-data/@text-id}?line={$ce-data/@line-id}&amp;frag={$ce-data/@context-id}"
 	 target="_blank">
+	<xsl:call-template name="make-label-text">
+	  <xsl:with-param name="label" select="$label"/>
+	</xsl:call-template>
+      </a>
+    </xsl:when>
+    <xsl:when test="$item-url = 'yes'">
+      <xsl:variable name="vitem">
+	<xsl:choose>
+	  <xsl:when test="$item='NaN'"><xsl:text>'NaN'</xsl:text></xsl:when>
+	  <xsl:otherwise><xsl:value-of select="$item"/></xsl:otherwise>
+	</xsl:choose>
+      </xsl:variable>
+      <a href="javascript:p3item4('xtf',{$vitem},'{$ce-data/@project}','{../ce:content/*[1]/@ref}')">
 	<xsl:call-template name="make-label-text">
 	  <xsl:with-param name="label" select="$label"/>
 	</xsl:call-template>

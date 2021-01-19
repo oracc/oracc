@@ -120,6 +120,17 @@ function p3item3(type,nth,id) {
     document.getElementById('p3form').submit();    
 }
 
+function p3item4(type,nth,id,ref) {
+    if (nth === "NaN") {
+	popup('/'+id+'/'+ref,'instRef',800,500,0,0);	
+    } else {
+	document.getElementById('arg_item').value = nth;
+	document.getElementById('itemtype').value = type;
+	document.getElementById('pqx_id').value = id;
+	document.getElementById('p3form').submit();
+    }
+}
+
 function p3zoom(z) {
     p3PageControls();
 
