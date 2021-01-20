@@ -1,0 +1,5 @@
+#!/bin/sh -e
+cd /home/oracc
+. bin/oraccenv.sh
+cd cdli
+cdli-rebuild.sh || serve-project.sh cdli
