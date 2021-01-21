@@ -518,7 +518,10 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 			  while (end > tmp)
 			    {
 			      if (*--end == '(')
-				*end = '\0';
+				{
+				  *end = '\0';
+				  break;
+				}
 			    }
 			}
 		      if ((comma = strchr((const char *)f2->sense, ',')))
