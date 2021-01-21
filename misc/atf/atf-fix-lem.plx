@@ -28,10 +28,15 @@ while (<>) {
 	foreach my $l (split(/(?<!\\)\|/,$lem)) {
 	    push(@lem,$l) and next unless $l =~ /\[/;
 	    $l =~ s/\s*$//;
+	    my $postfix = '';
+	    if ($l =~ s/(\+\.\*.*$)//) {
+		$postfix = $1;
+	    }
 	    warn("$ARGV:$.: bad cfgw $l\n") and next
 		unless $l =~ 
 /^.*?\[.*?\][A-Z]*(?:\'[A-Z]*)?(?:[\\\/][-a-z0-9\.\*]+)?(?:\+0|\+\*[0a-zE\.\*]+)?(?:\s+[\+-]\.\s*)?(?:\#.*?)?$/;
 	    push @lem, $bad{$l} || $l;
+	    $lem[$#lem] .= $postfix if $postfix;
 	}
 	push @newlem, join('|',@lem);
     }
