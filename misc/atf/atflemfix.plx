@@ -7,6 +7,7 @@ my %from= ();
 my %from_nopos = ();
 
 my $clean = 0;
+my $fixed = 0;
 my $from = '';
 my $to = '';
 my $nopos = 0;
@@ -37,15 +38,22 @@ foreach my $a (@ARGV) {
 	if (open(N, ">new/$a")) {
 	    warn "atflemfix.plx: reading $a and writing new/$a\n";
 	    while (<A>) {
-		if (s/^\#lem:\s*//) {
+		if (/^\#lem:\s/) {
+		    my $orig = $_;
+		    s/^\#lem:\s*//;
 		    chomp;
 		    my @l = split(/;\s+/, $_);
 		    my @nl = ();
+		    $fixed = 0;
 		    foreach my $l (@l) {
 			push @nl, fix($l);
 		    }
 		    chomp @nl;
-		    print N "#lem: ", join('; ', @nl), "\n";
+		    if ($fixed) {
+			print N "#lem: ", join('; ', @nl), "\n";
+		    } else {
+			print N $orig;
+		    }
 		} else {
 		    print N;
 		}
@@ -68,6 +76,7 @@ sub fix {
 	$tmp = $from{$x2} unless $tmp;
 #	$tmp =~ s/\].*$/]/;
 	warn "fixing $x => $tmp\n";
+	++$fixed;
 	return $tmp;
     } else {
 	my ($tmp,$post) = ($x =~ m/^(.*\])(.*)$/);
@@ -75,11 +84,12 @@ sub fix {
 	$post = '' unless $post;
 	if ($from_nopos{$tmp}) {
 	    my $tmpo = $tmp;
-	    warn "matched nopos\n";
+	    # warn "matched nopos\n";
 	    $tmp = $from{${$from_nopos{$tmp}}[0]};
 	    $tmp .= $post unless $clean;
 	    $tmp =~ s/\].*$/]/;
 	    warn "fixing $tmpo => $tmp\n";
+	    ++$fixed;
 	    return $tmp;
 	}
     }

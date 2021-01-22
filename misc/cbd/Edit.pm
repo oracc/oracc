@@ -213,6 +213,8 @@ sub edit_apply_script {
 			$c[$from_line] =~ s/^\+// if $$args{'strip'};
 		    } elsif ($s[$i] =~ /^:why/) {
 			# this is ignored by edit apply -- just there for edit/oid history
+		    } elsif ($s[$i] =~ s/^:hst\s*//) {
+			history($lang, $edit_entry, $edit_sense, $s[$i]);
 		    } else {
 			warn "edit.edit:$i: unhandled edit script tag $s[$i]\n";
 		    }
@@ -288,6 +290,8 @@ sub edit_make_script {
 	    my($tag) = ($c[$i-1] =~ /(\@[a-z]+)/);
 	    my $e = pp_entry_of($i,@c);
 	    my $action = 'rename';
+	    my $double = ($c[$i] =~ s/^>>/>/);
+	    my $bang = ($c[$i] =~ s/^>!/>/);
 	    
 	    if ($tag eq '@entry') {
 		my $renstr = $c[$i]; $renstr =~ s/^>\s*//;
@@ -297,11 +301,26 @@ sub edit_make_script {
 #		}
 		my $eid = ${$cbddata{'entries'}}{$renstr};
 		if ($eid) {
-		    $action = 'mrg';
+		    # if >> it's correct for the entry to exist; if > it's incorrect for it to exist
+		    if ($double) {
+			$action = 'mrg';
+		    } else {
+			pp_line($i);
+			pp_warn("can't rename to existing entry; use >> if merging");
+		    }
 		} else {
-		    my $ecfgw = $c[$e];
-		    $ecfgw =~ s/^.*?\s+//; $ecfgw =~ s/\s*$//; chomp $ecfgw;
-		    ${$cbddata{'entries'}}{$renstr} = ${$cbddata{'entries'}}{$ecfgw};
+		    # if > it's correct for the entry not to exist; if >> it's incorrect
+		    if ($double) {
+			# but we suppress the error message if it's >>!
+			unless ($bang) {
+			    pp_line($i);
+			    pp_warn("merge target doesn't exist; use >>! to suppress this warning");
+			}
+		    } else {
+			my $ecfgw = $c[$e];
+			$ecfgw =~ s/^.*?\s+//; $ecfgw =~ s/\s*$//; chomp $ecfgw;
+			${$cbddata{'entries'}}{$renstr} = ${$cbddata{'entries'}}{$ecfgw};
+		    }
 		}
 	    }
 
@@ -314,7 +333,8 @@ sub edit_make_script {
 		    } else {
 			$c[$i] =~ s/>\s*/>$tag /;
 		    }
-		    push @s, ":rnm $c[$i]";
+		    my $target = $c[$i]; $target =~ s/\s*(\[.*?\])\s*/ $1 /;
+		    push @s, ":rnm $target";
 		} else {
 		    pp_warn("expected $tag before '>$tag'");
 		}
@@ -330,6 +350,10 @@ sub edit_make_script {
 	    if ($c[$i] =~ /\@entry/) {
 		if ($c[$i+1] =~ /^\#why:\s+(.*?)$/) {
 		    push @s, ":why $1";
+		} elsif ($c[$i+1] =~ /^>\s*(.*?)\s*$/) {
+		    my $target = $1; $target =~ s/\s*(\[.*?\])\s*/ $1 /;
+		    push @s, ":hst \@entry $target";
+		    ++$ed; # skip over the >
 		} else {
 		    pp_line($i);
 		    pp_warn("must give single line #why: comment after entry-deleting code -\@entry");

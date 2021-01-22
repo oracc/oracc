@@ -17,6 +17,8 @@ my %history = ();
 
 sub history {
     my($l,$e,$s,$to) = @_;
+    $e =~ s/^-//;
+    $to =~ s/\s*>\s*/ /;
     $s = '' unless $s;
     my $date = `date +\%Y-\%m-\%d`; chomp $date;
     print H "$date\t$l\t$e\t$s\t$to\n";

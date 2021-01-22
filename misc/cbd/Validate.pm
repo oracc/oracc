@@ -70,7 +70,7 @@ use Data::Dumper;
 my $bid = 'b000001';
 my $eid = 'x000001';
 
-my $acd_chars = '->+=';
+my $acd_chars = '->+=!';
 my $acd_rx = '['.$acd_chars.']';
 $ORACC::CBD::Edit::acd_rx = $acd_rx;
 
@@ -309,7 +309,7 @@ sub pp_validate {
 		if ($pre) {
 		    if (exists $acd_ok_tags{$tag}) {
 			push @{$data{'edit'}}, pp_line()-1;
-			if ($pre eq '>') {
+			if ($pre =~ /^>/) {
 			    if ($tag eq 'entry') {
 				$cbd[$i] =~ /entry\S*\s+(.*)\s*$/;
 				$entry_map{$curr_cfgw} = $1;
@@ -336,13 +336,13 @@ sub pp_validate {
 	    } else {
 		pp_warn("\@$tag unknown tag");
 	    }
-	} elsif ($cbd[$i] =~ /^($acd_rx)/o) {
+	} elsif ($cbd[$i] =~ /^($acd_rx+)/o) {
 
 	    my $x = $1;
 	    push @{$data{'edit'}}, pp_line()-1;
-	    if ($x eq '>' && $cbd[$i-1] =~ /^$acd_rx?\@entry/) {
+	    if ($x eq '>' && $cbd[$i-1] =~ /^$acd_rx*\@entry/) {
 		$cbd[$i] =~ /^>\s*(.*?)\s*$/;
-		my $ncfgw = $1;
+		my $ncfgw = $1; $ncfgw =~ s/\s*(\[.*?\])\s*/ $1 /;
 		pp_warn("syntax error in > $ncfgw") unless $ncfgw =~ s/^(.*?)\s+(\[.*?\])\s+(\S+)$/$1 $2 $3/;
 		$entry_map{$curr_cfgw} = $1;
 	    } elsif ($x eq '>' && $cbd[$i-1] =~ /^\@sense/) {
