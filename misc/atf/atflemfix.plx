@@ -78,7 +78,7 @@ sub fix {
 	warn "fixing $x => $tmp\n";
 	++$fixed;
 	return $tmp;
-    } else {
+    } elsif ($nopos) { # by default, do not try to match by ignoring POS, only do so if -nopos is given
 	my ($tmp,$post) = ($x =~ m/^(.*\])(.*)$/);
 	return $x unless $tmp; # e.g., DN, PN
 	$post = '' unless $post;
