@@ -63,6 +63,11 @@ dbgitems {
 
 %p = decode_args(@ARGV);
 
+my $CORS='';
+if ($p{'project'} eq 'neo') {
+    $CORS="; Access-Control-Allow-Origin: *";
+}
+
 $rt{'tmpdir'} = $p{'tmpdir'};
 
 p3_oas_triage()
@@ -267,7 +272,7 @@ if ($p{'item'} == 0) {
 }
 
 # echo the template including outline/content as we go
-print "Content-type: text/html; Encoding=utf-8\n\n"
+print "Content-type: text/html; Encoding=utf-8$CORS\n\n"
     unless $p{'noheader'};
 
 run_form_maker("@@ORACC@@/lib/data/p3-template.xml");
@@ -911,7 +916,7 @@ run_item_maker {
 sub
 run_glos_maker {
     set_runtime_vars();
-    print "Content-type: text/html; Encoding=utf-8\n\n";
+    print "Content-type: text/html; Encoding=utf-8$CORS\n\n";
     run_form_maker();
 }
 
@@ -1320,12 +1325,12 @@ p3_oas_triage {
 	if ($p{'asSubmit'} eq 'edit') {
 	    $oas_instance = `cat $p{'tmpdir'}/search.xml`;
 	    $oas_instance =~ s/search>/search xmlns="">/;
-	    print "Content-type: text/xml; charset=utf-8\n\n";
+	    print "Content-type: text/xml; charset=utf-8$CORS\n\n";
 	    run_form_maker($oas_template);
 	    goto EXIT;
 	} else {
 	    $oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
-	    print "Content-type: text/xml; charset=utf-8\n\n";
+	    print "Content-type: text/xml; charset=utf-8$CORS\n\n";
 	    run_form_maker($oas_template);
 	    goto EXIT;
 	}
@@ -1355,7 +1360,7 @@ p3_oas_triage {
 	    unless (-r "$p{'tmpdir'}/results.lst") {
 		warn "p3_oas_triage: no $p{'tmpdir'}/results.lst\n";
 		$oas_instance = `cat @@ORACC@@/lib/data/oas-instance.xml`;
-		print "Content-type: text/xml; charset=utf-8\n\n";
+		print "Content-type: text/xml; charset=utf-8$CORS\n\n";
 		run_form_maker($oas_template);
 		goto EXIT;
 	    } else {

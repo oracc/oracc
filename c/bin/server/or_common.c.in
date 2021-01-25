@@ -156,7 +156,10 @@ print_hdr_text(void)
 void
 print_hdr_xml(void)
 {
-  fputs("Content-type: text/xml; charset=utf-8\n\n", stdout);
+  if (!strcmp(project, "neo"))
+    fputs("Content-type: text/xml; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
+  else
+    fputs("Content-type: text/xml; charset=utf-8\n\n", stdout);
   fflush(stdout);
 }
 
