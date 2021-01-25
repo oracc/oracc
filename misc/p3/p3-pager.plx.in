@@ -65,7 +65,7 @@ dbgitems {
 
 my $CORS='';
 if ($p{'project'} eq 'neo') {
-    $CORS="; Access-Control-Allow-Origin: *";
+    $CORS=";\nAccess-Control-Allow-Origin: *";
 }
 
 $rt{'tmpdir'} = $p{'tmpdir'};
