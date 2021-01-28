@@ -150,7 +150,7 @@ gconv {
 #    $tmp =~ s/x4(?![\(\d])/\cD/g;
     return $tmp if $tmp =~ /^[xX]$/;
     $tmp =~ s/(~[a-z][a-wyz0-9]*)x/$1\cX/g;
-    $tmp =~ s/([a-wyz])x/$1ₓ/g;
+    $tmp =~ s/([a-wyz])x(>![a-zšḫŋṣṭA-ZŠḪŊṢṬ])/$1ₓ/g;
     $tmp =~ s/\cX/x/g;
     my $ret = join('', 
 		   map(_safeconv($_), 
