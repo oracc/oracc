@@ -314,7 +314,7 @@ sub edit_make_script {
 			# but we suppress the error message if it's >>!
 			unless ($bang) {
 			    pp_line($i);
-			    pp_warn("merge target doesn't exist; use >>! to suppress this warning");
+			    pp_warn("merge target $renstr doesn't exist; use >>! to suppress this warning");
 			}
 		    } else {
 			my $ecfgw = $c[$e];

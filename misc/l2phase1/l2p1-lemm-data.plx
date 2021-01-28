@@ -40,11 +40,18 @@ if ($glossary) {
 } else {
     my @glosig_files = ();
     if ($g2) {
-#	if ($cbd_mode eq 'dynamic') {
-#	    @glosig_files = `ls 01bld/*/union.sig`;
-#	} else {
+	if ($cbd_mode eq 'dynamic') {
+	    @glosig_files = `ls 01bld/*/union.sig`; chomp @glosig_files;
+	    my @n = ();
+	    foreach my $g (@glosig_files) {
+		my $l = $g; $l =~ s#01bld/##; $l =~ s#/.*$##;
+		system "$ENV{'ORACC_BUILDS'}/bin/l2p1-union-ranks.plx", $l;
+		push @n, "01bld/$l/union-ranks.sig";
+	    }
+	    @glosig_files = @n;
+	} else {
 	    @glosig_files = `ls 01bld/*/from_glo.sig`;
-#	}
+	}
 	chomp @glosig_files; @glosig_files = grep /\.sig$/, @glosig_files;
     } else {
 	@glosig_files = ('01bld/from-glos.sig');

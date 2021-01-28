@@ -46,6 +46,12 @@ main(int argc, char **argv)
       if ((x = xpd_init(project,pool)))
 	{
 	  const char *val = xpd_option(x,option);
+	  if (!val)
+	    {
+	      if (*option == '%')
+		++option;
+	      val = xpd_lang(x,option); /* look up %sux opts as sux */;
+	    }
 	  if (!val && deflt)
 	    val = deflt;
 	  if (val)
