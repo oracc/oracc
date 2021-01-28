@@ -166,6 +166,8 @@ gconv {
 	$ret =~ s/\}×/}x/g;
 	$ret =~ s/×([a-z])/x$1/g;
     }
+    $ret =~ s/Šyrus/Cyrus/;
+    $ret =~ s/ŠN/CN/;
     $ret;
 }
 
