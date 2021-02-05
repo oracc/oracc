@@ -2,6 +2,7 @@
 use warnings; use strict; use open ':utf8'; use utf8;
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+use Encode;
 
 my $dump_table = undef;
 my %edits = ();
@@ -31,6 +32,9 @@ if ($table) {
     unless ($when && $from && $to) {
 	fail("must use -table or all of -when/-from/-to");
     }
+    Encode::_utf8_on($when);
+    Encode::_utf8_on($from);
+    Encode::_utf8_on($to);
     $edits{'e1'} = { when=>$when, 
 		     from=>$from,
 		     to=>$to,

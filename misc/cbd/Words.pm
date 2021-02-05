@@ -2,7 +2,7 @@ package ORACC::CBD::Words;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/words_check/;
+@EXPORT = qw/words_check words_init words_term words_signs words_anagrams/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -28,6 +28,21 @@ my $verbose = 0;
 my %warned = ();
 my @cfgws = ();
 my %g = ();
+
+sub words_init {
+    ORACC::SL::BaseC::init();
+}
+sub words_term {
+    ORACC::SL::BaseC::term();
+}
+
+sub words_signs {
+    
+}
+
+sub words_anagrams {
+    
+}
 
 sub words_check {
     my ($args) = @_;

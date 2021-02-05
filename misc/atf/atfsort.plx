@@ -3,7 +3,11 @@ use warnings; use strict;
 
 my $keys = '';
 my %keys = ();
+my $order = ();
 my $psort = 0;
+
+# To sort using a list of P-numbers as the ordering criteria, give
+# the P-number file as the keys argument.
 
 use Getopt::Long;
 GetOptions(
