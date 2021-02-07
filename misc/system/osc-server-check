@@ -1,0 +1,7 @@
+#!/bin/sh
+ps -C osc-server -o pid= >/home/oracc/tmp/osc-server-pid
+if [ -s >/home/oracc/tmp/osc-server-pid ]; then
+    exit 0
+else
+    exit 1
+fi
