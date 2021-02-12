@@ -1,0 +1,5 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+ORACC=/home/oracc
+echo oracc-osc-server-reboot called via cron at `date`
+* 7 * * * root /home/oracc/sbin/oscstart.sh
