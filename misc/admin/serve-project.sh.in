@@ -58,11 +58,15 @@ else
     if [ "$servesubs" == "#all" ]; then
 	allsubs=`list-pub-subs.sh $project`
 	for a in $allsubs ; do
-	    serve-project.sh $a
+	    if [ "$a" != "$project" ]; then
+		serve-project.sh $a
+	    fi
 	done
     else
 	for a in $servesubs ; do
-	    serve-project.sh $project/$a
+	    if [ "$a" != "" ]; then
+		serve-project.sh $project/$a
+	    fi
 	done
     fi
 fi
