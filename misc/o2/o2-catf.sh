@@ -11,7 +11,11 @@ fi
     ox -I01bld/atfsources.lst | catf-manager.plx -s 2>01tmp/catf-manager.log >02www/project.catf
     chown root:oracc 02www/project.catf
     chmod +r 02www/project.catf
-    echo o2-catf.sh: you can now retrieve /$fullproj/project.catf
+    echo '####'
+    echo
+    echo You can now retrieve http://$ORACC_HOST/$fullproj/project.catf
+    echo
+    echo '####'
 #else
 #    echo o2-catf.sh: CATF output is not enabled for project $fullproject
 #fi
