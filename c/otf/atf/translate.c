@@ -17,6 +17,8 @@
 
 extern void note_initialize_line(void);
 
+Hash_table *trans_hash = NULL;
+
 extern int need_lemm;
 const char *const xtr_xmlns[] =
   {
@@ -163,6 +165,11 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
 	  appendAttr(trans->tree,attr(a_xtr_type,ucc(trans->type)));
 	  appendAttr(trans->tree,attr(a_xtr_code,ucc(trans->code)));
 	  sprintf(trans_id_base,"%s_%s-%s",textid,trans->code,trans->lang);
+	  if (trans_hash_add(trans_id_base))
+	    {
+	      warning("duplicate @translation will be ignored");
+	      return NULL;
+	    }
 	  appendAttr(trans->tree,attr(a_xml_id,ucc(trans_id_base)));
 	  next_trans_p_id = 0;
 	  (void)refattrs(NULL,NULL,NULL);
@@ -583,6 +590,31 @@ find_marker(unsigned char *s)
   else
     {
       return NULL;
+    }
+}
+
+void
+trans_hash_init(void)
+{
+  if (!trans_hash)
+    trans_hash = hash_create(1);
+}
+int
+trans_hash_add(const char *t)
+{
+  static int one = 1;
+  if (hash_find(trans_hash, t))
+    return 1;
+  hash_add(trans_hash,pool_copy(t), &one);
+  return 0;
+}
+void
+trans_hash_term(void)
+{
+  if (trans_hash)
+    {
+      hash_free(trans_hash,NULL);
+      trans_hash = NULL;
     }
 }
 

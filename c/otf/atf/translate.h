@@ -49,4 +49,8 @@ extern unsigned char **trans_dollar(unsigned char **lines);
 extern void trans_finish_labels(struct node *text, struct translation *tp);
 extern unsigned char *trans_inline(struct node*parent,unsigned char *text, const char *, int);
 
+extern void trans_hash_init(void);
+extern int trans_hash_add(const char *t);
+extern void trans_hash_term(void);
+
 #endif /*_TRANSLATE_H*/

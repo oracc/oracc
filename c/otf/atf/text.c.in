@@ -142,6 +142,7 @@ text_init()
 {
   textid = (char*)text_idbuf;
   per_text_mem_list = list_create(LIST_SINGLE);
+  trans_hash_init();
 }
 
 void
@@ -153,6 +154,7 @@ text_term(void)
   savetext(NULL,NULL);
   list_free(per_text_mem_list,list_xfree);
   per_text_mem_list = NULL;
+  trans_hash_term();
 }
 
 void

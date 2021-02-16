@@ -514,11 +514,11 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 		 be used for label generation; actual trans tree building
 		 is carried out in translate.c */
 	      current = text_element = translation(lines,text,&transtype);
+	      if (!current)
+		return skip_rest(lines);
 	      current_trans = curr_trans_tree();
 	      if (transtype == etu_parallel)
 		line_id = exemplar_offset = 0;
-	      if (!current)
-		return skip_rest(lines);
 	      /* parse_inline = trans_parse_inline */
 	      break;
 	    case TR_SWITCH:
