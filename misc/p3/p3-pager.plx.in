@@ -64,9 +64,9 @@ dbgitems {
 %p = decode_args(@ARGV);
 
 my $CORS='';
-if ($p{'project'} eq 'neo') {
+#if ($p{'project'} eq 'neo') {
     $CORS=";\nAccess-Control-Allow-Origin: *";
-}
+#}
 
 $rt{'tmpdir'} = $p{'tmpdir'};
 
