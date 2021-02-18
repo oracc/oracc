@@ -147,8 +147,9 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
   /*  for (i = 0; i < (nclnodes - 1); ++i) */
   for (i = 0; i < nclnodes; ++i)
     {
-      int i_nle,n_nle;
+      int i_nle, n_nle, psu_lnum;
       struct NLE**nle;
+      unsigned char *psu_sense = NULL;
 
       /* We don't need to iterate into xcl_node_c entries because
 	 xcl_map is going to do that for us */
@@ -236,10 +237,27 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
       for (i_nle = 0; i_nle < n_nle; ++i_nle)
 	{
 	  ngramify_reset();
-	  ngdebug("[ngramify] testing %s:NLE#%d: %s",
-		  nle[i_nle]->owner->name,
-		  nle[i_nle]->priority,
-		  nle[i_nle]->line);
+	  if (i_nle == 0)
+	    {
+	      if (clnodes[i].l->f->psu_sense)
+		{
+		  psu_sense = clnodes[i].l->f->psu_sense;
+		  psu_lnum = clnodes[i].l->f->lnum;
+		  if (verbose)
+		    fprintf(stderr, "psu_sense = %s\n", psu_sense);
+		}
+	    }
+	  if (psu_sense && nle[i_nle]->psu && !strstr(nle[i_nle]->psu, psu_sense))
+	    {
+	      ngdebug("[ngramify] skipping PSU %s because it doesn't contain '%s'",
+		      nle[i_nle]->line, psu_sense);
+	      continue;
+	    }
+	  else
+	    ngdebug("[ngramify] testing %s:NLE#%d: %s",
+		    nle[i_nle]->owner->name,
+		    nle[i_nle]->priority,
+		    nle[i_nle]->line);
 	  if (match_nle(nle[i_nle], clnodes, i, nclnodes))
 	    {
 	      int first_non_d;
@@ -291,6 +309,7 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		 tree for each NLCP
 	       */
 	      i += match_list->matches_used - 1;
+	      psu_sense = NULL;
 	      break;
 	    }
 	  else
@@ -299,7 +318,10 @@ ngramify(struct xcl_context *xcp, struct xcl_c*cp)
 		      nle[i_nle]->priority);
 	    }
 	}
+      if (psu_sense)
+	vwarning2(file,psu_lnum,"PSU sense given with +=%s doesn't match any PSUs",psu_sense);
     }
+    
   ngdebug("[ngramify] returning");
 }
 

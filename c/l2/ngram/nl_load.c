@@ -331,7 +331,8 @@ nl_process_one_line(struct NL *nlp, const char *lp, List *components)
   struct f2 *psu_form = NULL;
   if (!isspace(*lp) && '#' != *lp)
     {
-      ngdebug("loading:%d: %s",nl_lnum,lp);
+      if (verbose > 2)
+	ngdebug("loading:%d: %s",nl_lnum,lp);
       switch (*lp)
 	{
 	case ' ':
