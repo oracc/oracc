@@ -26,7 +26,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdskel.sh cbd-pull-dups.plx \
 	cbd-fbm.plx cbd-add-base-form.plx \
 	bases-add-map-bases.plx cbd-diff.sh \
-	entry-homographs.plx entries-log-homographs.sh
+	entry-homographs.plx entries-log-homographs.sh cbd-find-homographs.plx
 
 # cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 

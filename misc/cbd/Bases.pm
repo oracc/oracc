@@ -43,17 +43,22 @@ sub bases_primaries {
 }
 
 sub bases_sigs {
-    my $x = shift;
+    my ($args, $x) = @_;
     my %x = %$x;
     my $l = ORACC::CBD::Util::lang();
-    open(B,">01bld/$l/base-sigs.tab");
+    unless ($$args{'stdout'}) {
+	open(B,">01bld/$l/base-sigs.tab"); select B;
+    }
     foreach my $c (sort keys %x) {
 	my @b = @{$x{$c}};
 	foreach my $b (@b) {
-	    print B "$c\t$$b[0]\t$$b[1]\n";
+	    print "$c\t$$b[0]\t$$b[1]\n";
 	}
     }
-    close(B);
+    unless ($$args{'stdout'}) {
+	close(B);
+	select STDOUT;
+    }
 }
 
 sub bases_homographs_init {
@@ -73,6 +78,13 @@ sub bases_homographs_init {
     } else {
 	return 0;
     }
+}
+
+sub bases_homographs_dump {
+    use Data::Dumper;
+    open(B,'>bases_homographs.dump') || die;
+    print B Dumper \%homographs;
+    close(B);
 }
 
 sub bases_homographs_lookup {

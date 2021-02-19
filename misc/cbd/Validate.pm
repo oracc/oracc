@@ -389,7 +389,7 @@ sub pp_validate {
     
     %ORACC::CBD::data = %data;
 
-    ORACC::CBD::Bases::bases_sigs(\%basesigs) if $$args{'bases'} || $project eq 'epsd2';
+    ORACC::CBD::Bases::bases_sigs($args, \%basesigs) if $$args{'bases'} || $project eq 'epsd2';
 
 #    warn "validate: exiting pp_validate status=".pp_status()."\n";
 #    warn "pp_status now=".pp_status()."\n";
