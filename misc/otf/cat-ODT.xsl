@@ -34,7 +34,7 @@
   <name n="source"   sig="L"><oracc:br/>Source</name>
   <name n="xexc_no"  sig="M">Excavation/<oracc:br/>Registration No.</name>
   <name n="xmus_no"  sig="N">Museum Number/<oracc:br/>Source</name>
-  <name n="epi_no"   sig="O">Epigraph no.</name>
+  <name n="epi_no"   sig="O">Epigraph<oracc:br/>no.</name>
   <name n="asbepi1a"  sig="P">Text no. 76<oracc:br/>(Text A)</name>
   <name n="asbepi1b"     sig="Q">Text no. 77<oracc:br/>(Text B)</name>
   <name n="asbepi1c"  sig="R">Text no. 78<oracc:br/>(Text C)</name>
