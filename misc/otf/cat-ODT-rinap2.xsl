@@ -34,34 +34,6 @@
   <name n="source"   sig="L"><oracc:br/>Source</name>
   <name n="xexc_no"  sig="M">Excavation/<oracc:br/>Registration No.</name>
   <name n="xmus_no"  sig="N">Museum Number/<oracc:br/>Source</name>
-  <name n="epi_no"   sig="O">Epigraph no.</name>
-  <name n="asbepi1a"  sig="P">Text no. 76<oracc:br/>(Text A)</name>
-  <name n="asbepi1b"     sig="Q">Text no. 77<oracc:br/>(Text B)</name>
-  <name n="asbepi1c"  sig="R">Text no. 78<oracc:br/>(Text C)</name>
-  <name n="asbepi1d"    sig="S">Text no. 79<oracc:br/>(Text D)</name>
-  <name n="asbepi1e"    sig="T">Text no. 80<oracc:br/>(Text E)</name>
-  <name n="asbepi1f"      sig="U">Text no. 81<oracc:br/>(Text F)</name>
-  <name n="asbepi1g"  sig="V">Text no. 82<oracc:br/>(Text G)</name>
-  <name n="asbepi1h" sig="W">Text no. 83<oracc:br/>(Text H)</name>
-  <name n="asbepi2a" sig="X">Text no. 88<oracc:br/>(Text A)</name>
-  <name n="asbepi2b"  sig="Y">Text no. 89<oracc:br/>(Text B)</name>
-  <name n="asbepi2c"  sig="Z">Text no. 90<oracc:br/>(Text C)</name>
-  <name n="asbepi2d"   sig="0">Text no. 91<oracc:br/>(Text D)</name>
-  <name n="asbepi2e"     sig="1">Text no. 92<oracc:br/>(Text E)</name>
-  <name n="asbepi2f" sig="2">Text no. 93<oracc:br/>(Text F)</name>
-  <name n="asbepi2g" sig="3">Text no. 94<oracc:br/>(Text G)</name>
-  <name n="asbepi2h"  sig="4">Text no. 95<oracc:br/>(Text H)</name>
-  <name n="asbepi2i"     sig="5">Text no. 96<oracc:br/>(Text I/J)</name>
-  <name n="mus_l"  sig="6">Museum<oracc:br/>Number</name>
-  <name n="mus_m" sig="7">Museum<oracc:br/>Number</name>
-  <name n="reg_l"    sig="8">Registration<oracc:br/>Number</name>
-  <name n="reg_m" sig="9">Registration<oracc:br/>Number</name>
-  <name n="xexc_l"     sig="a">Excavation/<oracc:br/>Registration No.</name>
-  <name n="xexc_m" sig="b">Excavation/<oracc:br/>Registration No.</name>
-  <name n="dimen_l"   sig="c">Dimensions<oracc:br/>(cm)</name>
-  <name n="dimen_m"    sig="d">Dimensions<oracc:br/>(cm)</name>
-  <name n="dimen_s"     sig="e">Dimensions<oracc:br/>(cm)</name>
-  <!--
   <name n="oip_40"   sig="O"><oracc:br/>OIP 40</name>
   <name n="squeeze"  sig="P">Louvre<oracc:br/>Squeeze</name>
   <name n="frgm"     sig="Q"><oracc:br/>Frgm.</name>
@@ -92,7 +64,6 @@
   <name n="column"   sig="f"><oracc:br/>Column</name>
   <name n="khors_date" sig="g">Date in Khorsabad<oracc:br/>Annals (text nos. 1–6)</name>
   <name n="subject"  sig="h"><oracc:br/>Subject</name>
-  -->
   <name n="prov_s"   sig="i"><oracc:br/>Provenance</name>
   <name n="reg_s"    sig="j">Registration<oracc:br/>Number</name>
   <name n="exc_s"    sig="k">Excavation<oracc:br/>Number</name>

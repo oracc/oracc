@@ -19,6 +19,12 @@ my %seen = ();
 
 if ($#pre >= 0) {
     foreach my $p (@pre) {
+	unless (-r $p) {
+	    my($proj,$lang) = ($p =~ /^(.*?):(.*?)$/);
+	    if ($proj) {
+		$p = "$ENV{'ORACC_BUILDS'}/$proj/01bld/$lang/base-sigs.tab";
+	    }
+	}
 	open(P,$p) || die "$0: can't preload $p\n";
 	while (<P>) {
 	    chomp;
@@ -31,7 +37,7 @@ if ($#pre >= 0) {
     }
 }
 
-open(D,'>pre.dump') || die; print D Dumper \%t; close(D);
+#open(D,'>pre.dump') || die; print D Dumper \%t; close(D);
 
 # clear %seen so that singleton entries in preload will match incoming dups
 
@@ -49,7 +55,8 @@ while (<>) {
 }
 
 foreach (keys %h) {
-    print "$_ => @{$t{$_}}\n";
+    my $o = join("\t", @{$t{$_}});
+    print "$_ => $o\n";
 }
 
 1;

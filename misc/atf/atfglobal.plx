@@ -2,6 +2,7 @@
 use warnings; use strict; use open ':utf8'; use utf8;
 use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+binmode $DB::OUT, ':utf8' if $DB::OUT;
 use Encode;
 
 my $dump_table = undef;
@@ -68,7 +69,7 @@ while (<>) {
 	    $lem =~ s/\s$//;
 	    $line =~ s/<<.*?>>//g;
 	    $line =~ s/--/-/;
-	    $line =~ tr/-:. a-zA-Z0-9šŋŠŊ₀-₉ₓ\|\@&~%{}()//cd;
+	    $line =~ tr/-:. a-zA-Z0-9šṣṭŋŠṢṬŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
 	    $line =~ s/\(\d*::\d*\)//g; # for etcsl
 	    $line =~ s/:\(MIN\)//g; # for liturgies
