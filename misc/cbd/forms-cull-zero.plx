@@ -66,6 +66,7 @@ foreach (@input) {
 	%forms = ();
     } elsif (/\@lang\s+(\S+)/) {
 	$lang = $1;
+	$lang = 'sux' if $lang eq 'qpn';
     }
     print if $_;
 }

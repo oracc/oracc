@@ -139,10 +139,14 @@ or_find_pqx_xtr(const char *project, const char *pqid, const char *code, const c
 void
 print_hdr(void)
 {
+#if 1
+    fputs("Content-type: text/html; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
+#else
   if (!strcmp(project, "neo"))
     fputs("Content-type: text/html; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
   else
     fputs("Content-type: text/html; charset=utf-8\n\n", stdout);
+#endif
   fflush(stdout);
 }
 
@@ -156,10 +160,14 @@ print_hdr_text(void)
 void
 print_hdr_xml(void)
 {
+#if 1
+    fputs("Content-type: text/xml; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
+#else
   if (!strcmp(project, "neo"))
     fputs("Content-type: text/xml; charset=utf-8\nAccess-Control-Allow-Origin: *\n\n", stdout);
   else
     fputs("Content-type: text/xml; charset=utf-8\n\n", stdout);
+#endif
   fflush(stdout);
 }
 
