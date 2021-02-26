@@ -46,7 +46,7 @@ sub bases_sigs {
     my ($args, $x) = @_;
     my %x = %$x;
     my $l = ORACC::CBD::Util::lang();
-    unless ($$args{'stdout'}) {
+    unless ($$args{'bases'} && $$args{'stdout'}) {
 	open(B,">01bld/$l/base-sigs.tab"); select B;
     }
     foreach my $c (sort keys %x) {
@@ -55,7 +55,7 @@ sub bases_sigs {
 	    print "$c\t$$b[0]\t$$b[1]\n";
 	}
     }
-    unless ($$args{'stdout'}) {
+    unless ($$args{'bases'} && $$args{'stdout'}) {
 	close(B);
 	select STDOUT;
     }

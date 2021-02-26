@@ -159,7 +159,7 @@ foreach my $l (keys %lemmdata) {
     open(L, ">02pub/lemm-$l.sig") 
 	|| die "l2p1-lemm-data.plx: Strange, can't write 02pub/lemm-$l.sig. Stop";
     print L "\@fields sig rank freq\n";
-    print L sort { &byfreq }  @{$lemmdata{$l}};
+    print L sort { &byfreq }  uniq(@{$lemmdata{$l}});
     if ($use_psus{$l}) {
 	my $psu_lemm_sig = "$ENV{'ORACC_BUILDS'}/$use_psus{$l}/02pub/lemm-$l.sig";
 	if (-r $psu_lemm_sig) {
@@ -216,6 +216,12 @@ sub set_f {
  
     $rank = $f{'rank'};
     $freq = $f{'freq'};
+}
+
+sub uniq {
+    my %x = ();
+    @x{@_} = ();
+    keys %x;
 }
 
 1;

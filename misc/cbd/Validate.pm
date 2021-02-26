@@ -232,7 +232,8 @@ sub pp_validate {
     @bffs = ();
     @parts = ();
     %tlit_sigs = ();
-
+    %ORACC::CBD::forms = ();
+	
     ORACC::SL::BaseC::init();
     $ORACC::SL::report_all = 1;
     if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
@@ -875,7 +876,7 @@ sub v_form {
     } elsif ($lang =~ /^qpn/) {
 	pp_warn("no %LANG in QPN glossary \@form entry");
     } else {
-	$flang = ''
+	$flang = $lang;
     }
     
     my $barecheck = $arg;
@@ -898,13 +899,13 @@ sub v_form {
 	pp_warn("angle brackets not allowed in \@form");
     }
 
-    my($fo) = ($f =~ /^(\S+)/);
-    if ($ORACC::CBD::Forms::external 
+    my($fo) = ($f =~ /^(\S+)/); # warn "fo=$fo; flang=$flang\n";
+    if (!$ORACC::CBD::Forms::external
 	&& $ORACC::CBD::forms{$curr_cfgw,$fo,$flang}++) {
-	# can't do this: it's legit to have al-pi $alpi and al-pi $alpī
+	# can't do this for all langs: it's legit to have al-pi $alpi and al-pi $alpī
 	pp_warn("duplicate form in `$curr_cfgw': $fo")
 	    if $flang =~ /^sux/;
-#	return;
+	# return;
     }
 
     if ($fo =~ tr/_/ / && !$is_compound) {

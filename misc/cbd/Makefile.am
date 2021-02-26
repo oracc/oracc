@@ -14,7 +14,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbd-super-compare.plx cbd-super-map-sigs.plx \
 	cbd-super-map-glos.plx cbdparts.plx cbd-count-insts.sh \
 	cbdequivs.plx cbdsort.plx \
-	cbd-pull-forms.plx cbd-merge-forms.plx dotforms-dups.plx \
+	cbd-pull-forms.plx cbd-merge-forms.plx \
 	cbdcollo.plx cbdoid.plx cbd-bases-tab.plx cbd-add-oid.plx \
 	cbdstash.plx cbdminglo.sh cbdedit.plx \
 	base-instances.plx cbdhistory.plx cbd forms-cull-zero.plx \
@@ -22,13 +22,14 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	history-all.sh cbd-tidy.sh cbd-trusted.plx cbd-drop-epsd2.sh \
 	base-audit.plx base-count.plx cbd-from_glo.sh cbdbasenoform.plx \
 	base-redup.plx cbd-check-form-base.plx cbd-fix-form-base.plx \
-	sig-stats.plx sig-psu-forms.plx sigs-invert.plx dotforms-sigs.plx \
+	sig-stats.plx sig-psu-forms.plx sigs-invert.plx \
 	cbdskel.sh cbd-pull-dups.plx \
 	cbd-fbm.plx cbd-add-base-form.plx \
 	bases-add-map-bases.plx cbd-diff.sh \
 	entry-homographs.plx entries-log-homographs.sh cbd-find-homographs.plx \
 	cbd-merge-dups.plx cbd-NN-coerce-senses.plx NN-normalize.plx \
-	cbd2atf.plx
+	cbd2atf.plx \
+	dotforms-diff.plx dotforms-dups.plx dotforms-sigs.plx
 
 # cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
 
