@@ -129,7 +129,7 @@ sub edit_apply_script {
 		    if ($s[$i] =~ s/^:mrg =//) {
 			--$from_line; # mrg = line is the one after \@entry
 			$deletia{$from_line} = 1;
-			my $this_e = $s[$i]; $this_e =~ s/\@entry\s*//;
+			my $this_e = $s[$i]; $this_e =~ s/\@entry\s*//; $this_e =~ s/\s*(\[.*?\])\s*/ $1 /;
 			my $eid = ${$cbddata{'entries'}}{$this_e};
 			if ($eid) {
 			    my $to_line = -1;
@@ -294,11 +294,11 @@ sub edit_make_script {
 	    my $bang = ($c[$i] =~ s/^>!/>/);
 	    
 	    if ($tag eq '@entry') {
-		my $renstr = $c[$i]; $renstr =~ s/^>\s*//;
+		my $renstr = $c[$i]; $renstr =~ s/^>\s*//; $renstr =~ s/\s*(\[.*?\])\s*/ $1 /;
 		# decide whether we rename or merge
 #		if ($renstr =~ /diri/) {
 #		    warn "renstr = $renstr\n";
-#		}
+		#		}		
 		my $eid = ${$cbddata{'entries'}}{$renstr};
 		if ($eid) {
 		    # if >> it's correct for the entry to exist; if > it's incorrect for it to exist
