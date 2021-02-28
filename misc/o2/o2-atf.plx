@@ -27,7 +27,7 @@ if ($batch) {
 	xsystem 'rm', '-f', "01bld/lists/valid-$b.lst", "01bld/lists/invalid-$b.lst";
 	my $start_time = [Time::HiRes::gettimeofday()];
 	warn "o2-atf-batch.plx: start batch $b\n";
-	xsystem "$ox -I$a -C${O2ARGS} -P$project -b01bld/lists/invalid-$b.lst -g01bld/lists/valid-$b.lst  -l$log| xmlsplit -f -u -c01bld/lists/changed-$b.lst";
+	xsystem "$ox -C${O2ARGS} -P$project -b01bld/lists/invalid-$b.lst -g01bld/lists/valid-$b.lst  -l$log| xmlsplit -f -u -c01bld/lists/changed-$b.lst -I$a";
 	my $diff = Time::HiRes::tv_interval($start_time);
 	warn "o2-atf-batch.plx: batch $b took $diff seconds\n";
     }
