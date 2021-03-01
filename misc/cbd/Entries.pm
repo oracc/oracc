@@ -100,6 +100,14 @@ sub entries_align {
 			}
 		    }
 		}
+	    } elsif ($acd && $acd eq '+') {
+		unless ($xmap_fh) {
+		    if (exists $entries{$entry}) {
+			pp_notice("[+]: redundant + on $entry");
+		    } else {
+			pp_warn("[4]: add to base glossary: +$entry");
+		    }
+		}
 	    }
 	    while ($cbd[$i] !~ /^\@end\s+entry/) {
 		if ($cbd[$i] =~ /^\@parts\s+(.*?)\s*$/) {

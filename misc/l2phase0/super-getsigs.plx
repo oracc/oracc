@@ -92,7 +92,8 @@ while (<S>) {
 	next unless /\%$ORACC::L2P0::L2Super::qpn_lang/;
 	next unless /\]([A-Z]N)/; # superglo only takes words with primary POS=NN
     } else {
-	next unless /\%$data{'baselang'}/;
+	# next unless /\%$data{'baselang'}/; # not good enough because NN in sux.sig have %sux lang
+	next if /\][A-Z]N'/; # skip entries with POS=NN
     }
 
     # For now, just deal with entry/sense level mapping
