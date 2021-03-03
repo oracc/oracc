@@ -17,12 +17,18 @@ my $sigs = '';
 $ORACC::CBD::nosetupargs = 1;
 my %args = pp_args();
 
+my $qflag = 0;
+if ($args{'lang'} && $args{'lang'} =~ /^qpn/) {
+    $qflag = 1;
+}
+
+
 my $map = shift @ARGV; $map = '' unless $map;
 die "$0: can't open map $map\n" unless $map && -r $map;
 
 if ($args{'auto'}) {
     ($proj,$lang) = ($map =~ m#^01map/(.*?)~(.*?)\.map#);
-    $lang = $args{'lang'} if $args{'lang'};
+    $lang = $args{'lang'} if $args{'lang'} && !$qflag; # don't use args{'lang'} if it is 'qpn'
     $proj =~ tr#-#/#;
     $sigs = "$ENV{'ORACC_BUILDS'}/$proj/01bld/from-xtf-glo.sig";
     unless (-r $sigs) {
@@ -55,6 +61,11 @@ foreach (@input) {
 	print;
     } else {
 	if ($lang) {
+	    if ($qflag) {
+		next unless /\][A-Z]N'/;
+	    } else {
+		next if /\][A-Z]N'/;
+	    }
 	    print map_apply_sig(\%args,$_) if /\%$lang/;
 	} else {
 	    print map_apply_sig(\%args,$_);

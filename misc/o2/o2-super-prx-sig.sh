@@ -31,7 +31,8 @@ done
 project=`oraccopt`
 echo "o2-super-prep.sh: creating 01bld/from-prx-glo.sig"
 echo "@fields sig inst" >01bld/from-prx-glo.sig
-grep -h -v '@\(project\|lang\|name\|fields\)' 01sig/*.sig | perl -p -e "s#^\@.*?\%#\@$project%#" >>01bld/from-prx-glo.sig
+grep -h -v '@\(project\|lang\|name\|fields\)' 01sig/*.sig \
+    | perl -p -e "s#^\@.*?\%#\@$project%#" >>01bld/from-prx-glo.sig
 
 if [ -r 00lib/NN-simple.sig ]; then
     l2p1-remap-sigs.plx 01bld/from-prx-glo.sig 00lib/NN-simple.sig
