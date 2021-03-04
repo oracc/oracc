@@ -47,7 +47,7 @@ sub map_apply_glo {
 	    if ($currmap{$key}) {
 		my %emap = %{$currmap{$key}};
 		# warn "$key\n";
-		print STDERR Dumper \%emap if $key =~ /^ašte/;
+		# print STDERR Dumper \%emap if $key =~ /^ašte/;
 
 		# emap may have @parts @bases @form @sense:
 

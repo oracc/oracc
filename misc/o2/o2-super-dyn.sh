@@ -34,9 +34,9 @@ if [ -r 00lib/superdyn.lst ]; then
 	fi
     done
     superlang=`basename $superglo .glo`
-    for m in 01map/*.map ; do
-	cbd-super-map-sigs.plx -lang $superlang -auto $m
-    done
+#    for m in 01map/*.map ; do
+#	cbd-super-map-sigs.plx -lang $superlang -auto $m
+#    done
 else
     echo "$0: no 00lib/superdyn.lst, nothing to do."
 fi

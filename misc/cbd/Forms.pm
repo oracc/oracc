@@ -31,6 +31,7 @@ my %forms = ();
 my $forms_inline = '';
 my $map_fh = undef;
 my %seen = ();
+my %fi_added = ();
 
 sub dump_forms {
     my($f,$h) = @_;
@@ -53,23 +54,31 @@ sub forms_align {
 	    if ($f_index{$if}) {
 		%fi = %{$f_index{$if}};
 	    } else {
-#		warn "indexing forms for $if\n";
+#		warn "indexing forms for $if; argslang=$$args{'lang'}\n";
 		foreach my $f (keys %{$forms{$if}}) {
-		    $f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
-		    ++$fi{$f};
+		    my $tmp = $f;
+		    $tmp =~ s/^\@form\S*\s+//;
+		    $tmp =~ s/\s.*$//
+			if ($$args{'lang'} =~ /^sux/
+			    || ($$args{'lang'} =~ /^qpn/ && $f =~ m,\s/,)); # use presence of base as proxy for Sum lang
+		    ++$fi{$tmp};
 		}
-		$f_index{$if} = %fi;
+		%{$f_index{$if}} = %fi;
 	    }
 	    foreach my $f (keys %{$incoming_forms{$if}}) {
 		next if $f eq '#';
 		my $fullform = $f;
-		$f =~ s/^\S+\s+(\S+).*$/$1/ if $$args{'lang'} =~ /^sux/;
-		if ($fi{$f}) {
+		$f =~ s/^\@form\S*\s+//;
+		$f =~ s/\s.*$//
+		    if ($$args{'lang'} =~ /^sux/
+			|| ($$args{'lang'} =~ /^qpn/ && $f =~ m,\s/,));
+		if ($fi{$f} || $fi_added{$if,$f}) {
 		    # if (${$forms{$if}}{$f}) { ## why did I try this?
-#		    warn "$if: incoming form $f already in glossary\n";
+		    # warn "$if: incoming form $f already in glossary\n";
 		} else {
 #		    warn "$if: form $f/fullform=$fullform not found in glossary\n";
-		    map_form($args,$if,$fullform)
+		    map_form($args,$if,$fullform);
+		    ++$fi_added{$if,$f};
 		}
 	    }
 	}
