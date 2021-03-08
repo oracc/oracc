@@ -58,6 +58,7 @@ my %longlang = (
     qpn=>'Proper Nouns',
     sux=>'Sumerian',
     'sux-x-emesal'=>'Emesal Sumerian',
+    tr=>'Turkish',
     uga=>'Ugaritic',
     xhu=>'Hurrian',
     xur=>'Urartian',
