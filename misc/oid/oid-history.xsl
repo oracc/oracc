@@ -52,7 +52,9 @@
       <col style="width: 30%"/>
       <col style="width: 20%"/>
     </colgroup>
-    <xsl:apply-templates select="$nodes"/>
+    <xsl:apply-templates select="$nodes">
+      <xsl:sort select="@day" order="descending"/>
+    </xsl:apply-templates>
   </table>
 </xsl:template>
 
