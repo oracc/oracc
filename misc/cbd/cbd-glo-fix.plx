@@ -31,7 +31,7 @@ if ($args{'all'}) {
 }
 
 $args{'output'} = 'trusted.glo';
-open(L,'trusted.log');
+open(L,'>trusted.log') || die "$0: can't open 'trusted.log'. Stop.\n";
 my $curr_entry = '';
 for (my $i = 0; $i <= $#cbd; ++$i) {
     if ($cbd[$i] =~ /^\@entry(\S*)\s+(.*?)\s*$/) {

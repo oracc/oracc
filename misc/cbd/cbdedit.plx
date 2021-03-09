@@ -48,6 +48,15 @@ if (pp_status()) {
 	die("cbdpp.plx: $ret errors in $e. Stop.\n");
     }
 
+} elsif ($args{'check'}) {
+
+    my $e = errfile();
+    if ($e ne $args{'cbd'}) {
+	warn("cbdpp.plx: $e (source of $args{'cbd'}) checks clean.\n");
+    } else {
+	warn("cbdpp.plx: $e checks clean.\n");
+    }
+    
 } else {
 
     @cbd = edit(\%args, @cbd);

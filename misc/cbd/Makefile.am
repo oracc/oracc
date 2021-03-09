@@ -13,7 +13,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbdalignforms.plx cbdfixparts.plx \
 	cbd-super-compare.plx cbd-super-map-sigs.plx \
 	cbd-super-map-glos.plx cbdparts.plx cbd-count-insts.sh \
-	cbdequivs.plx cbdsort.plx \
+	cbdequivs.plx cbdsort.plx cbd-fix-glo.plx \
 	cbd-pull-forms.plx cbd-merge-forms.plx \
 	cbdcollo.plx cbdoid.plx cbd-bases-tab.plx cbd-add-oid.plx \
 	cbdstash.plx cbdminglo.sh cbdedit.plx \
@@ -29,9 +29,10 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	entry-homographs.plx entries-log-homographs.sh cbd-find-homographs.plx \
 	cbd-merge-dups.plx cbd-NN-coerce-senses.plx NN-normalize.plx \
 	cbd2atf.plx cbd-drop-form-dups.plx \
-	dotforms-diff.plx dotforms-dups.plx dotforms-sigs.plx
+	dotforms-diff.plx dotforms-dups.plx dotforms-sigs.plx \
+	hist-to-glo-fix.sh
 
-# cbd-fix-glo.plx cbd-lem-fix.plx # now in old/
+# cbd-glo-fix.plx cbd-lem-fix.plx # now in old/
 
 scriptdata_DATA = entry-counts.xsl
 data_DATA = 
