@@ -54,7 +54,7 @@ cp -fa 00web/slmain.html 00web/slform.html $webdir
 
 cp -fp 00lib/thumb.png $webdir
 p3-colours.plx $webdir
-
+cp -fp 00web/css/* $webdir/css
 chmod -R o+r $webdir/
 chmod o-r $log
 echo esp2 portal is now live at http://$ORACC_HOST/$project
