@@ -45,14 +45,14 @@ struct grapheme
 
 extern struct node *pending_disamb;
 
-void g_reinit(void);
-struct grapheme *gparse(register unsigned char *g, enum t_type type);
-void graphemes_init(void);
-void graphemes_term(void);
-void galloc_init(void);
-void galloc_term(void);
-enum t_type gtype(register unsigned char *g);
-unsigned char *unicodify(register const unsigned char *s);
+extern void g_reinit(void);
+extern struct grapheme *gparse(register unsigned char *g, enum t_type type);
+extern void graphemes_init(void);
+extern void graphemes_term(void);
+extern void galloc_init(void);
+extern void galloc_term(void);
+extern enum t_type gtype(register unsigned char *g);
+extern unsigned char *unicodify(register const unsigned char *s);
 extern char cued_opener[];
 extern void cue_opener(const char *o);
 extern void appendCloser(struct node *gp, const char *c);

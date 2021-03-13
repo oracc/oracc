@@ -12,6 +12,7 @@
 #include "pool.h"
 #include "ngram.h"
 #include "f2.h"
+#include "graphemes.h"
 
 extern int do_show_insts;
 

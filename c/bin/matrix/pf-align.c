@@ -1,5 +1,6 @@
 #include <psd_base.h>
 #include "pf_lib.h"
+#include "warning.h"
 
 static int n_notes;
 
@@ -271,8 +272,8 @@ align_each_source_column()
 	      if (iterate_source_column->explicit_ncols)
 		i = w - visible_width(iterate_source_column->text);
 	      if (i < 0)
-		warning (ewfile (iterate_source_column->line->file,
-				 iterate_source_column->line->linenum),
+		vwarning2 (iterate_source_column->line->file,
+			   iterate_source_column->line->linenum,
 			 "text entry beginning column %d is wider than its columns (w=%d; i=%d; text=%s)",
 			 iterate_source_column->index,w,i,iterate_source_column->text);
 	    }
@@ -342,10 +343,10 @@ align_each_source_column()
 	    {
 	      if (sp->text_entry_flag
 		  && *sp->composite->delim == '\0')
-		warning (ewfile (sp->line->file,
-				 sp->line->linenum),
-			 "text entry beginning column %d may lack following space",
-			 sp->index);
+		vwarning2 (sp->line->file,
+			   sp->line->linenum,
+			   "text entry beginning column %d may lack following space",
+			   sp->index);
 	    }
 	}
     }

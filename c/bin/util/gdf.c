@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "runexpat.h"
 
 static int need_gdf_closer = 0;

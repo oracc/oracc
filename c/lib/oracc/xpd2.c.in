@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/unistd.h>
 #include <ctype128.h>
 #include "loadfile.h"
@@ -8,6 +9,7 @@
 #include "fname.h"
 #include "hash.h"
 #include "xpd2.h"
+#include "warning.h"
 
 extern int verbose;
 

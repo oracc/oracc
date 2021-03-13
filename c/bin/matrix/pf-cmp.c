@@ -1,5 +1,6 @@
 #include <psd_base.h>
 #include "pf_lib.h"
+#include <ctype.h>
 
 #define P0(a) 		fprintf(ipf->output_fp,"%s",(a))
 #define P1(f,a)		fprintf(ipf->output_fp,(f),(a))

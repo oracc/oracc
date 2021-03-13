@@ -30,20 +30,20 @@ iterate (Process_functions *pf, List *base)
 {
   ipf = pf;
   ipf->output_fn = output_fn;
-  if ('\0' == *output_fn || !strcmp(output_fn, "-"))
+  if ('\0' == *output_fn || !strcmp((const char *)output_fn, "-"))
     {
       ipf->output_fp = stdout;
-      ipf->output_fn = "<stdout>";
+      ipf->output_fn = (Uchar *)"<stdout>";
     }
   else
     {
-      ipf->output_fp = xfopen (output_fn, "w");
+      ipf->output_fp = xfopen ((const char *)output_fn, "w");
     }
   pf->before_outers ();
   list_exec (base, process_outer);
   pf->after_outers ();
   if (ipf->output_fp != stdout)
-    xfclose (ipf->output_fn, ipf->output_fp);
+    xfclose ((const char *)ipf->output_fn, ipf->output_fp);
 }
 
 static void
@@ -183,13 +183,13 @@ aggregate_note (Uchar *txt)
     {
       note_text = xmalloc (note_text_len = 8192);
     }
-  else if (strlen(note_text) + strlen(txt) + 2 > note_text_len)
+  else if (strlen((const char *)note_text) + strlen((const char *)txt) + 2 > note_text_len)
     {
       if (note_text_len)
 	note_text = xrealloc (note_text, 2*note_text_len);
     }
-  strcat (note_text, txt);
-  strcat (note_text, "\n");
+  strcat ((char *)note_text, (const char*)txt);
+  strcat ((char *)note_text, "\n");
 }
 
 static void

@@ -5,6 +5,8 @@
 #endif
 #include "pf_lib.h"
 #include "variants.h"
+#include "warning.h"
+#include <ctype.h>
 
 #define xmalloc malloc
 #define xrealloc realloc
@@ -210,7 +212,7 @@ tex_after_composite()
   P0("\\cr\n");
   if (tex_template_phantoms != tex_cmp_phantoms)
     {
-      warning (ewfile(iterate_line->file,iterate_line->linenum),
+      vwarning2(iterate_line->file,iterate_line->linenum,
 	       "%s: wrong number of phantoms in composite line (has %d, not %d)",
 	       *iterate_block->composite->name 
 	       ? (Uchar*)(iterate_block->composite->name) : (Uchar*)".",
@@ -329,7 +331,7 @@ tex_after_reconstructed()
   P0("\\cr\n");
   if (tex_template_phantoms != tex_cmp_phantoms)
     {
-      warning (ewfile(iterate_line->file,iterate_line->linenum),
+      vwarning2(iterate_line->file,iterate_line->linenum,
 	       "%s: wrong number of phantoms in reconstructed line (has %d, not %d)",
 	       iterate_block->composite->name,
 	       tex_cmp_phantoms, tex_template_phantoms);
@@ -367,7 +369,7 @@ tex_each_reconstructed_column()
 					 iterate_reconstructed_column->complex_index);
 	  if (NULL == ccomplex)
 	    {
-	      warning (ewfile(iterate_line->file,iterate_line->linenum),
+	      vwarning2(iterate_line->file,iterate_line->linenum,"%s",
 		       "reconstructed text has more columns than composite");
 	      return;
 	    }
@@ -411,14 +413,14 @@ tex_after_source()
 {
   P0("\\cr\n");
   if (tex_output_col_count + tex_zeroes_skipped != iterate_block->composite->column_count)
-    warning (ewfile(iterate_line->file,iterate_line->linenum),
+    vwarning2(iterate_line->file,iterate_line->linenum,
 	     "%s:%s: TeX columns output != columns in composite line (%d != %d)",
 	     iterate_block->composite->name, iterate_line->name,
 	     tex_output_col_count + tex_zeroes_skipped, 
 	     iterate_block->composite->column_count);
   if (tex_template_phantoms != tex_src_phantoms
       && !iterate_block->composite->col_count_err_given)
-    warning (ewfile(iterate_line->file,iterate_line->linenum),
+    vwarning2(iterate_line->file,iterate_line->linenum,
 	     "%s:%s: wrong number of phantoms in source line (has %d, not %d)",
 	     iterate_block->composite->name, iterate_line->name,
 	     tex_src_phantoms, tex_cmp_phantoms);
@@ -691,7 +693,7 @@ tex_each_source_column()
 	{
 	  if ('[' != *iterate_source_column->complex_text)
 	    {
-	      warning (ewfile(iterate_line->file, iterate_line->linenum),
+	      vwarning2(iterate_line->file, iterate_line->linenum,
 		       "inconsistent text: `%s' should begin with '['",
 		       print_escaped(iterate_source_column->complex_text));
 	      iterate_source_column->text = iterate_source_column->complex_text;
@@ -796,13 +798,13 @@ tex_each_source_column()
 		}
 	      else if (iterate_source_column->columns_occupied < 0)
 		{
-		  warning(ewfile(iterate_line->file,iterate_line->linenum),
-			  "wrong column count in expand");
+		  vwarning2(iterate_line->file,iterate_line->linenum,"%s",
+			    "wrong column count in expand");
 		}
 	      if (complex_phantoms < 0)
 		{
-		  warning(ewfile(iterate_line->file,iterate_line->linenum),
-			  "wrong phantom count in expand");
+		  vwarning2(iterate_line->file,iterate_line->linenum,"%s",
+			    "wrong phantom count in expand");
 		  complex_phantoms = 0;
 		}
 	    }
@@ -883,7 +885,7 @@ tex_each_source_column()
 	      P0("&\\phantom{}");
 	      ++tex_src_phantoms;
 	      if (complex_phantoms > 1)
-		warning(ewfile(iterate_line->file,iterate_line->linenum),
+		vwarning2(iterate_line->file,iterate_line->linenum,
 			"too many complex_phantoms (%d; expected at most 1)",
 			complex_phantoms);
 	    }

@@ -5,6 +5,8 @@
 #include "xcl.h"
 #include "links.h"
 #include "f2.h"
+#include "warning.h"
+#include "../prop/props.h"
 #include "../ilem/ilem_form.h"
 #include "../ilem/ilem_para.h"
 

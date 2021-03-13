@@ -1,6 +1,8 @@
+#include <ctype.h>
 #include <psd_base.h>
 #include "matrix.h"
 #include "sources.h"
+#include "warning.h"
 
 #define xmalloc  malloc
 #define xrealloc realloc
@@ -101,9 +103,12 @@ get_next_bit (Uchar *t, Uchar **pt, Srcs_tabloc *stp)
 	  {
 	    tloc[i++] = *t++;
 	    if (i == TABLOC_TLOC_LEN)
-	      error (matrix_location(),
-		     "excessive locator information (max %d) in tablet locator",
-		     TABLOC_TLOC_LEN);
+	      {
+		struct FileLine fl = matrix_location();
+		vwarning2 (fl.f, fl.l,
+			   "excessive locator information (max %d) in tablet locator",
+			   TABLOC_TLOC_LEN);
+	      }
 	  }       
 	tloc[i] = '\0';
 	ret = tloc;
@@ -119,9 +124,12 @@ get_next_bit (Uchar *t, Uchar **pt, Srcs_tabloc *stp)
 	  {
 	    tloc[i++] = *t++;
 	    if (i == TABLOC_TLOC_LEN)
-	      error (matrix_location(),
+	      {
+		struct FileLine fl = matrix_location();
+		vwarning2 (fl.f, fl.l,
 		     "excessive locator information (max %d) in tablet locator",
 		     TABLOC_TLOC_LEN);
+	      }
 	  }       
 	tloc[i] = '\0';
 	stp->column = Arabicised (tloc);
@@ -187,9 +195,12 @@ get_next_bit (Uchar *t, Uchar **pt, Srcs_tabloc *stp)
 	    {
 	      tloc[i++] = *t++;
 	      if (i == TABLOC_TLOC_LEN)
-		error (matrix_location(),
-		       "excessive locator information (max %d) in tablet locator",
-		       TABLOC_TLOC_LEN);
+		{
+		  struct FileLine fl = matrix_location();
+		  vwarning2 (fl.f, fl.l, "%s",
+			     "excessive locator information (max %d) in tablet locator",
+			     TABLOC_TLOC_LEN);
+		}
 	    }       
 	  tloc[i] = '\0';
 	  ret = tloc;
@@ -202,7 +213,8 @@ get_next_bit (Uchar *t, Uchar **pt, Srcs_tabloc *stp)
 	{
 	  if (!tabloc_warned)
 	    {
-	      warning (matrix_location(),
+	      struct FileLine fl = matrix_location();
+	      vwarning2 (fl.f, fl.l,
 		       "illegal character `%c' in tablet locator",
 		       *t);
 	      ++tabloc_warned;
@@ -215,9 +227,12 @@ get_next_bit (Uchar *t, Uchar **pt, Srcs_tabloc *stp)
     {
       *mp++ = *t++;
       if (mp - meta == TABLOC_META_LEN)
-	error (matrix_location(),
-	       "excessive meta-information (max %d) in tablet locator",
-	       TABLOC_META_LEN);
+	{
+	  struct FileLine fl = matrix_location();
+	  vwarning2 (fl.f, fl.l,
+		 "excessive meta-information (max %d) in tablet locator",
+		 TABLOC_META_LEN);
+	}
     }
   *mp = '\0';
   *pt = &t[0];

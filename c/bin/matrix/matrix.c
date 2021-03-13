@@ -1,12 +1,15 @@
 #include <psd_base.h>
 #include <string.h>
 #include <locale.h>
+#include <ctype.h>
 #include "atf.h"
 #include "oracclocale.h"
 #include "collate.h"
 #include "psd_da94.h"
 #include "pf_lib.h"
 #include "sources.h"
+#include "warning.h"
+#include "options.h"
 
 #define MTX_ISDELIM(c) ((c)=='-'||(c)=='.'||(c)==' '||(c)=='\t'||(c)=='\n')
 
@@ -92,10 +95,13 @@ static void add_filler (void);
 static Source_column *corresponding_sou_col (List *sp, int n);
 static Composite_column *corresponding_cmp_col (List *cp, int n);
 
+extern void gdlif_init(void);
+extern void gdlif_term(void);
+
 static void
 strip_trailing_white (Uchar *lp)
 {
-  Uchar *elp = lp + strlen(lp);
+  Uchar *elp = lp + strlen((const char *)lp);
   while (elp > lp && (elp[-1] == ' ' || elp[-1] == '\t'))
     --elp;
   if (*elp != '\n')
@@ -154,7 +160,7 @@ main (int argc, char **argv)
     return history;
   else if (!matrices_found)
     {
-      warning (NULL, "no matrices found.");
+      warning ("no matrices found.");
       return EXIT_WARNING;
     }
   return 0;
@@ -231,8 +237,11 @@ scan_input (int ac, char **av)
 	  if (matches_matrix(lp)) 
 	    {
 	      if (in_matrix)
-		warning (matrix_location(), 
-			 "new matrix began before end of old one");
+		{
+		  struct FileLine fl = matrix_location();
+		  vwarning2 (fl.f, fl.l,"%s",
+			   "new matrix began before end of old one");
+		}
 	      list_add (curr_stuff, xstrdup (lp));
 	      new_outer (outer, OUTER_MATRIX);
 	      in_matrix = TRUE;
@@ -301,7 +310,8 @@ scan_input (int ac, char **av)
 		}
 	      else
 		{
-		  warning (matrix_location(), 
+		  struct FileLine fl = matrix_location();
+		  vwarning2 (fl.f,fl.l,"%s",
 			   "junk in matrix, outside of block");
 		}
 	    }
@@ -377,7 +387,8 @@ new_composite (Block *bp, Uchar *lp)
 	}
       else
 	{
-	  warning (matrix_location(), 
+	  struct FileLine fl = matrix_location();
+	  vwarning2 (fl.f, fl.l, "%s", 
 		   "line number should be followed by `.'");
 	  curr_line->name = "unknown";
 	}
@@ -392,7 +403,10 @@ new_composite (Block *bp, Uchar *lp)
 	  if (curr_comp_col)
 	    curr_comp_col->short_line_divider = TRUE;
 	  else
-	    warning(matrix_location(),"must have previous column before /");
+	    {
+	      struct FileLine fl = matrix_location();
+	      vwarning2(fl.f, fl.l, "%s", "must have previous column before /");
+	    }
 	  continue;
 	}
 
@@ -551,7 +565,10 @@ new_source (Block *bp, Uchar *lp)
 	  while (*t && ')' != *t)
 	    ++t;
 	  if ('\0' == *t)
-	    warning (matrix_location(), "mismatched parens in alternate siglum notation");
+	    {
+	      struct FileLine fl = matrix_location();
+	      vwarning2 (fl.f, fl.l, "%s", "mismatched parens in alternate siglum notation");
+	    }
 	  else
 	    *t++ = '\0';
 	  curr_line->altsig = xstrdup(sigp);
@@ -594,8 +611,9 @@ new_source (Block *bp, Uchar *lp)
     }
   else
     {
-      warning (matrix_location(), 
-	       "siglum should be followed by `:'");
+      struct FileLine fl = matrix_location();
+      vwarning2 (fl.f, fl.l, "%s",
+		 "siglum should be followed by `:'");
       curr_line->name = "unknown";
       curr_line->altsig = "";
       curr_line->tabloc = &empty_tabloc;
@@ -638,8 +656,11 @@ new_source (Block *bp, Uchar *lp)
 	      if (curr_sou_col->left
 		  && curr_sou_col->left->text_entry_flag
 		  && '~' == *curr_sou_col->left->text)
-		warning (matrix_location(),
-			 "use of multiple sequential tilde-inserts is not recommended");
+		{
+		  struct FileLine fl = matrix_location();
+		  vwarning2 (fl.f, fl.l, "%s",
+			     "use of multiple sequential tilde-inserts is not recommended");
+		}
 	    }
 	  else if ('/' == *curr_sou_col->text 
 		   || ';' == *curr_sou_col->text 
@@ -684,7 +705,8 @@ new_source (Block *bp, Uchar *lp)
 	         check that the composite column is the start of a complex */
 	      if (curr_sou_col->composite->complex != curr_sou_col->composite)
 		{
-		  warning (matrix_location(),
+		  struct FileLine fl = matrix_location();
+		  vwarning2 (fl.f, fl.l,
 			   "text entry should begin where complex begins (col %d not %d)",
 			   curr_sou_col->composite->complex->index,
 			   curr_sou_col->composite->index);
@@ -715,17 +737,21 @@ new_source (Block *bp, Uchar *lp)
   if (1 == curr_index) /* an empty line is an implicit apocopation */
     {
       if (do_warn_blanks)
-	warning (matrix_location(), "%s,%s is not filled in",
-		 curr_line->name, curr_line->tabloc->compressed);
+	{
+	  struct FileLine fl = matrix_location();
+	  vwarning2 (fl.f, fl.l, "%s,%s is not filled in",
+		   curr_line->name, curr_line->tabloc->compressed);
+	}
       basic_source_setup (NULL, NULL);
       apocopation_setup ('^');
     }
   if (curr_line->column_count != curr_composite->column_count)
     {
-      warning (matrix_location(), 
-	       "column count mismatch: %d in composite; %d in matrix",
-	       curr_composite->column_count,
-	       curr_line->column_count);
+      struct FileLine fl = matrix_location();
+      vwarning2 (fl.f, fl.l, "%s", 
+		 "column count mismatch: %d in composite; %d in matrix",
+		 curr_composite->column_count,
+		 curr_line->column_count);
       curr_composite->col_count_err_given = 
 	curr_line->col_count_err_given = TRUE;
     }
@@ -1428,12 +1454,12 @@ adjust_multis ()
     }
 }
 
-struct File *
+struct FileLine
 matrix_location ()
 {
-  return ewfile (error_file ? error_file : curr_file->name,
-		 curr_file->line 
-		 + ((error_line > -1) ? error_line : 0));
+  struct FileLine fl;
+  fl.f = error_file ? error_file : curr_file->name;
+  fl.l = curr_file->line + ((error_line > -1) ? error_line : 0);
 }
 
 /********************************************************

@@ -129,6 +129,9 @@ struct SOURCE_COLUMN
 };
 typedef struct SOURCE_COLUMN Source_column;
 
+struct FileLine { const char *f; long int l; };
+struct FileLine matrix_location(void);
+
 extern Boolean do_aka_primary;
 extern Boolean do_encapsulate;
 extern Boolean do_expand;
@@ -139,7 +142,6 @@ extern Boolean pf_vars_collapse_variants;
 extern Uchar *output_fn;
 extern List *curr_matrix;
 extern Line *curr_line;
-extern struct File *matrix_location (void);
 extern Tabloc *do_tabloc (Uchar *t);
 extern Boolean tabloc_transition (Tabloc *a, Tabloc *b);
 extern Uchar *tabloc_location_noline (Tabloc *tp);

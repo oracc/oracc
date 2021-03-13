@@ -1,7 +1,10 @@
 #include <psd_base.h>
 #include <hash.h>
+#include "collate.h"
 #include "matrix.h"
 #include "sources.h"
+#include "gdl.h"
+#include "warning.h"
 
 #define xmalloc malloc
 
@@ -70,7 +73,7 @@ void
 srcs_in_lines ()
 {
   Srcs_array *sp;
-  Uchar *last_location = "";
+  const Uchar *last_location = (const Uchar *)"";
 
   if (NULL == sources_array)
     srcs_make_array ();
@@ -107,12 +110,12 @@ srcs_in_lines ()
 		      Srcs_presence *last = presp;
 		      range->location = tabloc_location_noline (presp->present->tabloc);
 		      if (first == last)
-			range->lines = xstrdup (first->name);
+			range->lines = (Uchar*)xstrdup ((const char *)first->name);
 		      else
 			{
-			  range->lines = xmalloc (strlen(first->name) 
-						  + strlen(last->name) + 2);
-			  sprintf (range->lines, "%s-%s", 
+			  range->lines = xmalloc (strlen((const char *)first->name) 
+						  + strlen((const char *)last->name) + 2);
+			  sprintf ((char*)range->lines, "%s-%s", 
 				   first->name, last->name);
 			}
 		      list_add (sp->ranges, range);
@@ -129,7 +132,7 @@ srcs_in_lines ()
 	{
 	  if (i)
 	    printf("; ");
-	  if (*rp->location && strcmp(rp->location, last_location))
+	  if (*rp->location && strcmp((const char *)rp->location, (const char *)last_location))
 	    {
 	      printf("%s = %s", rp->location, rp->lines);
 	      last_location = rp->location;
@@ -154,7 +157,7 @@ srcs_make_array ()
 {
   sources_array = xmalloc (sizeof(Srcs_array) * (sources_count+1));
   counter = 0;
-  hash_exec2 (sources_hash, srcs_make_array_sub);
+  hash_exec2 (sources_hash, (void (*)(const unsigned char *, void *))srcs_make_array_sub);
   sources_array[counter].name = NULL;
   sources_array[counter].lines = NULL;
   qsort (sources_array, counter, sizeof (Srcs_array), da94_cmp);
@@ -170,9 +173,11 @@ srcs_init_presence (void *vp)
   ltxt = bp->composite->name;
   bp->composite->presence = &sources_presence[counter];
   sources_presence[counter].name = ltxt;
-  if (sscanf (ltxt, "%d%n", &sources_presence[counter].val, &how_far) < 1)
-    error (ewfile(bp->composite->file,bp->composite->linenum),
-	   "bad line format `%s'", ltxt);
+  if (sscanf ((const char*)ltxt, "%d%n", &sources_presence[counter].val, &how_far) < 1)
+    {
+      vwarning2 (bp->composite->file,bp->composite->linenum,
+	     "bad line format `%s'", ltxt);
+    }
   if (ltxt[how_far])
     {
       if (ltxt[how_far] >= 'a' && ltxt[how_far] <= 'z'
@@ -182,7 +187,7 @@ srcs_init_presence (void *vp)
 	  sources_presence[counter].subval = ltxt[how_far] - 'a' + 1;
 	}
       else
-	error (ewfile(((Block*)vp)->composite->file,((Block*)vp)->composite->linenum),
+	vwarning2 (((Block*)vp)->composite->file,((Block*)vp)->composite->linenum,
 	       "bad line format (non alpha subscript) `%s'", ltxt);
     }
   ++counter;

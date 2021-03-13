@@ -3,8 +3,10 @@
    environment.  This is intended for use only in fragments mode.
  */
 #include <psd_base.h>
+#include <ctype.h>
 #include "pf_lib.h"
 #include "variants.h"
+#include "gdl.h"
 
 #define P0(a) 		fprintf(ipf->output_fp,"%s",(a))
 #define P1(f,a)		fprintf(ipf->output_fp,(f),(a))
@@ -27,6 +29,7 @@ static int mtx_output_col_count, mtx_template_phantoms,
   mtx_cmp_phantoms, mtx_src_phantoms, mtx_zeroes_skipped;
 static Uchar *mtx_cic_width (Uchar *dp);
 static Uchar *mtx_hack_tabloc (Uchar *t);
+extern void gdl_print(FILE*fp,const unsigned char *gdlinput);
 
 static Uchar *
 mtx_unhash (Uchar *txt)

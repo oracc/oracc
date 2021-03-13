@@ -62,6 +62,9 @@
 #if defined (_LIBC) || defined (HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+#else
+#include <unistd.h>
+#include <string.h>
 #endif	/* GNU C library.  */
 
 #ifdef VMS

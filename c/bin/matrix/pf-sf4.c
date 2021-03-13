@@ -76,7 +76,7 @@ static Uchar *
 sf4_expand_var (Variant *vp)
 {
   if ('.' == *vp->sp->text || '-' == *vp->sp->text)
-    return "";
+    return NULL;
   else
     return vp->sp->text;
 }

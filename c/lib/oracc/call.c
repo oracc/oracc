@@ -5,6 +5,7 @@
  $Id: call.c,v 0.6 1997/09/08 14:50:03 sjt Exp $
 */
 
+#include <unistd.h>
 #include <psd_base.h>
 #include <vector.h>
 #include <call.h>

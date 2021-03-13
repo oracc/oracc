@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "globals.h"
 #include "lang.h"
+#include "pool.h"
 #include "gdl.h"
+#include "warning.h"
 
 void
 gdlif_init()

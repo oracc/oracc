@@ -1,4 +1,5 @@
 #include <psd_base.h>
+#include "warning.h"
 #include "pf_lib.h"
 void
 phantom_prepare_phantoms (void *vp)
@@ -21,8 +22,8 @@ phantom_prepare_phantoms (void *vp)
 		sp2->needs_phantom = TRUE;
 	      else
 		{
-		  warning(ewfile(iterate_line->file,iterate_line->linenum),
-			  "unable to migrate phantom leftwards");
+		  vwarning2(iterate_line->file,iterate_line->linenum,"%s",
+			    "unable to migrate phantom leftwards");
 		  sp->needs_phantom = TRUE;
 		}
 	    }

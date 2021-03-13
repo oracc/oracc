@@ -1,6 +1,7 @@
 #include <psd_base.h>
 #include "pf_lib.h"
 #include "variants.h"
+#include "warning.h"
 
 /* Module to build a map of variants throughout the score; the idea is
    that various other modules that actually do stuff with variants, 
@@ -179,7 +180,7 @@ force_complex_end_phantom (Source_column *sp)
 		sp3->needs_phantom = TRUE;
 	      else
 		{
-		  warning(ewfile(iterate_line->file,iterate_line->linenum),
+		  vwarning2((const char *)iterate_line->file,iterate_line->linenum,"%s",
 			  "unable to migrate phantom leftwards");
 		  sp2->needs_phantom = TRUE;
 		}
@@ -217,7 +218,7 @@ vars_each_source_column()
 		    iterate_source_column->complex->composite->complex->complex_has_variant
 		      = iterate_source_column->complex->complex_has_variant = TRUE;
 		  else
-		    warning (ewfile(iterate_line->file, iterate_line->linenum),
+		    vwarning2 (iterate_line->file, iterate_line->linenum, "%s",
 			     "attempt to dereference null complex pointer");
 		  force_complex_end_phantom (iterate_source_column);
 		}
