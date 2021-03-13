@@ -6,7 +6,9 @@
 */
 
 #include <psd_base.h>
+#ifndef __unix__
 #include <unistd.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
