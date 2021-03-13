@@ -63,6 +63,7 @@ int indexing = 0;
 
 static FILE *keysf;
 static void process_cdata(Uchar*);
+static void process_cf_data(Uchar *cdata);
 
 /*CAUTION: THESE NAMES MUST BE KEPT ALIGNED WITH field_names IN fields.h*/
 const char *static_names[] = 
@@ -133,23 +134,27 @@ endElement(void *userData, const char *name)
     {
       static char cfgw[256];
       struct sn_tab* sntabp;
+      int unit_id = 0;
       char *data = charData_retrieve();
       est_add((unsigned char *)data, estp);
+
       if (!strcmp(name,"cf"))
 	{
+	  process_cf_data((Uchar *)data);
 	  strcpy(cfgw,data);
 	}
       else if (!strcmp(name,"gw"))
 	{
 	  sprintf(cfgw+strlen(cfgw),"[%s]",data);
 	  l8.unit_id = sn_cfgw;
-	  grapheme(cfgw);
+	  grapheme(cfgw); 	/* index literal cfgw without mangling */
 	}
 
       if (NULL != (sntabp = statnames(name,strlen(name))))
-	l8.unit_id = sntabp->uid;
+	unit_id = sntabp->uid;
       else
 	fprintf(stderr,"secbdx: indexed field %s not in statnames\n",name);
+
       if (l8.unit_id == sn_norm)
 	++norm_count;
       if (l8.unit_id == sn_mng || l8.unit_id == sn_norm)
@@ -169,6 +174,26 @@ endElement(void *userData, const char *name)
 #define HYPHEN(c) ((c)=='-')
 #define SPACE(c)  ((c <  128)&&(isspace(c)||(c)==','||(c)==';'))
 #define JUNK(c)   ((c)=='['||(c)==']'||(c)=='?'||(c)=='!')
+
+static void
+process_cf_data(Uchar *cdata)
+{
+  Uchar *start = cdata, *end = cdata;
+  int len = strlen((const char *)cdata);
+  l8.unit_id = sn_cf;
+  grapheme((const char *)cdata);     /* index cf without mangling */
+  while (*end)
+    {
+      if (' ' == *end || '.' == *end)
+	*end = '\0';
+      else
+	++end;
+      grapheme((const char *)start);
+      start = end + 1;
+      if (start - cdata < len)
+	end = start;
+    }
+}
 
 static void
 process_cdata(Uchar*cdata) {
@@ -406,7 +431,7 @@ const char *usage_string = "[-{acgps}] <input>";
 void
 help()
 {
-  ;
+  printf("\n\tuse -p arg to give project and -l arg to give lang\n\n");
 }
 
 int

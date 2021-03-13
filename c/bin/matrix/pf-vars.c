@@ -218,7 +218,7 @@ vars_each_source_column()
 		    iterate_source_column->complex->composite->complex->complex_has_variant
 		      = iterate_source_column->complex->complex_has_variant = TRUE;
 		  else
-		    vwarning2 (iterate_line->file, iterate_line->linenum, "%s",
+		    vwarning2 ((const char *)iterate_line->file, iterate_line->linenum, "%s",
 			     "attempt to dereference null complex pointer");
 		  force_complex_end_phantom (iterate_source_column);
 		}

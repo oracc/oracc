@@ -7,7 +7,7 @@
 	gperf -L ANSI -N$* -tT $< >$@
 
 AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
-	 -I@top_srcdir@/c/bin/se/setxtx \
+	-I@top_srcdir@/c/bin/se/setxtx \
 	-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
