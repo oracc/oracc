@@ -2,13 +2,12 @@
 #define _FIELDS_H
 
 #define field_names				\
-  C(sn_cf)					\
-  C(sn_gw)					\
+  C(sn_c)					\
+  C(sn_g)					\
+  C(sn_p)					\
   C(sn_t)					\
-  C(sn_mng)					\
-  C(sn_mean)					\
-  C(sn_cfgw)					\
-  C(sn_term)					\
+  C(sn_m)					\
+  C(sn_l)					\
   C(sn_norm)
 
 #define C(x) x,

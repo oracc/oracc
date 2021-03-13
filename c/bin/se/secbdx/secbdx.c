@@ -63,12 +63,12 @@ int indexing = 0;
 
 static FILE *keysf;
 static void process_cdata(Uchar*);
-static void process_cf_data(Uchar *cdata);
+static void process_cg_data(Uchar *cdata);
 
 /*CAUTION: THESE NAMES MUST BE KEPT ALIGNED WITH field_names IN fields.h*/
 const char *static_names[] = 
   {
-    "cf", "gw", "t", "mng", "mean", "cfgw", "term", "n", "nofield" , "not_in_use", "next_uid"
+   "c", "g", "p", "t", "m", "l", "n", "nofield" , "not_in_use", "next_uid"
   };
 
 /* This indexer ignores the fact that senses and bases can have their own
@@ -140,13 +140,16 @@ endElement(void *userData, const char *name)
 
       if (!strcmp(name,"cf"))
 	{
-	  process_cf_data((Uchar *)data);
+	  l8.unit_id = sn_c;
+	  process_cg_data((Uchar *)data);
 	  strcpy(cfgw,data);
 	}
       else if (!strcmp(name,"gw"))
 	{
+	  l8.unit_id = sn_g;
+	  process_cg_data((Uchar *)data);
 	  sprintf(cfgw+strlen(cfgw),"[%s]",data);
-	  l8.unit_id = sn_cfgw;
+	  l8.unit_id = sn_l;
 	  grapheme(cfgw); 	/* index literal cfgw without mangling */
 	}
 
@@ -157,7 +160,7 @@ endElement(void *userData, const char *name)
 
       if (l8.unit_id == sn_norm)
 	++norm_count;
-      if (l8.unit_id == sn_mng || l8.unit_id == sn_norm)
+      if (l8.unit_id == sn_m || l8.unit_id == sn_norm)
 	{
 	  begin_branch();
 	  process_cdata((Uchar*)data);
@@ -176,12 +179,16 @@ endElement(void *userData, const char *name)
 #define JUNK(c)   ((c)=='['||(c)==']'||(c)=='?'||(c)=='!')
 
 static void
-process_cf_data(Uchar *cdata)
+process_cg_data(Uchar *cdata)
 {
-  Uchar *start = cdata, *end = cdata;
-  int len = strlen((const char *)cdata);
-  l8.unit_id = sn_cf;
-  grapheme((const char *)cdata);     /* index cf without mangling */
+  Uchar *start = NULL, *end = NULL, *c0 = NULL;
+  int len = -1;
+
+  c0 = start = end = (Uchar*)strdup((const char *)cdata);
+  len = strlen((const char *)start);
+
+  l8.unit_id = sn_c;
+  grapheme((const char *)start);
   while (*end)
     {
       if (' ' == *end || '.' == *end)
