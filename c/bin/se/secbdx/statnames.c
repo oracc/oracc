@@ -1,5 +1,5 @@
-/* C code produced by gperf version 3.0.3 */
-/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -L ANSI -Nstatnames -tT statnames.g  */
+/* ANSI-C code produced by gperf version 3.1 */
+/* Command-line: gperf -L ANSI -Nstatnames -tT statnames.g  */
 /* Computed positions: -k'1' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -26,7 +26,7 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
 #line 1 "statnames.g"
@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "fields.h"
 
-#define TOTAL_KEYWORDS 7
+#define TOTAL_KEYWORDS 10
 #define MIN_WORD_LENGTH 1
 #define MAX_WORD_LENGTH 1
-#define MIN_HASH_VALUE 1
-#define MAX_HASH_VALUE 8
-/* maximum key range = 8, duplicates = 0 */
+#define MIN_HASH_VALUE 0
+#define MAX_HASH_VALUE 15
+/* maximum key range = 16, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -48,71 +48,75 @@ __inline
 inline
 #endif
 #endif
+/*ARGSUSED*/
 static unsigned int
-hash (str, len)
-     register const char *str;
-     register unsigned int len;
+hash (register const char *str, register size_t len)
 {
   static unsigned char asso_values[] =
     {
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 6,
-      9, 9, 9, 1, 9, 9, 9, 9, 4, 7,
-      2, 9, 5, 9, 9, 9, 0, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 13, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16,  8,  3,
+      16, 16, 16, 14, 16, 16, 16, 16,  9,  4,
+      15, 16, 10, 16, 16,  5,  0, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+      16, 16, 16, 16, 16, 16
     };
-  return len + asso_values[(unsigned char)str[0]];
+  return asso_values[(unsigned char)str[0]];
 }
 
 struct sn_tab *
-statnames (str, len)
-     register const char *str;
-     register unsigned int len;
+statnames (register const char *str, register size_t len)
 {
   static struct sn_tab wordlist[] =
     {
-      {""},
-#line 10 "statnames.g"
-      {"t",		sn_t},
-#line 8 "statnames.g"
-      {"g",		sn_g},
 #line 13 "statnames.g"
-      {"n",      sn_norm},
-      {""},
-#line 12 "statnames.g"
-      {"l",   	sn_l},
-#line 9 "statnames.g"
-      {"p",		sn_p},
+      {"t",		sn_t},
+      {""}, {""},
 #line 7 "statnames.g"
       {"c",		sn_c},
 #line 11 "statnames.g"
-      {"m",		sn_m}
+      {"m",		sn_m},
+#line 14 "statnames.g"
+      {"s",		sn_s},
+      {""}, {""},
+#line 10 "statnames.g"
+      {"b",		sn_b},
+#line 15 "statnames.g"
+      {"l",   	sn_l},
+#line 9 "statnames.g"
+      {"p",		sn_p},
+      {""}, {""},
+#line 12 "statnames.g"
+      {"M",		sn_M},
+#line 8 "statnames.g"
+      {"g",		sn_g},
+#line 16 "statnames.g"
+      {"n",      sn_n}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      unsigned int key = hash (str, len);
+      register unsigned int key = hash (str, len);
 
       if (key <= MAX_HASH_VALUE)
         {

@@ -62,13 +62,13 @@ int curr_text_id, curr_unit_id, curr_word_id;
 int indexing = 0;
 
 static FILE *keysf;
-static void process_cdata(Uchar*);
-static void process_cg_data(Uchar *cdata);
+static void process_cdata(Uchar*, int mangling, int splitting);
+/*static void process_cg_data(Uchar *cdata);*/
 
 /*CAUTION: THESE NAMES MUST BE KEPT ALIGNED WITH field_names IN fields.h*/
 const char *static_names[] = 
   {
-   "c", "g", "p", "t", "m", "l", "n", "nofield" , "not_in_use", "next_uid"
+    "c", "g", "p", "b", "m", "M", "t", "s", "l", "n", "nofield" , "not_in_use", "next_uid"
   };
 
 /* This indexer ignores the fact that senses and bases can have their own
@@ -99,8 +99,10 @@ startElement(void *userData, const char *name, const char **atts)
     case 'f':
       if (!name[4] && (!strcmp(name,"base") || !strcmp(name, "form")))
 	{
+	  l8.unit_id = (*name == 'b' ? sn_b : sn_t);
 	  wid2loc8(curr_id,xml_lang(atts),&l8);
-	  process_cdata((unsigned char*)findAttr(atts,"n"));
+	  process_cdata((unsigned char*)findAttr(atts,"n"),0,0);
+	  process_cdata((unsigned char*)findAttr(atts,"n"),1,1);
 	}
       break;
     case 'n':
@@ -121,53 +123,58 @@ void
 endElement(void *userData, const char *name)
 {
   static int norm_count = 0;
+  struct sn_alias_tab *snap = NULL;
   if (*name == 'e' && !strcmp(name,"entry"))
     {
       end_parallels();
       end_indexed();
     }
+#if 1
+  else if ((snap = sn_alias(name,strlen(name))))
+#else
   else if ((!name[1] && *name == 't')
 	   || (!name[1] && (!strcmp(name,"n")))
 	   || (!name[2] && (!strcmp(name,"cf")||!strcmp(name,"gw")))
 	   || (!name[3] && (!strcmp(name,"mng")))
 	   || (!name[4] && (!strcmp(name,"mean")||!strcmp(name,"term"))))
+#endif
     {
       static char cfgw[256];
       struct sn_tab* sntabp;
-      int unit_id = 0;
+      const char *name_alias = snap->name;
       char *data = charData_retrieve();
       est_add((unsigned char *)data, estp);
 
       if (!strcmp(name,"cf"))
 	{
 	  l8.unit_id = sn_c;
-	  process_cg_data((Uchar *)data);
+	  process_cdata((Uchar *)data,0,0);
 	  strcpy(cfgw,data);
 	}
       else if (!strcmp(name,"gw"))
 	{
 	  l8.unit_id = sn_g;
-	  process_cg_data((Uchar *)data);
+	  process_cdata((Uchar *)data,0,1);
 	  sprintf(cfgw+strlen(cfgw),"[%s]",data);
 	  l8.unit_id = sn_l;
-	  grapheme(cfgw); 	/* index literal cfgw without mangling */
+	  process_cdata((Uchar *)data,0,0);
 	}
 
-      if (NULL != (sntabp = statnames(name,strlen(name))))
-	unit_id = sntabp->uid;
+      if (NULL != (sntabp = statnames(name_alias,strlen(name_alias))))
+	l8.unit_id = sntabp->uid;
       else
-	fprintf(stderr,"secbdx: indexed field %s not in statnames\n",name);
+	fprintf(stderr,"secbdx: indexed field %s=>%s not in statnames\n",name,name_alias);
 
-      if (l8.unit_id == sn_norm)
+      if (l8.unit_id == sn_n)
 	++norm_count;
-      if (l8.unit_id == sn_m || l8.unit_id == sn_norm)
+      if (l8.unit_id == sn_s || l8.unit_id == sn_n)
 	{
 	  begin_branch();
-	  process_cdata((Uchar*)data);
+	  process_cdata((Uchar*)data,1,1);
 	  end_branch();
 	}
       else
-	process_cdata((Uchar*)data);
+	process_cdata((Uchar*)data,1,1);
     }
   else
     charData_discard();
@@ -178,6 +185,7 @@ endElement(void *userData, const char *name)
 #define SPACE(c)  ((c <  128)&&(isspace(c)||(c)==','||(c)==';'))
 #define JUNK(c)   ((c)=='['||(c)==']'||(c)=='?'||(c)=='!')
 
+#if 0
 static void
 process_cg_data(Uchar *cdata)
 {
@@ -187,7 +195,6 @@ process_cg_data(Uchar *cdata)
   c0 = start = end = (Uchar*)strdup((const char *)cdata);
   len = strlen((const char *)start);
 
-  l8.unit_id = sn_c;
   grapheme((const char *)start);
   while (*end)
     {
@@ -197,13 +204,14 @@ process_cg_data(Uchar *cdata)
 	++end;
       grapheme((const char *)start);
       start = end + 1;
-      if (start - cdata < len)
+      if (start - c0 < len)
 	end = start;
     }
 }
+#endif
 
 static void
-process_cdata(Uchar*cdata) {
+process_cdata(Uchar*cdata, int mangling, int splitting) {
   unsigned char *s = cdata;
   unsigned char *graph;
   static unsigned char buf[1024];
@@ -212,6 +220,12 @@ process_cdata(Uchar*cdata) {
   if (!*cdata)
     return;
 
+  if (!splitting)
+    {
+      grapheme((const char*)cdata);
+      return;
+    }
+  
   s = cdata = (unsigned char *)strcpy((char*)buf,(const char *)cdata);  
 
   while (*s && (HYPHEN(*s) || SPACE(*s)))
@@ -240,14 +254,19 @@ process_cdata(Uchar*cdata) {
 	  const unsigned char *kmg = NULL;
 	  *s = '\0';
 	  est_add(graph,estp);
-	  kmg = keymangler((unsigned char *)graph, 
-			   rulestab[d_cbd].ix_manglerules, NULL, 0,
-			   estp, "cbd");
+	  if (mangling)
+	    {
+	      kmg = keymangler((unsigned char *)graph, 
+			       rulestab[d_cbd].ix_manglerules, NULL, 0,
+			       estp, "cbd");
 #if 0
-	  if (strcmp(kmg,graph))
-	    fprintf(stderr,"mangled %s to %s\n",graph,kmg);
+	      if (strcmp(kmg,graph))
+		fprintf(stderr,"mangled %s to %s\n",graph,kmg);
 #endif
-	  grapheme((char*)kmg);
+	      grapheme((char*)kmg);
+	    }
+	  else
+	    grapheme((const char*)graph);
 #endif
 	  *s = saved_char;
 	}
@@ -381,7 +400,10 @@ main(int argc, char **argv)
        ++i)
     {
       struct sn_tab *s = statnames(static_names[i],strlen(static_names[i]));
-      fprintf(fldsf,"%s\t%d\n",static_names[i],s->uid);
+      if (s)
+	fprintf(fldsf,"%s\t%d\n",static_names[i],s->uid);
+      else
+	fprintf(stderr,"secbdx: no '%s' entry found in statnames\n", static_names[i]);
     }
   xfclose(fldsname,fldsf);
 
