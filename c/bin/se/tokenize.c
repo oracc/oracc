@@ -144,6 +144,7 @@ tokinit(void)
   isexpr[']'] = 1;
   isexpr['?'] = 1;
   isexpr['\''] = 1;
+  isexpr['@'] = 1; /* change made when withdrawing @filter */
   for (c = rexp_chars; *c; ++c)
     isrexp[(int)*c] = 1;
   for (c = "0123456780jJ,"; *c; ++c)
@@ -262,6 +263,12 @@ phase1(const char **tokptrs)
 	{
 	  switch (*s)
 	    {
+#if 0
+	      /* This feature conflicts with @-modifiers in ATF so
+		 it's withdrawn for now. Not sure it's ever used--if
+		 that turns out to be wrong or changes it can be
+		 reimplemented in a way that doesn't conflict (e.g.,
+		 requiring @ be at the start of a token) */
 	    case '@':
 	      curr_tok = add_token(se_filter);
 	      s = (unsigned char*)scan_name(curr_tok,(char*)++s);
@@ -271,6 +278,7 @@ phase1(const char **tokptrs)
 		  p[strlen(p)-1] = '\t';
 	      }
 	      break;
+#endif
 	    case '%':
 	      curr_tok = add_token(se_lang);
 	      s = (unsigned char *)scan_name(curr_tok,(char*)++s);
