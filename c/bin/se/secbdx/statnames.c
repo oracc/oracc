@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -L ANSI -Nstatnames -tT statnames.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -L ANSI -Nstatnames -tT statnames.g  */
 /* Computed positions: -k'1' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -34,12 +34,12 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "fields.h"
 
-#define TOTAL_KEYWORDS 7
+#define TOTAL_KEYWORDS 8
 #define MIN_WORD_LENGTH 1
 #define MAX_WORD_LENGTH 4
 #define MIN_HASH_VALUE 1
-#define MAX_HASH_VALUE 8
-/* maximum key range = 8, duplicates = 0 */
+#define MAX_HASH_VALUE 11
+/* maximum key range = 11, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -55,32 +55,32 @@ hash (str, len)
 {
   static unsigned char asso_values[] =
     {
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 5,
-      9, 9, 9, 0, 9, 9, 9, 9, 7, 0,
-      5, 9, 9, 9, 9, 9, 0, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-      9, 9, 9, 9, 9, 9
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12,  5,
+      12, 12, 12,  0, 12, 12, 12, 12, 10,  5,
+       5, 12,  0, 12, 12, 12,  0, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+      12, 12, 12, 12, 12, 12
     };
   return len + asso_values[(unsigned char)str[0]];
 }
@@ -93,20 +93,23 @@ statnames (str, len)
   static struct sn_tab wordlist[] =
     {
       {""},
-#line 9 "statnames.g"
+#line 10 "statnames.g"
       {"t",		sn_t},
 #line 8 "statnames.g"
       {"gw",		sn_g},
-#line 10 "statnames.g"
-      {"mng",	sn_m},
+#line 9 "statnames.g"
+      {"pos",	sn_p},
 #line 11 "statnames.g"
-      {"term",	sn_term},
+      {"text",	sn_t},
       {""},
-#line 13 "statnames.g"
+#line 14 "statnames.g"
       {"n",      sn_norm},
 #line 7 "statnames.g"
       {"cf",		sn_c},
 #line 12 "statnames.g"
+      {"mng",	sn_m},
+      {""}, {""},
+#line 13 "statnames.g"
       {"l",   	sn_l}
     };
 
