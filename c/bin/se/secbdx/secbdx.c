@@ -156,7 +156,7 @@ endElement(void *userData, const char *name)
 	  l8.unit_id = sn_g;
 	  process_cdata((Uchar *)data,0,1);
 	  sprintf(cfgw+strlen(cfgw),"[%s]",data);
-	  l8.unit_id = sn_l;
+	  l8.unit_id = sn_l;	  
 	  process_cdata((Uchar *)data,0,0);
 	}
 

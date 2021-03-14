@@ -182,8 +182,8 @@ p8(struct location8 *l8p)
   if ('x' == id_prefix(t))
     {
       char *slash = strrchr(indexname,'/');
-      fprintf(stdout, "%s.x%06d;u=%d",
-	      slash+1,XidVal(l8p->text_id),l8p->unit_id);
+      fprintf(stdout, "%s.x%06d;w=%d;u=%d",
+	      slash+1,XidVal(l8p->text_id),l8p->word_id,l8p->unit_id);
     }
   else
     {
