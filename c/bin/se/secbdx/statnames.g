@@ -4,11 +4,10 @@
 %}
 struct sn_tab;
 %%
-cf,		sn_c
-gw,		sn_g
-pos,	sn_p
+c,		sn_c
+g,		sn_g
+p,		sn_p
 t,		sn_t
-text,	sn_t
-mng,	sn_m
+m,		sn_m
 l,   	sn_l
 n,      sn_norm

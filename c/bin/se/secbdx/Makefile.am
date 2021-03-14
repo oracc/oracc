@@ -20,7 +20,7 @@ AM_CFLAGS=-pedantic -Wall -g
 
 bin_PROGRAMS=secbdx
 
-secbdx_SOURCES=secbdx.c statnames.c
+secbdx_SOURCES=secbdx.c statnames.c sn_alias.c
 
 secbdx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
 	../setxtx/grapheme.o ../setxtx/node.o ../setxtx/parallel.o \

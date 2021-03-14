@@ -25,6 +25,13 @@ struct sn_tab
   enum fields uid;
 };
 
+struct sn_alias_tab
+{
+  const char *alias;
+  const char *name;
+};
+
 struct sn_tab *statnames (register const char *str, register unsigned int len);
+struct sn_alias_tab *sn_alias (register const char *str, register unsigned int len);
 
 #endif /*_FIELDS_H*/
