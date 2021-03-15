@@ -421,6 +421,7 @@ gran2lev(enum result_granularity g)
     case g_grapheme: return n_grapheme;
     case g_not_set: return n_record;
     }
+  return n_record;
 }
 
 
@@ -703,13 +704,18 @@ expr_toks(char *e)
 		  if (curr_tok && (curr_tok->type == se_rexp || curr_tok->type == se_expr))
 		    default_boolean();
 #endif
-		  colon = strchr(ebuf,':');
-		  if (colon)
-		    {
-		      *colon = '\0';
-		      filter_prefix(ebuf);
-		      memmove(ebuf,colon+1,strlen(colon+1)+1);
-		    }
+		colon:
+		  {
+		    colon = strchr(ebuf,':');
+		    if (colon)
+		      {
+			*colon = '\0';
+			filter_prefix(ebuf);
+			memmove(ebuf,colon+1,strlen(colon+1)+1);
+			goto colon; /* process stacked filter prefixes */
+		      }
+		  }
+		  
 		  curr_tok = add_token(regex_chars(ebuf) ? se_rexp : se_expr);
 		  curr_tok->data = strdup(ebuf);
 		  curr_tok->expr_id = expr_id;
@@ -754,14 +760,17 @@ expr_toks(char *e)
 	  if (curr_tok && (curr_tok->type == se_rexp || curr_tok->type == se_expr))
 	    default_boolean();
 #endif
-	  colon = strchr(ebuf,':');
-	  if (colon)
-	    {
-	      *colon = '\0';
-	      filter_prefix(ebuf);
-	      memmove(ebuf,colon+1,strlen(colon+1)+1);
-	    }
-	  
+	colon2:
+	  {
+	    colon = strchr(ebuf,':');
+	    if (colon)
+	      {
+		*colon = '\0';
+		filter_prefix(ebuf);
+		memmove(ebuf,colon+1,strlen(colon+1)+1);
+		goto colon2;
+	      }
+	  }
 	  curr_tok = add_token(regex_chars(ebuf) ? se_rexp : se_expr);
 	  curr_tok->data = strdup(ebuf);
 	  curr_tok->expr_id = expr_id;
