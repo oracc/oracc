@@ -23,18 +23,21 @@
 int swc_flag = 0;
 int l2 = 1;
 
-static struct vid_data *vidp;
+struct vid_data *vidp;
 
 #ifndef strdup
 extern char *strdup(const char *);
 #endif
 
-static struct est *estp;
+struct est *estp;
 
 extern void grapheme_decr_start_column(void);
 extern void grapheme_end_column_logo(void);
 extern void grapheme_inherit_preceding_properties(void);
 extern void grapheme_reset_start_column(void);
+
+extern void trie_init(void);
+extern void trie_term(void);
 
 #undef xmalloc
 #undef xrealloc
@@ -45,18 +48,14 @@ extern void grapheme_reset_start_column(void);
 #define xcalloc calloc
 #define xfree free
 
-#include "addgraph.c"
-
 Dbi_index *dip;
 
 static int aliases_only = 0;
-static int in_qualified = 0;
-static int role_logo = 0;
 static char fnbuf[_MAX_PATH];
 static char **fnlist = NULL;
 static size_t findex;
 int one_big_stdin = 0;
-static char loc_project_buf[_MAX_PATH];
+char loc_project_buf[_MAX_PATH];
 int verbose = 0;
 
 const char *curr_project = "cdli", *curr_index = "txt", *proxies_arg = "";
@@ -81,30 +80,12 @@ static FILE *keysf;
 /* static void process_cdata(Uchar*); */
 static void fn_expand(void *p);
 
-enum pending_boundary_types { pb_none , pb_space , pb_hyphen };
 enum pending_boundary_types pending_boundary = pb_none;
 
 extern void grapheme_decr_start_column(void);
 extern void signmap_init(void);
 extern void signmap_term(Dbi_index *);
 static void set_proxies(const char *pxpath);
-
-static void
-do_boundary()
-{
-  switch (pending_boundary)
-    {
-    case pb_space:
-      grapheme_boundary(' ');
-      break;
-    case pb_hyphen:
-      grapheme_boundary('-');
-      break;
-    case pb_none:
-      break;
-    }
-  pending_boundary = pb_none;
-}
 
 static const char *
 pos(const char **atts)
@@ -155,8 +136,6 @@ loc_project(const char **atts)
 void
 startElement(void *userData, const char *name, const char **atts)
 {
-  const char *v_delim = NULL, *data = NULL;
-
   /*  flush_graphemes(name[3], EVENT_BEGIN); */
   switch (*name)
     {
@@ -199,72 +178,10 @@ startElement(void *userData, const char *name, const char **atts)
       break;
     case 'g':
       if (curr_node && name[1] == ':' && name[3] == '\0')
-	switch (name[2])
-	  {
-	  case 'w':
-	    {
-	      static char qualified_id[128];
-	      const char *form;
-	      pos_props(pos(atts));
-	      sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
-	      wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
-	      form = attr_by_name(atts,"form");
-	      if (form)
-		est_add((const unsigned char*)attr_by_name(atts,"form"), estp);
-	      else
-		fprintf(stderr,"setxtx:warning:%s: word has NULL form attribute\n",
-			qualified_id);
-	      if (swc_flag)
-		{
-		  swc_flag = 0;
-		  grapheme_reset_start_column();
-		}
-	      else
-		{
-		  const char *hw = findAttr(atts, "headform");
-		  if (*hw)
-		    {
-		      /*
-			fprintf(stderr, "setting swc_flag for %s\n", xml_id(atts));
-		      */
-		      swc_flag = 1;
-		    }
-		}
-	    }
-	    break;
-	  case 'v':
-	    v_delim = findAttr(atts, "g:delim");
-	    if (v_delim && *v_delim == ' ')
-	      pending_boundary = pb_space;
-	    else if (v_delim && *v_delim)
-	      pending_boundary = pb_hyphen;
-	    do_boundary();
-	    charData_discard();
-	    break;
-	  case 'd':
-	    do_boundary();
-	    begin_option();
-	    charData_discard();
-	    break;
-	  case 's':
-	    if (!strcmp(findAttr(atts,"g:role"),"logo"))
-	      role_logo = 1;
-	    do_boundary();
-	    charData_discard();
-	    break;
-	  case 'c':
-	  case 'n':
-	    do_boundary();
-	    charData_discard();
-	    data = (const char*)attr_by_name(atts,"form");
-	    grapheme(data);
-	    est_add((const unsigned char *)data, estp);
-	    break;
-	  case 'q':
-	    do_boundary();
-	    in_qualified = 1;
-	    break;
-	  }
+	{
+	  extern void gdlStartElement(void*userData,const char *name, const char **atts);
+	  gdlStartElement(userData,name,atts);
+	}
       else
 	{
 	  if (!strcmp("g:swc",name))
@@ -308,84 +225,8 @@ endElement(void *userData, const char *name)
     }
   else if (curr_node && *name == 'g' && name[1] == ':' && name[3] == '\0')
     {
-      extern Hash_table *signmap;
-      switch (name[2])
-	{
-	case 'w':
-	  pending_boundary = pb_space;
-	  break;
-	case 'q':
-	  in_qualified = 0;
-	  pending_boundary = pb_hyphen;
-	  break;
-	case 'd':
-	  end_option();
-	  pending_boundary = pb_hyphen;
-	  break;
-	case 'v':
-	case 's':
-	  {
-	    Char *g = (Char*)charData_retrieve();
-	    const unsigned char *lg = NULL;
-	    
-	    grapheme((const char *)g);
-	    est_add(g, estp);
-	    if (name[2] == 's')
-	      {
-		extern const unsigned char *utf_lcase(const unsigned char *);
-		unsigned char *s = NULL;
-		lg = utf_lcase((const unsigned char *)g);
-		if (lg)
-		  {
-		    s = hash_find(signmap,lg);
-		    if (s)
-		      {
-			if (strcmp((const char *)s,(const char *)g))
-			  {
-			    progress("indexing sign value %s as sign %s\n",g, s);
-			    /* fprintf(stderr, "indexing sign value %s as sign %s\n", g, s); */
-			    grapheme_decr_start_column();
-			    grapheme((const char *)s);
-			    est_add(g, estp);
-			    grapheme_inherit_preceding_properties();
-			    do_boundary();
-			  }
-#if 0
-			else
-			  fprintf(stderr, "%s == %s not double-indexed\n", s, g);
-#endif
-		      }
-		    else
-		      fprintf(signmap_err, "%s not found in signmap\n", lg);
-		  }
-		else
-		  fprintf(stderr, "failed to lowercase %s\n", g);
-		if (role_logo)
-		  grapheme_end_column_logo();
-	      }
-	    else /* v */
-	      {
-		Char *s = hash_find(signmap,g);
-		if (s)
-		  {
-		    progress("indexing value %s as sign %s\n",g, s);
-		    grapheme_decr_start_column();
-		    grapheme((const char *)s);
-		    est_add(g, estp);
-		    grapheme_inherit_preceding_properties();
-		    do_boundary();
-		  }
-	      }
-	    if (!in_qualified)
-	      pending_boundary = pb_hyphen;
-	  }
-	  break;
-	case 'c':
-	case 'n':
-	  if (!in_qualified)
-	    pending_boundary = pb_hyphen;
-	  break;
-	}
+      extern void gdlEndElement(void*userData,const char *name);
+      gdlEndElement(userData,name);
     }
   else if ('n' == *name && !strcmp("n:w",name))
     {
@@ -512,27 +353,6 @@ main (int argc, char **argv)
 }
 
 /********************************************************************/
-
-void
-add_graphemes ()
-{
-  struct grapheme *gnp;
-  for (gnp = grapheme_list_base; gnp; gnp = gnp->next)
-    {
-      Uchar *tmp;
-      if (!gnp->text)
-	continue;
-      if (aliases)
-	{
-	  tmp  = alias_fast_get_alias (gnp->text);
-	  if (verbose && tmp && strcmp((const char*)tmp,(const char *)gnp->text))
-	    fprintf(stderr,"%s indexed under alias '%s'\n", gnp->text, tmp);
-	  addgraph (dip, tmp ? tmp : gnp->text, &gnp->node->l);
-	}
-      else
-	addgraph (dip, gnp->text, &gnp->node->l);
-    }
-}
 
 static void
 fn_expand(void *p)

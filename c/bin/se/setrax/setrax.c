@@ -75,7 +75,6 @@ static FILE *keysf;
 /* static void process_cdata(Uchar*); */
 static void fn_expand(void *p);
 
-enum pending_boundary_types { pb_none , pb_space , pb_hyphen };
 enum pending_boundary_types pending_boundary = pb_none;
 
 extern void grapheme_decr_start_column(void);

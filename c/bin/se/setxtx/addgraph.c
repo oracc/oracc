@@ -16,8 +16,6 @@ extern unsigned long _nkeys;
 static inline Dbi_tnode *trie_find (unsigned char *key);
 static inline void trie_add (Dbi_tnode *dp);
 static inline void addgraph (Dbi_index *dp, unsigned char *key, void *data);
-static void trie_init (void);
-static void trie_term (void);
 
 static unsigned char trie_chars[] = "abdeghjiklmnpqrsfctvuwz0123456789";
 static int ntrie_chars = sizeof (trie_chars) - 1;
@@ -30,7 +28,7 @@ Dbi_tnode *last_find;
 #define  dsize	(dp->h.data_size)
   
 /*******************************************************************/
-static void
+void
 trie_init ()
 {
   unsigned char *t_map_rover;
@@ -46,7 +44,7 @@ trie_init ()
     trie_map[*t_map_rover] = t_map_rover - trie_chars;
 }
 
-static void
+void
 trie_term ()
 {
   free (trie_1);

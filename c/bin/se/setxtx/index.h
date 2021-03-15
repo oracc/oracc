@@ -52,6 +52,8 @@ struct node_list
   struct node_list *next;
 };
 
+enum pending_boundary_types { pb_none , pb_space , pb_hyphen };
+
 extern Four_bytes curr_label_id;
 extern Four_bytes record_id;
 extern int debug_flag, index_flag, words_flag;

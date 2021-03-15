@@ -7,23 +7,31 @@
  * g = gw
  * p = pos
  * b = base
- * m = morph1
- * M = morph2
- * s = sense
+ * m1= morph1
+ * m2= morph2
  * t = transliteration (form)
- * l = lemma (CF[GW])
+ * m = sense (meaning)
+ * cg= cfgw (CF[GW])
  * n = norm
+ *
+ * Should probably implement Sum morph query as:
+ *
+ * ns1 ns2
+ * vp1 vp2
+ * vs1 vs2
+ * is1 is2
+ *
  */
 #define field_names				\
   C(sn_c)					\
   C(sn_g)					\
   C(sn_p)					\
   C(sn_b)					\
-  C(sn_m)					\
-  C(sn_M)					\
+  C(sn_m1)					\
+  C(sn_m2)					\
   C(sn_t)					\
-  C(sn_s)					\
-  C(sn_l)					\
+  C(sn_m)					\
+  C(sn_cg)					\
   C(sn_n)
 
 #define C(x) x,

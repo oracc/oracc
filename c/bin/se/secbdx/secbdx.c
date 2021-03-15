@@ -21,12 +21,20 @@
 extern char *strdup(const char *);
 #endif
 
+int l2 = 1;
 int swc_flag = 0;
 
 FILE *f_idlist;
 extern FILE *f_log;
 FILE *f_mangletab = NULL;
-static struct est *estp;
+FILE *signmap_err = NULL;
+
+extern void signmap_init(void);
+extern void signmap_term(Dbi_index *);
+
+struct est *estp;
+struct vid_data *vidp;
+char loc_project_buf[_MAX_PATH];
 
 #undef xmalloc
 #undef xrealloc
@@ -37,9 +45,9 @@ static struct est *estp;
 #define xcalloc calloc
 #define xfree free
 
-#include "addgraph.c"
-
 Dbi_index *dip;
+
+enum pending_boundary_types pending_boundary = pb_none;
 
 static int aliases_only = 0;
 
@@ -63,12 +71,16 @@ int indexing = 0;
 
 static FILE *keysf;
 static void process_cdata(Uchar*, int mangling, int splitting);
+
+extern void trie_init (void);
+extern void trie_term (void);
+
 /*static void process_cg_data(Uchar *cdata);*/
 
 /*CAUTION: THESE NAMES MUST BE KEPT ALIGNED WITH field_names IN fields.h*/
 const char *static_names[] = 
   {
-    "c", "g", "p", "b", "m", "M", "t", "s", "l", "n", "nofield" , "not_in_use", "next_uid"
+    "c", "g", "p", "b", "m1", "m2", "t", "m", "cg", "n", "nofield" , "not_in_use", "next_uid"
   };
 
 /* This indexer ignores the fact that senses and bases can have their own
@@ -112,7 +124,7 @@ startElement(void *userData, const char *name, const char **atts)
     default:
       if ((!name[1] && *name == 't')
 	  || (!name[2] && (!strcmp(name,"cf")||!strcmp(name,"gw")))
-	  || (!name[3] && (!strcmp(name,"mng")))
+	  || (!name[3] && (!strcmp(name,"mng")||!strcmp(name,"pos")))
 	  || (!name[4] && (!strcmp(name,"mean")||!strcmp(name,"term"))))
 	wid2loc8(curr_id,xml_lang(atts),&l8);
       break;
@@ -141,7 +153,7 @@ endElement(void *userData, const char *name)
     {
       static char cfgw[256];
       struct sn_tab* sntabp;
-      const char *name_alias = snap->name;
+      const char *name_alias = snap->alias;
       char *data = charData_retrieve();
       est_add((unsigned char *)data, estp);
 
@@ -155,8 +167,13 @@ endElement(void *userData, const char *name)
 	{
 	  l8.unit_id = sn_g;
 	  process_cdata((Uchar *)data,0,1);
+	  l8.unit_id = sn_cg;
 	  sprintf(cfgw+strlen(cfgw),"[%s]",data);
-	  l8.unit_id = sn_l;	  
+	  process_cdata((Uchar *)cfgw,0,0);
+	}
+      else if (!strcmp(name,"pos"))
+	{
+	  l8.unit_id = sn_p;
 	  process_cdata((Uchar *)data,0,0);
 	}
 
@@ -167,7 +184,7 @@ endElement(void *userData, const char *name)
 
       if (l8.unit_id == sn_n)
 	++norm_count;
-      if (l8.unit_id == sn_s || l8.unit_id == sn_n)
+      if (l8.unit_id == sn_m || l8.unit_id == sn_n)
 	{
 	  begin_branch();
 	  process_cdata((Uchar*)data,1,1);
@@ -301,6 +318,7 @@ main(int argc, char **argv)
   FILE *fldsf;
   const char *fldsname;
   int i, top;
+  Dbi_index *mapdb;
 
   f_log = stderr;
 
@@ -323,6 +341,13 @@ main(int argc, char **argv)
   
   f_mangletab = create_mangle_tab(curr_project,idxlang);
 
+  if (!(signmap_err = fopen("01tmp/signmap.log", "w")))
+    {
+      fprintf(stderr, "setxtx: unable to write to 01tmp/signmap.log. Stop.\n");
+      exit(1);
+    }
+  signmap_init();
+
   progress("indexing %s ...\n", index_dir);
   se_v2(curr_project);
   if (v2)
@@ -334,10 +359,10 @@ main(int argc, char **argv)
 
   /*  alias_check_date ("", TRUE); */
   dip = dbi_create(curr_index, index_dir, 10000, /* hash_create will adjust */
-		    sizeof(struct location16), DBI_ACCRETE);
-  dbi_set_user(dip,d_cbd);
+		   sizeof(struct location16), DBI_ACCRETE);
   if (NULL == dip) 
     error (NULL, "unable to create index for %s", curr_index);
+  dbi_set_user(dip,d_cbd);
   if (cache_elements > 0)
     dbi_set_cache(dip, cache_elements);
   trie_init ();
@@ -384,7 +409,6 @@ main(int argc, char **argv)
   dbi_flush(dip);
   dbi_free(dip);
   dip = dbi_open("cbd", index_dir);
-  
   est_dump(estp);
   est_term(estp);
 
@@ -419,36 +443,18 @@ main(int argc, char **argv)
   fclose(keysf);
   dbi_close(dip);
 
+  mapdb = dbi_create ("signmap", index_dir, 8000,
+		      PADDED_GRAPHEME_LEN, DBI_BALK);
+  signmap_term(mapdb);
+  fclose(signmap_err);
+  
+  dbi_flush(mapdb);
+  
   ce_cfg(curr_project, buf, "p", NULL, ce_summary, NULL);
 
   progress("index files written to `%s'\n", index_dir);
 
   return 0;
-}
-
-/********************************************************************/
-
-void
-add_graphemes ()
-{
-  struct grapheme *gnp;
-  for (gnp = grapheme_list_base; gnp; gnp = gnp->next)
-    {
-      Uchar *tmp;
-      if (!gnp->text)
-	continue;
-      if (aliases)
-	{
-	  tmp  = alias_fast_get_alias (gnp->text);
-#if 0
-	  if (tmp && strcmp(tmp,gnp->text))
-	    fprintf(stderr,"%s indexed under alias '%s'\n", gnp->text, tmp);
-#endif
-	  addgraph (dip, tmp ? tmp : gnp->text, &gnp->node->l);
-	}
-      else
-	addgraph (dip, gnp->text, &gnp->node->l);
-    }
 }
 
 /********************************************************************/

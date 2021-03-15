@@ -9,8 +9,8 @@ g,		sn_g
 p,		sn_p
 b,		sn_b
 m,		sn_m
-M,		sn_M
+m1,		sn_m1
+m2,		sn_m2
 t,		sn_t
-s,		sn_s
-l,   	sn_l
+cg,   	sn_cg
 n,      sn_n

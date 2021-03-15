@@ -24,9 +24,11 @@ secbdx_SOURCES=secbdx.c statnames.c sn_alias.c
 
 secbdx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
 	../setxtx/grapheme.o ../setxtx/node.o ../setxtx/parallel.o \
-	../setxtx/indexed.o ../setxtx/intercha.o \
+	../setxtx/indexed.o ../setxtx/intercha.o ../setxtx/gdlix.o \
 	../setxtx/option.o ../setxtx/property.o ../est.o \
-	../setxtx/branch.o ../rulestab.o ../keymangler.o ../v2.o \
+	../setxtx/branch.o \
+	../vid.o ../propmask.o ../signmap.o \
+	../rulestab.o ../keymangler.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la
