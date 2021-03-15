@@ -143,9 +143,13 @@ gdlStartElement(void *userData, const char *name, const char **atts)
       {
 	static char qualified_id[128];
 	const char *form;
+	extern char curr_id[];
 	pos_props(pos(atts));
 	sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));
-	wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
+	if (vidp)
+	  wid2loc8(vid_map_id(vidp,qualified_id),xml_lang(atts),&l8);
+	else
+	  wid2loc8(curr_id,xml_lang(atts),&l8);
 	form = attr_by_name(atts,"form");
 	if (form)
 	  est_add((const unsigned char*)attr_by_name(atts,"form"), estp);

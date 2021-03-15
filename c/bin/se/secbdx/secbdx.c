@@ -29,6 +29,7 @@ extern FILE *f_log;
 FILE *f_mangletab = NULL;
 FILE *signmap_err = NULL;
 
+extern struct node *curr_node;
 extern void signmap_init(void);
 extern void signmap_term(Dbi_index *);
 
@@ -51,7 +52,7 @@ enum pending_boundary_types pending_boundary = pb_none;
 
 static int aliases_only = 0;
 
-static char curr_id[32];
+char curr_id[32];
 int one_big_stdin = 0;
 extern int branch_id;
 
@@ -114,9 +115,15 @@ startElement(void *userData, const char *name, const char **atts)
 	  l8.unit_id = (*name == 'b' ? sn_b : sn_t);
 	  wid2loc8(curr_id,xml_lang(atts),&l8);
 	  process_cdata((unsigned char*)findAttr(atts,"n"),0,0);
-	  process_cdata((unsigned char*)findAttr(atts,"n"),1,1);
+	  /*process_cdata((unsigned char*)findAttr(atts,"n"),1,1);*/
 	}
       break;
+    case 'g':
+      if (curr_node && name[1] == ':' && name[3] == '\0')
+	{
+	  extern void gdlStartElement(void*userData,const char *name, const char **atts);
+	  gdlStartElement(userData,name,atts);
+	}
     case 'n':
       if (!name[1])
 	wid2loc8(curr_id,xml_lang(atts),&l8);
@@ -192,6 +199,11 @@ endElement(void *userData, const char *name)
 	}
       else
 	process_cdata((Uchar*)data,1,1);
+    }
+  else if (curr_node && *name == 'g' && name[1] == ':' && name[3] == '\0')
+    {
+      extern void gdlEndElement(void*userData,const char *name);
+      gdlEndElement(userData,name);
     }
   else
     charData_discard();

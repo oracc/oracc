@@ -30,7 +30,6 @@ extern char *strdup(const char *);
 #endif
 
 struct est *estp;
-
 extern void grapheme_decr_start_column(void);
 extern void grapheme_end_column_logo(void);
 extern void grapheme_inherit_preceding_properties(void);
@@ -64,6 +63,7 @@ Four_bytes curr_line;
 int debug_flag = 0, index_flag = 1;
 static int cache_elements = 16;
 
+char curr_id[32];
 struct location8 l8;
 
 Two_bytes curr_properties;
