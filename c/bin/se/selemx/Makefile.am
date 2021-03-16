@@ -3,9 +3,6 @@
 
 include ../../../../oracc-am-rules.txt
 
-.g.c:
-	gperf -L ANSI -N `basename $*` -tT $< >$@
-
 AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 	 -I@top_srcdir@/c/bin/se/selemx \
 	-I@top_srcdir@/c/include \

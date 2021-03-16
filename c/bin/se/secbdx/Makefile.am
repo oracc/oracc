@@ -1,10 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 ##
 
-# build for secbdx is basically the same code base as setxtx
+include ../../../../oracc-am-rules.txt
 
-.g.c:
-	gperf -L ANSI -N$* -tT $< >$@
+# build for secbdx is basically the same code base as setxtx
 
 AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 	-I@top_srcdir@/c/bin/se/setxtx \
