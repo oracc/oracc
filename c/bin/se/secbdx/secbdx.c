@@ -338,10 +338,6 @@ main(int argc, char **argv)
 
   setlocale(LC_ALL,ORACC_LOCALE);
 
-  alias_index_aliases(curr_project,curr_index);
-  if (aliases_only)
-    exit(0);
-
   index_dir = (char*)se_dir(curr_project, curr_index);
   if (lang)
     {
@@ -351,6 +347,10 @@ main(int argc, char **argv)
     }
   index_dir = strdup(index_dir);
   
+  alias_index_aliases(curr_project,idxlang);
+  if (aliases_only)
+    exit(0);
+
   f_mangletab = create_mangle_tab(curr_project,idxlang);
 
   if (!(signmap_err = fopen("01tmp/signmap.log", "w")))

@@ -11,6 +11,8 @@ struct expr_rules *rules = NULL, *ret_type_rules = NULL;
 
 static int expr_id = 0;
 
+static int suppress_mangling = 0;
+
 #undef C
 #define C(x) #x,
 const char *const se_toks_names[] = 
@@ -230,6 +232,8 @@ filter_prefix(char *fname)
 {
   scan_name(add_token(!strcmp(fname,"s") ? se_sign : 
 		      (!strcmp(fname,"l") ? se_logo : se_filter1)), fname);
+  if ('\0' == fname[1] && (!strcmp(fname,"b") || !strcmp(fname,"c")))
+    suppress_mangling = 1;
 }
 
 static struct token *
@@ -719,7 +723,10 @@ expr_toks(char *e)
 		  curr_tok = add_token(regex_chars(ebuf) ? se_rexp : se_expr);
 		  curr_tok->data = strdup(ebuf);
 		  curr_tok->expr_id = expr_id;
-		  mangle(curr_tok, *e);
+		  if (!suppress_mangling)
+		    mangle(curr_tok, *e);
+		  else
+		    suppress_mangling = 0;
 		  p = ebuf;
 		}
 	      switch (*e)
@@ -774,7 +781,10 @@ expr_toks(char *e)
 	  curr_tok = add_token(regex_chars(ebuf) ? se_rexp : se_expr);
 	  curr_tok->data = strdup(ebuf);
 	  curr_tok->expr_id = expr_id;
-	  mangle(curr_tok,'\0');
+	  if (!suppress_mangling)
+	    mangle(curr_tok,'\0');
+	  else
+	    suppress_mangling = 0;
 	}
     }
   curr_tok->rules = rules;
