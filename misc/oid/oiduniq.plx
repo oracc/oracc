@@ -26,7 +26,7 @@ if ($oidonly) {
 }
 close(X);
 
-open(X,"| sort >$file");
+open(X,">$file");
 print X @keep;
 close(X);
 
