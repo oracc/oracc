@@ -14,6 +14,9 @@ my $lang = '';
 my $proj = '';
 my $sigs = '';
 
+my $with_nn = `oraccopt . cbd-with-nn`;
+$with_nn = 1 if $with_nn && $with_nn eq 'yes';
+
 $ORACC::CBD::nosetupargs = 1;
 my %args = pp_args();
 
@@ -21,7 +24,6 @@ my $qflag = 0;
 if ($args{'lang'} && $args{'lang'} =~ /^qpn/) {
     $qflag = 1;
 }
-
 
 my $map = shift @ARGV; $map = '' unless $map;
 die "$0: can't open map $map\n" unless $map && -r $map;
@@ -64,7 +66,7 @@ foreach (@input) {
 	    if ($qflag) {
 		next unless /\][A-Z]N'/;
 	    } else {
-		next if /\][A-Z]N'/;
+		next if /\][A-Z]N'/ && !$with_nn;
 	    }
 	    print map_apply_sig(\%args,$_) if /\%$lang/;
 	} else {
