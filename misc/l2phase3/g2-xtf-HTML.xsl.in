@@ -163,6 +163,7 @@
   <div>
     <table class="{local-name(.)}">
       <xsl:call-template name="base-attr"/>
+      <xsl:call-template name="key-after"/>
       <xsl:apply-templates/>
     </table>
 <!--    <xsl:message>#includes==<xsl:value-of select="count(xtf:include)"/>; self=<xsl:value-of select="local-name(.)"/></xsl:message> -->
@@ -1597,6 +1598,18 @@
   </xsl:if>
 </xsl:template>
 -->
+
+<xsl:template name="key-after">
+  <xsl:message>key-after <xsl:value-of select="local-name()"/></xsl:message>
+  <xsl:variable name="key-after" select="xtf:protocols/xtf:protocol[@type='key'][starts-with(text(),'after ')]"/>
+  <xsl:if test="count($key-after)>0">
+    <xsl:variable name="url" select="substring-after($key-after,'after ')"/>
+    <xsl:message>url = <xsl:value-of select="$url"/></xsl:message>
+    <tr class="noncolumn">
+      <td/><td colspan="{ancestor::*[@cols][1]/@cols}"><xsl:text>(After </xsl:text><a href="{$url}"><xsl:value-of select="$url"/><xsl:text>)</xsl:text></a></td>
+    </tr>
+  </xsl:if>
+</xsl:template>
 
 <xsl:template match="text()">
   <xsl:value-of select="."/>
