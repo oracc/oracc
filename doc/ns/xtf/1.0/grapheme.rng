@@ -331,6 +331,7 @@
         <value>|</value>
         <value>/</value>
         <value>:r:</value>
+        <value>·</value>
       </choice>
     </attribute>
     <ref name="g.meta"/>

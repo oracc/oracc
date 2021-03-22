@@ -1,8 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 ##
 
-.g.c:
-	gperf -L ANSI -N `basename $*` -tT $< >$@
+include ../../../../oracc-am-rules.txt
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \

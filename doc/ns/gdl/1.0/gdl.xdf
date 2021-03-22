@@ -1004,7 +1004,7 @@ alt="cuneiform triple wedge colon"/>); MZL592~b (as <code>:'</code>).</p>
 <d:rnc>
 # Punctuation
 p.model =
-    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:"|"·" } , 
     g.meta , 
     (v|q|s|n|c)? 
 </d:rnc>

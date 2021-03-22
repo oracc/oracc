@@ -84,6 +84,6 @@ o.binary =
 
 # Punctuation
 p.model =
-    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:"|"·" } , 
     g.meta , 
     (v|q|s|n|c)?
