@@ -393,8 +393,8 @@ T, Ṭ
 #
 # 2021-03-14 Add @ for IGI@g
 @chars %qse/n
-@allow aāâbcdeēêfgŋhḫiīîjklmnopqrsṣśštṭuūûvwxyzʾ'AĀÂBCDEĒÊFGŊHḪIĪÎJKLMNOPQRSṢŚŠTṬUŪÛVWXYZ-?`<>[]*0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙ;,:₀₁₂₃₄₅₆₇₈₉ₓ|@
-@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°@
+@allow aāâbcdeēêfgŋhḫiīîjklmnopqrsṣśštṭuūûvwxyzʾ'AĀÂBCDEĒÊFGŊHḪIĪÎJKLMNOPQRSṢŚŠTṬUŪÛVWXYZ-?`<>[]*0123456789'·°áéíúàèìùÁÉÍÚÀÈÌÙ;,:₀₁₂₃₄₅₆₇₈₉ₓ|@.
+@nokey ḫḪ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ·°@.
 @trans
 j  ŋ
 s, ṣ

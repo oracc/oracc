@@ -17,9 +17,14 @@ if [ ! -f ${ORACC_BUILDS}/$project/01bld/buildstamp ]; then
     echo "serve-project.sh: $project has no buildstamp--please run 'oracc build'"
     exit 1
 fi
-
+echo "ORACC_SERVE_STAGE = ${ORACC_SERVE_STAGE}"
 projfile=`/bin/echo -n $project | tr / -`
-srvdir=${ORACC_BUILDS}/www/srv
+if [ "$ORACC_SERVE_STAGE" == "" ]; then
+    srvdir=${ORACC_BUILDS}/www/srv
+else
+    echo "serve-project.sh: setting srvdir to $ORACC_SERVE_STAGE"
+    srvdir=${ORACC_SERVE_STAGE}
+fi
 tarball=$srvdir/${projfile}.part
 tarballfinal=$srvdir/${projfile}.tar.xz
 mkdir -p $srvdir
