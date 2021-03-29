@@ -322,6 +322,7 @@
       <h3 class="h3">Bibliography</h3>
       <p><xsl:value-of select="/*/md:cat/md:publication_history"/></p>
     </xsl:when>
+    <xsl:otherwise/>
   </xsl:choose>
 </xsl:template>
 

@@ -76,7 +76,8 @@ while (<>) {
 
 foreach (keys %h) {
     my $o = join("\t", @{$t{$_}});
-    print "$_ => $o\n";
+    $o =~ /==(.*?)\t/;
+    print "$1\t$_ => $o\n";
 }
 
 1;

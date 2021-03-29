@@ -49,7 +49,7 @@ while (<G>) {
 	}
 	$printed_forms = 0;
     } elsif (/^\@bases/ && $bases{$curr_cfgw}) {
-	my $incoming = '@bases '.join("; ", sort keys $bases{$curr_cfgw});
+	my $incoming = '@bases '.join("; ", sort keys %{$bases{$curr_cfgw}});
 	#	warn "incoming = $incoming\n";
 	my $newbref = bases_merge($_, $incoming, $is_compound);
 	my $newb = bases_serialize(%$newbref);
