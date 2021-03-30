@@ -14,7 +14,7 @@ cat >sig-glo/input.sig
 # l can be empty here if we've previously restricted sigs to NN
 l=`sig-langs.sh sig-glo/input.sig`
 for a in $l ; do
-    echo writing sig-glo/$l.glo
+    echo writing sig-glo/$a.glo
     grep '%'$a':' sig-glo/input.sig \
 	| l2p2-sig-g2a.plx -filter -lang $a -proj $proj >sig-glo/$a.glo
 done

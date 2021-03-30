@@ -96,7 +96,8 @@ cssfile {
     my $f = shift;
     my $in = "$indir/$f";
     my $out = "$outdir/$f";
-    open(OUT, ">$out"); select OUT;
+    open(OUT, ">$out") || die "$0: unable to open $out to write css from $in\n";
+    select OUT;
     subfile($in);
     close(OUT);
 }

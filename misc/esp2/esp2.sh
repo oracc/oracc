@@ -74,9 +74,10 @@ ln -sf $HTTPROOT $HTTPLINK
 # echo Copying project static site content
 # (cd $XMLSAP/00web/00static && cp_00web_static)
 cp -R $XMLSAP/00res/* $HTTPROOT
+chmod ug+w $HTTPROOT/*
 
 #echo Copying ESP default site content
-for a in css images js ; do mkdir -p $HTTPROOT/$a ; cp $ESP2/$a/* $HTTPROOT/$a/ ; done
+for a in css images js ; do mkdir -p $HTTPROOT/$a ; chmod ug+w $HTTPROOT/$a ; cp $ESP2/$a/* $HTTPROOT/$a/ ; done
 
 cd $XMLSAP && esp2-image-info.sh >01tmp/images-info.xml project=$project
 
