@@ -14,10 +14,12 @@ my $when = '';
 my $from = '';
 my $to = '';
 my $table = '';
+my $reportall = 0;
 
 GetOptions (
     'dump:s'=>\$dump_table,
     'from:s'=>\$from,
+    reportall=>\$reportall, 
     'table:s'=>\$table,
     'to:s'=>\$to,
     'when:s'=>\$when,
@@ -58,6 +60,9 @@ while (<>) {
 	my $lem = <> || last;
 	if ($lem =~ /^\#lem:/) {
 	    chomp $line; chomp $lem;
+	    $line =~ s/,!\S+//g; # remove field designators like ,!yn
+	    $line =~ tr/[]⸢⸣//d;
+	    $line =~ s/\*\(AŠ\@c\)[#*!?]*\s+//;
 	    $line =~ s/\(\#.*?\#\)//g;
 	    $line =~ s/\(\$.*?\$\)//g;
 	    $line =~ s/\{\{/ /g;
@@ -124,7 +129,8 @@ foreach my $e (keys %edits) {
     my $ehash = $edits{$e};
     $total += $$ehash{'done'};
     print STDERR
-	"$$ehash{'done'}: when $$ehash{'when'} map $$ehash{'from'} to $$ehash{'to'}\n";
+	"$$ehash{'done'}: when $$ehash{'when'} map $$ehash{'from'} to $$ehash{'to'}\n"
+	if $reportall || $$ehash{'done'};
 }
 print STDERR "Total fixes: $total\n";
 

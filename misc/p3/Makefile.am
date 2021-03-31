@@ -1,7 +1,8 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS=p3-project-data.plx p3-project.sh p3-pager.plx p3-asrch.sh p3-colours.plx p3-collapse.plx \
-	p3-selector.plx p3-transonly.plx p3-translangs.sh proxyhost.plx p3-wrapup.sh colour_nn-html.plx
+	p3-selector.plx p3-transonly.plx p3-translangs.sh proxyhost.plx p3-wrapup.sh colour_nn-html.plx \
+	use-colour-nns.sh
 css_DATA=p3.css p3cbd.css oas.css transonly_off.css transonly_on.css transnone.css p3css.xml p3cbdcss.xml \
 	p3social.css colour_nn.css p3oid.css
 data_DATA=p3-template.xml as-base.xml p2colours.txt oas-template.xml oas-instance.xml pll_linkids.xml \
