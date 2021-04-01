@@ -74,6 +74,7 @@ while (<>) {
 	    $lem =~ s/\s$//;
 	    $line =~ s/<<.*?>>//g;
 	    $line =~ s/--/-/;
+	    $line =~ tr/:/-/;
 	    $line =~ tr/-:. a-zA-Z0-9šṣṭŋŠṢṬŊ₀-₉ₓ\|\@&~%{}()//cd;
 	    $line =~ s/\s+/ /g;
 	    $line =~ s/\(\d*::\d*\)//g; # for etcsl
@@ -164,6 +165,7 @@ load_table {
 	++$e;
     }
     close(T);
+    # use Data::Dumper; print Dumper \%whens; exit 1;
 }
 
 1;
