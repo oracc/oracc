@@ -454,9 +454,9 @@ parse_nsf {
 	    while ($tmp--) {
 		last if $nsf[$tmp];
 	    }
-	    if ($tmp <= 1) {
+	    if ($tmp < 1) {
 		$nsf[1] = 'ak';
-	    } elsif ($tmp <= 5) {
+	    } elsif ($tmp < 5 && !$nsf[1]) { # if we have .ak don't do .ak.ak -- what is best default?
 		$nsf[5] = 'ak';
 	    } else {
 		# leave it as 'a'
