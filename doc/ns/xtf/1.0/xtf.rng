@@ -105,10 +105,35 @@
   </define>
   <define name="proto.key">
     <element name="protocol">
-      <attribute name="type">
-        <value>key</value>
-      </attribute>
-      <text/>
+      <choice>
+        <group>
+          <attribute name="type">
+            <value>key</value>
+          </attribute>
+          <text/>
+        </group>
+        <group>
+          <attribute name="type">
+            <value>key</value>
+          </attribute>
+          <attribute name="kkey">
+            <data type="NMTOKEN"/>
+          </attribute>
+          <attribute name="kval"/>
+        </group>
+        <group>
+          <attribute name="type">
+            <choice>
+              <value>after</value>
+              <value>see</value>
+            </choice>
+          </attribute>
+          <optional>
+            <attribute name="url"/>
+          </optional>
+          <text/>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="proto.lem">

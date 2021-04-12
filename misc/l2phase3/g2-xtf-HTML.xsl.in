@@ -1601,14 +1601,18 @@
 
 <xsl:template name="key-after">
   <xsl:message>key-after <xsl:value-of select="local-name()"/></xsl:message>
-  <xsl:variable name="key-after" select="xtf:protocols/xtf:protocol[@type='key'][starts-with(text(),'after ')]"/>
-  <xsl:if test="count($key-after)>0">
-    <xsl:variable name="url" select="substring-after($key-after,'after ')"/>
-    <xsl:message>url = <xsl:value-of select="$url"/></xsl:message>
+  <xsl:variable name="key-after" select="xtf:protocols/xtf:protocol[@type='after' or @type='see']"/>
+  <xsl:for-each select="$key-after">
     <tr class="noncolumn">
-      <td/><td colspan="{ancestor::*[@cols][1]/@cols}"><xsl:text>(After </xsl:text><a href="{$url}"><xsl:value-of select="$url"/><xsl:text>)</xsl:text></a></td>
+      <td/><td colspan="{ancestor::*[@cols][1]/@cols}"
+      ><xsl:text>(</xsl:text><xsl:value-of select="@type"/><xsl:text> </xsl:text
+      ><xsl:apply-templates
+      /><xsl:if test="string-length(@url)>0"
+      ><xsl:text> </xsl:text
+      ><a href="{@url}"><xsl:value-of select="@url"/></a
+      ></xsl:if><xsl:text>)</xsl:text></td>
     </tr>
-  </xsl:if>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="text()">

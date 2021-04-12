@@ -256,6 +256,7 @@ protocol(struct run_context *run,
     {
       int suppress_output = 0;
       char *endp = (char*)(line + xxstrlen(line));
+      struct keypair *kp = NULL;
       while (isspace(endp[-1]))
 	--endp;
       if (*endp)
@@ -359,7 +360,6 @@ protocol(struct run_context *run,
 	    }
 	  else if (!xstrcmp(type,"key"))
 	    {
-	      struct keypair *kp = NULL;
 	      key_init();
 	      kp = key_parse(line);
 	      if (doctype == e_score)
@@ -380,6 +380,10 @@ protocol(struct run_context *run,
 			  warning("bad syntax in siglum-map, say, e.g., A1=>A");
 			}
 		    }
+		}
+	      if (!strcmp(kp->key, "after") || !strcmp(kp->key, "see"))
+		{
+		  type = kp->key;
 		}
 	    }
 	  else if (!xstrcmp(type,"var") || !xstrcmp(type,"basket"))
@@ -407,7 +411,9 @@ protocol(struct run_context *run,
 	{
 	  e = appendChild(parent,elem(e_protocol,NULL,lnum,level));
 	  setAttr(e, a_type, type);
-	  appendChild(e,cdata(line));
+	  if (kp && kp->url)
+	    setAttr(e, a_url, kp->url);
+	  appendChild(e,cdata(kp ? kp->val : line));
 	}
 
       if (need_auto_syntax_line_is_unit)

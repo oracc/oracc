@@ -27,7 +27,14 @@ proto.atf    = element protocol { attribute type { "atf" }    , text }
 proto.basket = element protocol { attribute type { "basket" } , text }
 proto.bib    = element protocol { attribute type { "bib" }    , text }
 proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
-proto.key    = element protocol { attribute type { "key" }    , text }
+proto.key    = element protocol { ( attribute type { "key" }  , text )
+				  |(attribute type { "key" } , 
+				    attribute kkey { xsd:NMTOKEN } , 
+				    attribute kval { text } )
+				  |(attribute type { "after"|"see" } ,
+				    attribute url { text }? ,
+				    text )
+				}
 proto.lem    = element protocol { attribute type { "lem" }    , text }
 proto.psu    = element protocol { attribute type { "psu" }    , text }
 proto.lemmatizer

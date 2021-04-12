@@ -39,7 +39,20 @@ key_parse(unsigned char *lp)
       while (*lp && (*lp >128 || !isspace(*lp)))
 	++lp;
       if (*lp)
+	*lp++ = '\0';
+      while (*lp && (*lp > 128 || isspace(*lp)))
+	++lp;
+      if (*lp)
+	kp->url = lp;
+      while (*lp && (*lp >128 || !isspace(*lp)))
+	++lp;
+      if (*lp)
 	*lp = '\0';
+      if (!kp->url && kp->val && !strncmp(kp->val,"http",4))
+	{
+	  kp->url = kp->val;
+	  kp->val = "";
+	}
     }
   return kp;
 }

@@ -5,6 +5,7 @@ struct keypair
 {
   char *key;
   char *val;
+  char *url;
 };
 
 extern struct keypair *key_parse(unsigned char *lp);

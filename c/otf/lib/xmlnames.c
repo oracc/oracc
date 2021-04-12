@@ -81,6 +81,8 @@ struct xname anames[] =
   { "headref", "headref" },
   { "hlid", "hlid" },
   { "implicit", "implicit" },
+  { "kkey", "kkey" },
+  { "kval", "kval" },
   { "l", "l" },
   { "label", "label" },
   { "lang", "lang" },
@@ -128,6 +130,7 @@ struct xname anames[] =
   { "to", "to" },
   { "type", "type" },
   { "unit", "unit" },
+  { "url", "url" },
   { "varnum", "varnum" },
   { "xml:id", "http://www.w3.org/XML/1998/namespace:id" },
   { "xml:lang", "http://www.w3.org/XML/1998/namespace:lang" },
@@ -305,6 +308,9 @@ struct attr abases[] =
   { { anames[140].qname,NULL } , { anames[140].pname,NULL } },
   { { anames[141].qname,NULL } , { anames[141].pname,NULL } },
   { { anames[142].qname,NULL } , { anames[142].pname,NULL } },
+  { { anames[143].qname,NULL } , { anames[143].pname,NULL } },
+  { { anames[144].qname,NULL } , { anames[144].pname,NULL } },
+  { { anames[145].qname,NULL } , { anames[145].pname,NULL } },
 };
 struct xname enames[] =
 {
