@@ -13,6 +13,8 @@ static int bracketing_level = 0;
 static const char *const LPC_names[] = { LPC };
 static const char *const LPT_names[] = { LPT };
 
+unsigned char *longprop_val = NULL;
+
 const unsigned char *
 ilem_para_head_label(struct xcl_c *c, int depth)
 {
@@ -66,6 +68,8 @@ add_lp(struct ilem_para **lpp, enum ilem_para_class c, enum ilem_para_type t,
   lp->class = c;
   lp->type = t;
   lp->text = text;
+  if (longprop_val)
+    lp->longval = longprop_val+1;
   lp->level = level;
 }
 
@@ -76,6 +80,11 @@ next_feature(unsigned char *c)
     ++c;
   if (*c)
     *c++ = '\0';
+  if (longprop_val)
+    {
+      *longprop_val = '\0';
+      longprop_val = NULL;
+    }
   return c;
 }
 
@@ -97,6 +106,16 @@ void
 ilem_reset_bracketing_level(void)
 {
   bracketing_level = 0;
+}
+
+static unsigned char *longprop(unsigned char *c)
+{
+  while (*c && !isspace(*c))
+    if ('=' == *c)
+      return c;
+    else
+      ++c;
+  return NULL;
 }
 
 struct ilem_para *
@@ -128,7 +147,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	  add_lp(&lp, LPC_pointer, LPT_pointer_ref, ++c, bracketing_level);
 	  break;
 	case '$':
-	  if (strchr((char*)c,'='))
+	  if ((longprop_val = longprop(c)))
 	    add_lp(&lp, LPC_property, LPT_long_prop, ++c, bracketing_level);
 	  else
 	    add_lp(&lp, LPC_property, LPT_short_prop, ++c, bracketing_level);
@@ -390,10 +409,11 @@ ilem_para_dump_one(FILE*fp,struct ilem_para *p,const char *pos)
   fprintf(fp,"<para pos=\"%s\">",pos);
   for (pp = p; pp; pp = pp->next)
     {
-      fprintf(fp,"<p class=\"%s\" type=\"%s\" text=\"%s\" bracketing_level=\"%d\"/>",
+      fprintf(fp,"<p class=\"%s\" type=\"%s\" text=\"%s\" val=\"%s\" bracketing_level=\"%d\"/>",
 	      LPC_names[pp->class],
 	      LPT_names[pp->type],
 	      xmlify(pp->text),
+	      pp->longval ? xmlify(pp->longval) : "",
 	      pp->level);
     }
   fputs("</para>",fp);

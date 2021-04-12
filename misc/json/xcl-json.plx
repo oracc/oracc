@@ -131,13 +131,16 @@ xcl_howtos {
     $howto{'xcl_m'} = { type=>'#ignore' };
     $howto{'xcl_props'} = { nam=>'props',val=>'[' };
     $howto{'xcl_prop'} = { type=>'{',nam=>'#ignore',val=>'#ignore',att=>'' };
-    $howto{'xcl_para'} = { type=>'#ignore' };
-    $howto{'xcl_p'} = { type=>'#ignore' };
+    $howto{'xcl_para'} = { nam=>'para',val=>'[' };
+    $howto{'xcl_p'} = { type=>'{',nam=>'#ignore',val=>'#ignore',att=>'' };
 
     ORACC::JSON::gdl_howtos(\%howto, \%attmap);
  
     ORACC::JSON::setHowTos(%howto);
     ORACC::JSON::setAttMap(%attmap);
 }
+
+#    $howto{'xcl_para'} = { type=>'#ignore' };
+#    $howto{'xcl_p'} = { type=>'#ignore' };
 
 1;

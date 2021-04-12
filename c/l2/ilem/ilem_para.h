@@ -46,6 +46,7 @@ struct ilem_para
   enum ilem_para_class class;
   enum ilem_para_type type;
   const unsigned char *text;
+  const unsigned char *longval;
   int level;
   struct ilem_para *next;
 };
