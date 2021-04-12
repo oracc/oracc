@@ -211,14 +211,14 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
       lp = xcl_lemma(xc,NULL,master_formp->ref,master_formp,NULL,0);
       lp->inst = master_formp->literal;
       lp->lnum = lnum;
-      lp->ante_para = ilem_para_parse(xc, lem,&lem,master_formp->lnum, ilem_para_pos_ante);
+      lp->ante_para = ilem_para_parse(xc, lem, &lem,master_formp->lnum, ilem_para_pos_ante, lp);
       if (lem)
 	{
 	  unsigned char *post = NULL;
 	  while (isspace(*lem))
 	    ++lem;
 	  post = lem_end(lem);
-	  lp->post_para = ilem_para_parse(xc, post,NULL,master_formp->lnum, ilem_para_pos_post);
+	  lp->post_para = ilem_para_parse(xc, post,NULL,master_formp->lnum, ilem_para_pos_post, lp);
 	  if (isspace(*post))
 	    {
 	      while (post > lem && isspace(post[-1]))

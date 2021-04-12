@@ -53,7 +53,7 @@ struct ilem_para
 
 extern void ilem_para_boundaries(struct xcl_l*lp, struct xcl_context*xc);
 extern struct ilem_para *ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **end, 
-					 int err_lnum, enum ilem_para_pos);
+					 int err_lnum, enum ilem_para_pos, struct xcl_l*lp);
 extern void ilem_para_dump(FILE *fp, struct xcl_l *lp);
 extern const unsigned char *ilem_para_head_label(struct xcl_c *c, int depth);
 extern struct ilem_para *ilem_para_find(struct xcl_l *lp, enum ilem_para_class class, enum ilem_para_type type);

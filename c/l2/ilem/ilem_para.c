@@ -3,6 +3,7 @@
 #include "warning.h"
 #include "xcl.h"
 #include "ilem_para.h"
+#include "ilem_form.h"
 #include "pool.h"
 #include "xmlutil.h"
 
@@ -118,8 +119,24 @@ static unsigned char *longprop(unsigned char *c)
   return NULL;
 }
 
+void
+lpt_save_anchor(unsigned char *c, struct xcl_l*lp, int err_lnum)
+{
+  unsigned char *e = c;
+  char ec = *e;
+  while (*e && *e < 128 && !isspace(*e))
+    ++e;
+  *e = '\0';
+  if (hash_find(lp->xc->lpt_anchors,c))
+    vwarning2(file, err_lnum, "duplicate anchor ID %s",c);
+  else
+    hash_add(lp->xc->lpt_anchors,pool_copy(c),lp->xml_id);
+  *e = ec;
+}
+
 struct ilem_para *
-ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **end, int err_lnum, enum ilem_para_pos pos)
+ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **end,
+		int err_lnum, enum ilem_para_pos pos, struct xcl_l*xlp)
 {
 #if 1
   unsigned char *c = pool_copy(s);
@@ -141,6 +158,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    add_lp(&lp, LPC_linkset, LPT_linkset_member, ++c, bracketing_level);
 	  break;
 	case '@':
+	  lpt_save_anchor(c+1, xlp->xml_id, err_lnum);
 	  add_lp(&lp, LPC_pointer, LPT_pointer_anchor, ++c, bracketing_level);
 	  break;
 	case '=':
@@ -403,12 +421,20 @@ ilem_para_boundaries(struct xcl_l*lp, struct xcl_context*xc)
 }
 
 static void
-ilem_para_dump_one(FILE*fp,struct ilem_para *p,const char *pos)
+ilem_para_dump_one(FILE*fp,struct ilem_para *p,const char *pos,struct xcl_l *lp)
 {
   struct ilem_para *pp;
   fprintf(fp,"<para pos=\"%s\">",pos);
   for (pp = p; pp; pp = pp->next)
     {
+      if (pp->longval && *pp->longval == '@')
+	{
+	  char *id = hash_find(lp->xc->lpt_anchors,pp->longval+1);
+	  if (id)
+	    pp->longval = id;
+	  else
+	    vwarning2(lp->f->file, lp->f->lnum, "duplicate anchor ID %s",pp->longval+1);
+	}
       fprintf(fp,"<p class=\"%s\" type=\"%s\" text=\"%s\" val=\"%s\" bracketing_level=\"%d\"/>",
 	      LPC_names[pp->class],
 	      LPT_names[pp->type],
@@ -425,9 +451,9 @@ ilem_para_dump(FILE *fp, struct xcl_l *lp)
   if (fp && lp)
     {
       if (lp->ante_para)
-	ilem_para_dump_one(fp,lp->ante_para,"ante");
+	ilem_para_dump_one(fp,lp->ante_para,"ante",lp);
       if (lp->post_para)
-	ilem_para_dump_one(fp,lp->post_para,"post");
+	ilem_para_dump_one(fp,lp->post_para,"post",lp);
     }
 }
 

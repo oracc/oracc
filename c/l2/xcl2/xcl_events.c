@@ -88,6 +88,7 @@ xcl_create()
   xc->pool = xcl_pool;
   xc->langs = xc->project = xc->textid = NULL;
   xc->psus = hash_create(1);
+  xc->lpt_anchors = hash_create(1);
   xcl_props_init();
   return xc;
 }
@@ -170,6 +171,7 @@ xcl_destroy(struct xcl_context **xc)
       npool_term((*xc)->pool);
 #endif
       hash_free((*xc)->psus,(hash_free_func*)list_free);
+      hash_free((*xc)->lpt_anchors,(hash_free_func*)NULL);
       linkbase_free((*xc)->linkbase);
 #if 0 /* we should be using one global sig context now */
       if ((*xc)->sigs)

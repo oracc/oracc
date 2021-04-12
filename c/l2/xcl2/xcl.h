@@ -118,6 +118,7 @@ struct xcl_context
   struct linkbase *linkbase;
   struct npool *pool;
   Hash_table *psus;
+  Hash_table *lpt_anchors;
   void *user;
 };
 

@@ -373,6 +373,11 @@ ilem_wrapup_sub(struct xcl_context *xcp, struct xcl_l *lp, struct ilem_form *fp)
   else if (!BIT_ISSET(fp->f2.flags, F2_FLAGS_FROM_CACHE))
     BIT_SET(fp->f2.flags, F2_FLAGS_INVALID);
 
+#if 0
+  if (lp->ante_para || lp->post_para)
+    ilem_para_resolve_anchors(lp);
+#endif
+  
 #if 0 /* can't do this any more because the cache references the ilem node */
   free(fp->finds);
   fp->finds = NULL;
