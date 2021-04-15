@@ -9,6 +9,16 @@ extern int ilem_props_verbose;
 int check = 0;
 int test = 0;
 
+void
+testf(const char *t)
+{
+  struct keypair *kp = NULL;
+  fprintf(stderr, "lemprop testing '%s'\n", t);
+  kp = ilem_props_look((const unsigned char *)t);
+  if (kp->key)
+    fprintf(stderr, "look(gender=f) returned key=%s; val=%s\n", kp->key, kp->val);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -21,6 +31,15 @@ main(int argc, char **argv)
 	fprintf(stderr, "errors in lemprops file\n");
       else
 	fprintf(stderr, "lemprops file syntax OK\n");
+    }
+  if (test)
+    {
+      testf("gender=f");
+      testf("gender=banana");
+      testf("seller");
+      testf("x");
+      testf("banana");
+      testf("BN=merchant");
     }
 }
 

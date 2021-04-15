@@ -1,0 +1,9 @@
+role seller buyer x y
+BN *
+gender
+	m
+	f
+	x
+	=y
+fatherOf @
+sealer -

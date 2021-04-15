@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
-#include "key.h"
 #include "hash.h"
 #include "npool.h"
 #include "loadfile.h"
@@ -77,7 +76,6 @@ ilem_props_prop(unsigned char *s)
     *t = save;
 
   return t;
-
 }
 
 static unsigned char *
@@ -140,9 +138,12 @@ ilem_props_save(unsigned char *v)
 		}
 	      else
 		{
-		  hash_add(h,v,pv);
-		  if (ilem_props_verbose)
-		    fprintf(stdout, "adding v %s => %s\n", v, pv);
+		  if (*v != '*' && *v != '-' && *v != '@')
+		    {
+		      hash_add(h,v,pv);
+		      if (ilem_props_verbose)
+			fprintf(stdout, "adding v %s => %s\n", v, pv);
+		    }
 		}
 	    }
 	}
@@ -299,12 +300,46 @@ ilem_props_term(void)
   (void)ilem_props_look(NULL);
 }
 
+static int
+ilem_props_special(const unsigned char *kv, char special)
+{
+  unsigned char *s = NULL, *e;
+  s = malloc(strlen((const char*)kv) + 1);
+  strcpy((char*)s,(const char*)kv);
+  e = (unsigned char *)strchr((char*)s,'=');
+  e[1] = special;
+  e[2] = '\0';
+  if (hash_find(h,s))
+    {      
+      free(s); /* This is the 's' that we used to look up the =* form */
+      return 1;
+    }
+  else
+    {
+      free(s);
+      return 0;
+    }
+}
+
+static void
+ilem_props_kp_from_kv(const unsigned char *kv, struct keypair *kp)
+{
+  static unsigned char *tmp = NULL, *s = NULL;
+  s = tmp = realloc((char*)tmp,strlen((char*)kv)+1);
+  strcpy((char*)tmp,(char*)kv);
+  kp.key = (char*)tmp;
+  while (*s && *s != '=')
+    ++s;
+  *s = '\0';
+  kp.val = (char*)(s+1);
+}
+
 /* receive a string which is KEY or KEY=VALUE; no spaces in VALUE 
  * return a structure containing pointers to key and value;
  * validate KEY/VALUE against our hash.
  */
 struct keypair *
-ilem_props_look(unsigned char *kv)
+ilem_props_look(const unsigned char *kv)
 {
   static struct keypair kp;
   static unsigned char *tmp = NULL;
@@ -316,9 +351,39 @@ ilem_props_look(unsigned char *kv)
 	{
 	  if (hash_find(h,kv))
 	    {
-	      kp.key = (char*)kv;
-	      kp.val = (char*)(equal+1);
-	      *equal = '\0';
+	      unsigned char *s = NULL;
+	      s = tmp = realloc((char*)tmp,strlen((char*)kv)+1);
+	      strcpy((char*)tmp,(char*)kv);
+	      kp.key = (char*)tmp;
+	      while (*s && *s != '=')
+		++s;
+	      *s = '\0';
+	      kp.val = (char*)(s+1);
+	    }
+	  else
+	    {
+	      unsigned char *s = NULL, *e;
+	      s = malloc(strlen((const char*)kv) + 1);
+	      strcpy((char*)s,(const char*)kv);
+	      e = (unsigned char *)strchr((char*)s,'=');
+	      e[1] = '*';
+	      e[2] = '\0';
+	      if (hash_find(h,s))
+		{
+		  free(s); /* This is the 's' that we used to look up the =* form */
+		  s = tmp = realloc((char*)tmp,strlen((char*)kv)+1);
+		  strcpy((char*)tmp,(char*)kv);
+		  kp.key = (char*)tmp;
+		  while (*s && *s != '=')
+		    ++s;
+		  *s = '\0';
+		  kp.val = (char*)(s+1);
+		}
+	      else
+		{
+		  free(s);
+		  vwarning("$%s not found in lemprops", kv);
+		}
 	    }
 	}
       else
@@ -327,16 +392,17 @@ ilem_props_look(unsigned char *kv)
 	  if (found)
 	    {
 	      if (strchr((char*)found, ' '))
-		vwarning("ambigous value requires $PROP=VAL: %s", found);
+		vwarning("ambigous value %s requires $PROP=VAL: %s", kv, found);
 	      else
 		{
-		  tmp = realloc((char*)tmp,strlen((char*)found)+1);
+		  unsigned char *s = NULL;
+		  s = tmp = realloc((char*)tmp,strlen((char*)found)+1);
 		  strcpy((char*)tmp,(char*)found);
 		  kp.key = (char*)tmp;
-		  while (*tmp && *tmp != '=')
-		      ++tmp;
-		  *tmp = '\0';
-		  kp.val = (char*)(tmp+1);
+		  while (*s && *s != '=')
+		      ++s;
+		  *s = '\0';
+		  kp.val = (char*)(s+1);
 		}
 	    }
 	  else
