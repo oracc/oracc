@@ -123,9 +123,10 @@ void
 lpt_save_anchor(unsigned char *c, struct xcl_l*lp, int err_lnum)
 {
   unsigned char *e = c;
-  char ec = *e;
+  char ec;
   while (*e && *e < 128 && !isspace(*e))
     ++e;
+  ec = *e;
   *e = '\0';
   if (hash_find(lp->xc->lpt_anchors,c))
     vwarning2(file, err_lnum, "duplicate anchor ID %s",c);
@@ -158,8 +159,9 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    add_lp(&lp, LPC_linkset, LPT_linkset_member, ++c, bracketing_level);
 	  break;
 	case '@':
-	  lpt_save_anchor(c+1, xlp->xml_id, err_lnum);
-	  add_lp(&lp, LPC_pointer, LPT_pointer_anchor, ++c, bracketing_level);
+	  lpt_save_anchor(c+1, xlp, err_lnum);
+	  add_lp(&lp, LPC_pointer, LPT_pointer_anchor, c, bracketing_level);
+	  ++c;
 	  break;
 	case '=':
 	  add_lp(&lp, LPC_pointer, LPT_pointer_ref, ++c, bracketing_level);
@@ -427,20 +429,23 @@ ilem_para_dump_one(FILE*fp,struct ilem_para *p,const char *pos,struct xcl_l *lp)
   fprintf(fp,"<para pos=\"%s\">",pos);
   for (pp = p; pp; pp = pp->next)
     {
+      char *id = NULL;
       if (pp->longval && *pp->longval == '@')
 	{
-	  char *id = hash_find(lp->xc->lpt_anchors,pp->longval+1);
-	  if (id)
-	    pp->longval = id;
-	  else
+	  id = hash_find(lp->xc->lpt_anchors,pp->longval+1);
+	  if (!id)
 	    vwarning2(lp->f->file, lp->f->lnum, "duplicate anchor ID %s",pp->longval+1);
 	}
-      fprintf(fp,"<p class=\"%s\" type=\"%s\" text=\"%s\" val=\"%s\" bracketing_level=\"%d\"/>",
+      fprintf(fp,"<p class=\"%s\" type=\"%s\" text=\"%s\" val=\"%s\" bracketing_level=\"%d\"",
 	      LPC_names[pp->class],
 	      LPT_names[pp->type],
 	      xmlify(pp->text),
 	      pp->longval ? xmlify(pp->longval) : "",
 	      pp->level);
+      if (id)
+	fprintf(fp," ref=\"%s\"/>",id);
+      else
+	fputs("/>",fp);
     }
   fputs("</para>",fp);
 }
