@@ -25,6 +25,9 @@
  *  - all values may be given as $property=value
  *  - unique values may be given directly with $
  *  - non-unique values must be given as $property=value
+ *  - non-unique values generate an error when reading the lemprops file;
+ *    this error can be suppressed by prefixing the value with '=';
+ *    the '=' is a flag which is not part of the value itself
  *
  */
 
@@ -36,6 +39,11 @@
 #include "npool.h"
 #include "loadfile.h"
 #include "warning.h"
+#include "ilem_props.h"
+
+int ilem_props_equals_flag = 0;
+int ilem_props_verbose = 0;
+int ilem_props_status = 0;
 
 static char *plist = "00lib/lemprops.txt";
 static int pline = 1;
@@ -63,7 +71,7 @@ ilem_props_prop(unsigned char *s)
 
   prop = npool_copy(s, p);
 
-  printf("prop: :%s:\n", prop);
+  /*printf("prop: :%s:\n", prop);*/
 
   if (save)
     *t = save;
@@ -95,6 +103,7 @@ ilem_props_save(unsigned char *v)
 	{
 	  fprintf(stderr, "%s:%d: ignoring duplicate property %s\n",
 		  plist, pline, prop);
+	  ++ilem_props_status;
 	}
       else
 	{
@@ -103,11 +112,13 @@ ilem_props_save(unsigned char *v)
 	    {
 	      fprintf(stderr, "%s:%d: ignoring duplicate value %s in property %s\n",
 		      plist, pline, v, prop);
+	      ++ilem_props_status;
 	    }
 	  else
 	    {
 	      hash_add(h,pv,&v_ok);
-	      fprintf(stdout, "adding pv == %s\n", pv);
+	      if (ilem_props_verbose)
+		fprintf(stdout, "adding pv %s\n", pv);
 	      if ((found = hash_find(h,v)))
 		{
 		  /* This is a repeat occurrence of v 
@@ -120,14 +131,18 @@ ilem_props_save(unsigned char *v)
 		  ambig_val = npool_copy(tmp,p);
 		  free(tmp);
 		  hash_add(h,v,ambig_val);
-		  fprintf(stderr, "%s:%d: ambiguous value %s requires PROP=VAL: %s\n",
-			  plist, pline, v, ambig_val);
-		  fprintf(stdout, "adding v || %s\n", ambig_val);
+		  if (!ilem_props_equals_flag)
+		    fprintf(stderr, "%s:%d: ambiguous value %s requires PROP=VAL: %s\n",
+			    plist, pline, v, ambig_val);
+		  ++ilem_props_status;
+		  if (ilem_props_verbose)
+		    fprintf(stdout, "adding v %s || %s\n", v, ambig_val);
 		}
 	      else
 		{
 		  hash_add(h,v,pv);
-		  fprintf(stdout, "adding v => %s\n", pv);
+		  if (ilem_props_verbose)
+		    fprintf(stdout, "adding v %s => %s\n", v, pv);
 		}
 	    }
 	}
@@ -144,26 +159,43 @@ ilem_props_val(unsigned char *v)
 	{
 	  if (!v[1])
 	    {
+#if 1
+	      (void)ilem_props_save(v);
+#else
 	      unsigned char *pv = ilem_props_save(v);
 	      fprintf(stderr, "%s:%d: pv: %s\n", plist, pline, pv);
+#endif
 	    }
 	  else
 	    {
 	      fprintf(stderr, "%s:%d: property %s has bad value %s (junk after @, *, or -)\n",
 		      plist, pline, prop, v);
+	      ++ilem_props_status;
 	    }
 	}
       else if (*v == '|' && !v[1])
 	{
 	  fprintf(stderr, "%s:%d: in prop %s standalone value '|' is not allowed (reserved for system use)\n",
 		  plist, pline, prop);
+	  ++ilem_props_status;
 	}
       else
 	{
 	  unsigned char *pv = NULL;
+	  if (*v == '=')
+	    {
+	      ilem_props_equals_flag = 1;
+	      ++v;
+	    }
+	  else
+	    ilem_props_equals_flag = 0;
 	  v = npool_copy(v,p);
+#if 1
+	  pv = ilem_props_save(v);
+#else
 	  pv = ilem_props_save(v);
 	  fprintf(stderr, "%s:%d: pv: %s\n", plist, pline, pv);
+#endif
 	}
     }
 }
@@ -254,6 +286,7 @@ ilem_props_load(void)
 void
 ilem_props_init(void)
 {
+  h = hash_create(1);
   p = npool_init();
   ilem_props_load();
 }
@@ -263,6 +296,7 @@ ilem_props_term(void)
 {
   hash_free(h,NULL);
   npool_term(p);
+  (void)ilem_props_look(NULL);
 }
 
 /* receive a string which is KEY or KEY=VALUE; no spaces in VALUE 
@@ -319,4 +353,3 @@ ilem_props_look(unsigned char *kv)
     }
   return &kp;
 }
-
