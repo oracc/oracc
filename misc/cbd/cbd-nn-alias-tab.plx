@@ -12,8 +12,10 @@ my %aliases = ();
 my %seen = ();
 my $sigs = '';
 my %sigforms = ();
+my $xalias = 0;
 GetOptions(
     'sigs:s'=>\$sigs,
+    'x'=>\$xalias,
     );
 if ($sigs) {
     open(S,$sigs) || die "$0: can't read $sigs\n";
@@ -39,6 +41,7 @@ while (<>) {
 	($e) = (/\s+(.*?)\s*$/);
 	$e =~ s/\s+(\[.*?\])\s+/$1/;
 	@a = ();
+	push @a, 'X' if $xalias;
     } elsif (/\@alias/) {
 	my ($a) = (/\s+(.*?)\s*$/);
 	$a =~ s/\s+(\[.*?\])\s+/$1/;

@@ -15,6 +15,7 @@ my $from = '';
 my $to = '';
 my $table = '';
 my $reportall = 0;
+my $xfix = 0; # fix X lemmatizations as well
 
 GetOptions (
     'dump:s'=>\$dump_table,
@@ -23,6 +24,7 @@ GetOptions (
     'table:s'=>\$table,
     'to:s'=>\$to,
     'when:s'=>\$when,
+    'x'=>\$xfix
     );
 
 if ($table) {
@@ -106,7 +108,7 @@ while (<>) {
 			    } else {
 				foreach my $l (split(/\|/,$lem[$i])) {
 				    next unless $l;
-				    if ($l eq $$ehash{'from'}) {
+				    if ($l eq $$ehash{'from'} || ($xfix && $l eq 'X')) {
 					$lem[$i] = $$ehash{'to'};
 					++$$ehash{'done'};
 					last;
