@@ -16,7 +16,7 @@ testf(const char *t)
   fprintf(stderr, "lemprop testing '%s'\n", t);
   kp = ilem_props_look((const unsigned char *)t);
   if (kp->key)
-    fprintf(stderr, "look(gender=f) returned key=%s; val=%s\n", kp->key, kp->val);
+    fprintf(stderr, "%s returned key=%s; val=%s\n", t, kp->key, kp->val);
 }
 
 int
@@ -35,11 +35,17 @@ main(int argc, char **argv)
   if (test)
     {
       testf("gender=f");
-      testf("gender=banana");
+      testf("gender=banana"); 	/* banana not a valid val */
+      testf("sealer");
+      testf("sealer=Dada"); 	/* sealer is boolean so no val */
       testf("seller");
-      testf("x");
-      testf("banana");
-      testf("BN=merchant");
+      testf("seller=xyz"); 	/* seller is a value not a prop */
+      testf("x"); 		/* x is an ambiguous val */
+      testf("banana");		/* banana not valid prop or val */
+      testf("prof=merchant");	/* prof has * val */
+      testf("pro=xyz"); 	/* pro is not a property */
+      testf("fatherOf=@1"); 	/* must take ref */
+      testf("fatherOf=Dada"); 	/* must take ref */
     }
 }
 

@@ -56,7 +56,7 @@ static unsigned char *prop = NULL;
 static unsigned char *
 ilem_props_prop(unsigned char *s)
 {
-  unsigned char *t = s, *tmp;
+  unsigned char *t = s, *tmp = NULL;
   unsigned char save = '\0';
 
   while (*t && ' ' != *t && '\t' != *t && '\n' != *t)
@@ -69,12 +69,12 @@ ilem_props_prop(unsigned char *s)
     }
 
   prop = npool_copy(s, p);
-  *tmp = malloc(strlen(prop)+2);
-  sprintf(tmp,"%s=",prop);
+  tmp = malloc(strlen((const char*)prop)+3);
+  sprintf((char*)tmp,"%s==",prop);
+  if (ilem_props_verbose)
+    fprintf(stdout, "adding p %s\n", tmp);
   hash_add(h,npool_copy(tmp, p), &v_ok);
   free(tmp);
-
-  /*printf("prop: :%s:\n", prop);*/
 
   if (save)
     *t = save;
@@ -308,11 +308,15 @@ static int
 ilem_props_special(const unsigned char *kv, char special)
 {
   unsigned char *s = NULL, *e;
-  s = malloc(strlen((const char*)kv) + 1);
+
+  s = malloc(strlen((const char*)kv) + 3); /* leave room for adding special char */
   strcpy((char*)s,(const char*)kv);
-  e = (unsigned char *)strchr((char*)s,'=');
-  e[1] = special;
-  e[2] = '\0';
+  if (!(e = (unsigned char *)strchr((char*)s,'=')))
+    sprintf((char*)s+strlen((const char *)s),"=%c",special);
+  else
+    sprintf((char*)e+1,"%c",special);
+  if (ilem_props_verbose)
+    fprintf(stderr, "ilem_props_special looking for %s\n", s);
   if (hash_find(h,s))
     {      
       free(s); /* This is the 's' that we used to look up the =* form */
@@ -333,11 +337,18 @@ ilem_props_kp_from_kv(const unsigned char *kv, struct keypair *kp)
     {
       s = tmp = realloc((char*)tmp,strlen((char*)kv)+1);
       strcpy((char*)tmp,(char*)kv);
-      kp.key = (char*)tmp;
+      kp->key = (char*)tmp;
       while (*s && *s != '=')
 	++s;
-      *s = '\0';
-      kp.val = (char*)(s+1);
+      if (*s == '=')
+	{
+	  *s = '\0';
+	  kp->val = (char*)(s+1);
+	}
+      else
+	{
+	  kp->val = "";
+	}
     }
   else
     {
@@ -367,35 +378,52 @@ ilem_props_look(const unsigned char *kv)
 	{
 	  if (hash_find(h,kv))
 	    {
-	      unsigned char *s = NULL;
 	      ilem_props_kp_from_kv(kv, &kp);
+	    }
+	  else if (ilem_props_special(kv,'@'))
+	    {
+	      if (strstr((const char *)kv,"=@"))
+		ilem_props_kp_from_kv(kv, &kp);
+	      else
+		vwarning("PROP in $%s requires @ref (has VAL='@' in lemprops spec)", kv);
 	    }
 	  else
 	    {
 	      if (ilem_props_special(kv,'*'))
 		ilem_props_kp_from_kv(kv, &kp);
+	      else if (ilem_props_special(kv,'-'))
+		vwarning("PROP in $%s is boolean (has VAL='-' in lemprops spec), no VAL allowed", kv);
+	      else if (ilem_props_special(kv,'='))
+		vwarning("PROP in $%s has unknown VAL", kv);
 	      else
-		vwarning("$%s not found in lemprops", kv);
+		vwarning("unknown PROP in $%s", kv);
 	    }
 	}
       else
 	{
-
-	  ####  && !ilem_props_special(kv,'-') booleans
-
 	  unsigned char *found = hash_find(h,kv);
 	  if (found)
 	    {
 	      if (strchr((char*)found, ' '))
-		vwarning("ambigous value %s requires $PROP=VAL: %s", kv, found);
+		vwarning("ambiguous value %s needs $PROP=VAL from: %s", kv, found);
 	      else
 		ilem_props_kp_from_kv(found,&kp);
 	    }
 	  else
-	    if (ilem_props_special(kv,'='))
-	      vwarning("property $%s requires =VALUE",kv);
-	    else
-	      vwarning("$%s not found in lemprops", kv);
+	    {
+	      if (!ilem_props_special(kv,'-'))
+		{
+		  if (ilem_props_special(kv,'='))
+		    vwarning("property $%s requires =VALUE",kv);
+		  else
+		    vwarning("$%s not found in lemprops", kv);
+		}
+	      else
+		{
+		  kp.key = (char*)kv;
+		  kp.val = "";
+		}
+	    }
 	}
 
       if (kp.val && *kp.val == '@')
