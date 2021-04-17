@@ -167,6 +167,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	  add_lp(&lp, LPC_pointer, LPT_pointer_ref, ++c, bracketing_level);
 	  break;
 	case '$':
+	  XXX replace with new ilem_props_look XXX
 	  if ((longprop_val = longprop(c)))
 	    add_lp(&lp, LPC_property, LPT_long_prop, ++c, bracketing_level);
 	  else

@@ -7,6 +7,7 @@
 #include "xcl.h"
 #include "npool.h"
 #include "props.h"
+#include "../ilem/ilem_props.h"
 
 #ifndef strdup
 char *strdup(const char *);
@@ -90,6 +91,7 @@ xcl_create()
   xc->psus = hash_create(1);
   xc->lpt_anchors = hash_create(1);
   xcl_props_init();
+  ilem_props_init();
   return xc;
 }
 
@@ -181,6 +183,7 @@ xcl_destroy(struct xcl_context **xc)
       *xc = NULL;
     }
   xcl_props_term();
+  ilem_props_term();
 }
 
 void
