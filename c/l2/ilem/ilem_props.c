@@ -376,6 +376,9 @@ ilem_props_look(const unsigned char *kv)
   static unsigned char *tmp = NULL;
   kp.key = kp.val = NULL;
 
+  if (!h)
+    return &kp;
+  
   if (kv)
     {
       unsigned char *equal = NULL;

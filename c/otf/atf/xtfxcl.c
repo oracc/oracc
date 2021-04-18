@@ -13,6 +13,7 @@
 #include "lemline.h"
 #include "label.h"
 #include "run.h"
+#include "ilem_props.h"
 
 #define xpool_copy(s) (pool_copy(ucc(s)))
 
@@ -24,6 +25,8 @@ extern FILE *f_lemma;
 static Hash_table *lemtab = NULL;
 extern Hash_table *word_form_index;
 extern int lem_standalone, line_is_unit, v2;
+
+extern int lem_props_yes;
 
 extern int lemmata(struct xcl_context *xc, struct ilem_form *fp);
 static void process(struct xcl_context *xc, struct node *n);
@@ -57,6 +60,8 @@ xcl_process(struct run_context *run, struct node *text)
   xc->textid = textid;
   xc->file = file;
   xc->sigs = sig_context_init();
+  if (lem_props_yes)
+    ilem_props_init();
   process(xc,text);
   return xc;
 }

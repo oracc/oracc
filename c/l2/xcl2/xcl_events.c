@@ -77,6 +77,7 @@ struct xcl_context *
 xcl_create()
 {
   struct xcl_context *xc = calloc(1, sizeof(struct xcl_context));
+
   if (c_mm_info.blocks == NULL)
     {
       c_mm_info.blocks = calloc(BLOCK_SIZE, sizeof(char*));
@@ -91,7 +92,6 @@ xcl_create()
   xc->psus = hash_create(1);
   xc->lpt_anchors = hash_create(1);
   xcl_props_init();
-  ilem_props_init();
   return xc;
 }
 

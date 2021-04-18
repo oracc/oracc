@@ -23,6 +23,7 @@ int fuzzy_aliasing = 0;
 int gdl_bootstrap = 0;
 int use_ilem_conv = 0;
 int lem_props_strict = 0;
+int lem_props_yes = 0;
 int line_is_unit = 0;
 int need_lemm = 0;
 int no_destfile = 0;

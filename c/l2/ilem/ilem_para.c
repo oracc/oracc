@@ -170,7 +170,18 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	  break;
 	case '$':
 	  {
-	    struct keypair *kp = ilem_props_look(++c);
+	    unsigned char *end = NULL, save = '\0';
+	    struct keypair *kp = NULL;
+
+	    end = ++c;
+	    while (*end && *end < 128 && !isspace(*end))
+	      ++end;
+	    if (*end)
+	      {
+		save = *end;
+		*end = '\0';
+	      }
+	    kp = ilem_props_look(c);
 	    if (kp->key)
 	      {
 		if ((longprop_val = (unsigned char*)kp->val))
@@ -184,11 +195,13 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 		if (!lem_props_strict)
 		  {
 		    if ((longprop_val = longprop(c)))
-		      add_lp(&lp, LPC_property, LPT_long_prop, ++c, bracketing_level);
+		      add_lp(&lp, LPC_property, LPT_long_prop, c, bracketing_level);
 		    else
-		      add_lp(&lp, LPC_property, LPT_short_prop, ++c, bracketing_level);
+		      add_lp(&lp, LPC_property, LPT_short_prop, c, bracketing_level);
 		  }
 	      }
+	    if (save)
+	      *end = save;
 	    break;
 	  }
 	case ',':
