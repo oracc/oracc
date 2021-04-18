@@ -1,8 +1,10 @@
 #include <string.h>
 #include <ctype128.h>
 #include "warning.h"
+#include "key.h"
 #include "xcl.h"
 #include "ilem_para.h"
+#include "ilem_props.h"
 #include "ilem_form.h"
 #include "pool.h"
 #include "xmlutil.h"
@@ -131,7 +133,7 @@ lpt_save_anchor(unsigned char *c, struct xcl_l*lp, int err_lnum)
   if (hash_find(lp->xc->lpt_anchors,c))
     vwarning2(file, err_lnum, "duplicate anchor ID %s",c);
   else
-    hash_add(lp->xc->lpt_anchors,pool_copy(c),lp->xml_id);
+    hash_add(lp->xc->lpt_anchors,pool_copy(c),(void*)lp->xml_id);
   *e = ec;
 }
 
@@ -167,12 +169,28 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	  add_lp(&lp, LPC_pointer, LPT_pointer_ref, ++c, bracketing_level);
 	  break;
 	case '$':
-	  XXX replace with new ilem_props_look XXX
-	  if ((longprop_val = longprop(c)))
-	    add_lp(&lp, LPC_property, LPT_long_prop, ++c, bracketing_level);
-	  else
-	    add_lp(&lp, LPC_property, LPT_short_prop, ++c, bracketing_level);
-	  break;
+	  {
+	    struct keypair *kp = ilem_props_look(++c);
+	    if (kp->key)
+	      {
+		if ((longprop_val = (unsigned char*)kp->val))
+		  add_lp(&lp, LPC_property, LPT_long_prop, (unsigned char*)kp->key, bracketing_level);
+		else
+		  add_lp(&lp, LPC_property, LPT_short_prop, (unsigned char*)kp->key, bracketing_level);
+	      }
+	    else
+	      {
+		extern int lem_props_strict;
+		if (!lem_props_strict)
+		  {
+		    if ((longprop_val = longprop(c)))
+		      add_lp(&lp, LPC_property, LPT_long_prop, ++c, bracketing_level);
+		    else
+		      add_lp(&lp, LPC_property, LPT_short_prop, ++c, bracketing_level);
+		  }
+	      }
+	    break;
+	  }
 	case ',':
 	  if (pos == ilem_para_pos_post)
 	    {
@@ -441,7 +459,7 @@ ilem_para_dump_one(FILE*fp,struct ilem_para *p,const char *pos,struct xcl_l *lp)
 	      LPC_names[pp->class],
 	      LPT_names[pp->type],
 	      xmlify(pp->text),
-	      pp->longval ? xmlify(pp->longval) : "",
+	      pp->longval ? xmlify(pp->longval) : (unsigned char*)"",
 	      pp->level);
       if (id)
 	fprintf(fp," ref=\"%s\"/>",id);

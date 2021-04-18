@@ -44,6 +44,11 @@ int ilem_props_equals_flag = 0;
 int ilem_props_verbose = 0;
 int ilem_props_status = 0;
 
+/* option in config.xml, if =yes then do not output props unless
+ * they pass validation in ilem_props_look 
+ */
+extern int lem_props_strict;
+
 static char *plist = "00lib/lemprops.txt";
 static int pline = 1;
 

@@ -40,6 +40,8 @@ enum t_scope protocol_state = s_global;
 extern const unsigned char *default_ftype;
 extern int has_links;
 extern int lem_extended;
+extern int lem_props_strict;
+const char *lem_props_strict_opt;
 extern int lem_simplify;
 const char *lem_simplify_opt;
 extern int mixed_case_ok;
@@ -383,7 +385,7 @@ protocol(struct run_context *run,
 		}
 	      if (!strcmp(kp->key, "after") || !strcmp(kp->key, "see"))
 		{
-		  type = kp->key;
+		  type = (unsigned char*)kp->key;
 		}
 	    }
 	  else if (!xstrcmp(type,"var") || !xstrcmp(type,"basket"))
@@ -412,8 +414,8 @@ protocol(struct run_context *run,
 	  e = appendChild(parent,elem(e_protocol,NULL,lnum,level));
 	  setAttr(e, a_type, type);
 	  if (kp && kp->url)
-	    setAttr(e, a_url, kp->url);
-	  appendChild(e,cdata(kp ? kp->val : line));
+	    setAttr(e, a_url, (unsigned char*)kp->url);
+	  appendChild(e,cdata(kp ? (unsigned char*)kp->val : line));
 	}
 
       if (need_auto_syntax_line_is_unit)
@@ -672,6 +674,9 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   lem_simplify_opt = xpd_option(run->proj->xpd,"lem-simplify");
   if (lem_simplify_opt && !strcmp(lem_simplify_opt, "yes"))
     lem_simplify = 1;
+  lem_props_strict_opt = xpd_option(run->proj->xpd,"lem-props-strict");
+  if (lem_props_strict_opt && !strcmp(lem_props_strict_opt, "yes"))
+    lem_props_strict = 1;
   
   o = xpd_option(run->proj->xpd,"trans-dollar-align");
   if (o && !strcmp(o, "yes"))
