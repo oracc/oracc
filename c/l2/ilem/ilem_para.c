@@ -18,6 +18,8 @@ static const char *const LPT_names[] = { LPT };
 
 unsigned char *longprop_val = NULL;
 
+int prop_from_key = 0;
+
 const unsigned char *
 ilem_para_head_label(struct xcl_c *c, int depth)
 {
@@ -72,7 +74,12 @@ add_lp(struct ilem_para **lpp, enum ilem_para_class c, enum ilem_para_type t,
   lp->type = t;
   lp->text = text;
   if (longprop_val)
-    lp->longval = longprop_val+1;
+    {
+      if (prop_from_key)
+	lp->longval = longprop_val;
+      else
+	lp->longval = longprop_val+1;
+    }
   lp->level = level;
 }
 
@@ -85,7 +92,8 @@ next_feature(unsigned char *c)
     *c++ = '\0';
   if (longprop_val)
     {
-      *longprop_val = '\0';
+      if (!prop_from_key)
+	*longprop_val = '\0';
       longprop_val = NULL;
     }
   return c;
@@ -184,7 +192,10 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    kp = ilem_props_look(c);
 	    if (kp->key)
 	      {
-		if ((longprop_val = (unsigned char*)kp->val))
+		prop_from_key = 1;
+		if (*kp->val)
+		  longprop_val = (unsigned char*)kp->val;
+		if (longprop_val)
 		  add_lp(&lp, LPC_property, LPT_long_prop, (unsigned char*)kp->key, bracketing_level);
 		else
 		  add_lp(&lp, LPC_property, LPT_short_prop, (unsigned char*)kp->key, bracketing_level);
@@ -192,6 +203,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    else
 	      {
 		extern int lem_props_strict;
+		prop_from_key = 0;
 		if (!lem_props_strict)
 		  {
 		    if ((longprop_val = longprop(c)))

@@ -35,6 +35,7 @@ main(int argc, char **argv)
   if (test)
     {
       testf("gender=f");
+      testf("m");		/* do abbreviated propspecs work? */
       testf("gender=banana"); 	/* banana not a valid val */
       testf("sealer");
       testf("sealer=Dada"); 	/* sealer is boolean so no val */
