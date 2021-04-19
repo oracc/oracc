@@ -92,7 +92,7 @@ next_feature(unsigned char *c)
     *c++ = '\0';
   if (longprop_val)
     {
-      if (!prop_from_key)
+      /*if (!prop_from_key)*/
 	*longprop_val = '\0';
       longprop_val = NULL;
     }
@@ -192,9 +192,9 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    kp = ilem_props_look(c);
 	    if (kp->key)
 	      {
-		prop_from_key = 1;
+		/*prop_from_key = 1;*/
 		if (*kp->val)
-		  longprop_val = (unsigned char*)kp->val;
+		  longprop_val = longprop(c);
 		if (longprop_val)
 		  add_lp(&lp, LPC_property, LPT_long_prop, (unsigned char*)kp->key, bracketing_level);
 		else
@@ -203,7 +203,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	    else
 	      {
 		extern int lem_props_strict;
-		prop_from_key = 0;
+		/*prop_from_key = 0;*/
 		if (!lem_props_strict)
 		  {
 		    if ((longprop_val = longprop(c)))

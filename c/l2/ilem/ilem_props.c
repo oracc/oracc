@@ -123,7 +123,14 @@ ilem_props_save(unsigned char *v)
 	    }
 	  else
 	    {
+#if 0
+	      struct keypair *kp = malloc(sizeof(struct keypair));
+	      kp.key = prop;
+	      kp.val = v;
+	      hash_add(h,pv,&kp);
+#else
 	      hash_add(h,pv,&v_ok);
+#endif
 	      if (ilem_props_verbose)
 		fprintf(stdout, "adding pv %s\n", pv);
 	      if ((found = hash_find(h,v)))
@@ -384,9 +391,10 @@ ilem_props_look(const unsigned char *kv)
       unsigned char *equal = NULL;
       if ((equal = (unsigned char *)strchr((char*)kv,'=')))
 	{
-	  if (hash_find(h,kv))
+	  struct keypair *kp_found;
+	  if ((kp_found = hash_find(h,kv)))
 	    {
-	      ilem_props_kp_from_kv(kv, &kp);
+	      kp = *kp_found;
 	    }
 	  else if (ilem_props_special(kv,'@'))
 	    {
