@@ -347,8 +347,7 @@ ilem_props_kp_from_kv(const unsigned char *kv, struct keypair *kp)
   static unsigned char *tmp = NULL, *s = NULL;
   if (kv)
     {
-      s = tmp = realloc((char*)tmp,strlen((char*)kv)+1);
-      strcpy((char*)tmp,(char*)kv);
+      s = tmp = npool_copy(kv,p);
       kp->key = (char*)tmp;
       while (*s && *s != '=')
 	++s;
@@ -360,14 +359,6 @@ ilem_props_kp_from_kv(const unsigned char *kv, struct keypair *kp)
       else
 	{
 	  kp->val = "";
-	}
-    }
-  else
-    {
-      if (tmp)
-	{
-	  free(tmp);
-	  tmp = NULL;
 	}
     }
 }
@@ -391,11 +382,8 @@ ilem_props_look(const unsigned char *kv)
       unsigned char *equal = NULL;
       if ((equal = (unsigned char *)strchr((char*)kv,'=')))
 	{
-	  struct keypair *kp_found;
-	  if ((kp_found = hash_find(h,kv)))
-	    {
-	      kp = *kp_found;
-	    }
+	  if (hash_find(h,kv))
+	    ilem_props_kp_from_kv(kv,&kp);
 	  else if (ilem_props_special(kv,'@'))
 	    {
 	      if (strstr((const char *)kv,"=@"))
