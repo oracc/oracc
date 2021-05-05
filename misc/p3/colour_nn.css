@@ -1,4 +1,4 @@
-.sux-x-emesal a:link { color: mediumorchid !important }
+.sux-x-emesal { color: mediumorchid !important }
 .n  { color: slategrey !important }
 .AN { color: sandybrown !important }
 .CN { color: fuchsia !important }
@@ -8,6 +8,7 @@
 .MN { color: cornflowerblue }
 .ON { color: darksalmon !important }
 .PN { color: mediumvioletred !important }
+.LN { color: indigo !important }
 .RN { color: purple !important }
 .SN { color: darkgreen !important }
 .TN { color: mediumslateblue !important }
@@ -20,6 +21,7 @@
 .DN a:link { color: deepskyblue !important }
 .FN a:link { color: yellowgreen !important }
 .GN a:link { color: green !important }
+.LN a:link { color: indigo !important }
 .MN a:link { color: cornflowerblue }
 .ON a:link { color: darksalmon !important }
 .PN a:link { color: mediumvioletred !important }
