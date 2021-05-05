@@ -17,7 +17,7 @@ static const char *const LPC_names[] = { LPC };
 static const char *const LPT_names[] = { LPT };
 
 unsigned char *longprop_val = NULL;
-
+unsigned char *kpval = NULL;
 int prop_from_key = 0;
 
 const unsigned char *
@@ -79,6 +79,11 @@ add_lp(struct ilem_para **lpp, enum ilem_para_class c, enum ilem_para_type t,
 	lp->longval = longprop_val;
       else
 	lp->longval = longprop_val+1;
+    }
+  else if (kpval)
+    {
+      lp->longval = kpval;
+      kpval = NULL;
     }
   lp->level = level;
 }
@@ -194,7 +199,11 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	      {
 		/*prop_from_key = 1;*/
 		if (*kp->val)
-		  longprop_val = longprop(c);
+		  {
+		    longprop_val = longprop(c);
+		    if (!longprop_val)
+		      kpval = kp->val;
+		  }
 		if (longprop_val)
 		  add_lp(&lp, LPC_property, LPT_long_prop, (unsigned char*)kp->key, bracketing_level);
 		else
