@@ -1,9 +1,10 @@
 #!/usr/bin/perl
-use warnings; use strict; use open ':utf8';
+use warnings; use strict; use open ':utf8'; use utf8;
 use integer;
 use Getopt::Long;
 binmode STDIN, ':utf8';
 binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
 
 my $raw = 0;
 my @todo_list = ();
@@ -15,7 +16,7 @@ GetOptions (
     'trace'=>\$trace,
     );
 
-my @known_asz = qw/gur gur7 guru7/;
+my @known_asz = qw/gur gur7 guru7 gur₇ guru₇/;
 my %known_asz = ();
 @known_asz{ @known_asz } = ();
 
@@ -68,7 +69,7 @@ sub
 handle_line {
     return unless /[-\s.;\[\+]\d/;
     s/\s*$//;
-    s/sze-\./sze 0./g;
+    s/še-\./še 0./g;
 #    tr/;/./;
     s/([\s-])\.(?!\.)/${1}0./g;
     s/(?!<[0-9])0\#/0/g;
@@ -103,15 +104,15 @@ handle_line {
 
 	if ($bits[$i] =~ /\[?\d/ && $bits[$i] =~ /^\d+[,;]/) {
 	    my @steps = split(/[,;.]/,$bits[$i]);
-	    my @stepvals = qw/asz barig ban2 disz disz/;
+	    my @stepvals = qw/aš barig ban₂ diš diš/;
 	    my @new = ();
 	    for (my $i = 0; $i <= $#steps; ++$i) {
 		my $s = $steps[$i];
 		next if $s eq '0';
 		my $sval = $stepvals[$i];
-		if ($sval eq 'asz') {
+		if ($sval eq 'š') {
 		    push @new, do_sex_num($s,1);
-		} elsif ($sval eq 'barig' || $sval eq 'ban2') {
+		} elsif ($sval eq 'barig' || $sval eq 'ban₂') {
 		    push @new, "$s($sval)";
 		} else {
 		    push @new, do_sex_num($s);
@@ -136,8 +137,9 @@ handle_line {
 		$frac2 = $bits[++$i];
 		$bits[$i] = '';
 	    }
-	    if ($i < $#bits && $bits[$i+1] =~ /gana2/i) {
-		$det = 'gana2';
+	    if (($i+1) < $#bits && $bits[$i+2] =~ /gan₂/i) {
+		$bits[$i+2] =~ s/gan₂/GAN₂/;
+		$det = 'gan₂';
 	    } else {
 		$det = 'gur';
 	    }
@@ -163,7 +165,7 @@ handle_line {
 		 && ($bits[$i+1] =~ /sila3/
 		     || ($i+1 < $#bits 
 			 && $bits[$i+1] =~ /\// 
-			 && $bits[$i+2] =~ /sila3/))) {
+			 && $bits[$i+2] =~ /sila₃/))) {
 	    
 #		$bits[$i] =~ s/(\d+)(?!\/)/$1(disz)/;
 	    $bits[$i] = do_sex_num($bits[$i]);
@@ -192,6 +194,7 @@ handle_line {
 	print STDERR "$ARGV:$.: $_\n";
     }
     $_ = $bits[0] . $first_white . $_;
+    s/ +/ /g;
     s/\[\s+/[/g;
     s/\s+\]/]/g;
 }
@@ -206,7 +209,7 @@ check_prev {
 sub
 do_dot_num {
     my ($dots,$frac1,$frac2,$det) = @_;
-    if ($det eq 'gana2') {
+    if ($det eq 'gan₂') {
 	return do_dot_area($dots,$frac1,$frac2);
     } else {
 	return do_dot_capacity($dots,$frac1);
@@ -223,11 +226,11 @@ do_dot_area {
 	$ret .= ' ';
     }
     if ($esze !~ /^0(?!\d)/) {
-	$esze =~ s/(\d+)/$1(esze3)/;
+	$esze =~ s/(\d+)/$1(eše₃)/;
 	$ret .= $esze . ' ';
     }
     if ($iku !~ /^0(?!\d)/) {
-	$iku =~ s/(\d+)/$1(asz)/;
+	$iku =~ s/(\d+)/$1(iku)/;
 	$ret .= $iku;
     }
     if (length $frac1) {
@@ -256,14 +259,14 @@ do_dot_capacity {
     }
     if ($barig !~ /^0(?!\d)/) {
 	$ret .= do_sex_num($barig.$c);
-	$ret =~ s/disz/barig/;
+	$ret =~ s/diš/barig/;
 	$ret .= ' ';
     } else {
 	$barig =~ s/^0//;
 	$ret .= $barig if length $barig;
     }
     if ($ban !~ /^0(?!\d)/) {
-	$ban =~ s/(\d+)/$1(ban2)/;
+	$ban =~ s/(\d+)/$1(ban₂)/;
 	$ban =~ s/\)/\@c)/ if $c;
 	$ret .= $ban;
     } else {
@@ -339,7 +342,7 @@ sub
 sex_num {
     my ($n,$asz) = @_;
 
-    my $asz_or_disz = ($asz ? 'asz' : 'disz');
+    my $asz_or_disz = ($asz ? 'aš' : 'diš');
 
     return '' unless defined $n;
 
@@ -369,11 +372,11 @@ sex_num {
 
     my $ret = '';
     
-    $ret .= "$szargal(szargal) " if $szargal;
-    $ret .= "$szaru(szar'u) " if $szaru;
-    $ret .= "$szar2(szar2) " if $szar2;
-    $ret .= "$geszu(gesz'u) " if $geszu;
-    $ret .= "$diszd(gesz2) " if $diszd;
+    $ret .= "$szargal(šargal) " if $szargal;
+    $ret .= "$szaru(šarʾu) " if $szaru;
+    $ret .= "$szar2(šar₂) " if $szar2;
+    $ret .= "$geszu(ŋešʾu) " if $geszu;
+    $ret .= "$diszd(ŋeš₂) " if $diszd;
     $ret .= "$u(u) " if $u;
     $ret .= "$disz($asz_or_disz)" if $disz;
 
@@ -387,9 +390,9 @@ sex_frac {
     my ($f,$asz) = @_;
     my $ret = undef;
     if (defined $asz) {
-	$ret = "$f(asz)";
+	$ret = "$f(aš)";
     } else {
-	$ret = "$f(disz)";
+	$ret = "$f(diš)";
     }
     $ret;
 }
@@ -424,9 +427,9 @@ bur_num {
 
     my $bur = $n;
 
-    $ret .= "$szar2(szar2) " if $szar2;
-    $ret .= "$buru(bur'u) " if $buru;
-    $ret .= "$bur(bur3) " if $bur;
+    $ret .= "$szar2(šar₂) " if $szar2;
+    $ret .= "$buru(burʾu) " if $buru;
+    $ret .= "$bur(bur₃) " if $bur;
 
     $ret =~ s/\s*$//;
     

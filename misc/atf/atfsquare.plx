@@ -1,8 +1,10 @@
 #!/usr/bin/perl -p
-use warnings; use strict; use open ':utf8'; 
-binmode STDIN, ':utf8'; binmode STDOUT, ':utf8';
+use warnings; use strict; use open ':utf8'; use utf8;
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my $delim = '\.\.\.+|[-.&\@%+ 	{}()<>\|:]';
+my $nondelim = '[a-zšṣṭŋḫA-ZŠṢṬŊḪ₀₁₂₃₄₅₆₇₈₉ₓʾ@]';
+
 s/[ \t]*$//;
 if (/\[\#/) { # preprocess [# ... #] meaning half-brackets
     my @seq = split(/(\[\#|\#\])/, $_);
@@ -15,8 +17,12 @@ if (/\[\#/) { # preprocess [# ... #] meaning half-brackets
 	    $hb = 0;
 	} else {
 	    if ($hb) {
-		$s =~ s/($delim)/\#$1/g;
-	        $s .= '#';
+		#$s =~ s/($delim)/\#$1/g;
+	        #$s .= '#';
+		$s =~ s/(^|$delim)($nondelim+)/$1$2\#/g;
+		$s =~ s/\#\)/)#/g;
+		$s =~ s/\#(\(.*?\))/$1#/g;
+		$s =~ s/\(x\)#/\(x#\)/g;
 	    }
 	    push @nseq, $s;
 	}
