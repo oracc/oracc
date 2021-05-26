@@ -386,9 +386,7 @@ protocol(struct run_context *run,
 		    }
 		}
 	      if (!strcmp(kp->key, "after") || !strcmp(kp->key, "see"))
-		{
-		  type = (unsigned char*)kp->key;
-		}
+		type = (unsigned char*)kp->key;
 	    }
 	  else if (!xstrcmp(type,"var") || !xstrcmp(type,"basket"))
 	    {
@@ -415,8 +413,13 @@ protocol(struct run_context *run,
 	{
 	  e = appendChild(parent,elem(e_protocol,NULL,lnum,level));
 	  setAttr(e, a_type, type);
-	  if (kp && kp->url)
-	    setAttr(e, a_url, (unsigned char*)kp->url);
+	  if (kp)
+	    {
+	      if (kp->url)
+		setAttr(e, a_url, (unsigned char*)kp->url);
+	      if (type && strcmp(type,kp->key))
+		setAttr(e, a_kkey, (unsigned char*)kp->key);
+	    }
 	  appendChild(e,cdata(kp ? (unsigned char*)kp->val : line));
 	}
 

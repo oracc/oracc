@@ -30,7 +30,7 @@ proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
 proto.key    = element protocol { ( attribute type { "key" }  , text )
 				  |(attribute type { "key" } , 
 				    attribute kkey { xsd:NMTOKEN } , 
-				    attribute kval { text } )
+				    text )
 				  |(attribute type { "after"|"see" } ,
 				    attribute url { text }? ,
 				    text )

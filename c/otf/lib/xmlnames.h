@@ -75,7 +75,6 @@ enum a_type
   a_hlid,
   a_implicit,
   a_kkey,
-  a_kval,
   a_l,
   a_label,
   a_lang,

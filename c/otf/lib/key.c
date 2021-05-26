@@ -28,7 +28,7 @@ key_parse(unsigned char *lp)
 {
   struct keypair *kp = mb_new(key_mem);
   lp = kp->key = (char*)npool_copy(lp, key_pool);
-  while (*lp && (*lp >128 || !isspace(*lp)))
+  while (*lp && (*lp >128 || (!isspace(*lp) && '=' != *lp)))
     ++lp;
   if (*lp)
     {
