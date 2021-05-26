@@ -6,6 +6,7 @@ my $delim = '\.\.\.+|[-.&\@%+ 	{}()<>\|:]';
 my $nondelim = '[a-zšṣṭŋḫA-ZŠṢṬŊḪ₀₁₂₃₄₅₆₇₈₉ₓʾ@]';
 
 s/[ \t]*$//;
+
 if (/\[\#/) { # preprocess [# ... #] meaning half-brackets
     my @seq = split(/(\[\#|\#\])/, $_);
     my $hb = 0;

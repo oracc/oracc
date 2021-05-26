@@ -300,6 +300,11 @@ sub sigs_simple {
 		    next if $forms_in_entry{$f};
 		    my $instsig1 = "\@$project\%$lng:$f=";
 		    my $xsig = "\$$sig{'cf'}/$b#~";
+		    if ($project eq 'etcsri') {
+			my $mcf = $sig{'cf'};
+			$xsig = "\$$sig{'cf'}/$b#N1=$mcf##N1=STEM";
+			# warn "autogenerating form $xsig\n";
+		    }
 		    ++$noprintsigs{ "$instsig1$coresig1/$f\t0\n" };
 		    $printsigs{ "$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
 #		    warn "base-form $b => $instsig1$coresig1$xsig\t0\n";
