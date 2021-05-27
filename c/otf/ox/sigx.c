@@ -12,6 +12,8 @@ int fuzzy_aliasing = 0;
 int lem_autolem = 0;
 int lem_dynalem = 0;
 
+const char *project = NULL;
+
 int
 main(int argc, char **argv)
 {

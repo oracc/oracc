@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+#include "fname.h"
 #include "hash.h"
 #include "npool.h"
 #include "loadfile.h"
@@ -49,7 +50,9 @@ int ilem_props_status = 0;
  */
 extern int lem_props_strict;
 
-static char *plist = "00lib/lemprops.txt";
+extern const char *project;
+
+static char *plist = NULL;
 static int pline = 1;
 
 static int v_ok = 1;
@@ -261,6 +264,9 @@ ilem_props_values(unsigned char *s)
 static void
 ilem_props_load(void)
 {
+  const char *lemprops = "00lib/lemprops.txt";
+  plist = malloc(strlen(oracc_builds()) + strlen(project) + strlen(lemprops) + 3);
+  sprintf(plist, "%s/%s/%s", oracc_builds(), project, lemprops);
   if (!access(plist, R_OK))
     {
       unsigned char *f = loadfile((unsigned char *)plist, NULL);

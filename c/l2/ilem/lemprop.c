@@ -4,6 +4,8 @@
 #include "warning.h"
 #include "ilem_props.h"
 
+const char *project;
+
 extern int ilem_props_status;
 extern int ilem_props_verbose;
 int check = 0;
@@ -23,7 +25,12 @@ int
 main(int argc, char **argv)
 {
   warning_init();
-  options(argc,argv,"ctv");
+  options(argc,argv,"ctvp:");
+  if (!project)
+    {
+      fprintf(stderr, "must give project with -p option\n");
+      exit(1);
+    }
   ilem_props_init();
   if (check)
     {
