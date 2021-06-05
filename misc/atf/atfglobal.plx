@@ -14,18 +14,25 @@ my $when = '';
 my $from = '';
 my $to = '';
 my $table = '';
+my $nofixes = 0;
 my $reportall = 0;
 my $xfix = 0; # fix X lemmatizations as well
 
 GetOptions (
     'dump:s'=>\$dump_table,
     'from:s'=>\$from,
+    nofixes=>\$nofixes,
     reportall=>\$reportall, 
     'table:s'=>\$table,
     'to:s'=>\$to,
     'when:s'=>\$when,
     'x'=>\$xfix
     );
+
+open(L,'>atfglobal.log') || fail("unable to write atfglobal.log");
+
+my @f = @ARGV;
+fail("must give file(s) to process on command line") unless $#f >= 0;
 
 if ($table) {
     fail("no such table file '$table'") unless -r $table;
@@ -49,82 +56,98 @@ if ($table) {
     }
 }
 
-while (<>) {
-    if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
-	print unless $dump_table;
-	next;
-    } elsif (/^\#/) {
-	print unless $dump_table;
-	next;
-    } else {
-	print unless $dump_table; # get rid of the line before hacking it up
-	my $line = $_;
-	my $lem = <> || last;
-	if ($lem =~ /^\#lem:/) {
-	    chomp $line; chomp $lem;
-	    $line =~ s/,!\S+//g; # remove field designators like ,!yn
-	    $line =~ tr/[]⸢⸣//d;
-	    $line =~ s/\*\(AŠ\@c\)[#*!?]*\s+//;
-	    $line =~ s/\(\#.*?\#\)//g;
-	    $line =~ s/\(\$.*?\$\)//g;
-	    $line =~ s/\{\{/ /g;
-	    $line =~ s/\}\}/ /g;
-	    $line =~ s/^\S*\s+//;
-	    $line =~ s/\s$//;
-	    $line =~ s/\%[a-z]+\s*//g;
-	    $lem =~ s/^\S*\s+//;
-	    $lem =~ s/\s$//;
-	    $line =~ s/<<.*?>>//g;
-	    $line =~ s/--/-/;
-	    $line =~ tr/:/-/;
-	    $line =~ tr/-:. a-zA-Z0-9šṣṭŋŠṢṬŊ₀-₉ₓ\|\@&~%{}()//cd;
-	    $line =~ s/\s+/ /g;
-	    $line =~ s/\(\d*::\d*\)//g; # for etcsl
-	    $line =~ s/:\(MIN\)//g; # for liturgies
-	    $line =~ s/:\?//g; # for liturgies
-
-	    my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
-	    my @lem = grep(defined&&length, split(/;\s+/, $lem));
-	    if ($#line != $#lem) {
-		warn("$.: $#line != $#lem\n");
-		warn("$.:tlt: ", join('|',@line),"\n");
-		warn("$.:lem: ", join('|',@lem),"\n");
-		print("#lem: ", join('; ', @lem), "\n") unless $dump_table;
-	    } else {
-		for (my $i = 0; $i <= $#line; ++$i) {
-		    if ($dump_table) {
-			print DUMPTAB "$line[$i]\t$lem[$i]\n";
-		    } else {
-			my $w = $line[$i];
-			next unless $whens{$w};
-			foreach my $e (@{$whens{$w}}) {
-			    my $ehash = $edits{$e};
-			    if ($$ehash{'from'} =~ /\|/) {
-				if ($lem[$i] eq $$ehash{'from'}) {
-				    $lem[$i] = $$ehash{'to'};
-				    ++$$ehash{'done'};
-				    last;
-				}
-			    } else {
-				foreach my $l (split(/\|/,$lem[$i])) {
-				    next unless $l;
-				    if ($l eq $$ehash{'from'} || ($xfix && $l eq 'X')) {
-					$lem[$i] = $$ehash{'to'};
+system 'mkdir', '-p', 'new';
+foreach my $f (@f) {
+    my $errfile = '';
+    my $errline = '';
+    open(F,$f) || fail("unable to open input $f");
+    $errfile = $f;
+    my $outfile = `basename $f`;
+    $outfile = "new/$outfile";
+    open(O,">$outfile") || fail("unable to open output $outfile");
+    while (<F>) {
+	if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
+	    print O unless $dump_table;
+	    next;
+	} elsif (/^\#/) {
+	    print O unless $dump_table;
+	    next;
+	} else {
+	    print O unless $dump_table; # get rid of the line before hacking it up
+	    my $line = $_;
+	    my $lem = <F> || last;
+	    $errline = $.;
+	    if ($lem =~ /^\#lem:/) {
+		chomp $line; chomp $lem;
+		$line =~ s/,!\S+//g; # remove field designators like ,!yn
+		$line =~ s/\s\&\s/ /g; # remove column seps
+		$line =~ tr/[]⸢⸣//d;
+		$line =~ s/\*\(AŠ\@c\)[#*!?]*\s+//;
+		$line =~ s/\(\#.*?\#\)//g;
+		$line =~ s/\(\$.*?\$\)//g;
+		$line =~ s/\{\{/ /g;
+		$line =~ s/\}\}/ /g;
+		$line =~ s/^\S*\s+//;
+		$line =~ s/\s$//;
+		$line =~ s/\%[a-z-]+\s*//g;
+		$lem =~ s/^\S*\s+//;
+		$lem =~ s/\s$//;
+		$line =~ s/<<.*?>>//g;
+		$line =~ s/--/-/;
+		$line =~ tr/:/-/;
+		$line =~ tr/-:. a-zA-Z0-9šṣṭŋŠṢṬŊ₀-₉ₓ\|\@&~%{}()//cd;
+		$line =~ s/\s+/ /g;
+		$line =~ s/\(\d*::\d*\)//g; # for etcsl
+		$line =~ s/:\(MIN\)//g; # for liturgies
+		$line =~ s/:\?//g; # for liturgies
+		
+		my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
+		my @lem = grep(defined&&length, split(/;\s+/, $lem));
+		if ($#line != $#lem) {
+		    warn("$.: $#line != $#lem\n");
+		    warn("$.:tlt: ", join('|',@line),"\n");
+		    warn("$.:lem: ", join('|',@lem),"\n");
+		    print O "#lem: ", join('; ', @lem), "\n"
+			unless $dump_table;
+		} else {
+		    for (my $i = 0; $i <= $#line; ++$i) {
+			if ($dump_table) {
+			    print DUMPTAB "$line[$i]\t$lem[$i]\n";
+			} else {
+			    my $w = $line[$i];
+			    next unless $whens{$w};
+			    foreach my $e (@{$whens{$w}}) {
+				my $ehash = $edits{$e};
+				if ($$ehash{'from'} =~ /\|/) {
+				    if ($lem[$i] eq $$ehash{'from'}) {
+					$lem[$i] = $$ehash{'to'} unless $nofixes;
 					++$$ehash{'done'};
+					print L "$errfile:$errline: when $w from $$ehash{'from'} to $$ehash{'to'}\n";
 					last;
+				    }
+				} else {
+				    foreach my $l (split(/\|/,$lem[$i])) {
+					next unless $l;
+					if ($l eq $$ehash{'from'} || ($xfix && $l eq 'X')) {
+					    print L "$errfile:$errline: when $w from $$ehash{'from'} to $$ehash{'to'}\n";
+					    $lem[$i] = $$ehash{'to'} unless $nofixes;
+					    ++$$ehash{'done'};
+					    last;
+					}
 				    }
 				}
 			    }
 			}
 		    }
+		    print O "#lem: ", join('; ', @lem), "\n"
+			unless $dump_table;
 		}
-		print "#lem: ", join('; ', @lem), "\n"
-		    unless $dump_table;
+	    } else {
+		print O $lem unless $dump_table;
 	    }
-	} else {
-	    print $lem unless $dump_table;
 	}
     }
+    close(F);
 }
 
 my $total = 0;
@@ -169,5 +192,7 @@ load_table {
     close(T);
     # use Data::Dumper; print Dumper \%whens; exit 1;
 }
+
+close(L);
 
 1;

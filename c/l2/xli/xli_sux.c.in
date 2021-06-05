@@ -121,14 +121,23 @@ xli_sux_handler(struct xcl_context *xcp, struct xli *xlip, struct ilem_form *f, 
 		}
 	      else
 		{
-		  unsigned char *base, *cont, *morph, *stem;
+		  unsigned char *base=NULL, *cont=NULL, *morph=NULL, *stem=NULL, *c=NULL;
 		  base = res;
-		  cont = (unsigned char *)strchr((char*)res,'\t')+1;
-		  cont[-1] = '\0';
-		  morph = (unsigned char *)strchr((char*)cont,'\t')+1;
-		  morph[-1] = '\0';
-		  stem = (unsigned char *)strchr((char*)morph,'\t')+1;
-		  stem[-1] = '\0';
+		  if ((c = (unsigned char *)strchr((char*)base,'\t')))
+		    {
+		      cont = c+1;
+		      cont[-1] = '\0';
+		      if ((c = (unsigned char *)strchr((char*)cont,'\t')))
+			{
+			  morph = c+1;
+			  morph[-1] = '\0';
+			  if ((c = (unsigned char *)strchr((char*)morph,'\t')))
+			    {
+			      stem = c+1;
+			      stem[-1] = '\0';
+			    }
+			}
+		    }
 		  if (!f2p->base || !*f2p->base)
 		    f2p->base = npool_copy(base,xcp->pool);
 		  if (!f2p->cont)

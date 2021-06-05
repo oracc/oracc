@@ -727,6 +727,7 @@ run_item_maker {
 	$newPage = $rt{'page_selector_page_n'};
 	$p{'page'} = $newPage;
 	$p{'item'} = $sedItem + (($newPage-1) * $p{'pagesize'});
+	warn "run_item_maker set p{item} to $p{'item'}\n";
 	if (!$hilite_words && $p{'line-id'}) {
 	    $hilite_words = $p{'line-id'};
 	}

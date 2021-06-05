@@ -554,6 +554,7 @@ sux_norm1 {
 sub
 sux_soundex {
     my $tmp = shift;
+    $tmp =~ tr/{}/\cA\cB/;
     $tmp =~ tr/'.//d;
     $tmp =~ tr/[₀-₉ₓ\.]//d;
     $tmp = "\L$tmp";
@@ -567,6 +568,8 @@ sux_soundex {
     $tmp =~ s/([gŋk])/n?$1/g;
     $tmp =~ s/[gŋk]/[gŋk]/g;
     $tmp =~ s/[mn]/[mnŋ]/g;
+    $tmp =~ s/\cA/\\{/g;
+    $tmp =~ s/\cB/\\}/g;
     if ($tmp =~ /\[aeiu\]$/) {
 	$tmp .= '?';
     } else {

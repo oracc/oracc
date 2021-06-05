@@ -13,10 +13,15 @@ my %seen = ();
 my $sigs = '';
 my %sigforms = ();
 my $xalias = 0;
+my $q = '';
 GetOptions(
+    q=>\$q,
     'sigs:s'=>\$sigs,
     'x'=>\$xalias,
     );
+
+$q = shift @ARGV unless $q;
+open(Q,$q) || die "$0: must give valid glossary on command line\n";
 if ($sigs) {
     open(S,$sigs) || die "$0: can't read $sigs\n";
     while (<S>) {
@@ -36,7 +41,8 @@ my @f = ();
 system 'mkdir', '-p', '00etc';
 open(A,'>00etc/nn-alias.tab') || die;
 open(G,'>00etc/nn-global.tab') || die;
-while (<>) {
+open(S,'>00lib/NN-simple.sig') || die;
+while (<Q>) {
     if (/\@entry/) {
 	($e) = (/\s+(.*?)\s*$/);
 	$e =~ s/\s+(\[.*?\])\s+/$1/;
@@ -47,9 +53,9 @@ while (<>) {
 	$a =~ s/\s+(\[.*?\])\s+/$1/;
 	push @a, $a;
 	if ($aliases{$a}) {
-	    warn "$0: duplicate alias $a points to $aliases{$a} and now also $e\n";
+	    warn "$0:$.: duplicate alias $a points to $aliases{$a} and now also $e\n";
 	} else {
-	    $aliases{$a} = $e;
+	    $aliases{$a} = $e;	    
 	}
 	print A "$a\t$e\n";
     } elsif (/\@form/) {
@@ -57,9 +63,20 @@ while (<>) {
 	foreach my $a (@a) {
 	    print G "$f\t$a\t$e\n" unless $seen{$f,$a}++;
 	}
+    } elsif (/\@end\s+entry/) {
+	if ($#a >= 0) {
+	    @a = uniq(@a);
+	    print S "$e\n";
+	    foreach my $a (@a) {
+		$a = augment($a) unless $a =~ m#//#;
+		print S "\t$a\n";
+	    }
+	}
     }
 }
 close(A);
+close(S);
+close(Q);
 
 foreach my $s (keys %sigforms) {
     my $a = '';
@@ -74,4 +91,20 @@ foreach my $s (keys %sigforms) {
 }
 
 close(G);
+
+sub augment {
+    my $tmp = shift;
+    $tmp =~ s/[ \t]+$//;
+    $tmp =~ s/\s*(\[.*?\])\s*/$1/;
+    $tmp =~ s#\[(.*?)\]#[$1//$1]#;
+    $tmp =~ s/\](.*?)$/]$1'$1/;
+    $tmp;
+}
+
+sub uniq {
+    my %u = ();
+    @u{@_} = ();
+    sort keys %u;
+}
+
 1;
