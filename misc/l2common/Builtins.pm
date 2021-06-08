@@ -411,6 +411,8 @@ acd2xml {
 			$atf =~ s/\\\S+//g;
 			$atf .= "\n";
 			$atf =~ tr/_/ /;
+			$atf =~ s/\{-/{/g;
+			$atf =~ tr/·°//d;
 			push @glo_atf, $atf;
 		    } elsif ($currtag eq 'bff') {
 ## we already processed these
@@ -1452,6 +1454,7 @@ setup_list_field {
 	    }
 	    if ($field eq 'bases') {
 		$bases_atf =~ tr/·°//d;
+		$bases_atf =~ s/\{-/{/g;
 		push @glo_atf, "$line_of{'bases'}.\t%sux $bases_atf\n";
 		$bases_atf = '';
 	    }

@@ -14,6 +14,7 @@ my %cpd = ();
 
 sub atf_add {
     my ($a,$l) = @_;
+#    warn "atf_add: $a\n";
     if ($a) {
 	my @a = split(/\s+/, $a);
 	my @aa = ();
@@ -37,6 +38,7 @@ sub atf_add {
 	$a =~ s/\\.*$//; # remove disambiguators for checking
 	my $add = $l ? "\%$l $a" : $a;
 #	warn pp_line().": $add\n";
+#	warn "atf_add: actually adding $add\n";
 	push @{$atf{pp_line()}}, $add;
     } else {
 	pp_warn("internal error: empty value passed to atf_add")
@@ -88,6 +90,7 @@ sub cpd_add {
     my $a = shift;
     if ($a) {
 	$a =~ tr/·°//d;
+	$a =~ s/\{-/{/g;
 	push @{$cpd{pp_line()}}, $a;
     } else {
 	pp_warn("internal error: empty value passed to cpd_add")
@@ -145,6 +148,7 @@ uniq_by_line {
 	my($lnum,$rest) = ($l =~ /^(\S+)\s+(.*)\s*$/);
 	my %u = ();
 	@u{split(/\s+/,$rest)} = ();
+#	warn "uniq_by_line: $rest\n";
 	push @new_l, $lnum . "\t$lang" . join(' ', keys %u), "\n";
     }
     @new_l;
