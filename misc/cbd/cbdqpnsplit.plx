@@ -5,8 +5,10 @@ use lib "$ENV{'ORACC'}/lib";
 
 use Getopt::Long;
 my $pos = undef;
+my $qpn = 0;
 my $split_lang = undef;
 GetOptions(
+    'qpn'=>\$qpn,
     'pos:s'=>\$pos,
     'lang:s'=>\$split_lang,
     );
@@ -16,7 +18,8 @@ my @s = ();
 use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 
-$split_lang = 'qpn' if $pos;
+$split_lang = 'qpn' if $pos || $qpn;
+$pos = 'NN' if $qpn;
 
 die "$0: must give -pos or -lang arg on command line\n" unless $split_lang;
 
@@ -25,7 +28,11 @@ if ($pos) {
     while (<>) {
 	if (/\@entry.*\s(\S+)\s*$/) {
 	    my $this_pos = $1;
-	    $pos_match = $pos =~ /$this_pos/;
+	    if ($qpn) {
+		$pos_match = $this_pos =~ /^[A-Z]N$/;
+	    } else {
+		$pos_match = $pos =~ /$this_pos/;
+	    }
 	}
 	if ($pos_match) {
 	    push @s, $_;

@@ -31,7 +31,7 @@ while (<>) {
     }
 }
 
-open(F,'>F'); print F join("\n", keys \%part_forms); close(F);
+open(F,'>F'); print F join("\n", keys %part_forms); close(F);
 
 foreach (@input) {
     if (/^$acd_rx\@entry/) {

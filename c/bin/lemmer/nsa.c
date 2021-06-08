@@ -11,6 +11,7 @@ extern const char *file,*project;
 /* symbols that are really external but aren't provided by the linked libraries */
 int cbd_lem_sigs = 0, fuzzy_aliasing = 0, lem_dynalem = 0, pretty = 0;
 
+int lem_props_strict = 0;
 int bootstrap_mode = 0;
 int do_lem = 0;
 int ignore_plus = 0;
@@ -19,6 +20,9 @@ int lem_standalone = 0;
 int lem_system = 1;
 int atf = 0;
 int v2 = 0;
+
+const char *project;
+
 extern int checkpoints;
 extern int label;
 extern int printres;

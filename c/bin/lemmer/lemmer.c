@@ -10,8 +10,10 @@
 extern void dsa_exec(struct xcl_context *xc);
 extern void psa_exec(struct xcl_context *xc);
 
+int lem_props_strict;
 const char *config_file;
 const char *out_file;
+const char *project;
 const char *sig_file;
 const char *textid;
 const char *xcl_file;
