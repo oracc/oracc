@@ -55,9 +55,10 @@ select XL;
 
 # preload a list of known signs
 my %at_signs = ();
-my @at_signs = `grep \@sign $asl`; chomp @at_signs;
+#; push @at_signs, `grep \@nosign $asl`
+my @at_signs = `grep '\@sign\\|\@nosign' $asl`; chomp @at_signs;
 foreach my $a (@at_signs) {
-    $a =~ s/\@sign\S*\s+(\S+).*$/$1/;
+    $a =~ s/\@(?:no)?sign\S*\s+(\S+).*$/$1/;
     ++$at_signs{$a};
 }
 
