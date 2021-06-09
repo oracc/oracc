@@ -56,7 +56,8 @@ select XL;
 # preload a list of known signs
 my %at_signs = ();
 #; push @at_signs, `grep \@nosign $asl`
-my @at_signs = `grep '\@sign\\|\@nosign' $asl`; chomp @at_signs;
+#my @at_signs = `grep '\@sign\\|\@nosign' $asl`; chomp @at_signs;
+my @at_signs = `grep \@sign 00lib/ogsl.asl`; chomp @at_signs;
 foreach my $a (@at_signs) {
     $a =~ s/\@(?:no)?sign\S*\s+(\S+).*$/$1/;
     ++$at_signs{$a};
@@ -123,6 +124,9 @@ while (<SL>) {
 	    $sid = $xid++;
 	}
 	pi_line();
+	if (/\@nosign/) {
+	    $sid = "NOT.$sid";
+	}
 	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>";
 	if ($sortcodes{$signname}) {
 	    print "<sort";

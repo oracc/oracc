@@ -383,6 +383,8 @@ subsign {
 
     return if $node->hasAttribute('deprecated') && $node->getAttribute('deprecated') eq '1';
 
+    my $form_is_TOP = 0;
+    
     my $type = $node->getAttribute('type');
 #    next unless $type eq 'normal' || $type eq 'numeric';
 
@@ -396,6 +398,7 @@ subsign {
 	$id = $rf;
     } else {
 	$id = $node->getAttributeNS($xml_uri,'id');
+	$form_is_TOP = 1;
     }
     my $sn = $node->getAttribute('n');
     
@@ -465,6 +468,10 @@ subsign {
 	$values{$sn} = $id;
 	$values{$xsn} = $id;
     } else {
+	if ($form_is_TOP) {
+	    $values{$sn} = $id;
+	    $values{$xsn} = $id;
+	}
 	push @{$values{$sn,'form'}}, $id;
 	push @{$values{$xsn,'form'}}, $id;
     }
