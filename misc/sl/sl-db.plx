@@ -390,6 +390,8 @@ subsign {
     my $id = '';
 
     # if an @form is a known sign name, use the ID of the sign name
+    ### THIS DOES NOT DO WHAT IT THINKS IT DOES; there is always a @ref attr but this does not mean
+    ### the @form is also an @sign
     if ($rf) {
 	$id = $rf;
     } else {
@@ -472,6 +474,11 @@ subsign {
     $values{$id,'name'} = $sn;
 
     $id;
+}
+
+# Process @forms which do not occur as @sign
+sub
+xsign {
 }
 
 sub

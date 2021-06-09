@@ -35,6 +35,9 @@ foreach my $s (@sortcodes) {
     $sortcodes{$sign} = [ @codes ];
 }
 
+#my %actual_signs = ();
+#my %actual_forms = ();
+
 #open(C, '>codes.dump');
 #print C Dumper \%sortcodes;
 #close(C);
@@ -49,6 +52,14 @@ $xl =~ s/\.a?sl$/-sl.xml/;
 
 open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
 select XL;
+
+# preload a list of known signs
+my %at_signs = ();
+my @at_signs = `grep \@sign $asl`; chomp @at_signs;
+foreach my $a (@at_signs) {
+    $a =~ s/\@sign\S*\s+(\S+).*$/$1/;
+    ++$at_signs{$a};
+}
 
 my %slv_val2sign = ();
 my %slv_form_vars = ();
@@ -81,8 +92,9 @@ while (<SL>) {
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
 	my $deprecated = '';
 	my $signname = $curr_sign = $1;
+	# $actual_signs{$signname} = $.;
 	my $n = xmlify($signname);
-	
+ 
 	%slv_form_vars = ();
 	%v = ();
 	$curr_form = '';
@@ -169,14 +181,25 @@ while (<SL>) {
 	    } else {
 		my ($n,$v,$u) = ($2,$1,$3);
 		my $formname = $curr_form = $n;
-		++${$v{'#forms'}}{$curr_form};
+		#$actual_forms{$formname} = $.;
+
+		if (${$v{'#forms'}}{$curr_form}) {
+		    warn "$asl:$.: duplicate form $curr_form\n";
+		} else {
+		    ++${$v{'#forms'}}{$curr_form};
+		}
 		$n = xmlify($n);
 		$v = xmlify($v);
 		my $uattr = "";
 		$uattr = " utf8=\"$u\"" if $u;
 		my $ref = '';
-		if ($sign_ids{'sl',$formname}) {
+		# if the form is also a sign, make ref point to the sign, otherwise use xml:id here
+		## if ($sign_ids{'sl',$formname}) {
+		if ($at_signs{$formname}) {
 		    $ref = sprintf(" ref=\"%s\"", $sign_ids{'sl',$formname});
+		} else {
+		    $ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
+		    ++$at_signs{$formname}; # prevent duplicate xml:id
 		}
 		pi_line();
 		my $vv = $v; $vv =~ s/^~//;
@@ -184,7 +207,7 @@ while (<SL>) {
 		    warn "$asl:$.: duplicate var code $vv\n";
 		    continue;
 		}
-		print "<form n=\"$n\" var=\"$v\" xml:id=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>";
+		print "<form n=\"$n\" var=\"$v\" varid=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>";
 		$in_form = 1;
 		if ($sortcodes{$n}) {
 		    print "<sort";
@@ -316,6 +339,16 @@ while (<SL>) {
 	}
     }
 }
+
+#foreach my $f (sort keys %actual_forms) {
+#    if (!$actual_signs{$f}) {
+#	my $foid = $sign_ids{'sl',$f};
+#	warn "$asl:$actual_forms{$f}: detected \@form $f that is not \@sign; creating xsign $foid\n";
+#	my $xf = xmlify($f);
+#	print "<xsign n=\"$xf\" xml:id=\"$foid\"><name g:me=\"1\">$xf</name></xsign>";
+#    }
+#}
+
 print '</signlist>';
 close(SL);
 
