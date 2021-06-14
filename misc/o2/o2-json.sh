@@ -69,7 +69,6 @@ metadata-json.sh
 
 if [ -s $asl ]; then
     echo "o2-json.sh: signlist from $asl"
-    b=`basename $asl .asl`
     asl-json.plx $asl >01bld/json/${project}-sl.json
 fi
 

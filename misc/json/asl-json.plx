@@ -95,6 +95,11 @@ asl_howtos {
 			   hook=>\&ORACC::JSON::default_metadata
     };
 
+    # These are used in ePSD signlist for grouping
+    $howto{'sl_letter'} = { type=>'#ignore' };
+    $howto{'sl_signs'} = { type=>'#ignore' };
+
+    # These on down are standard
     $howto{'sl_sign'} = { type=>"",nam=>'@n',val=>'{',att=>'-id n', hook=>\&values };
     $howto{'sl_form'} = { type=>"",nam=>'@n',val=>'{',att=>'-id n', hook=>\&values };
     $howto{'sl_name'} = { type=>'', nam=>'gdl', val=>'text()', chld=>['gdl','['], att=>'-id' };
