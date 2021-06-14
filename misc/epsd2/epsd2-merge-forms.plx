@@ -26,11 +26,12 @@ open(G, "00src/$lang.glo") || die;
 open(G2, ">00lib/$lang.glo") || die;
 select G2;
 while (<G>) {
-    if (/^\@entry\*?\S*\s+(.*?)\s*$/) {
+    if (/^[+-]?\@entry\*?\S*\s+(.*?)\s*$/) {
 	$curr_cfgw = $1;
-	if ($f{$curr_cfgw}) {
-	    @forms = map { $$_[1] } @{$f{$curr_cfgw}};
-	    delete $f{$curr_cfgw};
+	my $xcf = $curr_cfgw; $xcf =~ s/^\+//;
+	if ($f{$xcf}) {
+	    @forms = map { $$_[1] } @{$f{$xcf}};
+	    delete $f{$xcf};
 	} else {
 	    @forms = ();
 	}
@@ -41,7 +42,7 @@ while (<G>) {
 	chomp $tmp;
 	$tmp =~ s/\@bases\s+//;
 	$tmp =~ s/\s+\(.*?\)(;|$)/$1/g;
-	$tmp =~ tr/°·//d;
+	# $tmp =~ tr/°·//d;
 	$tmp =~ s/\*\S+(?:\s+|$)//g;
 	$tmp =~ tr/;/\cA/;
 	$tmp =~ s/\s*\cA\s*/\cA/g;

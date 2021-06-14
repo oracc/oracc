@@ -6,6 +6,7 @@ require Exporter;
 use warnings; use strict; use open 'utf8'; use utf8;
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
+use Data::Dumper;
 use ORACC::CBD::PPWarn;
 use ORACC::Legacy::Sexify;
 
@@ -100,6 +101,10 @@ sub cpd_add {
 sub cpd_check {
     my($proj,$lang,$err_file) = @_;
 
+    my $pedantic = ORACC::SL::BaseC::pedantic();
+#    warn "called cpd_check with ORACC::SL::BaseC::Pedantic = $pedantic\n";
+#    warn Dumper \%cpd;
+    
     return unless scalar keys %cpd;
 
     my $save = pp_line();
@@ -112,7 +117,8 @@ sub cpd_check {
     system 'ox', '-f', '-x=', '-l', "01tmp/$lang-cpd.log", "01tmp/cpd-$lang.atf";
     system 'xsltproc', '-o', "01tmp/cpd-$lang.tab", "$ENV{'ORACC_BUILDS'}/lib/scripts/sl-compounds.xsl",
 	"01tmp/cpd-$lang.xml";
-    my @cpd_err = `cat 01tmp/cpd-$lang.tab`; chomp @cpd_err;
+    my @cpd_err = `cat 01tmp/cpd-$lang.tab`; 
+    chomp @cpd_err;
     foreach my $c (@cpd_err) {
 	my($ln,$in,$ret) = split(/\t/,$c);
 	pp_file($err_file);
@@ -120,9 +126,9 @@ sub cpd_check {
 	if ($ret eq 'OK') {
 #	    warn "compound $in OK\n";
 	} elsif ($ret =~ /^OK=(.*?)$/) {
-	    pp_warn("(bases) compound $in should be $1") if $ORACC::SL::BaseC::pedantic;
+	    pp_warn("(bases) compound $in should be $1") if $pedantic;
 	} elsif ($ret =~ /^OK~(.*?)\s*$/) {
-	    pp_warn("(bases) compound $in should be $1") if $ORACC::SL::BaseC::pedantic;
+	    pp_warn("(bases) compound $in should be $1") if $pedantic;
 	} elsif ($ret =~ /^NO:(.*?)\s*$/) {
 	    my $m = $1;
 	    pp_warn("(bases) compound $in (mapped to $m) not in signlist") unless $m =~ /X/;

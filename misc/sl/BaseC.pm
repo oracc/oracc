@@ -579,6 +579,15 @@ _signature {
 	next if !$g;
 	my $xid = is_value($g);
 	if ($xid) {
+	    if ($pedantic && $g =~ /[A-ZŠŊṢṬ]/) {
+		my $sn_nm = sign_of($xid);
+		my $sn_g = $g; $sn_g =~ tr/|//d;
+		$sn_nm =~ tr/|//d;
+		# warn "sn $g has id $xid and sign_of $sn_nm\n";
+		if ($sn_nm ne $sn_g) {
+		    msg($ctxt, "name of pseudo-sign $sn_g should be $sn_nm");
+		}
+	    }
 #	    warn "g=$g=$xid\n";
 	    push @sig, $xid;
 	} elsif ($g =~ /[A-ZŠŊṢṬ]/) {
@@ -592,6 +601,13 @@ _signature {
 	    }
 	    $sn =~ tr/\cA/./;
 	    my $sn_id = is_form($sn) || is_sign($sn);
+	    if ($sn_id) {
+		my $sn_nm = sign_of($sn_id);
+		# warn "sn $sn has id $sn_id and sign_of $sn_nm\n";
+		if ($sn_nm ne $sn) {
+		    msg($ctxt, "name of pseudo-sign $sn should be $sn_nm");
+		}
+	    }
 #	    warn "g=$g; sn=$sn; sn_id=$sn_id\n";
 #	    if ($sn =~ /ŠE.A.AN/) {
 #		warn "$sn => $sn_id\n";

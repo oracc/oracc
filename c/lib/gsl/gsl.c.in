@@ -29,8 +29,22 @@ static struct npool *psl_pool;
 static unsigned char *sname_buf;
 static int sname_buf_alloced;
 
+static int deprecated_sign = 0;
 
 static unsigned char *sname_append(const unsigned char *sn,const unsigned char *app);
+
+static int
+deprecated(const char *type,const char **atts)
+{
+  const char *d = (const char *)findAttr(atts,"deprecated");
+  if (d && !strcmp(d,"1"))
+    {
+      if (!strcmp(type,"sign"))
+	deprecated_sign = 1;
+      return 1;
+    }
+  return 0;
+}
 
 #if 0
 static unsigned char *
@@ -52,11 +66,14 @@ sH(void *userData, const char *name, const char **atts)
   static char *curr_xid = NULL;
   if (!strcmp(name,"sign"))
     {
-      static int n = 1;
-      sign_sn = curr_unitary_sn = curr_sn = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
-      curr_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
-      hash_add(psl,curr_sn,&n);
-      hash_add(psl_id,curr_sn,curr_xid);
+      if (!deprecated("sign",atts))
+	{
+	  static int n = 1;
+	  sign_sn = curr_unitary_sn = curr_sn = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
+	  curr_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
+	  hash_add(psl,curr_sn,&n);
+	  hash_add(psl_id,curr_sn,curr_xid);
+	}
     }
   else if (!strcmp(name,"form"))
     {
@@ -79,48 +96,51 @@ sH(void *userData, const char *name, const char **atts)
     {
       if (curr_sn)
 	{
-	  const char *n = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
+	  const unsigned char *n = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
 	  hash_add(psl, n, curr_sn);		   
 	}
     }
   else if (!strcmp(name,"v"))
     {
-      unsigned char *sn = NULL;
-      const char *utf8 = findAttr(atts,"utf8");
-      unsigned char *curr_val = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
-      hash_add(psl_id,curr_val,curr_xid);
-      if (curr_form)
+      if (!deprecated_sign && !deprecated("value",atts))
 	{
-	  /* If this value is not known yet allow it as the default */
-	  if (!(sn = hash_find(psl_v,curr_val)))
+	  unsigned char *sn = NULL;
+	  const char *utf8 = findAttr(atts,"utf8");
+	  unsigned char *curr_val = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
+	  hash_add(psl_id,curr_val,curr_xid);
+	  if (curr_form)
 	    {
-	      if (!*utf8 && curr_utf8)
-		utf8 = (char*)curr_utf8;
+	      /* If this value is not known yet allow it as the default */
+	      if (!(sn = hash_find(psl_v,curr_val)))
+		{
+		  if (!*utf8 && curr_utf8)
+		    utf8 = (char*)curr_utf8;
+		  hash_add(psl_v, curr_val,
+			   npool_copy(psl_bounded_sname(curr_sn),psl_pool));
+		  if (*utf8)
+		    hash_add(cuneify_tab,
+			     npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
+			     npool_copy((unsigned char *)utf8,psl_pool));
+		}
+	    }
+	  if (!(sn = hash_find(psl,curr_val)))
+	    {
 	      hash_add(psl_v, curr_val,
 		       npool_copy(psl_bounded_sname(curr_sn),psl_pool));
 	      if (*utf8)
-		hash_add(cuneify_tab,
-			 npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
-			 npool_copy((unsigned char *)utf8,psl_pool));
-	    }
-	}
-      if (!(sn = hash_find(psl,curr_val)))
-	{
-	  hash_add(psl_v, curr_val,
-		   npool_copy(psl_bounded_sname(curr_sn),psl_pool));
-	  if (*utf8)
-	    {
-	      if (!(hash_find(cuneify_tab, curr_val)))
 		{
-		  hash_add(cuneify_tab, curr_val,
-			   npool_copy((unsigned char *)utf8,psl_pool));
+		  if (!(hash_find(cuneify_tab, curr_val)))
+		    {
+		      hash_add(cuneify_tab, curr_val,
+			       npool_copy((unsigned char *)utf8,psl_pool));
+		    }
 		}
 	    }
-	}
-      else
-	{
-	  hash_add(psl_v,curr_val,
-		   npool_copy(sname_append(sn,psl_bounded_sname(curr_sn)),psl_pool));
+	  else
+	    {
+	      hash_add(psl_v,curr_val,
+		       npool_copy(sname_append(sn,psl_bounded_sname(curr_sn)),psl_pool));
+	    }
 	}
     }
   else if (!strcmp(name,"utf8"))
@@ -150,7 +170,10 @@ eH(void *userData, const char *name)
 	}
     }
   else if (!strcmp(name,"sign"))
-    curr_unitary_sn = NULL;
+    {
+      curr_unitary_sn = NULL;
+      deprecated_sign = 0;
+    }
   else if (!strcmp(name,"form"))
     {
       curr_unitary_sn = sign_sn;

@@ -368,6 +368,7 @@ sub pp_validate {
 
     pp_trace("calling atf_check at pp_line()==", pp_line());
     atf_check($project,$lang);
+    ORACC::SL::BaseC::pedantic(1);
     cpd_check($project,$lang, $$args{'file'});
 
     %{$glodata{'bffs'}} = bff_check();
@@ -785,6 +786,7 @@ sub v_bases {
 	    if ($p =~ tr/|/|/ % 2) {
 		pp_warn("(bases) odd number of pipes in compound");
 	    } else {
+		# warn "cpd_add $p\n";
 		cpd_add($p) unless $p =~ /X/;
 	    }
 	    # warn "#4: $p\n";

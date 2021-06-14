@@ -280,6 +280,23 @@ sub args_process {
 	    } else {
 		die "$0: no next command; use cbd init [LANG] to begin alignment\n";
 	    }
+	} elsif ($a eq '@') {
+	    my $d = `cbdstash.plx dir`;
+	    if ($d) {
+		my @n = ();
+		if (-r "$d/next") {
+		    @n = `cat $d/next`; chomp @n;
+		    if ($n[0] =~ /\scull\s/) {
+			xsystem('touch', '.nocull');
+			die "$0: failed to exec @n\n"
+			    unless exec @n;		
+		    } else {
+			die "$0: skipping only implemented for cull commands\n";
+		    }
+		}
+	    } else {
+		die "$0: no next command; use cbd init [LANG] to begin alignment\n";
+	    }
 	} elsif ($a eq '=') {
 	    my $d = `cbdstash.plx dir`;
 	    my @n = ();
@@ -482,6 +499,7 @@ sub cull {
 	if (-r '.nocull') {
 	    xsystem 'cbdstash.plx', 'status', 'sux', 'culled';
 	    cbd_next("Not performing cull because of .nocull", "cbd stash");
+	    unlink('.nocull');
 	} else {
 	    if ($object eq 'bases') {
 		if (-r "$lang-culled-forms.glo") {
@@ -655,6 +673,8 @@ To see next operation:\tcbd .
 To see progress:\tcbd =
 
 To run next command:\tcbd -
+
+To skip next command:\tcbd \@
 
 EOF
 

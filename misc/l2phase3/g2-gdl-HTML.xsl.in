@@ -608,28 +608,32 @@
 </xsl:template>
 
 <xsl:template name="render-o">
-  <span class="sux">
-    <xsl:if test="@g:varo">
-      <sup class="varmark"><xsl:value-of select="concat('(',@g:varo,':')"/></sup>
-    </xsl:if>
-    <xsl:value-of select="@g:o"/>
-    <xsl:if test="@g:ho">
-      <xsl:text>&#x2e22;</xsl:text>
-    </xsl:if>
-  </span>
+  <xsl:if test="(string-length(@g:varo)+string-length(@g:o)+string-length(@g:ho)) > 0">
+    <span class="sux">
+      <xsl:if test="@g:varo">
+	<sup class="varmark"><xsl:value-of select="concat('(',@g:varo,':')"/></sup>
+      </xsl:if>
+      <xsl:value-of select="@g:o"/>
+      <xsl:if test="@g:ho">
+	<xsl:text>&#x2e22;</xsl:text>
+      </xsl:if>
+    </span>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template name="render-c">
-  <span class="sux">
-    <xsl:if test="@g:hc">
-      <xsl:text>&#x2e23;</xsl:text>
-    </xsl:if>
-    <xsl:value-of select="@g:c"/>
-    <xsl:if test="@g:varc">
-      <sup class="varmark"><xsl:value-of select="concat(':',@g:varc,')')"/></sup>
-    </xsl:if>
-    <xsl:value-of select="@g:delim"/>
-  </span>
+  <xsl:if test="(string-length(@g:varc)+string-length(@g:c)+string-length(@g:hc)) > 0">
+    <span class="sux">
+      <xsl:if test="@g:hc">
+	<xsl:text>&#x2e23;</xsl:text>
+      </xsl:if>
+      <xsl:value-of select="@g:c"/>
+      <xsl:if test="@g:varc">
+	<sup class="varmark"><xsl:value-of select="concat(':',@g:varc,')')"/></sup>
+      </xsl:if>
+    </span>
+  </xsl:if>
+  <xsl:value-of select="@g:delim"/>
 </xsl:template>
 
 <xsl:template name="gdl-w">

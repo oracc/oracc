@@ -1,4 +1,5 @@
 #!/bin/sh
+pwd
 mkdir -p 01log
 project=`proj-from-conf.sh`
 if [ -e $ORACC/bin/$project-update.sh ]; then

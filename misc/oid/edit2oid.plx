@@ -33,16 +33,20 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    s/^.?\@sense\s+//;
 	    my $from_e = $edit_entry;
 	    my($epos,$mean) = ($edit_sense =~ /\s(\S+)\s+(.*)$/);
-	    $from_e =~ s#](\S+)$#//$mean]$1'$epos#;
-	    my $from_o = oid_lookup('sux',$from_e);
-	    my $to_e = $new_ent{$edit_entry} || $edit_entry;
-	    ($epos,$mean) = (m/^(\S+)\s+(.*)$/);
-	    $to_e =~ s#](\S+)$#//$mean]$1'$epos#;
-	    if ($from_o) {
-		print "$D$from_o\t$from_e\t>\t$to_e\n" if $from_o;
+	    if ($epos && $mean) {
+		$from_e =~ s#](\S+)$#//$mean]$1'$epos#;
+		my $from_o = oid_lookup('sux',$from_e);
+		my $to_e = $new_ent{$edit_entry} || $edit_entry;
+		($epos,$mean) = (m/^(\S+)\s+(.*)$/);
+		$to_e =~ s#](\S+)$#//$mean]$1'$epos#;
+		if ($from_o) {
+		    print "$D$from_o\t$from_e\t>\t$to_e\n" if $from_o;
+		} else {
+		    ### don't warn here: we are renaming something that never got an OID
+		    ### warn "no OID for $from_e\n" unless $from_o; ### 
+		}
 	    } else {
-		### don't warn here: we are renaming something that never got an OID
-		### warn "no OID for $from_e\n" unless $from_o; ### 
+		warn "edit.edit:$i: syntax error: $_\n";
 	    }
 	}
     } elsif (/:ent\s+(.*?)$/) {
@@ -92,7 +96,7 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    if ($o) {
 		print "$D$o\t$ent\t+\n";
 	    } else {
-		warn "$ent\n";
+		warn "no OID for added entry $ent\n";
 	    }
 	} else {
 	    my $s = $new_ent{$edit_entry} || $edit_entry; 
