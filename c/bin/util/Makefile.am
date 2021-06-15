@@ -19,9 +19,12 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
-	xns xisdb wid2err rootnode wid2lem
+	xns xisdb wid2err rootnode wid2lem xis2json
 
 #pqoutline pqsort xml2json
+
+xis2json_SOURCES=xis2json.c
+xis2json_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 haslinks.c: haslinks.c.in
 	$(ORACCIFY) haslinks.c.in

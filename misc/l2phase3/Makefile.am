@@ -10,7 +10,7 @@ scriptdata_DATA = g2-gdl-HTML.xsl g2-gdl-TeX.xsl g2-xtf-HTML.xsl cbd-HTML-OBF.xs
 	p2-summaries-HTML.xsl p2-summaries.xsl g2-xsf-HTML.xsl p2-summary-HTML-lib.xsl \
 	p2-cbd-toc.xsl ns-g2-HTML-articles.xsl \
 	ns-g2-forms-HTML.xsl ns-g2-norms-HTML.xsl ns-g2-morphs-HTML.xsl \
-	div-ids.xsl
+	div-ids.xsl g2-chunk-xml.xsl
 
 config_DATA = l2p3.xcf l2p3-newstyle.xcf
 
