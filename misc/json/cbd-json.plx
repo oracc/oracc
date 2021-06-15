@@ -32,15 +32,16 @@ $cbd_nons = undef;
 print "\n,\n";
 
 ORACC::JSON::reset();
+#@in = `cat $xis_ns | $ENV{'ORACC'}/bin/xns`;
+#my $xis_nons = join('',@in);
+#my $xxis = load_xml_string($xis_nons);
+#ORACC::JSON::iterate($xxis->getDocumentElement());
+#$xxis = undef;
 
-@in = `cat $xis_ns | $ENV{'ORACC'}/bin/xns`;
-my $xis_nons = join('',@in);
-my $xxis = load_xml_string($xis_nons);
-ORACC::JSON::iterate($xxis->getDocumentElement());
-$xxis = undef;
+system "$ENV{'ORACC_BUILDS'}/bin/xis2json", $xis_ns;
 print "\n,\n";
 
-ORACC::JSON::reset();
+#ORACC::JSON::reset();
 
 @in = `cat $sum_ns | $ENV{'ORACC'}/bin/xns`;
 my $sum_nons = join('',@in);

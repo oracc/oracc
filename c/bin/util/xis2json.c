@@ -67,18 +67,35 @@ int
 main(int argc, char **argv)
 {
   const char *f[2];
+  int wrap = 0;
   setlocale(LC_ALL,ORACC_LOCALE);
-  f[0] = argv[1];
+  if (argv[1])
+    f[0] = argv[1];
+  if (f[0]) {
+    if (!strcmp(f[0],"-w"))
+      {
+	wrap = 1;
+	if (argv[2])
+	  f[0] = argv[2];
+	else
+	  f[0] = NULL;
+      }
+  }
   f[1] = NULL;
-  printf("{");
-  runexpat(i_stdin,NULL,sH,eH);
-  printf("}");
+  if (wrap)
+    printf("{");
+  if (f[0])
+    runexpat(i_list,f,sH,eH);
+  else
+    runexpat(i_stdin,NULL,sH,eH);
+  if (wrap)
+    printf("}");
   return 1;
 }
 
 const char *prog = "xmlns";
 int major_version = 1, minor_version = 0;
-const char *usage_string = "xmlns XMLFILE";
-void help () { }
+const char *usage_string = "xis2json [-w] [<] XISFILE";
+void help () { printf("xis2json reads stdin or from the file on the command line.\n\nWith -w arg { ... } is wrapped around the JSON output\n"); }
 int opts(int arg,char*str){ return 1; }
 int verbose = 0;
