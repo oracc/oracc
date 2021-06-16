@@ -769,8 +769,15 @@ run_item_maker {
     warn "### hilite_words = $hilite_words\n";
 
     my($eproject,$eid) = ($p{'project'},'');
+    my $catproject = $p{'project'};
     if ($id =~ /^(.*?):(.*?)$/) {
 	($eproject,$eid) = ($1,$2);
+	# This could be a proxy project; see if it's listed in proxy-cat.lst
+	my $pcat = `grep $eid @@ORACC@@/bld/$p{'project'}/lists/proxy-cat.lst`;
+	if ($pcat) {
+	    $pcat =~ s/:.*$//;
+	    $catproject = $pcat;
+	}
     } else {
 	$eid = $id;
     }
