@@ -11,6 +11,7 @@
 #include <messages.h>
 #include <npool.h>
 #include <xmd.h>
+#include <fname.h>
 #include <xmlutil.h>
 #include <xpd2.h>
 #include "ce.h"
@@ -220,6 +221,7 @@ xmdprinter2(const char *pq)
       const char *designation = NULL;
       const char *icon = NULL, *icon_alt;
       const char *id = NULL;
+      const char *colon = NULL;
 
       ++nth;
       xmd_init();
@@ -236,8 +238,15 @@ xmdprinter2(const char *pq)
 #endif
 
       /* pq is a qualified ID, so use the project from that */
-      if (strchr(pq, ':'))
-	fields = l2_xmd_load(NULL, pq);
+      if ((colon = strchr(pq, ':')))
+	{
+	  const char *fn = l2_expand(project,colon+1,"xmd");
+	  /* only use the qualifying project if there is no local XMD */
+	  if (!xaccess(fn,R_OK,0))
+	    fields = l2_xmd_load(project, colon+1);
+	  else 
+	    fields = l2_xmd_load(NULL, pq);
+	}
       else
 	fields = l2_xmd_load(project, pq);
 
