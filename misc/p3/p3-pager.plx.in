@@ -787,7 +787,7 @@ run_item_maker {
     $eid =~ s/\..*$//;
     my $base = $eid;
     $base =~ s/^(....).*$/$1/;
-    my $xmd = "@@ORACC@@/bld/$eproject/$base/$eid/$eid.xmd";
+    my $xmd = "@@ORACC@@/bld/$catproject/$base/$eid/$eid.xmd";
 
     if ($rt{'itemtype'} eq 'cat') {
 	xsystem('xsltproc',
