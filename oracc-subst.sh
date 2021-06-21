@@ -7,7 +7,14 @@ function check_env_or_die {
     fi
 }
 
-ORACC=$1
+#ORACC=$1
+
+if [ "$2" == "" ]; then
+    ORACC=$ORACC_BUILDS
+    in=$1
+else
+    in=$2
+fi
 
 xetex=`which xetex`
 if [ "$xetex" == "" ]; then
@@ -31,7 +38,8 @@ else
     echo "$0: unable to set ORADMIN--no /home or /Users"
 fi
 
-in=$2
+#in=$2
+
 out=`basename $in .in`
 pat1="s#\@\@ORACC\@\@#${ORACC}#g"
 pat2="s#\@\@ORACC_HOST\@\@#${ORACC_HOST}#g"

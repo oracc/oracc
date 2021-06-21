@@ -1,0 +1,8 @@
+Ubuntu 20
+=========
+
+* Firewall: some VMs at least have the local firewall enabled by default. To enable http:
+
+  sudo ufw allow 80
+  sudo ufw allow 8080
+
