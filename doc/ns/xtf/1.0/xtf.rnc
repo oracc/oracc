@@ -283,7 +283,7 @@ lg = element lg {
     | (l,gus?,nts,lgs) 
     | (l,gus?, (e | comments)*)),
   proto.inter*,
-  var*
+  (var|cmt)*
 }
 bil = element l { attribute type { "bil" } , l.inner* }
 nts = element l { attribute type { "nts" } , (ag | l.inner)* }

@@ -125,7 +125,7 @@ static unsigned char **line_trans(unsigned char **lines, enum e_tu_types transty
 
 unsigned char *hash_hash_file = NULL;
 
-void
+int
 hash_hash_get_file(unsigned char *t)
 {
   if (t && '#' == t[0] && !strncmp((const char *)t, "##file ", 7))
@@ -137,15 +137,17 @@ hash_hash_get_file(unsigned char *t)
       hash_hash_file = realloc(hash_hash_file, (end - f) + 1);
       strncpy((char*)hash_hash_file, (const char *)f, end - f);
       hash_hash_file[end-f] = '\0';
+      return 1;
     }
   else
     {
       if (hash_hash_file)
 	free(hash_hash_file);
+      return 0;
     }
 }
 
-void
+int
 hash_hash_get_line(unsigned char *t)
 {
   if (t && '#' == t[0] && !strncmp((const char *)t, "##line ", 7))
@@ -160,7 +162,10 @@ hash_hash_get_line(unsigned char *t)
 	  *t = '\0';
 	  fprintf(stderr, "hash_hash_get_line failed on input: %s\n", t);
 	}
+      return 1;
     }
+  else
+    return 0;
 }
 
 static int
@@ -240,6 +245,7 @@ needs_lg(unsigned char **ll)
 #if 1 
   while (ll[0] && (!strncmp((char*)ll[0],"#lem:",5) 
 		   || !strncmp((char*)ll[0],"#etcsl:",7)
+		   || ll[0][0] == '#'
 		   || ll[0][0] == '<'
 		   || ll[0][0] == '>'
 		   || ll[0][0] == '+'
@@ -283,19 +289,40 @@ is_blank_line(const unsigned char *l)
   return !*l;
 }
 
-#define skip_blank() \
-  while (lines[1]) \
-    {					\
-      unsigned char *next = lines[1];	\
-      while (isspace(*next))	     	\
-	++next;				\
-      if (*next)			\
-	break; 				\
-      if (lem_autolem)			\
-	lem_save_line(next);		\
-      ++lnum; 				\
-      ++lines;				\
+#define skip_blank()			\
+  while (lines[1])				\
+    {						\
+      unsigned char *next = lines[1];		\
+      while (isspace(*next))			\
+	++next;					\
+      if (*next)				\
+	break;					\
+      if (lem_autolem)				\
+	lem_save_line(next);			\
+      ++lnum;					\
+      ++lines;					\
     }
+
+static unsigned char **
+skip_blank_func(unsigned char **lines)
+{
+  if (lines && lines[0])
+    {
+      while (lines[1])
+	{					
+	  unsigned char *next = lines[1];
+	  while (isspace(*next))
+	    ++next;
+	  if (*next)
+	    break;
+	  if (lem_autolem)
+	    lem_save_line(next);
+	  ++lnum;
+	  ++lines;
+	}
+    }
+  return lines;
+}
 
 unsigned char **
 parse_block(struct run_context *run, struct node *text, unsigned char **lines)
@@ -374,10 +401,12 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 	      }
 	    else if (lines[0][1] == '#')
 	      {
-		extern void hash_hash_get_line(unsigned char *t);
-		hash_hash_get_line(lines[0]); /* FIXME: this needs to handle ##file , ##line, or ##<regular comment */
-		++lines;
-		continue;
+		extern int hash_hash_get_line(unsigned char *t);
+		if (hash_hash_get_line(lines[0])) /* FIXME: this needs to handle ##file , ##line, or ##<regular comment */
+		  {
+		    ++lines;
+		    continue;
+		  }
 	      }
 
 	    while (*s && !isspace(*s))
@@ -960,7 +989,7 @@ $ start of reverse missing
 		}
 	      skip_blank();
 	      var_lines_in_lg = 0;
-	      while (lines[1] && is_exemplar(lines[1]))
+	      while (lines[1] && (is_exemplar(lines[1])))
 		{
 		  ++lnum;
 		  ++lines;
@@ -970,6 +999,7 @@ $ start of reverse missing
 		  line_var(*lines);
 		  skip_blank();
 		  /* FIXME: weak support for #lem: */
+		retry_comment:
 		  if (lines[1] && lines[1][0] == '#')
 		    {
 		      ++lnum;
@@ -982,8 +1012,73 @@ $ start of reverse missing
 			}
 		      else
 			{
+#if 1
+			  register const unsigned char *s = *lines;
+
+			  if (lines[0][1] == 'e' && !xstrncmp(*lines,"#eid:",5))
+			    {
+			      ++lines;
+			      continue;
+			    }
+			  else if (lines[0][1] == '#')
+			    {
+			      extern int hash_hash_get_line(unsigned char *t);
+			      if (hash_hash_get_line(lines[0])) /* FIXME: this needs to handle ##file , ##line, or ##<regular comment */
+				{
+				  ++lines;
+				  lines = skip_blank_func(lines);
+				  continue;
+				}
+			    }
+
+			  while (*s && !isspace(*s))
+			    if (':' == *s && (isspace(s[1]) 
+					      || ('^' == s[1] 
+						  && (s - *lines) == 5 
+						  && !strncmp((const char *)*lines,"#note",5))))
+			      break;
+			    else
+			      ++s;
+			  if (':' == *s)
+			    {
+			      if (!xstrncmp(*lines,"#note:",6))
+				{
+				  int lines_used = note_parse_tlit(current, current_level, lines) - 1;
+				  lines += lines_used;
+				  lnum += lines_used;
+				}
+			      else if (!xstrncmp(*lines,"#tr",3)
+				       && (lines[0][3] == '.' || lines[0][3] == ':'))
+				{
+				  lines = trans_inter(lines);
+				  /*--lnum;*/ /* not correct for this inner loop */
+				  lines = skip_blank_func(lines);
+				  /*continue;*/
+				  if (lines[0])
+				    goto retry_comment;
+				  else
+				    --lines;
+				}
+			      else
+				protocol(run, protocol_state, LINE, current, *lines);
+			    }
+			  else
+			    {
+			      int lines_used = comment(lines) - 1;
+			      if (!strncmp((const char*)*lines,"#lem:", 5))
+				vwarning("no space after #lem: (should be '#lem: ')");
+			      lines += lines_used;
+			      lnum += lines_used;
+			    }
+			  lines = skip_blank_func(lines);
+			  if (lines[0])
+			    goto retry_comment;
+			  else
+			    --lines;
+#else	    
 			  --lnum;
 			  --lines;
+#endif
 			}
 		    }
 		}

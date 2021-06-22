@@ -6,8 +6,8 @@ my $verbose = 0;
 
 while (<>) {
     my $query = $_;
-    $query =~ tr/-,.:;()//d;
     $query =~ s/\t.*//;
+    $query =~ tr/-,.:;()//d;
     $query =~ s/^\s*(.*?)\s*$/$1/;
     $query =~ s/\s*[=\+].*$//;
     $query =~ s/\s+/_/g;

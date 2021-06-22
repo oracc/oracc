@@ -17,7 +17,7 @@ extern unsigned char *scan_comment_sub(unsigned char **lines, int *nlinesp, int 
 extern unsigned char **skip_rest(unsigned char **lines);
 extern unsigned char *hash_hash_file;
 extern unsigned int hash_hash_line;
-extern void hash_hash_get_file(unsigned char *t);
-extern void hash_hash_get_line(unsigned char *t);
+extern int hash_hash_get_file(unsigned char *t);
+extern int hash_hash_get_line(unsigned char *t);
 
 #endif /*_BLOCK_H*/

@@ -958,7 +958,10 @@
         <ref name="proto.inter"/>
       </zeroOrMore>
       <zeroOrMore>
-        <ref name="var"/>
+        <choice>
+          <ref name="var"/>
+          <ref name="cmt"/>
+        </choice>
       </zeroOrMore>
     </element>
   </define>
