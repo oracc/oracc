@@ -249,6 +249,7 @@ needs_lg(unsigned char **ll)
 		   || ll[0][0] == '<'
 		   || ll[0][0] == '>'
 		   || ll[0][0] == '+'
+		   || ll[0][0] == 0
 		   ))
     ++ll;
   while (ll[0] && !ll[0][0])
@@ -917,7 +918,7 @@ $ start of reverse missing
 			  ++has_links;
 			}
 		    }
-		  else
+		  else /* lines[1][0] == '#' */
 		    {
 		      ++lnum;
 		      ++lines;
@@ -926,9 +927,27 @@ $ start of reverse missing
 			  concat_continuations(lines);
 			}
 		      else
-			lem_save_line(lines[0]);
-		      if (xstrncmp(*lines,"#eid:",5))
-			protocol(run, protocol_state, LINE, current, *lines);
+			{
+			  lem_save_line(lines[0]);
+			  if (!xstrncmp(*lines,"#note:",6))
+			    {
+			      int lines_used = note_parse_tlit(current, current_level, lines) - 1;
+			      lines += lines_used;
+			      lnum += lines_used;
+			    }
+			  else if (!xstrncmp(*lines,"#tr",3)
+				   && (lines[0][3] == '.' || lines[0][3] == ':'))
+			    {
+			      lines = trans_inter(lines);
+			      /*--lnum;*/
+			    }
+			  else if (xstrncmp(*lines,"#eid:",5))
+			    protocol(run, protocol_state, LINE, current, *lines);
+			  else
+			    {
+			      /* what should happen here ? */
+			    }
+			}
 		    }
 		  skip_blank();
 		}

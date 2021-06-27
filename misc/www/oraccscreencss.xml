@@ -289,6 +289,7 @@ tr.hforce td.xtr-h1 { padding-left: .5em; font-weight: bold; padding-top: 6px; }
 
 td { padding-right: .5em; }
 td.lnum { padding-right: 1em; color: #777; text-align: right; }
+td.enum { padding-right: 1em; color: #777; text-align: right; font-size: 80%; }
 td.lnuml { padding-right: 1em; color: #777; text-align: left; width: 6rem; }
 td>span.lnuml { padding-right: 1em; color: #777; text-align: left; font-size: 70%; }
 

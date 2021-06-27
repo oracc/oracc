@@ -113,13 +113,13 @@ link_check_protocol(const char *line)
 	++line;
       if (*line)
 	{
-	  char symbuf[10];
+	  char symbuf[20];
 	  int i = 0;
 	  while (*line && !isspace(*line) && i < 10)
 	    symbuf[i++] = *line++;
-	  if (i == 10)
+	  if (i == 20)
 	    {
-	      symbuf[9] = '\0';
+	      symbuf[19] = '\0';
 	      vwarning("malformed link: protocol: symbol '%s' too long (max 9 characters)", symbuf);
 	    }
 	  else

@@ -1115,7 +1115,11 @@
 
 <!-- Is there even an xtf:e any more?  
      
-     Nowadays this code is to handle score matrix|synopsis parsed -->
+     Nowadays this code is to handle score matrix|synopsis parsed 
+
+     Update 2021-06-26: adapt to work with 1. A: style outside of scores
+
+-->
 <xsl:template match="xtf:e|xtf:v">
   <xsl:variable name="maxcols">
     <xsl:for-each select="*[xtf:c]|*/*[xtf:c]">
@@ -1171,27 +1175,26 @@
           </xsl:otherwise>
         </xsl:choose>
 	<xsl:if test="/xtf:score[@score-type='legacy']">
-	  <td class="tlit">
-	    <span class="enum">
-	      <xsl:choose>
-		<xsl:when test="@varnum">
-		  <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
-		    <xsl:value-of select="@varnum"/>
-		  </a>		
-		</xsl:when>
-		<xsl:otherwise>
-		  <a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
-		    <xsl:value-of select="concat(@n,' ',@l)"/>
-		  </a>
-		</xsl:otherwise>
-	      </xsl:choose>
-	    </span>	    
+	  <td class="enum">
+	    <xsl:choose>
+	      <xsl:when test="@varnum">
+		<a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
+		  <xsl:value-of select="@varnum"/>
+		</a>		
+	      </xsl:when>
+	      <xsl:otherwise>
+		<a href="javascript:showexemplar('{substring-before(@p,':')}','{substring-after(@p,':')}','{@hlid}','{@fragid}')">
+		  <xsl:value-of select="concat(@n,' ',@l)"/>
+		</a>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </td>
 	</xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <td class="tlit"><span class="enum"><xsl:value-of select="concat(@n,' ',@l)"
-	  	/><xsl:text>. </xsl:text></span></td>	
+	<!-- ><xsl:value-of select="concat(@n,' ',@l)" -->
+        <td class="enum"><xsl:value-of select="@varnum"
+	  		       /><sub><xsl:value-of select="@ex_label"/></sub><xsl:text>: </xsl:text></td>	
         <xsl:choose>
     	  <xsl:when test="xtf:c">
             <xsl:apply-templates>
