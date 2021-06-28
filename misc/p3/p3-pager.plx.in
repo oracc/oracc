@@ -777,6 +777,7 @@ run_item_maker {
 	if ($pcat) {
 	    $pcat =~ s/:.*$//;
 	    $catproject = $pcat;
+	    chomp $catproject;
 	}
     } else {
 	$eid = $id;

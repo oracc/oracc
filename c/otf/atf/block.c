@@ -2023,6 +2023,8 @@ line_var(unsigned char *lp)
   char *tmp = NULL;
   struct attr *xid = NULL;
 
+  note_initialize_line();
+
   /* FIXME: stabilize this so that the same siglum maps
      to the same exemplar_offset within each text and 
      output a map of the siglum::exemplar_offset pairs */

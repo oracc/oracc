@@ -960,6 +960,7 @@
       <zeroOrMore>
         <choice>
           <ref name="var"/>
+          <ref name="notetext"/>
           <ref name="cmt"/>
         </choice>
       </zeroOrMore>
