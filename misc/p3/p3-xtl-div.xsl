@@ -75,8 +75,16 @@
 	<span class="noimg">&#xa0;</span>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="@sig">
+      <xsl:value-of select="concat(' [', @sig, '] ')"/>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="@proj = 'cdli'">
+	<a href="javascript:showcdli('{@text}')">
+	  <xsl:value-of select="@n"/>
+	</a>
+      </xsl:when>
+      <xsl:when test="@have_atf = 'no'">
 	<a href="javascript:showcdli('{@text}')">
 	  <xsl:value-of select="@n"/>
 	</a>

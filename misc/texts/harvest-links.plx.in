@@ -24,6 +24,7 @@ my %prefs = ();
 my %seen = ();
 my %sources_ok = ();
 my %srefs = ();
+my %symdefs = ();
 my %warned = ();
 my %symwarned = ();
 my @texts = ();
@@ -172,10 +173,17 @@ process_project {
     foreach my $k (sort keys %srefs) {
 	print LINKBASE "<refs type=\"sources\" ref=\"$k\">";
 	foreach my $r (sort keys %{$srefs{$k}}) {
-	    if ($sources_ok{"$k\->$r"} || $sources_ok{"$r\->$k"}) {
-		print LINKBASE "<r ref=\"$r\"/>";
+	    my $sym = $r; $sym =~ s/^.*?://; $sym = "$project:$sym";
+	    if ($symdefs{$sym}) {
+		my $ex = $symdefs{$sym};
+		$sym = " sig=\"$ex\"";
 	    } else {
-		print LINKBASE "<r ref=\"$r\" links=\"no\"/>";
+		$sym = '';
+	    }
+	    if ($sources_ok{"$k\->$r"} || $sources_ok{"$r\->$k"}) {
+		print LINKBASE "<r ref=\"$r\"$sym/>";
+	    } else {
+		print LINKBASE "<r ref=\"$r\"$sym links=\"no\"/>";
 		if ($ok_debug) {
 		    warn "dropping source $k\->$r\n";
 		}
@@ -329,6 +337,8 @@ process_protocol {
 		index_text(expand_in_project(undef,"$text.xtf", $project),$prj,$pqx) unless $indexed{$project.$text};
 	    }
 	    $defs{$sym} = $text;
+	    my $tmp = $text; $tmp =~ s/^.*?://;
+	    $symdefs{"$prj:$tmp"} = $sym;
 	    if ($text eq "$prj:$pqx") {
 		warn "$file:$line: text refers to itself in #link def ($text=$prj:$pqx)\n";
 	    } else {
