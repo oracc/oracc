@@ -294,6 +294,8 @@ td>span.lnuml { padding-right: 1em; color: #777; text-align: left; font-size: 70
 
 tr.score-spacer td { padding-bottom: 1em; }
 
+tr.e { font-size: 90%; }
+
 tr.p1 td { width: 60%; }
 tr.p1 td.lnum  { padding-right: 1em; color: #777; width: 10%; }
 tr.p2 td { width: 48%; }

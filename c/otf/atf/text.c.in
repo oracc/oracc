@@ -48,6 +48,8 @@ const char *const xtf_xmlns[] =
 
 int trans_dollar_fifo = 0;
 
+extern void set_tr_id(const char *id);
+
 extern const unsigned char *catvec, *curr_dialect;
 extern size_t max_cat_id;
 
@@ -244,6 +246,7 @@ process_text(struct run_context *run, unsigned char **lines)
   lemline_init();
   note_initialize_text();
   galloc_init();
+  set_tr_id(NULL);
 
   trans_dollar_fifo = has_trans_labeled(lines);
 
@@ -262,7 +265,6 @@ process_text(struct run_context *run, unsigned char **lines)
     lem_save_line(*lines);
 
   note_initialize_line();
-
   andline(text,*lines);
 
   if (text)

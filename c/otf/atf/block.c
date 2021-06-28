@@ -35,6 +35,7 @@
 #include "symbolattr.h"
 
 extern int lem_autolem, mylines;
+extern void set_tr_id(const char *id);
 
 int auto_lg = 0;
 
@@ -1807,7 +1808,10 @@ line_mts(unsigned char *lp)
      adds an 'l' suffix to the <l> ID then removes it so the right ID base is used for words
   */
   if (lg_mode)
-    (void)strcat(line_id_buf,(const char *)"l");
+    {
+      (void)strcat(line_id_buf,(const char *)"l");
+      set_tr_id(line_id_buf);
+    }
   xid = attr(a_xml_id,ucc(line_id_buf));
   if (lg_mode)
     line_id_buf[strlen(line_id_buf)-1] = '\0';
@@ -2016,6 +2020,8 @@ line_var(unsigned char *lp)
   unsigned char *n, *n_vbar;
   unsigned char lab[128];
   struct symbolattr *sa = NULL;
+  char *tmp = NULL;
+  struct attr *xid = NULL;
 
   /* FIXME: stabilize this so that the same siglum maps
      to the same exemplar_offset within each text and 
@@ -2023,7 +2029,18 @@ line_var(unsigned char *lp)
   ++exemplar_offset;
   
   /* appendAttr(lnode,attr(a_type,ucc("var"))); */
+
+  (void)sprintf(line_id_buf+strlen(line_id_buf),(const char *)"v%d", exemplar_offset);
+  set_tr_id(line_id_buf);
+  xid = attr(a_xml_id,ucc(line_id_buf));
+  tmp = line_id_buf + strlen(line_id_buf);
+  while (tmp[-1] != 'v')
+    --tmp;
+  tmp[-1] = '\0';
+  appendAttr(lnode,xid);
+
   appendChild(current,lnode);
+
   while (*s && !isspace(*s))
     ++s;
 

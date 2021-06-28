@@ -123,11 +123,18 @@
   <xsl:choose>
     <xsl:when test="ancestor::g:d">
       <sup>
-	<xsl:if test="ancestor::g:d[@g:role='phonetic']">
-	  <xsl:attribute name="class">
-	    <xsl:value-of select="$lang"/>
-	  </xsl:attribute>
-	</xsl:if>
+	<xsl:choose>
+	  <xsl:when test="ancestor::g:d[@g:role='phonetic']">
+	    <xsl:attribute name="class">
+	      <xsl:value-of select="$lang"/>
+	    </xsl:attribute>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:attribute name="class">
+	      <xsl:text>sux</xsl:text>
+	    </xsl:attribute>
+	  </xsl:otherwise>
+	</xsl:choose>
 	<xsl:call-template name="render-g"/>
 	<xsl:call-template name="render-flags"/>
       </sup>

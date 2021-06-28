@@ -556,14 +556,15 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- 2021-06-27: is there any harm always emitting a spacer? -->
 <xsl:template match="xtf:lg">
   <xsl:param name="maxcols" select="0"/>
   <xsl:apply-templates>
     <xsl:with-param name="maxcols" select="$maxcols"/>
   </xsl:apply-templates>
-  <xsl:if test="self::xtf:lg and /xtf:score[not(@score-type='legacy')]">
+<!--  <xsl:if test="self::xtf:lg and /xtf:score[not(@score-type='legacy')]"> -->
     <tr class="score-spacer"><td> </td></tr>
-  </xsl:if>
+<!--  </xsl:if> -->
 </xsl:template>
 
 <xsl:template match="xtf:noncolumn">

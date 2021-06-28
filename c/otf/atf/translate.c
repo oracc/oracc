@@ -34,6 +34,8 @@ const char *const xtr_xmlns[] =
 #define setClass(n,c) appendAttr((n),attr(a_class,ucc((c))))
 #define getClass(n) getAttr((n),"class")
 
+static char *tr_id_buf = NULL;
+
 static char trans_id_base[32];
 static unsigned char last_xid[128];
 int start_lnum = -1;
@@ -80,6 +82,24 @@ static unsigned char last_label_buf[128];
 static const char *xid_prev(const char *x);
 static int xid_line(const char *x);
 static int xid_diff(const char *x1, const char *x2);
+
+void
+set_tr_id(const char *id)
+{
+  if (id)
+    {
+      tr_id_buf = realloc(tr_id_buf, strlen(id) + 1);
+      strcpy(tr_id_buf, id);
+    }
+  else
+    {
+      if (tr_id_buf)
+	{
+	  free(tr_id_buf);
+	  tr_id_buf = NULL;
+	}
+    }
+}
 
 struct node *
 translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
@@ -1036,7 +1056,10 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	      se_label(p,cc(text_n),cc(label));
 	      if (current_trans->etype == etu_interlinear)
 		{
-		  appendAttr(p,attr(a_xtr_ref,ucc(line_id_buf)));
+		  if (tr_id_buf)
+		    appendAttr(p,attr(a_xtr_ref,ucc(tr_id_buf)));
+		  else
+		    appendAttr(p,attr(a_xtr_ref,ucc(line_id_buf)));
 
 		  setAttr(p,n_xh,(unsigned char *)nstab[n_xh].ns);
 		  setAttr(p,n_xtr,(unsigned char *)nstab[n_xtr].ns);

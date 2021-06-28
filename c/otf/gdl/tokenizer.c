@@ -1668,6 +1668,10 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      ++sentences_used;
 		      continue; /* skip the whitespace skipping */
 		    }
+		  else if ((*l == '+' && l[1] == '-') || (*l == '-' && l[1] == '+'))
+		    {
+		      
+		    }
 		  else
 		    {
 #if 1
