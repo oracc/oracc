@@ -896,7 +896,8 @@ $ start of reverse missing
 		     && (lines[1][0] == '#' 
 			 || lines[1][0] == '<'
 			 || lines[1][0] == '>'
-			 || lines[1][0] == '+'))
+			 || lines[1][0] == '+'
+			 || lines[1][0] == '='))
 		{
 		  if (lines[1][0] == '<' || lines[1][0] == '>' || lines[1][0] == '+')
 		    {
@@ -990,7 +991,26 @@ $ start of reverse missing
 			{
 			  concat_continuations(lines);
 			}
-		      protocol(run, protocol_state, LINE, current, *lines);
+		      else if (!xstrncmp(*lines,"#note:",6))
+			{
+			  int lines_used = note_parse_tlit(current, current_level, lines) - 1;
+			  lines += lines_used;
+			  lnum += lines_used;
+			}
+		      else if (!xstrncmp(*lines,"#tr",3)
+			       && (lines[0][3] == '.' || lines[0][3] == ':'))
+			{
+			  lines = trans_inter(lines);
+			  /*--lnum;*/ /* not correct for this inner loop */
+			  lines = skip_blank_func(lines);
+			  /*continue;*/
+			  if (lines[0])
+			    goto retry_comment;
+			  else
+			    --lines;
+			}
+		      else
+			protocol(run, protocol_state, LINE, current, *lines);
 		      skip_blank();
 		    }		  
 		}

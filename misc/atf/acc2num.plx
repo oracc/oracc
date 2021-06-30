@@ -19,6 +19,11 @@ while (<>) {
 	chomp;
 	my $l = ORACC::ATF::Unicode::acc2num($_);
 	print "$lnum$l\n";
+    } elsif (s/^(==\S+)//) {
+	my $lnum = $1;
+	chomp;
+	my $l = ORACC::ATF::Unicode::acc2num($_);
+	print "$lnum$l\n";
     } else {
 	warn "$.: unhandled line: $_";
 	print;
