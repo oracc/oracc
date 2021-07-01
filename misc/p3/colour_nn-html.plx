@@ -3,10 +3,10 @@ use warnings; use strict;
 
 use Data::Dumper;
 
-my @nn = qw/n AN CN DN EN FN GN LN MN ON PN RN SN TN WN YN/;
+my @nn = qw/n AN CN DN EN FN GN LN MN ON PN QN RN SN TN WN YN/;
 
 my @nn_long = qw/number Agricultural Celestial Divine Ethnos Field
-    Geographical Lineage Month Object Personal Royal Temple
+    Geographical Lineage Month Object Personal Quarter Royal Temple
     Watercourse Year/;
 
 my %nn_colours = ();
