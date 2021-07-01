@@ -33,9 +33,11 @@ print <<EOF;
 EOF
     
 foreach my $n (sort keys %nn_colours) {
-    print "<tr><td>$n</td><td>$nn_long{$n} Name</td><td style=\"color:$nn_colours{$n}\">$nn_colours{$n}</td></tr>\n"
+    my $Name = '';
+    $Name = ' Name' if $n =~ /^[A-Z]/;
+    print "<tr><td>$n</td><td>$nn_long{$n}$Name</td><td style=\"color:$nn_colours{$n}\">$nn_colours{$n}</td></tr>\n"
 }
-
+print "<tr><td colspan=\"2\">Emesal Sumerian</td><td style=\"color:mediumorchid\">mediumorchid</td></tr>\n";
 print '</table></body></html>';
 close(H);
 
