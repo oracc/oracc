@@ -1,13 +1,16 @@
 .sux-x-emesal { color: mediumorchid !important }
 .n  { color: slategrey !important }
+
 .AN { color: sandybrown !important }
 .CN { color: fuchsia !important }
 .DN { color: deepskyblue !important }
+.EN { color: darkred !important }
 .FN { color: yellowgreen !important }
 .GN { color: green !important }
 .MN { color: cornflowerblue }
 .ON { color: darksalmon !important }
 .PN { color: mediumvioletred !important }
+.QN { color: lightsteelblue !important }
 .LN { color: indigo !important }
 .RN { color: purple !important }
 .SN { color: darkgreen !important }
@@ -19,12 +22,14 @@
 .AN a:link { color: sandybrown !important }
 .CN a:link { color: fuchsia !important }
 .DN a:link { color: deepskyblue !important }
+.EN a:link { color: darkred !important }
 .FN a:link { color: yellowgreen !important }
 .GN a:link { color: green !important }
 .LN a:link { color: indigo !important }
 .MN a:link { color: cornflowerblue }
 .ON a:link { color: darksalmon !important }
 .PN a:link { color: mediumvioletred !important }
+.QN a:link { color: lightsteelblue !important }
 .RN a:link { color: purple !important }
 .SN a:link { color: darkgreen !important }
 .TN a:link { color: mediumslateblue !important }
