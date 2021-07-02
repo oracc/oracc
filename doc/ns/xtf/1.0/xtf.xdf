@@ -1300,7 +1300,9 @@ lg = element lg {
     | (l,gus?,nts?,(proto.link?,bil+)+)
     | (l,gus?,lgs) 
     | (l,gus?,nts,lgs) 
-    | (l,gus?, (e | comments)*)),
+    | (l,gus?, (e | comments)*)
+    | (l,(bil|var|notetext|cmt)*)
+    ),
   proto.inter*,
   (var|notetext|cmt)*
 }

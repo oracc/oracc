@@ -953,6 +953,17 @@
             </choice>
           </zeroOrMore>
         </group>
+        <group>
+          <ref name="l"/>
+          <zeroOrMore>
+            <choice>
+              <ref name="bil"/>
+              <ref name="var"/>
+              <ref name="notetext"/>
+              <ref name="cmt"/>
+            </choice>
+          </zeroOrMore>
+        </group>
       </choice>
       <zeroOrMore>
         <ref name="proto.inter"/>
