@@ -6,8 +6,8 @@ use Data::Dumper;
 my @nn = qw/n AN CN DN EN FN GN LN MN ON PN QN RN SN TN WN YN/;
 
 my @nn_long = qw/number Agricultural Celestial Divine Ethnos Field
-    Geographical Lineage Month Object Personal Quarter Royal Temple
-    Watercourse Year/;
+    Geographical Lineage Month Object Personal Quarter Royal Settlement 
+    Temple Watercourse Year/;
 
 my %nn_colours = ();
 my %nn_long = (); @nn_long{@nn} = @nn_long;

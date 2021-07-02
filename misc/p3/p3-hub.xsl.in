@@ -44,6 +44,7 @@
 
     <p><a href="/">Oracc Home Page</a></p>
     <p><a href="/doc2/help/">Oracc Documentation</a></p>
+    <p><a href="/colour_nn.html">Oracc Proper Noun Colour Codings</a></p>
     <p><a href="/{/*/@project}/index.html"><xsl:value-of select="/*/@project"/> Home Page</a></p>
     <p><a href="/{/*/@project}/as"><xsl:value-of select="/*/@project"/> Advanced Search</a></p>
 

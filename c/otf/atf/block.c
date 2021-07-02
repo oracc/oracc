@@ -920,6 +920,17 @@ $ start of reverse missing
 			  ++has_links;
 			}
 		    }
+		  else if (lines[1][0] == '=')
+		    {
+		      /* This block is needed to intermix notes, trans and bil */
+		      ++lnum;
+		      ++lines;
+		      concat_continuations(lines);
+		      lem_save_line(lines[0]);
+		      note_initialize_line();
+		      line_bil(*lines);
+		      skip_blank();		      
+		    }
 		  else /* lines[1][0] == '#' */
 		    {
 		      ++lnum;
@@ -980,6 +991,7 @@ $ start of reverse missing
 		  ++lines;
 		  concat_continuations(lines);
 		  lem_save_line(lines[0]);
+		  note_initialize_line();
 		  line_bil(*lines);
 		  skip_blank();
 		  /* FIXME: weak support for #lem: */
@@ -1904,6 +1916,7 @@ line_bil(unsigned char *lp)
   unsigned char *end = lp+xxstrlen(lp);
   
   already_lemmed = 0;
+  note_initialize_line();
   appendAttr(lnode,attr(a_type,ucc("bil")));
   appendChild(current,lnode);
   while (*s && isspace(*s))
