@@ -38,6 +38,10 @@ foreach my $buildhost (@BUILD_HOSTS) {
 
     foreach my $s (@servelist) {
 	my($project,$datestamp) = split(/\s+/,$s);
+        if (-d "$oracc_builds/$project/.git") {
+	    sc_log("$project is a git repo; skipping installation");
+	    next;
+	}
 	my $installstamp = ((stat("$oracc_builds/$project/installstamp"))[9] || 0);
 	if ($datestamp > $installstamp) {
 	    sc_log("$project needs updating (built $datestamp, installed $installstamp)");

@@ -938,6 +938,7 @@ $ start of reverse missing
 		      if (!xstrncmp(*lines, "#lem:",5))
 			{
 			  concat_continuations(lines);
+			  protocol(run, protocol_state, LINE, current, *lines);
 			}
 		      else
 			{
@@ -1002,6 +1003,7 @@ $ start of reverse missing
 		      if (!xstrncmp(*lines, "#lem:",5))
 			{
 			  concat_continuations(lines);
+			  protocol(run, protocol_state, LINE, current, *lines);
 			}
 		      else if (!xstrncmp(*lines,"#note:",6))
 			{
@@ -1929,7 +1931,7 @@ line_bil(unsigned char *lp)
 	{
 	  *end = '\0';
 	  tlit_parse_inline(s,end,lnode, 
-			    1 + (++bil_offset * 1000), 
+			    1 + (++exemplar_offset * 1000), 
 			    WITH_WORD_LIST, uc(line_id_buf));
 	}
     }
