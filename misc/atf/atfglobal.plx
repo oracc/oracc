@@ -65,6 +65,7 @@ foreach my $f (@f) {
     my $outfile = `basename $f`;
     $outfile = "new/$outfile";
     open(O,">$outfile") || fail("unable to open output $outfile");
+    print STDERR "writing fixed $f to $outfile\n";
     while (<F>) {
 	if (/^\s*$/ || /^[&\@\$]/ || /^[:=]/) {
 	    print O unless $dump_table;

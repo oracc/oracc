@@ -17,6 +17,7 @@ elx, "020", "sux", m_sign, m_logo, c_elx, LF_BASE|LF_SAC
 peo, "030", "peo", m_logo, m_lang, c_peo, LF_NORM
 plq, "020", "plq", m_logo, m_lang, c_plq, LF_NORM
 qam, "020", "qam", m_sign, m_lang, c_qam, LF_NORM|LF_SAC
+qka, "020", "qka", m_sign, m_lang, c_qka, LF_NORM|LF_SAC
 qcu, "020", "qcu", m_sign, m_lang, c_qcu, LF_NORM|LF_SAC
 qeb, "020", "qeb", m_sign, m_lang, c_qeb, LF_NORM|LF_SAC
 xht, "020", "sux", m_logo, m_logo, c_xht, LF_NORM|LF_SAC|LF_LOGO

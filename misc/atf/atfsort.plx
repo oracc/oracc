@@ -19,6 +19,8 @@ if ($keys) {
     open(K, $keys) || die;
     while (<K>) {
 	chomp;
+	s/\s+.*$//;
+	s/^&//;
 	$keys{$_} = $.;
     }
     close(K);

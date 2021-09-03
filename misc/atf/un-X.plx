@@ -30,7 +30,7 @@ while (<M>) {
 		    ++$status;
 		} else {
 		    if ($seen{$f2}++) {
-			warn "$map:$.: already saw ID $f1\n";
+			warn "$map:$.: already saw ID $f2\n";
 			++$status;
 		    } else {
 			$map{$f1} = $f2;
@@ -46,7 +46,7 @@ while (<M>) {
 		    ++$status;
 		} else {
 		    if ($seen{$f2}++) {
-			warn "$map:$.: already saw ID $f1\n";
+			warn "$map:$.: already saw ID $f2\n";
 			++$status;
 		    } else {
 			$map{$f2} = $f1;
