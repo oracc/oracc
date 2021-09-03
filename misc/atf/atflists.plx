@@ -59,6 +59,7 @@ foreach my $arg (@ARGV) {
 	}
 
 	@ln = map { tr/\n\r//d; $_ } @ln;
+	@ln = grep (/^\&?[PQX]/, @ln); # only use lines that have PQX IDs
 	if ($ln[0] && $ln[0] =~ /\@/) {
 	    # remove XMD project from proxy lists
 	    @ln = map { s/\@.*$//; $_ } @ln;
