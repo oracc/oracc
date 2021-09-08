@@ -12,6 +12,7 @@ my %runninglist = ();
 my $unqualified_ok = 0;
 my $unqualified_force = 0;
 my $verbose = 0;
+my $errfile = '';
 
 foreach my $arg (@ARGV) {
     if ($need_outfile) {
@@ -47,6 +48,7 @@ foreach my $arg (@ARGV) {
 	print STDERR "op $arg\n" if $verbose;
     } else {
 	my @ln = ();
+	$errfile = $arg;
 	if ($arg eq 'stdin') {
 	    while (<STDIN>) {
 		push @ln, $_;
@@ -59,7 +61,8 @@ foreach my $arg (@ARGV) {
 	}
 
 	@ln = map { tr/\n\r//d; $_ } @ln;
-	@ln = grep (/^\&?[PQX]/, @ln); # only use lines that have PQX IDs
+	@ln = valid_pqx(@ln);
+#	@ln = grep (/^\&?[PQX]/ || , @ln);
 	if ($ln[0] && $ln[0] =~ /\@/) {
 	    # remove XMD project from proxy lists
 	    @ln = map { s/\@.*$//; $_ } @ln;
@@ -140,6 +143,23 @@ pqx_sort {
     $tmp_a =~ s/^.*?://;
     $tmp_b =~ s/^.*?://;
     $tmp_a cmp $tmp_b;
+}
+
+sub valid_pqx {
+    # only use lines that are legal PQX IDs
+    my @ret = ();
+    my $i = 0;
+    foreach my $pqx (@_) {
+	++$i;
+	if ($pqx =~ /^[PQX]\d\d\d\d\d\d$/) {
+	    push @ret, $pqx;
+	} elsif ($pqx =~ m#^[a-z0-9/]+:[PQX]\d\d\d\d\d\d$#) {
+	    push @ret, $pqx;
+	} else {
+	    warn "$errfile:$i: $pqx: bad entry in list file\n";
+	}
+    }
+    @ret;
 }
 
 1;
