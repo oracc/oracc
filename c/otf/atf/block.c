@@ -953,7 +953,10 @@ $ start of reverse missing
 				   && (lines[0][3] == '.' || lines[0][3] == ':'))
 			    {
 			      lines = trans_inter(lines);
-			      /*--lnum;*/
+			      /* trans_inter returns line-after #tr; if that is non-blank
+			       * it causes content to be skipped by this inner loop */
+			      --lnum;
+			      --lines;
 			    }
 			  else if (xstrncmp(*lines,"#eid:",5))
 			    protocol(run, protocol_state, LINE, current, *lines);
