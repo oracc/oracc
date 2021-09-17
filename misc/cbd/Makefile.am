@@ -31,7 +31,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbd2atf.plx cbd-drop-form-dups.plx \
 	dotforms-diff.plx dotforms-dups.plx dotforms-sigs.plx \
 	hist-to-glo-fix.sh cbd-sig2glo.sh cbd-err-entries.plx \
-	cbd-drop-qpn.plx cbd-nn-alias-tab.plx
+	cbd-drop-qpn.plx cbd-nn-alias-tab.plx sigoid.plx
 
 # cbd-glo-fix.plx cbd-lem-fix.plx # now in old/
 
