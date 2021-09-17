@@ -22,5 +22,5 @@ for a in 02pub/cbd/* ; do
 done
 o2-weblive.sh
 o2-prm.sh
-o2-json.sh
+#o2-json.sh
 neo-portals.sh
