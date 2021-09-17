@@ -1151,7 +1151,7 @@
 <!--      <xsl:apply-templates select="cbd:usages"/> -->
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="$cbd-inline-senses">
+  <xsl:if test="$cbd-inline-senses='yes'">
     <xsl:choose>
       <xsl:when test="@icount &lt; 101">
 	<xsl:variable name="src"

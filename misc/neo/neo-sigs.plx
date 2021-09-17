@@ -28,6 +28,9 @@ while (<O>) {
 		chomp;
 		s/^\@(.*?)\%/\@neo\%/;
 		my($s,$rr) = (split(/\t/,$_));
+		if ($s =~ /##/) {
+		    $s = strip_morph2($s);
+		}
 		foreach my $r (split(/\s+/,$rr)) {
 		    my $t = $r; $t =~ s/\..*$//;
 		    if (exists($l{$t})) {
@@ -56,5 +59,13 @@ close(S);
 open(L, '>01bld/superlangs');
 print L join(' ', sort keys %langs, 'qpn'), "\n";
 close(L);
+
+# This assumes that morph2 is the last component in a signature which is true as of 2021-09-17
+sub strip_morph2 {
+    my $s = shift;
+    $s =~ s/\#\#.*?\+\+/++/g;
+    $s =~ s/\#\#.*?$//;
+    $s;
+}
 
 1;

@@ -400,7 +400,7 @@ tlitsplit {
 #
 #    $tlit = $c10ed if $c10ed;
     
-    $tlit =~ s/\!\(.*?\)//;
+    $tlit =~ s/\!\(.*?\)//g; # this is not strong enough if there are () nested inside (|...|)
     $tlit =~ tr/?![]#*<>//d;
 
     # protect periods in parenthesized signs in compounds
