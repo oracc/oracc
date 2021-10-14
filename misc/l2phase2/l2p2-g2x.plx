@@ -180,6 +180,7 @@ print '<?xml version="1.0" encoding="utf-8"?>', "\n";
 print "<entries $ns project=\"$header{'project'}\" xml:lang=\"$header{'lang'}\" n=\"$header{'name'}\"$versionattr$dateattr>";
 
 foreach my $lang (sort keys %data) {
+    $baselang = $lang; $baselang =~ s/-.*$//;
     foreach my $entry (sort keys %{$data{$lang}}) {
 	foreach my $sense (keys %{${$data{$lang}}{$entry}}) {
 	    my $sense_freq = 0;
@@ -193,7 +194,7 @@ foreach my $lang (sort keys %data) {
 	}
 	my $entry_xid = $entry_ids{$entry};
 	my $oid = '';
-	$oid = oid_lookup('sux', $entry) if $cbd_oid; # $baselang =~ /^sux/
+	$oid = oid_lookup($baselang, $entry) if $cbd_oid; # $baselang =~ /^sux/
 	my $xid = ($oid ? $oid : $entry_xid);
 	my ($letter) = ($entry =~ /^(.)/);
 #	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;

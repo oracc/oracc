@@ -54,7 +54,7 @@ my $wants = 0; # read cbdoid input and output the ones that are wanted
 my $xid_template = 'x0000000';
 my $xids = 0;
 
-my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb xht xhu xur qur xlu hlu uga/;
+my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb qka xht xhu xur qur xlu hlu uga/;
 my %domains = (); @domains{@domains} = ();
 
 my %domain_authorities = (
@@ -236,8 +236,13 @@ sub oid_fail {
 }
 
 sub oid_add {
-    oid_fail("project $project lacks authority to assign IDs in domain $domain")
-	unless $xids || $domain_authorities{$domain} eq $project;
+    if ($domain_authorities{$domain}) {
+	oid_fail("project $project lacks authority to assign IDs in domain $domain")
+	    unless $xids || $domain_authorities{$domain} eq $project;
+    } elsif ($project ne 'neo') { # neo is default authority for all languages
+	oid_fail("project $project lacks authority to assign IDs in domain $domain")
+	    unless $xids;
+    }
 
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;

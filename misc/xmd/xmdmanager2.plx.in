@@ -984,6 +984,8 @@ find_keydata {
     if (-r '00lib/keydata.xml') {
 	$project_mode = 1;
 	$keydata = '00lib/keydata.xml';
+    } elsif (($keydata = find_keydata_in_parent($project))) {
+	; # do nothing, we set $keydata in the conditional test
     } elsif (-r "@@ORACC@@/pub/$catproj/keydata.xml") {
 	$keydata = "@@ORACC@@/pub/$catproj/keydata.xml";
     } else {
@@ -991,6 +993,19 @@ find_keydata {
     }
     warn "xmdmanager2.plx: using keydata from $keydata\n";
     $keydata;
+}
+
+sub find_keydata_in_parent {
+    my $p = shift;
+    warn "find_key_data_in_parent: arg p = $p\n";
+    while ($p =~ s#/[^/]+$##) {
+	warn "find_key_data_in_parent: trying $p\n";
+	if (-r "@@ORACC@@/$p/00lib/keydata.xml") {
+	    warn "find_key_data_in_parent: found $p/00lib/keydata.xml\n";
+	    return "@@ORACC@@/$p/00lib/keydata.xml";
+	}
+    }
+    '';
 }
 
 #sub
