@@ -261,6 +261,23 @@ T, Ṭ
 ^U Û
 @end chars
 
+@chars %qka/g
+@allow abdefgŋhḫiklmnopqrsṣśštṭuwxyzABCDEGŊHḪIJKLMNPQRSṢŚŠTṬUWXYZʾ₀₁₂₃₄₅₆₇₈₉ₓ0123456789áéíúàèìùÁÉÍÚÀÈÌÙ
+@nokey Ḫḫ₀₁₂₃₄₅₆₇₈₉ₓáéíúàèìùÁÉÍÚÀÈÌÙ
+@trans
+j  ŋ
+J  Ŋ
+s, ṣ
+S, Ṣ
+s' ś
+S' Ś
+sz š
+SZ Š
+t, ṭ
+T, Ṭ
+'  ʾ
+@end chars
+
 @chars %qpc/g
 @allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'ʾ
 @nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ

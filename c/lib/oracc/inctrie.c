@@ -64,9 +64,12 @@ inctrie_map(struct inctrie *ip, const char *s, const char *end, int append,
 {
   static unsigned char *dest = NULL;
   static int dest_alloced = 0;
-  int dest_used = (append ? strlen((const char *)dest) : 0);
+  int dest_used = 0;
   const char *s_orig = s;
 
+  if (dest && append)
+    dest_used = strlen((const char *)dest);
+  
   if (!s)
     {
       if (dest)
