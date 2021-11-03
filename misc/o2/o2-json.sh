@@ -91,6 +91,7 @@ if [ -r 01tmp/json-error.log ]; then
     echo "o2-json.sh: internal errors in JSON processing; please tell Steve."
     echo "o2-json.sh: skipping zipping JSON."
 else
+    echo "o2-json.sh: creating manifest.json"
     echo "o2-json.sh: zipping json ..."
     zip=`zip-json.sh`
     rm -fr 01bld/json/*

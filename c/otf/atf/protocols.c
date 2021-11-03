@@ -67,6 +67,9 @@ static void version_handler(struct node *parent, enum t_scope scope,
 
 extern void link_check_protocol(const char *line);
 
+static unsigned char *savebuf = NULL;
+static int savebuf_len = 0;
+
 static int
 is_blank_line(const unsigned char *l)
 {
@@ -81,9 +84,23 @@ protocols(struct run_context *run,
 	  unsigned char **lines, unsigned char ***end, struct node *np)
 {
   struct node *p = elem(e_protocols,NULL,lnum,level);
-  unsigned char savebuf[1024];
 
+  if (!savebuf)
+    {
+      savebuf_len = 1024;
+      savebuf = xmalloc(savebuf_len);
+    }
+  else if (strlen(*lines) >= savebuf_len)
+    {
+      while (strlen(*lines) >= savebuf_len)
+	{
+	  savebuf_len *= 2;
+	  savebuf = xrealloc(savebuf, savebuf_len);
+	}
+    }
+  
   appendAttr(p,attr(a_scope,ucc(strchr(scope_names[scope],'_')+1)));
+  
   if (scope == s_text)
     {
       if (lines[0] && *lines[0] == '@')
