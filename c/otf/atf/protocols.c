@@ -78,6 +78,27 @@ is_blank_line(const unsigned char *l)
   return !*l;
 }
 
+static void
+manage_savebuf(const char *l)
+{
+  if (l)
+    {
+      if (!savebuf)
+	{
+	  savebuf_len = 1024;
+	  savebuf = malloc(savebuf_len);
+	}
+      else if (strlen(l) >= savebuf_len)
+	{
+	  while (strlen(l) >= savebuf_len)
+	    {
+	      savebuf_len *= 2;
+	      savebuf = realloc(savebuf, savebuf_len);
+	    }
+	}
+    }
+}
+
 struct node *
 protocols(struct run_context *run,
 	  enum t_scope scope, enum block_levels level, 
@@ -85,20 +106,6 @@ protocols(struct run_context *run,
 {
   struct node *p = elem(e_protocols,NULL,lnum,level);
 
-  if (!savebuf)
-    {
-      savebuf_len = 1024;
-      savebuf = xmalloc(savebuf_len);
-    }
-  else if (strlen(*lines) >= savebuf_len)
-    {
-      while (strlen(*lines) >= savebuf_len)
-	{
-	  savebuf_len *= 2;
-	  savebuf = xrealloc(savebuf, savebuf_len);
-	}
-    }
-  
   appendAttr(p,attr(a_scope,ucc(strchr(scope_names[scope],'_')+1)));
   
   if (scope == s_text)
@@ -111,7 +118,10 @@ protocols(struct run_context *run,
 	  struct block_token *blocktokp;
 
 	  if (need_lemm)
-	    xstrcpy(savebuf,*lines);
+	    {
+	      manage_savebuf(*lines);
+	      xstrcpy(savebuf,*lines);
+	    }
 
 	  while (*s && !isspace(*s))
 	    ++s;
@@ -120,7 +130,7 @@ protocols(struct run_context *run,
 	  blocktokp = blocktok((const char *)token,xxstrlen(token));
 	  if (blocktokp && blocktokp->type == TEXT)
 	    {
-	      if (need_lemm || do_show_insts)
+	      if (need_lemm || do_show_insts)		
 		lem_save_line(savebuf);
 	      doctype = blocktokp->etype;
 	      setName(np,blocktokp->etype);
@@ -153,7 +163,10 @@ protocols(struct run_context *run,
 	  continue;
 	}
       if (need_lemm)
-	xstrcpy(savebuf,*lines);
+	{
+	  manage_savebuf(*lines);
+	  xstrcpy(savebuf,*lines);
+	}
       if (*lines[0] 
 	  && xstrncmp(*lines,"#eid:",5) 
 	  && !protocol(run, scope, level, p, *lines))
