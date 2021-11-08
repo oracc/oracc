@@ -196,4 +196,13 @@ margin: 1em 2em 1em 2em;
     float: right;
     padding: 0 4%;
 }
+#switcherul {
+    margin-left: 3em;
+    margin-bottom: 0.5em;
+    padding-left: 0;
+    font-size: 0.9em;
+    font-weight: bold;
+    width: 70%;
+    border-bottom: 2px solid $light;
+}
 }
