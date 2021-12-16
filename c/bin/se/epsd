@@ -1,0 +1,2 @@
+#!/bin/sh
+se \#epsd2 \!cbd/sux $*
