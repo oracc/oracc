@@ -2,10 +2,12 @@
 #
 # As of 2021-01-20 this just rebuilds catalog data not corpus
 #
+# Adapted 2021-11-25 to work with CDLI's move to git lfs
+#
 echo Rebuilding CDLI with cdli-rebuild.sh ...
-(cd 00git ; git pull)
+(cd 00git/data ; git pull)
 if [ $? == 1 ]; then
-    head -1 00git/cdli_catalogue_1of2.csv >00lib/fieldnames.row
+    head -1 00git/data/cdli_catalogue.csv >00lib/fieldnames.row
     00bin/csv-clean.plx
     o2-catalog.sh
     exit 0

@@ -151,9 +151,9 @@ sub valid_pqx {
     my $i = 0;
     foreach my $pqx (@_) {
 	++$i;
-	if ($pqx =~ /^[PQX]\d\d\d\d\d\d$/) {
+	if ($pqx =~ /^[PQX]\d\d\d\d\d\d(?:\@|$)/) {
 	    push @ret, $pqx;
-	} elsif ($pqx =~ m#^[a-z0-9/]+:[PQX]\d\d\d\d\d\d$#) {
+	} elsif ($pqx =~ m#^[a-z0-9/]+:[PQX]\d\d\d\d\d\d(?:\@|$)#) {
 	    push @ret, $pqx;
 	} else {
 	    warn "$errfile:$i: $pqx: bad entry in list file\n";

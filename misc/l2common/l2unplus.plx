@@ -21,9 +21,11 @@ foreach my $f (@files) {
 	select F;
 	foreach (@lines) {
 	    if (/^\#lem:/) {
+		s/\+\&/\001/g;
 		s/([:;])(\s+)\+(?!\.)/$1$2/g;
 		s/\+\.(\s+)\+/+.$1/g;
 		s/\&\+/\&/g;
+		s/\001/\+\&/g;
 	    }
 	    print;
 	}

@@ -2,7 +2,7 @@
 biglog=`pwd`/super-build-subs.log
 rm -f $biglog
 date >$biglog
-for a in `cat 00lib/super*.lst`; do
+for a in `cat 00lib/superbuild.lst`; do
     proj=`/bin/echo -n $a | cut -d: -f1`
     echo $proj
     (cd $ORACC_BUILDS/$proj ; rm -f nohup.out ;

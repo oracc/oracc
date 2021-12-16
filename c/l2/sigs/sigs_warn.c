@@ -142,6 +142,24 @@ trysig(struct ilem_form *fp)
   return tsig;
 }
 
+static char *
+make_cfgw(struct f2 *f2p)
+{
+  char *c = NULL;
+  if (f2p->cf && f2p->gw && f2p->pos)
+    {
+      c = malloc(strlen((const char*)f2p->cf)+strlen((const char*)f2p->gw)+strlen((const char*)f2p->pos)+3);
+      sprintf(c,"%s[%s]%s",(const char*)f2p->cf,(const char*)f2p->gw,(const char*)f2p->pos);
+    }
+  else
+    {
+      fprintf(stderr, "make_cfgw failed to make a CFGW\n");
+      c = malloc(1);
+      c[0] = '\0';
+    }
+  return c;
+}
+
 void
 sigs_warn(struct xcl_context *xcp, struct xcl_l *l, 
 	  struct siglook *look, struct ilem_form *fp)
@@ -178,10 +196,14 @@ sigs_warn(struct xcl_context *xcp, struct xcl_l *l,
 	  const char *tsig = trysig(fp);
 	  const char *tinst = tryinst(l,fp);
 	  if (BIT_ISSET(fp->f2.flags,F2_FLAGS_NO_FORM))
-	    vwarning2(fp->file,fp->lnum,
-		      "no FORM `%s'; %d match%s for %s in glossary %s:%s",
-		      strcmp((char*)fp->f2.form, "*") ? fp->f2.form : fp->f2.norm,
-		      nfinds, (nfinds>1)?"es":"", tsig, sp->project, sp->lang);
+	    {
+	      char *cfgw = make_cfgw(&fp->finds[0]->f2);
+	      vwarning2(fp->file,fp->lnum,
+			"no FORM `%s'; %d match%s for %s in glossary %s:%s %s",
+			strcmp((char*)fp->f2.form, "*") ? fp->f2.form : fp->f2.norm,
+			nfinds, (nfinds>1)?"es":"", tsig, sp->project, sp->lang, cfgw);
+	      free(cfgw);
+	    }			
 	  else
 	    vwarning2(fp->file,fp->lnum,
 		      "found %d %smatch%s for %s=%s in %s:%s",
