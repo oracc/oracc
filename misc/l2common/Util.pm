@@ -282,13 +282,13 @@ parse_sig {
     
     if (/\'/) {
 	@x{'cf','gw','sense','pos','epos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
-	s/^.*?\'.*?(?=[\$\t\/]|$)//;
+	s/^.*?\'.*?(?=[\@\$\t\/]|$)//;
     } elsif (m,//,) {
 	@x{'cf','gw','sense','pos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\$\t\/]|$)/;
-	s/^.*?\].*?(?=[\$\t\/]|$)//;
+	s/^.*?\].*?(?=[\@\$\t\/]|$)//;
     } elsif (m,\[,) {
 	@x{'cf','gw','pos'} = /^(.*?)\[(.*?)\](.*?)(?:[\$\t\/\#]|$)/;
-	s/^.*?\].*?(?=[\$\t\/]|$)//;
+	s/^.*?\].*?(?=[\@\$\t\/]|$)//;
     } elsif (/^[A-Za-z\/]+/) {
 	$x{'pos'} = $_; # Assume it's PN/DN etc
 	$_ = '';
@@ -301,6 +301,12 @@ parse_sig {
     $x{'pos'} =~ tr,\cA,/, if $x{'pos'};
     $x{'epos'} =~ tr,\cA,/, if $x{'epos'};
 
+
+    # new 2021-12-16: after POS there can be an RWS like @EG, @ES, @UGN
+    if (s/^\@(A-Z+)//) {
+	$x{'rws'} = $1;
+    }
+    
     # unprotect remainder from V/[ti] protection because tum₂-u₃=tum[bring//to bring]V/t'V/t$tum!V/tum₂#~!V
     tr,\cA,/,;
     
@@ -348,7 +354,7 @@ parse_sig {
     if (s/^\/(.+?)([#\t]|\+-|$)/$2/) {
 	my $b = $1;
 	$b =~ tr/\cA/+/;
-	$x{'base'} = "\%$baselang\:$b";
+	$x{'base'} = "\%$baselang\:$b" unless $x{'base'} =~ /^\%\S+?:/;
     }
     if (/^\+/) {
 	if (s/^\+(-.+?)(?=[#\t]|$)//) {

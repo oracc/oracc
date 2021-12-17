@@ -1,7 +1,7 @@
 For Sumerian, Emegir, Emesal, and Udgalnun langs can now be given at
 glossary, entry, form, and base level.
 
-An entry uses @EG, @ES, @UGN
+An entry uses an RWS (Register/Writing System) code @EG, @ES, @UGN
 
 A form uses %s, %e, %u -- the full forms %sux, %sux-x-emesal, and
 %sux-x-udganu may be used, but the system automatically expands the
@@ -13,9 +13,14 @@ with a space between the lang and the base: @bases *rr %s su-su
 A base in an @form gives the lang after the / with : instead of space:
 /%e:du₅-mu.  This is also the format in a signature.
 
-LANG inherits such that forms and bases have the same lang as the
-entry; the entry has the same lang as the glossary unless it uses
-@EG/@ES/@UGN.
+LANG inherits as follows:
+
+     * entry inherits from glossary lang, but @EG/ES/UGN overrides this
+     * form inherits from entry lang, but <space>%lang<space> in form overrides this
+     * base in bases inherits from entry lang, but %s/%e/%u overrides this
+     * base in form inherits from the lang of its occurrence in @bases,
+       but /%(s|e|u) overrides this
+     * N.B.: base in form never inherits directly from the form's language
 
 This means that you can have an EG word in an ES glossary and
 differentiate EG/ES like this which has an ES form (based on
@@ -25,11 +30,36 @@ morphology) with EG entry and base:
  @bases b·e₂
  @form de₃-em₃-ma-ab-be₂ %e /b·e₂ #da.Vmma.b:~
 
+Some of these notations are unnecessary in source glossary files, but they are
+implemented to support round-tripping from glossaries to .sig files and back to
+glossaries.
+
+If you need to include an EG form in an ES glossary, one which doesn't have an ES
+base or any ES morphological markers, it is preferred practice to tag the form
+with %s even though that is the default. This is taken by some validation processes
+as a positive assertion that the presence of an EG form in an ES glossary is known
+and acceptable. This is useful for PSUs where one component may have ES markers but
+other components do not.
+
 When .sig is output from .glo:
 
-     * any @EG/@ES/@UGN is output after the POS of the entry
+     * any RWS @EG/@ES/@UGN is output after the POS of the entry
      * if a form has a %lang it is used as the sig lang
      * if a base in the form has a lang, it is preserved
      * if a base in @bases has a lang that lang is inherited on the
        sig's base with the syntax /%s:dumu
      
+Boundary/low ES valency cases
+
+-ŋen/men₃
+
+ašte EG and ES
+
+am₃ in prefixes?
+
+sa₅-b·a spelling of sab[jar]
+
+li₉- spelling of nu-
+
+zi-ba/bu?
+

@@ -193,7 +193,8 @@ sub guess_init {
     open(B,'>B');
     foreach my $b (keys %b) {
 	next if $b =~ /\s\S+\s+\[/;
-	my %bh = bases_hash($cbd[$b{$b}],0,$b{$b});
+	next if $b =~ /\%$/;
+	my %bh = bases_hash($cbd[$b{$b}],0,$b{$b},$b{$b,'%'});
 #	print B Dumper(\%bh);
 	my @sigs = keys %{$bh{'#sigs'}};
 #	warn "sigs for $b = @sigs\n";

@@ -17,6 +17,22 @@ use Data::Dumper;
 $ORACC::CBD::Bases::ignore_empty_serializations = 0;
 $ORACC::CBD::Bases::serialize_ref = 0;
 
+my %blang_of = (
+    'sux' => '%s',
+    'sux-x-emesal' => '%e',
+    'sux-x-udganu' => '%u'
+    );
+
+my %rws_map = (
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
+    );
+
+my $cbd_lang = '';
+my $entry_lang = '';
+my $default_base_lang = '';
+
 my $base_trace = 0;
 my $bound = '(?:[-\|.{}()/ ]|$)';
 my %fixes = ();
@@ -24,7 +40,6 @@ my %homographs = ();
 my %log_errors = ();
 my %stats = ();
 my $use_map_fh;
-
 my %base_cpd_flags = ();
 
 my $map_fh = undef;
@@ -135,9 +150,22 @@ sub bases_tab {
 	if (/^\@bases/) {
 	    # warn "bases_tab calling bases_hash\n";
 	    $b_ln = $ln;
-	    my %b = bases_hash($_,$cpd);
+	    my %b = bases_hash($_,$cpd,$b_ln,$entry_lang);
+	    my $elang = $blang_of{$entry_lang} if $blang_of{$entry_lang};
+	    my @b = sort grep(!/\#/, keys %b);
+	    my @nb = ();
+	    foreach my $b (@b) {
+		if ($b =~ /^\%/) {
+		    push @nb, $b;
+		} else {
+		    my $blang = $b{"$b#lang"};
+		    $blang = $blang_of{$blang} if ($blang && $blang_of{$blang});
+		    $blang = $elang unless $blang;
+		    push @nb, "$blang:$b";
+		}
+	    }
 	    print "$file\t$e_ln\t$b_ln\t";
-	    print "$e\t", join("\t", sort grep(!/\#/, keys %b)), "\n";
+	    print "$e\t", join("\t", @nb), "\n";
 	} elsif (/^\@parts/) {
 	    $cpd = 1;
 	} elsif (/^$acd_rx?\@entry\S*\s*(.*?)\s*$/) {
@@ -146,6 +174,14 @@ sub bases_tab {
 	    $e =~ s/\]\s/]/;
 	    $cpd = 0;
 	    $e_ln = $ln;
+	    $entry_lang = $cbd_lang;
+	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	    my $rws = $1;
+	    if ($rws_map{$rws}) {
+		$entry_lang = $rws_map{$rws};
+	    }
+	} elsif (/^\@lang\s+(\S+)/) {
+	    $cbd_lang = $1;
 	}
     }
 }
@@ -177,6 +213,7 @@ sub bases_align {
     for (my $i = 0; $i <= $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^$acd_rx?\@entry\S*\s+(.*?)\s*$/) {
 	    $curr_entry = $1;
+	    $entry_lang = $cbd_lang;
 	    $p_entry = $curr_entry;
 	    $p_entry =~ s/\s*\[(.*?)\]\s*/[$1]/;
 	} elsif ($cbd[$i] =~ /^\@bases/) {
@@ -184,7 +221,8 @@ sub bases_align {
 	    if ($base_i) {
 		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
 		pp_line($i+1);
-		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i, $curr_entry);
+		my $base_lang = $base_bases{$curr_entry,'%'}; $base_lang = $blang_of{$base_lang} if $blang_of{$base_lang};
+		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i, $curr_entry, $base_lang);
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    if ($$args{'apply'}) {
 			$bases{$curr_entry} = $b;
@@ -209,6 +247,13 @@ sub bases_align {
 		    }
 		}
 	    }
+	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	    my $rws = $1;
+	    if ($rws_map{$rws}) {
+		$entry_lang = $rws_map{$rws};
+	    }
+	} elsif (/^\@lang\s+(\S+)/) {
+	    $cbd_lang = $1;
 	}
     }
     return %bases;
@@ -226,8 +271,16 @@ sub bases_collect {
 	    if ($cf =~ /\s/) {
 		$base_cpd_flags{$curr_entry} = 1;
 	    }
+	    $b{$curr_entry,'%'} = $cbd_lang;
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    $b{$curr_entry} = $i;
+	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	    my $rws = $1;
+	    if ($rws_map{$rws}) {
+		$b{$curr_entry,'%'} = $rws_map{$rws};
+	    }
+	} elsif (/^\@lang\s+(\S+)/) {
+	    $cbd_lang = $1;
 	}
     }
     %b;
@@ -251,15 +304,15 @@ sub bases_term {
 
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
-    my($b1,$b2,$cpd,$base_i,$curr) = @_;
+    my($b1,$b2,$cpd,$base_i,$curr,$base_lang) = @_;
 
     $p_entry = $curr || '';
 
     #    warn "bases_merge calling bases_hash\n";
     
-    my %h1 = bases_hash($b1,$cpd, $base_i);
+    my %h1 = bases_hash($b1, $cpd, $base_i, $base_lang);
     
-    my %h2 = bases_hash($b2,$cpd, pp_line());
+    my %h2 = bases_hash($b2, $cpd, pp_line(), $entry_lang);
 
     $h1{'#new'} = 0;
 
@@ -355,8 +408,16 @@ sub bases_string {
 }
 
 sub bases_hash {
-    my($arg,$is_compound,$line) = @_;
+    my($arg,$is_compound,$line,$elang) = @_;
     my $saved_line = pp_line();
+
+    if ($elang) {
+	$elang = $blang_of{$elang} if $blang_of{$elang};
+    } else {
+	warn "bases_hash: passed empty elang--defaulting to \%s\n";
+	$elang = '%s';
+    }
+    
 #    warn 'bases_hash caller: ', join(':', caller()), "\n";
     if (defined $line) {
 #	warn "bases_hash: resetting line to $line\n";
@@ -376,6 +437,7 @@ sub bases_hash {
 
     my $alt = '';
     my $stem = '';
+    my $blang = '';
     my $pri = '';
     my %vbases = (); # this one is just for validation of the current @bases field
     my $pricode = 0;
@@ -388,6 +450,13 @@ sub bases_hash {
 	    $b =~ s/^\*\s*//;
 	    pp_warn("misplaced '*' in \@bases");
 	}
+	if ($b =~ s/^\%(\S+)\s+//) {
+	    $blang = xflang($1);
+	} elsif ($b =~ /^\%/) {
+	    $b =~ s/^\%\s*//;
+	    pp_warn("misplaced '%' in \@bases");
+	}
+	$blang = $entry_lang unless $blang;
 	if ($b =~ /\s+\(/) {
 	    warn "primary with alternates $b\n" if $base_trace;
 	    my $tmp = $b;
@@ -412,6 +481,7 @@ sub bases_hash {
 		    } else {
 			%{$vbases{$pri}} = ();
 			$vbases{"$pri#code"} = ++$pricode;
+			$vbases{"$pri#lang"} = $blang;
 			${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef,$pri, 1) } = $pri;
 		    }
 		    foreach my $a (split(/,\s+/,$alt)) {
@@ -455,6 +525,7 @@ sub bases_hash {
 		} else {
 		    %{$vbases{$pri}} = ();
 		    $vbases{"$pri#code"} = ++$pricode;
+		    $vbases{"$pri#lang"} = $blang;
 		    ${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef, $pri, 1) } = $pri;
 		}
 	    }
@@ -464,6 +535,15 @@ sub bases_hash {
     ORACC::CBD::Validate::pp_sl_messages();
     pp_line($saved_line);
     %vbases;
+}
+
+sub xflang {
+    my %xl = (s=>'sux',e=>'sux-x-emesal',u=>'sux-x-udganu');
+    my $l = shift;
+    if ($l && $xl{$l}) {
+	return $xl{$l};
+    }
+    $l;
 }
 
 sub bases_log{
@@ -593,7 +673,7 @@ sub bases_process {
     my %bd = @_;
     my @log_errors = bases_log_errors($bd{'line'});
 #    warn "bases_process calling bases_hash\n";
-    my %b = bases_hash($bd{'data'}, $bd{'compound'});
+    my %b = bases_hash($bd{'data'}, $bd{'compound'}, $bd{'lang'});
 #    open(D,'>bases.dump');
 #    use Data::Dumper;
 #    print D Dumper \%stats;

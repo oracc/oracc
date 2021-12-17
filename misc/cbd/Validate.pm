@@ -282,6 +282,9 @@ sub pp_validate {
 
 	if ($cbd[$i] =~ /^\@([A-Z]+)(?:\s*(\S.*))?$/) {
 	    my $rws = $1;
+	    if ($seen_bases) {
+		pp_warn("\@$1 should come before \@bases");
+	    }
 	    unless ($rws_map{$rws}) {
 		pp_warn("\@$1 unknown register/writing-system/dialect");
 	    } else {

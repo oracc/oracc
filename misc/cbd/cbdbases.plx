@@ -16,6 +16,22 @@ my $acd_rx = $ORACC::CBD::acd_rx;
 %ORACC::CBD::bases = ();
 %ORACC::CBD::forms = ();
 
+my %blang_of = (
+    'sux' => '%s',
+    'sux-x-emesal' => '%e',
+    'sux-x-udganu' => '%u'
+    );
+
+my %rws_map = (
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
+    );
+
+my $cbd_lang = '';
+my $entry_lang = '';
+my $default_base_lang = '';
+
 my $project = '';
 my $lang = '';
 
@@ -129,6 +145,14 @@ sub do_bases {
 	    $base_data{'data'} = $cbd[$i];
 	    $base_data{'cfgw'} = $cfgw;
 	    $base_data{'compound'} = $is_compound;
+	    $base_data{'elang'} = $entry_lang;
+	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	    my $rws = $1;
+	    if ($rws_map{$rws}) {
+		$entry_lang = $rws_map{$rws};
+	    }
+	} elsif (/^\@lang\s+(\S+)/) {
+	    $cbd_lang = $1;
 	}
     }
     @cbd;

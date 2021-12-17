@@ -46,6 +46,12 @@ my %rws_map = (
     SB => 'akk-x-stdbab',
     );
 
+my %blang_of = (
+    'sux' => '%s',
+    'sux-x-emesal' => '%e',
+    'sux-x-udganu' => '%u'
+    );
+
 my %acc = (
 	   'á'=>['a','₂'],
 	   'é'=>['e','₂'],
@@ -89,6 +95,7 @@ my $curr_sig_id = '';
 my $bid = 'b000001';
 my $eid = 'x000001';
 my $entry_lang;
+my $default_base_lang; # set from $entry_lang
 my $e_sig = '';
 my $sid = 0;
 my %formattr = ();
@@ -408,9 +415,12 @@ acd2xml {
 			    }
 			}
 			my $atf = "$..\t";
-			/\s(\%\S+)/ && ($atf .= "$1 ");
-			/\s(\S+)/ && ($atf .= "$1 ");
-			m#\s/(\S+)# && ($atf .= $1);
+			/\s(\%\S+)/ && ($atf .= "$1 "); # add lang
+			/\s(\S+)/ && ($atf .= "$1 "); # add form
+			m#\s/(\S+)# && ($atf .= $1); # add base
+			if ($atf =~ s/(\%[-a-z]+):/$1 /) {
+			    # warn "atf = $atf\n";
+			}
 			$atf =~ s/\\\S+//g;
 			$atf .= "\n";
 			$atf =~ tr/_/ /;
@@ -708,6 +718,7 @@ acdentry {
 			}
 			# $cbdid.$eid
 			$entry_lang = set_e_lang(keys %{$e{'rws_cfs'}});
+			$default_base_lang = $blang_of{$entry_lang} || $entry_lang;
 			push @ret, "<entry xml:id=\"$eid\" xml:lang=\"$entry_lang\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
@@ -795,7 +806,7 @@ acdentry {
 
     if ($e{'form'}) {
 	# form is different because for the CBD it's partly a source to 
-	# harvest bases and norms from, and partly a source of data to validated
+	# harvest bases and norms from, and partly a source of data to validate
 	# form/cf/gw in the lemmatized files
 #	my %localfids = ();
 	my $localfid = '000';
@@ -1495,7 +1506,14 @@ xbase_split {
 	$bstar = $1;
     } else {
 	$b =~ s/^\*\s*//;
+    }    
+    if ($b =~ s/^\%(\S+)\s+//) {
+	$blang = xflang($1);
+    } elsif ($b =~ /^\%/) {
+	$b =~ s/^\%\s*//;
+	pp_warn("misplaced '%' in \@bases");
     }
+    $blang = $entry_lang unless $blang;
     if ($b =~ /\s+\(/) {
 	my $tmp = $b;
 	bad('bases',"malformed alt-base in `$b'")
@@ -2088,6 +2106,14 @@ sub
 check_base {
     my($b,%b) = @_;
     my @b = keys %b;
+    if ($b =~ /^(\%\S+?):/) {
+	my $blang = $1;
+	# warn "check_base passed $b; default_base_lang=$default_base_lang\n";
+	if ($blang eq $default_base_lang) {
+	    # remove redundant lang silently
+	    $b =~ s/^\%\S+?://;
+	} # else let it pass if its base had the same lang
+    }
     unless ($b{$b}) {
 	bad('form', "unknown base `$b'");
 	0;

@@ -303,16 +303,16 @@ sub sigs_simple {
 		my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
 		# warn "cfb2=$current_first_base\n";
 		foreach my $b (split(/\s+/, $current_first_base)) {
-		    if ($b =~ /du₃/) {
-			warn "bdu₃ == $b\n";
-		    }
+		    # if ($b =~ /du₃/) {
+		    #	warn "bdu₃ == $b\n";
+		    # }
 		    my $f = $b; $f =~ tr/·°//d; $f =~ s/^\%\S+?://;
 		    if ($b =~ m/^\%(\S+?):/) {
 			$lng = xflang($1);
-			warn "lng=$lng\n";
+			# warn "lng=$lng\n";
 		    } elsif ($blangs{$b}) {
 			$b = "\%$blangs{$b}:$b";
-			warn "bdu₃ now= $b\n";
+			# warn "bdu₃ now= $b\n";
 		    }
 		    next if $forms_in_entry{$f};
 		    my $instsig1 = "\@$project\%$lng:$f=";
@@ -408,7 +408,7 @@ sub sigs_simple {
 				$lng = xflang($1);
 			    } elsif ($blangs{$b}) {
 				$b = "\%$blangs{$b}:$b";
-				warn "bdu₃ now= $b\n";
+				# warn "bdu₃ now= $b\n";
 			    }
 
 			    my $instsig1 = "\@$project\%$lng:$f=";
@@ -424,8 +424,8 @@ sub sigs_simple {
 
 	    $current_first_base = $1;
 	    %blangs = index_base_langs($current_first_base);
-	    warn "cfg3 = $current_first_base\n";
-	    print STDERR Dumper \%blangs;
+#	    warn "cfg3 = $current_first_base\n";
+#	    print STDERR Dumper \%blangs;
 	    $current_first_base =~ s/\{d\}/\001/g;
 	    my @bits = split(/;\s+/,$current_first_base);
 	    # remove phonetic determinatives because they don't get used for preferred bases

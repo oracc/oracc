@@ -8,6 +8,22 @@ use ORACC::CBD::Util;
 use ORACC::CBD::Bases;
 use ORACC::CBD::Sort;
 
+my %blang_of = (
+    'sux' => '%s',
+    'sux-x-emesal' => '%e',
+    'sux-x-udganu' => '%u'
+    );
+
+my %rws_map = (
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
+    );
+
+my $cbd_lang = '';
+my $entry_lang = '';
+my $default_base_lang = '';
+
 my %args = pp_args();
 
 $args{'letters'} = 1;
@@ -20,11 +36,20 @@ if ($args{'bases'}) {
     my $cpd = 0;
     for (my $i = 0; $i < $#cbd; ++$i) {
 	if ($cbd[$i] =~ /^\@bases/) {
-	    my $b = bases_serialize(bases_hash($cbd[$i],$cpd,$i+1));
+	    my $b = bases_serialize(bases_hash($cbd[$i],$cpd,$i+1,$entry_lang));
 	    $cbd[$i] = "\@bases $b";
 	    $cpd = 0;
 	} elsif ($cbd[$i] =~ /\@parts/) {
 	    $cpd = 1;
+	} elsif (/^$acd_rx?\@entry\S*\s*(.*?)\s*$/) {
+	    $entry_lang = $cbd_lang;
+	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	    my $rws = $1;
+	    if ($rws_map{$rws}) {
+		$entry_lang = $rws_map{$rws};
+	    }
+	} elsif (/^\@lang\s+(\S+)/) {
+	    $cbd_lang = $1;
 	}
     }
 }
