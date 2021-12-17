@@ -116,8 +116,12 @@ $ORACC::L2GLO::Util::project = '';
     flags => '!',
     );
 
+## Watchme: rws_map had EG=>''
+
 %ORACC::L2GLO::Util::rws_map = (
-    EG => '',
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
     MB => 'akk-x-midbab',
     OA => 'akk-x-oldass',
     OB => 'akk-x-oldbab',

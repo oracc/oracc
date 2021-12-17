@@ -18,6 +18,8 @@ my $parts_map_loaded = 0;
 
 my %rws_map = (
     EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
     CF => 'akk',
     OA => 'akk-x-oldass',
     OB => 'akk-x-oldbab',
@@ -88,6 +90,8 @@ my %line_of = ();
 my $usage_flag = 0;
 my $ebang_flag = 0;
 my %sense_props = ();
+
+my $entry_lang = '';
 
 my @funcs = qw/free impf perf Pl PlObj PlSubj Sg SgObj SgSubj/;
 my %funcs = (); @funcs{@funcs} = ();
@@ -289,7 +293,8 @@ acdentry {
 			$gd = '' unless $pos;
 			$pos = '' unless $pos;
 			$e_sig = "$cf\[$gd\]$pos";
-			push @ret, "<entry xml:id=\"$cbdid.$eid\" n=\"$e_sig\"$usattr$defattr>",
+			$entry_lang = set_e_lang(keys %{$e{'rws_cfs'}});
+			push @ret, "<entry xml:id=\"$cbdid.$eid\" xml:lang=\"$entry_lang\" n=\"$e_sig\"$usattr$defattr>",
 			    make_file_pi(pp_file()), 
 			    make_line_pi($line_of{'entry'}), 
 			    "<cf$cacf>$cf</cf>";
@@ -300,7 +305,8 @@ acdentry {
 			}
 			foreach my $dialect (keys %{$e{'rws_cfs'}}) {
 			    if ($rws_map{$dialect}) {
-				push @ret, "<dcf xml:lang=\"$rws_map{$dialect}\" n=\"$dialect\">${$e{'rws_cfs'}}{$dialect}</dcf>";
+				push @ret, "<dcf xml:lang=\"$rws_map{$dialect}\" n=\"$dialect\">${$e{'rws_cfs'}}{$dialect}</dcf>"
+				    unless ${$e{'rws_cfs'}}{$dialect} =~ /^\s*=\s*$/; # '@EG =' means an ES glossary is hosting an EG word
 			    } else {
 				pp_warn("unknown dialect abbreviation `$dialect'\n");
 			    }
@@ -456,7 +462,7 @@ acdentry {
 		}
 	    }
 	    if (!exists $cfgw_forms{$fo}) {
-		$cfgw_forms{$fo} = [$defbang,$flang,$fo,$lfid,
+		$cfgw_forms{$fo} = [$defbang,xflang($flang),$fo,$lfid,
 				    $base,$cont,$morph,$pref,$stem,$rws,$morph2,
 				    $line_of{'form'}+$field_index];
 	    }
@@ -588,7 +594,7 @@ acdentry {
 	foreach my $fo (sort keys %cfgw_forms) {
 	    my($defbang,$l,$f,$lfid,$base,$cont,$morph,$pref,$stem,$rws,$morph2,$fline) 
 		= @{$cfgw_forms{$fo}};
-	    $l = $cbdlang unless $l;
+	    $l = $entry_lang unless $l;
 	    $l =~ s#/n#-949#;
 	    $f = xmlify($f);
 	    my $xattr = ($defbang ? ' default="yes"' : '');
@@ -607,7 +613,7 @@ acdentry {
 #	    my $gline = $line_of{'form'} || 0;
 	    my $f_no_slash = $f;
 	    $f_no_slash =~ s/\\.*$//;
-	    push @ret, xidify("<form literal=\"$f\" g:file=\"$lang.glo\" g:line=\"$fline\" g:me=\"1\"$xattr>%$l $f_no_slash</form>",$f);
+	    push @ret, xidify("<form literal=\"$f\" xml:lang=\"$l\" g:file=\"$lang.glo\" g:line=\"$fline\" g:me=\"1\"$xattr>%$l $f_no_slash</form>",$f);
 	    $lffmap{$f} = $last_xid;
 	}
 	push @ret, '</forms>';
@@ -803,6 +809,15 @@ acdentry {
     @ret;
 }
 
+sub set_e_lang {
+    foreach my $dialect (@_) {
+	if ($dialect =~ /^EG|ES|UGN$/) {
+	    return $rws_map{$dialect};
+	}
+    }
+    $cbdlang;
+}
+
 sub
 make_file_pi {
     my $f = shift;
@@ -876,6 +891,15 @@ xbase_split {
 	$alt = '';
     }
     ($pri,$alt);
+}
+
+sub xflang {
+    my %xl = (s=>'sux',e=>'sux-x-emesal',u=>'sux-x-udganu');
+    my $l = shift;
+    if ($l && $xl{$l}) {
+	return $xl{$l};
+    }
+    $l;
 }
 
 sub

@@ -1,0 +1,35 @@
+For Sumerian, Emegir, Emesal, and Udgalnun langs can now be given at
+glossary, entry, form, and base level.
+
+An entry uses @EG, @ES, @UGN
+
+A form uses %s, %e, %u -- the full forms %sux, %sux-x-emesal, and
+%sux-x-udganu may be used, but the system automatically expands the
+short forms
+
+A base in @bases gives the lang before the base and after any stem,
+with a space between the lang and the base: @bases *rr %s su-su
+
+A base in an @form gives the lang after the / with : instead of space:
+/%e:du₅-mu.  This is also the format in a signature.
+
+LANG inherits such that forms and bases have the same lang as the
+entry; the entry has the same lang as the glossary unless it uses
+@EG/@ES/@UGN.
+
+This means that you can have an EG word in an ES glossary and
+differentiate EG/ES like this which has an ES form (based on
+morphology) with EG entry and base:
+
+ @entry e [speak] V/t
+ @bases b·e₂
+ @form de₃-em₃-ma-ab-be₂ %e /b·e₂ #da.Vmma.b:~
+
+When .sig is output from .glo:
+
+     * any @EG/@ES/@UGN is output after the POS of the entry
+     * if a form has a %lang it is used as the sig lang
+     * if a base in the form has a lang, it is preserved
+     * if a base in @bases has a lang that lang is inherited on the
+       sig's base with the syntax /%s:dumu
+     

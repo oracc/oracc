@@ -34,6 +34,8 @@ my $early_debug = 1;
 
 my %rws_map = (
     EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
     CF => 'akk',
     OA => 'akk-x-oldass',
     OB => 'akk-x-oldbab',
@@ -86,6 +88,7 @@ my $curr_sense_id = 0;
 my $curr_sig_id = '';
 my $bid = 'b000001';
 my $eid = 'x000001';
+my $entry_lang;
 my $e_sig = '';
 my $sid = 0;
 my %formattr = ();
@@ -704,7 +707,8 @@ acdentry {
 			    }
 			}
 			# $cbdid.$eid
-			push @ret, "<entry xml:id=\"$eid\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
+			$entry_lang = set_e_lang(keys %{$e{'rws_cfs'}});
+			push @ret, "<entry xml:id=\"$eid\" xml:lang=\"$entry_lang\" n=\"$e_sig\"$oidattr$usattr$defattr>",make_file_pi($curr_file), make_line_pi($line_of{'entry'}), "<cf$cacf>$cf</cf>";
 			if ($e{'alias'}) {
 			    foreach my $alias (@{$e{'alias'}}) {
 				push @ret, "<alias>$alias</alias>";
@@ -888,7 +892,7 @@ acdentry {
 		}
 	    }
 	    if (!exists $cfgw_forms{$fo}) {
-		$cfgw_forms{$fo} = [$defbang,$flang,$fo,$lfid,
+		$cfgw_forms{$fo} = [$defbang,xflang($flang),$fo,$lfid,
 				    $base,$cont,$morph,$pref,$stem,$rws,$morph2,
 				    $line_of{'form'}+$field_index];
 	    }
@@ -1020,7 +1024,7 @@ acdentry {
 	foreach my $fo (sort keys %cfgw_forms) {
 	    my($defbang,$l,$f,$lfid,$base,$cont,$morph,$pref,$stem,$rws,$morph2,$fline) 
 		= @{$cfgw_forms{$fo}};
-	    $l = $cbdlang unless $l;
+	    $l = $entry_lang unless $l;
 	    $l =~ s#/n#-949#;
 	    $f = xmlify($f);
 	    my $xattr = ($defbang ? ' default="yes"' : '');
@@ -1040,7 +1044,7 @@ acdentry {
 #	    my $gline = $line_of{'form'} || 0;
 	    my $f_no_slash = $f;
 	    $f_no_slash =~ s/\\.*$//;
-	    push @ret, xidify("<form literal=\"$f\" g:file=\"$lang.glo\" g:line=\"$fline\" g:me=\"1\"$xattr>%$l $f_no_slash</form>",$f);
+	    push @ret, xidify("<form literal=\"$f\" xml:lang=\"$entry_lang\" g:file=\"$lang.glo\" g:line=\"$fline\" g:me=\"1\"$xattr>%$l $f_no_slash</form>",$f);
 	    $lffmap{$f} = $last_xid;
 	}
 	push @ret, '</forms>';
@@ -1289,6 +1293,24 @@ acdentry {
     push @ret, '</entry>';
     ++$eid;
     @ret;
+}
+
+sub set_e_lang {
+    foreach my $dialect (@_) {
+	if ($dialect =~ /^EG|ES|UGN$/) {
+	    return $rws_map{$dialect};
+	}
+    }
+    $cbdlang;
+}
+
+sub xflang {
+    my %xl = (s=>'sux',e=>'sux-x-emesal',u=>'sux-x-udganu');
+    my $l = shift;
+    if ($l && $xl{$l}) {
+	return $xl{$l};
+    }
+    $l;
 }
 
 my %parts_map = ();

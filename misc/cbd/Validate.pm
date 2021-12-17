@@ -96,6 +96,7 @@ my %stems = (); @stems{@stems} = ();
 my %rws_map = (
     EG => 'sux',
     ES => 'sux-x-emesal',
+    UGN => 'sux-x-udganu',
     CF => 'akk',
     CA => 'akk-x-conakk',
     OA => 'akk-x-oldass',
@@ -142,6 +143,9 @@ my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
 my $lang = '';
+my $entry_lang = ''; 	# this is set when RWS tokens @EG, @ES @UGN are encountered;
+			# the semantics of Akk RWS are different--the RWS gives the
+			# CF for the dialect
 my $mixed_morph = 0;
 my %ok = ();
 my @parts = ();
@@ -278,8 +282,11 @@ sub pp_validate {
 
 	if ($cbd[$i] =~ /^\@([A-Z]+)(?:\s*(\S.*))?$/) {
 	    my $rws = $1;
-	    pp_warn("\@$1 unknown register/writing-system/dialect")
-		unless $rws_map{$rws};
+	    unless ($rws_map{$rws}) {
+		pp_warn("\@$1 unknown register/writing-system/dialect");
+	    } else {
+		$entry_lang = $rws_map{$rws} if $rws =~ /^(?:EG|ES|UGN) /
+	    }
 	} elsif ($cbd[$i] =~ /^($acd_rx*)@([a-z_]+)/) { # \s+(.*)\s*$/o) {
 	    my ($pre,$tag,$post) = ($1,$2);
 	    if (exists $tags{$tag}) {
@@ -593,6 +600,7 @@ sub v_bases {
     
     my $alt = '';
     my $stem = '';
+    my $blang = '';
     my $pri = '';
     my %vbases = (); # this one is just for validation of the current @bases field
     my $pricode = 0;
@@ -605,6 +613,15 @@ sub v_bases {
 	    $b =~ s/^\*\s*//;
 	    pp_warn("misplaced '*' in \@bases");
 	}
+
+	if ($b =~ s/^\%(\S+)\s+//) {
+	    $blang = xflang($1);
+	} elsif ($b =~ /^\%/) {
+	    $b =~ s/^\%\s*//;
+	    pp_warn("misplaced '%' in \@bases");
+	}
+	$blang = $entry_lang unless $blang;
+	
 	if ($b =~ /\s+\(/) {
 	    my $tmp = $b;
 	    pp_warn("malformed alt-base in `$b'")
@@ -621,6 +638,7 @@ sub v_bases {
 		    ++$bases{$pri};
 		    $bases{$pri,'*'} = $stem
 			if $stem;
+		    $bases{$pri,'%'} = $blang;
 		}
 		if ($pri) {
 		    det_check($pri) if $detcheck;
@@ -817,6 +835,15 @@ sub v_bases {
     }
 }
 
+sub xflang {
+    my %xl = (s=>'sux',e=>'sux-x-emesal',u=>'sux-x-udganu');
+    my $l = shift;
+    if ($l && $xl{$l}) {
+	return $xl{$l};
+    }
+    $l;
+}
+
 sub pp_sl_messages {
     my $p = shift || '';
     my @m = ORACC::SL::BaseC::messages();
@@ -923,53 +950,58 @@ sub v_form {
     if (($ORACC::CBD::bases # $lang =~ /^sux/ 
 	 || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))) {
 	if ($f =~ m#(?:^|\s)/(\S+)#) {
-	my $b = $1;
-	if ($b) {
-	    if ($always_check_base) {
-		ORACC::SL::BaseC::check('',$b);
-		pp_sl_messages('Q');
+	    my $b = $1;
+	    my $blang; # ignored when validating
+	    if ($b =~ s/^\%(\S+?)://) {
+		$blang = $1;
 	    }
-	    if ($is_compound) {
-		pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
-	    } else {
-		if (!$bases{$b}) { ###  || $ORACC::SL::report_all
-		    if (!${$ORACC::CBD::bases{$curr_cfgw}}{$b}) { ### || $ORACC::SL::report_all) {
-			my $warned = 0;
-			my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
-			# warn "alt for $b == $a\n";
-			if ($a) {
-			    $a =~ s/^\#//;
-			    pp_warn("alt BASE $b should be primary $a");
-			    $warned = 1;
-			} else {
-			    # slow but effective check for base match by tlit signature
-			    atf_add($b,$lang) if $b;
-			    my $tsig = $tlit_sigs{$b};
-			    $tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
-				unless $tsig;
-			    # warn "tsig for $b == $tsig\n";
-			    # my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
-			    # warn "curr_cfgw == $curr_cfgw; nkeys = $nkeys\n";
-			    foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
-				my $csig = $tlit_sigs{$c};
-				$csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
-				    unless $csig;
-				# warn "csig for $c == $csig\n";
-				if ($tsig eq $csig && $b ne $c) {
-				    $c =~ s/^\#//;
-				    pp_warn "form's BASE $b should be $c";
-				    $warned = 1;
-				    last;
+	    if ($b) {
+		if ($always_check_base) {
+		    ORACC::SL::BaseC::check('',$b);
+		    pp_sl_messages('Q');
+		}
+		if ($is_compound) {
+		    pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
+		} else {
+		    if (!$bases{$b}) { ###  || $ORACC::SL::report_all
+			if (!${$ORACC::CBD::bases{$curr_cfgw}}{$b}) { ### || $ORACC::SL::report_all) {
+			    my $warned = 0;
+			    my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
+			    # warn "alt for $b == $a\n";
+			    if ($a) {
+				$a =~ s/^\#//;
+				pp_warn("alt BASE $b should be primary $a");
+				$warned = 1;
+			    } else {
+				# slow but effective check for base match by tlit signature
+				atf_add($b,$lang) if $b;
+				my $tsig = $tlit_sigs{$b};
+				$tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
+				    unless $tsig;
+				# warn "tsig for $b == $tsig\n";
+				# my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
+				# warn "curr_cfgw == $curr_cfgw; nkeys = $nkeys\n";
+				foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
+				    $c =~ s/^\%.*?://;
+				    my $csig = $tlit_sigs{$c};
+				    $csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
+					unless $csig;
+				    # warn "csig for $c == $csig\n";
+				    if ($tsig eq $csig && $b ne $c) {
+					$c =~ s/^\#//;
+					pp_warn "form's BASE $b should be $c";
+					$warned = 1;
+					last;
+				    }
 				}
+				pp_sl_messages();
 			    }
-			    pp_sl_messages();
+			    pp_warn("BASE $b not known or findable for `$curr_cfgw'")
+				unless $bases{$b} || $warned;
 			}
-			pp_warn("BASE $b not known or findable for `$curr_cfgw'")
-			    unless $bases{$b} || $warned;
 		    }
 		}
 	    }
-	}
 	} else {
 	    pp_warn("no BASE entry in form") unless $is_compound;
 	}

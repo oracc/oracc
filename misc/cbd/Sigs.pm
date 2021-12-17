@@ -23,6 +23,7 @@ my $COF_HEAD = 1;
 my $COF_TAIL = 2;
 
 my $basesig = '';
+my %blangs = ();
 my @compound_parts = ();
 my %cof_lines = ();
 my $coresig = '';
@@ -32,6 +33,8 @@ my $in_sense = '';
 my @instsigs = ();
 my $out = '';
 my $lang = '';
+my $entry_lang = '';
+my $entry_rws = '';
 
 my %pref_bases = ();
 
@@ -267,7 +270,10 @@ sub sigs_simple {
 #	warn "input: $_\n" if $verbose;
 
 	if (s/^$acd_rx?\@entry\*?(!?)\s+//) {
-	    $curr_cfgw = $_; $curr_cfgw =~ s/\s*$//;
+	    $entry_lang = $lang;
+	    $entry_rws = '';
+	    %blangs = ();
+    	    $curr_cfgw = $_; $curr_cfgw =~ s/\s*$//;
 	    $compound = $in_sense = 0;
 	    @instsigs = ();
 	    %forms_in_entry = ();
@@ -295,8 +301,19 @@ sub sigs_simple {
 	    }
 	    if (!$compound && $current_first_base) {
 		my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
+		# warn "cfb2=$current_first_base\n";
 		foreach my $b (split(/\s+/, $current_first_base)) {
-		    my $f = $b; $f =~ tr/·°//d;
+		    if ($b =~ /du₃/) {
+			warn "bdu₃ == $b\n";
+		    }
+		    my $f = $b; $f =~ tr/·°//d; $f =~ s/^\%\S+?://;
+		    if ($b =~ m/^\%(\S+?):/) {
+			$lng = xflang($1);
+			warn "lng=$lng\n";
+		    } elsif ($blangs{$b}) {
+			$b = "\%$blangs{$b}:$b";
+			warn "bdu₃ now= $b\n";
+		    }
 		    next if $forms_in_entry{$f};
 		    my $instsig1 = "\@$project\%$lng:$f=";
 		    my $xsig = "\$$sig{'cf'}/$b#~";
@@ -363,6 +380,9 @@ sub sigs_simple {
 	    $coresigs{$coresig} = ++$sigorder
 		unless $coresigs{$coresig};
 
+	    my $erws = '';
+	    $erws = "\@$entry_rws" if $entry_rws;
+	    
 	    if ($#instsigs >= 0) {
 		foreach my $instsig (@instsigs) {
 		    my $instsig0 = $$instsig[0];
@@ -375,7 +395,7 @@ sub sigs_simple {
 			$rank |= 1;
 		    }
 			
-		    $printsigs{ "$instsig0$coresig$$instsig[1]\t$rank\n" } = ++$sigorder;
+		    $printsigs{ "$instsig0$coresig$erws$$instsig[1]\t$rank\n" } = ++$sigorder;
 		    $found_simple_sig = 1;
 		}
 	    } else {
@@ -383,11 +403,18 @@ sub sigs_simple {
 		    if ($current_first_base) {
 			my $lng = ($lang =~ /^qpn/ ? $ORACC::CBD::qpn_base_lang : $lang);
 			foreach my $b (split(/\s+/, $current_first_base)) {
-			    my $f = $b; $f =~ tr/·°//d;
+			    my $f = $b; $f =~ tr/·°//d; $f =~ s/^\%\S+?://;
+			    if ($b =~ m/^\s*\%(\S+?):/) {
+				$lng = xflang($1);
+			    } elsif ($blangs{$b}) {
+				$b = "\%$blangs{$b}:$b";
+				warn "bdu₃ now= $b\n";
+			    }
+
 			    my $instsig1 = "\@$project\%$lng:$f=";
 			    my $xsig = "\$$sig{'cf'}/$b#~";
 			    ++$noprintsigs{ "$instsig1$coresig/$f\t0\n" };
-			    $printsigs{ "$instsig1$coresig$xsig\t0\n" } = ++$sigorder;
+			    $printsigs{ "$instsig1$coresig$erws$xsig\t0\n" } = ++$sigorder;
 			}
 		    }
 		}
@@ -396,13 +423,17 @@ sub sigs_simple {
 	} elsif (/^\@bases\s+(.*)\s*$/) {
 
 	    $current_first_base = $1;
+	    %blangs = index_base_langs($current_first_base);
+	    warn "cfg3 = $current_first_base\n";
+	    print STDERR Dumper \%blangs;
 	    $current_first_base =~ s/\{d\}/\001/g;
 	    my @bits = split(/;\s+/,$current_first_base);
-	    @bits = map { s/\s+\(.*$//; s/\{-/{/g; s/\{\+.*?\}//g; s/\001/{d}/g; $_ } @bits;
+	    # remove phonetic determinatives because they don't get used for preferred bases
+	    @bits = map { s/\s+\(.*$//; s/^\*\S+\s+//; s/^(\%\S+)\s+/$1:/; s/\{-/{/g; s/\{\+.*?\}//g; s/\001/{d}/g; $_ } @bits;
 	    my %bits = (); @bits { @bits } = ();
 	    $current_first_base = join(' ', @bits);
 	    
-#	    warn "cfb=$current_first_base\n";
+	    # warn "cfb=$current_first_base\n";
 
 	    my $basekey = $curr_cfgw; $basekey =~ s/\s+\[/[/; $basekey =~ s/\]\s+/]/;
 	    my $p = $pref_bases{$basekey};
@@ -426,6 +457,16 @@ sub sigs_simple {
 	    sigs_form($args,$1,$2,$_) unless
 		$ORACC::CBD::Forms::external;
 
+	} elsif (/^\@([A-Z]+)/) {
+	    my $rws = $1;
+	    # warn "found rws=$rws\n";
+	    if (defined $ORACC::L2GLO::Util::rws_map{$rws}) {
+		if ($rws =~ /^EG|ES|UGN$/) {
+		    $entry_lang = $ORACC::L2GLO::Util::rws_map{$rws};
+		    $entry_rws = $rws;
+		    # warn "entry_lang now $entry_lang\n";
+		}	    
+	    }
 	}
     }
 
@@ -453,16 +494,16 @@ sub sigs_form {
     
     $formbang = '!' if $entrybang;
     
-    @sig{qw/norm morph morph2 base cont stem root/} = ();
+    @sig{qw/norm morph morph2 base blang cont stem root/} = ();
     
     my $cof_nth = 0;
     
     if (s/\s+\%(\S+)//) {
-	$sig{'lang'} = $1;
+	$sig{'lang'} = xflang($1);
 	$sig{'lang'} =~ s#/n$#-949# if $sig{'lang'};
 #	warn "sig{lang} = $sig{'lang'}\n";
     } else {
-	$sig{'lang'} = $lang;
+	$sig{'lang'} = $entry_lang;
     }
     
     if (/\$\(/) {
@@ -523,19 +564,32 @@ sub sigs_form {
     $sig{'cont'} = $1 if s/\s+\+(\S+)//;
     $sig{'stem'} = $1 if s/\s+\*(\S+)//;
 
-#    warn "stem=$sig{'stem'}\n" if $sig{'stem'};
+    if ($sig{'base'} =~ /^%/) {
+	my $b = $sig{'base'};
+	if ($b =~ s/^\%(\S+?)://) {
+	    $sig{'blang'} = xflang($1);
+	    $sig{'base'} = $b;
+	} else {
+	    pp_warn("(sigs) lang in base $sig{'base'} is missing ':'");
+	}
+    } elsif ($blangs{$sig{'base'}}) {
+	$sig{'blang'} = $blangs{$sig{'base'}};
+    }
+    
+    #    warn "stem=$sig{'stem'}\n" if $sig{'stem'};
     
     if (s/\s\@(\S+)//) {
-	my $rws = $1;
-	if (defined $ORACC::L2GLO::Util::rws_map{$rws}) {
-	    $sig{'lang'} = $ORACC::L2GLO::Util::rws_map{$rws};
-	    if ($rws eq 'EG' 
-		&& ($lang && $lang ne 'sux')) {
-		$sig{'lang'} = 'sux';
-	    }
-	} else {
-	    pp_warn("(sigs) unknown RWS code \@$rws has been ignored");
-	}
+	pp_warn("(sigs) use of \@RWS inside of \@form is no longer allowed; use \%LANG to set FORM's language");
+#	my $rws = $1;
+#	if (defined $ORACC::L2GLO::Util::rws_map{$rws}) {
+#	    $sig{'lang'} = $ORACC::L2GLO::Util::rws_map{$rws};
+#	    if ($rws eq 'EG' 
+#		&& ($lang && $lang ne 'sux')) {
+#		$sig{'lang'} = 'sux';
+#	    }
+#	} else {
+#	    pp_warn("(sigs) unknown RWS code \@$rws has been ignored");
+#	}
     }
     
     if ($sig{'form'}) {
@@ -543,10 +597,15 @@ sub sigs_form {
 	my $instsig1 = "\@$project\%$l:$sig{'form'}=";
 	my $instsig2 = '';
 	foreach my $field (@ORACC::L2GLO::Util::instfields) {
+	    if ($field eq 'blang') {
+		# ignore here
+	    }
 	    $instsig2 .= "$ORACC::L2GLO::Util::fieldchars{$field}$sig{$field}" 
 		if $sig{$field};
-	}
-	
+	    if ($field eq 'base' && $sig{'blang'}) { # use it here
+		$instsig2 =~ s#/#/\%$sig{'blang'}:#;
+	    }
+	}    
 	if ($cof == $COF_HEAD) {
 	    $instsig2 .= '!0x01';
 	} elsif ($cof == $COF_TAIL) {
@@ -579,6 +638,28 @@ sub sigs_invert {
 }
 
 ######################################################################
+
+sub index_base_langs {
+    my $cfb = shift;
+    my %ix = ();
+    my @b = split(/;\s+/,$cfb);
+    foreach my $b (@b) {
+	$b =~ s/\s+\(.*$//;
+	if ($b =~ /^\%(\S+)\s+(\S+)/) {
+	    $ix{$2} = $1;
+	}
+    }
+    %ix;
+}
+
+sub xflang {
+    my %xl = (s=>'sux',e=>'sux-x-emesal',u=>'sux-x-udganu');
+    my $l = shift;
+    if ($l && $xl{$l}) {
+	return $xl{$l};
+    }
+    $l;
+}
 
 sub cofs_marshall {
     my @smpl = grep(/\!0x0/, @_); chomp @smpl;
