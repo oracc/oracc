@@ -354,7 +354,11 @@ parse_sig {
     if (s/^\/(.+?)([#\t]|\+-|$)/$2/) {
 	my $b = $1;
 	$b =~ tr/\cA/+/;
-	$x{'base'} = "\%$baselang\:$b" unless $x{'base'} =~ /^\%\S+?:/;
+	if ($b =~ /^\%\S+?:/) {
+	    $x{'base'} = $b;
+	} else {
+	    $x{'base'} = "\%$baselang\:$b";
+	}
     }
     if (/^\+/) {
 	if (s/^\+(-.+?)(?=[#\t]|$)//) {
