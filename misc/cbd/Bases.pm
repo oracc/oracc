@@ -247,12 +247,12 @@ sub bases_align {
 		    }
 		}
 	    }
-	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s+(.*?)\s*$/) {
 	    my $rws = $1;
 	    if ($rws_map{$rws}) {
 		$entry_lang = $rws_map{$rws};
 	    }
-	} elsif (/^\@lang\s+(\S+)/) {
+	} elsif ($cbd[$i] =~ /^\@lang\s+(\S+)/) {
 	    $cbd_lang = $1;
 	}
     }
@@ -274,12 +274,12 @@ sub bases_collect {
 	    $b{$curr_entry,'%'} = $cbd_lang;
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    $b{$curr_entry} = $i;
-	} elsif (/^\@([A-Z]+)\s+(.*?)\s*$/) {
+	} elsif ($cbd[$i] =~ /^\@([A-Z]+)\s+(.*?)\s*$/) {
 	    my $rws = $1;
 	    if ($rws_map{$rws}) {
 		$b{$curr_entry,'%'} = $rws_map{$rws};
 	    }
-	} elsif (/^\@lang\s+(\S+)/) {
+	} elsif ($cbd[$i] =~ /^\@lang\s+(\S+)/) {
 	    $cbd_lang = $1;
 	}
     }
@@ -414,7 +414,7 @@ sub bases_hash {
     if ($elang) {
 	$elang = $blang_of{$elang} if $blang_of{$elang};
     } else {
-	warn "bases_hash: passed empty elang--defaulting to \%s\n";
+	# warn "bases_hash: passed empty elang--defaulting to \%s\n";
 	$elang = '%s';
     }
     

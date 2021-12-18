@@ -564,16 +564,18 @@ sub sigs_form {
     $sig{'cont'} = $1 if s/\s+\+(\S+)//;
     $sig{'stem'} = $1 if s/\s+\*(\S+)//;
 
-    if ($sig{'base'} =~ /^%/) {
-	my $b = $sig{'base'};
-	if ($b =~ s/^\%(\S+?)://) {
-	    $sig{'blang'} = xflang($1);
-	    $sig{'base'} = $b;
-	} else {
-	    pp_warn("(sigs) lang in base $sig{'base'} is missing ':'");
+    if ($sig{'base'}) {
+	if ($sig{'base'} =~ /^%/) {
+	    my $b = $sig{'base'};
+	    if ($b =~ s/^\%(\S+?)://) {
+		$sig{'blang'} = xflang($1);
+		$sig{'base'} = $b;
+	    } else {
+		pp_warn("(sigs) lang in base $sig{'base'} is missing ':'");
+	    }
+	} elsif ($blangs{$sig{'base'}}) {
+	    $sig{'blang'} = $blangs{$sig{'base'}};
 	}
-    } elsif ($blangs{$sig{'base'}}) {
-	$sig{'blang'} = $blangs{$sig{'base'}};
     }
     
     #    warn "stem=$sig{'stem'}\n" if $sig{'stem'};
