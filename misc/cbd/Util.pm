@@ -82,7 +82,7 @@ sub pp_args {
 
     GetOptions(
 	\%args,
-	qw/announce all apply auto bare base:s bases check kompounds dets dry dynamic edit entries=s file 
+	qw/announce addonly all apply auto bare base:s bases check kompounds dets dry dynamic edit entries=s file 
 	filter fix:s force glo:s homograph increment:s inplace invert letters lines list:s lang:s log:s mode:s 
 	noforms nomapping nominusstripping nondestructive nonormify nopsus nosigs novalid 
 	oids output:s project:s quiet 

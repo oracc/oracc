@@ -270,6 +270,8 @@ sub edit_apply_script {
 sub edit_make_script {
     return unless defined $ORACC::CBD::data{'edit'};
     my($args, @c) = @_;
+    my $addonly = ($$args{'addonly'} ? 1 : 0);
+    warn "$0: operating in addonly mode\n" if $addonly;
     my @eds = @{$ORACC::CBD::data{'edit'}};
 #    print STDERR Dumper \@eds;
     my %cbddata = %{$ORACC::CBD::data{ORACC::CBD::Util::cbdname()}};
@@ -282,6 +284,8 @@ sub edit_make_script {
 	if ($c[$i] =~ /^\+\@entry/) {
 	    my $entry = $i;
 	    push @s, ":add $c[$i]";
+	} elsif ($addonly) {
+	    next;
 	} elsif ($c[$i] =~ /^\+\@sense/) {
 	    my $e = pp_entry_of($i,@c);
 	    push @s, ":ent $c[$e]";

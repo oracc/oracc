@@ -132,6 +132,9 @@ foreach my $s (@sigs) {
 	warn "$0: form 'x' illegal in lemm data ($s)\n";
 	next;
     }
+    if ($s =~ s/\@(?:EG|ES|UGN)//) {
+#	warn "removed EG/ES/UGN\n";
+    }
     my ($r,$f) = (0,0);
     $r = $ranks{$s} if $ranks{$s};
     $f = $freqs{$s} if $freqs{$s};
