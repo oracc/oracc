@@ -814,7 +814,7 @@ load_rewrites {
 
 sub
 next_xid {
-    sprintf("$id_base.x%07d",++$id_counter);
+    sprintf("$id_base.x%08d",++$id_counter);
 }
 
 sub
