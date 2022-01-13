@@ -4,6 +4,7 @@
 #
 # Adapted 2021-11-25 to work with CDLI's move to git lfs
 #
+d=`isogmt`
 echo Rebuilding CDLI with cdli-rebuild.sh ...
 (cd 00git/data ; git pull)
 if [ $? == 1 ]; then
@@ -12,7 +13,6 @@ if [ $? == 1 ]; then
     o2-catalog.sh
     exit 0
 else
-    d=`isogmt`
     if [ $? == 0 ]; then
 	echo "$0 $d: git up to date, no rebuild or serve necessary."
     else

@@ -141,22 +141,24 @@ sub oid_load_domain {
 
 sub oid_init {
     my $d = shift @_;
-    if (open(O, "$ENV{'ORACC_BUILDS'}/oid/$ids.tab")) {
-	if ($d) {
-	    while (<O>) {
-		my($oid,$dom,$key) = split(/\t/, $_);
-		$oid{$dom,$key} = $oid if ($d eq $dom);
+    foreach my $init_ids ('oid', 'xid') {
+	if (open(O, "$ENV{'ORACC_BUILDS'}/oid/$init_ids.tab")) {
+	    if ($d) {
+		while (<O>) {
+		    my($oid,$dom,$key) = split(/\t/, $_);
+		    $oid{$dom,$key} = $oid if ($d eq $dom);
+		}
+		close(O);
+	    } else {
+		while (<O>) {
+		    my($oid,$dom,$key) = split(/\t/, $_);
+		    $oid{$dom,$key} = $oid;
+		}
+		close(O);
 	    }
-	    close(O);
 	} else {
-	    while (<O>) {
-		my($oid,$dom,$key) = split(/\t/, $_);
-		$oid{$dom,$key} = $oid;
-	    }
-	    close(O);
+	    warn "$0: can't read OID file\n";
 	}
-    } else {
-	warn "$0: can't read OID file\n";
     }
     ++$inited;
     if (!$d || $d eq 'sl') {

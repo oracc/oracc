@@ -2,6 +2,8 @@
 webdir=01bld/www
 project=`oraccopt`
 
+echo o2-portal.sh invoked with pwd=`pwd` and project=$project and OPROJECT=$OPROJECT
+
 if [ ! -r 02xml/config.xml ]; then
     o2-cnf.sh
 fi
