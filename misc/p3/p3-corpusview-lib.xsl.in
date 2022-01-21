@@ -600,7 +600,10 @@
 	      <xsl:value-of select="$cspan"/>
 	    </xsl:attribute>
 	  </xsl:if>
-	  <p class="tr"><xsl:apply-templates/></p>
+	  <p class="tr">
+	    <xsl:copy-of select="ancestor::xtr:translation/@dir"/>
+	    <xsl:apply-templates/>
+	  </p>
 	</td>
       </xsl:for-each>
       <xsl:for-each select="xh:span[position()>1]">

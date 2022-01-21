@@ -165,7 +165,10 @@ $ORACC::L2GLO::Util::project = '';
     uga=>'Ugaritic',
     xhu=>'Hurrian',
     xur=>'Urartian',
+    ar=>'Arabic',
     en=>'English',
+    fa=>'Farsi',
+    he=>'Hebrew',
     hu=>'Hungarian'
     );
 
