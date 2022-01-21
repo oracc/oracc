@@ -31,7 +31,7 @@ sc_log($dashline);
 sc_log("Cron job serve-cron started at ", scalar localtime());
 
 foreach my $buildhost (@BUILD_HOSTS) {
-    my @servelist = `curl -s http://$buildhost/srv/`; chomp @servelist;
+    my @servelist = `curl -k -s http://$buildhost/srv/`; chomp @servelist;
 
     my $msg = sprintf("%d entries retrieved from build server $buildhost", $#servelist+1);
     sc_log($msg);

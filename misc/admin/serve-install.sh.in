@@ -32,7 +32,7 @@ projfile=`/bin/echo -n $project | tr / -`
 tarball=$projfile.tar.xz
 httpurl="http://$buildserver/srv/$tarball"
 echo Retrieving $httpurl ...
-curl -s -O $httpurl
+curl -k -s -O $httpurl
 if [ -s $tarball ]; then
     echo "Installing $tarball"
     cd $oracc_builds
