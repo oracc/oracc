@@ -44,6 +44,7 @@ osc_status(const char *session_id)
       static char *ebuf = NULL;
       ebuf = malloc(strlen(status_file) + 20);
       sprintf(ebuf, "%s not found (%d)", status_file, res);
+      fprintf(stderr, "%s\n", ebuf);
       return ebuf;
     }
 
