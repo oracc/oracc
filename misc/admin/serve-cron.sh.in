@@ -1,9 +1,11 @@
 #!/bin/sh
+echo "--------------------------------------------------------------">>/var/log/oracc-serve-cron.log
 if [ -r /tmp/oracc-serve.pid ]; then
     pid=`cat /tmp/oracc-serve.pid`
-    echo "[ @@ORACC@@/bin/serve-cron.plx already running (pid=$pid) ]">>/var/log/oracc-serve-cron.log
+    echo "[ @@ORACC@@/bin/serve-cron.plx already running (shell pid=$pid) ]">>/var/log/oracc-serve-cron.log
 else
     echo $$ >/tmp/oracc-serve.pid
+    echo "[ starting @@ORACC@@/bin/serve-cron.plx (shell pid=$$) ]">>/var/log/oracc-serve-cron.log
     @@ORACC@@/bin/serve-cron.plx >>/var/log/oracc-serve-cron.log 2>&1
     rm -f /tmp/oracc-serve.pid
 fi

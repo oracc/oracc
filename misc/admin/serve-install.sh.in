@@ -28,9 +28,15 @@ fi
 mkdir -p $oracc_builds/srv
 cd $oracc_builds/srv
 
+if [[ $buildserver == *"muenchen"* ]]; then
+    http=http
+else
+    http=https
+fi
+
 projfile=`/bin/echo -n $project | tr / -`
 tarball=$projfile.tar.xz
-httpurl="http://$buildserver/srv/$tarball"
+httpurl="$http://$buildserver/srv/$tarball"
 echo Retrieving $httpurl ...
 curl -k -s -O $httpurl
 if [ -s $tarball ]; then
