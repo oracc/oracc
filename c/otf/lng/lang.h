@@ -45,6 +45,12 @@ struct langmode
   enum t_modes mode;
 };
 
+struct langrtl
+{
+  const char *name;
+  int yes;
+};
+
 struct lang_tag
 {
   char *tag;
@@ -113,6 +119,7 @@ extern struct lang_context *logo_lang;
 extern struct langcore *lang_core(register const char *str,register size_t len);
 extern struct langcore *langcore_of(const char *lang);
 extern struct langmode *lang_mode(register const char *str,register size_t len);
+extern struct langrtl *langrtl(register const char *str,register size_t len);
 extern struct langatf *lang_atf(register const char *str, register unsigned int len);
 extern void lang_init(void);
 extern void lang_term(void);

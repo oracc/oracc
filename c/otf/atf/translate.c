@@ -182,6 +182,8 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
 	  appendAttr(trans->tree,attr(a_n, getAttr(text,"n")));
 	  appendAttr(trans->tree,attr(a_project, getAttr(text,"project")));
 	  appendAttr(trans->tree,attr(a_xml_lang,ucc(trans->lang)));
+	  if (langrtl(trans->lang,strlen(trans->lang)))
+	    appendAttr(trans->tree,attr(a_dir,ucc("rtl")));
 	  appendAttr(trans->tree,attr(a_xtr_type,ucc(trans->type)));
 	  appendAttr(trans->tree,attr(a_xtr_code,ucc(trans->code)));
 	  sprintf(trans_id_base,"%s_%s-%s",textid,trans->code,trans->lang);

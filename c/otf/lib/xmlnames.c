@@ -30,6 +30,7 @@ struct xname anames[] =
   { "class", "class" },
   { "cols", "cols" },
   { "contrefs", "contrefs" },
+  { "dir", "dir" },
   { "endflag", "endflag" },
   { "ex_label", "ex_label" },
   { "extent", "extent" },
@@ -309,6 +310,7 @@ struct attr abases[] =
   { { anames[142].qname,NULL } , { anames[142].pname,NULL } },
   { { anames[143].qname,NULL } , { anames[143].pname,NULL } },
   { { anames[144].qname,NULL } , { anames[144].pname,NULL } },
+  { { anames[145].qname,NULL } , { anames[145].pname,NULL } },
 };
 struct xname enames[] =
 {

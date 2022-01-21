@@ -11,6 +11,11 @@
       <attribute name="xml:lang">
         <data type="NMTOKEN"/>
       </attribute>
+      <optional>
+        <attribute name="dir">
+          <data type="NMTOKEN"/>
+        </attribute>
+      </optional>
       <attribute name="xtr:code">
         <data type="NMTOKEN"/>
       </attribute>

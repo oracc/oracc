@@ -8,6 +8,7 @@ translation =
     attribute n        { text },
     attribute project  { text },
     attribute xml:lang { xsd:NMTOKEN },
+    attribute dir      { xsd:NMTOKEN }?,
     attribute xtr:code { xsd:NMTOKEN },
     attribute xtr:type { 
       "interlinear" | "parallel" | "labeled" | "unitary" 

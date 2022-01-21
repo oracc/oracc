@@ -23,6 +23,7 @@ enum a_type
   a_class,
   a_cols,
   a_contrefs,
+  a_dir,
   a_endflag,
   a_ex_label,
   a_extent,
