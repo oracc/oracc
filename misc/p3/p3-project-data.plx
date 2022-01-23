@@ -57,6 +57,7 @@ my %longlang = (
     hu=>'Hungarian',
     hun=>'Hungarian',
     it=>'Italian',
+    ku=>'Kurdish',
     peo=>'Old Persian',
     qca=>'Canaanite',
     qka=>'Kassite',
