@@ -33,6 +33,18 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 #                          '{d}muati==Nabu [1] DN',
 #                          "{d}\x{161}ullat\x{2082}==\x{160}ullat [1] DN"
 #                        ],
+#
+# AND ALSO
+#
+# 'umah [blow] N' => {
+#                       'o0001786' => {
+#                                       'umah' => 1
+#                                     }
+#                    }
+#
+# In the latter case, the deepest hash may have multiple members for, e.g., @allow be₇=ne.
+#
+
 
 my %global_e = ();
 
@@ -55,10 +67,12 @@ sub basesigs_load {
 	next if $seen{$f[0],$r}++;
 	if ($sort) {
 	    my $s = join('.',sort split(/\./,$f[2])) if $sort;
-	    warn "$0: input: using $s for $f[2]\n" if ($ORACC::CBD::BaseSigs::verbose && $s ne $f[2]);
+	    warn "$0: input: using $s for $f[2]\n"
+		if ($ORACC::CBD::BaseSigs::verbose && $s ne $f[2]);
 	    $f[2] = $s;
 	}
 	push @{$t{$f[2]}}, $r;
+	++${${$t{$f[0]}}{$f[2]}}{$f[1]};
     }
     close(P);
     if ($esort) {

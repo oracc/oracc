@@ -5,7 +5,7 @@ require Exporter;
 @EXPORT = qw/bases_align bases_hash bases_init bases_log bases_collect
     bases_log_errors bases_fixes bases_process bases_stats bases_term
     bases_merge bases_string bases_serialize bases_fix_base bases_sigs 
-    bases_prefer bases_primaries/;
+    bases_prefer bases_primaries bases_blang_of/;
 
 use warnings; use strict; use open 'utf8'; use utf8;
 
@@ -807,6 +807,10 @@ sub fix_form_bases {
 	    }
 	}
     }
+}
+
+sub bases_blang_of {
+    $blang_of{$_[0]} || $_[0];
 }
 
 1;

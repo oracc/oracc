@@ -6,7 +6,6 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::CBD::Bases;
 use ORACC::CBD::Util;
 
-
 my %args = pp_args();
 $ORACC::CBD::nominusstripping = $ORACC::CBD::novalidate = $ORACC::CBD::nonormify = $ORACC::CBD::noforms = 1;
 my @cbd = setup_cbd(\%args);
