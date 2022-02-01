@@ -162,6 +162,9 @@
 <xsl:template name="render-top-level">
   <div>
     <table class="{local-name(.)}">
+      <xsl:if test="$proofing-mode=true()">
+	<xsl:attribute name="width"><xsl:text>100%</xsl:text></xsl:attribute>
+      </xsl:if>
       <xsl:call-template name="base-attr"/>
       <xsl:call-template name="key-after"/>
       <xsl:apply-templates/>
@@ -1590,15 +1593,21 @@
 
 <!-- had commented this out: why? -->
 <xsl:template name="note-links">
-  <xsl:for-each select="note:link">
-    <a href="javascript://" 
-       onmouseover="showNote(event,'{@note:ref}')" 
-       onmouseout="hideNote(event,'{@note:ref}')">
-      <span class="marker">
-	<xsl:text>xyz</xsl:text><xsl:apply-templates/>
-      </span>
-    </a>
-  </xsl:for-each>
+  <xsl:choose>
+    <xsl:when test="$proofing-mode = true()">
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:for-each select="note:link">
+	<a href="javascript://" 
+	   onmouseover="showNote(event,'{@note:ref}')" 
+	   onmouseout="hideNote(event,'{@note:ref}')">
+	  <span class="marker">
+	    <xsl:text>xyz</xsl:text><xsl:apply-templates/>
+	  </span>
+	</a>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!--

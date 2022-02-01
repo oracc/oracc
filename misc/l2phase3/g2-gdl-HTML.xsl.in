@@ -745,8 +745,14 @@
   </xsl:variable>
   <xsl:variable name="lsig" select="$lemnode/@sig|$lemnode/@exosig"/>
   <xsl:variable name="pos" select="$lemnode/*[1]/@pos"/>
+  <xsl:variable name="cspos">
+    <xsl:choose>
+      <xsl:when test="$pos='N'">NOUN</xsl:when>
+      <xsl:otherwise><xsl:value-of select="$pos"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
 <!--  <xsl:message><xsl:value-of select="$lsig"/></xsl:message> -->
-  <span class="{$w-class} {@xml:lang} {$pos}" id="{@xml:id}">
+  <span class="{$w-class} {@xml:lang} {$cspos}" id="{@xml:id}">
     <xsl:variable name="wid" select="@xml:id"/>
     <xsl:choose>
       <xsl:when test="self::norm:w">
@@ -845,13 +851,19 @@
 
 <!-- This is the note mark in the transliteration line of XTF data -->
 <xsl:template name="process-notes">
-  <a href="javascript://" 
-     onmouseover="showNote(event,'{@note:ref}')" 
-     onmouseout="hideNote(event,'{@note:ref}')">
-    <span class="marker">
-      <xsl:apply-templates/>
-    </span>
-  </a>
+  <xsl:choose>
+    <xsl:when test="$proofing-mode = true()">
+    </xsl:when>
+    <xsl:otherwise>
+      <a href="javascript://" 
+	 onmouseover="showNote(event,'{@note:ref}')" 
+	 onmouseout="hideNote(event,'{@note:ref}')">
+	<span class="marker">
+	  <xsl:apply-templates/>
+	</span>
+      </a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="g:gloss">

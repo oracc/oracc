@@ -425,9 +425,11 @@ span.tiny { font-size: 80%; }
 
 .gw { font-size: 80%; }
 
-table.proof { width: 15%; vertical-align: middle; }
+table.proof { width: 50%; vertical-align: middle; }
 
-.proof tr td { width: 15em; }
+.proof tr td { } /* width: 15em; */
+
+.proof tr td.lnum { width: 3em; } /* width: 15em; */
 
 form.langdrop { margin: 0px; padding: 0px; }
 

@@ -279,6 +279,7 @@ results(const char *session, const char *list)
 static void
 rpc(void)
 {
+  fprintf(stderr, "oracc-resolver: invoking @@ORACC@@/bin/rpc.plx\n");
   execl("/usr/bin/perl", "perl", "@@ORACC@@/bin/rpc.plx", NULL);
   do404();
 }

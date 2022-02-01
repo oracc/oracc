@@ -28,6 +28,7 @@ my $l2 = 1;
 # Process a CGI call.
 sub process_cgi_call ($) {
     my ($methods) = @_;
+    # print STDERR Dumper $methods, "\n";
     my $length = $ENV{'CONTENT_LENGTH'};
     open RPCLOG, ">/tmp/rpc$$.log";
     print RPCLOG map { "$_: $ENV{$_}\n" } sort keys %ENV;
