@@ -630,54 +630,60 @@
 </xsl:template>
 
 <xsl:template match="xtf:nonl|xtf:nonx">
-  <xsl:variable name="class-val">
-    <xsl:choose>
-      <xsl:when test="/xtf:score[not(@score-type='legacy')]">
-	<xsl:text>lnuml</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>lnum</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:variable name="xnonl-class">
-    <xsl:choose>
-      <xsl:when test="preceding-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
+  <xsl:choose>
+    <xsl:when test="$proofing-mode = true()">
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="class-val">
 	<xsl:choose>
-	  <xsl:when test="following-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
-	    <xsl:text>-medial</xsl:text>
+	  <xsl:when test="/xtf:score[not(@score-type='legacy')]">
+	    <xsl:text>lnuml</xsl:text>
 	  </xsl:when>
-	  <xsl:otherwise>-final</xsl:otherwise>
+	  <xsl:otherwise>
+	    <xsl:text>lnum</xsl:text>
+	  </xsl:otherwise>
 	</xsl:choose>
-      </xsl:when>
-      <xsl:when test="following-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
-	<xsl:text>-initial</xsl:text>
-      </xsl:when>
-      <xsl:otherwise/>
-    </xsl:choose>
-  </xsl:variable>
-  <tr class="nonl{$xnonl-class}">
-    <xsl:if test="@xml:id">
-      <xsl:attribute name="xml:id">
-        <xsl:value-of select="@xml:id"/>
-      </xsl:attribute>
-    </xsl:if>
-    <xsl:choose>
-      <xsl:when test="not(preceding-sibling::*[1])">
-	<td class="{$class-val}">
-	  <span class="xlabel">
-	    <xsl:value-of select="translate(ancestor-or-self::*[@label][1]/@label,
-				  ' ','&#xa0;')"/>
-	  </span>
-	  <xsl:call-template name="span-lnum"/>
-	</td>
-      </xsl:when>
-      <xsl:otherwise>
-	<td class="nonlnum"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <td colspan="{ancestor::*[@cols]/@cols}" class="nonlbody"><xsl:call-template name="do-non-c-or-l"/></td>
-  </tr>
+      </xsl:variable>
+      <xsl:variable name="xnonl-class">
+	<xsl:choose>
+	  <xsl:when test="preceding-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
+	    <xsl:choose>
+	      <xsl:when test="following-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
+		<xsl:text>-medial</xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>-final</xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:when>
+	  <xsl:when test="following-sibling::*[1][self::xtf:nonl or self::xtf:nonx]">
+	    <xsl:text>-initial</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise/>
+	</xsl:choose>
+      </xsl:variable>
+      <tr class="nonl{$xnonl-class}">
+	<xsl:if test="@xml:id">
+	  <xsl:attribute name="xml:id">
+            <xsl:value-of select="@xml:id"/>
+	  </xsl:attribute>
+	</xsl:if>
+	<xsl:choose>
+	  <xsl:when test="not(preceding-sibling::*[1])">
+	    <td class="{$class-val}">
+	      <span class="xlabel">
+		<xsl:value-of select="translate(ancestor-or-self::*[@label][1]/@label,
+				      ' ','&#xa0;')"/>
+	      </span>
+	      <xsl:call-template name="span-lnum"/>
+	    </td>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <td class="nonlnum"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<td colspan="{ancestor::*[@cols]/@cols}" class="nonlbody"><xsl:call-template name="do-non-c-or-l"/></td>
+      </tr>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template name="do-non-c-or-l">
