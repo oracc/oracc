@@ -1,5 +1,5 @@
 dnl $Id: configure.in,v 1.1 1998/11/05 03:26:43 s Exp s $
-AC_INIT(Oracc,1.0)
+AC_INIT([Oracc],[1.0])
 AC_LANG(C)
 AC_CONFIG_SRCDIR(c/include/psd_base.h)
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -13,7 +13,7 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_YACC
 AM_PROG_LEX
-AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_INSTALL
 AC_PROG_LN_S
 dnl AC_PROG_RANLIB
@@ -29,7 +29,15 @@ dnl AC_SEARCH_LIBS(iconv,iconv,,
 dnl     AC_SEARCH_LIBS(libiconv,iconv,,AC_MSG_ERROR(['libiconv' is required but it doesn't seem to be installed on this system.]),))
 
 dnl Checks for header files.
-AC_HEADER_STDC
+m4_warn([obsolete],
+[The preprocessor macro `STDC_HEADERS' is obsolete.
+  Except in unusual embedded environments, you can safely include all
+  ISO C90 headers unconditionally.])dnl
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h limits.h malloc.h strings.h unistd.h)
 
@@ -84,7 +92,7 @@ dnl AC_SUBST(QDBMLIBDIR)
 
 dnl 	   oracc-hyperestraier/estconfig
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   oracc-hyperestraier/Makefile
 	   oracc-hyperestraier/qdbm/Makefile
 	   c/Makefile
@@ -236,3 +244,4 @@ AC_OUTPUT([Makefile
 	doc/ns/xtf/1.0/Makefile
 	doc/ns/xse/1.0/Makefile
 ])
+AC_OUTPUT
