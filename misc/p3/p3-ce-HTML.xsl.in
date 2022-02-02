@@ -17,6 +17,7 @@
 <xsl:param name="item-url"/>
 <xsl:param name="project"/>
 <xsl:param name="divwrap" select="'no'"/>
+<xsl:param name="proofing-mode" select="false()"/>
 
 <xsl:variable name="ce-config-file" select="concat('@@ORACC_BUILDS@@/xml/',$project,'/config.xml')"/>
 
