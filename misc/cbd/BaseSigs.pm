@@ -3,7 +3,7 @@ package ORACC::CBD::BaseSigs;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/basesigs_load/;
+@EXPORT = qw/basesigs_load basesigs_load_files/;
 
 use warnings; use strict; use open 'utf8'; use utf8; use feature 'unicode_strings';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
@@ -47,18 +47,33 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 
 
 my %global_e = ();
+my %t = ();
+
+sub basesigs_load_files {
+    my @f = @_;
+    foreach my $f (@f) {
+	bs_load_one($f,0,0);
+    }
+    %t;
+}
 
 sub basesigs_load {
     my($p,$sort,$esort) = @_;
-    my %seen = ();
-    my %t = ();
     
     unless (-r $p) {
 	my($proj,$lang) = ($p =~ /^(.*?):(.*?)$/);
 	if ($proj) {
 	    $p = "$ENV{'ORACC_BUILDS'}/$proj/01bld/$lang/base-sigs.tab";
 	}
+	bs_load_in($p,$sort,$esort);
     }
+    
+    %t;
+}
+
+sub bs_load_one {
+    my($p,$sort,$esort) = @_;
+    my %seen = ();
     open(P,$p) || die "$0: can't load Base Sigs $p\n";
     while (<P>) {
 	chomp;
@@ -81,7 +96,6 @@ sub basesigs_load {
 	print T Dumper \%t;
 	close(T);
     }
-    %t;
 }
 
 sub bsigcmp {

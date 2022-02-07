@@ -30,12 +30,19 @@ die "$0: ORACC environment not set\n" unless $oracc;
 die "$0: -forms FILE required; -lang and -proj optional (defaults epsd2 and sux).\n"
     unless $form && $lang && $proj;
 
-my $basesigs = "$oracc/$proj/01bld/$lang/base-sigs.tab";
+#my $basesigs = "$oracc/$proj/01bld/$lang/base-sigs.tab";
+#die "$0: no $basesigs\n\nYou can create this file with:\n\t(cd $oracc/$proj ; cbdpp.plx -c -bases 00lib/$lang.glo)\n"
+#    unless -r $basesigs;
 
-die "$0: no $basesigs\n\nYou can create this file with:\n\t(cd $oracc/$proj ; cbdpp.plx -c -bases 00lib/$lang.glo)\n"
-    unless -r $basesigs;
+my %t = (); 
+# my %t = basesigs_load($basesigs);
 
-my %t = basesigs_load($basesigs);
+my $cancel = 0;
+collect_bases();
+
+if ($cancel) {
+    die "$0: run commands listed before this line and try again\n";
+}
 
 my $auto_str = " (autofixed)" if $auto;
 ORACC::SL::BaseC::init();
@@ -91,5 +98,40 @@ while (<F>) {
     print;
 }
 ORACC::SL::BaseC::term();
+
+#############################################################################################
+
+sub collect_bases {
+    my @b = ();
+    if ($lang eq 'sux') {
+	push @b, 'epsd2:sux', 'epsd2/names:qpn';
+	push @b, '.:sux' if -r '00lib/sux.glo';
+	push @b, '.:qpn' if -r '00lib/qpn.glo';
+    } else {
+	push @b, 'epsd2/emesal:sux-x-emesal';
+	push @b, '.:sux-x-emesal' if -r '00lib/sux-x-emesal.glo';
+	push @b, '.:qpn' if -r '00lib/qpn.glo';
+    }
+    my @sigtabs = ();
+    foreach my $b (@b) {
+	my($p,$l) = ($b =~ /^(.*?):(.*?)$/);
+	$p = "$oracc/$p" unless $p eq '.';
+	my $sigtab = "$p/01bld/$l/base-sigs.tab";
+	if (-r $sigtab) {
+	    warn "using $sigtab\n";
+	    push @sigtabs, $sigtab;
+	} else {
+	    ++$cancel;
+	    if ($p eq '.') {
+		warn "cbdpp.plx -c -bases 00lib/$l.glo\n";
+	    } else {
+		warn "(cd $p ; cbdpp.plx -c -bases 00lib/$l.glo)\n";
+	    }
+	}
+    }
+    unless ($cancel) {
+	%t = basesigs_load_files(@sigtabs);
+    }
+}
 
 1;
