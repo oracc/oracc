@@ -248,6 +248,9 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
 	  if (master_formp->mcount == 1)
 	    {
 	      master_formp->type = "cof-head";
+	      /* This master_lp set is suspect */
+	      if (!master_lp)
+		master_lp = lp;
 	      master_lp->cof_tails = list_create(LIST_SINGLE);
 	    }
 	  lp->f->type = "cof-tail";

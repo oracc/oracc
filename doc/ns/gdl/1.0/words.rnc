@@ -5,7 +5,7 @@ namespace syn = "http://oracc.org/ns/syntax/1.0"
 
 word.content = text | group | grapheme | nongrapheme
 
-words = (word | sword.head | sword.cont | nonword | nongrapheme)*
+words = (word | sword.head | sword.cont | nonword | nongrapheme | normword)*
 
 word = 
   element g:w {

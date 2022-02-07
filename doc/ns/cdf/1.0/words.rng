@@ -16,6 +16,7 @@
         <ref name="sword.cont"/>
         <ref name="nonword"/>
         <ref name="nongrapheme"/>
+        <ref name="normword"/>
       </choice>
     </zeroOrMore>
   </define>
